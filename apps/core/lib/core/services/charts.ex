@@ -4,6 +4,7 @@ defmodule Core.Services.Charts do
 
   alias Core.Services.Users
   alias Core.Schema.{Chart, User, Installation, Version}
+  alias Core.ChartMuseum.Token
 
   def get_chart(chart_id), do: Core.Repo.get(Chart, chart_id)
 
@@ -54,4 +55,29 @@ defmodule Core.Services.Charts do
     Chart.changeset(chart, %{latest_version: v})
     |> Core.Repo.update()
   end
+
+  def gen_token(%Installation{} = installation, %User{} = user) do
+    installation
+    |> Core.Repo.preload([chart: :publisher])
+    |> allow(user, :access)
+    |> when_ok(fn %Installation{chart: chart} ->
+      Token.claims_for_chart(chart, ["pull"])
+      |> Token.encode_and_sign()
+      |> handle_token()
+    end)
+  end
+
+  def gen_token(%Chart{} = chart, %User{} = user) do
+    chart
+    |> Core.Repo.preload([:publisher])
+    |> allow(user, :create)
+    |> when_ok(fn %Chart{} = chart ->
+      Token.claims_for_chart(chart, ["pull", "push"])
+      |> Token.encode_and_sign()
+      |> handle_token()
+    end)
+  end
+
+  defp handle_token({:ok, token, _}), do: {:ok, token}
+  defp handle_token(error), do: error
 end

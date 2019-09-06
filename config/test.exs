@@ -12,3 +12,10 @@ config :api, ApiWeb.Endpoint,
   server: false
 
 config :logger, level: :warn
+
+pem = Path.dirname(__ENV__.file) |> Path.join("testkey.pem") |> File.read!()
+config :joken,
+  chartmuseum: [
+    signer_alg: "RS256",
+    key_pem: pem
+  ]

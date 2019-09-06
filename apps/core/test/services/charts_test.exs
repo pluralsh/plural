@@ -1,6 +1,7 @@
 defmodule Core.Services.ChartsTest do
   use Core.SchemaCase, async: true
   alias Core.Services.Charts
+  alias Core.ChartMuseum.Token
 
   describe "#create_chart" do
     test "A user can create a chart if he's a publisher" do
@@ -56,6 +57,51 @@ defmodule Core.Services.ChartsTest do
       user = insert(:user)
 
       {:error, _} = Charts.create_installation(%{version: "bogus"}, chart.id, user)
+    end
+  end
+
+  describe "#gen_token" do
+    test "A user can generate a pull token for a chart they installed" do
+      %{user: user} = installation = insert(:installation)
+
+      {:ok, token} = Charts.gen_token(installation, user)
+
+      {:ok, %{"access" => %{
+        "type" => "artifact-repository",
+        "name" => name,
+        "actions" => ["pull"]
+      }}} = Token.verify(token)
+
+      assert name == "#{installation.chart.publisher.name}/#{installation.chart.name}"
+    end
+
+    test "Users cannot generate tokens for other installations" do
+      user = insert(:user)
+      installation = insert(:installation)
+
+      {:error, _} = Charts.gen_token(installation, user)
+    end
+
+    test "Users can generate push tokens for charts they publish" do
+      publisher = insert(:publisher)
+      chart = insert(:chart, publisher: publisher)
+
+      {:ok, token} = Charts.gen_token(chart, publisher.owner)
+
+      {:ok, %{"access" => %{
+        "type" => "artifact-repository",
+        "name" => name,
+        "actions" => ["pull", "push"]
+      }}} = Token.verify(token)
+
+      assert name == "#{publisher.name}/#{chart.name}"
+    end
+
+    test "Users cannot generate tokens for others' charts" do
+      user = insert(:user)
+      chart = insert(:chart)
+
+      {:error, _} = Charts.gen_token(chart, user)
     end
   end
 end

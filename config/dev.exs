@@ -38,3 +38,10 @@ config :logger, :console, format: "[$level] $message\n"
 config :phoenix, :stacktrace_depth, 20
 
 config :phoenix, :plug_init_mode, :runtime
+
+pem = Path.dirname(__ENV__.file) |> Path.join("testkey.pem") |> File.read!()
+config :joken,
+  chartmuseum: [
+    signer_alg: "RS256",
+    key_pem: pem
+  ]

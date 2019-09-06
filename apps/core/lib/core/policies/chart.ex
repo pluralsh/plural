@@ -11,6 +11,7 @@ defmodule Core.Policies.Chart do
     %{chart: chart} = Core.Repo.preload(chart_version, [chart: :publisher])
     can?(user, chart, action)
   end
+  def can?(%User{id: user_id}, %Installation{user_id: user_id}, :access), do: :continue
   def can?(%User{}, %Installation{chart_id: chart_id, version: v}, :create) do
     case Charts.get_chart_version(chart_id, v) do
       nil -> {:error, :no_version}

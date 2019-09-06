@@ -22,6 +22,8 @@ defmodule Core.SchemaCase do
       import Ecto.Changeset
       import Ecto.Query
       import Core.SchemaCase
+      import Core.Factory
+      import Core.TestHelpers
     end
   end
 

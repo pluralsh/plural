@@ -1,6 +1,6 @@
 use Mix.Config
 
-config :api,
+config :core,
   ecto_repos: [Core.Repo]
 
 config :api, ApiWeb.Endpoint,

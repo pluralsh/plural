@@ -1,22 +1,37 @@
 defmodule ApiWeb.Router do
   use ApiWeb, :router
 
-  pipeline :browser do
-    plug :accepts, ["html"]
-    plug :fetch_session
-    plug :fetch_flash
-    plug :protect_from_forgery
-    plug :put_secure_browser_headers
-  end
-
   pipeline :api do
     plug :accepts, ["json"]
   end
 
-  scope "/", ApiWeb do
-    pipe_through :browser
+  pipeline :auth do
+    plug ApiWeb.GuardianPipeline
+  end
 
-    get "/", PageController, :index
+  scope "/", ApiWeb do
+    pipe_through :api
+
+    get "/health", HealthController, :ping
+
+    post "/signup", UserController, :create
+
+    post "/login", UserController, :login
+  end
+
+  scope "/api", ApiWeb do
+    pipe_through [:api, :auth]
+
+    post "/publishers", UserController, :create_publisher
+
+    resources "/charts", ChartController, only: [:create] do
+      post "/version", ChartController, :version
+      get "/token", ChartController, :token
+    end
+
+    resources "/installations", InstallationController, only: [:create] do
+      get "/token", InstallationController, :token
+    end
   end
 
   # Other scopes may use custom stacks.

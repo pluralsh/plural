@@ -11,6 +11,9 @@ defmodule Core.Services.Charts do
   def get_chart_version(chart_id, version),
     do: Core.Repo.get_by(Version, chart_id: chart_id, version: version)
 
+  def get_installation!(inst_id),
+    do: Core.Repo.get!(Installation, inst_id)
+
   def create_chart(attrs, %User{} = user) do
     publisher = Users.get_publisher!(user.id)
 

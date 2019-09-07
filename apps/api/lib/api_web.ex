@@ -23,7 +23,10 @@ defmodule ApiWeb do
 
       import Plug.Conn
       import ApiWeb.Gettext
+      import ApiWeb.Helpers
       alias ApiWeb.Router.Helpers, as: Routes
+
+      action_fallback ApiWeb.FallbackController
     end
   end
 

@@ -16,5 +16,8 @@ config :logger, :console,
 
 config :phoenix, :json_library, Jason
 
+config :api, Api.Guardian,
+  issuer: "chartmart",
+  secret_key: "chartmart_secret"
 
 import_config "#{Mix.env()}.exs"

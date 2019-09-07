@@ -25,4 +25,20 @@ defmodule Core.Services.UsersTest do
       assert publisher.owner_id == user.id
     end
   end
+
+  describe "#login_user" do
+    test "You can log in by password" do
+      {:ok, user} = Users.create_user(%{
+        name: "some user",
+        email: "someone@example.com",
+        password: "verystrongpassword"
+      })
+
+      {:ok, login} = Users.login_user(user.email, "verystrongpassword")
+
+      assert login.id == user.id
+
+      {:error, :invalid_password} = Users.login_user(user.email, "incorrectpassword")
+    end
+  end
 end

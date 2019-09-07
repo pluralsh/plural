@@ -20,6 +20,9 @@ defmodule ApiWeb.ConnCase do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
       alias ApiWeb.Router.Helpers, as: Routes
+      import Core.Factory
+      import Core.TestHelpers
+      import ApiWeb.ConnCase
 
       # The default endpoint for testing
       @endpoint ApiWeb.Endpoint
@@ -34,5 +37,16 @@ defmodule ApiWeb.ConnCase do
     end
 
     {:ok, conn: Phoenix.ConnTest.build_conn()}
+  end
+
+  def authorized(conn, user) do
+    {:ok, token, _} = Api.Guardian.encode_and_sign(user, %{})
+    Plug.Conn.put_req_header(conn, "authorization", "Bearer #{token}")
+  end
+
+  def assert_header(conn, header, fun) when is_function(fun) do
+    [header] = Plug.Conn.get_resp_header(conn, header)
+    assert fun.(header)
+    conn
   end
 end

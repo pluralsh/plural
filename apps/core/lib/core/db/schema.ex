@@ -1,6 +1,7 @@
 defmodule Core.DB.Schema do
   import Ecto.Changeset
-  defmacro __using__(_) do
+  defmacro __using__(opts \\ []) do
+    derive_json = Keyword.get(opts, :derive_json, true)
     quote do
       use Ecto.Schema
       import Ecto.Query
@@ -23,10 +24,12 @@ defmodule Core.DB.Schema do
 
       defoverridable [any: 0]
 
-      defimpl Jason.Encoder, for: __MODULE__ do
-        def encode(struct, opts) do
-          Core.DB.Schema.mapify(struct)
-          |> Jason.Encode.map(opts)
+      if unquote(derive_json) do
+        defimpl Jason.Encoder, for: __MODULE__ do
+          def encode(struct, opts) do
+            Core.DB.Schema.mapify(struct)
+            |> Jason.Encode.map(opts)
+          end
         end
       end
     end

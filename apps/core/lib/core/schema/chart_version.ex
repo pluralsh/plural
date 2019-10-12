@@ -1,5 +1,5 @@
 defmodule Core.Schema.Version do
-  use Core.DB.Schema
+  use Piazza.Ecto.Schema
   alias Core.Schema.{Chart}
 
   schema "versions" do

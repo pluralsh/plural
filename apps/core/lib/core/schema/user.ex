@@ -1,5 +1,5 @@
 defmodule Core.Schema.User do
-  use Core.DB.Schema, derive_json: false
+  use Piazza.Ecto.Schema, derive_json: false
 
   @email_re ~r/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-\.]+\.[a-zA-Z]{2,}$/
 
@@ -14,7 +14,7 @@ defmodule Core.Schema.User do
 
   defimpl Jason.Encoder, for: __MODULE__ do
     def encode(struct, opts) do
-      Core.DB.Schema.mapify(struct)
+      Piazza.Ecto.Schema.mapify(struct)
       |> Map.drop([:password, :password_hash])
       |> Jason.Encode.map(opts)
     end

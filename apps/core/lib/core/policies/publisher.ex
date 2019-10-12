@@ -1,5 +1,5 @@
 defmodule Core.Policies.Publisher do
-  use Core.Policies.Base
+  use Piazza.Policy
   alias Core.Schema.{User, Publisher}
 
   def can?(%User{id: user_id}, %Publisher{owner_id: user_id}, _), do: :continue

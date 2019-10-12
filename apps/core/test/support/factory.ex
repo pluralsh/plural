@@ -16,9 +16,16 @@ defmodule Core.Factory do
     }
   end
 
+  def repository_factory do
+    %Schema.Repository{
+      name: sequence(:repository, &"repo-#{&1}"),
+      publisher: build(:publisher)
+    }
+  end
+
   def chart_factory do
     %Schema.Chart{
-      publisher: build(:publisher),
+      repository: build(:repository),
       name: sequence(:chart, & "chart-#{&1}"),
       latest_version: "0.1.0"
     }
@@ -33,9 +40,16 @@ defmodule Core.Factory do
 
   def installation_factory do
     %Schema.Installation{
-      chart: build(:chart),
+      repository: build(:repository),
       user: build(:user),
-      version: "0.1.0"
+    }
+  end
+
+  def chart_installation_factory do
+    %Schema.ChartInstallation{
+      chart: build(:chart),
+      version: build(:version),
+      installation: build(:installation)
     }
   end
 end

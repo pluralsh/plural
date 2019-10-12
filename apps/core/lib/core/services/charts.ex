@@ -2,24 +2,25 @@ defmodule Core.Services.Charts do
   use Core.Services.Base
   import Core.Policies.Chart
 
-  alias Core.Services.Users
-  alias Core.Schema.{Chart, User, Installation, Version}
-  alias Core.ChartMuseum.Token
+  alias Core.Services.Repositories
+  alias Core.Schema.{
+    Chart,
+    User,
+    ChartInstallation,
+    Version
+  }
 
   def get_chart(chart_id), do: Core.Repo.get(Chart, chart_id)
+
+  def get_chart!(chart_id), do: Core.Repo.get!(Chart, chart_id)
 
   def get_chart_version(chart_id, version),
     do: Core.Repo.get_by(Version, chart_id: chart_id, version: version)
 
-  def get_installation!(inst_id),
-    do: Core.Repo.get!(Installation, inst_id)
-
-  def create_chart(attrs, %User{} = user) do
-    publisher = Users.get_publisher!(user.id)
-
+  def create_chart(attrs, repository_id, %User{} = user) do
     start_transaction()
     |> add_operation(:chart, fn _ ->
-      %Chart{publisher_id: publisher.id}
+      %Chart{repository_id: repository_id}
       |> Chart.changeset(attrs)
       |> Core.Repo.insert()
     end)
@@ -47,9 +48,11 @@ defmodule Core.Services.Charts do
     |> execute(extract: :version)
   end
 
-  def create_installation(attrs, chart_id, %User{} = user) do
-    %Installation{chart_id: chart_id, user_id: user.id}
-    |> Installation.changeset(attrs)
+  def create_chart_installation(attrs, installation_id, %User{} = user) do
+    installation = Repositories.get_installation!(installation_id)
+
+    %ChartInstallation{installation_id: installation.id, installation: installation}
+    |> ChartInstallation.changeset(attrs)
     |> allow(user, :create)
     |> when_ok(:insert)
   end
@@ -58,29 +61,4 @@ defmodule Core.Services.Charts do
     Chart.changeset(chart, %{latest_version: v})
     |> Core.Repo.update()
   end
-
-  def gen_token(%Installation{} = installation, %User{} = user) do
-    installation
-    |> Core.Repo.preload([chart: :publisher])
-    |> allow(user, :access)
-    |> when_ok(fn %Installation{chart: chart} ->
-      Token.claims_for_chart(chart, ["pull"])
-      |> Token.encode_and_sign()
-      |> handle_token()
-    end)
-  end
-
-  def gen_token(%Chart{} = chart, %User{} = user) do
-    chart
-    |> Core.Repo.preload([:publisher])
-    |> allow(user, :create)
-    |> when_ok(fn %Chart{} = chart ->
-      Token.claims_for_chart(chart, ["pull", "push"])
-      |> Token.encode_and_sign()
-      |> handle_token()
-    end)
-  end
-
-  defp handle_token({:ok, token, _}), do: {:ok, token}
-  defp handle_token(error), do: error
 end

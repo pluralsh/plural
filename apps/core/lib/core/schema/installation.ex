@@ -1,24 +1,22 @@
 defmodule Core.Schema.Installation do
-  use Core.DB.Schema
-  alias Core.Schema.{Chart, User}
+  use Piazza.Ecto.Schema
+  alias Core.Schema.{Repository, User}
 
   schema "installations" do
-    field :version, :string
-
     belongs_to :user, User
-    belongs_to :chart, Chart
+    belongs_to :repository, Repository
 
     timestamps()
   end
 
-  @valid ~w(version user_id chart_id)a
+  @valid ~w(user_id repository_id)a
 
   def changeset(model, attrs \\ %{}) do
     model
     |> cast(attrs, @valid)
-    |> validate_required([:version, :user_id, :chart_id])
-    |> unique_constraint(:chart_id, name: index_name(:installations, [:user_id, :chart_id]))
+    |> validate_required([:user_id, :repository_id])
+    |> unique_constraint(:repository_id, name: index_name(:installations, [:user_id, :repository_id]))
     |> foreign_key_constraint(:user_id)
-    |> foreign_key_constraint(:chart_id)
+    |> foreign_key_constraint(:repository_id)
   end
 end

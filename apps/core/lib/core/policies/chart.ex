@@ -1,21 +1,20 @@
 defmodule Core.Policies.Chart do
-  use Core.Policies.Base
-  alias Core.Schema.{Chart, Version, User, Installation}
-  alias Core.Services.Charts
+  use Piazza.Policy
+  alias Core.Schema.{Chart, Version, User, ChartInstallation}
 
   def can?(%User{} = user, %Chart{} = chart, action) do
-    %{publisher: publisher} = Core.Repo.preload(chart, [:publisher])
+    %{repository: %{publisher: publisher}} = Core.Repo.preload(chart, [repository: :publisher])
     Core.Policies.Publisher.can?(user, publisher, action)
   end
   def can?(%User{} = user, %Version{} = chart_version, action) do
-    %{chart: chart} = Core.Repo.preload(chart_version, [chart: :publisher])
+    %{chart: chart} = Core.Repo.preload(chart_version, [chart: [repository: :publisher]])
     can?(user, chart, action)
   end
-  def can?(%User{id: user_id}, %Installation{user_id: user_id}, :access), do: :continue
-  def can?(%User{}, %Installation{chart_id: chart_id, version: v}, :create) do
-    case Charts.get_chart_version(chart_id, v) do
-      nil -> {:error, :no_version}
-      _ -> :continue
+
+  def can?(%User{id: user_id}, %ChartInstallation{installation: %{repository_id: repo_id, user_id: user_id}} = ci, _) do
+    case Core.Repo.preload(ci, [:chart, :version]) do
+      %{version: %{chart_id: cid}, chart: %{id: cid, repository_id: ^repo_id}} -> :pass
+      _ -> {:error, :invalid_version}
     end
   end
 

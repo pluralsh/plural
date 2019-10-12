@@ -1,5 +1,5 @@
 defmodule Core.Schema.Publisher do
-  use Core.DB.Schema
+  use Piazza.Ecto.Schema
   alias Core.Schema.User
 
   schema "publishers" do

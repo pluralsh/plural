@@ -35,17 +35,19 @@ defmodule ApiWeb.Router do
   end
 
   scope "/", ApiWeb do
-    get "/:publisher/:repo/index.yaml", ChartMuseumController, :index
-    get "/:publisher/:repo/charts/:chart", ChartMuseumController, :get
+    pipe_through [:auth]
+
+    get "/:repo/index.yaml", ChartMuseumController, :index
+    get "/:repo/charts/:chart", ChartMuseumController, :get
 
     scope "/api" do
-      post "/:publisher/:repo/charts", ChartMuseumController, :create_chart
-      post "/:publisher/:repo/prov", ChartMuseumController, :create_prov
-      delete "/:publisher/:repo/charts/:name/:version", ChartMuseumController, :delete
+      post "/:repo/charts", ChartMuseumController, :create_chart
+      post "/:repo/prov", ChartMuseumController, :create_prov
+      delete "/:repo/charts/:name/:version", ChartMuseumController, :delete
 
-      get "/:publisher/:repo/charts", ChartMuseumController, :list
-      get "/:publisher/:repo/charts/:chart", ChartMuseumController, :list_versions
-      get "/:publisher/:repo/charts/:chart/:version", ChartMuseumController, :get_version
+      get "/:repo/charts", ChartMuseumController, :list
+      get "/:repo/charts/:chart", ChartMuseumController, :list_versions
+      get "/:repo/charts/:chart/:version", ChartMuseumController, :get_version
     end
   end
 

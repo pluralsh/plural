@@ -44,4 +44,15 @@ defmodule Core.Services.Base do
     |> Map.put(:inserted_at, DateTime.utc_now())
     |> Map.put(:updated_at, DateTime.utc_now())
   end
+
+  defmacro stringish_fetch(map, atom_key) do
+    string_key = Atom.to_string(atom_key)
+    quote do
+      case unquote(map) do
+        %{unquote(atom_key) => val} -> val
+        %{unquote(string_key) => val} -> val
+        _ -> nil
+      end
+    end
+  end
 end

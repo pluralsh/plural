@@ -21,8 +21,19 @@ defmodule Core.Schema.Chart do
     model
     |> cast(attrs, @valid)
     |> unique_constraint(:name, name: index_name(:charts, [:repository_id, :name]))
+    |> bump_version(model)
     |> foreign_key_constraint(:repository_id)
     |> validate_required([:name, :latest_version])
     |> validate_length(:name, max: 255)
+  end
+
+  def bump_version(cs, %{latest_version: nil}), do: cs
+  def bump_version(cs, %{latest_version: v}) do
+    with changed_version when not is_nil(changed_version) <- get_change(cs, :latest_version),
+         :lt <- Elixir.Version.compare(changed_version, v) do
+      delete_change(cs, :latest_version)
+    else
+      _ -> cs
+    end
   end
 end

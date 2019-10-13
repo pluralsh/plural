@@ -62,6 +62,7 @@ defmodule Core.Repo.Migrations.Bootstrap do
       add :id, :uuid, primary_key: true
       add :chart_id, references(:charts, type: :uuid, on_delete: :delete_all)
       add :version, :string
+      add :helm, :map
 
       timestamps()
     end

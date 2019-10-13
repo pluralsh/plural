@@ -80,4 +80,18 @@ defmodule Core.Services.ChartsTest do
       }, installation.id, user)
     end
   end
+
+  describe "#sync_version" do
+    test "It will add helm info onto a chart version" do
+      version = insert(:version)
+
+      {:ok, version} = Charts.sync_version(
+        %{"description" => "some chart"},
+        version.chart_id,
+        version.version
+      )
+
+      assert version.helm == %{"description" => "some chart"}
+    end
+  end
 end

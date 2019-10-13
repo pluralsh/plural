@@ -1,159 +1,86 @@
 defmodule ApiWeb.ChartMuseumController do
   use ApiWeb, :controller
+  import ApiWeb.Plugs.ReverseProxy
+  alias Core.Services.{Charts, Repositories}
+  alias Core.Policies.Repository, as: RepoPolicy
 
-  def index(conn, %{"publisher" => pub, "repo" => repo}) do
-    url = Path.join([chartmuseum(), pub, repo, "index.yaml"]) |> IO.inspect()
-    opts = ReverseProxyPlug.init([])
+  plug :fetch_repository
+  plug :authorize
 
-    HTTPoison.request(%HTTPoison.Request{
-      method: :get,
-      url: url,
-      body: ReverseProxyPlug.read_body(conn),
-      headers: proxy_headers(conn, url),
-      options: proxy_opts(opts)
-    })
-    |> ReverseProxyPlug.response(conn, opts)
+  def index(conn, %{"repo" => repo}) do
+    url = Path.join([chartmuseum(), repo, "index.yaml"])
+
+    execute_proxy(:get, url, conn)
   end
 
-  def get(conn, %{"publisher" => pub, "repo" => repo, "chart" => chart}) do
-    url = Path.join([chartmuseum(), pub, repo, "charts", chart])
-    opts = ReverseProxyPlug.init([])
+  def get(conn, %{"repo" => repo, "chart" => chart}) do
+    url = Path.join([chartmuseum(), repo, "charts", chart])
 
-    HTTPoison.request(%HTTPoison.Request{
-      method: :get,
-      url: url,
-      body: ReverseProxyPlug.read_body(conn),
-      headers: proxy_headers(conn, url),
-      options: proxy_opts(opts)
-    })
-    |> ReverseProxyPlug.response(conn, opts)
+    execute_proxy(:get, url, conn)
   end
 
-  def create_chart(conn, %{"publisher" => pub, "repo" => repo, "chart" => _upload} = params) do
-    url = Path.join([chartmuseum(), "api", pub, repo, "charts"])
+  def create_chart(conn, %{"repo" => repo} = params) do
+    current_user = Guardian.Plug.current_resource(conn)
     opts = ReverseProxyPlug.init(response_mode: :buffer)
-    uploads =
-      ["chart", "prov"]
-      |> Enum.map(&to_upload(params, &1))
-      |> Enum.filter(& &1)
+    url = Path.join([chartmuseum(), "api", repo, "charts"])
 
-    HTTPoison.request(%HTTPoison.Request{
-      method: :post,
-      url: url,
-      body: {:multipart, uploads},
-      headers: proxy_headers(conn, url),
-      options: [timeout: :infinity, recv_timeout: :infinity] ++ opts
-    })
-    |> ReverseProxyPlug.response(conn, opts)
-  end
-
-  defp to_upload(params, key) do
-    case params do
-      %{^key => %{filename: file}} ->
-        {:file, file, {"form-data", [name: "chart", filename: Path.basename(file)]}, []}
-      _ -> nil
+    Map.take(params, ["chart", "prov"])
+    |> Charts.upload_chart(conn.assigns.repo, current_user, %{opts: opts, headers: proxy_headers(conn, url)})
+    |> case do
+      {:ok, %{cm: resp}} -> {:ok, resp} |> ReverseProxyPlug.response(conn, opts)
+      error -> error
     end
   end
 
-  def create_prov(conn, %{"publisher" => pub, "repo" => repo}) do
-    url = Path.join([chartmuseum(), "api", pub, repo, "prov"])
+  def create_prov(conn, %{"repo" => repo, "prov" => %{filename: file}}) do
+    url = Path.join([chartmuseum(), "api", repo, "prov"])
     opts = ReverseProxyPlug.init([])
 
-    HTTPoison.request(%HTTPoison.Request{
-      method: :post,
-      url: url,
-      body: ReverseProxyPlug.read_body(conn),
-      headers: proxy_headers(conn, url),
-      options: proxy_opts(opts)
-    })
+    HTTPoison.post(
+      url,
+      {:multipart, {:file, file, {"form-data", [name: "prov", filename: Path.basename(file)]}, []}},
+      proxy_headers(conn, url),
+      proxy_opts(opts)
+    )
     |> ReverseProxyPlug.response(conn, opts)
   end
 
-  def delete(conn, %{"publisher" => pub, "repo" => repo, "chart" => chart, "version" => v}) do
-    url = Path.join([chartmuseum(), "api", pub, repo, "charts", chart, v])
-    opts = ReverseProxyPlug.init([])
+  def delete(conn, %{"repo" => repo, "chart" => chart, "version" => v}) do
+    url = Path.join([chartmuseum(), "api", repo, "charts", chart, v])
 
-    HTTPoison.request(%HTTPoison.Request{
-      method: :delete,
-      url: url,
-      body: ReverseProxyPlug.read_body(conn),
-      headers: proxy_headers(conn, url),
-      options: proxy_opts(opts)
-    })
-    |> ReverseProxyPlug.response(conn, opts)
+    execute_proxy(:delete, url, conn)
   end
 
-  def list(conn, %{"publisher" => pub, "repo" => repo}) do
-    url = Path.join([chartmuseum(), "api", pub, repo, "charts"])
-    opts = ReverseProxyPlug.init([])
+  def list(conn, %{"repo" => repo}) do
+    url = Path.join([chartmuseum(), "api", repo, "charts"])
 
-    HTTPoison.request(%HTTPoison.Request{
-      method: :get,
-      url: url,
-      body: ReverseProxyPlug.read_body(conn),
-      headers: proxy_headers(conn, url),
-      options: proxy_opts(opts)
-    })
-    |> ReverseProxyPlug.response(conn, opts)
+    execute_proxy(:get, url, conn)
   end
 
-  def list_versions(conn, %{"publisher" => pub, "repo" => repo, "chart" => chart}) do
-    url = Path.join([chartmuseum(), "api", pub, repo, "charts", chart])
-    opts = ReverseProxyPlug.init([])
+  def list_versions(conn, %{"repo" => repo, "chart" => chart}) do
+    url = Path.join([chartmuseum(), "api", repo, "charts", chart])
 
-    HTTPoison.request(%HTTPoison.Request{
-      method: :get,
-      url: url,
-      body: ReverseProxyPlug.read_body(conn),
-      headers: proxy_headers(conn, url),
-      options: proxy_opts(opts)
-    })
-    |> ReverseProxyPlug.response(conn, opts)
+    execute_proxy(:get, url, conn)
   end
 
-  def get_version(conn, %{"publisher" => pub, "repo" => repo, "chart" => chart, "version" => version}) do
-    url = Path.join([chartmuseum(), "api", pub, repo, "charts", chart, version])
-    opts = ReverseProxyPlug.init([])
+  def get_version(conn, %{"repo" => repo, "chart" => chart, "version" => version}) do
+    url = Path.join([chartmuseum(), "api", repo, "charts", chart, version])
 
-    HTTPoison.request(%HTTPoison.Request{
-      method: :get,
-      url: url,
-      body: ReverseProxyPlug.read_body(conn),
-      headers: proxy_headers(conn, url),
-      options: proxy_opts(opts)
-    })
-    |> ReverseProxyPlug.response(conn, opts)
+    execute_proxy(:get, url, conn)
   end
 
-  @ignore_headers ~w(
-    te
-    transfer-encoding
-    trailer
-    connection
-    keep-alive
-    proxy-authenticate
-    proxy-authorization
-    upgrade
-  )
-
-  defp chartmuseum(), do: Application.get_env(:api, :chartmuseum)
-
-  defp proxy_headers(conn, url) do
-    %{host: host, port: port} = URI.parse(url)
-
-    conn.req_headers
-    |> Enum.map(fn {header, value} -> {String.downcase(header), value} end)
-    |> Enum.filter(fn
-      {header, _} when header not in @ignore_headers -> true
-      _ -> false
-    end)
-    |> List.keyreplace("host", 0, {"host", "#{host}:#{port}"})
+  def fetch_repository(%{params: %{"repo" => repo_name}} = conn, _) do
+    repo = Repositories.get_repository_by_name!(repo_name)
+    assign(conn, :repo, repo)
   end
 
-  defp proxy_opts(opts) do
-    opts
-    |> Keyword.put_new(:timeout, :infinity)
-    |> Keyword.put_new(:recv_timeout, :infinity)
-    |> Keyword.put_new(:stream_to, self())
+  def authorize(conn, _) do
+    current_user = Guardian.Plug.current_resource(conn)
+    case RepoPolicy.allow(conn.assigns.repo, current_user, :access) do
+      {:ok, _} -> conn
+      _ -> ApiWeb.FallbackController.call(conn, {:error, :forbidden}) |> halt()
+    end
   end
+
+  defp chartmuseum(), do: Application.get_env(:core, :chartmuseum)
 end

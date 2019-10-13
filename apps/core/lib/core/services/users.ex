@@ -10,6 +10,9 @@ defmodule Core.Services.Users do
   def get_publisher!(user_id),
     do: Core.Repo.get_by!(Publisher, owner_id: user_id)
 
+  def get_publisher_by_name!(name),
+    do: Core.Repo.get_by!(Publisher, name: name)
+
   def login_user(email, password) do
     get_user_by_email!(email)
     |> Argon2.check_pass(password)

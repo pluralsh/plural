@@ -4,6 +4,7 @@ defmodule Core.Schema.Version do
 
   schema "versions" do
     field :version, :string
+    field :helm, :map
     belongs_to :chart, Chart
 
     timestamps()

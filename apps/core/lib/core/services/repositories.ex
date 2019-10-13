@@ -11,6 +11,9 @@ defmodule Core.Services.Repositories do
     Core.Repo.get_by(Installation, repository_id: repo_id, user_id: user_id)
   end
 
+  def get_repository_by_name!(name),
+    do: Core.Repo.get_by(Repository, name: name)
+
   def create_repository(attrs, %User{} = user) do
     publisher = Users.get_publisher!(user.id)
 

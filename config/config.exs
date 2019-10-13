@@ -20,4 +20,6 @@ config :api, Api.Guardian,
   issuer: "chartmart",
   secret_key: "chartmart_secret"
 
+config :api, :chartmuseum, "http://localhost:8080"
+
 import_config "#{Mix.env()}.exs"

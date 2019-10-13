@@ -19,7 +19,7 @@ defmodule ApiWeb.Router do
     post "/login", UserController, :login
   end
 
-  scope "/api", ApiWeb do
+  scope "/mart", ApiWeb do
     pipe_through [:api, :auth]
 
     post "/publishers", UserController, :create_publisher
@@ -31,6 +31,21 @@ defmodule ApiWeb.Router do
 
     resources "/installations", InstallationController, only: [:create] do
       get "/token", InstallationController, :token
+    end
+  end
+
+  scope "/", ApiWeb do
+    get "/:publisher/:repo/index.yaml", ChartMuseumController, :index
+    get "/:publisher/:repo/charts/:chart", ChartMuseumController, :get
+
+    scope "/api" do
+      post "/:publisher/:repo/charts", ChartMuseumController, :create_chart
+      post "/:publisher/:repo/prov", ChartMuseumController, :create_prov
+      delete "/:publisher/:repo/charts/:name/:version", ChartMuseumController, :delete
+
+      get "/:publisher/:repo/charts", ChartMuseumController, :list
+      get "/:publisher/:repo/charts/:chart", ChartMuseumController, :list_versions
+      get "/:publisher/:repo/charts/:chart/:version", ChartMuseumController, :get_version
     end
   end
 

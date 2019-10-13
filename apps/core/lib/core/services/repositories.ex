@@ -4,7 +4,8 @@ defmodule Core.Services.Repositories do
   alias Core.Services.Users
   alias Core.Schema.{Repository, Installation, User}
 
-  def get_installation!(id), do: Core.Repo.get!(Installation, id)
+  def get_installation!(id),
+    do: Core.Repo.get!(Installation, id)
 
   def get_installation(user_id, repo_id) do
     Core.Repo.get_by(Installation, repository_id: repo_id, user_id: user_id)

@@ -10,6 +10,9 @@ defmodule Core.Schema.Publisher do
     timestamps()
   end
 
+  def ordered(query \\ __MODULE__, order \\ [asc: :name]),
+    do: from(p in query, order_by: ^order)
+
   @valid ~w(name owner_id)a
 
   def changeset(model, attrs \\ %{}) do

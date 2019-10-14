@@ -11,17 +11,18 @@ defmodule Core.Services.Repositories do
     Core.Repo.get_by(Installation, repository_id: repo_id, user_id: user_id)
   end
 
+  def get_repository!(id), do: Core.Repo.get(Repository, id)
+
   def get_repository_by_name!(name),
     do: Core.Repo.get_by(Repository, name: name)
 
   def create_repository(attrs, %User{} = user) do
-    publisher = Users.get_publisher!(user.id)
+    publisher = Users.get_publisher_by_owner!(user.id)
 
     %Repository{publisher_id: publisher.id}
     |> Repository.changeset(attrs)
     |> Core.Repo.insert()
   end
-
 
   def create_installation(attrs, repository_id, %User{} = user) do
     %Installation{repository_id: repository_id, user_id: user.id}
@@ -29,4 +30,11 @@ defmodule Core.Services.Repositories do
     |> allow(user, :create)
     |> when_ok(:insert)
   end
+
+  def authorize(repo_id, %User{} = user) when is_binary(repo_id) do
+    get_repository!(repo_id)
+    |> authorize(user)
+  end
+  def authorize(%Repository{} = repo, user),
+    do: allow(repo, user, :access)
 end

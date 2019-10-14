@@ -9,6 +9,9 @@ defmodule Core.Schema.Installation do
     timestamps()
   end
 
+  def for_user(query \\ __MODULE__, user_id),
+    do: from(i in query, where: i.user_id == ^user_id)
+
   @valid ~w(user_id repository_id)a
 
   def changeset(model, attrs \\ %{}) do

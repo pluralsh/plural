@@ -63,4 +63,10 @@ defmodule GraphQl.Schema.Types do
 
     timestamps()
   end
+
+  connection node_type: :user
+  connection node_type: :publisher
+  connection node_type: :repository
+  connection node_type: :chart
+  connection node_type: :version
 end

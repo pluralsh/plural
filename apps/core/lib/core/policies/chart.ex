@@ -2,6 +2,10 @@ defmodule Core.Policies.Chart do
   use Piazza.Policy
   alias Core.Schema.{Chart, Version, User, ChartInstallation}
 
+  def can?(%User{} = user, %Chart{} = chart, :access) do
+    %{repository: repo} = Core.Repo.preload(chart, repository: :publisher)
+    Core.Policies.Repository.can?(user, repo, :access)
+  end
   def can?(%User{} = user, %Chart{} = chart, action) do
     %{repository: %{publisher: publisher}} = Core.Repo.preload(chart, [repository: :publisher])
     Core.Policies.Publisher.can?(user, publisher, action)

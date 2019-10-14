@@ -7,8 +7,14 @@ defmodule Core.Services.Users do
   def get_user_by_email!(email),
     do: Core.Repo.get_by!(User, email: email)
 
-  def get_publisher!(user_id),
-    do: Core.Repo.get_by!(Publisher, owner_id: user_id)
+  def get_publisher!(id),
+    do: Core.Repo.get!(Publisher, id)
+
+  def get_publisher_by_owner!(owner_id),
+    do: Core.Repo.get_by!(Publisher, owner_id: owner_id)
+
+  def get_publisher_by_owner(owner_id),
+    do: Core.Repo.get_by(Publisher, owner_id: owner_id)
 
   def get_publisher_by_name!(name),
     do: Core.Repo.get_by!(Publisher, name: name)

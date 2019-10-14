@@ -115,6 +115,13 @@ defmodule Core.Services.Charts do
     |> when_ok(:insert)
   end
 
+  def authorize(chart_id, %User{} = user) when is_binary(chart_id) do
+    get_chart!(chart_id)
+    |> authorize(user)
+  end
+  def authorize(%Chart{} = chart, user),
+    do: allow(chart, user, :access)
+
   defp update_latest_version(%Chart{} = chart, v) do
     Chart.changeset(chart, %{latest_version: v})
     |> Core.Repo.update()

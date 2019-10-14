@@ -11,6 +11,9 @@ defmodule Core.Schema.Chart do
     timestamps()
   end
 
+  def ordered(query \\ __MODULE__, order \\ [asc: :name]),
+    do: from(c in query, order_by: ^order)
+
   def for_repository(query \\ __MODULE__, repo_id) do
     from(c in query, where: c.repository_id == ^repo_id)
   end

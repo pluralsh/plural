@@ -10,6 +10,12 @@ defmodule Core.Schema.Version do
     timestamps()
   end
 
+  def for_chart(query \\ __MODULE__, chart_id),
+    do: from(v in query, where: v.chart_id == ^chart_id)
+
+  def ordered(query \\ __MODULE__, order \\ [desc: :inserted_at]),
+    do: from(v in query, order_by: ^order)
+
   @valid ~w(version chart_id)a
 
   def changeset(model, attrs \\ %{}) do

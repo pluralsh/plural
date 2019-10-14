@@ -20,6 +20,9 @@ defmodule Core.Schema.User do
     end
   end
 
+  def ordered(query \\ __MODULE__, order \\ [asc: :name]),
+    do: from(p in query, order_by: ^order)
+
   @valid ~w(name email password)a
 
   def changeset(model, attrs \\ %{}) do

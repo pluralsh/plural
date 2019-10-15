@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: chartmart-api
+  labels:
+{{ include "chartmart.labels" . | indent 4 }}
+  annotations:
+    cloud.google.com/neg: '{"ingress": true}'
+spec:
+  type: NodePort
+  ports:
+  - port: {{ .Values.api.port }}
+    targetPort: http
+    protocol: TCP
+    name: http
+  - port: 4369
+    targetPort: epmd
+    protocol: TCP
+    name: epmd
+  selector:
+    app.kubernetes.io/name: chartmart-api
+    app.kubernetes.io/instance: {{ .Release.Name }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chartmart-chartmuseum
+  labels:
+{{ include "chartmart.labels" . | indent 4 }}
+  annotations:
+    cloud.google.com/neg: '{"ingress": true}'
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector:
+    app.kubernetes.io/name: chartmart-chartmuseum
+    app.kubernetes.io/instance: {{ .Release.Name }}

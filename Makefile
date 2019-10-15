@@ -26,3 +26,6 @@ push: ## push to gcr
 
 testup: ## sets up dependent services for test
 	docker-compose up -d
+
+install: ## installs the helm chart
+	helm upgrade --install -f charts/chartmart/config.secrets.yaml --namespace chartmart chartmart charts/chartmart

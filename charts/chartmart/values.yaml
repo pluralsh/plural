@@ -1,0 +1,42 @@
+replicaCount: 2
+
+image:
+  repository: gcr.io/piazza-247002/chartmart
+  tag: '0.1.0'
+  pullPolicy: Always
+
+api:
+  port: 4000
+
+dbPasswordSecret: chartmart-postgresql
+
+chartmuseum:
+  repository: chartmuseum/chartmuseum
+  tag: latest
+  bucket: chartmart-charts
+
+postgresql:
+  postgresqlUsername: chartmart
+  postgresqlDatabase: chartmart
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  dns: chartmart.piazzaapp.com
+  annotations:
+    networking.gke.io/managed-certificates: chartmart-certificate
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

@@ -3,6 +3,9 @@ use Mix.Config
 config :core,
   ecto_repos: [Core.Repo]
 
+config :piazza_core,
+  repos: [Core.Repo]
+
 config :api, ApiWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "1rkd5+lxJbdTadyxW7qF/n1fNzKPV010PKf8SEGmUrXwMw0iAZyoyZgWEwr6nmCJ",

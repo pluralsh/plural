@@ -1,0 +1,28 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: networking.gke.io/v1beta1
+kind: ManagedCertificate
+metadata:
+  name: chartmart-certificate
+spec:
+  domains:
+  - {{ .Values.ingress.dns }}
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: chartmart
+  labels:
+{{ include "chartmart.labels" . | indent 4 }}
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  rules:
+  - host: {{ .Values.ingress.dns }}
+    http:
+      paths:
+      - backend:
+          serviceName: chartmart-api
+          servicePort: http
+{{- end }}

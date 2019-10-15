@@ -60,4 +60,26 @@ defmodule GraphQl.UserMutationTest do
       assert signup["email"] == "mguarino46@gmail.com"
     end
   end
+
+  describe "createPublisher" do
+    test "A user can create a publisher" do
+      user = insert(:user)
+
+      {:ok, %{data: %{"createPublisher" => publisher}}} = run_query("""
+        mutation CreatePublisher($attrs: PublisherAttributes!) {
+          createPublisher(attributes: $attrs) {
+            id
+            name
+            owner {
+              id
+            }
+          }
+        }
+      """, %{"attrs" => %{"name" => "my publisher"}}, %{current_user: user})
+
+      assert publisher["id"]
+      assert publisher["name"] == "my publisher"
+      assert publisher["owner"]["id"] == user.id
+    end
+  end
 end

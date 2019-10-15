@@ -37,7 +37,8 @@ release :chartmart do
   set applications: [
     :runtime_tools,
     api: :permanent,
-    core: :permanent
+    core: :permanent,
+    graphql: :load
   ]
   set commands: [
     migrate: "rel/commands/migrate.sh",

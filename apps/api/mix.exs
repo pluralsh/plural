@@ -43,7 +43,8 @@ defmodule Api.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:reverse_proxy_plug, "~> 1.2.1"},
 
-      {:core, in_umbrella: true}
+      {:core, in_umbrella: true},
+      {:graphql, in_umbrella: true}
     ]
   end
 

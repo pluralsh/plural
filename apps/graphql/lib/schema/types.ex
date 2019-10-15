@@ -69,4 +69,5 @@ defmodule GraphQl.Schema.Types do
   connection node_type: :repository
   connection node_type: :chart
   connection node_type: :version
+  connection node_type: :installation
 end

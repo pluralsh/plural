@@ -22,6 +22,9 @@ defmodule GraphQl.Resolvers.User do
   def login_user(%{email: email, password: pwd}, _),
     do: Users.login_user(email, pwd)
 
-  def signup_user(%{attributes: args}, _),
-    do: Users.create_user(args)
+  def signup_user(%{attributes: attrs}, _),
+    do: Users.create_user(attrs)
+
+  def create_publisher(%{attributes: attrs}, %{context: %{current_user: user}}),
+    do: Users.create_publisher(attrs, user)
 end

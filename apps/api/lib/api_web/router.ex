@@ -7,6 +7,18 @@ defmodule ApiWeb.Router do
 
   pipeline :auth do
     plug ApiWeb.GuardianPipeline
+    plug ApiWeb.Plugs.AbsintheContext
+  end
+
+  forward "/graphiql", Absinthe.Plug.GraphiQL,
+      schema: GraphQl,
+      interface: :advanced
+
+  scope "/gql" do
+    pipe_through [:api, :auth]
+
+    forward "/", Absinthe.Plug,
+      schema: GraphQl
   end
 
   scope "/", ApiWeb do

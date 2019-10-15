@@ -54,6 +54,12 @@ defmodule GraphQl do
       resolve &Repository.list_repositories/2
     end
 
+    connection field :installations, node_type: :installation do
+      middleware GraphQl.Middleware.Authenticated
+
+      resolve &Repository.list_installations/2
+    end
+
     connection field :charts, node_type: :chart do
       middleware GraphQl.Middleware.Authenticated
       arg :repository_id, non_null(:id)
@@ -81,6 +87,18 @@ defmodule GraphQl do
       arg :attributes, non_null(:user_attributes)
 
       resolve safe_resolver(&User.signup_user/2)
+    end
+
+    field :create_publisher, :publisher do
+      arg :attributes, non_null(:publisher_attributes)
+
+      resolve safe_resolver(&User.create_publisher/2)
+    end
+
+    field :create_repository, :repository do
+      arg :attributes, non_null(:repository_attributes)
+
+      resolve safe_resolver(&Repository.create_repository/2)
     end
   end
 

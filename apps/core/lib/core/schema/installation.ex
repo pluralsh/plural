@@ -9,6 +9,9 @@ defmodule Core.Schema.Installation do
     timestamps()
   end
 
+  def ordered(query \\ __MODULE__, order \\ [desc: :inserted_at]),
+    do: from(i in query, order_by: ^order)
+
   def for_user(query \\ __MODULE__, user_id),
     do: from(i in query, where: i.user_id == ^user_id)
 

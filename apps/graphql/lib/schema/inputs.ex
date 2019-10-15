@@ -9,4 +9,12 @@ defmodule GraphQl.Schema.Inputs do
     field :email, :string
     field :password, :string
   end
+
+  input_object :publisher_attributes do
+    field :name, :string
+  end
+
+  input_object :repository_attributes do
+    field :name, :string
+  end
 end

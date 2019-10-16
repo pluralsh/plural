@@ -13,6 +13,8 @@ spec:
         envFrom:
         - secretRef:
             name: chartmart-env
+        - secretRef:
+            name: chartmart-migration-env
         env:
         - name: NAMESPACE
           valueFrom:

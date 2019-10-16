@@ -25,4 +25,7 @@ config :api, Api.Guardian,
 
 config :core, :chartmuseum, "http://localhost:8080"
 
+config :botanist,
+  ecto_repo: Core.Repo
+
 import_config "#{Mix.env()}.exs"

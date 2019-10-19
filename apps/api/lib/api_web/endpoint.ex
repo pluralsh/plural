@@ -23,6 +23,8 @@ defmodule ApiWeb.Endpoint do
     plug Phoenix.CodeReloader
   end
 
+  plug CORSPlug
+
   plug Plug.RequestId
   plug Plug.Telemetry, event_prefix: [:phoenix, :endpoint]
 

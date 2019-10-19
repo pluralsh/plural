@@ -62,9 +62,4 @@ defmodule ApiWeb.Router do
       get "/:repo/charts/:chart/:version", ChartMuseumController, :get_version
     end
   end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", ApiWeb do
-  #   pipe_through :api
-  # end
 end

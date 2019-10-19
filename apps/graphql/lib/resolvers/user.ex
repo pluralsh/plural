@@ -19,12 +19,22 @@ defmodule GraphQl.Resolvers.User do
     |> paginate(args)
   end
 
-  def login_user(%{email: email, password: pwd}, _),
-    do: Users.login_user(email, pwd)
+  def login_user(%{email: email, password: pwd}, _) do
+    Users.login_user(email, pwd)
+    |> with_jwt()
+  end
 
-  def signup_user(%{attributes: attrs}, _),
-    do: Users.create_user(attrs)
+  def signup_user(%{attributes: attrs}, _) do
+    Users.create_user(attrs)
+    |> with_jwt()
+  end
 
   def create_publisher(%{attributes: attrs}, %{context: %{current_user: user}}),
     do: Users.create_publisher(attrs, user)
+
+  defp with_jwt({:ok, user}) do
+    with {:ok, token, _} <- Core.Guardian.encode_and_sign(user),
+        do: {:ok, %{user | jwt: token}}
+  end
+  defp with_jwt(error), do: error
 end

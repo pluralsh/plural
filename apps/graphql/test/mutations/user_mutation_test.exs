@@ -15,11 +15,13 @@ defmodule GraphQl.UserMutationTest do
         mutation Login($email: String!, $password: String!) {
           login(email: $email, password: $password) {
             id
+            jwt
           }
         }
       """, %{"email" => "mguarino46@gmail.com", "password" => "super strong password"})
 
       assert found["id"] == user.id
+      assert found["jwt"]
     end
 
     test "Incorrect passwords fail" do
@@ -47,6 +49,7 @@ defmodule GraphQl.UserMutationTest do
             id
             name
             email
+            jwt
           }
         }
       """, %{"attributes" => %{
@@ -58,6 +61,7 @@ defmodule GraphQl.UserMutationTest do
       assert signup["id"]
       assert signup["name"] == "Michael Guarino"
       assert signup["email"] == "mguarino46@gmail.com"
+      assert signup["jwt"]
     end
   end
 

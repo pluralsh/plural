@@ -11,6 +11,12 @@ defmodule GraphQl.Schema.Types do
     field :name, non_null(:string)
     field :email, non_null(:string)
 
+    field :jwt, :string, resolve: fn
+      %{id: id, jwt: jwt}, _, %{context: %{current_user: %{id: id}}} -> {:ok, jwt}
+      _, _, %{context: %{current_user: %{}}} -> {:error, "you can only query your own jwt"}
+      %{jwt: jwt}, _, _ -> {:ok, jwt}
+    end
+
     timestamps()
   end
 

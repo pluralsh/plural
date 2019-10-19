@@ -11,5 +11,6 @@ seed do
   } |> Schema.User.changeset(%{
     password: get_env("ADMIN_PASSWORD")
   }) |> Repo.insert!()
+
   {:ok, _} = Core.Services.Users.create_publisher(%{name: get_env("PUBLISHER_NAME")}, admin)
 end

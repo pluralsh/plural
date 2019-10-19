@@ -38,6 +38,7 @@ defmodule Core.MixProject do
       {:argon2_elixir, "~> 2.0"},
       {:piazza_core, "~> 0.1.2"},
       {:joken, "~> 2.1.0"},
+      {:guardian, "~> 1.2.1"},
       {:botanist, "~> 0.1.0", git: "https://github.com/michaeljguarino/botanist.git", branch: "ecto3"}
     ]
   end

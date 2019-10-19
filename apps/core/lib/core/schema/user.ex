@@ -8,14 +8,17 @@ defmodule Core.Schema.User do
     field :email, :string
     field :password_hash, :string
     field :password, :string, virtual: true
+    field :jwt, :string, virtual: true
 
     timestamps()
   end
 
   defimpl Jason.Encoder, for: __MODULE__ do
+    @ignore ~w(password password_hash jwt)a
+
     def encode(struct, opts) do
       Piazza.Ecto.Schema.mapify(struct)
-      |> Map.drop([:password, :password_hash])
+      |> Map.drop(@ignore)
       |> Jason.Encode.map(opts)
     end
   end

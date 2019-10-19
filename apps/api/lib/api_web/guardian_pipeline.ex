@@ -1,6 +1,6 @@
 defmodule ApiWeb.GuardianPipeline do
   use Guardian.Plug.Pipeline, otp_app: :api,
-                              module: Api.Guardian,
+                              module: Core.Guardian,
                               error_handler: ApiWeb.Plug.AuthErrorHandler
 
   plug Guardian.Plug.VerifySession

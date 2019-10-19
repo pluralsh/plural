@@ -40,7 +40,7 @@ defmodule ApiWeb.ConnCase do
   end
 
   def authorized(conn, user) do
-    {:ok, token, _} = Api.Guardian.encode_and_sign(user, %{})
+    {:ok, token, _} = Core.Guardian.encode_and_sign(user, %{})
     Plug.Conn.put_req_header(conn, "authorization", "Bearer #{token}")
   end
 

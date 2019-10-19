@@ -1,5 +1,5 @@
-defmodule Api.Guardian do
-  use Guardian, otp_app: :api
+defmodule Core.Guardian do
+  use Guardian, otp_app: :core
   alias Core.Schema.User
   alias Core.Services.Users
 

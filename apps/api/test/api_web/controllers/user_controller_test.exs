@@ -53,7 +53,7 @@ defmodule ApiWeb.UserControllerTest do
   end
 
   defp valid_bearer_token("Bearer " <> token) do
-    case Api.Guardian.decode_and_verify(token) do
+    case Core.Guardian.decode_and_verify(token) do
       {:ok, _} -> true
       _ -> false
     end

@@ -19,7 +19,7 @@ config :logger, :console,
 
 config :phoenix, :json_library, Jason
 
-config :api, Api.Guardian,
+config :core, Core.Guardian,
   issuer: "chartmart",
   secret_key: "chartmart_secret"
 

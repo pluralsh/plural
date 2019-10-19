@@ -29,3 +29,6 @@ testup: ## sets up dependent services for test
 
 install: ## installs the helm chart
 	helm upgrade --install -f charts/chartmart/config.secrets.yaml --namespace chartmart chartmart charts/chartmart
+
+web: ## starts a local webserver
+	cd www && npm start

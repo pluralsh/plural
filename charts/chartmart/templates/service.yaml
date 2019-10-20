@@ -3,6 +3,7 @@ kind: Service
 metadata:
   name: chartmart-api
   labels:
+    app: chartmart-api
 {{ include "chartmart.labels" . | indent 4 }}
   annotations:
     cloud.google.com/neg: '{"ingress": true}'
@@ -27,8 +28,6 @@ metadata:
   name: chartmart-chartmuseum
   labels:
 {{ include "chartmart.labels" . | indent 4 }}
-  annotations:
-    cloud.google.com/neg: '{"ingress": true}'
 spec:
   type: NodePort
   ports:

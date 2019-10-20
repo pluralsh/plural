@@ -15,7 +15,7 @@ config :libcluster,
       config: [
         mode: :ip,
         kubernetes_node_basename: "api",
-        kubernetes_selector: "app=api",
+        kubernetes_selector: "app=chartmart-api",
         kubernetes_namespace: get_env("NAMESPACE"),
         polling_interval: 10_000
       ]

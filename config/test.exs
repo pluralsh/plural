@@ -13,9 +13,6 @@ config :api, ApiWeb.Endpoint,
 
 config :logger, level: :warn
 
-pem = Path.dirname(__ENV__.file) |> Path.join("testkey.pem") |> File.read!()
-config :joken,
-  chartmuseum: [
-    signer_alg: "RS256",
-    key_pem: pem
-  ]
+
+config :goth,
+  json: System.get_env("GOOGLE_APPLICATION_CREDENTIALS") |> File.read!()

@@ -10,11 +10,20 @@ defmodule GraphQl.Schema.Types do
     field :id, :id
     field :name, non_null(:string)
     field :email, non_null(:string)
+    field :publisher, :publisher, resolve: dataloader(User)
 
     field :jwt, :string, resolve: fn
       %{id: id, jwt: jwt}, _, %{context: %{current_user: %{id: id}}} -> {:ok, jwt}
       _, _, %{context: %{current_user: %{}}} -> {:error, "you can only query your own jwt"}
       %{jwt: jwt}, _, _ -> {:ok, jwt}
+    end
+
+    field :avatar, :string, resolve: fn
+      user, _, _ -> {:ok, Core.Storage.url({user.avatar, user}, :original)}
+    end
+
+    field :background_color, :string, resolve: fn
+      user, _, _ -> {:ok, User.background_color(user)}
     end
 
     timestamps()
@@ -24,6 +33,11 @@ defmodule GraphQl.Schema.Types do
     field :id, :id
     field :name, non_null(:string)
     field :owner, :user, resolve: dataloader(User)
+    field :description, :string
+
+    field :avatar, :string, resolve: fn
+      publisher, _, _ -> {:ok, Core.Storage.url({publisher.avatar, publisher}, :original)}
+    end
 
     timestamps()
   end
@@ -32,6 +46,12 @@ defmodule GraphQl.Schema.Types do
     field :id, :id
     field :name, non_null(:string)
     field :publisher, :publisher, resolve: dataloader(User)
+    field :description, :string
+    field :documentation, :string
+
+    field :icon, :string, resolve: fn
+      repo, _, _ -> {:ok, Core.Storage.url({repo.icon, repo}, :original)}
+    end
 
     timestamps()
   end

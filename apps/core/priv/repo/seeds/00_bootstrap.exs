@@ -12,5 +12,8 @@ seed do
     password: get_env("ADMIN_PASSWORD")
   }) |> Repo.insert!()
 
-  {:ok, _} = Core.Services.Users.create_publisher(%{name: get_env("PUBLISHER_NAME")}, admin)
+  {:ok, _} = Core.Services.Users.create_publisher(%{
+    name: get_env("PUBLISHER_NAME"),
+    description: get_env("PUBLISHER_DESCRIPTION")
+  }, admin)
 end

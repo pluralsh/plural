@@ -8,13 +8,19 @@ defmodule GraphQl.Schema.Inputs do
     field :name, :string
     field :email, :string
     field :password, :string
+    field :avatar, :upload_or_url
   end
 
   input_object :publisher_attributes do
     field :name, :string
+    field :avatar, :upload_or_url
+    field :description, :string
   end
 
   input_object :repository_attributes do
     field :name, :string
+    field :icon, :upload_or_url
+    field :description, :string
+    field :documentation, :string
   end
 end

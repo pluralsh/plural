@@ -27,6 +27,11 @@ push: ## push to gcr
 testup: ## sets up dependent services for test
 	docker-compose up -d
 
+
+connectdb: ## proxies the db in kubernetes via kubectl
+	@echo "run psql -U chartmart -h 127.0.0.1 chartmart to connect"
+	kubectl port-forward statefulset/chartmart-postgresql 5432 -n chartmart
+
 install: ## installs the helm chart
 	helm upgrade --install -f charts/chartmart/config.secrets.yaml --namespace chartmart chartmart charts/chartmart
 

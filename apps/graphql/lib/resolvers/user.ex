@@ -32,6 +32,14 @@ defmodule GraphQl.Resolvers.User do
   def create_publisher(%{attributes: attrs}, %{context: %{current_user: user}}),
     do: Users.create_publisher(attrs, user)
 
+  @colors ~w(#6b5b95 #feb236 #d64161 #ff7b25 #103A50 #CDCCC2 #FDC401 #8E5B3C #020001 #2F415B)
+
+  def background_color(%{id: id}) do
+    stripped = String.replace(id, "-", "")
+    {integral, _} = Integer.parse(stripped, 16)
+    Enum.at(@colors, rem(integral, length(@colors)))
+  end
+
   defp with_jwt({:ok, user}) do
     with {:ok, token, _} <- Core.Guardian.encode_and_sign(user),
         do: {:ok, %{user | jwt: token}}

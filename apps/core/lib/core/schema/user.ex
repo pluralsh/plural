@@ -1,5 +1,6 @@
 defmodule Core.Schema.User do
   use Piazza.Ecto.Schema, derive_json: false
+  use Arc.Ecto.Schema
 
   @email_re ~r/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-\.]+\.[a-zA-Z]{2,}$/
 
@@ -9,6 +10,11 @@ defmodule Core.Schema.User do
     field :password_hash, :string
     field :password, :string, virtual: true
     field :jwt, :string, virtual: true
+    field :avatar_id, :binary_id
+    field :avatar, Core.Storage.Type
+
+    has_one :publisher, Core.Schema.Publisher,
+      foreign_key: :owner_id
 
     timestamps()
   end
@@ -26,7 +32,7 @@ defmodule Core.Schema.User do
   def ordered(query \\ __MODULE__, order \\ [asc: :name]),
     do: from(p in query, order_by: ^order)
 
-  @valid ~w(name email password)a
+  @valid ~w(name email password avatar)a
 
   def changeset(model, attrs \\ %{}) do
     model
@@ -39,6 +45,8 @@ defmodule Core.Schema.User do
     |> validate_format(:email, @email_re)
     |> hash_password()
     |> validate_required([:password_hash])
+    |> generate_uuid(:avatar_id)
+    |> cast_attachments(attrs, [:avatar], allow_urls: true)
   end
 
   defp hash_password(%Ecto.Changeset{valid?: true, changes: %{password: password}} = changeset) do

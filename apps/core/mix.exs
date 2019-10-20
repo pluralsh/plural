@@ -39,6 +39,9 @@ defmodule Core.MixProject do
       {:piazza_core, "~> 0.1.2"},
       {:joken, "~> 2.1.0"},
       {:guardian, "~> 1.2.1"},
+      {:arc, "~> 0.11.0"},
+      {:arc_gcs, "~> 0.1.0"},
+      {:arc_ecto, "~> 0.11.1"},
       {:botanist, "~> 0.1.0", git: "https://github.com/michaeljguarino/botanist.git", branch: "ecto3"}
     ]
   end

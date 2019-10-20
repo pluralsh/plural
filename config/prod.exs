@@ -6,3 +6,5 @@ config :api, ApiWeb.Endpoint,
   server: true
 
 config :logger, level: :info
+
+config :goth, json: {:system, "GCP_CREDENTIALS"}

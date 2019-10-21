@@ -26,6 +26,32 @@ defmodule Core.Services.UsersTest do
     end
   end
 
+  describe "#update_user" do
+    test "Users can update themselves" do
+      {:ok, user} = Users.create_user(%{
+        name: "some user",
+        password: "superstrongpassword",
+        email: "something@example.com"
+      })
+
+      {:ok, updated} = Users.update_user(%{name: "real user"}, user)
+
+      assert updated.name == "real user"
+    end
+  end
+
+  describe "#update_publisher" do
+    test "Users can update their own publisher" do
+      user = insert(:user)
+      publisher = insert(:publisher, owner: user)
+
+      {:ok, updated} = Users.update_publisher(%{name: "publisher"}, user)
+
+      assert updated.id == publisher.id
+      assert updated.name == "publisher"
+    end
+  end
+
   describe "#login_user" do
     test "You can log in by password" do
       {:ok, user} = Users.create_user(%{

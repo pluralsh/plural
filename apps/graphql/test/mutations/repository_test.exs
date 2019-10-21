@@ -23,4 +23,23 @@ defmodule GraphQl.RepositoryMutationsTest do
       assert repo["publisher"]["id"] == id
     end
   end
+
+  describe "updateRepository" do
+    test "Users can update themselves" do
+      user = insert(:user)
+      repo = insert(:repository, publisher: build(:publisher, owner: user))
+
+      {:ok, %{data: %{"updateRepository" => updated}}} = run_query("""
+        mutation updateRepository($repositoryId: ID!, $name: String) {
+          updateRepository(repositoryId: $repositoryId, attributes: {name: $name}) {
+            id
+            name
+          }
+        }
+      """, %{"repositoryId" => repo.id, "name" => "Updated Repo"}, %{current_user: user})
+
+      assert updated["id"] == repo.id
+      assert updated["name"] == "Updated Repo"
+    end
+  end
 end

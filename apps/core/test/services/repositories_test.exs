@@ -12,6 +12,24 @@ defmodule Core.Services.RepositoriesTest do
     end
   end
 
+  describe "#update_repository" do
+    test "Users can update their repositories" do
+      %{owner: user} = publisher = insert(:publisher)
+      repo = insert(:repository, publisher: publisher)
+
+      {:ok, updated} = Repositories.update_repository(%{name: "piazza"}, repo.id, user)
+
+      assert updated.name == "piazza"
+    end
+
+    test "Nonpublishers cannot update their repositories" do
+      user = insert(:user)
+      repo = insert(:repository)
+
+      {:error, _} = Repositories.update_repository(%{name: "piazza"}, repo.id, user)
+    end
+  end
+
   describe "#create_installation" do
     test "Users can install other repositories" do
       user = insert(:user)

@@ -24,6 +24,13 @@ defmodule Core.Services.Repositories do
     |> Core.Repo.insert()
   end
 
+  def update_repository(attrs, repo_id, %User{} = user) do
+    get_repository!(repo_id)
+    |> Repository.changeset(attrs)
+    |> allow(user, :edit)
+    |> when_ok(:update)
+  end
+
   def create_installation(attrs, repository_id, %User{} = user) do
     %Installation{repository_id: repository_id, user_id: user.id}
     |> Installation.changeset(attrs)

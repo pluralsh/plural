@@ -89,16 +89,40 @@ defmodule GraphQl do
       resolve safe_resolver(&User.signup_user/2)
     end
 
+    field :update_user, :user do
+      middleware GraphQl.Middleware.Authenticated
+      arg :attributes, non_null(:user_attributes)
+
+      resolve safe_resolver(&User.update_user/2)
+    end
+
     field :create_publisher, :publisher do
+      middleware GraphQl.Middleware.Authenticated
       arg :attributes, non_null(:publisher_attributes)
 
       resolve safe_resolver(&User.create_publisher/2)
     end
 
+    field :update_publisher, :publisher do
+      middleware GraphQl.Middleware.Authenticated
+      arg :attributes, non_null(:publisher_attributes)
+
+      resolve safe_resolver(&User.update_publisher/2)
+    end
+
     field :create_repository, :repository do
+      middleware GraphQl.Middleware.Authenticated
       arg :attributes, non_null(:repository_attributes)
 
       resolve safe_resolver(&Repository.create_repository/2)
+    end
+
+    field :update_repository, :repository do
+      middleware GraphQl.Middleware.Authenticated
+      arg :repository_id, non_null(:id)
+      arg :attributes, non_null(:repository_attributes)
+
+      resolve safe_resolver(&Repository.update_repository/2)
     end
   end
 

@@ -34,9 +34,21 @@ defmodule Core.Services.Users do
     |> Core.Repo.insert()
   end
 
+  def update_user(attrs, %User{} = user) do
+    user
+    |> User.changeset(attrs)
+    |> Core.Repo.update()
+  end
+
   def create_publisher(attrs, %User{} = user) do
     %Publisher{owner_id: user.id}
     |> Publisher.changeset(attrs)
     |> Core.Repo.insert()
+  end
+
+  def update_publisher(attrs, %User{} = user) do
+    get_publisher_by_owner!(user.id)
+    |> Publisher.changeset(attrs)
+    |> Core.Repo.update()
   end
 end

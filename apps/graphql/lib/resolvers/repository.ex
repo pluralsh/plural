@@ -25,4 +25,7 @@ defmodule GraphQl.Resolvers.Repository do
 
   def create_repository(%{attributes: attrs}, %{context: %{current_user: user}}),
     do: Repositories.create_repository(attrs, user)
+
+  def update_repository(%{attributes: attrs, repository_id: repo_id}, %{context: %{current_user: user}}),
+    do: Repositories.update_repository(attrs, repo_id, user)
 end

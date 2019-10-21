@@ -65,6 +65,28 @@ defmodule GraphQl.UserMutationTest do
     end
   end
 
+  describe "updateUser" do
+    test "Users can update themselves" do
+      {:ok, user} = Users.create_user(%{
+        name: "Michael Guarino",
+        email: "mguarino46@gmail.com",
+        password: "super strong password"
+      })
+
+      {:ok, %{data: %{"updateUser" => updated}}} = run_query("""
+        mutation UpdateUser($name: String) {
+          updateUser(attributes: {name: $name}) {
+            id
+            name
+          }
+        }
+      """, %{"name" => "Updated User"}, %{current_user: user})
+
+      assert updated["id"] == user.id
+      assert updated["name"] == "Updated User"
+    end
+  end
+
   describe "createPublisher" do
     test "A user can create a publisher" do
       user = insert(:user)
@@ -84,6 +106,24 @@ defmodule GraphQl.UserMutationTest do
       assert publisher["id"]
       assert publisher["name"] == "my publisher"
       assert publisher["owner"]["id"] == user.id
+    end
+  end
+
+  describe "updatePublisher" do
+    test "A user can update their publisher" do
+      %{owner: user} = pub = insert(:publisher)
+
+      {:ok, %{data: %{"updatePublisher" => update}}} = run_query("""
+        mutation UpdatePublisher($name: String) {
+          updatePublisher(attributes: {name: $name}) {
+            id
+            name
+          }
+        }
+      """, %{"name" => "updated publisher"}, %{current_user: user})
+
+      assert update["id"] == pub.id
+      assert update["name"] == "updated publisher"
     end
   end
 end

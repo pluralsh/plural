@@ -50,6 +50,8 @@ spec:
             secretKeyRef:
               name: chartmart-serviceaccount
               key: gcp.json
+        - name: GCS_BUCKET
+          value: {{ .Values.api.bucket }}
         ports:
         - name: http
           containerPort: {{ .Values.api.port }}

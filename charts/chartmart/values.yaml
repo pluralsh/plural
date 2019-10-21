@@ -7,6 +7,7 @@ image:
 
 api:
   port: 4000
+  bucket: chartmart-assets
 
 dbPasswordSecret: chartmart-postgresql
 

@@ -11,7 +11,7 @@ function Repository({repo, hasNext}) {
       <Box width='50px' heigh='50px'>
         <img alt='' width='50px' height='50px' src={repo.icon} />
       </Box>
-      <Box gap='xsmall'>
+      <Box gap='xxsmall' justify='center'>
         <Text size='small' weight='bold'>
           {repo.name}
         </Text>

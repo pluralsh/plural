@@ -6,6 +6,7 @@ import Publishers from './publisher/Publishers'
 import MyPublisher from './publisher/MyPublisher'
 import Publisher from './publisher/Publisher'
 import Toolbar from './Toolbar'
+import Sidebar from './Sidebar'
 
 const TOOLBAR_SIZE = '50px'
 
@@ -37,8 +38,8 @@ function Chartmart(props) {
         <Box background='brand' gridArea='hamburger' align='center' justify='center'>
 
         </Box>
-        <Box background='brand' gridArea='toolbarLeft' align='center' justify='center'>
-          Left toolbar
+        <Box background='brand' gridArea='toolbarLeft'>
+          <Sidebar />
         </Box>
       </Grid>
     )}

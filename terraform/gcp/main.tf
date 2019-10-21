@@ -77,7 +77,7 @@ resource "google_storage_bucket_iam_member" "chartmart" {
 }
 
 resource "google_storage_bucket_iam_member" "chartmart_assets" {
-  bucket = "${google_storage_bucket.chartmart_bucket.name}"
+  bucket = "${google_storage_bucket.chartmart_assets_bucket.name}"
   role = "roles/storage.admin"
   member = "serviceAccount:${google_service_account.chartmart.email}"
 

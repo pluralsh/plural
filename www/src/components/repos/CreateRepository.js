@@ -10,14 +10,14 @@ import {generatePreview} from '../../utils/file'
 
 const LABEL_WIDTH = '90px'
 
-function CreateRepository(props) {
+function CreateRepository({publisher}) {
   const [state, setState] = useState({name: "", description: ""})
   const [image, setImage] = useState(null)
   const [mutation, {loading}] = useMutation(CREATE_REPO, {
     variables: {attributes: {...state, icon: image && image.file}},
     update: (cache, { data: { createRepository } }) => {
-      const prev = cache.readQuery({ query: REPOS_Q })
-      cache.writeQuery({query: REPOS_Q, data: {
+      const prev = cache.readQuery({ query: REPOS_Q, variables: {publisherId: publisher.id} })
+      cache.writeQuery({query: REPOS_Q, variables: {publisherId: publisher.id}, data: {
         ...prev,
         repositories: {
           ...prev.repositories,

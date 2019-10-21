@@ -5,6 +5,7 @@ import {Book, Logout} from 'grommet-icons'
 import Avatar from './Avatar'
 import HoveredBackground from '../utils/HoveredBackground'
 import MenuItem from '../utils/MenuItem'
+import {wipeToken} from '../../helpers/authentication'
 
 export function DropdownItem(props) {
   const {onClick, ...rest} = props
@@ -44,7 +45,10 @@ function Me({me}) {
         <Box gap='xxsmall' pad={{top: 'xxsmall'}}>
           <DropdownItem icon={Book} text="Edit publisher" onClick={() => history.push('/publishers/mine')} />
           <Box border='top' pad={{vertical: 'xxsmall'}}>
-            <MenuItem onClick={() => console.log('logout')}>
+            <MenuItem onClick={() => {
+              wipeToken()
+              history.push('/login')
+            }}>
               <Box direction='row' align='center'>
                 <Box width='100%'>
                   <Text size='small'>logout</Text>

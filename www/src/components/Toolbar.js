@@ -6,7 +6,7 @@ function Toolbar(props) {
   return (
     <Box direction='row' fill='horizontal'>
       <Box width='100px' height='100%' justify='center'>
-        <Text size='small'>Chartmart</Text>
+        <Text size='small' weight='bold'>Chartmart</Text>
       </Box>
       <Box width='100%'>
 

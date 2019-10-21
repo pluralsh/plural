@@ -28,4 +28,8 @@ config :core, :chartmuseum, "http://localhost:8080"
 config :botanist,
   ecto_repo: Core.Repo
 
+config :arc,
+  storage: Arc.Storage.GCS,
+  bucket: "chartmart-assets"
+
 import_config "#{Mix.env()}.exs"

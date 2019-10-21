@@ -5,6 +5,8 @@ export const UserFragment = gql`
     id
     name
     email
+    avatar
+    backgroundColor
   }
 `;
 
@@ -12,6 +14,7 @@ export const PublisherFragment = gql`
   fragment PublisherFragment on Publisher {
     id
     name
+    description
     owner {
       ...UserFragment
     }

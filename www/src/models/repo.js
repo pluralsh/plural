@@ -5,6 +5,9 @@ export const RepoFragment = gql`
   fragment RepoFragment on Repository {
     id
     name
+    description
+    documentation
+    icon
   }
 `;
 

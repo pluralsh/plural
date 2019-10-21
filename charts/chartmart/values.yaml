@@ -29,9 +29,9 @@ service:
 
 ingress:
   enabled: true
-  dns: chartmart.piazzaapp.com
+  dns: mart.piazzaapp.com
   annotations:
-    networking.gke.io/managed-certificates: chartmart-certificate
+    networking.gke.io/managed-certificates: chartmart-cert
 
 resources: {}
 

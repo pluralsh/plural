@@ -3,6 +3,9 @@ import {Box, Grid} from 'grommet'
 import { Switch, Route } from 'react-router-dom'
 import CurrentUser from './login/CurrentUser'
 import Publishers from './publisher/Publishers'
+import MyPublisher from './publisher/MyPublisher'
+import Publisher from './publisher/Publisher'
+import Toolbar from './Toolbar'
 
 const TOOLBAR_SIZE = '50px'
 
@@ -22,10 +25,12 @@ function Chartmart(props) {
         ]}
       >
         <Box background='brand' gridArea='toolbarTop' align='center' justify='center'>
-          Top toolbar
+          <Toolbar me={me} />
         </Box>
         <Box style={{height: `calc(100vh - ${TOOLBAR_SIZE})`}} gridArea='viewport'>
           <Switch>
+            <Route path='/publishers/mine' component={MyPublisher} />
+            <Route path='/publishers/:publisherId' component={Publisher} />
             <Route path='/' component={Publishers} />
           </Switch>
         </Box>

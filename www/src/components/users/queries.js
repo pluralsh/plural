@@ -5,6 +5,11 @@ export const ME_Q = gql`
   query {
     me {
       ...UserFragment
+      publisher {
+        id
+        name
+        description
+      }
     }
   }
   ${UserFragment}

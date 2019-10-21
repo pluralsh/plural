@@ -11,7 +11,7 @@ export function localized(path) {
 export function apiHost() {
   switch (window.location.hostname) {
     case "localhost":
-      return "chartmart.piazzaapp.com"
+      return "mart.piazzaapp.com"
     default:
       return window.location.hostname
   }

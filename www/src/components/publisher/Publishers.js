@@ -17,7 +17,14 @@ function Publisher({publisher}) {
         weight='bold'>
         {publisher.name}
       </Anchor>
-      <Text size='small'>{publisher.owner.name}</Text>
+      <Box gap='xxsmall'>
+        <Box>
+          <Text size='small'><i>{publisher.description}</i></Text>
+        </Box>
+        <Box>
+          <Text size='small'>Owned by {publisher.owner.name}</Text>
+        </Box>
+      </Box>
     </Box>
   )
 }

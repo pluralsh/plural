@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@apollo/react-hooks": "^3.1.3",
+    "apollo-absinthe-upload-link": "^1.5.0",
     "apollo-boost": "^0.4.4",
     "apollo-link-context": "^1.0.19",
     "graphql": "^14.5.8",
@@ -12,6 +13,7 @@
     "react": "^16.10.2",
     "react-apollo": "^3.1.3",
     "react-dom": "^16.10.2",
+    "react-file-picker": "^0.0.6",
     "react-router": "^5.1.2",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.2.0",

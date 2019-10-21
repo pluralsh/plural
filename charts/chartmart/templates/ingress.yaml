@@ -2,7 +2,7 @@
 apiVersion: networking.gke.io/v1beta1
 kind: ManagedCertificate
 metadata:
-  name: chartmart-certificate
+  name: chartmart-cert
 spec:
   domains:
   - {{ .Values.ingress.dns }}

@@ -8,6 +8,7 @@ defmodule ApiWeb.Plugs.ReverseProxy do
     proxy-authenticate
     proxy-authorization
     upgrade
+    authorization
   )
 
   def execute_proxy(method, url, conn) do

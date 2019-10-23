@@ -19,10 +19,11 @@ defmodule ApiWeb.ChartMuseumController do
     execute_proxy(:get, url, conn)
   end
 
-  def create_chart(conn, %{"repo" => repo} = params) do
+  def create_chart(conn, %{"repo" => repo, "chart" => upload} = params) do
     current_user = Guardian.Plug.current_resource(conn)
     opts = ReverseProxyPlug.init(response_mode: :buffer)
     url = Path.join([chartmuseum(), "api", repo, "charts"])
+    IO.inspect(upload)
 
     Map.take(params, ["chart", "prov"])
     |> Charts.upload_chart(conn.assigns.repo, current_user, %{opts: opts, headers: proxy_headers(conn, url)})

@@ -85,19 +85,19 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: chartmart-chartmuseum
+  name: chartmuseum
   labels:
 {{ include "chartmart.labels" . | indent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: chartmart-chartmuseum
+      app.kubernetes.io/name: chartmuseum
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: chartmart-chartmuseum
+        app.kubernetes.io/name: chartmuseum
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
     {{- with .Values.imagePullSecrets }}

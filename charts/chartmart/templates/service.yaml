@@ -25,7 +25,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: chartmart-chartmuseum
+  name: chartmuseum
   labels:
 {{ include "chartmart.labels" . | indent 4 }}
 spec:
@@ -36,5 +36,5 @@ spec:
     protocol: TCP
     name: http
   selector:
-    app.kubernetes.io/name: chartmart-chartmuseum
+    app.kubernetes.io/name: chartmuseum
     app.kubernetes.io/instance: {{ .Release.Name }}

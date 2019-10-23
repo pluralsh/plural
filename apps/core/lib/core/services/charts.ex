@@ -61,10 +61,10 @@ defmodule Core.Services.Charts do
 
   def upload_chart(%{"chart" => chart} = uploads, %Repository{id: repo_id, name: repo}, user, context) do
     {chart, version} = chart_info(chart)
-    uploads = Enum.map(uploads, fn {key, %{filename: file}} ->
-      {:file, file, {"form-data", [name: key, filename: Path.basename(file)]}, []}
+    uploads = Enum.map(uploads, fn {key, %{path: path, filename: file}} ->
+      path |> IO.inspect() |> File.exists?() |> IO.inspect()
+      {:file, path, {"form-data", [{"name", key}, {"filename", Path.basename(file)}]}, []}
     end)
-    |> IO.inspect()
 
     start_transaction()
     |> add_operation(:chart, fn _ ->

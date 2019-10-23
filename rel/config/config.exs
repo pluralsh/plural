@@ -15,4 +15,4 @@ config :core, Core.Repo,
   password: get_env("POSTGRES_PASSWORD"),
   hostname: "chartmart-postgresql"
 
-config :core, :chartmuseum, "http://chartmart-chartmuseum:8080"
+config :core, :chartmuseum, "http://chartmuseum:8080"

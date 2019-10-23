@@ -62,7 +62,6 @@ defmodule Core.Services.Charts do
   def upload_chart(%{"chart" => chart} = uploads, %Repository{id: repo_id, name: repo}, user, context) do
     {chart, version} = chart_info(chart)
     uploads = Enum.map(uploads, fn {key, %{path: path, filename: file}} ->
-      path |> IO.inspect() |> File.exists?() |> IO.inspect()
       {:file, path, {"form-data", [{"name", key}, {"filename", Path.basename(file)}]}, []}
     end)
 
@@ -76,7 +75,6 @@ defmodule Core.Services.Charts do
 
       opts = [timeout: :infinity, recv_timeout: :infinity] ++ context.opts
       HTTPoison.post(url, {:multipart, uploads}, context.headers, opts)
-      |> IO.inspect()
     end)
     |> add_operation(:sync, fn %{chart: %{id: id, name: chart}} ->
       url = Path.join([chartmuseum(), "api", repo, "charts", chart, version])

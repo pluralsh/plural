@@ -60,7 +60,7 @@ resource "google_storage_bucket_acl" "chartmart_bucket_acl" {
   predefined_acl = "publicRead"
 }
 
-resource "google_storage_bucket_acl" "chartmart_assets__bucket_acl" {
+resource "google_storage_bucket_acl" "chartmart_assets_bucket_acl" {
   bucket = "${google_storage_bucket.chartmart_assets_bucket.name}"
   predefined_acl = "publicRead"
 }

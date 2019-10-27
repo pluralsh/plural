@@ -45,4 +45,21 @@ defmodule GraphQl.RepositoryQueriesTest do
              |> ids_equal(found_repos)
     end
   end
+
+  describe "repository" do
+    test "It can fetch a repository by id" do
+      repo = insert(:repository)
+      user = insert(:user)
+
+      {:ok, %{data: %{"repository" => found}}} = run_query("""
+        query Repo($repoId: ID!) {
+          repository(id: $repoId) {
+            id
+          }
+        }
+      """, %{"repoId" => repo.id}, %{current_user: user})
+
+      assert found["id"] == repo.id
+    end
+  end
 end

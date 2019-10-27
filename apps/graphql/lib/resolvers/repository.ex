@@ -5,6 +5,9 @@ defmodule GraphQl.Resolvers.Repository do
 
   def query(_, _), do: Repository
 
+  def resolve_repository(%{id: repo_id}, _),
+    do: {:ok, Repositories.get_repository!(repo_id)}
+
   def list_repositories(%{publisher_id: pid} = args, _) when not is_nil(pid) do
     Repository.for_publisher(pid)
     |> Repository.ordered()

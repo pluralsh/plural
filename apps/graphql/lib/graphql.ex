@@ -37,6 +37,13 @@ defmodule GraphQl do
       resolve &User.resolve_publisher/2
     end
 
+    field :repository, :repository do
+      middleware GraphQl.Middleware.Authenticated
+      arg :id, non_null(:id)
+
+      resolve &Repository.resolve_repository/2
+    end
+
     connection field :users, node_type: :user do
       middleware GraphQl.Middleware.Authenticated
       resolve &User.list_users/2

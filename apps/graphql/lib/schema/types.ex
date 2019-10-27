@@ -59,7 +59,7 @@ defmodule GraphQl.Schema.Types do
   object :chart do
     field :id, :id
     field :name, non_null(:string)
-    field :helm, :map
+    field :latest_version, :string
     field :repository, :repository, resolve: dataloader(Repository)
 
     timestamps()
@@ -68,6 +68,7 @@ defmodule GraphQl.Schema.Types do
   object :version do
     field :id, :id
     field :version, non_null(:string)
+    field :helm, :map
     field :chart, :chart, resolve: dataloader(Chart)
 
     timestamps()

@@ -6,15 +6,16 @@ import Scroller from '../utils/Scroller'
 import {REPOS_Q} from './queries'
 
 function Repository({repo, hasNext}) {
+  let history = useHistory()
   return (
     <Box pad='small' direction='row' gap='small' border={hasNext ? 'bottom' : null}>
       <Box width='50px' heigh='50px'>
         <img alt='' width='50px' height='50px' src={repo.icon} />
       </Box>
       <Box gap='xxsmall' justify='center'>
-        <Text size='small' weight='bold'>
+        <Anchor size='small' weight='bold' onClick={() => history.push(`/repositories/${repo.id}`)}>
           {repo.name}
-        </Text>
+        </Anchor>
         <Text size='small'>
           {repo.description}
         </Text>

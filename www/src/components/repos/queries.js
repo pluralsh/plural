@@ -1,6 +1,6 @@
 import gql from 'graphql-tag'
 import {RepoFragment} from '../../models/repo'
-import {ChartFragment} from '../../models/chart'
+import {ChartFragment, VersionFragment} from '../../models/chart'
 
 export const CREATE_REPO = gql`
   mutation CreateRepository($attributes: RepositoryAttributes!) {
@@ -30,7 +30,9 @@ export const REPOS_Q = gql`
 
 export const REPO_Q = gql`
   query Repo($repositoryId: String!, $chartCursor: String) {
-    repositor
+    repository(id: $repositoryId) {
+      ...RepoFragment
+    }
     charts(repositoryId: $repositoryId, first: 15, after: $chartCursor) {
       pageInfo {
         hasNextPage
@@ -43,5 +45,23 @@ export const REPO_Q = gql`
       }
     }
   }
+  ${RepoFragment}
   ${ChartFragment}
+`;
+
+export const CHART_Q = gql`
+  query Charts($chartId: String!, $cursor: String) {
+    versions(chartId: $chartId, first: 10, after: $cursor) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      edges {
+        node {
+          ...VersionFragment
+        }
+      }
+    }
+  }
+  ${VersionFragment}
 `;

@@ -7,6 +7,8 @@ import MyPublisher from './publisher/MyPublisher'
 import Publisher from './publisher/Publisher'
 import Toolbar from './Toolbar'
 import Sidebar from './Sidebar'
+import Repository from './repos/Repository'
+import Chart from './repos/Chart'
 
 const TOOLBAR_SIZE = '50px'
 
@@ -32,6 +34,8 @@ function Chartmart(props) {
           <Switch>
             <Route path='/publishers/mine' component={MyPublisher} />
             <Route path='/publishers/:publisherId' component={Publisher} />
+            <Route path='/repositories/:repositoryId' component={Repository} />
+            <Route path='/charts/:chartId' component={Chart} />
             <Route path='/' component={Publishers} />
           </Switch>
         </Box>

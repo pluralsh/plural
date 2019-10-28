@@ -5,6 +5,7 @@ defmodule Core.Schema.Version do
   schema "versions" do
     field :version, :string
     field :helm, :map
+    field :readme, :string
     belongs_to :chart, Chart
 
     timestamps()
@@ -16,7 +17,7 @@ defmodule Core.Schema.Version do
   def ordered(query \\ __MODULE__, order \\ [desc: :inserted_at]),
     do: from(v in query, order_by: ^order)
 
-  @valid ~w(version chart_id)a
+  @valid ~w(version chart_id readme)a
 
   def changeset(model, attrs \\ %{}) do
     model

@@ -86,12 +86,19 @@ defmodule Core.Services.ChartsTest do
       version = insert(:version)
 
       {:ok, version} = Charts.sync_version(
-        %{"description" => "some chart"},
+        %{helm: %{"description" => "some chart"}},
         version.chart_id,
         version.version
       )
 
       assert version.helm == %{"description" => "some chart"}
+    end
+  end
+
+  describe "#extract_chart_meta/2" do
+    test "It can extract info from a tar file" do
+      path = Path.join(:code.priv_dir(:core), "chartmart-0.1.1.tgz")
+      {:ok, %{readme: _, helm: _}} = Charts.extract_chart_meta("chartmart", path)
     end
   end
 end

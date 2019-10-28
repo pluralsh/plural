@@ -4,6 +4,7 @@ export const ChartFragment = gql`
   fragment ChartFragment on Chart {
     id
     name
+    latestVersion
   }
 `;
 

@@ -42,7 +42,8 @@ defmodule Core.MixProject do
       {:arc, "~> 0.11.0"},
       {:arc_gcs, "~> 0.1.0"},
       {:arc_ecto, "~> 0.11.1"},
-      {:botanist, "~> 0.1.0", git: "https://github.com/michaeljguarino/botanist.git", branch: "ecto3"}
+      {:botanist, "~> 0.1.0", git: "https://github.com/michaeljguarino/botanist.git", branch: "ecto3"},
+      {:yaml_elixir, "~> 2.4"}
     ]
   end
 

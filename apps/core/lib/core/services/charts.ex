@@ -60,14 +60,14 @@ defmodule Core.Services.Charts do
   end
 
   def upload_chart(%{"chart" => chart} = uploads, %Repository{id: repo_id, name: repo}, user, context) do
-    {chart, version} = chart_info(chart)
+    {chart_name, version} = chart_info(chart)
     uploads = Enum.map(uploads, fn {key, %{path: path, filename: file}} ->
       {:file, path, {"form-data", [{"name", key}, {"filename", Path.basename(file)}]}, []}
     end)
 
     start_transaction()
     |> add_operation(:chart, fn _ ->
-      %{name: chart, latest_version: version}
+      %{name: chart_name, latest_version: version}
       |> create_chart(repo_id, user)
     end)
     |> add_operation(:cm, fn _ ->
@@ -76,21 +76,17 @@ defmodule Core.Services.Charts do
       opts = [timeout: :infinity, recv_timeout: :infinity] ++ context.opts
       HTTPoison.post(url, {:multipart, uploads}, context.headers, opts)
     end)
-    |> add_operation(:sync, fn %{chart: %{id: id, name: chart}} ->
-      url = Path.join([chartmuseum(), "api", repo, "charts", chart, version])
-      with {:ok, %{body: body}} <- HTTPoison.get(url),
-           {:ok, helm_info} <- Jason.decode(body) do
+    |> add_operation(:sync, fn %{chart: %{id: id}} ->
+      with {:ok, helm_info} <- extract_chart_meta(chart_name, chart.path) do
         sync_version(helm_info, id, version)
-      else
-        _ -> {:error, :invalid_argument}
       end
     end)
     |> execute()
   end
 
-  def sync_version(helm_info, chart_id, version) do
+  def sync_version(attrs, chart_id, version) do
     get_chart_version(chart_id, version)
-    |> Ecto.Changeset.change(%{helm: helm_info})
+    |> Ecto.Changeset.change(attrs)
     |> Core.Repo.update()
   end
 
@@ -113,6 +109,18 @@ defmodule Core.Services.Charts do
     |> ChartInstallation.changeset(attrs)
     |> allow(user, :create)
     |> when_ok(:insert)
+  end
+
+  def extract_chart_meta(chart, path) do
+    readme_file = String.to_charlist("#{chart}/README.md")
+    chart_file  = String.to_charlist("#{chart}/Chart.yaml")
+
+    with {:ok, result} <- String.to_charlist(path)
+                          |> :erl_tar.extract([:memory, :compressed, {:files, [readme_file, chart_file]}]),
+         {_, readme} <- Enum.find(result, &elem(&1, 0) == readme_file),
+         {_, chart_yaml} <- Enum.find(result, &elem(&1, 0) == chart_file),
+         {:ok, chart_decoded} <- YamlElixir.read_from_string(chart_yaml),
+      do: {:ok, %{readme: readme, helm: chart_decoded}}
   end
 
   def authorize(chart_id, %User{} = user) when is_binary(chart_id) do

@@ -5,6 +5,7 @@ defmodule Core.Schema.Chart do
   schema "charts" do
     field :name,           :string
     field :latest_version, :string
+    field :description,    :string
 
     belongs_to :repository, Repository
 
@@ -18,7 +19,7 @@ defmodule Core.Schema.Chart do
     from(c in query, where: c.repository_id == ^repo_id)
   end
 
-  @valid ~w(name latest_version repository_id)a
+  @valid ~w(name latest_version description repository_id)a
 
   def changeset(model, attrs \\ %{}) do
     model

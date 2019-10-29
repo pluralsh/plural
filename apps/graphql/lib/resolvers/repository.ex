@@ -29,6 +29,13 @@ defmodule GraphQl.Resolvers.Repository do
     |> paginate(args)
   end
 
+  def editable(repo, user) do
+    case Core.Policies.Repository.can?(user, repo, :edit) do
+      {:error, _} -> {:ok, false}
+      _ -> {:ok, true}
+    end
+  end
+
   def create_repository(%{attributes: attrs}, %{context: %{current_user: user}}),
     do: Repositories.create_repository(attrs, user)
 

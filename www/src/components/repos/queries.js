@@ -29,7 +29,7 @@ export const REPOS_Q = gql`
 `;
 
 export const INSTALL_REPO = gql`
-  mutation Installation($repositoryId: ID!) {
+  mutation CreateInstallation($repositoryId: ID!) {
     createInstallation(repositoryId: $repositoryId) {
       user {
         id

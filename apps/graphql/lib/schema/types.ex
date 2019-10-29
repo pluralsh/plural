@@ -57,12 +57,17 @@ defmodule GraphQl.Schema.Types do
       repo, _, context -> Repository.resolve_installation(repo, context)
     end
 
+    field :editable, :boolean, resolve: fn
+      repo, _, %{context: %{current_user: user}} -> Repository.editable(repo, user)
+    end
+
     timestamps()
   end
 
   object :chart do
     field :id, :id
     field :name, non_null(:string)
+    field :description, :string
     field :latest_version, :string
     field :repository, :repository, resolve: dataloader(Repository)
 

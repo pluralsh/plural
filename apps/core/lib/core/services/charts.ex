@@ -81,6 +81,11 @@ defmodule Core.Services.Charts do
         sync_version(helm_info, id, version)
       end
     end)
+    |> add_operation(:sync_chart, fn %{sync: %{helm: helm}, chart: chart} ->
+      chart
+      |> Chart.changeset(from_version(helm))
+      |> Core.Repo.update()
+    end)
     |> execute()
   end
 
@@ -89,6 +94,9 @@ defmodule Core.Services.Charts do
     |> Ecto.Changeset.change(attrs)
     |> Core.Repo.update()
   end
+
+  defp from_version(%{} = attrs), do: Map.take(attrs, ~w(description))
+  defp from_version(_), do: %{}
 
   defp chart_info(%{filename: filename}) do
     Path.rootname(filename)

@@ -4,19 +4,18 @@ import {useQuery} from 'react-apollo'
 import {useParams, useHistory} from 'react-router-dom'
 import Scroller from '../utils/Scroller'
 import {REPO_Q} from './queries'
-
-const PLACEHOLDER = process.env.PUBLIC_URL + '/chart.png'
+import {DEFAULT_CHART_ICON} from './constants'
 
 function Chart({chart, hasNext}) {
   let history = useHistory()
   return (
     <Box pad='small' direction='row' gap='small' border={hasNext ? 'bottom' : null}>
       <Box width='50px' heigh='50px'>
-        <img alt='' width='50px' height='50px' src={chart.icon || PLACEHOLDER} />
+        <img alt='' width='50px' height='50px' src={chart.icon || DEFAULT_CHART_ICON} />
       </Box>
       <Box gap='xxsmall' justify='center'>
-        <Anchor onClick={() => history.push(`/charts/${chart.id}`)}>
-          <Text size='small' weight='bold'>{chart.name}</Text>
+        <Anchor size='small' onClick={() => history.push(`/charts/${chart.id}`)}>
+          {chart.name}
         </Anchor>
         <Text size='small'>
           {chart.description}
@@ -34,7 +33,7 @@ function Repository(props) {
   const {edges, pageInfo} = data.charts
   const repository = data.repository
   return (
-    <Box pad='small'>
+    <Box pad='medium'>
       <Box direction='row' align='center' margin={{bottom: 'medium'}}>
         <Box width='50px' heigh='50px'>
           <img alt='' width='50px' height='50px' src={repository.icon} />
@@ -47,7 +46,8 @@ function Repository(props) {
       <Scroller id='charts'
         edges={edges}
         style={{overflow: 'auto', height: '100%', width: '100%'}}
-        mapper={({node}, next) => <Chart key={node.id} chart={node} hasNext={!!next} />}
+        mapper={({node}, next) => <Chart key={node.id} chart={node} hasNext={!!next.node} />}
+        emptyState={<Text size='medium'>No charts uploaded yet</Text>}
         onLoadMore={() => {
           if (!pageInfo.hasNextPage) return
 

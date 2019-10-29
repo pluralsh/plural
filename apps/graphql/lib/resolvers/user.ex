@@ -6,6 +6,8 @@ defmodule GraphQl.Resolvers.User do
   def query(Publisher, _), do: Publisher
   def query(_, _), do: User
 
+  def resolve_publisher(%{id: id}, _),
+    do: {:ok, Users.get_publisher!(id)}
   def resolve_publisher(_, %{context: %{current_user: user}}),
     do: {:ok, Users.get_publisher_by_owner(user.id)}
 

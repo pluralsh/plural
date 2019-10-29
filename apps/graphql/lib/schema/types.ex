@@ -53,6 +53,10 @@ defmodule GraphQl.Schema.Types do
       repo, _, _ -> {:ok, Core.Storage.url({repo.icon, repo}, :original)}
     end
 
+    field :installation, :installation, resolve: fn
+      repo, _, context -> Repository.resolve_installation(repo, context)
+    end
+
     timestamps()
   end
 

@@ -61,5 +61,25 @@ defmodule GraphQl.RepositoryQueriesTest do
 
       assert found["id"] == repo.id
     end
+
+    test "It can sideload installations" do
+      %{repository: repo, user: user} = insert(:installation)
+
+      {:ok, %{data: %{"repository" => found}}} = run_query("""
+        query Repo($repoId: ID!) {
+          repository(id: $repoId) {
+            id
+            installation {
+              user {
+                id
+              }
+            }
+          }
+        }
+      """, %{"repoId" => repo.id}, %{current_user: user})
+
+      assert found["id"] == repo.id
+      assert found["installation"]["user"]["id"] == user.id
+    end
   end
 end

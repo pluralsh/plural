@@ -31,10 +31,10 @@ function Repositories({publisher}) {
   const {edges, pageInfo} = data.repositories
   return (
     <Box pad='small'>
-      <Scroller id='publishers'
+      <Scroller id='repositories'
         edges={edges}
         style={{overflow: 'auto', height: '100%', width: '100%'}}
-        mapper={({node}, next) => <Repository key={node.id} repo={node} hasNext={!!next} />}
+        mapper={({node}, next) => <Repository key={node.id} repo={node} hasNext={!!next.node} />}
         onLoadMore={() => {
           if (!pageInfo.hasNextPage) return
 

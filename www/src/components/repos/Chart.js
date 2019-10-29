@@ -1,10 +1,12 @@
 import React from 'react'
-import {Box, Text, Table, TableHeader, TableRow, TableBody, TableCell, Anchor} from 'grommet'
+import {Box, Text, Anchor, Markdown} from 'grommet'
 import {useQuery} from 'react-apollo'
 import {useParams, useHistory} from 'react-router-dom'
 import Scroller from '../utils/Scroller'
 import {CHART_Q} from './queries'
 import moment from 'moment'
+import {DEFAULT_CHART_ICON} from './constants'
+
 
 function ChartVersion({version}) {
   let history = useHistory()
@@ -17,43 +19,43 @@ function ChartVersion({version}) {
   )
 }
 
-function ChartView({helm, chart}) {
+function ChartInfo({helm}) {
+  console.log(helm)
   return (
-    <Box gap='small'>
-      <Text size='medium'>{chart.name}</Text>
-      <Text size='small'><i>{helm.description}</i></Text>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableCell scope="col" border="bottom">
-              Name
-            </TableCell>
-            <TableCell scope="col" border="bottom">
-              Value
-            </TableCell>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <TableRow>
-            <TableCell scope="row">
-              <strong>App Version</strong>
-            </TableCell>
-            <TableCell>{helm.appVersion}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell scope="row">
-              <strong>Digest</strong>
-            </TableCell>
-            <TableCell>{helm.digest}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell scope="row">
-              <strong>Created</strong>
-            </TableCell>
-            <TableCell>{moment(helm.created).fromNow()}</TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
+    <Box pad='small' elevation='small' gap='small' style={{overflow: 'hidden'}}>
+      <Text weight="bold" size='small'>App Version</Text>
+      <Text size='small'>{helm.appVersion}</Text>
+      <Text weight='bold' size='small'>Created</Text>
+      <Text size='small'>{moment(helm.created).fromNow()}</Text>
+      <Text weight='bold' size='small'>Source</Text>
+      <Text size='small'>{(helm.sources || []).map((m) => <Anchor href={m}>{m}</Anchor>)}</Text>
+      <Text weight='bold' size='small'>Maintainers</Text>
+      <Text size='small'>{(helm.maintainers || []).map((m) => <Box>{m.email}</Box>)}</Text>
+    </Box>
+  )
+}
+
+const MARKDOWN_STYLING = {
+  p: {props: {size: 'small', margin: {top: 'xsmall', bottom: 'xsmall'}}},
+  h1: {props: {size: 'small', margin: {top: 'small', bottom: 'small'}}},
+  h2: {props: {size: 'xsmall', margin: {top: 'small', bottom: 'small'}}}
+}
+
+function ChartView({helm, chart, readme, version}) {
+  return (
+    <Box gap='small' style={{overflow: 'auto'}}>
+      <Box direction='row' align='center' gap='small' margin={{bottom: 'small'}} style={{minHeight: '50px'}}>
+        <Box width='50px' heigh='50px'>
+          <img alt='' width='50px' height='50px' src={chart.icon || DEFAULT_CHART_ICON} />
+        </Box>
+        <Box>
+          <Text size='medium'>{chart.name} - {version}</Text>
+          <Text size='small'><i>{helm.description}</i></Text>
+        </Box>
+      </Box>
+      <Box>
+        <Markdown components={MARKDOWN_STYLING}>{readme}</Markdown>
+      </Box>
     </Box>
   )
 }
@@ -64,12 +66,13 @@ function Chart() {
   if (loading || !data) return null
 
   const {edges, pageInfo} = data.versions
+  const currentVersion = edges[0].node
   return (
-    <Box pad='small' direction='row'>
+    <Box pad='small' direction='row' height="100%">
       <Box width='70%' pad='small' border='right'>
-        <ChartView {...edges[0].node} />
+        <ChartView {...currentVersion} />
       </Box>
-      <Box pad='small' width='30%'>
+      <Box pad='small' width='30%' gap='small'>
         <Box elevation='small' gap='xsmall' pad='small'>
           <Text size='small'>Versions</Text>
           <Scroller id='chart'
@@ -94,8 +97,9 @@ function Chart() {
                 }
               })
             }} />
-          </Box>
         </Box>
+        <ChartInfo {...currentVersion} />
+      </Box>
     </Box>
   )
 }

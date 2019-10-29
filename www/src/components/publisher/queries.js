@@ -17,3 +17,12 @@ export const PUBLISHERS_Q = gql`
   }
   ${PublisherFragment}
 `;
+
+export const PUBLISHER_Q = gql`
+  query Publisher($publisherId: ID) {
+    publisher(id: $publisherId) {
+      ...PublisherFragment
+    }
+  }
+  ${PublisherFragment}
+`;

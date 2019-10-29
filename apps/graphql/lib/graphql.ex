@@ -34,6 +34,8 @@ defmodule GraphQl do
 
     field :publisher, :publisher do
       middleware GraphQl.Middleware.Authenticated
+      arg :id, :id
+
       resolve &User.resolve_publisher/2
     end
 

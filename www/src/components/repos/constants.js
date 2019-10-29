@@ -1,0 +1,1 @@
+export const DEFAULT_CHART_ICON = process.env.PUBLIC_URL + '/chart.png'

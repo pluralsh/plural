@@ -10,7 +10,9 @@ export const ChartFragment = gql`
 
 export const VersionFragment = gql`
   fragment VersionFragment on Version {
+    id
     helm
+    readme
     version
     chart {
       ...ChartFragment

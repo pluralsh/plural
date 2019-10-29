@@ -1,5 +1,5 @@
 export const DEFAULT_COLOR_THEME = {
-  brand: '#2F415B',
+  brand: '#001f3f',
   sidebar: '#2F415B',
   action: '#2F415B',
   actionHover: '#2a3b52',

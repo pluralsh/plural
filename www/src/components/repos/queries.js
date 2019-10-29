@@ -28,10 +28,25 @@ export const REPOS_Q = gql`
   ${RepoFragment}
 `;
 
+export const INSTALL_REPO = gql`
+  mutation Installation($repositoryId: ID!) {
+    createInstallation(repositoryId: $repositoryId) {
+      user {
+        id
+      }
+    }
+  }
+`;
+
 export const REPO_Q = gql`
   query Repo($repositoryId: String!, $chartCursor: String) {
     repository(id: $repositoryId) {
       ...RepoFragment
+      installation {
+        user {
+          id
+        }
+      }
     }
     charts(repositoryId: $repositoryId, first: 15, after: $chartCursor) {
       pageInfo {

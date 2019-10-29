@@ -80,7 +80,7 @@ defmodule GraphQl.Schema.Types do
   end
 
   object :installation do
-    field :id
+    field :id, :id
     field :repository, :repository, resolve: dataloader(Repository)
     field :user, :user, resolve: dataloader(User)
 
@@ -88,7 +88,7 @@ defmodule GraphQl.Schema.Types do
   end
 
   object :chart_installation do
-    field :id
+    field :id, :id
     field :chart, :chart, resolve: dataloader(Chart)
     field :version, :version, resolve: dataloader(Chart)
     field :user, :user, resolve: dataloader(User)

@@ -42,4 +42,24 @@ defmodule GraphQl.RepositoryMutationsTest do
       assert updated["name"] == "Updated Repo"
     end
   end
+
+  describe "createInstallation" do
+    test "Users can install repositories" do
+      user = insert(:user)
+      repo = insert(:repository)
+
+      {:ok, %{data: %{"createInstallation" => installation}}} = run_query("""
+        mutation CreateInstallation($repositoryId: ID!) {
+          createInstallation(repositoryId: $repositoryId) {
+            id
+            repository {
+              id
+            }
+          }
+        }
+      """, %{"repositoryId" => repo.id}, %{current_user: user})
+
+      assert installation["repository"]["id"] == repo.id
+    end
+  end
 end

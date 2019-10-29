@@ -1,6 +1,6 @@
 import React from 'react'
 import {Box, Text, Anchor} from 'grommet'
-import {useQuery} from 'react-apollo'
+import {useQuery, useMutation} from 'react-apollo'
 import {useParams, useHistory} from 'react-router-dom'
 import Scroller from '../utils/Scroller'
 import {REPO_Q} from './queries'
@@ -35,13 +35,20 @@ function Repository(props) {
   return (
     <Box pad='medium'>
       <Box direction='row' align='center' margin={{bottom: 'medium'}}>
-        <Box width='50px' heigh='50px'>
-          <img alt='' width='50px' height='50px' src={repository.icon} />
+        <Box direction='row' align='center'>
+          <Box width='50px' heigh='50px'>
+            <img alt='' width='50px' height='50px' src={repository.icon} />
+          </Box>
+          <Box gap='xsmall' pad='small'>
+            <Text weight='bold'>{repository.name}</Text>
+            <Text size='small'>{repository.description}</Text>
+          </Box>
         </Box>
-        <Box gap='xsmall' pad='small'>
-          <Text weight='bold'>{repository.name}</Text>
-          <Text size='small'>{repository.description}</Text>
-        </Box>
+        {repository.installation && (
+          <Box>
+
+          </Box>
+        )}
       </Box>
       <Scroller id='charts'
         edges={edges}

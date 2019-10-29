@@ -133,6 +133,13 @@ defmodule GraphQl do
 
       resolve safe_resolver(&Repository.update_repository/2)
     end
+
+    field :create_installation, :installation do
+      middleware GraphQl.Middleware.Authenticated
+      arg :repository_id, non_null(:id)
+
+      resolve safe_resolver(&Repository.create_installation/2)
+    end
   end
 
   def safe_resolver(fun) do

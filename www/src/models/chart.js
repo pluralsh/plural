@@ -15,6 +15,7 @@ export const VersionFragment = gql`
     helm
     readme
     version
+    insertedAt
     chart {
       ...ChartFragment
     }

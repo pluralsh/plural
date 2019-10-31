@@ -78,6 +78,7 @@ defmodule GraphQl.Schema.Types do
     field :id, :id
     field :version, non_null(:string)
     field :readme, :string
+    field :values_template, :string
     field :helm, :map
     field :chart, :chart, resolve: dataloader(Chart)
 

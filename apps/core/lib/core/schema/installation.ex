@@ -3,6 +3,7 @@ defmodule Core.Schema.Installation do
   alias Core.Schema.{Repository, User}
 
   schema "installations" do
+    field :context, :map
     belongs_to :user, User
     belongs_to :repository, Repository
 
@@ -15,7 +16,7 @@ defmodule Core.Schema.Installation do
   def for_user(query \\ __MODULE__, user_id),
     do: from(i in query, where: i.user_id == ^user_id)
 
-  @valid ~w(user_id repository_id)a
+  @valid ~w(user_id repository_id context)a
 
   def changeset(model, attrs \\ %{}) do
     model

@@ -6,7 +6,6 @@ import Publishers from './publisher/Publishers'
 import MyPublisher from './publisher/MyPublisher'
 import Publisher from './publisher/Publisher'
 import Toolbar from './Toolbar'
-import Sidebar from './Sidebar'
 import Repository from './repos/Repository'
 import Chart from './repos/Chart'
 
@@ -19,12 +18,10 @@ function Chartmart(props) {
       <Grid
         fill
         rows={[TOOLBAR_SIZE, 'flex']}
-        columns={[TOOLBAR_SIZE, 'flex']}
+        columns={['100vw']}
         areas={[
-          {name: 'toolbarTop', start: [1, 0], end: [1, 0]},
-          {name: 'hamburger', start: [0, 0], end: [0, 0]},
-          {name: 'toolbarLeft', start: [0, 1], end: [0, 1]},
-          {name: 'viewport', start: [1, 1], end: [1, 1]}
+          {name: 'toolbarTop', start: [0, 0], end: [0, 0]},
+          {name: 'viewport', start: [0, 1], end: [0, 1]}
         ]}
       >
         <Box background='brand' gridArea='toolbarTop' align='center' justify='center'>
@@ -38,12 +35,6 @@ function Chartmart(props) {
             <Route path='/charts/:chartId' component={Chart} />
             <Route path='/' component={Publishers} />
           </Switch>
-        </Box>
-        <Box background='brand' gridArea='hamburger' align='center' justify='center'>
-
-        </Box>
-        <Box background='brand' gridArea='toolbarLeft'>
-          <Sidebar />
         </Box>
       </Grid>
     )}

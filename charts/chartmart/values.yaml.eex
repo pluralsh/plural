@@ -1,0 +1,23 @@
+postgresql:
+  postgresqlPassword: <%= rand_alphnum(32) %>
+
+secrets:
+  jwt: <%= rand_alphnum(32) %>
+  erlang: <%= rand_alphnum(32) %>
+
+admin:
+  enabled: true
+  name: <%= required(@ctx, "admin_name") %>
+  email: <%= required(@ctx, "admin_email") %>
+  password: <%= rand_alphnum(12) %>
+  publisher: <%= required(@ctx, "publisher") %>
+  publisher_description: <%= required(@ctx, "publisher_description") %>
+
+ingress:
+  dns: <%= required(@ctx, "chartmart_dns") %>
+
+api:
+  bucket: <%= required(@ctx, "assets_bucket") %>
+
+chartmuseum:
+  bucket: <%= required(@ctx, "chartmuseum_bucket") %>

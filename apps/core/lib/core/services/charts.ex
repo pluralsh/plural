@@ -120,15 +120,23 @@ defmodule Core.Services.Charts do
   end
 
   def extract_chart_meta(chart, path) do
-    readme_file = String.to_charlist("#{chart}/README.md")
-    chart_file  = String.to_charlist("#{chart}/Chart.yaml")
+    readme_file  = String.to_charlist("#{chart}/README.md")
+    chart_file   = String.to_charlist("#{chart}/Chart.yaml")
+    val_template = String.to_charlist("#{chart}/values.yaml.eex")
 
     with {:ok, result} <- String.to_charlist(path)
-                          |> :erl_tar.extract([:memory, :compressed, {:files, [readme_file, chart_file]}]),
+                          |> :erl_tar.extract([:memory, :compressed, {:files, [readme_file, chart_file, val_template]}]),
          {_, readme} <- Enum.find(result, &elem(&1, 0) == readme_file),
          {_, chart_yaml} <- Enum.find(result, &elem(&1, 0) == chart_file),
          {:ok, chart_decoded} <- YamlElixir.read_from_string(chart_yaml),
-      do: {:ok, %{readme: readme, helm: chart_decoded}}
+      do: {:ok, %{readme: readme, helm: chart_decoded, values_template: extract_val_template(result, val_template)}}
+  end
+
+  def extract_val_template(result, val_template) do
+    case Enum.find(result, &elem(&1, 0) == val_template) do
+      {_, template} -> template
+      _ -> nil
+    end
   end
 
   def authorize(chart_id, %User{} = user) when is_binary(chart_id) do

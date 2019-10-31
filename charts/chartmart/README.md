@@ -24,6 +24,15 @@ secrets:
   jwt: alsosupercomplicatedrandombytes
   erlang: stillusesupercomplicatedrandombytes
 
+ingress:
+  dns: my.chartmart.domain
+
+api:
+  bucket: assets-for-chartmart
+
+chartmuseum:
+  bucket: bucket-for-chartmuseum
+
 admin:
   enabled: true
   name: "Michael Guarino"

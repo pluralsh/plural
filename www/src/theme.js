@@ -32,6 +32,10 @@ export const DEFAULT_THEME = {
       vertical: '2px'
     }
   },
+  tab: {
+    active: {color: 'focus'},
+    border: {active: {color: 'focus'}, hover: {color: 'focus'}},
+  },
   textArea: {
     extend: {
       fontWeight: 400

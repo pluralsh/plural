@@ -38,6 +38,13 @@ defmodule Core.Services.Repositories do
     |> when_ok(:insert)
   end
 
+  def update_installation(attrs, inst_id, %User{} = user) do
+    get_installation!(inst_id)
+    |> Installation.changeset(attrs)
+    |> allow(user, :edit)
+    |> when_ok(:update)
+  end
+
   def authorize(repo_id, %User{} = user) when is_binary(repo_id) do
     get_repository!(repo_id)
     |> authorize(user)

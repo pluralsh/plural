@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import {Box, Text, Anchor, Markdown} from 'grommet'
+import {Box, Text, Anchor, Markdown, Tabs, Tab} from 'grommet'
 import {useQuery} from 'react-apollo'
 import {useParams} from 'react-router-dom'
 import Scroller from '../utils/Scroller'
@@ -51,21 +51,36 @@ const MARKDOWN_STYLING = {
   }
 }
 
-function ChartView({helm, chart, readme, version}) {
+function TemplateView({valuesTemplate}) {
   return (
-    <Box gap='small' style={{overflow: 'auto'}}>
-      <Box direction='row' align='center' gap='small' margin={{bottom: 'small'}} style={{minHeight: '50px'}}>
-        <Box width='50px' heigh='50px'>
-          <img alt='' width='50px' height='50px' src={chart.icon || DEFAULT_CHART_ICON} />
-        </Box>
-        <Box>
-          <Text size='medium'>{chart.name} - {version}</Text>
-          <Text size='small'><i>{helm.description}</i></Text>
-        </Box>
+    <Box style={{overflow: 'auto', maxHeight: '100%'}}>
+      <Highlight language='yml'>
+        {valuesTemplate || ''}
+      </Highlight>
+    </Box>
+  )
+}
+
+function ChartHeader({helm, chart, version}) {
+  return (
+    <Box direction='row' align='center' gap='small' margin={{bottom: 'small'}} style={{minHeight: '50px'}}>
+      <Box width='50px' heigh='50px'>
+        <img alt='' width='50px' height='50px' src={chart.icon || DEFAULT_CHART_ICON} />
       </Box>
       <Box>
+        <Text size='medium'>{chart.name} - {version}</Text>
+        <Text size='small'><i>{helm.description}</i></Text>
+      </Box>
+    </Box>
+  )
+}
+
+function ChartReadme({readme}) {
+  return (
+    <Box gap='small' style={{maxHeight: '100%', overflow: 'auto'}}>
+      <Box>
         <Markdown components={MARKDOWN_STYLING}>
-          {readme || ''}
+          {readme || 'the developer needs to upload a values.yaml.eex'}
         </Markdown>
       </Box>
     </Box>
@@ -83,7 +98,15 @@ function Chart() {
   return (
     <Box pad='small' direction='row' height="100%">
       <Box width='70%' pad='small' border='right'>
-        <ChartView {...currentVersion} />
+        <ChartHeader {...currentVersion} />
+        <Tabs justify='start' flex>
+          <Tab title='Readme'>
+            <ChartReadme {...currentVersion} />
+          </Tab>
+          <Tab title='Configuration'>
+            <TemplateView {...currentVersion} />
+          </Tab>
+        </Tabs>
       </Box>
       <Box pad='small' width='30%' gap='small'>
         <Box elevation='small' gap='xsmall' pad='small' style={{maxHeight: '50%'}}>

@@ -16,7 +16,8 @@ defmodule Core.Policies.Repository do
       _ -> {:error, :forbidden}
     end
   end
-  def can?(%User{id: user_id}, %Installation{user_id: user_id}, :access), do: :continue
+  def can?(%User{id: user_id}, %Installation{user_id: user_id}, action) when action in [:edit, :access],
+    do: :continue
   def can?(%User{}, %Installation{}, :create), do: :pass
 
   def can?(user, %Ecto.Changeset{} = cs, action),

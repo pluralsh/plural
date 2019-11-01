@@ -14,6 +14,7 @@ export const VersionFragment = gql`
     id
     helm
     readme
+    valuesTemplate
     version
     insertedAt
     chart {

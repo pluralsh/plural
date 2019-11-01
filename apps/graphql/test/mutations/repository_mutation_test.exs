@@ -62,4 +62,24 @@ defmodule GraphQl.RepositoryMutationsTest do
       assert installation["repository"]["id"] == repo.id
     end
   end
+
+  describe "updateInstallation" do
+    test "Users can update their installations" do
+      %{user: user} = inst = insert(:installation)
+
+      {:ok, %{data: %{"updateInstallation" => update}}} = run_query("""
+        mutation UpdateInstallation($id: ID!, $attrs: InstallationAttributes!) {
+          updateInstallation(id: $id, attributes: $attrs) {
+            id
+            context
+          }
+        }
+      """,
+      %{"id" => inst.id, "attrs" => %{"context" => Jason.encode!(%{"some" => "value"})}},
+      %{current_user: user})
+
+      assert update["id"] == inst.id
+      assert update["context"]["some"] == "value"
+    end
+  end
 end

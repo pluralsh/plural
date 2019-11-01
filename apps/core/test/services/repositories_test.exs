@@ -41,4 +41,21 @@ defmodule Core.Services.RepositoriesTest do
       assert installation.repository_id == repo.id
     end
   end
+
+  describe "update_installation" do
+    test "Users can update their installations" do
+      %{user: user} = inst = insert(:installation)
+
+      {:ok, updated} = Repositories.update_installation(%{context: %{some: "value"}}, inst.id, user)
+
+      assert updated.context.some == "value"
+    end
+
+    test "Other users cannot update" do
+      user = insert(:user)
+      inst = insert(:installation)
+
+      {:error, _} = Repositories.update_installation(%{context: %{some: "val"}}, inst.id, user)
+    end
+  end
 end

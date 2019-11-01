@@ -87,6 +87,7 @@ defmodule GraphQl.Schema.Types do
 
   object :installation do
     field :id, :id
+    field :context, :map
     field :repository, :repository, resolve: dataloader(Repository)
     field :user, :user, resolve: dataloader(User)
 

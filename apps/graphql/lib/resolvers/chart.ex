@@ -6,6 +6,9 @@ defmodule GraphQl.Resolvers.Chart do
   def query(Version, _), do: Version
   def query(_, _), do: Chart
 
+  def resolve_chart(%{id: chart_id}, _),
+    do: {:ok, Charts.get_chart!(chart_id)}
+
   def list_charts(%{repository_id: repo_id} = args, %{context: %{current_user: user}}) do
     with {:ok, _} <- Repositories.authorize(repo_id, user) do
       Chart.for_repository(repo_id)

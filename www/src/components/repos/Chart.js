@@ -54,8 +54,8 @@ const MARKDOWN_STYLING = {
 function TemplateView({valuesTemplate}) {
   return (
     <Box style={{overflow: 'auto', maxHeight: '100%'}}>
-      <Highlight language='yml'>
-        {valuesTemplate || ''}
+      <Highlight language='yaml'>
+        {valuesTemplate || 'no values template'}
       </Highlight>
     </Box>
   )
@@ -80,7 +80,7 @@ function ChartReadme({readme}) {
     <Box gap='small' style={{maxHeight: '100%', overflow: 'auto'}}>
       <Box>
         <Markdown components={MARKDOWN_STYLING}>
-          {readme || 'the developer needs to upload a values.yaml.eex'}
+          {readme || 'no readme'}
         </Markdown>
       </Box>
     </Box>

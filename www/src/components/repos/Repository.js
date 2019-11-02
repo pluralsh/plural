@@ -1,12 +1,11 @@
 import React, {useState} from 'react'
 import {Box, Text} from 'grommet'
-import {useQuery, useMutation} from 'react-apollo'
+import {useQuery} from 'react-apollo'
 import {useParams, useHistory} from 'react-router-dom'
 import Scroller from '../utils/Scroller'
-import {REPO_Q, INSTALL_REPO} from './queries'
+import {REPO_Q} from './queries'
 import {DEFAULT_CHART_ICON} from './constants'
-import Button from '../utils/Button'
-import {apiHost} from '../../helpers/hostname'
+import Installation from './Installation'
 
 function Chart({chart}) {
   let history = useHistory()
@@ -21,7 +20,7 @@ function Chart({chart}) {
       pad='small'
       direction='row'
       gap='small'
-      border='full'
+      border
       round='xsmall'>
       <Box width='50px' heigh='50px'>
         <img alt='' width='50px' height='50px' src={chart.icon || DEFAULT_CHART_ICON} />
@@ -38,19 +37,9 @@ function Chart({chart}) {
   )
 }
 
-function Repository(props) {
+function Repository() {
   const {repositoryId} = useParams()
   const {loading, data, fetchMore} = useQuery(REPO_Q, {variables: {repositoryId}})
-  const [mutation] = useMutation(INSTALL_REPO, {
-    variables: {repositoryId},
-    update: (cache, { data: { createInstallation } }) => {
-      const prev = cache.readQuery({ query: REPO_Q, variables: {repositoryId} })
-      cache.writeQuery({query: REPO_Q,
-        variables: {repositoryId},
-        data: {...prev, repository: { ...prev.repository, installation: createInstallation}}
-      })
-    }
-  })
 
   if (loading) return null
   const {edges, pageInfo} = data.charts
@@ -93,15 +82,7 @@ function Repository(props) {
         />
       </Box>
       <Box pad='small' width='40%'>
-        <Box pad='small' elevation='small' gap='small'>
-          <Text size='medium'>Installation</Text>
-          {repository.installation ?
-            <Box background='light-3' pad='small'>
-              <Text size='small'>helm repo add {repository.name} cm://{apiHost()}/{repository.name}</Text>
-            </Box> :
-            <Button label='Install Repository' round='xsmall' onClick={mutation} />
-          }
-        </Box>
+        <Installation repository={repository} />
       </Box>
     </Box>
   )

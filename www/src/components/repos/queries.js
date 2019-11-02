@@ -1,5 +1,5 @@
 import gql from 'graphql-tag'
-import {RepoFragment} from '../../models/repo'
+import {RepoFragment, InstallationFragment} from '../../models/repo'
 import {ChartFragment, VersionFragment} from '../../models/chart'
 
 export const CREATE_REPO = gql`
@@ -9,6 +9,15 @@ export const CREATE_REPO = gql`
     }
   }
   ${RepoFragment}
+`;
+
+export const UPDATE_INSTALLATION = gql`
+  mutation UpdateInstallation($id: ID!, $attributes: InstallationAttributes!) {
+    updateInstallation(id: $id, attributes: $attributes) {
+      ...InstallationFragment
+    }
+  }
+  ${InstallationFragment}
 `;
 
 export const REPOS_Q = gql`

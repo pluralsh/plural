@@ -24,6 +24,23 @@ defmodule GraphQl.ChartQueriesTest do
     end
   end
 
+  describe "chart" do
+    test "It can query a chart" do
+      chart = insert(:chart)
+      user  = insert(:user)
+
+      {:ok, %{data: %{"chart" => found}}} = run_query("""
+        query Chart($id: ID!) {
+          chart(id: $id) {
+            id
+          }
+        }
+      """, %{"id" => chart.id}, %{current_user: user})
+
+      assert found["id"] == chart.id
+    end
+  end
+
   describe "versions" do
     test "A user with a repo installation can list versions for a chart" do
       %{repository: repo, user: user} = insert(:installation)

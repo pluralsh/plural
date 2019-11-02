@@ -13,6 +13,7 @@ export const RepoFragment = gql`
 
 export const InstallationFragment = gql`
   fragment InstallationFragment on Installation {
+    context
     repository {
       ...RepoFragment
     }

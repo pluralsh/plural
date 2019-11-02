@@ -39,6 +39,13 @@ defmodule GraphQl do
       resolve &User.resolve_publisher/2
     end
 
+    field :chart, :chart do
+      middleware GraphQl.Middleware.Authenticated
+      arg :id, non_null(:id)
+
+      resolve &Chart.resolve_chart/2
+    end
+
     field :repository, :repository do
       middleware GraphQl.Middleware.Authenticated
       arg :id, non_null(:id)

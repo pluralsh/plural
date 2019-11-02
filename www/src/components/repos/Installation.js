@@ -1,26 +1,43 @@
 import React, {useState} from 'react'
 import {Box, Text} from 'grommet'
-import {Alert} from 'grommet-icons'
+import {Alert, Close} from 'grommet-icons'
 import {useMutation} from 'react-apollo'
 import Button from '../utils/Button'
 import {INSTALL_REPO, UPDATE_INSTALLATION, REPO_Q} from './queries'
 import {apiHost} from '../../helpers/hostname'
 import Editor from '../utils/Editor'
+import Pill from '../utils/Pill'
 
-function EditInstallation({installation, repository}) {
-  const [ctx, setCtx] = useState(JSON.stringify(installation.context || {}))
-  const [mutation, {errors}] = useMutation(UPDATE_INSTALLATION, {
+function update(cache, repositoryId, installation) {
+  const prev = cache.readQuery({ query: REPO_Q, variables: {repositoryId} })
+  cache.writeQuery({query: REPO_Q,
+    variables: {repositoryId},
+    data: {...prev, repository: { ...prev.repository, installation: installation}}
+  })
+}
+
+function EditInstallation({installation, repository, onUpdate}) {
+  const [ctx, setCtx] = useState(JSON.stringify(installation.context || {}, null, 2))
+  const [notif, setNotif] = useState(false)
+  const [mutation, {loading, errors}] = useMutation(UPDATE_INSTALLATION, {
     variables: {id: installation.id, attributes: {context: ctx}},
     update: (cache, {data: {updateInstallation}}) => {
-      const prev = cache.readQuery({ query: REPO_Q, variables: {repositoryId: repository.id} })
-      cache.writeQuery({query: REPO_Q,
-        variables: {repositoryId: repository.id},
-        data: {...prev, repository: { ...prev.repository, installation: updateInstallation}}
-      })
+      const func = onUpdate || update
+      func(cache, repository.id, updateInstallation)
+      setNotif(true)
     }
   })
 
   return (
+    <>
+    {notif && (
+      <Pill background='status-ok' onClose={() => {console.log('wtf'); setNotif(false)}}>
+        <Box direction='row' align='center' gap='small'>
+          <Text>Configuration saved</Text>
+          <Close style={{cursor: 'pointer'}} size='15px' onClick={() => setNotif(false)} />
+        </Box>
+      </Pill>
+    )}
     <Box gap='xsmall' fill='horizontal'>
       <Text size='medium'>Configuration</Text>
       <Box height='330px'>
@@ -32,14 +49,15 @@ function EditInstallation({installation, repository}) {
           <Text size='small' color='notif'>Must be in json format</Text>
         </Box>)}
       <Box direction='row' justify='end'>
-        <Button label='save' onClick={mutation} round='xsmall' width='70px' />
+        <Button loading={loading} label='save' onClick={mutation} round='xsmall' />
       </Box>
     </Box>
+    </>
   )
 }
 
 
-function Installation({repository}) {
+function Installation({repository, onUpdate}) {
   const [mutation] = useMutation(INSTALL_REPO, {
     variables: {repositoryId: repository.id},
     update: (cache, { data: { createInstallation } }) => {
@@ -59,7 +77,7 @@ function Installation({repository}) {
           <Box background='light-3' pad='small'>
             <Text size='small'>helm repo add {repository.name} cm://{apiHost()}/{repository.name}</Text>
           </Box>
-          <EditInstallation installation={repository.installation} repository={repository} />
+          <EditInstallation installation={repository.installation} repository={repository} onUpdate={onUpdate} />
         </Box> :
         <Button label='Install Repository' round='xsmall' onClick={mutation} />
       }

@@ -52,9 +52,7 @@ export const REPO_Q = gql`
     repository(id: $repositoryId) {
       ...RepoFragment
       installation {
-        user {
-          id
-        }
+        ...InstallationFragment
       }
     }
     charts(repositoryId: $repositoryId, first: 15, after: $chartCursor) {
@@ -71,10 +69,20 @@ export const REPO_Q = gql`
   }
   ${RepoFragment}
   ${ChartFragment}
+  ${InstallationFragment}
 `;
 
 export const CHART_Q = gql`
-  query Charts($chartId: String!, $cursor: String) {
+  query Charts($chartId: ID!, $cursor: String) {
+    chart(id: $chartId) {
+      ...ChartFragment
+      repository {
+        ...RepoFragment
+        installation {
+          ...InstallationFragment
+        }
+      }
+    }
     versions(chartId: $chartId, first: 10, after: $cursor) {
       pageInfo {
         hasNextPage
@@ -87,5 +95,8 @@ export const CHART_Q = gql`
       }
     }
   }
+  ${InstallationFragment}
+  ${RepoFragment}
+  ${ChartFragment}
   ${VersionFragment}
 `;

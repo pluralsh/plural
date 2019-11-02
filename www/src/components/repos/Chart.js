@@ -7,6 +7,7 @@ import {CHART_Q} from './queries'
 import moment from 'moment'
 import {DEFAULT_CHART_ICON} from './constants'
 import Highlight from 'react-highlight'
+import Installation from './Installation'
 
 function ChartVersion({version, onSelect}) {
   return (
@@ -26,9 +27,9 @@ function ChartInfo({helm, insertedAt}) {
       <Text weight='bold' size='small'>Created</Text>
       <Text size='small'>{moment(insertedAt).fromNow()}</Text>
       <Text weight='bold' size='small'>Source</Text>
-      <Text size='small'>{(helm.sources || []).map((m) => <Anchor href={m}>{m}</Anchor>)}</Text>
+      <Text size='small'>{(helm.sources || []).map((l) => <Anchor key={l} href={l}>{l}</Anchor>)}</Text>
       <Text weight='bold' size='small'>Maintainers</Text>
-      <Text size='small'>{(helm.maintainers || []).map((m) => <Box>{m.email}</Box>)}</Text>
+      <Text size='small'>{(helm.maintainers || []).map((m) => <Box key={m.email}>{m.email}</Box>)}</Text>
     </Box>
   )
 }
@@ -87,19 +88,35 @@ function ChartReadme({readme}) {
   )
 }
 
+function updateInstallation(chartId) {
+  return (cache, repoId, installation) => {
+    const prev = cache.readQuery({query: CHART_Q, variables: {chartId}})
+    cache.writeQuery({
+      query: CHART_Q,
+      variables: {chartId},
+      data: {...prev, chart: {...prev.chart, repository: {...prev.chart.repository, installation: installation}}}
+    })
+  }
+}
+
 function Chart() {
   const {chartId} = useParams()
   const [version, setVersion] = useState(null)
+  const [edit, setEdit] = useState(false)
   const {loading, data, fetchMore} = useQuery(CHART_Q, {variables: {chartId}})
+
   if (loading || !data) return null
 
-  const {edges, pageInfo} = data.versions
+  const {versions, chart: {repository}} = data
+  const {edges, pageInfo} = versions
   const currentVersion = version || edges[0].node
+  const width = edit ? 60 : 70
+
   return (
     <Box pad='small' direction='row' height="100%">
-      <Box width='70%' pad='small' border='right'>
+      <Box width={`${width}%`} pad='small' border='right'>
         <ChartHeader {...currentVersion} />
-        <Tabs justify='start' flex>
+        <Tabs justify='start' flex onActive={(tab) => { console.log(tab); setEdit(tab === 1) }}>
           <Tab title='Readme'>
             <ChartReadme {...currentVersion} />
           </Tab>
@@ -108,33 +125,35 @@ function Chart() {
           </Tab>
         </Tabs>
       </Box>
-      <Box pad='small' width='30%' gap='small'>
-        <Box elevation='small' gap='xsmall' pad='small' style={{maxHeight: '50%'}}>
-          <Text size='small' weight='bold'>Versions</Text>
-          <Scroller id='chart'
-            edges={edges}
-            style={{overflow: 'auto', width: '100%'}}
-            mapper={({node}, next) => <ChartVersion key={node.id} version={node} hasNext={!!next} onSelect={setVersion} />}
-            onLoadMore={() => {
-              if (!pageInfo.hasNextPage) return
+      <Box pad='small' width={`${100 - width}%`} gap='small'>
+        {edit ? <Installation repository={repository} installation={repository.installation} onUpdate={updateInstallation(chartId)} /> :
+          (<><Box elevation='small' gap='xsmall' pad='small' style={{maxHeight: '50%'}}>
+            <Text size='small' weight='bold'>Versions</Text>
+            <Scroller id='chart'
+              edges={edges}
+              style={{overflow: 'auto', width: '100%'}}
+              mapper={({node}, next) => <ChartVersion key={node.id} version={node} hasNext={!!next} onSelect={setVersion} />}
+              onLoadMore={() => {
+                if (!pageInfo.hasNextPage) return
 
-              fetchMore({
-                variables: {chartCursor: pageInfo.endCursor},
-                updateQuery: (prev, {fetchMoreResult}) => {
-                  const {edges, pageInfo} = fetchMoreResult.versions
-                  return edges.length ? {
-                    ...prev,
-                    versions: {
-                      ...prev.versions,
-                      pageInfo,
-                      edges: [...prev.versions.edges, ...edges]
-                    }
-                  } : prev
-                }
-              })
-            }} />
-        </Box>
-        <ChartInfo {...currentVersion} />
+                fetchMore({
+                  variables: {chartCursor: pageInfo.endCursor},
+                  updateQuery: (prev, {fetchMoreResult}) => {
+                    const {edges, pageInfo} = fetchMoreResult.versions
+                    return edges.length ? {
+                      ...prev,
+                      versions: {
+                        ...prev.versions,
+                        pageInfo,
+                        edges: [...prev.versions.edges, ...edges]
+                      }
+                    } : prev
+                  }
+                })
+              }} />
+          </Box>
+          <ChartInfo {...currentVersion} />
+          </>)}
       </Box>
     </Box>
   )

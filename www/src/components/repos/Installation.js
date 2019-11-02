@@ -7,6 +7,7 @@ import {INSTALL_REPO, UPDATE_INSTALLATION, REPO_Q} from './queries'
 import {apiHost} from '../../helpers/hostname'
 import Editor from '../utils/Editor'
 import Pill from '../utils/Pill'
+import yaml from 'js-yaml'
 
 function update(cache, repositoryId, installation) {
   const prev = cache.readQuery({ query: REPO_Q, variables: {repositoryId} })
@@ -17,7 +18,7 @@ function update(cache, repositoryId, installation) {
 }
 
 function EditInstallation({installation, repository, onUpdate}) {
-  const [ctx, setCtx] = useState(JSON.stringify(installation.context || {}, null, 2))
+  const [ctx, setCtx] = useState(yaml.safeDump(installation.context || {}, null, 2))
   const [notif, setNotif] = useState(false)
   const [mutation, {loading, errors}] = useMutation(UPDATE_INSTALLATION, {
     variables: {id: installation.id, attributes: {context: ctx}},

@@ -25,6 +25,6 @@ defmodule GraphQl.Schema.Inputs do
   end
 
   input_object :installation_attributes do
-    field :context, :map
+    field :context, :yml
   end
 end

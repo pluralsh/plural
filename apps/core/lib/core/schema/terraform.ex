@@ -16,6 +16,12 @@ defmodule Core.Schema.Terraform do
     timestamps()
   end
 
+  def for_repository(query \\ __MODULE__, id),
+    do: from(tf in query, where: tf.repository_id == ^id)
+
+  def ordered(query \\ __MODULE__, order \\ [asc: :id]),
+    do: from(tf in query, order_by: ^order)
+
   @valid ~w(name values_template readme)a
 
   def changeset(schema, attrs \\ %{}) do

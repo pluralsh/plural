@@ -107,6 +107,7 @@ defmodule GraphQl.Schema.Types do
     field :id, :id
     field :name, :string
     field :values_template, :string
+    field :readme, :string
     field :package, :string, resolve: fn
       repo, _, _ -> {:ok, Core.Storage.url({repo.package, repo}, :original)}
     end
@@ -121,4 +122,5 @@ defmodule GraphQl.Schema.Types do
   connection node_type: :chart
   connection node_type: :version
   connection node_type: :installation
+  connection node_type: :terraform
 end

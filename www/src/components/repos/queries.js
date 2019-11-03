@@ -1,6 +1,7 @@
 import gql from 'graphql-tag'
 import {RepoFragment, InstallationFragment} from '../../models/repo'
 import {ChartFragment, VersionFragment} from '../../models/chart'
+import {TerraformFragment} from '../../models/terraform'
 
 export const CREATE_REPO = gql`
   mutation CreateRepository($attributes: RepositoryAttributes!) {
@@ -51,6 +52,7 @@ export const REPO_Q = gql`
   query Repo($repositoryId: String!, $chartCursor: String) {
     repository(id: $repositoryId) {
       ...RepoFragment
+      editable
       installation {
         ...InstallationFragment
       }
@@ -66,10 +68,22 @@ export const REPO_Q = gql`
         }
       }
     }
+    terraform(repositoryId: $repositoryId, first: 15, after: $versionCursor) {
+      pageInfo {
+        hasnextPage
+        endCursor
+      }
+      edges {
+        node {
+          ...TerraformFragment
+        }
+      }
+    }
   }
   ${RepoFragment}
   ${ChartFragment}
   ${InstallationFragment}
+  ${TerraformFragment}
 `;
 
 export const CHART_Q = gql`

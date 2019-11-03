@@ -9,7 +9,8 @@ defmodule GraphQl do
   alias GraphQl.Resolvers.{
     User,
     Chart,
-    Repository
+    Repository,
+    Terraform
   }
 
   def context(ctx) do
@@ -18,6 +19,7 @@ defmodule GraphQl do
       |> Dataloader.add_source(User, User.data(ctx))
       |> Dataloader.add_source(Chart, Chart.data(ctx))
       |> Dataloader.add_source(Repository, Repository.data(ctx))
+      |> Dataloader.add_source(Terraform, Terraform.data(ctx))
 
     Map.put(ctx, :loader, loader)
   end
@@ -81,6 +83,13 @@ defmodule GraphQl do
       arg :repository_id, non_null(:id)
 
       resolve &Chart.list_charts/2
+    end
+
+    connection field :terraform, node_type: :terraform do
+      middleware GraphQl.Middleware.Authenticated
+      arg :repository_id, non_null(:id)
+
+      resolve &Terraform.list_terraform/2
     end
 
     connection field :versions, node_type: :version do
@@ -154,6 +163,22 @@ defmodule GraphQl do
       arg :attributes, non_null(:installation_attributes)
 
       resolve safe_resolver(&Repository.update_installation/2)
+    end
+
+    field :create_terraform, :terraform do
+      middleware GraphQl.Middleware.Authenticated
+      arg :repository_id, non_null(:id)
+      arg :attributes, non_null(:terraform_attributes)
+
+      resolve safe_resolver(&Terraform.create_terraform/2)
+    end
+
+    field :update_terraform, :terraform do
+      middleware GraphQl.Middleware.Authenticated
+      arg :id, non_null(:id)
+      arg :attributes, non_null(:terraform_attributes)
+
+      resolve safe_resolver(&Terraform.update_terraform/2)
     end
   end
 

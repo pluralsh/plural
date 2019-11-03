@@ -3,12 +3,14 @@ import CodeMirror from 'react-codemirror'
 import 'codemirror/lib/codemirror.css'
 import './codemirror.css'
 require('codemirror/mode/javascript/javascript');
+require('codemirror/mode/yaml/yaml');
 
-function Editor({value, onChange}) {
+
+function Editor({value, onChange, lang}) {
   const [state, setState] = useState(value)
   return (
     <CodeMirror value={state}
-                options={{mode: 'javascript', lineNumbers: true}}
+                options={{mode: lang || 'javascript', lineNumbers: true}}
                 onChange={(val) => {
                   setState(val)
                   onChange(val)

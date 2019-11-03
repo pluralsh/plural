@@ -4,25 +4,29 @@ import {useQuery} from 'react-apollo'
 import {useHistory} from 'react-router-dom'
 import Scroller from '../utils/Scroller'
 import {PUBLISHERS_Q} from './queries'
+import Avatar from '../users/Avatar'
 
 
 function Publisher({publisher}) {
   let history = useHistory()
 
   return (
-    <Box gap='xsmall'>
-      <Anchor
-        onClick={() => history.push(`/publishers/${publisher.id}`)}
-        size='small'
-        weight='bold'>
-        {publisher.name}
-      </Anchor>
-      <Box gap='xxsmall'>
-        <Box>
-          <Text size='small'><i>{publisher.description}</i></Text>
-        </Box>
-        <Box>
-          <Text size='small'>Owned by {publisher.owner.name}</Text>
+    <Box direction='row' gap='small'>
+      <Avatar size='75px' user={publisher.owner} />
+      <Box gap='xsmall'>
+        <Anchor
+          onClick={() => history.push(`/publishers/${publisher.id}`)}
+          size='small'
+          weight='bold'>
+          {publisher.name}
+        </Anchor>
+        <Box gap='xxsmall'>
+          <Box>
+            <Text size='small'><i>{publisher.description}</i></Text>
+          </Box>
+          <Box>
+            <Text size='small'>Owned by {publisher.owner.name}</Text>
+          </Box>
         </Box>
       </Box>
     </Box>

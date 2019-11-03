@@ -31,6 +31,13 @@ defmodule Core.Factory do
     }
   end
 
+  def terraform_factory do
+    %Schema.Terraform{
+      repository: build(:repository),
+      name: "gcp"
+    }
+  end
+
   def version_factory do
     %Schema.Version{
       chart: build(:chart),

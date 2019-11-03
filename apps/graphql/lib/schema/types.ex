@@ -103,6 +103,18 @@ defmodule GraphQl.Schema.Types do
     timestamps()
   end
 
+  object :terraform do
+    field :id, :id
+    field :name, :string
+    field :values_template, :string
+    field :package, :string, resolve: fn
+      repo, _, _ -> {:ok, Core.Storage.url({repo.package, repo}, :original)}
+    end
+    field :repository, :repository, resolve: dataloader(Repository)
+
+    timestamps()
+  end
+
   connection node_type: :user
   connection node_type: :publisher
   connection node_type: :repository

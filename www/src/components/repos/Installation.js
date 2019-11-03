@@ -41,8 +41,8 @@ function EditInstallation({installation, repository, onUpdate}) {
     )}
     <Box gap='xsmall' fill='horizontal'>
       <Text size='medium'>Configuration</Text>
-      <Box height='330px'>
-        <Editor value={ctx} onChange={setCtx} />
+      <Box>
+        <Editor lang='yaml' value={ctx} onChange={setCtx} />
       </Box>
       {errors && (
         <Box direction='row' gap='small'>
@@ -50,7 +50,12 @@ function EditInstallation({installation, repository, onUpdate}) {
           <Text size='small' color='notif'>Must be in json format</Text>
         </Box>)}
       <Box direction='row' justify='end'>
-        <Button loading={loading} label='save' onClick={mutation} round='xsmall' />
+        <Button
+          pad={{horizontal: 'medium', vertical: 'xsmall'}}
+          loading={loading}
+          label='Save'
+          onClick={mutation}
+          round='xsmall' />
       </Box>
     </Box>
     </>

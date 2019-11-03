@@ -26,9 +26,10 @@ defmodule Core.Services.Terraform do
     end
   end
 
-  def extract_tf_meta(%{package: %{path: path}}) do
+  def extract_tf_meta(%{package: %{path: path, filename: file}}) do
+    root = grab_root_dir(file)
     path = String.to_charlist(path)
-    [rm, valt] = files = ~w(README.md terraform.tfvars)
+    [rm, valt] = files = ["#{root}/README.md", "#{root}/terraform.tfvars"]
                          |> Enum.map(&String.to_charlist/1)
 
     with {:ok, result} <- :erl_tar.extract(path, [:memory, :compressed, {:files, files}]) do
@@ -45,5 +46,10 @@ defmodule Core.Services.Terraform do
       {_, template} -> template
       _ -> nil
     end
+  end
+
+  def grab_root_dir(filename) do
+    Path.rootname(filename)
+    |> Path.basename()
   end
 end

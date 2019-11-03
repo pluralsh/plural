@@ -37,4 +37,17 @@ defmodule Core.Services.TerraformTest do
       {:error, _} = Terraform.update_terraform(%{name: "aws"}, tf.id, insert(:user))
     end
   end
+
+  describe "#extract_tf_meta/3" do
+    test "It can find a readme and var template" do
+      path = Path.join(:code.priv_dir(:core), "gcp.tgz")
+
+      {:ok, %{readme: readme, values_template: tmp}} = Terraform.extract_tf_meta(%{
+        package: %{path: path, filename: path}
+      })
+
+      assert is_binary(readme)
+      assert is_binary(tmp)
+    end
+  end
 end

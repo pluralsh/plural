@@ -1,0 +1,7 @@
+dependencies:
+- name: external-dns
+  version: 2.6.4
+  repository: https://kubernetes-charts.storage.googleapis.com/
+- name: datadog
+  version: 1.38.2
+  repository: https://kubernetes-charts.storage.googleapis.com/

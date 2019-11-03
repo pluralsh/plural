@@ -1,0 +1,20 @@
+gcp:
+  enabled: true
+  project: piazza-247002
+  bucket: piazzaapp-uploads
+
+external-dns:
+  provider: google
+  txtOwnerId: piazza
+  rbac:
+    create: true
+    serviceAccountName: external-dns
+  domainFilters:
+  - piazzaapp.com
+  google:
+    project: piazza-247002
+    serviceAccountSecret: externaldns
+
+datadog:
+  datadog:
+    apiKey: 5343da8b382a406a857a557ef191b721

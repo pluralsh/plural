@@ -6,6 +6,8 @@ import InputField from '../utils/InputField'
 import Button, {SecondaryButton} from '../utils/Button'
 import {FilePicker} from 'react-file-picker'
 import {CREATE_TF, REPO_Q} from './queries'
+import {generatePreview} from '../../utils/file'
+import {DEFAULT_TF_ICON} from './constants'
 
 const LABEL_WIDTH = '90px'
 
@@ -13,9 +15,9 @@ function CreateTerraform({repositoryId}) {
   const [state, setState] = useState({name: "", description: ""})
   const [terraform, setTerraform] = useState(null)
   const [mutation, {loading}] = useMutation(CREATE_TF, {
-    variables: {attributes: {...state, package: terraform}},
-    update: (cache, { data: { createTerraform } }) => {
-      const prev = cache.readQuery({ query: REPO_Q, variables: {repositoryId} })
+    variables: {repositoryId, attributes: {...state, package: terraform && terraform.file}},
+    update: (cache, { data: {createTerraform} }) => {
+      const prev = cache.readQuery({query: REPO_Q, variables: {repositoryId}})
       cache.writeQuery({query: REPO_Q, variables: {repositoryId}, data: {
         ...prev,
         terraform: {
@@ -27,27 +29,27 @@ function CreateTerraform({repositoryId}) {
   })
 
   return (
-    <Box pad='medium' gap='small'>
+    <Box gap='small'>
       <Text>Create a new Terraform Module</Text>
       <Box direction='row' gap='small' align='center'>
-        <Box
-          width='70px'
-          height='70px'
-          background='light-2'
-          border
-          pad='xsmall'
-          align='center'
-          justify='center'>
-          <Archive size='20px' />
-        </Box>
+        {terraform ?
+          <img alt='' width='70px' height='70px' src={DEFAULT_TF_ICON} /> :
+          <Box
+            width='70px'
+            height='70px'
+            background='light-2'
+            border
+            pad='xsmall'
+            align='center'
+            justify='center'>
+            <Archive size='20px' />
+          </Box>}
         <Box gap='xsmall'>
-          <Text size='small'>{terraform ? terraform.name : 'Select an terraform'}</Text>
+          <Text size='small'>{terraform ? terraform.file.name : 'Select a terraform module'}</Text>
           <FilePicker
-            extensions={['jpg', 'jpeg', 'png']}
-            dims={{minWidth: 100, maxWidth: 500, minHeight: 100, maxHeight: 500}}
-            onChange={setTerraform}
-          >
-            <SecondaryButton round='xsmall' label='Upload an icon' />
+            extensions={['tgz']}
+            onChange={(file) => generatePreview(file, setTerraform)}>
+            <SecondaryButton round='xsmall' label='Upload a tar' />
           </FilePicker>
         </Box>
       </Box>

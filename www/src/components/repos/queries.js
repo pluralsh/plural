@@ -123,3 +123,20 @@ export const CHART_Q = gql`
   ${ChartFragment}
   ${VersionFragment}
 `;
+
+export const TF_Q = gql`
+  query Charts($tfId: ID!) {
+    terraformModule(id: $tfId) {
+      ...TerraformFragment
+      repository {
+        ...RepoFragment
+        installation {
+          ...InstallationFragment
+        }
+      }
+    }
+  }
+  ${InstallationFragment}
+  ${RepoFragment}
+  ${TerraformFragment}
+`;

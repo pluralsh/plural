@@ -4,8 +4,9 @@ export const TerraformFragment = gql`
   fragment TerraformFragment on Terraform {
     id
     name
-    package
     readme
+    package
+    description
     valuesTemplate
   }
 `;

@@ -188,7 +188,7 @@ variable "master_authorized_networks_cidr_display" {
   default = "default"
 }
 
-variable "piazza_dns" {
+variable "dns_domain" {
   type = "string"
   description = "The domain name you'll register piazza under"
 }

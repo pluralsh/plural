@@ -63,7 +63,7 @@ function EditInstallation({installation, repository, onUpdate}) {
 }
 
 
-function Installation({repository, onUpdate}) {
+function Installation({repository, onUpdate, noHelm}) {
   const [mutation] = useMutation(INSTALL_REPO, {
     variables: {repositoryId: repository.id},
     update: (cache, { data: { createInstallation } }) => {
@@ -77,12 +77,16 @@ function Installation({repository, onUpdate}) {
 
   return (
     <Box pad='small' elevation='small' gap='small'>
-      <Text size='medium'>Installation</Text>
       {repository.installation ?
         <Box gap='small'>
-          <Box background='light-3' pad='small'>
-            <Text size='small'>helm repo add {repository.name} cm://{apiHost()}/{repository.name}</Text>
-          </Box>
+          {!noHelm && (
+            <>
+            <Text size='medium'>Installation</Text>
+            <Box background='light-3' pad='small'>
+              <Text size='small'>helm repo add {repository.name} cm://{apiHost()}/{repository.name}</Text>
+            </Box>
+            </>
+          )}
           <EditInstallation installation={repository.installation} repository={repository} onUpdate={onUpdate} />
         </Box> :
         <Button label='Install Repository' round='xsmall' onClick={mutation} />

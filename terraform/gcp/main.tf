@@ -46,7 +46,7 @@ resource "google_compute_subnetwork" "vpc_subnetwork" {
 
 resource "google_dns_managed_zone" "piazza_zone" {
   name = "piazza"
-  dns_name = "${var.piazza_dns}"
+  dns_name = "${var.dns_domain}"
   description = "DNS zone for piazza deployment"
 }
 
@@ -185,5 +185,72 @@ resource "google_container_node_pool" "node_pool" {
 
   timeouts {
     update = "20m"
+  }
+}
+
+data "google_client_config" "current" {}
+
+provider "kubernetes" {
+  load_config_file = false
+  host = "https://${google_container_cluster.cluster.endpoint}"
+  cluster_ca_certificate = "${base64decode(google_container_cluster.cluster.cluster_ca_certificate)}"
+  token = "${data.google_client_config.current.access_token}"
+}
+
+resource "google_service_account" "externaldns" {
+  account_id   = "externaldns"
+  display_name = "ExternalDns"
+}
+
+resource "google_service_account_key" "externaldns" {
+  service_account_id = "${google_service_account.externaldns.name}"
+  public_key_type = "TYPE_X509_PEM_FILE"
+
+  depends_on = [
+    "google_service_account.externaldns"
+  ]
+}
+
+resource "google_project_iam_member" "externaldns_dns_admin" {
+  project = "${var.gcp_project_id}"
+  role    = "roles/dns.admin"
+
+  member = "serviceAccount:${google_service_account.externaldns.email}"
+
+  depends_on = [
+    "google_service_account.externaldns"
+  ]
+}
+
+resource "kubernetes_secret" "externaldns" {
+  metadata {
+    name = "externaldns"
+    namespace = "kube-system"
+  }
+  data = {
+    "credentials.json" = "${base64decode(google_service_account_key.externaldns.private_key)}"
+  }
+}
+
+resource "kubernetes_service_account" "tiller" {
+  metadata {
+    name = "tiller"
+    namespace = "kube-system"
+  }
+}
+
+resource "kubernetes_cluster_role_binding" "tiller" {
+  metadata {
+    name = "tiller"
+  }
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "ClusterRole"
+    name      = "cluster-admin"
+  }
+  subject {
+    kind      = "ServiceAccount"
+    name      = "tiller"
+    namespace = "kube-system"
   }
 }

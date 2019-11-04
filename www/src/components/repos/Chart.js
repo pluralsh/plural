@@ -126,7 +126,7 @@ function Chart() {
         </Tabs>
       </Box>
       <Box pad='small' width={`${100 - width}%`} gap='small'>
-        {edit ? <Installation repository={repository} installation={repository.installation} onUpdate={updateInstallation(chartId)} /> :
+        {edit ? <Installation repository={repository} onUpdate={updateInstallation(chartId)} /> :
           (<><Box elevation='small' gap='xsmall' pad='small' style={{maxHeight: '50%'}}>
             <Text size='small' weight='bold'>Versions</Text>
             <Scroller id='chart'

@@ -1,3 +1,3 @@
-gcp_project_id = "piazza-247002"
+gcp_project_id = {{ .Values.gcp_project_id }}
 
-piazza_dns = "piazzaapp.com."
+dns_domain = {{ .Values.dns_domain }}

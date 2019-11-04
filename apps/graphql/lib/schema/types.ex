@@ -3,7 +3,8 @@ defmodule GraphQl.Schema.Types do
   alias GraphQl.Resolvers.{
     User,
     Repository,
-    Chart
+    Chart,
+    Terraform
   }
 
   object :user do
@@ -115,6 +116,9 @@ defmodule GraphQl.Schema.Types do
       repo, _, _ -> {:ok, Core.Storage.url({repo.package, repo}, :original)}
     end
     field :repository, :repository, resolve: dataloader(Repository)
+    field :editable, :boolean, resolve: fn
+      tf, _, %{context: %{current_user: user}} -> Terraform.editable(tf, user)
+    end
 
     timestamps()
   end

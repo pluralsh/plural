@@ -6,6 +6,7 @@ import Scroller from '../utils/Scroller'
 import {REPO_Q} from './queries'
 import {DEFAULT_CHART_ICON, DEFAULT_TF_ICON} from './constants'
 import Installation from './Installation'
+import CreateTerraform from './CreateTerraform'
 
 function Container({children, onClick}) {
   const [hover, setHover] = useState(false)
@@ -48,14 +49,18 @@ function Chart({chart}) {
 }
 
 function Tf({terraform}) {
+  let history = useHistory()
   return (
-    <Container>
+    <Container onClick={() => history.push(`/terraform/${terraform.id}`)}>
       <Box width='50px' heigh='50px'>
         <img alt='' width='50px' height='50px' src={DEFAULT_TF_ICON} />
       </Box>
       <Box gap='xxsmall' justify='center'>
         <Text size='small' >
           {terraform.name}
+        </Text>
+        <Text size='small'>
+          {terraform.description}
         </Text>
       </Box>
     </Container>
@@ -97,7 +102,6 @@ function Terraform({edges, pageInfo, fetchMore}) {
       edges={edges}
       style={{overflow: 'auto', height: '100%', width: '100%'}}
       mapper={({node}) => <Tf key={node.id} terraform={node} />}
-      emptyState={<Text size='medium'>No terraform templates yet</Text>}
       onLoadMore={() => {
         if (!pageInfo.hasNextPage) return
 
@@ -145,8 +149,9 @@ function Repository() {
             </Box>
           </Tab>
           <Tab title='Terraform'>
-            <Box pad='small'>
+            <Box pad='small' gap='small'>
               <Terraform {...terraform} fetchMore={fetchMore} />
+              <CreateTerraform repositoryId={repository.id} />
             </Box>
           </Tab>
         </Tabs>

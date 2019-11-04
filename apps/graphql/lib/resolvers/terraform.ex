@@ -18,4 +18,11 @@ defmodule GraphQl.Resolvers.Terraform do
 
   def update_terraform(%{id: id, attributes: attrs}, %{context: %{current_user: user}}),
     do: TfSvc.update_terraform(attrs, id, user)
+
+  def editable(tf, user) do
+    case Core.Policies.Terraform.can?(user, tf, :edit) do
+      {:error, _} -> {:ok, false}
+      _ -> {:ok, true}
+    end
+  end
 end

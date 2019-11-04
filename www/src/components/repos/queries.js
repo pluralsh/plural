@@ -49,7 +49,7 @@ export const INSTALL_REPO = gql`
 `;
 
 export const REPO_Q = gql`
-  query Repo($repositoryId: String!, $chartCursor: String) {
+  query Repo($repositoryId: String!, $chartCursor: String, $tfCursor: String) {
     repository(id: $repositoryId) {
       ...RepoFragment
       editable
@@ -68,9 +68,9 @@ export const REPO_Q = gql`
         }
       }
     }
-    terraform(repositoryId: $repositoryId, first: 15, after: $versionCursor) {
+    terraform(repositoryId: $repositoryId, first: 15, after: $tfCursor) {
       pageInfo {
-        hasnextPage
+        hasNextPage
         endCursor
       }
       edges {
@@ -83,6 +83,15 @@ export const REPO_Q = gql`
   ${RepoFragment}
   ${ChartFragment}
   ${InstallationFragment}
+  ${TerraformFragment}
+`;
+
+export const CREATE_TF = gql`
+  mutation CreateTerraform($repositoryId: ID!, $attributes: TerraformAttributes!) {
+    createTerraform(repositoryId: $repositoryId, attributes: $attributes) {
+      ...TerraformFragment
+    }
+  }
   ${TerraformFragment}
 `;
 

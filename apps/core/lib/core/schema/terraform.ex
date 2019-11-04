@@ -3,13 +3,13 @@ defmodule Core.Schema.Terraform do
   use Arc.Ecto.Schema
   alias Core.Schema.Repository
 
-
   schema "terraform" do
-    field :name, :string
-    field :package_id, :binary_id
-    field :package, Core.Storage.Type
+    field :name,            :string
+    field :package,         Core.Storage.Type
+    field :package_id,      :binary_id
+    field :description,     :string
     field :values_template, :string
-    field :readme, :string
+    field :readme,          :string
 
     belongs_to :repository, Repository
 
@@ -22,7 +22,7 @@ defmodule Core.Schema.Terraform do
   def ordered(query \\ __MODULE__, order \\ [asc: :id]),
     do: from(tf in query, order_by: ^order)
 
-  @valid ~w(name values_template readme)a
+  @valid ~w(name values_template readme description)a
 
   def changeset(schema, attrs \\ %{}) do
     schema

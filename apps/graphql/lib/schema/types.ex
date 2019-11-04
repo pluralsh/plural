@@ -7,9 +7,9 @@ defmodule GraphQl.Schema.Types do
   }
 
   object :user do
-    field :id, :id
-    field :name, non_null(:string)
-    field :email, non_null(:string)
+    field :id,        :id
+    field :name,      non_null(:string)
+    field :email,     non_null(:string)
     field :publisher, :publisher, resolve: dataloader(User)
 
     field :jwt, :string, resolve: fn
@@ -30,10 +30,10 @@ defmodule GraphQl.Schema.Types do
   end
 
   object :publisher do
-    field :id, :id
-    field :name, non_null(:string)
-    field :owner, :user, resolve: dataloader(User)
-    field :description, :string
+    field :id,           :id
+    field :name,         non_null(:string)
+    field :description,  :string
+    field :owner,        :user, resolve: dataloader(User)
 
     field :avatar, :string, resolve: fn
       publisher, _, _ -> {:ok, Core.Storage.url({publisher.avatar, publisher}, :original)}
@@ -43,11 +43,11 @@ defmodule GraphQl.Schema.Types do
   end
 
   object :repository do
-    field :id, :id
-    field :name, non_null(:string)
-    field :publisher, :publisher, resolve: dataloader(User)
-    field :description, :string
+    field :id,            :id
+    field :name,          non_null(:string)
+    field :description,   :string
     field :documentation, :string
+    field :publisher,     :publisher, resolve: dataloader(User)
 
     field :icon, :string, resolve: fn
       repo, _, _ -> {:ok, Core.Storage.url({repo.icon, repo}, :original)}
@@ -65,49 +65,52 @@ defmodule GraphQl.Schema.Types do
   end
 
   object :chart do
-    field :id, :id
-    field :name, non_null(:string)
-    field :description, :string
+    field :id,             :id
+    field :name,           non_null(:string)
+    field :description,    :string
     field :latest_version, :string
-    field :repository, :repository, resolve: dataloader(Repository)
+    field :repository,     :repository, resolve: dataloader(Repository)
 
     timestamps()
   end
 
   object :version do
-    field :id, :id
-    field :version, non_null(:string)
-    field :readme, :string
+    field :id,              :id
+    field :version,         non_null(:string)
+    field :readme,          :string
     field :values_template, :string
-    field :helm, :map
+    field :helm,            :map
+
     field :chart, :chart, resolve: dataloader(Chart)
 
     timestamps()
   end
 
   object :installation do
-    field :id, :id
-    field :context, :map
+    field :id,         :id
+    field :context,    :map
     field :repository, :repository, resolve: dataloader(Repository)
-    field :user, :user, resolve: dataloader(User)
+    field :user,       :user, resolve: dataloader(User)
 
     timestamps()
   end
 
   object :chart_installation do
-    field :id, :id
-    field :chart, :chart, resolve: dataloader(Chart)
+    field :id,      :id
+    field :chart,   :chart, resolve: dataloader(Chart)
     field :version, :version, resolve: dataloader(Chart)
-    field :user, :user, resolve: dataloader(User)
+    field :user,    :user, resolve: dataloader(User)
 
     timestamps()
   end
 
   object :terraform do
-    field :id, :id
-    field :name, :string
+    field :id,              :id
+    field :name,            :string
+    field :readme,          :string
+    field :description,     :string
     field :values_template, :string
-    field :readme, :string
+
     field :package, :string, resolve: fn
       repo, _, _ -> {:ok, Core.Storage.url({repo.package, repo}, :original)}
     end

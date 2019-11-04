@@ -5,22 +5,22 @@ defmodule GraphQl.Schema.Inputs do
   import_types GraphQl.Schemas.Upload
 
   input_object :user_attributes do
-    field :name, :string
-    field :email, :string
+    field :name,     :string
+    field :email,    :string
     field :password, :string
-    field :avatar, :upload_or_url
+    field :avatar,   :upload_or_url
   end
 
   input_object :publisher_attributes do
-    field :name, :string
-    field :avatar, :upload_or_url
+    field :name,        :string
+    field :avatar,      :upload_or_url
     field :description, :string
   end
 
   input_object :repository_attributes do
-    field :name, :string
-    field :icon, :upload_or_url
-    field :description, :string
+    field :name,          :string
+    field :icon,          :upload_or_url
+    field :description,   :string
     field :documentation, :string
   end
 
@@ -29,7 +29,8 @@ defmodule GraphQl.Schema.Inputs do
   end
 
   input_object :terraform_attributes do
-    field :name, :string
-    field :package, :upload_or_url
+    field :name,        :string
+    field :description, :string
+    field :package,     :upload_or_url
   end
 end

@@ -48,6 +48,13 @@ defmodule GraphQl do
       resolve &Chart.resolve_chart/2
     end
 
+    field :terraform_module, :terraform do
+      middleware GraphQl.Middleware.Authenticated
+      arg :id, non_null(:id)
+
+      resolve &Terraform.resolve_terraform/2
+    end
+
     field :repository, :repository do
       middleware GraphQl.Middleware.Authenticated
       arg :id, non_null(:id)

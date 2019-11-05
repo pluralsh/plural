@@ -11,26 +11,10 @@ import {DEFAULT_TF_ICON} from './constants'
 
 const LABEL_WIDTH = '90px'
 
-function CreateTerraform({repositoryId}) {
-  const [state, setState] = useState({name: "", description: ""})
-  const [terraform, setTerraform] = useState(null)
-  const [mutation, {loading}] = useMutation(CREATE_TF, {
-    variables: {repositoryId, attributes: {...state, package: terraform && terraform.file}},
-    update: (cache, { data: {createTerraform} }) => {
-      const prev = cache.readQuery({query: REPO_Q, variables: {repositoryId}})
-      cache.writeQuery({query: REPO_Q, variables: {repositoryId}, data: {
-        ...prev,
-        terraform: {
-          ...prev.terraform,
-          edges: [{__typename: 'TerraformEdge', node: createTerraform}, ...prev.terraform.edges]
-        }
-      }})
-    }
-  })
-
+export function TerraformForm({label, update, loading, mutation, state, setState, terraform, setTerraform}) {
   return (
     <Box gap='small'>
-      <Text>Create a new Terraform Module</Text>
+      <Text>{label}</Text>
       <Box direction='row' gap='small' align='center'>
         {terraform ?
           <img alt='' width='70px' height='70px' src={DEFAULT_TF_ICON} /> :
@@ -66,9 +50,38 @@ function CreateTerraform({repositoryId}) {
         value={state.description}
         onChange={(e) => setState({...state, description: e.target.value})} />
       <Box direction='row' justify='end'>
-        <Button loading={loading} round='xsmall' label='Create' onClick={mutation} />
+        <Button loading={loading} round='xsmall' label={update ? 'Update' : 'Create'} onClick={mutation} />
       </Box>
     </Box>
+  )
+}
+
+function CreateTerraform({repositoryId, query, vars}) {
+  const [state, setState] = useState({name: "", description: ""})
+  const [terraform, setTerraform] = useState(null)
+  const [mutation, {loading}] = useMutation(query || CREATE_TF, {
+    variables: {repositoryId, attributes: {...state, package: terraform && terraform.file}},
+    update: (cache, { data: {createTerraform} }) => {
+      const prev = cache.readQuery({query: REPO_Q, variables: {repositoryId}})
+      cache.writeQuery({query: REPO_Q, variables: {repositoryId}, data: {
+        ...prev,
+        terraform: {
+          ...prev.terraform,
+          edges: [{__typename: 'TerraformEdge', node: createTerraform}, ...prev.terraform.edges]
+        }
+      }})
+    }
+  })
+
+  return (
+    <TerraformForm
+      state={state}
+      setState={setState}
+      terraform={terraform}
+      setTerraform={setTerraform}
+      mutation={mutation}
+      loading={loading}
+      label='Create a new Terraform Module' />
   )
 }
 

@@ -1,5 +1,6 @@
 import React, {useState} from 'react'
-import {Box, Text, Tabs, Tab} from 'grommet'
+import {Box, Text, Tabs, Tab, Anchor} from 'grommet'
+import {FormPrevious} from 'grommet-icons'
 import {useQuery} from 'react-apollo'
 import {useParams, useHistory} from 'react-router-dom'
 import Scroller from '../utils/Scroller'
@@ -124,6 +125,35 @@ function Terraform({edges, pageInfo, fetchMore}) {
   )
 }
 
+function TerraformCreator({repositoryId, onReturn}) {
+  return (
+    <Box>
+      <CreateTerraform repositoryId={repositoryId} />
+      <Box direction='row' align='center' gap='xsmall'>
+        <FormPrevious size='15px'/>
+        <Anchor onClick={onReturn}>
+          Return
+        </Anchor>
+      </Box>
+    </Box>
+  )
+}
+
+function TerraformTab({repositoryId, terraform, fetchMore}) {
+  const [create, setCreate] = useState(false)
+
+  return create ?
+    <TerraformCreator repositoryId={repositoryId} onReturn={() => setCreate(false)} /> :
+    (<Box gap='small'>
+      <Box direction='row' justify='end'>
+        <Anchor onClick={() => setCreate(true)}>
+          Create more
+        </Anchor>
+      </Box>
+      <Terraform {...terraform} fetchMore={fetchMore} />
+    </Box>)
+}
+
 function Repository() {
   const {repositoryId} = useParams()
   const {loading, data, fetchMore} = useQuery(REPO_Q, {variables: {repositoryId}})
@@ -150,8 +180,10 @@ function Repository() {
           </Tab>
           <Tab title='Terraform'>
             <Box pad='small' gap='small'>
-              <Terraform {...terraform} fetchMore={fetchMore} />
-              <CreateTerraform repositoryId={repository.id} />
+              <TerraformTab
+                terraform={terraform}
+                repositoryId={repositoryId}
+                fetchMore={fetchMore} />
             </Box>
           </Tab>
         </Tabs>

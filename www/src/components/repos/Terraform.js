@@ -1,11 +1,12 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {Box, Text, Markdown, Tabs, Tab} from 'grommet'
-import {useQuery} from 'react-apollo'
+import {useQuery, useMutation} from 'react-apollo'
 import {useParams} from 'react-router-dom'
-import {TF_Q} from './queries'
+import {TF_Q, UPDATE_TF} from './queries'
 import {DEFAULT_TF_ICON} from './constants'
 import Highlight from 'react-highlight'
 import Installation from './Installation'
+import {TerraformForm} from './CreateTerraform'
 
 function Code({value, children, language}) {
   return (
@@ -77,14 +78,46 @@ function updateInstallation(tfId) {
   }
 }
 
+function UpdateTerraform({id, name, description}) {
+  const [state, setState] = useState({name: name, description: description})
+  const [terraform, setTerraform] = useState(null)
+  const [mutation, {loading}] = useMutation(UPDATE_TF, {
+    variables: {id, attributes: {...state, package: terraform && terraform.file}},
+    update: (cache, { data: {updateTerraform} }) => {
+      const prev = cache.readQuery({query: TF_Q, variables: {id}})
+      cache.writeQuery({query: TF_Q, variables: {id}, data: {
+        ...prev,
+        terraformModule: {
+          ...prev.terraform,
+          ...updateTerraform
+        }
+      }})
+    }
+  })
+
+  return (
+    <Box pad='small'>
+      <TerraformForm
+        state={state}
+        setState={setState}
+        terraform={terraform}
+        setTerraform={setTerraform}
+        mutation={mutation}
+        loading={loading}
+        update
+        label={`Update ${name}`} />
+    </Box>
+  )
+}
+
 function Terraform() {
   const {tfId} = useParams()
   const {loading, data} = useQuery(TF_Q, {variables: {tfId}})
+  const width = 60
 
   if (loading || !data) return null
-
   const {terraformModule} = data
-  const width = 60
+
   return (
     <Box pad='small' direction='row' height="100%">
       <Box width={`${width}%`} pad='small' border='right'>
@@ -96,6 +129,11 @@ function Terraform() {
           <Tab title='Configuration'>
             <TemplateView {...terraformModule} />
           </Tab>
+          {terraformModule.editable && (
+            <Tab title='Edit'>
+              <UpdateTerraform {...terraformModule} />
+            </Tab>
+          )}
         </Tabs>
       </Box>
       <Box pad='small' width={`${100 - width}%`} gap='small'>

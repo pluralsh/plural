@@ -95,6 +95,15 @@ export const CREATE_TF = gql`
   ${TerraformFragment}
 `;
 
+export const UPDATE_TF = gql`
+  mutation UpdateTerraform($id: ID!, $attributes: TerraformAttributes!) {
+    updateTerraform(id: $id, attributes: $attributes) {
+      ...TerraformFragment
+    }
+  }
+  ${TerraformFragment}
+`;
+
 export const CHART_Q = gql`
   query Charts($chartId: ID!, $cursor: String) {
     chart(id: $chartId) {
@@ -128,6 +137,7 @@ export const TF_Q = gql`
   query Charts($tfId: ID!) {
     terraformModule(id: $tfId) {
       ...TerraformFragment
+      editable
       repository {
         ...RepoFragment
         installation {

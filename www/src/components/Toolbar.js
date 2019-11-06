@@ -2,6 +2,7 @@ import React from 'react'
 import {useHistory} from 'react-router-dom'
 import {Box, Text} from 'grommet'
 import Me from './users/Me'
+import SearchRepositories from './repos/SearchRepositories'
 
 function Toolbar(props) {
   let history = useHistory()
@@ -16,8 +17,8 @@ function Toolbar(props) {
           Chartmart
         </Text>
       </Box>
-      <Box width='100%'>
-
+      <Box direction='row' width='100%' align='center' justify='center'>
+        <SearchRepositories />
       </Box>
       <Me me={props.me} />
     </Box>

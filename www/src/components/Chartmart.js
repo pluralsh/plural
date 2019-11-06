@@ -10,7 +10,7 @@ import Repository from './repos/Repository'
 import Chart from './repos/Chart'
 import Terraform from './repos/Terraform'
 
-const TOOLBAR_SIZE = '50px'
+const TOOLBAR_SIZE = '55px'
 
 function Chartmart(props) {
   return (

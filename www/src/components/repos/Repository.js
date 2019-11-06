@@ -103,6 +103,7 @@ function Terraform({edges, pageInfo, fetchMore}) {
       edges={edges}
       style={{overflow: 'auto', height: '100%', width: '100%'}}
       mapper={({node}) => <Tf key={node.id} terraform={node} />}
+      emptyState={<Text size='medium'>No terraform modules uploaded yet</Text>}
       onLoadMore={() => {
         if (!pageInfo.hasNextPage) return
 

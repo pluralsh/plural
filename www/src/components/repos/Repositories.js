@@ -5,7 +5,7 @@ import {useHistory} from 'react-router-dom'
 import Scroller from '../utils/Scroller'
 import {REPOS_Q} from './queries'
 
-function Repository({repo, hasNext}) {
+export function Repository({repo, hasNext}) {
   let history = useHistory()
   return (
     <Box pad='small' direction='row' gap='small' border={hasNext ? 'bottom' : null}>

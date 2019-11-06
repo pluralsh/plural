@@ -38,6 +38,19 @@ export const REPOS_Q = gql`
   ${RepoFragment}
 `;
 
+export const SEARCH_REPOS = gql`
+  query SearchRepos($query: String!) {
+    searchRepositories(query: $query, first: 10) {
+      edges {
+        node {
+          ...RepoFragment
+        }
+      }
+    }
+  }
+  ${RepoFragment}
+`;
+
 export const INSTALL_REPO = gql`
   mutation CreateInstallation($repositoryId: ID!) {
     createInstallation(repositoryId: $repositoryId) {

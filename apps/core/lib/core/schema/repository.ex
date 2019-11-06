@@ -16,6 +16,9 @@ defmodule Core.Schema.Repository do
     timestamps()
   end
 
+  def search(query \\ __MODULE__, sq),
+    do: from(r in query, where: like(r.name, ^"#{sq}%"))
+
   def for_user(query \\ __MODULE__, user_id) do
     from(r in query,
       join: i in ^Installation.for_user(user_id),

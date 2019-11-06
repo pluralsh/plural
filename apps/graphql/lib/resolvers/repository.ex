@@ -23,6 +23,12 @@ defmodule GraphQl.Resolvers.Repository do
     |> paginate(args)
   end
 
+  def search_repositories(%{query: q} = args, _) do
+    Repository.search(q)
+    |> Repository.ordered()
+    |> paginate(args)
+  end
+
   def list_installations(args, %{context: %{current_user: user}}) do
     Installation.for_user(user.id)
     |> Installation.ordered()

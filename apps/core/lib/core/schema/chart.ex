@@ -12,6 +12,9 @@ defmodule Core.Schema.Chart do
     timestamps()
   end
 
+  def search(query \\ __MODULE__, sq),
+    do: from(c in query, where: like(c.name, ^"#{sq}%"))
+
   def ordered(query \\ __MODULE__, order \\ [asc: :name]),
     do: from(c in query, order_by: ^order)
 

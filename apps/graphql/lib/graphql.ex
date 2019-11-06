@@ -79,6 +79,13 @@ defmodule GraphQl do
       resolve &Repository.list_repositories/2
     end
 
+    connection field :search_repositories, node_type: :repository do
+      middleware GraphQl.Middleware.Authenticated
+      arg :query, non_null(:string)
+
+      resolve &Repository.search_repositories/2
+    end
+
     connection field :installations, node_type: :installation do
       middleware GraphQl.Middleware.Authenticated
 

@@ -16,6 +16,9 @@ defmodule Core.Schema.Terraform do
     timestamps()
   end
 
+  def search(query \\ __MODULE__, sq),
+    do: from(tf in query, where: like(tf.name, ^"#{sq}%"))
+
   def for_repository(query \\ __MODULE__, id),
     do: from(tf in query, where: tf.repository_id == ^id)
 

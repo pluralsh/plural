@@ -86,4 +86,26 @@ defmodule GraphQl.RepositoryQueriesTest do
       refute found["editable"]
     end
   end
+
+  describe "search_repositories" do
+    test "It can search for substrings of a repo name" do
+      repos = for i <- 1..3, do: insert(:repository, name: "query #{i}")
+      insert(:repository)
+
+      {:ok, %{data: %{"searchRepositories" => found}}} = run_query("""
+        query SearchRepositories($query: String!) {
+          searchRepositories(query: $query, first: 5) {
+            edges {
+              node {
+                id
+              }
+            }
+          }
+        }
+      """, %{"query" => "query"}, %{current_user: insert(:user)})
+
+      assert from_connection(found)
+             |> ids_equal(repos)
+    end
+  end
 end

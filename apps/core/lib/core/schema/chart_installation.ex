@@ -10,6 +10,20 @@ defmodule Core.Schema.ChartInstallation do
     timestamps()
   end
 
+  def for_chart(query \\ __MODULE__, chart_id) do
+    from(ci in query,
+      join: c in assoc(ci, :chart), as: :chart,
+      where: c.id == ^chart_id)
+  end
+
+  def for_user(query, user_id) do
+    from([ci, chart: c] in query,
+      join: inst in Installation,
+        on: inst.id == ci.installation_id and c.repository_id == inst.repository_id,
+      where: inst.user_id == ^user_id
+    )
+  end
+
   @valid ~w(installation_id chart_id version_id)a
 
   def changeset(model, attrs \\ %{}) do

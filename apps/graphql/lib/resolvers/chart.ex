@@ -6,6 +6,9 @@ defmodule GraphQl.Resolvers.Chart do
   def query(Version, _), do: Version
   def query(_, _), do: Chart
 
+  def resolve_chart_installation(chart, user),
+    do: {:ok, Charts.get_chart_installation(chart.id, user.id)}
+
   def resolve_chart(%{id: chart_id}, _),
     do: {:ok, Charts.get_chart!(chart_id)}
 
@@ -24,4 +27,10 @@ defmodule GraphQl.Resolvers.Chart do
       |> paginate(args)
     end
   end
+
+  def install_chart(%{installation_id: id, attributes: attrs}, %{context: %{current_user: user}}),
+    do: Charts.create_chart_installation(attrs, id, user)
+
+  def update_chart_installation(%{chart_installation_id: id, attributes: attrs}, %{context: %{current_user: user}}),
+    do: Charts.update_chart_installation(attrs, id, user)
 end

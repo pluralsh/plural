@@ -72,6 +72,11 @@ defmodule GraphQl.Schema.Types do
     field :latest_version, :string
     field :repository,     :repository, resolve: dataloader(Repository)
 
+    field :installation, :chart_installation, resolve: fn
+      chart, _, %{context: %{current_user: user}} ->
+        Chart.resolve_chart_installation(chart, user)
+    end
+
     timestamps()
   end
 

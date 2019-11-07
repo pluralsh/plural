@@ -23,3 +23,13 @@ export const VersionFragment = gql`
   }
   ${ChartFragment}
 `;
+
+export const ChartInstallationFragment = gql`
+  fragment ChartInstallationFragment on ChartInstallation {
+    id
+    version {
+      id
+      version
+    }
+  }
+`;

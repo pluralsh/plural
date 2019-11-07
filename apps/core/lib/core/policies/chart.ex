@@ -21,6 +21,8 @@ defmodule Core.Policies.Chart do
       _ -> {:error, :invalid_version}
     end
   end
+  def can?(%User{} = user, %ChartInstallation{installation: %Ecto.Association.NotLoaded{}} = inst, action),
+    do: can?(user, Core.Repo.preload(inst, [:installation, :chart, :version]), action)
 
   def can?(user, %Ecto.Changeset{} = cs, action),
     do: can?(user, apply_changes(cs), action)

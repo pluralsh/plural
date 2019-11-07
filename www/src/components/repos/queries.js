@@ -1,6 +1,6 @@
 import gql from 'graphql-tag'
 import {RepoFragment, InstallationFragment} from '../../models/repo'
-import {ChartFragment, VersionFragment} from '../../models/chart'
+import {ChartFragment, VersionFragment, ChartInstallationFragment} from '../../models/chart'
 import {TerraformFragment} from '../../models/terraform'
 
 export const CREATE_REPO = gql`
@@ -145,6 +145,9 @@ export const CHART_Q = gql`
           ...InstallationFragment
         }
       }
+      installation {
+        ...ChartInstallationFragment
+      }
     }
     versions(chartId: $chartId, first: 10, after: $cursor) {
       pageInfo {
@@ -162,6 +165,7 @@ export const CHART_Q = gql`
   ${RepoFragment}
   ${ChartFragment}
   ${VersionFragment}
+  ${ChartInstallationFragment}
 `;
 
 export const TF_Q = gql`
@@ -180,4 +184,22 @@ export const TF_Q = gql`
   ${InstallationFragment}
   ${RepoFragment}
   ${TerraformFragment}
+`;
+
+export const INSTALL_CHART = gql`
+  mutation InstallChart($id: ID!, $attributes: ChartInstallationAttributes!) {
+    installChart(installationId: $id, attributes: $attributes) {
+      ...ChartInstallationFragment
+    }
+  }
+  ${ChartInstallationFragment}
+`
+
+export const UPDATE_CHART_INST = gql`
+  mutation UpdateChartInst($id: ID!, $attributes: ChartInstallationAttributes!) {
+    updateChartInstallation(chartInstallationId: $id, attributes: $attributes) {
+      ...ChartInstallationFragment
+    }
+  }
+  ${ChartInstallationFragment}
 `;

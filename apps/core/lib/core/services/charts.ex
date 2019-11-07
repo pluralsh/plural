@@ -18,6 +18,12 @@ defmodule Core.Services.Charts do
   def get_chart_version(chart_id, version),
     do: Core.Repo.get_by(Version, chart_id: chart_id, version: version)
 
+  def get_chart_installation(chart_id, user_id) do
+    ChartInstallation.for_chart(chart_id)
+    |> ChartInstallation.for_user(user_id)
+    |> Core.Repo.one()
+  end
+
   def create_chart(attrs, repository_id, %User{} = user) do
     name = stringish_fetch(attrs, :name)
 
@@ -117,6 +123,14 @@ defmodule Core.Services.Charts do
     |> ChartInstallation.changeset(attrs)
     |> allow(user, :create)
     |> when_ok(:insert)
+  end
+
+  def update_chart_installation(attrs, chart_inst_id, %User{} = user) do
+    Core.Repo.get!(ChartInstallation, chart_inst_id)
+    |> Core.Repo.preload([:installation, :chart, :version])
+    |> ChartInstallation.changeset(attrs)
+    |> allow(user, :create)
+    |> when_ok(:update)
   end
 
   def extract_chart_meta(chart, path) do

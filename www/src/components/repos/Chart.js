@@ -1,13 +1,14 @@
 import React, { useState } from 'react'
 import {Box, Text, Anchor, Markdown, Tabs, Tab} from 'grommet'
-import {useQuery} from 'react-apollo'
+import {useQuery, useMutation} from 'react-apollo'
 import {useParams} from 'react-router-dom'
 import Scroller from '../utils/Scroller'
-import {CHART_Q} from './queries'
+import {CHART_Q, INSTALL_CHART, UPDATE_CHART_INST} from './queries'
 import moment from 'moment'
 import {DEFAULT_CHART_ICON} from './constants'
 import Highlight from 'react-highlight'
 import Installation from './Installation'
+import Button from '../utils/Button'
 
 function ChartVersion({version, onSelect}) {
   return (
@@ -62,7 +63,26 @@ function TemplateView({valuesTemplate}) {
   )
 }
 
-function ChartHeader({helm, chart, version}) {
+function ChartInstaller({installation, versionId, chartId}) {
+  const [mutation] = useMutation(installation ? UPDATE_CHART_INST : INSTALL_CHART, {
+    variables: {chartId, versionId},
+    update: (cache, {data}) => {
+      const ci = data.installChart || data.updateChartInstallation
+      const prev = cache.readQuery({ query: CHART_Q, variables: {chartId} })
+      cache.writeQuery({query: CHART_Q, variables: {chartId}, data: {
+        ...prev,
+        chart: {
+          ...prev.chart,
+          installation: ci
+        }
+      }})
+    }
+  })
+
+  return <Button round='xsmall' label='Install' onClick={mutation} />
+}
+
+function ChartHeader({helm, chart, version, installation, id}) {
   return (
     <Box direction='row' align='center' gap='small' margin={{bottom: 'small'}} style={{minHeight: '50px'}}>
       <Box width='50px' heigh='50px'>
@@ -72,7 +92,12 @@ function ChartHeader({helm, chart, version}) {
         <Text size='medium'>{chart.name} - {version}</Text>
         <Text size='small'><i>{helm.description}</i></Text>
       </Box>
+      {installation && installation.version.version === version ?
+        <Box round='xsmall' pad='small'>Installated</Box> :
+        <ChartInstaller installation={installation} versionId={id} chartId={chart.id} />
+      }
     </Box>
+
   )
 }
 

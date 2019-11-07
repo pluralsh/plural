@@ -41,7 +41,7 @@ defmodule Core.Services.ChartsTest do
     end
   end
 
-  describe "#chart_installation" do
+  describe "#create_chart_installation" do
     test "A user can install valid versions of a chart" do
       %{chart: chart, id: vid} = insert(:version, version: "1.0.0")
       user = insert(:user)
@@ -78,6 +78,23 @@ defmodule Core.Services.ChartsTest do
         version_id: version.id,
         chart_id: chart.id
       }, installation.id, user)
+    end
+  end
+
+  describe "#update_chart_installation" do
+    test "A user can update his chart installation" do
+      %{chart: chart} = v = insert(:version, version: "1.0.0")
+      user = insert(:user)
+      installation = insert(:installation, repository: chart.repository, user: user)
+      chart_inst = insert(:chart_installation, installation: installation, chart: chart, version: v)
+      v2 = insert(:version, chart: chart, version: "2.0")
+
+      {:ok, ci} = Charts.update_chart_installation(%{
+        version_id: v2.id
+      }, chart_inst.id, user)
+
+      assert ci.id == chart_inst.id
+      assert ci.version_id == v2.id
     end
   end
 

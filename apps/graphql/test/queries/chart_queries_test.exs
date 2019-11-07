@@ -39,6 +39,25 @@ defmodule GraphQl.ChartQueriesTest do
 
       assert found["id"] == chart.id
     end
+
+    test "It can sideload chart installations" do
+      %{repository: repo, user: user} = inst = insert(:installation)
+      chart = insert(:chart, repository: repo)
+      ci = insert(:chart_installation, installation: inst, chart: chart)
+      {:ok, %{data: %{"chart" => found}}} = run_query("""
+        query Chart($id: ID!) {
+          chart(id: $id) {
+            id
+            installation {
+              id
+            }
+          }
+        }
+      """, %{"id" => chart.id}, %{current_user: user})
+
+      assert found["id"] == chart.id
+      assert found["installation"]["id"] == ci.id
+    end
   end
 
   describe "versions" do

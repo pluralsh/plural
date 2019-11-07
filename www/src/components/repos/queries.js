@@ -12,6 +12,24 @@ export const CREATE_REPO = gql`
   ${RepoFragment}
 `;
 
+export const UPDATE_REPO = gql`
+  mutation UpdateRepository($id: ID!, $attributes: RepositoryAttributes!) {
+    updateRepository(repositoryId: $id, attributes: $attributes) {
+      ...RepoFragment
+    }
+  }
+  ${RepoFragment}
+`;
+
+export const DELETE_REPO = gql`
+  mutation DeleteRepository($id: ID!) {
+    deleteRepository(repositoryId: $id) {
+      ...RepoFragment
+    }
+  }
+  ${RepoFragment}
+`;
+
 export const UPDATE_INSTALLATION = gql`
   mutation UpdateInstallation($id: ID!, $attributes: InstallationAttributes!) {
     updateInstallation(id: $id, attributes: $attributes) {

@@ -31,6 +31,12 @@ defmodule Core.Services.Repositories do
     |> when_ok(:update)
   end
 
+  def delete_repository(repo_id, %User{} = user) do
+    get_repository!(repo_id)
+    |> allow(user, :edit)
+    |> when_ok(:delete)
+  end
+
   def create_installation(attrs, repository_id, %User{} = user) do
     %Installation{repository_id: repository_id, user_id: user.id}
     |> Installation.changeset(attrs)

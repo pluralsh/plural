@@ -58,4 +58,21 @@ defmodule Core.Services.RepositoriesTest do
       {:error, _} = Repositories.update_installation(%{context: %{some: "val"}}, inst.id, user)
     end
   end
+
+  describe "#delete_repository" do
+    test "Publishers can delete repos" do
+      %{owner: user} = pub = insert(:publisher)
+      repo = insert(:repository, publisher: pub)
+
+      {:ok, repo} = Repositories.delete_repository(repo.id, user)
+
+      refute refetch(repo)
+    end
+
+    test "Non publishers cannot delete" do
+      repo = insert(:repository)
+
+      {:error, _} = Repositories.delete_repository(repo.id, insert(:user))
+    end
+  end
 end

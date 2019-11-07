@@ -1,13 +1,14 @@
 import React, {useState} from 'react'
 import {Box, Text, Tabs, Tab, Anchor} from 'grommet'
 import {FormPrevious} from 'grommet-icons'
-import {useQuery} from 'react-apollo'
+import {useQuery, useMutation} from 'react-apollo'
 import {useParams, useHistory} from 'react-router-dom'
 import Scroller from '../utils/Scroller'
-import {REPO_Q} from './queries'
+import {REPO_Q, UPDATE_REPO} from './queries'
 import {DEFAULT_CHART_ICON, DEFAULT_TF_ICON} from './constants'
 import Installation from './Installation'
 import CreateTerraform from './CreateTerraform'
+import {RepoForm} from './CreateRepository'
 
 function Container({children, onClick}) {
   const [hover, setHover] = useState(false)
@@ -155,6 +156,38 @@ function TerraformTab({repositoryId, terraform, fetchMore}) {
     </Box>)
 }
 
+function RepoUpdate({repository}) {
+  const [state, setState] = useState({name: repository.name, description: repository.description})
+  const [image, setImage] = useState(null)
+  const [mutation, {loading}] = useMutation(UPDATE_REPO, {
+    variables: {id: repository.id, attributes: {...state, icon: image && image.file}},
+    update: (cache, { data: { updateRepository } }) => {
+      const prev = cache.readQuery({ query: REPO_Q, variables: {repositoryId: repository.id} })
+      cache.writeQuery({query: REPO_Q, variables: {repositoryId: repository.id}, data: {
+        ...prev,
+        repository: {
+          ...prev.repository,
+          ...updateRepository
+        }
+      }})
+    }
+  })
+  return (
+    <RepoForm
+      label={`Update ${repository.name}`}
+      state={state}
+      setState={setState}
+      image={image}
+      setImage={setImage}
+      mutation={mutation}
+      loading={loading}
+      update
+      />
+  )
+}
+
+const IMG_SIZE = '75px'
+
 function Repository() {
   const {repositoryId} = useParams()
   const {loading, data, fetchMore} = useQuery(REPO_Q, {variables: {repositoryId}})
@@ -165,8 +198,8 @@ function Repository() {
     <Box pad='small' direction='row' height='100%'>
       <Box pad='small' width='60%' height='100%' border='right'>
         <Box direction='row' align='center' margin={{bottom: 'medium'}}>
-          <Box width='50px' heigh='50px'>
-            <img alt='' width='50px' height='50px' src={repository.icon} />
+          <Box width={IMG_SIZE} heigh={IMG_SIZE}>
+            <img alt='' width={IMG_SIZE} height={IMG_SIZE} src={repository.icon} />
           </Box>
           <Box gap='xsmall' pad='small'>
             <Text weight='bold'>{repository.name}</Text>
@@ -187,6 +220,11 @@ function Repository() {
                 fetchMore={fetchMore} />
             </Box>
           </Tab>
+          {repository.editable && (
+            <Tab title='Edit'>
+              <RepoUpdate repository={repository} />
+            </Tab>
+          )}
         </Tabs>
       </Box>
       <Box pad='small' width='40%'>

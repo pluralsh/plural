@@ -164,6 +164,13 @@ defmodule GraphQl do
       resolve safe_resolver(&Repository.update_repository/2)
     end
 
+    field :delete_repository, :repository do
+      middleware GraphQl.Middleware.Authenticated
+      arg :repository_id, non_null(:id)
+
+      resolve safe_resolver(&Repository.delete_repository/2)
+    end
+
     field :create_installation, :installation do
       middleware GraphQl.Middleware.Authenticated
       arg :repository_id, non_null(:id)

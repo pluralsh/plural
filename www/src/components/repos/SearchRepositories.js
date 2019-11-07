@@ -46,10 +46,9 @@ function SearchRepositories() {
           history.push(`/repositories/${suggestion.value.id}`)
         }}
         value={value}
-        onChange={(event) => {
-          const q = event.target.value
-          setValue(q)
-          searchRepositories(client, q, setSuggestions)
+        onChange={({target: {value}}) => {
+          setValue(value)
+          searchRepositories(client, value, setSuggestions)
         }}
       />
     </Box>

@@ -10,26 +10,10 @@ import {generatePreview} from '../../utils/file'
 
 const LABEL_WIDTH = '90px'
 
-function CreateRepository({publisher}) {
-  const [state, setState] = useState({name: "", description: ""})
-  const [image, setImage] = useState(null)
-  const [mutation, {loading}] = useMutation(CREATE_REPO, {
-    variables: {attributes: {...state, icon: image && image.file}},
-    update: (cache, { data: { createRepository } }) => {
-      const prev = cache.readQuery({ query: REPOS_Q, variables: {publisherId: publisher.id} })
-      cache.writeQuery({query: REPOS_Q, variables: {publisherId: publisher.id}, data: {
-        ...prev,
-        repositories: {
-          ...prev.repositories,
-          edges: [{__typename: 'RepositoryEdge', node: createRepository}, ...prev.repositories.edges]
-        }
-      }})
-    }
-  })
-
+export function RepoForm({image, setImage, state, setState, label, mutation, loading, update}) {
   return (
     <Box pad='medium' gap='small'>
-      <Text>Create a new Repository</Text>
+      <Text>{label}</Text>
       <Box direction='row' gap='small' align='center'>
         <Box
           width='70px'
@@ -67,9 +51,38 @@ function CreateRepository({publisher}) {
         value={state.description}
         onChange={(e) => setState({...state, description: e.target.value})} />
       <Box direction='row' justify='end'>
-        <Button loading={loading} round='xsmall' label='Create' onClick={mutation} />
+        <Button loading={loading} round='xsmall' label={update ? 'Update' : 'Create'} onClick={mutation} />
       </Box>
     </Box>
+  )
+}
+
+function CreateRepository({publisher}) {
+  const [state, setState] = useState({name: "", description: ""})
+  const [image, setImage] = useState(null)
+  const [mutation, {loading}] = useMutation(CREATE_REPO, {
+    variables: {attributes: {...state, icon: image && image.file}},
+    update: (cache, { data: { createRepository } }) => {
+      const prev = cache.readQuery({ query: REPOS_Q, variables: {publisherId: publisher.id} })
+      cache.writeQuery({query: REPOS_Q, variables: {publisherId: publisher.id}, data: {
+        ...prev,
+        repositories: {
+          ...prev.repositories,
+          edges: [{__typename: 'RepositoryEdge', node: createRepository}, ...prev.repositories.edges]
+        }
+      }})
+    }
+  })
+
+  return (
+    <RepoForm
+      label='Create a new repository'
+      image={image}
+      setImage={setImage}
+      state={state}
+      setState={setState}
+      mutation={mutation}
+      loading={loading} />
   )
 }
 

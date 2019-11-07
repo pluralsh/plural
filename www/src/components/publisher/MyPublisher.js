@@ -10,7 +10,7 @@ function MyPublisher(props) {
     {me => (
       <Box height='100%' direction='row' pad='medium'>
         <Box height='100%' width='60%' border='right'>
-          <Repositories publisher={me.publisher} />
+          <Repositories publisher={me.publisher} deletable />
         </Box>
         <Box height='100%' width='40%'>
           <CreateRepository publisher={me.publisher} />

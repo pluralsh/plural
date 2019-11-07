@@ -43,6 +43,23 @@ defmodule GraphQl.RepositoryMutationsTest do
     end
   end
 
+  describe "deleteRepository" do
+    test "Publishers can delete repositories" do
+      %{owner: user} = pub = insert(:publisher)
+      repo = insert(:repository, publisher: pub)
+
+      {:ok, %{data: %{"deleteRepository" => deleted}}} = run_query("""
+        mutation DeleteRepository($id: ID!) {
+          deleteRepository(repositoryId: $id) {
+            id
+          }
+        }
+      """, %{"id" => repo.id}, %{current_user: user})
+
+      assert deleted["id"] == repo.id
+    end
+  end
+
   describe "createInstallation" do
     test "Users can install repositories" do
       user = insert(:user)

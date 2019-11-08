@@ -63,9 +63,12 @@ function TemplateView({valuesTemplate}) {
   )
 }
 
-function ChartInstaller({installation, versionId, chartId}) {
-  const [mutation] = useMutation(installation ? UPDATE_CHART_INST : INSTALL_CHART, {
-    variables: {chartId, versionId},
+function ChartInstaller({chartInstallation, versionId, chartId, installation}) {
+  const [mutation] = useMutation(chartInstallation ? UPDATE_CHART_INST : INSTALL_CHART, {
+    variables: {
+      id: chartInstallation ? chartInstallation.id : installation.id,
+      attributes: {chartId, versionId}
+    },
     update: (cache, {data}) => {
       const ci = data.installChart || data.updateChartInstallation
       const prev = cache.readQuery({ query: CHART_Q, variables: {chartId} })
@@ -82,20 +85,26 @@ function ChartInstaller({installation, versionId, chartId}) {
   return <Button round='xsmall' label='Install' onClick={mutation} />
 }
 
-function ChartHeader({helm, chart, version, installation, id}) {
+function ChartHeader({helm, chart, version, chartInstallation, id, installation}) {
   return (
     <Box direction='row' align='center' gap='small' margin={{bottom: 'small'}} style={{minHeight: '50px'}}>
       <Box width='50px' heigh='50px'>
         <img alt='' width='50px' height='50px' src={chart.icon || DEFAULT_CHART_ICON} />
       </Box>
-      <Box>
+      <Box width='100%'>
         <Text size='medium'>{chart.name} - {version}</Text>
         <Text size='small'><i>{helm.description}</i></Text>
       </Box>
-      {installation && installation.version.version === version ?
-        <Box round='xsmall' pad='small'>Installated</Box> :
-        <ChartInstaller installation={installation} versionId={id} chartId={chart.id} />
+      <Box width='100px' direction='row' justify='end'>
+      {chartInstallation && chartInstallation.version.id === id ?
+        <Box round='xsmall' pad='small' border>Installed</Box> :
+        <ChartInstaller
+          chartInstallation={chartInstallation}
+          installation={installation}
+          versionId={id}
+          chartId={chart.id} />
       }
+      </Box>
     </Box>
 
   )
@@ -140,7 +149,7 @@ function Chart() {
   return (
     <Box pad='small' direction='row' height="100%">
       <Box width={`${width}%`} pad='small' border='right'>
-        <ChartHeader {...currentVersion} />
+        <ChartHeader {...currentVersion} chartInstallation={data.chart.installation} installation={repository.installation} />
         <Tabs justify='start' flex onActive={(tab) => { console.log(tab); setEdit(tab === 1) }}>
           <Tab title='Readme'>
             <ChartReadme {...currentVersion} />

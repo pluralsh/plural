@@ -1,5 +1,5 @@
 import gql from 'graphql-tag'
-import {UserFragment} from './user'
+import {UserFragment, PublisherFragment} from './user'
 
 export const RepoFragment = gql`
   fragment RepoFragment on Repository {
@@ -8,7 +8,11 @@ export const RepoFragment = gql`
     description
     documentation
     icon
+    publisher {
+      ...PublisherFragment
+    }
   }
+  ${PublisherFragment}
 `;
 
 export const InstallationFragment = gql`

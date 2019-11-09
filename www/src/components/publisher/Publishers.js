@@ -1,14 +1,19 @@
-import React from 'react'
+import React, {useContext, useEffect} from 'react'
 import {Box, Text, Anchor} from 'grommet'
 import {useQuery} from 'react-apollo'
 import {useHistory} from 'react-router-dom'
 import Scroller from '../utils/Scroller'
 import {PUBLISHERS_Q} from './queries'
 import Avatar from '../users/Avatar'
+import {BreadcrumbContext} from '../Chartmart'
 
 
 function Publisher({publisher}) {
   let history = useHistory()
+  const {setBreadcrumbs} = useContext(BreadcrumbContext)
+  useEffect(() => {
+    setBreadcrumbs([])
+  }, [setBreadcrumbs])
 
   return (
     <Box direction='row' gap='small'>

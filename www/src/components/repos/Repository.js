@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useContext, useEffect} from 'react'
 import {Box, Text, Tabs, Tab, Anchor} from 'grommet'
 import {FormPrevious} from 'grommet-icons'
 import {useQuery, useMutation} from 'react-apollo'
@@ -9,6 +9,7 @@ import {DEFAULT_CHART_ICON, DEFAULT_TF_ICON} from './constants'
 import Installation from './Installation'
 import CreateTerraform from './CreateTerraform'
 import {RepoForm} from './CreateRepository'
+import {BreadcrumbContext} from '../Chartmart'
 
 function Container({children, onClick}) {
   const [hover, setHover] = useState(false)
@@ -191,6 +192,16 @@ const IMG_SIZE = '75px'
 function Repository() {
   const {repositoryId} = useParams()
   const {loading, data, fetchMore} = useQuery(REPO_Q, {variables: {repositoryId}})
+  const {setBreadcrumbs} = useContext(BreadcrumbContext)
+  useEffect(() => {
+    if (!data) return
+    const {repository} = data
+
+    setBreadcrumbs([
+      {url: `/publishers/${repository.publisher.id}`, text: repository.publisher.name},
+      {url: `/repositories/${repository.id}`, text: repository.name}
+    ])
+  }, [setBreadcrumbs, data])
 
   if (loading) return null
   const {charts, repository, terraform} = data

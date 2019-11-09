@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useContext, useEffect} from 'react'
 import {Box, Text, Markdown, Tabs, Tab} from 'grommet'
 import {useQuery, useMutation} from 'react-apollo'
 import {useParams} from 'react-router-dom'
@@ -7,6 +7,7 @@ import {DEFAULT_TF_ICON} from './constants'
 import Highlight from 'react-highlight'
 import Installation from './Installation'
 import {TerraformForm} from './CreateTerraform'
+import {BreadcrumbContext} from '../Chartmart'
 
 function Code({value, children, language}) {
   return (
@@ -114,6 +115,16 @@ function Terraform() {
   const {tfId} = useParams()
   const {loading, data} = useQuery(TF_Q, {variables: {tfId}})
   const width = 60
+  const {setBreadcrumbs} = useContext(BreadcrumbContext)
+  useEffect(() => {
+    if (!data) return
+    const {terraformModule} = data
+    setBreadcrumbs([
+      {url: `/publishers/${terraformModule.repository.publisher.id}`, text: terraformModule.repository.publisher.name},
+      {url: `/repositories/${terraformModule.repository.id}`, text: terraformModule.repository.name},
+      {url: `/terraform/${terraformModule.id}`, text: terraformModule.name}
+    ])
+  }, [data, setBreadcrumbs])
 
   if (loading || !data) return null
   const {terraformModule} = data

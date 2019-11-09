@@ -1,10 +1,11 @@
-import React from 'react'
+import React, {useEffect, useContext} from 'react'
 import {Box, Text} from 'grommet'
 import {useQuery} from 'react-apollo'
 import {useParams} from 'react-router-dom'
 import {PUBLISHER_Q} from './queries'
 import Repositories from '../repos/Repositories'
 import Avatar from '../users/Avatar'
+import {BreadcrumbContext} from '../Chartmart'
 
 function PublisherView({name, owner, description}) {
   return (
@@ -21,6 +22,13 @@ function PublisherView({name, owner, description}) {
 function Publisher() {
   const {publisherId} = useParams()
   const {loading, data} = useQuery(PUBLISHER_Q, {variables: {publisherId}})
+  const {setBreadcrumbs} = useContext(BreadcrumbContext)
+  useEffect(() => {
+    if (!data) return
+    setBreadcrumbs([
+      {url: `/publishers/${data.publisher.id}`, text: data.publisher.name}
+    ])
+  }, [setBreadcrumbs, data])
   if (loading || !data) return null
 
   const {publisher} = data

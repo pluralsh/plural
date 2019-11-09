@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import {Box, Text, Anchor, Markdown, Tabs, Tab} from 'grommet'
 import {useQuery, useMutation} from 'react-apollo'
 import {useParams} from 'react-router-dom'
@@ -9,6 +9,7 @@ import {DEFAULT_CHART_ICON} from './constants'
 import Highlight from 'react-highlight'
 import Installation from './Installation'
 import Button from '../utils/Button'
+import {BreadcrumbContext} from '../Chartmart'
 
 function ChartVersion({version, onSelect}) {
   return (
@@ -138,6 +139,16 @@ function Chart() {
   const [version, setVersion] = useState(null)
   const [edit, setEdit] = useState(false)
   const {loading, data, fetchMore} = useQuery(CHART_Q, {variables: {chartId}})
+  const {setBreadcrumbs} = useContext(BreadcrumbContext)
+  useEffect(() => {
+    if (!data) return
+    const {chart} = data
+    setBreadcrumbs([
+      {url: `/publishers/${chart.repository.publisher.id}`, text: chart.repository.publisher.name},
+      {url: `/repositories/${chart.repository.id}`, text: chart.repository.name},
+      {url: `/charts/${chart.id}`, text: chart.name}
+    ])
+  }, [data, setBreadcrumbs])
 
   if (loading || !data) return null
 
@@ -161,7 +172,8 @@ function Chart() {
       </Box>
       <Box pad='small' width={`${100 - width}%`} gap='small'>
         {edit ? <Installation repository={repository} onUpdate={updateInstallation(chartId)} /> :
-          (<><Box elevation='small' gap='xsmall' pad='small' style={{maxHeight: '50%'}}>
+          (<>
+          <Box elevation='small' gap='xsmall' pad='small' style={{maxHeight: '50%'}}>
             <Text size='small' weight='bold'>Versions</Text>
             <Scroller id='chart'
               edges={edges}

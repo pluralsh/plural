@@ -1,11 +1,12 @@
 import { ApolloClient } from 'apollo-client'
 import { createLink } from "apollo-absinthe-upload-link";
 import { setContext } from 'apollo-link-context'
+import { onError } from 'apollo-link-error'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import { AUTH_TOKEN } from '../constants'
 import {apiHost, secure} from './hostname'
 import customFetch from './uploadLink'
-
+import {wipeToken} from './authentication'
 
 const API_HOST = apiHost()
 const GQL_URL=`${secure() ? 'https' : 'http'}://${API_HOST}/gql`
@@ -23,7 +24,15 @@ const authLink = setContext((_, { headers }) => {
   }
 })
 
+const resetToken = onError(({ response, networkError }) => {
+  if (networkError && networkError.statusCode === 401) {
+    // remove cached token on 401 from the server
+    wipeToken()
+    window.location = '/login'
+  }
+});
+
 export const client = new ApolloClient({
-  link: authLink.concat(httpLink),
+  link: authLink.concat(resetToken).concat(httpLink),
   cache: new InMemoryCache()
 })

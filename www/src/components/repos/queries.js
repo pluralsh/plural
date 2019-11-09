@@ -173,6 +173,9 @@ export const TF_Q = gql`
     terraformModule(id: $tfId) {
       ...TerraformFragment
       editable
+      installation {
+        id
+      }
       repository {
         ...RepoFragment
         installation {
@@ -194,6 +197,22 @@ export const INSTALL_CHART = gql`
   }
   ${ChartInstallationFragment}
 `
+
+export const INSTALL_TF = gql`
+  mutation InstallTf($id: ID!, $attributes: TerraformInstallationAttributes!) {
+    installTerraform(installationId: $id, attributes: $attributes) {
+      id
+    }
+  }
+`;
+
+export const UNINSTALL_TF = gql`
+  mutation UninstallTf($id: ID!) {
+    uninstallTerraform(id: $id) {
+      id
+    }
+  }
+`;
 
 export const UPDATE_CHART_INST = gql`
   mutation UpdateChartInst($id: ID!, $attributes: ChartInstallationAttributes!) {

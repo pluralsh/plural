@@ -2,12 +2,13 @@ import React, {useState, useContext, useEffect} from 'react'
 import {Box, Text, Markdown, Tabs, Tab} from 'grommet'
 import {useQuery, useMutation} from 'react-apollo'
 import {useParams} from 'react-router-dom'
-import {TF_Q, UPDATE_TF} from './queries'
+import {TF_Q, UPDATE_TF, INSTALL_TF, UNINSTALL_TF} from './queries'
 import {DEFAULT_TF_ICON} from './constants'
 import Highlight from 'react-highlight'
 import Installation from './Installation'
 import {TerraformForm} from './CreateTerraform'
 import {BreadcrumbContext} from '../Chartmart'
+import Button, {SecondaryButton} from '../utils/Button'
 
 function Code({value, children, language}) {
   return (
@@ -37,15 +38,45 @@ function TemplateView({valuesTemplate}) {
   )
 }
 
-function TerraformHeader({name, description}) {
+function TerraformInstaller({installation, terraformId, terraformInstallation}) {
+  const [mutation] = useMutation(terraformInstallation ? UNINSTALL_TF : INSTALL_TF, {
+    variables: {
+      id: terraformInstallation ? terraformInstallation.id : installation.id,
+      attributes: {terraformId}
+    },
+    update: (cache, {data}) => {
+      const ti = data.installTerraform ? data.installTerraform : null
+      const prev = cache.readQuery({ query: TF_Q, variables: {tfId: terraformId} })
+      cache.writeQuery({query: TF_Q, variables: {tfId: terraformId}, data: {
+        ...prev,
+        terraformModule: {
+          ...prev.terraformModule,
+          installation: ti
+        }
+      }})
+    }
+  })
+
+  return terraformInstallation ?
+    <SecondaryButton round='xsmall' label='Uninstall' pad='small' onClick={mutation} /> :
+    <Button round='xsmall' label='Install' pad='small' onClick={mutation} />
+}
+
+function TerraformHeader({id, name, description, installation, repository}) {
   return (
     <Box direction='row' align='center' gap='small' margin={{bottom: 'small'}} style={{minHeight: '50px'}}>
       <Box width='50px' heigh='50px'>
         <img alt='' width='50px' height='50px' src={DEFAULT_TF_ICON} />
       </Box>
-      <Box>
+      <Box width='100%'>
         <Text size='medium'>{name}</Text>
         <Text size='small'><i>{description}</i></Text>
+      </Box>
+      <Box width='100px' direction='row' justify='end'>
+        <TerraformInstaller
+          installation={repository.installation}
+          terraformInstallation={installation}
+          terraformId={id} />
       </Box>
     </Box>
   )
@@ -128,7 +159,6 @@ function Terraform() {
 
   if (loading || !data) return null
   const {terraformModule} = data
-
   return (
     <Box pad='small' direction='row' height="100%">
       <Box width={`${width}%`} pad='small' border='right'>

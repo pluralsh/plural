@@ -83,7 +83,7 @@ function ChartInstaller({chartInstallation, versionId, chartId, installation}) {
     }
   })
 
-  return <Button round='xsmall' label='Install' onClick={mutation} />
+  return <Button round='xsmall' label='Install' pad='small' onClick={mutation} />
 }
 
 function ChartHeader({helm, chart, version, chartInstallation, id, installation}) {

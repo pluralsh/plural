@@ -7,6 +7,9 @@ defmodule GraphQl.Resolvers.Terraform do
   def resolve_terraform(%{id: id}, _),
     do: {:ok, TfSvc.get_tf!(id)}
 
+  def resolve_terraform_installation(chart, user),
+    do: {:ok, TfSvc.get_terraform_installation(chart.id, user.id)}
+
   def list_terraform(%{repository_id: repo_id} = args, _) do
     Terraform.for_repository(repo_id)
     |> Terraform.ordered()
@@ -18,6 +21,12 @@ defmodule GraphQl.Resolvers.Terraform do
 
   def update_terraform(%{id: id, attributes: attrs}, %{context: %{current_user: user}}),
     do: TfSvc.update_terraform(attrs, id, user)
+
+  def create_terraform_installation(%{installation_id: inst_id, attributes: attrs}, %{context: %{current_user: user}}),
+    do: TfSvc.create_terraform_installation(attrs, inst_id, user)
+
+  def delete_terraform_installation(%{id: id}, %{context: %{current_user: user}}),
+    do: TfSvc.delete_terraform_installation(id, user)
 
   def editable(tf, user) do
     case Core.Policies.Terraform.can?(user, tf, :edit) do

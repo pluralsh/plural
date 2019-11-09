@@ -1,12 +1,19 @@
 defmodule Core.Services.Terraform do
   use Core.Services.Base
   import Core.Policies.Terraform
-  alias Core.Schema.{Terraform}
+  alias Core.Services.Repositories
+  alias Core.Schema.{Terraform, TerraformInstallation, User}
 
   def get_tf!(id), do: Core.Repo.get!(Terraform, id)
 
   def get_tf!(repo_id, cloud),
     do: Core.Repo.get_by!(Terraform, repository_id: repo_id, cloud: cloud)
+
+  def get_terraform_installation(terraform_id, user_id) do
+    TerraformInstallation.for_terraform(terraform_id)
+    |> TerraformInstallation.for_user(user_id)
+    |> Core.Repo.one()
+  end
 
   def create_terraform(attrs, repo_id, user) do
     with {:ok, added} <- extract_tf_meta(attrs) do
@@ -24,6 +31,30 @@ defmodule Core.Services.Terraform do
       |> allow(user, :edit)
       |> when_ok(:update)
     end
+  end
+
+  def create_terraform_installation(attrs, installation_id, %User{} = user) do
+    installation = Repositories.get_installation!(installation_id)
+
+    %TerraformInstallation{installation_id: installation.id, installation: installation}
+    |> TerraformInstallation.changeset(attrs)
+    |> allow(user, :create)
+    |> when_ok(:insert)
+  end
+
+  def update_terraform_installation(attrs, tf_inst_id, %User{} = user) do
+    Core.Repo.get!(TerraformInstallation, tf_inst_id)
+    |> Core.Repo.preload([:installation, :terraform])
+    |> TerraformInstallation.changeset(attrs)
+    |> allow(user, :create)
+    |> when_ok(:update)
+  end
+
+  def delete_terraform_installation(tf_inst_id, %User{} = user) do
+    Core.Repo.get!(TerraformInstallation, tf_inst_id)
+    |> Core.Repo.preload([:installation, :terraform])
+    |> allow(user, :create)
+    |> when_ok(:delete)
   end
 
   def extract_tf_meta(%{package: %{path: path, filename: file}}) do

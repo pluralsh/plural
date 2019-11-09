@@ -29,6 +29,7 @@ defmodule Core.Schema.ChartInstallation do
   def changeset(model, attrs \\ %{}) do
     model
     |> cast(attrs, @valid)
+    |> validate_required([:installation_id, :chart_id, :version_id])
     |> foreign_key_constraint(:installation_id)
     |> foreign_key_constraint(:chart_id)
     |> foreign_key_constraint(:version_id)

@@ -102,10 +102,18 @@ defmodule GraphQl.Schema.Types do
   end
 
   object :chart_installation do
-    field :id,      :id
-    field :chart,   :chart, resolve: dataloader(Chart)
-    field :version, :version, resolve: dataloader(Chart)
-    field :user,    :user, resolve: dataloader(User)
+    field :id,           :id
+    field :chart,        :chart, resolve: dataloader(Chart)
+    field :version,      :version, resolve: dataloader(Chart)
+    field :installation, :installation, resolve: dataloader(Repository)
+
+    timestamps()
+  end
+
+  object :terraform_installation do
+    field :id,           :id
+    field :terraform,    :terraform, resolve: dataloader(Terraform)
+    field :installation, :installation, resolve: dataloader(Repository)
 
     timestamps()
   end
@@ -123,6 +131,11 @@ defmodule GraphQl.Schema.Types do
     field :repository, :repository, resolve: dataloader(Repository)
     field :editable, :boolean, resolve: fn
       tf, _, %{context: %{current_user: user}} -> Terraform.editable(tf, user)
+    end
+
+    field :installation, :terraform_installation, resolve: fn
+      terraform, _, %{context: %{current_user: user}} ->
+        Terraform.resolve_terraform_installation(terraform, user)
     end
 
     timestamps()

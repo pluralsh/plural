@@ -35,7 +35,11 @@ defmodule GraphQl.Schema.Inputs do
   end
 
   input_object :chart_installation_attributes do
-    field :chart_id, :string
-    field :version_id, :string
+    field :chart_id, :id
+    field :version_id, :id
+  end
+
+  input_object :terraform_installation_attributes do
+    field :terraform_id, :id
   end
 end

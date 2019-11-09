@@ -59,4 +59,11 @@ defmodule Core.Factory do
       installation: build(:installation)
     }
   end
+
+  def terraform_installation_factory do
+    %Schema.TerraformInstallation{
+      terraform: build(:terraform),
+      installation: build(:installation)
+    }
+  end
 end

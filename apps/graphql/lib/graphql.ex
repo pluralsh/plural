@@ -217,6 +217,21 @@ defmodule GraphQl do
 
       resolve safe_resolver(&Chart.update_chart_installation/2)
     end
+
+    field :install_terraform, :terraform_installation do
+      middleware GraphQl.Middleware.Authenticated
+      arg :installation_id, non_null(:id)
+      arg :attributes, non_null(:terraform_installation_attributes)
+
+      resolve safe_resolver(&Terraform.create_terraform_installation/2)
+    end
+
+    field :uninstall_terraform, :terraform_installation do
+      middleware GraphQl.Middleware.Authenticated
+      arg :id, non_null(:id)
+
+      resolve safe_resolver(&Terraform.delete_terraform_installation/2)
+    end
   end
 
   def safe_resolver(fun) do

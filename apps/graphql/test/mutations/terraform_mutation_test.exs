@@ -42,4 +42,43 @@ defmodule GraphQl.Terraform.MutationsTest do
       assert tf["name"] == "tf"
     end
   end
+
+  describe "installTerraform" do
+    test "A user can install terraform against one of their installations" do
+      %{repository: repo, user: user} = inst = insert(:installation)
+      terraform = insert(:terraform, repository: repo)
+
+      {:ok, %{data: %{"installTerraform" => installed}}} = run_query("""
+        mutation InstallTf($id: ID!, $attributes: TerraformInstallationAttributes!) {
+          installTerraform(installationId: $id, attributes: $attributes) {
+            id
+            terraform {
+              id
+            }
+          }
+        }
+      """, %{"id" => inst.id, "attributes" => %{"terraformId" => terraform.id}}, %{current_user: user})
+
+      assert installed["id"]
+      assert installed["terraform"]["id"] == terraform.id
+    end
+  end
+
+  describe  "uninstallTerraform" do
+    test "A user can uninstall" do
+      %{repository: repo, user: user} = inst = insert(:installation)
+      terraform = insert(:terraform, repository: repo)
+      ti = insert(:terraform_installation, terraform: terraform, installation: inst)
+
+      {:ok, %{data: %{"uninstallTerraform" => _}}} = run_query("""
+      mutation InstallTf($id: ID!) {
+        uninstallTerraform(id: $id) {
+          id
+        }
+      }
+      """, %{"id" => ti.id}, %{current_user: user})
+
+      refute refetch(ti)
+    end
+  end
 end

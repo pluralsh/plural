@@ -3,6 +3,7 @@ defmodule GraphQl.Resolvers.Repository do
   alias Core.Services.Repositories
   alias Core.Schema.{Installation}
 
+  def query(Installation, _), do: Installation
   def query(_, _), do: Repository
 
   def resolve_repository(%{id: repo_id}, _),

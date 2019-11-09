@@ -16,6 +16,26 @@ defmodule GraphQl.TerraformQueriesTest do
 
       assert found["id"] == tf.id
     end
+
+    test "It can sideload tf installations" do
+      %{repository: repo, user: user} = inst = insert(:installation)
+      tf = insert(:terraform, repository: repo)
+      ti = insert(:terraform_installation, installation: inst, terraform: tf)
+
+      {:ok, %{data: %{"terraformModule" => found}}} = run_query("""
+        query TerraformModule($id: ID!) {
+          terraformModule(id: $id) {
+            id
+            installation {
+              id
+            }
+          }
+        }
+      """, %{"id" => tf.id}, %{current_user: user})
+
+      assert found["id"] == tf.id
+      assert found["installation"]["id"] == ti.id
+    end
   end
 
   describe "#terraform" do

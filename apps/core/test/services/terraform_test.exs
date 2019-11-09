@@ -50,4 +50,49 @@ defmodule Core.Services.TerraformTest do
       assert is_binary(tmp)
     end
   end
+
+
+  describe "#create_terraform_installation" do
+    test "A user can install terraform modules from repo's they've installed" do
+      terraform = insert(:terraform)
+      user = insert(:user)
+      installation = insert(:installation, repository: terraform.repository, user: user)
+
+      {:ok, ti} = Terraform.create_terraform_installation(%{
+        terraform_id: terraform.id
+      }, installation.id, user)
+
+      assert ti.terraform_id == terraform.id
+      assert ti.installation_id == installation.id
+    end
+
+    test "If there is no installation of the terraform's repo, it can't be installed" do
+      terraform = insert(:terraform)
+      user = insert(:user)
+      installation = insert(:installation, user: user)
+
+      {:error, _} = Terraform.create_terraform_installation(%{
+        terraform_id: terraform.id
+      }, installation.id, user)
+    end
+  end
+
+  describe "#delete_chart_installation" do
+    test "A user can delete his terraform installation" do
+      terraform = insert(:terraform)
+      user = insert(:user)
+      installation = insert(:installation, repository: terraform.repository, user: user)
+      ti = insert(:terraform_installation, terraform: terraform, installation: installation)
+
+      {:ok, _} = Terraform.delete_terraform_installation(ti.id, user)
+
+      refute refetch(ti)
+    end
+
+    test "A user cannot delete others' installations" do
+      ti = insert(:terraform_installation)
+
+      {:error, _} = Terraform.delete_terraform_installation(ti.id, insert(:user))
+    end
+  end
 end

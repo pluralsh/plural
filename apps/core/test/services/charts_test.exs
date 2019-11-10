@@ -114,7 +114,7 @@ defmodule Core.Services.ChartsTest do
 
   describe "#extract_chart_meta/2" do
     test "It can extract info from a tar file" do
-      path = Path.join(:code.priv_dir(:core), "chartmart-0.1.5.tgz")
+      path = Path.join(:code.priv_dir(:core), "chartmart-0.1.6.tgz")
       {:ok, %{readme: _, helm: _, values_template: template}} = Charts.extract_chart_meta("chartmart", path)
 
       assert is_binary(template)

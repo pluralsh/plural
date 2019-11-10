@@ -136,7 +136,7 @@ defmodule Core.Services.Charts do
   def extract_chart_meta(chart, path) do
     readme_file  = String.to_charlist("#{chart}/README.md")
     chart_file   = String.to_charlist("#{chart}/Chart.yaml")
-    val_template = String.to_charlist("#{chart}/values.yaml.eex")
+    val_template = String.to_charlist("#{chart}/values.yaml.gpl")
 
     with {:ok, result} <- String.to_charlist(path)
                           |> :erl_tar.extract([:memory, :compressed, {:files, [readme_file, chart_file, val_template]}]),

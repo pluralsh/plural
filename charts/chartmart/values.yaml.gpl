@@ -1,0 +1,23 @@
+postgresql:
+  postgresqlPassword: {{ randAlphnum 32 }}
+
+secrets:
+  jwt: {{ randAlphnum 32 }}
+  erlang: {{ randAlphnum 32 }}
+
+admin:
+  enabled: true
+  name: {{ .Values.admin_name }}
+  email: {{ .Values.admin_email }}
+  password: {{ randAlphnum 12 }}
+  publisher: {{ .Values.publisher }}
+  publisher_description: {{ .Values.publisher_description }}
+
+ingress:
+  dns: {{ .Values.chartmart_dns }}
+
+api:
+  bucket: {{ .Values.assets_bucket }}
+
+chartmuseum:
+  bucket: {{ .Values.chartmuseum_bucket }}

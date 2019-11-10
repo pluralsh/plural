@@ -99,11 +99,25 @@ defmodule GraphQl do
       resolve &Chart.list_charts/2
     end
 
+    connection field :chart_installations, node_type: :chart_installation do
+      middleware GraphQl.Middleware.Authenticated
+      arg :repository_id, non_null(:id)
+
+      resolve &Chart.list_chart_installations/2
+    end
+
     connection field :terraform, node_type: :terraform do
       middleware GraphQl.Middleware.Authenticated
       arg :repository_id, non_null(:id)
 
       resolve &Terraform.list_terraform/2
+    end
+
+    connection field :terraform_installations, node_type: :terraform_installation do
+      middleware GraphQl.Middleware.Authenticated
+      arg :repository_id, non_null(:id)
+
+      resolve &Terraform.list_terraform_installations/2
     end
 
     connection field :versions, node_type: :version do

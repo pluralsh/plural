@@ -5,7 +5,7 @@ import (
 	"github.com/machinebox/graphql"
 )
 
-type response struct {
+type instResponse struct {
 	Installations struct {
 		Edges []InstallationEdge
 	}
@@ -13,7 +13,7 @@ type response struct {
 
 var instQuery = fmt.Sprintf(`
 	query {
-		installations(first: 15) {
+		installations(first: %d) {
 			edges {
 				node {
 					...InstallationFragment
@@ -22,11 +22,10 @@ var instQuery = fmt.Sprintf(`
 		}
 	}
 	%s
-	%s
-`, InstallationFragment, RepositoryFragment)
+`, pageSize, InstallationFragment)
 
 func (client *Client) GetInstallations() ([]InstallationEdge, error) {
-	var resp response
+	var resp instResponse
 	err := client.Run(graphql.NewRequest(instQuery), &resp)
 	return resp.Installations.Edges, err
 }

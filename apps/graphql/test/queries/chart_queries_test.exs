@@ -24,6 +24,29 @@ defmodule GraphQl.ChartQueriesTest do
     end
   end
 
+  describe "chartInstallations" do
+    test "It can list chart installations for a user" do
+      %{repository: repo, user: user} = inst = insert(:installation)
+      charts = insert_list(3, :chart, repository: repo)
+      insts = for chart <- charts, do: insert(:chart_installation, chart: chart, installation: inst)
+
+      {:ok, %{data: %{"chartInstallations" => found}}} = run_query("""
+        query ChartInsts($id: ID!) {
+          chartInstallations(repositoryId: $id, first: 5) {
+            edges {
+              node {
+                id
+              }
+            }
+          }
+        }
+      """, %{"id" => repo.id}, %{current_user: user})
+
+      assert from_connection(found)
+             |> ids_equal(insts)
+    end
+  end
+
   describe "chart" do
     test "It can query a chart" do
       chart = insert(:chart)

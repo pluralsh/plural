@@ -9,6 +9,12 @@ defmodule Core.Schema.TerraformInstallation do
     timestamps()
   end
 
+  def for_repo(query \\ __MODULE__, repo_id) do
+    from(ti in query,
+      join: c in assoc(ti, :terraform), as: :terraform,
+      where: c.repository_id == ^repo_id)
+  end
+
   def for_terraform(query \\ __MODULE__, terraform_id) do
     from(ti in query,
       join: c in assoc(ti, :terraform), as: :terraform,

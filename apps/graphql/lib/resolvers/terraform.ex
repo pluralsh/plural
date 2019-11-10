@@ -1,5 +1,6 @@
 defmodule GraphQl.Resolvers.Terraform do
   use GraphQl.Resolvers.Base, model: Core.Schema.Terraform
+  alias Core.Schema.TerraformInstallation
   alias Core.Services.Terraform, as: TfSvc
 
   def query(_, _), do: Terraform
@@ -13,6 +14,12 @@ defmodule GraphQl.Resolvers.Terraform do
   def list_terraform(%{repository_id: repo_id} = args, _) do
     Terraform.for_repository(repo_id)
     |> Terraform.ordered()
+    |> paginate(args)
+  end
+
+  def list_terraform_installations(%{repository_id: repo_id} = args, %{context: %{current_user: user}}) do
+    TerraformInstallation.for_repo(repo_id)
+    |> TerraformInstallation.for_user(user.id)
     |> paginate(args)
   end
 

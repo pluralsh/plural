@@ -7,6 +7,7 @@ import (
 )
 
 const endpoint = "https://mart.piazzaapp.com/gql"
+const pageSize = 100
 
 type Client struct {
 	gqlClient *graphql.Client

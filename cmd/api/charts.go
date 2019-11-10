@@ -17,6 +17,12 @@ type versionsResponse struct {
 	}
 }
 
+type chartInstallationsResponse struct {
+	ChartInstallations struct {
+		Edges []ChartInstallationEdge
+	}
+}
+
 var chartsQuery = fmt.Sprintf(`
 	query ChartsQuery($id: ID!) {
 		charts(repositoryId: $id, first: %d) {
@@ -43,6 +49,18 @@ var versionsQuery = fmt.Sprintf(`
 	%s
 `, pageSize, VersionFragment)
 
+var chartInstallationsQuery = fmt.Sprintf(`
+	query CIQuery($id: ID!) {
+		chartInstallations(repositoryId: $id, first: %d) {
+			edges {
+				node {
+					...ChartInstallationFragment
+				}
+			}
+		}
+	}
+	%s
+`, pageSize, ChartInstallationFragment)
 
 func (client *Client) GetCharts(repoId string) ([]ChartEdge, error) {
 	var resp chartsResponse
@@ -58,4 +76,12 @@ func (client *Client) GetVersions(chartId string) ([]VersionEdge, error) {
 	req.Var("id", chartId)
 	err := client.Run(req, &resp)
 	return resp.Versions.Edges, err
+}
+
+func (client *Client) GetChartInstallations(repoId string) ([]ChartInstallationEdge, error) {
+	var resp chartInstallationsResponse
+	req := graphql.NewRequest(chartInstallationsQuery)
+	req.Var("id", repoId)
+	err := client.Run(req, &resp)
+	return resp.ChartInstallations.Edges, err
 }

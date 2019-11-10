@@ -34,6 +34,20 @@ func Commands() []cli.Command {
 					ArgsUsage: "CHART_ID",
 					Action: handleVersions,
 				},
+				{
+					Name: "chartinstallations",
+					Aliases: []string{"ci"},
+					Usage: "lists chart installations for a repository",
+					ArgsUsage: "REPO_ID",
+					Action: handleChartInstallations,
+				},
+				{
+					Name: "terraforminstallations",
+					Aliases: []string{"ti"},
+					Usage: "lists terraform installations for a repository",
+					ArgsUsage: "REPO_ID",
+					Action: handleTerraformInstallations,
+				},
 			},
 		},
 	}

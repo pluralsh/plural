@@ -75,3 +75,40 @@ func handleVersions(c *cli.Context) error {
 	table.Render()
 	return nil
 }
+
+func handleChartInstallations(c *cli.Context) error {
+	client := NewClient()
+	chartInstallations, err := client.GetChartInstallations(c.Args().First())
+
+	if err != nil {
+		return err
+	}
+
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{"Id", "Chart Id", "Chart Name", "Version"})
+	for _, edge := range chartInstallations {
+		ci := edge.Node
+		table.Append([]string{ ci.Id, ci.Chart.Id, ci.Chart.Name, ci.Version.Version })
+	}
+	table.Render()
+	return nil
+}
+
+func handleTerraformInstallations(c *cli.Context) error {
+	client := NewClient()
+	terraformInstallations, err := client.GetTerraformInstallations(c.Args().First())
+
+	if err != nil {
+		return err
+	}
+
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{"Id", "Terraform Id", "Name"})
+	for _, edge := range terraformInstallations {
+		ti := edge.Node
+		tf := ti.Terraform
+		table.Append([]string{ ti.Id, tf.Id, tf.Name })
+	}
+	table.Render()
+	return nil
+}

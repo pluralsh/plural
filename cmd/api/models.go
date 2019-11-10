@@ -55,6 +55,12 @@ type Terraform struct {
 	ValuesTemplate string
 }
 
+type TerraformInstallation struct {
+	Id string
+	Installation Installation
+	Terraform Terraform
+}
+
 type Installation struct {
 	Repository Repository
 	User User
@@ -74,6 +80,14 @@ type TerraformEdge struct {
 
 type VersionEdge struct {
 	Node Version
+}
+
+type ChartInstallationEdge struct {
+	Node ChartInstallation
+}
+
+type TerraformInstallationEdge struct {
+	Node TerraformInstallation
 }
 
 const RepositoryFragment = `
@@ -116,6 +130,7 @@ const VersionFragment = `
 
 var ChartInstallationFragment = fmt.Sprintf(`
 	fragment ChartInstallationFragment on ChartInstallation {
+		id
 		chart {
 			...ChartFragment
 		}
@@ -135,3 +150,13 @@ const TerraformFragment = `
 		valuesTemplate
 	}
 `
+
+var TerraformInstallationFragment = fmt.Sprintf(`
+	fragment TerraformInstallationFragment on TerraformInstallation {
+		id
+		terraform {
+			...TerraformFragment
+		}
+	}
+	%s
+`, TerraformFragment)

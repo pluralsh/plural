@@ -148,4 +148,6 @@ defmodule GraphQl.Schema.Types do
   connection node_type: :version
   connection node_type: :installation
   connection node_type: :terraform
+  connection node_type: :terraform_installation
+  connection node_type: :chart_installation
 end

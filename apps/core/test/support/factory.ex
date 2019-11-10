@@ -34,7 +34,7 @@ defmodule Core.Factory do
   def terraform_factory do
     %Schema.Terraform{
       repository: build(:repository),
-      name: "gcp"
+      name: sequence(:terraform, &"tf-#{&1}")
     }
   end
 

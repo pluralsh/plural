@@ -59,4 +59,28 @@ defmodule GraphQl.TerraformQueriesTest do
              |> ids_equal(terraform)
     end
   end
+
+  describe "terraformInstallations" do
+    test "It can list chart installations for a user" do
+      %{repository: repo, user: user} = inst = insert(:installation)
+      terraforms = insert_list(3, :terraform, repository: repo)
+      insts = for terraform <- terraforms,
+        do: insert(:terraform_installation, terraform: terraform, installation: inst)
+
+      {:ok, %{data: %{"terraformInstallations" => found}}} = run_query("""
+        query TfInsts($id: ID!) {
+          terraformInstallations(repositoryId: $id, first: 5) {
+            edges {
+              node {
+                id
+              }
+            }
+          }
+        }
+      """, %{"id" => repo.id}, %{current_user: user})
+
+      assert from_connection(found)
+             |> ids_equal(insts)
+    end
+  end
 end

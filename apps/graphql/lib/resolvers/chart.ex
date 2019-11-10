@@ -1,7 +1,7 @@
 defmodule GraphQl.Resolvers.Chart do
   use GraphQl.Resolvers.Base, model: Core.Schema.Chart
   alias Core.Services.{Charts, Repositories}
-  alias Core.Schema.{Version}
+  alias Core.Schema.{Version, ChartInstallation}
 
   def query(Version, _), do: Version
   def query(_, _), do: Chart
@@ -18,6 +18,12 @@ defmodule GraphQl.Resolvers.Chart do
       |> Chart.ordered()
       |> paginate(args)
     end
+  end
+
+  def list_chart_installations(%{repository_id: repo_id} = args, %{context: %{current_user: user}}) do
+    ChartInstallation.for_repo(repo_id)
+    |> ChartInstallation.for_user(user.id)
+    |> paginate(args)
   end
 
   def list_versions(%{chart_id: chart_id} = args, %{context: %{current_user: user}}) do

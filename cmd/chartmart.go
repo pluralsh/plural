@@ -5,6 +5,7 @@ import (
   "os"
   "github.com/urfave/cli"
   "github.com/michaeljguarino/chartmart/config"
+  "github.com/michaeljguarino/chartmart/api"
 )
 
 func main() {
@@ -26,23 +27,15 @@ func main() {
       Action:  Deploy,
     },
     {
+      Name: "api",
+      Usage: "inspect the chartmart api",
+      Subcommands: api.Commands(),
+    },
+    {
       Name:    "config",
       Aliases: []string{"conf"},
       Usage:   "reads/modifies cli configuration",
-      Subcommands: []cli.Command{
-        {
-          Name:  "amend",
-          Usage: "modify config",
-          ArgsUsage: "[key] [value]",
-          Action: config.HandleAmend,
-        },
-        {
-          Name:  "read",
-          Usage: "dumps config",
-          ArgsUsage: "",
-          Action: config.HandleRead,
-        },
-      },
+      Subcommands: config.Commands(),
     },
   }
 

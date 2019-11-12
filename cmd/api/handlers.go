@@ -16,8 +16,8 @@ func handleInstallations(c *cli.Context) error {
 
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Repository", "Repository Id", "Publisher"})
-	for _, edge := range installations {
-		repo := edge.Node.Repository
+	for _, inst := range installations {
+		repo := inst.Repository
 		table.Append([]string{ repo.Name, repo.Id, repo.Publisher.Name })
 	}
 	table.Render()
@@ -33,8 +33,7 @@ func handleCharts(c *cli.Context) error {
 
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Id", "Name", "Description", "Latest Version"})
-	for _, edge := range charts {
-		chart := edge.Node
+	for _, chart := range charts {
 		table.Append([]string{ chart.Id, chart.Name, chart.Description, chart.LatestVersion })
 	}
 	table.Render()
@@ -50,8 +49,7 @@ func handleTerraforma(c *cli.Context) error {
 
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Id", "Name", "Description"})
-	for _, edge := range tfs {
-		tf := edge.Node
+	for _, tf := range tfs {
 		table.Append([]string{ tf.Id, tf.Name, tf.Description })
 	}
 	table.Render()
@@ -68,8 +66,7 @@ func handleVersions(c *cli.Context) error {
 
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Id", "Version"})
-	for _, edge := range versions {
-		version := edge.Node
+	for _, version := range versions {
 		table.Append([]string{ version.Id, version.Version })
 	}
 	table.Render()
@@ -86,8 +83,7 @@ func handleChartInstallations(c *cli.Context) error {
 
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Id", "Chart Id", "Chart Name", "Version"})
-	for _, edge := range chartInstallations {
-		ci := edge.Node
+	for _, ci := range chartInstallations {
 		table.Append([]string{ ci.Id, ci.Chart.Id, ci.Chart.Name, ci.Version.Version })
 	}
 	table.Render()
@@ -104,8 +100,7 @@ func handleTerraformInstallations(c *cli.Context) error {
 
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Id", "Terraform Id", "Name"})
-	for _, edge := range terraformInstallations {
-		ti := edge.Node
+	for _, ti := range terraformInstallations {
 		tf := ti.Terraform
 		table.Append([]string{ ti.Id, tf.Id, tf.Name })
 	}

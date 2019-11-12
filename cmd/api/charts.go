@@ -62,26 +62,38 @@ var chartInstallationsQuery = fmt.Sprintf(`
 	%s
 `, pageSize, ChartInstallationFragment)
 
-func (client *Client) GetCharts(repoId string) ([]ChartEdge, error) {
+func (client *Client) GetCharts(repoId string) ([]Chart, error) {
 	var resp chartsResponse
 	req := graphql.NewRequest(chartsQuery)
 	req.Var("id", repoId)
 	err := client.Run(req, &resp)
-	return resp.Charts.Edges, err
+	charts := make([]Chart, len(resp.Charts.Edges))
+	for i, edge := range resp.Charts.Edges {
+		charts[i] = edge.Node
+	}
+	return charts, err
 }
 
-func (client *Client) GetVersions(chartId string) ([]VersionEdge, error) {
+func (client *Client) GetVersions(chartId string) ([]Version, error) {
 	var resp versionsResponse
 	req := graphql.NewRequest(versionsQuery)
 	req.Var("id", chartId)
 	err := client.Run(req, &resp)
-	return resp.Versions.Edges, err
+	versions := make([]Version, len(resp.Versions.Edges))
+	for i, edge := range resp.Versions.Edges {
+		versions[i] = edge.Node
+	}
+	return versions, err
 }
 
-func (client *Client) GetChartInstallations(repoId string) ([]ChartInstallationEdge, error) {
+func (client *Client) GetChartInstallations(repoId string) ([]ChartInstallation, error) {
 	var resp chartInstallationsResponse
 	req := graphql.NewRequest(chartInstallationsQuery)
 	req.Var("id", repoId)
 	err := client.Run(req, &resp)
-	return resp.ChartInstallations.Edges, err
+	insts := make([]ChartInstallation, len(resp.ChartInstallations.Edges))
+	for i, edge := range resp.ChartInstallations.Edges {
+		insts[i] = edge.Node
+	}
+	return insts, err
 }

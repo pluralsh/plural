@@ -29,6 +29,9 @@ defmodule GraphQl.Resolvers.Terraform do
   def update_terraform(%{id: id, attributes: attrs}, %{context: %{current_user: user}}),
     do: TfSvc.update_terraform(attrs, id, user)
 
+  def upsert_terraform(%{repository_id: repo_id, name: name, attributes: attrs}, %{context: %{current_user: user}}),
+    do: TfSvc.upsert_terraform(attrs, repo_id, name, user)
+
   def create_terraform_installation(%{installation_id: inst_id, attributes: attrs}, %{context: %{current_user: user}}),
     do: TfSvc.create_terraform_installation(attrs, inst_id, user)
 

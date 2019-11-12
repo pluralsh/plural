@@ -38,6 +38,34 @@ defmodule Core.Services.TerraformTest do
     end
   end
 
+  describe "#upsert_terraform" do
+    test "if no matching tf exists, it will create" do
+      repository = insert(:repository)
+
+      {:ok, tf} = Terraform.upsert_terraform(
+        %{name: "upsert", description: "an upsert"},
+        repository.id,
+        "upsert",
+        repository.publisher.owner)
+
+      assert tf.description == "an upsert"
+    end
+
+    test "It will update if the tf exists" do
+      repository = insert(:repository)
+      terraform  = insert(:terraform, name: "upsert", repository: repository)
+
+      {:ok, tf} = Terraform.upsert_terraform(
+        %{name: "upsert", description: "an upsert"},
+        repository.id,
+        "upsert",
+        repository.publisher.owner)
+
+      assert tf.id == terraform.id
+      assert tf.description == "an upsert"
+    end
+  end
+
   describe "#extract_tf_meta/3" do
     test "It can find a readme and var template" do
       path = Path.join(:code.priv_dir(:core), "gcp.tgz")

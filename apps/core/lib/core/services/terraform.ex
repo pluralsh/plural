@@ -6,8 +6,8 @@ defmodule Core.Services.Terraform do
 
   def get_tf!(id), do: Core.Repo.get!(Terraform, id)
 
-  def get_tf!(repo_id, cloud),
-    do: Core.Repo.get_by!(Terraform, repository_id: repo_id, cloud: cloud)
+  def get_terraform_by_name(repo_id, name),
+    do: Core.Repo.get_by(Terraform, repository_id: repo_id, name: name)
 
   def get_terraform_installation(terraform_id, user_id) do
     TerraformInstallation.for_terraform(terraform_id)
@@ -21,6 +21,13 @@ defmodule Core.Services.Terraform do
       |> Terraform.changeset(Map.merge(attrs, added))
       |> allow(user, :create)
       |> when_ok(:insert)
+    end
+  end
+
+  def upsert_terraform(attrs, repo_id, name, user) do
+    case get_terraform_by_name(repo_id, name) do
+      %Terraform{id: id} -> update_terraform(attrs, id, user)
+      _ -> create_terraform(attrs, repo_id, user)
     end
   end
 

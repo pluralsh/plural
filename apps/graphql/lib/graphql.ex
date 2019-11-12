@@ -216,6 +216,15 @@ defmodule GraphQl do
       resolve safe_resolver(&Terraform.update_terraform/2)
     end
 
+    field :upload_terraform, :terraform do
+      middleware GraphQl.Middleware.Authenticated
+      arg :repository_id, non_null(:id)
+      arg :name, non_null(:string)
+      arg :attributes, non_null(:terraform_attributes)
+
+      resolve safe_resolver(&Terraform.upsert_terraform/2)
+    end
+
     field :install_chart, :chart_installation do
       middleware GraphQl.Middleware.Authenticated
       arg :installation_id, non_null(:id)

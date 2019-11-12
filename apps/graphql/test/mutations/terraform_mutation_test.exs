@@ -43,6 +43,29 @@ defmodule GraphQl.Terraform.MutationsTest do
     end
   end
 
+  describe "uploadTerraform" do
+    test "A publisher can update tf" do
+      repo = insert(:repository)
+      terraform = insert(:terraform, repository: repo)
+
+      {:ok, %{data: %{"uploadTerraform" => tf}}} = run_query("""
+        mutation UploadTerraform($id: ID!, $name: String!, $attributes: TerraformAttributes!) {
+          uploadTerraform(repositoryId: $id, name: $name, attributes: $attributes) {
+            id
+            name
+            description
+          }
+        }
+      """,
+      %{"id" => terraform.repository_id, "name" => terraform.name, "attributes" => %{"description" => "upserted"}},
+      %{current_user: repo.publisher.owner})
+
+      assert tf["id"] == terraform.id
+      assert tf["name"] == terraform.name
+      assert tf["description"] == "upserted"
+    end
+  end
+
   describe "installTerraform" do
     test "A user can install terraform against one of their installations" do
       %{repository: repo, user: user} = inst = insert(:installation)

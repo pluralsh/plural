@@ -116,8 +116,8 @@ function UpdateTerraform({id, name, description}) {
   const [mutation, {loading}] = useMutation(UPDATE_TF, {
     variables: {id, attributes: {...state, package: terraform && terraform.file}},
     update: (cache, { data: {updateTerraform} }) => {
-      const prev = cache.readQuery({query: TF_Q, variables: {id}})
-      cache.writeQuery({query: TF_Q, variables: {id}, data: {
+      const prev = cache.readQuery({query: TF_Q, variables: {tfId: id}})
+      cache.writeQuery({query: TF_Q, variables: {tfId: id}, data: {
         ...prev,
         terraformModule: {
           ...prev.terraform,

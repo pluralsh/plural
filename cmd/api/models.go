@@ -53,6 +53,7 @@ type Terraform struct {
 	Name string
 	Description string
 	ValuesTemplate string
+	Package string
 }
 
 type TerraformInstallation struct {
@@ -150,6 +151,7 @@ const TerraformFragment = `
 		name
 		description
 		valuesTemplate
+		package
 	}
 `
 

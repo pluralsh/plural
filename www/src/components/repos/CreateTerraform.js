@@ -6,7 +6,6 @@ import InputField from '../utils/InputField'
 import Button, {SecondaryButton} from '../utils/Button'
 import {FilePicker} from 'react-file-picker'
 import {CREATE_TF, REPO_Q} from './queries'
-import {generatePreview} from '../../utils/file'
 import {DEFAULT_TF_ICON} from './constants'
 
 const LABEL_WIDTH = '90px'
@@ -32,7 +31,8 @@ export function TerraformForm({label, update, loading, mutation, state, setState
           <Text size='small'>{terraform ? terraform.file.name : 'Select a terraform module'}</Text>
           <FilePicker
             extensions={['tgz']}
-            onChange={(file) => generatePreview(file, setTerraform)}>
+            onChange={(file) => setTerraform({file: file})}
+            onError={(error) => console.log(error)}>
             <SecondaryButton round='xsmall' label='Upload a tar' />
           </FilePicker>
         </Box>

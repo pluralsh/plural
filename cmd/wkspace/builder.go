@@ -41,16 +41,11 @@ func (wk *Workspace) Prepare() error {
 		return err
 	}
 
-	helmPath := path.Join(repo.Name, "helm")
-	if _, err := wk.CreateChart(repo.Name, helmPath); err != nil {
+	if err := wk.BuildHelm(); err != nil {
 		return err
 	}
 
-	if err := wk.CreateChartDependencies(repo.Name, helmPath); err != nil {
-		return err
-	}
-
-	if err := wk.FinalizeCharts(); err != nil {
+	if err := wk.BuildTerraform(); err != nil {
 		return err
 	}
 

@@ -64,6 +64,24 @@ type dependency struct {
 	Repository string
 }
 
+func (wk *Workspace) BuildHelm() error {
+	repo := wk.Installation.Repository
+	helmPath := filepath.Join(repo.Name, "helm")
+	if _, err := wk.CreateChart(repo.Name, helmPath); err != nil {
+		return err
+	}
+
+	if err := wk.CreateChartDependencies(repo.Name, helmPath); err != nil {
+		return err
+	}
+
+	if err := wk.FinalizeCharts(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (w *Workspace) CreateChartDependencies(name, dir string) error {
 	dependencies := make([]dependency, len(w.Charts))
 	for i, chartInstallation := range w.Charts {

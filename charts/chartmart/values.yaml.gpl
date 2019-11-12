@@ -1,15 +1,15 @@
 postgresql:
-  postgresqlPassword: {{ randAlphnum 32 }}
+  postgresqlPassword: {{ randAlphaNumeric 32 }}
 
 secrets:
-  jwt: {{ randAlphnum 32 }}
-  erlang: {{ randAlphnum 32 }}
+  jwt: {{ randAlphaNumeric 32 }}
+  erlang: {{ randAlphaNumeric 32 }}
 
 admin:
   enabled: true
   name: {{ .Values.admin_name }}
   email: {{ .Values.admin_email }}
-  password: {{ randAlphnum 12 }}
+  password: {{ randAlphaNumeric 12 }}
   publisher: {{ .Values.publisher }}
   publisher_description: {{ .Values.publisher_description }}
 

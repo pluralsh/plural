@@ -1,6 +1,8 @@
 package main
 
 import (
+  "math/rand"
+  "time"
   "log"
   "os"
   "github.com/urfave/cli"
@@ -9,6 +11,7 @@ import (
 )
 
 func main() {
+  rand.Seed(time.Now().UnixNano())
   app := cli.NewApp()
   app.Name = "chartmart"
   app.Usage = "Tooling to manage your installed chartmart applications"

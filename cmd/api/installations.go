@@ -24,8 +24,12 @@ var instQuery = fmt.Sprintf(`
 	%s
 `, pageSize, InstallationFragment)
 
-func (client *Client) GetInstallations() ([]InstallationEdge, error) {
+func (client *Client) GetInstallations() ([]Installation, error) {
 	var resp instResponse
 	err := client.Run(graphql.NewRequest(instQuery), &resp)
-	return resp.Installations.Edges, err
+	insts := make([]Installation, len(resp.Installations.Edges))
+	for i, edge := range resp.Installations.Edges {
+		insts[i] = edge.Node
+	}
+	return insts, err
 }

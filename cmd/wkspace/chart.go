@@ -3,6 +3,7 @@ package wkspace
 import (
 	"fmt"
 	"os"
+	"bytes"
 	"path/filepath"
 	"github.com/michaeljguarino/chartmart/utils"
 	"github.com/michaeljguarino/chartmart/api"
@@ -79,6 +80,10 @@ func (wk *Workspace) BuildHelm() error {
 		return err
 	}
 
+	if err := wk.BuildChartValues(); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -97,12 +102,52 @@ func (w *Workspace) CreateChartDependencies(name, dir string) error {
 	return utils.WriteFile(requirementsFile, io)
 }
 
-func buildDependency(repo *api.Repository, chartInstallation *api.ChartInstallation) *dependency {
-	return &dependency{chartInstallation.Chart.Name, chartInstallation.Version.Version, repoUrl(repo)}
+
+func (w *Workspace) FinalizeCharts() error {
+	conf := config.Read()
+	repo := w.Installation.Repository
+	repoUrl := repoUrl(&repo)
+
+	utils.Cmd(&conf, "helm", "repo", "add", repo.Name, repoUrl)
+	cmd := utils.MkCmd(&conf, "helm", "dependency", "update")
+
+	helmPath, err := filepath.Abs(filepath.Join(repo.Name, "helm", repo.Name))
+	if err != nil {
+		return err
+	}
+
+	cmd.Dir = helmPath
+	return cmd.Run()
 }
 
-func repoUrl(repo *api.Repository) string {
-	return "cm://mart.piazzaapp.com/" + repo.Name
+func (w *Workspace) BuildChartValues() error {
+	ctx := w.Installation.Context
+	var buf bytes.Buffer
+	values := make(map[string]interface{})
+	buf.Grow(5 * 1024)
+
+	for _, chartInst := range w.Charts {
+		if err := utils.RenderTemplate(&buf, chartInst.Version.ValuesTemplate, ctx); err != nil {
+			return err
+		}
+
+		var subVals map[string]interface{}
+		if err := yaml.Unmarshal(buf.Bytes(), &subVals); err != nil {
+			return err
+		}
+
+		values[chartInst.Chart.Name] = subVals
+		buf.Reset()
+	}
+	io, err := yaml.Marshal(values)
+	if err != nil {
+		return err
+	}
+
+	repo := w.Installation.Repository
+	dir, _ := filepath.Abs(repo.Name)
+	valuesFile := filepath.Join(dir, "helm", repo.Name,  "values.yaml")
+	return utils.WriteFile(valuesFile, io)
 }
 
 func (w *Workspace) CreateChart(name, dir string) (string, error) {
@@ -159,19 +204,10 @@ func (w *Workspace) CreateChart(name, dir string) (string, error) {
 	return cdir, nil
 }
 
-func (w *Workspace) FinalizeCharts() error {
-	conf := config.Read()
-	repo := w.Installation.Repository
-	repoUrl := repoUrl(&repo)
+func buildDependency(repo *api.Repository, chartInstallation *api.ChartInstallation) *dependency {
+	return &dependency{chartInstallation.Chart.Name, chartInstallation.Version.Version, repoUrl(repo)}
+}
 
-	utils.Cmd(&conf, "helm", "repo", "add", repo.Name, repoUrl)
-	cmd := utils.MkCmd(&conf, "helm", "dependency", "update")
-
-	helmPath, err := filepath.Abs(filepath.Join(repo.Name, "helm", repo.Name))
-	if err != nil {
-		return err
-	}
-
-	cmd.Dir = helmPath
-	return cmd.Run()
+func repoUrl(repo *api.Repository) string {
+	return "cm://mart.piazzaapp.com/" + repo.Name
 }

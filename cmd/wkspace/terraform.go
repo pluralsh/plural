@@ -4,6 +4,7 @@ import (
 	"os"
 	"net/http"
 	"path"
+	"bytes"
 	"path/filepath"
 	"github.com/michaeljguarino/chartmart/api"
 	"github.com/michaeljguarino/chartmart/utils"
@@ -12,6 +13,8 @@ import (
 
 func (wk *Workspace) BuildTerraform() error {
 	repo := wk.Installation.Repository
+	ctx := wk.Installation.Context
+	dir, _ := filepath.Abs(repo.Name)
 	for _, tfInst := range wk.Terraform {
 		tf := tfInst.Terraform
 		path := terraformPath(&repo, &tf)
@@ -22,6 +25,18 @@ func (wk *Workspace) BuildTerraform() error {
 		if err := Extract(&tf, path); err != nil {
 			return err
 		}
+
+		var buf bytes.Buffer
+		buf.Grow(5 * 1024)
+		if err := utils.RenderTemplate(&buf, tf.ValuesTemplate, ctx); err != nil {
+			return err
+		}
+
+		valuesFile := filepath.Join(dir, "terraform", tf.Name,  "terraform.tfvars")
+		if err := utils.WriteFile(valuesFile, buf.Bytes()); err != nil {
+			return err
+		}
+		buf.Reset()
 	}
 	return nil
 }

@@ -2,7 +2,10 @@ package api
 
 import (
 	"fmt"
-	"github.com/machinebox/graphql"
+	"path/filepath"
+	"path"
+	"github.com/michaeljguarino/chartmart/utils"
+	"os"
 )
 
 type terraformResponse struct {
@@ -43,9 +46,18 @@ var terraformInstallationQuery = fmt.Sprintf(`
 	%s
 `, pageSize, TerraformInstallationFragment)
 
+var terraformUpload = fmt.Sprintf(`
+	mutation TerraformUpload($repoId: ID!, $name: String!, $package: UploadOrUrl!) {
+		uploadTerraform(repositoryId: $repoId, name: $name, attributes: {name: $name, package: $package}) {
+			...TerraformFragment
+		}
+	}
+	%s
+`, TerraformFragment)
+
 func (client *Client) GetTerraforma(repoId string) ([]Terraform, error) {
 	var resp terraformResponse
-	req := graphql.NewRequest(terraformQuery)
+	req := client.Build(terraformQuery)
 	req.Var("id", repoId)
 	err := client.Run(req, &resp)
 	terraform := make([]Terraform, len(resp.Terraform.Edges))
@@ -57,7 +69,7 @@ func (client *Client) GetTerraforma(repoId string) ([]Terraform, error) {
 
 func (client *Client) GetTerraformInstallations(repoId string) ([]TerraformInstallation, error) {
 	var resp terraformInstallationResponse
-	req := graphql.NewRequest(terraformInstallationQuery)
+	req := client.Build(terraformInstallationQuery)
 	req.Var("id", repoId)
 	err := client.Run(req, &resp)
 	inst := make([]TerraformInstallation, len(resp.TerraformInstallations.Edges))
@@ -65,4 +77,38 @@ func (client *Client) GetTerraformInstallations(repoId string) ([]TerraformInsta
 		inst[i] = edge.Node
 	}
 	return inst, err
+}
+
+func (client *Client) UploadTerraform(dir, repoId string) (Terraform, error) {
+	name := path.Base(dir)
+	fullPath, err := filepath.Abs(dir)
+	var tf Terraform
+	if err != nil {
+		return tf, err
+	}
+	cwd, _ := os.Getwd()
+	tarFile := filepath.Join(cwd, name + ".tgz")
+	f, err := os.Create(tarFile)
+	if err != nil {
+		return tf, err
+	}
+	defer f.Close()
+
+	if err := utils.Tar(fullPath, f, "\\.terraform"); err != nil {
+		return tf, err
+	}
+	rf, err := os.Open(tarFile)
+	if err != nil {
+		return tf, err
+	}
+	defer rf.Close()
+	defer os.Remove(tarFile)
+
+	req := client.Build(terraformUpload)
+	req.Var("repoId", repoId)
+	req.Var("name", name)
+	req.Var("package", "package")
+	req.File("package", tarFile, rf)
+	err = client.Run(req, &tf)
+	return tf, err
 }

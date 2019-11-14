@@ -107,3 +107,9 @@ func handleTerraformInstallations(c *cli.Context) error {
 	table.Render()
 	return nil
 }
+
+func handleTerraformUpload(c *cli.Context) error {
+	client := NewUploadClient()
+	_, err := client.UploadTerraform(c.Args().Get(1), c.Args().Get(0))
+	return err
+}

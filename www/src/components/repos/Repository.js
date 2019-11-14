@@ -22,6 +22,7 @@ function Container({children, onClick}) {
       style={{cursor: 'pointer'}}
       background={hover ? 'light-2' : null}
       pad='small'
+      margin={{bottom: 'small'}}
       direction='row'
       gap='small'
       border
@@ -147,7 +148,7 @@ function TerraformTab({repositoryId, terraform, fetchMore}) {
 
   return create ?
     <TerraformCreator repositoryId={repositoryId} onReturn={() => setCreate(false)} /> :
-    (<Box gap='small'>
+    (<Box>
       <Box direction='row' justify='end'>
         <Anchor onClick={() => setCreate(true)}>
           Create more

@@ -11,7 +11,65 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+	"regexp"
 )
+
+func Tar(src string, w io.Writer, regex string) error {
+	// ensure the src actually exists before trying to tar it
+	dir := filepath.Dir(src)
+	if _, err := os.Stat(src); err != nil {
+		return fmt.Errorf("Unable to tar files - %v", err.Error())
+	}
+
+	gzw := gzip.NewWriter(w)
+	defer gzw.Close()
+
+	tw := tar.NewWriter(gzw)
+	defer tw.Close()
+
+	// walk path
+	return filepath.Walk(src, func(file string, fi os.FileInfo, err error) error {
+		if regex != "" {
+			matched, err := regexp.MatchString(regex, file)
+			if matched || err != nil {
+				return err
+			}
+		}
+
+		if err != nil {
+			return err
+		}
+
+		if !fi.Mode().IsRegular() {
+			return nil
+		}
+
+		// create a new dir/file header
+		header, err := tar.FileInfoHeader(fi, fi.Name())
+		if err != nil {
+			return err
+		}
+		header.Name = strings.TrimPrefix(strings.Replace(file, dir, "", -1), string(filepath.Separator))
+
+		if err := tw.WriteHeader(header); err != nil {
+			return err
+		}
+
+		f, err := os.Open(file)
+		if err != nil {
+			return err
+		}
+
+		if _, err := io.Copy(tw, f); err != nil {
+			return err
+		}
+
+		f.Close()
+
+		return nil
+	})
+}
+
 
 func Untar(r io.Reader, dir, relpath string) error {
 	return untar(r, dir, relpath)

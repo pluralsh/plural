@@ -2,7 +2,6 @@ package api
 
 import (
 	"fmt"
-	"github.com/machinebox/graphql"
 )
 
 type chartsResponse struct {
@@ -64,7 +63,7 @@ var chartInstallationsQuery = fmt.Sprintf(`
 
 func (client *Client) GetCharts(repoId string) ([]Chart, error) {
 	var resp chartsResponse
-	req := graphql.NewRequest(chartsQuery)
+	req := client.Build(chartsQuery)
 	req.Var("id", repoId)
 	err := client.Run(req, &resp)
 	charts := make([]Chart, len(resp.Charts.Edges))
@@ -76,7 +75,7 @@ func (client *Client) GetCharts(repoId string) ([]Chart, error) {
 
 func (client *Client) GetVersions(chartId string) ([]Version, error) {
 	var resp versionsResponse
-	req := graphql.NewRequest(versionsQuery)
+	req := client.Build(versionsQuery)
 	req.Var("id", chartId)
 	err := client.Run(req, &resp)
 	versions := make([]Version, len(resp.Versions.Edges))
@@ -88,7 +87,7 @@ func (client *Client) GetVersions(chartId string) ([]Version, error) {
 
 func (client *Client) GetChartInstallations(repoId string) ([]ChartInstallation, error) {
 	var resp chartInstallationsResponse
-	req := graphql.NewRequest(chartInstallationsQuery)
+	req := client.Build(chartInstallationsQuery)
 	req.Var("id", repoId)
 	err := client.Run(req, &resp)
 	insts := make([]ChartInstallation, len(resp.ChartInstallations.Edges))

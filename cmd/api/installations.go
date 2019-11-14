@@ -2,7 +2,6 @@ package api
 
 import (
 	"fmt"
-	"github.com/machinebox/graphql"
 )
 
 type instResponse struct {
@@ -26,7 +25,7 @@ var instQuery = fmt.Sprintf(`
 
 func (client *Client) GetInstallations() ([]Installation, error) {
 	var resp instResponse
-	err := client.Run(graphql.NewRequest(instQuery), &resp)
+	err := client.Run(client.Build(instQuery), &resp)
 	insts := make([]Installation, len(resp.Installations.Edges))
 	for i, edge := range resp.Installations.Edges {
 		insts[i] = edge.Node

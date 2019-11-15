@@ -159,7 +159,7 @@ function Chart() {
 
   return (
     <Box pad='small' direction='row' height="100%">
-      <Box width={`${width}%`} pad='small' border='right'>
+      <Box width={`${width}%`} pad='small'>
         <ChartHeader {...currentVersion} chartInstallation={data.chart.installation} installation={repository.installation} />
         <Tabs justify='start' flex onActive={(tab) => { console.log(tab); setEdit(tab === 1) }}>
           <Tab title='Readme'>

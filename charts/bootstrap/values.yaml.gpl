@@ -1,0 +1,15 @@
+external-dns:
+  provider: {{ .Values.provider }}
+  txtOwnerId: {{ .Values.txt_owner }}
+  rbac:
+    create: true
+    serviceAccountName: {{ default "external-dns" .Values.externaldns_service_account }}
+  domainFilters:
+  - {{ .Values.dns_domain }}
+  google:
+    project: {{ .Values.gcp_project_id }}
+    serviceAccountSecret: externaldns
+
+datadog:
+  datadog:
+    apiKey: {{ .Values.datadog_api_key }}

@@ -15,7 +15,7 @@ function MyPublisher() {
 
   return (
     <Box height='100%' direction='row' pad='medium'>
-      <Box height='100%' width='60%' border='right'>
+      <Box height='100%' width='60%'>
         <Repositories publisher={me.publisher} deletable />
       </Box>
       <Box height='100%' width='40%'>

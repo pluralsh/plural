@@ -161,7 +161,7 @@ function Terraform() {
   const {terraformModule} = data
   return (
     <Box pad='small' direction='row' height="100%">
-      <Box width={`${width}%`} pad='small' border='right'>
+      <Box width={`${width}%`} pad='small'>
         <TerraformHeader {...terraformModule} />
         <Tabs justify='start' flex>
           <Tab title='Readme'>

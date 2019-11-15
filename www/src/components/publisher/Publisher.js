@@ -34,7 +34,7 @@ function Publisher() {
   const {publisher} = data
   return (
     <Box height='100%' direction='row' pad='medium'>
-      <Box height='100%' width='60%' border='right'>
+      <Box height='100%' width='60%'>
         <Repositories publisher={publisher} />
       </Box>
       <Box width='40%' pad='small'>

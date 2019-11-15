@@ -29,9 +29,10 @@ defmodule GraphQl.Schema.Inputs do
   end
 
   input_object :terraform_attributes do
-    field :name,        :string
-    field :description, :string
-    field :package,     :upload_or_url
+    field :name,         :string
+    field :description,  :string
+    field :package,      :upload_or_url
+    field :dependencies, :yml
   end
 
   input_object :chart_installation_attributes do

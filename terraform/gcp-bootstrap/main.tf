@@ -210,3 +210,7 @@ resource "kubernetes_cluster_role_binding" "tiller" {
     namespace = "kube-system"
   }
 }
+
+output "cluster_name" {
+  value = google_container_cluster.cluster.name
+}

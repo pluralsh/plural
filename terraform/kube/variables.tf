@@ -38,3 +38,11 @@ variable "gcp_project_id" {
 The ID of the project in which the resources belong.
 EOF
 }
+
+variable "node_pool" {
+  type = "string"
+  default = "ignore"
+  description = <<EOF
+The node pool of the cluster you've bootstrapped
+EOF
+}

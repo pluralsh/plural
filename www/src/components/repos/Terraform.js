@@ -1,5 +1,6 @@
 import React, {useState, useContext, useEffect} from 'react'
 import {Box, Text, Markdown, Tabs, Tab} from 'grommet'
+import {Alert, Close} from 'grommet-icons'
 import {useQuery, useMutation} from 'react-apollo'
 import {useParams} from 'react-router-dom'
 import {TF_Q, UPDATE_TF, INSTALL_TF, UNINSTALL_TF} from './queries'
@@ -9,6 +10,10 @@ import Installation from './Installation'
 import {TerraformForm} from './CreateTerraform'
 import {BreadcrumbContext} from '../Chartmart'
 import Button, {SecondaryButton} from '../utils/Button'
+import Editor from '../utils/Editor'
+import Pill from '../utils/Pill'
+import yaml from 'js-yaml'
+
 
 function Code({value, children, language}) {
   return (
@@ -110,6 +115,56 @@ function updateInstallation(tfId) {
   }
 }
 
+function EditDependencies({id, dependencies}) {
+  const [deps, setDeps] = useState(yaml.safeDump(dependencies || {}, null, 2))
+  const [notif, setNotif] = useState(false)
+  const [mutation, {loading, errors}] = useMutation(UPDATE_TF, {
+    variables: {id, attributes: {dependencies: deps}},
+    update: (cache, { data: {updateTerraform} }) => {
+      const prev = cache.readQuery({query: TF_Q, variables: {tfId: id}})
+      cache.writeQuery({query: TF_Q, variables: {tfId: id}, data: {
+        ...prev,
+        terraformModule: {
+          ...prev.terraform,
+          ...updateTerraform
+        }
+      }})
+    }
+  })
+
+  return (
+    <>
+    {notif && (
+      <Pill background='status-ok' onClose={() => {console.log('wtf'); setNotif(false)}}>
+        <Box direction='row' align='center' gap='small'>
+          <Text>Configuration saved</Text>
+          <Close style={{cursor: 'pointer'}} size='15px' onClick={() => setNotif(false)} />
+        </Box>
+      </Pill>
+    )}
+    <Box gap='xsmall' fill='horizontal'>
+      <Text size='medium'>Configuration</Text>
+      <Box>
+        <Editor lang='yaml' value={deps} onChange={setDeps} />
+      </Box>
+      {errors && (
+        <Box direction='row' gap='small'>
+          <Alert size='15px' color='notif' />
+          <Text size='small' color='notif'>Must be in yml format</Text>
+        </Box>)}
+      <Box direction='row' justify='end'>
+        <Button
+          pad={{horizontal: 'medium', vertical: 'xsmall'}}
+          loading={loading}
+          label='Save'
+          onClick={mutation}
+          round='xsmall' />
+      </Box>
+    </Box>
+    </>
+  )
+}
+
 function UpdateTerraform({id, name, description}) {
   const [state, setState] = useState({name: name, description: description})
   const [terraform, setTerraform] = useState(null)
@@ -169,6 +224,9 @@ function Terraform() {
           </Tab>
           <Tab title='Configuration'>
             <TemplateView {...terraformModule} />
+          </Tab>
+          <Tab title='Dependencies'>
+            <EditDependencies {...terraformModule} />
           </Tab>
           {terraformModule.editable && (
             <Tab title='Edit'>

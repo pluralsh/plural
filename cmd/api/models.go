@@ -53,6 +53,7 @@ type Terraform struct {
 	Name string
 	Description string
 	ValuesTemplate string
+	Dependencies map[string]string
 	Package string
 }
 
@@ -149,9 +150,10 @@ const TerraformFragment = `
 	fragment TerraformFragment on Terraform {
 		id
 		name
-		description
-		valuesTemplate
 		package
+		description
+		dependencies
+		valuesTemplate
 	}
 `
 

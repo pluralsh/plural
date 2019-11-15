@@ -124,6 +124,7 @@ defmodule GraphQl.Schema.Types do
     field :readme,          :string
     field :description,     :string
     field :values_template, :string
+    field :dependencies,    :map
 
     field :package, :string, resolve: fn
       repo, _, _ -> {:ok, Core.Storage.url({repo.package, repo}, :original)}

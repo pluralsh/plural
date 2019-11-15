@@ -10,6 +10,7 @@ defmodule Core.Schema.Terraform do
     field :description,     :string
     field :values_template, :string
     field :readme,          :string
+    field :dependencies,    :map
 
     belongs_to :repository, Repository
 
@@ -25,7 +26,7 @@ defmodule Core.Schema.Terraform do
   def ordered(query \\ __MODULE__, order \\ [asc: :id]),
     do: from(tf in query, order_by: ^order)
 
-  @valid ~w(name values_template readme description)a
+  @valid ~w(name values_template readme description dependencies)a
 
   def changeset(schema, attrs \\ %{}) do
     schema

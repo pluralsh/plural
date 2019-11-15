@@ -37,3 +37,6 @@ install: ## installs the helm chart
 
 web: ## starts a local webserver
 	cd www && npm start
+
+cli: ## builds the chartmart cli
+	cd cmd && go build

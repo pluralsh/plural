@@ -23,6 +23,12 @@ provider "kubernetes" {
   token = "${data.google_client_config.current.access_token}"
 }
 
+resource "null_resource" "node_pool" {
+  triggers {
+    node_pool = "${var.node_pool}"
+  }
+}
+
 resource "google_service_account" "chartmart" {
   account_id = "chartmart"
   display_name = "Service account for chartmart"
@@ -96,6 +102,9 @@ resource "kubernetes_namespace" "chartmart" {
       "cnrm.cloud.google.com/project-id" = "${var.gcp_project_id}"
     }
   }
+  depends_on = [
+    null_resource.node_pool
+  ]
 }
 
 resource "kubernetes_secret" "chartmart" {

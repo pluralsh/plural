@@ -7,6 +7,7 @@ export const TerraformFragment = gql`
     readme
     package
     description
+    dependencies
     valuesTemplate
   }
 `;

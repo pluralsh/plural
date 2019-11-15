@@ -218,7 +218,7 @@ defmodule GraphQl do
 
     field :upload_terraform, :terraform do
       middleware GraphQl.Middleware.Authenticated
-      arg :repository_id, non_null(:id)
+      arg :repository_name, non_null(:string)
       arg :name, non_null(:string)
       arg :attributes, non_null(:terraform_attributes)
 

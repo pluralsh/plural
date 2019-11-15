@@ -50,14 +50,14 @@ defmodule GraphQl.Terraform.MutationsTest do
 
       {:ok, %{data: %{"uploadTerraform" => tf}}} = run_query("""
         mutation UploadTerraform($id: ID!, $name: String!, $attributes: TerraformAttributes!) {
-          uploadTerraform(repositoryId: $id, name: $name, attributes: $attributes) {
+          uploadTerraform(repositoryName: $id, name: $name, attributes: $attributes) {
             id
             name
             description
           }
         }
       """,
-      %{"id" => terraform.repository_id, "name" => terraform.name, "attributes" => %{"description" => "upserted"}},
+      %{"id" => repo.name, "name" => terraform.name, "attributes" => %{"description" => "upserted"}},
       %{current_user: repo.publisher.owner})
 
       assert tf["id"] == terraform.id

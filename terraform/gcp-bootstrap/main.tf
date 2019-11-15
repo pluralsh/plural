@@ -1,9 +1,3 @@
-terraform {
-  backend "gcs" {
-    prefix = "terraform/gcp"
-  }
-}
-
 locals {
   gcp_location_parts = split("-", var.gcp_location)
   gcp_region         = "${local.gcp_location_parts[0]}-${local.gcp_location_parts[1]}"
@@ -40,12 +34,12 @@ resource "google_compute_subnetwork" "vpc_subnetwork" {
   private_ip_google_access = true
 
   depends_on = [
-    "google_compute_network.vpc_network",
+    google_compute_network.vpc_network,
   ]
 }
 
 resource "google_dns_managed_zone" "piazza_zone" {
-  name = "piazza"
+  name = "${var.dns_zone_name}"
   dns_name = "${var.dns_domain}"
   description = "DNS zone for piazza deployment"
 }
@@ -78,9 +72,6 @@ resource "google_container_cluster" "cluster" {
     # In GKE this also enables the ip masquerade agent
     # https://cloud.google.com/kubernetes-engine/docs/how-to/ip-masquerade-agent
     enabled = false
-
-    # The selected network policy provider. Defaults to PROVIDER_UNSPECIFIED.
-    provider = "CALICO"
   }
 
   master_auth {
@@ -134,7 +125,7 @@ resource "google_container_cluster" "cluster" {
   }
 
   depends_on = [
-    "google_compute_subnetwork.vpc_subnetwork",
+    google_compute_subnetwork.vpc_subnetwork,
   ]
 }
 
@@ -193,43 +184,8 @@ data "google_client_config" "current" {}
 provider "kubernetes" {
   load_config_file = false
   host = "https://${google_container_cluster.cluster.endpoint}"
-  cluster_ca_certificate = "${base64decode(google_container_cluster.cluster.cluster_ca_certificate)}"
+  cluster_ca_certificate = "${base64decode(google_container_cluster.cluster.master_auth.0.cluster_ca_certificate)}"
   token = "${data.google_client_config.current.access_token}"
-}
-
-resource "google_service_account" "externaldns" {
-  account_id   = "externaldns"
-  display_name = "ExternalDns"
-}
-
-resource "google_service_account_key" "externaldns" {
-  service_account_id = "${google_service_account.externaldns.name}"
-  public_key_type = "TYPE_X509_PEM_FILE"
-
-  depends_on = [
-    "google_service_account.externaldns"
-  ]
-}
-
-resource "google_project_iam_member" "externaldns_dns_admin" {
-  project = "${var.gcp_project_id}"
-  role    = "roles/dns.admin"
-
-  member = "serviceAccount:${google_service_account.externaldns.email}"
-
-  depends_on = [
-    "google_service_account.externaldns"
-  ]
-}
-
-resource "kubernetes_secret" "externaldns" {
-  metadata {
-    name = "externaldns"
-    namespace = "kube-system"
-  }
-  data = {
-    "credentials.json" = "${base64decode(google_service_account_key.externaldns.private_key)}"
-  }
 }
 
 resource "kubernetes_service_account" "tiller" {

@@ -22,3 +22,5 @@ erl_crash.dump
 /charts/chartmart/config.secrets.yaml
 
 /**/.terraform
+/**/.terraform*
+/**/terraform.tfstate*

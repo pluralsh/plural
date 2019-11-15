@@ -149,7 +149,7 @@ function TerraformTab({repositoryId, terraform, fetchMore}) {
   return create ?
     <TerraformCreator repositoryId={repositoryId} onReturn={() => setCreate(false)} /> :
     (<Box>
-      <Box direction='row' justify='end'>
+      <Box margin={{bottom: 'small'}} direction='row' justify='end'>
         <Anchor onClick={() => setCreate(true)}>
           Create more
         </Anchor>
@@ -208,9 +208,9 @@ function Repository() {
   const {charts, repository, terraform} = data
   return (
     <Box pad='small' direction='row' height='100%'>
-      <Box pad='small' width='60%' height='100%' border='right'>
+      <Box pad='small' width='60%' height='100%'>
         <Box direction='row' align='center' margin={{bottom: 'medium'}}>
-          <Box width={IMG_SIZE} heigh={IMG_SIZE}>
+          <Box width={IMG_SIZE} height={IMG_SIZE}>
             <img alt='' width={IMG_SIZE} height={IMG_SIZE} src={repository.icon} />
           </Box>
           <Box gap='xsmall' pad='small'>

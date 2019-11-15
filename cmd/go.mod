@@ -14,7 +14,7 @@ require (
 	github.com/olekukonko/tablewriter v0.0.2
 	github.com/pkg/errors v0.8.1
 	github.com/urfave/cli v1.22.1
-	golang.org/x/crypto v0.0.0-20191111213947-16651526fdb4 // indirect
+	golang.org/x/crypto v0.0.0-20191111213947-16651526fdb4
 	gopkg.in/oleiade/reflections.v1 v1.0.0
 	gopkg.in/yaml.v2 v2.2.2
 )

@@ -30,6 +30,11 @@ func main() {
       Action:  Deploy,
     },
     {
+      Name: "login",
+      Usage: "login to charmart",
+      Action: Login,
+    },
+    {
       Name: "api",
       Usage: "inspect the chartmart api",
       Subcommands: api.Commands(),

@@ -192,3 +192,9 @@ variable "dns_domain" {
   type = "string"
   description = "The domain name you'll register piazza under"
 }
+
+variable "dns_zone_name" {
+  type = "string"
+  description = "The name for your dns zone"
+  default = "piazza"
+}

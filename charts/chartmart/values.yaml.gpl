@@ -1,15 +1,15 @@
 postgresql:
-  postgresqlPassword: {{ derivePassword 1 "maximum" .Values.master_password "postgres" "chartmart.com" }}
+  postgresqlPassword: {{ derivePassword 1 "maximum" .MasterPassword "postgres" "chartmart.com" }}
 
 secrets:
-  jwt: {{ derivePassword 1 "maximum" .Values.master_password "jwt" "chartmart.com" }}
-  erlang: {{ derivePassword 1 "maximum" .Values.master_password "erlang" "chartmart.com" }}
+  jwt: {{ derivePassword 1 "maximum" .MasterPassword "jwt" "chartmart.com" }}
+  erlang: {{ derivePassword 1 "maximum" .MasterPassword "erlang" "chartmart.com" }}
 
 admin:
   enabled: true
   name: {{ .Values.admin_name }}
   email: {{ .Values.admin_email }}
-  password: {{ derivePassword 1 "maximum" .Values.master_password "admin" "chartmart.com" }}
+  password: {{ derivePassword 1 "maximum" .MasterPassword "admin" "chartmart.com" }}
   publisher: {{ .Values.publisher }}
   publisher_description: {{ .Values.publisher_description }}
 

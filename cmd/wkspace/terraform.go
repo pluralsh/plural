@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"github.com/michaeljguarino/chartmart/api"
 	"github.com/michaeljguarino/chartmart/utils"
+	"github.com/michaeljguarino/chartmart/config"
 )
 
 const moduleTemplate = `module "{{ .Values.name }}" {
@@ -33,7 +34,13 @@ func (wk *Workspace) BuildTerraform() error {
 	repo := wk.Installation.Repository
 	ctx := wk.Installation.Context
 	dir, _ := filepath.Abs(repo.Name)
-	var modules = make([]string, len(wk.Terraform))
+	var modules = make([]string, len(wk.Terraform) + 1)
+	backend, err := wk.Provider.CreateBackend(repo.Name)
+	if err != nil {
+		return err
+	}
+
+	modules[0] = backend
 	for i, tfInst := range wk.Terraform {
 		tf := tfInst.Terraform
 		path := terraformPath(&repo, &tf)
@@ -62,7 +69,7 @@ func (wk *Workspace) BuildTerraform() error {
 		if err := utils.RenderTemplate(&moduleBuf, moduleTemplate, module); err != nil {
 			return err
 		}
-		modules[i] = moduleBuf.String()
+		modules[i + 1] = moduleBuf.String()
 
 		valuesFile := filepath.Join(dir, "terraform", tf.Name,  "terraform.tfvars")
 		os.Remove(valuesFile)
@@ -75,6 +82,24 @@ func (wk *Workspace) BuildTerraform() error {
 		return err
 	}
 
+	return nil
+}
+
+func (w *Workspace) InstallTerraform() error {
+	repo := w.Installation.Repository
+	path, err := filepath.Abs(path.Join(repo.Name, "terraform"))
+	if err != nil {
+		return err
+	}
+
+	os.Chdir(path)
+	conf := config.Read()
+	if err := utils.Cmd(&conf, "terraform", "init"); err != nil {
+		return err
+	}
+	if err := utils.Cmd(&conf, "terraform", "apply", "-auto-approve"); err != nil {
+		return err
+	}
 	return nil
 }
 

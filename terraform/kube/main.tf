@@ -24,7 +24,7 @@ provider "kubernetes" {
 }
 
 resource "null_resource" "node_pool" {
-  triggers {
+  triggers = {
     node_pool = "${var.node_pool}"
   }
 }
@@ -76,7 +76,8 @@ resource "google_storage_bucket_iam_member" "chartmart" {
 
   depends_on = [
     google_service_account.chartmart,
-    google_storage_bucket.chartmart_bucket
+    google_storage_bucket.chartmart_bucket,
+    google_storage_bucket_acl.chartmart_bucket_acl
   ]
 }
 
@@ -87,7 +88,8 @@ resource "google_storage_bucket_iam_member" "chartmart_assets" {
 
   depends_on = [
     google_service_account.chartmart,
-    google_storage_bucket.chartmart_assets_bucket
+    google_storage_bucket.chartmart_assets_bucket,
+    google_storage_bucket_acl.chartmart_assets_bucket_acl
   ]
 }
 
@@ -110,7 +112,7 @@ resource "kubernetes_namespace" "chartmart" {
 resource "kubernetes_secret" "chartmart" {
   metadata {
     name = "chartmart-serviceaccount"
-    namespace = "chartmart"
+    namespace = "${var.chartmart_namespace}"
   }
   data = {
     "gcp.json" = "${base64decode(google_service_account_key.chartmart.private_key)}"
@@ -149,9 +151,13 @@ resource "google_project_iam_member" "externaldns_dns_admin" {
 resource "kubernetes_secret" "externaldns" {
   metadata {
     name = "externaldns"
-    namespace = "chartmart"
+    namespace = "${var.chartmart_namespace}"
   }
   data = {
     "credentials.json" = "${base64decode(google_service_account_key.externaldns.private_key)}"
   }
+
+  depends_on = [
+    kubernetes_namespace.chartmart
+  ]
 }

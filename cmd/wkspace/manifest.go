@@ -4,31 +4,14 @@ import (
 	"io/ioutil"
 	"gopkg.in/yaml.v2"
 	"github.com/michaeljguarino/chartmart/api"
+	"github.com/michaeljguarino/chartmart/utils"
+	"github.com/michaeljguarino/chartmart/manifest"
 )
 
-type ChartManifest struct {
-	Id string
-	Name string
-	VersionId string
-	Version string
-}
-
-type TerraformManifest struct {
-	Id string
-	Name string
-}
-
-type Manifest struct {
-	Id string
-	Name string
-	Charts []ChartManifest
-	Terraform []TerraformManifest
-}
-
-func (wk *Workspace) BuildManifest() *Manifest {
+func (wk *Workspace) BuildManifest() *manifest.Manifest {
 	repository := wk.Installation.Repository
-	charts := make([]ChartManifest, len(wk.Charts))
-	terraform := make([]TerraformManifest, len(wk.Terraform))
+	charts := make([]manifest.ChartManifest, len(wk.Charts))
+	terraform := make([]manifest.TerraformManifest, len(wk.Terraform))
 
 	for i, ci := range wk.Charts {
 		charts[i] = *buildChartManifest(&ci)
@@ -36,26 +19,40 @@ func (wk *Workspace) BuildManifest() *Manifest {
 	for i, ti := range wk.Terraform {
 		terraform[i] = *buildTerraformManifest(&ti)
 	}
-
-	return &Manifest{repository.Id, repository.Name, charts, terraform}
+	hash := utils.HashPwd(wk.MasterPassword)
+	return &manifest.Manifest{
+		repository.Id,
+		repository.Name,
+		hash,
+		wk.Provider.Cluster(),
+		wk.Provider.Project(),
+		wk.Provider.Bucket(),
+		wk.Provider.Name(),
+		charts,
+		terraform,
+	}
 }
 
-func (m *Manifest) Write(path string) error {
-	io, err := yaml.Marshal(&m)
-	if (err != nil) {
-		return err
+func ReadManifest(path string) (*manifest.Manifest, error) {
+	contents, err := ioutil.ReadFile(path)
+	man := manifest.Manifest{}
+	if err != nil {
+		return &man, err
+	}
+	if err := yaml.Unmarshal(contents, &man); err != nil {
+		return &man, err
 	}
 
-	return ioutil.WriteFile(path, io, 0644)
+	return &man, nil
 }
 
-func buildChartManifest(chartInstallation *api.ChartInstallation) *ChartManifest {
+func buildChartManifest(chartInstallation *api.ChartInstallation) *manifest.ChartManifest {
 	chart := chartInstallation.Chart
 	version := chartInstallation.Version
-	return &ChartManifest{chart.Id, chart.Name, version.Id, version.Version}
+	return &manifest.ChartManifest{chart.Id, chart.Name, version.Id, version.Version}
 }
 
-func buildTerraformManifest(tfInstallation *api.TerraformInstallation) *TerraformManifest {
+func buildTerraformManifest(tfInstallation *api.TerraformInstallation) *manifest.TerraformManifest {
 	terraform := tfInstallation.Terraform
-	return &TerraformManifest{terraform.Id, terraform.Name}
+	return &manifest.TerraformManifest{terraform.Id, terraform.Name}
 }

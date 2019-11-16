@@ -11,7 +11,6 @@ import (
 	"github.com/michaeljguarino/chartmart/wkspace"
 	"github.com/michaeljguarino/chartmart/api"
 	"github.com/michaeljguarino/chartmart/config"
-	"github.com/michaeljguarino/chartmart/utils"
 )
 
 func Build(c *cli.Context) error {
@@ -19,7 +18,10 @@ func Build(c *cli.Context) error {
 	installations, _ := client.GetInstallations()
 	for _, installation := range installations {
 		fmt.Printf("Building workspace for %s\n", installation.Repository.Name)
-		workspace, _ := wkspace.New(client, &installation)
+		workspace, err := wkspace.New(client, &installation)
+		if err != nil {
+			return err
+		}
 		if err := workspace.Prepare(); err != nil {
 			return err
 		}
@@ -28,7 +30,30 @@ func Build(c *cli.Context) error {
 }
 
 func Deploy(c *cli.Context) error {
-	fmt.Println("placeholder for deploy")
+	client := api.NewClient()
+	installations, _ := client.GetInstallations()
+	repoName := c.Args().Get(0)
+	dir, _ := os.Getwd()
+	for _, installation := range installations {
+		if installation.Repository.Name != repoName {
+			continue;
+		}
+
+		fmt.Printf("(Re)building workspace for %s\n", installation.Repository.Name)
+		workspace, err := wkspace.New(client, &installation)
+		if err != nil {
+			return err
+		}
+
+		if err := workspace.InstallTerraform(); err != nil {
+			return err
+		}
+
+		os.Chdir(dir)
+		if err := workspace.InstallHelm(); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -45,12 +70,5 @@ func Login(c *cli.Context) error {
 	}
 	fmt.Printf("\nlogged in as %s", email)
 	config.Amend("token", result)
-
-	fmt.Print("Enter a master password: ")
-	masterPwd, err := terminal.ReadPassword(int(syscall.Stdin))
-	if err != nil {
-		return err
-	}
-	config.Amend("hash", utils.HashPwd(string(masterPwd)))
 	return nil
 }

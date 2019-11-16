@@ -128,7 +128,12 @@ func (w *Workspace) BuildChartValues() error {
 	buf.Grow(5 * 1024)
 
 	for _, chartInst := range w.Charts {
-		if err := utils.RenderTemplate(&buf, chartInst.Version.ValuesTemplate, ctx); err != nil {
+		tmpl, err := utils.MakeTemplate(chartInst.Version.ValuesTemplate)
+		if err != nil {
+			return err
+		}
+		if err := tmpl.Execute(
+			&buf, map[string]interface{}{"Values": ctx, "MasterPassword": w.MasterPassword}); err != nil {
 			return err
 		}
 
@@ -203,6 +208,25 @@ func (w *Workspace) CreateChart(name, dir string) (string, error) {
 		return cdir, err
 	}
 	return cdir, nil
+}
+
+func (w *Workspace) InstallHelm() error {
+	repo := w.Installation.Repository
+	path, err := filepath.Abs(filepath.Join(repo.Name, "helm", "chartmart"))
+	if err != nil {
+		return err
+	}
+
+	w.Provider.KubeConfig()
+	conf := config.Read()
+	if err := utils.Cmd(&conf, "helm", "init", "--wait", "--service-account=tiller"); err != nil {
+		return err
+	}
+	if err := utils.Cmd(&conf,
+		"helm", "upgrade", "--install", "--wait", "--namespace", repo.Name, repo.Name, path); err != nil {
+		return err
+	}
+	return nil
 }
 
 func buildDependency(repo *api.Repository, chartInstallation *api.ChartInstallation) *dependency {

@@ -27,6 +27,7 @@ func main() {
       Name:    "deploy",
       Aliases: []string{"d"},
       Usage:   "deploys the current workspace",
+      ArgsUsage: "WKSPACE",
       Action:  Deploy,
     },
     {

@@ -12,12 +12,11 @@ import (
 
 type Config struct {
 	Token string `yaml:"token"`
-	Hash string
 }
 
 func configFile() string {
 	folder, _ := os.UserHomeDir()
-	return path.Join(folder, ".chartmart.yml")
+	return path.Join(folder, ".chartmart", "config.yml")
 }
 
 func Read() Config {
@@ -26,6 +25,7 @@ func Read() Config {
 	if err != nil {
 		return conf
 	}
+
 	err = yaml.Unmarshal(contents, &conf)
 	if err != nil {
 		fmt.Printf("wtf")
@@ -44,8 +44,13 @@ func Amend(key string, value string) error {
 func flush(c *Config) error {
 	io, err := yaml.Marshal(&c)
 	if (err != nil) {
-		fmt.Printf("Failed to marshal yaml")
 		return err
 	}
+
+	folder, _ := os.UserHomeDir()
+	if err := os.MkdirAll(path.Join(folder, ".chartmart"), os.ModePerm); err != nil {
+		return err
+	}
+
 	return ioutil.WriteFile(configFile(), io, 0644)
 }

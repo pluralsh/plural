@@ -122,6 +122,7 @@ func (w *Workspace) FinalizeCharts() error {
 
 func (w *Workspace) BuildChartValues() error {
 	ctx := w.Installation.Context
+	ctx["master_password"] = w.MasterPassword
 	var buf bytes.Buffer
 	values := make(map[string]interface{})
 	buf.Grow(5 * 1024)

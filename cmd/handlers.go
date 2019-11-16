@@ -11,6 +11,7 @@ import (
 	"github.com/michaeljguarino/chartmart/wkspace"
 	"github.com/michaeljguarino/chartmart/api"
 	"github.com/michaeljguarino/chartmart/config"
+	"github.com/michaeljguarino/chartmart/utils"
 )
 
 func Build(c *cli.Context) error {
@@ -44,5 +45,12 @@ func Login(c *cli.Context) error {
 	}
 	fmt.Printf("\nlogged in as %s", email)
 	config.Amend("token", result)
+
+	fmt.Print("Enter a master password: ")
+	masterPwd, err := terminal.ReadPassword(int(syscall.Stdin))
+	if err != nil {
+		return err
+	}
+	config.Amend("hash", utils.HashPwd(string(masterPwd)))
 	return nil
 }

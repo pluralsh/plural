@@ -12,6 +12,7 @@ import (
 
 type Config struct {
 	Token string `yaml:"token"`
+	Hash string
 }
 
 func configFile() string {

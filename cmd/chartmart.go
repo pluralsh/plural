@@ -30,9 +30,14 @@ func main() {
       Action:  Deploy,
     },
     {
-      Name: "login",
-      Usage: "login to charmart",
+      Name: "init",
+      Usage: "initializes charmart",
       Action: Login,
+    },
+    {
+      Name: "push",
+      Usage: "utilities for pushing tf or helm packages",
+      Subcommands: pushCommands(),
     },
     {
       Name: "api",

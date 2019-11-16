@@ -47,8 +47,8 @@ var terraformInstallationQuery = fmt.Sprintf(`
 `, pageSize, TerraformInstallationFragment)
 
 var terraformUpload = fmt.Sprintf(`
-	mutation TerraformUpload($repoId: ID!, $name: String!, $package: UploadOrUrl!) {
-		uploadTerraform(repositoryId: $repoId, name: $name, attributes: {name: $name, package: $package}) {
+	mutation TerraformUpload($repoName: String!, $name: String!, $package: UploadOrUrl!) {
+		uploadTerraform(repositoryName: $repoName, name: $name, attributes: {name: $name, package: $package}) {
 			...TerraformFragment
 		}
 	}
@@ -79,7 +79,7 @@ func (client *Client) GetTerraformInstallations(repoId string) ([]TerraformInsta
 	return inst, err
 }
 
-func (client *Client) UploadTerraform(dir, repoId string) (Terraform, error) {
+func (client *Client) UploadTerraform(dir, repoName string) (Terraform, error) {
 	name := path.Base(dir)
 	fullPath, err := filepath.Abs(dir)
 	var tf Terraform
@@ -105,7 +105,7 @@ func (client *Client) UploadTerraform(dir, repoId string) (Terraform, error) {
 	defer os.Remove(tarFile)
 
 	req := client.Build(terraformUpload)
-	req.Var("repoId", repoId)
+	req.Var("repoName", repoName)
 	req.Var("name", name)
 	req.Var("package", "package")
 	req.File("package", tarFile, rf)

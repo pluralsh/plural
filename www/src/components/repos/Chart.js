@@ -99,11 +99,11 @@ function ChartHeader({helm, chart, version, chartInstallation, id, installation}
       <Box width='100px' direction='row' justify='end'>
       {chartInstallation && chartInstallation.version.id === id ?
         <Box round='xsmall' pad='small' border>Installed</Box> :
-        <ChartInstaller
+        installation && (<ChartInstaller
           chartInstallation={chartInstallation}
           installation={installation}
           versionId={id}
-          chartId={chart.id} />
+          chartId={chart.id} />)
       }
       </Box>
     </Box>

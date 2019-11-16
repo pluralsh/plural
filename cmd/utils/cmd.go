@@ -1,9 +1,9 @@
 package utils
 
 import (
+	"github.com/michaeljguarino/chartmart/config"
 	"os"
 	"os/exec"
-	"github.com/michaeljguarino/chartmart/config"
 )
 
 func Cmd(conf *config.Config, program string, args ...string) error {

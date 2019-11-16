@@ -9,9 +9,9 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"time"
-	"regexp"
 )
 
 func Tar(src string, w io.Writer, regex string) error {
@@ -69,7 +69,6 @@ func Tar(src string, w io.Writer, regex string) error {
 		return nil
 	})
 }
-
 
 func Untar(r io.Reader, dir, relpath string) error {
 	return untar(r, dir, relpath)

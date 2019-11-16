@@ -1,15 +1,16 @@
 package wkspace
 
 import (
-	"fmt"
-	"os"
 	"bytes"
-	"path/filepath"
-	"github.com/michaeljguarino/chartmart/utils"
+	"fmt"
+	"github.com/fatih/color"
 	"github.com/michaeljguarino/chartmart/api"
 	"github.com/michaeljguarino/chartmart/config"
+	"github.com/michaeljguarino/chartmart/utils"
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v2"
+	"os"
+	"path/filepath"
 )
 
 const defaultChartfile = `apiVersion: v1
@@ -60,8 +61,8 @@ const (
 )
 
 type dependency struct {
-	Name string
-	Version string
+	Name       string
+	Version    string
 	Repository string
 }
 
@@ -102,7 +103,6 @@ func (w *Workspace) CreateChartDependencies(name, dir string) error {
 	return utils.WriteFile(requirementsFile, io)
 }
 
-
 func (w *Workspace) FinalizeCharts() error {
 	conf := config.Read()
 	repo := w.Installation.Repository
@@ -122,7 +122,6 @@ func (w *Workspace) FinalizeCharts() error {
 
 func (w *Workspace) BuildChartValues() error {
 	ctx := w.Installation.Context
-	ctx["master_password"] = w.MasterPassword
 	var buf bytes.Buffer
 	values := make(map[string]interface{})
 	buf.Grow(5 * 1024)
@@ -152,7 +151,7 @@ func (w *Workspace) BuildChartValues() error {
 
 	repo := w.Installation.Repository
 	dir, _ := filepath.Abs(repo.Name)
-	valuesFile := filepath.Join(dir, "helm", repo.Name,  "values.yaml")
+	valuesFile := filepath.Join(dir, "helm", repo.Name, "values.yaml")
 	return utils.WriteFile(valuesFile, io)
 }
 
@@ -216,7 +215,8 @@ func (w *Workspace) InstallHelm() error {
 	if err != nil {
 		return err
 	}
-
+	color.New(color.FgYellow, color.Bold).Printf(
+		"helm upgrade --install --wait --namespace %s %s %s", repo.Name, repo.Name, path)
 	w.Provider.KubeConfig()
 	conf := config.Read()
 	if err := utils.Cmd(&conf, "helm", "init", "--wait", "--service-account=tiller"); err != nil {

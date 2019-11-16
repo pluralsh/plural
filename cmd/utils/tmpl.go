@@ -1,9 +1,9 @@
 package utils
 
 import (
+	"github.com/Masterminds/sprig"
 	"io"
 	"text/template"
-	"github.com/Masterminds/sprig"
 )
 
 func MakeTemplate(tmplate string) (*template.Template, error) {

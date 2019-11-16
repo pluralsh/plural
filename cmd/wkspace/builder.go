@@ -1,23 +1,24 @@
 package wkspace
 
 import (
-	"os"
 	"fmt"
-	"path"
-	"syscall"
-	"path/filepath"
-	"golang.org/x/crypto/ssh/terminal"
+	"github.com/fatih/color"
 	"github.com/michaeljguarino/chartmart/api"
-	"github.com/michaeljguarino/chartmart/utils"
 	"github.com/michaeljguarino/chartmart/provider"
+	"github.com/michaeljguarino/chartmart/utils"
+	"golang.org/x/crypto/ssh/terminal"
+	"os"
+	"path"
+	"path/filepath"
+	"syscall"
 )
 
 type Workspace struct {
 	MasterPassword string
-	Provider provider.Provider
-	Installation *api.Installation
-	Charts []api.ChartInstallation
-	Terraform []api.TerraformInstallation
+	Provider       provider.Provider
+	Installation   *api.Installation
+	Charts         []api.ChartInstallation
+	Terraform      []api.TerraformInstallation
 }
 
 func New(client *api.Client, inst *api.Installation) (*Workspace, error) {
@@ -29,8 +30,7 @@ func New(client *api.Client, inst *api.Installation) (*Workspace, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	fmt.Print("Enter your master password: ")
+	color.New(color.Bold).Print("Enter your master password: ")
 	pwd, err := terminal.ReadPassword(int(syscall.Stdin))
 	fmt.Println("")
 	if err != nil {

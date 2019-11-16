@@ -1,13 +1,13 @@
 package config
 
 import (
-	"os"
-	"io/ioutil"
 	"fmt"
+	"gopkg.in/oleiade/reflections.v1"
+	"gopkg.in/yaml.v2"
+	"io/ioutil"
+	"os"
 	"path"
 	"strings"
-	"gopkg.in/yaml.v2"
-	"gopkg.in/oleiade/reflections.v1"
 )
 
 type Config struct {
@@ -43,7 +43,7 @@ func Amend(key string, value string) error {
 
 func flush(c *Config) error {
 	io, err := yaml.Marshal(&c)
-	if (err != nil) {
+	if err != nil {
 		return err
 	}
 

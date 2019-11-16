@@ -50,17 +50,5 @@ func Commands() []cli.Command {
 				},
 			},
 		},
-		{
-			Name: "upload",
-			Usage: "uploads charts/repositories",
-			Subcommands: []cli.Command{
-				{
-					Name: "terraform",
-					Usage: "upload a terraform module",
-					ArgsUsage: "REPO_ID DIR",
-					Action: handleTerraformUpload,
-				},
-			},
-		},
 	}
 }

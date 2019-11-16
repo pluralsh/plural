@@ -77,12 +77,14 @@ function TerraformHeader({id, name, description, installation, repository}) {
         <Text size='medium'>{name}</Text>
         <Text size='small'><i>{description}</i></Text>
       </Box>
-      <Box width='100px' direction='row' justify='end'>
-        <TerraformInstaller
-          installation={repository.installation}
-          terraformInstallation={installation}
-          terraformId={id} />
-      </Box>
+      {repository.installation && (
+        <Box width='100px' direction='row' justify='end'>
+          <TerraformInstaller
+            installation={repository.installation}
+            terraformInstallation={installation}
+            terraformId={id} />
+        </Box>
+      )}
     </Box>
   )
 }

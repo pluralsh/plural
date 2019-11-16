@@ -2,12 +2,18 @@ package wkspace
 
 import (
 	"os"
+	"fmt"
 	"path"
 	"path/filepath"
+	"syscall"
+	"golang.org/x/crypto/ssh/terminal"
 	"github.com/michaeljguarino/chartmart/api"
+	"github.com/michaeljguarino/chartmart/config"
+	"github.com/michaeljguarino/chartmart/utils"
 )
 
 type Workspace struct {
+	MasterPassword string
 	Installation *api.Installation
 	Charts []api.ChartInstallation
 	Terraform []api.TerraformInstallation
@@ -23,7 +29,18 @@ func New(client *api.Client, inst *api.Installation) (*Workspace, error) {
 		anyErr = err2
 	}
 
-	return &Workspace{inst, ci, ti}, anyErr
+	conf := config.Read()
+	fmt.Print("Enter your master password: ")
+	pwd, err := terminal.ReadPassword(int(syscall.Stdin))
+	pwdStr := string(pwd)
+	if err != nil {
+		anyErr = err
+	}
+	if !utils.VerifyPwd(conf.Hash, pwdStr) {
+		anyErr = fmt.Errorf("Incorrect password")
+	}
+
+	return &Workspace{pwdStr, inst, ci, ti}, anyErr
 }
 
 func (wk *Workspace) Prepare() error {

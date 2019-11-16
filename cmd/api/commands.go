@@ -1,7 +1,7 @@
 package api
 
 import (
-  "github.com/urfave/cli"
+	"github.com/urfave/cli"
 )
 
 func Commands() []cli.Command {
@@ -9,44 +9,44 @@ func Commands() []cli.Command {
 		{
 			Name:  "list",
 			Usage: "lists chartmart resources",
-      Subcommands: []cli.Command{
+			Subcommands: []cli.Command{
 				{
-					Name: "installations",
-					Usage: "lists your installations",
+					Name:      "installations",
+					Usage:     "lists your installations",
 					ArgsUsage: "",
-					Action: handleInstallations,
+					Action:    handleInstallations,
 				},
 				{
-					Name: "charts",
-					Usage: "lists charts for a repository",
+					Name:      "charts",
+					Usage:     "lists charts for a repository",
 					ArgsUsage: "REPO_ID",
-					Action: handleCharts,
+					Action:    handleCharts,
 				},
 				{
-					Name: "terraform",
-					Usage: "lists terraform modules for a repository",
+					Name:      "terraform",
+					Usage:     "lists terraform modules for a repository",
 					ArgsUsage: "REPO_ID",
-					Action: handleTerraforma,
+					Action:    handleTerraforma,
 				},
 				{
-					Name: "versions",
-					Usage: "lists versions of a chart",
+					Name:      "versions",
+					Usage:     "lists versions of a chart",
 					ArgsUsage: "CHART_ID",
-					Action: handleVersions,
+					Action:    handleVersions,
 				},
 				{
-					Name: "chartinstallations",
-					Aliases: []string{"ci"},
-					Usage: "lists chart installations for a repository",
+					Name:      "chartinstallations",
+					Aliases:   []string{"ci"},
+					Usage:     "lists chart installations for a repository",
 					ArgsUsage: "REPO_ID",
-					Action: handleChartInstallations,
+					Action:    handleChartInstallations,
 				},
 				{
-					Name: "terraforminstallations",
-					Aliases: []string{"ti"},
-					Usage: "lists terraform installations for a repository",
+					Name:      "terraforminstallations",
+					Aliases:   []string{"ti"},
+					Usage:     "lists terraform installations for a repository",
 					ArgsUsage: "REPO_ID",
-					Action: handleTerraformInstallations,
+					Action:    handleTerraformInstallations,
 				},
 			},
 		},

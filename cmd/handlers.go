@@ -2,22 +2,24 @@ package main
 
 import (
 	"bufio"
-	"syscall"
-	"golang.org/x/crypto/ssh/terminal"
-	"strings"
-	"os"
-  "fmt"
-	"github.com/urfave/cli"
-	"github.com/michaeljguarino/chartmart/wkspace"
+	"fmt"
+	"github.com/fatih/color"
 	"github.com/michaeljguarino/chartmart/api"
 	"github.com/michaeljguarino/chartmart/config"
+	"github.com/michaeljguarino/chartmart/wkspace"
+	"github.com/urfave/cli"
+	"golang.org/x/crypto/ssh/terminal"
+	"os"
+	"strings"
+	"syscall"
 )
 
 func Build(c *cli.Context) error {
 	client := api.NewClient()
 	installations, _ := client.GetInstallations()
 	for _, installation := range installations {
-		fmt.Printf("Building workspace for %s\n", installation.Repository.Name)
+		repoName := installation.Repository.Name
+		color.New(color.FgYellow, color.Bold).Printf("Building workspace for %s\n", repoName)
 		workspace, err := wkspace.New(client, &installation)
 		if err != nil {
 			return err
@@ -25,6 +27,7 @@ func Build(c *cli.Context) error {
 		if err := workspace.Prepare(); err != nil {
 			return err
 		}
+		color.New(color.FgGreen, color.Bold).Printf("Finished building %s\n", repoName)
 	}
 	return nil
 }
@@ -36,10 +39,10 @@ func Deploy(c *cli.Context) error {
 	dir, _ := os.Getwd()
 	for _, installation := range installations {
 		if installation.Repository.Name != repoName {
-			continue;
+			continue
 		}
 
-		fmt.Printf("(Re)building workspace for %s\n", installation.Repository.Name)
+		color.New(color.FgYellow, color.Bold).Printf("(Re)building workspace for %s\n", installation.Repository.Name)
 		workspace, err := wkspace.New(client, &installation)
 		if err != nil {
 			return err

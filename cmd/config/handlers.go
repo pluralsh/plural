@@ -1,11 +1,10 @@
 package config
 
 import (
-  "fmt"
+	"fmt"
 	"github.com/urfave/cli"
 	"gopkg.in/yaml.v2"
 )
-
 
 func HandleAmend(c *cli.Context) error {
 	return Amend(c.Args().Get(0), c.Args().Get(1))

@@ -1,15 +1,15 @@
 package wkspace
 
 import (
-	"os"
-	"net/http"
-	"path"
 	"bytes"
-	"strings"
-	"path/filepath"
 	"github.com/michaeljguarino/chartmart/api"
-	"github.com/michaeljguarino/chartmart/utils"
 	"github.com/michaeljguarino/chartmart/config"
+	"github.com/michaeljguarino/chartmart/utils"
+	"net/http"
+	"os"
+	"path"
+	"path/filepath"
+	"strings"
 )
 
 const moduleTemplate = `module "{{ .Values.name }}" {
@@ -29,12 +29,11 @@ type tfModule struct {
 	deps map[string]string
 }
 
-
 func (wk *Workspace) BuildTerraform() error {
 	repo := wk.Installation.Repository
 	ctx := wk.Installation.Context
 	dir, _ := filepath.Abs(repo.Name)
-	var modules = make([]string, len(wk.Terraform) + 1)
+	var modules = make([]string, len(wk.Terraform)+1)
 	backend, err := wk.Provider.CreateBackend(repo.Name)
 	if err != nil {
 		return err
@@ -54,7 +53,12 @@ func (wk *Workspace) BuildTerraform() error {
 
 		var buf bytes.Buffer
 		buf.Grow(5 * 1024)
-		if err := utils.RenderTemplate(&buf, tf.ValuesTemplate, ctx); err != nil {
+		tmpl, err := utils.MakeTemplate(tf.ValuesTemplate)
+		if err != nil {
+			return err
+		}
+		if err := tmpl.Execute(
+			&buf, map[string]interface{}{"Values": ctx, "Cluster": wk.Provider.Cluster()}); err != nil {
 			return err
 		}
 
@@ -69,9 +73,10 @@ func (wk *Workspace) BuildTerraform() error {
 		if err := utils.RenderTemplate(&moduleBuf, moduleTemplate, module); err != nil {
 			return err
 		}
-		modules[i + 1] = moduleBuf.String()
 
-		valuesFile := filepath.Join(dir, "terraform", tf.Name,  "terraform.tfvars")
+		modules[i+1] = moduleBuf.String()
+
+		valuesFile := filepath.Join(dir, "terraform", tf.Name, "terraform.tfvars")
 		os.Remove(valuesFile)
 
 		moduleBuf.Reset()

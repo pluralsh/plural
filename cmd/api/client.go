@@ -1,9 +1,9 @@
 package api
 
 import (
-	"github.com/michaeljguarino/chartmart/config"
-	"github.com/machinebox/graphql"
 	"context"
+	"github.com/machinebox/graphql"
+	"github.com/michaeljguarino/chartmart/config"
 )
 
 const endpoint = "https://mart.piazzaapp.com/gql"
@@ -11,7 +11,7 @@ const pageSize = 100
 
 type Client struct {
 	gqlClient *graphql.Client
-	config config.Config
+	config    config.Config
 }
 
 func NewClient() *Client {
@@ -27,7 +27,7 @@ func NewUploadClient() *Client {
 
 func (client *Client) Build(doc string) *graphql.Request {
 	req := graphql.NewRequest(doc)
-	req.Header.Set("Authorization", "Bearer " + client.config.Token)
+	req.Header.Set("Authorization", "Bearer "+client.config.Token)
 	return req
 }
 

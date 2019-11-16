@@ -6,67 +6,67 @@ import (
 
 type PageInfo struct {
 	HasNextPage bool
-	EndCursor string
+	EndCursor   string
 }
 
 type Publisher struct {
-	Id string
+	Id   string
 	Name string
 }
 
 type Repository struct {
-	Id string
-	Name string
+	Id        string
+	Name      string
 	Publisher Publisher
 }
 
 type User struct {
-	Id string
-	Name string
-	Email string
+	Id        string
+	Name      string
+	Email     string
 	Publisher Publisher
 }
 
 type Chart struct {
-	Id string
-	Name string
-	Description string
+	Id            string
+	Name          string
+	Description   string
 	LatestVersion string
 }
 
 type ChartInstallation struct {
-	Id string
-	Chart Chart
-	Version Version
+	Id           string
+	Chart        Chart
+	Version      Version
 	Installation Installation
 }
 
 type Version struct {
-	Id string
-	Version string
-	Readme string
+	Id             string
+	Version        string
+	Readme         string
 	ValuesTemplate string
 }
 
 type Terraform struct {
-	Id string
-	Name string
-	Description string
+	Id             string
+	Name           string
+	Description    string
 	ValuesTemplate string
-	Dependencies map[string]string
-	Package string
+	Dependencies   map[string]string
+	Package        string
 }
 
 type TerraformInstallation struct {
-	Id string
+	Id           string
 	Installation Installation
-	Terraform Terraform
+	Terraform    Terraform
 }
 
 type Installation struct {
 	Repository Repository
-	User User
-	Context map[string]interface{}
+	User       User
+	Context    map[string]interface{}
 }
 
 type InstallationEdge struct {

@@ -1,11 +1,11 @@
 package wkspace
 
 import (
-	"io/ioutil"
-	"gopkg.in/yaml.v2"
 	"github.com/michaeljguarino/chartmart/api"
-	"github.com/michaeljguarino/chartmart/utils"
 	"github.com/michaeljguarino/chartmart/manifest"
+	"github.com/michaeljguarino/chartmart/utils"
+	"gopkg.in/yaml.v2"
+	"io/ioutil"
 )
 
 func (wk *Workspace) BuildManifest() *manifest.Manifest {

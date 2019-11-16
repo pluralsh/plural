@@ -1,8 +1,8 @@
 package utils
 
 import (
-	"os"
 	"io/ioutil"
+	"os"
 	"path/filepath"
 )
 
@@ -16,7 +16,7 @@ func WriteFile(name string, content []byte) error {
 func Exists(path string) bool {
 	_, err := os.Stat(path)
 	if os.IsNotExist(err) {
-			return false
+		return false
 	}
 	return true
 }

@@ -2,10 +2,10 @@ package api
 
 import (
 	"fmt"
-	"path/filepath"
-	"path"
 	"github.com/michaeljguarino/chartmart/utils"
 	"os"
+	"path"
+	"path/filepath"
 )
 
 type terraformResponse struct {
@@ -87,7 +87,7 @@ func (client *Client) UploadTerraform(dir, repoName string) (Terraform, error) {
 		return tf, err
 	}
 	cwd, _ := os.Getwd()
-	tarFile := filepath.Join(cwd, name + ".tgz")
+	tarFile := filepath.Join(cwd, name+".tgz")
 	f, err := os.Create(tarFile)
 	if err != nil {
 		return tf, err

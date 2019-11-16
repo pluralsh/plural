@@ -1,22 +1,23 @@
 package main
+
 import (
-	"github.com/urfave/cli"
 	"github.com/michaeljguarino/chartmart/api"
-	"github.com/michaeljguarino/chartmart/utils"
 	"github.com/michaeljguarino/chartmart/config"
+	"github.com/michaeljguarino/chartmart/utils"
+	"github.com/urfave/cli"
 )
 
 func pushCommands() []cli.Command {
 	return []cli.Command{
-    {
-      Name:    "terraform",
-      Usage:   "pushes a terraform module",
-      Action:  handleTerraformUpload,
-    },
-    {
-      Name:    "helm",
-      Usage:   "pushes a helm chart",
-      Action:  handleHelmUpload,
+		{
+			Name:   "terraform",
+			Usage:  "pushes a terraform module",
+			Action: handleTerraformUpload,
+		},
+		{
+			Name:   "helm",
+			Usage:  "pushes a helm chart",
+			Action: handleHelmUpload,
 		},
 	}
 }

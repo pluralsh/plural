@@ -1,22 +1,22 @@
 package config
 
 import (
-  "github.com/urfave/cli"
+	"github.com/urfave/cli"
 )
 
 func Commands() []cli.Command {
 	return []cli.Command{
 		{
-			Name:  "amend",
-			Usage: "modify config",
+			Name:      "amend",
+			Usage:     "modify config",
 			ArgsUsage: "[key] [value]",
-			Action: HandleAmend,
+			Action:    HandleAmend,
 		},
 		{
-			Name:  "read",
-			Usage: "dumps config",
+			Name:      "read",
+			Usage:     "dumps config",
 			ArgsUsage: "",
-			Action: HandleRead,
+			Action:    HandleRead,
 		},
 	}
 }

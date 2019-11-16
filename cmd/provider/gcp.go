@@ -1,23 +1,24 @@
 package provider
 
 import (
-	"os"
-	"fmt"
 	"bufio"
-	"strings"
-	"context"
-	"os/exec"
 	"cloud.google.com/go/storage"
-	"google.golang.org/api/option"
+	"context"
+	"fmt"
+	"github.com/fatih/color"
 	"github.com/michaeljguarino/chartmart/manifest"
+	"google.golang.org/api/option"
+	"os"
+	"os/exec"
+	"strings"
 )
 
 type GCPProvider struct {
-	cluster string
-	project string
-	bucket string
+	cluster       string
+	project       string
+	bucket        string
 	storageClient *storage.Client
-	ctx context.Context
+	ctx           context.Context
 }
 
 const backendTemplate = `terraform {
@@ -33,13 +34,13 @@ func mkGCP() (*GCPProvider, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	clr := color.New(color.Bold)
 	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("Enter the name of your cluster: ")
+	clr.Print("Enter the name of your cluster: ")
 	cluster, _ := reader.ReadString('\n')
-	fmt.Print("Enter the name of its gcp project: ")
+	clr.Print("Enter the name of its gcp project: ")
 	project, _ := reader.ReadString('\n')
-	fmt.Print("Enter the name of a gcs bucket to use for state, eg: <yourprojectname>-tf-state: ")
+	clr.Print("Enter the name of a gcs bucket to use for state, eg: <yourprojectname>-tf-state: ")
 	bucket, _ := reader.ReadString('\n')
 	provider := &GCPProvider{
 		strings.TrimSpace(cluster),

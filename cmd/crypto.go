@@ -31,6 +31,16 @@ func cryptoCommands() []cli.Command {
 			Usage:  "auto-decrypts all affected files in the repo",
 			Action: handleUnlock,
 		},
+		{
+			Name:   "import",
+			Usage:  "imports an aes key for chartmart to use",
+			Action: importKey,
+		},
+		{
+			Name:   "export",
+			Usage:  "dumps the current aes key to stdout",
+			Action: exportKey,
+		},
 	}
 }
 
@@ -87,4 +97,29 @@ func handleUnlock(c *cli.Context) error {
 	gitIndex, _ := filepath.Abs(filepath.Join(repoRoot, ".git", "index"))
 	os.Remove(gitIndex)
 	return gitCommand("checkout", "HEAD", "--", strings.TrimSpace(string(res))).Run()
+}
+
+func exportKey(c *cli.Context) error {
+	key, err := crypto.Materialize()
+	if err != nil {
+		return err
+	}
+	io, err := key.Marshal()
+	if err != nil {
+		return err
+	}
+	os.Stdout.Write(io)
+	return nil
+}
+
+func importKey(c *cli.Context) error {
+	data, err := ioutil.ReadAll(os.Stdin)
+	if err != nil {
+		return err
+	}
+	key, err := crypto.Import(data)
+	if err != nil {
+		return err
+	}
+	return key.Flush()
 }

@@ -34,12 +34,7 @@ func Materialize() (*AESKey, error) {
 	}
 
 	key := gen()
-	io, err := yaml.Marshal(key)
-	if err != nil {
-		return nil, err
-	}
-
-	if err := ioutil.WriteFile(p, io, 0644); err != nil {
+	if err := key.Flush(); err != nil {
 		return nil, err
 	}
 	return key, nil
@@ -59,6 +54,25 @@ func gen() *AESKey {
 	return &AESKey{
 		base64.StdEncoding.EncodeToString(key),
 	}
+}
+
+func Import(buf []byte) (*AESKey, error) {
+	key := AESKey{}
+	err := yaml.Unmarshal(buf, &key)
+	return &key, err
+}
+
+func (k *AESKey) Marshal() ([]byte, error) {
+	return yaml.Marshal(k)
+}
+
+func (k *AESKey) Flush() error {
+	io, err := k.Marshal()
+	if err != nil {
+		return err
+	}
+	p := getKeyPath()
+	return ioutil.WriteFile(p, io, 0644)
 }
 
 func (k *AESKey) Encrypt(text []byte) ([]byte, error) {

@@ -33,7 +33,12 @@ func main() {
 		{
 			Name:   "init",
 			Usage:  "initializes charmart",
-			Action: Login,
+			Action: Init,
+		},
+		{
+			Name: "crypto",
+			Usage: "chartmart encryption utilities",
+			Subcommands: cryptoCommands(),
 		},
 		{
 			Name:        "push",

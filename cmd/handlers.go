@@ -12,7 +12,13 @@ import (
 	"os"
 	"strings"
 	"syscall"
+	"io/ioutil"
+	"path/filepath"
 )
+
+const gitattributes = `/**/helm/**/values.yaml filter=chartmart-crypt
+/**/manifest.yaml filter=chartmart-crypt
+`
 
 func Build(c *cli.Context) error {
 	client := api.NewClient()
@@ -60,12 +66,12 @@ func Deploy(c *cli.Context) error {
 	return nil
 }
 
-func Login(c *cli.Context) error {
+func Init(c *cli.Context) error {
 	client := api.NewClient()
 	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("Enter your email: ")
+	color.New(color.Bold).Printf("Enter your email: ")
 	email, _ := reader.ReadString('\n')
-	fmt.Print("Enter Password: ")
+	color.New(color.Bold).Printf("Enter Password: ")
 	pwd, err := terminal.ReadPassword(int(syscall.Stdin))
 	result, err := client.Login(strings.TrimSpace(email), strings.TrimSpace(string(pwd)))
 	if err != nil {
@@ -73,5 +79,23 @@ func Login(c *cli.Context) error {
 	}
 	fmt.Printf("\nlogged in as %s", email)
 	config.Amend("token", result)
+
+	encryptConfig := [][]string{
+		{"filter.chartmart-crypt.smudge", "chartmart crypto decrypt"},
+		{"filter.chartmart-crypt.clean", "chartmart crypto encrypt"},
+		{"filter.chartmart-crypt.required", "true"},
+	}
+	color.New(color.Bold).Printf("Creating git encryption filters\n")
+	for _, conf := range encryptConfig {
+		if err := gitConfig(conf[0], conf[1]); err != nil {
+			panic(err)
+		}
+	}
+	gitattrs, _ := filepath.Abs(".gitattributes")
+	if err := ioutil.WriteFile(gitattrs, []byte(gitattributes), 0644); err != nil {
+		return err
+	}
+
+	color.New(color.FgGreen, color.Bold).Printf("Workspace is properly configured!")
 	return nil
 }

@@ -4,11 +4,13 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/fatih/color"
+	"github.com/imdario/mergo"
 	"github.com/michaeljguarino/chartmart/api"
 	"github.com/michaeljguarino/chartmart/config"
 	"github.com/michaeljguarino/chartmart/utils"
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v2"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 )
@@ -123,7 +125,7 @@ func (w *Workspace) FinalizeCharts() error {
 func (w *Workspace) BuildChartValues() error {
 	ctx := w.Installation.Context
 	var buf bytes.Buffer
-	values := make(map[string]interface{})
+	values := make(map[string]map[string]interface{})
 	buf.Grow(5 * 1024)
 
 	for _, chartInst := range w.Charts {
@@ -144,15 +146,35 @@ func (w *Workspace) BuildChartValues() error {
 		values[chartInst.Chart.Name] = subVals
 		buf.Reset()
 	}
+	repo := w.Installation.Repository
+	dir, _ := filepath.Abs(repo.Name)
+	valuesFile := filepath.Join(dir, "helm", repo.Name, "values.yaml")
+	prevVals, _ := prevValues(valuesFile)
+	if err := mergo.Merge(&values, prevVals, mergo.WithOverride); err != nil {
+    return err
+	}
 	io, err := yaml.Marshal(values)
 	if err != nil {
 		return err
 	}
 
-	repo := w.Installation.Repository
-	dir, _ := filepath.Abs(repo.Name)
-	valuesFile := filepath.Join(dir, "helm", repo.Name, "values.yaml")
 	return utils.WriteFile(valuesFile, io)
+}
+
+func prevValues(filename string) (map[string]map[string]interface{}, error) {
+	vals := make(map[string]map[string]interface{})
+	if !utils.Exists(filename) {
+		return vals, nil
+	}
+	fmt.Println("\"Safely\" merging in previous values")
+	contents, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return vals, err
+	}
+	if err := yaml.Unmarshal(contents, &vals); err != nil {
+		return vals, err
+	}
+	return vals, nil
 }
 
 func (w *Workspace) CreateChart(name, dir string) (string, error) {

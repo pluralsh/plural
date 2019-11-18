@@ -238,10 +238,10 @@ func (w *Workspace) InstallHelm() error {
 		return err
 	}
 	color.New(color.FgYellow, color.Bold).Printf(
-		"helm upgrade --install --wait --namespace %s %s %s", repo.Name, repo.Name, path)
+		"helm upgrade --install --wait --namespace %s %s %s\n", repo.Name, repo.Name, path)
 	w.Provider.KubeConfig()
 	conf := config.Read()
-	if err := utils.Cmd(&conf, "helm", "init", "--wait", "--service-account=tiller"); err != nil {
+	if err := utils.Cmd(&conf, "helm", "init", "--wait", "--service-account=tiller", "--client-only"); err != nil {
 		return err
 	}
 	if err := utils.Cmd(&conf,

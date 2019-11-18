@@ -7,17 +7,21 @@ import (
 	"github.com/michaeljguarino/chartmart/api"
 	"github.com/michaeljguarino/chartmart/config"
 	"github.com/michaeljguarino/chartmart/wkspace"
+	"github.com/michaeljguarino/chartmart/utils"
 	"github.com/urfave/cli"
 	"golang.org/x/crypto/ssh/terminal"
 	"os"
 	"strings"
 	"syscall"
-	"io/ioutil"
-	"path/filepath"
 )
 
-const gitattributes = `/**/helm/**/values.yaml filter=chartmart-crypt
-/**/manifest.yaml filter=chartmart-crypt
+const gitattributes = `/**/helm/**/values.yaml filter=chartmart-crypt diff=chartmart-crypt
+/**/manifest.yaml filter=chartmart-crypt diff=chartmart-crypt
+`
+
+const gitignore = `/**/.terraform
+/**/.terraform*
+/**/terraform.tfstate*
 `
 
 func Build(c *cli.Context) error {
@@ -77,24 +81,26 @@ func Init(c *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("\nlogged in as %s", email)
+
+	fmt.Printf("\nlogged in as %s\n", email)
 	config.Amend("token", result)
 
 	encryptConfig := [][]string{
 		{"filter.chartmart-crypt.smudge", "chartmart crypto decrypt"},
 		{"filter.chartmart-crypt.clean", "chartmart crypto encrypt"},
 		{"filter.chartmart-crypt.required", "true"},
+		{"diff.chartmart-crypt.textconv", "chartmart crypto decrypt"},
 	}
-	color.New(color.Bold).Printf("Creating git encryption filters\n")
+
+	color.New(color.Bold).Printf("Creating git encryption filters\n\n")
 	for _, conf := range encryptConfig {
 		if err := gitConfig(conf[0], conf[1]); err != nil {
 			panic(err)
 		}
 	}
-	gitattrs, _ := filepath.Abs(".gitattributes")
-	if err := ioutil.WriteFile(gitattrs, []byte(gitattributes), 0644); err != nil {
-		return err
-	}
+
+	utils.WriteFileIfNotPresent(".gitattributes", gitattributes)
+	utils.WriteFileIfNotPresent(".gitignore", gitignore)
 
 	color.New(color.FgGreen, color.Bold).Printf("Workspace is properly configured!")
 	return nil

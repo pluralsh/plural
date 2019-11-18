@@ -8,7 +8,6 @@ import (
 	"os/exec"
 	"bytes"
 	"path/filepath"
-	"fmt"
 	"strings"
 )
 
@@ -73,8 +72,10 @@ func handleDecrypt(c *cli.Context) error {
 		return err
 	}
 	if !bytes.HasPrefix(data, prefix) {
-		return fmt.Errorf("Not a valid chartmart encrypted file, %s", data)
+		os.Stdout.Write(data)
+		return nil
 	}
+
 	key, err := crypto.Materialize()
 	if err != nil {
 		return err

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/michaeljguarino/chartmart/api"
 	"github.com/michaeljguarino/chartmart/config"
 	"github.com/michaeljguarino/chartmart/utils"
@@ -32,5 +33,11 @@ func handleTerraformUpload(c *cli.Context) error {
 
 func handleHelmUpload(c *cli.Context) error {
 	conf := config.Read()
-	return utils.Cmd(&conf, "helm", "push", c.Args().Get(0), c.Args().Get(1))
+	pth, repo := c.Args().Get(0), c.Args().Get(1)
+
+	if err := utils.Cmd(&conf, "helm", "repo", "add", repo, fmt.Sprintf("cm://mart.piazzaapp.com/%s", repo));
+			err != nil {
+		return err
+	}
+	return utils.Cmd(&conf, "helm", "push", pth, repo)
 }

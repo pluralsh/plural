@@ -239,7 +239,7 @@ func (w *Workspace) InstallHelm() error {
 
 func (w *Workspace) Bounce() error {
 	repo := w.Installation.Repository
-	path, err := filepath.Abs(filepath.Join(repo.Name, "helm", "chartmart"))
+	path, err := filepath.Abs(filepath.Join(repo.Name, "helm", repo.Name))
 	if err != nil {
 		return err
 	}

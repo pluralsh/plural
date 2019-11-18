@@ -12,11 +12,13 @@ func pushCommands() []cli.Command {
 		{
 			Name:   "terraform",
 			Usage:  "pushes a terraform module",
+			ArgsUsage: "REPO path/to/module",
 			Action: handleTerraformUpload,
 		},
 		{
 			Name:   "helm",
 			Usage:  "pushes a helm chart",
+			ArgsUsage: "path/to/chart REPO",
 			Action: handleHelmUpload,
 		},
 	}

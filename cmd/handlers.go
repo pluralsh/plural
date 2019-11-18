@@ -24,7 +24,7 @@ const gitignore = `/**/.terraform
 /**/terraform.tfstate*
 `
 
-func Build(c *cli.Context) error {
+func build(c *cli.Context) error {
 	client := api.NewClient()
 	installations, _ := client.GetInstallations()
 	for _, installation := range installations {
@@ -42,7 +42,7 @@ func Build(c *cli.Context) error {
 	return nil
 }
 
-func Deploy(c *cli.Context) error {
+func deploy(c *cli.Context) error {
 	client := api.NewClient()
 	installations, _ := client.GetInstallations()
 	repoName := c.Args().Get(0)
@@ -70,7 +70,32 @@ func Deploy(c *cli.Context) error {
 	return nil
 }
 
-func Init(c *cli.Context) error {
+func bounce(c *cli.Context) error {
+	client := api.NewClient()
+	installations, _ := client.GetInstallations()
+	repoName := c.Args().Get(0)
+	dir, _ := os.Getwd()
+	for _, installation := range installations {
+		if installation.Repository.Name != repoName {
+			continue
+		}
+
+		color.New(color.FgYellow, color.Bold).Printf("bouncing deployments in %s\n", installation.Repository.Name)
+		workspace, err := wkspace.New(client, &installation)
+		if err != nil {
+			return err
+		}
+		workspace.Provider.KubeConfig()
+
+		os.Chdir(dir)
+		if err := workspace.Bounce(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func handleInit(c *cli.Context) error {
 	client := api.NewClient()
 	reader := bufio.NewReader(os.Stdin)
 	color.New(color.Bold).Printf("Enter your email: ")

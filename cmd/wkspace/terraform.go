@@ -3,7 +3,6 @@ package wkspace
 import (
 	"bytes"
 	"github.com/michaeljguarino/chartmart/api"
-	"github.com/michaeljguarino/chartmart/config"
 	"github.com/michaeljguarino/chartmart/utils"
 	"net/http"
 	"os"
@@ -98,11 +97,10 @@ func (w *Workspace) InstallTerraform() error {
 	}
 
 	os.Chdir(path)
-	conf := config.Read()
-	if err := utils.Cmd(&conf, "terraform", "init"); err != nil {
+	if err := utils.Cmd(w.Config, "terraform", "init"); err != nil {
 		return err
 	}
-	if err := utils.Cmd(&conf, "terraform", "apply", "-auto-approve"); err != nil {
+	if err := utils.Cmd(w.Config, "terraform", "apply", "-auto-approve"); err != nil {
 		return err
 	}
 	return nil

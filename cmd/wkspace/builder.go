@@ -6,6 +6,7 @@ import (
 	"github.com/michaeljguarino/chartmart/api"
 	"github.com/michaeljguarino/chartmart/provider"
 	"github.com/michaeljguarino/chartmart/utils"
+	"github.com/michaeljguarino/chartmart/config"
 	"golang.org/x/crypto/ssh/terminal"
 	"os"
 	"path"
@@ -19,6 +20,7 @@ type Workspace struct {
 	Installation   *api.Installation
 	Charts         []api.ChartInstallation
 	Terraform      []api.TerraformInstallation
+	Config  		   *config.Config
 }
 
 func New(client *api.Client, inst *api.Installation) (*Workspace, error) {
@@ -58,8 +60,15 @@ func New(client *api.Client, inst *api.Installation) (*Workspace, error) {
 			return nil, err
 		}
 	}
-
-	return &Workspace{string(pwd), prov, inst, ci, ti}, nil
+	conf := config.Read()
+	return &Workspace{
+		string(pwd),
+		prov,
+		inst,
+		ci,
+		ti,
+		&conf,
+	}, nil
 }
 
 func (wk *Workspace) Prepare() error {

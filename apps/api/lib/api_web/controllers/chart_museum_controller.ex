@@ -78,7 +78,9 @@ defmodule ApiWeb.ChartMuseumController do
     current_user = Guardian.Plug.current_resource(conn)
     case RepoPolicy.allow(conn.assigns.repo, current_user, :access) do
       {:ok, _} -> conn
-      _ -> ApiWeb.FallbackController.call(conn, {:error, :forbidden}) |> halt()
+      _ ->
+        ApiWeb.FallbackController.call(conn, {:error, :forbidden})
+        |> halt()
     end
   end
 

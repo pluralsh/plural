@@ -2,6 +2,7 @@ package wkspace
 
 import (
 	"bytes"
+	"fmt"
 	"github.com/michaeljguarino/chartmart/api"
 	"github.com/michaeljguarino/chartmart/utils"
 	"net/http"
@@ -112,6 +113,7 @@ func terraformPath(repo *api.Repository, tf *api.Terraform) string {
 }
 
 func Extract(tf *api.Terraform, dir string) error {
+	fmt.Printf("Unpacking %s\n", tf.Package)
 	resp, err := http.Get(tf.Package)
 	if err != nil {
 		return err

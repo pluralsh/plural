@@ -6,7 +6,6 @@ import (
 	"github.com/fatih/color"
 	"github.com/imdario/mergo"
 	"github.com/michaeljguarino/chartmart/api"
-	"github.com/michaeljguarino/chartmart/config"
 	"github.com/michaeljguarino/chartmart/utils"
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v2"
@@ -106,12 +105,11 @@ func (w *Workspace) CreateChartDependencies(name, dir string) error {
 }
 
 func (w *Workspace) FinalizeCharts() error {
-	conf := config.Read()
 	repo := w.Installation.Repository
 	repoUrl := repoUrl(&repo)
 
-	utils.Cmd(&conf, "helm", "repo", "add", repo.Name, repoUrl)
-	cmd := utils.MkCmd(&conf, "helm", "dependency", "update")
+	utils.Cmd(w.Config, "helm", "repo", "add", repo.Name, repoUrl)
+	cmd := utils.MkCmd(w.Config, "helm", "dependency", "update")
 
 	helmPath, err := filepath.Abs(filepath.Join(repo.Name, "helm", repo.Name))
 	if err != nil {
@@ -232,6 +230,14 @@ func (w *Workspace) CreateChart(name, dir string) (string, error) {
 }
 
 func (w *Workspace) InstallHelm() error {
+	w.Provider.KubeConfig()
+	if err := utils.Cmd(w.Config, "helm", "init", "--wait", "--service-account=tiller", "--client-only"); err != nil {
+		return err
+	}
+	return w.Bounce()
+}
+
+func (w *Workspace) Bounce() error {
 	repo := w.Installation.Repository
 	path, err := filepath.Abs(filepath.Join(repo.Name, "helm", "chartmart"))
 	if err != nil {
@@ -239,16 +245,8 @@ func (w *Workspace) InstallHelm() error {
 	}
 	color.New(color.FgYellow, color.Bold).Printf(
 		"helm upgrade --install --wait --namespace %s %s %s\n", repo.Name, repo.Name, path)
-	w.Provider.KubeConfig()
-	conf := config.Read()
-	if err := utils.Cmd(&conf, "helm", "init", "--wait", "--service-account=tiller", "--client-only"); err != nil {
-		return err
-	}
-	if err := utils.Cmd(&conf,
-		"helm", "upgrade", "--install", "--wait", "--namespace", repo.Name, repo.Name, path); err != nil {
-		return err
-	}
-	return nil
+	return utils.Cmd(w.Config,
+		"helm", "upgrade", "--install", "--wait", "--namespace", repo.Name, repo.Name, path)
 }
 
 func buildDependency(repo *api.Repository, chartInstallation *api.ChartInstallation) *dependency {

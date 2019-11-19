@@ -45,7 +45,7 @@ function Code({value, children, language}) {
 }
 
 const MARKDOWN_STYLING = {
-  p: {props: {size: 'small', margin: {top: 'xsmall', bottom: 'xsmall'}}},
+  p: {props: {size: 'small', style: {maxWidth: '100%'}, margin: {top: 'xsmall', bottom: 'xsmall'}}},
   h1: {props: {style: {borderBottom: '1px solid #eaecef', paddingBottom: '.3em', maxWidth: '100%'}, size: 'small', margin: {top: 'small', bottom: 'small'}}},
   h2: {props: {style: {borderBottom: '1px solid #eaecef', paddingBottom: '.3em', maxWidth: '100%'}, size: 'xsmall', margin: {top: 'small', bottom: 'small'}}},
   pre: {

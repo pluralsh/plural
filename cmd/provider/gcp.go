@@ -1,16 +1,14 @@
 package provider
 
 import (
-	"bufio"
 	"cloud.google.com/go/storage"
 	"context"
 	"fmt"
-	"github.com/fatih/color"
 	"github.com/michaeljguarino/chartmart/manifest"
+	"github.com/michaeljguarino/chartmart/utils"
 	"google.golang.org/api/option"
 	"os"
 	"os/exec"
-	"strings"
 )
 
 type GCPProvider struct {
@@ -34,18 +32,13 @@ func mkGCP() (*GCPProvider, error) {
 	if err != nil {
 		return nil, err
 	}
-	clr := color.New(color.Bold)
-	reader := bufio.NewReader(os.Stdin)
-	clr.Print("Enter the name of your cluster: ")
-	cluster, _ := reader.ReadString('\n')
-	clr.Print("Enter the name of its gcp project: ")
-	project, _ := reader.ReadString('\n')
-	clr.Print("Enter the name of a gcs bucket to use for state, eg: <yourprojectname>-tf-state: ")
-	bucket, _ := reader.ReadString('\n')
+	cluster, _ := utils.ReadLine("Enter the name of your cluster: ")
+	project, _ := utils.ReadLine("Enter the name of its gcp project: ")
+	bucket, _ := utils.ReadLine("Enter the name of a gcs bucket to use for state, eg: <yourprojectname>-tf-state: ")
 	provider := &GCPProvider{
-		strings.TrimSpace(cluster),
-		strings.TrimSpace(project),
-		strings.TrimSpace(bucket),
+		cluster,
+		project,
+		bucket,
 		client,
 		ctx,
 	}

@@ -1,8 +1,6 @@
 package main
 
 import (
-	"github.com/michaeljguarino/chartmart/api"
-	"github.com/michaeljguarino/chartmart/config"
 	"github.com/urfave/cli"
 	"log"
 	"math/rand"
@@ -21,6 +19,12 @@ func main() {
 			Name:    "build",
 			Aliases: []string{"b"},
 			Usage:   "builds your workspace",
+			Flags:   []cli.Flag {
+				cli.StringFlag {
+					Name:  "only",
+					Usage: "repository to (re)build",
+				},
+			},
 			Action:  build,
 		},
 		{
@@ -55,13 +59,13 @@ func main() {
 		{
 			Name:        "api",
 			Usage:       "inspect the chartmart api",
-			Subcommands: api.Commands(),
+			Subcommands: apiCommands(),
 		},
 		{
 			Name:        "config",
 			Aliases:     []string{"conf"},
 			Usage:       "reads/modifies cli configuration",
-			Subcommands: config.Commands(),
+			Subcommands: configCommands(),
 		},
 	}
 

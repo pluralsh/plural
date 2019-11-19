@@ -37,3 +37,16 @@ func (m *Manifest) Write(path string) error {
 
 	return ioutil.WriteFile(path, io, 0644)
 }
+
+func Read(path string) (*Manifest, error) {
+	contents, err := ioutil.ReadFile(path)
+	man := Manifest{}
+	if err != nil {
+		return &man, err
+	}
+	if err := yaml.Unmarshal(contents, &man); err != nil {
+		return &man, err
+	}
+
+	return &man, nil
+}

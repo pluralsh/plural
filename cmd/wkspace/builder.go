@@ -2,16 +2,14 @@ package wkspace
 
 import (
 	"fmt"
-	"github.com/fatih/color"
 	"github.com/michaeljguarino/chartmart/api"
 	"github.com/michaeljguarino/chartmart/provider"
 	"github.com/michaeljguarino/chartmart/utils"
 	"github.com/michaeljguarino/chartmart/config"
-	"golang.org/x/crypto/ssh/terminal"
+	"github.com/michaeljguarino/chartmart/manifest"
 	"os"
 	"path"
 	"path/filepath"
-	"syscall"
 )
 
 type Workspace struct {
@@ -32,8 +30,7 @@ func New(client *api.Client, inst *api.Installation) (*Workspace, error) {
 	if err != nil {
 		return nil, err
 	}
-	color.New(color.Bold).Print("Enter your master password: ")
-	pwd, err := terminal.ReadPassword(int(syscall.Stdin))
+	pwd, err := utils.ReadPwd("Enter your master password: ")
 	fmt.Println("")
 	if err != nil {
 		return nil, err
@@ -42,7 +39,7 @@ func New(client *api.Client, inst *api.Installation) (*Workspace, error) {
 	var prov provider.Provider
 	manifestPath := manifestPath(&inst.Repository)
 	if utils.Exists(manifestPath) {
-		manifest, err := ReadManifest(manifestPath)
+		manifest, err := manifest.Read(manifestPath)
 		if err != nil {
 			return nil, err
 		}

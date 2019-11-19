@@ -1,13 +1,64 @@
-package api
+package main
 
 import (
+	"github.com/michaeljguarino/chartmart/api"
 	"github.com/olekukonko/tablewriter"
 	"github.com/urfave/cli"
 	"os"
 )
 
+func apiCommands() []cli.Command {
+	return []cli.Command{
+		{
+			Name:  "list",
+			Usage: "lists chartmart resources",
+			Subcommands: []cli.Command{
+				{
+					Name:      "installations",
+					Usage:     "lists your installations",
+					ArgsUsage: "",
+					Action:    handleInstallations,
+				},
+				{
+					Name:      "charts",
+					Usage:     "lists charts for a repository",
+					ArgsUsage: "REPO_ID",
+					Action:    handleCharts,
+				},
+				{
+					Name:      "terraform",
+					Usage:     "lists terraform modules for a repository",
+					ArgsUsage: "REPO_ID",
+					Action:    handleTerraforma,
+				},
+				{
+					Name:      "versions",
+					Usage:     "lists versions of a chart",
+					ArgsUsage: "CHART_ID",
+					Action:    handleVersions,
+				},
+				{
+					Name:      "chartinstallations",
+					Aliases:   []string{"ci"},
+					Usage:     "lists chart installations for a repository",
+					ArgsUsage: "REPO_ID",
+					Action:    handleChartInstallations,
+				},
+				{
+					Name:      "terraforminstallations",
+					Aliases:   []string{"ti"},
+					Usage:     "lists terraform installations for a repository",
+					ArgsUsage: "REPO_ID",
+					Action:    handleTerraformInstallations,
+				},
+			},
+		},
+	}
+}
+
+
 func handleInstallations(c *cli.Context) error {
-	client := NewClient()
+	client := api.NewClient()
 	installations, err := client.GetInstallations()
 	if err != nil {
 		return err
@@ -24,7 +75,7 @@ func handleInstallations(c *cli.Context) error {
 }
 
 func handleCharts(c *cli.Context) error {
-	client := NewClient()
+	client := api.NewClient()
 	charts, err := client.GetCharts(c.Args().First())
 	if err != nil {
 		return err
@@ -40,7 +91,7 @@ func handleCharts(c *cli.Context) error {
 }
 
 func handleTerraforma(c *cli.Context) error {
-	client := NewClient()
+	client := api.NewClient()
 	tfs, err := client.GetTerraforma(c.Args().First())
 	if err != nil {
 		return err
@@ -56,7 +107,7 @@ func handleTerraforma(c *cli.Context) error {
 }
 
 func handleVersions(c *cli.Context) error {
-	client := NewClient()
+	client := api.NewClient()
 	versions, err := client.GetVersions(c.Args().First())
 
 	if err != nil {
@@ -73,7 +124,7 @@ func handleVersions(c *cli.Context) error {
 }
 
 func handleChartInstallations(c *cli.Context) error {
-	client := NewClient()
+	client := api.NewClient()
 	chartInstallations, err := client.GetChartInstallations(c.Args().First())
 
 	if err != nil {
@@ -90,7 +141,7 @@ func handleChartInstallations(c *cli.Context) error {
 }
 
 func handleTerraformInstallations(c *cli.Context) error {
-	client := NewClient()
+	client := api.NewClient()
 	terraformInstallations, err := client.GetTerraformInstallations(c.Args().First())
 
 	if err != nil {

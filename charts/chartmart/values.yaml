@@ -1,7 +1,7 @@
 replicaCount: 2
 
 image:
-  repository: gcr.io/piazza-247002/chartmart
+  repository: gcr.io/piazzaapp/chartmart
   tag: '0.1.0'
   pullPolicy: Always
 

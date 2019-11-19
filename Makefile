@@ -1,6 +1,6 @@
 .PHONY: help
 
-GCP_PROJECT ?= piazza-247002
+GCP_PROJECT ?= piazzaapp
 APP_NAME ?= chartmart
 APP_VSN ?= `cat VERSION`
 BUILD ?= `git rev-parse --short HEAD`

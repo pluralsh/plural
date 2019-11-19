@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"github.com/fatih/color"
 	"github.com/michaeljguarino/chartmart/api"
@@ -9,10 +8,7 @@ import (
 	"github.com/michaeljguarino/chartmart/wkspace"
 	"github.com/michaeljguarino/chartmart/utils"
 	"github.com/urfave/cli"
-	"golang.org/x/crypto/ssh/terminal"
 	"os"
-	"strings"
-	"syscall"
 )
 
 const gitattributes = `/**/helm/**/values.yaml filter=chartmart-crypt diff=chartmart-crypt
@@ -28,6 +24,10 @@ func build(c *cli.Context) error {
 	client := api.NewClient()
 	installations, _ := client.GetInstallations()
 	for _, installation := range installations {
+		if c.IsSet("only") && c.String("only") != installation.Repository.Name {
+			continue
+		}
+
 		repoName := installation.Repository.Name
 		color.New(color.FgYellow, color.Bold).Printf("Building workspace for %s\n", repoName)
 		workspace, err := wkspace.New(client, &installation)
@@ -97,12 +97,9 @@ func bounce(c *cli.Context) error {
 
 func handleInit(c *cli.Context) error {
 	client := api.NewClient()
-	reader := bufio.NewReader(os.Stdin)
-	color.New(color.Bold).Printf("Enter your email: ")
-	email, _ := reader.ReadString('\n')
-	color.New(color.Bold).Printf("Enter Password: ")
-	pwd, err := terminal.ReadPassword(int(syscall.Stdin))
-	result, err := client.Login(strings.TrimSpace(email), strings.TrimSpace(string(pwd)))
+	email, _ := utils.ReadLine("Enter your email: ")
+	pwd, _ := utils.ReadPwd("Enter password: ")
+	result, err := client.Login(email, pwd)
 	if err != nil {
 		return err
 	}

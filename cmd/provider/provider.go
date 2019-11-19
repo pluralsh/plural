@@ -1,11 +1,10 @@
 package provider
 
 import (
-	"bufio"
 	"fmt"
 	"github.com/fatih/color"
 	"github.com/michaeljguarino/chartmart/manifest"
-	"os"
+	"github.com/michaeljguarino/chartmart/utils"
 	"strconv"
 	"strings"
 )
@@ -27,9 +26,7 @@ func Select() (Provider, error) {
 	}
 	fmt.Println("")
 
-	reader := bufio.NewReader(os.Stdin)
-	color.New(color.Bold).Print("Your choice: ")
-	val, _ := reader.ReadString('\n')
+	val, _ := utils.ReadLine("Your choice: ")
 	i, err := strconv.Atoi(strings.TrimSpace(val))
 	if err != nil {
 		return nil, err

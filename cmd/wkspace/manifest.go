@@ -4,8 +4,6 @@ import (
 	"github.com/michaeljguarino/chartmart/api"
 	"github.com/michaeljguarino/chartmart/manifest"
 	"github.com/michaeljguarino/chartmart/utils"
-	"gopkg.in/yaml.v2"
-	"io/ioutil"
 )
 
 func (wk *Workspace) BuildManifest() *manifest.Manifest {
@@ -31,19 +29,6 @@ func (wk *Workspace) BuildManifest() *manifest.Manifest {
 		charts,
 		terraform,
 	}
-}
-
-func ReadManifest(path string) (*manifest.Manifest, error) {
-	contents, err := ioutil.ReadFile(path)
-	man := manifest.Manifest{}
-	if err != nil {
-		return &man, err
-	}
-	if err := yaml.Unmarshal(contents, &man); err != nil {
-		return &man, err
-	}
-
-	return &man, nil
 }
 
 func buildChartManifest(chartInstallation *api.ChartInstallation) *manifest.ChartManifest {

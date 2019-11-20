@@ -25,4 +25,10 @@ spec:
       - backend:
           serviceName: chartmart-api
           servicePort: http
+  - host: {{ .Values.ingress.wwwDns }}
+    http:
+      paths:
+      - backend:
+          serviceName: chartmart-www
+          servicePort: http
 {{- end }}

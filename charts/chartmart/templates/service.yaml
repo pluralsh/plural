@@ -38,3 +38,23 @@ spec:
   selector:
     app.kubernetes.io/name: chartmuseum
     app.kubernetes.io/instance: {{ .Release.Name }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chartmart-www
+  labels:
+    app: chartmart-www
+{{ include "chartmart.labels" . | indent 4 }}
+  annotations:
+    cloud.google.com/neg: '{"ingress": true}'
+spec:
+  type: NodePort
+  ports:
+  - port: {{ .Values.www.port }}
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector:
+    app.kubernetes.io/name: chartmart-www
+    app.kubernetes.io/instance: {{ .Release.Name }}

@@ -22,12 +22,14 @@ spec:
   - host: {{ .Values.ingress.dns }}
     http:
       paths:
-      - backend:
+      - path: /cm/*
+        backend:
           serviceName: chartmart-api
           servicePort: http
-  - host: {{ .Values.ingress.wwwDns }}
-    http:
-      paths:
+      - path: /gql
+        backend:
+          serviceName: chartmart-api
+          servicePort: http
       - backend:
           serviceName: chartmart-www
           servicePort: http

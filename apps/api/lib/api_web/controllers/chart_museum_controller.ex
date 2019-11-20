@@ -8,13 +8,13 @@ defmodule ApiWeb.ChartMuseumController do
   plug :authorize
 
   def index(conn, %{"repo" => repo}) do
-    url = Path.join([chartmuseum(), repo, "index.yaml"])
+    url = Path.join([chartmuseum(), "cm", repo, "index.yaml"])
 
     execute_proxy(:get, url, conn)
   end
 
   def get(conn, %{"repo" => repo, "chart" => chart}) do
-    url = Path.join([chartmuseum(), repo, "charts", chart])
+    url = Path.join([chartmuseum(), "cm", repo, "charts", chart])
 
     execute_proxy(:get, url, conn)
   end
@@ -22,7 +22,7 @@ defmodule ApiWeb.ChartMuseumController do
   def create_chart(conn, %{"repo" => repo} = params) do
     current_user = Guardian.Plug.current_resource(conn)
     opts = ReverseProxyPlug.init(response_mode: :buffer)
-    url = Path.join([chartmuseum(), "api", repo, "charts"])
+    url = Path.join([chartmuseum(), "cm", "api", repo, "charts"])
 
     Map.take(params, ["chart", "prov"])
     |> Charts.upload_chart(conn.assigns.repo, current_user, %{opts: opts, headers: proxy_headers(conn, url)})
@@ -33,7 +33,7 @@ defmodule ApiWeb.ChartMuseumController do
   end
 
   def create_prov(conn, %{"repo" => repo, "prov" => %{filename: file}}) do
-    url = Path.join([chartmuseum(), "api", repo, "prov"])
+    url = Path.join([chartmuseum(), "cm", "api", repo, "prov"])
     opts = ReverseProxyPlug.init([])
 
     HTTPoison.post(
@@ -46,25 +46,25 @@ defmodule ApiWeb.ChartMuseumController do
   end
 
   def delete(conn, %{"repo" => repo, "chart" => chart, "version" => v}) do
-    url = Path.join([chartmuseum(), "api", repo, "charts", chart, v])
+    url = Path.join([chartmuseum(), "cm", "api", repo, "charts", chart, v])
 
     execute_proxy(:delete, url, conn)
   end
 
   def list(conn, %{"repo" => repo}) do
-    url = Path.join([chartmuseum(), "api", repo, "charts"])
+    url = Path.join([chartmuseum(), "cm", "api", repo, "charts"])
 
     execute_proxy(:get, url, conn)
   end
 
   def list_versions(conn, %{"repo" => repo, "chart" => chart}) do
-    url = Path.join([chartmuseum(), "api", repo, "charts", chart])
+    url = Path.join([chartmuseum(), "cm", "api", repo, "charts", chart])
 
     execute_proxy(:get, url, conn)
   end
 
   def get_version(conn, %{"repo" => repo, "chart" => chart, "version" => version}) do
-    url = Path.join([chartmuseum(), "api", repo, "charts", chart, version])
+    url = Path.join([chartmuseum(), "cm", "api", repo, "charts", chart, version])
 
     execute_proxy(:get, url, conn)
   end

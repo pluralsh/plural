@@ -83,7 +83,7 @@ function Installation({repository, onUpdate, noHelm}) {
             <>
             <Text size='medium'>Installation</Text>
             <Box background='light-3' pad='small'>
-              <Text size='small'>helm repo add {repository.name} cm://{apiHost()}/{repository.name}</Text>
+              <Text size='small'>helm repo add {repository.name} cm://{apiHost()}/cm/{repository.name}</Text>
             </Box>
             </>
           )}

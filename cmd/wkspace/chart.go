@@ -132,7 +132,7 @@ func (w *Workspace) BuildChartValues() error {
 			return err
 		}
 		if err := tmpl.Execute(
-			&buf, map[string]interface{}{"Values": ctx, "MasterPassword": w.MasterPassword}); err != nil {
+			&buf, map[string]interface{}{"Values": ctx}); err != nil {
 			return err
 		}
 
@@ -244,9 +244,9 @@ func (w *Workspace) Bounce() error {
 		return err
 	}
 	color.New(color.FgYellow, color.Bold).Printf(
-		"helm upgrade --install --wait --namespace %s %s %s\n", repo.Name, repo.Name, path)
+		"helm upgrade --install --namespace %s %s %s\n", repo.Name, repo.Name, path)
 	return utils.Cmd(w.Config,
-		"helm", "upgrade", "--install", "--wait", "--namespace", repo.Name, repo.Name, path)
+		"helm", "upgrade", "--install", "--namespace", repo.Name, repo.Name, path)
 }
 
 func buildDependency(repo *api.Repository, chartInstallation *api.ChartInstallation) *dependency {
@@ -254,5 +254,5 @@ func buildDependency(repo *api.Repository, chartInstallation *api.ChartInstallat
 }
 
 func repoUrl(repo *api.Repository) string {
-	return "cm://mart.piazzaapp.com/" + repo.Name
+	return "cm://mart.piazzaapp.com/cm/" + repo.Name
 }

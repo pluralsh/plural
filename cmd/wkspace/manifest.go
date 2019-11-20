@@ -3,7 +3,6 @@ package wkspace
 import (
 	"github.com/michaeljguarino/chartmart/api"
 	"github.com/michaeljguarino/chartmart/manifest"
-	"github.com/michaeljguarino/chartmart/utils"
 )
 
 func (wk *Workspace) BuildManifest() *manifest.Manifest {
@@ -17,11 +16,9 @@ func (wk *Workspace) BuildManifest() *manifest.Manifest {
 	for i, ti := range wk.Terraform {
 		terraform[i] = *buildTerraformManifest(&ti)
 	}
-	hash := utils.HashPwd(wk.MasterPassword)
 	return &manifest.Manifest{
 		repository.Id,
 		repository.Name,
-		hash,
 		wk.Provider.Cluster(),
 		wk.Provider.Project(),
 		wk.Provider.Bucket(),

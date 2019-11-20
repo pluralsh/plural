@@ -115,6 +115,8 @@ spec:
           value: {{ .Release.Time }}
         - name: DEPTH
           value: '1'
+        - name: CONTEXT_PATH
+          value: '/cm'
         - name: STORAGE
           value: google
         - name: STORAGE_GOOGLE_BUCKET
@@ -129,11 +131,11 @@ spec:
           protocol: TCP
         livenessProbe:
           httpGet:
-            path: /health
+            path: /cm/health
             port: http
         readinessProbe:
           httpGet:
-            path: /health
+            path: /cm/health
             port: http
         volumeMounts:
         - name: gcp
@@ -176,7 +178,6 @@ spec:
         app.kubernetes.io/name: chartmart-www
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
-      serviceAccountName: chartmart
       containers:
       - name: www
         image: "{{ .Values.www.image }}:{{ .Values.image.tag }}"

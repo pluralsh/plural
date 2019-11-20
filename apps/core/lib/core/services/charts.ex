@@ -77,7 +77,7 @@ defmodule Core.Services.Charts do
       |> create_chart(repo_id, user)
     end)
     |> add_operation(:cm, fn _ ->
-      url = Path.join([chartmuseum(), "api", repo, "charts"])
+      url = Path.join([chartmuseum(), "cm", "api", repo, "charts"])
 
       opts = [timeout: :infinity, recv_timeout: :infinity] ++ context.opts
       HTTPoison.post(url, {:multipart, uploads}, context.headers, opts)

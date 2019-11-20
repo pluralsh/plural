@@ -1,7 +1,6 @@
 package wkspace
 
 import (
-	"fmt"
 	"github.com/michaeljguarino/chartmart/api"
 	"github.com/michaeljguarino/chartmart/provider"
 	"github.com/michaeljguarino/chartmart/utils"
@@ -13,7 +12,6 @@ import (
 )
 
 type Workspace struct {
-	MasterPassword string
 	Provider       provider.Provider
 	Installation   *api.Installation
 	Charts         []api.ChartInstallation
@@ -30,11 +28,6 @@ func New(client *api.Client, inst *api.Installation) (*Workspace, error) {
 	if err != nil {
 		return nil, err
 	}
-	pwd, err := utils.ReadPwd("Enter your master password: ")
-	fmt.Println("")
-	if err != nil {
-		return nil, err
-	}
 
 	var prov provider.Provider
 	manifestPath := manifestPath(&inst.Repository)
@@ -44,9 +37,6 @@ func New(client *api.Client, inst *api.Installation) (*Workspace, error) {
 			return nil, err
 		}
 
-		if !utils.VerifyPwd(manifest.Hash, string(pwd)) {
-			return nil, fmt.Errorf("invalid password")
-		}
 		prov, err = provider.FromManifest(manifest)
 		if err != nil {
 			return nil, err
@@ -59,7 +49,6 @@ func New(client *api.Client, inst *api.Installation) (*Workspace, error) {
 	}
 	conf := config.Read()
 	return &Workspace{
-		string(pwd),
 		prov,
 		inst,
 		ci,

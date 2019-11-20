@@ -15,7 +15,6 @@ admin:
 
 ingress:
   dns: {{ .Values.chartmart_dns }}
-  wwwDns: {{ .Values.chartmart_www_dns }}
 
 api:
   bucket: {{ .Values.assets_bucket }}

@@ -19,6 +19,7 @@ services:
       DEBUG: 1
       DEPTH: 1
       STORAGE: google
+      CONTEXT_PATH: '/cm'
       STORAGE_GOOGLE_BUCKET: "mguarino-charts"
       STORAGE_GOOGLE_PREFIX: ""
       GOOGLE_APPLICATION_CREDENTIALS: "/home/chartmuseum/.gcp/key.json"

@@ -46,7 +46,7 @@ defmodule ApiWeb.Router do
     end
   end
 
-  scope "/", ApiWeb do
+  scope "/cm", ApiWeb do
     pipe_through [:auth]
 
     get "/:repo/index.yaml", ChartMuseumController, :index

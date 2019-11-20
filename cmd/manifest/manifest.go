@@ -20,7 +20,6 @@ type TerraformManifest struct {
 type Manifest struct {
 	Id        string
 	Name      string
-	Hash      string
 	Cluster   string
 	Project   string
 	Bucket    string

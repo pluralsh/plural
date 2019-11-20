@@ -157,3 +157,56 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chartmart-www
+  labels:
+{{ include "chartmart.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.www.replicas }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: chartmart-www
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: chartmart-www
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      serviceAccountName: chartmart
+      containers:
+      - name: www
+        image: "{{ .Values.www.image }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: DEPLOYED_AT
+          value: {{ .Release.Time }}
+        ports:
+        - name: http
+          containerPort: {{ .Values.www.port }}
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+        resources:
+          {{- toYaml .Values.www.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

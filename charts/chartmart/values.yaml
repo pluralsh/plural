@@ -5,6 +5,10 @@ image:
   tag: '0.1.0'
   pullPolicy: Always
 
+www:
+  image: gcr.io/piazzaapp/chartmart-www
+  port: 80
+
 api:
   port: 4000
   bucket: chartmart-assets
@@ -31,6 +35,7 @@ service:
 ingress:
   enabled: true
   dns: mart.piazzaapp.com
+  wwwDns: chartmart.piazzaapp.com
   annotations:
     networking.gke.io/managed-certificates: chartmart-cert
 

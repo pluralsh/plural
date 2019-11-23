@@ -4,10 +4,21 @@ defmodule Core.Schema.ChartInstallation do
 
   schema "chart_installations" do
     belongs_to :installation, Installation
-    belongs_to :chart, Chart
-    belongs_to :version, Version
+    belongs_to :chart,        Chart
+    belongs_to :version,      Version
 
     timestamps()
+  end
+
+  def with_auto_upgrade(query \\ __MODULE__) do
+    from(ci in query,
+      join: inst in assoc(ci, :installation),
+      where: inst.auto_upgrade)
+  end
+
+  def ignore_version(query \\ __MODULE__, version_id) do
+    from(ci in query,
+      where: ci.version_id != ^version_id)
   end
 
   def for_chart(query \\ __MODULE__, chart_id) do

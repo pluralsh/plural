@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {Box, Text} from 'grommet'
+import {Box, Text, CheckBox} from 'grommet'
 import {Alert, Close} from 'grommet-icons'
 import {useMutation} from 'react-apollo'
 import Button from '../utils/Button'
@@ -19,9 +19,10 @@ function update(cache, repositoryId, installation) {
 
 function EditInstallation({installation, repository, onUpdate}) {
   const [ctx, setCtx] = useState(yaml.safeDump(installation.context || {}, null, 2))
+  const [autoUpgrade, setAutoUpgrade] = useState(installation.autoUpgrade)
   const [notif, setNotif] = useState(false)
   const [mutation, {loading, errors}] = useMutation(UPDATE_INSTALLATION, {
-    variables: {id: installation.id, attributes: {context: ctx}},
+    variables: {id: installation.id, attributes: {context: ctx, autoUpgrade}},
     update: (cache, {data: {updateInstallation}}) => {
       const func = onUpdate || update
       func(cache, repository.id, updateInstallation)
@@ -39,7 +40,7 @@ function EditInstallation({installation, repository, onUpdate}) {
         </Box>
       </Pill>
     )}
-    <Box gap='xsmall' fill='horizontal'>
+    <Box gap='small' fill='horizontal'>
       <Text size='medium'>Configuration</Text>
       <Box>
         <Editor lang='yaml' value={ctx} onChange={setCtx} />
@@ -49,6 +50,14 @@ function EditInstallation({installation, repository, onUpdate}) {
           <Alert size='15px' color='notif' />
           <Text size='small' color='notif'>Must be in json format</Text>
         </Box>)}
+      <Box direction='row' justify='end'>
+        <CheckBox
+          toggle
+          label='Auto Upgrade'
+          checked={autoUpgrade}
+          onChange={(e) => setAutoUpgrade(e.target.checked)}
+        />
+      </Box>
       <Box direction='row' justify='end'>
         <Button
           pad={{horizontal: 'medium', vertical: 'xsmall'}}

@@ -3,6 +3,7 @@ defmodule Core.Services.Charts do
   import Core.Policies.Chart
 
   alias Core.Services.Repositories
+  alias Core.PubSub
   alias Core.Schema.{
     Chart,
     User,
@@ -93,6 +94,12 @@ defmodule Core.Services.Charts do
       |> Core.Repo.update()
     end)
     |> execute()
+    |> case do
+      {:ok, %{sync: sync}} = res ->
+        notify(sync, :create)
+        res
+      error -> error
+    end
   end
 
   def sync_version(attrs, chart_id, version) do
@@ -164,4 +171,8 @@ defmodule Core.Services.Charts do
     Chart.changeset(chart, %{latest_version: v})
     |> Core.Repo.update()
   end
+
+  defp notify(%Version{} = v, :create),
+    do: handle_notify(PubSub.VersionCreated, v)
+  defp notify(error, _), do: error
 end

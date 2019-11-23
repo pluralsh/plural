@@ -66,6 +66,7 @@ type TerraformInstallation struct {
 type Installation struct {
 	Repository Repository
 	User       User
+	License    string
 	Context    map[string]interface{}
 }
 
@@ -107,6 +108,7 @@ var InstallationFragment = fmt.Sprintf(`
 	fragment InstallationFragment on Installation {
 		id
 		context
+		license
 		repository {
 			...RepositoryFragment
 		}

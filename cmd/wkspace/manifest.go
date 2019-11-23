@@ -23,6 +23,7 @@ func (wk *Workspace) BuildManifest() *manifest.Manifest {
 		wk.Provider.Project(),
 		wk.Provider.Bucket(),
 		wk.Provider.Name(),
+		wk.Installation.License,
 		charts,
 		terraform,
 	}

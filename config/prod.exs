@@ -8,3 +8,7 @@ config :api, ApiWeb.Endpoint,
 config :logger, level: :info
 
 config :goth, json: {:system, "GCP_CREDENTIALS"}
+
+config :core, :consumers, [
+  Core.PubSub.Consumers.Fanout
+]

@@ -1,0 +1,1 @@
+defmodule Core.PubSub.VersionCreated, do: use Piazza.PubSub.Event

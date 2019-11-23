@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {Box, ThemeContext} from 'grommet'
+import {Box, ThemeContext, CheckBox} from 'grommet'
 import {normalizeColor} from './colors'
 
 function RadioButton(props) {

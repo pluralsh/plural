@@ -1,6 +1,7 @@
 defmodule Core.Services.RepositoriesTest do
   use Core.SchemaCase, async: true
   alias Core.Services.Repositories
+  alias Piazza.Crypto.RSA
 
   describe "#create_repository" do
     test "It will create a repository for the user's publisher" do
@@ -9,6 +10,8 @@ defmodule Core.Services.RepositoriesTest do
       {:ok, repo} = Repositories.create_repository(%{name: "piazza"}, user)
 
       assert repo.name == "piazza"
+      assert is_binary(repo.public_key)
+      assert is_binary(repo.private_key)
     end
   end
 
@@ -73,6 +76,20 @@ defmodule Core.Services.RepositoriesTest do
       repo = insert(:repository)
 
       {:error, _} = Repositories.delete_repository(repo.id, insert(:user))
+    end
+  end
+
+  describe "#generate_license/1" do
+    test "It can generate an ecrypted license for an installation" do
+      publisher = insert(:publisher)
+      {:ok, repo} = Repositories.create_repository(%{name: "my repo"}, publisher.owner)
+
+      installation = insert(:installation, repository: repo)
+
+      {:ok, license} = Repositories.generate_license(installation)
+      {:ok, decoded} = RSA.decrypt(license, ExPublicKey.loads!(repo.public_key))
+
+      assert is_map(Jason.decode!(decoded))
     end
   end
 end

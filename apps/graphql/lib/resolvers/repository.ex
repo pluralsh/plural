@@ -6,8 +6,19 @@ defmodule GraphQl.Resolvers.Repository do
   def query(Installation, _), do: Installation
   def query(_, _), do: Repository
 
-  def resolve_repository(%{id: repo_id}, _),
-    do: {:ok, Repositories.get_repository!(repo_id)}
+  def resolve_public_key(repo, user) do
+    case Core.Policies.Repository.can?(user, repo, :edit) do
+      {:error, _} -> {:ok, nil}
+      _ -> {:ok, repo.public_key}
+    end
+  end
+
+  def resolve_repository(%{id: repo_id}, _) do
+    repo =
+      Repositories.get_repository!(repo_id)
+      |> Core.Repo.preload([:publisher])
+    {:ok, repo}
+  end
 
   def resolve_installation(%{id: repo_id}, %{context: %{current_user: user}}),
     do: {:ok, Repositories.get_installation(user.id, repo_id)}

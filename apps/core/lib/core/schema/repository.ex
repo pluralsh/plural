@@ -4,11 +4,13 @@ defmodule Core.Schema.Repository do
   alias Core.Schema.{Publisher, Installation}
 
   schema "repositories" do
-    field :name, :string, null: false
-    field :icon_id, :binary_id
-    field :icon, Core.Storage.Type
-    field :description, :string
+    field :name,          :string, null: false
+    field :icon_id,       :binary_id
+    field :icon,          Core.Storage.Type
+    field :description,   :string
     field :documentation, :binary
+    field :public_key,    :binary
+    field :private_key,   :binary
 
     belongs_to :publisher, Publisher
     has_many :installations, Installation
@@ -39,7 +41,16 @@ defmodule Core.Schema.Repository do
     |> cast(attrs, @valid)
     |> foreign_key_constraint(:publisher_id)
     |> unique_constraint(:name)
+    |> validate_required([:name])
     |> generate_uuid(:icon_id)
     |> cast_attachments(attrs, [:icon], allow_urls: true)
+  end
+
+  @keyvalid ~w(public_key private_key)a
+
+  def key_changeset(model, attrs \\ %{}) do
+    model
+    |> cast(attrs, @keyvalid)
+    |> validate_required([:public_key, :private_key])
   end
 end

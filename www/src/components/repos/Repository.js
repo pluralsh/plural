@@ -10,6 +10,8 @@ import Installation from './Installation'
 import CreateTerraform from './CreateTerraform'
 import {RepoForm} from './CreateRepository'
 import {BreadcrumbContext} from '../Chartmart'
+import Highlight from 'react-highlight'
+
 
 function Container({children, onClick}) {
   const [hover, setHover] = useState(false)
@@ -158,6 +160,16 @@ function TerraformTab({repositoryId, terraform, fetchMore}) {
     </Box>)
 }
 
+function RepoConfiguration({publicKey}) {
+  return (
+    <Box pad='small'>
+      <Highlight language='plaintext'>
+        {publicKey}
+      </Highlight>
+    </Box>
+  )
+}
+
 function RepoUpdate({repository}) {
   const [state, setState] = useState({name: repository.name, description: repository.description})
   const [image, setImage] = useState(null)
@@ -232,6 +244,11 @@ function Repository() {
                 fetchMore={fetchMore} />
             </Box>
           </Tab>
+          {repository.publicKey && (
+            <Tab title='Configuration'>
+              <RepoConfiguration {...repository} />
+            </Tab>
+          )}
           {repository.editable && (
             <Tab title='Edit'>
               <RepoUpdate repository={repository} />

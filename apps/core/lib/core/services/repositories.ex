@@ -3,6 +3,7 @@ defmodule Core.Services.Repositories do
   import Core.Policies.Repository
   alias Core.Services.Users
   alias Core.Schema.{Repository, Installation, User}
+  alias Piazza.Crypto.RSA
 
   def get_installation!(id),
     do: Core.Repo.get!(Installation, id)
@@ -19,9 +20,16 @@ defmodule Core.Services.Repositories do
   def create_repository(attrs, %User{} = user) do
     publisher = Users.get_publisher_by_owner!(user.id)
 
-    %Repository{publisher_id: publisher.id}
-    |> Repository.changeset(attrs)
-    |> Core.Repo.insert()
+    start_transaction()
+    |> add_operation(:repo, fn _ ->
+      %Repository{publisher_id: publisher.id}
+      |> Repository.changeset(attrs)
+      |> Core.Repo.insert()
+    end)
+    |> add_operation(:licensed, fn %{repo: repo} ->
+      generate_keys(repo)
+    end)
+    |> execute(extract: :licensed)
   end
 
   def update_repository(attrs, repo_id, %User{} = user) do
@@ -49,6 +57,22 @@ defmodule Core.Services.Repositories do
     |> Installation.changeset(attrs)
     |> allow(user, :edit)
     |> when_ok(:update)
+  end
+
+  def generate_license(%Installation{} = installation) do
+    %{repository: repo} = Core.Repo.preload(installation, [:repository])
+
+    Jason.encode!(installation.policy || %{free: true})
+    |> RSA.encrypt(ExPublicKey.loads!(repo.private_key))
+  end
+
+  def generate_keys(%Repository{} = repo) do
+    with {:ok, keypair} <- RSA.generate_keypair(),
+         {:ok, {priv, pub}} <- RSA.pem_encode(keypair) do
+      repo
+      |> Repository.key_changeset(%{private_key: priv, public_key: pub})
+      |> Core.Repo.update()
+    end
   end
 
   def authorize(repo_id, %User{} = user) when is_binary(repo_id) do

@@ -85,6 +85,40 @@ defmodule GraphQl.RepositoryQueriesTest do
       assert found["installation"]["user"]["id"] == user.id
       refute found["editable"]
     end
+
+    test "publishers can see their public keys" do
+      %{owner: user} = insert(:publisher)
+      {:ok, repo} = Core.Services.Repositories.create_repository(%{name: "my repo"}, user)
+
+      {:ok, %{data: %{"repository" => found}}} = run_query("""
+        query Repo($id: ID!) {
+          repository(id: $id) {
+            id
+            publicKey
+          }
+        }
+      """, %{"id" => repo.id}, %{current_user: user})
+
+      assert found["id"] == repo.id
+      assert found["publicKey"] == repo.public_key
+    end
+
+    test "nonpublishers cannot see public keys" do
+      %{owner: user} = insert(:publisher)
+      {:ok, repo} = Core.Services.Repositories.create_repository(%{name: "my repo"}, user)
+
+      {:ok, %{data: %{"repository" => found}}} = run_query("""
+        query Repo($id: ID!) {
+          repository(id: $id) {
+            id
+            publicKey
+          }
+        }
+      """, %{"id" => repo.id}, %{current_user: insert(:user)})
+
+      assert found["id"] == repo.id
+      refute found["publicKey"]
+    end
   end
 
   describe "search_repositories" do

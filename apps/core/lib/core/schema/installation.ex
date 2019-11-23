@@ -2,8 +2,25 @@ defmodule Core.Schema.Installation do
   use Piazza.Ecto.Schema
   alias Core.Schema.{Repository, User}
 
+  defmodule Policy do
+    use Piazza.Ecto.Schema
+
+    embedded_schema do
+      field :free, :boolean, default: true
+    end
+
+    @valid ~w(free)
+
+    def changeset(model, attrs \\ %{}) do
+      model
+      |> cast(attrs, @valid)
+    end
+  end
+
   schema "installations" do
     field :context, :map
+
+    embeds_one :policy, Policy, on_replace: :update
     belongs_to :user, User
     belongs_to :repository, Repository
 

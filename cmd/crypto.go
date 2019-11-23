@@ -4,6 +4,7 @@ import (
 	"github.com/michaeljguarino/chartmart/crypto"
 	"github.com/urfave/cli"
 	"io/ioutil"
+	"io"
 	"os"
 	"os/exec"
 	"bytes"
@@ -67,7 +68,20 @@ func handleEncrypt(c *cli.Context) error {
 }
 
 func handleDecrypt(c *cli.Context) error {
-	data, err := ioutil.ReadAll(os.Stdin)
+	var file io.Reader
+	if c.Args().Present() {
+		p, _ := filepath.Abs(c.Args().First())
+		f, err := os.Open(p)
+		defer f.Close()
+		if err != nil {
+			return err
+		}
+		file = f
+	} else {
+		file = os.Stdin
+	}
+
+	data, err := ioutil.ReadAll(file)
 	if err != nil {
 		return err
 	}

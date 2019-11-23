@@ -62,6 +62,10 @@ defmodule GraphQl.Schema.Types do
       repo, _, %{context: %{current_user: user}} -> Repository.editable(repo, user)
     end
 
+    field :public_key, :string, resolve: fn
+      repo, _, %{context: %{current_user: user}} -> Repository.resolve_public_key(repo, user)
+    end
+
     timestamps()
   end
 
@@ -97,6 +101,10 @@ defmodule GraphQl.Schema.Types do
     field :context,    :map
     field :repository, :repository, resolve: dataloader(Repository)
     field :user,       :user, resolve: dataloader(User)
+
+    field :license,    :string, resolve: fn
+      installation, _, _ -> Core.Services.Repositories.generate_license(installation)
+    end
 
     timestamps()
   end

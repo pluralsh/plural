@@ -21,4 +21,4 @@ The charmart workflow provides the following:
 * Automatic README extraction for documentation on the site
 
 
-In the future, I'll add some dependency validation, license key generation, and a managed docker repository authenticated using the same mechanism as chartmart itself (so public repos are not necessary).
+In the future, I'll add some dependency validation, license key generation, and a managed docker registry authenticated using the same mechanism as chartmart itself (so public repos are not necessary).

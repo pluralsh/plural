@@ -84,6 +84,7 @@ export const REPO_Q = gql`
     repository(id: $repositoryId) {
       ...RepoFragment
       editable
+      publicKey
       installation {
         ...InstallationFragment
       }

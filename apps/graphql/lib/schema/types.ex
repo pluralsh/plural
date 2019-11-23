@@ -97,10 +97,11 @@ defmodule GraphQl.Schema.Types do
   end
 
   object :installation do
-    field :id,         :id
-    field :context,    :map
-    field :repository, :repository, resolve: dataloader(Repository)
-    field :user,       :user, resolve: dataloader(User)
+    field :id,           :id
+    field :context,      :map
+    field :repository,   :repository, resolve: dataloader(Repository)
+    field :user,         :user, resolve: dataloader(User)
+    field :auto_upgrade, :boolean
 
     field :license,    :string, resolve: fn
       installation, _, _ -> Core.Services.Repositories.generate_license(installation)

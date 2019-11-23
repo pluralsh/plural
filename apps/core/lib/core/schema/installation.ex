@@ -19,9 +19,10 @@ defmodule Core.Schema.Installation do
 
   schema "installations" do
     field :context, :map
+    field :auto_upgrade, :boolean, default: false
 
-    embeds_one :policy, Policy, on_replace: :update
-    belongs_to :user, User
+    embeds_one :policy,     Policy, on_replace: :update
+    belongs_to :user,       User
     belongs_to :repository, Repository
 
     timestamps()
@@ -33,7 +34,7 @@ defmodule Core.Schema.Installation do
   def for_user(query \\ __MODULE__, user_id),
     do: from(i in query, where: i.user_id == ^user_id)
 
-  @valid ~w(user_id repository_id context)a
+  @valid ~w(user_id repository_id context auto_upgrade)a
 
   def changeset(model, attrs \\ %{}) do
     model

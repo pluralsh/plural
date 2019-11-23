@@ -3,10 +3,13 @@ defmodule Core.Application do
 
   def start(_type, _args) do
     children = [
-      Core.Repo
-    ]
+      Core.Repo,
+      Core.PubSub.Broadcaster,
+    ] ++ consumers()
 
     opts = [strategy: :one_for_one, name: Core.Supervisor]
     Supervisor.start_link(children, opts)
   end
+
+  defp consumers(), do: Application.get_env(:core, :consumers, [])
 end

@@ -19,6 +19,8 @@ export const InstallationFragment = gql`
   fragment InstallationFragment on Installation {
     id
     context
+    license
+    autoUpgrade
     repository {
       ...RepoFragment
     }

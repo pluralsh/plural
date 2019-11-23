@@ -13,19 +13,20 @@ defmodule GraphQl.Schema.Inputs do
 
   input_object :publisher_attributes do
     field :name,        :string
-    field :avatar,      :upload_or_url
     field :description, :string
+    field :avatar,      :upload_or_url
   end
 
   input_object :repository_attributes do
     field :name,          :string
-    field :icon,          :upload_or_url
     field :description,   :string
     field :documentation, :string
+    field :icon,          :upload_or_url
   end
 
   input_object :installation_attributes do
-    field :context, :yml
+    field :context,      :yml
+    field :auto_upgrade, :boolean
   end
 
   input_object :terraform_attributes do
@@ -36,7 +37,7 @@ defmodule GraphQl.Schema.Inputs do
   end
 
   input_object :chart_installation_attributes do
-    field :chart_id, :id
+    field :chart_id,   :id
     field :version_id, :id
   end
 

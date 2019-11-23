@@ -24,6 +24,7 @@ type Manifest struct {
 	Project   string
 	Bucket    string
 	Provider  string
+	License   string
 	Charts    []ChartManifest
 	Terraform []TerraformManifest
 }

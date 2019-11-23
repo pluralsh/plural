@@ -131,8 +131,9 @@ func (w *Workspace) BuildChartValues() error {
 		if err != nil {
 			return err
 		}
-		if err := tmpl.Execute(
-			&buf, map[string]interface{}{"Values": ctx}); err != nil {
+
+		vals := map[string]interface{}{"Values": ctx, "License": w.Installation.License}
+		if err := tmpl.Execute(&buf, vals); err != nil {
 			return err
 		}
 
@@ -144,6 +145,7 @@ func (w *Workspace) BuildChartValues() error {
 		values[chartInst.Chart.Name] = subVals
 		buf.Reset()
 	}
+
 	repo := w.Installation.Repository
 	dir, _ := filepath.Abs(repo.Name)
 	valuesFile := filepath.Join(dir, "helm", repo.Name, "values.yaml")
@@ -151,6 +153,7 @@ func (w *Workspace) BuildChartValues() error {
 	if err := mergo.Merge(&values, prevVals, mergo.WithOverride); err != nil {
     return err
 	}
+
 	io, err := yaml.Marshal(values)
 	if err != nil {
 		return err

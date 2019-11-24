@@ -1,6 +1,10 @@
 defmodule Core.Services.Users do
   use Core.Services.Base
-  alias Core.Schema.{User, Publisher}
+  alias Core.Schema.{
+    PersistedToken,
+    User,
+    Publisher
+  }
 
   def get_user(user_id), do: Core.Repo.get(User, user_id)
 
@@ -19,6 +23,11 @@ defmodule Core.Services.Users do
   def get_publisher_by_name!(name),
     do: Core.Repo.get_by!(Publisher, name: name)
 
+  def get_persisted_token(token) do
+    Core.Repo.get_by!(PersistedToken, token: token)
+    |> Core.Repo.preload([:user])
+  end
+
   def login_user(email, password) do
     get_user_by_email!(email)
     |> Argon2.check_pass(password)
@@ -26,6 +35,12 @@ defmodule Core.Services.Users do
       {:ok, user} -> {:ok, user}
       _ -> {:error, :invalid_password}
     end
+  end
+
+  def create_persisted_token(%User{} = user) do
+    %PersistedToken{}
+    |> PersistedToken.changeset(%{user_id: user.id})
+    |> Core.Repo.insert()
   end
 
   def create_user(attrs) do

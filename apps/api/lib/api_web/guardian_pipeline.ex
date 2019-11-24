@@ -3,6 +3,7 @@ defmodule ApiWeb.GuardianPipeline do
                               module: Core.Guardian,
                               error_handler: ApiWeb.Plug.AuthErrorHandler
 
+  plug Api.Plugs.VerifyPersistedToken
   plug Guardian.Plug.VerifySession
   plug Guardian.Plug.VerifyHeader, realm: "Bearer"
   # plug Guardian.Plug.EnsureAuthenticated

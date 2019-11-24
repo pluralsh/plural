@@ -67,4 +67,15 @@ defmodule Core.Services.UsersTest do
       {:error, :invalid_password} = Users.login_user(user.email, "incorrectpassword")
     end
   end
+
+  describe "#create_persisted_token/1" do
+    test "A user can create a persisted token for themselves" do
+      user = insert(:user)
+
+      {:ok, %{token: "cmt-" <> _} = token} = Users.create_persisted_token(user)
+
+      assert token.token
+      assert Users.get_persisted_token(token.token)
+    end
+  end
 end

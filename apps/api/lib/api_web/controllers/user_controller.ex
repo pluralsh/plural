@@ -2,6 +2,12 @@ defmodule ApiWeb.UserController do
   use ApiWeb, :controller
   alias Core.Services.Users
 
+  def me(conn, _) do
+    user = Guardian.Plug.current_resource(conn)
+
+    json(conn, user)
+  end
+
   def create(conn, params) do
     with {:ok, user} <- Users.create_user(params) do
       conn

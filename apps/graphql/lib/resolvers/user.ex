@@ -1,7 +1,7 @@
 defmodule GraphQl.Resolvers.User do
   use GraphQl.Resolvers.Base, model: Core.Schema.User
   alias Core.Services.Users
-  alias Core.Schema.Publisher
+  alias Core.Schema.{Publisher, PersistedToken}
 
   def query(Publisher, _), do: Publisher
   def query(_, _), do: User
@@ -20,6 +20,15 @@ defmodule GraphQl.Resolvers.User do
     Publisher.ordered()
     |> paginate(args)
   end
+
+  def list_tokens(args, %{context: %{current_user: user}}) do
+    PersistedToken.for_user(user.id)
+    |> PersistedToken.ordered()
+    |> paginate(args)
+  end
+
+  def create_token(_, %{context: %{current_user: user}}),
+    do: Users.create_persisted_token(user)
 
   def login_user(%{email: email, password: pwd}, _) do
     Users.login_user(email, pwd)

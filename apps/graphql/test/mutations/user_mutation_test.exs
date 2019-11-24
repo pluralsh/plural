@@ -126,4 +126,22 @@ defmodule GraphQl.UserMutationTest do
       assert update["name"] == "updated publisher"
     end
   end
+
+  describe "createToken" do
+    test "A user can create a token for themself" do
+      user = insert(:user)
+
+      {:ok, %{data: %{"createToken" => token}}} = run_query("""
+        mutation {
+          createToken {
+            id
+            token
+          }
+        }
+      """, %{}, %{current_user: user})
+
+      assert token["id"]
+      assert token["token"]
+    end
+  end
 end

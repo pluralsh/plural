@@ -66,4 +66,11 @@ defmodule Core.Factory do
       installation: build(:installation)
     }
   end
+
+  def persisted_token_factory do
+    %Schema.PersistedToken{
+      token: sequence(:token, &"token-#{&1}"),
+      user: build(:user)
+    }
+  end
 end

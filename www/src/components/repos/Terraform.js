@@ -1,5 +1,6 @@
 import React, {useState, useContext, useEffect} from 'react'
-import {Box, Text, Markdown, Tabs, Tab} from 'grommet'
+import {Box, Text, Markdown} from 'grommet'
+import Tabs, {TabHeader, TabHeaderItem, TabContent} from '../utils/Tabs'
 import {Alert, Close} from 'grommet-icons'
 import {useQuery, useMutation} from 'react-apollo'
 import {useParams} from 'react-router-dom'
@@ -35,7 +36,7 @@ const MARKDOWN_STYLING = {
 
 function TemplateView({valuesTemplate}) {
   return (
-    <Box style={{overflow: 'auto', maxHeight: '100%'}}>
+    <Box style={{overflow: 'auto', maxHeight: '100%'}} pad='small'>
       <Highlight language='tf'>
         {valuesTemplate || 'no values template'}
       </Highlight>
@@ -91,7 +92,7 @@ function TerraformHeader({id, name, description, installation, repository}) {
 
 function Readme({readme}) {
   return (
-    <Box gap='small' style={{maxHeight: '100%', overflow: 'auto'}}>
+    <Box gap='small' style={{maxHeight: '100%', overflow: 'auto'}} pad='small'>
       <Box>
         <Markdown components={MARKDOWN_STYLING}>
           {readme || 'no readme'}
@@ -144,8 +145,8 @@ function EditDependencies({id, dependencies}) {
         </Box>
       </Pill>
     )}
-    <Box gap='xsmall' fill='horizontal'>
-      <Text size='medium'>Configuration</Text>
+    <Box gap='xsmall' fill='horizontal' pad='small'>
+      <Text size='medium'>Dependencies</Text>
       <Box>
         <Editor lang='yaml' value={deps} onChange={setDeps} />
       </Box>
@@ -220,21 +221,35 @@ function Terraform() {
     <Box pad='small' direction='row' height="100%">
       <Box width={`${width}%`} pad='small'>
         <TerraformHeader {...terraformModule} />
-        <Tabs justify='start' flex>
-          <Tab title='Readme'>
+        <Tabs defaultTab='readme'>
+          <TabHeader>
+            <TabHeaderItem name='readme'>
+              <Text size='small' style={{fontWeight: 500}}>Readme</Text>
+            </TabHeaderItem>
+            <TabHeaderItem name='configuration'>
+              <Text size='small' style={{fontWeight: 500}}>Configuration</Text>
+            </TabHeaderItem>
+            <TabHeaderItem name='dependencies'>
+              <Text size='small' style={{fontWeight: 500}}>Dependencies</Text>
+            </TabHeaderItem>
+            {terraformModule.editable && (
+              <TabHeaderItem name='edit'>
+                <Text size='small' style={{fontWeight: 500}}>Edit</Text>
+              </TabHeaderItem>
+            )}
+          </TabHeader>
+          <TabContent name='readme'>
             <Readme {...terraformModule} />
-          </Tab>
-          <Tab title='Configuration'>
+          </TabContent>
+          <TabContent name='configuration'>
             <TemplateView {...terraformModule} />
-          </Tab>
-          <Tab title='Dependencies'>
+          </TabContent>
+          <TabContent name='dependencies'>
             <EditDependencies {...terraformModule} />
-          </Tab>
-          {terraformModule.editable && (
-            <Tab title='Edit'>
-              <UpdateTerraform {...terraformModule} />
-            </Tab>
-          )}
+          </TabContent>
+          <TabContent name='edit'>
+            <UpdateTerraform {...terraformModule} />
+          </TabContent>
         </Tabs>
       </Box>
       <Box pad='small' width={`${100 - width}%`} gap='small'>

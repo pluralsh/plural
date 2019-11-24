@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'
-import {Box, Text, Anchor, Markdown, Tabs, Tab} from 'grommet'
+import {Box, Text, Anchor, Markdown} from 'grommet'
+import Tabs, {TabHeader, TabHeaderItem, TabContent} from '../utils/Tabs'
 import {useQuery, useMutation} from 'react-apollo'
 import {useParams} from 'react-router-dom'
 import Scroller from '../utils/Scroller'
@@ -56,7 +57,7 @@ const MARKDOWN_STYLING = {
 
 function TemplateView({valuesTemplate}) {
   return (
-    <Box style={{overflow: 'auto', maxHeight: '100%'}}>
+    <Box style={{overflow: 'auto', maxHeight: '100%'}} pad='small'>
       <Highlight language='yaml'>
         {valuesTemplate || 'no values template'}
       </Highlight>
@@ -113,7 +114,7 @@ function ChartHeader({helm, chart, version, chartInstallation, id, installation}
 
 function ChartReadme({readme}) {
   return (
-    <Box gap='small' style={{maxHeight: '100%', overflow: 'auto'}}>
+    <Box gap='small' pad='small' style={{maxHeight: '100%', overflow: 'auto'}}>
       <Box>
         <Markdown components={MARKDOWN_STYLING}>
           {readme || 'no readme'}
@@ -161,13 +162,21 @@ function Chart() {
     <Box pad='small' direction='row' height="100%">
       <Box width={`${width}%`} pad='small'>
         <ChartHeader {...currentVersion} chartInstallation={data.chart.installation} installation={repository.installation} />
-        <Tabs justify='start' flex onActive={(tab) => { console.log(tab); setEdit(tab === 1) }}>
-          <Tab title='Readme'>
+        <Tabs defaultTab='readme' onTabChange={(tab) => setEdit(tab === 'configuration')}>
+          <TabHeader>
+            <TabHeaderItem name='readme'>
+              <Text style={{fontWeight: 500}} size='small'>Readme</Text>
+            </TabHeaderItem>
+            <TabHeaderItem name='configuration'>
+              <Text style={{fontWeight: 500}} size='small'>Configuration</Text>
+            </TabHeaderItem>
+          </TabHeader>
+          <TabContent name='readme'>
             <ChartReadme {...currentVersion} />
-          </Tab>
-          <Tab title='Configuration'>
+          </TabContent>
+          <TabContent name='configuration'>
             <TemplateView {...currentVersion} />
-          </Tab>
+          </TabContent>
         </Tabs>
       </Box>
       <Box pad='small' width={`${100 - width}%`} gap='small'>

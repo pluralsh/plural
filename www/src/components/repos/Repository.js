@@ -1,9 +1,11 @@
 import React, {useState, useContext, useEffect} from 'react'
-import {Box, Text, Tabs, Tab, Anchor} from 'grommet'
-import {FormPrevious} from 'grommet-icons'
+import {Box, Text} from 'grommet'
 import {useQuery, useMutation} from 'react-apollo'
 import {useParams, useHistory} from 'react-router-dom'
 import Scroller from '../utils/Scroller'
+import {SecondaryButton} from '../utils/Button'
+import Modal, {ModalHeader} from '../utils/Modal'
+import Tabs, {TabHeader, TabHeaderItem, TabContent} from '../utils/Tabs'
 import {REPO_Q, UPDATE_REPO} from './queries'
 import {DEFAULT_CHART_ICON, DEFAULT_TF_ICON} from './constants'
 import Installation from './Installation'
@@ -13,7 +15,7 @@ import {BreadcrumbContext} from '../Chartmart'
 import Highlight from 'react-highlight'
 
 
-function Container({children, onClick}) {
+function Container({children, onClick, hasNext}) {
   const [hover, setHover] = useState(false)
 
   return (
@@ -24,21 +26,19 @@ function Container({children, onClick}) {
       style={{cursor: 'pointer'}}
       background={hover ? 'light-2' : null}
       pad='small'
-      margin={{bottom: 'small'}}
       direction='row'
-      gap='small'
-      border
-      round='xsmall'>
+      border={hasNext ? 'bottom' : null}
+      gap='small'>
       {children}
     </Box>
   )
 }
 
 
-function Chart({chart}) {
+function Chart({chart, hasNext}) {
   let history = useHistory()
   return (
-    <Container onClick={() => history.push(`/charts/${chart.id}`)}>
+    <Container onClick={() => history.push(`/charts/${chart.id}`)} hasNext={hasNext}>
       <Box width='50px' heigh='50px'>
         <img alt='' width='50px' height='50px' src={chart.icon || DEFAULT_CHART_ICON} />
       </Box>
@@ -54,10 +54,10 @@ function Chart({chart}) {
   )
 }
 
-function Tf({terraform}) {
+function Tf({terraform, hasNext}) {
   let history = useHistory()
   return (
-    <Container onClick={() => history.push(`/terraform/${terraform.id}`)}>
+    <Container onClick={() => history.push(`/terraform/${terraform.id}`)} hasNext={hasNext}>
       <Box width='50px' heigh='50px'>
         <img alt='' width='50px' height='50px' src={DEFAULT_TF_ICON} />
       </Box>
@@ -78,7 +78,7 @@ function Charts({edges, pageInfo, fetchMore}) {
     <Scroller id='charts'
       edges={edges}
       style={{overflow: 'auto', height: '100%', width: '100%'}}
-      mapper={({node}) => <Chart key={node.id} chart={node} />}
+      mapper={({node}, next) => <Chart key={node.id} chart={node} hasNext={!!next.node} />}
       emptyState={<Text size='medium'>No charts uploaded yet</Text>}
       onLoadMore={() => {
         if (!pageInfo.hasNextPage) return
@@ -107,7 +107,7 @@ function Terraform({edges, pageInfo, fetchMore}) {
     <Scroller id='terraform'
       edges={edges}
       style={{overflow: 'auto', height: '100%', width: '100%'}}
-      mapper={({node}) => <Tf key={node.id} terraform={node} />}
+      mapper={({node}, next) => <Tf key={node.id} terraform={node} hasNext={!!next.node} />}
       emptyState={<Text size='medium'>No terraform modules uploaded yet</Text>}
       onLoadMore={() => {
         if (!pageInfo.hasNextPage) return
@@ -131,36 +131,22 @@ function Terraform({edges, pageInfo, fetchMore}) {
   )
 }
 
-function TerraformCreator({repositoryId, onReturn}) {
+function TerraformCreateModal({repositoryId}) {
   return (
-    <Box>
-      <CreateTerraform repositoryId={repositoryId} />
-      <Box direction='row' align='center' gap='xsmall'>
-        <FormPrevious size='15px'/>
-        <Anchor onClick={onReturn}>
-          Return
-        </Anchor>
+    <Modal target={<SecondaryButton round='xsmall' label='Create' />}>
+    {setOpen => (
+      <Box width='40vw'>
+        <ModalHeader text='Create Terraform Module' setOpen={setOpen} />
+        <Box pad='small'>
+        <CreateTerraform repositoryId={repositoryId} onCreate={() => setOpen(false)} />
+        </Box>
       </Box>
-    </Box>
+    )}
+    </Modal>
   )
 }
 
-function TerraformTab({repositoryId, terraform, fetchMore}) {
-  const [create, setCreate] = useState(false)
-
-  return create ?
-    <TerraformCreator repositoryId={repositoryId} onReturn={() => setCreate(false)} /> :
-    (<Box>
-      <Box margin={{bottom: 'small'}} direction='row' justify='end'>
-        <Anchor onClick={() => setCreate(true)}>
-          Create more
-        </Anchor>
-      </Box>
-      <Terraform {...terraform} fetchMore={fetchMore} />
-    </Box>)
-}
-
-function RepoConfiguration({publicKey}) {
+function RepoCredentials({publicKey}) {
   return (
     <Box pad='small'>
       <Highlight language='plaintext'>
@@ -206,6 +192,7 @@ function Repository() {
   const {repositoryId} = useParams()
   const {loading, data, fetchMore} = useQuery(REPO_Q, {variables: {repositoryId}})
   const {setBreadcrumbs} = useContext(BreadcrumbContext)
+  const [tab, setTab] = useState(null)
   useEffect(() => {
     if (!data) return
     const {repository} = data
@@ -230,30 +217,37 @@ function Repository() {
             <Text size='small'>{repository.description}</Text>
           </Box>
         </Box>
-        <Tabs justify='start' flex>
-          <Tab title='Charts'>
-            <Box pad='small'>
-              <Charts {...charts} fetchMore={fetchMore} />
-            </Box>
-          </Tab>
-          <Tab title='Terraform'>
-            <Box pad='small' gap='small'>
-              <TerraformTab
-                terraform={terraform}
-                repositoryId={repositoryId}
-                fetchMore={fetchMore} />
-            </Box>
-          </Tab>
-          {repository.publicKey && (
-            <Tab title='Configuration'>
-              <RepoConfiguration {...repository} />
-            </Tab>
-          )}
-          {repository.editable && (
-            <Tab title='Edit'>
-              <RepoUpdate repository={repository} />
-            </Tab>
-          )}
+        <Tabs defaultTab='charts' onTabChange={setTab} headerEnd={tab === 'terraform' ? <TerraformCreateModal /> : null}>
+          <TabHeader>
+            <TabHeaderItem name='charts'>
+              <Text style={{fontWeight: 500}} size='small'>Charts</Text>
+            </TabHeaderItem>
+            <TabHeaderItem name='terraform'>
+              <Text style={{fontWeight: 500}} size='small'>Terraform</Text>
+            </TabHeaderItem>
+            {repository.publicKey && (
+              <TabHeaderItem name='credentials'>
+                <Text style={{fontWeight: 500}} size='small'>Credentials</Text>
+              </TabHeaderItem>
+            )}
+            {repository.editable && (
+              <TabHeaderItem name='edit'>
+                <Text style={{fontWeight: 500}} size='small'>Edit</Text>
+              </TabHeaderItem>
+            )}
+          </TabHeader>
+          <TabContent name='charts'>
+            <Charts {...charts} fetchMore={fetchMore} />
+          </TabContent>
+          <TabContent name='terraform'>
+            <Terraform {...terraform} fetchMore={fetchMore} />
+          </TabContent>
+          <TabContent name='credentials'>
+            <RepoCredentials {...repository} />
+          </TabContent>
+          <TabContent name='edit'>
+            <RepoUpdate repository={repository} />
+          </TabContent>
         </Tabs>
       </Box>
       <Box pad='small' width='40%'>

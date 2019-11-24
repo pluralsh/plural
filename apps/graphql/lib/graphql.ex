@@ -34,6 +34,11 @@ defmodule GraphQl do
       resolve fn _, %{context: %{current_user: user}} -> {:ok, user} end
     end
 
+    connection field :tokens, node_type: :persisted_token do
+      middleware GraphQl.Middleware.Authenticated
+      resolve &User.list_tokens/2
+    end
+
     field :publisher, :publisher do
       middleware GraphQl.Middleware.Authenticated
       arg :id, :id
@@ -134,6 +139,11 @@ defmodule GraphQl do
       arg :password, non_null(:string)
 
       resolve safe_resolver(&User.login_user/2)
+    end
+
+    field :create_token, :persisted_token do
+      middleware GraphQl.Middleware.Authenticated
+      resolve safe_resolver(&User.create_token/2)
     end
 
     field :signup, :user do

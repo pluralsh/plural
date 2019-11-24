@@ -34,6 +34,8 @@ defmodule ApiWeb.Router do
   scope "/mart", ApiWeb do
     pipe_through [:api, :auth]
 
+    get "/me", UserController, :me
+
     post "/publishers", UserController, :create_publisher
 
     resources "/charts", ChartController, only: [:create] do

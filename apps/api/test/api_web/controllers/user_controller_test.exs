@@ -1,5 +1,6 @@
 defmodule ApiWeb.UserControllerTest do
   use ApiWeb.ConnCase, async: true
+  alias Core.Services.Users
 
   describe "#signup" do
     test "It will create a new user", %{conn: conn} do
@@ -49,6 +50,19 @@ defmodule ApiWeb.UserControllerTest do
 
       assert result["name"] == "Publisher"
       assert result["owner_id"] == user.id
+    end
+  end
+
+  describe "#me" do
+    test "It can authorize with persisted tokens", %{conn: conn} do
+      user = insert(:user)
+      {:ok, token} = Users.create_persisted_token(user)
+      path = Routes.user_path(conn, :me)
+
+      conn
+      |> Plug.Conn.put_req_header("authorization", "Bearer #{token.token}")
+      |> get(path)
+      |> json_response(200)
     end
   end
 

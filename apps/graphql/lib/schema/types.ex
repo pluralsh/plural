@@ -30,6 +30,13 @@ defmodule GraphQl.Schema.Types do
     timestamps()
   end
 
+  object :persisted_token do
+    field :id,    :id
+    field :token, :string
+
+    timestamps()
+  end
+
   object :publisher do
     field :id,           :id
     field :name,         non_null(:string)
@@ -160,4 +167,5 @@ defmodule GraphQl.Schema.Types do
   connection node_type: :terraform
   connection node_type: :terraform_installation
   connection node_type: :chart_installation
+  connection node_type: :persisted_token
 end

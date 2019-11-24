@@ -7,6 +7,7 @@ defmodule Core.Guardian do
     do: {:ok, "user:#{id}"}
   def subject_for_token(_, _), do: {:error, :invalid_argument}
 
+  def resource_from_claims(%{"user" => user}), do: {:ok, user}
   def resource_from_claims(%{"sub" => "user:" <> id}) do
     case Users.get_user(id) do
       %User{} = user -> {:ok, user}

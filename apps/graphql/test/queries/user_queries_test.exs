@@ -77,4 +77,26 @@ defmodule GraphQl.UserQueriesTest do
              |> ids_equal(publishers)
     end
   end
+
+  describe "tokens" do
+    test "It will list tokens for a user" do
+      user = insert(:user)
+      tokens = insert_list(3, :persisted_token, user: user)
+
+      {:ok, %{data: %{"tokens" => found}}} = run_query("""
+        query {
+          tokens(first: 5) {
+            edges {
+              node {
+                id
+              }
+            }
+          }
+        }
+      """, %{}, %{current_user: user})
+
+      assert from_connection(found)
+             |> ids_equal(tokens)
+    end
+  end
 end

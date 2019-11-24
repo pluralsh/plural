@@ -1,7 +1,7 @@
 import React, {useState, useRef} from 'react'
 import {useHistory} from 'react-router-dom'
 import {Box, Text, Drop} from 'grommet'
-import {Book, Logout} from 'grommet-icons'
+import {Book, Logout, User} from 'grommet-icons'
 import Avatar from './Avatar'
 import HoveredBackground from '../utils/HoveredBackground'
 import MenuItem from '../utils/MenuItem'
@@ -44,6 +44,7 @@ function Me({me}) {
       <Drop align={{top: 'bottom'}} target={dropRef.current} onClickOutside={() => setOpen(false)}>
         <Box gap='xxsmall' pad={{top: 'xxsmall'}}>
           <DropdownItem icon={Book} text="Edit publisher" onClick={() => history.push('/publishers/mine')} />
+          <DropdownItem icon={User} text="Edit user" onClick={() => history.push('/me/edit')} />
           <Box border='top' pad={{vertical: 'xxsmall'}}>
             <MenuItem onClick={() => {
               wipeToken()

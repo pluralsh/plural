@@ -10,6 +10,14 @@ export const UserFragment = gql`
   }
 `;
 
+export const TokenFragment = gql`
+  fragment TokenFragment on PersistedToken {
+    id
+    token
+    insertedAt
+  }
+`;
+
 export const PublisherFragment = gql`
   fragment PublisherFragment on Publisher {
     id

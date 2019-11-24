@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import {Box, Text} from 'grommet'
-import {Copy} from 'grommet-icons'
+import {Copy, Close} from 'grommet-icons'
 import {CopyToClipboard} from 'react-copy-to-clipboard'
 import Pill from './Pill'
 
@@ -25,8 +25,9 @@ function Copyable(props) {
         style={{cursor: 'pointer'}}
         direction='row'
         align='center'
-        border={hover ? 'full' : null}
+        border={hover && !props.noBorder ? 'full' : null}
         round='xsmall'
+        gap='xsmall'
         pad={hover ? {horizontal: 'xsmall'} : null}>
         <Text size='small'>{trimmed(props.text)}</Text>
         {hover && (
@@ -38,7 +39,10 @@ function Copyable(props) {
     </CopyToClipboard>
     {display && (
       <Pill background='status-ok' onClose={() => setDisplay(false)}>
-        <Text>{props.pillText}</Text>
+        <Box direction='row' align='center' gap='small'>
+          <Text>{props.pillText}</Text>
+          <Close style={{cursor: 'pointer'}} size='15px' onClick={() => setDisplay(false)} />
+        </Box>
       </Pill>
     )}
     </>

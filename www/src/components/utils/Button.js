@@ -4,15 +4,14 @@ import {BeatLoader} from 'react-spinners'
 
 const BUTTON_PAD = {horizontal: 'small', vertical: 'xsmall'}
 
-export function SecondaryButton(props) {
+export function SecondaryButton({onClick, label, pad, ...rest}) {
   const [hover, setHover] = useState(null)
-  const {onClick, label, pad, ...rest} = props
   return (
     <Box
       style={{cursor: 'pointer'}}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      onClick={props.onClick}
+      onClick={onClick}
       direction='row'
       border
       align='center'

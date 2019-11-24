@@ -9,6 +9,7 @@ import Toolbar from './Toolbar'
 import Repository from './repos/Repository'
 import Chart from './repos/Chart'
 import Terraform from './repos/Terraform'
+import EditUser from './users/EditUser'
 import Breadcrumbs from './utils/Breadcrumbs'
 
 const TOOLBAR_SIZE = '55px'
@@ -40,6 +41,7 @@ function Chartmart(props) {
               <Route path='/repositories/:repositoryId' component={Repository} />
               <Route path='/charts/:chartId' component={Chart} />
               <Route path='/terraform/:tfId' component={Terraform} />
+              <Route path='/me/edit' component={EditUser} />
               <Route path='/' component={Publishers} />
             </Switch>
           </Box>

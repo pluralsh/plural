@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react'
+import React, {useContext, useState, useEffect} from 'react'
 import {Box, Anchor, Text} from 'grommet'
 import {FormNext, FormDown} from 'grommet-icons'
 import {useMutation, useQuery} from 'react-apollo'
@@ -11,7 +11,7 @@ import Collapsible from 'react-collapsible'
 import Scroller from '../utils/Scroller'
 import moment from 'moment'
 import Copyable from '../utils/Copyable'
-
+import {BreadcrumbContext} from '../Chartmart'
 
 const LABEL_WIDTH = '90px'
 const CELL_WIDTH='200px'
@@ -145,10 +145,16 @@ export default function EditUser() {
   const [mutation, {loading}] = useMutation(UPDATE_USER, {
     variables: {attributes}
   })
+  const {setBreadcrumbs} = useContext(BreadcrumbContext)
+  useEffect(() => {
+    setBreadcrumbs([
+      {url: `/me/edit`, text: me.email}
+    ])
+  }, [setBreadcrumbs])
 
   return (
     <Box direction='row' gap='small'>
-      <Box width='50%' gap='small' pad='medium'>
+      <Box width='70%' gap='small' pad='medium'>
         <InputField
           label='name'
           labelWidth={LABEL_WIDTH}
@@ -187,7 +193,7 @@ export default function EditUser() {
           <Tokens />
         </Box>
       </Box>
-      <Box width='50%' pad='small'>
+      <Box width='30%' pad='small'>
         <Box direction='row' align='center' gap='small'>
           <Avatar user={me} size='100px' />
           <Box>

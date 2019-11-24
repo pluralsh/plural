@@ -20,7 +20,6 @@ export function TerraformForm({label, update, loading, mutation, state, setState
           <Box
             width='70px'
             height='70px'
-            background='light-2'
             border
             pad='xsmall'
             align='center'
@@ -56,7 +55,7 @@ export function TerraformForm({label, update, loading, mutation, state, setState
   )
 }
 
-function CreateTerraform({repositoryId, query, vars}) {
+function CreateTerraform({repositoryId, query, vars, onCreate}) {
   const [state, setState] = useState({name: "", description: ""})
   const [terraform, setTerraform] = useState(null)
   const [mutation, {loading}] = useMutation(query || CREATE_TF, {
@@ -70,6 +69,7 @@ function CreateTerraform({repositoryId, query, vars}) {
           edges: [{__typename: 'TerraformEdge', node: createTerraform}, ...prev.terraform.edges]
         }
       }})
+      onCreate && onCreate()
     }
   })
 

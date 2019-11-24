@@ -4,10 +4,10 @@ import {Alert, Close} from 'grommet-icons'
 import {useMutation} from 'react-apollo'
 import Button from '../utils/Button'
 import {INSTALL_REPO, UPDATE_INSTALLATION, REPO_Q} from './queries'
-import {apiHost} from '../../helpers/hostname'
 import Editor from '../utils/Editor'
 import Pill from '../utils/Pill'
 import yaml from 'js-yaml'
+import Highlight from 'react-highlight'
 
 function update(cache, repositoryId, installation) {
   const prev = cache.readQuery({ query: REPO_Q, variables: {repositoryId} })
@@ -91,9 +91,10 @@ function Installation({repository, onUpdate, noHelm}) {
           {!noHelm && (
             <>
             <Text size='medium'>Installation</Text>
-            <Box background='light-3' pad='small'>
-              <Text size='small'>helm repo add {repository.name} cm://{apiHost()}/cm/{repository.name}</Text>
-            </Box>
+            <Highlight language='sh'>
+              {`chartmart build --only ${repository.name}
+chartmart deploy ${repository.name}`}
+            </Highlight>
             </>
           )}
           <EditInstallation installation={repository.installation} repository={repository} onUpdate={onUpdate} />

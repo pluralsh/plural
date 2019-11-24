@@ -25,10 +25,8 @@ function Copyable(props) {
         style={{cursor: 'pointer'}}
         direction='row'
         align='center'
-        border={hover && !props.noBorder ? 'full' : null}
         round='xsmall'
-        gap='xsmall'
-        pad={hover ? {horizontal: 'xsmall'} : null}>
+        gap='xsmall'>
         <Text size='small'>{trimmed(props.text)}</Text>
         {hover && (
           <Box animation={{type: 'fadeIn', duration: 200}}>

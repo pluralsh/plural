@@ -18,7 +18,6 @@ export function RepoForm({image, setImage, state, setState, label, mutation, loa
         <Box
           width='70px'
           height='70px'
-          background='light-2'
           border
           pad='xsmall'
           align='center'

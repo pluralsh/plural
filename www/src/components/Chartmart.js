@@ -12,7 +12,7 @@ import Terraform from './repos/Terraform'
 import EditUser from './users/EditUser'
 import Breadcrumbs from './utils/Breadcrumbs'
 
-const TOOLBAR_SIZE = '55px'
+export const TOOLBAR_SIZE = '60px'
 export const BreadcrumbContext = React.createContext({})
 
 function Chartmart(props) {

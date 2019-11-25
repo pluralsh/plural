@@ -6,7 +6,7 @@ import {useQuery, useMutation} from 'react-apollo'
 import {useParams} from 'react-router-dom'
 import {TF_Q, UPDATE_TF, INSTALL_TF, UNINSTALL_TF} from './queries'
 import {DEFAULT_TF_ICON} from './constants'
-import Highlight from 'react-highlight'
+import Highlight from 'react-highlight.js'
 import Installation from './Installation'
 import {TerraformForm} from './CreateTerraform'
 import {BreadcrumbContext} from '../Chartmart'
@@ -36,8 +36,8 @@ const MARKDOWN_STYLING = {
 
 function TemplateView({valuesTemplate}) {
   return (
-    <Box style={{overflow: 'auto', maxHeight: '100%'}} pad='small'>
-      <Highlight language='tf'>
+    <Box style={{overflow: 'auto', maxHeight: '100%'}}>
+      <Highlight language='terraform'>
         {valuesTemplate || 'no values template'}
       </Highlight>
     </Box>

@@ -7,7 +7,7 @@ import Scroller from '../utils/Scroller'
 import {CHART_Q, INSTALL_CHART, UPDATE_CHART_INST} from './queries'
 import moment from 'moment'
 import {DEFAULT_CHART_ICON} from './constants'
-import Highlight from 'react-highlight'
+import Highlight from 'react-highlight.js'
 import Installation from './Installation'
 import Button from '../utils/Button'
 import {BreadcrumbContext} from '../Chartmart'
@@ -39,7 +39,7 @@ function ChartInfo({helm, insertedAt}) {
 
 function Code({value, children, language}) {
   return (
-    <Highlight language={language || 'sh'}>
+    <Highlight language={language}>
       {value || children}
     </Highlight>
   )
@@ -57,7 +57,7 @@ const MARKDOWN_STYLING = {
 
 function TemplateView({valuesTemplate}) {
   return (
-    <Box style={{overflow: 'auto', maxHeight: '100%'}} pad='small'>
+    <Box style={{overflow: 'auto', maxHeight: '100%'}}>
       <Highlight language='yaml'>
         {valuesTemplate || 'no values template'}
       </Highlight>

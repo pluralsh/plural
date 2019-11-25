@@ -150,7 +150,7 @@ export default function EditUser() {
     setBreadcrumbs([
       {url: `/me/edit`, text: me.email}
     ])
-  }, [setBreadcrumbs])
+  }, [me, setBreadcrumbs])
 
   return (
     <Box direction='row' gap='small'>

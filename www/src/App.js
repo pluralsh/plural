@@ -4,6 +4,10 @@ import { Grommet } from 'grommet'
 import Login from './components/Login'
 import Chartmart from './components/Chartmart'
 import {DEFAULT_THEME} from './theme'
+import hljs from 'highlight.js'
+import hljsDefineTerraform from './highlight/terraform'
+
+hljs.registerLanguage('terraform', hljsDefineTerraform)
 
 function App() {
   return (

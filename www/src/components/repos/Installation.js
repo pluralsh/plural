@@ -7,7 +7,7 @@ import {INSTALL_REPO, UPDATE_INSTALLATION, REPO_Q} from './queries'
 import Editor from '../utils/Editor'
 import Pill from '../utils/Pill'
 import yaml from 'js-yaml'
-import Highlight from 'react-highlight'
+import Highlight from 'react-highlight.js'
 
 function update(cache, repositoryId, installation) {
   const prev = cache.readQuery({ query: REPO_Q, variables: {repositoryId} })
@@ -91,10 +91,12 @@ function Installation({repository, onUpdate, noHelm}) {
           {!noHelm && (
             <>
             <Text size='medium'>Installation</Text>
-            <Highlight language='sh'>
-              {`chartmart build --only ${repository.name}
+            <Box>
+              <Highlight language='bash'>
+                {`chartmart build --only ${repository.name}
 chartmart deploy ${repository.name}`}
-            </Highlight>
+              </Highlight>
+            </Box>
             </>
           )}
           <EditInstallation installation={repository.installation} repository={repository} onUpdate={onUpdate} />

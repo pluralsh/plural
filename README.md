@@ -11,6 +11,8 @@ chartmart build
 chartmart deploy <repo>
 ```
 
+An example deployment can be found at: https://mart.piazzaapp.com
+
 ## Guarantees
 
 The charmart workflow provides the following:

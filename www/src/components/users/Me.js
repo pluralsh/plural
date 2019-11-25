@@ -1,11 +1,15 @@
 import React, {useState, useRef} from 'react'
 import {useHistory} from 'react-router-dom'
+import {useMutation} from 'react-apollo'
 import {Box, Text, Drop} from 'grommet'
 import {Book, Logout, User} from 'grommet-icons'
 import Avatar from './Avatar'
 import HoveredBackground from '../utils/HoveredBackground'
 import MenuItem from '../utils/MenuItem'
 import {wipeToken} from '../../helpers/authentication'
+import {FilePicker} from 'react-file-picker'
+import {UPDATE_USER, ME_Q} from './queries'
+import {TOOLBAR_SIZE} from '../Chartmart'
 
 export function DropdownItem(props) {
   const {onClick, ...rest} = props
@@ -18,10 +22,24 @@ export function DropdownItem(props) {
     </MenuItem>
   )
 }
+
+
 function Me({me}) {
   const [open, setOpen] = useState(false)
   const dropRef = useRef()
   let history = useHistory()
+  const [mutation] = useMutation(UPDATE_USER, {
+    update: (cache, {data: updateUser}) => {
+      const prev = cache.readQuery({ query: ME_Q })
+      cache.writeQuery({query: ME_Q, data: {
+        ...prev,
+        me: {
+          ...prev.me,
+          ...updateUser
+        }
+      }})
+    }
+  })
 
   return (
     <>
@@ -29,15 +47,24 @@ function Me({me}) {
       <Box
         sidebarHover
         ref={dropRef}
-        onClick={() => setOpen(true)}
         style={{cursor: 'pointer'}}
         pad={{horizontal: 'small'}}
         width='250px'
+        height={TOOLBAR_SIZE}
         direction='row'
         align='center'
         gap='xsmall'>
-        <Avatar size='40px' user={me} />
-        <Text size='small'>{me.name}</Text>
+        <FilePicker
+          extensions={['jpg', 'jpeg', 'png']}
+          dims={{minWidth: 100, maxWidth: 500, minHeight: 100, maxHeight: 500}}
+          onChange={(file) => mutation({variables: {attributes: {avatar: file}}})}
+        >
+          <span><Avatar size='40px' user={me} /></span>
+        </FilePicker>
+        <Box onClick={() => setOpen(true)} height={TOOLBAR_SIZE} justify='center'>
+          <Text size='small' style={{fontWeight: 500}}>{me.name}</Text>
+          <Text size='xsmall'>{me.publisher.name}</Text>
+        </Box>
       </Box>
     </HoveredBackground>
     {open && (

@@ -20,7 +20,6 @@ export const UPDATE_USER = gql`
     updateUser(attributes: $attributes) {
       ...UserFragment
     }
-    ${UserFragment}
   }
   ${UserFragment}
 `;

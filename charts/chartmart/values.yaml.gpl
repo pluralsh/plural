@@ -1,6 +1,16 @@
 postgresql:
   postgresqlPassword: {{ randAlphaNum 14 }}
 
+registry:
+  configData:
+    storage:
+      gcs:
+        bucket: {{ .Values.images_bucket }}
+    auth:
+      token:
+        realm: https://{{ .Values.chartmart_dns }}/auth/token
+        service: {{ .Values.chartmart_dns }}/dkr
+
 {{ $certificate := genCA "chartmart" 1886 }}
 
 secrets:
@@ -8,7 +18,7 @@ secrets:
   erlang: {{ randAlphaNum 14 }}
   jwt_pk: {{ $certificate.Key | quote }}
   jwt_cert: {{ $certificate.Cert | quote }}
-  jwt_aud: {{ .Values.chartmart_dns }}
+  jwt_aud: {{ .Values.chartmart_dns }}/dkr
   jwt_iss: {{ .Values.chartmart_dns }}
 
 admin:

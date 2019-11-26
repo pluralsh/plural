@@ -20,6 +20,50 @@ chartmuseum:
   tag: latest
   bucket: chartmart-charts
 
+registry:
+  replicaCount: 1
+  podAnnotations: {}
+  podLabels: {}
+  podDisruptionBudget: {}
+  nodeSelector: {}
+  tolerations: []
+
+  image:
+    repository: registry
+    tag: 2.7.1
+  secrets:
+    haSharedSecret: ""
+
+  configData:
+    version: 0.1
+    log:
+      fields:
+        service: registry
+    storage:
+      cache:
+        blobdescriptor: inmemory
+    prometheus:
+      enabled: true
+    storage:
+      gcs:
+        keyfile: /etc/docker/registry/gcp.json
+    auth:
+      token:
+        realm: mart.piazzaapp.com/dkr
+        service: mart.piazzaapp.com/dkr
+        issuer: mart.piazzaapp.com
+        rootcertbundle: /etc/docker/registry/cert.pem
+    http:
+      addr: :5000
+      prefix: /dkr/
+      headers:
+        X-Content-Type-Options: [nosniff]
+    health:
+      storagedriver:
+        enabled: true
+        interval: 10s
+        threshold: 3
+
 postgresql:
   postgresqlUsername: chartmart
   postgresqlDatabase: chartmart

@@ -47,6 +47,11 @@ func main() {
 			Action: handleInit,
 		},
 		{
+			Name:  "test",
+			Usage: "validate a values templace",
+			Action: testTemplate,
+		},
+		{
 			Name: "crypto",
 			Usage: "chartmart encryption utilities",
 			Subcommands: cryptoCommands(),

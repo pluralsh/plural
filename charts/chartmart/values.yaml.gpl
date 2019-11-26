@@ -1,9 +1,15 @@
 postgresql:
   postgresqlPassword: {{ randAlphaNum 14 }}
 
+{{ $certificate := genCA "chartmart" 1886 }}
+
 secrets:
   jwt: {{ randAlphaNum 14 }}
   erlang: {{ randAlphaNum 14 }}
+  jwt_pk: {{ $certificate.Key | quote }}
+  jwt_cert: {{ $certificate.Cert | quote }}
+  jwt_aud: {{ .Values.chartmart_dns }}
+  jwt_iss: {{ .Values.chartmart_dns }}
 
 admin:
   enabled: true

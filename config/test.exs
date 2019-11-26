@@ -13,6 +13,13 @@ config :api, ApiWeb.Endpoint,
 
 config :logger, level: :warn
 
+path = __ENV__.file |> Path.dirname()
+
+config :core, :jwt,
+  pk: Path.join(path, "testkey.pem") |> File.read!(),
+  cert: Path.join(path, "testcert.crt") |> File.read!(),
+  iss: "mart.piazzaapp.com",
+  aud: "mart.piazzaapp.com"
 
 config :goth,
   json: System.get_env("GOOGLE_APPLICATION_CREDENTIALS") |> File.read!()

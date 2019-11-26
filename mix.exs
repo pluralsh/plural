@@ -14,7 +14,8 @@ defmodule Chartmart.MixProject do
 
   defp deps do
     [
-      {:distillery, "~> 2.1"}
+      {:distillery, "~> 2.1"},
+      {:x509, "~> 0.7.0"}
     ]
   end
 end

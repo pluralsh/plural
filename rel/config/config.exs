@@ -15,4 +15,10 @@ config :core, Core.Repo,
   password: get_env("POSTGRES_PASSWORD"),
   hostname: "chartmart-postgresql"
 
+config :core, :jwt,
+  pk: get_env("JWT_PRIVATE_KEY"),
+  cert: get_env("JWT_CERT"),
+  iss: get_env("JWT_ISS"),
+  aud: get_env("JWT_AUD")
+
 config :core, :chartmuseum, "http://chartmuseum:8080"

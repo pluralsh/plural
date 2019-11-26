@@ -12,7 +12,7 @@ function Breadcrumbs({crumbs}) {
         <Text key={crumb.url + 'next'} size='small'>/</Text>
       ]
     }
-    return <Text key={crumb.url} size='small'>{crumb.text}</Text>
+    return <Text key={crumb.url} size='small' color='dark-2'>{crumb.text}</Text>
   })).flat()
 
   return (

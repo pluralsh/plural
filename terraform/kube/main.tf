@@ -59,6 +59,13 @@ resource "google_storage_bucket" "chartmart_assets_bucket" {
   force_destroy = true
 }
 
+
+resource "google_storage_bucket" "chartmart_images_bucket" {
+  name = "${var.chartmart_images_bucket}"
+  project = "${var.gcp_project_id}"
+  force_destroy = true
+}
+
 resource "google_storage_bucket_acl" "chartmart_bucket_acl" {
   bucket = "${google_storage_bucket.chartmart_bucket.name}"
   predefined_acl = "publicRead"
@@ -90,6 +97,18 @@ resource "google_storage_bucket_iam_member" "chartmart_assets" {
     google_service_account.chartmart,
     google_storage_bucket.chartmart_assets_bucket,
     google_storage_bucket_acl.chartmart_assets_bucket_acl
+  ]
+}
+
+
+resource "google_storage_bucket_iam_member" "chartmart_images" {
+  bucket = "${google_storage_bucket.chartmart_images.name}"
+  role = "roles/storage.admin"
+  member = "serviceAccount:${google_service_account.chartmart.email}"
+
+  depends_on = [
+    google_service_account.chartmart,
+    google_storage_bucket.chartmart_images
   ]
 }
 

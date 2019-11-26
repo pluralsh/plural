@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: chartmart-registry-config
+  labels:
+{{ include "chartmart.labels" . | indent 4 }}
+data:
+  config.yml: |-
+{{ toYaml .Values.registry.configData | indent 4 }}
+  cert.pem: {{ .Values.secrets.jwt_cert | quote }}
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: chartmart-registry-secret
+  labels:
+{{ include "chartmart.labels" . | indent 4 }}
+type: Opaque
+data:
+  {{- if .Values.registry.secrets.haSharedSecret }}
+  haSharedSecret: {{ .Values.secrets.haSharedSecret | b64enc | quote }}
+  {{- else }}
+  haSharedSecret: {{ randAlphaNum 16 | b64enc | quote }}
+  {{- end }}

@@ -1,0 +1,16 @@
+_build/
+deps/
+charts/
+.vscode/
+log/
+.git/
+.gitignore
+.dockerignore
+Dockerfile
+Makefile
+README*
+test/
+priv/static/
+creds/
+cmd/
+www/

@@ -1,21 +1,23 @@
 import React, {useState, useContext, useEffect} from 'react'
-import {Box, Text} from 'grommet'
+import {Box, Text, Anchor} from 'grommet'
+import {Bundle, FormPrevious} from 'grommet-icons'
 import {useQuery, useMutation} from 'react-apollo'
 import {useParams, useHistory} from 'react-router-dom'
 import Scroller from '../utils/Scroller'
 import {SecondaryButton} from '../utils/Button'
 import Modal, {ModalHeader} from '../utils/Modal'
 import Tabs, {TabHeader, TabHeaderItem, TabContent} from '../utils/Tabs'
-import {REPO_Q, UPDATE_REPO} from './queries'
-import {DEFAULT_CHART_ICON, DEFAULT_TF_ICON} from './constants'
+import {REPO_Q, UPDATE_REPO, DOCKER_IMG_Q} from './queries'
+import {DEFAULT_CHART_ICON, DEFAULT_TF_ICON, DEFAULT_DKR_ICON} from './constants'
 import Installation from './Installation'
 import CreateTerraform from './CreateTerraform'
 import {RepoForm} from './CreateRepository'
 import {BreadcrumbContext} from '../Chartmart'
 import Highlight from 'react-highlight'
+import moment from 'moment'
 
 
-function Container({children, onClick, hasNext}) {
+function Container({children, onClick, hasNext, noPad}) {
   const [hover, setHover] = useState(false)
 
   return (
@@ -25,7 +27,7 @@ function Container({children, onClick, hasNext}) {
       onClick={onClick}
       style={{cursor: 'pointer'}}
       background={hover ? 'light-2' : null}
-      pad='small'
+      pad={noPad ? null : 'small'}
       direction='row'
       border={hasNext ? 'bottom' : null}
       gap='small'>
@@ -43,7 +45,7 @@ function Chart({chart, hasNext}) {
         <img alt='' width='50px' height='50px' src={chart.icon || DEFAULT_CHART_ICON} />
       </Box>
       <Box gap='xxsmall' justify='center'>
-        <Text size='small' >
+        <Text size='small' style={{fontWeight: 500}}>
           {chart.name}
         </Text>
         <Text size='small'>
@@ -51,6 +53,40 @@ function Chart({chart, hasNext}) {
         </Text>
       </Box>
     </Container>
+  )
+}
+
+function DockerRepository({docker, repo, hasNext, setRepo}) {
+  return (
+    <Container hasNext={hasNext} onClick={() => setRepo(docker)}>
+      <Box width='60px' heigh='50px'>
+        <img alt='' width='60px' height='50px' src={DEFAULT_DKR_ICON} />
+      </Box>
+      <Box justify='center'>
+        <Text size='small' style={{fontWeight: 500}}>
+          {docker.name}
+        </Text>
+        <Text size='small'>
+          docker pull dkr.piazzaapp.com/{repo.name}/{docker.name} -- created {moment(docker.insertedAt).fromNow()}
+        </Text>
+      </Box>
+    </Container>
+  )
+}
+
+function DockerImage({image}) {
+  return (
+    <Box direction='row' pad='xsmall'>
+      <Box direction='row' gap='xsmall' width='100px' align='center' justify='center'>
+        <Bundle size='12px' /> {image.tag}
+      </Box>
+      <Box fill='horizontal' align='center' justify='center'>
+        {image.digest}
+      </Box>
+      <Box width='100px' align='center' justify='center'>
+        {moment(image.insertedAt).fromNow()}
+      </Box>
+    </Box>
   )
 }
 
@@ -62,7 +98,7 @@ function Tf({terraform, hasNext}) {
         <img alt='' width='50px' height='50px' src={DEFAULT_TF_ICON} />
       </Box>
       <Box gap='xxsmall' justify='center'>
-        <Text size='small' >
+        <Text size='small' style={{fontWeight: 500}}>
           {terraform.name}
         </Text>
         <Text size='small'>
@@ -115,13 +151,99 @@ function Terraform({edges, pageInfo, fetchMore}) {
         fetchMore({
           variables: {tfCursor: pageInfo.endCursor},
           updateQuery: (prev, {fetchMoreResult}) => {
-            const {edges, pageInfo} = fetchMoreResult.charts
+            const {edges, pageInfo} = fetchMoreResult.terraform
             return edges.length ? {
               ...prev,
               terraform: {
                 ...prev.terraform,
                 pageInfo,
                 edges: [...prev.terraform.edges, ...edges]
+              }
+            } : prev
+          }
+        })
+      }}
+    />
+  )
+}
+
+function DockerImages({dockerRepository, clear}) {
+  const {data, loading, fetchMore} = useQuery(DOCKER_IMG_Q, {
+    variables: {dockerRepositoryId: dockerRepository.id}
+  })
+
+  if (!data || loading) return null
+  const {edges, pageInfo} = data.dockerImages
+
+  return (
+    <>
+    <Box direction='row' border='bottom' pad='xsmall' gap='xsmall' align='center'>
+      <FormPrevious size='14px' />
+      <Anchor onClick={clear}>
+        {dockerRepository.name}
+      </Anchor>
+    </Box>
+    <Scroller
+      id='docker-images'
+      edges={edges}
+      style={{overflow: 'auto', height: '100%', width: '100%'}}
+      mapper={({node}, next) => <DockerImage key={node.id} image={node} hasNext={!!next.node} clear={clear} />}
+      emptyState={<Text size='medium'>No images pushed yet</Text>}
+      onLoadMore={() => {
+        if (!pageInfo.hasNextPage) return
+
+        fetchMore({
+          variables: {cursor: pageInfo.endCursor},
+          updateQuery: (prev, {fetchMoreResult}) => {
+            const {edges, pageInfo} = fetchMoreResult.dockerImages
+            return edges.length ? {
+              ...prev,
+              dockerImages: {
+                ...prev.dockerImages,
+                pageInfo,
+                edges: [...prev.dockerImages.edges, ...edges]
+              }
+            } : prev
+          }
+        })
+      }}
+    />
+    </>
+  )
+}
+
+function DockerRepos({edges, repo, pageInfo, fetchMore}) {
+  const [dockerRepository, setDockerRepository] = useState(null)
+  if (dockerRepository) {
+    return <DockerImages dockerRepository={dockerRepository} clear={() => setDockerRepository(null)} />
+  }
+
+  return (
+    <Scroller id='docker'
+      edges={edges}
+      style={{overflow: 'auto', height: '100%', width: '100%'}}
+      mapper={({node}, next) => (
+        <DockerRepository
+          key={node.id}
+          docker={node}
+          repo={repo}
+          hasNext={!!next.node}
+          setRepo={setDockerRepository} />
+      )}
+      emptyState={<Box pad='small'><Text size='medium'>No repos created yet</Text></Box>}
+      onLoadMore={() => {
+        if (!pageInfo.hasNextPage) return
+
+        fetchMore({
+          variables: {dkrCursor: pageInfo.endCursor},
+          updateQuery: (prev, {fetchMoreResult}) => {
+            const {edges, pageInfo} = fetchMoreResult.dockerRepositories
+            return edges.length ? {
+              ...prev,
+              dockerRepositories: {
+                ...prev.dockerRepositories,
+                pageInfo,
+                edges: [...prev.dockerRepositories.edges, ...edges]
               }
             } : prev
           }
@@ -148,7 +270,7 @@ function TerraformCreateModal({repositoryId}) {
 
 function RepoCredentials({publicKey}) {
   return (
-    <Box pad='small'>
+    <Box>
       <Highlight language='plaintext'>
         {publicKey}
       </Highlight>
@@ -204,7 +326,7 @@ function Repository() {
   }, [setBreadcrumbs, data])
 
   if (loading) return null
-  const {charts, repository, terraform} = data
+  const {charts, repository, terraform, dockerRepositories} = data
   const width = 65
   return (
     <Box pad='small' direction='row' height='100%'>
@@ -226,6 +348,9 @@ function Repository() {
             <TabHeaderItem name='terraform'>
               <Text style={{fontWeight: 500}} size='small'>Terraform</Text>
             </TabHeaderItem>
+            <TabHeaderItem name='docker'>
+              <Text style={{fontWeight: 500}} size='small'>Docker</Text>
+            </TabHeaderItem>
             {repository.publicKey && (
               <TabHeaderItem name='credentials'>
                 <Text style={{fontWeight: 500}} size='small'>Credentials</Text>
@@ -242,6 +367,9 @@ function Repository() {
           </TabContent>
           <TabContent name='terraform'>
             <Terraform {...terraform} fetchMore={fetchMore} />
+          </TabContent>
+          <TabContent name='docker'>
+            <DockerRepos repo={repository} {...dockerRepositories} fetchMore={fetchMore} />
           </TabContent>
           <TabContent name='credentials'>
             <RepoCredentials {...repository} />

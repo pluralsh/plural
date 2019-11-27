@@ -18,3 +18,11 @@ defimpl Core.PubSub.Fanout, for: Core.PubSub.VersionCreated do
     |> Core.Repo.update_all(set: [version_id: version.id])
   end
 end
+
+defimpl Core.PubSub.Fanout, for: Core.PubSub.DockerNotification do
+  def fanout(%{item: item}) do
+    # don't parallelize for now for simplicity
+    Core.Docker.Event.build(item)
+    |> Enum.map(&Core.Docker.Publishable.handle/1)
+  end
+end

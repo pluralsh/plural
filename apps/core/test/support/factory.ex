@@ -73,4 +73,19 @@ defmodule Core.Factory do
       user: build(:user)
     }
   end
+
+  def docker_repository_factory do
+    %Schema.DockerRepository{
+      name: sequence(:dkr_repo, &"dkr-#{&1}"),
+      repository: build(:repository)
+    }
+  end
+
+  def docker_image_factory do
+    %Schema.DockerImage{
+      tag: sequence(:dkr_img, &"image-#{&1}"),
+      digest: "sha:98ae8321",
+      docker_repository: build(:docker_repository)
+    }
+  end
 end

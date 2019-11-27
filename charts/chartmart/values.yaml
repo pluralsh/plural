@@ -46,6 +46,13 @@ registry:
 
   configData:
     version: 0.1
+    notifications:
+      endpoints:
+      - name: chartmart
+        url: http://chartmart-api:4000/dkr/callback
+        timeout: 500ms
+        threshold: 5
+        backoff: 1s
     log:
       fields:
         service: registry

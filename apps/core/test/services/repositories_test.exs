@@ -116,4 +116,20 @@ defmodule Core.Services.RepositoriesTest do
       assert is_map(Jason.decode!(decoded))
     end
   end
+
+  describe "#create_docker_image/3" do
+    test "It can upsert a new docker repo/image" do
+      repository = insert(:repository)
+      repo_name = "#{repository.name}/dkr_repo"
+
+      {:ok, %{repo: repo, image: image}} = Repositories.create_docker_image(repo_name, "latest", "some_digest")
+
+      assert repo.name == "dkr_repo"
+      assert repo.repository_id == repository.id
+
+      assert image.tag == "latest"
+      assert image.docker_repository_id == repo.id
+      assert image.digest == "some_digest"
+    end
+  end
 end

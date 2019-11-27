@@ -156,7 +156,7 @@ function Chart() {
   const {versions, chart: {repository}} = data
   const {edges, pageInfo} = versions
   const currentVersion = version || edges[0].node
-  const width = edit ? 60 : 70
+  const width = edit ? 65 : 70
 
   return (
     <Box pad='small' direction='row' height="100%">

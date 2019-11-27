@@ -205,9 +205,10 @@ function Repository() {
 
   if (loading) return null
   const {charts, repository, terraform} = data
+  const width = 65
   return (
     <Box pad='small' direction='row' height='100%'>
-      <Box pad='small' width='60%' height='100%'>
+      <Box pad='small' width={`${width}%`} height='100%'>
         <Box direction='row' align='center' margin={{bottom: 'medium'}}>
           <Box width={IMG_SIZE} height={IMG_SIZE}>
             <img alt='' width={IMG_SIZE} height={IMG_SIZE} src={repository.icon} />
@@ -250,7 +251,7 @@ function Repository() {
           </TabContent>
         </Tabs>
       </Box>
-      <Box pad='small' width='40%'>
+      <Box pad='small' width={`${100 - width}%`}>
         <Installation repository={repository} />
       </Box>
     </Box>

@@ -7,6 +7,14 @@ spec:
   domains:
   - {{ .Values.ingress.dns }}
 ---
+apiVersion: networking.gke.io/v1beta1
+kind: ManagedCertificate
+metadata:
+  name: chartmart-dkr-cert
+spec:
+  domains:
+  - {{ .Values.ingress.dkr_dns }}
+---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -34,11 +42,13 @@ spec:
         backend:
           serviceName: chartmart-api
           servicePort: http
-      - path: /dkr/*
-        backend:
-          serviceName: chartmart-registry
-          servicePort: http
       - backend:
           serviceName: chartmart-www
+          servicePort: http
+  - host: {{ .Values.ingress.dkr_dns }}
+    http:
+      paths:
+      - backend:
+          serviceName: chartmart-registry
           servicePort: http
 {{- end }}

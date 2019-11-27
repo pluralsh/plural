@@ -24,6 +24,8 @@ defmodule ApiWeb.Router do
   scope "/", ApiWeb do
     pipe_through :api
 
+    get "/auth/token", AuthController, :token
+
     get "/health", HealthController, :ping
 
     post "/signup", UserController, :create

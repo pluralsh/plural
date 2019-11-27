@@ -17,6 +17,13 @@ The bucket for uploads/icons and such for the chartmart deployment
 EOF
 }
 
+variable "chartmart_images_bucket" {
+  type = "string"
+  description = <<EOF
+The bucket for docker images for the chartmart deployment
+EOF
+}
+
 variable "chartmart_namespace" {
   type = "string"
   description = <<EOF

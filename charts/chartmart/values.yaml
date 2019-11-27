@@ -28,6 +28,16 @@ registry:
   nodeSelector: {}
   tolerations: []
 
+  persistence:
+    accessMode: 'ReadWriteOnce'
+    enabled: false
+    size: 10Gi
+
+  securityContext:
+    enabled: false
+    runAsUser: 1000
+    fsGroup: 1000
+
   image:
     repository: registry
     tag: 2.7.1
@@ -46,7 +56,7 @@ registry:
       enabled: true
     storage:
       gcs:
-        keyfile: /etc/docker/registry/gcp.json
+        keyfile: /etc/docker/chartmart/gcp.json
     auth:
       token:
         realm: mart.piazzaapp.com/dkr
@@ -55,7 +65,6 @@ registry:
         rootcertbundle: /etc/docker/registry/cert.pem
     http:
       addr: :5000
-      prefix: /dkr/
       headers:
         X-Content-Type-Options: [nosniff]
     health:
@@ -79,8 +88,9 @@ service:
 ingress:
   enabled: true
   dns: mart.piazzaapp.com
+  dkr_dns: dkr.piazzaapp.com
   annotations:
-    networking.gke.io/managed-certificates: chartmart-cert
+    networking.gke.io/managed-certificates: chartmart-cert,chartmart-dkr-cert
 
 resources: {}
 

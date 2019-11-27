@@ -10,9 +10,9 @@ spec:
       app.kubernetes.io/name: chartmart-registry
       app.kubernetes.io/instance: {{ .Release.Name }}
   replicas: {{ .Values.registry.replicaCount }}
-{{- if .Values.updateStrategy }}
+{{- if .Values.registry.updateStrategy }}
   strategy:
-{{ toYaml .Values.updateStrategy | indent 4 }}
+{{ toYaml .Values.registry.updateStrategy | indent 4 }}
 {{- end }}
   minReadySeconds: 5
   template:
@@ -21,7 +21,7 @@ spec:
         app.kubernetes.io/name: chartmart-registry
         app.kubernetes.io/instance: {{ .Release.Name }}
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/registry-configmap.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/registry-config.yaml") . | sha256sum }}
 {{- if $.Values.registry.podAnnotations }}
 {{ toYaml $.Values.registry.podAnnotations | indent 8 }}
 {{- end }}
@@ -30,13 +30,13 @@ spec:
       imagePullSecrets:
 {{ toYaml .Values.imagePullSecrets | indent 8 }}
       {{- end }}
-{{- if .Values.priorityClassName }}
-      priorityClassName: "{{ .Values.priorityClassName }}"
+{{- if .Values.registry.priorityClassName }}
+      priorityClassName: "{{ .Values.registry.priorityClassName }}"
 {{- end }}
-{{- if .Values.securityContext.enabled }}
+{{- if .Values.registry.securityContext.enabled }}
       securityContext:
-        fsGroup: {{ .Values.securityContext.fsGroup }}
-        runAsUser: {{ .Values.securityContext.runAsUser }}
+        fsGroup: {{ .Values.registry.securityContext.fsGroup }}
+        runAsUser: {{ .Values.registry.securityContext.runAsUser }}
 {{- end }}
       containers:
         - name: registry
@@ -48,6 +48,8 @@ spec:
           - /etc/docker/registry/config.yml
           ports:
           - containerPort: 5000
+            name: http
+            protocol: TCP
           livenessProbe:
             httpGet:
 {{- if .Values.tlsSecretName }}
@@ -78,14 +80,14 @@ spec:
           - name: chartmart-registry-config
             mountPath: "/etc/docker/registry"
           - name: chartmart-registry-serviceaccount
-            mountPath: "/etc/docker/registry"
-{{- if .Values.nodeSelector }}
+            mountPath: "/etc/docker/chartmart"
+{{- if .Values.registry.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
+{{ toYaml .Values.registry.nodeSelector | indent 8 }}
 {{- end }}
 {{- if .Values.tolerations }}
       tolerations:
-{{ toYaml .Values.tolerations | indent 8 }}
+{{ toYaml .Values.registry.tolerations | indent 8 }}
 {{- end }}
       volumes:
       - name: chartmart-registry-config

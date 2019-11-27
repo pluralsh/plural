@@ -79,6 +79,30 @@ defmodule Core.Services.RepositoriesTest do
     end
   end
 
+  describe "#authorize_docker/2" do
+    test "A repo owner can push/pull" do
+      %{owner: user} = pub = insert(:publisher)
+      repo = insert(:repository, publisher: pub)
+
+      allowed = Repositories.authorize_docker(repo.name, user)
+
+      assert [:pull, :push] == Enum.sort(allowed)
+    end
+
+    test "An installer can pull" do
+      repo = insert(:repository)
+      %{user: user} = insert(:installation, repository: repo)
+
+      [:pull] = Repositories.authorize_docker(repo.name, user)
+    end
+
+    test "Arbitrary users have no access" do
+      repo = insert(:repository)
+
+      [] = Repositories.authorize_docker(repo.name, insert(:user))
+    end
+  end
+
   describe "#generate_license/1" do
     test "It can generate an ecrypted license for an installation" do
       publisher = insert(:publisher)

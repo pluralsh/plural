@@ -13,12 +13,12 @@ function trimmed(link) {
   return link
 }
 
-function Copyable(props) {
+function Copyable({text, pillText, displayText}) {
   const [display, setDisplay] = useState(false)
   const [hover, setHover] = useState(false)
   return (
     <>
-    <CopyToClipboard text={props.text} onCopy={() =>  setDisplay(true)}>
+    <CopyToClipboard text={text} onCopy={() =>  setDisplay(true)}>
       <Box
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
@@ -27,7 +27,7 @@ function Copyable(props) {
         align='center'
         round='xsmall'
         gap='xsmall'>
-        <Text size='small'>{trimmed(props.text)}</Text>
+        <Text size='small'>{trimmed(displayText || text)}</Text>
         {hover && (
           <Box animation={{type: 'fadeIn', duration: 200}}>
             <Copy size='12px' />
@@ -38,7 +38,7 @@ function Copyable(props) {
     {display && (
       <Pill background='status-ok' onClose={() => setDisplay(false)}>
         <Box direction='row' align='center' gap='small'>
-          <Text>{props.pillText}</Text>
+          <Text>{pillText}</Text>
           <Close style={{cursor: 'pointer'}} size='15px' onClick={() => setDisplay(false)} />
         </Box>
       </Pill>

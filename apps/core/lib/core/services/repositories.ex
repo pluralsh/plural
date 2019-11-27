@@ -2,6 +2,7 @@ defmodule Core.Services.Repositories do
   use Core.Services.Base
   import Core.Policies.Repository
   alias Core.Services.Users
+  alias Core.Auth.Jwt
   alias Core.Schema.{Repository, Installation, User}
   alias Piazza.Crypto.RSA
 
@@ -30,6 +31,34 @@ defmodule Core.Services.Repositories do
       generate_keys(repo)
     end)
     |> execute(extract: :licensed)
+  end
+
+  def authorize_docker(repo_name, %User{} = user) do
+    repo = get_repository_by_name!(repo_name) |> Core.Repo.preload([:publisher])
+    Parallax.new()
+    |> Parallax.operation(:push, fn -> allow(repo, user, :edit) end)
+    |> Parallax.operation(:pull, fn -> allow(repo, user, :access) end)
+    |> Parallax.execute()
+    |> Enum.filter(fn
+      {_, {:ok, _}} -> true
+      _ -> false
+    end)
+    |> Enum.map(&elem(&1, 0))
+  end
+
+  def docker_token(scopes, repo_name, user) do
+    signer = Jwt.signer()
+    access = [%{"type" => "repository", "name" => repo_name, "actions" => scopes}]
+    with {:ok, claims} <- Jwt.generate_claims(%{"sub" => user.email, "access" => access}),
+         {:ok, token, _} <- Jwt.encode_and_sign(claims, signer),
+      do: {:ok, token}
+  end
+
+  def dkr_login_token(user) do
+    signer = Jwt.signer()
+    with {:ok, claims} <- Jwt.generate_claims(%{"sub" => user.email, "access" => []}),
+         {:ok, token, _} <- Jwt.encode_and_sign(claims, signer),
+      do: {:ok, token}
   end
 
   def update_repository(attrs, repo_id, %User{} = user) do

@@ -102,13 +102,13 @@ resource "google_storage_bucket_iam_member" "chartmart_assets" {
 
 
 resource "google_storage_bucket_iam_member" "chartmart_images" {
-  bucket = "${google_storage_bucket.chartmart_images.name}"
+  bucket = "${google_storage_bucket.chartmart_images_bucket.name}"
   role = "roles/storage.admin"
   member = "serviceAccount:${google_service_account.chartmart.email}"
 
   depends_on = [
     google_service_account.chartmart,
-    google_storage_bucket.chartmart_images
+    google_storage_bucket.chartmart_images_bucket
   ]
 }
 

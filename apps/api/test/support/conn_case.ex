@@ -49,4 +49,9 @@ defmodule ApiWeb.ConnCase do
     assert fun.(header)
     conn
   end
+
+  def basic_auth(conn, username, pwd) do
+    basic = Base.encode64("#{username}:#{pwd}")
+    Plug.Conn.put_req_header(conn, "authorization", "Basic #{basic}")
+  end
 end

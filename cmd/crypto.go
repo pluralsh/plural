@@ -10,6 +10,11 @@ import (
 	"bytes"
 	"path/filepath"
 	"strings"
+	"crypto/x509"
+	"github.com/docker/libtrust"
+	"encoding/pem"
+	"fmt"
+	crypt "crypto"
 )
 
 var prefix = []byte("CHARTMART-ENCRYPTED")
@@ -40,6 +45,11 @@ func cryptoCommands() []cli.Command {
 			Name:   "export",
 			Usage:  "dumps the current aes key to stdout",
 			Action: exportKey,
+		},
+		{
+			Name:   "fingerprint",
+			Usage:  "generates the public key fingerprint for a cert",
+			Action: fingerprint,
 		},
 	}
 }
@@ -137,4 +147,44 @@ func importKey(c *cli.Context) error {
 		return err
 	}
 	return key.Flush()
+}
+
+func fingerprint(c *cli.Context) error {
+	rawCertBundle, err := ioutil.ReadAll(os.Stdin)
+	if err != nil {
+		return err
+	}
+
+	var rootCerts []*x509.Certificate
+	pemBlock, rawCertBundle := pem.Decode(rawCertBundle)
+	for pemBlock != nil {
+		if pemBlock.Type == "CERTIFICATE" {
+			cert, err := x509.ParseCertificate(pemBlock.Bytes)
+			if err != nil {
+				return fmt.Errorf("unable to parse token auth root certificate: %s", err)
+			}
+
+			rootCerts = append(rootCerts, cert)
+		}
+
+		pemBlock, rawCertBundle = pem.Decode(rawCertBundle)
+	}
+
+	if len(rootCerts) == 0 {
+		return fmt.Errorf("token auth requires at least one token signing root certificate")
+	}
+
+	rootPool := x509.NewCertPool()
+	trustedKeys := make(map[string]libtrust.PublicKey, len(rootCerts))
+	for _, rootCert := range rootCerts {
+		rootPool.AddCert(rootCert)
+		pubKey, err := libtrust.FromCryptoPublicKey(crypt.PublicKey(rootCert.PublicKey))
+		if err != nil {
+			return fmt.Errorf("unable to get public key from token auth root certificate: %s", err)
+		}
+		trustedKeys[pubKey.KeyID()] = pubKey
+		os.Stdout.Write([]byte(pubKey.KeyID()))
+	}
+
+	return nil
 }

@@ -203,7 +203,7 @@ function UpdateTerraform({id, name, description}) {
 function Terraform() {
   const {tfId} = useParams()
   const {loading, data} = useQuery(TF_Q, {variables: {tfId}})
-  const width = 60
+  const width = 65
   const {setBreadcrumbs} = useContext(BreadcrumbContext)
   useEffect(() => {
     if (!data) return

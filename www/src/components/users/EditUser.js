@@ -43,7 +43,8 @@ function Token({token, hasNext}) {
         <Copyable
           noBorder
           pillText='Copied access token'
-          text={token.token.substring(0, 9) + "x".repeat(15)} />
+          text={token.token}
+          displayText={token.token.substring(0, 9) + "x".repeat(15)} />
       </Box>
       <Box width={CELL_WIDTH} pad='xsmall'>
         <Text size='small'>{moment(token.insertedAt).fromNow()}</Text>

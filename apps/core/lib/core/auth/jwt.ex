@@ -6,13 +6,15 @@ defmodule Core.Auth.Jwt do
     Joken.Signer.create("RS256", %{"pem" => conf(:pk)}, %{"kid" => fingerprint(cert)})
   end
 
-  defp fingerprint(certificate) do
-    der_encoded = X509.Certificate.to_der(certificate)
+  def fingerprint(certificate) do
+    pk = X509.Certificate.public_key(certificate)
+    der_encoded = X509.PublicKey.to_der(pk)
 
-    :crypto.hash(:sha, der_encoded)
-    |> Base.encode16
-    |> String.to_charlist
-    |> Enum.chunk_every(2, 2, :discard)
+    :crypto.hash(:sha256, der_encoded)
+    |> Base.encode32()
+    |> String.to_charlist()
+    |> Enum.chunk_every(4, 4, :discard)
+    |> Enum.take(12)
     |> Enum.join(":")
   end
 

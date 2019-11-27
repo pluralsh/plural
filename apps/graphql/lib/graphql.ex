@@ -10,7 +10,8 @@ defmodule GraphQl do
     User,
     Chart,
     Repository,
-    Terraform
+    Terraform,
+    Docker
   }
 
   def context(ctx) do
@@ -20,6 +21,7 @@ defmodule GraphQl do
       |> Dataloader.add_source(Chart, Chart.data(ctx))
       |> Dataloader.add_source(Repository, Repository.data(ctx))
       |> Dataloader.add_source(Terraform, Terraform.data(ctx))
+      |> Dataloader.add_source(Docker, Docker.data(ctx))
 
     Map.put(ctx, :loader, loader)
   end
@@ -123,6 +125,20 @@ defmodule GraphQl do
       arg :repository_id, non_null(:id)
 
       resolve &Terraform.list_terraform_installations/2
+    end
+
+    connection field :docker_repositories, node_type: :docker_repository do
+      middleware GraphQl.Middleware.Authenticated
+      arg :repository_id, non_null(:id)
+
+      resolve &Docker.list_repositories/2
+    end
+
+    connection field :docker_images, node_type: :docker_image do
+      middleware GraphQl.Middleware.Authenticated
+      arg :docker_repository_id, non_null(:id)
+
+      resolve &Docker.list_images/2
     end
 
     connection field :versions, node_type: :version do

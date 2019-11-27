@@ -2,6 +2,7 @@ import gql from 'graphql-tag'
 import {RepoFragment, InstallationFragment} from '../../models/repo'
 import {ChartFragment, VersionFragment, ChartInstallationFragment} from '../../models/chart'
 import {TerraformFragment} from '../../models/terraform'
+import {DockerRepoFragment, DockerImageFragment} from '../../models/docker'
 
 export const CREATE_REPO = gql`
   mutation CreateRepository($attributes: RepositoryAttributes!) {
@@ -80,7 +81,7 @@ export const INSTALL_REPO = gql`
 `;
 
 export const REPO_Q = gql`
-  query Repo($repositoryId: String!, $chartCursor: String, $tfCursor: String) {
+  query Repo($repositoryId: String!, $chartCursor: String, $tfCursor: String, $dkrCursor: String) {
     repository(id: $repositoryId) {
       ...RepoFragment
       editable
@@ -111,11 +112,40 @@ export const REPO_Q = gql`
         }
       }
     }
+    dockerRepositories(repositoryId: $repositoryId, first: 15, after: $dkrCursor) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      edges {
+        node {
+          ...DockerRepoFragment
+        }
+      }
+    }
   }
   ${RepoFragment}
   ${ChartFragment}
   ${InstallationFragment}
   ${TerraformFragment}
+  ${DockerRepoFragment}
+`;
+
+export const DOCKER_IMG_Q = gql`
+  query DockerImages($dockerRepositoryId: ID!, $cursor: String) {
+    dockerImages(dockerRepositoryId: $dockerRepositoryId, after: $cursor, first: 15) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      edges {
+        node {
+          ...DockerImageFragment
+        }
+      }
+    }
+  }
+  ${DockerImageFragment}
 `;
 
 export const CREATE_TF = gql`

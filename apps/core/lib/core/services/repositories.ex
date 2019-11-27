@@ -3,7 +3,7 @@ defmodule Core.Services.Repositories do
   import Core.Policies.Repository
   alias Core.Services.Users
   alias Core.Auth.Jwt
-  alias Core.Schema.{Repository, Installation, User}
+  alias Core.Schema.{Repository, Installation, User, DockerRepository, DockerImage}
   alias Piazza.Crypto.RSA
 
   def get_installation!(id),
@@ -16,6 +16,9 @@ defmodule Core.Services.Repositories do
   def get_repository!(id), do: Core.Repo.get(Repository, id)
 
   def get_repository_by_name!(name),
+    do: Core.Repo.get_by!(Repository, name: name)
+
+  def get_repository_by_name(name),
     do: Core.Repo.get_by(Repository, name: name)
 
   def create_repository(attrs, %User{} = user) do
@@ -44,6 +47,40 @@ defmodule Core.Services.Repositories do
       _ -> false
     end)
     |> Enum.map(&elem(&1, 0))
+  end
+
+  def create_docker_image(repo, tag, digest) do
+    [cm_repo | rest] = String.split(repo, "/")
+    cm_repo = get_repository_by_name!(cm_repo)
+
+    start_transaction()
+    |> add_operation(:repo, fn _ ->
+      Enum.join(rest, "/")
+      |> upsert_docker_repo(cm_repo)
+    end)
+    |> add_operation(:image, fn %{repo: repo} ->
+      upsert_image(tag, digest, repo)
+    end)
+    |> execute()
+  end
+
+  defp upsert_docker_repo(name, %Repository{id: id}) do
+    case Core.Repo.get_by(DockerRepository, repository_id: id, name: name) do
+      nil -> %DockerRepository{repository_id: id, name: name}
+      %DockerRepository{} = repo -> repo
+    end
+    |> DockerRepository.changeset()
+    |> Core.Repo.insert_or_update()
+  end
+
+  defp upsert_image(nil, _, _), do: {:ok, nil}
+  defp upsert_image(tag, digest, %DockerRepository{id: id}) do
+    case Core.Repo.get_by(DockerImage, docker_repository_id: id, tag: tag) do
+      nil -> %DockerImage{docker_repository_id: id, tag: tag}
+      %DockerImage{} = repo -> repo
+    end
+    |> DockerImage.changeset(%{digest: digest})
+    |> Core.Repo.insert_or_update()
   end
 
   def docker_token(scopes, repo_name, user) do

@@ -4,7 +4,8 @@ defmodule GraphQl.Schema.Types do
     User,
     Repository,
     Chart,
-    Terraform
+    Terraform,
+    Docker
   }
 
   object :user do
@@ -134,6 +135,23 @@ defmodule GraphQl.Schema.Types do
     timestamps()
   end
 
+  object :docker_repository do
+    field :id,         :id
+    field :name,       :string
+    field :repository, :repository, resolve: dataloader(Repository)
+
+    timestamps()
+  end
+
+  object :docker_image do
+    field :id,     :id
+    field :tag,    :string
+    field :digest, :string
+    field :docker_repository, :docker_repository, resolve: dataloader(Docker)
+
+    timestamps()
+  end
+
   object :terraform do
     field :id,              :id
     field :name,            :string
@@ -168,4 +186,6 @@ defmodule GraphQl.Schema.Types do
   connection node_type: :terraform_installation
   connection node_type: :chart_installation
   connection node_type: :persisted_token
+  connection node_type: :docker_repository
+  connection node_type: :docker_image
 end

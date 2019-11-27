@@ -11,7 +11,7 @@ function Editor({value, onChange, lang}) {
   const [state, setState] = useState(value)
   return (
     <CodeMirror value={state}
-                options={{mode: lang || 'javascript', theme: 'nord', lineNumbers: true}}
+                options={{mode: lang || 'javascript', lineNumbers: true}}
                 onChange={(val) => {
                   setState(val)
                   onChange(val)

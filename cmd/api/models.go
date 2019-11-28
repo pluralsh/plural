@@ -53,8 +53,24 @@ type Terraform struct {
 	Name           string
 	Description    string
 	ValuesTemplate string
-	Dependencies   map[string]string
+	Dependencies   Dependencies
 	Package        string
+}
+
+type Dependencies struct {
+	Dependencies []Dependency
+	Wirings Wirings
+}
+
+type Dependency struct {
+	Type string
+	Repo string
+	Name string
+}
+
+type Wirings struct {
+	Terraform map[string]string
+	Helm map[string]string
 }
 
 type TerraformInstallation struct {
@@ -154,7 +170,17 @@ const TerraformFragment = `
 		name
 		package
 		description
-		dependencies
+		dependencies {
+			dependencies {
+				type
+				repo
+				name
+			}
+			wirings {
+				terraform
+				helm
+			}
+		}
 		valuesTemplate
 	}
 `

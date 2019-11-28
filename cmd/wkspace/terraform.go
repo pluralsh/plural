@@ -61,12 +61,13 @@ func (wk *Workspace) BuildTerraform() error {
 			&buf, map[string]interface{}{"Values": ctx, "Cluster": wk.Provider.Cluster()}); err != nil {
 			return err
 		}
+		fmt.Printf("%+v", tf.Dependencies)
 
 		module := make(map[string]interface{})
 		module["name"] = tf.Name
 		module["path"] = "./" + tf.Name
 		module["conf"] = buf.String()
-		module["deps"] = tf.Dependencies
+		module["deps"] = tf.Dependencies.Wirings.Terraform
 
 		var moduleBuf bytes.Buffer
 		moduleBuf.Grow(1024)

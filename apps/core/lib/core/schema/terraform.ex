@@ -1,7 +1,7 @@
 defmodule Core.Schema.Terraform do
   use Piazza.Ecto.Schema
   use Arc.Ecto.Schema
-  alias Core.Schema.Repository
+  alias Core.Schema.{Repository, Dependencies}
 
   schema "terraform" do
     field :name,            :string
@@ -10,9 +10,9 @@ defmodule Core.Schema.Terraform do
     field :description,     :string
     field :values_template, :string
     field :readme,          :string
-    field :dependencies,    :map
 
-    belongs_to :repository, Repository
+    embeds_one :dependencies, Dependencies, on_replace: :update
+    belongs_to :repository,   Repository
 
     timestamps()
   end
@@ -26,11 +26,12 @@ defmodule Core.Schema.Terraform do
   def ordered(query \\ __MODULE__, order \\ [asc: :id]),
     do: from(tf in query, order_by: ^order)
 
-  @valid ~w(name values_template readme description dependencies)a
+  @valid ~w(name values_template readme description)a
 
   def changeset(schema, attrs \\ %{}) do
     schema
     |> cast(attrs, @valid)
+    |> cast_embed(:dependencies)
     |> generate_uuid(:package_id)
     |> unique_constraint(:name, name: index_name(:terraform, [:repository_id, :name]))
     |> foreign_key_constraint(:repository_id)

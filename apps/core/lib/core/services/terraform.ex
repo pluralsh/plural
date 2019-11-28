@@ -67,13 +67,15 @@ defmodule Core.Services.Terraform do
   def extract_tf_meta(%{package: %{path: path, filename: file}}) do
     root = grab_root_dir(file)
     path = String.to_charlist(path)
-    [rm, valt] = files = ["#{root}/README.md", "#{root}/terraform.tfvars"]
+    [rm, valt, deps] = files = ["#{root}/README.md", "#{root}/terraform.tfvars", "#{root}/deps.yaml"]
                          |> Enum.map(&String.to_charlist/1)
 
-    with {:ok, result} <- :erl_tar.extract(path, [:memory, :compressed, {:files, files}]) do
+    with {:ok, result} <- :erl_tar.extract(path, [:memory, :compressed, {:files, files}]),
+         {:ok, deps} <- extract_dependencies(result, deps) do
       {:ok, %{
         readme: extract_tar_file(result, rm),
-        values_template: extract_tar_file(result, valt)
+        values_template: extract_tar_file(result, valt),
+        dependencies: deps
       }}
     end
   end
@@ -83,6 +85,16 @@ defmodule Core.Services.Terraform do
     case Enum.find(result, &elem(&1, 0) == val_template) do
       {_, template} -> template
       _ -> nil
+    end
+  end
+
+  def extract_dependencies(result, deps) do
+    with deps when is_binary(deps) <- extract_tar_file(result, deps),
+         {:ok, map} <- YamlElixir.read_from_string(deps) do
+      {:ok, map}
+    else
+      {:error, _} = error -> error
+      _ -> {:ok, nil}
     end
   end
 

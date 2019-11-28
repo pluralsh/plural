@@ -152,13 +152,34 @@ defmodule GraphQl.Schema.Types do
     timestamps()
   end
 
+  object :dependencies do
+    field :dependencies, list_of(:dependency)
+    field :wirings, :wirings
+  end
+
+  enum :dependency_type do
+    value :terraform
+    value :helm
+  end
+
+  object :dependency do
+    field :type, :dependency_type
+    field :name, :string
+    field :repo, :string
+  end
+
+  object :wirings do
+    field :terraform, :map
+    field :helm, :map
+  end
+
   object :terraform do
     field :id,              :id
     field :name,            :string
     field :readme,          :string
     field :description,     :string
     field :values_template, :string
-    field :dependencies,    :map
+    field :dependencies,    :dependencies
 
     field :package, :string, resolve: fn
       repo, _, _ -> {:ok, Core.Storage.url({repo.package, repo}, :original)}

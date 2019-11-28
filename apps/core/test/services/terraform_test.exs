@@ -41,14 +41,21 @@ defmodule Core.Services.TerraformTest do
   describe "#upsert_terraform" do
     test "if no matching tf exists, it will create" do
       repository = insert(:repository)
+      path = Path.join(:code.priv_dir(:core), "gcp-bootstrap.tgz")
+
+      {:ok, args} = Terraform.extract_tf_meta(%{
+        package: %{path: path, filename: path}
+      })
 
       {:ok, tf} = Terraform.upsert_terraform(
-        %{name: "upsert", description: "an upsert"},
+        Map.merge(%{name: "upsert", description: "an upsert"}, args),
         repository.id,
         "upsert",
         repository.publisher.owner)
 
       assert tf.description == "an upsert"
+      assert hd(tf.dependencies.dependencies).name == "gcp-bootstrap"
+      assert tf.dependencies.wirings.terraform["cluster_name"] == "gcp-bootstrap.cluster_name"
     end
 
     test "It will update if the tf exists" do
@@ -68,14 +75,16 @@ defmodule Core.Services.TerraformTest do
 
   describe "#extract_tf_meta/3" do
     test "It can find a readme and var template" do
-      path = Path.join(:code.priv_dir(:core), "gcp.tgz")
+      path = Path.join(:code.priv_dir(:core), "gcp-bootstrap.tgz")
 
-      {:ok, %{readme: readme, values_template: tmp}} = Terraform.extract_tf_meta(%{
+      {:ok, %{readme: readme, values_template: tmp, dependencies: deps}} = Terraform.extract_tf_meta(%{
         package: %{path: path, filename: path}
       })
 
       assert is_binary(readme)
       assert is_binary(tmp)
+      assert is_list(deps["dependencies"])
+      assert is_map(deps["wirings"]["terraform"])
     end
   end
 

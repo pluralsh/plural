@@ -31,3 +31,17 @@ export const InstallationFragment = gql`
   ${RepoFragment}
   ${UserFragment}
 `;
+
+export const DependenciesFragment = gql`
+  fragment DependenciesFragment on Dependencies {
+    dependencies {
+      name
+      repo
+      type
+    }
+    wirings {
+      terraform
+      helm
+    }
+  }
+`;

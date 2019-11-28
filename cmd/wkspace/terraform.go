@@ -61,7 +61,6 @@ func (wk *Workspace) BuildTerraform() error {
 			&buf, map[string]interface{}{"Values": ctx, "Cluster": wk.Provider.Cluster()}); err != nil {
 			return err
 		}
-		fmt.Printf("%+v", tf.Dependencies)
 
 		module := make(map[string]interface{})
 		module["name"] = tf.Name

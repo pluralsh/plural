@@ -1,20 +1,16 @@
 import React, {useState, useContext, useEffect} from 'react'
 import {Box, Text, Markdown} from 'grommet'
 import Tabs, {TabHeader, TabHeaderItem, TabContent} from '../utils/Tabs'
-import {Alert, Close} from 'grommet-icons'
 import {useQuery, useMutation} from 'react-apollo'
 import {useParams} from 'react-router-dom'
 import {TF_Q, UPDATE_TF, INSTALL_TF, UNINSTALL_TF} from './queries'
-import {DEFAULT_TF_ICON} from './constants'
+import {DEFAULT_TF_ICON, DEFAULT_CHART_ICON} from './constants'
 import Highlight from 'react-highlight.js'
 import Installation from './Installation'
 import {TerraformForm} from './CreateTerraform'
 import {BreadcrumbContext} from '../Chartmart'
 import Button, {SecondaryButton} from '../utils/Button'
-import Editor from '../utils/Editor'
-import Pill from '../utils/Pill'
-import yaml from 'js-yaml'
-
+import TreeGraph from '../utils/TreeGraph'
 
 function Code({value, children, language}) {
   return (
@@ -118,53 +114,26 @@ function updateInstallation(tfId) {
   }
 }
 
-function EditDependencies({id, dependencies}) {
-  const [deps, setDeps] = useState(yaml.safeDump(dependencies || {}, null, 2))
-  const [notif, setNotif] = useState(false)
-  const [mutation, {loading, errors}] = useMutation(UPDATE_TF, {
-    variables: {id, attributes: {dependencies: deps}},
-    update: (cache, { data: {updateTerraform} }) => {
-      const prev = cache.readQuery({query: TF_Q, variables: {tfId: id}})
-      cache.writeQuery({query: TF_Q, variables: {tfId: id}, data: {
-        ...prev,
-        terraformModule: {
-          ...prev.terraform,
-          ...updateTerraform
-        }
-      }})
-    }
+function Dependencies({name, dependencies}) {
+  if (!dependencies || !dependencies.dependencies) {
+    return (
+      <Box pad='small'>
+        <Text size='small'>No dependencies</Text>
+      </Box>
+    )
+  }
+  const deps = dependencies.dependencies.map((dep) => {
+    if (dep.type === "TERRAFORM") return {...dep, image: DEFAULT_TF_ICON}
+    if (dep.type === "HELM") return {...dep, image: DEFAULT_CHART_ICON}
+    return dep
   })
 
   return (
-    <>
-    {notif && (
-      <Pill background='status-ok' onClose={() => {console.log('wtf'); setNotif(false)}}>
-        <Box direction='row' align='center' gap='small'>
-          <Text>Configuration saved</Text>
-          <Close style={{cursor: 'pointer'}} size='15px' onClick={() => setNotif(false)} />
-        </Box>
-      </Pill>
-    )}
-    <Box gap='xsmall' fill='horizontal' pad='small'>
-      <Text size='medium'>Dependencies</Text>
-      <Box>
-        <Editor lang='yaml' value={deps} onChange={setDeps} />
-      </Box>
-      {errors && (
-        <Box direction='row' gap='small'>
-          <Alert size='15px' color='notif' />
-          <Text size='small' color='notif'>Must be in yml format</Text>
-        </Box>)}
-      <Box direction='row' justify='end'>
-        <Button
-          pad={{horizontal: 'medium', vertical: 'xsmall'}}
-          loading={loading}
-          label='Save'
-          onClick={mutation}
-          round='xsmall' />
-      </Box>
-    </Box>
-    </>
+    <TreeGraph
+      id={`${name}-tree`}
+      tree={{name: name, image: DEFAULT_TF_ICON, children: deps}}
+      width='100%'
+      height='400px' />
   )
 }
 
@@ -245,7 +214,7 @@ function Terraform() {
             <TemplateView {...terraformModule} />
           </TabContent>
           <TabContent name='dependencies'>
-            <EditDependencies {...terraformModule} />
+            <Dependencies {...terraformModule} />
           </TabContent>
           <TabContent name='edit'>
             <UpdateTerraform {...terraformModule} />

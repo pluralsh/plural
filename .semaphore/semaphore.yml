@@ -39,12 +39,14 @@ blocks:
     secrets:
     - name: GCP
     - name: gcp-test
+    - name: chartmart
     prologue:
       commands:
       # Authenticate using the file injected from the secret
       - gcloud auth activate-service-account --key-file=.secrets/gcp-piazzaapp.json
       # Don't forget -q to silence confirmation prompts
       - gcloud auth configure-docker -q
+      - docker login -u mguarino46@gmail.com -p $CHARTMART_ACCESS_TOKEN dkr.piazzaapp.com
       - checkout
     jobs:
     - name: "Build chartmart"

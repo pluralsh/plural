@@ -230,7 +230,7 @@ function DockerRepos({edges, repo, pageInfo, fetchMore}) {
           hasNext={!!next.node}
           setRepo={setDockerRepository} />
       )}
-      emptyState={<Box pad='small'><Text size='medium'>No repos created yet</Text></Box>}
+      emptyState={<Box pad='small'><Text size='small'>No repos created yet</Text></Box>}
       onLoadMore={() => {
         if (!pageInfo.hasNextPage) return
 

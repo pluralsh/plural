@@ -13,7 +13,7 @@ ifeq ($(APP_NAME), www)
 	cd www && docker build -t $(APP_NAME):`cat ../VERSION` \
 							-t $(APP_NAME):latest \
 							-t gcr.io/$(GCP_PROJECT)/chartmart-www:`cat ../VERSION` \
-							-t mart.piazzaapp.com/dkr/chartmart/chartmart-www:`cat ../VERSION` .
+							-t dkr.piazzaapp.com/chartmart/chartmart-www:`cat ../VERSION` .
 else
 	docker build --build-arg APP_NAME=$(APP_NAME) \
 		--build-arg APP_VSN=$(APP_VSN) \
@@ -25,6 +25,7 @@ endif
 
 push: ## push to gcr
 	docker push gcr.io/$(GCP_PROJECT)/$(APP_NAME):$(APP_VSN)
+	docker push dkr.piazzaapp.com/chartmart/${APP_NAME}:${APP_VSN}
 
 testup: ## sets up dependent services for test
 	docker-compose up -d

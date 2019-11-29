@@ -5,6 +5,10 @@ metadata:
 spec:
   template:
     spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
       containers:
       - name: migrator
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

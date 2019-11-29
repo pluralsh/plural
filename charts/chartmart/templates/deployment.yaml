@@ -18,7 +18,7 @@ spec:
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
+        {{- toYaml . | nindent 6 }}
     {{- end }}
       containers:
       - name: api
@@ -102,7 +102,7 @@ spec:
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
+        {{- toYaml . | nindent 6 }}
     {{- end }}
       containers:
       - name: chartmuseum
@@ -178,6 +178,10 @@ spec:
         app.kubernetes.io/name: chartmart-www
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
       containers:
       - name: www
         image: "{{ .Values.www.image }}:{{ .Values.image.tag }}"

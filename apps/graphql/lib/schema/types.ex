@@ -83,6 +83,7 @@ defmodule GraphQl.Schema.Types do
     field :description,    :string
     field :latest_version, :string
     field :repository,     :repository, resolve: dataloader(Repository)
+    field :dependencies,   :dependencies
 
     field :installation, :chart_installation, resolve: fn
       chart, _, %{context: %{current_user: user}} ->
@@ -166,6 +167,11 @@ defmodule GraphQl.Schema.Types do
     field :type, :dependency_type
     field :name, :string
     field :repo, :string
+  end
+
+  object :closure do
+    field :helm, list_of(:chart)
+    field :terraform, list_of(:terraform)
   end
 
   object :wirings do

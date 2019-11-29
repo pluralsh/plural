@@ -22,7 +22,12 @@ defmodule Core.Schema.TerraformInstallation do
       where: r.name == ^repo_name)
   end
 
-  def for_terraform_name(query \\ __MODULE__, terraform_name) do
+  def for_terraform_name(query \\ __MODULE__, terraform_name)
+  def for_terraform_name(query, names) when is_list(names) do
+    from([ti, terraform: t] in query,
+      where: t.name in ^names)
+  end
+  def for_terraform_name(query, terraform_name) do
     from([ti, terraform: t] in query,
       where: t.name == ^terraform_name)
   end

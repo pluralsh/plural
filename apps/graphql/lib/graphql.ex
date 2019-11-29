@@ -11,7 +11,8 @@ defmodule GraphQl do
     Chart,
     Repository,
     Terraform,
-    Docker
+    Docker,
+    Dependencies
   }
 
   def context(ctx) do
@@ -67,6 +68,14 @@ defmodule GraphQl do
       arg :id, non_null(:id)
 
       resolve &Repository.resolve_repository/2
+    end
+
+    field :closure, :closure do
+      middleware GraphQl.Middleware.Authenticated
+      arg :id, non_null(:id)
+      arg :type, non_null(:dependency_type)
+
+      resolve &Dependencies.resolve_closure/2
     end
 
     connection field :users, node_type: :user do

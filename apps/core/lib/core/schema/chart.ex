@@ -23,6 +23,18 @@ defmodule Core.Schema.Chart do
     from(c in query, where: c.repository_id == ^repo_id)
   end
 
+  def for_repository_name(query \\ __MODULE__, name) do
+    from(c in query,
+      join: r in assoc(c, :repository),
+      where: r.name == ^name)
+  end
+
+  def for_name(query \\ __MODULE__, names) when is_list(names),
+    do: from(c in query, where: c.name in ^names)
+
+  def preloaded(query \\ __MODULE__, preload \\ [:repository]),
+    do: from(c in query, preload: ^preload)
+
   @valid ~w(name latest_version description repository_id)a
 
   def changeset(model, attrs \\ %{}) do

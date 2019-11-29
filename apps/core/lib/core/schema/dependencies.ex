@@ -9,9 +9,10 @@ defmodule Core.Schema.Dependencies do
       field :type, Type
       field :repo, :string
       field :name, :string
+      field :any,  {:array, :string}
     end
 
-    @valid ~w(type repo name)a
+    @valid ~w(type repo name any)a
 
     def changeset(model, attrs \\ %{}) do
       model

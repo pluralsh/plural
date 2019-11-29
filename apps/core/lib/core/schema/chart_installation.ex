@@ -40,7 +40,12 @@ defmodule Core.Schema.ChartInstallation do
       where: r.name == ^name)
   end
 
-  def for_chart_name(query \\ __MODULE__, name) do
+  def for_chart_name(query \\ __MODULE__, name)
+  def for_chart_name(query, names) when is_list(names) do
+    from([ci, chart: c] in query,
+      where: c.name in ^names)
+  end
+  def for_chart_name(query, name) do
     from([ci, chart: c] in query,
       where: c.name == ^name)
   end

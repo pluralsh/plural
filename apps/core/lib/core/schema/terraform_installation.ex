@@ -15,10 +15,22 @@ defmodule Core.Schema.TerraformInstallation do
       where: c.repository_id == ^repo_id)
   end
 
+  def for_repo_name(query \\ __MODULE__, repo_name) do
+    from(ti in query,
+      join: t in assoc(ti, :terraform), as: :terraform,
+      join: r in assoc(t, :repository), as: :repo,
+      where: r.name == ^repo_name)
+  end
+
+  def for_terraform_name(query \\ __MODULE__, terraform_name) do
+    from([ti, terraform: t] in query,
+      where: t.name == ^terraform_name)
+  end
+
   def for_terraform(query \\ __MODULE__, terraform_id) do
     from(ti in query,
-      join: c in assoc(ti, :terraform), as: :terraform,
-      where: c.id == ^terraform_id)
+      join: t in assoc(ti, :terraform), as: :terraform,
+      where: t.id == ^terraform_id)
   end
 
   def for_user(query, user_id) do

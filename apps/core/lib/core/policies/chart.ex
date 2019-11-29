@@ -1,5 +1,6 @@
 defmodule Core.Policies.Chart do
   use Piazza.Policy
+  alias Core.Services.{Dependencies}
   alias Core.Schema.{Chart, Version, User, ChartInstallation}
 
   def can?(%User{} = user, %Chart{} = chart, :access) do
@@ -15,12 +16,18 @@ defmodule Core.Policies.Chart do
     can?(user, chart, action)
   end
 
-  def can?(%User{id: user_id}, %ChartInstallation{installation: %{repository_id: repo_id, user_id: user_id}} = ci, _) do
+  def can?(
+    %User{id: user_id} = user,
+    %ChartInstallation{installation: %{repository_id: repo_id, user_id: user_id}} = ci,
+    :create
+  ) do
     case Core.Repo.preload(ci, [:chart, :version]) do
-      %{version: %{chart_id: cid}, chart: %{id: cid, repository_id: ^repo_id}} -> :pass
+      %{version: %{chart_id: cid} = version, chart: %{id: cid, repository_id: ^repo_id}} ->
+        Dependencies.validate(version.dependencies, user)
       _ -> {:error, :invalid_version}
     end
   end
+  def can?(%User{id: user_id}, %ChartInstallation{installation: %{user_id: user_id}}, _), do: :pass
   def can?(%User{} = user, %ChartInstallation{installation: %Ecto.Association.NotLoaded{}} = inst, action),
     do: can?(user, Core.Repo.preload(inst, [:installation, :chart, :version]), action)
 

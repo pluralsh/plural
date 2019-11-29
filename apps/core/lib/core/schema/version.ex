@@ -1,12 +1,14 @@
 defmodule Core.Schema.Version do
   use Piazza.Ecto.Schema
-  alias Core.Schema.{Chart}
+  alias Core.Schema.{Chart, Dependencies}
 
   schema "versions" do
     field :version, :string
     field :helm, :map
     field :readme, :string
     field :values_template, :string
+
+    embeds_one :dependencies, Dependencies
     belongs_to :chart, Chart
 
     timestamps()
@@ -23,6 +25,7 @@ defmodule Core.Schema.Version do
   def changeset(model, attrs \\ %{}) do
     model
     |> cast(attrs, @valid)
+    |> cast_embed(:dependencies)
     |> validate_required([:version, :chart_id])
     |> unique_constraint(:version, name: index_name(:charts, [:chart_id, :version]))
     |> foreign_key_constraint(:chart_id)

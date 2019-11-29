@@ -79,6 +79,52 @@ defmodule Core.Services.ChartsTest do
         chart_id: chart.id
       }, installation.id, user)
     end
+
+    test "If dependencies are met it can install" do
+      chart = insert(:chart)
+      tf    = insert(:terraform)
+      user  = insert(:user)
+      insert(:chart_installation,
+        chart: chart,
+        installation: insert(:installation, user: user, repository: chart.repository)
+      )
+      insert(:terraform_installation,
+        terraform: tf,
+        installation: insert(:installation, user: user, repository: tf.repository)
+      )
+
+      %{chart: chart, id: vid} = insert(:version, version: "1.0.0", dependencies: %{dependencies: [
+        %{type: :helm, repo: chart.repository.name, name: chart.name},
+        %{type: :terraform, repo: tf.repository.name, name: tf.name}
+      ]})
+      installation = insert(:installation, repository: chart.repository, user: user)
+
+      {:ok, _} = Charts.create_chart_installation(%{
+        version_id: vid,
+        chart_id: chart.id
+      }, installation.id, user)
+    end
+
+    test "If dependencies aren't met it can't install" do
+      chart = insert(:chart)
+      tf    = insert(:terraform)
+      user  = insert(:user)
+      insert(:terraform_installation,
+        terraform: tf,
+        installation: insert(:installation, user: user, repository: tf.repository)
+      )
+
+      %{chart: chart, id: vid} = insert(:version, version: "1.0.0", dependencies: %{dependencies: [
+        %{type: :helm, repo: chart.repository.name, name: chart.name},
+        %{type: :terraform, repo: tf.repository.name, name: tf.name}
+      ]})
+      installation = insert(:installation, repository: chart.repository, user: user)
+
+      {:error, _} = Charts.create_chart_installation(%{
+        version_id: vid,
+        chart_id: chart.id
+      }, installation.id, user)
+    end
   end
 
   describe "#update_chart_installation" do
@@ -114,7 +160,7 @@ defmodule Core.Services.ChartsTest do
 
   describe "#extract_chart_meta/2" do
     test "It can extract info from a tar file" do
-      path = Path.join(:code.priv_dir(:core), "chartmart-0.1.6.tgz")
+      path = Path.join(:code.priv_dir(:core), "chartmart-0.2.3.tgz")
       {:ok, %{readme: _, helm: _, values_template: template}} = Charts.extract_chart_meta("chartmart", path)
 
       assert is_binary(template)

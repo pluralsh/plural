@@ -1,7 +1,7 @@
 defmodule Core.Services.Terraform do
   use Core.Services.Base
   import Core.Policies.Terraform
-  alias Core.Services.Repositories
+  alias Core.Services.{Repositories, Dependencies}
   alias Core.Schema.{Terraform, TerraformInstallation, User}
 
   def get_tf!(id), do: Core.Repo.get!(Terraform, id)
@@ -60,7 +60,7 @@ defmodule Core.Services.Terraform do
   def delete_terraform_installation(tf_inst_id, %User{} = user) do
     Core.Repo.get!(TerraformInstallation, tf_inst_id)
     |> Core.Repo.preload([:installation, :terraform])
-    |> allow(user, :create)
+    |> allow(user, :delete)
     |> when_ok(:delete)
   end
 
@@ -71,7 +71,7 @@ defmodule Core.Services.Terraform do
                          |> Enum.map(&String.to_charlist/1)
 
     with {:ok, result} <- :erl_tar.extract(path, [:memory, :compressed, {:files, files}]),
-         {:ok, deps} <- extract_dependencies(result, deps) do
+         {:ok, deps} <- Dependencies.extract_dependencies(result, deps) do
       {:ok, %{
         readme: extract_tar_file(result, rm),
         values_template: extract_tar_file(result, valt),
@@ -85,16 +85,6 @@ defmodule Core.Services.Terraform do
     case Enum.find(result, &elem(&1, 0) == val_template) do
       {_, template} -> template
       _ -> nil
-    end
-  end
-
-  def extract_dependencies(result, deps) do
-    with deps when is_binary(deps) <- extract_tar_file(result, deps),
-         {:ok, map} <- YamlElixir.read_from_string(deps) do
-      {:ok, map}
-    else
-      {:error, _} = error -> error
-      _ -> {:ok, nil}
     end
   end
 

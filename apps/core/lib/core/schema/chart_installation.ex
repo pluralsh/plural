@@ -33,6 +33,18 @@ defmodule Core.Schema.ChartInstallation do
       where: c.repository_id == ^repo_id)
   end
 
+  def for_repo_name(query \\ __MODULE__, name) do
+    from(ci in query,
+      join: c in assoc(ci, :chart), as: :chart,
+      join: r in assoc(c, :repository), as: :repo,
+      where: r.name == ^name)
+  end
+
+  def for_chart_name(query \\ __MODULE__, name) do
+    from([ci, chart: c] in query,
+      where: c.name == ^name)
+  end
+
   def for_user(query, user_id) do
     from([ci, chart: c] in query,
       join: inst in Installation,

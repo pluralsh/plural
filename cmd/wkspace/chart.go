@@ -234,10 +234,33 @@ func (w *Workspace) CreateChart(name, dir string) (string, error) {
 
 func (w *Workspace) InstallHelm() error {
 	w.Provider.KubeConfig()
+
 	if err := utils.Cmd(w.Config, "helm", "init", "--wait", "--service-account=tiller", "--client-only"); err != nil {
 		return err
 	}
+
+	if err := w.ensurePullCredentials(); err != nil {
+		return err
+	}
+
 	return w.Bounce()
+}
+
+const pullSecretName = "chartmartcreds"
+const repoName = "dkr.piazzaapp.com"
+
+func (w *Workspace) ensurePullCredentials() error {
+	name := w.Installation.Repository.Name
+	if err := utils.Cmd(w.Config, "kubectl", "get", "secret", pullSecretName, "--namespace", name); err != nil {
+		username, _ := utils.ReadLine("Enter chartmart user email address to authenticate to docker: ")
+		token, _ := utils.ReadPwd("Enter your chartmart access token: ")
+
+		return utils.Cmd(w.Config,
+			"kubectl", "create", "secret", "docker-registry", pullSecretName,
+					"--namespace", name, "--docker-username", username, "--docker-password", token, "--docker-server", repoName)
+	}
+
+	return nil
 }
 
 func (w *Workspace) Bounce() error {

@@ -1,13 +1,17 @@
 replicaCount: 2
 
 image:
-  repository: gcr.io/piazzaapp/chartmart
+  repository: dkr.piazzaapp.com/chartmart/chartmart
   tag: '0.1.0'
   pullPolicy: Always
 
 www:
-  image: gcr.io/piazzaapp/chartmart-www
+  image: dkr.piazzaapp.com/chartmart/chartmart-www
+  tag: '0.1.0'
   port: 80
+
+imagePullSecrets:
+- name: chartmartcreds
 
 api:
   port: 4000
@@ -84,7 +88,6 @@ postgresql:
   postgresqlUsername: chartmart
   postgresqlDatabase: chartmart
 
-imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 

@@ -2,7 +2,7 @@ defmodule Core.Services.Charts do
   use Core.Services.Base
   import Core.Policies.Chart
 
-  alias Core.Services.Repositories
+  alias Core.Services.{Repositories, Dependencies}
   alias Core.PubSub
   alias Core.Schema.{
     Chart,
@@ -88,9 +88,9 @@ defmodule Core.Services.Charts do
         sync_version(helm_info, id, version)
       end
     end)
-    |> add_operation(:sync_chart, fn %{sync: %{helm: helm}, chart: chart} ->
+    |> add_operation(:sync_chart, fn %{sync: version, chart: chart} ->
       chart
-      |> Chart.changeset(from_version(helm))
+      |> Chart.changeset(from_version(version))
       |> Core.Repo.update()
     end)
     |> execute()
@@ -108,7 +108,9 @@ defmodule Core.Services.Charts do
     |> Core.Repo.update()
   end
 
-  defp from_version(%{} = attrs), do: Map.take(attrs, ~w(description))
+  defp from_version(%Version{dependencies: deps, helm: helm}) do
+    %{dependencies: deps, description: helm && helm["description"]}
+  end
   defp from_version(_), do: %{}
 
   defp chart_info(%{filename: filename}) do
@@ -143,14 +145,21 @@ defmodule Core.Services.Charts do
   def extract_chart_meta(chart, path) do
     readme_file  = String.to_charlist("#{chart}/README.md")
     chart_file   = String.to_charlist("#{chart}/Chart.yaml")
-    val_template = String.to_charlist("#{chart}/values.yaml.gpl")
+    val_template = String.to_charlist("#{chart}/values.yaml.gotpl")
+    deps_tmplate = String.to_charlist("#{chart}/deps.yaml")
 
     with {:ok, result} <- String.to_charlist(path)
                           |> :erl_tar.extract([:memory, :compressed, {:files, [readme_file, chart_file, val_template]}]),
          {_, readme} <- Enum.find(result, &elem(&1, 0) == readme_file),
          {_, chart_yaml} <- Enum.find(result, &elem(&1, 0) == chart_file),
          {:ok, chart_decoded} <- YamlElixir.read_from_string(chart_yaml),
-      do: {:ok, %{readme: readme, helm: chart_decoded, values_template: extract_val_template(result, val_template)}}
+         {:ok, deps} <- Dependencies.extract_dependencies(result, deps_tmplate) do
+      {:ok, %{
+        readme: readme,
+        helm: chart_decoded,
+        values_template: extract_val_template(result, val_template),
+        dependencies: deps}}
+    end
   end
 
   def extract_val_template(result, val_template) do

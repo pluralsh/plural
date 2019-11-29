@@ -112,6 +112,50 @@ defmodule Core.Services.TerraformTest do
         terraform_id: terraform.id
       }, installation.id, user)
     end
+
+    test "If dependencies are met it can install" do
+      chart = insert(:chart)
+      tf    = insert(:terraform)
+      user  = insert(:user)
+      insert(:chart_installation,
+        chart: chart,
+        installation: insert(:installation, user: user, repository: chart.repository)
+      )
+      insert(:terraform_installation,
+        terraform: tf,
+        installation: insert(:installation, user: user, repository: tf.repository)
+      )
+
+      terraform = insert(:terraform, dependencies: %{dependencies: [
+        %{type: :helm, repo: chart.repository.name, name: chart.name},
+        %{type: :terraform, repo: tf.repository.name, name: tf.name}
+      ]})
+      installation = insert(:installation, repository: terraform.repository, user: user)
+
+      {:ok, _} = Terraform.create_terraform_installation(%{
+        terraform_id: terraform.id
+      }, installation.id, user)
+    end
+
+    test "If dependencies aren't met it can't install" do
+      chart = insert(:chart)
+      tf    = insert(:terraform)
+      user  = insert(:user)
+      insert(:terraform_installation,
+        terraform: tf,
+        installation: insert(:installation, user: user, repository: tf.repository)
+      )
+
+      terraform = insert(:terraform, dependencies: %{dependencies: [
+        %{type: :helm, repo: chart.repository.name, name: chart.name},
+        %{type: :terraform, repo: tf.repository.name, name: tf.name}
+      ]})
+      installation = insert(:installation, repository: terraform.repository, user: user)
+
+      {:error, {:missing_dep, _}} = Terraform.create_terraform_installation(%{
+        terraform_id: terraform.id
+      }, installation.id, user)
+    end
   end
 
   describe "#delete_chart_installation" do

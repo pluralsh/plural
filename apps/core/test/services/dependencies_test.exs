@@ -1,5 +1,5 @@
 defmodule Core.Services.DependenciesTest do
-  use Core.SchemaCase, async: true
+  use Core.SchemaCase
   alias Core.Services.Dependencies
 
   describe "#valid?/2" do
@@ -18,6 +18,28 @@ defmodule Core.Services.DependenciesTest do
 
       terraform = insert(:terraform, dependencies: %{dependencies: [
         %{type: :helm, repo: chart.repository.name, name: chart.name},
+        %{type: :terraform, repo: terraform.repository.name, name: terraform.name}
+      ]})
+
+      assert Dependencies.valid?(terraform.dependencies, user)
+    end
+
+    test "It can handle any dependencies" do
+      chart     = insert(:chart)
+      ignore    = insert(:chart, repository: chart.repository)
+      terraform = insert(:terraform)
+      user      = insert(:user)
+      insert(:chart_installation,
+        chart: chart,
+        installation: insert(:installation, user: user, repository: chart.repository)
+      )
+      insert(:terraform_installation,
+        terraform: terraform,
+        installation: insert(:installation, user: user, repository: terraform.repository)
+      )
+
+      terraform = insert(:terraform, dependencies: %{dependencies: [
+        %{type: :helm, repo: chart.repository.name, any: [chart.name, ignore.name]},
         %{type: :terraform, repo: terraform.repository.name, name: terraform.name}
       ]})
 
@@ -93,6 +115,27 @@ defmodule Core.Services.DependenciesTest do
       ]})
 
       assert Dependencies.validate(terraform.dependencies, user) == :pass
+    end
+  end
+
+  describe "#closure/1" do
+    test "It can recursively traverse dependencies" do
+      chart = insert(:chart)
+      chart2 = insert(:chart)
+      chart3 = insert(:chart)
+      t1 = insert(:terraform, dependencies: %{dependencies: [
+        %{type: :helm, repo: chart2.repository.name, name: chart2.name}
+      ]})
+
+      t2 = insert(:terraform, dependencies: %{dependencies: [
+        %{type: :helm, repo: chart.repository.name, name: chart.name},
+        %{type: :helm, repo: chart3.repository.name, name: chart3.name},
+        %{type: :terraform, repo: t1.repository.name, name: t1.name}
+      ]})
+
+      closure = Dependencies.closure(t2)
+
+      assert ids_equal(closure, [chart, chart2, chart3, t1])
     end
   end
 end

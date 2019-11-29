@@ -4,13 +4,13 @@ import Tabs, {TabHeader, TabHeaderItem, TabContent} from '../utils/Tabs'
 import {useQuery, useMutation} from 'react-apollo'
 import {useParams} from 'react-router-dom'
 import {TF_Q, UPDATE_TF, INSTALL_TF, UNINSTALL_TF} from './queries'
-import {DEFAULT_TF_ICON, DEFAULT_CHART_ICON} from './constants'
+import {DEFAULT_TF_ICON} from './constants'
 import Highlight from 'react-highlight.js'
 import Installation from './Installation'
 import {TerraformForm} from './CreateTerraform'
 import {BreadcrumbContext} from '../Chartmart'
 import Button, {SecondaryButton} from '../utils/Button'
-import TreeGraph from '../utils/TreeGraph'
+import Dependencies from './Dependencies'
 
 function Code({value, children, language}) {
   return (
@@ -112,29 +112,6 @@ function updateInstallation(tfId) {
         }
     })
   }
-}
-
-function Dependencies({name, dependencies}) {
-  if (!dependencies || !dependencies.dependencies) {
-    return (
-      <Box pad='small'>
-        <Text size='small'>No dependencies</Text>
-      </Box>
-    )
-  }
-  const deps = dependencies.dependencies.map((dep) => {
-    if (dep.type === "TERRAFORM") return {...dep, image: DEFAULT_TF_ICON}
-    if (dep.type === "HELM") return {...dep, image: DEFAULT_CHART_ICON}
-    return dep
-  })
-
-  return (
-    <TreeGraph
-      id={`${name}-tree`}
-      tree={{name: name, image: DEFAULT_TF_ICON, children: deps}}
-      width='100%'
-      height='400px' />
-  )
 }
 
 function UpdateTerraform({id, name, description}) {

@@ -23,8 +23,20 @@ defmodule Core.Schema.Terraform do
   def for_repository(query \\ __MODULE__, id),
     do: from(tf in query, where: tf.repository_id == ^id)
 
+  def for_repository_name(query \\ __MODULE__, name) do
+    from(tf in query,
+      join: r in assoc(tf, :repository),
+      where: r.name == ^name)
+  end
+
+  def for_name(query \\ __MODULE__, names) when is_list(names),
+    do: from(tf in query, where: tf.name in ^names)
+
   def ordered(query \\ __MODULE__, order \\ [asc: :id]),
     do: from(tf in query, order_by: ^order)
+
+  def preloaded(query \\ __MODULE__, preload \\ [:repository]),
+    do: from(tf in query, preload: ^preload)
 
   @valid ~w(name values_template readme description)a
 

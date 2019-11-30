@@ -2,6 +2,8 @@ defmodule Core.Services.ChartsTest do
   use Core.SchemaCase, async: true
   alias Core.Services.Charts
 
+  import Mock
+
   describe "#create_chart" do
     test "A user can create a chart if he's a publisher" do
       user = insert(:user)
@@ -160,10 +162,28 @@ defmodule Core.Services.ChartsTest do
 
   describe "#extract_chart_meta/2" do
     test "It can extract info from a tar file" do
-      path = Path.join(:code.priv_dir(:core), "chartmart-0.2.3.tgz")
-      {:ok, %{readme: _, helm: _, values_template: template}} = Charts.extract_chart_meta("chartmart", path)
+      path = Path.join(:code.priv_dir(:core), "chartmart-0.2.4.tgz")
+      {:ok, %{readme: _, helm: _, values_template: template, dependencies: deps}} = Charts.extract_chart_meta("chartmart", path)
 
       assert is_binary(template)
+      assert deps["dependencies"]
+    end
+  end
+
+  describe "#upload_chart/4" do
+    test "It can upload a chart" do
+      path = Path.join(:code.priv_dir(:core), "chartmart-0.2.4.tgz")
+      repo = insert(:repository)
+      with_mock HTTPoison, [post: fn _, _, _, _ -> {:ok, %{}} end] do
+        {:ok, %{sync_chart: chart}} = Charts.upload_chart(
+          %{"chart" => %{filename: path, path: path}},
+          repo,
+          repo.publisher.owner,
+          %{opts: [], headers: []}
+        )
+
+        assert length(chart.dependencies.dependencies) == 2
+      end
     end
   end
 end

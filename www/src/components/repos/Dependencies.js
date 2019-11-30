@@ -67,7 +67,6 @@ export function FullDependencies(resource) {
 
   if (loading || !data) return null
   const graph = compileGraph(resource, cloneDeep(data.closure))
-
   return (
     <TreeGraph
       id={`${resource.name}-full-tree`}

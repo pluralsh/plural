@@ -16,6 +16,7 @@ RUN apk add --no-cache --virtual .build-deps \
     apk del .build-deps
 ENV PATH /app/node_modules/.bin:$PATH
 COPY package.json /app/package.json
+COPY yarn.lock /app/yarn.lock
 RUN yarn install
 RUN npm install react-scripts@3.0.1 -g --silent
 COPY . /app

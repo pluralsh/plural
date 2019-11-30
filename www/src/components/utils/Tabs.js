@@ -6,8 +6,8 @@ const HOVER_BORDER = {side: 'bottom', color: 'dark-6', size: 'small'}
 const ACTIVE_BORDER = {side: 'bottom', color: 'brand', size: 'small'}
 
 export function TabHeaderItem({name, children}) {
-  const {setTab, tab} = useContext(TabContext)
   const [hover, setHover] = useState(false)
+  const {setTab, tab} = useContext(TabContext)
 
   return (
     <Box

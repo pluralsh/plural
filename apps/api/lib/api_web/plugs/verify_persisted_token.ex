@@ -30,6 +30,7 @@ defmodule Api.Plugs.VerifyPersistedToken do
       _ -> :error
     end
   end
+  defp fetch_token_from_header(_), do: :error
 
   defp build_claims(persisted), do: %{"sub" => "user:#{persisted.user_id}"}
   defp storage_key(conn, opts), do: Pipeline.fetch_key(conn, opts)

@@ -8,7 +8,7 @@ function diagonal(d) {
 }
 
 function renderTree(id, tree, height, width) {
-  var margin = {top: 40, right: 90, bottom: 50, left: 90},
+  var margin = {top: 50, right: 90, bottom: 50, left: 90},
     layoutWidth = width - margin.left - margin.right,
     layoutHeight = height - margin.top - margin.bottom;
   var treemap = treeLayout()
@@ -34,7 +34,6 @@ function renderTree(id, tree, height, width) {
     .style("fill", 'none')
     .attr("stroke", '#ccc')
 
-  console.log(tree)
   var nodes = svg.selectAll("g")
     .data(root.descendants())
     .enter()
@@ -44,14 +43,14 @@ function renderTree(id, tree, height, width) {
 
     nodes.append("text")
       .attr("dy", ".35em")
-      .attr("y", function(d) { return d.children ? -20 : 20; })
+      .attr("y", function(d) { return d.children ? -32 : 32; })
       .style("text-anchor", "middle")
       .text((d) => d.data.name)
 
     nodes
       .append("svg:image")
       .attr('x', -12)
-      .attr('y', -12)
+      .attr('y', (d) => d.children ? -25 : 0)
       .attr('width', 25)
       .attr('height', 25)
       .attr("xlink:href", (d) => d.data.image)

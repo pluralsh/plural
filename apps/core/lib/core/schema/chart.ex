@@ -7,7 +7,7 @@ defmodule Core.Schema.Chart do
     field :latest_version, :string
     field :description,    :string
 
-    embeds_one :dependencies, Dependencies
+    embeds_one :dependencies, Dependencies, on_replace: :update
     belongs_to :repository, Repository
 
     timestamps()

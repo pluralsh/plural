@@ -11,6 +11,7 @@ import Highlight from 'react-highlight.js'
 import Installation from './Installation'
 import Button from '../utils/Button'
 import {BreadcrumbContext} from '../Chartmart'
+import Dependencies, {FullDependencies, ShowFull} from './Dependencies'
 
 function ChartVersion({version, onSelect}) {
   return (
@@ -138,7 +139,8 @@ function updateInstallation(chartId) {
 function Chart() {
   const {chartId} = useParams()
   const [version, setVersion] = useState(null)
-  const [edit, setEdit] = useState(false)
+  const [tab, setTab] = useState(false)
+  const [full, setFull] = useState(false)
   const {loading, data, fetchMore} = useQuery(CHART_Q, {variables: {chartId}})
   const {setBreadcrumbs} = useContext(BreadcrumbContext)
   useEffect(() => {
@@ -153,22 +155,28 @@ function Chart() {
 
   if (loading || !data) return null
 
-  const {versions, chart: {repository}} = data
+  const {versions, chart} = data
+  const repository = chart.repository
   const {edges, pageInfo} = versions
   const currentVersion = version || edges[0].node
-  const width = edit ? 65 : 70
+  const width = tab === 'configuration' ? 65 : 70
 
   return (
     <Box pad='small' direction='row' height="100%">
       <Box width={`${width}%`} pad='small'>
         <ChartHeader {...currentVersion} chartInstallation={data.chart.installation} installation={repository.installation} />
-        <Tabs defaultTab='readme' onTabChange={(tab) => setEdit(tab === 'configuration')}>
+        <Tabs defaultTab='readme' onTabChange={setTab} headerEnd={tab === 'dependencies' ?
+          <ShowFull label={full ? 'immediate' : 'show full'} onClick={() => setFull(!full)} /> : null
+        }>
           <TabHeader>
             <TabHeaderItem name='readme'>
               <Text style={{fontWeight: 500}} size='small'>Readme</Text>
             </TabHeaderItem>
             <TabHeaderItem name='configuration'>
               <Text style={{fontWeight: 500}} size='small'>Configuration</Text>
+            </TabHeaderItem>
+            <TabHeaderItem name='dependencies'>
+              <Text size='small' style={{fontWeight: 500}}>Dependencies</Text>
             </TabHeaderItem>
           </TabHeader>
           <TabContent name='readme'>
@@ -177,10 +185,13 @@ function Chart() {
           <TabContent name='configuration'>
             <TemplateView {...currentVersion} />
           </TabContent>
+          <TabContent name='dependencies'>
+            {full ? <FullDependencies {...chart} /> : <Dependencies {...chart} />}
+          </TabContent>
         </Tabs>
       </Box>
       <Box pad='small' width={`${100 - width}%`} gap='small'>
-        {edit ? <Installation repository={repository} onUpdate={updateInstallation(chartId)} /> :
+        {tab === 'configuration' ? <Installation repository={repository} onUpdate={updateInstallation(chartId)} /> :
           (<>
           <Box elevation='small' gap='xsmall' pad='small' style={{maxHeight: '50%'}}>
             <Text size='small' weight='bold'>Versions</Text>

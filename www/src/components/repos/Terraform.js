@@ -10,7 +10,7 @@ import Installation from './Installation'
 import {TerraformForm} from './CreateTerraform'
 import {BreadcrumbContext} from '../Chartmart'
 import Button, {SecondaryButton} from '../utils/Button'
-import Dependencies from './Dependencies'
+import Dependencies, {FullDependencies, ShowFull} from './Dependencies'
 
 function Code({value, children, language}) {
   return (
@@ -147,10 +147,13 @@ function UpdateTerraform({id, name, description}) {
 }
 
 function Terraform() {
+  const [tab, setTab] = useState(null)
+  const [full, setFull] = useState(false)
   const {tfId} = useParams()
   const {loading, data} = useQuery(TF_Q, {variables: {tfId}})
   const width = 65
   const {setBreadcrumbs} = useContext(BreadcrumbContext)
+
   useEffect(() => {
     if (!data) return
     const {terraformModule} = data
@@ -167,7 +170,9 @@ function Terraform() {
     <Box pad='small' direction='row' height="100%">
       <Box width={`${width}%`} pad='small'>
         <TerraformHeader {...terraformModule} />
-        <Tabs defaultTab='readme'>
+        <Tabs defaultTab='readme' onTabChange={setTab} headerEnd={tab === 'dependencies' ?
+          <ShowFull label={full ? 'immediate' : 'show full'} onClick={() => setFull(!full)} /> : null
+        }>
           <TabHeader>
             <TabHeaderItem name='readme'>
               <Text size='small' style={{fontWeight: 500}}>Readme</Text>
@@ -191,7 +196,7 @@ function Terraform() {
             <TemplateView {...terraformModule} />
           </TabContent>
           <TabContent name='dependencies'>
-            <Dependencies {...terraformModule} />
+            {full ? <FullDependencies {...terraformModule} /> : <Dependencies {...terraformModule} />}
           </TabContent>
           <TabContent name='edit'>
             <UpdateTerraform {...terraformModule} />

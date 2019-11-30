@@ -253,3 +253,24 @@ export const UPDATE_CHART_INST = gql`
   }
   ${ChartInstallationFragment}
 `;
+
+export const CLOSURE_Q = gql`
+  query Closure($type: DependencyType!, $id: ID!) {
+    closure(type: $type, id: $id) {
+      terraform {
+        ...TerraformFragment
+        repository {
+          name
+        }
+      }
+      helm {
+        ...ChartFragment
+        repository {
+          name
+        }
+      }
+    }
+  }
+  ${TerraformFragment}
+  ${ChartFragment}
+`;

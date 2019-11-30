@@ -13,6 +13,7 @@
     "grommet": "^2.7.9",
     "grommet-icons": "^4.3.0",
     "js-yaml": "^3.13.1",
+    "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "react": "^16.10.2",
     "react-apollo": "^3.1.3",

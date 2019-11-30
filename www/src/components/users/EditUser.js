@@ -1,33 +1,19 @@
 import React, {useContext, useState, useEffect} from 'react'
-import {Box, Anchor, Text} from 'grommet'
-import {FormNext, FormDown} from 'grommet-icons'
+import {Box, Text} from 'grommet'
 import {useMutation, useQuery} from 'react-apollo'
 import {UPDATE_USER, CREATE_TOKEN, TOKENS_Q} from './queries'
 import InputField from '../utils/InputField'
 import Button, {SecondaryButton} from '../utils/Button'
 import {CurrentUserContext} from '../login/CurrentUser'
 import Avatar from '../users/Avatar'
-import Collapsible from 'react-collapsible'
 import Scroller from '../utils/Scroller'
 import moment from 'moment'
 import Copyable from '../utils/Copyable'
 import {BreadcrumbContext} from '../Chartmart'
+import Expander from '../utils/Expander'
 
-const LABEL_WIDTH = '90px'
+const LABEL_WIDTH = '60px'
 const CELL_WIDTH='200px'
-
-function PasswordTrigger({open}) {
-  return (
-    <Box style={{cursor: 'pointer'}} direction='row' pad='xsmall'>
-      <Box width='100%'>
-        <Anchor size='small'>Update Password</Anchor>
-      </Box>
-      <Box width='25px'>
-        {open ? <FormDown size='20px' /> : <FormNext size='20px' />}
-      </Box>
-    </Box>
-  )
-}
 
 function Token({token, hasNext}) {
   const [hover, setHover] = useState(false)
@@ -154,52 +140,49 @@ export default function EditUser() {
   }, [me, setBreadcrumbs])
 
   return (
-    <Box direction='row' gap='small'>
-      <Box width='70%' gap='small' pad='medium'>
-        <InputField
-          label='name'
-          labelWidth={LABEL_WIDTH}
-          placeholder='your name'
-          value={attributes.name}
-          onChange={(e) => setAttributes({...attributes, name: e.target.value})} />
-        <InputField
-          label='email'
-          labelWidth={LABEL_WIDTH}
-          placeholder='your email'
-          value={attributes.email}
-          onChange={(e) => setAttributes({...attributes, email: e.target.value})} />
-        <Collapsible
-          transitionTime={200}
-          trigger={<PasswordTrigger />}
-          triggerWhenOpen={<PasswordTrigger open />}>
-          <Box pad='small'>
-            <InputField
-              label='password'
-              placeholder='your password'
-              labelWidth={LABEL_WIDTH}
-              type='password'
-              value={attributes.password || ''}
-              onChange={(e) => setAttributes({...attributes, password: e.target.value})} />
-          </Box>
-        </Collapsible>
-        <Box direction='row' justify='end'>
-          <Button
-            pad={{horizontal: 'medium', vertical: 'xsmall'}}
-            loading={loading}
-            label='Update'
-            onClick={mutation}
-            round='xsmall' />
-        </Box>
-        <Box margin={{top: 'medium'}}>
-          <Tokens />
-        </Box>
+    <Box direction='row' gap='small' pad='medium'>
+      <Box width='70%' gap='small' pad='small'>
+        <Tokens />
       </Box>
-      <Box width='30%' pad='small'>
+      <Box width='30%' pad='small' gap='medium' elevation='small'>
         <Box direction='row' align='center' gap='small'>
           <Avatar user={me} size='100px' />
           <Box>
             <Text>{me.name}</Text>
             <Text size='small'>{me.email}</Text>
+          </Box>
+        </Box>
+        <Box gap='small'>
+          <InputField
+            label='name'
+            labelWidth={LABEL_WIDTH}
+            placeholder='your name'
+            value={attributes.name}
+            onChange={(e) => setAttributes({...attributes, name: e.target.value})} />
+          <InputField
+            label='email'
+            labelWidth={LABEL_WIDTH}
+            placeholder='your email'
+            value={attributes.email}
+            onChange={(e) => setAttributes({...attributes, email: e.target.value})} />
+          <Expander text='Update password'>
+            <Box pad={{vertical: 'small'}}>
+              <InputField
+                label='password'
+                placeholder='your password'
+                labelWidth='80px'
+                type='password'
+                value={attributes.password || ''}
+                onChange={(e) => setAttributes({...attributes, password: e.target.value})} />
+            </Box>
+          </Expander>
+          <Box direction='row' justify='end'>
+            <Button
+              pad={{horizontal: 'medium', vertical: 'xsmall'}}
+              loading={loading}
+              label='Update'
+              onClick={mutation}
+              round='xsmall' />
           </Box>
         </Box>
       </Box>

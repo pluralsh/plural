@@ -1,5 +1,6 @@
 defmodule Core.Services.Users do
   use Core.Services.Base
+  import Core.Policies.User
   alias Core.Schema.{
     PersistedToken,
     User,
@@ -41,6 +42,12 @@ defmodule Core.Services.Users do
     %PersistedToken{}
     |> PersistedToken.changeset(%{user_id: user.id})
     |> Core.Repo.insert()
+  end
+
+  def delete_persisted_token(token_id, %User{} = user) do
+    Core.Repo.get!(PersistedToken, token_id)
+    |> allow(user, :edit)
+    |> when_ok(:delete)
   end
 
   def create_user(attrs) do

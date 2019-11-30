@@ -30,6 +30,9 @@ defmodule GraphQl.Resolvers.User do
   def create_token(_, %{context: %{current_user: user}}),
     do: Users.create_persisted_token(user)
 
+  def delete_token(%{id: id}, %{context: %{current_user: user}}),
+    do: Users.delete_persisted_token(id, user)
+
   def login_user(%{email: email, password: pwd}, _) do
     Users.login_user(email, pwd)
     |> with_jwt()

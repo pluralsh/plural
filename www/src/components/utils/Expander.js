@@ -1,17 +1,30 @@
 import React from 'react'
 import {Box, Text} from 'grommet'
 import {Next, Down} from 'grommet-icons'
+import Collapsible from 'react-collapsible'
 
-function Expander(props) {
+function Trigger({text, textSize, open}) {
   return (
     <Box style={{cursor: 'pointer'}} direction='row'>
-      <Box width='100%' justify='center' pad='small'>
-        <Text size='small'>{props.text}</Text>
+      <Box width='100%' justify='center' pad={{vertical: 'small'}}>
+        <Text style={{fontWeight: 500}} size={textSize || 'small'}>{text}</Text>
       </Box>
       <Box width='40px' align='center' justify='center'>
-        {props.expanded ? <Down size='15px' /> : <Next size='15px' />}
+        {open ? <Down size='15px' /> : <Next size='15px' />}
       </Box>
     </Box>
+  )
+}
+
+function Expander({text, textSize, open, children}) {
+  return (
+    <Collapsible
+      open={open}
+      transitionTime={100}
+      trigger={<Trigger text={text} textSize={textSize} />}
+      triggerWhenOpen={<Trigger text={text} textSize={textSize} open />}>
+      {children}
+    </Collapsible>
   )
 }
 

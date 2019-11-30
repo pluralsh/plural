@@ -166,7 +166,7 @@ function Chart() {
       <Box width={`${width}%`} pad='small'>
         <ChartHeader {...currentVersion} chartInstallation={data.chart.installation} installation={repository.installation} />
         <Tabs defaultTab='readme' onTabChange={setTab} headerEnd={tab === 'dependencies' ?
-          <ShowFull label={full ? 'immediate' : 'show full'} onClick={() => setFull(!full)} /> : null
+          <ShowFull label={full ? 'Immediate' : 'Full'} onClick={() => setFull(!full)} /> : null
         }>
           <TabHeader>
             <TabHeaderItem name='readme'>
@@ -191,7 +191,7 @@ function Chart() {
         </Tabs>
       </Box>
       <Box pad='small' width={`${100 - width}%`} gap='small'>
-        {tab === 'configuration' ? <Installation repository={repository} onUpdate={updateInstallation(chartId)} /> :
+        {tab === 'configuration' ? <Installation repository={repository} onUpdate={updateInstallation(chartId)} open /> :
           (<>
           <Box elevation='small' gap='xsmall' pad='small' style={{maxHeight: '50%'}}>
             <Text size='small' weight='bold'>Versions</Text>

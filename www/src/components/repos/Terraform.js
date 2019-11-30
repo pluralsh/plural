@@ -171,7 +171,7 @@ function Terraform() {
       <Box width={`${width}%`} pad='small'>
         <TerraformHeader {...terraformModule} />
         <Tabs defaultTab='readme' onTabChange={setTab} headerEnd={tab === 'dependencies' ?
-          <ShowFull label={full ? 'immediate' : 'show full'} onClick={() => setFull(!full)} /> : null
+          <ShowFull label={full ? 'Immediate' : 'Full'} onClick={() => setFull(!full)} /> : null
         }>
           <TabHeader>
             <TabHeaderItem name='readme'>
@@ -206,6 +206,7 @@ function Terraform() {
       <Box pad='small' width={`${100 - width}%`} gap='small'>
         <Installation
           noHelm
+          open
           repository={terraformModule.repository}
           onUpdate={updateInstallation(tfId)} />
       </Box>

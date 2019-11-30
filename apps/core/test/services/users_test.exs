@@ -78,4 +78,23 @@ defmodule Core.Services.UsersTest do
       assert Users.get_persisted_token(token.token)
     end
   end
+
+  describe "#delete_persisted_token" do
+    test "A user can delete their tokens" do
+      user = insert(:user)
+      token = insert(:persisted_token, user: user)
+
+      {:ok, del} = Users.delete_persisted_token(token.id, user)
+
+      assert del.id == token.id
+      refute refetch(token)
+    end
+
+    test "Users cannot delete other's tokens" do
+      user  = insert(:user)
+      token = insert(:persisted_token)
+
+      {:error, _} = Users.delete_persisted_token(token.id, user)
+    end
+  end
 end

@@ -144,4 +144,21 @@ defmodule GraphQl.UserMutationTest do
       assert token["token"]
     end
   end
+
+  describe "deleteToken" do
+    test "A user can delete a persisted token" do
+      user = insert(:user)
+      token = insert(:persisted_token, user: user)
+
+      {:ok, %{data: %{"deleteToken" => deleted}}} = run_query("""
+        mutation DeleteToken($id: ID!) {
+          deleteToken(id: $id) {
+            id
+          }
+        }
+      """, %{"id" => token.id}, %{current_user: user})
+
+      assert deleted["id"] == token.id
+    end
+  end
 end

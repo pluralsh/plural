@@ -171,6 +171,13 @@ defmodule GraphQl do
       resolve safe_resolver(&User.create_token/2)
     end
 
+    field :delete_token, :persisted_token do
+      middleware GraphQl.Middleware.Authenticated
+      arg :id, non_null(:id)
+
+      resolve safe_resolver(&User.delete_token/2)
+    end
+
     field :signup, :user do
       arg :attributes, non_null(:user_attributes)
 

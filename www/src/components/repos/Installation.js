@@ -8,6 +8,7 @@ import Editor from '../utils/Editor'
 import Pill from '../utils/Pill'
 import yaml from 'js-yaml'
 import Highlight from 'react-highlight.js'
+import Expander from '../utils/Expander'
 
 function update(cache, repositoryId, installation) {
   const prev = cache.readQuery({ query: REPO_Q, variables: {repositoryId} })
@@ -17,7 +18,7 @@ function update(cache, repositoryId, installation) {
   })
 }
 
-function EditInstallation({installation, repository, onUpdate}) {
+function EditInstallation({installation, repository, onUpdate, open}) {
   const [ctx, setCtx] = useState(yaml.safeDump(installation.context || {}, null, 2))
   const [autoUpgrade, setAutoUpgrade] = useState(installation.autoUpgrade)
   const [notif, setNotif] = useState(false)
@@ -40,39 +41,40 @@ function EditInstallation({installation, repository, onUpdate}) {
         </Box>
       </Pill>
     )}
-    <Box gap='small' fill='horizontal'>
-      <Text size='medium'>Configuration</Text>
-      <Box>
-        <Editor lang='yaml' value={ctx} onChange={setCtx} />
+    <Expander text='Configuration' open={open}>
+      <Box gap='small' fill='horizontal'>
+        <Box>
+          <Editor lang='yaml' value={ctx} onChange={setCtx} />
+        </Box>
+        {errors && (
+          <Box direction='row' gap='small'>
+            <Alert size='15px' color='notif' />
+            <Text size='small' color='notif'>Must be in json format</Text>
+          </Box>)}
+        <Box direction='row' justify='end'>
+          <CheckBox
+            toggle
+            label='Auto Upgrade'
+            checked={autoUpgrade}
+            onChange={(e) => setAutoUpgrade(e.target.checked)}
+          />
+        </Box>
+        <Box direction='row' justify='end'>
+          <Button
+            pad={{horizontal: 'medium', vertical: 'xsmall'}}
+            loading={loading}
+            label='Save'
+            onClick={mutation}
+            round='xsmall' />
+        </Box>
       </Box>
-      {errors && (
-        <Box direction='row' gap='small'>
-          <Alert size='15px' color='notif' />
-          <Text size='small' color='notif'>Must be in json format</Text>
-        </Box>)}
-      <Box direction='row' justify='end'>
-        <CheckBox
-          toggle
-          label='Auto Upgrade'
-          checked={autoUpgrade}
-          onChange={(e) => setAutoUpgrade(e.target.checked)}
-        />
-      </Box>
-      <Box direction='row' justify='end'>
-        <Button
-          pad={{horizontal: 'medium', vertical: 'xsmall'}}
-          loading={loading}
-          label='Save'
-          onClick={mutation}
-          round='xsmall' />
-      </Box>
-    </Box>
+    </Expander>
     </>
   )
 }
 
 
-function Installation({repository, onUpdate, noHelm}) {
+function Installation({repository, onUpdate, noHelm, open}) {
   const [mutation] = useMutation(INSTALL_REPO, {
     variables: {repositoryId: repository.id},
     update: (cache, { data: { createInstallation } }) => {
@@ -89,17 +91,21 @@ function Installation({repository, onUpdate, noHelm}) {
       {repository.installation ?
         <Box gap='small'>
           {!noHelm && (
-            <>
-            <Text size='medium'>Installation</Text>
-            <Box>
-              <Highlight language='bash'>
-                {`chartmart build --only ${repository.name}
+            <Box gap='small'>
+              <Text size='small' style={{fontWeight: 500}}>Installation</Text>
+              <Box>
+                <Highlight language='bash'>
+                  {`chartmart build --only ${repository.name}
 chartmart deploy ${repository.name}`}
-              </Highlight>
+                </Highlight>
+              </Box>
             </Box>
-            </>
           )}
-          <EditInstallation installation={repository.installation} repository={repository} onUpdate={onUpdate} />
+          <EditInstallation
+            installation={repository.installation}
+            repository={repository}
+            open={open}
+            onUpdate={onUpdate} />
         </Box> :
         <Button label='Install Repository' round='xsmall' onClick={mutation} />
       }

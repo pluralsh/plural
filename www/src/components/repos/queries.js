@@ -260,12 +260,14 @@ export const CLOSURE_Q = gql`
       terraform {
         ...TerraformFragment
         repository {
+          id
           name
         }
       }
       helm {
         ...ChartFragment
         repository {
+          id
           name
         }
       }

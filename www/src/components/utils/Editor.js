@@ -1,6 +1,5 @@
 import React, {useState} from 'react'
 import CodeMirror from 'react-codemirror'
-import 'codemirror/lib/codemirror.css'
 import 'codemirror/theme/nord.css'
 import './codemirror.css'
 require('codemirror/mode/javascript/javascript');

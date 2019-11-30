@@ -8,7 +8,7 @@ defmodule Core.Schema.Version do
     field :readme, :string
     field :values_template, :string
 
-    embeds_one :dependencies, Dependencies
+    embeds_one :dependencies, Dependencies, on_replace: :update
     belongs_to :chart, Chart
 
     timestamps()
@@ -29,5 +29,11 @@ defmodule Core.Schema.Version do
     |> validate_required([:version, :chart_id])
     |> unique_constraint(:version, name: index_name(:charts, [:chart_id, :version]))
     |> foreign_key_constraint(:chart_id)
+  end
+
+  def helm_changeset(model, attrs \\ %{}) do
+    model
+    |> cast(attrs, [:helm | @valid])
+    |> cast_embed(:dependencies)
   end
 end

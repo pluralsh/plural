@@ -72,45 +72,46 @@ defmodule Core.Services.Charts do
       {:file, path, {"form-data", [{"name", key}, {"filename", Path.basename(file)}]}, []}
     end)
 
-    start_transaction()
-    |> add_operation(:chart, fn _ ->
-      %{name: chart_name, latest_version: version}
-      |> create_chart(repo_id, user)
-    end)
-    |> add_operation(:cm, fn _ ->
-      url = Path.join([chartmuseum(), "cm", "api", repo, "charts"])
+    with {:ok, helm_info} <- extract_chart_meta(chart_name, chart.path) do
+      start_transaction()
+      |> add_operation(:chart, fn _ ->
+        %{name: chart_name, latest_version: version}
+        |> create_chart(repo_id, user)
+      end)
+      |> add_operation(:cm, fn _ ->
+        url = Path.join([chartmuseum(), "cm", "api", repo, "charts"])
 
-      opts = [timeout: :infinity, recv_timeout: :infinity] ++ context.opts
-      HTTPoison.post(url, {:multipart, uploads}, context.headers, opts)
-    end)
-    |> add_operation(:sync, fn %{chart: %{id: id}} ->
-      with {:ok, helm_info} <- extract_chart_meta(chart_name, chart.path) do
+        opts = [timeout: :infinity, recv_timeout: :infinity] ++ context.opts
+        HTTPoison.post(url, {:multipart, uploads}, context.headers, opts)
+      end)
+      |> add_operation(:sync, fn %{chart: %{id: id}} ->
         sync_version(helm_info, id, version)
+      end)
+      |> add_operation(:sync_chart, fn %{sync: version, chart: chart} ->
+        chart
+        |> Chart.changeset(
+          from_version(version)
+          |> Map.put(:dependencies, helm_info.dependencies)
+        )
+        |> Core.Repo.update()
+      end)
+      |> execute()
+      |> case do
+        {:ok, %{sync: sync}} = res ->
+          notify(sync, :create)
+          res
+        error -> error
       end
-    end)
-    |> add_operation(:sync_chart, fn %{sync: version, chart: chart} ->
-      chart
-      |> Chart.changeset(from_version(version))
-      |> Core.Repo.update()
-    end)
-    |> execute()
-    |> case do
-      {:ok, %{sync: sync}} = res ->
-        notify(sync, :create)
-        res
-      error -> error
     end
   end
 
   def sync_version(attrs, chart_id, version) do
     get_chart_version(chart_id, version)
-    |> Ecto.Changeset.change(attrs)
+    |> Version.helm_changeset(attrs)
     |> Core.Repo.update()
   end
 
-  defp from_version(%Version{dependencies: deps, helm: helm}) do
-    %{dependencies: deps, description: helm && helm["description"]}
-  end
+  defp from_version(%Version{helm: helm}), do: %{description: helm && helm["description"]}
   defp from_version(_), do: %{}
 
   defp chart_info(%{filename: filename}) do
@@ -147,9 +148,10 @@ defmodule Core.Services.Charts do
     chart_file   = String.to_charlist("#{chart}/Chart.yaml")
     val_template = String.to_charlist("#{chart}/values.yaml.gotpl")
     deps_tmplate = String.to_charlist("#{chart}/deps.yaml")
+    files = [readme_file, chart_file, val_template, deps_tmplate]
 
     with {:ok, result} <- String.to_charlist(path)
-                          |> :erl_tar.extract([:memory, :compressed, {:files, [readme_file, chart_file, val_template]}]),
+                          |> :erl_tar.extract([:memory, :compressed, {:files, files}]),
          {_, readme} <- Enum.find(result, &elem(&1, 0) == readme_file),
          {_, chart_yaml} <- Enum.find(result, &elem(&1, 0) == chart_file),
          {:ok, chart_decoded} <- YamlElixir.read_from_string(chart_yaml),

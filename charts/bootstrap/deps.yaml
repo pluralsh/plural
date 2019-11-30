@@ -1,0 +1,4 @@
+dependencies:
+- type: terraform
+  name: kube
+  repo: chartmart

@@ -1,7 +1,8 @@
 import React, {useContext, useState, useEffect} from 'react'
 import {Box, Text} from 'grommet'
+import {Trash} from 'grommet-icons'
 import {useMutation, useQuery} from 'react-apollo'
-import {UPDATE_USER, CREATE_TOKEN, TOKENS_Q} from './queries'
+import {UPDATE_USER, CREATE_TOKEN, TOKENS_Q, DELETE_TOKEN} from './queries'
 import InputField from '../utils/InputField'
 import Button, {SecondaryButton} from '../utils/Button'
 import {CurrentUserContext} from '../login/CurrentUser'
@@ -15,8 +16,21 @@ import Expander from '../utils/Expander'
 const LABEL_WIDTH = '60px'
 const CELL_WIDTH='200px'
 
-function Token({token, hasNext}) {
+function Token({token: {token, insertedAt, id}, hasNext}) {
   const [hover, setHover] = useState(false)
+  const [mutation] = useMutation(DELETE_TOKEN, {
+    variables: {id},
+    update: (cache, { data: { deleteToken } }) => {
+      const prev = cache.readQuery({query: TOKENS_Q})
+      cache.writeQuery({query: TOKENS_Q, data: {
+        ...prev,
+        tokens: {
+          ...prev.tokens,
+          edges: prev.tokens.edges.filter(({node: {id}}) => id !== deleteToken.id)
+        }
+      }})
+    }
+  })
   return (
     <Box
       style={{cursor: 'pointer'}}
@@ -25,15 +39,16 @@ function Token({token, hasNext}) {
       background={hover ? 'light-2' : null}
       border={hasNext ? 'bottom' : null}
       direction='row'>
-      <Box width='100%' pad={{left: 'small', vertical: 'xsmall'}}>
+      <Box width='100%' pad={{left: 'small', vertical: 'xsmall'}} direction='row' gap='xsmall' align='center'>
         <Copyable
           noBorder
           pillText='Copied access token'
-          text={token.token}
-          displayText={token.token.substring(0, 9) + "x".repeat(15)} />
+          text={token}
+          displayText={token.substring(0, 9) + "x".repeat(15)} />
       </Box>
-      <Box width={CELL_WIDTH} pad='xsmall'>
-        <Text size='small'>{moment(token.insertedAt).fromNow()}</Text>
+      <Box width={CELL_WIDTH} pad='xsmall' direction='row' gap='medium' align='center' justify='end'>
+        <Text size='small'>{moment(insertedAt).fromNow()}</Text>
+        <Trash size='12px' onClick={mutation} />
       </Box>
     </Box>
   )
@@ -80,14 +95,6 @@ function Tokens() {
             label='Create'
             onClick={mutation}
             round='xsmall' />
-        </Box>
-      </Box>
-      <Box direction='row' border='bottom' pad={{horizontal: 'small'}}>
-        <Box width='100%' pad='xsmall'>
-          <Text size='small'>token</Text>
-        </Box>
-        <Box width={CELL_WIDTH} border='left' pad='xsmall' align='center'>
-          <Text size='small'>created at</Text>
         </Box>
       </Box>
       <Box>

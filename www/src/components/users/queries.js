@@ -49,3 +49,12 @@ export const CREATE_TOKEN = gql`
   }
   ${TokenFragment}
 `;
+
+export const DELETE_TOKEN = gql`
+  mutation DeleteToken($id: ID!) {
+    deleteToken(id: $id) {
+      ...TokenFragment
+    }
+  }
+  ${TokenFragment}
+`;

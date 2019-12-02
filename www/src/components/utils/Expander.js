@@ -1,11 +1,18 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {Box, Text} from 'grommet'
 import {Next, Down} from 'grommet-icons'
 import Collapsible from 'react-collapsible'
 
 function Trigger({text, textSize, open}) {
+  const [hover, setHover] = useState(false)
   return (
-    <Box style={{cursor: 'pointer'}} direction='row'>
+    <Box
+      pad={{horizontal: 'small', vertical: 'xsmall'}}
+      onMouseLeave={() => setHover(false)}
+      onMouseEnter={() => setHover(true)}
+      style={{cursor: 'pointer'}}
+      background={hover ? 'light-3' : null}
+      direction='row'>
       <Box width='100%' justify='center' pad={{vertical: 'small'}}>
         <Text style={{fontWeight: 500}} size={textSize || 'small'}>{text}</Text>
       </Box>

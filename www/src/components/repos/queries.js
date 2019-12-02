@@ -40,6 +40,23 @@ export const UPDATE_INSTALLATION = gql`
   ${InstallationFragment}
 `;
 
+export const INSTALLATIONS_Q = gql`
+  query Installations($cursor: String) {
+    installations(after: $cursor, first: 15) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      edges {
+        node {
+          ...InstallationFragment
+        }
+      }
+    }
+  }
+  ${InstallationFragment}
+`;
+
 export const REPOS_Q = gql`
   query Repos($publisherId: String, $cursor: String) {
     repositories(publisherId: $publisherId, first: 15, after: $cursor) {

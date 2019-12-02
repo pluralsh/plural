@@ -1,25 +1,16 @@
 export const DEFAULT_COLOR_THEME = {
-  brand: '#001f3f',
-  sidebar: '#2F415B',
-  action: '#2F415B',
-  actionHover: '#2a3b52',
-  focus: '#CF6D57',
-  sidebarHover: '#263449',
-  tagLight: '#6d7a8c',
-  tagMedium: '#59677c',
-  focusText: '#FFFFFF',
-  activeText: '#FFFFFF',
-  sidebarText: '#C0C0C0',
-  sidebarTextHover: '#FFFFFF',
-  highlight: '#cdd7e5',
-  highlightDark: '#a4acb7',
-  notif: '#EB4D5C',
-  lightHover: '#EDEDED',
-  presence: '#006633'
+  brand: '#3B1D98',
+  action: '#3B1D98',
+  sidebar: '#1E2436',
+  sidebarLight: '#353a4a',
+  sidebarHover: '#34394A',
+  sidebarActive: '#0F121B',
+  focus: '#3B1D98',
 }
 
 export const DEFAULT_THEME = {
   anchor: {
+    color: {light: 'sidebar'},
     hover: {
       textDecoration: 'none',
       extend: 'font-weight: 600'

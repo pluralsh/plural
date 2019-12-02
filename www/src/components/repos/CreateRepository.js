@@ -13,7 +13,6 @@ const LABEL_WIDTH = '90px'
 export function RepoForm({image, setImage, state, setState, label, mutation, loading, update}) {
   return (
     <Box pad='medium' gap='small'>
-      <Text>{label}</Text>
       <Box direction='row' gap='small' align='center'>
         <Box
           width='70px'

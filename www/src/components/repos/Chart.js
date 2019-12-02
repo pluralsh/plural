@@ -67,7 +67,7 @@ function TemplateView({valuesTemplate}) {
 }
 
 function ChartInstaller({chartInstallation, versionId, chartId, installation}) {
-  const [mutation] = useMutation(chartInstallation ? UPDATE_CHART_INST : INSTALL_CHART, {
+  const [mutation, {error}] = useMutation(chartInstallation ? UPDATE_CHART_INST : INSTALL_CHART, {
     variables: {
       id: chartInstallation ? chartInstallation.id : installation.id,
       attributes: {chartId, versionId}
@@ -85,7 +85,14 @@ function ChartInstaller({chartInstallation, versionId, chartId, installation}) {
     }
   })
 
-  return <Button round='xsmall' label='Install' pad='small' onClick={mutation} />
+  return (
+    <Button
+      round='xsmall'
+      label='Install'
+      pad='small'
+      error={error}
+      onClick={mutation} />
+  )
 }
 
 function ChartHeader({helm, chart, version, chartInstallation, id, installation}) {

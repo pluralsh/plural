@@ -1,8 +1,8 @@
 import React, {useState} from 'react'
 import {Box, Grid} from 'grommet'
 import { Switch, Route } from 'react-router-dom'
+import Home from './Home'
 import CurrentUser from './login/CurrentUser'
-import Publishers from './publisher/Publishers'
 import MyPublisher from './publisher/MyPublisher'
 import Publisher from './publisher/Publisher'
 import Toolbar from './Toolbar'
@@ -30,7 +30,7 @@ function Chartmart(props) {
             {name: 'viewport', start: [0, 1], end: [0, 1]}
           ]}
         >
-          <Box background='brand' gridArea='toolbarTop' align='center' justify='center'>
+          <Box background='sidebar' gridArea='toolbarTop' align='center' justify='center'>
             <Toolbar me={me} />
           </Box>
           <Box style={{height: `calc(100vh - ${TOOLBAR_SIZE})`}} gridArea='viewport'>
@@ -42,7 +42,7 @@ function Chartmart(props) {
               <Route path='/charts/:chartId' component={Chart} />
               <Route path='/terraform/:tfId' component={Terraform} />
               <Route path='/me/edit' component={EditUser} />
-              <Route path='/' component={Publishers} />
+              <Route path='/' component={Home} />
             </Switch>
           </Box>
         </Grid>

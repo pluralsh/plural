@@ -1,10 +1,29 @@
 import React, {useState} from 'react'
 import {Box, Text} from 'grommet'
+import {FormClose} from 'grommet-icons'
 import {BeatLoader} from 'react-spinners'
+import Errors from './Error'
+import Pill from './Pill'
 
 const BUTTON_PAD = {horizontal: 'small', vertical: 'xsmall'}
 
-export function SecondaryButton({onClick, label, pad, ...rest}) {
+function ErrorPill({error}) {
+  const [open, setOpen] = useState(true)
+  return (
+    open && (
+      <Pill onClose={() => setOpen(false)}>
+        <Box width='100%'>
+          <Errors errors={error}/>
+        </Box>
+        <Box width='20px'>
+          <FormClose size='15px' onClick={() => setOpen(false)} />
+        </Box>
+      </Pill>
+    )
+  )
+}
+
+export function SecondaryButton({onClick, label, pad, error, ...rest}) {
   const [hover, setHover] = useState(null)
   return (
     <Box
@@ -20,32 +39,31 @@ export function SecondaryButton({onClick, label, pad, ...rest}) {
       background='#fff'
       pad={pad || BUTTON_PAD}
       {...rest}>
+      {error && <ErrorPill errors={error} />}
       <Text size='small'>{label}</Text>
     </Box>
   )
 }
 
-function Button(props) {
+function Button({pad, disabled, onClick, label, loading, textSize, error, ...rest}) {
   const [hover, setHover] = useState(false)
   return (
     <Box
-      onClick={() => !props.disabled && props.onClick()}
-      style={!props.disabled ? {cursor: 'pointer'} : null}
+      onClick={() => !disabled && onClick()}
+      style={!disabled ? {cursor: 'pointer'} : null}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      pad={props.pad || BUTTON_PAD}
+      pad={pad || BUTTON_PAD}
       direction='row'
       gap='xsmall'
       align='center'
       justify='center'
-      background={props.disabled ? 'light-6' : 'action'}
-      elevation={hover && !props.disabled ? 'small' : null}
-      margin={props.margin}
-      width={props.width}
-      height={props.height}
-      round={props.round}>
-      {props.loading && <BeatLoader color='white' size={8} />}
-      <Text size={props.textSize || 'small'}>{props.label}</Text>
+      background={disabled ? 'light-6' : 'action'}
+      elevation={hover && !disabled ? 'small' : null}
+      {...rest}>
+      {error && <ErrorPill errors={error} />}
+      {loading && <BeatLoader color='white' size={8} />}
+      <Text size={textSize || 'small'}>{label}</Text>
     </Box>
   )
 }

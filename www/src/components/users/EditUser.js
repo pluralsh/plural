@@ -12,6 +12,7 @@ import moment from 'moment'
 import Copyable from '../utils/Copyable'
 import {BreadcrumbContext} from '../Chartmart'
 import Expander from '../utils/Expander'
+import Installations from '../repos/Installations'
 
 const LABEL_WIDTH = '60px'
 const CELL_WIDTH='200px'
@@ -31,6 +32,7 @@ function Token({token: {token, insertedAt, id}, hasNext}) {
       }})
     }
   })
+
   return (
     <Box
       style={{cursor: 'pointer'}}
@@ -85,6 +87,7 @@ function Tokens() {
         background='light-3'
         border='bottom'
         align='center'
+        elevation='xsmall'
         pad={{vertical: 'xsmall', horizontal: 'small'}}>
         <Box width='100%'>
           <Text size='small' style={{fontWeight: 500}}>Access Tokens</Text>
@@ -136,7 +139,7 @@ function Tokens() {
 export default function EditUser() {
   const me = useContext(CurrentUserContext)
   const [attributes, setAttributes] = useState({name: me.name, email: me.email})
-  const [mutation, {loading}] = useMutation(UPDATE_USER, {
+  const [mutation, {loading, error}] = useMutation(UPDATE_USER, {
     variables: {attributes}
   })
   const {setBreadcrumbs} = useContext(BreadcrumbContext)
@@ -148,32 +151,39 @@ export default function EditUser() {
 
   return (
     <Box direction='row' gap='small' pad='medium'>
-      <Box width='70%' gap='small' pad='small'>
+      <Box width='70%' gap='medium' pad='small'>
+        <Installations />
         <Tokens />
       </Box>
-      <Box width='30%' pad='small' gap='medium' elevation='small'>
-        <Box direction='row' align='center' gap='small'>
+      <Box width='30%' elevation='small'>
+        <Box direction='row' align='center' pad='small' gap='small'>
           <Avatar user={me} size='100px' />
           <Box>
             <Text>{me.name}</Text>
             <Text size='small'>{me.email}</Text>
           </Box>
         </Box>
-        <Box gap='small'>
-          <InputField
-            label='name'
-            labelWidth={LABEL_WIDTH}
-            placeholder='your name'
-            value={attributes.name}
-            onChange={(e) => setAttributes({...attributes, name: e.target.value})} />
-          <InputField
-            label='email'
-            labelWidth={LABEL_WIDTH}
-            placeholder='your email'
-            value={attributes.email}
-            onChange={(e) => setAttributes({...attributes, email: e.target.value})} />
+        <Box>
+          <Expander text='Update attributes' open>
+            <Box gap='small' pad='small'>
+              <InputField
+                label='name'
+                labelWidth={LABEL_WIDTH}
+                placeholder='your name'
+                value={attributes.name}
+                onChange={(e) => setAttributes({...attributes, name: e.target.value})} />
+              <InputField
+                label='email'
+                labelWidth={LABEL_WIDTH}
+                placeholder='your email'
+                value={attributes.email}
+                onChange={(e) => setAttributes({...attributes, email: e.target.value})} />
+            </Box>
+          </Expander>
+        </Box>
+        <Box border='top'>
           <Expander text='Update password'>
-            <Box pad={{vertical: 'small'}}>
+            <Box pad='small'>
               <InputField
                 label='password'
                 placeholder='your password'
@@ -183,14 +193,15 @@ export default function EditUser() {
                 onChange={(e) => setAttributes({...attributes, password: e.target.value})} />
             </Box>
           </Expander>
-          <Box direction='row' justify='end'>
-            <Button
-              pad={{horizontal: 'medium', vertical: 'xsmall'}}
-              loading={loading}
-              label='Update'
-              onClick={mutation}
-              round='xsmall' />
-          </Box>
+        </Box>
+        <Box pad='small' direction='row' justify='end'>
+          <Button
+            pad={{horizontal: 'medium', vertical: 'xsmall'}}
+            loading={loading}
+            error={error}
+            label='Update'
+            onClick={mutation}
+            round='xsmall' />
         </Box>
       </Box>
     </Box>

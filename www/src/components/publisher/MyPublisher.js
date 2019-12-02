@@ -1,9 +1,44 @@
-import React, {useContext, useEffect} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
+import {useMutation} from 'react-apollo'
 import {Box} from 'grommet'
 import Repositories from '../repos/Repositories'
 import CreateRepository from '../repos/CreateRepository'
 import {CurrentUserContext} from '../login/CurrentUser'
 import {BreadcrumbContext} from '../Chartmart'
+import Expander from '../utils/Expander'
+import { EDIT_PUBLISHER } from './queries'
+import { ME_Q } from '../users/queries'
+import InputField from '../utils/InputField'
+import Button from '../utils/Button'
+
+function EditPublisher({description}) {
+  const [attributes, setAttributes] = useState({description})
+  const [mutation] = useMutation(EDIT_PUBLISHER, {
+    variables: {attributes},
+    update: (cache, { data: { updatePublisher } }) => {
+      const prev = cache.readQuery({ query: ME_Q })
+      cache.writeQuery({query: ME_Q, data: {
+        ...prev, me: {
+          ...prev.me,
+          publisher: updatePublisher
+        }
+      }})
+    }
+  })
+
+  return (
+    <Box gap='small' pad='small'>
+      <InputField
+        label='description'
+        labelWidth='85px'
+        value={attributes.description}
+        onChange={(e) => setAttributes({...attributes, description: e.target.value})} />
+      <Box direction='row' justify='end'>
+        <Button round='xsmall' label='Update' onClick={mutation} />
+      </Box>
+    </Box>
+  )
+}
 
 function MyPublisher() {
   const me = useContext(CurrentUserContext)
@@ -14,12 +49,19 @@ function MyPublisher() {
   }, [me, setBreadcrumbs])
 
   return (
-    <Box height='100%' direction='row' pad='medium'>
-      <Box height='100%' width='60%'>
+    <Box direction='row' pad='medium'>
+      <Box width='60%'>
         <Repositories publisher={me.publisher} deletable />
       </Box>
-      <Box height='100%' width='40%'>
-        <CreateRepository publisher={me.publisher} />
+      <Box width='40%' elevation='small'>
+        <Expander text='Edit publisher'>
+          <EditPublisher {...me.publisher} />
+        </Expander>
+        <Box border='top'>
+          <Expander text='Create Repository' open>
+            <CreateRepository publisher={me.publisher} />
+          </Expander>
+        </Box>
       </Box>
     </Box>
   )

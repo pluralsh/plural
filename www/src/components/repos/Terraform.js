@@ -41,7 +41,7 @@ function TemplateView({valuesTemplate}) {
 }
 
 function TerraformInstaller({installation, terraformId, terraformInstallation}) {
-  const [mutation] = useMutation(terraformInstallation ? UNINSTALL_TF : INSTALL_TF, {
+  const [mutation, {error}] = useMutation(terraformInstallation ? UNINSTALL_TF : INSTALL_TF, {
     variables: {
       id: terraformInstallation ? terraformInstallation.id : installation.id,
       attributes: {terraformId}
@@ -60,8 +60,8 @@ function TerraformInstaller({installation, terraformId, terraformInstallation}) 
   })
 
   return terraformInstallation ?
-    <SecondaryButton round='xsmall' label='Uninstall' pad='small' onClick={mutation} /> :
-    <Button round='xsmall' label='Install' pad='small' onClick={mutation} />
+    <SecondaryButton round='xsmall' label='Uninstall' pad='small' error={error} onClick={mutation} /> :
+    <Button round='xsmall' label='Install' pad='small' error={error} onClick={mutation} />
 }
 
 function TerraformHeader({id, name, description, installation, repository}) {

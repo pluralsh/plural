@@ -42,7 +42,7 @@ function EditInstallation({installation, repository, onUpdate, open}) {
       </Pill>
     )}
     <Expander text='Configuration' open={open}>
-      <Box gap='small' fill='horizontal'>
+      <Box gap='small' fill='horizontal' pad='small'>
         <Box>
           <Editor lang='yaml' value={ctx} onChange={setCtx} />
         </Box>
@@ -59,7 +59,7 @@ function EditInstallation({installation, repository, onUpdate, open}) {
             onChange={(e) => setAutoUpgrade(e.target.checked)}
           />
         </Box>
-        <Box direction='row' justify='end'>
+        <Box pad='small' direction='row' justify='end'>
           <Button
             pad={{horizontal: 'medium', vertical: 'xsmall'}}
             loading={loading}
@@ -87,11 +87,11 @@ function Installation({repository, onUpdate, noHelm, open}) {
   })
 
   return (
-    <Box pad='small' elevation='small' gap='small'>
+    <Box elevation='small' gap='small'>
       {repository.installation ?
-        <Box gap='small'>
+        <Box>
           {!noHelm && (
-            <Box gap='small'>
+            <Box gap='small' pad='small' border='bottom'>
               <Text size='small' style={{fontWeight: 500}}>Installation</Text>
               <Box>
                 <Highlight language='bash'>
@@ -107,7 +107,9 @@ chartmart deploy ${repository.name}`}
             open={open}
             onUpdate={onUpdate} />
         </Box> :
-        <Button label='Install Repository' round='xsmall' onClick={mutation} />
+        <Box pad='small'>
+          <Button label='Install Repository' round='xsmall' onClick={mutation} />
+        </Box>
       }
     </Box>
   )

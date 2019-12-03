@@ -10,10 +10,9 @@ import {DEFAULT_TF_ICON} from './constants'
 
 const LABEL_WIDTH = '90px'
 
-export function TerraformForm({label, update, loading, mutation, state, setState, terraform, setTerraform}) {
+export function TerraformForm({update, loading, mutation, state, setState, terraform, setTerraform}) {
   return (
     <Box gap='small'>
-      <Text>{label}</Text>
       <Box direction='row' gap='small' align='center'>
         {terraform ?
           <img alt='' width='70px' height='70px' src={DEFAULT_TF_ICON} /> :

@@ -7,7 +7,7 @@ import {TF_Q, UPDATE_TF, INSTALL_TF, UNINSTALL_TF} from './queries'
 import {DEFAULT_TF_ICON} from './constants'
 import Highlight from 'react-highlight.js'
 import Installation from './Installation'
-import {TerraformForm} from './CreateTerraform'
+import InputField from '../utils/InputField'
 import {BreadcrumbContext} from '../Chartmart'
 import Button, {SecondaryButton} from '../utils/Button'
 import Dependencies, {FullDependencies, ShowFull} from './Dependencies'
@@ -114,11 +114,12 @@ function updateInstallation(tfId) {
   }
 }
 
+const LABEL_WIDTH = '90px'
+
 function UpdateTerraform({id, name, description}) {
   const [state, setState] = useState({name: name, description: description})
-  const [terraform, setTerraform] = useState(null)
   const [mutation, {loading}] = useMutation(UPDATE_TF, {
-    variables: {id, attributes: {...state, package: terraform && terraform.file}},
+    variables: {id, attributes: {...state}},
     update: (cache, { data: {updateTerraform} }) => {
       const prev = cache.readQuery({query: TF_Q, variables: {tfId: id}})
       cache.writeQuery({query: TF_Q, variables: {tfId: id}, data: {
@@ -132,16 +133,22 @@ function UpdateTerraform({id, name, description}) {
   })
 
   return (
-    <Box pad='small'>
-      <TerraformForm
-        state={state}
-        setState={setState}
-        terraform={terraform}
-        setTerraform={setTerraform}
-        mutation={mutation}
-        loading={loading}
-        update
-        label={`Update ${name}`} />
+    <Box pad='medium' gap='small'>
+      <InputField
+        label='name'
+        labelWidth={LABEL_WIDTH}
+        placeholder='give it a  name'
+        value={state.name}
+        onChange={(e) => setState({...state, name: e.target.value})} />
+      <InputField
+        label='description'
+        labelWidth={LABEL_WIDTH}
+        placeholder='a helpful description'
+        value={state.description}
+        onChange={(e) => setState({...state, description: e.target.value})} />
+      <Box direction='row' justify='end'>
+        <Button loading={loading} round='xsmall' label='Update' onClick={mutation} />
+      </Box>
     </Box>
   )
 }

@@ -35,3 +35,12 @@ export const EDIT_PUBLISHER = gql`
   }
   ${PublisherFragment}
 `;
+
+export const CREATE_PUBLISHER = gql`
+  mutation CreatePublisher($attributes: PublisherAttributes!) {
+    createPublisher(attributes: $attributes) {
+      ...PublisherFragment
+    }
+  }
+  ${PublisherFragment}
+`;

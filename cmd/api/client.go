@@ -16,7 +16,11 @@ type Client struct {
 
 func NewClient() *Client {
 	conf := config.Read()
-	return &Client{graphql.NewClient(endpoint), conf}
+	return FromConfig(&conf)
+}
+
+func FromConfig(conf *config.Config) *Client {
+	return &Client{graphql.NewClient(endpoint), *conf}
 }
 
 func NewUploadClient() *Client {

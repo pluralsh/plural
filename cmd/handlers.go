@@ -107,7 +107,18 @@ func handleInit(c *cli.Context) error {
 	}
 
 	fmt.Printf("\nlogged in as %s\n", email)
-	config.Amend("token", result)
+	conf := config.Read()
+	conf.Email = email
+	conf.Token = result
+
+
+	client = api.FromConfig(&conf)
+	accessToken, err := client.CreateAccessToken()
+	if err != nil {
+		return err
+	}
+	conf.Token = accessToken
+	config.Flush(&conf)
 
 	encryptConfig := [][]string{
 		{"filter.chartmart-crypt.smudge", "chartmart crypto decrypt"},

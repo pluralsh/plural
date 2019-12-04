@@ -11,6 +11,7 @@ import (
 )
 
 type Config struct {
+	Email string
 	Token string `yaml:"token"`
 }
 
@@ -38,10 +39,10 @@ func Amend(key string, value string) error {
 	key = strings.Title(key)
 	conf := Read()
 	reflections.SetField(&conf, key, value)
-	return flush(&conf)
+	return Flush(&conf)
 }
 
-func flush(c *Config) error {
+func Flush(c *Config) error {
 	io, err := yaml.Marshal(&c)
 	if err != nil {
 		return err

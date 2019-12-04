@@ -107,7 +107,8 @@ chartmart deploy ${repository.name}`}
             open={open}
             onUpdate={onUpdate} />
         </Box> :
-        <Box pad='small'>
+        <Box pad='medium' gap='small'>
+          <Text size='small'>This repository is free to use</Text>
           <Button label='Install Repository' round='xsmall' onClick={mutation} />
         </Box>
       }

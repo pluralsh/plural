@@ -110,6 +110,10 @@ type TerraformInstallationEdge struct {
 	Node TerraformInstallation
 }
 
+type Token struct {
+	Token string
+}
+
 const RepositoryFragment = `
 	fragment RepositoryFragment on Repository {
 		id
@@ -194,3 +198,9 @@ var TerraformInstallationFragment = fmt.Sprintf(`
 	}
 	%s
 `, TerraformFragment)
+
+const TokenFragment = `
+	fragment TokenFragment on PersistedToken {
+		token
+	}
+`

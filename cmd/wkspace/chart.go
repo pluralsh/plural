@@ -252,8 +252,8 @@ const repoName = "dkr.piazzaapp.com"
 func (w *Workspace) ensurePullCredentials() error {
 	name := w.Installation.Repository.Name
 	if err := utils.Cmd(w.Config, "kubectl", "get", "secret", pullSecretName, "--namespace", name); err != nil {
-		username, _ := utils.ReadLine("Enter chartmart user email address to authenticate to docker: ")
-		token, _ := utils.ReadPwd("Enter your chartmart access token: ")
+		token := w.Config.Token
+		username := w.Config.Email
 
 		return utils.Cmd(w.Config,
 			"kubectl", "create", "secret", "docker-registry", pullSecretName,
@@ -269,6 +269,7 @@ func (w *Workspace) Bounce() error {
 	if err != nil {
 		return err
 	}
+
 	color.New(color.FgYellow, color.Bold).Printf(
 		"helm upgrade --install --namespace %s %s %s\n", repo.Name, repo.Name, path)
 	return utils.Cmd(w.Config,

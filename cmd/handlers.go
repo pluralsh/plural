@@ -98,7 +98,9 @@ func bounce(c *cli.Context) error {
 }
 
 func handleInit(c *cli.Context) error {
-	client := api.NewClient()
+	conf := config.Read()
+	conf.Token = ""
+	client := api.FromConfig(&conf)
 	email, _ := utils.ReadLine("Enter your email: ")
 	pwd, _ := utils.ReadPwd("Enter password: ")
 	result, err := client.Login(email, pwd)
@@ -107,7 +109,6 @@ func handleInit(c *cli.Context) error {
 	}
 
 	fmt.Printf("\nlogged in as %s\n", email)
-	conf := config.Read()
 	conf.Email = email
 	conf.Token = result
 

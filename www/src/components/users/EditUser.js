@@ -152,7 +152,7 @@ export default function EditUser() {
   return (
     <Box direction='row' gap='small' pad='medium'>
       <Box width='70%' gap='medium' pad='small'>
-        <Installations />
+        <Installations edit />
         <Tokens />
       </Box>
       <Box width='30%' elevation='small'>

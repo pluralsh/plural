@@ -68,4 +68,7 @@ defmodule GraphQl.Resolvers.Repository do
 
   def update_installation(%{id: inst_id, attributes: attrs}, %{context: %{current_user: user}}),
     do: Repositories.update_installation(attrs, inst_id, user)
+
+  def delete_installation(%{id: id}, %{context: %{current_user: user}}),
+    do: Repositories.delete_installation(id, user)
 end

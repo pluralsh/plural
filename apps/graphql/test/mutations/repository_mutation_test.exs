@@ -99,4 +99,20 @@ defmodule GraphQl.RepositoryMutationsTest do
       assert update["context"]["some"] == "value"
     end
   end
+
+  describe "deleteInstallation" do
+    test "Users can delete their installations" do
+      %{user: user} = inst = insert(:installation)
+
+      {:ok, %{data: %{"deleteInstallation" => delete}}} = run_query("""
+        mutation deleteInstallation($id: ID!) {
+          deleteInstallation(id: $id) {
+            id
+          }
+        }
+      """, %{"id" => inst.id}, %{current_user: user})
+
+      assert delete["id"] == inst.id
+    end
+  end
 end

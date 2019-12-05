@@ -62,6 +62,23 @@ defmodule Core.Services.RepositoriesTest do
     end
   end
 
+  describe "#delete_installation" do
+    test "Users can delete their installations" do
+      %{user: user} = inst = insert(:installation)
+
+      {:ok, deleted} = Repositories.delete_installation(inst.id, user)
+
+      assert deleted.id == inst.id
+      refute refetch(deleted)
+    end
+
+    test "Other users cannot delete" do
+      inst = insert(:installation)
+
+      {:error, _} = Repositories.delete_installation(inst.id, insert(:user))
+    end
+  end
+
   describe "#delete_repository" do
     test "Publishers can delete repos" do
       %{owner: user} = pub = insert(:publisher)

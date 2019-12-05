@@ -1,9 +1,5 @@
 package api
 
-import (
-	"fmt"
-)
-
 const loginQuery = `
 	mutation Login($email: String!, $pwd: String!) {
 		login(email: $email, password: $pwd) {

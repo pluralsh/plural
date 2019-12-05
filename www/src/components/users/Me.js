@@ -106,7 +106,7 @@ function Me({me}) {
           <Box border='top' pad={{vertical: 'xxsmall'}}>
             <MenuItem onClick={() => {
               wipeToken()
-              history.push('/login')
+              window.location.href = "/login"
             }}>
               <Box direction='row' align='center'>
                 <Box width='100%'>

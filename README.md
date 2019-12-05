@@ -13,14 +13,13 @@ chartmart deploy <repo>
 
 An example deployment can be found at: https://mart.piazzaapp.com
 
-## Guarantees
+## Features
 
 The charmart workflow provides the following:
 
+* Authenticated docker registry per repository
+* License generation
+* Authenticated chartmuseum proxy for each repository
 * secret encryption using AES-256 (so you can keep the entire workflow in git)
-* proper preservation of existing configuration on version upgrade
 * templating using a shared context between tf and helm to reduce the drift between duplicated configuration
 * Automatic README extraction for documentation on the site
-
-
-In the future, I'll add some dependency validation, license key generation, and a managed docker registry authenticated using the same mechanism as chartmart itself (so public repos are not necessary).

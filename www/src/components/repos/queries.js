@@ -90,11 +90,10 @@ export const SEARCH_REPOS = gql`
 export const INSTALL_REPO = gql`
   mutation CreateInstallation($repositoryId: ID!) {
     createInstallation(repositoryId: $repositoryId) {
-      user {
-        id
-      }
+      ...InstallationFragment
     }
   }
+  ${InstallationFragment}
 `;
 
 export const REPO_Q = gql`

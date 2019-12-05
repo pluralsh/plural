@@ -11,12 +11,14 @@ function ErrorPill({error}) {
   const [open, setOpen] = useState(true)
   return (
     open && (
-      <Pill onClose={() => setOpen(false)}>
-        <Box width='100%'>
-          <Errors errors={error}/>
-        </Box>
-        <Box width='20px'>
-          <FormClose size='15px' onClick={() => setOpen(false)} />
+      <Pill background='status-warning' onClose={() => setOpen(false)}>
+        <Box direction='row' align='center'>
+          <Box width='100%' align='center'>
+            <Errors errors={error}/>
+          </Box>
+          <Box width='25px' style={{cursor: 'pointer'}}>
+            <FormClose size='25px' onClick={() => setOpen(false)} />
+          </Box>
         </Box>
       </Pill>
     )
@@ -26,6 +28,8 @@ function ErrorPill({error}) {
 export function SecondaryButton({onClick, label, pad, error, ...rest}) {
   const [hover, setHover] = useState(null)
   return (
+    <>
+    {error && <ErrorPill error={error} />}
     <Box
       style={{cursor: 'pointer'}}
       onMouseEnter={() => setHover(true)}
@@ -39,15 +43,17 @@ export function SecondaryButton({onClick, label, pad, error, ...rest}) {
       background='#fff'
       pad={pad || BUTTON_PAD}
       {...rest}>
-      {error && <ErrorPill errors={error} />}
       <Text size='small'>{label}</Text>
     </Box>
+    </>
   )
 }
 
 function Button({pad, disabled, onClick, label, loading, textSize, error, ...rest}) {
   const [hover, setHover] = useState(false)
   return (
+    <>
+    {error && <ErrorPill error={error} />}
     <Box
       onClick={() => !disabled && onClick()}
       style={!disabled ? {cursor: 'pointer'} : null}
@@ -61,10 +67,10 @@ function Button({pad, disabled, onClick, label, loading, textSize, error, ...res
       background={disabled ? 'light-6' : 'action'}
       elevation={hover && !disabled ? 'small' : null}
       {...rest}>
-      {error && <ErrorPill errors={error} />}
       {loading && <BeatLoader color='white' size={8} />}
       <Text size={textSize || 'small'}>{label}</Text>
     </Box>
+    </>
   )
 }
 

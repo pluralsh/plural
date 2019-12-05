@@ -23,3 +23,23 @@ The charmart workflow provides the following:
 * secret encryption using AES-256 (so you can keep the entire workflow in git)
 * templating using a shared context between tf and helm to reduce the drift between duplicated configuration
 * Automatic README extraction for documentation on the site
+
+## Build
+
+To run tests for the api:
+
+```bash
+mix deps.get # ignore if you've already fetched
+make testup
+mix test
+```
+
+To build the `chartmart` cli:
+
+```bash
+make cli
+```
+
+and copy cmd/chartmart to your path.
+
+alternatively, if you don't mind `go install`, you can `cd cmd && go install` 

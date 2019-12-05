@@ -242,6 +242,13 @@ defmodule GraphQl do
       resolve safe_resolver(&Repository.update_installation/2)
     end
 
+    field :delete_installation, :installation do
+      middleware GraphQl.Middleware.Authenticated
+      arg :id, non_null(:id)
+
+      resolve safe_resolver(&Repository.delete_installation/2)
+    end
+
     field :create_terraform, :terraform do
       middleware GraphQl.Middleware.Authenticated
       arg :repository_id, non_null(:id)

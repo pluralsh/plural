@@ -1,7 +1,8 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {Box, Text} from 'grommet'
-import {useQuery} from 'react-apollo'
-import {INSTALLATIONS_Q} from './queries'
+import {Trash} from 'grommet-icons'
+import {useQuery, useMutation} from 'react-apollo'
+import {INSTALLATIONS_Q, DELETE_INSTALLATION} from './queries'
 import {Repository} from './Repositories'
 import Scroller from '../utils/Scroller'
 
@@ -16,7 +17,38 @@ function NoInstallations() {
   )
 }
 
-export default function Installations() {
+function EditableInstallation({installation, hasNext}) {
+  const [hover, setHover] = useState(false)
+  const [mutation] = useMutation(DELETE_INSTALLATION, {
+    variables: {id: installation.id},
+    update: (cache, {data: {deleteInstallation}}) => {
+      const prev = cache.readQuery({query: INSTALLATIONS_Q})
+      cache.writeQuery({query: INSTALLATIONS_Q, data: {
+        ...prev,
+        installations: {
+          ...prev.installations,
+          edges: prev.installations.edges.filter(({node}) => node.id !== deleteInstallation.id)
+        }
+      }})
+    }
+  })
+  return (
+    <Box direction='row' align='center'>
+      <Box width='100%'>
+        <Repository repo={installation.repository} hasNext={hasNext} />
+      </Box>
+      <Box
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+        width='20px'
+        style={{cursor: 'pointer'}}>
+        <Trash color={hover ? 'focus' : null} size='15px' onClick={mutation} />
+      </Box>
+    </Box>
+  )
+}
+
+export default function Installations({edit}) {
   const {data, loading, fetchMore} = useQuery(INSTALLATIONS_Q)
 
   if (!data || loading) return null
@@ -29,7 +61,10 @@ export default function Installations() {
         edges={edges}
         style={{overflow: 'auto', width: '100%'}}
         emptyState={<NoInstallations />}
-        mapper={({node}, next) => <Repository key={node.id} repo={node.repository} hasNext={!!next.node} />}
+        mapper={({node}, next) => (edit ?
+          <EditableInstallation key={node.id} installation={node} hasNext={!!next.node} /> :
+          <Repository key={node.id} repo={node.repository} hasNext={!!next.node} />
+        )}
         onLoadMore={() => {
           if (!pageInfo.hasNextPage) return
 

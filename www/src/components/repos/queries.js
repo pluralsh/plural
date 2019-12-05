@@ -40,6 +40,15 @@ export const UPDATE_INSTALLATION = gql`
   ${InstallationFragment}
 `;
 
+export const DELETE_INSTALLATION = gql`
+  mutation DeleteInstallation($id: ID!) {
+    deleteInstallation(id: $id) {
+      ...InstallationFragment
+    }
+  }
+  ${InstallationFragment}
+`;
+
 export const INSTALLATIONS_Q = gql`
   query Installations($cursor: String) {
     installations(after: $cursor, first: 15) {

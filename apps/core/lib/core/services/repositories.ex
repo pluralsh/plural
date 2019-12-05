@@ -125,6 +125,12 @@ defmodule Core.Services.Repositories do
     |> when_ok(:update)
   end
 
+  def delete_installation(inst_id, %User{} = user) do
+    get_installation!(inst_id)
+    |> allow(user, :edit)
+    |> when_ok(:delete)
+  end
+
   def generate_license(%Installation{} = installation) do
     %{repository: repo} = Core.Repo.preload(installation, [:repository])
 

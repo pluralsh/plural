@@ -235,7 +235,7 @@ func (w *Workspace) CreateChart(name, dir string) (string, error) {
 func (w *Workspace) InstallHelm() error {
 	w.Provider.KubeConfig()
 
-	if err := utils.Cmd(w.Config, "helm", "init", "--wait", "--service-account=tiller", "--client-only"); err != nil {
+	if err := utils.Cmd(w.Config, "helm", "init", "--wait", "--service-account=tiller"); err != nil {
 		return err
 	}
 

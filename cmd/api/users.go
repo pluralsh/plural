@@ -16,6 +16,18 @@ const createTokenQuery = `
 	}
 `
 
+const listTokenQuery = `
+	query {
+		tokens(first: 3) {
+			edges {
+				node {
+					token
+				}
+			}
+		}
+	}
+`
+
 type login struct {
 	Login struct {
 		Jwt string `json:"jwt"`
@@ -25,6 +37,16 @@ type login struct {
 type createToken struct {
 	CreateToken struct {
 		Token string
+	}
+}
+
+type listToken struct {
+	Tokens struct {
+		Edges []struct {
+			Node struct {
+				Token string
+			}
+		}
 	}
 }
 
@@ -43,4 +65,18 @@ func (client *Client) CreateAccessToken() (string, error) {
 	req := client.Build(createTokenQuery)
 	err := client.Run(req, &resp)
 	return resp.CreateToken.Token, err
+}
+
+func (client *Client) GrabAccessToken() (string, error) {
+	var resp listToken
+	req := client.Build(listTokenQuery)
+	err := client.Run(req, &resp)
+	if err != nil {
+		return "", err
+	}
+	if len(resp.Tokens.Edges) > 0 {
+		return resp.Tokens.Edges[0].Node.Token, nil
+	}
+
+	return client.CreateAccessToken()
 }

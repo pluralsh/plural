@@ -2,7 +2,6 @@ package provider
 
 import (
 	"fmt"
-	"github.com/fatih/color"
 	"github.com/michaeljguarino/chartmart/manifest"
 	"github.com/michaeljguarino/chartmart/utils"
 	"strconv"
@@ -20,6 +19,24 @@ type Provider interface {
 
 func Select() (Provider, error) {
 	available := []string{GCP}
+	path := manifest.ProjectManifestPath()
+	if utils.Exists(path) {
+		if project, err := manifest.ReadProject(path); err == nil {
+			line := fmt.Sprintf("Reuse existing manifest {provider: %s, cluster: %s, bucket: %s} [(y)/n]:",
+				project.Provider, project.Cluster, project.Bucket)
+			val, _ := utils.ReadLine(line)
+
+			if val != "n" {
+				return FromManifest(&manifest.Manifest{
+					Cluster: project.Cluster,
+					Project: project.Project,
+					Bucket: project.Bucket,
+					Provider: project.Provider,
+				})
+			}
+		}
+	}
+
 	fmt.Println("Select on of the following providers:")
 	for i, name := range available {
 		fmt.Printf("[%d] %s\n", i, name)
@@ -34,7 +51,7 @@ func Select() (Provider, error) {
 	if i >= len(available) {
 		return nil, fmt.Errorf("Invalid index, must be < %d", len(available))
 	}
-	color.New(color.FgGreen, color.Bold).Printf("Using provider %s\n", available[i])
+	utils.Success("Using provider %s\n", available[i])
 	return New(available[i])
 }
 

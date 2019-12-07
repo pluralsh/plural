@@ -3,7 +3,6 @@ package wkspace
 import (
 	"bytes"
 	"fmt"
-	"github.com/fatih/color"
 	"github.com/imdario/mergo"
 	"github.com/michaeljguarino/chartmart/api"
 	"github.com/michaeljguarino/chartmart/utils"
@@ -270,8 +269,7 @@ func (w *Workspace) Bounce() error {
 		return err
 	}
 
-	color.New(color.FgYellow, color.Bold).Printf(
-		"helm upgrade --install --namespace %s %s %s\n", repo.Name, repo.Name, path)
+	utils.Warn("helm upgrade --install --namespace %s %s %s\n", repo.Name, repo.Name, path)
 	return utils.Cmd(w.Config,
 		"helm", "upgrade", "--install", "--namespace", repo.Name, repo.Name, path)
 }

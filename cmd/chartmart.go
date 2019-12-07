@@ -35,6 +35,12 @@ func main() {
 			Action:    deploy,
 		},
 		{
+			Name:      "topsort",
+			Aliases:   []string{"d"},
+			Usage:     "renders a dependency-inferred topological sort of the installations in a workspace",
+			Action:    topsort,
+		},
+		{
 			Name:      "bounce",
 			Aliases:   []string{"b"},
 			Usage:     "redeploys the charts in a workspace",

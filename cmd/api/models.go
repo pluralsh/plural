@@ -32,6 +32,7 @@ type Chart struct {
 	Name          string
 	Description   string
 	LatestVersion string
+	Dependencies  Dependencies
 }
 
 type ChartInstallation struct {
@@ -153,12 +154,24 @@ const VersionFragment = `
 		valuesTemplate
 	}
 `
+const DependenciesFragment = `
+	fragment DependenciesFragment on Dependencies {
+		dependencies {
+			type
+			name
+			repo
+		}
+	}
+`
 
 var ChartInstallationFragment = fmt.Sprintf(`
 	fragment ChartInstallationFragment on ChartInstallation {
 		id
 		chart {
 			...ChartFragment
+			dependencies {
+				...DependenciesFragment
+			}
 		}
 		version {
 			...VersionFragment
@@ -166,7 +179,8 @@ var ChartInstallationFragment = fmt.Sprintf(`
 	}
 	%s
 	%s
-`, ChartFragment, VersionFragment)
+	%s
+`, ChartFragment, DependenciesFragment, VersionFragment)
 
 const TerraformFragment = `
 	fragment TerraformFragment on Terraform {

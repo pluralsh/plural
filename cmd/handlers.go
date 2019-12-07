@@ -49,7 +49,13 @@ func deploy(c *cli.Context) error {
 	installations, _ := client.GetInstallations()
 	repoName := c.Args().Get(0)
 	dir, _ := os.Getwd()
-	for _, installation := range installations {
+
+	sorted, err := wkspace.TopSort(installations)
+	if err != nil {
+		return err
+	}
+
+	for _, installation := range sorted {
 		if installation.Repository.Name != repoName {
 			continue
 		}
@@ -68,6 +74,21 @@ func deploy(c *cli.Context) error {
 		if err := workspace.InstallHelm(); err != nil {
 			return err
 		}
+	}
+	return nil
+}
+
+func topsort(c *cli.Context) error {
+	client := api.NewClient()
+	installations, _ := client.GetInstallations()
+
+	sorted, err := wkspace.TopSort(installations)
+	if err != nil {
+		return err
+	}
+
+	for _, inst := range sorted {
+		fmt.Println(inst.Repository.Name)
 	}
 	return nil
 }
@@ -111,7 +132,6 @@ func handleInit(c *cli.Context) error {
 	fmt.Printf("\nlogged in as %s\n", email)
 	conf.Email = email
 	conf.Token = result
-
 
 	client = api.FromConfig(&conf)
 	accessToken, err := client.CreateAccessToken()

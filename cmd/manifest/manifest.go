@@ -17,6 +17,10 @@ type TerraformManifest struct {
 	Name string
 }
 
+type Dependency struct {
+	Repo string
+}
+
 type Manifest struct {
 	Id        string
 	Name      string
@@ -27,6 +31,7 @@ type Manifest struct {
 	License   string
 	Charts    []ChartManifest
 	Terraform []TerraformManifest
+	Dependencies []Dependency
 }
 
 func (m *Manifest) Write(path string) error {

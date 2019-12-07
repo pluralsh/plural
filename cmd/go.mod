@@ -17,6 +17,7 @@ require (
 	github.com/mattn/go-isatty v0.0.10 // indirect
 	github.com/mitchellh/copystructure v1.0.0 // indirect
 	github.com/olekukonko/tablewriter v0.0.2
+	github.com/philopon/go-toposort v0.0.0-20170620085441-9be86dbd762f
 	github.com/pkg/errors v0.8.1
 	github.com/urfave/cli v1.22.1
 	golang.org/x/crypto v0.0.0-20191111213947-16651526fdb4

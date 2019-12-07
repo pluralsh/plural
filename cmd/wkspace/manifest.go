@@ -26,7 +26,43 @@ func (wk *Workspace) BuildManifest() *manifest.Manifest {
 		wk.Installation.License,
 		charts,
 		terraform,
+		buildDependencies(repository.Name, wk.Charts, wk.Terraform),
 	}
+}
+
+func buildDependencies(repo string, charts []api.ChartInstallation, tfs []api.TerraformInstallation) []manifest.Dependency {
+	var deps []manifest.Dependency
+	var seen = make(map[string]bool)
+
+	for _, chart := range charts {
+		for _, dep := range chart.Chart.Dependencies.Dependencies {
+			_, ok := seen[dep.Repo]
+			if ok {
+				continue
+			}
+
+			if (dep.Repo != repo) {
+				deps = append(deps, manifest.Dependency{dep.Repo})
+				seen[dep.Repo] = true
+			}
+		}
+	}
+
+	for _, tf := range tfs {
+		for _, dep := range tf.Terraform.Dependencies.Dependencies {
+			_, ok := seen[dep.Repo]
+			if ok {
+				continue
+			}
+
+			if (dep.Repo != repo) {
+				deps = append(deps, manifest.Dependency{dep.Repo})
+				seen[dep.Repo] = true
+			}
+		}
+	}
+
+	return deps
 }
 
 func buildChartManifest(chartInstallation *api.ChartInstallation) *manifest.ChartManifest {

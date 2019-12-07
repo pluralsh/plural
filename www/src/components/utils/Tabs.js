@@ -2,8 +2,8 @@ import React, {useState, useContext} from 'react'
 import {Box} from 'grommet'
 
 const TabContext = React.createContext({})
-const HOVER_BORDER = {side: 'bottom', color: 'dark-6', size: 'small'}
-const ACTIVE_BORDER = {side: 'bottom', color: 'brand', size: 'small'}
+const HOVER_BORDER = {side: 'bottom', color: 'dark-6', size: '3px'}
+const ACTIVE_BORDER = {side: 'bottom', color: 'brand', size: '3px'}
 
 export function TabHeaderItem({name, children}) {
   const [hover, setHover] = useState(false)

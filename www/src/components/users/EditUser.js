@@ -164,7 +164,7 @@ export default function EditUser() {
           </Box>
         </Box>
         <Box>
-          <Expander text='Update attributes' open>
+          <Expander text='Update attributes'>
             <Box gap='small' pad='small'>
               <InputField
                 label='name'

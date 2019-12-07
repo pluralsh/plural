@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/fatih/color"
 	"github.com/michaeljguarino/chartmart/api"
 	"github.com/michaeljguarino/chartmart/config"
 	"github.com/michaeljguarino/chartmart/wkspace"
@@ -31,7 +30,7 @@ func build(c *cli.Context) error {
 		}
 
 		repoName := installation.Repository.Name
-		color.New(color.FgYellow, color.Bold).Printf("Building workspace for %s\n", repoName)
+		utils.Warn("Building workspace for %s\n", repoName)
 		workspace, err := wkspace.New(client, &installation)
 		if err != nil {
 			return err
@@ -39,7 +38,7 @@ func build(c *cli.Context) error {
 		if err := workspace.Prepare(); err != nil {
 			return err
 		}
-		color.New(color.FgGreen, color.Bold).Printf("Finished building %s\n", repoName)
+		utils.Success("Finished building %s\n", repoName)
 	}
 	return nil
 }
@@ -60,7 +59,7 @@ func deploy(c *cli.Context) error {
 			continue
 		}
 
-		color.New(color.FgYellow, color.Bold).Printf("(Re)building workspace for %s\n", installation.Repository.Name)
+		utils.Warn("(Re)building workspace for %s\n", installation.Repository.Name)
 		workspace, err := wkspace.New(client, &installation)
 		if err != nil {
 			return err
@@ -81,8 +80,8 @@ func deploy(c *cli.Context) error {
 func topsort(c *cli.Context) error {
 	client := api.NewClient()
 	installations, _ := client.GetInstallations()
-
-	sorted, err := wkspace.TopSort(installations)
+	repoName := c.Args().Get(0)
+	sorted, err := wkspace.Dependencies(repoName, installations)
 	if err != nil {
 		return err
 	}
@@ -103,7 +102,7 @@ func bounce(c *cli.Context) error {
 			continue
 		}
 
-		color.New(color.FgYellow, color.Bold).Printf("bouncing deployments in %s\n", installation.Repository.Name)
+		utils.Warn("bouncing deployments in %s\n", installation.Repository.Name)
 		workspace, err := wkspace.New(client, &installation)
 		if err != nil {
 			return err
@@ -148,7 +147,7 @@ func handleInit(c *cli.Context) error {
 		{"diff.chartmart-crypt.textconv", "chartmart crypto decrypt"},
 	}
 
-	color.New(color.Bold).Printf("Creating git encryption filters\n\n")
+	utils.Highlight("Creating git encryption filters\n\n")
 	for _, conf := range encryptConfig {
 		if err := gitConfig(conf[0], conf[1]); err != nil {
 			panic(err)
@@ -158,7 +157,7 @@ func handleInit(c *cli.Context) error {
 	utils.WriteFileIfNotPresent(".gitattributes", gitattributes)
 	utils.WriteFileIfNotPresent(".gitignore", gitignore)
 
-	color.New(color.FgGreen, color.Bold).Printf("Workspace is properly configured!")
+	utils.Success("Workspace is properly configured!")
 	return nil
 }
 

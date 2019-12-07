@@ -21,3 +21,15 @@ func ReadPwd(prompt string) (string, error) {
 	pwd, err := terminal.ReadPassword(int(syscall.Stdin))
 	return strings.TrimSpace(string(pwd)), err
 }
+
+func Warn(line string, args... interface{}) {
+	color.New(color.FgYellow, color.Bold).Printf(line, args...)
+}
+
+func Success(line string, args... interface{}) {
+	color.New(color.FgGreen, color.Bold).Printf(line, args...)
+}
+
+func Highlight(line string, args... interface{}) {
+	color.New(color.Bold).Printf(line, args...)
+}

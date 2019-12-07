@@ -39,3 +39,20 @@ func TopSort(installations []api.Installation) ([]api.Installation, error) {
 	}
 	return sorted, nil
 }
+
+func Dependencies(repo string, installations []api.Installation) ([]api.Installation, error) {
+	topsorted, err := TopSort(installations)
+	if err != nil {
+		return topsorted, err
+	}
+
+	ind := 0
+	for i := 0; i < len(topsorted); i++ {
+		ind = i
+		if topsorted[i].Repository.Name == repo {
+			break
+		}
+	}
+
+	return topsorted[:(ind + 1)], err
+}

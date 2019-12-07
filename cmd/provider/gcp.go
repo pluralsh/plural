@@ -42,6 +42,15 @@ func mkGCP() (*GCPProvider, error) {
 		client,
 		ctx,
 	}
+	projectManifest := manifest.ProjectManifest{
+		Cluster: cluster,
+		Project: project,
+		Bucket: bucket,
+		Provider: GCP,
+	}
+	path := manifest.ProjectManifestPath()
+	projectManifest.Write(path)
+
 	return provider, nil
 }
 

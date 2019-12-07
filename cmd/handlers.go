@@ -49,7 +49,7 @@ func deploy(c *cli.Context) error {
 	repoName := c.Args().Get(0)
 	dir, _ := os.Getwd()
 
-	sorted, err := wkspace.TopSort(installations)
+	sorted, err := wkspace.Dependencies(repoName, installations)
 	if err != nil {
 		return err
 	}
@@ -133,7 +133,7 @@ func handleInit(c *cli.Context) error {
 	conf.Token = result
 
 	client = api.FromConfig(&conf)
-	accessToken, err := client.CreateAccessToken()
+	accessToken, err := client.GrabAccessToken()
 	if err != nil {
 		return err
 	}

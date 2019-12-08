@@ -129,8 +129,12 @@ defmodule Core.Services.RepositoriesTest do
 
       {:ok, license} = Repositories.generate_license(installation)
       {:ok, decoded} = RSA.decrypt(license, ExPublicKey.loads!(repo.public_key))
+      %{"refresh_token" => token, "expires_at" => expiry} = Jason.decode!(decoded)
+      {:ok, _} = Timex.parse(expiry, "{ISO:Extended}")
+      {:ok, license} = Repositories.refresh_license(token)
 
-      assert is_map(Jason.decode!(decoded))
+      {:ok, decoded} = RSA.decrypt(license, ExPublicKey.loads!(repo.public_key))
+      %{"refresh_token" => _} = Jason.decode!(decoded)
     end
   end
 

@@ -55,7 +55,7 @@ func deploy(c *cli.Context) error {
 	}
 
 	for _, installation := range sorted {
-		if installation.Repository.Name != repoName {
+		if installation.Repository.Name != repoName && repoName != "" {
 			continue
 		}
 

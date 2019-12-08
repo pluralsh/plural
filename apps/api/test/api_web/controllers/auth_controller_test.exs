@@ -1,6 +1,7 @@
 defmodule ApiWeb.AuthControllerTest do
   use ApiWeb.ConnCase, async: true
   alias Core.Auth.Jwt
+  alias Core.Services.Repositories
 
   describe "#token/2" do
     test "It can fetch a valid repo auth token", %{conn: conn} do
@@ -21,6 +22,22 @@ defmodule ApiWeb.AuthControllerTest do
       assert perms["name"] == "#{repo.name}/image"
       assert perms["type"] == "repository"
       assert Enum.sort(perms["actions"]) == ["pull"]
+    end
+  end
+
+  describe "#refresh_license/2" do
+    test "It can refresh the license for an installation", %{conn: conn} do
+      publisher = insert(:publisher)
+      {:ok, repo} = Repositories.create_repository(%{name: "my repo"}, publisher.owner)
+
+      installation = insert(:installation, repository: repo)
+      token = insert(:license_token, installation: installation)
+      path = Routes.auth_path(conn, :refresh_license)
+
+      %{"license" => _} =
+        conn
+        |> post(path, %{"refresh_token" => token.token})
+        |> json_response(200)
     end
   end
 end

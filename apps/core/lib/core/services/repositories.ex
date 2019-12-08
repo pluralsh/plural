@@ -3,7 +3,15 @@ defmodule Core.Services.Repositories do
   import Core.Policies.Repository
   alias Core.Services.Users
   alias Core.Auth.Jwt
-  alias Core.Schema.{Repository, Installation, User, DockerRepository, DockerImage}
+  alias Core.Schema.{
+    Repository,
+    Installation,
+    User,
+    DockerRepository,
+    DockerImage,
+    LicenseToken,
+    License
+  }
   alias Piazza.Crypto.RSA
 
   def get_installation!(id),
@@ -38,6 +46,7 @@ defmodule Core.Services.Repositories do
 
   def authorize_docker(repo_name, %User{} = user) do
     repo = get_repository_by_name!(repo_name) |> Core.Repo.preload([:publisher])
+
     Parallax.new()
     |> Parallax.operation(:push, fn -> allow(repo, user, :edit) end)
     |> Parallax.operation(:pull, fn -> allow(repo, user, :access) end)
@@ -134,9 +143,24 @@ defmodule Core.Services.Repositories do
   def generate_license(%Installation{} = installation) do
     %{repository: repo} = Core.Repo.preload(installation, [:repository])
 
-    Jason.encode!(installation.policy || %{free: true})
-    |> RSA.encrypt(ExPublicKey.loads!(repo.private_key))
+    with {:ok, license_token} <- upsert_license_token(installation) do
+      License.new(
+        policy: installation.policy || %{free: true},
+        refresh_token: license_token.token
+      )
+      |> Jason.encode!()
+      |> RSA.encrypt(ExPublicKey.loads!(repo.private_key))
+    end
   end
+
+  def refresh_license(%LicenseToken{installation: %Installation{} = installation}),
+    do: generate_license(installation)
+  def refresh_license(token) when is_binary(token) do
+    Core.Repo.get_by!(LicenseToken, token: token)
+    |> Core.Repo.preload([:installation])
+    |> refresh_license()
+  end
+  def refresh_license(_), do: {:error, :not_found}
 
   def generate_keys(%Repository{} = repo) do
     with {:ok, keypair} <- RSA.generate_keypair(),
@@ -145,6 +169,15 @@ defmodule Core.Services.Repositories do
       |> Repository.key_changeset(%{private_key: priv, public_key: pub})
       |> Core.Repo.update()
     end
+  end
+
+  def upsert_license_token(%Installation{id: id}) do
+    case Core.Repo.get_by(LicenseToken, installation_id: id) do
+      %LicenseToken{} = token -> token
+      nil -> %LicenseToken{}
+    end
+    |> LicenseToken.changeset(%{installation_id: id})
+    |> Core.Repo.insert_or_update()
   end
 
   def authorize(repo_id, %User{} = user) when is_binary(repo_id) do

@@ -46,6 +46,8 @@ defmodule Core.MixProject do
       {:botanist, "~> 0.1.0", git: "https://github.com/michaeljguarino/botanist.git", branch: "ecto3"},
       {:x509, "~> 0.7.0"},
       {:yaml_elixir, "~> 2.4"},
+      {:timex, "~> 3.6"},
+      {:tzdata, "~> 0.1.8", override: true},
 
       {:mock, "~> 0.3.3", only: :test},
     ]

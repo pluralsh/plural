@@ -2,7 +2,8 @@ defmodule ApiWeb.AuthController do
   use ApiWeb, :controller
   alias Core.Services.Repositories
   alias Core.Services.Users
-  plug BasicAuth, callback: &__MODULE__.fetch_user/3
+
+  plug BasicAuth, [callback: &__MODULE__.fetch_user/3] when action == :token
 
   def token(conn, %{"scope" => "repository:" <> repo}) do
     user = conn.assigns.token.user
@@ -17,6 +18,12 @@ defmodule ApiWeb.AuthController do
   def token(conn, %{"account" => _, "service" => _}) do
     with {:ok, token} <- Repositories.dkr_login_token(conn.assigns.token.user) do
       json(conn, %{token: token, access_token: token})
+    end
+  end
+
+  def refresh_license(conn, %{"refresh_token" => token}) do
+    with {:ok, license} <- Repositories.refresh_license(token) do
+      json(conn, %{license: license})
     end
   end
 

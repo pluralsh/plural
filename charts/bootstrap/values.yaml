@@ -1,6 +1,7 @@
 external-dns:
   provider: google
   txtOwnerId: piazza
+  policy: sync
   rbac:
     create: true
     serviceAccountName: external-dns

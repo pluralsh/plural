@@ -88,4 +88,11 @@ defmodule Core.Factory do
       docker_repository: build(:docker_repository)
     }
   end
+
+  def license_token_factory do
+    %Schema.LicenseToken{
+      token: sequence(:license_token, &"license-#{&1}"),
+      installation: build(:installation)
+    }
+  end
 end

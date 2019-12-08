@@ -24,6 +24,16 @@ The charmart workflow provides the following:
 * templating using a shared context between tf and helm to reduce the drift between duplicated configuration
 * Automatic README extraction for documentation on the site
 
+## Dependencies
+
+To properly work, you will need installations of terraform and helm. In addition, the helm push plugin is used to interface with chartmuseum, which is used for versioned storage of helm charts. On mac, you can simply do:
+
+```bash
+brew install terraform
+brew install kubernetes-helm
+helm plugin install https://github.com/chartmuseum/helm-push
+```
+
 ## Build
 
 To run tests for the api:
@@ -42,4 +52,4 @@ make cli
 
 and copy cmd/chartmart to your path.
 
-alternatively, if you don't mind `go install`, you can `cd cmd && go install` 
+alternatively, if you don't mind `go install`, you can `cd cmd && go install`

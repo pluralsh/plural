@@ -26,6 +26,8 @@ defmodule ApiWeb.Router do
 
     get "/auth/token", AuthController, :token
 
+    post "/auth/license", AuthController, :refresh_license
+
     get "/health", HealthController, :ping
 
     post "/signup", UserController, :create

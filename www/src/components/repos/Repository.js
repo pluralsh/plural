@@ -312,7 +312,10 @@ const IMG_SIZE = '75px'
 
 function Repository() {
   const {repositoryId} = useParams()
-  const {loading, data, fetchMore} = useQuery(REPO_Q, {variables: {repositoryId}})
+  const {loading, data, fetchMore} = useQuery(REPO_Q, {
+    variables: {repositoryId},
+    fetchPolicy: "cache-and-network"
+  })
   const {setBreadcrumbs} = useContext(BreadcrumbContext)
   const [tab, setTab] = useState(null)
   useEffect(() => {

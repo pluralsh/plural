@@ -150,6 +150,8 @@ defmodule Core.Services.Repositories do
       )
       |> Jason.encode!()
       |> RSA.encrypt(ExPublicKey.loads!(repo.private_key))
+    else
+      _ -> {:ok, nil}
     end
   end
 

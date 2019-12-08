@@ -36,7 +36,7 @@ defmodule Core.MixProject do
       {:ex_machina, "~> 2.3", only: :test},
       {:comeonin, "~> 5.1.2"},
       {:argon2_elixir, "~> 2.0"},
-      {:piazza_core, "~> 0.1.4"},
+      {:piazza_core, "~> 0.1.7"},
       {:parallax, "~> 1.0"},
       {:joken, "~> 2.1.0"},
       {:guardian, "~> 1.2.1"},

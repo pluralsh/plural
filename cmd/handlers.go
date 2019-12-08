@@ -157,7 +157,7 @@ func handleInit(c *cli.Context) error {
 	utils.WriteFileIfNotPresent(".gitattributes", gitattributes)
 	utils.WriteFileIfNotPresent(".gitignore", gitignore)
 
-	utils.Success("Workspace is properly configured!")
+	utils.Success("Workspace is properly configured!\n")
 	return nil
 }
 

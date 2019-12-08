@@ -9,8 +9,8 @@ defmodule Core.Schema.Repository do
     field :icon,          Core.Storage.Type
     field :description,   :string
     field :documentation, :binary
-    field :public_key,    :binary
-    field :private_key,   :binary
+    field :public_key,    Piazza.Ecto.EncryptedString
+    field :private_key,   Piazza.Ecto.EncryptedString
 
     belongs_to :publisher, Publisher
     has_many :installations, Installation

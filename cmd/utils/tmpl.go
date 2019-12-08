@@ -7,7 +7,9 @@ import (
 )
 
 func MakeTemplate(tmplate string) (*template.Template, error) {
-	return template.New("gotpl").Funcs(sprig.TxtFuncMap()).Parse(tmplate)
+	funcs := sprig.TxtFuncMap()
+	funcs["genAESKey"] = GenAESKey
+	return template.New("gotpl").Funcs(funcs).Parse(tmplate)
 }
 
 func RenderTemplate(wr io.Writer, tmplate string, ctx map[string]interface{}) error {

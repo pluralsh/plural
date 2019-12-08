@@ -20,6 +20,7 @@ secrets:
   jwt_cert: {{ $certificate.Cert | quote }}
   jwt_aud: {{ .Values.chartmart_dkr_dns }}
   jwt_iss: {{ .Values.chartmart_dns }}
+  aes_key: {{ genAESKey }}
 
 admin:
   enabled: true

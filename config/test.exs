@@ -23,3 +23,5 @@ config :core, :jwt,
 
 config :goth,
   json: System.get_env("GOOGLE_APPLICATION_CREDENTIALS") |> File.read!()
+
+config :piazza_core, aes_key: "1HdFP1DuK7xkkcEBne41yAwUY8NSfJnYfGVylYYCS2U="

@@ -24,6 +24,8 @@ The charmart workflow provides the following:
 * templating using a shared context between tf and helm to reduce the drift between duplicated configuration
 * Automatic README extraction for documentation on the site
 
+And a bit more, of course.
+
 ## Dependencies
 
 To properly work, you will need installations of terraform and helm. In addition, the helm push plugin is used to interface with chartmuseum, which is used for versioned storage of helm charts. On mac, you can simply do:

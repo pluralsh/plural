@@ -24,3 +24,5 @@ erl_crash.dump
 /**/.terraform
 /**/.terraform*
 /**/terraform.tfstate*
+
+/secrets/

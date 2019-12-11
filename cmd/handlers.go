@@ -3,23 +3,16 @@ package main
 import (
 	"fmt"
 	"github.com/michaeljguarino/chartmart/api"
+	"github.com/michaeljguarino/chartmart/crypto"
 	"github.com/michaeljguarino/chartmart/config"
 	"github.com/michaeljguarino/chartmart/wkspace"
 	"github.com/michaeljguarino/chartmart/utils"
 	"github.com/urfave/cli"
+	"path/filepath"
 	"os"
 	"io/ioutil"
 	"bytes"
 )
-
-const gitattributes = `/**/helm/**/values.yaml filter=chartmart-crypt diff=chartmart-crypt
-/**/manifest.yaml filter=chartmart-crypt diff=chartmart-crypt
-`
-
-const gitignore = `/**/.terraform
-/**/.terraform*
-/**/terraform.tfstate*
-`
 
 func build(c *cli.Context) error {
 	client := api.NewClient()
@@ -140,24 +133,41 @@ func handleInit(c *cli.Context) error {
 	conf.Token = accessToken
 	config.Flush(&conf)
 
-	encryptConfig := [][]string{
-		{"filter.chartmart-crypt.smudge", "chartmart crypto decrypt"},
-		{"filter.chartmart-crypt.clean", "chartmart crypto encrypt"},
-		{"filter.chartmart-crypt.required", "true"},
-		{"diff.chartmart-crypt.textconv", "chartmart crypto decrypt"},
+	if err := cryptoInit(c); err != nil {
+		return err
 	}
-
-	utils.Highlight("Creating git encryption filters\n\n")
-	for _, conf := range encryptConfig {
-		if err := gitConfig(conf[0], conf[1]); err != nil {
-			panic(err)
-		}
-	}
-
-	utils.WriteFileIfNotPresent(".gitattributes", gitattributes)
-	utils.WriteFileIfNotPresent(".gitignore", gitignore)
 
 	utils.Success("Workspace is properly configured!\n")
+	return nil
+}
+
+func handleImport(c *cli.Context) error {
+	dir, err := filepath.Abs(c.Args().Get(0))
+	if err != nil {
+		return err
+	}
+
+	conf := config.Import(filepath.Join(dir, "config.yml"))
+	config.Flush(&conf)
+
+	if err := cryptoInit(c); err != nil {
+		return err
+	}
+
+	data, err := ioutil.ReadFile(filepath.Join(dir, "key"))
+	if err != nil {
+		return err
+	}
+
+	key, err := crypto.Import(data)
+	if err != nil {
+		return err
+	}
+	if err := key.Flush(); err != nil {
+		return err
+	}
+
+	utils.Success("Workspace properly imported")
 	return nil
 }
 

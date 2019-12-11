@@ -53,6 +53,11 @@ func main() {
 			Action: handleInit,
 		},
 		{
+			Name:   "import",
+			Usage:  "imports chartmart config from another file",
+			Action: handleImport,
+		},
+		{
 			Name:  "test",
 			Usage: "validate a values templace",
 			Action: testTemplate,

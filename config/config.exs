@@ -3,6 +3,8 @@ use Mix.Config
 config :core,
   ecto_repos: [Core.Repo]
 
+
+
 config :piazza_core,
   repos: [Core.Repo]
 
@@ -11,6 +13,13 @@ config :api, ApiWeb.Endpoint,
   secret_key_base: "1rkd5+lxJbdTadyxW7qF/n1fNzKPV010PKf8SEGmUrXwMw0iAZyoyZgWEwr6nmCJ",
   render_errors: [view: ApiWeb.ErrorView, accepts: ~w(html json)],
   pubsub: [name: Api.PubSub, adapter: Phoenix.PubSub.PG2],
+  server: true
+
+config :watchman, WatchmanWeb.Endpoint,
+  url: [host: "localhost"],
+  secret_key_base: "1rkd5+lxJbdTadyxW7qF/n1fNzKPV010PKf8SEGmUrXwMw0iAZyoyZgWEwr6nmCJ",
+  render_errors: [view: WatchmanWeb.ErrorView, accepts: ~w(html json)],
+  pubsub: [name: Watchman.PubSub, adapter: Phoenix.PubSub.PG2],
   server: true
 
 config :logger, :console,

@@ -21,7 +21,11 @@ func configFile() string {
 }
 
 func Read() Config {
-	contents, err := ioutil.ReadFile(configFile())
+	return Import(configFile())
+}
+
+func Import(file string) Config {
+	contents, err := ioutil.ReadFile(file)
 	conf := Config{}
 	if err != nil {
 		return conf

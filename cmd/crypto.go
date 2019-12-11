@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/michaeljguarino/chartmart/crypto"
+	"github.com/michaeljguarino/chartmart/utils"
 	"github.com/urfave/cli"
 	"io/ioutil"
 	"io"
@@ -19,6 +20,16 @@ import (
 
 var prefix = []byte("CHARTMART-ENCRYPTED")
 
+
+const gitattributes = `/**/helm/**/values.yaml filter=chartmart-crypt diff=chartmart-crypt
+/**/manifest.yaml filter=chartmart-crypt diff=chartmart-crypt
+`
+
+const gitignore = `/**/.terraform
+/**/.terraform*
+/**/terraform.tfstate*
+`
+
 func cryptoCommands() []cli.Command {
 	return []cli.Command{
 		{
@@ -30,6 +41,11 @@ func cryptoCommands() []cli.Command {
 			Name:   "decrypt",
 			Usage:  "decrypts stdin and writes to stdout",
 			Action: handleDecrypt,
+		},
+		{
+			Name:   "init",
+			Usage:  "initializes git filters for you",
+			Action: cryptoInit,
 		},
 		{
 			Name:   "unlock",
@@ -112,6 +128,26 @@ func handleDecrypt(c *cli.Context) error {
 	return nil
 }
 
+func cryptoInit(c *cli.Context) error {
+	encryptConfig := [][]string{
+		{"filter.chartmart-crypt.smudge", "chartmart crypto decrypt"},
+		{"filter.chartmart-crypt.clean", "chartmart crypto encrypt"},
+		{"filter.chartmart-crypt.required", "true"},
+		{"diff.chartmart-crypt.textconv", "chartmart crypto decrypt"},
+	}
+
+	utils.Highlight("Creating git encryption filters\n\n")
+	for _, conf := range encryptConfig {
+		if err := gitConfig(conf[0], conf[1]); err != nil {
+			panic(err)
+		}
+	}
+
+	utils.WriteFileIfNotPresent(".gitattributes", gitattributes)
+	utils.WriteFileIfNotPresent(".gitignore", gitignore)
+	return nil
+}
+
 func handleUnlock(c *cli.Context) error {
 	cmd := exec.Command("git", "rev-parse", "--show-toplevel")
 	res, err := cmd.CombinedOutput()
@@ -120,7 +156,11 @@ func handleUnlock(c *cli.Context) error {
 	}
 	repoRoot := strings.TrimSpace(string(res))
 	gitIndex, _ := filepath.Abs(filepath.Join(repoRoot, ".git", "index"))
-	os.Remove(gitIndex)
+	err = os.Remove(gitIndex)
+	if err != nil {
+		return err
+	}
+
 	return gitCommand("checkout", "HEAD", "--", strings.TrimSpace(string(res))).Run()
 }
 

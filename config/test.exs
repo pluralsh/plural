@@ -34,4 +34,5 @@ config :watchman,
   workspace_root: path |> Path.dirname() |> Path.join("secrets"),
   git_url: "git@github.com:michaeljguarino/chartmart-installations.git",
   repo_root: "chartmart-installations",
-  chartmart_config: "/Users/michaelguarino/.chartmart"
+  chartmart_config: "/Users/michaelguarino/.chartmart",
+  webhook_secret: "webhook_secret"

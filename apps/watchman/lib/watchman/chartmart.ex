@@ -6,7 +6,7 @@ defmodule Watchman.Chartmart do
 
   def unlock(), do: chartmart("crypto", ["unlock"])
 
-  def build(repo), do: chartmart("build", [repo])
+  def build(repo), do: chartmart("build", ["--only", repo])
 
   def deploy(repo), do: chartmart("deploy", [repo])
 

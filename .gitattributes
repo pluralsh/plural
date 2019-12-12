@@ -1,0 +1,2 @@
+/**/helm/**/values.yaml filter=chartmart-crypt diff=chartmart-crypt
+/**/manifest.yaml filter=chartmart-crypt diff=chartmart-crypt

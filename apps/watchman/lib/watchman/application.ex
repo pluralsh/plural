@@ -1,11 +1,11 @@
 defmodule Watchman.Application do
-  @moduledoc false
-
   use Application
+  import Supervisor.Spec
 
   def start(_type, _args) do
     children = [
-      WatchmanWeb.Endpoint
+      WatchmanWeb.Endpoint,
+      worker(Watchman.Deployer, [determine_storage()])
     ]
 
     opts = [strategy: :one_for_one, name: Watchman.Supervisor]
@@ -16,4 +16,7 @@ defmodule Watchman.Application do
     WatchmanWeb.Endpoint.config_change(changed, removed)
     :ok
   end
+
+  # only support git for now
+  defp determine_storage(), do: Watchman.Storage.Git
 end

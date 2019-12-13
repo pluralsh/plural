@@ -6,11 +6,11 @@ log/
 .git/
 .gitignore
 .dockerignore
-Dockerfile
+Dockerfile*
+apps/watchman/Dockerfile
 Makefile
 README*
 test/
 priv/static/
 creds/
-cmd/
 www/

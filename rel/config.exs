@@ -46,3 +46,10 @@ release :chartmart do
   ]
 end
 
+release :watchman do
+  set version: version
+  set applications: [
+    :runtime_tools,
+    watchman: :permanent
+  ]
+end

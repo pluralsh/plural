@@ -14,6 +14,15 @@ ifeq ($(APP_NAME), www)
 							-t $(APP_NAME):latest \
 							-t gcr.io/$(GCP_PROJECT)/chartmart-www:`cat ../VERSION` \
 							-t dkr.piazzaapp.com/chartmart/chartmart-www:`cat ../VERSION` .
+else ifeq ($(APP_NAME), watchman)
+	cp apps/watchman/Dockerfile Dockerfile.temp
+	docker build --build-arg APP_NAME=$(APP_NAME) -f Dockerfile.temp \
+		--build-arg APP_VSN=$(APP_VSN) \
+		-t $(APP_NAME):$(APP_VSN) \
+		-t $(APP_NAME):latest \
+		-t gcr.io/$(GCP_PROJECT)/$(APP_NAME):$(APP_VSN) \
+		-t dkr.piazzaapp.com/chartmart/$(APP_NAME):$(APP_VSN) .
+	rm Dockerfile.temp
 else
 	docker build --build-arg APP_NAME=$(APP_NAME) \
 		--build-arg APP_VSN=$(APP_VSN) \

@@ -5,6 +5,7 @@ defmodule Watchman.Application do
   def start(_type, _args) do
     children = [
       WatchmanWeb.Endpoint,
+      Watchman.Configuration,
       worker(Watchman.Deployer, [determine_storage()])
     ]
 

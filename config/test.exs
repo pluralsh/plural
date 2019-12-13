@@ -30,9 +30,13 @@ config :goth,
 
 config :piazza_core, aes_key: "1HdFP1DuK7xkkcEBne41yAwUY8NSfJnYfGVylYYCS2U="
 
+secrets_path = path |> Path.dirname() |> Path.join("secrets")
+
 config :watchman,
-  workspace_root: path |> Path.dirname() |> Path.join("secrets"),
+  workspace_root: secrets_path,
   git_url: "git@github.com:michaeljguarino/chartmart-installations.git",
   repo_root: "chartmart-installations",
   chartmart_config: "/Users/michaelguarino/.chartmart",
-  webhook_secret: "webhook_secret"
+  webhook_secret: "webhook_secret",
+  git_ssh_key_source: Path.join([Path.dirname(path), "testdata", "dummy"]),
+  git_ssh_key_destination: Path.join([Path.dirname(path), "testdata", "artifacts"])

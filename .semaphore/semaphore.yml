@@ -57,3 +57,7 @@ blocks:
       commands:
       - make build APP_NAME=www
       - make push APP_NAME=chartmart-www
+    - name: "Build watchman"
+      commands:
+      - make build APP_NAME=watchman
+      - make push APP_NAME=watchman

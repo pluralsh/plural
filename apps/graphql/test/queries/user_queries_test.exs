@@ -99,4 +99,26 @@ defmodule GraphQl.UserQueriesTest do
              |> ids_equal(tokens)
     end
   end
+
+  describe "webhooks" do
+    test "A user can list their webhooks" do
+      user = insert(:user)
+      webhooks = insert_list(3, :webhook, user: user)
+
+      {:ok, %{data: %{"webhooks" => found}}} = run_query("""
+        query {
+          webhooks(first: 5) {
+            edges {
+              node {
+                id
+              }
+            }
+          }
+        }
+      """, %{}, %{current_user: user})
+
+      assert from_connection(found)
+             |> ids_equal(webhooks)
+    end
+  end
 end

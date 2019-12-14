@@ -23,6 +23,11 @@ func WriteFileIfNotPresent(path, contents string) {
 	}
 }
 
+func ReadFile(name string) (string, error) {
+	content, err := ioutil.ReadFile(name)
+	return string(content), err
+}
+
 func Exists(path string) bool {
 	_, err := os.Stat(path)
 	if os.IsNotExist(err) {

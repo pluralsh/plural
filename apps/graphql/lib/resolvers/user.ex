@@ -1,9 +1,10 @@
 defmodule GraphQl.Resolvers.User do
   use GraphQl.Resolvers.Base, model: Core.Schema.User
   alias Core.Services.Users
-  alias Core.Schema.{Publisher, PersistedToken}
+  alias Core.Schema.{Publisher, PersistedToken, Webhook}
 
   def query(Publisher, _), do: Publisher
+  def query(Webhook, _), do: Webhook
   def query(_, _), do: User
 
   def resolve_publisher(%{id: id}, _),
@@ -26,6 +27,15 @@ defmodule GraphQl.Resolvers.User do
     |> PersistedToken.ordered()
     |> paginate(args)
   end
+
+  def list_webhooks(args, %{context: %{current_user: user}}) do
+    Webhook.for_user(user.id)
+    |> Webhook.ordered()
+    |> paginate(args)
+  end
+
+  def create_webhook(%{attributes: %{url: url}}, %{context: %{current_user: user}}),
+    do: Users.upsert_webhook(url, user)
 
   def create_token(_, %{context: %{current_user: user}}),
     do: Users.create_persisted_token(user)

@@ -179,6 +179,15 @@ defmodule GraphQl.Schema.Types do
     field :helm, :map
   end
 
+  object :webhook do
+    field :id,     :id
+    field :url,    :string
+    field :secret, :string
+    field :user,   :user, resolve: dataloader(User)
+
+    timestamps()
+  end
+
   object :terraform do
     field :id,              :id
     field :name,            :string
@@ -215,4 +224,5 @@ defmodule GraphQl.Schema.Types do
   connection node_type: :persisted_token
   connection node_type: :docker_repository
   connection node_type: :docker_image
+  connection node_type: :webhook
 end

@@ -44,4 +44,8 @@ defmodule GraphQl.Schema.Inputs do
   input_object :terraform_installation_attributes do
     field :terraform_id, :id
   end
+
+  input_object :webhook_attributes do
+    field :url, non_null(:string)
+  end
 end

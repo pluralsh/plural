@@ -7,7 +7,7 @@ defmodule WatchmanWeb.Router do
 
   get "/health", WatchmanWeb.HealthController, :health
 
-  scope "/watchman", WatchmanWeb do
+  scope "/v1", WatchmanWeb do
     pipe_through [:api]
 
     post "/webhook", WebhookController, :webhook

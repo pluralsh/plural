@@ -4,7 +4,8 @@ defmodule Core.Services.Users do
   alias Core.Schema.{
     PersistedToken,
     User,
-    Publisher
+    Publisher,
+    Webhook
   }
 
   def get_user(user_id), do: Core.Repo.get(User, user_id)
@@ -72,5 +73,12 @@ defmodule Core.Services.Users do
     get_publisher_by_owner!(user.id)
     |> Publisher.changeset(attrs)
     |> Core.Repo.update()
+  end
+
+  def upsert_webhook(url, %User{id: user_id}) do
+    case Core.Repo.get_by(Webhook, url: url, user_id: user_id) do
+      %Webhook{} = webhook -> {:ok, webhook}
+      nil -> %Webhook{user_id: user_id} |> Webhook.changeset(%{url: url}) |> Core.Repo.insert()
+    end
   end
 end

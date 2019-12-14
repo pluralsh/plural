@@ -95,4 +95,12 @@ defmodule Core.Factory do
       installation: build(:installation)
     }
   end
+
+  def webhook_factory do
+    %Schema.Webhook{
+      url: sequence(:webhook, &"url-#{&1}.com"),
+      secret: sequence(:webhook, &"secret-#{&1}"),
+      user: build(:user)
+    }
+  end
 end

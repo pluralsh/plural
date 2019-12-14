@@ -97,4 +97,27 @@ defmodule Core.Services.UsersTest do
       {:error, _} = Users.delete_persisted_token(token.id, user)
     end
   end
+
+  describe "#upsert_webhook/2" do
+    test "It can create a new webhook for a url" do
+      user = insert(:user)
+      url  = "https://www.example.com"
+
+      {:ok, webhook} = Users.upsert_webhook(url, user)
+
+      assert webhook.user_id == user.id
+      assert webhook.url == url
+      assert webhook.secret
+    end
+
+    test "It will echo an existing webhook" do
+      %{user: user} = webhook = insert(:webhook)
+
+      {:ok, upserted} = Users.upsert_webhook(webhook.url, user)
+
+      assert upserted.secret == webhook.secret
+      assert upserted.url == webhook.url
+      assert upserted.user_id == user.id
+    end
+  end
 end

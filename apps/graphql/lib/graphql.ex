@@ -156,6 +156,12 @@ defmodule GraphQl do
 
       resolve &Chart.list_versions/2
     end
+
+    connection field :webhooks, node_type: :webhook do
+      middleware GraphQl.Middleware.Authenticated
+
+      resolve &User.list_webhooks/2
+    end
   end
 
   mutation do
@@ -196,6 +202,13 @@ defmodule GraphQl do
       arg :attributes, non_null(:publisher_attributes)
 
       resolve safe_resolver(&User.create_publisher/2)
+    end
+
+    field :create_webhook, :webhook do
+      middleware GraphQl.Middleware.Authenticated
+      arg :attributes, non_null(:webhook_attributes)
+
+      resolve safe_resolver(&User.create_webhook/2)
     end
 
     field :update_publisher, :publisher do

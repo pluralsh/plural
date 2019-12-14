@@ -161,4 +161,21 @@ defmodule GraphQl.UserMutationTest do
       assert deleted["id"] == token.id
     end
   end
+
+  describe "createWebhook" do
+    test "A user can create a webhook" do
+      user = insert(:user)
+
+      {:ok, %{data: %{"createWebhook" => created}}} = run_query("""
+        mutation createWebhook($url: String!) {
+          createWebhook(attributes: {url: $url}) {
+            id
+            url
+          }
+        }
+      """, %{"url" => "https://example.com"}, %{current_user: user})
+
+      assert created["url"] == "https://example.com"
+    end
+  end
 end

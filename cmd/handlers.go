@@ -7,6 +7,7 @@ import (
 	"github.com/michaeljguarino/chartmart/config"
 	"github.com/michaeljguarino/chartmart/wkspace"
 	"github.com/michaeljguarino/chartmart/utils"
+	"github.com/michaeljguarino/chartmart/template"
 	"github.com/urfave/cli"
 	"path/filepath"
 	"os"
@@ -186,7 +187,7 @@ func testTemplate(c *cli.Context) error {
 		}
 
 		ctx := installation.Context
-		tmpl, err := utils.MakeTemplate(string(testTemplate))
+		tmpl, err := template.MakeTemplate(string(testTemplate))
 		if err != nil {
 			return err
 		}

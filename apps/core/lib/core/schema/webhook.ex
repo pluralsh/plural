@@ -4,7 +4,7 @@ defmodule Core.Schema.Webhook do
 
   schema "webhooks" do
     field :url,    :string
-    field :secret, Piazza.Ecto.EncryptedString
+    field :secret, :string
 
     belongs_to :user, User
 

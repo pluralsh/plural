@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/michaeljguarino/chartmart/api"
 	"github.com/michaeljguarino/chartmart/utils"
+	"github.com/michaeljguarino/chartmart/template"
 	"net/http"
 	"os"
 	"path"
@@ -53,7 +54,7 @@ func (wk *Workspace) BuildTerraform() error {
 
 		var buf bytes.Buffer
 		buf.Grow(5 * 1024)
-		tmpl, err := utils.MakeTemplate(tf.ValuesTemplate)
+		tmpl, err := template.MakeTemplate(tf.ValuesTemplate)
 		if err != nil {
 			return err
 		}
@@ -70,7 +71,7 @@ func (wk *Workspace) BuildTerraform() error {
 
 		var moduleBuf bytes.Buffer
 		moduleBuf.Grow(1024)
-		if err := utils.RenderTemplate(&moduleBuf, moduleTemplate, module); err != nil {
+		if err := template.RenderTemplate(&moduleBuf, moduleTemplate, module); err != nil {
 			return err
 		}
 

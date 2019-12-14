@@ -1,10 +1,9 @@
 package main
 
 import (
-	"fmt"
+	"os"
 	"github.com/urfave/cli"
 	"github.com/michaeljguarino/chartmart/config"
-	"gopkg.in/yaml.v2"
 )
 
 func configCommands() []cli.Command {
@@ -30,7 +29,11 @@ func handleAmend(c *cli.Context) error {
 
 func handleRead(c *cli.Context) error {
 	conf := config.Read()
-	d, err := yaml.Marshal(&conf)
-	fmt.Printf(string(d))
-	return err
+	d, err := conf.Marshal()
+	if err != nil {
+		return err
+	}
+
+	os.Stdout.Write(d)
+	return nil
 }

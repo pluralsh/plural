@@ -5,7 +5,7 @@ config :api, ApiWeb.Endpoint,
   cache_static_manifest: "priv/static/cache_manifest.json",
   server: true
 
-config :api, WatchmanWeb.Endpoint,
+config :watchman, WatchmanWeb.Endpoint,
   http: [port: 4000],
   cache_static_manifest: "priv/static/cache_manifest.json",
   server: true

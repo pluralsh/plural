@@ -6,6 +6,7 @@ import (
 	"github.com/imdario/mergo"
 	"github.com/michaeljguarino/chartmart/api"
 	"github.com/michaeljguarino/chartmart/utils"
+	"github.com/michaeljguarino/chartmart/template"
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
@@ -125,13 +126,25 @@ func (w *Workspace) BuildChartValues() error {
 	values := make(map[string]map[string]interface{})
 	buf.Grow(5 * 1024)
 
+	repo := w.Installation.Repository
+	dir, _ := filepath.Abs(repo.Name)
+	valuesFile := filepath.Join(dir, "helm", repo.Name, "values.yaml")
+	prevVals, _ := prevValues(valuesFile)
+
 	for _, chartInst := range w.Charts {
-		tmpl, err := utils.MakeTemplate(chartInst.Version.ValuesTemplate)
+		tmpl, err := template.MakeTemplate(chartInst.Version.ValuesTemplate)
 		if err != nil {
 			return err
 		}
 
-		vals := map[string]interface{}{"Values": ctx, "License": w.Installation.License}
+		vals := map[string]interface{}{
+			"Values": ctx,
+			"License": w.Installation.License,
+		}
+		for k, v := range prevVals {
+			vals[k] = v
+		}
+
 		if err := tmpl.Execute(&buf, vals); err != nil {
 			return err
 		}
@@ -145,10 +158,6 @@ func (w *Workspace) BuildChartValues() error {
 		buf.Reset()
 	}
 
-	repo := w.Installation.Repository
-	dir, _ := filepath.Abs(repo.Name)
-	valuesFile := filepath.Join(dir, "helm", repo.Name, "values.yaml")
-	prevVals, _ := prevValues(valuesFile)
 	if err := mergo.Merge(&values, prevVals, mergo.WithOverride); err != nil {
     return err
 	}

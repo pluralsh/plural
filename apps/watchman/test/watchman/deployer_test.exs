@@ -28,6 +28,10 @@ defmodule Watchman.DeployerTest do
             send(myself, :git_init)
             :ok
           end,
+          revise: fn msg ->
+            send(myself, {:commit, msg})
+            :ok
+          end,
           push: fn ->
             send(myself, :git_push)
             :ok
@@ -43,6 +47,11 @@ defmodule Watchman.DeployerTest do
           assert_receive :git_init
           assert_receive {:build, repo}
           assert_receive {:deploy, repo}
+          assert_receive :git_push
+
+          assert_receive {:commit, msg}
+
+          assert msg =~ repo
         end
       end
     end

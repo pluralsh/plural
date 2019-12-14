@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: watchman
+  labels:
+{{ include "watchman.labels" . | indent 4 }}
+spec:
+  type: NodePort
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: watchman
+    app.kubernetes.io/instance: {{ .Release.Name }}

@@ -1,0 +1,28 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: networking.gke.io/v1beta1
+kind: ManagedCertificate
+metadata:
+  name: watchman-cert
+spec:
+  domains:
+  - {{ .Values.ingress.watchman_dns }}
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: watchman
+  labels:
+{{ include "watchman.labels" . | indent 4 }}
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  rules:
+  - host: {{ .Values.ingress.watchman_dns | quote }}
+    http:
+      paths:
+      - backend:
+          serviceName: watchman
+          servicePort: http
+{{- end }}

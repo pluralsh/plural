@@ -46,8 +46,12 @@ func Amend(key string, value string) error {
 	return Flush(&conf)
 }
 
+func (conf *Config) Marshal() ([]byte, error) {
+	return yaml.Marshal(conf)
+}
+
 func Flush(c *Config) error {
-	io, err := yaml.Marshal(&c)
+	io, err := c.Marshal()
 	if err != nil {
 		return err
 	}

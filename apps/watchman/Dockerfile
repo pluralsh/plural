@@ -70,6 +70,23 @@ COPY cmd/ .
 RUN ls -al
 RUN go build -o /go/bin/chartmart
 
+FROM alpine:3 as helm
+
+ARG VERSION=2.12.0
+ENV TERRAFORM_VERSION=0.12.12
+
+# ENV BASE_URL="https://storage.googleapis.com/kubernetes-helm"
+ENV BASE_URL="https://get.helm.sh"
+ENV TAR_FILE="helm-v${VERSION}-linux-amd64.tar.gz"
+
+RUN apk add --update --no-cache curl ca-certificates unzip wget openssl && \
+    curl -L ${BASE_URL}/${TAR_FILE} | tar xvz && \
+    mv linux-amd64/helm /usr/local/bin/helm && \
+    wget https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip && \
+    unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip -d /usr/local/bin && \
+    chmod +x /usr/local/bin/helm && \
+    chmod +x /usr/local/bin/terraform
+
 FROM docker:17.12.0-ce as static-docker-source
 
 # From this line onwards, we're in a new image, which will be the image used in production
@@ -81,6 +98,9 @@ ENV PATH /google-cloud-sdk/bin:$PATH
 
 COPY --from=static-docker-source /usr/local/bin/docker /usr/local/bin/docker
 COPY --from=cmd /go/bin/chartmart /usr/local/bin/chartmart
+COPY --from=helm /usr/local/bin/helm /usr/local/bin/helm
+COPY --from=helm /usr/local/bin/terraform /usr/local/bin/terraform
+
 RUN apk --no-cache add \
         curl \
         python \
@@ -100,22 +120,27 @@ RUN apk --no-cache add \
 
 # The name of your application/release (required)
 ARG APP_NAME
-ADD https://storage.googleapis.com/kubernetes-release/release/v1.6.4/bin/linux/amd64/kubectl /usr/local/bin/kubectl
+ARG KUBECTL_VERSION='1.14.8'
+ADD https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl /usr/local/bin/kubectl
 
 RUN set -x && \
     apk add --no-cache curl openssl-dev ca-certificates bash && \
     chmod +x /usr/local/bin/kubectl && \
     kubectl version --client
 
-
 ENV REPLACE_OS_VARS=true \
     APP_NAME=${APP_NAME}
 
 WORKDIR /opt/app
 
-RUN mkdir -p /etc/chartmart/.chartmart
-RUN mkdir -p /etc/chartmart/.ssh
-RUN echo $HOME
+RUN mkdir -p /root/.ssh
+RUN mkdir -p /root/.chartmart
+RUN mkdir -p /root/.creds
+
+# add common repos to known hosts
+RUN touch /root/.ssh/known_hosts
+RUN ssh-keyscan bitbucket.org >> /root/.ssh/known_hosts
+RUN ssh-keyscan github.com >> /root/.ssh/known_hosts
 
 COPY --from=builder /opt/built .
 

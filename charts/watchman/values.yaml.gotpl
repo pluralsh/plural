@@ -1,0 +1,20 @@
+ingress:
+  watchman_dns: {{ .Values.watchman_dns }}
+
+secrets:
+  git_url: {{ repoUrl }}
+  repo_root: {{ repoName }}
+  config: {{ readFile (homeDir ".chartmart" "config.yml") | quote }}
+  key: {{ readFile (homeDir ".chartmart" "key") | quote }}
+  erlang: {{ randAlphaNum 14 }}
+{{ if and (hasKey . "watchman") (hasKey .watchman "secrets") }}
+  webhook_secret: {{ .Current.watchman.secrets.webhook_secret }}
+  id_rsa: {{ .Current.watchman.secrets.id_rsa | quote }}
+  id_rsa_pub: {{ .Current.watchman.secrets.id_rsa_pub | quote }}
+{{ else }}
+  {{ $webhook := createWebhook .Values.watchman_dns }}
+  {{ $id_rsa := readLineDefault "Enter the path to your deploy keys" (homeDir ".ssh" "id_rsa") }}
+  webhook_secret: {{ $webhook.Secret }}
+  id_rsa: {{ readFile $id_rsa | quote }}
+  id_rsa_pub: {{ readFile (printf "%s.pub" $id_rsa) | quote }}
+{{ end }}

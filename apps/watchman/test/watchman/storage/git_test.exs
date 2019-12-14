@@ -22,10 +22,6 @@ defmodule Watchman.Storage.GitTest do
         end
       ] do
         with_mock Chartmart, [
-          init: fn ->
-            send myself, :init
-            :ok
-          end,
           unlock: fn ->
             send myself, :unlock
             :ok
@@ -34,7 +30,6 @@ defmodule Watchman.Storage.GitTest do
           :ok = Git.init()
 
           assert_receive :git_clone
-          assert_receive :init
           assert_receive :unlock
         end
       end

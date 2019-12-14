@@ -115,6 +115,12 @@ type Token struct {
 	Token string
 }
 
+type Webhook struct {
+	Id string
+	Url string
+	Secret string
+}
+
 const RepositoryFragment = `
 	fragment RepositoryFragment on Repository {
 		id
@@ -216,5 +222,13 @@ var TerraformInstallationFragment = fmt.Sprintf(`
 const TokenFragment = `
 	fragment TokenFragment on PersistedToken {
 		token
+	}
+`
+
+const WebhookFragment = `
+	fragment WebhookFragment on Webhook {
+		id
+		url
+		secret
 	}
 `

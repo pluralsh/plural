@@ -180,3 +180,7 @@ resource "kubernetes_secret" "externaldns" {
     kubernetes_namespace.chartmart
   ]
 }
+
+output "namespace" {
+  value = kubernetes_namespace.chartmart.metadata[0].name
+}

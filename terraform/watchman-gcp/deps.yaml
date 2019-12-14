@@ -1,0 +1,13 @@
+dependencies:
+- name: gcp-bootstrap
+  repo: chartmart
+  type: terraform
+- name: kube
+  repo: chartmart
+  type: terraform
+
+wirings:
+  terraform:
+    cluster_name: gcp-bootstrap.cluster_name
+    node_pool: gcp-bootstrap.node_pool
+    chartmart_namespace: kube.namespace

@@ -5,4 +5,6 @@ defmodule Watchman.Storage do
   @callback pull() :: :ok | {:error, term}
 
   @callback push() :: :ok | {:error, term}
+
+  @callback revise(binary) :: :ok | {:error, term}
 end

@@ -27,6 +27,8 @@ defmodule Watchman.Deployer do
   defp perform(storage, repo) do
     with :ok <- storage.init(),
          :ok <- Chartmart.build(repo),
-      do: Chartmart.deploy(repo)
+         :ok <- Chartmart.deploy(repo),
+         :ok <- storage.revise("watchman deployment for #{repo}"),
+      do: storage.push()
   end
 end

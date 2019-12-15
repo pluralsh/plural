@@ -57,10 +57,7 @@ defmodule GraphQl.Resolvers.User do
     webhook = Users.get_webhook!(webhook_id)
     case Core.Services.Users.post_webhook(repo, webhook) do
       {:ok, %{body: body, status_code: code, headers: headers}} when is_list(headers) ->
-        headers = Enum.into(headers, %{}, fn {k, headers} ->
-          {k, Enum.join(headers, ", ")}
-        end)
-        {:ok, %{body: body, status_code: code, headers: headers}}
+        {:ok, %{body: body, status_code: code, headers: Map.new(headers)}}
       error -> error
     end
   end

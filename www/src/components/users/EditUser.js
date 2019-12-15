@@ -151,59 +151,61 @@ export default function EditUser() {
   }, [me, setBreadcrumbs])
 
   return (
-    <Box direction='row' gap='small' pad='medium'>
-      <Box width='70%' gap='medium' pad='small'>
+    <Box direction='row' gap='small' pad='medium' height='100%'>
+      <Box width='70%' gap='medium' pad='small' height='100%'>
         <Installations edit />
         <Webhooks />
         <Tokens />
       </Box>
-      <Box width='30%' elevation='small'>
-        <Box direction='row' align='center' pad='small' gap='small'>
-          <Avatar user={me} size='100px' />
-          <Box>
-            <Text>{me.name}</Text>
-            <Text size='small'>{me.email}</Text>
+      <Box width='30%'>
+        <Box elevation='small'>
+          <Box direction='row' align='center' pad='small' gap='small'>
+            <Avatar user={me} size='100px' />
+            <Box>
+              <Text>{me.name}</Text>
+              <Text size='small'>{me.email}</Text>
+            </Box>
           </Box>
-        </Box>
-        <Box>
-          <Expander text='Update attributes'>
-            <Box gap='small' pad='small'>
-              <InputField
-                label='name'
-                labelWidth={LABEL_WIDTH}
-                placeholder='your name'
-                value={attributes.name}
-                onChange={(e) => setAttributes({...attributes, name: e.target.value})} />
-              <InputField
-                label='email'
-                labelWidth={LABEL_WIDTH}
-                placeholder='your email'
-                value={attributes.email}
-                onChange={(e) => setAttributes({...attributes, email: e.target.value})} />
-            </Box>
-          </Expander>
-        </Box>
-        <Box border='top'>
-          <Expander text='Update password'>
-            <Box pad='small'>
-              <InputField
-                label='password'
-                placeholder='your password'
-                labelWidth='80px'
-                type='password'
-                value={attributes.password || ''}
-                onChange={(e) => setAttributes({...attributes, password: e.target.value})} />
-            </Box>
-          </Expander>
-        </Box>
-        <Box pad='small' direction='row' justify='end'>
-          <Button
-            pad={{horizontal: 'medium', vertical: 'xsmall'}}
-            loading={loading}
-            error={error}
-            label='Update'
-            onClick={mutation}
-            round='xsmall' />
+          <Box>
+            <Expander text='Update attributes'>
+              <Box gap='small' pad='small'>
+                <InputField
+                  label='name'
+                  labelWidth={LABEL_WIDTH}
+                  placeholder='your name'
+                  value={attributes.name}
+                  onChange={(e) => setAttributes({...attributes, name: e.target.value})} />
+                <InputField
+                  label='email'
+                  labelWidth={LABEL_WIDTH}
+                  placeholder='your email'
+                  value={attributes.email}
+                  onChange={(e) => setAttributes({...attributes, email: e.target.value})} />
+              </Box>
+            </Expander>
+          </Box>
+          <Box border='top'>
+            <Expander text='Update password'>
+              <Box pad='small'>
+                <InputField
+                  label='password'
+                  placeholder='your password'
+                  labelWidth='80px'
+                  type='password'
+                  value={attributes.password || ''}
+                  onChange={(e) => setAttributes({...attributes, password: e.target.value})} />
+              </Box>
+            </Expander>
+          </Box>
+          <Box pad='small' direction='row' justify='end'>
+            <Button
+              pad={{horizontal: 'medium', vertical: 'xsmall'}}
+              loading={loading}
+              error={error}
+              label='Update'
+              onClick={mutation}
+              round='xsmall' />
+          </Box>
         </Box>
       </Box>
     </Box>

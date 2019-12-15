@@ -53,14 +53,16 @@ function MyPublisher() {
       <Box width='60%'>
         <Repositories publisher={me.publisher} deletable />
       </Box>
-      <Box width='40%' elevation='small'>
-        <Expander text='Edit publisher'>
-          <EditPublisher {...me.publisher} />
-        </Expander>
-        <Box border='top'>
-          <Expander text='Create Repository' open>
-            <CreateRepository publisher={me.publisher} />
+      <Box width='40%'>
+        <Box elevation='small'>
+          <Expander text='Edit publisher'>
+            <EditPublisher {...me.publisher} />
           </Expander>
+          <Box border='top'>
+            <Expander text='Create Repository' open>
+              <CreateRepository publisher={me.publisher} />
+            </Expander>
+          </Box>
         </Box>
       </Box>
     </Box>

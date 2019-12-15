@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {Box, Text, Layer} from 'grommet'
+import {Box, Text, Layer, Anchor, Table, TableBody, TableRow, TableCell} from 'grommet'
 import {Refresh} from 'grommet-icons'
 import {useQuery, useMutation} from 'react-apollo'
 import { WEBHOOKS_Q, PING_WEBHOOK} from './queries'
@@ -14,30 +14,62 @@ import moment from 'moment'
 const LABEL_WIDTH = '60px'
 const CELL_WIDTH='200px'
 
-function WebhookResult({statusCode, body}) {
+function WebhookResult({statusCode, body, headers, url}) {
   const status = statusCode >= 200 && statusCode < 300 ? 'status-ok' : 'status-error'
   return (
-    <Box gap='small' border='top' pad={{top: 'small'}}>
-      <Box direction='row' gap='small' align='center'>
-        <Text weight='bold' size='small'>Status Code: </Text>
+    <Box gap='small' border>
+      <Box
+        direction='row'
+        gap='small'
+        align='center'
+        background='light-3'
+        pad='small'
+        border='bottom'
+        elevation='xsmall'>
         <Box background={status} round='xsmall' pad={{vertical: 'xxsmall', horizontal: 'xsmall'}}>
           <Text size='small' >{statusCode}</Text>
         </Box>
+        <Box direction='row' align='center' gap='xsmall'>
+          <Text style={{fontWeight: 500}} size='small'>POST</Text>
+          <Text size='small'>{url}</Text>
+        </Box>
       </Box>
-      <Box direction='row' align='center' gap='small'>
-        <Text size='small' weight='bold'>Body</Text>
-        <Box background='light-2' pad='small'>{body}</Box>
+      <Box gap='small' pad='small'>
+        <Box gap='xsmall'>
+          <Text size='small' weight='bold'>Body</Text>
+          <Box direction='row' align='center' gap='small'>
+            <Box background='light-2' pad='small'>{body}</Box>
+          </Box>
+        </Box>
+        <Box gap='xsmall'>
+          <Text size='small' weight='bold'>Headers</Text>
+          <Box direction='row' align='center' gap='small'>
+            <Box background='light-2'>
+              <Table>
+                <TableBody>
+                {Object.entries(headers).map((entry) => (
+                  <TableRow>
+                    <TableCell>
+                      <Text size='small' weight='bold'>{entry[0]}:</Text>
+                    </TableCell>
+                    <TableCell ><Text size='small'>{entry[1]}</Text></TableCell>
+                  </TableRow>
+                ))}
+                </TableBody>
+            </Table>
+            </Box>
+          </Box>
+        </Box>
       </Box>
     </Box>
   )
 }
 
-function PingWebhook({id}) {
+function PingWebhook({id, url}) {
   const [open, setOpen] = useState(false)
   const [repo, setRepo] = useState(null)
   const [mutation, {data}] = useMutation(PING_WEBHOOK, {variables: {repo, id}})
   const pinged = data && data.pingWebhook
-
   return (
     <>
     <Refresh size='18px' onClick={() => setOpen(true)} />
@@ -59,7 +91,7 @@ function PingWebhook({id}) {
             <Box direction='row' justify='end'>
               <Button round='xsmall' label='Update' onClick={mutation} />
             </Box>
-            {pinged && (<WebhookResult {...pinged} />)}
+            {pinged && (<WebhookResult url={url} {...pinged} />)}
           </Box>
         </Box>
       </Layer>
@@ -79,17 +111,17 @@ function Webhook({webhook: {url, insertedAt, id, secret}, hasNext}) {
       background={hover ? 'light-2' : null}
       border={hasNext ? 'bottom' : null}
       direction='row' pad={{vertical: 'xsmall', horizontal: 'small'}}>
-      <Box width='100%' justify='center' gap='xxsmall'>
-        <Text size='small'>{url}</Text>
+      <Box width='100%' direction='row' align='center' gap='xsmall'>
+        <Anchor size='small' onClick={null}>{url}</Anchor>
         <Copyable
           noBorder
           pillText='Copied webhook secret'
           text={secret}
-          displayText={secret.substring(0, 9) + "x".repeat(15)} />
+          displayText={<Text size='small' color='dark-3'>({secret.substring(0, 9) + "x".repeat(15)})</Text>} />
       </Box>
       <Box width={CELL_WIDTH} pad='xsmall' direction='row' gap='medium' align='center' justify='end'>
         <Text size='small'>{moment(insertedAt).fromNow()}</Text>
-        <PingWebhook id={id} />
+        <PingWebhook id={id} url={url} />
       </Box>
     </Box>
   )
@@ -115,7 +147,7 @@ export default function Webhooks() {
         border='bottom'
         align='center'
         elevation='xsmall'
-        pad={{vertical: 'xsmall', horizontal: 'small'}}>
+        pad='small'>
         <Text size='small' style={{fontWeight: 500}}>Webhooks</Text>
       </Box>
       <Box>

@@ -81,6 +81,7 @@ export const PING_WEBHOOK = gql`
     pingWebhook(repo: $repo, id: $id) {
       statusCode
       body
+      headers
     }
   }
 `;

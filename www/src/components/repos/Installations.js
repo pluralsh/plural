@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import {Box, Text} from 'grommet'
 import {Trash} from 'grommet-icons'
 import {useQuery, useMutation} from 'react-apollo'
-import {INSTALLATIONS_Q, DELETE_INSTALLATION, REPO_Q} from './queries'
+import {INSTALLATIONS_Q, DELETE_INSTALLATION} from './queries'
 import {Repository} from './Repositories'
 import Scroller from '../utils/Scroller'
 

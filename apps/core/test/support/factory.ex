@@ -98,7 +98,7 @@ defmodule Core.Factory do
 
   def webhook_factory do
     %Schema.Webhook{
-      url: sequence(:webhook, &"url-#{&1}.com"),
+      url: sequence(:webhook, &"https://url-#{&1}.com"),
       secret: sequence(:webhook, &"secret-#{&1}"),
       user: build(:user)
     }

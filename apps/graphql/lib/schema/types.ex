@@ -212,6 +212,11 @@ defmodule GraphQl.Schema.Types do
     timestamps()
   end
 
+  object :webhook_response do
+    field :status_code, non_null(:integer)
+    field :body,        :string
+  end
+
   connection node_type: :user
   connection node_type: :publisher
   connection node_type: :repository

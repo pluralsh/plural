@@ -38,5 +38,4 @@ config :watchman,
   repo_root: "chartmart-installations",
   chartmart_config: "/Users/michaelguarino/.chartmart",
   webhook_secret: "webhook_secret",
-  git_ssh_key_source: Path.join([Path.dirname(path), "testdata", "dummy"]),
-  git_ssh_key_destination: Path.join([Path.dirname(path), "testdata", "artifacts"])
+  git_ssh_key: :pass

@@ -10,7 +10,7 @@ image:
   pullPolicy: Always
 
 imagePullSecrets:
-  - name: chartmartcreds
+- name: chartmartcreds
 nameOverride: ""
 fullnameOverride: ""
 

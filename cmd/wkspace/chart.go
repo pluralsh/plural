@@ -70,6 +70,11 @@ type dependency struct {
 func (wk *Workspace) BuildHelm() error {
 	repo := wk.Installation.Repository
 	helmPath := filepath.Join(repo.Name, "helm")
+
+	if err := wk.helmInit(true); err != nil {
+		return err
+	}
+
 	if _, err := wk.CreateChart(repo.Name, helmPath); err != nil {
 		return err
 	}
@@ -243,7 +248,7 @@ func (w *Workspace) CreateChart(name, dir string) (string, error) {
 func (w *Workspace) InstallHelm() error {
 	w.Provider.KubeConfig()
 
-	if err := utils.Cmd(w.Config, "helm", "init", "--wait", "--service-account=tiller"); err != nil {
+	if err := w.helmInit(false); err != nil {
 		return err
 	}
 
@@ -289,4 +294,17 @@ func buildDependency(repo *api.Repository, chartInstallation *api.ChartInstallat
 
 func repoUrl(repo *api.Repository) string {
 	return "cm://mart.piazzaapp.com/cm/" + repo.Name
+}
+
+func (w *Workspace) helmInit(clientOnly bool) error {
+	home, _ := os.UserHomeDir()
+	helmRepos := filepath.Join(home, ".helm", "repository", "repositories.yaml")
+	if !utils.Exists(helmRepos) && clientOnly {
+		return utils.Cmd(w.Config, "helm", "init", "--client-only")
+	}
+	if !clientOnly {
+		return utils.Cmd(w.Config, "helm", "init", "--wait", "--service-account=tiller")
+	}
+
+	return nil
 }

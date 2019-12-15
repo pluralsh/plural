@@ -13,6 +13,7 @@ import Copyable from '../utils/Copyable'
 import {BreadcrumbContext} from '../Chartmart'
 import Expander from '../utils/Expander'
 import Installations from '../repos/Installations'
+import Webhooks from './Webhooks'
 
 const LABEL_WIDTH = '60px'
 const CELL_WIDTH='200px'
@@ -118,7 +119,7 @@ function Tokens() {
             fetchMore({
               variables: {cursor: pageInfo.endCursor},
               updateQuery: (prev, {fetchMoreResult}) => {
-                const {edges, pageInfo} = fetchMoreResult.repositories
+                const {edges, pageInfo} = fetchMoreResult.tokens
                 return edges.length ? {
                   ...prev,
                   tokens: {
@@ -153,6 +154,7 @@ export default function EditUser() {
     <Box direction='row' gap='small' pad='medium'>
       <Box width='70%' gap='medium' pad='small'>
         <Installations edit />
+        <Webhooks />
         <Tokens />
       </Box>
       <Box width='30%' elevation='small'>

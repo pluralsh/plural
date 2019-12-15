@@ -6,6 +6,7 @@ secrets:
   repo_root: {{ repoName }}
   config: {{ readFile (homeDir ".chartmart" "config.yml") | quote }}
   key: {{ readFile (homeDir ".chartmart" "key") | quote }}
+  known_hosts: {{ knownHosts | quote }}
   erlang: {{ randAlphaNum 14 }}
 {{ if and (hasKey . "watchman") (hasKey .watchman "secrets") }}
   webhook_secret: {{ .Current.watchman.secrets.webhook_secret }}

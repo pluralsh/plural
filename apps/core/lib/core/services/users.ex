@@ -30,6 +30,8 @@ defmodule Core.Services.Users do
     |> Core.Repo.preload([:user])
   end
 
+  def get_webhook!(id), do: Core.Repo.get!(Webhook, id)
+
   def login_user(email, password) do
     get_user_by_email!(email)
     |> Argon2.check_pass(password)
@@ -80,5 +82,25 @@ defmodule Core.Services.Users do
       %Webhook{} = webhook -> {:ok, webhook}
       nil -> %Webhook{user_id: user_id} |> Webhook.changeset(%{url: url}) |> Core.Repo.insert()
     end
+  end
+
+  def post_webhook(repo, %Webhook{url: url, secret: secret}) do
+    payload   = Jason.encode!(%{repo: repo})
+    signature = hmac(secret, payload)
+    headers   = [
+      {"content-type", "application/json"},
+      {"accept", "application/json"},
+      {"x-watchman-signature", "sha1=#{signature}"}
+    ]
+    Mojito.post(sanitize(url), headers, payload)
+  end
+
+  defp sanitize("https://" <> _ = url), do: url
+  defp sanitize("http://" <> rest), do: "https://#{rest}"
+  defp sanitize(url), do: "https://" <> url
+
+  def hmac(secret, payload) when is_binary(payload) do
+    :crypto.hmac(:sha, secret, payload)
+    |> Base.encode16(case: :lower)
   end
 end

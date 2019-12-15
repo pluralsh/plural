@@ -1,5 +1,5 @@
 import gql from 'graphql-tag'
-import {UserFragment, TokenFragment} from '../../models/user'
+import {UserFragment, TokenFragment, WebhookFragment} from '../../models/user'
 
 export const ME_Q = gql`
   query {
@@ -57,4 +57,30 @@ export const DELETE_TOKEN = gql`
     }
   }
   ${TokenFragment}
+`;
+
+export const WEBHOOKS_Q = gql`
+  query Webhooks($cursor: String) {
+    webhooks(first: 10, after: $cursor) {
+      edges {
+        node {
+          ...WebhookFragment
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+  ${WebhookFragment}
+`;
+
+export const PING_WEBHOOK = gql`
+  mutation PingWebhook($repo: String!, $id: ID!) {
+    pingWebhook(repo: $repo, id: $id) {
+      statusCode
+      body
+    }
+  }
 `;

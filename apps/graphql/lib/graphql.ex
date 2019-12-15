@@ -211,6 +211,14 @@ defmodule GraphQl do
       resolve safe_resolver(&User.create_webhook/2)
     end
 
+    field :ping_webhook, :webhook_response do
+      middleware GraphQl.Middleware.Authenticated
+      arg :id,   non_null(:id)
+      arg :repo, non_null(:string)
+
+      resolve safe_resolver(&User.ping_webhook/2)
+    end
+
     field :update_publisher, :publisher do
       middleware GraphQl.Middleware.Authenticated
       arg :attributes, non_null(:publisher_attributes)

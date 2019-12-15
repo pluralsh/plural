@@ -15,6 +15,7 @@ defmodule Core.Schema.User do
 
     has_one :publisher, Core.Schema.Publisher,
       foreign_key: :owner_id
+    has_many :webhooks, Core.Schema.Webhook
 
     timestamps()
   end

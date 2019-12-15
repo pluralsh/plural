@@ -1,7 +1,8 @@
 defmodule GraphQl.UserMutationTest do
-  use Core.SchemaCase, async: true
+  use Core.SchemaCase
   import GraphQl.TestHelpers
   alias Core.Services.Users
+  import Mock
 
   describe "login" do
     test "A user can log in with a password" do
@@ -176,6 +177,28 @@ defmodule GraphQl.UserMutationTest do
       """, %{"url" => "https://example.com"}, %{current_user: user})
 
       assert created["url"] == "https://example.com"
+    end
+  end
+
+  describe "pingWebhook" do
+    test "It will send a POST to the given webhook" do
+      user = insert(:user)
+      webhook = insert(:webhook, user: user)
+
+      with_mock Mojito, [
+        post: fn _, _, payload -> {:ok, %Mojito.Response{status_code: 200, body: payload}} end
+      ] do
+        {:ok, %{data: %{"pingWebhook" => response}}} = run_query("""
+          mutation pingWebhook($repo: String!, $id: ID!) {
+            pingWebhook(repo: $repo, id: $id) {
+              statusCode
+              body
+            }
+          }
+        """, %{"repo" => "repo", "id" => webhook.id}, %{current_user: user})
+        assert response["body"] == Jason.encode!(%{repo: "repo"})
+        assert response["statusCode"] == 200
+      end
     end
   end
 end

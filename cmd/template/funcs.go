@@ -31,7 +31,7 @@ func repoUrl() (string, error) {
 
 func createWebhook(domain string) (api.Webhook, error) {
 	client := api.NewClient()
-	return client.CreateWebhook(path.Join(domain, "v1", "webhook"))
+	return client.CreateWebhook(path.Join("https://" + domain, "v1", "webhook"))
 }
 
 func dumpConfig() (string, error) {
@@ -66,4 +66,13 @@ func readLineDefault(prompt string, def string) (string, error) {
 func homeDir(parts... string) (string, error) {
 	home, err := os.UserHomeDir()
 	return path.Join(home, path.Join(parts...)), err
+}
+
+func knownHosts() (string, error) {
+	known_hosts, err := homeDir(".ssh", "known_hosts")
+	if err != nil {
+		return "", err
+	}
+
+	return utils.ReadFile(known_hosts)
 }

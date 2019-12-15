@@ -58,6 +58,12 @@ defmodule Core.Schema.ChartInstallation do
     )
   end
 
+  def ordered(query \\ __MODULE__, order \\ [asc: :id]),
+    do: from(cv in query, order_by: ^order)
+
+  def preload(query \\ __MODULE__, preloads),
+    do: from(cv in query, preload: ^preloads)
+
   @valid ~w(installation_id chart_id version_id)a
 
   def changeset(model, attrs \\ %{}) do

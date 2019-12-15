@@ -3,7 +3,7 @@ defmodule Core.Schema.Webhook do
   alias Core.Schema.User
 
   schema "webhooks" do
-    field :url,    :string
+    field :url,    Piazza.Ecto.Types.URI
     field :secret, :string
 
     belongs_to :user, User

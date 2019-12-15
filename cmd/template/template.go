@@ -20,6 +20,7 @@ func MakeTemplate(tmplate string) (*template.Template, error) {
 	funcs["readLineDefault"] = readLineDefault
 	funcs["readFile"] 		   = utils.ReadFile
 	funcs["homeDir"]				 = homeDir
+	funcs["knownHosts"]      = knownHosts
 	return template.New("gotpl").Funcs(funcs).Parse(tmplate)
 }
 

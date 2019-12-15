@@ -83,6 +83,7 @@ spec:
       volumes:
       - name: watchman-ssh
         secret:
+          defaultMode: 384
           secretName: watchman-ssh
       - name: watchman-conf
         secret:

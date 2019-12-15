@@ -13,7 +13,8 @@ config :core, Core.Repo,
   database: "chartmart",
   username: "chartmart",
   password: get_env("POSTGRES_PASSWORD"),
-  hostname: "chartmart-postgresql"
+  hostname: "chartmart-postgresql",
+  pool_size: 10
 
 config :core, :jwt,
   pk: get_env("JWT_PRIVATE_KEY"),

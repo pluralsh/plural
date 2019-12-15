@@ -133,7 +133,10 @@ ENV REPLACE_OS_VARS=true \
 
 WORKDIR /opt/app
 
+RUN helm init --client-only && \
+    helm plugin install https://github.com/chartmuseum/helm-push
 RUN mkdir -p /root/.ssh
+RUN chmod 0700 /root/.ssh
 RUN mkdir -p /root/.chartmart
 RUN mkdir -p /root/.creds
 
@@ -144,4 +147,4 @@ RUN ssh-keyscan github.com >> /root/.ssh/known_hosts
 
 COPY --from=builder /opt/built .
 
-CMD trap 'exit' INT; /opt/app/bin/${APP_NAME} foreground
+CMD trap 'exit' INT; eval $(ssh-agent -s); /opt/app/bin/${APP_NAME} foreground

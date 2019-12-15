@@ -53,6 +53,11 @@ defmodule GraphQl.Resolvers.User do
     |> with_jwt()
   end
 
+  def ping_webhook(%{repo: repo, id: webhook_id}, _) do
+    webhook = Users.get_webhook!(webhook_id)
+    Core.Services.Users.post_webhook(repo, webhook)
+  end
+
   def update_user(%{attributes: attrs}, %{context: %{current_user: user}}),
     do: Users.update_user(attrs, user)
 

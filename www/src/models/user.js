@@ -29,3 +29,12 @@ export const PublisherFragment = gql`
   }
   ${UserFragment}
 `;
+
+export const WebhookFragment = gql`
+  fragment WebhookFragment on Webhook {
+    id
+    url
+    secret
+    insertedAt
+  }
+`;

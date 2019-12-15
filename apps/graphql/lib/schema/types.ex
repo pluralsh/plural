@@ -215,6 +215,7 @@ defmodule GraphQl.Schema.Types do
   object :webhook_response do
     field :status_code, non_null(:integer)
     field :body,        :string
+    field :headers,     :map
   end
 
   connection node_type: :user

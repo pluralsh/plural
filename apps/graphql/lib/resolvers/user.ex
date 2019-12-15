@@ -55,7 +55,14 @@ defmodule GraphQl.Resolvers.User do
 
   def ping_webhook(%{repo: repo, id: webhook_id}, _) do
     webhook = Users.get_webhook!(webhook_id)
-    Core.Services.Users.post_webhook(repo, webhook)
+    case Core.Services.Users.post_webhook(repo, webhook) do
+      {:ok, %{body: body, status_code: code, headers: headers}} when is_list(headers) ->
+        headers = Enum.into(headers, %{}, fn {k, headers} ->
+          {k, Enum.join(headers, ", ")}
+        end)
+        {:ok, %{body: body, status_code: code, headers: headers}}
+      error -> error
+    end
   end
 
   def update_user(%{attributes: attrs}, %{context: %{current_user: user}}),

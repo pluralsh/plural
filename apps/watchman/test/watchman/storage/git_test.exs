@@ -15,23 +15,23 @@ defmodule Watchman.Storage.GitTest do
 
     test "It will properly initialize a workspace" do
       myself = self()
-      with_mock Command, [
-        cmd: fn "git", ["clone" | _] ->
-          send myself, :git_clone
-          :ok
-        end
-      ] do
-        with_mock Chartmart, [
-          unlock: fn ->
-            send myself, :unlock
-            :ok
-          end
-        ] do
-          :ok = Git.init()
+      git_fn = fn "git", args, _ ->
+        send myself, {:git, args}
+        :ok
+      end
 
-          assert_receive :git_clone
-          assert_receive :unlock
-        end
+      with_mocks [
+        {Command, [], [cmd: git_fn, cmd: fn "git", args -> git_fn.("git", args, "path") end]},
+        {Chartmart, [], [unlock: fn ->
+          send myself, :unlock
+          :ok
+        end]}] do
+        :ok = Git.init()
+
+        assert_receive {:git, ["clone" | _]}
+        assert_receive {:git, ["config", "user.name" | _]}
+        assert_receive {:git, ["config", "user.email" | _]}
+        assert_receive :unlock
       end
     end
   end

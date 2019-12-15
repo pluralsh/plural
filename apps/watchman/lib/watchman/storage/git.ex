@@ -6,6 +6,8 @@ defmodule Watchman.Storage.Git do
   def init() do
     unless File.exists?(workspace()) do
       with :ok <- cmd("git", ["clone", conf(:git_url)]),
+           :ok <- git("config", ["user.name", conf(:git_user_name)]),
+           :ok <- git("config", ["user.email", conf(:git_user_email)]),
         do: Chartmart.unlock()
     else
       pull()
@@ -13,12 +15,12 @@ defmodule Watchman.Storage.Git do
   end
 
   def push(retry \\ 0) do
-    case {git("push", ["origin/master"]), retry} do
+    case {git("push", []), retry} do
       {:ok, _} -> :ok
       {_, retries} when retries >= 3 -> {:error, :exhausted_retries}
       {_, retry} ->
-        :ok = git("pull", "--rebase")
-        push(retry + 1)
+        with :ok <- git("pull", "--rebase"),
+          do: push(retry + 1)
     end
   end
 

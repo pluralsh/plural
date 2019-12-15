@@ -9,12 +9,14 @@ import (
 	"google.golang.org/api/option"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 type GCPProvider struct {
 	cluster       string
 	project       string
 	bucket        string
+	region        string
 	storageClient *storage.Client
 	ctx           context.Context
 }
@@ -39,6 +41,7 @@ func mkGCP() (*GCPProvider, error) {
 		cluster,
 		project,
 		bucket,
+		getRegion(),
 		client,
 		ctx,
 	}
@@ -47,6 +50,7 @@ func mkGCP() (*GCPProvider, error) {
 		Project: project,
 		Bucket: bucket,
 		Provider: GCP,
+		Region: provider.Region(),
 	}
 	path := manifest.ProjectManifestPath()
 	projectManifest.Write(path)
@@ -67,13 +71,17 @@ func gcpFromManifest(man *manifest.Manifest) (*GCPProvider, error) {
 		return nil, err
 	}
 
-	return &GCPProvider{man.Cluster, man.Project, man.Bucket, client, ctx}, nil
+	return &GCPProvider{man.Cluster, man.Project, man.Bucket, man.Region, client, ctx}, nil
 }
 
 func (gcp *GCPProvider) KubeConfig() error {
+	if (utils.InKubernetes()) {
+		return nil
+	}
+
 	// move tf supported env var to gcloud's
 	os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", os.Getenv("GOOGLE_CREDENTIALS"))
-	cmd := exec.Command("gcloud", "container", "clusters", "get-credentials", gcp.cluster)
+	cmd := exec.Command("gcloud", "container", "clusters", "get-credentials", gcp.cluster, "--region", gcp.region)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
@@ -94,6 +102,15 @@ func (gcp *GCPProvider) mkBucket(name string) error {
 	return nil
 }
 
+func getRegion() string {
+	cmd := exec.Command("gcloud", "config", "get-value", "compute/zone")
+	res, err := cmd.CombinedOutput()
+	if err != nil {
+		return "us-east1-b"
+	}
+	return strings.Split(string(res), "\n")[1]
+}
+
 func (gcp *GCPProvider) Name() string {
 	return GCP
 }
@@ -108,4 +125,8 @@ func (gcp *GCPProvider) Project() string {
 
 func (gcp *GCPProvider) Bucket() string {
 	return gcp.bucket
+}
+
+func (gcp * GCPProvider) Region() string {
+	return gcp.region
 }

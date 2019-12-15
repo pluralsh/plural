@@ -12,6 +12,7 @@ type Provider interface {
 	Name() string
 	Cluster() string
 	Project() string
+	Region() string
 	Bucket() string
 	KubeConfig() error
 	CreateBackend(prefix string) (string, error)

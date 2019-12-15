@@ -15,14 +15,18 @@ const LABEL_WIDTH = '60px'
 const CELL_WIDTH='200px'
 
 function WebhookResult({statusCode, body}) {
+  const status = statusCode >= 200 && statusCode < 300 ? 'status-ok' : 'status-error'
   return (
-    <Box gap='small'>
-      <Box direction='row' gap='small'>
+    <Box gap='small' border='top' pad={{top: 'small'}}>
+      <Box direction='row' gap='small' align='center'>
         <Text weight='bold' size='small'>Status Code: </Text>
-        <Text size='small'>{statusCode}</Text>
+        <Box background={status} round='xsmall' pad={{vertical: 'xxsmall', horizontal: 'xsmall'}}>
+          <Text size='small' >{statusCode}</Text>
+        </Box>
       </Box>
-      <Box background='light-2'>
-        {body}
+      <Box direction='row' align='center' gap='small'>
+        <Text size='small' weight='bold'>Body</Text>
+        <Box background='light-2' pad='small'>{body}</Box>
       </Box>
     </Box>
   )
@@ -32,6 +36,8 @@ function PingWebhook({id}) {
   const [open, setOpen] = useState(false)
   const [repo, setRepo] = useState(null)
   const [mutation, {data}] = useMutation(PING_WEBHOOK, {variables: {repo, id}})
+  const pinged = data && data.pingWebhook
+
   return (
     <>
     <Refresh size='18px' onClick={() => setOpen(true)} />
@@ -53,7 +59,7 @@ function PingWebhook({id}) {
             <Box direction='row' justify='end'>
               <Button round='xsmall' label='Update' onClick={mutation} />
             </Box>
-            {data && (<WebhookResult {...data.pingWebhook} />)}
+            {pinged && (<WebhookResult {...pinged} />)}
           </Box>
         </Box>
       </Layer>

@@ -13,46 +13,33 @@ defmodule Watchman.DeployerTest do
 
     test "It will properly deploy a repo" do
       myself = self()
-      with_mock Chartmart, [
-        build: fn repo ->
-          send myself, {:build, repo}
-          :ok
-        end,
-        deploy: fn repo ->
-          send myself, {:deploy, repo}
-          :ok
-        end
+      echo = fn msg ->
+        send myself, msg
+        :ok
+      end
+
+      with_mocks [
+        {Chartmart, [], [
+          build: fn repo -> echo.({:build, repo}) end,
+          deploy: fn repo -> echo.({:deploy, repo}) end
+        ]},
+        {Git, [], [
+          init: fn -> echo.(:git_init) end,
+          revise: fn msg -> echo.({:commit, msg}) end,
+          push: fn -> echo.(:git_push) end,
+          pull: fn -> echo.(:git_pull) end]}
       ] do
-        with_mock Git, [
-          init: fn ->
-            send(myself, :git_init)
-            :ok
-          end,
-          revise: fn msg ->
-            send(myself, {:commit, msg})
-            :ok
-          end,
-          push: fn ->
-            send(myself, :git_push)
-            :ok
-          end,
-          pull: fn ->
-            send(myself, :git_pull)
-            :ok
-          end
-        ] do
-          repo = "chartmart"
-          :ok = Watchman.Deployer.deploy(repo)
+        repo = "chartmart"
+        :ok = Watchman.Deployer.deploy(repo)
 
-          assert_receive :git_init
-          assert_receive {:build, repo}
-          assert_receive {:deploy, repo}
-          assert_receive :git_push
+        assert_receive :git_init
+        assert_receive {:build, repo}
+        assert_receive {:deploy, repo}
+        assert_receive :git_push
 
-          assert_receive {:commit, msg}
+        assert_receive {:commit, msg}
 
-          assert msg =~ repo
-        end
+        assert msg =~ repo
       end
     end
   end

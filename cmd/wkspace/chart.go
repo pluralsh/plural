@@ -256,6 +256,7 @@ func (w *Workspace) InstallHelm() error {
 		return err
 	}
 
+	utils.Warn("Applying helm chart")
 	return w.Bounce()
 }
 
@@ -302,7 +303,7 @@ func (w *Workspace) helmInit(clientOnly bool) error {
 	if !utils.Exists(helmRepos) && clientOnly {
 		return utils.Cmd(w.Config, "helm", "init", "--client-only")
 	}
-	if !clientOnly {
+	if !clientOnly && !utils.InKubernetes() {
 		return utils.Cmd(w.Config, "helm", "init", "--wait", "--service-account=tiller")
 	}
 

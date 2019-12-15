@@ -22,6 +22,10 @@ config :watchman, WatchmanWeb.Endpoint,
   pubsub: [name: Watchman.PubSub, adapter: Phoenix.PubSub.PG2],
   server: true
 
+config :watchman,
+  git_user_name: "chartmart",
+  git_user_email: "chartmart@piazzaapp.com"
+
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]

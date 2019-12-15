@@ -1,5 +1,5 @@
 import Config
-import System, only: [get_env: 1]
+import System, only: [get_env: 1, get_env: 2]
 
 config :watchman, WatchmanWeb.Endpoint,
   url: [host: get_env("HOST"), port: 80],
@@ -11,4 +11,6 @@ config :watchman,
   repo_root: get_env("REPO_ROOT"),
   chartmart_config: "/ect/chartmart/.chartmart",
   webhook_secret: get_env("WEBHOOK_SECRET"),
-  git_ssh_key: {:home, ".ssh/id_rsa"}
+  git_ssh_key: {:home, ".ssh/id_rsa"},
+  git_user_name: get_env("GIT_USER", "chartmart"),
+  git_user_email: get_env("GIT_EMAIL", "chartmart@piazzaapp.com")

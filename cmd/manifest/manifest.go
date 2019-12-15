@@ -29,6 +29,7 @@ type Manifest struct {
 	Project   string
 	Bucket    string
 	Provider  string
+	Region    string
 	License   string
 	Charts    []ChartManifest
 	Terraform []TerraformManifest
@@ -40,6 +41,7 @@ type ProjectManifest struct {
 	Bucket string
 	Project string
 	Provider string
+	Region string
 }
 
 func ProjectManifestPath() string {

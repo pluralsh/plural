@@ -1,6 +1,7 @@
 defmodule Watchman.Deployer do
   use GenServer
   alias Watchman.Chartmart
+  require Logger
 
   defmodule State, do: defstruct [:storage]
 
@@ -17,8 +18,11 @@ defmodule Watchman.Deployer do
   def deploy_sync(repo), do: GenServer.call(__MODULE__, {:deploy, repo}, :infinity)
 
   def handle_cast({:deploy, repo}, %State{storage: storage} = state) do
-    with :ok <- perform(storage, repo),
-      do: {:noreply, state}
+    case perform(storage, repo) do
+      :ok -> :ok
+      {:error, _} = error -> Logger.error "Failed to deploy: #{inspect(error)}"
+    end
+    {:noreply, state}
   end
 
   def handle_call({:deploy, repo}, _, %State{storage: storage} = state),

@@ -33,8 +33,6 @@ spec:
           env:
           - name: HOST
             value: {{ .Values.ingress.watchman_dns }}
-          - name: DEPLOYED_AT
-            value: {{ .Release.Time }}
           - name: NAMESPACE
             valueFrom:
               fieldRef:

@@ -5,6 +5,7 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
+	"crypto/sha256"
 	"encoding/base64"
 	"errors"
 	"io"
@@ -89,12 +90,10 @@ func (k *AESKey) Encrypt(text []byte) ([]byte, error) {
 		return nil, err
 	}
 
-	nonce := make([]byte, gcm.NonceSize())
-	_, err = io.ReadFull(rand.Reader, nonce)
-	if err != nil {
-		return nil, err
-	}
-
+	// use the hash of the input text to stabilize encryption, but still
+	// don't leak any info (except file changes)
+	hash := sha256.Sum256(text)
+	nonce := hash[:gcm.NonceSize()]
 	return gcm.Seal(nonce, nonce, text, nil), nil
 }
 

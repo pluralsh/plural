@@ -13,7 +13,7 @@ func pushCommands() []cli.Command {
 		{
 			Name:   "terraform",
 			Usage:  "pushes a terraform module",
-			ArgsUsage: "REPO path/to/module",
+			ArgsUsage: "path/to/module REPO",
 			Action: handleTerraformUpload,
 		},
 		{
@@ -27,7 +27,7 @@ func pushCommands() []cli.Command {
 
 func handleTerraformUpload(c *cli.Context) error {
 	client := api.NewUploadClient()
-	_, err := client.UploadTerraform(c.Args().Get(1), c.Args().Get(0))
+	_, err := client.UploadTerraform(c.Args().Get(0), c.Args().Get(1))
 	return err
 }
 

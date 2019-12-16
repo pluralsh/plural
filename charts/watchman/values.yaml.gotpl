@@ -19,3 +19,13 @@ secrets:
   id_rsa: {{ readFile $id_rsa | quote }}
   id_rsa_pub: {{ readFile (printf "%s.pub" $id_rsa) | quote }}
 {{ end }}
+{{ if hasKey .Values "git_user" }}
+  git_user: {{ .Values.git_user }}
+{{ else }}
+  git_user: chartmart
+{{ end}}
+{{ if hasKey .Values "git_email" }}
+  git_email: {{ .Values.git_email }}
+{{ else }}
+  git_email: chartmart@piazzaapp.com
+{{ end}}

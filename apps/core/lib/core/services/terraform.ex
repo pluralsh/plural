@@ -9,6 +9,9 @@ defmodule Core.Services.Terraform do
   def get_terraform_by_name(repo_id, name),
     do: Core.Repo.get_by(Terraform, repository_id: repo_id, name: name)
 
+  def get_terraform_by_name!(repo_id, name),
+    do: Core.Repo.get_by!(Terraform, repository_id: repo_id, name: name)
+
   def get_terraform_installation(terraform_id, user_id) do
     TerraformInstallation.for_terraform(terraform_id)
     |> TerraformInstallation.for_user(user_id)

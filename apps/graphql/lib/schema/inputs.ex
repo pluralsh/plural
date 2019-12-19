@@ -48,4 +48,39 @@ defmodule GraphQl.Schema.Inputs do
   input_object :webhook_attributes do
     field :url, non_null(:string)
   end
+
+  input_object :recipe_attributes do
+    field :name,        non_null(:string)
+    field :description, :string
+    field :sections,    list_of(:recipe_section_attributes)
+  end
+
+  input_object :recipe_section_attributes do
+    field :name,  non_null(:string)
+    field :items, list_of(:recipe_item_attributes)
+  end
+
+  input_object :recipe_item_attributes do
+    field :name,          non_null(:string)
+    field :type,          non_null(:recipe_item_type_input)
+    field :configuration, list_of(:recipe_configuration_attributes)
+  end
+
+
+  input_object :recipe_configuration_attributes do
+    field :type,    non_null(:recipe_configuration_type_input)
+    field :name,    non_null(:string)
+    field :default, :string
+  end
+
+  enum :recipe_item_type_input do
+    value :helm
+    value :terraform
+  end
+
+  enum :recipe_configuration_type_input do
+    value :int
+    value :bool
+    value :string
+  end
 end

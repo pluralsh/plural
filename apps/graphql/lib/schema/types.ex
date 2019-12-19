@@ -5,7 +5,8 @@ defmodule GraphQl.Schema.Types do
     Repository,
     Chart,
     Terraform,
-    Docker
+    Docker,
+    Recipe
   }
 
   object :user do
@@ -218,6 +219,47 @@ defmodule GraphQl.Schema.Types do
     field :headers,     :map
   end
 
+  object :recipe do
+    field :id,              :id
+    field :name,            non_null(:string)
+    field :description,     :string
+    field :repository,      :repository, resolve: dataloader(Repository)
+    field :recipe_sections, list_of(:recipe_section), resolve: dataloader(Recipe)
+
+    timestamps()
+  end
+
+  object :recipe_section do
+    field :id,           :id
+    field :repository,   :repository, resolve: dataloader(Repository)
+    field :recipe,       :recipe, resolve: dataloader(Recipe)
+    field :recipe_items, list_of(:recipe_item), resolve: dataloader(Recipe)
+
+    timestamps()
+  end
+
+  object :recipe_item do
+    field :id,             :id
+    field :chart,          :chart, resolve: dataloader(Chart)
+    field :terraform,      :terraform, resolve: dataloader(Terraform)
+    field :recipe_section, :recipe_section, resolve: dataloader(Recipe)
+    field :configuration,  list_of(:recipe_configuration)
+
+    timestamps()
+  end
+
+  enum :configuration_type do
+    value :int
+    value :bool
+    value :string
+  end
+
+  object :recipe_configuration do
+    field :type,    :configuration_type
+    field :name,    :string
+    field :default, :string
+  end
+
   connection node_type: :user
   connection node_type: :publisher
   connection node_type: :repository
@@ -231,4 +273,5 @@ defmodule GraphQl.Schema.Types do
   connection node_type: :docker_repository
   connection node_type: :docker_image
   connection node_type: :webhook
+  connection node_type: :recipe
 end

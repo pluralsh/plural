@@ -16,6 +16,9 @@ defmodule Core.Services.Charts do
 
   def get_chart!(chart_id), do: Core.Repo.get!(Chart, chart_id)
 
+  def get_chart_by_name!(repo_id, name),
+    do: Core.Repo.get_by!(Chart, repository_id: repo_id, name: name)
+
   def get_chart_version(chart_id, version),
     do: Core.Repo.get_by(Version, chart_id: chart_id, version: version)
 
@@ -171,12 +174,9 @@ defmodule Core.Services.Charts do
     end
   end
 
-  def authorize(chart_id, %User{} = user) when is_binary(chart_id) do
-    get_chart!(chart_id)
-    |> authorize(user)
-  end
-  def authorize(%Chart{} = chart, user),
-    do: allow(chart, user, :access)
+  def authorize(chart_id, %User{} = user) when is_binary(chart_id),
+    do: get_chart!(chart_id) |> authorize(user)
+  def authorize(%Chart{} = chart, user), do: allow(chart, user, :access)
 
   defp update_latest_version(%Chart{} = chart, v) do
     Chart.changeset(chart, %{latest_version: v})

@@ -103,4 +103,25 @@ defmodule Core.Factory do
       user: build(:user)
     }
   end
+
+  def recipe_factory do
+    %Schema.Recipe{
+      name: sequence(:recipe, &"recipe-#{&1}"),
+      repository: build(:repository)
+    }
+  end
+
+  def recipe_section_factory do
+    %Schema.RecipeSection{
+      recipe: build(:recipe),
+      repository: build(:repository),
+      index: 0
+    }
+  end
+
+  def recipe_item_factory do
+    %Schema.RecipeItem{
+      recipe_section: build(:recipe_section)
+    }
+  end
 end

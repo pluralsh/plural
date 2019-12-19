@@ -12,7 +12,8 @@ defmodule GraphQl do
     Repository,
     Terraform,
     Docker,
-    Dependencies
+    Dependencies,
+    Recipe
   }
 
   def context(ctx) do
@@ -23,6 +24,7 @@ defmodule GraphQl do
       |> Dataloader.add_source(Repository, Repository.data(ctx))
       |> Dataloader.add_source(Terraform, Terraform.data(ctx))
       |> Dataloader.add_source(Docker, Docker.data(ctx))
+      |> Dataloader.add_source(Recipe, Recipe.data(ctx))
 
     Map.put(ctx, :loader, loader)
   end
@@ -106,6 +108,20 @@ defmodule GraphQl do
       middleware GraphQl.Middleware.Authenticated
 
       resolve &Repository.list_installations/2
+    end
+
+    field :recipe, :recipe do
+      middleware GraphQl.Middleware.Authenticated
+      arg :id, non_null(:id)
+
+      resolve &Recipe.resolve_recipe/2
+    end
+
+    connection field :recipes, node_type: :recipe do
+      middleware GraphQl.Middleware.Authenticated
+      arg :repository_id, non_null(:id)
+
+      resolve &Recipe.list_recipes/2
     end
 
     connection field :charts, node_type: :chart do
@@ -268,6 +284,22 @@ defmodule GraphQl do
       arg :id, non_null(:id)
 
       resolve safe_resolver(&Repository.delete_installation/2)
+    end
+
+    field :create_recipe, :recipe do
+      middleware GraphQl.Middleware.Authenticated
+      arg :repository_id, non_null(:id)
+      arg :attributes, non_null(:recipe_attributes)
+
+      resolve safe_resolver(&Recipe.create_recipe/2)
+    end
+
+    field :install_recipe, list_of(:installation) do
+      middleware GraphQl.Middleware.Authenticated
+      arg :recipe_id, non_null(:id)
+      arg :context, non_null(:map)
+
+      resolve safe_resolver(&Recipe.install_recipe/2)
     end
 
     field :create_terraform, :terraform do

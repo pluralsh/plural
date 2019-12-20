@@ -6,6 +6,7 @@ import (
 
 type RecipeInput struct {
 	Name string
+	Description string
 	Sections []RecipeSectionInput
 }
 
@@ -28,7 +29,7 @@ type ConfigurationItemInput struct {
 
 const createRecipe = `
 	mutation CreateRecipe($name: String!, $attributes: RecipeAttributes!) {
-		createRecipe(name: $name, attributes: $attributes) {
+		createRecipe(repositoryName: $name, attributes: $attributes) {
 			id
 		}
 	}

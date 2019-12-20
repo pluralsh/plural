@@ -6,6 +6,8 @@ import (
 	"github.com/michaeljguarino/chartmart/config"
 	"github.com/michaeljguarino/chartmart/utils"
 	"github.com/urfave/cli"
+	"io/ioutil"
+	"path/filepath"
 )
 
 func pushCommands() []cli.Command {
@@ -21,6 +23,12 @@ func pushCommands() []cli.Command {
 			Usage:  "pushes a helm chart",
 			ArgsUsage: "path/to/chart REPO",
 			Action: handleHelmUpload,
+		},
+		{
+			Name:   "recipe",
+			Usage:  "pushes a recipe",
+			ArgsUsage: "path/to/recipe.yaml REPO",
+			Action: handleRecipeUpload,
 		},
 	}
 }
@@ -40,4 +48,21 @@ func handleHelmUpload(c *cli.Context) error {
 		return err
 	}
 	return utils.Cmd(&conf, "helm", "push", "--context-path=/cm", pth, repo)
+}
+
+func handleRecipeUpload(c *cli.Context) error {
+	client := api.NewClient()
+	fullPath, _ := filepath.Abs(c.Args().Get(0))
+	contents, err := ioutil.ReadFile(fullPath)
+	if err != nil {
+		return err
+	}
+
+	recipeInput, err := api.ConstructRecipe(contents)
+	if err != nil {
+		return err
+	}
+
+	_, err = client.CreateRecipe(c.Args().Get(1), recipeInput)
+	return err
 }

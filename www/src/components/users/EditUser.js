@@ -4,7 +4,7 @@ import {Trash} from 'grommet-icons'
 import {useMutation, useQuery} from 'react-apollo'
 import {UPDATE_USER, CREATE_TOKEN, TOKENS_Q, DELETE_TOKEN} from './queries'
 import InputField from '../utils/InputField'
-import Button, {SecondaryButton} from '../utils/Button'
+import Button from '../utils/Button'
 import {CurrentUserContext} from '../login/CurrentUser'
 import Avatar from '../users/Avatar'
 import Scroller from '../utils/Scroller'
@@ -94,7 +94,7 @@ function Tokens() {
           <Text size='small' style={{fontWeight: 500}}>Access Tokens</Text>
         </Box>
         <Box width={CELL_WIDTH}>
-          <SecondaryButton
+          <Button
             pad={{horizontal: 'medium', vertical: 'xsmall'}}
             label='Create'
             onClick={mutation}

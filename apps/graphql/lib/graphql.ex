@@ -288,8 +288,9 @@ defmodule GraphQl do
 
     field :create_recipe, :recipe do
       middleware GraphQl.Middleware.Authenticated
-      arg :repository_id, non_null(:id)
-      arg :attributes, non_null(:recipe_attributes)
+      arg :repository_name, :string
+      arg :repository_id,   :string
+      arg :attributes,      non_null(:recipe_attributes)
 
       resolve safe_resolver(&Recipe.create_recipe/2)
     end

@@ -55,7 +55,7 @@ function Button({pad, disabled, onClick, label, loading, textSize, error, ...res
     <>
     {error && <ErrorPill error={error} />}
     <Box
-      onClick={() => !disabled && onClick()}
+      onClick={() => !disabled && onClick && onClick()}
       style={!disabled ? {cursor: 'pointer'} : null}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}

@@ -1,0 +1,32 @@
+name: gcp-kubernetes
+description: Constructs a gke cluster and installs the bootstrap chart
+sections:
+- name: chartmart
+  items:
+  - type: TERRAFORM
+    name: gcp-bootstrap
+    configuration:
+    - name: gcp_project_id
+      type: STRING
+    - name: dns_zone_name
+      type: STRING
+  - type: TERRAFORM
+    name: kube
+    configuration:
+    - name: chartmuseum_bucket
+      type: STRING
+    - name: assets_bucket
+      type: STRING
+    - name: images_bucket
+      type: STRING
+  - type: HELM
+    name: bootstrap
+    configuration:
+    - name: provider
+      type: STRING
+      default: google
+    - name: txt_owner
+      type: STRING
+      default: chartmart
+    - name: dns_domain
+      type: STRING

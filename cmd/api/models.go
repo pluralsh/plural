@@ -121,6 +121,31 @@ type Webhook struct {
 	Secret string
 }
 
+type Recipe struct {
+	Id string
+	Name string
+	RecipeSections []RecipeSection
+}
+
+type RecipeSection struct {
+	Id string
+	Repository Repository
+	RecipeItems []RecipeItem
+}
+
+type RecipeItem struct {
+	Id string
+	Terraform Terraform
+	Chart Chart
+	Configuration []ConfigurationItem
+}
+
+type ConfigurationItem struct {
+	Name string
+	Default string
+	Type string
+}
+
 const RepositoryFragment = `
 	fragment RepositoryFragment on Repository {
 		id

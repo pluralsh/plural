@@ -32,8 +32,8 @@ defmodule GraphQl.RecipeMutationsTest do
       } |> Jason.encode!() |> Jason.decode!()
 
       {:ok, %{data: %{"createRecipe" => created}}} = run_query("""
-        mutation CreateRecipe($attrs: RecipeAttributes!, $repositoryId: ID!) {
-          createRecipe(repositoryId: $repositoryId, attributes: $attrs) {
+        mutation CreateRecipe($attrs: RecipeAttributes!, $repoName: String!) {
+          createRecipe(repositoryName: $repoName, attributes: $attrs) {
             id
             name
             recipeSections {
@@ -51,14 +51,15 @@ defmodule GraphQl.RecipeMutationsTest do
             }
           }
         }
-      """, %{"repositoryId" => repo.id, "attrs" => attrs}, %{current_user: user})
+      """, %{"repoName" => repo.name, "attrs" => attrs}, %{current_user: user})
 
       assert created["name"] == "recipe"
 
       sections = created["recipeSections"]
-      assert Enum.map(sections, & &1["repository"]) |> ids_equal([repo, other_repo])
-      items = Enum.flat_map(sections, & &1["recipeItems"])
+      assert Enum.map(sections, & &1["repository"])
+             |> ids_equal([repo, other_repo])
 
+      items = Enum.flat_map(sections, & &1["recipeItems"])
       assert Enum.map(items, & &1["chart"])
              |> Enum.filter(& &1)
              |> ids_equal([chart, other_chart])

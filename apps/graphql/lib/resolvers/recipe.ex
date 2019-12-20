@@ -18,8 +18,15 @@ defmodule GraphQl.Resolvers.Recipe do
     {:ok, Recipes.get!(id) |> Recipes.hydrate()}
   end
 
-  def create_recipe(%{repository_id: repo_id, attributes: attrs}, %{context: %{current_user: user}}),
-    do: Recipes.upsert(attrs, repo_id, user)
+  def create_recipe(%{repository_id: repo_id, attributes: attrs}, %{context: %{current_user: user}})
+    when is_binary(repo_id), do: Recipes.upsert(attrs, repo_id, user)
+  def create_recipe(%{repository_name: name} = args, context) do
+    repo = Core.Services.Repositories.get_repository_by_name!(name)
+
+    Map.put(args, :repository_id, repo.id)
+    |> create_recipe(context)
+  end
+
 
   def install_recipe(%{recipe_id: recipe_id, context: context}, %{context: %{current_user: user}}),
     do: Recipes.install(recipe_id, context, user)

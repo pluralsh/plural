@@ -58,9 +58,7 @@ defmodule Core.Services.Recipes do
         _ -> {:ok, nil}
       end
     end)
-    |> add_operation(:create, fn _ ->
-      create(attrs, repo_id, user)
-    end)
+    |> add_operation(:create, fn _ -> create(attrs, repo_id, user) end)
     |> execute(extract: :create)
   end
 

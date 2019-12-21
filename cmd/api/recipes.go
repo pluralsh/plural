@@ -7,6 +7,7 @@ import (
 type RecipeInput struct {
 	Name string
 	Description string
+	Provider string
 	Sections []RecipeSectionInput
 }
 

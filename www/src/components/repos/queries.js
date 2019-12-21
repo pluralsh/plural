@@ -3,7 +3,7 @@ import {RepoFragment, InstallationFragment} from '../../models/repo'
 import {ChartFragment, VersionFragment, ChartInstallationFragment} from '../../models/chart'
 import {TerraformFragment} from '../../models/terraform'
 import {DockerRepoFragment, DockerImageFragment} from '../../models/docker'
-import { RecipeFragment } from '../../models/recipe'
+import { RecipeFragment, RecipeSectionFragment } from '../../models/recipe'
 
 export const CREATE_REPO = gql`
   mutation CreateRepository($attributes: RepositoryAttributes!) {
@@ -313,4 +313,17 @@ export const CLOSURE_Q = gql`
   }
   ${TerraformFragment}
   ${ChartFragment}
+`;
+
+export const RECIPE_Q = gql`
+  query Recipe($id: ID!) {
+    recipe(id: $id) {
+      ...RecipeFragment
+      recipeSections {
+        ...RecipeSectionFragment
+      }
+    }
+  }
+  ${RecipeFragment}
+  ${RecipeSectionFragment}
 `;

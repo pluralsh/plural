@@ -26,6 +26,8 @@ type ConfigurationItemInput struct {
 	Name string
 	Default string
 	Type string
+	Documentation string
+	Placeholder string
 }
 
 const createRecipe = `

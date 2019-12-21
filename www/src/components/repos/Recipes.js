@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Box, Text } from 'grommet'
 import Carousel from '../utils/Carousel'
+import Recipe from './Recipe'
 import { DEFAULT_GCP_ICON } from './constants'
 
 const PROVIDER_WIDTH = 40
@@ -14,8 +15,10 @@ function Provider({provider}) {
   }
 }
 
-function Recipe({name, description, provider}) {
+function RecipeListItem({recipe, setRecipe}) {
+  const {name, description, provider} = recipe
   const [hover, setHover] = useState(false)
+
   return (
     <Box
       direction='row'
@@ -23,6 +26,7 @@ function Recipe({name, description, provider}) {
       style={{cursor: 'pointer'}}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
+      onClick={() => setRecipe(recipe)}
       round='xsmall'
       pad='medium'
       gap='small'
@@ -41,10 +45,19 @@ function Recipe({name, description, provider}) {
 }
 
 export default function Recipes({edges, pageInfo, fetchMore}) {
+  const [recipe, setRecipe] = useState(null)
   if (edges.length === 0) return null
-
+  function wrappedSetRecipe(recipe) {
+    if (!recipe) {
+      setRecipe(null)
+      return
+    }
+    setRecipe(recipe)
+  }
 
   return (
+    <>
+    {recipe && (<Recipe {...recipe} setOpen={wrappedSetRecipe} />)}
     <Box pad='small' gap='small' elevation='small'>
       <Text size='small' style={{fontWeight: 500}}>Recipes</Text>
       <Carousel
@@ -52,7 +65,7 @@ export default function Recipes({edges, pageInfo, fetchMore}) {
         dots
         slidesPerPage={3}
         edges={edges}
-        mapper={({node}) => <Recipe {...node} />}
+        mapper={({node}) => <RecipeListItem key={node.id} recipe={node} setRecipe={wrappedSetRecipe} />}
         fetchMore={() => {
           if (!pageInfo.hasNextPage) return
 
@@ -72,5 +85,6 @@ export default function Recipes({edges, pageInfo, fetchMore}) {
           })
         }} />
     </Box>
+    </>
   )
 }

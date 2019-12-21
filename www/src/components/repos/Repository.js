@@ -309,6 +309,20 @@ function RepoUpdate({repository}) {
   )
 }
 
+export function RepositoryIcon({size, repository, headingSize}) {
+  return (
+    <>
+    <Box width={size} height={size}>
+      <img alt='' width={size} height={size} src={repository.icon} />
+    </Box>
+    <Box gap='xsmall' pad='small'>
+      <Text weight='bold' size={headingSize}>{repository.name}</Text>
+      <Text size='small'>{repository.description}</Text>
+    </Box>
+    </>
+  )
+}
+
 const IMG_SIZE = '75px'
 const WIDTH = 65
 
@@ -338,13 +352,7 @@ function Repository() {
       <Box pad='small' direction='row'>
         <Box pad='small' width={`${WIDTH}%`}>
           <Box direction='row' align='center' margin={recipes.edges.length > 0 ? null : {bottom: 'medium'}}>
-            <Box width={IMG_SIZE} height={IMG_SIZE}>
-              <img alt='' width={IMG_SIZE} height={IMG_SIZE} src={repository.icon} />
-            </Box>
-            <Box gap='xsmall' pad='small'>
-              <Text weight='bold'>{repository.name}</Text>
-              <Text size='small'>{repository.description}</Text>
-            </Box>
+            <RepositoryIcon size={IMG_SIZE} repository={repository} />
           </Box>
           {recipes.edges.length > 0 && (
             <Box pad='small'>

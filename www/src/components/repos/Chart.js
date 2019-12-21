@@ -12,6 +12,7 @@ import Installation from './Installation'
 import Button from '../utils/Button'
 import {BreadcrumbContext} from '../Chartmart'
 import Dependencies, {FullDependencies, ShowFull} from './Dependencies'
+import ScrollableContainer from '../utils/ScrollableContainer'
 
 function ChartVersion({version, onSelect}) {
   return (
@@ -169,66 +170,68 @@ function Chart() {
   const width = tab === 'configuration' ? 65 : 70
 
   return (
-    <Box pad='small' direction='row' height="100%">
-      <Box width={`${width}%`} pad='small'>
-        <ChartHeader {...currentVersion} chartInstallation={data.chart.installation} installation={repository.installation} />
-        <Tabs defaultTab='readme' onTabChange={setTab} headerEnd={tab === 'dependencies' ?
-          <ShowFull label={full ? 'Immediate' : 'Full'} onClick={() => setFull(!full)} /> : null
-        }>
-          <TabHeader>
-            <TabHeaderItem name='readme'>
-              <Text style={{fontWeight: 500}} size='small'>Readme</Text>
-            </TabHeaderItem>
-            <TabHeaderItem name='configuration'>
-              <Text style={{fontWeight: 500}} size='small'>Configuration</Text>
-            </TabHeaderItem>
-            <TabHeaderItem name='dependencies'>
-              <Text size='small' style={{fontWeight: 500}}>Dependencies</Text>
-            </TabHeaderItem>
-          </TabHeader>
-          <TabContent name='readme'>
-            <ChartReadme {...currentVersion} />
-          </TabContent>
-          <TabContent name='configuration'>
-            <TemplateView {...currentVersion} />
-          </TabContent>
-          <TabContent name='dependencies'>
-            {full ? <FullDependencies {...chart} /> : <Dependencies {...chart} />}
-          </TabContent>
-        </Tabs>
-      </Box>
-      <Box pad='small' width={`${100 - width}%`} gap='small'>
-        {tab === 'configuration' ? <Installation repository={repository} onUpdate={updateInstallation(chartId)} open /> :
-          (<>
-          <Box elevation='small' gap='xsmall' pad='small' style={{maxHeight: '50%'}}>
-            <Text size='small' weight='bold'>Versions</Text>
-            <Scroller id='chart'
-              edges={edges}
-              style={{overflow: 'auto', width: '100%'}}
-              mapper={({node}, next) => <ChartVersion key={node.id} version={node} hasNext={!!next} onSelect={setVersion} />}
-              onLoadMore={() => {
-                if (!pageInfo.hasNextPage) return
+    <ScrollableContainer>
+      <Box pad='small' direction='row'>
+        <Box width={`${width}%`} pad='small'>
+          <ChartHeader {...currentVersion} chartInstallation={data.chart.installation} installation={repository.installation} />
+          <Tabs defaultTab='readme' onTabChange={setTab} headerEnd={tab === 'dependencies' ?
+            <ShowFull label={full ? 'Immediate' : 'Full'} onClick={() => setFull(!full)} /> : null
+          }>
+            <TabHeader>
+              <TabHeaderItem name='readme'>
+                <Text style={{fontWeight: 500}} size='small'>Readme</Text>
+              </TabHeaderItem>
+              <TabHeaderItem name='configuration'>
+                <Text style={{fontWeight: 500}} size='small'>Configuration</Text>
+              </TabHeaderItem>
+              <TabHeaderItem name='dependencies'>
+                <Text size='small' style={{fontWeight: 500}}>Dependencies</Text>
+              </TabHeaderItem>
+            </TabHeader>
+            <TabContent name='readme'>
+              <ChartReadme {...currentVersion} />
+            </TabContent>
+            <TabContent name='configuration'>
+              <TemplateView {...currentVersion} />
+            </TabContent>
+            <TabContent name='dependencies'>
+              {full ? <FullDependencies {...chart} /> : <Dependencies {...chart} />}
+            </TabContent>
+          </Tabs>
+        </Box>
+        <Box pad='small' width={`${100 - width}%`} gap='small'>
+          {tab === 'configuration' ? <Installation repository={repository} onUpdate={updateInstallation(chartId)} open /> :
+            (<>
+            <Box elevation='small' gap='xsmall' pad='small' style={{maxHeight: '50%'}}>
+              <Text size='small' weight='bold'>Versions</Text>
+              <Scroller id='chart'
+                edges={edges}
+                style={{overflow: 'auto', width: '100%'}}
+                mapper={({node}, next) => <ChartVersion key={node.id} version={node} hasNext={!!next} onSelect={setVersion} />}
+                onLoadMore={() => {
+                  if (!pageInfo.hasNextPage) return
 
-                fetchMore({
-                  variables: {chartCursor: pageInfo.endCursor},
-                  updateQuery: (prev, {fetchMoreResult}) => {
-                    const {edges, pageInfo} = fetchMoreResult.versions
-                    return edges.length ? {
-                      ...prev,
-                      versions: {
-                        ...prev.versions,
-                        pageInfo,
-                        edges: [...prev.versions.edges, ...edges]
-                      }
-                    } : prev
-                  }
-                })
-              }} />
-          </Box>
-          <ChartInfo {...currentVersion} />
-          </>)}
+                  fetchMore({
+                    variables: {chartCursor: pageInfo.endCursor},
+                    updateQuery: (prev, {fetchMoreResult}) => {
+                      const {edges, pageInfo} = fetchMoreResult.versions
+                      return edges.length ? {
+                        ...prev,
+                        versions: {
+                          ...prev.versions,
+                          pageInfo,
+                          edges: [...prev.versions.edges, ...edges]
+                        }
+                      } : prev
+                    }
+                  })
+                }} />
+            </Box>
+            <ChartInfo {...currentVersion} />
+            </>)}
+        </Box>
       </Box>
-    </Box>
+    </ScrollableContainer>
   )
 }
 

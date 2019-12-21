@@ -1,6 +1,25 @@
 import React, { useRef, useState } from "react";
 import {lookahead} from '../../utils/array'
 import {debounce} from 'lodash'
+import { Box } from "grommet";
+
+export function SideScroller({id, style, onLoadMore, emptyState, edges, mapper}) {
+  const scrollRef = useRef()
+
+  const handleOnScroll = () => {
+    let elem = document.getElementById(id)
+    if (elem.scrollWidth <= elem.offsetWidth) {
+      onLoadMore()
+    }
+  }
+
+  let entries = Array.from(lookahead(edges, (edge, next) => mapper(edge, next, scrollRef)))
+  return (
+    <Box direction='row' id={id} ref={scrollRef} onScroll={handleOnScroll} style={style}>
+      {entries.length > 0 ? entries : emptyState}
+    </Box>
+  )
+}
 
 function Scroller(props) {
   const scrollRef = useRef()

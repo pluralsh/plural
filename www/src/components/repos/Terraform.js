@@ -11,6 +11,7 @@ import InputField from '../utils/InputField'
 import {BreadcrumbContext} from '../Chartmart'
 import Button, {SecondaryButton} from '../utils/Button'
 import Dependencies, {FullDependencies, ShowFull} from './Dependencies'
+import ScrollableContainer from '../utils/ScrollableContainer'
 
 function Code({value, children, language}) {
   return (
@@ -174,50 +175,52 @@ function Terraform() {
   if (loading || !data) return null
   const {terraformModule} = data
   return (
-    <Box pad='small' direction='row' height="100%">
-      <Box width={`${width}%`} pad='small'>
-        <TerraformHeader {...terraformModule} />
-        <Tabs defaultTab='readme' onTabChange={setTab} headerEnd={tab === 'dependencies' ?
-          <ShowFull label={full ? 'Immediate' : 'Full'} onClick={() => setFull(!full)} /> : null
-        }>
-          <TabHeader>
-            <TabHeaderItem name='readme'>
-              <Text size='small' style={{fontWeight: 500}}>Readme</Text>
-            </TabHeaderItem>
-            <TabHeaderItem name='configuration'>
-              <Text size='small' style={{fontWeight: 500}}>Configuration</Text>
-            </TabHeaderItem>
-            <TabHeaderItem name='dependencies'>
-              <Text size='small' style={{fontWeight: 500}}>Dependencies</Text>
-            </TabHeaderItem>
-            {terraformModule.editable && (
-              <TabHeaderItem name='edit'>
-                <Text size='small' style={{fontWeight: 500}}>Edit</Text>
+    <ScrollableContainer>
+      <Box pad='small' direction='row'>
+        <Box width={`${width}%`} pad='small'>
+          <TerraformHeader {...terraformModule} />
+          <Tabs defaultTab='readme' onTabChange={setTab} headerEnd={tab === 'dependencies' ?
+            <ShowFull label={full ? 'Immediate' : 'Full'} onClick={() => setFull(!full)} /> : null
+          }>
+            <TabHeader>
+              <TabHeaderItem name='readme'>
+                <Text size='small' style={{fontWeight: 500}}>Readme</Text>
               </TabHeaderItem>
-            )}
-          </TabHeader>
-          <TabContent name='readme'>
-            <Readme {...terraformModule} />
-          </TabContent>
-          <TabContent name='configuration'>
-            <TemplateView {...terraformModule} />
-          </TabContent>
-          <TabContent name='dependencies'>
-            {full ? <FullDependencies {...terraformModule} /> : <Dependencies {...terraformModule} />}
-          </TabContent>
-          <TabContent name='edit'>
-            <UpdateTerraform {...terraformModule} />
-          </TabContent>
-        </Tabs>
+              <TabHeaderItem name='configuration'>
+                <Text size='small' style={{fontWeight: 500}}>Configuration</Text>
+              </TabHeaderItem>
+              <TabHeaderItem name='dependencies'>
+                <Text size='small' style={{fontWeight: 500}}>Dependencies</Text>
+              </TabHeaderItem>
+              {terraformModule.editable && (
+                <TabHeaderItem name='edit'>
+                  <Text size='small' style={{fontWeight: 500}}>Edit</Text>
+                </TabHeaderItem>
+              )}
+            </TabHeader>
+            <TabContent name='readme'>
+              <Readme {...terraformModule} />
+            </TabContent>
+            <TabContent name='configuration'>
+              <TemplateView {...terraformModule} />
+            </TabContent>
+            <TabContent name='dependencies'>
+              {full ? <FullDependencies {...terraformModule} /> : <Dependencies {...terraformModule} />}
+            </TabContent>
+            <TabContent name='edit'>
+              <UpdateTerraform {...terraformModule} />
+            </TabContent>
+          </Tabs>
+        </Box>
+        <Box pad='small' width={`${100 - width}%`} gap='small'>
+          <Installation
+            noHelm
+            open
+            repository={terraformModule.repository}
+            onUpdate={updateInstallation(tfId)} />
+        </Box>
       </Box>
-      <Box pad='small' width={`${100 - width}%`} gap='small'>
-        <Installation
-          noHelm
-          open
-          repository={terraformModule.repository}
-          onUpdate={updateInstallation(tfId)} />
-      </Box>
-    </Box>
+    </ScrollableContainer>
   )
 }
 

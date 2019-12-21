@@ -223,16 +223,24 @@ defmodule GraphQl.Schema.Types do
     field :id,              :id
     field :name,            non_null(:string)
     field :description,     :string
+    field :provider,        :provider
     field :repository,      :repository, resolve: dataloader(Repository)
     field :recipe_sections, list_of(:recipe_section), resolve: dataloader(Recipe)
 
     timestamps()
   end
 
+  enum :provider do
+    value :gcp
+    value :aws
+    value :azure
+  end
+
   object :recipe_section do
     field :id,           :id
     field :repository,   :repository, resolve: dataloader(Repository)
     field :recipe,       :recipe, resolve: dataloader(Recipe)
+    field :index,        :integer
     field :recipe_items, list_of(:recipe_item), resolve: dataloader(Recipe)
 
     timestamps()

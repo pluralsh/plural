@@ -3,6 +3,7 @@ import {RepoFragment, InstallationFragment} from '../../models/repo'
 import {ChartFragment, VersionFragment, ChartInstallationFragment} from '../../models/chart'
 import {TerraformFragment} from '../../models/terraform'
 import {DockerRepoFragment, DockerImageFragment} from '../../models/docker'
+import { RecipeFragment } from '../../models/recipe'
 
 export const CREATE_REPO = gql`
   mutation CreateRepository($attributes: RepositoryAttributes!) {
@@ -106,7 +107,7 @@ export const INSTALL_REPO = gql`
 `;
 
 export const REPO_Q = gql`
-  query Repo($repositoryId: String!, $chartCursor: String, $tfCursor: String, $dkrCursor: String) {
+  query Repo($repositoryId: String!, $chartCursor: String, $tfCursor: String, $dkrCursor: String, $recipeCursor: String) {
     repository(id: $repositoryId) {
       ...RepoFragment
       editable
@@ -148,12 +149,24 @@ export const REPO_Q = gql`
         }
       }
     }
+    recipes(repositoryId: $repositoryId, first: 5, after: $recipeCursor) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      edges {
+        node {
+          ...RecipeFragment
+        }
+      }
+    }
   }
   ${RepoFragment}
   ${ChartFragment}
   ${InstallationFragment}
   ${TerraformFragment}
   ${DockerRepoFragment}
+  ${RecipeFragment}
 `;
 
 export const DOCKER_IMG_Q = gql`

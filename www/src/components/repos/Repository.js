@@ -315,9 +315,9 @@ export function RepositoryIcon({size, repository, headingSize}) {
     <Box width={size} height={size}>
       <img alt='' width={size} height={size} src={repository.icon} />
     </Box>
-    <Box gap='xsmall' pad='small'>
+    <Box pad='small'>
       <Text weight='bold' size={headingSize}>{repository.name}</Text>
-      <Text size='small'>{repository.description}</Text>
+      <Text size='small' color='dark-3'>{repository.description}</Text>
     </Box>
     </>
   )

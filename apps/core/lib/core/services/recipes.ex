@@ -28,9 +28,11 @@ defmodule Core.Services.Recipes do
     |> Map.get(:recipe_sections)
     |> Enum.reduce(start_transaction(), fn %{id: id, repository_id: repo_id} = section, acc ->
       add_operation(acc, id, fn _ ->
+        installation_ctx = Map.get(context, repo_id, %{})
         case Repositories.get_installation(user.id, repo_id) do
-          %Installation{id: id} -> Repositories.update_installation(%{context: context[id]}, id, user)
-          _ -> Repositories.create_installation(%{context: Map.get(context, id, %{})}, repo_id, user)
+          %Installation{id: id, context: ctx} ->
+            Repositories.update_installation(%{context: Map.merge(ctx, installation_ctx)}, id, user)
+          _ -> Repositories.create_installation(%{context: installation_ctx}, repo_id, user)
         end
       end)
       |> install_items(section.recipe_items, id, user)

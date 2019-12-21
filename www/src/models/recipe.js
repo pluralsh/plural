@@ -23,8 +23,10 @@ export const RecipeItemFragment = gql`
     }
     configuration {
       name
-      default
       type
+      default
+      documentation
+      placeholder
     }
   }
   ${ChartFragment}

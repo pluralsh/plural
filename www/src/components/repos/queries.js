@@ -327,3 +327,12 @@ export const RECIPE_Q = gql`
   ${RecipeFragment}
   ${RecipeSectionFragment}
 `;
+
+export const INSTALL_RECIPE = gql`
+  mutation InstallRecipe($id: ID!, $ctx: Map!) {
+    installRecipe(recipeId: $id, context: $ctx) {
+      ...InstallationFragment
+    }
+  }
+  ${InstallationFragment}
+`;

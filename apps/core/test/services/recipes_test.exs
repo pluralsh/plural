@@ -136,9 +136,10 @@ defmodule Core.Services.RecipesTest do
       insert(:recipe_item, recipe_section: section2, chart: other_chart)
 
       user = insert(:user)
-      {:ok, installations} = Recipes.install(recipe, %{}, user)
+      {:ok, installations} = Recipes.install(recipe, %{repo.id => %{"some" => "context"}}, user)
 
       assert Enum.map(installations, & &1.repository_id) |> ids_equal([repo, repo2])
+      assert Enum.find(installations, & &1.repository_id == repo.id).context == %{"some" => "context"}
 
       assert Charts.get_chart_installation(chart.id, user.id)
       assert Charts.get_chart_installation(other_chart.id, user.id)

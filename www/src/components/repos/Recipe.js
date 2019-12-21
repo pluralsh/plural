@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { useQuery } from 'react-apollo'
-import { RECIPE_Q } from './queries'
+import { useQuery, useMutation } from 'react-apollo'
+import { RECIPE_Q, INSTALL_RECIPE, REPO_Q } from './queries'
 import { Layer, Box, Text } from 'grommet'
 import { ModalHeader } from '../utils/Modal'
 import Button, { SecondaryButton } from '../utils/Button'
@@ -45,7 +45,7 @@ function Configure({conf: {name, placeholder, documentation, type}, repo, ctx, s
           label={name}
           placeholder={placeholder}
           labelWidth={labelWidth}
-          value={current}
+          value={current || ""}
           onChange={({target: {value}}) => updateCtx(value)} />
       )
     case "INT":
@@ -53,7 +53,7 @@ function Configure({conf: {name, placeholder, documentation, type}, repo, ctx, s
         <InputField
           label={name}
           placeholder={placeholder}
-          value={current}
+          value={current || ""}
           labelWidth={labelWidth}
           onChange={({target: {value}}) => updateCtx(parseInt(value))} />
       )
@@ -62,10 +62,21 @@ function Configure({conf: {name, placeholder, documentation, type}, repo, ctx, s
   }
 }
 
+function Documentation({name, documentation}) {
+  return (
+    <Box direction='row' gap='xsmall'>
+      <Text weight='bold' size='small'>{name}</Text>
+      <Text size='small'><i>{documentation}</i></Text>
+    </Box>
+  )
+}
+
+const DOC_WIDTH = 40
+
 function EditSection({recipeSection, item, ctx, setCtx}) {
   const repo = recipeSection.repository
   const recipeItem = recipeSection.recipeItems[item]
-  const labelWidth = `${Math.max(...recipeItem.configuration.map(({name}) => name.length * 9))}px`
+  const labelWidth = `${Math.max(...recipeItem.configuration.map(({name}) => name.length * 10))}px`
   return (
     <Box gap='small'>
       <Box direction='row' align='center'>
@@ -74,35 +85,80 @@ function EditSection({recipeSection, item, ctx, setCtx}) {
       <Box fill='horizontal' pad='small' border='top'>
         <RecipeItemHeading {...recipeItem} />
       </Box>
-      {recipeItem.configuration && (
-        <Box pad='small' gap='xsmall'>
-          {recipeItem.configuration.map((conf) => (
-            <Configure
-              key={conf.name}
-              conf={conf}
-              ctx={ctx}
-              setCtx={setCtx}
-              repo={repo}
-              labelWidth={labelWidth} />
-          ))}
+      <Box direction='row' fill='horizontal'>
+        <Box width={`${100 - DOC_WIDTH}%`}>
+          {recipeItem.configuration && (
+            <Box pad='small' gap='xsmall'>
+              {recipeItem.configuration.map((conf) => (
+                <Configure
+                  key={conf.name}
+                  conf={conf}
+                  ctx={ctx}
+                  setCtx={setCtx}
+                  repo={repo}
+                  labelWidth={labelWidth} />
+              ))}
+            </Box>
+          )}
+          </Box>
+          <Box width={`${DOC_WIDTH}%`} pad='small' gap='xxsmall' border='left'>
+            <Text weight='bold' size='small' margin={{bottom: 'xsmall'}}>Documentation</Text>
+            {recipeItem.configuration.map(({name, documentation}) => (
+              documentation ? <Documentation name={name} documentation={documentation} /> : null
+            ))}
+          </Box>
         </Box>
-      )}
     </Box>
   )
 }
 
 function buildCtx(recipeSections) {
   return recipeSections.reduce((ctx, {repository}) => {
+    ctx[repository.id] = {}
     if (repository.installation) {
       ctx[repository.id] = repository.installation.context
-      return ctx
     }
-    return ctx[repository.id] = {}
+    return ctx
   }, {})
 }
 
-function RecipeSectionEditor({recipeSections, section, item, setState}) {
+function InstallRecipe({id, ctx, setOpen}) {
+  const [mutation, {loading, error}] = useMutation(INSTALL_RECIPE, {
+    variables: {id, ctx: JSON.stringify(ctx)},
+    update: (cache, {data: {installRecipe}}) => {
+      console.log(installRecipe)
+      for (const installation of installRecipe) {
+        try {
+          const repositoryId = installation.repository.id
+          const prev = cache.readQuery({query: REPO_Q, variables: {repositoryId}})
+          cache.writeQuery({query: REPO_Q, variables: {repositoryId}, data: {
+            ...prev,
+            repository: {
+              ...prev.repository,
+              installation
+            }
+          }})
+        } catch {
+          // ignore
+        }
+      }
+      setOpen(false)
+    }
+  })
+  return (
+    <Button
+      loading={loading}
+      error={error}
+      onClick={mutation}
+      round='xsmall'
+      pad='small'
+      label='Install' />
+  )
+}
+
+function RecipeSectionEditor({id, recipeSections, section, item, setState, setOpen}) {
   const [ctx, setCtx] = useState(buildCtx(recipeSections))
+  console.log(ctx)
   const recipeSection = recipeSections[section]
   const lastSection = recipeSections.length === section + 1
   const lastItem = recipeSection.recipeItems.length === item + 1
@@ -132,7 +188,7 @@ function RecipeSectionEditor({recipeSections, section, item, setState}) {
       <Box direction='row' align='center' justify='end' gap='small'>
         {hasPrev && <SecondaryButton round='xsmall' pad='small' onClick={prev} label='Go back' />}
         {hasNext ? <Button round='xsmall' pad='small' label='Next' onClick={next} /> :
-                   <Button round='xsmall' pad='small' label='Finalize' />}
+                   <InstallRecipe id={id} ctx={ctx} setOpen={setOpen} />}
       </Box>
     </Box>
   )
@@ -143,7 +199,6 @@ export default function Recipe({id, name, setOpen}) {
   const {data, loading} = useQuery(RECIPE_Q, {variables: {id}})
   if (!data || loading) return null
   const {recipeSections} = data.recipe
-
   return (
     <Layer
       modal
@@ -153,10 +208,12 @@ export default function Recipe({id, name, setOpen}) {
         <ModalHeader text={name} setOpen={setOpen} />
         <Box pad='small'>
           <RecipeSectionEditor
+            id={id}
             recipeSections={recipeSections}
             section={section}
             item={item}
-            setState={setState} />
+            setState={setState}
+            setOpen={setOpen} />
         </Box>
       </Box>
     </Layer>

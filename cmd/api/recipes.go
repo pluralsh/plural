@@ -5,29 +5,29 @@ import (
 )
 
 type RecipeInput struct {
-	Name string
+	Name        string
 	Description string
-	Provider string
-	Sections []RecipeSectionInput
+	Provider    string
+	Sections    []RecipeSectionInput
 }
 
 type RecipeSectionInput struct {
-	Name string
+	Name  string
 	Items []RecipeItemInput
 }
 
 type RecipeItemInput struct {
-	Name string
-	Type string
+	Name 					string
+	Type 					string
 	Configuration []ConfigurationItemInput
 }
 
 type ConfigurationItemInput struct {
-	Name string
-	Default string
-	Type string
+	Name          string
+	Default       string
+	Type          string
 	Documentation string
-	Placeholder string
+	Placeholder   string
 }
 
 const createRecipe = `

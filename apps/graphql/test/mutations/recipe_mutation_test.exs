@@ -86,7 +86,7 @@ defmodule GraphQl.RecipeMutationsTest do
             }
           }
         }
-      """, %{"id" => recipe.id, "context" => Jason.encode!(%{})}, %{current_user: insert(:user)})
+      """, %{"id" => recipe.id, "context" => Jason.encode!(%{repo.id => %{"some" => "value"}})}, %{current_user: insert(:user)})
 
       assert installation["repository"]["id"] == repo.id
     end

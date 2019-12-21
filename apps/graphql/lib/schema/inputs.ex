@@ -49,9 +49,16 @@ defmodule GraphQl.Schema.Inputs do
     field :url, non_null(:string)
   end
 
+  enum :provider_input do
+    value :aws
+    value :gcp
+    value :azure
+  end
+
   input_object :recipe_attributes do
     field :name,        non_null(:string)
     field :description, :string
+    field :provider,    :provider_input
     field :sections,    list_of(:recipe_section_attributes)
   end
 

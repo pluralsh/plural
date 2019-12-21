@@ -74,7 +74,7 @@ function EditInstallation({installation, repository, onUpdate, open}) {
 }
 
 
-function Installation({repository, onUpdate, noHelm, open}) {
+function Installation({repository, onUpdate, noHelm, open, recipes, fetchMore}) {
   const [mutation] = useMutation(INSTALL_REPO, {
     variables: {repositoryId: repository.id},
     update: (cache, { data: { createInstallation } }) => {

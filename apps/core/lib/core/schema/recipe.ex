@@ -2,9 +2,12 @@ defmodule Core.Schema.Recipe do
   use Piazza.Ecto.Schema
   alias Core.Schema.{Repository, RecipeSection}
 
+  defenum Provider, gcp: 0, aws: 1, azure: 2
+
   schema "recipes" do
     field :name, :string
     field :description, :string
+    field :provider, Provider
 
     belongs_to :repository, Repository
     has_many :recipe_sections, RecipeSection
@@ -18,7 +21,7 @@ defmodule Core.Schema.Recipe do
   def ordered(query \\ __MODULE__, order \\ [asc: :name]),
     do: from(r in query, order_by: ^order)
 
-  @valid ~w(name description repository_id)a
+  @valid ~w(name description repository_id provider)a
 
   def changeset(model, attrs \\ %{}) do
     model

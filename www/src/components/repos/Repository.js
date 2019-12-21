@@ -14,8 +14,9 @@ import CreateTerraform from './CreateTerraform'
 import {RepoForm} from './CreateRepository'
 import {BreadcrumbContext} from '../Chartmart'
 import Highlight from 'react-highlight'
+import Recipes from './Recipes'
 import moment from 'moment'
-
+import ScrollableContainer from '../utils/ScrollableContainer'
 
 function Container({children, onClick, hasNext, noPad}) {
   const [hover, setHover] = useState(false)
@@ -309,6 +310,7 @@ function RepoUpdate({repository}) {
 }
 
 const IMG_SIZE = '75px'
+const WIDTH = 65
 
 function Repository() {
   const {repositoryId} = useParams()
@@ -329,63 +331,70 @@ function Repository() {
   }, [setBreadcrumbs, data])
 
   if (loading) return null
-  const {charts, repository, terraform, dockerRepositories} = data
-  const width = 65
+  const {charts, repository, terraform, dockerRepositories, recipes} = data
+
   return (
-    <Box pad='small' direction='row' height='100%'>
-      <Box pad='small' width={`${width}%`} height='100%'>
-        <Box direction='row' align='center' margin={{bottom: 'medium'}}>
-          <Box width={IMG_SIZE} height={IMG_SIZE}>
-            <img alt='' width={IMG_SIZE} height={IMG_SIZE} src={repository.icon} />
+    <ScrollableContainer>
+      <Box pad='small' direction='row'>
+        <Box pad='small' width={`${WIDTH}%`}>
+          <Box direction='row' align='center' margin={recipes.edges.length > 0 ? null : {bottom: 'medium'}}>
+            <Box width={IMG_SIZE} height={IMG_SIZE}>
+              <img alt='' width={IMG_SIZE} height={IMG_SIZE} src={repository.icon} />
+            </Box>
+            <Box gap='xsmall' pad='small'>
+              <Text weight='bold'>{repository.name}</Text>
+              <Text size='small'>{repository.description}</Text>
+            </Box>
           </Box>
-          <Box gap='xsmall' pad='small'>
-            <Text weight='bold'>{repository.name}</Text>
-            <Text size='small'>{repository.description}</Text>
-          </Box>
+          {recipes.edges.length > 0 && (
+            <Box pad='small'>
+              <Recipes {...recipes} fetchMore={fetchMore} />
+            </Box>
+          )}
+          <Tabs defaultTab='charts' onTabChange={setTab} headerEnd={tab === 'terraform' ? <TerraformCreateModal /> : null}>
+            <TabHeader>
+              <TabHeaderItem name='charts'>
+                <Text style={{fontWeight: 500}} size='small'>Charts</Text>
+              </TabHeaderItem>
+              <TabHeaderItem name='terraform'>
+                <Text style={{fontWeight: 500}} size='small'>Terraform</Text>
+              </TabHeaderItem>
+              <TabHeaderItem name='docker'>
+                <Text style={{fontWeight: 500}} size='small'>Docker</Text>
+              </TabHeaderItem>
+              {repository.publicKey && (
+                <TabHeaderItem name='credentials'>
+                  <Text style={{fontWeight: 500}} size='small'>Credentials</Text>
+                </TabHeaderItem>
+              )}
+              {repository.editable && (
+                <TabHeaderItem name='edit'>
+                  <Text style={{fontWeight: 500}} size='small'>Edit</Text>
+                </TabHeaderItem>
+              )}
+            </TabHeader>
+            <TabContent name='charts'>
+              <Charts {...charts} fetchMore={fetchMore} />
+            </TabContent>
+            <TabContent name='terraform'>
+              <Terraform {...terraform} fetchMore={fetchMore} />
+            </TabContent>
+            <TabContent name='docker'>
+              <DockerRepos repo={repository} {...dockerRepositories} fetchMore={fetchMore} />
+            </TabContent>
+            <TabContent name='credentials'>
+              <RepoCredentials {...repository} />
+            </TabContent>
+            <TabContent name='edit'>
+              <RepoUpdate repository={repository} />
+            </TabContent>
+          </Tabs>
         </Box>
-        <Tabs defaultTab='charts' onTabChange={setTab} headerEnd={tab === 'terraform' ? <TerraformCreateModal /> : null}>
-          <TabHeader>
-            <TabHeaderItem name='charts'>
-              <Text style={{fontWeight: 500}} size='small'>Charts</Text>
-            </TabHeaderItem>
-            <TabHeaderItem name='terraform'>
-              <Text style={{fontWeight: 500}} size='small'>Terraform</Text>
-            </TabHeaderItem>
-            <TabHeaderItem name='docker'>
-              <Text style={{fontWeight: 500}} size='small'>Docker</Text>
-            </TabHeaderItem>
-            {repository.publicKey && (
-              <TabHeaderItem name='credentials'>
-                <Text style={{fontWeight: 500}} size='small'>Credentials</Text>
-              </TabHeaderItem>
-            )}
-            {repository.editable && (
-              <TabHeaderItem name='edit'>
-                <Text style={{fontWeight: 500}} size='small'>Edit</Text>
-              </TabHeaderItem>
-            )}
-          </TabHeader>
-          <TabContent name='charts'>
-            <Charts {...charts} fetchMore={fetchMore} />
-          </TabContent>
-          <TabContent name='terraform'>
-            <Terraform {...terraform} fetchMore={fetchMore} />
-          </TabContent>
-          <TabContent name='docker'>
-            <DockerRepos repo={repository} {...dockerRepositories} fetchMore={fetchMore} />
-          </TabContent>
-          <TabContent name='credentials'>
-            <RepoCredentials {...repository} />
-          </TabContent>
-          <TabContent name='edit'>
-            <RepoUpdate repository={repository} />
-          </TabContent>
-        </Tabs>
+        <Box pad='small' gap='medium' width={`${100 - WIDTH}%`}>
+          <Installation repository={repository} />
+        </Box>
       </Box>
-      <Box pad='small' width={`${100 - width}%`}>
-        <Installation repository={repository} />
-      </Box>
-    </Box>
+    </ScrollableContainer>
   )
 }
 

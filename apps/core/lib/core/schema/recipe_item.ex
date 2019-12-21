@@ -7,12 +7,14 @@ defmodule Core.Schema.RecipeItem do
     defenum Type, string: 0, int: 1, bool: 2
 
     embedded_schema do
-      field :type,    Type
-      field :name,    :string
-      field :default, :string
+      field :type,          Type
+      field :name,          :string
+      field :default,       :string
+      field :documentation, :string
+      field :placeholder,   :string
     end
 
-    @valid ~w(type name default)a
+    @valid ~w(type name default documentation placeholder)a
 
     def changeset(model, attrs \\ %{}) do
       model

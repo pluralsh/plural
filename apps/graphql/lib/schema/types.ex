@@ -263,9 +263,11 @@ defmodule GraphQl.Schema.Types do
   end
 
   object :recipe_configuration do
-    field :type,    :configuration_type
-    field :name,    :string
-    field :default, :string
+    field :type,          :configuration_type
+    field :name,          :string
+    field :default,       :string
+    field :documentation, :string
+    field :placeholder,   :string
   end
 
   connection node_type: :user

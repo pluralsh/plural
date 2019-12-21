@@ -75,9 +75,11 @@ defmodule GraphQl.Schema.Inputs do
 
 
   input_object :recipe_configuration_attributes do
-    field :type,    non_null(:recipe_configuration_type_input)
-    field :name,    non_null(:string)
-    field :default, :string
+    field :type,          non_null(:recipe_configuration_type_input)
+    field :name,          non_null(:string)
+    field :default,       :string
+    field :documentation, :string
+    field :placeholder,   :string
   end
 
   enum :recipe_item_type_input do

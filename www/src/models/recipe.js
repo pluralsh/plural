@@ -8,6 +8,7 @@ export const RecipeFragment = gql`
     id
     name
     description
+    provider
   }
 `;
 

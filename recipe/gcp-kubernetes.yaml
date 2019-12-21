@@ -1,5 +1,6 @@
 name: gcp-kubernetes
 description: Constructs a gke cluster and installs the bootstrap chart
+provider: GCP
 sections:
 - name: chartmart
   items:

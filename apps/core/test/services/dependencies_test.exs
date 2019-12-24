@@ -17,7 +17,7 @@ defmodule Core.Services.DependenciesTest do
       )
 
       terraform = insert(:terraform, dependencies: %{dependencies: [
-        %{type: :helm, repo: chart.repository.name, name: chart.name},
+        %{type: :helm, repo: chart.repository.name, name: chart.name, providers: [:gcp]},
         %{type: :terraform, repo: terraform.repository.name, name: terraform.name}
       ]})
 

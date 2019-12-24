@@ -1,6 +1,8 @@
 defmodule Core.Schema.Dependencies do
   use Piazza.Ecto.Schema
 
+  defenum Provider, gcp: 0, aws: 1, azure: 2
+
   defmodule Dependency do
     use Piazza.Ecto.Schema
     defenum Type, terraform: 0, helm: 1
@@ -38,13 +40,17 @@ defmodule Core.Schema.Dependencies do
   end
 
   embedded_schema do
+    field :providers, {:array, Provider}
+
     embeds_many :dependencies, Dependency, on_replace: :delete
-    embeds_one :wirings, Wirings, on_replace: :update
+    embeds_one  :wirings, Wirings, on_replace: :update
   end
+
+  @valid ~w(providers)a
 
   def changeset(model, attrs \\ %{}) do
     model
-    |> cast(attrs, [])
+    |> cast(attrs, @valid)
     |> cast_embed(:dependencies)
     |> cast_embed(:wirings)
   end

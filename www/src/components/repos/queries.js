@@ -204,6 +204,15 @@ export const UPDATE_TF = gql`
   ${TerraformFragment}
 `;
 
+export const DELETE_TF = gql`
+  mutation DeleteTerraform($id: ID!) {
+    deleteTerraform(id: $id) {
+      ...TerraformFragment
+    }
+  }
+  ${TerraformFragment}
+`;
+
 export const CHART_Q = gql`
   query Charts($chartId: ID!, $cursor: String) {
     chart(id: $chartId) {
@@ -335,4 +344,13 @@ export const INSTALL_RECIPE = gql`
     }
   }
   ${InstallationFragment}
+`;
+
+export const DELETE_RECIPE = gql`
+  mutation DeleteRecipe($id: ID!) {
+    deleteRecipe(id: $id) {
+      ...RecipeFragment
+    }
+  }
+  ${RecipeFragment}
 `;

@@ -1,8 +1,12 @@
 import React, { useState } from 'react'
-import { Box, Text } from 'grommet'
+import { Box, Text, Stack } from 'grommet'
 import Carousel from '../utils/Carousel'
 import Recipe from './Recipe'
 import { DEFAULT_GCP_ICON } from './constants'
+import { Trash } from 'grommet-icons'
+import HoveredBackground from '../utils/HoveredBackground'
+import { useMutation } from 'react-apollo'
+import { DELETE_RECIPE, REPO_Q } from './queries'
 
 const PROVIDER_WIDTH = 40
 
@@ -15,9 +19,39 @@ function Provider({provider}) {
   }
 }
 
-function RecipeListItem({recipe, setRecipe}) {
+function DeleteRecipe({recipe: {id}, repositoryId}) {
+  const [mutation] = useMutation(DELETE_RECIPE, {
+    variables: {id},
+    update: (cache, {data: {deleteRecipe}}) => {
+      const prev = cache.readQuery({query: REPO_Q, variables: {repositoryId}})
+      cache.writeQuery({query: REPO_Q, variables: {repositoryId}, data: {
+        ...prev,
+        recipes: {
+          ...prev.recipes,
+          edges: prev.recipes.edges.filter(({node}) => node.id !== deleteRecipe.id)
+        }
+      }})
+    }
+  })
+
+  return (
+    <HoveredBackground>
+      <Box
+        accentable
+        style={{cursor: 'pointer'}}
+        background='white'
+        pad='xsmall'
+        round='xsmall'
+        onClick={mutation}
+        margin={{top: 'xsmall', right: 'xsmall'}}>
+          <Trash size='15px' />
+      </Box>
+    </HoveredBackground>
+  )
+}
+
+function RecipeListItemInner({recipe, setRecipe, hover, setHover}) {
   const {name, description, provider} = recipe
-  const [hover, setHover] = useState(false)
 
   return (
     <Box
@@ -44,7 +78,22 @@ function RecipeListItem({recipe, setRecipe}) {
   )
 }
 
-export default function Recipes({edges, pageInfo, fetchMore}) {
+function RecipeListItem({recipe, setRecipe, repository: {editable, id}}) {
+  const [hover, setHover] = useState(false)
+
+  if (editable && hover) {
+    return (
+      <Stack anchor='top-right' onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
+        <RecipeListItemInner recipe={recipe} setRecipe={setRecipe} hover={hover} setHover={() => null} />
+        <DeleteRecipe recipe={recipe} repositoryId={id} />
+      </Stack>
+    )
+  }
+
+  return <RecipeListItemInner recipe={recipe} setRecipe={setRecipe} hover={hover} setHover={setHover} />
+}
+
+export default function Recipes({repository, edges, pageInfo, fetchMore}) {
   const [recipe, setRecipe] = useState(null)
   if (edges.length === 0) return null
   function wrappedSetRecipe(recipe) {
@@ -66,7 +115,7 @@ export default function Recipes({edges, pageInfo, fetchMore}) {
         slidesPerPage={3}
         offset={12}
         edges={edges}
-        mapper={({node}) => <RecipeListItem key={node.id} recipe={node} setRecipe={wrappedSetRecipe} />}
+        mapper={({node}) => <RecipeListItem key={node.id} recipe={node} setRecipe={wrappedSetRecipe} repository={repository} />}
         fetchMore={() => {
           if (!pageInfo.hasNextPage) return
 

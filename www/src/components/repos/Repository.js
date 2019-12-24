@@ -356,7 +356,7 @@ function Repository() {
           </Box>
           {recipes.edges.length > 0 && (
             <Box pad='small'>
-              <Recipes {...recipes} fetchMore={fetchMore} />
+              <Recipes {...recipes} fetchMore={fetchMore} repository={repository} />
             </Box>
           )}
           <Tabs defaultTab='charts' onTabChange={setTab} headerEnd={tab === 'terraform' ? <TerraformCreateModal /> : null}>

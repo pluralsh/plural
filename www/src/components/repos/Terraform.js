@@ -2,8 +2,8 @@ import React, {useState, useContext, useEffect} from 'react'
 import {Box, Text, Markdown} from 'grommet'
 import Tabs, {TabHeader, TabHeaderItem, TabContent} from '../utils/Tabs'
 import {useQuery, useMutation} from 'react-apollo'
-import {useParams} from 'react-router-dom'
-import {TF_Q, UPDATE_TF, INSTALL_TF, UNINSTALL_TF} from './queries'
+import {useParams, useHistory} from 'react-router-dom'
+import {TF_Q, UPDATE_TF, INSTALL_TF, UNINSTALL_TF, DELETE_TF} from './queries'
 import {DEFAULT_TF_ICON} from './constants'
 import Highlight from 'react-highlight.js'
 import Installation from './Installation'
@@ -117,6 +117,23 @@ function updateInstallation(tfId) {
 
 const LABEL_WIDTH = '90px'
 
+function DeleteTerraform({id}) {
+  let history = useHistory()
+  const [mutation, {loading}] = useMutation(DELETE_TF, {
+    variables: {id},
+    onCompleted: () => history.goBack()
+  })
+
+  return (
+    <Button
+      background='status-error'
+      loading={loading}
+      round='xsmall'
+      label='Delete'
+      onClick={mutation} />
+  )
+}
+
 function UpdateTerraform({id, name, description}) {
   const [state, setState] = useState({name: name, description: description})
   const [mutation, {loading}] = useMutation(UPDATE_TF, {
@@ -147,7 +164,8 @@ function UpdateTerraform({id, name, description}) {
         placeholder='a helpful description'
         value={state.description}
         onChange={(e) => setState({...state, description: e.target.value})} />
-      <Box direction='row' justify='end'>
+      <Box direction='row' justify='end' gap='small'>
+        <DeleteTerraform id={id} />
         <Button loading={loading} round='xsmall' label='Update' onClick={mutation} />
       </Box>
     </Box>

@@ -9,6 +9,7 @@ import Button from '../utils/Button'
 import Copyable from '../utils/Copyable'
 import InputField from '../utils/InputField'
 import moment from 'moment'
+import HoveredBackground from '../utils/HoveredBackground'
 
 
 const LABEL_WIDTH = '60px'
@@ -72,7 +73,11 @@ function PingWebhook({id, url}) {
   const pinged = data && data.pingWebhook
   return (
     <>
-    <Refresh size='18px' onClick={() => setOpen(true)} />
+    <HoveredBackground>
+      <Box accentable style={{cursor: 'pointer'}} pad='xsamll' onClick={() => setOpen(true)}>
+        <Refresh size='18px'  />
+      </Box>
+    </HoveredBackground>
     {open && (
       <Layer
         modal

@@ -5,30 +5,30 @@ locals {
 
 provider "google" {
   version = "2.5.1"
-  project = "${var.gcp_project_id}"
-  region  = "${local.gcp_region}"
+  project = var.gcp_project_id
+  region  = local.gcp_region
 }
 
 resource "google_compute_network" "vpc_network" {
-  name                    = "${var.vpc_network_name}"
+  name                    = var.vpc_network_name
   auto_create_subnetworks = "false"
 }
 
 resource "google_compute_subnetwork" "vpc_subnetwork" {
   #name = "default-${var.gcp_cluster_region}"
-  name = "${var.vpc_subnetwork_name}"
+  name = var.vpc_subnetwork_name
 
-  ip_cidr_range = "${var.vpc_subnetwork_cidr_range}"
+  ip_cidr_range = var.vpc_subnetwork_cidr_range
 
-  network = "${google_compute_network.vpc_network.name}"
+  network = google_compute_network.vpc_network.name
 
   secondary_ip_range {
-    range_name    = "${var.cluster_secondary_range_name}"
-    ip_cidr_range = "${var.cluster_secondary_range_cidr}"
+    range_name    = var.cluster_secondary_range_name
+    ip_cidr_range = var.cluster_secondary_range_cidr
   }
   secondary_ip_range {
-    range_name    = "${var.services_secondary_range_name}"
-    ip_cidr_range = "${var.services_secondary_range_cidr}"
+    range_name    = var.services_secondary_range_name
+    ip_cidr_range = var.services_secondary_range_cidr
   }
 
   private_ip_google_access = true
@@ -39,21 +39,21 @@ resource "google_compute_subnetwork" "vpc_subnetwork" {
 }
 
 resource "google_dns_managed_zone" "piazza_zone" {
-  name = "${var.dns_zone_name}"
-  dns_name = "${var.dns_domain}"
+  name = var.dns_zone_name
+  dns_name = var.dns_domain
   description = "DNS zone for piazza deployment"
 }
 
 resource "google_container_cluster" "cluster" {
-  location = "${var.gcp_location}"
+  location = var.gcp_location
 
-  name = "${var.cluster_name}"
+  name = var.cluster_name
 
   min_master_version = "latest"
 
   maintenance_policy {
     daily_maintenance_window {
-      start_time = "${var.daily_maintenance_window_start_time}"
+      start_time = var.daily_maintenance_window_start_time
     }
   }
 
@@ -90,7 +90,7 @@ resource "google_container_cluster" "cluster" {
     }
 
     http_load_balancing {
-      disabled = "${var.http_load_balancing_disabled}"
+      disabled = var.http_load_balancing_disabled
     }
 
     network_policy_config {
@@ -98,14 +98,14 @@ resource "google_container_cluster" "cluster" {
     }
   }
 
-  network    = "${var.vpc_network_name}"
-  subnetwork = "${var.vpc_subnetwork_name}"
+  network    = var.vpc_network_name
+  subnetwork = var.vpc_subnetwork_name
 
   ip_allocation_policy {
     use_ip_aliases = true
 
-    cluster_secondary_range_name  = "${var.cluster_secondary_range_name}"
-    services_secondary_range_name = "${var.services_secondary_range_name}"
+    cluster_secondary_range_name  = var.cluster_secondary_range_name
+    services_secondary_range_name = var.services_secondary_range_name
   }
 
   remove_default_node_pool = true
@@ -115,8 +115,8 @@ resource "google_container_cluster" "cluster" {
 
   master_authorized_networks_config {
     cidr_blocks {
-      cidr_block = "${var.master_authorized_networks_cidr_block}"
-      display_name = "${var.master_authorized_networks_cidr_display}"
+      cidr_block = var.master_authorized_networks_cidr_block
+      display_name = var.master_authorized_networks_cidr_display
     }
   }
 
@@ -130,34 +130,34 @@ resource "google_container_cluster" "cluster" {
 }
 
 resource "google_container_node_pool" "node_pool" {
-  location = "${google_container_cluster.cluster.location}"
+  location = google_container_cluster.cluster.location
 
-  count = "${length(var.node_pools)}"
+  count = length(var.node_pools)
 
-  name = "${lookup(var.node_pools[count.index], "name", format("%03d", count.index + 1))}-pool"
+  name = lookup(var.node_pools[count.index], "name", format("%03d", count.index + 1))}-pool"
 
-  cluster = "${google_container_cluster.cluster.name}"
+  cluster = google_container_cluster.cluster.name
 
-  initial_node_count = "${lookup(var.node_pools[count.index], "initial_node_count", 2)}"
+  initial_node_count = lookup(var.node_pools[count.index], "initial_node_count", 2)
 
   autoscaling {
-    min_node_count = "${lookup(var.node_pools[count.index], "autoscaling_min_node_count", 2)}"
-    max_node_count = "${lookup(var.node_pools[count.index], "autoscaling_max_node_count", 3)}"
+    min_node_count = lookup(var.node_pools[count.index], "autoscaling_min_node_count", 2)
+    max_node_count = lookup(var.node_pools[count.index], "autoscaling_max_node_count", 3)
   }
 
   management {
-    auto_repair = "${lookup(var.node_pools[count.index], "auto_repair", true)}"
-    auto_upgrade = "${lookup(var.node_pools[count.index], "auto_upgrade", true)}"
+    auto_repair = lookup(var.node_pools[count.index], "auto_repair", true)
+    auto_upgrade = lookup(var.node_pools[count.index], "auto_upgrade", true)
   }
 
   node_config {
-    machine_type = "${lookup(var.node_pools[count.index], "node_config_machine_type", "n1-standard-1")}"
+    machine_type = lookup(var.node_pools[count.index], "node_config_machine_type", "n1-standard-1")
 
-    disk_size_gb = "${lookup(var.node_pools[count.index], "node_config_disk_size_gb", 100)}"
+    disk_size_gb = lookup(var.node_pools[count.index], "node_config_disk_size_gb", 100)
 
-    disk_type = "${lookup(var.node_pools[count.index], "node_config_disk_type", "pd-standard")}"
+    disk_type = lookup(var.node_pools[count.index], "node_config_disk_type", "pd-standard")
 
-    preemptible = "${lookup(var.node_pools[count.index], "node_config_preemptible", false)}"
+    preemptible = lookup(var.node_pools[count.index], "node_config_preemptible", false)
 
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform",
@@ -184,8 +184,8 @@ data "google_client_config" "current" {}
 provider "kubernetes" {
   load_config_file = false
   host = "https://${google_container_cluster.cluster.endpoint}"
-  cluster_ca_certificate = "${base64decode(google_container_cluster.cluster.master_auth.0.cluster_ca_certificate)}"
-  token = "${data.google_client_config.current.access_token}"
+  cluster_ca_certificate = base64decode(google_container_cluster.cluster.master_auth.0.cluster_ca_certificate)
+  token = data.google_client_config.current.access_token
 }
 
 resource "kubernetes_service_account" "tiller" {

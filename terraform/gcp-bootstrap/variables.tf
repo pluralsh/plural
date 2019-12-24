@@ -1,5 +1,5 @@
 variable "gcp_project_id" {
-  type = "string"
+  type = string
 
   description = <<EOF
 The ID of the project in which the resources belong.
@@ -7,7 +7,7 @@ EOF
 }
 
 variable "cluster_name" {
-  type = "string"
+  type = string
   default = "piazza"
 
   description = <<EOF
@@ -16,7 +16,7 @@ EOF
 }
 
 variable "gcp_location" {
-  type = "string"
+  type = string
   default = "us-east1-b"
 
   description = <<EOF
@@ -34,7 +34,7 @@ EOF
 }
 
 variable "daily_maintenance_window_start_time" {
-  type = "string"
+  type = string
   default = "03:00"
 
   description = <<EOF
@@ -89,7 +89,7 @@ EOF
 }
 
 variable "vpc_network_name" {
-  type = "string"
+  type = string
   default = "piazza-network"
 
   description = <<EOF
@@ -99,7 +99,7 @@ EOF
 }
 
 variable "vpc_subnetwork_name" {
-  type = "string"
+  type = string
   default = "piazza-subnetwork"
 
   description = <<EOF
@@ -109,12 +109,12 @@ EOF
 }
 
 variable "vpc_subnetwork_cidr_range" {
-  type = "string"
+  type = string
   default = "10.0.16.0/20"
 }
 
 variable "cluster_secondary_range_name" {
-  type = "string"
+  type = string
   default = "pods"
 
   description = <<EOF
@@ -125,12 +125,12 @@ EOF
 }
 
 variable "cluster_secondary_range_cidr" {
-  type = "string"
+  type = string
   default = "10.16.0.0/12"
 }
 
 variable "services_secondary_range_name" {
-  type = "string"
+  type = string
   default = "services"
 
   description = <<EOF
@@ -141,12 +141,12 @@ EOF
 }
 
 variable "services_secondary_range_cidr" {
-  type = "string"
+  type = string
   default = "10.1.0.0/20"
 }
 
 variable "master_ipv4_cidr_block" {
-  type    = "string"
+  type    = string
   default = "172.16.0.0/28"
 
   description = <<EOF
@@ -158,7 +158,7 @@ EOF
 }
 
 variable "access_private_images" {
-  type    = "string"
+  type    = string
   default = "false"
 
   description = <<EOF
@@ -168,7 +168,7 @@ EOF
 }
 
 variable "http_load_balancing_disabled" {
-  type    = "string"
+  type    = string
   default = "false"
 
   description = <<EOF
@@ -179,22 +179,22 @@ EOF
 }
 
 variable "master_authorized_networks_cidr_block" {
-  type = "string"
+  type = string
   default = "0.0.0.0/0"
 }
 
 variable "master_authorized_networks_cidr_display" {
-  type = "string"
+  type = string
   default = "default"
 }
 
 variable "dns_domain" {
-  type = "string"
+  type = string
   description = "The domain name you'll register piazza under"
 }
 
 variable "dns_zone_name" {
-  type = "string"
+  type = string
   description = "The name for your dns zone"
   default = "piazza"
 }

@@ -5,27 +5,27 @@ locals {
 
 provider "google" {
   version = "2.5.1"
-  project = "${var.gcp_project_id}"
-  region  = "${local.gcp_region}"
+  project = var.gcp_project_id
+  region  = local.gcp_region
 }
 
 data "google_client_config" "current" {}
 
 data "google_container_cluster" "cluster" {
-  name = "${var.cluster_name}"
-  location = "${var.gcp_location}"
+  name = var.cluster_name
+  location = var.gcp_location
 }
 
 provider "kubernetes" {
   load_config_file = false
-  host = "${data.google_container_cluster.cluster.endpoint}"
-  cluster_ca_certificate = "${base64decode(data.google_container_cluster.cluster.master_auth.0.cluster_ca_certificate)}"
-  token = "${data.google_client_config.current.access_token}"
+  host = data.google_container_cluster.cluster.endpoint
+  cluster_ca_certificate = base64decode(data.google_container_cluster.cluster.master_auth.0.cluster_ca_certificate)
+  token = data.google_client_config.current.access_token
 }
 
 resource "null_resource" "node_pool" {
   triggers = {
-    node_pool = "${var.node_pool}"
+    node_pool = var.node_pool
   }
 }
 
@@ -36,9 +36,9 @@ resource "null_resource" "node_pool" {
 
 resource "kubernetes_namespace" "chartmart" {
   metadata {
-    name = "${var.chartmart_namespace}"
+    name = var.chartmart_namespace
     annotations = {
-      "cnrm.cloud.google.com/project-id" = "${var.gcp_project_id}"
+      "cnrm.cloud.google.com/project-id" = var.gcp_project_id
     }
   }
   depends_on = [
@@ -52,7 +52,7 @@ resource "google_service_account" "externaldns" {
 }
 
 resource "google_service_account_key" "externaldns" {
-  service_account_id = "${google_service_account.externaldns.name}"
+  service_account_id = google_service_account.externaldns.name
   public_key_type = "TYPE_X509_PEM_FILE"
 
   depends_on = [
@@ -61,7 +61,7 @@ resource "google_service_account_key" "externaldns" {
 }
 
 resource "google_project_iam_member" "externaldns_dns_admin" {
-  project = "${var.gcp_project_id}"
+  project = var.gcp_project_id
   role    = "roles/dns.admin"
 
   member = "serviceAccount:${google_service_account.externaldns.email}"
@@ -74,10 +74,10 @@ resource "google_project_iam_member" "externaldns_dns_admin" {
 resource "kubernetes_secret" "externaldns" {
   metadata {
     name = "externaldns"
-    namespace = "${var.chartmart_namespace}"
+    namespace = var.chartmart_namespace
   }
   data = {
-    "credentials.json" = "${base64decode(google_service_account_key.externaldns.private_key)}"
+    "credentials.json" = base64decode(google_service_account_key.externaldns.private_key)
   }
 
   depends_on = [

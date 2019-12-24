@@ -29,88 +29,6 @@ resource "null_resource" "node_pool" {
   }
 }
 
-resource "google_service_account" "chartmart" {
-  account_id = "chartmart"
-  display_name = "Service account for chartmart"
-}
-
-resource "google_service_account_key" "chartmart" {
-  service_account_id = "${google_service_account.chartmart.name}"
-  public_key_type = "TYPE_X509_PEM_FILE"
-
-  depends_on = [
-    google_service_account.chartmart
-  ]
-}
-
-##
-# Create our gcs bucket
-##
-
-resource "google_storage_bucket" "chartmart_bucket" {
-  name = "${var.chartmart_bucket}"
-  project = "${var.gcp_project_id}"
-  force_destroy = true
-}
-
-resource "google_storage_bucket" "chartmart_assets_bucket" {
-  name = "${var.chartmart_assets_bucket}"
-  project = "${var.gcp_project_id}"
-  force_destroy = true
-}
-
-
-resource "google_storage_bucket" "chartmart_images_bucket" {
-  name = "${var.chartmart_images_bucket}"
-  project = "${var.gcp_project_id}"
-  force_destroy = true
-}
-
-resource "google_storage_bucket_acl" "chartmart_bucket_acl" {
-  bucket = "${google_storage_bucket.chartmart_bucket.name}"
-  predefined_acl = "publicRead"
-}
-
-resource "google_storage_bucket_acl" "chartmart_assets_bucket_acl" {
-  bucket = "${google_storage_bucket.chartmart_assets_bucket.name}"
-  predefined_acl = "publicRead"
-}
-
-resource "google_storage_bucket_iam_member" "chartmart" {
-  bucket = "${google_storage_bucket.chartmart_bucket.name}"
-  role = "roles/storage.admin"
-  member = "serviceAccount:${google_service_account.chartmart.email}"
-
-  depends_on = [
-    google_service_account.chartmart,
-    google_storage_bucket.chartmart_bucket,
-    google_storage_bucket_acl.chartmart_bucket_acl
-  ]
-}
-
-resource "google_storage_bucket_iam_member" "chartmart_assets" {
-  bucket = "${google_storage_bucket.chartmart_assets_bucket.name}"
-  role = "roles/storage.admin"
-  member = "serviceAccount:${google_service_account.chartmart.email}"
-
-  depends_on = [
-    google_service_account.chartmart,
-    google_storage_bucket.chartmart_assets_bucket,
-    google_storage_bucket_acl.chartmart_assets_bucket_acl
-  ]
-}
-
-
-resource "google_storage_bucket_iam_member" "chartmart_images" {
-  bucket = "${google_storage_bucket.chartmart_images_bucket.name}"
-  role = "roles/storage.admin"
-  member = "serviceAccount:${google_service_account.chartmart.email}"
-
-  depends_on = [
-    google_service_account.chartmart,
-    google_storage_bucket.chartmart_images_bucket
-  ]
-}
 
 ##
 # Finally tie everything back into our cluster
@@ -125,20 +43,6 @@ resource "kubernetes_namespace" "chartmart" {
   }
   depends_on = [
     null_resource.node_pool
-  ]
-}
-
-resource "kubernetes_secret" "chartmart" {
-  metadata {
-    name = "chartmart-serviceaccount"
-    namespace = "${var.chartmart_namespace}"
-  }
-  data = {
-    "gcp.json" = "${base64decode(google_service_account_key.chartmart.private_key)}"
-  }
-
-  depends_on = [
-    kubernetes_namespace.chartmart
   ]
 }
 

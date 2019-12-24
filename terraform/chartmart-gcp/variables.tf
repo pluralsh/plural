@@ -3,6 +3,27 @@ variable "cluster_name" {
   default = "piazza"
 }
 
+variable "chartmart_bucket" {
+  type = "string"
+  description = <<EOF
+The bucket the chartmart deployment will actually use
+EOF
+}
+
+variable "chartmart_assets_bucket" {
+  type = "string"
+  description = <<EOF
+The bucket for uploads/icons and such for the chartmart deployment
+EOF
+}
+
+variable "chartmart_images_bucket" {
+  type = "string"
+  description = <<EOF
+The bucket for docker images for the chartmart deployment
+EOF
+}
+
 variable "chartmart_namespace" {
   type = "string"
   description = <<EOF

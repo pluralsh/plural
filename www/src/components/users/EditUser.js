@@ -14,6 +14,7 @@ import {BreadcrumbContext} from '../Chartmart'
 import Expander from '../utils/Expander'
 import Installations from '../repos/Installations'
 import Webhooks from './Webhooks'
+import HoveredBackground from '../utils/HoveredBackground'
 
 const LABEL_WIDTH = '60px'
 const CELL_WIDTH='200px'
@@ -51,7 +52,11 @@ function Token({token: {token, insertedAt, id}, hasNext}) {
       </Box>
       <Box width={CELL_WIDTH} pad='xsmall' direction='row' gap='medium' align='center' justify='end'>
         <Text size='small'>{moment(insertedAt).fromNow()}</Text>
-        <Trash size='12px' onClick={mutation} />
+        <HoveredBackground>
+          <Box accentable pad='xsmall' style={{cursor: 'pointer'}}>
+            <Trash size='12px' onClick={mutation} />
+          </Box>
+        </HoveredBackground>
       </Box>
     </Box>
   )

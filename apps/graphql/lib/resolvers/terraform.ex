@@ -29,6 +29,9 @@ defmodule GraphQl.Resolvers.Terraform do
   def update_terraform(%{id: id, attributes: attrs}, %{context: %{current_user: user}}),
     do: TfSvc.update_terraform(attrs, id, user)
 
+  def delete_terraform(%{id: id}, %{context: %{current_user: user}}),
+    do: TfSvc.delete_terraform(id, user)
+
   def upsert_terraform(%{repository_name: repo_name, name: name, attributes: attrs}, %{context: %{current_user: user}}) do
     %{id: repo_id} = Core.Services.Repositories.get_repository_by_name!(repo_name)
     TfSvc.upsert_terraform(attrs, repo_id, name, user)

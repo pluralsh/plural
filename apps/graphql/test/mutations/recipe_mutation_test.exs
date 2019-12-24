@@ -70,6 +70,24 @@ defmodule GraphQl.RecipeMutationsTest do
     end
   end
 
+  describe "deleteRecipe" do
+    test "Publishers can delete recipes" do
+      %{publisher: pub} = repo = insert(:repository)
+      recipe = insert(:recipe, repository: repo)
+
+      {:ok, %{data: %{"deleteRecipe" => del}}} = run_query("""
+        mutation DeleteRecipe($id: ID!) {
+          deleteRecipe(id: $id) {
+            id
+          }
+        }
+      """, %{"id" => recipe.id}, %{current_user: pub.owner})
+
+      assert del["id"] == recipe.id
+      refute refetch(recipe)
+    end
+  end
+
   describe "installRecipe" do
     test "You can install recipes" do
       recipe = insert(:recipe)

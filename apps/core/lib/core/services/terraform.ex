@@ -43,6 +43,12 @@ defmodule Core.Services.Terraform do
     end
   end
 
+  def delete_terraform(id, user) do
+    get_tf!(id)
+    |> allow(user, :edit)
+    |> when_ok(:delete)
+  end
+
   def create_terraform_installation(attrs, installation_id, %User{} = user) do
     installation = Repositories.get_installation!(installation_id)
 

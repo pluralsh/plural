@@ -43,6 +43,24 @@ defmodule GraphQl.Terraform.MutationsTest do
     end
   end
 
+  describe "deleteTerraform" do
+    test "A publisher can delete tf" do
+      %{publisher: pub} = repo = insert(:repository)
+      terraform = insert(:terraform, repository: repo)
+
+      {:ok, %{data: %{"deleteTerraform" => del}}} = run_query("""
+        mutation DeleteTf($id: ID!) {
+          deleteTerraform(id: $id) {
+            id
+          }
+        }
+      """, %{"id" => terraform.id}, %{current_user: pub.owner})
+
+      assert del["id"] == terraform.id
+      refute refetch(terraform)
+    end
+  end
+
   describe "uploadTerraform" do
     test "A publisher can update tf" do
       repo = insert(:repository)

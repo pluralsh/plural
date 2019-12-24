@@ -86,28 +86,33 @@ function EditSection({recipeSection, item, ctx, setCtx}) {
         <RecipeItemHeading {...recipeItem} />
       </Box>
       <Box direction='row' fill='horizontal'>
-        <Box width={`${100 - DOC_WIDTH}%`}>
-          {recipeItem.configuration && (
-            <Box pad='small' gap='xsmall'>
-              {recipeItem.configuration.map((conf) => (
-                <Configure
-                  key={conf.name}
-                  conf={conf}
-                  ctx={ctx}
-                  setCtx={setCtx}
-                  repo={repo}
-                  labelWidth={labelWidth} />
-              ))}
+        {recipeItem.configuration.length > 0 ? (
+          <><Box width={`${100 - DOC_WIDTH}%`}>
+            {recipeItem.configuration && (
+              <Box pad='small' gap='xsmall'>
+                {recipeItem.configuration.map((conf) => (
+                  <Configure
+                    key={conf.name}
+                    conf={conf}
+                    ctx={ctx}
+                    setCtx={setCtx}
+                    repo={repo}
+                    labelWidth={labelWidth} />
+                ))}
+              </Box>
+            )}
             </Box>
-          )}
-          </Box>
-          <Box width={`${DOC_WIDTH}%`} pad='small' gap='xxsmall' border='left'>
-            <Text weight='bold' size='small' margin={{bottom: 'xsmall'}}>Documentation</Text>
-            {recipeItem.configuration.map(({name, documentation}) => (
-              documentation ? <Documentation name={name} documentation={documentation} /> : null
-            ))}
-          </Box>
-        </Box>
+            <Box width={`${DOC_WIDTH}%`} pad='small' gap='xxsmall' border='left'>
+              <Text weight='bold' size='small' margin={{bottom: 'xsmall'}}>Documentation</Text>
+              {recipeItem.configuration.map(({name, documentation}) => (
+                documentation ? <Documentation name={name} documentation={documentation} /> : null
+              ))}
+            </Box></>) :
+        (<Box fill='horizontal' align='center' justify='center'>
+            <Text weight='bold' size='small'>Nothing to configure</Text>
+         </Box>)
+      }
+      </Box>
     </Box>
   )
 }

@@ -73,7 +73,7 @@ RUN go build -o /go/bin/chartmart
 FROM alpine:3 as helm
 
 ARG VERSION=2.12.0
-ENV TERRAFORM_VERSION=0.12.12
+ENV TERRAFORM_VERSION=0.12.18
 
 # ENV BASE_URL="https://storage.googleapis.com/kubernetes-helm"
 ENV BASE_URL="https://get.helm.sh"

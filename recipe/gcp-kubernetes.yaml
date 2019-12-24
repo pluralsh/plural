@@ -15,16 +15,7 @@ sections:
       type: STRING
   - type: TERRAFORM
     name: kube
-    configuration:
-    - name: chartmuseum_bucket
-      documentation: bucket for storing charts
-      type: STRING
-    - name: assets_bucket
-      documentation: bucket for storing chartmart assets
-      type: STRING
-    - name: images_bucket
-      documentation: bucket for storing docker images
-      type: STRING
+    configuration: []
   - type: HELM
     name: bootstrap
     configuration:

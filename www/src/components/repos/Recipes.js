@@ -64,6 +64,7 @@ export default function Recipes({edges, pageInfo, fetchMore}) {
         draggable={false}
         dots
         slidesPerPage={3}
+        offset={12}
         edges={edges}
         mapper={({node}) => <RecipeListItem key={node.id} recipe={node} setRecipe={wrappedSetRecipe} />}
         fetchMore={() => {

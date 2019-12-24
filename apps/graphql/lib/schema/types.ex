@@ -156,6 +156,7 @@ defmodule GraphQl.Schema.Types do
 
   object :dependencies do
     field :dependencies, list_of(:dependency)
+    field :providers, list_of(:provider)
     field :wirings, :wirings
   end
 

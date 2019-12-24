@@ -23,6 +23,12 @@ defmodule Core.Services.Recipes do
     |> when_ok(&hydrate/1)
   end
 
+  def delete(id, user) do
+    get!(id)
+    |> allow(user, :edit)
+    |> when_ok(:delete)
+  end
+
   def install(%Recipe{} = recipe, context, user) do
     hydrate(recipe)
     |> Map.get(:recipe_sections)

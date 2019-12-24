@@ -73,6 +73,23 @@ defmodule Core.Services.TerraformTest do
     end
   end
 
+  describe "#delete_terraform/2" do
+    test "A publisher can delete terraform" do
+      %{publisher: pub} = repo = insert(:repository)
+      terraform = insert(:terraform, repository: repo)
+
+      {:ok, del} = Terraform.delete_terraform(terraform.id, pub.owner)
+
+      assert del.id == terraform.id
+      refute refetch(terraform)
+    end
+
+    test "Nonpublishers cannot delete tf" do
+      terraform = insert(:terraform)
+      {:error, _} = Terraform.delete_terraform(terraform.id, insert(:user))
+    end
+  end
+
   describe "#extract_tf_meta/3" do
     test "It can find a readme and var template" do
       path = Path.join(:code.priv_dir(:core), "gcp-bootstrap.tgz")

@@ -121,6 +121,23 @@ defmodule Core.Services.RecipesTest do
     end
   end
 
+  describe "#delete" do
+    test "Publishers can delete their recipes" do
+      %{publisher: pub} = repo = insert(:repository)
+      recipe = insert(:recipe, repository: repo)
+
+      {:ok, del} = Recipes.delete(recipe.id, pub.owner)
+
+      assert del.id == recipe.id
+      refute refetch(recipe)
+    end
+
+    test "Nonpublishers cannot delete recipes" do
+      recipe = insert(:recipe)
+      {:error, _} = Recipes.delete(recipe.id, insert(:user))
+    end
+  end
+
   describe "#install" do
     test "It can install all components in a recipe" do
       recipe = insert(:recipe)

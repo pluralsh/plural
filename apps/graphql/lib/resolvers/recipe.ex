@@ -27,6 +27,8 @@ defmodule GraphQl.Resolvers.Recipe do
     |> create_recipe(context)
   end
 
+  def delete_recipe(%{id: id}, %{context: %{current_user: user}}),
+    do: Recipes.delete(id, user)
 
   def install_recipe(%{recipe_id: recipe_id, context: context}, %{context: %{current_user: user}}),
     do: Recipes.install(recipe_id, context, user)

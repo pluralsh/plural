@@ -295,6 +295,13 @@ defmodule GraphQl do
       resolve safe_resolver(&Recipe.create_recipe/2)
     end
 
+    field :delete_recipe, :recipe do
+      middleware GraphQl.Middleware.Authenticated
+      arg :id, non_null(:id)
+
+      resolve safe_resolver(&Recipe.delete_recipe/2)
+    end
+
     field :install_recipe, list_of(:installation) do
       middleware GraphQl.Middleware.Authenticated
       arg :recipe_id, non_null(:id)
@@ -317,6 +324,13 @@ defmodule GraphQl do
       arg :attributes, non_null(:terraform_attributes)
 
       resolve safe_resolver(&Terraform.update_terraform/2)
+    end
+
+    field :delete_terraform, :terraform do
+      middleware GraphQl.Middleware.Authenticated
+      arg :id, non_null(:id)
+
+      resolve safe_resolver(&Terraform.delete_terraform/2)
     end
 
     field :upload_terraform, :terraform do

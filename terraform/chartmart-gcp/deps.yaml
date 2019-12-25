@@ -6,6 +6,9 @@ dependencies:
     repo: chartmart
     type: terraform
 
+providers:
+- gcp
+
 wirings:
   terraform:
     cluster_name: gcp-bootstrap.cluster_name

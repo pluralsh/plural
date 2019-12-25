@@ -2,6 +2,8 @@ dependencies:
 - name: gcp-bootstrap
   repo: chartmart
   type: terraform
+providers:
+- gcp
 
 wirings:
   terraform:

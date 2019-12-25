@@ -39,6 +39,7 @@ export const DependenciesFragment = gql`
       repo
       type
     }
+    providers
     wirings {
       terraform
       helm

@@ -35,6 +35,18 @@ func main() {
 			Action:    deploy,
 		},
 		{
+			Name:    "validate",
+			Aliases: []string{"v"},
+			Usage:   "validates your workspace",
+			Flags:   []cli.Flag {
+				cli.StringFlag {
+					Name:  "only",
+					Usage: "repository to (re)build",
+				},
+			},
+			Action:  validate,
+		},
+		{
 			Name:      "topsort",
 			Aliases:   []string{"d"},
 			Usage:     "renders a dependency-inferred topological sort of the installations in a workspace",

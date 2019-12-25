@@ -30,6 +30,27 @@ func build(c *cli.Context) error {
 	return nil
 }
 
+func validate(c *cli.Context) error {
+	client := api.NewClient()
+	installations, _ := client.GetInstallations()
+	for _, installation := range installations {
+		if c.IsSet("only") && c.String("only") != installation.Repository.Name {
+			continue
+		}
+
+		utils.Highlight("Validating repository %s\n", installation.Repository.Name)
+		workspace, err := wkspace.New(client, &installation)
+		if err != nil {
+			return err
+		}
+		if err := workspace.Validate(); err != nil {
+			return err
+		}
+	}
+	utils.Success("Workspace providers are properly configured!\n")
+	return nil
+}
+
 func deploy(c *cli.Context) error {
 	client := api.NewClient()
 	installations, _ := client.GetInstallations()

@@ -60,6 +60,7 @@ type Terraform struct {
 
 type Dependencies struct {
 	Dependencies []Dependency
+	Providers []string
 	Wirings Wirings
 }
 
@@ -192,6 +193,7 @@ const DependenciesFragment = `
 			name
 			repo
 		}
+		providers
 	}
 `
 
@@ -213,18 +215,14 @@ var ChartInstallationFragment = fmt.Sprintf(`
 	%s
 `, ChartFragment, DependenciesFragment, VersionFragment)
 
-const TerraformFragment = `
+var TerraformFragment = fmt.Sprintf(`
 	fragment TerraformFragment on Terraform {
 		id
 		name
 		package
 		description
 		dependencies {
-			dependencies {
-				type
-				repo
-				name
-			}
+			...DependenciesFragment
 			wirings {
 				terraform
 				helm
@@ -232,7 +230,8 @@ const TerraformFragment = `
 		}
 		valuesTemplate
 	}
-`
+	%s
+`, DependenciesFragment)
 
 var TerraformInstallationFragment = fmt.Sprintf(`
 	fragment TerraformInstallationFragment on TerraformInstallation {

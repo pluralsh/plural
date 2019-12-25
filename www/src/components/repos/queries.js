@@ -247,7 +247,7 @@ export const CHART_Q = gql`
 `;
 
 export const TF_Q = gql`
-  query Charts($tfId: ID!) {
+  query Terraform($tfId: ID!) {
     terraformModule(id: $tfId) {
       ...TerraformFragment
       editable

@@ -2,22 +2,13 @@ import React, { useState } from 'react'
 import { Box, Text, Stack } from 'grommet'
 import Carousel from '../utils/Carousel'
 import Recipe from './Recipe'
-import { DEFAULT_GCP_ICON } from './constants'
 import { Trash } from 'grommet-icons'
 import HoveredBackground from '../utils/HoveredBackground'
 import { useMutation } from 'react-apollo'
 import { DELETE_RECIPE, REPO_Q } from './queries'
+import { Provider } from './misc'
 
 const PROVIDER_WIDTH = 40
-
-function Provider({provider}) {
-  switch (provider) {
-    case "GCP":
-      return <img alt='gcp' width={`${PROVIDER_WIDTH - 5}px`} height={`${PROVIDER_WIDTH - 5}px`} src={DEFAULT_GCP_ICON} />
-    default:
-      return null
-  }
-}
 
 function DeleteRecipe({recipe: {id}, repositoryId}) {
   const [mutation] = useMutation(DELETE_RECIPE, {
@@ -44,7 +35,7 @@ function DeleteRecipe({recipe: {id}, repositoryId}) {
         round='xsmall'
         onClick={mutation}
         margin={{top: 'xsmall', right: 'xsmall'}}>
-          <Trash size='15px' />
+        <Trash size='12px' />
       </Box>
     </HoveredBackground>
   )
@@ -67,7 +58,7 @@ function RecipeListItemInner({recipe, setRecipe, hover, setHover}) {
       background={hover ? 'light-3' : null}>
       {provider && (
         <Box width={PROVIDER_WIDTH + 'px'} align='center' justify='center'>
-          <Provider provider={provider} />
+          <Provider provider={provider} width={PROVIDER_WIDTH - 5} />
         </Box>
       )}
       <Box gap='small' fill='horizontal'>

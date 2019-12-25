@@ -17,6 +17,7 @@ import Highlight from 'react-highlight'
 import Recipes from './Recipes'
 import moment from 'moment'
 import ScrollableContainer from '../utils/ScrollableContainer'
+import { Provider } from './misc'
 
 function Container({children, onClick, hasNext, noPad}) {
   const [hover, setHover] = useState(false)
@@ -93,15 +94,19 @@ function DockerImage({image}) {
 
 function Tf({terraform, hasNext}) {
   let history = useHistory()
+  console.log(terraform)
   return (
     <Container onClick={() => history.push(`/terraform/${terraform.id}`)} hasNext={hasNext}>
       <Box width='50px' heigh='50px'>
         <img alt='' width='50px' height='50px' src={DEFAULT_TF_ICON} />
       </Box>
       <Box gap='xxsmall' justify='center'>
-        <Text size='small' style={{fontWeight: 500}}>
-          {terraform.name}
-        </Text>
+        <Box direction='row' align='center' gap='xsmall'>
+          <Text size='small' style={{fontWeight: 500}}>
+            {terraform.name}
+          </Text>
+          {terraform.dependencies && terraform.dependencies.providers && terraform.dependencies.providers.map((provider) => <Provider provider={provider} width={15} />)}
+        </Box>
         <Text size='small'>
           {terraform.description}
         </Text>

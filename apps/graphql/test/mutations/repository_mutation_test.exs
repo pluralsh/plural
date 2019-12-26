@@ -16,7 +16,18 @@ defmodule GraphQl.RepositoryMutationsTest do
             }
           }
         }
-      """, %{"attrs" => %{"name" => "my repo"}}, %{current_user: user})
+      """, %{"attrs" => %{
+        "name" => "my repo",
+        "integration_resource_definition" => %{
+          "name" => "definition",
+          "spec" => [
+            %{"type" => "STRING", "name" => "str"},
+            %{"type" => "OBJECT", "name" => "nest", "spec" => [
+              %{"type" => "STRING", "name" => "nested"}
+            ]}
+          ]
+        }
+      }}, %{current_user: user})
 
       assert repo["id"]
       assert repo["name"] == "my repo"
@@ -25,21 +36,37 @@ defmodule GraphQl.RepositoryMutationsTest do
   end
 
   describe "updateRepository" do
-    test "Users can update themselves" do
+    test "Users can update their repositories" do
       user = insert(:user)
       repo = insert(:repository, publisher: build(:publisher, owner: user))
 
       {:ok, %{data: %{"updateRepository" => updated}}} = run_query("""
-        mutation updateRepository($repositoryId: ID!, $name: String) {
-          updateRepository(repositoryId: $repositoryId, attributes: {name: $name}) {
+        mutation updateRepository($repositoryName: String!, $name: String, $resource: ResourceDefinitionAttributes) {
+          updateRepository(repositoryName: $repositoryName, attributes: {name: $name, integrationResourceDefinition: $resource}) {
             id
             name
           }
         }
-      """, %{"repositoryId" => repo.id, "name" => "Updated Repo"}, %{current_user: user})
+      """, %{
+        "repositoryName" => repo.name,
+        "name" => "Updated Repo",
+        "resource" => %{
+          "name" => "definition",
+          "spec" => [
+            %{"type" => "STRING", "name" => "str", "spec" => []},
+            %{"type" => "OBJECT", "name" => "nest", "spec" => [
+              %{"type" => "STRING", "name" => "nested"}
+            ]}
+          ]
+        }
+      }, %{current_user: user})
 
       assert updated["id"] == repo.id
       assert updated["name"] == "Updated Repo"
+
+      %{integration_resource_definition: def} = Core.Repo.preload(refetch(repo), [:integration_resource_definition])
+
+      assert def.name == "definition"
     end
   end
 
@@ -113,6 +140,34 @@ defmodule GraphQl.RepositoryMutationsTest do
       """, %{"id" => inst.id}, %{current_user: user})
 
       assert delete["id"] == inst.id
+    end
+  end
+
+  describe "createIntegration" do
+    test "Publishers can create integrations" do
+      %{publisher: %{owner: pub}} = repo = insert(:repository,
+        integration_resource_definition: build(:resource_definition,
+          spec: [
+            build(:specification, type: :string, name: "str", required: true)
+          ]
+        )
+      )
+
+      {:ok, %{data: %{"createIntegration" => intg}}} = run_query("""
+        mutation CreateIntegration($name: String!, $attrs: IntegrationAttributes!) {
+          createIntegration(repositoryName: $name, attributes: $attrs) {
+            id
+            name
+            spec
+          }
+        }
+      """, %{
+        "name" => repo.name,
+        "attrs" => %{"name" => "github", "spec" => Jason.encode!(%{"str" => "val"})}
+      }, %{current_user: pub})
+
+      assert intg["name"] == "github"
+      assert intg["spec"]["str"] == "val"
     end
   end
 end

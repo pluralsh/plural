@@ -26,3 +26,5 @@ erl_crash.dump
 /**/terraform.tfstate*
 
 /secrets/
+
+/.vscode

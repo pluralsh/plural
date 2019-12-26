@@ -110,6 +110,13 @@ defmodule GraphQl do
       resolve &Repository.list_installations/2
     end
 
+    connection field :integrations, node_type: :integration do
+      arg :repository_id,   :id
+      arg :repository_name, :string
+
+      resolve &Repository.list_integrations/2
+    end
+
     field :recipe, :recipe do
       middleware GraphQl.Middleware.Authenticated
       arg :id, non_null(:id)
@@ -251,8 +258,9 @@ defmodule GraphQl do
 
     field :update_repository, :repository do
       middleware GraphQl.Middleware.Authenticated
-      arg :repository_id, non_null(:id)
-      arg :attributes, non_null(:repository_attributes)
+      arg :repository_id,   :id
+      arg :repository_name, :string
+      arg :attributes,      non_null(:repository_attributes)
 
       resolve safe_resolver(&Repository.update_repository/2)
     end
@@ -284,6 +292,14 @@ defmodule GraphQl do
       arg :id, non_null(:id)
 
       resolve safe_resolver(&Repository.delete_installation/2)
+    end
+
+    field :create_integration, :integration do
+      middleware GraphQl.Middleware.Authenticated
+      arg :repository_name, non_null(:string)
+      arg :attributes, non_null(:integration_attributes)
+
+      resolve safe_resolver(&Repository.upsert_integration/2)
     end
 
     field :create_recipe, :recipe do

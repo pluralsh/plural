@@ -5,7 +5,8 @@ defmodule Core.Storage do
     User,
     Publisher,
     Repository,
-    Terraform
+    Terraform,
+    Integration
   }
 
   @acl :public_read
@@ -26,6 +27,7 @@ defmodule Core.Storage do
   def storage_dir(_, {_file, %User{avatar_id: avatar_id}}), do: "uploads/avatars/#{avatar_id}"
   def storage_dir(_, {_file, %Publisher{avatar_id: avatar_id}}), do: "uploads/pubs/#{avatar_id}"
   def storage_dir(_, {_file, %Repository{icon_id: icon_id}}), do: "uploads/repos/#{icon_id}"
+  def storage_dir(_, {_file, %Integration{icon_id: icon_id}}), do: "uploads/integrations/#{icon_id}"
 
   def default_url(_), do: nil
 end

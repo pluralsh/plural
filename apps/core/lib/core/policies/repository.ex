@@ -1,8 +1,12 @@
 defmodule Core.Policies.Repository do
   use Piazza.Policy
-  alias Core.Schema.{User, Installation, Repository}
+  alias Core.Schema.{User, Installation, Repository, Integration}
   alias Core.Services.Repositories
 
+  def can?(%User{} = user, %Integration{} = integ, policy) do
+    %{repository: repo} = Core.Repo.preload(integ, [:repository])
+    can?(user, repo, policy)
+  end
   def can?(%User{id: user_id}, %Repository{} = repo, :access) do
     case Core.Repo.preload(repo, [:publisher]) do
       %{publisher: %{owner_id: ^user_id}} -> :continue

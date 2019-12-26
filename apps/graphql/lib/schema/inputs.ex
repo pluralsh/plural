@@ -22,6 +22,7 @@ defmodule GraphQl.Schema.Inputs do
     field :description,   :string
     field :documentation, :string
     field :icon,          :upload_or_url
+    field :integration_resource_definition, :resource_definition_attributes
   end
 
   input_object :installation_attributes do
@@ -75,7 +76,7 @@ defmodule GraphQl.Schema.Inputs do
 
 
   input_object :recipe_configuration_attributes do
-    field :type,          non_null(:recipe_configuration_type_input)
+    field :type,          non_null(:type_input)
     field :name,          non_null(:string)
     field :default,       :string
     field :documentation, :string
@@ -87,9 +88,30 @@ defmodule GraphQl.Schema.Inputs do
     value :terraform
   end
 
-  enum :recipe_configuration_type_input do
+  enum :type_input do
     value :int
     value :bool
     value :string
+    value :object
+  end
+
+  input_object :integration_attributes do
+    field :name,          non_null(:string)
+    field :icon,          :upload_or_url
+    field :source_url,    :string
+    field :description,   :string
+    field :spec,          :yml
+  end
+
+  input_object :resource_definition_attributes do
+    field :name, non_null(:string)
+    field :spec, list_of(:specification_attributes)
+  end
+
+  input_object :specification_attributes do
+    field :name,     non_null(:string)
+    field :type,     non_null(:type_input)
+    field :spec,     list_of(:specification_attributes)
+    field :required, :boolean
   end
 end

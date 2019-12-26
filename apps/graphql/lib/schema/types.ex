@@ -257,18 +257,36 @@ defmodule GraphQl.Schema.Types do
     timestamps()
   end
 
-  enum :configuration_type do
+  enum :datatype do
     value :int
     value :bool
     value :string
+    value :object
   end
 
   object :recipe_configuration do
-    field :type,          :configuration_type
+    field :type,          :datatype
     field :name,          :string
     field :default,       :string
     field :documentation, :string
     field :placeholder,   :string
+  end
+
+  object :integration do
+    field :id,          non_null(:id)
+    field :name,        non_null(:string)
+    field :source_url,  :string
+    field :description, :string
+    field :spec,        :map
+
+    field :icon, :string, resolve: fn
+      integration, _, _ -> {:ok, Core.Storage.url({integration.icon, integration}, :original)}
+    end
+
+    field :repository, :repository, resolve: dataloader(Repository)
+    field :publisher,  :publisher, resolve: dataloader(User)
+
+    timestamps()
   end
 
   connection node_type: :user
@@ -277,6 +295,7 @@ defmodule GraphQl.Schema.Types do
   connection node_type: :chart
   connection node_type: :version
   connection node_type: :installation
+  connection node_type: :integration
   connection node_type: :terraform
   connection node_type: :terraform_installation
   connection node_type: :chart_installation

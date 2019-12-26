@@ -142,4 +142,26 @@ defmodule GraphQl.RepositoryQueriesTest do
              |> ids_equal(repos)
     end
   end
+
+  describe "integrations" do
+    test "It will list integrations" do
+      repository = insert(:repository)
+      integrations = insert_list(3, :integration, repository: repository)
+
+      {:ok, %{data: %{"integrations" => found}}} = run_query("""
+        query Integrations($name: String) {
+          integrations(repositoryName: $name, first: 5) {
+            edges {
+              node {
+                id
+              }
+            }
+          }
+        }
+      """, %{"name" => repository.name}, %{})
+
+      assert from_connection(found)
+             |> ids_equal(integrations)
+    end
+  end
 end

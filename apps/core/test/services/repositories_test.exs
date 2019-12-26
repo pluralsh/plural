@@ -13,6 +13,21 @@ defmodule Core.Services.RepositoriesTest do
       assert is_binary(repo.public_key)
       assert is_binary(repo.private_key)
     end
+
+    test "It can create an associated integration resource definition" do
+      %{owner: user} = insert(:publisher)
+
+      {:ok, repo} = Repositories.create_repository(%{
+        name: "piazza",
+        integration_resource_definition: %{
+          name: "piazza",
+          spec: [%{type: :int, name: "int"}, %{type: :string, name: "str"}]
+        }
+      }, user)
+
+      assert repo.integration_resource_definition.name == "piazza"
+      [%{type: :int, name: "int"}, %{type: :string, name: "str"}] = repo.integration_resource_definition.spec
+    end
   end
 
   describe "#update_repository" do
@@ -23,6 +38,23 @@ defmodule Core.Services.RepositoriesTest do
       {:ok, updated} = Repositories.update_repository(%{name: "piazza"}, repo.id, user)
 
       assert updated.name == "piazza"
+    end
+
+    test "It can update integration resource definitions" do
+      %{owner: user} = publisher = insert(:publisher)
+      repo = insert(:repository, publisher: publisher)
+
+      {:ok, updated} = Repositories.update_repository(%{
+        name: "piazza",
+        integration_resource_definition: %{
+          name: "piazza",
+          spec: [%{type: :int, name: "int"}, %{type: :string, name: "str"}]
+        }
+      }, repo.id, user)
+
+      assert updated.id == repo.id
+      assert updated.integration_resource_definition.name == "piazza"
+      [%{type: :int, name: "int"}, %{type: :string, name: "str"}] = updated.integration_resource_definition.spec
     end
 
     test "Nonpublishers cannot update their repositories" do
@@ -93,6 +125,68 @@ defmodule Core.Services.RepositoriesTest do
       repo = insert(:repository)
 
       {:error, _} = Repositories.delete_repository(repo.id, insert(:user))
+    end
+  end
+
+  describe "#upsert_integration/3" do
+    test "A publisher can upsert an integrations" do
+      %{owner: user} = pub = insert(:publisher)
+      repo = insert(:repository,
+        publisher: pub,
+        integration_resource_definition: build(:resource_definition,
+          spec: [
+            build(:specification, type: :string, name: "str")
+          ]
+        )
+      )
+
+      {:ok, integration} = Repositories.upsert_integration(%{
+        name: "github",
+        spec: %{"str" => "a value"}
+      }, repo.id, user)
+
+      assert integration.name == "github"
+      assert integration.spec["str"] == "a value"
+
+      {:ok, integration} = Repositories.upsert_integration(%{
+        name: "github",
+        spec: %{"str" => "a different value"}
+      }, repo.id, user)
+
+      assert integration.name == "github"
+      assert integration.spec["str"] == "a different value"
+    end
+
+    test "Non publishers cannot add integrations" do
+      repo = insert(:repository,
+        integration_resource_definition: build(:resource_definition,
+          spec: [
+            build(:specification, type: :string, name: "str")
+          ]
+        )
+      )
+
+      {:error, _} = Repositories.upsert_integration(%{
+        name: "github",
+        spec: %{"str" => "a value"}
+      }, repo.id, insert(:user))
+    end
+
+    test "It will enforce resource definitions" do
+      %{owner: user} = pub = insert(:publisher)
+      repo = insert(:repository,
+        publisher: pub,
+        integration_resource_definition: build(:resource_definition,
+          spec: [
+            build(:specification, type: :string, name: "str")
+          ]
+        )
+      )
+
+      {:error, %Ecto.Changeset{}} = Repositories.upsert_integration(%{
+        name: "github",
+        spec: %{"str" => 1}
+      }, repo.id, user)
     end
   end
 

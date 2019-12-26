@@ -10,7 +10,8 @@ defmodule Core.Services.Repositories do
     DockerRepository,
     DockerImage,
     LicenseToken,
-    License
+    License,
+    Integration
   }
   alias Piazza.Crypto.RSA
 
@@ -109,6 +110,7 @@ defmodule Core.Services.Repositories do
 
   def update_repository(attrs, repo_id, %User{} = user) do
     get_repository!(repo_id)
+    |> Core.Repo.preload([:integration_resource_definition])
     |> Repository.changeset(attrs)
     |> allow(user, :edit)
     |> when_ok(:update)
@@ -118,6 +120,18 @@ defmodule Core.Services.Repositories do
     get_repository!(repo_id)
     |> allow(user, :edit)
     |> when_ok(:delete)
+  end
+
+  def upsert_integration(%{name: name} = attrs, repo_id, %User{} = user) do
+    repo = get_repository!(repo_id) |> Core.Repo.preload([:integration_resource_definition])
+    case Core.Repo.get_by(Integration, name: name, repository_id:  repo_id) do
+      %Integration{} = int -> int
+      _ -> %Integration{repository_id: repo_id, name: name}
+    end
+    |> Integration.changeset(attrs)
+    |> Integration.validate(repo.integration_resource_definition)
+    |> allow(user, :edit)
+    |> when_ok(&Core.Repo.insert_or_update/1)
   end
 
   def create_installation(attrs, repository_id, %User{} = user) do

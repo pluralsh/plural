@@ -1,7 +1,7 @@
 defmodule Core.Schema.Repository do
   use Piazza.Ecto.Schema
   use Arc.Ecto.Schema
-  alias Core.Schema.{Publisher, Installation}
+  alias Core.Schema.{Publisher, Installation, ResourceDefinition}
 
   schema "repositories" do
     field :name,          :string, null: false
@@ -12,6 +12,7 @@ defmodule Core.Schema.Repository do
     field :public_key,    Piazza.Ecto.EncryptedString
     field :private_key,   Piazza.Ecto.EncryptedString
 
+    belongs_to :integration_resource_definition, ResourceDefinition
     belongs_to :publisher, Publisher
     has_many :installations, Installation
 
@@ -40,6 +41,7 @@ defmodule Core.Schema.Repository do
     model
     |> cast(attrs, @valid)
     |> foreign_key_constraint(:publisher_id)
+    |> cast_assoc(:integration_resource_definition)
     |> unique_constraint(:name)
     |> validate_required([:name])
     |> generate_uuid(:icon_id)

@@ -124,4 +124,21 @@ defmodule Core.Factory do
       recipe_section: build(:recipe_section)
     }
   end
+
+  def resource_definition_factory do
+    %Schema.ResourceDefinition{
+      name: sequence(:resource_def, &"resource-definition-#{&1}"),
+    }
+  end
+
+  def specification_factory do
+    %Schema.ResourceDefinition.Specification{}
+  end
+
+  def integration_factory do
+    %Schema.Integration{
+      name: sequence(:integration, &"intg-#{&1}"),
+      repository: build(:repository)
+    }
+  end
 end

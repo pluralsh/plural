@@ -2,6 +2,8 @@ package api
 
 import (
 	"context"
+	"fmt"
+
 	"github.com/machinebox/graphql"
 	"github.com/michaeljguarino/chartmart/config"
 )
@@ -37,4 +39,8 @@ func (client *Client) Build(doc string) *graphql.Request {
 
 func (client *Client) Run(req *graphql.Request, resp interface{}) error {
 	return client.gqlClient.Run(context.Background(), req, &resp)
+}
+
+func (client *Client) EnableLogging() {
+	client.gqlClient.Log = func(l string) { fmt.Println(l) }
 }

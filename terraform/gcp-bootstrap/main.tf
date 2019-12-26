@@ -134,7 +134,7 @@ resource "google_container_node_pool" "node_pool" {
 
   count = length(var.node_pools)
 
-  name = lookup(var.node_pools[count.index], "name", format("%03d", count.index + 1))}-pool"
+  name = "${lookup(var.node_pools[count.index], "name", format("%03d", count.index + 1))}-pool"
 
   cluster = google_container_cluster.cluster.name
 

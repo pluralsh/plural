@@ -1,8 +1,10 @@
 defmodule GraphQl.Resolvers.Repository do
   use GraphQl.Resolvers.Base, model: Core.Schema.Repository
   alias Core.Services.Repositories
-  alias Core.Schema.{Installation}
+  alias Core.Schema.{Installation, Integration, ResourceDefinition}
 
+  def query(Integration, _), do: Integration
+  def query(ResourceDefinition, _), do: ResourceDefinition
   def query(Installation, _), do: Installation
   def query(_, _), do: Repository
 
@@ -47,6 +49,18 @@ defmodule GraphQl.Resolvers.Repository do
     |> paginate(args)
   end
 
+  def list_integrations(%{repository_id: repo_id} = args, _) do
+    Integration.for_repository(repo_id)
+    |> Integration.ordered()
+    |> paginate(args)
+  end
+  def list_integrations(%{repository_name: name} = args, context) do
+    repo = Repositories.get_repository_by_name!(name)
+
+    Map.put(args, :repository_id, repo.id)
+    |> list_integrations(context)
+  end
+
   def editable(repo, user) do
     case Core.Policies.Repository.can?(user, repo, :edit) do
       {:error, _} -> {:ok, false}
@@ -54,11 +68,22 @@ defmodule GraphQl.Resolvers.Repository do
     end
   end
 
+  def upsert_integration(%{attributes: attrs, repository_name: name}, %{context: %{current_user: user}}) do
+    repo = Repositories.get_repository_by_name!(name)
+    Repositories.upsert_integration(attrs, repo.id, user)
+  end
+
   def create_repository(%{attributes: attrs}, %{context: %{current_user: user}}),
     do: Repositories.create_repository(attrs, user)
 
   def update_repository(%{attributes: attrs, repository_id: repo_id}, %{context: %{current_user: user}}),
     do: Repositories.update_repository(attrs, repo_id, user)
+  def update_repository(%{repository_name: name} = args, context) do
+    repo = Repositories.get_repository_by_name!(name)
+
+    Map.put(args, :repository_id, repo.id)
+    |> update_repository(context)
+  end
 
   def delete_repository(%{repository_id: repo_id}, %{context: %{current_user: user}}),
     do: Repositories.delete_repository(repo_id, user)

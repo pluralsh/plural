@@ -159,15 +159,23 @@ defmodule GraphQl.RepositoryMutationsTest do
             id
             name
             spec
+            tags {
+              tag
+            }
           }
         }
       """, %{
         "name" => repo.name,
-        "attrs" => %{"name" => "github", "spec" => Jason.encode!(%{"str" => "val"})}
+        "attrs" => %{
+          "name" => "github",
+          "spec" => Jason.encode!(%{"str" => "val"}),
+          "tags" => [%{"tag" => "something"}]
+        }
       }, %{current_user: pub})
 
       assert intg["name"] == "github"
       assert intg["spec"]["str"] == "val"
+      assert Enum.map(intg["tags"], & &1["tag"]) == ["something"]
     end
   end
 end

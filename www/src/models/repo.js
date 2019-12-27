@@ -46,3 +46,17 @@ export const DependenciesFragment = gql`
     }
   }
 `;
+
+export const IntegrationFragment = gql`
+  fragment IntegrationFragment on Integration {
+    id
+    name
+    icon
+    sourceUrl
+    description
+    publisher {
+      ...PublisherFragment
+    }
+  }
+  ${PublisherFragment}
+`;

@@ -1,5 +1,5 @@
 import gql from 'graphql-tag'
-import {RepoFragment, InstallationFragment} from '../../models/repo'
+import {RepoFragment, InstallationFragment, IntegrationFragment} from '../../models/repo'
 import {ChartFragment, VersionFragment, ChartInstallationFragment} from '../../models/chart'
 import {TerraformFragment} from '../../models/terraform'
 import {DockerRepoFragment, DockerImageFragment} from '../../models/docker'
@@ -107,7 +107,7 @@ export const INSTALL_REPO = gql`
 `;
 
 export const REPO_Q = gql`
-  query Repo($repositoryId: String!, $chartCursor: String, $tfCursor: String, $dkrCursor: String, $recipeCursor: String) {
+  query Repo($repositoryId: String!, $chartCursor: String, $tfCursor: String, $dkrCursor: String, $recipeCursor: String, $intCursor: String) {
     repository(id: $repositoryId) {
       ...RepoFragment
       editable
@@ -160,6 +160,17 @@ export const REPO_Q = gql`
         }
       }
     }
+    integrations(repositoryId: $repositoryId, first: 5, after: $intCursor) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      edges {
+        node {
+          ...IntegrationFragment
+        }
+      }
+    }
   }
   ${RepoFragment}
   ${ChartFragment}
@@ -167,6 +178,7 @@ export const REPO_Q = gql`
   ${TerraformFragment}
   ${DockerRepoFragment}
   ${RecipeFragment}
+  ${IntegrationFragment}
 `;
 
 export const DOCKER_IMG_Q = gql`

@@ -9,6 +9,7 @@ import Pill from '../utils/Pill'
 import yaml from 'js-yaml'
 import Highlight from 'react-highlight.js'
 import Expander from '../utils/Expander'
+import Integrations from './Integrations'
 
 function update(cache, repositoryId, installation) {
   const prev = cache.readQuery({ query: REPO_Q, variables: {repositoryId} })
@@ -74,7 +75,7 @@ function EditInstallation({installation, repository, onUpdate, open}) {
 }
 
 
-function Installation({repository, onUpdate, noHelm, open, recipes, fetchMore}) {
+function Installation({repository, onUpdate, noHelm, open, integrations, pageInfo, fetchMore}) {
   const [mutation] = useMutation(INSTALL_REPO, {
     variables: {repositoryId: repository.id},
     update: (cache, { data: { createInstallation } }) => {
@@ -106,6 +107,11 @@ chartmart deploy ${repository.name}`}
             repository={repository}
             open={open}
             onUpdate={onUpdate} />
+          {integrations && integrations.edges.length > 0 && (
+            <Expander text='Integrations'>
+              <Integrations integrations={integrations} fetchMore={fetchMore} repository={repository} />
+            </Expander>
+          )}
         </Box> :
         <Box pad='medium' gap='small'>
           <Text size='small'>This repository is free to use</Text>

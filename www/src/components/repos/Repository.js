@@ -350,7 +350,7 @@ function Repository() {
   }, [setBreadcrumbs, data])
 
   if (loading) return null
-  const {charts, repository, terraform, dockerRepositories, recipes} = data
+  const {charts, repository, terraform, dockerRepositories, recipes, integrations} = data
 
   return (
     <ScrollableContainer>
@@ -404,7 +404,10 @@ function Repository() {
           </Tabs>
         </Box>
         <Box pad='small' gap='medium' width={`${100 - WIDTH}%`}>
-          <Installation repository={repository} />
+          <Installation
+            repository={repository}
+            integrations={integrations}
+            fetchMore={fetchMore} />
         </Box>
       </Box>
     </ScrollableContainer>

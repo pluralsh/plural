@@ -141,4 +141,11 @@ defmodule Core.Factory do
       repository: build(:repository)
     }
   end
+
+  def tag_factory do
+    %Schema.Tag{
+      tag: sequence(:tags, &"tag-#{&1}"),
+      resource_type: :integration
+    }
+  end
 end

@@ -163,5 +163,27 @@ defmodule GraphQl.RepositoryQueriesTest do
       assert from_connection(found)
              |> ids_equal(integrations)
     end
+
+    test "It will list integrations for a tag" do
+      repository = insert(:repository)
+      first  = insert(:integration, repository: repository, tags: [%{tag: "tag", resource_type: :integration}])
+      second = insert(:integration, repository: repository, tags: [%{tag: "tag", resource_type: :integration}])
+      insert(:integration, repository: repository)
+
+      {:ok, %{data: %{"integrations" => found}}} = run_query("""
+        query Integrations($name: String!, $tag: String!) {
+          integrations(repositoryName: $name, tag: $tag, first: 5) {
+            edges {
+              node {
+                id
+              }
+            }
+          }
+        }
+      """, %{"name" => repository.name, "tag" => "tag"}, %{})
+
+      assert from_connection(found)
+             |> ids_equal([first, second])
+    end
   end
 end

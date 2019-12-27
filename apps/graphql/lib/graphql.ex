@@ -13,7 +13,8 @@ defmodule GraphQl do
     Terraform,
     Docker,
     Dependencies,
-    Recipe
+    Recipe,
+    Tag
   }
 
   def context(ctx) do
@@ -25,6 +26,7 @@ defmodule GraphQl do
       |> Dataloader.add_source(Terraform, Terraform.data(ctx))
       |> Dataloader.add_source(Docker, Docker.data(ctx))
       |> Dataloader.add_source(Recipe, Recipe.data(ctx))
+      |> Dataloader.add_source(Tag, Tag.data(ctx))
 
     Map.put(ctx, :loader, loader)
   end
@@ -113,6 +115,7 @@ defmodule GraphQl do
     connection field :integrations, node_type: :integration do
       arg :repository_id,   :id
       arg :repository_name, :string
+      arg :tag,             :string
 
       resolve &Repository.list_integrations/2
     end
@@ -184,6 +187,13 @@ defmodule GraphQl do
       middleware GraphQl.Middleware.Authenticated
 
       resolve &User.list_webhooks/2
+    end
+
+    connection field :tags, node_type: :grouped_tag do
+      arg :id,   non_null(:string)
+      arg :type, non_null(:tag_group)
+
+      resolve &Tag.grouped_tags/2
     end
   end
 

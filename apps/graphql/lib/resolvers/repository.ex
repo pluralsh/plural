@@ -1,8 +1,9 @@
 defmodule GraphQl.Resolvers.Repository do
   use GraphQl.Resolvers.Base, model: Core.Schema.Repository
   alias Core.Services.Repositories
-  alias Core.Schema.{Installation, Integration, ResourceDefinition}
+  alias Core.Schema.{Installation, Integration, ResourceDefinition, Tag}
 
+  def query(Tag, _), do: Tag
   def query(Integration, _), do: Integration
   def query(ResourceDefinition, _), do: ResourceDefinition
   def query(Installation, _), do: Installation
@@ -51,6 +52,7 @@ defmodule GraphQl.Resolvers.Repository do
 
   def list_integrations(%{repository_id: repo_id} = args, _) do
     Integration.for_repository(repo_id)
+    |> maybe_add_tags(args)
     |> Integration.ordered()
     |> paginate(args)
   end
@@ -60,6 +62,10 @@ defmodule GraphQl.Resolvers.Repository do
     Map.put(args, :repository_id, repo.id)
     |> list_integrations(context)
   end
+
+  defp maybe_add_tags(query, %{tag: tag}) when is_binary(tag),
+    do: Integration.for_tag(query, tag)
+  defp maybe_add_tags(query, _), do: query
 
   def editable(repo, user) do
     case Core.Policies.Repository.can?(user, repo, :edit) do

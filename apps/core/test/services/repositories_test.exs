@@ -142,19 +142,27 @@ defmodule Core.Services.RepositoriesTest do
 
       {:ok, integration} = Repositories.upsert_integration(%{
         name: "github",
-        spec: %{"str" => "a value"}
+        spec: %{"str" => "a value"},
+        tags: [%{tag: "some"}, %{tag: "tag"}]
       }, repo.id, user)
 
       assert integration.name == "github"
       assert integration.spec["str"] == "a value"
+      integration = refetch(integration) |> Core.Repo.preload([:tags])
+      assert Enum.map(integration.tags, & &1.tag)
+             |> Enum.sort() == ["some", "tag"]
 
       {:ok, integration} = Repositories.upsert_integration(%{
         name: "github",
-        spec: %{"str" => "a different value"}
+        spec: %{"str" => "a different value"},
+        tags: [%{tag: "another"}, %{tag: "tag"}]
       }, repo.id, user)
 
       assert integration.name == "github"
       assert integration.spec["str"] == "a different value"
+      integration = refetch(integration) |> Core.Repo.preload([:tags])
+      assert Enum.map(integration.tags, & &1.tag)
+             |> Enum.sort() == ["another", "tag"]
     end
 
     test "Non publishers cannot add integrations" do

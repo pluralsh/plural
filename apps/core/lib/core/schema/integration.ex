@@ -2,7 +2,7 @@ defmodule Core.Schema.Integration do
   use Piazza.Ecto.Schema
   use Arc.Ecto.Schema
 
-  alias Core.Schema.{Publisher, Repository, ResourceDefinition}
+  alias Core.Schema.{Publisher, Repository, ResourceDefinition, Tag}
 
   schema "integrations" do
     field :name,          :string
@@ -15,11 +15,23 @@ defmodule Core.Schema.Integration do
     belongs_to :publisher,  Publisher
     belongs_to :repository, Repository
 
+    has_many :tags, Tag,
+      where: [resource_type: :integration],
+      foreign_key: :resource_id,
+      on_replace: :delete
+
     timestamps()
   end
 
   def for_repository(query \\ __MODULE__, repo_id),
     do: from(i in query, where: i.repository_id == ^repo_id)
+
+  def for_tag(query \\ __MODULE__, tag) do
+    from(i in query,
+      join: t in assoc(i, :tags),
+      where: t.tag == ^tag
+    )
+  end
 
   def ordered(query \\ __MODULE__, order \\ [asc: :name]),
     do: from(i in query, order_by: ^order)
@@ -29,6 +41,7 @@ defmodule Core.Schema.Integration do
   def changeset(model, attrs \\ %{}) do
     model
     |> cast(attrs, @valid)
+    |> cast_assoc(:tags, with: &Tag.tag_changeset(&1, &2, :integration))
     |> foreign_key_constraint(:publisher_id)
     |> foreign_key_constraint(:repository_id)
     |> unique_constraint(:name, name: index_name(:integrations, [:repository_id, :name]))

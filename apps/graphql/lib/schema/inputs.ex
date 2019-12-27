@@ -50,6 +50,10 @@ defmodule GraphQl.Schema.Inputs do
     field :url, non_null(:string)
   end
 
+  input_object :tag_attributes do
+    field :tag, non_null(:string)
+  end
+
   enum :provider_input do
     value :aws
     value :gcp
@@ -101,6 +105,7 @@ defmodule GraphQl.Schema.Inputs do
     field :source_url,    :string
     field :description,   :string
     field :spec,          :yml
+    field :tags,          list_of(:tag_attributes)
   end
 
   input_object :resource_definition_attributes do

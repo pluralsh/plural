@@ -285,8 +285,23 @@ defmodule GraphQl.Schema.Types do
 
     field :repository, :repository, resolve: dataloader(Repository)
     field :publisher,  :publisher, resolve: dataloader(User)
+    field :tags, list_of(:tag), resolve: dataloader(Repository)
 
     timestamps()
+  end
+
+  object :tag do
+    field :id,  non_null(:id)
+    field :tag, non_null(:string)
+  end
+
+  enum :tag_group do
+    value :integrations
+  end
+
+  object :grouped_tag do
+    field :tag,   non_null(:string)
+    field :count, non_null(:integer)
   end
 
   connection node_type: :user
@@ -304,4 +319,5 @@ defmodule GraphQl.Schema.Types do
   connection node_type: :docker_image
   connection node_type: :webhook
   connection node_type: :recipe
+  connection node_type: :grouped_tag
 end

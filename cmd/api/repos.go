@@ -20,6 +20,7 @@ type IntegrationInput struct {
 	Name        string
 	Description string
 	Icon        string
+	SourceURL   string `json:"sourceUrl,omitempty"`
 	Spec        string
 	Tags        []Tag `json:"tags,omitempty" yaml:"tags"`
 }
@@ -73,6 +74,7 @@ func ConstructIntegration(marshalled []byte) (IntegrationInput, error) {
 		Name        string
 		Description string
 		Icon        string
+		SourceURL   string `yaml:"sourceUrl"`
 		Tags        []Tag
 		Spec        interface{}
 	}
@@ -88,5 +90,6 @@ func ConstructIntegration(marshalled []byte) (IntegrationInput, error) {
 		Icon:        intg.Icon,
 		Spec:        string(str),
 		Tags:        intg.Tags,
+		SourceURL:   intg.SourceURL,
 	}, err
 }

@@ -7,6 +7,7 @@ import HoveredBackground from '../utils/HoveredBackground'
 import { useMutation } from 'react-apollo'
 import { DELETE_RECIPE, REPO_Q } from './queries'
 import { Provider } from './misc'
+import { Container } from './Integrations'
 
 const PROVIDER_WIDTH = 40
 
@@ -35,7 +36,7 @@ function DeleteRecipe({recipe: {id}, repositoryId}) {
         round='xsmall'
         onClick={mutation}
         margin={{top: 'xsmall', right: 'xsmall'}}>
-        <Trash size='12px' />
+        <Trash size='15px' />
       </Box>
     </HoveredBackground>
   )
@@ -45,17 +46,14 @@ function RecipeListItemInner({recipe, setRecipe, hover, setHover}) {
   const {name, description, provider} = recipe
 
   return (
-    <Box
-      direction='row'
-      border
+    <Container
       style={{cursor: 'pointer'}}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      onClick={() => setRecipe(recipe)}
-      round='xsmall'
+      direction='row'
+      gap='medium'
       pad='medium'
-      gap='small'
-      background={hover ? 'light-3' : null}>
+      hover={hover}
+      setHover={setHover}
+      onClick={() => setRecipe(recipe)}>
       {provider && (
         <Box width={PROVIDER_WIDTH + 'px'} align='center' justify='center'>
           <Provider provider={provider} width={PROVIDER_WIDTH - 5} />
@@ -65,7 +63,7 @@ function RecipeListItemInner({recipe, setRecipe, hover, setHover}) {
         <Text weight='bold' size='small'>{name}</Text>
         <Text size='small'>{description}</Text>
       </Box>
-    </Box>
+    </Container>
   )
 }
 

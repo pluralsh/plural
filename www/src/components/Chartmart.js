@@ -11,6 +11,7 @@ import Chart from './repos/Chart'
 import Terraform from './repos/Terraform'
 import EditUser from './users/EditUser'
 import Breadcrumbs from './utils/Breadcrumbs'
+import {IntegrationPage} from './repos/Integrations'
 
 export const TOOLBAR_SIZE = '60px'
 export const BreadcrumbContext = React.createContext({})
@@ -38,6 +39,7 @@ function Chartmart(props) {
             <Switch>
               <Route path='/publishers/mine' component={MyPublisher} />
               <Route path='/publishers/:publisherId' component={Publisher} />
+              <Route path='/repositories/:repositoryId/integrations' component={IntegrationPage} />
               <Route path='/repositories/:repositoryId' component={Repository} />
               <Route path='/charts/:chartId' component={Chart} />
               <Route path='/terraform/:tfId' component={Terraform} />

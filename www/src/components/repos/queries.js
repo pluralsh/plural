@@ -366,3 +366,36 @@ export const DELETE_RECIPE = gql`
   }
   ${RecipeFragment}
 `;
+
+export const INTEGRATIONS_Q = gql`
+  query Integrations($id: ID!, $tag: String, $cursor: String, $intCursor: String) {
+    repository(id: $id) {
+      ...RepoFragment
+    }
+    integrations(tag: $tag, repositoryId: $id, after: $intCursor, first: 10) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      edges {
+        node {
+          ...IntegrationFragment
+        }
+      }
+    }
+    tags(id: $id, type: INTEGRATIONS, first: 20, after: $cursor) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      edges {
+        node {
+          tag
+          count
+        }
+      }
+    }
+  }
+  ${RepoFragment}
+  ${IntegrationFragment}
+`;

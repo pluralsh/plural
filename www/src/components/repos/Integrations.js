@@ -14,7 +14,8 @@ import { FormPrevious, FormNextLink } from 'grommet-icons'
 
 const ICON_SIZE = 50
 
-function Integration({name, description, icon, tags, sourceUrl, width}) {
+function Integration({name, description, icon, tags, sourceUrl, publisher, width}) {
+  let hist = useHistory()
   const [hover, setHover] = useState(false)
   return (
     <Container pad='medium' width={width} hover={hover} setHover={setHover}>
@@ -23,7 +24,17 @@ function Integration({name, description, icon, tags, sourceUrl, width}) {
           <img src={icon} alt={name} width={`${ICON_SIZE}px`} height={`${ICON_SIZE}px`} />
         </Box>
         <Box gap='xsmall'>
-          <Text style={{fontWeight: 500}} size='small'>{name}</Text>
+          <Box>
+            <Text style={{fontWeight: 500}} size='small'>{name}</Text>
+            {publisher && (
+              <Box direction='row' gap='xxsmall'>
+                <Text size='small'>by: </Text>
+                <Anchor size='small' onClick={() => hist.push(`/publishers/${publisher.id}`)}>
+                  {publisher.name}
+                </Anchor>
+              </Box>
+            )}
+          </Box>
           <Text color='dark-3' size='small'>{description}</Text>
           {tags && tags.length > 0 && (
             <Box direction='row' gap='xxsmall'>

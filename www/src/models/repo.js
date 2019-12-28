@@ -54,6 +54,9 @@ export const IntegrationFragment = gql`
     icon
     sourceUrl
     description
+    tags {
+      tag
+    }
     publisher {
       ...PublisherFragment
     }

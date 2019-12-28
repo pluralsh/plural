@@ -4,7 +4,7 @@ import { Box, Text } from 'grommet'
 
 const ICON_SIZE = 50
 
-function Integration({name, description, icon}) {
+function Integration({name, description, icon, tags}) {
   return (
     <Box direction='row' pad='medium' round='xsmall' gap='small' border>
       <Box align='center' justify='center' width={`${ICON_SIZE}px`}>
@@ -12,7 +12,14 @@ function Integration({name, description, icon}) {
       </Box>
       <Box gap='xsmall'>
         <Text style={{fontWeight: 500}} size='small'>{name}</Text>
-        <Text color='dark-3' size='small'>{description}</Text>
+        <Box>
+          <Text color='dark-3' size='small'>{description}</Text>
+          {tags && tags.length > 0 && (
+            <Box direction='row' gap='xxsmall'>
+              {tags.map(({tag}) => <Text size='xsmall' color='dark-3'>#{tag}</Text>)}
+            </Box>
+          )}
+        </Box>
       </Box>
     </Box>
   )

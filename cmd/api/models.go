@@ -42,6 +42,10 @@ type ChartInstallation struct {
 	Installation Installation
 }
 
+type Tag struct {
+	Tag string
+}
+
 type Version struct {
 	Id             string
 	Version        string
@@ -60,8 +64,8 @@ type Terraform struct {
 
 type Dependencies struct {
 	Dependencies []Dependency
-	Providers []string
-	Wirings Wirings
+	Providers    []string
+	Wirings      Wirings
 }
 
 type Dependency struct {
@@ -72,7 +76,7 @@ type Dependency struct {
 
 type Wirings struct {
 	Terraform map[string]string
-	Helm map[string]string
+	Helm      map[string]string
 }
 
 type TerraformInstallation struct {
@@ -117,34 +121,34 @@ type Token struct {
 }
 
 type Webhook struct {
-	Id string
-	Url string
+	Id     string
+	Url    string
 	Secret string
 }
 
 type Recipe struct {
-	Id string
-	Name string
+	Id             string
+	Name           string
 	RecipeSections []RecipeSection
 }
 
 type RecipeSection struct {
-	Id string
-	Repository Repository
+	Id          string
+	Repository  Repository
 	RecipeItems []RecipeItem
 }
 
 type RecipeItem struct {
-	Id string
-	Terraform Terraform
-	Chart Chart
+	Id            string
+	Terraform     Terraform
+	Chart         Chart
 	Configuration []ConfigurationItem
 }
 
 type ConfigurationItem struct {
-	Name string
+	Name    string
 	Default string
-	Type string
+	Type    string
 }
 
 const RepositoryFragment = `

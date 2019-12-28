@@ -21,6 +21,7 @@ type IntegrationInput struct {
 	Description string
 	Icon        string
 	Spec        string
+	Tags        []Tag `json:"tags,omitempty" yaml:"tags"`
 }
 
 const updateRepository = `
@@ -72,6 +73,7 @@ func ConstructIntegration(marshalled []byte) (IntegrationInput, error) {
 		Name        string
 		Description string
 		Icon        string
+		Tags        []Tag
 		Spec        interface{}
 	}
 	err := yaml.Unmarshal(marshalled, &intg)
@@ -85,5 +87,6 @@ func ConstructIntegration(marshalled []byte) (IntegrationInput, error) {
 		Description: intg.Description,
 		Icon:        intg.Icon,
 		Spec:        string(str),
+		Tags:        intg.Tags,
 	}, err
 }

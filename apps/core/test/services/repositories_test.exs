@@ -147,6 +147,7 @@ defmodule Core.Services.RepositoriesTest do
       }, repo.id, user)
 
       assert integration.name == "github"
+      assert integration.publisher_id  == pub.id
       assert integration.spec["str"] == "a value"
       integration = refetch(integration) |> Core.Repo.preload([:tags])
       assert Enum.map(integration.tags, & &1.tag)

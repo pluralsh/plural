@@ -36,7 +36,7 @@ defmodule Core.Schema.Integration do
   def ordered(query \\ __MODULE__, order \\ [asc: :name]),
     do: from(i in query, order_by: ^order)
 
-  @valid ~w(name source_url description spec)a
+  @valid ~w(name source_url description spec publisher_id)a
 
   def changeset(model, attrs \\ %{}) do
     model

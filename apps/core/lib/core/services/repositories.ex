@@ -124,11 +124,12 @@ defmodule Core.Services.Repositories do
 
   def upsert_integration(%{name: name} = attrs, repo_id, %User{} = user) do
     repo = get_repository!(repo_id) |> Core.Repo.preload([:integration_resource_definition])
-    case Core.Repo.get_by(Integration, name: name, repository_id:  repo_id) do
+    pub  = Users.get_publisher_by_owner(user.id)
+    case Core.Repo.get_by(Integration, name: name, repository_id: repo_id) do
       %Integration{} = int -> Core.Repo.preload(int, [:tags])
-      _ -> %Integration{repository_id: repo_id, name: name}
+      _ -> %Integration{repository_id: repo_id, name: name, publisher_id: pub && pub.id}
     end
-    |> Integration.changeset(attrs)
+    |> Integration.changeset(Map.put(attrs, :publisher_id, pub && pub.id))
     |> Integration.validate(repo.integration_resource_definition)
     |> allow(user, :edit)
     |> when_ok(&Core.Repo.insert_or_update/1)

@@ -3,15 +3,16 @@ package wkspace
 import (
 	"bytes"
 	"fmt"
-	"github.com/imdario/mergo"
-	"github.com/michaeljguarino/chartmart/api"
-	"github.com/michaeljguarino/chartmart/utils"
-	"github.com/michaeljguarino/chartmart/template"
-	"github.com/pkg/errors"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
 	"path/filepath"
+
+	"github.com/imdario/mergo"
+	"github.com/michaeljguarino/chartmart/api"
+	"github.com/michaeljguarino/chartmart/template"
+	"github.com/michaeljguarino/chartmart/utils"
+	"github.com/pkg/errors"
+	"gopkg.in/yaml.v2"
 )
 
 const defaultChartfile = `apiVersion: v1
@@ -125,6 +126,11 @@ func (w *Workspace) FinalizeCharts() error {
 	return cmd.Run()
 }
 
+func (w *Workspace) DestroyHelm() error {
+	w.Provider.KubeConfig()
+	return utils.Cmd(w.Config, "helm", "del", "--purge", w.Installation.Repository.Name)
+}
+
 func (w *Workspace) BuildChartValues() error {
 	ctx := w.Installation.Context
 	var buf bytes.Buffer
@@ -143,7 +149,7 @@ func (w *Workspace) BuildChartValues() error {
 		}
 
 		vals := map[string]interface{}{
-			"Values": ctx,
+			"Values":  ctx,
 			"License": w.Installation.License,
 		}
 		for k, v := range prevVals {
@@ -164,7 +170,7 @@ func (w *Workspace) BuildChartValues() error {
 	}
 
 	if err := mergo.Merge(&values, prevVals, mergo.WithOverride); err != nil {
-    return err
+		return err
 	}
 
 	io, err := yaml.Marshal(values)
@@ -271,7 +277,7 @@ func (w *Workspace) ensurePullCredentials() error {
 
 		return utils.Cmd(w.Config,
 			"kubectl", "create", "secret", "docker-registry", pullSecretName,
-					"--namespace", name, "--docker-username", username, "--docker-password", token, "--docker-server", repoName)
+			"--namespace", name, "--docker-username", username, "--docker-password", token, "--docker-server", repoName)
 	}
 
 	return nil

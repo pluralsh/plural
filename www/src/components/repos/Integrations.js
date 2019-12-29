@@ -11,6 +11,7 @@ import { chunk } from '../../utils/array'
 import Scroller from '../utils/Scroller'
 import HoveredBackground from '../utils/HoveredBackground'
 import { FormPrevious, FormNextLink } from 'grommet-icons'
+import Loading from '../utils/Loading'
 
 const ICON_SIZE = 50
 
@@ -121,7 +122,7 @@ const WIDTH = 15
 export function IntegrationPage() {
   const [tag, setTag] = useState(null)
   const {repositoryId} = useParams()
-  const {loading, data, fetchMore} = useQuery(INTEGRATIONS_Q, {
+  const {data, fetchMore} = useQuery(INTEGRATIONS_Q, {
     variables: {id: repositoryId, tag},
     fetchPolicy: "cache-and-network"
   })
@@ -137,7 +138,7 @@ export function IntegrationPage() {
     ])
   }, [setBreadcrumbs, data])
 
-  if (loading) return null
+  if (!data) return null
 
   const {tags, integrations, repository} = data
 

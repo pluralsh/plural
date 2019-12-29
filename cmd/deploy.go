@@ -1,11 +1,12 @@
 package main
 
 import (
-	"github.com/michaeljguarino/chartmart/api"
-	"github.com/michaeljguarino/chartmart/wkspace"
-	"github.com/michaeljguarino/chartmart/utils"
-	"github.com/urfave/cli"
 	"os"
+
+	"github.com/michaeljguarino/chartmart/api"
+	"github.com/michaeljguarino/chartmart/utils"
+	"github.com/michaeljguarino/chartmart/wkspace"
+	"github.com/urfave/cli"
 )
 
 func build(c *cli.Context) error {
@@ -85,7 +86,6 @@ func deploy(c *cli.Context) error {
 	return nil
 }
 
-
 func bounce(c *cli.Context) error {
 	client := api.NewClient()
 	installations, _ := client.GetInstallations()
@@ -108,5 +108,41 @@ func bounce(c *cli.Context) error {
 			return err
 		}
 	}
+	return nil
+}
+
+func destroy(c *cli.Context) error {
+	client := api.NewClient()
+	installations, _ := client.GetInstallations()
+	repoName := c.Args().Get(0)
+	dir, _ := os.Getwd()
+
+	sorted, err := wkspace.Dependencies(repoName, installations)
+	if err != nil {
+		return err
+	}
+
+	for i := len(sorted) - 1; i >= 0; i-- {
+		installation := sorted[i]
+		if installation.Repository.Name != repoName && repoName != "" {
+			continue
+		}
+		os.Chdir(dir)
+		utils.Warn("Destroying workspace %s\n", installation.Repository.Name)
+		workspace, err := wkspace.New(client, &installation)
+		if err != nil {
+			return err
+		}
+
+		if err := workspace.DestroyHelm(); err != nil {
+			return err
+		}
+
+		if err := workspace.DestroyTerraform(); err != nil {
+			return err
+		}
+	}
+
+	utils.Success("Finished destroying workspace")
 	return nil
 }

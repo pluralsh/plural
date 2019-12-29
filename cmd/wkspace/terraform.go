@@ -3,14 +3,15 @@ package wkspace
 import (
 	"bytes"
 	"fmt"
-	"github.com/michaeljguarino/chartmart/api"
-	"github.com/michaeljguarino/chartmart/utils"
-	"github.com/michaeljguarino/chartmart/template"
 	"net/http"
 	"os"
 	"path"
 	"path/filepath"
 	"strings"
+
+	"github.com/michaeljguarino/chartmart/api"
+	"github.com/michaeljguarino/chartmart/template"
+	"github.com/michaeljguarino/chartmart/utils"
 )
 
 const moduleTemplate = `module "{{ .Values.name }}" {
@@ -106,6 +107,17 @@ func (w *Workspace) InstallTerraform() error {
 		return err
 	}
 	return nil
+}
+
+func (w *Workspace) DestroyTerraform() error {
+	repo := w.Installation.Repository
+	path, err := filepath.Abs(path.Join(repo.Name, "terraform"))
+	if err != nil {
+		return err
+	}
+
+	os.Chdir(path)
+	return utils.Cmd(w.Config, "terraform", "destroy", "-auto-approve")
 }
 
 func terraformPath(repo *api.Repository, tf *api.Terraform) string {

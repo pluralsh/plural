@@ -1,6 +1,6 @@
 import React from 'react'
 import {Box} from 'grommet'
-import {HashLoader} from 'react-spinners'
+import {ScaleLoader} from 'react-spinners'
 
 function Loading(props) {
   return (
@@ -10,7 +10,7 @@ function Loading(props) {
       direction='column'
       justify='center'
       align='center'>
-      <HashLoader size={50} />
+      <ScaleLoader size={50} />
     </Box>
   )
 }

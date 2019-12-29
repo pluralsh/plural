@@ -4,7 +4,7 @@ import { Anchor, Text, Box } from 'grommet'
 
 function Tag({tag, count, setTag}) {
   return (
-    <Box direction='row' gap='small' pad={{bottom: 'xsmall'}}>
+    <Box direction='row' gap='xsmall' pad={{bottom: 'xsmall'}}>
       <Anchor onClick={() => setTag && setTag(tag)} size='small'>#{tag}</Anchor>
       <Text size='small'>({count})</Text>
     </Box>

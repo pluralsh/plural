@@ -1,11 +1,12 @@
 package main
 
 import (
-	"github.com/urfave/cli"
 	"log"
 	"math/rand"
 	"os"
 	"time"
+
+	"github.com/urfave/cli"
 )
 
 func main() {
@@ -19,13 +20,13 @@ func main() {
 			Name:    "build",
 			Aliases: []string{"b"},
 			Usage:   "builds your workspace",
-			Flags:   []cli.Flag {
-				cli.StringFlag {
+			Flags: []cli.Flag{
+				cli.StringFlag{
 					Name:  "only",
 					Usage: "repository to (re)build",
 				},
 			},
-			Action:  build,
+			Action: build,
 		},
 		{
 			Name:      "deploy",
@@ -38,19 +39,19 @@ func main() {
 			Name:    "validate",
 			Aliases: []string{"v"},
 			Usage:   "validates your workspace",
-			Flags:   []cli.Flag {
-				cli.StringFlag {
+			Flags: []cli.Flag{
+				cli.StringFlag{
 					Name:  "only",
 					Usage: "repository to (re)build",
 				},
 			},
-			Action:  validate,
+			Action: validate,
 		},
 		{
-			Name:      "topsort",
-			Aliases:   []string{"d"},
-			Usage:     "renders a dependency-inferred topological sort of the installations in a workspace",
-			Action:    topsort,
+			Name:    "topsort",
+			Aliases: []string{"d"},
+			Usage:   "renders a dependency-inferred topological sort of the installations in a workspace",
+			Action:  topsort,
 		},
 		{
 			Name:      "bounce",
@@ -58,6 +59,13 @@ func main() {
 			Usage:     "redeploys the charts in a workspace",
 			ArgsUsage: "WKSPACE",
 			Action:    bounce,
+		},
+		{
+			Name:      "destroy",
+			Aliases:   []string{"b"},
+			Usage:     "iterates through all installations in reverse topological order, deleting helm installations and terraform",
+			ArgsUsage: "WKSPACE",
+			Action:    destroy,
 		},
 		{
 			Name:   "init",
@@ -70,13 +78,13 @@ func main() {
 			Action: handleImport,
 		},
 		{
-			Name:  "test",
-			Usage: "validate a values templace",
+			Name:   "test",
+			Usage:  "validate a values templace",
 			Action: testTemplate,
 		},
 		{
-			Name: "crypto",
-			Usage: "chartmart encryption utilities",
+			Name:        "crypto",
+			Usage:       "chartmart encryption utilities",
 			Subcommands: cryptoCommands(),
 		},
 		{

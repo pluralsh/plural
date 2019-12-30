@@ -9,4 +9,10 @@ defmodule GraphQl.Resolvers.Tag do
     |> Tag.grouped()
     |> paginate(args)
   end
+  def grouped_tags(%{type: :repositories} = args, _) do
+    Tag.repository_tags()
+    |> Tag.ordered()
+    |> Tag.grouped()
+    |> paginate(args)
+  end
 end

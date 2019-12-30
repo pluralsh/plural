@@ -21,6 +21,11 @@ defmodule Core.Schema.Tag do
     )
   end
 
+  def repository_tags(query \\ __MODULE__) do
+    from(t in query,
+      where: t.resource_type == ^:repository)
+  end
+
   def grouped(query \\ __MODULE__) do
     from(t in query,
       group_by: t.tag,

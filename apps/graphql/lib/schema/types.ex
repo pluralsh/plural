@@ -299,6 +299,7 @@ defmodule GraphQl.Schema.Types do
 
   enum :tag_group do
     value :integrations
+    value :repositories
   end
 
   object :grouped_tag do

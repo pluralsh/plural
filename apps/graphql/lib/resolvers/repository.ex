@@ -26,6 +26,11 @@ defmodule GraphQl.Resolvers.Repository do
   def resolve_installation(%{id: repo_id}, %{context: %{current_user: user}}),
     do: {:ok, Repositories.get_installation(user.id, repo_id)}
 
+  def list_repositories(%{tag: tag} = args, _) when not is_nil(tag) do
+    Repository.for_tag(tag)
+    |> Repository.ordered()
+    |> paginate(args)
+  end
   def list_repositories(%{publisher_id: pid} = args, _) when not is_nil(pid) do
     Repository.for_publisher(pid)
     |> Repository.ordered()

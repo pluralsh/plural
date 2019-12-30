@@ -27,5 +27,29 @@ defmodule GraphQl.TagQueriesTest do
       assert count == 2
       assert other_count == 1
     end
+
+    test "It can list tag counts for repositories" do
+      insert(:repository, tags: [%{tag: "tag", resource_type: :repository}])
+      insert(:repository, tags: [%{tag: "other", resource_type: :repository}])
+      insert(:repository, tags: [%{tag: "other", resource_type: :repository}])
+
+      {:ok, %{data: %{"tags" => found}}} = run_query("""
+        query {
+          tags(type: REPOSITORIES, first: 5) {
+            edges {
+              node {
+                tag
+                count
+              }
+            }
+          }
+        }
+      """, %{}, %{})
+
+      [%{"tag" => "other", "count" => count}, %{"tag" => "tag", "count" => other_count}] = from_connection(found)
+
+      assert count == 2
+      assert other_count == 1
+    end
   end
 end

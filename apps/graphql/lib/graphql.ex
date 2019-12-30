@@ -95,6 +95,7 @@ defmodule GraphQl do
     connection field :repositories, node_type: :repository do
       middleware GraphQl.Middleware.Authenticated
       arg :publisher_id, :id
+      arg :tag,          :string
 
       resolve &Repository.list_repositories/2
     end
@@ -190,7 +191,7 @@ defmodule GraphQl do
     end
 
     connection field :tags, node_type: :grouped_tag do
-      arg :id,   non_null(:string)
+      arg :id,   :string
       arg :type, non_null(:tag_group)
 
       resolve &Tag.grouped_tags/2

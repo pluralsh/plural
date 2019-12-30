@@ -1,13 +1,15 @@
 import React, {useState} from 'react'
-import {Box, Text, Anchor} from 'grommet'
+import {Box, Text, Anchor, Stack} from 'grommet'
 import {Trash} from 'grommet-icons'
 import {useQuery, useMutation} from 'react-apollo'
 import {useHistory} from 'react-router-dom'
 import Scroller from '../utils/Scroller'
 import {REPOS_Q, DELETE_REPO} from './queries'
+import { Container } from './Integrations'
+import HoveredBackground from '../utils/HoveredBackground'
+import { chunk } from '../../utils/array'
 
 function DeleteRepository({repo, publisherId}) {
-  const [hover, setHover] = useState(false)
   const [mutation] = useMutation(DELETE_REPO, {
     variables: {id: repo.id},
     update: (cache, { data: { deleteRepository } }) => {
@@ -21,18 +23,68 @@ function DeleteRepository({repo, publisherId}) {
       }})
     }
   })
+
   return (
-    <Box
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      style={{cursor: 'pointer'}}
-      width='25px'
-      direction='row'
-      justify='end'
-      align='center'>
-      <Trash color={hover ? 'focus' : null} size='15px' onClick={mutation} />
-    </Box>
+    <HoveredBackground>
+      <Box
+        accentable
+        style={{cursor: 'pointer'}}
+        background='white'
+        pad='xsmall'
+        round='xsmall'
+        margin={{top: 'xsmall', right: 'xsmall'}}>
+        <Trash size='15px' onClick={mutation} />
+      </Box>
+    </HoveredBackground>
   )
+}
+
+const ICON_WIDTH = '50px'
+
+function RepositoryCellInner({repo, width, hover, setHover}) {
+  let history = useHistory()
+  const onClick = () => history.push(`/repositories/${repo.id}`)
+
+  return (
+    <Container
+      pad='medium'
+      style={{cursor: 'pointer'}}
+      width={width}
+      hover={hover}
+      setHover={setHover}
+      onClick={onClick}>
+      <Box direction='row' gap='medium' fill='horizontal'>
+        <Box align='center' justify='center' width={ICON_WIDTH}>
+          <img alt='' width='50px' height='50px' src={repo.icon} />
+        </Box>
+        <Box gap='xxsmall' justify='center' width='100%'>
+          <Anchor size='small' weight='bold' onClick={onClick}>
+            {repo.name}
+          </Anchor>
+          <Text size='small'>
+            {repo.description}
+          </Text>
+        </Box>
+      </Box>
+    </Container>
+  )
+}
+
+export function RepositoryCell({repo, deletable, publisherId, width}) {
+  const [hover, setHover] = useState(false)
+
+  if (deletable && hover) {
+    return (
+      <Box width={width}>
+        <Stack anchor='top-right' onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
+          <RepositoryCellInner repo={repo} hover={hover} setHover={() => null} />
+          <DeleteRepository repo={repo} publisherId={publisherId} />
+        </Stack>
+      </Box>
+    )
+  }
+
+  return <RepositoryCellInner repo={repo} width={width} hover={hover} setHover={setHover} />
 }
 
 export function Repository({repo, hasNext, deletable, publisherId}) {
@@ -55,18 +107,21 @@ export function Repository({repo, hasNext, deletable, publisherId}) {
   )
 }
 
-export function RepositoryList({repositores: {edges, pageInfo}, fetchMore, publisher, deletable}) {
+export function RepositoryList({repositores: {edges, pageInfo}, fetchMore, publisher, deletable, columns}) {
+  const width = Math.floor((100 - 10) / columns)
   return (
     <Scroller id='repositories'
-      edges={edges}
+      edges={Array.from(chunk(edges, columns))}
       style={{overflow: 'auto', height: '100%', width: '100%'}}
-      mapper={({node}, next) => (
-        <Repository
-          key={node.id}
-          repo={node}
-          hasNext={!!next.node}
-          publisherId={publisher && publisher.id}
-          deletable={deletable} />
+      mapper={(chunk) => (
+        <Box key={chunk[0].node.id} direction='row' gap='small' fill='horizontal'>
+          {chunk.map(({node}) => <RepositoryCell
+                                    key={node.id}
+                                    repo={node}
+                                    publisherId={publisher && publisher.id}
+                                    deletable={deletable}
+                                    width={`${width}%`} />)}
+        </Box>
       )}
       onLoadMore={() => {
         if (!pageInfo.hasNextPage) return
@@ -90,7 +145,7 @@ export function RepositoryList({repositores: {edges, pageInfo}, fetchMore, publi
   )
 }
 
-function Repositories({publisher, deletable}) {
+function Repositories({publisher, deletable, columns}) {
   const {loading, data, fetchMore} = useQuery(REPOS_Q, {variables: {publisherId: publisher.id}})
   if (loading || !data) return null
 
@@ -100,7 +155,8 @@ function Repositories({publisher, deletable}) {
         repositores={data.repositories}
         fetchMore={fetchMore}
         deletable={deletable}
-        publisher={publisher} />
+        publisher={publisher}
+        columns={columns} />
     </Box>
   )
 }

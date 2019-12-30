@@ -10,6 +10,7 @@ import { EDIT_PUBLISHER } from './queries'
 import { ME_Q } from '../users/queries'
 import InputField from '../utils/InputField'
 import Button from '../utils/Button'
+import ScrollableContainer from '../utils/ScrollableContainer'
 
 function EditPublisher({description}) {
   const [attributes, setAttributes] = useState({description})
@@ -49,23 +50,25 @@ function MyPublisher() {
   }, [me, setBreadcrumbs])
 
   return (
-    <Box direction='row' pad='medium'>
-      <Box width='60%'>
-        <Repositories publisher={me.publisher} deletable />
-      </Box>
-      <Box width='40%'>
-        <Box elevation='small'>
-          <Expander text='Edit publisher'>
-            <EditPublisher {...me.publisher} />
-          </Expander>
-          <Box border='top'>
-            <Expander text='Create Repository' open>
-              <CreateRepository publisher={me.publisher} />
+    <ScrollableContainer>
+      <Box direction='row' pad='medium'>
+        <Box width='60%'>
+          <Repositories publisher={me.publisher} deletable columns={2} />
+        </Box>
+        <Box width='40%' elevation='small'>
+          <Box>
+            <Expander text='Edit publisher'>
+              <EditPublisher {...me.publisher} />
             </Expander>
+            <Box border='top'>
+              <Expander text='Create Repository' open>
+                <CreateRepository publisher={me.publisher} />
+              </Expander>
+            </Box>
           </Box>
         </Box>
       </Box>
-    </Box>
+    </ScrollableContainer>
   )
 }
 

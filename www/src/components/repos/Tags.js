@@ -32,23 +32,33 @@ export function TagInput({addTag, removeTag, tags, round, ...rest}) {
   )
 }
 
-function Tag({tag, count, setTag}) {
+function Tag({tag, count, setTag, enabled}) {
+  const [hover, setHover] = useState(false)
+  const border = (hover || enabled) ? {side: 'right', color: 'focus', size: '2px'} : null
   return (
-    <Box direction='row' gap='xsmall' pad={{bottom: 'xsmall'}}>
-      <Anchor onClick={() => setTag && setTag(tag)} size='small'>#{tag}</Anchor>
+    <Box
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      pad={{horizontal: 'small', vertical: 'xxsmall'}}
+      direction='row'
+      align='center'
+      gap='xsmall'
+      border={border}
+      background={hover || enabled ? 'white' : null}>
+      <Anchor onClick={() => setTag && setTag(tag)} size='small'># {tag}</Anchor>
       <Text size='small'>({count})</Text>
     </Box>
   )
 }
 
-export default function Tags({tags: {pageInfo, edges}, fetchMore, setTag, pad}) {
+export default function Tags({tags: {pageInfo, edges}, fetchMore, tag, setTag, pad}) {
   return (
-    <Box pad={pad || 'medium'} height='100%' gap='small'>
-      <Text style={{fontWeight: 500}}>Tags</Text>
+    <Box pad={pad || {vertical: 'medium'}} height='100%' gap='small'>
+      <Text margin={{horizontal: 'small'}} style={{fontWeight: 500}}>Tags</Text>
       <Scroller
         edges={edges}
         style={{overflow: 'auto', height: '100%', width: '100%'}}
-        mapper={({node}) => <Tag {...node} setTag={setTag} />}
+        mapper={({node}) => <Tag {...node} setTag={setTag} enabled={node.tag === tag} />}
         onLoadMore={() => {
           if (!pageInfo.hasNextPage) return
 

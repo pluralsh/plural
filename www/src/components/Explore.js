@@ -20,18 +20,16 @@ export default function Explore() {
 
   return (
     <Box direction='row' fill='horizontal' height='100%'>
-      <Box pad='small' width={`${WIDTH}%`} height='100%' border='right'>
-        <Box>
-          <Tags pad='small' tags={tags} setTag={setTag} fetchMore={fetchMore} />
-        </Box>
+      <Box width={`${WIDTH}%`} height='100%' border='right' elevation='small' background='light-1'>
+        <Tags tags={tags} setTag={setTag} fetchMore={fetchMore} tag={tag} />
       </Box>
-      <Box pad='small' width={`${100 - WIDTH}%`} height='100%'>
-        <Box pad={{vertical: 'small'}}>
+      <Box pad='medium' width={`${100 - WIDTH}%`} height='100%' gap='small'>
+        <Box>
           {tag ? <TagHeader tag={tag} setTag={setTag} /> :
                   <Text style={{fontWeight: 500}}>Installed Repositories</Text>}
         </Box>
         <Box>
-          <RepositoryList repositores={repositories} fetchMore={fetchMore} />
+          <RepositoryList repositores={repositories} fetchMore={fetchMore} columns={3} />
         </Box>
       </Box>
     </Box>

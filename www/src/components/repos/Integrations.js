@@ -124,10 +124,9 @@ export function TagHeader({tag, setTag}) {
       style={{cursor: 'pointer'}}
       align='center'
       direction='row'
-      gap='xsmall'
       onClick={() => setTag(null)}>
         <FormPrevious size='20px' />
-        <Text style={{fontWeight: 500}}>#{tag}</Text>
+        <Text style={{fontWeight: 500}}># {tag}</Text>
       </Box>
     </HoveredBackground>
   )
@@ -161,13 +160,11 @@ export function IntegrationPage() {
   return (
     <ScrollableContainer>
       <Box direction='row' height='100%'>
-        <Box pad='small' width={`${WIDTH}%`} height='100%' border='right'>
-          <Box>
-            <Tags tags={tags} fetchMore={fetchMore} setTag={setTag} />
-          </Box>
+        <Box width={`${WIDTH}%`} height='100%' border='right' elevation='small' background='light-1'>
+          <Tags tags={tags} fetchMore={fetchMore} setTag={setTag} tag={tag} />
         </Box>
-        <Box pad='small' margin={{left: 'medium'}} width={`${100 - WIDTH}%`} gap='small'>
-          <Box pad={{vertical: 'small'}}>
+        <Box pad='medium' width={`${100 - WIDTH}%`} gap='small'>
+          <Box>
           {tag ? <TagHeader tag={tag} setTag={setTag} /> :
                  <Text style={{fontWeight: 500}}>{repository.name}</Text>}
           </Box>

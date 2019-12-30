@@ -41,9 +41,9 @@ function Tag({tag, count, setTag}) {
   )
 }
 
-export default function Tags({tags: {pageInfo, edges}, fetchMore, setTag}) {
+export default function Tags({tags: {pageInfo, edges}, fetchMore, setTag, pad}) {
   return (
-    <Box pad='medium' height='100%' gap='small'>
+    <Box pad={pad || 'medium'} height='100%' gap='small'>
       <Text style={{fontWeight: 500}}>Tags</Text>
       <Scroller
         edges={edges}

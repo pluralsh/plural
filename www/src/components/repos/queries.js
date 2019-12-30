@@ -402,3 +402,32 @@ export const INTEGRATIONS_Q = gql`
   ${RepoFragment}
   ${IntegrationFragment}
 `;
+
+export const EXPLORE_REPOS = gql`
+  query Repos($tag: String, $repoCursor: String, $cursor: String) {
+    repositories(tag: $tag, after: $repoCursor, first: 15) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      edges {
+        node {
+          ...RepoFragment
+        }
+      }
+    }
+    tags(type: REPOSITORIES, first: 20, after: $cursor) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      edges {
+        node {
+          tag
+          count
+        }
+      }
+    }
+  }
+  ${RepoFragment}
+`;

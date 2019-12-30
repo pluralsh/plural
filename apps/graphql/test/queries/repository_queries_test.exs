@@ -44,6 +44,28 @@ defmodule GraphQl.RepositoryQueriesTest do
       assert Enum.map(installations, & &1.repository)
              |> ids_equal(found_repos)
     end
+
+    test "It can list repositories for a tag" do
+      user = insert(:user)
+      repo  = insert(:repository, tags: [%{tag: "tag", resource_type: :repository}])
+      other = insert(:repository, tags: [%{tag: "tag", resource_type: :repository}])
+      insert(:repository)
+
+      {:ok, %{data: %{"repositories" => found}}} = run_query("""
+        query {
+          repositories(first: 5, tag: "tag") {
+            edges {
+              node {
+                id
+              }
+            }
+          }
+        }
+      """, %{}, %{current_user: user})
+
+      assert from_connection(found)
+             |> ids_equal([repo, other])
+    end
   end
 
   describe "repository" do

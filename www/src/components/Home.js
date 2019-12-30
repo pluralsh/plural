@@ -20,7 +20,7 @@ function SidebarOption({text, path, active}) {
       style={{cursor: 'pointer'}}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      border={active ? {size: 'medium', side: 'left', color: 'focus'} : null}
+      border={active ? {size: '3px', side: 'left', color: 'focus'} : null}
       onClick={() => hist.push(path)}
       pad='small'
       background={active ? 'sidebarActive' : (hover ? 'sidebarHover' : null)}>

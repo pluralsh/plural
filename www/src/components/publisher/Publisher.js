@@ -35,7 +35,7 @@ function Publisher() {
   return (
     <Box height='100%' direction='row' pad='medium'>
       <Box height='100%' width='60%'>
-        <Repositories publisher={publisher} />
+        <Repositories publisher={publisher} columns={2} />
       </Box>
       <Box width='40%' pad='small'>
         <PublisherView {...publisher} />

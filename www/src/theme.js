@@ -6,6 +6,8 @@ export const DEFAULT_COLOR_THEME = {
   sidebarHover: '#34394A',
   sidebarActive: '#0F121B',
   focus: '#3B1D98',
+  tagMedium: '#3B1D98',
+  tagLight: '#624aad'
 }
 
 export const DEFAULT_THEME = {

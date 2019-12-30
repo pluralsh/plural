@@ -115,6 +115,9 @@ export const REPO_Q = gql`
       installation {
         ...InstallationFragment
       }
+      tags {
+        tag
+      }
     }
     charts(repositoryId: $repositoryId, first: 15, after: $chartCursor) {
       pageInfo {

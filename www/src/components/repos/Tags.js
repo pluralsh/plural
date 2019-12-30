@@ -1,6 +1,36 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Scroller from '../utils/Scroller'
-import { Anchor, Text, Box } from 'grommet'
+import { Anchor, Text, Box, Keyboard, TextInput } from 'grommet'
+import { Tag as TagInner } from '../utils/TagInput'
+
+export function TagInput({addTag, removeTag, tags, round, ...rest}) {
+  const [current, setCurrent] = useState("")
+  return (
+    <Keyboard onEnter={() => {
+      addTag(current)
+      setCurrent("")
+    }}>
+      <Box fill='horizontal' direction="row" align="center" border="all" round={round || 'xsmall'}>
+        <Box direction='row' wrap align='center'>
+          {tags.length > 0 && tags.map((tag, index) => (
+            <TagInner margin="xxsmall" key={`${tag}${index}`} onRemove={() => removeTag(tag)}>
+              {tag}
+            </TagInner>
+          ))}
+        </Box>
+        <Box flex style={{ minWidth: "120px" }}>
+          <TextInput
+            type="search"
+            plain
+            onChange={({target: {value}}) => setCurrent(value)}
+            value={current}
+            {...rest}
+          />
+        </Box>
+      </Box>
+    </Keyboard>
+  )
+}
 
 function Tag({tag, count, setTag}) {
   return (

@@ -58,6 +58,7 @@ defmodule GraphQl.Schema.Types do
     field :description,   :string
     field :documentation, :string
     field :publisher,     :publisher, resolve: dataloader(User)
+    field :tags,          list_of(:tag), resolve: dataloader(Repository)
 
     field :icon, :string, resolve: fn
       repo, _, _ -> {:ok, Core.Storage.url({repo.icon, repo}, :original)}
@@ -113,7 +114,7 @@ defmodule GraphQl.Schema.Types do
     field :user,         :user, resolve: dataloader(User)
     field :auto_upgrade, :boolean
 
-    field :license,    :string, resolve: fn
+    field :license, :string, resolve: fn
       installation, _, _ -> Core.Services.Repositories.generate_license(installation)
     end
 
@@ -149,6 +150,7 @@ defmodule GraphQl.Schema.Types do
     field :id,     :id
     field :tag,    :string
     field :digest, :string
+
     field :docker_repository, :docker_repository, resolve: dataloader(Docker)
 
     timestamps()
@@ -198,11 +200,11 @@ defmodule GraphQl.Schema.Types do
     field :values_template, :string
     field :dependencies,    :dependencies
 
-    field :package, :string, resolve: fn
+    field :package,     :string, resolve: fn
       repo, _, _ -> {:ok, Core.Storage.url({repo.package, repo}, :original)}
     end
-    field :repository, :repository, resolve: dataloader(Repository)
-    field :editable, :boolean, resolve: fn
+    field :repository,  :repository, resolve: dataloader(Repository)
+    field :editable,    :boolean, resolve: fn
       tf, _, %{context: %{current_user: user}} -> Terraform.editable(tf, user)
     end
 
@@ -285,7 +287,7 @@ defmodule GraphQl.Schema.Types do
 
     field :repository, :repository, resolve: dataloader(Repository)
     field :publisher,  :publisher, resolve: dataloader(User)
-    field :tags, list_of(:tag), resolve: dataloader(Repository)
+    field :tags,       list_of(:tag), resolve: dataloader(Repository)
 
     timestamps()
   end

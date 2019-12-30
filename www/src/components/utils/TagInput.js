@@ -2,7 +2,7 @@ import React, {Component, createRef, useState} from 'react'
 import {Box, Text, Keyboard, TextInput, Button} from 'grommet'
 import {FormClose} from 'grommet-icons'
 
-const Tag = ({ children, onRemove, ...rest }) => {
+export const Tag = ({ children, onRemove, ...rest }) => {
   const [hover, setHover] = useState(false)
   const padding = {horizontal: 'xxsmall', vertical: 'xxsmall'}
   const tag = (

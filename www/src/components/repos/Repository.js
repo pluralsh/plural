@@ -285,10 +285,15 @@ function RepoCredentials({publicKey}) {
 }
 
 function RepoUpdate({repository}) {
-  const [state, setState] = useState({name: repository.name, description: repository.description})
+  const [state, setState] = useState({
+    name: repository.name,
+    description: repository.description,
+    tags: repository.tags.map(({tag}) => tag)
+  })
   const [image, setImage] = useState(null)
+  const attributes = {...state, tags: state.tags.map((t) => ({tag: t}))}
   const [mutation, {loading}] = useMutation(UPDATE_REPO, {
-    variables: {id: repository.id, attributes: {...state, icon: image && image.file}},
+    variables: {id: repository.id, attributes: image ? {...attributes, icon: image.file} : attributes},
     update: (cache, { data: { updateRepository } }) => {
       const prev = cache.readQuery({ query: REPO_Q, variables: {repositoryId: repository.id} })
       cache.writeQuery({query: REPO_Q, variables: {repositoryId: repository.id}, data: {

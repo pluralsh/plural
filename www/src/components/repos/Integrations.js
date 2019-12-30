@@ -116,6 +116,23 @@ function IntegrationGrid({integrations: {edges, pageInfo}, fetchMore}) {
   )
 }
 
+export function TagHeader({tag, setTag}) {
+  return (
+    <HoveredBackground>
+      <Box
+      accentable
+      style={{cursor: 'pointer'}}
+      align='center'
+      direction='row'
+      gap='xsmall'
+      onClick={() => setTag(null)}>
+        <FormPrevious size='20px' />
+        <Text style={{fontWeight: 500}}>#{tag}</Text>
+      </Box>
+    </HoveredBackground>
+  )
+}
+
 const WIDTH = 15
 
 export function IntegrationPage() {
@@ -151,18 +168,7 @@ export function IntegrationPage() {
         </Box>
         <Box pad='small' margin={{left: 'medium'}} width={`${100 - WIDTH}%`} gap='small'>
           <Box pad={{vertical: 'small'}}>
-          {tag ? <HoveredBackground>
-                   <Box
-                    accentable
-                    style={{cursor: 'pointer'}}
-                    align='center'
-                    direction='row'
-                    gap='xsmall'
-                    onClick={() => setTag(null)}>
-                     <FormPrevious size='20px' />
-                     <Text style={{fontWeight: 500}}>#{tag}</Text>
-                   </Box>
-                 </HoveredBackground> :
+          {tag ? <TagHeader tag={tag} setTag={setTag} /> :
                  <Text style={{fontWeight: 500}}>{repository.name}</Text>}
           </Box>
           <IntegrationGrid integrations={integrations} fetchMore={fetchMore} />

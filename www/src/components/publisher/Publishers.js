@@ -44,7 +44,7 @@ function Publishers(props) {
 
   const {edges, pageInfo} = data.publishers
   return (
-    <Box gap='small'>
+    <Box gap='small' pad='medium'>
       <Scroller
         id='publishers'
         edges={edges}

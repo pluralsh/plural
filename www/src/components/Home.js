@@ -1,13 +1,15 @@
-import React, {useState} from 'react'
+import React, {useState, useContext, useEffect} from 'react'
 import {Box, Text} from 'grommet'
 import { Switch, Route, useHistory, useLocation } from 'react-router-dom'
 import Publishers from './publisher/Publishers'
-import Installations from './repos/Installations'
+import Explore from './Explore'
+import ScrollableContainer from './utils/ScrollableContainer'
+import { BreadcrumbContext } from './Chartmart'
 
 
 const OPTIONS = [
-  {text: 'Publishers', path: '/publishers'},
-  {text: 'Installations', path: '/installations'}
+  {text: 'Explore', path: '/explore'},
+  {text: 'Publishers', path: '/publishers'}
 ]
 
 function SidebarOption({text, path, active}) {
@@ -30,17 +32,20 @@ function SidebarOption({text, path, active}) {
 export default function Home() {
   const loc = useLocation()
   const active = Math.max(OPTIONS.findIndex(({path}) => path === loc.pathname), 0)
+  const {setBreadcrumbs} = useContext(BreadcrumbContext)
+  useEffect(() => setBreadcrumbs([]), [setBreadcrumbs])
+
   return (
-    <Box direction='row' height='100%'>
-      <Box width='200px' background='sidebar' height='100%'>
-        {OPTIONS.map((opt, ind) => <SidebarOption key={opt.path} active={ind === active} {...opt} />)}
-      </Box>
-      <Box width='100%' direction='row' pad='medium'>
+    <ScrollableContainer>
+      <Box direction='row' height='100%'>
+        <Box width='200px' background='sidebar' height='100%'>
+          {OPTIONS.map((opt, ind) => <SidebarOption key={opt.path} active={ind === active} {...opt} />)}
+        </Box>
         <Switch>
-          <Route path='/installations' component={Installations} />
-          <Route path={['', '/publishers']} component={Publishers} />
+          <Route path='/publishers' component={Publishers} />
+          <Route path={['', '/explore']} component={Explore} />
         </Switch>
       </Box>
-    </Box>
+    </ScrollableContainer>
   )
 }

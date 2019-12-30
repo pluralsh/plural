@@ -55,43 +55,52 @@ export function Repository({repo, hasNext, deletable, publisherId}) {
   )
 }
 
+export function RepositoryList({repositores: {edges, pageInfo}, fetchMore, publisher, deletable}) {
+  return (
+    <Scroller id='repositories'
+      edges={edges}
+      style={{overflow: 'auto', height: '100%', width: '100%'}}
+      mapper={({node}, next) => (
+        <Repository
+          key={node.id}
+          repo={node}
+          hasNext={!!next.node}
+          publisherId={publisher && publisher.id}
+          deletable={deletable} />
+      )}
+      onLoadMore={() => {
+        if (!pageInfo.hasNextPage) return
+
+        fetchMore({
+          variables: {cursor: pageInfo.endCursor},
+          updateQuery: (prev, {fetchMoreResult}) => {
+            const {edges, pageInfo} = fetchMoreResult.repositories
+            return edges.length ? {
+              ...prev,
+              repositories: {
+                ...prev.repositories,
+                pageInfo,
+                edges: [...prev.repositories.edges, ...edges]
+              }
+            } : prev
+          }
+        })
+      }}
+    />
+  )
+}
+
 function Repositories({publisher, deletable}) {
   const {loading, data, fetchMore} = useQuery(REPOS_Q, {variables: {publisherId: publisher.id}})
   if (loading || !data) return null
 
-  const {edges, pageInfo} = data.repositories
   return (
     <Box pad='small'>
-      <Scroller id='repositories'
-        edges={edges}
-        style={{overflow: 'auto', height: '100%', width: '100%'}}
-        mapper={({node}, next) => (
-          <Repository
-            key={node.id}
-            repo={node}
-            hasNext={!!next.node}
-            publisherId={publisher.id}
-            deletable={deletable} />
-        )}
-        onLoadMore={() => {
-          if (!pageInfo.hasNextPage) return
-
-          fetchMore({
-            variables: {cursor: pageInfo.endCursor},
-            updateQuery: (prev, {fetchMoreResult}) => {
-              const {edges, pageInfo} = fetchMoreResult.repositories
-              return edges.length ? {
-                ...prev,
-                repositories: {
-                  ...prev.repositories,
-                  pageInfo,
-                  edges: [...prev.repositories.edges, ...edges]
-                }
-              } : prev
-            }
-          })
-        }}
-      />
+      <RepositoryList
+        repositores={data.repositories}
+        fetchMore={fetchMore}
+        deletable={deletable}
+        publisher={publisher} />
     </Box>
   )
 }

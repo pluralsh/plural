@@ -1,7 +1,7 @@
 defmodule Core.Schema.Repository do
   use Piazza.Ecto.Schema
   use Arc.Ecto.Schema
-  alias Core.Schema.{Publisher, Installation, ResourceDefinition}
+  alias Core.Schema.{Publisher, Installation, ResourceDefinition, Tag}
 
   schema "repositories" do
     field :name,          :string, null: false
@@ -15,6 +15,10 @@ defmodule Core.Schema.Repository do
     belongs_to :integration_resource_definition, ResourceDefinition
     belongs_to :publisher, Publisher
     has_many :installations, Installation
+    has_many :tags, Tag,
+      where: [resource_type: :repository],
+      foreign_key: :resource_id,
+      on_replace: :delete
 
     timestamps()
   end
@@ -40,6 +44,7 @@ defmodule Core.Schema.Repository do
   def changeset(model, attrs \\ %{}) do
     model
     |> cast(attrs, @valid)
+    |> cast_assoc(:tags, with: &Tag.tag_changeset(&1, &2, :repository))
     |> foreign_key_constraint(:publisher_id)
     |> cast_assoc(:integration_resource_definition)
     |> unique_constraint(:name)

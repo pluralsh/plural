@@ -11,7 +11,6 @@ import { chunk } from '../../utils/array'
 import Scroller from '../utils/Scroller'
 import HoveredBackground from '../utils/HoveredBackground'
 import { FormPrevious, FormNextLink } from 'grommet-icons'
-import Loading from '../utils/Loading'
 
 const ICON_SIZE = 50
 

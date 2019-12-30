@@ -6,15 +6,24 @@ import Button, {SecondaryButton} from '../utils/Button'
 import {FilePicker} from 'react-file-picker'
 import {CREATE_REPO, REPOS_Q} from './queries'
 import {generatePreview} from '../../utils/file'
+import { TagInput } from './Tags'
 
 const LABEL_WIDTH = '90px'
+
+function LabeledInput({label, children}) {
+  return (
+    <Box gap='xsmall'>
+      <Text size='small' weight='bold'>{label}</Text>
+      {children}
+    </Box>
+  )
+}
 
 export function RepoForm({image, setImage, state, setState, label, mutation, loading, update}) {
   return (
     <Box pad='medium' gap='medium'>
-      <Box gap='xsmall'>
-        <Text size='small' weight='bold'>1. Upload an image</Text>
-        <Box direction='row' gap='small' align='center'>
+      <LabeledInput label='1. Upload an image'>
+      <Box direction='row' gap='small' align='center'>
           <Box
             width='70px'
             height='70px'
@@ -37,24 +46,28 @@ export function RepoForm({image, setImage, state, setState, label, mutation, loa
             </FilePicker>
           </Box>
         </Box>
-      </Box>
-      <Box gap='xsmall'>
-        <Text size='small' weight='bold'>2. Give it a name</Text>
+      </LabeledInput>
+      <LabeledInput label='2. Give it a name'>
         <TextInput
           labelWidth={LABEL_WIDTH}
           placeholder='a good name'
           value={state.name}
           onChange={(e) => setState({...state, name: e.target.value})} />
-      </Box>
-      <Box gap='xsmall'>
-        <Text size='small' weight='bold'>3. Give it a quick description</Text>
+      </LabeledInput>
+      <LabeledInput label='3. Give it a quick description'>
         <TextInput
           label='description'
           labelWidth={LABEL_WIDTH}
           placeholder='a helpful description'
           value={state.description}
           onChange={(e) => setState({...state, description: e.target.value})} />
-      </Box>
+      </LabeledInput>
+      <LabeledInput label='4. Add tags as needed'>
+        <TagInput
+          tags={state.tags || []}
+          addTag={(tag) => setState({...state, tags: [tag, ...(state.tags || [])]})}
+          removeTag={(tag) => setState({...state, tags: state.tags.filter((t) => t !== tag)})} />
+      </LabeledInput>
       <Box direction='row' justify='end'>
         <Button loading={loading} round='xsmall' label={update ? 'Update' : 'Create'} onClick={mutation} />
       </Box>

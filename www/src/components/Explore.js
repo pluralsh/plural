@@ -8,6 +8,15 @@ import { RepositoryList } from './repos/Repositories'
 
 const WIDTH = 15
 
+function EmptyState() {
+  return (
+    <Box pad='small'>
+      <Text style={{fontWeight: 500}} size='small'>It looks like you haven't installed any repos yet, use the search bar or browse by tag
+      to find what you're looking for</Text>
+    </Box>
+  )
+}
+
 export default function Explore() {
   const [tag, setTag] = useState(null)
   const {data, fetchMore} = useQuery(EXPLORE_REPOS, {
@@ -29,7 +38,11 @@ export default function Explore() {
                   <Text style={{fontWeight: 500}}>Installed Repositories</Text>}
         </Box>
         <Box>
-          <RepositoryList repositores={repositories} fetchMore={fetchMore} columns={3} />
+          <RepositoryList
+            repositores={repositories}
+            emptyState={<EmptyState />}
+            fetchMore={fetchMore}
+            columns={3} />
         </Box>
       </Box>
     </Box>

@@ -1,15 +1,16 @@
 package provider
 
 import (
-	"cloud.google.com/go/storage"
 	"context"
 	"fmt"
-	"github.com/michaeljguarino/chartmart/manifest"
-	"github.com/michaeljguarino/chartmart/utils"
-	"google.golang.org/api/option"
 	"os"
 	"os/exec"
 	"strings"
+
+	"cloud.google.com/go/storage"
+	"github.com/michaeljguarino/chartmart/manifest"
+	"github.com/michaeljguarino/chartmart/utils"
+	"google.golang.org/api/option"
 )
 
 type GCPProvider struct {
@@ -46,11 +47,11 @@ func mkGCP() (*GCPProvider, error) {
 		ctx,
 	}
 	projectManifest := manifest.ProjectManifest{
-		Cluster: cluster,
-		Project: project,
-		Bucket: bucket,
+		Cluster:  cluster,
+		Project:  project,
+		Bucket:   bucket,
 		Provider: GCP,
-		Region: provider.Region(),
+		Region:   provider.Region(),
 	}
 	path := manifest.ProjectManifestPath()
 	projectManifest.Write(path)
@@ -75,13 +76,15 @@ func gcpFromManifest(man *manifest.Manifest) (*GCPProvider, error) {
 }
 
 func (gcp *GCPProvider) KubeConfig() error {
-	if (utils.InKubernetes()) {
+	if utils.InKubernetes() {
 		return nil
 	}
 
 	// move tf supported env var to gcloud's
 	os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", os.Getenv("GOOGLE_CREDENTIALS"))
-	cmd := exec.Command("gcloud", "container", "clusters", "get-credentials", gcp.cluster, "--region", gcp.region)
+	cmd := exec.Command(
+		"gcloud", "container", "clusters", "get-credentials", gcp.cluster,
+		"--region", gcp.region, "--project", gcp.project)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
@@ -127,6 +130,6 @@ func (gcp *GCPProvider) Bucket() string {
 	return gcp.bucket
 }
 
-func (gcp * GCPProvider) Region() string {
+func (gcp *GCPProvider) Region() string {
 	return gcp.region
 }

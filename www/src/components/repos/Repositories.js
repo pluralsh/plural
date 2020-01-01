@@ -107,12 +107,13 @@ export function Repository({repo, hasNext, deletable, publisherId}) {
   )
 }
 
-export function RepositoryList({repositores: {edges, pageInfo}, fetchMore, publisher, deletable, columns}) {
+export function RepositoryList({repositores: {edges, pageInfo}, fetchMore, publisher, deletable, columns, emptyState}) {
   const width = Math.floor((100 - 10) / columns)
   return (
     <Scroller id='repositories'
       edges={Array.from(chunk(edges, columns))}
       style={{overflow: 'auto', height: '100%', width: '100%'}}
+      emptyState={emptyState}
       mapper={(chunk) => (
         <Box key={chunk[0].node.id} direction='row' gap='small' fill='horizontal'>
           {chunk.map(({node}) => <RepositoryCell

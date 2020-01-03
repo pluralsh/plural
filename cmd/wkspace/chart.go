@@ -169,7 +169,7 @@ func (w *Workspace) BuildChartValues() error {
 		buf.Reset()
 	}
 
-	if err := mergo.Merge(&values, prevVals, mergo.WithOverride); err != nil {
+	if err := mergo.Merge(&values, prevVals); err != nil {
 		return err
 	}
 
@@ -182,19 +182,25 @@ func (w *Workspace) BuildChartValues() error {
 }
 
 func prevValues(filename string) (map[string]map[string]interface{}, error) {
-	vals := make(map[string]map[string]interface{})
+	vals := make(map[string]map[interface{}]interface{})
+	parsed := make(map[string]map[string]interface{})
 	if !utils.Exists(filename) {
-		return vals, nil
+		return parsed, nil
 	}
 	fmt.Println("\"Safely\" merging in previous values")
 	contents, err := ioutil.ReadFile(filename)
 	if err != nil {
-		return vals, err
+		return parsed, err
 	}
 	if err := yaml.Unmarshal(contents, &vals); err != nil {
-		return vals, err
+		return parsed, err
 	}
-	return vals, nil
+
+	for k, v := range vals {
+		parsed[k] = utils.CleanUpInterfaceMap(v)
+	}
+
+	return parsed, nil
 }
 
 func (w *Workspace) CreateChart(name, dir string) (string, error) {

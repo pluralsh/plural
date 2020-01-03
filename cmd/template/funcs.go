@@ -76,3 +76,26 @@ func knownHosts() (string, error) {
 
 	return utils.ReadFile(known_hosts)
 }
+
+func probe(obj interface{}, path string) (interface{}, error) {
+	keys := strings.Split(path, ".")
+	val  := obj
+	for _, key := range keys {
+		typed := val.(map[string]interface{})
+		value, ok := typed[key]
+		if !ok {
+			return nil, fmt.Errorf("Could not find %s", key)
+		}
+		val = value
+	}
+	return val, nil
+}
+
+func dedupe(obj interface{}, path string, val string) string {
+	probed, err := probe(obj, path)
+	if err != nil {
+		return val
+	}
+
+	return fmt.Sprintf("%s", probed)
+}

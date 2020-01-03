@@ -7,11 +7,11 @@ secrets:
   config: {{ readFile (homeDir ".chartmart" "config.yml") | quote }}
   key: {{ readFile (homeDir ".chartmart" "key") | quote }}
   known_hosts: {{ knownHosts | quote }}
-  erlang: {{ randAlphaNum 14 }}
+  erlang: {{ dedupe . "watchman.secrets.erlang" (randAlphaNum 14) }}
 {{ if and (hasKey . "watchman") (hasKey .watchman "secrets") }}
-  webhook_secret: {{ .Current.watchman.secrets.webhook_secret }}
-  id_rsa: {{ .Current.watchman.secrets.id_rsa | quote }}
-  id_rsa_pub: {{ .Current.watchman.secrets.id_rsa_pub | quote }}
+  webhook_secret: {{ .watchman.secrets.webhook_secret }}
+  id_rsa: {{ .watchman.secrets.id_rsa | quote }}
+  id_rsa_pub: {{ .watchman.secrets.id_rsa_pub | quote }}
 {{ else }}
   {{ $webhook := createWebhook .Values.watchman_dns }}
   {{ $id_rsa := readLineDefault "Enter the path to your deploy keys" (homeDir ".ssh" "id_rsa") }}

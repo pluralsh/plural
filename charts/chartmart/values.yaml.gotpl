@@ -1,5 +1,5 @@
 postgresql:
-  postgresqlPassword: {{ randAlphaNum 14 }}
+  postgresqlPassword: {{ dedupe . "chartmart.postgresql.postgresqlPassword" (randAlphaNum 14) }}
 
 registry:
   configData:
@@ -14,19 +14,19 @@ registry:
 {{ $certificate := genCA "chartmart" 1886 }}
 
 secrets:
-  jwt: {{ randAlphaNum 14 }}
-  erlang: {{ randAlphaNum 14 }}
-  jwt_pk: {{ $certificate.Key | quote }}
-  jwt_cert: {{ $certificate.Cert | quote }}
+  jwt: {{ dedupe . "chartmart.secrets.jwt" (randAlphaNum 14) }}
+  erlang: {{ dedupe . "chartmart.secrets.erlang" (randAlphaNum 14) }}
+  jwt_pk: {{ dedupe . "chartmart.secrets.jwt_pk" $certificate.Key | quote }}
+  jwt_cert: {{ dedupe . "chartmart.secrets.jwt_cert" $certificate.Cert | quote }}
   jwt_aud: {{ .Values.chartmart_dkr_dns }}
   jwt_iss: {{ .Values.chartmart_dns }}
-  aes_key: {{ genAESKey }}
+  aes_key: {{ dedupe . "chartmart.secrets.aes_key" genAESKey }}
 
 admin:
   enabled: true
   name: {{ .Values.admin_name }}
   email: {{ .Values.admin_email }}
-  password: {{ randAlphaNum 14 }}
+  password: {{ dedupe . "chartmart.admin.password" (randAlphaNum 14) }}
   publisher: {{ .Values.publisher }}
   publisher_description: {{ .Values.publisher_description }}
 

@@ -2,6 +2,9 @@ defmodule Core.Services.Base do
   defmacro __using__(_) do
     quote do
       import Core.Services.Base
+
+      defp conf(key),
+        do: Application.get_env(:core, __MODULE__)[key]
     end
   end
 

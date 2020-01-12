@@ -52,6 +52,7 @@ defmodule Core.MixProject do
       {:yaml_elixir, "~> 2.4"},
       {:timex, "~> 3.6"},
       {:tzdata, "~> 0.1.8", override: true},
+      {:stripity_stripe, "~> 2.7"},
 
       {:mock, "~> 0.3.3", only: :test},
     ]

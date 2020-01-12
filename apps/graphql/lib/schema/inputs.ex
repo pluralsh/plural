@@ -120,4 +120,11 @@ defmodule GraphQl.Schema.Inputs do
     field :spec,     list_of(:specification_attributes)
     field :required, :boolean
   end
+
+  input_object :plan_attributes do
+    field :name,   non_null(:string)
+    field :cost,   non_null(:integer)
+    field :period, non_null(:string)
+    field :defalt, :boolean
+  end
 end

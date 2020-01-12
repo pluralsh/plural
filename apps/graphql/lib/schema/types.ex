@@ -6,13 +6,15 @@ defmodule GraphQl.Schema.Types do
     Chart,
     Terraform,
     Docker,
-    Recipe
+    Recipe,
+    Payments
   }
 
   object :user do
-    field :id,        :id
-    field :name,      non_null(:string)
-    field :email,     non_null(:string)
+    field :id,          non_null(:id)
+    field :name,        non_null(:string)
+    field :email,       non_null(:string)
+    field :customer_id, :string
     field :publisher, :publisher, resolve: dataloader(User)
 
     field :jwt, :string, resolve: fn
@@ -43,6 +45,7 @@ defmodule GraphQl.Schema.Types do
     field :id,           :id
     field :name,         non_null(:string)
     field :description,  :string
+    field :account_id,   :string
     field :owner,        :user, resolve: dataloader(User)
 
     field :avatar, :string, resolve: fn
@@ -290,6 +293,25 @@ defmodule GraphQl.Schema.Types do
     field :tags,       list_of(:tag), resolve: dataloader(Repository)
 
     timestamps()
+  end
+
+  object :plan do
+    field :id,      non_null(:id)
+    field :name,    non_null(:string)
+    field :default, :boolean
+    field :visible, non_null(:boolean)
+    field :cost,    non_null(:integer)
+    field :period,  :string
+
+    timestamps()
+  end
+
+  object :repository_subscription do
+    field :id,          non_null(:id)
+    field :external_id, :string
+    field :customer_id, :string
+    field :installation, :installation, resolve: dataloader(Repository)
+    field :plan, :plan, resolve: dataloader(Payments)
   end
 
   object :tag do

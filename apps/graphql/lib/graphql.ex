@@ -14,21 +14,31 @@ defmodule GraphQl do
     Docker,
     Dependencies,
     Recipe,
-    Tag
+    Tag,
+    Payments
   }
 
+  @sources [
+    User,
+    Chart,
+    Repository,
+    Terraform,
+    Docker,
+    Recipe,
+    Tag,
+    Payments
+  ]
+
   def context(ctx) do
-    loader =
-      Dataloader.new()
-      |> Dataloader.add_source(User, User.data(ctx))
-      |> Dataloader.add_source(Chart, Chart.data(ctx))
-      |> Dataloader.add_source(Repository, Repository.data(ctx))
-      |> Dataloader.add_source(Terraform, Terraform.data(ctx))
-      |> Dataloader.add_source(Docker, Docker.data(ctx))
-      |> Dataloader.add_source(Recipe, Recipe.data(ctx))
-      |> Dataloader.add_source(Tag, Tag.data(ctx))
+    loader = make_dataloader(@sources, ctx)
 
     Map.put(ctx, :loader, loader)
+  end
+
+  defp make_dataloader(sources, ctx) do
+    Enum.reduce(sources, Dataloader.new(), fn source, loader ->
+      Dataloader.add_source(loader, source, source.data(ctx))
+    end)
   end
 
   def plugins do
@@ -218,6 +228,13 @@ defmodule GraphQl do
       resolve safe_resolver(&User.delete_token/2)
     end
 
+    field :create_customer, :user do
+      middleware GraphQl.Middleware.Authenticated
+      arg :source, non_null(:string)
+
+      resolve safe_resolver(&Payments.create_customer/2)
+    end
+
     field :signup, :user do
       arg :attributes, non_null(:user_attributes)
 
@@ -236,6 +253,13 @@ defmodule GraphQl do
       arg :attributes, non_null(:publisher_attributes)
 
       resolve safe_resolver(&User.create_publisher/2)
+    end
+
+    field :link_publisher, :publisher do
+      middleware GraphQl.Middleware.Authenticated
+      arg :token, non_null(:string)
+
+      resolve safe_resolver(&Payments.link_publisher/2)
     end
 
     field :create_webhook, :webhook do
@@ -267,6 +291,14 @@ defmodule GraphQl do
       resolve safe_resolver(&Repository.create_repository/2)
     end
 
+    field :create_plan, :plan do
+      middleware GraphQl.Middleware.Authenticated
+      arg :repository_id, non_null(:id)
+      arg :attributes, non_null(:plan_attributes)
+
+      resolve safe_resolver(&Payments.create_plan/2)
+    end
+
     field :update_repository, :repository do
       middleware GraphQl.Middleware.Authenticated
       arg :repository_id,   :id
@@ -296,6 +328,14 @@ defmodule GraphQl do
       arg :attributes, non_null(:installation_attributes)
 
       resolve safe_resolver(&Repository.update_installation/2)
+    end
+
+    field :create_subscription, :repository_subscription do
+      middleware GraphQl.Middleware.Authenticated
+      arg :installation_id, non_null(:id)
+      arg :plan_id, non_null(:id)
+
+      resolve safe_resolver(&Payments.create_subscription/2)
     end
 
     field :delete_installation, :installation do

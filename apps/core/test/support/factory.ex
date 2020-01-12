@@ -148,4 +148,19 @@ defmodule Core.Factory do
       resource_type: :integration
     }
   end
+
+  def plan_factory do
+    %Schema.Plan{
+      name: sequence(:plan, &"plan-#{&1}"),
+      repository: build(:repository),
+      cost: 100
+    }
+  end
+
+  def subscription_factory do
+    %Schema.Subscription{
+      installation: build(:installation),
+      plan: build(:plan)
+    }
+  end
 end

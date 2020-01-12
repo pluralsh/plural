@@ -5,6 +5,8 @@ config :core, Core.Guardian,
   issuer: "piazza",
   secret_key: get_env("JWT_SECRET")
 
+config :stripity_stripe, api_key: get_env("STRIPE_SECRET")
+
 config :api, ApiWeb.Endpoint,
   secret_key_base: get_env("SECRET_KEY_BASE")
 

@@ -8,6 +8,7 @@ defmodule Core.Schema.Publisher do
     field :avatar_id, :binary_id
     field :avatar, Core.Storage.Type
     field :description, :string
+    field :account_id,  :string
 
     belongs_to :owner, User
 
@@ -28,5 +29,13 @@ defmodule Core.Schema.Publisher do
     |> validate_length(:name, max: 255)
     |> generate_uuid(:avatar_id)
     |> cast_attachments(attrs, [:avatar], allow_urls: true)
+  end
+
+  @stripe_valid ~w(account_id)a
+
+  def stripe_changeset(model, attrs \\ %{}) do
+    model
+    |> cast(attrs, @stripe_valid)
+    |> unique_constraint(:account_id)
   end
 end

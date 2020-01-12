@@ -5,13 +5,14 @@ defmodule Core.Schema.User do
   @email_re ~r/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-\.]+\.[a-zA-Z]{2,}$/
 
   schema "users" do
-    field :name,  :string
-    field :email, :string
+    field :name,          :string
+    field :email,         :string
     field :password_hash, :string
-    field :password, :string, virtual: true
-    field :jwt, :string, virtual: true
-    field :avatar_id, :binary_id
-    field :avatar, Core.Storage.Type
+    field :password,      :string, virtual: true
+    field :jwt,           :string, virtual: true
+    field :avatar_id,     :binary_id
+    field :avatar,        Core.Storage.Type
+    field :customer_id,   :string
 
     has_one :publisher, Core.Schema.Publisher,
       foreign_key: :owner_id
@@ -48,6 +49,14 @@ defmodule Core.Schema.User do
     |> validate_required([:password_hash])
     |> generate_uuid(:avatar_id)
     |> cast_attachments(attrs, [:avatar], allow_urls: true)
+  end
+
+  @stripe_valid ~w(customer_id)a
+
+  def stripe_changeset(model, attrs \\ %{}) do
+    model
+    |> cast(attrs, @stripe_valid)
+    |> unique_constraint(:customer_id)
   end
 
   defp hash_password(%Ecto.Changeset{valid?: true, changes: %{password: password}} = changeset) do

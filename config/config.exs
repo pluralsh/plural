@@ -3,8 +3,6 @@ use Mix.Config
 config :core,
   ecto_repos: [Core.Repo]
 
-
-
 config :piazza_core,
   repos: [Core.Repo]
 
@@ -38,11 +36,17 @@ config :core, Core.Guardian,
 
 config :core, :chartmuseum, "http://localhost:8080"
 
+config :core, Core.Services.Payments,
+  application_fee: 5
+
 config :botanist,
   ecto_repo: Core.Repo
 
 config :arc,
   storage: Arc.Storage.GCS,
   bucket: "chartmart-assets"
+
+config :stripity_stripe,
+  hackney_opts: [connect_timeout: 5000, recv_timeout: 60_000]
 
 import_config "#{Mix.env()}.exs"

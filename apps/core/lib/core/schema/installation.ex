@@ -1,6 +1,6 @@
 defmodule Core.Schema.Installation do
   use Piazza.Ecto.Schema
-  alias Core.Schema.{Repository, User}
+  alias Core.Schema.{Repository, User, Subscription}
 
   defmodule Policy do
     use Piazza.Ecto.Schema
@@ -24,6 +24,7 @@ defmodule Core.Schema.Installation do
     embeds_one :policy,     Policy, on_replace: :update
     belongs_to :user,       User
     belongs_to :repository, Repository
+    has_one :subscription,  Subscription
 
     timestamps()
   end

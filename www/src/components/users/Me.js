@@ -12,6 +12,7 @@ import {FilePicker} from 'react-file-picker'
 import {UPDATE_USER, ME_Q} from './queries'
 import {TOOLBAR_SIZE} from '../Chartmart'
 import CreatePublisher from '../publisher/CreatePublisher'
+import {FaCreditCard} from 'react-icons/fa'
 
 export function DropdownItem(props) {
   const {onClick, ...rest} = props
@@ -103,6 +104,7 @@ function Me({me}) {
             <CreatePublisherModal />
           }
           <DropdownItem icon={User} text="Edit user" onClick={() => history.push('/me/edit')} />
+          <DropdownItem icon={FaCreditCard} text="Billing Details" onClick={() => history.push('/me/billing')} />
           <Box border='top' pad={{vertical: 'xxsmall'}}>
             <MenuItem onClick={() => {
               wipeToken()

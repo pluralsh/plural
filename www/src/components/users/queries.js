@@ -5,10 +5,12 @@ export const ME_Q = gql`
   query {
     me {
       ...UserFragment
+      customerId
       publisher {
         id
         name
         description
+        accountId
       }
     }
   }
@@ -84,4 +86,14 @@ export const PING_WEBHOOK = gql`
       headers
     }
   }
+`;
+
+export const REGISTER_CARD = gql`
+  mutation RegisterCard($source: String!) {
+    createCustomer(source: $source) {
+      ...UserFragment
+      customerId
+    }
+  }
+  ${UserFragment}
 `;

@@ -1,16 +1,49 @@
 import React, {useContext, useEffect, useState} from 'react'
 import {useMutation} from 'react-apollo'
-import {Box} from 'grommet'
+import {Box, Text} from 'grommet'
 import Repositories from '../repos/Repositories'
 import CreateRepository from '../repos/CreateRepository'
 import {CurrentUserContext} from '../login/CurrentUser'
 import {BreadcrumbContext} from '../Chartmart'
 import Expander from '../utils/Expander'
-import { EDIT_PUBLISHER } from './queries'
+import { EDIT_PUBLISHER, LINK_ACCOUNT } from './queries'
 import { ME_Q } from '../users/queries'
 import InputField from '../utils/InputField'
 import Button from '../utils/Button'
 import ScrollableContainer from '../utils/ScrollableContainer'
+import { CONNECT_ICON, AUTHORIZE_URL } from './constants'
+
+function PublisherPayments({accountId}) {
+  const [mutation] = useMutation(LINK_ACCOUNT, {
+    update: (cache, {data: { linkPublisher }}) => {
+      const prev = cache.readQuery({ query: ME_Q })
+      cache.writeQuery({query: ME_Q, data: {
+        ...prev, me: {
+          ...prev.me,
+          publisher: linkPublisher
+        }
+      }})
+    }
+  })
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get('code')
+
+  useEffect(() => {
+    if (token && !accountId) {
+      mutation({variables: {token}})
+    }
+  }, [token, accountId, mutation])
+
+  return (
+    <Box pad='small' align='center' justify='center'>
+      {accountId ?
+        <Text>Account connnected</Text> :
+        <a href={AUTHORIZE_URL}>
+          <img src={CONNECT_ICON} />
+        </a>}
+    </Box>
+  )
+}
 
 function EditPublisher({description}) {
   const [attributes, setAttributes] = useState({description})
@@ -41,7 +74,8 @@ function EditPublisher({description}) {
   )
 }
 
-function MyPublisher() {
+function MyPublisher(props) {
+  console.log(window.location.search)
   const me = useContext(CurrentUserContext)
   const {setBreadcrumbs} = useContext(BreadcrumbContext)
   useEffect(() => {
@@ -59,6 +93,9 @@ function MyPublisher() {
           <Box>
             <Expander text='Edit publisher'>
               <EditPublisher {...me.publisher} />
+            </Expander>
+            <Expander text='Payments'>
+              <PublisherPayments {...me.publisher} />
             </Expander>
             <Box border='top'>
               <Expander text='Create Repository' open>

@@ -10,13 +10,25 @@ defmodule Core.Services.Base do
 
   def start_transaction(), do: Ecto.Multi.new()
 
+  def short_circuit(), do: []
+
+  def short(circuit, name, fun) when is_list(circuit) and is_function(fun),
+    do: [{name, fun} | circuit]
+
   def add_operation(multi, name, fun) when is_function(fun) do
     Ecto.Multi.run(multi, name, fn _, params ->
       fun.(params)
     end)
   end
 
-  def execute(multi, opts \\ []) do
+  def execute(operation, opts \\ [])
+
+  def execute(circuit, _) when is_list(circuit) do
+    Enum.reverse(circuit)
+    |> execute_short_circuit(%{})
+  end
+
+  def execute(%Ecto.Multi{} = multi, opts) do
     with {:ok, result} <- Core.Repo.transaction(multi) do
       case Map.new(opts) do
         %{extract: operation} -> {:ok, result[operation]}
@@ -25,6 +37,14 @@ defmodule Core.Services.Base do
     else
       {:error, _, reason, _} -> {:error, reason}
       {:error, reason} -> {:error, reason}
+    end
+  end
+
+  defp execute_short_circuit([], result), do: {:ok, result}
+  defp execute_short_circuit([{name, fun} | rest], result) do
+    case fun.() do
+      {:ok, res} -> execute_short_circuit(rest, Map.put(result, name, res))
+      {:error, _} = error -> error
     end
   end
 

@@ -122,9 +122,35 @@ defmodule GraphQl.Schema.Inputs do
   end
 
   input_object :plan_attributes do
-    field :name,   non_null(:string)
-    field :cost,   non_null(:integer)
-    field :period, non_null(:string)
-    field :defalt, :boolean
+    field :name,       non_null(:string)
+    field :cost,       non_null(:integer)
+    field :period,     non_null(:string)
+    field :defalt,     :boolean
+    field :line_items, :plan_line_item_attributes
+  end
+
+  input_object :plan_line_item_attributes do
+    field :included, list_of(:limit_attributes)
+    field :items,    list_of(:line_item_attributes)
+  end
+
+  input_object :limit_attributes do
+    field :dimension, non_null(:string)
+    field :quantity,  non_null(:integer)
+  end
+
+  input_object :line_item_attributes do
+    field :name,      non_null(:string)
+    field :dimension, non_null(:string)
+    field :cost,      non_null(:integer)
+    field :period,    non_null(:string)
+  end
+
+  input_object :subscription_attributes do
+    field :line_items, :subscription_line_item_attributes
+  end
+
+  input_object :subscription_line_item_attributes do
+    field :items, list_of(:limit_attributes)
   end
 end

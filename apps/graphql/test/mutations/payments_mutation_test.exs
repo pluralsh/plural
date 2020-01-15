@@ -39,9 +39,9 @@ defmodule GraphQl.PaymentsMutationsTest do
 
   describe "createPlan" do
     test_with_mock "It will create a plan for a repository", Stripe.Plan,
-      [create: fn %{id: _, amount: 100, currency: "USD", interval: "month", product: %{name: "pro"}},
+      [create: fn %{amount: 100, currency: "USD", interval: "month", product: %{name: "pro"}},
                   [connect_account: "account_id"] ->
-        {:ok, %{}}
+        {:ok, %{id: "id"}}
       end] do
       %{publisher: pub} = repository = insert(:repository,
         publisher: build(:publisher, account_id: "account_id")
@@ -71,7 +71,16 @@ defmodule GraphQl.PaymentsMutationsTest do
       user = insert(:user, customer_id: "cus_id")
       repository = insert(:repository, publisher: build(:publisher, account_id: "account_id"))
       installation = insert(:installation, user: user, repository: repository)
-      %{id: plan_id} = plan = insert(:plan, repository: installation.repository)
+      plan = insert(:plan,
+        repository: installation.repository,
+        external_id: "plan_id",
+        line_items: %{
+          items: [
+            %{name: "stor", dimension: "storage", external_id: "id_stor", period: :monthly},
+            %{name: "user", dimension: "user", external_id: "id_user", period: :monthly},
+          ]
+        }
+      )
 
       with_mocks [
         {Stripe.Token, [], [create: fn %{customer: "cus_id"}, [connect_account: "account_id"] ->
@@ -80,16 +89,35 @@ defmodule GraphQl.PaymentsMutationsTest do
         {Stripe.Customer, [], [create: fn %{email: _, source: "tok_id"}, [connect_account: "account_id"] ->
           {:ok, %{id: "cus_id2"}}
         end]},
-        {Stripe.Subscription, [], [create: fn %{customer: "cus_id2", items: [%{plan: ^plan_id}]}, [connect_account: "account_id"] ->
-          {:ok, %{id: "sub_id"}}
+        {Stripe.Subscription, [], [create: fn %{
+          customer: "cus_id2",
+          application_fee_percent: 5,
+          items: [%{plan: "plan_id"}, %{plan: "id_stor", quantity: 1}, %{plan: "id_user", quantity: 2}]
+        }, [connect_account: "account_id"] ->
+          {:ok, %{
+            id: "sub_id",
+            items: %{
+              data: [
+                %{id: "item_id"},
+                %{id: "stor_id", plan: %{id: "id_stor"}},
+                %{id: "user_id", plan: %{id: "id_user"}}
+              ]
+            }
+          }}
         end]}
       ] do
 
         {:ok, %{data: %{"createSubscription" => result}}} = run_query("""
-          mutation CreateSubscription($planId: String!, $instId: String!) {
-            createSubscription(planId: $planId, installationId: $instId) {
+          mutation CreateSubscription($planId: String!, $instId: String!, $attrs: SubscriptionAttributes!) {
+            createSubscription(planId: $planId, installationId: $instId, attributes: $attrs) {
               customerId
               externalId
+              lineItems {
+                items {
+                  quantity
+                  dimension
+                }
+              }
               installation {
                 id
               }
@@ -98,12 +126,29 @@ defmodule GraphQl.PaymentsMutationsTest do
               }
             }
           }
-        """, %{"planId" => plan.id, "instId" => installation.id}, %{current_user: user})
+        """, %{
+          "planId" => plan.id,
+          "instId" => installation.id,
+          "attrs" => %{
+            "line_items" => %{
+              "items" => [
+                %{"quantity" => 1, "dimension" => "storage"},
+                %{"quantity" => 2, "dimension" => "user"}
+              ]
+            }
+          }
+        }, %{current_user: user})
 
         assert result["installation"]["id"] == installation.id
         assert result["plan"]["id"] == plan.id
         assert result["customerId"] == "cus_id2"
         assert result["externalId"] == "sub_id"
+
+        [storage, user] = result["lineItems"]["items"]
+        assert storage["quantity"] == 1
+        assert storage["dimension"] == "storage"
+        assert user["quantity"] == 2
+        assert user["dimension"] == "user"
       end
     end
   end

@@ -334,6 +334,7 @@ defmodule GraphQl do
       middleware GraphQl.Middleware.Authenticated
       arg :installation_id, non_null(:id)
       arg :plan_id, non_null(:id)
+      arg :attributes, :subscription_attributes
 
       resolve safe_resolver(&Payments.create_subscription/2)
     end

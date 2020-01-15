@@ -61,6 +61,7 @@ defmodule GraphQl.Schema.Types do
     field :description,   :string
     field :documentation, :string
     field :publisher,     :publisher, resolve: dataloader(User)
+    field :plans,         list_of(:plan), resolve: dataloader(Payments)
     field :tags,          list_of(:tag), resolve: dataloader(Repository)
 
     field :icon, :string, resolve: fn
@@ -296,22 +297,24 @@ defmodule GraphQl.Schema.Types do
   end
 
   object :plan do
-    field :id,      non_null(:id)
-    field :name,    non_null(:string)
-    field :default, :boolean
-    field :visible, non_null(:boolean)
-    field :cost,    non_null(:integer)
-    field :period,  :string
+    field :id,         non_null(:id)
+    field :name,       non_null(:string)
+    field :default,    :boolean
+    field :visible,    non_null(:boolean)
+    field :cost,       non_null(:integer)
+    field :period,     :string
+    field :line_items, :plan_line_items
 
     timestamps()
   end
 
   object :repository_subscription do
-    field :id,          non_null(:id)
-    field :external_id, :string
-    field :customer_id, :string
+    field :id,           non_null(:id)
+    field :external_id,  :string
+    field :customer_id,  :string
+    field :line_items,   :subscription_line_items
     field :installation, :installation, resolve: dataloader(Repository)
-    field :plan, :plan, resolve: dataloader(Payments)
+    field :plan,         :plan, resolve: dataloader(Payments)
   end
 
   object :tag do
@@ -327,6 +330,27 @@ defmodule GraphQl.Schema.Types do
   object :grouped_tag do
     field :tag,   non_null(:string)
     field :count, non_null(:integer)
+  end
+
+  object :plan_line_items do
+    field :included, list_of(:limit)
+    field :items,    list_of(:line_item)
+  end
+
+  object :subscription_line_items do
+    field :items, list_of(:limit)
+  end
+
+  object :line_item do
+    field :name,      non_null(:string)
+    field :dimension, non_null(:string)
+    field :cost,      non_null(:integer)
+    field :period,    :string
+  end
+
+  object :limit do
+    field :dimension, non_null(:string)
+    field :quantity,  non_null(:integer)
   end
 
   connection node_type: :user

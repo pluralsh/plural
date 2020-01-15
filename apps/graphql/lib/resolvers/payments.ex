@@ -6,6 +6,10 @@ defmodule GraphQl.Resolvers.Payments do
   def query(Plan, _), do: Plan
   def query(Subscription, _), do: Subscription
 
+  def create_subscription(
+    %{attributes: attrs, plan_id: plan_id, installation_id: inst_id},
+    %{context: %{current_user: user}}
+  ), do: Payments.create_subscription(attrs, plan_id, inst_id, user)
   def create_subscription(%{plan_id: plan_id, installation_id: inst_id}, %{context: %{current_user: user}}),
     do: Payments.create_subscription(plan_id, inst_id, user)
 

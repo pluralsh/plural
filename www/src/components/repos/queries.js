@@ -4,6 +4,7 @@ import {ChartFragment, VersionFragment, ChartInstallationFragment} from '../../m
 import {TerraformFragment} from '../../models/terraform'
 import {DockerRepoFragment, DockerImageFragment} from '../../models/docker'
 import { RecipeFragment, RecipeSectionFragment } from '../../models/recipe'
+import { PlanFragment } from '../../models/payments'
 
 export const CREATE_REPO = gql`
   mutation CreateRepository($attributes: RepositoryAttributes!) {
@@ -115,6 +116,9 @@ export const REPO_Q = gql`
       installation {
         ...InstallationFragment
       }
+      plans {
+        ...PlanFragment
+      }
       tags {
         tag
       }
@@ -175,6 +179,7 @@ export const REPO_Q = gql`
       }
     }
   }
+  ${PlanFragment}
   ${RepoFragment}
   ${ChartFragment}
   ${InstallationFragment}

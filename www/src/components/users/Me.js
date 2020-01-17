@@ -82,7 +82,7 @@ function Me({me}) {
         height={TOOLBAR_SIZE}
         direction='row'
         align='center'
-        gap='xsmall'>
+        gap='small'>
         <FilePicker
           extensions={['jpg', 'jpeg', 'png']}
           dims={{minWidth: 100, maxWidth: 500, minHeight: 100, maxHeight: 500}}

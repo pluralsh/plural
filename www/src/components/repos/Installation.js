@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {Box, Text, CheckBox} from 'grommet'
+import {Box, Text, CheckBox, Anchor} from 'grommet'
 import {Alert, Close} from 'grommet-icons'
 import {useMutation} from 'react-apollo'
 import Button from '../utils/Button'
@@ -10,6 +10,9 @@ import yaml from 'js-yaml'
 import Highlight from 'react-highlight.js'
 import Expander from '../utils/Expander'
 import Integrations from './Integrations'
+import Carousel from '../utils/Carousel'
+import Plan from '../payments/Plan'
+import CreatePlan from '../payments/CreatePlan'
 
 function update(cache, repositoryId, installation) {
   const prev = cache.readQuery({ query: REPO_Q, variables: {repositoryId} })
@@ -75,7 +78,36 @@ function EditInstallation({installation, repository, onUpdate, open}) {
 }
 
 
-function Installation({repository, onUpdate, noHelm, open, integrations, pageInfo, fetchMore}) {
+function PlanCarousel({repository}) {
+  const [open, setOpen] = useState(false)
+  const {plans, editable} = repository
+
+  return (
+    <>
+    <Expander text='Plans'>
+      <Box pad='small' gap='small'>
+        {plans.length > 0 ?
+          <Carousel
+            dots
+            draggable={false}
+            slidesPerPage={1}
+            offset={12}
+            edges={plans}
+            mapper={(plan) => <Plan key={plan.id} {...plan} width='80%' />}
+            fetchMore={() => null} /> :
+          <Text size='small'>This repo is currently free to use</Text>
+        }
+        {editable && (<Box direction='row' justify='end'>
+          <Anchor onClick={() => setOpen(true)} size='small'>Create more</Anchor>
+        </Box>)}
+      </Box>
+    </Expander>
+    {open && <CreatePlan repository={repository} setOpen={setOpen} />}
+    </>
+  )
+}
+
+function Installation({repository, onUpdate, noHelm, open, integrations, fetchMore}) {
   const [mutation] = useMutation(INSTALL_REPO, {
     variables: {repositoryId: repository.id},
     update: (cache, { data: { createInstallation } }) => {
@@ -86,6 +118,7 @@ function Installation({repository, onUpdate, noHelm, open, integrations, pageInf
       })
     }
   })
+  const hasPlans = repository.plans && repository.plans.length > 0
 
   return (
     <Box elevation='small' gap='small'>
@@ -102,6 +135,7 @@ chartmart deploy ${repository.name}`}
               </Box>
             </Box>
           )}
+          {<PlanCarousel repository={repository} />}
           <EditInstallation
             installation={repository.installation}
             repository={repository}

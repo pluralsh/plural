@@ -52,6 +52,11 @@ export const DEFAULT_THEME = {
       fontWeight: 400
     }
   },
+  select: {
+    options: {
+      text: {size: 'small'}
+    }
+  },
   global: {
     colors: DEFAULT_COLOR_THEME,
     drop: {

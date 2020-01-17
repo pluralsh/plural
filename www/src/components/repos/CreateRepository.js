@@ -4,13 +4,13 @@ import {DocumentImage} from 'grommet-icons'
 import {useMutation} from 'react-apollo'
 import Button, {SecondaryButton} from '../utils/Button'
 import {FilePicker} from 'react-file-picker'
-import {CREATE_REPO, REPOS_Q} from './queries'
+import {CREATE_REPO, REPO_Q} from './queries'
 import {generatePreview} from '../../utils/file'
 import { TagInput } from './Tags'
 
 const LABEL_WIDTH = '90px'
 
-function LabeledInput({label, children}) {
+export function LabeledInput({label, children}) {
   return (
     <Box gap='xsmall'>
       <Text size='small' weight='bold'>{label}</Text>
@@ -81,8 +81,8 @@ function CreateRepository({publisher}) {
   const [mutation, {loading}] = useMutation(CREATE_REPO, {
     variables: {attributes: {...state, icon: image && image.file}},
     update: (cache, { data: { createRepository } }) => {
-      const prev = cache.readQuery({ query: REPOS_Q, variables: {publisherId: publisher.id} })
-      cache.writeQuery({query: REPOS_Q, variables: {publisherId: publisher.id}, data: {
+      const prev = cache.readQuery({ query: REPO_Q, variables: {publisherId: publisher.id} })
+      cache.writeQuery({query: REPO_Q, variables: {publisherId: publisher.id}, data: {
         ...prev,
         repositories: {
           ...prev.repositories,

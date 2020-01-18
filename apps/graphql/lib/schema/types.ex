@@ -80,6 +80,10 @@ defmodule GraphQl.Schema.Types do
       repo, _, %{context: %{current_user: user}} -> Repository.resolve_public_key(repo, user)
     end
 
+    field :subscription, :repository_subscription, resolve: fn
+      repo, _, %{context: %{current_user: user}} -> Payments.resolve_subscription(repo, user)
+    end
+
     timestamps()
   end
 

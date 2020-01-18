@@ -13,6 +13,7 @@ import Integrations from './Integrations'
 import Carousel from '../utils/Carousel'
 import Plan from '../payments/Plan'
 import CreatePlan from '../payments/CreatePlan'
+import SubscribeModal from '../payments/CreateSubscription'
 
 function update(cache, repositoryId, installation) {
   const prev = cache.readQuery({ query: REPO_Q, variables: {repositoryId} })
@@ -80,12 +81,20 @@ function EditInstallation({installation, repository, onUpdate, open}) {
 
 function PlanCarousel({repository}) {
   const [open, setOpen] = useState(false)
+  const [modal, setModal] = useState(null)
   const {plans, editable} = repository
+
+  function approvePlan(plan) {
+    setModal(
+      <SubscribeModal plan={plan} repositoryId={repository.id} setOpen={setModal} />
+    )
+  }
 
   return (
     <>
     <Expander text='Plans'>
       <Box pad='small' gap='small'>
+        {modal}
         {plans.length > 0 ?
           <Carousel
             dots
@@ -93,7 +102,7 @@ function PlanCarousel({repository}) {
             slidesPerPage={1}
             offset={12}
             edges={plans}
-            mapper={(plan) => <Plan key={plan.id} {...plan} width='80%' />}
+            mapper={(plan) => <Plan key={plan.id} {...plan} approvePlan={approvePlan} width='80%' />}
             fetchMore={() => null} /> :
           <Text size='small'>This repo is currently free to use</Text>
         }

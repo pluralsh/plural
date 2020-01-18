@@ -1,5 +1,5 @@
 import gql from 'graphql-tag'
-import { PlanFragment } from '../../models/payments';
+import { PlanFragment, SubscriptionFragment } from '../../models/payments';
 
 export const CREATE_PLAN = gql`
   mutation CreatePlan($repositoryId: ID!, $attributes: PlanAttributes!) {
@@ -8,4 +8,13 @@ export const CREATE_PLAN = gql`
     }
   }
   ${PlanFragment}
+`;
+
+export const CREATE_SUBSCRIPTION = gql`
+  mutation CreateSubscription($installationId: ID!, $planId: ID!, $attributes: SubscriptionAttributes!) {
+    createSubscription(attributes: $attributes, installationId: $installationId, planId: $planId) {
+      ...SubscriptionFragment
+    }
+  }
+  ${SubscriptionFragment}
 `;

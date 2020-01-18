@@ -339,6 +339,22 @@ defmodule GraphQl do
       resolve safe_resolver(&Payments.create_subscription/2)
     end
 
+    field :update_plan, :repository_subscription do
+      middleware GraphQl.Middleware.Authenticated
+      arg :plan_id, non_null(:id)
+      arg :subscription_id, non_null(:id)
+
+      resolve safe_resolver(&Payments.update_plan/2)
+    end
+
+    field :update_line_item, :repository_subscription do
+      middleware GraphQl.Middleware.Authenticated
+      arg :attributes, non_null(:limit_attributes)
+      arg :subscription_id, non_null(:id)
+
+      resolve safe_resolver(&Payments.update_line_item/2)
+    end
+
     field :delete_installation, :installation do
       middleware GraphQl.Middleware.Authenticated
       arg :id, non_null(:id)

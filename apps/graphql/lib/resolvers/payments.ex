@@ -6,7 +6,6 @@ defmodule GraphQl.Resolvers.Payments do
   def query(Plan, _), do: Plan
   def query(Subscription, _), do: Subscription
 
-
   def resolve_subscription(%{id: repo_id}, %{id: user_id}),
     do: {:ok, Payments.get_subscription(repo_id, user_id)}
 
@@ -22,6 +21,12 @@ defmodule GraphQl.Resolvers.Payments do
 
   def create_plan(%{attributes: attrs, repository_id: id}, %{context: %{current_user: user}}),
     do: Payments.create_plan(attrs, id, user)
+
+  def update_line_item(%{attributes: attrs, subscription_id: id}, %{context: %{current_user: user}}),
+    do: Payments.update_line_item(attrs, id, user)
+
+  def update_plan(%{plan_id: plan_id, subscription_id: id}, %{context: %{current_user: user}}),
+    do: Payments.update_plan(plan_id, id, user)
 
   def link_publisher(%{token: token}, %{context: %{current_user: user}}) do
     Users.get_publisher_by_owner!(user.id)

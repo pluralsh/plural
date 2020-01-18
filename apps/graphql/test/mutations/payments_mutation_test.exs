@@ -152,4 +152,154 @@ defmodule GraphQl.PaymentsMutationsTest do
       end
     end
   end
+
+  describe "updateLineItem" do
+    test_with_mock "A subscriber can update individual line items", Stripe.SubscriptionItem, [
+      update: fn "si_id", %{quantity: 2}, [connect_account: "account_id"] -> {:ok, %{}} end
+    ] do
+      user = insert(:user)
+      repository = insert(:repository, publisher: build(:publisher, account_id: "account_id"))
+      installation = insert(:installation, user: user, repository: repository)
+      plan = insert(:plan,
+        repository: installation.repository,
+        external_id: "plan_id",
+        line_items: %{
+          items: [
+            %{name: "stor", dimension: "storage", external_id: "id_stor", period: :monthly},
+            %{name: "user", dimension: "user", external_id: "id_user", period: :monthly},
+          ]
+        })
+      subscription = insert(:subscription, installation: installation, plan: plan, line_items: %{
+        item_id: "some_id",
+        items: [
+          %{id: Ecto.UUID.generate(), external_id: "si_id", quantity: 1, dimension: "storage"},
+          %{id: Ecto.UUID.generate(), external_id: "si_id2", quantity: 2, dimension: "user"},
+        ]
+      })
+
+      {:ok, %{data: %{"updateLineItem" => result}}} = run_query("""
+          mutation UpdateLineItem($subscriptionId: ID!, $attrs: LimitAttributes!) {
+            updateLineItem(subscriptionId: $subscriptionId, attributes: $attrs) {
+              lineItems {
+                items {
+                  quantity
+                  dimension
+                }
+              }
+              installation {
+                id
+              }
+              plan {
+                id
+              }
+            }
+          }
+        """,
+        %{"subscriptionId" => subscription.id, "attrs" => %{"dimension" => "storage", "quantity" => 2}},
+        %{current_user: user})
+
+      assert result["installation"]["id"] == installation.id
+      assert result["plan"]["id"] == plan.id
+
+      [storage, user] = result["lineItems"]["items"]
+      assert storage["quantity"] == 2
+      assert storage["dimension"] == "storage"
+      assert user["quantity"] == 2
+      assert user["dimension"] == "user"
+    end
+  end
+
+  describe "updatePlan" do
+    test_with_mock "Users can change plans", Stripe.Subscription, [
+      update: fn
+        "sub_id",
+        %{items: [
+          %{plan: "pl_id", deleted: true},
+          %{plan: "it_1", deleted: true},
+          %{plan: "it_2", deleted: true},
+          %{plan: "pl_id2"},
+          %{plan: "id_stor", quantity: 1},
+          %{plan: "id_user", quantity: 0}
+        ]},
+        [connect_account: "account_id"] -> {:ok, %{
+          id: "sub_id",
+          items: %{
+            data: [
+              %{id: "item_id"},
+              %{id: "stor_id", plan: %{id: "id_stor"}},
+              %{id: "user_id", plan: %{id: "id_user"}}
+            ]
+          }
+        }}
+      end] do
+      user = insert(:user)
+      repository = insert(:repository, publisher: build(:publisher, account_id: "account_id"))
+      installation = insert(:installation, user: user, repository: repository)
+      plan = insert(:plan,
+        repository: installation.repository,
+        external_id: "pl_id2",
+        line_items: %{
+          included: [%{dimension: "storage", quantity: 1}, %{dimension: "user", quantity: 2}],
+          items: [
+            %{name: "stor", dimension: "storage", external_id: "id_stor", period: :monthly},
+            %{name: "user", dimension: "user", external_id: "id_user", period: :monthly},
+          ]
+        }
+      )
+
+      old_plan = insert(:plan,
+        repository: installation.repository,
+        external_id: "pl_id",
+        line_items: %{
+          included: [%{dimension: "storage", quantity: 1}, %{dimension: "user", quantity: 1}],
+          items: [
+            %{name: "stor", dimension: "storage", external_id: "it_1", period: :monthly},
+            %{name: "user", dimension: "user", external_id: "it_2", period: :monthly},
+          ]
+        }
+      )
+      subscription = insert(:subscription,
+        external_id: "sub_id",
+        installation: installation,
+        plan: old_plan,
+        line_items: %{
+          item_id: "some_id",
+          items: [
+            %{id: Ecto.UUID.generate(), external_id: "it_1", quantity: 1, dimension: "storage"},
+            %{id: Ecto.UUID.generate(), external_id: "it_2", quantity: 1, dimension: "user"},
+          ]
+        }
+      )
+
+      {:ok, %{data: %{"updatePlan" => result}}} = run_query("""
+          mutation UpdatePlan($subscriptionId: ID!, $planId: ID!) {
+            updatePlan(subscriptionId: $subscriptionId, planId: $planId) {
+              lineItems {
+                items {
+                  quantity
+                  dimension
+                }
+              }
+              installation {
+                id
+              }
+              plan {
+                id
+              }
+            }
+          }
+        """,
+        %{"subscriptionId" => subscription.id, "planId" => plan.id},
+        %{current_user: user})
+
+      assert result["installation"]["id"] == installation.id
+      assert result["plan"]["id"] == plan.id
+
+      [storage, user] = result["lineItems"]["items"]
+      assert storage["quantity"] == 1
+      assert storage["dimension"] == "storage"
+      assert user["quantity"] == 0
+      assert user["dimension"] == "user"
+    end
+  end
 end

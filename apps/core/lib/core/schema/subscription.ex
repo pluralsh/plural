@@ -50,6 +50,18 @@ defmodule Core.Schema.Subscription do
 
   @valid ~w(installation_id plan_id)a
 
+  def dimension(
+    %__MODULE__{plan: %Plan{line_items: %{included: included}}, line_items: %LineItems{items: items}},
+    dim
+  ) do
+    with %{quantity: quantity} <- Enum.find(items, & &1.dimension == dim),
+         %{quantity: included} <- Enum.find(included, & &1.dimension == dim) do
+      quantity + (included || 0)
+    else
+      _ -> 0
+    end
+  end
+
   def changeset(schema, attrs \\ %{}) do
     schema
     |> cast(attrs, @valid)

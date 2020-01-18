@@ -14,6 +14,8 @@ defmodule Core.Services.Payments do
 
   def get_plan!(id), do: Core.Repo.get!(Plan, id)
 
+  def get_subscription!(id), do: Core.Repo.get!(Subscription, id)
+
   def get_subscription(repository_id, user_id) do
     with %Installation{id: id} <- Repositories.get_installation(user_id, repository_id),
       do: Core.Repo.get_by(Subscription, installation_id: id)
@@ -147,7 +149,85 @@ defmodule Core.Services.Payments do
     create_subscription(attrs, plan, inst, user)
   end
 
-  defp sub_line_items(%{line_items: %{items: line_items}}, %{line_items: %{items: items}}) when is_list(line_items) do
+  def update_line_item(
+    %{dimension: dim, quantity: quantity},
+    %Subscription{line_items: %{items: items}} = sub,
+    %User{} = user
+  ) do
+    %{installation: %{repository: %{publisher: %{account_id: account_id}}}} = sub =
+      Core.Repo.preload(sub, [:plan, installation: [repository: :publisher]])
+
+    start_transaction()
+    |> add_operation(:db, fn _ ->
+      sub
+      |> Subscription.changeset(%{line_items: %{
+        items: rebuild_subscription_items(items, dim, quantity)
+      }})
+      |> allow(user, :edit)
+      |> when_ok(:update)
+    end)
+    |> add_operation(:stripe, fn %{db: %{line_items: %{items: items}}} ->
+      with %{external_id: ext_id, quantity: quantity} <- Enum.find(items, & &1.dimension == dim) do
+        Stripe.SubscriptionItem.update(ext_id, %{quantity: quantity}, connect_account: account_id)
+      else
+        _ -> {:error, :not_found}
+      end
+    end)
+    |> execute(extract: :db)
+  end
+  def update_line_item(attrs, subscription_id, user),
+    do: update_line_item(attrs, get_subscription!(subscription_id), user)
+
+  def update_plan(%Plan{id: id, external_id: ext_id} = plan, %Subscription{} = sub, %User{} = user) do
+    %{installation: %{repository: %{publisher: %{account_id: account_id}}}} = sub =
+      Core.Repo.preload(sub, [:plan, installation: [repository: :publisher]])
+
+    start_transaction()
+    |> add_operation(:db, fn _ ->
+      sub
+      |> Subscription.changeset(%{
+        plan_id: id,
+        line_items: %{items: migrate_line_items(plan, sub)}
+      })
+      |> allow(user, :edit)
+      |> when_ok(:update)
+      |> when_ok(&Core.Repo.preload(&1, [:plan], force: true))
+    end)
+    |> add_operation(:stripe, fn %{db: updated} ->
+      Stripe.Subscription.update(sub.external_id, %{
+        items: old_items(sub) ++ [%{plan: ext_id}] ++ sub_line_items(updated.plan, updated)
+      }, connect_account: account_id)
+    end)
+    |> add_operation(:finalized, fn
+      %{
+        stripe: %{id: sub_id, items: %{data: [%{id: id} | rest]}},
+        db: subscription
+      } ->
+      subscription
+      |> Subscription.stripe_changeset(%{
+        external_id: sub_id,
+        line_items: %{
+          item_id: id,
+          items: rebuild_line_items(subscription, subscription.plan, rest)
+        }
+      })
+      |> Core.Repo.update()
+    end)
+    |> execute(extract: :finalized)
+  end
+  def update_plan(plan_id, sub_id, user) do
+    get_plan!(plan_id) |> update_plan(get_subscription!(sub_id), user)
+  end
+
+  defp old_items(%Subscription{plan: %Plan{external_id: plan_id, line_items: %{items: items}}}) do
+    line_items = Enum.map(items, fn %{external_id: id} -> %{plan: id, deleted: true} end)
+    [%{plan: plan_id, deleted: true} | line_items]
+  end
+
+  defp sub_line_items(
+    %Plan{line_items: %{items: line_items}},
+    %Subscription{line_items: %{items: items}}
+  ) when is_list(line_items) and is_list(items) do
     by_dimension = Enum.into(items, %{}, & {&1.dimension, &1})
 
     Enum.map(line_items, fn %{external_id: id, dimension: dim} ->
@@ -155,6 +235,16 @@ defmodule Core.Services.Payments do
     end)
   end
   defp sub_line_items(_, _), do: []
+
+  defp migrate_line_items(%Plan{line_items: %{items: items, included: included}}, subscription) do
+    by_dimension = Enum.into(included, %{}, & {&1.dimension, &1})
+
+    Enum.map(items, fn %{dimension: dimension} ->
+      current  = Subscription.dimension(subscription, dimension)
+      included = fetch_quantity(by_dimension[dimension])
+      %{dimension: dimension, quantity: max(current - included, 0)}
+    end)
+  end
 
   defp rebuild_line_items(
     %{line_items: %{items: items}},
@@ -174,7 +264,15 @@ defmodule Core.Services.Payments do
   end
   defp rebuild_line_items(_, _, _), do: []
 
-  defp fetch_quantity(%{quantity: quantity}), do: quantity
+  defp rebuild_subscription_items(items, dimension, quantity) do
+    Enum.map(items, fn
+      %{dimension: ^dimension} = item -> %{Piazza.Ecto.Schema.mapify(item) | quantity: quantity}
+      item -> Piazza.Ecto.Schema.mapify(item)
+    end)
+    |> Enum.map(&Map.take(&1, [:dimension, :quantity, :external_id]))
+  end
+
+  defp fetch_quantity(%{quantity: quantity}) when is_integer(quantity), do: quantity
   defp fetch_quantity(_), do: 0
 
   defp stripe_interval(:monthly), do: "month"

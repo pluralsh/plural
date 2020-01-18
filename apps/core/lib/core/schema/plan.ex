@@ -28,7 +28,7 @@ defmodule Core.Schema.Plan do
 
     embedded_schema do
       field :dimension, :string
-      field :quantity,  :integer
+      field :quantity,  :integer, default: 0
     end
 
     @valid ~w(dimension quantity)a

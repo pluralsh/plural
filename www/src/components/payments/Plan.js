@@ -1,12 +1,21 @@
 import React, { useState } from 'react'
 import { Box, Text } from 'grommet'
-import { Cube } from 'grommet-icons'
+import { Cube, Group } from 'grommet-icons'
 import { Container } from '../repos/Integrations'
+
+export function LineItemIcon({dimension, size}) {
+  switch (dimension) {
+    case 'user':
+      return <Group size={size || '15px'} color='focus' />
+    default:
+      return <Cube size={size || '15px'} color='focus' />
+  }
+}
 
 export function LineItem({item: {cost, name, dimension}, included: {quantity}}) {
   return (
     <Box direction='row' align='center' gap='xsmall'>
-      <Cube size='15px' color='focus' />
+      <LineItemIcon dimension={dimension} />
       <Text size='small' weight='bold'>{name}</Text>
       <Text size='small'>${cost / 100} / {dimension}</Text>
       <Text size='small' color='dark-3'>({quantity} included)</Text>
@@ -14,7 +23,8 @@ export function LineItem({item: {cost, name, dimension}, included: {quantity}}) 
   )
 }
 
-export default function Plan({name, cost, period, lineItems: {items, included}}) {
+export default function Plan({approvePlan, ...plan}) {
+  const {name, cost, period, lineItems: {items, included}} = plan
   const [hover, setHover] = useState(false)
   const includedByDimension = included.reduce((byDim, val) => {
     byDim[val.dimension] = val
@@ -22,7 +32,13 @@ export default function Plan({name, cost, period, lineItems: {items, included}})
   }, {})
 
   return (
-    <Container pad='medium' gap='xsmall' hover={hover} setHover={setHover}>
+    <Container
+      style={{cursor: 'pointer'}}
+      pad='medium'
+      gap='xsmall'
+      onClick={() => approvePlan(plan)}
+      hover={hover}
+      setHover={setHover}>
       <Text size='small' weight='bold'>{name}</Text>
       <Text size='small'>${cost /100} {period}</Text>
       <Box gap='xsmall' border='top' pad={{top: 'small'}}>

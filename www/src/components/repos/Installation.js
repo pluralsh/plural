@@ -14,6 +14,7 @@ import Carousel from '../utils/Carousel'
 import Plan from '../payments/Plan'
 import CreatePlan from '../payments/CreatePlan'
 import SubscribeModal from '../payments/CreateSubscription'
+import { SubscriptionBadge } from '../payments/Subscription'
 
 function update(cache, repositoryId, installation) {
   const prev = cache.readQuery({ query: REPO_Q, variables: {repositoryId} })
@@ -79,22 +80,23 @@ function EditInstallation({installation, repository, onUpdate, open}) {
 }
 
 
-function PlanCarousel({repository}) {
+function PlanCarousel({repository, installationId}) {
   const [open, setOpen] = useState(false)
   const [modal, setModal] = useState(null)
   const {plans, editable} = repository
+  console.log(plans)
 
   function approvePlan(plan) {
     setModal(
-      <SubscribeModal plan={plan} repositoryId={repository.id} setOpen={setModal} />
+      <SubscribeModal plan={plan} installationId={installationId} repositoryId={repository.id} setOpen={setModal} />
     )
   }
 
   return (
     <>
+    {modal}
     <Expander text='Plans'>
       <Box pad='small' gap='small'>
-        {modal}
         {plans.length > 0 ?
           <Carousel
             dots
@@ -142,9 +144,14 @@ function Installation({repository, onUpdate, noHelm, open, integrations, fetchMo
 chartmart deploy ${repository.name}`}
                 </Highlight>
               </Box>
+              {repository.subscription && (<SubscriptionBadge {...repository.subscription} />)}
             </Box>
           )}
-          {<PlanCarousel repository={repository} />}
+          {(hasPlans || repository.editable) && (
+            <PlanCarousel
+              repository={repository}
+              repositoryId={repository.id}
+              installationId={repository.installation.id} />)}
           <EditInstallation
             installation={repository.installation}
             repository={repository}

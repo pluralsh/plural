@@ -200,7 +200,7 @@ export default function CreatePlan({repository, setOpen}) {
   const [mutation, {loading}] = useMutation(CREATE_PLAN, {
     variables: {repositoryId, attributes: state},
     update: (cache, {data: {createPlan}}) => {
-      const prev = cache.readQuery(REPO_Q, {variables: {repositoryId}})
+      const prev = cache.readQuery({query: REPO_Q, variables: {repositoryId}})
       cache.writeQuery({
         query: REPO_Q,
         variables: {repositoryId},

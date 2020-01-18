@@ -49,7 +49,7 @@ export function SecondaryButton({onClick, label, pad, error, ...rest}) {
   )
 }
 
-function Button({pad, disabled, onClick, label, loading, textSize, error, ...rest}) {
+function Button({pad, disabled, onClick, label, loading, textSize, error, icon, ...rest}) {
   const [hover, setHover] = useState(false)
   return (
     <>
@@ -68,7 +68,7 @@ function Button({pad, disabled, onClick, label, loading, textSize, error, ...res
       elevation={hover && !disabled ? 'small' : null}
       {...rest}>
       {loading && <BeatLoader color='white' size={8} />}
-      <Text size={textSize || 'small'}>{label}</Text>
+      {icon ? icon : <Text size={textSize || 'small'}>{label}</Text>}
     </Box>
     </>
   )

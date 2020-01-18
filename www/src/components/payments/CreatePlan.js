@@ -212,6 +212,7 @@ export default function CreatePlan({repository, setOpen}) {
           }
         }
       })
+      setOpen(false)
     }
   })
 

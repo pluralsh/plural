@@ -3,7 +3,7 @@ import { Box, Text } from 'grommet'
 import { Cube } from 'grommet-icons'
 import { Container } from '../repos/Integrations'
 
-function LineItem({item: {cost, name, dimension}, included: {quantity}}) {
+export function LineItem({item: {cost, name, dimension}, included: {quantity}}) {
   return (
     <Box direction='row' align='center' gap='xsmall'>
       <Cube size='15px' color='focus' />
@@ -22,7 +22,7 @@ export default function Plan({name, cost, period, lineItems: {items, included}})
   }, {})
 
   return (
-    <Container pad='small' gap='xsmall' hover={hover} setHover={setHover}>
+    <Container pad='medium' gap='xsmall' hover={hover} setHover={setHover}>
       <Text size='small' weight='bold'>{name}</Text>
       <Text size='small'>${cost /100} {period}</Text>
       <Box gap='xsmall' border='top' pad={{top: 'small'}}>

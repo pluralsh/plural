@@ -14,6 +14,11 @@ defmodule Core.Services.Payments do
 
   def get_plan!(id), do: Core.Repo.get!(Plan, id)
 
+  def get_subscription(repository_id, user_id) do
+    with %Installation{id: id} <- Repositories.get_installation(user_id, repository_id),
+      do: Core.Repo.get_by(Subscription, installation_id: id)
+  end
+
   def create_publisher_account(%Publisher{} = publisher, code) do
     with {:ok, %{stripe_user_id: account_id}} <- Stripe.Connect.OAuth.token(code) do
       publisher

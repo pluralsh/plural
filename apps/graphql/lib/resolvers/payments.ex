@@ -3,7 +3,7 @@ defmodule GraphQl.Resolvers.Payments do
   alias Core.Services.{Payments, Users}
   alias Core.Schema.{Plan}
 
-  def query(Plan, _), do: Plan
+  def query(Plan, _), do: Plan.ordered()
   def query(Subscription, _), do: Subscription
 
   def resolve_subscription(%{id: repo_id}, %{id: user_id}),

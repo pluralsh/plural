@@ -24,6 +24,12 @@ export const PlanFragment = gql`
         period
       }
     }
+    metadata {
+      features {
+        name
+        description
+      }
+    }
   }
   ${LimitFragment}
 `;

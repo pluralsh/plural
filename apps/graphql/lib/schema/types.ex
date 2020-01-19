@@ -308,6 +308,7 @@ defmodule GraphQl.Schema.Types do
     field :cost,       non_null(:integer)
     field :period,     :string
     field :line_items, :plan_line_items
+    field :metadata,   :plan_metadata
 
     timestamps()
   end
@@ -339,6 +340,16 @@ defmodule GraphQl.Schema.Types do
   object :plan_line_items do
     field :included, list_of(:limit)
     field :items,    list_of(:line_item)
+  end
+
+  object :plan_metadata do
+    field :freeform, :map
+    field :features, list_of(:plan_feature)
+  end
+
+  object :plan_feature do
+    field :name,        non_null(:string)
+    field :description, non_null(:string)
   end
 
   object :subscription_line_items do

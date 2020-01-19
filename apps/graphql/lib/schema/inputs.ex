@@ -127,6 +127,17 @@ defmodule GraphQl.Schema.Inputs do
     field :period,     non_null(:string)
     field :defalt,     :boolean
     field :line_items, :plan_line_item_attributes
+    field :metadata,   :plan_metadata_attributes
+  end
+
+  input_object :plan_metadata_attributes do
+    field :freeform, :yml
+    field :features, list_of(:plan_feature_attributes)
+  end
+
+  input_object :plan_feature_attributes do
+    field :name,        non_null(:string)
+    field :description, non_null(:string)
   end
 
   input_object :plan_line_item_attributes do

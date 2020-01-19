@@ -18,3 +18,22 @@ export const CREATE_SUBSCRIPTION = gql`
   }
   ${SubscriptionFragment}
 `;
+
+export const UPDATE_LINE_ITEM = gql`
+  mutation UpdateLineItem($subscriptionId: ID!, $attributes: LimitAttributes!) {
+    updateLineItem(subscriptionId: $subscriptionId, attributes: $attributes) {
+      ...SubscriptionFragment
+    }
+  }
+  ${SubscriptionFragment}
+`;
+
+export const UPDATE_PLAN = gql`
+  mutation UpdatePlan($subscriptionId: ID!, $planId: ID!) {
+    updatePlan(subscriptionId: $subscriptionId, planId: $planId) {
+      ...SubscriptionFragment
+    }
+  }
+  ${SubscriptionFragment}
+  
+`;

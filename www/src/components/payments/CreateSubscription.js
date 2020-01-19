@@ -6,8 +6,7 @@ import Button from '../utils/Button'
 import { Add } from 'grommet-icons'
 import { useMutation } from 'react-apollo'
 import { CREATE_SUBSCRIPTION } from './queries'
-import { REPO_Q } from '../repos/queries'
-import { pivotByDimension, subscriptionCost } from './utils'
+import { pivotByDimension, subscriptionCost, updateSubscription } from './utils'
 
 function LineItemInput({item: {dimension, name, cost}, included, updateItem}) {
   return (
@@ -54,17 +53,11 @@ export default function SubscribeModal({plan, installationId, repositoryId, setO
   const [attributes, setAttributes] = useState({
     lineItems: {items: plan.lineItems.items.map(({dimension}) => ({dimension, quantity: 0}))}
   })
-  console.log(plan)
 
   const [mutation, {loading}] = useMutation(CREATE_SUBSCRIPTION, {
     variables: {installationId, attributes, planId: plan.id},
     update: (cache, {data: {createSubscription}}) => {
-      const prev = cache.readQuery({query: REPO_Q, variables: {repositoryId}})
-      cache.writeQuery({
-        query: REPO_Q,
-        variables: {repositoryId},
-        data: {...prev, repository: {...prev.repository, subscription: createSubscription}}
-      })
+      updateSubscription(cache, repositoryId, createSubscription)
     }
   })
   const total = subscriptionCost(attributes, plan)

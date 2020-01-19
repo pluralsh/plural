@@ -1,3 +1,5 @@
+import { REPO_Q } from "../repos/queries"
+
 export function pivotByDimension(items) {
   return items.reduce((byDim, item) => {
     byDim[item.dimension] = item
@@ -11,4 +13,13 @@ export function subscriptionCost({lineItems: {items}}, {cost, lineItems}) {
     (total, {dimension, quantity}) => total + planLineItems[dimension].cost * quantity,
     cost
   )
+}
+
+export function updateSubscription(cache, repositoryId, subscription) {
+  const prev = cache.readQuery({query: REPO_Q, variables: {repositoryId}})
+  cache.writeQuery({
+    query: REPO_Q,
+    variables: {repositoryId},
+    data: {...prev, repository: {...prev.repository, subscription: subscription}}
+  })
 }

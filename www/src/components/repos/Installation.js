@@ -144,7 +144,7 @@ function Installation({repository, onUpdate, noHelm, open, integrations, fetchMo
 chartmart deploy ${repository.name}`}
                 </Highlight>
               </Box>
-              {repository.subscription && (<SubscriptionBadge {...repository.subscription} />)}
+              {repository.subscription && (<SubscriptionBadge repository={repository} {...repository.subscription} />)}
             </Box>
           )}
           {(hasPlans || repository.editable) && (

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Box, Text } from 'grommet'
-import { Cube, Group } from 'grommet-icons'
+import { Cube, Group, Checkmark } from 'grommet-icons'
 import { Container } from '../repos/Integrations'
 
 export function LineItemIcon({dimension, size}) {
@@ -23,8 +23,20 @@ export function LineItem({item: {cost, name, dimension}, included: {quantity}}) 
   )
 }
 
+function Feature({name, description}) {
+  return (
+    <Box direction='row' gap='small' align='center'>
+      <Checkmark size='15px' color='focus' />
+      <Box gap='xsmall'>
+        <Text size='small' style={{fontWeight: 500}}>{name}</Text>
+        <Text size='small'><i>{description}</i></Text>
+      </Box>
+    </Box>
+  )
+}
+
 export default function Plan({approvePlan, ...plan}) {
-  const {name, cost, period, lineItems: {items, included}} = plan
+  const {name, cost, period, lineItems: {items, included}, metadata} = plan
   const [hover, setHover] = useState(false)
   const includedByDimension = included.reduce((byDim, val) => {
     byDim[val.dimension] = val
@@ -33,7 +45,7 @@ export default function Plan({approvePlan, ...plan}) {
 
   return (
     <Container
-      style={{cursor: 'pointer'}}
+      style={{cursor: 'pointer', maxWidth: '70%'}}
       pad='medium'
       gap='xsmall'
       onClick={() => approvePlan(plan)}
@@ -41,13 +53,19 @@ export default function Plan({approvePlan, ...plan}) {
       setHover={setHover}>
       <Text size='small' weight='bold'>{name}</Text>
       <Text size='small'>${cost /100} {period}</Text>
-      <Box gap='xsmall' border='top' pad={{top: 'small'}}>
+      <Box gap='xsmall' border='top' pad={{vertical: 'small'}}>
         <Text size='small' style={{fontWeight: 500}}>Add-ons:</Text>
         {items.map((item) => <LineItem
                               key={item.dimension}
                               item={item}
                               included={includedByDimension[item.dimension]} />)}
       </Box>
+      {metadata && metadata.features && metadata.features.length > 0 && (
+        <Box gap='small' border='top' pad={{vertical: 'small'}}>
+          <Text size='small' style={{fontWeight: 500}}>Additional features:</Text>
+          {metadata.features.map((feature) => <Feature key={feature.name} {...feature} />)}
+        </Box>
+      )}
     </Container>
   )
 }

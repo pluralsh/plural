@@ -107,6 +107,9 @@ defmodule Core.Schema.Plan do
 
   @valid ~w(name default visible cost period external_id)a
 
+  def ordered(query \\ __MODULE__, order \\ [asc: :cost]),
+    do: from(p in query, order_by: ^order)
+
   def changeset(schema, attrs \\ %{}) do
     schema
     |> cast(attrs, @valid)

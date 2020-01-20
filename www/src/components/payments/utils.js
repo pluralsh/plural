@@ -20,6 +20,15 @@ export function updateSubscription(cache, repositoryId, subscription) {
   cache.writeQuery({
     query: REPO_Q,
     variables: {repositoryId},
-    data: {...prev, repository: {...prev.repository, subscription: subscription}}
+    data: {
+      ...prev,
+      repository: {
+        ...prev.repository,
+        installation: {
+          ...prev.repository.installation,
+          subscription: subscription
+        }
+      }
+    }
   })
 }

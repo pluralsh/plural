@@ -81,15 +81,16 @@ function EditInstallation({installation, repository, onUpdate, open}) {
 }
 
 
-function PlanCarousel({repository, installationId}) {
+function PlanCarousel({repository}) {
   const [open, setOpen] = useState(false)
   const [modal, setModal] = useState(null)
-  const {plans, editable} = repository
+  const {plans, editable, installation} = repository
+  const {subscription, id} = installation
 
   function approvePlan(plan) {
-    if (!repository.subscription) {
+    if (!subscription) {
       setModal(
-        <SubscribeModal plan={plan} installationId={installationId} repositoryId={repository.id} setOpen={setModal} />
+        <SubscribeModal plan={plan} installationId={id} repositoryId={repository.id} setOpen={setModal} />
       )
       return
     }
@@ -113,7 +114,7 @@ function PlanCarousel({repository, installationId}) {
               <Plan
                 key={plan.id}
                 {...plan}
-                subscription={repository.subscription}
+                subscription={subscription}
                 approvePlan={approvePlan} />
             )}
             fetchMore={() => null} /> :
@@ -141,10 +142,11 @@ function Installation({repository, onUpdate, noHelm, open, integrations, fetchMo
     }
   })
   const hasPlans = repository.plans && repository.plans.length > 0
+  const {installation} = repository
 
   return (
     <Box elevation='small' gap='small'>
-      {repository.installation ?
+      {installation ?
         <Box>
           {!noHelm && (
             <Box gap='small' pad='small' border='bottom'>
@@ -155,14 +157,10 @@ function Installation({repository, onUpdate, noHelm, open, integrations, fetchMo
 chartmart deploy ${repository.name}`}
                 </Highlight>
               </Box>
-              {repository.subscription && (<SubscriptionBadge repository={repository} {...repository.subscription} />)}
+              {installation.subscription && (<SubscriptionBadge repository={repository} {...installation.subscription} />)}
             </Box>
           )}
-          {(hasPlans || repository.editable) && (
-            <PlanCarousel
-              repository={repository}
-              repositoryId={repository.id}
-              installationId={repository.installation.id} />)}
+          {(hasPlans || repository.editable) && <PlanCarousel repository={repository} />}
           <EditInstallation
             installation={repository.installation}
             repository={repository}

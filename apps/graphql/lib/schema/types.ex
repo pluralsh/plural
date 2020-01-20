@@ -80,10 +80,6 @@ defmodule GraphQl.Schema.Types do
       repo, _, %{context: %{current_user: user}} -> Repository.resolve_public_key(repo, user)
     end
 
-    field :subscription, :repository_subscription, resolve: fn
-      repo, _, %{context: %{current_user: user}} -> Payments.resolve_subscription(repo, user)
-    end
-
     timestamps()
   end
 
@@ -118,9 +114,10 @@ defmodule GraphQl.Schema.Types do
   object :installation do
     field :id,           :id
     field :context,      :map
+    field :auto_upgrade, :boolean
     field :repository,   :repository, resolve: dataloader(Repository)
     field :user,         :user, resolve: dataloader(User)
-    field :auto_upgrade, :boolean
+    field :subscription, :repository_subscription, resolve: dataloader(Payments)
 
     field :license, :string, resolve: fn
       installation, _, _ -> Core.Services.Repositories.generate_license(installation)

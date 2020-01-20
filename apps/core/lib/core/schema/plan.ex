@@ -107,8 +107,15 @@ defmodule Core.Schema.Plan do
 
   @valid ~w(name default visible cost period external_id)a
 
+  def for_repository(query \\ __MODULE__, repo_id),
+    do: from(p in query, where: p.repository_id == ^repo_id)
+
   def ordered(query \\ __MODULE__, order \\ [asc: :cost]),
     do: from(p in query, order_by: ^order)
+
+  def features(%__MODULE__{metadata: %{features: features}}),
+    do: Enum.map(features, & &1.name)
+  def features(_), do: []
 
   def changeset(schema, attrs \\ %{}) do
     schema

@@ -113,11 +113,11 @@ export const REPO_Q = gql`
       ...RepoFragment
       editable
       publicKey
-      subscription {
-        ...SubscriptionFragment
-      }
       installation {
         ...InstallationFragment
+        subscription {
+          ...SubscriptionFragment
+        }
       }
       plans {
         ...PlanFragment

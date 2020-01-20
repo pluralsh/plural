@@ -239,6 +239,47 @@ defmodule Core.Services.RepositoriesTest do
       {:ok, decoded} = RSA.decrypt(license, ExPublicKey.loads!(repo.public_key))
       %{"refresh_token" => _} = Jason.decode!(decoded)
     end
+
+    test "It can generate licenses for payed plans" do
+      publisher = insert(:publisher)
+      {:ok, repo} = Repositories.create_repository(%{name: "my repo"}, publisher.owner)
+      installation = insert(:installation, repository: repo)
+      plan = insert(:plan,
+        repository: repo,
+        line_items: %{
+          included: [%{dimension: "user", quantity: 1}, %{dimension: "storage", quantity: 0}],
+          items: [
+            %{dimension: "user", name: "Users", cost: 500},
+            %{dimension: "storage", name: "Users", cost: 500}
+          ]
+        },
+        metadata: %{
+          features: [%{name: "sso", description: "does sso"}]
+        }
+      )
+      insert(:subscription,
+        installation: installation,
+        plan: plan,
+        line_items: %{
+          items: [%{dimension: "user", quantity: 1}, %{dimension: "storage", quantity: 3}]
+        }
+      )
+      {:ok, license} = Repositories.generate_license(installation)
+      {:ok, decoded} = RSA.decrypt(license, ExPublicKey.loads!(repo.public_key))
+      %{"policy" => %{"limits" => limits, "features" => ["sso"]}} = Jason.decode!(decoded)
+
+      assert limits["storage"] == 3
+      assert limits["user"] == 2
+    end
+
+    test "It will not generate licenses if there is no subscription for a non-free repo" do
+      publisher = insert(:publisher)
+      {:ok, repo} = Repositories.create_repository(%{name: "my repo"}, publisher.owner)
+      installation = insert(:installation, repository: repo)
+      insert(:plan, repository: repo)
+
+      {:ok, nil} =  Repositories.generate_license(installation)
+    end
   end
 
   describe "#create_docker_image/3" do

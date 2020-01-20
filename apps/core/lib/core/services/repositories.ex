@@ -11,7 +11,9 @@ defmodule Core.Services.Repositories do
     DockerImage,
     LicenseToken,
     License,
-    Integration
+    Integration,
+    Subscription,
+    Plan
   }
   alias Piazza.Crypto.RSA
 
@@ -156,11 +158,13 @@ defmodule Core.Services.Repositories do
   end
 
   def generate_license(%Installation{} = installation) do
-    %{repository: repo} = Core.Repo.preload(installation, [:repository])
+    %{repository: repo} = installation =
+      Core.Repo.preload(installation, [:repository, [subscription: :plan]])
 
-    with {:ok, license_token} <- upsert_license_token(installation) do
+    with {:ok, license_token} <- upsert_license_token(installation),
+         {:ok, policy} <- mk_policy(installation, Core.Services.Payments.has_plans?(repo.id)) do
       License.new(
-        policy: installation.policy || %{free: true},
+        policy: policy,
         refresh_token: license_token.token
       )
       |> Jason.encode!()
@@ -169,6 +173,16 @@ defmodule Core.Services.Repositories do
       _ -> {:ok, nil}
     end
   end
+
+  defp mk_policy(%Installation{subscription: %Subscription{line_items: %{items: items}, plan: plan} = sub}, _) do
+    limits = Enum.into(items, %{}, fn %{dimension: dim} ->
+      {dim, Subscription.dimension(sub, dim)}
+    end)
+    features = Plan.features(plan)
+    {:ok, %{limits: limits, features: features, free: false}}
+  end
+  defp mk_policy(_, false), do: {:ok, %{free: true}}
+  defp mk_policy(_, _), do: :error
 
   def refresh_license(%LicenseToken{installation: %Installation{} = installation}),
     do: generate_license(installation)

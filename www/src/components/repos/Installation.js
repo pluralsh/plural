@@ -15,6 +15,7 @@ import Plan from '../payments/Plan'
 import CreatePlan from '../payments/CreatePlan'
 import SubscribeModal from '../payments/CreateSubscription'
 import { SubscriptionBadge } from '../payments/Subscription'
+import UpdatePlan from '../payments/UpdatePlan'
 
 function update(cache, repositoryId, installation) {
   const prev = cache.readQuery({ query: REPO_Q, variables: {repositoryId} })
@@ -84,12 +85,16 @@ function PlanCarousel({repository, installationId}) {
   const [open, setOpen] = useState(false)
   const [modal, setModal] = useState(null)
   const {plans, editable} = repository
-  console.log(plans)
 
   function approvePlan(plan) {
-    setModal(
-      <SubscribeModal plan={plan} installationId={installationId} repositoryId={repository.id} setOpen={setModal} />
-    )
+    if (!repository.subscription) {
+      setModal(
+        <SubscribeModal plan={plan} installationId={installationId} repositoryId={repository.id} setOpen={setModal} />
+      )
+      return
+    }
+
+    setModal(<UpdatePlan plan={plan} repository={repository} setOpen={setModal} />)
   }
 
   return (
@@ -104,7 +109,13 @@ function PlanCarousel({repository, installationId}) {
             slidesPerPage={1}
             offset={12}
             edges={plans}
-            mapper={(plan) => <Plan key={plan.id} {...plan} approvePlan={approvePlan} width='80%' />}
+            mapper={(plan) => (
+              <Plan
+                key={plan.id}
+                {...plan}
+                subscription={repository.subscription}
+                approvePlan={approvePlan} />
+            )}
             fetchMore={() => null} /> :
           <Text size='small'>This repo is currently free to use</Text>
         }

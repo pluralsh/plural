@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Box, Text } from 'grommet'
-import { Cube, Group, Checkmark } from 'grommet-icons'
+import { Cube, Group, Checkmark, Cycle } from 'grommet-icons'
 import { Container } from '../repos/Integrations'
 
 export function LineItemIcon({dimension, size}) {
@@ -35,7 +35,7 @@ function Feature({name, description}) {
   )
 }
 
-export default function Plan({approvePlan, ...plan}) {
+export default function Plan({approvePlan, subscription, ...plan}) {
   const {name, cost, period, lineItems: {items, included}, metadata} = plan
   const [hover, setHover] = useState(false)
   const includedByDimension = included.reduce((byDim, val) => {
@@ -43,16 +43,22 @@ export default function Plan({approvePlan, ...plan}) {
     return byDim
   }, {})
 
+  const subscribed = subscription && subscription.plan.id === plan.id
   return (
     <Container
-      style={{cursor: 'pointer', maxWidth: '70%'}}
+      style={subscribed ? {maxWidth: '70%'} : {cursor: 'pointer', maxWidth: '70%'}}
       pad='medium'
       gap='xsmall'
-      onClick={() => approvePlan(plan)}
-      hover={hover}
+      onClick={() => !subscribed && approvePlan(plan)}
+      hover={!subscribed && hover}
       setHover={setHover}>
-      <Text size='small' weight='bold'>{name}</Text>
-      <Text size='small'>${cost /100} {period}</Text>
+      <Box direction='row' align='center'>
+        <Box gap='xsmall' fill='horizontal'>
+          <Text size='small' weight='bold'>{name}</Text>
+          <Text size='small'>${cost /100} {period}</Text>
+        </Box>
+        {subscribed && <Cycle size='15px' />}
+      </Box>
       <Box gap='xsmall' border='top' pad={{vertical: 'small'}}>
         <Text size='small' style={{fontWeight: 500}}>Add-ons:</Text>
         {items.map((item) => <LineItem

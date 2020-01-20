@@ -214,9 +214,9 @@ defmodule GraphQl.PaymentsMutationsTest do
       update: fn
         "sub_id",
         %{items: [
-          %{plan: "pl_id", deleted: true},
-          %{plan: "it_1", deleted: true},
-          %{plan: "it_2", deleted: true},
+          %{id: "some_id", deleted: true},
+          %{id: "si_1", deleted: true},
+          %{id: "si_2", deleted: true},
           %{plan: "pl_id2"},
           %{plan: "id_stor", quantity: 1},
           %{plan: "id_user", quantity: 0}
@@ -265,8 +265,8 @@ defmodule GraphQl.PaymentsMutationsTest do
         line_items: %{
           item_id: "some_id",
           items: [
-            %{id: Ecto.UUID.generate(), external_id: "it_1", quantity: 1, dimension: "storage"},
-            %{id: Ecto.UUID.generate(), external_id: "it_2", quantity: 1, dimension: "user"},
+            %{id: Ecto.UUID.generate(), external_id: "si_1", quantity: 1, dimension: "storage"},
+            %{id: Ecto.UUID.generate(), external_id: "si_2", quantity: 1, dimension: "user"},
           ]
         }
       )
@@ -290,7 +290,8 @@ defmodule GraphQl.PaymentsMutationsTest do
           }
         """,
         %{"subscriptionId" => subscription.id, "planId" => plan.id},
-        %{current_user: user})
+        %{current_user: user}
+      )
 
       assert result["installation"]["id"] == installation.id
       assert result["plan"]["id"] == plan.id

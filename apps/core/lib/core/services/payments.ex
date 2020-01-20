@@ -219,9 +219,9 @@ defmodule Core.Services.Payments do
     get_plan!(plan_id) |> update_plan(get_subscription!(sub_id), user)
   end
 
-  defp old_items(%Subscription{plan: %Plan{external_id: plan_id, line_items: %{items: items}}}) do
-    line_items = Enum.map(items, fn %{external_id: id} -> %{plan: id, deleted: true} end)
-    [%{plan: plan_id, deleted: true} | line_items]
+  defp old_items(%Subscription{line_items: %{item_id: item_id, items: items}}) do
+    line_items = Enum.map(items, fn %{external_id: id} -> %{id: id, deleted: true} end)
+    [%{id: item_id, deleted: true} | line_items]
   end
 
   defp sub_line_items(

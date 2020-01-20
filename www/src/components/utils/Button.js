@@ -49,7 +49,7 @@ export function SecondaryButton({onClick, label, pad, error, ...rest}) {
   )
 }
 
-function Button({pad, disabled, onClick, label, loading, textSize, error, icon, ...rest}) {
+function Button({pad, disabled, onClick, label, loading, textSize, error, icon, round, ...rest}) {
   const [hover, setHover] = useState(false)
   return (
     <>
@@ -64,6 +64,7 @@ function Button({pad, disabled, onClick, label, loading, textSize, error, icon, 
       gap='xsmall'
       align='center'
       justify='center'
+      round={round || 'xsmall'}
       background={disabled ? 'light-6' : 'action'}
       elevation={hover && !disabled ? 'small' : null}
       {...rest}>

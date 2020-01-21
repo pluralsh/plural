@@ -1,8 +1,7 @@
 defmodule Core.Services.ChartsTest do
   use Core.SchemaCase, async: true
+  use Mimic
   alias Core.Services.Charts
-
-  import Mock
 
   describe "#create_chart" do
     test "A user can create a chart if he's a publisher" do
@@ -174,16 +173,15 @@ defmodule Core.Services.ChartsTest do
     test "It can upload a chart" do
       path = Path.join(:code.priv_dir(:core), "chartmart-0.2.4.tgz")
       repo = insert(:repository)
-      with_mock HTTPoison, [post: fn _, _, _, _ -> {:ok, %{}} end] do
-        {:ok, %{sync_chart: chart}} = Charts.upload_chart(
-          %{"chart" => %{filename: path, path: path}},
-          repo,
-          repo.publisher.owner,
-          %{opts: [], headers: []}
-        )
+      expect(HTTPoison, :post, fn _, _, _, _ -> {:ok, %{}} end)
+      {:ok, %{sync_chart: chart}} = Charts.upload_chart(
+        %{"chart" => %{filename: path, path: path}},
+        repo,
+        repo.publisher.owner,
+        %{opts: [], headers: []}
+      )
 
-        assert length(chart.dependencies.dependencies) == 2
-      end
+      assert length(chart.dependencies.dependencies) == 2
     end
   end
 end

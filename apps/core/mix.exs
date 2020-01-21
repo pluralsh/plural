@@ -54,7 +54,7 @@ defmodule Core.MixProject do
       {:tzdata, "~> 0.1.8", override: true},
       {:stripity_stripe, "~> 2.7"},
 
-      {:mock, "~> 0.3.3", only: :test},
+      {:mimic, "~> 1.1", only: :test}
     ]
   end
 

@@ -1,11 +1,11 @@
 defmodule GraphQl.PaymentsMutationsTest do
-  use Core.SchemaCase, async: false
-  import Mock
+  use Core.SchemaCase, async: true
+  use Mimic
   import GraphQl.TestHelpers
 
   describe "createCustomer" do
-    test_with_mock "It will create a customer and persist its id", Stripe.Customer,
-        [create: fn %{email: _, source: "token"} -> {:ok, %{id: "cus_id"}} end] do
+    test "It will create a customer and persist its id" do
+      expect(Stripe.Customer, :create, fn %{email: _, source: "token"} -> {:ok, %{id: "cus_id"}} end)
       user = insert(:user)
 
       {:ok, %{data: %{"createCustomer" => result}}} = run_query("""
@@ -21,8 +21,10 @@ defmodule GraphQl.PaymentsMutationsTest do
   end
 
   describe "linkPublisher" do
-    test_with_mock "It will fetch an account id and persist it", Stripe.Connect.OAuth,
-        [token: fn "oauth_code" -> {:ok, %{stripe_user_id: "account_id"}} end] do
+    test "It will fetch an account id and persist it" do
+      expect(Stripe.Connect.OAuth, :token, fn "oauth_code" ->
+        {:ok, %{stripe_user_id: "account_id"}}
+      end)
       publisher = insert(:publisher)
 
       {:ok, %{data: %{"linkPublisher" => result}}} = run_query("""
@@ -38,11 +40,11 @@ defmodule GraphQl.PaymentsMutationsTest do
   end
 
   describe "createPlan" do
-    test_with_mock "It will create a plan for a repository", Stripe.Plan,
-      [create: fn %{amount: 100, currency: "USD", interval: "month", product: %{name: "pro"}},
-                  [connect_account: "account_id"] ->
+    test "It will create a plan for a repository" do
+      expect(Stripe.Plan, :create, fn %{amount: 100, currency: "USD", interval: "month", product: %{name: "pro"}},
+                                    [connect_account: "account_id"] ->
         {:ok, %{id: "id"}}
-      end] do
+      end)
       %{publisher: pub} = repository = insert(:repository,
         publisher: build(:publisher, account_id: "account_id")
       )
@@ -81,82 +83,77 @@ defmodule GraphQl.PaymentsMutationsTest do
           ]
         }
       )
+      expect(Stripe.Token, :create, fn %{customer: "cus_id"}, [connect_account: "account_id"] ->
+        {:ok, %{id: "tok_id"}}
+      end)
+      expect(Stripe.Customer, :create, fn %{email: _, source: "tok_id"}, [connect_account: "account_id"] ->
+        {:ok, %{id: "cus_id2"}}
+      end)
+      expect(Stripe.Subscription, :create, fn %{
+        customer: "cus_id2",
+        application_fee_percent: 5,
+        items: [%{plan: "plan_id"}, %{plan: "id_stor", quantity: 1}, %{plan: "id_user", quantity: 2}]
+      }, [connect_account: "account_id"] ->
+        {:ok, %{
+          id: "sub_id",
+          items: %{
+            data: [
+              %{id: "item_id"},
+              %{id: "stor_id", plan: %{id: "id_stor"}},
+              %{id: "user_id", plan: %{id: "id_user"}}
+            ]
+          }
+        }}
+      end)
 
-      with_mocks [
-        {Stripe.Token, [], [create: fn %{customer: "cus_id"}, [connect_account: "account_id"] ->
-          {:ok, %{id: "tok_id"}}
-        end]},
-        {Stripe.Customer, [], [create: fn %{email: _, source: "tok_id"}, [connect_account: "account_id"] ->
-          {:ok, %{id: "cus_id2"}}
-        end]},
-        {Stripe.Subscription, [], [create: fn %{
-          customer: "cus_id2",
-          application_fee_percent: 5,
-          items: [%{plan: "plan_id"}, %{plan: "id_stor", quantity: 1}, %{plan: "id_user", quantity: 2}]
-        }, [connect_account: "account_id"] ->
-          {:ok, %{
-            id: "sub_id",
-            items: %{
-              data: [
-                %{id: "item_id"},
-                %{id: "stor_id", plan: %{id: "id_stor"}},
-                %{id: "user_id", plan: %{id: "id_user"}}
-              ]
+      {:ok, %{data: %{"createSubscription" => result}}} = run_query("""
+        mutation CreateSubscription($planId: String!, $instId: String!, $attrs: SubscriptionAttributes!) {
+          createSubscription(planId: $planId, installationId: $instId, attributes: $attrs) {
+            customerId
+            externalId
+            lineItems {
+              items {
+                quantity
+                dimension
+              }
             }
-          }}
-        end]}
-      ] do
-
-        {:ok, %{data: %{"createSubscription" => result}}} = run_query("""
-          mutation CreateSubscription($planId: String!, $instId: String!, $attrs: SubscriptionAttributes!) {
-            createSubscription(planId: $planId, installationId: $instId, attributes: $attrs) {
-              customerId
-              externalId
-              lineItems {
-                items {
-                  quantity
-                  dimension
-                }
-              }
-              installation {
-                id
-              }
-              plan {
-                id
-              }
+            installation {
+              id
+            }
+            plan {
+              id
             }
           }
-        """, %{
-          "planId" => plan.id,
-          "instId" => installation.id,
-          "attrs" => %{
-            "line_items" => %{
-              "items" => [
-                %{"quantity" => 1, "dimension" => "storage"},
-                %{"quantity" => 2, "dimension" => "user"}
-              ]
-            }
+        }
+      """, %{
+        "planId" => plan.id,
+        "instId" => installation.id,
+        "attrs" => %{
+          "line_items" => %{
+            "items" => [
+              %{"quantity" => 1, "dimension" => "storage"},
+              %{"quantity" => 2, "dimension" => "user"}
+            ]
           }
-        }, %{current_user: user})
+        }
+      }, %{current_user: user})
 
-        assert result["installation"]["id"] == installation.id
-        assert result["plan"]["id"] == plan.id
-        assert result["customerId"] == "cus_id2"
-        assert result["externalId"] == "sub_id"
+      assert result["installation"]["id"] == installation.id
+      assert result["plan"]["id"] == plan.id
+      assert result["customerId"] == "cus_id2"
+      assert result["externalId"] == "sub_id"
 
-        [storage, user] = result["lineItems"]["items"]
-        assert storage["quantity"] == 1
-        assert storage["dimension"] == "storage"
-        assert user["quantity"] == 2
-        assert user["dimension"] == "user"
-      end
+      [storage, user] = result["lineItems"]["items"]
+      assert storage["quantity"] == 1
+      assert storage["dimension"] == "storage"
+      assert user["quantity"] == 2
+      assert user["dimension"] == "user"
     end
   end
 
   describe "updateLineItem" do
-    test_with_mock "A subscriber can update individual line items", Stripe.SubscriptionItem, [
-      update: fn "si_id", %{quantity: 2}, [connect_account: "account_id"] -> {:ok, %{}} end
-    ] do
+    test "A subscriber can update individual line items" do
+      expect(Stripe.SubscriptionItem, :update, fn "si_id", %{quantity: 2}, [connect_account: "account_id"] -> {:ok, %{}} end)
       user = insert(:user)
       repository = insert(:repository, publisher: build(:publisher, account_id: "account_id"))
       installation = insert(:installation, user: user, repository: repository)
@@ -210,8 +207,8 @@ defmodule GraphQl.PaymentsMutationsTest do
   end
 
   describe "updatePlan" do
-    test_with_mock "Users can change plans", Stripe.Subscription, [
-      update: fn
+    test "Users can change plans" do
+      expect(Stripe.Subscription, :update, fn
         "sub_id",
         %{items: [
           %{id: "some_id", deleted: true},
@@ -221,7 +218,8 @@ defmodule GraphQl.PaymentsMutationsTest do
           %{plan: "id_stor", quantity: 1},
           %{plan: "id_user", quantity: 0}
         ]},
-        [connect_account: "account_id"] -> {:ok, %{
+        [connect_account: "account_id"] ->
+        {:ok, %{
           id: "sub_id",
           items: %{
             data: [
@@ -231,7 +229,8 @@ defmodule GraphQl.PaymentsMutationsTest do
             ]
           }
         }}
-      end] do
+      end)
+
       user = insert(:user)
       repository = insert(:repository, publisher: build(:publisher, account_id: "account_id"))
       installation = insert(:installation, user: user, repository: repository)

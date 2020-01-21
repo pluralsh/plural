@@ -1,6 +1,6 @@
 defmodule WatchmanWeb.WebhookControllerTest do
-  use WatchmanWeb.ConnCase
-  import Mock
+  use WatchmanWeb.ConnCase, async: true
+  use Mimic
 
   describe "#webhook/2" do
     test "it'll succeed if the signature is valid", %{conn: conn} do
@@ -9,18 +9,18 @@ defmodule WatchmanWeb.WebhookControllerTest do
       body   = Jason.encode!(%{repo: "chartmart"})
       myself = self()
 
-      with_mock Watchman.Deployer, [deploy: fn repo ->
+      expect(Watchman.Deployer, :deploy, fn repo ->
         send myself, {:deploy, repo}
         :ok
-      end] do
-        conn
-        |> put_req_header("x-watchman-signature", "sha1=#{Watchman.hmac(secret, body)}")
-        |> put_req_header("content-type", "application/json")
-        |> post(path, body)
-        |> json_response(200)
+      end)
 
-        assert_receive {:deploy, "chartmart"}
-      end
+      conn
+      |> put_req_header("x-watchman-signature", "sha1=#{Watchman.hmac(secret, body)}")
+      |> put_req_header("content-type", "application/json")
+      |> post(path, body)
+      |> json_response(200)
+
+      assert_receive {:deploy, "chartmart"}
     end
 
     test "It will fail on invalid signatures", %{conn: conn} do

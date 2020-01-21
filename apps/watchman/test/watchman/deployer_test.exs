@@ -1,9 +1,11 @@
 defmodule Watchman.DeployerTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: false
   alias Watchman.Chartmart
   alias Watchman.Storage.Git
+  use Mimic
 
-  import Mock
+  setup :set_mimic_global
+
 
   describe "#deploy/1" do
     @tag :skip
@@ -18,29 +20,25 @@ defmodule Watchman.DeployerTest do
         :ok
       end
 
-      with_mocks [
-        {Chartmart, [], [
-          build: fn repo -> echo.({:build, repo}) end,
-          deploy: fn repo -> echo.({:deploy, repo}) end
-        ]},
-        {Git, [], [
-          init: fn -> echo.(:git_init) end,
-          revise: fn msg -> echo.({:commit, msg}) end,
-          push: fn -> echo.(:git_push) end,
-          pull: fn -> echo.(:git_pull) end]}
-      ] do
-        repo = "chartmart"
-        :ok = Watchman.Deployer.deploy(repo)
+      expect(Git, :init, fn -> echo.(:git_init) end)
+      |> expect(:revise, & echo.({:commit, &1}))
+      |> expect(:push, fn -> echo.(:git_push) end)
 
-        assert_receive :git_init
-        assert_receive {:build, repo}
-        assert_receive {:deploy, repo}
-        assert_receive :git_push
+      expect(Chartmart, :build, & echo.({:build, &1}))
+      |> expect(:deploy, & echo.({:deploy, &1}))
 
-        assert_receive {:commit, msg}
 
-        assert msg =~ repo
-      end
+      repo = "chartmart"
+      :ok = Watchman.Deployer.deploy(repo)
+
+      assert_receive :git_init
+      assert_receive {:build, repo}
+      assert_receive {:deploy, repo}
+      assert_receive :git_push
+
+      assert_receive {:commit, msg}
+
+      assert msg =~ repo
     end
   end
 end

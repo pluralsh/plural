@@ -1,8 +1,8 @@
 defmodule GraphQl.UserMutationTest do
-  use Core.SchemaCase
+  use Core.SchemaCase, async: true
   import GraphQl.TestHelpers
   alias Core.Services.Users
-  import Mock
+  use Mimic
 
   describe "login" do
     test "A user can log in with a password" do
@@ -185,20 +185,18 @@ defmodule GraphQl.UserMutationTest do
       user = insert(:user)
       webhook = insert(:webhook, user: user)
 
-      with_mock Mojito, [
-        post: fn _, _, payload -> {:ok, %Mojito.Response{status_code: 200, body: payload}} end
-      ] do
-        {:ok, %{data: %{"pingWebhook" => response}}} = run_query("""
-          mutation pingWebhook($repo: String!, $id: ID!) {
-            pingWebhook(repo: $repo, id: $id) {
-              statusCode
-              body
-            }
+      expect(Mojito, :post, fn _, _, payload -> {:ok, %Mojito.Response{status_code: 200, body: payload}} end)
+
+      {:ok, %{data: %{"pingWebhook" => response}}} = run_query("""
+        mutation pingWebhook($repo: String!, $id: ID!) {
+          pingWebhook(repo: $repo, id: $id) {
+            statusCode
+            body
           }
-        """, %{"repo" => "repo", "id" => webhook.id}, %{current_user: user})
-        assert response["body"] == Jason.encode!(%{repo: "repo"})
-        assert response["statusCode"] == 200
-      end
+        }
+      """, %{"repo" => "repo", "id" => webhook.id}, %{current_user: user})
+      assert response["body"] == Jason.encode!(%{repo: "repo"})
+      assert response["statusCode"] == 200
     end
   end
 end

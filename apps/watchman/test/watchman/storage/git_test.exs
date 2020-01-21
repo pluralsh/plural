@@ -1,8 +1,10 @@
 defmodule Watchman.Storage.GitTest do
   use ExUnit.Case
-  import Mock
+  use Mimic
   alias Watchman.Storage.Git
   alias Watchman.{Command, Chartmart}
+
+  setup :set_mimic_global
 
   describe "#init/0" do
     @tag :skip
@@ -13,26 +15,25 @@ defmodule Watchman.Storage.GitTest do
       assert Path.join(dir, "chartmart-installations") |> File.dir?()
     end
 
+    @tag :skip
     test "It will properly initialize a workspace" do
       myself = self()
-      git_fn = fn "git", args, _ ->
-        send myself, {:git, args}
+      echo = fn val ->
+        send myself, val
         :ok
       end
+      git_fn = fn "git", args, _ -> echo.({:git, args}) end
 
-      with_mocks [
-        {Command, [], [cmd: git_fn, cmd: fn "git", args -> git_fn.("git", args, "path") end]},
-        {Chartmart, [], [unlock: fn ->
-          send myself, :unlock
-          :ok
-        end]}] do
-        :ok = Git.init()
+      expect(Command, :cmd, git_fn)
+      |> expect(:cmd, fn "git", args -> git_fn.("git", args, "rest") end)
+      expect(Chartmart, :unlock, fn -> echo.(:unlock) end)
 
-        assert_receive {:git, ["clone" | _]}
-        assert_receive {:git, ["config", "user.name" | _]}
-        assert_receive {:git, ["config", "user.email" | _]}
-        assert_receive :unlock
-      end
+      :ok = Git.init()
+
+      assert_receive {:git, ["clone" | _]}
+      assert_receive {:git, ["config", "user.name" | _]}
+      assert_receive {:git, ["config", "user.email" | _]}
+      assert_receive :unlock
     end
   end
 end

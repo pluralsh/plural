@@ -1,11 +1,11 @@
 defmodule Core.Services.PaymentsTest do
-  use Core.SchemaCase, async: false
-  import Mock
+  use Core.SchemaCase, async: true
+  use Mimic
   alias Core.Services.Payments
 
   describe "#create_publisher_account" do
-    test_with_mock "It will fetch an account id and persist it", Stripe.Connect.OAuth,
-        [token: fn "oauth_code" -> {:ok, %{stripe_user_id: "account_id"}} end] do
+    test "It will fetch an account id and persist it" do
+      expect(Stripe.Connect.OAuth, :token, fn "oauth_code" -> {:ok, %{stripe_user_id: "account_id"}} end)
       publisher = insert(:publisher)
 
       {:ok, updated} = Payments.create_publisher_account(publisher, "oauth_code")
@@ -15,9 +15,9 @@ defmodule Core.Services.PaymentsTest do
   end
 
   describe "#register_customer" do
-    test_with_mock "It will create a customer and persist its id", Stripe.Customer,
-        [create: fn %{email: _, source: "token"} -> {:ok, %{id: "cus_some_id"}} end] do
+    test "It will create a customer and persist its id" do
       user = insert(:user)
+      expect(Stripe.Customer, :create, fn %{email: _, source: "token"} -> {:ok, %{id: "cus_some_id"}} end)
       {:ok, updated} = Payments.register_customer(user, "token")
 
       assert updated.customer_id == "cus_some_id"
@@ -25,11 +25,13 @@ defmodule Core.Services.PaymentsTest do
   end
 
   describe "#create_plan" do
-    test_with_mock "It will create a plan for a repository", Stripe.Plan,
-      [create: fn %{amount: 100, currency: "USD", interval: "month", product: %{name: "pro"}},
-                  [connect_account: "account_id"] ->
+    test "It will create a plan for a repository" do
+      expect(Stripe.Plan, :create, fn
+        %{amount: 100, currency: "USD", interval: "month", product: %{name: "pro"}},
+        [connect_account: "account_id"] ->
         {:ok, %{id: "id_random"}}
-      end] do
+      end)
+
       %{publisher: pub} = repository = insert(:repository, publisher: build(:publisher, account_id: "account_id"))
 
       {:ok, plan} = Payments.create_plan(%{
@@ -44,18 +46,18 @@ defmodule Core.Services.PaymentsTest do
       assert plan.external_id == "id_random"
     end
 
-    test_with_mock "Plans can have line items", Stripe.Plan,
-      [create: fn
+    test "Plans can have line items" do
+      expect(Stripe.Plan, :create, 3, fn
         %{amount: _, currency: "USD", interval: "month", product: %{name: "pro"}},
-                  [connect_account: "account_id"] ->
+            [connect_account: "account_id"] ->
           {:ok, %{id: "id_pro"}}
         %{amount: _, currency: "USD", interval: "month", product: %{name: "users"}},
-          [connect_account: "account_id"] ->
+            [connect_account: "account_id"] ->
           {:ok, %{id: "id_users"}}
         %{amount: _, currency: "USD", interval: "month", product: %{name: "storage"}},
-          [connect_account: "account_id"] ->
+            [connect_account: "account_id"] ->
           {:ok, %{id: "id_storage"}}
-      end] do
+      end)
       %{publisher: pub} = repository = insert(:repository,
         publisher: build(:publisher, account_id: "account_id")
       )
@@ -119,29 +121,26 @@ defmodule Core.Services.PaymentsTest do
       installation = insert(:installation, user: user, repository: repository)
       plan = insert(:plan, external_id: "plan_id", repository: installation.repository)
 
-      with_mocks [
-        {Stripe.Token, [], [create: fn %{customer: "cus_id"}, [connect_account: "account_id"] ->
-          {:ok, %{id: "tok_id"}}
-        end]},
-        {Stripe.Customer, [], [create: fn %{email: _, source: "tok_id"}, [connect_account: "account_id"] ->
-          {:ok, %{id: "cus_id2"}}
-        end]},
-        {Stripe.Subscription, [], [create: fn %{
-          customer: "cus_id2",
-          application_fee_percent: 5,
-          items: [%{plan: "plan_id"}]
-        }, [connect_account: "account_id"] ->
-          {:ok, %{id: "sub_id", items: %{data: [%{id: "item_id"}]}}}
-        end]}
-      ] do
-        {:ok, subscription} = Payments.create_subscription(plan, installation, user)
+      expect(Stripe.Token, :create, fn %{customer: "cus_id"}, [connect_account: "account_id"] ->
+        {:ok, %{id: "tok_id"}}
+      end)
+      expect(Stripe.Customer, :create, fn %{email: _, source: "tok_id"}, [connect_account: "account_id"] ->
+        {:ok, %{id: "cus_id2"}}
+      end)
+      expect(Stripe.Subscription, :create, fn %{
+        customer: "cus_id2",
+        application_fee_percent: 5,
+        items: [%{plan: "plan_id"}]
+      }, [connect_account: "account_id"] ->
+        {:ok, %{id: "sub_id", items: %{data: [%{id: "item_id"}]}}}
+      end)
+      {:ok, subscription} = Payments.create_subscription(plan, installation, user)
 
-        assert subscription.installation_id == installation.id
-        assert subscription.plan_id == plan.id
-        assert subscription.customer_id == "cus_id2"
-        assert subscription.external_id == "sub_id"
-        assert subscription.line_items.item_id == "item_id"
-      end
+      assert subscription.installation_id == installation.id
+      assert subscription.plan_id == plan.id
+      assert subscription.customer_id == "cus_id2"
+      assert subscription.external_id == "sub_id"
+      assert subscription.line_items.item_id == "item_id"
     end
 
     test "It can create a subscription with line items" do
@@ -158,56 +157,53 @@ defmodule Core.Services.PaymentsTest do
           ]
         }
       )
-
-      with_mocks [
-        {Stripe.Token, [], [create: fn %{customer: "cus_id"}, [connect_account: "account_id"] ->
-          {:ok, %{id: "tok_id"}}
-        end]},
-        {Stripe.Customer, [], [create: fn %{email: _, source: "tok_id"}, [connect_account: "account_id"] ->
-          {:ok, %{id: "cus_id2"}}
-        end]},
-        {Stripe.Subscription, [], [create: fn %{
-          customer: "cus_id2",
-          application_fee_percent: 5,
-          items: [%{plan: "plan_id"}, %{plan: "id_stor", quantity: 1}, %{plan: "id_user", quantity: 2}]
-        }, [connect_account: "account_id"] ->
-          {:ok, %{
-            id: "sub_id",
-            items: %{
-              data: [
-                %{id: "item_id"},
-                %{id: "stor_id", plan: %{id: "id_stor"}},
-                %{id: "user_id", plan: %{id: "id_user"}}
-              ]
-            }
-          }}
-        end]}
-      ] do
-        {:ok, subscription} = Payments.create_subscription(%{
-          line_items: %{
-            items: [
-              %{dimension: "storage", quantity: 1},
-              %{dimension: "user", quantity: 2}
+      expect(Stripe.Token, :create, fn %{customer: "cus_id"}, [connect_account: "account_id"] ->
+        {:ok, %{id: "tok_id"}}
+      end)
+      expect(Stripe.Customer, :create, fn %{email: _, source: "tok_id"}, [connect_account: "account_id"] ->
+        {:ok, %{id: "cus_id2"}}
+      end)
+      expect(Stripe.Subscription, :create, fn %{
+        customer: "cus_id2",
+        application_fee_percent: 5,
+        items: [%{plan: "plan_id"}, %{plan: "id_stor", quantity: 1}, %{plan: "id_user", quantity: 2}]
+      }, [connect_account: "account_id"] ->
+        {:ok, %{
+          id: "sub_id",
+          items: %{
+            data: [
+              %{id: "item_id"},
+              %{id: "stor_id", plan: %{id: "id_stor"}},
+              %{id: "user_id", plan: %{id: "id_user"}}
             ]
           }
-        }, plan, installation, user)
+        }}
+      end)
 
-        assert subscription.installation_id == installation.id
-        assert subscription.plan_id == plan.id
-        assert subscription.customer_id == "cus_id2"
-        assert subscription.external_id == "sub_id"
+      {:ok, subscription} = Payments.create_subscription(%{
+        line_items: %{
+          items: [
+            %{dimension: "storage", quantity: 1},
+            %{dimension: "user", quantity: 2}
+          ]
+        }
+      }, plan, installation, user)
 
-        assert subscription.line_items.item_id == "item_id"
-        [storage, user] = subscription.line_items.items
-        assert storage.id
-        assert storage.dimension == "storage"
-        assert storage.quantity == 1
-        assert storage.external_id == "stor_id"
-        assert user.id
-        assert user.dimension == "user"
-        assert user.quantity == 2
-        assert user.external_id == "user_id"
-      end
+      assert subscription.installation_id == installation.id
+      assert subscription.plan_id == plan.id
+      assert subscription.customer_id == "cus_id2"
+      assert subscription.external_id == "sub_id"
+
+      assert subscription.line_items.item_id == "item_id"
+      [storage, user] = subscription.line_items.items
+      assert storage.id
+      assert storage.dimension == "storage"
+      assert storage.quantity == 1
+      assert storage.external_id == "stor_id"
+      assert user.id
+      assert user.dimension == "user"
+      assert user.quantity == 2
+      assert user.external_id == "user_id"
     end
 
     test "Mismapped plan/installations will fail" do
@@ -228,9 +224,10 @@ defmodule Core.Services.PaymentsTest do
   end
 
   describe "#update_line_item/3" do
-    test_with_mock "A subscriber can update individual line items", Stripe.SubscriptionItem, [
-      update: fn "si_id", %{quantity: 2}, [connect_account: "account_id"] -> {:ok, %{}} end
-    ] do
+    test "A subscriber can update individual line items" do
+      expect(Stripe.SubscriptionItem, :update, fn "si_id", %{quantity: 2}, [connect_account: "account_id"] ->
+        {:ok, %{}}
+      end)
       user = insert(:user)
       repository = insert(:repository, publisher: build(:publisher, account_id: "account_id"))
       installation = insert(:installation, user: user, repository: repository)
@@ -299,8 +296,8 @@ defmodule Core.Services.PaymentsTest do
   end
 
   describe "#update_plan/3" do
-    test_with_mock "Users can change plans", Stripe.Subscription, [
-      update: fn
+    test "Users can change plans" do
+      expect(Stripe.Subscription, :update, fn
         "sub_id",
         %{items: [
           %{id: "some_id", deleted: true},
@@ -320,7 +317,8 @@ defmodule Core.Services.PaymentsTest do
             ]
           }
         }}
-      end] do
+      end)
+
       user = insert(:user)
       repository = insert(:repository, publisher: build(:publisher, account_id: "account_id"))
       installation = insert(:installation, user: user, repository: repository)

@@ -5,11 +5,19 @@ defmodule Core.Services.Recipes do
   alias Core.Services.{Repositories, Charts}
   alias Core.Services.Terraform, as: TfSvc
 
+  @spec get!(binary) :: Recipe.t
   def get!(recipe_id), do: Core.Repo.get!(Recipe, recipe_id)
 
+  @spec get_by_name(binary, binary) :: Recipe.t | nil
   def get_by_name(name, repo_id),
     do: Core.Repo.get_by(Recipe, name: name, repository_id: repo_id)
 
+  @doc """
+  Will persist the given recipe for repository `repository_id`
+
+  Fails if the user is not the publisher
+  """
+  @spec create(map, binary, User.t) :: {:ok, Recipe.t} | {:error, term}
   def create(%{sections: sections} = attrs, repository_id, user) do
     start_transaction()
     |> add_operation(:recipe, fn _ ->
@@ -23,12 +31,22 @@ defmodule Core.Services.Recipes do
     |> when_ok(&hydrate/1)
   end
 
+  @doc """
+  Deletes the recipe.  Fails if the user is not the publisher
+  """
+  @spec delete(binary, User.t) :: {:ok, Recipe.t} | {:error, term}
   def delete(id, user) do
     get!(id)
     |> allow(user, :edit)
     |> when_ok(:delete)
   end
 
+  @doc """
+  Evaluates each section of the recipe, given the provided context, and installs
+  the repository for each section and any chart/terraform items per section. Returns
+  the created installations.
+  """
+  @spec install(Recipe.t | binary, map, User.t) :: {:ok, [Installation.t]} | {:error, term}
   def install(%Recipe{} = recipe, context, user) do
     hydrate(recipe)
     |> Map.get(:recipe_sections)
@@ -58,6 +76,11 @@ defmodule Core.Services.Recipes do
   def install(recipe_id, ctx, user) when is_binary(recipe_id),
     do: get!(recipe_id) |> install(ctx, user)
 
+  @doc """
+  Either creates a new recipe, or deletes the entire old recipe and
+  recreates it.
+  """
+  @spec upsert(map, binary, User.t) :: {:ok, Recipe.t} | {:error, term}
   def upsert(%{name: name} = attrs, repo_id, user) do
     start_transaction()
     |> add_operation(:wipe, fn _ ->
@@ -72,6 +95,11 @@ defmodule Core.Services.Recipes do
 
   @preloads [recipe_sections: [recipe_items: [:terraform, :chart]]]
 
+  @doc """
+  Preloads a recipe, and properly topsorts the sections according to their
+  dependency maps.
+  """
+  @spec hydrate(Recipe.t) :: Recipe.t
   def hydrate(%Recipe{} = recipe) do
     %{recipe_sections: sections} = recipe = Core.Repo.preload(recipe, @preloads)
     sections = Enum.map(sections, fn %{recipe_items: items} = section ->

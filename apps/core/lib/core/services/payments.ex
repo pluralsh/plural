@@ -12,20 +12,28 @@ defmodule Core.Services.Payments do
     Installation
   }
 
+  @spec get_plan!(binary) :: Plan.t
   def get_plan!(id), do: Core.Repo.get!(Plan, id)
 
+  @spec get_subscription!(binary) :: Subscription.t
   def get_subscription!(id), do: Core.Repo.get!(Subscription, id)
 
+  @spec get_subscription(binary, binary) :: Subscription.t | nil
   def get_subscription(repository_id, user_id) do
     with %Installation{id: id} <- Repositories.get_installation(user_id, repository_id),
       do: Core.Repo.get_by(Subscription, installation_id: id)
   end
 
+  @spec has_plans?(binary) :: boolean
   def has_plans?(repository_id) do
     Plan.for_repository(repository_id)
     |> Core.Repo.exists?()
   end
 
+  @doc """
+  Completes the stripe oauth cycle and persists the account id to the publisher
+  """
+  @spec create_publisher_account(Publisher.t, binary) :: {:ok, Publisher.t} | {:error, term}
   def create_publisher_account(%Publisher{} = publisher, code) do
     with {:ok, %{stripe_user_id: account_id}} <- Stripe.Connect.OAuth.token(code) do
       publisher
@@ -34,6 +42,11 @@ defmodule Core.Services.Payments do
     end
   end
 
+  @doc """
+  Creates a stripe customer with the given source and user email, saves
+  the customer back to storage.
+  """
+  @spec register_customer(User.t, binary) :: {:ok, User.t} | {:error, term}
   def register_customer(%User{email: email} = user, source_token) do
     with {:ok, %{id: id}} <- Stripe.Customer.create(%{email: email, source: source_token}) do
       user
@@ -42,6 +55,13 @@ defmodule Core.Services.Payments do
     end
   end
 
+  @doc """
+  Creates a plan and associated add-ons.  Transactionally creates them in stripe, then
+  restitches them back into the db.
+
+  Fails if the user is not a publisher of the repo
+  """
+  @spec create_plan(map, Repository.t | binary, User.t) :: {:ok, Plan.t} | {:error, any}
   def create_plan(attrs, %Repository{id: id} = repo, %User{} = user) do
     %{publisher: publisher} = Core.Repo.preload(repo, [:publisher])
 
@@ -98,6 +118,14 @@ defmodule Core.Services.Payments do
   end
   defp restitch_line_items(_, _), do: %{}
 
+  @doc """
+  Creates a new subscription for the given plan/installation.  Will
+  transactionally create it in stripe (with line items), then persist back
+  the stripe data to the subscription.
+
+  Fails if the user is not the installer
+  """
+  @spec create_subscription(map, Plan.t, Installation.t, User.t) :: {:ok, Subscription.t} | {:error, term}
   def create_subscription(attrs \\ %{}, plan, inst, user)
   def create_subscription(_, _, _, %User{customer_id: nil}), do: {:error, "No payment method"}
   def create_subscription(attrs, %Plan{} = plan, %Installation{} = installation, %User{} = user) do
@@ -154,6 +182,12 @@ defmodule Core.Services.Payments do
     create_subscription(attrs, plan, inst, user)
   end
 
+  @doc """
+  Updates the quantity of a specific line item.  Persists the update to stripe transactionally.
+
+  Fails if the user is not the subscriber.
+  """
+  @spec update_line_item(%{dimension: binary, quantity: integer}, Subscription.t | binary, User.t) :: {:ok, Subscription.t} | {:error, any}
   def update_line_item(
     %{dimension: dim, quantity: quantity},
     %Subscription{line_items: %{items: items}} = sub,
@@ -183,11 +217,24 @@ defmodule Core.Services.Payments do
   def update_line_item(attrs, subscription_id, user),
     do: update_line_item(attrs, get_subscription!(subscription_id), user)
 
-  def update_plan(%Plan{id: id, external_id: ext_id} = plan, %Subscription{} = sub, %User{} = user) do
+  @doc """
+  Moves the subscription to the given plan.  Will migrate all line items to the new
+  plan and readjust according to any difference in included items.
+
+  Fails if the plan is not for the associated repository or the user isn't the installer.
+  """
+  @spec update_plan(Plan.t, Subscription.t, User.t) :: {:ok, Subscription.t} | {:error, term}
+  def update_plan(%Plan{id: id, external_id: ext_id, repository_id: repo_id} = plan, %Subscription{} = sub, %User{} = user) do
     %{installation: %{repository: %{publisher: %{account_id: account_id}}}} = sub =
       Core.Repo.preload(sub, [:plan, installation: [repository: :publisher]])
 
     start_transaction()
+    |> add_operation(:validate, fn _ ->
+      case sub do
+        %{installation: %{repository: %{id: ^repo_id}}} = sub -> {:ok, sub}
+        _ -> {:error, "Plan #{id} is not valid for repository #{repo_id}"}
+      end
+    end)
     |> add_operation(:db, fn _ ->
       sub
       |> Subscription.changeset(%{

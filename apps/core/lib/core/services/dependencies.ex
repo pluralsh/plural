@@ -9,6 +9,10 @@ defmodule Core.Services.Dependencies do
     User
   }
 
+  @doc """
+  Determines if the user's installations has met the given dependencies
+  """
+  @spec valid?(Dependencies.t | Dependencies.Dependency.t | nil, User.t) :: boolean
   def valid?(nil, _), do: true
   def valid?(%Dependencies{dependencies: nil}, _), do: true
   def valid?(%Dependencies{dependencies: deps}, user) when is_list(deps),
@@ -27,6 +31,10 @@ defmodule Core.Services.Dependencies do
   end
   def valid?(_, _), do: false
 
+  @doc """
+  Same as valid? except extracts and returns the first dep that fails.
+  """
+  @spec validate(nil | Dependencies.t | [Dependencies.Dependency.t], User.t) :: :pass | {:error, {:missing_dep, term}}
   def validate(nil, _), do: :pass
   def validate(%{dependencies: nil}, _), do: :pass
   def validate(%{dependencies: deps}, user) when is_list(deps),
@@ -39,6 +47,10 @@ defmodule Core.Services.Dependencies do
   end
   def validate([], _), do: :pass
 
+  @doc """
+  Converts a validation error to a gql suitable response
+  """
+  @spec pretty_print({:error, {:missing_dep, %{type: :terraform | :helm, repo: binary}}}) :: {:error, binary}
   def pretty_print({:error, {:missing_dep, %{type: :terraform, repo: repo} = dep}}),
     do: {:error, "Missing #{mod(dep)} terraform module #{pretty_name(dep)} from repo #{repo}"}
   def pretty_print({:error, {:missing_dep, %{type: :helm, repo: repo} = dep}}),
@@ -50,6 +62,10 @@ defmodule Core.Services.Dependencies do
   defp pretty_name(%{any: [_ | _] = names}), do: "in [#{Enum.join(names, ", ")}]"
   defp pretty_name(%{name: name}), do: name
 
+  @doc """
+  Extracts all charts/tf modules which are transitive dependencies
+  """
+  @spec closure(Dependencies.t | Dependencies.Dependency.t | nil) :: %{terraform: [Terraform.t], helm: [Helm.t]}
   def closure(%{dependencies: dependencies}), do: closure(dependencies)
   def closure(nil), do: []
   def closure(deps) when is_list(deps), do: closure(deps, MapSet.new(), [])

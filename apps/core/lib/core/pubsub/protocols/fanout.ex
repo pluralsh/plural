@@ -12,6 +12,13 @@ defimpl Core.PubSub.Fanout, for: Core.PubSub.VersionCreated do
   alias Core.Schema.{ChartInstallation, Repository, Webhook}
   require Logger
 
+  @doc """
+  On each new helm version, fan out to all installations of that chart,
+  and publish webhook updates where a webhook has been created.
+
+  Pushes the whole process through flow for parallelism.  There's no
+  checkpointing or persistence, so this must be considered best-effort.
+  """
   def fanout(%{item: version}) do
     ChartInstallation.for_chart(version.chart_id)
     |> ChartInstallation.with_auto_upgrade()

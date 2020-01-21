@@ -17,21 +17,32 @@ defmodule Core.Services.Repositories do
   }
   alias Piazza.Crypto.RSA
 
+  @spec get_installation!(binary) :: Installation.t
   def get_installation!(id),
     do: Core.Repo.get!(Installation, id)
 
+  @spec get_installation(binary, binary) :: Installation.t | nil
   def get_installation(user_id, repo_id) do
     Core.Repo.get_by(Installation, repository_id: repo_id, user_id: user_id)
   end
 
+  @spec get_repository!(binary) :: Repository.t
   def get_repository!(id), do: Core.Repo.get(Repository, id)
 
+  @spec get_repository_by_name!(binary) :: Repository.t
   def get_repository_by_name!(name),
     do: Core.Repo.get_by!(Repository, name: name)
 
+  @spec get_repository_by_name(binary) :: Repository.t | nil
   def get_repository_by_name(name),
     do: Core.Repo.get_by(Repository, name: name)
 
+  @doc """
+  Creates a new repository for the user's publisher
+
+  Will throw if there is no publisher
+  """
+  @spec create_repository(map, User.t) :: {:ok, Repository.t} | {:error, term}
   def create_repository(attrs, %User{} = user) do
     publisher = Users.get_publisher_by_owner!(user.id)
 
@@ -47,6 +58,11 @@ defmodule Core.Services.Repositories do
     |> execute(extract: :licensed)
   end
 
+  @doc """
+  Returns the list of docker accesses available for `user` against the
+  given repository
+  """
+  @spec authorize_docker(binary, User.t) :: [:push | :pull]
   def authorize_docker(repo_name, %User{} = user) do
     repo = get_repository_by_name!(repo_name) |> Core.Repo.preload([:publisher])
 
@@ -61,6 +77,11 @@ defmodule Core.Services.Repositories do
     |> Enum.map(&elem(&1, 0))
   end
 
+  @doc """
+  Persists a given docker image with the given tag.  Called by the docker
+  registry notification webhook.
+  """
+  @spec create_docker_image(binary, binary, binary) :: {:ok, DockerImage.t} | {:error, term}
   def create_docker_image(repo, tag, digest) do
     [cm_repo | rest] = String.split(repo, "/")
     cm_repo = get_repository_by_name!(cm_repo)
@@ -95,6 +116,10 @@ defmodule Core.Services.Repositories do
     |> Core.Repo.insert_or_update()
   end
 
+  @doc """
+  Constructs a docker-compliant jwt for the given repo and scopes.
+  """
+  @spec docker_token([binary | atom], binary, User.t) :: {:ok, binary} | {:error, term}
   def docker_token(scopes, repo_name, user) do
     signer = Jwt.signer()
     access = [%{"type" => "repository", "name" => repo_name, "actions" => scopes}]
@@ -103,6 +128,11 @@ defmodule Core.Services.Repositories do
       do: {:ok, token}
   end
 
+
+  @doc """
+  Constructs a dummy jwt for user on docker login
+  """
+  @spec dkr_login_token(User.t) :: {:ok, binary} | {:error, term}
   def dkr_login_token(user) do
     signer = Jwt.signer()
     with {:ok, claims} <- Jwt.generate_claims(%{"sub" => user.email, "access" => []}),
@@ -110,6 +140,12 @@ defmodule Core.Services.Repositories do
       do: {:ok, token}
   end
 
+  @doc """
+  Updates the given repository.
+
+  Fails if the user is not the publisher
+  """
+  @spec update_repository(map, binary, User.t) :: {:ok, Repository.t} | {:error, term}
   def update_repository(attrs, repo_id, %User{} = user) do
     get_repository!(repo_id)
     |> Core.Repo.preload([:integration_resource_definition, :tags])
@@ -118,12 +154,23 @@ defmodule Core.Services.Repositories do
     |> when_ok(:update)
   end
 
+  @doc """
+  Deletes the repository.  This might be deprecated as it's inherently unsafe.
+
+  Fails if the user is not the publisher.
+  """
   def delete_repository(repo_id, %User{} = user) do
     get_repository!(repo_id)
     |> allow(user, :edit)
     |> when_ok(:delete)
   end
 
+  @doc """
+  Creates or updates the given integration for the repo.
+
+  Fails if the user is not the publisher
+  """
+  @spec upsert_integration(map, binary, User.t) :: {:ok, Integration.t} | {:error, term}
   def upsert_integration(%{name: name} = attrs, repo_id, %User{} = user) do
     repo = get_repository!(repo_id) |> Core.Repo.preload([:integration_resource_definition])
     pub  = Users.get_publisher_by_owner(user.id)
@@ -137,6 +184,10 @@ defmodule Core.Services.Repositories do
     |> when_ok(&Core.Repo.insert_or_update/1)
   end
 
+  @doc """
+  Creates a new installation for a repository for the given user
+  """
+  @spec create_installation(map, binary, User.t) :: {:ok, Installation.t} | {:error, term}
   def create_installation(attrs, repository_id, %User{} = user) do
     %Installation{repository_id: repository_id, user_id: user.id}
     |> Installation.changeset(attrs)
@@ -144,6 +195,12 @@ defmodule Core.Services.Repositories do
     |> when_ok(:insert)
   end
 
+  @doc """
+  Updates the given installation.
+
+  Fails if the user is not the original installer.
+  """
+  @spec update_installation(map, binary, User.t) :: {:ok, Installation.t} | {:error, term}
   def update_installation(attrs, inst_id, %User{} = user) do
     get_installation!(inst_id)
     |> Installation.changeset(attrs)
@@ -151,12 +208,26 @@ defmodule Core.Services.Repositories do
     |> when_ok(:update)
   end
 
+  @doc """
+  Deletes the given installation.
+
+  Fails if the user is not the installer.
+  """
+  @spec delete_installation(binary, User.t) :: {:ok, Installation.t} | {:error, term}
   def delete_installation(inst_id, %User{} = user) do
     get_installation!(inst_id)
     |> allow(user, :edit)
     |> when_ok(:delete)
   end
 
+  @doc """
+  Generates a refresh token for the license, constructs the policy given
+  the current subscription (or free if there are no plans configured).
+
+  Fails if the installation has no suscription but the repository has
+  plans available.
+  """
+  @spec generate_license(Installation.t) :: {:ok, binary | nil}
   def generate_license(%Installation{} = installation) do
     %{repository: repo} = installation =
       Core.Repo.preload(installation, [:repository, [subscription: :plan]])
@@ -184,6 +255,10 @@ defmodule Core.Services.Repositories do
   defp mk_policy(_, false), do: {:ok, %{free: true}}
   defp mk_policy(_, _), do: :error
 
+  @doc """
+  Constructs a new license file with the given license token.
+  """
+  @spec refresh_license(LicenseToken.t) :: {:ok, binary} | {:error, :not_found}
   def refresh_license(%LicenseToken{installation: %Installation{} = installation}),
     do: generate_license(installation)
   def refresh_license(token) when is_binary(token) do
@@ -193,6 +268,10 @@ defmodule Core.Services.Repositories do
   end
   def refresh_license(_), do: {:error, :not_found}
 
+  @doc """
+  Generates an rsa key pair and persists it to the repository
+  """
+  @spec generate_keys(Repository.t) :: {:ok, Repository.t} | {:error, term}
   def generate_keys(%Repository{} = repo) do
     with {:ok, keypair} <- RSA.generate_keypair(),
          {:ok, {priv, pub}} <- RSA.pem_encode(keypair) do
@@ -202,6 +281,10 @@ defmodule Core.Services.Repositories do
     end
   end
 
+  @doc """
+  Self-explanatory
+  """
+  @spec upsert_license_token(Installation.t) :: {:ok, LicenseToken.t} | {:error, term}
   def upsert_license_token(%Installation{id: id}) do
     case Core.Repo.get_by(LicenseToken, installation_id: id) do
       %LicenseToken{} = token -> token
@@ -211,6 +294,10 @@ defmodule Core.Services.Repositories do
     |> Core.Repo.insert_or_update()
   end
 
+  @doc """
+  Returns whether a user can `:access` the repository.
+  """
+  @spec authorize(binary, User.t) :: {:ok, Repository.t} | {:error, term}
   def authorize(repo_id, %User{} = user) when is_binary(repo_id) do
     get_repository!(repo_id)
     |> authorize(user)

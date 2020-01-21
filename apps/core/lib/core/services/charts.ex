@@ -12,22 +12,31 @@ defmodule Core.Services.Charts do
     Repository
   }
 
+  @spec get_chart(binary) :: Chart.t | nil
   def get_chart(chart_id), do: Core.Repo.get(Chart, chart_id)
 
+  @spec get_chart!(binary) :: Chart.t
   def get_chart!(chart_id), do: Core.Repo.get!(Chart, chart_id)
 
+  @spec get_chart_by_name!(binary, binary) :: Chart.t
   def get_chart_by_name!(repo_id, name),
     do: Core.Repo.get_by!(Chart, repository_id: repo_id, name: name)
 
+  @spec get_chart_version(binary, binary) :: Version.t | nil
   def get_chart_version(chart_id, version),
     do: Core.Repo.get_by(Version, chart_id: chart_id, version: version)
 
+  @spec get_chart_installation(binary, binary) :: ChartInstallation.t | nil
   def get_chart_installation(chart_id, user_id) do
     ChartInstallation.for_chart(chart_id)
     |> ChartInstallation.for_user(user_id)
     |> Core.Repo.one()
   end
 
+  @doc """
+  Creates a new chart. Fails if the user is not the publisher of the repository
+  """
+  @spec create_chart(map, binary, User.t) :: {:ok, Chart.t} | {:error, term}
   def create_chart(attrs, repository_id, %User{} = user) do
     name = stringish_fetch(attrs, :name)
 
@@ -46,6 +55,10 @@ defmodule Core.Services.Charts do
     |> execute(extract: :chart)
   end
 
+  @doc """
+  Creates a new version for a chart.  Fails if the user is not the publisher
+  """
+  @spec create_version(map, binary, User.t) :: {:ok, Version.t} | {:error, term}
   def create_version(attrs, chart_id, %User{} = user) do
     version = stringish_fetch(attrs, :version)
 
@@ -69,6 +82,14 @@ defmodule Core.Services.Charts do
     |> execute(extract: :version)
   end
 
+  @doc """
+  Handles a chart upload.  Performs metadata extraction on the tarball, along
+  with inferring the appropriate version and persisting everything to the
+  repository.  It will also send the update to chartmuseum transactionally.
+
+  Fails if the user is not the publisher of the repository.
+  """
+  @spec upload_chart(map, Repository.t, User.t, map) :: {:ok, Chart.t} | {:error, term}
   def upload_chart(%{"chart" => chart} = uploads, %Repository{id: repo_id, name: repo}, user, context) do
     {chart_name, version} = chart_info(chart)
     uploads = Enum.map(uploads, fn {key, %{path: path, filename: file}} ->
@@ -108,6 +129,10 @@ defmodule Core.Services.Charts do
     end
   end
 
+  @doc """
+  Syncs attrs against a chart version.  For internal use only
+  """
+  @spec sync_version(map, binary, Version.t) :: {:ok, Version.t} | {:error, %Ecto.Changeset{}}
   def sync_version(attrs, chart_id, version) do
     get_chart_version(chart_id, version)
     |> Version.helm_changeset(attrs)
@@ -129,6 +154,12 @@ defmodule Core.Services.Charts do
 
   defp chartmuseum(), do: Application.get_env(:core, :chartmuseum)
 
+  @doc """
+  Creates a new chart installation for a repository installation.
+
+  Fails if the user is not the installer
+  """
+  @spec create_chart_installation(map, binary, User.t) :: {:ok, ChartInstallation.t} | {:error, term}
   def create_chart_installation(attrs, installation_id, %User{} = user) do
     installation = Repositories.get_installation!(installation_id)
 
@@ -138,6 +169,10 @@ defmodule Core.Services.Charts do
     |> when_ok(:insert)
   end
 
+  @doc """
+  Updates the chart installation. Fails if the user is not the original installer
+  """
+  @spec update_chart_installation(map, binary, User.t) :: {:ok, ChartInstallation.t} | {:error, term}
   def update_chart_installation(attrs, chart_inst_id, %User{} = user) do
     Core.Repo.get!(ChartInstallation, chart_inst_id)
     |> Core.Repo.preload([:installation, :chart, :version])
@@ -167,13 +202,17 @@ defmodule Core.Services.Charts do
     end
   end
 
-  def extract_val_template(result, val_template) do
+  defp extract_val_template(result, val_template) do
     case Enum.find(result, &elem(&1, 0) == val_template) do
       {_, template} -> template
       _ -> nil
     end
   end
 
+  @doc """
+  Returns true iff the user can `:access` the chart
+  """
+  @spec authorize(binary | Chart.t, User.t) :: boolean
   def authorize(chart_id, %User{} = user) when is_binary(chart_id),
     do: get_chart!(chart_id) |> authorize(user)
   def authorize(%Chart{} = chart, user), do: allow(chart, user, :access)

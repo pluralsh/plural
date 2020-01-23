@@ -13,7 +13,8 @@ defmodule Core.Services.Repositories do
     License,
     Integration,
     Subscription,
-    Plan
+    Plan,
+    Artifact
   }
   alias Piazza.Crypto.RSA
 
@@ -218,6 +219,20 @@ defmodule Core.Services.Repositories do
     get_installation!(inst_id)
     |> allow(user, :edit)
     |> when_ok(:delete)
+  end
+
+  @doc """
+  Creates a new artifact for the repository, representing a downloadable resource
+  like a cli, desktop app, etc.
+
+  Fails if the user is not the publisher
+  """
+  @spec create_artifact(map, binary, User.t) :: {:ok, Artifact.t} | {:error, term}
+  def create_artifact(attrs, repository_id, %User{} = user) do
+    %Artifact{repository_id: repository_id}
+    |> Artifact.changeset(attrs)
+    |> allow(user, :edit)
+    |> when_ok(:insert)
   end
 
   @doc """

@@ -297,4 +297,33 @@ defmodule Core.Services.RepositoriesTest do
       assert image.digest == "some_digest"
     end
   end
+
+  describe "#create_artifact/3" do
+    test "Publishers can create artifacts" do
+      %{publisher: %{owner: user}} = repo = insert(:repository)
+
+      {:ok, artifact} = Repositories.create_artifact(%{
+        name: "artifact",
+        readme: "empty",
+        type: :cli,
+        platform: :mac
+      }, repo.id, user)
+
+      assert artifact.name == "artifact"
+      assert artifact.readme == "empty"
+      assert artifact.type == :cli
+      assert artifact.platform == :mac
+    end
+
+    test "non publishers cannot create artifacts" do
+      repo = insert(:repository)
+
+      {:error, _} = Repositories.create_artifact(%{
+        name: "artifact",
+        readme: "empty",
+        type: :cli,
+        platform: :mac
+      }, repo.id, insert(:user))
+    end
+  end
 end

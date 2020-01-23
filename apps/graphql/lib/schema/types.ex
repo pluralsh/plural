@@ -63,6 +63,7 @@ defmodule GraphQl.Schema.Types do
     field :publisher,     :publisher, resolve: dataloader(User)
     field :plans,         list_of(:plan), resolve: dataloader(Payments)
     field :tags,          list_of(:tag), resolve: dataloader(Repository)
+    field :artifacts,     list_of(:artifact), resolve: dataloader(Repository)
 
     field :icon, :string, resolve: fn
       repo, _, _ -> {:ok, Core.Storage.url({repo.icon, repo}, :original)}
@@ -159,6 +160,33 @@ defmodule GraphQl.Schema.Types do
     field :docker_repository, :docker_repository, resolve: dataloader(Docker)
 
     timestamps()
+  end
+
+  object :artifact do
+    field :id,       :id
+    field :name,     :string
+    field :readme,   :string
+    field :type,     :artifact_type
+    field :platform, :artifact_platform
+    field :filesize, :integer
+    field :sha,      :string
+    field :blob, :string, resolve: fn
+      artifact, _, _ -> {:ok, Core.Storage.url({artifact.blob, artifact}, :original)}
+    end
+
+    timestamps()
+  end
+
+  enum :artifact_type do
+    value :cli
+    value :mobile
+    value :desktop
+  end
+
+  enum :artifact_platform do
+    value :mac
+    value :windows
+    value :linux
   end
 
   object :dependencies do

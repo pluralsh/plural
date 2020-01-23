@@ -394,6 +394,15 @@ defmodule GraphQl do
       resolve safe_resolver(&Recipe.install_recipe/2)
     end
 
+    field :create_artifact, :artifact do
+      middleware GraphQl.Middleware.Authenticated
+      arg :repository_id,   :id
+      arg :repository_name, :string
+      arg :attributes, non_null(:artifact_attributes)
+
+      resolve safe_resolver(&Repository.create_artifact/2)
+    end
+
     field :create_terraform, :terraform do
       middleware GraphQl.Middleware.Authenticated
       arg :repository_id, non_null(:id)

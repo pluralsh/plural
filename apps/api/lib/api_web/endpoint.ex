@@ -1,6 +1,8 @@
 defmodule ApiWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :api
 
+  @upload_maximum 50_000_000
+
   socket "/socket", ApiWeb.UserSocket,
     websocket: true,
     longpoll: false
@@ -29,7 +31,7 @@ defmodule ApiWeb.Endpoint do
   plug Plug.Telemetry, event_prefix: [:phoenix, :endpoint]
 
   plug Plug.Parsers,
-    parsers: [:urlencoded, :multipart, ApiWeb.Parsers.ApplicationJson],
+    parsers: [:urlencoded, {:multipart, length: @upload_maximum}, ApiWeb.Parsers.ApplicationJson],
     pass: ["*/*"],
     json_decoder: Phoenix.json_library()
 

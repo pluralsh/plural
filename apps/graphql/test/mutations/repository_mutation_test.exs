@@ -178,4 +178,33 @@ defmodule GraphQl.RepositoryMutationsTest do
       assert Enum.map(intg["tags"], & &1["tag"]) == ["something"]
     end
   end
+
+  describe "createArtifact" do
+    test "Publishers can create artifacts" do
+      %{id: id, publisher: %{owner: user}} = insert(:repository)
+
+      {:ok, %{data: %{"createArtifact" => art}}} = run_query("""
+        mutation CreateArtifact($id: ID!, $attrs: ArtifactAttributes!) {
+          createArtifact(repositoryId: $id, attributes: $attrs) {
+            id
+            name
+            readme
+            type
+            platform
+          }
+        }
+      """, %{"id" => id, "attrs" => %{
+        "name" => "artifact",
+        "readme" => "blank",
+        "type" => "cli",
+        "platform" => "mac"
+      }}, %{current_user: user})
+
+      assert art["id"]
+      assert art["name"] == "artifact"
+      assert art["readme"] == "blank"
+      assert art["type"] == "CLI"
+      assert art["platform"] == "MAC"
+    end
+  end
 end

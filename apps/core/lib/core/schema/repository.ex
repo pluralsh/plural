@@ -1,7 +1,14 @@
 defmodule Core.Schema.Repository do
   use Piazza.Ecto.Schema
   use Arc.Ecto.Schema
-  alias Core.Schema.{Publisher, Installation, ResourceDefinition, Tag, Plan}
+  alias Core.Schema.{
+    Publisher,
+    Installation,
+    ResourceDefinition,
+    Tag,
+    Plan,
+    Artifact
+  }
 
   schema "repositories" do
     field :name,          :string, null: false
@@ -17,6 +24,7 @@ defmodule Core.Schema.Repository do
 
     has_many :installations, Installation
     has_many :plans,         Plan
+    has_many :artifacts,     Artifact
     has_many :tags,          Tag,
         where: [resource_type: :repository],
         foreign_key: :resource_id,

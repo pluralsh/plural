@@ -1,12 +1,13 @@
 defmodule GraphQl.Resolvers.Repository do
   use GraphQl.Resolvers.Base, model: Core.Schema.Repository
   alias Core.Services.Repositories
-  alias Core.Schema.{Installation, Integration, ResourceDefinition, Tag}
+  alias Core.Schema.{Installation, Integration, ResourceDefinition, Tag, Artifact}
 
   def query(Tag, _), do: Tag
   def query(Integration, _), do: Integration
   def query(ResourceDefinition, _), do: ResourceDefinition
   def query(Installation, _), do: Installation
+  def query(Artifact, _), do: Artifact.ordered()
   def query(_, _), do: Repository
 
   def resolve_public_key(repo, user) do
@@ -107,4 +108,11 @@ defmodule GraphQl.Resolvers.Repository do
 
   def delete_installation(%{id: id}, %{context: %{current_user: user}}),
     do: Repositories.delete_installation(id, user)
+
+  def create_artifact(%{repository_id: repo_id, attributes: attrs}, %{context: %{current_user: user}}),
+    do: Repositories.create_artifact(attrs, repo_id, user)
+  def create_artifact(%{repository_name: name, attributes: attrs}, %{context: %{current_user: user}}) do
+    repo = Repositories.get_repository_by_name!(name)
+    Repositories.create_artifact(attrs, repo.id, user)
+  end
 end

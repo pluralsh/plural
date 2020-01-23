@@ -157,6 +157,14 @@ defmodule GraphQl.Schema.Inputs do
     field :period,    non_null(:string)
   end
 
+  input_object :artifact_attributes do
+    field :name,     non_null(:string)
+    field :readme,   non_null(:string)
+    field :type,     non_null(:string)
+    field :platform, non_null(:string)
+    field :blob,     :upload_or_url
+  end
+
   input_object :subscription_attributes do
     field :line_items, :subscription_line_item_attributes
   end

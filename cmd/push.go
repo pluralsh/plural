@@ -43,6 +43,12 @@ func pushCommands() []cli.Command {
 			ArgsUsage: "path/to/def.yaml REPO",
 			Action:    handleIntegration,
 		},
+		{
+			Name:      "artifact",
+			Usage:     "creates an artifact for the repo",
+			ArgsUsage: "path/to/def.yaml REPO",
+			Action:    handleArtifact,
+		},
 	}
 }
 
@@ -109,5 +115,22 @@ func handleIntegration(c *cli.Context) error {
 	}
 
 	_, err = client.CreateIntegration(c.Args().Get(1), input)
+	return err
+}
+
+func handleArtifact(c *cli.Context) error {
+	client := api.NewUploadClient()
+	fullPath, _ := filepath.Abs(c.Args().Get(0))
+	contents, err := ioutil.ReadFile(fullPath)
+	if err != nil {
+		return err
+	}
+
+	input, err := api.ConstructArtifactAttributes(contents)
+	if err != nil {
+		return err
+	}
+
+	_, err = client.CreateArtifact(c.Args().Get(1), input)
 	return err
 }

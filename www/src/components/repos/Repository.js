@@ -18,6 +18,7 @@ import Recipes from './Recipes'
 import moment from 'moment'
 import ScrollableContainer from '../utils/ScrollableContainer'
 import { Provider } from './misc'
+import Artifacts from './Artifacts'
 
 function Container({children, onClick, hasNext, noPad}) {
   const [hover, setHover] = useState(false)
@@ -413,6 +414,7 @@ function Repository() {
             repository={repository}
             integrations={integrations}
             fetchMore={fetchMore} />
+          <Artifacts artifacts={repository.artifacts} />
         </Box>
       </Box>
     </ScrollableContainer>

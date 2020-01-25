@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/machinebox/graphql"
+	"github.com/michaeljguarino/graphql"
 	"github.com/michaeljguarino/chartmart/config"
 )
 

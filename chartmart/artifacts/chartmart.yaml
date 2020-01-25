@@ -1,0 +1,6 @@
+name: chartmart
+readme: CLI for building and deploying chartmart workspaces
+type: cli
+platform: mac
+blob: cmd/chartmart
+readme: chartmart/artifacts/chartmart-readme.md

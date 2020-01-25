@@ -63,3 +63,16 @@ export const IntegrationFragment = gql`
   }
   ${PublisherFragment}
 `;
+
+export const ArtifactFragment = gql`
+  fragment ArtifactFragment on Artifact {
+    id
+    name
+    blob
+    type
+    platform
+    filesize
+    sha
+    readme
+  }
+`;

@@ -1,5 +1,5 @@
 import gql from 'graphql-tag'
-import {RepoFragment, InstallationFragment, IntegrationFragment} from '../../models/repo'
+import {RepoFragment, InstallationFragment, IntegrationFragment, ArtifactFragment} from '../../models/repo'
 import {ChartFragment, VersionFragment, ChartInstallationFragment} from '../../models/chart'
 import {TerraformFragment} from '../../models/terraform'
 import {DockerRepoFragment, DockerImageFragment} from '../../models/docker'
@@ -125,6 +125,9 @@ export const REPO_Q = gql`
       tags {
         tag
       }
+      artifacts {
+        ...ArtifactFragment
+      }
     }
     charts(repositoryId: $repositoryId, first: 15, after: $chartCursor) {
       pageInfo {
@@ -191,6 +194,7 @@ export const REPO_Q = gql`
   ${DockerRepoFragment}
   ${RecipeFragment}
   ${IntegrationFragment}
+  ${ArtifactFragment}
 `;
 
 export const DOCKER_IMG_Q = gql`

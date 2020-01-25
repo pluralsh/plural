@@ -228,11 +228,14 @@ defmodule Core.Services.Repositories do
   Fails if the user is not the publisher
   """
   @spec create_artifact(map, binary, User.t) :: {:ok, Artifact.t} | {:error, term}
-  def create_artifact(attrs, repository_id, %User{} = user) do
-    %Artifact{repository_id: repository_id}
+  def create_artifact(%{name: name, platform: plat} = attrs, repository_id, %User{} = user) do
+    case Core.Repo.get_by(Artifact, repository_id: repository_id, name: name, platform: plat) do
+      %Artifact{} = art -> art
+      _ -> %Artifact{repository_id: repository_id}
+    end
     |> Artifact.changeset(attrs)
     |> allow(user, :edit)
-    |> when_ok(:insert)
+    |> when_ok(&Core.Repo.insert_or_update/1)
   end
 
   @doc """

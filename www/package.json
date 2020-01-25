@@ -10,6 +10,7 @@
     "apollo-link-context": "^1.0.19",
     "d3-force": "^2.0.1",
     "d3-selection": "^1.4.1",
+    "filesize": "^6.0.1",
     "graphql": "^14.5.8",
     "grommet": "^2.7.9",
     "grommet-icons": "^4.3.0",

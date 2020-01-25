@@ -151,6 +151,15 @@ type ConfigurationItem struct {
 	Type    string
 }
 
+type Artifact struct {
+	Id       string
+	Name 	   string
+	Readme   string
+	Blob     string
+	Sha      string
+	Filesize int
+}
+
 const RepositoryFragment = `
 	fragment RepositoryFragment on Repository {
 		id
@@ -258,5 +267,16 @@ const WebhookFragment = `
 		id
 		url
 		secret
+	}
+`
+
+const ArtifactFragment = `
+	fragment ArtifactFragment on Artifact {
+		id
+		name
+		readme
+		blob
+		sha
+		filesize
 	}
 `

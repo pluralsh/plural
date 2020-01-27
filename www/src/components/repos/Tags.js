@@ -58,7 +58,7 @@ export default function Tags({tags: {pageInfo, edges}, fetchMore, tag, setTag, p
       <Scroller
         edges={edges}
         style={{overflow: 'auto', height: '100%', width: '100%'}}
-        mapper={({node}) => <Tag {...node} setTag={setTag} enabled={node.tag === tag} />}
+        mapper={({node}) => <Tag key={node.tag} {...node} setTag={setTag} enabled={node.tag === tag} />}
         onLoadMore={() => {
           if (!pageInfo.hasNextPage) return
 

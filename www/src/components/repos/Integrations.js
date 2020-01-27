@@ -38,7 +38,7 @@ function Integration({name, description, icon, tags, sourceUrl, publisher, width
           <Text color='dark-3' size='small'>{description}</Text>
           {tags && tags.length > 0 && (
             <Box direction='row' gap='xxsmall'>
-              {tags.map(({tag}) => <Text size='xsmall' color='dark-3'>#{tag}</Text>)}
+              {tags.map(({tag}) => <Text key={tag} size='xsmall' color='dark-3'>#{tag}</Text>)}
             </Box>
           )}
         </Box>
@@ -91,8 +91,8 @@ function IntegrationGrid({integrations: {edges, pageInfo}, fetchMore}) {
       style={{overflow: 'auto', height: '100%', width: '100%'}}
       edges={Array.from(chunk(edges, 3))}
       mapper={(chunk) => (
-        <Box direction='row' gap='small' fill='horizontal'>
-          {chunk.map(({node}) => <Integration {...node} width='30%' />)}
+        <Box key={chunk[0].id} direction='row' gap='small' fill='horizontal'>
+          {chunk.map(({node}) => <Integration key={node.id} {...node} width='30%' />)}
         </Box>
       )}
       onLoadMore={() => {

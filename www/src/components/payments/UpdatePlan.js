@@ -6,7 +6,7 @@ import { updateSubscription } from './utils'
 import { ModalHeader } from '../utils/Modal'
 import Button from '../utils/Button'
 
-export default function UpdatePlan({plan, repository: {id, subscription}, setOpen}) {
+export default function UpdatePlan({plan, repository: {id, installation: {subscription}}, setOpen}) {
   const [mutation, {loading}] = useMutation(UPDATE_PLAN, {
     variables: {subscriptionId: subscription.id, planId: plan.id},
     update: (cache, {data: {updatePlan}}) => {

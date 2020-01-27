@@ -76,6 +76,7 @@ export function SubscriptionBadge({repository, ...subscription}) {
         <Text style={{fontWeight: 500}} size='small'>Subscribed to {name}</Text>
         {items.map(({dimension, quantity}) => (
           <LineItemNub
+            key={dimension}
             repository={repository}
             subscription={subscription}
             lineItem={itemsByDim[dimension]}

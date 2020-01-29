@@ -17,3 +17,7 @@ config :goth, json: {:system, "GCP_CREDENTIALS"}
 config :core, :consumers, [
   Core.PubSub.Consumers.Fanout
 ]
+
+config :core, Core.Email.Mailer,
+  adapter: Bamboo.SendgridAdapter,
+  api_key: {:system, "SENGRID_API_KEY"}

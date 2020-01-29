@@ -19,7 +19,7 @@ export function download(url) {
   // This allows you to download files in desktop safari if pop up blocking
   // is enabled.
   if (typeof tempLink.download === 'undefined') {
-      tempLink.setAttribute('target', '_blank');
+    tempLink.setAttribute('target', '_blank');
   }
 
   document.body.appendChild(tempLink);
@@ -27,6 +27,6 @@ export function download(url) {
 
   // Fixes "webkit blob resource error 1"
   setTimeout(function() {
-      document.body.removeChild(tempLink);
+    document.body.removeChild(tempLink);
   }, 0)
 }

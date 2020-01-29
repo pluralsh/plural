@@ -14,6 +14,7 @@ export default function UpdatePlan({plan, repository: {id, installation: {subscr
       setOpen(false)
     }
   })
+
   return (
     <Layer modal position='center' onEsc={() => setOpen(false)}>
       <Box width='40vw'>

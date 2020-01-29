@@ -35,6 +35,8 @@ defmodule ApiWeb.Router do
     post "/login", UserController, :login
 
     post "/dkr/callback", DockerController, :events
+
+    post "/email", EmailController, :email
   end
 
   scope "/mart", ApiWeb do

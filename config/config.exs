@@ -49,4 +49,8 @@ config :arc,
 config :stripity_stripe,
   hackney_opts: [connect_timeout: 5000, recv_timeout: 60_000]
 
+config :core, Core.Email.Mailer,
+  adapter: Bamboo.LocalAdapter
+
+
 import_config "#{Mix.env()}.exs"

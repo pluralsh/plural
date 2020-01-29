@@ -39,6 +39,9 @@ defmodule ApiWeb.ConnCase do
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
 
+  def authorized(conn, %Core.Schema.LicenseToken{token: token}) do
+    Plug.Conn.put_req_header(conn, "authorization", "Bearer #{token}")
+  end
   def authorized(conn, user) do
     {:ok, token, _} = Core.Guardian.encode_and_sign(user, %{})
     Plug.Conn.put_req_header(conn, "authorization", "Bearer #{token}")

@@ -38,6 +38,9 @@ defmodule Core.Services.Repositories do
   def get_repository_by_name(name),
     do: Core.Repo.get_by(Repository, name: name)
 
+  def get_license_token(token),
+    do: Core.Repo.get_by(LicenseToken, token: token)
+
   @doc """
   Creates a new repository for the user's publisher
 

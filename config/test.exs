@@ -39,3 +39,6 @@ config :watchman,
   chartmart_config: "/Users/michaelguarino/.chartmart",
   webhook_secret: "webhook_secret",
   git_ssh_key: :pass
+
+config :core, Core.Email.Mailer,
+  adapter: Bamboo.TestAdapter

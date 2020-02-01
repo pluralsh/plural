@@ -266,7 +266,7 @@ defmodule Core.Services.RepositoriesTest do
       )
       {:ok, license} = Repositories.generate_license(installation)
       {:ok, decoded} = RSA.decrypt(license, ExPublicKey.loads!(repo.public_key))
-      %{"policy" => %{"limits" => limits, "features" => ["sso"]}} = Jason.decode!(decoded)
+      %{"policy" => %{"limits" => limits, "features" => [%{"name" => "sso"}]}} = Jason.decode!(decoded)
 
       assert limits["storage"] == 3
       assert limits["user"] == 2

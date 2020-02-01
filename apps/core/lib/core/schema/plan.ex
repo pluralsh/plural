@@ -114,7 +114,7 @@ defmodule Core.Schema.Plan do
     do: from(p in query, order_by: ^order)
 
   def features(%__MODULE__{metadata: %{features: features}}),
-    do: Enum.map(features, & &1.name)
+    do: Enum.map(features, & %{name: &1.name, description: &1.description})
   def features(_), do: []
 
   def changeset(schema, attrs \\ %{}) do

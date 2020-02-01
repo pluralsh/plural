@@ -39,6 +39,8 @@ push: ## push to gcr
 testup: ## sets up dependent services for test
 	docker-compose up -d
 
+testdown: ## tear down test dependencies
+	docker-compose down
 
 connectdb: ## proxies the db in kubernetes via kubectl
 	@echo "run psql -U chartmart -h 127.0.0.1 chartmart to connect"

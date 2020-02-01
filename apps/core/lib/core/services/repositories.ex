@@ -268,7 +268,7 @@ defmodule Core.Services.Repositories do
       {dim, Subscription.dimension(sub, dim)}
     end)
     features = Plan.features(plan)
-    {:ok, %{limits: limits, features: features, free: false}}
+    {:ok, %{limits: limits, features: features, plan: plan.name, free: false}}
   end
   defp mk_policy(_, false), do: {:ok, %{free: true}}
   defp mk_policy(_, _), do: :error

@@ -3,7 +3,7 @@ defmodule Core.Schema.License do
 
   defmodule Policy do
     @derive Jason.Encoder
-    defstruct [:features, :limits, :free]
+    defstruct [:features, :limits, :free, :plan]
 
     def new(attrs), do: Map.new(attrs) |> __struct__()
   end

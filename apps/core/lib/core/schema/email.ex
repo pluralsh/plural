@@ -1,9 +1,33 @@
 defmodule Core.Schema.Email do
   use Piazza.Ecto.Schema
 
+  defmodule Address do
+    use Ecto.Type
+    def type, do: :string
+
+    def cast(%{"name" => name, "email" => address}),
+      do: {:ok, {name, address}}
+    def cast(%{"email" => email}), do: {:ok, {nil, email}}
+    def cast(email) when is_binary(email), do: {:ok, {nil, email}}
+    def cast(_), do: :error
+
+    def load(data) do
+      case String.split(data, ":") do
+        [address] -> {:ok, {nil, address}}
+        [name, address] -> {:ok, {name, address}}
+        _ -> :error
+      end
+    end
+
+    def dump({name, addr}) when not is_nil(name), do: {:ok, "#{name}:#{addr}"}
+    def dump({_, addr}), do: {:ok, addr}
+    def dump(addr) when is_binary(addr), do: {:ok, addr}
+    def dump(_), do: :error
+  end
+
   embedded_schema do
-    field :to,        :string
-    field :from,      :string
+    field :to,        Address
+    field :from,      Address
     field :subject,   :string
     field :html_body, :string
     field :text_body, :string

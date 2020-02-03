@@ -35,6 +35,10 @@ defmodule ApiWeb.Router do
     post "/login", UserController, :login
 
     post "/dkr/callback", DockerController, :events
+  end
+
+  scope "/api", ApiWeb do
+    pipe_through :api
 
     post "/email", EmailController, :email
   end

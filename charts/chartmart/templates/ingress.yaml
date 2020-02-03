@@ -42,6 +42,10 @@ spec:
         backend:
           serviceName: chartmart-api
           servicePort: http
+      - path: /api/*
+        backend:
+          serviceName: chartmart-api
+          servicePort: http
       - backend:
           serviceName: chartmart-www
           servicePort: http

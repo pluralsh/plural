@@ -19,5 +19,5 @@ config :core, :consumers, [
 ]
 
 config :core, Core.Email.Mailer,
-  adapter: Bamboo.SendgridAdapter,
+  adapter: Bamboo.SendGridAdapter,
   api_key: {:system, "SENGRID_API_KEY"}

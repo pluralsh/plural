@@ -1,13 +1,47 @@
 defmodule GraphQl.Resolvers.Payments do
   use GraphQl.Resolvers.Base, model: Core.Schema.Subscription
+  import Piazza.Utils
   alias Core.Services.{Payments, Users}
   alias Core.Schema.{Plan}
 
   def query(Plan, _), do: Plan.ordered()
   def query(Subscription, _), do: Subscription
 
-  def resolve_subscription(%{id: repo_id}, %{id: user_id}),
-    do: {:ok, Payments.get_subscription(repo_id, user_id)}
+  def resolve_subscription(%{id: id}, %{context: %{current_user: user}}) do
+    Payments.get_subscription!(id)
+    |> Payments.allow(user)
+  end
+
+  def list_subscriptions(args, %{context: %{current_user: %{id: user_id}}}) do
+    Subscription.for_user(user_id)
+    |> Subscription.ordered()
+    |> paginate(args)
+  end
+
+  def list_invoices(subscription, args, _) do
+    Payments.list_invoices(subscription, to_connection_args(args))
+    |> to_connection()
+  end
+
+  defp to_connection({:ok, %Stripe.List{has_more: has_more, data: list}}) do
+    {edges, end_cursor} = build_edges(list)
+    page_info = %{has_next_page: has_more, end_cursor: end_cursor}
+    {:ok, %{edges: Enum.reverse(edges), page_info: page_info}}
+  end
+  defp to_connection(error), do: error
+
+  defp to_connection_args(args) do
+    args
+    |> move_value([:after], [:starting_after])
+    |> move_value([:first], [:limit])
+    |> Map.take(~w(starting_after limit)a)
+  end
+
+  defp build_edges(items) do
+    Enum.reduce(items, {[], nil}, fn %{id: id} = node, {l, _} ->
+      {[%{node: node, cursor: id} | l], id}
+    end)
+  end
 
   def create_subscription(
     %{attributes: attrs, plan_id: plan_id, installation_id: inst_id},

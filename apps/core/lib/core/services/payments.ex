@@ -24,6 +24,25 @@ defmodule Core.Services.Payments do
       do: Core.Repo.get_by(Subscription, installation_id: id)
   end
 
+  @doc """
+  Determine if a user has access permissions against a subscription
+  """
+  @spec allow(Subscription.t, User.t) :: {:ok, Subscription.t} | {:error, term}
+  def allow(%Subscription{} = subscription, %User{} = user),
+    do: allow(subscription, user, :access)
+
+  @doc """
+  List all invoices against a subscription
+  """
+  @spec list_invoices(Subscription.t, map) :: {:ok, Stripe.List.t} | {:error, term}
+  def list_invoices(%Subscription{customer_id: customer} = sub, opts \\ %{}) do
+    %{installation: %{repository: %{publisher: %{account_id: account_id}}}} =
+      Core.Repo.preload(sub, [installation: [repository: :publisher]])
+
+    Map.merge(%{customer: customer}, opts)
+    |> Stripe.Invoice.list(connect_account: account_id)
+  end
+
   @spec has_plans?(binary) :: boolean
   def has_plans?(repository_id) do
     Plan.for_repository(repository_id)

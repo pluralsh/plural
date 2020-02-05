@@ -46,7 +46,7 @@ function Login(props) {
 
   return (
     <Box direction="column" align="center" justify="center" height="100vh">
-      <Box width="60%" pad='medium' border={{style: "hidden"}} round="small" elevation="small">
+      <Box width="60%" pad='medium' border={{style: "hidden"}} elevation="small">
         {error && <Error errors={error} />}
         <Keyboard onEnter={mutation}>
           <Form onSubmit={mutation}>

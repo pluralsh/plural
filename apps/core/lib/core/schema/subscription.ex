@@ -50,6 +50,17 @@ defmodule Core.Schema.Subscription do
 
   @valid ~w(installation_id plan_id)a
 
+  def for_user(query \\ __MODULE__, user_id) do
+    from(s in query,
+      join: i in ^Installation.for_user(user_id),
+      where: s.installation_id == i.id
+    )
+  end
+
+  def ordered(query \\ __MODULE__, order \\ [desc: :inserted_at]) do
+    from(s in query, order_by: ^order)
+  end
+
   def dimension(
     %__MODULE__{plan: %Plan{line_items: %{included: included}}, line_items: %LineItems{items: items}},
     dim

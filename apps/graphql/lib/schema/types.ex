@@ -345,6 +345,28 @@ defmodule GraphQl.Schema.Types do
     field :line_items,   :subscription_line_items
     field :installation, :installation, resolve: dataloader(Repository)
     field :plan,         :plan, resolve: dataloader(Payments)
+
+    connection field :invoices, node_type: :invoice do
+      resolve &Payments.list_invoices/3
+    end
+  end
+
+  object :invoice do
+    field :number,      non_null(:string)
+    field :amount_due,  non_null(:integer)
+    field :amount_paid, non_null(:integer)
+    field :currency,    non_null(:string)
+    field :status,      :string
+    field :created_at,  :datetime, resolve: fn %{created: created}, _, _ ->
+      Timex.from_unix(created)
+    end
+    field :lines, list_of(:invoice_item), resolve: fn %{lines: %{data: lines}}, _, _ -> {:ok, lines} end
+  end
+
+  object :invoice_item do
+    field :amount,      non_null(:integer)
+    field :currency,    non_null(:string)
+    field :description, :string
   end
 
   object :tag do
@@ -409,4 +431,6 @@ defmodule GraphQl.Schema.Types do
   connection node_type: :webhook
   connection node_type: :recipe
   connection node_type: :grouped_tag
+  connection node_type: :repository_subscription
+  connection node_type: :invoice
 end

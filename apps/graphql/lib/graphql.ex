@@ -145,6 +145,19 @@ defmodule GraphQl do
       resolve &Recipe.list_recipes/2
     end
 
+    field :repository_subscription, :repository_subscription do
+      middleware GraphQl.Middleware.Authenticated
+      arg :id, non_null(:id)
+
+      resolve safe_resolver(&Payments.resolve_subscription/2)
+    end
+
+    connection field :subscriptions, node_type: :repository_subscription do
+      middleware GraphQl.Middleware.Authenticated
+
+      resolve &Payments.list_subscriptions/2
+    end
+
     connection field :charts, node_type: :chart do
       middleware GraphQl.Middleware.Authenticated
       arg :repository_id, non_null(:id)

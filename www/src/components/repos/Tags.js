@@ -32,22 +32,32 @@ export function TagInput({addTag, removeTag, tags, round, ...rest}) {
   )
 }
 
-function Tag({tag, count, setTag, enabled}) {
+export function TagContainer({enabled, children, gap, pad, onClick}) {
   const [hover, setHover] = useState(false)
   const border = (hover || enabled) ? {side: 'right', color: 'focus', size: '2px'} : null
   return (
     <Box
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      pad={{horizontal: 'small', vertical: 'xxsmall'}}
+      style={onClick && {cursor: 'pointer'}}
+      pad={pad || {horizontal: 'small', vertical: 'xxsmall'}}
       direction='row'
       align='center'
-      gap='xsmall'
+      gap={gap || 'xsmall'}
       border={border}
+      onClick={onClick}
       background={hover || enabled ? 'white' : null}>
+      {children}
+    </Box>
+  )
+}
+
+function Tag({tag, count, setTag, enabled}) {
+  return (
+    <TagContainer enabled={enabled}>
       <Anchor onClick={() => setTag && setTag(tag)} size='small'># {tag}</Anchor>
       <Text size='small'>({count})</Text>
-    </Box>
+    </TagContainer>
   )
 }
 

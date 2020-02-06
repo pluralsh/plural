@@ -352,15 +352,18 @@ defmodule GraphQl.Schema.Types do
   end
 
   object :invoice do
-    field :number,      non_null(:string)
-    field :amount_due,  non_null(:integer)
-    field :amount_paid, non_null(:integer)
-    field :currency,    non_null(:string)
-    field :status,      :string
+    field :number,             non_null(:string)
+    field :amount_due,         non_null(:integer)
+    field :amount_paid,        non_null(:integer)
+    field :currency,           non_null(:string)
+    field :status,             :string
+    field :hosted_invoice_url, :string
     field :created_at,  :datetime, resolve: fn %{created: created}, _, _ ->
-      Timex.from_unix(created)
+      {:ok, Timex.from_unix(created)}
     end
-    field :lines, list_of(:invoice_item), resolve: fn %{lines: %{data: lines}}, _, _ -> {:ok, lines} end
+    field :lines, list_of(:invoice_item), resolve: fn
+      %Stripe.Invoice{lines: %Stripe.List{data: lines}}, _, _ -> {:ok, lines}
+    end
   end
 
   object :invoice_item do

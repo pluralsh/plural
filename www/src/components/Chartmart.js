@@ -14,6 +14,7 @@ import Breadcrumbs from './utils/Breadcrumbs'
 import {IntegrationPage} from './repos/Integrations'
 import {StripeProvider} from 'react-stripe-elements'
 import BillingDetails from './users/BillingDetails'
+import Invoices from './payments/Invoices'
 
 export const TOOLBAR_SIZE = '60px'
 export const BreadcrumbContext = React.createContext({})
@@ -48,6 +49,8 @@ function Chartmart(props) {
                 <Route path='/terraform/:tfId' component={Terraform} />
                 <Route path='/me/edit' component={EditUser} />
                 <Route path='/me/billing' component={BillingDetails} />
+                <Route path='/me/invoices' component={Invoices} />
+                <Route path='/me/invoices/:subscriptionId' component={Invoices} />
                 <Route path='/' component={Home} />
               </Switch>
             </Box>

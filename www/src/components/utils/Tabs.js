@@ -4,6 +4,7 @@ import {Box} from 'grommet'
 const TabContext = React.createContext({})
 const HOVER_BORDER = {side: 'bottom', color: 'dark-6', size: '2px'}
 const ACTIVE_BORDER = {side: 'bottom', color: 'brand', size: '2px'}
+export const BORDER_COLOR = 'light-6'
 
 export function TabHeaderItem({name, children}) {
   const [hover, setHover] = useState(false)
@@ -17,7 +18,6 @@ export function TabHeaderItem({name, children}) {
       onClick={() => setTab(name)}
       direction='row'
       pad='small'
-      background={hover ? 'light-4' : null}
       border={tab === name ? ACTIVE_BORDER : (hover ? HOVER_BORDER : null)}>
       {children}
     </Box>
@@ -40,21 +40,19 @@ export function TabContent({name, children}) {
 }
 
 export default function Tabs({onTabChange, defaultTab, headerEnd, children}) {
-  const [tab, setTab] = useState(defaultTab)
-  function wrappedSetTab(tab) {
+  const [tab, setTabInner] = useState(defaultTab)
+  function setTab(tab) {
     onTabChange && onTabChange(tab)
-    setTab(tab)
+    setTabInner(tab)
   }
 
   return (
-    <TabContext.Provider value={{tab, setTab: wrappedSetTab}}>
-    <Box border>
+    <TabContext.Provider value={{tab, setTab}}>
+    <Box>
       <Box
         style={{minHeight: '46px'}}
         direction='row'
-        background='light-3'
-        border='bottom'
-        elevation='xsmall'
+        border={{side: 'bottom', color: BORDER_COLOR}}
         pad={{right: 'xsmall'}}
         align='center'>
         <Box width='100%' direction='row' gap='small'>

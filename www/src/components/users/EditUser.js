@@ -15,6 +15,7 @@ import Expander from '../utils/Expander'
 import Installations from '../repos/Installations'
 import Webhooks from './Webhooks'
 import HoveredBackground from '../utils/HoveredBackground'
+import { BORDER_COLOR } from '../utils/Tabs'
 
 const LABEL_WIDTH = '60px'
 const CELL_WIDTH='200px'
@@ -41,7 +42,7 @@ function Token({token: {token, insertedAt, id}, hasNext}) {
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       background={hover ? 'light-2' : null}
-      border={hasNext ? 'bottom' : null}
+      border={hasNext ? {side: 'bottom', color: BORDER_COLOR} : null}
       direction='row'>
       <Box width='100%' pad={{left: 'small', vertical: 'xsmall'}} direction='row' gap='xsmall' align='center'>
         <Copyable
@@ -87,13 +88,11 @@ function Tokens() {
   if (!data || loading) return null
   const {edges, pageInfo} = data.tokens
   return (
-    <Box border>
+    <Box>
       <Box
         direction='row'
-        background='light-3'
-        border='bottom'
+        border={{side: 'bottom', color: BORDER_COLOR}}
         align='center'
-        elevation='xsmall'
         pad={{vertical: 'xsmall', horizontal: 'small'}}>
         <Box width='100%'>
           <Text size='small' style={{fontWeight: 500}}>Access Tokens</Text>
@@ -119,15 +118,11 @@ function Tokens() {
               hasNext={!!next.node} />
           )}
           onLoadMore={() => {
-            if (!pageInfo.hasNextPage) return
-
-            fetchMore({
+            pageInfo.hasNextPage && fetchMore({
               variables: {cursor: pageInfo.endCursor},
-              updateQuery: (prev, {fetchMoreResult}) => {
-                const {edges, pageInfo} = fetchMoreResult.tokens
+              updateQuery: (prev, {fetchMoreResult: {edges, pageInfo}}) => {
                 return edges.length ? {
-                  ...prev,
-                  tokens: {
+                  ...prev, tokens: {
                     ...prev.tokens,
                     pageInfo,
                     edges: [...prev.tokens.edges, ...edges]

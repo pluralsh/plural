@@ -102,7 +102,7 @@ export default function Invoices() {
   if (loading && !data) return null
   const {edges} = data.subscriptions
 
-  if (edges.length == 0) return <EmptyState />
+  if (edges.length === 0) return <EmptyState />
 
   let currentSubscription = current || edges[0].node
 

@@ -96,7 +96,7 @@ export default function Recipes({repository, edges, pageInfo, fetchMore}) {
   return (
     <>
     {recipe && (<Recipe {...recipe} setOpen={wrappedSetRecipe} />)}
-    <Box pad='small' gap='small' elevation='small'>
+    <Box pad='small' gap='small'>
       <Text size='small' style={{fontWeight: 500}}>Recipes</Text>
       <Carousel
         draggable={false}

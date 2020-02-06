@@ -1,12 +1,12 @@
 import React, {useState, useContext, useEffect} from 'react'
-import {Box, Text, Anchor} from 'grommet'
+import {Box, Text, Anchor, Table, TableHeader, TableRow, TableCell, TableBody} from 'grommet'
 import {Bundle, FormPrevious} from 'grommet-icons'
 import {useQuery, useMutation} from 'react-apollo'
 import {useParams, useHistory} from 'react-router-dom'
 import Scroller from '../utils/Scroller'
 import {SecondaryButton} from '../utils/Button'
 import Modal, {ModalHeader} from '../utils/Modal'
-import Tabs, {TabHeader, TabHeaderItem, TabContent} from '../utils/Tabs'
+import Tabs, {TabHeader, TabHeaderItem, TabContent, BORDER_COLOR} from '../utils/Tabs'
 import {REPO_Q, UPDATE_REPO, DOCKER_IMG_Q} from './queries'
 import {DEFAULT_CHART_ICON, DEFAULT_TF_ICON, DEFAULT_DKR_ICON} from './constants'
 import Installation from './Installation'
@@ -32,7 +32,7 @@ function Container({children, onClick, hasNext, noPad}) {
       background={hover ? 'light-2' : null}
       pad={noPad ? null : 'small'}
       direction='row'
-      border={hasNext ? 'bottom' : null}
+      border={hasNext ? {side: 'bottom', color: BORDER_COLOR} : null}
       gap='small'>
       {children}
     </Box>
@@ -79,17 +79,15 @@ function DockerRepository({docker, repo, hasNext, setRepo}) {
 
 function DockerImage({image}) {
   return (
-    <Box direction='row' pad='xsmall'>
-      <Box direction='row' gap='xsmall' width='100px' align='center' justify='center'>
-        <Bundle size='12px' /> {image.tag}
-      </Box>
-      <Box fill='horizontal' align='center' justify='center'>
-        {image.digest}
-      </Box>
-      <Box width='100px' align='center' justify='center'>
-        {moment(image.insertedAt).fromNow()}
-      </Box>
-    </Box>
+    <TableRow>
+      <TableCell>
+        <Box direction='row' gap='xsmall' width='100px' align='center'>
+          <Bundle size='12px' /> {image.tag}
+        </Box>
+      </TableCell>
+      <TableCell>{image.digest}</TableCell>
+      <TableCell>{moment(image.insertedAt).fromNow()}</TableCell>
+    </TableRow>
   )
 }
 
@@ -183,39 +181,28 @@ function DockerImages({dockerRepository, clear}) {
   const {edges, pageInfo} = data.dockerImages
 
   return (
-    <>
-    <Box direction='row' border='bottom' pad='xsmall' gap='xsmall' align='center'>
-      <FormPrevious size='14px' />
-      <Anchor onClick={clear}>
-        {dockerRepository.name}
-      </Anchor>
+    <Box pad='small' gap='small'>
+      <Box direction='row' gap='xxsmall' align='center'>
+        <FormPrevious size='14px' />
+        <Anchor onClick={clear}>
+          return to docker repositories
+        </Anchor>
+      </Box>
+      <Box border>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableCell scope='col' border='bottom'>tag</TableCell>
+              <TableCell scope='col' border='bottom'>sha</TableCell>
+              <TableCell scope='col' border='bottom'>created</TableCell>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {edges.map(({node}) => <DockerImage key={node.id} image={node} clear={clear} />)}
+          </TableBody>
+        </Table>
+      </Box>
     </Box>
-    <Scroller
-      id='docker-images'
-      edges={edges}
-      style={{overflow: 'auto', height: '100%', width: '100%'}}
-      mapper={({node}, next) => <DockerImage key={node.id} image={node} hasNext={!!next.node} clear={clear} />}
-      emptyState={<Text size='medium'>No images pushed yet</Text>}
-      onLoadMore={() => {
-        if (!pageInfo.hasNextPage) return
-
-        fetchMore({
-          variables: {cursor: pageInfo.endCursor},
-          updateQuery: (prev, {fetchMoreResult}) => {
-            const {edges, pageInfo} = fetchMoreResult.dockerImages
-            return edges.length ? {
-              ...prev,
-              dockerImages: {
-                ...prev.dockerImages,
-                pageInfo,
-                edges: [...prev.dockerImages.edges, ...edges]
-              }
-            } : prev
-          }
-        })
-      }}
-    />
-    </>
   )
 }
 
@@ -277,7 +264,7 @@ function TerraformCreateModal({repositoryId}) {
 
 function RepoCredentials({publicKey}) {
   return (
-    <Box>
+    <Box pad='small'>
       <Highlight language='plaintext'>
         {publicKey}
       </Highlight>

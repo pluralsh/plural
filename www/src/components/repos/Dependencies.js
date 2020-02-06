@@ -93,10 +93,12 @@ export default function Dependencies(resource) {
   })
 
   return (
-    <TreeGraph
-      id={`${name}-tree`}
-      tree={asDep({...resource, children: deps})}
-      width='100%'
-      height={GRAPH_HEIGHT} />
+    <Box pad='small'>
+      <TreeGraph
+        id={`${name}-tree`}
+        tree={asDep({...resource, children: deps})}
+        width='100%'
+        height={GRAPH_HEIGHT} />
+    </Box>
   )
 }

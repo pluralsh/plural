@@ -33,7 +33,7 @@ const MARKDOWN_STYLING = {
 
 function TemplateView({valuesTemplate}) {
   return (
-    <Box style={{overflow: 'auto', maxHeight: '100%'}}>
+    <Box style={{overflow: 'auto', maxHeight: '100%'}} pad='small'>
       <Highlight language='terraform'>
         {valuesTemplate || 'no values template'}
       </Highlight>

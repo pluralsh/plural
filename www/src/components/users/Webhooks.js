@@ -10,6 +10,7 @@ import Copyable from '../utils/Copyable'
 import InputField from '../utils/InputField'
 import moment from 'moment'
 import HoveredBackground from '../utils/HoveredBackground'
+import { BORDER_COLOR } from '../utils/Tabs'
 
 
 const LABEL_WIDTH = '60px'
@@ -23,10 +24,8 @@ function WebhookResult({statusCode, body, headers, url}) {
         direction='row'
         gap='small'
         align='center'
-        background='light-3'
         pad='small'
-        border='bottom'
-        elevation='xsmall'>
+        border={{side: 'bottom', color: BORDER_COLOR}}>
         <Box background={status} round='xsmall' pad={{vertical: 'xxsmall', horizontal: 'xsmall'}}>
           <Text size='small' >{statusCode}</Text>
         </Box>
@@ -114,7 +113,7 @@ function Webhook({webhook: {url, insertedAt, id, secret}, hasNext}) {
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       background={hover ? 'light-2' : null}
-      border={hasNext ? 'bottom' : null}
+      border={hasNext ? {side: 'bottom', color: BORDER_COLOR} : null}
       direction='row' pad={{vertical: 'xsmall', horizontal: 'small'}}>
       <Box width='100%' direction='row' align='center' gap='xsmall'>
         <Anchor size='small' onClick={null}>{url}</Anchor>
@@ -145,13 +144,11 @@ export default function Webhooks() {
   if (!data || loading) return null
   const {edges, pageInfo} = data.webhooks
   return (
-    <Box border>
+    <Box>
       <Box
         direction='row'
-        background='light-3'
-        border='bottom'
+        border={{side: 'bottom', color: BORDER_COLOR}}
         align='center'
-        elevation='xsmall'
         pad='small'>
         <Text size='small' style={{fontWeight: 500}}>Webhooks</Text>
       </Box>

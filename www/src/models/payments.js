@@ -49,3 +49,27 @@ export const SubscriptionFragment = gql`
   ${PlanFragment}
   ${LimitFragment}
 `;
+
+export const InvoiceItemFragment = gql`
+  fragment InvoiceItemFragment on InvoiceItem {
+    amount
+    currency
+    description
+  }
+`;
+
+export const InvoiceFragment = gql`
+  fragment InvoiceFragment on Invoice {
+    number
+    amountDue
+    amountPaid
+    currency
+    status
+    createdAt
+    hostedInvoiceUrl
+    lines {
+      ...InvoiceItemFragment
+    }
+  }
+  ${InvoiceItemFragment}
+`;

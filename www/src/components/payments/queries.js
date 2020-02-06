@@ -1,5 +1,6 @@
 import gql from 'graphql-tag'
-import { PlanFragment, SubscriptionFragment } from '../../models/payments';
+import { PlanFragment, SubscriptionFragment, InvoiceFragment } from '../../models/payments';
+import { InstallationFragment } from '../../models/repo';
 
 export const CREATE_PLAN = gql`
   mutation CreatePlan($repositoryId: ID!, $attributes: PlanAttributes!) {
@@ -35,5 +36,42 @@ export const UPDATE_PLAN = gql`
     }
   }
   ${SubscriptionFragment}
-  
+
+`;
+
+export const SUBSCRIPTIONS_Q = gql`
+  query Subscriptions($cursor: String) {
+    subscriptions(first: 15, after: $cursor) {
+      edges {
+        node {
+          ...SubscriptionFragment
+          installation {
+            ...InstallationFragment
+          }
+        }
+      }
+    }
+  }
+  ${SubscriptionFragment}
+  ${InstallationFragment}
+`;
+
+export const SUBSCRIPTION_Q = gql`
+  query Subscription($id: ID!) {
+    repositorySubscription(id: $id) {
+      id
+      installation {
+        ...InstallationFragment
+      }
+      invoices(first: 15) {
+        edges {
+          node {
+            ...InvoiceFragment
+          }
+        }
+      }
+    }
+  }
+  ${InstallationFragment}
+  ${InvoiceFragment}
 `;

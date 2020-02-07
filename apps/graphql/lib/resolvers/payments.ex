@@ -2,7 +2,7 @@ defmodule GraphQl.Resolvers.Payments do
   use GraphQl.Resolvers.Base, model: Core.Schema.Subscription
   import Piazza.Utils
   alias Core.Services.{Payments, Users}
-  alias Core.Schema.{Plan}
+  alias Core.Schema.{Plan, User}
 
   def query(Plan, _), do: Plan.ordered()
   def query(Subscription, _), do: Subscription
@@ -19,9 +19,15 @@ defmodule GraphQl.Resolvers.Payments do
   end
 
   def list_invoices(subscription, args, _) do
-    Payments.list_invoices(subscription, to_connection_args(args))
+    Payments.list_invoices(subscription, to_stripe_args(args))
     |> to_connection()
   end
+
+  def list_cards(%User{id: uid} = user, args, %{context: %{current_user: %User{id: uid}}}) do
+    Payments.list_cards(user, to_stripe_args(args))
+    |> to_connection()
+  end
+  def list_cards(_, _, _), do: {:error, :forbidden}
 
   defp to_connection({:ok, %Stripe.List{has_more: has_more, data: list}}) do
     {edges, end_cursor} = build_edges(list)
@@ -30,7 +36,7 @@ defmodule GraphQl.Resolvers.Payments do
   end
   defp to_connection(error), do: error
 
-  defp to_connection_args(args) do
+  defp to_stripe_args(args) do
     args
     |> move_value([:after], [:starting_after])
     |> move_value([:first], [:limit])

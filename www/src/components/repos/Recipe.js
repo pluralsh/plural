@@ -13,7 +13,7 @@ function SubHeading({size, icon, name, description}) {
   return (
     <Box direction='row' gap='small' align='center'>
       <Box width={size}>
-        <img  width={size} height={size} src={icon} />
+        <img alt='' width={size} height={size} src={icon} />
       </Box>
       <Box fill='horizontal'>
         <Text size='small' style={{fontWeight: 500}}>{name}</Text>

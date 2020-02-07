@@ -173,15 +173,15 @@ function Terraform({edges, pageInfo, fetchMore}) {
 }
 
 function DockerImages({dockerRepository, clear}) {
-  const {data, loading, fetchMore} = useQuery(DOCKER_IMG_Q, {
+  const {data, loading} = useQuery(DOCKER_IMG_Q, {
     variables: {dockerRepositoryId: dockerRepository.id}
   })
 
   if (!data || loading) return null
-  const {edges, pageInfo} = data.dockerImages
+  const {edges} = data.dockerImages
 
   return (
-    <Box pad='small' gap='small'>
+    <Box pad={{vertical: 'small'}} gap='small'>
       <Box direction='row' gap='xxsmall' align='center'>
         <FormPrevious size='14px' />
         <Anchor onClick={clear}>

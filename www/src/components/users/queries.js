@@ -116,3 +116,13 @@ export const REGISTER_CARD = gql`
   }
   ${UserFragment}
 `;
+
+export const DELETE_CARD = gql`
+  mutation DeleteCard($id: ID!) {
+    deleteCard(id: $id) {
+      ...UserFragment
+      customerId
+    }
+  }
+  ${UserFragment}
+`;

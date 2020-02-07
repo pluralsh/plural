@@ -31,6 +31,17 @@ defmodule Core.Services.PaymentsTest do
     end
   end
 
+  describe "#delete_card" do
+    test "It will delete a customer's card" do
+      user = insert(:user, customer_id: "cus_id")
+      expect(Stripe.Card, :delete, fn "card", %{customer: "cus_id"} -> {:ok, %{id: "bogus"}} end)
+
+      {:ok, updated} = Payments.delete_card("card", user)
+
+      assert updated.id == user.id
+    end
+  end
+
   describe "#create_plan" do
     test "It will create a plan for a repository" do
       expect(Stripe.Plan, :create, fn

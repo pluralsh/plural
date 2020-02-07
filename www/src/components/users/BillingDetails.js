@@ -1,9 +1,9 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext, useState } from 'react'
 import {Elements, CardElement, injectStripe} from 'react-stripe-elements'
 import { CurrentUserContext } from '../login/CurrentUser'
-import { Box, Text } from 'grommet'
+import { Box, Text, Stack } from 'grommet'
 import { useMutation, useQuery } from 'react-apollo'
-import { REGISTER_CARD, CARDS } from './queries'
+import { REGISTER_CARD, CARDS, DELETE_CARD } from './queries'
 import CardDisplay from 'react-credit-cards'
 import 'react-credit-cards/es/styles-compiled.css';
 import './stripe.css'
@@ -11,8 +11,9 @@ import './stripe.css'
 import Button from '../utils/Button'
 import { TagContainer } from '../repos/Tags'
 import { TOOLBAR_SIZE } from '../Chartmart'
-import { Visa, Mastercard, Amex } from 'grommet-icons'
+import { Visa, Mastercard, Amex, Trash } from 'grommet-icons'
 import { FaCreditCard } from 'react-icons/fa'
+import HoveredBackground from '../utils/HoveredBackground'
 
 function _CardForm({stripe, header, onCompleted}) {
   const [mutation, {loading}] = useMutation(REGISTER_CARD, {
@@ -27,7 +28,7 @@ function _CardForm({stripe, header, onCompleted}) {
       <Box width='50%' gap='small'>
         <Text size='small' weight='bold'>{header ? header : 'Enter your payment information'}</Text>
         <Box pad='small' gap='xsmall' elevation='small'>
-          <label>  Card Details <CardElement /></label>
+          <CardElement />
           <Box direction='row' justify='end'>
             <Button
               loading={loading}
@@ -53,10 +54,9 @@ function CardInputForm({me, header, onCompleted}) {
 }
 
 const cardNumber = (last4) => `**** **** **** ${last4}`
-const expiry = (expMonth, expYear) => `${expMonth > 10 ? 'expMonth' : '0' + expMonth}/${expYear}`
+const expiry = (expMonth, expYear) => `${expMonth > 10 ? expMonth : '0' + expMonth}/${expYear}`
 
-
-function Card({card: {name, expMonth, expYear, brand, last4}}) {
+function CardInner({card: {name, expMonth, expYear, brand, last4}}) {
   return (
     <CardDisplay
       expiry={expiry(expMonth, expYear)}
@@ -65,6 +65,49 @@ function Card({card: {name, expMonth, expYear, brand, last4}}) {
       cvc='*'
       issuer={brand}
       name={name || 'John Doe'} />
+  )
+}
+
+function DeleteCard({card: {id}}) {
+  const [mutation, {loading}] = useMutation(DELETE_CARD, {
+    variables: {id},
+    refetchQueries: [{query: CARDS}]
+  })
+
+  return (
+    <HoveredBackground>
+      <Box
+        accentable
+        style={{cursor: 'pointer'}}
+        onClick={() => !loading && mutation()}
+        margin={{top: 'xsmall', right: 'xsmall'}}
+        round='xsmall'
+        pad='small'
+        background='white'
+        align='center'
+        justify='center'>
+        <Trash size='14px' />
+      </Box>
+    </HoveredBackground>
+  )
+}
+
+function Card({card, noDelete}) {
+  const [hover, setHover] = useState(false)
+
+  if (hover && !noDelete) {
+    return (
+      <Stack anchor='top-right' onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
+        <CardInner card={card} />
+        <DeleteCard card={card} />
+      </Stack>
+    )
+  }
+
+  return (
+    <Box onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
+      <CardInner card={card} />
+    </Box>
   )
 }
 
@@ -112,7 +155,11 @@ export function Cards({me}) {
         ))}
       </Box>
       <Box pad='medium' gap='small' width='100%'>
-        <Card card={card} />
+        <Box fill='horizontal' align='center'>
+          <Box width='290px'>
+            <Card card={card} noDelete={edges.length <= 1} />
+          </Box>
+        </Box>
         <Box border='top' pad='medium'>
           <CardInputForm header='Add another card' me={me} />
         </Box>
@@ -123,8 +170,8 @@ export function Cards({me}) {
 
 export default function BillingDetails() {
   const me = useContext(CurrentUserContext)
-  if (me.customerId) return <Cards me={me} />
 
+  if (me.customerId) return <Cards me={me} />
   return (
     <Box pad='small'>
       <CardInputForm me={me} />

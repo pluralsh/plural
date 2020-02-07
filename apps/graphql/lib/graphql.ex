@@ -248,6 +248,13 @@ defmodule GraphQl do
       resolve safe_resolver(&Payments.create_card/2)
     end
 
+    field :delete_card, :user do
+      middleware GraphQl.Middleware.Authenticated
+      arg :id, non_null(:id)
+
+      resolve safe_resolver(&Payments.delete_card/2)
+    end
+
     field :signup, :user do
       arg :attributes, non_null(:user_attributes)
 

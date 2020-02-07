@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react'
 import {useMutation} from 'react-apollo'
-import {Box, Text} from 'grommet'
+import {Box, Anchor} from 'grommet'
 import Repositories from '../repos/Repositories'
 import CreateRepository from '../repos/CreateRepository'
 import {CurrentUserContext} from '../login/CurrentUser'
@@ -12,6 +12,17 @@ import InputField from '../utils/InputField'
 import Button from '../utils/Button'
 import ScrollableContainer from '../utils/ScrollableContainer'
 import { CONNECT_ICON, AUTHORIZE_URL } from './constants'
+import { Stripe } from 'grommet-icons'
+import { STRIPE_BLUE } from '../payments/constants'
+
+function AccountConnected() {
+  return (
+    <Box pad='small' justify='center' align='center' direction='row' gap='xsmall'>
+      <Stripe color={STRIPE_BLUE} size='medium' />
+      <Anchor href='https://dashboard.stripe.com/' size='small'>stripe dashboard</Anchor>
+    </Box>
+  )
+}
 
 function PublisherPayments({accountId}) {
   const [mutation] = useMutation(LINK_ACCOUNT, {
@@ -36,11 +47,9 @@ function PublisherPayments({accountId}) {
 
   return (
     <Box pad='small' align='center' justify='center'>
-      {accountId ?
-        <Text>Account connnected</Text> :
-        <a href={AUTHORIZE_URL}>
-          <img src={CONNECT_ICON} />
-        </a>}
+      <a href={AUTHORIZE_URL}>
+        <img alt='' src={CONNECT_ICON} />
+      </a>
     </Box>
   )
 }
@@ -74,8 +83,7 @@ function EditPublisher({description}) {
   )
 }
 
-function MyPublisher(props) {
-  console.log(window.location.search)
+export default function MyPublisher() {
   const me = useContext(CurrentUserContext)
   const {setBreadcrumbs} = useContext(BreadcrumbContext)
   useEffect(() => {
@@ -91,12 +99,15 @@ function MyPublisher(props) {
         </Box>
         <Box width='40%' elevation='small'>
           <Box>
+            {me.publisher.accountId && <AccountConnected />}
             <Expander text='Edit publisher'>
               <EditPublisher {...me.publisher} />
             </Expander>
-            <Expander text='Payments'>
-              <PublisherPayments {...me.publisher} />
-            </Expander>
+            {!me.publisher.accountId && (
+              <Expander text='Payments'>
+                <PublisherPayments {...me.publisher} />
+              </Expander>
+            )}
             <Box border='top'>
               <Expander text='Create Repository' open>
                 <CreateRepository publisher={me.publisher} />
@@ -108,5 +119,3 @@ function MyPublisher(props) {
     </ScrollableContainer>
   )
 }
-
-export default MyPublisher

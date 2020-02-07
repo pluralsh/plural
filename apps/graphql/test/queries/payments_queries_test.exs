@@ -105,6 +105,35 @@ defmodule GraphQl.PaymentsQueriesTest do
     end
   end
 
+  describe "cards" do
+    test "You can query your own cards on your user" do
+      user = insert(:user, customer_id: "cus_id")
+      expect(Stripe.Card, :list, fn %{customer: "cus_id"} -> {:ok, mk_cards()} end)
+
+      {:ok, %{data: %{"me" => me}}} = run_query("""
+        query {
+          me {
+            cards(first: 5) {
+              edges {
+                node {
+                  id
+                  brand
+                  last4
+                }
+              }
+            }
+          }
+        }
+      """, %{}, %{current_user: user})
+
+      cards = from_connection(me["cards"])
+      assert length(cards) == 2
+      assert Enum.all?(cards, & &1["id"] == "some_id")
+      assert Enum.all?(cards, & &1["brand"] == "amex")
+      assert Enum.all?(cards, & &1["last4"] == "0123")
+    end
+  end
+
   defp mk_invoices() do
     %Stripe.List{
       has_more: true,
@@ -124,6 +153,30 @@ defmodule GraphQl.PaymentsQueriesTest do
           amount_paid: 10,
           currency: "usd",
           lines: mk_invoice_items()
+        }
+      ]
+    }
+  end
+
+  defp mk_cards() do
+    %Stripe.List{
+      has_more: true,
+      data: [
+        %Stripe.Card{
+          id: "some_id",
+          brand: "amex",
+          last4: "0123",
+          exp_month: 1,
+          exp_year: 2020,
+          name: "Someone"
+        },
+        %Stripe.Card{
+          id: "some_id",
+          brand: "amex",
+          last4: "0123",
+          exp_month: 1,
+          exp_year: 2020,
+          name: "Someone"
         }
       ]
     }

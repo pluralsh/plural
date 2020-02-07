@@ -31,6 +31,10 @@ defmodule GraphQl.Schema.Types do
       user, _, _ -> {:ok, User.background_color(user)}
     end
 
+    connection field :cards, node_type: :card do
+      resolve &Payments.list_cards/3
+    end
+
     timestamps()
   end
 
@@ -366,6 +370,15 @@ defmodule GraphQl.Schema.Types do
     end
   end
 
+  object :card do
+    field :id,         non_null(:id)
+    field :last4,      non_null(:string)
+    field :exp_month,  non_null(:integer)
+    field :exp_year,   non_null(:integer)
+    field :brand,      non_null(:string)
+    field :name,       :string
+  end
+
   object :invoice_item do
     field :amount,      non_null(:integer)
     field :currency,    non_null(:string)
@@ -436,4 +449,5 @@ defmodule GraphQl.Schema.Types do
   connection node_type: :grouped_tag
   connection node_type: :repository_subscription
   connection node_type: :invoice
+  connection node_type: :card
 end

@@ -34,7 +34,7 @@ defmodule Core.Services.Payments do
   @doc """
   List all invoices against a subscription
   """
-  @spec list_invoices(Subscription.t, map) :: {:ok, Stripe.List.t} | {:error, term}
+  @spec list_invoices(Subscription.t, map) :: {:ok, Stripe.List.t(Stripe.Invoice.t)} | {:error, term}
   def list_invoices(%Subscription{customer_id: customer} = sub, opts \\ %{}) do
     %{installation: %{repository: %{publisher: %{account_id: account_id}}}} =
       Core.Repo.preload(sub, [installation: [repository: :publisher]])
@@ -42,6 +42,16 @@ defmodule Core.Services.Payments do
     Map.merge(%{customer: customer}, opts)
     |> Stripe.Invoice.list(connect_account: account_id)
   end
+
+  @doc """
+  It can list all cards attached to a customer
+  """
+  @spec list_cards(User.t, map) :: {:ok, Stripe.List.t(Stripe.Card.t)} | {:error, term}
+  def list_cards(%User{customer_id: id}, opts \\ %{}) when not is_nil(id) do
+    Map.merge(%{customer: id}, opts)
+    |> Stripe.Card.list()
+  end
+  def list_cards(_, _), do: {:ok, %Stripe.List{has_more: false, data: []}}
 
   @spec has_plans?(binary) :: boolean
   def has_plans?(repository_id) do

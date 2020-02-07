@@ -90,6 +90,16 @@ defmodule Core.Services.Payments do
   end
 
   @doc """
+  Detaches a card from a customer
+  """
+  @spec delete_card(binary, User.t) :: {:ok, User.t} | {:error, term}
+  def delete_card(id, %User{customer_id: cus_id} = user) when not is_nil(cus_id) do
+    with {:ok, _} <- Stripe.Card.delete(id, %{customer: cus_id}),
+      do: {:ok, user}
+  end
+  def delete_card(_, _), do: {:error, :invalid_argument}
+
+  @doc """
   Creates a plan and associated add-ons.  Transactionally creates them in stripe, then
   restitches them back into the db.
 

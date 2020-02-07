@@ -73,3 +73,14 @@ export const InvoiceFragment = gql`
   }
   ${InvoiceItemFragment}
 `;
+
+export const CardFragment = gql`
+  fragment CardFragment on Card {
+    id
+    last4
+    expMonth
+    expYear
+    name
+    brand
+  }
+`;

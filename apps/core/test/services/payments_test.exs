@@ -14,13 +14,20 @@ defmodule Core.Services.PaymentsTest do
     end
   end
 
-  describe "#register_customer" do
+  describe "#create_card" do
     test "It will create a customer and persist its id" do
       user = insert(:user)
       expect(Stripe.Customer, :create, fn %{email: _, source: "token"} -> {:ok, %{id: "cus_some_id"}} end)
-      {:ok, updated} = Payments.register_customer(user, "token")
+      {:ok, updated} = Payments.create_card(user, "token")
 
       assert updated.customer_id == "cus_some_id"
+    end
+
+    test "If a customer has already been registered, it will just create a new card" do
+      user = insert(:user, customer_id: "cus_id")
+      expect(Stripe.Card, :create, fn %{customer: "cus_id", source: "token"} -> {:ok, %{id: "something"}} end)
+
+      {:ok, _} = Payments.create_card(user, "token")
     end
   end
 

@@ -1,5 +1,6 @@
 import gql from 'graphql-tag'
 import {UserFragment, TokenFragment, WebhookFragment} from '../../models/user'
+import { CardFragment } from '../../models/payments';
 
 export const ME_Q = gql`
   query {
@@ -16,6 +17,24 @@ export const ME_Q = gql`
   }
   ${UserFragment}
 `;
+
+export const CARDS = gql`
+  query {
+    me {
+      ...UserFragment
+      customerId
+      cards(first: 5) {
+        edges {
+          node {
+            ...CardFragment
+          }
+        }
+      }
+    }
+  }
+  ${UserFragment}
+  ${CardFragment}
+`
 
 export const UPDATE_USER = gql`
   mutation UpdateUser($attributes: UserAttributes!) {
@@ -90,7 +109,7 @@ export const PING_WEBHOOK = gql`
 
 export const REGISTER_CARD = gql`
   mutation RegisterCard($source: String!) {
-    createCustomer(source: $source) {
+    createCard(source: $source) {
       ...UserFragment
       customerId
     }

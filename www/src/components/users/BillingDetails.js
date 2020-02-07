@@ -1,28 +1,41 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import {Elements, CardElement, injectStripe} from 'react-stripe-elements'
 import { CurrentUserContext } from '../login/CurrentUser'
 import { Box, Text } from 'grommet'
-import { useMutation } from 'react-apollo'
-import { REGISTER_CARD, ME_Q } from './queries'
-
+import { useMutation, useQuery } from 'react-apollo'
+import { REGISTER_CARD, CARDS } from './queries'
+import CardDisplay from 'react-credit-cards'
+import 'react-credit-cards/es/styles-compiled.css';
 import './stripe.css'
-import Button from '../utils/Button'
 
-function _CardForm({stripe}) {
-  const [mutation, {loading}] = useMutation(REGISTER_CARD)
+import Button from '../utils/Button'
+import { TagContainer } from '../repos/Tags'
+import { TOOLBAR_SIZE } from '../Chartmart'
+import { Visa, Mastercard, Amex } from 'grommet-icons'
+import { FaCreditCard } from 'react-icons/fa'
+
+function _CardForm({stripe, header, onCompleted}) {
+  const [mutation, {loading}] = useMutation(REGISTER_CARD, {
+    refetchQueries: [{query: CARDS}],
+    onCompleted
+  })
   const onClick = () => stripe.createToken().then(({token: {id}}) =>
     mutation({variables: {source: id}})
   )
   return (
     <Box width='100%' height='100%' align='center' justify='center'>
       <Box width='50%' gap='small'>
-        <Text size='small' weight='bold'>Enter your payment information</Text>
+        <Text size='small' weight='bold'>{header ? header : 'Enter your payment information'}</Text>
         <Box pad='small' gap='xsmall' elevation='small'>
-          <label>
-            Card Details
-            <CardElement />
-          </label>
-          <Button loading={loading} pad='small' round='xsmall' label='Register' onClick={onClick} />
+          <label>  Card Details <CardElement /></label>
+          <Box direction='row' justify='end'>
+            <Button
+              loading={loading}
+              pad='small'
+              round='xsmall'
+              label='Register'
+              onClick={onClick} />
+          </Box>
         </Box>
       </Box>
     </Box>
@@ -31,22 +44,90 @@ function _CardForm({stripe}) {
 
 const CardForm = injectStripe(_CardForm)
 
-function Completed() {
+function CardInputForm({me, header, onCompleted}) {
   return (
-    <Box pad='small'>
-      <Text>You've already uploaded your payment information</Text>
+    <Elements>
+      <CardForm me={me} header={header} onCompleted={onCompleted} />
+    </Elements>
+  )
+}
+
+const cardNumber = (last4) => `**** **** **** ${last4}`
+const expiry = (expMonth, expYear) => `${expMonth > 10 ? 'expMonth' : '0' + expMonth}/${expYear}`
+
+
+function Card({card: {name, expMonth, expYear, brand, last4}}) {
+  return (
+    <CardDisplay
+      expiry={expiry(expMonth, expYear)}
+      preview
+      number={cardNumber(last4)}
+      cvc='*'
+      issuer={brand}
+      name={name || 'John Doe'} />
+  )
+}
+
+function CardIcon({brand}) {
+  switch (brand.toLowerCase()) {
+    case 'visa':
+      return <Visa color='focus' size='medium' />
+    case 'mastercard':
+      return <Mastercard color='focus' size='medium' />
+    case 'amex':
+      return <Amex color='focus' size='medium' />
+    default:
+      return <FaCreditCard size='16px' />
+  }
+}
+
+function CardOption({card, current, setCurrent}) {
+  return (
+    <TagContainer pad='small' gap='small' enabled={card.id === current.id} onClick={() => setCurrent(card)}>
+      <CardIcon brand={card.brand} />
+      <Box>
+        <Text size='small'>{cardNumber(card.last4)}</Text>
+        <Text size='small' color='dark-3'>{expiry(card.expMonth, card.expYear)}</Text>
+      </Box>
+    </TagContainer>
+  )
+}
+
+export function Cards({me}) {
+  const [current, setCurrent] = useState(null)
+  const {data, loading} = useQuery(CARDS)
+  if (!data || loading) return null
+
+  const {edges} = data.me.cards
+  const card = current || edges[0].node
+  return (
+    <Box direction='row' height={`calc(100vh - ${TOOLBAR_SIZE})`}>
+      <Box width='250px' background='light-1' style={{height: '100%', scroll: 'auto'}} elevation='small'>
+        {edges.map(({node}) => (
+          <CardOption
+            key={node.id}
+            card={node}
+            setCurrent={setCurrent}
+            current={card} />
+        ))}
+      </Box>
+      <Box pad='medium' gap='small' width='100%'>
+        <Card card={card} />
+        <Box border='top' pad='medium'>
+          <CardInputForm header='Add another card' me={me} />
+        </Box>
+      </Box>
     </Box>
   )
 }
 
 export default function BillingDetails() {
   const me = useContext(CurrentUserContext)
+  if (me.customerId) return <Cards me={me} />
 
   return (
     <Box pad='small'>
-      <Elements>
-        {me.customerId ? <Completed /> : <CardForm me={me}/>}
-      </Elements>
+      <CardInputForm me={me} />
     </Box>
   )
 }

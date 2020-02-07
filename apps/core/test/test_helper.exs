@@ -8,6 +8,6 @@ Mimic.copy(Stripe.Plan)
 Mimic.copy(Stripe.Token)
 Mimic.copy(Stripe.Subscription)
 Mimic.copy(Stripe.SubscriptionItem)
-
+Mimic.copy(Stripe.Card)
 
 {:ok, _} = Application.ensure_all_started(:ex_machina)

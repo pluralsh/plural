@@ -23,6 +23,7 @@
     "react-collapsible": "^2.6.0",
     "react-contenteditable": "^3.3.2",
     "react-copy-to-clipboard": "^5.0.2",
+    "react-credit-cards": "^0.8.0",
     "react-dom": "^16.10.2",
     "react-file-picker": "^0.0.6",
     "react-highlight": "^0.12.0",

@@ -3,14 +3,14 @@ defmodule GraphQl.PaymentsMutationsTest do
   use Mimic
   import GraphQl.TestHelpers
 
-  describe "createCustomer" do
+  describe "createCard" do
     test "It will create a customer and persist its id" do
       expect(Stripe.Customer, :create, fn %{email: _, source: "token"} -> {:ok, %{id: "cus_id"}} end)
       user = insert(:user)
 
-      {:ok, %{data: %{"createCustomer" => result}}} = run_query("""
-        mutation CreateCustomer($source: String!) {
-          createCustomer(source: $source) {
+      {:ok, %{data: %{"createCard" => result}}} = run_query("""
+        mutation createCard($source: String!) {
+          createCard(source: $source) {
             customerId
           }
         }

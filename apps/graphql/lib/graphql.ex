@@ -241,11 +241,11 @@ defmodule GraphQl do
       resolve safe_resolver(&User.delete_token/2)
     end
 
-    field :create_customer, :user do
+    field :create_card, :user do
       middleware GraphQl.Middleware.Authenticated
       arg :source, non_null(:string)
 
-      resolve safe_resolver(&Payments.create_customer/2)
+      resolve safe_resolver(&Payments.create_card/2)
     end
 
     field :signup, :user do

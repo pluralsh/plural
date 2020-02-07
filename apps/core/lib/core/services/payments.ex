@@ -47,7 +47,8 @@ defmodule Core.Services.Payments do
   It can list all cards attached to a customer
   """
   @spec list_cards(User.t, map) :: {:ok, Stripe.List.t(Stripe.Card.t)} | {:error, term}
-  def list_cards(%User{customer_id: id}, opts \\ %{}) when not is_nil(id) do
+  def list_cards(user, opts \\ %{})
+  def list_cards(%User{customer_id: id}, opts) when not is_nil(id) do
     Map.merge(%{customer: id}, opts)
     |> Stripe.Card.list()
   end
@@ -75,13 +76,17 @@ defmodule Core.Services.Payments do
   Creates a stripe customer with the given source and user email, saves
   the customer back to storage.
   """
-  @spec register_customer(User.t, binary) :: {:ok, User.t} | {:error, term}
-  def register_customer(%User{email: email} = user, source_token) do
+  @spec create_card(User.t, binary) :: {:ok, User.t} | {:error, term}
+  def create_card(%User{email: email, customer_id: nil} = user, source_token) do
     with {:ok, %{id: id}} <- Stripe.Customer.create(%{email: email, source: source_token}) do
       user
       |> User.stripe_changeset(%{customer_id: id})
       |> Core.Repo.update()
     end
+  end
+  def create_card(%User{customer_id: cus_id} = user, source) do
+    with {:ok, _} <- Stripe.Card.create(%{customer: cus_id, source: source}),
+      do: {:ok, user}
   end
 
   @doc """

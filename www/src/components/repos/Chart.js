@@ -209,20 +209,17 @@ function Chart() {
                 style={{overflow: 'auto', width: '100%'}}
                 mapper={({node}, next) => <ChartVersion key={node.id} version={node} hasNext={!!next} onSelect={setVersion} />}
                 onLoadMore={() => {
-                  if (!pageInfo.hasNextPage) return
-
-                  fetchMore({
-                    variables: {chartCursor: pageInfo.endCursor},
-                    updateQuery: (prev, {fetchMoreResult}) => {
-                      const {edges, pageInfo} = fetchMoreResult.versions
-                      return edges.length ? {
+                  pageInfo.hasNextPage && fetchMore({
+                    variables: {cursor: pageInfo.endCursor},
+                    updateQuery: (prev, {fetchMoreResult: {versions: {edges, pageInfo}}}) => {
+                      return {
                         ...prev,
                         versions: {
                           ...prev.versions,
                           pageInfo,
                           edges: [...prev.versions.edges, ...edges]
                         }
-                      } : prev
+                      }
                     }
                   })
                 }} />

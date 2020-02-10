@@ -1,6 +1,6 @@
-import React, {useState} from 'react'
-import {Box, ThemeContext} from 'grommet'
-import {normalizeColor} from './colors'
+import React, { useState } from 'react'
+import { Box, ThemeContext } from 'grommet'
+import { normalizeColor}  from './colors'
 
 function RadioButton(props) {
   const [hover, setHover] = useState(false)

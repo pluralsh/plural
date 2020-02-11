@@ -45,8 +45,7 @@ export function TagContainer({enabled, children, gap, pad, onClick}) {
       align='center'
       gap={gap || 'xsmall'}
       border={border}
-      onClick={onClick}
-      background={hover || enabled ? 'white' : null}>
+      onClick={onClick} >
       {children}
     </Box>
   )

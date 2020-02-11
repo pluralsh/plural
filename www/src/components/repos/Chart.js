@@ -1,17 +1,17 @@
 import React, { useState, useContext, useEffect } from 'react'
-import {Box, Text, Anchor, Markdown} from 'grommet'
-import Tabs, {TabHeader, TabHeaderItem, TabContent} from '../utils/Tabs'
-import {useQuery, useMutation} from 'react-apollo'
-import {useParams} from 'react-router-dom'
+import { Box, Text, Anchor, Markdown } from 'grommet'
+import Tabs, { TabHeader, TabHeaderItem, TabContent } from '../utils/Tabs'
+import { useQuery, useMutation } from 'react-apollo'
+import { useParams } from 'react-router-dom'
 import Scroller from '../utils/Scroller'
-import {CHART_Q, INSTALL_CHART, UPDATE_CHART_INST} from './queries'
+import { CHART_Q, INSTALL_CHART, UPDATE_CHART_INST } from './queries'
 import moment from 'moment'
-import {DEFAULT_CHART_ICON} from './constants'
+import { DEFAULT_CHART_ICON } from './constants'
 import Highlight from 'react-highlight.js'
 import Installation from './Installation'
 import Button from '../utils/Button'
-import {BreadcrumbContext} from '../Chartmart'
-import Dependencies, {FullDependencies, ShowFull} from './Dependencies'
+import { BreadcrumbContext } from '../Chartmart'
+import Dependencies, { FullDependencies, ShowFull } from './Dependencies'
 import ScrollableContainer from '../utils/ScrollableContainer'
 
 function ChartVersion({version, onSelect}) {
@@ -144,7 +144,7 @@ function updateInstallation(chartId) {
   }
 }
 
-function Chart() {
+export default function Chart() {
   const {chartId} = useParams()
   const [version, setVersion] = useState(null)
   const [tab, setTab] = useState(false)
@@ -213,11 +213,8 @@ function Chart() {
                     variables: {cursor: pageInfo.endCursor},
                     updateQuery: (prev, {fetchMoreResult: {versions: {edges, pageInfo}}}) => {
                       return {
-                        ...prev,
-                        versions: {
-                          ...prev.versions,
-                          pageInfo,
-                          edges: [...prev.versions.edges, ...edges]
+                        ...prev, versions: {
+                          ...prev.versions, pageInfo, edges: [...prev.versions.edges, ...edges]
                         }
                       }
                     }
@@ -231,5 +228,3 @@ function Chart() {
     </ScrollableContainer>
   )
 }
-
-export default Chart

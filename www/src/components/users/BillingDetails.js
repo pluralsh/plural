@@ -145,7 +145,7 @@ export function Cards({me}) {
   const card = current || edges[0].node
   return (
     <Box direction='row' height={`calc(100vh - ${TOOLBAR_SIZE})`}>
-      <Box width='250px' background='light-1' style={{height: '100%', scroll: 'auto'}} elevation='small'>
+      <Box width='250px'  style={{height: '100%', scroll: 'auto'}} elevation='medium'>
         {edges.map(({node}) => (
           <CardOption
             key={node.id}

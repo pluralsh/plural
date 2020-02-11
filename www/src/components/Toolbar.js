@@ -4,7 +4,7 @@ import {Box, Text} from 'grommet'
 import Me from './users/Me'
 import SearchRepositories from './repos/SearchRepositories'
 
-function Toolbar(props) {
+export default function Toolbar({me}) {
   let history = useHistory()
   return (
     <Box direction='row' fill='horizontal' pad={{left: 'small'}}>
@@ -20,9 +20,7 @@ function Toolbar(props) {
       <Box direction='row' width='100%' align='center' justify='center'>
         <SearchRepositories />
       </Box>
-      <Me me={props.me} />
+      <Me me={me} />
     </Box>
   )
 }
-
-export default Toolbar

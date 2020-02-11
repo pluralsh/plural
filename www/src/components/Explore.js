@@ -29,7 +29,7 @@ export default function Explore() {
 
   return (
     <Box direction='row' fill='horizontal' height='100%'>
-      <Box width={`${WIDTH}%`} height='100%' border='right' elevation='small' background='light-1'>
+      <Box width={`${WIDTH}%`} height='100%' border='right' elevation='small'>
         <Tags tags={tags} setTag={setTag} fetchMore={fetchMore} tag={tag} />
       </Box>
       <Box pad='medium' width={`${100 - WIDTH}%`} height='100%' gap='small'>

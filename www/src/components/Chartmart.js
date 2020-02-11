@@ -19,7 +19,7 @@ import Invoices from './payments/Invoices'
 export const TOOLBAR_SIZE = '60px'
 export const BreadcrumbContext = React.createContext({})
 
-function Chartmart(props) {
+export default function Chartmart() {
   const [breadcrumbs, setBreadcrumbs] = useState([])
   return (
     <StripeProvider apiKey="pk_test_ZVj7wQQqsBDrud0mttnnY6uy00QM8CndBt">
@@ -61,5 +61,3 @@ function Chartmart(props) {
     </StripeProvider>
   )
 }
-
-export default Chartmart

@@ -108,7 +108,7 @@ export default function Invoices() {
 
   return (
     <Box direction='row' width='100%' height={`calc(100vh - ${TOOLBAR_SIZE})`}>
-      <Box width='250px' background='light-1' style={{height: '100%', scroll: 'auto'}} elevation='small'>
+      <Box width='250px'  style={{height: '100%', scroll: 'auto'}} elevation='medium'>
         <SubscriptionBar
           edges={edges}
           current={currentSubscription}

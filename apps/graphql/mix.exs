@@ -33,6 +33,7 @@ defmodule Graphql.MixProject do
       {:absinthe_relay, "~> 1.4.6"},
       {:absinthe_plug, "~> 1.4.0"},
       {:dataloader, "~> 1.0.0"},
+      {:apq, "~> 1.2"},
 
       {:core, in_umbrella: true}
     ]

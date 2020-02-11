@@ -53,4 +53,13 @@ config :core, Core.Email.Mailer,
   adapter: Bamboo.LocalAdapter
 
 
+config :core, Core.Cache.Local,
+  gc_interval: 86_400,
+  allocated_memory: 1_000_000,
+  gc_cleanup_interval: 100
+
+config :core, Core.Cache,
+  local: Core.Cache.Local,
+  node_selector: Nebulex.Adapters.Dist
+
 import_config "#{Mix.env()}.exs"

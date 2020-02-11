@@ -1,5 +1,6 @@
 import { ApolloClient } from 'apollo-client'
-import { createLink } from "apollo-absinthe-upload-link";
+import { createLink } from "apollo-absinthe-upload-link"
+import { createPersistedQueryLink } from "apollo-link-persisted-queries"
 import { setContext } from 'apollo-link-context'
 import { onError } from 'apollo-link-error'
 import { InMemoryCache } from 'apollo-cache-inmemory'
@@ -32,7 +33,9 @@ const resetToken = onError(({ response, networkError }) => {
   }
 });
 
+const apqLink = createPersistedQueryLink().concat(httpLink)
+
 export const client = new ApolloClient({
-  link: authLink.concat(resetToken).concat(httpLink),
+  link: authLink.concat(resetToken).concat(apqLink),
   cache: new InMemoryCache()
 })

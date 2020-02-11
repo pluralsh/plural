@@ -5,6 +5,8 @@ defmodule Core.Application do
     children = [
       Core.Repo,
       Core.PubSub.Broadcaster,
+      Core.Cache.Local,
+      Core.Cache,
     ] ++ consumers()
 
     opts = [strategy: :one_for_one, name: Core.Supervisor]

@@ -18,7 +18,8 @@ defmodule ApiWeb.Router do
     pipe_through [:api, :auth]
 
     forward "/", Absinthe.Plug,
-      schema: GraphQl
+      schema: GraphQl,
+      document_providers: [GraphQl.APQ, Absinthe.Plug.DocumentProvider.Default]
   end
 
   scope "/", ApiWeb do

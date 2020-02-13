@@ -19,4 +19,9 @@ defmodule Watchman.TestHelpers do
   def id(id) when is_binary(id), do: id
 
   def refetch(%{__struct__: schema, id: id}), do: Watchman.Repo.get(schema, id)
+
+  def run_query(query, variables, context \\ %{}),
+    do: Absinthe.run(query, Watchman.GraphQl, variables: variables, context: context)
+
+  def from_connection(%{"edges" => edges}), do: Enum.map(edges, & &1["node"])
 end

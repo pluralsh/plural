@@ -39,8 +39,7 @@ defmodule Watchman.Deployer do
     case Builds.poll() do
       nil -> {:noreply, state}
       %Build{} = build ->
-        perform(storage, build)
-        |> log()
+        perform(storage, build) |> log()
         {:noreply, state}
     end
   end

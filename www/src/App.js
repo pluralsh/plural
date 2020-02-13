@@ -9,7 +9,7 @@ import hljsDefineTerraform from './highlight/terraform'
 
 hljs.registerLanguage('terraform', hljsDefineTerraform)
 
-function App() {
+export default function App() {
   return (
     <Grommet theme={DEFAULT_THEME}>
       <Switch>
@@ -19,5 +19,3 @@ function App() {
     </Grommet>
   )
 }
-
-export default App

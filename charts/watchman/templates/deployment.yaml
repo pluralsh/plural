@@ -24,54 +24,56 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       containers:
-        - name: watchman
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          envFrom:
-          - secretRef:
-              name: watchman-env
-          env:
-          - name: HOST
-            value: {{ .Values.ingress.watchman_dns }}
-          - name: NAMESPACE
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.namespace
-          - name: POD_IP
-            valueFrom:
-              fieldRef:
-                fieldPath: status.podIP
-          - name: POSTGRES_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.dbPasswordSecret }}
-                key: postgresql-password
-          - name: GOOGLE_CREDENTIALS
-            value: /root/.creds/gcp.json
-          volumeMounts:
-          - name: watchman-ssh
-            mountPath: "/root/.ssh"
-          - name: watchman-conf
-            mountPath: "/root/.chartmart"
-          - name: watchman-creds
-            mountPath: "/root/.creds"
-          ports:
-          - name: http
-            containerPort: {{ .Values.service.port }}
-            protocol: TCP
-          - name: epmd
-            containerPort: 4369
-            protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /health
-              port: http
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+      - name: watchman
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        envFrom:
+        - secretRef:
+            name: watchman-env
+        env:
+        - name: HOST
+          value: {{ .Values.ingress.watchman_dns }}
+        - name: DEPLOYED_AT
+          value: {{ .Release.Time }}
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.dbPasswordSecret }}
+              key: postgresql-password
+        - name: GOOGLE_CREDENTIALS
+          value: /root/.creds/gcp.json
+        volumeMounts:
+        - name: watchman-ssh
+          mountPath: "/root/.ssh"
+        - name: watchman-conf
+          mountPath: "/root/.chartmart"
+        - name: watchman-creds
+          mountPath: "/root/.creds"
+        ports:
+        - name: http
+          containerPort: {{ .Values.service.port }}
+          protocol: TCP
+        - name: epmd
+          containerPort: 4369
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

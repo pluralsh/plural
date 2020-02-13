@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import { Box, TextInput } from 'grommet'
 import { FormNext, FormPrevious } from 'grommet-icons'
-import Button from './Button'
+import { SecondaryButton } from './Button'
 
 const ICON_SIZE = '20px'
 
 function Toggle({direction, current, setCurrent}) {
   return (
-    <Button
+    <SecondaryButton
       pad='xsmall'
       round='xsmall'
       align='center'
@@ -16,6 +16,11 @@ function Toggle({direction, current, setCurrent}) {
       icon={direction === 'up' ? <FormNext size={ICON_SIZE} /> :
                                   <FormPrevious size={ICON_SIZE} />} />
   )
+}
+
+function estimateWidth(current) {
+  const len = ('' + current).length - 1
+  return 30 + (len * 10)
 }
 
 export default function NumericInput({value, onChange, ...rest}) {
@@ -29,7 +34,7 @@ export default function NumericInput({value, onChange, ...rest}) {
   return (
     <Box direction='row' gap='xsmall' align='center' {...rest}>
       <Toggle direction='down' current={current} setCurrent={updateValue} />
-      <Box width='50px'>
+      <Box width={`${estimateWidth(current)}px`}>
         <TextInput value={current + ''} onChange={({target: {value}}) => {
           const parsed = parseInt(value)
           if (!isNaN(parsed)) {

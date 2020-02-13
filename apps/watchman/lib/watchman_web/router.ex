@@ -13,6 +13,13 @@ defmodule WatchmanWeb.Router do
     post "/webhook", WebhookController, :webhook
   end
 
+  forward "/graphiql", Absinthe.Plug.GraphiQL,
+    schema: Watchman.GraphQl,
+    interface: :advanced
+
+  forward "/gql", Absinthe.Plug,
+    schema: Watchman.GraphQl
+
   scope "/", WatchmanWeb do
     get "/", PageController, :index
     get "/*path", PageController, :index

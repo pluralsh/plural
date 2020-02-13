@@ -1,4 +1,4 @@
-defmodule GraphQl.Resolvers.Base do
+defmodule Watchman.GraphQl.Resolvers.Base do
   @moduledoc """
   Scaffolding for configuring dataloader and adding some useful helper functions.
 
@@ -14,10 +14,10 @@ defmodule GraphQl.Resolvers.Base do
   alias Absinthe.Relay
   defmacro __using__(model: model) do
     quote do
-      import GraphQl.Resolvers.Base
+      import Watchman.GraphQl.Resolvers.Base
       alias unquote(model)
       def data(args \\ %{}),
-        do: Dataloader.Ecto.new(Core.Repo, query: &query/2, default_params: filter_context(args))
+        do: Dataloader.Ecto.new(Watchman.Repo, query: &query/2, default_params: filter_context(args))
 
       def query(_queryable, _args), do: unquote(model).any()
 
@@ -30,6 +30,6 @@ defmodule GraphQl.Resolvers.Base do
   end
 
   def paginate(query, args) do
-    Relay.Connection.from_query(query, &Core.Repo.all/1, args)
+    Relay.Connection.from_query(query, &Watchman.Repo.all/1, args)
   end
 end

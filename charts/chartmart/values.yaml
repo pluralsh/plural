@@ -33,7 +33,7 @@ registry:
   tolerations: []
 
   persistence:
-    accessMode: 'ReadWriteOnce'
+    accessMode: ReadWriteOnce
     enabled: false
     size: 10Gi
 

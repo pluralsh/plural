@@ -7,6 +7,13 @@ config :core, Core.Repo,
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
 
+config :watchman, Watchman.Repo,
+  username: "postgres",
+  password: "postgres",
+  database: "chartmart_test",
+  hostname: "localhost",
+  pool: Ecto.Adapters.SQL.Sandbox
+
 config :api, ApiWeb.Endpoint,
   http: [port: 4002],
   server: false

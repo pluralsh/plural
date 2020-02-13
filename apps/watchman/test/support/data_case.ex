@@ -22,10 +22,18 @@ defmodule Watchman.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import Watchman.DataCase
+      import Watchman.Factory
+      import Watchman.TestHelpers
     end
   end
 
-  setup _tags do
+  setup tags do
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Watchman.Repo)
+
+    unless tags[:async] do
+      Ecto.Adapters.SQL.Sandbox.mode(Watchman.Repo, {:shared, self()})
+    end
+
     :ok
   end
 

@@ -44,6 +44,7 @@ defmodule Api.MixProject do
       {:cors_plug, "~> 2.0"},
       {:plug_cowboy, "~> 2.0"},
       {:reverse_proxy_plug, "~> 1.2.1"},
+      {:libcluster, "~> 3.1.1"},
 
       {:core, in_umbrella: true},
       {:graphql, in_umbrella: true}

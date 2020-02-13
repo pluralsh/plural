@@ -12,11 +12,11 @@ ARG APP_VSN
 # The environment to build with
 ARG MIX_ENV=prod
 # Set this to true if this release is not a Phoenix app
-ARG SKIP_PHOENIX=true
+ARG SKIP_PHOENIX=false
 # If you are using an umbrella project, you can change this
 # argument to the directory the Phoenix app is in so that the assets
 # can be built
-ARG PHOENIX_SUBDIR=.
+ARG PHOENIX_SUBDIR=apps/watchman
 
 ENV SKIP_PHOENIX=${SKIP_PHOENIX} \
     APP_NAME=${APP_NAME} \
@@ -48,9 +48,7 @@ RUN mix do deps.get, compile
 RUN if [ ! "$SKIP_PHOENIX" = "true" ]; then \
   cd ${PHOENIX_SUBDIR}/assets && \
   yarn install && \
-  yarn deploy && \
-  cd - && \
-  mix phx.digest; \
+  yarn run build; \
 fi
 
 RUN \
@@ -142,7 +140,6 @@ RUN mkdir -p /root/.creds
 
 # add common repos to known hosts
 RUN touch /root/.ssh/known_hosts
-RUN ssh-keyscan bitbucket.org >> /root/.ssh/known_hosts
 RUN ssh-keyscan github.com >> /root/.ssh/known_hosts
 
 COPY --from=builder /opt/built .

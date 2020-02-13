@@ -12,4 +12,9 @@ defmodule WatchmanWeb.Router do
 
     post "/webhook", WebhookController, :webhook
   end
+
+  scope "/", WatchmanWeb do
+    get "/", PageController, :index
+    get "/*path", PageController, :index
+  end
 end

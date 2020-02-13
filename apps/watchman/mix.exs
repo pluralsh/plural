@@ -11,6 +11,7 @@ defmodule Watchman.MixProject do
       lockfile: "../../mix.lock",
       elixir: "~> 1.9",
       elixirc_paths: elixirc_paths(Mix.env()),
+      compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       deps: deps()
     ]
@@ -30,16 +31,24 @@ defmodule Watchman.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:ecto_sql, "~> 3.0"},
+      {:ecto, "~> 3.3.2", override: true},
+      {:ex_machina, "~> 2.3", only: :test},
+      {:postgrex, ">= 0.0.0"},
       {:phoenix, "~> 1.4.9"},
       {:phoenix_pubsub, "~> 1.1"},
       {:phoenix_ecto, "~> 4.0"},
       {:ecto_sql, "~> 3.1"},
+      {:piazza_core, "~> 0.2.6"},
+      {:flow, "~> 0.15.0"},
+      {:bourne, "~> 1.1"},
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 2.11"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 2.0"}
+      {:plug_cowboy, "~> 2.0"},
+      {:porcelain, "~> 2.0"}
     ]
   end
 end

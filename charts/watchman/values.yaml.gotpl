@@ -1,3 +1,6 @@
+postgresql:
+  postgresqlPassword: {{ dedupe . "watchman.postgresql.postgresqlPassword" (randAlphaNum 20) }}
+
 ingress:
   watchman_dns: {{ .Values.watchman_dns }}
 

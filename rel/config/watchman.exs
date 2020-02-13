@@ -1,9 +1,19 @@
 import Config
 import System, only: [get_env: 1, get_env: 2]
 
+config :piazza_core,
+  repos: [Watchman.Repo]
+
 config :watchman, WatchmanWeb.Endpoint,
   url: [host: get_env("HOST"), port: 80],
   check_origin: ["//#{get_env("HOST")}", "//watchman"]
+
+config :watchman, Watchman.Repo,
+  database: "watchman",
+  username: "watchman",
+  password: get_env("POSTGRES_PASSWORD"),
+  hostname: "watchman-postgresql",
+  pool_size: 10
 
 config :watchman,
   workspace_root: "/root",

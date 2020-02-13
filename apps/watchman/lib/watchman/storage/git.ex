@@ -1,7 +1,7 @@
 defmodule Watchman.Storage.Git do
   import Watchman
-  import Watchman.Command, only: [cmd: 2, cmd: 3]
-  alias Watchman.Chartmart
+  import Watchman.Commands.Command, only: [cmd: 2, cmd: 3]
+  alias Watchman.Commands.Chartmart
 
   def init() do
     unless File.exists?(workspace()) do

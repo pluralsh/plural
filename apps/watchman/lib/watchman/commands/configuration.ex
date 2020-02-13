@@ -1,7 +1,7 @@
-defmodule Watchman.Configuration do
+defmodule Watchman.Commands.Configuration do
   use Task, restart: :transient
   import Watchman
-  import Watchman.Command
+  import Watchman.Commands.Command
 
   def start_link(_) do
     Task.start_link(__MODULE__, :run, [])

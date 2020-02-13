@@ -1,4 +1,4 @@
-defmodule Watchman.Command do
+defmodule Watchman.Commands.Command do
   import Watchman
 
   def cmd(exec, args, dir \\ conf(:workspace_root)) do

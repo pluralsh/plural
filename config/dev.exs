@@ -8,6 +8,16 @@ config :core, Core.Repo,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
+config :watchman, :initialize, true
+
+config :watchman, Watchman.Repo,
+  username: "postgres",
+  password: "postgres",
+  database: "chartmart_dev",
+  hostname: "localhost",
+  show_sensitive_data_on_connection_error: true,
+  pool_size: 10
+
 config :api, ApiWeb.Endpoint,
   http: [port: 4000],
   debug_errors: true,
@@ -29,6 +39,23 @@ config :watchman, WatchmanWeb.Endpoint,
   debug_errors: true,
   code_reloader: true,
   check_origin: false
+  # watchers: [
+  #   node: [
+  #     "node_modules/react-scripts/bin/react-scripts.js",
+  #     "start",
+  #     cd: Path.expand("../apps/watchman/assets", __DIR__)
+  #   ]
+  # ]
+
+secrets_path = Path.expand("../secrets", __DIR__)
+
+config :watchman,
+  workspace_root: secrets_path,
+  git_url: "git@github.com:michaeljguarino/chartmart-installations.git",
+  repo_root: "chartmart-installations",
+  chartmart_config: "/Users/michaelguarino/.chartmart",
+  webhook_secret: "webhook_secret",
+  git_ssh_key: :pass
 
 config :watchman, WatchmanWeb.Endpoint,
   live_reload: [

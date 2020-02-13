@@ -41,6 +41,11 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: status.podIP
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.dbPasswordSecret }}
+                key: postgresql-password
           - name: GOOGLE_CREDENTIALS
             value: /root/.creds/gcp.json
           volumeMounts:

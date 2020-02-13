@@ -22,6 +22,8 @@ defmodule WatchmanWeb.ChannelCase do
 
       # The default endpoint for testing
       @endpoint WatchmanWeb.Endpoint
+      import Watchman.Factory
+      import Watchman.TestHelpers
     end
   end
 

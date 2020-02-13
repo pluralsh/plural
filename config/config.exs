@@ -3,6 +3,9 @@ use Mix.Config
 config :core,
   ecto_repos: [Core.Repo]
 
+config :watchman,
+  ecto_repos: [Watchman.Repo]
+
 config :piazza_core,
   repos: [Core.Repo]
 
@@ -61,5 +64,7 @@ config :core, Core.Cache.Local,
 config :core, Core.Cache,
   local: Core.Cache.Local,
   node_selector: Nebulex.Adapters.Dist
+
+config :libcluster, :topologies, []
 
 import_config "#{Mix.env()}.exs"

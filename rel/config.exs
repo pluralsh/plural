@@ -6,10 +6,10 @@
 version = File.read!("VERSION")
 
 use Distillery.Releases.Config,
-    # This sets the default release built by `mix distillery.release`
-    default_release: :default,
-    # This sets the default environment used by `mix distillery.release`
-    default_environment: Mix.env()
+  # This sets the default release built by `mix distillery.release`
+  default_release: :default,
+  # This sets the default environment used by `mix distillery.release`
+  default_environment: Mix.env()
 
 environment :dev do
   set dev_mode: true
@@ -51,5 +51,9 @@ release :watchman do
   set applications: [
     :runtime_tools,
     watchman: :permanent
+  ]
+  set commands: [
+    migrate: "rel/commands/migrate.sh",
+    drop: "rel/commands/drop.sh"
   ]
 end

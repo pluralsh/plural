@@ -9,9 +9,8 @@ defmodule WatchmanWeb.WebhookControllerTest do
       body   = Jason.encode!(%{repo: "chartmart"})
       myself = self()
 
-      expect(Watchman.Deployer, :deploy, fn repo ->
-        send myself, {:deploy, repo}
-        :ok
+      expect(Watchman.Deployer, :wake, fn ->
+        send myself, :wake
       end)
 
       conn
@@ -20,7 +19,8 @@ defmodule WatchmanWeb.WebhookControllerTest do
       |> post(path, body)
       |> json_response(200)
 
-      assert_receive {:deploy, "chartmart"}
+      assert_receive :wake
+      assert Watchman.Services.Builds.poll()
     end
 
     test "It will fail on invalid signatures", %{conn: conn} do

@@ -2,7 +2,7 @@ defmodule Watchman.Storage.GitTest do
   use ExUnit.Case
   use Mimic
   alias Watchman.Storage.Git
-  alias Watchman.{Command, Chartmart}
+  alias Watchman.Commands.{Command, Chartmart}
 
   setup :set_mimic_global
 

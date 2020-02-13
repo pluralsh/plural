@@ -18,6 +18,8 @@ service:
   type: ClusterIP
   port: 4000
 
+dbPasswordSecret: watchman-postgresql
+
 ingress:
   enabled: true
   annotations:
@@ -40,3 +42,9 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+postgresql:
+  postgresqlUsername: watchman
+  postgresqlDatabase: watchman
+  nameOverride: watchman
+  fullnameOverride: watchman-postgresql

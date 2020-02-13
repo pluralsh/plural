@@ -25,7 +25,7 @@ function ErrorPill({error}) {
   )
 }
 
-export function SecondaryButton({onClick, label, pad, error, ...rest}) {
+export function SecondaryButton({onClick, label, pad, error, icon, textSize, ...rest}) {
   const [hover, setHover] = useState(null)
   return (
     <>
@@ -43,7 +43,7 @@ export function SecondaryButton({onClick, label, pad, error, ...rest}) {
       background='#fff'
       pad={pad || BUTTON_PAD}
       {...rest}>
-      <Text size='small'>{label}</Text>
+      {icon ? icon : <Text size={textSize || 'small'}>{label}</Text>}
     </Box>
     </>
   )

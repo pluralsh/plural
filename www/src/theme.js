@@ -1,10 +1,9 @@
 export const DEFAULT_COLOR_THEME = {
   brand: '#3B1D98',
   action: '#3B1D98',
-  sidebar: '#1E2436',
-  sidebarLight: '#353a4a',
-  sidebarHover: '#34394A',
-  sidebarActive: '#0F121B',
+  sidebar: '#1A1D21',
+  sidebarHover: '#000000',
+  sidebarActive: '#000000',
   focus: '#3B1D98',
   tagMedium: '#3B1D98',
   tagLight: '#624aad'

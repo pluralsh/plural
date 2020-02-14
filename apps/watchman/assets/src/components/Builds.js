@@ -8,10 +8,17 @@ import Button from './utils/Button'
 import Modal, { ModalHeader } from './utils/Modal'
 import ScrollableContainer from './utils/ScrollableContainer'
 import { mergeEdges, appendEdge } from './graphql/utils'
+import { BeatLoader } from 'react-spinners'
 
-function BuildStatusInner({background, text}) {
+function BuildStatusInner({background, text, icon}) {
   return (
-    <Box pad={{horizontal: 'small', vertical: 'xsmall'}} round='xsmall' background={background}>
+    <Box
+      direction='row'
+      align='center'
+      pad={{horizontal: 'small', vertical: 'xsmall'}}
+      round='xsmall'
+      background={background}>
+      {icon && <Box width='50px'>{icon}</Box>}
       <Text size='small'>{text}</Text>
     </Box>
   )
@@ -22,7 +29,7 @@ function BuildStatus({status}) {
     case "QUEUED":
       return <BuildStatusInner background='status-unknown' text='queued' />
     case "RUNNING":
-      return <BuildStatusInner background='progress' text='running' />
+      return <BuildStatusInner icon={<BeatLoader size={5} margin={2} color='white' />} background='progress' text='running' />
     case "FAILED":
       return <BuildStatusInner background='status-error' text='failed' />
     case "SUCCESSFUL":

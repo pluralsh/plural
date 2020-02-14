@@ -3,7 +3,7 @@ defmodule WatchmanWeb.Endpoint do
   use Absinthe.Phoenix.Endpoint
 
   socket "/socket", WatchmanWeb.UserSocket,
-    websocket: true,
+    websocket: [check_origin: false],
     longpoll: false
 
   # Serve at "/" the static files from "priv/static" directory.

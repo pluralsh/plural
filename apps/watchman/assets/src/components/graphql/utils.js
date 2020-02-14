@@ -16,16 +16,20 @@ export function mergeList(list, delta, payload) {
   }
 }
 
-export function appendEdge(edges, newNode, type) {
+export function appendEdge(edges, newNode, type, appendType) {
   if (edges.find(({node}) => node.id === newNode.id)) return edges
 
-  return [{__typename: type, node: newNode}, ...edges]
+  return (
+    appendType === 'append' ?
+      [...edges, {__typename: type, node: newNode}] :
+      [{__typename: type, node: newNode}, ...edges]
+  )
 }
 
-export function mergeEdges(edges, delta, payload, edgeType) {
+export function mergeEdges(edges, delta, payload, edgeType, appendType) {
   switch (delta) {
     case "CREATE":
-      return appendEdge(edges, payload, edgeType)
+      return appendEdge(edges, payload, edgeType, appendType)
     case "UPDATE":
       return edges.map((edge) => edge.node.id === payload.id ? {...edge, node: payload} : edge)
     case "DELETE":

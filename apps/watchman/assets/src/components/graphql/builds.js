@@ -43,8 +43,12 @@ export const BUILD_Q = gql`
   query Build($buildId: ID!) {
     build(id: $buildId) {
       ...BuildFragment
-      commands {
-        ...CommandFragment
+      commands(first: 100) {
+        edges {
+          node {
+            ...CommandFragment
+          }
+        }
       }
     }
   }

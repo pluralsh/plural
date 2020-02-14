@@ -33,15 +33,19 @@ defmodule Watchman.GraphQl.BuildQueriesTest do
         query Build($id: ID!) {
           build(id: $id) {
             id
-            commands {
-              id
+            commands(first: 10) {
+              edges {
+                node {
+                  id
+                }
+              }
             }
           }
         }
       """, %{"id" => build.id})
 
       assert found["id"] == build.id
-      assert Enum.map(found["commands"], & &1["id"]) == expected
+      assert from_connection(found["commands"]) |> Enum.map(& &1["id"]) == expected
     end
   end
 end

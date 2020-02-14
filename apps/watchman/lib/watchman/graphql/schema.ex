@@ -32,7 +32,10 @@ defmodule Watchman.GraphQl.Schema do
     field :type,         non_null(:build_type)
     field :status,       non_null(:status)
     field :completed_at, :datetime
-    field :commands,     list_of(:command), resolve: dataloader(Build)
+
+    connection field :commands, node_type: :command do
+      resolve &Build.list_commands/2
+    end
 
     timestamps()
   end
@@ -52,4 +55,5 @@ defmodule Watchman.GraphQl.Schema do
   delta :command
 
   connection node_type: :build
+  connection node_type: :command
 end

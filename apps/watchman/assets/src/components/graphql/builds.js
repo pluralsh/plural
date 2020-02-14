@@ -36,3 +36,15 @@ export const CREATE_BUILD = gql`
   }
   ${BuildFragment}
 `;
+
+export const BUILD_SUB = gql`
+  subscription {
+    buildDelta {
+      delta
+      paylaod {
+        ...BuildFragment
+      }
+    }
+  }
+  ${BuildFragment}
+`;

@@ -1,11 +1,12 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useQuery, useMutation } from 'react-apollo'
-import { BUILDS_Q, CREATE_BUILD } from './graphql/builds'
+import { BUILDS_Q, CREATE_BUILD, BUILD_SUB } from './graphql/builds'
 import Loading from './utils/Loading'
 import { Box, Text, FormField, TextInput, Select } from 'grommet'
 import moment from 'moment'
 import Button from './utils/Button'
 import Modal, { ModalHeader } from './utils/Modal'
+import { mergeEdges } from './graphql/utils'
 
 function BuildStatusInner({background, text}) {
   return (
@@ -107,8 +108,18 @@ function CreateBuild() {
   )
 }
 
+function applyDelta({builds: {edges, ...rest}, ...prev}, {delta, payload}) {
+  return {
+    ...prev,
+    builds: {...rest, edges: mergeEdges(edges, delta, payload, "BuildEdge")}
+  }
+}
+
 export default function Builds() {
-  const {data, loading} = useQuery(BUILDS_Q, {pollInterval: 5000})
+  const {data, loading, subscribeToMore} = useQuery(BUILDS_Q)
+  useEffect(() => subscribeToMore({document: BUILD_SUB, updateQuery: (prev, {subscriptionData: {data}}) => {
+    return data ? applyDelta(prev, data.buildDelta) : prev
+  }}), [])
 
   if (loading || !data) return <Loading />
 

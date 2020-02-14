@@ -19,15 +19,30 @@ defmodule WatchmanWeb.ChannelCase do
     quote do
       # Import conveniences for testing with channels
       use Phoenix.ChannelTest
+      use Absinthe.Phoenix.SubscriptionTest, schema: Watchman.GraphQl
+      import Watchman.Factory
+      import Watchman.TestHelpers
 
       # The default endpoint for testing
       @endpoint WatchmanWeb.Endpoint
-      import Watchman.Factory
-      import Watchman.TestHelpers
+
+      def establish_socket() do
+        {:ok, socket} = mk_socket()
+        Absinthe.Phoenix.SubscriptionTest.join_absinthe(socket)
+      end
+
+      def mk_socket() do
+        connect(WatchmanWeb.UserSocket, %{}, %{})
+      end
     end
   end
 
-  setup _tags do
+  setup tags do
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Watchman.Repo)
+
+    unless tags[:async] do
+      Ecto.Adapters.SQL.Sandbox.mode(Watchman.Repo, {:shared, self()})
+    end
     :ok
   end
 end

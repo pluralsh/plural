@@ -35,5 +35,7 @@ defmodule Watchman.GraphQl.Schema do
     timestamps()
   end
 
+  delta :build
+
   connection node_type: :build
 end

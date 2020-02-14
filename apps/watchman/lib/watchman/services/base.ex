@@ -1,9 +1,21 @@
 defmodule Watchman.Services.Base do
+  alias Watchman.GraphQl.Topic
+
   defmacro __using__(_) do
     quote do
       import Watchman.Services.Base
       alias Watchman.Repo
     end
+  end
+
+  def broadcast(resource, delta) do
+    topic = Topic.infer(resource, delta)
+    :ok = Absinthe.Subscription.publish(
+      WatchmanWeb.Endpoint,
+      %{payload: resource, delta: delta},
+      topic
+    )
+    resource
   end
 
   def when_ok({:ok, resource}, :insert), do: Watchman.Repo.insert(resource)

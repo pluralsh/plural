@@ -7,6 +7,12 @@ defmodule Watchman.GraphQl.Schema.Base do
       import Watchman.GraphQl.Schema.Base
       import_types Absinthe.Type.Custom
 
+      enum :delta do
+        value :create
+        value :update
+        value :delete
+      end
+
       enum :direction do
         value :before
         value :after

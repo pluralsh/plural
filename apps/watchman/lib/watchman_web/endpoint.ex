@@ -1,5 +1,6 @@
 defmodule WatchmanWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :watchman
+  use Absinthe.Phoenix.Endpoint
 
   socket "/socket", WatchmanWeb.UserSocket,
     websocket: true,

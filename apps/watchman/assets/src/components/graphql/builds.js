@@ -74,8 +74,8 @@ export const BUILD_SUB = gql`
 `;
 
 export const COMMAND_SUB = gql`
-  subscription {
-    commandDelta {
+  subscription CommandSubs($buildId: ID!) {
+    commandDelta(buildId: $buildId) {
       delta
       payload {
         ...CommandFragment

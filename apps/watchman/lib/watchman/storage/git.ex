@@ -19,7 +19,7 @@ defmodule Watchman.Storage.Git do
       {:ok, _} = result -> result
       {_, retries} when retries >= 3 -> {:error, :exhausted_retries}
       {_, retry} ->
-        with {:ok, _} <- git("pull", "--rebase"),
+        with {:ok, _} <- git("pull", ["--rebase"]),
           do: push(retry + 1)
     end
   end

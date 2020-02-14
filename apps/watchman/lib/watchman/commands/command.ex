@@ -9,13 +9,14 @@ defmodule Watchman.Commands.Command do
 
   def cmd(exec, args, dir \\ conf(:workspace_root)) do
     with {:ok, collectible} <- make_command(exec, args),
-         {output, exit_code} <- System.cmd(exec, args, into: collectible, cd: dir),
+         {output, exit_code} <- System.cmd(exec, args, into: collectible, cd: dir, stderr_to_stdout: true),
       do: complete(output, exit_code)
   end
 
   defp make_command(exec, args) do
     case Process.get(@build_key) do
-      %Build{} = build -> Builds.create_command(%{command: "#{exec} #{Enum.join(args, " ")}"}, build)
+      %Build{} = build ->
+        Builds.create_command(%{command: "#{exec} #{Enum.join(args, " ")}"}, build)
       _ -> {:ok, IO.stream(:stdio, :line)}
     end
   end

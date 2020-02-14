@@ -1,7 +1,13 @@
+export function appendEdge(edges, newNode, type) {
+  if (edges.find(({node}) => node.id === newNode.id)) return edges
+
+  return [{__typename: type, node: newNode}, ...edges]
+}
+
 export function mergeEdges(edges, delta, payload, edgeType) {
   switch (delta) {
     case "CREATE":
-      return [{__typename: edgeType, node: payload}, ...edges]
+      return appendEdge(edges, payload, edgeType)
     case "UPDATE":
       return edges.map((edge) => edge.node.id === payload.id ? {...edge, node: payload} : edge)
     case "DELETE":

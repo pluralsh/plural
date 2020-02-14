@@ -1,6 +1,8 @@
 defmodule Watchman.Schema.Build do
   use Piazza.Ecto.Schema
 
+  @expiry 1
+
   defenum Type, deploy: 0, bounce: 1
   defenum Status, queued: 0, running: 1, successful: 2, failed: 3
 
@@ -27,6 +29,11 @@ defmodule Watchman.Schema.Build do
 
   def queued(query \\ __MODULE__) do
     from(b in query, where: b.status == ^:queued)
+  end
+
+  def expired(query \\ __MODULE__) do
+    expiry = Timex.now() |> Timex.shift(days: -@expiry)
+    from(b in query, where: b.inserted_at <= ^expiry)
   end
 
   @valid ~w(repository type status completed_at)a

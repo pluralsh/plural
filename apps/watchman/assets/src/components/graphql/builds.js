@@ -41,7 +41,7 @@ export const BUILD_SUB = gql`
   subscription {
     buildDelta {
       delta
-      paylaod {
+      payload {
         ...BuildFragment
       }
     }

@@ -32,7 +32,7 @@ defmodule Watchman.DeployerTest do
       assert_receive :git_push
 
       assert_receive {:commit, msg}
-
+      :timer.sleep(500)
       assert msg =~ repo
 
       refetched = refetch(build)

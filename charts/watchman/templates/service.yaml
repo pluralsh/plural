@@ -4,6 +4,8 @@ metadata:
   name: watchman
   labels:
 {{ include "watchman.labels" . | indent 4 }}
+    cloud.google.com/neg: '{"ingress": true}'
+    beta.cloud.google.com/backend-config: '{"ports": {"http": "watchman-backendconfig"}}'
 spec:
   type: NodePort
   ports:

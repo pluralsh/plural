@@ -23,6 +23,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.shutdownDelay }}
       containers:
       - name: watchman
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

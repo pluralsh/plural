@@ -4,9 +4,11 @@ defmodule Watchman.Application do
 
   def start(_type, _args) do
     children = [
+      Piazza.GracefulShutdown,
       Watchman.Repo,
       WatchmanWeb.Endpoint,
       Watchman.Commands.Configuration,
+      Watchman.Cron,
       {Absinthe.Subscription, [WatchmanWeb.Endpoint]},
       worker(Watchman.Deployer, [determine_storage()])
     ]

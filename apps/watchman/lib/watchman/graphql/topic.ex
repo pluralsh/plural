@@ -4,7 +4,7 @@ defprotocol Watchman.GraphQl.Topic do
 end
 
 defimpl Watchman.GraphQl.Topic, for: Watchman.Schema.Build do
-  def infer(_, _), do: [build_delta: "builds"]
+  def infer(%{id: id}, _), do: [build_delta: "builds", build_delta: "builds:#{id}"]
 end
 
 defimpl Watchman.GraphQl.Topic, for: Watchman.Schema.Command do

@@ -6,7 +6,8 @@ import { Box, Text, FormField, TextInput, Select } from 'grommet'
 import moment from 'moment'
 import Button from './utils/Button'
 import Modal, { ModalHeader } from './utils/Modal'
-import { mergeEdges } from './graphql/utils'
+import ScrollableContainer from './utils/ScrollableContainer'
+import { mergeEdges, appendEdge } from './graphql/utils'
 
 function BuildStatusInner({background, text}) {
   return (
@@ -37,6 +38,7 @@ function Build({build: {repository, status, insertedAt}}) {
     <Box
       border
       pad='small'
+      margin={{bottom: 'small'}}
       direction='row'
       align='center'
       round='xsmall'
@@ -62,7 +64,7 @@ function BuildForm({setOpen}) {
       cache.writeQuery({
         query: BUILDS_Q,
         data: {...prev, builds: {
-            ...rest, pageInfo, edges: [{__typename: 'BuildEdge', node: createBuild}, ...edges]
+            ...rest, pageInfo, edges: appendEdge(edges, createBuild, 'BuildEdge')
           }
         }
       })
@@ -117,22 +119,30 @@ function applyDelta({builds: {edges, ...rest}, ...prev}, {delta, payload}) {
 
 export default function Builds() {
   const {data, loading, subscribeToMore} = useQuery(BUILDS_Q)
-  useEffect(() => subscribeToMore({document: BUILD_SUB, updateQuery: (prev, {subscriptionData: {data}}) => {
-    return data ? applyDelta(prev, data.buildDelta) : prev
+  useEffect(() => subscribeToMore({
+    document: BUILD_SUB,
+    updateQuery: (prev, {subscriptionData: {data}}) => {
+      return data ? applyDelta(prev, data.buildDelta) : prev
   }}), [])
 
   if (loading || !data) return <Loading />
 
   const {edges} = data.builds
   return (
-    <Box gap='small' pad={{horizontal: 'medium'}}>
-      <Box pad='small' direction='row' align='center' border='bottom'>
-        <Box fill='horizontal'>
-          <Text weight='bold'>Builds</Text>
+    <Box height='100vh' pad={{bottom: 'small'}}>
+      <ScrollableContainer>
+        <Box gap='small' pad={{horizontal: 'medium'}}>
+          <Box pad='small' direction='row' align='center' border='bottom' height='60px'>
+            <Box fill='horizontal'>
+              <Text weight='bold'>Builds</Text>
+            </Box>
+            <CreateBuild />
+          </Box>
+          <Box>
+            {edges.map(({node}) => <Build key={node.id} build={node} />)}
+          </Box>
         </Box>
-        <CreateBuild />
-      </Box>
-      {edges.map(({node}) => <Build key={node.id} build={node} />)}
+      </ScrollableContainer>
     </Box>
   )
 }

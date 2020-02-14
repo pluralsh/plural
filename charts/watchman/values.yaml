@@ -20,6 +20,8 @@ service:
 
 dbPasswordSecret: watchman-postgresql
 
+shutdownDelay: 15
+
 ingress:
   enabled: true
   annotations:

@@ -1,4 +1,15 @@
 {{- if .Values.ingress.enabled -}}
+apiVersion: cloud.google.com/v1beta1
+kind: BackendConfig
+metadata:
+  name: watchman-backendconfig
+spec:
+  timeoutSec: 43200
+  connectionDraining:
+    drainingTimeoutSec: 60
+  sessionAffinity:
+    affinityType: "GENERATED_COOKIE"
+---
 apiVersion: networking.gke.io/v1beta1
 kind: ManagedCertificate
 metadata:

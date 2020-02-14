@@ -11,7 +11,7 @@ defmodule Watchman.DeployerTest do
       myself = self()
       echo = fn msg ->
         send myself, msg
-        :ok
+        {:ok, msg}
       end
 
       expect(Git, :init, fn -> echo.(:git_init) end)

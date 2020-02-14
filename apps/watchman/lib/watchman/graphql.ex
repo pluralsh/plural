@@ -4,12 +4,36 @@ defmodule Watchman.GraphQl do
   import Watchman.GraphQl.Helpers
   alias Watchman.GraphQl.Resolvers.Build
 
-
   import_types Watchman.GraphQl.Schema
+
+  @sources [
+    Build
+  ]
+
+  def context(ctx) do
+    loader = make_dataloader(@sources, ctx)
+    Map.put(ctx, :loader, loader)
+  end
+
+  defp make_dataloader(sources, ctx) do
+    Enum.reduce(sources, Dataloader.new(), fn source, loader ->
+      Dataloader.add_source(loader, source, source.data(ctx))
+    end)
+  end
+
+  def plugins do
+    [Absinthe.Middleware.Dataloader] ++ Absinthe.Plugin.defaults()
+  end
 
   query do
     connection field :builds, node_type: :build do
       resolve &Build.list_builds/2
+    end
+
+    field :build, :build do
+      arg :id, non_null(:id)
+
+      resolve safe_resolver(&Build.resolve_build/2)
     end
   end
 
@@ -24,6 +48,12 @@ defmodule Watchman.GraphQl do
   subscription do
     field :build_delta, :build_delta do
       config fn _, _ -> {:ok, topic: "builds"} end
+    end
+
+    field :command_delta, :command_delta do
+      arg :build_id, non_null(:id)
+
+      config fn %{build_id: build_id}, _ -> {:ok, topic: "commands:#{build_id}"} end
     end
   end
 

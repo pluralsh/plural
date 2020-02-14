@@ -1,5 +1,6 @@
 defmodule Watchman.Schema.Build do
   use Piazza.Ecto.Schema
+  alias Watchman.Schema.Command
 
   @expiry 1
 
@@ -11,6 +12,8 @@ defmodule Watchman.Schema.Build do
     field :type,         Type
     field :status,       Status
     field :completed_at, :utc_datetime_usec
+
+    has_many :commands, Command
 
     timestamps()
   end

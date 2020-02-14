@@ -1,6 +1,8 @@
 defmodule Watchman.Services.Builds do
   use Watchman.Services.Base
-  alias Watchman.Schema.Build
+  alias Watchman.Schema.{Build, Command}
+
+  def get!(id), do: Repo.get!(Build, id)
 
   def create(attrs) do
     %Build{type: :deploy, status: :queued}
@@ -8,6 +10,24 @@ defmodule Watchman.Services.Builds do
     |> Repo.insert()
     |> when_ok(&wake_deployer/1)
     |> when_ok(&broadcast(&1, :create))
+  end
+
+  def create_command(attrs, %Build{id: id}) do
+    %Command{build_id: id}
+    |> Command.changeset(attrs)
+    |> Repo.insert()
+    |> when_ok(&broadcast(&1, :create))
+  end
+
+  def complete(%Command{stdout: stdout} = command, exit_code) do
+    %{command | stdout: nil}
+    |> Command.changeset(%{
+      exit_code: exit_code,
+      completed_at: Timex.now(),
+      stdout: stdout
+    })
+    |> Repo.update()
+    |> when_ok(&broadcast(&1, :update))
   end
 
   def poll() do

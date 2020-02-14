@@ -1,5 +1,6 @@
 defmodule Watchman.GraphQl.Schema do
   use Watchman.GraphQl.Schema.Base
+  alias Watchman.GraphQl.Resolvers.Build
   import_types Absinthe.Plug.Types
 
   ## ENUMS
@@ -31,11 +32,24 @@ defmodule Watchman.GraphQl.Schema do
     field :type,         non_null(:build_type)
     field :status,       non_null(:status)
     field :completed_at, :datetime
+    field :commands,     list_of(:command), resolve: dataloader(Build)
+
+    timestamps()
+  end
+
+  object :command do
+    field :id,           non_null(:id)
+    field :command,      non_null(:string)
+    field :exit_code,    :integer
+    field :stdout,       :string
+    field :completed_at, :datetime
+    field :build,        :build, resolve: dataloader(Build)
 
     timestamps()
   end
 
   delta :build
+  delta :command
 
   connection node_type: :build
 end

@@ -11,6 +11,17 @@ export const BuildFragment = gql`
   }
 `;
 
+export const CommandFragment = gql`
+  fragment CommandFragment on Command {
+    id
+    command
+    exitCode
+    stdout
+    completedAt
+    insertedAt
+  }
+`;
+
 export const BUILDS_Q = gql`
   query Builds($cursor: String) {
     builds(first: 15, after: $cursor) {
@@ -26,6 +37,19 @@ export const BUILDS_Q = gql`
     }
   }
   ${BuildFragment}
+`;
+
+export const BUILD_Q = gql`
+  query Build($buildId: ID!) {
+    build(id: $buildId) {
+      ...BuildFragment
+      commands {
+        ...CommandFragment
+      }
+    }
+  }
+  ${BuildFragment}
+  ${CommandFragment}
 `;
 
 export const CREATE_BUILD = gql`
@@ -47,4 +71,16 @@ export const BUILD_SUB = gql`
     }
   }
   ${BuildFragment}
+`;
+
+export const COMMAND_SUB = gql`
+  subscription {
+    commandDelta {
+      delta
+      payload {
+        ...CommandFragment
+      }
+    }
+  }
+  ${CommandFragment}
 `;

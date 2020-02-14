@@ -1,3 +1,21 @@
+function appendList(list, payload) {
+  if (list.find(({id}) => id === payload.id)) return list
+  return [payload, ...list]
+}
+
+export function mergeList(list, delta, payload) {
+  switch (delta) {
+    case "CREATE":
+      return appendList(list, payload)
+    case "UPDATE":
+      return list.map((item) => item.id === payload.id ? payload : item)
+    case "DELETE":
+      return list.filter(({id}) => id !== payload.id)
+    default:
+      return list
+  }
+}
+
 export function appendEdge(edges, newNode, type) {
   if (edges.find(({node}) => node.id === newNode.id)) return edges
 

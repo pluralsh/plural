@@ -9,4 +9,11 @@ defmodule Watchman.Factory do
       type: :deploy
     }
   end
+
+  def command_factory do
+    %Schema.Command{
+      build: build(:build),
+      command: "some command"
+    }
+  end
 end

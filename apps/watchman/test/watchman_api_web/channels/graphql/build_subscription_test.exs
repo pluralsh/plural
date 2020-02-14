@@ -55,4 +55,57 @@ defmodule WatchmanWeb.GraphQl.BuildSubscriptionTest do
       assert delta["payload"]["status"] == "SUCCESSFUL"
     end
   end
+
+  describe "commandDelta" do
+    test "command creates send CREATE deltas" do
+      build = insert(:build)
+      {:ok, socket} = establish_socket()
+
+      ref = push_doc(socket, """
+        subscription Delta($buildId: ID!) {
+          commandDelta(buildId: $buildId) {
+            delta
+            payload {
+              id
+              command
+            }
+          }
+        }
+      """, variables: %{"buildId" => build.id})
+
+      assert_reply(ref, :ok, %{subscriptionId: _})
+
+      {:ok, command} = Builds.create_command(%{command: "echo 'hello world'"}, build)
+      assert_push("subscription:data", %{result: %{data: %{"commandDelta" => delta}}})
+      assert delta["delta"] == "CREATE"
+      assert delta["payload"]["id"] == command.id
+      assert delta["payload"]["command"] == "echo 'hello world'"
+    end
+
+    test "command completion sends UPDATE deltas" do
+      build = insert(:build)
+      command = insert(:command, build: build)
+      {:ok, socket} = establish_socket()
+
+      ref = push_doc(socket, """
+        subscription Delta($buildId: ID!) {
+          commandDelta(buildId: $buildId) {
+            delta
+            payload {
+              id
+              exitCode
+            }
+          }
+        }
+      """, variables: %{"buildId" => build.id})
+
+      assert_reply(ref, :ok, %{subscriptionId: _})
+
+      {:ok, command} = Builds.complete(command, 0)
+      assert_push("subscription:data", %{result: %{data: %{"commandDelta" => delta}}})
+      assert delta["delta"] == "UPDATE"
+      assert delta["payload"]["id"] == command.id
+      assert delta["payload"]["exitCode"] == 0
+    end
+  end
 end

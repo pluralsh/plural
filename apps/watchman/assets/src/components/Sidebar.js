@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useHistory } from 'react-router-dom'
 import { Deploy } from 'grommet-icons'
 import { Box, Text } from 'grommet'
 
 const SIDEBAR_ROW_HEIGHT = '40px'
 
-function SidebarIcon({icon, text, selected}) {
+function SidebarIcon({icon, text, selected, path}) {
+  let history = useHistory()
   const [hover, setHover] = useState(false)
   return (
     <Box
@@ -16,6 +17,7 @@ function SidebarIcon({icon, text, selected}) {
       style={{cursor: 'pointer'}}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
+      onClick={() => history.push(path)}
       background={(hover || selected) ? 'sidebarHover' : null}
       border={selected ? {side: 'left', color: 'focus', size: '3px'} : null}
       direction='row'>
@@ -38,8 +40,8 @@ export default function Sidebar() {
       <Box height='50px' justify='center' pad='small'>
         <Text size='small' weight='bold'>Watchman</Text>
       </Box>
-      {OPTIONS.map(({text, icon}, ind) => (
-        <SidebarIcon key={ind} icon={icon} text={text} selected={ind === active} />
+      {OPTIONS.map(({text, icon, path}, ind) => (
+        <SidebarIcon key={ind} icon={icon} path={path} text={text} selected={ind === active} />
       ))}
     </Box>
   )

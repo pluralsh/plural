@@ -8,7 +8,7 @@ defmodule Watchman.Commands.Configuration do
   end
 
   def run() do
-    :ok = register_ssh_keys()
+    {:ok, _} = register_ssh_keys()
   end
 
   defp register_ssh_keys() do
@@ -16,7 +16,7 @@ defmodule Watchman.Commands.Configuration do
       do: cmd("ssh-add", [ssh_key])
   end
 
-  defp mkpath(:pass), do: :ok
+  defp mkpath(:pass), do: {:ok, :pass}
   defp mkpath({:home, dir}), do: System.user_home!() |> Path.join(dir)
   defp mkpath(dir) when is_binary(dir), do: dir
 end

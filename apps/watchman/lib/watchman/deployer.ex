@@ -1,6 +1,6 @@
 defmodule Watchman.Deployer do
   use GenServer
-  alias Watchman.Commands.Chartmart
+  alias Watchman.Commands.{Chartmart, Command}
   alias Watchman.Services.Builds
   alias Watchman.Schema.Build
   require Logger
@@ -39,6 +39,7 @@ defmodule Watchman.Deployer do
     case Builds.poll() do
       nil -> {:noreply, state}
       %Build{} = build ->
+        Command.set_build(build)
         perform(storage, build) |> log()
         {:noreply, state}
     end
@@ -46,11 +47,11 @@ defmodule Watchman.Deployer do
 
   defp perform(storage, %Build{repository: repo} = build) do
     with {:ok, _} <- Builds.running(build),
-         :ok <- storage.init(),
-         :ok <- Chartmart.build(repo),
-         :ok <- Chartmart.deploy(repo),
-         :ok <- storage.revise("watchman deployment for #{repo}"),
-         :ok <- storage.push() do
+         {:ok, _} <- storage.init(),
+         {:ok, _} <- Chartmart.build(repo),
+         {:ok, _} <- Chartmart.deploy(repo),
+         {:ok, _} <- storage.revise("watchman deployment for #{repo}"),
+         {:ok, _} <- storage.push() do
       Builds.succeed(build)
     else
       _ -> Builds.fail(build)
@@ -58,7 +59,7 @@ defmodule Watchman.Deployer do
   end
 
   defp log({:error, error}) do
-    Logger.info "Failed to deploy, error: #{error}"
+    Logger.info "Failed to deploy, error: #{inspect(error)}"
   end
   defp log(_), do: :ok
 end

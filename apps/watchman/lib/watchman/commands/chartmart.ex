@@ -3,7 +3,7 @@ defmodule Watchman.Commands.Chartmart do
   import Watchman.Commands.Command, only: [cmd: 3]
 
   def unlock() do
-    with :ok <- chartmart("crypto", ["init"]),
+    with {:ok, _} <- chartmart("crypto", ["init"]),
       do: chartmart("crypto", ["unlock"])
   end
 

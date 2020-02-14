@@ -65,6 +65,9 @@ config :core, Core.Cache,
   local: Core.Cache.Local,
   node_selector: Nebulex.Adapters.Dist
 
+config :watchman, Watchman.Repo,
+  migration_timestamps: [type: :utc_datetime_usec]
+
 config :libcluster, :topologies, []
 
 import_config "#{Mix.env()}.exs"

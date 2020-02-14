@@ -13,6 +13,12 @@ defmodule Watchman.GraphQl.Resolvers.Build do
     |> paginate(args)
   end
 
+  def list_commands(args, %{source: %{id: build_id}}) do
+    Command.ordered()
+    |> Command.for_build(build_id)
+    |> paginate(args)
+  end
+
   def create_build(%{attributes: attrs}, _),
     do: Builds.create(attrs)
 end

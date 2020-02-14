@@ -6,7 +6,7 @@ import { LazyLog } from 'react-lazylog'
 import { BUILD_Q, BUILD_SUB, COMMAND_SUB } from './graphql/builds'
 import Loading from './utils/Loading'
 import ScrollableContainer from './utils/ScrollableContainer'
-import { mergeList } from './graphql/utils'
+import { mergeList, mergeEdges } from './graphql/utils'
 import moment from 'moment'
 import { reverse } from '../utils/array'
 import { Checkmark, StatusCritical } from 'grommet-icons'
@@ -89,8 +89,13 @@ function Command({command}) {
 function updateQuery(prev, {subscriptionData: {data}}) {
   if (!data) return prev
   const {commandDelta: {delta, payload}} = data
-
-  return {...prev, build: {...prev.build, commands: mergeList(prev.build.commands, delta, payload)}}
+  const {commands: {edges}, ...rest} = prev
+  return {
+    ...prev,
+    build: {
+      ...prev.build,
+      commands: {...rest, edges: mergeEdges(edges, delta, payload, 'CommandEdge', 'append')}
+  }}
 }
 
 export default function Build() {
@@ -99,7 +104,7 @@ export default function Build() {
   useEffect(() => subscribeToMore({document: COMMAND_SUB, variables: {buildId}, updateQuery}), [])
 
   if (!data || loading) return <Loading />
-  const {commands, ...build} = data.build
+  const {commands: {edges}, ...build} = data.build
   return (
     <Box height='100vh' pad={{bottom: 'small'}}>
       <ScrollableContainer>
@@ -110,7 +115,7 @@ export default function Build() {
           </Box>
           <BuildTimer insertedAt={build.insertedAt} completedAt={build.completedAt} status={build.status} />
         </Box>
-        {Array.from(reverse(commands)).map((command) => <Command key={command.id} command={command} />)}
+        {edges.map(({node}) => <Command key={node.id} command={node} />)}
         </Box>
       </ScrollableContainer>
     </Box>

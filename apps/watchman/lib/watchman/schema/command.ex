@@ -13,6 +13,9 @@ defmodule Watchman.Schema.Command do
     timestamps()
   end
 
+  def for_build(query \\ __MODULE__, build_id),
+    do: from(c in query, where: c.build_id == ^build_id)
+
   def ordered(query \\ __MODULE__, order \\ [asc: :inserted_at]),
     do: from(c in query, order_by: ^order)
 

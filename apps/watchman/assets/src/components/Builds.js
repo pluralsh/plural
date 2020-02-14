@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useHistory } from 'react-router-dom'
 import { useQuery, useMutation } from 'react-apollo'
 import { BUILDS_Q, CREATE_BUILD, BUILD_SUB } from './graphql/builds'
 import Loading from './utils/Loading'
@@ -19,7 +20,7 @@ function BuildStatusInner({background, text, icon}) {
       round='xsmall'
       background={background}>
       {icon && <Box width='50px'>{icon}</Box>}
-      <Text size='small'>{text}</Text>
+      <Text size='small' color='white'>{text}</Text>
     </Box>
   )
 }
@@ -39,7 +40,8 @@ function BuildStatus({status}) {
   }
 }
 
-function Build({build: {repository, status, insertedAt}}) {
+function Build({build: {id, repository, status, insertedAt}}) {
+  let history = useHistory()
   const [hover, setHover] = useState(false)
   return (
     <Box
@@ -50,6 +52,7 @@ function Build({build: {repository, status, insertedAt}}) {
       align='center'
       round='xsmall'
       style={{cursor: 'pointer'}}
+      onClick={() => history.push(`/build/${id}`)}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       background={hover ? 'light-3' : null}>

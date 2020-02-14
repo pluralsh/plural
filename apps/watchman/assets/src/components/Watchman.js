@@ -3,6 +3,7 @@ import { Switch, Route } from 'react-router-dom'
 import { Box } from 'grommet'
 import Sidebar from './Sidebar'
 import Builds from './Builds'
+import Build from './Build'
 
 const SIDEBAR_WIDTH = '160px'
 
@@ -14,6 +15,7 @@ export default function Watchman() {
       </Box>
       <Box flex>
         <Switch>
+          <Route path='/build/:buildId' component={Build} />
           <Route path='/' component={Builds} />
         </Switch>
       </Box>

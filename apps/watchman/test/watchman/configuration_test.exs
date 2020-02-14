@@ -3,7 +3,7 @@ defmodule Watchman.Commands.ConfigurationTest do
 
   describe "#run/0" do
     test "It will cp ssh keys" do
-      :ok = Watchman.Commands.Configuration.run()
+      {:ok, _} = Watchman.Commands.Configuration.run()
     end
   end
 end

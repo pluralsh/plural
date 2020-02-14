@@ -15,8 +15,8 @@ defmodule Watchman.Storage.Git do
   end
 
   def push(retry \\ 0) do
-    case {git("push", []), retry} do
-      {:ok, _} = result -> result
+    case {git("push"), retry} do
+      {{:ok, _} = result, _} -> result
       {_, retries} when retries >= 3 -> {:error, :exhausted_retries}
       {_, retry} ->
         with {:ok, _} <- git("pull", ["--rebase"]),
@@ -34,5 +34,6 @@ defmodule Watchman.Storage.Git do
       do: git("commit", ["-m", msg])
   end
 
-  def git(cmd, args \\ []), do: cmd("git", [cmd | args], workspace())
+  def git(cmd, args \\ []),
+    do: cmd("git", [cmd | args], workspace())
 end

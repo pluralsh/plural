@@ -89,11 +89,11 @@ function Command({command}) {
 function updateQuery(prev, {subscriptionData: {data}}) {
   if (!data) return prev
   const {commandDelta: {delta, payload}} = data
-  const {commands: {edges}, ...rest} = prev
+  const {commands: {edges, ...rest}, ...build} = prev.build
   return {
     ...prev,
     build: {
-      ...prev.build,
+      ...build,
       commands: {...rest, edges: mergeEdges(edges, delta, payload, 'CommandEdge', 'append')}
   }}
 }

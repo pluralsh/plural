@@ -55,7 +55,6 @@ config :stripity_stripe,
 config :core, Core.Email.Mailer,
   adapter: Bamboo.LocalAdapter
 
-
 config :core, Core.Cache.Local,
   gc_interval: 86_400,
   allocated_memory: 1_000_000,

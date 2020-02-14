@@ -1,5 +1,7 @@
 defmodule WatchmanWeb.UserSocket do
   use Phoenix.Socket
+  use Absinthe.Phoenix.Socket,
+    schema: Watchman.GraphQl
 
   ## Channels
   # channel "room:*", WatchmanWeb.RoomChannel

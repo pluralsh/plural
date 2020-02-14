@@ -7,6 +7,7 @@ defmodule Watchman.Services.Builds do
     |> Build.changeset(attrs)
     |> Repo.insert()
     |> when_ok(&wake_deployer/1)
+    |> when_ok(&broadcast(&1, :create))
   end
 
   def poll() do
@@ -29,6 +30,7 @@ defmodule Watchman.Services.Builds do
     build
     |> Build.changeset(add_completion(%{status: state}, state))
     |> Repo.update()
+    |> when_ok(&broadcast(&1, :update))
   end
 
   defp add_completion(attrs, state) when state in [:successful, :failed],

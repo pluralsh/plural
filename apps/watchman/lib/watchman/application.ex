@@ -7,6 +7,7 @@ defmodule Watchman.Application do
       Watchman.Repo,
       WatchmanWeb.Endpoint,
       Watchman.Commands.Configuration,
+      {Absinthe.Subscription, [WatchmanWeb.Endpoint]},
       worker(Watchman.Deployer, [determine_storage()])
     ]
 

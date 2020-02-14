@@ -21,6 +21,12 @@ defmodule Watchman.GraphQl do
     end
   end
 
+  subscription do
+    field :build_delta, :build_delta do
+      config fn _, _ -> {:ok, topic: "builds"} end
+    end
+  end
+
   def safe_resolver(fun) do
     fn args, ctx ->
       try do

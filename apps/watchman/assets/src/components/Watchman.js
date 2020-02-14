@@ -4,7 +4,7 @@ import { Box } from 'grommet'
 import Sidebar from './Sidebar'
 import Builds from './Builds'
 
-const SIDEBAR_WIDTH = '100px'
+const SIDEBAR_WIDTH = '160px'
 
 export default function Watchman() {
   return (

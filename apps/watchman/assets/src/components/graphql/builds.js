@@ -27,3 +27,12 @@ export const BUILDS_Q = gql`
   }
   ${BuildFragment}
 `;
+
+export const CREATE_BUILD = gql`
+  mutation CreateBuild($attributes: BuildAttributes!) {
+    createBuild(attributes: $attributes) {
+      ...BuildFragment
+    }
+  }
+  ${BuildFragment}
+`;

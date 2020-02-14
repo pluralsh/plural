@@ -3,30 +3,34 @@ import { useParams } from 'react-router-dom'
 import { useQuery } from 'react-apollo'
 import { Box, Text } from 'grommet'
 import { LazyLog } from 'react-lazylog'
-import { BUILD_Q, BUILD_SUB, COMMAND_SUB } from './graphql/builds'
+import { BUILD_Q, COMMAND_SUB } from './graphql/builds'
 import Loading from './utils/Loading'
 import ScrollableContainer from './utils/ScrollableContainer'
-import { mergeList, mergeEdges } from './graphql/utils'
+import { mergeEdges } from './graphql/utils'
 import moment from 'moment'
-import { reverse } from '../utils/array'
 import { Checkmark, StatusCritical } from 'grommet-icons'
-import { BounceLoader } from 'react-spinners'
+import { BeatLoader } from 'react-spinners'
 
-function Timer({insertedAt, completedAt}) {
+function TimerInner({insertedAt, completedAt}) {
   const end = completedAt ? moment(completedAt) : moment()
   const begin = moment(insertedAt)
-  const [duration, setDuration] = useState(moment.duration(end.diff(begin)))
+  const fromBeginning = (dt) =>  moment.duration(dt.diff(begin))
+  const duration = fromBeginning(end)
+  return (
+    <pre>
+      {moment.utc(duration.as('milliseconds')).format('HH:mm:SS')}
+    </pre>
+  )
+}
+
+function Timer({insertedAt, completedAt}) {
+  const [tick, setTick] = useState(0)
   useEffect(() => {
-    if (completedAt) {
-      setDuration(moment.duration(moment(completedAt).diff(begin)))
-      return
-    }
+    if (completedAt) return
+    setTimeout(() => setTick(tick + 1), 1000)
+  }, [completedAt, tick, setTick])
 
-    const interval = setInterval(() => setDuration(moment.duration(moment().diff(begin))), 1000)
-    return () => clearInterval(interval)
-  }, [insertedAt, completedAt])
-
-  return <Text size='small'>{moment.utc(duration.as('milliseconds')).format('HH:mm:SS')}</Text>
+  return <TimerInner tick={tick} insertedAt={insertedAt} completedAt={completedAt} />
 }
 
 function BuildTimer({insertedAt, completedAt, status}) {
@@ -40,12 +44,6 @@ function BuildTimer({insertedAt, completedAt, status}) {
 
 const countLines = (str) => (str.match(/\n/g) || '').length + 1
 
-function exitCodeToStatus(code) {
-  if (code === 0) return "SUCCESSFUL"
-  if (!code) return "RUNNING"
-  return "FAILED"
-}
-
 function ExitStatusInner({exitCode}) {
   const success = exitCode === 0
   return (
@@ -58,7 +56,11 @@ function ExitStatusInner({exitCode}) {
 
 function ExitStatus({exitCode}) {
   const background = exitCode !== 0 ? 'status-error' : null
-  if (!exitCode && exitCode !== 0) return <Box width='40px'><BounceLoader size={8} /></Box>
+  if (!exitCode && exitCode !== 0) return (
+    <Box width='40px' direction='row'>
+      <BeatLoader size={5} />
+    </Box>
+  )
 
   return (
     <Box pad='xsmall' background={background} align='center'>
@@ -72,7 +74,7 @@ function Command({command}) {
     <Box margin={{bottom: 'small'}}>
       <Box direction='row' gap='small' elevation='small' background='light-3' pad='xsmall' align='center'>
         <Box fill='horizontal' direction='row' gap='small' align='center'>
-          <pre>~> {command.command}</pre>
+          <pre>==> {command.command}</pre>
           <ExitStatus exitCode={command.exitCode} />
         </Box>
         <Timer

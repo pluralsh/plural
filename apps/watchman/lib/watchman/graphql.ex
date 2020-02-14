@@ -47,7 +47,11 @@ defmodule Watchman.GraphQl do
 
   subscription do
     field :build_delta, :build_delta do
-      config fn _, _ -> {:ok, topic: "builds"} end
+      arg :build_id, :id
+      config fn
+        %{id: id}, _ -> {:ok, topic: "builds:#{id}"}
+        _, _ -> {:ok, topic: "builds"}
+      end
     end
 
     field :command_delta, :command_delta do

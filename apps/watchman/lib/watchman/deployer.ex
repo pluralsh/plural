@@ -45,18 +45,21 @@ defmodule Watchman.Deployer do
     end
   end
 
-  defp perform(storage, %Build{repository: repo} = build) do
+  defp perform(storage, %Build{repository: repo, message: message} = build) do
     with {:ok, _} <- Builds.running(build),
          {:ok, _} <- storage.init(),
          {:ok, _} <- Chartmart.build(repo),
          {:ok, _} <- Chartmart.deploy(repo),
-         {:ok, _} <- storage.revise("watchman deployment for #{repo}"),
+         {:ok, _} <- storage.revise(commit_message(message, repo)),
          {:ok, _} <- storage.push() do
       Builds.succeed(build)
     else
       _ -> Builds.fail(build)
     end
   end
+
+  defp commit_message(nil, repo), do: "watchman deployment for #{repo}"
+  defp commit_message(message, repo), do: "watchman deployment for #{repo} -- #{message}"
 
   defp log({:error, error}) do
     Logger.info "Failed to deploy, error: #{inspect(error)}"

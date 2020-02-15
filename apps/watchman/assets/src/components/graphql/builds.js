@@ -6,6 +6,7 @@ export const BuildFragment = gql`
     repository
     type
     status
+    message
     insertedAt
     completedAt
   }

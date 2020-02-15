@@ -41,7 +41,7 @@ function BuildStatus({status}) {
   }
 }
 
-function Build({build: {id, repository, status, insertedAt}}) {
+function Build({build: {id, repository, status, insertedAt, message}}) {
   let history = useHistory()
   const [hover, setHover] = useState(false)
   return (
@@ -59,7 +59,7 @@ function Build({build: {id, repository, status, insertedAt}}) {
       background={hover ? 'light-3' : null}>
       <Box fill='horizontal'>
         <Text size='small' weight='bold'>{repository}</Text>
-        <Text size='small' color='dark-3'>{moment(insertedAt).fromNow()}</Text>
+        <Text size='small' color='dark-3'>{moment(insertedAt).fromNow()} {message && `-- ${message}`}</Text>
       </Box>
       <BuildStatus status={status} />
     </Box>
@@ -67,7 +67,7 @@ function Build({build: {id, repository, status, insertedAt}}) {
 }
 
 function BuildForm({setOpen}) {
-  const [attributes, setAttributes] = useState({repository: '', type: 'DEPLOY'})
+  const [attributes, setAttributes] = useState({repository: '', type: 'DEPLOY', message: "manual test"})
   const [mutation, {loading}] = useMutation(CREATE_BUILD, {
     variables: {attributes},
     update: (cache, {data: {createBuild}}) => {
@@ -89,6 +89,12 @@ function BuildForm({setOpen}) {
           placeholder='chartmart'
           value={attributes.repository}
           onChange={({target: {value}}) => setAttributes({...attributes, repository: value})} />
+      </FormField>
+      <FormField label='message'>
+        <TextInput
+          placeholder='manual test'
+          value={attributes.message}
+          onChange={({target: {value}}) => setAttributes({...attributes, message: value})} />
       </FormField>
       <FormField label='type'>
         <Select

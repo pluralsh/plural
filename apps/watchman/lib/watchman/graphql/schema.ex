@@ -21,7 +21,8 @@ defmodule Watchman.GraphQl.Schema do
 
   input_object :build_attributes do
     field :repository, non_null(:string)
-    field :type, :build_type
+    field :type,       :build_type
+    field :message,    :string
   end
 
   ## OBJECTS
@@ -31,6 +32,7 @@ defmodule Watchman.GraphQl.Schema do
     field :repository,   non_null(:string)
     field :type,         non_null(:build_type)
     field :status,       non_null(:status)
+    field :message,      :string
     field :completed_at, :datetime
 
     connection field :commands, node_type: :command do

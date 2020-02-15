@@ -6,7 +6,7 @@ defmodule WatchmanWeb.WebhookControllerTest do
     test "it'll succeed if the signature is valid", %{conn: conn} do
       path   = Routes.webhook_path(conn, :webhook)
       secret = Watchman.conf(:webhook_secret)
-      body   = Jason.encode!(%{repo: "chartmart"})
+      body   = Jason.encode!(%{repository: "chartmart", message: "Some message"})
       myself = self()
 
       expect(Watchman.Deployer, :wake, fn ->
@@ -20,12 +20,14 @@ defmodule WatchmanWeb.WebhookControllerTest do
       |> json_response(200)
 
       assert_receive :wake
-      assert Watchman.Services.Builds.poll()
+      build = Watchman.Services.Builds.poll()
+      assert build.repository == "chartmart"
+      assert build.message == "Some message"
     end
 
     test "It will fail on invalid signatures", %{conn: conn} do
       path = Routes.webhook_path(conn, :webhook)
-      body = Jason.encode!(%{repo: "chartmart"})
+      body = Jason.encode!(%{repository: "chartmart"})
 
       conn
       |> put_req_header("x-watchman-signature", "sha1=bogus")

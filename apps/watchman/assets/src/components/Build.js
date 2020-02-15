@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState, useContext, useRef } from 'react'
 import { useParams } from 'react-router-dom'
 import { useQuery } from 'react-apollo'
 import { Box, Text } from 'grommet'
@@ -79,10 +79,13 @@ function ExitStatus({exitCode}) {
 }
 
 function Command({command}) {
+  const ref = useRef()
   const stdout = command.stdout || 'No ouput...'
+  useEffect(() => ref && ref.current && ref.current.scrollIntoView(true), [ref, command.stdout])
+
   return (
-    <Box margin={{bottom: 'small'}}>
-      <Box direction='row' gap='small' elevation='small' pad='xsmall' align='center'>
+    <Box ref={ref}>
+      <Box direction='row' gap='small' elevation='small' pad='xxsmall' align='center' background='console'>
         <Box fill='horizontal' direction='row' gap='small' align='center'>
           <pre>==> {command.command}</pre>
           <ExitStatus exitCode={command.exitCode} />

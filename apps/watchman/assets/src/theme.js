@@ -9,7 +9,8 @@ export const DEFAULT_COLOR_THEME = {
   tagLight: '#624aad',
   progress: '#007bff',
   error: '#CC4400',
-  success: '#007a5a'
+  success: '#007a5a',
+  console: '#222222'
 }
 
 export const DEFAULT_THEME = {

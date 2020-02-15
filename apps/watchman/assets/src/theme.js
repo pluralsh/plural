@@ -7,7 +7,9 @@ export const DEFAULT_COLOR_THEME = {
   focus: '#3B1D98',
   tagMedium: '#3B1D98',
   tagLight: '#624aad',
-  progress: '#007bff'
+  progress: '#007bff',
+  error: '#CC4400',
+  success: '#007a5a'
 }
 
 export const DEFAULT_THEME = {

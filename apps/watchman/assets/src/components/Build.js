@@ -12,33 +12,41 @@ import { Checkmark, StatusCritical } from 'grommet-icons'
 import { BeatLoader } from 'react-spinners'
 import { BreadcrumbsContext } from './Breadcrumbs'
 
-function TimerInner({insertedAt, completedAt}) {
+function TimerInner({insertedAt, completedAt, status}) {
   const end = completedAt ? moment(completedAt) : moment()
   const begin = moment(insertedAt)
   const fromBeginning = (dt) =>  moment.duration(dt.diff(begin))
   const duration = fromBeginning(end)
   return (
     <pre>
-      {moment.utc(duration.as('milliseconds')).format('HH:mm:ss')}
+      {status}{moment.utc(duration.as('milliseconds')).format('HH:mm:ss')}
     </pre>
   )
 }
 
-function Timer({insertedAt, completedAt}) {
+function Timer({insertedAt, completedAt, status}) {
   const [tick, setTick] = useState(0)
   useEffect(() => {
     if (completedAt) return
     setTimeout(() => setTick(tick + 1), 1000)
   }, [completedAt, tick, setTick])
 
-  return <TimerInner tick={tick} insertedAt={insertedAt} completedAt={completedAt} />
+  return <TimerInner
+    tick={tick}
+    insertedAt={insertedAt}
+    completedAt={completedAt}
+    status={status} />
 }
 
 function BuildTimer({insertedAt, completedAt, status}) {
-  const background = status === "SUCCESSFUL" ? 'status-ok' : (status === 'FAILED' ? 'status-error' : 'progress')
+  const background = status === "SUCCESSFUL" ? 'success' : (status === 'FAILED' ? 'error' : 'progress')
+  const statusLabel = status === 'SUCCESSFUL' ? 'Passed, ' : (status === 'FAILED' ? 'Failed, ' : null)
   return (
-    <Box pad='xsmall' background={background}>
-      <Timer insertedAt={insertedAt} completedAt={completedAt} />
+    <Box flex={false} pad='xsmall' background={background}>
+      <Timer
+        insertedAt={insertedAt}
+        completedAt={completedAt}
+        status={statusLabel} />
     </Box>
   )
 }
@@ -49,14 +57,14 @@ function ExitStatusInner({exitCode}) {
   const success = exitCode === 0
   return (
     <Box direction='row' align='center' gap='xsmall'>
-      {success ? <Checkmark color='status-ok' size='12px' /> : <StatusCritical size='12px' />}
-      {success ? <Text size='small' color='green'>OK</Text> : <Text size='small'>exit code: {exitCode}</Text>}
+      {success ? <Checkmark color='success' size='12px' /> : <StatusCritical size='12px' />}
+      {success ? <Text size='small' color='success'>OK</Text> : <Text size='small'>exit code: {exitCode}</Text>}
     </Box>
   )
 }
 
 function ExitStatus({exitCode}) {
-  const background = exitCode !== 0 ? 'status-error' : null
+  const background = exitCode !== 0 ? 'error' : null
   if (!exitCode && exitCode !== 0) return (
     <Box width='40px' direction='row'>
       <BeatLoader size={5} />
@@ -71,9 +79,10 @@ function ExitStatus({exitCode}) {
 }
 
 function Command({command}) {
+  const stdout = command.stdout || 'No ouput...'
   return (
     <Box margin={{bottom: 'small'}}>
-      <Box direction='row' gap='small' elevation='small' background='light-3' pad='xsmall' align='center'>
+      <Box direction='row' gap='small' elevation='small' pad='xsmall' align='center'>
         <Box fill='horizontal' direction='row' gap='small' align='center'>
           <pre>==> {command.command}</pre>
           <ExitStatus exitCode={command.exitCode} />
@@ -82,8 +91,8 @@ function Command({command}) {
           insertedAt={command.insertedAt}
           completedAt={command.completedAt} />
       </Box>
-      <div style={{height: Math.min(countLines(command.stdout || '') * 20, 300)}}>
-        {command.stdout && <LazyLog text={command.stdout} follow extraLines={1} />}
+      <div style={{height: Math.min(countLines(stdout || '') * 20, 300)}}>
+        <LazyLog text={stdout} follow extraLines={1} />
       </div>
     </Box>
   )
@@ -131,6 +140,7 @@ export default function Build() {
   return (
     <>
       <Box
+        flex={false}
         direction='row'
         align='center'
         pad={{horizontal: 'medium', vertical: 'small'}}

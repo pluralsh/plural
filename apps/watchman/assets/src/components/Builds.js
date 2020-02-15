@@ -33,9 +33,9 @@ function BuildStatus({status}) {
     case "RUNNING":
       return <BuildStatusInner icon={<BeatLoader size={5} margin={2} color='white' />} background='progress' text='running' />
     case "FAILED":
-      return <BuildStatusInner background='status-error' text='failed' />
+      return <BuildStatusInner background='error' text='failed' />
     case "SUCCESSFUL":
-      return <BuildStatusInner background='status-ok' text='successful' />
+      return <BuildStatusInner background='success' text='successful' />
     default:
       return null
   }

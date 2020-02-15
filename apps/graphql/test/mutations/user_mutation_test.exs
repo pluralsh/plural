@@ -195,7 +195,7 @@ defmodule GraphQl.UserMutationTest do
           }
         }
       """, %{"repo" => "repo", "id" => webhook.id}, %{current_user: user})
-      assert response["body"] == Jason.encode!(%{repo: "repo"})
+      assert response["body"] == Jason.encode!(%{repository: "repo", message: "webhook ping"})
       assert response["statusCode"] == 200
     end
   end

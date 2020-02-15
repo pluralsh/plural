@@ -85,7 +85,13 @@ function Command({command}) {
 
   return (
     <Box ref={ref}>
-      <Box direction='row' gap='small' elevation='small' pad='xxsmall' align='center' background='console'>
+      <Box
+        direction='row'
+        gap='small'
+        elevation='small'
+        pad={{vertical: 'xxsmall', horizontal: 'medium'}}
+        align='center'
+        background='console'>
         <Box fill='horizontal' direction='row' gap='small' align='center'>
           <pre>==> {command.command}</pre>
           <ExitStatus exitCode={command.exitCode} />
@@ -147,14 +153,13 @@ export default function Build() {
         direction='row'
         align='center'
         pad={{horizontal: 'medium', vertical: 'small'}}
-        border='bottom'
-        margin={{bottom: 'small'}}>
+        border='bottom'>
         <Box fill='horizontal'>
           <Text size='small' weight='bold'>{build.repository}</Text>
         </Box>
         <BuildTimer insertedAt={build.insertedAt} completedAt={build.completedAt} status={build.status} />
       </Box>
-      <div style={{height: 'calc(100vh-100px)', overflow: 'auto', paddingLeft: '20px', paddingRight: '20px'}}>
+      <div style={{height: 'calc(100vh-100px)', overflow: 'auto'}}>
         <ScrollableContainer>
           {edges.map(({node}) => <Command key={node.id} command={node} />)}
         </ScrollableContainer>

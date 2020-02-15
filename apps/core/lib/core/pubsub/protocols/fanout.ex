@@ -20,6 +20,7 @@ defimpl Core.PubSub.Fanout, for: Core.PubSub.VersionCreated do
   checkpointing or persistence, so this must be considered best-effort.
   """
   def fanout(%{item: version}) do
+    version = Core.Repo.preload(version, [:chart])
     ChartInstallation.for_chart(version.chart_id)
     |> ChartInstallation.with_auto_upgrade()
     |> ChartInstallation.ignore_version(version.id)
@@ -34,7 +35,7 @@ defimpl Core.PubSub.Fanout, for: Core.PubSub.VersionCreated do
         Logger.error "Failed to update #{inspect(error)}"
         []
     end)
-    |> Flow.map(&post_webhook/1)
+    |> Flow.map(&post_webhook(&1, version))
     |> Enum.count()
   end
 
@@ -48,8 +49,15 @@ defimpl Core.PubSub.Fanout, for: Core.PubSub.VersionCreated do
     do: Enum.map(webhooks, & {repo, &1})
   defp derive_webhooks(_), do: []
 
-  defp post_webhook({%Repository{name: repo}, %Webhook{} = webhook}),
-    do: Core.Services.Users.post_webhook(repo, webhook)
+  defp post_webhook(
+    {%Repository{name: repo}, %Webhook{} = webhook},
+    %{version: version, chart: %{name: chart}}
+  ) do
+    Core.Services.Users.post_webhook(%{
+      repository: repo,
+      message: "Upgraded #{chart} to #{version}"
+    }, webhook)
+  end
 end
 
 defimpl Core.PubSub.Fanout, for: Core.PubSub.DockerNotification do

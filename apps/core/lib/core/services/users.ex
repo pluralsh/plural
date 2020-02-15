@@ -128,9 +128,9 @@ defmodule Core.Services.Users do
   {"repo": `repo`}
   ```
   """
-  @spec post_webhook(binary, Webhook.t) :: {:ok, %Mojito.Response{}} | {:error, term}
-  def post_webhook(repo, %Webhook{url: url, secret: secret}) do
-    payload   = Jason.encode!(%{repo: repo})
+  @spec post_webhook(map, Webhook.t) :: {:ok, %Mojito.Response{}} | {:error, term}
+  def post_webhook(message, %Webhook{url: url, secret: secret}) do
+    payload   = Jason.encode!(message)
     signature = hmac(secret, payload)
     headers   = [
       {"content-type", "application/json"},

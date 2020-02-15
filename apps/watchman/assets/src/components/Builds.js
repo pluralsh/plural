@@ -128,12 +128,12 @@ function applyDelta({builds: {edges, ...rest}, ...prev}, {delta, payload}) {
 }
 
 export default function Builds() {
-  const {data, loading, subscribeToMore} = useQuery(BUILDS_Q)
+  const {data, loading, subscribeToMore} = useQuery(BUILDS_Q, {fetchPolicy: 'cache-and-network'})
   useEffect(() => subscribeToMore({
     document: BUILD_SUB,
     updateQuery: (prev, {subscriptionData: {data}}) => {
       return data ? applyDelta(prev, data.buildDelta) : prev
-  }}), [])
+  }}), [subscribeToMore])
 
   if (loading || !data) return <Loading />
 

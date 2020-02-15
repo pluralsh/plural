@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { useParams } from 'react-router-dom'
 import { useQuery } from 'react-apollo'
 import { Box, Text } from 'grommet'
@@ -10,6 +10,7 @@ import { mergeEdges } from './graphql/utils'
 import moment from 'moment'
 import { Checkmark, StatusCritical } from 'grommet-icons'
 import { BeatLoader } from 'react-spinners'
+import { BreadcrumbsContext } from './Breadcrumbs'
 
 function TimerInner({insertedAt, completedAt}) {
   const end = completedAt ? moment(completedAt) : moment()
@@ -108,6 +109,14 @@ function updateQuery(prev, {subscriptionData: {data}}) {
 export default function Build() {
   const {buildId} = useParams()
   const {data, loading, subscribeToMore} = useQuery(BUILD_Q, {variables: {buildId}})
+  const {setBreadcrumbs} = useContext(BreadcrumbsContext)
+  useEffect(() => {
+    setBreadcrumbs([
+      {text: 'builds', url: '/'},
+      {text: buildId, url: `/builds/${buildId}`}
+    ])
+  }, [buildId])
+
   useEffect(() => {
     const first = subscribeToMore({document: COMMAND_SUB, variables: {buildId}, updateQuery})
     const second = subscribeToMore({document: BUILD_SUB, variables: {buildId}, updateQuery})
@@ -115,23 +124,28 @@ export default function Build() {
       first()
       second()
     }
-  }, [buildId, subscribeToMore])
+  }, [subscribeToMore])
 
   if (!data || loading) return <Loading />
   const {commands: {edges}, ...build} = data.build
   return (
-    <Box height='100vh' pad={{bottom: 'small'}}>
-      <ScrollableContainer>
-        <Box margin={{horizontal: 'medium'}}>
-          <Box direction='row' align='center' pad='small'>
-            <Box fill='horizontal'>
-              <Text size='small' weight='bold'>{build.repository}</Text>
-            </Box>
-            <BuildTimer insertedAt={build.insertedAt} completedAt={build.completedAt} status={build.status} />
-          </Box>
-          {edges.map(({node}) => <Command key={node.id} command={node} />)}
+    <>
+      <Box
+        direction='row'
+        align='center'
+        pad={{horizontal: 'medium', vertical: 'small'}}
+        border='bottom'
+        margin={{bottom: 'small'}}>
+        <Box fill='horizontal'>
+          <Text size='small' weight='bold'>{build.repository}</Text>
         </Box>
-      </ScrollableContainer>
-    </Box>
+        <BuildTimer insertedAt={build.insertedAt} completedAt={build.completedAt} status={build.status} />
+      </Box>
+      <div style={{height: 'calc(100vh-100px)', overflow: 'auto', paddingLeft: '20px', paddingRight: '20px'}}>
+        <ScrollableContainer>
+          {edges.map(({node}) => <Command key={node.id} command={node} />)}
+        </ScrollableContainer>
+      </div>
+    </>
   )
 }

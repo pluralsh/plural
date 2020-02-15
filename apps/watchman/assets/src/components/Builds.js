@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useQuery, useMutation } from 'react-apollo'
 import { BUILDS_Q, CREATE_BUILD, BUILD_SUB } from './graphql/builds'
@@ -10,6 +10,7 @@ import Modal, { ModalHeader } from './utils/Modal'
 import ScrollableContainer from './utils/ScrollableContainer'
 import { mergeEdges, appendEdge } from './graphql/utils'
 import { BeatLoader } from 'react-spinners'
+import { BreadcrumbsContext } from './Breadcrumbs'
 
 function BuildStatusInner({background, text, icon}) {
   return (
@@ -129,6 +130,8 @@ function applyDelta({builds: {edges, ...rest}, ...prev}, {delta, payload}) {
 
 export default function Builds() {
   const {data, loading, subscribeToMore} = useQuery(BUILDS_Q, {fetchPolicy: 'cache-and-network'})
+  const {setBreadcrumbs} = useContext(BreadcrumbsContext)
+  useEffect(() => setBreadcrumbs([{text: 'builds', url: '/'}]), [])
   useEffect(() => subscribeToMore({
     document: BUILD_SUB,
     updateQuery: (prev, {subscriptionData: {data}}) => {
@@ -139,7 +142,7 @@ export default function Builds() {
 
   const {edges} = data.builds
   return (
-    <Box height='100vh' pad={{bottom: 'small'}}>
+    <Box height='calc(100vh - 45px)' pad={{bottom: 'small'}}>
       <ScrollableContainer>
         <Box gap='small' pad={{horizontal: 'medium'}}>
           <Box pad='small' direction='row' align='center' border='bottom' height='60px'>

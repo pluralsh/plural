@@ -20,11 +20,12 @@ defmodule Watchman.Schema.Command do
     do: from(c in query, order_by: ^order)
 
   defimpl Collectable, for: __MODULE__ do
+    alias Watchman.Services.Base
     def into(command) do
       {command, fn
         %{stdout: stdo} = command, {:cont, line} when is_binary(line) ->
           IO.write(line)
-          %{command | stdout: safe_concat(stdo, line)}
+          Base.broadcast(%{command | stdout: safe_concat(stdo, line)}, :update)
         command, :done -> command
         _, :halt -> :ok
       end}

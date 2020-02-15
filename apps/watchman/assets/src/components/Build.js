@@ -100,7 +100,7 @@ function Command({command}) {
           insertedAt={command.insertedAt}
           completedAt={command.completedAt} />
       </Box>
-      <div style={{height: Math.min(countLines(stdout || '') * 20, 300)}}>
+      <div style={{height: countLines(stdout || '') * 19}}>
         <LazyLog text={stdout} follow extraLines={1} />
       </div>
     </Box>
@@ -156,6 +156,7 @@ export default function Build() {
         border='bottom'>
         <Box fill='horizontal'>
           <Text size='small' weight='bold'>{build.repository}</Text>
+          <Text size='small' color='dark-3'>{build.message}</Text>
         </Box>
         <BuildTimer insertedAt={build.insertedAt} completedAt={build.completedAt} status={build.status} />
       </Box>

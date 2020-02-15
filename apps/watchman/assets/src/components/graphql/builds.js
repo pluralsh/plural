@@ -66,8 +66,8 @@ export const CREATE_BUILD = gql`
 `;
 
 export const BUILD_SUB = gql`
-  subscription {
-    buildDelta {
+  subscription BuildSub($buildId: String) {
+    buildDelta(buildId: $buildId) {
       delta
       payload {
         ...BuildFragment

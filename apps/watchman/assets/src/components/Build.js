@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import { useQuery } from 'react-apollo'
 import { Box, Text } from 'grommet'
 import { LazyLog } from 'react-lazylog'
-import { BUILD_Q, COMMAND_SUB } from './graphql/builds'
+import { BUILD_Q, COMMAND_SUB, BUILD_SUB } from './graphql/builds'
 import Loading from './utils/Loading'
 import ScrollableContainer from './utils/ScrollableContainer'
 import { mergeEdges } from './graphql/utils'
@@ -18,7 +18,7 @@ function TimerInner({insertedAt, completedAt}) {
   const duration = fromBeginning(end)
   return (
     <pre>
-      {moment.utc(duration.as('milliseconds')).format('HH:mm:SS')}
+      {moment.utc(duration.as('milliseconds')).format('HH:mm:ss')}
     </pre>
   )
 }
@@ -34,7 +34,7 @@ function Timer({insertedAt, completedAt}) {
 }
 
 function BuildTimer({insertedAt, completedAt, status}) {
-  const background = status === "SUCCESSFUL" ? 'status-ok' : (status === 'FAILED' ? 'status-error' : 'running')
+  const background = status === "SUCCESSFUL" ? 'status-ok' : (status === 'FAILED' ? 'status-error' : 'progress')
   return (
     <Box pad='xsmall' background={background}>
       <Timer insertedAt={insertedAt} completedAt={completedAt} />
@@ -90,8 +90,13 @@ function Command({command}) {
 
 function updateQuery(prev, {subscriptionData: {data}}) {
   if (!data) return prev
+  if (data.buildDelta) {
+    return {...prev, build: {...prev, ...data.buildDelta.payload}}
+  }
+
   const {commandDelta: {delta, payload}} = data
   const {commands: {edges, ...rest}, ...build} = prev.build
+
   return {
     ...prev,
     build: {
@@ -103,7 +108,14 @@ function updateQuery(prev, {subscriptionData: {data}}) {
 export default function Build() {
   const {buildId} = useParams()
   const {data, loading, subscribeToMore} = useQuery(BUILD_Q, {variables: {buildId}})
-  useEffect(() => subscribeToMore({document: COMMAND_SUB, variables: {buildId}, updateQuery}), [])
+  useEffect(() => {
+    const first = subscribeToMore({document: COMMAND_SUB, variables: {buildId}, updateQuery})
+    const second = subscribeToMore({document: BUILD_SUB, variables: {buildId}, updateQuery})
+    return () => {
+      first()
+      second()
+    }
+  }, [buildId, subscribeToMore])
 
   if (!data || loading) return <Loading />
   const {commands: {edges}, ...build} = data.build
@@ -111,13 +123,13 @@ export default function Build() {
     <Box height='100vh' pad={{bottom: 'small'}}>
       <ScrollableContainer>
         <Box margin={{horizontal: 'medium'}}>
-        <Box direction='row' align='center' pad='small'>
-          <Box fill='horizontal'>
-            <Text size='small' weight='bold'>{build.repository}</Text>
+          <Box direction='row' align='center' pad='small'>
+            <Box fill='horizontal'>
+              <Text size='small' weight='bold'>{build.repository}</Text>
+            </Box>
+            <BuildTimer insertedAt={build.insertedAt} completedAt={build.completedAt} status={build.status} />
           </Box>
-          <BuildTimer insertedAt={build.insertedAt} completedAt={build.completedAt} status={build.status} />
-        </Box>
-        {edges.map(({node}) => <Command key={node.id} command={node} />)}
+          {edges.map(({node}) => <Command key={node.id} command={node} />)}
         </Box>
       </ScrollableContainer>
     </Box>

@@ -18,7 +18,7 @@ defmodule Watchman.Chartmart.Queries do
   """
 
   @installation_query """
-    query Installations(first: Int!, $cursor: String) {
+    query Installations($first: Int!, $cursor: String) {
       installations(first: $first, after: $cursor) {
         pageInfo {
           endCursor

@@ -1,0 +1,12 @@
+.log {
+  overflow: auto !important;
+  font-family: "Monaco", monospace;
+  font-size: 12px;
+  margin: 0;
+  white-space: pre;
+  background-color: #222222;
+  color: #d6d6d6;
+  font-weight: 400;
+  will-change: initial;
+  outline: none;
+}

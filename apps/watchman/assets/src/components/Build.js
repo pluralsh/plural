@@ -2,7 +2,8 @@ import React, { useEffect, useState, useContext, useRef } from 'react'
 import { useParams } from 'react-router-dom'
 import { useQuery } from 'react-apollo'
 import { Box, Text } from 'grommet'
-import { LazyLog } from 'react-lazylog'
+import Line from 'react-lazylog/build/Line'
+import { ansiparse } from './utils/ansi'
 import { BUILD_Q, COMMAND_SUB, BUILD_SUB } from './graphql/builds'
 import Loading from './utils/Loading'
 import ScrollableContainer from './utils/ScrollableContainer'
@@ -11,6 +12,7 @@ import moment from 'moment'
 import { Checkmark, StatusCritical } from 'grommet-icons'
 import { BeatLoader } from 'react-spinners'
 import { BreadcrumbsContext } from './Breadcrumbs'
+import './build.css'
 
 function TimerInner({insertedAt, completedAt, status}) {
   const end = completedAt ? moment(completedAt) : moment()
@@ -51,8 +53,6 @@ function BuildTimer({insertedAt, completedAt, status}) {
   )
 }
 
-const countLines = (str) => (str.match(/\n/g) || '').length + 1
-
 function ExitStatusInner({exitCode}) {
   const success = exitCode === 0
   return (
@@ -78,9 +78,34 @@ function ExitStatus({exitCode}) {
   )
 }
 
+function LogLine({line, number, last}) {
+  const lineRef = useRef()
+  useEffect(() => {
+    lineRef && lineRef.current && line === last && lineRef.scrollIntoView()
+  }, [lineRef, line, last])
+
+  return (
+    <div ref={lineRef}>
+      <Line data={ansiparse(line)} number={number} rowHeight={19} />
+    </div>
+  )
+}
+
+function Log({text}) {
+  if (!text) return null
+
+  const lines = text.match(/[^\r\n]+/g)
+  const last = lines.length
+  return (
+    <div class='log'>
+      {lines.map((line, ind) => <LogLine key={ind} line={line} number={ind + 1} last={last} />)}
+    </div>
+  )
+}
+
 function Command({command}) {
   const ref = useRef()
-  const stdout = command.stdout || 'No ouput...'
+  const stdout = command.stdout
   useEffect(() => ref && ref.current && ref.current.scrollIntoView(true), [ref, command.stdout])
 
   return (
@@ -100,9 +125,7 @@ function Command({command}) {
           insertedAt={command.insertedAt}
           completedAt={command.completedAt} />
       </Box>
-      <div style={{height: countLines(stdout || '') * 19}}>
-        <LazyLog text={stdout} follow extraLines={1} />
-      </div>
+      <Log text={stdout} follow />
     </Box>
   )
 }

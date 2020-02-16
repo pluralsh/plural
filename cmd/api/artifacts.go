@@ -31,6 +31,34 @@ type ArtifactAttributes struct {
 	Blob string
 }
 
+type artifactsResponse struct {
+	Repository struct {
+		Artifacts []Artifact
+	}
+}
+
+var artifactsQuery = fmt.Sprintf(`
+	query ArtifactsQuery($id: ID!) {
+		repository(id: $id) {
+			artifacts {
+				...ArtifactFragment
+			}
+		}
+	}
+	%s
+`, ArtifactFragment)
+
+func (client *Client) ListArtifacts(repo string) ([]Artifact, error) {
+	var resp artifactsResponse
+	req := client.Build(artifactsQuery)
+	req.Var("id", repo)
+	err := client.Run(req, &resp)
+	if err != nil {
+		return resp.Repository.Artifacts, err
+	}
+	return resp.Repository.Artifacts, nil
+}
+
 func (client *Client) CreateArtifact(repo string, attrs ArtifactAttributes) (Artifact, error) {
 	var artifact Artifact
 	fullPath, _ := filepath.Abs(attrs.Blob)

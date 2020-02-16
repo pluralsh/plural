@@ -157,6 +157,7 @@ type Artifact struct {
 	Readme   string
 	Blob     string
 	Sha      string
+	Platform string
 	Filesize int
 }
 
@@ -275,6 +276,7 @@ const ArtifactFragment = `
 		id
 		name
 		readme
+		platform
 		blob
 		sha
 		filesize

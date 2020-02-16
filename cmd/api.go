@@ -51,6 +51,12 @@ func apiCommands() []cli.Command {
 					ArgsUsage: "REPO_ID",
 					Action:    handleTerraformInstallations,
 				},
+				{
+					Name:      "artifacts",
+					Usage:     "Lists artifacts for a repository",
+					ArgsUsage: "REPO_ID",
+					Action:    handleArtifacts,
+				},
 			},
 		},
 	}
@@ -153,6 +159,23 @@ func handleTerraformInstallations(c *cli.Context) error {
 	for _, ti := range terraformInstallations {
 		tf := ti.Terraform
 		table.Append([]string{ti.Id, tf.Id, tf.Name})
+	}
+	table.Render()
+	return nil
+}
+
+func handleArtifacts(c *cli.Context) error {
+	client := api.NewClient()
+	artifacts, err := client.ListArtifacts(c.Args().First())
+
+	if err != nil {
+		return err
+	}
+
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{"Id", "Name", "Platform", "Blob", "Sha"})
+	for _, artifact := range artifacts {
+		table.Append([]string{artifact.Id, artifact.Name, artifact.Platform, artifact.Blob, artifact.Sha})
 	}
 	table.Render()
 	return nil

@@ -42,27 +42,31 @@ function BuildStatus({status}) {
   }
 }
 
+const BUILD_PADDING = {horizontal: 'medium'}
+
 function Build({build: {id, repository, status, insertedAt, message}}) {
   let history = useHistory()
   const [hover, setHover] = useState(false)
   return (
-    <Box
-      border
-      pad='small'
-      margin={{bottom: 'small'}}
-      direction='row'
-      align='center'
-      round='xsmall'
-      style={{cursor: 'pointer'}}
-      onClick={() => history.push(`/build/${id}`)}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      background={hover ? 'light-3' : null}>
-      <Box fill='horizontal'>
-        <Text size='small' weight='bold'>{repository}</Text>
-        <Text size='small' color='dark-3'>{moment(insertedAt).fromNow()} {message && `-- ${message}`}</Text>
+    <Box pad={BUILD_PADDING}>
+      <Box
+        border
+        pad='small'
+        margin={{bottom: 'small'}}
+        direction='row'
+        align='center'
+        round='xsmall'
+        style={{cursor: 'pointer'}}
+        onClick={() => history.push(`/build/${id}`)}
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+        background={hover ? 'light-3' : null}>
+        <Box fill='horizontal'>
+          <Text size='small' weight='bold'>{repository}</Text>
+          <Text size='small' color='dark-3'>{moment(insertedAt).fromNow()} {message && `-- ${message}`}</Text>
+        </Box>
+        <BuildStatus status={status} />
       </Box>
-      <BuildStatus status={status} />
     </Box>
   )
 }
@@ -124,7 +128,9 @@ function BuildForm({setOpen}) {
 function CreateBuild() {
   return (
     <Modal target={
-      <Button round='xsmall' label='Create' />
+      <Box pad={{horizontal: 'small'}}>
+        <Button round='xsmall' pad={{horizontal: 'medium', vertical: 'xsmall'}} label='Create' />
+      </Box>
     }>
     {setOpen => (
       <Box width='40vw'>
@@ -158,19 +164,25 @@ export default function Builds() {
   const {edges} = data.builds
   return (
     <Box height='calc(100vh - 45px)' pad={{bottom: 'small'}}>
-      <ScrollableContainer>
-        <Box gap='small' pad={{horizontal: 'medium'}}>
-          <Box pad='small' direction='row' align='center' border='bottom' height='60px'>
-            <Box fill='horizontal'>
-              <Text weight='bold'>Builds</Text>
-            </Box>
-            <CreateBuild />
+      <Box gap='small'>
+        <Box
+          pad={{vertical: 'small', ...BUILD_PADDING}}
+          direction='row'
+          align='center'
+          border='bottom'
+          height='60px'>
+          <Box fill='horizontal' pad={{horizontal: 'small'}}>
+            <Text weight='bold' size='small'>Builds</Text>
+            <Text size='small' color='dark-3'>a list of historical changes managed by watchman</Text>
           </Box>
-          <Box>
-            {edges.map(({node}) => <Build key={node.id} build={node} />)}
-          </Box>
+          <CreateBuild />
         </Box>
-      </ScrollableContainer>
+        <Box height='calc(100vh - 105px)'>
+          <ScrollableContainer>
+          {edges.map(({node}) => <Build key={node.id} build={node} />)}
+          </ScrollableContainer>
+        </Box>
+      </Box>
     </Box>
   )
 }

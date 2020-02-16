@@ -103,6 +103,22 @@ func main() {
 			Usage:       "reads/modifies cli configuration",
 			Subcommands: configCommands(),
 		},
+		{
+			Name:    "webhook",
+			Aliases: []string{"wh"},
+			Usage:   "Posts to a watchman webhook",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "secret",
+					Usage: "the hmac secret to use",
+				},
+				cli.StringFlag{
+					Name:  "url",
+					Usage: "the url for your watchman instance",
+				},
+			},
+			Action: handleWebhook,
+		},
 	}
 
 	err := app.Run(os.Args)

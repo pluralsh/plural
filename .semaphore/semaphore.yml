@@ -61,3 +61,20 @@ blocks:
       commands:
       - make build APP_NAME=watchman
       - make push APP_NAME=watchman
+- name: deploy
+  dependencies: ['build']
+  skip:
+    when: "branch != 'master'"
+  task:
+    secrets:
+    - name: chartmart
+    prologue:
+      commands:
+      - checkout
+      - wget -O chartmart.cmd https://storage.googleapis.com/chartmart-assets-2/uploads/artifacts/2c21a449-2931-43cf-be3e-3a0818e5e739/chartmart
+      - chmod +x ./chartmart.cmd
+    jobs:
+    - name: "Deploy with watchman"
+      commands:
+      - export GIT_COMMIT_MESSAGE=$(git log -1 --pretty=%B | cat)
+      - ./chartmart.cmd webhook chartmart "${GIT_COMMIT_MESSAGE}" --secret "${CHARTMART_WEBHOOK_SECRET}" --url https://watchman.piazzaapp.com/v1/webhook

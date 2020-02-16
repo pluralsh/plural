@@ -28,3 +28,5 @@ erl_crash.dump
 /secrets/
 
 /.vscode
+
+/cmd/build

@@ -25,7 +25,8 @@ config :watchman, WatchmanWeb.Endpoint,
 
 config :watchman,
   git_user_name: "chartmart",
-  git_user_email: "chartmart@piazzaapp.com"
+  git_user_email: "chartmart@piazzaapp.com",
+  chartmart_url: "https://mart.piazzaapp.com/gql"
 
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",

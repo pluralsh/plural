@@ -2,7 +2,7 @@ defmodule Watchman.GraphQl do
   use Absinthe.Schema
   use Absinthe.Relay.Schema, :modern
   import Watchman.GraphQl.Helpers
-  alias Watchman.GraphQl.Resolvers.Build
+  alias Watchman.GraphQl.Resolvers.{Build, Chartmart}
 
   import_types Watchman.GraphQl.Schema
 
@@ -34,6 +34,10 @@ defmodule Watchman.GraphQl do
       arg :id, non_null(:id)
 
       resolve safe_resolver(&Build.resolve_build/2)
+    end
+
+    connection field :installations, node_type: :installation do
+      resolve &Chartmart.list_installations/2
     end
   end
 

@@ -56,7 +56,10 @@ defmodule Watchman.MixProject do
       {:dataloader, "~> 1.0.0"},
       {:cors_plug, "~> 2.0"},
       {:timex, "~> 3.6"},
-      {:quantum, "~> 2.3"}
+      {:quantum, "~> 2.3"},
+      {:yaml_elixir, "~> 2.4"},
+      {:poison, "~> 3.1"},
+      {:mojito, "~> 0.3.0"}
     ]
   end
 end

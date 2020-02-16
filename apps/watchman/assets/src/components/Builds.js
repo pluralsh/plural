@@ -11,6 +11,7 @@ import ScrollableContainer from './utils/ScrollableContainer'
 import { mergeEdges, appendEdge } from './graphql/utils'
 import { BeatLoader } from 'react-spinners'
 import { BreadcrumbsContext } from './Breadcrumbs'
+import { INSTALLATION_Q } from './graphql/chartmart'
 
 function BuildStatusInner({background, text, icon}) {
   return (
@@ -82,13 +83,21 @@ function BuildForm({setOpen}) {
       setOpen(false)
     }
   })
+  const {data} = useQuery(INSTALLATION_Q, {
+    onCompleted: ({installations: {edges}}) => {
+      setAttributes({...attributes, repository: edges[0].node.repository.name})
+    }
+  })
+  if (!data) return <Loading />
+  const {edges} = data.installations
+
   return (
     <Box gap='small' pad='medium'>
       <FormField label='repository'>
-        <TextInput
-          placeholder='chartmart'
+        <Select
+          options={edges.map(({node: {repository: {name}}}) => name)}
           value={attributes.repository}
-          onChange={({target: {value}}) => setAttributes({...attributes, repository: value})} />
+          onChange={({value}) => setAttributes({...attributes, repository: value})} />
       </FormField>
       <FormField label='message'>
         <TextInput

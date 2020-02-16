@@ -12,7 +12,7 @@ defmodule Watchman.GraphQl.ChartmartQueriesTest do
       installations = [%{id: "id", repository: %{id: "id2", name: "repo", description: "desc"}}]
 
       expect(Mojito, :post, fn _, _, ^body ->
-        {:ok, %{body: Jason.encode!(%{data: as_connection(installations)})}}
+        {:ok, %{body: Jason.encode!(%{data: %{installations: as_connection(installations)}})}}
       end)
 
       {:ok, %{data: %{"installations" => %{"pageInfo" => page_info, "edges" => [edge]}}}} = run_query("""

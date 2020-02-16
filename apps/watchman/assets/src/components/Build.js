@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useContext, useRef } from 'react'
-import { useParams } from 'react-router-dom'
-import { useQuery } from 'react-apollo'
+import { useParams, useHistory } from 'react-router-dom'
+import { useQuery, useMutation } from 'react-apollo'
 import { Box, Text } from 'grommet'
 import Line from 'react-lazylog/build/Line'
 import { ansiparse } from './utils/ansi'
-import { BUILD_Q, COMMAND_SUB, BUILD_SUB } from './graphql/builds'
+import { BUILD_Q, COMMAND_SUB, BUILD_SUB, CREATE_BUILD } from './graphql/builds'
 import Loading from './utils/Loading'
 import ScrollableContainer from './utils/ScrollableContainer'
 import { mergeEdges } from './graphql/utils'
@@ -13,6 +13,10 @@ import { Checkmark, StatusCritical } from 'grommet-icons'
 import { BeatLoader } from 'react-spinners'
 import { BreadcrumbsContext } from './Breadcrumbs'
 import './build.css'
+import Modal, { ModalHeader } from './utils/Modal'
+import Button from './utils/Button'
+
+ const HEADER_PADDING = {horizontal: 'medium', vertical: 'small'}
 
 function TimerInner({insertedAt, completedAt, status}) {
   const end = completedAt ? moment(completedAt) : moment()
@@ -44,12 +48,49 @@ function BuildTimer({insertedAt, completedAt, status}) {
   const background = status === "SUCCESSFUL" ? 'success' : (status === 'FAILED' ? 'error' : 'progress')
   const statusLabel = status === 'SUCCESSFUL' ? 'Passed, ' : (status === 'FAILED' ? 'Failed, ' : null)
   return (
-    <Box flex={false} pad='xsmall' background={background}>
-      <Timer
-        insertedAt={insertedAt}
-        completedAt={completedAt}
-        status={statusLabel} />
+    <Box flex={false} pad={HEADER_PADDING} border='left' height='65px' justify='center' align='center'>
+      <Box flex={false} pad='xsmall' background={background}>
+        <Timer
+          insertedAt={insertedAt}
+          completedAt={completedAt}
+          status={statusLabel} />
+      </Box>
     </Box>
+  )
+}
+
+function Rebuild({build: {repository, message, type}}) {
+  let history = useHistory()
+  const [hover, setHover] = useState(false)
+  const [mutation, {loading}] = useMutation(CREATE_BUILD, {
+    variables: {attributes: {repository, message, type}},
+    onCompleted: ({createBuild: {id}}) => history.push(`/build/${id}`)
+  })
+
+  return (
+    <Modal target={
+      <Box
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+        pad={HEADER_PADDING}
+        style={{cursor: 'pointer'}}
+        background={hover ? 'light-3' : null}
+        border='left'
+        height='65px'
+        justify='center'
+        align='center'>
+        <Text size='small'>restart</Text>
+      </Box>
+      }>
+      {setOpen => (
+        <Box width='40vw'>
+          <ModalHeader text='Are you sure you want to restart this build?' setOpen={setOpen} />
+          <Box direction='row' justify='end' pad='medium'>
+            <Button label='restart' onClick={mutation} loading={loading} />
+          </Box>
+        </Box>
+      )}
+    </Modal>
   )
 }
 
@@ -151,21 +192,20 @@ export default function Build() {
   const {buildId} = useParams()
   const {data, loading, subscribeToMore} = useQuery(BUILD_Q, {variables: {buildId}})
   const {setBreadcrumbs} = useContext(BreadcrumbsContext)
+
   useEffect(() => {
     setBreadcrumbs([
       {text: 'builds', url: '/'},
       {text: buildId, url: `/builds/${buildId}`}
     ])
-  }, [buildId])
 
-  useEffect(() => {
     const first = subscribeToMore({document: COMMAND_SUB, variables: {buildId}, updateQuery})
     const second = subscribeToMore({document: BUILD_SUB, variables: {buildId}, updateQuery})
     return () => {
       first()
       second()
     }
-  }, [subscribeToMore])
+  }, [buildId, subscribeToMore])
 
   if (!data || loading) return <Loading />
   const {commands: {edges}, ...build} = data.build
@@ -175,15 +215,15 @@ export default function Build() {
         flex={false}
         direction='row'
         align='center'
-        pad={{horizontal: 'medium', vertical: 'small'}}
         border='bottom'>
-        <Box fill='horizontal'>
+        <Box fill='horizontal' pad={HEADER_PADDING}>
           <Text size='small' weight='bold'>{build.repository}</Text>
           <Text size='small' color='dark-3'>{build.message}</Text>
         </Box>
         <BuildTimer insertedAt={build.insertedAt} completedAt={build.completedAt} status={build.status} />
+        <Rebuild build={build} />
       </Box>
-      <div style={{height: 'calc(100vh-100px)', overflow: 'auto'}}>
+      <div style={{height: 'calc(100vh-100px)', overflow: 'auto', backgroundColor: '#222222', paddingBottom: '19px'}}>
         <ScrollableContainer>
           {edges.map(({node}) => <Command key={node.id} command={node} />)}
         </ScrollableContainer>

@@ -61,8 +61,6 @@ defmodule Watchman.Deployer do
   defp commit_message(nil, repo), do: "watchman deployment for #{repo}"
   defp commit_message(message, repo), do: "watchman deployment for #{repo} -- #{message}"
 
-  defp log({:error, error}) do
-    Logger.info "Failed to deploy, error: #{inspect(error)}"
-  end
+  defp log({:error, error}), do: Logger.info "Failed to deploy, error: #{inspect(error)}"
   defp log(_), do: :ok
 end

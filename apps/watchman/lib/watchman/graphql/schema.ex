@@ -53,9 +53,21 @@ defmodule Watchman.GraphQl.Schema do
     timestamps()
   end
 
+  object :installation do
+    field :id, non_null(:id)
+    field :repository, :repository
+  end
+
+  object :repository do
+    field :id, non_null(:id)
+    field :name, non_null(:string)
+    field :description, :string
+  end
+
   delta :build
   delta :command
 
   connection node_type: :build
   connection node_type: :command
+  connection node_type: :installation
 end

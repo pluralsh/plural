@@ -293,6 +293,7 @@ defmodule GraphQl do
       middleware GraphQl.Middleware.Authenticated
       arg :id,   non_null(:id)
       arg :repo, non_null(:string)
+      arg :message, :string
 
       resolve safe_resolver(&User.ping_webhook/2)
     end

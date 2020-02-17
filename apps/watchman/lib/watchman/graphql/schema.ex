@@ -18,7 +18,7 @@ defmodule Watchman.GraphQl.Schema do
   end
 
   enum :webhook_health do
-    value :heathy
+    value :healthy
     value :unhealthy
   end
 

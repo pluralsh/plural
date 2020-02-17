@@ -12,10 +12,30 @@ import { Box, Text, FormField, TextInput } from 'grommet'
 const MAX_LEN = 60
 const trim = (url) => url.length > 10 ? `${url.slice(0, MAX_LEN)}...` : url
 
-function Webhook({webhook: {url}}) {
+function WebhookHealth({health}) {
+  const background = health === "HEALTHY" ? 'success' : 'error'
   return (
-    <Box margin={{bottom: 'small', ...BUILD_PADDING}} pad='small' border round='xsmall'>
-      <Text size='small'>{trim(url)}</Text>
+    <Box background={background} pad='xsmall'>
+      <Text size='small'>{health.toLowerCase()}</Text>
+    </Box>
+  )
+}
+
+function Webhook({webhook: {url, health}}) {
+  return (
+    <Box
+      margin={{bottom: 'small', ...BUILD_PADDING}}
+      pad='small'
+      align='center'
+      border
+      round='xsmall'
+      direction='row'>
+      <Box fill='horizontal'>
+        <Text size='small'>{trim(url)}</Text>
+      </Box>
+      <Box flex={false}>
+        <WebhookHealth health={health} />
+      </Box>
     </Box>
   )
 }

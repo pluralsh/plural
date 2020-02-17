@@ -19,6 +19,7 @@ defmodule WatchmanWeb.GqlTest do
 
       %{"data" => %{"builds" => found}} =
         conn
+        |> put_req_header("authorization", "Bearer #{Watchman.conf(:webhook_secret)}")
         |> post("/gql", %{query: @document, variables: %{}})
         |> json_response(200)
 

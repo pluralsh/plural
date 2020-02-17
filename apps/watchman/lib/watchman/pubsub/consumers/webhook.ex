@@ -2,7 +2,6 @@ defmodule Watchman.PubSub.Consumers.Webhook do
   use Piazza.PubSub.Consumer,
     broadcaster: Watchman.PubSub.Broadcaster,
     max_demand: 10
-
   require Logger
 
   @headers [
@@ -11,7 +10,6 @@ defmodule Watchman.PubSub.Consumers.Webhook do
   ]
 
   def handle_event(event) do
-    Logger.info "event received by webhook consumer"
     with wh when is_binary(wh) <- get_webhook(),
         {:ok, payload} <- Watchman.PubSub.Webhook.deliver(event) do
       Logger.info "Attempting to deliver webhook"

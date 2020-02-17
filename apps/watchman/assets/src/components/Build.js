@@ -119,11 +119,11 @@ function ExitStatus({exitCode}) {
   )
 }
 
-function LogLine({line, number, last}) {
+function LogLine({line, number}) {
   const lineRef = useRef()
   useEffect(() => {
-    lineRef && lineRef.current && line === last && lineRef.scrollIntoView()
-  }, [lineRef, line, last])
+    lineRef && lineRef.current && lineRef.current.scrollIntoView(true)
+  }, [lineRef, line])
 
   return (
     <div ref={lineRef}>
@@ -147,7 +147,7 @@ function Log({text}) {
 function Command({command}) {
   const ref = useRef()
   const stdout = command.stdout
-  useEffect(() => ref && ref.current && ref.current.scrollIntoView(true), [ref])
+  useEffect(() => ref && ref.current && ref.current.scrollIntoView(), [ref])
 
   return (
     <Box ref={ref}>

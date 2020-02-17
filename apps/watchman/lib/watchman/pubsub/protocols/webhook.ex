@@ -13,7 +13,7 @@ defmodule Watchman.Webhook.Request do
   def structured(%Build{id: id, repository: repo, status: status}) do
     """
 <root>
-  <attachment accent="#{color(status)}" direction="row" pad="small" gap="xsmall">
+  <attachment accent="#{color(status)}" direction="row" pad="small" gap="xsmall" margin="small">
     <text>#{status_modifier(status)} #{repo} using watchman:</text>
     <link href="#{build_url(id)}">
       build logs

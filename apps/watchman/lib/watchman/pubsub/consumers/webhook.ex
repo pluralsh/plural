@@ -3,14 +3,18 @@ defmodule Watchman.PubSub.Consumers.Webhook do
     broadcaster: Watchman.PubSub.Broadcaster,
     max_demand: 10
 
+  require Logger
+
   @headers [
     {"content-type", "application/json"},
     {"accept", "application/json"}
   ]
 
   def handle_event(event) do
+    Logger.info "event received by webhook consumer"
     with wh when is_binary(wh) <- get_webhook(),
-         {:ok, payload} <- Watchman.PubSub.Webhook.deliver(event) do
+        {:ok, payload} <- Watchman.PubSub.Webhook.deliver(event) do
+      Logger.info "Attempting to deliver webhook"
       Mojito.post(wh, @headers, Jason.encode!(payload))
     end
   end

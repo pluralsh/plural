@@ -147,7 +147,7 @@ function Log({text}) {
 function Command({command}) {
   const ref = useRef()
   const stdout = command.stdout
-  useEffect(() => ref && ref.current && ref.current.scrollIntoView(true), [ref, command.stdout])
+  useEffect(() => ref && ref.current && ref.current.scrollIntoView(true), [ref])
 
   return (
     <Box ref={ref}>

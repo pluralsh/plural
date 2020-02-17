@@ -10,6 +10,8 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "apollo-boost": "^0.4.7",
+    "apollo-link-context": "^1.0.19",
+    "apollo-link-error": "^1.1.12",
     "cpx": "^1.5.0",
     "graphql": "^14.6.0",
     "grommet": "^2.10.0",

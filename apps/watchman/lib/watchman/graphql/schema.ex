@@ -1,6 +1,6 @@
 defmodule Watchman.GraphQl.Schema do
   use Watchman.GraphQl.Schema.Base
-  alias Watchman.GraphQl.Resolvers.Build
+  alias Watchman.GraphQl.Resolvers.{Build, Chartmart}
   import_types Absinthe.Plug.Types
 
   ## ENUMS
@@ -84,6 +84,7 @@ defmodule Watchman.GraphQl.Schema do
     field :id, non_null(:id)
     field :name, non_null(:string)
     field :description, :string
+    field :configuration, :string, resolve: &Chartmart.resolve_configuration/3
   end
 
   delta :build

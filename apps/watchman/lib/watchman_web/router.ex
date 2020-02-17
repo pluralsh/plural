@@ -5,6 +5,10 @@ defmodule WatchmanWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :auth do
+    plug WatchmanWeb.Plugs.Authorized
+  end
+
   get "/health", WatchmanWeb.HealthController, :health
 
   scope "/v1", WatchmanWeb do
@@ -17,8 +21,12 @@ defmodule WatchmanWeb.Router do
     schema: Watchman.GraphQl,
     interface: :advanced
 
-  forward "/gql", Absinthe.Plug,
-    schema: Watchman.GraphQl
+  scope "/" do
+    pipe_through [:auth]
+
+    forward "/gql", Absinthe.Plug,
+      schema: Watchman.GraphQl
+  end
 
   scope "/", WatchmanWeb do
     get "/", PageController, :index

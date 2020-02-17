@@ -4,6 +4,7 @@ export const WebhookFragment = gql`
   fragment WebhookFragment on Webhook {
     id
     url
+    health
   }
 `;
 

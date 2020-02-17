@@ -29,4 +29,15 @@ defmodule Watchman.Services.Base do
     end
   end
   def when_ok(error, _), do: error
+
+  def handle_notify(event_type, resource, additional \\ %{}) do
+    Map.new(additional)
+    |> Map.put(:item, resource)
+    |> event_type.__struct__()
+    |> Watchman.PubSub.Broadcaster.notify()
+    |> case do
+      :ok   -> {:ok, resource}
+      _error -> {:error, :internal_error}
+    end
+  end
 end

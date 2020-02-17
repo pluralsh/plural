@@ -1,8 +1,9 @@
 defmodule Watchman.Services.BuildsTest do
   use Watchman.DataCase, async: true
   alias Watchman.Services.Builds
+  alias Watchman.PubSub
 
-  describe "Command Collectable" do
+  describe "Command implements Collectable" do
     test "A command can accumulate a string stream" do
       command = insert(:command)
 
@@ -21,6 +22,27 @@ defmodule Watchman.Services.BuildsTest do
 
       assert command.command == exec
       assert command.build_id == build.id
+    end
+  end
+
+  describe "fail/1" do
+    test "Failed builds broadcast" do
+      build = insert(:build)
+
+      {:ok, failed} = Builds.fail(build)
+
+      assert failed.status == :failed
+      assert_receive {:event, %PubSub.BuildFailed{item: ^failed}}
+    end
+  end
+
+  describe "succeed/1" do
+    test "Succeded builds broadcast" do
+      build = insert(:build)
+      {:ok, succeed} = Builds.succeed(build)
+
+      assert succeed.status == :successful
+      assert_receive {:event, %PubSub.BuildSucceeded{item: ^succeed}}
     end
   end
 

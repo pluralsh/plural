@@ -1,5 +1,6 @@
 defmodule Watchman.Services.Builds do
   use Watchman.Services.Base
+  alias Watchman.PubSub
   alias Watchman.Schema.{Build, Command}
 
   def get!(id), do: Repo.get!(Build, id)
@@ -40,11 +41,15 @@ defmodule Watchman.Services.Builds do
   def running(build),
     do: modify_status(build, :running)
 
-  def succeed(build),
-    do: modify_status(build, :successful)
+  def succeed(build) do
+    modify_status(build, :successful)
+    |> notify(:succeed)
+  end
 
-  def fail(build),
-    do: modify_status(build, :failed)
+  def fail(build) do
+    modify_status(build, :failed)
+    |> notify(:failed)
+  end
 
   defp modify_status(build, state) do
     build
@@ -61,4 +66,10 @@ defmodule Watchman.Services.Builds do
     Watchman.Deployer.wake()
     {:ok, build}
   end
+
+  defp notify({:ok, %Build{} = build}, :succeed),
+    do: handle_notify(PubSub.BuildSucceeded, build)
+  defp notify({:ok, %Build{} = build}, :failed),
+    do: handle_notify(PubSub.BuildFailed, build)
+  defp notify(error, _), do: error
 end

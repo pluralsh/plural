@@ -24,6 +24,10 @@ config :core, :consumers, [
   Core.PubSub.Consumers.Fanout
 ]
 
+config :watchman, :consumers, [
+  Watchman.PubSub.Consumers.Webhook
+]
+
 config :core, Core.Email.Mailer,
   adapter: Bamboo.SendGridAdapter,
   api_key: {:system, "SENGRID_API_KEY"}

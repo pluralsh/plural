@@ -194,8 +194,6 @@ export default function Integrations({integrations: {edges, pageInfo}, fetchMore
         </Anchor>
       </Box>
       <Carousel
-        dots
-        draggable={false}
         slidesPerPage={1}
         offset={12}
         edges={edges}

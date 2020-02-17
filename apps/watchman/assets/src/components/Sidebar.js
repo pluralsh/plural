@@ -33,7 +33,7 @@ const OPTIONS = [
 
 export default function Sidebar() {
   const loc = useLocation()
-  const active = Math.max(OPTIONS.findIndex(({path}) => path === loc.pathname), 0)
+  const active = OPTIONS.findIndex(({path}) => path === loc.pathname)
 
   return (
     <Box background='sidebar' height='100vh'>

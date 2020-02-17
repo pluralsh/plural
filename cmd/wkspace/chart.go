@@ -268,7 +268,7 @@ func (w *Workspace) InstallHelm() error {
 		return err
 	}
 
-	utils.Warn("Applying helm chart")
+	utils.Warn("Applying helm chart: ")
 	return w.Bounce()
 }
 

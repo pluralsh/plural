@@ -15,7 +15,12 @@ const trim = (url) => url.length > 10 ? `${url.slice(0, MAX_LEN)}...` : url
 function WebhookHealth({health}) {
   const background = health === "HEALTHY" ? 'success' : 'error'
   return (
-    <Box background={background} pad='xsmall'>
+    <Box
+      background={background}
+      justify='center'
+      align='center'
+      round='xsmall'
+      pad={{horizontal: 'medium', vertical: 'xsmall'}}>
       <Text size='small'>{health.toLowerCase()}</Text>
     </Box>
   )

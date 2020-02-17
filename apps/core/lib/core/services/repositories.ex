@@ -1,6 +1,8 @@
 defmodule Core.Services.Repositories do
   use Core.Services.Base
   import Core.Policies.Repository
+
+  alias Core.PubSub
   alias Core.Services.Users
   alias Core.Auth.Jwt
   alias Core.Schema.{
@@ -210,6 +212,7 @@ defmodule Core.Services.Repositories do
     |> Installation.changeset(attrs)
     |> allow(user, :edit)
     |> when_ok(:update)
+    |> notify(:update)
   end
 
   @doc """
@@ -322,4 +325,8 @@ defmodule Core.Services.Repositories do
   end
   def authorize(%Repository{} = repo, user),
     do: allow(repo, user, :access)
+
+  defp notify({:ok, %Installation{} = inst}, :update),
+    do: handle_notify(PubSub.InstallationUpdated, inst)
+  defp notify(error, _), do: error
 end

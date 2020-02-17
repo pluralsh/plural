@@ -24,4 +24,6 @@ config :watchman,
   webhook_secret: get_env("WEBHOOK_SECRET"),
   git_ssh_key: {:home, ".ssh/id_rsa"},
   git_user_name: get_env("GIT_USER", "chartmart"),
-  git_user_email: get_env("GIT_EMAIL", "chartmart@piazzaapp.com")
+  git_user_email: get_env("GIT_EMAIL", "chartmart@piazzaapp.com"),
+  url: get_env("HOST"),
+  incoming_webhook: get_env("PIAZZA_INCOMING_WEBHOOK")

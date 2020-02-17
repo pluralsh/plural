@@ -76,5 +76,5 @@ blocks:
     jobs:
     - name: "Deploy with watchman"
       commands:
-      - export GIT_COMMIT_MESSAGE=$(git log -1 --pretty=%B | cat)
+      - export GIT_COMMIT_MESSAGE=$(git log -1 --pretty=%B | cat | head -n 1)
       - ./chartmart.cmd webhook chartmart "${GIT_COMMIT_MESSAGE}" --secret "${CHARTMART_WEBHOOK_SECRET}" --url https://watchman.piazzaapp.com/v1/webhook

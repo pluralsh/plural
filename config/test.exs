@@ -47,5 +47,7 @@ config :watchman,
   webhook_secret: "webhook_secret",
   git_ssh_key: :pass
 
+config :watchman, :consumers, [Watchman.EchoConsumer]
+
 config :core, Core.Email.Mailer,
   adapter: Bamboo.TestAdapter

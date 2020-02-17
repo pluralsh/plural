@@ -45,6 +45,8 @@ defmodule Watchman.Deployer do
     end
   end
 
+  def handle_info(_, state), do: {:noreply, state}
+
   defp perform(storage, %Build{repository: repo, message: message} = build) do
     with {:ok, _} <- Builds.running(build),
          {:ok, _} <- storage.init(),

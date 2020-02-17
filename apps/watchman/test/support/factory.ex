@@ -16,4 +16,12 @@ defmodule Watchman.Factory do
       command: "some command"
     }
   end
+
+  def webhook_factory do
+    %Schema.Webhook{
+      url: sequence(:webhook, &"https://example.com/#{&1}"),
+      type: :piazza,
+      health: :healthy
+    }
+  end
 end

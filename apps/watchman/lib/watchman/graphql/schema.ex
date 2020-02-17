@@ -17,12 +17,25 @@ defmodule Watchman.GraphQl.Schema do
     value :bounce
   end
 
+  enum :webhook_health do
+    value :heathy
+    value :unhealthy
+  end
+
+  enum :webhook_type do
+    value :piazza
+  end
+
   ## INPUTS
 
   input_object :build_attributes do
     field :repository, non_null(:string)
     field :type,       :build_type
     field :message,    :string
+  end
+
+  input_object :webhook_attributes do
+    field :url, non_null(:string)
   end
 
   ## OBJECTS
@@ -53,6 +66,15 @@ defmodule Watchman.GraphQl.Schema do
     timestamps()
   end
 
+  object :webhook do
+    field :id,      non_null(:id)
+    field :url,     non_null(:string)
+    field :healthy, non_null(:webhook_health)
+    field :type,    non_null(:webhook_type)
+
+    timestamps()
+  end
+
   object :installation do
     field :id, non_null(:id)
     field :repository, :repository
@@ -70,4 +92,5 @@ defmodule Watchman.GraphQl.Schema do
   connection node_type: :build
   connection node_type: :command
   connection node_type: :installation
+  connection node_type: :webhook
 end

@@ -6,8 +6,8 @@ import Loading from './utils/Loading'
 import { Box, Text, FormField, TextInput, Select } from 'grommet'
 import moment from 'moment'
 import Button from './utils/Button'
+import Scroller from './utils/Scroller'
 import Modal, { ModalHeader } from './utils/Modal'
-import ScrollableContainer from './utils/ScrollableContainer'
 import { mergeEdges, appendEdge } from './graphql/utils'
 import { BeatLoader } from 'react-spinners'
 import { BreadcrumbsContext } from './Breadcrumbs'
@@ -150,7 +150,7 @@ function applyDelta({builds: {edges, ...rest}, ...prev}, {delta, payload}) {
 }
 
 export default function Builds() {
-  const {data, loading, subscribeToMore} = useQuery(BUILDS_Q, {fetchPolicy: 'cache-and-network'})
+  const {data, loading, subscribeToMore, fetchMore} = useQuery(BUILDS_Q, {fetchPolicy: 'cache-and-network'})
   const {setBreadcrumbs} = useContext(BreadcrumbsContext)
   useEffect(() => setBreadcrumbs([{text: 'builds', url: '/'}]), [])
   useEffect(() => subscribeToMore({
@@ -159,9 +159,9 @@ export default function Builds() {
       return data ? applyDelta(prev, data.buildDelta) : prev
   }}), [subscribeToMore])
 
-  if (loading || !data) return <Loading />
+  if (loading && !data) return <Loading />
 
-  const {edges} = data.builds
+  const {edges, pageInfo} = data.builds
   return (
     <Box height='calc(100vh - 45px)' pad={{bottom: 'small'}}>
       <Box gap='small'>
@@ -178,9 +178,19 @@ export default function Builds() {
           <CreateBuild />
         </Box>
         <Box height='calc(100vh - 105px)'>
-          <ScrollableContainer>
-          {edges.map(({node}) => <Build key={node.id} build={node} />)}
-          </ScrollableContainer>
+          <Scroller
+            id='builds'
+            style={{height: '100%', overflow: 'auto'}}
+            edges={edges}
+            mapper={({node}) => <Build key={node.id} build={node} />}
+            onLoadMore={() => pageInfo.hasNextPage && fetchMore({
+              variables: {cursor: pageInfo.endCursor},
+              updateQuery: (prev, {fetchMoreResult: {builds}}) => {
+                return {...prev, builds: {
+                  ...prev.builds, pageInfo: builds.pageInfo, edges: [...edges, ...builds.edges]
+                }}
+              }
+            })} />
         </Box>
       </Box>
     </Box>

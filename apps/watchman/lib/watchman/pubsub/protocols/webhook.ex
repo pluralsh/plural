@@ -32,7 +32,7 @@ defmodule Watchman.Webhook.Request do
   defp status_modifier(:successful), do: "Successfully deployed"
   defp status_modifier(:failed), do: "Failed to deploy"
 
-  defp build_url(id), do: "#{Watchman.conf(:url)}/build/#{id}"
+  defp build_url(id), do: "https://#{Watchman.conf(:url)}/build/#{id}"
 end
 
 defimpl Watchman.PubSub.Webhook, for: [Watchman.PubSub.BuildSucceeded, Watchman.PubSub.BuildFailed] do

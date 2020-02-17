@@ -9,7 +9,7 @@ import { MARKDOWN_STYLING } from './Chart'
 
 const ICON_SIZE = '30px'
 const SMALL_ICON_SIZE = '13px'
-const SHA_LENGTH = 10
+const SHA_LENGTH = 8
 
 function trim(sha) {
   if (sha.length > SHA_LENGTH) return `${sha.substring(0, SHA_LENGTH)}...`
@@ -72,9 +72,9 @@ export function Artifact({name, type, blob, sha, readme, platform, filesize}) {
       width='50%'
       gap='medium'
       align='center'
-      pad='medium'>
+      pad='small'>
       <ArtifactIcon type={type} />
-      <Box ref={dropRef} gap='small'>
+      <Box ref={dropRef} gap='xsmall'>
         <Box direction='row' gap='xsmall' align='center'>
           <Anchor size='small' weight='bold' onClick={() => download(blob)}>{name}</Anchor>
           <ArtifactPlatform platform={platform} />

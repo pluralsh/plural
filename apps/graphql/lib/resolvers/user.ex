@@ -53,9 +53,14 @@ defmodule GraphQl.Resolvers.User do
     |> with_jwt()
   end
 
-  def ping_webhook(%{repo: repo, id: webhook_id}, _) do
+  def ping_webhook(%{repo: repo, id: webhook_id} = args, _) do
     webhook = Users.get_webhook!(webhook_id)
-    case Core.Services.Users.post_webhook(%{repository: repo, message: "webhook ping"}, webhook) do
+
+    Core.Services.Users.post_webhook(%{
+      repository: repo,
+      message: Map.get(args, :message, "webhook ping")
+    }, webhook)
+    |> case do
       {:ok, %{body: body, status_code: code, headers: headers}} when is_list(headers) ->
         {:ok, %{body: body, status_code: code, headers: Map.new(headers)}}
       error -> error

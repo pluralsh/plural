@@ -1,5 +1,7 @@
 defmodule Core.Services.RepositoriesTest do
   use Core.SchemaCase, async: true
+
+  alias Core.PubSub
   alias Core.Services.Repositories
   alias Piazza.Crypto.RSA
 
@@ -83,6 +85,7 @@ defmodule Core.Services.RepositoriesTest do
 
       {:ok, updated} = Repositories.update_installation(%{context: %{some: "value"}}, inst.id, user)
 
+      assert_receive {:event, %PubSub.InstallationUpdated{item: ^updated}}
       assert updated.context.some == "value"
     end
 

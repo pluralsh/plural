@@ -2,6 +2,7 @@ defmodule Core.Services.Payments do
   use Core.Services.Base
   import Core.Policies.Payments
 
+  alias Core.PubSub
   alias Core.Services.{Repositories}
   alias Core.Schema.{
     Publisher,
@@ -218,6 +219,7 @@ defmodule Core.Services.Payments do
       |> Core.Repo.update()
     end)
     |> execute(extract: :finalized)
+    |> notify(:create)
   end
   def create_subscription(attrs, plan_id, inst_id, %User{} = user) do
     plan = get_plan!(plan_id)
@@ -257,6 +259,7 @@ defmodule Core.Services.Payments do
       end
     end)
     |> execute(extract: :db)
+    |> notify(:update)
   end
   def update_line_item(attrs, subscription_id, user),
     do: update_line_item(attrs, get_subscription!(subscription_id), user)
@@ -310,6 +313,7 @@ defmodule Core.Services.Payments do
       |> Core.Repo.update()
     end)
     |> execute(extract: :finalized)
+    |> notify(:update)
   end
   def update_plan(plan_id, sub_id, user) do
     get_plan!(plan_id) |> update_plan(get_subscription!(sub_id), user)
@@ -373,4 +377,10 @@ defmodule Core.Services.Payments do
 
   defp stripe_interval(:monthly), do: "month"
   defp stripe_interval(:yearly), do: "year"
+
+  defp notify({:ok, %Subscription{} = sub}, :create),
+    do: handle_notify(PubSub.SubscriptionCreated, sub)
+  defp notify({:ok, %Subscription{} = sub}, :update),
+    do: handle_notify(PubSub.SubscriptionUpdated, sub)
+  defp notify(error, _), do: error
 end

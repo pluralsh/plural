@@ -1,6 +1,7 @@
 defmodule Core.Services.PaymentsTest do
   use Core.SchemaCase, async: true
   use Mimic
+  alias Core.PubSub
   alias Core.Services.Payments
 
   describe "#create_publisher_account" do
@@ -159,6 +160,8 @@ defmodule Core.Services.PaymentsTest do
       assert subscription.customer_id == "cus_id2"
       assert subscription.external_id == "sub_id"
       assert subscription.line_items.item_id == "item_id"
+
+      assert_receive {:event, %PubSub.SubscriptionCreated{item: ^subscription}}
     end
 
     test "It can create a subscription with line items" do
@@ -272,6 +275,8 @@ defmodule Core.Services.PaymentsTest do
         user
       )
 
+      assert_receive {:event, %PubSub.SubscriptionUpdated{item: ^subscription}}
+
       assert subscription.line_items.item_id == "some_id"
       [%{dimension: "storage"} = storage, %{dimension: "user"} = user] = subscription.line_items.items
 
@@ -377,6 +382,8 @@ defmodule Core.Services.PaymentsTest do
       )
 
       {:ok, updated} = Payments.update_plan(plan, subscription, user)
+
+      assert_receive {:event, %PubSub.SubscriptionUpdated{item: ^updated}}
 
       assert updated.external_id == "sub_id"
       assert updated.line_items.item_id == "item_id"

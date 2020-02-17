@@ -21,7 +21,8 @@ config :logger, level: :info
 config :goth, json: {:system, "GCP_CREDENTIALS"}
 
 config :core, :consumers, [
-  Core.PubSub.Consumers.Fanout
+  Core.PubSub.Consumers.Fanout,
+  Core.PubSub.Consumers.Webhook
 ]
 
 config :watchman, :consumers, [

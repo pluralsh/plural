@@ -48,6 +48,7 @@ config :watchman,
   git_ssh_key: :pass
 
 config :watchman, :consumers, [Watchman.EchoConsumer]
+config :core, :consumers, [Core.EchoConsumer]
 
 config :core, Core.Email.Mailer,
   adapter: Bamboo.TestAdapter

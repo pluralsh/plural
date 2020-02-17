@@ -6,7 +6,7 @@ import Builds from './Builds'
 import Build from './Build'
 import BreadcrumbProvider, { Breadcrumbs } from './Breadcrumbs'
 
-const SIDEBAR_WIDTH = '160px'
+const SIDEBAR_WIDTH = '220px'
 
 export default function Watchman() {
   return (

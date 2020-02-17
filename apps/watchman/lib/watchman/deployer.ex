@@ -39,7 +39,6 @@ defmodule Watchman.Deployer do
     case Builds.poll() do
       nil -> {:noreply, state}
       %Build{} = build ->
-        Command.set_build(build)
         perform(storage, build) |> log()
         {:noreply, state}
     end
@@ -47,13 +46,27 @@ defmodule Watchman.Deployer do
 
   def handle_info(_, state), do: {:noreply, state}
 
+  defp perform(storage, %Build{repository: repo, type: :bounce} = build) do
+    with_build(build, fn ->
+      with {:ok, _} <- storage.init(),
+        do: Chartmart.bounce(repo)
+    end)
+  end
+
   defp perform(storage, %Build{repository: repo, message: message} = build) do
+    with_build(build, fn ->
+      with {:ok, _} <- storage.init(),
+           {:ok, _} <- Chartmart.build(repo),
+           {:ok, _} <- Chartmart.deploy(repo),
+           {:ok, _} <- storage.revise(commit_message(message, repo)),
+        do: storage.push()
+    end)
+  end
+
+  defp with_build(%Build{} = build, fun) when is_function(fun) do
+    Command.set_build(build)
     with {:ok, _} <- Builds.running(build),
-         {:ok, _} <- storage.init(),
-         {:ok, _} <- Chartmart.build(repo),
-         {:ok, _} <- Chartmart.deploy(repo),
-         {:ok, _} <- storage.revise(commit_message(message, repo)),
-         {:ok, _} <- storage.push() do
+         {:ok, _} <- fun.() do
       Builds.succeed(build)
     else
       _ -> Builds.fail(build)

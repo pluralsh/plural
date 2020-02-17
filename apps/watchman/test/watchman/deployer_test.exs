@@ -32,12 +32,33 @@ defmodule Watchman.DeployerTest do
       assert_receive :git_push
 
       assert_receive {:commit, msg}
-      :timer.sleep(500)
+      :timer.sleep(100)
       assert msg =~ repo
 
       refetched = refetch(build)
       assert refetched.status == :successful
       assert refetched.completed_at
+    end
+
+    test "It can handle bounce deploys" do
+      bounce = insert(:build, type: :bounce)
+      myself = self()
+      echo = fn msg ->
+        send myself, msg
+        {:ok, msg}
+      end
+
+      expect(Git, :init, fn -> echo.(:git_init) end)
+      expect(Chartmart, :bounce, fn repo -> echo.({:bounce, repo}) end)
+
+      :ok = Watchman.Deployer.wake()
+
+      assert_receive :git_init
+      assert_receive {:bounce, repo}
+      assert bounce.repository == repo
+      :timer.sleep(100)
+
+      assert refetch(bounce).status == :successful
     end
   end
 end

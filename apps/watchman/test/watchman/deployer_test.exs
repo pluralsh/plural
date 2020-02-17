@@ -61,4 +61,17 @@ defmodule Watchman.DeployerTest do
       assert refetch(bounce).status == :successful
     end
   end
+
+  describe "update/2" do
+    @tag :skip
+    test "It can push an update to a values.yaml file" do
+      expect(Git, :init, fn -> {:ok, :init} end)
+      |> expect(:revise, fn _ -> {:ok, :commit} end)
+      |> expect(:push, fn -> {:ok, :push} end)
+
+      expect(File, :write, fn _, _ -> :ok end)
+
+      {:ok, "content"} = Watchman.Deployer.update("repo", "content")
+    end
+  end
 end

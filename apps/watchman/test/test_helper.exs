@@ -3,6 +3,7 @@ Mimic.copy(Watchman.Storage.Git)
 Mimic.copy(Watchman.Commands.Chartmart)
 Mimic.copy(Watchman.Commands.Command)
 Mimic.copy(Mojito)
+# Mimic.copy(File)
 
 ExUnit.start()
 Ecto.Adapters.SQL.Sandbox.mode(Watchman.Repo, :manual)

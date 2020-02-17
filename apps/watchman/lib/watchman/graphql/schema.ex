@@ -69,7 +69,7 @@ defmodule Watchman.GraphQl.Schema do
   object :webhook do
     field :id,      non_null(:id)
     field :url,     non_null(:string)
-    field :healthy, non_null(:webhook_health)
+    field :health,  non_null(:webhook_health)
     field :type,    non_null(:webhook_type)
 
     timestamps()

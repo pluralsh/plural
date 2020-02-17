@@ -42,7 +42,7 @@ function BuildStatus({status}) {
   }
 }
 
-const BUILD_PADDING = {horizontal: 'medium'}
+export const BUILD_PADDING = {horizontal: 'medium'}
 
 function Build({build: {id, repository, status, insertedAt, message}}) {
   let history = useHistory()

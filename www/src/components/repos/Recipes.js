@@ -100,7 +100,6 @@ export default function Recipes({repository, edges, pageInfo, fetchMore}) {
       <Text size='small' style={{fontWeight: 500}}>Recipes</Text>
       <Carousel
         draggable={false}
-        dots
         slidesPerPage={3}
         offset={12}
         edges={edges}

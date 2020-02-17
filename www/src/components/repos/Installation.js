@@ -105,7 +105,6 @@ function PlanCarousel({repository}) {
       <Box pad='small' gap='small'>
         {plans.length > 0 ?
           <Carousel
-            dots
             draggable={false}
             slidesPerPage={1}
             offset={12}
@@ -130,7 +129,7 @@ function PlanCarousel({repository}) {
   )
 }
 
-function Installation({repository, onUpdate, noHelm, open, integrations, fetchMore}) {
+export default function Installation({repository, onUpdate, noHelm, open, integrations, fetchMore}) {
   const [mutation] = useMutation(INSTALL_REPO, {
     variables: {repositoryId: repository.id},
     update: (cache, { data: { createInstallation } }) => {
@@ -180,5 +179,3 @@ chartmart deploy ${repository.name}`}
     </Box>
   )
 }
-
-export default Installation

@@ -1,36 +1,58 @@
 defmodule Watchman.Webhook.BuildTest do
-  use Watchman.DataCase, async: true
+  use Watchman.DataCase
   use Mimic
   alias Watchman.PubSub.Consumers.Webhook
   alias Watchman.PubSub
 
-  @wh_url Watchman.conf(:incoming_webhook)
+  setup :set_mimic_global
 
   describe "BuildFailed" do
     test "it will send a failed webhook" do
       build = insert(:build, status: :failed)
-      expect(Mojito, :post, fn @wh_url, _, payload -> Jason.decode(payload) end)
+      %{url: url} = wh = insert(:webhook)
+
+      myself = self()
+      expect(Mojito, :post, fn ^url, _, payload ->
+        decoded = Jason.decode!(payload)
+        send myself, {:payload, decoded}
+        {:ok, decoded}
+      end)
 
       event = %PubSub.BuildFailed{item: build}
-      {:ok, decoded} = Webhook.handle_event(event)
+      Webhook.handle_event(event)
 
-      assert decoded["text"] =~ build.repository
-      assert decoded["structured_message"] =~ build.id
-      assert decoded["structured_message"] =~ "red"
+      assert_receive {:payload, payload}
+
+      assert payload["text"] =~ build.repository
+      assert payload["structured_message"] =~ build.id
+      assert payload["structured_message"] =~ "red"
+
+      assert refetch(wh).health == :healthy
     end
   end
 
   describe "BuildSucceeded" do
     test "it will send a succeeded webhook" do
       build = insert(:build, status: :successful)
-      expect(Mojito, :post, fn @wh_url, _, payload -> Jason.decode(payload) end)
+      %{url: url} = wh = insert(:webhook)
+
+      myself = self()
+      expect(Mojito, :post, fn ^url, _, payload ->
+        decoded = Jason.decode!(payload)
+        send myself, {:payload, decoded}
+        {:ok, decoded}
+      end)
 
       event = %PubSub.BuildSucceeded{item: build}
-      {:ok, decoded} = Webhook.handle_event(event)
+      Webhook.handle_event(event)
 
-      assert decoded["text"] =~ build.repository
-      assert decoded["structured_message"] =~ build.id
-      assert decoded["structured_message"] =~ "green"
+      assert_receive {:payload, payload}
+
+      assert payload["text"] =~ build.repository
+      assert payload["structured_message"] =~ build.id
+      assert payload["structured_message"] =~ "green"
+
+      assert refetch(wh).health == :healthy
     end
   end
 end

@@ -24,7 +24,6 @@ export default function Carousel({edges, mapper, fetchMore, ...props}) {
       fetchMore && fetchMore()
     }
   }, [index, len, fetchMore])
-  console.log(index)
 
   let entries = Array.from(lookahead(edges, (edge, next) => mapper(edge, next)))
   return (

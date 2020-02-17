@@ -3,24 +3,23 @@ defmodule Watchman.PubSub.Consumers.Webhook do
     broadcaster: Watchman.PubSub.Broadcaster,
     max_demand: 10
   require Logger
-
-  @headers [
-    {"content-type", "application/json"},
-    {"accept", "application/json"}
-  ]
+  alias Watchman.Services.Webhooks
 
   def handle_event(event) do
-    with wh when is_binary(wh) <- get_webhook(),
-        {:ok, payload} <- Watchman.PubSub.Webhook.deliver(event) do
-      Logger.info "Attempting to deliver webhook"
-      Mojito.post(wh, @headers, Jason.encode!(payload))
-    end
-  end
+    with {:ok, {build, webhook_query}} <- Watchman.PubSub.Webhook.deliver(event) do
+      Logger.info "Delivering webhooks"
 
-  defp get_webhook() do
-    case Watchman.conf(:incoming_webhook) do
-      nil -> :ok
-      webhook -> webhook
+      webhook_query
+      |> Watchman.Repo.stream(method: :keyset)
+      |> Flow.from_enumerable()
+      |> Flow.map(&Webhooks.deliver(build, &1))
+      |> Flow.map(fn
+        {:ok, wh} -> wh
+        {:error, error} ->
+          Logger.error "Failed to deliver webhook properly: #{inspect(error)}"
+          nil
+      end)
+      |> Flow.run()
     end
   end
 end

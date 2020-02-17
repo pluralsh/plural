@@ -5,6 +5,7 @@ import Sidebar from './Sidebar'
 import Builds from './Builds'
 import Build from './Build'
 import BreadcrumbProvider, { Breadcrumbs } from './Breadcrumbs'
+import Webhooks from './Webhooks'
 
 const SIDEBAR_WIDTH = '220px'
 
@@ -19,6 +20,7 @@ export default function Watchman() {
           <Breadcrumbs />
           <Switch>
             <Route path='/build/:buildId' component={Build} />
+            <Route path='/webhooks' component={Webhooks} />
             <Route path='/' component={Builds} />
           </Switch>
         </Box>

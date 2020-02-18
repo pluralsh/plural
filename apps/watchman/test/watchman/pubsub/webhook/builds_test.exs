@@ -12,7 +12,7 @@ defmodule Watchman.Webhook.BuildTest do
       %{url: url} = wh = insert(:webhook)
 
       myself = self()
-      expect(Mojito, :post, fn ^url, _, payload ->
+      expect(Mojito, :post, fn ^url, _, payload, _ ->
         decoded = Jason.decode!(payload)
         send myself, {:payload, decoded}
         {:ok, decoded}
@@ -37,7 +37,7 @@ defmodule Watchman.Webhook.BuildTest do
       %{url: url} = wh = insert(:webhook)
 
       myself = self()
-      expect(Mojito, :post, fn ^url, _, payload ->
+      expect(Mojito, :post, fn ^url, _, payload, _ ->
         decoded = Jason.decode!(payload)
         send myself, {:payload, decoded}
         {:ok, decoded}

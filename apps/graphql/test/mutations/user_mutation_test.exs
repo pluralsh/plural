@@ -185,7 +185,7 @@ defmodule GraphQl.UserMutationTest do
       user = insert(:user)
       webhook = insert(:webhook, user: user)
 
-      expect(Mojito, :post, fn _, _, payload -> {:ok, %Mojito.Response{status_code: 200, body: payload}} end)
+      expect(Mojito, :post, fn _, _, payload, _ -> {:ok, %Mojito.Response{status_code: 200, body: payload}} end)
 
       {:ok, %{data: %{"pingWebhook" => response}}} = run_query("""
         mutation pingWebhook($repo: String!, $id: ID!) {

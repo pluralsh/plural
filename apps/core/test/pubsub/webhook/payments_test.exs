@@ -10,7 +10,7 @@ defmodule Core.PubSub.Webhook.PaymentsTest do
       %{url: url} = insert(:webhook, user: user)
       inst = insert(:installation, user: user)
       subscription = insert(:subscription, installation: inst)
-      expect(Mojito, :post, fn ^url, _, body -> Jason.decode!(body) end)
+      expect(Mojito, :post, fn ^url, _, body, _ -> Jason.decode!(body) end)
 
       event = %PubSub.SubscriptionUpdated{item: subscription}
       [body] = Webhook.handle_event(event)
@@ -26,7 +26,7 @@ defmodule Core.PubSub.Webhook.PaymentsTest do
       %{url: url} = insert(:webhook, user: user)
       inst = insert(:installation, user: user)
       subscription = insert(:subscription, installation: inst)
-      expect(Mojito, :post, fn ^url, _, body -> Jason.decode!(body) end)
+      expect(Mojito, :post, fn ^url, _, body, _ -> Jason.decode!(body) end)
 
       event = %PubSub.SubscriptionCreated{item: subscription}
       [body] = Webhook.handle_event(event)

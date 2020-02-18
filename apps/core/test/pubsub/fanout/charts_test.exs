@@ -21,7 +21,7 @@ defmodule Core.PubSub.Fanout.ChartsTest do
       ignored = insert_list(2, :chart_installation, chart: chart, version: chart_version)
       version = insert(:version, version: "0.1.1", chart: chart)
       pid = self()
-      expect(Mojito, :post, 3, fn _, headers, _ -> send pid, {:post, headers} end)
+      expect(Mojito, :post, 3, fn _, headers, _, _ -> send pid, {:post, headers} end)
 
       3 = Core.PubSub.Fanout.fanout(%PubSub.VersionCreated{item: version})
       assert_receive {:post, h1}

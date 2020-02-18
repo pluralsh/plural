@@ -3,7 +3,7 @@ defmodule Watchman.Chartmart.Installation do
 end
 
 defmodule Watchman.Chartmart.Repository do
-  defstruct [:id, :name, :description]
+  defstruct [:id, :icon, :name, :description]
 end
 
 defmodule Watchman.Chartmart.Edge do

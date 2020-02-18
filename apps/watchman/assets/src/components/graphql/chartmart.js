@@ -48,6 +48,8 @@ export const CONFIGURATIONS_Q = gql`
           repository {
             ...RepositoryFragment
             configuration
+            icon
+            description
           }
         }
       }

@@ -58,7 +58,7 @@ defmodule Watchman.GraphQl do
       resolve safe_resolver(&Webhook.create_webhook/2)
     end
 
-    field :update_configuration, :string do
+    field :update_configuration, :configuration do
       arg :repository, non_null(:string)
       arg :content, non_null(:string)
 

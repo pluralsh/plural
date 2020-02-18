@@ -14,7 +14,6 @@ import "ace-builds/src-noconflict/mode-yaml"
 import "ace-builds/src-noconflict/theme-terminal"
 
 export function EditConfiguration({repository: {name, configuration}}) {
-  const {setBreadcrumbs} = useContext(BreadcrumbsContext)
   const [config, setConfig] = useState(configuration)
   const [mutation, {loading}] = useMutation(UPDATE_CONFIGURATION, {
     variables: {repository: name, content: config},
@@ -37,10 +36,6 @@ export function EditConfiguration({repository: {name, configuration}}) {
       })
     }
   })
-  useEffect(() => setBreadcrumbs([
-    {text: 'configuration', url: '/config'},
-    {text: name, url: `/config/${name}`}
-  ]), [])
 
   return (
     <Box height='calc(100vh - 45px)'>
@@ -75,15 +70,16 @@ export function EditConfiguration({repository: {name, configuration}}) {
   )
 }
 
-function Config({config, next}) {
+function Config({config}) {
   let history = useHistory()
-  console.log(next)
+
   return (
     <Box
       onClick={() => history.push(`/config/${config.name}`)}
+      hoverIndicator='light-3'
       direction='row'
       pad={{vertical: 'small', ...BUILD_PADDING}}
-      border={next.node ? 'bottom' : null}>
+      border='bottom'>
       <Box fill='horizontal'>
         <Text size='small' style={{fontWeight: 500}}>{config.name}</Text>
       </Box>
@@ -98,7 +94,10 @@ export default function Configuration() {
   const {repo} = useParams()
   const {setBreadcrumbs} = useContext(BreadcrumbsContext)
   const {data} = useQuery(CONFIGURATIONS_Q)
-  useEffect(() => setBreadcrumbs([{text: 'configuration', url: '/config'}]), [])
+  useEffect(() => {
+    const additional = repo ? [{text: repo, url: `/config/${repo}`}] : []
+    setBreadcrumbs([{text: 'configuration', url: '/config'}, ...additional])
+  }, [repo])
 
   if (!data) return <Loading />
   const {edges} = data.installations
@@ -127,7 +126,7 @@ export default function Configuration() {
           id='configuration'
           style={{height: '100%', overflow: 'auto'}}
           edges={edges}
-          mapper={({node: {repository}}, next) => <Config key={repository.id} config={repository} next={next} />} />
+          mapper={({node: {repository}}) => <Config key={repository.id} config={repository} />} />
       </Box>
     </Box>
   )

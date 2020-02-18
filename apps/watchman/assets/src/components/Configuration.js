@@ -13,7 +13,7 @@ import AceEditor from "react-ace"
 import "ace-builds/src-noconflict/mode-yaml"
 import "ace-builds/src-noconflict/theme-terminal"
 
-export function EditConfiguration({repository: {name, configuration}}) {
+export function EditConfiguration({repository: {name, configuration, icon, description}}) {
   const [config, setConfig] = useState(configuration)
   const [mutation, {loading}] = useMutation(UPDATE_CONFIGURATION, {
     variables: {repository: name, content: config},
@@ -46,7 +46,8 @@ export function EditConfiguration({repository: {name, configuration}}) {
           align='center'
           border='bottom'
           height='60px'>
-          <Box fill='horizontal' pad={{horizontal: 'small'}}>
+          <Box direction='row' fill='horizontal' gap='small' align='center'>
+            {icon && <img alt='' src={icon} height='40px' width='40px' />}
             <Text weight='bold' size='small'>Edit {name}</Text>
           </Box>
           <Box flex={false}>
@@ -70,18 +71,22 @@ export function EditConfiguration({repository: {name, configuration}}) {
   )
 }
 
-function Config({config}) {
+function Config({config: {name, icon, description}}) {
   let history = useHistory()
 
   return (
     <Box
-      onClick={() => history.push(`/config/${config.name}`)}
+      onClick={() => history.push(`/config/${name}`)}
       hoverIndicator='light-3'
       direction='row'
       pad={{vertical: 'small', ...BUILD_PADDING}}
       border='bottom'>
-      <Box fill='horizontal'>
-        <Text size='small' style={{fontWeight: 500}}>{config.name}</Text>
+      <Box direction='row' fill='horizontal' gap='small' align='center'>
+        {icon && <img alt='' src={icon} height='40px' width='40px' />}
+        <Box>
+          <Text size='small' style={{fontWeight: 500}}>{name}</Text>
+          <Text size='small' color='dark-3'>{description}</Text>
+        </Box>
       </Box>
       <Box flex={false}>
         <FormNext size='25px' />

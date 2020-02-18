@@ -3,6 +3,7 @@ defmodule Watchman.Chartmart.Queries do
     fragment RepositoryFragment on Repository {
       id
       name
+      icon
       description
     }
   """

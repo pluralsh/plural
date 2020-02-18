@@ -84,6 +84,7 @@ defmodule Watchman.GraphQl.Schema do
     field :id, non_null(:id)
     field :name, non_null(:string)
     field :description, :string
+    field :icon, :string
     field :configuration, :string, resolve: &Chartmart.resolve_configuration/3
   end
 

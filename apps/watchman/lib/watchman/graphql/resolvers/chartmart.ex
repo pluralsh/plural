@@ -16,8 +16,11 @@ defmodule Watchman.GraphQl.Resolvers.Chartmart do
     end
   end
 
-  def update_configuration(%{repository: repo, content: content}, _),
-    do: Watchman.Deployer.update(repo, content)
+  def update_configuration(%{repository: repo, content: content}, _) do
+    with {:ok, conf} <- Watchman.Deployer.update(repo, content) do
+      {:ok, %{configuration: conf}}
+    end
+  end
 
   defp clean_up_connection({:ok, %Connection{pageInfo: page_info, edges: edges}}) do
     {:ok, %{page_info: clean_up_page_info(page_info), edges: edges}}

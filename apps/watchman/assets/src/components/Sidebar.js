@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useLocation, useHistory } from 'react-router-dom'
-import { Deploy, Network } from 'grommet-icons'
+import { Deploy, Network, Configure } from 'grommet-icons'
 import { Box, Text } from 'grommet'
 
 const SIDEBAR_ROW_HEIGHT = '40px'
@@ -29,6 +29,7 @@ function SidebarIcon({icon, text, selected, path}) {
 
 const OPTIONS = [
   {text: 'Builds', icon: <Deploy size='15px' />, path: '/'},
+  {text: 'Configuration', icon: <Configure size='15px' />, path: '/config' },
   {text: 'Webhooks', icon: <Network size='15px' />, path: '/webhooks'}
 ]
 

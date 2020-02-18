@@ -3,13 +3,15 @@ import { useParams, useHistory } from 'react-router-dom'
 import { useQuery, useMutation } from 'react-apollo'
 import { CONFIGURATIONS_Q, UPDATE_CONFIGURATION } from './graphql/chartmart'
 import Loading from './utils/Loading'
-import Editor from './utils/Editor'
 import Button from './utils/Button'
 import { Box, Text } from 'grommet'
 import { BreadcrumbsContext } from './Breadcrumbs'
 import Scroller from './utils/Scroller'
 import { BUILD_PADDING } from './Builds'
 import { FormNext } from 'grommet-icons'
+import AceEditor from "react-ace"
+import "ace-builds/src-noconflict/mode-yaml"
+import "ace-builds/src-noconflict/theme-terminal"
 
 export function EditConfiguration({repository: {name, configuration}}) {
   const {setBreadcrumbs} = useContext(BreadcrumbsContext)
@@ -58,7 +60,17 @@ export function EditConfiguration({repository: {name, configuration}}) {
         </Box>
       </Box>
       <Box pad='medium'>
-        <Editor lang='yaml' value={config} onChange={setConfig} />
+        <AceEditor
+          mode='yaml'
+          theme='terminal'
+          width='100%'
+          name={name}
+          value={config}
+          showGutter
+          showPrintMargin
+          highlightActiveLine
+          editorProps={{ $blockScrolling: true }}
+          onChange={setConfig} />
       </Box>
     </Box>
   )

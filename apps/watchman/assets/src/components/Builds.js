@@ -8,7 +8,7 @@ import moment from 'moment'
 import Button from './utils/Button'
 import Scroller from './utils/Scroller'
 import Modal, { ModalHeader } from './utils/Modal'
-import { mergeEdges, appendEdge } from './graphql/utils'
+import { mergeEdges } from './graphql/utils'
 import { BeatLoader } from 'react-spinners'
 import { BreadcrumbsContext } from './Breadcrumbs'
 import { INSTALLATION_Q } from './graphql/chartmart'
@@ -75,17 +75,8 @@ function BuildForm({setOpen}) {
   const [attributes, setAttributes] = useState({repository: '', type: 'DEPLOY', message: "manual test"})
   const [mutation, {loading}] = useMutation(CREATE_BUILD, {
     variables: {attributes},
-    update: (cache, {data: {createBuild}}) => {
-      const {builds: {pageInfo, edges, ...rest}, ...prev} = cache.readQuery({ query: BUILDS_Q })
-      cache.writeQuery({
-        query: BUILDS_Q,
-        data: {...prev, builds: {
-            ...rest, pageInfo, edges: appendEdge(edges, createBuild, 'BuildEdge')
-          }
-        }
-      })
-      setOpen(false)
-    }
+    fetchPolicy: 'no-cache',
+    onCompleted: () => setOpen(false)
   })
   const {data} = useQuery(INSTALLATION_Q, {
     onCompleted: ({installations: {edges}}) => {
@@ -156,8 +147,9 @@ export default function Builds() {
   useEffect(() => subscribeToMore({
     document: BUILD_SUB,
     updateQuery: (prev, {subscriptionData: {data}}) => {
+      console.log(data)
       return data ? applyDelta(prev, data.buildDelta) : prev
-  }}), [subscribeToMore])
+  }}), [])
 
   if (loading && !data) return <Loading />
 

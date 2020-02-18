@@ -43,7 +43,7 @@ export function EditConfiguration({repository: {name, configuration}}) {
   ]), [])
 
   return (
-    <Box height='calc(100vh - 45px)' pad={{bottom: 'small'}}>
+    <Box height='calc(100vh - 45px)'>
       <Box gap='small'>
         <Box
           pad={{vertical: 'small', ...BUILD_PADDING}}
@@ -59,19 +59,18 @@ export function EditConfiguration({repository: {name, configuration}}) {
           </Box>
         </Box>
       </Box>
-      <Box pad='medium'>
-        <AceEditor
-          mode='yaml'
-          theme='terminal'
-          width='100%'
-          name={name}
-          value={config}
-          showGutter
-          showPrintMargin
-          highlightActiveLine
-          editorProps={{ $blockScrolling: true }}
-          onChange={setConfig} />
-      </Box>
+      <AceEditor
+        mode='yaml'
+        theme='terminal'
+        height='calc(100vh - 105px)'
+        width='100%'
+        name={name}
+        value={config}
+        showGutter
+        showPrintMargin
+        highlightActiveLine
+        editorProps={{ $blockScrolling: true }}
+        onChange={setConfig} />
     </Box>
   )
 }

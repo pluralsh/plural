@@ -137,7 +137,7 @@ defmodule Core.Services.Users do
       {"accept", "application/json"},
       {"x-watchman-signature", "sha1=#{signature}"}
     ]
-    Mojito.post(sanitize(url), headers, payload)
+    Mojito.post(sanitize(url), headers, payload, pool: false)
   end
 
   defp sanitize("https://" <> _ = url), do: url

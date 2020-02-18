@@ -18,7 +18,7 @@ defmodule Watchman.Services.Webhooks do
     formatter = formatter(type)
 
     with {:ok, payload} <- formatter.format(build) do
-      Mojito.post(url, @headers, Jason.encode!(payload))
+      Mojito.post(url, @headers, Jason.encode!(payload), pool: false)
       |> IO.inspect()
       |> mark_webhook(wh)
     end

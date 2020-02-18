@@ -9,7 +9,7 @@ defmodule Core.PubSub.Webhook.RepositoriesTest do
       user = insert(:user)
       %{url: url} = insert(:webhook, user: user)
       inst = insert(:installation, user: user)
-      expect(Mojito, :post, fn ^url, _, body -> Jason.decode!(body) end)
+      expect(Mojito, :post, fn ^url, _, body, _ -> Jason.decode!(body) end)
 
       event = %PubSub.InstallationUpdated{item: inst}
       [body] = Webhook.handle_event(event)

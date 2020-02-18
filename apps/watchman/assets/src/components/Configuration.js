@@ -79,8 +79,9 @@ function Config({config: {name, icon, description}}) {
       onClick={() => history.push(`/config/${name}`)}
       hoverIndicator='light-3'
       direction='row'
-      pad={{vertical: 'small', ...BUILD_PADDING}}
-      border='bottom'>
+      align='center'
+      border='bottom'
+      pad={{vertical: 'small', ...BUILD_PADDING}}>
       <Box direction='row' fill='horizontal' gap='small' align='center'>
         {icon && <img alt='' src={icon} height='40px' width='40px' />}
         <Box>

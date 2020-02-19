@@ -4,7 +4,6 @@ import {Alert, Close} from 'grommet-icons'
 import {useMutation} from 'react-apollo'
 import Button from '../utils/Button'
 import {INSTALL_REPO, UPDATE_INSTALLATION, REPO_Q} from './queries'
-import Editor from '../utils/Editor'
 import Pill from '../utils/Pill'
 import yaml from 'js-yaml'
 import Highlight from 'react-highlight.js'
@@ -16,6 +15,9 @@ import CreatePlan from '../payments/CreatePlan'
 import SubscribeModal from '../payments/CreateSubscription'
 import { SubscriptionBadge } from '../payments/Subscription'
 import UpdatePlan from '../payments/UpdatePlan'
+import AceEditor from "react-ace"
+import "ace-builds/src-noconflict/mode-yaml"
+import "ace-builds/src-noconflict/theme-terminal"
 
 function update(cache, repositoryId, installation) {
   const prev = cache.readQuery({ query: REPO_Q, variables: {repositoryId} })
@@ -51,7 +53,18 @@ function EditInstallation({installation, repository, onUpdate, open}) {
     <Expander text='Configuration' open={open}>
       <Box gap='small' fill='horizontal' pad='small'>
         <Box>
-          <Editor lang='yaml' value={ctx} onChange={setCtx} />
+          <AceEditor
+            mode='yaml'
+            theme='terminal'
+            height='300px'
+            width='100%'
+            name='Configuration'
+            value={ctx}
+            showGutter
+            showPrintMargin
+            highlightActiveLine
+            editorProps={{ $blockScrolling: true }}
+            onChange={setCtx} />
         </Box>
         {errors && (
           <Box direction='row' gap='small'>

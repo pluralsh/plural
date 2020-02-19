@@ -20,9 +20,11 @@ function Integration({name, description, icon, tags, sourceUrl, publisher, width
   return (
     <Container pad='medium' width={width} hover={hover} setHover={setHover}>
       <Box direction='row' gap='medium'>
-        <Box align='center' justify='center' width={`${ICON_SIZE}px`}>
-          <img src={icon} alt={name} width={`${ICON_SIZE}px`} height={`${ICON_SIZE}px`} />
-        </Box>
+        {icon && (
+          <Box align='center' justify='center' width={`${ICON_SIZE}px`}>
+            <img src={icon} alt={name} width={`${ICON_SIZE}px`} height={`${ICON_SIZE}px`} />
+          </Box>
+        )}
         <Box gap='xsmall'>
           <Box>
             <Text style={{fontWeight: 500}} size='small'>{name}</Text>

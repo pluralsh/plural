@@ -74,6 +74,21 @@ defmodule Core.Services.Payments do
   end
 
   @doc """
+  Cancels a subscription for a user, and deletes the record in our database
+  """
+  @spec cancel_subscription(Subscription.t, User.t) :: {:ok, Subscription.t} | {:error, term}
+  def cancel_subscription(%Subscription{external_id: eid} = subscription, %User{} = user) do
+    start_transaction()
+    |> add_operation(:db, fn _ ->
+      subscription
+      |> allow(user, :delete)
+      |> when_ok(:delete)
+    end)
+    |> add_operation(:stripe, fn _ -> Stripe.Subscription.delete(eid) end)
+    |> execute(extract: :db)
+  end
+
+  @doc """
   Creates a stripe customer with the given source and user email, saves
   the customer back to storage.
   """

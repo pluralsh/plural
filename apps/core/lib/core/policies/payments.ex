@@ -8,6 +8,13 @@ defmodule Core.Policies.Payments do
     Publisher.can?(user, pub, action)
   end
 
+  def can?(%User{id: user_id}, %Subscription{} = sub, :delete) do
+    case Core.Repo.preload(sub, [:installation]) do
+      %{installation: %{user_id: ^user_id}} -> :pass
+      _ -> {:error, :forbidden}
+    end
+  end
+
   def can?(%User{id: user_id}, %Subscription{} = sub, _) do
     case Core.Repo.preload(sub, [:installation, :plan]) do
       %{plan: %Plan{repository_id: repo_id}, installation: %{user_id: ^user_id, repository_id: repo_id}} ->

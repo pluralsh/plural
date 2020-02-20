@@ -216,16 +216,29 @@ defmodule Core.Services.Repositories do
   end
 
   @doc """
-  Deletes the given installation.
+  Deletes the given installation.  If there is also a subscription, will delete it as well.
 
   Fails if the user is not the installer.
   """
-  @spec delete_installation(binary, User.t) :: {:ok, Installation.t} | {:error, term}
-  def delete_installation(inst_id, %User{} = user) do
-    get_installation!(inst_id)
-    |> allow(user, :edit)
-    |> when_ok(:delete)
+  @spec delete_installation(binary | Installation.t, User.t) :: {:ok, Installation.t} | {:error, term}
+  def delete_installation(%Installation{} = installation, %User{} = user) do
+    start_transaction()
+    |> add_operation(:subscription, fn _ ->
+      Core.Repo.preload(installation, [:subscription])
+      |> case do
+        %{subscription: %Subscription{} = sub} ->
+          Core.Services.Payments.cancel_subscription(sub, user)
+        _ -> {:ok, nil}
+      end
+    end)
+    |> add_operation(:installation, fn _ ->
+      installation
+      |> allow(user, :edit)
+      |> when_ok(:delete)
+    end)
+    |> execute(extract: :installation)
   end
+  def delete_installation(inst_id, user), do: get_installation!(inst_id) |> delete_installation(user)
 
   @doc """
   Creates a new artifact for the repository, representing a downloadable resource

@@ -17,6 +17,7 @@ data "google_container_cluster" "cluster" {
 }
 
 provider "kubernetes" {
+  version          = " ~> 1.10.0"
   load_config_file = false
   host = data.google_container_cluster.cluster.endpoint
   cluster_ca_certificate = base64decode(data.google_container_cluster.cluster.master_auth.0.cluster_ca_certificate)

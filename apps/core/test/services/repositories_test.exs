@@ -1,6 +1,7 @@
 defmodule Core.Services.RepositoriesTest do
   use Core.SchemaCase, async: true
 
+  use Mimic
   alias Core.PubSub
   alias Core.Services.Repositories
   alias Piazza.Crypto.RSA
@@ -105,6 +106,18 @@ defmodule Core.Services.RepositoriesTest do
 
       assert deleted.id == inst.id
       refute refetch(deleted)
+    end
+
+    test "It will cancel associated subscriptions when present" do
+      user = insert(:user)
+      inst = insert(:installation, user: user)
+      sub  = insert(:subscription, installation: inst, external_id: "sub_id")
+      expect(Stripe.Subscription, :delete, fn "sub_id" -> {:ok, %{}} end)
+
+      {:ok, _deleted} = Repositories.delete_installation(inst.id, user)
+
+      refute refetch(inst)
+      refute refetch(sub)
     end
 
     test "Other users cannot delete" do

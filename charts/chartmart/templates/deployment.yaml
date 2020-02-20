@@ -16,6 +16,7 @@ spec:
         app.kubernetes.io/name: chartmart-api
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+      serviceAccountName: chartmart
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 6 }}

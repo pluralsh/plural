@@ -2,7 +2,7 @@
 
 A repository of helm charts, implementing authorization on top of chartmuseum along with bookkeeping around installations, discovery, etc.
 
-There are two components, a web-app/api and a cli.  You can select the repos you'd like to install and the chart versions/terraform modules you specifically want, then with a few commands, the cli will build a production-ready workspace for it which can be easily deployed.  If you're a developer, you can register a publisher for yourself and upload your own charts/repos for use by others.
+There are three components, a web-app/api, a cli, and a webhook receiver installable in-cluster.  You can select the repos you'd like to install and the chart versions/terraform modules you specifically want, then with a few commands, the cli will build a production-ready workspace for it which can be easily deployed.  If you're a developer, you can register a publisher for yourself and upload your own charts/repos for use by others.  And if you choose, the auto-upgrader can listen to webhooks and handle the deployment process entirely for you, including the annoying git minutiae.
 
 The workflow is basically (after selecting your preferences):
 
@@ -18,13 +18,17 @@ An example deployment can be found at: https://mart.piazzaapp.com
 The charmart workflow provides the following:
 
 * Authenticated docker registry per repository
-* License generation
+* License generation using RSA + AES
 * Authenticated chartmuseum proxy for each repository
 * secret encryption using AES-256 (so you can keep the entire workflow in git)
 * templating using a shared context between tf and helm to reduce the drift between duplicated configuration
 * Automatic README extraction for documentation on the site
-
-And a bit more, of course.
+* dependency management between tf/helm modules, with dependency aware deployment in the cli
+* auto-upgrading with real-time log feedback, and web-based configuration editing
+* billing management, with line item billing, usage limiting, and feature differentiation (core SaaS pricing constructs)
+* email proxy, so you don't need to have customers configure their own email servers
+  - in the future a push notification proxy will be added
+* deployment secret ingestion, for transfering low-value secrets (like publishable keys, giphy tokens) to deployed releases using the same encryption as the licensing uses (RSA + AES)
 
 ## Dependencies
 

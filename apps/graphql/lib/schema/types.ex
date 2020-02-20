@@ -15,7 +15,9 @@ defmodule GraphQl.Schema.Types do
     field :name,        non_null(:string)
     field :email,       non_null(:string)
     field :customer_id, :string
-    field :publisher, :publisher, resolve: dataloader(User)
+    field :publisher,   :publisher, resolve: dataloader(User)
+    field :phone,       :string
+    field :address,     :address
 
     field :jwt, :string, resolve: fn
       %{id: id, jwt: jwt}, _, %{context: %{current_user: %{id: id}}} -> {:ok, jwt}
@@ -36,6 +38,14 @@ defmodule GraphQl.Schema.Types do
     end
 
     timestamps()
+  end
+
+  object :address do
+    field :line1, :string
+    field :line2, :string
+    field :city,  :string
+    field :state, :string
+    field :zip,   :string
   end
 
   object :persisted_token do

@@ -2,6 +2,27 @@ defmodule Core.Schema.User do
   use Piazza.Ecto.Schema, derive_json: false
   use Arc.Ecto.Schema
 
+  defmodule Address do
+    use Piazza.Ecto.Schema
+
+    embedded_schema do
+      field :line1,   :string
+      field :line2,   :string
+      field :city,    :string
+      field :state,   :string
+      field :country, :string
+      field :zip,     :string
+    end
+
+    @valid ~w(line1 line2 city state country zip)a
+
+    def changeset(model, attrs \\ %{}) do
+      model
+      |> cast(attrs, @valid)
+      |> validate_required([:line1, :city, :state, :country, :zip])
+    end
+  end
+
   @email_re ~r/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-\.]+\.[a-zA-Z]{2,}$/
 
   schema "users" do
@@ -13,10 +34,12 @@ defmodule Core.Schema.User do
     field :avatar_id,     :binary_id
     field :avatar,        Core.Storage.Type
     field :customer_id,   :string
+    field :phone,         :string
 
-    has_one :publisher, Core.Schema.Publisher,
+    embeds_one :address, Address
+    has_one :publisher,  Core.Schema.Publisher,
       foreign_key: :owner_id
-    has_many :webhooks, Core.Schema.Webhook
+    has_many :webhooks,  Core.Schema.Webhook
 
     timestamps()
   end
@@ -34,11 +57,12 @@ defmodule Core.Schema.User do
   def ordered(query \\ __MODULE__, order \\ [asc: :name]),
     do: from(p in query, order_by: ^order)
 
-  @valid ~w(name email password)a
+  @valid ~w(name email password phone)a
 
   def changeset(model, attrs \\ %{}) do
     model
     |> cast(attrs, @valid)
+    |> cast_embed(:address)
     |> unique_constraint(:email)
     |> validate_required([:name, :email])
     |> validate_length(:email,    max: 255)

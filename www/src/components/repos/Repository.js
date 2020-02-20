@@ -324,7 +324,7 @@ export function RepositoryIcon({size, repository, headingSize}) {
 const IMG_SIZE = '75px'
 const WIDTH = 65
 
-function Repository() {
+export default function Repository() {
   const {repositoryId} = useParams()
   const {loading, data, fetchMore} = useQuery(REPO_Q, {
     variables: {repositoryId},
@@ -407,5 +407,3 @@ function Repository() {
     </ScrollableContainer>
   )
 }
-
-export default Repository

@@ -58,6 +58,7 @@ export default function SubscribeModal({plan, installationId, repositoryId, setO
     variables: {installationId, attributes, planId: plan.id},
     update: (cache, {data: {createSubscription}}) => {
       updateSubscription(cache, repositoryId, createSubscription)
+      setOpen(false)
     }
   })
   const total = subscriptionCost(attributes, plan)

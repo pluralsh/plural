@@ -359,6 +359,9 @@ export const RECIPE_Q = gql`
       recipeSections {
         ...RecipeSectionFragment
       }
+      repository {
+        id
+      }
     }
   }
   ${RecipeFragment}

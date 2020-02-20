@@ -127,28 +127,11 @@ function buildCtx(recipeSections) {
   }, {})
 }
 
-function InstallRecipe({id, ctx, setOpen}) {
+function InstallRecipe({id, ctx, repository, setOpen}) {
   const [mutation, {loading, error}] = useMutation(INSTALL_RECIPE, {
     variables: {id, ctx: JSON.stringify(ctx)},
-    update: (cache, {data: {installRecipe}}) => {
-      console.log(installRecipe)
-      for (const installation of installRecipe) {
-        try {
-          const repositoryId = installation.repository.id
-          const prev = cache.readQuery({query: REPO_Q, variables: {repositoryId}})
-          cache.writeQuery({query: REPO_Q, variables: {repositoryId}, data: {
-            ...prev,
-            repository: {
-              ...prev.repository,
-              installation
-            }
-          }})
-        } catch {
-          // ignore
-        }
-      }
-      setOpen(false)
-    }
+    onCompleted: () => setOpen(false),
+    refetchQueries: [{query: REPO_Q, variables: {repositoryId: repository.id}}]
   })
   return (
     <Button
@@ -161,9 +144,8 @@ function InstallRecipe({id, ctx, setOpen}) {
   )
 }
 
-function RecipeSectionEditor({id, recipeSections, section, item, setState, setOpen}) {
+function RecipeSectionEditor({id, recipeSections, section, item, setState, repository, setOpen}) {
   const [ctx, setCtx] = useState(buildCtx(recipeSections))
-  console.log(ctx)
   const recipeSection = recipeSections[section]
   const lastSection = recipeSections.length === section + 1
   const lastItem = recipeSection.recipeItems.length === item + 1
@@ -193,7 +175,7 @@ function RecipeSectionEditor({id, recipeSections, section, item, setState, setOp
       <Box direction='row' align='center' justify='end' gap='small'>
         {hasPrev && <SecondaryButton round='xsmall' pad='small' onClick={prev} label='Go back' />}
         {hasNext ? <Button round='xsmall' pad='small' label='Next' onClick={next} /> :
-                   <InstallRecipe id={id} ctx={ctx} setOpen={setOpen} />}
+                   <InstallRecipe id={id} ctx={ctx} repository={repository} setOpen={setOpen} />}
       </Box>
     </Box>
   )
@@ -203,7 +185,7 @@ export default function Recipe({id, name, setOpen}) {
   const [{section, item}, setState] = useState({section: 0, item: 0})
   const {data, loading} = useQuery(RECIPE_Q, {variables: {id}})
   if (!data || loading) return null
-  const {recipeSections} = data.recipe
+  const {recipeSections, repository} = data.recipe
   return (
     <Layer
       modal
@@ -215,6 +197,7 @@ export default function Recipe({id, name, setOpen}) {
           <RecipeSectionEditor
             id={id}
             recipeSections={recipeSections}
+            repository={repository}
             section={section}
             item={item}
             setState={setState}

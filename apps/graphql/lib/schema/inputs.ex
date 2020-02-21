@@ -21,6 +21,7 @@ defmodule GraphQl.Schema.Inputs do
     field :name,          :string
     field :description,   :string
     field :documentation, :string
+    field :secrets,       :yml
     field :icon,          :upload_or_url
     field :integration_resource_definition, :resource_definition_attributes
     field :tags,          list_of(:tag_attributes)

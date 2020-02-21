@@ -5,11 +5,14 @@ defmodule Core.Schema.License do
     @derive Jason.Encoder
     defstruct [:features, :limits, :free, :plan]
 
-    def new(attrs), do: Map.new(attrs) |> __struct__()
+    def new(attrs) do
+      Map.new(attrs)
+      |> __struct__()
+    end
   end
 
   @derive Jason.Encoder
-  defstruct [:policy, :refresh_token, :expires_at]
+  defstruct [:policy, :refresh_token, :secrets, :expires_at]
 
   def new(attrs) do
     Map.new(attrs)

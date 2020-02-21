@@ -271,7 +271,7 @@ defmodule Core.Services.Repositories do
 
     with {:ok, %{token: token}} <- upsert_license_token(installation),
          {:ok, policy} <- mk_policy(installation, Core.Services.Payments.has_plans?(repo.id)) do
-      License.new(policy: policy, refresh_token: token)
+      License.new(policy: policy, refresh_token: token, secrets: repo.secrets)
       |> Jason.encode!()
       |> RSA.encrypt(ExPublicKey.loads!(repo.private_key))
     else

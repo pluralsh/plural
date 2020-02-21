@@ -18,6 +18,7 @@ defmodule Core.Schema.Repository do
     field :documentation, :binary
     field :public_key,    Piazza.Ecto.EncryptedString
     field :private_key,   Piazza.Ecto.EncryptedString
+    field :secrets,       :map
 
     belongs_to :integration_resource_definition, ResourceDefinition
     belongs_to :publisher, Publisher
@@ -54,7 +55,7 @@ defmodule Core.Schema.Repository do
   def ordered(query \\ __MODULE__, order \\ [asc: :name]),
     do: from(r in query, order_by: ^order)
 
-  @valid ~w(name publisher_id description documentation)a
+  @valid ~w(name publisher_id description documentation secrets)a
 
   def changeset(model, attrs \\ %{}) do
     model

@@ -243,13 +243,17 @@ defmodule Core.Services.RepositoriesTest do
   describe "#generate_license/1" do
     test "It can generate an ecrypted license for an installation" do
       publisher = insert(:publisher)
-      {:ok, repo} = Repositories.create_repository(%{name: "my repo"}, publisher.owner)
+      {:ok, repo} = Repositories.create_repository(%{
+        name: "my repo",
+        secrets: %{"token" => "a"}
+      }, publisher.owner)
 
       installation = insert(:installation, repository: repo)
 
       {:ok, license} = Repositories.generate_license(installation)
       {:ok, decoded} = RSA.decrypt(license, ExPublicKey.loads!(repo.public_key))
-      %{"refresh_token" => token, "expires_at" => expiry} = Jason.decode!(decoded)
+      %{"refresh_token" => token, "expires_at" => expiry, "secrets" => secrets} = Jason.decode!(decoded)
+      assert secrets["token"] == "a"
       {:ok, _} = Timex.parse(expiry, "{ISO:Extended}")
       {:ok, license} = Repositories.refresh_license(token)
 

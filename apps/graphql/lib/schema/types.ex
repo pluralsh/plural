@@ -74,6 +74,7 @@ defmodule GraphQl.Schema.Types do
     field :name,          non_null(:string)
     field :description,   :string
     field :documentation, :string
+    field :secrets,       :map
     field :publisher,     :publisher, resolve: dataloader(User)
     field :plans,         list_of(:plan), resolve: dataloader(Payments)
     field :tags,          list_of(:tag), resolve: dataloader(Repository)

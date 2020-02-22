@@ -98,7 +98,7 @@ function PlanCarousel({repository}) {
   const [open, setOpen] = useState(false)
   const [modal, setModal] = useState(null)
   const {plans, editable, installation} = repository
-  const {subscription, id} = installation
+  const {subscription, id} = installation ? installation : {}
 
   function approvePlan(plan) {
     if (!subscription) {
@@ -156,9 +156,9 @@ export default function Installation({repository, onUpdate, noHelm, open, integr
   const hasPlans = repository.plans && repository.plans.length > 0
   const {installation} = repository
 
-  return (
-    <Box elevation='small' gap='small'>
-      {installation ?
+  if (installation) {
+    return (
+      <Box elevation='small' gap='small'>
         <Box>
           {!noHelm && (
             <Box gap='small' pad='small' border='bottom'>
@@ -183,12 +183,22 @@ chartmart deploy ${repository.name}`}
               <Integrations integrations={integrations} fetchMore={fetchMore} repository={repository} />
             </Expander>
           )}
-        </Box> :
-        <Box pad='medium' gap='small'>
-          <Text size='small'>This repository is free to use</Text>
-          <Button label='Install Repository' round='xsmall' onClick={mutation} />
         </Box>
-      }
+      </Box>
+    )
+  }
+
+  return (
+    <Box elevation='small' gap='small'>
+      <Box pad='small'>
+        <Button label='Install Repository' round='xsmall' onClick={mutation} />
+      </Box>
+      {(hasPlans || repository.editable) && <PlanCarousel repository={repository} />}
+      {integrations && integrations.edges.length > 0 && (
+        <Expander text='Integrations'>
+          <Integrations integrations={integrations} fetchMore={fetchMore} repository={repository} />
+        </Expander>
+      )}
     </Box>
   )
 }

@@ -74,7 +74,6 @@ defmodule GraphQl.Schema.Types do
     field :name,          non_null(:string)
     field :description,   :string
     field :documentation, :string
-    field :secrets,       :map
     field :publisher,     :publisher, resolve: dataloader(User)
     field :plans,         list_of(:plan), resolve: dataloader(Payments)
     field :tags,          list_of(:tag), resolve: dataloader(Repository)
@@ -90,6 +89,10 @@ defmodule GraphQl.Schema.Types do
 
     field :editable, :boolean, resolve: fn
       repo, _, %{context: %{current_user: user}} -> Repository.editable(repo, user)
+    end
+
+    field :secrets, :map, resolve: fn
+      repo, _, %{context: %{current_user: user}} -> Repository.protected_field(repo, user, :secrets)
     end
 
     field :public_key, :string, resolve: fn

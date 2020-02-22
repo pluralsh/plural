@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
-import { Box, Text, Stack } from 'grommet'
-import Carousel from '../utils/Carousel'
+import { Box, Text, Anchor, Stack } from 'grommet'
 import Recipe from './Recipe'
 import { Trash } from 'grommet-icons'
 import HoveredBackground from '../utils/HoveredBackground'
@@ -8,6 +7,7 @@ import { useMutation } from 'react-apollo'
 import { DELETE_RECIPE, REPO_Q } from './queries'
 import { Provider } from './misc'
 import { Container } from './Integrations'
+import { chunk } from '../../utils/array'
 
 const PROVIDER_WIDTH = 40
 
@@ -96,32 +96,21 @@ export default function Recipes({repository, edges, pageInfo, fetchMore}) {
   return (
     <>
     {recipe && (<Recipe {...recipe} setOpen={wrappedSetRecipe} />)}
-    <Box pad='small' gap='small'>
-      <Text size='small' style={{fontWeight: 500}}>Recipes</Text>
-      <Carousel
-        draggable={false}
-        slidesPerPage={3}
-        offset={12}
-        edges={edges}
-        mapper={({node}) => <RecipeListItem key={node.id} recipe={node} setRecipe={wrappedSetRecipe} repository={repository} />}
-        fetchMore={() => {
-          if (!pageInfo.hasNextPage) return
-
-          fetchMore({
-            variables: {recipeCursor: pageInfo.endCursor},
-            updateQuery: (prev, {fetchMoreResult}) => {
-              const {edges, pageInfo} = fetchMoreResult.recipes
-              return edges.length ? {
-                ...prev,
-                recipes: {
-                  ...prev.recipes,
-                  pageInfo,
-                  edges: [...prev.recipes.edges, ...edges]
-                }
-              } : prev
-            }
+    <Box pad='small' gap='medium'>
+      {Array.from(chunk(edges, 2)).map((chunk, ind) => (
+        <Box key={ind} direction='row' gap='small' fill='horizontal'>
+          {chunk.map(({node}) => (
+            <RecipeListItem key={node.id} recipe={node} setRecipe={wrappedSetRecipe} repository={repository} />
+          ))}
+        </Box>
+      ))}
+      {pageInfo.hasNextPage && (<Anchor onClick={() => fetchMore({
+          variables: {recipeCursor: pageInfo.endCursor},
+          updateQuery: (prev, {fetchMoreResult: {recipes: {edges, pageInfo}}}) => ({
+              ...prev,
+              recipes: {...prev.recipes, pageInfo, edges: [...prev.recipes.edges, ...edges]}
           })
-        }} />
+      })}>show more</Anchor>)}
     </Box>
     </>
   )

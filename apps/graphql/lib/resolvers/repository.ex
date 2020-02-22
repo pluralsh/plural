@@ -80,6 +80,13 @@ defmodule GraphQl.Resolvers.Repository do
     end
   end
 
+  def protected_field(repo, user, field) do
+    case Core.Policies.Repository.can?(user, repo, :edit) do
+      {:error, _} -> {:ok, nil}
+      _ -> {:ok, Map.get(repo, field)}
+    end
+  end
+
   def upsert_integration(%{attributes: attrs, repository_name: name}, %{context: %{current_user: user}}) do
     repo = Repositories.get_repository_by_name!(name)
     Repositories.upsert_integration(attrs, repo.id, user)

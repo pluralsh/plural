@@ -113,6 +113,7 @@ export const REPO_Q = gql`
       ...RepoFragment
       editable
       publicKey
+      secrets
       installation {
         ...InstallationFragment
         subscription {

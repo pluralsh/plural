@@ -4,7 +4,8 @@ import {Bundle, FormPrevious} from 'grommet-icons'
 import {useQuery, useMutation} from 'react-apollo'
 import {useParams, useHistory} from 'react-router-dom'
 import Scroller from '../utils/Scroller'
-import {SecondaryButton} from '../utils/Button'
+import yaml from 'js-yaml'
+import Button, {SecondaryButton} from '../utils/Button'
 import Modal, {ModalHeader} from '../utils/Modal'
 import Tabs, {TabHeader, TabHeaderItem, TabContent, BORDER_COLOR} from '../utils/Tabs'
 import {REPO_Q, UPDATE_REPO, DOCKER_IMG_Q} from './queries'
@@ -19,6 +20,9 @@ import moment from 'moment'
 import ScrollableContainer from '../utils/ScrollableContainer'
 import { Provider } from './misc'
 import Artifacts from './Artifacts'
+import AceEditor from "react-ace"
+import "ace-builds/src-noconflict/mode-yaml"
+import "ace-builds/src-noconflict/theme-terminal"
 
 function Container({children, onClick, hasNext, noPad}) {
   const [hover, setHover] = useState(false)
@@ -307,6 +311,43 @@ function RepoUpdate({repository}) {
   )
 }
 
+function UpdateSecrets({repository}) {
+  const [secrets, setSecrets] = useState(yaml.safeDump(repository.secrets || {}, null, 2))
+  const [mutation, {loading}] = useMutation(UPDATE_REPO, {
+    variables: {id: repository.id, attributes: {secrets}},
+    update: (cache, { data: { updateRepository } }) => {
+      const prev = cache.readQuery({ query: REPO_Q, variables: {repositoryId: repository.id} })
+      cache.writeQuery({query: REPO_Q, variables: {repositoryId: repository.id}, data: {
+        ...prev,
+        repository: {
+          ...prev.repository,
+          ...updateRepository
+        }
+      }})
+    }
+  })
+
+  return (
+    <Box pad='small' gap='small'>
+      <AceEditor
+        mode='yaml'
+        theme='terminal'
+        height='300px'
+        width='100%'
+        name='secrets'
+        value={secrets}
+        onChange={setSecrets}
+        showGutter
+        showPrintMargin
+        highlightActiveLine
+        editorProps={{ $blockScrolling: true }} />
+      <Box direction='row' justify='end'>
+        <Button loading={loading} label='Save' onClick={mutation} />
+      </Box>
+    </Box>
+  )
+}
+
 export function RepositoryIcon({size, repository, headingSize}) {
   return (
     <>
@@ -357,7 +398,10 @@ export default function Repository() {
               <Recipes {...recipes} fetchMore={fetchMore} repository={repository} />
             </Box>
           )}
-          <Tabs defaultTab='charts' onTabChange={setTab} headerEnd={tab === 'terraform' ? <TerraformCreateModal /> : null}>
+          <Tabs
+            defaultTab='charts'
+            onTabChange={setTab}
+            headerEnd={tab === 'terraform' && repository.editable ? <TerraformCreateModal /> : null}>
             <TabHeader>
               <TabHeaderItem name='charts'>
                 <Text style={{fontWeight: 500}} size='small'>Charts</Text>
@@ -371,6 +415,11 @@ export default function Repository() {
               {repository.publicKey && (
                 <TabHeaderItem name='credentials'>
                   <Text style={{fontWeight: 500}} size='small'>Credentials</Text>
+                </TabHeaderItem>
+              )}
+              {repository.editable && (
+                <TabHeaderItem name='secrets'>
+                  <Text style={{fontWeight: 500}} size='small'>Secrets</Text>
                 </TabHeaderItem>
               )}
               {repository.editable && (
@@ -390,6 +439,9 @@ export default function Repository() {
             </TabContent>
             <TabContent name='credentials'>
               <RepoCredentials {...repository} />
+            </TabContent>
+            <TabContent name='secrets'>
+              <UpdateSecrets repository={repository} />
             </TabContent>
             <TabContent name='edit'>
               <RepoUpdate repository={repository} />

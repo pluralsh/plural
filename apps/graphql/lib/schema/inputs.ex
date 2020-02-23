@@ -15,6 +15,17 @@ defmodule GraphQl.Schema.Inputs do
     field :name,        :string
     field :description, :string
     field :avatar,      :upload_or_url
+    field :phone,       :string
+    field :address,     :address_attributes
+  end
+
+  input_object :address_attributes do
+    field :line1,   non_null(:string)
+    field :line2,   non_null(:string)
+    field :city,    non_null(:string)
+    field :state,   non_null(:string)
+    field :country, non_null(:string)
+    field :zip,     non_null(:string)
   end
 
   input_object :repository_attributes do

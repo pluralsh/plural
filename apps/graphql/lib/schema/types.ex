@@ -61,6 +61,8 @@ defmodule GraphQl.Schema.Types do
     field :description,  :string
     field :account_id,   :string
     field :owner,        :user, resolve: dataloader(User)
+    field :phone,        :string
+    field :address,      :address
 
     field :avatar, :string, resolve: fn
       publisher, _, _ -> {:ok, Core.Storage.url({publisher.avatar, publisher}, :original)}

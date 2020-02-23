@@ -1,27 +1,7 @@
 defmodule Core.Schema.User do
   use Piazza.Ecto.Schema, derive_json: false
   use Arc.Ecto.Schema
-
-  defmodule Address do
-    use Piazza.Ecto.Schema
-
-    embedded_schema do
-      field :line1,   :string
-      field :line2,   :string
-      field :city,    :string
-      field :state,   :string
-      field :country, :string
-      field :zip,     :string
-    end
-
-    @valid ~w(line1 line2 city state country zip)a
-
-    def changeset(model, attrs \\ %{}) do
-      model
-      |> cast(attrs, @valid)
-      |> validate_required([:line1, :city, :state, :country, :zip])
-    end
-  end
+  alias Core.Schema.{Address, Publisher, Webhook}
 
   @email_re ~r/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-\.]+\.[a-zA-Z]{2,}$/
 
@@ -37,9 +17,9 @@ defmodule Core.Schema.User do
     field :phone,         :string
 
     embeds_one :address, Address
-    has_one :publisher,  Core.Schema.Publisher,
+    has_one :publisher,  Publisher,
       foreign_key: :owner_id
-    has_many :webhooks,  Core.Schema.Webhook
+    has_many :webhooks,  Webhook
 
     timestamps()
   end

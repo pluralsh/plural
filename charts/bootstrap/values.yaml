@@ -10,3 +10,16 @@ external-dns:
   google:
     project: piazza-247002
     serviceAccountSecret: externaldns
+grafana:
+  admin:
+    existingSecret: grafana-credentials
+  service:
+    type: NodePort
+  persistence:
+    enabled: true
+  sidecar:
+    datasources:
+      searchNamespace: ALL
+  ingress:
+    enabled: true
+    path: /*

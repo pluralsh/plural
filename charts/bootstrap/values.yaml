@@ -13,12 +13,51 @@ external-dns:
 grafana:
   admin:
     existingSecret: grafana-credentials
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+      - name: default
+        orgId: 1
+        folder: ''
+        type: file
+        updateIntervalSeconds: 10
+        disableDeletion: true
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/default
+      - name: sidecar
+        orgId: 1
+        folder: ''
+        type: file
+        updateIntervalSeconds: 10
+        disableDeletion: true
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/sidecar
+  dashboards:
+    default:
+      kubernetes-overview:
+        gnetId: 10856
+        revision: 1
+        datasource: Prometheus
+      kubernetes-deepdive:
+        gnetId: 8588
+        revision: 1
+        datasource: Prometheus
+      node-overview:
+        gnetId: 1860
+        revision: 16
+        datasource: Prometheus
   service:
     type: NodePort
   persistence:
     enabled: true
   sidecar:
     dashboards:
+      provider:
+        name: sidecar
+        allowUiUpdates: true
       enabled: true
       searchNamespace: ALL
     datasources:

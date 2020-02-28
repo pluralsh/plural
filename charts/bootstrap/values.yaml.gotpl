@@ -10,6 +10,10 @@ external-dns:
     project: {{ .Values.gcp_project_id }}
     serviceAccountSecret: externaldns
 
-datadog:
-  datadog:
-    apiKey: {{ .Values.datadog_api_key }}
+grafana:
+  admin:
+    password: {{ dedupe . "bootstrap.grafana.admin.password" (randAlphaNum 14) }}
+    user: admin
+  ingress:
+    hosts:
+    - {{ .Values.grafana_dns }}

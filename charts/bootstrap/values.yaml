@@ -18,7 +18,11 @@ grafana:
   persistence:
     enabled: true
   sidecar:
+    dashboards:
+      enabled: true
+      searchNamespace: ALL
     datasources:
+      enabled: true
       searchNamespace: ALL
   ingress:
     enabled: true

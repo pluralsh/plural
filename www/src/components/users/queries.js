@@ -1,5 +1,5 @@
 import gql from 'graphql-tag'
-import {UserFragment, TokenFragment, WebhookFragment} from '../../models/user'
+import {UserFragment, TokenFragment, WebhookFragment, AddressFragment} from '../../models/user'
 import { CardFragment } from '../../models/payments';
 
 export const ME_Q = gql`
@@ -10,12 +10,17 @@ export const ME_Q = gql`
       publisher {
         id
         name
+        phone
         description
         accountId
+        address {
+          ...AddressFragment
+        }
       }
     }
   }
   ${UserFragment}
+  ${AddressFragment}
 `;
 
 export const CARDS = gql`

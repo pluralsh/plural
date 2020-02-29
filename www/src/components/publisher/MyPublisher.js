@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react'
 import {useMutation} from 'react-apollo'
-import {Box, Anchor} from 'grommet'
+import {Box, Anchor, Text, TextInput} from 'grommet'
 import Repositories from '../repos/Repositories'
 import CreateRepository from '../repos/CreateRepository'
 import {CurrentUserContext} from '../login/CurrentUser'
@@ -8,7 +8,7 @@ import {BreadcrumbContext} from '../Chartmart'
 import Expander from '../utils/Expander'
 import { EDIT_PUBLISHER, LINK_ACCOUNT } from './queries'
 import { ME_Q } from '../users/queries'
-import InputField from '../utils/InputField'
+import InputField, { InputCollection, ResponsiveInput } from '../utils/InputField'
 import Button from '../utils/Button'
 import ScrollableContainer from '../utils/ScrollableContainer'
 import { CONNECT_ICON, AUTHORIZE_URL } from './constants'
@@ -54,9 +54,60 @@ function PublisherPayments({accountId}) {
   )
 }
 
-function EditPublisher({description}) {
-  const [attributes, setAttributes] = useState({description})
-  const [mutation] = useMutation(EDIT_PUBLISHER, {
+function AddressForm({address, onChange}) {
+  return (
+    <Box pad={{horizontal: 'small'}}>
+      <InputCollection>
+        <ResponsiveInput
+          label='line 1'
+          value={address.line1}
+          placeholder='street address'
+          onChange={({target: {value}}) => onChange({...address, line1: value})} />
+        <ResponsiveInput
+          label='line 2'
+          value={address.line2}
+          placeholder='apt number, suite number, etc'
+          onChange={({target: {value}}) => onChange({...address, line2: value})} />
+        <ResponsiveInput
+          label='city'
+          value={address.city}
+          placeholder='city'
+          onChange={({target: {value}}) => onChange({...address, city: value})} />
+        <ResponsiveInput
+          label='state'
+          value={address.state}
+          placeholder='state'
+          onChange={({target: {value}}) => onChange({...address, state: value})} />
+        <tr>
+          <td>
+            <Text size='small' weight='bold'>country</Text>
+          </td>
+          <td>
+            <Box direction='row' gap='small'>
+              <TextInput
+                label='country'
+                value={address.country}
+                placeholder='country'
+                onChange={({target: {value}}) => onChange({...address, country: value})} />
+              <InputField
+                label='zip'
+                value={address.zip}
+                labelWidth='30px'
+                placeholder='zip'
+                onChange={({target: {value}}) => onChange({...address, zip: value})} />
+            </Box>
+          </td>
+        </tr>
+      </InputCollection>
+    </Box>
+  )
+}
+
+const defaultAddress = {line1: '', line2: '', city: '', state: '', zip: '', country: 'United States'}
+
+function EditPublisher({description, phone, address}) {
+  const [attributes, setAttributes] = useState({description, phone, address: (address || defaultAddress)})
+  const [mutation, {loading}] = useMutation(EDIT_PUBLISHER, {
     variables: {attributes},
     update: (cache, { data: { updatePublisher } }) => {
       const prev = cache.readQuery({ query: ME_Q })
@@ -71,13 +122,25 @@ function EditPublisher({description}) {
 
   return (
     <Box gap='small' pad='small'>
-      <InputField
-        label='description'
-        labelWidth='85px'
-        value={attributes.description}
-        onChange={(e) => setAttributes({...attributes, description: e.target.value})} />
+      <Box pad={{horizontal: 'small'}}>
+        <InputCollection>
+          <ResponsiveInput
+            label='description'
+            value={attributes.description}
+            onChange={({target: {value}}) => setAttributes({...attributes, description: value})} />
+          <ResponsiveInput
+            label='phone'
+            value={attributes.phone}
+            onChange={({target: {value}}) => setAttributes({...attributes, phone: value})} />
+        </InputCollection>
+      </Box>
+      <Box border='top' pad={{top: 'small'}}>
+        <AddressForm
+          address={attributes.address}
+          onChange={(address) => setAttributes({...attributes, address})} />
+      </Box>
       <Box direction='row' justify='end'>
-        <Button round='xsmall' label='Update' onClick={mutation} />
+        <Button loading={loading} round='xsmall' label='Update' onClick={mutation} />
       </Box>
     </Box>
   )
@@ -90,6 +153,7 @@ export default function MyPublisher() {
     if (!me.publisher) return
     setBreadcrumbs([{url: `/publishers/${me.publisher.id}`, text: me.publisher.name}])
   }, [me, setBreadcrumbs])
+  console.log(me.publisher)
 
   return (
     <ScrollableContainer>

@@ -16,7 +16,7 @@ defmodule Core.Schema.User do
     field :customer_id,   :string
     field :phone,         :string
 
-    embeds_one :address, Address
+    embeds_one :address, Address, on_replace: :update
     has_one :publisher,  Publisher,
       foreign_key: :owner_id
     has_many :webhooks,  Webhook
@@ -50,7 +50,6 @@ defmodule Core.Schema.User do
     |> validate_length(:password, min: 10)
     |> validate_format(:email, @email_re)
     |> hash_password()
-    |> validate_required([:password_hash])
     |> generate_uuid(:avatar_id)
     |> cast_attachments(attrs, [:avatar], allow_urls: true)
   end

@@ -41,11 +41,12 @@ defmodule GraphQl.Schema.Types do
   end
 
   object :address do
-    field :line1, :string
-    field :line2, :string
-    field :city,  :string
-    field :state, :string
-    field :zip,   :string
+    field :line1,   :string
+    field :line2,   :string
+    field :city,    :string
+    field :state,   :string
+    field :country, :string
+    field :zip,     :string
   end
 
   object :persisted_token do

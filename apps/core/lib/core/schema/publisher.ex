@@ -11,7 +11,7 @@ defmodule Core.Schema.Publisher do
     field :account_id,  :string
     field :phone,       :string
 
-    embeds_one :address, Address
+    embeds_one :address, Address, on_replace: :update
     belongs_to :owner, User
 
     timestamps()

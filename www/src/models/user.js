@@ -23,6 +23,7 @@ export const AddressFragment = gql`
     line1
     line2
     city
+    country
     state
     zip
   }

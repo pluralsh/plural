@@ -16,29 +16,23 @@ function Publisher({publisher}) {
   }, [setBreadcrumbs])
 
   return (
-    <Box direction='row' gap='small'>
-      <Avatar size='75px' user={publisher.owner} />
-      <Box gap='xsmall'>
+    <Box direction='row' gap='small' align='center'>
+      <Avatar size='65px' user={publisher.owner} />
+      <Box>
         <Anchor
           onClick={() => history.push(`/publishers/${publisher.id}`)}
           size='small'
           weight='bold'>
           {publisher.name}
         </Anchor>
-        <Box gap='xxsmall'>
-          <Box>
-            <Text size='small'><i>{publisher.description}</i></Text>
-          </Box>
-          <Box>
-            <Text size='small'>Owned by {publisher.owner.name}</Text>
-          </Box>
-        </Box>
+        <Text size='small'><i>{publisher.description}</i></Text>
+        <Text size='small'>owner: {publisher.owner.name}</Text>
       </Box>
     </Box>
   )
 }
 
-function Publishers(props) {
+export default function Publishers() {
   const {loading, data, fetchMore} = useQuery(PUBLISHERS_Q)
   if (loading || !data) return null
 
@@ -50,27 +44,17 @@ function Publishers(props) {
         edges={edges}
         style={{overflow: 'auto', height: '100%', width: '100%'}}
         mapper={({node}) => <Publisher publisher={node} />}
-        onLoadMore={() => {
-          if (!pageInfo.hasNextPage) return
-
-          fetchMore({
-            variables: {cursor: pageInfo.endCursor},
-            updateQuery: (prev, {fetchMoreResult}) => {
-              const {edges, pageInfo} = fetchMoreResult.publishers
-              return edges.length ? {
-                ...prev,
-                publishers: {
-                  ...prev.publishers,
-                  pageInfo,
-                  edges: [...prev.publishers.edges, ...edges]
-                }
-              } : prev
+        onLoadMore={() => pageInfo && fetchMore({
+          variables: {cursor: pageInfo.endCursor},
+          updateQuery: (prev, {fetchMoreResult: {publishers: {edges, pageInfo}}}) => {
+            return {...prev, publishers: {
+                ...prev.publishers,
+                pageInfo,
+                edges: [...prev.publishers.edges, ...edges]
+              }
             }
-          })
-        }}
-      />
+          }
+        })} />
     </Box>
   )
 }
-
-export default Publishers

@@ -6,14 +6,30 @@ import {PUBLISHER_Q} from './queries'
 import Repositories from '../repos/Repositories'
 import Avatar from '../users/Avatar'
 import {BreadcrumbContext} from '../Chartmart'
+import { InputCollection, ResponsiveInputContainer } from '../utils/InputField'
 
-function PublisherView({name, owner, description}) {
+function formatAddress({line1, line2, city, state, country, zip}) {
+  return `${line1}, ${line2} ${city}, ${state}, ${country} ${zip}`
+}
+
+function PublisherView({name, owner, description, phone, address}) {
   return (
-    <Box gap='small' elevation='small' pad='small' direction='row'>
-      <Avatar size='100px' user={owner} />
-      <Box gap='small'>
-        <Text size='medium'>{name}</Text>
-        <Text size='small'>{description}</Text>
+    <Box gap='small' elevation='small' pad='small'>
+      <Box direction='row' align='center' gap='small' pad='small'>
+        <Avatar size='100px' user={owner} />
+        <Box gap='small'>
+          <Box>
+            <Text size='medium'>{name}</Text>
+            <Text size='small'><i>{description}</i></Text>
+          </Box>
+        </Box>
+      </Box>
+      <Box pad='small'>
+        <InputCollection>
+          <ResponsiveInputContainer label='email' content={<Text size='small'>{owner.email}</Text>} />
+          <ResponsiveInputContainer label='phone' content={<Text size='small'>{phone}</Text>} />
+          <ResponsiveInputContainer label='address' content={<Text size='small'>{formatAddress(address)}</Text>} />
+        </InputCollection>
       </Box>
     </Box>
   )

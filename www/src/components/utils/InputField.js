@@ -3,17 +3,27 @@ import { Box, Text, TextInput } from 'grommet'
 
 export function ResponsiveInput({label, name, type, value, onChange, placeholder}) {
   return (
-    <tr>
-      <td style={{whiteSpace: 'nowrap'}}>
-        <Text size='small' weight='bold'>{label}</Text>
-      </td>
-      <td style={{width: '99%'}}>
+    <ResponsiveInputContainer
+      label={label}
+      content={
         <TextInput
           name={name || 'name'}
           type={type}
           value={value}
           onChange={onChange}
           placeholder={placeholder} />
+      } />
+  )
+}
+
+export function ResponsiveInputContainer({label, content}) {
+  return (
+    <tr>
+      <td style={{whiteSpace: 'nowrap'}}>
+        <Text size='small' weight='bold'>{label}</Text>
+      </td>
+      <td style={{width: '99%'}}>
+        {content}
       </td>
     </tr>
   )

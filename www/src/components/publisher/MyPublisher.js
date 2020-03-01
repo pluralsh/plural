@@ -134,13 +134,19 @@ function EditPublisher({description, phone, address}) {
             onChange={({target: {value}}) => setAttributes({...attributes, phone: value})} />
         </InputCollection>
       </Box>
-      <Box border='top' pad={{top: 'small'}}>
+      <Box border='top' pad={{top: 'small'}} gap='small'>
+        <Text size='small' margin={{left: 'small'}} style={{fontWeight: 500}}>Address</Text>
         <AddressForm
           address={attributes.address}
           onChange={(address) => setAttributes({...attributes, address})} />
       </Box>
-      <Box direction='row' justify='end'>
-        <Button loading={loading} round='xsmall' label='Update' onClick={mutation} />
+      <Box direction='row' justify='end' pad={{horizontal: '16px'}}>
+        <Button
+          loading={loading}
+          pad={{horizontal: 'medium', vertical: 'xsmall'}}
+          round='xsmall'
+          label='Update'
+          onClick={mutation} />
       </Box>
     </Box>
   )

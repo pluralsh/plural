@@ -1,13 +1,12 @@
 import React, { useState } from 'react'
 import { useQuery, useMutation } from 'react-apollo'
 import { RECIPE_Q, INSTALL_RECIPE, REPO_Q } from './queries'
-import { Layer, Box, Text } from 'grommet'
+import { Layer, Box, Text, CheckBox } from 'grommet'
 import { ModalHeader } from '../utils/Modal'
 import Button, { SecondaryButton } from '../utils/Button'
 import { RepositoryIcon } from './Repository'
 import { DEFAULT_CHART_ICON, DEFAULT_TF_ICON } from './constants'
-import RadioButton from '../utils/RadioButton'
-import InputField from '../utils/InputField'
+import { InputCollection, ResponsiveInput, ResponsiveInputContainer } from '../utils/InputField'
 
 function SubHeading({size, icon, name, description}) {
   return (
@@ -30,7 +29,7 @@ function RecipeItemHeading({terraform, chart}) {
   return <SubHeading size='30px' icon={chart.icon || DEFAULT_CHART_ICON} name={chart.name} description={chart.description} />
 }
 
-function Configure({conf: {name, placeholder, documentation, type}, repo, ctx, setCtx, labelWidth}) {
+function Configure({conf: {name, placeholder, type}, repo, ctx, setCtx}) {
   const updateCtx = (val) => {
     ctx[repo.id][name] = val
     setCtx({...ctx})
@@ -38,23 +37,27 @@ function Configure({conf: {name, placeholder, documentation, type}, repo, ctx, s
   const current = ctx[repo.id][name]
   switch (type) {
     case "BOOL":
-      return <RadioButton label={name} enabled={!!current} onClick={(en) => updateCtx(en)} />
+      return (
+        <ResponsiveInputContainer
+          label={name}
+          content={
+            <CheckBox checked={!!current} onChange={({target: {checked}}) => updateCtx(!!checked)} />
+          } />
+      )
     case "STRING":
       return (
-        <InputField
+        <ResponsiveInput
           label={name}
           placeholder={placeholder}
-          labelWidth={labelWidth}
           value={current || ""}
           onChange={({target: {value}}) => updateCtx(value)} />
       )
     case "INT":
       return (
-        <InputField
+        <ResponsiveInput
           label={name}
           placeholder={placeholder}
           value={current || ""}
-          labelWidth={labelWidth}
           onChange={({target: {value}}) => updateCtx(parseInt(value))} />
       )
     default:
@@ -76,7 +79,6 @@ const DOC_WIDTH = 40
 function EditSection({recipeSection, item, ctx, setCtx}) {
   const repo = recipeSection.repository
   const recipeItem = recipeSection.recipeItems[item]
-  const labelWidth = `${Math.max(...recipeItem.configuration.map(({name}) => name.length * 10))}px`
   return (
     <Box gap='small'>
       <Box direction='row' align='center'>
@@ -90,15 +92,16 @@ function EditSection({recipeSection, item, ctx, setCtx}) {
           <><Box width={`${100 - DOC_WIDTH}%`}>
             {recipeItem.configuration && (
               <Box pad='small' gap='xsmall'>
+                <InputCollection>
                 {recipeItem.configuration.map((conf) => (
                   <Configure
                     key={conf.name}
                     conf={conf}
                     ctx={ctx}
                     setCtx={setCtx}
-                    repo={repo}
-                    labelWidth={labelWidth} />
+                    repo={repo} />
                 ))}
+                </InputCollection>
               </Box>
             )}
             </Box>

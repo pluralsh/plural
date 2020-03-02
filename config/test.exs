@@ -52,3 +52,5 @@ config :core, :consumers, [Core.EchoConsumer]
 
 config :core, Core.Email.Mailer,
   adapter: Bamboo.TestAdapter
+
+config :kazan, :server, %{url: "kubernetes.default", auth: %{token: "your_token"}}

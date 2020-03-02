@@ -60,6 +60,20 @@ defmodule Core.Services.RepositoriesTest do
       [%{type: :int, name: "int"}, %{type: :string, name: "str"}] = updated.integration_resource_definition.spec
     end
 
+    test "It can update dashboards" do
+      %{owner: user} = publisher = insert(:publisher)
+      repo = insert(:repository, publisher: publisher)
+
+      {:ok, updated} = Repositories.update_repository(%{
+        name: "piazza",
+        dashboards: [%{name: "postgres", uid: "piazza-postgres"}]
+      }, repo.id, user)
+
+      assert updated.id == repo.id
+      [%{name: "postgres", uid: "piazza-postgres", repository_id: repo_id}] = updated.dashboards
+      assert repo_id == repo.id
+    end
+
     test "Nonpublishers cannot update their repositories" do
       user = insert(:user)
       repo = insert(:repository)

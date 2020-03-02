@@ -11,6 +11,7 @@ defmodule Watchman.Application do
       Watchman.Commands.Configuration,
       Watchman.Chartmart.Config,
       Watchman.Cron,
+      Watchman.Grafana.Token,
       {Absinthe.Subscription, [WatchmanWeb.Endpoint]},
       worker(Watchman.Deployer, [determine_storage()])
     ] ++ consumers()

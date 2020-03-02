@@ -1,12 +1,20 @@
 defmodule GraphQl.Resolvers.Repository do
   use GraphQl.Resolvers.Base, model: Core.Schema.Repository
   alias Core.Services.Repositories
-  alias Core.Schema.{Installation, Integration, ResourceDefinition, Tag, Artifact}
+  alias Core.Schema.{
+    Installation,
+    Integration,
+    ResourceDefinition,
+    Tag,
+    Artifact,
+    Dashboard
+  }
 
   def query(Tag, _), do: Tag
   def query(Integration, _), do: Integration
   def query(ResourceDefinition, _), do: ResourceDefinition
   def query(Installation, _), do: Installation
+  def query(Dashboard, _), do: Dashboard
   def query(Artifact, _), do: Artifact.ordered()
   def query(_, _), do: Repository
 

@@ -11,6 +11,5 @@ defmodule Core.Services.Email do
   def send(%Email{} = email) do
     Email.bamboo(email)
     |> Core.Email.Mailer.deliver_now()
-    |> IO.inspect()
   end
 end

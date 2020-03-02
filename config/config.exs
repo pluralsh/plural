@@ -72,4 +72,6 @@ config :watchman, Watchman.Repo,
 
 config :libcluster, :topologies, []
 
+config :kazan, :server, :in_cluster
+
 import_config "#{Mix.env()}.exs"

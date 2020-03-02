@@ -9,6 +9,10 @@ defmodule WatchmanWeb.Router do
     plug WatchmanWeb.Plugs.Authorized
   end
 
+  pipeline :grafana do
+    plug WatchmanWeb.Plugs.GrafanaAuth
+  end
+
   get "/health", WatchmanWeb.HealthController, :health
 
   scope "/v1", WatchmanWeb do
@@ -20,6 +24,13 @@ defmodule WatchmanWeb.Router do
   forward "/graphiql", Absinthe.Plug.GraphiQL,
     schema: Watchman.GraphQl,
     interface: :advanced
+
+  scope "/grafana" do
+    pipe_through [:grafana]
+
+    forward "/", ReverseProxyPlug,
+      upstream: "http://chartmart-grafana"
+  end
 
   scope "/" do
     pipe_through [:auth]

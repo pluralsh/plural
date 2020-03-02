@@ -81,6 +81,7 @@ defmodule GraphQl.Schema.Types do
     field :plans,         list_of(:plan), resolve: dataloader(Payments)
     field :tags,          list_of(:tag), resolve: dataloader(Repository)
     field :artifacts,     list_of(:artifact), resolve: dataloader(Repository)
+    field :dashboards,    list_of(:dashboard), resolve: dataloader(Repository)
 
     field :icon, :string, resolve: fn
       repo, _, _ -> {:ok, Core.Storage.url({repo.icon, repo}, :original)}
@@ -101,6 +102,14 @@ defmodule GraphQl.Schema.Types do
     field :public_key, :string, resolve: fn
       repo, _, %{context: %{current_user: user}} -> Repository.resolve_public_key(repo, user)
     end
+
+    timestamps()
+  end
+
+  object :dashboard do
+    field :id,   non_null(:id)
+    field :name, non_null(:string)
+    field :uid,  non_null(:string)
 
     timestamps()
   end

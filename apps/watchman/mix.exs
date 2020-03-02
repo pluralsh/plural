@@ -59,7 +59,9 @@ defmodule Watchman.MixProject do
       {:quantum, "~> 2.3"},
       {:yaml_elixir, "~> 2.4"},
       {:poison, "~> 3.1"},
-      {:mojito, "~> 0.3.0"}
+      {:mojito, "~> 0.3.0"},
+      {:reverse_proxy_plug, "~> 1.2.1"},
+      {:kazan, "~> 0.11"}
     ]
   end
 end

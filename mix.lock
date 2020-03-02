@@ -49,6 +49,7 @@
   "jason": {:hex, :jason, "1.1.2", "b03dedea67a99223a2eaf9f1264ce37154564de899fd3d8b9a21b1a6fd64afe7", [:mix], [{:decimal, "~> 1.0", [hex: :decimal, repo: "hexpm", optional: true]}], "hexpm"},
   "joken": {:hex, :joken, "2.1.0", "bf21a73105d82649f617c5e59a7f8919aa47013d2519ebcc39d998d8d12adda9", [:mix], [{:jose, "~> 1.9", [hex: :jose, repo: "hexpm", optional: false]}], "hexpm"},
   "jose": {:hex, :jose, "1.9.0", "4167c5f6d06ffaebffd15cdb8da61a108445ef5e85ab8f5a7ad926fdf3ada154", [:mix, :rebar3], [{:base64url, "~> 0.0.1", [hex: :base64url, repo: "hexpm", optional: false]}], "hexpm"},
+  "kazan": {:hex, :kazan, "0.11.0", "fe70a92a922f307680086ecbfda085f11193649dd84b465e488d5b82f96e7f7b", [:mix], [{:httpoison, "~> 0.10 or ~> 1.0", [hex: :httpoison, repo: "hexpm", optional: false]}, {:poison, "~> 2.0 or ~> 3.0 or ~> 4.0", [hex: :poison, repo: "hexpm", optional: false]}, {:yaml_elixir, "~> 2.0", [hex: :yaml_elixir, repo: "hexpm", optional: false]}], "hexpm"},
   "libcluster": {:hex, :libcluster, "3.1.1", "cbab97b96141f47f2fe5563183c444bbce9282b3991ef054d69b8805546f0122", [:mix], [{:jason, "~> 1.1.2", [hex: :jason, repo: "hexpm", optional: false]}], "hexpm"},
   "libring": {:hex, :libring, "1.4.0", "41246ba2f3fbc76b3971f6bce83119dfec1eee17e977a48d8a9cfaaf58c2a8d6", [:mix], [], "hexpm"},
   "meck": {:hex, :meck, "0.8.13", "ffedb39f99b0b99703b8601c6f17c7f76313ee12de6b646e671e3188401f7866", [:rebar3], [], "hexpm"},

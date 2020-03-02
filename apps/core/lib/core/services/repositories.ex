@@ -154,7 +154,7 @@ defmodule Core.Services.Repositories do
   @spec update_repository(map, binary, User.t) :: {:ok, Repository.t} | {:error, term}
   def update_repository(attrs, repo_id, %User{} = user) do
     get_repository!(repo_id)
-    |> Core.Repo.preload([:integration_resource_definition, :tags])
+    |> Core.Repo.preload([:integration_resource_definition, :tags, :dashboards])
     |> Repository.changeset(attrs)
     |> allow(user, :edit)
     |> when_ok(:update)

@@ -36,6 +36,12 @@ defmodule GraphQl.Schema.Inputs do
     field :icon,          :upload_or_url
     field :integration_resource_definition, :resource_definition_attributes
     field :tags,          list_of(:tag_attributes)
+    field :dashboards,    list_of(:dashboard_attributes)
+  end
+
+  input_object :dashboard_attributes do
+    field :name, non_null(:string)
+    field :uid,  non_null(:string)
   end
 
   input_object :installation_attributes do

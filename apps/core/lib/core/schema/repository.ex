@@ -3,6 +3,7 @@ defmodule Core.Schema.Repository do
   use Arc.Ecto.Schema
   alias Core.Schema.{
     Publisher,
+    Dashboard,
     Installation,
     ResourceDefinition,
     Tag,
@@ -26,6 +27,7 @@ defmodule Core.Schema.Repository do
     has_many :installations, Installation
     has_many :plans,         Plan
     has_many :artifacts,     Artifact
+    has_many :dashboards,    Dashboard
     has_many :tags,          Tag,
         where: [resource_type: :repository],
         foreign_key: :resource_id,
@@ -61,6 +63,7 @@ defmodule Core.Schema.Repository do
     model
     |> cast(attrs, @valid)
     |> cast_assoc(:tags, with: &Tag.tag_changeset(&1, &2, :repository))
+    |> cast_assoc(:dashboards)
     |> foreign_key_constraint(:publisher_id)
     |> cast_assoc(:integration_resource_definition)
     |> unique_constraint(:name)

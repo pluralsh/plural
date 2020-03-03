@@ -50,12 +50,12 @@ function Build({build: {id, repository, status, insertedAt, message}}) {
   return (
     <Box pad={BUILD_PADDING}>
       <Box
-        border
+        elevation='xsmall'
         pad='small'
         margin={{bottom: 'small'}}
         direction='row'
         align='center'
-        round='xsmall'
+        // round='xsmall'
         style={{cursor: 'pointer'}}
         onClick={() => history.push(`/build/${id}`)}
         onMouseEnter={() => setHover(true)}
@@ -156,7 +156,7 @@ export default function Builds() {
   const {edges, pageInfo} = data.builds
   return (
     <Box height='calc(100vh - 45px)' pad={{bottom: 'small'}}>
-      <Box gap='small'>
+      <Box>
         <Box
           pad={{vertical: 'small', ...BUILD_PADDING}}
           direction='row'
@@ -169,7 +169,7 @@ export default function Builds() {
           </Box>
           <CreateBuild />
         </Box>
-        <Box height='calc(100vh - 105px)'>
+        <Box height='calc(100vh - 105px)' pad={{top: 'small'}}>
           <Scroller
             id='builds'
             style={{height: '100%', overflow: 'auto'}}

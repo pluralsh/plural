@@ -30,8 +30,8 @@ function SidebarIcon({icon, text, selected, path}) {
 const OPTIONS = [
   {text: 'Builds', icon: <Deploy size='15px' />, path: '/'},
   {text: 'Configuration', icon: <Configure size='15px' />, path: '/config' },
+  {text: 'Observability', icon: <Dashboard size='15px' />, path: '/dashboards'},
   {text: 'Webhooks', icon: <Network size='15px' />, path: '/webhooks'},
-  {text: 'Observability', icon: <Dashboard size='15px' />, path: '/dashboards'}
 ]
 
 export default function Sidebar() {

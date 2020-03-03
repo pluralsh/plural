@@ -4,9 +4,10 @@ defmodule WatchmanWeb.Plugs.GrafanaAuth do
   def init(opts), do: opts
 
   def call(conn, _opts) do
-    secret = Watchman.conf(:webhook_secret)
+    secret = Watchman.conf(:webhook_secret) |> Base.encode64(padding: false)
     fetch_cookies(conn)
     |> Map.get(:req_cookies)
+    |> IO.inspect()
     |> Map.new()
     |> case do
       %{"grafana_token" => ^secret} ->

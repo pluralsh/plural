@@ -17,7 +17,8 @@ defmodule WatchmanWeb.Plugs.GrafanaAuthTest do
       end)
       send Watchman.Grafana.Token, :refetch
 
-      result = GrafanaAuth.call(%{conn | req_cookies: [{"grafana_token", Watchman.conf(:webhook_secret)}]}, [])
+      secret = Watchman.conf(:webhook_secret)
+      result = GrafanaAuth.call(%{conn | req_cookies: [{"grafana_token", Base.encode64(secret, padding: false)}]}, [])
 
       refute result.status == 401
       ["Basic " <> basic] = get_req_header(result, "authorization")

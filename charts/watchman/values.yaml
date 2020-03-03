@@ -25,7 +25,7 @@ shutdownDelay: 15
 ingress:
   enabled: true
   annotations:
-    networking.gke.io/managed-certificates: watchman-cert
+    networking.gke.io/managed-certificates: watchman-cert,watchman-grafana-cert
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

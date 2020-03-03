@@ -3,6 +3,7 @@ postgresql:
 
 ingress:
   watchman_dns: {{ .Values.watchman_dns }}
+  grafana_dns: watchman-grafana.{{ .Values.dns_domain }}
 
 secrets:
   git_url: {{ repoUrl }}

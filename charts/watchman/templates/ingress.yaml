@@ -18,6 +18,14 @@ spec:
   domains:
   - {{ .Values.ingress.watchman_dns }}
 ---
+apiVersion: networking.gke.io/v1beta1
+kind: ManagedCertificate
+metadata:
+  name: watchman-grafana-cert
+spec:
+  domains:
+  - {{ .Values.ingress.grafana_dns }}
+---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -31,6 +39,12 @@ metadata:
 spec:
   rules:
   - host: {{ .Values.ingress.watchman_dns | quote }}
+    http:
+      paths:
+      - backend:
+          serviceName: watchman
+          servicePort: http
+  - host: {{ .Values.ingress.grafana_dns | quote }}
     http:
       paths:
       - backend:

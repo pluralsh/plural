@@ -1,6 +1,6 @@
 defmodule Watchman.Chartmart.Repositories do
   use Watchman.Chartmart.Base
-  alias Watchman.Chartmart.{Connection, Edge, PageInfo, Installation, Repository}
+  alias Watchman.Chartmart.{Connection, Edge, PageInfo, Installation, Repository, Dashboard}
 
   defmodule Query, do: defstruct [:installations]
 
@@ -10,7 +10,11 @@ defmodule Watchman.Chartmart.Repositories do
       prune_variables(%{cursor: cursor, first: first}),
       %Query{installations: %Connection{
         pageInfo: %PageInfo{},
-        edges: [%Edge{node: %Installation{repository: %Repository{}}}]
+        edges: [
+          %Edge{node: %Installation{
+            repository: %Repository{dashboards: [%Dashboard{}]}
+          }
+        }]
       }}
     )
     |> case do

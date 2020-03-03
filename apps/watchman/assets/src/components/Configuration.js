@@ -71,12 +71,12 @@ export function EditConfiguration({repository: {name, configuration, icon, descr
   )
 }
 
-function Config({config: {name, icon, description}}) {
+export function RepositoryChoice({config: {name, icon, description}, link}) {
   let history = useHistory()
 
   return (
     <Box
-      onClick={() => history.push(`/config/${name}`)}
+      onClick={() => history.push(link)}
       hoverIndicator='light-3'
       direction='row'
       align='center'
@@ -132,7 +132,12 @@ export default function Configuration() {
           id='configuration'
           style={{height: '100%', overflow: 'auto'}}
           edges={edges}
-          mapper={({node: {repository}}) => <Config key={repository.id} config={repository} />} />
+          mapper={({node: {repository}}) => (
+            <RepositoryChoice
+              key={repository.id}
+              link={`/config/${repository.name}`}
+              config={repository} />
+          )} />
       </Box>
     </Box>
   )

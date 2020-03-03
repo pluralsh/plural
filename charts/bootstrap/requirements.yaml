@@ -8,3 +8,6 @@ dependencies:
 - name: prometheus
   version: 10.5.2
   repository: https://kubernetes-charts.storage.googleapis.com/
+- name: loki-stack
+  version: 0.32.1
+  repository: https://grafana.github.io/loki/charts

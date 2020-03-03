@@ -8,7 +8,7 @@ config :piazza_core,
 
 config :watchman, WatchmanWeb.Endpoint,
   url: [host: get_env("HOST"), port: 80],
-  check_origin: ["//#{get_env("HOST")}", "//watchman-grafana.#{Enum.join(rest, "."}", "//watchman"]
+  check_origin: ["//#{get_env("HOST")}", "//watchman-grafana.#{Enum.join(rest, ".")}", "//watchman"]
 
 config :watchman, Watchman.Repo,
   database: "watchman",

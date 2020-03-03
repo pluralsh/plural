@@ -25,13 +25,6 @@ defmodule WatchmanWeb.Router do
     schema: Watchman.GraphQl,
     interface: :advanced
 
-  scope "/", host: "watchman-grafana." do
-    pipe_through [:grafana]
-
-    forward "/", ReverseProxyPlug,
-      upstream: "http://chartmart-grafana"
-  end
-
   scope "/" do
     pipe_through [:auth]
 

@@ -2,6 +2,8 @@ defmodule WatchmanWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :watchman
   use Absinthe.Phoenix.Endpoint
 
+  plug WatchmanWeb.Plugs.GrafanaProxy
+
   socket "/socket", WatchmanWeb.UserSocket,
     websocket: [check_origin: false],
     longpoll: false

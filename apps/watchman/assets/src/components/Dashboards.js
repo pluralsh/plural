@@ -10,8 +10,12 @@ import { BUILD_PADDING } from './Builds'
 import { CONFIGURATIONS_Q } from './graphql/chartmart'
 import Loading from './utils/Loading'
 
-const API_HOST = apiHost()
-const GRAFANA_URL = `${secure() ? 'https' : 'http'}://${API_HOST}/grafana`
+function grafanaHost() {
+  const [_head, ...rest] = apiHost().split(".")
+  return `watchman-grafana.${rest.join('.')}`
+}
+
+const GRAFANA_URL = `${secure() ? 'https' : 'http'}://${grafanaHost()}`
 
 function ViewDashboards({repository: {icon, name, dashboards}}) {
   const [current, setCurrent] = useState(dashboards.length > 0?  dashboards[0].name : null)

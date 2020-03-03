@@ -33,6 +33,10 @@ function ViewDashboards({repository: {icon, name, dashboards}}) {
             {icon && <img alt='' src={icon} height='40px' width='40px' />}
             <Text weight='bold' size='small'>{name} dashboards</Text>
           </Box>
+          <Select
+            options={dashboards.map(({name}) => name)}
+            value={current}
+            onChange={({option}) => setCurrent(option)} />
         </Box>
       </Box>
       <Box height='calc(100vh - 105px)'>
@@ -40,14 +44,10 @@ function ViewDashboards({repository: {icon, name, dashboards}}) {
           <Box pad='medium'>
             <Text>No dashboards for this repository, contact the publisher to fix this</Text>
           </Box>) : (
-          <Stack anchor='top-left'>
-            <iframe height='100%' width='100%' src={`${GRAFANA_URL}/d/${currentDash.uid}?orgId=1&refresh=5s&kiosk`} />
-            <Select
-              margin={{top: 'small', left: 'small'}}
-              options={dashboards.map(({name}) => name)}
-              value={current}
-              onChange={({option}) => setCurrent(option)} />
-          </Stack>
+          <iframe
+            style={{display: 'block', height: 'calc(100vh - 105px', width: '100%'}}
+            frameBorder='0'
+            src={`${GRAFANA_URL}/d/${currentDash.uid}?orgId=1&refresh=5s&kiosk`} />
         )}
       </Box>
     </Box>

@@ -11,6 +11,9 @@ external-dns:
     project: piazza-247002
     serviceAccountSecret: externaldns
 grafana:
+  grafana.ini:
+    security:
+      allow_embedding: true
   admin:
     existingSecret: grafana-credentials
   dashboardProviders:

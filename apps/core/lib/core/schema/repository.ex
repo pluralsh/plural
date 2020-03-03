@@ -27,7 +27,7 @@ defmodule Core.Schema.Repository do
     has_many :installations, Installation
     has_many :plans,         Plan
     has_many :artifacts,     Artifact
-    has_many :dashboards,    Dashboard
+    has_many :dashboards,    Dashboard, on_replace: :delete
     has_many :tags,          Tag,
         where: [resource_type: :repository],
         foreign_key: :resource_id,

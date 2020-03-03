@@ -1,6 +1,13 @@
 import gql from 'graphql-tag'
 import {UserFragment, PublisherFragment} from './user'
 
+export const DashboardFragment = gql`
+  fragment DashboardFragment on Dashboard {
+    name
+    uid
+  }
+`;
+
 export const RepoFragment = gql`
   fragment RepoFragment on Repository {
     id

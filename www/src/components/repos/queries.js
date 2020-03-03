@@ -1,5 +1,5 @@
 import gql from 'graphql-tag'
-import {RepoFragment, InstallationFragment, IntegrationFragment, ArtifactFragment} from '../../models/repo'
+import {RepoFragment, InstallationFragment, IntegrationFragment, ArtifactFragment, DashboardFragment} from '../../models/repo'
 import {ChartFragment, VersionFragment, ChartInstallationFragment} from '../../models/chart'
 import {TerraformFragment} from '../../models/terraform'
 import {DockerRepoFragment, DockerImageFragment} from '../../models/docker'
@@ -19,9 +19,13 @@ export const UPDATE_REPO = gql`
   mutation UpdateRepository($id: ID!, $attributes: RepositoryAttributes!) {
     updateRepository(repositoryId: $id, attributes: $attributes) {
       ...RepoFragment
+      dashboards {
+        ...DashboardFragment
+      }
     }
   }
   ${RepoFragment}
+  ${DashboardFragment}
 `;
 
 export const DELETE_REPO = gql`
@@ -120,6 +124,9 @@ export const REPO_Q = gql`
           ...SubscriptionFragment
         }
       }
+      dashboards {
+        ...DashboardFragment
+      }
       plans {
         ...PlanFragment
       }
@@ -196,6 +203,7 @@ export const REPO_Q = gql`
   ${RecipeFragment}
   ${IntegrationFragment}
   ${ArtifactFragment}
+  ${DashboardFragment}
 `;
 
 export const DOCKER_IMG_Q = gql`

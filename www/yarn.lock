@@ -4654,10 +4654,10 @@ filesize@3.6.1:
   resolved "https://registry.yarnpkg.com/filesize/-/filesize-3.6.1.tgz#090bb3ee01b6f801a8a8be99d31710b3422bb317"
   integrity sha512-7KjR1vv6qnicaPMi1iiTcI85CyYwRO/PSFCu6SvqL8jN2Wjt/NIYQTFtFs7fSDCYOstUkEWIQGFUg5YZQfjlcg==
 
-filesize@^6.0.1:
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/filesize/-/filesize-6.0.1.tgz#f850b509909c7c86f7e450ea19006c31c2ed3d2f"
-  integrity sha512-u4AYWPgbI5GBhs6id1KdImZWn5yfyFrrQ8OWZdN7ZMfA8Bf4HcO0BGo9bmUIEV8yrp8I1xVfJ/dn90GtFNNJcg==
+filesize@^6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/filesize/-/filesize-6.1.0.tgz#e81bdaa780e2451d714d71c0d7a4f3238d37ad00"
+  integrity sha512-LpCHtPQ3sFx67z+uh2HnSyWSLLu5Jxo21795uRDuar/EOuYWXib5EmPaGIBuSnRqH2IODiKA2k5re/K9OnN/Yg==
 
 fill-range@^4.0.0:
   version "4.0.0"
@@ -9299,6 +9299,18 @@ react-stripe-elements@^6.0.1:
   integrity sha512-WVKTunSgsrkm8Tv1+BEehfYrA2CHdlk01ocmbcECliPb1EDybaoUCx2MR212ptRHyitMrHF+ahUTewjaX98kcQ==
   dependencies:
     prop-types "15.7.2"
+
+react-tiny-crossfade@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/react-tiny-crossfade/-/react-tiny-crossfade-2.0.0.tgz#c2b0e62fc329c7a2cb1a77d813c11f71fa456132"
+  integrity sha512-B2HH1mZdwHcS/R0k/qzwKV9zBHJiVU4M1o7TG7m7JAShgCYlqvC+2IofmgJe+DAo0gNAkKet7iaD4dsx9142AA==
+  dependencies:
+    react-tiny-transition "^2.1.8"
+
+react-tiny-transition@^2.1.8:
+  version "2.2.7"
+  resolved "https://registry.yarnpkg.com/react-tiny-transition/-/react-tiny-transition-2.2.7.tgz#3b4c65e4ec2b23433e844e9b9536c6423ca5e84f"
+  integrity sha512-YQS7w8iAh3UynPZZiAwhZ0D03BKaBC2H0rWkBSzF8y3xkBqYcZ/NJovZDsTam4X7WhdU6z9e/bt9T8+2h/Vh3g==
 
 react-vis@^1.11.7:
   version "1.11.7"

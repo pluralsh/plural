@@ -43,14 +43,17 @@ grafana:
       kubernetes-overview:
         gnetId: 10856
         revision: 1
+        uid: 'kubernetes-overview'
         datasource: Prometheus
       kubernetes-deepdive:
         gnetId: 8588
         revision: 1
+        uid: 'kubernetes-deepdive'
         datasource: Prometheus
       node-overview:
         gnetId: 1860
         revision: 16
+        uid: 'node-overview'
         datasource: Prometheus
   service:
     type: NodePort

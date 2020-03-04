@@ -1,20 +1,15 @@
 import React, { useState, useRef } from 'react'
-import { Box, Text, Anchor, Drop, Markdown } from 'grommet'
-import { Terminal, Apple, Windows, Ubuntu } from 'grommet-icons'
-import { chunk } from '../../utils/array'
-import size from 'filesize'
+import { Box, Text, Anchor, Drop, Markdown, Table, TableBody, TableRow, TableCell } from 'grommet'
+import { Apple, Windows, Ubuntu, Terminal, Previous, Cube } from 'grommet-icons'
 import { download } from '../../utils/file'
-import { Container } from './Integrations'
 import { MARKDOWN_STYLING } from './Chart'
+import fs from 'filesize'
 
-const ICON_SIZE = '30px'
+const ICON_SIZE = '20px'
 const SMALL_ICON_SIZE = '13px'
-const SHA_LENGTH = 8
+const SHA_LENGTH  = 20
 
-function trim(sha) {
-  if (sha.length > SHA_LENGTH) return `${sha.substring(0, SHA_LENGTH)}...`
-  return sha
-}
+const trim = (sha) => `${sha.substring(0, SHA_LENGTH)}...`
 
 function ArtifactPlatform({platform}) {
   switch (platform) {
@@ -29,63 +24,143 @@ function ArtifactPlatform({platform}) {
   }
 }
 
+const ICON_COLOR = 'focus'
+
 function ArtifactIcon({type}) {
   switch (type) {
     case "CLI":
-      return <Terminal size={ICON_SIZE} />
+      return <Terminal color={ICON_COLOR} size={ICON_SIZE} />
     default:
-      return null
+      return <Cube color={ICON_COLOR} size={ICON_SIZE} />
   }
 }
 
-function Readme({readme, dropRef, setOpen}) {
-  // if (!readme || readme === "") return null
+function Readme({readme}) {
+  return (
+    <Box pad={{horizontal: 'small', bottom: 'small'}} style={{maxWidth: '40vw', overflow: 'auto'}}>
+      <Markdown components={MARKDOWN_STYLING}>
+        {readme}
+      </Markdown>
+    </Box>
+  )
+}
 
+function ArtifactOption({onClick, text, border, round}) {
+  const [hover, setHover] = useState(false)
+  return (
+    <Box
+      style={{cursor: 'pointer'}}
+      onMouseLeave={() => setHover(false)}
+      onMouseEnter={() => setHover(true)}
+      onClick={onClick}
+      background={hover ? '#000000' : null}
+      round={round}
+      pad='xsmall'
+      border={border}>
+      <Text size='small' color={hover ? 'light-3' : null}>{text}</Text>
+    </Box>
+  )
+}
+
+function WithBack({children, setAlternate}) {
+  const [hover, setHover] = useState(false)
+  return (
+    <Box animation='fadeIn'>
+      <Box pad='small'>
+        {children}
+      </Box>
+      <Box
+        style={{cursor: 'pointer'}}
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+        background={hover ? 'light-3' : null}
+        onClick={() => setAlternate(null)}
+        direction='row'
+        align='center'
+        border='top'
+        pad='small'
+        gap='small'>
+        <Previous size='12px' />
+        <Text size='small'>back</Text>
+      </Box>
+    </Box>
+  )
+}
+
+
+function ArtifactDetails({sha, filesize}) {
+  return (
+    <Table>
+      <TableBody>
+        <TableRow>
+          <TableCell border='right'><b>sha</b></TableCell>
+          <TableCell>{trim(sha)}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell border='right'><b>filesize</b></TableCell>
+          <TableCell>{fs(filesize)}</TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>
+  )
+}
+
+function ArtifactDetail({dropRef, setOpen, blob, readme, sha, filesize}) {
+  const [alternate, setAlternate] = useState(null)
   return (
     <Drop
       target={dropRef.current}
-      align={{bottom: 'top', right: 'left'}}
+      align={{bottom: 'top'}}
       onEsc={() => setOpen(false)}
       onClickOutside={() => setOpen(false)}>
-      <Box pad={{horizontal: 'small', bottom: 'small'}} style={{maxWidth: '40vw', overflow: 'auto'}}>
-        <Markdown components={MARKDOWN_STYLING}>
-          {readme}
-        </Markdown>
-      </Box>
+      {alternate ? <WithBack setAlternate={setAlternate}>{alternate}</WithBack> : (
+        <Box background='#222222' direction='row' round='xsmall'>
+          <ArtifactOption
+            text='download'
+            border='right'
+            round={{corner: 'left', size: 'xsmall'}}
+            onClick={() => download(blob)} />
+          <ArtifactOption
+            text='readme'
+            border='right'
+            onClick={() => setAlternate(<Readme readme={readme} />)} />
+          <ArtifactOption
+            text='details'
+            border='right'
+            round={{corner: 'right', size: 'xsmall'}}
+            onClick={() => setAlternate(<ArtifactDetails sha={sha} filesize={filesize} />)} />
+        </Box>
+      )}
     </Drop>
   )
 }
 
-export function Artifact({name, type, blob, sha, readme, platform, filesize}) {
-  const [hover, setHover] = useState(false)
+export function Artifact({name, type, platform, ...artifact}) {
   const [open, setOpen] = useState(false)
+  const [hover, setHover] = useState(false)
   const dropRef = useRef()
   return (
     <>
-    <Container
+    <Box
       onClick={() => setOpen(!open)}
-      hover={hover}
-      setHover={setHover}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
       style={{cursor: 'pointer'}}
-      round='xsmall'
+      background={hover ? 'light-3' : null}
+      border='bottom'
       direction='row'
-      width='50%'
-      gap='medium'
+      gap='small'
       align='center'
       pad='small'>
       <ArtifactIcon type={type} />
       <Box ref={dropRef} gap='xsmall'>
         <Box direction='row' gap='xsmall' align='center'>
-          <Anchor size='small' weight='bold' onClick={() => download(blob)}>{name}</Anchor>
+          <Anchor size='small' weight='bold' onClick={() => setOpen(true)}>{name}</Anchor>
           <ArtifactPlatform platform={platform} />
         </Box>
-        <Box>
-          <Text size='small' color='dark-6'>sha: {trim(sha)}</Text>
-          <Text size='small' color='dark-6'>size: {size(filesize)}</Text>
-        </Box>
       </Box>
-    </Container>
-    {open && <Readme dropRef={dropRef} readme={readme} setOpen={setOpen} />}
+    </Box>
+    {open && <ArtifactDetail dropRef={dropRef} setOpen={setOpen} {...artifact} />}
     </>
   )
 }
@@ -95,13 +170,11 @@ export default function Artifacts({artifacts}) {
 
   return (
     <Box elevation='small'>
-      <Box gap='small' pad='small'>
-        <Text style={{fontWeight: 500}} size='small'>Artifacts</Text>
-        {Array.from(chunk(artifacts, 2)).map((chunk, i) => (
-          <Box key={i} direction='row' gap='small'>
-            {artifacts.map((artifact) => <Artifact key={artifact.id} {...artifact} />)}
-          </Box>
-        ))}
+      <Box>
+        <Box border='bottom' pad='small'>
+          <Text style={{fontWeight: 500}} size='small'>Artifacts</Text>
+        </Box>
+        {artifacts.map((artifact) => <Artifact key={artifact.id} {...artifact} />)}
       </Box>
     </Box>
   )

@@ -27,6 +27,7 @@ function logUrl(name) {
     {"mode":"Logs"},
     {"ui":[true,true,true,"none"]}
   ]
+
   return `${GRAFANA_URL}/explore?orgId=1&left=${encodeURI(JSON.stringify(query))}`
 }
 

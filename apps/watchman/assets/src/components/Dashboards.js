@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useQuery } from 'react-apollo'
-import { Box, Text, Stack, Select } from 'grommet'
+import { Box, Text, Stack, Select, Anchor } from 'grommet'
 import Scroller from './utils/Scroller'
 import { RepositoryChoice } from './Configuration'
 import { BreadcrumbsContext } from './Breadcrumbs'
@@ -9,6 +9,7 @@ import { apiHost, secure } from '../helpers/hostname'
 import { BUILD_PADDING } from './Builds'
 import { CONFIGURATIONS_Q } from './graphql/chartmart'
 import Loading from './utils/Loading'
+import { Next } from 'grommet-icons'
 
 function grafanaHost() {
   const [_head, ...rest] = apiHost().split(".")
@@ -16,6 +17,18 @@ function grafanaHost() {
 }
 
 const GRAFANA_URL = `${secure() ? 'https' : 'http'}://${grafanaHost()}`
+
+function logUrl(name) {
+  const query = [
+    "now-1h",
+    "now",
+    "Loki",
+    {"expr": `{namespace="${name}"}`},
+    {"mode":"Logs"},
+    {"ui":[true,true,true,"none"]}
+  ]
+  return `${GRAFANA_URL}/explore?orgId=1&left=${encodeURI(JSON.stringify(query))}`
+}
 
 function ViewDashboards({repository: {icon, name, dashboards}}) {
   const [current, setCurrent] = useState(dashboards.length > 0?  dashboards[0].name : null)
@@ -31,7 +44,13 @@ function ViewDashboards({repository: {icon, name, dashboards}}) {
           height='60px'>
           <Box direction='row' fill='horizontal' gap='small' align='center'>
             {icon && <img alt='' src={icon} height='40px' width='40px' />}
-            <Text weight='bold' size='small'>{name} dashboards</Text>
+            <Box gap='xxsmall'>
+              <Text weight='bold' size='small'>{name} dashboards</Text>
+              <Box direction='row' align='center' gap='xsmall'>
+                <Anchor href={logUrl(name)} target="_blank">view logs</Anchor>
+                <Next size='10px' />
+              </Box>
+            </Box>
           </Box>
           <Select
             options={dashboards.map(({name}) => name)}

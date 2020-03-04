@@ -18,6 +18,8 @@ spec:
         - secretRef:
             name: watchman-env
         env:
+        - name: HOST
+          value: {{ .Values.ingress.watchman_dns }}
         - name: NAMESPACE
           valueFrom:
             fieldRef:

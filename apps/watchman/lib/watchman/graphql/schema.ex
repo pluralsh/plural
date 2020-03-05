@@ -87,6 +87,9 @@ defmodule Watchman.GraphQl.Schema do
     field :icon, :string
     field :dashboards, list_of(:dashboard)
     field :configuration, :string, resolve: &Chartmart.resolve_configuration/3
+    field :grafana_dns, :string, resolve: fn _, _, _ ->
+      {:ok, Watchman.conf(:grafana_dns)}
+    end
   end
 
   object :dashboard do

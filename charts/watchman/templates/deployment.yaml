@@ -44,6 +44,8 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.podIP
+        - name: GRAFANA_DNS
+          value: {{ .Values.grafana_dns }}
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:

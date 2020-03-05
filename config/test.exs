@@ -45,7 +45,8 @@ config :watchman,
   repo_root: "chartmart-installations",
   chartmart_config: "/Users/michaelguarino/.chartmart",
   webhook_secret: "webhook_secret",
-  git_ssh_key: :pass
+  git_ssh_key: :pass,
+  grafana_dns: "grafana.example.com"
 
 config :watchman, :consumers, [Watchman.EchoConsumer]
 config :core, :consumers, [Core.EchoConsumer]

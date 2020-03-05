@@ -27,4 +27,5 @@ config :watchman,
   git_user_name: get_env("GIT_USER", "chartmart"),
   git_user_email: get_env("GIT_EMAIL", "chartmart@piazzaapp.com"),
   url: get_env("HOST"),
-  incoming_webhook: get_env("PIAZZA_INCOMING_WEBHOOK")
+  incoming_webhook: get_env("PIAZZA_INCOMING_WEBHOOK"),
+  grafana_dns: get_env("GRAFANA_DNS")

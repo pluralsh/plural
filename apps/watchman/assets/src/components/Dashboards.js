@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useQuery } from 'react-apollo'
-import { Box, Text, Stack, Select, Anchor } from 'grommet'
+import { Box, Text, Select, Anchor } from 'grommet'
 import Scroller from './utils/Scroller'
 import { RepositoryChoice } from './Configuration'
 import { BreadcrumbsContext } from './Breadcrumbs'
@@ -12,7 +12,7 @@ import Loading from './utils/Loading'
 import { Next } from 'grommet-icons'
 
 function grafanaHost() {
-  const [_head, ...rest] = apiHost().split(".")
+  const [_, ...rest] = apiHost().split(".")
   return `watchman-grafana.${rest.join('.')}`
 }
 
@@ -65,6 +65,7 @@ function ViewDashboards({repository: {icon, name, dashboards}}) {
             <Text>No dashboards for this repository, contact the publisher to fix this</Text>
           </Box>) : (
           <iframe
+            title={currentDash.name}
             style={{display: 'block', height: 'calc(100vh - 105px', width: '100%'}}
             frameBorder='0'
             src={`${GRAFANA_URL}/d/${currentDash.uid}?orgId=1&refresh=5s&kiosk`} />

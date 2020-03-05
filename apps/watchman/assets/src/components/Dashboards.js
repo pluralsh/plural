@@ -16,9 +16,10 @@ function grafanaHost() {
   return `watchman-grafana.${rest.join('.')}`
 }
 
-const GRAFANA_URL = `${secure() ? 'https' : 'http'}://${grafanaHost()}`
+const PROTOCOL = secure() ? 'https' : 'http'
+const GRAFANA_URL = `${PROTOCOL}://${grafanaHost()}`
 
-function logUrl(name) {
+function logUrl(grafana, name) {
   const query = [
     "now-1h",
     "now",
@@ -28,10 +29,10 @@ function logUrl(name) {
     {"ui":[true,true,true,"none"]}
   ]
 
-  return `${GRAFANA_URL}/explore?orgId=1&left=${encodeURI(JSON.stringify(query))}`
+  return `http://${grafana}/explore?orgId=1&left=${encodeURI(JSON.stringify(query))}`
 }
 
-function ViewDashboards({repository: {icon, name, dashboards}}) {
+function ViewDashboards({repository: {icon, name, dashboards, grafanaDns}}) {
   const [current, setCurrent] = useState(dashboards.length > 0?  dashboards[0].name : null)
   const currentDash = dashboards.find(({name}) => name === current)
   return (
@@ -48,7 +49,7 @@ function ViewDashboards({repository: {icon, name, dashboards}}) {
             <Box gap='xxsmall'>
               <Text weight='bold' size='small'>{name} dashboards</Text>
               <Box direction='row' align='center' gap='xsmall'>
-                <Anchor href={logUrl(name)} target="_blank">view logs</Anchor>
+                <Anchor href={logUrl(grafanaDns, name)} target="_blank">view logs</Anchor>
                 <Next size='10px' />
               </Box>
             </Box>
@@ -82,7 +83,7 @@ export default function Dashboards() {
     const additional = repo ? [{text: repo, url: `/dashboards/${repo}`}] : []
     setBreadcrumbs([{text: 'dashboards', url: '/dashboards'}, ...additional])
   }, [repo])
-  const {data} = useQuery(CONFIGURATIONS_Q)
+  const {data} = useQuery(CONFIGURATIONS_Q, {fetchPolicy: 'cache-and-network'})
 
   if (!data) return <Loading />
   const {edges} = data.installations

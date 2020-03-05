@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import Scroller from '../utils/Scroller'
-import { Anchor, Text, Box, Keyboard, TextInput } from 'grommet'
+import { Text, Box, Keyboard, TextInput } from 'grommet'
 import { Tag as TagInner } from '../utils/TagInput'
 
 export function TagInput({addTag, removeTag, tags, round, ...rest}) {
@@ -41,6 +41,7 @@ export function TagContainer({enabled, children, gap, pad, onClick}) {
       onMouseLeave={() => setHover(false)}
       style={onClick && {cursor: 'pointer'}}
       pad={pad || {horizontal: 'small', vertical: 'xxsmall'}}
+      background={hover ? 'light-2' : null}
       direction='row'
       align='center'
       gap={gap || 'xsmall'}
@@ -53,9 +54,8 @@ export function TagContainer({enabled, children, gap, pad, onClick}) {
 
 function Tag({tag, count, setTag, enabled}) {
   return (
-    <TagContainer enabled={enabled}>
-      <Anchor onClick={() => setTag && setTag(tag)} size='small'># {tag}</Anchor>
-      <Text size='small'>({count})</Text>
+    <TagContainer enabled={enabled} onClick={() => setTag && setTag(tag)}>
+      <Text size='small'># {tag} ({count})</Text>
     </TagContainer>
   )
 }
@@ -63,7 +63,6 @@ function Tag({tag, count, setTag, enabled}) {
 export default function Tags({tags: {pageInfo, edges}, fetchMore, tag, setTag, pad}) {
   return (
     <Box pad={pad || {vertical: 'medium'}} height='100%' gap='small'>
-      <Text margin={{horizontal: 'small'}} style={{fontWeight: 500}}>Tags</Text>
       <Scroller
         edges={edges}
         style={{overflow: 'auto', height: '100%', width: '100%'}}

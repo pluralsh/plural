@@ -61,6 +61,7 @@ export const CONFIGURATIONS_Q = gql`
             configuration
             icon
             description
+            grafanaDns
           }
         }
       }

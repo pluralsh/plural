@@ -99,7 +99,7 @@ export function RepositoryChoice({config: {name, icon, description}, link}) {
 export default function Configuration() {
   const {repo} = useParams()
   const {setBreadcrumbs} = useContext(BreadcrumbsContext)
-  const {data} = useQuery(CONFIGURATIONS_Q)
+  const {data} = useQuery(CONFIGURATIONS_Q, {fetchPolicy: 'cache-and-network'})
   useEffect(() => {
     const additional = repo ? [{text: repo, url: `/config/${repo}`}] : []
     setBreadcrumbs([{text: 'configuration', url: '/config'}, ...additional])

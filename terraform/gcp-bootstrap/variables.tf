@@ -44,7 +44,7 @@ EOF
 }
 
 variable "node_pools" {
-  type = "list"
+  type = list
   default = [
     {
       name                       = "default"

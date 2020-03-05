@@ -39,7 +39,7 @@ defmodule Watchman.MixProject do
       {:phoenix_pubsub, "~> 1.1"},
       {:phoenix_ecto, "~> 4.0"},
       {:ecto_sql, "~> 3.1"},
-      {:piazza_core, "~> 0.2.7"},
+      {:piazza_core, "~> 0.2.8"},
       {:flow, "~> 0.15.0"},
       {:bourne, "~> 1.1"},
       {:postgrex, ">= 0.0.0"},

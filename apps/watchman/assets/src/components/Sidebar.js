@@ -3,7 +3,8 @@ import { useLocation, useHistory } from 'react-router-dom'
 import { Deploy, Network, Configure, Dashboard } from 'grommet-icons'
 import { Box, Text, Drop } from 'grommet'
 
-const SIDEBAR_ROW_HEIGHT = '40px'
+const SIDEBAR_ROW_HEIGHT = '50px'
+const APP_ICON = `${process.env.PUBLIC_URL}/watchman.png`
 
 function SidebarIcon({icon, text, selected, path}) {
   const dropRef = useRef()
@@ -14,6 +15,7 @@ function SidebarIcon({icon, text, selected, path}) {
     <Box
       ref={dropRef}
       align='center'
+      justify='center'
       pad='small'
       gap='small'
       height={SIDEBAR_ROW_HEIGHT}
@@ -25,12 +27,11 @@ function SidebarIcon({icon, text, selected, path}) {
       border={selected ? {side: 'left', color: 'focus', size: '3px'} : null}
       direction='row'>
       {icon}
-      {/* <Text size='small'>{text}</Text> */}
     </Box>
     {hover && (
       <Drop target={dropRef.current} plain align={{left: 'right'}}>
-        <Box background='sidebarHover' pad='small' height='40px' align='center' justify='center'>
-          <Text size='small'>{text}</Text>
+        <Box background='sidebarHover' pad='small' height={SIDEBAR_ROW_HEIGHT} align='center' justify='center'>
+          <Text size='small' style={{fontWeight: 500}}>{text}</Text>
         </Box>
       </Drop>
     )}
@@ -53,8 +54,8 @@ export default function Sidebar() {
 
   return (
     <Box background='sidebar' height='100vh'>
-      <Box height='50px' justify='center' pad='small'>
-        {/* <Text size='small' weight='bold'>Watchman</Text> */}
+      <Box height='50px' justify='center' align='center' pad='small' margin={{bottom: 'medium'}}>
+        <img height='30px' width='30px' alt='' src={APP_ICON} />
       </Box>
       {OPTIONS.map(({text, icon, path}, ind) => (
         <SidebarIcon key={ind} icon={icon} path={path} text={text} selected={ind === active} />

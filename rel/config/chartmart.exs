@@ -16,7 +16,7 @@ config :libcluster,
       strategy: Cluster.Strategy.Kubernetes,
       config: [
         mode: :ip,
-        kubernetes_node_basename: "api",
+        kubernetes_node_basename: "chartmart",
         kubernetes_selector: "app=chartmart-api",
         kubernetes_namespace: get_env("NAMESPACE"),
         polling_interval: 10_000

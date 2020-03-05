@@ -4,6 +4,9 @@ import {Home} from 'grommet-icons'
 import {useHistory} from 'react-router-dom'
 import HoveredBackground from './utils/HoveredBackground'
 
+const SIDEBAR_HEIGHT = '40px'
+const ICON_HEIGHT = '20px'
+
 function SidebarIcon(props) {
   const [hover, setHover] = useState(false)
   return (
@@ -15,9 +18,9 @@ function SidebarIcon(props) {
         style={{cursor: 'pointer', borderLeft: (hover ? '2px solid white' : null)}}
         align='center'
         justify='center'
-        height='40px'
+        height={SIDEBAR_HEIGHT}
         onClick={props.onClick}>
-        {React.createElement(props.icon, {size: '20px'})}
+        {React.createElement(props.icon, {size: ICON_HEIGHT})}
       </Box>
     </HoveredBackground>
   )

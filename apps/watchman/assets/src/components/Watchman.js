@@ -9,13 +9,13 @@ import Webhooks from './Webhooks'
 import Configuration from './Configuration'
 import Dashboards from './Dashboards'
 
-const SIDEBAR_WIDTH = '220px'
+const SIDEBAR_WIDTH = '60px'
 
 export default function Watchman() {
   return (
     <BreadcrumbProvider>
       <Box direction='row' width='100vw' height='100vh'>
-        <Box width={SIDEBAR_WIDTH}>
+        <Box width={SIDEBAR_WIDTH} elevation='large'>
           <Sidebar />
         </Box>
         <Box height='100vh' width='100%'>

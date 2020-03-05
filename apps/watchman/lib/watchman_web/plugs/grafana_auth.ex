@@ -7,11 +7,10 @@ defmodule WatchmanWeb.Plugs.GrafanaAuth do
     secret = Watchman.conf(:webhook_secret) |> Base.encode64(padding: false)
     fetch_cookies(conn)
     |> Map.get(:req_cookies)
-    |> IO.inspect()
     |> Map.new()
     |> case do
       %{"grafana_token" => ^secret} ->
-        {user, pwd} = Watchman.Grafana.Token.fetch() |> IO.inspect()
+        {user, pwd} = Watchman.Grafana.Token.fetch()
         auth = Base.encode64("#{user}:#{pwd}")
         put_req_header(conn, "authorization", "Basic #{auth}")
       _ ->

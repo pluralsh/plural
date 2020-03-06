@@ -135,7 +135,7 @@ function ArtifactDetail({dropRef, setOpen, blob, readme, sha, filesize}) {
   )
 }
 
-export function Artifact({name, type, platform, ...artifact}) {
+export function Artifact({name, type, platform, filesize, ...artifact}) {
   const [open, setOpen] = useState(false)
   const [hover, setHover] = useState(false)
   const dropRef = useRef()
@@ -157,6 +157,7 @@ export function Artifact({name, type, platform, ...artifact}) {
         <Box direction='row' gap='xsmall' align='center'>
           <Anchor size='small' weight='bold' onClick={() => setOpen(true)}>{name}</Anchor>
           <ArtifactPlatform platform={platform} />
+          <Text size='small' color='dark-3'>-- {fs(filesize)}</Text>
         </Box>
       </Box>
     </Box>

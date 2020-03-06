@@ -8,7 +8,6 @@ import Pill from '../utils/Pill'
 import yaml from 'js-yaml'
 import Highlight from 'react-highlight.js'
 import Expander from '../utils/Expander'
-import Integrations from './Integrations'
 import Carousel from '../utils/Carousel'
 import Plan from '../payments/Plan'
 import CreatePlan from '../payments/CreatePlan'
@@ -18,6 +17,7 @@ import UpdatePlan from '../payments/UpdatePlan'
 import AceEditor from "react-ace"
 import "ace-builds/src-noconflict/mode-yaml"
 import "ace-builds/src-noconflict/theme-terminal"
+import './container.css'
 
 function update(cache, repositoryId, installation) {
   const prev = cache.readQuery({ query: REPO_Q, variables: {repositoryId} })
@@ -178,11 +178,6 @@ chartmart deploy ${repository.name}`}
             repository={repository}
             open={open}
             onUpdate={onUpdate} />
-          {integrations && integrations.edges.length > 0 && (
-            <Expander text='Integrations'>
-              <Integrations integrations={integrations} fetchMore={fetchMore} repository={repository} />
-            </Expander>
-          )}
         </Box>
       </Box>
     )
@@ -194,11 +189,6 @@ chartmart deploy ${repository.name}`}
         <Button label='Install Repository' round='xsmall' onClick={mutation} />
       </Box>
       {(hasPlans || repository.editable) && <PlanCarousel repository={repository} />}
-      {integrations && integrations.edges.length > 0 && (
-        <Expander text='Integrations'>
-          <Integrations integrations={integrations} fetchMore={fetchMore} repository={repository} />
-        </Expander>
-      )}
     </Box>
   )
 }

@@ -1,5 +1,5 @@
-import React, {useState} from 'react'
-import {Box, Text, Anchor, Stack} from 'grommet'
+import React from 'react'
+import {Box, Text, Anchor} from 'grommet'
 import {Trash} from 'grommet-icons'
 import {useQuery, useMutation} from 'react-apollo'
 import {useHistory} from 'react-router-dom'
@@ -41,26 +41,23 @@ function DeleteRepository({repo, publisherId}) {
 
 const ICON_WIDTH = '50px'
 
-function RepositoryCellInner({repo, width, hover, setHover}) {
+function RepositoryCell({repo, deletable, publisherId, width}) {
   let history = useHistory()
-  const onClick = () => history.push(`/repositories/${repo.id}`)
-
   return (
     <Container
       pad='medium'
-      style={{cursor: 'pointer'}}
       width={width}
-      hover={hover}
-      setHover={setHover}
-      onClick={onClick}>
+      style={{cursor: 'pointer'}}
+      modifier={deletable && <DeleteRepository repo={repo} publisherId={publisherId} />}
+      onClick={() => history.push(`/repositories/${repo.id}`)}>
       <Box direction='row' gap='medium' fill='horizontal'>
         <Box align='center' justify='center' width={ICON_WIDTH}>
           <img alt='' width='50px' height='50px' src={repo.icon} />
         </Box>
         <Box gap='xxsmall' justify='center' width='100%'>
-          <Anchor size='small' weight='bold' onClick={onClick}>
+          <Text size='small' weight='bold'>
             {repo.name}
-          </Anchor>
+          </Text>
           <Text size='small'>
             {repo.description}
           </Text>
@@ -68,23 +65,6 @@ function RepositoryCellInner({repo, width, hover, setHover}) {
       </Box>
     </Container>
   )
-}
-
-export function RepositoryCell({repo, deletable, publisherId, width}) {
-  const [hover, setHover] = useState(false)
-
-  if (deletable && hover) {
-    return (
-      <Box width={width}>
-        <Stack anchor='top-right' onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
-          <RepositoryCellInner repo={repo} hover={hover} setHover={() => null} />
-          <DeleteRepository repo={repo} publisherId={publisherId} />
-        </Stack>
-      </Box>
-    )
-  }
-
-  return <RepositoryCellInner repo={repo} width={width} hover={hover} setHover={setHover} />
 }
 
 export function Repository({repo, hasNext, deletable, publisherId}) {

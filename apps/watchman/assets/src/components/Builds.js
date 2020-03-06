@@ -52,7 +52,7 @@ function Build({build: {id, repository, status, insertedAt, message}}) {
       <Box
         elevation='xsmall'
         pad='small'
-        margin={{bottom: 'small'}}
+        margin={{top: 'small'}}
         direction='row'
         align='center'
         // round='xsmall'
@@ -169,7 +169,7 @@ export default function Builds() {
           </Box>
           <CreateBuild />
         </Box>
-        <Box height='calc(100vh - 105px)' pad={{top: 'small'}}>
+        <Box height='calc(100vh - 105px)'>
           <Scroller
             id='builds'
             style={{height: '100%', overflow: 'auto'}}

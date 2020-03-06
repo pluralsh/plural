@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Box, Text, Anchor, Stack } from 'grommet'
+import { Box, Text, Anchor } from 'grommet'
 import Recipe from './Recipe'
 import { Trash } from 'grommet-icons'
 import HoveredBackground from '../utils/HoveredBackground'
@@ -34,25 +34,22 @@ function DeleteRecipe({recipe: {id}, repositoryId}) {
         background='white'
         pad='xsmall'
         round='xsmall'
-        onClick={mutation}
-        margin={{top: 'xsmall', right: 'xsmall'}}>
+        onClick={mutation}>
         <Trash size='15px' />
       </Box>
     </HoveredBackground>
   )
 }
 
-function RecipeListItemInner({recipe, setRecipe, hover, setHover}) {
+function RecipeListItem({recipe, setRecipe, repository: {editable, id}}) {
   const {name, description, provider} = recipe
-
   return (
     <Container
       style={{cursor: 'pointer'}}
       direction='row'
       gap='medium'
       pad='medium'
-      hover={hover}
-      setHover={setHover}
+      modifier={editable ? <DeleteRecipe recipe={recipe} repositoryId={id} /> : null}
       onClick={() => setRecipe(recipe)}>
       {provider && (
         <Box width={PROVIDER_WIDTH + 'px'} align='center' justify='center'>
@@ -65,21 +62,6 @@ function RecipeListItemInner({recipe, setRecipe, hover, setHover}) {
       </Box>
     </Container>
   )
-}
-
-function RecipeListItem({recipe, setRecipe, repository: {editable, id}}) {
-  const [hover, setHover] = useState(false)
-
-  if (editable && hover) {
-    return (
-      <Stack anchor='top-right' onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
-        <RecipeListItemInner recipe={recipe} setRecipe={setRecipe} hover={hover} setHover={() => null} />
-        <DeleteRecipe recipe={recipe} repositoryId={id} />
-      </Stack>
-    )
-  }
-
-  return <RecipeListItemInner recipe={recipe} setRecipe={setRecipe} hover={hover} setHover={setHover} />
 }
 
 export default function Recipes({repository, edges, pageInfo, fetchMore}) {

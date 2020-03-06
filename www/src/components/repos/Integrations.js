@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react'
+import styled from 'styled-components'
 import {useParams, useHistory} from 'react-router-dom'
 import Carousel from '../utils/Carousel'
-import { Box, Text, Anchor } from 'grommet'
+import { Box, Text, Anchor, Stack } from 'grommet'
 import { INTEGRATIONS_Q } from './queries'
 import { useQuery } from 'react-apollo'
 import { BreadcrumbContext } from '../Chartmart'
@@ -11,6 +12,7 @@ import { chunk } from '../../utils/array'
 import Scroller from '../utils/Scroller'
 import HoveredBackground from '../utils/HoveredBackground'
 import { FormPrevious, FormNextLink } from 'grommet-icons'
+import { normalizeColor } from 'grommet/utils'
 
 const ICON_SIZE = 50
 
@@ -50,19 +52,40 @@ function Integration({name, description, icon, tags, sourceUrl, publisher, width
   )
 }
 
-export function Container({pad, width, hover, setHover, children, ...rest}) {
+const containerStyling = styled.div`
+  border-color: ${props => normalizeColor('light-4', props.theme)};
+  border-width: 1px;
+  border-style: solid;
+  border-radius: ${props => props.theme.global.edgeSize[props.round || 'medium']}
+  width: ${props => props.width};
+
+  ${props => !props.noHover && `&:hover {
+      border-color: ${normalizeColor('brand', props.theme)};
+      box-shadow: ${props.theme.global.elevation[props.theme.dark ? 'dark' : 'light'].medium};
+    }`
+  }
+  &:hover .modifier {
+    display: flex !important;
+  }
+`
+
+export function Container({pad, width, hover, setHover, children, modifier, noHover, ...rest}) {
   return (
-    <Box
+    <Stack
+      as={containerStyling}
       width={width}
-      pad={pad || 'medium'}
+      noHover={noHover}
       round='xsmall'
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      border={hover ? {color: 'focus'} : true}
-      elevation={hover ? 'medium' : null}
-      {...rest}>
-    {children}
-    </Box>
+      anchor="top-right"
+      onMouseEnter={() => setHover && setHover(true)}
+      onMouseLeave={() => setHover && setHover(false)}>
+      <Box height='100%' width='100%' pad={pad || 'medium'} round='xsmall' {...rest}>
+      {children}
+      </Box>
+      <Box className='modifier' margin={{top: 'xsmall', right: 'xsmall'}}>
+        {modifier}
+      </Box>
+    </Stack>
   )
 }
 

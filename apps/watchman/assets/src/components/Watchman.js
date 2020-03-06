@@ -9,7 +9,7 @@ import Webhooks from './Webhooks'
 import Configuration from './Configuration'
 import Dashboards from './Dashboards'
 
-const SIDEBAR_WIDTH = '60px'
+const SIDEBAR_WIDTH = '70px'
 
 export default function Watchman() {
   return (

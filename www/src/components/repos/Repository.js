@@ -24,6 +24,8 @@ import AceEditor from "react-ace"
 import "ace-builds/src-noconflict/mode-yaml"
 import "ace-builds/src-noconflict/theme-terminal"
 import { InputCollection, ResponsiveInput } from '../utils/InputField'
+import Expander from '../utils/Expander'
+import Integrations from './Integrations'
 
 function Container({children, onClick, hasNext, noPad}) {
   const [hover, setHover] = useState(false)
@@ -541,6 +543,13 @@ export default function Repository() {
             repository={repository}
             integrations={integrations}
             fetchMore={fetchMore} />
+          {integrations && integrations.edges.length > 0 && (
+            <Box elevation='small'>
+              <Expander text='Integrations' open>
+                <Integrations integrations={integrations} fetchMore={fetchMore} repository={repository} />
+              </Expander>
+            </Box>
+          )}
           <Artifacts artifacts={repository.artifacts} />
         </Box>
       </Box>

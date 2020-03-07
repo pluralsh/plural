@@ -162,6 +162,7 @@ export default function Installation({repository, onUpdate, noHelm, open, integr
         <Box>
           {!noHelm && (
             <Box gap='small' pad='small' border='bottom'>
+              {installation.subscription && (<SubscriptionBadge repository={repository} {...installation.subscription} />)}
               <Text size='small' style={{fontWeight: 500}}>Installation</Text>
               <Box>
                 <Highlight language='bash'>
@@ -169,7 +170,6 @@ export default function Installation({repository, onUpdate, noHelm, open, integr
 chartmart deploy ${repository.name}`}
                 </Highlight>
               </Box>
-              {installation.subscription && (<SubscriptionBadge repository={repository} {...installation.subscription} />)}
             </Box>
           )}
           {(hasPlans || repository.editable) && <PlanCarousel repository={repository} />}

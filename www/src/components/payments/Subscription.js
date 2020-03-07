@@ -71,7 +71,7 @@ export function SubscriptionBadge({repository, ...subscription}) {
   const itemsByDim = pivotByDimension(lineItems.items)
 
   return (
-    <Box direction='row' border round='xsmall' pad='small'>
+    <Box direction='row' border={{color: 'light-6'}} elevation='xsmall' round='xsmall' pad='small'>
       <Box fill='horizontal' gap='xsmall'>
         <Text style={{fontWeight: 500}} size='small'>Subscribed to {name}</Text>
         {items.map(({dimension, quantity}) => (

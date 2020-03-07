@@ -1,5 +1,5 @@
 import gql from 'graphql-tag'
-import {PublisherFragment} from '../../models/user'
+import { PublisherFragment } from '../../models/user'
 
 export const PUBLISHERS_Q = gql`
   query Publishers($cursor: String) {
@@ -11,6 +11,13 @@ export const PUBLISHERS_Q = gql`
       edges {
         node {
           ...PublisherFragment
+          repositories {
+            id
+            name
+            description
+            documentation
+            icon
+          }
         }
       }
     }

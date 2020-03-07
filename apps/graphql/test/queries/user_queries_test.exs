@@ -76,6 +76,38 @@ defmodule GraphQl.UserQueriesTest do
       assert from_connection(found)
              |> ids_equal(publishers)
     end
+
+    test "It can sideload repositories for publishers" do
+      [first, second, _] = publishers = insert_list(3, :publisher)
+      repos = insert_list(10, :repository, publisher: first)
+      other_repos = insert_list(2, :repository, publisher: second)
+
+      {:ok, %{data: %{"publishers" => found}}} = run_query("""
+        query {
+          publishers(first: 5) {
+            edges {
+              node {
+                id
+                repositories {
+                  id
+                }
+              }
+            }
+          }
+        }
+      """, %{}, %{current_user: insert(:user)})
+
+      found_publishers = from_connection(found)
+      assert ids_equal(publishers, found_publishers)
+
+      %{"repositories" => sideload} = Enum.find(found_publishers, & &1["id"] == first.id)
+      assert length(sideload) == 5
+      assert Enum.all?(sideload, fn %{"id" => id} -> Enum.find(repos, & &1.id == id) end)
+
+      %{"repositories" => sideload} = Enum.find(found_publishers, & &1["id"] == second.id)
+      assert length(sideload) == 2
+      assert Enum.all?(sideload, fn %{"id" => id} -> Enum.find(other_repos, & &1.id == id) end)
+    end
   end
 
   describe "tokens" do

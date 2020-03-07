@@ -407,15 +407,15 @@ function UpdateSecrets({repository}) {
 
 export function RepositoryIcon({size, repository, headingSize}) {
   return (
-    <>
-    <Box width={size} height={size} flex={false}>
-      <img alt='' width={size} height={size} src={repository.icon} />
+    <Box direction='row' align='center' gap='small' fill='horizontal'>
+      <Box width={size} height={size} flex={false}>
+        <img alt='' width={size} height={size} src={repository.icon} />
+      </Box>
+      <Box pad='small' flex={false}>
+        <Text weight='bold' size={headingSize}>{repository.name}</Text>
+        <Text size='small' color='dark-3'>{repository.description}</Text>
+      </Box>
     </Box>
-    <Box pad='small' flex={false}>
-      <Text weight='bold' size={headingSize}>{repository.name}</Text>
-      <Text size='small' color='dark-3'>{repository.description}</Text>
-    </Box>
-    </>
   )
 }
 

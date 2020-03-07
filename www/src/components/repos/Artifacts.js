@@ -1,9 +1,11 @@
 import React, { useState, useRef } from 'react'
+import styled from 'styled-components'
 import { Box, Text, Anchor, Drop, Markdown, Table, TableBody, TableRow, TableCell } from 'grommet'
 import { Apple, Windows, Ubuntu, Terminal, Previous, Cube } from 'grommet-icons'
 import { download } from '../../utils/file'
 import { MARKDOWN_STYLING } from './Chart'
 import fs from 'filesize'
+import { normalizeColor } from '../utils/colors'
 
 const ICON_SIZE = '20px'
 const SMALL_ICON_SIZE = '13px'
@@ -45,35 +47,44 @@ function Readme({readme}) {
   )
 }
 
+const hovered = styled.div`
+  cursor: pointer;
+  &:hover {
+    background-color: ${props => normalizeColor('light-3', props.theme)};
+  }
+`;
+
+const optionHover = styled.div`
+  cursor: pointer;
+  &:hover {
+    background-color: #000000;
+  }
+  &:hover span {
+    text-color: ${props => normalizeColor('light-3', props.theme)};
+  }
+`;
+
 function ArtifactOption({onClick, text, border, round}) {
-  const [hover, setHover] = useState(false)
   return (
     <Box
-      style={{cursor: 'pointer'}}
-      onMouseLeave={() => setHover(false)}
-      onMouseEnter={() => setHover(true)}
+      as={optionHover}
       onClick={onClick}
-      background={hover ? '#000000' : null}
       round={round}
-      pad='xsmall'
+      pad={{vertical: 'xsmall', horizontal: 'small'}}
       border={border}>
-      <Text size='small' color={hover ? 'light-3' : null}>{text}</Text>
+      <Text size='small'>{text}</Text>
     </Box>
   )
 }
 
 function WithBack({children, setAlternate}) {
-  const [hover, setHover] = useState(false)
   return (
     <Box animation='fadeIn'>
       <Box pad='small'>
         {children}
       </Box>
       <Box
-        style={{cursor: 'pointer'}}
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
-        background={hover ? 'light-3' : null}
+        as={hovered}
         onClick={() => setAlternate(null)}
         direction='row'
         align='center'
@@ -107,6 +118,7 @@ function ArtifactDetails({sha, filesize}) {
 
 function ArtifactDetail({dropRef, setOpen, blob, readme, sha, filesize}) {
   const [alternate, setAlternate] = useState(null)
+
   return (
     <Drop
       target={dropRef.current}
@@ -161,7 +173,7 @@ export function Artifact({name, type, platform, filesize, ...artifact}) {
         </Box>
       </Box>
     </Box>
-    {open && <ArtifactDetail dropRef={dropRef} setOpen={setOpen} {...artifact} />}
+    {open && <ArtifactDetail dropRef={dropRef} setOpen={setOpen} filesize={filesize} {...artifact} />}
     </>
   )
 }

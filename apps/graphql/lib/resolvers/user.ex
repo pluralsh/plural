@@ -3,9 +3,31 @@ defmodule GraphQl.Resolvers.User do
   alias Core.Services.Users
   alias Core.Schema.{Publisher, PersistedToken, Webhook}
 
+  def data(args) do
+    Dataloader.Ecto.new(Core.Repo,
+      query: &query/2,
+      default_params: filter_context(args),
+      run_batch: &run_batch/5
+    )
+  end
+
   def query(Publisher, _), do: Publisher
   def query(Webhook, _), do: Webhook
   def query(_, _), do: User
+
+  def run_batch(_, _, :repositories, publishers, repo_opts) do
+    repos =
+      Enum.map(publishers, fn %{id: id} -> id end)
+      |> Publisher.for_ids()
+      |> Publisher.repositories()
+      |> Core.Repo.all(repo_opts)
+      |> Enum.group_by(& &1.publisher_id)
+
+    Enum.map(publishers, fn %{id: id} -> Map.get(repos, id, []) end)
+  end
+  def run_batch(queryable, query, col, inputs, repo_opts) do
+    Dataloader.Ecto.run_batch(Core.Repo, queryable, query, col, inputs, repo_opts)
+  end
 
   def resolve_publisher(%{id: id}, _),
     do: {:ok, Users.get_publisher!(id)}

@@ -1,7 +1,9 @@
 defmodule Core.Schema.Publisher do
   use Piazza.Ecto.Schema
   use Arc.Ecto.Schema
-  alias Core.Schema.{User, Address}
+  alias Core.Schema.{User, Address, Repository}
+
+  @repo_sideload_limit 5
 
   schema "publishers" do
     field :name,        :string
@@ -12,6 +14,7 @@ defmodule Core.Schema.Publisher do
     field :phone,       :string
 
     embeds_one :address, Address, on_replace: :update
+    has_many :repositories, Repository
     belongs_to :owner, User
 
     timestamps()
@@ -19,6 +22,21 @@ defmodule Core.Schema.Publisher do
 
   def ordered(query \\ __MODULE__, order \\ [asc: :name]),
     do: from(p in query, order_by: ^order)
+
+  def repositories(query \\ __MODULE__) do
+    from(p in query,
+      inner_lateral_join: r in fragment("""
+        (select *
+        from repositories as r
+        where r.publisher_id = ?
+        order by r.inserted_at desc
+        limit ?)
+      """, p.id, @repo_sideload_limit),
+      inner_join: rs in Repository,
+        on: rs.id == r.id,
+      select: rs
+    )
+  end
 
   @valid ~w(name owner_id description phone)a
 

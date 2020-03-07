@@ -69,6 +69,13 @@ defmodule GraphQl.Schema.Types do
       publisher, _, _ -> {:ok, Core.Storage.url({publisher.avatar, publisher}, :original)}
     end
 
+    field :repositories, list_of(:repository) do
+      resolve fn publisher, _, %{context: %{loader: loader}} ->
+        manual_dataloader(
+          loader, User, {:many, Core.Schema.Publisher}, repositories: publisher)
+      end
+    end
+
     timestamps()
   end
 

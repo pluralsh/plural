@@ -8,6 +8,7 @@ import Scroller from './utils/Scroller'
 import Modal, { ModalHeader } from './utils/Modal'
 import { BUILD_PADDING } from './Builds'
 import { Box, Text, FormField, TextInput } from 'grommet'
+import { chunk } from '../utils/array'
 
 const MAX_LEN = 60
 const trim = (url) => url.length > 10 ? `${url.slice(0, MAX_LEN)}...` : url
@@ -30,9 +31,11 @@ function Webhook({webhook: {url, health}}) {
   return (
     <Box
       margin={{bottom: 'small', ...BUILD_PADDING}}
+      width='50%'
       pad='small'
       align='center'
-      border
+      border={{color: 'light-6'}}
+      elevation='small'
       round='xsmall'
       direction='row'>
       <Box fill='horizontal'>
@@ -120,8 +123,12 @@ export default function Webhooks() {
           <Scroller
             id='webhooks'
             style={{height: '100%', overflow: 'auto'}}
-            edges={edges}
-            mapper={({node}) => <Webhook key={node.id} webhook={node} />}
+            edges={Array.from(chunk(edges, 2))}
+            mapper={(chunk) => (
+              <Box key={chunk[0].node.id} direction='row' gap='small'>
+                {chunk.map(({node}) => <Webhook key={node.id} webhook={node} />)}
+              </Box>
+            )}
             onLoadMore={() => pageInfo.hasNextPage && fetchMore({
               variables: {cursor: pageInfo.endCursor},
               updateQuery: (prev, {fetchMoreResult: {webhooks}}) => {

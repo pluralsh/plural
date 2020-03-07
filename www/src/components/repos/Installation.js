@@ -142,6 +142,14 @@ function PlanCarousel({repository}) {
   )
 }
 
+export function DetailContainer({children, ...rest}) {
+  return (
+    <Box {...rest} elevation='small' border={{color: 'light-4'}}>
+      {children}
+    </Box>
+  )
+}
+
 export default function Installation({repository, onUpdate, noHelm, open, integrations, fetchMore}) {
   const [mutation] = useMutation(INSTALL_REPO, {
     variables: {repositoryId: repository.id},
@@ -158,7 +166,7 @@ export default function Installation({repository, onUpdate, noHelm, open, integr
 
   if (installation) {
     return (
-      <Box elevation='small' gap='small'>
+      <DetailContainer gap='small'>
         <Box>
           {!noHelm && (
             <Box gap='small' pad='small' border='bottom'>
@@ -179,16 +187,16 @@ chartmart deploy ${repository.name}`}
             open={open}
             onUpdate={onUpdate} />
         </Box>
-      </Box>
+      </DetailContainer>
     )
   }
 
   return (
-    <Box elevation='small' gap='small'>
+    <DetailContainer gap='small'>
       <Box pad='small'>
         <Button label='Install Repository' round='xsmall' onClick={mutation} />
       </Box>
       {(hasPlans || repository.editable) && <PlanCarousel repository={repository} />}
-    </Box>
+    </DetailContainer>
   )
 }

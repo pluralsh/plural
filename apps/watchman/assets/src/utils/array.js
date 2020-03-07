@@ -10,3 +10,10 @@ export function* lookahead(array, mapper = (i) => i) {
     yield mapper(array[i], array[i + 1] || {})
   }
 }
+
+export function* chunk(array, chunkSize) {
+  let i, j;
+  for (i=0, j=array.length ; i<j; i += chunkSize) {
+    yield array.slice(i, i + chunkSize);
+  }
+}

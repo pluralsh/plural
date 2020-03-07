@@ -7,6 +7,7 @@ import Repositories from '../repos/Repositories'
 import Avatar from '../users/Avatar'
 import {BreadcrumbContext} from '../Chartmart'
 import { InputCollection, ResponsiveInputContainer } from '../utils/InputField'
+import { DetailContainer } from '../repos/Installation'
 
 function formatAddress({line1, line2, city, state, country, zip}) {
   return `${line1}, ${line2} ${city}, ${state}, ${country} ${zip}`
@@ -14,7 +15,7 @@ function formatAddress({line1, line2, city, state, country, zip}) {
 
 function PublisherView({name, owner, description, phone, address}) {
   return (
-    <Box gap='small' elevation='small' pad='small'>
+    <DetailContainer gap='small' pad='small'>
       <Box direction='row' align='center' gap='small' pad='small'>
         <Avatar size='100px' user={owner} />
         <Box gap='small'>
@@ -31,7 +32,7 @@ function PublisherView({name, owner, description, phone, address}) {
           <ResponsiveInputContainer label='address' content={<Text size='small'>{formatAddress(address)}</Text>} />
         </InputCollection>
       </Box>
-    </Box>
+    </DetailContainer>
   )
 }
 

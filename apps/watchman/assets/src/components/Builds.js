@@ -51,6 +51,7 @@ function Build({build: {id, repository, status, insertedAt, message}}) {
     <Box pad={BUILD_PADDING}>
       <Box
         elevation='xsmall'
+        border={{color: 'light-6'}}
         pad='small'
         margin={{top: 'small'}}
         direction='row'

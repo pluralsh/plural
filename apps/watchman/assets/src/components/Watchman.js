@@ -15,7 +15,7 @@ export default function Watchman() {
   return (
     <BreadcrumbProvider>
       <Box direction='row' width='100vw' height='100vh'>
-        <Box width={SIDEBAR_WIDTH} elevation='large'>
+        <Box width={SIDEBAR_WIDTH} style={{boxShadow: '0px 6px 12px rgba(0, 0, 0, 0.60)'}}>
           <Sidebar />
         </Box>
         <Box height='100vh' width='100%'>

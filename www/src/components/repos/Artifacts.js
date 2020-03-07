@@ -6,6 +6,7 @@ import { download } from '../../utils/file'
 import { MARKDOWN_STYLING } from './Chart'
 import fs from 'filesize'
 import { normalizeColor } from '../utils/colors'
+import { DetailContainer } from './Installation'
 
 const ICON_SIZE = '20px'
 const SMALL_ICON_SIZE = '13px'
@@ -182,13 +183,13 @@ export default function Artifacts({artifacts}) {
   if (!artifacts || artifacts.length === 0) return null
 
   return (
-    <Box elevation='small'>
+    <DetailContainer>
       <Box>
         <Box border='bottom' pad='small'>
           <Text style={{fontWeight: 500}} size='small'>Artifacts</Text>
         </Box>
         {artifacts.map((artifact) => <Artifact key={artifact.id} {...artifact} />)}
       </Box>
-    </Box>
+    </DetailContainer>
   )
 }

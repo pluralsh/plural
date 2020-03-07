@@ -8,7 +8,7 @@ import { CHART_Q, INSTALL_CHART, UPDATE_CHART_INST } from './queries'
 import moment from 'moment'
 import { DEFAULT_CHART_ICON } from './constants'
 import Highlight from 'react-highlight.js'
-import Installation from './Installation'
+import Installation, { DetailContainer } from './Installation'
 import Button from '../utils/Button'
 import { BreadcrumbContext } from '../Chartmart'
 import Dependencies, { FullDependencies, ShowFull } from './Dependencies'
@@ -26,7 +26,7 @@ function ChartVersion({version, onSelect}) {
 
 function ChartInfo({helm, insertedAt}) {
   return (
-    <Box pad='small' elevation='small' gap='small' style={{overflow: 'hidden'}}>
+    <DetailContainer pad='small' gap='small' style={{overflow: 'hidden'}}>
       <Text weight="bold" size='small'>App Version</Text>
       <Text size='small'>{helm.appVersion}</Text>
       <Text weight='bold' size='small'>Created</Text>
@@ -35,7 +35,7 @@ function ChartInfo({helm, insertedAt}) {
       <Text size='small'>{(helm.sources || []).map((l) => <Anchor key={l} href={l}>{l}</Anchor>)}</Text>
       <Text weight='bold' size='small'>Maintainers</Text>
       <Text size='small'>{(helm.maintainers || []).map((m) => <Box key={m.email}>{m.email}</Box>)}</Text>
-    </Box>
+    </DetailContainer>
   )
 }
 
@@ -202,7 +202,7 @@ export default function Chart() {
         <Box pad='small' width={`${100 - width}%`} gap='small'>
           {tab === 'configuration' ? <Installation repository={repository} onUpdate={updateInstallation(chartId)} open /> :
             (<>
-            <Box elevation='small' gap='xsmall' pad='small' style={{maxHeight: '50%'}}>
+            <DetailContainer gap='xsmall' pad='small' style={{maxHeight: '50%'}}>
               <Text size='small' weight='bold'>Versions</Text>
               <Scroller id='chart'
                 edges={edges}
@@ -220,7 +220,7 @@ export default function Chart() {
                     }
                   })
                 }} />
-            </Box>
+            </DetailContainer>
             <ChartInfo {...currentVersion} />
             </>)}
         </Box>

@@ -14,6 +14,7 @@ import ScrollableContainer from '../utils/ScrollableContainer'
 import { CONNECT_ICON, AUTHORIZE_URL } from './constants'
 import { Stripe } from 'grommet-icons'
 import { STRIPE_BLUE } from '../payments/constants'
+import { DetailContainer } from '../repos/Installation'
 
 function AccountConnected() {
   return (
@@ -167,7 +168,7 @@ export default function MyPublisher() {
         <Box width='60%'>
           <Repositories publisher={me.publisher} deletable columns={2} />
         </Box>
-        <Box width='40%' elevation='small'>
+        <DetailContainer width='40%'>
           <Box>
             {me.publisher.accountId && <AccountConnected />}
             <Expander text='Edit publisher'>
@@ -184,7 +185,7 @@ export default function MyPublisher() {
               </Expander>
             </Box>
           </Box>
-        </Box>
+        </DetailContainer>
       </Box>
     </ScrollableContainer>
   )

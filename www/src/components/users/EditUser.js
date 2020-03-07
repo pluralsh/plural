@@ -16,6 +16,7 @@ import Installations from '../repos/Installations'
 import Webhooks from './Webhooks'
 import HoveredBackground from '../utils/HoveredBackground'
 import { BORDER_COLOR } from '../utils/Tabs'
+import { DetailContainer } from '../repos/Installation'
 
 const LABEL_WIDTH = '60px'
 const CELL_WIDTH='200px'
@@ -158,7 +159,7 @@ export default function EditUser() {
         <Tokens />
       </Box>
       <Box width='30%'>
-        <Box elevation='small'>
+        <DetailContainer>
           <Box direction='row' align='center' pad='small' gap='small'>
             <Avatar user={me} size='100px' />
             <Box>
@@ -206,7 +207,7 @@ export default function EditUser() {
               onClick={mutation}
               round='xsmall' />
           </Box>
-        </Box>
+        </DetailContainer>
       </Box>
     </Box>
   )

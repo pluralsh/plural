@@ -4,6 +4,7 @@ defmodule GraphQl.Schema.Base do
       use Absinthe.Schema.Notation
       use Absinthe.Relay.Schema.Notation, :modern
       import Absinthe.Resolution.Helpers
+      import GraphQl.Schema.Helpers
       import GraphQl.Schema.Base
       import_types Absinthe.Type.Custom
       import_types GraphQl.Schema.CustomTypes

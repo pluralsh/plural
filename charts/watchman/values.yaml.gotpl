@@ -35,3 +35,5 @@ secrets:
 {{ else }}
   git_email: chartmart@piazzaapp.com
 {{ end}}
+
+license: {{ .License }}

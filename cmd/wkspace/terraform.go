@@ -92,23 +92,6 @@ func (wk *Workspace) BuildTerraform() error {
 	return nil
 }
 
-func (w *Workspace) InstallTerraform() error {
-	repo := w.Installation.Repository
-	path, err := filepath.Abs(path.Join(repo.Name, "terraform"))
-	if err != nil {
-		return err
-	}
-
-	os.Chdir(path)
-	if err := utils.Cmd(w.Config, "terraform", "init"); err != nil {
-		return err
-	}
-	if err := utils.Cmd(w.Config, "terraform", "apply", "-auto-approve"); err != nil {
-		return err
-	}
-	return nil
-}
-
 func (w *Workspace) DestroyTerraform() error {
 	repo := w.Installation.Repository
 	path, err := filepath.Abs(path.Join(repo.Name, "terraform"))

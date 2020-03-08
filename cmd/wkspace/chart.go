@@ -72,7 +72,7 @@ func (wk *Workspace) BuildHelm() error {
 	repo := wk.Installation.Repository
 	helmPath := filepath.Join(repo.Name, "helm")
 
-	if err := wk.helmInit(true); err != nil {
+	if err := wk.ToMinimal().HelmInit(true); err != nil {
 		return err
 	}
 
@@ -254,51 +254,12 @@ func (w *Workspace) CreateChart(name, dir string) (string, error) {
 	if err := os.MkdirAll(filepath.Join(cdir, ChartsDir), 0755); err != nil {
 		return cdir, err
 	}
+
 	return cdir, nil
 }
 
-func (w *Workspace) InstallHelm() error {
-	w.Provider.KubeConfig()
-
-	if err := w.helmInit(false); err != nil {
-		return err
-	}
-
-	if err := w.ensurePullCredentials(); err != nil {
-		return err
-	}
-
-	utils.Warn("Applying helm chart: ")
-	return w.Bounce()
-}
-
-const pullSecretName = "chartmartcreds"
-const repoName = "dkr.piazzaapp.com"
-
-func (w *Workspace) ensurePullCredentials() error {
-	name := w.Installation.Repository.Name
-	if err := utils.Cmd(w.Config, "kubectl", "get", "secret", pullSecretName, "--namespace", name); err != nil {
-		token := w.Config.Token
-		username := w.Config.Email
-
-		return utils.Cmd(w.Config,
-			"kubectl", "create", "secret", "docker-registry", pullSecretName,
-			"--namespace", name, "--docker-username", username, "--docker-password", token, "--docker-server", repoName)
-	}
-
-	return nil
-}
-
 func (w *Workspace) Bounce() error {
-	repo := w.Installation.Repository
-	path, err := filepath.Abs(filepath.Join(repo.Name, "helm", repo.Name))
-	if err != nil {
-		return err
-	}
-
-	utils.Warn("helm upgrade --install --namespace %s %s %s\n", repo.Name, repo.Name, path)
-	return utils.Cmd(w.Config,
-		"helm", "upgrade", "--install", "--namespace", repo.Name, repo.Name, path)
+	return w.ToMinimal().BounceHelm()
 }
 
 func buildDependency(repo *api.Repository, chartInstallation *api.ChartInstallation) *dependency {
@@ -307,17 +268,4 @@ func buildDependency(repo *api.Repository, chartInstallation *api.ChartInstallat
 
 func repoUrl(repo *api.Repository) string {
 	return "cm://mart.piazzaapp.com/cm/" + repo.Name
-}
-
-func (w *Workspace) helmInit(clientOnly bool) error {
-	home, _ := os.UserHomeDir()
-	helmRepos := filepath.Join(home, ".helm", "repository", "repositories.yaml")
-	if !utils.Exists(helmRepos) && clientOnly {
-		return utils.Cmd(w.Config, "helm", "init", "--client-only")
-	}
-	if !clientOnly && !utils.InKubernetes() {
-		return utils.Cmd(w.Config, "helm", "init", "--wait", "--service-account=tiller")
-	}
-
-	return nil
 }

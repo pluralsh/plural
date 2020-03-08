@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 
 	"github.com/michaeljguarino/chartmart/api"
+	"github.com/michaeljguarino/chartmart/executor"
 	"github.com/michaeljguarino/chartmart/utils"
 	"github.com/michaeljguarino/chartmart/wkspace"
 	"github.com/urfave/cli"
@@ -75,7 +76,7 @@ func deploy(c *cli.Context) error {
 			continue
 		}
 
-		execution, err := wkspace.GetExecution(filepath.Join(repoRoot, name), "deploy")
+		execution, err := executor.GetExecution(filepath.Join(repoRoot, name), "deploy")
 		if err != nil {
 			return err
 		}

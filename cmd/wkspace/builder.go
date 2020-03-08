@@ -117,12 +117,14 @@ func (wk *Workspace) buildExecution() error {
 		return err
 	}
 
-	if _, err := GetExecution(filepath.Join(wkspaceRoot), "deploy"); err == nil {
-		// already exists, so ignore
+	ignoreFile := filepath.Join(wkspaceRoot, ".forgeignore")
+	if err := ioutil.WriteFile(ignoreFile, []byte(forgeIgnore), 0644); err != nil {
 		return err
 	}
 
-	return DefaultExecution(name).Flush(repoRoot)
+	exec, _ := GetExecution(filepath.Join(wkspaceRoot), "deploy")
+
+	return DefaultExecution(name, exec).Flush(repoRoot)
 }
 
 func mkDir(repoName, subDir string) error {

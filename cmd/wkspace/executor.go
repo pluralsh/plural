@@ -17,7 +17,7 @@ import (
 type Execution struct {
 	Path  string
 	Name  string
-	Steps []Step
+	Steps []*Step
 }
 
 type Step struct {
@@ -35,19 +35,25 @@ type outputWriter struct {
 	lines       []string
 }
 
+const (
+	forgeIgnore = `terraform/.terraform
+`
+)
+
 func GetExecution(path, name string) (*Execution, error) {
 	fullpath := filepath.Join(path, name+".yaml")
 	contents, err := ioutil.ReadFile(fullpath)
 	if err != nil {
 		return nil, err
 	}
-	conf := Execution{}
-	err = yaml.Unmarshal(contents, &conf)
+
+	ex := Execution{}
+	err = yaml.Unmarshal(contents, &ex)
 	if err != nil {
-		return nil, err
+		return &ex, err
 	}
 
-	return &conf, nil
+	return &ex, nil
 }
 
 func (e *Execution) Execute() error {
@@ -55,12 +61,13 @@ func (e *Execution) Execute() error {
 	if err != nil {
 		return err
 	}
+	ignore, err := e.IgnoreFile(root)
 
 	utils.Warn("deploying %s, hold on to your butts\n", e.Path)
 	for i, step := range e.Steps {
 		os.Chdir(filepath.Join(root, step.Wkdir))
 
-		newSha, err := step.Execute(root)
+		newSha, err := step.Execute(root, ignore)
 		if err != nil {
 			if err := e.Flush(root); err != nil {
 				return err
@@ -75,8 +82,8 @@ func (e *Execution) Execute() error {
 	return e.Flush(root)
 }
 
-func (step Step) Execute(root string) (string, error) {
-	current, err := mkhash(filepath.Join(root, step.Target))
+func (step Step) Execute(root string, ignore []string) (string, error) {
+	current, err := mkhash(filepath.Join(root, step.Target), ignore)
 	if err != nil {
 		return step.Sha, err
 	}
@@ -101,15 +108,30 @@ func (step Step) Execute(root string) (string, error) {
 	return current, err
 }
 
-func DefaultExecution(path string) (e *Execution) {
-	return &Execution{
+func (e *Execution) IgnoreFile(root string) ([]string, error) {
+	ignorePath := filepath.Join(root, e.Path, ".forgeignore")
+	contents, err := ioutil.ReadFile(ignorePath)
+	if err != nil {
+		return []string{}, err
+	}
+
+	return strings.Split(string(contents), "\n"), nil
+}
+
+func DefaultExecution(path string, prev *Execution) (e *Execution) {
+	byName := make(map[string]*Step)
+	for _, step := range prev.Steps {
+		byName[step.Name] = step
+	}
+
+	intended := &Execution{
 		Path: path,
 		Name: "deploy",
-		Steps: []Step{
+		Steps: []*Step{
 			{
 				Name:    "terraform-init",
 				Wkdir:   filepath.Join(path, "terraform"),
-				Target:  filepath.Join(path, "NONCE"),
+				Target:  filepath.Join(path, "terraform"),
 				Command: "terraform",
 				Args:    []string{"init"},
 				Sha:     "",
@@ -156,6 +178,14 @@ func DefaultExecution(path string) (e *Execution) {
 			},
 		},
 	}
+
+	for _, step := range intended.Steps {
+		if val, ok := byName[step.Name]; ok {
+			step.Sha = val.Sha // preserve shas where appropriate
+		}
+	}
+
+	return intended
 }
 
 func (e *Execution) Flush(root string) error {
@@ -168,7 +198,7 @@ func (e *Execution) Flush(root string) error {
 	return ioutil.WriteFile(path, io, 0644)
 }
 
-func mkhash(root string) (string, error) {
+func mkhash(root string, ignore []string) (string, error) {
 	fi, err := os.Stat(root)
 	if err != nil {
 		return "", err
@@ -176,10 +206,43 @@ func mkhash(root string) (string, error) {
 
 	switch mode := fi.Mode(); {
 	case mode.IsDir():
-		return dirhash.HashDir(root, filepath.Base(root), dirhash.DefaultHash)
+		return filteredHash(root, ignore)
 	default:
 		return utils.Sha256(root)
 	}
+}
+
+func filteredHash(root string, ignore []string) (string, error) {
+	prefix := filepath.Base(root)
+	files, err := dirhash.DirFiles(root, prefix)
+	if err != nil {
+		return "", err
+	}
+
+	keep := []string{}
+	for _, file := range files {
+		if ignorePath(strings.TrimPrefix(file, prefix), ignore) {
+			continue
+		}
+
+		keep = append(keep, file)
+	}
+
+	osOpen := func(name string) (io.ReadCloser, error) {
+		return os.Open(filepath.Join(root, strings.TrimPrefix(name, prefix)))
+	}
+
+	return dirhash.Hash1(keep, osOpen)
+}
+
+func ignorePath(file string, ignore []string) bool {
+	for _, pref := range ignore {
+		if strings.HasPrefix(file, pref) {
+			return true
+		}
+	}
+
+	return false
 }
 
 func (out *outputWriter) Write(line []byte) (int, error) {

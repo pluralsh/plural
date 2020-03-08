@@ -9,6 +9,7 @@ import (
 	"github.com/michaeljguarino/chartmart/api"
 	"github.com/michaeljguarino/chartmart/config"
 	"github.com/michaeljguarino/chartmart/crypto"
+	"github.com/michaeljguarino/chartmart/executor"
 	"github.com/michaeljguarino/chartmart/manifest"
 	"github.com/michaeljguarino/chartmart/provider"
 	"github.com/michaeljguarino/chartmart/utils"
@@ -117,14 +118,13 @@ func (wk *Workspace) buildExecution() error {
 		return err
 	}
 
-	ignoreFile := filepath.Join(wkspaceRoot, ".forgeignore")
-	if err := ioutil.WriteFile(ignoreFile, []byte(forgeIgnore), 0644); err != nil {
+	if err := executor.Ignore(wkspaceRoot); err != nil {
 		return err
 	}
 
-	exec, _ := GetExecution(filepath.Join(wkspaceRoot), "deploy")
+	exec, _ := executor.GetExecution(filepath.Join(wkspaceRoot), "deploy")
 
-	return DefaultExecution(name, exec).Flush(repoRoot)
+	return executor.DefaultExecution(name, exec).Flush(repoRoot)
 }
 
 func mkDir(repoName, subDir string) error {

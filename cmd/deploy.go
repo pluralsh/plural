@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"path/filepath"
 
 	"github.com/michaeljguarino/chartmart/api"
 	"github.com/michaeljguarino/chartmart/utils"
@@ -23,9 +24,11 @@ func build(c *cli.Context) error {
 		if err != nil {
 			return err
 		}
+
 		if err := workspace.Prepare(); err != nil {
 			return err
 		}
+
 		utils.Success("Finished building %s\n", repoName)
 	}
 	return nil
@@ -56,30 +59,28 @@ func deploy(c *cli.Context) error {
 	client := api.NewClient()
 	installations, _ := client.GetInstallations()
 	repoName := c.Args().Get(0)
-	dir, _ := os.Getwd()
-
 	sorted, err := wkspace.Dependencies(repoName, installations)
 	if err != nil {
 		return err
 	}
 
+	repoRoot, err := utils.RepoRoot()
+	if err != nil {
+		return err
+	}
+
 	for _, installation := range sorted {
-		if installation.Repository.Name != repoName && repoName != "" {
+		name := installation.Repository.Name
+		if name != repoName && repoName != "" {
 			continue
 		}
 
-		utils.Warn("(Re)building workspace for %s\n", installation.Repository.Name)
-		workspace, err := wkspace.New(client, &installation)
+		execution, err := wkspace.GetExecution(filepath.Join(repoRoot, name), "deploy")
 		if err != nil {
 			return err
 		}
 
-		if err := workspace.InstallTerraform(); err != nil {
-			return err
-		}
-
-		os.Chdir(dir)
-		if err := workspace.InstallHelm(); err != nil {
+		if err := execution.Execute(); err != nil {
 			return err
 		}
 	}

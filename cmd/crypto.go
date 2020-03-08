@@ -1,25 +1,22 @@
 package main
 
 import (
+	"bytes"
+	crypt "crypto"
+	"crypto/x509"
+	"encoding/pem"
+	"fmt"
+	"github.com/docker/libtrust"
 	"github.com/michaeljguarino/chartmart/crypto"
 	"github.com/michaeljguarino/chartmart/utils"
 	"github.com/urfave/cli"
-	"io/ioutil"
 	"io"
+	"io/ioutil"
 	"os"
-	"os/exec"
-	"bytes"
 	"path/filepath"
-	"strings"
-	"crypto/x509"
-	"github.com/docker/libtrust"
-	"encoding/pem"
-	"fmt"
-	crypt "crypto"
 )
 
 var prefix = []byte("CHARTMART-ENCRYPTED")
-
 
 const gitattributes = `/**/helm/**/values.yaml filter=chartmart-crypt diff=chartmart-crypt
 /**/manifest.yaml filter=chartmart-crypt diff=chartmart-crypt
@@ -149,19 +146,18 @@ func cryptoInit(c *cli.Context) error {
 }
 
 func handleUnlock(c *cli.Context) error {
-	cmd := exec.Command("git", "rev-parse", "--show-toplevel")
-	res, err := cmd.CombinedOutput()
+	repoRoot, err := utils.RepoRoot()
 	if err != nil {
 		return err
 	}
-	repoRoot := strings.TrimSpace(string(res))
+
 	gitIndex, _ := filepath.Abs(filepath.Join(repoRoot, ".git", "index"))
 	err = os.Remove(gitIndex)
 	if err != nil {
 		return err
 	}
 
-	return gitCommand("checkout", "HEAD", "--", strings.TrimSpace(string(res))).Run()
+	return gitCommand("checkout", "HEAD", "--", repoRoot).Run()
 }
 
 func exportKey(c *cli.Context) error {

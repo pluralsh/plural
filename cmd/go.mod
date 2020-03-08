@@ -22,6 +22,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/urfave/cli v1.22.1
 	golang.org/x/crypto v0.0.0-20191111213947-16651526fdb4
+	golang.org/x/mod v0.1.0
 	google.golang.org/api v0.13.0
 	gopkg.in/oleiade/reflections.v1 v1.0.0
 	gopkg.in/yaml.v2 v2.2.2

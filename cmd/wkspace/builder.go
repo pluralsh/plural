@@ -1,22 +1,25 @@
 package wkspace
 
 import (
-	"github.com/michaeljguarino/chartmart/api"
-	"github.com/michaeljguarino/chartmart/provider"
-	"github.com/michaeljguarino/chartmart/utils"
-	"github.com/michaeljguarino/chartmart/config"
-	"github.com/michaeljguarino/chartmart/manifest"
+	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
+
+	"github.com/michaeljguarino/chartmart/api"
+	"github.com/michaeljguarino/chartmart/config"
+	"github.com/michaeljguarino/chartmart/crypto"
+	"github.com/michaeljguarino/chartmart/manifest"
+	"github.com/michaeljguarino/chartmart/provider"
+	"github.com/michaeljguarino/chartmart/utils"
 )
 
 type Workspace struct {
-	Provider       provider.Provider
-	Installation   *api.Installation
-	Charts         []api.ChartInstallation
-	Terraform      []api.TerraformInstallation
-	Config  		   *config.Config
+	Provider     provider.Provider
+	Installation *api.Installation
+	Charts       []api.ChartInstallation
+	Terraform    []api.TerraformInstallation
+	Config       *config.Config
 }
 
 func New(client *api.Client, inst *api.Installation) (*Workspace, error) {
@@ -57,17 +60,31 @@ func New(client *api.Client, inst *api.Installation) (*Workspace, error) {
 	}, nil
 }
 
+func (wk *Workspace) ToMinimal() *MinimalWorkspace {
+	return &MinimalWorkspace{
+		Name:     wk.Installation.Repository.Name,
+		Provider: wk.Provider,
+		Config:   wk.Config,
+	}
+}
+
 func (wk *Workspace) Prepare() error {
 	repo := wk.Installation.Repository
+
 	if err := mkDir(repo.Name, "terraform"); err != nil {
 		return err
 	}
+
 	if err := mkDir(repo.Name, "helm"); err != nil {
 		return err
 	}
 
 	manifest := wk.BuildManifest()
 	if err := manifest.Write(manifestPath(&repo)); err != nil {
+		return err
+	}
+
+	if err := wk.buildExecution(); err != nil {
 		return err
 	}
 
@@ -82,6 +99,32 @@ func (wk *Workspace) Prepare() error {
 	return nil
 }
 
+func (wk *Workspace) buildExecution() error {
+	repoRoot, err := utils.RepoRoot()
+	if err != nil {
+		return err
+	}
+	name := wk.Installation.Repository.Name
+	wkspaceRoot := filepath.Join(repoRoot, name)
+
+	onceFile := filepath.Join(wkspaceRoot, "ONCE")
+	if err := ioutil.WriteFile(onceFile, []byte("once"), 0644); err != nil {
+		return err
+	}
+
+	nonceFile := filepath.Join(wkspaceRoot, "NONCE")
+	if err := ioutil.WriteFile(nonceFile, []byte(crypto.RandString(32)), 0644); err != nil {
+		return err
+	}
+
+	if _, err := GetExecution(filepath.Join(wkspaceRoot), "deploy"); err == nil {
+		// already exists, so ignore
+		return err
+	}
+
+	return DefaultExecution(name).Flush(repoRoot)
+}
+
 func mkDir(repoName, subDir string) error {
 	path, err := filepath.Abs(path.Join(repoName, subDir))
 	if err != nil {
@@ -94,6 +137,6 @@ func mkDir(repoName, subDir string) error {
 }
 
 func manifestPath(repo *api.Repository) string {
-	path, _ := filepath.Abs(path.Join(repo.Name, "manifest.yaml"))
+	path, _ := filepath.Abs(filepath.Join(repo.Name, "manifest.yaml"))
 	return path
 }

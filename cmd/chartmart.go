@@ -104,6 +104,12 @@ func main() {
 			Subcommands: configCommands(),
 		},
 		{
+			Name:       "workspace",
+			Aliases:    []string{"wkspace"},
+			Usage:      "Commands for managing installations in your workspace",
+			Subcommands: workspaceCommands(),
+		},
+		{
 			Name:    "webhook",
 			Aliases: []string{"wh"},
 			Usage:   "Posts to a watchman webhook",

@@ -20,7 +20,7 @@ const moduleTemplate = `module "{{ .Values.name }}" {
 {{ .Values.conf | nindent 2 }}
 {{ range $key, $val := .Values.deps }}
 	{{ $key }} = module.{{ $val }}
-{{ end }}
+{{- end }}
 }
 `
 

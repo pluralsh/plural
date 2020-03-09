@@ -14,7 +14,12 @@ import (
 func build(c *cli.Context) error {
 	client := api.NewClient()
 	installations, _ := client.GetInstallations()
-	for _, installation := range installations {
+	sorted, err := wkspace.Dependencies("", installations)
+	if err != nil {
+		return err
+	}
+
+	for _, installation := range sorted {
 		if c.IsSet("only") && c.String("only") != installation.Repository.Name {
 			continue
 		}

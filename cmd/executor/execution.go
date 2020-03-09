@@ -6,19 +6,23 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/hashicorp/hcl"
 	"github.com/michaeljguarino/chartmart/utils"
-	"gopkg.in/yaml.v2"
+	"github.com/rodaine/hclencoder"
 )
 
 type Execution struct {
-	Path  string
-	Name  string
-	Steps []*Step
+	Metadata Metadata `hcl:"metadata"`
+	Steps    []*Step  `hcl:"step"`
+}
+
+type Metadata struct {
+	Path string `hcl:"path"`
+	Name string `hcl:"name"`
 }
 
 const (
-	forgeIgnore = `terraform/.terraform
-`
+	forgeIgnore = `terraform/.terraform`
 )
 
 func Ignore(root string) error {
@@ -27,14 +31,14 @@ func Ignore(root string) error {
 }
 
 func GetExecution(path, name string) (*Execution, error) {
-	fullpath := filepath.Join(path, name+".yaml")
+	fullpath := filepath.Join(path, name+".hcl")
 	contents, err := ioutil.ReadFile(fullpath)
+	ex := Execution{}
 	if err != nil {
-		return nil, err
+		return &ex, err
 	}
 
-	ex := Execution{}
-	err = yaml.Unmarshal(contents, &ex)
+	err = hcl.Decode(&ex, string(contents))
 	if err != nil {
 		return &ex, err
 	}
@@ -49,7 +53,7 @@ func (e *Execution) Execute() error {
 	}
 	ignore, err := e.IgnoreFile(root)
 
-	utils.Warn("deploying %s, hold on to your butts\n", e.Path)
+	utils.Warn("deploying %s, hold on to your butts\n", e.Metadata.Path)
 	for i, step := range e.Steps {
 		os.Chdir(filepath.Join(root, step.Wkdir))
 
@@ -69,7 +73,7 @@ func (e *Execution) Execute() error {
 }
 
 func (e *Execution) IgnoreFile(root string) ([]string, error) {
-	ignorePath := filepath.Join(root, e.Path, ".forgeignore")
+	ignorePath := filepath.Join(root, e.Metadata.Path, ".forgeignore")
 	contents, err := ioutil.ReadFile(ignorePath)
 	if err != nil {
 		return []string{}, err
@@ -94,8 +98,7 @@ func DefaultExecution(path string, prev *Execution) (e *Execution) {
 	}
 
 	intended := &Execution{
-		Path: path,
-		Name: "deploy",
+		Metadata: Metadata{Path: path, Name: "deploy"},
 		Steps: []*Step{
 			{
 				Name:    "terraform-init",
@@ -158,11 +161,11 @@ func DefaultExecution(path string, prev *Execution) (e *Execution) {
 }
 
 func (e *Execution) Flush(root string) error {
-	io, err := yaml.Marshal(&e)
+	io, err := hclencoder.Encode(&e)
 	if err != nil {
 		return err
 	}
 
-	path, _ := filepath.Abs(filepath.Join(root, e.Path, e.Name+".yaml"))
+	path, _ := filepath.Abs(filepath.Join(root, e.Metadata.Path, e.Metadata.Name+".hcl"))
 	return ioutil.WriteFile(path, io, 0644)
 }

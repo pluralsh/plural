@@ -11,6 +11,7 @@ require (
 	github.com/docker/libtrust v0.0.0-20160708172513-aabc10ec26b7
 	github.com/fatih/color v1.7.0
 	github.com/google/uuid v1.1.1 // indirect
+	github.com/hashicorp/hcl v1.0.0
 	github.com/huandu/xstrings v1.2.0 // indirect
 	github.com/imdario/mergo v0.3.8
 	github.com/machinebox/graphql v0.2.2
@@ -20,6 +21,7 @@ require (
 	github.com/olekukonko/tablewriter v0.0.2
 	github.com/philopon/go-toposort v0.0.0-20170620085441-9be86dbd762f
 	github.com/pkg/errors v0.9.1
+	github.com/rodaine/hclencoder v0.0.0-20190213202847-fb9757bb536e
 	github.com/urfave/cli v1.22.1
 	golang.org/x/crypto v0.0.0-20191111213947-16651526fdb4
 	golang.org/x/mod v0.1.0

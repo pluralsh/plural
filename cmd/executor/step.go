@@ -13,12 +13,12 @@ import (
 )
 
 type Step struct {
-	Name    string
-	Wkdir   string
-	Target  string
-	Command string
-	Args    []string
-	Sha     string
+	Name    string   `hcl:",key"`
+	Wkdir   string   `hcl:"wkdir"`
+	Target  string   `hcl:"target"`
+	Command string   `hcl:"command"`
+	Args    []string `hcl:"args"`
+	Sha     string   `hcl:"sha"`
 }
 
 func (step Step) Execute(root string, ignore []string) (string, error) {

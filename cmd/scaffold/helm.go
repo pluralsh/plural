@@ -23,7 +23,8 @@ type dependency struct {
 func (s *Scaffold) handleHelm(wk *wkspace.Workspace) error {
 	repo := wk.Installation.Repository
 
-	if _, err := s.createChart(wk, repo.Name); err != nil {
+	err := s.createChart(wk, repo.Name)
+	if err != nil {
 		return err
 	}
 
@@ -128,26 +129,24 @@ func prevValues(filename string) (map[string]map[string]interface{}, error) {
 	return parsed, nil
 }
 
-func (s *Scaffold) createChart(w *wkspace.Workspace, name string) (string, error) {
-	cdir := filepath.Join(s.Root, name)
-
+func (s *Scaffold) createChart(w *wkspace.Workspace, name string) error {
 	files := []struct {
 		path    string
 		content []byte
 	}{
 		{
 			// Chart.yaml
-			path:    filepath.Join(cdir, ChartfileName),
+			path:    filepath.Join(s.Root, ChartfileName),
 			content: []byte(fmt.Sprintf(defaultChartfile, name)),
 		},
 		{
 			// .helmignore
-			path:    filepath.Join(cdir, IgnorefileName),
+			path:    filepath.Join(s.Root, IgnorefileName),
 			content: []byte(defaultIgnore),
 		},
 		{
 			// NOTES.txt
-			path:    filepath.Join(cdir, NotesName),
+			path:    filepath.Join(s.Root, NotesName),
 			content: []byte(defaultNotes),
 		},
 	}
@@ -158,16 +157,16 @@ func (s *Scaffold) createChart(w *wkspace.Workspace, name string) (string, error
 			continue
 		}
 		if err := utils.WriteFile(file.path, file.content); err != nil {
-			return cdir, err
+			return err
 		}
 	}
 
 	// Need to add the ChartsDir explicitly as it does not contain any file OOTB
-	if err := os.MkdirAll(filepath.Join(cdir, ChartsDir), 0755); err != nil {
-		return cdir, err
+	if err := os.MkdirAll(filepath.Join(s.Root, ChartsDir), 0755); err != nil {
+		return err
 	}
 
-	return cdir, nil
+	return nil
 }
 
 func repoUrl(repo string) string {

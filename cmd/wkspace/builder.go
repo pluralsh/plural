@@ -3,7 +3,6 @@ package wkspace
 import (
 	"io/ioutil"
 	"os"
-	"path"
 	"path/filepath"
 
 	"github.com/michaeljguarino/chartmart/api"
@@ -72,28 +71,12 @@ func (wk *Workspace) ToMinimal() *MinimalWorkspace {
 func (wk *Workspace) Prepare() error {
 	repo := wk.Installation.Repository
 
-	if err := mkDir(repo.Name, "terraform"); err != nil {
-		return err
-	}
-
-	if err := mkDir(repo.Name, "helm"); err != nil {
-		return err
-	}
-
 	manifest := wk.BuildManifest()
 	if err := manifest.Write(manifestPath(&repo)); err != nil {
 		return err
 	}
 
 	if err := wk.buildExecution(); err != nil {
-		return err
-	}
-
-	if err := wk.BuildHelm(); err != nil {
-		return err
-	}
-
-	if err := wk.BuildTerraform(); err != nil {
 		return err
 	}
 
@@ -108,12 +91,16 @@ func (wk *Workspace) buildExecution() error {
 	name := wk.Installation.Repository.Name
 	wkspaceRoot := filepath.Join(repoRoot, name)
 
-	onceFile := filepath.Join(wkspaceRoot, "ONCE")
+	if err := mkdir(filepath.Join(wkspaceRoot, ".forge")); err != nil {
+		return err
+	}
+
+	onceFile := filepath.Join(wkspaceRoot, ".forge", "ONCE")
 	if err := ioutil.WriteFile(onceFile, []byte("once"), 0644); err != nil {
 		return err
 	}
 
-	nonceFile := filepath.Join(wkspaceRoot, "NONCE")
+	nonceFile := filepath.Join(wkspaceRoot, ".forge", "NONCE")
 	if err := ioutil.WriteFile(nonceFile, []byte(crypto.RandString(32)), 0644); err != nil {
 		return err
 	}
@@ -127,11 +114,7 @@ func (wk *Workspace) buildExecution() error {
 	return executor.DefaultExecution(name, exec).Flush(repoRoot)
 }
 
-func mkDir(repoName, subDir string) error {
-	path, err := filepath.Abs(path.Join(repoName, subDir))
-	if err != nil {
-		return err
-	}
+func mkdir(path string) error {
 	if err := os.MkdirAll(path, os.ModePerm); err != nil {
 		return err
 	}

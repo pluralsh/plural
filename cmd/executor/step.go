@@ -37,6 +37,7 @@ func (step Step) Execute(root string, ignore []string) (string, error) {
 	output := &outputWriter{delegate: os.Stdout}
 	cmd.Stdout = output
 	cmd.Stderr = output
+	cmd.Dir = filepath.Join(root, step.Wkdir)
 	err = cmd.Run()
 	if err != nil {
 		fmt.Printf("\noutput: %s\n", output.Format())

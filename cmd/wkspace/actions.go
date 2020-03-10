@@ -1,12 +1,20 @@
 package wkspace
 
 import (
-	"github.com/michaeljguarino/chartmart/api"
-	"github.com/michaeljguarino/chartmart/utils"
 	"os"
 	"path"
 	"path/filepath"
+	"github.com/michaeljguarino/chartmart/utils"
 )
+
+func (w *Workspace) DestroyHelm() error {
+	w.Provider.KubeConfig()
+	return utils.Cmd(w.Config, "helm", "del", "--purge", w.Installation.Repository.Name)
+}
+
+func (w *Workspace) Bounce() error {
+	return w.ToMinimal().BounceHelm()
+}
 
 func (w *Workspace) DestroyTerraform() error {
 	repo := w.Installation.Repository
@@ -17,9 +25,4 @@ func (w *Workspace) DestroyTerraform() error {
 
 	os.Chdir(path)
 	return utils.Cmd(w.Config, "terraform", "destroy", "-auto-approve")
-}
-
-func terraformPath(repo *api.Repository, tf *api.Terraform) string {
-	p, _ := filepath.Abs(path.Join(repo.Name, "terraform", tf.Name))
-	return p
 }

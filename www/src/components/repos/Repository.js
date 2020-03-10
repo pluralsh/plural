@@ -24,7 +24,6 @@ import AceEditor from "react-ace"
 import "ace-builds/src-noconflict/mode-yaml"
 import "ace-builds/src-noconflict/theme-terminal"
 import { InputCollection, ResponsiveInput } from '../utils/InputField'
-import Expander from '../utils/Expander'
 import Integrations from './Integrations'
 
 function Container({children, onClick, hasNext, noPad}) {
@@ -545,9 +544,12 @@ export default function Repository() {
             fetchMore={fetchMore} />
           {integrations && integrations.edges.length > 0 && (
             <DetailContainer>
-              <Expander text='Integrations' open>
+              <Box>
+                <Box pad='small' border='bottom'>
+                  <Text size='small' style={{fontWeight: 500}}>Integrations</Text>
+                </Box>
                 <Integrations integrations={integrations} fetchMore={fetchMore} repository={repository} />
-              </Expander>
+              </Box>
             </DetailContainer>
           )}
           <Artifacts artifacts={repository.artifacts} />

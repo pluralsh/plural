@@ -2,13 +2,15 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
+	"os/exec"
+	"path/filepath"
+
 	"github.com/michaeljguarino/chartmart/api"
-	"github.com/michaeljguarino/chartmart/crypto"
 	"github.com/michaeljguarino/chartmart/config"
+	"github.com/michaeljguarino/chartmart/crypto"
 	"github.com/michaeljguarino/chartmart/utils"
 	"github.com/urfave/cli"
-	"path/filepath"
-	"io/ioutil"
 )
 
 func handleInit(c *cli.Context) error {
@@ -38,8 +40,7 @@ func handleInit(c *cli.Context) error {
 		return err
 	}
 
-	utils.Success("Workspace is properly configured!\n")
-	return nil
+	return initHelm("Workspace is properly configured!\n")
 }
 
 func handleImport(c *cli.Context) error {
@@ -68,6 +69,14 @@ func handleImport(c *cli.Context) error {
 		return err
 	}
 
-	utils.Success("Workspace properly imported")
+	return initHelm("Workspace properly imported\n")
+}
+
+func initHelm(success string) error {
+	err := exec.Command("helm", "init", "--client-only").Run()
+	if err != nil {
+		return err
+	}
+	utils.Success(success)
 	return nil
 }

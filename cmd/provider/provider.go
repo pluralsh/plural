@@ -2,8 +2,8 @@ package provider
 
 import (
 	"fmt"
-	"github.com/michaeljguarino/chartmart/manifest"
-	"github.com/michaeljguarino/chartmart/utils"
+	"github.com/michaeljguarino/forge/manifest"
+	"github.com/michaeljguarino/forge/utils"
 	"strconv"
 	"strings"
 )
@@ -29,9 +29,9 @@ func Select() (Provider, error) {
 
 			if val != "n" {
 				return FromManifest(&manifest.Manifest{
-					Cluster: project.Cluster,
-					Project: project.Project,
-					Bucket: project.Bucket,
+					Cluster:  project.Cluster,
+					Project:  project.Project,
+					Bucket:   project.Bucket,
 					Provider: project.Provider,
 				})
 			}

@@ -1,6 +1,6 @@
 defmodule Watchman.GraphQl.Schema do
   use Watchman.GraphQl.Schema.Base
-  alias Watchman.GraphQl.Resolvers.{Build, Chartmart}
+  alias Watchman.GraphQl.Resolvers.{Build, Forge}
   import_types Absinthe.Plug.Types
 
   ## ENUMS
@@ -86,7 +86,7 @@ defmodule Watchman.GraphQl.Schema do
     field :description, :string
     field :icon, :string
     field :dashboards, list_of(:dashboard)
-    field :configuration, :string, resolve: &Chartmart.resolve_configuration/3
+    field :configuration, :string, resolve: &Forge.resolve_configuration/3
     field :grafana_dns, :string, resolve: fn _, _, _ ->
       {:ok, Watchman.conf(:grafana_dns)}
     end

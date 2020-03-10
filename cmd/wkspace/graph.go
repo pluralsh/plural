@@ -2,8 +2,8 @@ package wkspace
 
 import (
 	"fmt"
-	"github.com/michaeljguarino/chartmart/api"
-	"github.com/michaeljguarino/chartmart/manifest"
+	"github.com/michaeljguarino/forge/api"
+	"github.com/michaeljguarino/forge/manifest"
 	toposort "github.com/philopon/go-toposort"
 )
 
@@ -35,7 +35,7 @@ func TopSort(installations []api.Installation) ([]api.Installation, error) {
 	}
 
 	for j := 1; j <= len(result); j++ {
-		sorted[len(result) - j] = repoMap[result[j - 1]]
+		sorted[len(result)-j] = repoMap[result[j-1]]
 	}
 	return sorted, nil
 }

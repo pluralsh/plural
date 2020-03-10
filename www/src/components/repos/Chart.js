@@ -10,7 +10,7 @@ import { DEFAULT_CHART_ICON } from './constants'
 import Highlight from 'react-highlight.js'
 import Installation, { DetailContainer } from './Installation'
 import Button from '../utils/Button'
-import { BreadcrumbContext } from '../Chartmart'
+import { BreadcrumbContext } from '../Forge'
 import Dependencies, { FullDependencies, ShowFull } from './Dependencies'
 import ScrollableContainer from '../utils/ScrollableContainer'
 

@@ -7,7 +7,7 @@ import { RepositoryChoice } from './Configuration'
 import { BreadcrumbsContext } from './Breadcrumbs'
 import { apiHost, secure } from '../helpers/hostname'
 import { BUILD_PADDING } from './Builds'
-import { CONFIGURATIONS_Q } from './graphql/chartmart'
+import { CONFIGURATIONS_Q } from './graphql/forge'
 import Loading from './utils/Loading'
 import { Next } from 'grommet-icons'
 

@@ -1,0 +1,16 @@
+dependencies:
+- name: gcp-bootstrap
+  repo: bootstrap
+  type: terraform
+- name: kube
+  repo: bootstrap
+  type: terraform
+
+providers:
+- gcp
+
+wirings:
+  terraform:
+    cluster_name: gcp-bootstrap.cluster_name
+    node_pool: gcp-bootstrap.node_pool
+    bootstrap_namespace: kube.namespace

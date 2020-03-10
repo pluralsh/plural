@@ -1,12 +1,12 @@
 package main
 
 import (
-	"github.com/michaeljguarino/chartmart/api"
-	"github.com/michaeljguarino/chartmart/template"
-	"github.com/urfave/cli"
-	"os"
-	"io/ioutil"
 	"bytes"
+	"github.com/michaeljguarino/forge/api"
+	"github.com/michaeljguarino/forge/template"
+	"github.com/urfave/cli"
+	"io/ioutil"
+	"os"
 )
 
 func testTemplate(c *cli.Context) error {

@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/michaeljguarino/graphql"
-	"github.com/michaeljguarino/chartmart/config"
+	"github.com/michaeljguarino/forge/config"
 )
 
 const endpoint = "https://mart.piazzaapp.com/gql"

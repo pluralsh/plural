@@ -4,10 +4,10 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/michaeljguarino/chartmart/config"
-	"github.com/michaeljguarino/chartmart/manifest"
-	"github.com/michaeljguarino/chartmart/provider"
-	"github.com/michaeljguarino/chartmart/utils"
+	"github.com/michaeljguarino/forge/config"
+	"github.com/michaeljguarino/forge/manifest"
+	"github.com/michaeljguarino/forge/provider"
+	"github.com/michaeljguarino/forge/utils"
 )
 
 type MinimalWorkspace struct {
@@ -58,7 +58,7 @@ func (m *MinimalWorkspace) HelmInit(clientOnly bool) error {
 	return nil
 }
 
-const pullSecretName = "chartmartcreds"
+const pullSecretName = "forgecreds"
 const repoName = "dkr.piazzaapp.com"
 
 func (m *MinimalWorkspace) EnsurePullCredentials() error {

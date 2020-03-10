@@ -1,0 +1,11 @@
+dependencies:
+- name: gcp-bootstrap
+  repo: bootrap
+  type: terraform
+providers:
+- gcp
+
+wirings:
+  terraform:
+    cluster_name: gcp-bootstrap.cluster_name
+    node_pool: gcp-bootstrap.node_pool

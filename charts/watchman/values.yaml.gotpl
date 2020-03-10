@@ -10,8 +10,8 @@ grafana_dns: {{ dedupe .Values "grafana_dns" (cat "watchman-grafana." .Values.dn
 secrets:
   git_url: {{ repoUrl }}
   repo_root: {{ repoName }}
-  config: {{ readFile (homeDir ".chartmart" "config.yml") | quote }}
-  key: {{ readFile (homeDir ".chartmart" "key") | quote }}
+  config: {{ readFile (homeDir ".forge" "config.yml") | quote }}
+  key: {{ readFile (homeDir ".forge" "key") | quote }}
   known_hosts: {{ knownHosts | quote }}
   erlang: {{ dedupe . "watchman.secrets.erlang" (randAlphaNum 14) }}
 {{ if and (hasKey . "watchman") (hasKey .watchman "secrets") }}
@@ -28,12 +28,12 @@ secrets:
 {{ if hasKey .Values "git_user" }}
   git_user: {{ .Values.git_user }}
 {{ else }}
-  git_user: chartmart
+  git_user: forge
 {{ end}}
 {{ if hasKey .Values "git_email" }}
   git_email: {{ .Values.git_email }}
 {{ else }}
-  git_email: chartmart@piazzaapp.com
+  git_email: forge@piazzaapp.com
 {{ end}}
 
 license: {{ .License }}

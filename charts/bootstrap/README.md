@@ -6,13 +6,13 @@ Should include any dependencies you might need per provider
 ## Installation
 
 ```
-helm repo add chartmart https://mart.piazzaapp.com/chartmart
+helm repo add forge https://mart.piazzaapp.com/forge
 ```
 
 ## Usage
 
 ```
-helm upgrade --install --name chartmart chartmart/chartmart
+helm upgrade --install --name forge forge/forge
 ```
 
 ## Example Configuration

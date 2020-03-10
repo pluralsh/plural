@@ -1,18 +1,18 @@
 package main
 
 import (
-	"github.com/michaeljguarino/chartmart/crypto"
-	"github.com/urfave/cli"
-	"encoding/json"
-	"net/http"
-	"fmt"
-	"io/ioutil"
 	"bytes"
+	"encoding/json"
+	"fmt"
+	"github.com/michaeljguarino/forge/crypto"
+	"github.com/urfave/cli"
+	"io/ioutil"
+	"net/http"
 )
 
 type webhookRequest struct {
 	Repository string `json:"repository"`
-	Message string `json:"message"`
+	Message    string `json:"message"`
 }
 
 func handleWebhook(c *cli.Context) error {
@@ -22,7 +22,7 @@ func handleWebhook(c *cli.Context) error {
 	url := c.String("url")
 	marshalled, _ := json.Marshal(webhookRequest{
 		Repository: repository,
-		Message: msg,
+		Message:    msg,
 	})
 	fmt.Println("Request body: ", string(marshalled))
 	signature := crypto.Hmac(string(marshalled), secret)
@@ -34,7 +34,7 @@ func handleWebhook(c *cli.Context) error {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-			return err
+		return err
 	}
 	defer resp.Body.Close()
 

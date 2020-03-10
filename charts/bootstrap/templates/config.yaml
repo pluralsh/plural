@@ -12,4 +12,4 @@ data:
       type: prometheus
       access: proxy
       orgId: 1
-      url: http://chartmart-prometheus-server
+      url: http://forge-prometheus-server

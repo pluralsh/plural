@@ -1,8 +1,8 @@
 package wkspace
 
 import (
-	"github.com/michaeljguarino/chartmart/api"
-	"github.com/michaeljguarino/chartmart/manifest"
+	"github.com/michaeljguarino/forge/api"
+	"github.com/michaeljguarino/forge/manifest"
 )
 
 func (wk *Workspace) BuildManifest() *manifest.Manifest {
@@ -42,7 +42,7 @@ func buildDependencies(repo string, charts []api.ChartInstallation, tfs []api.Te
 				continue
 			}
 
-			if (dep.Repo != repo) {
+			if dep.Repo != repo {
 				deps = append(deps, manifest.Dependency{dep.Repo})
 				seen[dep.Repo] = true
 			}
@@ -56,7 +56,7 @@ func buildDependencies(repo string, charts []api.ChartInstallation, tfs []api.Te
 				continue
 			}
 
-			if (dep.Repo != repo) {
+			if dep.Repo != repo {
 				deps = append(deps, manifest.Dependency{dep.Repo})
 				seen[dep.Repo] = true
 			}

@@ -1,4 +1,4 @@
-module github.com/michaeljguarino/chartmart
+module github.com/michaeljguarino/forge
 
 go 1.13
 

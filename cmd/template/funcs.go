@@ -1,15 +1,15 @@
 package template
 
 import (
-	"github.com/michaeljguarino/chartmart/api"
-	"github.com/michaeljguarino/chartmart/config"
-	"github.com/michaeljguarino/chartmart/crypto"
-	"github.com/michaeljguarino/chartmart/utils"
-	"strings"
+	"fmt"
+	"github.com/michaeljguarino/forge/api"
+	"github.com/michaeljguarino/forge/config"
+	"github.com/michaeljguarino/forge/crypto"
+	"github.com/michaeljguarino/forge/utils"
+	"os"
 	"os/exec"
 	"path"
-	"fmt"
-	"os"
+	"strings"
 )
 
 func repoRoot() (string, error) {
@@ -31,7 +31,7 @@ func repoUrl() (string, error) {
 
 func createWebhook(domain string) (api.Webhook, error) {
 	client := api.NewClient()
-	return client.CreateWebhook(path.Join("https://" + domain, "v1", "webhook"))
+	return client.CreateWebhook(path.Join("https://"+domain, "v1", "webhook"))
 }
 
 func dumpConfig() (string, error) {
@@ -63,7 +63,7 @@ func readLineDefault(prompt string, def string) (string, error) {
 	return result, err
 }
 
-func homeDir(parts... string) (string, error) {
+func homeDir(parts ...string) (string, error) {
 	home, err := os.UserHomeDir()
 	return path.Join(home, path.Join(parts...)), err
 }
@@ -79,7 +79,7 @@ func knownHosts() (string, error) {
 
 func probe(obj interface{}, path string) (interface{}, error) {
 	keys := strings.Split(path, ".")
-	val  := obj
+	val := obj
 	for _, key := range keys {
 		typed := val.(map[string]interface{})
 		value, ok := typed[key]

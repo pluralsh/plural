@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/michaeljguarino/chartmart/utils"
+	"github.com/michaeljguarino/forge/utils"
 	"golang.org/x/mod/sumdb/dirhash"
 )
 

@@ -13,7 +13,7 @@ export function apiHost() {
     case "localhost":
       return "mart.piazzaapp.com"
     default:
-      return window.location.hostname.replace("chartmart", "mart")
+      return window.location.hostname.replace("forge", "mart")
   }
 }
 

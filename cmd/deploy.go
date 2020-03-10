@@ -5,11 +5,11 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/michaeljguarino/chartmart/api"
-	"github.com/michaeljguarino/chartmart/executor"
-	"github.com/michaeljguarino/chartmart/scaffold"
-	"github.com/michaeljguarino/chartmart/utils"
-	"github.com/michaeljguarino/chartmart/wkspace"
+	"github.com/michaeljguarino/forge/api"
+	"github.com/michaeljguarino/forge/executor"
+	"github.com/michaeljguarino/forge/scaffold"
+	"github.com/michaeljguarino/forge/utils"
+	"github.com/michaeljguarino/forge/wkspace"
 	"github.com/urfave/cli"
 )
 

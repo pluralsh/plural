@@ -1,0 +1,111 @@
+replicaCount: 2
+
+image:
+  repository: dkr.piazzaapp.com/forge/forge
+  tag: '0.1.0'
+  pullPolicy: Always
+
+www:
+  image: dkr.piazzaapp.com/forge/forge-www
+  tag: '0.1.0'
+  port: 80
+
+imagePullSecrets:
+- name: forgecreds
+
+api:
+  port: 4000
+  bucket: forge-assets
+
+dbPasswordSecret: forge-postgresql
+
+chartmuseum:
+  repository: chartmuseum/chartmuseum
+  tag: latest
+  bucket: forge-charts
+
+registry:
+  replicaCount: 1
+  podAnnotations: {}
+  podLabels: {}
+  podDisruptionBudget: {}
+  nodeSelector: {}
+  tolerations: []
+
+  persistence:
+    accessMode: ReadWriteOnce
+    enabled: false
+    size: 10Gi
+
+  securityContext:
+    enabled: false
+    runAsUser: 1000
+    fsGroup: 1000
+
+  image:
+    repository: registry
+    tag: 2.7.1
+  secrets:
+    haSharedSecret: ""
+
+  configData:
+    version: 0.1
+    notifications:
+      endpoints:
+      - name: forge
+        url: http://forge-api:4000/dkr/callback
+        timeout: 500ms
+        threshold: 5
+        backoff: 1s
+    log:
+      fields:
+        service: registry
+    storage:
+      cache:
+        blobdescriptor: inmemory
+    prometheus:
+      enabled: true
+    storage:
+      gcs:
+        keyfile: /etc/docker/forge/gcp.json
+    auth:
+      token:
+        realm: mart.piazzaapp.com/dkr
+        service: mart.piazzaapp.com/dkr
+        issuer: mart.piazzaapp.com
+        rootcertbundle: /etc/docker/registry/cert.pem
+    http:
+      addr: :5000
+      headers:
+        X-Content-Type-Options: [nosniff]
+    health:
+      storagedriver:
+        enabled: true
+        interval: 10s
+        threshold: 3
+
+postgresql:
+  postgresqlUsername: forge
+  postgresqlDatabase: forge
+
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  dns: mart.piazzaapp.com
+  dkr_dns: dkr.piazzaapp.com
+  annotations:
+    networking.gke.io/managed-certificates: forge-cert,forge-dkr-cert
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

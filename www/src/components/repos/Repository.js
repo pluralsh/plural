@@ -13,7 +13,7 @@ import { DEFAULT_CHART_ICON, DEFAULT_TF_ICON, DEFAULT_DKR_ICON } from './constan
 import Installation, { DetailContainer } from './Installation'
 import CreateTerraform from './CreateTerraform'
 import { RepoForm } from './CreateRepository'
-import { BreadcrumbContext } from '../Chartmart'
+import { BreadcrumbContext } from '../Forge'
 import Highlight from 'react-highlight'
 import Recipes from './Recipes'
 import moment from 'moment'

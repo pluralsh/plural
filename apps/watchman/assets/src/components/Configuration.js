@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useParams, useHistory } from 'react-router-dom'
 import { useQuery, useMutation } from 'react-apollo'
-import { CONFIGURATIONS_Q, UPDATE_CONFIGURATION } from './graphql/chartmart'
+import { CONFIGURATIONS_Q, UPDATE_CONFIGURATION } from './graphql/forge'
 import Loading from './utils/Loading'
 import Button from './utils/Button'
 import { Box, Text } from 'grommet'

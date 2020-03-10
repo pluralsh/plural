@@ -3,7 +3,7 @@ use Mix.Config
 config :core, Core.Repo,
   username: "postgres",
   password: "postgres",
-  database: "chartmart_dev",
+  database: "forge_dev",
   hostname: "localhost",
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
@@ -13,7 +13,7 @@ config :watchman, :initialize, true
 config :watchman, Watchman.Repo,
   username: "postgres",
   password: "postgres",
-  database: "chartmart_dev",
+  database: "forge_dev",
   hostname: "localhost",
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
@@ -51,9 +51,9 @@ secrets_path = Path.expand("../secrets", __DIR__)
 
 config :watchman,
   workspace_root: secrets_path,
-  git_url: "git@github.com:michaeljguarino/chartmart-installations.git",
-  repo_root: "chartmart-installations",
-  chartmart_config: "/Users/michaelguarino/.chartmart",
+  git_url: "git@github.com:michaeljguarino/forge-installations.git",
+  repo_root: "forge-installations",
+  forge_config: "/Users/michaelguarino/.forge",
   webhook_secret: "webhook_secret",
   git_ssh_key: :pass
 

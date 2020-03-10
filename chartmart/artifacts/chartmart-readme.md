@@ -1,16 +1,16 @@
-**chartmart**
+**forge**
 
-cli for managing chartmart.  Includes utilities for creating workspaces, validating dependencies are satisfied and deploying workspaces.
+cli for managing forge.  Includes utilities for creating workspaces, validating dependencies are satisfied and deploying workspaces.
 
 
 ```bash
-> chartmart --help
+> forge --help
 
 NAME:
-   chartmart - Tooling to manage your installed chartmart applications
+   forge - Tooling to manage your installed forge applications
 
 USAGE:
-   chartmart [global options] command [command options] [arguments...]
+   forge [global options] command [command options] [arguments...]
 
 VERSION:
    0.0.0
@@ -23,11 +23,11 @@ COMMANDS:
    bounce, b     redeploys the charts in a workspace
    destroy, b    iterates through all installations in reverse topological order, deleting helm installations and terraform
    init          initializes charmart
-   import        imports chartmart config from another file
+   import        imports forge config from another file
    test          validate a values templace
-   crypto        chartmart encryption utilities
+   crypto        forge encryption utilities
    push          utilities for pushing tf or helm packages
-   api           inspect the chartmart api
+   api           inspect the forge api
    config, conf  reads/modifies cli configuration
    help, h       Shows a list of commands or help for one command
 

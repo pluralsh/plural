@@ -5,13 +5,13 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/michaeljguarino/chartmart/api"
-	"github.com/michaeljguarino/chartmart/config"
-	"github.com/michaeljguarino/chartmart/crypto"
-	"github.com/michaeljguarino/chartmart/executor"
-	"github.com/michaeljguarino/chartmart/manifest"
-	"github.com/michaeljguarino/chartmart/provider"
-	"github.com/michaeljguarino/chartmart/utils"
+	"github.com/michaeljguarino/forge/api"
+	"github.com/michaeljguarino/forge/config"
+	"github.com/michaeljguarino/forge/crypto"
+	"github.com/michaeljguarino/forge/executor"
+	"github.com/michaeljguarino/forge/manifest"
+	"github.com/michaeljguarino/forge/provider"
+	"github.com/michaeljguarino/forge/utils"
 )
 
 type Workspace struct {

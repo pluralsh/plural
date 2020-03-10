@@ -1,6 +1,6 @@
-Chartmart license
+Forge license
 
-You are licensed to run or create compiled versions of chartmart via:
+You are licensed to run or create compiled versions of forge via:
 * registering an installation within mart.piazzaapp.com
 * the Free Software Foundation’s GNU AGPL v.3.0, with express permission of the repository owner
 
@@ -8,8 +8,8 @@ Use of Admin Tools (command line tooling under cmd/) is licensed under the Apach
 
 We promise that we will not enforce the copyleft provisions in AGPL v3.0 against you if your
 application (a) does not link to chartmrt directly, but exclusively uses the Admin Tools, and
-(b) you have not modified, added to or adapted the source code of chartmart in a way that
-results in the creation of a “modified version” or “work based on” chartmart as these terms are
+(b) you have not modified, added to or adapted the source code of forge in a way that
+results in the creation of a “modified version” or “work based on” forge as these terms are
 defined in the AGPL v3.0 license.
 
 

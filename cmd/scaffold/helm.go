@@ -8,9 +8,9 @@ import (
 	"path/filepath"
 
 	"github.com/imdario/mergo"
-	"github.com/michaeljguarino/chartmart/template"
-	"github.com/michaeljguarino/chartmart/utils"
-	"github.com/michaeljguarino/chartmart/wkspace"
+	"github.com/michaeljguarino/forge/template"
+	"github.com/michaeljguarino/forge/utils"
+	"github.com/michaeljguarino/forge/wkspace"
 	"gopkg.in/yaml.v2"
 )
 

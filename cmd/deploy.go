@@ -1,11 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 
 	"github.com/michaeljguarino/chartmart/api"
 	"github.com/michaeljguarino/chartmart/executor"
+	"github.com/michaeljguarino/chartmart/scaffold"
 	"github.com/michaeljguarino/chartmart/utils"
 	"github.com/michaeljguarino/chartmart/wkspace"
 	"github.com/urfave/cli"
@@ -25,7 +27,7 @@ func build(c *cli.Context) error {
 		}
 
 		repoName := installation.Repository.Name
-		utils.Warn("Building workspace for %s\n", repoName)
+		fmt.Printf("Building workspace for %s\n", repoName)
 		workspace, err := wkspace.New(client, &installation)
 		if err != nil {
 			return err
@@ -35,7 +37,16 @@ func build(c *cli.Context) error {
 			return err
 		}
 
-		utils.Success("Finished building %s\n", repoName)
+		build, err := scaffold.Scaffolds(workspace)
+		if err != nil {
+			return err
+		}
+
+		if err := build.Execute(workspace); err != nil {
+			return err
+		}
+
+		utils.Success("Finished building %s\n\n", repoName)
 	}
 	return nil
 }
@@ -89,6 +100,7 @@ func deploy(c *cli.Context) error {
 		if err := execution.Execute(); err != nil {
 			return err
 		}
+		fmt.Printf("\n")
 	}
 	return nil
 }
@@ -97,7 +109,11 @@ func bounce(c *cli.Context) error {
 	client := api.NewClient()
 	installations, _ := client.GetInstallations()
 	repoName := c.Args().Get(0)
-	dir, _ := os.Getwd()
+	repoRoot, err := utils.RepoRoot()
+	if err != nil {
+		return err
+	}
+
 	for _, installation := range installations {
 		if installation.Repository.Name != repoName {
 			continue
@@ -110,7 +126,7 @@ func bounce(c *cli.Context) error {
 		}
 		workspace.Provider.KubeConfig()
 
-		os.Chdir(dir)
+		os.Chdir(filepath.Join(repoRoot, repoName))
 		if err := workspace.Bounce(); err != nil {
 			return err
 		}

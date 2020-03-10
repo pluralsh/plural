@@ -1,9 +1,9 @@
 package main
 
 import (
-	"os"
+	"github.com/michaeljguarino/forge/config"
 	"github.com/urfave/cli"
-	"github.com/michaeljguarino/chartmart/config"
+	"os"
 )
 
 func configCommands() []cli.Command {

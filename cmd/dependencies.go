@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/michaeljguarino/chartmart/api"
-	"github.com/michaeljguarino/chartmart/wkspace"
+	"github.com/michaeljguarino/forge/api"
+	"github.com/michaeljguarino/forge/wkspace"
 	"github.com/urfave/cli"
 )
 

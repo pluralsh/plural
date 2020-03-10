@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"path/filepath"
 	"gopkg.in/yaml.v2"
-	"github.com/michaeljguarino/chartmart/utils"
+	"github.com/michaeljguarino/forge/utils"
 )
 
 var createArtifact = fmt.Sprintf(`

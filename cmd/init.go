@@ -6,10 +6,10 @@ import (
 	"os/exec"
 	"path/filepath"
 
-	"github.com/michaeljguarino/chartmart/api"
-	"github.com/michaeljguarino/chartmart/config"
-	"github.com/michaeljguarino/chartmart/crypto"
-	"github.com/michaeljguarino/chartmart/utils"
+	"github.com/michaeljguarino/forge/api"
+	"github.com/michaeljguarino/forge/config"
+	"github.com/michaeljguarino/forge/crypto"
+	"github.com/michaeljguarino/forge/utils"
 	"github.com/urfave/cli"
 )
 

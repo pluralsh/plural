@@ -1,6 +1,6 @@
 defmodule Watchman.DeployerTest do
   use Watchman.DataCase, async: false
-  alias Watchman.Commands.Chartmart
+  alias Watchman.Commands.Forge
   alias Watchman.Storage.Git
   use Mimic
 
@@ -18,11 +18,11 @@ defmodule Watchman.DeployerTest do
       |> expect(:revise, & echo.({:commit, &1}))
       |> expect(:push, fn -> echo.(:git_push) end)
 
-      expect(Chartmart, :build, & echo.({:build, &1}))
+      expect(Forge, :build, & echo.({:build, &1}))
       |> expect(:deploy, & echo.({:deploy, &1}))
 
 
-      repo = "chartmart"
+      repo = "forge"
       build = insert(:build, repository: repo)
       :ok = Watchman.Deployer.wake()
 
@@ -49,7 +49,7 @@ defmodule Watchman.DeployerTest do
       end
 
       expect(Git, :init, fn -> echo.(:git_init) end)
-      expect(Chartmart, :bounce, fn repo -> echo.({:bounce, repo}) end)
+      expect(Forge, :bounce, fn repo -> echo.({:bounce, repo}) end)
 
       :ok = Watchman.Deployer.wake()
 

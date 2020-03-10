@@ -1,8 +1,8 @@
 package wkspace
 
 import (
-	"github.com/michaeljguarino/chartmart/provider"
 	"fmt"
+	"github.com/michaeljguarino/forge/provider"
 )
 
 func (wk *Workspace) Validate() error {

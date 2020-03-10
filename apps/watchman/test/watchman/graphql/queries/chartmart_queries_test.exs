@@ -1,10 +1,10 @@
-defmodule Watchman.GraphQl.ChartmartQueriesTest do
+defmodule Watchman.GraphQl.ForgeQueriesTest do
   use Watchman.DataCase, async: true
   use Mimic
-  alias Watchman.Chartmart.Queries
+  alias Watchman.Forge.Queries
 
   describe "installations" do
-    test "It will fetch your installations from chartmart" do
+    test "It will fetch your installations from forge" do
       body = Jason.encode!(%{
         query: Queries.installation_query(),
         variables: %{first: 5}

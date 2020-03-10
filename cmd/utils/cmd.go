@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"github.com/michaeljguarino/chartmart/config"
+	"github.com/michaeljguarino/forge/config"
 	"os"
 	"os/exec"
 )

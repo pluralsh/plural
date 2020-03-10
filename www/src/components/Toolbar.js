@@ -14,7 +14,7 @@ export default function Toolbar({me}) {
           size='small'
           weight='bold'
           onClick={() => history.push('/')}>
-          Chartmart
+          Forge
         </Text>
       </Box>
       <Box direction='row' width='100%' align='center' justify='center'>

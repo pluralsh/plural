@@ -10,7 +10,7 @@ import './stripe.css'
 
 import Button from '../utils/Button'
 import { TagContainer } from '../repos/Tags'
-import { TOOLBAR_SIZE } from '../Chartmart'
+import { TOOLBAR_SIZE } from '../Forge'
 import { Visa, Mastercard, Amex, Trash } from 'grommet-icons'
 import { FaCreditCard } from 'react-icons/fa'
 import HoveredBackground from '../utils/HoveredBackground'

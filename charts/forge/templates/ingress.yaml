@@ -1,0 +1,58 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: networking.gke.io/v1beta1
+kind: ManagedCertificate
+metadata:
+  name: forge-cert
+spec:
+  domains:
+  - {{ .Values.ingress.dns }}
+---
+apiVersion: networking.gke.io/v1beta1
+kind: ManagedCertificate
+metadata:
+  name: forge-dkr-cert
+spec:
+  domains:
+  - {{ .Values.ingress.dkr_dns }}
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: forge
+  labels:
+{{ include "forge.labels" . | indent 4 }}
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  rules:
+  - host: {{ .Values.ingress.dns }}
+    http:
+      paths:
+      - path: /cm/*
+        backend:
+          serviceName: forge-api
+          servicePort: http
+      - path: /gql
+        backend:
+          serviceName: forge-api
+          servicePort: http
+      - path: /auth/*
+        backend:
+          serviceName: forge-api
+          servicePort: http
+      - path: /api/*
+        backend:
+          serviceName: forge-api
+          servicePort: http
+      - backend:
+          serviceName: forge-www
+          servicePort: http
+  - host: {{ .Values.ingress.dkr_dns }}
+    http:
+      paths:
+      - backend:
+          serviceName: forge-registry
+          servicePort: http
+{{- end }}

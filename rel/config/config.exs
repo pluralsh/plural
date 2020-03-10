@@ -3,17 +3,17 @@ import System, only: [get_env: 1]
 
 config :api, ApiWeb.Endpoint,
   url: [host: get_env("HOST"), port: 80],
-  check_origin: ["//#{get_env("HOST")}", "//chartmart-api"]
+  check_origin: ["//#{get_env("HOST")}", "//forge-api"]
 
 config :arc,
   storage: Arc.Storage.GCS,
   bucket: get_env("GCS_BUCKET")
 
 config :core, Core.Repo,
-  database: "chartmart",
-  username: "chartmart",
+  database: "forge",
+  username: "forge",
   password: get_env("POSTGRES_PASSWORD"),
-  hostname: "chartmart-postgresql",
+  hostname: "forge-postgresql",
   pool_size: 10
 
 config :core, :jwt,

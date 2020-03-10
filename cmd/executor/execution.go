@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/hashicorp/hcl"
-	"github.com/michaeljguarino/chartmart/utils"
+	"github.com/michaeljguarino/forge/utils"
 	"github.com/rodaine/hclencoder"
 )
 
@@ -112,7 +112,7 @@ func DefaultExecution(path string, prev *Execution) (e *Execution) {
 			Name:    "kube-init",
 			Wkdir:   path,
 			Target:  forgefile(path, "NONCE"),
-			Command: "chartmart",
+			Command: "forge",
 			Args:    []string{"wkspace", "kube-init", path},
 			Sha:     "",
 		},
@@ -120,7 +120,7 @@ func DefaultExecution(path string, prev *Execution) (e *Execution) {
 			Name:    "helm-init",
 			Wkdir:   path,
 			Target:  forgefile(path, "ONCE"),
-			Command: "chartmart",
+			Command: "forge",
 			Args:    []string{"wkspace", "helm-init", path},
 			Sha:     "",
 		},
@@ -128,7 +128,7 @@ func DefaultExecution(path string, prev *Execution) (e *Execution) {
 			Name:    "docker-credentials",
 			Wkdir:   path,
 			Target:  forgefile(path, "ONCE"),
-			Command: "chartmart",
+			Command: "forge",
 			Args:    []string{"wkspace", "docker-credentials", path},
 			Sha:     "",
 		},
@@ -136,7 +136,7 @@ func DefaultExecution(path string, prev *Execution) (e *Execution) {
 			Name:    "bounce",
 			Wkdir:   path,
 			Target:  filepath.Join(path, "helm"),
-			Command: "chartmart",
+			Command: "forge",
 			Args:    []string{"wkspace", "helm", path},
 			Sha:     "",
 		},

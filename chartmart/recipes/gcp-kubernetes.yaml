@@ -2,7 +2,7 @@ name: gcp-kubernetes
 description: Constructs a gke cluster and installs the bootstrap chart
 provider: GCP
 sections:
-- name: chartmart
+- name: forge
   items:
   - type: TERRAFORM
     name: gcp-bootstrap
@@ -26,7 +26,7 @@ sections:
     - name: txt_owner
       documentation: arbitrary name for externaldns to use to track ownership of dns records
       type: STRING
-      default: chartmart
+      default: forge
     - name: dns_domain
       documentation: top level domain to use
       type: STRING

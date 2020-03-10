@@ -16,8 +16,8 @@ config :libcluster,
       strategy: Cluster.Strategy.Kubernetes,
       config: [
         mode: :ip,
-        kubernetes_node_basename: "chartmart",
-        kubernetes_selector: "app=chartmart-api",
+        kubernetes_node_basename: "forge",
+        kubernetes_selector: "app=forge-api",
         kubernetes_namespace: get_env("NAMESPACE"),
         polling_interval: 10_000
       ]

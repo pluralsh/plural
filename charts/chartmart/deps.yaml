@@ -1,7 +1,0 @@
-dependencies:
-- type: terraform
-  name: kube
-  repo: chartmart
-- type: helm
-  name: bootstrap
-  repo: chartmart

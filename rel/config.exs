@@ -32,7 +32,7 @@ environment :prod do
   ]
 end
 
-release :chartmart do
+release :forge do
   set version: version
   set applications: [
     :runtime_tools,

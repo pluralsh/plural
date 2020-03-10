@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/michaeljguarino/chartmart/api"
+	"github.com/michaeljguarino/forge/api"
 	"github.com/olekukonko/tablewriter"
 	"github.com/urfave/cli"
 	"os"
@@ -11,7 +11,7 @@ func apiCommands() []cli.Command {
 	return []cli.Command{
 		{
 			Name:  "list",
-			Usage: "lists chartmart resources",
+			Usage: "lists forge resources",
 			Subcommands: []cli.Command{
 				{
 					Name:      "installations",
@@ -61,7 +61,6 @@ func apiCommands() []cli.Command {
 		},
 	}
 }
-
 
 func handleInstallations(c *cli.Context) error {
 	client := api.NewClient()

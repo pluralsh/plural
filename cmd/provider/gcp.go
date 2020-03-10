@@ -8,8 +8,8 @@ import (
 	"strings"
 
 	"cloud.google.com/go/storage"
-	"github.com/michaeljguarino/chartmart/manifest"
-	"github.com/michaeljguarino/chartmart/utils"
+	"github.com/michaeljguarino/forge/manifest"
+	"github.com/michaeljguarino/forge/utils"
 	"google.golang.org/api/option"
 )
 

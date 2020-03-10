@@ -1,6 +1,6 @@
-name: chartmart
-readme: CLI for building and deploying chartmart workspaces
+name: forge
+readme: CLI for building and deploying forge workspaces
 type: cli
 platform: mac
-blob: cmd/chartmart
-readme: chartmart/artifacts/chartmart-readme.md
+blob: cmd/forge
+readme: forge/artifacts/forge-readme.md

@@ -23,15 +23,9 @@ provider "kubernetes" {
   token = data.google_client_config.current.access_token
 }
 
-resource "null_resource" "node_pool" {
-  triggers = {
-    node_pool = var.node_pool
-  }
-}
-
 
 resource "google_service_account" "forge" {
-  account_id = "forge"
+  account_id = "forge-account"
   display_name = "Service account for forge"
 }
 
@@ -44,11 +38,17 @@ resource "google_service_account_key" "forge" {
   ]
 }
 
+resource "kubernetes_namespace" "forge" {
+  metadata {
+    name = var.forge_namespace
+  }
+}
+
 
 resource "kubernetes_secret" "forge" {
   metadata {
     name = "forge-serviceaccount"
-    namespace = var.forge_namespace
+    namespace = kubernetes_namespace.forge.metadata[0].name
   }
   data = {
     "gcp.json" = base64decode(google_service_account_key.forge.private_key)

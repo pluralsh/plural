@@ -1,6 +1,6 @@
 dependencies:
 - name: gcp-bootstrap
-  repo: bootrap
+  repo: bootstrap
   type: terraform
 providers:
 - gcp

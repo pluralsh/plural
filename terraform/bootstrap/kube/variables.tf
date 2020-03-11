@@ -3,7 +3,7 @@ variable "cluster_name" {
   default = "piazza"
 }
 
-variable "forge_namespace" {
+variable "bootstrap_namespace" {
   type = string
   description = <<EOF
 Namespace for your forge bucket

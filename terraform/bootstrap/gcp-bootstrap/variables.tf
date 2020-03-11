@@ -90,7 +90,7 @@ EOF
 
 variable "vpc_network_name" {
   type = string
-  default = "piazza-network"
+  default = "forge-network"
 
   description = <<EOF
 The name of the Google Compute Engine network to which the cluster is
@@ -100,7 +100,7 @@ EOF
 
 variable "vpc_subnetwork_name" {
   type = string
-  default = "piazza-subnetwork"
+  default = "forge-subnetwork"
 
   description = <<EOF
 The name of the Google Compute Engine subnetwork in which the cluster's

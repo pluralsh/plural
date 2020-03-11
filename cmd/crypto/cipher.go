@@ -26,11 +26,13 @@ func Materialize() (*AESKey, error) {
 		if err != nil {
 			return nil, err
 		}
+
 		conf := AESKey{}
 		err = yaml.Unmarshal(contents, &conf)
 		if err != nil {
 			return nil, err
 		}
+
 		return &conf, nil
 	}
 

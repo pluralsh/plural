@@ -2,7 +2,7 @@ name: gcp-kubernetes
 description: Constructs a gke cluster and installs the bootstrap chart
 provider: GCP
 sections:
-- name: forge
+- name: bootstrap
   items:
   - type: TERRAFORM
     name: gcp-bootstrap

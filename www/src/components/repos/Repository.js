@@ -519,15 +519,17 @@ export default function Repository() {
         <Box pad='small' width={`${WIDTH}%`}>
           <Box fill='horizontal' direction='row' align='center' margin={{bottom: 'medium'}}>
             <RepositoryIcon size={IMG_SIZE} repository={repository} />
-            <Box fill='horizontal' direction='row' justify='end'>
-              <Box flex={false}>
-                <CheckBox
-                  toggle
-                  checked={detail}
-                  label={detail ? 'detail' : 'recipes'}
-                  onChange={({target: {checked}}) => setDetail(checked)} />
+            {recipes && recipes.edges.length > 0 && (
+              <Box fill='horizontal' direction='row' justify='end'>
+                <Box flex={false}>
+                  <CheckBox
+                    toggle
+                    checked={detail}
+                    label={detail ? 'detail' : 'recipes'}
+                    onChange={({target: {checked}}) => setDetail(checked)} />
+                </Box>
               </Box>
-            </Box>
+            )}
           </Box>
           {(detail || recipes.edges.length <= 0) && (
             <Box animation='fadeIn'>

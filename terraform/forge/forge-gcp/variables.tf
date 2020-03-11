@@ -26,6 +26,7 @@ EOF
 
 variable "forge_namespace" {
   type = string
+  default = "forge"
   description = <<EOF
 Namespace for your forge bucket
 EOF

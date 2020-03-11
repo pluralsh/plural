@@ -1,2 +1,2 @@
 gcp_project_id = {{ .Values.gcp_project_id | quote }}
-forge_namespace = "forge"
+bootstrap_namespace = "bootstrap"

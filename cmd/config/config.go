@@ -28,7 +28,7 @@ func Import(file string) Config {
 	contents, err := ioutil.ReadFile(file)
 	conf := Config{}
 	if err != nil {
-		panic(err)
+		return conf
 	}
 
 	err = yaml.Unmarshal(contents, &conf)

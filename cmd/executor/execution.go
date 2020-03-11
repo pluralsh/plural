@@ -150,8 +150,15 @@ func DefaultExecution(path string, prev *Execution) (e *Execution) {
 	for _, step := range prev.Steps {
 		if val, ok := byName[step.Name]; ok {
 			val.Sha = step.Sha
+			delete(byName, step.Name)
 			finalizedSteps = append(finalizedSteps, val)
 		} else {
+			finalizedSteps = append(finalizedSteps, step)
+		}
+	}
+
+	for _, step := range steps {
+		if _, ok := byName[step.Name]; ok {
 			finalizedSteps = append(finalizedSteps, step)
 		}
 	}

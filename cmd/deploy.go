@@ -18,7 +18,7 @@ func build(c *cli.Context) error {
 	installations, _ := client.GetInstallations()
 	sorted, err := wkspace.Dependencies("", installations)
 	if err != nil {
-		return err
+		sorted = installations // we don't know all the dependencies yet
 	}
 
 	for _, installation := range sorted {

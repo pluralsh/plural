@@ -9,6 +9,12 @@ provider "google" {
   region  = local.gcp_region
 }
 
+resource "null_resource" "node_pool" {
+  triggers = {
+    node_pool = var.node_pool
+  }
+}
+
 data "google_client_config" "current" {}
 
 data "google_container_cluster" "cluster" {
@@ -24,10 +30,34 @@ provider "kubernetes" {
   token = data.google_client_config.current.access_token
 }
 
-resource "null_resource" "node_pool" {
-  triggers = {
-    node_pool = var.node_pool
+
+resource "kubernetes_service_account" "tiller" {
+  metadata {
+    name = "tiller"
+    namespace = "kube-system"
   }
+  depends_on = [
+    null_resource.node_pool
+  ]
+}
+
+resource "kubernetes_cluster_role_binding" "tiller" {
+  metadata {
+    name = "tiller"
+  }
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "ClusterRole"
+    name      = "cluster-admin"
+  }
+  subject {
+    kind      = "ServiceAccount"
+    name      = "tiller"
+    namespace = "kube-system"
+  }
+  depends_on = [
+    null_resource.node_pool
+  ]
 }
 
 
@@ -48,7 +78,7 @@ resource "kubernetes_namespace" "bootstrap" {
 }
 
 resource "google_service_account" "externaldns" {
-  account_id   = "externaldns"
+  account_id   = "forge-externaldns"
   display_name = "ExternalDns"
 }
 

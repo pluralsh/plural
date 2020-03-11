@@ -95,7 +95,7 @@ export function RepositoryList({repositores: {edges, pageInfo}, fetchMore, publi
       style={{overflow: 'auto', height: '100%', width: '100%'}}
       emptyState={emptyState}
       mapper={(chunk) => (
-        <Box key={chunk[0].node.id} direction='row' gap='small' fill='horizontal'>
+        <Box key={chunk[0].node.id} direction='row' gap='small' fill='horizontal' margin={{bottom: 'small'}}>
           {chunk.map(({node}) => <RepositoryCell
                                     key={node.id}
                                     repo={node}

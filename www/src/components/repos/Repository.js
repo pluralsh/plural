@@ -180,7 +180,7 @@ function Charts({edges, pageInfo, fetchMore}) {
       edges={edges}
       style={{overflow: 'auto', height: '100%', width: '100%'}}
       mapper={({node}, next) => <Chart key={node.id} chart={node} hasNext={!!next.node} />}
-      emptyState={<Text size='medium'>No charts uploaded yet</Text>}
+      emptyState={<EmptyTab text='No charts uploaded yet' />}
       onLoadMore={() => {
         if (!pageInfo.hasNextPage) return
 
@@ -209,7 +209,7 @@ function Terraform({edges, pageInfo, fetchMore}) {
       edges={edges}
       style={{overflow: 'auto', height: '100%', width: '100%'}}
       mapper={({node}, next) => <Tf key={node.id} terraform={node} hasNext={!!next.node} />}
-      emptyState={<Text size='medium'>No terraform modules uploaded yet</Text>}
+      emptyState={<EmptyTab text='no terraform modules uploaded yet' />}
       onLoadMore={() => {
         if (!pageInfo.hasNextPage) return
 
@@ -266,6 +266,14 @@ function DockerImages({dockerRepository, clear}) {
   )
 }
 
+function EmptyTab({text}) {
+  return (
+    <Box pad='small'>
+      <Text size='small'>{text}</Text>
+    </Box>
+  )
+}
+
 function DockerRepos({edges, repo, pageInfo, fetchMore}) {
   const [dockerRepository, setDockerRepository] = useState(null)
   if (dockerRepository) {
@@ -284,7 +292,7 @@ function DockerRepos({edges, repo, pageInfo, fetchMore}) {
           hasNext={!!next.node}
           setRepo={setDockerRepository} />
       )}
-      emptyState={<Box pad='small'><Text size='small'>No repos created yet</Text></Box>}
+      emptyState={<EmptyTab text='no repos created yet' />}
       onLoadMore={() => {
         if (!pageInfo.hasNextPage) return
 

@@ -70,9 +70,9 @@ registry:
         keyfile: /etc/docker/forge/gcp.json
     auth:
       token:
-        realm: mart.piazzaapp.com/dkr
-        service: mart.piazzaapp.com/dkr
-        issuer: mart.piazzaapp.com
+        realm: forge.piazza.app/dkr
+        service: forge.piazza.app/dkr
+        issuer: forge.piazza.app
         rootcertbundle: /etc/docker/registry/cert.pem
     http:
       addr: :5000
@@ -97,7 +97,7 @@ service:
 
 ingress:
   enabled: true
-  dns: mart.piazzaapp.com
+  dns: forge.piazza.app
   dkr_dns: dkr.piazzaapp.com
   annotations:
     networking.gke.io/managed-certificates: forge-cert,forge-dkr-cert

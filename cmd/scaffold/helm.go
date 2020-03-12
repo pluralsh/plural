@@ -170,5 +170,5 @@ func (s *Scaffold) createChart(w *wkspace.Workspace, name string) error {
 }
 
 func repoUrl(repo string) string {
-	return "cm://mart.piazzaapp.com/cm/" + repo
+	return "cm://forge.piazza.app/cm/" + repo
 }

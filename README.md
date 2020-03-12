@@ -11,7 +11,7 @@ forge build
 forge deploy <repo>
 ```
 
-An example deployment can be found at: https://mart.piazzaapp.com
+An example deployment can be found at: https://forge.piazza.app
 
 ## Features
 

@@ -5,7 +5,7 @@ Forge is a multi-tenant kubernetes app repository
 ## Installation
 
 ```
-helm repo add forge https://mart.piazzaapp.com/forge
+helm repo add forge https://forge.piazza.app/forge
 ```
 
 ## Usage
@@ -49,5 +49,5 @@ admin:
 | replicaCount | number of api replicas | 2 |
 | api.bucket | the bucket to use for images | forge-assets |
 | chartmuseum.bucket | the bucket for charts | forge-charts |
-| ingress.dns | the dns name to register under | mart.piazzaapp.com |
+| ingress.dns | the dns name to register under | forge.piazza.app |
 | ingress.enabled | whether to provision an ingress | true |

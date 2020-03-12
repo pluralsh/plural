@@ -6,7 +6,7 @@ Should include any dependencies you might need per provider
 ## Installation
 
 ```
-helm repo add forge https://mart.piazzaapp.com/forge
+helm repo add forge https://forge.piazza.app/forge
 ```
 
 ## Usage

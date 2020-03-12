@@ -26,7 +26,7 @@ config :watchman, WatchmanWeb.Endpoint,
 config :watchman,
   git_user_name: "forge",
   git_user_email: "forge@piazzaapp.com",
-  forge_url: "https://mart.piazzaapp.com/gql",
+  forge_url: "https://forge.piazza.app/gql",
   url: "https://watchman.piazzaapp.com",
   incoming_webhook: "https://some.piazza.webhook"
 

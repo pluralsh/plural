@@ -5,11 +5,11 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/michaeljguarino/chartmart/api"
-	"github.com/michaeljguarino/chartmart/executor"
-	"github.com/michaeljguarino/chartmart/scaffold"
-	"github.com/michaeljguarino/chartmart/utils"
-	"github.com/michaeljguarino/chartmart/wkspace"
+	"github.com/michaeljguarino/forge/api"
+	"github.com/michaeljguarino/forge/executor"
+	"github.com/michaeljguarino/forge/scaffold"
+	"github.com/michaeljguarino/forge/utils"
+	"github.com/michaeljguarino/forge/wkspace"
 	"github.com/urfave/cli"
 )
 
@@ -18,7 +18,7 @@ func build(c *cli.Context) error {
 	installations, _ := client.GetInstallations()
 	sorted, err := wkspace.Dependencies("", installations)
 	if err != nil {
-		return err
+		sorted = installations // we don't know all the dependencies yet
 	}
 
 	for _, installation := range sorted {

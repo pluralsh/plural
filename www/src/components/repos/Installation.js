@@ -174,8 +174,8 @@ export default function Installation({repository, onUpdate, noHelm, open, integr
               <Text size='small' style={{fontWeight: 500}}>Installation</Text>
               <Box>
                 <Highlight language='bash'>
-                  {`chartmart build --only ${repository.name}
-chartmart deploy ${repository.name}`}
+                  {`forge build --only ${repository.name}
+forge deploy ${repository.name}`}
                 </Highlight>
               </Box>
             </Box>

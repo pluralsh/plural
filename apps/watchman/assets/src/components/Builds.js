@@ -11,7 +11,7 @@ import Modal, { ModalHeader } from './utils/Modal'
 import { mergeEdges } from './graphql/utils'
 import { BeatLoader } from 'react-spinners'
 import { BreadcrumbsContext } from './Breadcrumbs'
-import { INSTALLATION_Q } from './graphql/chartmart'
+import { INSTALLATION_Q } from './graphql/forge'
 
 function BuildStatusInner({background, text, icon}) {
   return (

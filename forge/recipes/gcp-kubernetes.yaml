@@ -1,0 +1,35 @@
+name: gcp-kubernetes
+description: Constructs a gke cluster and installs the bootstrap chart
+provider: GCP
+sections:
+- name: bootstrap
+  items:
+  - type: TERRAFORM
+    name: gcp-bootstrap
+    configuration:
+    - name: gcp_project_id
+      documentation: gcp project to use
+      type: STRING
+    - name: dns_zone_name
+      documentation: managed zone name (must be globally unique)
+      type: STRING
+  - type: TERRAFORM
+    name: kube
+    configuration: []
+  - type: HELM
+    name: bootstrap
+    configuration:
+    - name: provider
+      documentation: externaldns provider name (choose google for google cloud dns)
+      type: STRING
+      default: google
+    - name: txt_owner
+      documentation: arbitrary name for externaldns to use to track ownership of dns records
+      type: STRING
+      default: forge
+    - name: dns_domain
+      documentation: top level domain to use
+      type: STRING
+    - name: grafana_dns
+      documentation: FQDN for grafana
+      type: STRING

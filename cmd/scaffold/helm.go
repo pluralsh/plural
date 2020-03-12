@@ -8,9 +8,9 @@ import (
 	"path/filepath"
 
 	"github.com/imdario/mergo"
-	"github.com/michaeljguarino/chartmart/template"
-	"github.com/michaeljguarino/chartmart/utils"
-	"github.com/michaeljguarino/chartmart/wkspace"
+	"github.com/michaeljguarino/forge/template"
+	"github.com/michaeljguarino/forge/utils"
+	"github.com/michaeljguarino/forge/wkspace"
 	"gopkg.in/yaml.v2"
 )
 
@@ -170,5 +170,5 @@ func (s *Scaffold) createChart(w *wkspace.Workspace, name string) error {
 }
 
 func repoUrl(repo string) string {
-	return "cm://mart.piazzaapp.com/cm/" + repo
+	return "cm://forge.piazza.app/cm/" + repo
 }

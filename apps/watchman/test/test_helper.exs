@@ -1,6 +1,6 @@
 Mimic.copy(Watchman.Deployer)
 Mimic.copy(Watchman.Storage.Git)
-Mimic.copy(Watchman.Commands.Chartmart)
+Mimic.copy(Watchman.Commands.Forge)
 Mimic.copy(Watchman.Commands.Command)
 Mimic.copy(Mojito)
 Mimic.copy(Kazan)

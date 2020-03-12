@@ -5,13 +5,13 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/michaeljguarino/chartmart/api"
-	"github.com/michaeljguarino/chartmart/config"
-	"github.com/michaeljguarino/chartmart/crypto"
-	"github.com/michaeljguarino/chartmart/executor"
-	"github.com/michaeljguarino/chartmart/manifest"
-	"github.com/michaeljguarino/chartmart/provider"
-	"github.com/michaeljguarino/chartmart/utils"
+	"github.com/michaeljguarino/forge/api"
+	"github.com/michaeljguarino/forge/config"
+	"github.com/michaeljguarino/forge/crypto"
+	"github.com/michaeljguarino/forge/executor"
+	"github.com/michaeljguarino/forge/manifest"
+	"github.com/michaeljguarino/forge/provider"
+	"github.com/michaeljguarino/forge/utils"
 )
 
 type Workspace struct {
@@ -70,24 +70,28 @@ func (wk *Workspace) ToMinimal() *MinimalWorkspace {
 
 func (wk *Workspace) Prepare() error {
 	repo := wk.Installation.Repository
+	repoRoot, err := utils.RepoRoot()
+	if err != nil {
+		return err
+	}
 
 	manifest := wk.BuildManifest()
+	if err := mkdir(filepath.Join(repoRoot, repo.Name)); err != nil {
+		return err
+	}
+
 	if err := manifest.Write(manifestPath(&repo)); err != nil {
 		return err
 	}
 
-	if err := wk.buildExecution(); err != nil {
+	if err := wk.buildExecution(repoRoot); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (wk *Workspace) buildExecution() error {
-	repoRoot, err := utils.RepoRoot()
-	if err != nil {
-		return err
-	}
+func (wk *Workspace) buildExecution(repoRoot string) error {
 	name := wk.Installation.Repository.Name
 	wkspaceRoot := filepath.Join(repoRoot, name)
 

@@ -9,7 +9,7 @@ defmodule Watchman.Application do
       Watchman.Repo,
       WatchmanWeb.Endpoint,
       Watchman.Commands.Configuration,
-      Watchman.Chartmart.Config,
+      Watchman.Forge.Config,
       Watchman.Cron,
       Watchman.Grafana.Token,
       {Absinthe.Subscription, [WatchmanWeb.Endpoint]},

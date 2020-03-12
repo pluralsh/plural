@@ -1,6 +1,6 @@
 defmodule Watchman.Deployer do
   use GenServer
-  alias Watchman.Commands.{Chartmart, Command}
+  alias Watchman.Commands.{Forge, Command}
   alias Watchman.Services.Builds
   alias Watchman.Schema.Build
   require Logger
@@ -55,15 +55,15 @@ defmodule Watchman.Deployer do
   defp perform(storage, %Build{repository: repo, type: :bounce} = build) do
     with_build(build, fn ->
       with {:ok, _} <- storage.init(),
-        do: Chartmart.bounce(repo)
+        do: Forge.bounce(repo)
     end)
   end
 
   defp perform(storage, %Build{repository: repo, message: message} = build) do
     with_build(build, fn ->
       with {:ok, _} <- storage.init(),
-           {:ok, _} <- Chartmart.build(repo),
-           {:ok, _} <- Chartmart.deploy(repo),
+           {:ok, _} <- Forge.build(repo),
+           {:ok, _} <- Forge.deploy(repo),
            {:ok, _} <- storage.revise(commit_message(message, repo)),
         do: storage.push()
     end)
@@ -72,7 +72,7 @@ defmodule Watchman.Deployer do
   defp update(storage, repo, content) do
     Command.set_build(nil)
     with {:ok, _} <- storage.init(),
-         {:ok, res} <- Watchman.Services.Chartmart.update_configuration(repo, content),
+         {:ok, res} <- Watchman.Services.Forge.update_configuration(repo, content),
          {:ok, _} <- storage.revise("updated configuration for #{repo}"),
          {:ok, _} <- storage.push(),
       do: {:ok, res}

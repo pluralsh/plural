@@ -24,9 +24,9 @@ config :watchman, WatchmanWeb.Endpoint,
   server: true
 
 config :watchman,
-  git_user_name: "chartmart",
-  git_user_email: "chartmart@piazzaapp.com",
-  chartmart_url: "https://mart.piazzaapp.com/gql",
+  git_user_name: "forge",
+  git_user_email: "forge@piazzaapp.com",
+  forge_url: "https://forge.piazza.app/gql",
   url: "https://watchman.piazzaapp.com",
   incoming_webhook: "https://some.piazza.webhook"
 
@@ -37,8 +37,8 @@ config :logger, :console,
 config :phoenix, :json_library, Jason
 
 config :core, Core.Guardian,
-  issuer: "chartmart",
-  secret_key: "chartmart_secret"
+  issuer: "forge",
+  secret_key: "forge_secret"
 
 config :core, :chartmuseum, "http://localhost:8080"
 
@@ -50,7 +50,7 @@ config :botanist,
 
 config :arc,
   storage: Arc.Storage.GCS,
-  bucket: "chartmart-assets"
+  bucket: "forge-assets"
 
 config :stripity_stripe,
   hackney_opts: [connect_timeout: 5000, recv_timeout: 60_000]

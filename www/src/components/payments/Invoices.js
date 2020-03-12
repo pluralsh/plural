@@ -6,7 +6,7 @@ import { SUBSCRIPTIONS_Q, SUBSCRIPTION_Q } from './queries'
 import { subscriptionCost } from './utils'
 import { TagContainer } from '../repos/Tags'
 import moment from 'moment'
-import { TOOLBAR_SIZE, BreadcrumbContext } from '../Chartmart'
+import { TOOLBAR_SIZE, BreadcrumbContext } from '../Forge'
 
 const ICON_SIZE = '30px'
 

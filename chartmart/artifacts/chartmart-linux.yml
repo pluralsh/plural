@@ -1,6 +1,0 @@
-name: chartmart
-readme: CLI for building and deploying chartmart workspaces
-type: cli
-platform: linux
-blob: cmd/build/chartmart
-readme: chartmart/artifacts/chartmart-readme.md

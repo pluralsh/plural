@@ -2,7 +2,7 @@ import React from 'react'
 import { Switch, Route } from 'react-router-dom'
 import { Grommet } from 'grommet'
 import Login from './components/Login'
-import Chartmart from './components/Chartmart'
+import Forge from './components/Forge'
 import {DEFAULT_THEME} from './theme'
 import hljs from 'highlight.js'
 import hljsDefineTerraform from './highlight/terraform'
@@ -14,7 +14,7 @@ export default function App() {
     <Grommet theme={DEFAULT_THEME}>
       <Switch>
         <Route exact path="/login" component={Login} />
-        <Route path="/" component={Chartmart} />
+        <Route path="/" component={Forge} />
       </Switch>
     </Grommet>
   )

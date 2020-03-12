@@ -1,18 +1,18 @@
 package crypto
 
 import (
-	"path"
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/base64"
 	"errors"
+	"github.com/michaeljguarino/forge/utils"
+	"gopkg.in/yaml.v2"
 	"io"
 	"io/ioutil"
 	"os"
-	"github.com/michaeljguarino/chartmart/utils"
-	"gopkg.in/yaml.v2"
+	"path"
 )
 
 type AESKey struct {
@@ -26,11 +26,13 @@ func Materialize() (*AESKey, error) {
 		if err != nil {
 			return nil, err
 		}
+
 		conf := AESKey{}
 		err = yaml.Unmarshal(contents, &conf)
 		if err != nil {
 			return nil, err
 		}
+
 		return &conf, nil
 	}
 
@@ -43,7 +45,7 @@ func Materialize() (*AESKey, error) {
 
 func getKeyPath() string {
 	folder, _ := os.UserHomeDir()
-	return path.Join(folder, ".chartmart", "key")
+	return path.Join(folder, ".forge", "key")
 }
 
 func gen() *AESKey {

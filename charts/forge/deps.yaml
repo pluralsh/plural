@@ -1,0 +1,7 @@
+dependencies:
+- type: terraform
+  name: kube
+  repo: bootstrap
+- type: helm
+  name: bootstrap
+  repo: bootstrap

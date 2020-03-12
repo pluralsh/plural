@@ -1,8 +1,8 @@
 package main
 
 import (
+	"github.com/michaeljguarino/forge/wkspace"
 	"github.com/urfave/cli"
-	"github.com/michaeljguarino/chartmart/wkspace"
 )
 
 func workspaceCommands() []cli.Command {

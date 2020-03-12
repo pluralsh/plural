@@ -10,7 +10,7 @@ import {ModalHeader} from '../utils/Modal'
 import {wipeToken} from '../../helpers/authentication'
 import {FilePicker} from 'react-file-picker'
 import {UPDATE_USER, ME_Q} from './queries'
-import {TOOLBAR_SIZE} from '../Chartmart'
+import {TOOLBAR_SIZE} from '../Forge'
 import CreatePublisher from '../publisher/CreatePublisher'
 import {FaCreditCard, FaReceipt} from 'react-icons/fa'
 

@@ -55,7 +55,7 @@ defmodule Core.Services.Users do
 
   @doc """
   Creates a new persisted token for the user which can substitute for jwt bearer
-  tokens for use in the chartmart cli.
+  tokens for use in the forge cli.
   """
   @spec create_persisted_token(User.t) :: {:ok, PersistedToken.t} | {:error, term}
   def create_persisted_token(%User{} = user) do

@@ -4,11 +4,11 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/michaeljguarino/forge/config"
 	"github.com/michaeljguarino/graphql"
-	"github.com/michaeljguarino/chartmart/config"
 )
 
-const endpoint = "https://mart.piazzaapp.com/gql"
+const endpoint = "https://forge.piazza.app/gql"
 const pageSize = 100
 
 type Client struct {

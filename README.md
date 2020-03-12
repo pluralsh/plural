@@ -1,4 +1,4 @@
-# Chartmart
+# Forge
 
 A repository of helm charts, implementing authorization on top of chartmuseum along with bookkeeping around installations, discovery, etc.
 
@@ -7,11 +7,11 @@ There are three components, a web-app/api, a cli, and a webhook receiver install
 The workflow is basically (after selecting your preferences):
 
 ```bash
-chartmart build
-chartmart deploy <repo>
+forge build
+forge deploy <repo>
 ```
 
-An example deployment can be found at: https://mart.piazzaapp.com
+An example deployment can be found at: https://forge.piazza.app
 
 ## Features
 
@@ -50,12 +50,12 @@ make testup
 mix test
 ```
 
-To build the `chartmart` cli:
+To build the `forge` cli:
 
 ```bash
 make cli
 ```
 
-and copy cmd/chartmart to your path.
+and copy cmd/forge to your path.
 
 alternatively, if you don't mind `go install`, you can `cd cmd && go install`

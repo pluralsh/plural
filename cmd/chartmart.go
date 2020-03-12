@@ -12,8 +12,8 @@ import (
 func main() {
 	rand.Seed(time.Now().UnixNano())
 	app := cli.NewApp()
-	app.Name = "chartmart"
-	app.Usage = "Tooling to manage your installed chartmart applications"
+	app.Name = "forge"
+	app.Usage = "Tooling to manage your installed forge applications"
 
 	app.Commands = []cli.Command{
 		{
@@ -69,12 +69,12 @@ func main() {
 		},
 		{
 			Name:   "init",
-			Usage:  "initializes charmart",
+			Usage:  "initializes forge",
 			Action: handleInit,
 		},
 		{
 			Name:   "import",
-			Usage:  "imports chartmart config from another file",
+			Usage:  "imports forge config from another file",
 			Action: handleImport,
 		},
 		{
@@ -84,7 +84,7 @@ func main() {
 		},
 		{
 			Name:        "crypto",
-			Usage:       "chartmart encryption utilities",
+			Usage:       "forge encryption utilities",
 			Subcommands: cryptoCommands(),
 		},
 		{
@@ -94,7 +94,7 @@ func main() {
 		},
 		{
 			Name:        "api",
-			Usage:       "inspect the chartmart api",
+			Usage:       "inspect the forge api",
 			Subcommands: apiCommands(),
 		},
 		{
@@ -104,9 +104,9 @@ func main() {
 			Subcommands: configCommands(),
 		},
 		{
-			Name:       "workspace",
-			Aliases:    []string{"wkspace"},
-			Usage:      "Commands for managing installations in your workspace",
+			Name:        "workspace",
+			Aliases:     []string{"wkspace"},
+			Usage:       "Commands for managing installations in your workspace",
 			Subcommands: workspaceCommands(),
 		},
 		{

@@ -66,7 +66,7 @@ RUN apk update && apk add --no-cache git
 WORKDIR $GOPATH/src/mypackage/myapp/
 COPY cmd/ .
 RUN ls -al
-RUN go build -o /go/bin/chartmart
+RUN go build -o /go/bin/forge
 
 FROM alpine:3 as helm
 
@@ -95,7 +95,7 @@ ENV CLOUD_SDK_VERSION=$CLOUD_SDK_VERSION
 ENV PATH /google-cloud-sdk/bin:$PATH
 
 COPY --from=static-docker-source /usr/local/bin/docker /usr/local/bin/docker
-COPY --from=cmd /go/bin/chartmart /usr/local/bin/chartmart
+COPY --from=cmd /go/bin/forge /usr/local/bin/forge
 COPY --from=helm /usr/local/bin/helm /usr/local/bin/helm
 COPY --from=helm /usr/local/bin/terraform /usr/local/bin/terraform
 
@@ -135,7 +135,7 @@ RUN helm init --client-only && \
     helm plugin install https://github.com/chartmuseum/helm-push
 RUN mkdir -p /root/.ssh
 RUN chmod 0700 /root/.ssh
-RUN mkdir -p /root/.chartmart
+RUN mkdir -p /root/.forge
 RUN mkdir -p /root/.creds
 
 # add common repos to known hosts

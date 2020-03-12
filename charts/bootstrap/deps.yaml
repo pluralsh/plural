@@ -1,4 +1,4 @@
 dependencies:
 - type: terraform
   name: kube
-  repo: chartmart
+  repo: bootstrap

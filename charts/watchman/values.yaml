@@ -5,12 +5,12 @@
 replicaCount: 1
 
 image:
-  repository: dkr.piazzaapp.com/chartmart/watchman
+  repository: dkr.piazzaapp.com/forge/watchman
   tag: '0.1.0'
   pullPolicy: Always
 
 imagePullSecrets:
-- name: chartmartcreds
+- name: forgecreds
 nameOverride: ""
 fullnameOverride: ""
 

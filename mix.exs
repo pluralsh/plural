@@ -1,4 +1,4 @@
-defmodule Chartmart.MixProject do
+defmodule Forge.MixProject do
   use Mix.Project
 
   @vsn File.read!("VERSION")

@@ -2,7 +2,7 @@ defmodule Watchman.Storage.GitTest do
   use ExUnit.Case
   use Mimic
   alias Watchman.Storage.Git
-  alias Watchman.Commands.{Command, Chartmart}
+  alias Watchman.Commands.{Command, Forge}
 
   setup :set_mimic_global
 
@@ -12,7 +12,7 @@ defmodule Watchman.Storage.GitTest do
       :ok = Git.init()
       dir = Application.get_env(:watchman, :workspace_root)
 
-      assert Path.join(dir, "chartmart-installations") |> File.dir?()
+      assert Path.join(dir, "forge-installations") |> File.dir?()
     end
 
     @tag :skip
@@ -26,7 +26,7 @@ defmodule Watchman.Storage.GitTest do
 
       expect(Command, :cmd, git_fn)
       |> expect(:cmd, fn "git", args -> git_fn.("git", args, "rest") end)
-      expect(Chartmart, :unlock, fn -> echo.(:unlock) end)
+      expect(Forge, :unlock, fn -> echo.(:unlock) end)
 
       :ok = Git.init()
 

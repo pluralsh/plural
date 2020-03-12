@@ -1,5 +1,5 @@
 version: v1.0
-name: Chartmart
+name: Forge
 agent:
   machine:
     type: e1-standard-2
@@ -39,42 +39,42 @@ blocks:
     secrets:
     - name: GCP
     - name: gcp-test
-    - name: chartmart
+    - name: forge
     prologue:
       commands:
       # Authenticate using the file injected from the secret
       - gcloud auth activate-service-account --key-file=.secrets/gcp-piazzaapp.json
       # Don't forget -q to silence confirmation prompts
       - gcloud auth configure-docker -q
-      - docker login -u mguarino46@gmail.com -p $CHARTMART_ACCESS_TOKEN dkr.piazzaapp.com
+      - docker login -u mguarino46@gmail.com -p $FORGE_ACCESS_TOKEN dkr.piazza.app
       - checkout
     jobs:
-    - name: "Build chartmart"
+    - name: "Build forge"
       commands:
-      - make build APP_NAME=chartmart
-      - make push APP_NAME=chartmart
+      - make build APP_NAME=forge
+      - make push APP_NAME=forge
     - name: "Build www"
       commands:
       - make build APP_NAME=www
-      - make push APP_NAME=chartmart-www
+      - make push APP_NAME=forge-www
     - name: "Build watchman"
       commands:
       - make build APP_NAME=watchman
       - make push APP_NAME=watchman
-- name: deploy
-  dependencies: ['build']
-  skip:
-    when: "branch != 'master'"
-  task:
-    secrets:
-    - name: chartmart
-    prologue:
-      commands:
-      - checkout
-      - wget -O chartmart.cmd https://storage.googleapis.com/chartmart-assets-2/uploads/artifacts/2c21a449-2931-43cf-be3e-3a0818e5e739/chartmart
-      - chmod +x ./chartmart.cmd
-    jobs:
-    - name: "Deploy with watchman"
-      commands:
-      - export GIT_COMMIT_MESSAGE=$(git log -1 --pretty=%B | cat | head -n 1)
-      - ./chartmart.cmd webhook chartmart "${GIT_COMMIT_MESSAGE}" --secret "${CHARTMART_WEBHOOK_SECRET}" --url https://watchman.piazzaapp.com/v1/webhook
+# - name: deploy
+#   dependencies: ['build']
+#   skip:
+#     when: "branch != 'master'"
+#   task:
+#     secrets:
+#     - name: forge
+#     prologue:
+#       commands:
+#       - checkout
+#       - wget -O forge.cmd https://storage.googleapis.com/forge-assets-2/uploads/artifacts/2c21a449-2931-43cf-be3e-3a0818e5e739/forge
+#       - chmod +x ./forge.cmd
+#     jobs:
+#     - name: "Deploy with watchman"
+#       commands:
+#       - export GIT_COMMIT_MESSAGE=$(git log -1 --pretty=%B | cat | head -n 1)
+#       - ./forge.cmd webhook forge "${GIT_COMMIT_MESSAGE}" --secret "${FORGE_WEBHOOK_SECRET}" --url https://watchman.piazzaapp.com/v1/webhook

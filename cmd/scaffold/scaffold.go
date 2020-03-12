@@ -8,9 +8,9 @@ import (
 	"github.com/hashicorp/hcl"
 	"github.com/rodaine/hclencoder"
 
-	"github.com/michaeljguarino/chartmart/executor"
-	"github.com/michaeljguarino/chartmart/utils"
-	"github.com/michaeljguarino/chartmart/wkspace"
+	"github.com/michaeljguarino/forge/executor"
+	"github.com/michaeljguarino/forge/utils"
+	"github.com/michaeljguarino/forge/wkspace"
 )
 
 type Scaffold struct {

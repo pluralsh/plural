@@ -17,7 +17,7 @@ type Config struct {
 
 func configFile() string {
 	folder, _ := os.UserHomeDir()
-	return path.Join(folder, ".chartmart", "config.yml")
+	return path.Join(folder, ".forge", "config.yml")
 }
 
 func Read() Config {
@@ -28,7 +28,7 @@ func Import(file string) Config {
 	contents, err := ioutil.ReadFile(file)
 	conf := Config{}
 	if err != nil {
-		panic(err)
+		return conf
 	}
 
 	err = yaml.Unmarshal(contents, &conf)
@@ -57,7 +57,7 @@ func Flush(c *Config) error {
 	}
 
 	folder, _ := os.UserHomeDir()
-	if err := os.MkdirAll(path.Join(folder, ".chartmart"), os.ModePerm); err != nil {
+	if err := os.MkdirAll(path.Join(folder, ".forge"), os.ModePerm); err != nil {
 		return err
 	}
 

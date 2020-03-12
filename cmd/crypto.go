@@ -7,8 +7,8 @@ import (
 	"encoding/pem"
 	"fmt"
 	"github.com/docker/libtrust"
-	"github.com/michaeljguarino/chartmart/crypto"
-	"github.com/michaeljguarino/chartmart/utils"
+	"github.com/michaeljguarino/forge/crypto"
+	"github.com/michaeljguarino/forge/utils"
 	"github.com/urfave/cli"
 	"io"
 	"io/ioutil"
@@ -18,8 +18,8 @@ import (
 
 var prefix = []byte("CHARTMART-ENCRYPTED")
 
-const gitattributes = `/**/helm/**/values.yaml filter=chartmart-crypt diff=chartmart-crypt
-/**/manifest.yaml filter=chartmart-crypt diff=chartmart-crypt
+const gitattributes = `/**/helm/**/values.yaml filter=forge-crypt diff=forge-crypt
+/**/manifest.yaml filter=forge-crypt diff=forge-crypt
 `
 
 const gitignore = `/**/.terraform
@@ -51,7 +51,7 @@ func cryptoCommands() []cli.Command {
 		},
 		{
 			Name:   "import",
-			Usage:  "imports an aes key for chartmart to use",
+			Usage:  "imports an aes key for forge to use",
 			Action: importKey,
 		},
 		{
@@ -127,10 +127,10 @@ func handleDecrypt(c *cli.Context) error {
 
 func cryptoInit(c *cli.Context) error {
 	encryptConfig := [][]string{
-		{"filter.chartmart-crypt.smudge", "chartmart crypto decrypt"},
-		{"filter.chartmart-crypt.clean", "chartmart crypto encrypt"},
-		{"filter.chartmart-crypt.required", "true"},
-		{"diff.chartmart-crypt.textconv", "chartmart crypto decrypt"},
+		{"filter.forge-crypt.smudge", "forge crypto decrypt"},
+		{"filter.forge-crypt.clean", "forge crypto encrypt"},
+		{"filter.forge-crypt.required", "true"},
+		{"diff.forge-crypt.textconv", "forge crypto decrypt"},
 	}
 
 	utils.Highlight("Creating git encryption filters\n\n")

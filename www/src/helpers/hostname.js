@@ -11,7 +11,7 @@ export function localized(path) {
 export function apiHost() {
   switch (window.location.hostname) {
     case "localhost":
-      return "mart.piazzaapp.com"
+      return "forge.piazza.app"
     default:
       return window.location.hostname.replace("forge", "mart")
   }

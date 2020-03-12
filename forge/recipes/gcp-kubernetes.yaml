@@ -30,3 +30,6 @@ sections:
     - name: dns_domain
       documentation: top level domain to use
       type: STRING
+    - name: grafana_dns
+      documentation: FQDN for grafana
+      type: STRING

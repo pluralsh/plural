@@ -59,7 +59,7 @@ func (m *MinimalWorkspace) HelmInit(clientOnly bool) error {
 }
 
 const pullSecretName = "forgecreds"
-const repoName = "dkr.piazzaapp.com"
+const repoName = "dkr.piazza.app"
 
 func (m *MinimalWorkspace) EnsurePullCredentials() error {
 	name := m.Name

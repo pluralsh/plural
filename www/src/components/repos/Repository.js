@@ -130,7 +130,7 @@ function DockerRepository({docker, repo, hasNext, setRepo}) {
           {docker.name}
         </Text>
         <Text size='small'>
-          docker pull dkr.piazzaapp.com/{repo.name}/{docker.name} -- created {moment(docker.insertedAt).fromNow()}
+          docker pull dkr.piazza.app/{repo.name}/{docker.name} -- created {moment(docker.insertedAt).fromNow()}
         </Text>
       </Box>
     </Container>

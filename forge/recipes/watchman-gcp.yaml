@@ -1,0 +1,27 @@
+name: watchman-gcp
+description: Deploys watchman on a GKE cluster
+provider: GCP
+sections:
+- name: bootstrap
+  items:
+  - type: TERRAFORM
+    name: watchman-gcp
+    configuration:
+    - name: gcp_project_id
+      documentation: project id the gke cluster lives in
+      type: STRING
+  - type: HELM
+    name: watchman
+    configuration:
+    - name: watchman_dns
+      documentation: FQDN for the watchman dashboard
+      type: STRING
+    - name: dns_domain
+      documentation: domain to put watchman under
+      type: STRING
+    - name: git_user
+      documentation: user for watchman to use in git operations
+      type: STRING
+    - name: git_email
+      documentation: email for git operations by watchman
+      type: STRING

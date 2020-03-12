@@ -2,14 +2,15 @@ package template
 
 import (
 	"fmt"
-	"github.com/michaeljguarino/forge/api"
-	"github.com/michaeljguarino/forge/config"
-	"github.com/michaeljguarino/forge/crypto"
-	"github.com/michaeljguarino/forge/utils"
 	"os"
 	"os/exec"
 	"path"
 	"strings"
+
+	"github.com/michaeljguarino/forge/api"
+	"github.com/michaeljguarino/forge/config"
+	"github.com/michaeljguarino/forge/crypto"
+	"github.com/michaeljguarino/forge/utils"
 )
 
 func repoRoot() (string, error) {
@@ -31,7 +32,8 @@ func repoUrl() (string, error) {
 
 func createWebhook(domain string) (api.Webhook, error) {
 	client := api.NewClient()
-	return client.CreateWebhook(path.Join("https://"+domain, "v1", "webhook"))
+	url := fmt.Sprintf("https://%s/v1/webhook", domain)
+	return client.CreateWebhook(url)
 }
 
 func dumpConfig() (string, error) {

@@ -1,12 +1,12 @@
 replicaCount: 2
 
 image:
-  repository: dkr.piazzaapp.com/forge/forge
+  repository: dkr.piazza.app/forge/forge
   tag: '0.1.0'
   pullPolicy: Always
 
 www:
-  image: dkr.piazzaapp.com/forge/forge-www
+  image: dkr.piazza.app/forge/forge-www
   tag: '0.1.0'
   port: 80
 
@@ -98,7 +98,7 @@ service:
 ingress:
   enabled: true
   dns: forge.piazza.app
-  dkr_dns: dkr.piazzaapp.com
+  dkr_dns: dkr.piazza.app
   annotations:
     networking.gke.io/managed-certificates: forge-cert,forge-dkr-cert
 

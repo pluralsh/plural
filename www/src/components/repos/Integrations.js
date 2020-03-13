@@ -13,6 +13,8 @@ import Scroller from '../utils/Scroller'
 import HoveredBackground from '../utils/HoveredBackground'
 import { FormPrevious, FormNextLink } from 'grommet-icons'
 import { normalizeColor } from 'grommet/utils'
+import { DetailContainer } from './Installation'
+import { DetailHeader } from './Artifacts'
 
 const ICON_SIZE = 50
 
@@ -200,47 +202,53 @@ export function IntegrationPage() {
   )
 }
 
-export default function Integrations({integrations: {edges, pageInfo}, fetchMore, repository}) {
+function ViewAll({repositoryId}) {
   let hist = useHistory()
   return (
-    <Box pad='small'>
-      <Box
-        pad={{bottom: 'small'}}
-        direction='row'
-        fill='horizontal'
-        justify='end'>
-        <Anchor color="focus" onClick={() => hist.push(`/repositories/${repository.id}/integrations`)}>
-          <Box direction='row' gap='xxsmall' align='center'>
-            <Text size='small' color='focus'>
-              view all
-            </Text>
-            <FormNextLink size='15px' color='focus' />
-          </Box>
-        </Anchor>
-      </Box>
-      <Carousel
-        slidesPerPage={1}
-        offset={12}
-        edges={edges}
-        mapper={({node}) => <Integration key={node.id} {...node} width='80%' />}
-        fetchMore={() => {
-          if (!pageInfo.hasNextPage) return
-
-          fetchMore({
-            variables: {intCursor: pageInfo.endCursor},
-            updateQuery: (prev, {fetchMoreResult}) => {
-              const {edges, pageInfo} = fetchMoreResult.integrations
-              return edges.length ? {
-                ...prev,
-                integrations: {
-                  ...prev.integrations,
-                  pageInfo,
-                  edges: [...prev.integrations.edges, ...edges]
-                }
-              } : prev
-            }
-          })
-        }} />
+    <Box flex={false}>
+      <Anchor color="focus" onClick={() => hist.push(`/repositories/${repositoryId}/integrations`)}>
+        <Box direction='row' gap='xxsmall' align='center'>
+          <Text size='small' color='focus'>
+            view all
+          </Text>
+          <FormNextLink size='15px' color='focus' />
+        </Box>
+      </Anchor>
     </Box>
+  )
+}
+
+export default function Integrations({integrations: {edges, pageInfo}, fetchMore, repository}) {
+  return (
+    <DetailContainer>
+      <Box>
+        <DetailHeader text='Integrations' modifier={<ViewAll repositoryId={repository.id} />} />
+        <Box pad='small'>
+          <Carousel
+            slidesPerPage={1}
+            offset={12}
+            edges={edges}
+            mapper={({node}) => <Integration key={node.id} {...node} width='80%' />}
+            fetchMore={() => {
+              if (!pageInfo.hasNextPage) return
+
+              fetchMore({
+                variables: {intCursor: pageInfo.endCursor},
+                updateQuery: (prev, {fetchMoreResult}) => {
+                  const {edges, pageInfo} = fetchMoreResult.integrations
+                  return edges.length ? {
+                    ...prev,
+                    integrations: {
+                      ...prev.integrations,
+                      pageInfo,
+                      edges: [...prev.integrations.edges, ...edges]
+                    }
+                  } : prev
+                }
+              })
+            }} />
+          </Box>
+      </Box>
+    </DetailContainer>
   )
 }

@@ -10,7 +10,7 @@ import Modal, { ModalHeader } from '../utils/Modal'
 import Tabs, { TabHeader, TabHeaderItem, TabContent, BORDER_COLOR } from '../utils/Tabs'
 import { REPO_Q, UPDATE_REPO, DOCKER_IMG_Q } from './queries'
 import { DEFAULT_CHART_ICON, DEFAULT_TF_ICON, DEFAULT_DKR_ICON } from './constants'
-import Installation, { DetailContainer } from './Installation'
+import Installation from './Installation'
 import CreateTerraform from './CreateTerraform'
 import { RepoForm } from './CreateRepository'
 import { BreadcrumbContext } from '../Forge'
@@ -19,7 +19,7 @@ import Recipes from './Recipes'
 import moment from 'moment'
 import ScrollableContainer from '../utils/ScrollableContainer'
 import { Provider } from './misc'
-import Artifacts, { DetailHeader } from './Artifacts'
+import Artifacts from './Artifacts'
 import AceEditor from "react-ace"
 import "ace-builds/src-noconflict/mode-yaml"
 import "ace-builds/src-noconflict/theme-terminal"
@@ -553,12 +553,7 @@ export default function Repository() {
             integrations={integrations}
             fetchMore={fetchMore} />
           {integrations && integrations.edges.length > 0 && (
-            <DetailContainer>
-              <Box>
-                <DetailHeader text='Integrations' />
-                <Integrations integrations={integrations} fetchMore={fetchMore} repository={repository} />
-              </Box>
-            </DetailContainer>
+            <Integrations integrations={integrations} fetchMore={fetchMore} repository={repository} />
           )}
           <Artifacts artifacts={repository.artifacts} />
         </Box>

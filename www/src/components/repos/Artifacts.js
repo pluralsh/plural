@@ -179,10 +179,18 @@ export function Artifact({name, type, platform, filesize, ...artifact}) {
   )
 }
 
-export function DetailHeader({text}) {
+export function DetailHeader({text, modifier}) {
   return (
-    <Box border={{color: 'light-6', side: 'bottom'}} pad='small' background='light-1'>
-      <Text style={{fontWeight: 500}} size='small'>{text}</Text>
+    <Box
+      direction='row'
+      border={{color: 'light-6', side: 'bottom'}}
+      pad='small'
+      background='light-1'
+      justify='end'>
+      <Box fill='horizontal'>
+        <Text style={{fontWeight: 500}} size='small'>{text}</Text>
+      </Box>
+      {modifier}
     </Box>
   )
 }

@@ -54,10 +54,12 @@ function ViewDashboards({repository: {icon, name, dashboards, grafanaDns}}) {
               </Box>
             </Box>
           </Box>
-          <Select
-            options={dashboards.map(({name}) => name)}
-            value={current}
-            onChange={({option}) => setCurrent(option)} />
+          {dashboards.length > 0 && (
+            <Select
+              options={dashboards.map(({name}) => name)}
+              value={current}
+              onChange={({option}) => setCurrent(option)} />
+          )}
         </Box>
       </Box>
       <Box height='calc(100vh - 105px)'>

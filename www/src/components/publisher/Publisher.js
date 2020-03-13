@@ -16,16 +16,16 @@ function formatAddress({line1, line2, city, state, country, zip}) {
 function PublisherView({name, owner, description, phone, address}) {
   return (
     <DetailContainer gap='small' pad='small'>
-      <Box direction='row' align='center' gap='small' pad='small'>
-        <Avatar size='100px' user={owner} />
+      <Box direction='row' align='center' gap='medium' pad='small'>
+        <Avatar size='80px' user={owner} />
         <Box gap='small'>
           <Box>
-            <Text size='medium'>{name}</Text>
+            <Text size='medium' style={{fontWeight: 500}}>{name}</Text>
             <Text size='small'><i>{description}</i></Text>
           </Box>
         </Box>
       </Box>
-      <Box pad='small'>
+      <Box pad='small' border='top'>
         <InputCollection>
           <ResponsiveInputContainer label='email' content={<Text size='small'>{owner.email}</Text>} />
           <ResponsiveInputContainer label='phone' content={<Text size='small'>{phone}</Text>} />

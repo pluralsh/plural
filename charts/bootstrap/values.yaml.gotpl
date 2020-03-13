@@ -10,6 +10,8 @@ external-dns:
     project: {{ .Values.gcp_project_id }}
     serviceAccountSecret: externaldns
 
+grafana_dns: {{ .Values.grafana_dns }}
+
 grafana:
   admin:
     password: {{ dedupe . "bootstrap.grafana.admin.password" (randAlphaNum 14) }}

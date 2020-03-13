@@ -29,7 +29,7 @@ function logUrl(grafana, name) {
     {"ui":[true,true,true,"none"]}
   ]
 
-  return `http://${grafana}/explore?orgId=1&left=${encodeURI(JSON.stringify(query))}`
+  return `https://${grafana}/explore?orgId=1&left=${encodeURI(JSON.stringify(query))}`
 }
 
 function ViewDashboards({repository: {icon, name, dashboards, grafanaDns}}) {

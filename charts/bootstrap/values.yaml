@@ -8,7 +8,6 @@ external-dns:
   domainFilters:
   - piazzaapp.com
   google:
-    project: piazza-247002
     serviceAccountSecret: externaldns
 grafana:
   grafana.ini:
@@ -72,3 +71,5 @@ grafana:
   ingress:
     enabled: true
     path: /*
+    annotations:
+      networking.gke.io/managed-certificates: grafana-cert

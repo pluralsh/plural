@@ -1,0 +1,7 @@
+apiVersion: networking.gke.io/v1beta1
+kind: ManagedCertificate
+metadata:
+  name: grafana-cert
+spec:
+  domains:
+  - {{ .Values.grafana_dns }}

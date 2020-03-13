@@ -179,15 +179,21 @@ export function Artifact({name, type, platform, filesize, ...artifact}) {
   )
 }
 
+export function DetailHeader({text}) {
+  return (
+    <Box border={{color: 'light-6', side: 'bottom'}} pad='small' background='light-1'>
+      <Text style={{fontWeight: 500}} size='small'>{text}</Text>
+    </Box>
+  )
+}
+
 export default function Artifacts({artifacts}) {
   if (!artifacts || artifacts.length === 0) return null
 
   return (
     <DetailContainer>
       <Box>
-        <Box border='bottom' pad='small'>
-          <Text style={{fontWeight: 500}} size='small'>Artifacts</Text>
-        </Box>
+        <DetailHeader text='Artifacts' />
         {artifacts.map((artifact) => <Artifact key={artifact.id} {...artifact} />)}
       </Box>
     </DetailContainer>

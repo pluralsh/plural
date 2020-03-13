@@ -98,7 +98,7 @@ function ChartInstaller({chartInstallation, versionId, chartId, installation}) {
 
 function ChartHeader({helm, chart, version, chartInstallation, id, installation}) {
   return (
-    <Box direction='row' align='center' gap='small' margin={{bottom: 'small'}} style={{minHeight: '50px'}}>
+    <Box direction='row' align='center' gap='medium' margin={{bottom: 'small'}} style={{minHeight: '50px'}}>
       <Box width='50px' heigh='50px'>
         <img alt='' width='50px' height='50px' src={chart.icon || DEFAULT_CHART_ICON} />
       </Box>
@@ -199,30 +199,31 @@ export default function Chart() {
             </TabContent>
           </Tabs>
         </Box>
-        <Box pad='small' width={`${100 - width}%`} gap='small'>
-          {tab === 'configuration' ? <Installation repository={repository} onUpdate={updateInstallation(chartId)} open /> :
-            (<>
-            <DetailContainer gap='xsmall' pad='small' style={{maxHeight: '50%'}}>
-              <Text size='small' weight='bold'>Versions</Text>
-              <Scroller id='chart'
-                edges={edges}
-                style={{overflow: 'auto', width: '100%'}}
-                mapper={({node}, next) => <ChartVersion key={node.id} version={node} hasNext={!!next} onSelect={setVersion} />}
-                onLoadMore={() => {
-                  pageInfo.hasNextPage && fetchMore({
-                    variables: {cursor: pageInfo.endCursor},
-                    updateQuery: (prev, {fetchMoreResult: {versions: {edges, pageInfo}}}) => {
-                      return {
-                        ...prev, versions: {
-                          ...prev.versions, pageInfo, edges: [...prev.versions.edges, ...edges]
+        <Box pad='small' width={`${100 - width}%`}>
+          {tab === 'configuration' ? <Installation repository={repository} onUpdate={updateInstallation(chartId)} open /> : (
+            <Box gap='small'>
+              <DetailContainer gap='xsmall' pad='small' style={{maxHeight: '50%'}}>
+                <Text size='small' weight='bold'>Versions</Text>
+                <Scroller id='chart'
+                  edges={edges}
+                  style={{overflow: 'auto', width: '100%'}}
+                  mapper={({node}, next) => <ChartVersion key={node.id} version={node} hasNext={!!next} onSelect={setVersion} />}
+                  onLoadMore={() => {
+                    pageInfo.hasNextPage && fetchMore({
+                      variables: {cursor: pageInfo.endCursor},
+                      updateQuery: (prev, {fetchMoreResult: {versions: {edges, pageInfo}}}) => {
+                        return {
+                          ...prev, versions: {
+                            ...prev.versions, pageInfo, edges: [...prev.versions.edges, ...edges]
+                          }
                         }
                       }
-                    }
-                  })
-                }} />
-            </DetailContainer>
-            <ChartInfo {...currentVersion} />
-            </>)}
+                    })
+                  }} />
+              </DetailContainer>
+              <ChartInfo {...currentVersion} />
+            </Box>
+          )}
         </Box>
       </Box>
     </ScrollableContainer>

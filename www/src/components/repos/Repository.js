@@ -19,7 +19,7 @@ import Recipes from './Recipes'
 import moment from 'moment'
 import ScrollableContainer from '../utils/ScrollableContainer'
 import { Provider } from './misc'
-import Artifacts from './Artifacts'
+import Artifacts, { DetailHeader } from './Artifacts'
 import AceEditor from "react-ace"
 import "ace-builds/src-noconflict/mode-yaml"
 import "ace-builds/src-noconflict/theme-terminal"
@@ -555,9 +555,7 @@ export default function Repository() {
           {integrations && integrations.edges.length > 0 && (
             <DetailContainer>
               <Box>
-                <Box pad='small' border='bottom'>
-                  <Text size='small' style={{fontWeight: 500}}>Integrations</Text>
-                </Box>
+                <DetailHeader text='Integrations' />
                 <Integrations integrations={integrations} fetchMore={fetchMore} repository={repository} />
               </Box>
             </DetailContainer>

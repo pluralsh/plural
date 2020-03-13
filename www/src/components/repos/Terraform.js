@@ -67,7 +67,7 @@ function TerraformInstaller({installation, terraformId, terraformInstallation}) 
 
 function TerraformHeader({id, name, description, installation, repository}) {
   return (
-    <Box direction='row' align='center' gap='small' margin={{bottom: 'small'}} style={{minHeight: '50px'}}>
+    <Box direction='row' align='center' gap='medium' margin={{bottom: 'small'}} style={{minHeight: '50px'}}>
       <Box width='50px' heigh='50px'>
         <img alt='' width='50px' height='50px' src={DEFAULT_TF_ICON} />
       </Box>

@@ -24,7 +24,7 @@ defmodule Watchman.Grafana.Token do
   def handle_info(_, state), do: {:noreply, state}
 
   def fetch_credentials() do
-    Kazan.Apis.Core.V1.read_namespaced_secret!("forge", "grafana-credentials")
+    Kazan.Apis.Core.V1.read_namespaced_secret!("bootstrap", "grafana-credentials")
     |> Kazan.run()
     |> case do
       {:ok, %Kazan.Apis.Core.V1.Secret{data: %{"admin-user" => userb64, "admin-password" => pwdb64}}} ->

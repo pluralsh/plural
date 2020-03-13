@@ -9,7 +9,7 @@ defmodule WatchmanWeb.Plugs.GrafanaAuthTest do
   describe "call/2" do
     test "It can authorize against an incoming cookie and rewrite to basic auth", %{conn: conn} do
       expect(Kazan, :run, fn
-        %Kazan.Request{method: "get", path: "/api/v1/namespaces/forge/secrets/grafana-credentials"} ->
+        %Kazan.Request{method: "get", path: "/api/v1/namespaces/bootstrap/secrets/grafana-credentials"} ->
           {:ok, %Kazan.Apis.Core.V1.Secret{data: %{
             "admin-user" => Base.encode64("admin"),
             "admin-password" => Base.encode64("password")}

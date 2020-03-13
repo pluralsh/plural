@@ -13,7 +13,7 @@ export function apiHost() {
     case "localhost":
       return "forge.piazza.app"
     default:
-      return window.location.hostname.replace("forge", "mart")
+      return window.location.hostname
   }
 }
 

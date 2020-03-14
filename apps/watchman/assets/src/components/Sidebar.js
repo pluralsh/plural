@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react'
 import { useLocation, useHistory } from 'react-router-dom'
-import { Deploy, Network, Configure, Dashboard } from 'grommet-icons'
+import { Deploy, Network, Configure, BarChart } from 'grommet-icons'
 import { Box, Text, Drop } from 'grommet'
 
 const SIDEBAR_ROW_HEIGHT = '50px'
@@ -44,7 +44,7 @@ const ICON_HEIGHT = '20px'
 const OPTIONS = [
   {text: 'Builds', icon: <Deploy size={ICON_HEIGHT} />, path: '/'},
   {text: 'Configuration', icon: <Configure size={ICON_HEIGHT} />, path: '/config' },
-  {text: 'Observability', icon: <Dashboard size={ICON_HEIGHT} />, path: '/dashboards'},
+  {text: 'Observability', icon: <BarChart size={ICON_HEIGHT} />, path: '/dashboards'},
   {text: 'Webhooks', icon: <Network size={ICON_HEIGHT} />, path: '/webhooks'},
 ]
 

@@ -53,7 +53,7 @@ function CreatePublisherModal() {
   )
 }
 
-function Me({me}) {
+export default function Me({me}) {
   const [open, setOpen] = useState(false)
   const dropRef = useRef()
   let history = useHistory()
@@ -125,5 +125,3 @@ function Me({me}) {
     </>
   )
 }
-
-export default Me

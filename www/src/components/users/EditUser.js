@@ -3,7 +3,7 @@ import {Box, Text} from 'grommet'
 import {Trash} from 'grommet-icons'
 import {useMutation, useQuery} from 'react-apollo'
 import {UPDATE_USER, CREATE_TOKEN, TOKENS_Q, DELETE_TOKEN} from './queries'
-import InputField from '../utils/InputField'
+import { InputCollection, ResponsiveInput } from '../utils/InputField'
 import Button from '../utils/Button'
 import {CurrentUserContext} from '../login/CurrentUser'
 import Avatar from '../users/Avatar'
@@ -169,32 +169,36 @@ export default function EditUser() {
           </Box>
           <Box>
             <Expander text='Update attributes'>
-              <Box gap='small' pad='small'>
-                <InputField
-                  label='name'
-                  labelWidth={LABEL_WIDTH}
-                  placeholder='your name'
-                  value={attributes.name}
-                  onChange={(e) => setAttributes({...attributes, name: e.target.value})} />
-                <InputField
-                  label='email'
-                  labelWidth={LABEL_WIDTH}
-                  placeholder='your email'
-                  value={attributes.email}
-                  onChange={(e) => setAttributes({...attributes, email: e.target.value})} />
+              <Box pad='xsmall'>
+                <InputCollection>
+                  <ResponsiveInput
+                    label='name'
+                    labelWidth={LABEL_WIDTH}
+                    placeholder='your name'
+                    value={attributes.name}
+                    onChange={(e) => setAttributes({...attributes, name: e.target.value})} />
+                  <ResponsiveInput
+                    label='email'
+                    labelWidth={LABEL_WIDTH}
+                    placeholder='your email'
+                    value={attributes.email}
+                    onChange={(e) => setAttributes({...attributes, email: e.target.value})} />
+                </InputCollection>
               </Box>
             </Expander>
           </Box>
           <Box border='top'>
             <Expander text='Update password'>
-              <Box pad='small'>
-                <InputField
-                  label='password'
-                  placeholder='your password'
-                  labelWidth='80px'
-                  type='password'
-                  value={attributes.password || ''}
-                  onChange={(e) => setAttributes({...attributes, password: e.target.value})} />
+              <Box pad='xsmall'>
+                <InputCollection>
+                  <ResponsiveInput
+                    label='password'
+                    placeholder='your password'
+                    labelWidth='80px'
+                    type='password'
+                    value={attributes.password || ''}
+                    onChange={(e) => setAttributes({...attributes, password: e.target.value})} />
+                </InputCollection>
               </Box>
             </Expander>
           </Box>

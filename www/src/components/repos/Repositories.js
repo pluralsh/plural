@@ -41,6 +41,24 @@ function DeleteRepository({repo, publisherId}) {
 
 const ICON_WIDTH = '50px'
 
+export function RepositoryInner({repo}) {
+  return (
+    <Box direction='row' gap='medium' fill='horizontal'>
+      <Box align='center' justify='center' width={ICON_WIDTH}>
+        <img alt='' width='50px' height='50px' src={repo.icon} />
+      </Box>
+      <Box gap='xxsmall' justify='center' width='100%'>
+        <Text size='small' weight='bold'>
+          {repo.name}
+        </Text>
+        <Text size='small'>
+          {repo.description}
+        </Text>
+      </Box>
+    </Box>
+  )
+}
+
 function RepositoryCell({repo, deletable, publisherId, width}) {
   let history = useHistory()
   return (
@@ -50,19 +68,7 @@ function RepositoryCell({repo, deletable, publisherId, width}) {
       style={{cursor: 'pointer'}}
       modifier={deletable && <DeleteRepository repo={repo} publisherId={publisherId} />}
       onClick={() => history.push(`/repositories/${repo.id}`)}>
-      <Box direction='row' gap='medium' fill='horizontal'>
-        <Box align='center' justify='center' width={ICON_WIDTH}>
-          <img alt='' width='50px' height='50px' src={repo.icon} />
-        </Box>
-        <Box gap='xxsmall' justify='center' width='100%'>
-          <Text size='small' weight='bold'>
-            {repo.name}
-          </Text>
-          <Text size='small'>
-            {repo.description}
-          </Text>
-        </Box>
-      </Box>
+      <RepositoryInner repo={repo} />
     </Container>
   )
 }

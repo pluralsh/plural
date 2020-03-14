@@ -1,10 +1,14 @@
-import React, {useState} from 'react'
-import {Box, Text} from 'grommet'
-import {Trash} from 'grommet-icons'
-import {useQuery, useMutation} from 'react-apollo'
-import {INSTALLATIONS_Q, DELETE_INSTALLATION} from './queries'
-import {Repository} from './Repositories'
+import React from 'react'
+import { Box, Text } from 'grommet'
+import { Trash} from 'grommet-icons'
+import { useHistory } from 'react-router-dom'
+import { useQuery, useMutation } from 'react-apollo'
+import { INSTALLATIONS_Q, DELETE_INSTALLATION } from './queries'
+import { Repository, RepositoryInner } from './Repositories'
 import Scroller from '../utils/Scroller'
+import { Container } from './Integrations'
+import HoveredBackground from '../utils/HoveredBackground'
+import { chunk } from '../../utils/array'
 
 function NoInstallations() {
   return (
@@ -17,34 +21,39 @@ function NoInstallations() {
   )
 }
 
-function EditableInstallation({installation, hasNext}) {
-  const [hover, setHover] = useState(false)
+function DeleteInstallation({installation}) {
   const [mutation] = useMutation(DELETE_INSTALLATION, {
     variables: {id: installation.id},
     update: (cache, {data: {deleteInstallation}}) => {
-      const prev = cache.readQuery({query: INSTALLATIONS_Q})
+      const {installations, ...prev} = cache.readQuery({query: INSTALLATIONS_Q})
       cache.writeQuery({query: INSTALLATIONS_Q, data: {
-        ...prev,
-        installations: {
-          ...prev.installations,
-          edges: prev.installations.edges.filter(({node}) => node.id !== deleteInstallation.id)
+        ...prev, installations: {
+          ...installations,
+          edges: installations.edges.filter(({node}) => node.id !== deleteInstallation.id)
         }
       }})
     }
   })
+
   return (
-    <Box direction='row' align='center'>
-      <Box width='100%'>
-        <Repository repo={installation.repository} hasNext={hasNext} />
+    <HoveredBackground>
+      <Box accentable width='20px' style={{cursor: 'pointer'}} margin={{top: 'xsmall'}}>
+        <Trash size='15px' onClick={mutation} />
       </Box>
-      <Box
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
-        width='20px'
-        style={{cursor: 'pointer'}}>
-        <Trash color={hover ? 'focus' : null} size='15px' onClick={mutation} />
-      </Box>
-    </Box>
+    </HoveredBackground>
+  )
+}
+
+function EditableInstallation({installation}) {
+  let history = useHistory()
+  return (
+    <Container
+      width='48%'
+      onClick={() => history.push(`/repositories/${installation.repository.id}`)}
+      style={{cursor: 'pointer'}}
+      modifier={<DeleteInstallation installation={installation} />}>
+      <RepositoryInner repo={installation.repository} />
+    </Container>
   )
 }
 
@@ -58,31 +67,26 @@ export default function Installations({edit}) {
     <Box gap='small' fill='horizontal'>
       <Scroller
         id='installations'
-        edges={edges}
+        edges={Array.from(chunk(edges, 2))}
         style={{overflow: 'auto', width: '100%'}}
         emptyState={<NoInstallations />}
-        mapper={({node}, next) => (edit ?
-          <EditableInstallation key={node.id} installation={node} hasNext={!!next.node} /> :
-          <Repository key={node.id} repo={node.repository} hasNext={!!next.node} />
+        mapper={(chunk) => (
+          <Box key={chunk[0].id} direction='row' gap='small' margin={{bottom: 'small'}}>
+            {chunk.map(({node}) => (
+              edit ? <EditableInstallation key={node.id} installation={node} /> :
+                     <Repository key={node.id} repo={node.repository} />
+            ))}
+          </Box>
         )}
-        onLoadMore={() => {
-          if (!pageInfo.hasNextPage) return
-
-          fetchMore({
-            variables: {chartCursor: pageInfo.endCursor},
-            updateQuery: (prev, {fetchMoreResult}) => {
-              const {edges, pageInfo} = fetchMoreResult.installations
-              return edges.length ? {
-                ...prev,
-                installations: {
-                  ...prev.installations,
-                  pageInfo,
-                  edges: [...prev.installations.edges, ...edges]
-                }
-              } : prev
-            }
-          })
-        }} />
+        onLoadMore={() => pageInfo.hasNextPage && fetchMore({
+          variables: {chartCursor: pageInfo.endCursor},
+          updateQuery: (prev, {fetchMoreResult: {installations: {edges, pageInfo}}}) => {
+            return {...prev, installations: {
+              ...prev.installations, pageInfo, edges: [...prev.installations.edges, ...edges]
+            }}
+          }
+        })
+      } />
     </Box>
   )
 }

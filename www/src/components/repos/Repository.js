@@ -122,8 +122,8 @@ function Chart({chart, hasNext}) {
 function DockerRepository({docker, repo, hasNext, setRepo}) {
   return (
     <Container hasNext={hasNext} onClick={() => setRepo(docker)}>
-      <Box width='70px' heigh='50px'>
-        <img alt='' width='70px' height='50px' src={DEFAULT_DKR_ICON} />
+      <Box width='50px' heigh='50px'>
+        <img alt='' width='50px' height='50px' src={DEFAULT_DKR_ICON} />
       </Box>
       <Box justify='center'>
         <Text size='small' style={{fontWeight: 500}}>

@@ -8,6 +8,9 @@ ingress:
 grafana_dns: {{ dedupe .Values "grafana_dns" (cat "watchman-grafana." .Values.dns_domain) }}
 
 secrets:
+  admin_name: {{ .Values.admin_name }}
+  admin_email: {{ .Values.admin_email }}
+  admin_password: {{ dedupe . "watchman.secrets.admin_password" (randAlphaNum 20) }}
   git_url: {{ repoUrl }}
   repo_root: {{ repoName }}
   config: {{ readFile (homeDir ".forge" "config.yml") | quote }}

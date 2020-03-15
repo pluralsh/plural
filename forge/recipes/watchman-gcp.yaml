@@ -31,6 +31,3 @@ sections:
     - name: admin_name
       documentation: name for the initial admin user
       type: STRING
-    - name: admin_password
-      documentation: password for the initial admin user
-      type: STRING

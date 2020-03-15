@@ -3,7 +3,7 @@ import { Switch, Route } from 'react-router-dom'
 import { Grommet } from 'grommet'
 import { DEFAULT_THEME } from './theme';
 import Watchman from './components/Watchman';
-import Login, { EnsureLogin } from './components/Login'
+import Login from './components/Login'
 
 export default function App() {
   return (

@@ -9,6 +9,7 @@ import Webhooks from './Webhooks'
 import Configuration from './Configuration'
 import Dashboards from './Dashboards'
 import { EnsureLogin } from './Login'
+import EditUser from './EditUser'
 
 const SIDEBAR_WIDTH = '70px'
 
@@ -29,6 +30,7 @@ export default function Watchman() {
               <Route path='/webhooks' component={Webhooks} />
               <Route path='/dashboards/:repo' component={Dashboards} />
               <Route path='/dashboards' component={Dashboards} />
+              <Route path='/me/edit' component={EditUser} />
               <Route path='/' component={Builds} />
             </Switch>
           </Box>

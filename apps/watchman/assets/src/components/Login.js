@@ -17,7 +17,7 @@ export function EnsureLogin({children}) {
   if (!data) return null
 
   return (
-    <LoginContext.Provider me={data.me}>
+    <LoginContext.Provider value={{me: data.me}}>
       {children}
     </LoginContext.Provider>
   )
@@ -28,8 +28,8 @@ export default function Login() {
   const {data, error} = useQuery(ME_Q)
   const [mutation, {loading}] = useMutation(SIGNIN, {
     variables: form,
-    onCompleted: ({signIn}) => {
-      setToken(signIn.jwt)
+    onCompleted: ({signIn: {jwt}}) => {
+      setToken(jwt)
       window.location = '/'
     }
   })

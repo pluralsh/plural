@@ -1,6 +1,6 @@
 defmodule Watchman.GraphQl.Schema do
   use Watchman.GraphQl.Schema.Base
-  alias Watchman.GraphQl.Resolvers.{Build, Forge}
+  alias Watchman.GraphQl.Resolvers.{Build, Forge, User}
   import_types Absinthe.Plug.Types
 
   ## ENUMS
@@ -34,6 +34,12 @@ defmodule Watchman.GraphQl.Schema do
     field :message,    :string
   end
 
+  input_object :user_attributes do
+    field :name,     :string
+    field :email,    :string
+    field :password, :string
+  end
+
   input_object :webhook_attributes do
     field :url, non_null(:string)
   end
@@ -44,11 +50,17 @@ defmodule Watchman.GraphQl.Schema do
     field :id, non_null(:id)
     field :name, non_null(:string)
     field :email, non_null(:string)
+
     field :jwt, :string, resolve: fn
       %{id: id, jwt: jwt}, _, %{context: %{current_user: %{id: id}}} -> {:ok, jwt}
       _, _, %{context: %{current_user: %{}}} -> {:error, "you can only query your own jwt"}
       %{jwt: jwt}, _, _ -> {:ok, jwt}
     end
+
+    field :background_color, :string, resolve: fn
+      user, _, _ -> User.background_color(user)
+    end
+
     timestamps()
   end
 

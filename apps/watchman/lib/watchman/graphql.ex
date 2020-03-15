@@ -68,6 +68,12 @@ defmodule Watchman.GraphQl do
       resolve safe_resolver(&User.signin_user/2)
     end
 
+    field :update_user, :user do
+      arg :attributes, non_null(:user_attributes)
+
+      resolve safe_resolver(&User.update_user/2)
+    end
+
     field :create_build, :build do
       middleware Authenticated
 

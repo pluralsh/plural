@@ -14,6 +14,8 @@ defmodule WatchmanWeb.ConnCase do
   """
 
   use ExUnit.CaseTemplate
+  import Plug.Conn
+  alias Watchman.Schema.User
 
   using do
     quote do
@@ -22,6 +24,7 @@ defmodule WatchmanWeb.ConnCase do
       alias WatchmanWeb.Router.Helpers, as: Routes
       import Watchman.Factory
       import Watchman.TestHelpers
+      import WatchmanWeb.ConnCase
 
       # The default endpoint for testing
       @endpoint WatchmanWeb.Endpoint
@@ -36,5 +39,10 @@ defmodule WatchmanWeb.ConnCase do
     end
 
     {:ok, conn: Phoenix.ConnTest.build_conn()}
+  end
+
+  def add_auth_headers(conn, %User{} = user) do
+    {:ok, token, _} = Watchman.Guardian.encode_and_sign(user)
+    put_req_header(conn, "authorization", "Bearer #{token}")
   end
 end

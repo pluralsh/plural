@@ -17,6 +17,8 @@ spec:
         envFrom:
         - secretRef:
             name: watchman-env
+        - secretRef:
+          name: watchman-migration-env
         env:
         - name: HOST
           value: {{ .Values.ingress.watchman_dns }}

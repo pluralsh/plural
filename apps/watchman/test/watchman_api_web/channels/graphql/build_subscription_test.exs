@@ -1,11 +1,12 @@
 defmodule WatchmanWeb.GraphQl.BuildSubscriptionTest do
-  use WatchmanWeb.ChannelCase
+  use WatchmanWeb.ChannelCase, async: false
   alias Watchman.Services.Builds
   use Mimic
 
   describe "buildDelta" do
     test "build create will broadcast deltas" do
-      {:ok, socket} = establish_socket()
+      user = insert(:user)
+      {:ok, socket} = establish_socket(user)
       expect(Watchman.Deployer, :wake, fn -> :ok end)
 
       ref = push_doc(socket, """
@@ -30,7 +31,8 @@ defmodule WatchmanWeb.GraphQl.BuildSubscriptionTest do
     end
 
     test "Build modify will send UPDATE deltas" do
-      {:ok, socket} = establish_socket()
+      user = insert(:user)
+      {:ok, socket} = establish_socket(user)
       build = insert(:build)
 
       ref = push_doc(socket, """
@@ -59,7 +61,8 @@ defmodule WatchmanWeb.GraphQl.BuildSubscriptionTest do
   describe "commandDelta" do
     test "command creates send CREATE deltas" do
       build = insert(:build)
-      {:ok, socket} = establish_socket()
+      user = insert(:user)
+      {:ok, socket} = establish_socket(user)
 
       ref = push_doc(socket, """
         subscription Delta($buildId: ID!) {
@@ -85,7 +88,8 @@ defmodule WatchmanWeb.GraphQl.BuildSubscriptionTest do
     test "command completion sends UPDATE deltas" do
       build = insert(:build)
       command = insert(:command, build: build)
-      {:ok, socket} = establish_socket()
+      user = insert(:user)
+      {:ok, socket} = establish_socket(user)
 
       ref = push_doc(socket, """
         subscription Delta($buildId: ID!) {

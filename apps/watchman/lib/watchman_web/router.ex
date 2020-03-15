@@ -6,6 +6,8 @@ defmodule WatchmanWeb.Router do
   end
 
   pipeline :auth do
+    plug WatchmanWeb.GuardianPipeline
+    plug WatchmanWeb.Plugs.AbsintheContext
     plug WatchmanWeb.Plugs.Authorized
   end
 

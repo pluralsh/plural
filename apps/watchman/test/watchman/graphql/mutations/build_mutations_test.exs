@@ -15,7 +15,7 @@ defmodule Watchman.GraphQl.BuildMutationsTest do
             status
           }
         }
-      """, %{})
+      """, %{}, %{current_user: insert(:user)})
 
       assert build["id"]
       assert build["type"] == "DEPLOY"

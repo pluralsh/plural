@@ -34,7 +34,7 @@ defmodule Watchman.GraphQl.ForgeQueriesTest do
             }
           }
         }
-      """, %{})
+      """, %{}, %{current_user: insert(:user)})
 
       assert page_info["hasNextPage"]
       assert page_info["endCursor"] == "something"

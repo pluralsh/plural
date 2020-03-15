@@ -4,6 +4,10 @@ import System, only: [get_env: 1, get_env: 2]
 config :piazza_core,
   repos: [Watchman.Repo]
 
+config :core, Watchman.Guardian,
+  issuer: "watchman",
+  secret_key: get_env("JWT_SECRET")
+
 [_ | rest] = get_env("HOST") |> String.split(".")
 
 config :watchman, WatchmanWeb.Endpoint,

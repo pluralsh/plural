@@ -40,6 +40,18 @@ defmodule Watchman.GraphQl.Schema do
 
   ## OBJECTS
 
+  object :user do
+    field :id, non_null(:id)
+    field :name, non_null(:string)
+    field :email, non_null(:string)
+    field :jwt, :string, resolve: fn
+      %{id: id, jwt: jwt}, _, %{context: %{current_user: %{id: id}}} -> {:ok, jwt}
+      _, _, %{context: %{current_user: %{}}} -> {:error, "you can only query your own jwt"}
+      %{jwt: jwt}, _, _ -> {:ok, jwt}
+    end
+    timestamps()
+  end
+
   object :build do
     field :id,           non_null(:id)
     field :repository,   non_null(:string)

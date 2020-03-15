@@ -26,13 +26,14 @@ defmodule WatchmanWeb.ChannelCase do
       # The default endpoint for testing
       @endpoint WatchmanWeb.Endpoint
 
-      def establish_socket() do
-        {:ok, socket} = mk_socket()
+      def establish_socket(user) do
+        {:ok, socket} = mk_socket(user)
         Absinthe.Phoenix.SubscriptionTest.join_absinthe(socket)
       end
 
-      def mk_socket() do
-        connect(WatchmanWeb.UserSocket, %{}, %{})
+      def mk_socket(user) do
+        {:ok, token, _} = Watchman.Guardian.encode_and_sign(user)
+        connect(WatchmanWeb.UserSocket, %{"token" => "Bearer #{token}"}, %{})
       end
     end
   end

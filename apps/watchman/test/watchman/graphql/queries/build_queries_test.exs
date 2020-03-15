@@ -15,7 +15,7 @@ defmodule Watchman.GraphQl.BuildQueriesTest do
             }
           }
         }
-      """, %{})
+      """, %{}, %{current_user: insert(:user)})
 
       assert from_connection(found)
              |> ids_equal(builds)
@@ -42,7 +42,7 @@ defmodule Watchman.GraphQl.BuildQueriesTest do
             }
           }
         }
-      """, %{"id" => build.id})
+      """, %{"id" => build.id}, %{current_user: insert(:user)})
 
       assert found["id"] == build.id
       assert from_connection(found["commands"]) |> Enum.map(& &1["id"]) == expected

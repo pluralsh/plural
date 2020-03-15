@@ -2,7 +2,8 @@ defmodule Watchman.GraphQl do
   use Absinthe.Schema
   use Absinthe.Relay.Schema, :modern
   import Watchman.GraphQl.Helpers
-  alias Watchman.GraphQl.Resolvers.{Build, Forge, Webhook}
+  alias Watchman.GraphQl.Resolvers.{Build, Forge, Webhook, User}
+  alias Watchman.Middleware.Authenticated
 
   import_types Watchman.GraphQl.Schema
 
@@ -26,39 +27,66 @@ defmodule Watchman.GraphQl do
   end
 
   query do
+    field :me, :user do
+      middleware Authenticated
+
+      resolve fn _, %{context: %{current_user: user}} -> {:ok, user} end
+    end
+
     connection field :builds, node_type: :build do
+      middleware Authenticated
+
       resolve &Build.list_builds/2
     end
 
     field :build, :build do
+      middleware Authenticated
+
       arg :id, non_null(:id)
 
       resolve safe_resolver(&Build.resolve_build/2)
     end
 
     connection field :installations, node_type: :installation do
+      middleware Authenticated
+
       resolve &Forge.list_installations/2
     end
 
     connection field :webhooks, node_type: :webhook do
+      middleware Authenticated
+
       resolve &Webhook.list_webhooks/2
     end
   end
 
   mutation do
+    field :sign_in, :user do
+      arg :email, non_null(:string)
+      arg :password, non_null(:string)
+
+      resolve safe_resolver(&User.signin_user/2)
+    end
+
     field :create_build, :build do
+      middleware Authenticated
+
       arg :attributes, non_null(:build_attributes)
 
       resolve safe_resolver(&Build.create_build/2)
     end
 
     field :create_webhook, :webhook do
+      middleware Authenticated
+
       arg :attributes, non_null(:webhook_attributes)
 
       resolve safe_resolver(&Webhook.create_webhook/2)
     end
 
     field :update_configuration, :configuration do
+      middleware Authenticated
+
       arg :repository, non_null(:string)
       arg :content, non_null(:string)
 

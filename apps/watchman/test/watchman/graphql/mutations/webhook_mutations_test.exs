@@ -10,7 +10,7 @@ defmodule Watchman.GraphQl.WebhookMutationsTest do
             url
           }
         }
-      """, %{"url" => "https://example.com"})
+      """, %{"url" => "https://example.com"}, %{current_user: insert(:user)})
 
       assert webhook["id"]
       assert webhook["url"] == "https://example.com"

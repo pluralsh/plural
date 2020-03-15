@@ -15,11 +15,12 @@ defmodule WatchmanWeb.GqlTest do
 
   describe "POST /gql" do
     test "It can process graphql documents", %{conn: conn} do
+      user = insert(:user)
       builds = insert_list(3, :build)
 
       %{"data" => %{"builds" => found}} =
         conn
-        |> put_req_header("authorization", "Bearer #{Watchman.conf(:webhook_secret)}")
+        |> add_auth_headers(user)
         |> post("/gql", %{query: @document, variables: %{}})
         |> json_response(200)
 

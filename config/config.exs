@@ -40,6 +40,10 @@ config :core, Core.Guardian,
   issuer: "forge",
   secret_key: "forge_secret"
 
+config :watchman, Watchman.Guardian,
+  issuer: "watchman",
+  secret_key: "watchman_secret"
+
 config :core, :chartmuseum, "http://localhost:8080"
 
 config :core, Core.Services.Payments,

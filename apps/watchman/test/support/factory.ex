@@ -24,4 +24,11 @@ defmodule Watchman.Factory do
       health: :healthy
     }
   end
+
+  def user_factory do
+    %Schema.User{
+      name: "Some User",
+      email: sequence(:user, &"user-#{&1}@example.com")
+    }
+  end
 end

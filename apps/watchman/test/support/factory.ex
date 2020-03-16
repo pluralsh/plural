@@ -31,4 +31,11 @@ defmodule Watchman.Factory do
       email: sequence(:user, &"user-#{&1}@example.com")
     }
   end
+
+  def invite_factory do
+    %Schema.Invite{
+      email: sequence(:invite, &"someone-#{&1}@example.com"),
+      secure_id: sequence(:invite, &"secure-#{&1}")
+    }
+  end
 end

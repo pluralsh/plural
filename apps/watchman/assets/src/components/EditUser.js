@@ -32,8 +32,8 @@ export default function EditUser() {
   const [attributes, setAttributes] = useState({name: me.name, email: me.email})
   const [password, setPassword] = useState('')
   useEffect(() => setBreadcrumbs([{text: 'me', url: '/me/edit'}]), [])
-  const variables = password && password.length > 0 ? {...attributes, password} : attributes
-  const [mutation, {loading}] = useMutation(UPDATE_USER, {variables})
+  const mergedAttributes = password && password.length > 0 ? {...attributes, password} : attributes
+  const [mutation, {loading}] = useMutation(UPDATE_USER, {variables: {attributes: mergedAttributes}})
 
   return (
     <Box pad='small'>

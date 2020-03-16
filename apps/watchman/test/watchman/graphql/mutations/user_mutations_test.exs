@@ -41,4 +41,41 @@ defmodule Watchman.GraphQl.UserMutationsTest do
       assert updated["name"] == "new name"
     end
   end
+
+  describe "createInvite" do
+    test "It can create an invite" do
+      {:ok, %{data: %{"createInvite" => invite}}} = run_query("""
+        mutation CreateInvite($email: String!) {
+          createInvite(attributes: {email: $email}) {
+            secureId
+            email
+          }
+        }
+      """, %{"email" => "someone@example.com"})
+
+      assert invite["secureId"]
+      assert invite["email"] == "someone@example.com"
+    end
+  end
+
+  describe "signup" do
+    test "It can create a user from an invite" do
+      invite = insert(:invite)
+
+      {:ok, %{data: %{"signup" => user}}} = run_query("""
+        mutation Signup($invite: String!, $attributes: UserAttributes!) {
+          signup(inviteId: $invite, attributes: $attributes) {
+            jwt
+            email
+          }
+        }
+      """, %{"invite" => invite.secure_id, "attributes" => %{
+        "password" => "strong password",
+        "name" => "Some User"
+      }})
+
+      assert user["jwt"]
+      assert user["email"] == invite.email
+    end
+  end
 end

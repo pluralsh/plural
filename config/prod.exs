@@ -35,5 +35,6 @@ config :core, Core.Email.Mailer,
 
 config :watchman, Watchman.Cron,
   jobs: [
-    {"@daily", {Watchman.Cron.Jobs, :prune_builds, []}}
+    {"@daily", {Watchman.Cron.Jobs, :prune_builds, []}},
+    {"@daily", {Watchman.Cron.Jobs, :prune_invites, []}}
   ]

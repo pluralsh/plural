@@ -33,10 +33,22 @@ defmodule Watchman.GraphQl do
       resolve fn _, %{context: %{current_user: user}} -> {:ok, user} end
     end
 
+    field :invite, :invite do
+      arg :id, non_null(:string)
+
+      resolve &User.resolve_invite/2
+    end
+
     connection field :builds, node_type: :build do
       middleware Authenticated
 
       resolve &Build.list_builds/2
+    end
+
+    connection field :users, node_type: :user do
+      middleware Authenticated
+
+      resolve &User.list_users/2
     end
 
     field :build, :build do
@@ -66,6 +78,19 @@ defmodule Watchman.GraphQl do
       arg :password, non_null(:string)
 
       resolve safe_resolver(&User.signin_user/2)
+    end
+
+    field :signup, :user do
+      arg :invite_id, non_null(:string)
+      arg :attributes, non_null(:user_attributes)
+
+      resolve safe_resolver(&User.signup_user/2)
+    end
+
+    field :create_invite, :invite do
+      arg :attributes, non_null(:invite_attributes)
+
+      resolve safe_resolver(&User.create_invite/2)
     end
 
     field :update_user, :user do

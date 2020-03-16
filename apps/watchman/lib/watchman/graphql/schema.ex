@@ -44,12 +44,17 @@ defmodule Watchman.GraphQl.Schema do
     field :url, non_null(:string)
   end
 
+  input_object :invite_attributes do
+    field :email, :string
+  end
+
   ## OBJECTS
 
   object :user do
     field :id, non_null(:id)
     field :name, non_null(:string)
     field :email, non_null(:string)
+    field :deleted_at, :datetime
 
     field :jwt, :string, resolve: fn
       %{id: id, jwt: jwt}, _, %{context: %{current_user: %{id: id}}} -> {:ok, jwt}
@@ -62,6 +67,11 @@ defmodule Watchman.GraphQl.Schema do
     end
 
     timestamps()
+  end
+
+  object :invite do
+    field :secure_id, non_null(:string)
+    field :email, :string
   end
 
   object :build do
@@ -132,4 +142,5 @@ defmodule Watchman.GraphQl.Schema do
   connection node_type: :command
   connection node_type: :installation
   connection node_type: :webhook
+  connection node_type: :user
 end

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useContext } from 'react'
 import { useLocation, useHistory } from 'react-router-dom'
-import { Deploy, Network, Configure, BarChart } from 'grommet-icons'
+import { Deploy, Network, Configure, BarChart, Group } from 'grommet-icons'
 import { Box, Text, Drop } from 'grommet'
 import { LoginContext } from './Login'
 import { Avatar } from './EditUser'
@@ -59,6 +59,7 @@ const OPTIONS = [
   {text: 'Builds', icon: <Deploy size={ICON_HEIGHT} />, path: '/'},
   {text: 'Configuration', icon: <Configure size={ICON_HEIGHT} />, path: '/config' },
   {text: 'Observability', icon: <BarChart size={ICON_HEIGHT} />, path: '/dashboards'},
+  {text: "Users", icon: <Group size={ICON_HEIGHT} />, path: '/users'},
   {text: 'Webhooks', icon: <Network size={ICON_HEIGHT} />, path: '/webhooks'},
 ]
 

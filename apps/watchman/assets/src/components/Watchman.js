@@ -10,6 +10,7 @@ import Configuration from './Configuration'
 import Dashboards from './Dashboards'
 import { EnsureLogin } from './Login'
 import EditUser from './EditUser'
+import Users from './Users'
 
 const SIDEBAR_WIDTH = '70px'
 
@@ -31,6 +32,7 @@ export default function Watchman() {
               <Route path='/dashboards/:repo' component={Dashboards} />
               <Route path='/dashboards' component={Dashboards} />
               <Route path='/me/edit' component={EditUser} />
+              <Route path='/users' component={Users} />
               <Route path='/' component={Builds} />
             </Switch>
           </Box>

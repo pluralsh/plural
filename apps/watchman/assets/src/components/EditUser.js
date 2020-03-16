@@ -15,7 +15,7 @@ export function Avatar({me, size, round, textSize, ...rest}) {
       justify='center'
       width={size}
       height={size}
-      background='#6b5b95'
+      background={me.backgroundColor}
       pad='small'
       round={round || 'xsmall'}
       {...rest}>

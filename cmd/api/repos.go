@@ -25,6 +25,13 @@ type IntegrationInput struct {
 	Tags        []Tag `json:"tags,omitempty" yaml:"tags"`
 }
 
+type RepositoryInput struct {
+	Dashboards []struct {
+		Name string
+		UID  string `json:"uid"`
+	}
+}
+
 const updateRepository = `
 	mutation UpdateRepository($name: String!, $input: ResourceDefinitionAttributes!) {
 		updateRepository(repositoryName: $name, attributes: {integrationResourceDefinition: $input}) {
@@ -36,6 +43,14 @@ const updateRepository = `
 const createIntegration = `
 	mutation CreateIntegration($name: String!, $attrs: IntegrationAttributes!) {
 		createIntegration(repositoryName: $name, attributes: $attrs) {
+			id
+		}
+	}
+`
+
+const updateRepo = `
+	mutation UpdateRepo($name: String!, $attrs: RepositoryAttributes!) {
+		updateRepository(repositoryName: $name, attributes: $attrs) {
 			id
 		}
 	}
@@ -63,10 +78,25 @@ func (client *Client) CreateIntegration(name string, input IntegrationInput) (st
 	return resp.Id, err
 }
 
-func ConstructResourceDefinition(marshalled []byte) (ResourceDefinitionInput, error) {
-	var def ResourceDefinitionInput
-	err := yaml.Unmarshal(marshalled, &def)
-	return def, err
+func (client *Client) UpdateRepository(name string, input RepositoryInput) (string, error) {
+	var resp struct {
+		Id string
+	}
+	req := client.Build(updateRepo)
+	req.Var("attrs", input)
+	req.Var("name", name)
+	err := client.Run(req, &resp)
+	return resp.Id, err
+}
+
+func ConstructRepositoryInput(marshalled []byte) (input RepositoryInput, err error) {
+	err = yaml.Unmarshal(marshalled, &input)
+	return
+}
+
+func ConstructResourceDefinition(marshalled []byte) (input ResourceDefinitionInput, err error) {
+	err = yaml.Unmarshal(marshalled, &input)
+	return
 }
 
 func ConstructIntegration(marshalled []byte) (IntegrationInput, error) {

@@ -45,61 +45,6 @@ function Container({children, onClick, hasNext, noPad}) {
   )
 }
 
-function Dashboards({repo: {id, dashboards, editable}}) {
-  const [dashboard, setDashboard] = useState({name: '', uid: ''})
-  const [mutation, {loading}] = useMutation(UPDATE_REPO, {
-    variables: {id, attributes: {dashboards: [...(dashboards.map(({name, uid}) => ({name, uid}))), dashboard]}},
-    update: (cache, { data: { updateRepository } }) => {
-      const prev = cache.readQuery({ query: REPO_Q, variables: {repositoryId: id} })
-      cache.writeQuery({query: REPO_Q, variables: {repositoryId: id}, data: {
-        ...prev,
-        repository: {
-          ...prev.repository,
-          ...updateRepository
-        }
-      }})
-    }
-  })
-
-  return (
-    <Box pad='small' gap='small'>
-      <Text size='small'><i>The following dashboards will be auto-installed in your cluster's grafana instance</i></Text>
-      <Box gap='xsmall' pad={{bottom: 'small'}}>
-        {dashboards.map(({name, uid}) => (
-          <Box key={uid} direction='row' gap='small' pad='xsmall' align='center'>
-            <Dashboard size='15px' />
-            <Text size='small'>{name} ({uid})</Text>
-            {editable && (
-              <Close style={{cursor: 'pointer'}} size='15px' onClick={() => mutation({
-                variables: {attributes: {dashboards: dashboards.filter((d) => d.uid !== uid)}}
-              })} />
-            )}
-          </Box>
-        ))}
-      </Box>
-      {editable && (
-        <Box gap='small' border='top' pad={{top: 'small'}}>
-          <Text size='small' weight='bold' style={{fontWeight: 500}}>Create more</Text>
-          <InputCollection>
-            <ResponsiveInput
-              label='name'
-              value={dashboard.name}
-              onChange={({target: {value}}) => setDashboard({...dashboard, name: value})} />
-            <ResponsiveInput
-              label='unique id'
-              value={dashboard.uid}
-              onChange={({target: {value}}) => setDashboard({...dashboard, uid: value})} />
-          </InputCollection>
-          <Box direction='row' justify='end'>
-            <Button loading={loading} label='Save' onClick={mutation} />
-          </Box>
-        </Box>
-      )}
-    </Box>
-  )
-}
-
-
 function Chart({chart, hasNext}) {
   let history = useHistory()
   return (
@@ -446,11 +391,6 @@ function DetailView({repository, terraform, dockerRepositories, charts, fetchMor
         <TabHeaderItem name='docker'>
           <Text style={{fontWeight: 500}} size='small'>Docker</Text>
         </TabHeaderItem>
-        {(repository.dashboards.length > 0 || repository.editable) && (
-          <TabHeaderItem name='dashboards'>
-            <Text style={{fontWeight: 500}} size='small'>Dashboards</Text>
-          </TabHeaderItem>
-        )}
         {repository.publicKey && (
           <TabHeaderItem name='credentials'>
             <Text style={{fontWeight: 500}} size='small'>Credentials</Text>
@@ -475,9 +415,6 @@ function DetailView({repository, terraform, dockerRepositories, charts, fetchMor
       </TabContent>
       <TabContent name='docker'>
         <DockerRepos repo={repository} {...dockerRepositories} fetchMore={fetchMore} />
-      </TabContent>
-      <TabContent name='dashboards'>
-        <Dashboards repo={repository} />
       </TabContent>
       <TabContent name='credentials'>
         <RepoCredentials {...repository} />

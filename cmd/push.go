@@ -49,6 +49,12 @@ func pushCommands() []cli.Command {
 			ArgsUsage: "path/to/def.yaml REPO",
 			Action:    handleArtifact,
 		},
+		{
+			Name:      "dashboard",
+			Usage:     "creates dashboards for a repository",
+			ArgsUsage: "path/to/def.yaml REPO",
+			Action:    handleDashboard,
+		},
 	}
 }
 
@@ -132,5 +138,22 @@ func handleArtifact(c *cli.Context) error {
 	}
 
 	_, err = client.CreateArtifact(c.Args().Get(1), input)
+	return err
+}
+
+func handleDashboard(c *cli.Context) error {
+	client := api.NewClient()
+	fullPath, _ := filepath.Abs(c.Args().Get(0))
+	contents, err := ioutil.ReadFile(fullPath)
+	if err != nil {
+		return err
+	}
+
+	input, err := api.ConstructRepositoryInput(contents)
+	if err != nil {
+		return err
+	}
+
+	_, err = client.UpdateRepository(c.Args().Get(1), input)
 	return err
 }

@@ -33,7 +33,13 @@ const resetToken = onError(({ response, networkError }) => {
   }
 });
 
-const socket = new PhoenixSocket(WS_URI)
+const socket = new PhoenixSocket(WS_URI, {
+  params: () => {
+    const token = fetchToken()
+    return token ? { Authorization: `Bearer ${token}`} : {}
+  }
+})
+
 const absintheSocket = AbsintheSocket.create(socket)
 
 const socketLink = createAbsintheSocketLink(absintheSocket)

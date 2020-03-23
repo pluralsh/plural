@@ -9,13 +9,13 @@ export default function Toolbar({me}) {
   return (
     <Box direction='row' fill='horizontal' pad={{left: 'small'}}>
       <Box width='100px' height='100%' justify='center'>
-        <Text
+        {/* <Text
           style={{cursor: 'pointer'}}
           size='small'
           weight='bold'
           onClick={() => history.push('/')}>
           Forge
-        </Text>
+        </Text> */}
       </Box>
       <Box direction='row' width='100%' align='center' justify='center'>
         <SearchRepositories />

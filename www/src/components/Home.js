@@ -5,11 +5,14 @@ import Publishers from './publisher/Publishers'
 import Explore from './Explore'
 import ScrollableContainer from './utils/ScrollableContainer'
 import { BreadcrumbContext } from './Forge'
+import { Search, Book } from 'grommet-icons'
+import { SidebarIcon } from './Sidebar'
 
+const ICON_HEIGHT = '20px'
 
 const OPTIONS = [
-  {text: 'Explore', path: '/explore'},
-  {text: 'Publishers', path: '/publishers'}
+  {text: 'Explore', icon: <Search size={ICON_HEIGHT} />, path: '/explore'},
+  {text: 'Publishers', icon: <Book size={ICON_HEIGHT} />, path: '/publishers'}
 ]
 
 function SidebarOption({text, path, active}) {
@@ -38,8 +41,8 @@ export default function Home() {
   return (
     <ScrollableContainer>
       <Box direction='row' height='100%'>
-        <Box width='200px' background='sidebar' height='100%'>
-          {OPTIONS.map((opt, ind) => <SidebarOption key={opt.path} active={ind === active} {...opt} />)}
+        <Box width='60px' background='sidebar' height='100%' elevation='medium' flex={false}>
+          {OPTIONS.map((opt, ind) => <SidebarIcon key={opt.path} selected={ind === active} {...opt} />)}
         </Box>
         <Switch>
           <Route path='/publishers' component={Publishers} />

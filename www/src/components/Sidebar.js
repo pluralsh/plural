@@ -4,7 +4,6 @@ import { Home } from 'grommet-icons'
 import { useHistory } from 'react-router-dom'
 
 const SIDEBAR_ROW_HEIGHT = '50px'
-const ICON_HEIGHT = '20px'
 
 export function SidebarIcon({icon, text, selected, path}) {
   const dropRef = useRef()

@@ -71,7 +71,7 @@ function ArtifactOption({onClick, text, border, round}) {
       as={optionHover}
       onClick={onClick}
       round={round}
-      pad={{vertical: 'xsmall', horizontal: 'small'}}
+      pad='small'
       border={border}>
       <Text size='small'>{text}</Text>
     </Box>
@@ -86,6 +86,7 @@ function WithBack({children, setAlternate}) {
       </Box>
       <Box
         as={hovered}
+        flex={false}
         onClick={() => setAlternate(null)}
         direction='row'
         align='center'

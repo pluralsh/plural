@@ -63,14 +63,16 @@ const OPTIONS = [
   {text: 'Webhooks', icon: <Network size={ICON_HEIGHT} />, path: '/webhooks'},
 ]
 
+const IMAGE_HEIGHT='55px'
+
 export default function Sidebar() {
   const loc = useLocation()
   const active = OPTIONS.findIndex(({path}) => path === loc.pathname)
 
   return (
     <Box background='sidebar' height='100vh'>
-      <Box flex={false} height='60px' justify='center' align='center' pad='small' margin={{bottom: 'medium'}}>
-        <img height='30px' width='30px' alt='' src={APP_ICON} />
+      <Box flex={false} height={IMAGE_HEIGHT} justify='center' align='center' pad='small' margin={{top: 'small', bottom: 'medium'}}>
+        <img height={IMAGE_HEIGHT} alt='' src={APP_ICON} />
       </Box>
       <Box fill='vertical'>
       {OPTIONS.map(({text, icon, path}, ind) => (

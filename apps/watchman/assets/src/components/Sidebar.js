@@ -6,7 +6,7 @@ import { LoginContext } from './Login'
 import { Avatar } from './EditUser'
 
 const SIDEBAR_ROW_HEIGHT = '50px'
-const APP_ICON = `${process.env.PUBLIC_URL}/watchman.png`
+const APP_ICON = `${process.env.PUBLIC_URL}/watchman.svg`
 
 function SidebarIcon({icon, text, selected, path}) {
   const dropRef = useRef()

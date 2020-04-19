@@ -36,7 +36,7 @@ export function SecondaryButton({onClick, label, pad, error, icon, textSize, ...
       onMouseLeave={() => setHover(false)}
       onClick={onClick}
       direction='row'
-      border
+      border={{color: '#bbbbbb'}}
       align='center'
       justify='center'
       elevation={hover ? 'small' : null}

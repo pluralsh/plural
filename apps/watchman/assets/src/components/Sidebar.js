@@ -6,7 +6,7 @@ import { LoginContext } from './Login'
 import { Avatar } from './EditUser'
 
 const SIDEBAR_ROW_HEIGHT = '50px'
-const APP_ICON = `${process.env.PUBLIC_URL}/watchman.svg`
+const APP_ICON = `${process.env.PUBLIC_URL}/watchman.png`
 
 function SidebarIcon({icon, text, selected, path}) {
   const dropRef = useRef()
@@ -63,7 +63,7 @@ const OPTIONS = [
   {text: 'Webhooks', icon: <Network size={ICON_HEIGHT} />, path: '/webhooks'},
 ]
 
-const IMAGE_HEIGHT='55px'
+const IMAGE_HEIGHT='35px'
 
 export default function Sidebar() {
   const loc = useLocation()

@@ -63,7 +63,7 @@ const OPTIONS = [
   {text: 'Webhooks', icon: <Network size={ICON_HEIGHT} />, path: '/webhooks'},
 ]
 
-const IMAGE_HEIGHT='35px'
+const IMAGE_HEIGHT='30px'
 
 export default function Sidebar() {
   const loc = useLocation()

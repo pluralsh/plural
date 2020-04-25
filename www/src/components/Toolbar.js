@@ -16,7 +16,7 @@ export default function Toolbar({me}) {
           size='small'
           weight='bold'
           onClick={() => history.push('/')}>
-          <Image src={FORGE_ICON} height='50px' />
+          <Image src={FORGE_ICON} height='30px' />
         </Text>
       </Box>
       <Box direction='row' width='100%' align='center' justify='center'>

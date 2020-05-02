@@ -16,6 +16,7 @@ function SidebarIcon({icon, text, selected, path}) {
     <>
     <Box
       ref={dropRef}
+      focusIndicator={false}
       align='center'
       justify='center'
       pad='small'
@@ -63,7 +64,7 @@ const OPTIONS = [
   {text: 'Webhooks', icon: <Network size={ICON_HEIGHT} />, path: '/webhooks'},
 ]
 
-const IMAGE_HEIGHT='30px'
+const IMAGE_HEIGHT='35px'
 
 export default function Sidebar() {
   const loc = useLocation()

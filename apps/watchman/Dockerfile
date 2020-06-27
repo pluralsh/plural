@@ -70,7 +70,7 @@ RUN go build -o /go/bin/forge
 
 FROM alpine:3 as helm
 
-ARG VERSION=2.12.0
+ARG VERSION=3.2.4
 ENV TERRAFORM_VERSION=0.12.18
 
 # ENV BASE_URL="https://storage.googleapis.com/kubernetes-helm"
@@ -131,8 +131,7 @@ ENV REPLACE_OS_VARS=true \
 
 WORKDIR /opt/app
 
-RUN helm init --client-only && \
-    helm plugin install https://github.com/chartmuseum/helm-push
+RUN helm plugin install https://github.com/chartmuseum/helm-push
 RUN mkdir -p /root/.ssh
 RUN chmod 0700 /root/.ssh
 RUN mkdir -p /root/.forge

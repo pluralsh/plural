@@ -117,14 +117,6 @@ func DefaultExecution(path string, prev *Execution) (e *Execution) {
 			Sha:     "",
 		},
 		{
-			Name:    "helm-init",
-			Wkdir:   path,
-			Target:  forgefile(path, "ONCE"),
-			Command: "forge",
-			Args:    []string{"wkspace", "helm-init", path},
-			Sha:     "",
-		},
-		{
 			Name:    "docker-credentials",
 			Wkdir:   path,
 			Target:  forgefile(path, "ONCE"),

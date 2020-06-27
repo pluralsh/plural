@@ -40,7 +40,8 @@ func handleInit(c *cli.Context) error {
 		return err
 	}
 
-	return initHelm("Workspace is properly configured!\n")
+	utils.Success("Workspace is properly configured!\n")
+	return nil
 }
 
 func handleImport(c *cli.Context) error {
@@ -69,7 +70,8 @@ func handleImport(c *cli.Context) error {
 		return err
 	}
 
-	return initHelm("Workspace properly imported\n")
+	utils.Success("Workspace properly imported\n")
+	return nil
 }
 
 func initHelm(success string) error {

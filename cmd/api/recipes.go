@@ -5,10 +5,16 @@ import (
 )
 
 type RecipeInput struct {
-	Name        string
-	Description string
-	Provider    string
-	Sections    []RecipeSectionInput
+	Name         string
+	Description  string
+	Provider     string
+	Sections     []RecipeSectionInput
+	Dependencies []DependencyInput
+}
+
+type DependencyInput struct {
+	Name string
+	Repo string
 }
 
 type RecipeSectionInput struct {
@@ -17,8 +23,8 @@ type RecipeSectionInput struct {
 }
 
 type RecipeItemInput struct {
-	Name 					string
-	Type 					string
+	Name          string
+	Type          string
 	Configuration []ConfigurationItemInput
 }
 
@@ -39,7 +45,7 @@ const createRecipe = `
 `
 
 func (client *Client) CreateRecipe(repoName string, attrs RecipeInput) (string, error) {
-	var resp struct{
+	var resp struct {
 		Id string
 	}
 	req := client.Build(createRecipe)

@@ -80,10 +80,16 @@ defmodule GraphQl.Schema.Inputs do
   end
 
   input_object :recipe_attributes do
-    field :name,        non_null(:string)
-    field :description, :string
-    field :provider,    :provider_input
-    field :sections,    list_of(:recipe_section_attributes)
+    field :name,         non_null(:string)
+    field :description,  :string
+    field :provider,     :provider_input
+    field :sections,     list_of(:recipe_section_attributes)
+    field :dependencies, list_of(:recipe_dependency_attributes)
+  end
+
+  input_object :recipe_dependency_attributes do
+    field :repo, non_null(:string)
+    field :name, non_null(:string)
   end
 
   input_object :recipe_section_attributes do

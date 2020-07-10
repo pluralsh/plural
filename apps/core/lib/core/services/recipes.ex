@@ -22,7 +22,7 @@ defmodule Core.Services.Recipes do
     start_transaction()
     |> add_operation(:recipe, fn _ ->
       %Recipe{repository_id: repository_id}
-      |> Recipe.changeset(attrs)
+      |> Recipe.changeset(build_dependencies(attrs))
       |> allow(user, :edit)
       |> when_ok(:insert)
     end)
@@ -93,7 +93,8 @@ defmodule Core.Services.Recipes do
     |> execute(extract: :create)
   end
 
-  @preloads [recipe_sections: [recipe_items: [:terraform, :chart]]]
+  @recipe_preloads [recipe_sections: [recipe_items: [:terraform, :chart]]]
+  @preloads [dependencies: [dependent_recipe: @recipe_preloads]] ++ @recipe_preloads
 
   @doc """
   Preloads a recipe, and properly topsorts the sections according to their
@@ -101,12 +102,21 @@ defmodule Core.Services.Recipes do
   """
   @spec hydrate(Recipe.t) :: Recipe.t
   def hydrate(%Recipe{} = recipe) do
-    %{recipe_sections: sections} = recipe = Core.Repo.preload(recipe, @preloads)
-    sections = Enum.map(sections, fn %{recipe_items: items} = section ->
-      %{section | recipe_items: topsort(items)}
-    end) |> Enum.sort_by(& &1.index)
+    %{recipe_sections: sections, dependencies: deps} = recipe = Core.Repo.preload(recipe, @preloads)
+    sections = sort_sections(sections)
+    dependencies =
+      Enum.sort_by(deps, & &1.index)
+      |> Enum.flat_map(fn %{dependent_recipe: %{recipe_sections: sections}} -> sort_sections(sections) end)
 
-    %{recipe | recipe_sections: sections}
+    %{recipe | recipe_sections: dependencies ++ sections}
+  end
+
+  defp sort_sections(sections) do
+    sections
+    |> Enum.map(fn %{recipe_items: items} = section ->
+      %{section | recipe_items: topsort(items)}
+    end)
+    |> Enum.sort_by(& &1.index)
   end
 
   defp install_items(transaction, items, id, user) do
@@ -185,6 +195,18 @@ defmodule Core.Services.Recipes do
       |> build_items({:section, repo_name}, repo, items)
     end)
   end
+
+  defp build_dependencies(%{dependencies: [_ | _] = deps} = attrs) do
+    dependencies =
+      Enum.with_index(deps)
+      |> Enum.map(fn {%{repo: repo, name: recipe}, ind} ->
+        repo = Repositories.get_repository_by_name!(repo)
+        recipe = get_by_name(recipe, repo.id)
+        %{dependent_recipe_id: recipe.id, index: ind}
+      end)
+    %{attrs | dependencies: dependencies}
+  end
+  defp build_dependencies(attrs), do: attrs
 
   defp build_items(transaction, section_key, repo, items) when is_list(items) do
     Enum.reduce(items, transaction, fn %{name: name} = item, acc ->

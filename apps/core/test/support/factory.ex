@@ -163,4 +163,11 @@ defmodule Core.Factory do
       plan: build(:plan)
     }
   end
+
+  def recipe_dependency_factory do
+    %Schema.RecipeDependency{
+      recipe: build(:recipe),
+      dependent_recipe: build(:recipe)
+    }
+  end
 end

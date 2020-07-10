@@ -12,9 +12,12 @@ defmodule Core.Services.RecipesTest do
       tf = insert(:terraform, repository: repo, name: "tf")
       other_repo = insert(:repository)
       other_chart = insert(:chart, repository: other_repo)
+      dep1 = insert(:recipe, repository: other_repo)
+      dep2 = insert(:recipe, repository: other_repo)
 
       {:ok, recipe} = Recipes.create(%{
         name: "recipe",
+        dependencies: [%{name: dep1.name, repo: other_repo.name}, %{name: dep2.name, repo: other_repo.name}],
         sections: [
           %{
             name: repo.name,
@@ -34,6 +37,15 @@ defmodule Core.Services.RecipesTest do
 
       assert recipe.repository_id == repo.id
       assert recipe.name == "recipe"
+
+      [first, second] = recipe.dependencies
+      assert first.index == 0
+      assert first.recipe_id == recipe.id
+      assert first.dependent_recipe_id == dep1.id
+
+      assert second.index == 1
+      assert second.recipe_id == recipe.id
+      assert second.dependent_recipe_id == dep2.id
 
       repo_section = Enum.find(recipe.recipe_sections, & &1.repository_id == repo.id)
       other_repo_section = Enum.find(recipe.recipe_sections, & &1.repository_id == other_repo.id)

@@ -32,7 +32,7 @@ spec:
         - name: HOST
           value: {{ .Values.ingress.dns }}
         - name: DEPLOYED_AT
-          value: {{ .Release.Time }}
+          value: {{ now | unixEpoch | quote }}
         - name: NAMESPACE
           valueFrom:
             fieldRef:
@@ -113,7 +113,7 @@ spec:
         - name: PORT
           value: '8080'
         - name: DEPLOYED_AT
-          value: {{ .Release.Time }}
+          value: {{ now | unixEpoch | quote }}
         - name: DEPTH
           value: '1'
         - name: CONTEXT_PATH
@@ -189,7 +189,7 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
         - name: DEPLOYED_AT
-          value: {{ .Release.Time }}
+          value: {{ now | unixEpoch | quote }}
         ports:
         - name: http
           containerPort: {{ .Values.www.port }}

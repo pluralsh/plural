@@ -298,7 +298,7 @@ defmodule GraphQl.Schema.Types do
     field :description,     :string
     field :provider,        :provider
     field :repository,      :repository, resolve: dataloader(Repository)
-    field :recipe_sections, list_of(:recipe_section), resolve: dataloader(Recipe)
+    field :recipe_sections, list_of(:recipe_section)
 
     timestamps()
   end

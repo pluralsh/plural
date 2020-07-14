@@ -12,8 +12,15 @@ defmodule GraphQl.RecipeMutationsTest do
       other_repo = insert(:repository)
       other_chart = insert(:chart, repository: other_repo)
 
+      third_repo = insert(:repository)
+      recipe = insert(:recipe, repository: third_repo)
+      section = insert(:recipe_section, recipe: recipe, repository: third_repo, index: 1)
+      third_chart = insert(:chart, repository: third_repo)
+      insert(:recipe_item, recipe_section: section, chart: third_chart)
+
       attrs = %{
         name: "recipe",
+        dependencies: [%{name: recipe.name, repo: third_repo.name}],
         sections: [
           %{
             name: repo.name,
@@ -57,12 +64,12 @@ defmodule GraphQl.RecipeMutationsTest do
 
       sections = created["recipeSections"]
       assert Enum.map(sections, & &1["repository"])
-             |> ids_equal([repo, other_repo])
+             |> ids_equal([repo, other_repo, third_repo])
 
       items = Enum.flat_map(sections, & &1["recipeItems"])
       assert Enum.map(items, & &1["chart"])
              |> Enum.filter(& &1)
-             |> ids_equal([chart, other_chart])
+             |> ids_equal([chart, other_chart, third_chart])
 
       assert Enum.map(items, & &1["terraform"])
              |> Enum.filter(& &1)

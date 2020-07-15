@@ -118,7 +118,7 @@ function IntegrationGrid({integrations: {edges, pageInfo}, fetchMore}) {
       style={{overflow: 'auto', height: '100%', width: '100%'}}
       edges={Array.from(chunk(edges, 3))}
       mapper={(chunk) => (
-        <Box key={chunk[0].id} direction='row' gap='small' fill='horizontal'>
+        <Box key={chunk[0].id} direction='row' gap='small' fill='horizontal' margin={{bottom: 'small'}}>
           {chunk.map(({node}) => <Integration key={node.id} {...node} width='30%' />)}
         </Box>
       )}

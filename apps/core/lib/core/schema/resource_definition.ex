@@ -11,7 +11,7 @@ defmodule Core.Schema.ResourceDefinition do
       field :name, :string
       field :required, :boolean, default: false
 
-      embeds_many :spec, __MODULE__
+      embeds_many :spec, __MODULE__, on_replace: :delete
     end
 
     @valid ~w(type name)a
@@ -27,7 +27,7 @@ defmodule Core.Schema.ResourceDefinition do
   schema "resource_definitions" do
     field :name, :string
 
-    embeds_many :spec, Specification
+    embeds_many :spec, Specification, on_replace: :delete
 
     timestamps()
   end

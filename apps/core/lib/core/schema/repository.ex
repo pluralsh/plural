@@ -21,7 +21,7 @@ defmodule Core.Schema.Repository do
     field :private_key,   Piazza.Ecto.EncryptedString
     field :secrets,       :map
 
-    belongs_to :integration_resource_definition, ResourceDefinition
+    belongs_to :integration_resource_definition, ResourceDefinition, on_replace: :update
     belongs_to :publisher, Publisher
 
     has_many :installations, Installation

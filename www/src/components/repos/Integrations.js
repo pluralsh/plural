@@ -122,24 +122,18 @@ function IntegrationGrid({integrations: {edges, pageInfo}, fetchMore}) {
           {chunk.map(({node}) => <Integration key={node.id} {...node} width='30%' />)}
         </Box>
       )}
-      onLoadMore={() => {
-        if (!pageInfo.hasNextPage) return
-
-        fetchMore({
+      onLoadMore={() => pageInfo.hasNextPage && fetchMore({
           variables: {intCursor: pageInfo.endCursor},
           updateQuery: (prev, {fetchMoreResult}) => {
             const {edges, pageInfo} = fetchMoreResult.integrations
-            return edges.length ? {
-              ...prev,
-              integrations: {
+            return {...prev, integrations: {
                 ...prev.integrations,
                 pageInfo,
                 edges: [...prev.integrations.edges, ...edges]
               }
-            } : prev
+            }
           }
-        })
-      }} />
+        })} />
   )
 }
 

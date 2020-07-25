@@ -1,13 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Box, Text, FormField, TextInput } from 'grommet'
 import { useQuery, useMutation } from 'react-apollo'
+import { Scroller, Button, Modal, ModalHeader, Copyable } from 'forge-core'
 import { USERS_Q, INVITE_USER } from './graphql/users'
-import Scroller from './utils/Scroller'
 import { Avatar } from './EditUser'
 import { BreadcrumbsContext } from './Breadcrumbs'
-import Button from './utils/Button'
-import Modal, { ModalHeader } from './utils/Modal'
-import Copyable from './utils/Copyable'
 
 function User({user}) {
   return (

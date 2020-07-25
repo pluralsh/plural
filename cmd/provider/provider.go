@@ -19,7 +19,7 @@ type Provider interface {
 }
 
 func Select() (Provider, error) {
-	available := []string{GCP}
+	available := []string{GCP, AWS}
 	path := manifest.ProjectManifestPath()
 	if utils.Exists(path) {
 		if project, err := manifest.ReadProject(path); err == nil {
@@ -60,6 +60,8 @@ func FromManifest(man *manifest.Manifest) (Provider, error) {
 	switch man.Provider {
 	case GCP:
 		return gcpFromManifest(man)
+	case AWS:
+		return awsFromManifest(man)
 	default:
 		return nil, fmt.Errorf("Invalid provider name: %s", man.Provider)
 	}
@@ -69,6 +71,8 @@ func New(provider string) (Provider, error) {
 	switch provider {
 	case GCP:
 		return mkGCP()
+	case AWS:
+		return mkAWS()
 	default:
 		return nil, fmt.Errorf("Invalid provider name: %s", provider)
 	}

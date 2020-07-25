@@ -1,20 +1,17 @@
 import React, { useEffect, useState, useContext, useRef } from 'react'
 import { useParams, useHistory } from 'react-router-dom'
 import { useQuery, useMutation } from 'react-apollo'
+import { ScrollableContainer, Modal, ModalHeader, Button, Loading } from 'forge-core'
 import { Box, Text } from 'grommet'
 import Line from 'react-lazylog/build/Line'
 import { ansiparse } from './utils/ansi'
 import { BUILD_Q, COMMAND_SUB, BUILD_SUB, CREATE_BUILD } from './graphql/builds'
-import Loading from './utils/Loading'
-import ScrollableContainer from './utils/ScrollableContainer'
 import { mergeEdges } from './graphql/utils'
 import moment from 'moment'
 import { Checkmark, StatusCritical } from 'grommet-icons'
 import { BeatLoader } from 'react-spinners'
 import { BreadcrumbsContext } from './Breadcrumbs'
 import './build.css'
-import Modal, { ModalHeader } from './utils/Modal'
-import Button from './utils/Button'
 
  const HEADER_PADDING = {horizontal: 'medium', vertical: 'small'}
 

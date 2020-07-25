@@ -1,11 +1,9 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { Box, Text } from 'grommet'
+import { InputCollection, ResponsiveInput, Expander, Button } from 'forge-core'
 import { LoginContext } from './Login'
-import { InputCollection, ResponsiveInput } from './utils/InputField'
-import Expander from './utils/Expander'
 import { useMutation } from 'react-apollo'
 import { BreadcrumbsContext } from './Breadcrumbs'
-import Button from './utils/Button'
 import { UPDATE_USER } from './graphql/users'
 
 export function Avatar({me, size, round, textSize, ...rest}) {

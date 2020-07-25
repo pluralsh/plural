@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useQuery, useMutation } from 'react-apollo'
 import { Box, Keyboard, Text, FormField, TextInput } from 'grommet'
-import Button from './utils/Button'
+import { Button } from 'forge-core'
 import { setToken, wipeToken } from '../helpers/auth'
 import { ME_Q, SIGNIN } from './graphql/users'
 

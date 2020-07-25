@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { useParams } from 'react-router'
 import { useMutation, useQuery } from 'react-apollo'
+import { Button } from 'forge-core'
 import { SIGNUP, INVITE_Q } from './graphql/users'
 import { Box, Keyboard, FormField, TextInput, Text } from 'grommet'
-import Button from './utils/Button'
 import { setToken } from '../helpers/auth'
 
 function InvalidInvite() {

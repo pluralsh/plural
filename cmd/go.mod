@@ -7,6 +7,8 @@ require (
 	github.com/Masterminds/goutils v1.1.0 // indirect
 	github.com/Masterminds/semver v1.5.0 // indirect
 	github.com/Masterminds/sprig v2.22.0+incompatible
+	github.com/aws/aws-sdk-go v1.33.11
+	github.com/aws/aws-sdk-go-v2 v0.24.0 // indirect
 	github.com/cheggaaa/pb/v3 v3.0.4
 	github.com/docker/libtrust v0.0.0-20160708172513-aabc10ec26b7
 	github.com/fatih/color v1.7.0

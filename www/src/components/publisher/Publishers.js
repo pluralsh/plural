@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState, useRef } from 'react'
 import { Box, Text, Anchor, Drop } from 'grommet'
 import { useQuery } from 'react-apollo'
 import { useHistory } from 'react-router-dom'
-import Scroller from '../utils/Scroller'
+import { Scroller } from 'forge-core'
 import { PUBLISHERS_Q } from './queries'
 import Avatar from '../users/Avatar'
 import { BreadcrumbContext } from '../Forge'
@@ -19,7 +19,7 @@ function RepoStub({id, icon, name}) {
   return (
     <Box
       ref={dropRef}
-      style={{cursor: 'pointer'}}
+      focusIndicator={false}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       onClick={() => history.push(`/publishers/${id}`)}
@@ -41,11 +41,7 @@ function Publisher({publisher: {id, name, owner, description, repositories}}) {
   let history = useHistory()
 
   return (
-    <Container
-      style={{cursor: 'pointer'}}
-      direction='row'
-      gap='small'
-      onClick={() => history.push(`/publishers/${id}`)}>
+    <Container direction='row' gap='small' onClick={() => history.push(`/publishers/${id}`)}>
       <Avatar size='65px' user={owner} />
       <Box>
         <Anchor onClick={() => history.push(`/publishers/${id}`)} size='small' weight='bold'>

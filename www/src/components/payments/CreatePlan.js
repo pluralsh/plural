@@ -2,13 +2,11 @@ import React, { useState } from 'react'
 import { LabeledInput } from '../repos/CreateRepository'
 import { TextInput, Box, Select, Layer, Text, Anchor } from 'grommet'
 import { FaDollarSign } from 'react-icons/fa'
-import Button, { SecondaryButton } from '../utils/Button'
-import { ModalHeader } from '../utils/Modal'
+import { Button, SecondaryButton, ModalHeader, HoveredBackground } from 'forge-core'
 import { FormPrevious, Cube, FormNext, Trash } from 'grommet-icons'
 import { useMutation } from 'react-apollo'
 import { CREATE_PLAN } from './queries'
 import { REPO_Q } from '../repos/queries'
-import HoveredBackground from '../utils/HoveredBackground'
 
 const FEATURES = 'features'
 const LINE_ITEMS = 'items'
@@ -33,8 +31,8 @@ function LineItem({item: {cost, name, dimension}, included, state, setState}) {
         {name} - ${cost / 100} / {dimension} ({quantity} included)
       </Text>
       <HoveredBackground>
-        <Box accentable style={{cursor: 'pointer'}} margin={{left: 'small'}}>
-          <Trash size='15px' onClick={() => setState(removeItem())} />
+        <Box accentable focusIndicator={false} margin={{left: 'small'}} onClick={() => setState(removeItem())}>
+          <Trash size='15px'  />
         </Box>
       </HoveredBackground>
     </Box>
@@ -49,8 +47,8 @@ function Feature({name, description, removeFeature}) {
         <Text size='small'><i>{description}</i></Text>
       </Box>
       <HoveredBackground>
-        <Box accentable style={{cursor: 'pointer'}}>
-          <Trash size='15px' onClick={() => removeFeature(name)} />
+        <Box accentable focusIndicator={false} onClick={() => removeFeature(name)}>
+          <Trash size='15px' />
         </Box>
       </HoveredBackground>
     </Box>

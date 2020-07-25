@@ -1,12 +1,10 @@
 import React, { useState } from 'react'
 import { useQuery, useMutation } from 'react-apollo'
+import { ModalHeader, Button, SecondaryButton, InputCollection, ResponsiveInput, ResponsiveInputContainer } from 'forge-core'
 import { RECIPE_Q, INSTALL_RECIPE, REPO_Q } from './queries'
 import { Layer, Box, Text, CheckBox } from 'grommet'
-import { ModalHeader } from '../utils/Modal'
-import Button, { SecondaryButton } from '../utils/Button'
 import { RepositoryIcon } from './Repository'
 import { DEFAULT_CHART_ICON, DEFAULT_TF_ICON } from './constants'
-import { InputCollection, ResponsiveInput, ResponsiveInputContainer } from '../utils/InputField'
 
 function SubHeading({size, icon, name, description}) {
   return (

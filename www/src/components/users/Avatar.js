@@ -1,5 +1,5 @@
 import React from 'react'
-import {Box, Text} from 'grommet'
+import { Box, Text } from 'grommet'
 
 function initials(name) {
   return name
@@ -8,7 +8,7 @@ function initials(name) {
           .join('')
 }
 
-function Avatar({size, user}) {
+export default function Avatar({size, user}) {
   return (
     <Box
       round='xsmall'
@@ -24,5 +24,3 @@ function Avatar({size, user}) {
     </Box>
   )
 }
-
-export default Avatar

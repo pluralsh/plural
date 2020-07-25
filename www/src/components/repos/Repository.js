@@ -3,11 +3,10 @@ import { Box, Text, Anchor, Table, TableHeader, TableRow, TableCell, TableBody, 
 import { Bundle, FormPrevious, Dashboard, Close } from 'grommet-icons'
 import { useQuery, useMutation } from 'react-apollo'
 import { useParams, useHistory } from 'react-router-dom'
-import Scroller from '../utils/Scroller'
+import { Scroller, Button, SecondaryButton, Modal, ModalHeader, Tabs, TabHeader,
+        TabHeaderItem, TabContent, BORDER_COLOR, ScrollableContainer,
+        InputCollection, ResponsiveInput } from 'forge-core'
 import yaml from 'js-yaml'
-import Button, { SecondaryButton } from '../utils/Button'
-import Modal, { ModalHeader } from '../utils/Modal'
-import Tabs, { TabHeader, TabHeaderItem, TabContent, BORDER_COLOR } from '../utils/Tabs'
 import { REPO_Q, UPDATE_REPO, DOCKER_IMG_Q } from './queries'
 import { DEFAULT_CHART_ICON, DEFAULT_TF_ICON, DEFAULT_DKR_ICON } from './constants'
 import Installation from './Installation'
@@ -17,25 +16,20 @@ import { BreadcrumbContext } from '../Forge'
 import Highlight from 'react-highlight'
 import Recipes from './Recipes'
 import moment from 'moment'
-import ScrollableContainer from '../utils/ScrollableContainer'
 import { Provider } from './misc'
 import Artifacts from './Artifacts'
 import AceEditor from "react-ace"
 import "ace-builds/src-noconflict/mode-yaml"
 import "ace-builds/src-noconflict/theme-terminal"
-import { InputCollection, ResponsiveInput } from '../utils/InputField'
 import Integrations from './Integrations'
 
 function Container({children, onClick, hasNext, noPad}) {
-  const [hover, setHover] = useState(false)
 
   return (
     <Box
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
       onClick={onClick}
-      style={{cursor: 'pointer'}}
-      background={hover ? 'light-2' : null}
+      focusIndicator={false}
+      hoverIndicator='light-2'
       pad={noPad ? null : 'small'}
       direction='row'
       border={hasNext ? {side: 'bottom', color: BORDER_COLOR} : null}

@@ -1,16 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import {useParams, useHistory} from 'react-router-dom'
-import Carousel from '../utils/Carousel'
+import { Carousel, ScrollableContainer, Scroller, HoveredBackground } from 'forge-core'
 import { Box, Text, Anchor, Stack } from 'grommet'
 import { INTEGRATIONS_Q } from './queries'
 import { useQuery } from 'react-apollo'
 import { BreadcrumbContext } from '../Forge'
-import ScrollableContainer from '../utils/ScrollableContainer'
 import Tags from './Tags'
 import { chunk } from '../../utils/array'
-import Scroller from '../utils/Scroller'
-import HoveredBackground from '../utils/HoveredBackground'
 import { FormPrevious, FormNextLink } from 'grommet-icons'
 import { normalizeColor } from 'grommet/utils'
 import { DetailContainer } from './Installation'
@@ -58,8 +55,8 @@ const containerStyling = styled.div`
   border-color: ${props => normalizeColor('light-4', props.theme)};
   border-width: 1px;
   border-style: solid;
-  border-radius: ${props => props.theme.global.edgeSize[props.round || 'medium']}
-  width: ${props => props.width};
+  border-radius: ${props => props.theme.global.edgeSize[props.round || 'medium']} !important;
+  ${props => props.width && `width: ${props.width} !important;`}
 
   ${props => !props.noHover && `&:hover {
       border-color: ${normalizeColor('brand', props.theme)};
@@ -81,7 +78,7 @@ export function Container({pad, width, hover, setHover, children, modifier, noHo
       anchor="top-right"
       onMouseEnter={() => setHover && setHover(true)}
       onMouseLeave={() => setHover && setHover(false)}>
-      <Box height='100%' width='100%' pad={pad || 'medium'} round='xsmall' {...rest}>
+      <Box height='100%' width='100%' pad={pad || 'medium'} round='xsmall' focusIndicator={false} {...rest}>
       {children}
       </Box>
       <Box className='modifier' margin={{top: 'xsmall', right: 'xsmall'}}>
@@ -142,7 +139,7 @@ export function TagHeader({tag, setTag}) {
     <HoveredBackground>
       <Box
       accentable
-      style={{cursor: 'pointer'}}
+      focusIndicator={false}
       align='center'
       direction='row'
       onClick={() => setTag(null)}>

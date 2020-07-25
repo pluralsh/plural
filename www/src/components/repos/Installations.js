@@ -2,12 +2,11 @@ import React from 'react'
 import { Box, Text } from 'grommet'
 import { Trash} from 'grommet-icons'
 import { useHistory } from 'react-router-dom'
+import { Scroller, HoveredBackground } from 'forge-core'
 import { useQuery, useMutation } from 'react-apollo'
 import { INSTALLATIONS_Q, DELETE_INSTALLATION } from './queries'
 import { Repository, RepositoryInner } from './Repositories'
-import Scroller from '../utils/Scroller'
 import { Container } from './Integrations'
-import HoveredBackground from '../utils/HoveredBackground'
 import { chunk } from '../../utils/array'
 
 function NoInstallations() {
@@ -37,8 +36,8 @@ function DeleteInstallation({installation}) {
 
   return (
     <HoveredBackground>
-      <Box accentable width='20px' style={{cursor: 'pointer'}} margin={{top: 'xsmall'}}>
-        <Trash size='15px' onClick={mutation} />
+      <Box accentable width='20px' margin={{top: 'xsmall'}}  onClick={mutation}>
+        <Trash size='15px' />
       </Box>
     </HoveredBackground>
   )
@@ -50,7 +49,6 @@ function EditableInstallation({installation}) {
     <Container
       width='48%'
       onClick={() => history.push(`/repositories/${installation.repository.id}`)}
-      style={{cursor: 'pointer'}}
       modifier={<DeleteInstallation installation={installation} />}>
       <RepositoryInner repo={installation.repository} />
     </Container>

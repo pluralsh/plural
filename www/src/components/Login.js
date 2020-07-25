@@ -2,8 +2,7 @@ import React, { useState } from 'react'
 import { useMutation } from 'react-apollo'
 import gql from 'graphql-tag'
 import {Box, Form, Keyboard, FormField, Text, Anchor} from 'grommet'
-import Error from './utils/Error'
-import Button from './utils/Button'
+import { Error, Button } from 'forge-core'
 import {fetchToken, setToken} from '../helpers/authentication'
 
 const SIGNUP_MUTATION = gql`

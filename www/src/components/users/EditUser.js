@@ -1,21 +1,15 @@
-import React, {useContext, useState, useEffect} from 'react'
-import {Box, Text} from 'grommet'
-import {Trash} from 'grommet-icons'
-import {useMutation, useQuery} from 'react-apollo'
-import {UPDATE_USER, CREATE_TOKEN, TOKENS_Q, DELETE_TOKEN} from './queries'
-import { InputCollection, ResponsiveInput } from '../utils/InputField'
-import Button from '../utils/Button'
-import {CurrentUserContext} from '../login/CurrentUser'
+import React, { useContext, useState, useEffect } from 'react'
+import { Box, Text } from 'grommet'
+import { Trash } from 'grommet-icons'
+import { useMutation, useQuery } from 'react-apollo'
+import { UPDATE_USER, CREATE_TOKEN, TOKENS_Q, DELETE_TOKEN } from './queries'
+import { InputCollection, ResponsiveInput, Button, Scroller, Copyable, Expander, HoveredBackground, BORDER_COLOR } from 'forge-core'
+import { CurrentUserContext } from '../login/CurrentUser'
 import Avatar from '../users/Avatar'
-import Scroller from '../utils/Scroller'
 import moment from 'moment'
-import Copyable from '../utils/Copyable'
-import {BreadcrumbContext} from '../Forge'
-import Expander from '../utils/Expander'
+import { BreadcrumbContext } from '../Forge'
 import Installations from '../repos/Installations'
 import Webhooks from './Webhooks'
-import HoveredBackground from '../utils/HoveredBackground'
-import { BORDER_COLOR } from '../utils/Tabs'
 import { DetailContainer } from '../repos/Installation'
 
 const LABEL_WIDTH = '60px'
@@ -55,8 +49,8 @@ function Token({token: {token, insertedAt, id}, hasNext}) {
       <Box width={CELL_WIDTH} pad='xsmall' direction='row' gap='medium' align='center' justify='end'>
         <Text size='small'>{moment(insertedAt).fromNow()}</Text>
         <HoveredBackground>
-          <Box accentable pad='xsmall' style={{cursor: 'pointer'}}>
-            <Trash size='12px' onClick={mutation} />
+          <Box accentable pad='xsmall' focusIndicator={false} onClick={mutation}>
+            <Trash size='12px' />
           </Box>
         </HoveredBackground>
       </Box>

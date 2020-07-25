@@ -1,9 +1,9 @@
 import React, {useState, useContext, useEffect} from 'react'
 import {Box, Text} from 'grommet'
 import { Switch, Route, useHistory, useLocation } from 'react-router-dom'
+import { ScrollableContainer } from 'forge-core'
 import Publishers from './publisher/Publishers'
 import Explore from './Explore'
-import ScrollableContainer from './utils/ScrollableContainer'
 import { BreadcrumbContext } from './Forge'
 import { Search, Book } from 'grommet-icons'
 import { SidebarIcon } from './Sidebar'
@@ -20,7 +20,7 @@ function SidebarOption({text, path, active}) {
   let hist = useHistory()
   return (
     <Box
-      style={{cursor: 'pointer'}}
+      focusIndicator={false}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       border={active ? {size: '3px', side: 'left', color: 'focus'} : null}

@@ -18,7 +18,7 @@ export function SidebarIcon({icon, text, selected, path}) {
       pad='small'
       gap='small'
       height={SIDEBAR_ROW_HEIGHT}
-      style={{cursor: 'pointer'}}
+      focusIndicator={false}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       onClick={() => history.push(path)}

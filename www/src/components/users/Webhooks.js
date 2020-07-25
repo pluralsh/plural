@@ -1,17 +1,10 @@
-import React, {useState} from 'react'
-import {Box, Text, Layer, Anchor, Table, TableBody, TableRow, TableCell} from 'grommet'
-import {Refresh} from 'grommet-icons'
-import {useQuery, useMutation} from 'react-apollo'
-import { WEBHOOKS_Q, PING_WEBHOOK} from './queries'
-import Scroller from '../utils/Scroller'
-import {ModalHeader} from '../utils/Modal'
-import Button from '../utils/Button'
-import Copyable from '../utils/Copyable'
-import InputField from '../utils/InputField'
+import React, { useState } from 'react'
+import { Box, Text, Layer, Anchor, Table, TableBody, TableRow, TableCell } from 'grommet'
+import { Refresh } from 'grommet-icons'
+import { useQuery, useMutation } from 'react-apollo'
+import { WEBHOOKS_Q, PING_WEBHOOK } from './queries'
+import { Scroller, ModalHeader, Button, Copyable, InputField, HoveredBackground, BORDER_COLOR } from 'forge-core'
 import moment from 'moment'
-import HoveredBackground from '../utils/HoveredBackground'
-import { BORDER_COLOR } from '../utils/Tabs'
-
 
 const LABEL_WIDTH = '60px'
 const CELL_WIDTH='200px'
@@ -73,7 +66,7 @@ function PingWebhook({id, url}) {
   return (
     <>
     <HoveredBackground>
-      <Box accentable style={{cursor: 'pointer'}} pad='xsamll' onClick={() => setOpen(true)}>
+      <Box accentable focusIndicator={false} pad='xsamll' onClick={() => setOpen(true)}>
         <Refresh size='18px'  />
       </Box>
     </HoveredBackground>

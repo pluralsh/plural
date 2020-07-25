@@ -1,6 +1,6 @@
 import React from 'react'
-import {useHistory} from 'react-router-dom'
-import {Box, Text, Image} from 'grommet'
+import { useHistory } from 'react-router-dom'
+import { Box, Text, Image } from 'grommet'
 import Me from './users/Me'
 import SearchRepositories from './repos/SearchRepositories'
 
@@ -10,12 +10,8 @@ export default function Toolbar({me}) {
   let history = useHistory()
   return (
     <Box direction='row' fill='horizontal' pad={{left: 'small'}}>
-      <Box width='100px' height='100%' justify='center' align='center'>
-        <Text
-          style={{cursor: 'pointer'}}
-          size='small'
-          weight='bold'
-          onClick={() => history.push('/')}>
+      <Box focusIndicator={false} width='100px' height='100%' justify='center' align='center' onClick={() => history.push('/')}>
+        <Text size='small' weight='bold'>
           <Image src={FORGE_ICON} height='30px' />
         </Text>
       </Box>

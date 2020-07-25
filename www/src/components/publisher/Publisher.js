@@ -2,11 +2,11 @@ import React, {useEffect, useContext} from 'react'
 import {Box, Text} from 'grommet'
 import {useQuery} from 'react-apollo'
 import {useParams} from 'react-router-dom'
+import { InputCollection, ResponsiveInputContainer } from 'forge-core'
 import {PUBLISHER_Q} from './queries'
 import Repositories from '../repos/Repositories'
 import Avatar from '../users/Avatar'
 import {BreadcrumbContext} from '../Forge'
-import { InputCollection, ResponsiveInputContainer } from '../utils/InputField'
 import { DetailContainer } from '../repos/Installation'
 
 function formatAddress({line1, line2, city, state, country, zip}) {

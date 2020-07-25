@@ -8,12 +8,11 @@ import CardDisplay from 'react-credit-cards'
 import 'react-credit-cards/es/styles-compiled.css';
 import './stripe.css'
 
-import Button from '../utils/Button'
+import { Button, HoveredBackground } from 'forge-core'
 import { TagContainer } from '../repos/Tags'
 import { TOOLBAR_SIZE } from '../Forge'
 import { Visa, Mastercard, Amex, Trash } from 'grommet-icons'
 import { FaCreditCard } from 'react-icons/fa'
-import HoveredBackground from '../utils/HoveredBackground'
 
 function _CardForm({stripe, header, onCompleted}) {
   const [mutation, {loading}] = useMutation(REGISTER_CARD, {
@@ -78,7 +77,7 @@ function DeleteCard({card: {id}}) {
     <HoveredBackground>
       <Box
         accentable
-        style={{cursor: 'pointer'}}
+        focusIndicator={false}
         onClick={() => !loading && mutation()}
         margin={{top: 'xsmall', right: 'xsmall'}}
         round='xsmall'

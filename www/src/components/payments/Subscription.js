@@ -2,11 +2,9 @@ import React, { useState } from 'react'
 import { Box, Text, Anchor, Layer } from 'grommet'
 import { LineItemIcon } from './Plan'
 import { subscriptionCost, updateSubscription, pivotByDimension } from './utils'
-import { ModalHeader } from '../utils/Modal'
-import NumericInput from '../utils/NumericInput'
+import { Modal, ModalHeader, NumericInput, Button } from 'forge-core'
 import { useMutation } from 'react-apollo'
 import { UPDATE_LINE_ITEM } from './queries'
-import Button from '../utils/Button'
 
 function LineItemUpdate({lineItem: {cost}, dimension, quantity, subscription, repository, setOpen}) {
   const [value, setValue] = useState(quantity)

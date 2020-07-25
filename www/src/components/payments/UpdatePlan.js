@@ -2,9 +2,8 @@ import React from 'react'
 import { Box, Layer, Text } from 'grommet'
 import { useMutation } from 'react-apollo'
 import { UPDATE_PLAN } from './queries'
+import { ModalHeader, Button } from 'forge-core'
 import { updateSubscription } from './utils'
-import { ModalHeader } from '../utils/Modal'
-import Button from '../utils/Button'
 
 export default function UpdatePlan({plan, repository: {id, installation: {subscription}}, setOpen}) {
   const [mutation, {loading}] = useMutation(UPDATE_PLAN, {

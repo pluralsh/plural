@@ -1,12 +1,11 @@
 import React from 'react'
-import {Box, Text, Anchor} from 'grommet'
-import {Trash} from 'grommet-icons'
-import {useQuery, useMutation} from 'react-apollo'
-import {useHistory} from 'react-router-dom'
-import Scroller from '../utils/Scroller'
-import {REPOS_Q, DELETE_REPO} from './queries'
+import { Box, Text, Anchor } from 'grommet'
+import { Scroller, HoveredBackground } from 'forge-core'
+import { Trash } from 'grommet-icons'
+import { useQuery, useMutation } from 'react-apollo'
+import { useHistory } from 'react-router-dom'
+import { REPOS_Q, DELETE_REPO } from './queries'
 import { Container } from './Integrations'
-import HoveredBackground from '../utils/HoveredBackground'
 import { chunk } from '../../utils/array'
 
 function DeleteRepository({repo, publisherId}) {
@@ -28,7 +27,7 @@ function DeleteRepository({repo, publisherId}) {
     <HoveredBackground>
       <Box
         accentable
-        style={{cursor: 'pointer'}}
+        focusIndicator={false}
         background='white'
         pad='xsmall'
         round='xsmall'
@@ -65,7 +64,6 @@ function RepositoryCell({repo, deletable, publisherId, width}) {
     <Container
       pad='medium'
       width={width}
-      style={{cursor: 'pointer'}}
       modifier={deletable && <DeleteRepository repo={repo} publisherId={publisherId} />}
       onClick={() => history.push(`/repositories/${repo.id}`)}>
       <RepositoryInner repo={repo} />

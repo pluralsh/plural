@@ -1,18 +1,15 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { Box, Text, Anchor, Markdown } from 'grommet'
-import Tabs, { TabHeader, TabHeaderItem, TabContent } from '../utils/Tabs'
 import { useQuery, useMutation } from 'react-apollo'
 import { useParams } from 'react-router-dom'
-import Scroller from '../utils/Scroller'
+import { Scroller, Button, ScrollableContainer, Tabs, TabHeader, TabHeaderItem, TabContent } from 'forge-core'
 import { CHART_Q, INSTALL_CHART, UPDATE_CHART_INST } from './queries'
 import moment from 'moment'
 import { DEFAULT_CHART_ICON } from './constants'
 import Highlight from 'react-highlight.js'
 import Installation, { DetailContainer } from './Installation'
-import Button from '../utils/Button'
 import { BreadcrumbContext } from '../Forge'
 import Dependencies, { FullDependencies, ShowFull } from './Dependencies'
-import ScrollableContainer from '../utils/ScrollableContainer'
 
 function ChartVersion({version, onSelect}) {
   return (

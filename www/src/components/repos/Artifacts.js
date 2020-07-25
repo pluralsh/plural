@@ -2,10 +2,10 @@ import React, { useState, useRef } from 'react'
 import styled from 'styled-components'
 import { Box, Text, Anchor, Drop, Markdown, Table, TableBody, TableRow, TableCell } from 'grommet'
 import { Apple, Windows, Ubuntu, Terminal, Previous, Cube } from 'grommet-icons'
+import { normalizeColor } from 'grommet/utils'
 import { download } from '../../utils/file'
 import { MARKDOWN_STYLING } from './Chart'
 import fs from 'filesize'
-import { normalizeColor } from '../utils/colors'
 import { DetailContainer } from './Installation'
 
 const ICON_SIZE = '20px'
@@ -156,10 +156,10 @@ export function Artifact({name, type, platform, filesize, ...artifact}) {
   return (
     <>
     <Box
+      focusIndicator={false}
       onClick={() => setOpen(!open)}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      style={{cursor: 'pointer'}}
       background={hover ? 'light-3' : null}
       border='bottom'
       direction='row'

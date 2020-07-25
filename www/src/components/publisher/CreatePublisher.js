@@ -1,8 +1,7 @@
 import React, {useState} from 'react'
 import {useMutation} from 'react-apollo'
 import {Box} from 'grommet'
-import InputField from '../utils/InputField'
-import Button from '../utils/Button'
+import { InputField, Button } from 'forge-core'
 import { CREATE_PUBLISHER } from './queries'
 import { ME_Q } from '../users/queries'
 

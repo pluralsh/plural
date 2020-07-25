@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
-import Scroller from '../utils/Scroller'
 import { Text, Box, Keyboard, TextInput } from 'grommet'
-import { Tag as TagInner } from '../utils/TagInput'
+import { Scroller, Tag as TagInner } from 'forge-core'
 
 export function TagInput({addTag, removeTag, tags, round, ...rest}) {
   const [current, setCurrent] = useState("")
@@ -39,9 +38,9 @@ export function TagContainer({enabled, children, gap, pad, onClick}) {
     <Box
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      style={onClick && {cursor: 'pointer'}}
       pad={pad || {horizontal: 'small', vertical: 'xxsmall'}}
-      background={hover ? 'light-2' : null}
+      hoverIndicator='light-2'
+      focusIndicator={false}
       direction='row'
       align='center'
       gap={gap || 'xsmall'}

@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { Box, Text, Anchor } from 'grommet'
+import { HoveredBackground } from 'forge-core'
 import Recipe from './Recipe'
 import { Trash } from 'grommet-icons'
-import HoveredBackground from '../utils/HoveredBackground'
 import { useMutation } from 'react-apollo'
 import { DELETE_RECIPE, REPO_Q } from './queries'
 import { Provider } from './misc'
@@ -30,7 +30,7 @@ function DeleteRecipe({recipe: {id}, repositoryId}) {
     <HoveredBackground>
       <Box
         accentable
-        style={{cursor: 'pointer'}}
+        focusIndicator={false}
         background='white'
         pad='xsmall'
         round='xsmall'
@@ -45,7 +45,6 @@ function RecipeListItem({recipe, setRecipe, repository: {editable, id}}) {
   const {name, description, provider} = recipe
   return (
     <Container
-      style={{cursor: 'pointer'}}
       direction='row'
       gap='medium'
       pad='medium'

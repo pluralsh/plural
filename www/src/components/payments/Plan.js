@@ -46,11 +46,10 @@ export default function Plan({approvePlan, subscription, ...plan}) {
   const subscribed = subscription && subscription.plan.id === plan.id
   return (
     <Container
-      style={!subscribed ? {cursor: 'pointer'} : null}
       noHover={subscribed}
       pad='medium'
       gap='xsmall'
-      onClick={() => !subscribed && approvePlan(plan)}
+      onClick={subscribed ? null : () => approvePlan(plan)}
       hover={!subscribed && hover}
       setHover={setHover}>
       <Box direction='row' align='center'>

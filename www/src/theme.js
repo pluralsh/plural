@@ -1,3 +1,9 @@
+import { css } from 'styled-components'
+
+const boxStyle = css`
+  outline: none;
+`;
+
 export const DEFAULT_COLOR_THEME = {
   brand: '#3B1D98',
   action: '#3B1D98',
@@ -23,6 +29,9 @@ export const DEFAULT_THEME = {
       horizontal: '6px',
       vertical: '2px'
     }
+  },
+  box: {
+    extend: boxStyle
   },
   tab: {
     active: {color: 'focus'},

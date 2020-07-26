@@ -4964,10 +4964,10 @@ forever-agent@~0.6.1:
   resolved "https://registry.yarnpkg.com/forever-agent/-/forever-agent-0.6.1.tgz#fbc71f0c41adeb37f96c577ad1ed42d8fdacca91"
   integrity sha1-+8cfDEGt6zf5bFd60e1C2P2sypE=
 
-forge-core@^1.0.19:
-  version "1.0.19"
-  resolved "https://registry.yarnpkg.com/forge-core/-/forge-core-1.0.19.tgz#b46efd1a5401b4b574fa4faf5dee67624a6b0d43"
-  integrity sha512-u0Yyws5j+/GOpGnbNtoszj6fw9Xr0XeR+J4Wg/k87YmiAAMQ1VhRU+vnbaeAL/nnma9C2lPWYgBQuTftJN/stQ==
+forge-core@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/forge-core/-/forge-core-1.1.0.tgz#1a1090001a9458154a82c987883a0d42c755949f"
+  integrity sha512-xH+20n8I+N6x+ycYmK/6V4lA1FT5LYhAx+MprUqO2lXW3vqGjGvlofZK/EuufUdL5o58ct384xlmW+6xaZLHKA==
   dependencies:
     "@babel/plugin-proposal-class-properties" "^7.10.4"
     babel-plugin-module-resolver "^4.0.0"
@@ -9502,10 +9502,10 @@ react-scripts@3.2.0:
   optionalDependencies:
     fsevents "2.0.7"
 
-react-spinners@^0.6.1:
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/react-spinners/-/react-spinners-0.6.1.tgz#c4f31a1d0e4c85cdb1785a8bdbe17311cf269b0a"
-  integrity sha512-bMCOvwAlzuIDC6Zh69E1EbyKUbvWSl4sMzLXOgnsF4Q/kkAnCNaonWyskMFytbaJSYxBCCOiaeCH2moDJ5y5Pg==
+react-spinners@^0.9.0:
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/react-spinners/-/react-spinners-0.9.0.tgz#b22c38acbfce580cd6f1b04a4649e812370b1fb8"
+  integrity sha512-+x6eD8tn/aYLdxZjNW7fSR1uoAXLb9qq6TFYZR1dFweJvckcf/HfP8Pa/cy5HOvB/cvI4JgrYXTjh2Me3S6Now==
   dependencies:
     "@emotion/core" "^10.0.15"
 

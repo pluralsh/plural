@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import {useParams, useHistory} from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom'
 import { Carousel, ScrollableContainer, Scroller, HoveredBackground } from 'forge-core'
 import { Box, Text, Anchor, Stack } from 'grommet'
 import { INTEGRATIONS_Q } from './queries'
@@ -28,7 +28,7 @@ function Integration({name, description, icon, tags, sourceUrl, publisher, width
         )}
         <Box gap='xsmall'>
           <Box>
-            <Text style={{fontWeight: 500}} size='small'>{name}</Text>
+            <Text weight={500} size='small'>{name}</Text>
             {publisher && (
               <Box direction='row' gap='xxsmall'>
                 <Text size='small'>by: </Text>
@@ -219,7 +219,7 @@ export default function Integrations({integrations: {edges, pageInfo}, fetchMore
             slidesPerPage={1}
             offset={12}
             edges={edges}
-            mapper={({node}) => <Integration key={node.id} {...node} width='80%' />}
+            mapper={({node}) => <Integration key={node.id} {...node} width='75%' />}
             fetchMore={() => {
               if (!pageInfo.hasNextPage) return
 

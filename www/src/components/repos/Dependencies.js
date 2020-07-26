@@ -1,11 +1,11 @@
 import React from 'react'
-import {Box, Text} from 'grommet'
-import {useQuery} from 'react-apollo'
-import { Button, SecondaryButton } from 'forge-core'
+import { Box, Text } from 'grommet'
+import { useQuery } from 'react-apollo'
+import { SecondaryButton } from 'forge-core'
 import TreeGraph from '../utils/TreeGraph'
 import { DEFAULT_TF_ICON, DEFAULT_CHART_ICON } from './constants'
 import { CLOSURE_Q } from './queries'
-import {remove, cloneDeep} from 'lodash'
+import { remove, cloneDeep } from 'lodash'
 
 const GRAPH_HEIGHT = '500px'
 

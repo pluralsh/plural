@@ -6,7 +6,7 @@ import Forge from './components/Forge'
 import {DEFAULT_THEME} from './theme'
 import hljs from 'highlight.js'
 import hljsDefineTerraform from './highlight/terraform'
-
+import '@brainhubeu/react-carousel/lib/style.css'
 hljs.registerLanguage('terraform', hljsDefineTerraform)
 
 export default function App() {

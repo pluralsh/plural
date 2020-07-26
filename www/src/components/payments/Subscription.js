@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Box, Text, Anchor, Layer } from 'grommet'
 import { LineItemIcon } from './Plan'
 import { subscriptionCost, updateSubscription, pivotByDimension } from './utils'
-import { Modal, ModalHeader, NumericInput, Button } from 'forge-core'
+import { ModalHeader, NumericInput, Button } from 'forge-core'
 import { useMutation } from 'react-apollo'
 import { UPDATE_LINE_ITEM } from './queries'
 

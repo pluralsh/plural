@@ -88,8 +88,8 @@ export default function Me({me}) {
         >
           <span><Avatar size='40px' user={me} /></span>
         </FilePicker>
-        <Box onClick={() => setOpen(true)} height={TOOLBAR_SIZE} justify='center'>
-          <Text size='small' style={{fontWeight: 500}}>{me.name}</Text>
+        <Box style={{outline: 'none'}} onClick={() => setOpen(true)} focusIndicator={false} height={TOOLBAR_SIZE} justify='center'>
+          <Text size='small' weight={500}>{me.name}</Text>
           {me.publisher && (<Text size='xsmall'>{me.publisher.name}</Text>)}
         </Box>
       </Box>

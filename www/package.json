@@ -12,7 +12,7 @@
     "d3-force": "^2.0.1",
     "d3-selection": "^1.4.1",
     "filesize": "^6.1.0",
-    "forge-core": "^1.0.8",
+    "forge-core": "^1.0.19",
     "graphql": "^14.5.8",
     "grommet": "^2.14.0",
     "grommet-icons": "^4.4.0",

@@ -72,6 +72,9 @@ export const DEFAULT_THEME = {
         radius: '2px'
       }
     },
+    box: {
+      extend: boxStyle
+    },
     font: {
       family: 'Roboto',
       size: '14px',

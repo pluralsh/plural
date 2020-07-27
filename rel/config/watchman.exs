@@ -35,4 +35,5 @@ config :watchman,
   git_user_email: get_env("GIT_EMAIL", "forge@piazzaapp.com"),
   url: get_env("HOST"),
   incoming_webhook: get_env("PIAZZA_INCOMING_WEBHOOK"),
-  grafana_dns: get_env("GRAFANA_DNS")
+  grafana_dns: get_env("GRAFANA_DNS"),
+  piazza_secret: get_env("PIAZZA_WEBHOOK_SECRET")

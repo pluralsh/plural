@@ -26,20 +26,19 @@ export default function Forge() {
       <BreadcrumbContext.Provider value={{breadcrumbs, setBreadcrumbs}}>
         <CurrentUser>
         {me => (
-          <Grid
-            fill
-            rows={[TOOLBAR_SIZE, 'flex']}
-            columns={['100vw']}
-            areas={[
+          <Grid fill rows={[TOOLBAR_SIZE, 'flex']} columns={['100vw']} areas={[
               {name: 'toolbarTop', start: [0, 0], end: [0, 0]},
               {name: 'viewport', start: [0, 1], end: [0, 1]}
-            ]}
-          >
+            ]}>
             <Box background='sidebar' gridArea='toolbarTop' align='center' justify='center'>
               <Toolbar me={me} />
             </Box>
             <Box style={{height: `calc(100vh - ${TOOLBAR_SIZE})`}} gridArea='viewport'>
-              {breadcrumbs.length > 0 && (<Breadcrumbs crumbs={breadcrumbs} />)}
+              {breadcrumbs.length > 0 && (
+                <Box flex={false} fill='horizontal' border={{color: 'light-6'}}>
+                  <Breadcrumbs crumbs={breadcrumbs} />
+                </Box>
+              )}
               <Switch>
                 <Route path='/publishers/mine' component={MyPublisher} />
                 <Route path='/publishers/:publisherId' component={Publisher} />

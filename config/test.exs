@@ -45,6 +45,7 @@ config :watchman,
   repo_root: "forge-installations",
   forge_config: "/Users/michaelguarino/.forge",
   webhook_secret: "webhook_secret",
+  piazza_secret: "webhook_secret",
   git_ssh_key: :pass,
   grafana_dns: "grafana.example.com"
 

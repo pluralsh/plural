@@ -7,4 +7,9 @@ defmodule Watchman do
     :crypto.hmac(:sha, secret, payload)
     |> Base.encode16(case: :lower)
   end
+
+  def sha(body) do
+    :crypto.hash(:sha, body)
+    |> Base.url_encode64()
+  end
 end

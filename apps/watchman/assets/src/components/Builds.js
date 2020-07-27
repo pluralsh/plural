@@ -43,22 +43,11 @@ export const BUILD_PADDING = {horizontal: 'medium'}
 
 function Build({build: {id, repository, status, insertedAt, message}}) {
   let history = useHistory()
-  const [hover, setHover] = useState(false)
   return (
     <Box pad={BUILD_PADDING}>
-      <Box
-        elevation='xsmall'
-        border={{color: 'light-6'}}
-        pad='small'
-        margin={{top: 'small'}}
-        direction='row'
-        align='center'
-        // round='xsmall'
-        style={{cursor: 'pointer'}}
-        onClick={() => history.push(`/build/${id}`)}
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
-        background={hover ? 'light-3' : null}>
+      <Box elevation='xsmall' border={{color: 'light-6'}} pad='small' margin={{top: 'small'}} direction='row'
+        align='center' focusIndicator={false} hoverIndicator='light-3'
+        onClick={() => history.push(`/build/${id}`)}>
         <Box fill='horizontal'>
           <Text size='small' weight='bold'>{repository}</Text>
           <Text size='small' color='dark-3'>{moment(insertedAt).fromNow()} {message && `-- ${message}`}</Text>

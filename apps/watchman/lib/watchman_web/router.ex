@@ -21,6 +21,7 @@ defmodule WatchmanWeb.Router do
     pipe_through [:api]
 
     post "/webhook", WebhookController, :webhook
+    post "/webhooks/piazza", WebhookController, :piazza
   end
 
   forward "/graphiql", Absinthe.Plug.GraphiQL,

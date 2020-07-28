@@ -8,6 +8,9 @@ defmodule WatchmanWeb.GraphQl.BuildSubscriptionTest do
       user = insert(:user)
       {:ok, socket} = establish_socket(user)
       expect(Watchman.Deployer, :wake, fn -> :ok end)
+      expect(Watchman.Forge.Repositories, :list_installations, fn _, _ ->
+        {:ok, %{edges: [%{node: %{repository: %{name: "repo"}}}]}}
+      end)
 
       ref = push_doc(socket, """
         subscription {

@@ -13,6 +13,10 @@ defmodule WatchmanWeb.WebhookControllerTest do
         send myself, :wake
       end)
 
+      expect(Watchman.Forge.Repositories, :list_installations, fn _, _ ->
+        {:ok, %{edges: [%{node: %{repository: %{name: "forge"}}}]}}
+      end)
+
       conn
       |> put_req_header("x-watchman-signature", "sha1=#{Watchman.hmac(secret, body)}")
       |> put_req_header("content-type", "application/json")
@@ -47,6 +51,10 @@ defmodule WatchmanWeb.WebhookControllerTest do
 
       expect(Watchman.Deployer, :wake, fn ->
         send myself, :wake
+      end)
+
+      expect(Watchman.Forge.Repositories, :list_installations, fn _, _ ->
+        {:ok, %{edges: [%{node: %{repository: %{name: "forge"}}}]}}
       end)
 
       conn

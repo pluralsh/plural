@@ -1,14 +1,27 @@
 defmodule Watchman.Services.Builds do
   use Watchman.Services.Base
   alias Watchman.PubSub
+  alias Watchman.Forge.Repositories
   alias Watchman.Schema.{Build, Command}
 
   def get!(id), do: Repo.get!(Build, id)
 
   def create(attrs) do
-    %Build{type: :deploy, status: :queued}
-    |> Build.changeset(attrs)
-    |> Repo.insert()
+    start_transaction()
+    |> add_operation(:build, fn _ ->
+      %Build{type: :deploy, status: :queued}
+      |> Build.changeset(attrs)
+      |> Repo.insert()
+    end)
+    |> add_operation(:valid, fn %{build: %{repository: repo} = build} ->
+      with {:ok, %{edges: edges}} <- Repositories.list_installations(100, nil),
+           true <- Enum.any?(edges, fn %{node: %{repository: %{name: name}}} -> name == repo end) do
+        {:ok, build}
+      else
+        _ -> {:error, :invalid_repository}
+      end
+    end)
+    |> execute(extract: :build)
     |> when_ok(&wake_deployer/1)
     |> when_ok(&broadcast(&1, :create))
   end

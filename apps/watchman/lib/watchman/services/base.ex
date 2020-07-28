@@ -8,6 +8,26 @@ defmodule Watchman.Services.Base do
     end
   end
 
+  def start_transaction(), do: Ecto.Multi.new()
+
+  def add_operation(multi, name, fun) when is_function(fun) do
+    Ecto.Multi.run(multi, name, fn _, params ->
+      fun.(params)
+    end)
+  end
+
+  def execute(%Ecto.Multi{} = multi, opts \\ []) do
+    with {:ok, result} <- Watchman.Repo.transaction(multi) do
+      case Map.new(opts) do
+        %{extract: operation} -> {:ok, result[operation]}
+        _ -> {:ok, result}
+      end
+    else
+      {:error, _, reason, _} -> {:error, reason}
+      {:error, reason} -> {:error, reason}
+    end
+  end
+
   def broadcast(resource, delta) do
     topic = Topic.infer(resource, delta)
     :ok = Absinthe.Subscription.publish(

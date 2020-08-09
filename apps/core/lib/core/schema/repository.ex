@@ -8,7 +8,9 @@ defmodule Core.Schema.Repository do
     ResourceDefinition,
     Tag,
     Plan,
-    Artifact
+    Artifact,
+    Database,
+    Shell
   }
 
   schema "repositories" do
@@ -24,6 +26,8 @@ defmodule Core.Schema.Repository do
     belongs_to :integration_resource_definition, ResourceDefinition, on_replace: :update
     belongs_to :publisher, Publisher
 
+    has_one  :database,      Database
+    has_one  :shell,         Shell
     has_many :installations, Installation
     has_many :plans,         Plan
     has_many :artifacts,     Artifact
@@ -64,6 +68,8 @@ defmodule Core.Schema.Repository do
     |> cast(attrs, @valid)
     |> cast_assoc(:tags, with: &Tag.tag_changeset(&1, &2, :repository))
     |> cast_assoc(:dashboards)
+    |> cast_assoc(:database)
+    |> cast_assoc(:shell)
     |> foreign_key_constraint(:publisher_id)
     |> cast_assoc(:integration_resource_definition)
     |> unique_constraint(:name)

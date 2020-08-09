@@ -37,6 +37,8 @@ defmodule GraphQl.Schema.Inputs do
     field :integration_resource_definition, :resource_definition_attributes
     field :tags,          list_of(:tag_attributes)
     field :dashboards,    list_of(:dashboard_attributes)
+    field :database,      :database_attributes
+    field :shell,         :shell_attributes
   end
 
   input_object :dashboard_attributes do
@@ -47,6 +49,22 @@ defmodule GraphQl.Schema.Inputs do
   input_object :installation_attributes do
     field :context,      :yml
     field :auto_upgrade, :boolean
+  end
+
+  input_object :shell_attributes do
+    field :target,  non_null(:string)
+    field :command, :string
+    field :args,    list_of(:string)
+  end
+
+  enum :engine_input do
+    value :postgres
+  end
+
+  input_object :database_attributes do
+    field :engine, non_null(:engine_input)
+    field :target, non_null(:string)
+    field :port,   non_null(:integer)
   end
 
   input_object :terraform_attributes do

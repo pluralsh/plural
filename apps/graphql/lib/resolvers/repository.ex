@@ -7,7 +7,9 @@ defmodule GraphQl.Resolvers.Repository do
     ResourceDefinition,
     Tag,
     Artifact,
-    Dashboard
+    Dashboard,
+    Shell,
+    Database
   }
 
   def query(Tag, _), do: Tag
@@ -16,6 +18,8 @@ defmodule GraphQl.Resolvers.Repository do
   def query(Installation, _), do: Installation
   def query(Dashboard, _), do: Dashboard
   def query(Artifact, _), do: Artifact.ordered()
+  def query(Database, _), do: Database
+  def query(Shell, _), do: Shell
   def query(_, _), do: Repository
 
   def resolve_public_key(repo, user) do

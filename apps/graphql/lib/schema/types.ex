@@ -89,6 +89,8 @@ defmodule GraphQl.Schema.Types do
     field :tags,          list_of(:tag), resolve: dataloader(Repository)
     field :artifacts,     list_of(:artifact), resolve: dataloader(Repository)
     field :dashboards,    list_of(:dashboard), resolve: dataloader(Repository)
+    field :shell,         :shell, resolve: dataloader(Repository)
+    field :database,      :database, resolve: dataloader(Repository)
 
     field :icon, :string, resolve: fn
       repo, _, _ -> {:ok, Core.Storage.url({repo.icon, repo}, :original)}
@@ -117,6 +119,28 @@ defmodule GraphQl.Schema.Types do
     field :id,   non_null(:id)
     field :name, non_null(:string)
     field :uid,  non_null(:string)
+
+    timestamps()
+  end
+
+  enum :engine do
+    value :postgres
+  end
+
+  object :database do
+    field :id,      non_null(:id)
+    field :engine,  non_null(:engine)
+    field :target,  non_null(:string)
+    field :port,    non_null(:string)
+
+    timestamps()
+  end
+
+  object :shell do
+    field :id,      non_null(:id)
+    field :target,  non_null(:string)
+    field :command, :string
+    field :args,    list_of(:string)
 
     timestamps()
   end

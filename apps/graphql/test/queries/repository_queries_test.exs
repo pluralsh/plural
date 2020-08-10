@@ -86,6 +86,22 @@ defmodule GraphQl.RepositoryQueriesTest do
       assert found["editable"]
     end
 
+    test "it can fetch a repository by name" do
+      user = insert(:user)
+      repo = insert(:repository)
+
+      {:ok, %{data: %{"repository" => found}}} = run_query("""
+        query Repo($name: ID!) {
+          repository(name: $name) {
+            id
+            editable
+          }
+        }
+      """, %{"name" => repo.name}, %{current_user: user})
+
+      assert found["id"] == repo.id
+    end
+
     test "It can sideload installations" do
       %{repository: repo, user: user} = insert(:installation)
 

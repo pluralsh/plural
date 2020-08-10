@@ -79,7 +79,8 @@ defmodule GraphQl do
 
     field :repository, :repository do
       middleware GraphQl.Middleware.Authenticated
-      arg :id, non_null(:id)
+      arg :id,   :id
+      arg :name, :string
 
       resolve &Repository.resolve_repository/2
     end

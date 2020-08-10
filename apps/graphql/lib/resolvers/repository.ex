@@ -30,11 +30,16 @@ defmodule GraphQl.Resolvers.Repository do
   end
 
   def resolve_repository(%{id: repo_id}, _) do
-    repo =
-      Repositories.get_repository!(repo_id)
-      |> Core.Repo.preload([:publisher])
-    {:ok, repo}
+    repo = Repositories.get_repository!(repo_id)
+    {:ok, preload(repo)}
   end
+
+  def resolve_repository(%{name: repo_name}, _) do
+    repo = Repositories.get_repository_by_name!(repo_name)
+    {:ok, preload(repo)}
+  end
+
+  defp preload(repo), do: Core.Repo.preload(repo, [:publisher])
 
   def resolve_installation(%{id: repo_id}, %{context: %{current_user: user}}),
     do: {:ok, Repositories.get_installation(user.id, repo_id)}

@@ -32,6 +32,18 @@ type RepositoryInput struct {
 	}
 }
 
+type ShellInput struct {
+	Target  string
+	Command string
+	Args    []string
+}
+
+type DatabaseInput struct {
+	Target string
+	Port   int32
+	Engine string
+}
+
 const updateRepository = `
 	mutation UpdateRepository($name: String!, $input: ResourceDefinitionAttributes!) {
 		updateRepository(repositoryName: $name, attributes: {integrationResourceDefinition: $input}) {
@@ -51,6 +63,14 @@ const createIntegration = `
 const updateRepo = `
 	mutation UpdateRepo($name: String!, $attrs: RepositoryAttributes!) {
 		updateRepository(repositoryName: $name, attributes: $attrs) {
+			id
+		}
+	}
+`
+
+const updateOperations = `
+	mutation UpdateRepo($name: String!, $shell: ShellAttributes, $database: DatabaseAttributes) {
+		updateRepository(repositoryName: $name, attributes: {shell: $shell, database: $database}) {
 			id
 		}
 	}
@@ -78,6 +98,28 @@ func (client *Client) CreateIntegration(name string, input IntegrationInput) (st
 	return resp.Id, err
 }
 
+func (client *Client) CreateShell(name string, input ShellInput) (string, error) {
+	var resp struct {
+		Id string
+	}
+	req := client.Build(updateOperations)
+	req.Var("shell", input)
+	req.Var("name", name)
+	err := client.Run(req, &resp)
+	return resp.Id, err
+}
+
+func (client *Client) CreateDatabase(name string, input DatabaseInput) (string, error) {
+	var resp struct {
+		Id string
+	}
+	req := client.Build(updateOperations)
+	req.Var("database", input)
+	req.Var("name", name)
+	err := client.Run(req, &resp)
+	return resp.Id, err
+}
+
 func (client *Client) UpdateRepository(name string, input RepositoryInput) (string, error) {
 	var resp struct {
 		Id string
@@ -90,6 +132,16 @@ func (client *Client) UpdateRepository(name string, input RepositoryInput) (stri
 }
 
 func ConstructRepositoryInput(marshalled []byte) (input RepositoryInput, err error) {
+	err = yaml.Unmarshal(marshalled, &input)
+	return
+}
+
+func ConstructShellInput(marshalled []byte) (input ShellInput, err error) {
+	err = yaml.Unmarshal(marshalled, &input)
+	return
+}
+
+func ConstructDatabaseInput(marshalled []byte) (input DatabaseInput, err error) {
 	err = yaml.Unmarshal(marshalled, &input)
 	return
 }

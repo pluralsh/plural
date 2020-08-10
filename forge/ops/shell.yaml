@@ -1,0 +1,4 @@
+target: forge-api
+command: /opt/app/bin/forge
+args:
+- remote_console

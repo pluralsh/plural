@@ -18,6 +18,20 @@ type Repository struct {
 	Id        string
 	Name      string
 	Publisher Publisher
+	Database  *Database
+	Shell     *Shell
+}
+
+type Database struct {
+	Target string
+	Engine string
+	Port   int32
+}
+
+type Shell struct {
+	Target  string
+	Command string
+	Args    []string
 }
 
 type User struct {
@@ -153,7 +167,7 @@ type ConfigurationItem struct {
 
 type Artifact struct {
 	Id       string
-	Name 	   string
+	Name     string
 	Readme   string
 	Blob     string
 	Sha      string
@@ -161,15 +175,39 @@ type Artifact struct {
 	Filesize int
 }
 
-const RepositoryFragment = `
+const DatabaseFragment = `
+	fragment DatabaseFragment on Database {
+		engine
+		port
+		target
+	}
+`
+
+const ShellFragment = `
+	fragment ShellFragment on Shell {
+		target
+		command
+		args
+	}
+`
+
+var RepositoryFragment = fmt.Sprintf(`
 	fragment RepositoryFragment on Repository {
 		id
 		name
 		publisher {
 			name
 		}
+		database {
+			...DatabaseFragment
+		}
+		shell {
+			...ShellFragment
+		}
 	}
-`
+	%s
+	%s
+`, DatabaseFragment, ShellFragment)
 
 var InstallationFragment = fmt.Sprintf(`
 	fragment InstallationFragment on Installation {

@@ -83,6 +83,13 @@ func main() {
 			Action: testTemplate,
 		},
 		{
+			Name:      "shell",
+			Aliases:   []string{"sh"},
+			ArgsUsage: "REPO",
+			Usage:     "opens a ssh connection to a running deployed pod",
+			Action:    handleShell,
+		},
+		{
 			Name:        "crypto",
 			Usage:       "forge encryption utilities",
 			Subcommands: cryptoCommands(),

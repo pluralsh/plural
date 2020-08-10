@@ -26,8 +26,8 @@ defmodule Core.Schema.Repository do
     belongs_to :integration_resource_definition, ResourceDefinition, on_replace: :update
     belongs_to :publisher, Publisher
 
-    has_one  :database,      Database
-    has_one  :shell,         Shell
+    has_one  :database,      Database, on_replace: :update
+    has_one  :shell,         Shell, on_replace: :update
     has_many :installations, Installation
     has_many :plans,         Plan
     has_many :artifacts,     Artifact

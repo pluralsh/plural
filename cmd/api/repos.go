@@ -1,6 +1,8 @@
 package api
 
 import (
+	"fmt"
+
 	"gopkg.in/yaml.v2"
 )
 
@@ -75,6 +77,26 @@ const updateOperations = `
 		}
 	}
 `
+
+var getRepo = fmt.Sprintf(`
+	query Repo($name: String) {
+		repository(name: $name) {
+			...RepositoryFragment
+		}
+	}
+	%s
+`, RepositoryFragment)
+
+func (client *Client) GetRepository(repo string) (repository *Repository, err error) {
+	var resp struct {
+		Repository *Repository
+	}
+	req := client.Build(getRepo)
+	req.Var("name", repo)
+	err = client.Run(req, &resp)
+	repository = resp.Repository
+	return
+}
 
 func (client *Client) CreateResourceDefinition(repoName string, input ResourceDefinitionInput) (string, error) {
 	var resp struct {

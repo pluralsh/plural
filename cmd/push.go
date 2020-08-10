@@ -65,7 +65,7 @@ func pushCommands() []cli.Command {
 			Name:      "shell",
 			Usage:     "registers a new shell for a repository",
 			ArgsUsage: "path/to/def.yaml REPO",
-			Action:    handleShell,
+			Action:    createShell,
 		},
 	}
 }
@@ -136,7 +136,7 @@ func handleIntegration(c *cli.Context) error {
 	return err
 }
 
-func handleShell(c *cli.Context) error {
+func createShell(c *cli.Context) error {
 	client := api.NewClient()
 	fullPath, _ := filepath.Abs(c.Args().Get(0))
 	contents, err := ioutil.ReadFile(fullPath)

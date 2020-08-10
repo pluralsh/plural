@@ -131,7 +131,7 @@ defmodule GraphQl.Schema.Types do
     field :id,      non_null(:id)
     field :engine,  non_null(:engine)
     field :target,  non_null(:string)
-    field :port,    non_null(:string)
+    field :port,    non_null(:integer)
 
     timestamps()
   end

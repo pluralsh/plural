@@ -8,8 +8,13 @@ import (
 )
 
 func Shell(namespace string, shell *api.Shell) error {
-	// kubectl exec -it -n silo deployment/silo-api -- /bin/sh
-	cmd := exec.Command("kubectl", "exec", "-it", "-n", namespace, shell.Target, "--", "/bin/sh")
+	var rest []string
+	if len(shell.Command) > 0 {
+		rest = append([]string{"-e", shell.Command}, shell.Args...)
+	}
+	args := []string{"exec", "-it", "-n", namespace, shell.Target, "--", "/bin/sh"}
+	args = append(args, rest...)
+	cmd := exec.Command("kubectl", args...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	cmd.Stdin = os.Stdin

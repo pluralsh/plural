@@ -90,6 +90,13 @@ func main() {
 			Action:    handleShell,
 		},
 		{
+			Name:      "database",
+			Aliases:   []string{"db"},
+			ArgsUsage: "REPO",
+			Usage:     "opens a ssh connection to a running deployed pod",
+			Action:    connectDatabase,
+		},
+		{
 			Name:        "crypto",
 			Usage:       "forge encryption utilities",
 			Subcommands: cryptoCommands(),

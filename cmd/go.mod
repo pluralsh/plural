@@ -11,8 +11,8 @@ require (
 	github.com/aws/aws-sdk-go-v2 v0.24.0 // indirect
 	github.com/cheggaaa/pb/v3 v3.0.4
 	github.com/docker/libtrust v0.0.0-20160708172513-aabc10ec26b7
+	github.com/evanphx/json-patch v4.2.0+incompatible // indirect
 	github.com/fatih/color v1.7.0
-	github.com/google/uuid v1.1.1 // indirect
 	github.com/hashicorp/hcl v1.0.0
 	github.com/huandu/xstrings v1.2.0 // indirect
 	github.com/imdario/mergo v0.3.8
@@ -25,9 +25,13 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/rodaine/hclencoder v0.0.0-20190213202847-fb9757bb536e
 	github.com/urfave/cli v1.22.1
-	golang.org/x/crypto v0.0.0-20191111213947-16651526fdb4
+	golang.org/x/crypto v0.0.0-20200220183623-bac4c82f6975
 	golang.org/x/mod v0.1.0
 	google.golang.org/api v0.13.0
 	gopkg.in/oleiade/reflections.v1 v1.0.0
-	gopkg.in/yaml.v2 v2.2.2
+	gopkg.in/yaml.v2 v2.2.8
+	k8s.io/api v0.18.8
+	k8s.io/apimachinery v0.18.8
+	k8s.io/client-go v0.18.8
+	k8s.io/utils v0.0.0-20200731180307-f00132d28269 // indirect
 )

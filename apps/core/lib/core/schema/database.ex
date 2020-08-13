@@ -20,7 +20,7 @@ defmodule Core.Schema.Database do
     timestamps()
   end
 
-  @valid ~w(engine target port repository_id)a
+  @valid ~w(engine target port repository_id name)a
 
   def changeset(model, attrs \\ %{}) do
     model

@@ -23,9 +23,17 @@ type Repository struct {
 }
 
 type Database struct {
-	Target string
-	Engine string
-	Port   int32
+	Target      string
+	Engine      string
+	Name        string
+	Port        int32
+	Credentials *Credentials
+}
+
+type Credentials struct {
+	User   string
+	Secret string
+	Key    string
 }
 
 type Shell struct {
@@ -180,6 +188,12 @@ const DatabaseFragment = `
 		engine
 		port
 		target
+		name
+		credentials {
+			user
+			secret
+			key
+		}
 	}
 `
 

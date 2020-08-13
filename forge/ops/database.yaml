@@ -1,3 +1,8 @@
 engine: POSTGRES
 target: statefulset/forge-postgresql
 port: 5432
+name: forge
+credentials:
+  secret: forge-postgresql
+  key: postgresql-password
+  user: forge

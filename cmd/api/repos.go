@@ -41,9 +41,17 @@ type ShellInput struct {
 }
 
 type DatabaseInput struct {
-	Target string
-	Port   int32
-	Engine string
+	Target      string
+	Port        int32
+	Engine      string
+	Name        string
+	Credentials CredentialInput
+}
+
+type CredentialInput struct {
+	User   string
+	Secret string
+	Key    string
 }
 
 const updateRepository = `

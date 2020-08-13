@@ -128,12 +128,20 @@ defmodule GraphQl.Schema.Types do
   end
 
   object :database do
-    field :id,      non_null(:id)
-    field :engine,  non_null(:engine)
-    field :target,  non_null(:string)
-    field :port,    non_null(:integer)
+    field :id,          non_null(:id)
+    field :engine,      non_null(:engine)
+    field :target,      non_null(:string)
+    field :port,        non_null(:integer)
+    field :name,        non_null(:string)
+    field :credentials, :credentials
 
     timestamps()
+  end
+
+  object :credentials do
+    field :user,   non_null(:string)
+    field :secret, non_null(:string)
+    field :key,    non_null(:string)
   end
 
   object :shell do

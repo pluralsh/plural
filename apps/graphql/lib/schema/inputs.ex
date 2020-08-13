@@ -62,9 +62,17 @@ defmodule GraphQl.Schema.Inputs do
   end
 
   input_object :database_attributes do
-    field :engine, non_null(:engine_input)
-    field :target, non_null(:string)
-    field :port,   non_null(:integer)
+    field :engine,      non_null(:engine_input)
+    field :target,      non_null(:string)
+    field :port,        non_null(:integer)
+    field :credentials, :credentials_attributes
+    field :name,        non_null(:string)
+  end
+
+  input_object :credentials_attributes do
+    field :user,   non_null(:string)
+    field :secret, non_null(:string)
+    field :key,    non_null(:string)
   end
 
   input_object :terraform_attributes do

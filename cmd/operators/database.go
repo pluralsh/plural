@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"time"
 
 	"github.com/michaeljguarino/forge/api"
 	"github.com/michaeljguarino/forge/utils"
@@ -57,10 +58,12 @@ func (pg *postgres) Connect(namespace string) error {
 		return err
 	}
 	defer fwd.Process.Kill()
-	// psql -U silo -h 127.0.0.1 silo
+
+	utils.Highlight("Wait a bit while the port-forward boots up\n")
+	time.Sleep(5 * time.Second)
 	cmd := exec.Command("psql", "-U", pg.Db.Credentials.User, "-h", "127.0.0.1", pg.Db.Name)
 	cmd.Env = os.Environ()
-	cmd.Env = append(cmd.Env, fmt.Sprintf("POSTGRES_PASSWORD=%s", pg.Pwd))
+	cmd.Env = append(cmd.Env, fmt.Sprintf("PGPASSWORD=%s", pg.Pwd))
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	cmd.Stdin = os.Stdin
@@ -68,7 +71,7 @@ func (pg *postgres) Connect(namespace string) error {
 }
 
 func portForward(namespace string, db *api.Database) (cmd *exec.Cmd, err error) {
-	cmd = exec.Command("kubectl", "port-forward", db.Target, fmt.Sprintf("%s", db.Port), "-n", namespace)
+	cmd = exec.Command("kubectl", "port-forward", db.Target, fmt.Sprint(db.Port), "-n", namespace)
 	err = cmd.Start()
 	return
 }

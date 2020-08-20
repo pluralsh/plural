@@ -76,6 +76,7 @@ export function RepositoryChoice({config: {name, icon, description}, link}) {
     <Box
       onClick={() => history.push(link)}
       hoverIndicator='light-3'
+      background='white'
       direction='row'
       align='center'
       border='bottom'
@@ -112,7 +113,7 @@ export default function Configuration() {
 
   return (
     <Box height='calc(100vh - 45px)' pad={{bottom: 'small'}}>
-      <Box gap='small'>
+      <Box gap='small' background='backgroundColor'>
         <Box
           pad={{vertical: 'small', ...BUILD_PADDING}}
           direction='row'
@@ -121,11 +122,11 @@ export default function Configuration() {
           height='60px'>
           <Box fill='horizontal' pad={{horizontal: 'small'}}>
             <Text weight='bold' size='small'>Configuration</Text>
-            <Text size='small' color='dark-3'>edit configuration for your installed repos</Text>
+            <Text size='small' color='dark-6'>edit configuration for your installed repos</Text>
           </Box>
         </Box>
       </Box>
-      <Box height='calc(100vh - 105px)'>
+      <Box height='calc(100vh - 105px)' background='backgroundColor'>
         <Scroller
           id='configuration'
           style={{height: '100%', overflow: 'auto'}}

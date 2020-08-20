@@ -57,5 +57,8 @@ install: ## installs the helm chart
 web: ## starts a local webserver
 	cd www && npm start
 
+watchman:
+	cd apps/watchman/assets && yarn start
+
 cli: ## builds the forge cli
 	cd cmd && go build

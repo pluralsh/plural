@@ -21,11 +21,17 @@ export function Breadcrumbs() {
         <Text key={crumb.url + 'next'} size='small'>/</Text>
       ]
     }
-    return <Text key={crumb.url} size='small' color='dark-3'>{crumb.text}</Text>
+    return <Text key={crumb.url} size='small' color='dark-6'>{crumb.text}</Text>
   })).flat()
 
   return (
-    <Box flex={false} direction='row' gap='xsmall' pad={{horizontal: 'medium', vertical: 'small'}} border='bottom'>
+    <Box
+      flex={false}
+      background='backgroundDark'
+      direction='row'
+      gap='xsmall'
+      pad={{horizontal: 'medium', vertical: 'small'}}
+      border='bottom'>
       {children}
     </Box>
   )

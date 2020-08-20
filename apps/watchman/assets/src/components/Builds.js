@@ -45,12 +45,12 @@ function Build({build: {id, repository, status, insertedAt, message}}) {
   let history = useHistory()
   return (
     <Box pad={BUILD_PADDING}>
-      <Box elevation='xsmall' border={{color: 'light-6'}} pad='small' margin={{top: 'small'}} direction='row'
-        align='center' focusIndicator={false} hoverIndicator='light-3'
+      <Box pad='small' margin={{top: 'small'}} direction='row' background='cardDetailLight'
+        align='center' focusIndicator={false} hoverIndicator='backgroundDark' round='xsmall'
         onClick={() => history.push(`/build/${id}`)}>
         <Box fill='horizontal'>
           <Text size='small' weight='bold'>{repository}</Text>
-          <Text size='small' color='dark-3'>{moment(insertedAt).fromNow()} {message && `-- ${message}`}</Text>
+          <Text size='small' color='dark-6'>{moment(insertedAt).fromNow()} {message && `-- ${message}`}</Text>
         </Box>
         <BuildStatus status={status} />
       </Box>
@@ -149,6 +149,7 @@ export default function Builds() {
           direction='row'
           align='center'
           border='bottom'
+          background='backgroundColor'
           height='60px'>
           <Box fill='horizontal' pad={{horizontal: 'small'}}>
             <Text weight='bold' size='small'>Builds</Text>
@@ -156,7 +157,7 @@ export default function Builds() {
           </Box>
           <CreateBuild />
         </Box>
-        <Box height='calc(100vh - 105px)'>
+        <Box height='calc(100vh - 105px)' background='backgroundColor'>
           <Scroller
             id='builds'
             style={{height: '100%', overflow: 'auto'}}

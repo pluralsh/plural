@@ -101,14 +101,15 @@ export default function Dashboards() {
           direction='row'
           align='center'
           border='bottom'
+          background='backgroundColor'
           height='60px'>
           <Box fill='horizontal' pad={{horizontal: 'small'}}>
             <Text weight='bold' size='small'>Dashboards</Text>
-            <Text size='small' color='dark-3'>See runtime data for each of your installations</Text>
+            <Text size='small' color='dark-6'>See runtime data for each of your installations</Text>
           </Box>
         </Box>
       </Box>
-      <Box height='calc(100vh - 105px)'>
+      <Box height='calc(100vh - 105px)' background='backgroundColor'>
         <Scroller
           id='configuration'
           style={{height: '100%', overflow: 'auto'}}

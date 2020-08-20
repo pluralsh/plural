@@ -5,9 +5,9 @@ const boxStyle = css`
 `;
 
 export const DEFAULT_COLOR_THEME = {
-  brand: '#3B1D98',
+  brand: '#4b25c1',
   action: '#3B1D98',
-  sidebar: '#1A1D21',
+  sidebar: 'backgroundDark',
   sidebarHover: '#000000',
   sidebarActive: '#000000',
   focus: '#3B1D98',
@@ -16,12 +16,19 @@ export const DEFAULT_COLOR_THEME = {
   progress: '#007bff',
   error: '#CC4400',
   success: '#007a5a',
-  console: '#222222'
+  console: '#222222',
+  cardDark: '#20222b',
+  cardDarkLight: '#363840',
+  cardDetail: '#252833',
+  cardDetailLight: '#363a4a',
+  backgroundColor: '#20222b',
+  backgroundDark: '#13141a',
+  backgroundLight: 'cardDarkLight',
 }
 
 export const DEFAULT_THEME = {
   anchor: {
-    color: {light: 'sidebar'},
+    color: {light: 'sidebar', dark: 'white'},
     hover: {
       textDecoration: 'none',
       extend: 'font-weight: 600'

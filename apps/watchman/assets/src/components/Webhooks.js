@@ -28,11 +28,10 @@ function Webhook({webhook: {url, health}}) {
   return (
     <Box
       margin={{bottom: 'small', ...BUILD_PADDING}}
+      background='cardDetailLight'
       width='50%'
       pad='small'
       align='center'
-      border={{color: 'light-6'}}
-      elevation='small'
       round='xsmall'
       direction='row'>
       <Box fill='horizontal'>
@@ -103,12 +102,13 @@ export default function Webhooks() {
 
   return (
     <Box height='calc(100vh - 45px)' pad={{bottom: 'small'}}>
-      <Box gap='small'>
+      <Box>
         <Box
           pad={{vertical: 'small', ...BUILD_PADDING}}
           direction='row'
           align='center'
           border='bottom'
+          background='backgroundColor'
           height='60px'>
           <Box fill='horizontal' pad={{horizontal: 'small'}}>
             <Text weight='bold' size='small'>Webhooks</Text>
@@ -116,7 +116,7 @@ export default function Webhooks() {
           </Box>
           <CreateWebhook />
         </Box>
-        <Box height='calc(100vh - 105px)'>
+        <Box height='calc(100vh - 105px)' background='backgroundColor' pad={{vertical: 'small'}}>
           <Scroller
             id='webhooks'
             style={{height: '100%', overflow: 'auto'}}

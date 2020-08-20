@@ -10,6 +10,7 @@ import { FormNext } from 'grommet-icons'
 import AceEditor from "react-ace"
 import "ace-builds/src-noconflict/mode-yaml"
 import "ace-builds/src-noconflict/theme-terminal"
+import { chunk } from '../utils/array'
 
 export function EditConfiguration({repository: {name, configuration, icon, description}}) {
   const [config, setConfig] = useState(configuration)
@@ -42,7 +43,7 @@ export function EditConfiguration({repository: {name, configuration, icon, descr
           pad={{vertical: 'small', ...BUILD_PADDING}}
           direction='row'
           align='center'
-          border='bottom'
+          background='backgroundColor'
           height='60px'>
           <Box direction='row' fill='horizontal' gap='small' align='center'>
             {icon && <img alt='' src={icon} height='40px' width='40px' />}
@@ -75,17 +76,19 @@ export function RepositoryChoice({config: {name, icon, description}, link}) {
   return (
     <Box
       onClick={() => history.push(link)}
-      hoverIndicator='light-3'
-      background='white'
+      width='50%'
+      hoverIndicator='backgroundDark'
+      background='cardDetailLight'
       direction='row'
       align='center'
-      border='bottom'
-      pad={{vertical: 'small', ...BUILD_PADDING}}>
+      justify='center'
+      round='xsmall'
+      pad='medium'>
       <Box direction='row' fill='horizontal' gap='small' align='center'>
         {icon && <img alt='' src={icon} height='40px' width='40px' />}
         <Box>
           <Text size='small' style={{fontWeight: 500}}>{name}</Text>
-          <Text size='small' color='dark-3'>{description}</Text>
+          <Text size='small' color='dark-6'>{description}</Text>
         </Box>
       </Box>
       <Box flex={false}>
@@ -115,27 +118,26 @@ export default function Configuration() {
     <Box height='calc(100vh - 45px)' pad={{bottom: 'small'}}>
       <Box gap='small' background='backgroundColor'>
         <Box
-          pad={{vertical: 'small', ...BUILD_PADDING}}
-          direction='row'
-          align='center'
-          border='bottom'
-          height='60px'>
+          pad={{vertical: 'small', ...BUILD_PADDING}} direction='row' align='center' height='60px'>
           <Box fill='horizontal' pad={{horizontal: 'small'}}>
             <Text weight='bold' size='small'>Configuration</Text>
             <Text size='small' color='dark-6'>edit configuration for your installed repos</Text>
           </Box>
         </Box>
       </Box>
-      <Box height='calc(100vh - 105px)' background='backgroundColor'>
+      <Box height='calc(100vh - 105px)' background='backgroundColor' pad='small'>
         <Scroller
           id='configuration'
           style={{height: '100%', overflow: 'auto'}}
-          edges={edges}
-          mapper={({node: {repository}}) => (
-            <RepositoryChoice
-              key={repository.id}
-              link={`/config/${repository.name}`}
-              config={repository} />
+          edges={[...chunk(edges, 2)]}
+          mapper={(chunk) => (
+            <Box direction='row' height='100px' gap='small' margin={{bottom: 'small'}}>
+               {chunk.map(({node: {repository}}) => (
+                  <RepositoryChoice
+                    key={repository.id}
+                    link={`/config/${repository.name}`}
+                    config={repository} />))}
+            </Box>
           )} />
       </Box>
     </Box>

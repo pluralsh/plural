@@ -9,6 +9,7 @@ import { apiHost, secure } from '../helpers/hostname'
 import { BUILD_PADDING } from './Builds'
 import { CONFIGURATIONS_Q } from './graphql/forge'
 import { Next } from 'grommet-icons'
+import { chunk } from '../utils/array'
 
 function grafanaHost() {
   const [_, ...rest] = apiHost().split(".")
@@ -109,16 +110,19 @@ export default function Dashboards() {
           </Box>
         </Box>
       </Box>
-      <Box height='calc(100vh - 105px)' background='backgroundColor'>
+      <Box height='calc(100vh - 105px)' background='backgroundColor' pad='small'>
         <Scroller
           id='configuration'
           style={{height: '100%', overflow: 'auto'}}
-          edges={edges}
-          mapper={({node: {repository}}) => (
-            <RepositoryChoice
-              key={repository.id}
-              link={`/dashboards/${repository.name}`}
-              config={repository} />
+          edges={[...chunk(edges, 2)]}
+          mapper={(chunk) => (
+            <Box direction='row' height='100px' gap='small' margin={{bottom: 'small'}}>
+              {chunk.map(({node: {repository}}) => (
+                <RepositoryChoice
+                  key={repository.id}
+                  link={`/dashboards/${repository.name}`}
+                  config={repository} />))}
+            </Box>
           )} />
       </Box>
     </Box>

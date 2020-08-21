@@ -5,13 +5,13 @@ import (
 	"strings"
 )
 
-type outputWriter struct {
+type OutputWriter struct {
 	delegate    io.WriteCloser
 	useDelegate bool
 	lines       []string
 }
 
-func (out *outputWriter) Write(line []byte) (int, error) {
+func (out *OutputWriter) Write(line []byte) (int, error) {
 	if out.useDelegate {
 		return out.delegate.Write(line)
 	}
@@ -21,10 +21,10 @@ func (out *outputWriter) Write(line []byte) (int, error) {
 	return len(line), nil
 }
 
-func (out *outputWriter) Close() error {
+func (out *OutputWriter) Close() error {
 	return out.delegate.Close()
 }
 
-func (out *outputWriter) Format() string {
+func (out *OutputWriter) Format() string {
 	return strings.Join(out.lines, "")
 }

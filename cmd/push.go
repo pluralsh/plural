@@ -1,12 +1,16 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"io/ioutil"
+	"os"
 	"path/filepath"
 
 	"github.com/michaeljguarino/forge/api"
 	"github.com/michaeljguarino/forge/config"
+	"github.com/michaeljguarino/forge/executor"
+	"github.com/michaeljguarino/forge/template"
 	"github.com/michaeljguarino/forge/utils"
 	"github.com/urfave/cli"
 )
@@ -80,10 +84,58 @@ func handleHelmUpload(c *cli.Context) error {
 	conf := config.Read()
 	pth, repo := c.Args().Get(0), c.Args().Get(1)
 
+	f, err := tmpValuesFile(pth)
+	defer os.Remove(f.Name())
+	if err != nil {
+		return err
+	}
+
+	utils.Highlight("linting helm: ")
+	cmd, output := executor.SuppressedCommand("helm", "lint", pth, "-f", f.Name())
+
+	err = executor.RunCommand(cmd, output)
+	if err != nil {
+		return err
+	}
+
 	if err := utils.Cmd(&conf, "helm", "repo", "add", repo, fmt.Sprintf("cm://forge.piazza.app/cm/%s", repo)); err != nil {
 		return err
 	}
 	return utils.Cmd(&conf, "helm", "push", "--context-path=/cm", pth, repo)
+}
+
+func tmpValuesFile(path string) (f *os.File, err error) {
+	valuesTmpl, err := utils.ReadFile(filepath.Join(path, "values.yaml.gotpl"))
+	if err != nil {
+		return
+	}
+	tmpl, err := template.MakeTemplate(valuesTmpl)
+	if err != nil {
+		return
+	}
+
+	vals := map[string]interface{}{
+		"Values":  map[string]string{},
+		"License": "example-license",
+	}
+
+	var buf bytes.Buffer
+
+	if err = tmpl.Execute(&buf, vals); err != nil {
+		return
+	}
+
+	f, err = ioutil.TempFile("", "values.yaml")
+	if err != nil {
+		return
+	}
+
+	_, err = f.Write(buf.Bytes())
+	if err != nil {
+		return
+	}
+	err = f.Close()
+	return
 }
 
 func handleRecipeUpload(c *cli.Context) error {

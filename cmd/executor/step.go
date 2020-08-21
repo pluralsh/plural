@@ -21,6 +21,25 @@ type Step struct {
 	Sha     string   `hcl:"sha"`
 }
 
+func SuppressedCommand(command string, args ...string) (cmd *exec.Cmd, output *OutputWriter) {
+	cmd = exec.Command(command, args...)
+	output = &OutputWriter{delegate: os.Stdout}
+	cmd.Stdout = output
+	cmd.Stderr = output
+	return
+}
+
+func RunCommand(cmd *exec.Cmd, output *OutputWriter) (err error) {
+	err = cmd.Run()
+	if err != nil {
+		fmt.Printf("\nOutput:\n\n%s\n", output.Format())
+		return
+	}
+
+	utils.Success("\u2713\n")
+	return
+}
+
 func (step Step) Execute(root string, ignore []string) (string, error) {
 	current, err := mkhash(filepath.Join(root, step.Target), ignore)
 	if err != nil {
@@ -33,18 +52,13 @@ func (step Step) Execute(root string, ignore []string) (string, error) {
 		return current, nil
 	}
 
-	cmd := exec.Command(step.Command, step.Args...)
-	output := &outputWriter{delegate: os.Stdout}
-	cmd.Stdout = output
-	cmd.Stderr = output
+	cmd, output := SuppressedCommand(step.Command, step.Args...)
 	cmd.Dir = filepath.Join(root, step.Wkdir)
-	err = cmd.Run()
+	err = RunCommand(cmd, output)
 	if err != nil {
-		fmt.Printf("\noutput: %s\n", output.Format())
 		return step.Sha, err
 	}
 
-	utils.Success("\u2713\n")
 	return current, err
 }
 

@@ -14,6 +14,16 @@ export const ChartFragment = gql`
   ${DependenciesFragment}
 `;
 
+export const VersionTagFragment = gql`
+  fragment VersionTagFragment on VersionTag {
+    id
+    tag
+    version {
+      id
+    }
+  }
+`;
+
 export const VersionFragment = gql`
   fragment VersionFragment on Version {
     id

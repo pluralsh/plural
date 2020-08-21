@@ -1,0 +1,11 @@
+.chart-version:hover .tags {
+  display: none !important;
+}
+
+.chart-version:hover .edit {
+  display: block !important;
+}
+
+.chart-version .edit {
+  display: none;
+}

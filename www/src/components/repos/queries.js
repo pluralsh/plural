@@ -1,6 +1,6 @@
 import gql from 'graphql-tag'
 import {RepoFragment, InstallationFragment, IntegrationFragment, ArtifactFragment, DashboardFragment} from '../../models/repo'
-import {ChartFragment, VersionFragment, ChartInstallationFragment} from '../../models/chart'
+import {ChartFragment, VersionFragment, ChartInstallationFragment, VersionTagFragment} from '../../models/chart'
 import {TerraformFragment} from '../../models/terraform'
 import {DockerRepoFragment, DockerImageFragment} from '../../models/docker'
 import { RecipeFragment, RecipeSectionFragment } from '../../models/recipe'
@@ -263,6 +263,9 @@ export const CHART_Q = gql`
       installation {
         ...ChartInstallationFragment
       }
+      tags {
+        ...VersionTagFragment
+      }
     }
     versions(chartId: $chartId, first: 10, after: $cursor) {
       pageInfo {
@@ -281,6 +284,20 @@ export const CHART_Q = gql`
   ${ChartFragment}
   ${VersionFragment}
   ${ChartInstallationFragment}
+  ${VersionTagFragment}
+`;
+
+export const UPDATE_CHART = gql`
+  mutation UpdateChart($id: ID!, $attributes: ChartAttributes!) {
+    updateChart(id: $id, attributes: $attributes) {
+      ...ChartFragment
+      tags {
+        ...VersionTagFragment
+      }
+    }
+  }
+  ${ChartFragment}
+  ${VersionTagFragment}
 `;
 
 export const TF_Q = gql`

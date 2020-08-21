@@ -1,22 +1,105 @@
-import React, { useState, useContext, useEffect } from 'react'
-import { Box, Text, Anchor, Markdown } from 'grommet'
+import React, { useState, useContext, useEffect, useMemo, useCallback } from 'react'
+import { Box, Text, Anchor, Markdown, Select, Layer } from 'grommet'
 import { useQuery, useMutation } from 'react-apollo'
 import { useParams } from 'react-router-dom'
-import { Scroller, Button, ScrollableContainer, Tabs, TabHeader, TabHeaderItem, TabContent } from 'forge-core'
-import { CHART_Q, INSTALL_CHART, UPDATE_CHART_INST } from './queries'
+import { Scroller, Button, ScrollableContainer, Tabs, TabHeader, TabHeaderItem, TabContent, ModalHeader } from 'forge-core'
+import { CHART_Q, INSTALL_CHART, UPDATE_CHART_INST, UPDATE_CHART } from './queries'
 import moment from 'moment'
 import { DEFAULT_CHART_ICON } from './constants'
 import Highlight from 'react-highlight.js'
 import Installation, { DetailContainer } from './Installation'
 import { BreadcrumbContext } from '../Forge'
 import Dependencies, { FullDependencies, ShowFull } from './Dependencies'
+import './chart.css'
 
-function ChartVersion({version, onSelect}) {
+function VersionTag({tag: {tag}, onClick}) {
   return (
-    <Box direction='row' align='center' gap='xsmall'>
-      <Anchor size='small' onClick={() => onSelect(version)}>
-        {version.version}
-      </Anchor> - <Text size='small'>{moment(version.insertedAt).fromNow()}</Text>
+    <Box
+      round='xsmall'
+      align='center'
+      justify='center'
+      background='sidebar'
+      onClick={onClick}
+      pad={{horizontal: 'small', vertical: 'xxsmall'}}>
+      <Text size='xsmall'>{tag}</Text>
+    </Box>
+  )
+}
+
+const TAGS = [
+  'latest',
+  'stable',
+  'warm'
+]
+
+function EditTags({chart, version, versionTags, setOpen}) {
+  const [value, setValue] = useState('stable')
+  const [current, setCurrent] = useState((versionTags || []).map(({tag, version: {id}}) => ({tag, versionId: id})))
+  const rest = useMemo(() => (
+    (chart.tags || [])
+      .filter(({version: {id}}) => id !== version.id)
+      .filter(({tag}) => !current.find(({tag: c}) => c === tag))
+      .map(({tag, version: {id}}) => ({tag, versionId: id}))
+  ), [chart.tags, current, version.id])
+  const addTag = useCallback((tag) => {
+    setCurrent([...current, {tag, versionId: version.id}])
+    setValue('')
+  }, [current, setCurrent, setValue])
+  const removeTag = useCallback((tag) => setCurrent(current.filter((c) => c.tag !== tag)), [current, setCurrent])
+  const [mutation, {loading}] = useMutation(UPDATE_CHART, {
+    variables: {id: chart.id, attributes: {tags: [...rest, ...current]}},
+    onCompleted: () => setOpen(false)
+  })
+
+  return (
+    <Box width='40vw'>
+      <ModalHeader text='Edit tags' setOpen={setOpen} />
+      <Box gap='small' pad='small'>
+        <Box direction='row' gap='small' align='center'>
+          <Select
+            options={TAGS.filter(name => !current.find(({tag}) => tag === name))}
+            value={value}
+            onChange={({option}) => setValue(option)} />
+          <Button label='add' onClick={() => addTag(value)} />
+          <Box direction='row' gap='xsmall' align='center'>
+            {current.length > 0 ?
+              (current.map((tag) => <VersionTag tag={tag} onClick={() => removeTag(tag.tag)} />)) :
+              <Text size='small'>Add a tag...</Text>}
+          </Box>
+        </Box>
+        <Box direction='row' align='center' justify='end'>
+          <Button label='Update' onClick={mutation} loading={loading} />
+        </Box>
+      </Box>
+    </Box>
+  )
+}
+
+function ChartVersion({chart, version, onSelect, tags}) {
+  const [open, setOpen] = useState(false)
+  const versionTags = tags[version.id]
+
+  return (
+    <Box direction='row' align='center' className='chart-version'>
+      <Box direction='row' fill='horizontal' align='center' gap='xsmall'>
+        <Anchor size='small' onClick={() => onSelect(version)}>
+          {version.version}
+        </Anchor>
+        <Text size='small' truncate>- {moment(version.insertedAt).fromNow()}</Text>
+      </Box>
+      <Box flex={false} className='tags' direction='row' gap='xxsmall'>
+        {versionTags && (
+          versionTags.map((tag) => <VersionTag tag={tag} />)
+        )}
+      </Box>
+      <Box flex={false} className='edit'>
+        <Anchor size='small' onClick={() => setOpen(true)}>edit tags</Anchor>
+      </Box>
+      {open && (
+        <Layer modal>
+          <EditTags chart={chart} version={version} versionTags={versionTags} setOpen={setOpen} />
+        </Layer>
+      )}
     </Box>
   )
 }
@@ -165,6 +248,7 @@ export default function Chart() {
   const {edges, pageInfo} = versions
   const currentVersion = version || edges[0].node
   const width = tab === 'configuration' ? 65 : 70
+  const tags = chart.tags.reduce((acc, tag) => ({...acc, [tag.version.id]: [tag, ...(acc[tag.version.id] || [])]}), {})
 
   return (
     <ScrollableContainer>
@@ -204,7 +288,7 @@ export default function Chart() {
                 <Scroller id='chart'
                   edges={edges}
                   style={{overflow: 'auto', width: '100%'}}
-                  mapper={({node}, next) => <ChartVersion key={node.id} version={node} hasNext={!!next} onSelect={setVersion} />}
+                  mapper={({node}, next) => <ChartVersion key={node.id} version={node} hasNext={!!next} onSelect={setVersion} tags={tags} chart={chart} />}
                   onLoadMore={() => {
                     pageInfo.hasNextPage && fetchMore({
                       variables: {cursor: pageInfo.endCursor},

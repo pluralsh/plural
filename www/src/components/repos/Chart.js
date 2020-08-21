@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect, useMemo, useCallback } from 're
 import { Box, Text, Anchor, Markdown, Select, Layer } from 'grommet'
 import { useQuery, useMutation } from 'react-apollo'
 import { useParams } from 'react-router-dom'
-import { Scroller, Button, ScrollableContainer, Tabs, TabHeader, TabHeaderItem, TabContent, ModalHeader } from 'forge-core'
+import { Scroller, Button, SecondaryButton, ScrollableContainer, Tabs, TabHeader, TabHeaderItem, TabContent, ModalHeader } from 'forge-core'
 import { CHART_Q, INSTALL_CHART, UPDATE_CHART_INST, UPDATE_CHART } from './queries'
 import moment from 'moment'
 import { DEFAULT_CHART_ICON } from './constants'
@@ -56,16 +56,16 @@ function EditTags({chart, version, versionTags, setOpen}) {
       <ModalHeader text='Edit tags' setOpen={setOpen} />
       <Box gap='small' pad='small'>
         <Box direction='row' gap='small' align='center'>
-          <Select
-            options={TAGS.filter(name => !current.find(({tag}) => tag === name))}
-            value={value}
-            onChange={({option}) => setValue(option)} />
-          <Button label='add' onClick={() => addTag(value)} />
           <Box direction='row' gap='xsmall' align='center'>
             {current.length > 0 ?
               (current.map((tag) => <VersionTag tag={tag} onClick={() => removeTag(tag.tag)} />)) :
               <Text size='small'>Add a tag...</Text>}
           </Box>
+          <Select
+            options={TAGS.filter(name => !current.find(({tag}) => tag === name))}
+            value={value}
+            onChange={({option}) => setValue(option)} />
+          <SecondaryButton label='add' onClick={() => addTag(value)} />
         </Box>
         <Box direction='row' align='center' justify='end'>
           <Button label='Update' onClick={mutation} loading={loading} />
@@ -80,7 +80,7 @@ function ChartVersion({chart, version, onSelect, tags}) {
   const versionTags = tags[version.id]
 
   return (
-    <Box direction='row' align='center' className='chart-version'>
+    <Box direction='row' align='center' className='chart-version' height='30px' border={{side: 'bottom', color: 'light-3'}}>
       <Box direction='row' fill='horizontal' align='center' gap='xsmall'>
         <Anchor size='small' onClick={() => onSelect(version)}>
           {version.version}

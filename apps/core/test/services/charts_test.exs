@@ -16,6 +16,23 @@ defmodule Core.Services.ChartsTest do
       assert chart.latest_version == "0.1.0"
 
       assert Charts.get_chart_version(chart.id, "0.1.0")
+      assert Charts.get_tag(chart.id, "latest")
+    end
+  end
+
+  describe "#update_chart" do
+    test "It can add tags" do
+      user  = insert(:user)
+      pub   = insert(:publisher, owner: user)
+      repo  = insert(:repository, publisher: pub)
+      chart = insert(:chart, repository: repo)
+      version = insert(:version, chart: chart, version: "1.1.0")
+
+      {:ok, %{tags: [tag]}} = Charts.update_chart(%{tags: [%{version_id: version.id, tag: "stable"}]}, chart.id, user)
+
+      assert tag.tag == "stable"
+      assert tag.chart_id == chart.id
+      assert tag.version_id == version.id
     end
   end
 
@@ -32,6 +49,9 @@ defmodule Core.Services.ChartsTest do
       assert version.version == "1.1.0"
 
       assert refetch(chart).latest_version == "1.1.0"
+      %{tags: [tag]} = Core.Repo.preload(version, [:tags])
+      assert tag.tag == "latest"
+      assert tag.chart_id == chart.id
     end
 
     test "Non owners are forbidden" do

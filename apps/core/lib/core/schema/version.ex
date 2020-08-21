@@ -1,6 +1,6 @@
 defmodule Core.Schema.Version do
   use Piazza.Ecto.Schema
-  alias Core.Schema.{Chart, Dependencies}
+  alias Core.Schema.{Chart, Dependencies, VersionTag}
 
   schema "versions" do
     field :version, :string
@@ -9,6 +9,7 @@ defmodule Core.Schema.Version do
     field :values_template, :string
 
     embeds_one :dependencies, Dependencies, on_replace: :update
+    has_many :tags, VersionTag
     belongs_to :chart, Chart
 
     timestamps()

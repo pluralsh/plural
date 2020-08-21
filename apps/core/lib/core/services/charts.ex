@@ -9,7 +9,8 @@ defmodule Core.Services.Charts do
     User,
     ChartInstallation,
     Version,
-    Repository
+    Repository,
+    VersionTag
   }
 
   @spec get_chart(binary) :: Chart.t | nil
@@ -25,6 +26,9 @@ defmodule Core.Services.Charts do
   @spec get_chart_version(binary, binary) :: Version.t | nil
   def get_chart_version(chart_id, version),
     do: Core.Repo.get_by(Version, chart_id: chart_id, version: version)
+
+  @spec get_tag(binary, binary) :: VersionTag.t | nil
+  def get_tag(chart_id, tag), do: Core.Repo.get_by(VersionTag, chart_id: chart_id, tag: tag)
 
   @spec get_chart_installation(binary, binary) :: ChartInstallation.t | nil
   def get_chart_installation(chart_id, user_id) do
@@ -55,6 +59,15 @@ defmodule Core.Services.Charts do
     |> execute(extract: :chart)
   end
 
+  @spec update_chart(map, binary, User.t) :: {:ok, Chart.t} | {:error, term}
+  def update_chart(attrs, chart_id, %User{} = user) do
+    get_chart!(chart_id)
+    |> Core.Repo.preload([:tags])
+    |> Chart.changeset(attrs)
+    |> allow(user, :edit)
+    |> when_ok(:update)
+  end
+
   @doc """
   Creates a new version for a chart.  Fails if the user is not the publisher
   """
@@ -78,6 +91,14 @@ defmodule Core.Services.Charts do
         :gt -> update_latest_version(chart, v)
         _ -> {:ok, chart}
       end
+    end)
+    |> add_operation(:tag, fn %{version: %{id: version_id}} ->
+      case get_tag(chart_id, "latest") do
+        %VersionTag{} = tag -> tag
+        _ -> %VersionTag{chart_id: chart_id, tag: "latest"}
+      end
+      |> VersionTag.changeset(%{version_id: version_id})
+      |> Core.Repo.insert_or_update()
     end)
     |> execute(extract: :version)
   end

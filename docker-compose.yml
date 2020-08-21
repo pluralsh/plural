@@ -9,22 +9,22 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
     - database_data:/var/lib/postgresql/data
-  chartmuseum:
-    image: chartmuseum/chartmuseum:latest
-    volumes:
-    - ${HOME}/.gcp:/home/chartmuseum/.gcp:ro
-    restart: always
-    environment:
-      PORT: 8080
-      DEBUG: 1
-      DEPTH: 1
-      STORAGE: google
-      CONTEXT_PATH: '/cm'
-      STORAGE_GOOGLE_BUCKET: "mguarino-charts"
-      STORAGE_GOOGLE_PREFIX: ""
-      GOOGLE_APPLICATION_CREDENTIALS: "/home/chartmuseum/.gcp/key.json"
-    ports:
-    - 8080:8080
+  # chartmuseum:
+  #   image: chartmuseum/chartmuseum:latest
+  #   volumes:
+  #   - ${HOME}/.gcp:/home/chartmuseum/.gcp:ro
+  #   restart: always
+  #   environment:
+  #     PORT: 8080
+  #     DEBUG: 1
+  #     DEPTH: 1
+  #     STORAGE: google
+  #     CONTEXT_PATH: '/cm'
+  #     STORAGE_GOOGLE_BUCKET: "mguarino-charts"
+  #     STORAGE_GOOGLE_PREFIX: ""
+  #     GOOGLE_APPLICATION_CREDENTIALS: "/home/chartmuseum/.gcp/key.json"
+  #   ports:
+  #   - 8080:8080
 volumes:
   database_data:
     driver: local

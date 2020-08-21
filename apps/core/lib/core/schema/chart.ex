@@ -1,6 +1,6 @@
 defmodule Core.Schema.Chart do
   use Piazza.Ecto.Schema
-  alias Core.Schema.{Repository, Dependencies}
+  alias Core.Schema.{Repository, Dependencies, VersionTag}
 
   schema "charts" do
     field :name,           :string
@@ -8,6 +8,7 @@ defmodule Core.Schema.Chart do
     field :description,    :string
 
     embeds_one :dependencies, Dependencies, on_replace: :update
+    has_many :tags, VersionTag, on_replace: :delete
     belongs_to :repository, Repository
 
     timestamps()
@@ -41,6 +42,7 @@ defmodule Core.Schema.Chart do
     model
     |> cast(attrs, @valid)
     |> cast_embed(:dependencies)
+    |> cast_assoc(:tags)
     |> unique_constraint(:name, name: index_name(:charts, [:repository_id, :name]))
     |> bump_version(model)
     |> foreign_key_constraint(:repository_id)

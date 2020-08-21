@@ -41,6 +41,15 @@ defmodule GraphQl.Schema.Inputs do
     field :shell,         :shell_attributes
   end
 
+  input_object :chart_attributes do
+    field :tags, list_of(:version_tag_attributes)
+  end
+
+  input_object :version_tag_attributes do
+    field :version_id, non_null(:id)
+    field :tag, non_null(:string)
+  end
+
   input_object :dashboard_attributes do
     field :name, non_null(:string)
     field :uid,  non_null(:string)

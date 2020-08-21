@@ -160,6 +160,7 @@ defmodule GraphQl.Schema.Types do
     field :latest_version, :string
     field :repository,     :repository, resolve: dataloader(Repository)
     field :dependencies,   :dependencies
+    field :tags,           list_of(:version_tag), resolve: dataloader(Chart)
 
     field :installation, :chart_installation, resolve: fn
       chart, _, %{context: %{current_user: user}} ->
@@ -170,13 +171,22 @@ defmodule GraphQl.Schema.Types do
   end
 
   object :version do
-    field :id,              :id
+    field :id,              non_null(:id)
     field :version,         non_null(:string)
     field :readme,          :string
     field :values_template, :string
     field :helm,            :map
 
     field :chart, :chart, resolve: dataloader(Chart)
+
+    timestamps()
+  end
+
+  object :version_tag do
+    field :id,      non_null(:id)
+    field :tag,     non_null(:string)
+    field :version, :version, resolve: dataloader(Chart)
+    field :chart,   :chart, resolve: dataloader(Chart)
 
     timestamps()
   end

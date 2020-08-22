@@ -20,7 +20,7 @@ defmodule Core.Schema.VersionTag do
   end
 
   def ignore_version(query \\ __MODULE__, version_id) do
-    from(v in query, where: v.id != ^version_id)
+    from(v in query, where: v.version_id != ^version_id)
   end
 
   @valid ~w(tag version_id chart_id)a

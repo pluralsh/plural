@@ -90,12 +90,16 @@ defmodule Core.Services.ChartsTest do
       insert(:version_tag, version: version, chart: chart, tag: "latest")
       insert(:version_tag, version: build(:version, chart: chart), chart: chart)
 
-      {:ok, %{id: id, tags: [tag]} = result} = Charts.update_version(%{tags: [%{tag: "stable"}]}, version.id, user)
+      {:ok, %{id: id, tags: [tag, other]} = result} = Charts.update_version(%{tags: [%{tag: "stable"}, %{tag: "latest"}]}, version.id, user)
 
       assert id == version.id
       assert tag.chart_id == chart.id
       assert tag.version_id == version.id
       assert tag.tag == "stable"
+
+      assert other.version_id == version.id
+      assert other.chart_id == chart.id
+      assert other.tag == "latest"
 
       assert_receive {:event, %PubSub.VersionUpdated{item: ^result}}
     end

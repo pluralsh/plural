@@ -1,6 +1,7 @@
 defmodule Core.Services.ChartsTest do
   use Core.SchemaCase, async: true
   use Mimic
+  alias Core.PubSub
   alias Core.Services.Charts
 
   describe "#create_chart" do
@@ -59,6 +60,25 @@ defmodule Core.Services.ChartsTest do
       chart = insert(:chart)
 
       {:error, _} = Charts.create_version(%{version: "1.0.0"}, chart.id, user)
+    end
+  end
+
+  describe "#update_version" do
+    test "A publisher can update version tags" do
+      user  = insert(:user)
+      pub   = insert(:publisher, owner: user)
+      repo  = insert(:repository, publisher: pub)
+      chart = insert(:chart, repository: repo)
+      version = insert(:version, chart: chart, version: "1.1.0")
+
+      {:ok, %{id: id, tags: [tag]} = result} = Charts.update_version(%{tags: [%{tag: "stable"}]}, version.id, user)
+
+      assert id == version.id
+      assert tag.chart_id == chart.id
+      assert tag.version_id == version.id
+      assert tag.tag == "stable"
+
+      assert_receive {:event, %PubSub.VersionUpdated{item: ^result}}
     end
   end
 

@@ -9,7 +9,7 @@ defmodule Core.Schema.Version do
     field :values_template, :string
 
     embeds_one :dependencies, Dependencies, on_replace: :update
-    has_many :tags, VersionTag
+    has_many :tags, VersionTag, on_replace: :delete
     belongs_to :chart, Chart
 
     timestamps()
@@ -27,6 +27,7 @@ defmodule Core.Schema.Version do
     model
     |> cast(attrs, @valid)
     |> cast_embed(:dependencies)
+    |> cast_assoc(:tags)
     |> validate_required([:version, :chart_id])
     |> unique_constraint(:version, name: index_name(:charts, [:chart_id, :version]))
     |> foreign_key_constraint(:chart_id)

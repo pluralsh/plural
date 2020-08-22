@@ -321,6 +321,14 @@ defmodule GraphQl do
       resolve safe_resolver(&Chart.update_chart/2)
     end
 
+    field :update_version, :version do
+      middleware GraphQl.Middleware.Authenticated
+      arg :id,         non_null(:id)
+      arg :attributes, non_null(:version_attributes)
+
+      resolve safe_resolver(&Chart.update_version/2)
+    end
+
     field :create_plan, :plan do
       middleware GraphQl.Middleware.Authenticated
       arg :repository_id, non_null(:id)

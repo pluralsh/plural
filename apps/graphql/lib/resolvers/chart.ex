@@ -34,6 +34,9 @@ defmodule GraphQl.Resolvers.Chart do
   def update_chart(%{attributes: attrs, id: id}, %{context: %{current_user: user}}),
     do: Charts.update_chart(attrs, id, user)
 
+  def update_version(%{attributes: attrs, id: id}, %{context: %{current_user: user}}),
+    do: Charts.update_version(attrs, id, user)
+
   def install_chart(%{installation_id: id, attributes: attrs}, %{context: %{current_user: user}}),
     do: Charts.create_chart_installation(attrs, id, user)
 

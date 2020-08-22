@@ -103,6 +103,40 @@ defmodule Core.Services.Charts do
     |> execute(extract: :version)
   end
 
+  def update_version(attrs, version_id, %User{} = user) do
+    start_transaction()
+    |> add_operation(:version, fn _ ->
+      Core.Repo.get!(Version, version_id)
+      |> Core.Repo.preload([:tags])
+      |> ok()
+    end)
+    |> maybe_clean_tags(attrs)
+    |> add_operation(:update, fn %{version: %{chart_id: chart_id} = version} ->
+      version
+      |> Version.changeset(sanitize_tags(attrs, chart_id))
+      |> allow(user, :edit)
+      |> when_ok(:update)
+    end)
+    |> execute(extract: :update)
+    |> notify(:update)
+  end
+
+  defp maybe_clean_tags(transaction, %{tags: tags}) do
+    add_operation(transaction, :clean, fn %{version: %{id: id, chart_id: chart_id}} ->
+      VersionTag.for_chart(chart_id)
+      |> VersionTag.for_tags(Enum.map(tags, & &1.tag))
+      |> VersionTag.ignore_version(id)
+      |> Core.Repo.delete_all()
+      |> elem(0)
+      |> ok()
+    end)
+  end
+  defp maybe_clean_tags(transaction, _), do: transaction
+
+  defp sanitize_tags(%{tags: tags} = attrs, chart_id),
+    do: Map.put(attrs, :tags, Enum.map(tags, &Map.put(&1, :chart_id, chart_id)))
+  defp sanitize_tags(attrs, _), do: attrs
+
   @doc """
   Handles a chart upload.  Performs metadata extraction on the tarball, along
   with inferring the appropriate version and persisting everything to the
@@ -245,5 +279,7 @@ defmodule Core.Services.Charts do
 
   defp notify(%Version{} = v, :create),
     do: handle_notify(PubSub.VersionCreated, v)
+  defp notify({:ok, %Version{} = v}, :update),
+    do: handle_notify(PubSub.VersionUpdated, v)
   defp notify(error, _), do: error
 end

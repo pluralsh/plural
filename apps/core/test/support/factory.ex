@@ -170,4 +170,12 @@ defmodule Core.Factory do
       dependent_recipe: build(:recipe)
     }
   end
+
+  def version_tag_factory do
+    %Schema.VersionTag{
+      version: build(:version),
+      chart: build(:chart),
+      tag: sequence(:vt, &"tag-#{&1}")
+    }
+  end
 end

@@ -176,6 +176,7 @@ defmodule GraphQl.Schema.Types do
     field :readme,          :string
     field :values_template, :string
     field :helm,            :map
+    field :tags,            list_of(:version_tag), resolve: dataloader(Chart)
 
     field :chart, :chart, resolve: dataloader(Chart)
 
@@ -198,6 +199,7 @@ defmodule GraphQl.Schema.Types do
     field :repository,   :repository, resolve: dataloader(Repository)
     field :user,         :user, resolve: dataloader(User)
     field :subscription, :repository_subscription, resolve: dataloader(Payments)
+    field :track_tag,    non_null(:string)
 
     field :license, :string, resolve: fn
       installation, _, _ -> Core.Services.Repositories.generate_license(installation)

@@ -10,10 +10,11 @@ defmodule Core.Schema.ChartInstallation do
     timestamps()
   end
 
-  def with_auto_upgrade(query \\ __MODULE__) do
+  def with_auto_upgrade(query \\ __MODULE__, tags) do
+    tags = Enum.map(tags, & &1.tag)
     from(ci in query,
       join: inst in assoc(ci, :installation),
-      where: inst.auto_upgrade)
+      where: inst.auto_upgrade and inst.track_tag in ^tags)
   end
 
   def ignore_version(query \\ __MODULE__, version_id) do

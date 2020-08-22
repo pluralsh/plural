@@ -54,6 +54,40 @@ defmodule GraphQl.ChartMutationsTest do
     end
   end
 
+  describe "updateVersion" do
+    test "it can update a chart's tags" do
+      user  = insert(:user)
+      pub   = insert(:publisher, owner: user)
+      repo  = insert(:repository, publisher: pub)
+      chart = insert(:chart, repository: repo)
+      version = insert(:version, chart: chart, version: "1.1.0")
+
+      {:ok, %{data: %{"updateVersion" => updated}}} = run_query("""
+        mutation updateVersion($attrs: VersionAttributes!, $id: ID!) {
+          updateVersion(attributes: $attrs, id: $id) {
+            id
+            tags {
+              version {
+                id
+              }
+              chart {
+                id
+              }
+              tag
+            }
+          }
+        }
+      """,
+      %{"id" => version.id, "attrs" => %{"tags" => [%{"tag" => "stable"}]}},
+      %{current_user: user})
+
+      assert updated["id"] == version.id
+      assert hd(updated["tags"])["version"]["id"] == version.id
+      assert hd(updated["tags"])["chart"]["id"] == chart.id
+      assert hd(updated["tags"])["tag"] == "stable"
+    end
+  end
+
   describe "updateChartInstallation" do
     test "A user can update their installations" do
       %{user: user, repository: repo} = inst = insert(:installation)

@@ -8,7 +8,7 @@ defimpl Core.PubSub.Fanout, for: Any do
   def fanout(_), do: :ok
 end
 
-defimpl Core.PubSub.Fanout, for: Core.PubSub.VersionCreated do
+defimpl Core.PubSub.Fanout, for: [Core.PubSub.VersionCreated, Core.PubSub.VersionUpdated] do
   alias Core.Schema.{ChartInstallation, Repository, Webhook}
   require Logger
 
@@ -20,9 +20,9 @@ defimpl Core.PubSub.Fanout, for: Core.PubSub.VersionCreated do
   checkpointing or persistence, so this must be considered best-effort.
   """
   def fanout(%{item: version}) do
-    version = Core.Repo.preload(version, [:chart])
+    version = Core.Repo.preload(version, [:chart, :tags])
     ChartInstallation.for_chart(version.chart_id)
-    |> ChartInstallation.with_auto_upgrade()
+    |> ChartInstallation.with_auto_upgrade(version.tags)
     |> ChartInstallation.ignore_version(version.id)
     |> ChartInstallation.preload([installation: [:repository, user: :webhooks]])
     |> ChartInstallation.ordered()

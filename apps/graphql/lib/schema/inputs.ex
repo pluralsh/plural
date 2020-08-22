@@ -45,8 +45,12 @@ defmodule GraphQl.Schema.Inputs do
     field :tags, list_of(:version_tag_attributes)
   end
 
+  input_object :version_attributes do
+    field :tags, list_of(:version_tag_attributes)
+  end
+
   input_object :version_tag_attributes do
-    field :version_id, non_null(:id)
+    field :version_id, :id
     field :tag, non_null(:string)
   end
 
@@ -58,6 +62,7 @@ defmodule GraphQl.Schema.Inputs do
   input_object :installation_attributes do
     field :context,      :yml
     field :auto_upgrade, :boolean
+    field :track_tag,    :string
   end
 
   input_object :shell_attributes do

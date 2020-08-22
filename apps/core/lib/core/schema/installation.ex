@@ -20,6 +20,7 @@ defmodule Core.Schema.Installation do
   schema "installations" do
     field :context, :map
     field :auto_upgrade, :boolean, default: false
+    field :track_tag, :string, default: "latest"
 
     embeds_one :policy,     Policy, on_replace: :update
     belongs_to :user,       User
@@ -35,7 +36,7 @@ defmodule Core.Schema.Installation do
   def for_user(query \\ __MODULE__, user_id),
     do: from(i in query, where: i.user_id == ^user_id)
 
-  @valid ~w(user_id repository_id context auto_upgrade)a
+  @valid ~w(user_id repository_id context auto_upgrade track_tag)a
 
   def changeset(model, attrs \\ %{}) do
     model

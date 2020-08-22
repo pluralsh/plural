@@ -11,6 +11,18 @@ defmodule Core.Schema.VersionTag do
     timestamps()
   end
 
+  def for_chart(query \\ __MODULE__, chart_id) do
+    from(v in query, where: v.chart_id == ^chart_id)
+  end
+
+  def for_tags(query \\ __MODULE__, tags) do
+    from(v in query, where: v.tag in ^tags)
+  end
+
+  def ignore_version(query \\ __MODULE__, version_id) do
+    from(v in query, where: v.id != ^version_id)
+  end
+
   @valid ~w(tag version_id chart_id)a
 
   def changeset(model, attrs \\ %{}) do

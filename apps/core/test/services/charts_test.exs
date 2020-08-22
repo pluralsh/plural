@@ -80,6 +80,25 @@ defmodule Core.Services.ChartsTest do
 
       assert_receive {:event, %PubSub.VersionUpdated{item: ^result}}
     end
+
+    test "It can update with existing tags" do
+      user  = insert(:user)
+      pub   = insert(:publisher, owner: user)
+      repo  = insert(:repository, publisher: pub)
+      chart = insert(:chart, repository: repo)
+      version = insert(:version, chart: chart, version: "1.1.0")
+      insert(:version_tag, version: version, chart: chart, tag: "latest")
+      insert(:version_tag, version: build(:version, chart: chart), chart: chart)
+
+      {:ok, %{id: id, tags: [tag]} = result} = Charts.update_version(%{tags: [%{tag: "stable"}]}, version.id, user)
+
+      assert id == version.id
+      assert tag.chart_id == chart.id
+      assert tag.version_id == version.id
+      assert tag.tag == "stable"
+
+      assert_receive {:event, %PubSub.VersionUpdated{item: ^result}}
+    end
   end
 
   describe "#create_chart_installation" do

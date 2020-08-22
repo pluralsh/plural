@@ -263,9 +263,6 @@ export const CHART_Q = gql`
       installation {
         ...ChartInstallationFragment
       }
-      tags {
-        ...VersionTagFragment
-      }
     }
     versions(chartId: $chartId, first: 10, after: $cursor) {
       pageInfo {
@@ -275,6 +272,9 @@ export const CHART_Q = gql`
       edges {
         node {
           ...VersionFragment
+          tags {
+            ...VersionTagFragment
+          }
         }
       }
     }
@@ -299,6 +299,20 @@ export const UPDATE_CHART = gql`
   ${ChartFragment}
   ${VersionTagFragment}
 `;
+
+
+export const UPDATE_VERSION = gql`
+  mutation UpdateVersion($id: ID!, $attributes: VersionAttributes!) {
+    updateVersion(id: $id, attributes: $attributes) {
+      ...VersionFragment
+      tags {
+        ...VersionTagFragment
+      }
+    }
+  }
+  ${VersionFragment}
+  ${VersionTagFragment}
+`
 
 export const TF_Q = gql`
   query Terraform($tfId: ID!) {

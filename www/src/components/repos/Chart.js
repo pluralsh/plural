@@ -1,9 +1,9 @@
-import React, { useState, useContext, useEffect, useMemo, useCallback } from 'react'
+import React, { useState, useContext, useEffect, useCallback } from 'react'
 import { Box, Text, Anchor, Markdown, Select, Layer } from 'grommet'
 import { useQuery, useMutation } from 'react-apollo'
 import { useParams } from 'react-router-dom'
 import { Scroller, Button, SecondaryButton, ScrollableContainer, Tabs, TabHeader, TabHeaderItem, TabContent, ModalHeader } from 'forge-core'
-import { CHART_Q, INSTALL_CHART, UPDATE_CHART_INST, UPDATE_CHART } from './queries'
+import { CHART_Q, INSTALL_CHART, UPDATE_CHART_INST, UPDATE_VERSION } from './queries'
 import moment from 'moment'
 import { DEFAULT_CHART_ICON } from './constants'
 import Highlight from 'react-highlight.js'
@@ -32,23 +32,17 @@ const TAGS = [
   'warm'
 ]
 
-function EditTags({chart, version, versionTags, setOpen}) {
+function EditTags({version, setOpen, refetch}) {
   const [value, setValue] = useState('stable')
-  const [current, setCurrent] = useState((versionTags || []).map(({tag, version: {id}}) => ({tag, versionId: id})))
-  const rest = useMemo(() => (
-    (chart.tags || [])
-      .filter(({version: {id}}) => id !== version.id)
-      .filter(({tag}) => !current.find(({tag: c}) => c === tag))
-      .map(({tag, version: {id}}) => ({tag, versionId: id}))
-  ), [chart.tags, current, version.id])
+  const [current, setCurrent] = useState((version.tags || []).map(({tag}) => ({tag})))
   const addTag = useCallback((tag) => {
-    setCurrent([...current, {tag, versionId: version.id}])
+    setCurrent([...current, {tag}])
     setValue('')
   }, [current, setCurrent, setValue])
   const removeTag = useCallback((tag) => setCurrent(current.filter((c) => c.tag !== tag)), [current, setCurrent])
-  const [mutation, {loading}] = useMutation(UPDATE_CHART, {
-    variables: {id: chart.id, attributes: {tags: [...rest, ...current]}},
-    onCompleted: () => setOpen(false)
+  const [mutation, {loading}] = useMutation(UPDATE_VERSION, {
+    variables: {id: version.id, attributes: {tags: current}},
+    onCompleted: () => { setOpen(false); refetch() }
   })
 
   return (
@@ -58,7 +52,7 @@ function EditTags({chart, version, versionTags, setOpen}) {
         <Box direction='row' gap='small' align='center'>
           <Box direction='row' gap='xsmall' align='center'>
             {current.length > 0 ?
-              (current.map((tag) => <VersionTag tag={tag} onClick={() => removeTag(tag.tag)} />)) :
+              (current.map((tag) => <VersionTag key={tag} tag={tag} onClick={() => removeTag(tag.tag)} />)) :
               <Text size='small'>Add a tag...</Text>}
           </Box>
           <Select
@@ -75,9 +69,8 @@ function EditTags({chart, version, versionTags, setOpen}) {
   )
 }
 
-function ChartVersion({chart, version, onSelect, tags}) {
+function ChartVersion({chart, version, onSelect, refetch}) {
   const [open, setOpen] = useState(false)
-  const versionTags = tags[version.id]
 
   return (
     <Box direction='row' align='center' className='chart-version' height='30px' border={{side: 'bottom', color: 'light-3'}}>
@@ -88,16 +81,14 @@ function ChartVersion({chart, version, onSelect, tags}) {
         <Text size='small' truncate>- {moment(version.insertedAt).fromNow()}</Text>
       </Box>
       <Box flex={false} className='tags' direction='row' gap='xxsmall'>
-        {versionTags && (
-          versionTags.map((tag) => <VersionTag tag={tag} />)
-        )}
+        {version.tags.map((tag) => <VersionTag key={tag} tag={tag} />)}
       </Box>
       <Box flex={false} className='edit'>
         <Anchor size='small' onClick={() => setOpen(true)}>edit tags</Anchor>
       </Box>
       {open && (
         <Layer modal>
-          <EditTags chart={chart} version={version} versionTags={versionTags} setOpen={setOpen} />
+          <EditTags chart={chart} version={version} setOpen={setOpen} refetch={refetch} />
         </Layer>
       )}
     </Box>
@@ -229,7 +220,7 @@ export default function Chart() {
   const [version, setVersion] = useState(null)
   const [tab, setTab] = useState(false)
   const [full, setFull] = useState(false)
-  const {loading, data, fetchMore} = useQuery(CHART_Q, {variables: {chartId}})
+  const {loading, data, fetchMore, refetch} = useQuery(CHART_Q, {variables: {chartId}})
   const {setBreadcrumbs} = useContext(BreadcrumbContext)
   useEffect(() => {
     if (!data) return
@@ -248,7 +239,6 @@ export default function Chart() {
   const {edges, pageInfo} = versions
   const currentVersion = version || edges[0].node
   const width = tab === 'configuration' ? 65 : 70
-  const tags = chart.tags.reduce((acc, tag) => ({...acc, [tag.version.id]: [tag, ...(acc[tag.version.id] || [])]}), {})
 
   return (
     <ScrollableContainer>
@@ -288,7 +278,14 @@ export default function Chart() {
                 <Scroller id='chart'
                   edges={edges}
                   style={{overflow: 'auto', width: '100%'}}
-                  mapper={({node}, next) => <ChartVersion key={node.id} version={node} hasNext={!!next} onSelect={setVersion} tags={tags} chart={chart} />}
+                  mapper={({node}, next) => (
+                    <ChartVersion
+                      key={node.id}
+                      version={node}
+                      hasNext={!!next}
+                      onSelect={setVersion}
+                      refetch={refetch} />
+                  )}
                   onLoadMore={() => {
                     pageInfo.hasNextPage && fetchMore({
                       variables: {cursor: pageInfo.endCursor},

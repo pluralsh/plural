@@ -11,3 +11,9 @@ dependencies:
 - name: loki-stack
   version: 0.32.1
   repository: https://grafana.github.io/loki/charts
+- name: contour
+  version: 0.2.0
+  repository: https://kubernetes-charts.storage.googleapis.com/
+- name: cert-manager
+  version: v0.16.1
+  repository: https://charts.jetstack.io

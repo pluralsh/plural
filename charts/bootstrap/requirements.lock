@@ -11,5 +11,11 @@ dependencies:
 - name: loki-stack
   repository: https://grafana.github.io/loki/charts
   version: 0.32.1
-digest: sha256:ca28450aead896db2067edeb766bd35450ceed3b60e151f03e7126cef390e0f5
-generated: "2020-03-03T18:21:11.570762-05:00"
+- name: contour
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 0.2.0
+- name: cert-manager
+  repository: https://charts.jetstack.io
+  version: v0.16.1
+digest: sha256:a3cf0f37109a0c403144e2e8c2e8672856f91cb63a2be14658de874b97fc9177
+generated: "2020-08-23T13:19:17.876442-04:00"

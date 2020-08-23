@@ -28,6 +28,7 @@ export const InstallationFragment = gql`
     context
     license
     autoUpgrade
+    trackTag
     repository {
       ...RepoFragment
     }

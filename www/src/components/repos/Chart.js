@@ -26,7 +26,7 @@ function VersionTag({tag: {tag}, onClick}) {
   )
 }
 
-const TAGS = [
+export const TAGS = [
   'latest',
   'stable',
   'warm'

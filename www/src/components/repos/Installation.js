@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Box, Text, CheckBox, Anchor } from 'grommet'
+import { Box, Text, CheckBox, Anchor, Select } from 'grommet'
 import { Alert, Close } from 'grommet-icons'
 import { useMutation } from 'react-apollo'
 import { Button, Pill, Expander, Carousel } from 'forge-core'
@@ -15,6 +15,7 @@ import AceEditor from "react-ace"
 import "ace-builds/src-noconflict/mode-yaml"
 import "ace-builds/src-noconflict/theme-terminal"
 import './container.css'
+import { TAGS } from './Chart'
 
 function update(cache, repositoryId, installation) {
   const prev = cache.readQuery({ query: REPO_Q, variables: {repositoryId} })
@@ -27,9 +28,10 @@ function update(cache, repositoryId, installation) {
 function EditInstallation({installation, repository, onUpdate, open}) {
   const [ctx, setCtx] = useState(yaml.safeDump(installation.context || {}, null, 2))
   const [autoUpgrade, setAutoUpgrade] = useState(installation.autoUpgrade)
+  const [trackTag, setTrackTag] = useState(installation.trackTag)
   const [notif, setNotif] = useState(false)
   const [mutation, {loading, errors}] = useMutation(UPDATE_INSTALLATION, {
-    variables: {id: installation.id, attributes: {context: ctx, autoUpgrade}},
+    variables: {id: installation.id, attributes: {context: ctx, autoUpgrade, trackTag}},
     update: (cache, {data: {updateInstallation}}) => {
       const func = onUpdate || update
       func(cache, repository.id, updateInstallation)
@@ -68,13 +70,19 @@ function EditInstallation({installation, repository, onUpdate, open}) {
             <Alert size='15px' color='notif' />
             <Text size='small' color='notif'>Must be in json format</Text>
           </Box>)}
-        <Box direction='row' justify='end'>
+        <Box direction='row' justify='end' gap='small' align='center'>
           <CheckBox
             toggle
             label='Auto Upgrade'
             checked={autoUpgrade}
             onChange={(e) => setAutoUpgrade(e.target.checked)}
           />
+          {autoUpgrade && (
+            <Select
+              value={trackTag}
+              options={TAGS}
+              onChange={({option}) => setTrackTag(option)} />
+          )}
         </Box>
         <Box pad='small' direction='row' justify='end'>
           <Button

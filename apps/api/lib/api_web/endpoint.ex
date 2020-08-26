@@ -1,7 +1,7 @@
 defmodule ApiWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :api
 
-  @upload_maximum 50_000_000
+  @upload_maximum 75_000_000
 
   socket "/socket", ApiWeb.UserSocket,
     websocket: true,

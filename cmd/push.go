@@ -10,6 +10,7 @@ import (
 	"github.com/michaeljguarino/forge/api"
 	"github.com/michaeljguarino/forge/config"
 	"github.com/michaeljguarino/forge/executor"
+	"github.com/michaeljguarino/forge/forgefile"
 	"github.com/michaeljguarino/forge/template"
 	"github.com/michaeljguarino/forge/utils"
 	"github.com/urfave/cli"
@@ -72,6 +73,17 @@ func pushCommands() []cli.Command {
 			Action:    createShell,
 		},
 	}
+}
+
+func apply(c *cli.Context) error {
+	path, _ := os.Getwd()
+
+	forge, err := forgefile.Parse(path)
+	if err != nil {
+		return err
+	}
+	lock := forgefile.Lock(path)
+	return forge.Execute(path, lock)
 }
 
 func handleTerraformUpload(c *cli.Context) error {

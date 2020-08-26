@@ -41,7 +41,7 @@ func RunCommand(cmd *exec.Cmd, output *OutputWriter) (err error) {
 }
 
 func (step Step) Execute(root string, ignore []string) (string, error) {
-	current, err := mkhash(filepath.Join(root, step.Target), ignore)
+	current, err := MkHash(filepath.Join(root, step.Target), ignore)
 	if err != nil {
 		return step.Sha, err
 	}
@@ -62,7 +62,7 @@ func (step Step) Execute(root string, ignore []string) (string, error) {
 	return current, err
 }
 
-func mkhash(root string, ignore []string) (string, error) {
+func MkHash(root string, ignore []string) (string, error) {
 	fi, err := os.Stat(root)
 	if err != nil {
 		return "", err

@@ -1,0 +1,10 @@
+REPO forge
+
+RECIPE forge/recipes/*
+
+DB forge/ops/database.yaml
+
+SH forge/ops/database.yaml
+
+ARTIFACT forge/artifacts/forge-linux.yml
+ARTIFACT forge/artifacts/forge.yaml

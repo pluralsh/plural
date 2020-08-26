@@ -36,6 +36,11 @@ func main() {
 			Action:    deploy,
 		},
 		{
+			Name:      "apply",
+			Usage:     "applys the current forgefile",
+			Action:    apply,
+		},
+		{
 			Name:    "validate",
 			Aliases: []string{"v"},
 			Usage:   "validates your workspace",

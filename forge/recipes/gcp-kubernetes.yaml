@@ -1,6 +1,7 @@
 name: gcp-kubernetes
 description: Constructs a gke cluster and installs the bootstrap chart
 provider: GCP
+dependencies: []
 sections:
 - name: bootstrap
   items:

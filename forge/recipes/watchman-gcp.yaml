@@ -1,6 +1,7 @@
 name: watchman-gcp
 description: Deploys watchman on a GKE cluster
 provider: GCP
+dependencies: []
 sections:
 - name: bootstrap
   items:

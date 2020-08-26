@@ -1,6 +1,9 @@
 package forgefile
 
 import (
+	"os"
+	"os/exec"
+
 	"github.com/michaeljguarino/forge/executor"
 	"github.com/michaeljguarino/forge/utils"
 )
@@ -27,8 +30,9 @@ func (a *Terraform) Push(repo string, sha string) (string, error) {
 	}
 
 	utils.Highlight("pushing terraform %s", a.File)
-	cmd, output := executor.SuppressedCommand("forge", "push", "terraform", a.File, repo)
-
-	err = executor.RunCommand(cmd, output)
+	cmd := exec.Command("forge", "push", "terraform", a.File, repo)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	err = cmd.Run()
 	return newsha, err
 }

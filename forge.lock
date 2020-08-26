@@ -1,12 +1,16 @@
 artifact:
   forge/artifacts/forge-linux.yml: 11d143ed99588407c3c4609704ea9f3850f6844adc51856f8cfbcad77dae58b2
-terraform: {}
-helm: {}
+  forge/artifacts/forge.yaml: deb08d49b9c63da88868379e9fc8b64b748d71dc9ef352855de2e748cb5863c8
+terraform:
+  terraform/forge: h1:8VnDjmXPacPCmpMbrnQh54lbtlX/lgKbdi5o3HW5lv0=
+helm:
+  charts/forge: h1:zTwGMM9TAgg7qWjtE01wjIIkyopv+0m7RuxsUxiEmEE=
 recipe:
   forge/recipes/gcp-kubernetes.yaml: 5db02eb02b9da40ccbe7e10906345a9f89c37e7aa0aa952a438fb74a1d8b2199
   forge/recipes/watchman-gcp.yaml: e0bec37378ab299b0168ba31f85d9b6378fcc9c0f1d432332194110ac951add7
 integration: {}
 shell:
   forge/ops/database.yaml: 48ad537eb4207c02b0b36f0130d13be3d8dabc535ea9ab59d985213cee76adef
+  forge/ops/shell.yaml: 0d9e5422cb4db63fa1adee12b741437c1003c339423ef8cc5353fa7ba235211c
 database:
   forge/ops/database.yaml: 48ad537eb4207c02b0b36f0130d13be3d8dabc535ea9ab59d985213cee76adef

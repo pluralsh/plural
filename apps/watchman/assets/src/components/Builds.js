@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom'
 import { useQuery, useMutation } from 'react-apollo'
 import { BUILDS_Q, CREATE_BUILD, BUILD_SUB } from './graphql/builds'
 import { Loading, Button, Scroller, Modal, ModalHeader } from 'forge-core'
-import { Box, Text, FormField, TextInput, Select } from 'grommet'
+import { Box, Text, FormField, TextInput, Select, Layer } from 'grommet'
 import moment from 'moment'
 import { mergeEdges } from './graphql/utils'
 import { BeatLoader } from 'react-spinners'
@@ -105,19 +105,26 @@ function BuildForm({setOpen}) {
 }
 
 function CreateBuild() {
+  const [open, setOpen] = useState(false)
   return (
-    <Modal target={
-      <Box pad={{horizontal: 'small'}}>
-        <Button round='xsmall' pad={{horizontal: 'medium', vertical: 'xsmall'}} label='Create' />
-      </Box>
-    }>
-    {setOpen => (
-      <Box width='40vw'>
-        <ModalHeader text='Create a build' setOpen={setOpen} />
-        <BuildForm setOpen={setOpen} />
-      </Box>
+    <>
+    <Box pad={{horizontal: 'small'}}>
+      <Button
+        onClick={() => setOpen(true)}
+        round='xsmall'
+        flat
+        pad={{horizontal: 'medium', vertical: 'xsmall'}}
+        label='Create' />
+    </Box>
+    {open && (
+      <Layer modal>
+        <Box width='40vw'>
+          <ModalHeader text='Create a build' setOpen={setOpen} />
+          <BuildForm setOpen={setOpen} />
+        </Box>
+      </Layer>
     )}
-    </Modal>
+    </>
   )
 }
 

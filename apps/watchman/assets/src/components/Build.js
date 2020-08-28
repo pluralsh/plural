@@ -2,10 +2,10 @@ import React, { useEffect, useState, useContext, useRef } from 'react'
 import { useParams, useHistory } from 'react-router-dom'
 import { useQuery, useMutation } from 'react-apollo'
 import { ScrollableContainer, Modal, ModalHeader, Button, Loading } from 'forge-core'
-import { Box, Text } from 'grommet'
+import { Box, Text, Layer } from 'grommet'
 import Line from 'react-lazylog/build/Line'
 import { ansiparse } from './utils/ansi'
-import { BUILD_Q, COMMAND_SUB, BUILD_SUB, CREATE_BUILD } from './graphql/builds'
+import { BUILD_Q, COMMAND_SUB, BUILD_SUB, CREATE_BUILD, CANCEL_BUILD } from './graphql/builds'
 import { mergeEdges } from './graphql/utils'
 import moment from 'moment'
 import { Checkmark, StatusCritical } from 'grommet-icons'
@@ -58,36 +58,65 @@ function BuildTimer({insertedAt, completedAt, status}) {
 
 function Rebuild({build: {repository, message, type}}) {
   let history = useHistory()
-  const [hover, setHover] = useState(false)
+  const [open, setOpen] = useState(false)
   const [mutation, {loading}] = useMutation(CREATE_BUILD, {
     variables: {attributes: {repository, message, type}},
     onCompleted: ({createBuild: {id}}) => history.push(`/build/${id}`)
   })
 
   return (
-    <Modal target={
-      <Box
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
-        pad={HEADER_PADDING}
-        style={{cursor: 'pointer'}}
-        background={hover ? 'light-3' : null}
-        border='left'
-        height='65px'
-        justify='center'
-        align='center'>
-        <Text size='small'>restart</Text>
-      </Box>
-      }>
-      {setOpen => (
+    <>
+    <Box
+      pad={HEADER_PADDING}
+      hoverIndicator='light-3'
+      onClick={() => setOpen(true)}
+      border='left'
+      height='65px'
+      justify='center'
+      align='center'>
+      <Text size='small'>restart</Text>
+    </Box>
+    {open && (
+      <Layer modal>
         <Box width='40vw'>
           <ModalHeader text='Are you sure you want to restart this build?' setOpen={setOpen} />
           <Box direction='row' justify='end' pad='medium'>
             <Button label='restart' onClick={mutation} loading={loading} />
           </Box>
         </Box>
-      )}
-    </Modal>
+      </Layer>
+    )}
+    </>
+  )
+}
+
+function Cancel({build: {id}}) {
+  const [open, setOpen] = useState(false)
+  const [mutation, {loading}] = useMutation(CANCEL_BUILD, {variables: {id}})
+
+  return (
+    <>
+    <Box
+      pad={HEADER_PADDING}
+      hoverIndicator='light-3'
+      onClick={() => setOpen(true)}
+      border='left'
+      height='65px'
+      justify='center'
+      align='center'>
+      <Text size='small'>cancel</Text>
+    </Box>
+    {open && (
+      <Layer modal>
+        <Box width='40vw'>
+          <ModalHeader text='Are you sure you want to cancel this build?' setOpen={setOpen} />
+          <Box direction='row' justify='end' pad='medium'>
+            <Button label='Cancel' onClick={mutation} loading={loading} />
+          </Box>
+        </Box>
+      </Layer>
+    )}
+    </>
   )
 }
 
@@ -219,6 +248,7 @@ export default function Build() {
         </Box>
         <BuildTimer insertedAt={build.insertedAt} completedAt={build.completedAt} status={build.status} />
         <Rebuild build={build} />
+        <Cancel build={build} />
       </Box>
       <div style={{height: 'calc(100vh-100px)', overflow: 'auto', backgroundColor: '#222222', paddingBottom: '19px'}}>
         <ScrollableContainer>

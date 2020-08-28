@@ -15,7 +15,7 @@
     "apollo-link-context": "^1.0.19",
     "apollo-link-error": "^1.1.12",
     "cpx": "^1.5.0",
-    "forge-core": "^1.0.8",
+    "forge-core": "^1.1.10",
     "graphql": "^14.6.0",
     "grommet": "^2.10.0",
     "grommet-icons": "^4.4.0",

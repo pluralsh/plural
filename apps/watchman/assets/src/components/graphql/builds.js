@@ -66,6 +66,15 @@ export const CREATE_BUILD = gql`
   ${BuildFragment}
 `;
 
+export const CANCEL_BUILD = gql`
+  mutation CancelBuild($id: ID!) {
+    cancelBuild(id: $id) {
+      ...BuildFragment
+    }
+  }
+  ${BuildFragment}
+`;
+
 export const BUILD_SUB = gql`
   subscription BuildSub($buildId: String) {
     buildDelta(buildId: $buildId) {

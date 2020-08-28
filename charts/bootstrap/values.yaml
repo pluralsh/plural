@@ -73,6 +73,3 @@ grafana:
     path: /*
     annotations:
       networking.gke.io/managed-certificates: grafana-cert
-
-cert-manager:
-  installCRDs: true

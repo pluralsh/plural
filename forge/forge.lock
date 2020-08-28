@@ -2,8 +2,8 @@ artifact: {}
 terraform:
   ../terraform/bootstrap: h1:bTO17sZqkVJm5opkSjJhCZqQt4cVG8olc+OIsjTlcP8=
 helm:
-  ../charts/bootstrap: h1:Zz1+DXlUOosN0tFXsk4VXAAe5PBCmbzvZ2iLI+Nnwe4=
-  ../charts/watchman: h1:CkSb0r325o7ih06IhUBhDyymYnSBpU8Fxa3y59u+hUw=
+  ../charts/bootstrap: h1:KTbtPpaJFEh06j5wTAj/mBEIICip7KBhk+H5L6Dwy0Y=
+  ../charts/watchman: h1:2Bq++W6+AtpdnrvcWdSqzWJujk5aAQ4b3rUk5Zfwx+E=
 recipe: {}
 integration: {}
 shell: {}

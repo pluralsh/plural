@@ -31,7 +31,7 @@ type Component interface {
 	Push(repo string, sha string) (string, error)
 }
 
-func (forge *Forgefile) Execute(path string, lock *Lockfile) (err error) {
+func (forge *Forgefile) Execute(f string, lock *Lockfile) (err error) {
 	for _, component := range forge.Components {
 		key := component.Key()
 		t := component.Type()
@@ -43,15 +43,15 @@ func (forge *Forgefile) Execute(path string, lock *Lockfile) (err error) {
 		lock.addSha(t, key, newsha)
 	}
 
-	if flusherr := lock.Flush(path); flusherr != nil {
+	if flusherr := lock.Flush(f); flusherr != nil {
 		return flusherr
 	}
 
 	return
 }
 
-func Parse(path string) (*Forgefile, error) {
-	forgefile, err := os.Open(filepath.Join(path, "Forgefile"))
+func Parse(f string) (*Forgefile, error) {
+	forgefile, err := os.Open(f)
 	forge := &Forgefile{}
 	if err != nil {
 		return forge, err

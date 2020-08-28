@@ -77,13 +77,21 @@ func pushCommands() []cli.Command {
 
 func apply(c *cli.Context) error {
 	path, _ := os.Getwd()
+	var file = filepath.Join(path, "Forgefile")
+	if c.IsSet("file") {
+		file, _ = filepath.Abs(c.String("file"))
+	}
 
-	forge, err := forgefile.Parse(path)
+	if err := os.Chdir(filepath.Dir(file)); err != nil {
+		return err
+	}
+
+	forge, err := forgefile.Parse(file)
 	if err != nil {
 		return err
 	}
-	lock := forgefile.Lock(path)
-	return forge.Execute(path, lock)
+	lock := forgefile.Lock(file)
+	return forge.Execute(file, lock)
 }
 
 func handleTerraformUpload(c *cli.Context) error {
@@ -97,10 +105,10 @@ func handleHelmUpload(c *cli.Context) error {
 	pth, repo := c.Args().Get(0), c.Args().Get(1)
 
 	f, err := tmpValuesFile(pth)
-	defer os.Remove(f.Name())
 	if err != nil {
 		return err
 	}
+	defer os.Remove(f.Name())
 
 	utils.Highlight("linting helm: ")
 	cmd, output := executor.SuppressedCommand("helm", "lint", pth, "-f", f.Name())
@@ -127,7 +135,7 @@ func tmpValuesFile(path string) (f *os.File, err error) {
 	}
 
 	vals := map[string]interface{}{
-		"Values":  map[string]string{},
+		"Values":  map[string]interface{}{},
 		"License": "example-license",
 	}
 

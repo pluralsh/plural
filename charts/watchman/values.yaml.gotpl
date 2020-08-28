@@ -21,7 +21,7 @@ secrets:
   webhook_secret: {{ .watchman.secrets.webhook_secret }}
   id_rsa: {{ .watchman.secrets.id_rsa | quote }}
   id_rsa_pub: {{ .watchman.secrets.id_rsa_pub | quote }}
-{{ else }}
+{{ else if .Values.watchman_dns }}
   {{ $webhook := createWebhook .Values.watchman_dns }}
   {{ $id_rsa := readLineDefault "Enter the path to your deploy keys" (homeDir ".ssh" "id_rsa") }}
   webhook_secret: {{ $webhook.Secret }}

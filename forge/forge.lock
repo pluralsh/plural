@@ -1,0 +1,8 @@
+artifact: {}
+terraform:
+  ../terraform/bootstrap: h1:bTO17sZqkVJm5opkSjJhCZqQt4cVG8olc+OIsjTlcP8=
+helm: {}
+recipe: {}
+integration: {}
+shell: {}
+database: {}

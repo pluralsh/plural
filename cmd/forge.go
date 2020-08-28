@@ -36,9 +36,15 @@ func main() {
 			Action:    deploy,
 		},
 		{
-			Name:      "apply",
-			Usage:     "applys the current forgefile",
-			Action:    apply,
+			Name:  "apply",
+			Usage: "applys the current forgefile",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "file",
+					Usage: "forgefile to use",
+				},
+			},
+			Action: apply,
 		},
 		{
 			Name:    "validate",

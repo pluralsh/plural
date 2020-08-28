@@ -1,6 +1,7 @@
 package forgefile
 
 import (
+	"fmt"
 	"io/ioutil"
 	"path/filepath"
 
@@ -31,6 +32,7 @@ func lock() *Lockfile {
 
 func Lock(path string) *Lockfile {
 	lockfile := lockPath(path)
+	fmt.Println(lockfile)
 	lock := lock()
 	content, err := ioutil.ReadFile(lockfile)
 	if err != nil {
@@ -42,7 +44,7 @@ func Lock(path string) *Lockfile {
 }
 
 func lockPath(path string) string {
-	return filepath.Join(path, "forge.lock")
+	return filepath.Join(filepath.Dir(path), "forge.lock")
 }
 
 func (lock *Lockfile) Flush(path string) error {

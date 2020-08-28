@@ -1,0 +1,7 @@
+REPO bootstrap
+
+RECIPE recipe/watchman-gcp.yaml
+HELM ../charts/watchman
+HELM ../charts/bootstrap
+
+TF ../terraform/bootstrap

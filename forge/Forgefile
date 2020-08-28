@@ -1,6 +1,8 @@
 REPO bootstrap
 
 RECIPE recipe/watchman-gcp.yaml
+DB ops/database-watchman.yaml
+
 HELM ../charts/watchman
 HELM ../charts/bootstrap
 

@@ -90,9 +90,10 @@ function BuildForm({setOpen}) {
       <FormField label='type'>
         <Select
           options={[{display: 'deploy', type: 'DEPLOY'}, {display: 'bounce', type: 'BOUNCE'}]}
-          value={attributes.type.toLowerCase()}
-          valueKey={'display'}
-          onChange={({value: {type}}) => setAttributes({...attributes, type})}>
+          value={attributes.type}
+          labelKey='display'
+          valueKey={{key: 'type', reduce: true}}
+          onChange={({value}) => setAttributes({...attributes, type: value})}>
           {({display}) => <Box pad='small'><Text size='small'>{display}</Text></Box>}
         </Select>
       </FormField>

@@ -1,8 +1,11 @@
 artifact: {}
 terraform:
   ../terraform/bootstrap: h1:bTO17sZqkVJm5opkSjJhCZqQt4cVG8olc+OIsjTlcP8=
-helm: {}
+helm:
+  ../charts/bootstrap: h1:Zz1+DXlUOosN0tFXsk4VXAAe5PBCmbzvZ2iLI+Nnwe4=
+  ../charts/watchman: h1:CkSb0r325o7ih06IhUBhDyymYnSBpU8Fxa3y59u+hUw=
 recipe: {}
 integration: {}
 shell: {}
-database: {}
+database:
+  ops/database-watchman.yaml: 30095b5994b93512cd478eeba19274e98ff69a0357d15f5f18e1e0584658b0b5

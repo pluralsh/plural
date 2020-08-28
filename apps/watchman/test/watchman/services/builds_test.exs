@@ -25,6 +25,18 @@ defmodule Watchman.Services.BuildsTest do
     end
   end
 
+  describe "#cancel/1" do
+    test "It will cancel a build by id and send an event" do
+      build = insert(:build)
+
+      {:ok, cancelled} = Builds.cancel(build.id)
+
+      assert cancelled.status == :failed
+
+      assert_receive {:event, %PubSub.BuildDeleted{item: ^cancelled}}
+    end
+  end
+
   describe "fail/1" do
     test "Failed builds broadcast" do
       build = insert(:build)

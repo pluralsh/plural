@@ -26,6 +26,12 @@ defmodule Watchman.Services.Builds do
     |> when_ok(&broadcast(&1, :create))
   end
 
+  def cancel(build_id) do
+    get!(build_id)
+    |> modify_status(:failed)
+    |> notify(:delete)
+  end
+
   def create_command(attrs, %Build{id: id}) do
     %Command{build_id: id}
     |> Command.changeset(attrs)
@@ -84,5 +90,7 @@ defmodule Watchman.Services.Builds do
     do: handle_notify(PubSub.BuildSucceeded, build)
   defp notify({:ok, %Build{} = build}, :failed),
     do: handle_notify(PubSub.BuildFailed, build)
+  defp notify({:ok, %Build{} = build}, :delete),
+    do: handle_notify(PubSub.BuildDeleted, build)
   defp notify(error, _), do: error
 end

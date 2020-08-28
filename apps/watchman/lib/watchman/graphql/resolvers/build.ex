@@ -21,4 +21,7 @@ defmodule Watchman.GraphQl.Resolvers.Build do
 
   def create_build(%{attributes: attrs}, _),
     do: Builds.create(attrs)
+
+  def cancel_build(%{id: id}, _),
+    do: Builds.cancel(id)
 end

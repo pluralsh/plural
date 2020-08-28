@@ -5,7 +5,7 @@ defmodule Watchman.Schema.Build do
   @expiry 1
 
   defenum Type, deploy: 0, bounce: 1
-  defenum Status, queued: 0, running: 1, successful: 2, failed: 3
+  defenum Status, queued: 0, running: 1, successful: 2, failed: 3, cancelled: 4
 
   schema "builds" do
     field :repository,   :string

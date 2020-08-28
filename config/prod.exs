@@ -26,7 +26,8 @@ config :core, :consumers, [
 ]
 
 config :watchman, :consumers, [
-  Watchman.PubSub.Consumers.Webhook
+  Watchman.PubSub.Consumers.Webhook,
+  Watchman.PubSub.Consumers.Recurse
 ]
 
 config :core, Core.Email.Mailer,

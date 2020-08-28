@@ -24,4 +24,20 @@ defmodule Watchman.GraphQl.BuildMutationsTest do
       assert build["status"] == "QUEUED"
     end
   end
+
+  describe "cancelBuild" do
+    test "It can create a new build" do
+      build = insert(:build)
+
+      {:ok, %{data: %{"cancelBuild" => cancelled}}} = run_query("""
+        mutation Cancel($id: ID!) {
+          cancelBuild(id: $id) {
+            id
+          }
+        }
+      """, %{"id" => build.id}, %{current_user: insert(:user)})
+
+      assert cancelled["id"] == build.id
+    end
+  end
 end

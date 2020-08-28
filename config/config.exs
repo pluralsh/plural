@@ -9,6 +9,9 @@ config :watchman,
 config :piazza_core,
   repos: [Core.Repo]
 
+config :piazza_core,
+  shutdown_delay: 60 * 1000
+
 config :api, ApiWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "1rkd5+lxJbdTadyxW7qF/n1fNzKPV010PKf8SEGmUrXwMw0iAZyoyZgWEwr6nmCJ",

@@ -4,7 +4,6 @@ defmodule Watchman.Application do
 
   def start(_type, _args) do
     children = [
-      Piazza.GracefulShutdown,
       Watchman.PubSub.Broadcaster,
       Watchman.Repo,
       WatchmanWeb.Endpoint,
@@ -14,7 +13,9 @@ defmodule Watchman.Application do
       Watchman.Grafana.Token,
       {Absinthe.Subscription, [WatchmanWeb.Endpoint]},
       worker(Watchman.Deployer, [determine_storage()])
-    ] ++ consumers()
+    ] ++ consumers() ++ [
+      Piazza.GracefulShutdown
+    ]
 
     opts = [strategy: :one_for_one, name: Watchman.Supervisor]
     Supervisor.start_link(children, opts)

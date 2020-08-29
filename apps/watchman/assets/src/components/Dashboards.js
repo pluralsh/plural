@@ -95,7 +95,7 @@ export default function Dashboards() {
   }
 
   return (
-    <Box height='calc(100vh - 45px)' pad={{bottom: 'small'}}>
+    <Box height='calc(100vh - 45px)'>
       <Box gap='small'>
         <Box
           pad={{vertical: 'small', ...BUILD_PADDING}}

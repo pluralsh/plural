@@ -150,7 +150,7 @@ export default function Builds() {
 
   const {edges, pageInfo} = data.builds
   return (
-    <Box height='calc(100vh - 45px)' pad={{bottom: 'small'}}>
+    <Box height='calc(100vh - 45px)'>
       <Box>
         <Box
           pad={{vertical: 'small', ...BUILD_PADDING}}
@@ -165,7 +165,7 @@ export default function Builds() {
           </Box>
           <CreateBuild />
         </Box>
-        <Box height='calc(100vh - 105px)' background='backgroundColor'>
+        <Box height='calc(100vh - 105px)' background='backgroundColor' pad={{bottom: 'small'}}>
           <Scroller
             id='builds'
             style={{height: '100%', overflow: 'auto'}}

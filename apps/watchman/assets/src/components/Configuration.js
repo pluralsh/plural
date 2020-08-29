@@ -115,7 +115,7 @@ export default function Configuration() {
   }
 
   return (
-    <Box height='calc(100vh - 45px)' pad={{bottom: 'small'}}>
+    <Box height='calc(100vh - 45px)'>
       <Box gap='small' background='backgroundColor'>
         <Box
           pad={{vertical: 'small', ...BUILD_PADDING}} direction='row' align='center' height='60px'>

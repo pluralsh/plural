@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Box, Text, FormField, TextInput } from 'grommet'
+import { Box, Text, FormField, TextInput, Layer } from 'grommet'
 import { useQuery, useMutation } from 'react-apollo'
 import { Scroller, Button, Modal, ModalHeader, Copyable } from 'forge-core'
 import { USERS_Q, INVITE_USER } from './graphql/users'
@@ -29,29 +29,31 @@ function InviteBanner({invite: {secureId}}) {
 
 function Invite() {
   const [email, setEmail] = useState('')
+  const [open, setOpen] = useState(false)
   const [mutation, {loading, data}] = useMutation(INVITE_USER, {variables: {email}})
   return (
     <Box width='100px'>
-      <Modal target={<Button label='Invite user' />}>
-      {setOpen => (
-        <Box width='40vw'>
-          <ModalHeader text='Invite user' setOpen={setOpen} />
-          <Box pad='small'>
-            {data && data.createInvite && (
-              <InviteBanner invite={data.createInvite} />
-            )}
-            <FormField label='email'>
-              <TextInput
-                placeholder='someone@example.com'
-                value={email} onChange={({target: {value}}) => setEmail(value)} />
-            </FormField>
-            <Box direction='row' justify='end'>
-              <Button label='Invite' loading={loading} onClick={mutation} />
+      <Button onClick={() => setOpen(true)} label='Invite user' />
+      {open && (
+        <Layer modal>
+          <Box width='40vw'>
+            <ModalHeader text='Invite user' setOpen={setOpen} />
+            <Box pad='small'>
+              {data && data.createInvite && (
+                <InviteBanner invite={data.createInvite} />
+              )}
+              <FormField label='email'>
+                <TextInput
+                  placeholder='someone@example.com'
+                  value={email} onChange={({target: {value}}) => setEmail(value)} />
+              </FormField>
+              <Box direction='row' justify='end'>
+                <Button label='Invite' loading={loading} onClick={mutation} />
+              </Box>
             </Box>
           </Box>
-        </Box>
+        </Layer>
       )}
-      </Modal>
     </Box>
   )
 }

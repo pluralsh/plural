@@ -4,7 +4,7 @@ import { BreadcrumbsContext } from './Breadcrumbs'
 import { WEBHOOKS_Q, CREATE_WEBHOOK } from './graphql/webhooks'
 import { Loading, Button, Scroller, Modal, ModalHeader } from 'forge-core'
 import { BUILD_PADDING } from './Builds'
-import { Box, Text, FormField, TextInput } from 'grommet'
+import { Box, Text, FormField, TextInput, Layer } from 'grommet'
 import { chunk } from '../utils/array'
 
 const MAX_LEN = 60
@@ -76,19 +76,27 @@ function WebhookForm({onSubmit}) {
 }
 
 function CreateWebhook() {
+  const [open, setOpen] = useState(false)
   return (
-    <Modal target={
+    <>
       <Box pad={{horizontal: 'small'}}>
-        <Button round='xsmall' pad={{horizontal: 'medium', vertical: 'xsmall'}} label='Create' />
+        <Button
+          onClick={() => setOpen(true)}
+          flat
+          round='xsmall'
+          pad={{horizontal: 'medium', vertical: 'xsmall'}}
+          label='Create'
+        />
       </Box>
-    }>
-    {setOpen => (
-      <Box width='50vw'>
-        <ModalHeader text='Create webhook' setOpen={setOpen} />
-        <WebhookForm onSubmit={() => setOpen(false)} />
-      </Box>
+    {open && (
+      <Layer modal>
+        <Box width='50vw'>
+          <ModalHeader text='Create webhook' setOpen={setOpen} />
+          <WebhookForm onSubmit={() => setOpen(false)} />
+        </Box>
+      </Layer>
     )}
-    </Modal>
+    </>
   )
 }
 
@@ -101,7 +109,7 @@ export default function Webhooks() {
   const {edges, pageInfo} = data.webhooks
 
   return (
-    <Box height='calc(100vh - 45px)' pad={{bottom: 'small'}}>
+    <Box height='calc(100vh - 45px)'>
       <Box>
         <Box
           pad={{vertical: 'small', ...BUILD_PADDING}}

@@ -46,6 +46,7 @@ export default function Plan({approvePlan, subscription, ...plan}) {
   const subscribed = subscription && subscription.plan.id === plan.id
   return (
     <Container
+      width='80%'
       noHover={subscribed}
       pad='medium'
       gap='xsmall'

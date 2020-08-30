@@ -128,11 +128,7 @@ function PlanCarousel({repository}) {
             offset={12}
             edges={plans}
             mapper={(plan) => (
-              <Plan
-                key={plan.id}
-                {...plan}
-                subscription={subscription}
-                approvePlan={approvePlan} />
+              <Plan key={plan.id} subscription={subscription} approvePlan={approvePlan} {...plan} />
             )}
             fetchMore={() => null} /> :
           <Text size='small'>This repo is currently free to use</Text>

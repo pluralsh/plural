@@ -1,21 +1,21 @@
 dependencies:
 - name: external-dns
-  repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 2.6.4
+  repository: https://charts.bitnami.com/bitnami
+  version: 3.4.0
 - name: grafana
   repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 5.0.3
+  version: 5.5.7
 - name: prometheus
   repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 10.5.2
+  version: 11.12.1
 - name: loki-stack
   repository: https://grafana.github.io/loki/charts
-  version: 0.32.1
+  version: 0.40.1
 - name: contour
   repository: https://kubernetes-charts.storage.googleapis.com/
   version: 0.2.0
 - name: cert-manager
   repository: https://charts.jetstack.io
-  version: v0.16.1
-digest: sha256:a3cf0f37109a0c403144e2e8c2e8672856f91cb63a2be14658de874b97fc9177
-generated: "2020-08-23T13:19:17.876442-04:00"
+  version: v1.0.1
+digest: sha256:cc2421dea03a0988d7044e0fc6c7d9a32d808c56660af012d5bc568e03995c4d
+generated: "2020-09-12T18:56:44.922501-04:00"

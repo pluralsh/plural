@@ -1,15 +1,15 @@
 dependencies:
 - name: external-dns
-  version: 2.6.4
-  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 3.4.0
+  repository: https://charts.bitnami.com/bitnami
 - name: grafana
-  version: 5.0.3
+  version: 5.5.7
   repository: https://kubernetes-charts.storage.googleapis.com/
 - name: prometheus
-  version: 10.5.2
+  version: 11.12.1
   repository: https://kubernetes-charts.storage.googleapis.com/
 - name: loki-stack
-  version: 0.32.1
+  version: 0.40.1
   repository: https://grafana.github.io/loki/charts
 - name: contour
   version: 0.2.0

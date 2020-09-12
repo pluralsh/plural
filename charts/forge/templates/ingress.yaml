@@ -15,7 +15,11 @@ spec:
   domains:
   - {{ .Values.ingress.dkr_dns }}
 ---
+{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
+apiVersion: networking.k8s.io/v1beta1
+{{ else }}
 apiVersion: extensions/v1beta1
+{{ end -}}
 kind: Ingress
 metadata:
   name: forge

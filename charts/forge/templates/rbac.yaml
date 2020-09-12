@@ -1,5 +1,5 @@
-kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
 metadata:
   name: forge-endpoint-reader
   labels:
@@ -17,8 +17,8 @@ metadata:
   labels:
 {{ include "forge.labels" . | indent 4 }}
 ---
-kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
 metadata:
   name: forge-endpoint-reader
   labels:

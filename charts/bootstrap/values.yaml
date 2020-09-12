@@ -1,10 +1,8 @@
 external-dns:
-  image:
-    tag: '0.7.3'
-  sources:
-  - service
-  - ingress
-  - contour-httpproxy
+  # sources:
+  # - service
+  # - ingress
+  # # - contour-httpproxy
   provider: google
   txtOwnerId: piazza
   policy: sync
@@ -20,6 +18,14 @@ ownerEmail: mguarino46@gmail.com
 
 cert-manager:
   installCRDs: true
+
+loki-stack:
+  grafana:
+    enabled: false
+    sidecar:
+      image: {}
+      notifiers:
+        enabled: false
 
 grafana:
   grafana.ini:

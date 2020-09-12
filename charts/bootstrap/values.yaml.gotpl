@@ -12,6 +12,8 @@ external-dns:
 
 grafana_dns: {{ .Values.grafana_dns }}
 
+ownerEmail: {{ .Values.ownerEmail }}
+
 grafana:
   admin:
     password: {{ dedupe . "bootstrap.grafana.admin.password" (randAlphaNum 14) }}

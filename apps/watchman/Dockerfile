@@ -70,7 +70,7 @@ RUN go build -o /go/bin/forge
 
 FROM alpine:3 as helm
 
-ARG VERSION=3.2.4
+ARG VERSION=3.3.1
 ENV TERRAFORM_VERSION=0.12.18
 
 # ENV BASE_URL="https://storage.googleapis.com/kubernetes-helm"
@@ -118,7 +118,7 @@ RUN apk --no-cache add \
 
 # The name of your application/release (required)
 ARG APP_NAME
-ARG KUBECTL_VERSION='1.14.8'
+ARG KUBECTL_VERSION='1.16.14'
 ADD https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl /usr/local/bin/kubectl
 
 RUN set -x && \

@@ -15,5 +15,5 @@ dependencies:
   version: 0.2.0
   repository: https://kubernetes-charts.storage.googleapis.com/
 - name: cert-manager
-  version: v0.16.1
+  version: v1.0.1
   repository: https://charts.jetstack.io

@@ -1,4 +1,10 @@
 external-dns:
+  image:
+    tag: '0.7.3'
+  sources:
+  - service
+  - ingress
+  - contour-httpproxy
   provider: google
   txtOwnerId: piazza
   policy: sync
@@ -9,6 +15,12 @@ external-dns:
   - piazzaapp.com
   google:
     serviceAccountSecret: externaldns
+
+ownerEmail: mguarino46@gmail.com
+
+cert-manager:
+  installCRDs: true
+
 grafana:
   grafana.ini:
     security:

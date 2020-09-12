@@ -2,7 +2,7 @@ artifact: {}
 terraform:
   ../terraform/bootstrap: h1:bTO17sZqkVJm5opkSjJhCZqQt4cVG8olc+OIsjTlcP8=
 helm:
-  ../charts/bootstrap: h1:yHFf3gfrcglzmYeo7zOKTSyeggr72otbnCJZiqjDONY=
+  ../charts/bootstrap: h1:3XmCqLKBUSFEME5Md/JnBw4PPh/o2sfdTlEHPtHgipM=
   ../charts/watchman: h1:2Bq++W6+AtpdnrvcWdSqzWJujk5aAQ4b3rUk5Zfwx+E=
 recipe: {}
 integration: {}

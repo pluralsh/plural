@@ -23,6 +23,7 @@ const (
 	INTEGRATION ComponentName = "integration"
 	SHELL       ComponentName = "sh"
 	DATABASE    ComponentName = "db"
+	CRD         ComponentName = "crd"
 )
 
 type Component interface {
@@ -142,6 +143,16 @@ func Parse(f string) (*Forgefile, error) {
 			}
 
 			forge.Components = append(forge.Components, dbs...)
+		case "crd":
+			chart := splitline[2]
+			crds, err := expandGlob(splitline[1], func(targ string) Component {
+				return &Crd{Chart: chart, File: targ}
+			})
+
+			if err != nil {
+				return forge, err
+			}
+			forge.Components = append(forge.Components, crds...)
 		default:
 			continue
 		}

@@ -7,3 +7,5 @@ HELM ../charts/watchman
 HELM ../charts/bootstrap
 
 TF ../terraform/bootstrap
+
+CRD crds/* bootstrap

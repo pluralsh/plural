@@ -130,7 +130,7 @@ func DefaultExecution(path string, prev *Execution) (e *Execution) {
 			Wkdir:   path,
 			Target:  filepath.Join(path, "crds"),
 			Command: "kubectl",
-			Args:    []string{"apply", "-f", filepath.Join(path, "crds")},
+			Args:    []string{"apply", "-f", "crds"},
 			Sha:     "",
 		},
 		{
@@ -150,21 +150,28 @@ func DefaultExecution(path string, prev *Execution) (e *Execution) {
 	for _, step := range prev.Steps {
 		byName[step.Name] = step
 	}
-
+	dedupe := make(map[string]bool)
 	// set up a topsort between the two orders of operations
 	graph := toposort.NewGraph(len(byName))
-	keys := make([]string, 0, len(byName))
 	for k := range byName {
-		keys = append(keys, k)
+		graph.AddNode(k)
 	}
 
-	graph.AddNodes(keys...)
 	for i := 0; i < len(steps)-1; i++ {
-		graph.AddEdge(steps[i].Name, steps[i+1].Name)
+		in := steps[i].Name
+		out := steps[i+1].Name
+		graph.AddEdge(in, out)
+		dedupe[fmt.Sprintf("%s:%s", in, out)] = true
 	}
 
 	for i := 0; i < len(prev.Steps)-1; i++ {
-		graph.AddEdge(steps[i].Name, steps[i+1].Name)
+		in := steps[i].Name
+		out := steps[i+1].Name
+		key := fmt.Sprintf("%s:%s", in, out)
+		if _, ok := dedupe[key]; !ok {
+			graph.AddEdge(steps[i].Name, steps[i+1].Name)
+			dedupe[key] = true
+		}
 	}
 
 	finalizedSteps := []*Step{}

@@ -72,6 +72,12 @@ func pushCommands() []cli.Command {
 			ArgsUsage: "path/to/def.yaml REPO",
 			Action:    createShell,
 		},
+		{
+			Name:      "crd",
+			Usage:     "registers a new crd for a chart",
+			ArgsUsage: "path/to/def.yaml REPO CHART",
+			Action:    createCrd,
+		},
 	}
 }
 
@@ -274,4 +280,12 @@ func handleDashboard(c *cli.Context) error {
 
 	_, err = client.UpdateRepository(c.Args().Get(1), input)
 	return err
+}
+
+func createCrd(c *cli.Context) error {
+	client := api.NewUploadClient()
+	fullPath, _ := filepath.Abs(c.Args().Get(0))
+	repo := c.Args().Get(1)
+	chart := c.Args().Get(2)
+	return client.CreateCrd(repo, chart, fullPath)
 }

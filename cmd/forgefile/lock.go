@@ -16,6 +16,7 @@ type Lockfile struct {
 	Integration map[string]string
 	Shell       map[string]string
 	Database    map[string]string
+	Crd         map[string]string
 }
 
 func lock() *Lockfile {
@@ -27,6 +28,7 @@ func lock() *Lockfile {
 		Integration: map[string]string{},
 		Shell:       map[string]string{},
 		Database:    map[string]string{},
+		Crd:         map[string]string{},
 	}
 }
 
@@ -78,6 +80,9 @@ func (lock *Lockfile) getSha(name ComponentName, key string) string {
 	case INTEGRATION:
 		sha, _ := lock.Integration[key]
 		return sha
+	case CRD:
+		sha, _ := lock.Crd[key]
+		return sha
 	default:
 		return ""
 	}
@@ -100,6 +105,8 @@ func (lock *Lockfile) addSha(name ComponentName, key string, sha string) {
 		lock.Database[key] = sha
 	case INTEGRATION:
 		lock.Integration[key] = sha
+	case CRD:
+		lock.Crd[key] = sha
 	default:
 		return
 	}

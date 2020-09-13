@@ -3,6 +3,7 @@ package api
 import (
 	"fmt"
 	"os"
+	"path"
 )
 
 type chartsResponse struct {
@@ -51,7 +52,7 @@ var versionsQuery = fmt.Sprintf(`
 
 const createCrdQuery = `
 	mutation CrdCreate($chartName: ChartName!, $name: String!, $blob: UploadOrUrl!) {
-		createCrd(chartName: $chartName, attributes: {name: $name, blob: blob}) {
+		createCrd(chartName: $chartName, attributes: {name: $name, blob: $blob}) {
 			id
 		}
 	}
@@ -106,10 +107,11 @@ func (client *Client) GetChartInstallations(repoId string) ([]ChartInstallation,
 	return insts, err
 }
 
-func (client *Client) CreateCrd(chart string, repo string, name string, file string) error {
+func (client *Client) CreateCrd(repo string, chart string, file string) error {
 	var resp struct {
 		Id string
 	}
+	name := path.Base(file)
 
 	rf, err := os.Open(file)
 	if err != nil {

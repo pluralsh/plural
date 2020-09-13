@@ -1,23 +1,29 @@
 package scaffold
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"path/filepath"
 
 	"github.com/michaeljguarino/forge/api"
+	"github.com/michaeljguarino/forge/utils"
 	"github.com/michaeljguarino/forge/wkspace"
 )
 
 func (s *Scaffold) buildCrds(wk *wkspace.Workspace) error {
+	utils.Highlight("syncing crds")
 	for _, chartInst := range wk.Charts {
 		for _, crd := range chartInst.Version.Crds {
+			utils.Highlight(".")
 			if err := writeCrd(s.Root, &crd); err != nil {
+				fmt.Print("\n")
 				return err
 			}
 		}
 	}
 
+	utils.Success("\u2713\n")
 	return nil
 }
 

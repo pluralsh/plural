@@ -9,3 +9,6 @@ integration: {}
 shell: {}
 database:
   ops/database-watchman.yaml: 30095b5994b93512cd478eeba19274e98ff69a0357d15f5f18e1e0584658b0b5
+crd:
+  crds/cert-manager.crds.yaml: d83aa047f7c0b9495fecddfe6bdaea96d20b07544f15f3067747229e4890d4ce
+  crds/contour.yaml: 86e1f2b20639f3d026d8b47e1bddf20020bd9134f90f756535fa806cef1fa87a

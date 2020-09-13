@@ -10,7 +10,8 @@ defmodule Core.Services.Charts do
     ChartInstallation,
     Version,
     Repository,
-    VersionTag
+    VersionTag,
+    Crd
   }
 
   @spec get_chart(binary) :: Chart.t | nil
@@ -29,6 +30,13 @@ defmodule Core.Services.Charts do
 
   @spec get_tag(binary, binary) :: VersionTag.t | nil
   def get_tag(chart_id, tag), do: Core.Repo.get_by(VersionTag, chart_id: chart_id, tag: tag)
+
+
+  @spec get_latest_version(binary) :: Version.t | nil
+  def get_latest_version(chart_id) do
+    with %Chart{latest_version: version} <- get_chart(chart_id),
+      do: get_chart_version(chart_id, version)
+  end
 
   @spec get_chart_installation(binary, binary) :: ChartInstallation.t | nil
   def get_chart_installation(chart_id, user_id) do
@@ -192,6 +200,20 @@ defmodule Core.Services.Charts do
     get_chart_version(chart_id, version)
     |> Version.helm_changeset(attrs)
     |> Core.Repo.update()
+  end
+
+  @doc """
+  Create a new crd.  If one exists for this version, name, the old crd is overwritten
+  """
+  @spec create_crd(map, binary, User.t) :: {:ok, Crd.t} | {:error, %Ecto.Changeset{}}
+  def create_crd(%{name: name} = attrs, version_id, %User{} = user) do
+    case Core.Repo.get_by(Crd, version_id: version_id, name: name) do
+      nil -> %Crd{version_id: version_id}
+      crd -> crd
+    end
+    |> Crd.changeset(attrs)
+    |> allow(user, :create)
+    |> when_ok(&Core.Repo.insert_or_update/1)
   end
 
   defp from_version(%Version{helm: helm}), do: %{description: helm && helm["description"]}

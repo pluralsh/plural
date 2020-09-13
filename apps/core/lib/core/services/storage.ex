@@ -7,7 +7,8 @@ defmodule Core.Storage do
     Repository,
     Terraform,
     Integration,
-    Artifact
+    Artifact,
+    Crd
   }
 
   @acl :public_read
@@ -30,6 +31,7 @@ defmodule Core.Storage do
   def storage_dir(_, {_file, %Repository{icon_id: icon_id}}), do: "uploads/repos/#{icon_id}"
   def storage_dir(_, {_file, %Integration{icon_id: icon_id}}), do: "uploads/integrations/#{icon_id}"
   def storage_dir(_, {_file, %Artifact{blob_id: blob_id}}), do: "uploads/artifacts/#{blob_id}"
+  def storage_dir(_, {_file, %Crd{blob_id: blob_id}}), do: "uploads/crds/#{blob_id}"
 
   def default_url(_), do: nil
 end

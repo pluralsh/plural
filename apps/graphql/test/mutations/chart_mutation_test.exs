@@ -54,6 +54,27 @@ defmodule GraphQl.ChartMutationsTest do
     end
   end
 
+  describe "createCrd" do
+    test "It can create a crd for a chart" do
+      %{owner: user} = pub = insert(:publisher)
+      repo = insert(:repository, publisher: pub)
+      chart = insert(:chart, repository: repo, latest_version: "1.0")
+      version = insert(:version, chart: chart, version: "1.0")
+
+      {:ok, %{data: %{"createCrd" => create}}} = run_query("""
+        mutation CreateCrd($attrs: CrdAttributes!, $id: ID!) {
+          createCrd(attributes: $attrs, chartId: $id) {
+            id
+            name
+          }
+        }
+      """, %{"id" => chart.id, "attrs" => %{"name" => "example.yaml"}}, %{current_user: user})
+
+      assert create["id"]
+      assert create["name"] == "example.yaml"
+    end
+  end
+
   describe "updateVersion" do
     test "it can update a chart's tags" do
       user  = insert(:user)

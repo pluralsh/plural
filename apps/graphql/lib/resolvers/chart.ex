@@ -1,10 +1,11 @@
 defmodule GraphQl.Resolvers.Chart do
   use GraphQl.Resolvers.Base, model: Core.Schema.Chart
   alias Core.Services.{Charts}
-  alias Core.Schema.{Version, ChartInstallation, VersionTag}
+  alias Core.Schema.{Version, ChartInstallation, VersionTag, Crd}
 
   def query(Version, _), do: Version
   def query(VersionTag, _), do: VersionTag
+  def query(Crd, _), do: Crd
   def query(_, _), do: Chart
 
   def resolve_chart_installation(chart, user),
@@ -42,4 +43,11 @@ defmodule GraphQl.Resolvers.Chart do
 
   def update_chart_installation(%{chart_installation_id: id, attributes: attrs}, %{context: %{current_user: user}}),
     do: Charts.update_chart_installation(attrs, id, user)
+
+  def create_crd(%{attributes: attrs, chart_id: chart_id}, %{context: %{current_user: user}}) do
+    case Charts.get_latest_version(chart_id) do
+      %Version{id: id} -> Charts.create_crd(attrs, id, user)
+      nil -> {:error, "could not find latest chart version"}
+    end
+  end
 end

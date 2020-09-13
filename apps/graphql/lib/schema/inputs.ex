@@ -229,6 +229,11 @@ defmodule GraphQl.Schema.Inputs do
     field :blob,     :upload_or_url
   end
 
+  input_object :crd_attributes do
+    field :name, non_null(:string)
+    field :blob, :upload_or_url
+  end
+
   input_object :subscription_attributes do
     field :line_items, :subscription_line_item_attributes
   end

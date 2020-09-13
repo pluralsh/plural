@@ -247,4 +247,23 @@ defmodule Core.Services.ChartsTest do
       assert length(chart.dependencies.dependencies) == 2
     end
   end
+
+  describe "#create_crd/3" do
+    test "A publisher can create crds for a repository" do
+      %{owner: user} = pub = insert(:publisher)
+      repo = insert(:repository, publisher: pub)
+      version = insert(:version, chart: build(:chart, repository: repo))
+
+      {:ok, crd} = Charts.create_crd(%{name: "example.yaml"}, version.id, user)
+
+      assert crd.name == "example.yaml"
+    end
+
+    test "A random user cannot create crds for a repository" do
+      user = insert(:user)
+      version = insert(:version)
+
+      {:error, _} = Charts.create_crd(%{name: "example.yaml"}, version.id, user)
+    end
+  end
 end

@@ -179,6 +179,7 @@ defmodule GraphQl.Schema.Types do
     field :tags,            list_of(:version_tag), resolve: dataloader(Chart)
 
     field :chart, :chart, resolve: dataloader(Chart)
+    field :crds,  list_of(:crd), resolve: dataloader(Chart)
 
     timestamps()
   end
@@ -188,6 +189,16 @@ defmodule GraphQl.Schema.Types do
     field :tag,     non_null(:string)
     field :version, :version, resolve: dataloader(Chart)
     field :chart,   :chart, resolve: dataloader(Chart)
+
+    timestamps()
+  end
+
+  object :crd do
+    field :id,   non_null(:id)
+    field :name, non_null(:string)
+    field :blob, :string, resolve: fn
+      crd, _, _ -> {:ok, Core.Storage.url({crd.blob, crd}, :original)}
+    end
 
     timestamps()
   end

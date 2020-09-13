@@ -1,8 +1,11 @@
 package main
 
 import (
+	"github.com/michaeljguarino/forge/utils"
 	"github.com/michaeljguarino/forge/wkspace"
 	"github.com/urfave/cli"
+	"os"
+	"os/exec"
 )
 
 func workspaceCommands() []cli.Command {
@@ -30,6 +33,12 @@ func workspaceCommands() []cli.Command {
 			Usage:     "upgrade/installs the helm chart for this subworkspace",
 			ArgsUsage: "NAME",
 			Action:    bounceHelm,
+		},
+		{
+			Name:      "crds",
+			Usage:     "installs the crds for this repo",
+			ArgsUsage: "REPO",
+			Action:    createCrds,
 		},
 	}
 }
@@ -72,4 +81,15 @@ func bounceHelm(c *cli.Context) error {
 	}
 
 	return minimal.BounceHelm()
+}
+
+func createCrds(c *cli.Context) error {
+	if empty, err := utils.IsEmpty("crds"); err != nil || empty {
+		return err
+	}
+
+	cmd := exec.Command("kubectl", "apply", "-f", "crds")
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
 }

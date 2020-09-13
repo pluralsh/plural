@@ -129,8 +129,8 @@ func DefaultExecution(path string, prev *Execution) (e *Execution) {
 			Name:    "crds",
 			Wkdir:   path,
 			Target:  filepath.Join(path, "crds"),
-			Command: "kubectl",
-			Args:    []string{"apply", "-f", "crds"},
+			Command: "forge",
+			Args:    []string{"wkspace", "crds", path},
 			Sha:     "",
 		},
 		{
@@ -143,13 +143,18 @@ func DefaultExecution(path string, prev *Execution) (e *Execution) {
 		},
 	}
 
-	for _, step := range steps {
-		byName[step.Name] = step
-	}
-
 	for _, step := range prev.Steps {
 		byName[step.Name] = step
 	}
+
+	for _, step := range steps {
+		prev, ok := byName[step.Name]
+		if ok {
+			step.Sha = prev.Sha
+		}
+		byName[step.Name] = step
+	}
+
 	dedupe := make(map[string]bool)
 	// set up a topsort between the two orders of operations
 	graph := toposort.NewGraph(len(byName))

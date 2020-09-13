@@ -83,5 +83,5 @@ func (m *MinimalWorkspace) BounceHelm() error {
 
 	utils.Warn("helm upgrade --install --namespace %s %s %s\n", m.Name, m.Name, path)
 	return utils.Cmd(m.Config,
-		"helm", "upgrade", "--install", "--namespace", m.Name, m.Name, path)
+		"helm", "upgrade", "--install", "--skip-crds", "--namespace", m.Name, m.Name, path)
 }

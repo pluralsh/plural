@@ -73,6 +73,7 @@ type Version struct {
 	Version        string
 	Readme         string
 	ValuesTemplate string
+	Crds           []Crd
 }
 
 type Terraform struct {
@@ -183,6 +184,17 @@ type Artifact struct {
 	Filesize int
 }
 
+type Crd struct {
+	Id   string
+	Name string
+	Blob string
+}
+
+type ChartName struct {
+	Repo string
+	Chart string
+}
+
 const DatabaseFragment = `
 	fragment DatabaseFragment on Database {
 		engine
@@ -244,14 +256,27 @@ const ChartFragment = `
 	}
 `
 
-const VersionFragment = `
+const CrdFragment = `
+	fragment CrdFragment on Crd {
+		id
+		name
+		blob
+	}
+`
+
+var VersionFragment = fmt.Sprintf(`
 	fragment VersionFragment on Version {
 		id
 		version
 		readme
 		valuesTemplate
+		crds {
+			...CrdFragment
+		}
 	}
-`
+	%s
+`, CrdFragment)
+
 const DependenciesFragment = `
 	fragment DependenciesFragment on Dependencies {
 		dependencies {

@@ -59,7 +59,7 @@ defmodule GraphQl.ChartMutationsTest do
       %{owner: user} = pub = insert(:publisher)
       repo = insert(:repository, publisher: pub)
       chart = insert(:chart, repository: repo, latest_version: "1.0")
-      version = insert(:version, chart: chart, version: "1.0")
+      insert(:version, chart: chart, version: "1.0")
 
       {:ok, %{data: %{"createCrd" => create}}} = run_query("""
         mutation CreateCrd($attrs: CrdAttributes!, $id: ID!) {
@@ -69,6 +69,27 @@ defmodule GraphQl.ChartMutationsTest do
           }
         }
       """, %{"id" => chart.id, "attrs" => %{"name" => "example.yaml"}}, %{current_user: user})
+
+      assert create["id"]
+      assert create["name"] == "example.yaml"
+    end
+
+    test "It can create a crd for a chart by chart name" do
+      %{owner: user} = pub = insert(:publisher)
+      repo = insert(:repository, publisher: pub)
+      chart = insert(:chart, repository: repo, latest_version: "1.0")
+      insert(:version, chart: chart, version: "1.0")
+
+      {:ok, %{data: %{"createCrd" => create}}} = run_query("""
+        mutation CreateCrd($attrs: CrdAttributes!, $chartName: ChartName!) {
+          createCrd(attributes: $attrs, chartName: $chartName) {
+            id
+            name
+          }
+        }
+      """,
+      %{"chartName" => %{"repo" => repo.name, "chart" => chart.name}, "attrs" => %{"name" => "example.yaml"}},
+      %{current_user: user})
 
       assert create["id"]
       assert create["name"] == "example.yaml"

@@ -24,6 +24,10 @@ defmodule Core.Services.Charts do
   def get_chart_by_name!(repo_id, name),
     do: Core.Repo.get_by!(Chart, repository_id: repo_id, name: name)
 
+  @spec get_chart_by_name(binary, binary) :: Chart.t
+  def get_chart_by_name(repo_id, name),
+    do: Core.Repo.get_by(Chart, repository_id: repo_id, name: name)
+
   @spec get_chart_version(binary, binary) :: Version.t | nil
   def get_chart_version(chart_id, version),
     do: Core.Repo.get_by(Version, chart_id: chart_id, version: version)

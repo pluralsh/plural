@@ -34,6 +34,7 @@ type Build struct {
 const (
 	TF   = "terraform"
 	HELM = "helm"
+	CRD  = "crd"
 )
 
 func Scaffolds(wk *wkspace.Workspace) (*Build, error) {
@@ -76,11 +77,16 @@ func Default(name string) (b *Build) {
 			{
 				Name: "terraform",
 				Path: "terraform",
-				Type: "terraform",
+				Type: TF,
+			},
+			{
+				Name: "crds",
+				Type: CRD,
+				Path: "crds",
 			},
 			{
 				Name: "helm",
-				Type: "helm",
+				Type: HELM,
 				Path: filepath.Join("helm", name),
 				Preflight: []*executor.Step{
 					{
@@ -138,6 +144,8 @@ func (s *Scaffold) executeType(wk *wkspace.Workspace) error {
 		return s.handleTerraform(wk)
 	case HELM:
 		return s.handleHelm(wk)
+	case CRD:
+		return s.buildCrds(wk)
 	default:
 		return nil
 	}

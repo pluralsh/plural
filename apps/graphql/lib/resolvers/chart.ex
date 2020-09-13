@@ -1,6 +1,6 @@
 defmodule GraphQl.Resolvers.Chart do
   use GraphQl.Resolvers.Base, model: Core.Schema.Chart
-  alias Core.Services.{Charts}
+  alias Core.Services.{Charts, Repositories}
   alias Core.Schema.{Version, ChartInstallation, VersionTag, Crd}
 
   def query(Version, _), do: Version
@@ -44,10 +44,25 @@ defmodule GraphQl.Resolvers.Chart do
   def update_chart_installation(%{chart_installation_id: id, attributes: attrs}, %{context: %{current_user: user}}),
     do: Charts.update_chart_installation(attrs, id, user)
 
-  def create_crd(%{attributes: attrs, chart_id: chart_id}, %{context: %{current_user: user}}) do
+  def create_crd(%{attributes: attrs, chart_name: %{chart: chart, repo: repo}}, %{context: %{current_user: user}}) do
+    case get_by_chart_name(repo, chart) do
+      %{id: id} -> do_create_crd(attrs, id, user)
+      _ -> {:error, "could not find chart for #{repo}/#{chart}"}
+    end
+  end
+
+  def create_crd(%{attributes: attrs, chart_id: chart_id}, %{context: %{current_user: user}}),
+    do: do_create_crd(attrs, chart_id, user)
+
+  defp do_create_crd(attrs, chart_id, user) do
     case Charts.get_latest_version(chart_id) do
       %Version{id: id} -> Charts.create_crd(attrs, id, user)
       nil -> {:error, "could not find latest chart version"}
     end
+  end
+
+  def get_by_chart_name(repo, chart) do
+    with %{id: id} <- Repositories.get_repository_by_name(repo),
+      do: Charts.get_chart_by_name(id, chart)
   end
 end

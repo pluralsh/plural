@@ -8,6 +8,7 @@ import (
 
 	"github.com/hashicorp/hcl"
 	"github.com/michaeljguarino/forge/utils"
+	toposort "github.com/philopon/go-toposort"
 	"github.com/rodaine/hclencoder"
 )
 
@@ -125,6 +126,14 @@ func DefaultExecution(path string, prev *Execution) (e *Execution) {
 			Sha:     "",
 		},
 		{
+			Name:    "crds",
+			Wkdir:   path,
+			Target:  filepath.Join(path, "crds"),
+			Command: "kubectl",
+			Args:    []string{"apply", "-f", filepath.Join(path, "crds")},
+			Sha:     "",
+		},
+		{
 			Name:    "bounce",
 			Wkdir:   path,
 			Target:  filepath.Join(path, "helm"),
@@ -138,21 +147,35 @@ func DefaultExecution(path string, prev *Execution) (e *Execution) {
 		byName[step.Name] = step
 	}
 
-	finalizedSteps := []*Step{}
 	for _, step := range prev.Steps {
-		if val, ok := byName[step.Name]; ok {
-			val.Sha = step.Sha
-			delete(byName, step.Name)
-			finalizedSteps = append(finalizedSteps, val)
-		} else {
-			finalizedSteps = append(finalizedSteps, step)
-		}
+		byName[step.Name] = step
 	}
 
-	for _, step := range steps {
-		if _, ok := byName[step.Name]; ok {
-			finalizedSteps = append(finalizedSteps, step)
-		}
+	// set up a topsort between the two orders of operations
+	graph := toposort.NewGraph(len(byName))
+	keys := make([]string, 0, len(byName))
+	for k := range byName {
+		keys = append(keys, k)
+	}
+
+	graph.AddNodes(keys...)
+	for i := 0; i < len(steps)-1; i++ {
+		graph.AddEdge(steps[i].Name, steps[i+1].Name)
+	}
+
+	for i := 0; i < len(prev.Steps)-1; i++ {
+		graph.AddEdge(steps[i].Name, steps[i+1].Name)
+	}
+
+	finalizedSteps := []*Step{}
+	sorted, ok := graph.Toposort()
+	if !ok {
+		panic("deployfile cycle detected")
+	}
+
+	// dump the topsort to a list and use that from now on
+	for _, name := range sorted {
+		finalizedSteps = append(finalizedSteps, byName[name])
 	}
 
 	return &Execution{

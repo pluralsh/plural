@@ -4,6 +4,11 @@ defmodule GraphQl.Schema.Inputs do
   import_types Absinthe.Plug.Types
   import_types GraphQl.Schemas.Upload
 
+  input_object :chart_name do
+    field :repo,  :string
+    field :chart, :string
+  end
+
   input_object :user_attributes do
     field :name,     :string
     field :email,    :string

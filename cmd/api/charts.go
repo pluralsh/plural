@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"os"
 )
 
 type chartsResponse struct {
@@ -47,6 +48,14 @@ var versionsQuery = fmt.Sprintf(`
 	}
 	%s
 `, pageSize, VersionFragment)
+
+const createCrdQuery = `
+	mutation CrdCreate($chartName: ChartName!, $name: String!, $blob: UploadOrUrl!) {
+		createCrd(chartName: $chartName, attributes: {name: $name, blob: blob}) {
+			id
+		}
+	}
+`
 
 var chartInstallationsQuery = fmt.Sprintf(`
 	query CIQuery($id: ID!) {
@@ -95,4 +104,24 @@ func (client *Client) GetChartInstallations(repoId string) ([]ChartInstallation,
 		insts[i] = edge.Node
 	}
 	return insts, err
+}
+
+func (client *Client) CreateCrd(chart string, repo string, name string, file string) error {
+	var resp struct {
+		Id string
+	}
+
+	rf, err := os.Open(file)
+	if err != nil {
+		return err
+	}
+	defer rf.Close()
+
+	req := client.Build(createCrdQuery)
+	req.Var("chartName", ChartName{Chart: chart, Repo: repo})
+	req.Var("name", name)
+	req.Var("blob", "blob")
+	req.File("blob", file, rf)
+
+	return client.Run(req, &resp)
 }

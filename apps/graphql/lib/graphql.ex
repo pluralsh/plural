@@ -331,7 +331,8 @@ defmodule GraphQl do
 
     field :create_crd, :crd do
       middleware GraphQl.Middleware.Authenticated
-      arg :chart_id,   non_null(:id)
+      arg :chart_id,   :id
+      arg :chart_name, :chart_name
       arg :attributes, non_null(:crd_attributes)
 
       resolve safe_resolver(&Chart.create_crd/2)

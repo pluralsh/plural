@@ -47,11 +47,12 @@ func Scaffolds(wk *wkspace.Workspace) (*Build, error) {
 	wkspaceRoot := filepath.Join(repoRoot, name)
 
 	build, err := Read(wkspaceRoot)
+	def := Default(name)
 	if err != nil {
-		return Default(name), nil
+		return def, nil
 	}
 
-	return build, nil
+	return merge(build, def), nil
 }
 
 func Read(path string) (*Build, error) {
@@ -106,6 +107,60 @@ func Default(name string) (b *Build) {
 				},
 			},
 		},
+	}
+}
+
+func merge(build *Build, base *Build) *Build {
+	byName := make(map[string]*Scaffold)
+
+	for _, scaffold := range build.Scaffolds {
+		byName[scaffold.Name] = scaffold
+	}
+	for _, scaffold := range base.Scaffolds {
+		if prev, ok := byName[scaffold.Name]; ok {
+			mergePreflights(scaffold, prev)
+		}
+		byName[scaffold.Name] = scaffold
+	}
+
+	graph := utils.Graph(len(byName))
+
+	for key := range byName {
+		graph.AddNode(key)
+	}
+
+	for i := 0; i < len(build.Scaffolds)-1; i++ {
+		graph.AddEdge(build.Scaffolds[i].Name, build.Scaffolds[i+1].Name)
+	}
+
+	for i := 0; i < len(base.Scaffolds)-1; i++ {
+		graph.AddEdge(build.Scaffolds[i].Name, build.Scaffolds[i+1].Name)
+	}
+
+	sorted, ok := graph.Topsort()
+	if !ok {
+		panic("scaffold cycle created")
+	}
+
+	scaffolds := []*Scaffold{}
+	for _, name := range sorted {
+		scaffolds = append(scaffolds, byName[name])
+	}
+	build.Scaffolds = scaffolds
+
+	return build
+}
+
+func mergePreflights(new, old *Scaffold) {
+	byName := make(map[string]*executor.Step)
+	for _, preflight := range old.Preflight {
+		byName[preflight.Name] = preflight
+	}
+
+	for _, preflight := range new.Preflight {
+		if prev, ok := byName[preflight.Name]; ok {
+			preflight.Sha = prev.Sha
+		}
 	}
 }
 

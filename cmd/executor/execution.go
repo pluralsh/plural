@@ -8,7 +8,6 @@ import (
 
 	"github.com/hashicorp/hcl"
 	"github.com/michaeljguarino/forge/utils"
-	toposort "github.com/philopon/go-toposort"
 	"github.com/rodaine/hclencoder"
 )
 
@@ -155,32 +154,22 @@ func DefaultExecution(path string, prev *Execution) (e *Execution) {
 		byName[step.Name] = step
 	}
 
-	dedupe := make(map[string]bool)
 	// set up a topsort between the two orders of operations
-	graph := toposort.NewGraph(len(byName))
+	graph := utils.Graph(len(byName))
 	for k := range byName {
 		graph.AddNode(k)
 	}
 
 	for i := 0; i < len(steps)-1; i++ {
-		in := steps[i].Name
-		out := steps[i+1].Name
-		graph.AddEdge(in, out)
-		dedupe[fmt.Sprintf("%s:%s", in, out)] = true
+		graph.AddEdge(steps[i].Name, steps[i+1].Name)
 	}
 
 	for i := 0; i < len(prev.Steps)-1; i++ {
-		in := steps[i].Name
-		out := steps[i+1].Name
-		key := fmt.Sprintf("%s:%s", in, out)
-		if _, ok := dedupe[key]; !ok {
-			graph.AddEdge(steps[i].Name, steps[i+1].Name)
-			dedupe[key] = true
-		}
+		graph.AddEdge(steps[i].Name, steps[i+1].Name)
 	}
 
 	finalizedSteps := []*Step{}
-	sorted, ok := graph.Toposort()
+	sorted, ok := graph.Topsort()
 	if !ok {
 		panic("deployfile cycle detected")
 	}

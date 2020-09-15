@@ -16,9 +16,6 @@ external-dns:
 
 ownerEmail: mguarino46@gmail.com
 
-cert-manager:
-  installCRDs: true
-
 loki-stack:
   grafana:
     enabled: false

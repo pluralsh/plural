@@ -1,8 +1,0 @@
-engine: POSTGRES
-target: statefulset/watchman-postgresql
-port: 5432
-name: watchman
-credentials:
-  secret: watchman-postgresql
-  key: postgresql-password
-  user: watchman

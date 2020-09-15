@@ -1,6 +1,0 @@
-name: forge
-readme: CLI for building and deploying forge workspaces
-type: cli
-platform: mac
-blob: cmd/forge
-readme: forge/artifacts/forge-readme.md

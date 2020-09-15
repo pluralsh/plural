@@ -15,15 +15,6 @@ ifeq ($(APP_NAME), www)
 							-t $(APP_NAME):latest \
 							-t gcr.io/$(GCP_PROJECT)/forge-www:`cat ../VERSION` \
 							-t $(DKR_HOST)/forge/forge-www:`cat ../VERSION` .
-else ifeq ($(APP_NAME), watchman)
-	cp apps/watchman/Dockerfile Dockerfile.temp
-	docker build --build-arg APP_NAME=$(APP_NAME) -f Dockerfile.temp \
-		--build-arg APP_VSN=$(APP_VSN) \
-		-t $(APP_NAME):$(APP_VSN) \
-		-t $(APP_NAME):latest \
-		-t gcr.io/$(GCP_PROJECT)/$(APP_NAME):$(APP_VSN) \
-		-t $(DKR_HOST)/bootstrap/$(APP_NAME):$(APP_VSN) .
-	rm Dockerfile.temp
 else
 	docker build --build-arg APP_NAME=$(APP_NAME) \
 		--build-arg APP_VSN=$(APP_VSN) \
@@ -35,11 +26,7 @@ endif
 
 push: ## push to gcr
 	docker push gcr.io/$(GCP_PROJECT)/$(APP_NAME):$(APP_VSN)
-ifeq ($(APP_NAME), watchman)
-	docker push $(DKR_HOST)/bootstrap/${APP_NAME}:${APP_VSN}
-else
 	docker push $(DKR_HOST)/forge/${APP_NAME}:$(APP_VSN)
-endif
 
 testup: ## sets up dependent services for test
 	docker-compose up -d

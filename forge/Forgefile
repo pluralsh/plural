@@ -1,9 +1,7 @@
 REPO bootstrap
 
-RECIPE recipe/watchman-gcp.yaml
-DB ops/database-watchman.yaml
+RECIPE recipes/gcp-kubernetes.yaml
 
-HELM ../charts/watchman
 HELM ../charts/bootstrap
 
 TF ../terraform/bootstrap

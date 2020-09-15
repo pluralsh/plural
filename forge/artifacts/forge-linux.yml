@@ -1,6 +1,0 @@
-name: forge
-readme: CLI for building and deploying forge workspaces
-type: cli
-platform: linux
-blob: cmd/build/forge
-readme: forge/artifacts/forge-readme.md

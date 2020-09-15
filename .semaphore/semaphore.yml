@@ -57,10 +57,6 @@ blocks:
       commands:
       - make build APP_NAME=www
       - make push APP_NAME=forge-www
-    - name: "Build watchman"
-      commands:
-      - make build APP_NAME=watchman
-      - make push APP_NAME=watchman
 - name: deploy
   dependencies: ['build']
   skip:

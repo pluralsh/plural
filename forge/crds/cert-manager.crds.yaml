@@ -16,7 +16,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cert-manager.io/inject-ca-from-secret: cert-manager/cert-manager-webhook-ca
+    cert-manager.io/inject-ca-from-secret: bootstrap/bootstrap-cert-manager-webhook-ca
   labels:
     app: cert-manager
     app.kubernetes.io/instance: cert-manager
@@ -28,8 +28,8 @@ spec:
     webhook:
       clientConfig:
         service:
-          name: cert-manager-webhook
-          namespace: cert-manager
+          name: bootstrap-cert-manager-webhook
+          namespace: bootstrap
           path: /convert
       conversionReviewVersions:
       - v1
@@ -821,7 +821,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cert-manager.io/inject-ca-from-secret: cert-manager/cert-manager-webhook-ca
+    cert-manager.io/inject-ca-from-secret: bootstrap/bootstrap-cert-manager-webhook-ca
   labels:
     app: cert-manager
     app.kubernetes.io/instance: cert-manager
@@ -833,8 +833,8 @@ spec:
     webhook:
       clientConfig:
         service:
-          name: cert-manager-webhook
-          namespace: cert-manager
+          name: bootstrap-cert-manager-webhook
+          namespace: bootstrap
           path: /convert
       conversionReviewVersions:
       - v1
@@ -2494,7 +2494,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cert-manager.io/inject-ca-from-secret: cert-manager/cert-manager-webhook-ca
+    cert-manager.io/inject-ca-from-secret: bootstrap/bootstrap-cert-manager-webhook-ca
   labels:
     app: cert-manager
     app.kubernetes.io/instance: cert-manager
@@ -2506,8 +2506,8 @@ spec:
     webhook:
       clientConfig:
         service:
-          name: cert-manager-webhook
-          namespace: cert-manager
+          name: bootstrap-cert-manager-webhook
+          namespace: bootstrap
           path: /convert
       conversionReviewVersions:
       - v1
@@ -8519,7 +8519,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cert-manager.io/inject-ca-from-secret: cert-manager/cert-manager-webhook-ca
+    cert-manager.io/inject-ca-from-secret: bootstrap/bootstrap-cert-manager-webhook-ca
   labels:
     app: cert-manager
     app.kubernetes.io/instance: cert-manager
@@ -8531,8 +8531,8 @@ spec:
     webhook:
       clientConfig:
         service:
-          name: cert-manager-webhook
-          namespace: cert-manager
+          name: bootstrap-cert-manager-webhook
+          namespace: bootstrap
           path: /convert
       conversionReviewVersions:
       - v1
@@ -16448,7 +16448,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cert-manager.io/inject-ca-from-secret: cert-manager/cert-manager-webhook-ca
+    cert-manager.io/inject-ca-from-secret: bootstrap/bootstrap-cert-manager-webhook-ca
   labels:
     app: cert-manager
     app.kubernetes.io/instance: cert-manager
@@ -16460,8 +16460,8 @@ spec:
     webhook:
       clientConfig:
         service:
-          name: cert-manager-webhook
-          namespace: cert-manager
+          name: bootstrap-cert-manager-webhook
+          namespace: bootstrap
           path: /convert
       conversionReviewVersions:
       - v1
@@ -24373,7 +24373,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cert-manager.io/inject-ca-from-secret: cert-manager/cert-manager-webhook-ca
+    cert-manager.io/inject-ca-from-secret: bootstrap/bootstrap-cert-manager-webhook-ca
   labels:
     app: cert-manager
     app.kubernetes.io/instance: cert-manager
@@ -24385,8 +24385,8 @@ spec:
     webhook:
       clientConfig:
         service:
-          name: cert-manager-webhook
-          namespace: cert-manager
+          name: bootstrap-cert-manager-webhook
+          namespace: bootstrap
           path: /convert
       conversionReviewVersions:
       - v1

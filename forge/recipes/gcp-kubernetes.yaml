@@ -34,3 +34,6 @@ sections:
     - name: grafana_dns
       documentation: FQDN for grafana
       type: STRING
+    - name: ownerEmail
+      type: STRING
+      documentation: email to be used for certificate renewal notifications

@@ -2,13 +2,14 @@ artifact: {}
 terraform:
   ../terraform/bootstrap: h1:bTO17sZqkVJm5opkSjJhCZqQt4cVG8olc+OIsjTlcP8=
 helm:
-  ../charts/bootstrap: h1:MlxV3JI6ilB4uoLnSTHZdyY5M918IcBGgClYWE2UfCg=
+  ../charts/bootstrap: h1:5M0qiU+NSMUIuvQFc0pZbWbAJKrgbca+RaulJZ+5LX8=
   ../charts/watchman: h1:cvX5nVHicwvNmo8IQ96Flgf2ypWr197piZlNhKIJZEw=
-recipe: {}
+recipe:
+  recipes/gcp-kubernetes.yaml: 4bd0bc92539465271770551498626b162646055ddf007e78342f35fe11a96399
 integration: {}
 shell: {}
 database:
   ops/database-watchman.yaml: 30095b5994b93512cd478eeba19274e98ff69a0357d15f5f18e1e0584658b0b5
 crd:
-  crds/cert-manager.crds.yaml: d83aa047f7c0b9495fecddfe6bdaea96d20b07544f15f3067747229e4890d4ce
+  crds/cert-manager.crds.yaml: 078fc6cb2251a17a60def50a94b4d3cc437a158679d94ac0d090dbbec09c7ecf
   crds/contour.yaml: 86e1f2b20639f3d026d8b47e1bddf20020bd9134f90f756535fa806cef1fa87a

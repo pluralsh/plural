@@ -11,11 +11,11 @@ dependencies:
 - name: loki-stack
   repository: https://grafana.github.io/loki/charts
   version: 0.40.1
-- name: contour
-  repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 0.2.0
+- name: traefik
+  repository: https://helm.traefik.io/traefik
+  version: 9.2.1
 - name: cert-manager
   repository: https://charts.jetstack.io
   version: v1.0.1
-digest: sha256:cc2421dea03a0988d7044e0fc6c7d9a32d808c56660af012d5bc568e03995c4d
-generated: "2020-09-12T18:56:44.922501-04:00"
+digest: sha256:935a1ed404137b49c3c809e98642e75c7f873eee9ad27928ae5753b983182bbd
+generated: "2020-09-21T21:35:24.09535-04:00"

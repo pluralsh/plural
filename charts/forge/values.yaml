@@ -23,6 +23,7 @@ chartmuseum:
   repository: chartmuseum/chartmuseum
   tag: latest
   bucket: forge-charts
+  pullPolicy: Always
 
 registry:
   replicaCount: 1

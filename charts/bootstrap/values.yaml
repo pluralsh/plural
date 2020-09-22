@@ -34,6 +34,17 @@ loki-stack:
       notifiers:
         enabled: false
 
+traefik:
+  deployment:
+    replicas: 2
+  logs:
+    general:
+      level: INFO
+
+  ingressRoute:
+    dashboard:
+      enabled: false
+
 grafana:
   grafana.ini:
     security:

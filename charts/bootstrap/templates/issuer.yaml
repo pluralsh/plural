@@ -16,4 +16,4 @@ spec:
     solvers:
     - http01:
         ingress:
-          class: contour
+          class: traefik

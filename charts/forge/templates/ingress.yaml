@@ -1,20 +1,4 @@
 {{- if .Values.ingress.enabled -}}
-apiVersion: networking.gke.io/v1beta1
-kind: ManagedCertificate
-metadata:
-  name: forge-cert
-spec:
-  domains:
-  - {{ .Values.ingress.dns }}
----
-apiVersion: networking.gke.io/v1beta1
-kind: ManagedCertificate
-metadata:
-  name: forge-dkr-cert
-spec:
-  domains:
-  - {{ .Values.ingress.dkr_dns }}
----
 {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
 apiVersion: networking.k8s.io/v1beta1
 {{ else }}
@@ -30,11 +14,16 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
+  tls:
+  - hosts:
+    - {{ .Values.ingress.dns }}
+    - {{ .Values.ingress.dkr_dns }}
+    secretName: forge-tls
   rules:
   - host: {{ .Values.ingress.dns }}
     http:
       paths:
-      - path: /cm/*
+      - path: /cm/.*
         backend:
           serviceName: forge-api
           servicePort: http
@@ -42,11 +31,11 @@ spec:
         backend:
           serviceName: forge-api
           servicePort: http
-      - path: /auth/*
+      - path: /auth/.*
         backend:
           serviceName: forge-api
           servicePort: http
-      - path: /api/*
+      - path: /api/.*
         backend:
           serviceName: forge-api
           servicePort: http

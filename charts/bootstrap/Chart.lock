@@ -1,30 +1,21 @@
-apiVersion: v2
-appVersion: "1.0"
-description: A Helm chart for Kubernetes
-name: bootstrap
-type: application
-sources:
-- https://github.com/michaeljguarino/forge/charts/bootstrap
-maintainers:
-- name: michaeljguarino
-  email: mguarino46@gmail.com
-version: 0.3.6
 dependencies:
 - name: external-dns
-  version: 3.4.0
   repository: https://charts.bitnami.com/bitnami
+  version: 3.4.0
 - name: grafana
+  repository: https://kubernetes-charts.storage.googleapis.com/
   version: 5.5.7
-  repository: https://kubernetes-charts.storage.googleapis.com/
 - name: prometheus
-  version: 11.12.1
   repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 11.12.1
 - name: loki-stack
-  version: 0.40.1
   repository: https://grafana.github.io/loki/charts
+  version: 0.40.1
 - name: ingress-nginx
-  version: 3.3.0
   repository: https://kubernetes.github.io/ingress-nginx
+  version: 3.3.0
 - name: cert-manager
-  version: v1.0.1
   repository: https://charts.jetstack.io
+  version: v1.0.1
+digest: sha256:0a22a30cbe15e7153d10aa1e3673a10254031d9868f4b62e290ad20fca8fa1d7
+generated: "2020-09-22T14:28:58.330947-04:00"

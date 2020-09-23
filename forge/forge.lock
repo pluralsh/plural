@@ -2,7 +2,7 @@ artifact: {}
 terraform:
   ../terraform/bootstrap: h1:bTO17sZqkVJm5opkSjJhCZqQt4cVG8olc+OIsjTlcP8=
 helm:
-  ../charts/bootstrap: h1:pwGGITca8mGDRIbzewzFcpqcqOaGNeNLr6dR5VfJUMQ=
+  ../charts/bootstrap: h1:Z5puTSBXwzjIa00jsvpcvY7s2I2iK+XBFH/KIofKc5w=
   ../charts/watchman: h1:cvX5nVHicwvNmo8IQ96Flgf2ypWr197piZlNhKIJZEw=
 recipe:
   recipes/gcp-kubernetes.yaml: 4bd0bc92539465271770551498626b162646055ddf007e78342f35fe11a96399

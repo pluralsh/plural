@@ -36,6 +36,8 @@ loki-stack:
 
 ingress-nginx:
   controller:
+    autoscaling:
+      enabled: true
     service:
       annotations:
         service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp
@@ -43,6 +45,7 @@ ingress-nginx:
         service.beta.kubernetes.io/aws-load-balancer-type: nlb
     config:
       worker-shutdown-timeout: 240s
+      proxy-body-size: '0'
 
 grafana:
   grafana.ini:

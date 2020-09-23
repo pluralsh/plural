@@ -45,15 +45,3 @@ release :forge do
     drop: "rel/commands/drop.sh"
   ]
 end
-
-release :watchman do
-  set version: version
-  set applications: [
-    :runtime_tools,
-    watchman: :permanent
-  ]
-  set commands: [
-    migrate: "rel/commands/migrate.sh",
-    drop: "rel/commands/drop.sh"
-  ]
-end

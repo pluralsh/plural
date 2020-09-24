@@ -128,6 +128,7 @@ defmodule GraphQl do
       arg :repository_id,   :id
       arg :repository_name, :string
       arg :tag,             :string
+      arg :type,            :string
 
       resolve &Repository.list_integrations/2
     end

@@ -404,6 +404,7 @@ defmodule GraphQl.Schema.Types do
     field :name,        non_null(:string)
     field :source_url,  :string
     field :description, :string
+    field :type,        :string
     field :spec,        :map
 
     field :icon, :string, resolve: fn

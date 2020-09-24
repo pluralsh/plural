@@ -174,6 +174,7 @@ defmodule GraphQl.Schema.Inputs do
     field :icon,          :upload_or_url
     field :source_url,    :string
     field :description,   :string
+    field :type,          :string
     field :spec,          :yml
     field :tags,          list_of(:tag_attributes)
   end

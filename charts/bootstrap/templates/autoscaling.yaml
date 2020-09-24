@@ -1,0 +1,22 @@
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  labels:
+    {{- include "bootstrap.labels" . | nindent 4 }}
+  name: nginx-autoscaler
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: bootstrap-ingress-nginx-controller
+  minReplicas: {{ .Values.autoscaling.ingress.minReplicas }}
+  maxReplicas: {{ .Values.autoscaling.ingress.maxReplicas }}
+  metrics:
+  {{- with .Values.autoscaling.ingress.targetCPUUtilizationPercentage }}
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: {{ . }}
+  {{- end }}

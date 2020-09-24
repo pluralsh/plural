@@ -76,6 +76,7 @@ defmodule GraphQl.Resolvers.Repository do
   def list_integrations(%{repository_id: repo_id} = args, _) do
     Integration.for_repository(repo_id)
     |> maybe_add_tags(args)
+    |> maybe_filter_type(args)
     |> Integration.ordered()
     |> paginate(args)
   end
@@ -89,6 +90,10 @@ defmodule GraphQl.Resolvers.Repository do
   defp maybe_add_tags(query, %{tag: tag}) when is_binary(tag),
     do: Integration.for_tag(query, tag)
   defp maybe_add_tags(query, _), do: query
+
+  defp maybe_filter_type(query, %{type: type}) when is_binary(type),
+    do: Integration.for_type(type)
+  defp maybe_filter_type(query, _), do: query
 
   def editable(repo, user) do
     case Core.Policies.Repository.can?(user, repo, :edit) do

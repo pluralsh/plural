@@ -10,6 +10,7 @@ defmodule Core.Schema.Integration do
     field :icon_id,       :binary_id
     field :source_url,    :string
     field :description,   :string
+    field :type,          :string
     field :spec,          :map
 
     belongs_to :publisher,  Publisher
@@ -33,10 +34,14 @@ defmodule Core.Schema.Integration do
     )
   end
 
+  def for_type(query \\ __MODULE__, type) do
+    from(i in query, where: i.type == ^type)
+  end
+
   def ordered(query \\ __MODULE__, order \\ [asc: :name]),
     do: from(i in query, order_by: ^order)
 
-  @valid ~w(name source_url description spec publisher_id)a
+  @valid ~w(name source_url description spec publisher_id type)a
 
   def changeset(model, attrs \\ %{}) do
     model

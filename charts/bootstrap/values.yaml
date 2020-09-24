@@ -26,6 +26,12 @@ external-dns:
 
 ownerEmail: mguarino46@gmail.com
 
+autoscaling:
+  ingress:
+    minReplicas: 1
+    maxReplicas: 11
+    targetCPUUtilizationPercentage: 50
+
 loki-stack:
   grafana:
     enabled: false
@@ -36,8 +42,6 @@ loki-stack:
 
 ingress-nginx:
   controller:
-    autoscaling:
-      enabled: true
     service:
       annotations:
         service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp

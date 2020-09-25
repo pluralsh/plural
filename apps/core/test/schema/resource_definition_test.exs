@@ -16,6 +16,11 @@ defmodule Core.Schema.ResourceDefinitionTest do
       {:error, _} = ResourceDefinition.validate(definition(), %{"str" => "val", "nest" => %{"nested" => 1}})
     end
 
+    test "it will validate lists" do
+      {:error, _} = ResourceDefinition.validate(definition(), %{"str" => "val", "list" => [%{"bogus" => "value"}]})
+      {:error, _} = ResourceDefinition.validate(definition(), %{"str" => "val", "list" => %{"bogus" => "value"}})
+    end
+
     test "It will pass on valid input" do
       :ok = ResourceDefinition.validate(definition(), %{
         "str" => "val",
@@ -31,6 +36,11 @@ defmodule Core.Schema.ResourceDefinitionTest do
         "nest" => %{"nested" => "val"},
         "int" => 1
       })
+
+      :ok = ResourceDefinition.validate(definition(), %{
+        "str" => "val",
+        "list" => [%{"list-ind" => "a"}]
+      })
     end
   end
 
@@ -39,7 +49,10 @@ defmodule Core.Schema.ResourceDefinitionTest do
       build(:specification, name: "str", type: :string, required: true),
       build(:specification, name: "int", type: :int),
       build(:specification, name: "nest", type: :object, spec: [
-        build(:specification, name: "nested", type: :string)
+        build(:specification, name: "nested", type: :string, required: true)
+      ]),
+      build(:specification, name: "list", type: :list, spec: [
+        build(:specification, name: "list-ind", type: :string)
       ])
     ])
   end

@@ -167,6 +167,7 @@ defmodule GraphQl.Schema.Inputs do
     value :bool
     value :string
     value :object
+    value :list
   end
 
   input_object :integration_attributes do

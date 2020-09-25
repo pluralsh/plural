@@ -4,7 +4,7 @@ defmodule Core.Schema.ResourceDefinition do
   defmodule Specification do
     use Piazza.Ecto.Schema
 
-    defenum Type, string: 0, int: 1, float: 2, bool: 3, object: 4
+    defenum Type, string: 0, int: 1, float: 2, bool: 3, object: 4, list: 5
 
     embedded_schema do
       field :type, Type
@@ -64,6 +64,12 @@ defmodule Core.Schema.ResourceDefinition do
     do: do_validate(map, name, required, &is_boolean/1)
   def validate_spec(%Specification{type: :object, name: name, required: required} = spec, map),
     do: do_validate(map, name, required, &validate(spec, &1) == :ok)
+  def validate_spec(%Specification{type: :list, name: name, required: required} = spec, map) do
+    do_validate(map, name, required, fn
+      list when is_list(list) -> Enum.all?(list, &validate(spec, &1) == :ok)
+      _ -> false
+    end)
+  end
 
   defp do_validate(map, name, required, validator) do
     case {map, required} do

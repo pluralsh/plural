@@ -188,6 +188,7 @@ defmodule GraphQl.Schema.Inputs do
   input_object :specification_attributes do
     field :name,     non_null(:string)
     field :type,     non_null(:type_input)
+    field :inner,    :type_input
     field :spec,     list_of(:specification_attributes)
     field :required, :boolean
   end

@@ -19,6 +19,7 @@ defmodule Core.Schema.ResourceDefinitionTest do
     test "it will validate lists" do
       {:error, _} = ResourceDefinition.validate(definition(), %{"str" => "val", "list" => [%{"bogus" => "value"}]})
       {:error, _} = ResourceDefinition.validate(definition(), %{"str" => "val", "list" => %{"bogus" => "value"}})
+      {:error, _} = ResourceDefinition.validate(definition(), %{"str" => "val", "list-int" => ["a", "b"]})
     end
 
     test "It will pass on valid input" do
@@ -41,6 +42,11 @@ defmodule Core.Schema.ResourceDefinitionTest do
         "str" => "val",
         "list" => [%{"list-ind" => "a"}]
       })
+
+      :ok = ResourceDefinition.validate(definition(), %{
+        "str" => "val",
+        "list-int" => [1, 2]
+      })
     end
   end
 
@@ -53,7 +59,8 @@ defmodule Core.Schema.ResourceDefinitionTest do
       ]),
       build(:specification, name: "list", type: :list, spec: [
         build(:specification, name: "list-ind", type: :string)
-      ])
+      ]),
+      build(:specification, name: "list-int", type: :list, inner: :int)
     ])
   end
 end

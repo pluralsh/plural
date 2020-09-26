@@ -1,0 +1,43 @@
+description: Converts dicom images to raw format and jpeg
+name: dicom
+type: workflow
+tags:
+- tag: healthcare
+- tag: imaging
+spec:
+  workflow:
+    name: dicom
+    mappings:
+    - extension: .dcm
+    sections:
+    - index: 1
+      source: ORIGINAL
+      operations:
+      - image: 4catalyzer/gdcm
+        command: gdcmconv
+        args:
+        - --raw
+        - /files/${SOURCE}
+        - /files/raw.dcm
+        output: ${WKDIR}/raw.dcm
+        destination_type: PROXY
+        destination: raw
+    - index: 2
+      source: PROXY
+      source_name: raw
+      operations:
+      - image: pydicom/dicom
+        command: dcmj2pnm
+        args:
+        - /files/${SOURCE}
+        - /files/image.jpg
+        output: ${WKDIR}/image.jpg
+        destination_type: THUMB
+      - image: pydicom/dicom
+        command: dcmj2pnm
+        args:
+        - /files/${SOURCE}
+        - /files/image.jpg
+        output: ${WKDIR}/image.jpg
+        destination_type: PROXY
+        destination: jpeg

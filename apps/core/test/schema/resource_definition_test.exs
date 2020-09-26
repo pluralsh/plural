@@ -48,6 +48,13 @@ defmodule Core.Schema.ResourceDefinitionTest do
         "list-int" => [1, 2]
       })
     end
+
+    test "it can validate silo workflow specs" do
+      definition = silo_definition()
+      path = Path.join(:code.priv_dir(:core), "dicom.yml")
+      {:ok, %{"spec" => spec}} = YamlElixir.read_from_file(path)
+      :ok = ResourceDefinition.validate(definition, spec)
+    end
   end
 
   defp definition() do
@@ -61,6 +68,31 @@ defmodule Core.Schema.ResourceDefinitionTest do
         build(:specification, name: "list-ind", type: :string)
       ]),
       build(:specification, name: "list-int", type: :list, inner: :int)
+    ])
+  end
+
+  defp silo_definition() do
+    build(:resource_definition, spec: [
+      build(:specification, name: "workflow", type: :object, spec: [
+        build(:specification, name: "name", type: :string, required: true),
+        build(:specification, name: "mappings", type: :list, spec: [
+          build(:specification, name: "extension", type: :string, required: true)
+        ]),
+        build(:specification, name: "sections", required: true, type: :list, spec: [
+          build(:specification, name: "index", type: :int, required: true),
+          build(:specification, name: "source", type: :string, required: true),
+          build(:specification, name: "source_name", type: :string),
+          build(:specification, name: "operations", type: :list, spec: [
+            build(:specification, name: "image", type: :string, required: true),
+            build(:specification, name: "command", type: :string),
+            build(:specification, name: "entrypoint", type: :string),
+            build(:specification, name: "output", type: :string, required: true),
+            build(:specification, name: "args", type: :list, inner: :string),
+            build(:specification, name: "destination", type: :string),
+            build(:specification, name: "destination_type", type: :string, required: true),
+          ]),
+        ])
+      ])
     ])
   end
 end

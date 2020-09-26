@@ -15,7 +15,7 @@ defmodule Core.Schema.ResourceDefinition do
       embeds_many :spec, __MODULE__, on_replace: :delete
     end
 
-    @valid ~w(type name)a
+    @valid ~w(type name inner)a
 
     def changeset(model, attrs \\ %{}) do
       model
@@ -43,7 +43,6 @@ defmodule Core.Schema.ResourceDefinition do
   end
 
   def validate(%{spec: spec}, map) when is_map(map) do
-    IO.inspect(map)
     keys = Enum.map(spec, & &1.name)
 
     with {:subset, dropped} when map_size(dropped) == 0 <- {:subset, Map.drop(map, keys)},

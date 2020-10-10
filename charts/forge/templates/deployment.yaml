@@ -15,6 +15,10 @@ spec:
       labels:
         app.kubernetes.io/name: forge-api
         app.kubernetes.io/instance: {{ .Release.Name }}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/metrics"
+        prometheus.io/port: {{ .Values.api.port | quote }}
     spec:
       serviceAccountName: forge
     {{- with .Values.imagePullSecrets }}

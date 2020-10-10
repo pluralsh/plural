@@ -5,6 +5,7 @@ defmodule Api.Application do
 
   def start(_type, _args) do
     topologies = Application.get_env(:libcluster, :topologies)
+    ApiWeb.Plugs.MetricsExporter.setup()
     children = [
       ApiWeb.Endpoint,
       {Cluster.Supervisor, [topologies, [name: Api.ClusterSupervisor]]},

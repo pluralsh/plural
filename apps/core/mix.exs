@@ -54,6 +54,7 @@ defmodule Core.MixProject do
       {:yaml_elixir, "~> 2.4"},
       {:timex, "~> 3.6"},
       {:tzdata, "~> 0.1.8", override: true},
+      {:prometheus_ex, "~> 3.0"},
       {:stripity_stripe, "~> 2.7"},
 
       {:mimic, "~> 1.1", only: :test}

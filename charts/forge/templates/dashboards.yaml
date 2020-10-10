@@ -1,0 +1,91 @@
+apiVersion: forgelabs.sh/v1alpha1
+kind: Dashboard
+metadata:
+  name: {{ template "forge.fullname" $ }}-beam
+  labels:
+{{ include "forge.labels" . | indent 4 }}
+spec:
+  name: beam
+  description: internal erlang telemetry for forge
+  timeslices: [30m, 1h, 2h, 1d]
+  defaultTime: 30m
+  labels:
+  - name: "service"
+    query:
+      query: erlang_vm_ets_limit{app_kubernetes_io_instance="{{ .Release.Name }}"}
+      label: app_kubernetes_io_name
+  graphs:
+  - queries:
+    - query: avg(erlang_vm_process_limit{app_kubernetes_io_name="$service"})
+      legend: process limit
+    - query: avg(erlang_vm_process_count{app_kubernetes_io_name="$service"})
+      legend: process count
+    name: Process details
+  - queries:
+    - query: avg(erlang_vm_memory_bytes_total{app_kubernetes_io_name="$service", kind="processes"})
+      legend: process memory
+    - query: avg(erlang_vm_memory_system_bytes_total{app_kubernetes_io_name="$service", usage="binary"})
+      legend: binary heap memory
+    - query: avg(erlang_vm_memory_system_bytes_total{app_kubernetes_io_name="$service", usage="code"})
+      legend: code memory
+    - query: avg(erlang_vm_memory_system_bytes_total{app_kubernetes_io_name="$service", usage="ets"})
+      legend: ets memory
+    name: VM memory
+---
+apiVersion: forgelabs.sh/v1alpha1
+kind: Dashboard
+metadata:
+  name: {{ template "forge.fullname" $ }}-postgres
+  labels:
+{{ include "forge.labels" . | indent 4 }}
+spec:
+  name: postgres
+  description: Monitoring for forge's postgres db
+  timeslices: [30m, 1h, 2h, 1d]
+  defaultTime: 30m
+  labels:
+  - name: instance
+    query:
+      query: pg_stat_database_tup_fetched{kubernetes_namespace="{{ .Release.Namespace }}"}
+      label: instance
+  graphs:
+  - queries:
+    - query: SUM(pg_stat_database_tup_fetched{instance=~"$instance"})
+      legend: tuples fetched
+    - query: SUM(pg_stat_database_tup_inserted{instance=~"$instance"})
+      legend: tuples inserted
+    - query: SUM(pg_stat_database_tup_updated{instance=~"$instance"})
+      legend: tuples updated
+    name: Storage Performance
+  - queries:
+    - query: pg_settings_max_connections{instance="$instance"}
+      legend: connections
+    name: Max Connections
+  - queries:
+    - query: avg(rate(process_cpu_seconds_total{instance="$instance"}[5m]) * 1000)
+      legend: seconds
+    name: CPU time
+  - queries:
+    - query: avg(rate(process_resident_memory_bytes{instance="$instance"}[5m]))
+      legend: resident mem
+    - query: avg(rate(process_virtual_memory_bytes{instance="$instance"}[5m]))
+      legend: process mem
+    name: Memory utilization
+  - queries:
+    - query: process_open_fds{instance="$instance"}
+      legend: fds
+    name: Open file descriptors
+  - queries:
+    - query: pg_settings_max_wal_size_bytes{instance="$instance"}
+      legend: WAL size
+    name: Max WAL size
+  - queries:
+    - query: irate(pg_stat_database_xact_commit{instance="$instance"}[5m])
+      legend: commits
+    - query: irate(pg_stat_database_xact_rollback{instance="$instance"}[5m])
+      legend: rollbacks
+    name: Transactions
+  - queries:
+    - query: pg_stat_database_blks_hit{instance="$instance"} / (pg_stat_database_blks_read{instance="$instance"} + pg_stat_database_blks_hit{instance="$instance"})
+      legend: hit rate
+    name: Cache hit rate

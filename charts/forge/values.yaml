@@ -86,6 +86,8 @@ registry:
         threshold: 3
 
 postgresql:
+  metrics:
+    enabled: true
   postgresqlUsername: forge
   postgresqlDatabase: forge
 

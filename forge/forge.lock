@@ -14,4 +14,6 @@ crd:
   crds/cert-manager.crds.yaml: 078fc6cb2251a17a60def50a94b4d3cc437a158679d94ac0d090dbbec09c7ecf
   crds/cert-manager.yaml: 480e2d25505769d0586897de792a5acdc2e37db3fd56ae497a846b98201b95aa
   crds/contour.yaml: 86e1f2b20639f3d026d8b47e1bddf20020bd9134f90f756535fa806cef1fa87a
+  crds/dashboard.yaml: a50baac747dfdbce1e97ed54e5efa7be4959c74fea9a3553948a93e2c347603d
   crds/traefik.yaml: f15563bc098295e13172978ac703836ba5264248586c5402c87d53ab5498e7b6
+ird: {}

@@ -21,16 +21,16 @@ blocks:
       - mix local.hex --force
       - mix local.rebar --force
 
-      - cache restore mix-deps2-$SEMAPHORE_GIT_BRANCH-$(checksum mix.lock),mix-deps2-$SEMAPHORE_GIT_BRANCH,mix-deps2-master
-      - cache restore mix-build2-$SEMAPHORE_GIT_BRANCH-$(checksum mix.lock),mix-build2-$SEMAPHORE_GIT_BRANCH,mix-build2-master
+      - cache restore mix-deps3-$SEMAPHORE_GIT_BRANCH-$(checksum mix.lock),mix-deps3-$SEMAPHORE_GIT_BRANCH,mix-deps3-master
+      - cache restore mix-build3-$SEMAPHORE_GIT_BRANCH-$(checksum mix.lock),mix-build3-$SEMAPHORE_GIT_BRANCH,mix-build3-master
 
       - mix deps.get
       - mix test
 
-      - cache store mix-deps2-$SEMAPHORE_GIT_BRANCH-$(checksum mix.lock) deps
-      - cache store mix-build2-$SEMAPHORE_GIT_BRANCH-$(checksum mix.lock) _build
-      - cache store mix-deps2-$SEMAPHORE_GIT_BRANCH deps
-      - cache store mix-build2-$SEMAPHORE_GIT_BRANCH _build
+      - cache store mix-deps3-$SEMAPHORE_GIT_BRANCH-$(checksum mix.lock) deps
+      - cache store mix-build3-$SEMAPHORE_GIT_BRANCH-$(checksum mix.lock) _build
+      - cache store mix-deps3-$SEMAPHORE_GIT_BRANCH deps
+      - cache store mix-build3-$SEMAPHORE_GIT_BRANCH _build
 - name: build
   dependencies: ['test']
   skip:

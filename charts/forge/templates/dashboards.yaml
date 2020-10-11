@@ -32,6 +32,13 @@ spec:
       legend: ets memory
     format: bytes
     name: VM memory
+  - queries:
+    - query: irate(erlang_vm_statistics_context_switches{app_kubernetes_io_name="$service"}[5m])
+      legend: context switches
+    - query: irate(erlang_vm_statistics_reductions_total{app_kubernetes_io_name="$service"}[5m])
+      legend: reductions
+    format: none
+    name: runtime performance
 ---
 apiVersion: forgelabs.sh/v1alpha1
 kind: Dashboard

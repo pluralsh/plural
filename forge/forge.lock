@@ -2,7 +2,7 @@ artifact: {}
 terraform:
   ../terraform/bootstrap: h1:bTO17sZqkVJm5opkSjJhCZqQt4cVG8olc+OIsjTlcP8=
 helm:
-  ../charts/bootstrap: h1:okuw/V3t8/MCkn+1JJrrLfIbBXlDnjKFQ4EvR0WrZgI=
+  ../charts/bootstrap: h1:1iTDgnEGTVSBjjIg6/eIylTWA1rPTe296fZXrM/2+Ro=
   ../charts/watchman: h1:cvX5nVHicwvNmo8IQ96Flgf2ypWr197piZlNhKIJZEw=
 recipe:
   recipes/gcp-kubernetes.yaml: 4bd0bc92539465271770551498626b162646055ddf007e78342f35fe11a96399
@@ -14,6 +14,6 @@ crd:
   crds/cert-manager.crds.yaml: 078fc6cb2251a17a60def50a94b4d3cc437a158679d94ac0d090dbbec09c7ecf
   crds/cert-manager.yaml: 480e2d25505769d0586897de792a5acdc2e37db3fd56ae497a846b98201b95aa
   crds/contour.yaml: 86e1f2b20639f3d026d8b47e1bddf20020bd9134f90f756535fa806cef1fa87a
-  crds/dashboard.yaml: 15344889b31ee495b5ed674e36f0a4f42446996da04871103409abbce4b2b0e3
+  crds/dashboard.yaml: 73b6455275cc4e58c969e310f6216eea119a55f3a284aeaf47169aa833580418
   crds/traefik.yaml: f15563bc098295e13172978ac703836ba5264248586c5402c87d53ab5498e7b6
 ird: {}

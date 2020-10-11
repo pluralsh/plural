@@ -19,5 +19,9 @@ grafana:
     password: {{ dedupe . "bootstrap.grafana.admin.password" (randAlphaNum 14) }}
     user: admin
   ingress:
+    tls:
+    - hosts:
+      - {{ .Values.grafana_dns }}
+      secretName: grafana-tls
     hosts:
     - {{ .Values.grafana_dns }}

@@ -30,6 +30,7 @@ spec:
       legend: code memory
     - query: avg(erlang_vm_memory_system_bytes_total{app_kubernetes_io_name="$service", usage="ets"})
       legend: ets memory
+    format: bytes
     name: VM memory
 ---
 apiVersion: forgelabs.sh/v1alpha1
@@ -70,6 +71,7 @@ spec:
       legend: resident mem
     - query: avg(rate(process_virtual_memory_bytes{instance="$instance"}[5m]))
       legend: process mem
+    format: bytes
     name: Memory utilization
   - queries:
     - query: process_open_fds{instance="$instance"}
@@ -78,6 +80,7 @@ spec:
   - queries:
     - query: pg_settings_max_wal_size_bytes{instance="$instance"}
       legend: WAL size
+    format: bytes
     name: Max WAL size
   - queries:
     - query: irate(pg_stat_database_xact_commit{instance="$instance"}[5m])

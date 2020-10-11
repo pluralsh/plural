@@ -56,13 +56,18 @@ spec:
                 type: object
                 required: [queries, name]
                 properties:
+                  format:
+                    type: string
+                    enum: [bytes, percent, none]
                   queries:
                     type: array
                     items:
                       type: object
-                      required: [query, legend]
+                      required: [query]
                       properties:
                         query:
+                          type: string
+                        legendFormat:
                           type: string
                         legend:
                           type: string

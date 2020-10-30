@@ -1,11 +1,10 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { Box, Text, Anchor, Table, TableHeader, TableRow, TableCell, TableBody, CheckBox } from 'grommet'
-import { Bundle, FormPrevious, Dashboard, Close } from 'grommet-icons'
+import { Bundle, FormPrevious } from 'grommet-icons'
 import { useQuery, useMutation } from 'react-apollo'
 import { useParams, useHistory } from 'react-router-dom'
 import { Scroller, Button, SecondaryButton, Modal, ModalHeader, Tabs, TabHeader,
-        TabHeaderItem, TabContent, BORDER_COLOR, ScrollableContainer,
-        InputCollection, ResponsiveInput } from 'forge-core'
+        TabHeaderItem, TabContent, BORDER_COLOR, ScrollableContainer } from 'forge-core'
 import yaml from 'js-yaml'
 import { REPO_Q, UPDATE_REPO, DOCKER_IMG_Q } from './queries'
 import { DEFAULT_CHART_ICON, DEFAULT_TF_ICON, DEFAULT_DKR_ICON } from './constants'

@@ -178,7 +178,7 @@ export function IntegrationPage() {
   return (
     <ScrollableContainer>
       <Box direction='row' height='100%'>
-        <Box width={`${WIDTH}%`} height='100%' border={{side: 'right', color: 'light-6'}} elevation='small' >
+        <Box width={`${WIDTH}%`} height='100%' border={{side: 'right', color: 'light-6'}}>
           <Tags tags={tags} fetchMore={fetchMore} setTag={setTag} tag={tag} />
         </Box>
         <Box pad='medium' width={`${100 - WIDTH}%`} gap='small'>

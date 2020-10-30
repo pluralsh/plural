@@ -1,6 +1,6 @@
-import React, {useState, useContext, useEffect} from 'react'
-import {Box, Text} from 'grommet'
-import { Switch, Route, useHistory, useLocation } from 'react-router-dom'
+import React, { useContext, useEffect} from 'react'
+import { Box } from 'grommet'
+import { Switch, Route, useLocation } from 'react-router-dom'
 import { ScrollableContainer } from 'forge-core'
 import Publishers from './publisher/Publishers'
 import Explore from './Explore'
@@ -14,23 +14,6 @@ const OPTIONS = [
   {text: 'Explore', icon: <Search size={ICON_HEIGHT} />, path: '/explore'},
   {text: 'Publishers', icon: <Book size={ICON_HEIGHT} />, path: '/publishers'}
 ]
-
-function SidebarOption({text, path, active}) {
-  const [hover, setHover] = useState(false)
-  let hist = useHistory()
-  return (
-    <Box
-      focusIndicator={false}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      border={active ? {size: '3px', side: 'left', color: 'focus'} : null}
-      onClick={() => hist.push(path)}
-      pad='small'
-      background={active ? 'sidebarActive' : (hover ? 'sidebarHover' : null)}>
-      <Text size='small' style={{fontWeight: 500}}>{text}</Text>
-    </Box>
-  )
-}
 
 export default function Home() {
   const loc = useLocation()

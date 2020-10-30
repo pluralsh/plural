@@ -16,7 +16,6 @@ const LABEL_WIDTH = '60px'
 const CELL_WIDTH='200px'
 
 function Token({token: {token, insertedAt, id}, hasNext}) {
-  const [hover, setHover] = useState(false)
   const [mutation] = useMutation(DELETE_TOKEN, {
     variables: {id},
     update: (cache, { data: { deleteToken } }) => {
@@ -32,13 +31,8 @@ function Token({token: {token, insertedAt, id}, hasNext}) {
   })
 
   return (
-    <Box
-      style={{cursor: 'pointer'}}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      background={hover ? 'light-2' : null}
-      border={hasNext ? {side: 'bottom', color: BORDER_COLOR} : null}
-      direction='row'>
+    <Box onClick={() => null} hoverIndicator='light-2' direction='row'
+      border={hasNext ? {side: 'bottom', color: BORDER_COLOR} : null}>
       <Box width='100%' pad={{left: 'small', vertical: 'xsmall'}} direction='row' gap='xsmall' align='center'>
         <Copyable
           noBorder

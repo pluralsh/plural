@@ -98,14 +98,10 @@ function PingWebhook({id, url}) {
 }
 
 function Webhook({webhook: {url, insertedAt, id, secret}, hasNext}) {
-  const [hover, setHover] = useState(false)
-
   return (
     <Box
-      style={{cursor: 'pointer'}}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      background={hover ? 'light-2' : null}
+      onClick={() => null}
+      hoverIndicator='light-2'
       border={hasNext ? {side: 'bottom', color: BORDER_COLOR} : null}
       direction='row' pad={{vertical: 'xsmall', horizontal: 'small'}}>
       <Box width='100%' direction='row' align='center' gap='xsmall'>

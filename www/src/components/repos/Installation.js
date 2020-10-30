@@ -145,7 +145,7 @@ function PlanCarousel({repository}) {
 
 export function DetailContainer({children, ...rest}) {
   return (
-    <Box {...rest} elevation='xsmall' border={{color: 'light-4'}}>
+    <Box {...rest} border={{color: 'light-4'}}>
       {children}
     </Box>
   )

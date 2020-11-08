@@ -26,6 +26,13 @@ external-dns:
 
 ownerEmail: mguarino46@gmail.com
 
+imagePullSecrets:
+- name: forgecreds
+
+application:
+  registry: dkr.piazza.app/bootstrap
+  tag: v0.8.3
+
 autoscaling:
   ingress:
     minReplicas: 1

@@ -201,6 +201,10 @@ spec:
         controller-tools.k8s.io: "1.0"
     spec:
       serviceAccountName: application-system
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
       containers:
       - args:
         - --secure-listen-address=0.0.0.0:8443
@@ -208,17 +212,18 @@ spec:
         - --logtostderr=true
         - --v=10
         image: gcr.io/kubebuilder/kube-rbac-proxy:v0.4.1
+
         name: kube-rbac-proxy
         ports:
         - containerPort: 8443
           name: https
       - args:
         - --metrics-addr=127.0.0.1:8080
-        - --enable-leader-election
+        # - --enable-leader-election
         command:
         - /kube-app-manager
-        image: quay.io/kubernetes-sigs/kube-app-manager:v0.8.3
-        imagePullPolicy: IfNotPresent
+        image: {{ .Values.application.registry }}/kube-app-manager:{{ .Values.application.tag }}
+        imagePullPolicy: Always
         name: kube-app-manager
         resources:
           limits:

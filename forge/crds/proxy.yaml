@@ -1,0 +1,53 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: proxies.forgelabs.sh
+spec:
+  group: forgelabs.sh
+  version: v1alpha1
+  scope: Namespaced
+  names:
+    plural: proxies
+    singular: proxy
+    kind: Proxy
+  validation:
+    openAPIV3Schema:
+      required: [spec]
+      properties:
+        spec:
+          type: object
+          required: [type, target]
+          properties:
+            type:
+              type: string
+              enum: [db, sh]
+            target:
+              type: string
+            credentials:
+              type: object
+              properties:
+                user:
+                  type: string
+                secret:
+                  type: string
+                key:
+                  type: string
+            dbConfig:
+              type: object
+              required: [engine]
+              properties:
+                engine:
+                  type: string
+                  enum: [postgres]
+                port:
+                  type: integer
+            shConfig:
+              type: object
+              required: [command]
+              properties:
+                command:
+                  type: string
+                args:
+                  type: array
+                  items:
+                    type: string

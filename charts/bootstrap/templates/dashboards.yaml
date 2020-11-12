@@ -27,6 +27,18 @@ spec:
       legend: fs
     name: Cluster Filesystem Usage
   - queries:
+    - query: sum (rate (container_cpu_usage_seconds_total{id="/",instance="$instance"}[5m])) / sum (machine_cpu_cores{instance="$instance"})
+      legend: cpu utilization
+    - query: sum (container_memory_working_set_bytes{id="/",instance="$instance"}) / sum (machine_memory_bytes{instance="$instance"})
+      legend: memory utilization
+    format: percent
+    name: Node CPU + memory
+  - queries:
+    - query: sum (container_fs_usage_bytes{id="/",instance="$instance", device=~"^/dev/.*$"}) / sum (container_fs_limit_bytes{id="/",instance="$instance", device=~"^/dev/.*$"})
+      legend: fs
+    format: percent
+    name: Node Filesystem Usage
+  - queries:
     - query: sum(rate(container_cpu_usage_seconds_total{namespace=~".+"}[5m])) by (namespace)
       legendFormat: $namespace cpu
     format: none
@@ -48,15 +60,3 @@ spec:
       legend: sent
     format: bytes
     name: Network Usage
-  - queries:
-    - query: sum (rate (container_cpu_usage_seconds_total{id="/",instance="$instance"}[5m])) / sum (machine_cpu_cores{instance="$instance"})
-      legend: cpu utilization
-    - query: sum (container_memory_working_set_bytes{id="/",instance="$instance"}) / sum (machine_memory_bytes{instance="$instance"})
-      legend: memory utilization
-    format: percent
-    name: Node CPU + memory
-  - queries:
-    - query: sum (container_fs_usage_bytes{id="/",instance="$instance", device=~"^/dev/.*$"}) / sum (container_fs_limit_bytes{id="/",instance="$instance", device=~"^/dev/.*$"})
-      legend: fs
-    format: percent
-    name: Node Filesystem Usage

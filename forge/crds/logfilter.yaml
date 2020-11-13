@@ -1,0 +1,31 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: logfilters.forgelabs.sh
+spec:
+  group: forgelabs.sh
+  version: v1alpha1
+  scope: Namespaced
+  names:
+    plural: logfilters
+    singular: logfilter
+    kind: LogFilter
+  validation:
+    openAPIV3Schema:
+      required: [spec]
+      properties:
+        spec:
+          type: object
+          properties:
+            query:
+              type: string
+            labels:
+              type: array
+              items:
+                type: object
+                required: [name, value]
+                properties:
+                  name:
+                    type: string
+                  value:
+                    type: string

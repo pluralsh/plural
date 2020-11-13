@@ -4,7 +4,7 @@ artifact:
 terraform:
   terraform/forge: h1:8VnDjmXPacPCmpMbrnQh54lbtlX/lgKbdi5o3HW5lv0=
 helm:
-  charts/forge: h1:l3BCqwYQ0CLN1IEst7mm9iEpBqu0EmVoQNsYHuisM4E=
+  charts/forge: h1:ow8q8bjD1EdcyUkpy4Hs0BrH2+rQW8WDqvEtuebNCNg=
 recipe:
   forge/recipes/gcp-kubernetes.yaml: 5db02eb02b9da40ccbe7e10906345a9f89c37e7aa0aa952a438fb74a1d8b2199
   forge/recipes/watchman-gcp.yaml: e0bec37378ab299b0168ba31f85d9b6378fcc9c0f1d432332194110ac951add7

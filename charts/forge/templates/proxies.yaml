@@ -12,6 +12,7 @@ spec:
     key: postgresql-password
     user: forge
   dbConfig:
+    name: forge
     engine: postgres
     port: 5432
 ---

@@ -34,8 +34,10 @@ spec:
                   type: string
             dbConfig:
               type: object
-              required: [engine]
+              required: [engine, name]
               properties:
+                name:
+                  type: string
                 engine:
                   type: string
                   enum: [postgres]

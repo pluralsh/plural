@@ -16,7 +16,14 @@ spec:
       properties:
         spec:
           type: object
+          required:
+            - name
+            - description
           properties:
+            name:
+              type: string
+            description:
+              type: string
             query:
               type: string
             labels:

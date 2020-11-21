@@ -2,7 +2,6 @@ import React, {useState} from 'react'
 import {Box, Grid} from 'grommet'
 import { Switch, Route } from 'react-router-dom'
 import { Breadcrumbs } from 'forge-core'
-import Home from './Home'
 import CurrentUser from './login/CurrentUser'
 import MyPublisher from './publisher/MyPublisher'
 import Publisher from './publisher/Publisher'
@@ -15,6 +14,9 @@ import {IntegrationPage} from './repos/Integrations'
 import {StripeProvider} from 'react-stripe-elements'
 import BillingDetails from './users/BillingDetails'
 import Invoices from './payments/Invoices'
+import Sidebar from './Sidebar'
+import Publishers from './publisher/Publishers'
+import Explore from './Explore'
 
 export const TOOLBAR_SIZE = '60px'
 export const BreadcrumbContext = React.createContext({})
@@ -25,36 +27,38 @@ export default function Forge() {
     <StripeProvider apiKey="pk_test_ZVj7wQQqsBDrud0mttnnY6uy00QM8CndBt">
       <BreadcrumbContext.Provider value={{breadcrumbs, setBreadcrumbs}}>
         <CurrentUser>
-        {me => (
           <Grid fill rows={[TOOLBAR_SIZE, 'flex']} columns={['100vw']} areas={[
               {name: 'toolbarTop', start: [0, 0], end: [0, 0]},
               {name: 'viewport', start: [0, 1], end: [0, 1]}
             ]}>
             <Box background='sidebar' gridArea='toolbarTop' align='center' justify='center'>
-              <Toolbar me={me} />
+              <Toolbar />
             </Box>
-            <Box style={{height: `calc(100vh - ${TOOLBAR_SIZE})`}} gridArea='viewport'>
-              {breadcrumbs.length > 0 && (
-                <Box flex={false} fill='horizontal' border={{color: 'light-6'}}>
-                  <Breadcrumbs crumbs={breadcrumbs} />
-                </Box>
-              )}
-              <Switch>
-                <Route path='/publishers/mine' component={MyPublisher} />
-                <Route path='/publishers/:publisherId' component={Publisher} />
-                <Route path='/repositories/:repositoryId/integrations' component={IntegrationPage} />
-                <Route path='/repositories/:repositoryId' component={Repository} />
-                <Route path='/charts/:chartId' component={Chart} />
-                <Route path='/terraform/:tfId' component={Terraform} />
-                <Route path='/me/edit' component={EditUser} />
-                <Route path='/me/billing' component={BillingDetails} />
-                <Route path='/me/invoices' component={Invoices} />
-                <Route path='/me/invoices/:subscriptionId' component={Invoices} />
-                <Route path='/' component={Home} />
-              </Switch>
+            <Box style={{height: `calc(100vh - ${TOOLBAR_SIZE})`}} direction='row' gridArea='viewport'>
+              <Sidebar />
+              <Box fill>
+                {breadcrumbs.length > 0 && (
+                  <Box flex={false} fill='horizontal' border={{color: 'light-6'}}>
+                    <Breadcrumbs crumbs={breadcrumbs} />
+                  </Box>
+                )}
+                <Switch>
+                  <Route path='/publishers/mine' component={MyPublisher} />
+                  <Route path='/publishers/:publisherId' component={Publisher} />
+                  <Route path='/publishers' component={Publishers} />
+                  <Route path='/repositories/:repositoryId/integrations' component={IntegrationPage} />
+                  <Route path='/repositories/:repositoryId' component={Repository} />
+                  <Route path='/charts/:chartId' component={Chart} />
+                  <Route path='/terraform/:tfId' component={Terraform} />
+                  <Route path='/me/edit' component={EditUser} />
+                  <Route path='/me/billing' component={BillingDetails} />
+                  <Route path='/me/invoices' component={Invoices} />
+                  <Route path='/me/invoices/:subscriptionId' component={Invoices} />
+                  <Route path='/' component={Explore} />
+                </Switch>
+              </Box>
             </Box>
           </Grid>
-        )}
         </CurrentUser>
       </BreadcrumbContext.Provider>
     </StripeProvider>

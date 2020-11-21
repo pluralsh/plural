@@ -73,7 +73,7 @@ function ChartVersion({chart, version, onSelect, refetch}) {
   const [open, setOpen] = useState(false)
 
   return (
-    <Box direction='row' align='center' className='chart-version' height='30px' border={{side: 'bottom', color: 'light-3'}}>
+    <Box direction='row' align='center' className='chart-version' height='30px'>
       <Box direction='row' fill='horizontal' align='center' gap='xsmall'>
         <Anchor size='small' onClick={() => onSelect(version)}>
           {version.version}
@@ -277,7 +277,7 @@ export default function Chart() {
                 <Text size='small' weight='bold'>Versions</Text>
                 <Scroller id='chart'
                   edges={edges}
-                  style={{overflow: 'auto', width: '100%'}}
+                  style={{overflow: 'auto', width: '100%', maxHeight: '50vh'}}
                   mapper={({node}, next) => (
                     <ChartVersion
                       key={node.id}

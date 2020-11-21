@@ -1,206 +1,184 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { Box, Text } from 'grommet'
-import { Trash } from 'grommet-icons'
-import { useMutation, useQuery } from 'react-apollo'
-import { UPDATE_USER, CREATE_TOKEN, TOKENS_Q, DELETE_TOKEN } from './queries'
-import { InputCollection, ResponsiveInput, Button, Scroller, Copyable, Expander, HoveredBackground, BORDER_COLOR } from 'forge-core'
-import { CurrentUserContext } from '../login/CurrentUser'
-import Avatar from '../users/Avatar'
-import moment from 'moment'
-import { BreadcrumbContext } from '../Forge'
+import { useFilePicker } from 'react-sage'
+import { Button, InputCollection, ResponsiveInput } from 'forge-core'
+import { useMutation } from 'react-apollo'
+import { UPDATE_USER } from './queries'
+import Avatar from './Avatar'
+import { wipeToken } from '../../helpers/authentication'
+import { Logout, StatusCritical, Checkmark, User, Lock, Install, Network, Robot } from 'grommet-icons'
 import Installations from '../repos/Installations'
 import Webhooks from './Webhooks'
-import { DetailContainer } from '../repos/Installation'
+import { CurrentUserContext } from '../login/CurrentUser'
+import { Tokens } from './Tokens'
 
-const LABEL_WIDTH = '60px'
-const CELL_WIDTH='200px'
+const EditContext = React.createContext({})
 
-function Token({token: {token, insertedAt, id}, hasNext}) {
-  const [mutation] = useMutation(DELETE_TOKEN, {
-    variables: {id},
-    update: (cache, { data: { deleteToken } }) => {
-      const prev = cache.readQuery({query: TOKENS_Q})
-      cache.writeQuery({query: TOKENS_Q, data: {
-        ...prev,
-        tokens: {
-          ...prev.tokens,
-          edges: prev.tokens.edges.filter(({node: {id}}) => id !== deleteToken.id)
-        }
-      }})
+function EditAvatar({me}) {
+  const {files, onClick, HiddenFileInput} = useFilePicker({})
+  const [mutation] = useMutation(UPDATE_USER)
+  useEffect(() => {
+    if (files.length > 0) {
+      mutation({variables: {attributes: {avatar: files[0]}}})
     }
-  })
+  }, [files])
 
   return (
-    <Box onClick={() => null} hoverIndicator='light-2' direction='row'
-      border={hasNext ? {side: 'bottom', color: BORDER_COLOR} : null}>
-      <Box width='100%' pad={{left: 'small', vertical: 'xsmall'}} direction='row' gap='xsmall' align='center'>
-        <Copyable
-          noBorder
-          pillText='Copied access token'
-          text={token}
-          displayText={token.substring(0, 9) + "x".repeat(15)} />
+    <>
+      <Avatar user={me} size='80px' onClick={onClick} />
+      <HiddenFileInput accept='.jpg, .jpeg, .png' multiple={false} />
+    </>
+  )
+}
+
+function ActionBox({onClick, text, icon}) {
+  return (
+    <Box pad={{vertical: 'xsmall', horizontal: 'small'}} background='white' direction='row' round='xsmall'
+         border={{color: 'light-4', side: 'all'}} align='center'
+         justify='end' hoverIndicator='light-3' onClick={onClick}>
+      <Box fill='horizontal' align='center'>
+        <Text size='small' weight={500}>{text}</Text>
       </Box>
-      <Box width={CELL_WIDTH} pad='xsmall' direction='row' gap='medium' align='center' justify='end'>
-        <Text size='small'>{moment(insertedAt).fromNow()}</Text>
-        <HoveredBackground>
-          <Box accentable pad='xsmall' focusIndicator={false} onClick={mutation}>
-            <Trash size='12px' />
-          </Box>
-        </HoveredBackground>
+      <Box width='50px' direction='row' justify='end'>
+        {icon}
       </Box>
     </Box>
   )
 }
 
-function EmptyTokens() {
+function EditSelect({edit, icon}) {
+  const {editing, setEditing} = useContext(EditContext)
   return (
-    <Box pad='small'>
-      <Text size='small'>No tokens</Text>
+    <Box pad={{horizontal: 'small', vertical: 'xsmall'}} round='xsmall'
+         border={{color: edit === editing ? 'brand' : 'light-5'}} fill='horizontal'
+         align='center' gap='small' direction='row' hoverIndicator='light-2'
+         focusIndicator={false} onClick={edit === editing ? null : () => setEditing(edit)}>
+      <Box fill='horizontal'>
+        {edit}
+      </Box>
+      <Box flex={false}>
+        {icon}
+      </Box>
     </Box>
   )
 }
 
-function Tokens() {
-  const {data, loading, fetchMore} = useQuery(TOKENS_Q)
-  const [mutation] = useMutation(CREATE_TOKEN, {
-    update: (cache, { data: { createToken } }) => {
-      const prev = cache.readQuery({query: TOKENS_Q})
-      cache.writeQuery({query: TOKENS_Q, data: {
-        ...prev,
-        tokens: {
-          ...prev.tokens,
-          edges: [{__typename: 'PersistedTokenEdge', node: createToken}, ...prev.tokens.edges]
-        }
-      }})
-    }
-  })
-  if (!data || loading) return null
-  const {edges, pageInfo} = data.tokens
+function EditContent({edit, children}) {
+  const {editing} = useContext(EditContext)
+  if (editing !== edit) return null
+
   return (
-    <Box>
-      <Box
-        direction='row'
-        border={{side: 'bottom', color: BORDER_COLOR}}
-        align='center'
-        pad={{vertical: 'xsmall', horizontal: 'small'}}>
-        <Box width='100%'>
-          <Text size='small' style={{fontWeight: 500}}>Access Tokens</Text>
-        </Box>
-        <Box width={CELL_WIDTH}>
-          <Button
-            pad={{horizontal: 'medium', vertical: 'xsmall'}}
-            label='Create'
-            onClick={mutation}
-            round='xsmall' />
-        </Box>
+    <Box pad={{horizontal: 'small'}} fill>
+      <Box fill='horizontal' direction='row' justify='center' margin={{bottom: 'small'}}>
+        <Text size='small' weight={500}>{edit}</Text>
       </Box>
-      <Box>
-        <Scroller
-          id='tokens'
-          edges={edges}
-          emptyState={<EmptyTokens />}
-          style={{overflow: 'auto', height: '100%', width: '100%'}}
-          mapper={({node}, next) => (
-            <Token
-              key={node.id}
-              token={node}
-              hasNext={!!next.node} />
-          )}
-          onLoadMore={() => {
-            pageInfo.hasNextPage && fetchMore({
-              variables: {cursor: pageInfo.endCursor},
-              updateQuery: (prev, {fetchMoreResult: {edges, pageInfo}}) => {
-                return edges.length ? {
-                  ...prev, tokens: {
-                    ...prev.tokens,
-                    pageInfo,
-                    edges: [...prev.tokens.edges, ...edges]
-                  }
-                } : prev
-              }
-            })
-          }}
-        />
-      </Box>
+      {children}
     </Box>
   )
+}
+
+function passwordValid(password, confirm) {
+  if (password === '') return {disabled: true, reason: 'please enter a password'}
+  if (password !== confirm) return {disabled: true, reason: 'passwords must match'}
+  if (password.length < 12) return {disabled: true, reason: 'passwords must be more than 12 characters'}
+  return {disabled: false, reason: 'passwords match!'}
 }
 
 export default function EditUser() {
   const me = useContext(CurrentUserContext)
   const [attributes, setAttributes] = useState({name: me.name, email: me.email})
-  const [mutation, {loading, error}] = useMutation(UPDATE_USER, {
-    variables: {attributes}
-  })
-  const {setBreadcrumbs} = useContext(BreadcrumbContext)
-  useEffect(() => {
-    setBreadcrumbs([
-      {url: `/me/edit`, text: me.email}
-    ])
-  }, [me, setBreadcrumbs])
+  const [password, setPassword] = useState('')
+  const [confirm, setConfirm] = useState('')
+  const [editing, setEditing] = useState('User Attributes')
+  const mergedAttributes = password && password.length > 0 ? {...attributes, password} : attributes
+  const [mutation, {loading}] = useMutation(UPDATE_USER, {variables: {attributes: mergedAttributes}})
+  const {disabled, reason} = passwordValid(password, confirm)
+  const color = disabled ? 'status-error' : 'status-ok'
 
   return (
-    <Box direction='row' gap='small' pad='medium' height='100%'>
-      <Box width='70%' gap='medium' pad='small' height='100%'>
-        <Installations edit />
-        <Webhooks />
-        <Tokens />
+    <Box fill gap='small' pad='medium'>
+      <Box direction='row' align='center' gap='medium' pad='medium'>
+        <EditAvatar me={me} />
+        <Box flex={false}>
+          <Text>{attributes.name}</Text>
+          <Text size='small'>{attributes.email}</Text>
+        </Box>
+        <Box fill direction='row' align='center' justify='end'>
+          <ActionBox
+            text='logout'
+            onClick={() => {
+              wipeToken()
+              window.location = '/login'
+            }}
+            icon={<Logout size='12px' />} />
+        </Box>
       </Box>
-      <Box width='30%'>
-        <DetailContainer>
-          <Box direction='row' align='center' pad='small' gap='small'>
-            <Avatar user={me} size='100px' />
-            <Box>
-              <Text>{me.name}</Text>
-              <Text size='small'>{me.email}</Text>
+      <EditContext.Provider value={{editing, setEditing}}>
+      <Box fill direction='row' border='between' gap='small'>
+        <Box gap='small' width='25%' pad={{horizontal: 'small', vertical: 'medium'}}>
+          <EditSelect edit='User Attributes' icon={<User size='small' />} />
+          <EditSelect edit='Password' icon={<Lock size='small' />} />
+          <EditSelect edit='Installations' icon={<Install size='small' />} />
+          <EditSelect edit='Webhooks' icon={<Network size='small' />} />
+          <EditSelect edit='Access Tokens' icon={<Robot size='small' />} />
+        </Box>
+        <Box width='75%'>
+          <EditContent edit='User Attributes'>
+            <InputCollection>
+              <ResponsiveInput
+                value={attributes.name}
+                label='name'
+                onChange={({target: {value}}) => setAttributes({...attributes, name: value})} />
+              <ResponsiveInput
+                value={attributes.email}
+                label='email'
+                onChange={({target: {value}}) => setAttributes({...attributes, email: value})} />
+            </InputCollection>
+            <Box direction='row' justify='end'>
+              <Button loading={loading} onClick={mutation} flex={false} label='Update' />
             </Box>
-          </Box>
-          <Box>
-            <Expander text='Update attributes'>
-              <Box pad='xsmall'>
-                <InputCollection>
-                  <ResponsiveInput
-                    label='name'
-                    labelWidth={LABEL_WIDTH}
-                    placeholder='your name'
-                    value={attributes.name}
-                    onChange={(e) => setAttributes({...attributes, name: e.target.value})} />
-                  <ResponsiveInput
-                    label='email'
-                    labelWidth={LABEL_WIDTH}
-                    placeholder='your email'
-                    value={attributes.email}
-                    onChange={(e) => setAttributes({...attributes, email: e.target.value})} />
-                </InputCollection>
+          </EditContent>
+          <EditContent edit='Password'>
+            <InputCollection>
+              <ResponsiveInput
+                value={password}
+                label='password'
+                type='password'
+                onChange={({target: {value}}) => setPassword(value)} />
+              <ResponsiveInput
+                value={confirm}
+                label='confirm'
+                type='password'
+                onChange={({target: {value}}) => setConfirm(value)} />
+            </InputCollection>
+            <Box direction='row' justify='end' align='center'>
+              <Box fill='horizontal' align='center' direction='row' gap='small'>
+                {disabled ?
+                  <StatusCritical size='15px' color={color} /> :
+                  <Checkmark size='15px' color={color} />}
+                <Text size='small' color={color}>
+                  {reason}
+                </Text>
               </Box>
-            </Expander>
-          </Box>
-          <Box border='top'>
-            <Expander text='Update password'>
-              <Box pad='xsmall'>
-                <InputCollection>
-                  <ResponsiveInput
-                    label='password'
-                    placeholder='your password'
-                    labelWidth='80px'
-                    type='password'
-                    value={attributes.password || ''}
-                    onChange={(e) => setAttributes({...attributes, password: e.target.value})} />
-                </InputCollection>
-              </Box>
-            </Expander>
-          </Box>
-          <Box pad='small' direction='row' justify='end'>
-            <Button
-              pad={{horizontal: 'medium', vertical: 'xsmall'}}
-              loading={loading}
-              error={error}
-              label='Update'
-              onClick={mutation}
-              round='xsmall' />
-          </Box>
-        </DetailContainer>
+              <Button
+                disabled={disabled}
+                loading={loading}
+                onClick={mutation}
+                label='Update' />
+            </Box>
+          </EditContent>
+          <EditContent edit='Installations'>
+            <Installations edit />
+          </EditContent>
+          <EditContent edit='Webhooks'>
+            <Webhooks />
+          </EditContent>
+          <EditContent edit='Access Tokens'>
+            <Tokens />
+          </EditContent>
+        </Box>
       </Box>
+      </EditContext.Provider>
     </Box>
   )
 }

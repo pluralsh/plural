@@ -5274,10 +5274,10 @@ grommet-icons@^4.2.0:
   dependencies:
     grommet-styles "^0.2.0"
 
-grommet-icons@^4.4.0:
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/grommet-icons/-/grommet-icons-4.4.0.tgz#6503a33ca29e3c9d89ba56ef1b2bc786222e62a7"
-  integrity sha512-uOc3rsgIBVOm/iuN8dj2lKuBq0uhIPYxH84zDoY0jrJZLjcVH1bHUQLlv0R/e9oB/pCFYEBse1mnvps+f3ylmw==
+grommet-icons@^4.5.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/grommet-icons/-/grommet-icons-4.5.0.tgz#855ad26338ea1a1503eb18fdae428c431332be6a"
+  integrity sha512-q7TNXV996fDh2e++7WapiNFUk0UEll17iEZ2d75W4yz+8Bb3+vdQ1MeT/d1RRlM0pV2KnTpSeR00GeN4KA9upg==
   dependencies:
     grommet-styles "^0.2.0"
 
@@ -9440,6 +9440,11 @@ react-router@5.1.2, react-router@^5.1.2:
     react-is "^16.6.0"
     tiny-invariant "^1.0.2"
     tiny-warning "^1.0.0"
+
+react-sage@^0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/react-sage/-/react-sage-0.1.5.tgz#b819549363ebcf11327755af601d142fd2d59429"
+  integrity sha512-a/L5ILib9QitvtCY4BwFnMwaelgDfg7Hg8lNWaYlqxVHtbrvc6A/JGPwcUX/6/ye9LZ4Vo7bCRFKamdMKEpvcA==
 
 react-scripts@3.2.0:
   version "3.2.0"

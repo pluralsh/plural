@@ -1,16 +1,13 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useCallback } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useMutation } from 'react-apollo'
-import { Box, Text, Drop, Layer } from 'grommet'
-import { Book, Logout, User } from 'grommet-icons'
+import { Box, Text, Layer } from 'grommet'
 import { HoveredBackground, MenuItem, ModalHeader } from 'forge-core'
 import Avatar from './Avatar'
-import { wipeToken } from '../../helpers/authentication'
 import { FilePicker } from 'react-file-picker'
 import { UPDATE_USER, ME_Q } from './queries'
 import { TOOLBAR_SIZE } from '../Forge'
 import CreatePublisher from '../publisher/CreatePublisher'
-import { FaCreditCard, FaReceipt } from 'react-icons/fa'
 
 export function DropdownItem(props) {
   const {onClick, ...rest} = props
@@ -24,36 +21,29 @@ export function DropdownItem(props) {
   )
 }
 
-function CreatePublisherModal() {
-  const [open, setOpen] = useState(false)
+function CreatePublisherModal({setModal}) {
   let history = useHistory()
   return (
-    <>
-    <DropdownItem icon={Book} text="Create publisher" onClick={() => setOpen(true)} />
-    {open && (
-      <Layer
-        modal
-        position='center'
-        onClickOutside={() => setOpen(false)}
-        onEsc={() => setOpen(false)} >
-        <Box width='30vw'>
-          <ModalHeader text='Create Publisher' setOpen={setOpen} />
-          <Box pad='medium'>
-            <CreatePublisher onCreate={() => {
-              setOpen(false)
-              history.push('/publishers/mine')
-            }}/>
-          </Box>
+    <Layer
+      modal
+      position='center'
+      onClickOutside={() => setModal(null)}
+      onEsc={() => setModal(null)} >
+      <Box width='30vw'>
+        <ModalHeader text='Create Publisher' setOpen={setModal} />
+        <Box pad='medium'>
+          <CreatePublisher onCreate={() => {
+            setModal(null)
+            history.push('/publishers/mine')
+          }}/>
         </Box>
-      </Layer>
-    )}
-    </>
+      </Box>
+    </Layer>
   )
 }
 
 export default function Me({me}) {
-  const [open, setOpen] = useState(false)
-  const dropRef = useRef()
+  const [modal, setModal] = useState(null)
   let history = useHistory()
   const [mutation] = useMutation(UPDATE_USER, {
     update: (cache, {data: updateUser}) => {
@@ -67,13 +57,19 @@ export default function Me({me}) {
       }})
     }
   })
+  const onClick = useCallback(() => {
+    if (!me.publisher) {
+      setModal(<CreatePublisherModal setModal={setModal} />)
+    } else {
+      history.push('/publishers/mine')
+    }
+  }, [me.publisher, history, setModal])
 
   return (
     <>
     <HoveredBackground>
       <Box
         sidebarHover
-        ref={dropRef}
         style={{cursor: 'pointer'}}
         pad={{horizontal: 'small'}}
         width='250px'
@@ -88,38 +84,14 @@ export default function Me({me}) {
         >
           <span><Avatar size='40px' user={me} /></span>
         </FilePicker>
-        <Box style={{outline: 'none'}} onClick={() => setOpen(true)} focusIndicator={false} height={TOOLBAR_SIZE} justify='center'>
+        <Box style={{outline: 'none'}} onClick={onClick} focusIndicator={false}
+             height={TOOLBAR_SIZE} justify='center'>
           <Text size='small' weight={500}>{me.name}</Text>
           {me.publisher && (<Text size='xsmall'>{me.publisher.name}</Text>)}
         </Box>
       </Box>
     </HoveredBackground>
-    {open && (
-      <Drop align={{top: 'bottom'}} target={dropRef.current} onClickOutside={() => setOpen(false)}>
-        <Box gap='xxsmall' pad={{top: 'xxsmall'}}>
-          {me.publisher ?
-            <DropdownItem icon={Book} text="Edit publisher" onClick={() => history.push('/publishers/mine')} /> :
-            <CreatePublisherModal />
-          }
-          <DropdownItem icon={User} text="Edit user" onClick={() => history.push('/me/edit')} />
-          <DropdownItem icon={FaCreditCard} text="Billing Details" onClick={() => history.push('/me/billing')} />
-          <DropdownItem icon={FaReceipt} text='Invoices' onClick={() => history.push('/me/invoices')} />
-          <Box border='top' pad={{vertical: 'xxsmall'}}>
-            <MenuItem onClick={() => {
-              wipeToken()
-              window.location.href = "/login"
-            }}>
-              <Box direction='row' align='center'>
-                <Box width='100%'>
-                  <Text size='small'>logout</Text>
-                </Box>
-                <Logout size='12px' />
-              </Box>
-            </MenuItem>
-          </Box>
-        </Box>
-      </Drop>
-    )}
+    {modal}
     </>
   )
 }

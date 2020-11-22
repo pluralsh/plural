@@ -1,3 +1,5 @@
 dependencies: []
 providers:
 - gcp
+description: Creates a GKE cluster and prepares it for bootstrapping
+version: 0.1.0

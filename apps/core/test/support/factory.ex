@@ -34,7 +34,8 @@ defmodule Core.Factory do
   def terraform_factory do
     %Schema.Terraform{
       repository: build(:repository),
-      name: sequence(:terraform, &"tf-#{&1}")
+      name: sequence(:terraform, &"tf-#{&1}"),
+      latest_version: "0.1.0"
     }
   end
 

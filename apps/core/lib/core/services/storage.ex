@@ -8,7 +8,8 @@ defmodule Core.Storage do
     Terraform,
     Integration,
     Artifact,
-    Crd
+    Crd,
+    Version
   }
 
   @acl :public_read
@@ -26,6 +27,8 @@ defmodule Core.Storage do
   # end
 
   def storage_dir(_, {_file, %Terraform{package_id: pkg_id}}), do: "terraform/#{pkg_id}"
+  def storage_dir(_, {_file, %Version{package_id: pkg_id, terraform_id: id}}) when not is_nil(id),
+    do: "terraform/#{pkg_id}"
   def storage_dir(_, {_file, %User{avatar_id: avatar_id}}), do: "uploads/avatars/#{avatar_id}"
   def storage_dir(_, {_file, %Publisher{avatar_id: avatar_id}}), do: "uploads/pubs/#{avatar_id}"
   def storage_dir(_, {_file, %Repository{icon_id: icon_id}}), do: "uploads/repos/#{icon_id}"

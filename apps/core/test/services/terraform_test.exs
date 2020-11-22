@@ -53,9 +53,15 @@ defmodule Core.Services.TerraformTest do
         "upsert",
         repository.publisher.owner)
 
-      assert tf.description == "an upsert"
-      assert hd(tf.dependencies.dependencies).name == "gcp-bootstrap"
-      assert tf.dependencies.wirings.terraform["cluster_name"] == "gcp-bootstrap.cluster_name"
+      assert tf.latest_version == "0.1.0"
+      assert tf.description == "Creates a GKE cluster and prepares it for bootstrapping"
+      assert tf.dependencies.providers == [:gcp]
+      assert Enum.empty?(tf.dependencies.dependencies)
+
+      version = Terraform.get_latest_version(tf.id)
+      assert version.version == "0.1.0"
+      assert version.dependencies.providers == [:gcp]
+      assert Enum.empty?(tf.dependencies.dependencies)
     end
 
     test "It will update if the tf exists" do
@@ -94,14 +100,15 @@ defmodule Core.Services.TerraformTest do
     test "It can find a readme and var template" do
       path = Path.join(:code.priv_dir(:core), "gcp-bootstrap.tgz")
 
-      {:ok, %{readme: readme, values_template: tmp, dependencies: deps}} = Terraform.extract_tf_meta(%{
+      {:ok, %{readme: readme, values_template: tmp, dependencies: deps, description: desc, latest_version: v}} = Terraform.extract_tf_meta(%{
         package: %{path: path, filename: path}
       })
 
       assert is_binary(readme)
       assert is_binary(tmp)
+      assert is_binary(desc)
+      assert is_binary(v)
       assert is_list(deps["dependencies"])
-      assert is_map(deps["wirings"]["terraform"])
     end
   end
 

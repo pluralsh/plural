@@ -160,6 +160,7 @@ defmodule Core.Services.RecipesTest do
       other_chart = insert(:chart, repository: repo2)
       insert(:version, chart: other_chart, version: other_chart.latest_version)
       tf = insert(:terraform, repository: repo2)
+      insert(:version, terraform: tf, version: tf.latest_version, chart: nil)
       insert(:recipe_item, recipe_section: section, chart: chart)
       insert(:recipe_item, recipe_section: section2, terraform: tf)
       insert(:recipe_item, recipe_section: section2, chart: other_chart)

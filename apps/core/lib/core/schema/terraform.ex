@@ -10,6 +10,7 @@ defmodule Core.Schema.Terraform do
     field :description,     :string
     field :values_template, :string
     field :readme,          :string
+    field :latest_version,  :string
 
     embeds_one :dependencies, Dependencies, on_replace: :update
     belongs_to :repository,   Repository
@@ -38,7 +39,7 @@ defmodule Core.Schema.Terraform do
   def preloaded(query \\ __MODULE__, preload \\ [:repository]),
     do: from(tf in query, preload: ^preload)
 
-  @valid ~w(name values_template readme description)a
+  @valid ~w(name values_template readme description latest_version)a
 
   def changeset(schema, attrs \\ %{}) do
     schema
@@ -47,7 +48,18 @@ defmodule Core.Schema.Terraform do
     |> generate_uuid(:package_id)
     |> unique_constraint(:name, name: index_name(:terraform, [:repository_id, :name]))
     |> foreign_key_constraint(:repository_id)
+    |> bump_version(schema)
     |> cast_attachments(attrs, [:package], allow_urls: true)
     |> validate_required([:name, :repository_id])
+  end
+
+  def bump_version(cs, %{latest_version: nil}), do: cs
+  def bump_version(cs, %{latest_version: v}) do
+    with changed_version when not is_nil(changed_version) <- get_change(cs, :latest_version),
+         :lt <- Elixir.Version.compare(changed_version, v) do
+      delete_change(cs, :latest_version)
+    else
+      _ -> cs
+    end
   end
 end

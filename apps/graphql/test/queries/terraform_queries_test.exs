@@ -64,8 +64,13 @@ defmodule GraphQl.TerraformQueriesTest do
     test "It can list chart installations for a user" do
       %{repository: repo, user: user} = inst = insert(:installation)
       terraforms = insert_list(3, :terraform, repository: repo)
-      insts = for terraform <- terraforms,
-        do: insert(:terraform_installation, terraform: terraform, installation: inst)
+      insts = for terraform <- terraforms do
+        insert(:terraform_installation,
+          terraform: terraform,
+          installation: inst,
+          version: build(:version, terraform: terraform)
+        )
+      end
 
       {:ok, %{data: %{"terraformInstallations" => found}}} = run_query("""
         query TfInsts($id: ID!) {
@@ -73,6 +78,7 @@ defmodule GraphQl.TerraformQueriesTest do
             edges {
               node {
                 id
+                version { id }
               }
             }
           }
@@ -81,6 +87,7 @@ defmodule GraphQl.TerraformQueriesTest do
 
       assert from_connection(found)
              |> ids_equal(insts)
+      assert from_connection(found) |> Enum.all?(& &1["version"]["id"])
     end
   end
 end

@@ -1,7 +1,6 @@
 defmodule Core.Services.ChartsTest do
   use Core.SchemaCase, async: true
   use Mimic
-  alias Core.PubSub
   alias Core.Services.Charts
 
   describe "#create_chart" do
@@ -34,74 +33,6 @@ defmodule Core.Services.ChartsTest do
       assert tag.tag == "stable"
       assert tag.chart_id == chart.id
       assert tag.version_id == version.id
-    end
-  end
-
-  describe "#create_version" do
-    test "A user can create new versions of charts he owns" do
-      user  = insert(:user)
-      pub   = insert(:publisher, owner: user)
-      repo  = insert(:repository, publisher: pub)
-      chart = insert(:chart, repository: repo)
-
-      {:ok, version} = Charts.create_version(%{version: "1.1.0"}, chart.id, user)
-
-      assert version.chart_id == chart.id
-      assert version.version == "1.1.0"
-
-      assert refetch(chart).latest_version == "1.1.0"
-      %{tags: [tag]} = Core.Repo.preload(version, [:tags])
-      assert tag.tag == "latest"
-      assert tag.chart_id == chart.id
-    end
-
-    test "Non owners are forbidden" do
-      user = insert(:user)
-      chart = insert(:chart)
-
-      {:error, _} = Charts.create_version(%{version: "1.0.0"}, chart.id, user)
-    end
-  end
-
-  describe "#update_version" do
-    test "A publisher can update version tags" do
-      user  = insert(:user)
-      pub   = insert(:publisher, owner: user)
-      repo  = insert(:repository, publisher: pub)
-      chart = insert(:chart, repository: repo)
-      version = insert(:version, chart: chart, version: "1.1.0")
-
-      {:ok, %{id: id, tags: [tag]} = result} = Charts.update_version(%{tags: [%{tag: "stable"}]}, version.id, user)
-
-      assert id == version.id
-      assert tag.chart_id == chart.id
-      assert tag.version_id == version.id
-      assert tag.tag == "stable"
-
-      assert_receive {:event, %PubSub.VersionUpdated{item: ^result}}
-    end
-
-    test "It can update with existing tags" do
-      user  = insert(:user)
-      pub   = insert(:publisher, owner: user)
-      repo  = insert(:repository, publisher: pub)
-      chart = insert(:chart, repository: repo)
-      version = insert(:version, chart: chart, version: "1.1.0")
-      insert(:version_tag, version: version, chart: chart, tag: "latest")
-      insert(:version_tag, version: build(:version, chart: chart), chart: chart)
-
-      {:ok, %{id: id, tags: [tag, other]} = result} = Charts.update_version(%{tags: [%{tag: "stable"}, %{tag: "latest"}]}, version.id, user)
-
-      assert id == version.id
-      assert tag.chart_id == chart.id
-      assert tag.version_id == version.id
-      assert tag.tag == "stable"
-
-      assert other.version_id == version.id
-      assert other.chart_id == chart.id
-      assert other.tag == "latest"
-
-      assert_receive {:event, %PubSub.VersionUpdated{item: ^result}}
     end
   end
 
@@ -224,8 +155,8 @@ defmodule Core.Services.ChartsTest do
 
   describe "#extract_chart_meta/2" do
     test "It can extract info from a tar file" do
-      path = Path.join(:code.priv_dir(:core), "chartmart-0.2.4.tgz")
-      {:ok, %{readme: _, helm: _, values_template: template, dependencies: deps}} = Charts.extract_chart_meta("chartmart", path)
+      path = Path.join(:code.priv_dir(:core), "forge-0.3.7.tgz")
+      {:ok, %{readme: _, helm: _, values_template: template, dependencies: deps}} = Charts.extract_chart_meta("forge", path)
 
       assert is_binary(template)
       assert deps["dependencies"]
@@ -234,7 +165,7 @@ defmodule Core.Services.ChartsTest do
 
   describe "#upload_chart/4" do
     test "It can upload a chart" do
-      path = Path.join(:code.priv_dir(:core), "chartmart-0.2.4.tgz")
+      path = Path.join(:code.priv_dir(:core), "forge-0.3.7.tgz")
       repo = insert(:repository)
       expect(HTTPoison, :post, fn _, _, _, _ -> {:ok, %{}} end)
       {:ok, %{sync_chart: chart}} = Charts.upload_chart(

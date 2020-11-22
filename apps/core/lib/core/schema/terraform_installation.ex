@@ -1,10 +1,11 @@
 defmodule Core.Schema.TerraformInstallation do
   use Piazza.Ecto.Schema
-  alias Core.Schema.{Terraform, Installation}
+  alias Core.Schema.{Terraform, Installation, Version}
 
   schema "terraform_installations" do
     belongs_to :installation, Installation
     belongs_to :terraform, Terraform
+    belongs_to :version, Version
 
     timestamps()
   end
@@ -46,7 +47,7 @@ defmodule Core.Schema.TerraformInstallation do
     )
   end
 
-  @valid ~w(installation_id terraform_id)a
+  @valid ~w(installation_id terraform_id version_id)a
 
   def changeset(model, attrs \\ %{}) do
     model

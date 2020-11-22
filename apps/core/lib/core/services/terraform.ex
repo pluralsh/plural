@@ -1,11 +1,20 @@
 defmodule Core.Services.Terraform do
   use Core.Services.Base
   import Core.Policies.Terraform
-  alias Core.Services.{Repositories, Dependencies}
+  alias Core.Services.{Repositories, Dependencies, Versions}
   alias Core.Schema.{Terraform, TerraformInstallation, User}
 
   @spec get_tf!(binary) :: Terraform.t
   def get_tf!(id), do: Core.Repo.get!(Terraform, id)
+
+  @spec get_tf(binary) :: Terraform.t | nil
+  def get_tf(id), do: Core.Repo.get(Terraform, id)
+
+  @spec get_latest_version(binary) :: Version.t | nil
+  def get_latest_version(tf_id) do
+    with %Terraform{latest_version: version} <- get_tf(tf_id),
+      do: Versions.get_version(:terraform, tf_id, version)
+  end
 
   @spec get_terraform_by_name(binary, binary) :: Terraform.t | nil
   def get_terraform_by_name(repo_id, name),
@@ -29,10 +38,22 @@ defmodule Core.Services.Terraform do
   @spec create_terraform(map, binary, User.t) :: {:ok, Terraform.t} | {:error, term}
   def create_terraform(attrs, repo_id, user) do
     with {:ok, added} <- extract_tf_meta(attrs) do
-      %Terraform{repository_id: repo_id}
-      |> Terraform.changeset(Map.merge(attrs, added))
-      |> allow(user, :create)
-      |> when_ok(:insert)
+      start_transaction()
+      |> add_operation(:terraform, fn _ ->
+        %Terraform{repository_id: repo_id}
+        |> Terraform.changeset(Map.merge(attrs, added))
+        |> allow(user, :create)
+        |> when_ok(:insert)
+      end)
+      |> add_operation(:version, fn
+        %{terraform: %Terraform{id: id, latest_version: v}} when not is_nil(v) ->
+          attrs
+          |> Map.merge(added)
+          |> Map.put(:version, v)
+          |> Versions.create_version(:terraform, id, user)
+        _ -> {:ok, nil}
+      end)
+      |> execute(extract: :terraform)
     end
   end
 
@@ -51,10 +72,22 @@ defmodule Core.Services.Terraform do
   @spec update_terraform(map, binary, User.t) :: {:ok, Terraform.t} | {:error, term}
   def update_terraform(attrs, id, user) do
     with {:ok, added} <- extract_tf_meta(attrs) do
-      get_tf!(id)
-      |> Terraform.changeset(Map.merge(attrs, added))
-      |> allow(user, :edit)
-      |> when_ok(:update)
+      start_transaction()
+      |> add_operation(:terraform, fn _ ->
+        get_tf!(id)
+        |> Terraform.changeset(Map.merge(attrs, added))
+        |> allow(user, :edit)
+        |> when_ok(:update)
+      end)
+      |> add_operation(:version, fn
+        %{terraform: %Terraform{latest_version: v}} when not is_nil(v) ->
+          attrs
+          |> Map.merge(added)
+          |> Map.put(:version, v)
+          |> Versions.create_version(:terraform, id, user)
+        _ -> {:ok, nil}
+      end)
+      |> execute(extract: :terraform)
     end
   end
 
@@ -96,6 +129,11 @@ defmodule Core.Services.Terraform do
     |> when_ok(:delete)
   end
 
+  def update_latest_version(%Terraform{} = tf, v) do
+    Terraform.changeset(tf, %{latest_version: v})
+    |> Core.Repo.update()
+  end
+
   @doc """
   Extracts the readme, templated tfvars and deps file for a terraform module
   """
@@ -111,15 +149,17 @@ defmodule Core.Services.Terraform do
       {:ok, %{
         readme: extract_tar_file(result, rm),
         values_template: extract_tar_file(result, valt),
-        dependencies: deps
+        dependencies: deps,
+        description: deps["description"],
+        latest_version: deps["version"] || "0.1.0"
       }}
     end
   end
   def extract_tf_meta(_), do: {:ok, %{}}
 
-  def extract_tar_file(result, val_template) do
-    case Enum.find(result, &elem(&1, 0) == val_template) do
-      {_, template} -> template
+  def extract_tar_file(result, file) do
+    case Enum.find(result, &elem(&1, 0) == file) do
+      {_, content} -> content
       _ -> nil
     end
   end

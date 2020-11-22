@@ -92,7 +92,7 @@ defmodule GraphQl.Resolvers.Repository do
   defp maybe_add_tags(query, _), do: query
 
   defp maybe_filter_type(query, %{type: type}) when is_binary(type),
-    do: Integration.for_type(type)
+    do: Integration.for_type(query, type)
   defp maybe_filter_type(query, _), do: query
 
   def editable(repo, user) do

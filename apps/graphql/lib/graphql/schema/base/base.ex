@@ -6,13 +6,6 @@ defmodule GraphQl.Schema.Base do
       import Absinthe.Resolution.Helpers
       import GraphQl.Schema.Helpers
       import GraphQl.Schema.Base
-      import_types Absinthe.Type.Custom
-      import_types GraphQl.Schema.CustomTypes
-
-      enum :direction do
-        value :before
-        value :after
-      end
     end
   end
 
@@ -29,6 +22,21 @@ defmodule GraphQl.Schema.Base do
       object unquote(delta_type) do
         field :delta, :delta
         field :payload, unquote(type)
+      end
+    end
+  end
+
+  defmacro ecto_enum(name, module) do
+    module = Macro.expand(module, __CALLER__)
+    values = module.__enum_map__()
+             |> Enum.map(fn {key, _} ->
+                quote do
+                  value unquote(key)
+                end
+             end)
+    quote do
+      enum unquote(name) do
+        unquote(values)
       end
     end
   end

@@ -2,8 +2,7 @@ defmodule Core.Services.Charts do
   use Core.Services.Base
   import Core.Policies.Chart
 
-  alias Core.Services.{Repositories, Dependencies}
-  alias Core.PubSub
+  alias Core.Services.{Repositories, Dependencies, Versions}
   alias Core.Schema.{
     Chart,
     User,
@@ -66,7 +65,7 @@ defmodule Core.Services.Charts do
       |> Core.Repo.insert_or_update()
     end)
     |> add_operation(:version, fn %{chart: %Chart{id: id, latest_version: v}} ->
-      create_version(%{version: v}, id, user)
+      Versions.create_version(%{version: v}, :helm, id, user)
     end)
     |> execute(extract: :chart)
   end
@@ -79,75 +78,6 @@ defmodule Core.Services.Charts do
     |> allow(user, :edit)
     |> when_ok(:update)
   end
-
-  @doc """
-  Creates a new version for a chart.  Fails if the user is not the publisher
-  """
-  @spec create_version(map, binary, User.t) :: {:ok, Version.t} | {:error, term}
-  def create_version(attrs, chart_id, %User{} = user) do
-    version = stringish_fetch(attrs, :version)
-
-    start_transaction()
-    |> add_operation(:version, fn _ ->
-      case get_chart_version(chart_id, version) do
-        %Version{} = v -> v
-        _ ->%Version{chart_id: chart_id}
-      end
-      |> Version.changeset(attrs)
-      |> allow(user, :create)
-      |> when_ok(&Core.Repo.insert_or_update/1)
-    end)
-    |> add_operation(:bump, fn %{version: %{version: v}} ->
-      chart = get_chart(chart_id)
-      case Elixir.Version.compare(v, chart.latest_version) do
-        :gt -> update_latest_version(chart, v)
-        _ -> {:ok, chart}
-      end
-    end)
-    |> add_operation(:tag, fn %{version: %{id: version_id}} ->
-      case get_tag(chart_id, "latest") do
-        %VersionTag{} = tag -> tag
-        _ -> %VersionTag{chart_id: chart_id, tag: "latest"}
-      end
-      |> VersionTag.changeset(%{version_id: version_id})
-      |> Core.Repo.insert_or_update()
-    end)
-    |> execute(extract: :version)
-  end
-
-  def update_version(attrs, version_id, %User{} = user) do
-    start_transaction()
-    |> add_operation(:version, fn _ ->
-      Core.Repo.get!(Version, version_id)
-      |> Core.Repo.preload([:tags])
-      |> ok()
-    end)
-    |> maybe_clean_tags(attrs)
-    |> add_operation(:update, fn %{version: %{chart_id: chart_id} = version} ->
-      version
-      |> Version.changeset(sanitize_tags(attrs, chart_id))
-      |> allow(user, :edit)
-      |> when_ok(:update)
-    end)
-    |> execute(extract: :update)
-    |> notify(:update)
-  end
-
-  defp maybe_clean_tags(transaction, %{tags: tags}) do
-    add_operation(transaction, :clean, fn %{version: %{id: id, chart_id: chart_id}} ->
-      VersionTag.for_chart(chart_id)
-      |> VersionTag.for_tags(Enum.map(tags, & &1.tag))
-      |> VersionTag.ignore_version(id)
-      |> Core.Repo.delete_all()
-      |> elem(0)
-      |> ok()
-    end)
-  end
-  defp maybe_clean_tags(transaction, _), do: transaction
-
-  defp sanitize_tags(%{tags: tags} = attrs, chart_id),
-    do: Map.put(attrs, :tags, Enum.map(tags, &Map.put(&1, :chart_id, chart_id)))
-  defp sanitize_tags(attrs, _), do: attrs
 
   @doc """
   Handles a chart upload.  Performs metadata extraction on the tarball, along
@@ -189,7 +119,7 @@ defmodule Core.Services.Charts do
       |> execute()
       |> case do
         {:ok, %{sync: sync}} = res ->
-          notify(sync, :create)
+          Versions.notify(sync, :create)
           res
         error -> error
       end
@@ -262,10 +192,15 @@ defmodule Core.Services.Charts do
     |> when_ok(:update)
   end
 
+  def update_latest_version(%Chart{} = chart, v) do
+    Chart.changeset(chart, %{latest_version: v})
+    |> Core.Repo.update()
+  end
+
   def extract_chart_meta(chart, path) do
     readme_file  = String.to_charlist("#{chart}/README.md")
     chart_file   = String.to_charlist("#{chart}/Chart.yaml")
-    val_template = String.to_charlist("#{chart}/values.yaml.gotpl")
+    val_template = String.to_charlist("#{chart}/values.yaml.tpl")
     deps_tmplate = String.to_charlist("#{chart}/deps.yaml")
     files = [readme_file, chart_file, val_template, deps_tmplate]
 
@@ -297,15 +232,4 @@ defmodule Core.Services.Charts do
   def authorize(chart_id, %User{} = user) when is_binary(chart_id),
     do: get_chart!(chart_id) |> authorize(user)
   def authorize(%Chart{} = chart, user), do: allow(chart, user, :access)
-
-  defp update_latest_version(%Chart{} = chart, v) do
-    Chart.changeset(chart, %{latest_version: v})
-    |> Core.Repo.update()
-  end
-
-  defp notify(%Version{} = v, :create),
-    do: handle_notify(PubSub.VersionCreated, v)
-  defp notify({:ok, %Version{} = v}, :update),
-    do: handle_notify(PubSub.VersionUpdated, v)
-  defp notify(error, _), do: error
 end

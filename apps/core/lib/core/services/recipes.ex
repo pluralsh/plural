@@ -2,7 +2,7 @@ defmodule Core.Services.Recipes do
   use Core.Services.Base
   import Core.Policies.Recipe
   alias Core.Schema.{Recipe, RecipeSection, RecipeItem, Installation, Terraform, Chart, User}
-  alias Core.Services.{Repositories, Charts}
+  alias Core.Services.{Repositories, Charts, Versions}
   alias Core.Services.Terraform, as: TfSvc
 
   @spec get!(binary) :: Recipe.t
@@ -130,9 +130,10 @@ defmodule Core.Services.Recipes do
     end)
   end
 
-  defp upsert_terraform(%Terraform{id: id}, installation, %User{id: uid} = user) do
+  defp upsert_terraform(%Terraform{id: id, latest_version: v}, installation, %User{id: uid} = user) do
+    version = Versions.get_version(:terraform, id, v)
     case TfSvc.get_terraform_installation(id, uid) do
-      %{id: _} = tfinst -> {:ok, tfinst}
+      %{id: id} -> TfSvc.update_terraform_installation(%{version_id: version.id}, id, user)
       _ -> TfSvc.create_terraform_installation(%{terraform_id: id}, installation.id, user)
     end
   end

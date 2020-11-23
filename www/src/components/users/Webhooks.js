@@ -138,12 +138,7 @@ export default function Webhooks() {
       edges={edges}
       emptyState={<NoWebhooks />}
       style={{overflow: 'auto', height: '100%', width: '100%'}}
-      mapper={({node}, next) => (
-        <Webhook
-          key={node.id}
-          webhook={node}
-          hasNext={!!next.node} />
-      )}
+      mapper={({node}, next) => (<Webhook key={node.id} webhook={node} hasNext={!!next.node} />)}
       onLoadMore={() => pageInfo.hasNextPage && fetchMore({
           variables: {cursor: pageInfo.endCursor},
           updateQuery: (prev, {fetchMoreResult: {webhooks: {edges, pageInfo}}}) => (

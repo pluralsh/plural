@@ -144,13 +144,10 @@ export function Cards({me}) {
   const card = current || edges[0].node
   return (
     <Box direction='row' height={`calc(100vh - ${TOOLBAR_SIZE})`}>
-      <Box width='250px'  style={{height: '100%', scroll: 'auto'}} elevation='medium'>
+      <Box width='250px'  style={{height: '100%', scroll: 'auto'}}
+        border={{side: 'right', color: 'light-3'}}>
         {edges.map(({node}) => (
-          <CardOption
-            key={node.id}
-            card={node}
-            setCurrent={setCurrent}
-            current={card} />
+          <CardOption key={node.id} card={node} setCurrent={setCurrent} current={card} />
         ))}
       </Box>
       <Box pad='medium' gap='small' width='100%'>

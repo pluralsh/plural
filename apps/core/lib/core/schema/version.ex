@@ -44,6 +44,8 @@ defmodule Core.Schema.Version do
     |> cast_embed(:dependencies)
     |> cast_assoc(:tags)
     |> validate_required([:version])
+    |> generate_uuid(:package_id)
+    |> cast_attachments(attrs, [:package], allow_urls: true)
     |> unique_constraint(:chart_id, name: index_name(:versions, [:chart_id, :version]))
     |> unique_constraint(:terraform_id, name: index_name(:versions, [:terraform_id, :version]))
     |> foreign_key_constraint(:chart_id)
@@ -54,12 +56,5 @@ defmodule Core.Schema.Version do
     model
     |> cast(attrs, [:helm | @valid])
     |> cast_embed(:dependencies)
-  end
-
-  def terraform_changeset(model, attrs \\ %{}) do
-    model
-    |> cast(attrs, [])
-    |> generate_uuid(:package_id)
-    |> cast_attachments(attrs, [:package], allow_urls: true)
   end
 end

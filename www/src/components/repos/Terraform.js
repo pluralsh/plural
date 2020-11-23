@@ -9,6 +9,7 @@ import Highlight from 'react-highlight.js'
 import Installation from './Installation'
 import { BreadcrumbContext } from '../Forge'
 import Dependencies, { FullDependencies, ShowFull } from './Dependencies'
+import { Versions } from '../versions/Versions'
 
 function Code({value, children, language}) {
   return (
@@ -172,8 +173,9 @@ function UpdateTerraform({id, name, description}) {
 function Terraform() {
   const [tab, setTab] = useState(null)
   const [full, setFull] = useState(false)
+  const [version, setVersion] = useState(null)
   const {tfId} = useParams()
-  const {loading, data} = useQuery(TF_Q, {variables: {tfId}})
+  const {loading, data, refetch, fetchMore} = useQuery(TF_Q, {variables: {tfId}})
   const width = 65
   const {setBreadcrumbs} = useContext(BreadcrumbContext)
 
@@ -188,7 +190,10 @@ function Terraform() {
   }, [data, setBreadcrumbs])
 
   if (loading || !data) return null
-  const {terraformModule} = data
+  const {terraformModule, versions} = data
+  const {edges, pageInfo} = versions
+  const currentVersion = version || edges[0].node
+
   return (
     <ScrollableContainer>
       <Box pad='small' direction='row'>
@@ -214,10 +219,10 @@ function Terraform() {
               )}
             </TabHeader>
             <TabContent name='readme'>
-              <Readme {...terraformModule} />
+              <Readme readme={currentVersion.readme} />
             </TabContent>
             <TabContent name='configuration'>
-              <TemplateView {...terraformModule} />
+              <TemplateView valuesTemplate={currentVersion.valuesTemplate} />
             </TabContent>
             <TabContent name='dependencies'>
               {full ? <FullDependencies {...terraformModule} /> : <Dependencies {...terraformModule} />}
@@ -228,11 +233,13 @@ function Terraform() {
           </Tabs>
         </Box>
         <Box pad='small' width={`${100 - width}%`} gap='small'>
-          <Installation
-            noHelm
-            open
-            repository={terraformModule.repository}
-            onUpdate={updateInstallation(tfId)} />
+          {tab === 'configuration' ? (
+            <Installation noHelm open
+              repository={terraformModule.repository} onUpdate={updateInstallation(tfId)} />
+          ) : (
+            <Versions edges={edges} pageInfo={pageInfo} refetch={refetch}
+              fetchMore={fetchMore} setVersion={setVersion} />
+          )}
         </Box>
       </Box>
     </ScrollableContainer>

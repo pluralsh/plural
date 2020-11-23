@@ -5,6 +5,7 @@ import {TerraformFragment} from '../../models/terraform'
 import {DockerRepoFragment, DockerImageFragment} from '../../models/docker'
 import { RecipeFragment, RecipeSectionFragment } from '../../models/recipe'
 import { PlanFragment, SubscriptionFragment } from '../../models/payments'
+import { PageInfo } from '../../models/misc'
 
 export const CREATE_REPO = gql`
   mutation CreateRepository($attributes: RepositoryAttributes!) {
@@ -58,34 +59,26 @@ export const DELETE_INSTALLATION = gql`
 export const INSTALLATIONS_Q = gql`
   query Installations($cursor: String) {
     installations(after: $cursor, first: 15) {
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
+      pageInfo { ...PageInfo }
       edges {
-        node {
-          ...InstallationFragment
-        }
+        node { ...InstallationFragment }
       }
     }
   }
+  ${PageInfo}
   ${InstallationFragment}
 `;
 
 export const REPOS_Q = gql`
   query Repos($publisherId: String, $cursor: String) {
     repositories(publisherId: $publisherId, first: 15, after: $cursor) {
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
+      pageInfo { ...PageInfo }
       edges {
-        node {
-          ...RepoFragment
-        }
+        node { ...RepoFragment }
       }
     }
   }
+  ${PageInfo}
   ${RepoFragment}
 `;
 
@@ -93,9 +86,7 @@ export const SEARCH_REPOS = gql`
   query SearchRepos($query: String!) {
     searchRepositories(query: $query, first: 10) {
       edges {
-        node {
-          ...RepoFragment
-        }
+        node { ...RepoFragment }
       }
     }
   }
@@ -120,79 +111,45 @@ export const REPO_Q = gql`
       secrets
       installation {
         ...InstallationFragment
-        subscription {
-          ...SubscriptionFragment
-        }
+        subscription { ...SubscriptionFragment }
       }
-      dashboards {
-        ...DashboardFragment
-      }
-      plans {
-        ...PlanFragment
-      }
-      tags {
-        tag
-      }
-      artifacts {
-        ...ArtifactFragment
-      }
+      dashboards { ...DashboardFragment }
+      plans { ...PlanFragment }
+      tags { tag }
+      artifacts { ...ArtifactFragment }
     }
     charts(repositoryId: $repositoryId, first: 15, after: $chartCursor) {
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
+      pageInfo { ...PageInfo }
       edges {
-        node {
-          ...ChartFragment
-        }
+        node { ...ChartFragment }
       }
     }
     terraform(repositoryId: $repositoryId, first: 15, after: $tfCursor) {
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
+      pageInfo { ...PageInfo }
       edges {
-        node {
-          ...TerraformFragment
-        }
+        node { ...TerraformFragment }
       }
     }
     dockerRepositories(repositoryId: $repositoryId, first: 15, after: $dkrCursor) {
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
+      pageInfo { ...PageInfo }
       edges {
-        node {
-          ...DockerRepoFragment
-        }
+        node { ...DockerRepoFragment }
       }
     }
     recipes(repositoryId: $repositoryId, first: 5, after: $recipeCursor) {
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
+      pageInfo { ...PageInfo }
       edges {
-        node {
-          ...RecipeFragment
-        }
+        node { ...RecipeFragment }
       }
     }
     integrations(repositoryId: $repositoryId, first: 5, after: $intCursor) {
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
+      pageInfo { ...PageInfo }
       edges {
-        node {
-          ...IntegrationFragment
-        }
+        node { ...IntegrationFragment }
       }
     }
   }
+  ${PageInfo}
   ${PlanFragment}
   ${SubscriptionFragment}
   ${RepoFragment}
@@ -209,17 +166,13 @@ export const REPO_Q = gql`
 export const DOCKER_IMG_Q = gql`
   query DockerImages($dockerRepositoryId: ID!, $cursor: String) {
     dockerImages(dockerRepositoryId: $dockerRepositoryId, after: $cursor, first: 15) {
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
+      pageInfo { ...PageInfo }
       edges {
-        node {
-          ...DockerImageFragment
-        }
+        node { ...DockerImageFragment }
       }
     }
   }
+  ${PageInfo}
   ${DockerImageFragment}
 `;
 
@@ -256,29 +209,21 @@ export const CHART_Q = gql`
       ...ChartFragment
       repository {
         ...RepoFragment
-        installation {
-          ...InstallationFragment
-        }
+        installation { ...InstallationFragment }
       }
-      installation {
-        ...ChartInstallationFragment
-      }
+      installation { ...ChartInstallationFragment }
     }
     versions(chartId: $chartId, first: 10, after: $cursor) {
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
+      pageInfo { ...PageInfo }
       edges {
         node {
           ...VersionFragment
-          tags {
-            ...VersionTagFragment
-          }
+          tags { ...VersionTagFragment }
         }
       }
     }
   }
+  ${PageInfo}
   ${InstallationFragment}
   ${RepoFragment}
   ${ChartFragment}
@@ -305,9 +250,7 @@ export const UPDATE_VERSION = gql`
   mutation UpdateVersion($id: ID!, $attributes: VersionAttributes!) {
     updateVersion(id: $id, attributes: $attributes) {
       ...VersionFragment
-      tags {
-        ...VersionTagFragment
-      }
+      tags { ...VersionTagFragment }
     }
   }
   ${VersionFragment}
@@ -315,21 +258,29 @@ export const UPDATE_VERSION = gql`
 `
 
 export const TF_Q = gql`
-  query Terraform($tfId: ID!) {
+  query Terraform($tfId: ID!, $cursor: String) {
     terraformModule(id: $tfId) {
       ...TerraformFragment
       editable
-      installation {
-        id
-      }
+      installation { id }
       repository {
         ...RepoFragment
-        installation {
-          ...InstallationFragment
+        installation { ...InstallationFragment }
+      }
+    }
+    versions(terraformId: $tfId, first: 10, after: $cursor) {
+      pageInfo { ...PageInfo }
+      edges {
+        node {
+          ...VersionFragment
+          tags { ...VersionTagFragment }
         }
       }
     }
   }
+  ${PageInfo}
+  ${VersionFragment}
+  ${VersionTagFragment}
   ${InstallationFragment}
   ${RepoFragment}
   ${TerraformFragment}
@@ -399,9 +350,7 @@ export const RECIPE_Q = gql`
       recipeSections {
         ...RecipeSectionFragment
       }
-      repository {
-        id
-      }
+      repository { id }
     }
   }
   ${RecipeFragment}
@@ -432,29 +381,19 @@ export const INTEGRATIONS_Q = gql`
       ...RepoFragment
     }
     integrations(tag: $tag, repositoryId: $id, after: $intCursor, first: 10) {
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
+      pageInfo { ...PageInfo }
       edges {
-        node {
-          ...IntegrationFragment
-        }
+        node { ...IntegrationFragment }
       }
     }
     tags(id: $id, type: INTEGRATIONS, first: 20, after: $cursor) {
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
+      pageInfo { ...PageInfo }
       edges {
-        node {
-          tag
-          count
-        }
+        node { tag count }
       }
     }
   }
+  ${PageInfo}
   ${RepoFragment}
   ${IntegrationFragment}
 `;
@@ -462,28 +401,18 @@ export const INTEGRATIONS_Q = gql`
 export const EXPLORE_REPOS = gql`
   query Repos($tag: String, $repoCursor: String, $cursor: String) {
     repositories(tag: $tag, after: $repoCursor, first: 15) {
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
+      pageInfo { ...PageInfo }
       edges {
-        node {
-          ...RepoFragment
-        }
+        node { ...RepoFragment }
       }
     }
     tags(type: REPOSITORIES, first: 20, after: $cursor) {
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
+      pageInfo { ...PageInfo }
       edges {
-        node {
-          tag
-          count
-        }
+        node { tag count }
       }
     }
   }
+  ${PageInfo}
   ${RepoFragment}
 `;

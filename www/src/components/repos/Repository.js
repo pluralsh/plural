@@ -105,7 +105,7 @@ function Tf({terraform, hasNext}) {
           {terraform.dependencies && terraform.dependencies.providers && terraform.dependencies.providers.map((provider) => <Provider provider={provider} width={15} />)}
         </Box>
         <Text size='small'>
-          {terraform.description}
+          {terraform.latestVersion} {terraform.description && `- ${terraform.description}`}
         </Text>
       </Box>
     </Container>
@@ -119,25 +119,12 @@ function Charts({edges, pageInfo, fetchMore}) {
       style={{overflow: 'auto', height: '100%', width: '100%'}}
       mapper={({node}, next) => <Chart key={node.id} chart={node} hasNext={!!next.node} />}
       emptyState={<EmptyTab text='No charts uploaded yet' />}
-      onLoadMore={() => {
-        if (!pageInfo.hasNextPage) return
-
-        fetchMore({
-          variables: {chartCursor: pageInfo.endCursor},
-          updateQuery: (prev, {fetchMoreResult}) => {
-            const {edges, pageInfo} = fetchMoreResult.charts
-            return edges.length ? {
-              ...prev,
-              charts: {
-                ...prev.charts,
-                pageInfo,
-                edges: [...prev.charts.edges, ...edges]
-              }
-            } : prev
-          }
-        })
-      }}
-    />
+      onLoadMore={() => pageInfo.hasNextPage && fetchMore({
+        variables: {chartCursor: pageInfo.endCursor},
+        updateQuery: (prev, {fetchMoreResult: {charts: {edges, pageInfo}}}) => (
+          {...prev, charts: { ...prev.charts, pageInfo, edges: [...prev.charts.edges, ...edges] }}
+        )
+      })} />
   )
 }
 
@@ -148,25 +135,14 @@ function Terraform({edges, pageInfo, fetchMore}) {
       style={{overflow: 'auto', height: '100%', width: '100%'}}
       mapper={({node}, next) => <Tf key={node.id} terraform={node} hasNext={!!next.node} />}
       emptyState={<EmptyTab text='no terraform modules uploaded yet' />}
-      onLoadMore={() => {
-        if (!pageInfo.hasNextPage) return
-
-        fetchMore({
-          variables: {tfCursor: pageInfo.endCursor},
-          updateQuery: (prev, {fetchMoreResult}) => {
-            const {edges, pageInfo} = fetchMoreResult.terraform
-            return edges.length ? {
-              ...prev,
-              terraform: {
-                ...prev.terraform,
-                pageInfo,
-                edges: [...prev.terraform.edges, ...edges]
-              }
-            } : prev
-          }
-        })
-      }}
-    />
+      onLoadMore={() => pageInfo.hasNextPage && fetchMore({
+        variables: {tfCursor: pageInfo.endCursor},
+        updateQuery: (prev, {fetchMoreResult: {terraform: {edges, pageInfo}}}) => (
+          {...prev, terraform: {...prev.terraform,
+            pageInfo, edges: [...prev.terraform.edges, ...edges]
+          }}
+        )
+      })} />
   )
 }
 
@@ -231,25 +207,16 @@ function DockerRepos({edges, repo, pageInfo, fetchMore}) {
           setRepo={setDockerRepository} />
       )}
       emptyState={<EmptyTab text='no repos created yet' />}
-      onLoadMore={() => {
-        if (!pageInfo.hasNextPage) return
-
-        fetchMore({
-          variables: {dkrCursor: pageInfo.endCursor},
-          updateQuery: (prev, {fetchMoreResult}) => {
-            const {edges, pageInfo} = fetchMoreResult.dockerRepositories
-            return edges.length ? {
-              ...prev,
-              dockerRepositories: {
-                ...prev.dockerRepositories,
-                pageInfo,
-                edges: [...prev.dockerRepositories.edges, ...edges]
-              }
-            } : prev
+      onLoadMore={() => pageInfo.hasNextPage && fetchMore({
+        variables: {dkrCursor: pageInfo.endCursor},
+        updateQuery: (prev, {fetchMoreResult: {dockerRepositories: {edges, pageInfo}}}) => (
+          { ...prev,
+            dockerRepositories: {
+              ...prev.dockerRepositories, pageInfo, edges: [...prev.dockerRepositories.edges, ...edges]
+            }
           }
-        })
-      }}
-    />
+        )
+      })} />
   )
 }
 

@@ -8,9 +8,8 @@ export const TerraformFragment = gql`
     readme
     package
     description
-    dependencies {
-      ...DependenciesFragment
-    }
+    latestVersion
+    dependencies { ...DependenciesFragment }
     valuesTemplate
   }
   ${DependenciesFragment}

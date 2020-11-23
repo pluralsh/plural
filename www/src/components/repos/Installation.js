@@ -15,7 +15,7 @@ import AceEditor from "react-ace"
 import "ace-builds/src-noconflict/mode-yaml"
 import "ace-builds/src-noconflict/theme-terminal"
 import './container.css'
-import { TAGS } from './Chart'
+import { TAGS } from '../versions/VersionTags'
 
 function update(cache, repositoryId, installation) {
   const prev = cache.readQuery({ query: REPO_Q, variables: {repositoryId} })

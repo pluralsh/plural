@@ -151,25 +151,16 @@ function ArtifactDetail({dropRef, setOpen, blob, readme, sha, filesize}) {
 
 export function Artifact({name, type, platform, filesize, ...artifact}) {
   const [open, setOpen] = useState(false)
-  const [hover, setHover] = useState(false)
   const dropRef = useRef()
+
   return (
     <>
-    <Box
-      focusIndicator={false}
-      onClick={() => setOpen(!open)}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      background={hover ? 'light-3' : null}
-      border='bottom'
-      direction='row'
-      gap='small'
-      align='center'
-      pad='small'>
+    <Box focusIndicator={false} onClick={() => setOpen(!open)} hoverIndicator='light-3'
+      border='bottom' direction='row' gap='small' align='center' pad='small'>
       <ArtifactIcon type={type} />
       <Box ref={dropRef} gap='xsmall'>
         <Box direction='row' gap='xsmall' align='center'>
-          <Anchor size='small' weight='bold' onClick={() => setOpen(true)}>{name}</Anchor>
+          <Anchor size='small' weight='bold'>{name}</Anchor>
           <ArtifactPlatform platform={platform} />
           <Text size='small' color='dark-3'>-- {fs(filesize)}</Text>
         </Box>

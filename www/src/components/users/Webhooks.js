@@ -133,46 +133,25 @@ export default function Webhooks() {
   if (!data || loading) return null
   const {edges, pageInfo} = data.webhooks
   return (
-    <Box>
-      <Box
-        direction='row'
-        border={{side: 'bottom', color: BORDER_COLOR}}
-        align='center'
-        pad='small'>
-        <Text size='small' style={{fontWeight: 500}}>Webhooks</Text>
-      </Box>
-      <Box>
-        <Scroller
-          id='webhooks'
-          edges={edges}
-          emptyState={<NoWebhooks />}
-          style={{overflow: 'auto', height: '100%', width: '100%'}}
-          mapper={({node}, next) => (
-            <Webhook
-              key={node.id}
-              webhook={node}
-              hasNext={!!next.node} />
-          )}
-          onLoadMore={() => {
-            if (!pageInfo.hasNextPage) return
-
-            fetchMore({
-              variables: {cursor: pageInfo.endCursor},
-              updateQuery: (prev, {fetchMoreResult}) => {
-                const {edges, pageInfo} = fetchMoreResult.webhooks
-                return edges.length ? {
-                  ...prev,
-                  webhooks: {
-                    ...prev.webhooks,
-                    pageInfo,
-                    edges: [...prev.webhooks.edges, ...edges]
-                  }
-                } : prev
-              }
-            })
-          }}
-        />
-      </Box>
-    </Box>
+    <Scroller
+      id='webhooks'
+      edges={edges}
+      emptyState={<NoWebhooks />}
+      style={{overflow: 'auto', height: '100%', width: '100%'}}
+      mapper={({node}, next) => (
+        <Webhook
+          key={node.id}
+          webhook={node}
+          hasNext={!!next.node} />
+      )}
+      onLoadMore={() => pageInfo.hasNextPage && fetchMore({
+          variables: {cursor: pageInfo.endCursor},
+          updateQuery: (prev, {fetchMoreResult: {webhooks: {edges, pageInfo}}}) => (
+            {...prev, webhooks: { ...prev.webhooks, pageInfo,
+                edges: [...prev.webhooks.edges, ...edges]
+            }}
+          )
+        })
+      } />
   )
 }

@@ -69,14 +69,8 @@ export function Tokens() {
   const {edges, pageInfo} = data.tokens
   return (
     <Box>
-      <Box
-        direction='row'
-        border={{side: 'bottom', color: BORDER_COLOR}}
-        align='center'
-        pad={{vertical: 'xsmall', horizontal: 'small'}}>
-        <Box width='100%'>
-          <Text size='small' style={{fontWeight: 500}}>Access Tokens</Text>
-        </Box>
+      <Box direction='row' border={{side: 'bottom', color: BORDER_COLOR}}
+        align='center' justify='end' pad={{vertical: 'xsmall', horizontal: 'small'}}>
         <Box width={CELL_WIDTH}>
           <Button
             pad={{horizontal: 'medium', vertical: 'xsmall'}}

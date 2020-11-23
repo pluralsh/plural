@@ -4,6 +4,8 @@ dependencies:
   type: terraform
 providers:
 - gcp
+description: bootstrapping gcp credentials
+version: 0.1.0
 
 wirings:
   terraform:

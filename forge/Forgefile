@@ -4,6 +4,7 @@ RECIPE recipes/gcp-kubernetes.yaml
 
 HELM ../charts/bootstrap
 
-TF ../terraform/bootstrap
+TF ../terraform/bootstrap/gcp-bootstrap
+TF ../terraform/bootstrap/kube
 
 CRD crds/* bootstrap

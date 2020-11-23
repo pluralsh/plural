@@ -2,7 +2,7 @@ REPO forge
 
 DB forge/ops/database.yaml
 HELM charts/forge
-TF terraform/forge
+TF terraform/forge/forge-gcp
 
 SH forge/ops/shell.yaml
 

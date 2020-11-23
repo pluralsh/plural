@@ -2,9 +2,9 @@ artifact:
   forge/artifacts/forge-linux.yml: 11d143ed99588407c3c4609704ea9f3850f6844adc51856f8cfbcad77dae58b2
   forge/artifacts/forge.yaml: deb08d49b9c63da88868379e9fc8b64b748d71dc9ef352855de2e748cb5863c8
 terraform:
-  terraform/forge: h1:8VnDjmXPacPCmpMbrnQh54lbtlX/lgKbdi5o3HW5lv0=
+  terraform/forge/forge-gcp: h1:SR9XscvoS4FGeOmEwAaV9FojVsZaaPA+eVoqpafw08c=
 helm:
-  charts/forge: h1:ow8q8bjD1EdcyUkpy4Hs0BrH2+rQW8WDqvEtuebNCNg=
+  charts/forge: h1:oYsXFuFzEmtzolwmTJ+Ha+3hWzJMZFQy66CplUnOXQA=
 recipe:
   forge/recipes/gcp-kubernetes.yaml: 5db02eb02b9da40ccbe7e10906345a9f89c37e7aa0aa952a438fb74a1d8b2199
   forge/recipes/watchman-gcp.yaml: e0bec37378ab299b0168ba31f85d9b6378fcc9c0f1d432332194110ac951add7

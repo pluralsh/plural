@@ -41,12 +41,13 @@ defmodule Core.Schema.Dependencies do
 
   embedded_schema do
     field :providers, {:array, Provider}
+    field :provider_wirings, :map
 
     embeds_many :dependencies, Dependency, on_replace: :delete
     embeds_one  :wirings, Wirings, on_replace: :update
   end
 
-  @valid ~w(providers)a
+  @valid ~w(providers provider_wirings)a
 
   def changeset(model, attrs \\ %{}) do
     model

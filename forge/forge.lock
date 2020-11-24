@@ -1,6 +1,5 @@
 artifact: {}
 terraform:
-  ../terraform/bootstrap: h1:O4mJo8+RPSKXxR9X/8Mr0ndXiwbz3LIgLiWGejT6fRI=
   ../terraform/bootstrap/gcp-bootstrap: h1:upMeS14MraS+n0mnQ2ZT/nSTXXYS1BfVhQX5LIecmfU=
   ../terraform/bootstrap/kube: h1:0L7+Y8P1u9GF1BbzMjqeBz4iXpZOaavRG1bUmlYPLcA=
 helm:

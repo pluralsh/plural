@@ -1,0 +1,36 @@
+name: aws-k8s
+description: Constructs an eks cluster and installs the bootstrap chart
+provider: AWS
+dependencies: []
+sections:
+- name: bootstrap
+  items:
+  - type: TERRAFORM
+    name: aws-bootstrap
+    configuration:
+    - name: vpc_name
+      documentation: a memorable name for the vpc of the cluster
+      type: STRING
+    - name: dns_domain
+      documentation: the domain for all dns entries the cluster will use
+      type: STRING
+  - type: HELM
+    name: bootstrap
+    configuration:
+    - name: provider
+      documentation: externaldns provider name (choose google for google cloud dns)
+      type: STRING
+      default: aws
+    - name: txt_owner
+      documentation: arbitrary name for externaldns to use to track ownership of dns records
+      type: STRING
+      default: forge
+    - name: dns_domain
+      documentation: top level domain to use
+      type: STRING
+    - name: grafana_dns
+      documentation: FQDN for grafana
+      type: STRING
+    - name: ownerEmail
+      type: STRING
+      documentation: email to be used for certificate renewal notifications

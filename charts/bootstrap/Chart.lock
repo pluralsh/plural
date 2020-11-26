@@ -3,11 +3,11 @@ dependencies:
   repository: https://charts.bitnami.com/bitnami
   version: 3.4.0
 - name: grafana
-  repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 5.5.7
+  repository: https://grafana.github.io/helm-charts
+  version: 6.1.9
 - name: prometheus
-  repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 11.12.1
+  repository: https://prometheus-community.github.io/helm-charts
+  version: 12.0.0
 - name: loki-stack
   repository: https://grafana.github.io/loki/charts
   version: 0.40.1
@@ -17,5 +17,8 @@ dependencies:
 - name: cert-manager
   repository: https://charts.jetstack.io
   version: v1.0.1
-digest: sha256:0a22a30cbe15e7153d10aa1e3673a10254031d9868f4b62e290ad20fca8fa1d7
-generated: "2020-09-22T14:28:58.330947-04:00"
+- name: cluster-autoscaler
+  repository: https://kubernetes.github.io/autoscaler
+  version: 9.1.0
+digest: sha256:bd0c0c13d498f06694f6425b9be3451e1b26ae3edf1303623988b72a69207c89
+generated: "2020-11-25T20:21:21.954616-05:00"

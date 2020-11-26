@@ -10,6 +10,7 @@ registry:
       token:
         realm: https://{{ .Values.forge_dns }}/auth/token
         service: {{ .Values.forge_dkr_dns }}
+        issuer: {{ .Values.forge_dns }}
 
 {{ $certificate := genCA "forge" 1886 }}
 

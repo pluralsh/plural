@@ -12,7 +12,6 @@ external-dns:
   sources:
   - service
   - ingress
-  - contour-httpproxy
   provider: google
   txtOwnerId: piazza
   policy: sync
@@ -46,6 +45,8 @@ loki-stack:
       image: {}
       notifiers:
         enabled: false
+    imageRenderer:
+      enabled: false
 
 ingress-nginx:
   controller:

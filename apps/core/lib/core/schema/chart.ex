@@ -1,6 +1,6 @@
 defmodule Core.Schema.Chart do
   use Piazza.Ecto.Schema
-  alias Core.Schema.{Repository, Dependencies, VersionTag}
+  alias Core.Schema.{Repository, Dependencies, VersionTag, Version}
 
   schema "charts" do
     field :name,           :string
@@ -9,6 +9,7 @@ defmodule Core.Schema.Chart do
 
     embeds_one :dependencies, Dependencies, on_replace: :update
     has_many :tags, VersionTag, on_replace: :delete
+    has_many :versions, Version
     belongs_to :repository, Repository
 
     timestamps()
@@ -36,6 +37,28 @@ defmodule Core.Schema.Chart do
   def preloaded(query \\ __MODULE__, preload \\ [:repository]),
     do: from(c in query, preload: ^preload)
 
+  def preload_versions(query \\ __MODULE__) do
+    from(c in query, preload: ^[versions: &version_preloads/1])
+  end
+
+  @versions """
+  (
+    SELECT v.id as id
+    FROM versions v
+    WHERE v.chart_id = ?
+    ORDER BY v.inserted_at desc
+    LIMIT 25
+  )
+  """
+
+  def paginated_versions(query \\ __MODULE__, ids) do
+    from(c in query,
+      inner_lateral_join: v in fragment(@versions, c.id),
+      where: c.id in ^ids,
+      select: v.id
+    )
+  end
+
   @valid ~w(name latest_version description repository_id)a
 
   def changeset(model, attrs \\ %{}) do
@@ -58,5 +81,16 @@ defmodule Core.Schema.Chart do
     else
       _ -> cs
     end
+  end
+
+  def version_preloads(ids) do
+    child_ids =
+      paginated_versions(ids)
+      |> Core.Repo.all()
+      |> Enum.map(&Ecto.UUID.cast!/1)
+
+    Version
+    |> for_ids(child_ids)
+    |> Core.Repo.all()
   end
 end

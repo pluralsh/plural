@@ -3,6 +3,23 @@ defmodule Core.Services.ChartsTest do
   use Mimic
   alias Core.Services.Charts
 
+  describe "#list_charts_and_versions/1" do
+    test "it can list charts and their versions for the repo" do
+      repo = insert(:repository)
+      [first, second] = insert_list(2, :chart, repository: repo)
+      insert(:chart)
+      first_v = insert(:version, chart: first)
+      second_v = insert(:version, chart: second)
+
+      results = Charts.list_charts_and_versions(repo.id)
+      assert ids_equal([first, second], results)
+
+      by_id = Enum.into(results, %{}, & {&1.id, &1})
+      assert hd(by_id[first.id].versions).id == first_v.id
+      assert hd(by_id[second.id].versions).id == second_v.id
+    end
+  end
+
   describe "#create_chart" do
     test "A user can create a chart if he's a publisher" do
       user = insert(:user)

@@ -48,6 +48,14 @@ defmodule Core.Services.Charts do
     |> Core.Repo.one()
   end
 
+  @spec list_charts_and_versions(binary) :: [Chart.t]
+  def list_charts_and_versions(repo) do
+    Chart.for_repository(repo)
+    |> Chart.preload_versions()
+    |> Chart.ordered()
+    |> Core.Repo.all()
+  end
+
   @doc """
   Creates a new chart. Fails if the user is not the publisher of the repository
   """
@@ -213,6 +221,7 @@ defmodule Core.Services.Charts do
       {:ok, %{
         readme: readme,
         helm: chart_decoded,
+        digest: Piazza.File.hash(path),
         values_template: extract_val_template(result, val_template),
         dependencies: deps}}
     end

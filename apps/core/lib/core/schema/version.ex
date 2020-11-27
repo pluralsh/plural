@@ -16,6 +16,7 @@ defmodule Core.Schema.Version do
     field :package,         Core.Storage.Type
     field :package_id,      :binary_id
     field :values_template, :string
+    field :digest,          :string
 
     embeds_one :dependencies, Dependencies, on_replace: :update
 
@@ -54,7 +55,7 @@ defmodule Core.Schema.Version do
 
   def helm_changeset(model, attrs \\ %{}) do
     model
-    |> cast(attrs, [:helm | @valid])
+    |> cast(attrs, [:helm, :digest | @valid])
     |> cast_embed(:dependencies)
   end
 end

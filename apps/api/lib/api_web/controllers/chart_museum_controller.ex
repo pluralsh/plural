@@ -3,6 +3,7 @@ defmodule ApiWeb.ChartMuseumController do
   import ApiWeb.Plugs.ReverseProxy
   alias Core.Services.{Charts, Repositories}
   alias Core.Policies.Repository, as: RepoPolicy
+  alias Core.Schema.Version
 
   plug :fetch_repository
   plug :authorize
@@ -11,6 +12,24 @@ defmodule ApiWeb.ChartMuseumController do
     url = Path.join([chartmuseum(), "cm", repo, "index.yaml"])
 
     execute_proxy(:get, url, conn)
+  end
+
+  def index_db(conn, %{"repo" => _}) do
+    charts = Charts.list_charts_and_versions(conn.assigns.repo.id)
+
+    json(conn, %{
+      apiVersion: "v1",
+      entries: Enum.into(charts, %{}, fn %{name: name, versions: versions} ->
+        {name, Enum.map(versions, &cm_version(&1, name))}
+      end),
+      generated: Timex.now(),
+      serverInfo: %{contextPath: "/cm"}
+    })
+  end
+
+  defp cm_version(%Version{helm: helm, digest: digest, inserted_at: at, version: v}, chart) do
+    %{"created" => at, "digest" => digest, "urls" => ["charts/#{chart}-#{v}.tgz"]}
+    |> Map.merge(helm)
   end
 
   def get(conn, %{"repo" => repo, "chart" => chart}) do

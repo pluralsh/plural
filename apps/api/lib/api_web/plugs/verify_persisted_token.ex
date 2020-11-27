@@ -22,6 +22,7 @@ defmodule Api.Plugs.VerifyPersistedToken do
     |> fetch_token_from_header()
   end
 
+  defp fetch_token_from_header(["cmt-" <> _ = match | _]), do: {:ok, String.trim(match)}
   defp fetch_token_from_header([token | _tail]) do
     trimmed_token = String.trim(token)
 
@@ -33,5 +34,6 @@ defmodule Api.Plugs.VerifyPersistedToken do
   defp fetch_token_from_header(_), do: :error
 
   defp build_claims(persisted), do: %{"sub" => "user:#{persisted.user_id}"}
+
   defp storage_key(conn, opts), do: Pipeline.fetch_key(conn, opts)
 end

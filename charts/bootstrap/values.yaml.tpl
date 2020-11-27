@@ -9,7 +9,7 @@ external-dns:
   domainFilters:
   - {{ .Values.dns_domain }}
   google:
-    project: {{ .Values.gcp_project_id }}
+    project: {{ .Project }}
     serviceAccountSecret: externaldns
   aws:
     region: {{ .Region }}

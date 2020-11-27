@@ -20,5 +20,8 @@ dependencies:
 - name: cluster-autoscaler
   repository: https://kubernetes.github.io/autoscaler
   version: 9.1.0
-digest: sha256:bd0c0c13d498f06694f6425b9be3451e1b26ae3edf1303623988b72a69207c89
-generated: "2020-11-25T20:21:21.954616-05:00"
+- name: kubed
+  repository: https://charts.appscode.com/stable
+  version: v0.13.0-beta.0
+digest: sha256:980aa035c99ad65b61b3e290e82a68cfdd990589007e734a52fe22374b7173ad
+generated: "2020-11-26T20:47:33.081632-05:00"

@@ -14,14 +14,20 @@ external-dns:
   aws:
     region: {{ .Region }}
 
+regcreds:
+  auths:
+    dkr.piazza.app:
+      username: {{ .Config.Email }}
+      password: {{ .Config.Token }}
+      auth: {{ list .Config.Email .Config.Token | join ":" | b64enc | quote }}
+
+
 grafana_dns: {{ .Values.grafana_dns }}
 
 ownerEmail: {{ .Values.ownerEmail }}
 
 cluster-autoscaler:
-{{ if eq (default "google" .Values.provider) "google" }}
-  enabled: false
-{{ else }}
+{{ if eq (default "google" .Values.provider) "aws" }}
   enabled: true
 {{ end }}
   awsRegion: {{ .Region }}

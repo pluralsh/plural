@@ -13,6 +13,10 @@ defmodule Core.Schema.Tag do
     timestamps()
   end
 
+  def search(query \\ __MODULE__, search) do
+    from(t in query, where: like(t.tag, ^"#{search}%"))
+  end
+
   def integration_tags(query \\ __MODULE__, repo_id) do
     from(t in query,
       join: i in Integration,

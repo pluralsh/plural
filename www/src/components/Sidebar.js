@@ -2,7 +2,7 @@ import React, { useState, useRef, useContext } from 'react'
 import { Box, Text } from 'grommet'
 import { useHistory, useLocation } from 'react-router-dom'
 import { Tooltip } from './utils/Tooltip'
-import { Book, Search } from 'grommet-icons'
+import { Book, Package } from 'grommet-icons'
 import { FaCreditCard, FaReceipt } from 'react-icons/fa'
 import { CurrentUserContext } from './login/CurrentUser'
 import Avatar from './users/Avatar'
@@ -46,7 +46,7 @@ export function SidebarIcon({icon, text, selected, path}) {
 }
 
 const OPTIONS = [
-  {text: 'Explore', icon: <Search size={ICON_HEIGHT} />, path: '/explore'},
+  {text: 'Explore', icon: <Package size={ICON_HEIGHT} />, path: '/explore'},
   {text: 'Publishers', icon: <Book size={ICON_HEIGHT} />, path: '/publishers'},
   {text: 'Billing Details', icon: <FaCreditCard size={ICON_HEIGHT} />, path: '/me/billing'},
   {text: 'Invoices', icon: <FaReceipt size={ICON_HEIGHT} />, path: '/me/invoices'},

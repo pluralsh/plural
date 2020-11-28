@@ -51,7 +51,7 @@ export function TagContainer({enabled, children, gap, pad, onClick}) {
   )
 }
 
-function Tag({tag, count, setTag, enabled}) {
+function Tag({tag: {tag, count}, setTag, enabled}) {
   return (
     <TagContainer enabled={enabled} onClick={() => setTag && setTag(tag)}>
       <Text size='small'># {tag} ({count})</Text>
@@ -65,26 +65,15 @@ export default function Tags({tags: {pageInfo, edges}, fetchMore, tag, setTag, p
       <Scroller
         edges={edges}
         style={{overflow: 'auto', height: '100%', width: '100%'}}
-        mapper={({node}) => <Tag key={node.tag} {...node} setTag={setTag} enabled={node.tag === tag} />}
-        onLoadMore={() => {
-          if (!pageInfo.hasNextPage) return
-
-          fetchMore({
-            variables: {cursor: pageInfo.endCursor},
-            updateQuery: (prev, {fetchMoreResult}) => {
-              const {edges, pageInfo} = fetchMoreResult.tags
-              return edges.length ? {
-                ...prev,
-                tags: {
-                  ...prev.tags,
-                  pageInfo,
-                  edges: [...prev.tags.edges, ...edges]
-                }
-              } : prev
+        mapper={({node}) => <Tag key={node.tag} tag={node} setTag={setTag} enabled={node.tag === tag} />}
+        onLoadMore={() => pageInfo.hasNextPage && fetchMore({
+          variables: {cursor: pageInfo.endCursor},
+          updateQuery: (prev, {fetchMoreResult: {tags: {edges, pageInfo}}}) => ({
+            ...prev, tags: {
+              ...prev.tags, pageInfo, edges: [...prev.tags.edges, ...edges]
             }
           })
-        }}
-      />
+        })} />
     </Box>
   )
 }

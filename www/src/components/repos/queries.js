@@ -399,14 +399,14 @@ export const INTEGRATIONS_Q = gql`
 `;
 
 export const EXPLORE_REPOS = gql`
-  query Repos($tag: String, $repoCursor: String, $cursor: String) {
+  query Repos($tag: String, $repoCursor: String, $cursor: String, $q: String) {
     repositories(tag: $tag, after: $repoCursor, first: 15) {
       pageInfo { ...PageInfo }
       edges {
         node { ...RepoFragment }
       }
     }
-    tags(type: REPOSITORIES, first: 20, after: $cursor) {
+    tags(type: REPOSITORIES, first: 20, after: $cursor, q: $q) {
       pageInfo { ...PageInfo }
       edges {
         node { tag count }

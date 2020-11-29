@@ -1,0 +1,16 @@
+defmodule ApiWeb.ArtifactController do
+  use ApiWeb, :controller
+  import ApiWeb.Plugs.ReverseProxy
+  alias Core.Schema.{Artifact, Repository}
+  alias Core.Services.Repositories
+
+  def show(conn, %{"name" => name, "repository" => repo, "type" => type, "arch" => arch}) do
+    with %Repository{id: id} <- Repositories.get_repository_by_name(repo),
+         %Artifact{} = artifact <- Repositories.get_artifact(id, name, type, arch) do
+      url = Core.Storage.url({artifact.blob, artifact}, :original)
+      execute_proxy(:get, url, conn)
+    else
+      nil -> {:error, :not_found}
+    end
+  end
+end

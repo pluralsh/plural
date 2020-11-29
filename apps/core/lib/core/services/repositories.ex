@@ -43,6 +43,16 @@ defmodule Core.Services.Repositories do
   def get_license_token(token),
     do: Core.Repo.get_by(LicenseToken, token: token)
 
+  def get_artifact(repo_id, name, type, arch) do
+    Core.Repo.get_by(
+      Artifact,
+      repository_id: repo_id,
+      name: name,
+      type: type,
+      arch: arch
+    )
+  end
+
   @doc """
   Creates a new repository for the user's publisher
 
@@ -248,7 +258,16 @@ defmodule Core.Services.Repositories do
   """
   @spec create_artifact(map, binary, User.t) :: {:ok, Artifact.t} | {:error, term}
   def create_artifact(%{name: name, platform: plat} = attrs, repository_id, %User{} = user) do
-    case Core.Repo.get_by(Artifact, repository_id: repository_id, name: name, platform: plat) do
+    attrs = Map.put_new(attrs, :arch, "amd64")
+
+    Core.Repo.get_by(
+      Artifact,
+      repository_id: repository_id,
+      name: name,
+      platform: plat,
+      arch: attrs.arch
+    )
+    |> case do
       %Artifact{} = art -> art
       _ -> %Artifact{repository_id: repository_id}
     end

@@ -3,7 +3,7 @@ defmodule Core.Schema.Artifact do
   use Arc.Ecto.Schema
   alias Core.Schema.{Repository}
 
-  defenum Platform, mac: 0, windows: 1, linux: 2
+  defenum Platform, mac: 0, windows: 1, linux: 2, android: 3, freebsd: 4, openbsd: 5, solaris: 6
   defenum Type, cli: 0, mobile: 1, desktop: 2
 
   schema "artifacts" do
@@ -15,6 +15,7 @@ defmodule Core.Schema.Artifact do
     field :type,      Type
     field :filesize,  :integer
     field :sha,       :string
+    field :arch,      :string, default: "amd64"
 
     belongs_to :repository, Repository
 
@@ -24,15 +25,15 @@ defmodule Core.Schema.Artifact do
   def ordered(query \\ __MODULE__, order \\ [asc: :name]),
     do: from(a in query, order_by: ^order)
 
-  @valid ~w(name readme platform type)a
+  @valid ~w(name readme platform type arch)a
 
   def changeset(model, attrs \\ %{}) do
     model
     |> cast(attrs, @valid)
     |> generate_uuid(:blob_id)
-    |> validate_required([:name, :platform, :type])
+    |> validate_required([:name, :platform, :type, :arch])
     |> foreign_key_constraint(:repository_id)
-    |> unique_constraint(:repository_id, name: index_name(:artifacts, [:repository_id, :name, :platform]))
+    |> unique_constraint(:repository_id, name: index_name(:artifacts, [:repository_id, :name, :platform, :arch]))
     |> cast_attachments(attrs, [:blob], allow_urls: true)
     |> add_sha(attrs)
     |> add_filesize(attrs)

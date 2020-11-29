@@ -26,16 +26,16 @@ defmodule ApiWeb.Router do
     pipe_through :api
 
     get "/auth/token", AuthController, :token
-
     post "/auth/license", AuthController, :refresh_license
 
     get "/health", HealthController, :ping
 
     post "/signup", UserController, :create
-
     post "/login", UserController, :login
 
     post "/dkr/callback", DockerController, :events
+
+    get "/artifacts/:repository/:name", ArtifactController, :show
   end
 
   scope "/api", ApiWeb do

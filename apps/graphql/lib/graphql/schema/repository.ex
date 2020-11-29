@@ -57,6 +57,7 @@ defmodule GraphQl.Schema.Repository do
     field :readme,   non_null(:string)
     field :type,     non_null(:string)
     field :platform, non_null(:string)
+    field :arch,     :string
     field :blob,     :upload_or_url
   end
 
@@ -183,6 +184,7 @@ defmodule GraphQl.Schema.Repository do
     field :platform, :artifact_platform
     field :filesize, :integer
     field :sha,      :string
+    field :arch,     :string
     field :blob, :string, resolve: fn
       artifact, _, _ -> {:ok, Core.Storage.url({artifact.blob, artifact}, :original)}
     end

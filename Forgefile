@@ -1,10 +1,4 @@
 REPO forge
 
-DB forge/ops/database.yaml
 HELM charts/forge
 TF terraform/forge/forge-gcp
-
-SH forge/ops/shell.yaml
-
-ARTIFACT forge/artifacts/forge-linux.yml
-ARTIFACT forge/artifacts/forge.yaml

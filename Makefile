@@ -38,14 +38,5 @@ connectdb: ## proxies the db in kubernetes via kubectl
 	@echo "run psql -U forge -h 127.0.0.1 forge to connect"
 	kubectl port-forward statefulset/forge-postgresql 5432 -n forge
 
-install: ## installs the helm chart
-	helm upgrade --install -f charts/forge/config.secrets.yaml --namespace forge forge charts/forge
-
 web: ## starts a local webserver
 	cd www && npm start
-
-watchman:
-	cd apps/watchman/assets && yarn start
-
-cli: ## builds the forge cli
-	cd cmd && go build

@@ -23,7 +23,7 @@ spec:
   - host: {{ .Values.ingress.dns }}
     http:
       paths:
-      - path: /v2/.*
+      - path: /artifacts/.*
         backend:
           serviceName: forge-api
           servicePort: http

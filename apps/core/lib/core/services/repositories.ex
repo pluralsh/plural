@@ -43,12 +43,12 @@ defmodule Core.Services.Repositories do
   def get_license_token(token),
     do: Core.Repo.get_by(LicenseToken, token: token)
 
-  def get_artifact(repo_id, name, type, arch) do
+  def get_artifact(repo_id, name, platform, arch) do
     Core.Repo.get_by(
       Artifact,
       repository_id: repo_id,
       name: name,
-      type: type,
+      platform: platform,
       arch: arch
     )
   end
@@ -260,13 +260,7 @@ defmodule Core.Services.Repositories do
   def create_artifact(%{name: name, platform: plat} = attrs, repository_id, %User{} = user) do
     attrs = Map.put_new(attrs, :arch, "amd64")
 
-    Core.Repo.get_by(
-      Artifact,
-      repository_id: repository_id,
-      name: name,
-      platform: plat,
-      arch: attrs.arch
-    )
+    get_artifact(repository_id, name, plat, attrs.arch)
     |> case do
       %Artifact{} = art -> art
       _ -> %Artifact{repository_id: repository_id}

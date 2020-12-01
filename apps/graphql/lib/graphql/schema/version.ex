@@ -52,9 +52,10 @@ defmodule GraphQl.Schema.Version do
   ecto_enum :dependency_type, Core.Schema.Dependencies.Dependency.Type
 
   object :dependency do
-    field :type, :dependency_type
-    field :name, :string
-    field :repo, :string
+    field :type,    :dependency_type
+    field :name,    :string
+    field :repo,    :string
+    field :version, :string
   end
 
   object :wirings do

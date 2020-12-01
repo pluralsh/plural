@@ -21,13 +21,17 @@ defmodule Core.Services.Dependencies do
     TerraformInstallation.for_repo_name(repo)
     |> TerraformInstallation.for_terraform_name(find_names(dep))
     |> TerraformInstallation.for_user(user_id)
-    |> Core.Repo.exists?()
+    |> Core.Repo.one()
+    |> Core.Repo.preload([:version])
+    |> valid_version?(dep)
   end
   def valid?(%Dependencies.Dependency{type: :helm, repo: repo} = dep, %User{id: user_id}) do
     ChartInstallation.for_repo_name(repo)
     |> ChartInstallation.for_chart_name(find_names(dep))
     |> ChartInstallation.for_user(user_id)
-    |> Core.Repo.exists?()
+    |> Core.Repo.one()
+    |> Core.Repo.preload([:version])
+    |> valid_version?(dep)
   end
   def valid?(_, _), do: false
 
@@ -69,6 +73,11 @@ defmodule Core.Services.Dependencies do
   def closure(%{dependencies: dependencies}), do: closure(dependencies)
   def closure(nil), do: []
   def closure(deps) when is_list(deps), do: closure(deps, MapSet.new(), [])
+
+  defp valid_version?(%{}, %{version: nil}), do: true
+  defp valid_version?(%{version: %{version: v}}, %{version: spec}),
+    do: Version.match?(v, spec)
+  defp valid_version?(_, _), do: false
 
   defp closure([], _, acc), do: acc
   defp closure(deps, seen, acc) do

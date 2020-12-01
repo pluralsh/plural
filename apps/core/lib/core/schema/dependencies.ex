@@ -8,17 +8,21 @@ defmodule Core.Schema.Dependencies do
     defenum Type, terraform: 0, helm: 1
 
     embedded_schema do
-      field :type, Type
-      field :repo, :string
-      field :name, :string
-      field :any,  {:array, :string}
+      field :type,    Type
+      field :repo,    :string
+      field :name,    :string
+      field :version, Core.Schema.VersionRequirement
+      field :any,     {:array, :string}
+
+      embeds_many :any_of, __MODULE__
     end
 
-    @valid ~w(type repo name any)a
+    @valid ~w(type repo name any version)a
 
     def changeset(model, attrs \\ %{}) do
       model
       |> cast(attrs, @valid)
+      |> cast_embed(:any_of)
       |> validate_required([:type, :repo, :name])
     end
   end

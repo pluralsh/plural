@@ -116,6 +116,37 @@ defmodule Core.Services.DependenciesTest do
 
       assert Dependencies.validate(terraform.dependencies, user) == :pass
     end
+
+    test "It will validate dep versions" do
+      chart     = insert(:chart)
+      terraform = insert(:terraform)
+      user      = insert(:user)
+      insert(:chart_installation,
+        chart: chart,
+        version: insert(:version, chart: chart, version: "1.0.2"),
+        installation: insert(:installation, user: user, repository: chart.repository)
+      )
+      insert(:terraform_installation,
+        terraform: terraform,
+        version: insert(:version, terraform: terraform, version: "0.2.2"),
+        installation: insert(:installation, user: user, repository: terraform.repository)
+      )
+
+      terraform = insert(:terraform, dependencies: %{dependencies: [
+        %{type: :helm, repo: chart.repository.name, name: chart.name, version: "~> 1.0"},
+        %{type: :terraform, repo: terraform.repository.name, name: terraform.name, version: "~> 0.2"}
+      ]})
+
+      assert Dependencies.validate(terraform.dependencies, user) == :pass
+
+      tf = insert(:terraform, dependencies: %{dependencies: [
+        %{type: :helm, repo: chart.repository.name, name: chart.name, version: "~> 1.0"},
+        %{type: :terraform, repo: terraform.repository.name, name: terraform.name, version: "~> 0.3"}
+      ]})
+
+      {:error, {:missing_dep, dep}} = Dependencies.validate(tf.dependencies, user)
+      assert dep.name == terraform.name
+    end
   end
 
   describe "#closure/1" do

@@ -21,7 +21,7 @@ defmodule Core.Services.Dependencies do
     TerraformInstallation.for_repo_name(repo)
     |> TerraformInstallation.for_terraform_name(find_names(dep))
     |> TerraformInstallation.for_user(user_id)
-    |> Core.Repo.one()
+    |> Core.Repo.all()
     |> Core.Repo.preload([:version])
     |> valid_version?(dep)
   end
@@ -29,7 +29,7 @@ defmodule Core.Services.Dependencies do
     ChartInstallation.for_repo_name(repo)
     |> ChartInstallation.for_chart_name(find_names(dep))
     |> ChartInstallation.for_user(user_id)
-    |> Core.Repo.one()
+    |> Core.Repo.all()
     |> Core.Repo.preload([:version])
     |> valid_version?(dep)
   end
@@ -63,7 +63,7 @@ defmodule Core.Services.Dependencies do
   defp mod(%{any: [_ | _]}), do: "any"
   defp mod(_), do: ""
 
-  defp pretty_name(%{any: [_ | _] = names}), do: "in [#{Enum.join(names, ", ")}]"
+  defp pretty_name(%{any_of: [_ | _] = deps}), do: "in [#{Enum.map_join(deps, ", ", & &1.name)}]"
   defp pretty_name(%{name: name}), do: name
 
   @doc """
@@ -74,9 +74,14 @@ defmodule Core.Services.Dependencies do
   def closure(nil), do: []
   def closure(deps) when is_list(deps), do: closure(deps, MapSet.new(), [])
 
-  defp valid_version?(%{}, %{version: nil}), do: true
-  defp valid_version?(%{version: %{version: v}}, %{version: spec}),
-    do: Version.match?(v, spec)
+  defp valid_version?([_ | _], %{version: nil}), do: true
+  defp valid_version?(versions, %{any_of: [_ | _] = deps}) do
+    by_name = Enum.into(deps, %{}, & {&1.name, &1})
+    Enum.any?(versions, &valid_version?([&1], by_name[&1.name]))
+  end
+  defp valid_version?([%{version: %{version: v}}], %{version: spec}) do
+    Version.match?(v, spec)
+  end
   defp valid_version?(_, _), do: false
 
   defp closure([], _, acc), do: acc
@@ -106,7 +111,7 @@ defmodule Core.Services.Dependencies do
     |> Enum.flat_map(fn {_, results} -> results end)
   end
 
-  defp find_names(%{any: [_ | _] = names}), do: names
+  defp find_names(%{any_of: [_ | _] = deps}), do: Enum.map(deps, & &1.name)
   defp find_names(%{name: name}), do: [name]
 
   defp find_dependencies(:terraform, repo_name, names) do

@@ -12,12 +12,11 @@ defmodule Core.Schema.Dependencies do
       field :repo,    :string
       field :name,    :string
       field :version, Core.Schema.VersionRequirement
-      field :any,     {:array, :string}
 
       embeds_many :any_of, __MODULE__
     end
 
-    @valid ~w(type repo name any version)a
+    @valid ~w(type repo name version)a
 
     def changeset(model, attrs \\ %{}) do
       model

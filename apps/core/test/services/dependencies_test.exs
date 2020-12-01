@@ -24,28 +24,6 @@ defmodule Core.Services.DependenciesTest do
       assert Dependencies.valid?(terraform.dependencies, user)
     end
 
-    test "It can handle any dependencies" do
-      chart     = insert(:chart)
-      ignore    = insert(:chart, repository: chart.repository)
-      terraform = insert(:terraform)
-      user      = insert(:user)
-      insert(:chart_installation,
-        chart: chart,
-        installation: insert(:installation, user: user, repository: chart.repository)
-      )
-      insert(:terraform_installation,
-        terraform: terraform,
-        installation: insert(:installation, user: user, repository: terraform.repository)
-      )
-
-      terraform = insert(:terraform, dependencies: %{dependencies: [
-        %{type: :helm, repo: chart.repository.name, any: [chart.name, ignore.name]},
-        %{type: :terraform, repo: terraform.repository.name, name: terraform.name}
-      ]})
-
-      assert Dependencies.valid?(terraform.dependencies, user)
-    end
-
     test "If a dependency is missing it returns false" do
       chart     = insert(:chart)
       terraform = insert(:terraform)
@@ -146,6 +124,29 @@ defmodule Core.Services.DependenciesTest do
 
       {:error, {:missing_dep, dep}} = Dependencies.validate(tf.dependencies, user)
       assert dep.name == terraform.name
+    end
+
+    test "it supports any dependencies" do
+      chart     = insert(:chart)
+      terraform = insert(:terraform)
+      user      = insert(:user)
+      insert(:chart_installation,
+        chart: chart,
+        version: insert(:version, chart: chart, version: "1.0.2"),
+        installation: insert(:installation, user: user, repository: chart.repository)
+      )
+      insert(:terraform_installation,
+        terraform: terraform,
+        version: insert(:version, terraform: terraform, version: "0.2.2"),
+        installation: insert(:installation, user: user, repository: terraform.repository)
+      )
+
+      terraform = insert(:terraform, dependencies: %{dependencies: [
+        %{type: :helm, repo: chart.repository.name, name: chart.name, version: "~> 1.0"},
+        %{type: :terraform, repo: terraform.repository.name, any_of: [%{name: terraform.name, version: "~> 0.2"}]}
+      ]})
+
+      assert Dependencies.validate(terraform.dependencies, user) == :pass
     end
   end
 

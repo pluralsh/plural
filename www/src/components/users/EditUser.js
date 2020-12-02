@@ -12,7 +12,7 @@ import Webhooks from './Webhooks'
 import { CurrentUserContext } from '../login/CurrentUser'
 import { Tokens } from './Tokens'
 
-const EditContext = React.createContext({})
+export const EditContext = React.createContext({})
 
 function EditAvatar({me}) {
   const {files, onClick, HiddenFileInput} = useFilePicker({})
@@ -46,7 +46,7 @@ function ActionBox({onClick, text, icon}) {
   )
 }
 
-function EditSelect({edit, icon}) {
+export function EditSelect({edit, icon}) {
   const {editing, setEditing} = useContext(EditContext)
   return (
     <Box pad={{horizontal: 'small', vertical: 'xsmall'}} round='xsmall'
@@ -63,7 +63,7 @@ function EditSelect({edit, icon}) {
   )
 }
 
-function EditContent({edit, children}) {
+export function EditContent({edit, children}) {
   const {editing} = useContext(EditContext)
   if (editing !== edit) return null
 

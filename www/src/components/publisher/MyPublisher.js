@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useMutation } from 'react-apollo'
-import { Expander, InputField, InputCollection, ResponsiveInput, Button, ScrollableContainer } from 'forge-core'
+import { InputField, InputCollection, ResponsiveInput, Button } from 'forge-core'
 import { Box, Anchor, Text, TextInput } from 'grommet'
 import Repositories from '../repos/Repositories'
 import CreateRepository from '../repos/CreateRepository'
@@ -9,13 +9,14 @@ import { BreadcrumbContext } from '../Forge'
 import { EDIT_PUBLISHER, LINK_ACCOUNT } from './queries'
 import { ME_Q } from '../users/queries'
 import { CONNECT_ICON, AUTHORIZE_URL } from './constants'
-import { Stripe } from 'grommet-icons'
+import { Add, Edit, List, Stripe } from 'grommet-icons'
 import { STRIPE_BLUE } from '../payments/constants'
-import { DetailContainer } from '../repos/Installation'
+import { EditContent, EditContext, EditSelect } from '../users/EditUser'
 
 function AccountConnected() {
   return (
-    <Box pad='small' justify='center' align='center' direction='row' gap='xsmall'>
+    <Box pad='xsmall' justify='center' align='center' direction='row'
+         gap='xsmall' border={{color: 'light-5'}} round='xsmall'>
       <Stripe color={STRIPE_BLUE} size='medium' />
       <Anchor href='https://dashboard.stripe.com/' size='small'>stripe dashboard</Anchor>
     </Box>
@@ -44,7 +45,7 @@ function PublisherPayments({accountId}) {
   }, [token, accountId, mutation])
 
   return (
-    <Box pad='small' align='center' justify='center'>
+    <Box pad='small' align='center' justify='center' border={{color: 'light-5'}} round='xsmall'>
       <a href={AUTHORIZE_URL}>
         <img alt='' src={CONNECT_ICON} />
       </a>
@@ -153,37 +154,34 @@ function EditPublisher({description, phone, address}) {
 export default function MyPublisher() {
   const me = useContext(CurrentUserContext)
   const {setBreadcrumbs} = useContext(BreadcrumbContext)
+  const [editing, setEditing] = useState('Repositories')
   useEffect(() => {
     if (!me.publisher) return
     setBreadcrumbs([{url: `/publishers/${me.publisher.id}`, text: me.publisher.name}])
   }, [me, setBreadcrumbs])
-  console.log(me.publisher)
 
   return (
-    <ScrollableContainer>
-      <Box direction='row' pad='medium'>
-        <Box width='60%'>
-          <Repositories publisher={me.publisher} deletable columns={2} />
-        </Box>
-        <DetailContainer width='40%'>
-          <Box>
-            {me.publisher.accountId && <AccountConnected />}
-            <Expander text='Edit publisher'>
-              <EditPublisher {...me.publisher} />
-            </Expander>
-            {!me.publisher.accountId && (
-              <Expander text='Payments'>
-                <PublisherPayments {...me.publisher} />
-              </Expander>
-            )}
-            <Box border='top'>
-              <Expander text='Create Repository' open>
-                <CreateRepository publisher={me.publisher} />
-              </Expander>
-            </Box>
-          </Box>
-        </DetailContainer>
+    <EditContext.Provider value={{editing, setEditing}}>
+    <Box fill direction='row'>
+      <Box width='30%' flex={false} pad='small' gap='xsmall'>
+        <EditSelect edit='Repositories' icon={<List size='small' />} />
+        <EditSelect edit='Edit Attributes' icon={<Edit size='small' />} />
+        <EditSelect edit='Create Repository' icon={<Add size='small' />} />
+        {me.publisher.accountId && <AccountConnected />}
+        {!me.publisher.accountId && (<PublisherPayments {...me.publisher} />)}
       </Box>
-    </ScrollableContainer>
+      <Box fill style={{overflow: 'auto'}} pad='small'>
+        <EditContent edit='Repositories'>
+          <Repositories publisher={me.publisher} deletable columns={2} />
+        </EditContent>
+        <EditContent edit='Edit Attributes'>
+          <EditPublisher {...me.publisher} />
+        </EditContent>
+        <EditContent edit='Create Repository'>
+          <CreateRepository publisher={me.publisher} />
+        </EditContent>
+      </Box>
+    </Box>
+    </EditContext.Provider>
   )
 }

@@ -1,42 +1,35 @@
-import React, { useContext, useState } from 'react'
-import {Elements, CardElement, injectStripe} from 'react-stripe-elements'
+import React, { useCallback, useContext, useState } from 'react'
+import { Elements, CardElement, injectStripe } from 'react-stripe-elements'
 import { CurrentUserContext } from '../login/CurrentUser'
-import { Box, Text, Stack } from 'grommet'
+import { Box, Text, Stack, Layer } from 'grommet'
 import { useMutation, useQuery } from 'react-apollo'
 import { REGISTER_CARD, CARDS, DELETE_CARD } from './queries'
 import CardDisplay from 'react-credit-cards'
+import { Button, HoveredBackground, ModalHeader } from 'forge-core'
+import { TagContainer } from '../repos/Tags'
+import { Visa, Mastercard, Amex, Trash } from 'grommet-icons'
+import { FaCreditCard } from 'react-icons/fa'
 import 'react-credit-cards/es/styles-compiled.css';
 import './stripe.css'
 
-import { Button, HoveredBackground } from 'forge-core'
-import { TagContainer } from '../repos/Tags'
-import { TOOLBAR_SIZE } from '../Forge'
-import { Visa, Mastercard, Amex, Trash } from 'grommet-icons'
-import { FaCreditCard } from 'react-icons/fa'
-
-function _CardForm({stripe, header, onCompleted}) {
+function _CardForm({stripe, onCompleted}) {
   const [mutation, {loading}] = useMutation(REGISTER_CARD, {
     refetchQueries: [{query: CARDS}],
     onCompleted
   })
-  const onClick = () => stripe.createToken().then(({token: {id}}) =>
-    mutation({variables: {source: id}})
-  )
+  const onClick = useCallback(() => {
+    stripe.createToken().then(({token: {id}}) =>
+      mutation({variables: {source: id}})
+    )
+  }, [stripe, mutation])
+
   return (
-    <Box width='100%' height='100%' align='center' justify='center'>
-      <Box width='50%' gap='small'>
-        <Text size='small' weight='bold'>{header ? header : 'Enter your payment information'}</Text>
-        <Box pad='small' gap='xsmall' elevation='small'>
-          <CardElement />
-          <Box direction='row' justify='end'>
-            <Button
-              loading={loading}
-              pad='small'
-              round='xsmall'
-              label='Register'
-              onClick={onClick} />
-          </Box>
-        </Box>
+    <Box fill='horizontal' direction='row' pad='small' gap='xsmall' align='center'>
+      <Box fill='horizontal'>
+        <CardElement />
+      </Box>
+      <Box flex={false}>
+        <Button loading={loading} label='Register' onClick={onClick} />
       </Box>
     </Box>
   )
@@ -44,10 +37,10 @@ function _CardForm({stripe, header, onCompleted}) {
 
 const CardForm = injectStripe(_CardForm)
 
-function CardInputForm({me, header, onCompleted}) {
+function CardInputForm({me, onCompleted}) {
   return (
     <Elements>
-      <CardForm me={me} header={header} onCompleted={onCompleted} />
+      <CardForm me={me} onCompleted={onCompleted} />
     </Elements>
   )
 }
@@ -110,7 +103,7 @@ function Card({card, noDelete}) {
   )
 }
 
-function CardIcon({brand}) {
+export function CardIcon({brand}) {
   switch (brand.toLowerCase()) {
     case 'visa':
       return <Visa color='focus' size='medium' />
@@ -123,7 +116,7 @@ function CardIcon({brand}) {
   }
 }
 
-function CardOption({card, current, setCurrent}) {
+export function CardOption({card, current, setCurrent}) {
   return (
     <TagContainer pad='small' gap='small' enabled={card.id === current.id} onClick={() => setCurrent(card)}>
       <CardIcon brand={card.brand} />
@@ -135,42 +128,34 @@ function CardOption({card, current, setCurrent}) {
   )
 }
 
-export function Cards({me}) {
-  const [current, setCurrent] = useState(null)
+export function CardList() {
+  const me = useContext(CurrentUserContext)
+  const [open, setOpen] = useState(false)
   const {data, loading} = useQuery(CARDS)
   if (!data || loading) return null
 
   const {edges} = data.me.cards
-  const card = current || edges[0].node
+
   return (
-    <Box direction='row' height={`calc(100vh - ${TOOLBAR_SIZE})`}>
-      <Box width='250px'  style={{height: '100%', scroll: 'auto'}}
-        border={{side: 'right', color: 'light-3'}}>
-        {edges.map(({node}) => (
-          <CardOption key={node.id} card={node} setCurrent={setCurrent} current={card} />
-        ))}
+    <>
+    <Box fill pad='medium'>
+      <Box flex={false} direction='row' fill='horizontal' pad='small'>
+        <Button label='Add a card' onClick={() => setOpen(true)} />
       </Box>
-      <Box pad='medium' gap='small' width='100%'>
-        <Box fill='horizontal' align='center'>
-          <Box width='290px'>
-            <Card card={card} noDelete={edges.length <= 1} />
+      <Box fill align='center' pad='small' style={{overflow: 'auto'}} gap='small'>
+        {edges.map(({node: card}) => <Card card={card} />)}
+      </Box>
+    </Box>
+    {open && (
+      <Layer modal onEsc={() => setOpen(false)} onClickOutside={() => setOpen(false)}>
+        <Box width='35vw'>
+          <ModalHeader text='Add payment source' setOpen={setOpen} />
+          <Box pad='small'>
+            <CardInputForm header='Add another card' me={me} onCompleted={() => setOpen(false)} />
           </Box>
         </Box>
-        <Box border='top' pad='medium'>
-          <CardInputForm header='Add another card' me={me} />
-        </Box>
-      </Box>
-    </Box>
-  )
-}
-
-export default function BillingDetails() {
-  const me = useContext(CurrentUserContext)
-
-  if (me.customerId) return <Cards me={me} />
-  return (
-    <Box pad='small'>
-      <CardInputForm me={me} />
-    </Box>
+      </Layer>
+    )}
+    </>
   )
 }

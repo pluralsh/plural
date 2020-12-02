@@ -48,8 +48,7 @@ export function SidebarIcon({icon, text, selected, path}) {
 const OPTIONS = [
   {text: 'Explore', icon: <Package size={ICON_HEIGHT} />, path: '/explore'},
   {text: 'Publishers', icon: <Book size={ICON_HEIGHT} />, path: '/publishers'},
-  {text: 'Billing Details', icon: <FaCreditCard size={ICON_HEIGHT} />, path: '/me/billing'},
-  {text: 'Invoices', icon: <FaReceipt size={ICON_HEIGHT} />, path: '/me/invoices'},
+  {text: 'Billing', icon: <FaCreditCard size={ICON_HEIGHT} />, path: '/billing/methods'},
 ]
 
 export default function Sidebar() {

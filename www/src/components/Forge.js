@@ -12,11 +12,11 @@ import Terraform from './repos/Terraform'
 import EditUser from './users/EditUser'
 import { IntegrationPage } from './repos/Integrations'
 import { StripeProvider } from 'react-stripe-elements'
-import BillingDetails from './users/BillingDetails'
 import Invoices from './payments/Invoices'
 import Sidebar from './Sidebar'
 import Publishers from './publisher/Publishers'
 import Explore from './Explore'
+import { Billing } from './users/Billing'
 
 export const TOOLBAR_SIZE = '60px'
 export const BreadcrumbContext = React.createContext({})
@@ -51,8 +51,7 @@ export default function Forge() {
                   <Route path='/charts/:chartId' component={Chart} />
                   <Route path='/terraform/:tfId' component={Terraform} />
                   <Route path='/me/edit' component={EditUser} />
-                  <Route path='/me/billing' component={BillingDetails} />
-                  <Route path='/me/invoices' component={Invoices} />
+                  <Route path='/billing/:section' component={Billing} />
                   <Route path='/me/invoices/:subscriptionId' component={Invoices} />
                   <Route path='/' component={Explore} />
                 </Switch>

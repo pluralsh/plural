@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { useHistory } from 'react-router-dom'
 import { Box, Text, Anchor, Table, TableRow, TableCell, TableBody, TableHeader } from 'grommet'
+import { Loading } from 'forge-core'
 import { useQuery } from 'react-apollo'
 import { SUBSCRIPTIONS_Q, SUBSCRIPTION_Q } from './queries'
 import { subscriptionCost } from './utils'
@@ -55,7 +56,8 @@ function SubscriptionBar({edges, current, setCurrent}) {
 function InvoicesInner({current: {id}}) {
   let history = useHistory()
   const {loading, data} = useQuery(SUBSCRIPTION_Q, {variables: {id}})
-  if (loading && !data) return null
+  if (!data) return null
+  if (loading) return <Loading />
 
   const {invoices: {edges}, installation: {repository}} = data.repositorySubscription
   return (
@@ -108,13 +110,13 @@ export default function Invoices() {
 
   return (
     <Box direction='row' width='100%' height={`calc(100vh - ${TOOLBAR_SIZE})`}>
-      <Box width='250px'  style={{height: '100%', scroll: 'auto'}} border={{side: 'right', color: 'light-3'}}>
+      <Box flex={false} width='250px'  style={{height: '100%', scroll: 'auto'}} border={{side: 'right', color: 'light-3'}}>
         <SubscriptionBar
           edges={edges}
           current={currentSubscription}
           setCurrent={setCurrent} />
       </Box>
-      <Box width='calc(100vw - 250px)' pad='medium'>
+      <Box fill pad='medium'>
         <InvoicesInner current={currentSubscription} />
       </Box>
     </Box>

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Box, Text, CheckBox, Anchor, Select } from 'grommet'
 import { Alert, Close } from 'grommet-icons'
 import { useMutation } from 'react-apollo'
-import { Button, Pill, Expander, Carousel } from 'forge-core'
+import { Button, Pill, Carousel } from 'forge-core'
 import { INSTALL_REPO, UPDATE_INSTALLATION, REPO_Q } from './queries'
 import yaml from 'js-yaml'
 import Highlight from 'react-highlight.js'
@@ -12,10 +12,11 @@ import SubscribeModal from '../payments/CreateSubscription'
 import { SubscriptionBadge } from '../payments/Subscription'
 import UpdatePlan from '../payments/UpdatePlan'
 import AceEditor from "react-ace"
+import { TAGS } from '../versions/VersionTags'
 import "ace-builds/src-noconflict/mode-yaml"
 import "ace-builds/src-noconflict/theme-terminal"
 import './container.css'
-import { TAGS } from '../versions/VersionTags'
+import './installation.css'
 
 function update(cache, repositoryId, installation) {
   const prev = cache.readQuery({ query: REPO_Q, variables: {repositoryId} })
@@ -25,7 +26,7 @@ function update(cache, repositoryId, installation) {
   })
 }
 
-function EditInstallation({installation, repository, onUpdate, open}) {
+function EditInstallation({installation, repository, onUpdate}) {
   const [ctx, setCtx] = useState(yaml.safeDump(installation.context || {}, null, 2))
   const [autoUpgrade, setAutoUpgrade] = useState(installation.autoUpgrade)
   const [trackTag, setTrackTag] = useState(installation.trackTag)
@@ -49,51 +50,49 @@ function EditInstallation({installation, repository, onUpdate, open}) {
         </Box>
       </Pill>
     )}
-    <Expander text='Configuration' open={open}>
-      <Box gap='small' fill='horizontal' pad='small'>
-        <Box>
-          <AceEditor
-            mode='yaml'
-            theme='terminal'
-            height='300px'
-            width='100%'
-            name='Configuration'
-            value={ctx}
-            showGutter
-            showPrintMargin
-            highlightActiveLine
-            editorProps={{ $blockScrolling: true }}
-            onChange={setCtx} />
-        </Box>
-        {errors && (
-          <Box direction='row' gap='small'>
-            <Alert size='15px' color='notif' />
-            <Text size='small' color='notif'>Must be in json format</Text>
-          </Box>)}
-        <Box direction='row' justify='end' gap='small' align='center'>
-          <CheckBox
-            toggle
-            label='Auto Upgrade'
-            checked={autoUpgrade}
-            onChange={(e) => setAutoUpgrade(e.target.checked)}
-          />
-          {autoUpgrade && (
-            <Select
-              value={trackTag}
-              options={TAGS}
-              onChange={({option}) => setTrackTag(option)} />
-          )}
-        </Box>
-        <Box pad='small' direction='row' justify='end'>
-          <Button
-            pad={{horizontal: 'medium', vertical: 'xsmall'}}
-            loading={loading}
-            label='Save'
-            onClick={mutation}
-            round='xsmall' />
-        </Box>
+    <Box gap='small' fill='horizontal' pad='small'>
+      <Box>
+        <AceEditor
+          mode='yaml'
+          theme='terminal'
+          height='300px'
+          width='100%'
+          name='Configuration'
+          value={ctx}
+          showGutter
+          showPrintMargin
+          highlightActiveLine
+          editorProps={{ $blockScrolling: true }}
+          onChange={setCtx} />
       </Box>
-    </Expander>
+      {errors && (
+        <Box direction='row' gap='small'>
+          <Alert size='15px' color='notif' />
+          <Text size='small' color='notif'>Must be in json format</Text>
+        </Box>)}
+      <Box direction='row' justify='end' gap='small' align='center'>
+        <CheckBox
+          toggle
+          label='Auto Upgrade'
+          checked={autoUpgrade}
+          onChange={(e) => setAutoUpgrade(e.target.checked)}
+        />
+        {autoUpgrade && (
+          <Select
+            value={trackTag}
+            options={TAGS}
+            onChange={({option}) => setTrackTag(option)} />
+        )}
+      </Box>
+      <Box pad='small' direction='row' justify='end'>
+        <Button
+          pad={{horizontal: 'medium', vertical: 'xsmall'}}
+          loading={loading}
+          label='Save'
+          onClick={mutation}
+          round='xsmall' />
+      </Box>
+    </Box>
     </>
   )
 }
@@ -119,25 +118,23 @@ function PlanCarousel({repository}) {
   return (
     <>
     {modal}
-    <Expander text='Plans'>
-      <Box pad='small' gap='small'>
-        {plans.length > 0 ?
-          <Carousel
-            draggable={false}
-            slidesPerPage={1}
-            offset={12}
-            edges={plans}
-            mapper={(plan) => (
-              <Plan key={plan.id} subscription={subscription} approvePlan={approvePlan} {...plan} />
-            )}
-            fetchMore={() => null} /> :
-          <Text size='small'>This repo is currently free to use</Text>
-        }
-        {editable && (<Box direction='row' justify='end'>
-          <Anchor onClick={() => setOpen(true)} size='small'>Create more</Anchor>
-        </Box>)}
-      </Box>
-    </Expander>
+    <Box pad='small' gap='small'>
+      {plans.length > 0 ?
+        <Carousel
+          draggable={false}
+          slidesPerPage={1}
+          offset={12}
+          edges={plans}
+          mapper={(plan) => (
+            <Plan key={plan.id} subscription={subscription} approvePlan={approvePlan} {...plan} />
+          )}
+          fetchMore={() => null} /> :
+        <Text size='small'>This repo is currently free to use</Text>
+      }
+      {editable && (<Box direction='row' justify='end'>
+        <Anchor onClick={() => setOpen(true)} size='small'>Create more</Anchor>
+      </Box>)}
+    </Box>
     {open && <CreatePlan repository={repository} setOpen={setOpen} />}
     </>
   )
@@ -151,7 +148,32 @@ export function DetailContainer({children, ...rest}) {
   )
 }
 
-export default function Installation({repository, onUpdate, noHelm, open, integrations, fetchMore}) {
+const BORDER_ATTRS = {side: 'top', size: '2px'}
+
+function Tab({name, setTab, selected}) {
+  const active = selected === name
+
+  return (
+    <Box
+      flex={false}
+      background={active ? 'white' : 'light-1'}
+      className={'installation-tab' + (active ? ' selected' : ' unselected')}
+      pad='small' focusIndicator={false}
+      border={active ? {...BORDER_ATTRS, color: 'brand'} : null}
+      hoverIndicator='light-2'
+      onClick={active ? null : () => setTab(name)}>
+      <Text size='small' weight={500}>{name}</Text>
+    </Box>
+  )
+}
+
+function TabFiller() {
+  return (
+    <Box fill='horizontal' border={{side: 'bottom', color: 'light-5'}} />
+  )
+}
+
+function InstallationInner({installation, repository}) {
   const [mutation] = useMutation(INSTALL_REPO, {
     variables: {repositoryId: repository.id},
     update: (cache, { data: { createInstallation } }) => {
@@ -162,42 +184,47 @@ export default function Installation({repository, onUpdate, noHelm, open, integr
       })
     }
   })
-  const hasPlans = repository.plans && repository.plans.length > 0
-  const {installation} = repository
 
-  if (installation) {
-    return (
-      <DetailContainer gap='small'>
-        <Box>
-          {!noHelm && (
-            <Box gap='small' pad='small' border='bottom'>
-              {installation.subscription && (<SubscriptionBadge repository={repository} {...installation.subscription} />)}
-              <Text size='small' style={{fontWeight: 500}}>Installation</Text>
-              <Box>
-                <Highlight language='bash'>
-                  {`forge build --only ${repository.name}
-forge deploy ${repository.name}`}
-                </Highlight>
-              </Box>
-            </Box>
-          )}
-          {(hasPlans || repository.editable) && <PlanCarousel repository={repository} />}
+  if (installation) return (
+    <Box gap='small' pad='small'>
+      {installation.subscription && (<SubscriptionBadge repository={repository} {...installation.subscription} />)}
+      <Highlight language='bash'>
+        {[`forge build --only ${repository.name}`, `forge deploy ${repository.name}`].join('\n')}
+      </Highlight>
+    </Box>
+  )
+
+  return (
+    <Box pad='small'>
+      <Button label='Install Repository' round='xsmall' onClick={mutation} />
+    </Box>
+  )
+}
+
+export default function Installation({repository, onUpdate, noHelm, open}) {
+  const {installation} = repository
+  const hasPlans = repository.plans && repository.plans.length > 0
+  const [tab, setTab] = useState((noHelm && !installation) ? 'Configuration' : 'Installation')
+
+  return (
+    <Box>
+      <Box flex={false} className='installation-tabs' direction='row'>
+        {(!noHelm || installation) && <Tab name='Installation' setTab={setTab} selected={tab} />}
+        {(hasPlans || repository.editable) && <Tab name='Plans' setTab={setTab} selected={tab} />}
+        <Tab name='Configuration' setTab={setTab} selected={tab} />
+        <TabFiller />
+      </Box>
+      <Box className='installation-container'>
+        {tab === 'Installation' && <InstallationInner installation={installation} repository={repository} />}
+        {tab === 'Plans' && <PlanCarousel repository={repository} />}
+        {tab === 'Configuration' && (
           <EditInstallation
             installation={repository.installation}
             repository={repository}
             open={open}
             onUpdate={onUpdate} />
-        </Box>
-      </DetailContainer>
-    )
-  }
-
-  return (
-    <DetailContainer gap='small'>
-      <Box pad='small'>
-        <Button label='Install Repository' round='xsmall' onClick={mutation} />
+        )}
       </Box>
-      {(hasPlans || repository.editable) && <PlanCarousel repository={repository} />}
-    </DetailContainer>
+    </Box>
   )
 }

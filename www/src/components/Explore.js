@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { useQuery } from 'react-apollo'
 import { EXPLORE_REPOS } from './repos/queries'
 import { Box, Text, TextInput } from 'grommet'
@@ -6,6 +6,7 @@ import Tags from './repos/Tags'
 import { TagHeader } from './repos/Integrations'
 import { RepositoryList } from './repos/Repositories'
 import { Search } from 'grommet-icons'
+import { BreadcrumbContext } from './Forge'
 
 const WIDTH = 15
 
@@ -25,6 +26,8 @@ export default function Explore() {
     variables: {tag, q: q === '' ? null : q},
     fetchPolicy: 'cache-and-network'
   })
+  const {setBreadcrumbs} = useContext(BreadcrumbContext)
+  useEffect(() => setBreadcrumbs([]), [])
 
   if (!data) return null
 

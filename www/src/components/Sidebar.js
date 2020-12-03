@@ -3,7 +3,7 @@ import { Box, Text } from 'grommet'
 import { useHistory, useLocation } from 'react-router-dom'
 import { Tooltip } from './utils/Tooltip'
 import { Book, Package } from 'grommet-icons'
-import { FaCreditCard, FaReceipt } from 'react-icons/fa'
+import { FaCreditCard } from 'react-icons/fa'
 import { CurrentUserContext } from './login/CurrentUser'
 import Avatar from './users/Avatar'
 

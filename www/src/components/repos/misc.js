@@ -1,5 +1,5 @@
 import React from 'react'
-import { DEFAULT_GCP_ICON, ProviderIcons } from './constants'
+import { ProviderIcons } from './constants'
 
 export function Provider({provider, width}) {
   const url = ProviderIcons[provider]

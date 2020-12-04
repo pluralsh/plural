@@ -12,6 +12,7 @@ import { Add, Edit, List, Stripe } from 'grommet-icons'
 import { STRIPE_BLUE } from '../payments/constants'
 import { EditContent, EditContext, EditSelect } from '../users/EditUser'
 import { BreadcrumbsContext } from '../Breadcrumbs'
+import { SIDEBAR_WIDTH } from '../constants'
 
 function AccountConnected() {
   return (
@@ -163,7 +164,7 @@ export default function MyPublisher() {
   return (
     <EditContext.Provider value={{editing, setEditing}}>
     <Box fill direction='row'>
-      <Box width='30%' flex={false} pad='small' gap='xsmall'>
+      <Box width={SIDEBAR_WIDTH} flex={false} pad='small' gap='xsmall'>
         <EditSelect edit='Repositories' icon={<List size='small' />} />
         <EditSelect edit='Edit Attributes' icon={<Edit size='small' />} />
         <EditSelect edit='Create Repository' icon={<Add size='small' />} />

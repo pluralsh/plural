@@ -3,6 +3,7 @@ import React, { useContext, useEffect } from 'react'
 import { FaCreditCard, FaReceipt } from 'react-icons/fa'
 import { useHistory, useParams } from 'react-router'
 import { BreadcrumbsContext } from '../Breadcrumbs'
+import { SIDEBAR_WIDTH } from '../constants'
 import Invoices from '../payments/Invoices'
 import { SectionChoice } from '../utils/SectionChoice'
 import { CardList } from './BillingDetails'
@@ -30,7 +31,7 @@ export function Billing() {
 
   return (
     <Box fill direction='row'>
-      <Box gap='xsmall' flex={false} width='30%' height='100%'
+      <Box gap='xsmall' flex={false} width={SIDEBAR_WIDTH} height='100%'
            border={{side: 'right', color: 'light-3'}} pad='small'>
         {VIEWS.map(({text, view, icon}) => (
           <SectionChoice

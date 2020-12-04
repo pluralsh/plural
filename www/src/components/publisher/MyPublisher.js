@@ -5,13 +5,13 @@ import { Box, Anchor, Text, TextInput } from 'grommet'
 import Repositories from '../repos/Repositories'
 import CreateRepository from '../repos/CreateRepository'
 import { CurrentUserContext } from '../login/CurrentUser'
-import { BreadcrumbContext } from '../Forge'
 import { EDIT_PUBLISHER, LINK_ACCOUNT } from './queries'
 import { ME_Q } from '../users/queries'
 import { CONNECT_ICON, AUTHORIZE_URL } from './constants'
 import { Add, Edit, List, Stripe } from 'grommet-icons'
 import { STRIPE_BLUE } from '../payments/constants'
 import { EditContent, EditContext, EditSelect } from '../users/EditUser'
+import { BreadcrumbsContext } from '../Breadcrumbs'
 
 function AccountConnected() {
   return (
@@ -153,7 +153,7 @@ function EditPublisher({description, phone, address}) {
 
 export default function MyPublisher() {
   const me = useContext(CurrentUserContext)
-  const {setBreadcrumbs} = useContext(BreadcrumbContext)
+  const {setBreadcrumbs} = useContext(BreadcrumbsContext)
   const [editing, setEditing] = useState('Repositories')
   useEffect(() => {
     if (!me.publisher) return

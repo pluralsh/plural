@@ -4,9 +4,9 @@ import { Switch, Route, useLocation } from 'react-router-dom'
 import { ScrollableContainer } from 'forge-core'
 import Publishers from './publisher/Publishers'
 import Explore from './Explore'
-import { BreadcrumbContext } from './Forge'
 import { Search, Book } from 'grommet-icons'
 import { SidebarIcon } from './Sidebar'
+import { BreadcrumbsContext } from './Breadcrumbs'
 
 const ICON_HEIGHT = '20px'
 
@@ -18,7 +18,7 @@ const OPTIONS = [
 export default function Home() {
   const loc = useLocation()
   const active = Math.max(OPTIONS.findIndex(({path}) => path === loc.pathname), 0)
-  const {setBreadcrumbs} = useContext(BreadcrumbContext)
+  const {setBreadcrumbs} = useContext(BreadcrumbsContext)
   useEffect(() => setBreadcrumbs([]), [setBreadcrumbs])
 
   return (

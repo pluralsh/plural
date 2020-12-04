@@ -6,7 +6,7 @@ import Tags from './repos/Tags'
 import { TagHeader } from './repos/Integrations'
 import { RepositoryList } from './repos/Repositories'
 import { Search } from 'grommet-icons'
-import { BreadcrumbContext } from './Forge'
+import { BreadcrumbsContext } from './Breadcrumbs'
 
 const WIDTH = 15
 
@@ -26,7 +26,7 @@ export default function Explore() {
     variables: {tag, q: q === '' ? null : q},
     fetchPolicy: 'cache-and-network'
   })
-  const {setBreadcrumbs} = useContext(BreadcrumbContext)
+  const {setBreadcrumbs} = useContext(BreadcrumbsContext)
   useEffect(() => setBreadcrumbs([]), [])
 
   if (!data) return null

@@ -11,16 +11,16 @@ import { DEFAULT_CHART_ICON, DEFAULT_TF_ICON, DEFAULT_DKR_ICON } from './constan
 import Installation from './Installation'
 import CreateTerraform from './CreateTerraform'
 import { RepoForm } from './CreateRepository'
-import { BreadcrumbContext } from '../Forge'
 import Highlight from 'react-highlight'
 import Recipes from './Recipes'
 import moment from 'moment'
 import { Provider } from './misc'
 import Artifacts from './Artifacts'
 import AceEditor from "react-ace"
+import Integrations from './Integrations'
+import { BreadcrumbsContext } from '../Breadcrumbs'
 import "ace-builds/src-noconflict/mode-yaml"
 import "ace-builds/src-noconflict/theme-terminal"
-import Integrations from './Integrations'
 
 function Container({children, onClick, hasNext, noPad}) {
 
@@ -395,7 +395,7 @@ export default function Repository() {
     variables: {repositoryId},
     fetchPolicy: "cache-and-network"
   })
-  const {setBreadcrumbs} = useContext(BreadcrumbContext)
+  const {setBreadcrumbs} = useContext(BreadcrumbsContext)
   const [detail, setDetail] = useState(false)
   useEffect(() => {
     if (!data) return

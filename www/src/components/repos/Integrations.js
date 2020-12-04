@@ -5,13 +5,13 @@ import { Carousel, ScrollableContainer, Scroller, HoveredBackground } from 'forg
 import { Box, Text, Anchor, Stack } from 'grommet'
 import { INTEGRATIONS_Q } from './queries'
 import { useQuery } from 'react-apollo'
-import { BreadcrumbContext } from '../Forge'
 import Tags from './Tags'
 import { chunk } from '../../utils/array'
 import { FormPrevious, FormNextLink } from 'grommet-icons'
 import { normalizeColor } from 'grommet/utils'
 import { DetailContainer } from './Installation'
 import { DetailHeader } from './Artifacts'
+import { BreadcrumbsContext } from '../Breadcrumbs'
 
 const ICON_SIZE = 50
 
@@ -159,7 +159,7 @@ export function IntegrationPage() {
     variables: {id: repositoryId, tag},
     fetchPolicy: "cache-and-network"
   })
-  const {setBreadcrumbs} = useContext(BreadcrumbContext)
+  const {setBreadcrumbs} = useContext(BreadcrumbsContext)
   useEffect(() => {
     if (!data) return
     const {repository} = data

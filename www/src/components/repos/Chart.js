@@ -8,10 +8,10 @@ import moment from 'moment'
 import { DEFAULT_CHART_ICON } from './constants'
 import Highlight from 'react-highlight.js'
 import Installation, { DetailContainer } from './Installation'
-import { BreadcrumbContext } from '../Forge'
 import Dependencies, { FullDependencies, ShowFull } from './Dependencies'
 import './chart.css'
 import { Versions } from '../versions/Versions'
+import { BreadcrumbsContext } from '../Breadcrumbs'
 
 function ChartInfo({helm, insertedAt}) {
   return (
@@ -139,7 +139,7 @@ export default function Chart() {
   const [tab, setTab] = useState(false)
   const [full, setFull] = useState(false)
   const {loading, data, fetchMore, refetch} = useQuery(CHART_Q, {variables: {chartId}})
-  const {setBreadcrumbs} = useContext(BreadcrumbContext)
+  const {setBreadcrumbs} = useContext(BreadcrumbsContext)
   useEffect(() => {
     if (!data) return
     const {chart} = data

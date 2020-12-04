@@ -2,7 +2,7 @@ import { Box } from 'grommet'
 import React, { useContext, useEffect } from 'react'
 import { FaCreditCard, FaReceipt } from 'react-icons/fa'
 import { useHistory, useParams } from 'react-router'
-import { BreadcrumbContext } from '../Forge'
+import { BreadcrumbsContext } from '../Breadcrumbs'
 import Invoices from '../payments/Invoices'
 import { SectionChoice } from '../utils/SectionChoice'
 import { CardList } from './BillingDetails'
@@ -22,7 +22,7 @@ const VIEWS = [
 export function Billing() {
   const {section} = useParams()
   let history = useHistory()
-  const {setBreadcrumbs} = useContext(BreadcrumbContext)
+  const {setBreadcrumbs} = useContext(BreadcrumbsContext)
   useEffect(() => setBreadcrumbs([
     {text: 'billing', url: '/billing/methods'},
     {text: section, url: `/billing/${section}`}

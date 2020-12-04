@@ -7,9 +7,9 @@ import { TF_Q, UPDATE_TF, INSTALL_TF, UNINSTALL_TF, DELETE_TF } from './queries'
 import { DEFAULT_TF_ICON } from './constants'
 import Highlight from 'react-highlight.js'
 import Installation from './Installation'
-import { BreadcrumbContext } from '../Forge'
 import Dependencies, { FullDependencies, ShowFull } from './Dependencies'
 import { Versions } from '../versions/Versions'
+import { BreadcrumbsContext } from '../Breadcrumbs'
 
 function Code({value, children, language}) {
   return (
@@ -177,7 +177,7 @@ function Terraform() {
   const {tfId} = useParams()
   const {loading, data, refetch, fetchMore} = useQuery(TF_Q, {variables: {tfId}})
   const width = 65
-  const {setBreadcrumbs} = useContext(BreadcrumbContext)
+  const {setBreadcrumbs} = useContext(BreadcrumbsContext)
 
   useEffect(() => {
     if (!data) return

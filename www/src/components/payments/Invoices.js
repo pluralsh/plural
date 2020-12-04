@@ -7,7 +7,8 @@ import { SUBSCRIPTIONS_Q, SUBSCRIPTION_Q } from './queries'
 import { subscriptionCost } from './utils'
 import { TagContainer } from '../repos/Tags'
 import moment from 'moment'
-import { TOOLBAR_SIZE, BreadcrumbContext } from '../Forge'
+import { TOOLBAR_SIZE } from '../Forge'
+import { BreadcrumbsContext } from '../Breadcrumbs'
 
 const ICON_SIZE = '30px'
 
@@ -96,7 +97,7 @@ function EmptyState() {
 export default function Invoices() {
   const [current, setCurrent] = useState(null)
   const {loading, data} = useQuery(SUBSCRIPTIONS_Q)
-  const {setBreadcrumbs} = useContext(BreadcrumbContext)
+  const {setBreadcrumbs} = useContext(BreadcrumbsContext)
   useEffect(() => {
     setBreadcrumbs([])
   }, [])

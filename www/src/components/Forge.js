@@ -1,7 +1,6 @@
-import React, {useState} from 'react'
+import React from 'react'
 import {Box, Grid} from 'grommet'
 import { Switch, Route } from 'react-router-dom'
-import { Breadcrumbs } from 'forge-core'
 import CurrentUser from './login/CurrentUser'
 import MyPublisher from './publisher/MyPublisher'
 import Publisher from './publisher/Publisher'
@@ -17,15 +16,14 @@ import Sidebar from './Sidebar'
 import Publishers from './publisher/Publishers'
 import Explore from './Explore'
 import { Billing } from './users/Billing'
+import BreadcrumbProvider, { Breadcrumbs } from './Breadcrumbs'
 
 export const TOOLBAR_SIZE = '60px'
-export const BreadcrumbContext = React.createContext({})
 
 export default function Forge() {
-  const [breadcrumbs, setBreadcrumbs] = useState([])
   return (
     <StripeProvider apiKey="pk_test_ZVj7wQQqsBDrud0mttnnY6uy00QM8CndBt">
-      <BreadcrumbContext.Provider value={{breadcrumbs, setBreadcrumbs}}>
+      <BreadcrumbProvider>
         <CurrentUser>
           <Grid fill rows={[TOOLBAR_SIZE, 'flex']} columns={['100vw']} areas={[
               {name: 'toolbarTop', start: [0, 0], end: [0, 0]},
@@ -37,11 +35,7 @@ export default function Forge() {
             <Box style={{height: `calc(100vh - ${TOOLBAR_SIZE})`}} direction='row' gridArea='viewport'>
               <Sidebar />
               <Box fill>
-                {breadcrumbs.length > 0 && (
-                  <Box flex={false} fill='horizontal' border={{color: 'light-6'}}>
-                    <Breadcrumbs crumbs={breadcrumbs} />
-                  </Box>
-                )}
+                <Breadcrumbs />
                 <Switch>
                   <Route path='/publishers/mine' component={MyPublisher} />
                   <Route path='/publishers/:publisherId' component={Publisher} />
@@ -59,7 +53,7 @@ export default function Forge() {
             </Box>
           </Grid>
         </CurrentUser>
-      </BreadcrumbContext.Provider>
+      </BreadcrumbProvider>
     </StripeProvider>
   )
 }

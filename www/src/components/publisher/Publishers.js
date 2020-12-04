@@ -5,8 +5,8 @@ import { useHistory } from 'react-router-dom'
 import { Scroller } from 'forge-core'
 import { PUBLISHERS_Q } from './queries'
 import Avatar from '../users/Avatar'
-import { BreadcrumbContext } from '../Forge'
 import { Container } from '../repos/Integrations'
+import { BreadcrumbsContext } from '../Breadcrumbs'
 
 
 const STUB_ICON_SIZE = '20px'
@@ -58,7 +58,7 @@ function Publisher({publisher: {id, name, owner, description, repositories}}) {
 
 export default function Publishers() {
   const {loading, data, fetchMore} = useQuery(PUBLISHERS_Q)
-  const {setBreadcrumbs} = useContext(BreadcrumbContext)
+  const {setBreadcrumbs} = useContext(BreadcrumbsContext)
   useEffect(() => {
     setBreadcrumbs([])
   }, [setBreadcrumbs])

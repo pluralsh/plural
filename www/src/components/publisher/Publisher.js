@@ -6,8 +6,8 @@ import { InputCollection, ResponsiveInputContainer } from 'forge-core'
 import {PUBLISHER_Q} from './queries'
 import Repositories from '../repos/Repositories'
 import Avatar from '../users/Avatar'
-import {BreadcrumbContext} from '../Forge'
 import { DetailContainer } from '../repos/Installation'
+import { BreadcrumbsContext } from '../Breadcrumbs'
 
 function formatAddress({line1, line2, city, state, country, zip}) {
   return `${line1}, ${line2} ${city}, ${state}, ${country} ${zip}`
@@ -39,7 +39,7 @@ function PublisherView({name, owner, description, phone, address}) {
 function Publisher() {
   const {publisherId} = useParams()
   const {loading, data} = useQuery(PUBLISHER_Q, {variables: {publisherId}})
-  const {setBreadcrumbs} = useContext(BreadcrumbContext)
+  const {setBreadcrumbs} = useContext(BreadcrumbsContext)
   useEffect(() => {
     if (!data) return
     setBreadcrumbs([

@@ -2,9 +2,10 @@ import React, { useState } from 'react'
 import { Box, Text, Anchor, Layer } from 'grommet'
 import { LineItemIcon } from './Plan'
 import { subscriptionCost, updateSubscription, pivotByDimension } from './utils'
-import { ModalHeader, NumericInput, Button } from 'forge-core'
+import { ModalHeader, Button } from 'forge-core'
 import { useMutation } from 'react-apollo'
 import { UPDATE_LINE_ITEM } from './queries'
+import { NumericInput } from '../utils/NumericInput'
 
 function LineItemUpdate({lineItem: {cost}, dimension, quantity, subscription, repository, setOpen}) {
   const [value, setValue] = useState(quantity)
@@ -17,19 +18,14 @@ function LineItemUpdate({lineItem: {cost}, dimension, quantity, subscription, re
   return (
     <Layer modal position='center' onEsc={() => setOpen(false)}>
       <Box width='300px'>
-        <ModalHeader text={`Update line item ${dimension}`} setOpen={setOpen} />
-        <Box pad='medium' gap='small'>
-          <Box direction='row' gap='small' align='center'>
+        <ModalHeader text={`Update line item: ${dimension}`} setOpen={setOpen} />
+        <Box direction='row' pad='medium' gap='small'>
+          <Box direction='row' gap='small' align='center' flex={false}>
             <NumericInput value={value} onChange={setValue} />
-            <Text size='small'>${cost / 100} / {dimension}</Text>
+            <Text size='small'>(${cost / 100} / {dimension})</Text>
           </Box>
-          <Box direction='row' justify='end' align='center'>
-            <Button
-              loading={loading}
-              label='Update'
-              pad='small'
-              round='xsmall'
-              onClick={mutation} />
+          <Box direction='row' fill='horizontal' justify='end' align='center'>
+            <Button loading={loading} label='Update' onClick={mutation} />
           </Box>
         </Box>
       </Box>

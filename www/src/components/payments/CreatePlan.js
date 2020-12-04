@@ -3,7 +3,7 @@ import { LabeledInput } from '../repos/CreateRepository'
 import { TextInput, Box, Select, Layer, Text, Anchor } from 'grommet'
 import { FaDollarSign } from 'react-icons/fa'
 import { Button, SecondaryButton, ModalHeader, HoveredBackground } from 'forge-core'
-import { FormPrevious, Cube, FormNext, Trash } from 'grommet-icons'
+import { FormPrevious, Cube, FormNext, Trash, Add } from 'grommet-icons'
 import { useMutation } from 'react-apollo'
 import { CREATE_PLAN } from './queries'
 import { REPO_Q } from '../repos/queries'
@@ -57,21 +57,18 @@ function Feature({name, description, removeFeature}) {
 
 function DollarInput({value, onChange, placeholder}) {
   return (
-    <Box direction='row' border round='xxsmall' pad='xsmall' align='center'>
-      <FaDollarSign size='15px' />
-      <TextInput
-        plain
-        placeholder={placeholder}
-        value={value ? (value / 100) + '' : ''}
-        onChange={({target: {value}}) => {
-          const parsed = parseInt(value)
-          if (!isNaN(parsed)) {
-            onChange(parsed * 100)
-          } else {
-            onChange(null)
-          }
-        }} />
-    </Box>
+    <TextInput
+      icon={<FaDollarSign size='15px' />}
+      placeholder={placeholder}
+      value={value ? (value / 100) + '' : ''}
+      onChange={({target: {value}}) => {
+        const parsed = parseInt(value)
+        if (!isNaN(parsed)) {
+          onChange(parsed * 100)
+        } else {
+          onChange(null)
+        }
+      }} />
   )
 }
 
@@ -123,12 +120,10 @@ function FeatureCreator({state, setState, setDisplay, mutation, loading}) {
       <Box direction='row' justify='end' gap='small' margin={{top: 'small'}}>
         <SecondaryButton
           label='Add feature'
-          pad='small'
           round='xsmall'
           onClick={() => setState(addFeature())} />
         <Button
           loading={loading}
-          pad='small'
           label='Create'
           round='xsmall'
           onClick={mutation} />
@@ -213,12 +208,10 @@ function ItemCreator({state, setState, setDisplay, mutation, loading}) {
       <Box direction='row' justify='end' gap='small' margin={{top: 'small'}}>
         <SecondaryButton
           label='Add line item'
-          pad='small'
           round='xsmall'
           onClick={() => setState(addLineItem())} />
         <Button
           loading={loading}
-          pad='small'
           label='Create'
           round='xsmall'
           onClick={mutation} />
@@ -268,7 +261,6 @@ function PlanForm({state, setState, setDisplay, mutation, loading}) {
       </Box>
       <Box direction='row' justify='end' margin={{top: 'small'}}>
         <Button
-          pad='small'
           label='Create'
           round='xsmall'
           loading={loading}
@@ -287,6 +279,25 @@ function FormSwitch({display, ...rest}) {
     default:
       return <PlanForm {...rest} />
   }
+}
+
+export function CreateAnchor({onClick}) {
+  const [hover, setHover] = useState(false)
+  return (
+    <Box
+      border={{color: hover ? 'brand' : 'light-5'}}
+      focusIndicator={false}
+      onMouseLeave={() => setHover(false)}
+      onMouseEnter={() => setHover(true)}
+      pad='small'
+      direction='row'
+      gap='xsmall'
+      align='center'
+      onClick={onClick}>
+      <Add size='small' />
+      <Text size='small'>Create plan</Text>
+    </Box>
+  )
 }
 
 export default function CreatePlan({repository, setOpen}) {

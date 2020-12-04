@@ -21,7 +21,7 @@ export default function UpdatePlan({plan, repository: {id, installation: {subscr
         <Box pad='medium' gap='small'>
           <Text size='small'><i>We will migrate all existing line items to match the new plan for you</i></Text>
           <Box direction='row' align='center' justify='end'>
-            <Button loading={loading} pad='small' label='Update' onClick={mutation} />
+            <Button loading={loading} label='Update' onClick={mutation} />
           </Box>
         </Box>
       </Box>

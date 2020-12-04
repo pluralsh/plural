@@ -70,7 +70,7 @@ export default function SubscribeModal({plan, installationId, repositoryId, setO
           <Box direction='row' justify='end' gap='small' align='center'>
             <Text>Total</Text>
             <Text color='green'>${total / 100}</Text>
-            <Button loading={loading} pad='small' round='xsmall' label='Subscribe' onClick={mutation} />
+            <Button loading={loading} round='xsmall' label='Subscribe' onClick={mutation} />
           </Box>
         </Box>
       </Box>

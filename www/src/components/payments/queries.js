@@ -45,9 +45,7 @@ export const SUBSCRIPTIONS_Q = gql`
       edges {
         node {
           ...SubscriptionFragment
-          installation {
-            ...InstallationFragment
-          }
+          installation { ...InstallationFragment }
         }
       }
     }
@@ -60,14 +58,10 @@ export const SUBSCRIPTION_Q = gql`
   query Subscription($id: ID!) {
     repositorySubscription(id: $id) {
       id
-      installation {
-        ...InstallationFragment
-      }
+      installation { ...InstallationFragment }
       invoices(first: 15) {
         edges {
-          node {
-            ...InvoiceFragment
-          }
+          node { ...InvoiceFragment }
         }
       }
     }

@@ -24,7 +24,7 @@ function AccountConnected() {
   )
 }
 
-function PublisherPayments({accountId}) {
+function PublisherPayments({billingAccountId}) {
   const [mutation] = useMutation(LINK_ACCOUNT, {
     update: (cache, {data: { linkPublisher }}) => {
       const prev = cache.readQuery({ query: ME_Q })
@@ -40,10 +40,10 @@ function PublisherPayments({accountId}) {
   const token = params.get('code')
 
   useEffect(() => {
-    if (token && !accountId) {
+    if (token && !billingAccountId) {
       mutation({variables: {token}})
     }
-  }, [token, accountId, mutation])
+  }, [token, billingAccountId, mutation])
 
   return (
     <Box pad='small' align='center' justify='center' border={{color: 'light-5'}} round='xsmall'>
@@ -168,8 +168,8 @@ export default function MyPublisher() {
         <EditSelect edit='Repositories' icon={<List size='small' />} />
         <EditSelect edit='Edit Attributes' icon={<Edit size='small' />} />
         <EditSelect edit='Create Repository' icon={<Add size='small' />} />
-        {me.publisher.accountId && <AccountConnected />}
-        {!me.publisher.accountId && (<PublisherPayments {...me.publisher} />)}
+        {me.publisher.billingAccountId && <AccountConnected />}
+        {!me.publisher.billingAccountId && (<PublisherPayments {...me.publisher} />)}
       </Box>
       <Box fill style={{overflow: 'auto'}} pad='small'>
         <EditContent edit='Repositories'>

@@ -1,5 +1,13 @@
 import gql from 'graphql-tag'
 
+export const AccountFragment = gql`
+  fragment AccountFragment on Account {
+    id
+    name
+    billingCustomerId
+  }
+`;
+
 export const UserFragment = gql`
   fragment UserFragment on User {
     id
@@ -35,12 +43,8 @@ export const PublisherFragment = gql`
     name
     phone
     description
-    owner {
-      ...UserFragment
-    }
-    address {
-      ...AddressFragment
-    }
+    owner { ...UserFragment }
+    address { ...AddressFragment }
   }
   ${UserFragment}
   ${AddressFragment}

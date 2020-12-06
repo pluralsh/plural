@@ -1,21 +1,18 @@
 import gql from 'graphql-tag'
-import {UserFragment, TokenFragment, WebhookFragment, AddressFragment} from '../../models/user'
+import { UserFragment, TokenFragment, WebhookFragment, AddressFragment, AccountFragment } from '../../models/user'
 import { CardFragment } from '../../models/payments';
 
 export const ME_Q = gql`
   query {
     me {
       ...UserFragment
-      customerId
       publisher {
         id
         name
         phone
         description
-        accountId
-        address {
-          ...AddressFragment
-        }
+        billingAccountId
+        address { ...AddressFragment }
       }
     }
   }
@@ -27,7 +24,7 @@ export const CARDS = gql`
   query {
     me {
       ...UserFragment
-      customerId
+      account { ...AccountFragment }
       cards(first: 5) {
         edges {
           node {
@@ -39,6 +36,7 @@ export const CARDS = gql`
   }
   ${UserFragment}
   ${CardFragment}
+  ${AccountFragment}
 `
 
 export const UPDATE_USER = gql`
@@ -115,19 +113,17 @@ export const PING_WEBHOOK = gql`
 export const REGISTER_CARD = gql`
   mutation RegisterCard($source: String!) {
     createCard(source: $source) {
-      ...UserFragment
-      customerId
+      ...AccountFragment
     }
   }
-  ${UserFragment}
+  ${AccountFragment}
 `;
 
 export const DELETE_CARD = gql`
   mutation DeleteCard($id: ID!) {
     deleteCard(id: $id) {
-      ...UserFragment
-      customerId
+      ...AccountFragment
     }
   }
-  ${UserFragment}
+  ${AccountFragment}
 `;

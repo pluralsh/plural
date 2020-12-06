@@ -131,7 +131,7 @@ export function CardOption({card, current, setCurrent}) {
 export function CardList() {
   const me = useContext(CurrentUserContext)
   const [open, setOpen] = useState(false)
-  const {data, loading} = useQuery(CARDS)
+  const { data, loading } = useQuery(CARDS)
   if (!data || loading) return null
 
   const {edges} = data.me.cards
@@ -151,7 +151,10 @@ export function CardList() {
         <Box width='35vw'>
           <ModalHeader text='Add payment source' setOpen={setOpen} />
           <Box pad='small'>
-            <CardInputForm header='Add another card' me={me} onCompleted={() => setOpen(false)} />
+            <CardInputForm
+              header='Add another card'
+              me={me}
+              onCompleted={() => setOpen(false)} />
           </Box>
         </Box>
       </Layer>

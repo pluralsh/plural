@@ -56,7 +56,7 @@ export const LINK_ACCOUNT = gql`
   mutation LinkPublisher($token: String!) {
     linkPublisher(token: $token) {
       ...PublisherFragment
-      accountId
+      billingAccountId
     }
   }
   ${PublisherFragment}

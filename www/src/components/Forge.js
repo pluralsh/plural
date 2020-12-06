@@ -1,5 +1,5 @@
 import React from 'react'
-import {Box, Grid} from 'grommet'
+import { Box, Grid } from 'grommet'
 import { Switch, Route } from 'react-router-dom'
 import CurrentUser from './login/CurrentUser'
 import MyPublisher from './publisher/MyPublisher'
@@ -17,6 +17,7 @@ import Publishers from './publisher/Publishers'
 import Explore from './Explore'
 import { Billing } from './users/Billing'
 import BreadcrumbProvider, { Breadcrumbs } from './Breadcrumbs'
+import { EditAccount } from './accounts/EditAccount'
 
 export const TOOLBAR_SIZE = '60px'
 
@@ -37,6 +38,7 @@ export default function Forge() {
               <Box fill>
                 <Breadcrumbs />
                 <Switch>
+                  <Route path='/accounts/edit/:section' component={EditAccount} />
                   <Route path='/publishers/mine' component={MyPublisher} />
                   <Route path='/publishers/:publisherId' component={Publisher} />
                   <Route path='/publishers' component={Publishers} />

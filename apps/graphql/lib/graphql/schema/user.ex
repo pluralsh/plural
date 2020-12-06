@@ -87,7 +87,12 @@ defmodule GraphQl.Schema.User do
     field :id,                  non_null(:id)
     field :name,                :string
     field :billing_customer_id, :string
+
     field :root_user, :user, resolve: dataloader(User)
+
+    field :background_color, :string, resolve: fn
+      user, _, _ -> {:ok, User.background_color(user)}
+    end
 
     timestamps()
   end

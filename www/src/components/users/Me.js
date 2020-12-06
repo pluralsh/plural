@@ -1,13 +1,13 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useRef } from 'react'
 import { useHistory } from 'react-router-dom'
-import { useMutation } from 'react-apollo'
-import { Box, Text, Layer } from 'grommet'
-import { HoveredBackground, MenuItem, ModalHeader } from 'forge-core'
-import Avatar from './Avatar'
-import { FilePicker } from 'react-file-picker'
-import { UPDATE_USER, ME_Q } from './queries'
+import { Box, Text, Layer, Drop } from 'grommet'
+import { MenuItem, ModalHeader } from 'forge-core'
 import { TOOLBAR_SIZE } from '../Forge'
 import CreatePublisher from '../publisher/CreatePublisher'
+import { useQuery } from 'react-apollo'
+import { ACCOUNT_PUBLISHERS } from '../publisher/queries'
+import Avatar from './Avatar'
+import { Add, Edit, User } from 'grommet-icons'
 
 export function DropdownItem(props) {
   const {onClick, ...rest} = props
@@ -21,14 +21,20 @@ export function DropdownItem(props) {
   )
 }
 
+export function Item({onClick, icon, text, round}) {
+  return (
+    <Box pad={{horizontal: 'small', vertical: 'xsmall'}} hoverIndicator='light-2' round={round}
+         focusIndicator={false} direction='row' gap='xsmall' onClick={onClick} align='center'>
+      {icon}
+      <Text size='small'>{text}</Text>
+    </Box>
+  )
+}
+
 function CreatePublisherModal({setModal}) {
   let history = useHistory()
   return (
-    <Layer
-      modal
-      position='center'
-      onClickOutside={() => setModal(null)}
-      onEsc={() => setModal(null)} >
+    <Layer modal position='center' onClickOutside={() => setModal(null)} onEsc={() => setModal(null)} >
       <Box width='30vw'>
         <ModalHeader text='Create Publisher' setOpen={setModal} />
         <Box pad='medium'>
@@ -42,55 +48,69 @@ function CreatePublisherModal({setModal}) {
   )
 }
 
-export default function Me({me}) {
-  const [modal, setModal] = useState(null)
+function Publishers({account: {id: accountId}, publisher: {id}}) {
   let history = useHistory()
-  const [mutation] = useMutation(UPDATE_USER, {
-    update: (cache, {data: updateUser}) => {
-      const prev = cache.readQuery({ query: ME_Q })
-      cache.writeQuery({query: ME_Q, data: {
-        ...prev,
-        me: {
-          ...prev.me,
-          ...updateUser
-        }
-      }})
-    }
-  })
-  const onClick = useCallback(() => {
-    if (!me.publisher) {
-      setModal(<CreatePublisherModal setModal={setModal} />)
-    } else {
-      history.push('/publishers/mine')
-    }
-  }, [me.publisher, history, setModal])
+  const {data} = useQuery(ACCOUNT_PUBLISHERS, {variables: {accountId}})
+
+  if (!data) return null
+  const {edges} = data.publishers
+
+  return (
+    <Box fill='horizontal' gap='xsmall'>
+      {edges.map(({node}) => (
+        <Box key={node.id} pad={{horizontal: 'small', vertical: 'xsmall'}} direction='row'
+             align='center' gap='small' hoverIndicator='light-2' focusIndicator={false}
+             onClick={() => history.push(node.id === id ? '/publishers/mine' : `/publisher/${id}`)}>
+          <Avatar user={node.owner} size='35px' />
+          <Box>
+            <Text size='small' weight={500}>{node.name}</Text>
+            <Text size='small'><i>{node.description}</i></Text>
+          </Box>
+        </Box>
+      ))}
+    </Box>
+  )
+}
+
+export default function Me({me}) {
+  let history = useHistory()
+  const ref = useRef()
+  const [modal, setModal] = useState(null)
+  const [open, setOpen] = useState(false)
+  const {account} = me
 
   return (
     <>
-    <HoveredBackground>
-      <Box
-        sidebarHover
-        style={{cursor: 'pointer'}}
-        pad={{horizontal: 'small'}}
-        width='250px'
-        height={TOOLBAR_SIZE}
-        direction='row'
-        align='center'
-        gap='small'>
-        <FilePicker
-          extensions={['jpg', 'jpeg', 'png']}
-          dims={{minWidth: 100, maxWidth: 500, minHeight: 100, maxHeight: 500}}
-          onChange={(file) => mutation({variables: {attributes: {avatar: file}}})}
-        >
-          <span><Avatar size='40px' user={me} /></span>
-        </FilePicker>
-        <Box style={{outline: 'none'}} onClick={onClick} focusIndicator={false}
-             height={TOOLBAR_SIZE} justify='center'>
-          <Text size='small' weight={500}>{me.name}</Text>
-          {me.publisher && (<Text size='xsmall'>{me.publisher.name}</Text>)}
-        </Box>
+    <Box ref={ref} height={TOOLBAR_SIZE} width='250px' pad={{horizontal: 'small'}} direction='row'
+         gap='small' onClick={() => setOpen(true)} focusIndicator={false} align='center'
+         justify='center' hoverIndicator='sidebarHover'>
+      <Avatar user={account} size='40px' />
+      <Box>
+        <Text size='small' weight={500}>{account && account.name}</Text>
+        <Text size='xsmall'>{me.name}</Text>
       </Box>
-    </HoveredBackground>
+    </Box>
+    {open && (
+      <Drop target={ref.current} align={{top: "bottom"}} onClickOutside={() => setOpen(false)}>
+        <Box width='300px' gap='xsmall' pad='xsmall'>
+          <Item
+            icon={<Edit size='small' />}
+            text='Update Account' round='xsmall'
+            onClick={() => history.push('/accounts/edit/attributes')} />
+          <Item
+            icon={<User size='small' />}
+            text='Edit user' round='xsmall'
+            onClick={() => history.push('/me/edit')} />
+          {me.publisher && <Publishers account={account} publisher={me.publisher} />}
+          {!me.publisher && (
+            <Item
+              icon={<Add size='small' />}
+              text='Create new publisher' round='xsmall'
+              onClick={() => setModal(<CreatePublisherModal setModal={setModal} />)} />
+          )}
+        </Box>
+      </Drop>
+    )}
     {modal}
     </>
   )

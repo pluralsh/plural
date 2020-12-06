@@ -6,6 +6,7 @@ export const ME_Q = gql`
   query {
     me {
       ...UserFragment
+      account { ...AccountFragment }
       publisher {
         id
         name
@@ -18,6 +19,7 @@ export const ME_Q = gql`
   }
   ${UserFragment}
   ${AddressFragment}
+  ${AccountFragment}
 `;
 
 export const CARDS = gql`

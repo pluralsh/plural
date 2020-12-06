@@ -63,15 +63,21 @@ export function EditSelect({edit, icon}) {
   )
 }
 
+export function EditHeader({text}) {
+  return (
+    <Box fill='horizontal' direction='row' justify='center' margin={{bottom: 'small'}}>
+      <Text size='small' weight={500}>{text}</Text>
+    </Box>
+  )
+}
+
 export function EditContent({edit, children}) {
   const {editing} = useContext(EditContext)
   if (editing !== edit) return null
 
   return (
     <Box pad={{horizontal: 'small'}} fill>
-      <Box fill='horizontal' direction='row' justify='center' margin={{bottom: 'small'}}>
-        <Text size='small' weight={500}>{edit}</Text>
-      </Box>
+      <EditHeader text={edit} />
       {children}
     </Box>
   )

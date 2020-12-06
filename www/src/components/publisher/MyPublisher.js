@@ -105,7 +105,7 @@ function AddressForm({address, onChange}) {
 
 const defaultAddress = {line1: '', line2: '', city: '', state: '', zip: '', country: 'United States'}
 
-function EditPublisher({description, phone, address}) {
+function EditPublisher({description, phone, address: {__typename, ...address}}) {
   const [attributes, setAttributes] = useState({description, phone, address: (address || defaultAddress)})
   const [mutation, {loading}] = useMutation(EDIT_PUBLISHER, {
     variables: {attributes},

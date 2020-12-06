@@ -1,13 +1,11 @@
 import gql from 'graphql-tag'
+import { PageInfo } from '../../models/misc';
 import { PublisherFragment } from '../../models/user'
 
 export const PUBLISHERS_Q = gql`
   query Publishers($cursor: String) {
     publishers(first: 15, after: $cursor) {
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
+      pageInfo { ...PageInfo }
       edges {
         node {
           ...PublisherFragment
@@ -22,6 +20,18 @@ export const PUBLISHERS_Q = gql`
       }
     }
   }
+  ${PublisherFragment}
+  ${PageInfo}
+`;
+
+export const ACCOUNT_PUBLISHERS = gql`
+  query AccountPubs($accountId: String!, $cursor: String) {
+    publishers(first: 20, after: $cursor, accountId: $accountId) {
+      pageInfo { ...PageInfo }
+      edges { node { ...PublisherFragment } }
+    }
+  }
+  ${PageInfo}
   ${PublisherFragment}
 `;
 

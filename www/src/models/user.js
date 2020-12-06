@@ -5,6 +5,7 @@ export const AccountFragment = gql`
     id
     name
     billingCustomerId
+    backgroundColor
   }
 `;
 

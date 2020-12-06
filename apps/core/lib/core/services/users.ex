@@ -1,6 +1,7 @@
 defmodule Core.Services.Users do
   use Core.Services.Base
   import Core.Policies.User
+  alias Core.Services.Accounts
   alias Core.Schema.{
     PersistedToken,
     User,
@@ -77,9 +78,17 @@ defmodule Core.Services.Users do
   """
   @spec create_user(map) :: {:ok, User.t} | {:error, term}
   def create_user(attrs) do
-    %User{}
-    |> User.changeset(attrs)
-    |> Core.Repo.insert()
+    start_transaction()
+    |> add_operation(:pre, fn _ ->
+      %User{}
+      |> User.changeset(attrs)
+      |> Core.Repo.insert()
+    end)
+    |> add_operation(:user, fn %{pre: user} ->
+      with {:ok, %{user: user}} <- Accounts.create_account(user),
+        do: {:ok, user}
+    end)
+    |> execute(extract: :user)
   end
 
   @doc "self explanatory"

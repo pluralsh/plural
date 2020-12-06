@@ -6,23 +6,23 @@ defmodule GraphQl.PaymentsMutationsTest do
   describe "createCard" do
     test "It will create a customer and persist its id" do
       expect(Stripe.Customer, :create, fn %{email: _, source: "token"} -> {:ok, %{id: "cus_id"}} end)
-      user = insert(:user)
+      user = insert(:user, account: build(:account, root_user: build(:user)))
 
       {:ok, %{data: %{"createCard" => result}}} = run_query("""
         mutation createCard($source: String!) {
           createCard(source: $source) {
-            customerId
+            billingCustomerId
           }
         }
       """, %{"source" => "token"}, %{current_user: user})
 
-      assert result["customerId"] == "cus_id"
+      assert result["billingCustomerId"] == "cus_id"
     end
   end
 
   describe "deleteCard" do
     test "It can delete a user's registered card" do
-      user = insert(:user, customer_id: "cus_id")
+      user = insert(:user, account: build(:account, billing_customer_id: "cus_id"))
       expect(Stripe.Card, :delete, fn "card", %{customer: "cus_id"} -> {:ok, %{id: "id"}} end)
 
       {:ok, %{data: %{"deleteCard" => deleted}}} = run_query("""
@@ -33,7 +33,7 @@ defmodule GraphQl.PaymentsMutationsTest do
         }
       """, %{"id" => "card"}, %{current_user: user})
 
-      assert deleted["id"] == user.id
+      assert deleted["id"] == user.account.id
     end
   end
 
@@ -47,12 +47,12 @@ defmodule GraphQl.PaymentsMutationsTest do
       {:ok, %{data: %{"linkPublisher" => result}}} = run_query("""
         mutation LinkPublisher($token: String!) {
           linkPublisher(token: $token) {
-            accountId
+            billingAccountId
           }
         }
       """, %{"token" => "oauth_code"}, %{current_user: publisher.owner})
 
-      assert result["accountId"] == "account_id"
+      assert result["billingAccountId"] == "account_id"
     end
   end
 
@@ -63,7 +63,7 @@ defmodule GraphQl.PaymentsMutationsTest do
         {:ok, %{id: "id"}}
       end)
       %{publisher: pub} = repository = insert(:repository,
-        publisher: build(:publisher, account_id: "account_id")
+        publisher: build(:publisher, billing_account_id: "account_id")
       )
 
       {:ok, %{data: %{"createPlan" => result}}} = run_query("""
@@ -88,7 +88,7 @@ defmodule GraphQl.PaymentsMutationsTest do
   describe "createSubscription" do
     test "A user can create a subscription for their installation" do
       user = insert(:user, customer_id: "cus_id")
-      repository = insert(:repository, publisher: build(:publisher, account_id: "account_id"))
+      repository = insert(:repository, publisher: build(:publisher, billing_account_id: "account_id"))
       installation = insert(:installation, user: user, repository: repository)
       plan = insert(:plan,
         repository: installation.repository,
@@ -172,7 +172,7 @@ defmodule GraphQl.PaymentsMutationsTest do
     test "A subscriber can update individual line items" do
       expect(Stripe.SubscriptionItem, :update, fn "si_id", %{quantity: 2}, [connect_account: "account_id"] -> {:ok, %{}} end)
       user = insert(:user)
-      repository = insert(:repository, publisher: build(:publisher, account_id: "account_id"))
+      repository = insert(:repository, publisher: build(:publisher, billing_account_id: "account_id"))
       installation = insert(:installation, user: user, repository: repository)
       plan = insert(:plan,
         repository: installation.repository,
@@ -249,7 +249,7 @@ defmodule GraphQl.PaymentsMutationsTest do
       end)
 
       user = insert(:user)
-      repository = insert(:repository, publisher: build(:publisher, account_id: "account_id"))
+      repository = insert(:repository, publisher: build(:publisher, billing_account_id: "account_id"))
       installation = insert(:installation, user: user, repository: repository)
       plan = insert(:plan,
         repository: installation.repository,

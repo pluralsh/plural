@@ -161,14 +161,14 @@ defmodule GraphQl.Schema.Payments do
   end
 
   object :payment_mutations do
-    field :create_card, :user do
+    field :create_card, :account do
       middleware GraphQl.Middleware.Authenticated
       arg :source, non_null(:string)
 
       resolve safe_resolver(&Payments.create_card/2)
     end
 
-    field :delete_card, :user do
+    field :delete_card, :account do
       middleware GraphQl.Middleware.Authenticated
       arg :id, non_null(:id)
 

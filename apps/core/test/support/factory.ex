@@ -5,7 +5,8 @@ defmodule Core.Factory do
   def user_factory do
     %Schema.User{
       name: "Some user",
-      email: sequence(:user, & "user-#{&1}@example.com")
+      email: sequence(:user, & "user-#{&1}@example.com"),
+      account: build(:account)
     }
   end
 
@@ -13,6 +14,12 @@ defmodule Core.Factory do
     %Schema.Publisher{
       name: sequence(:publisher, & "publisher-#{&1}"),
       owner: build(:user)
+    }
+  end
+
+  def account_factory do
+    %Schema.Account{
+      name: sequence(:account, & "account-#{&1}")
     }
   end
 

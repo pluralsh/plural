@@ -6,12 +6,12 @@ defmodule Core.Schema.Publisher do
   @repo_sideload_limit 5
 
   schema "publishers" do
-    field :name,        :string
-    field :avatar_id,   :binary_id
-    field :avatar,      Core.Storage.Type
-    field :description, :string
-    field :account_id,  :string
-    field :phone,       :string
+    field :name,               :string
+    field :avatar_id,          :binary_id
+    field :avatar,             Core.Storage.Type
+    field :description,        :string
+    field :billing_account_id, :string
+    field :phone,              :string
 
     embeds_one :address, Address, on_replace: :update
     has_many :repositories, Repository
@@ -52,11 +52,11 @@ defmodule Core.Schema.Publisher do
     |> cast_attachments(attrs, [:avatar], allow_urls: true)
   end
 
-  @stripe_valid ~w(account_id)a
+  @stripe_valid ~w(billing_account_id)a
 
   def stripe_changeset(model, attrs \\ %{}) do
     model
     |> cast(attrs, @stripe_valid)
-    |> unique_constraint(:account_id)
+    |> unique_constraint(:billing_account_id)
   end
 end

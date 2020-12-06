@@ -11,21 +11,21 @@ defmodule Core.Services.PaymentsTest do
 
       {:ok, updated} = Payments.create_publisher_account(publisher, "oauth_code")
 
-      assert updated.account_id == "account_id"
+      assert updated.billing_account_id == "account_id"
     end
   end
 
   describe "#create_card" do
     test "It will create a customer and persist its id" do
-      user = insert(:user)
+      user = insert(:user, account: build(:account, root_user: build(:user)))
       expect(Stripe.Customer, :create, fn %{email: _, source: "token"} -> {:ok, %{id: "cus_some_id"}} end)
       {:ok, updated} = Payments.create_card(user, "token")
 
-      assert updated.customer_id == "cus_some_id"
+      assert updated.billing_customer_id == "cus_some_id"
     end
 
     test "If a customer has already been registered, it will just create a new card" do
-      user = insert(:user, customer_id: "cus_id")
+      user = insert(:user, account: build(:account, billing_customer_id: "cus_id"))
       expect(Stripe.Card, :create, fn %{customer: "cus_id", source: "token"} -> {:ok, %{id: "something"}} end)
 
       {:ok, _} = Payments.create_card(user, "token")
@@ -34,12 +34,12 @@ defmodule Core.Services.PaymentsTest do
 
   describe "#delete_card" do
     test "It will delete a customer's card" do
-      user = insert(:user, customer_id: "cus_id")
+      user = insert(:user, account: build(:account, billing_customer_id: "cus_id"))
       expect(Stripe.Card, :delete, fn "card", %{customer: "cus_id"} -> {:ok, %{id: "bogus"}} end)
 
       {:ok, updated} = Payments.delete_card("card", user)
 
-      assert updated.id == user.id
+      assert updated.id == user.account.id
     end
   end
 
@@ -51,7 +51,7 @@ defmodule Core.Services.PaymentsTest do
         {:ok, %{id: "id_random"}}
       end)
 
-      %{publisher: pub} = repository = insert(:repository, publisher: build(:publisher, account_id: "account_id"))
+      %{publisher: pub} = repository = insert(:repository, publisher: build(:publisher, billing_account_id: "account_id"))
 
       {:ok, plan} = Payments.create_plan(%{
         name: "pro",
@@ -78,7 +78,7 @@ defmodule Core.Services.PaymentsTest do
           {:ok, %{id: "id_storage"}}
       end)
       %{publisher: pub} = repository = insert(:repository,
-        publisher: build(:publisher, account_id: "account_id")
+        publisher: build(:publisher, billing_account_id: "account_id")
       )
 
       {:ok, plan} = Payments.create_plan(%{
@@ -123,7 +123,7 @@ defmodule Core.Services.PaymentsTest do
     end
 
     test "Non owners cannot create plans" do
-      repository = insert(:repository, publisher: build(:publisher, account_id: "account_id"))
+      repository = insert(:repository, publisher: build(:publisher, billing_account_id: "account_id"))
 
       {:error, _} = Payments.create_plan(%{
         name: "pro",
@@ -136,7 +136,7 @@ defmodule Core.Services.PaymentsTest do
   describe "#create_subscription" do
     test "A user can create a subscription for their installation" do
       user = insert(:user, customer_id: "cus_id")
-      repository = insert(:repository, publisher: build(:publisher, account_id: "account_id"))
+      repository = insert(:repository, publisher: build(:publisher, billing_account_id: "account_id"))
       installation = insert(:installation, user: user, repository: repository)
       plan = insert(:plan, external_id: "plan_id", repository: installation.repository)
 
@@ -166,7 +166,7 @@ defmodule Core.Services.PaymentsTest do
 
     test "It can create a subscription with line items" do
       user = insert(:user, customer_id: "cus_id")
-      repository = insert(:repository, publisher: build(:publisher, account_id: "account_id"))
+      repository = insert(:repository, publisher: build(:publisher, billing_account_id: "account_id"))
       installation = insert(:installation, user: user, repository: repository)
       plan = insert(:plan,
         repository: installation.repository,
@@ -236,7 +236,7 @@ defmodule Core.Services.PaymentsTest do
 
     test "Users without registered customers will fail" do
       user = insert(:user)
-      repository = insert(:repository, publisher: build(:publisher, account_id: "account_id"))
+      repository = insert(:repository, publisher: build(:publisher, billing_account_id: "account_id"))
       installation = insert(:installation, user: user, repository: repository)
       plan = insert(:plan, repository: installation.repository)
 
@@ -250,7 +250,7 @@ defmodule Core.Services.PaymentsTest do
         {:ok, %{}}
       end)
       user = insert(:user)
-      repository = insert(:repository, publisher: build(:publisher, account_id: "account_id"))
+      repository = insert(:repository, publisher: build(:publisher, billing_account_id: "account_id"))
       installation = insert(:installation, user: user, repository: repository)
       plan = insert(:plan,
         repository: installation.repository,
@@ -291,7 +291,7 @@ defmodule Core.Services.PaymentsTest do
 
     test "Users cannot update other user's subscriptions" do
       user = insert(:user)
-      repository = insert(:repository, publisher: build(:publisher, account_id: "account_id"))
+      repository = insert(:repository, publisher: build(:publisher, billing_account_id: "account_id"))
       installation = insert(:installation, repository: repository)
       plan = insert(:plan,
         repository: installation.repository,
@@ -343,7 +343,7 @@ defmodule Core.Services.PaymentsTest do
       end)
 
       user = insert(:user)
-      repository = insert(:repository, publisher: build(:publisher, account_id: "account_id"))
+      repository = insert(:repository, publisher: build(:publisher, billing_account_id: "account_id"))
       installation = insert(:installation, user: user, repository: repository)
       plan = insert(:plan,
         repository: installation.repository,
@@ -400,7 +400,7 @@ defmodule Core.Services.PaymentsTest do
 
     test "Users cannot change other users' plans" do
       user = insert(:user)
-      repository = insert(:repository, publisher: build(:publisher, account_id: "account_id"))
+      repository = insert(:repository, publisher: build(:publisher, billing_account_id: "account_id"))
       installation = insert(:installation, repository: repository)
       plan = insert(:plan,
         repository: installation.repository,

@@ -1,7 +1,7 @@
 defmodule Core.Schema.User do
   use Piazza.Ecto.Schema, derive_json: false
   use Arc.Ecto.Schema
-  alias Core.Schema.{Address, Publisher, Webhook}
+  alias Core.Schema.{Address, Publisher, Webhook, Account}
 
   @email_re ~r/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-\.]+\.[a-zA-Z]{2,}$/
 
@@ -17,6 +17,7 @@ defmodule Core.Schema.User do
     field :phone,         :string
 
     embeds_one :address, Address, on_replace: :update
+    belongs_to :account, Account
     has_one :publisher,  Publisher,
       foreign_key: :owner_id
     has_many :webhooks,  Webhook
@@ -32,6 +33,10 @@ defmodule Core.Schema.User do
       |> Map.drop(@ignore)
       |> Jason.Encode.map(opts)
     end
+  end
+
+  def without_account(query \\ __MODULE__) do
+    from(u in query, where: is_nil(u.account_id))
   end
 
   def ordered(query \\ __MODULE__, order \\ [asc: :name]),

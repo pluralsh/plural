@@ -13,9 +13,7 @@ defmodule GraphQl.PaymentsQueriesTest do
         query {
           subscriptions(first: 5) {
             edges {
-              node {
-                id
-              }
+              node { id }
             }
           }
         }
@@ -46,7 +44,7 @@ defmodule GraphQl.PaymentsQueriesTest do
 
     test "It can query a user's subscription and invoices" do
       user      = insert(:user)
-      publisher = insert(:publisher, account_id: "act_id")
+      publisher = insert(:publisher, billing_account_id: "act_id")
       repo      = insert(:repository, publisher: publisher)
       installation = insert(:installation, repository: repo, user: user)
       subscription = insert(:subscription,
@@ -107,7 +105,7 @@ defmodule GraphQl.PaymentsQueriesTest do
 
   describe "cards" do
     test "You can query your own cards on your user" do
-      user = insert(:user, customer_id: "cus_id")
+      user = insert(:user, account: build(:account, billing_customer_id: "cus_id"))
       expect(Stripe.Card, :list, fn %{customer: "cus_id"} -> {:ok, mk_cards()} end)
 
       {:ok, %{data: %{"me" => me}}} = run_query("""

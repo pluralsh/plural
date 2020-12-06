@@ -1,7 +1,7 @@
 defmodule GraphQl.Resolvers.User do
   use GraphQl.Resolvers.Base, model: Core.Schema.User
   alias Core.Services.Users
-  alias Core.Schema.{Publisher, PersistedToken, Webhook}
+  alias Core.Schema.{Publisher, PersistedToken, Webhook, Account}
 
   def data(args) do
     Dataloader.Ecto.new(Core.Repo,
@@ -13,6 +13,7 @@ defmodule GraphQl.Resolvers.User do
 
   def query(Publisher, _), do: Publisher
   def query(Webhook, _), do: Webhook
+  def query(Account, _), do: Account
   def query(_, _), do: User
 
   def run_batch(_, _, :repositories, publishers, repo_opts) do

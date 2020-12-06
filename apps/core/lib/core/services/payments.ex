@@ -6,6 +6,7 @@ defmodule Core.Services.Payments do
   alias Core.Services.{Repositories}
   alias Core.Schema.{
     Publisher,
+    Account,
     User,
     Repository,
     Plan,
@@ -37,7 +38,7 @@ defmodule Core.Services.Payments do
   """
   @spec list_invoices(Subscription.t, map) :: {:ok, Stripe.List.t(Stripe.Invoice.t)} | {:error, term}
   def list_invoices(%Subscription{customer_id: customer} = sub, opts \\ %{}) do
-    %{installation: %{repository: %{publisher: %{account_id: account_id}}}} =
+    %{installation: %{repository: %{publisher: %{billing_account_id: account_id}}}} =
       Core.Repo.preload(sub, [installation: [repository: :publisher]])
 
     Map.merge(%{customer: customer}, opts)
@@ -47,12 +48,19 @@ defmodule Core.Services.Payments do
   @doc """
   It can list all cards attached to a customer
   """
-  @spec list_cards(User.t, map) :: {:ok, Stripe.List.t(Stripe.Card.t)} | {:error, term}
+  @spec list_cards(User.t | Account.t, map) :: {:ok, Stripe.List.t(Stripe.Card.t)} | {:error, term}
   def list_cards(user, opts \\ %{})
-  def list_cards(%User{customer_id: id}, opts) when not is_nil(id) do
+  def list_cards(%User{} = user, opts) do
+    Core.Repo.preload(user, [:account])
+    |> Map.get(:account)
+    |> list_cards(opts)
+  end
+
+  def list_cards(%Account{billing_customer_id: id}, opts) when not is_nil(id) do
     Map.merge(%{customer: id}, opts)
     |> Stripe.Card.list()
   end
+
   def list_cards(_, _), do: {:ok, %Stripe.List{has_more: false, data: []}}
 
   @spec has_plans?(binary) :: boolean
@@ -68,7 +76,7 @@ defmodule Core.Services.Payments do
   def create_publisher_account(%Publisher{} = publisher, code) do
     with {:ok, %{stripe_user_id: account_id}} <- Stripe.Connect.OAuth.token(code) do
       publisher
-      |> Publisher.stripe_changeset(%{account_id: account_id})
+      |> Publisher.stripe_changeset(%{billing_account_id: account_id})
       |> Core.Repo.update()
     end
   end
@@ -78,7 +86,7 @@ defmodule Core.Services.Payments do
   """
   @spec cancel_subscription(Subscription.t, User.t) :: {:ok, Subscription.t} | {:error, term}
   def cancel_subscription(%Subscription{external_id: eid} = subscription, %User{} = user) do
-    %{installation: %{repository: %{publisher: %{account_id: account_id}}}} =
+    %{installation: %{repository: %{publisher: %{billing_account_id: account_id}}}} =
       Core.Repo.preload(subscription, [installation: [repository: :publisher]])
 
     start_transaction()
@@ -97,28 +105,38 @@ defmodule Core.Services.Payments do
   Creates a stripe customer with the given source and user email, saves
   the customer back to storage.
   """
-  @spec create_card(User.t, binary) :: {:ok, User.t} | {:error, term}
-  def create_card(%User{email: email, customer_id: nil} = user, source_token) do
+  @spec create_card(User.t | Account.t, binary) :: {:ok, Account.t} | {:error, term}
+  def create_card(%User{} = user, source_token) do
+    %{account: account} = Core.Repo.preload(user, [account: :root_user])
+    create_card(account, source_token)
+  end
+
+  def create_card(%Account{root_user: %User{email: email}, billing_customer_id: nil} = account, source_token) do
     with {:ok, %{id: id}} <- Stripe.Customer.create(%{email: email, source: source_token}) do
-      user
-      |> User.stripe_changeset(%{customer_id: id})
+      account
+      |> Account.payment_changeset(%{billing_customer_id: id})
       |> Core.Repo.update()
     end
   end
-  def create_card(%User{customer_id: cus_id} = user, source) do
+
+  def create_card(%Account{billing_customer_id: cus_id} = account, source) do
     with {:ok, _} <- Stripe.Card.create(%{customer: cus_id, source: source}),
-      do: {:ok, user}
+      do: {:ok, account}
   end
 
   @doc """
   Detaches a card from a customer
   """
   @spec delete_card(binary, User.t) :: {:ok, User.t} | {:error, term}
-  def delete_card(id, %User{customer_id: cus_id} = user) when not is_nil(cus_id) do
-    with {:ok, _} <- Stripe.Card.delete(id, %{customer: cus_id}),
-      do: {:ok, user}
+  def delete_card(id, %User{} = user) do
+    with %{account: %Account{billing_customer_id: cus_id} = account} when not is_nil(cus_id) <- Core.Repo.preload(user, [:account]),
+         {:ok, _} <- Stripe.Card.delete(id, %{customer: cus_id}) do
+      {:ok, account}
+    else
+      %User{} -> {:error, :invalid_argument}
+      error -> error
+    end
   end
-  def delete_card(_, _), do: {:error, :invalid_argument}
 
   @doc """
   Creates a plan and associated add-ons.  Transactionally creates them in stripe, then
@@ -146,7 +164,7 @@ defmodule Core.Services.Payments do
       }], plan.line_items)
       |> Enum.reduce(short_circuit(), fn {name, op}, circuit ->
         short(circuit, name, fn ->
-          Stripe.Plan.create(op, connect_account: publisher.account_id)
+          Stripe.Plan.create(op, connect_account: publisher.billing_account_id)
         end)
       end)
       |> execute()
@@ -175,9 +193,9 @@ defmodule Core.Services.Payments do
   defp restitch_line_items(%{line_items: %{items: items}}, rest) do
     %{line_items: %{
       items: Enum.map(items, fn %{dimension: dimension} = item ->
-               Piazza.Ecto.Schema.mapify(item)
-               |> Map.put(:external_id, rest[dimension].id)
-             end)
+          Piazza.Ecto.Schema.mapify(item)
+          |> Map.put(:external_id, rest[dimension].id)
+        end)
       }
     }
   end
@@ -194,7 +212,7 @@ defmodule Core.Services.Payments do
   def create_subscription(attrs \\ %{}, plan, inst, user)
   def create_subscription(_, _, _, %User{customer_id: nil}), do: {:error, "No payment method"}
   def create_subscription(attrs, %Plan{} = plan, %Installation{} = installation, %User{} = user) do
-    %{repository: %{publisher: %{account_id: account_id}}} = plan =
+    %{repository: %{publisher: %{billing_account_id: account_id}}} = plan =
       Core.Repo.preload(plan, [repository: :publisher])
 
     start_transaction()
@@ -259,7 +277,7 @@ defmodule Core.Services.Payments do
     %Subscription{line_items: %{items: items}} = sub,
     %User{} = user
   ) do
-    %{installation: %{repository: %{publisher: %{account_id: account_id}}}} = sub =
+    %{installation: %{repository: %{publisher: %{billing_account_id: account_id}}}} = sub =
       Core.Repo.preload(sub, [:plan, installation: [repository: :publisher]])
 
     start_transaction()
@@ -292,7 +310,7 @@ defmodule Core.Services.Payments do
   """
   @spec update_plan(Plan.t, Subscription.t, User.t) :: {:ok, Subscription.t} | {:error, term}
   def update_plan(%Plan{id: id, external_id: ext_id, repository_id: repo_id} = plan, %Subscription{} = sub, %User{} = user) do
-    %{installation: %{repository: %{publisher: %{account_id: account_id}}}} = sub =
+    %{installation: %{repository: %{publisher: %{billing_account_id: account_id}}}} = sub =
       Core.Repo.preload(sub, [:plan, installation: [repository: :publisher]])
 
     start_transaction()

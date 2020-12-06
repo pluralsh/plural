@@ -37,11 +37,11 @@ defmodule GraphQl.Schema.User do
     field :id,          non_null(:id)
     field :name,        non_null(:string)
     field :email,       non_null(:string)
-    field :customer_id, :string
-    field :publisher,   :publisher, resolve: dataloader(User)
     field :phone,       :string
     field :address,     :address
 
+    field :publisher, :publisher, resolve: dataloader(User)
+    field :account,   :account, resolve: dataloader(User)
     field :jwt, :string, resolve: fn
       %{id: id, jwt: jwt}, _, %{context: %{current_user: %{id: id}}} -> {:ok, jwt}
       _, _, %{context: %{current_user: %{}}} -> {:error, "you can only query your own jwt"}
@@ -79,15 +79,24 @@ defmodule GraphQl.Schema.User do
     timestamps()
   end
 
-  object :publisher do
-    field :id,           :id
-    field :name,         non_null(:string)
-    field :description,  :string
-    field :account_id,   :string
-    field :owner,        :user, resolve: dataloader(User)
-    field :phone,        :string
-    field :address,      :address
+  object :account do
+    field :id,                  non_null(:id)
+    field :name,                :string
+    field :billing_customer_id, :string
+    field :root_user, :user, resolve: dataloader(User)
 
+    timestamps()
+  end
+
+  object :publisher do
+    field :id,                 :id
+    field :name,               non_null(:string)
+    field :description,        :string
+    field :billing_account_id, :string
+    field :phone,              :string
+    field :address,            :address
+
+    field :owner,  :user, resolve: dataloader(User)
     field :avatar, :string, resolve: fn
       publisher, _, _ -> {:ok, Core.Storage.url({publisher.avatar, publisher}, :original)}
     end

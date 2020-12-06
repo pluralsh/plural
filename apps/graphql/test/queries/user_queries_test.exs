@@ -43,11 +43,7 @@ defmodule GraphQl.UserQueriesTest do
       {:ok, %{data: %{"users" => found}}} = run_query("""
         query {
           users(first: 5) {
-            edges {
-              node {
-                id
-              }
-            }
+            edges { node { id } }
           }
         }
       """, %{}, %{current_user: user})
@@ -64,11 +60,7 @@ defmodule GraphQl.UserQueriesTest do
       {:ok, %{data: %{"publishers" => found}}} = run_query("""
         query {
           publishers(first: 5) {
-            edges {
-              node {
-                id
-              }
-            }
+            edges { node { id } }
           }
         }
       """, %{}, %{current_user: insert(:user)})
@@ -88,9 +80,7 @@ defmodule GraphQl.UserQueriesTest do
             edges {
               node {
                 id
-                repositories {
-                  id
-                }
+                repositories { id }
               }
             }
           }
@@ -108,6 +98,23 @@ defmodule GraphQl.UserQueriesTest do
       assert length(sideload) == 2
       assert Enum.all?(sideload, fn %{"id" => id} -> Enum.find(other_repos, & &1.id == id) end)
     end
+
+    test "it can filter by ids" do
+      account = insert(:account)
+      publishers = insert_list(3, :publisher, account: account)
+      insert(:publisher)
+
+      {:ok, %{data: %{"publishers" => found}}} = run_query("""
+        query Publishers($id: ID!) {
+          publishers(first: 5, accountId: $id) {
+            edges { node { id } }
+          }
+        }
+      """, %{"id" => account.id}, %{current_user: insert(:user)})
+
+      assert from_connection(found)
+             |> ids_equal(publishers)
+    end
   end
 
   describe "tokens" do
@@ -118,11 +125,7 @@ defmodule GraphQl.UserQueriesTest do
       {:ok, %{data: %{"tokens" => found}}} = run_query("""
         query {
           tokens(first: 5) {
-            edges {
-              node {
-                id
-              }
-            }
+            edges { node { id } }
           }
         }
       """, %{}, %{current_user: user})
@@ -140,11 +143,7 @@ defmodule GraphQl.UserQueriesTest do
       {:ok, %{data: %{"webhooks" => found}}} = run_query("""
         query {
           webhooks(first: 5) {
-            edges {
-              node {
-                id
-              }
-            }
+            edges { node { id } }
           }
         }
       """, %{}, %{current_user: user})

@@ -12,6 +12,10 @@ defmodule GraphQl.Schema.User do
     field :avatar,   :upload_or_url
   end
 
+  input_object :account_attributes do
+    field :name, :string
+  end
+
   input_object :publisher_attributes do
     field :name,        :string
     field :description, :string
@@ -157,6 +161,8 @@ defmodule GraphQl.Schema.User do
 
     connection field :publishers, node_type: :publisher do
       middleware GraphQl.Middleware.Authenticated
+      arg :account_id, :id
+
       resolve &User.list_publishers/2
     end
 
@@ -173,6 +179,13 @@ defmodule GraphQl.Schema.User do
       arg :password, non_null(:string)
 
       resolve safe_resolver(&User.login_user/2)
+    end
+
+    field :update_account, :account do
+      middleware GraphQl.Middleware.Authenticated
+      arg :attributes, non_null(:account_attributes)
+
+      resolve safe_resolver(&User.update_account/2)
     end
 
     field :create_token, :persisted_token do

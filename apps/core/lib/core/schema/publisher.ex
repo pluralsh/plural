@@ -1,7 +1,7 @@
 defmodule Core.Schema.Publisher do
   use Piazza.Ecto.Schema
   use Arc.Ecto.Schema
-  alias Core.Schema.{User, Address, Repository}
+  alias Core.Schema.{User, Address, Repository, Account}
 
   @repo_sideload_limit 5
 
@@ -13,11 +13,17 @@ defmodule Core.Schema.Publisher do
     field :billing_account_id, :string
     field :phone,              :string
 
-    embeds_one :address, Address, on_replace: :update
     has_many :repositories, Repository
     belongs_to :owner, User
+    belongs_to :account, Account
+
+    embeds_one :address, Address, on_replace: :update
 
     timestamps()
+  end
+
+  def for_account(query \\ __MODULE__, account_id) do
+    from(p in query, where: p.account_id == ^account_id)
   end
 
   def ordered(query \\ __MODULE__, order \\ [asc: :name]),

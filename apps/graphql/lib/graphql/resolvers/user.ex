@@ -1,6 +1,6 @@
 defmodule GraphQl.Resolvers.User do
   use GraphQl.Resolvers.Base, model: Core.Schema.User
-  alias Core.Services.Users
+  alias Core.Services.{Users, Accounts}
   alias Core.Schema.{Publisher, PersistedToken, Webhook, Account}
 
   def data(args) do
@@ -40,6 +40,12 @@ defmodule GraphQl.Resolvers.User do
     |> paginate(args)
   end
 
+  def list_publishers(%{account_id: aid} = args, _) do
+    Publisher.for_account(aid)
+    |> Publisher.ordered()
+    |> paginate(args)
+  end
+
   def list_publishers(args, _) do
     Publisher.ordered()
     |> paginate(args)
@@ -56,6 +62,9 @@ defmodule GraphQl.Resolvers.User do
     |> Webhook.ordered()
     |> paginate(args)
   end
+
+  def update_account(%{attributes: attrs}, %{context: %{current_user: user}}),
+    do: Accounts.update_account(attrs, user)
 
   def create_webhook(%{attributes: %{url: url}}, %{context: %{current_user: user}}),
     do: Users.upsert_webhook(url, user)

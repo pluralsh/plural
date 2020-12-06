@@ -16,6 +16,7 @@ defmodule Core.Services.UsersTest do
 
       %{account: account} = Core.Repo.preload(user, [:account])
       assert account.name == user.email
+      assert account.root_user_id == user.id
     end
   end
 

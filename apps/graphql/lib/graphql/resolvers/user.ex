@@ -34,9 +34,9 @@ defmodule GraphQl.Resolvers.User do
   def resolve_publisher(_, %{context: %{current_user: user}}),
     do: {:ok, Users.get_publisher_by_owner(user.id)}
 
-  def list_users(args, _) do
+  def list_users(args, %{context: %{current_user: %{account_id: id}}}) do
     User.ordered()
-    |> for_account(args)
+    |> User.for_account(id)
     |> maybe_search(args)
     |> paginate(args)
   end

@@ -144,8 +144,7 @@ defmodule GraphQl.Schema.User do
 
     connection field :users, node_type: :user do
       middleware GraphQl.Middleware.Authenticated
-      arg :account_id, :id
-      arg :q,          :string
+      arg :q, :string
 
       resolve &User.list_users/2
     end

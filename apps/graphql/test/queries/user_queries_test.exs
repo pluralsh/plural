@@ -37,8 +37,10 @@ defmodule GraphQl.UserQueriesTest do
   end
 
   describe "users" do
-    test "It will list all users" do
-      [user | _] = users = insert_list(3, :user)
+    test "it can list users for an account" do
+      account = insert(:account)
+      users = insert_list(3, :user, account: account)
+      insert(:user)
 
       {:ok, %{data: %{"users" => found}}} = run_query("""
         query {
@@ -46,24 +48,7 @@ defmodule GraphQl.UserQueriesTest do
             edges { node { id } }
           }
         }
-      """, %{}, %{current_user: user})
-
-      assert from_connection(found)
-             |> ids_equal(users)
-    end
-
-    test "it can list users for an account" do
-      account = insert(:account)
-      users = insert_list(3, :user, account: account)
-      insert(:user)
-
-      {:ok, %{data: %{"users" => found}}} = run_query("""
-        query Users($accountId: ID!) {
-          users(first: 5, accountId: $accountId) {
-            edges { node { id } }
-          }
-        }
-      """, %{"accountId" => account.id}, %{current_user: hd(users)})
+      """, %{}, %{current_user: hd(users)})
 
       assert from_connection(found)
              |> ids_equal(users)
@@ -76,12 +61,12 @@ defmodule GraphQl.UserQueriesTest do
       insert(:user)
 
       {:ok, %{data: %{"users" => found}}} = run_query("""
-        query Users($accountId: ID!, $q: String) {
-          users(first: 5, accountId: $accountId, q: $q) {
+        query Users($q: String) {
+          users(first: 5, q: $q) {
             edges { node { id } }
           }
         }
-      """, %{"accountId" => account.id, "q" => "search"}, %{current_user: user})
+      """, %{"q" => "search"}, %{current_user: user})
 
       assert from_connection(found)
              |> ids_equal([user])

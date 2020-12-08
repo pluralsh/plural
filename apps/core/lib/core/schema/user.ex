@@ -25,14 +25,12 @@ defmodule Core.Schema.User do
     timestamps()
   end
 
-  defimpl Jason.Encoder, for: __MODULE__ do
-    @ignore ~w(password password_hash jwt)a
+  def search(query \\ __MODULE__, name) do
+    from(u in query, where: like(u.name, ^"#{name}%") or like(u.email, ^"#{name}%"))
+  end
 
-    def encode(struct, opts) do
-      Piazza.Ecto.Schema.mapify(struct)
-      |> Map.drop(@ignore)
-      |> Jason.Encode.map(opts)
-    end
+  def for_account(query \\ __MODULE__, account_id) do
+    from(u in query, where: u.account_id == ^account_id)
   end
 
   def without_account(query \\ __MODULE__) do
@@ -71,4 +69,14 @@ defmodule Core.Schema.User do
     change(changeset, Argon2.add_hash(password))
   end
   defp hash_password(changeset), do: changeset
+end
+
+defimpl Jason.Encoder, for: Core.Schema.User do
+  @ignore ~w(password password_hash jwt)a
+
+  def encode(struct, opts) do
+    Piazza.Ecto.Schema.mapify(struct)
+    |> Map.drop(@ignore)
+    |> Jason.Encode.map(opts)
+  end
 end

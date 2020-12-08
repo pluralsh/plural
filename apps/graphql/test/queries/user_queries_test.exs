@@ -51,6 +51,41 @@ defmodule GraphQl.UserQueriesTest do
       assert from_connection(found)
              |> ids_equal(users)
     end
+
+    test "it can list users for an account" do
+      account = insert(:account)
+      users = insert_list(3, :user, account: account)
+      insert(:user)
+
+      {:ok, %{data: %{"users" => found}}} = run_query("""
+        query Users($accountId: ID!) {
+          users(first: 5, accountId: $accountId) {
+            edges { node { id } }
+          }
+        }
+      """, %{"accountId" => account.id}, %{current_user: hd(users)})
+
+      assert from_connection(found)
+             |> ids_equal(users)
+    end
+
+    test "it can search users for an account" do
+      account = insert(:account)
+      user = insert(:user, account: account, name: "search name")
+      insert_list(2, :user, account: account)
+      insert(:user)
+
+      {:ok, %{data: %{"users" => found}}} = run_query("""
+        query Users($accountId: ID!, $q: String) {
+          users(first: 5, accountId: $accountId, q: $q) {
+            edges { node { id } }
+          }
+        }
+      """, %{"accountId" => account.id, "q" => "search"}, %{current_user: user})
+
+      assert from_connection(found)
+             |> ids_equal([user])
+    end
   end
 
   describe "publishers" do

@@ -199,22 +199,4 @@ defmodule GraphQl.UserMutationTest do
       assert response["statusCode"] == 200
     end
   end
-
-
-  describe "updateAccount" do
-    test "it can update accounts" do
-      user = insert(:user)
-      {:ok, %{user: user}} = Core.Services.Accounts.create_account(user)
-
-      {:ok, %{data: %{"updateAccount" => account}}} = run_query("""
-        mutation updateAccount($name: String) {
-          updateAccount(attributes: {name: $name}) {
-            name
-          }
-        }
-      """, %{"name" => "updated"}, %{current_user: user})
-
-      assert account["name"] == "updated"
-    end
-  end
 end

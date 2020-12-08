@@ -11,8 +11,8 @@ defmodule Core.SchemaCase do
   inside a transaction which is reset at the beginning
   of the test unless the test case is marked as async.
   """
-
   use ExUnit.CaseTemplate
+  import Core.Factory
 
   using do
     quote do
@@ -43,5 +43,11 @@ defmodule Core.SchemaCase do
         opts |> Keyword.get(String.to_existing_atom(key), key) |> to_string()
       end)
     end)
+  end
+
+  def setup_root_user(_) do
+    user = insert(:user)
+    {:ok, %{user: user, account: account}} = Core.Services.Accounts.create_account(user)
+    [user: user, account: account]
   end
 end

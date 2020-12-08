@@ -1,7 +1,7 @@
 defmodule GraphQl.Resolvers.User do
   use GraphQl.Resolvers.Base, model: Core.Schema.User
-  alias Core.Services.{Users, Accounts}
-  alias Core.Schema.{Publisher, PersistedToken, Webhook, Account}
+  alias Core.Services.{Users}
+  alias Core.Schema.{Publisher, PersistedToken, Webhook}
 
   def data(args) do
     Dataloader.Ecto.new(Core.Repo,
@@ -13,7 +13,6 @@ defmodule GraphQl.Resolvers.User do
 
   def query(Publisher, _), do: Publisher
   def query(Webhook, _), do: Webhook
-  def query(Account, _), do: Account
   def query(_, _), do: User
 
   def run_batch(_, _, :repositories, publishers, repo_opts) do
@@ -37,8 +36,16 @@ defmodule GraphQl.Resolvers.User do
 
   def list_users(args, _) do
     User.ordered()
+    |> for_account(args)
+    |> maybe_search(args)
     |> paginate(args)
   end
+
+  defp for_account(query, %{account_id: id}), do: User.for_account(query, id)
+  defp for_account(query, _), do: query
+
+  defp maybe_search(query, %{q: q}), do: User.search(query, q)
+  defp maybe_search(query, _), do: query
 
   def list_publishers(%{account_id: aid} = args, _) do
     Publisher.for_account(aid)
@@ -62,9 +69,6 @@ defmodule GraphQl.Resolvers.User do
     |> Webhook.ordered()
     |> paginate(args)
   end
-
-  def update_account(%{attributes: attrs}, %{context: %{current_user: user}}),
-    do: Accounts.update_account(attrs, user)
 
   def create_webhook(%{attributes: %{url: url}}, %{context: %{current_user: user}}),
     do: Users.upsert_webhook(url, user)

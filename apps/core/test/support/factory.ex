@@ -23,6 +23,27 @@ defmodule Core.Factory do
     }
   end
 
+  def group_factory do
+    %Schema.Group{
+      name: sequence(:group, & "group-#{&1}"),
+      account: build(:account)
+    }
+  end
+
+  def group_member_factory do
+    %Schema.GroupMember{
+      group: build(:group),
+      user: build(:user)
+    }
+  end
+
+  def invite_factory do
+    %Schema.Invite{
+      secure_id: sequence(:invite, & "secure-#{&1}"),
+      account: build(:account)
+    }
+  end
+
   def repository_factory do
     %Schema.Repository{
       name: sequence(:repository, &"repo-#{&1}"),

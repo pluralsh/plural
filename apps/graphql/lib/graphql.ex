@@ -13,6 +13,7 @@ defmodule GraphQl do
   import_types GraphQl.Schema.Terraform
   import_types GraphQl.Schema.Docker
   import_types GraphQl.Schema.Version
+  import_types GraphQl.Schema.Account
 
   alias GraphQl.Resolvers.{
     User,
@@ -24,7 +25,8 @@ defmodule GraphQl do
     Recipe,
     Tag,
     Payments,
-    Version
+    Version,
+    Account
   }
 
   @sources [
@@ -36,7 +38,8 @@ defmodule GraphQl do
     Recipe,
     Tag,
     Payments,
-    Version
+    Version,
+    Account
   ]
 
   def context(ctx) do
@@ -80,6 +83,7 @@ defmodule GraphQl do
     import_fields :terraform_queries
     import_fields :docker_queries
     import_fields :version_queries
+    import_fields :account_queries
   end
 
   mutation do
@@ -90,5 +94,6 @@ defmodule GraphQl do
     import_fields :chart_mutations
     import_fields :terraform_mutations
     import_fields :version_mutations
+    import_fields :account_mutations
   end
 end

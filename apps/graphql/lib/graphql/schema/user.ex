@@ -2,7 +2,8 @@ defmodule GraphQl.Schema.User do
   use GraphQl.Schema.Base
   alias GraphQl.Resolvers.{
     User,
-    Payments
+    Payments,
+    Account
   }
 
   input_object :user_attributes do
@@ -41,7 +42,7 @@ defmodule GraphQl.Schema.User do
     field :address,     :address
 
     field :publisher, :publisher, resolve: dataloader(User)
-    field :account,   :account, resolve: dataloader(User)
+    field :account,   :account, resolve: dataloader(Account)
     field :jwt, :string, resolve: fn
       %{id: id, jwt: jwt}, _, %{context: %{current_user: %{id: id}}} -> {:ok, jwt}
       _, _, %{context: %{current_user: %{}}} -> {:error, "you can only query your own jwt"}

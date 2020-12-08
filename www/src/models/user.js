@@ -9,6 +9,14 @@ export const AccountFragment = gql`
   }
 `;
 
+export const GroupFragment = gql`
+  fragment GroupFragment on Group {
+    id
+    name
+    description
+  }
+`;
+
 export const UserFragment = gql`
   fragment UserFragment on User {
     id
@@ -17,6 +25,24 @@ export const UserFragment = gql`
     avatar
     backgroundColor
   }
+`;
+
+export const InviteFragment = gql`
+  fragment InviteFragment on Invite {
+    id
+    secureId
+    email
+  }
+`;
+
+export const GroupMemberFragment = gql`
+  fragment GroupMemberFragment on GroupMember {
+    id
+    user {
+      ...UserFragment
+    }
+  }
+  ${UserFragment}
 `;
 
 export const TokenFragment = gql`

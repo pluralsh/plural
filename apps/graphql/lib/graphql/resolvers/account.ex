@@ -5,7 +5,7 @@ defmodule GraphQl.Resolvers.Account do
 
   def query(Group, _), do: Group
   def query(GroupMember, _), do: GroupMember
-  def query(_, _), do: User
+  def query(_, _), do: Account
 
   def update_account(%{attributes: attrs}, %{context: %{current_user: user}}),
     do: Accounts.update_account(attrs, user)

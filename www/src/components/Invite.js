@@ -6,7 +6,7 @@ import { Box, Keyboard, FormField, TextInput, Text } from 'grommet'
 import { Button, InputCollection, ResponsiveInput, SecondaryButton } from 'forge-core'
 import { StatusCritical, Checkmark } from 'grommet-icons'
 import { initials } from './users/Avatar'
-import { setToken } from '../helpers/auth'
+import { setToken } from '../helpers/authentication'
 
 const SIGNUP = gql`
   mutation Signup($attributes: UserAttributes!, $inviteId: ID!) {
@@ -53,8 +53,8 @@ function DummyAvatar({name, size: given}) {
 export function PasswordStatus({disabled, reason}) {
   return (
     <Box direction='row' fill='horizontal' align='center' gap='xsmall'>
-      {disabled ? <StatusCritical color='notif' size='12px' /> : <Checkmark color='status-ok' size='12px' />}
-      <Text size='small' color={disabled ? 'notif' : 'status-ok'}>{reason}</Text>
+      {disabled ? <StatusCritical color='error' size='12px' /> : <Checkmark color='status-ok' size='12px' />}
+      <Text size='small' color={disabled ? 'error' : 'status-ok'}>{reason}</Text>
     </Box>
   )
 }
@@ -66,11 +66,12 @@ export default function Invite() {
   const [editPassword, setEditPassword] = useState(false)
   const [mutation, {loading}] = useMutation(SIGNUP, {
     variables: {inviteId, attributes},
-    onCompleted: ({signUp: {jwt}}) => {
+    onCompleted: ({signup: {jwt}}) => {
       setToken(jwt)
       window.location = '/'
     }
   })
+
   const {data, error} = useQuery(INVITE_Q, {variables: {id: inviteId}})
 
   if (error) return <InvalidInvite />

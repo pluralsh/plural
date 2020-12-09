@@ -1,5 +1,5 @@
-import React, { useContext, useState } from 'react'
-import { Box } from 'grommet'
+import React, { useContext, useEffect, useState } from 'react'
+import { Box, Text } from 'grommet'
 import { SIDEBAR_WIDTH } from '../constants'
 import { SectionChoice } from '../utils/SectionChoice'
 import { useHistory, useParams } from 'react-router'
@@ -10,6 +10,8 @@ import { Button, InputCollection, ResponsiveInput } from 'forge-core'
 import { EditHeader } from '../users/EditUser'
 import { CurrentUserContext } from '../login/CurrentUser'
 import { Groups, Users } from './Directory'
+import Avatar from '../users/Avatar'
+import { BreadcrumbsContext } from '../Breadcrumbs'
 
 const ICON_SIZE = '12px'
 
@@ -47,13 +49,25 @@ function EditAttributes() {
 }
 
 export function EditAccount() {
+  const {account} = useContext(CurrentUserContext)
   let history = useHistory()
   const {section} = useParams()
+  const {setBreadcrumbs} = useContext(BreadcrumbsContext)
+  useEffect(() => {
+    setBreadcrumbs([
+      {text: 'accuunt', url: '/accuunt/attributes'},
+      {text: section, url: `/accuunt/${section}`}
+    ])
+  }, [setBreadcrumbs, section])
 
   return (
     <Box fill direction='row'>
       <Box gap='xsmall' flex={false} width={SIDEBAR_WIDTH} height='100%'
            border={{side: 'right', color: 'light-3'}} pad='small'>
+        <Box pad={{vertical: 'small'}} direction='row' align='center' gap='small'>
+          <Avatar user={account} size='40px' />
+          <Text size='small'>{account.name}</Text>
+        </Box>
         {VIEWS.map(({text, view, icon}) => (
           <SectionChoice
             selected={section === view}

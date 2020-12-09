@@ -45,7 +45,7 @@ export default function CreateInvite() {
       {open && (
         <Layer modal position='center' onClickOutside={() => setOpen(false)} onEsc={() => setOpen(false)}>
           <Box width='35vw'>
-            <ModalHeader text='Create a new group' setOpen={setOpen} />
+            <ModalHeader text='Invite a user' setOpen={setOpen} />
             <Box pad='small'>
               <InviteForm />
             </Box>

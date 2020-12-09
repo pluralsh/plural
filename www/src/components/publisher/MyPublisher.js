@@ -13,6 +13,7 @@ import { STRIPE_BLUE } from '../payments/constants'
 import { EditContent, EditContext, EditSelect } from '../users/EditUser'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 import { SIDEBAR_WIDTH } from '../constants'
+import { PublisherHeader } from './Publisher'
 
 function AccountConnected() {
   return (
@@ -164,7 +165,8 @@ export default function MyPublisher() {
   return (
     <EditContext.Provider value={{editing, setEditing}}>
     <Box fill direction='row'>
-      <Box width={SIDEBAR_WIDTH} flex={false} pad='small' gap='xsmall'>
+      <Box width={SIDEBAR_WIDTH} flex={false} pad='small' gap='small' border={{side: 'right', color: 'light-5'}}>
+        <PublisherHeader publisher={{...me.publisher, owner: me}} size='60px' />
         <EditSelect edit='Repositories' icon={<List size='small' />} />
         <EditSelect edit='Edit Attributes' icon={<Edit size='small' />} />
         <EditSelect edit='Create Repository' icon={<Add size='small' />} />

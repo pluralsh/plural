@@ -55,15 +55,15 @@ export function EditAccount() {
   const {setBreadcrumbs} = useContext(BreadcrumbsContext)
   useEffect(() => {
     setBreadcrumbs([
-      {text: 'accuunt', url: '/accuunt/attributes'},
-      {text: section, url: `/accuunt/${section}`}
+      {text: 'account', url: '/accounts/edit/attributes'},
+      {text: section, url: `/accounts/edit/${section}`}
     ])
   }, [setBreadcrumbs, section])
 
   return (
     <Box fill direction='row'>
-      <Box gap='xsmall' flex={false} width={SIDEBAR_WIDTH} height='100%'
-           border={{side: 'right', color: 'light-3'}} pad='small'>
+      <Box gap='small' flex={false} width={SIDEBAR_WIDTH} height='100%'
+           border={{side: 'right', color: 'light-5'}} pad='small'>
         <Box pad={{vertical: 'small'}} direction='row' align='center' gap='small'>
           <Avatar user={account} size='40px' />
           <Text size='small'>{account.name}</Text>

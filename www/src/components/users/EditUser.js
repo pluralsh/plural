@@ -120,7 +120,7 @@ export default function EditUser() {
         </Box>
       </Box>
       <EditContext.Provider value={{editing, setEditing}}>
-      <Box fill direction='row' border='between' gap='small'>
+      <Box fill direction='row' border={{side: 'between', color: 'light-5'}} gap='small'>
         <Box gap='small' width='25%' pad={{horizontal: 'small', vertical: 'medium'}}>
           <EditSelect edit='User Attributes' icon={<User size='small' />} />
           <EditSelect edit='Password' icon={<Lock size='small' />} />

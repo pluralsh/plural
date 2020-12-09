@@ -1,7 +1,7 @@
 import React from 'react'
 import { Box, Text } from 'grommet'
 
-function initials(name) {
+export function initials(name) {
   return name
           .split(' ')
           .map((n) => n.charAt(0).toUpperCase())

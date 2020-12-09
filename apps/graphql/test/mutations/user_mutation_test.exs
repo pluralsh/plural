@@ -47,10 +47,7 @@ defmodule GraphQl.UserMutationTest do
       {:ok, %{data: %{"signup" => signup}}} = run_query("""
         mutation Signup($attributes: UserAttributes!) {
           signup(attributes: $attributes) {
-            id
-            name
-            email
-            jwt
+            id name email jwt
           }
         }
       """, %{"attributes" => %{
@@ -58,6 +55,26 @@ defmodule GraphQl.UserMutationTest do
         "password" => "super strong password",
         "name" => "Michael Guarino"
       }})
+
+      assert signup["id"]
+      assert signup["name"] == "Michael Guarino"
+      assert signup["email"] == "mguarino46@gmail.com"
+      assert signup["jwt"]
+    end
+
+    test "it can create a user by invite" do
+      invite = insert(:invite)
+      {:ok, %{data: %{"signup" => signup}}} = run_query("""
+        mutation Signup($attributes: UserAttributes!, $id: String) {
+          signup(attributes: $attributes, inviteId: $id) {
+            id name email jwt
+          }
+        }
+      """, %{"attributes" => %{
+        "email" => "mguarino46@gmail.com",
+        "password" => "super strong password",
+        "name" => "Michael Guarino"
+      }, "id" => invite.secure_id})
 
       assert signup["id"]
       assert signup["name"] == "Michael Guarino"

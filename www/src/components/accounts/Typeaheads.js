@@ -2,10 +2,8 @@ import React, { useState } from 'react'
 import { TagInput } from 'forge-core'
 import { useApolloClient } from 'react-apollo'
 import { SEARCH_USERS, SEARCH_GROUPS } from './queries'
-import Avatar from './Avatar'
 import { Box, Text } from 'grommet'
-import moment from 'moment'
-import { dateFormat } from '../utils/Graph'
+import Avatar from '../users/Avatar'
 
 export function fetchUsers(client, query, setSuggestions) {
   if (!query) return
@@ -44,7 +42,7 @@ function groupSuggestion(group) {
   return (
     <Box direction='row' gap='small' align='center' pad='small'>
       <Text size='small' weight={500}>{group.name}</Text>
-      <Text size='small'>-- created {dateFormat(moment(group.insertedAt))}</Text>
+      <Text size='small'>-- {group.description}</Text>
     </Box>
   )
 }

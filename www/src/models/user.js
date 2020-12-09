@@ -29,7 +29,6 @@ export const UserFragment = gql`
 
 export const InviteFragment = gql`
   fragment InviteFragment on Invite {
-    id
     secureId
     email
   }

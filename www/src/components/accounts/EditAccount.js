@@ -3,21 +3,26 @@ import { Box } from 'grommet'
 import { SIDEBAR_WIDTH } from '../constants'
 import { SectionChoice } from '../utils/SectionChoice'
 import { useHistory, useParams } from 'react-router'
-import { Edit } from 'grommet-icons'
+import { Edit, Group, User } from 'grommet-icons'
 import { useMutation } from 'react-apollo'
 import { UPDATE_ACCOUNT } from './queries'
 import { Button, InputCollection, ResponsiveInput } from 'forge-core'
 import { EditHeader } from '../users/EditUser'
 import { CurrentUserContext } from '../login/CurrentUser'
+import { Groups, Users } from './Directory'
 
 const ICON_SIZE = '12px'
 
 const ViewOptions = {
-  EDIT: 'attributes'
+  EDIT: 'attributes',
+  USERS: 'users',
+  GROUPS: 'groups',
 }
 
 const VIEWS = [
-  {text: 'Edit Attributes', view: ViewOptions.EDIT, icon: <Edit size={ICON_SIZE} />}
+  {text: 'Edit Attributes', view: ViewOptions.EDIT, icon: <Edit size={ICON_SIZE} />},
+  {text: "Users", view: ViewOptions.USERS, icon: <User size={ICON_SIZE} />},
+  {text: "Groups", view: ViewOptions.GROUPS, icon: <Group size={ICON_SIZE} />}
 ]
 
 function EditAttributes() {
@@ -59,6 +64,8 @@ export function EditAccount() {
       </Box>
       <Box fill>
         {section === ViewOptions.EDIT && <EditAttributes />}
+        {section === ViewOptions.USERS && <Users />}
+        {section === ViewOptions.GROUPS && <Groups />}
       </Box>
     </Box>
   )

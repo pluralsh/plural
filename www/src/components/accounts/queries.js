@@ -12,15 +12,11 @@ export const UPDATE_ACCOUNT = gql`
 `;
 
 export const USERS_Q = gql`
-  query Users($q: String, $accountId: String, $ursor: String) {
-    users(q: $q, accountId: $accountId, first: 20, after: $ursor) {
-      pageInfo {
-        ...PageInfo
-      }
+  query Users($q: String, $ursor: String) {
+    users(q: $q, first: 20, after: $ursor) {
+      pageInfo { ...PageInfo }
       edges {
-        node {
-          ...UserFragment
-        }
+        node { ...UserFragment }
       }
     }
   }
@@ -31,13 +27,9 @@ export const USERS_Q = gql`
 export const GROUPS_Q = gql`
   query Groups($q: String, $cursor: String) {
     groups(q: $q, first: 20, after: $cursor) {
-      pageInfo {
-        ...PageInfo
-      }
+      pageInfo { ...PageInfo }
       edges {
-        node {
-          ...GroupFragment
-        }
+        node { ...GroupFragment }
       }
     }
   }
@@ -48,13 +40,9 @@ export const GROUPS_Q = gql`
 export const SEARCH_USERS = gql`
   query SearchUsers($q: String, $cursor: String) {
     users(q: $q, after: $cursor, first: 5) {
-      pageInfo {
-        ...PageInfo
-      }
+      pageInfo { ...PageInfo }
       edges {
-        node {
-          ...UserFragment
-        }
+        node { ...UserFragment }
       }
     }
   }
@@ -65,13 +53,9 @@ export const SEARCH_USERS = gql`
 export const SEARCH_GROUPS = gql`
   query SearchGroups($q: String, $cursor: String) {
     groups(q: $q, after: $cursor, first: 5) {
-      pageInfo {
-        ...PageInfo
-      }
+      pageInfo { ...PageInfo }
       edges {
-        node {
-          ...GroupFragment
-        }
+        node { ...GroupFragment }
       }
     }
   }
@@ -82,13 +66,9 @@ export const SEARCH_GROUPS = gql`
 export const GROUP_MEMBERS = gql`
   query GroupMembers($cursor: String, $id: ID!) {
     groupMembers(groupId: $id, after: $cursor, first: 20) {
-      pageInfo {
-        ...PageInfo
-      }
+      pageInfo { ...PageInfo }
       edges {
-        node {
-          ...GroupMemberFragment
-        }
+        node { ...GroupMemberFragment }
       }
     }
   }

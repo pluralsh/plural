@@ -12,7 +12,8 @@ export const DEFAULT_COLOR_THEME = {
   sidebarActive: '#000000',
   focus: '#3B1D98',
   tagMedium: '#3B1D98',
-  tagLight: '#624aad'
+  tagLight: '#624aad',
+  error: '#CC4400',
 }
 
 export const DEFAULT_THEME = {

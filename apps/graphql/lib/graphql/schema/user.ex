@@ -184,6 +184,7 @@ defmodule GraphQl.Schema.User do
     end
 
     field :signup, :user do
+      arg :invite_id,  :string
       arg :attributes, non_null(:user_attributes)
 
       resolve safe_resolver(&User.signup_user/2)

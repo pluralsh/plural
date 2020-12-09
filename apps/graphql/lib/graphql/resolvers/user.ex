@@ -1,6 +1,6 @@
 defmodule GraphQl.Resolvers.User do
   use GraphQl.Resolvers.Base, model: Core.Schema.User
-  alias Core.Services.{Users}
+  alias Core.Services.{Users, Accounts}
   alias Core.Schema.{Publisher, PersistedToken, Webhook}
 
   def data(args) do
@@ -84,6 +84,11 @@ defmodule GraphQl.Resolvers.User do
     |> with_jwt()
   end
 
+  def signup_user(%{invite_id: id, attributes: attrs}, _) when is_binary(id) do
+    Accounts.realize_invite(attrs, id)
+    |> with_jwt()
+  end
+
   def signup_user(%{attributes: attrs}, _) do
     Users.create_user(attrs)
     |> with_jwt()
@@ -92,7 +97,7 @@ defmodule GraphQl.Resolvers.User do
   def ping_webhook(%{repo: repo, id: webhook_id} = args, _) do
     webhook = Users.get_webhook!(webhook_id)
 
-    Core.Services.Users.post_webhook(%{
+    Users.post_webhook(%{
       repository: repo,
       message: Map.get(args, :message, "webhook ping")
     }, webhook)

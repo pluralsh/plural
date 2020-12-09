@@ -6,6 +6,8 @@ import { GROUPS_Q, USERS_Q } from './queries'
 import { Scroller, Loading } from 'forge-core'
 import GroupRow from './Group'
 import { UserRow } from './User'
+import CreateGroup from './CreateGroup'
+import CreateInvite from './CreateInvite'
 
 export function Users() {
   const [q, setQ] = useState(null)
@@ -17,7 +19,7 @@ export function Users() {
 
   return (
     <Box pad='small' gap='small'>
-      <Box direction='row' pad='small' align='center'>
+      <Box direction='row' pad='small' align='center' gap='small'>
         <Box fill='horizontal'>
           <Text weight={500}>Users</Text>
         </Box>
@@ -26,6 +28,9 @@ export function Users() {
           placeholder='search for users'
           value={q || ''}
           onChange={({target: {value}}) => setQ(value)} />
+        <Box flex={false}>
+          <CreateInvite />
+        </Box>
       </Box>
       <Scroller
         id='users'
@@ -48,7 +53,7 @@ export function Groups() {
 
   return (
     <Box pad='small' gap='small'>
-      <Box direction='row' pad='small' align='center'>
+      <Box direction='row' pad='small' align='center' gap='small'>
         <Box fill='horizontal'>
           <Text weight={500}>Groups</Text>
         </Box>
@@ -57,6 +62,9 @@ export function Groups() {
           placeholder='search for groups'
           value={q || ''}
           onChange={({target: {value}}) => setQ(value)} />
+        <Box flex={false}>
+          <CreateGroup />
+        </Box>
       </Box>
       <Scroller
         id='groups'

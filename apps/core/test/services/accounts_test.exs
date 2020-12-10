@@ -131,4 +131,69 @@ defmodule Core.Services.AccountsTest do
       assert user.name == "Some User"
     end
   end
+
+  describe "#create_role/2" do
+    setup [:setup_root_user]
+
+    test "Root users can create roles", %{user: user, account: account} do
+      group = insert(:group)
+      {:ok, role} = Accounts.create_role(%{
+        name: "role",
+        role_bindings: [%{user_id: user.id}, %{group_id: group.id}],
+        permissions: %{billing: true}
+      }, user)
+
+      assert role.name == "role"
+      assert role.permissions.billing
+      assert role.account_id == account.id
+
+      [first, second] = role.role_bindings
+      assert first.user_id == user.id
+      assert second.group_id == group.id
+    end
+
+    test "random users cannot create roles", %{account: account} do
+      group = insert(:group)
+      user = insert(:user, account: account)
+
+      {:error, _} = Accounts.create_role(%{
+        name: "role",
+        role_bindings: [%{user_id: user.id}, %{group_id: group.id}],
+        permissions: %{billing: true}
+      }, user)
+    end
+  end
+
+  describe "#update_role/3" do
+    setup [:setup_root_user]
+
+    test "root users can update roles", %{user: user, account: account} do
+      role = insert(:role, account: account)
+      {:ok, updated} = Accounts.update_role(%{name: "updated"}, role.id, user)
+
+      assert updated.id == role.id
+      assert updated.name == "updated"
+    end
+
+    test "random users cannot update", %{account: account} do
+      role = insert(:role, account: account)
+      {:error, _} = Accounts.update_role(%{name: "updated"}, role.id, insert(:user))
+    end
+  end
+
+  describe "#delete_role/2" do
+    setup [:setup_root_user]
+
+    test "it can delete a role", %{user: user, account: account} do
+      role = insert(:role, account: account)
+      {:ok, _} = Accounts.delete_role(role.id, user)
+
+      refute refetch(role)
+    end
+
+    test "random users cannot delete a role", %{account: account} do
+      role = insert(:role, account: account)
+      {:error, _} = Accounts.delete_role(role.id, insert(:user))
+    end
+  end
 end

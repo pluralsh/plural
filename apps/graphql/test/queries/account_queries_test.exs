@@ -69,4 +69,37 @@ defmodule GraphQl.AccountQueriesTest do
       assert found["email"] == invite.email
     end
   end
+
+  describe "role" do
+    setup [:setup_root_user]
+    test "it can fetch a role by id", %{user: user, account: account} do
+      role = insert(:role, account: account)
+
+      {:ok, %{data: %{"role" => found}}} = run_query("""
+        query Role($id: ID!) {
+          role(id: $id) { id }
+        }
+      """, %{"id" => role.id}, %{current_user: user})
+
+      assert found["id"] == role.id
+    end
+  end
+
+  describe "roles" do
+    setup [:setup_root_user]
+    test "it can fetch a role by id", %{user: user, account: account} do
+      roles = insert_list(3, :role, account: account)
+
+      {:ok, %{data: %{"roles" => found}}} = run_query("""
+        query {
+          roles(first: 5) {
+            edges { node { id } }
+          }
+        }
+      """, %{}, %{current_user: user})
+
+      assert from_connection(found)
+             |> ids_equal(roles)
+    end
+  end
 end

@@ -40,4 +40,19 @@ defmodule GraphQl.Schema.Base do
       end
     end
   end
+
+  defmacro enum_from_list(name, m, f, a) do
+    module = Macro.expand(m, __CALLER__)
+    values = apply(module, f, a) |> Enum.map(fn key ->
+      quote do
+        value unquote(key)
+      end
+    end)
+
+    quote do
+      enum unquote(name) do
+        unquote(values)
+      end
+    end
+  end
 end

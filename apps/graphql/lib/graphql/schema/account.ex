@@ -3,6 +3,8 @@ defmodule GraphQl.Schema.Account do
   alias GraphQl.Middleware.Authenticated
   alias GraphQl.Resolvers.{Account, User}
 
+  enum_from_list :permission, Core.Schema.Role, :permissions, []
+
   input_object :account_attributes do
     field :name, :string
   end
@@ -14,6 +16,20 @@ defmodule GraphQl.Schema.Account do
   input_object :group_attributes do
     field :name,  non_null(:string)
     field :description, :string
+  end
+
+  input_object :role_attributes do
+    field :name,  :string
+    field :description, :string
+    field :repositories, list_of(:string)
+    field :role_bindings, list_of(:binding_attributes)
+    field :permissions, list_of(:permission)
+  end
+
+  input_object :binding_attributes do
+    field :id,       :id
+    field :user_id,  :id
+    field :group_id, :id
   end
 
   object :account do
@@ -51,8 +67,31 @@ defmodule GraphQl.Schema.Account do
     timestamps()
   end
 
+  object :role do
+    field :id,           non_null(:id)
+    field :name,         non_null(:string)
+    field :description,  :string
+    field :repositories, list_of(:string)
+    field :permissions,  list_of(:permission), resolve: fn role, _, _ ->
+      {:ok, Core.Schema.Role.permissions(role)}
+    end
+    field :role_bindings, list_of(:role_binding), resolve: dataloader(Account)
+    field :account, :account, resolve: dataloader(Account)
+
+    timestamps()
+  end
+
+  object :role_binding do
+    field :id,    non_null(:id)
+    field :user,  :user, resolve: dataloader(User)
+    field :group, :group, resolve: dataloader(Account)
+
+    timestamps()
+  end
+
   connection node_type: :group
   connection node_type: :group_member
+  connection node_type: :role
 
   object :account_queries do
     field :invite, :invite do
@@ -73,6 +112,19 @@ defmodule GraphQl.Schema.Account do
       arg :group_id, non_null(:id)
 
       resolve &Account.list_group_members/2
+    end
+
+    field :role, :role do
+      middleware Authenticated
+      arg :id, non_null(:id)
+
+      resolve safe_resolver(&Account.resolve_role/2)
+    end
+
+    connection field :roles, node_type: :role do
+      middleware Authenticated
+
+      resolve &Account.list_roles/2
     end
   end
 
@@ -126,6 +178,28 @@ defmodule GraphQl.Schema.Account do
       arg :user_id, non_null(:id)
 
       resolve safe_resolver(&Account.delete_group_member/2)
+    end
+
+    field :create_role, :role do
+      middleware Authenticated
+      arg :attributes, non_null(:role_attributes)
+
+      resolve safe_resolver(&Account.create_role/2)
+    end
+
+    field :update_role, :role do
+      middleware Authenticated
+      arg :id, non_null(:id)
+      arg :attributes, non_null(:role_attributes)
+
+      resolve safe_resolver(&Account.update_role/2)
+    end
+
+    field :delete_role, :role do
+      middleware Authenticated
+      arg :id, non_null(:id)
+
+      resolve safe_resolver(&Account.delete_role/2)
     end
   end
 end

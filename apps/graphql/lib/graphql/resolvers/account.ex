@@ -1,9 +1,10 @@
 defmodule GraphQl.Resolvers.Account do
   use GraphQl.Resolvers.Base, model: Core.Schema.Account
-  alias Core.Schema.{Group, GroupMember}
+  alias Core.Schema.{Group, GroupMember, Role}
   alias Core.Services.Accounts
 
   def query(Group, _), do: Group
+  def query(Role, _), do: Role
   def query(GroupMember, _), do: GroupMember
   def query(_, _), do: Account
 
@@ -25,6 +26,15 @@ defmodule GraphQl.Resolvers.Account do
     |> paginate(args)
   end
 
+  def list_roles(args, %{context: %{current_user: %{account_id: aid}}}) do
+    Role.ordered()
+    |> Role.for_account(aid)
+    |> paginate(args)
+  end
+
+  def resolve_role(%{id: id}, _),
+    do: {:ok, Accounts.get_role(id)}
+
   def resolve_invite(%{id: secure_id}, _),
     do: {:ok, Accounts.get_invite(secure_id)}
 
@@ -45,4 +55,24 @@ defmodule GraphQl.Resolvers.Account do
 
   def delete_group_member(%{group_id: group_id, user_id: user_id}, %{context: %{current_user: user}}),
     do: Accounts.delete_group_member(group_id, user_id, user)
+
+  def create_role(%{attributes: attrs}, %{context: %{current_user: user}}) do
+    with_permissions(attrs)
+    |> Accounts.create_role(user)
+  end
+
+  def update_role(%{attributes: attrs, id: id}, %{context: %{current_user: user}}) do
+    with_permissions(attrs)
+    |> Accounts.update_role(id, user)
+  end
+
+  def delete_role(%{id: id}, %{context: %{current_user: user}}),
+    do: Accounts.delete_role(id, user)
+
+  defp with_permissions(%{permissions: perms} = attrs) when is_list(perms) do
+    perm_set = MapSet.new(perms)
+    permissions = Role.permissions() |> Enum.map(& {&1, MapSet.member?(perm_set, &1)}) |> Enum.into(%{})
+    Map.put(attrs, :permissions, permissions)
+  end
+  defp with_permissions(attrs), do: attrs
 end

@@ -37,6 +37,20 @@ defmodule Core.Factory do
     }
   end
 
+  def role_factory do
+    %Schema.Role{
+      name: sequence(:role, & "role-#{&1}"),
+      permissions: %{billing: true, users: true},
+      account: build(:account)
+    }
+  end
+
+  def role_binding do
+    %Schema.RoleBinding{
+      role: build(:role)
+    }
+  end
+
   def invite_factory do
     %Schema.Invite{
       secure_id: sequence(:invite, & "secure-#{&1}"),

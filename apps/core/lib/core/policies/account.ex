@@ -1,11 +1,16 @@
 defmodule Core.Policies.Account do
   use Piazza.Policy
-  alias Core.Schema.{User, Account, Group, GroupMember, Invite}
+  alias Core.Schema.{User, Account, Group, GroupMember, Invite, Role}
 
   def can?(%User{id: id}, %Account{root_user_id: id}, _), do: :pass
 
   def can?(%User{} = user, %Group{} = group, action) do
     %{account: account} = Core.Repo.preload(group, [:account])
+    can?(user, account, action)
+  end
+
+  def can?(%User{} = user, %Role{} = role, action) do
+    %{account: account} = Core.Repo.preload(role, [:account])
     can?(user, account, action)
   end
 

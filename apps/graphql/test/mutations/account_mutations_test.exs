@@ -131,4 +131,72 @@ defmodule GraphQl.AccountMutationTest do
       refute refetch(member)
     end
   end
+
+  describe "createRole" do
+    setup [:setup_root_user]
+
+    test "it can create roles", %{user: user} do
+      {:ok, %{data: %{"createRole" => create}}} = run_query("""
+        mutation Create($attributes: RoleAttributes!) {
+          createRole(attributes: $attributes) {
+            name
+            repositories
+            permissions
+          }
+        }
+      """, %{"attributes" => %{
+        "name" => "role", "repositories" => ["*"], "permissions" => ["INSTALL"]
+      }}, %{current_user: user})
+
+      assert create["name"] == "role"
+      assert create["repositories"] == ["*"]
+      assert create["permissions"] == ["INSTALL"]
+    end
+  end
+
+  describe "updateRole" do
+    setup [:setup_root_user]
+
+    test "it can create roles", %{user: user, account: account} do
+      role = insert(:role, account: account)
+      {:ok, %{data: %{"updateRole" => update}}} = run_query("""
+        mutation Update($attributes: RoleAttributes!, $id: ID!) {
+          updateRole(id: $id, attributes: $attributes) {
+            id
+            name
+            repositories
+            permissions
+          }
+        }
+      """, %{
+        "id" => role.id,
+        "attributes" => %{
+          "name" => "role", "repositories" => ["*"], "permissions" => ["INSTALL"]
+        }
+      }, %{current_user: user})
+
+      assert update["id"] == role.id
+      assert update["name"] == "role"
+      assert update["repositories"] == ["*"]
+      assert update["permissions"] == ["INSTALL"]
+    end
+  end
+
+  describe "deleteRole" do
+    setup [:setup_root_user]
+
+    test "it can create roles", %{user: user, account: account} do
+      role = insert(:role, account: account)
+      {:ok, %{data: %{"deleteRole" => delete}}} = run_query("""
+        mutation Create($id: ID!) {
+          deleteRole(id: $id) {
+            id
+          }
+        }
+      """, %{"id" => role.id}, %{current_user: user})
+
+      assert delete["id"] == role.id
+      refute refetch(role)
+    end
+  end
 end

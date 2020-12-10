@@ -1,12 +1,13 @@
 defmodule Core.Services.Accounts do
   use Core.Services.Base
   import Core.Policies.Account
-  alias Core.Schema.{User, Account, Group, GroupMember, Invite}
+  alias Core.Schema.{User, Account, Group, GroupMember, Invite, Role}
 
   @type account_resp :: {:ok, Account.t} | {:error, term}
   @type group_resp :: {:ok, Group.t} | {:error, term}
   @type group_member_resp :: {:ok, GroupMember.t} | {:error, term}
   @type invite_resp :: {:ok, Invite.t} | {:error, term}
+  @type role_resp :: {:ok, Role.t} | {:error, term}
 
   def get_account!(id), do: Core.Repo.get!(Account, id)
 
@@ -15,6 +16,10 @@ defmodule Core.Services.Accounts do
   def get_invite!(id), do: Core.Repo.get_by!(Invite, secure_id: id)
 
   def get_invite(id), do: Core.Repo.get_by(Invite, secure_id: id)
+
+  def get_role(id), do: Core.Repo.get(Role, id)
+
+  def get_role!(id), do: Core.Repo.get!(Role, id)
 
   def get_group_member(group_id, user_id),
     do: Core.Repo.get_by(GroupMember, user_id: user_id, group_id: group_id)
@@ -149,5 +154,38 @@ defmodule Core.Services.Accounts do
   def delete_group_member(group_id, user_id, %User{} = user) do
     Core.Repo.get_by!(GroupMember, user_id: user_id, group_id: group_id)
     |> delete_group_member(user)
+  end
+
+  @doc """
+  Creates a new role in the user's account
+  """
+  @spec create_role(map, User.t) :: role_resp
+  def create_role(attrs, %User{account_id: id} = user) do
+    %Role{account_id: id}
+    |> Role.changeset(attrs)
+    |> allow(user, :create)
+    |> when_ok(:insert)
+  end
+
+  @doc """
+  Updates a role by id
+  """
+  @spec update_role(map, binary, User.t) :: role_resp
+  def update_role(attrs, id, %User{} = user) do
+    get_role!(id)
+    |> Core.Repo.preload([:role_bindings])
+    |> Role.changeset(attrs)
+    |> allow(user, :edit)
+    |> when_ok(:update)
+  end
+
+  @doc """
+  Deletes a role by id
+  """
+  @spec delete_role(binary, User.t) :: role_resp
+  def delete_role(id, user) do
+    get_role!(id)
+    |> allow(user, :delete)
+    |> when_ok(:delete)
   end
 end

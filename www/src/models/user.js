@@ -84,3 +84,25 @@ export const WebhookFragment = gql`
     insertedAt
   }
 `;
+
+export const RoleBindingFragment = gql`
+  fragment RoleBindingFragment on RoleBinding {
+    id
+    user { ...UserFragment }
+    group { ...GroupFragment }
+  }
+  ${UserFragment}
+  ${GroupFragment}
+`;
+
+export const RoleFragment = gql`
+  fragment RoleFragment on Role {
+    id
+    name
+    description
+    repositories
+    permissions
+    roleBindings { ...RoleBindingFragment }
+  }
+  ${RoleBindingFragment}
+`;

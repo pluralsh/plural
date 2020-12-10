@@ -3,13 +3,13 @@ import { Box, Text } from 'grommet'
 import { SIDEBAR_WIDTH } from '../constants'
 import { SectionChoice } from '../utils/SectionChoice'
 import { useHistory, useParams } from 'react-router'
-import { Edit, Group, User } from 'grommet-icons'
+import { Edit, Group, Script, User } from 'grommet-icons'
 import { useMutation } from 'react-apollo'
 import { UPDATE_ACCOUNT } from './queries'
 import { Button, InputCollection, ResponsiveInput } from 'forge-core'
 import { EditHeader } from '../users/EditUser'
 import { CurrentUserContext } from '../login/CurrentUser'
-import { Groups, Users } from './Directory'
+import { Groups, Roles, Users } from './Directory'
 import Avatar from '../users/Avatar'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 
@@ -19,12 +19,14 @@ const ViewOptions = {
   EDIT: 'attributes',
   USERS: 'users',
   GROUPS: 'groups',
+  ROLES: 'roles',
 }
 
 const VIEWS = [
   {text: 'Edit Attributes', view: ViewOptions.EDIT, icon: <Edit size={ICON_SIZE} />},
   {text: "Users", view: ViewOptions.USERS, icon: <User size={ICON_SIZE} />},
-  {text: "Groups", view: ViewOptions.GROUPS, icon: <Group size={ICON_SIZE} />}
+  {text: "Groups", view: ViewOptions.GROUPS, icon: <Group size={ICON_SIZE} />},
+  {text: 'Roles', view: ViewOptions.ROLES, icon: <Script size={ICON_SIZE} />},
 ]
 
 function EditAttributes() {
@@ -80,6 +82,7 @@ export function EditAccount() {
         {section === ViewOptions.EDIT && <EditAttributes />}
         {section === ViewOptions.USERS && <Users />}
         {section === ViewOptions.GROUPS && <Groups />}
+        {section === ViewOptions.ROLES && <Roles />}
       </Box>
     </Box>
   )

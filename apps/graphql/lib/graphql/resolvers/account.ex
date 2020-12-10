@@ -1,10 +1,11 @@
 defmodule GraphQl.Resolvers.Account do
   use GraphQl.Resolvers.Base, model: Core.Schema.Account
-  alias Core.Schema.{Group, GroupMember, Role}
+  alias Core.Schema.{Group, GroupMember, Role, RoleBinding}
   alias Core.Services.Accounts
 
   def query(Group, _), do: Group
   def query(Role, _), do: Role
+  def query(RoleBinding, _), do: RoleBinding
   def query(GroupMember, _), do: GroupMember
   def query(_, _), do: Account
 

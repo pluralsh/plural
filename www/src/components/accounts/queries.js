@@ -1,6 +1,6 @@
 import { gql } from 'apollo-boost'
 import { PageInfo } from '../../models/misc';
-import { AccountFragment, GroupFragment, GroupMemberFragment, InviteFragment, UserFragment } from '../../models/user';
+import { AccountFragment, GroupFragment, GroupMemberFragment, InviteFragment, RoleFragment, UserFragment } from '../../models/user';
 
 export const UPDATE_ACCOUNT = gql`
   mutation UpdateAccount($attributes: AccountAttributes!) {
@@ -128,4 +128,46 @@ export const CREATE_INVITE = gql`
     }
   }
   ${InviteFragment}
+`;
+
+
+export const CREATE_ROLE = gql`
+  mutation CreateRole($attributes: RoleAttributes!) {
+    createRole(attributes: $attributes) {
+      ...RoleFragment
+    }
+  }
+  ${RoleFragment}
+`;
+
+export const UPDATE_ROLE = gql`
+  mutation UpdateRole($id: ID!, $attributes: RoleAttributes!) {
+    updateRole(id: $id, attributes: $attributes) {
+      ...RoleFragment
+    }
+  }
+  ${RoleFragment}
+`;
+
+export const DELETE_ROLE = gql`
+  mutation DeleteRow($id: ID!) {
+    deleteRole(id: $id) {
+      ...RoleFragment
+    }
+  }
+  ${RoleFragment}
+`;
+
+
+export const ROLES_Q = gql`
+  query Roles($cursor: String) {
+    roles(first: 20, after: $cursor) {
+      pageInfo { ...PageInfo }
+      edges {
+        node { ...RoleFragment }
+      }
+    }
+  }
+  ${PageInfo}
+  ${RoleFragment}
 `;

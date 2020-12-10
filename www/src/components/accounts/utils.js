@@ -1,4 +1,4 @@
-import { GROUP_MEMBERS, GROUPS_Q } from "./queries"
+import { GROUP_MEMBERS, GROUPS_Q, ROLES_Q } from "./queries"
 
 export function addGroupMember(cache, group, member) {
   const {members, ...data} = cache.readQuery({
@@ -23,6 +23,28 @@ export function deleteGroup(cache, group) {
     data: {
       ...data,
       groups: {...groups, edges: groups.edges.filter(({node: {id}}) => id !== group.id)}
+    }
+  })
+}
+
+export function deleteRole(cache, role) {
+  const {roles, ...data} = cache.readQuery({query: ROLES_Q})
+  cache.writeQuery({
+    query: ROLES_Q,
+    data: {
+      ...data,
+      roles: {...roles, edges: roles.edges.filter(({node: {id}}) => id !== role.id)}
+    }
+  })
+}
+
+export function addRole(cache, role) {
+  const {roles, ...data} = cache.readQuery({query: ROLES_Q})
+  cache.writeQuery({
+    query: ROLES_Q,
+    data: {
+      ...data,
+      roles: {...roles, edges: [{__typename: 'RoleEdge', node: role}, ...roles.edges]}
     }
   })
 }

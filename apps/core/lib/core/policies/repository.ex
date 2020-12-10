@@ -1,5 +1,6 @@
 defmodule Core.Policies.Repository do
   use Piazza.Policy
+  import Core.Policies.Utils
   alias Core.Schema.{User, Installation, Repository, Integration, Artifact}
   alias Core.Services.Repositories
 
@@ -21,16 +22,19 @@ defmodule Core.Policies.Repository do
     end
   end
 
-  def can?(%User{id: user_id}, %Repository{} = repo, :edit) do
-    case Core.Repo.preload(repo, [:publisher]) do
-      %{publisher: %{owner_id: ^user_id}} -> :continue
+  def can?(%User{} = user, %Repository{} = repo, :edit) do
+    case Core.Repo.preload(repo, [publisher: :account]) do
+      %{publisher: pub} -> Core.Policies.Publisher.can?(user, pub, :edit)
       _ -> {:error, :forbidden}
     end
   end
 
   def can?(%User{id: user_id}, %Installation{user_id: user_id}, action) when action in [:edit, :access],
     do: :continue
-  def can?(%User{}, %Installation{}, :create), do: :pass
+  def can?(%User{} = user, %Installation{} = inst, :create) do
+    %{repository: repo} = Core.Repo.preload(inst, [:repository])
+    check_rbac(user, :install, repository: repo.name)
+  end
 
   def can?(user, %Ecto.Changeset{} = cs, action),
     do: can?(user, apply_changes(cs), action)

@@ -48,7 +48,8 @@ defmodule Core.MixProject do
       {:arc_gcs, "~> 0.1.0"},
       {:arc_ecto, "~> 0.11.1"},
       {:mojito, "~> 0.3.0"},
-      {:nebulex, "~> 1.1"},
+      {:nebulex, "2.0.0-rc.1"},
+      {:decorator, "~> 1.3"},   #=> For using Caching Annotations
       {:botanist, "~> 0.1.0", git: "https://github.com/michaeljguarino/botanist.git", branch: "ecto3"},
       {:x509, "~> 0.7.0"},
       {:yaml_elixir, "~> 2.4"},

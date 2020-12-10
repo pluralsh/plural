@@ -23,6 +23,7 @@ defmodule ApiWeb.ConnCase do
       import Core.Factory
       import Core.TestHelpers
       import ApiWeb.ConnCase
+      import Core.SchemaCase, only: [setup_root_user: 1]
 
       # The default endpoint for testing
       @endpoint ApiWeb.Endpoint

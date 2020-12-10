@@ -3,12 +3,12 @@ defmodule Core.Policies.Terraform do
   alias Core.Services.Dependencies
   alias Core.Schema.{Terraform, User, TerraformInstallation}
 
-  def can?(%User{} = user, %Terraform{} = chart, :access) do
-    %{repository: repo} = Core.Repo.preload(chart, repository: :publisher)
+  def can?(%User{} = user, %Terraform{} = tf, :access) do
+    %{repository: repo} = Core.Repo.preload(tf, repository: :publisher)
     Core.Policies.Repository.can?(user, repo, :access)
   end
-  def can?(%User{} = user, %Terraform{} = chart, action) do
-    %{repository: %{publisher: publisher}} = Core.Repo.preload(chart, [repository: :publisher])
+  def can?(%User{} = user, %Terraform{} = tf, action) do
+    %{repository: %{publisher: publisher}} = Core.Repo.preload(tf, [repository: :publisher])
     Core.Policies.Publisher.can?(user, publisher, action)
   end
 

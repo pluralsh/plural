@@ -45,7 +45,7 @@ defmodule Core.Factory do
     }
   end
 
-  def role_binding do
+  def role_binding_factory do
     %Schema.RoleBinding{
       role: build(:role)
     }

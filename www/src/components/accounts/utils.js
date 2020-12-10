@@ -28,23 +28,19 @@ export function deleteGroup(cache, group) {
 }
 
 export function deleteRole(cache, role) {
-  const {roles, ...data} = cache.readQuery({query: ROLES_Q})
+  const {roles, ...data} = cache.readQuery({query: ROLES_Q, variables: {q: null}})
   cache.writeQuery({
     query: ROLES_Q,
-    data: {
-      ...data,
-      roles: {...roles, edges: roles.edges.filter(({node: {id}}) => id !== role.id)}
-    }
+    variables: {q: null},
+    data: {...data, roles: {...roles, edges: roles.edges.filter(({node: {id}}) => id !== role.id)}}
   })
 }
 
 export function addRole(cache, role) {
-  const {roles, ...data} = cache.readQuery({query: ROLES_Q})
+  const {roles, ...data} = cache.readQuery({query: ROLES_Q, variables: {q: null}})
   cache.writeQuery({
     query: ROLES_Q,
-    data: {
-      ...data,
-      roles: {...roles, edges: [{__typename: 'RoleEdge', node: role}, ...roles.edges]}
-    }
+    variables: {q: null},
+    data: {...data, roles: {...roles, edges: [{__typename: 'RoleEdge', node: role}, ...roles.edges]}}
   })
 }

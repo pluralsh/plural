@@ -151,7 +151,8 @@ defmodule Core.Services.RecipesTest do
   end
 
   describe "#install" do
-    test "It can install all components in a recipe" do
+    setup [:setup_root_user]
+    test "It can install all components in a recipe", %{user: user} do
       recipe = insert(:recipe)
       %{repository: repo} = section = insert(:recipe_section, recipe: recipe)
       %{repository: repo2} = section2 = insert(:recipe_section, recipe: recipe)
@@ -165,7 +166,6 @@ defmodule Core.Services.RecipesTest do
       insert(:recipe_item, recipe_section: section2, terraform: tf)
       insert(:recipe_item, recipe_section: section2, chart: other_chart)
 
-      user = insert(:user)
       {:ok, installations} = Recipes.install(recipe, %{repo.id => %{"some" => "context"}}, user)
 
       assert Enum.map(installations, & &1.repository_id) |> ids_equal([repo, repo2])

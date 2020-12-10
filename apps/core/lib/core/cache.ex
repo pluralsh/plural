@@ -1,18 +1,8 @@
 defmodule Core.Cache do
-  @moduledoc """
-  In-process, distributed caching using nebulex (ets + dist erlang).
-
-  Also enhanced with a few basic utilities for our use-case
-  """
   use Nebulex.Cache,
     otp_app: :core,
-    adapter: Nebulex.Adapters.Dist
-
-  defmodule Local do
-    use Nebulex.Cache,
-      otp_app: :core,
-      adapter: Nebulex.Adapters.Local
-  end
+    adapter: Nebulex.Adapters.Partitioned,
+    primary_storage_adapter: Nebulex.Adapters.Local
 
   @max_list_cache 1000
 
@@ -34,7 +24,7 @@ defmodule Core.Cache do
     transaction(fn ->
       with {:ok, nil} <- {:ok, get(key)},
            {:commit, val} <- fallback.(),
-        do: {:commit, set(key, val)}
+        do: {:commit, put(key, val)}
     end)
   end
 
@@ -46,7 +36,7 @@ defmodule Core.Cache do
   def refresh(key, fun) do
     case get(key) do
       nil -> nil
-      val -> set(key, fun.(val))
+      val -> put(key, fun.(val))
     end
   end
 
@@ -56,4 +46,11 @@ defmodule Core.Cache do
       _ -> {:commit, Core.Repo.all(query)}
     end
   end
+end
+
+
+defmodule Core.ReplicatedCache do
+  use Nebulex.Cache,
+    otp_app: :core,
+    adapter: Nebulex.Adapters.Replicated
 end

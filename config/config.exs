@@ -44,10 +44,13 @@ config :stripity_stripe,
 config :core, Core.Email.Mailer,
   adapter: Bamboo.LocalAdapter
 
-config :core, Core.Cache.Local,
-  gc_interval: 86_400,
-  allocated_memory: 1_000_000,
-  gc_cleanup_interval: 100
+config :core, Core.PartitionedCache,
+  primary: [
+    gc_interval: :timer.seconds(3600),
+    backend: :shards,
+    partitions: 2,
+    allocated_memory: 1000 * 1000 * 500
+  ]
 
 config :core, Core.Cache,
   local: Core.Cache.Local,

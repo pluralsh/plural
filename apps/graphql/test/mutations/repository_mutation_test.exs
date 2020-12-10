@@ -88,8 +88,8 @@ defmodule GraphQl.RepositoryMutationsTest do
   end
 
   describe "createInstallation" do
-    test "Users can install repositories" do
-      user = insert(:user)
+    setup [:setup_root_user]
+    test "Users can install repositories", %{user: user} do
       repo = insert(:repository)
 
       {:ok, %{data: %{"createInstallation" => installation}}} = run_query("""

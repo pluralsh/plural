@@ -83,8 +83,8 @@ defmodule Core.Services.RepositoriesTest do
   end
 
   describe "#create_installation" do
-    test "Users can install other repositories" do
-      user = insert(:user)
+    setup [:setup_root_user]
+    test "Users can install other repositories", %{user: user} do
       repo = insert(:repository)
 
       {:ok, installation} = Repositories.create_installation(%{}, repo.id, user)

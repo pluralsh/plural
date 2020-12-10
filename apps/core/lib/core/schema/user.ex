@@ -1,7 +1,7 @@
 defmodule Core.Schema.User do
   use Piazza.Ecto.Schema, derive_json: false
   use Arc.Ecto.Schema
-  alias Core.Schema.{Address, Publisher, Webhook, Account}
+  alias Core.Schema.{Address, Publisher, Webhook, Account, Group, RoleBinding}
 
   @email_re ~r/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-\.]+\.[a-zA-Z]{2,}$/
 
@@ -20,10 +20,21 @@ defmodule Core.Schema.User do
     belongs_to :account, Account
     has_one :publisher,  Publisher,
       foreign_key: :owner_id
+
     has_many :webhooks,  Webhook
+    has_many :role_bindings, RoleBinding
+    many_to_many :groups, Group, join_through: "group_members"
+    has_many :group_role_bindings, through: [:groups, :role_bindings]
 
     timestamps()
   end
+
+  def roles(%__MODULE__{role_bindings: roles, group_role_bindings: group_roles})
+    when is_list(roles) and is_list(group_roles) do
+    Enum.map(roles ++ group_roles, & &1.role)
+    |> Enum.uniq_by(& &1.id)
+  end
+  def roles(_), do: []
 
   def search(query \\ __MODULE__, name) do
     from(u in query, where: like(u.name, ^"#{name}%") or like(u.email, ^"#{name}%"))

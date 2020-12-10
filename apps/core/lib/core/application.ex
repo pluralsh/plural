@@ -5,7 +5,7 @@ defmodule Core.Application do
     children = [
       Core.Repo,
       Core.PubSub.Broadcaster,
-      Core.Cache.Local,
+      Core.ReplicatedCache,
       Core.Cache,
     ] ++ consumers()
 

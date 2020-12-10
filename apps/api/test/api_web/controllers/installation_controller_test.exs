@@ -2,10 +2,10 @@ defmodule ApiWeb.InstallationControllerTest do
   use ApiWeb.ConnCase, async: true
 
   describe "#create/2" do
-    test "Users can create installations of repositories", %{conn: conn} do
+    setup [:setup_root_user]
+    test "Users can create installations of repositories", %{conn: conn, user: user} do
       repository = insert(:repository)
       path = Routes.installation_path(conn, :create)
-      user = insert(:user)
 
       result =
         conn

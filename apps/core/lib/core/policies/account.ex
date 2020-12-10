@@ -1,22 +1,23 @@
 defmodule Core.Policies.Account do
   use Piazza.Policy
+  import Core.Policies.Utils
   alias Core.Schema.{User, Account, Group, GroupMember, Invite, Role}
 
   def can?(%User{id: id}, %Account{root_user_id: id}, _), do: :pass
 
-  def can?(%User{} = user, %Group{} = group, action) do
+  def can?(%User{} = user, %Group{} = group, _) do
     %{account: account} = Core.Repo.preload(group, [:account])
-    can?(user, account, action)
+    check_rbac(user, :users, account: account)
   end
 
-  def can?(%User{} = user, %Role{} = role, action) do
+  def can?(%User{} = user, %Role{} = role, _) do
     %{account: account} = Core.Repo.preload(role, [:account])
-    can?(user, account, action)
+    check_rbac(user, :users, account: account)
   end
 
-  def can?(%User{} = user, %Invite{} = group, action) do
+  def can?(%User{} = user, %Invite{} = group, _) do
     %{account: account} = Core.Repo.preload(group, [:account])
-    can?(user, account, action)
+    check_rbac(user, :users, account: account)
   end
 
   def can?(%User{} = user, %GroupMember{} = group, action) do

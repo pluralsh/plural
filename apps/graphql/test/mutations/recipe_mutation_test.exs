@@ -96,7 +96,8 @@ defmodule GraphQl.RecipeMutationsTest do
   end
 
   describe "installRecipe" do
-    test "You can install recipes" do
+    setup [:setup_root_user]
+    test "You can install recipes", %{user: user} do
       recipe = insert(:recipe)
       %{repository: repo} = section = insert(:recipe_section, recipe: recipe)
       chart = insert(:chart, repository: repo)
@@ -111,7 +112,7 @@ defmodule GraphQl.RecipeMutationsTest do
             }
           }
         }
-      """, %{"id" => recipe.id, "context" => Jason.encode!(%{repo.id => %{"some" => "value"}})}, %{current_user: insert(:user)})
+      """, %{"id" => recipe.id, "context" => Jason.encode!(%{repo.id => %{"some" => "value"}})}, %{current_user: user})
 
       assert installation["repository"]["id"] == repo.id
     end

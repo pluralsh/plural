@@ -35,22 +35,23 @@ export default function Forge() {
             </Box>
             <Box style={{height: `calc(100vh - ${TOOLBAR_SIZE})`}} direction='row' gridArea='viewport'>
               <Sidebar />
-              <Box fill>
-                <Breadcrumbs />
-                <Switch>
-                  <Route path='/accounts/edit/:section' component={EditAccount} />
-                  <Route path='/publishers/mine' component={MyPublisher} />
-                  <Route path='/publishers/:publisherId' component={Publisher} />
-                  <Route path='/publishers' component={Publishers} />
-                  <Route path='/repositories/:repositoryId/integrations' component={IntegrationPage} />
-                  <Route path='/repositories/:repositoryId' component={Repository} />
-                  <Route path='/charts/:chartId' component={Chart} />
-                  <Route path='/terraform/:tfId' component={Terraform} />
-                  <Route path='/me/edit' component={EditUser} />
-                  <Route path='/billing/:section' component={Billing} />
-                  <Route path='/me/invoices/:subscriptionId' component={Invoices} />
-                  <Route path='/' component={Explore} />
-                </Switch>
+              <Box fill pad='small' background='backgroundColor'>
+                <Box background='white' fill>
+                  <Switch>
+                    <Route path='/accounts/edit/:section' component={EditAccount} />
+                    <Route path='/publishers/mine' component={MyPublisher} />
+                    <Route path='/publishers/:publisherId' component={Publisher} />
+                    <Route path='/publishers' component={Publishers} />
+                    <Route path='/repositories/:repositoryId/integrations' component={IntegrationPage} />
+                    <Route path='/repositories/:repositoryId' component={Repository} />
+                    <Route path='/charts/:chartId' component={Chart} />
+                    <Route path='/terraform/:tfId' component={Terraform} />
+                    <Route path='/me/edit' component={EditUser} />
+                    <Route path='/billing/:section' component={Billing} />
+                    <Route path='/me/invoices/:subscriptionId' component={Invoices} />
+                    <Route path='/' component={Explore} />
+                  </Switch>
+                </Box>
               </Box>
             </Box>
           </Grid>

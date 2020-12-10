@@ -7,18 +7,19 @@ const boxStyle = css`
 export const DEFAULT_COLOR_THEME = {
   brand: '#3B1D98',
   action: '#3B1D98',
-  sidebar: '#1A1D21',
+  sidebar: '#13141a',
   sidebarHover: '#000000',
   sidebarActive: '#000000',
   focus: '#3B1D98',
   tagMedium: '#3B1D98',
   tagLight: '#624aad',
+  backgroundColor: '#20222b',
   error: '#CC4400',
 }
 
 export const DEFAULT_THEME = {
   anchor: {
-    color: {light: 'sidebar'},
+    color: {light: 'sidebar', dark: 'white'},
     hover: {
       textDecoration: 'none',
       extend: 'font-weight: 600'

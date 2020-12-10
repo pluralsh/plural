@@ -26,10 +26,15 @@ function SearchRepositories() {
   let history = useHistory()
 
   return (
-    <Box width='60%' background='#fff' direction='row' align='center'
-      round='xsmall' pad={{horizontal: 'xsmall'}} border>
+    <Box width='60%' direction='row' align='center' round='xsmall'
+         pad={{horizontal: 'xsmall'}} border='bottom'>
       <Search size='15px' />
-      <TextInput type="search" plain value={value} suggestions={suggestions} placeholder='search for a repo'
+      <TextInput
+        type="search"
+        plain
+        value={value}
+        suggestions={suggestions}
+        placeholder='search for a repo'
         onSelect={({suggestion}) => {
           setValue('')
           setSuggestions([])

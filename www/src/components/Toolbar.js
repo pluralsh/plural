@@ -5,6 +5,7 @@ import Me from './users/Me'
 import SearchRepositories from './repos/SearchRepositories'
 import { CurrentUserContext } from './login/CurrentUser'
 import { SIDEBAR_WIDTH } from './Sidebar'
+import { Breadcrumbs } from './Breadcrumbs'
 
 const FORGE_ICON = `${process.env.PUBLIC_URL}/forge.png`
 
@@ -17,6 +18,7 @@ export default function Toolbar() {
            onClick={() => history.push('/')} flex={false}>
         <Image src={FORGE_ICON} height='30px' />
       </Box>
+      <Breadcrumbs />
       <Box direction='row' width='100%' align='center' justify='center'>
         <SearchRepositories />
       </Box>

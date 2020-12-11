@@ -70,7 +70,7 @@ defmodule Core.Schema.Repository do
   def ordered(query \\ __MODULE__, order \\ [asc: :name]),
     do: from(r in query, order_by: ^order)
 
-  @valid ~w(name publisher_id description documentation secrets)a
+  @valid ~w(name publisher_id description documentation secrets private)a
 
   def changeset(model, attrs \\ %{}) do
     model

@@ -19,6 +19,7 @@ defmodule GraphQl.Schema.Repository do
     field :dashboards,    list_of(:dashboard_attributes)
     field :database,      :database_attributes
     field :shell,         :shell_attributes
+    field :private,       :boolean
   end
 
   input_object :installation_attributes do
@@ -111,6 +112,7 @@ defmodule GraphQl.Schema.Repository do
     field :name,          non_null(:string)
     field :description,   :string
     field :documentation, :string
+    field :private,       :boolean
     field :publisher,     :publisher, resolve: dataloader(User)
     field :plans,         list_of(:plan), resolve: dataloader(Payments)
     field :tags,          list_of(:tag), resolve: dataloader(Repository)

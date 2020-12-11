@@ -4,7 +4,7 @@ terraform:
   ../terraform/bootstrap/gcp-bootstrap: h1:qVFa6nD9O2HeBlcOi4YOfmfdHM2SG/YdBzUi0qIDU1A=
   ../terraform/bootstrap/kube: h1:0L7+Y8P1u9GF1BbzMjqeBz4iXpZOaavRG1bUmlYPLcA=
 helm:
-  ../charts/bootstrap: h1:AusEgdoxBrGFmwFxnA4kA/2Y9R0MNqyABgMOnvQPjRg=
+  ../charts/bootstrap: h1:NuMfphjr98Nd5m77vQdPkc7YJmKy4ZtxpTH+JKRUalQ=
   ../charts/watchman: h1:cvX5nVHicwvNmo8IQ96Flgf2ypWr197piZlNhKIJZEw=
 recipe:
   recipes/gcp-kubernetes.yaml: 4bd0bc92539465271770551498626b162646055ddf007e78342f35fe11a96399

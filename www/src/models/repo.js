@@ -1,5 +1,5 @@
 import gql from 'graphql-tag'
-import {UserFragment, PublisherFragment} from './user'
+import { UserFragment, PublisherFragment } from './user'
 
 export const DashboardFragment = gql`
   fragment DashboardFragment on Dashboard {
@@ -48,6 +48,7 @@ export const DependenciesFragment = gql`
       type
     }
     providers
+    application
     wirings {
       terraform
       helm

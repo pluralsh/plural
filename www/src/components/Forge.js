@@ -16,7 +16,7 @@ import Sidebar from './Sidebar'
 import Publishers from './publisher/Publishers'
 import Explore from './Explore'
 import { Billing } from './users/Billing'
-import BreadcrumbProvider, { Breadcrumbs } from './Breadcrumbs'
+import BreadcrumbProvider from './Breadcrumbs'
 import { EditAccount } from './accounts/EditAccount'
 
 export const TOOLBAR_SIZE = '50px'

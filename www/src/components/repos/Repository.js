@@ -46,9 +46,16 @@ function Chart({chart, hasNext}) {
         <img alt='' width='50px' height='50px' src={chart.icon || DEFAULT_CHART_ICON} />
       </Box>
       <Box gap='xxsmall' justify='center'>
-        <Text size='small' style={{fontWeight: 500}}>
-          {chart.name}
-        </Text>
+        <Box direction='row' gap='xsmall' align='center'>
+          <Text size='small' style={{fontWeight: 500}}>
+            {chart.name}
+          </Text>
+          {chart.dependencies.application && (
+            <Box round='xsmall' pad={{vertical: '3px', horizontal: '5px'}} background='light-4'>
+              <Text size='12px'>APP</Text>
+            </Box>
+          )}
+        </Box>
         <Text size='small'>
           {chart.latestVersion} {chart.description ? `- ${chart.description}` : null}
         </Text>

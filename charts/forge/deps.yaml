@@ -1,3 +1,4 @@
+application: true
 dependencies:
 - type: terraform
   name: kube

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useMutation } from 'react-apollo'
 import gql from 'graphql-tag'
-import { Box, Form, Keyboard, FormField, Text, Anchor } from 'grommet'
+import { Box, Form, Keyboard, FormField } from 'grommet'
 import { Error, Button } from 'forge-core'
 import {fetchToken, setToken} from '../helpers/authentication'
 import { Tab, TabContent, Tabs } from './utils/Tabs'
@@ -64,9 +64,6 @@ export default function Login(props) {
             <Keyboard onEnter={mutation}>
               <Form onSubmit={mutation}>
                 <Box margin={{bottom: '10px'}}>
-                  <Box direction="column" justify="center" align="center">
-                    <Text size="medium" weight="bold">{login ? 'Login' : 'Sign Up'}</Text>
-                  </Box>
                   {!login && (
                     <FormField
                       value={name}

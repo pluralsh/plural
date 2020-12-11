@@ -1,5 +1,5 @@
 import gql from 'graphql-tag'
-import {DependenciesFragment} from './repo'
+import { DependenciesFragment } from './repo'
 
 export const ChartFragment = gql`
   fragment ChartFragment on Chart {

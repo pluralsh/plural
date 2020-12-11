@@ -33,7 +33,7 @@ function SearchRepositories() {
 
   return (
     <Box width={focus ? '80%' : '50px'} direction='row' justify='end' align='center'
-         round='xsmall' style={animation} pad={{horizontal: 'xsmall'}}
+         round='xsmall' style={animation} pad={{horizontal: 'xsmall'}} focusIndicator={false}
          border={focus ? 'bottom' : null} onClick={() => setFocus(true)}>
       <Search size='20px' />
       {focus && (

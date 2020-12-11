@@ -1,5 +1,6 @@
 defmodule GraphQl.Schema.Docker do
   use GraphQl.Schema.Base
+  alias GraphQl.Middleware.Accessible
   alias GraphQl.Resolvers.{
     Repository,
     Docker
@@ -29,6 +30,7 @@ defmodule GraphQl.Schema.Docker do
   object :docker_queries do
     connection field :docker_repositories, node_type: :docker_repository do
       middleware GraphQl.Middleware.Authenticated
+      middleware Accessible
       arg :repository_id, non_null(:id)
 
       resolve &Docker.list_repositories/2

@@ -10,7 +10,8 @@ defmodule Core.Schema.Repository do
     Plan,
     Artifact,
     Database,
-    Shell
+    Shell,
+    User
   }
 
   schema "repositories" do
@@ -22,6 +23,7 @@ defmodule Core.Schema.Repository do
     field :public_key,    Piazza.Ecto.EncryptedString
     field :private_key,   Piazza.Ecto.EncryptedString
     field :secrets,       :map
+    field :private,       :boolean, default: false
 
     belongs_to :integration_resource_definition, ResourceDefinition, on_replace: :update
     belongs_to :publisher, Publisher
@@ -47,6 +49,13 @@ defmodule Core.Schema.Repository do
     from(r in query,
       join: i in ^Installation.for_user(user_id),
         on: i.repository_id == r.id)
+  end
+
+  def accessible(query \\ __MODULE__, %User{account_id: aid}) do
+    from(r in query,
+      join: p in assoc(r, :publisher),
+      where: not r.private or p.account_id == ^aid
+    )
   end
 
   def for_tag(query \\ __MODULE__, tag) do

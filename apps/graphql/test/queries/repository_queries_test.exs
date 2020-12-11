@@ -4,16 +4,14 @@ defmodule GraphQl.RepositoryQueriesTest do
 
   describe "repositories" do
     test "It can list repositories for a publisher" do
-      publisher    = insert(:publisher)
+      publisher = insert(:publisher)
       repos = insert_list(3, :repository, publisher: publisher)
 
       {:ok, %{data: %{"repositories" => found}}} = run_query("""
         query Repositories($publisherId: String) {
           repositories(publisherId: $publisherId, first: 5) {
             edges {
-              node {
-                id
-              }
+              node { id }
             }
           }
         }
@@ -21,6 +19,39 @@ defmodule GraphQl.RepositoryQueriesTest do
 
       assert from_connection(found)
              |> ids_equal(repos)
+    end
+
+    test "It can respect private repositories" do
+      account = insert(:account)
+      publisher = insert(:publisher, account: account)
+      repos = insert_list(3, :repository, publisher: publisher)
+      private = insert(:repository, private: true, publisher: publisher)
+
+      {:ok, %{data: %{"repositories" => found}}} = run_query("""
+        query Repositories($publisherId: String) {
+          repositories(publisherId: $publisherId, first: 5) {
+            edges {
+              node { id }
+            }
+          }
+        }
+      """, %{"publisherId" => publisher.id}, %{current_user: insert(:user)})
+
+      assert from_connection(found)
+             |> ids_equal(repos)
+
+      {:ok, %{data: %{"repositories" => found}}} = run_query("""
+        query Repositories($publisherId: String) {
+          repositories(publisherId: $publisherId, first: 5) {
+            edges {
+              node { id }
+            }
+          }
+        }
+      """, %{"publisherId" => publisher.id}, %{current_user: insert(:user, account: account)})
+
+      assert from_connection(found)
+             |> ids_equal([private | repos])
     end
 
     test "It can list repositories installed by a user" do
@@ -84,6 +115,32 @@ defmodule GraphQl.RepositoryQueriesTest do
 
       assert found["id"] == repo.id
       assert found["editable"]
+    end
+
+    test "It will respect privacy" do
+      user = insert(:user)
+      account = insert(:account)
+      repo = insert(:repository, private: true, publisher: build(:publisher, account: account))
+
+      {:ok, %{data: %{"repository" => nil}}} = run_query("""
+        query Repo($repoId: ID!) {
+          repository(id: $repoId) {
+            id
+            editable
+          }
+        }
+      """, %{"repoId" => repo.id}, %{current_user: user})
+
+      {:ok, %{data: %{"repository" => found}}} = run_query("""
+        query Repo($repoId: ID!) {
+          repository(id: $repoId) {
+            id
+            editable
+          }
+        }
+      """, %{"repoId" => repo.id}, %{current_user: insert(:user, account: account)})
+
+      assert found["id"] == repo.id
     end
 
     test "it can fetch a repository by name" do
@@ -196,7 +253,7 @@ defmodule GraphQl.RepositoryQueriesTest do
             }
           }
         }
-      """, %{"name" => repository.name}, %{})
+      """, %{"name" => repository.name}, %{current_user: insert(:user)})
 
       assert from_connection(found)
              |> ids_equal(integrations)
@@ -218,7 +275,7 @@ defmodule GraphQl.RepositoryQueriesTest do
             }
           }
         }
-      """, %{"name" => repository.name, "tag" => "tag"}, %{})
+      """, %{"name" => repository.name, "tag" => "tag"}, %{current_user: insert(:user)})
 
       assert from_connection(found)
              |> ids_equal([first, second])

@@ -29,14 +29,18 @@ defmodule GraphQl.Resolvers.Repository do
     end
   end
 
-  def resolve_repository(%{id: repo_id}, _) do
-    repo = Repositories.get_repository!(repo_id)
-    {:ok, preload(repo)}
+  def accessible(repo, user), do: Core.Policies.Repository.allow(repo, user, :access)
+
+  def resolve_repository(%{id: repo_id}, %{context: %{current_user: user}}) do
+    Repositories.get_repository!(repo_id)
+    |> preload()
+    |> accessible(user)
   end
 
-  def resolve_repository(%{name: repo_name}, _) do
-    repo = Repositories.get_repository_by_name!(repo_name)
-    {:ok, preload(repo)}
+  def resolve_repository(%{name: repo_name}, %{context: %{current_user: user}}) do
+    Repositories.get_repository_by_name!(repo_name)
+    |> preload()
+    |> accessible(user)
   end
 
   defp preload(repo), do: Core.Repo.preload(repo, [:publisher])
@@ -44,26 +48,30 @@ defmodule GraphQl.Resolvers.Repository do
   def resolve_installation(%{id: repo_id}, %{context: %{current_user: user}}),
     do: {:ok, Repositories.get_installation(user.id, repo_id)}
 
-  def list_repositories(%{tag: tag} = args, _) when not is_nil(tag) do
+  def list_repositories(%{tag: tag} = args, %{context: %{current_user: user}}) when not is_nil(tag) do
     Repository.for_tag(tag)
     |> Repository.ordered()
+    |> Repository.accessible(user)
     |> paginate(args)
   end
-  def list_repositories(%{publisher_id: pid} = args, _) when not is_nil(pid) do
+  def list_repositories(%{publisher_id: pid} = args, %{context: %{current_user: user}}) when not is_nil(pid) do
     Repository.for_publisher(pid)
     |> Repository.ordered()
+    |> Repository.accessible(user)
     |> paginate(args)
   end
 
   def list_repositories(args, %{context: %{current_user: user}}) do
     Repository.for_user(user.id)
     |> Repository.ordered()
+    |> Repository.accessible(user)
     |> paginate(args)
   end
 
-  def search_repositories(%{query: q} = args, _) do
+  def search_repositories(%{query: q} = args, %{context: %{current_user: user}}) do
     Repository.search(q)
     |> Repository.ordered()
+    |> Repository.accessible(user)
     |> paginate(args)
   end
 

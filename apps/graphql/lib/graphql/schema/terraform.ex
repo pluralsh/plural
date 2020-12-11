@@ -64,6 +64,7 @@ defmodule GraphQl.Schema.Terraform do
 
     connection field :terraform, node_type: :terraform do
       middleware GraphQl.Middleware.Authenticated
+      middleware GraphQl.Middleware.Accessible
       arg :repository_id, non_null(:id)
 
       resolve &Terraform.list_terraform/2

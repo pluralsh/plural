@@ -9,8 +9,12 @@ defmodule GraphQl.Resolvers.Chart do
   def resolve_chart_installation(chart, user),
     do: {:ok, Charts.get_chart_installation(chart.id, user.id)}
 
-  def resolve_chart(%{id: chart_id}, _),
-    do: {:ok, Charts.get_chart!(chart_id)}
+  def resolve_chart(%{id: chart_id}, %{context: %{current_user: user}}) do
+    Charts.get_chart!(chart_id)
+    |> accessible(user)
+  end
+
+  def accessible(chart, user), do: Core.Policies.Chart.allow(chart, user, :access)
 
   def list_charts(%{repository_id: repo_id} = args, _) do
     Chart.for_repository(repo_id)

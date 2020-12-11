@@ -84,7 +84,7 @@ defmodule Core.Services.Repositories do
 
     Parallax.new()
     |> Parallax.operation(:push, fn -> allow(repo, user, :edit) end)
-    |> Parallax.operation(:pull, fn -> allow(repo, user, :access) end)
+    |> Parallax.operation(:pull, fn -> allow(repo, user, :pull) end)
     |> Parallax.execute()
     |> Enum.filter(fn
       {_, {:ok, _}} -> true

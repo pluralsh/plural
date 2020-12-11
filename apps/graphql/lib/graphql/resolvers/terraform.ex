@@ -5,11 +5,15 @@ defmodule GraphQl.Resolvers.Terraform do
 
   def query(_, _), do: Terraform
 
-  def resolve_terraform(%{id: id}, _),
-    do: {:ok, TfSvc.get_tf!(id)}
+  def resolve_terraform(%{id: id}, %{context: %{current_user: user}}) do
+    TfSvc.get_tf!(id)
+    |> accessible(user)
+  end
 
   def resolve_terraform_installation(chart, user),
     do: {:ok, TfSvc.get_terraform_installation(chart.id, user.id)}
+
+  def accessible(tf, user), do: Core.Policies.Terraform.allow(tf, user, :access)
 
   def list_terraform(%{repository_id: repo_id} = args, _) do
     Terraform.for_repository(repo_id)

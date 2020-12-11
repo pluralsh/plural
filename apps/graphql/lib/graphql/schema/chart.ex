@@ -1,5 +1,6 @@
 defmodule GraphQl.Schema.Chart do
   use GraphQl.Schema.Base
+  alias GraphQl.Middleware.Accessible
   alias GraphQl.Resolvers.{
     Chart,
     Repository,
@@ -74,6 +75,7 @@ defmodule GraphQl.Schema.Chart do
 
     connection field :charts, node_type: :chart do
       middleware GraphQl.Middleware.Authenticated
+      middleware Accessible
       arg :repository_id, non_null(:id)
 
       resolve &Chart.list_charts/2

@@ -7,16 +7,19 @@ defmodule GraphQl.Resolvers.Recipe do
   def query(RecipeSection, _), do: RecipeSection
   def query(_, _), do: Recipe
 
-
   def list_recipes(%{repository_id: repo_id} = args, _) do
     Recipe.for_repository(repo_id)
     |> Recipe.ordered()
     |> paginate(args)
   end
 
-  def resolve_recipe(%{id: id}, _) do
-    {:ok, Recipes.get!(id) |> Recipes.hydrate()}
+  def resolve_recipe(%{id: id}, %{context: %{current_user: user}}) do
+    Recipes.get!(id)
+    |> Recipes.hydrate()
+    |> accessible(user)
   end
+
+  def accessible(recipe, user), do: Core.Policies.Recipe.allow(recipe, user, :access)
 
   def create_recipe(%{repository_id: repo_id, attributes: attrs}, %{context: %{current_user: user}})
     when is_binary(repo_id), do: Recipes.upsert(attrs, repo_id, user)

@@ -1,5 +1,6 @@
 defmodule GraphQl.Schema.Recipe do
   use GraphQl.Schema.Base
+  alias GraphQl.Middleware.Accessible
   alias GraphQl.Resolvers.{
     Recipe,
     Repository,
@@ -102,6 +103,7 @@ defmodule GraphQl.Schema.Recipe do
 
     connection field :recipes, node_type: :recipe do
       middleware GraphQl.Middleware.Authenticated
+      middleware Accessible
       arg :repository_id, non_null(:id)
 
       resolve &Recipe.list_recipes/2

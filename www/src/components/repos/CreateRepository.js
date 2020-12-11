@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Box, Text, TextInput } from 'grommet'
+import { Box, CheckBox, Text, TextInput } from 'grommet'
 import { DocumentImage } from 'grommet-icons'
 import { useMutation } from 'react-apollo'
 import { Button, SecondaryButton } from 'forge-core'
@@ -24,28 +24,23 @@ export function RepoForm({image, setImage, state, setState, label, mutation, loa
     <Box pad='medium' gap='medium'>
       <LabeledInput label='1. Upload an image'>
       <Box direction='row' gap='small' align='center'>
-          <Box
-            width='70px'
-            height='70px'
-            border
-            pad='xsmall'
-            align='center'
-            justify='center'>
-            {image ? <img alt='' width='50px' height='50px' src={image.previewUrl} /> :
-              <DocumentImage size='20px' />
-            }
-          </Box>
-          <Box gap='xsmall'>
-            <Text size='small'>{image ? image.file.name : 'Select an image'}</Text>
-            <FilePicker
-              extensions={['jpg', 'jpeg', 'png']}
-              dims={{minWidth: 100, maxWidth: 500, minHeight: 100, maxHeight: 500}}
-              onChange={(file) => generatePreview(file, setImage)}
-            >
-              <SecondaryButton round='xsmall' label='Upload an icon' />
-            </FilePicker>
-          </Box>
+        <Box width='70px' height='70px' border pad='xsmall'
+          align='center' justify='center'>
+          {image ? <img alt='' width='50px' height='50px' src={image.previewUrl} /> :
+            <DocumentImage size='20px' />
+          }
         </Box>
+        <Box gap='xsmall'>
+          <Text size='small'>{image ? image.file.name : 'Select an image'}</Text>
+          <FilePicker
+            extensions={['jpg', 'jpeg', 'png']}
+            dims={{minWidth: 100, maxWidth: 500, minHeight: 100, maxHeight: 500}}
+            onChange={(file) => generatePreview(file, setImage)}
+          >
+            <SecondaryButton round='xsmall' label='Upload an icon' />
+          </FilePicker>
+        </Box>
+      </Box>
       </LabeledInput>
       <LabeledInput label='2. Give it a name'>
         <TextInput
@@ -68,15 +63,20 @@ export function RepoForm({image, setImage, state, setState, label, mutation, loa
           addTag={(tag) => setState({...state, tags: [tag, ...(state.tags || [])]})}
           removeTag={(tag) => setState({...state, tags: state.tags.filter((t) => t !== tag)})} />
       </LabeledInput>
-      <Box direction='row' justify='end'>
+      <Box direction='row' justify='end' align='center' gap='small'>
+        <CheckBox
+          toggle
+          label={state.private ? 'private' : 'public'}
+          checked={state.private}
+          onChange={({target: {checked}}) => setState({...state, private: !!checked})} />
         <Button loading={loading} round='xsmall' label={update ? 'Update' : 'Create'} onClick={mutation} />
       </Box>
     </Box>
   )
 }
 
-function CreateRepository({publisher}) {
-  const [state, setState] = useState({name: "", description: "", tags: []})
+export default function CreateRepository({publisher}) {
+  const [state, setState] = useState({name: "", description: "", tags: [], private: false})
   const [image, setImage] = useState(null)
   const attributes = {...state, tags: state.tags.map((t) => ({tag: t}))}
   const [mutation, {loading}] = useMutation(CREATE_REPO, {
@@ -84,12 +84,10 @@ function CreateRepository({publisher}) {
     update: (cache, { data: { createRepository } }) => {
       const prev = cache.readQuery({ query: REPOS_Q, variables: {publisherId: publisher.id} })
       cache.writeQuery({query: REPOS_Q, variables: {publisherId: publisher.id}, data: {
-        ...prev,
-        repositories: {
+        ...prev, repositories: {
           ...prev.repositories,
           edges: [{__typename: 'RepositoryEdge', node: createRepository}, ...prev.repositories.edges]
-        }
-      }})
+      }}})
     }
   })
 
@@ -104,5 +102,3 @@ function CreateRepository({publisher}) {
       loading={loading} />
   )
 }
-
-export default CreateRepository

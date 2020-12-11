@@ -15,6 +15,7 @@ export const RepoFragment = gql`
     description
     documentation
     icon
+    private
     publisher {
       ...PublisherFragment
     }

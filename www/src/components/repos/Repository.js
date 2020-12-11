@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { Box, Text, Anchor, Table, TableHeader, TableRow, TableCell, TableBody, CheckBox } from 'grommet'
-import { Bundle, FormPrevious } from 'grommet-icons'
+import { Bundle, FormPrevious, Lock } from 'grommet-icons'
 import { useQuery, useMutation } from 'react-apollo'
 import { useParams, useHistory } from 'react-router-dom'
 import { Scroller, Button, SecondaryButton, Modal, ModalHeader, Tabs, TabHeader,
@@ -216,13 +216,10 @@ function DockerRepos({edges, repo, pageInfo, fetchMore}) {
       emptyState={<EmptyTab text='no repos created yet' />}
       onLoadMore={() => pageInfo.hasNextPage && fetchMore({
         variables: {dkrCursor: pageInfo.endCursor},
-        updateQuery: (prev, {fetchMoreResult: {dockerRepositories: {edges, pageInfo}}}) => (
-          { ...prev,
-            dockerRepositories: {
-              ...prev.dockerRepositories, pageInfo, edges: [...prev.dockerRepositories.edges, ...edges]
-            }
-          }
-        )
+        updateQuery: (prev, {fetchMoreResult: {dockerRepositories: {edges, pageInfo}}}) => ({
+          ...prev, dockerRepositories: {
+            ...prev.dockerRepositories, pageInfo, edges: [...prev.dockerRepositories.edges, ...edges]
+        }})
       })} />
   )
 }
@@ -256,7 +253,8 @@ function RepoUpdate({repository}) {
   const [state, setState] = useState({
     name: repository.name,
     description: repository.description,
-    tags: repository.tags.map(({tag}) => tag)
+    tags: repository.tags.map(({tag}) => tag),
+    private: repository.private
   })
   const [image, setImage] = useState(null)
   const attributes = {...state, tags: state.tags.map((t) => ({tag: t}))}
@@ -265,11 +263,7 @@ function RepoUpdate({repository}) {
     update: (cache, { data: { updateRepository } }) => {
       const prev = cache.readQuery({ query: REPO_Q, variables: {repositoryId: repository.id} })
       cache.writeQuery({query: REPO_Q, variables: {repositoryId: repository.id}, data: {
-        ...prev,
-        repository: {
-          ...prev.repository,
-          ...updateRepository
-        }
+        ...prev, repository: { ...prev.repository, ...updateRepository }
       }})
     }
   })
@@ -305,18 +299,9 @@ function UpdateSecrets({repository}) {
 
   return (
     <Box pad='small' gap='small'>
-      <AceEditor
-        mode='yaml'
-        theme='terminal'
-        height='300px'
-        width='100%'
-        name='secrets'
-        value={secrets}
-        onChange={setSecrets}
-        showGutter
-        showPrintMargin
-        highlightActiveLine
-        editorProps={{ $blockScrolling: true }} />
+      <AceEditor mode='yaml' theme='terminal' height='300px' width='100%' name='secrets'
+        value={secrets} onChange={setSecrets} showGutter showPrintMargin
+        highlightActiveLine editorProps={{ $blockScrolling: true }} />
       <Box direction='row' justify='end'>
         <Button loading={loading} label='Save' onClick={mutation} />
       </Box>
@@ -331,7 +316,10 @@ export function RepositoryIcon({size, repository, headingSize}) {
         <img alt='' width={size} height={size} src={repository.icon} />
       </Box>
       <Box pad='small' flex={false}>
-        <Text weight='bold' size={headingSize}>{repository.name}</Text>
+        <Box direction='row' gap='xsmall' align='center'>
+          <Text weight='bold' size={headingSize}>{repository.name}</Text>
+          {repository.private && <Lock size='small' />}
+        </Box>
         <Text size='small' color='dark-3'>{repository.description}</Text>
       </Box>
     </Box>

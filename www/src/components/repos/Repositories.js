@@ -1,7 +1,7 @@
 import React from 'react'
 import { Box, Text, Anchor } from 'grommet'
 import { Scroller, HoveredBackground } from 'forge-core'
-import { Trash } from 'grommet-icons'
+import { Lock, Trash } from 'grommet-icons'
 import { useQuery, useMutation } from 'react-apollo'
 import { useHistory } from 'react-router-dom'
 import { REPOS_Q, DELETE_REPO } from './queries'
@@ -12,12 +12,10 @@ function DeleteRepository({repo, publisherId}) {
   const [mutation] = useMutation(DELETE_REPO, {
     variables: {id: repo.id},
     update: (cache, { data: { deleteRepository } }) => {
-      const prev = cache.readQuery({query: REPOS_Q, variables: {publisherId}})
+      const {repositories, ...prev} = cache.readQuery({query: REPOS_Q, variables: {publisherId}})
       cache.writeQuery({query: REPOS_Q, variables: {publisherId}, data: {
-        ...prev,
-        repositories: {
-          ...prev.repositories,
-          edges: prev.repositories.edges.filter(({node}) => node.id !== deleteRepository.id)
+        ...prev, repositories: {
+          ...repositories, edges: repositories.edges.filter(({node}) => node.id !== deleteRepository.id)
         }
       }})
     }
@@ -47,9 +45,12 @@ export function RepositoryInner({repo}) {
         <img alt='' width='50px' height='50px' src={repo.icon} />
       </Box>
       <Box gap='xxsmall' justify='center' width='100%'>
-        <Text size='small' weight='bold'>
-          {repo.name}
-        </Text>
+        <Box direction='row' gap='xsmall' align='center'>
+          <Text size='small' weight='bold'>
+            {repo.name}
+          </Text>
+          {repo.private && <Lock size='small' />}
+        </Box>
         <Text size='small'>
           {repo.description}
         </Text>
@@ -79,9 +80,12 @@ export function Repository({repo, hasNext, deletable, publisherId}) {
         <img alt='' width='50px' height='50px' src={repo.icon} />
       </Box>
       <Box gap='xxsmall' justify='center' width='100%'>
-        <Anchor size='small' weight='bold' onClick={() => history.push(`/repositories/${repo.id}`)}>
-          {repo.name}
-        </Anchor>
+        <Box direction='row' gap='xsmall' align='center'>
+          <Anchor size='small' weight='bold' onClick={() => history.push(`/repositories/${repo.id}`)}>
+            {repo.name}
+          </Anchor>
+          {repo.private && <Lock size='small' />}
+        </Box>
         <Text size='small'>
           {repo.description}
         </Text>
@@ -108,29 +112,18 @@ export function RepositoryList({repositores: {edges, pageInfo}, fetchMore, publi
                                     width={`${width}%`} />)}
         </Box>
       )}
-      onLoadMore={() => {
-        if (!pageInfo.hasNextPage) return
-
-        fetchMore({
-          variables: {cursor: pageInfo.endCursor},
-          updateQuery: (prev, {fetchMoreResult}) => {
-            const {edges, pageInfo} = fetchMoreResult.repositories
-            return edges.length ? {
-              ...prev,
-              repositories: {
-                ...prev.repositories,
-                pageInfo,
-                edges: [...prev.repositories.edges, ...edges]
-              }
-            } : prev
-          }
-        })
-      }}
+      onLoadMore={() => pageInfo.hasNextPage && fetchMore({
+        variables: {cursor: pageInfo.endCursor},
+        updateQuery: (prev, {repositores: {edges, pageInfo}}) => ({
+          ...prev, repositories: {
+            ...prev.repositories, pageInfo, edges: [...prev.repositories.edges, ...edges]
+        }})
+      })}
     />
   )
 }
 
-function Repositories({publisher, deletable, columns}) {
+export default function Repositories({publisher, deletable, columns}) {
   const {loading, data, fetchMore} = useQuery(REPOS_Q, {variables: {publisherId: publisher.id}})
   if (loading || !data) return null
 
@@ -145,5 +138,3 @@ function Repositories({publisher, deletable, columns}) {
     </Box>
   )
 }
-
-export default Repositories

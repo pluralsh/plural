@@ -156,7 +156,7 @@ export function Artifact({name, type, platform, filesize, ...artifact}) {
   return (
     <>
     <Box focusIndicator={false} onClick={() => setOpen(!open)} hoverIndicator='light-3'
-      border='bottom' direction='row' gap='small' align='center' pad='small'>
+      direction='row' gap='small' align='center' pad='small'>
       <ArtifactIcon type={type} />
       <Box ref={dropRef} gap='xsmall'>
         <Box direction='row' gap='xsmall' align='center'>
@@ -192,8 +192,8 @@ export default function Artifacts({artifacts}) {
 
   return (
     <DetailContainer>
-      <Box>
-        <DetailHeader text='Artifacts' />
+      <DetailHeader text='Artifacts' />
+      <Box gap='0px' border={{side: 'between', color: 'light-5'}}>
         {artifacts.map((artifact) => <Artifact key={artifact.id} {...artifact} />)}
       </Box>
     </DetailContainer>

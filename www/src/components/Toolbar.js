@@ -13,13 +13,13 @@ export default function Toolbar() {
   const me = useContext(CurrentUserContext)
   let history = useHistory()
   return (
-    <Box direction='row' fill='horizontal'>
+    <Box direction='row' fill='horizontal' align='center' gap='small'>
       <Box focusIndicator={false} width={SIDEBAR_WIDTH} height='100%' justify='center' align='center'
            onClick={() => history.push('/')} flex={false}>
         <Image src={FORGE_ICON} height='30px' />
       </Box>
       <Breadcrumbs />
-      <Box direction='row' width='100%' align='center' justify='center'>
+      <Box direction='row' width='100%' align='center' justify='end'>
         <SearchRepositories />
       </Box>
       <Me me={me} />

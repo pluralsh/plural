@@ -14,6 +14,7 @@ export const DEFAULT_COLOR_THEME = {
   tagMedium: '#3B1D98',
   tagLight: '#624aad',
   backgroundColor: '#20222b',
+  orange: '#d7722c',
   error: '#CC4400',
 }
 

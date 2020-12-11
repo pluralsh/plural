@@ -1,11 +1,9 @@
-import React, { useState, useRef, useContext } from 'react'
+import React, { useState, useRef } from 'react'
 import { Box, Text } from 'grommet'
 import { useHistory, useLocation } from 'react-router-dom'
 import { Tooltip } from './utils/Tooltip'
 import { Book, Group, Package } from 'grommet-icons'
 import { FaCreditCard } from 'react-icons/fa'
-import { CurrentUserContext } from './login/CurrentUser'
-import Avatar from './users/Avatar'
 
 const SIDEBAR_ROW_HEIGHT = '50px'
 const ICON_HEIGHT = '20px'
@@ -53,19 +51,12 @@ const OPTIONS = [
 ]
 
 export default function Sidebar() {
-  let history = useHistory()
-  const me = useContext(CurrentUserContext)
   const loc = useLocation()
   const active = Math.max(OPTIONS.findIndex(({path}) => path === loc.pathname), 0)
 
   return (
     <Box width={SIDEBAR_WIDTH} background='sidebar' height='100%' elevation='medium' flex={false}>
       {OPTIONS.map((opt, ind) => <SidebarIcon key={opt.path} selected={ind === active} {...opt} />)}
-      <Box fill='vertical' justify='end' pad='small' align='center'>
-        <Box onClick={() => history.push('/me/edit')}>
-          <Avatar size='40px' user={me} />
-        </Box>
-      </Box>
     </Box>
   )
 }

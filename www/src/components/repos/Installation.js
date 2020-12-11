@@ -10,8 +10,8 @@ import SubscribeModal from '../payments/CreateSubscription'
 import { SubscriptionBadge } from '../payments/Subscription'
 import UpdatePlan from '../payments/UpdatePlan'
 import { EditInstallation } from './EditInstallation'
+import { Tab, TabContent, Tabs } from '../utils/Tabs'
 import './container.css'
-import './installation.css'
 
 function Plans({repository}) {
   const [open, setOpen] = useState(false)
@@ -55,31 +55,6 @@ export function DetailContainer({children, ...rest}) {
   )
 }
 
-const BORDER_ATTRS = {side: 'top', size: '2px'}
-
-function Tab({name, setTab, selected}) {
-  const active = selected === name
-
-  return (
-    <Box
-      flex={false}
-      background={active ? 'white' : 'light-1'}
-      className={'installation-tab' + (active ? ' selected' : ' unselected')}
-      pad='small' focusIndicator={false}
-      border={active ? {...BORDER_ATTRS, color: 'brand'} : null}
-      hoverIndicator='light-2'
-      onClick={active ? null : () => setTab(name)}>
-      <Text size='small' weight={500}>{name}</Text>
-    </Box>
-  )
-}
-
-function TabFiller() {
-  return (
-    <Box fill='horizontal' border={{side: 'bottom', color: 'light-5'}} />
-  )
-}
-
 function InstallationInner({installation, repository}) {
   const [mutation] = useMutation(INSTALL_REPO, {
     variables: {repositoryId: repository.id},
@@ -115,13 +90,12 @@ export default function Installation({repository, onUpdate, noHelm, open}) {
 
   return (
     <Box>
-      <Box flex={false} className='installation-tabs' direction='row'>
+      <Tabs>
         {(!noHelm || installation) && <Tab name='Installation' setTab={setTab} selected={tab} />}
         {(hasPlans || repository.editable) && <Tab name='Plans' setTab={setTab} selected={tab} />}
         <Tab name='Configuration' setTab={setTab} selected={tab} />
-        <TabFiller />
-      </Box>
-      <Box className='installation-container'>
+      </Tabs>
+      <TabContent>
         {tab === 'Installation' && <InstallationInner installation={installation} repository={repository} />}
         {tab === 'Plans' && <Plans repository={repository} />}
         {tab === 'Configuration' && (
@@ -131,7 +105,7 @@ export default function Installation({repository, onUpdate, noHelm, open}) {
             open={open}
             onUpdate={onUpdate} />
         )}
-      </Box>
+      </TabContent>
     </Box>
   )
 }

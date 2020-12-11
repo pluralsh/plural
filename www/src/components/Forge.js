@@ -19,7 +19,7 @@ import { Billing } from './users/Billing'
 import BreadcrumbProvider, { Breadcrumbs } from './Breadcrumbs'
 import { EditAccount } from './accounts/EditAccount'
 
-export const TOOLBAR_SIZE = '60px'
+export const TOOLBAR_SIZE = '50px'
 
 export default function Forge() {
   return (

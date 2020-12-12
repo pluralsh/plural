@@ -7,6 +7,7 @@ import { FormPrevious, Cube, FormNext, Trash, Add } from 'grommet-icons'
 import { useMutation } from 'react-apollo'
 import { CREATE_PLAN } from './queries'
 import { REPO_Q } from '../repos/queries'
+import { hover } from './Plan'
 
 const FEATURES = 'features'
 const LINE_ITEMS = 'items'
@@ -282,18 +283,9 @@ function FormSwitch({display, ...rest}) {
 }
 
 export function CreateAnchor({onClick}) {
-  const [hover, setHover] = useState(false)
   return (
-    <Box
-      border={{color: hover ? 'brand' : 'light-5'}}
-      focusIndicator={false}
-      onMouseLeave={() => setHover(false)}
-      onMouseEnter={() => setHover(true)}
-      pad='small'
-      direction='row'
-      gap='xsmall'
-      align='center'
-      onClick={onClick}>
+    <Box as={hover} border={{color: 'light-5'}} focusIndicator={false} pad='small'
+      direction='row' gap='xsmall' align='center' onClick={onClick}>
       <Add size='small' />
       <Text size='small'>Create plan</Text>
     </Box>

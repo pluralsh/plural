@@ -16,9 +16,7 @@ export const RepoFragment = gql`
     documentation
     icon
     private
-    publisher {
-      ...PublisherFragment
-    }
+    publisher { ...PublisherFragment }
   }
   ${PublisherFragment}
 `;
@@ -30,12 +28,8 @@ export const InstallationFragment = gql`
     license
     autoUpgrade
     trackTag
-    repository {
-      ...RepoFragment
-    }
-    user {
-      ...UserFragment
-    }
+    repository { ...RepoFragment }
+    user { ...UserFragment }
   }
   ${RepoFragment}
   ${UserFragment}
@@ -47,13 +41,11 @@ export const DependenciesFragment = gql`
       name
       repo
       type
+      version
     }
     providers
     application
-    wirings {
-      terraform
-      helm
-    }
+    wirings { terraform helm }
   }
 `;
 
@@ -64,12 +56,8 @@ export const IntegrationFragment = gql`
     icon
     sourceUrl
     description
-    tags {
-      tag
-    }
-    publisher {
-      ...PublisherFragment
-    }
+    tags { tag }
+    publisher { ...PublisherFragment }
   }
   ${PublisherFragment}
 `;

@@ -7,3 +7,8 @@ export const ProviderIcons = {
   GCP: process.env.PUBLIC_URL + '/gcp.png',
   AWS: process.env.PUBLIC_URL + '/aws.png'
 }
+
+export const Tools = {
+  HELM: 'HELM',
+  TERRAFORM: 'TERRAFORM'
+}

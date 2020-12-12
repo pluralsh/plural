@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
+import styled from 'styled-components'
 import { Anchor, Box, Collapsible, Stack, Text } from 'grommet'
 import { Cube, Group, Checkmark, Down, Next } from 'grommet-icons'
+import { normalizeColor } from 'grommet/utils'
 
 export function LineItemIcon({dimension, size}) {
   switch (dimension) {
@@ -53,6 +55,12 @@ function Features({features, open}) {
   )
 }
 
+export const hover = styled.div`
+  &:hover {
+    border-color: ${props => normalizeColor('brand', props.theme)}
+  }
+`;
+
 export default function Plan({approvePlan, subscription, ...plan}) {
   const {name, cost, period, lineItems: {items, included}, metadata} = plan
   const [open, setOpen] = useState(false)
@@ -65,8 +73,8 @@ export default function Plan({approvePlan, subscription, ...plan}) {
   const subscribed = subscription && subscription.plan.id === plan.id
   return (
     <Stack width='70%' anchor='top-right'>
-      <Box pad='small' focusIndicator={false}
-        border={{color: subscribed ? 'brand' : 'light-5'}} onClick={subscribed ? null : () => approvePlan(plan)}>
+      <Box as={hover} pad='small' focusIndicator={false} border={{color: subscribed ? 'brand' : 'light-5'}}
+           onClick={subscribed ? null : () => approvePlan(plan)}>
         <Box direction='row' align='center'>
           <Box gap='xsmall' fill='horizontal' direction='row'>
             <Text size='small' weight='bold'>{name}</Text>

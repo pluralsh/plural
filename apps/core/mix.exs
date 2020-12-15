@@ -31,13 +31,13 @@ defmodule Core.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ecto_sql, "~> 3.0"},
+      {:ecto_sql, "~> 3.3.4"},
       {:ecto, "~> 3.3.2", override: true},
       {:postgrex, ">= 0.0.0"},
       {:ex_machina, "~> 2.3", only: :test},
       {:comeonin, "~> 5.1.2"},
       {:argon2_elixir, "~> 2.0"},
-      {:piazza_core, "~> 0.3"},
+      {:piazza_core, "~> 0.3.1"},
       {:bamboo, "~> 1.4"},
       {:parallax, "~> 1.0"},
       {:bourne, "~> 1.1"},

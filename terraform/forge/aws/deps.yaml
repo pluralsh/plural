@@ -1,5 +1,5 @@
 dependencies:
-- name: gcp-bootstrap
+- name: aws-bootstrap
   repo: bootstrap
   type: terraform
 - name: kube
@@ -7,8 +7,8 @@ dependencies:
   type: terraform
 
 providers:
-- gcp
-description: forge gcp credentials
+- aws
+description: forge aws setup
 version: 0.1.0
 
 wirings:

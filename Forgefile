@@ -2,3 +2,4 @@ REPO forge
 
 HELM charts/forge
 TF terraform/forge/forge-gcp
+TF terraform/forge/aws

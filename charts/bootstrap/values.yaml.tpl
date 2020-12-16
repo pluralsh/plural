@@ -5,7 +5,7 @@ external-dns:
     create: true
     serviceAccountName: {{ default "external-dns" .Values.externaldns_service_account }}
     serviceAccountAnnotations:
-      eks.amazonaws.com/role-arn: "arn:aws:iam::{{ .Project }}:role/cluster-autoscaler"
+      eks.amazonaws.com/role-arn: "arn:aws:iam::{{ .Project }}:role/externaldns"
   domainFilters:
   - {{ .Values.dns_domain }}
   google:

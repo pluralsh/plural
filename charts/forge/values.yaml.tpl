@@ -41,4 +41,4 @@ api:
 chartmuseum:
   bucket: {{ .Values.chartmuseum_bucket }}
 
-license: {{ .License }}
+license: {{ .License | quote }}

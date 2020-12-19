@@ -1,6 +1,7 @@
 REPO bootstrap
 
 RECIPE recipes/gcp-kubernetes.yaml
+RECIPE recipes/aws-k8s.yaml
 
 HELM ../charts/bootstrap
 

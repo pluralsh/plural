@@ -7,6 +7,7 @@ helm:
   ../charts/bootstrap: h1:cjw9YHj2Tjk6rP9mcY8i6ZAXCiOEYUETVpp+93yaQcM=
   ../charts/watchman: h1:cvX5nVHicwvNmo8IQ96Flgf2ypWr197piZlNhKIJZEw=
 recipe:
+  recipes/aws-k8s.yaml: 1a4c39839f3fc1214a32e8bd3614aac83da86ae510038211a48ba1e9e2df0523
   recipes/gcp-kubernetes.yaml: 4bd0bc92539465271770551498626b162646055ddf007e78342f35fe11a96399
 integration: {}
 shell: {}

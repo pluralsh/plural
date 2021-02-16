@@ -45,3 +45,13 @@ release :forge do
     drop: "rel/commands/drop.sh"
   ]
 end
+
+release :rtc do
+  set version: version
+  set applications: [
+    :runtime_tools,
+    rtc: :permanent,
+    core: :permanent,
+    graphql: :load
+  ]
+end

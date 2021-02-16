@@ -11,6 +11,10 @@ config :api, ApiWeb.Endpoint,
   http: [port: 4002],
   server: false
 
+config :rtc, RtcWeb.Endpoint,
+  http: [port: 4002],
+  server: false
+
 config :logger, level: :warn
 
 path = __ENV__.file |> Path.dirname()

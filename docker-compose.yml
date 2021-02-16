@@ -9,6 +9,17 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
     - database_data:/var/lib/postgresql/data
+  rabbit:
+    image: "rabbitmq:3-management"
+    hostname: "rabbit1"
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
+      RABBITMQ_DEFAULT_USER: "rabbitmq"
+      RABBITMQ_DEFAULT_PASS: "rabbitmq"
+      RABBITMQ_DEFAULT_VHOST: "/"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
   # chartmuseum:
   #   image: chartmuseum/chartmuseum:latest
   #   volumes:

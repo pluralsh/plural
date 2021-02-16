@@ -4,7 +4,7 @@ locals {
 }
 
 provider "google" {
-  version = "2.5.1"
+  version = "3.51.0"
   project = var.gcp_project_id
   region  = local.gcp_region
 }
@@ -101,6 +101,10 @@ resource "google_container_cluster" "cluster" {
   network    = var.vpc_network_name
   subnetwork = var.vpc_subnetwork_name
 
+  workload_identity_config {
+    identity_namespace = "${var.gcp_project_id}.svc.id.goog"
+  }
+
   ip_allocation_policy {
     use_ip_aliases = true
 
@@ -158,6 +162,10 @@ resource "google_container_node_pool" "node_pool" {
     disk_type = lookup(var.node_pools[count.index], "node_config_disk_type", "pd-standard")
 
     preemptible = lookup(var.node_pools[count.index], "node_config_preemptible", false)
+
+    workload_metadata_config = {
+      node_metadata = "GKE_METADATA_SERVER"
+    }
 
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform",

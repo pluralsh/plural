@@ -13,8 +13,18 @@ config :api, ApiWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "1rkd5+lxJbdTadyxW7qF/n1fNzKPV010PKf8SEGmUrXwMw0iAZyoyZgWEwr6nmCJ",
   render_errors: [view: ApiWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: Api.PubSub, adapter: Phoenix.PubSub.PG2],
   server: true
+
+
+# Configures the endpoint
+config :rtc, RtcWeb.Endpoint,
+  url: [host: "localhost"],
+  secret_key_base: "xFC5PDvhCrg1iTQ3FM6uMfDGVIIIHE5wdyIwn9FXCwJXOQsTQ/kPFRtP5z6Z/1/a",
+  render_errors: [view: RtcWeb.ErrorView, accepts: ~w(html json), layout: false],
+  pubsub_server: Rtc.PubSub,
+  live_view: [signing_salt: "lFfrgo20"],
+  server: true
+
 
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
@@ -55,6 +65,14 @@ config :core, Core.PartitionedCache,
 config :core, Core.Cache,
   local: Core.Cache.Local,
   node_selector: Nebulex.Adapters.Dist
+
+config :core, Core.Aquaduct.Broker,
+  adapter: ConduitAMQP,
+  url: "amqp://rabbitmq:rabbitmq@localhost"
+
+config :rtc, Rtc.Aquaduct.Broker,
+  adapter: ConduitAMQP,
+  url: "amqp://rabbitmq:rabbitmq@localhost"
 
 config :libcluster, :topologies, []
 

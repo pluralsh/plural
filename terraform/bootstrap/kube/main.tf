@@ -4,7 +4,7 @@ locals {
 }
 
 provider "google" {
-  version = "2.5.1"
+  version = "3.51.0"
   project = var.gcp_project_id
   region  = local.gcp_region
 }

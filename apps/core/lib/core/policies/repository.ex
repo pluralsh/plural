@@ -13,6 +13,9 @@ defmodule Core.Policies.Repository do
     can?(user, repo, policy)
   end
 
+  def can?(%User{} = user, %Repository{} = repo, :support),
+    do: check_rbac(user, :support, repository: repo.name)
+
   def can?(%User{account_id: aid}, %Repository{private: true} = repo, :access) do
     case Core.Repo.preload(repo, [:publisher]) do
       %{publisher: %{account_id: ^aid}} -> :continue
@@ -41,6 +44,7 @@ defmodule Core.Policies.Repository do
 
   def can?(%User{id: user_id}, %Installation{user_id: user_id}, action) when action in [:edit, :access],
     do: :continue
+
   def can?(%User{} = user, %Installation{} = inst, :create) do
     %{repository: repo} = Core.Repo.preload(inst, [:repository])
     check_rbac(user, :install, repository: repo.name)

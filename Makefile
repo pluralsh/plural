@@ -40,3 +40,6 @@ connectdb: ## proxies the db in kubernetes via kubectl
 
 web: ## starts a local webserver
 	cd www && npm start
+
+migration:
+	cd apps/core && MIX_ENV=test mix ecto.gen.migration $(name)

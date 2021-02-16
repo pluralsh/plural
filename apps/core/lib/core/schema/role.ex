@@ -10,7 +10,7 @@ defmodule Core.Schema.Role do
     field :repositories, {:array, :string}
 
     embeds_one :permissions, Permissions, on_replace: :update do
-      boolean_fields [:install, :publish, :billing, :users]
+      boolean_fields [:install, :publish, :billing, :users, :support]
     end
 
     belongs_to :account, Account

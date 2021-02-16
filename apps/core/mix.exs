@@ -57,6 +57,8 @@ defmodule Core.MixProject do
       {:tzdata, "~> 0.1.8", override: true},
       {:prometheus_ex, "~> 3.0"},
       {:stripity_stripe, "~> 2.7"},
+      {:conduit, "~> 0.12"},
+      {:conduit_amqp, "~> 0.6.3"},
 
       {:mimic, "~> 1.1", only: :test}
     ]

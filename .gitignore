@@ -31,3 +31,5 @@ erl_crash.dump
 
 /cmd/build
 /cmd/forge
+
+log/

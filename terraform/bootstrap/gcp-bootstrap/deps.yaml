@@ -4,4 +4,4 @@ providers:
 provider_wirings:
   cluster: module.gcp-bootstrap.cluster_name
 description: Creates a GKE cluster and prepares it for bootstrapping
-version: 0.1.0
+version: 0.1.1

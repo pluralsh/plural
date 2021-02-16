@@ -221,4 +221,29 @@ defmodule Core.Factory do
       tag: sequence(:vt, &"tag-#{&1}")
     }
   end
+
+  def incident_factory do
+    %Schema.Incident{
+      title: "wtf",
+      repository: build(:repository),
+      creator: build(:user),
+      severity: 3
+    }
+  end
+
+  def incident_message_factory do
+    %Schema.IncidentMessage{
+      text: "message",
+      incident: build(:incident),
+      creator: build(:user)
+    }
+  end
+
+  def reaction_factory do
+    %Schema.Reaction{
+      message: build(:incident_message),
+      name: "smile",
+      creator: build(:user)
+    }
+  end
 end

@@ -22,13 +22,33 @@ defmodule RtcWeb.ChannelCase do
       # Import conveniences for testing with channels
       import Phoenix.ChannelTest
       import RtcWeb.ChannelCase
+      use Absinthe.Phoenix.SubscriptionTest, schema: GraphQl
+      import Core.Factory
+      import Core.TestHelpers
 
       # The default endpoint for testing
       @endpoint RtcWeb.Endpoint
+
+      def establish_socket(user) do
+        {:ok, socket} = mk_socket(user)
+        Absinthe.Phoenix.SubscriptionTest.join_absinthe(socket)
+      end
+
+      def mk_socket(user) do
+        connect(RtcWeb.UserSocket, %{"token" => Rtc.TestUtils.jwt(user)}, %{})
+      end
     end
   end
 
-  setup _tags do
+  setup tags do
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Core.Repo)
+
+    unless tags[:async] do
+      Ecto.Adapters.SQL.Sandbox.mode(Core.Repo, {:shared, self()})
+    end
+
     :ok
   end
+
+  def publish_event(event), do: Rtc.Conduit.Subscriber.publish_event(event)
 end

@@ -16,7 +16,8 @@ defmodule Forge.MixProject do
     [
       {:distillery, "~> 2.1"},
       {:x509, "~> 0.7.0"},
-      {:ecto, "~> 3.3.2", override: true}
+      {:ecto, "~> 3.3.2", override: true},
+      {:absinthe_plug, "~> 1.5.0", override: true},
     ]
   end
 end

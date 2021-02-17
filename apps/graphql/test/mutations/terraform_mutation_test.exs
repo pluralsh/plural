@@ -67,7 +67,7 @@ defmodule GraphQl.Terraform.MutationsTest do
       terraform = insert(:terraform, repository: repo)
 
       {:ok, %{data: %{"uploadTerraform" => tf}}} = run_query("""
-        mutation UploadTerraform($id: ID!, $name: String!, $attributes: TerraformAttributes!) {
+        mutation UploadTerraform($id: String!, $name: String!, $attributes: TerraformAttributes!) {
           uploadTerraform(repositoryName: $id, name: $name, attributes: $attributes) {
             id
             name

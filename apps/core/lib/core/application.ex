@@ -7,11 +7,19 @@ defmodule Core.Application do
       Core.PubSub.Broadcaster,
       Core.ReplicatedCache,
       Core.Cache,
-    ] ++ consumers()
+    ] ++ conf(:consumers, [])
+      ++ broker()
 
     opts = [strategy: :one_for_one, name: Core.Supervisor]
     Supervisor.start_link(children, opts)
   end
 
-  defp consumers(), do: Application.get_env(:core, :consumers, [])
+  def broker() do
+    case conf(:start_broker) do
+      true -> [{Core.Conduit.Broker, []}]
+      _ -> []
+    end
+  end
+
+  defp conf(value, default \\ nil), do: Application.get_env(:core, value, default)
 end

@@ -8,7 +8,7 @@ defmodule GraphQl.RepositoryQueriesTest do
       repos = insert_list(3, :repository, publisher: publisher)
 
       {:ok, %{data: %{"repositories" => found}}} = run_query("""
-        query Repositories($publisherId: String) {
+        query Repositories($publisherId: ID) {
           repositories(publisherId: $publisherId, first: 5) {
             edges {
               node { id }
@@ -28,7 +28,7 @@ defmodule GraphQl.RepositoryQueriesTest do
       private = insert(:repository, private: true, publisher: publisher)
 
       {:ok, %{data: %{"repositories" => found}}} = run_query("""
-        query Repositories($publisherId: String) {
+        query Repositories($publisherId: ID) {
           repositories(publisherId: $publisherId, first: 5) {
             edges {
               node { id }
@@ -41,7 +41,7 @@ defmodule GraphQl.RepositoryQueriesTest do
              |> ids_equal(repos)
 
       {:ok, %{data: %{"repositories" => found}}} = run_query("""
-        query Repositories($publisherId: String) {
+        query Repositories($publisherId: ID) {
           repositories(publisherId: $publisherId, first: 5) {
             edges {
               node { id }
@@ -148,7 +148,7 @@ defmodule GraphQl.RepositoryQueriesTest do
       repo = insert(:repository)
 
       {:ok, %{data: %{"repository" => found}}} = run_query("""
-        query Repo($name: ID!) {
+        query Repo($name: String!) {
           repository(name: $name) {
             id
             editable

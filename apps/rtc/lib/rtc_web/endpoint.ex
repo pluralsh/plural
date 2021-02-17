@@ -1,5 +1,6 @@
 defmodule RtcWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :rtc
+  use Absinthe.Phoenix.Endpoint
 
   # The session will be stored in the cookie and signed,
   # this means its contents can be read but not tampered with.
@@ -42,6 +43,8 @@ defmodule RtcWeb.Endpoint do
 
   plug Plug.MethodOverride
   plug Plug.Head
+  plug RtcWeb.Plugs.MetricsExporter
+
   plug Plug.Session, @session_options
   plug RtcWeb.Router
 end

@@ -5,6 +5,10 @@ image:
   tag: '0.1.0'
   pullPolicy: Always
 
+rtc:
+  image: dkr.piazza.app/forge/rtc
+  tag: '0.1.0'
+
 www:
   image: dkr.piazza.app/forge/forge-www
   tag: '0.1.0'
@@ -18,6 +22,7 @@ api:
   bucket: forge-assets
 
 dbPasswordSecret: forge-postgresql
+rabbitPasswordSecret: forge-rabbitmq
 
 chartmuseum:
   repository: chartmuseum/chartmuseum
@@ -64,11 +69,10 @@ registry:
     storage:
       cache:
         blobdescriptor: inmemory
-    prometheus:
-      enabled: true
-    storage:
       gcs:
         keyfile: /etc/docker/forge/gcp.json
+    prometheus:
+      enabled: true      
     auth:
       token:
         realm: forge.piazza.app/dkr

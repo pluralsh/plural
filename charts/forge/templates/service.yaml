@@ -25,6 +25,30 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  name: forge-rtc
+  labels:
+    app: forge-rtc
+{{ include "forge.labels" . | indent 4 }}
+  annotations:
+    cloud.google.com/neg: '{"ingress": true}'
+spec:
+  type: NodePort
+  ports:
+  - port: {{ .Values.api.port }}
+    targetPort: http
+    protocol: TCP
+    name: http
+  - port: 4369
+    targetPort: epmd
+    protocol: TCP
+    name: epmd
+  selector:
+    app.kubernetes.io/name: forge-rtc
+    app.kubernetes.io/instance: {{ .Release.Name }}
+---
+apiVersion: v1
+kind: Service
+metadata:
   name: chartmuseum
   labels:
 {{ include "forge.labels" . | indent 4 }}

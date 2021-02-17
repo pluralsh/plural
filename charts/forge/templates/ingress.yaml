@@ -43,6 +43,10 @@ spec:
         backend:
           serviceName: forge-api
           servicePort: http
+      - path: /socket.*
+        backend:
+          serviceName: forge-rtc
+          servicePort: http
       - backend:
           serviceName: forge-www
           servicePort: http

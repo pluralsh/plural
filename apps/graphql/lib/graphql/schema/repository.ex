@@ -3,7 +3,8 @@ defmodule GraphQl.Schema.Repository do
   alias GraphQl.Resolvers.{
     User,
     Payments,
-    Repository
+    Repository,
+    Dependencies
   }
 
   ### INPUTS
@@ -258,6 +259,14 @@ defmodule GraphQl.Schema.Repository do
       arg :type,            :string
 
       resolve &Repository.list_integrations/2
+    end
+
+    field :closure, :closure do
+      middleware GraphQl.Middleware.Authenticated
+      arg :id, non_null(:id)
+      arg :type, non_null(:dependency_type)
+
+      resolve &Dependencies.resolve_closure/2
     end
   end
 

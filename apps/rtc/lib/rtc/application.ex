@@ -6,16 +6,16 @@ defmodule Rtc.Application do
   use Application
 
   def start(_type, _args) do
+    topologies = Application.get_env(:libcluster, :topologies)
+
+    RtcWeb.Plugs.MetricsExporter.setup()
     children = [
-      # Start the Telemetry supervisor
       RtcWeb.Telemetry,
-      # Start the PubSub system
       {Phoenix.PubSub, name: Rtc.PubSub},
-      # Start the Endpoint (http/https)
-      RtcWeb.Endpoint
-      # Start a worker by calling: Rtc.Worker.start_link(arg)
-      # {Rtc.Worker, arg}
-    ]
+      RtcWeb.Endpoint,
+      {Cluster.Supervisor, [topologies, [name: Rtc.ClusterSupervisor]]},
+      {Absinthe.Subscription, RtcWeb.Endpoint},
+    ] ++ broker()
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
@@ -28,5 +28,12 @@ defmodule Rtc.Application do
   def config_change(changed, _new, removed) do
     RtcWeb.Endpoint.config_change(changed, removed)
     :ok
+  end
+
+  def broker() do
+    case Application.get_env(:rtc, :start_broker) do
+      true -> [{Rtc.Aquaduct.Broker, []}]
+      _ -> []
+    end
   end
 end

@@ -22,6 +22,14 @@ config :core, :jwt,
   iss: get_env("JWT_ISS"),
   aud: get_env("JWT_AUD")
 
+config :core, Core.Conduit.Broker,
+  adapter: ConduitAMQP,
+  url: "amqp://user:#{get_env("RABBITMQ_PASSWORD")}@piazza-rabbitmq"
+
+config :rtc, Rtc.Conduit.Broker,
+  adapter: ConduitAMQP,
+  url: "amqp://user:#{get_env("RABBITMQ_PASSWORD")}@piazza-rabbitmq"
+
 config :piazza_core, aes_key: get_env("AES_KEY")
 
 config :core, :chartmuseum, "http://chartmuseum:8080"

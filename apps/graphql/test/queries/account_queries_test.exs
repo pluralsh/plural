@@ -61,7 +61,7 @@ defmodule GraphQl.AccountQueriesTest do
       invite = insert(:invite)
 
       {:ok, %{data: %{"invite" => found}}} = run_query("""
-        query Invite($id: ID!) {
+        query Invite($id: String!) {
           invite(id: $id) { email }
         }
       """, %{"id" => invite.secure_id})

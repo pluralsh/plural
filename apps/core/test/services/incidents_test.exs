@@ -1,6 +1,7 @@
 defmodule Core.Services.IncidentsTest do
   use Core.SchemaCase
   alias Core.Services.Incidents
+  alias Core.PubSub
 
   describe "#create_incident" do
     test "repository installers can create incidents" do
@@ -18,6 +19,8 @@ defmodule Core.Services.IncidentsTest do
       assert incident.creator_id == user.id
       assert incident.status == :open
       assert incident.title == "wtf"
+
+      assert_receive {:event, %PubSub.IncidentCreated{item: ^incident}}
     end
 
     test "non-installers cannot create incidents" do
@@ -39,6 +42,8 @@ defmodule Core.Services.IncidentsTest do
       {:ok, updated} = Incidents.update_incident(%{severity: 0}, incident.id, incident.creator)
 
       assert updated.severity == 0
+
+      assert_receive {:event, %PubSub.IncidentUpdated{item: ^updated}}
     end
 
     test "incident owners can update" do
@@ -71,6 +76,8 @@ defmodule Core.Services.IncidentsTest do
       {:ok, accepted} = Incidents.accept_incident(incident.id, user)
 
       assert accepted.owner_id == user.id
+
+      assert_receive {:event, %PubSub.IncidentUpdated{item: ^accepted}}
     end
 
     test "non-account operators cannot accept" do
@@ -91,6 +98,8 @@ defmodule Core.Services.IncidentsTest do
       assert msg.creator_id == user.id
       assert msg.incident_id == incident.id
       assert msg.text == "hey"
+
+      assert_receive {:event, %PubSub.IncidentMessageCreated{item: ^msg}}
     end
 
     test "members on the owner's account can message" do
@@ -120,6 +129,8 @@ defmodule Core.Services.IncidentsTest do
 
       assert updated.id == msg.id
       assert updated.text == "updated"
+
+      assert_receive {:event, %PubSub.IncidentMessageUpdated{item: ^updated}}
     end
 
     test "non-creators cannot update" do
@@ -136,6 +147,8 @@ defmodule Core.Services.IncidentsTest do
       {:ok, deleted} = Incidents.delete_message(msg.id, msg.creator)
 
       refute refetch(deleted)
+
+      assert_receive {:event, %PubSub.IncidentMessageDeleted{item: ^deleted}}
     end
 
     test "non-creators cannot update" do

@@ -57,6 +57,105 @@ spec:
               key: gcp.json
         - name: GCS_BUCKET
           value: {{ .Values.api.bucket }}
+        - name: RABBITMQ_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.rabbitPasswordSecret }}
+              key: rabbitmq-password
+        ports:
+        - name: http
+          containerPort: {{ .Values.api.port }}
+          protocol: TCP
+        - name: epmd
+          containerPort: 4369
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: forge-rtc
+  labels:
+{{ include "forge.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: forge-rtc
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: forge-rtc
+        app.kubernetes.io/instance: {{ .Release.Name }}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/metrics"
+        prometheus.io/port: {{ .Values.api.port | quote }}
+    spec:
+      serviceAccountName: forge
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 6 }}
+    {{- end }}
+      containers:
+      - name: rtc
+        image: "{{ .Values.rtc.repository }}:{{ .Values.rtc.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        envFrom:
+        - secretRef:
+            name: forge-env
+        env:
+        - name: HOST
+          value: {{ .Values.ingress.dns }}
+        - name: DEPLOYED_AT
+          value: {{ now | unixEpoch | quote }}
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.dbPasswordSecret }}
+              key: postgresql-password
+        - name: GCP_CREDENTIALS
+          valueFrom:
+            secretKeyRef:
+              name: forge-serviceaccount
+              key: gcp.json
+        - name: GCS_BUCKET
+          value: {{ .Values.api.bucket }}
+        - name: RABBITMQ_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.rabbitPasswordSecret }}
+              key: rabbitmq-password
         ports:
         - name: http
           containerPort: {{ .Values.api.port }}

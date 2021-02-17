@@ -4,10 +4,9 @@ defmodule Core.Policies.Incidents do
 
   @preloads ~w(creator owner)a
 
-  def can?(%User{id: user_id}, %Incident{} = incident, :create) do
-    %{repository: repo} = Core.Repo.preload(incident, [:repository])
-    if Core.Services.Repositories.get_installation(user_id, repo.id),
-          do: :continue, else: {:error, :forbidden}
+  def can?(%User{id: user_id}, %Incident{repository_id: repo_id}, :create) do
+    if Core.Services.Repositories.get_installation(user_id, repo_id),
+        do: :continue, else: {:error, :forbidden}
   end
 
   def can?(%User{id: owner_id}, %Incident{owner_id: owner_id}, :edit), do: :pass

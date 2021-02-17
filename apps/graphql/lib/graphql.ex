@@ -3,8 +3,8 @@ defmodule GraphQl do
   use Absinthe.Relay.Schema, :modern
 
   import_types Absinthe.Plug.Types
-  import_types GraphQl.Schema.Misc
   import_types GraphQl.Schemas.Upload
+  import_types GraphQl.Schema.Misc
   import_types GraphQl.Schema.User
   import_types GraphQl.Schema.Payments
   import_types GraphQl.Schema.Repository
@@ -14,6 +14,8 @@ defmodule GraphQl do
   import_types GraphQl.Schema.Docker
   import_types GraphQl.Schema.Version
   import_types GraphQl.Schema.Account
+  import_types GraphQl.Schema.Incidents
+
 
   alias GraphQl.Resolvers.{
     User,
@@ -21,12 +23,12 @@ defmodule GraphQl do
     Repository,
     Terraform,
     Docker,
-    Dependencies,
     Recipe,
     Tag,
     Payments,
     Version,
-    Account
+    Account,
+    Incidents
   }
 
   @sources [
@@ -39,7 +41,8 @@ defmodule GraphQl do
     Tag,
     Payments,
     Version,
-    Account
+    Account,
+    Incidents
   ]
 
   def context(ctx) do
@@ -59,14 +62,6 @@ defmodule GraphQl do
   end
 
   query do
-    field :closure, :closure do
-      middleware GraphQl.Middleware.Authenticated
-      arg :id, non_null(:id)
-      arg :type, non_null(:dependency_type)
-
-      resolve &Dependencies.resolve_closure/2
-    end
-
     connection field :tags, node_type: :grouped_tag do
       arg :id,   :string
       arg :type, non_null(:tag_group)
@@ -84,6 +79,7 @@ defmodule GraphQl do
     import_fields :docker_queries
     import_fields :version_queries
     import_fields :account_queries
+    import_fields :incident_queries
   end
 
   mutation do
@@ -95,5 +91,10 @@ defmodule GraphQl do
     import_fields :terraform_mutations
     import_fields :version_mutations
     import_fields :account_mutations
+    import_fields :incident_mutations
+  end
+
+  subscription do
+    import_fields :incident_subscriptions
   end
 end

@@ -1,6 +1,9 @@
 import Config
 import System, only: [get_env: 1]
 
+config :core, start_broker: true
+config :rtc, start_broker: false
+
 config :core, Core.Guardian,
   issuer: "forge",
   secret_key: get_env("JWT_SECRET")

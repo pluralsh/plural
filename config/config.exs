@@ -66,14 +66,17 @@ config :core, Core.Cache,
   local: Core.Cache.Local,
   node_selector: Nebulex.Adapters.Dist
 
-config :core, Core.Aquaduct.Broker,
+config :core, Core.Conduit.Broker,
   adapter: ConduitAMQP,
   url: "amqp://rabbitmq:rabbitmq@localhost"
 
-config :rtc, Rtc.Aquaduct.Broker,
+config :rtc, Rtc.Conduit.Broker,
   adapter: ConduitAMQP,
   url: "amqp://rabbitmq:rabbitmq@localhost"
 
 config :libcluster, :topologies, []
+
+config :core, start_broker: false
+config :rtc, start_broker: false
 
 import_config "#{Mix.env()}.exs"

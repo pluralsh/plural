@@ -1,6 +1,11 @@
 postgresql:
   postgresqlPassword: {{ dedupe . "forge.postgresql.postgresqlPassword" (randAlphaNum 14) }}
 
+rabbitmq:
+  rabbitmq:
+    password: {{ dedupe . "piazza.rabbitmq.rabbitmq.password" (randAlphaNum 26) }}
+    erlangCookie: {{ dedupe . "piazza.rabbitmq.rabbitmq.erlangCookie" (randAlphaNum 26) }}
+
 registry:
   configData:
     storage:

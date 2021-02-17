@@ -9,5 +9,6 @@ Mimic.copy(Stripe.Token)
 Mimic.copy(Stripe.Subscription)
 Mimic.copy(Stripe.SubscriptionItem)
 Mimic.copy(Stripe.Card)
+Mimic.copy(Core.Conduit.Broker)
 
 {:ok, _} = Application.ensure_all_started(:ex_machina)

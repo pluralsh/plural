@@ -124,7 +124,7 @@ defmodule GraphQl.PaymentsMutationsTest do
       end)
 
       {:ok, %{data: %{"createSubscription" => result}}} = run_query("""
-        mutation CreateSubscription($planId: String!, $instId: String!, $attrs: SubscriptionAttributes!) {
+        mutation CreateSubscription($planId: ID!, $instId: ID!, $attrs: SubscriptionAttributes!) {
           createSubscription(planId: $planId, installationId: $instId, attributes: $attrs) {
             customerId
             externalId

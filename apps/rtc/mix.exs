@@ -44,7 +44,14 @@ defmodule Rtc.MixProject do
       {:telemetry_poller, "~> 0.4"},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 2.0"}
+      {:plug_cowboy, "~> 2.0"},
+      {:absinthe_phoenix, "~> 2.0"},
+      {:libcluster, "~> 3.1.1"},
+      {:prometheus_ex, "~> 3.0"},
+      {:prometheus_plugs, "~> 1.1.1"},
+
+      {:core, in_umbrella: true},
+      {:graphql, in_umbrella: true}
     ]
   end
 

@@ -53,6 +53,10 @@ blocks:
       commands:
       - make build APP_NAME=forge
       - make push APP_NAME=forge
+    - name: "Build rtc"
+      commands:
+      - make build APP_NAME=rtc
+      - make push APP_NAME=rtc
     - name: "Build www"
       commands:
       - make build APP_NAME=www

@@ -4,6 +4,12 @@ defmodule GraphQl.Schema.Misc do
   import_types Absinthe.Type.Custom
   import_types GraphQl.Schema.CustomTypes
 
+  enum :delta do
+    value :create
+    value :update
+    value :delete
+  end
+
   enum :direction do
     value :before
     value :after

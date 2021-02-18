@@ -6,7 +6,7 @@ image:
   pullPolicy: Always
 
 rtc:
-  image: dkr.piazza.app/forge/rtc
+  repository: dkr.piazza.app/forge/rtc
   tag: '0.1.0'
 
 www:

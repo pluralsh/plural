@@ -7,11 +7,11 @@ sources:
 maintainers:
 - name: michaeljguarino
   email: mguarino46@gmail.com
-version: 0.4.4
+version: 0.4.9
 dependencies:
 - name: postgresql
-  version: 8.6.4
-  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 10.3.2
+  repository: https://charts.bitnami.com/bitnami
 - name: rabbitmq
   version: 7.6.6
   repository: https://charts.bitnami.com/bitnami

@@ -9,6 +9,10 @@ config :arc,
   storage: Arc.Storage.GCS,
   bucket: get_env("GCS_BUCKET")
 
+config :core, Core.Guardian,
+  issuer: "forge",
+  secret_key: get_env("JWT_SECRET")
+
 config :core, Core.Repo,
   database: "forge",
   username: "forge",
@@ -24,11 +28,11 @@ config :core, :jwt,
 
 config :core, Core.Conduit.Broker,
   adapter: ConduitAMQP,
-  url: "amqp://user:#{get_env("RABBITMQ_PASSWORD")}@piazza-rabbitmq"
+  url: "amqp://user:#{get_env("RABBITMQ_PASSWORD")}@forge-rabbitmq"
 
 config :rtc, Rtc.Conduit.Broker,
   adapter: ConduitAMQP,
-  url: "amqp://user:#{get_env("RABBITMQ_PASSWORD")}@piazza-rabbitmq"
+  url: "amqp://user:#{get_env("RABBITMQ_PASSWORD")}@forge-rabbitmq"
 
 config :piazza_core, aes_key: get_env("AES_KEY")
 

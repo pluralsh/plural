@@ -79,4 +79,7 @@ config :libcluster, :topologies, []
 config :core, start_broker: false
 config :rtc, start_broker: false
 
+config :lager, :error_logger_redirect, false
+config :lager, :error_logger_whitelist, [Logger.ErrorHandler]
+
 import_config "#{Mix.env()}.exs"

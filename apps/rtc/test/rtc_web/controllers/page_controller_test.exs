@@ -1,8 +1,8 @@
 defmodule RtcWeb.PageControllerTest do
   use RtcWeb.ConnCase
 
-  test "GET /", %{conn: conn} do
-    conn = get(conn, "/")
-    assert html_response(conn, 200) =~ "Welcome to Phoenix!"
+  test "GET /health", %{conn: conn} do
+    conn = get(conn, "/health")
+    assert json_response(conn, 200)["pong"]
   end
 end

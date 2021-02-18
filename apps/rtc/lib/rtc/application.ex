@@ -8,9 +8,11 @@ defmodule Rtc.Application do
   def start(_type, _args) do
     topologies = Application.get_env(:libcluster, :topologies)
 
+    Application.get_env(:rtc, RtcWeb.Endpoint)
+    |> IO.inspect()
+
     RtcWeb.Plugs.MetricsExporter.setup()
     children = [
-      RtcWeb.Telemetry,
       {Phoenix.PubSub, name: Rtc.PubSub},
       RtcWeb.Endpoint,
       {Cluster.Supervisor, [topologies, [name: Rtc.ClusterSupervisor]]},
@@ -32,7 +34,7 @@ defmodule Rtc.Application do
 
   def broker() do
     case Application.get_env(:rtc, :start_broker) do
-      true -> [{Rtc.Aquaduct.Broker, []}]
+      true -> [{Rtc.Conduit.Broker, []}]
       _ -> []
     end
   end

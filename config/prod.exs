@@ -4,12 +4,12 @@ config :piazza_core,
   shutdown_delay: 14_000
 
 config :api, ApiWeb.Endpoint,
-  http: [port: 4000],
+  http: [port: 4000, compress: true],
   cache_static_manifest: "priv/static/cache_manifest.json",
   server: true
 
 config :rtc, RtcWeb.Endpoint,
-  url: [port: 4000],
+  http: [port: 4000, compress: true],
   cache_static_manifest: "priv/static/cache_manifest.json",
   server: true
 

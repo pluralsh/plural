@@ -70,7 +70,7 @@ export const INSTALLATIONS_Q = gql`
 `;
 
 export const REPOS_Q = gql`
-  query Repos($publisherId: String, $cursor: String) {
+  query Repos($publisherId: ID, $cursor: String) {
     repositories(publisherId: $publisherId, first: 15, after: $cursor) {
       pageInfo { ...PageInfo }
       edges {
@@ -103,7 +103,7 @@ export const INSTALL_REPO = gql`
 `;
 
 export const REPO_Q = gql`
-  query Repo($repositoryId: String!, $chartCursor: String, $tfCursor: String, $dkrCursor: String, $recipeCursor: String, $intCursor: String) {
+  query Repo($repositoryId: ID!, $chartCursor: String, $tfCursor: String, $dkrCursor: String, $recipeCursor: String, $intCursor: String) {
     repository(id: $repositoryId) {
       ...RepoFragment
       editable

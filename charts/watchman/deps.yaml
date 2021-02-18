@@ -1,4 +1,0 @@
-dependencies:
-- type: terraform
-  name: kube
-  repo: bootstrap

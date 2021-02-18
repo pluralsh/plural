@@ -4,6 +4,12 @@ defmodule Core.Conduit.Base do
       use Conduit.Broker, unquote(opts)
       import Core.Conduit.Base
 
+      configure do
+        exchange "forge.topic", type: :topic, durable: true
+
+        defqueue "forge.rtc"
+      end
+
       pipeline :out_tracking do
         plug Conduit.Plug.CorrelationId
         plug Conduit.Plug.CreatedBy, app: "forge"

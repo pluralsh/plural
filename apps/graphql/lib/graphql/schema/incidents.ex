@@ -24,6 +24,7 @@ defmodule GraphQl.Schema.Incidents do
     field :title,       non_null(:string)
     field :description, :string
     field :severity,    non_null(:integer)
+    field :status,      non_null(:incident_status)
 
     field :repository, non_null(:repository), resolve: dataloader(Repository)
     field :creator, non_null(:user), resolve: dataloader(User)
@@ -63,7 +64,7 @@ defmodule GraphQl.Schema.Incidents do
 
   object :incident_queries do
     connection field :incidents, node_type: :incident do
-      arg :repository_id, non_null(:id)
+      arg :repository_id, :id
 
       resolve safe_resolver(&Incidents.list_incidents/2)
     end

@@ -14,6 +14,12 @@ defmodule GraphQl.Resolvers.Incidents do
     |> paginate(args)
   end
 
+  def list_incidents(args, %{context: %{current_user: user}}) do
+    Incident.for_creator(user.id)
+    |> Incident.ordered()
+    |> paginate(args)
+  end
+
   def list_messages(args, %{source: incident}) do
     IncidentMessage.for_incident(incident.id)
     |> IncidentMessage.ordered()

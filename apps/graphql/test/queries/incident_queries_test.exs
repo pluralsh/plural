@@ -24,6 +24,23 @@ defmodule GraphQl.IncidentQueriesTest do
              |> ids_equal(incidents)
     end
 
+    test "it will list incidents by creator if no repo specified" do
+      user = insert(:user)
+      incidents = insert_list(3, :incident, creator: user)
+      insert(:incident)
+
+      {:ok, %{data: %{"incidents" => found}}} = run_query("""
+        query {
+          incidents(first: 5) {
+            edges { node { id } }
+          }
+        }
+      """, %{}, %{current_user: user})
+
+      assert from_connection(found)
+             |> ids_equal(incidents)
+    end
+
     test "it will list your account's incidents for a repo if not a maintainer" do
       user = insert(:user)
       repo = insert(:repository)

@@ -11,6 +11,7 @@ export function initials(name) {
 export default function Avatar({size, user}) {
   return (
     <Box
+      flex={false}
       round='xsmall'
       align='center'
       justify='center'

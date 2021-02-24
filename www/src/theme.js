@@ -11,6 +11,7 @@ export const DEFAULT_COLOR_THEME = {
   sidebarHover: '#000000',
   sidebarActive: '#000000',
   focus: '#3B1D98',
+  progress: '#007bff',
   tagMedium: '#3B1D98',
   tagLight: '#624aad',
   backgroundColor: '#2b2d33',

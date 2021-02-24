@@ -40,7 +40,7 @@ const ICON_WIDTH = '50px'
 
 export function RepoIcon({repo: {icon}}) {
   return (
-    <Box align='center' justify='center' width={ICON_WIDTH}>
+    <Box flex={false} align='center' justify='center' width={ICON_WIDTH}>
       <img alt='' width='50px' height='50px' src={icon} />
     </Box>
   )

@@ -9,7 +9,7 @@ import {wipeToken} from '../../helpers/authentication'
 // const POLL_INTERVAL=30000
 export const CurrentUserContext = React.createContext({})
 
-function CurrentUser({children}) {
+export default function CurrentUser({children}) {
   const {loading, error, data} = useQuery(ME_Q)
 
   if (loading) return (<Box height='100vh'><Loading/></Box>)
@@ -26,5 +26,3 @@ function CurrentUser({children}) {
     </CurrentUserContext.Provider>
   )
 }
-
-export default CurrentUser

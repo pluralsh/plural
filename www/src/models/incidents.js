@@ -22,7 +22,7 @@ export const IncidentMessageFragment = gql`
   fragment IncidentMessageFragment on IncidentMessage {
     id
     text
-    creator { ...UserFragmet }
+    creator { ...UserFragment }
     insertedAt
   }
   ${UserFragment}

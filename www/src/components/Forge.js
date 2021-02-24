@@ -20,6 +20,7 @@ import BreadcrumbProvider from './Breadcrumbs'
 import { EditAccount } from './accounts/EditAccount'
 import { Incidents } from './incidents/Incidents'
 import { CreateIncident } from './incidents/CreateIncident'
+import { UpdateIncident } from './incidents/UpdateIncident'
 
 export const TOOLBAR_SIZE = '50px'
 
@@ -52,6 +53,7 @@ export default function Forge() {
                     <Route path='/billing/:section' component={Billing} />
                     <Route path='/me/invoices/:subscriptionId' component={Invoices} />
                     <Route path='/incidents/create' component={CreateIncident} />
+                    <Route path='/incidents/:incidentId/edit' component={UpdateIncident} />
                     <Route path='/incidents/:incidentId' component={Incidents} />
                     <Route path='/incidents' component={Incidents} />
                     <Route path='/' component={Explore} />

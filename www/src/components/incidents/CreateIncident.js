@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Box, TextInput, Text } from 'grommet'
-import { Button } from 'forge-core'
+import { Button, SecondaryButton } from 'forge-core'
 import { Slate, Editable } from 'slate-react'
 import { useEditor } from '../utils/hooks'
 import { plainDeserialize, plainSerialize } from '../../utils/slate'
@@ -11,7 +11,6 @@ import { RepoIcon } from '../repos/Repositories'
 import { Checkmark } from 'grommet-icons'
 import { CREATE_INCIDENT, INCIDENTS_Q } from './queries'
 import { appendConnection, updateCache } from '../../utils/graphql'
-import { useHistory } from 'react-router'
 import { StatusSelector } from './IncidentStatus'
 
 
@@ -57,7 +56,7 @@ export function IncidentForm({attributes, setAttributes, statusEdit}) {
 
 function RepoOption({repo, selected, setRepository}) {
   return (
-    <Box direction='row' align='center' gap='small' onClick={() => setRepository(repo)}
+    <Box flex={false} direction='row' align='center' gap='small' onClick={() => setRepository(repo)}
           hoverIndicator='light-3' pad='small'>
       <RepoIcon repo={repo} />
       <Box fill='horizontal'>
@@ -83,7 +82,7 @@ export function RepositorySelect({repository, setRepository}) {
   if (!data || !repository) return null
 
   return (     
-    <Box width='30%' height='100%' style={{overflow: 'scroll'}} flex={false}>
+    <Box width='30%' style={{overflow: 'scroll', maxHeight: '60vh'}} flex={false}>
       {data.installations.edges.map(({node: {repository: repo}}) => (
         <RepoOption repo={repo} selected={repository} setRepository={setRepository} />
       ))}
@@ -91,8 +90,7 @@ export function RepositorySelect({repository, setRepository}) {
   )
 }
 
-export function CreateIncident() {
-  let history = useHistory()
+export function CreateIncident({onCompleted}) {
   const [repository, setRepository] = useState(null)
   const [attributes, setAttributes] = useState({title: '', description: '', severity: 4})
   const [mutation, {loading}] = useMutation(CREATE_INCIDENT, {
@@ -101,16 +99,19 @@ export function CreateIncident() {
       query: INCIDENTS_Q,
       update: (prev) => appendConnection(prev, createIncident, 'Incident', 'incidents')
     }),
-    onCompleted: () => history.push('/incidents')
+    onCompleted
   })
 
   return (
-    <Box fill direction='row' border={{side: 'between', color: 'light-5'}} gap='0px'>
-      <RepositorySelect repository={repository} setRepository={setRepository} />
-      <Box gap='small' pad='small' fill>
-        <IncidentForm attributes={attributes} setAttributes={setAttributes} />
-        <Box direction='row' justify='end'>
-          <Button loading={loading} label='Create' onClick={mutation} />
+    <Box flex={false} border={{side: 'bottom', color: 'light-5'}}>
+      <Box animation='fadeIn' flex={false} direction='row' border={{side: 'between', color: 'light-5'}} gap='0px'>
+        <RepositorySelect repository={repository} setRepository={setRepository} />
+        <Box gap='small' pad='small' fill>
+          <IncidentForm attributes={attributes} setAttributes={setAttributes} />
+          <Box direction='row' justify='end' gap='small'>
+            <SecondaryButton label='Cancel' onClick={onCompleted} />
+            <Button loading={loading} label='Create' onClick={mutation} />
+          </Box>
         </Box>
       </Box>
     </Box>

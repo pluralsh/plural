@@ -34,7 +34,7 @@ export function Breadcrumbs() {
   })).flat()
 
   return (
-    <Box flex={false} direction='row' gap='xsmall' align='center' pad={{horizontal: 'small'}} width='300px'>
+    <Box flex={false} direction='row' gap='xsmall' align='center' pad={{horizontal: 'small'}}>
       {children}
     </Box>
   )

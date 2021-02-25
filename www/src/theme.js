@@ -6,7 +6,7 @@ const boxStyle = css`
 
 export const DEFAULT_COLOR_THEME = {
   brand: '#3B1D98',
-  action: '#3B1D98',
+  action: '#007a5a',
   sidebar: '#13141a',
   sidebarHover: '#000000',
   sidebarActive: '#000000',

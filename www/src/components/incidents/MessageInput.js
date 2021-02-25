@@ -57,7 +57,7 @@ export function MessageInput() {
       query: INCIDENT_Q,
       variables: {id: incidentId},
       update: ({incident, ...prev}) => ({
-        ...prev,  
+        ...prev,
         incident: appendConnection(incident, createMessage, 'Message', 'messages') 
       })
     }),

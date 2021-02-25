@@ -8,20 +8,18 @@ export function initials(name) {
           .join('')
 }
 
-export default function Avatar({size, user}) {
+export default function Avatar({size, user, round}) {
   return (
     <Box
       flex={false}
-      round='xsmall'
+      round={round || 'xsmall'}
+      style={user.avatar ? {backgroundImage: `url(${user.avatar})`, backgroundPosition: 'center', backgroundSize: 'cover'} : null}
       align='center'
       justify='center'
       width={size}
       height={size}
-      background={user.backgroundColor}>
-      {user.avatar ?
-        <img alt='my avatar' height={size} width={size} style={{borderRadius: '6px'}} src={user.avatar}/> :
-        <Text>{initials(user.name)}</Text>
-      }
+      background={!user.avatar ? user.backgroundColor : null}>
+      {!user.avatar && <Text>{initials(user.name)}</Text>}
     </Box>
   )
 }

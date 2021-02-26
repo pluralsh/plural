@@ -9,6 +9,7 @@ defmodule GraphQl.Schema.Incidents do
     field :severity,    :integer
     field :description, :string
     field :status,      :incident_status
+    field :tags,        list_of(:tag_attributes)
   end
 
   input_object :incident_message_attributes do
@@ -27,8 +28,9 @@ defmodule GraphQl.Schema.Incidents do
     field :status,      non_null(:incident_status)
 
     field :repository, non_null(:repository), resolve: dataloader(Repository)
-    field :creator, non_null(:user), resolve: dataloader(User)
-    field :owner, :user, resolve: dataloader(User)
+    field :creator,    non_null(:user), resolve: dataloader(User)
+    field :owner,      :user, resolve: dataloader(User)
+    field :tags,       list_of(:tag), resolve: dataloader(Repository)
 
     connection field :messages, node_type: :incident_message do
       resolve &Incidents.list_messages/2
@@ -65,8 +67,9 @@ defmodule GraphQl.Schema.Incidents do
   object :incident_queries do
     connection field :incidents, node_type: :incident do
       arg :repository_id, :id
+      arg :q, :string
 
-      resolve safe_resolver(&Incidents.list_incidents/2)
+      resolve &Incidents.list_incidents/2
     end
 
     field :incident, :incident do

@@ -25,6 +25,9 @@ defmodule GraphQl.Resolvers.Base do
     end
   end
 
+  def maybe_search(query, model, %{q: q}) when is_binary(q), do: model.search(query, q)
+  def maybe_search(query, _, _), do: query
+
   def filter_context(ctx) do
     Map.take(ctx, [:current_user])
   end

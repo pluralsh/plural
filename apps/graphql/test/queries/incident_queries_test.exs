@@ -41,6 +41,24 @@ defmodule GraphQl.IncidentQueriesTest do
              |> ids_equal(incidents)
     end
 
+    test "it will list search incidents" do
+      user = insert(:user)
+      insert_list(3, :incident, creator: user)
+      incidents = insert_list(2, :incident, creator: user, title: "search")
+      insert(:incident)
+
+      {:ok, %{data: %{"incidents" => found}}} = run_query("""
+        query Inc($q: String) {
+          incidents(first: 5, q: $q) {
+            edges { node { id } }
+          }
+        }
+      """, %{"q" => "search"}, %{current_user: user})
+
+      assert from_connection(found)
+             |> ids_equal(incidents)
+    end
+
     test "it will list your account's incidents for a repo if not a maintainer" do
       user = insert(:user)
       repo = insert(:repository)

@@ -11,11 +11,13 @@ defmodule GraphQl.Resolvers.Incidents do
     Incident.for_repository(id)
     |> Incident.ordered()
     |> maybe_filter_creator(user, supports_repo?(id, user))
+    |> maybe_search(Incident, args)
     |> paginate(args)
   end
 
   def list_incidents(args, %{context: %{current_user: user}}) do
     Incident.for_creator(user.id)
+    |> maybe_search(Incident, args)
     |> Incident.ordered()
     |> paginate(args)
   end

@@ -18,6 +18,7 @@ defmodule Core.Services.Incidents do
 
   def update_incident(attrs, incident_id, %User{} = user) do
     get_incident!(incident_id)
+    |> Core.Repo.preload([:tags])
     |> Incident.changeset(attrs)
     |> allow(user, :edit)
     |> when_ok(:update)

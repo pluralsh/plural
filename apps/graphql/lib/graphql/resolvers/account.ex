@@ -19,9 +19,6 @@ defmodule GraphQl.Resolvers.Account do
     |> paginate(args)
   end
 
-  defp maybe_search(query, mod, %{q: search}) when is_binary(search), do: mod.search(query, search)
-  defp maybe_search(query, _, _), do: query
-
   def list_group_members(%{group_id: group_id} = args, _) do
     GroupMember.for_group(group_id)
     |> paginate(args)

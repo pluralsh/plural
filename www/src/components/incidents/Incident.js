@@ -109,8 +109,7 @@ export function Incident() {
   
   return (
     <Box fill gap='small'>
-      <Box flex={false} pad='small' direction='row' align='center' gap='small' border={{side: 'bottom', color: 'light-5'}} 
-           margin={{bottom: 'xsmall'}}>
+      <Box flex={false} pad='small' direction='row' align='center' gap='small' border={{side: 'bottom', color: 'light-5'}}>
         <Severity severity={incident.severity} />
         <Box fill='horizontal' direction='row' align='center' gap='xsmall'>
           <Text size='small' weight={500}>{incident.title}</Text>

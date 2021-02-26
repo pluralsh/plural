@@ -19,6 +19,29 @@ defmodule GraphQl.IncidentMutationsTest do
       assert found["title"] == "wtf"
       assert found["severity"] == 2
     end
+
+    test "installers can create incidents with tags" do
+      repo = insert(:repository)
+      %{user: user} = insert(:installation, repository: repo)
+
+      {:ok, %{data: %{"createIncident" => found}}} = run_query("""
+        mutation Incidents($id: ID!, $attrs: IncidentAttributes!) {
+          createIncident(repositoryId: $id, attributes: $attrs) {
+            id title severity tags { tag }
+          }
+        }
+      """, %{
+        "id" => repo.id,
+        "attrs" => %{
+          "title" => "wtf", "severity" => 2, "tags" => [%{"tag" => "help"}]
+        }
+      }, %{current_user: user})
+
+      assert found["id"]
+      assert found["title"] == "wtf"
+      assert found["severity"] == 2
+      assert found["tags"] == [%{"tag" => "help"}]
+    end
   end
 
   describe "updateIncident" do

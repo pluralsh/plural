@@ -3,7 +3,7 @@ defmodule Core.Schema.Tag do
 
   alias Core.Schema.{Integration}
 
-  defenum ResourceType, integration: 0, repository: 1
+  defenum ResourceType, integration: 0, repository: 1, incident: 2
 
   schema "tags" do
     field :tag, :string

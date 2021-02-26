@@ -37,15 +37,12 @@ defmodule GraphQl.Resolvers.User do
   def list_users(args, %{context: %{current_user: %{account_id: id}}}) do
     User.ordered()
     |> User.for_account(id)
-    |> maybe_search(args)
+    |> maybe_search(User, args)
     |> paginate(args)
   end
 
   defp for_account(query, %{account_id: id}), do: User.for_account(query, id)
   defp for_account(query, _), do: query
-
-  defp maybe_search(query, %{q: q}), do: User.search(query, q)
-  defp maybe_search(query, _), do: query
 
   def list_publishers(%{account_id: aid} = args, _) do
     Publisher.for_account(aid)

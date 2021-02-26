@@ -19,7 +19,6 @@ import { Billing } from './users/Billing'
 import BreadcrumbProvider from './Breadcrumbs'
 import { EditAccount } from './accounts/EditAccount'
 import { Incidents } from './incidents/Incidents'
-import { CreateIncident } from './incidents/CreateIncident'
 import { UpdateIncident } from './incidents/UpdateIncident'
 import { Incident } from './incidents/Incident'
 
@@ -53,7 +52,7 @@ export default function Forge() {
                     <Route path='/me/edit' component={EditUser} />
                     <Route path='/billing/:section' component={Billing} />
                     <Route path='/me/invoices/:subscriptionId' component={Invoices} />
-                    <Route path='/incidents/:incidentId/edit' component={UpdateIncident} />
+                    <Route path='/incidents/:incidentId/edit' component={(props) => <Incident {...props} editing />} />
                     <Route path='/incidents/:incidentId' component={Incident} />
                     <Route path='/incidents' component={Incidents} />
                     <Route path='/' component={Explore} />

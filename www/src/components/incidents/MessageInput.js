@@ -75,7 +75,7 @@ export function MessageInput() {
 
   return (
     <Box flex={false} background='white' border={{color: 'dark-3'}} style={{maxHeight: '210px', minHeight: 'auto'}} 
-         margin='small' round='xsmall'>
+         round='xsmall' margin={{horizontal: 'small', bottom: 'small'}}>
       <Keyboard onKeyDown={(e) => {
         if (e.key === 'Enter' && !e.shiftKey && !empty) {
           submit()

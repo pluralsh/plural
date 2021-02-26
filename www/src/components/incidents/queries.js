@@ -72,3 +72,10 @@ export const DELETE_MESSAGE = gql`
   }
   ${IncidentMessageFragment}
 `
+
+export const CREATE_REACTION = gql`
+  mutation Create($id: ID!, $name: String!) {
+    createReaction(id: $id, name: $name) { ...IncidentMessageFragment }
+  }
+  ${IncidentMessageFragment}
+`

@@ -1,26 +1,60 @@
-import React from 'react'
-import { Box, Text } from "grommet"
+import React, { useState } from 'react'
+import { Box, Stack, Text } from "grommet"
 import Avatar from '../users/Avatar'
 import Markdown from './Markdown'
 import moment from 'moment'
 import { dateFormat } from '../../utils/date'
+import { MessageControls } from './MessageControls'
+import './message.css'
 
-export function Message({message}) {
+function isConsecutive(message, next) {
+  if (!next || !next.creator) return false
+  if (message.creator.id !== next.creator.id) return false
+  const firstTime = moment(message.insertedAt)
+  const secondTime = moment(next.insertedAt)
+
+  return (secondTime.add(-10, 'minutes').isBefore(firstTime))
+}
+
+
+function MessageBody({message, next}) {
+  const consecutive = isConsecutive(message, next)
+  const formatted = dateFormat(moment(message.insertedAt))
+
   return (
-    <Box direction='row' gap='xsmall' margin={{bottom: 'small'}}>
-      <Box pad={{vertical: 'small'}}>
-        <Avatar round='full' user={message.creator} size='45px' />
+    <Box flex={false} direction='row' gap='xsmall' pad={{vertical: 'xsmall', left: 'small'}}>
+      <Box flex={false}>
+        {!consecutive && <Avatar user={message.creator} size='45px' />}
+        {consecutive && (
+          <Box fill='vertical' width='45px' justify='center' align='center' flex={false}>
+            <Text color='dark-2' size='10px' className='message-reactions'>{formatted}</Text>
+          </Box>
+        )}
       </Box>
-      <Box fill='horizontal' border={{color: 'light-4'}} round='xsmall'>
-        <Box round={{size: 'xsmall', corner: 'top'}} background='light-1' gap='xsmall' direction='row'
-            pad={{horizontal: 'small', vertical: 'xsmall'}}  border={{side: 'bottom', color: 'light-3'}}>
+      <Box fill='horizontal'>
+        {!consecutive && <Box gap='xsmall' direction='row'>
           <Text size='small' weight='bold'>{message.creator.name}</Text>
-          <Text size='small'>commented on {dateFormat(moment(message.insertedAt))}</Text>
-        </Box>
-        <Box pad='small'>
+          <Text size='small' color='dark-5'>{formatted}</Text>
+        </Box>}
+        <Box>
           <Markdown text={message.text} entities={message.entities} />
         </Box>
       </Box>
+    </Box>
+  )
+}
+
+ 
+export function Message({message, next}) {
+  const [hover, setHover] = useState(false)
+  const additionalClasses = hover ? ' hovered' : ''
+
+  return (
+    <Box flex={false} fill='horizontal' className={'message' + additionalClasses}>
+      <Stack fill anchor='top-right'>
+        <MessageBody message={message} next={next} />
+        <MessageControls message={message} setHover={setHover} />
+      </Stack>
     </Box>
   )
 }

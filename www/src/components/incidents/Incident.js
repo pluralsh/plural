@@ -108,16 +108,16 @@ export function Messages({incident, loading, fetchMore}) {
   const {messages: {pageInfo: {hasNextPage, endCursor}, edges}} = incident
   
   const entries = useMemo(() => {
-    if (edges.length === 0) return [['empty', null]]
-    return [...edges.map((e) => ['e', e])]
+    if (edges.length === 0) return ['empty']
+    return edges
   }, [edges, incident])
   
-  const mapper = useCallback(([t, e]) => {
-    switch (t) {
-      case 'e':
-        return <Message message={e.node} />
-      default:
+  const mapper = useCallback((e, next) => {
+    switch (e) {
+      case 'empty':
         return <Empty />
+      default:
+        return <Message message={e.node} next={next.node} />
     }
   }, [])
 
@@ -176,7 +176,7 @@ function IncidentInner({incident, fetchMore, loading, editing}) {
           updating={updating} 
           mutation={mutation} />
       </Box>
-      <Box fill pad={{horizontal: 'small'}}>
+      <Box fill>
         <Messages 
           updating={updating}
           editing={editing}

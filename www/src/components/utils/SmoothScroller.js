@@ -34,7 +34,7 @@ const Item = ({ index, mapper, parentRef, isItemLoaded, placeholder, items, styl
     return placeholder && placeholder(index)
   }
 
-  return mapper(items[index], items[index + 1] || {}, parentRef, style);
+  return mapper(items[index], items[index - 1] || {}, parentRef, style);
 };
 
 const ItemWrapper = React.memo(({data: {setSize, width, refreshKey, items, ...rest}, style, index, ...props}) => {

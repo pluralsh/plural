@@ -12,6 +12,7 @@ import { Checkmark } from 'grommet-icons'
 import { CREATE_INCIDENT, INCIDENTS_Q } from './queries'
 import { appendConnection, updateCache } from '../../utils/graphql'
 import { StatusSelector } from './IncidentStatus'
+import { TagInput } from '../repos/Tags'
 
 
 export function IncidentForm({attributes, setAttributes, statusEdit}) {
@@ -50,6 +51,10 @@ export function IncidentForm({attributes, setAttributes, statusEdit}) {
           <Editable placeholder='Description of the incident (markdown allowed)' />
         </Slate>
       </Box>
+      <TagInput
+        tags={attributes.tags || []}
+        addTag={(tag) => setAttributes({...attributes, tags: [tag, ...(attributes.tags || [])]})}
+        removeTag={(tag) => setAttributes({...attributes, tags: attributes.tags.filter((t) => t !== tag)})} />
     </Box>
   )
 }
@@ -92,11 +97,15 @@ export function RepositorySelect({repository, setRepository}) {
 
 export function CreateIncident({onCompleted}) {
   const [repository, setRepository] = useState(null)
-  const [attributes, setAttributes] = useState({title: '', description: '', severity: 4})
+  const [attributes, setAttributes] = useState({title: '', description: '', severity: 4, tags: []})
   const [mutation, {loading}] = useMutation(CREATE_INCIDENT, {
-    variables: {repositoryId: repository && repository.id, attributes},
+    variables: {
+      repositoryId: repository && repository.id, 
+      attributes:  {...attributes, tags: attributes.tags.map((t) => ({tag: t}))}
+    },
     update: (cache, {data: { createIncident }}) => updateCache(cache, {
       query: INCIDENTS_Q,
+      variables: {q: null},
       update: (prev) => appendConnection(prev, createIncident, 'Incident', 'incidents')
     }),
     onCompleted

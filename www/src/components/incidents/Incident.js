@@ -1,9 +1,9 @@
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { CurrentUserContext } from '../login/CurrentUser'
-import { useQuery } from 'react-apollo'
+import { useMutation, useQuery } from 'react-apollo'
 import { useHistory, useParams } from 'react-router'
 import Markdown from './Markdown'
-import { INCIDENT_Q } from './queries'
+import { INCIDENT_Q, UPDATE_INCIDENT } from './queries'
 import { Severity } from './Severity'
 import { Box, Text } from 'grommet'
 import { Status } from './IncidentStatus'
@@ -16,7 +16,7 @@ import { Message } from './Message'
 import { extendConnection } from '../../utils/graphql'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 
-const canEdit = ({creator, owner}, {id}) => creator.id === id || owner.id === id
+export const canEdit = ({creator, owner}, {id}) => creator.id === id || owner.id === id
 
 function EditButton({incidentId}) {
   let history = useHistory()
@@ -30,7 +30,7 @@ function EditButton({incidentId}) {
 
 function Empty() {
   return (
-    <Box width='100%' height='100%' pad='medium' gap='small' align='center' justify='center'>
+    <Box fill pad='medium' gap='small' align='center' justify='center' round='xsmall'>
       <Chat size='40px' />
       <Text size='small'>Get the conversation started</Text>
     </Box>
@@ -98,6 +98,7 @@ export function Messages({incident, loading, fetchMore}) {
 export function Incident() {
   const {incidentId} = useParams()
   const {data, loading, fetchMore} = useQuery(INCIDENT_Q, {variables: {id: incidentId}, fetchPolicy: 'cache-and-network'})
+  const [mutation] = useMutation(UPDATE_INCIDENT, {variables: {id: incidentId}})
   const {setBreadcrumbs} = useContext(BreadcrumbsContext)
   useEffect(() => {
     setBreadcrumbs([{url: `/incidents`, text: 'incidents'}, {url: `/incidents/${incidentId}`, text: incidentId}])
@@ -110,13 +111,13 @@ export function Incident() {
   return (
     <Box fill gap='small'>
       <Box flex={false} pad='small' direction='row' align='center' gap='small' border={{side: 'bottom', color: 'light-5'}}>
-        <Severity severity={incident.severity} />
+        <Severity incident={incident} setSeverity={(severity) => mutation({variables: {attributes: {severity}}})} />
         <Box fill='horizontal' direction='row' align='center' gap='xsmall'>
           <Text size='small' weight={500}>{incident.title}</Text>
-          <Status incident={incident} />
         </Box>
+        <Status incident={incident} setActive={(status) => mutation({variables: {attributes: {status}}})} />
       </Box>
-      <Box fill pad='small'>
+      <Box fill pad={{horizontal: 'small'}}>
         <Messages incident={incident} fetchMore={fetchMore} loading={loading} />
       </Box>
       <MessageInput />

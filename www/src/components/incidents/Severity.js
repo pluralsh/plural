@@ -1,15 +1,39 @@
-import React from 'react'
-import { Box, Select, Text } from 'grommet'
+import React, { useContext, useEffect, useRef, useState } from 'react'
+import { Box, Drop, Select, Text } from 'grommet'
+import { CurrentUserContext } from '../login/CurrentUser'
+import { canEdit } from './Incident'
+import { Down } from 'grommet-icons'
 
 const severityOptions = [0, 1, 2, 3, 4, 5].map((sev) => ({value: sev, label: `SEV ${sev}`}))
 
-function SeverityOption({value, label}, {active}) {
+const SeverityStatusOption = ({value, label}, {active}) => {
+  const color = severityColor(value)
+
   return (
-    <Box direction='row' background={active ? 'active' : null} gap='xsmall' align='center' pad={{vertical: 'xsmall', horizontal: 'small'}}>
+    <Box direction='row' background={active ? 'active' : null} gap='xsmall' align='center' 
+         pad={{vertical: 'xsmall', horizontal: 'small'}}>
       <Box fill='horizontal'>
         <Text size='small'>{label}</Text>
       </Box>
-      <Severity severity={value} />
+      <Box flex={false} background={color} round='xsmall' pad={{horizontal: 'xsmall', vertical: '1px'}}>
+        <Text size='small' weight={500}>SEV {value}</Text> 
+      </Box>
+    </Box>
+  )
+}
+
+function SeverityOption({value, label, active, setActive}) {
+  const color = severityColor(value)
+
+  return (
+    <Box direction='row' background={active ? 'active' : null} gap='xsmall' align='center' hoverIndicator='light-2'
+         pad={{vertical: 'xsmall', horizontal: 'small'}} onClick={() => setActive(value)}>
+      <Box fill='horizontal'>
+        <Text size='small'>{label}</Text>
+      </Box>
+      <Box flex={false} background={color} round='xsmall' pad={{horizontal: 'xsmall', vertical: '1px'}}>
+        <Text size='small' weight={500}>SEV {value}</Text> 
+      </Box>
     </Box>
   )
 }
@@ -24,7 +48,7 @@ export function SeveritySelect({severity, setSeverity}) {
       value={severity}
       onChange={({value}) => setSeverity(value)}
     >
-      {SeverityOption}
+      {SeverityStatusOption}
     </Select>
   )
 }
@@ -36,12 +60,32 @@ export function severityColor(severity) {
   return 'progress'
 }
 
-export function Severity({severity}) {
+export function Severity({incident: {severity, ...incident}, setSeverity}) {
+  const ref = useRef()
+  const [open, setOpen] = useState(false)
+  const [hover, setHover] = useState(false)
+  const user = useContext(CurrentUserContext)
   const color = severityColor(severity)
+  const editable = canEdit(incident, user) && setSeverity
+  useEffect(() => setOpen(false), [severity])
+
   return (
-    <Box flex={false} background={color} round='xsmall' align='center' direction='row'
-         pad={{horizontal: 'xsmall', vertical: '1px'}}>
+    <>
+    <Box ref={ref} flex={false} background={color} round='xsmall' align='center' direction='row' gap='xsmall'
+         pad={{horizontal: 'xsmall', vertical: '1px'}} onClick={() => editable && setOpen(true)} focusIndicator={false}
+         onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
       <Text size='small' weight={500}>SEV {severity}</Text> 
+      {((hover && editable) || open) && <Down size='small' />}
     </Box>
+    {open && (
+      <Drop target={ref.current} align={{top: 'bottom'}} onClickOutside={() => setOpen(false)}>
+        <Box width='150px'>
+          {severityOptions.map(({value, label}) => (
+            <SeverityOption key={value} value={value} label={label} active={severity === value} setActive={setSeverity || (() => null)} />
+          ))}
+        </Box>
+      </Drop>
+    )}
+    </>
   )
 }

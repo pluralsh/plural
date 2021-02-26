@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Box, Text } from 'grommet'
+import { Box, Text, TextInput } from 'grommet'
 import { Loading, Scroller, Button } from 'forge-core'
 import { useQuery } from 'react-apollo'
 import { INCIDENTS_Q } from './queries'
@@ -8,12 +8,12 @@ import { RepoIcon } from '../repos/Repositories'
 import moment from 'moment'
 import { Severity } from './Severity'
 import { useHistory, useParams } from 'react-router'
-import { Add, Checkmark } from 'grommet-icons'
+import { Add, Checkmark, Search } from 'grommet-icons'
 import { Status } from './IncidentStatus'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 import { CreateIncident } from './CreateIncident'
 
-function IncidentRow({incident: {id, repository, title, insertedAt, severity, ...incident}, next, selected}) {
+function IncidentRow({incident: {id, repository, title, insertedAt, ...incident}, next, selected}) {
   let history = useHistory()
 
   return (
@@ -28,7 +28,7 @@ function IncidentRow({incident: {id, repository, title, insertedAt, severity, ..
         </Box>
         <Text size='small' color='light-5'>created: {moment(insertedAt).fromNow()}</Text>
       </Box>
-      <Severity severity={severity} />
+      <Severity incident={incident} />
       {id === selected && <Checkmark color='brand' size='15px' />}
     </Box>
   )
@@ -62,8 +62,9 @@ export function IncidentSidebar({incidents: {edges, pageInfo}, fetchMore}) {
 
 export function Incidents() {
   const [open, setOpen] = useState(false)
+  const [q, setQ] = useState(null)
   const {incidentId} = useParams()
-  const {data, fetchMore} = useQuery(INCIDENTS_Q, {fetchPolicy: 'cache-and-network'})
+  const {data, fetchMore} = useQuery(INCIDENTS_Q, {variables: {q}, fetchPolicy: 'cache-and-network'})
   const {setBreadcrumbs} = useContext(BreadcrumbsContext)
   useEffect(() => {
     setBreadcrumbs([{url: `/incidents`, text: 'incidents'}])
@@ -76,7 +77,14 @@ export function Incidents() {
   return (
     <Box fill>
       {!open && (
-        <Box height='50px' fill='horizontal' pad='small' direction='row' gap='xsmall' justify='end' align='center'>
+        <Box fill='horizontal' pad='small' align='center' direction='row' gap='xsmall' justify='end'>
+          <Box fill='horizontal'>
+            <TextInput 
+              icon={<Search size='15px' />}
+              value={q}
+              placeholder='search for an incident'
+              onChange={({target: {value}}) => setQ(value)} />
+          </Box>
           <Button label='Create' onClick={() => setOpen(true)} />
         </Box>
       )}

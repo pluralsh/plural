@@ -12,6 +12,7 @@ export const IncidentFragment = gql`
     creator { ...UserFragment }
     owner { ...UserFragment }
     repository { ...RepoFragment }
+    tags { tag }
     insertedAt
   }
   ${UserFragment}

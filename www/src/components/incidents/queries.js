@@ -3,8 +3,8 @@ import { IncidentFragment, IncidentMessageFragment } from '../../models/incident
 import { PageInfo } from '../../models/misc'
 
 export const INCIDENTS_Q = gql`
-  query Incidents($repositoryId: ID, $cursor: String) {
-    incidents(repositoryId: $repositoryId, after: $cursor, first: 20) {
+  query Incidents($repositoryId: ID, $q: String, $cursor: String) {
+    incidents(repositoryId: $repositoryId, q: $q, after: $cursor, first: 20) {
       pageInfo { ...PageInfo }
       edges { node { ...IncidentFragment } }
     }
@@ -14,7 +14,7 @@ export const INCIDENTS_Q = gql`
 `;
 
 export const INCIDENT_Q = gql`
-  query Incident($id: ID!, $cursor: String) {
+  query Incident($id: ID! $cursor: String) {
     incident(id: $id) {
       ...IncidentFragment
       messages(after: $cursor, first: 50) {

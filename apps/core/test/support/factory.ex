@@ -246,4 +246,12 @@ defmodule Core.Factory do
       creator: build(:user)
     }
   end
+
+  def file_factory do
+    %Schema.File{
+      message: build(:incident_message),
+      media_type: :image,
+      filesize: 100
+    }
+  end
 end

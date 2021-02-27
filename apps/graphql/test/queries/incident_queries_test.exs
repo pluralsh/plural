@@ -125,5 +125,24 @@ defmodule GraphQl.IncidentQueriesTest do
       assert from_connection(found["messages"])
              |> ids_equal(messages)
     end
+
+    test "it can list files for an incident" do
+      incident = insert(:incident)
+      files = for _ <- 1..3,
+        do: insert(:file, message: build(:incident_message, incident: incident))
+
+      {:ok, %{data: %{"incident" => found}}} = run_query("""
+        query Incident($id: ID!) {
+          incident(id: $id) {
+            files(first: 5) {
+              edges { node { id } }
+            }
+          }
+        }
+      """, %{"id" => incident.id}, %{current_user: incident.creator})
+
+      assert from_connection(found["files"])
+             |> ids_equal(files)
+    end
   end
 end

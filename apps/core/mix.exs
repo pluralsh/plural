@@ -59,6 +59,7 @@ defmodule Core.MixProject do
       {:stripity_stripe, "~> 2.7"},
       {:conduit, "~> 0.12"},
       {:conduit_amqp, "~> 0.6.3"},
+      {:mime, "~> 1.2"},
 
       {:mimic, "~> 1.1", only: :test}
     ]

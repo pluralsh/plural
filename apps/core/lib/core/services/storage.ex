@@ -9,7 +9,8 @@ defmodule Core.Storage do
     Integration,
     Artifact,
     Crd,
-    Version
+    Version,
+    File
   }
 
   @acl :public_read
@@ -35,6 +36,7 @@ defmodule Core.Storage do
   def storage_dir(_, {_file, %Integration{icon_id: icon_id}}), do: "uploads/integrations/#{icon_id}"
   def storage_dir(_, {_file, %Artifact{blob_id: blob_id}}), do: "uploads/artifacts/#{blob_id}"
   def storage_dir(_, {_file, %Crd{blob_id: blob_id}}), do: "uploads/crds/#{blob_id}"
+  def storage_dir(_, {_file, %File{blob_id: blob_id}}), do: "uploads/files/#{blob_id}"
 
   def default_url(_), do: nil
 end

@@ -1,10 +1,11 @@
 defmodule GraphQl.Resolvers.Incidents do
   use GraphQl.Resolvers.Base, model: Core.Schema.Incident
   alias Core.Services.{Repositories, Incidents}
-  alias Core.Schema.{IncidentMessage, Reaction}
+  alias Core.Schema.{IncidentMessage, Reaction, File}
 
   def query(IncidentMessage, _), do: IncidentMessage
   def query(Reaction, _), do: Reaction
+  def query(File, _), do: File
   def query(_, _), do: Incident
 
   def list_incidents(%{repository_id: id} = args, %{context: %{current_user: user}}) do
@@ -25,6 +26,12 @@ defmodule GraphQl.Resolvers.Incidents do
   def list_messages(args, %{source: incident}) do
     IncidentMessage.for_incident(incident.id)
     |> IncidentMessage.ordered()
+    |> paginate(args)
+  end
+
+  def list_files(args, %{source: incident}) do
+    File.for_incident(incident.id)
+    |> File.ordered()
     |> paginate(args)
   end
 

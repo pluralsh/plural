@@ -12,7 +12,6 @@ function Repositories({repository, setRepository}) {
   const {data, fetchMore} = useQuery(REPOS_Q, {fetchPolicy: 'cache-and-network'})
   useEffect(() => {
     if (!repository && data && data.repositories) {
-      console.log(data)
       const edge = data.repositories.edges[0]
       setRepository(edge && edge.node)
     }

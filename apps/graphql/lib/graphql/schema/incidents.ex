@@ -3,6 +3,7 @@ defmodule GraphQl.Schema.Incidents do
   alias GraphQl.Resolvers.{Incidents, Repository, User}
 
   ecto_enum :incident_status, Core.Schema.Incident.Status
+  ecto_enum :media_type, Core.Schema.File.MediaType
 
   input_object :incident_attributes do
     field :title,       :string
@@ -14,10 +15,15 @@ defmodule GraphQl.Schema.Incidents do
 
   input_object :incident_message_attributes do
     field :text, non_null(:string)
+    field :file, :file_attributes
   end
 
   input_object :reaction_attributes do
     field :name, :string
+  end
+
+  input_object :file_attributes do
+    field :blob, :upload_or_url
   end
 
   object :incident do
@@ -36,6 +42,10 @@ defmodule GraphQl.Schema.Incidents do
       resolve &Incidents.list_messages/2
     end
 
+    connection field :files, node_type: :file do
+      resolve &Incidents.list_files/2
+    end
+
     timestamps()
   end
 
@@ -46,12 +56,26 @@ defmodule GraphQl.Schema.Incidents do
     field :incident,  non_null(:incident), resolve: dataloader(Incidents)
     field :creator,   non_null(:user), resolve: dataloader(User)
     field :reactions, list_of(:reaction), resolve: dataloader(Incidents)
+    field :file,      :file, resolve: dataloader(Incidents)
+
+    timestamps()
+  end
+
+  object :file do
+    field :id,           non_null(:id)
+    field :object,       non_null(:string)
+    field :media_type,   :media_type
+    field :filename,     :string
+    field :filesize,     :integer
+    field :content_type, :string
+
+    field :message, non_null(:incident_message), resolve: dataloader(Incidents)
 
     timestamps()
   end
 
   object :reaction do
-    field :name, non_null(:string)
+    field :name,    non_null(:string)
     field :creator, non_null(:user), resolve: dataloader(User)
     field :message, non_null(:incident_message), resolve: dataloader(Incidents)
 
@@ -60,6 +84,7 @@ defmodule GraphQl.Schema.Incidents do
 
   connection node_type: :incident
   connection node_type: :incident_message
+  connection node_type: :file
 
   delta :incident
   delta :incident_message

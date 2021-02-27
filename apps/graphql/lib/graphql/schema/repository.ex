@@ -235,6 +235,7 @@ defmodule GraphQl.Schema.Repository do
       middleware GraphQl.Middleware.Authenticated
       arg :publisher_id, :id
       arg :tag,          :string
+      arg :supports,     :boolean
 
       resolve &Repository.list_repositories/2
     end

@@ -10,9 +10,7 @@ defmodule GraphQl.RepositoryQueriesTest do
       {:ok, %{data: %{"repositories" => found}}} = run_query("""
         query Repositories($publisherId: ID) {
           repositories(publisherId: $publisherId, first: 5) {
-            edges {
-              node { id }
-            }
+            edges { node { id } }
           }
         }
       """, %{"publisherId" => publisher.id}, %{current_user: insert(:user)})
@@ -30,9 +28,7 @@ defmodule GraphQl.RepositoryQueriesTest do
       {:ok, %{data: %{"repositories" => found}}} = run_query("""
         query Repositories($publisherId: ID) {
           repositories(publisherId: $publisherId, first: 5) {
-            edges {
-              node { id }
-            }
+            edges { node { id } }
           }
         }
       """, %{"publisherId" => publisher.id}, %{current_user: insert(:user)})
@@ -43,9 +39,7 @@ defmodule GraphQl.RepositoryQueriesTest do
       {:ok, %{data: %{"repositories" => found}}} = run_query("""
         query Repositories($publisherId: ID) {
           repositories(publisherId: $publisherId, first: 5) {
-            edges {
-              node { id }
-            }
+            edges { node { id } }
           }
         }
       """, %{"publisherId" => publisher.id}, %{current_user: insert(:user, account: account)})
@@ -62,11 +56,7 @@ defmodule GraphQl.RepositoryQueriesTest do
       {:ok, %{data: %{"repositories" => repos}}} = run_query("""
         query {
           repositories(first: 5) {
-            edges {
-              node {
-                id
-              }
-            }
+            edges { node { id } }
           }
         }
       """, %{}, %{current_user: user})
@@ -85,17 +75,39 @@ defmodule GraphQl.RepositoryQueriesTest do
       {:ok, %{data: %{"repositories" => found}}} = run_query("""
         query {
           repositories(first: 5, tag: "tag") {
-            edges {
-              node {
-                id
-              }
-            }
+            edges { node { id } }
           }
         }
       """, %{}, %{current_user: user})
 
       assert from_connection(found)
              |> ids_equal([repo, other])
+    end
+
+    test "it can list repositories you support" do
+      account = insert(:account)
+      user = insert(:user, account: account)
+
+      publisher = insert(:publisher, account: account)
+      role = insert(:role, repositories: ["repo"], permissions: %{support: true}, account: account)
+      insert(:role_binding, role: role, user: user)
+      role = insert(:role, repositories: ["other*"], permissions: %{support: true}, account: account)
+      insert(:role_binding, role: role, user: user)
+
+      repo1 = insert(:repository, publisher: publisher, name: "repo")
+      repo2 = insert(:repository, publisher: publisher, name: "other-repo")
+      insert(:repository, publisher: publisher)
+
+      {:ok, %{data: %{"repositories" => found}}} = run_query("""
+        query {
+          repositories(first: 5, supports: true) {
+            edges { node { id } }
+          }
+        }
+      """, %{}, %{current_user: user})
+
+      assert from_connection(found)
+             |> ids_equal([repo1, repo2])
     end
   end
 
@@ -167,9 +179,7 @@ defmodule GraphQl.RepositoryQueriesTest do
           repository(id: $repoId) {
             id
             installation {
-              user {
-                id
-              }
+              user { id }
             }
             editable
           }
@@ -224,11 +234,7 @@ defmodule GraphQl.RepositoryQueriesTest do
       {:ok, %{data: %{"searchRepositories" => found}}} = run_query("""
         query SearchRepositories($query: String!) {
           searchRepositories(query: $query, first: 5) {
-            edges {
-              node {
-                id
-              }
-            }
+            edges { node { id } }
           }
         }
       """, %{"query" => "query"}, %{current_user: insert(:user)})
@@ -246,11 +252,7 @@ defmodule GraphQl.RepositoryQueriesTest do
       {:ok, %{data: %{"integrations" => found}}} = run_query("""
         query Integrations($name: String) {
           integrations(repositoryName: $name, first: 5) {
-            edges {
-              node {
-                id
-              }
-            }
+            edges { node { id } }
           }
         }
       """, %{"name" => repository.name}, %{current_user: insert(:user)})
@@ -268,11 +270,7 @@ defmodule GraphQl.RepositoryQueriesTest do
       {:ok, %{data: %{"integrations" => found}}} = run_query("""
         query Integrations($name: String!, $tag: String!) {
           integrations(repositoryName: $name, tag: $tag, first: 5) {
-            edges {
-              node {
-                id
-              }
-            }
+            edges { node { id } }
           }
         }
       """, %{"name" => repository.name, "tag" => "tag"}, %{current_user: insert(:user)})
@@ -290,11 +288,7 @@ defmodule GraphQl.RepositoryQueriesTest do
       {:ok, %{data: %{"integrations" => found}}} = run_query("""
         query Integrations($name: String!, $type: String!) {
           integrations(repositoryName: $name, type: $type, first: 5) {
-            edges {
-              node {
-                id
-              }
-            }
+            edges { node { id } }
           }
         }
       """, %{"name" => repository.name, "type" => "something"}, %{})

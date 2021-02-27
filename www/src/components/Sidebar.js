@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react'
 import { Box, Text } from 'grommet'
 import { useHistory, useLocation } from 'react-router-dom'
 import { Tooltip } from './utils/Tooltip'
-import { Aid, Book, Group, Package } from 'grommet-icons'
+import { Aid, Book, Group, Package, Alert } from 'grommet-icons'
 import { FaCreditCard } from 'react-icons/fa'
 
 const SIDEBAR_ROW_HEIGHT = '50px'
@@ -48,7 +48,8 @@ const OPTIONS = [
   {text: 'Publishers', icon: <Book size={ICON_HEIGHT} />, path: '/publishers'},
   {text: 'Account', icon: <Group size={ICON_HEIGHT} />, path: '/accounts/edit/users'},
   {text: 'Billing', icon: <FaCreditCard size={ICON_HEIGHT} />, path: '/billing/methods'},
-  {text: 'Incidents', icon: <Aid size={ICON_HEIGHT} />, path: '/incidents'}
+  {text: 'Incidents', icon: <Alert size={ICON_HEIGHT} />, path: '/incidents'},
+  {text: 'Responses', icon: <Aid size={ICON_HEIGHT} />, path: '/incidents/responses'}
 ]
 
 export default function Sidebar() {

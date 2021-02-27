@@ -45,6 +45,30 @@ defmodule Core.Schema.Repository do
   def search(query \\ __MODULE__, sq),
     do: from(r in query, where: like(r.name, ^"#{sq}%"))
 
+  def supported(query \\ __MODULE__, user)
+  def supported(query, %User{id: id, account: %{root_user_id: id}}), do: query
+  def supported(query, %User{} = user) do
+    subquery =
+      user
+      |> User.roles()
+      |> Enum.filter(& &1.permissions.support)
+      |> Enum.reduce(dynamic([r], r.name == "~~never-used~~"), fn %{repositories: repos}, acc ->
+        Enum.reduce(repos, acc, fn repo, q ->
+          like = String.replace(repo, "*", "%")
+          dynamic([r], ilike(r.name, ^like) or ^q)
+        end)
+      end)
+
+    from(r in query, where: ^subquery)
+  end
+
+  def for_account(query \\ __MODULE__, account_id) do
+    from(r in query,
+      join: p in assoc(r, :publisher),
+      where: p.account_id == ^account_id
+    )
+  end
+
   def for_user(query \\ __MODULE__, user_id) do
     from(r in query,
       join: i in ^Installation.for_user(user_id),

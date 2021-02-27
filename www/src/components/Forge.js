@@ -21,6 +21,7 @@ import { EditAccount } from './accounts/EditAccount'
 import { Incidents } from './incidents/Incidents'
 import { UpdateIncident } from './incidents/UpdateIncident'
 import { Incident } from './incidents/Incident'
+import { Responses } from './incidents/Responses'
 
 export const TOOLBAR_SIZE = '50px'
 
@@ -52,6 +53,7 @@ export default function Forge() {
                     <Route path='/me/edit' component={EditUser} />
                     <Route path='/billing/:section' component={Billing} />
                     <Route path='/me/invoices/:subscriptionId' component={Invoices} />
+                    <Route path='/incidents/responses' component={Responses} />
                     <Route path='/incidents/:incidentId/edit' component={(props) => <Incident {...props} editing />} />
                     <Route path='/incidents/:incidentId' component={Incident} />
                     <Route path='/incidents' component={Incidents} />

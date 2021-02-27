@@ -48,12 +48,22 @@ defmodule GraphQl.Resolvers.Repository do
   def resolve_installation(%{id: repo_id}, %{context: %{current_user: user}}),
     do: {:ok, Repositories.get_installation(user.id, repo_id)}
 
+  def list_repositories(%{supports: true} = args, %{context: %{current_user: user}}) do
+    user = Core.Services.Rbac.preload(user)
+
+    Repository.for_account(user.account_id)
+    |> Repository.supported(user)
+    |> Repository.ordered()
+    |> paginate(args)
+  end
+
   def list_repositories(%{tag: tag} = args, %{context: %{current_user: user}}) when not is_nil(tag) do
     Repository.for_tag(tag)
     |> Repository.ordered()
     |> Repository.accessible(user)
     |> paginate(args)
   end
+
   def list_repositories(%{publisher_id: pid} = args, %{context: %{current_user: user}}) when not is_nil(pid) do
     Repository.for_publisher(pid)
     |> Repository.ordered()

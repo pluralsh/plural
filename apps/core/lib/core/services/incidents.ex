@@ -1,7 +1,7 @@
 defmodule Core.Services.Incidents do
   use Core.Services.Base
   import Core.Policies.Incidents
-  alias Core.Schema.{User, Incident, IncidentMessage}
+  alias Core.Schema.{User, Incident, IncidentMessage, Reaction}
   alias Core.PubSub
 
   def get_incident!(id), do: Core.Repo.get!(Incident, id)
@@ -54,6 +54,32 @@ defmodule Core.Services.Incidents do
     |> allow(user, :edit)
     |> when_ok(:delete)
     |> notify(:delete)
+  end
+
+  def create_reaction(message_id, name, %User{} = user) do
+    start_transaction()
+    |> add_operation(:allow, fn _ ->
+      get_message!(message_id)
+      |> allow(user, :react)
+    end)
+    |> add_operation(:create, fn %{allow: %{id: id}} ->
+      %Reaction{message_id: id, creator_id: user.id}
+      |> Reaction.changeset(%{name: name})
+      |> Core.Repo.insert()
+    end)
+    |> execute(extract: :allow)
+    |> notify(:update)
+  end
+
+  def delete_reaction(message_id, name, %User{id: user_id}) do
+    start_transaction()
+    |> add_operation(:delete, fn _ ->
+      Core.Repo.get_by!(Reaction, message_id: message_id, name: name, creator_id: user_id)
+      |> Core.Repo.delete()
+    end)
+    |> add_operation(:allow, fn _ -> {:ok, get_message!(message_id)} end)
+    |> execute(extract: :allow)
+    |> notify(:update)
   end
 
   defp notify({:ok, %Incident{} = inc}, :create),

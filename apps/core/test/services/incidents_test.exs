@@ -157,4 +157,36 @@ defmodule Core.Services.IncidentsTest do
       {:error, _} = Incidents.delete_message(msg.id, insert(:user))
     end
   end
+
+  describe "#create_reaction/3" do
+    test "members on the owner's account can react" do
+      incident = insert(:incident, owner: insert(:user))
+      user = insert(:user, account: incident.owner.account)
+      msg = insert(:incident_message, incident: incident)
+
+      {:ok, react} = Incidents.create_reaction(msg.id, "smile", user)
+
+      assert msg.id == react.id
+    end
+
+    test "random users cannot react" do
+      incident = insert(:incident, owner: insert(:user))
+      msg = insert(:incident_message, incident: incident)
+
+      {:error, _} = Incidents.create_reaction(msg.id, "smile", insert(:user))
+    end
+  end
+
+  describe "#delete_reaction/3" do
+    test "users can delete their reactions" do
+      incident = insert(:incident, owner: insert(:user))
+      user = insert(:user, account: incident.owner.account)
+      msg = insert(:incident_message, incident: incident)
+      insert(:reaction, message: msg, creator: user, name: "smile")
+
+      {:ok, react} = Incidents.delete_reaction(msg.id, "smile", user)
+
+      assert msg.id == react.id
+    end
+  end
 end

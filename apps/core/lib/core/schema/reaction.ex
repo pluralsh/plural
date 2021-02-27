@@ -17,5 +17,6 @@ defmodule Core.Schema.Reaction do
     model
     |> cast(attrs, @valid)
     |> validate_required([:name, :creator_id, :message_id])
+    |> unique_constraint(:name, name: index_name(:reactions, [:message_id, :creator_id, :name]))
   end
 end

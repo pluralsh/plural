@@ -54,6 +54,12 @@ defmodule GraphQl.Resolvers.Incidents do
   def delete_message(%{id: id}, %{context: %{current_user: user}}),
     do: Incidents.delete_message(id, user)
 
+  def create_reaction(%{message_id: id, name: name}, %{context: %{current_user: user}}),
+    do: Incidents.create_reaction(id, name, user)
+
+  def delete_reaction(%{message_id: id, name: name}, %{context: %{current_user: user}}),
+    do: Incidents.delete_reaction(id, name, user)
+
   defp maybe_filter_creator(query, _, true), do: query
   defp maybe_filter_creator(query, %{id: id}, _), do: Incident.for_creator(query, id)
 

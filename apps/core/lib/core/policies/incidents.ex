@@ -32,7 +32,7 @@ defmodule Core.Policies.Incidents do
     end
   end
 
-  def can?(user, %IncidentMessage{} = msg, :create) do
+  def can?(user, %IncidentMessage{} = msg, action) when action in [:create, :react] do
     %{incident: incident} = Core.Repo.preload(msg, [incident: @preloads])
     can?(user, incident, :access)
   end

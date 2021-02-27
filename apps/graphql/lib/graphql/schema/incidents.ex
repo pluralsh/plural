@@ -113,6 +113,20 @@ defmodule GraphQl.Schema.Incidents do
 
       resolve safe_resolver(&Incidents.delete_message/2)
     end
+
+    field :create_reaction, :incident_message do
+      arg :message_id, non_null(:id)
+      arg :name, non_null(:string)
+
+      resolve safe_resolver(&Incidents.create_reaction/2)
+    end
+
+    field :delete_reaction, :incident_message do
+      arg :message_id, non_null(:id)
+      arg :name, non_null(:string)
+
+      resolve safe_resolver(&Incidents.delete_reaction/2)
+    end
   end
 
   object :incident_subscriptions do

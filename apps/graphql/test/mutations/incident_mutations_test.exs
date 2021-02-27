@@ -115,4 +115,41 @@ defmodule GraphQl.IncidentMutationsTest do
       refute refetch(message)
     end
   end
+
+  describe "createReaction" do
+    test "users can create reactions" do
+      msg = insert(:incident_message)
+
+      {:ok, %{data: %{"createReaction" => message}}} = run_query("""
+        mutation Create($id: ID!, $name: String!) {
+          createReaction(messageId: $id, name: $name) {
+            id
+            reactions { name }
+          }
+        }
+      """, %{"id" => msg.id, "name" => "smile"}, %{current_user: msg.incident.creator})
+
+      assert message["id"] == msg.id
+      assert message["reactions"] == [%{"name" => "smile"}]
+    end
+  end
+
+  describe "deleteReaction" do
+    test "users can create reactions" do
+      msg = insert(:incident_message)
+      reaction = insert(:reaction, message: msg)
+
+      {:ok, %{data: %{"deleteReaction" => message}}} = run_query("""
+        mutation Create($id: ID!, $name: String!) {
+          deleteReaction(messageId: $id, name: $name) {
+            id
+            reactions { name }
+          }
+        }
+      """, %{"id" => msg.id, "name" => "smile"}, %{current_user: reaction.creator})
+
+      assert message["id"] == msg.id
+      assert Enum.empty?(message["reactions"])
+    end
+  end
 end

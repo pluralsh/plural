@@ -7,11 +7,8 @@ defmodule Rtc.Application do
 
   def start(_type, _args) do
     topologies = Application.get_env(:libcluster, :topologies)
-
-    Application.get_env(:rtc, RtcWeb.Endpoint)
-    |> IO.inspect()
-
     RtcWeb.Plugs.MetricsExporter.setup()
+
     children = [
       {Phoenix.PubSub, name: Rtc.PubSub},
       RtcWeb.Endpoint,

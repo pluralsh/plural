@@ -13,7 +13,7 @@ import { Status } from './IncidentStatus'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 import { CreateIncident } from './CreateIncident'
 
-function IncidentRow({incident: {id, repository, title, insertedAt, ...incident}, next, selected}) {
+export function IncidentRow({incident: {id, repository, title, insertedAt, ...incident}, next, selected}) {
   let history = useHistory()
 
   return (
@@ -78,8 +78,9 @@ export function Incidents() {
     <Box fill>
       {!open && (
         <Box fill='horizontal' pad='small' align='center' direction='row' gap='xsmall' justify='end'>
-          <Box fill='horizontal'>
+          <Box fill='horizontal' border={{side: 'bottom', color: 'light-5'}}>
             <TextInput 
+              plain
               icon={<Search size='15px' />}
               value={q}
               placeholder='search for an incident'

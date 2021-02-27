@@ -1,4 +1,5 @@
 import gql from 'graphql-tag'
+import { RepoFragment } from '../../models/repo'
 import { IncidentFragment, IncidentMessageFragment } from '../../models/incidents';
 import { PageInfo } from '../../models/misc'
 
@@ -26,6 +27,19 @@ export const INCIDENT_Q = gql`
   ${IncidentFragment}
   ${PageInfo}
   ${IncidentMessageFragment}
+`
+
+export const REPOS_Q = gql`
+  query Repos($cursor: String) {
+    repositories(supports: true, first: 15, after: $cursor) {
+      pageInfo { ...PageInfo }
+      edges {
+        node { ...RepoFragment }
+      }
+    }
+  }
+  ${PageInfo}
+  ${RepoFragment}
 `
 
 export const CREATE_INCIDENT = gql`

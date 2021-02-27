@@ -59,7 +59,7 @@ export function IncidentForm({attributes, setAttributes, statusEdit}) {
   )
 }
 
-function RepoOption({repo, selected, setRepository}) {
+export function RepoOption({repo, selected, setRepository}) {
   return (
     <Box flex={false} direction='row' align='center' gap='small' onClick={() => setRepository(repo)}
           hoverIndicator='light-3' pad='small'>

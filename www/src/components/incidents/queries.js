@@ -75,7 +75,14 @@ export const DELETE_MESSAGE = gql`
 
 export const CREATE_REACTION = gql`
   mutation Create($id: ID!, $name: String!) {
-    createReaction(id: $id, name: $name) { ...IncidentMessageFragment }
+    createReaction(messageId: $id, name: $name) { ...IncidentMessageFragment }
   }
   ${IncidentMessageFragment}
 `
+
+export const DELETE_REACTION = gql`
+  mutation Delete($id: ID!, $name: String!) {
+    deleteReaction(messageId: $id, name: $name) { ...IncidentMessageFragment }
+  }
+  ${IncidentMessageFragment}
+`;

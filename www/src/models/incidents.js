@@ -24,6 +24,7 @@ export const IncidentMessageFragment = gql`
     id
     text
     creator { ...UserFragment }
+    reactions { name creator { id email } }
     insertedAt
   }
   ${UserFragment}

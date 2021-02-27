@@ -39,7 +39,7 @@ function Control({children, tooltip, pad, closed, ...rest}) {
   )
 }
 
-export function Reaction({message, setHover, align, label, ...props}) {
+export function Reaction({message, setHover, align, width, label, ...props}) {
   const ref = useRef()
   const [open, setOpen] = useState(false)
   const toggleOpen = useCallback((value) => {
@@ -50,10 +50,10 @@ export function Reaction({message, setHover, align, label, ...props}) {
 
   return (
     <>
-    <Control tooltip='add reaction'>
-      <Box ref={ref} accentable onClick={() => toggleOpen(!open)} {...CONTROL_ATTRS} {...props}>
+    <Control tooltip='add reaction' width={width}>
+      <Box ref={ref} onClick={() => toggleOpen(!open)} {...CONTROL_ATTRS} {...props}>
         <Emoji size='small'  />
-        {label && (<Text size='xsmall' margin={{left: '2px'}}>{label}</Text>)}
+        {label && (<Text size='xsmall'>{label}</Text>)}
       </Box>
     </Control>
     {open && (

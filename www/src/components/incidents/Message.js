@@ -6,6 +6,7 @@ import moment from 'moment'
 import { dateFormat } from '../../utils/date'
 import { MessageControls } from './MessageControls'
 import './message.css'
+import MessageReactions from './MessageReactions'
 
 function isConsecutive(message, next) {
   if (!next || !next.creator) return false
@@ -17,7 +18,7 @@ function isConsecutive(message, next) {
 }
 
 
-function MessageBody({message, next}) {
+function MessageBody({message, next, setHover}) {
   const consecutive = isConsecutive(message, next)
   const formatted = dateFormat(moment(message.insertedAt))
 
@@ -36,8 +37,11 @@ function MessageBody({message, next}) {
           <Text size='small' weight='bold'>{message.creator.name}</Text>
           <Text size='small' color='dark-5'>{formatted}</Text>
         </Box>}
-        <Box>
+        <Box flex={false}>
           <Markdown text={message.text} entities={message.entities} />
+          {message.reactions && message.reactions.length > 0 && (
+            <MessageReactions message={message} setHover={setHover} />
+          )}
         </Box>
       </Box>
     </Box>
@@ -52,7 +56,7 @@ export function Message({message, next}) {
   return (
     <Box flex={false} fill='horizontal' className={'message' + additionalClasses}>
       <Stack fill anchor='top-right'>
-        <MessageBody message={message} next={next} />
+        <MessageBody message={message} next={next} hover={hover} setHover={setHover} />
         <MessageControls message={message} setHover={setHover} />
       </Stack>
     </Box>

@@ -1,5 +1,5 @@
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import { Button } from 'forge-core'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
+import { Button, Scroller } from 'forge-core'
 import { CurrentUserContext } from '../login/CurrentUser'
 import { useMutation, useQuery } from 'react-apollo'
 import { useHistory, useParams } from 'react-router'
@@ -11,7 +11,7 @@ import { Status } from './IncidentStatus'
 import { MessageInput } from './MessageInput'
 import { dateFormat } from '../../utils/date'
 import moment from 'moment'
-import { Chat, Close, Edit } from 'grommet-icons'
+import { Chat, Close, Edit, Resources } from 'grommet-icons'
 import SmoothScroller from '../utils/SmoothScroller'
 import { Message } from './Message'
 import { extendConnection } from '../../utils/graphql'
@@ -21,6 +21,9 @@ import { useEditor } from '../utils/hooks'
 import { Editable, Slate } from 'slate-react'
 import { TagInput } from '../repos/Tags'
 import { AttachmentProvider, Dropzone } from './AttachmentProvider'
+import { IncidentView } from './types'
+import { FileEntry } from './File'
+import { ViewSwitcher } from './ViewSwitcher'
 
 export const canEdit = ({creator, owner}, {id}) => creator.id === id || owner.id === id
 
@@ -108,26 +111,14 @@ export function Messages({incident, loading, fetchMore}) {
   const [listRef, setListRef] = useState(null)
   const {messages: {pageInfo: {hasNextPage, endCursor}, edges}} = incident
   
-  const entries = useMemo(() => {
-    if (edges.length === 0) return ['empty']
-    return edges
-  }, [edges, incident])
-  
-  const mapper = useCallback((e, next) => {
-    switch (e) {
-      case 'empty':
-        return <Empty />
-      default:
-        return <Message message={e.node} next={next.node} />
-    }
-  }, [])
+  if (edges.length === 0) return <Empty />
 
   return (
     <SmoothScroller
       listRef={listRef}
       setListRef={setListRef}
-      items={entries}
-      mapper={mapper}
+      items={edges}
+      mapper={({node}, next) => <Message message={node} next={next.node} />}
       loading={loading}
       loadNextPage={() => hasNextPage && fetchMore({
         variables: {cursor: endCursor},
@@ -139,8 +130,37 @@ export function Messages({incident, loading, fetchMore}) {
   )
 }
 
+function NoFiles() {
+  return (
+    <Box fill pad='medium' gap='small' align='center' justify='center' round='xsmall'>
+      <Resources size='40px' />
+      <Text size='small'>No files uploaded yet</Text>
+    </Box>
+  )
+}
+
+function Files({incident, fetchMore}) {
+  const {files: {pageInfo: {hasNextPage, endCursor}, edges}} = incident
+
+  return (
+    <Scroller
+      id='files'
+      style={{width: '100%', height: '100%', overflow: 'auto'}}
+      edges={edges}
+      emptyState={<NoFiles />}
+      mapper={({node}, {node: next}) => <FileEntry file={node} next={next} />}
+      onLoadMore={() => hasNextPage && fetchMore({
+        variables: {fileCursor: endCursor},
+        updateQuery: (prev, {fetchMoreResult: {incident: {files}}}) => ({
+          ...prev, incident: {...prev.incident, files: extendConnection(prev.incident.files, files)},
+        })
+      })} />
+  )
+}
+
 function IncidentInner({incident, fetchMore, loading, editing}) {
   let history = useHistory()
+  const [view, setView] = useState(IncidentView.MSGS)
   const currentUser = useContext(CurrentUserContext)
   const editable = canEdit(incident, currentUser)
   const [attributes, setAttributes] = useState({
@@ -168,7 +188,7 @@ function IncidentInner({incident, fetchMore, loading, editing}) {
         )}
         <Status incident={incident} setActive={(status) => mutation({variables: {attributes: {status}}})} />
       </Box>
-      <Box flex={false} pad={{horizontal: 'small'}} margin={{vertical: 'small'}}>
+      <Box flex={false} pad={{horizontal: 'small'}} margin={{top: 'small'}}>
         <IncidentHeader 
           attributes={attributes}
           setAttributes={setAttributes}
@@ -178,16 +198,22 @@ function IncidentInner({incident, fetchMore, loading, editing}) {
           updating={updating} 
           mutation={mutation} />
       </Box>
-      <Box fill>
-        <Dropzone>
-          <Messages 
-            updating={updating}
-            editing={editing}
-            mutation={mutation}
-            incident={incident} 
-            fetchMore={fetchMore} 
-            loading={loading} />
-        </Dropzone>
+      <Box fill direction='row'>
+        <ViewSwitcher view={view} setView={setView} />
+        <Box fill>
+          {view === IncidentView.FILES && (<Files incident={incident} fetchMore={fetchMore} />)}
+          {view === IncidentView.MSGS && (
+            <Dropzone>
+              <Messages 
+                updating={updating}
+                editing={editing}
+                mutation={mutation}
+                incident={incident} 
+                fetchMore={fetchMore} 
+                loading={loading} />
+            </Dropzone>
+          )}
+        </Box>
       </Box>
       <MessageInput />
       </AttachmentProvider>

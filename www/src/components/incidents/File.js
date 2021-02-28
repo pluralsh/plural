@@ -28,18 +28,18 @@ function DownloadAffordance({blob}) {
   )
 }
 
-function Image({...file}) {
+function Image({height, blob, filename}) {
   const [hover, setHover] = useState(false)
 
   return (
     <Box onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
       <Stack anchor='top-right'>
         <img style={{
-          height: !file.height || file.height === 0 ? 50 : file.height,
+          height: !height || height === 0 ? 50 : height,
           maxHeight: 300,
           // objectFit: 'contain'
-        }} src={file.blob} alt={file.filename} />
-        {hover && (<DownloadAffordance blob={file.blob} />)}
+        }} src={blob} alt={filename} />
+        {hover && (<DownloadAffordance blob={blob} />)}
       </Stack>
     </Box>
   )
@@ -71,7 +71,11 @@ function MediaFile({file}) {
 export function Icon({size, name}) {
   const ext = extension(name)
   const styles = defaultStyles[ext] || {}
-  return <FileIcon extension={ext} size={size} {...styles} />
+  return (
+    <Box width={`${size}px`}>
+      <FileIcon extension={ext} {...styles} />
+    </Box>
+  )
 }
 
 
@@ -87,7 +91,7 @@ export function FileEntry({file, next}) {
         <Box
           direction='row'
           height='80px'
-          border={next.node ? 'top' : 'horizontal'}
+          border={next ? 'top' : 'horizontal'}
           align='center'
           gap='small'
           pad={{left: 'small'}}
@@ -114,25 +118,16 @@ export function FileEntry({file, next}) {
   )
 }
 
-export function StandardFile({file: {filename, object, insertedAt, ...file}}) {
+export function StandardFile({file: {filename, blob, insertedAt, ...file}}) {
   const [hover, setHover] = useState(false)
-  const ext = extension(filename)
-  const styles = defaultStyles[ext] || {}
+
   return (
-    <a href={object} download style={{color: 'inherit', textDecoration: 'none'}}>
-      <Box
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
-        border={hover ? {color: 'focus'} : {color: 'light-5'}}
-        background='#fff'
-        round='xsmall'
-        align="center"
-        direction='row'
-        pad='small'
-        gap='small'
-        margin={{vertical: 'xsmall'}}>
-        <FileIcon extension={ext} size={40} {...styles} />
-        <Box>
+    <Box fill='horizontal'>
+      <Box onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} onClick={() => download(blob)}
+        border={hover ? {color: 'focus'} : {color: 'light-5'}} background='#fff' round='xsmall' align="center" 
+        direction='row' pad='small' gap='small' margin={{vertical: 'xsmall'}} width='30%'>
+        <Icon name={filename} size={40} />
+        <Box flex={false}>
           <Text size='small'>{filename}</Text>
           <Box direction='row' gap='small' align='center'>
             <Text size='xsmall' color='dark-5'>{filesize(file.filesize || 0)}</Text>
@@ -140,7 +135,7 @@ export function StandardFile({file: {filename, object, insertedAt, ...file}}) {
           </Box>
         </Box>
       </Box>
-    </a>
+    </Box>
   )
 }
 

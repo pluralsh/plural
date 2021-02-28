@@ -8,14 +8,8 @@ export function Tooltip({children, background, align, target, side, ...props}) {
       className={`tooltip ${side || 'bottom'}`}
       align={align || {bottom: 'top'}}
       target={target.current}>
-      <Box
-        direction='row'
-        align='center'
-        justify='center'
-        round='xsmall'
-        background={background || 'sidebar'}
-        pad='xsmall'
-        {...props}>
+      <Box direction='row' align='center' justify='center' round='xsmall' background={background || 'sidebar'}
+        pad='xsmall' {...props}>
         {children}
       </Box>
     </Drop>

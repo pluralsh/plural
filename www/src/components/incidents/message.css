@@ -51,6 +51,7 @@
 
 .message .message-controls {
   display: none;
+  z-index: 20;
 }
 .message .message-reactions {
   display: none;

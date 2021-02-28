@@ -19,7 +19,6 @@ import { Billing } from './users/Billing'
 import BreadcrumbProvider from './Breadcrumbs'
 import { EditAccount } from './accounts/EditAccount'
 import { Incidents } from './incidents/Incidents'
-import { UpdateIncident } from './incidents/UpdateIncident'
 import { Incident } from './incidents/Incident'
 import { Responses } from './incidents/Responses'
 

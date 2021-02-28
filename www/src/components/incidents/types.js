@@ -13,3 +13,8 @@ export const FileTypes = {
   OTHER: 'OTHER',
   IMAGE: 'IMAGE'
 }
+
+export const IncidentView = {
+  MSGS: 'm',
+  FILES: 'f'
+}

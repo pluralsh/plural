@@ -19,13 +19,26 @@ export const IncidentFragment = gql`
   ${RepoFragment}
 `
 
+export const FileFragment = gql`
+  fragment FileFragment on File {
+    id
+    blob
+    mediaType
+    contentType
+    filesize
+    filename
+  }
+`
+
 export const IncidentMessageFragment = gql`
   fragment IncidentMessageFragment on IncidentMessage {
     id
     text
     creator { ...UserFragment }
     reactions { name creator { id email } }
+    file { ...FileFragment }
     insertedAt
   }
   ${UserFragment}
+  ${FileFragment}
 `

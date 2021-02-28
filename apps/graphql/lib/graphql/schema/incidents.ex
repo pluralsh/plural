@@ -63,11 +63,16 @@ defmodule GraphQl.Schema.Incidents do
 
   object :file do
     field :id,           non_null(:id)
-    field :object,       non_null(:string)
     field :media_type,   :media_type
     field :filename,     :string
     field :filesize,     :integer
+    field :width,        :integer
+    field :height,       :integer
     field :content_type, :string
+
+    field :blob, non_null(:string), resolve: fn
+      file, _, _ -> {:ok, Core.Storage.url({file.blob, file}, :original)}
+    end
 
     field :message, non_null(:incident_message), resolve: dataloader(Incidents)
 

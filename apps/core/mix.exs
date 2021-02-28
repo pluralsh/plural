@@ -60,6 +60,7 @@ defmodule Core.MixProject do
       {:conduit, "~> 0.12"},
       {:conduit_amqp, "~> 0.6.3"},
       {:mime, "~> 1.2"},
+      {:ex_image_info, "~> 0.2.4"},
 
       {:mimic, "~> 1.1", only: :test}
     ]

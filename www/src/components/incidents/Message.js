@@ -7,6 +7,7 @@ import { dateFormat } from '../../utils/date'
 import { MessageControls } from './MessageControls'
 import './message.css'
 import MessageReactions from './MessageReactions'
+import File from './File'
 
 function isConsecutive(message, next) {
   if (!next || !next.creator) return false
@@ -39,6 +40,7 @@ function MessageBody({message, next, setHover}) {
         </Box>}
         <Box flex={false}>
           <Markdown text={message.text} entities={message.entities} />
+          {message.file && <File file={message.file} />}
           {message.reactions && message.reactions.length > 0 && (
             <MessageReactions message={message} setHover={setHover} />
           )}

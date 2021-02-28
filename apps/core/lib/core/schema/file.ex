@@ -33,30 +33,26 @@ defmodule Core.Schema.File do
   @valid ~w(message_id)a
 
   def changeset(model, attrs \\ %{}) do
+    upload = get_upload(attrs)
     model
     |> cast(attrs, @valid)
     |> generate_uuid(:blob_id)
     |> cast_attachments(attrs, [:blob], allow_urls: true)
     |> foreign_key_constraint(:message_id)
-    |> put_change(:filename, get_upload(attrs) |> filename())
-    |> put_change(:filesize, get_upload(attrs) |> file_size())
+    |> put_change(:filename, filename(upload))
+    |> put_change(:filesize, file_size(upload))
     |> add_media_type()
-    |> validate_required([:object, :filename, :media_type])
+    |> add_dimensions(upload)
+    |> validate_required([:blob, :filename, :media_type])
   end
 
-  def get_upload(%{blob: blob}), do: blob
-  def get_upload(%{"blob" => blob}), do: blob
-  def get_upload(_), do: nil
+  defp get_upload(%{blob: blob}), do: blob
+  defp get_upload(%{"blob" => blob}), do: blob
+  defp get_upload(_), do: nil
 
-  def filename(%Plug.Upload{filename: name}), do: name
-  def filename(url) when is_binary(url), do: Path.basename(url)
-  def filename(_), do: nil
-
-  def media_type(name) do
-    MIME.from_path(name)
-    |> String.split("/")
-    |> infer_media_type()
-  end
+  defp filename(%Plug.Upload{filename: name}), do: name
+  defp filename(url) when is_binary(url), do: Path.basename(url)
+  defp filename(_), do: nil
 
   defp add_media_type(changeset) do
     case apply_changes(changeset) do
@@ -65,17 +61,36 @@ defmodule Core.Schema.File do
     end
   end
 
+  defp media_type(name) do
+    MIME.from_path(name)
+    |> String.split("/")
+    |> infer_media_type()
+  end
+
   defp infer_media_type(["image", "svg" <> _]), do: :other
   defp infer_media_type(["image", _]),  do: :image
   defp infer_media_type(["video", _]), do: :video
   defp infer_media_type([_, "pdf"]), do: :pdf
   defp infer_media_type(_), do: :other
 
-  def file_size(%Plug.Upload{path: path}) do
+  defp add_dimensions(changeset, %{path: file}) do
+    File.read!(file)
+    |> ExImageInfo.info()
+    |> case do
+      {_, width, height, _} ->
+        changeset
+        |> put_change(:width, width)
+        |> put_change(:height, height)
+      _ -> changeset
+    end
+  end
+  defp add_dimensions(changeset, _), do: changeset
+
+  defp file_size(%Plug.Upload{path: path}) do
     case File.stat(path) do
       {:ok, %{size: size}} -> size
       _ -> nil
     end
   end
-  def file_size(_), do: nil
+  defp file_size(_), do: nil
 end

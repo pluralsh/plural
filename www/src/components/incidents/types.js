@@ -8,3 +8,8 @@ export const IncidentStatus = {
   RESOLVED: 'RESOLVED',
   COMPLETED: 'COMPLETED'
 }
+
+export const FileTypes = {
+  OTHER: 'OTHER',
+  IMAGE: 'IMAGE'
+}

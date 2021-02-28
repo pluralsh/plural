@@ -1,5 +1,6 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useContext, useState } from 'react'
 import { useEditor } from '../utils/hooks'
+import { FilePicker } from 'react-file-picker'
 import { useMutation } from 'react-apollo'
 import { CREATE_MESSAGE, INCIDENT_Q } from './queries'
 import { Box, Keyboard } from 'grommet'
@@ -11,6 +12,9 @@ import Editor from './Editor'
 import { EntityType } from './types'
 import { useParams } from 'react-router'
 import { appendConnection, updateCache } from '../../utils/graphql'
+import { AttachmentContext } from './AttachmentProvider'
+import { Control } from './MessageControls'
+import { Attachment } from 'grommet-icons'
 
 function* extractEntities(editorState) {
   let startIndex = 0
@@ -47,7 +51,21 @@ function SendMsg({loading, empty, onClick}) {
   )
 }
 
+function FileInput() {
+  const {attachment, setAttachment} = useContext(AttachmentContext)
+
+  return (
+    <FilePicker onChange={(file) => setAttachment(file)} maxSize={2000} onError={console.log}>
+      <Control onClick={() => null} hoverIndicator='light-2' focusIndicator={false} tooltip='add attachment' 
+               align='center' justify='center'>
+        <Attachment color={attachment ? 'action' : null} size='15px' />
+      </Control>
+    </FilePicker>
+  )
+}
+
 export function MessageInput() {
+  const {attachment} = useContext(AttachmentContext)
   const editor = useEditor()
   const [editorState, setEditorState] = useState(plainDeserialize(''))
   const {incidentId} = useParams()
@@ -66,10 +84,11 @@ export function MessageInput() {
   const submit = useCallback(() => {
     // const entities = [...extractEntities(editorState)]
     // console.log(entities)
-    mutation({variables: {attributes: {text: plainSerialize(editorState)}}})
+    const file = attachment ? {blob: attachment} : null
+    mutation({variables: {attributes: {text: plainSerialize(editorState), file}}})
     Transforms.select(editor, SlateEditor.start(editor, []))
     setEditorState(plainDeserialize(''))
-  }, [mutation, setEditorState, editorState, editor])
+  }, [mutation, setEditorState, editorState, editor, attachment])
 
   const empty = isEmpty(editorState)
 
@@ -88,6 +107,7 @@ export function MessageInput() {
           editorState={editorState}
           setEditorState={setEditorState}
           clearable />
+        <FileInput />
         <SendMsg loading={loading} empty={empty} onClick={submit} />
       </Box>
       </Keyboard>

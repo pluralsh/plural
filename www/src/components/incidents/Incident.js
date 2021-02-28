@@ -20,6 +20,7 @@ import { plainDeserialize, plainSerialize } from '../../utils/slate'
 import { useEditor } from '../utils/hooks'
 import { Editable, Slate } from 'slate-react'
 import { TagInput } from '../repos/Tags'
+import { AttachmentProvider, Dropzone } from './AttachmentProvider'
 
 export const canEdit = ({creator, owner}, {id}) => creator.id === id || owner.id === id
 
@@ -154,6 +155,7 @@ function IncidentInner({incident, fetchMore, loading, editing}) {
 
   return (
     <Box fill>
+      <AttachmentProvider>
       <Box flex={false} pad='small' direction='row' align='center' gap='small' border={{side: 'bottom', color: 'light-5'}}>
         <Severity incident={incident} setSeverity={(severity) => mutation({variables: {attributes: {severity}}})} />
         {!editing && <Box fill='horizontal' direction='row' align='center' gap='xsmall'>
@@ -177,15 +179,18 @@ function IncidentInner({incident, fetchMore, loading, editing}) {
           mutation={mutation} />
       </Box>
       <Box fill>
-        <Messages 
-          updating={updating}
-          editing={editing}
-          mutation={mutation}
-          incident={incident} 
-          fetchMore={fetchMore} 
-          loading={loading} />
+        <Dropzone>
+          <Messages 
+            updating={updating}
+            editing={editing}
+            mutation={mutation}
+            incident={incident} 
+            fetchMore={fetchMore} 
+            loading={loading} />
+        </Dropzone>
       </Box>
       <MessageInput />
+      </AttachmentProvider>
     </Box>
   )
 }

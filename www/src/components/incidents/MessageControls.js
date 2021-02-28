@@ -21,7 +21,7 @@ const CONTROL_ATTRS = {
 const PAD = '2px'
 const OUTER = {height: SIZE, width: SIZE, align: 'center', justify: 'center'}
 
-function Control({children, tooltip, pad, closed, ...rest}) {
+export function Control({children, tooltip, pad, closed, ...rest}) {
   const ref = useRef()
   const [hover, setHover] = useState(false)
   return (

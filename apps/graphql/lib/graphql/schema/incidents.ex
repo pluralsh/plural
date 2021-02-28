@@ -4,6 +4,7 @@ defmodule GraphQl.Schema.Incidents do
 
   ecto_enum :incident_status, Core.Schema.Incident.Status
   ecto_enum :media_type, Core.Schema.File.MediaType
+  ecto_enum :incident_action, Core.Schema.IncidentHistory.Action
 
   input_object :incident_attributes do
     field :title,       :string
@@ -46,7 +47,28 @@ defmodule GraphQl.Schema.Incidents do
       resolve &Incidents.list_files/2
     end
 
+    connection field :history, node_type: :incident_history do
+      resolve &Incidents.list_history/2
+    end
+
     timestamps()
+  end
+
+  object :incident_history do
+    field :id,      non_null(:id)
+    field :action,  non_null(:incident_action)
+    field :changes, list_of(:incident_change)
+
+    field :actor,    non_null(:user), resolve: dataloader(User)
+    field :incident, non_null(:incident), resolve: dataloader(Incidents)
+
+    timestamps()
+  end
+
+  object :incident_change do
+    field :key,  non_null(:string)
+    field :prev, :string
+    field :next, :string
   end
 
   object :incident_message do
@@ -89,6 +111,7 @@ defmodule GraphQl.Schema.Incidents do
 
   connection node_type: :incident
   connection node_type: :incident_message
+  connection node_type: :incident_history
   connection node_type: :file
 
   delta :incident

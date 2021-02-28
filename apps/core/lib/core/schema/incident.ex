@@ -1,6 +1,6 @@
 defmodule Core.Schema.Incident do
   use Piazza.Ecto.Schema
-  alias Core.Schema.{Repository, User, Tag}
+  alias Core.Schema.{Repository, User, Tag, IncidentHistory}
 
   defenum Status, open: 0, in_progress: 1, resolved: 2, completed: 3
 
@@ -15,6 +15,7 @@ defmodule Core.Schema.Incident do
     belongs_to :creator,    User
     belongs_to :owner,      User
 
+    has_many :history, IncidentHistory
     has_many :tags, Tag,
       where: [resource_type: :incident],
       foreign_key: :resource_id,

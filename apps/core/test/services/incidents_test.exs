@@ -20,6 +20,11 @@ defmodule Core.Services.IncidentsTest do
       assert incident.status == :open
       assert incident.title == "wtf"
 
+      %{history: [hist]} = Core.Repo.preload(incident, [:history])
+
+      assert hist.actor_id == user.id
+      assert hist.action == :create
+
       assert_receive {:event, %PubSub.IncidentCreated{item: ^incident}}
     end
 
@@ -53,6 +58,41 @@ defmodule Core.Services.IncidentsTest do
       {:ok, updated} = Incidents.update_incident(%{severity: 0}, incident.id, incident.creator)
 
       assert updated.severity == 0
+    end
+
+    test "it will record severity changes" do
+      user = insert(:user)
+      incident = insert(:incident, owner: user)
+
+      {:ok, updated} = Incidents.update_incident(%{severity: 0}, incident.id, incident.creator)
+
+      %{history: [hist]} = Core.Repo.preload(updated, [:history])
+
+      assert hist.incident_id == incident.id
+      assert hist.action == :severity
+    end
+
+    test "it will record status changes" do
+      user = insert(:user)
+      incident = insert(:incident, owner: user)
+
+      {:ok, updated} = Incidents.update_incident(%{status: :in_progress}, incident.id, incident.creator)
+
+      %{history: [hist]} = Core.Repo.preload(updated, [:history])
+
+      assert hist.incident_id == incident.id
+      assert hist.action == :status
+    end
+
+    test "it will not choke on tags changes" do
+      user = insert(:user)
+      incident = insert(:incident, owner: user)
+
+      {:ok, updated} = Incidents.update_incident(%{tags: [%{tag: "test"}]}, incident.id, incident.creator)
+
+      %{history: [hist]} = Core.Repo.preload(updated, [:history])
+
+      assert hist.incident_id == incident.id
     end
 
     test "non-owner/creators cannot update" do

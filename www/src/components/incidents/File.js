@@ -78,29 +78,22 @@ export function Icon({size, name}) {
   )
 }
 
+const MEDIA_STYLES = {maxWidth: 50, maxHeight: 50}
 
-export function FileEntry({file, next}) {
+export function FileEntry({file}) {
   const [hover, setHover] = useState(false)
-  const mediaStyles = {maxWidth: 50, maxHeight: 50}
 
   return (
-    <>
     <Box flex={false} focusIndicator={false}
       onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
       <Stack anchor='top-right'>
-        <Box
-          direction='row'
-          height='80px'
-          border={next ? 'top' : 'horizontal'}
-          align='center'
-          gap='small'
-          pad={{left: 'small'}}
-          background={hover ? 'light-2' : null}>
+        <Box direction='row' height='80px' align='center' gap='small' background={hover ? 'light-2' : null}
+          border={{side: 'bottom', color: 'light-4'}} pad={{left: 'small'}}>
           <Box width='60px' height='60px' align='center' justify='center'>
             {file.mediaType === FileTypes.VIDEO ?
-              <video src={file.object} style={mediaStyles} alt={file.filename} /> :
+              <video src={file.object} style={MEDIA_STYLES} alt={file.filename} /> :
               file.mediaType === FileTypes.IMAGE ?
-                <img src={file.object} style={mediaStyles} alt={file.filename} /> :
+                <img src={file.object} style={MEDIA_STYLES} alt={file.filename} /> :
                 <Icon name={file.filename} size={40} />}
           </Box>
           <Box width='100%'>
@@ -114,7 +107,6 @@ export function FileEntry({file, next}) {
         {hover && (<DownloadAffordance object={file.object} />)}
       </Stack>
     </Box>
-    </>
   )
 }
 

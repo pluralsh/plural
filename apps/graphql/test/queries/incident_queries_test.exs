@@ -144,5 +144,23 @@ defmodule GraphQl.IncidentQueriesTest do
       assert from_connection(found["files"])
              |> ids_equal(files)
     end
+
+    test "it can list history for an incident" do
+      incident = insert(:incident)
+      history = insert_list(3, :incident_history, incident: incident)
+
+      {:ok, %{data: %{"incident" => found}}} = run_query("""
+        query Incident($id: ID!) {
+          incident(id: $id) {
+            history(first: 5) {
+              edges { node { id } }
+            }
+          }
+        }
+      """, %{"id" => incident.id}, %{current_user: incident.creator})
+
+      assert from_connection(found["history"])
+             |> ids_equal(history)
+    end
   end
 end

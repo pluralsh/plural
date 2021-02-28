@@ -1,7 +1,7 @@
 defmodule Core.Services.Incidents do
   use Core.Services.Base
   import Core.Policies.Incidents
-  alias Core.Schema.{User, Incident, IncidentMessage, Reaction}
+  alias Core.Schema.{User, Incident, IncidentMessage, Reaction, IncidentHistory}
   alias Core.PubSub
 
   def get_incident!(id), do: Core.Repo.get!(Incident, id)
@@ -9,27 +9,54 @@ defmodule Core.Services.Incidents do
   def get_message!(id), do: Core.Repo.get!(IncidentMessage, id)
 
   def create_incident(attrs, repository_id, %User{} = user) do
-    %Incident{repository_id: repository_id, creator_id: user.id, status: :open}
-    |> Incident.changeset(attrs)
-    |> allow(user, :create)
-    |> when_ok(:insert)
+    start_transaction()
+    |> add_operation(:change, fn _ ->
+      %Incident{repository_id: repository_id, creator_id: user.id, status: :open}
+      |> Incident.changeset(attrs)
+      |> allow(user, :create)
+    end)
+    |> add_operation(:insert, fn %{change: change} -> Core.Repo.insert(change) end)
+    |> add_operation(:hist, fn %{change: change, insert: %{id: id}} ->
+      %IncidentHistory{incident_id: id, actor_id: user.id}
+      |> IncidentHistory.changeset(%{action: :create}, change)
+      |> Core.Repo.insert()
+    end)
+    |> execute(extract: :insert)
     |> notify(:create)
   end
 
   def update_incident(attrs, incident_id, %User{} = user) do
-    get_incident!(incident_id)
-    |> Core.Repo.preload([:tags])
-    |> Incident.changeset(attrs)
-    |> allow(user, :edit)
-    |> when_ok(:update)
+    start_transaction()
+    |> add_operation(:change, fn _ ->
+      get_incident!(incident_id)
+      |> Core.Repo.preload([:tags])
+      |> Incident.changeset(attrs)
+      |> allow(user, :edit)
+    end)
+    |> add_operation(:update, fn %{change: change} -> Core.Repo.update(change) end)
+    |> add_operation(:hist, fn %{change: change, update: %{id: id}} ->
+      %IncidentHistory{incident_id: id, actor_id: user.id}
+      |> IncidentHistory.changeset(change)
+      |> Core.Repo.insert()
+    end)
+    |> execute(extract: :update)
     |> notify(:update)
   end
 
   def accept_incident(incident_id, %User{} = user) do
-    get_incident!(incident_id)
-    |> Incident.changeset(%{owner_id: user.id, status: :in_progress})
-    |> allow(user, :accept)
-    |> when_ok(:update)
+    start_transaction()
+    |> add_operation(:change, fn _ ->
+      get_incident!(incident_id)
+      |> Incident.changeset(%{owner_id: user.id, status: :in_progress})
+      |> allow(user, :accept)
+    end)
+    |> add_operation(:update, fn %{change: change} -> Core.Repo.update(change) end)
+    |> add_operation(:hist, fn %{change: change, update: %{id: id}} ->
+      %IncidentHistory{incident_id: id, actor_id: user.id}
+      |> IncidentHistory.changeset(%{action: :accept}, change)
+      |> Core.Repo.insert()
+    end)
+    |> execute(extract: :update)
     |> notify(:update)
   end
 

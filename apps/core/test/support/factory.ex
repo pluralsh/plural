@@ -254,4 +254,13 @@ defmodule Core.Factory do
       filesize: 100
     }
   end
+
+  def incident_history_factory do
+    %Schema.IncidentHistory{
+      action: :edit,
+      changes: [%{key: "title", prev: "something", next: "else"}],
+      actor: build(:user),
+      incident: build(:incident)
+    }
+  end
 end

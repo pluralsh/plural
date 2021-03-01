@@ -1,6 +1,6 @@
 import gql from 'graphql-tag'
 import { RepoFragment } from '../../models/repo'
-import { FileFragment, IncidentFragment, IncidentMessageFragment } from '../../models/incidents';
+import { FileFragment, IncidentFragment, IncidentHistoryFragment, IncidentMessageFragment } from '../../models/incidents';
 import { PageInfo } from '../../models/misc'
 
 export const INCIDENTS_Q = gql`
@@ -15,7 +15,7 @@ export const INCIDENTS_Q = gql`
 `;
 
 export const INCIDENT_Q = gql`
-  query Incident($id: ID! $cursor: String, $fileCursor: String) {
+  query Incident($id: ID! $cursor: String, $fileCursor: String, $historyCursor: String) {
     incident(id: $id) {
       ...IncidentFragment
       messages(after: $cursor, first: 50) {
@@ -26,12 +26,17 @@ export const INCIDENT_Q = gql`
         pageInfo { ...PageInfo }
         edges { node { ...FileFragment } }
       }
+      history(after: $historyCursor, first: 50) {
+        pageInfo { ...PageInfo }
+        edges { node { ...IncidentHistoryFragment } }
+      }
     }
   }
   ${IncidentFragment}
   ${PageInfo}
   ${IncidentMessageFragment}
   ${FileFragment}
+  ${IncidentHistoryFragment}
 `
 
 export const REPOS_Q = gql`

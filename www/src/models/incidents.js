@@ -19,6 +19,16 @@ export const IncidentFragment = gql`
   ${RepoFragment}
 `
 
+export const IncidentHistoryFragment = gql`
+  fragment IncidentHistoryFragment on IncidentHistory {
+    id
+    action
+    changes { key prev next }
+    actor { ...UserFragment }
+  }
+  ${UserFragment}
+`
+
 export const FileFragment = gql`
   fragment FileFragment on File {
     id

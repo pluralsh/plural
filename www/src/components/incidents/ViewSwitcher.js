@@ -4,19 +4,20 @@ import { Tooltip } from '../utils/Tooltip'
 import { IncidentView } from './types'
 import { Chat, Resources } from 'grommet-icons'
 
-function ViewOption({icon, selected, view, setView, text}) {
+export function ViewOption({icon, selected, view, setView, text, side, size}) {
   const ref = useRef()
   const [hover, setHover] = useState(false)
+  const props = {size: size || '20px'}
   return (
     <>
     <Box ref={ref} flex={false} width='40px' align='center' justify='center' round='xsmall' hoverIndicator='light-3'
       onClick={() => setView(view)} pad='xsmall' focusIndicator={false}
       onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
-      {React.createElement(icon, selected === view ? {size: '20px', color: 'brand'} : {size: '20px'})}
+      {React.createElement(icon, selected === view ? {...props, color: 'brand'} : props)}
     </Box>
     {hover  && (
       <Tooltip pad={{horizontal: 'small', vertical: 'xsmall'}} round='xsmall' justify='center' 
-               target={ref} side='right' align={{left: 'right'}}>
+               target={ref} side='right' align={side || {left: 'right'}}>
         <Text size='small' weight={500}>{text}</Text>
       </Tooltip>
     )}

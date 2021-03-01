@@ -93,6 +93,13 @@ defmodule Core.Services.IncidentsTest do
       %{history: [hist]} = Core.Repo.preload(updated, [:history])
 
       assert hist.incident_id == incident.id
+
+      {:ok, updated} = Incidents.update_incident(%{tags: [%{tag: "test"}, %{tag: "another"}]}, incident.id, incident.creator)
+
+      %{history: history} = updated = Core.Repo.preload(updated, [:history, :tags])
+
+      assert Enum.all?(history, & &1.incident_id == incident.id)
+      assert length(history) == 2
     end
 
     test "non-owner/creators cannot update" do

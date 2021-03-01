@@ -24,6 +24,7 @@ import { AttachmentProvider, Dropzone } from './AttachmentProvider'
 import { IncidentView } from './types'
 import { FileEntry } from './File'
 import { ViewSwitcher } from './ViewSwitcher'
+import { Sidebar } from './Sidebar'
 
 export const canEdit = ({creator, owner}, {id}) => creator.id === id || owner.id === id
 
@@ -188,34 +189,39 @@ function IncidentInner({incident, fetchMore, loading, editing}) {
         )}
         <Status incident={incident} setActive={(status) => mutation({variables: {attributes: {status}}})} />
       </Box>
-      <Box flex={false} pad={{horizontal: 'small'}} margin={{top: 'small'}}>
-        <IncidentHeader 
-          attributes={attributes}
-          setAttributes={setAttributes}
-          incident={incident} 
-          editable={editable} 
-          editing={editing} 
-          updating={updating} 
-          mutation={mutation} />
-      </Box>
       <Box fill direction='row'>
-        <ViewSwitcher view={view} setView={setView} />
         <Box fill>
-          {view === IncidentView.FILES && (<Files incident={incident} fetchMore={fetchMore} />)}
-          {view === IncidentView.MSGS && (
-            <Dropzone>
-              <Messages 
-                updating={updating}
-                editing={editing}
-                mutation={mutation}
-                incident={incident} 
-                fetchMore={fetchMore} 
-                loading={loading} />
-            </Dropzone>
-          )}
+          <Box flex={false} pad={{horizontal: 'small'}} margin={{top: 'small'}}>
+            <IncidentHeader 
+              attributes={attributes}
+              setAttributes={setAttributes}
+              incident={incident} 
+              editable={editable} 
+              editing={editing} 
+              updating={updating} 
+              mutation={mutation} />
+          </Box>
+          <Box fill direction='row'>
+            <ViewSwitcher view={view} setView={setView} />
+            <Box fill>
+              {view === IncidentView.FILES && (<Files incident={incident} fetchMore={fetchMore} />)}
+              {view === IncidentView.MSGS && (
+                <Dropzone>
+                  <Messages 
+                    updating={updating}
+                    editing={editing}
+                    mutation={mutation}
+                    incident={incident} 
+                    fetchMore={fetchMore} 
+                    loading={loading} />
+                </Dropzone>
+              )}
+            </Box>
+          </Box>
+          <MessageInput />
         </Box>
+        <Sidebar incident={incident} fetchMore={fetchMore} />
       </Box>
-      <MessageInput />
       </AttachmentProvider>
     </Box>
   )
@@ -234,8 +240,8 @@ export function Incident({editing}) {
   return (
     <IncidentInner 
       editing={editing}
-      incident={data.incident} 
-      fetchMore={fetchMore} 
+      incident={data.incident}
+      fetchMore={fetchMore}
       loading={loading} />
   )
 }

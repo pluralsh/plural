@@ -13,6 +13,18 @@ import { Status } from './IncidentStatus'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 import { CreateIncident } from './CreateIncident'
 
+function Tags({tags}) {
+  return (
+    <Box direction='row' gap='xsmall' align='center'>
+      {tags.map(({tag}) => (
+        <Box round='xsmall' pad={{horizontal: 'xsmall', vertical: 'xxsmall'}} background='light-2'>
+          <Text size='small'>{tag}</Text>
+        </Box>
+      ))}
+    </Box>
+  )
+}
+
 export function IncidentRow({incident: {id, repository, title, insertedAt, ...incident}, next, selected}) {
   let history = useHistory()
 
@@ -25,6 +37,7 @@ export function IncidentRow({incident: {id, repository, title, insertedAt, ...in
         <Box direction='row' align='center' gap='xsmall'>
           <Text size='small' weight={500}>{title}</Text>
           <Status incident={incident} />
+          <Tags tags={incident.tags} />
         </Box>
         <Text size='small' color='light-5'>created: {moment(insertedAt).fromNow()}</Text>
       </Box>

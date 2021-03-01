@@ -69,11 +69,13 @@ defmodule Core.Schema.IncidentHistory do
 
   defp tags(tags) when is_list(tags) do
     Enum.map(tags, &extract_tag/1)
+    |> Enum.filter(& &1)
     |> Enum.sort()
-    |> Enum.join(", ")
+    |> Enum.join(",")
   end
   defp tags(_), do: nil
 
   defp extract_tag(%Ecto.Changeset{changes: %{tag: tag}}), do: tag
   defp extract_tag(%{tag: tag}), do: tag
+  defp extract_tag(_), do: nil
 end

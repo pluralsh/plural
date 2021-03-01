@@ -25,6 +25,8 @@ import { IncidentView } from './types'
 import { FileEntry } from './File'
 import { ViewSwitcher } from './ViewSwitcher'
 import { Sidebar } from './Sidebar'
+import { IncidentControls } from './IncidentControls'
+import Avatar from '../users/Avatar'
 
 export const canEdit = ({creator, owner}, {id}) => creator.id === id || owner.id === id
 
@@ -64,6 +66,7 @@ function IncidentHeader({incident, editable, editing, mutation, attributes, setA
           <Text size='small' weight='bold'>{incident.creator.name}</Text>
           <Text size='small'>created on {dateFormat(moment(incident.insertedAt))}</Text>
         </Box>
+        {!editing && <IncidentControls incident={incident} />}
         {editing && (
           <Box flex={false}>
             <Button label='Update' loading={updating} pad={{vertical: 'xsmall', horizontal: 'small'}} onClick={() => mutation({
@@ -159,6 +162,16 @@ function Files({incident, fetchMore}) {
   )
 }
 
+function IncidentOwner({incident: {owner}}) {
+  return (
+    <Box flex={false} direction='row' align='center' gap='xsmall'>
+      <Text size='small'>Owner: </Text>
+      <Avatar user={owner} size='30px' />
+      <Text size='small' color='dark-3'>{owner.email}</Text>
+    </Box>
+  )
+}
+
 function IncidentInner({incident, fetchMore, loading, editing}) {
   let history = useHistory()
   const [view, setView] = useState(IncidentView.MSGS)
@@ -187,6 +200,7 @@ function IncidentInner({incident, fetchMore, loading, editing}) {
             <TextInput value={attributes.title} onChange={({target: {value}}) => setAttributes({...attributes, title: value})} />
           </Box>
         )}
+        {incident.owner && (<IncidentOwner incident={incident} />)}
         <Status incident={incident} setActive={(status) => mutation({variables: {attributes: {status}}})} />
       </Box>
       <Box fill direction='row'>

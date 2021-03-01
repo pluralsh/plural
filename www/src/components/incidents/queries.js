@@ -70,6 +70,15 @@ export const UPDATE_INCIDENT = gql`
   ${IncidentFragment}
 `
 
+export const ACCEPT_INCIDENT = gql`
+  mutation Accept($id: ID!) {
+    acceptIncident(id: $id) {
+      ...IncidentFragment
+    }
+  }
+  ${IncidentFragment}
+`
+
 export const CREATE_MESSAGE = gql`
   mutation CreateMessage($incidentId: ID!, $attributes: IncidentMessageAttributes!) {
     createMessage(incidentId: $incidentId, attributes: $attributes) {

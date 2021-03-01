@@ -147,6 +147,12 @@ defmodule GraphQl.Schema.Incidents do
       resolve safe_resolver(&Incidents.update_incident/2)
     end
 
+    field :accept_incident, :incident do
+      arg :id, non_null(:id)
+
+      resolve safe_resolver(&Incidents.accept_incident/2)
+    end
+
     field :create_message, :incident_message do
       arg :incident_id, non_null(:id)
       arg :attributes,  non_null(:incident_message_attributes)

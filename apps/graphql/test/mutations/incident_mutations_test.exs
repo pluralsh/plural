@@ -63,6 +63,30 @@ defmodule GraphQl.IncidentMutationsTest do
     end
   end
 
+  describe "acceptIncident" do
+    test "responders can accept" do
+      incident = insert(:incident)
+      account = incident.repository.publisher.account
+      user = insert(:user, account: account)
+      role = insert(:role, account: account, repositories: ["*"], permissions: %{support: true})
+      insert(:role_binding, role: role, user: user)
+
+      {:ok, %{data: %{"acceptIncident" => updated}}} = run_query("""
+        mutation Update($id: ID!) {
+          acceptIncident(id: $id) {
+            id
+            status
+            owner { id }
+          }
+        }
+      """, %{"id" => incident.id}, %{current_user: user})
+
+      assert updated["id"] == incident.id
+      assert updated["status"] == "IN_PROGRESS"
+      assert updated["owner"]["id"] == user.id
+    end
+  end
+
   describe "createMessage" do
     test "it can create a message" do
       incident = insert(:incident)

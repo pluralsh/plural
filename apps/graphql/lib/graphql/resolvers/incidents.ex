@@ -58,6 +58,9 @@ defmodule GraphQl.Resolvers.Incidents do
   def update_incident(%{attributes: attrs, id: id}, %{context: %{current_user: user}}),
     do: Incidents.update_incident(attrs, id, user)
 
+  def accept_incident(%{id: id}, %{context: %{current_user: user}}),
+    do: Incidents.accept_incident(id, user)
+
   def create_message(%{attributes: attrs, incident_id: id}, %{context: %{current_user: user}}),
     do: Incidents.create_message(attrs, id, user)
 

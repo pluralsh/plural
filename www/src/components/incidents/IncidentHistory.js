@@ -46,10 +46,10 @@ function HistoryChanges({changes}) {
 
   return (
     <Box flex={false} pad='xsmall' style={{maxWidth: '100%', overflow: 'auto'}}>
-      <ReactDiffViewer 
-        oldValue={previous} 
-        newValue={next} 
-        splitView={false} 
+      <ReactDiffViewer
+        oldValue={previous}
+        newValue={next}
+        splitView={false}
         useDarkTheme={true}
         hideLineNumbers={true} />
     </Box>

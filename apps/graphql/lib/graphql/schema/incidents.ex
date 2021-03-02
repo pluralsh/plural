@@ -5,6 +5,7 @@ defmodule GraphQl.Schema.Incidents do
   ecto_enum :incident_status, Core.Schema.Incident.Status
   ecto_enum :media_type, Core.Schema.File.MediaType
   ecto_enum :incident_action, Core.Schema.IncidentHistory.Action
+  ecto_enum :action_item_type, Core.Schema.Postmortem.ActionItem.Type
 
   input_object :incident_attributes do
     field :title,       :string
@@ -19,12 +20,31 @@ defmodule GraphQl.Schema.Incidents do
     field :file, :file_attributes
   end
 
+  input_object :postmortem_attributes do
+    field :content,      non_null(:string)
+    field :action_items, list_of(:action_item_attributes)
+  end
+
+  input_object :action_item_attributes do
+    field :type, non_null(:action_item_type)
+    field :link, non_null(:string)
+  end
+
   input_object :reaction_attributes do
     field :name, :string
   end
 
   input_object :file_attributes do
     field :blob, :upload_or_url
+  end
+
+  input_object :notification_preferences_attributes do
+    field :message,         non_null(:boolean)
+    field :incident_update, non_null(:boolean)
+  end
+
+  input_object :follower_attributes do
+    field :preferences, :notification_preferences_attributes
   end
 
   object :incident do
@@ -38,6 +58,12 @@ defmodule GraphQl.Schema.Incidents do
     field :creator,    non_null(:user), resolve: dataloader(User)
     field :owner,      :user, resolve: dataloader(User)
     field :tags,       list_of(:tag), resolve: dataloader(Repository)
+    field :postmortem, :postmortem, resolve: dataloader(Incidents)
+
+    field :follower, :follower, resolve: fn
+      %{id: incident_id}, _, %{context: %{current_user: user}} ->
+        {:ok, Core.Services.Incidents.get_follower(user.id, incident_id)}
+    end
 
     connection field :messages, node_type: :incident_message do
       resolve &Incidents.list_messages/2
@@ -52,6 +78,20 @@ defmodule GraphQl.Schema.Incidents do
     end
 
     timestamps()
+  end
+
+  object :postmortem do
+    field :id,           non_null(:id)
+    field :content,      non_null(:string)
+    field :action_items, list_of(:action_item)
+    field :creator,      non_null(:user), resolve: dataloader(User)
+
+    timestamps()
+  end
+
+  object :action_item do
+    field :type, non_null(:action_item_type)
+    field :link, non_null(:string)
   end
 
   object :incident_history do
@@ -109,16 +149,43 @@ defmodule GraphQl.Schema.Incidents do
     timestamps()
   end
 
+  object :notification do
+    field :id,       non_null(:id)
+    field :type,     non_null(:notification_type)
+    field :user,     non_null(:user), resolve: dataloader(User)
+    field :actor,    non_null(:user), resolve: dataloader(User)
+    field :incident, :incident, resolve: dataloader(Incidents)
+    field :message,  :incident_message, resolve: dataloader(Incidents)
+
+    timestamps()
+  end
+
+  object :follower do
+    field :id,          non_null(:id)
+    field :user,        non_null(:user), resolve: dataloader(User)
+    field :incident,    :incident, resolve: dataloader(Incidents)
+    field :preferences, :notification_preferences
+
+    timestamps()
+  end
+
+  object :notification_preferences do
+    field :message,         :boolean
+    field :incident_update, :boolean
+  end
+
   connection node_type: :incident
   connection node_type: :incident_message
   connection node_type: :incident_history
   connection node_type: :file
+  connection node_type: :notification
 
   delta :incident
   delta :incident_message
 
   object :incident_queries do
     connection field :incidents, node_type: :incident do
+      middleware GraphQl.Middleware.Authenticated
       arg :repository_id, :id
       arg :q, :string
 
@@ -126,14 +193,23 @@ defmodule GraphQl.Schema.Incidents do
     end
 
     field :incident, :incident do
+      middleware GraphQl.Middleware.Authenticated
       arg :id, non_null(:id)
 
       resolve safe_resolver(&Incidents.authorize_incident/2)
+    end
+
+    connection field :notifications, node_type: :notification do
+      middleware GraphQl.Middleware.Authenticated
+      arg :incident_id, :id
+
+      resolve &User.list_notifications/2
     end
   end
 
   object :incident_mutations do
     field :create_incident, :incident do
+      middleware GraphQl.Middleware.Authenticated
       arg :repository_id, non_null(:id)
       arg :attributes,    non_null(:incident_attributes)
 
@@ -141,6 +217,7 @@ defmodule GraphQl.Schema.Incidents do
     end
 
     field :update_incident, :incident do
+      middleware GraphQl.Middleware.Authenticated
       arg :id, non_null(:id)
       arg :attributes,  non_null(:incident_attributes)
 
@@ -148,12 +225,37 @@ defmodule GraphQl.Schema.Incidents do
     end
 
     field :accept_incident, :incident do
+      middleware GraphQl.Middleware.Authenticated
       arg :id, non_null(:id)
 
       resolve safe_resolver(&Incidents.accept_incident/2)
     end
 
+    field :complete_incident, :incident do
+      middleware GraphQl.Middleware.Authenticated
+      arg :id, non_null(:id)
+      arg :postmortem, non_null(:postmortem_attributes)
+
+      resolve safe_resolver(&Incidents.complete_incident/2)
+    end
+
+    field :follow_incident, :follower do
+      middleware GraphQl.Middleware.Authenticated
+      arg :id, non_null(:id)
+      arg :attributes, non_null(:follower_attributes)
+
+      resolve safe_resolver(&Incidents.follow_incident/2)
+    end
+
+    field :unfollow_incident, :follower do
+      middleware GraphQl.Middleware.Authenticated
+      arg :id, non_null(:id)
+
+      resolve safe_resolver(&Incidents.unfollow_incident/2)
+    end
+
     field :create_message, :incident_message do
+      middleware GraphQl.Middleware.Authenticated
       arg :incident_id, non_null(:id)
       arg :attributes,  non_null(:incident_message_attributes)
 
@@ -161,6 +263,7 @@ defmodule GraphQl.Schema.Incidents do
     end
 
     field :update_message, :incident_message do
+      middleware GraphQl.Middleware.Authenticated
       arg :id,         non_null(:id)
       arg :attributes, non_null(:incident_message_attributes)
 
@@ -168,12 +271,14 @@ defmodule GraphQl.Schema.Incidents do
     end
 
     field :delete_message, :incident_message do
+      middleware GraphQl.Middleware.Authenticated
       arg :id, non_null(:id)
 
       resolve safe_resolver(&Incidents.delete_message/2)
     end
 
     field :create_reaction, :incident_message do
+      middleware GraphQl.Middleware.Authenticated
       arg :message_id, non_null(:id)
       arg :name, non_null(:string)
 
@@ -181,6 +286,7 @@ defmodule GraphQl.Schema.Incidents do
     end
 
     field :delete_reaction, :incident_message do
+      middleware GraphQl.Middleware.Authenticated
       arg :message_id, non_null(:id)
       arg :name, non_null(:string)
 

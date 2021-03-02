@@ -84,14 +84,19 @@ defmodule GraphQl.IncidentQueriesTest do
     test "users on the account that created the incident can view" do
       incident = insert(:incident)
       user = insert(:user, account: incident.creator.account)
+      follow = insert(:follower, incident: incident, user: user)
 
       {:ok, %{data: %{"incident" => found}}} = run_query("""
         query Incident($id: ID!) {
-          incident(id: $id) { id }
+          incident(id: $id) {
+            id
+            follower { id }
+          }
         }
       """, %{"id" => incident.id}, %{current_user: user})
 
       assert found["id"] == incident.id
+      assert found["follower"]["id"] == follow.id
     end
 
     test "users on the account that received the incident can view" do
@@ -161,6 +166,38 @@ defmodule GraphQl.IncidentQueriesTest do
 
       assert from_connection(found["history"])
              |> ids_equal(history)
+    end
+  end
+
+  describe "notifications" do
+    test "it can list notifications for a user" do
+      user   = insert(:user)
+      notifs = insert_list(3, :notification, user: user)
+
+      {:ok, %{data: %{"notifications" => found}}} = run_query("""
+        query {
+          notifications(first: 5) { edges { node { id } } }
+        }
+      """, %{}, %{current_user: user})
+
+      assert from_connection(found)
+             |> ids_equal(notifs)
+    end
+
+    test "it can filter notifications by incident" do
+      user   = insert(:user)
+      incident = insert(:incident)
+      notifs = insert_list(3, :notification, incident: incident, user: user)
+      insert(:notification, user: user)
+
+      {:ok, %{data: %{"notifications" => found}}} = run_query("""
+        query notif($id: ID!) {
+          notifications(incidentId: $id, first: 5) { edges { node { id } } }
+        }
+      """, %{"id" => incident.id}, %{current_user: user})
+
+      assert from_connection(found)
+             |> ids_equal(notifs)
     end
   end
 end

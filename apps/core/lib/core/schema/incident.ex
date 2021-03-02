@@ -1,8 +1,8 @@
 defmodule Core.Schema.Incident do
   use Piazza.Ecto.Schema
-  alias Core.Schema.{Repository, User, Tag, IncidentHistory}
+  alias Core.Schema.{Repository, User, Tag, IncidentHistory, Postmortem}
 
-  defenum Status, open: 0, in_progress: 1, resolved: 2, completed: 3
+  defenum Status, open: 0, in_progress: 1, resolved: 2, complete: 3
 
   schema "incidents" do
     field :title,            :string
@@ -15,6 +15,7 @@ defmodule Core.Schema.Incident do
     belongs_to :creator,    User
     belongs_to :owner,      User
 
+    has_one  :postmortem, Postmortem
     has_many :history, IncidentHistory
     has_many :tags, Tag,
       where: [resource_type: :incident],
@@ -50,7 +51,22 @@ defmodule Core.Schema.Incident do
     model
     |> cast(attrs, @valid)
     |> cast_assoc(:tags, with: &Tag.tag_changeset(&1, &2, :incident))
-    |> validate_required([:title, :severity, :repository_id, :creator_id])
+    |> validate_required([:title, :severity, :repository_id, :creator_id, :status])
     |> validate_number(:severity, greater_than_or_equal_to: 0, less_than_or_equal_to: 5, message: "must be between 0 and 5")
+  end
+
+  def complete_changeset(model, attrs \\ %{})
+
+  def complete_changeset(%__MODULE__{status: :resolved} = model, attrs) do
+    model
+    |> cast(attrs, [:status])
+    |> cast_assoc(:postmortem)
+    |> validate_required([:status])
+  end
+
+  def complete_changeset(model, _) do
+    model
+    |> change(%{})
+    |> add_error(:status, "status must be resolved before complete")
   end
 end

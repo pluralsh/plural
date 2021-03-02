@@ -227,7 +227,8 @@ defmodule Core.Factory do
       title: "wtf",
       repository: build(:repository),
       creator: build(:user),
-      severity: 3
+      severity: 3,
+      status: :open
     }
   end
 
@@ -261,6 +262,21 @@ defmodule Core.Factory do
       changes: [%{key: "title", prev: "something", next: "else"}],
       actor: build(:user),
       incident: build(:incident)
+    }
+  end
+
+  def follower_factory do
+    %Schema.Follower{
+      incident: build(:incident),
+      user: build(:user)
+    }
+  end
+
+  def notification_factory do
+    %Schema.Notification{
+      type: :message,
+      user: build(:user),
+      actor: build(:user),
     }
   end
 end

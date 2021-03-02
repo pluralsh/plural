@@ -1,12 +1,18 @@
 defmodule Core.Services.Incidents do
   use Core.Services.Base
   import Core.Policies.Incidents
-  alias Core.Schema.{User, Incident, IncidentMessage, Reaction, IncidentHistory}
+  alias Core.Schema.{User, Incident, IncidentMessage, Reaction, IncidentHistory, Follower}
   alias Core.PubSub
 
   def get_incident!(id), do: Core.Repo.get!(Incident, id)
 
   def get_message!(id), do: Core.Repo.get!(IncidentMessage, id)
+
+  def get_follower(user_id, incident_id),
+    do: Core.Repo.get_by(Follower, user_id: user_id, incident_id: incident_id)
+
+  def get_follower!(user_id, incident_id),
+    do: Core.Repo.get_by!(Follower, user_id: user_id, incident_id: incident_id)
 
   def create_incident(attrs, repository_id, %User{} = user) do
     start_transaction()
@@ -40,7 +46,7 @@ defmodule Core.Services.Incidents do
       |> Core.Repo.insert()
     end)
     |> execute(extract: :update)
-    |> notify(:update)
+    |> notify(:update, user)
   end
 
   def accept_incident(incident_id, %User{} = user) do
@@ -57,7 +63,41 @@ defmodule Core.Services.Incidents do
       |> Core.Repo.insert()
     end)
     |> execute(extract: :update)
-    |> notify(:update)
+    |> notify(:update, user)
+  end
+
+  def complete_incident(attrs, incident_id, %User{} = user) do
+    attrs = Map.put(attrs, :creator_id, user.id)
+    start_transaction()
+    |> add_operation(:change, fn _ ->
+      get_incident!(incident_id)
+      |> Core.Repo.preload([:postmortem])
+      |> Incident.complete_changeset(%{status: :complete, postmortem: attrs})
+      |> allow(user, :complete)
+    end)
+    |> add_operation(:update, fn %{change: change} -> Core.Repo.update(change) end)
+    |> add_operation(:hist, fn %{change: change, update: %{id: id}} ->
+      %IncidentHistory{incident_id: id, actor_id: user.id}
+      |> IncidentHistory.changeset(%{action: :complete}, change)
+      |> Core.Repo.insert()
+    end)
+    |> execute(extract: :update)
+    |> notify(:update, user)
+  end
+
+  def follow_incident(attrs, incident_id, %User{id: user_id} = user) do
+    case Core.Repo.get_by(Follower, user_id: user_id, incident_id: incident_id) do
+      %Follower{} = f -> f
+      nil -> %Follower{incident_id: incident_id, user_id: user_id}
+    end
+    |> Follower.changeset(attrs)
+    |> allow(user, :create)
+    |> when_ok(&Core.Repo.insert_or_update/1)
+  end
+
+  def unfollow_incident(incident_id, %User{id: user_id}) do
+    get_follower!(user_id, incident_id)
+    |> Core.Repo.delete()
   end
 
   def create_message(attrs, incident_id, %User{} = user) do
@@ -111,15 +151,17 @@ defmodule Core.Services.Incidents do
 
   defp notify({:ok, %Incident{} = inc}, :create),
     do: handle_notify(PubSub.IncidentCreated, inc)
-  defp notify({:ok, %Incident{} = inc}, :update),
-    do: handle_notify(PubSub.IncidentUpdated, inc)
-
-  defp notify({:ok, %IncidentMessage{} = msg}, :create),
-    do: handle_notify(PubSub.IncidentMessageCreated, msg)
   defp notify({:ok, %IncidentMessage{} = msg}, :update),
     do: handle_notify(PubSub.IncidentMessageUpdated, msg)
+  defp notify({:ok, %IncidentMessage{} = msg}, :create),
+    do: handle_notify(PubSub.IncidentMessageCreated, msg)
   defp notify({:ok, %IncidentMessage{} = msg}, :delete),
     do: handle_notify(PubSub.IncidentMessageDeleted, msg)
 
-  defp notify(passthrough, _), do: passthrough
+  defp notify(pass, _), do: pass
+
+  defp notify({:ok, %Incident{} = msg}, :update, user),
+    do: handle_notify(PubSub.IncidentUpdated, msg, actor: user)
+
+  defp notify(pass, _, _), do: pass
 end

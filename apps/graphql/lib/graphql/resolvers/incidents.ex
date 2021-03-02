@@ -1,11 +1,12 @@
 defmodule GraphQl.Resolvers.Incidents do
   use GraphQl.Resolvers.Base, model: Core.Schema.Incident
   alias Core.Services.{Repositories, Incidents}
-  alias Core.Schema.{IncidentMessage, Reaction, File, IncidentHistory}
+  alias Core.Schema.{IncidentMessage, Reaction, File, IncidentHistory, Postmortem}
 
   def query(IncidentMessage, _), do: IncidentMessage
   def query(Reaction, _), do: Reaction
   def query(File, _), do: File
+  def query(Postmortem, _), do: Postmortem
   def query(_, _), do: Incident
 
   def list_incidents(%{repository_id: id} = args, %{context: %{current_user: user}}) do
@@ -41,6 +42,10 @@ defmodule GraphQl.Resolvers.Incidents do
     |> paginate(args)
   end
 
+  def resolve_follower(_, %{source: %{id: incident_id}, context: %{current_user: user}}) do
+    {:ok, Incidents.get_follower(user.id, incident_id)}
+  end
+
   def authorize_incident(%{id: id}, %{context: %{current_user: user}}) do
     Incidents.get_incident!(id)
     |> Core.Policies.Incidents.allow(user, :access)
@@ -61,6 +66,9 @@ defmodule GraphQl.Resolvers.Incidents do
   def accept_incident(%{id: id}, %{context: %{current_user: user}}),
     do: Incidents.accept_incident(id, user)
 
+  def complete_incident(%{postmortem: attrs, id: id}, %{context: %{current_user: user}}),
+    do: Incidents.complete_incident(attrs, id, user)
+
   def create_message(%{attributes: attrs, incident_id: id}, %{context: %{current_user: user}}),
     do: Incidents.create_message(attrs, id, user)
 
@@ -75,6 +83,12 @@ defmodule GraphQl.Resolvers.Incidents do
 
   def delete_reaction(%{message_id: id, name: name}, %{context: %{current_user: user}}),
     do: Incidents.delete_reaction(id, name, user)
+
+  def follow_incident(%{attributes: attrs, id: id}, %{context: %{current_user: user}}),
+    do: Incidents.follow_incident(attrs, id, user)
+
+  def unfollow_incident(%{id: id}, %{context: %{current_user: user}}),
+    do: Incidents.unfollow_incident(id, user)
 
   defp maybe_filter_creator(query, _, true), do: query
   defp maybe_filter_creator(query, %{id: id}, _), do: Incident.for_creator(query, id)

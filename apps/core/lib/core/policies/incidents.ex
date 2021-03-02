@@ -1,6 +1,6 @@
 defmodule Core.Policies.Incidents do
   use Piazza.Policy
-  alias Core.Schema.{Incident, IncidentMessage, User}
+  alias Core.Schema.{Incident, IncidentMessage, User, Follower}
 
   @preloads ~w(creator owner)a
 
@@ -15,6 +15,14 @@ defmodule Core.Policies.Incidents do
   def can?(%User{} = user, %Incident{} = incident, :accept) do
     %{repository: repository} = Core.Repo.preload(incident, [repository: [publisher: :account]])
     Core.Policies.Repository.can?(user, repository, :support)
+  end
+
+  def can?(%User{} = user, %Incident{} = incident, :complete),
+    do: can?(user, incident, :accept)
+
+  def can?(%User{id: user_id} = user, %Follower{user_id: user_id} = f, _) do
+    %{incident: incident} = Core.Repo.preload(f, [:incident])
+    can?(user, incident, :access)
   end
 
   def can?(%User{account_id: account_id}, %Incident{} = incident, :access) do

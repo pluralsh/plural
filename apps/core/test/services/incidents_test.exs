@@ -1,5 +1,5 @@
 defmodule Core.Services.IncidentsTest do
-  use Core.SchemaCase
+  use Core.SchemaCase, async: true
   alias Core.Services.Incidents
   alias Core.PubSub
 
@@ -96,7 +96,7 @@ defmodule Core.Services.IncidentsTest do
 
       {:ok, updated} = Incidents.update_incident(%{tags: [%{tag: "test"}, %{tag: "another"}]}, incident.id, incident.creator)
 
-      %{history: history} = updated = Core.Repo.preload(updated, [:history, :tags])
+      %{history: history} = Core.Repo.preload(updated, [:history, :tags])
 
       assert Enum.all?(history, & &1.incident_id == incident.id)
       assert length(history) == 2
@@ -132,6 +132,79 @@ defmodule Core.Services.IncidentsTest do
       incident = insert(:incident)
 
       {:error, _} = Incidents.accept_incident(incident.id, user)
+    end
+  end
+
+  describe "#complete_incident/3" do
+    test "account users can complete incidents" do
+      account = insert(:account)
+      user = insert(:user, account: account)
+
+      role = insert(:role, account: account, repositories: ["*"], permissions: %{support: true})
+      insert(:role_binding, role: role, user: user)
+
+      incident = insert(:incident, status: :resolved, repository: build(:repository, publisher: build(:publisher, account: account)))
+
+      user = Core.Services.Rbac.preload(user)
+      {:ok, completed} = Incidents.complete_incident(%{content: "a postmortem writeup"}, incident.id, user)
+
+      assert completed.status == :complete
+      %{postmortem: post} = Core.Repo.preload(completed, [:postmortem])
+      assert post.incident_id == completed.id
+      assert post.content == "a postmortem writeup"
+      assert post.creator_id == user.id
+
+      assert_receive {:event, %PubSub.IncidentUpdated{item: ^completed}}
+    end
+
+    test "unresolved incidents cannot be completed" do
+      account = insert(:account)
+      user = insert(:user, account: account)
+
+      role = insert(:role, account: account, repositories: ["*"], permissions: %{support: true})
+      insert(:role_binding, role: role, user: user)
+
+      incident = insert(:incident, repository: build(:repository, publisher: build(:publisher, account: account)))
+
+      {:error, _} = Incidents.complete_incident(%{content: "a postmortem writeup"}, incident.id, user)
+    end
+
+    test "non-account operators cannot accept" do
+      user = insert(:user)
+      incident = insert(:incident)
+
+      {:error, _} = Incidents.accept_incident(incident.id, user)
+    end
+  end
+
+  describe "#follow_incident/3" do
+    test "users on an affected account can follow" do
+      incident = insert(:incident)
+      user = insert(:user, account: incident.creator.account)
+
+      {:ok, follow} = Incidents.follow_incident(%{preferences: %{message: true}}, incident.id, user)
+
+      assert follow.user_id == user.id
+      assert follow.incident_id == incident.id
+      assert follow.preferences.message
+    end
+
+    test "unaffiliated users cannot follow" do
+      incident = insert(:incident)
+      user = insert(:user)
+
+      {:error, _} = Incidents.follow_incident(%{preferences: %{message: true}}, incident.id, user)
+    end
+  end
+
+  describe "#unfollow_incident/2" do
+    test "users can remove their follows" do
+      follow = insert(:follower)
+
+      {:ok, deleted} = Incidents.unfollow_incident(follow.incident_id, follow.user)
+
+      assert deleted.id == follow.id
+      refute refetch(follow)
     end
   end
 

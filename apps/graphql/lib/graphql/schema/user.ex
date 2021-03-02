@@ -6,6 +6,8 @@ defmodule GraphQl.Schema.User do
     Account
   }
 
+  ecto_enum :notification_type, Core.Schema.Notification.Type
+
   input_object :user_attributes do
     field :name,     :string
     field :email,    :string
@@ -122,7 +124,6 @@ defmodule GraphQl.Schema.User do
   connection node_type: :publisher
   connection node_type: :webhook
   connection node_type: :persisted_token
-
 
   object :user_queries do
     field :me, :user do

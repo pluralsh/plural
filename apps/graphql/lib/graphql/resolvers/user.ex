@@ -1,7 +1,7 @@
 defmodule GraphQl.Resolvers.User do
   use GraphQl.Resolvers.Base, model: Core.Schema.User
   alias Core.Services.{Users, Accounts}
-  alias Core.Schema.{Publisher, PersistedToken, Webhook}
+  alias Core.Schema.{Publisher, PersistedToken, Webhook, Notification}
 
   def data(args) do
     Dataloader.Ecto.new(Core.Repo,
@@ -41,9 +41,6 @@ defmodule GraphQl.Resolvers.User do
     |> paginate(args)
   end
 
-  defp for_account(query, %{account_id: id}), do: User.for_account(query, id)
-  defp for_account(query, _), do: query
-
   def list_publishers(%{account_id: aid} = args, _) do
     Publisher.for_account(aid)
     |> Publisher.ordered()
@@ -66,6 +63,17 @@ defmodule GraphQl.Resolvers.User do
     |> Webhook.ordered()
     |> paginate(args)
   end
+
+  def list_notifications(args, %{context: %{current_user: user}}) do
+    Notification.for_user(user.id)
+    |> Notification.ordered()
+    |> filter_notifs(args)
+    |> paginate(args)
+  end
+
+  def filter_notifs(query, %{incident_id: id}) when is_binary(id),
+    do: Notification.for_incident(query, id)
+  def filter_notifs(query, _), do: query
 
   def create_webhook(%{attributes: %{url: url}}, %{context: %{current_user: user}}),
     do: Users.upsert_webhook(url, user)

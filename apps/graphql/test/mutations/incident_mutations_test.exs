@@ -176,4 +176,41 @@ defmodule GraphQl.IncidentMutationsTest do
       assert Enum.empty?(message["reactions"])
     end
   end
+
+  describe "followIncident" do
+    test "it can create a follower" do
+      incident = insert(:incident)
+
+      {:ok, %{data: %{"followIncident" => follow}}} = run_query("""
+        mutation Follow($id: ID!, $attrs: FollowerAttributes!) {
+          followIncident(id: $id, attributes: $attrs) {
+            id
+            preferences { message incidentUpdate}
+          }
+        }
+      """, %{
+        "id" => incident.id,
+        "attrs" => %{"preferences" => %{"message" => true, "incidentUpdate" => true}}
+      }, %{current_user: incident.creator})
+
+      assert follow["id"]
+      assert follow["preferences"]["message"]
+      assert follow["preferences"]["incidentUpdate"]
+    end
+  end
+
+  describe "unfollowIncident" do
+    test "it can create a follower" do
+      incident = insert(:incident)
+      follow = insert(:follower, incident: incident, user: incident.creator)
+
+      {:ok, %{data: %{"unfollowIncident" => del}}} = run_query("""
+        mutation Follow($id: ID!) {
+          unfollowIncident(id: $id) { id }
+        }
+      """, %{"id" => incident.id}, %{current_user: incident.creator})
+
+      assert del["id"] == follow.id
+    end
+  end
 end

@@ -63,6 +63,7 @@ defmodule Core.Schema.IncidentHistory do
   defp build_changes(%Ecto.Changeset{data: %Incident{} = inc, changes: changes}) do
     Enum.map(changes, fn
       {:tags, tags} -> %{key: "tags", prev: tags(inc.tags), next: tags(tags)}
+      {:postmortem, %Ecto.Changeset{changes: %{content: cont}}} -> %{key: "postmortem", prev: nil, next: cont}
       {key, val} -> %{key: "#{key}", prev: to_string(Map.get(inc, key)), next: to_string(val)}
     end)
   end

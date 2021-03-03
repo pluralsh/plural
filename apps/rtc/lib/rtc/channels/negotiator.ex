@@ -53,3 +53,9 @@ defimpl Rtc.Channels.Negotiator, for: [
   defp delta_name(Core.PubSub.IncidentMessageUpdated), do: :update
   defp delta_name(Core.PubSub.IncidentMessageDeleted), do: :delete
 end
+
+defimpl Rtc.Channels.Negotiator, for: Core.PubSub.NotificationCreated do
+  def negotiate(%{item: notification}) do
+    {notification, [notification: "notifs:#{notification.user_id}"]}
+  end
+end

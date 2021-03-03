@@ -5,6 +5,10 @@ config :api, ApiWeb.Endpoint,
   url: [host: get_env("HOST"), port: 80],
   check_origin: ["//#{get_env("HOST")}", "//forge-api"]
 
+config :rtc, RtcWeb.Endpoint,
+  url: [host: get_env("HOST"), port: 80],
+  check_origin: ["//#{get_env("HOST")}", "//forge-rtc"]
+
 config :arc,
   storage: Arc.Storage.GCS,
   bucket: get_env("GCS_BUCKET")

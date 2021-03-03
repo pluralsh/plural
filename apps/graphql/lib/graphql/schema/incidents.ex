@@ -323,5 +323,11 @@ defmodule GraphQl.Schema.Incidents do
         _, %{context: %{current_user: user}} -> {:ok, topic: "incidents:msgs:mine:#{user.id}"}
       end
     end
+
+    field :notification, :notification do
+      config fn _, %{context: %{current_user: %{id: id}}} ->
+        {:ok, topic: "notifs:#{id}"}
+      end
+    end
   end
 end

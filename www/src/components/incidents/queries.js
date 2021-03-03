@@ -170,14 +170,17 @@ export const INCIDENT_SUB = gql`
       payload { 
         ...IncidentFragment
         postmortem { ...PostmortemFragment }
-        history(after: $historyCursor, first: 50) {
+        history(first: 50) {
           pageInfo { ...PageInfo }
           edges { node { ...IncidentHistoryFragment } }
         }
       }
     }
   }
+  ${PageInfo}
   ${IncidentFragment}
+  ${PostmortemFragment}
+  ${IncidentHistoryFragment}
 `
 
 export const MESSAGE_SUB = gql`

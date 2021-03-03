@@ -2,9 +2,9 @@ import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { Button, Scroller } from 'forge-core'
 import { CurrentUserContext } from '../login/CurrentUser'
 import { useMutation, useQuery } from 'react-apollo'
-import { useHistory, useParams } from 'react-router'
+import { useParams } from 'react-router'
 import Markdown from './Markdown'
-import { INCIDENT_Q, UPDATE_INCIDENT } from './queries'
+import { INCIDENT_Q, INCIDENT_SUB, MESSAGE_SUB, UPDATE_INCIDENT } from './queries'
 import { Severity } from './Severity'
 import { Box, Text, TextInput } from 'grommet'
 import { Status } from './IncidentStatus'
@@ -28,6 +28,7 @@ import { Sidebar } from './Sidebar'
 import { IncidentControls } from './IncidentControls'
 import Avatar from '../users/Avatar'
 import { Postmortem } from './Postmortem'
+import { applyMessages } from './applicators'
 
 export const canEdit = ({creator, owner}, {id}) => creator.id === id || owner.id === id
 
@@ -109,9 +110,15 @@ function IncidentHeader({incident, editable, editing, setEditing, mutation, attr
   )
 }
 
-export function Messages({incident, loading, fetchMore}) {
+export function Messages({incident, loading, fetchMore, subscribeToMore}) {
   const [listRef, setListRef] = useState(null)
   const {messages: {pageInfo: {hasNextPage, endCursor}, edges}} = incident
+
+  useEffect(() => subscribeToMore({
+    document: MESSAGE_SUB,
+    variables: {id: incident.id},
+    updateQuery: (prev, {subscriptionData: {data}}) => applyMessages(prev, data)
+  }), [incident.id])
   
   if (edges.length === 0) return <Empty />
 
@@ -170,7 +177,7 @@ function IncidentOwner({incident: {owner}}) {
   )
 }
 
-function IncidentInner({incident, fetchMore, loading, editing, setEditing}) {
+function IncidentInner({incident, fetchMore, subscribeToMore, loading, editing, setEditing}) {
   const [view, setView] = useState(IncidentView.MSGS)
   const currentUser = useContext(CurrentUserContext)
   const editable = canEdit(incident, currentUser)
@@ -183,6 +190,14 @@ function IncidentInner({incident, fetchMore, loading, editing, setEditing}) {
     variables: {id: incident.id, attributes: {...attributes, tags: attributes.tags.map((tag) => ({tag}))}},
     onCompleted: () => setEditing(false)
   })
+
+  useEffect(() => subscribeToMore({
+    document: INCIDENT_SUB,
+    variables: {id: incident.id},
+    updateQuery: ({incident, ...prev}, {subscriptionData: { data: { payload } }}) => (
+      {...prev, incident: {...incident, ...payload}}
+    )
+  }), [incident.id])
 
   return (
     <Box fill>
@@ -226,6 +241,7 @@ function IncidentInner({incident, fetchMore, loading, editing, setEditing}) {
                     mutation={mutation}
                     incident={incident} 
                     fetchMore={fetchMore} 
+                    subscribeToMore={subscribeToMore}
                     loading={loading} />
                 </Dropzone>
               )}
@@ -243,7 +259,10 @@ function IncidentInner({incident, fetchMore, loading, editing, setEditing}) {
 export function Incident({editing}) {
   const {incidentId} = useParams()
   const [edit, setEdit] = useState(editing)
-  const {data, loading, fetchMore} = useQuery(INCIDENT_Q, {variables: {id: incidentId}, fetchPolicy: 'cache-and-network'})
+  const {data, loading, fetchMore, subscribeToMore} = useQuery(INCIDENT_Q, {
+    variables: {id: incidentId}, 
+    fetchPolicy: 'cache-and-network'
+  })
   const {setBreadcrumbs} = useContext(BreadcrumbsContext)
   useEffect(() => {
     setBreadcrumbs([{url: `/incidents`, text: 'incidents'}, {url: `/incidents/${incidentId}`, text: incidentId}])
@@ -257,6 +276,7 @@ export function Incident({editing}) {
       setEditing={setEdit}
       incident={data.incident}
       fetchMore={fetchMore}
+      subscribeToMore={subscribeToMore}
       loading={loading} />
   )
 }

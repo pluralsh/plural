@@ -1,5 +1,5 @@
 defmodule RtcWeb.Channels.IncidentSubscriptionTest do
-  use RtcWeb.ChannelCase, async: true
+  use RtcWeb.ChannelCase, async: false
   alias Core.PubSub
 
   describe "incidentDelta" do
@@ -77,6 +77,27 @@ defmodule RtcWeb.Channels.IncidentSubscriptionTest do
       assert doc["delta"] == "DELETE"
       assert doc["payload"]["id"] == msg.id
       assert doc["payload"]["text"] == msg.text
+    end
+  end
+
+  describe "notification" do
+    test "it can send notifications to the destination user" do
+      user = insert(:user)
+      {:ok, socket} = establish_socket(user)
+
+      ref = push_doc(socket, """
+        subscription {
+          notification { id }
+        }
+      """, variables: %{})
+
+      assert_reply(ref, :ok, %{subscriptionId: _})
+
+      notif = insert(:notification, user: user)
+
+      publish_event(%PubSub.NotificationCreated{item: notif})
+      assert_push("subscription:data", %{result: %{data: %{"notification" => doc}}})
+      assert doc["id"] == notif.id
     end
   end
 end

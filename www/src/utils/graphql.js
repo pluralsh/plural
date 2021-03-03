@@ -1,9 +1,22 @@
+import { isString } from "lodash"
+
 export function extendConnection(prev, next, key) {
   const {edges, pageInfo} = next[key]
   return {...prev, [key]: {
       ...prev[key], pageInfo, edges: [...prev[key].edges, ...edges]
     }
   }
+}
+
+export function deepUpdate(prev, path, update) {
+  if (isString(path)) return deepUpdate(prev, path.split('.'), update)
+
+  const key = path[0]
+  if (path.length === 1) {
+    return {...prev, [key]: update(prev[key])}
+  }
+
+  return {...prev, [key]: deepUpdate(prev, path.slice(1), update)}
 }
 
 export function appendConnection(prev, next, type, key) {

@@ -64,10 +64,12 @@ function HistoryItem({history: {action, actor, insertedAt, changes}}) {
   return (
     <>
     <Box flex={false} direction='row' gap='small' align='center' margin={{top: 'xsmall'}}>
-      <Avatar user={actor} size='30px' />
-      <Box direction='row' gap='xsmall' align='center' pad='xsmall' round='xsmall' background='light-2' style={{overflow: 'auto'}}>
-        <Text size='small' weight={500} style={{whiteSpace: 'nowrap'}}>{historyModifier(action)}</Text>
+      <Avatar user={actor} size='40px' />
+      <Box>
         <Text size='small' style={{whiteSpace: 'nowrap'}}>{dateFormat(moment(insertedAt))}</Text>
+        <Box direction='row' gap='xsmall' align='center' pad='xsmall' round='xsmall' background='light-2' style={{overflow: 'auto'}}>
+          <Text size='small' weight={500} style={{whiteSpace: 'nowrap'}}>{historyModifier(action)}</Text>
+        </Box>
       </Box>
       {openable && (
         <Box pad='xsmall' round='xsmall' hoverIndicator='light-2' onClick={() => setOpen(!open)}>

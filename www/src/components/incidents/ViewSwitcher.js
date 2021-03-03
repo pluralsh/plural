@@ -1,8 +1,8 @@
 import React, { useRef, useState } from 'react'
 import { Box, Text } from 'grommet'
 import { Tooltip } from '../utils/Tooltip'
-import { IncidentView } from './types'
-import { Chat, Resources } from 'grommet-icons'
+import { IncidentStatus, IncidentView } from './types'
+import { Chat, Checkmark, Resources } from 'grommet-icons'
 
 export function ViewOption({icon, selected, view, setView, text, side, size}) {
   const ref = useRef()
@@ -25,7 +25,7 @@ export function ViewOption({icon, selected, view, setView, text, side, size}) {
   )
 }
 
-export function ViewSwitcher({view, setView}) {
+export function ViewSwitcher({incident, view, setView}) {
   return (
     <Box width='50px' gap='small' align='center' pad={{vertical: 'small'}} border={{side: 'right', color: 'light-5'}}>
       <ViewOption 
@@ -40,6 +40,14 @@ export function ViewSwitcher({view, setView}) {
         view={IncidentView.FILES}
         setView={setView}
         text='Files' />
+      {incident.status === IncidentStatus.COMPLETE && (
+        <ViewOption
+          icon={Checkmark}
+          selected={view}
+          view={IncidentView.POST}
+          setView={setView}
+          text='Postmortem' />
+      )}
     </Box>
   )
 }

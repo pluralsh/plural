@@ -21,8 +21,13 @@ end
 defimpl Rtc.Channels.Negotiator, for: [Core.PubSub.IncidentCreated, Core.PubSub.IncidentUpdated] do
   import Rtc.Channels.NegotiatorHelper
 
-  def negotiate(%{item: %{repository_id: repo_id} = incident}),
-    do: {delta(incident, delta_name(@for)), [incident_delta: "incidents:#{repo_id}"]}
+  def negotiate(%{item: %{repository_id: repo_id, id: id} = incident}) do
+    {delta(incident, delta_name(@for)), [
+      incident_delta: "incidents:repos:#{repo_id}",
+      incident_delta: "incidents:#{id}",
+      incident_delta: "incidents:mine:#{incident.creator_id}"
+    ]}
+  end
 
   defp delta_name(Core.PubSub.IncidentCreated), do: :create
   defp delta_name(Core.PubSub.IncidentUpdated), do: :update
@@ -35,8 +40,14 @@ defimpl Rtc.Channels.Negotiator, for: [
                                  ] do
   import Rtc.Channels.NegotiatorHelper
 
-  def negotiate(%{item: %{incident_id: id} = msg}),
-    do: {delta(msg, delta_name(@for)), [incident_message_delta: "incidents:messages:#{id}"]}
+  def negotiate(%{item: %{incident_id: id} = msg}) do
+    %{incident: incident} = msg = Core.Repo.preload(msg, [:incident])
+
+    {delta(msg, delta_name(@for)), [
+      incident_message_delta: "incidents:msgs:#{id}",
+      incident_message_delta: "incidents:msgs:mine:#{incident.creator_id}"
+    ]}
+  end
 
   defp delta_name(Core.PubSub.IncidentMessageCreated), do: :create
   defp delta_name(Core.PubSub.IncidentMessageUpdated), do: :update

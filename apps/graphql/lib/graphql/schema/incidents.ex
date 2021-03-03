@@ -2,9 +2,9 @@ defmodule GraphQl.Schema.Incidents do
   use GraphQl.Schema.Base
   alias GraphQl.Resolvers.{Incidents, Repository, User}
 
-  ecto_enum :incident_status, Core.Schema.Incident.Status
-  ecto_enum :media_type, Core.Schema.File.MediaType
-  ecto_enum :incident_action, Core.Schema.IncidentHistory.Action
+  ecto_enum :incident_status,  Core.Schema.Incident.Status
+  ecto_enum :media_type,       Core.Schema.File.MediaType
+  ecto_enum :incident_action,  Core.Schema.IncidentHistory.Action
   ecto_enum :action_item_type, Core.Schema.Postmortem.ActionItem.Type
 
   input_object :incident_attributes do
@@ -296,18 +296,31 @@ defmodule GraphQl.Schema.Incidents do
 
   object :incident_subscriptions do
     field :incident_delta, :incident_delta do
-      arg :repository_id, non_null(:id)
-      config fn %{repository_id: id}, %{context: %{current_user: user}} ->
-        with {:ok, _} <- Incidents.authorize_incidents(id, user),
-          do: {:ok, topic: "incidents:#{id}"}
+      arg :repository_id, :id
+      arg :incident_id,   :id
+
+      config fn
+        %{repository_id: id}, %{context: %{current_user: user}} ->
+          with {:ok, _} <- Incidents.authorize_incidents(id, user),
+            do: {:ok, topic: "incidents:repos:#{id}"}
+
+        %{incident_id: id}, context ->
+          with {:ok, _} <- Incidents.authorize_incident(%{id: id}, context),
+            do: {:ok, topic: "incidents:#{id}"}
+
+        _, %{context: %{current_user: user}} -> {:ok, topic: "incidents:mine:#{user.id}"}
       end
     end
 
     field :incident_message_delta, :incident_message_delta do
-      arg :incident_id, non_null(:id)
-      config fn %{incident_id: id}, context ->
-        with {:ok, _} <- Incidents.authorize_incident(%{id: id}, context),
-          do: {:ok, topic: "incidents:messages:#{id}"}
+      arg :incident_id, :id
+
+      config fn
+        %{incident_id: id}, context ->
+          with {:ok, _} <- Incidents.authorize_incident(%{id: id}, context),
+            do: {:ok, topic: "incidents:msgs:#{id}"}
+
+        _, %{context: %{current_user: user}} -> {:ok, topic: "incidents:msgs:mine:#{user.id}"}
       end
     end
   end

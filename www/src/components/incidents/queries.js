@@ -1,6 +1,6 @@
 import gql from 'graphql-tag'
 import { RepoFragment } from '../../models/repo'
-import { FileFragment, IncidentFragment, IncidentHistoryFragment, IncidentMessageFragment } from '../../models/incidents';
+import { FileFragment, FollowerFragment, IncidentFragment, IncidentHistoryFragment, IncidentMessageFragment, NotificationFragment, PostmortemFragment } from '../../models/incidents';
 import { PageInfo } from '../../models/misc'
 
 export const INCIDENTS_Q = gql`
@@ -18,14 +18,19 @@ export const INCIDENT_Q = gql`
   query Incident($id: ID! $cursor: String, $fileCursor: String, $historyCursor: String) {
     incident(id: $id) {
       ...IncidentFragment
+      postmortem { ...PostmortemFragment }
+      follower { ...FollowerFragment }
+
       messages(after: $cursor, first: 50) {
         pageInfo { ...PageInfo }
         edges { node { ...IncidentMessageFragment } }
       }
+
       files(after: $fileCursor, first: 50) {
         pageInfo { ...PageInfo }
         edges { node { ...FileFragment } }
       }
+
       history(after: $historyCursor, first: 50) {
         pageInfo { ...PageInfo }
         edges { node { ...IncidentHistoryFragment } }
@@ -37,15 +42,26 @@ export const INCIDENT_Q = gql`
   ${IncidentMessageFragment}
   ${FileFragment}
   ${IncidentHistoryFragment}
+  ${PostmortemFragment}
+  ${FollowerFragment}
+`
+
+export const NOTIFICATIONS_Q = gql`
+  query Notifications($incidentId: ID, $cursor: String) {
+    notifications(incidentId: $incidentId, first: 50, after: $cursor) {
+      pageInfo { ...PageInfo }
+      edges { node { ...NotificationFragment } }
+    }
+  }
+  ${PageInfo}
+  ${NotificationFragment}
 `
 
 export const REPOS_Q = gql`
   query Repos($cursor: String) {
     repositories(supports: true, first: 15, after: $cursor) {
       pageInfo { ...PageInfo }
-      edges {
-        node { ...RepoFragment }
-      }
+      edges { node { ...RepoFragment } }
     }
   }
   ${PageInfo}
@@ -78,6 +94,33 @@ export const ACCEPT_INCIDENT = gql`
   }
   ${IncidentFragment}
 `
+
+export const COMPLETE_INCIDENT = gql`
+  mutation Complete($id: ID!, $attributes: PostmortemAttributes!) {
+    completeIncident(id: $id, postmortem: $attributes) {
+      ...IncidentFragment
+      postmortem { ...PostmortemFragment }
+    }
+  }
+  ${IncidentFragment}
+  ${PostmortemFragment}
+`
+
+export const FOLLOW = gql`
+  mutation Follow($id: ID!, $attributes: FollowerAttributes!) {
+    followIncident(id: $id, attributes: $attributes) {
+      ...FollowerFragment
+    }
+  }
+  ${FollowerFragment}
+`;
+
+export const UNFOLLOW = gql`
+  mutation Unfollow($id: ID!) {
+    unfollowIncident(id: $id) { ...FollowerFragment }
+  }
+  ${FollowerFragment}
+`;
 
 export const CREATE_MESSAGE = gql`
   mutation CreateMessage($incidentId: ID!, $attributes: IncidentMessageAttributes!) {
@@ -119,3 +162,30 @@ export const DELETE_REACTION = gql`
   }
   ${IncidentMessageFragment}
 `;
+
+export const INCIDENT_SUB = gql`
+  subscription Incident($id: ID!) {
+    incidentDelta(incidentId: $id) {
+      delta
+      payload { 
+        ...IncidentFragment
+        postmortem { ...PostmortemFragment }
+        history(after: $historyCursor, first: 50) {
+          pageInfo { ...PageInfo }
+          edges { node { ...IncidentHistoryFragment } }
+        }
+      }
+    }
+  }
+  ${IncidentFragment}
+`
+
+export const MESSAGE_SUB = gql`
+  subscription Messages($id: ID!) {
+    incidentMessageDelta(incidentId: $id) {
+      delta
+      payload { ...IncidentMessageFragment }
+    }
+  }
+  ${IncidentMessageFragment}
+`

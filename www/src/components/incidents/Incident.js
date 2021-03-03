@@ -27,14 +27,13 @@ import { ViewSwitcher } from './ViewSwitcher'
 import { Sidebar } from './Sidebar'
 import { IncidentControls } from './IncidentControls'
 import Avatar from '../users/Avatar'
+import { Postmortem } from './Postmortem'
 
 export const canEdit = ({creator, owner}, {id}) => creator.id === id || owner.id === id
 
-function EditButton({incidentId, editing}) {
-  let history = useHistory()
+function EditButton({editing, setEditing}) {
   return (
-    <Box pad='xsmall' round='xsmall' hoverIndicator='light-3' 
-         onClick={() => history.push(editing ? `/incidents/${incidentId}` : `/incidents/${incidentId}/edit`)}>
+    <Box pad='xsmall' round='xsmall' hoverIndicator='light-3' focusIndicator={false} onClick={() => setEditing(!editing)}>
       {editing ? <Close size='small' color='dark-6' /> : <Edit size='small' color='dark-6' />}
     </Box>
   )
@@ -49,8 +48,7 @@ function Empty() {
   )
 }
 
-function IncidentHeader({incident, editable, editing, mutation, attributes, setAttributes, updating}) {
-  let history = useHistory()
+function IncidentHeader({incident, editable, editing, setEditing, mutation, attributes, setAttributes, updating}) {
   const [editorState, setEditorState] = useState(plainDeserialize(incident.description || ''))
   const editor = useEditor()
   const setDescription = useCallback((editorState) => {
@@ -71,11 +69,11 @@ function IncidentHeader({incident, editable, editing, mutation, attributes, setA
           <Box flex={false}>
             <Button label='Update' loading={updating} pad={{vertical: 'xsmall', horizontal: 'small'}} onClick={() => mutation({
               variables: {attributes: {...attributes, tags: attributes.tags.map((tag) => ({tag}))}},
-              update: () => history.push(`/incidents/${incident.id}`)
+              update: () => setEditing(false)
             })} />
           </Box>
         )}
-        {editable && <EditButton incidentId={incident.id} editing={editing} />}
+        {editable && <EditButton incidentId={incident.id} editing={editing} setEditing={setEditing} />}
       </Box>
       {!editing && <Box flex={false} gap='xsmall' border={{side: 'between', color: 'light-5'}}>
         <Box pad='small'>
@@ -172,8 +170,7 @@ function IncidentOwner({incident: {owner}}) {
   )
 }
 
-function IncidentInner({incident, fetchMore, loading, editing}) {
-  let history = useHistory()
+function IncidentInner({incident, fetchMore, loading, editing, setEditing}) {
   const [view, setView] = useState(IncidentView.MSGS)
   const currentUser = useContext(CurrentUserContext)
   const editable = canEdit(incident, currentUser)
@@ -184,7 +181,7 @@ function IncidentInner({incident, fetchMore, loading, editing}) {
   })
   const [mutation, {loading: updating}] = useMutation(UPDATE_INCIDENT, {
     variables: {id: incident.id, attributes: {...attributes, tags: attributes.tags.map((tag) => ({tag}))}},
-    onCompleted: () => history.push(`/incidents/${incident.id}`)
+    onCompleted: () => setEditing(false)
   })
 
   return (
@@ -212,12 +209,14 @@ function IncidentInner({incident, fetchMore, loading, editing}) {
               incident={incident} 
               editable={editable} 
               editing={editing} 
+              setEditing={setEditing}
               updating={updating} 
               mutation={mutation} />
           </Box>
           <Box fill direction='row'>
-            <ViewSwitcher view={view} setView={setView} />
+            <ViewSwitcher incident={incident} view={view} setView={setView} />
             <Box fill>
+              {view === IncidentView.POST && <Postmortem incident={incident} />}
               {view === IncidentView.FILES && (<Files incident={incident} fetchMore={fetchMore} />)}
               {view === IncidentView.MSGS && (
                 <Dropzone>
@@ -243,6 +242,7 @@ function IncidentInner({incident, fetchMore, loading, editing}) {
 
 export function Incident({editing}) {
   const {incidentId} = useParams()
+  const [edit, setEdit] = useState(editing)
   const {data, loading, fetchMore} = useQuery(INCIDENT_Q, {variables: {id: incidentId}, fetchPolicy: 'cache-and-network'})
   const {setBreadcrumbs} = useContext(BreadcrumbsContext)
   useEffect(() => {
@@ -253,7 +253,8 @@ export function Incident({editing}) {
 
   return (
     <IncidentInner 
-      editing={editing}
+      editing={edit}
+      setEditing={setEdit}
       incident={data.incident}
       fetchMore={fetchMore}
       loading={loading} />

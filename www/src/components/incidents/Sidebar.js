@@ -1,9 +1,10 @@
 import React, { useCallback, useState } from 'react'
 import { Box, Text } from 'grommet';
-import { Hide, History } from 'grommet-icons';
+import { Hide, History, Notification } from 'grommet-icons';
 import { IncidentHistory } from './IncidentHistory';
 import { SidebarView } from './types';
 import { ViewOption } from './ViewSwitcher';
+import { Notifications } from './Notifications';
 
 const animation = {
   outline: 'none',
@@ -17,8 +18,19 @@ function SmallSidebar({setOpen, setView}) {
   }, [setOpen, setView])
 
   return (
-    <Box fill gap='xsmall' align='center' pad={{top: 'small'}}>
-      <ViewOption icon={History} view={SidebarView.HISTORY} setView={doOpen} side={{right: 'left'}} text='history' />
+    <Box fill gap='small' align='center' pad={{top: 'small'}}>
+      <ViewOption 
+        icon={History} 
+        view={SidebarView.HISTORY} 
+        setView={doOpen} 
+        side={{right: 'left'}} 
+        text='history' />
+      <ViewOption 
+        icon={Notification} 
+        view={SidebarView.NOTIF} 
+        setView={doOpen} 
+        side={{right: 'left'}} 
+        text='notifications' />
     </Box>
   )
 }
@@ -36,6 +48,14 @@ function SidebarContent({view, setView, incident, fetchMore, setOpen}) {
           <Text size='small' weight={500}>{view}</Text>
         </Box>
         <ViewOption 
+          icon={Notification} 
+          size='15px' 
+          view={SidebarView.NOTIF} 
+          selected={view} 
+          setView={setView} 
+          side={{top: 'bottom'}} 
+          text='notifications' />
+        <ViewOption 
           icon={History} 
           size='15px' 
           view={SidebarView.HISTORY} 
@@ -45,6 +65,7 @@ function SidebarContent({view, setView, incident, fetchMore, setOpen}) {
           text='history' />
       </Box>
       <Box fill>
+        {view === SidebarView.NOTIF && <Notifications incident={incident} />}
         {view === SidebarView.HISTORY && <IncidentHistory incident={incident} fetchMore={fetchMore} />}
       </Box>
     </Box>
@@ -52,7 +73,7 @@ function SidebarContent({view, setView, incident, fetchMore, setOpen}) {
 }
 
 export function Sidebar({incident, fetchMore}) {
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(false)
   const [view, setView] = useState(SidebarView.HISTORY)
 
   return (

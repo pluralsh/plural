@@ -2,6 +2,21 @@ import gql from 'graphql-tag'
 import { RepoFragment } from './repo'
 import { UserFragment } from './user'
 
+export const PostmortemFragment = gql`
+  fragment PostmortemFragment on Postmortem {
+    id
+    content
+    actionItems { type link }
+  }
+`
+export const FollowerFragment = gql`
+  fragment FollowerFragment on Follower {
+    id
+    incident { id }
+    preferences { message incidentUpdate }
+  }
+`
+
 export const IncidentFragment = gql`
   fragment IncidentFragment on Incident {
     id
@@ -51,4 +66,15 @@ export const IncidentMessageFragment = gql`
   }
   ${UserFragment}
   ${FileFragment}
+`
+
+export const NotificationFragment = gql`
+  fragment NotificationFragment on Notification {
+    id
+    type
+    actor { ...UserFragment }
+    incident { ...IncidentFragment }
+  }
+  ${UserFragment}
+  ${IncidentFragment}
 `

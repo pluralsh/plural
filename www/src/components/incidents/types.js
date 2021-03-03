@@ -6,7 +6,7 @@ export const IncidentStatus = {
   OPEN: 'OPEN',
   IN_PROGRESS: 'IN_PROGRESS',
   RESOLVED: 'RESOLVED',
-  COMPLETED: 'COMPLETED'
+  COMPLETE: 'COMPLETE'
 }
 
 export const FileTypes = {
@@ -16,7 +16,8 @@ export const FileTypes = {
 
 export const IncidentView = {
   MSGS: 'm',
-  FILES: 'f'
+  FILES: 'f',
+  POST: 'p'
 }
 
 export const Action = {
@@ -29,5 +30,11 @@ export const Action = {
 }
 
 export const SidebarView = {
-  HISTORY: 'history'
+  HISTORY: 'history',
+  NOTIF: 'notifications'
+}
+
+export const NotificationTypes = {
+  MESSAGE: 'MESSAGE',
+  INCIDENT_UPDATE: 'INCIDENT_UPDATE'
 }

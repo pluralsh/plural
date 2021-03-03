@@ -6,15 +6,12 @@ import { Down } from 'grommet-icons'
 
 const severityOptions = [0, 1, 2, 3, 4, 5].map((sev) => ({value: sev, label: `SEV ${sev}`}))
 
-const SeverityStatusOption = ({value, label}, {active}) => {
+const SeverityStatusOption = ({value}, {active}) => {
   const color = severityColor(value)
 
   return (
     <Box direction='row' background={active ? 'active' : null} gap='xsmall' align='center' 
          pad={{vertical: 'xsmall', horizontal: 'small'}}>
-      <Box fill='horizontal'>
-        <Text size='small'>{label}</Text>
-      </Box>
       <Box flex={false} background={color} round='xsmall' pad={{horizontal: 'xsmall', vertical: '1px'}}>
         <Text size='small' weight={500}>SEV {value}</Text> 
       </Box>
@@ -22,15 +19,12 @@ const SeverityStatusOption = ({value, label}, {active}) => {
   )
 }
 
-function SeverityOption({value, label, active, setActive}) {
+function SeverityOption({value, active, setActive}) {
   const color = severityColor(value)
 
   return (
     <Box direction='row' background={active ? 'active' : null} gap='xsmall' align='center' hoverIndicator='light-2'
          pad={{vertical: 'xsmall', horizontal: 'small'}} onClick={() => setActive(value)}>
-      <Box fill='horizontal'>
-        <Text size='small'>{label}</Text>
-      </Box>
       <Box flex={false} background={color} round='xsmall' pad={{horizontal: 'xsmall', vertical: '1px'}}>
         <Text size='small' weight={500}>SEV {value}</Text> 
       </Box>

@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Box, Text } from 'grommet'
 import { Scroller } from 'forge-core'
-import { useApolloClient, useQuery, useSubscription } from 'react-apollo'
-import { NOTIFICATIONS_Q, NOTIF_SUB } from './queries'
+import { useApolloClient, useMutation, useQuery, useSubscription } from 'react-apollo'
+import { NOTIFICATIONS_Q, NOTIF_SUB, READ_NOTIFICATIONS } from './queries'
 import Avatar from '../users/Avatar'
 import { NotificationTypes } from './types'
 import { dateFormat } from '../../utils/date'
@@ -51,6 +51,7 @@ export function useNotificationSubscription() {
       updateFragment(client, {
         id: `Incident:${id}`,
         fragment: IncidentFragment,
+        fragmentName: 'IncidentFragment',
         update: ({notificationCount, ...rest}) => ({...rest, notificationCount: notificationCount + 1})
       })
     }
@@ -62,6 +63,18 @@ export function Notifications({incident: {id}}) {
     variables: {incidentId: id}, 
     fetchPolicy: 'cache-and-network'
   })
+  const [mutation] = useMutation(READ_NOTIFICATIONS, {
+    variables: {incidentId: id},
+    update: (cache) => {
+      updateFragment(cache, {
+        fragment: IncidentFragment,
+        fragmentName: 'IncidentFragment',
+        id: `Incident:${id}`,
+        update: (incident) => ({...incident, notificationCount: 0})
+      })
+    }
+  })
+  useEffect(() => mutation, [id])
 
   if (!data) return null
 

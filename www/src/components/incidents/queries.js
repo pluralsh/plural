@@ -163,6 +163,12 @@ export const DELETE_REACTION = gql`
   ${IncidentMessageFragment}
 `;
 
+export const READ_NOTIFICATIONS = gql`
+  mutation Read($incidentId: ID!) {
+    readNotifications(incidentId: $incidentId)
+  }
+`
+
 export const INCIDENT_SUB = gql`
   subscription Incident($id: ID!) {
     incidentDelta(incidentId: $id) {
@@ -194,7 +200,7 @@ export const MESSAGE_SUB = gql`
 `
 export const NOTIF_SUB = gql`
   subscription {
-    notifications { ...NotificationFragment }
+    notification { ...NotificationFragment }
   }
   ${NotificationFragment}
 `

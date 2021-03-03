@@ -26,8 +26,8 @@ function Tags({tags}) {
   return (
     <Box direction='row' gap='xsmall' align='center'>
       {tags.map(({tag}) => (
-        <Box round='xsmall' pad={{horizontal: 'xsmall', vertical: 'xxsmall'}} background='light-2'>
-          <Text size='small'>{tag}</Text>
+        <Box round='xsmall' pad={{horizontal: 'xsmall', vertical: '2px'}} background='light-2'>
+          <Text size='xsmall'>{tag}</Text>
         </Box>
       ))}
     </Box>
@@ -44,7 +44,7 @@ export function NotificationBadge({size, color, count}) {
          width={size} height={size} 
          align='center' justify='center'
          round='full' background={background}>
-      {count && <Text size='small'>{count > 10 ? '!!' : count}</Text>}
+      {count && <Text size='10px'>{count > 10 ? '!!' : count}</Text>}
     </Box>
   )
 }
@@ -63,7 +63,7 @@ export function IncidentRow({incident: {id, repository, title, insertedAt, owner
             <Text size='small' weight={500}>{title}</Text>
             <Status incident={incident} />
             <Tags tags={incident.tags} />
-            {incident.notificationCount > 0 && <NotificationBadge count={incident.notificationCount} size='20px' />}
+            {incident.notificationCount > 0 && <NotificationBadge count={incident.notificationCount} size='15px' />}
           </Box>
           <Text size='small' color='light-5'>created: {moment(insertedAt).fromNow()}, {owner ? `responder: ${owner.email}` : 'unassigned'}</Text>
         </Box>

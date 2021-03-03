@@ -3,11 +3,14 @@ import { Box, Stack, Text } from "grommet"
 import Avatar from '../users/Avatar'
 import Markdown from './Markdown'
 import moment from 'moment'
-import { dateFormat } from '../../utils/date'
 import { MessageControls } from './MessageControls'
 import './message.css'
 import MessageReactions from './MessageReactions'
 import File from './File'
+import { DateDivider } from './MessageDivider'
+
+const DATE_PATTERN = 'h:mm a'
+const dateFormat = (date) => moment(date).format(DATE_PATTERN)
 
 function isConsecutive(message, next) {
   if (!next || !next.creator) return false
@@ -15,7 +18,7 @@ function isConsecutive(message, next) {
   const firstTime = moment(message.insertedAt)
   const secondTime = moment(next.insertedAt)
 
-  return (secondTime.add(-10, 'minutes').isBefore(firstTime))
+  return (firstTime.add(-10, 'minutes').isBefore(secondTime))
 }
 
 
@@ -34,9 +37,9 @@ function MessageBody({message, next, setHover}) {
         )}
       </Box>
       <Box fill='horizontal'>
-        {!consecutive && <Box gap='xsmall' direction='row'>
+        {!consecutive && <Box gap='xsmall' direction='row' align='center'>
           <Text size='small' weight='bold'>{message.creator.name}</Text>
-          <Text size='small' color='dark-5'>{formatted}</Text>
+          <Text size='12px' color='dark-5'>{formatted}</Text>
         </Box>}
         <Box flex={false}>
           <Markdown text={message.text} entities={message.entities} />
@@ -51,16 +54,19 @@ function MessageBody({message, next, setHover}) {
 }
 
  
-export function Message({message, next}) {
+export const Message = React.memo(({message, next, prev, setSize}) => {
   const [hover, setHover] = useState(false)
   const additionalClasses = hover ? ' hovered' : ''
 
   return (
-    <Box flex={false} fill='horizontal' className={'message' + additionalClasses}>
-      <Stack fill anchor='top-right'>
-        <MessageBody message={message} next={next} hover={hover} setHover={setHover} />
-        <MessageControls message={message} setHover={setHover} />
-      </Stack>
+    <Box flex={false}>
+      <DateDivider message={message} next={next} setSize={setSize} />
+      <Box flex={false} fill='horizontal' className={'message' + additionalClasses}>
+        <Stack fill anchor='top-right'>
+          <MessageBody message={message} next={next} hover={hover} setHover={setHover} />
+          <MessageControls message={message} setHover={setHover} />
+        </Stack>
+      </Box>
     </Box>
   )
-}
+})

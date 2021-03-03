@@ -29,6 +29,7 @@ import { IncidentControls } from './IncidentControls'
 import Avatar from '../users/Avatar'
 import { Postmortem } from './Postmortem'
 import { applyMessages } from './applicators'
+import { LastMessage } from './LastMessage'
 
 export const canEdit = ({creator, owner}, {id}) => creator.id === id || owner.id === id
 
@@ -80,10 +81,10 @@ function IncidentHeader({incident, editable, editing, setEditing, mutation, attr
         <Box pad='small'>
           <Markdown text={incident.description || ''} />
         </Box>
-        {incident.tags.length > 0 && <Box direction='row' gap='xsmall' align='center' pad='small'>
+        {incident.tags.length > 0 && <Box direction='row' gap='xsmall' align='center' pad={{horizontal: 'small', vertical: 'xsmall'}}>
           {incident.tags.map(({tag}) => (
-            <Box flex={false} round='xsmall' pad={{vertical: '1px', horizontal: 'xsmall'}} background='light-3'>
-              <Text size='small'>{tag}</Text>
+            <Box key={tag} flex={false} round='xsmall' pad={{vertical: '1px', horizontal: 'xsmall'}} background='light-3'>
+              <Text size='xsmall'>{tag}</Text>
             </Box>
           ))}
         </Box>}
@@ -126,8 +127,11 @@ export function Messages({incident, loading, fetchMore, subscribeToMore}) {
     <SmoothScroller
       listRef={listRef}
       setListRef={setListRef}
-      items={edges}
-      mapper={({node}, next) => <Message message={node} next={next.node} />}
+      items={[...edges, 'end']}
+      mapper={(e, {next, prev}, props) => (
+        e === 'end' ? <LastMessage date={prev.node.insertedAt} /> : 
+                      <Message message={e.node} next={next.node} prev={prev.node} {...props} />
+      )}
       loading={loading}
       loadNextPage={() => hasNextPage && fetchMore({
         variables: {cursor: endCursor},

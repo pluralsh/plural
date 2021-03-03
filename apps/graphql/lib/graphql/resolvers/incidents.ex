@@ -3,11 +3,29 @@ defmodule GraphQl.Resolvers.Incidents do
   alias Core.Services.{Repositories, Incidents}
   alias Core.Schema.{IncidentMessage, Reaction, File, IncidentHistory, Postmortem}
 
+  def data(args) do
+    Dataloader.Ecto.new(Core.Repo,
+      query: &query/2,
+      default_params: filter_context(args),
+      run_batch: &run_batch/5
+    )
+  end
+
   def query(IncidentMessage, _), do: IncidentMessage
   def query(Reaction, _), do: Reaction
   def query(File, _), do: File
   def query(Postmortem, _), do: Postmortem
   def query(_, _), do: Incident
+
+  def run_batch(_, _, :unread_notifications, [{%{id: user_id}, _} | _] = args, repo_opts) do
+    Incident.unread_notification_count(user_id)
+    |> aggregated_count(args, repo_opts)
+  end
+
+  def run_batch(queryable, query, col, inputs, repo_opts) do
+    Dataloader.Ecto.run_batch(Core.Repo, queryable, query, col, inputs, repo_opts)
+  end
+
 
   def list_incidents(%{repository_id: id} = args, %{context: %{current_user: user}}) do
     Incident.for_repository(id)
@@ -89,6 +107,21 @@ defmodule GraphQl.Resolvers.Incidents do
 
   def unfollow_incident(%{id: id}, %{context: %{current_user: user}}),
     do: Incidents.unfollow_incident(id, user)
+
+  defp aggregated_count(query, args, repo_opts) do
+    conv_ids = Enum.map(args, fn
+      %{id: id} -> id
+      {_, %{id: id}} -> id
+    end)
+
+    result =
+      query
+      |> Incident.for_ids(conv_ids)
+      |> Core.Repo.all(repo_opts)
+      |> Map.new()
+
+    Enum.map(conv_ids, & [Map.get(result, &1, 0)])
+  end
 
   defp maybe_filter_creator(query, _, true), do: query
   defp maybe_filter_creator(query, %{id: id}, _), do: Incident.for_creator(query, id)

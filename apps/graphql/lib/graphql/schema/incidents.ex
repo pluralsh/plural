@@ -60,6 +60,13 @@ defmodule GraphQl.Schema.Incidents do
     field :tags,       list_of(:tag), resolve: dataloader(Repository)
     field :postmortem, :postmortem, resolve: dataloader(Incidents)
 
+    field :notification_count, :integer do
+      resolve fn incident, _, %{context: %{loader: loader, current_user: user}} ->
+        manual_dataloader(
+          loader, Incidents, {:one, Core.Schema.Incident}, unread_notifications: {user, incident})
+      end
+    end
+
     field :follower, :follower, resolve: fn
       %{id: incident_id}, _, %{context: %{current_user: user}} ->
         {:ok, Core.Services.Incidents.get_follower(user.id, incident_id)}

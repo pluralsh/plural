@@ -1,5 +1,13 @@
 import { isString } from "lodash"
 
+export function updateFragment(cache, {fragment, id, update}) {
+  const current = cache.readFragment({id, fragment})
+
+  if (!current) return
+
+  cache.writeFragment({id, fragment, data: update(current)})
+}
+
 export function extendConnection(prev, next, key) {
   const {edges, pageInfo} = next[key]
   return {...prev, [key]: {

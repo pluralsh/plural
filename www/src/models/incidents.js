@@ -24,6 +24,7 @@ export const IncidentFragment = gql`
     description
     severity
     status
+    notificationCount
     creator { ...UserFragment }
     owner { ...UserFragment }
     repository { ...RepoFragment }
@@ -73,8 +74,7 @@ export const NotificationFragment = gql`
     id
     type
     actor { ...UserFragment }
-    incident { ...IncidentFragment }
+    incident { id }
   }
   ${UserFragment}
-  ${IncidentFragment}
 `

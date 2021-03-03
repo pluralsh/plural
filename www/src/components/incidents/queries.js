@@ -192,3 +192,9 @@ export const MESSAGE_SUB = gql`
   }
   ${IncidentMessageFragment}
 `
+export const NOTIF_SUB = gql`
+  subscription {
+    notifications { ...NotificationFragment }
+  }
+  ${NotificationFragment}
+`

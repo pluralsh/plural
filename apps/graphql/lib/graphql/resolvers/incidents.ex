@@ -26,7 +26,6 @@ defmodule GraphQl.Resolvers.Incidents do
     Dataloader.Ecto.run_batch(Core.Repo, queryable, query, col, inputs, repo_opts)
   end
 
-
   def list_incidents(%{repository_id: id} = args, %{context: %{current_user: user}}) do
     Incident.for_repository(id)
     |> Incident.ordered()

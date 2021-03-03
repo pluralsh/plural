@@ -28,6 +28,7 @@
     "phoenix": "^1.5.7",
     "react": "^16.13.1",
     "react-ace": "^8.0.0",
+    "react-animations": "^1.0.0",
     "react-apollo": "^3.1.3",
     "react-codemirror": "^1.0.0",
     "react-collapsible": "^2.6.0",

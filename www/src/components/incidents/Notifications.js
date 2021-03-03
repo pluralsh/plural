@@ -1,13 +1,14 @@
 import React from 'react'
 import { Box, Text } from 'grommet'
 import { Scroller } from 'forge-core'
-import { useQuery } from 'react-apollo'
-import { NOTIFICATIONS_Q } from './queries'
+import { useApolloClient, useQuery, useSubscription } from 'react-apollo'
+import { NOTIFICATIONS_Q, NOTIF_SUB } from './queries'
 import Avatar from '../users/Avatar'
 import { NotificationTypes } from './types'
 import { dateFormat } from '../../utils/date'
 import moment from 'moment'
-import { extendConnection } from '../../utils/graphql'
+import { appendConnection, extendConnection, updateCache, updateFragment } from '../../utils/graphql'
+import { IncidentFragment } from '../../models/incidents'
 
 function notificationModifier(type) {
   switch (type) {
@@ -32,6 +33,28 @@ function Notification({notification: {actor, type, insertedAt}}) {
       </Box>
     </Box>
   )
+}
+
+export function useNotificationSubscription() {
+  const client = useApolloClient()
+  useSubscription(NOTIF_SUB, {
+    onSubscriptionData: ({subscriptionData: {data: { notification }}}) => {
+      const {incident: {id}} = notification
+      try {
+        updateCache(client, {
+          query: NOTIFICATIONS_Q,
+          variables: {incidentId: id},
+          update: (prev) => appendConnection(prev, notification, 'Notification', 'notifications')
+        })
+      } catch { }
+
+      updateFragment(client, {
+        id: `Incident:${id}`,
+        fragment: IncidentFragment,
+        update: ({notificationCount, ...rest}) => ({...rest, notificationCount: notificationCount + 1})
+      })
+    }
+  })
 }
 
 export function Notifications({incident: {id}}) {

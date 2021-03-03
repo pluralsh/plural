@@ -213,4 +213,23 @@ defmodule GraphQl.IncidentMutationsTest do
       assert del["id"] == follow.id
     end
   end
+
+  describe "readNotifications" do
+    test "it can read notifications for an incident" do
+      user = insert(:user)
+      incident = insert(:incident)
+      notifs = insert_list(2, :notification, user: user, incident: incident)
+      ignore = insert(:notification, user: user)
+
+      {:ok, %{data: %{"readNotifications" => 2}}} = run_query("""
+        mutation Read($incidentId: ID!) {
+          readNotifications(incidentId: $incidentId)
+        }
+      """, %{"incidentId" => incident.id}, %{current_user: user})
+
+      assert refetch(ignore)
+      for notif <- notifs,
+        do: refute refetch(notif)
+    end
+  end
 end

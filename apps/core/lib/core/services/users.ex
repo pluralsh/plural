@@ -6,7 +6,8 @@ defmodule Core.Services.Users do
     PersistedToken,
     User,
     Publisher,
-    Webhook
+    Webhook,
+    Notification
   }
 
   @spec get_user(binary) :: User.t | nil
@@ -118,6 +119,20 @@ defmodule Core.Services.Users do
     |> Publisher.changeset(attrs)
     |> Core.Repo.update()
   end
+
+  @doc """
+  Deletes the notifications for the current user, with filtering options
+  """
+  @spec read_notifications(map, User.t) :: {integer, term}
+  def read_notifications(args, %User{} = user) do
+    Notification.for_user(user.id)
+    |> filter_notifications(args)
+    |> Core.Repo.delete_all()
+  end
+
+  defp filter_notifications(query, %{incident_id: id}) when is_binary(id),
+    do: Notification.for_incident(query, id)
+  defp filter_notifications(query, _), do: query
 
   @doc """
   Creates or updates a new webhook for `url` and the given user

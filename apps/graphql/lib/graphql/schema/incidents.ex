@@ -299,6 +299,13 @@ defmodule GraphQl.Schema.Incidents do
 
       resolve safe_resolver(&Incidents.delete_reaction/2)
     end
+
+    field :read_notifications, :integer do
+      middleware GraphQl.Middleware.Authenticated
+      arg :incident_id, :id
+
+      resolve &User.read_notifications/2
+    end
   end
 
   object :incident_subscriptions do

@@ -47,7 +47,6 @@ const OPTIONS = [
   {text: 'Explore', icon: <Package size={ICON_HEIGHT} />, path: '/explore'},
   {text: 'Publishers', icon: <Book size={ICON_HEIGHT} />, path: '/publishers'},
   {text: 'Account', icon: <Group size={ICON_HEIGHT} />, path: '/accounts/edit/users'},
-  {text: 'Billing', icon: <FaCreditCard size={ICON_HEIGHT} />, path: '/billing/methods'},
   {text: 'Incidents', icon: <Alert size={ICON_HEIGHT} />, path: '/incidents'},
   {text: 'Responses', icon: <Aid size={ICON_HEIGHT} />, path: '/incidents/responses'}
 ]

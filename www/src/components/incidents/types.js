@@ -53,7 +53,7 @@ export const IncidentSort = {
 }
 
 export const IncidentSortNames = {
-  INSERTED_AT: 'Created On',
+  INSERTED_AT: 'Creation Date',
   SEVERITY: 'Severity',
   STATUS: 'Status',
   TITLE: 'Title'

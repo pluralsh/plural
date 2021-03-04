@@ -12,6 +12,9 @@ import { CurrentUserContext } from '../login/CurrentUser'
 import { Groups, Roles, Users } from './Directory'
 import Avatar from '../users/Avatar'
 import { BreadcrumbsContext } from '../Breadcrumbs'
+import { FaCreditCard, FaReceipt } from 'react-icons/fa'
+import { CardList } from '../users/BillingDetails'
+import Invoices from '../payments/Invoices'
 
 const ICON_SIZE = '12px'
 
@@ -20,6 +23,8 @@ const ViewOptions = {
   USERS: 'users',
   GROUPS: 'groups',
   ROLES: 'roles',
+  METHODS: 'methods',
+  INVOICES: 'invoices'
 }
 
 const VIEWS = [
@@ -27,6 +32,8 @@ const VIEWS = [
   {text: "Users", view: ViewOptions.USERS, icon: <User size={ICON_SIZE} />},
   {text: "Groups", view: ViewOptions.GROUPS, icon: <Group size={ICON_SIZE} />},
   {text: 'Roles', view: ViewOptions.ROLES, icon: <Script size={ICON_SIZE} />},
+  {text: 'Payment Methods', view: ViewOptions.METHODS, icon: <FaCreditCard size={ICON_SIZE} />},
+  {text: 'Invoices', view: ViewOptions.INVOICES, icon: <FaReceipt size={ICON_SIZE} />},
 ]
 
 function EditAttributes() {
@@ -50,17 +57,18 @@ function EditAttributes() {
   )
 }
 
-export function EditAccount() {
+export function EditAccount({billing}) {
   const {account} = useContext(CurrentUserContext)
   let history = useHistory()
   const {section} = useParams()
   const {setBreadcrumbs} = useContext(BreadcrumbsContext)
-  useEffect(() => {
+  useEffect(() => {    
+    const prefix = billing ? '/accounts/billing' : '/accounts/edit'
     setBreadcrumbs([
       {text: 'account', url: '/accounts/edit/attributes'},
-      {text: section, url: `/accounts/edit/${section}`}
+      {text: section, url: `${prefix}/${section}`}
     ])
-  }, [setBreadcrumbs, section])
+  }, [setBreadcrumbs, section, billing])
 
   return (
     <Box fill direction='row'>
@@ -83,6 +91,8 @@ export function EditAccount() {
         {section === ViewOptions.USERS && <Users />}
         {section === ViewOptions.GROUPS && <Groups />}
         {section === ViewOptions.ROLES && <Roles />}
+        {section === ViewOptions.METHODS && <CardList />}
+        {section === ViewOptions.INVOICES && <Invoices />}
       </Box>
     </Box>
   )

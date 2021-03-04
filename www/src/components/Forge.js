@@ -24,6 +24,8 @@ import { Responses } from './incidents/Responses'
 
 export const TOOLBAR_SIZE = '50px'
 
+const EditBilling = (props) => <EditAccount {...props} billing />
+
 export default function Forge() {
   return (
     <StripeProvider apiKey="pk_test_ZVj7wQQqsBDrud0mttnnY6uy00QM8CndBt">
@@ -42,6 +44,7 @@ export default function Forge() {
                 <Box background='white' fill>
                   <Switch>
                     <Route path='/accounts/edit/:section' component={EditAccount} />
+                    <Route path='/accounts/billing/:section' component={EditBilling} />
                     <Route path='/publishers/mine' component={MyPublisher} />
                     <Route path='/publishers/:publisherId' component={Publisher} />
                     <Route path='/publishers' component={Publishers} />

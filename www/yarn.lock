@@ -9835,6 +9835,13 @@ react-stripe-elements@^6.0.1:
   dependencies:
     prop-types "15.7.2"
 
+react-sweet-progress@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/react-sweet-progress/-/react-sweet-progress-1.1.2.tgz#b27c6baa7c08a12cf0896565431ba477af249892"
+  integrity sha512-FUfiKpox5LJ9YTeK/HsaLp/oOsuxWBJQir6oAYKLY5nsa2pb04PtxzddSy6Y1fn8osaILpXIcItJRQYnHp42CA==
+  dependencies:
+    classnames "^2.2.5"
+
 react-tiny-crossfade@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/react-tiny-crossfade/-/react-tiny-crossfade-2.0.0.tgz#c2b0e62fc329c7a2cb1a77d813c11f71fa456132"

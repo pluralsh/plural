@@ -21,7 +21,6 @@ function isConsecutive(message, next) {
   return (firstTime.add(-10, 'minutes').isBefore(secondTime))
 }
 
-
 function MessageBody({message, next, setHover}) {
   const consecutive = isConsecutive(message, next)
   const formatted = dateFormat(moment(message.insertedAt))
@@ -53,8 +52,7 @@ function MessageBody({message, next, setHover}) {
   )
 }
 
- 
-export const Message = React.memo(({message, next, prev, setSize}) => {
+export const Message = React.memo(({message, next, setSize}) => {
   const [hover, setHover] = useState(false)
   const additionalClasses = hover ? ' hovered' : ''
 

@@ -10,7 +10,6 @@ import { createAbsintheSocketLink } from "@absinthe/socket-apollo-link"
 import * as AbsintheSocket from "@absinthe/socket"
 import { Socket as PhoenixSocket } from "phoenix"
 import { InMemoryCache } from 'apollo-cache-inmemory'
-import { AUTH_TOKEN } from '../constants'
 import { apiHost } from './hostname'
 import customFetch from './uploadLink'
 import { wipeToken, fetchToken } from './authentication'

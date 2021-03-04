@@ -52,6 +52,7 @@
     "react-scripts": "3.2.0",
     "react-spinners": "^0.10.6",
     "react-stripe-elements": "^6.0.1",
+    "react-sweet-progress": "^1.1.2",
     "react-tiny-crossfade": "^2.0.0",
     "react-virtualized-auto-sizer": "^1.0.4",
     "react-vis": "^1.11.7",

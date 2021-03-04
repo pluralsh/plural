@@ -12,6 +12,8 @@ defmodule Core.Schema.File do
     field :media_type,   MediaType
     field :filename,     :string
     field :filesize,     :integer
+    field :width,        :integer
+    field :height,       :integer
     field :content_type, :string
 
     belongs_to :message, IncidentMessage

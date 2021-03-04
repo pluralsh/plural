@@ -8,7 +8,7 @@ import { INCIDENT_Q, INCIDENT_SUB, MESSAGE_SUB, UPDATE_INCIDENT } from './querie
 import { Severity } from './Severity'
 import { Box, Text, TextInput } from 'grommet'
 import { Status } from './IncidentStatus'
-import { MessageInput } from './MessageInput'
+import { MessageInput, MessageScrollContext } from './MessageInput'
 import { dateFormat } from '../../utils/date'
 import moment from 'moment'
 import { Chat, Close, Edit, Resources } from 'grommet-icons'
@@ -112,7 +112,7 @@ function IncidentHeader({incident, editable, editing, setEditing, mutation, attr
 }
 
 export function Messages({incident, loading, fetchMore, subscribeToMore}) {
-  const [listRef, setListRef] = useState(null)
+  const {loader, setLoader, setListRef, listRef} = useContext(MessageScrollContext)
   const {messages: {pageInfo: {hasNextPage, endCursor}, edges}} = incident
 
   useEffect(() => subscribeToMore({
@@ -125,6 +125,8 @@ export function Messages({incident, loading, fetchMore, subscribeToMore}) {
 
   return (
     <SmoothScroller
+      loader={loader}
+      setLoader={setLoader}
       listRef={listRef}
       setListRef={setListRef}
       items={[...edges, 'end']}
@@ -183,6 +185,8 @@ function IncidentOwner({incident: {owner}}) {
 
 function IncidentInner({incident, fetchMore, subscribeToMore, loading, editing, setEditing}) {
   const [view, setView] = useState(IncidentView.MSGS)
+  const [listRef, setListRef] = useState(null)
+  const [loader, setLoader] = useState(null)
   const currentUser = useContext(CurrentUserContext)
   const editable = canEdit(incident, currentUser)
   const [attributes, setAttributes] = useState({
@@ -203,7 +207,17 @@ function IncidentInner({incident, fetchMore, subscribeToMore, loading, editing, 
     )
   }), [incident.id])
 
+  const refreshList = useCallback(() => {
+    listRef && listRef.resetAfterIndex(0, true)
+  }, [listRef])
+
+  const returnToBeginning = useCallback(() => {
+    listRef.scrollToItem(0)
+    loader && loader.resetloadMoreItemsCache()
+  }, [loader, listRef])
+
   return (
+    <MessageScrollContext.Provider value={{listRef, setListRef, loader, setLoader, refreshList, returnToBeginning}}>
     <Box fill>
       <AttachmentProvider>
       <Box flex={false} pad='small' direction='row' align='center' gap='small' border={{side: 'bottom', color: 'light-5'}}>
@@ -257,6 +271,7 @@ function IncidentInner({incident, fetchMore, subscribeToMore, loading, editing, 
       </Box>
       </AttachmentProvider>
     </Box>
+    </MessageScrollContext.Provider>
   )
 }
 

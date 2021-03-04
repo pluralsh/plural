@@ -8,7 +8,7 @@ import { RepoIcon } from '../repos/Repositories'
 import moment from 'moment'
 import { Severity } from './Severity'
 import { useHistory, useParams } from 'react-router'
-import { BladesHorizontal, Checkmark, Close, Notification, Search, User, Tag as TagIcon, Descend, Ascend } from 'grommet-icons'
+import { BladesHorizontal, Checkmark, Close, Notification, Search, User, Tag as TagIcon, Descend, Ascend, Next } from 'grommet-icons'
 import { Status } from './IncidentStatus'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 import { CreateIncident } from './CreateIncident'
@@ -17,7 +17,7 @@ import { pulse } from 'react-animations';
 import { normalizeColor } from 'grommet/utils'
 import { IncidentFilter, IncidentSort, IncidentSortNames, Order } from './types'
 
-const IncidentViewContext = React.createContext({})
+export const IncidentViewContext = React.createContext({})
 
 const pulseAnimation = keyframes`${pulse}`;
 
@@ -77,12 +77,15 @@ export function IncidentRow({incident: {id, repository, title, insertedAt, owner
   )
 }
 
-function FilterOption({icon, filter, onClick}) {
+function FilterOption({icon, filter, onClick, next}) {
   return (
-    <Box direction='row' gap='xsmall' align='center' onClick={onClick} 
-         hoverIndicator='light-2' pad={{horizontal: 'small', vertical: 'xsmall'}}>
-      {icon}
-      <Text size='small'>{filter.toLowerCase()}</Text>
+    <Box direction='row' align='center' fill='horizontal' onClick={onClick} hoverIndicator='light-2' 
+         pad={{horizontal: 'small', vertical: 'xsmall'}}>
+      <Box direction='row' fill='horizontal' gap='small' align='center'>
+        {icon}
+        <Text size='small'>{filter.toLowerCase()}</Text>
+      </Box>
+      {next && <Next size='small' />}
     </Box>
   )
 }
@@ -95,7 +98,7 @@ function TagInput({setAlternate}) {
     setAlternate(null)
   }, [tag, setFilters, setAlternate])
   return (
-    <Box direction='row' align='center' gap='xsmall' pad={{vertical: 'small', horizontal: 'xsmall'}}>
+    <Box direction='row' align='center' gap='xsmall' pad='small'>
       <Text size='samll' weight={500}>tag</Text>
       <Box flex={false} border={{side: 'bottom', color: 'light-5'}}>
         <TextInput plain value={tag} onChange={({target: {value}}) => setTag(value)} />
@@ -110,7 +113,7 @@ function TagInput({setAlternate}) {
   )
 }
 
-function FilterSelect() {
+export function FilterSelect() {
   const {filters, setFilters} = useContext(IncidentViewContext)
   const ref = useRef()
   const [open, setOpen] = useState(false)
@@ -126,7 +129,7 @@ function FilterSelect() {
     </Box>
     {open && (
       <Drop target={ref.current} onClickOutside={() => setOpen(false)} align={{top: 'bottom'}}>
-        <Box pad={{vertical: 'xsmall'}}>
+        <Box pad={{vertical: 'xsmall'}} style={{minWidth: '150px'}}>
           {!alternate && (
             <>
             <FilterOption 
@@ -137,7 +140,8 @@ function FilterSelect() {
               icon={<User size='small' />}
               filter={IncidentFilter.FOLLOWING} 
               onClick={() => setFilters([...filters, {type: IncidentFilter.FOLLOWING}])} />
-            <FilterOption 
+            <FilterOption
+              next
               icon={<TagIcon size='small' />}
               filter={IncidentFilter.TAG} 
               onClick={() => setAlternate(
@@ -227,7 +231,7 @@ function SortOptions() {
   )
 }
 
-function IncidentToolbar() {
+export function IncidentToolbar() {
   return (
     <Box border={{side: 'bottom', color: 'light-5'}} align='center' direction='row' 
          pad={{vertical: 'xsmall', horizontal: 'small'}}>
@@ -264,7 +268,7 @@ export function Incidents() {
       {!open && (
         <Box fill='horizontal' pad='small' align='center' direction='row' gap='xsmall' justify='end'>
           <FilterSelect />
-          <Box fill='horizontal' border={{side: 'bottom', color: 'light-5'}}>
+          <Box fill='horizontal'>
             <TextInput 
               plain
               icon={<Search size='15px' />}

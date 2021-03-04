@@ -69,11 +69,12 @@ export const DEFAULT_THEME = {
       text: {size: 'small'}
     }
   },
+  drop: {border: {radius: '4px'}},
   global: {
     colors: DEFAULT_COLOR_THEME,
     drop: {
       border: {
-        radius: '2px'
+        radius: '4px'
       }
     },
     box: {

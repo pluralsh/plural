@@ -15,7 +15,7 @@ export const INCIDENTS_Q = gql`
 `;
 
 export const INCIDENT_Q = gql`
-  query Incident($id: ID! $cursor: String, $fileCursor: String, $historyCursor: String) {
+  query Incident($id: ID! $cursor: String, $fileCursor: String, $historyCursor: String, $followerCursor: String) {
     incident(id: $id) {
       ...IncidentFragment
       postmortem { ...PostmortemFragment }
@@ -34,6 +34,11 @@ export const INCIDENT_Q = gql`
       history(after: $historyCursor, first: 50) {
         pageInfo { ...PageInfo }
         edges { node { ...IncidentHistoryFragment } }
+      }
+      
+      followers(after: $followerCursor, first: 50) {
+        pageInfo { ...PageInfo }
+        edges { node { ...FollowerFragment } }
       }
     }
   }

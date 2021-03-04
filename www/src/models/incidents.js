@@ -13,8 +13,10 @@ export const FollowerFragment = gql`
   fragment FollowerFragment on Follower {
     id
     incident { id }
+    user { ...UserFragment }
     preferences { message incidentUpdate }
   }
+  ${UserFragment}
 `
 
 export const IncidentFragment = gql`

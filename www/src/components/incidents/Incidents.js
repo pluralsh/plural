@@ -16,6 +16,7 @@ import styled, { keyframes } from 'styled-components';
 import { pulse } from 'react-animations';
 import { normalizeColor } from 'grommet/utils'
 import { IncidentFilter, IncidentSort, IncidentSortNames, Order } from './types'
+import { AlternatingBox } from '../utils/AlternatingBox'
 
 export const IncidentViewContext = React.createContext({})
 
@@ -90,6 +91,8 @@ function FilterOption({icon, filter, onClick, next}) {
   )
 }
 
+const FILTER_DROP_WIDTH = '200px'
+
 function TagInput({setAlternate}) {
   const {setFilters, filters} = useContext(IncidentViewContext)
   const [tag, setTag] = useState('')
@@ -98,9 +101,9 @@ function TagInput({setAlternate}) {
     setAlternate(null)
   }, [tag, setFilters, setAlternate])
   return (
-    <Box direction='row' align='center' gap='xsmall' pad='small'>
+    <Box direction='row' align='center' gap='xsmall' pad='small' width={FILTER_DROP_WIDTH}>
       <Text size='samll' weight={500}>tag</Text>
-      <Box flex={false} border={{side: 'bottom', color: 'light-5'}}>
+      <Box fill='horizontal' border={{side: 'bottom', color: 'light-5'}}>
         <TextInput plain value={tag} onChange={({target: {value}}) => setTag(value)} />
       </Box>
       <Box flex={false} pad='xsmall' round='xsmall' onClick={accept} hoverIndicator='light-3'>
@@ -117,7 +120,6 @@ export function FilterSelect() {
   const {filters, setFilters} = useContext(IncidentViewContext)
   const ref = useRef()
   const [open, setOpen] = useState(false)
-  const [alternate, setAlternate] = useState(null)
 
   return (
     <>
@@ -128,28 +130,29 @@ export function FilterSelect() {
       <Text size='small'>Filters</Text>
     </Box>
     {open && (
-      <Drop target={ref.current} onClickOutside={() => setOpen(false)} align={{top: 'bottom'}}>
-        <Box pad={{vertical: 'xsmall'}} style={{minWidth: '150px'}}>
-          {!alternate && (
-            <>
-            <FilterOption 
-              icon={<Notification size='small' />}
-              filter={IncidentFilter.NOTIFICATIONS} 
-              onClick={() => setFilters([...filters, {type: IncidentFilter.NOTIFICATIONS}])} />
-            <FilterOption 
-              icon={<User size='small' />}
-              filter={IncidentFilter.FOLLOWING} 
-              onClick={() => setFilters([...filters, {type: IncidentFilter.FOLLOWING}])} />
-            <FilterOption
-              next
-              icon={<TagIcon size='small' />}
-              filter={IncidentFilter.TAG} 
-              onClick={() => setAlternate(
-                <TagInput setFilters={setFilters} filters={filters} setAlternate={setAlternate} />
-              )} />
-            </>
+      <Drop target={ref.current} onClickOutside={() => setOpen(false)} align={{top: 'bottom'}}> 
+        <Box flex={false} width={FILTER_DROP_WIDTH}>
+          <AlternatingBox>
+          {setAlternate => (
+            <Box pad={{vertical: 'xsmall'}}>
+              <FilterOption 
+                icon={<Notification size='small' />}
+                filter={IncidentFilter.NOTIFICATIONS} 
+                onClick={() => setFilters([...filters, {type: IncidentFilter.NOTIFICATIONS}])} />
+              <FilterOption 
+                icon={<User size='small' />}
+                filter={IncidentFilter.FOLLOWING} 
+                onClick={() => setFilters([...filters, {type: IncidentFilter.FOLLOWING}])} />
+              <FilterOption
+                next
+                icon={<TagIcon size='small' />}
+                filter={IncidentFilter.TAG} 
+                onClick={() => setAlternate(
+                  <TagInput setFilters={setFilters} filters={filters} setAlternate={setAlternate} />
+                )} />
+            </Box>
           )}
-          {alternate}
+          </AlternatingBox>
         </Box>
       </Drop>
     )}

@@ -137,8 +137,8 @@ export function Messages({incident, loading, fetchMore, subscribeToMore}) {
       loading={loading}
       loadNextPage={() => hasNextPage && fetchMore({
         variables: {cursor: endCursor},
-        updateQuery: (prev, {fetchMoreResult: {incident: {messages}}}) => ({
-          ...prev, incident: {...prev.incident, messages: extendConnection(prev.incident.messages, messages)},
+        updateQuery: (prev, {fetchMoreResult: {incident}}) => ({
+          ...prev, incident: extendConnection(prev.incident, incident, 'messages'),
         })
       })}
       hasNextPage={hasNextPage} />
@@ -168,7 +168,7 @@ function Files({incident, fetchMore}) {
         onLoadMore={() => hasNextPage && fetchMore({
           variables: {fileCursor: endCursor},
           updateQuery: (prev, {fetchMoreResult: {incident: {files}}}) => ({
-            ...prev, incident: {...prev.incident, files: extendConnection(prev.incident.files, files)},
+            ...prev, incident: extendConnection(prev.incident, files, 'files'),
           })
         })} />
     </Box>

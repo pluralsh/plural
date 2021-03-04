@@ -1,11 +1,12 @@
 import React, { useCallback, useState } from 'react'
 import { Box, Stack, Text } from 'grommet';
-import { Hide, History, Notification } from 'grommet-icons';
+import { Hide, History, Notification, User } from 'grommet-icons';
 import { IncidentHistory } from './IncidentHistory';
 import { SidebarView } from './types';
 import { ViewOption } from './ViewSwitcher';
 import { Notifications } from './Notifications';
 import { NotificationBadge } from './Incidents';
+import { Followers } from './Followers';
 
 const animation = {
   outline: 'none',
@@ -44,6 +45,12 @@ function SmallSidebar({incident, setOpen, setView}) {
         setView={doOpen}
         side={{right: 'left'}}
         text='notifications' />
+      <ViewOption
+        icon={User}
+        view={SidebarView.FOLLOW}
+        setView={doOpen}
+        side={{right: 'left'}}
+        text='followers' />
     </Box>
   )
 }
@@ -76,10 +83,19 @@ function SidebarContent({view, setView, incident, fetchMore, setOpen}) {
           setView={setView} 
           side={{top: 'bottom'}} 
           text='history' />
+        <ViewOption 
+          icon={User} 
+          size='15px' 
+          view={SidebarView.FOLLOW} 
+          selected={view} 
+          setView={setView} 
+          side={{top: 'bottom'}} 
+          text='followes' />
       </Box>
       <Box fill>
         {view === SidebarView.NOTIF && <Notifications incident={incident} />}
         {view === SidebarView.HISTORY && <IncidentHistory incident={incident} fetchMore={fetchMore} />}
+        {view === SidebarView.FOLLOW && <Followers incident={incident} fetchMore={fetchMore} />}
       </Box>
     </Box>
   )

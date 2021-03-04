@@ -158,18 +158,20 @@ function Files({incident, fetchMore}) {
   const {files: {pageInfo: {hasNextPage, endCursor}, edges}} = incident
 
   return (
-    <Scroller
-      id='files'
-      style={{width: '100%', height: '100%', overflow: 'auto'}}
-      edges={edges}
-      emptyState={<NoFiles />}
-      mapper={({node}, {node: next}) => <FileEntry file={node} next={next} />}
-      onLoadMore={() => hasNextPage && fetchMore({
-        variables: {fileCursor: endCursor},
-        updateQuery: (prev, {fetchMoreResult: {incident: {files}}}) => ({
-          ...prev, incident: {...prev.incident, files: extendConnection(prev.incident.files, files)},
-        })
-      })} />
+    <Box fill>
+      <Scroller
+        id='files'
+        style={{width: '100%', height: '100%', overflow: 'auto'}}
+        edges={edges}
+        emptyState={<NoFiles />}
+        mapper={({node}, {node: next}) => <FileEntry file={node} next={next} />}
+        onLoadMore={() => hasNextPage && fetchMore({
+          variables: {fileCursor: endCursor},
+          updateQuery: (prev, {fetchMoreResult: {incident: {files}}}) => ({
+            ...prev, incident: {...prev.incident, files: extendConnection(prev.incident.files, files)},
+          })
+        })} />
+    </Box>
   )
 }
 

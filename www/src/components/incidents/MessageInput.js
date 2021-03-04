@@ -71,7 +71,7 @@ function FileInput() {
 function UploadProgress({attachment, uploadProgress, setAttachment, empty}) {
   return (
     <Layer plain modal={false} position='top-right'>
-      <Stack width='400px' margin={{right: 'small', top: '70px'}} anchor='top-right'>
+      <Stack width='400px' margin={{right: '20px', top: '70px'}} anchor='top-right'>
         <Box width='400px' gap='xsmall' pad='small' round='xsmall' background='dark-1'>
           {attachment && (
             <Box>
@@ -115,7 +115,11 @@ export function MessageInput() {
         incident: appendConnection(incident, createMessage, 'Message', 'messages') 
       })
     }),
-    onCompleted: returnToBeginning
+    onCompleted: () => {
+      returnToBeginning()
+      setUploadProgress(0)
+      setAttachment(null)
+    }
   })
 
   const submit = useCallback(() => {

@@ -41,6 +41,57 @@ defmodule GraphQl.IncidentQueriesTest do
              |> ids_equal(incidents)
     end
 
+    test "it will apply notification filters" do
+      user = insert(:user)
+      [incident | _] = insert_list(3, :incident, creator: user)
+      insert(:notification, incident: incident, user: user)
+
+      {:ok, %{data: %{"incidents" => found}}} = run_query("""
+        query Inc($filters: [IncidentFilter]) {
+          incidents(first: 5, filters: $filters) {
+            edges { node { id } }
+          }
+        }
+      """, %{"filters" => [%{"type" => "NOTIFICATIONS"}]}, %{current_user: user})
+
+      assert from_connection(found)
+             |> ids_equal([incident])
+    end
+
+    test "it will apply follow filters" do
+      user = insert(:user)
+      [incident | _] = insert_list(3, :incident, creator: user)
+      insert(:follower, incident: incident, user: user)
+
+      {:ok, %{data: %{"incidents" => found}}} = run_query("""
+        query Inc($filters: [IncidentFilter]) {
+          incidents(first: 5, filters: $filters) {
+            edges { node { id } }
+          }
+        }
+      """, %{"filters" => [%{"type" => "FOLLOWING"}]}, %{current_user: user})
+
+      assert from_connection(found)
+             |> ids_equal([incident])
+    end
+
+    test "it will apply tag filters" do
+      user = insert(:user)
+      [incident | _] = insert_list(3, :incident, creator: user)
+      insert(:tag, resource_id: incident.id, resource_type: :incident, tag: "tag")
+
+      {:ok, %{data: %{"incidents" => found}}} = run_query("""
+        query Inc($filters: [IncidentFilter]) {
+          incidents(first: 5, filters: $filters) {
+            edges { node { id } }
+          }
+        }
+      """, %{"filters" => [%{"type" => "TAG", "value" => "tag"}]}, %{current_user: user})
+
+      assert from_connection(found)
+             |> ids_equal([incident])
+    end
+
     test "it can sideload notification counts" do
       user = insert(:user)
       incidents = insert_list(3, :incident, creator: user)

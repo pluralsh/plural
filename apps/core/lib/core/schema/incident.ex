@@ -1,6 +1,6 @@
 defmodule Core.Schema.Incident do
   use Piazza.Ecto.Schema
-  alias Core.Schema.{Repository, User, Tag, IncidentHistory, Postmortem, Notification}
+  alias Core.Schema.{Repository, User, Tag, IncidentHistory, Postmortem, Notification, Follower}
 
   defenum Status, open: 0, in_progress: 1, resolved: 2, complete: 3
 
@@ -41,6 +41,27 @@ defmodule Core.Schema.Incident do
 
   def for_owner(query \\ __MODULE__, user_id) do
     from(i in query, where: i.owner_id == ^user_id)
+  end
+
+  def following(query \\ __MODULE__, user_id) do
+    from(i in query,
+      join: f in ^Follower.for_user(user_id),
+        on: f.incident_id == i.id
+    )
+  end
+
+  def with_notifications(query \\ __MODULE__, user_id) do
+    from(i in query,
+      join: n in ^Notification.for_user(user_id),
+        on: n.incident_id == i.id
+    )
+  end
+
+  def for_tag(query \\ __MODULE__, tag) do
+    from(i in query,
+      join: t in assoc(i, :tags),
+      where: t.tag == ^tag
+    )
   end
 
   def ordered(query \\ __MODULE__, order \\ [desc: :inserted_at]) do

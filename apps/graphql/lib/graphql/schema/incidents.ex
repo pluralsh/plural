@@ -7,6 +7,19 @@ defmodule GraphQl.Schema.Incidents do
   ecto_enum :incident_action,  Core.Schema.IncidentHistory.Action
   ecto_enum :action_item_type, Core.Schema.Postmortem.ActionItem.Type
 
+  enum :incident_sort do
+    value :inserted_at
+    value :title
+    value :status
+    value :severity
+  end
+
+  enum :incident_filter_type do
+    value :notifications
+    value :following
+    value :tag
+  end
+
   input_object :incident_attributes do
     field :title,       :string
     field :severity,    :integer
@@ -45,6 +58,11 @@ defmodule GraphQl.Schema.Incidents do
 
   input_object :follower_attributes do
     field :preferences, :notification_preferences_attributes
+  end
+
+  input_object :incident_filter do
+    field :type,  non_null(:incident_filter_type)
+    field :value, :string
   end
 
   object :incident do
@@ -194,7 +212,11 @@ defmodule GraphQl.Schema.Incidents do
     connection field :incidents, node_type: :incident do
       middleware GraphQl.Middleware.Authenticated
       arg :repository_id, :id
-      arg :q, :string
+
+      arg :q,       :string
+      arg :sort,    :incident_sort
+      arg :order,   :order
+      arg :filters, list_of(:incident_filter)
 
       resolve &Incidents.list_incidents/2
     end

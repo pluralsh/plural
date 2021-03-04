@@ -28,18 +28,32 @@ defmodule GraphQl.Resolvers.Incidents do
 
   def list_incidents(%{repository_id: id} = args, %{context: %{current_user: user}}) do
     Incident.for_repository(id)
-    |> Incident.ordered()
+    |> incident_sort(args)
     |> maybe_filter_creator(user, supports_repo?(id, user))
     |> maybe_search(Incident, args)
+    |> apply_filters(args, user)
     |> paginate(args)
   end
 
   def list_incidents(args, %{context: %{current_user: user}}) do
     Incident.for_creator(user.id)
     |> maybe_search(Incident, args)
-    |> Incident.ordered()
+    |> incident_sort(args)
+    |> apply_filters(args, user)
     |> paginate(args)
   end
+
+  defp incident_sort(query, %{sort: sort, order: order}) when not is_nil(sort) and not is_nil(order),
+    do: Incident.ordered(query, [{sort, order}])
+  defp incident_sort(query, _), do: Incident.ordered(query)
+
+  defp apply_filters(query, %{filters: [_ | _] = filters}, user),
+    do: Enum.reduce(filters, query, &apply_incident_filter(&2, &1, user))
+  defp apply_filters(query, _, _), do: query
+
+  defp apply_incident_filter(query, %{type: :following}, user), do: Incident.following(query, user.id)
+  defp apply_incident_filter(query, %{type: :notifications}, user), do: Incident.with_notifications(query, user.id)
+  defp apply_incident_filter(query, %{type: :tag, value: tag}, _), do: Incident.for_tag(query, tag)
 
   def list_messages(args, %{source: incident}) do
     IncidentMessage.for_incident(incident.id)

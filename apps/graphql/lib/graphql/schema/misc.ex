@@ -15,6 +15,11 @@ defmodule GraphQl.Schema.Misc do
     value :after
   end
 
+  enum :order do
+    value :asc
+    value :desc
+  end
+
   input_object :tag_attributes do
     field :tag, non_null(:string)
   end

@@ -51,8 +51,14 @@ defmodule Core.Schema.Incident do
   end
 
   def with_notifications(query \\ __MODULE__, user_id) do
+    notifs = from(
+      f in Notification.for_user(user_id),
+      select: f.incident_id,
+      distinct: :incident_id
+    )
+
     from(i in query,
-      join: n in ^Notification.for_user(user_id),
+      join: n in subquery(notifs),
         on: n.incident_id == i.id
     )
   end

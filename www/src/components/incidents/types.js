@@ -52,14 +52,14 @@ export const IncidentSort = {
 }
 
 export const IncidentSortNames = {
-  INSERTED_AT: 'created on',
-  SEVERITY: 'severity',
-  STATUS: 'status',
-  TITLE: 'title'
+  INSERTED_AT: 'Created On',
+  SEVERITY: 'Severity',
+  STATUS: 'Status',
+  TITLE: 'Title'
 }
 
 export const IncidentFilter = {
   NOTIFICATIONS: 'NOTIFICATIONS',
-  FOLLOWS: 'FOLLOWS',
+  FOLLOWING: 'FOLLOWING',
   TAG: 'TAG'
 }

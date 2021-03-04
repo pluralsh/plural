@@ -95,10 +95,10 @@ function TagInput({setAlternate}) {
     setAlternate(null)
   }, [tag, setFilters, setAlternate])
   return (
-    <Box direction='row' align='center' gap='xsmall'>
+    <Box direction='row' align='center' gap='xsmall' pad={{vertical: 'small', horizontal: 'xsmall'}}>
       <Text size='samll' weight={500}>tag</Text>
       <Box flex={false} border={{side: 'bottom', color: 'light-5'}}>
-        <TextInput plain value={tag} onChange={({target: {value}}) => setTag(tag)} />
+        <TextInput plain value={tag} onChange={({target: {value}}) => setTag(value)} />
       </Box>
       <Box flex={false} pad='xsmall' round='xsmall' onClick={accept} hoverIndicator='light-3'>
         <Checkmark size='small' />
@@ -118,8 +118,9 @@ function FilterSelect() {
 
   return (
     <>
-    <Box flex={false} ref={ref} direction='row' gap='xsmall' align='center' background='light-3' 
-         round='xsmall' onClick={() => setOpen(true)} focusIndicator={false} pad={{horizontal: 'small', vertical: 'xsmall'}}>
+    <Box flex={false} ref={ref} direction='row' gap='xsmall' align='center' background='light-3'  
+         hoverIndicator='light-5' round='xsmall' onClick={() => setOpen(true)} focusIndicator={false} 
+         pad={{horizontal: 'small', vertical: 'xsmall'}}>
       <BladesHorizontal size='small' />
       <Text size='small'>Filters</Text>
     </Box>
@@ -134,8 +135,8 @@ function FilterSelect() {
               onClick={() => setFilters([...filters, {type: IncidentFilter.NOTIFICATIONS}])} />
             <FilterOption 
               icon={<User size='small' />}
-              filter={IncidentFilter.FOLLOWS} 
-              onClick={() => setFilters([...filters, {type: IncidentFilter.FOLLOWS}])} />
+              filter={IncidentFilter.FOLLOWING} 
+              onClick={() => setFilters([...filters, {type: IncidentFilter.FOLLOWING}])} />
             <FilterOption 
               icon={<TagIcon size='small' />}
               filter={IncidentFilter.TAG} 
@@ -162,7 +163,7 @@ function Filters() {
     <Box direction='row' gap='xsmall' align='center' fill='horizontal'>
       {filters.map((filter) => (
         <Box direction='row' round='xsmall' pad={{vertical: '2px', horizontal: 'xsmall'}} background='light-2' 
-             align='center' onClick={() => removeFilter(filter)} hoverIndicator='light-3'>
+             align='center' onClick={() => removeFilter(filter)} hoverIndicator='light-3' gap='xsmall'>
           <Text size='xsmall' weight={500}>{filter.type.toLowerCase()}</Text>
           {filter.value && <Text size='xsmall'>{filter.value}</Text>}
         </Box>
@@ -175,7 +176,7 @@ const Checked = () => <Checkmark size='small' color='brand' />
 
 function DropdownItem({icon, text, onClick}) {
   return (
-    <Box direction='row' align='center' round='xsmall' pad={{horizontal: 'xsmall', vertical: '3px'}}
+    <Box direction='row' align='center' round='xsmall' pad={{horizontal: 'small', vertical: 'xsmall'}}
          onClick={onClick} hoverIndicator='light-3'>
       <Box fill='horizontal'>
         <Text size='small'>{text}</Text>
@@ -206,7 +207,7 @@ function SortOptions() {
               <DropdownItem
                 key={order}
                 icon={order === selectedOrder ? <Checked /> : null}
-                text={order.toLowerCase()}
+                text={order === Order.DESC ? 'Descending' : 'Ascending'}
                 onClick={() => setOrder(order)} />
             ))}
           </Box>
@@ -228,7 +229,8 @@ function SortOptions() {
 
 function IncidentToolbar() {
   return (
-    <Box border={{side: 'bottom', color: 'light-5'}} align='center' direction='row' pad='xsmall'>
+    <Box border={{side: 'bottom', color: 'light-5'}} align='center' direction='row' 
+         pad={{vertical: 'xsmall', horizontal: 'small'}}>
       <Filters />
       <SortOptions />
     </Box>

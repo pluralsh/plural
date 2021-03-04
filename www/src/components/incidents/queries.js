@@ -4,8 +4,8 @@ import { FileFragment, FollowerFragment, IncidentFragment, IncidentHistoryFragme
 import { PageInfo } from '../../models/misc'
 
 export const INCIDENTS_Q = gql`
-  query Incidents($repositoryId: ID, $q: String, $cursor: String) {
-    incidents(repositoryId: $repositoryId, q: $q, after: $cursor, first: 20) {
+  query Incidents($repositoryId: ID, $q: String, $cursor: String, $order: Order, $sort: IncidentSort, $filters: [IncidentFilter]) {
+    incidents(repositoryId: $repositoryId, q: $q, after: $cursor, first: 20, order: $order, sort: $sort, filters: $filters) {
       pageInfo { ...PageInfo }
       edges { node { ...IncidentFragment } }
     }

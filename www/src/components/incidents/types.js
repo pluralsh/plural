@@ -38,3 +38,28 @@ export const NotificationTypes = {
   MESSAGE: 'MESSAGE',
   INCIDENT_UPDATE: 'INCIDENT_UPDATE'
 }
+
+export const Order = {
+  ASC: 'ASC',
+  DESC: 'DESC'
+}
+
+export const IncidentSort = {
+  INSERTED_AT: 'INSERTED_AT',
+  SEVERITY: 'SEVERITY',
+  STATUS: 'STATUS',
+  TITLE: 'TITLE'
+}
+
+export const IncidentSortNames = {
+  INSERTED_AT: 'created on',
+  SEVERITY: 'severity',
+  STATUS: 'status',
+  TITLE: 'title'
+}
+
+export const IncidentFilter = {
+  NOTIFICATIONS: 'NOTIFICATIONS',
+  FOLLOWS: 'FOLLOWS',
+  TAG: 'TAG'
+}

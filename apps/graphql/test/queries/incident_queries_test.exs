@@ -92,6 +92,21 @@ defmodule GraphQl.IncidentQueriesTest do
              |> ids_equal([incident])
     end
 
+    test "it can sort" do
+      user = insert(:user)
+      incidents = for i <- 1..3, do: insert(:incident, title: "title #{i}", creator: user)
+
+      {:ok, %{data: %{"incidents" => found}}} = run_query("""
+        query {
+          incidents(sort: TITLE, order: ASC, first: 5) {
+            edges { node { id } }
+          }
+        }
+      """, %{}, %{current_user: user})
+
+      assert from_connection(found) |> ids() == ids(incidents)
+    end
+
     test "it can sideload notification counts" do
       user = insert(:user)
       incidents = insert_list(3, :incident, creator: user)

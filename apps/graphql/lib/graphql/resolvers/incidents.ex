@@ -44,7 +44,7 @@ defmodule GraphQl.Resolvers.Incidents do
   end
 
   defp incident_sort(query, %{sort: sort, order: order}) when not is_nil(sort) and not is_nil(order),
-    do: Incident.ordered(query, [{sort, order}])
+    do: Incident.ordered(query, [{order, sort}])
   defp incident_sort(query, _), do: Incident.ordered(query)
 
   defp apply_filters(query, %{filters: [_ | _] = filters}, user),

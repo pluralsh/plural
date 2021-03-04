@@ -69,7 +69,7 @@ export function Reaction({message, setHover, align, width, label, ...props}) {
 
 function EditMsg({message}) {
   return (
-    <Control tooltip='delete'>
+    <Control tooltip='edit'>
       <Box {...CONTROL_ATTRS} onClick={() => null}>
         <Edit size='small' />
       </Box>

@@ -102,6 +102,10 @@ defmodule GraphQl.Schema.Incidents do
       resolve &Incidents.list_history/2
     end
 
+    connection field :followers, node_type: :follower do
+      resolve &Incidents.list_followers/2
+    end
+
     timestamps()
   end
 
@@ -204,6 +208,7 @@ defmodule GraphQl.Schema.Incidents do
   connection node_type: :incident_history
   connection node_type: :file
   connection node_type: :notification
+  connection node_type: :follower
 
   delta :incident
   delta :incident_message

@@ -1,7 +1,7 @@
 defmodule GraphQl.Resolvers.Incidents do
   use GraphQl.Resolvers.Base, model: Core.Schema.Incident
   alias Core.Services.{Repositories, Incidents}
-  alias Core.Schema.{IncidentMessage, Reaction, File, IncidentHistory, Postmortem}
+  alias Core.Schema.{IncidentMessage, Reaction, File, IncidentHistory, Postmortem, Follower}
 
   def data(args) do
     Dataloader.Ecto.new(Core.Repo,
@@ -70,6 +70,12 @@ defmodule GraphQl.Resolvers.Incidents do
   def list_history(args, %{source: incident}) do
     IncidentHistory.for_incident(incident.id)
     |> IncidentHistory.ordered()
+    |> paginate(args)
+  end
+
+  def list_followers(args, %{source: incident}) do
+    Follower.for_incident(incident.id)
+    |> Follower.ordered()
     |> paginate(args)
   end
 

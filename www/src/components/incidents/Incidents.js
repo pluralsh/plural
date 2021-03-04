@@ -8,7 +8,7 @@ import { RepoIcon } from '../repos/Repositories'
 import moment from 'moment'
 import { Severity } from './Severity'
 import { useHistory, useParams } from 'react-router'
-import { BladesHorizontal, Checkmark, Close, Notification, Search, User, Tag as TagIcon, Descend, Ascend, Next } from 'grommet-icons'
+import { BladesHorizontal, Checkmark, Close, Notification, Search, User, Tag as TagIcon, Descend, Ascend, Next, BladesVertical } from 'grommet-icons'
 import { Status } from './IncidentStatus'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 import { CreateIncident } from './CreateIncident'
@@ -124,7 +124,7 @@ export function FilterSelect() {
     <Box flex={false} ref={ref} direction='row' gap='xsmall' align='center' background='light-3'  
          hoverIndicator='light-5' round='xsmall' onClick={() => setOpen(true)} focusIndicator={false} 
          pad={{horizontal: 'small', vertical: 'xsmall'}}>
-      <BladesHorizontal size='small' />
+      <BladesVertical size='small' />
       <Text size='small'>Filters</Text>
     </Box>
     {open && (

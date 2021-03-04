@@ -23,6 +23,10 @@ defmodule Core.Schema.Follower do
     from(f in query, where: f.incident_id == ^incident_id)
   end
 
+  def ordered(query \\ __MODULE__, order \\ [asc: :inserted_at]) do
+    from(f in query, order_by: ^order)
+  end
+
   @valid ~w(user_id incident_id)a
 
   def changeset(model, attrs \\ %{}) do

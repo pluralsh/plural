@@ -253,6 +253,24 @@ defmodule GraphQl.IncidentQueriesTest do
       assert from_connection(found["history"])
              |> ids_equal(history)
     end
+
+    test "it can list followers for an incident" do
+      incident = insert(:incident)
+      followers = insert_list(3, :follower, incident: incident)
+
+      {:ok, %{data: %{"incident" => found}}} = run_query("""
+        query Incident($id: ID!) {
+          incident(id: $id) {
+            followers(first: 5) {
+              edges { node { id } }
+            }
+          }
+        }
+      """, %{"id" => incident.id}, %{current_user: incident.creator})
+
+      assert from_connection(found["followers"])
+             |> ids_equal(followers)
+    end
   end
 
   describe "notifications" do

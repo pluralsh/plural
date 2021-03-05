@@ -172,6 +172,14 @@ defmodule GraphQl.Schema.User do
       resolve safe_resolver(&User.login_user/2)
     end
 
+    field :external_token, :string do
+      middleware GraphQl.Middleware.Authenticated
+      resolve fn _, %{context: %{current_user: user}} ->
+        {:ok, token, _} = Core.Guardian.encode_and_sign(user, %{"external" => true})
+        {:ok, token}
+      end
+    end
+
     field :create_token, :persisted_token do
       middleware GraphQl.Middleware.Authenticated
       resolve safe_resolver(&User.create_token/2)

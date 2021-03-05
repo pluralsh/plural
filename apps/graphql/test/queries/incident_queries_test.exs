@@ -41,6 +41,23 @@ defmodule GraphQl.IncidentQueriesTest do
              |> ids_equal(incidents)
     end
 
+    test "it will allow external tokens" do
+      user = insert(:user)
+      incidents = insert_list(3, :incident, creator: user)
+      insert(:incident)
+
+      {:ok, %{data: %{"incidents" => found}}} = run_query("""
+        query {
+          incidents(first: 5) {
+            edges { node { id } }
+          }
+        }
+      """, %{}, %{current_user: %{user | external: true}})
+
+      assert from_connection(found)
+             |> ids_equal(incidents)
+    end
+
     test "it will apply notification filters" do
       user = insert(:user)
       [incident | _] = insert_list(3, :incident, creator: user)

@@ -11,6 +11,7 @@ defmodule Core.Schema.User do
     field :password_hash, :string
     field :password,      :string, virtual: true
     field :jwt,           :string, virtual: true
+    field :external,      :boolean, virtual: true, default: false
     field :avatar_id,     :binary_id
     field :avatar,        Core.Storage.Type
     field :customer_id,   :string

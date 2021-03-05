@@ -216,4 +216,18 @@ defmodule GraphQl.UserMutationTest do
       assert response["statusCode"] == 200
     end
   end
+
+  describe "externalToken" do
+    test "it will issue a limited token for the user" do
+      user = insert(:user)
+      {:ok, %{data: %{"externalToken" => token}}} = run_query("""
+        mutation { externalToken }
+      """, %{}, %{current_user: user})
+
+      {:ok, found, _} = Core.Guardian.resource_from_token(token)
+
+      assert found.id == user.id
+      assert found.external
+    end
+  end
 end

@@ -11,9 +11,9 @@ defmodule Core.Guardian do
   def subject_for_token(_, _), do: {:error, :invalid_argument}
 
   def resource_from_claims(%{"user" => user}), do: {:ok, user}
-  def resource_from_claims(%{"sub" => "user:" <> id}) do
+  def resource_from_claims(%{"sub" => "user:" <> id} = claims) do
     case fetch_user(id) do
-      %User{} = user -> {:ok, user}
+      %User{} = user -> {:ok, externalize(user, claims)}
       _ -> {:error, :not_authorized}
     end
   end
@@ -27,4 +27,7 @@ defmodule Core.Guardian do
 
   def allow(%User{} = user), do: {true, user}
   def allow(_), do: false
+
+  defp externalize(user, %{"external" => true}), do: %{user | external: true}
+  defp externalize(user, _), do: user
 end

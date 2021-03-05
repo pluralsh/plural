@@ -248,7 +248,7 @@ defmodule GraphQl.Schema.Repository do
     end
 
     connection field :installations, node_type: :installation do
-      middleware GraphQl.Middleware.Authenticated
+      middleware GraphQl.Middleware.Authenticated, :external
 
       resolve &Repository.list_installations/2
     end

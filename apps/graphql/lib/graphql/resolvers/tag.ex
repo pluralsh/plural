@@ -7,18 +7,15 @@ defmodule GraphQl.Resolvers.Tag do
     Tag.integration_tags(repo_id)
     |> Tag.ordered()
     |> Tag.grouped()
-    |> maybe_search(args)
+    |> maybe_search(Tag, args)
     |> paginate(args)
   end
+
   def grouped_tags(%{type: :repositories} = args, _) do
     Tag.repository_tags()
     |> Tag.ordered()
     |> Tag.grouped()
-    |> maybe_search(args)
+    |> maybe_search(Tag, args)
     |> paginate(args)
   end
-
-  defp maybe_search(query, %{q: q}) when is_binary(q),
-    do: Tag.search(query, q)
-  defp maybe_search(query, _), do: query
 end

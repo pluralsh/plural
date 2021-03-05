@@ -1,6 +1,6 @@
 defmodule Core.Schema.Incident do
   use Piazza.Ecto.Schema
-  alias Core.Schema.{Repository, User, Tag, IncidentHistory, Postmortem, Notification, Follower}
+  alias Core.Schema.{Repository, User, Tag, IncidentHistory, Postmortem, Notification, Follower, Installation}
 
   defenum Status, open: 0, in_progress: 1, resolved: 2, complete: 3
 
@@ -72,6 +72,15 @@ defmodule Core.Schema.Incident do
 
   def ordered(query \\ __MODULE__, order \\ [desc: :inserted_at]) do
     from(i in query, order_by: ^order)
+  end
+
+  def sideload_subscriptions(query \\ __MODULE__) do
+    from(i in query,
+      left_join: inst in Installation,
+        on: i.repository_id == inst.repository_id and i.creator_id == inst.user_id,
+      left_join: s in assoc(inst, :subscription),
+      select: {i.id, s}
+    )
   end
 
   def unread_notification_count(query \\ __MODULE__, user_id) do

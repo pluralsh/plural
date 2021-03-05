@@ -127,6 +127,30 @@ defmodule GraphQl.IncidentQueriesTest do
              |> Enum.all?(& &1["notificationCount"] == 1)
     end
 
+    test "it can sideload subscriptions" do
+      user = insert(:user)
+      incidents = for _ <- 1..3 do
+        repo = insert(:repository)
+        inc = insert(:incident, creator: user, repository: repo)
+        sub = insert(:subscription, installation: build(:installation, user: user, repository: repo))
+        {inc, sub}
+      end
+
+      {:ok, %{data: %{"incidents" => found}}} = run_query("""
+        query {
+          incidents(first: 5) {
+            edges { node { id subscription { id } } }
+          }
+        }
+      """, %{}, %{current_user: user})
+
+      assert from_connection(found)
+             |> ids_equal(Enum.map(incidents, &elem(&1, 0)))
+      assert from_connection(found)
+             |> Enum.map(& &1["subscription"])
+             |> ids_equal(Enum.map(incidents, &elem(&1, 1)))
+    end
+
     test "it will list search incidents" do
       user = insert(:user)
       insert_list(3, :incident, creator: user)

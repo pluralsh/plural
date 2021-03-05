@@ -1,6 +1,6 @@
 defmodule GraphQl.Schema.Incidents do
   use GraphQl.Schema.Base
-  alias GraphQl.Resolvers.{Incidents, Repository, User}
+  alias GraphQl.Resolvers.{Incidents, Repository, User, Payments}
 
   ecto_enum :incident_status,  Core.Schema.Incident.Status
   ecto_enum :media_type,       Core.Schema.File.MediaType
@@ -65,6 +65,12 @@ defmodule GraphQl.Schema.Incidents do
     field :value, :string
   end
 
+  object :slim_subscription do
+    field :id,           non_null(:id)
+    field :line_items,   :subscription_line_items
+    field :plan,         :plan, resolve: dataloader(Payments)
+  end
+
   object :incident do
     field :id,          non_null(:id)
     field :title,       non_null(:string)
@@ -77,6 +83,13 @@ defmodule GraphQl.Schema.Incidents do
     field :owner,      :user, resolve: dataloader(User)
     field :tags,       list_of(:tag), resolve: dataloader(Repository)
     field :postmortem, :postmortem, resolve: dataloader(Incidents)
+
+    field :subscription, :slim_subscription do
+      resolve fn incident, _, %{context: %{loader: loader}} ->
+        manual_dataloader(
+          loader, Incidents, {:one, Core.Schema.Subscription}, subscription: incident)
+      end
+    end
 
     field :notification_count, :integer do
       resolve fn incident, _, %{context: %{loader: loader, current_user: user}} ->

@@ -10,7 +10,7 @@ defmodule GraphQl.TagQueriesTest do
       insert(:integration, repository: repo, tags: [%{tag: "other", resource_type: :integration}])
 
       {:ok, %{data: %{"tags" => found}}} = run_query("""
-        query Tags($id: String!) {
+        query Tags($id: ID!) {
           tags(id: $id, type: INTEGRATIONS, first: 5) {
             edges {
               node {

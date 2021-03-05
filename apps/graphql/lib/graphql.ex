@@ -63,7 +63,7 @@ defmodule GraphQl do
 
   query do
     connection field :tags, node_type: :grouped_tag do
-      arg :id,   :string
+      arg :id,   :id
       arg :type, non_null(:tag_group)
       arg :q,    :string
 

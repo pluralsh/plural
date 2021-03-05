@@ -204,17 +204,17 @@ function Terraform() {
           }>
             <TabHeader>
               <TabHeaderItem name='readme'>
-                <Text size='small' style={{fontWeight: 500}}>Readme</Text>
+                <Text size='small' weight={500}>Readme</Text>
               </TabHeaderItem>
               <TabHeaderItem name='configuration'>
-                <Text size='small' style={{fontWeight: 500}}>Configuration</Text>
+                <Text size='small' weight={500}>Configuration</Text>
               </TabHeaderItem>
               <TabHeaderItem name='dependencies'>
-                <Text size='small' style={{fontWeight: 500}}>Dependencies</Text>
+                <Text size='small' weight={500}>Dependencies</Text>
               </TabHeaderItem>
               {terraformModule.editable && (
                 <TabHeaderItem name='edit'>
-                  <Text size='small' style={{fontWeight: 500}}>Edit</Text>
+                  <Text size='small' weight={500}>Edit</Text>
                 </TabHeaderItem>
               )}
             </TabHeader>

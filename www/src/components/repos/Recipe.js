@@ -13,7 +13,7 @@ function SubHeading({size, icon, name, description}) {
         <img alt='' width={size} height={size} src={icon} />
       </Box>
       <Box fill='horizontal'>
-        <Text size='small' style={{fontWeight: 500}}>{name}</Text>
+        <Text size='small' weight={500}>{name}</Text>
         <Text size='small' color='dark-3'>{description}</Text>
       </Box>
     </Box>

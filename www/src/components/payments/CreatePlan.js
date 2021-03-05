@@ -44,7 +44,7 @@ function Feature({name, description, removeFeature}) {
   return (
     <Box direction='row' align='center' gap='small'>
       <Box gap='xsmall'>
-        <Text size='small' style={{fontWeight: 500}}>{name}</Text>
+        <Text size='small' weight={500}>{name}</Text>
         <Text size='small'><i>{description}</i></Text>
       </Box>
       <HoveredBackground>
@@ -100,7 +100,7 @@ function FeatureCreator({state, setState, setDisplay, mutation, loading}) {
                 key={feature.name}
                 {...feature}
                 removeFeature={removeFeature} />)) :
-            <Box><Text size='small' style={{fontWeight: 500}}>No features created yet</Text></Box>
+            <Box><Text size='small' weight={500}>No features created yet</Text></Box>
           }
         </Box>
         <Box gap='small' width='60%'>
@@ -171,7 +171,7 @@ function ItemCreator({state, setState, setDisplay, mutation, loading}) {
                 included={included}
                 state={state}
                 setState={setState} />)) :
-            <Box><Text size='small' style={{fontWeight: 500}}>No line items created yet</Text></Box>
+            <Box><Text size='small' weight={500}>No line items created yet</Text></Box>
           }
         </Box>
         <Box gap='small' width='60%'>

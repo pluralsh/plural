@@ -168,13 +168,13 @@ export default function Chart() {
           }>
             <TabHeader>
               <TabHeaderItem name='readme'>
-                <Text style={{fontWeight: 500}} size='small'>Readme</Text>
+                <Text weight={500} size='small'>Readme</Text>
               </TabHeaderItem>
               <TabHeaderItem name='configuration'>
-                <Text style={{fontWeight: 500}} size='small'>Configuration</Text>
+                <Text weight={500} size='small'>Configuration</Text>
               </TabHeaderItem>
               <TabHeaderItem name='dependencies'>
-                <Text size='small' style={{fontWeight: 500}}>Dependencies</Text>
+                <Text size='small' weight={500}>Dependencies</Text>
               </TabHeaderItem>
             </TabHeader>
             <TabContent name='readme'>

@@ -33,7 +33,7 @@ function LineItemUpdate({lineItem: {cost}, dimension, quantity, subscription, re
   )
 }
 
-function LineItemNub({dimension, quantity, subscription, repository, lineItem}) {
+export function LineItemNub({dimension, quantity, subscription, repository, lineItem}) {
   const [open, setOpen] = useState(false)
   const [hover, setHover] = useState(false)
 
@@ -67,7 +67,7 @@ export function SubscriptionBadge({repository, ...subscription}) {
   return (
     <Box direction='row' border={{color: 'light-6'}} round='xsmall' pad='small'>
       <Box fill='horizontal' gap='xsmall'>
-        <Text style={{fontWeight: 500}} size='small'>Subscribed to {name}</Text>
+        <Text weight={500} size='small'>Subscribed to {name}</Text>
         {items.map(({dimension, quantity}) => (
           <LineItemNub
             key={dimension}

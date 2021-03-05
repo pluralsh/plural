@@ -144,7 +144,7 @@ export function TagHeader({tag, setTag}) {
       direction='row'
       onClick={() => setTag(null)}>
         <FormPrevious size='20px' />
-        <Text style={{fontWeight: 500}}># {tag}</Text>
+        <Text weight={500}># {tag}</Text>
       </Box>
     </HoveredBackground>
   )
@@ -184,7 +184,7 @@ export function IntegrationPage() {
         <Box pad='medium' width={`${100 - WIDTH}%`} gap='small'>
           <Box>
           {tag ? <TagHeader tag={tag} setTag={setTag} /> :
-                 <Text style={{fontWeight: 500}}>{repository.name}</Text>}
+                 <Text weight={500}>{repository.name}</Text>}
           </Box>
           <IntegrationGrid integrations={integrations} fetchMore={fetchMore} />
         </Box>

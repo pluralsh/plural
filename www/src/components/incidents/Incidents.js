@@ -8,7 +8,7 @@ import { RepoIcon } from '../repos/Repositories'
 import moment from 'moment'
 import { Severity } from './Severity'
 import { useHistory, useParams } from 'react-router'
-import { BladesHorizontal, Checkmark, Close, Notification, Search, User, Tag as TagIcon, Descend, Ascend, Next, BladesVertical } from 'grommet-icons'
+import { Checkmark, Close, Notification, Search, User, Tag as TagIcon, Descend, Ascend, Next, BladesVertical } from 'grommet-icons'
 import { Status } from './IncidentStatus'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 import { CreateIncident } from './CreateIncident'
@@ -53,12 +53,23 @@ export function NotificationBadge({size, color, count}) {
   )
 }
 
+function SubscriptionBadge({incident: {subscription}}) {
+  if (!subscription) return null
+
+  return (
+    <Box pad={{horizontal: 'small', vertical: 'xsmall'}} round='xsmall' border={{color: 'light-5'}} 
+         align='center' justify='center'>
+      <Text size='small'>{subscription.plan.name}</Text>
+    </Box>
+  )
+}
+
 export function IncidentRow({incident: {id, repository, title, insertedAt, owner, ...incident}, selected}) {
   let history = useHistory()
 
   return (
     <Box flex={false} fill='horizontal' pad='small' border={{side: 'bottom', color: 'light-3'}} direction='row' 
-        align='center' gap='xsmall' hoverIndicator='light-2' onClick={() => history.push(`/incidents/${id}`)}
+        align='center' gap='small' hoverIndicator='light-2' onClick={() => history.push(`/incidents/${id}`)}
         height='75px'>
       <RepoIcon repo={repository} />
       <Box fill='horizontal' direction='row' gap='xsmall' align='center'>
@@ -72,6 +83,7 @@ export function IncidentRow({incident: {id, repository, title, insertedAt, owner
           <Text size='small' color='light-5'>created: {moment(insertedAt).fromNow()}, {owner ? `responder: ${owner.email}` : 'unassigned'}</Text>
         </Box>
       </Box>
+      <SubscriptionBadge incident={incident} />
       <Severity incident={incident} />
       {id === selected && <Checkmark color='brand' size='15px' />}
     </Box>

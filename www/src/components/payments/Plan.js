@@ -29,7 +29,7 @@ function Feature({name, description}) {
     <Box direction='row' gap='small' align='center'>
       <Checkmark size='15px' color='focus' />
       <Box gap='xsmall'>
-        <Text size='small' style={{fontWeight: 500}}>{name}</Text>
+        <Text size='small' weight={500}>{name}</Text>
         <Text size='small'><i>{description}</i></Text>
       </Box>
     </Box>

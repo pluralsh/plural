@@ -136,7 +136,7 @@ function EditPublisher({description, phone, address: {__typename, ...address}}) 
         </InputCollection>
       </Box>
       <Box border='top' pad={{top: 'small'}} gap='small'>
-        <Text size='small' margin={{left: 'small'}} style={{fontWeight: 500}}>Address</Text>
+        <Text size='small' margin={{left: 'small'}} weight={500}>Address</Text>
         <AddressForm
           address={attributes.address}
           onChange={(address) => setAttributes({...attributes, address})} />

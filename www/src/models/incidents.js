@@ -1,4 +1,5 @@
 import gql from 'graphql-tag'
+import { PlanFragment } from './payments'
 import { RepoFragment } from './repo'
 import { UserFragment } from './user'
 
@@ -19,6 +20,15 @@ export const FollowerFragment = gql`
   ${UserFragment}
 `
 
+export const SubscriptionFragment = gql`
+  fragment SubscriptionFragment on SlimSubscription {
+    id
+    lineItems { items { dimension quantity } }
+    plan { ...PlanFragment }
+  }
+  ${PlanFragment}
+`
+
 export const IncidentFragment = gql`
   fragment IncidentFragment on Incident {
     id
@@ -30,11 +40,13 @@ export const IncidentFragment = gql`
     creator { ...UserFragment }
     owner { ...UserFragment }
     repository { ...RepoFragment }
+    subscription { ...SubscriptionFragment }
     tags { tag }
     insertedAt
   }
   ${UserFragment}
   ${RepoFragment}
+  ${SubscriptionFragment}
 `
 
 export const IncidentHistoryFragment = gql`

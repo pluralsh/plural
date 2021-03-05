@@ -13,7 +13,7 @@ const WIDTH = 15
 function EmptyState() {
   return (
     <Box pad='small'>
-      <Text style={{fontWeight: 500}} size='small'>It looks like you haven't installed any repos yet, use the search bar or browse by tag
+      <Text weight={500} size='small'>It looks like you haven't installed any repos yet, use the search bar or browse by tag
       to find what you're looking for</Text>
     </Box>
   )
@@ -46,7 +46,7 @@ export default function Explore() {
       <Box pad='medium' width={`${100 - WIDTH}%`} height='100%' gap='small'>
         <Box>
           {tag ? <TagHeader tag={tag} setTag={setTag} /> :
-                  <Text style={{fontWeight: 500}}>Installed Repositories</Text>}
+                  <Text weight={500}>Installed Repositories</Text>}
         </Box>
         <Box>
           <RepositoryList

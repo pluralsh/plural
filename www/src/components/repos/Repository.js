@@ -47,7 +47,7 @@ function Chart({chart, hasNext}) {
       </Box>
       <Box gap='xxsmall' justify='center'>
         <Box direction='row' gap='xsmall' align='center'>
-          <Text size='small' style={{fontWeight: 500}}>
+          <Text size='small' weight={500}>
             {chart.name}
           </Text>
           {chart.dependencies.application && (
@@ -71,7 +71,7 @@ function DockerRepository({docker, repo, hasNext, setRepo}) {
         <img alt='' width='50px' height='50px' src={DEFAULT_DKR_ICON} />
       </Box>
       <Box justify='center'>
-        <Text size='small' style={{fontWeight: 500}}>
+        <Text size='small' weight={500}>
           {docker.name}
         </Text>
         <Text size='small'>
@@ -106,7 +106,7 @@ function Tf({terraform, hasNext}) {
       </Box>
       <Box gap='xxsmall' justify='center'>
         <Box direction='row' align='center' gap='xsmall'>
-          <Text size='small' style={{fontWeight: 500}}>
+          <Text size='small' weight={500}>
             {terraform.name}
           </Text>
           {terraform.dependencies && terraform.dependencies.providers && terraform.dependencies.providers.map((provider) => <Provider provider={provider} width={15} />)}
@@ -338,27 +338,27 @@ function DetailView({repository, terraform, dockerRepositories, charts, fetchMor
       headerEnd={tab === 'terraform' && repository.editable ? <TerraformCreateModal /> : null}>
       <TabHeader>
         <TabHeaderItem name='charts'>
-          <Text style={{fontWeight: 500}} size='small'>Charts</Text>
+          <Text weight={500} size='small'>Charts</Text>
         </TabHeaderItem>
         <TabHeaderItem name='terraform'>
-          <Text style={{fontWeight: 500}} size='small'>Terraform</Text>
+          <Text weight={500} size='small'>Terraform</Text>
         </TabHeaderItem>
         <TabHeaderItem name='docker'>
-          <Text style={{fontWeight: 500}} size='small'>Docker</Text>
+          <Text weight={500} size='small'>Docker</Text>
         </TabHeaderItem>
         {repository.publicKey && (
           <TabHeaderItem name='credentials'>
-            <Text style={{fontWeight: 500}} size='small'>Credentials</Text>
+            <Text weight={500} size='small'>Credentials</Text>
           </TabHeaderItem>
         )}
         {repository.editable && (
           <TabHeaderItem name='secrets'>
-            <Text style={{fontWeight: 500}} size='small'>Secrets</Text>
+            <Text weight={500} size='small'>Secrets</Text>
           </TabHeaderItem>
         )}
         {repository.editable && (
           <TabHeaderItem name='edit'>
-            <Text style={{fontWeight: 500}} size='small'>Edit</Text>
+            <Text weight={500} size='small'>Edit</Text>
           </TabHeaderItem>
         )}
       </TabHeader>

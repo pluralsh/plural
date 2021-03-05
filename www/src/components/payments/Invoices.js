@@ -64,9 +64,9 @@ function InvoicesInner({current: {id}}) {
   return (
     <Box gap='small'>
       <Box direction='row' gap='xsmall'>
-        <Text size='small' style={{fontWeight: 500}}>Invoices for</Text>
+        <Text size='small' weight={500}>Invoices for</Text>
         <Anchor onClick={() => history.push(`/repositories/${repository.id}`)}>
-          <Text size='small' style={{fontWeight: 500}}>{repository.name}</Text>
+          <Text size='small' weight={500}>{repository.name}</Text>
         </Anchor>
       </Box>
       <Table>

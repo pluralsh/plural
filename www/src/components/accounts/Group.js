@@ -48,7 +48,7 @@ export function Icon({icon, iconAttrs, tooltip, onClick}) {
         margin={{bottom: 'xsmall'}}
         side='top'
         align={{bottom: 'top'}}>
-        <Text size='small' style={{fontWeight: 500}}>{tooltip}</Text>
+        <Text size='small' weight={500}>{tooltip}</Text>
       </TooltipContent>
     )}
     </>

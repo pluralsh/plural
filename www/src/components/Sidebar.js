@@ -3,7 +3,6 @@ import { Box, Text } from 'grommet'
 import { useHistory, useLocation } from 'react-router-dom'
 import { Tooltip } from './utils/Tooltip'
 import { Aid, Book, Group, Package, Alert } from 'grommet-icons'
-import { FaCreditCard } from 'react-icons/fa'
 
 const SIDEBAR_ROW_HEIGHT = '50px'
 const ICON_HEIGHT = '20px'

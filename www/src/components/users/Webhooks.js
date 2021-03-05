@@ -23,7 +23,7 @@ function WebhookResult({statusCode, body, headers, url}) {
           <Text size='small' >{statusCode}</Text>
         </Box>
         <Box direction='row' align='center' gap='xsmall'>
-          <Text style={{fontWeight: 500}} size='small'>POST</Text>
+          <Text weight={500} size='small'>POST</Text>
           <Text size='small'>{url}</Text>
         </Box>
       </Box>

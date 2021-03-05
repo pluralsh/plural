@@ -180,7 +180,7 @@ export function DetailHeader({text, modifier}) {
       background='light-1'
       justify='end'>
       <Box fill='horizontal'>
-        <Text style={{fontWeight: 500}} size='small'>{text}</Text>
+        <Text weight={500} size='small'>{text}</Text>
       </Box>
       {modifier}
     </Box>

@@ -1,12 +1,13 @@
 import React, { useCallback, useState } from 'react'
 import { Box, Stack, Text } from 'grommet';
-import { Hide, History, Notification, User } from 'grommet-icons';
+import { Hide, History, Notification, Package, User } from 'grommet-icons';
 import { IncidentHistory } from './IncidentHistory';
 import { SidebarView } from './types';
 import { ViewOption } from './ViewSwitcher';
 import { Notifications } from './Notifications';
 import { NotificationBadge } from './Incidents';
 import { Followers } from './Followers';
+import { Subscription } from './Subscription';
 
 const animation = {
   outline: 'none',
@@ -51,6 +52,13 @@ function SmallSidebar({incident, setOpen, setView}) {
         setView={doOpen}
         side={{right: 'left'}}
         text='followers' />
+      {incident.subscription && (
+        <ViewOption
+          icon={Package}
+          view={SidebarView.SUBSCRIPTION}
+          setView={doOpen}
+          side={{right: 'left'}}
+          text='subscription' />)}
     </Box>
   )
 }
@@ -58,8 +66,8 @@ function SmallSidebar({incident, setOpen, setView}) {
 function SidebarContent({view, setView, incident, fetchMore, setOpen}) {
   return (
     <Box fill>
-      <Box flex={false} direction='row' justify='end' align='center' 
-           gap='xsmall' pad='xsmall' border={{side: 'bottom', color: 'light-5'}}>
+      <Box flex={false} direction='row' justify='end' align='center' pad='xsmall' 
+           gap='xsmall' border={{side: 'bottom', color: 'light-5'}}>
         <Box direction='row' fill='horizontal' align='center' pad={{horizontal: 'xsmall'}} gap='small'>
           <Box flex={false} width='25px' onClick={() => setOpen(false)} pad='xsmall' round='xsmall' hoverIndicator='light-2'
             align='center' justify='center'>
@@ -70,6 +78,7 @@ function SidebarContent({view, setView, incident, fetchMore, setOpen}) {
         <ViewOption 
           icon={Notification} 
           size='15px' 
+          width='25px'
           view={SidebarView.NOTIF} 
           selected={view} 
           setView={setView} 
@@ -78,6 +87,7 @@ function SidebarContent({view, setView, incident, fetchMore, setOpen}) {
         <ViewOption 
           icon={History} 
           size='15px' 
+          width='25px'
           view={SidebarView.HISTORY} 
           selected={view} 
           setView={setView} 
@@ -86,16 +96,28 @@ function SidebarContent({view, setView, incident, fetchMore, setOpen}) {
         <ViewOption 
           icon={User} 
           size='15px' 
+          width='25px'
           view={SidebarView.FOLLOW} 
           selected={view} 
           setView={setView} 
           side={{top: 'bottom'}} 
-          text='followes' />
+          text='followers' />
+        {incident.subscription && (
+          <ViewOption 
+            icon={Package} 
+            size='15px' 
+            width='25px'
+            view={SidebarView.SUBSCRIPTION} 
+            selected={view} 
+            setView={setView} 
+            side={{top: 'bottom'}} 
+            text='subscription' />)}
       </Box>
       <Box fill>
         {view === SidebarView.NOTIF && <Notifications incident={incident} />}
         {view === SidebarView.HISTORY && <IncidentHistory incident={incident} fetchMore={fetchMore} />}
         {view === SidebarView.FOLLOW && <Followers incident={incident} fetchMore={fetchMore} />}
+        {view === SidebarView.SUBSCRIPTION && <Subscription incident={incident} />}
       </Box>
     </Box>
   )

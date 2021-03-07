@@ -110,6 +110,7 @@ defmodule Core.Services.Incidents do
 
   def update_message(attrs, message_id, %User{} = user) do
     get_message!(message_id)
+    |> Core.Repo.preload([:entities])
     |> IncidentMessage.changeset(attrs)
     |> allow(user, :edit)
     |> when_ok(:update)

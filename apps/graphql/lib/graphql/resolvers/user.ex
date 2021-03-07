@@ -25,6 +25,7 @@ defmodule GraphQl.Resolvers.User do
 
     Enum.map(publishers, fn %{id: id} -> Map.get(repos, id, []) end)
   end
+
   def run_batch(queryable, query, col, inputs, repo_opts) do
     Dataloader.Ecto.run_batch(Core.Repo, queryable, query, col, inputs, repo_opts)
   end
@@ -39,6 +40,19 @@ defmodule GraphQl.Resolvers.User do
     |> User.for_account(id)
     |> maybe_search(User, args)
     |> paginate(args)
+  end
+
+  def search_users(%{incident_id: id} = args, %{context: %{current_user: user}}) do
+    incident =
+      Core.Services.Incidents.get_incident!(id)
+      |> Core.Repo.preload([:creator, :owner])
+
+    with {:ok, incident} <- Core.Policies.Incidents.allow(incident, user, :access) do
+      User.ordered()
+      |> User.for_incident(incident)
+      |> maybe_search(User, args)
+      |> paginate(args)
+    end
   end
 
   def list_publishers(%{account_id: aid} = args, _) do

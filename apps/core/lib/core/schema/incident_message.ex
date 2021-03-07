@@ -1,6 +1,6 @@
 defmodule Core.Schema.IncidentMessage do
   use Piazza.Ecto.Schema
-  alias Core.Schema.{User, Incident, Reaction, File}
+  alias Core.Schema.{User, Incident, Reaction, File, MessageEntity}
 
   schema "incident_messages" do
     field :text, :binary
@@ -9,6 +9,7 @@ defmodule Core.Schema.IncidentMessage do
     belongs_to :creator,   User
     belongs_to :incident,  Incident
     has_many   :reactions, Reaction, foreign_key: :message_id
+    has_many   :entities,  MessageEntity, foreign_key: :message_id
     has_one    :file,      File, foreign_key: :message_id
 
     timestamps()
@@ -27,7 +28,8 @@ defmodule Core.Schema.IncidentMessage do
   def changeset(model, attrs \\ %{}) do
     model
     |> cast(attrs, @valid)
-    |> validate_required([:text, :creator_id, :incident_id])
     |> cast_assoc(:file)
+    |> cast_assoc(:entities)
+    |> validate_required([:text, :creator_id, :incident_id])
   end
 end

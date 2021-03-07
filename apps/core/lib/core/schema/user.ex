@@ -1,7 +1,7 @@
 defmodule Core.Schema.User do
   use Piazza.Ecto.Schema, derive_json: false
   use Arc.Ecto.Schema
-  alias Core.Schema.{Address, Publisher, Webhook, Account, Group, RoleBinding}
+  alias Core.Schema.{Address, Publisher, Webhook, Account, Group, RoleBinding, Incident}
 
   @email_re ~r/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-\.]+\.[a-zA-Z]{2,}$/
 
@@ -47,6 +47,10 @@ defmodule Core.Schema.User do
 
   def without_account(query \\ __MODULE__) do
     from(u in query, where: is_nil(u.account_id))
+  end
+
+  def for_incident(query \\ __MODULE__, %Incident{creator: %{account_id: id1}, owner: %{account_id: id2}}) do
+    from(u in query, where: u.account_id in ^[id1, id2])
   end
 
   def ordered(query \\ __MODULE__, order \\ [asc: :name]),

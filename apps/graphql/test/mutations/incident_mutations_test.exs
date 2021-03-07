@@ -93,6 +93,7 @@ defmodule GraphQl.IncidentMutationsTest do
   describe "createMessage" do
     test "it can create a message" do
       incident = insert(:incident)
+      user = insert(:user)
 
       {:ok, %{data: %{"createMessage" => msg}}} = run_query("""
         mutation Create($id: ID!, $attrs: IncidentMessageAttributes!) {
@@ -100,12 +101,28 @@ defmodule GraphQl.IncidentMutationsTest do
             id
             text
             incident { id }
+            entities { id type user { id } startIndex endIndex text }
           }
         }
-      """, %{"id" => incident.id, "attrs" => %{"text" => "created"}}, %{current_user: incident.creator})
+      """, %{
+        "id" => incident.id,
+        "attrs" => %{
+          "text" => "created",
+          "entities" => [
+            %{"type" => "MENTION", "userId" => user.id, "startIndex" => 0, "endIndex" => 1, "text" => user.name}
+          ]
+        }
+      }, %{current_user: incident.creator})
 
       assert msg["incident"]["id"] == incident.id
       assert msg["text"] == "created"
+
+      [entity] = msg["entities"]
+      assert entity["type"] == "MENTION"
+      assert entity["user"]["id"] == user.id
+      assert entity["startIndex"] == 0
+      assert entity["endIndex"] == 1
+      assert entity["text"] == user.name
     end
   end
 

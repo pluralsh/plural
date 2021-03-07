@@ -172,4 +172,23 @@ defmodule GraphQl.UserQueriesTest do
              |> ids_equal(webhooks)
     end
   end
+
+  describe "searchUsers" do
+    test "a user can list users associated with an incident" do
+      account  = insert(:account)
+      incident = insert(:incident, owner: insert(:user, account: account))
+      users = for i <- 1..3, do: insert(:user, account: account, name: "search #{i}")
+
+      {:ok, %{data: %{"searchUsers" => found}}} = run_query("""
+        query Search($incidentId: ID!, $q: String!) {
+          searchUsers(incidentId: $incidentId, q: $q, first: 5) {
+            edges { node { id } }
+          }
+        }
+      """, %{"incidentId" => incident.id, "q" => "search"}, %{current_user: incident.creator})
+
+      assert from_connection(found)
+             |> ids_equal(users)
+    end
+  end
 end

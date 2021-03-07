@@ -2,10 +2,11 @@ defmodule GraphQl.Schema.Incidents do
   use GraphQl.Schema.Base
   alias GraphQl.Resolvers.{Incidents, Repository, User, Payments}
 
-  ecto_enum :incident_status,  Core.Schema.Incident.Status
-  ecto_enum :media_type,       Core.Schema.File.MediaType
-  ecto_enum :incident_action,  Core.Schema.IncidentHistory.Action
-  ecto_enum :action_item_type, Core.Schema.Postmortem.ActionItem.Type
+  ecto_enum :incident_status,     Core.Schema.Incident.Status
+  ecto_enum :media_type,          Core.Schema.File.MediaType
+  ecto_enum :incident_action,     Core.Schema.IncidentHistory.Action
+  ecto_enum :action_item_type,    Core.Schema.Postmortem.ActionItem.Type
+  ecto_enum :message_entity_type, Core.Schema.MessageEntity.Type
 
   enum :incident_sort do
     value :inserted_at
@@ -36,8 +37,17 @@ defmodule GraphQl.Schema.Incidents do
   end
 
   input_object :incident_message_attributes do
-    field :text, non_null(:string)
-    field :file, :file_attributes
+    field :text,     non_null(:string)
+    field :file,     :file_attributes
+    field :entities, list_of(:entity_attributes)
+  end
+
+  input_object :entity_attributes do
+    field :type,        non_null(:message_entity_type)
+    field :text,        :string
+    field :user_id,     :id
+    field :start_index, :integer
+    field :end_index,   :integer
   end
 
   input_object :postmortem_attributes do
@@ -178,6 +188,20 @@ defmodule GraphQl.Schema.Incidents do
     field :creator,   non_null(:user), resolve: dataloader(User)
     field :reactions, list_of(:reaction), resolve: dataloader(Incidents)
     field :file,      :file, resolve: dataloader(Incidents)
+    field :entities,  list_of(:message_entity), resolve: dataloader(Incidents)
+
+    timestamps()
+  end
+
+  object :message_entity do
+    field :id,   non_null(:id)
+    field :type, non_null(:message_entity_type)
+    field :text, :string
+
+    field :start_index, :integer
+    field :end_index,   :integer
+
+    field :user, :user, resolve: dataloader(User)
 
     timestamps()
   end

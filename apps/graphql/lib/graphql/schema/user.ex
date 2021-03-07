@@ -150,6 +150,14 @@ defmodule GraphQl.Schema.User do
       resolve &User.list_users/2
     end
 
+    connection field :search_users, node_type: :user do
+      middleware GraphQl.Middleware.Authenticated
+      arg :incident_id, non_null(:id)
+      arg :q,           non_null(:string)
+
+      resolve &User.search_users/2
+    end
+
     connection field :publishers, node_type: :publisher do
       middleware GraphQl.Middleware.Authenticated
       arg :account_id, :id

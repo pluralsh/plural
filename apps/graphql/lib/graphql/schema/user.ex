@@ -127,7 +127,7 @@ defmodule GraphQl.Schema.User do
 
   object :user_queries do
     field :me, :user do
-      middleware GraphQl.Middleware.Authenticated
+      middleware GraphQl.Middleware.Authenticated, :external
       resolve fn _, %{context: %{current_user: user}} -> {:ok, user} end
     end
 

@@ -1,6 +1,6 @@
 defmodule Core.Schema.Incident do
   use Piazza.Ecto.Schema
-  alias Core.Schema.{Repository, User, Tag, IncidentHistory, Postmortem, Notification, Follower, Installation}
+  alias Core.Schema.{Repository, User, Tag, IncidentHistory, Postmortem, Notification, Follower, Installation, ClusterInformation}
 
   defenum Status, open: 0, in_progress: 1, resolved: 2, complete: 3
 
@@ -16,6 +16,7 @@ defmodule Core.Schema.Incident do
     belongs_to :owner,      User
 
     has_one  :postmortem, Postmortem
+    has_one  :cluster_information, ClusterInformation
     has_many :history, IncidentHistory
     has_many :tags, Tag,
       where: [resource_type: :incident],
@@ -95,6 +96,7 @@ defmodule Core.Schema.Incident do
     model
     |> cast(attrs, @valid)
     |> cast_assoc(:tags, with: &Tag.tag_changeset(&1, &2, :incident))
+    |> cast_assoc(:cluster_information)
     |> validate_required([:title, :severity, :repository_id, :creator_id, :status])
     |> validate_number(:severity, greater_than_or_equal_to: 0, less_than_or_equal_to: 5, message: "must be between 0 and 5")
   end

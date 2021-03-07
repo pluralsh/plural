@@ -64,6 +64,8 @@ defmodule Core.Schema.IncidentHistory do
     Enum.map(changes, fn
       {:tags, tags} -> %{key: "tags", prev: tags(inc.tags), next: tags(tags)}
       {:postmortem, %Ecto.Changeset{changes: %{content: cont}}} -> %{key: "postmortem", prev: nil, next: cont}
+      {:cluster_information, %Ecto.Changeset{changes: changes}} ->
+        %{key: "cluster_information", prev: nil, next: Jason.encode!(changes)}
       {key, val} -> %{key: "#{key}", prev: to_string(Map.get(inc, key)), next: to_string(val)}
     end)
   end

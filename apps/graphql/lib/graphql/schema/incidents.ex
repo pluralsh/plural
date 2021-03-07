@@ -21,11 +21,18 @@ defmodule GraphQl.Schema.Incidents do
   end
 
   input_object :incident_attributes do
-    field :title,       :string
-    field :severity,    :integer
-    field :description, :string
-    field :status,      :incident_status
-    field :tags,        list_of(:tag_attributes)
+    field :title,               :string
+    field :severity,            :integer
+    field :description,         :string
+    field :status,              :incident_status
+    field :tags,                list_of(:tag_attributes)
+    field :cluster_information, :cluster_information_attributes
+  end
+
+  input_object :cluster_information_attributes do
+    field :git_commit, :string
+    field :version,    :string
+    field :platform,   :string
   end
 
   input_object :incident_message_attributes do
@@ -83,6 +90,7 @@ defmodule GraphQl.Schema.Incidents do
     field :owner,      :user, resolve: dataloader(User)
     field :tags,       list_of(:tag), resolve: dataloader(Repository)
     field :postmortem, :postmortem, resolve: dataloader(Incidents)
+    field :cluster_information, :cluster_information, resolve: dataloader(Incidents)
 
     field :subscription, :slim_subscription do
       resolve fn incident, _, %{context: %{loader: loader}} ->
@@ -118,6 +126,15 @@ defmodule GraphQl.Schema.Incidents do
     connection field :followers, node_type: :follower do
       resolve &Incidents.list_followers/2
     end
+
+    timestamps()
+  end
+
+  object :cluster_information do
+    field :id,         non_null(:id)
+    field :version,    :string
+    field :git_commit, :string
+    field :platform,   :string
 
     timestamps()
   end

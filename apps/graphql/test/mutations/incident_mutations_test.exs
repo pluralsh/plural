@@ -20,7 +20,7 @@ defmodule GraphQl.IncidentMutationsTest do
       assert found["severity"] == 2
     end
 
-    test "installers can create incidents with tags" do
+    test "installers can create incidents with tags and cluster info" do
       repo = insert(:repository)
       %{user: user} = insert(:installation, repository: repo)
 
@@ -28,12 +28,14 @@ defmodule GraphQl.IncidentMutationsTest do
         mutation Incidents($id: ID!, $attrs: IncidentAttributes!) {
           createIncident(repositoryId: $id, attributes: $attrs) {
             id title severity tags { tag }
+            clusterInformation { version gitCommit }
           }
         }
       """, %{
         "id" => repo.id,
         "attrs" => %{
-          "title" => "wtf", "severity" => 2, "tags" => [%{"tag" => "help"}]
+          "title" => "wtf", "severity" => 2, "tags" => [%{"tag" => "help"}],
+          "clusterInformation" => %{"version" => "1.3", "gitCommit" => "341341"}
         }
       }, %{current_user: user})
 
@@ -41,6 +43,7 @@ defmodule GraphQl.IncidentMutationsTest do
       assert found["title"] == "wtf"
       assert found["severity"] == 2
       assert found["tags"] == [%{"tag" => "help"}]
+      assert found["clusterInformation"] == %{"version" => "1.3", "gitCommit" => "341341"}
     end
   end
 

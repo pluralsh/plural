@@ -1,7 +1,7 @@
 defmodule GraphQl.Resolvers.Incidents do
   use GraphQl.Resolvers.Base, model: Core.Schema.Incident
   alias Core.Services.{Repositories, Incidents}
-  alias Core.Schema.{IncidentMessage, Reaction, File, IncidentHistory, Postmortem, Follower}
+  alias Core.Schema.{IncidentMessage, Reaction, File, IncidentHistory, Postmortem, Follower, ClusterInformation}
 
   def data(args) do
     Dataloader.Ecto.new(Core.Repo,
@@ -15,6 +15,7 @@ defmodule GraphQl.Resolvers.Incidents do
   def query(Reaction, _), do: Reaction
   def query(File, _), do: File
   def query(Postmortem, _), do: Postmortem
+  def query(ClusterInformation, _), do: ClusterInformation
   def query(_, _), do: Incident
 
   def run_batch(_, _, :subscription, args, repo_opts) do

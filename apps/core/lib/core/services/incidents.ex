@@ -35,7 +35,7 @@ defmodule Core.Services.Incidents do
     start_transaction()
     |> add_operation(:change, fn _ ->
       get_incident!(incident_id)
-      |> Core.Repo.preload([:tags])
+      |> Core.Repo.preload([:tags, :cluster_information])
       |> Incident.changeset(attrs)
       |> allow(user, :edit)
     end)

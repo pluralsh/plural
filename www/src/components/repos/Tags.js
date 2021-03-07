@@ -9,7 +9,7 @@ export function TagInput({addTag, removeTag, tags, round, ...rest}) {
       addTag(current)
       setCurrent("")
     }}>
-      <Box fill='horizontal' direction="row" align="center" border="all" round={round || 'xsmall'}>
+      <Box fill='horizontal' direction="row" align="center" round={round || 'xsmall'}>
         <Box direction='row' wrap align='center'>
           {tags.length > 0 && tags.map((tag, index) => (
             <TagInner margin="xxsmall" key={`${tag}${index}`} onRemove={() => removeTag(tag)}>
@@ -21,6 +21,7 @@ export function TagInput({addTag, removeTag, tags, round, ...rest}) {
           <TextInput
             type="search"
             plain
+            placeholder='enter tags for this resource'
             onChange={({target: {value}}) => setCurrent(value)}
             value={current}
             {...rest}

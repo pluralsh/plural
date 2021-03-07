@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { Box, TextInput, Text } from 'grommet'
 import { Button, SecondaryButton } from 'forge-core'
 import { Slate, Editable } from 'slate-react'
@@ -13,6 +13,8 @@ import { CREATE_INCIDENT, INCIDENTS_Q } from './queries'
 import { appendConnection, updateCache } from '../../utils/graphql'
 import { StatusSelector } from './IncidentStatus'
 import { TagInput } from '../repos/Tags'
+import { IncidentContext } from './context'
+import { IncidentViewContext } from './Incidents'
 
 
 export function IncidentForm({attributes, setAttributes, statusEdit}) {
@@ -96,16 +98,18 @@ export function RepositorySelect({repository, setRepository}) {
 }
 
 export function CreateIncident({onCompleted}) {
+  const {clusterInformation} = useContext(IncidentContext)
+  const {sort, order, filters} = useContext(IncidentViewContext)
   const [repository, setRepository] = useState(null)
   const [attributes, setAttributes] = useState({title: '', description: '', severity: 4, tags: []})
   const [mutation, {loading}] = useMutation(CREATE_INCIDENT, {
     variables: {
       repositoryId: repository && repository.id, 
-      attributes:  {...attributes, tags: attributes.tags.map((t) => ({tag: t}))}
+      attributes:  {...attributes, tags: attributes.tags.map((t) => ({tag: t})), clusterInformation}
     },
     update: (cache, {data: { createIncident }}) => updateCache(cache, {
       query: INCIDENTS_Q,
-      variables: {q: null},
+      variables: {q: null, filters, order, sort},
       update: (prev) => appendConnection(prev, createIncident, 'Incident', 'incidents')
     }),
     onCompleted

@@ -29,6 +29,14 @@ export const SubscriptionFragment = gql`
   ${PlanFragment}
 `
 
+export const ClusterInformation = gql`
+  fragment ClusterInformation on ClusterInformation {
+    version
+    gitCommit
+    platform
+  }
+`
+
 export const IncidentFragment = gql`
   fragment IncidentFragment on Incident {
     id
@@ -41,12 +49,14 @@ export const IncidentFragment = gql`
     owner { ...UserFragment }
     repository { ...RepoFragment }
     subscription { ...SubscriptionFragment }
+    clusterInformation { ...ClusterInformation }
     tags { tag }
     insertedAt
   }
   ${UserFragment}
   ${RepoFragment}
   ${SubscriptionFragment}
+  ${ClusterInformation}
 `
 
 export const IncidentHistoryFragment = gql`

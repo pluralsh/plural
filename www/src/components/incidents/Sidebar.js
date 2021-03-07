@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import { Box, Stack, Text } from 'grommet';
-import { Hide, History, Notification, Package, User } from 'grommet-icons';
+import { Cluster, Hide, History, Notification, Package, User } from 'grommet-icons';
 import { IncidentHistory } from './IncidentHistory';
 import { SidebarView } from './types';
 import { ViewOption } from './ViewSwitcher';
@@ -8,6 +8,7 @@ import { Notifications } from './Notifications';
 import { NotificationBadge } from './Incidents';
 import { Followers } from './Followers';
 import { Subscription } from './Subscription';
+import { ClusterInformation } from './ClusterInformation';
 
 const animation = {
   outline: 'none',
@@ -52,6 +53,12 @@ function SmallSidebar({incident, setOpen, setView}) {
         setView={doOpen}
         side={{right: 'left'}}
         text='followers' />
+      <ViewOption
+        icon={Cluster}
+        view={SidebarView.CLUSTER}
+        setView={doOpen}
+        side={{right: 'left'}}
+        text='cluster' />
       {incident.subscription && (
         <ViewOption
           icon={Package}
@@ -102,6 +109,15 @@ function SidebarContent({view, setView, incident, fetchMore, setOpen}) {
           setView={setView} 
           side={{top: 'bottom'}} 
           text='followers' />
+        <ViewOption 
+          icon={Cluster} 
+          size='15px' 
+          width='25px'
+          view={SidebarView.CLUSTER} 
+          selected={view} 
+          setView={setView} 
+          side={{top: 'bottom'}} 
+          text='cluster' />
         {incident.subscription && (
           <ViewOption 
             icon={Package} 
@@ -118,6 +134,7 @@ function SidebarContent({view, setView, incident, fetchMore, setOpen}) {
         {view === SidebarView.HISTORY && <IncidentHistory incident={incident} fetchMore={fetchMore} />}
         {view === SidebarView.FOLLOW && <Followers incident={incident} fetchMore={fetchMore} />}
         {view === SidebarView.SUBSCRIPTION && <Subscription incident={incident} />}
+        {view === SidebarView.CLUSTER && <ClusterInformation incident={incident} />}
       </Box>
     </Box>
   )

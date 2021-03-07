@@ -33,7 +33,8 @@ export const SidebarView = {
   HISTORY: 'history',
   NOTIF: 'notifications',
   FOLLOW: 'followers',
-  SUBSCRIPTION: 'subscription'
+  SUBSCRIPTION: 'subscription',
+  CLUSTER: 'cluster'
 }
 
 export const NotificationTypes = {

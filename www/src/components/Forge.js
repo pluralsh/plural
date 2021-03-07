@@ -21,6 +21,7 @@ import { EditAccount } from './accounts/EditAccount'
 import { Incidents } from './incidents/Incidents'
 import { Incident } from './incidents/Incident'
 import { Responses } from './incidents/Responses'
+import { IncidentContext } from './incidents/context'
 
 export const TOOLBAR_SIZE = '50px'
 
@@ -28,6 +29,7 @@ const EditBilling = (props) => <EditAccount {...props} billing />
 
 export default function Forge() {
   return (
+    <IncidentContext.Provider value={{}}>
     <StripeProvider apiKey="pk_test_ZVj7wQQqsBDrud0mttnnY6uy00QM8CndBt">
       <BreadcrumbProvider>
         <CurrentUser>
@@ -68,5 +70,6 @@ export default function Forge() {
         </CurrentUser>
       </BreadcrumbProvider>
     </StripeProvider>
+    </IncidentContext.Provider>
   )
 }

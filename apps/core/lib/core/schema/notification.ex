@@ -2,7 +2,7 @@ defmodule Core.Schema.Notification do
   use Piazza.Ecto.Schema
   alias Core.Schema.{User, Incident, IncidentMessage}
 
-  defenum Type, message: 0, incident_update: 1
+  defenum Type, message: 0, incident_update: 1, mention: 2
 
   schema "notifications" do
     field :type, Type

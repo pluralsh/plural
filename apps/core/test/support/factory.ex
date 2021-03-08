@@ -279,4 +279,12 @@ defmodule Core.Factory do
       actor: build(:user),
     }
   end
+
+  def message_entity_factory do
+    %Schema.MessageEntity{
+      type: :mention,
+      text: "something",
+      user: build(:user)
+    }
+  end
 end

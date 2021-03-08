@@ -9,7 +9,7 @@ defmodule Core.Schema.Follower do
     belongs_to :incident, Incident
 
     embeds_one :preferences, Preferences, on_replace: :update do
-      boolean_fields [:message, :incident_update]
+      boolean_fields [:message, :incident_update, :mention]
     end
 
     timestamps()

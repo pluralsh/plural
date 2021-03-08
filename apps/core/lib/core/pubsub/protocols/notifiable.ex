@@ -37,10 +37,14 @@ defimpl Core.PubSub.Notifiable, for: Core.PubSub.IncidentMessageCreated do
   import Core.PubSub.Notification.Utils
   alias Core.Schema.Follower
 
-  def notify(%{item: %{incident_id: inc_id, id: id, creator_id: actor_id}}) do
-    Follower.for_incident(inc_id)
-    |> Core.Repo.all()
+  def notify(%{item: %{incident_id: inc_id, id: id, creator_id: actor_id} = incident}) do
+    followers = Follower.for_incident(inc_id) |> Core.Repo.all()
+    mention_notifs  = mentions(incident, followers)
+    mentioned_users = Enum.into(mention_notifs, MapSet.new(), & &1.user_id)
+
+    followers
     |> filter_preferences(:message)
+    |> Enum.filter(& !MapSet.member?(mentioned_users, &1.user_id))
     |> Enum.map(fn %{user_id: user_id} ->
       timestamped(%{
         incident_id: inc_id,
@@ -50,5 +54,29 @@ defimpl Core.PubSub.Notifiable, for: Core.PubSub.IncidentMessageCreated do
         type: :message
       })
     end)
+    |> Enum.concat(mention_notifs)
   end
+
+  defp mentions(%{entities: [_ | _] = entities, incident_id: inc_id, id: id, creator_id: actor_id}, followers) do
+    mapped_followers = Enum.into(followers, %{}, fn %{user_id: user_id} = f -> {user_id, f} end)
+
+    entities
+    |> Enum.filter(fn %{user_id: user_id} ->
+      case Map.get(mapped_followers, user_id) do
+        %{preferences: %{mention: true}} -> true
+        nil -> true
+        _ -> false
+      end
+    end)
+    |> Enum.map(fn %{user_id: user_id} ->
+      timestamped(%{
+        incident_id: inc_id,
+        actor_id: actor_id,
+        user_id: user_id,
+        message_id: id,
+        type: :mention
+      })
+    end)
+  end
+  defp mentions(_, _), do: []
 end

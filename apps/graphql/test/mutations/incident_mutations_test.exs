@@ -205,17 +205,18 @@ defmodule GraphQl.IncidentMutationsTest do
         mutation Follow($id: ID!, $attrs: FollowerAttributes!) {
           followIncident(id: $id, attributes: $attrs) {
             id
-            preferences { message incidentUpdate}
+            preferences { message incidentUpdate mention }
           }
         }
       """, %{
         "id" => incident.id,
-        "attrs" => %{"preferences" => %{"message" => true, "incidentUpdate" => true}}
+        "attrs" => %{"preferences" => %{"message" => true, "incidentUpdate" => true, "mention" => true}}
       }, %{current_user: incident.creator})
 
       assert follow["id"]
       assert follow["preferences"]["message"]
       assert follow["preferences"]["incidentUpdate"]
+      assert follow["preferences"]["mention"]
     end
   end
 

@@ -71,6 +71,7 @@ defmodule GraphQl.Schema.Incidents do
   input_object :notification_preferences_attributes do
     field :message,         non_null(:boolean)
     field :incident_update, non_null(:boolean)
+    field :mention,         non_null(:boolean)
   end
 
   input_object :follower_attributes do
@@ -255,6 +256,7 @@ defmodule GraphQl.Schema.Incidents do
   object :notification_preferences do
     field :message,         :boolean
     field :incident_update, :boolean
+    field :mention,         :boolean
   end
 
   connection node_type: :incident

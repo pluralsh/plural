@@ -11,6 +11,7 @@ defmodule Rtc.Application do
 
     children = [
       {Phoenix.PubSub, name: Rtc.PubSub},
+      Rtc.Presence,
       RtcWeb.Endpoint,
       {Cluster.Supervisor, [topologies, [name: Rtc.ClusterSupervisor]]},
       {Absinthe.Subscription, RtcWeb.Endpoint},

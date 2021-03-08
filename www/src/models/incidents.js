@@ -15,7 +15,7 @@ export const FollowerFragment = gql`
     id
     incident { id }
     user { ...UserFragment }
-    preferences { message incidentUpdate }
+    preferences { message incidentUpdate mention }
   }
   ${UserFragment}
 `

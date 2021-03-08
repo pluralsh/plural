@@ -6,6 +6,8 @@ defmodule Core.Services.Incidents do
 
   def get_incident!(id), do: Core.Repo.get!(Incident, id)
 
+  def get_incident(id), do: Core.Repo.get(Incident, id)
+
   def get_message!(id), do: Core.Repo.get!(IncidentMessage, id)
 
   def get_follower(user_id, incident_id),

@@ -4,7 +4,7 @@ defmodule RtcWeb.UserSocket do
     schema: GraphQl
 
   ## Channels
-  # channel "room:*", RtcWeb.RoomChannel
+  channel "incidents:*", RtcWeb.IncidentChannel
 
   @impl true
   def connect(params, socket) do

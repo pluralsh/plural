@@ -248,7 +248,7 @@ function SortOptions() {
 
 export function IncidentToolbar() {
   return (
-    <Box border={{side: 'bottom', color: 'light-5'}} align='center' direction='row' 
+    <Box flex={false} border={{side: 'bottom', color: 'light-5'}} align='center' direction='row' 
          pad={{vertical: 'xsmall', horizontal: 'small'}}>
       <Filters />
       <SortOptions />

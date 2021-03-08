@@ -17,7 +17,7 @@ import { IncidentContext } from './context'
 import { IncidentViewContext } from './Incidents'
 
 
-export function IncidentForm({attributes, setAttributes, statusEdit}) {
+export function IncidentForm({attributes, setAttributes, statusEdit, children}) {
   const [editorState, setEditorState] = useState(plainDeserialize(attributes.description || ''))
   const editor = useEditor()
   const setDescription = useCallback((editorState) => {
@@ -45,7 +45,7 @@ export function IncidentForm({attributes, setAttributes, statusEdit}) {
           severity={attributes.severity} 
           setSeverity={(severity) => setAttributes({...attributes, severity})} />
       </Box>
-      <Box style={{maxHeight: '80%'}} pad='small' border round='xsmall'>
+      <Box style={{maxHeight: '80%', minHeight: '30vh'}} pad='small' border={{color: 'light-5'}} round='xsmall'>
         <Slate
           editor={editor}
           value={editorState}
@@ -53,10 +53,13 @@ export function IncidentForm({attributes, setAttributes, statusEdit}) {
           <Editable placeholder='Description of the incident (markdown allowed)' />
         </Slate>
       </Box>
-      <TagInput
-        tags={attributes.tags || []}
-        addTag={(tag) => setAttributes({...attributes, tags: [tag, ...(attributes.tags || [])]})}
-        removeTag={(tag) => setAttributes({...attributes, tags: attributes.tags.filter((t) => t !== tag)})} />
+      <Box direction='row' gap='small' align='center'>
+        <TagInput
+          tags={attributes.tags || []}
+          addTag={(tag) => setAttributes({...attributes, tags: [tag, ...(attributes.tags || [])]})}
+          removeTag={(tag) => setAttributes({...attributes, tags: attributes.tags.filter((t) => t !== tag)})} />
+        {children}
+      </Box>
     </Box>
   )
 }
@@ -120,11 +123,12 @@ export function CreateIncident({onCompleted}) {
       <Box animation='fadeIn' flex={false} direction='row' border={{side: 'between', color: 'light-5'}} gap='0px'>
         <RepositorySelect repository={repository} setRepository={setRepository} />
         <Box gap='small' pad='small' fill>
-          <IncidentForm attributes={attributes} setAttributes={setAttributes} />
-          <Box direction='row' justify='end' gap='small'>
-            <SecondaryButton label='Cancel' onClick={onCompleted} />
-            <Button loading={loading} label='Create' onClick={mutation} />
-          </Box>
+          <IncidentForm attributes={attributes} setAttributes={setAttributes}>
+            <Box flex={false} direction='row' justify='end' gap='small'>
+              <SecondaryButton label='Cancel' onClick={onCompleted} />
+              <Button loading={loading} label='Create' onClick={mutation} />
+            </Box>
+          </IncidentForm>
         </Box>
       </Box>
     </Box>

@@ -8,6 +8,7 @@ import {
   useSelected,
   useFocused,
 } from 'slate-react'
+import { Emoji } from 'emoji-mart'
 import { EntityType } from '../incidents/types'
 
 
@@ -177,9 +178,15 @@ const Element = props => {
   switch (element.type) {
     case EntityType.MENTION:
       return <MentionElement {...props} />
+    case EntityType.EMOJI:
+      return <EmojiElement {...props} />
     default:
       return <div {...attributes}>{children}</div>
   }
+}
+
+const EmojiElement = ({element: {emoji}}) => {
+  return <Emoji forceSize set='google' emoji={emoji.name} size={16} sheetSize={16} />
 }
 
 const MentionElement = ({ attributes, children, element }) => {

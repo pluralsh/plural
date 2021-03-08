@@ -14,6 +14,16 @@ export const INCIDENTS_Q = gql`
   ${IncidentFragment}
 `;
 
+export const SEARCH_USERS = gql`
+  query Search($incidentId: ID!, $q: String!, $cursor: String) {
+    searchUsers(incidentId: $incidentId, q: $q, after: $cursor, first: 10) {
+      pageInfo { ...PageInfo }
+      edges { node { id name email avatar backgroundColor } }
+    }
+  }
+  ${PageInfo}
+`;
+
 export const INCIDENT_Q = gql`
   query Incident($id: ID! $cursor: String, $fileCursor: String, $historyCursor: String, $followerCursor: String) {
     incident(id: $id) {

@@ -1,38 +1,104 @@
-import React, { useCallback, useContext, useState } from 'react'
+import React, { useCallback, useContext, useRef, useState } from 'react'
 import { useEditor } from '../utils/hooks'
 import { FilePicker } from 'react-file-picker'
 import { useMutation } from 'react-apollo'
-import { CREATE_MESSAGE, INCIDENT_Q } from './queries'
-import { Box, Keyboard, Layer, Stack, Text } from 'grommet'
+import { CREATE_MESSAGE, INCIDENT_Q, SEARCH_USERS } from './queries'
+import { Box, Drop, Keyboard, Layer, Stack, Text } from 'grommet'
 import { plainDeserialize, plainSerialize, isEmpty } from '../../utils/slate'
 import { Send } from '../utils/icons'
 import { MoonLoader } from 'react-spinners'
 import { Progress } from 'react-sweet-progress'
 import { Transforms, Editor as SlateEditor } from 'slate'
 import Editor from './Editor'
-import { EntityType } from './types'
 import { useParams } from 'react-router'
 import { appendConnection, updateCache } from '../../utils/graphql'
 import { AttachmentContext } from './AttachmentProvider'
 import { Control } from './MessageControls'
-import { Attachment, Close } from 'grommet-icons'
+import { Attachment, Close, Emoji } from 'grommet-icons'
 import fs from 'filesize'
+import { emojiIndex, NimbleEmoji } from 'emoji-mart'
+import { EntityType } from './types'
+import Avatar from '../users/Avatar'
+import { EmojiPicker } from './Emoji'
 
 export const MessageScrollContext = React.createContext({})
+
+export function fetchUsers(client, query, incidentId) {
+  if (!query) return
+
+  return client.query({
+    query: SEARCH_USERS,
+    variables: {q: query, incidentId}})
+  .then(({data}) => {
+    return data.searchUsers.edges.map(edge => ({
+      key: edge.node.id,
+      value: userNode(edge.node),
+      suggestion: userSuggestion(edge.node)
+    }))
+  })
+}
+
+function fetchEmojis(client, query) {
+  if (!query) return
+
+  return Promise.resolve(
+    emojiIndex
+      .search(query)
+      .slice(0, 5)
+      .map((emoji) => ({
+        key: emoji.colons,
+        value: emojiNode(emoji),
+        suggestion: emojiSuggestion(emoji)
+      }))
+  )
+}
+
+export const emojiNode = (emoji) => {
+  const name = emoji.short_names ? emoji.short_names[0] : emoji.name
+  return {type: EntityType.EMOJI, children: [{text: name}], emoji: {...emoji, name}}
+}
+
+export const userNode = (user) => {
+  return {type: EntityType.MENTION, children: [{text: user.name}], user}
+}
+
+export function userSuggestion(user) {
+  return (
+    <Box flex={false}  direction='row' align='center' pad='xsmall' gap='xsmall' justify='end'>
+      <Box flex={false} direction='row' align='center' gap='xsmall'>
+        <Avatar user={user} size='30px' />
+        <Text size='small' weight={500}>{user.name}</Text>
+      </Box>
+      <Box width='100%' direction='row' justify='end'>
+        <Text size='small'>{user.email}</Text>
+      </Box>
+    </Box>
+  )
+}
+
+function emojiSuggestion(emoji) {
+  return (
+    <Box direction='row' align='center' pad='xsmall' gap='xsmall'>
+      <NimbleEmoji set='google' emoji={emoji.short_names[0]} size={16} />
+      <Text size='xsmall'>{emoji.colons}</Text>
+    </Box>
+  )
+}
+
 
 function* extractEntities(editorState) {
   let startIndex = 0
   for (const {children} of editorState) {
     for (const {type, text, user, ...child} of children) {
       let content = text
-      if (type === EntityType.MENTION) {
+      if (EntityType[type]) {
         content = child.children[0].text
         yield {
-          type: EntityType.MENTION,
+          type,
           text: content,
           startIndex,
           endIndex: startIndex + content.length,
-          userId: user.id
+          userId: user && user.id
         }
       }
 
@@ -40,6 +106,19 @@ function* extractEntities(editorState) {
     }
     startIndex++
   }
+}
+
+const insertEmoji = (editor, emoji) => {
+  let at;
+  if (editor.selection) {
+    at = editor.selection
+  } else if (editor.children.length > 0) {
+    at = SlateEditor.end(editor, [])
+  } else {
+    at = [0]
+  }
+  Transforms.insertNodes(editor, emojiNode(emoji), {at})
+  Transforms.move(editor)
 }
 
 function SendMsg({loading, empty, onClick}) {
@@ -68,6 +147,27 @@ function FileInput() {
   )
 }
 
+function EmojiInput({editor}) {
+  const ref = useRef()
+  const [open, setOpen] = useState(false)
+
+  return (
+    <>
+    <Box ref={ref} flex={false}>
+      <Control onClick={() => setOpen(true)} hoverIndicator='light-2' focusIndicator={false} 
+              tooltip='add attachment'  align='center' justify='center'>
+        <Emoji size='15px' />
+      </Control>
+    </Box>
+    {open && (
+      <Drop target={ref.current} align={{bottom: 'top'}} onClickOutside={() => setOpen(false)}>
+        <EmojiPicker onSelect={(emoji) => insertEmoji(editor, emoji)} />
+      </Drop>
+    )}
+    </>
+  )
+}
+
 function UploadProgress({attachment, uploadProgress, setAttachment, empty}) {
   return (
     <Layer plain modal={false} position='top-right'>
@@ -93,6 +193,11 @@ function UploadProgress({attachment, uploadProgress, setAttachment, empty}) {
   )
 }
 
+const PLUGIN_TEMPLATES = [
+  {trigger: /^@(\w+)$/, suggestions: fetchUsers},
+  {trigger: /^:(\w+)$/, suggestions: fetchEmojis}
+]
+
 export function MessageInput() {
   const {returnToBeginning} = useContext(MessageScrollContext)
   const [uploadProgress, setUploadProgress] = useState(0)
@@ -100,6 +205,7 @@ export function MessageInput() {
   const editor = useEditor()
   const [editorState, setEditorState] = useState(plainDeserialize(''))
   const {incidentId} = useParams()
+  const [disable, setDisable] = useState(false)
   const [mutation, {loading}] = useMutation(CREATE_MESSAGE, {
     variables: {incidentId},
     context: {fetchOptions: {
@@ -119,17 +225,19 @@ export function MessageInput() {
       returnToBeginning()
       setUploadProgress(0)
       setAttachment(null)
+      setDisable(false)
     }
   })
 
   const submit = useCallback(() => {
-    // const entities = [...extractEntities(editorState)]
-    // console.log(entities)
+    if (disable) return
+    const entities = [...extractEntities(editorState)]
+    console.log(entities)
     const file = attachment ? {blob: attachment} : null
-    mutation({variables: {attributes: {text: plainSerialize(editorState), file}}})
+    mutation({variables: {attributes: {text: plainSerialize(editorState), file, entities}}})
     Transforms.select(editor, SlateEditor.start(editor, []))
     setEditorState(plainDeserialize(''))
-  }, [mutation, setEditorState, editorState, editor, attachment])
+  }, [mutation, setEditorState, editorState, editor, attachment, disable])
 
   const empty = isEmpty(editorState)
 
@@ -155,7 +263,11 @@ export function MessageInput() {
           editor={editor}
           editorState={editorState}
           setEditorState={setEditorState}
+          incidentId={incidentId}
+          disableSubmit={setDisable}
+          handlers={PLUGIN_TEMPLATES}
           clearable />
+        <EmojiInput editor={editor} />
         <FileInput />
         <SendMsg loading={loading} empty={empty} onClick={submit} />
       </Box>

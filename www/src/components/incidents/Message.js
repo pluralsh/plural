@@ -41,7 +41,7 @@ function MessageBody({message, next, setHover}) {
           <Text size='12px' color='dark-5'>{formatted}</Text>
         </Box>}
         <Box flex={false}>
-          <Markdown text={message.text} entities={message.entities} />
+          <Markdown text={message.text} entities={message.entities || []} />
           {message.file && <File file={message.file} />}
           {message.reactions && message.reactions.length > 0 && (
             <MessageReactions message={message} setHover={setHover} />

@@ -1,5 +1,6 @@
 export const EntityType = {
-  MENTION: 'MENTION'
+  MENTION: 'MENTION',
+  EMOJI: 'EMOJI'
 }
 
 export const IncidentStatus = {

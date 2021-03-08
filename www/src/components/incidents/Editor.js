@@ -37,16 +37,15 @@ import { useApolloClient } from 'react-apollo'
 //   {trigger: /^@(\w+)$/, suggestions: fetchUsers}
 // ]
 
-export default function Editor({editorState, editor, disableSubmit, setEditorState}) {
+export default function Editor({incidentId, editorState, editor, handlers, disableSubmit, setEditorState}) {
   const client = useApolloClient()
-
   return (
     <TypeaheadEditor
       value={editorState}
       editor={editor}
-      searchQuery={(query, callback) => callback(client, query)}
+      searchQuery={(query, callback) => callback(client, query, incidentId)}
       onOpen={disableSubmit}
-      handlers={[]}
+      handlers={handlers || []}
       setValue={setEditorState}
       style={{
         overflow: 'auto',

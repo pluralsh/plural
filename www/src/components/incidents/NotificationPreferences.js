@@ -15,6 +15,11 @@ export function NotificationPreferences({preferences, setPreferences}) {
         label='every update' 
         checked={preferences.incidentUpdate}
         onChange={({target: {checked}}) => setPreferences({...preferences, incidentUpdate: checked})} />
+      <CheckBox 
+        toggle 
+        label='every mention'
+        checked={preferences.mention}
+        onChange={({target: {checked}}) => setPreferences({...preferences, incidentUpdate: checked})} />
     </Box>
   )
 }

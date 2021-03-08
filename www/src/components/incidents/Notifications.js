@@ -16,6 +16,8 @@ function notificationModifier(type) {
       return 'messaged'
     case NotificationTypes.INCIDENT_UPDATE:
       return 'updated the incident'
+    case NotificationTypes.MENTION:
+      return 'mentioned you'
     default:
       return null
   }

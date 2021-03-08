@@ -40,7 +40,8 @@ export const SidebarView = {
 
 export const NotificationTypes = {
   MESSAGE: 'MESSAGE',
-  INCIDENT_UPDATE: 'INCIDENT_UPDATE'
+  INCIDENT_UPDATE: 'INCIDENT_UPDATE',
+  MENTION: 'MENTION'
 }
 
 export const Order = {

@@ -70,9 +70,9 @@ function CompleteIncident({incident: {id}}) {
 }
 
 const followerPreferences = (follower) => {
-  if (!follower) return {message: true, incidentUpdate: true}
-  const {message, incidentUpdate} = follower.preferences
-  return {message, incidentUpdate}
+  if (!follower) return {message: true, incidentUpdate: true, mention: true}
+  const {message, incidentUpdate,  mention} = follower.preferences
+  return {message, incidentUpdate, mention}
 }
 
 function Follower({incident: {id, follower}}) {

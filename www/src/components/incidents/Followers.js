@@ -1,15 +1,19 @@
-import React from 'react'
-import { Box, Text } from 'grommet'
+import React, { useContext } from 'react'
+import { Box, Stack, Text } from 'grommet'
 import { Scroller } from 'forge-core'
 import { extendConnection } from '../../utils/graphql'
 import Avatar from '../users/Avatar'
+import { PresenceContext, PresenceIndicator } from './Presence'
 
 function Follower({follower: {user}}) {
+  const {present} = useContext(PresenceContext)
+  const isPresent = present[user.id]
+
   return (
     <Box direction='row' gap='small' align='center' onClick={() => null} hoverIndicator='light-3' pad='small'>
       <Avatar user={user} size='30px' />
       <Text size='small' weight={500}>{user.name}</Text>
-      <Text size='small' color='dark-5'>{user.email}</Text>
+      {isPresent && <PresenceIndicator />}
     </Box>
   )
 }

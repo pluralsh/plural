@@ -47,7 +47,7 @@ const resetToken = onError(({ response, networkError }) => {
   }
 });
 
-const socket = new PhoenixSocket(WS_URI, {
+export const socket = new PhoenixSocket(WS_URI, {
   params: () => {
     const token = fetchToken()
     return token ? { Authorization: `Bearer ${token}` } : {};

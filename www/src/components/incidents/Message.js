@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Box, Stack, Text } from "grommet"
 import Avatar from '../users/Avatar'
 import Markdown from './Markdown'
@@ -8,6 +8,7 @@ import './message.css'
 import MessageReactions from './MessageReactions'
 import File from './File'
 import { DateDivider } from './MessageDivider'
+import { PresenceContext, PresenceIndicator } from './Presence'
 
 const DATE_PATTERN = 'h:mm a'
 const dateFormat = (date) => moment(date).format(DATE_PATTERN)
@@ -22,6 +23,7 @@ function isConsecutive(message, next) {
 }
 
 function MessageBody({message, next, setHover}) {
+  const {present} = useContext(PresenceContext)
   const consecutive = isConsecutive(message, next)
   const formatted = dateFormat(moment(message.insertedAt))
 
@@ -38,6 +40,7 @@ function MessageBody({message, next, setHover}) {
       <Box fill='horizontal'>
         {!consecutive && <Box gap='xsmall' direction='row' align='center'>
           <Text size='small' weight='bold'>{message.creator.name}</Text>
+          {present[message.creator.id] && <PresenceIndicator />}
           <Text size='12px' color='dark-5'>{formatted}</Text>
         </Box>}
         <Box flex={false}>

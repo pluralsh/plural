@@ -30,6 +30,7 @@ import Avatar from '../users/Avatar'
 import { Postmortem } from './Postmortem'
 import { applyMessages } from './applicators'
 import { LastMessage } from './LastMessage'
+import { PresenceProvider } from './Presence'
 
 export const canEdit = ({creator, owner}, {id}) => creator.id === id || owner.id === id
 
@@ -292,12 +293,14 @@ export function Incident({editing}) {
   if (!data) return null
 
   return (
-    <IncidentInner 
-      editing={edit}
-      setEditing={setEdit}
-      incident={data.incident}
-      fetchMore={fetchMore}
-      subscribeToMore={subscribeToMore}
-      loading={loading} />
+    <PresenceProvider incidentId={incidentId}>
+      <IncidentInner
+        editing={edit}
+        setEditing={setEdit}
+        incident={data.incident}
+        fetchMore={fetchMore}
+        subscribeToMore={subscribeToMore}
+        loading={loading} />
+    </PresenceProvider>
   )
 }

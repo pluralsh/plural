@@ -20,6 +20,11 @@ import { emojiIndex, NimbleEmoji } from 'emoji-mart'
 import { EntityType } from './types'
 import Avatar from '../users/Avatar'
 import { EmojiPicker } from './Emoji'
+import { ThemeContext } from 'styled-components'
+import { PresenceContext } from './Presence'
+import { SyncLoader } from 'react-spinners'
+import { normalizeColor } from 'grommet/utils'
+import { CurrentUserContext } from '../login/CurrentUser'
 
 export const MessageScrollContext = React.createContext({})
 
@@ -198,6 +203,35 @@ const PLUGIN_TEMPLATES = [
   {trigger: /^:(\w+)$/, suggestions: fetchEmojis}
 ]
 
+
+function Typing() {
+  const {name: ignore} = useContext(CurrentUserContext)
+  const {typists} = useContext(PresenceContext)
+  const theme = useContext(ThemeContext)
+  let typing = typists.filter((name) => name !== ignore)
+  const len = typing.length
+  if (len === 0) {
+    return null
+  }
+  let text = {users: `${len}`, suffix: 'people are typing'}
+
+  if (len === 1) {
+    text = {users: typing[0], suffix: 'is typing'}
+  } else if (len <= 3) {
+    text = {users: typing.join(", "), suffix: 'are typing'}
+  }
+
+  return (
+    <Box direction='row' align='center' gap='xxsmall'>
+      <Text color='dark-4' size='xsmall' weight={500}>{text.users}</Text>
+      <Text color='dark-4' size='xsmall'>{text.suffix}</Text>
+      <Box pad={{vertical: '2px'}}>
+        <SyncLoader size={2} color={normalizeColor('dark-4', theme)} />
+      </Box>
+    </Box>
+  )
+}
+
 export function MessageInput() {
   const {returnToBeginning} = useContext(MessageScrollContext)
   const [uploadProgress, setUploadProgress] = useState(0)
@@ -242,37 +276,40 @@ export function MessageInput() {
   const empty = isEmpty(editorState)
 
   return (
-    <>
-    {(attachment || uploadProgress > 0) && (
-      <UploadProgress 
-        attachment={attachment} 
-        setAttachment={setAttachment} 
-        uploadProgress={uploadProgress}
-        empty={empty} />
-    )}
-    <Box flex={false} background='white' border={{color: 'dark-3'}} style={{maxHeight: '210px', minHeight: 'auto'}} 
-         round='xsmall' margin={{horizontal: 'small', bottom: 'small'}}>
-      <Keyboard onKeyDown={(e) => {
-        if (e.key === 'Enter' && !e.shiftKey && !empty) {
-          submit()
-          e.preventDefault()
-        }
-      }}>
-      <Box fill='horizontal' direction='row' align='center' pad='xxsmall'>
-        <Editor
-          editor={editor}
-          editorState={editorState}
-          setEditorState={setEditorState}
-          incidentId={incidentId}
-          disableSubmit={setDisable}
-          handlers={PLUGIN_TEMPLATES}
-          clearable />
-        <EmojiInput editor={editor} />
-        <FileInput />
-        <SendMsg loading={loading} empty={empty} onClick={submit} />
+    <Box flex={false} fill='horizontal'>
+      {(attachment || uploadProgress > 0) && (
+        <UploadProgress 
+          attachment={attachment} 
+          setAttachment={setAttachment} 
+          uploadProgress={uploadProgress}
+          empty={empty} />
+      )}
+      <Box flex={false} background='white' border={{color: 'dark-3'}} style={{maxHeight: '210px', minHeight: 'auto'}} 
+          round='xsmall' margin={{horizontal: 'small', bottom: 'small'}}>
+        <Keyboard onKeyDown={(e) => {
+          if (e.key === 'Enter' && !e.shiftKey && !empty) {
+            submit()
+            e.preventDefault()
+          }
+        }}>
+        <Box fill='horizontal' direction='row' align='center' pad='xxsmall'>
+          <Editor
+            editor={editor}
+            editorState={editorState}
+            setEditorState={setEditorState}
+            incidentId={incidentId}
+            disableSubmit={setDisable}
+            handlers={PLUGIN_TEMPLATES}
+            clearable />
+          <EmojiInput editor={editor} />
+          <FileInput />
+          <SendMsg loading={loading} empty={empty} onClick={submit} />
+        </Box>
+        </Keyboard>
       </Box>
-      </Keyboard>
+      <Box direction='row' align='center'>
+        <Typing />
+      </Box>
     </Box>
-    </>
   )
 }

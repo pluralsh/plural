@@ -1,6 +1,6 @@
 import { appendConnection, deepUpdate } from "../../utils/graphql"
 
-export const applyMessages = ({incident, ...prev}, {delta, payload}) => {
+export const applyMessages = ({incident, ...prev}, {incidentMessageDelta: {delta, payload}}) => {
   switch (delta) {
     case "CREATE":
       return {...prev, incident: appendConnection(incident, payload, 'Message', 'messages')}

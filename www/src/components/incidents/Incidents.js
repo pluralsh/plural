@@ -30,7 +30,7 @@ function Tags({tags}) {
   return (
     <Box direction='row' gap='xsmall' align='center'>
       {tags.map(({tag}) => (
-        <Box round='xsmall' pad={{horizontal: 'xsmall', vertical: '2px'}} background='light-2'>
+        <Box key={tag} round='xsmall' pad={{horizontal: 'xsmall', vertical: '2px'}} background='light-2'>
           <Text size='xsmall'>{tag}</Text>
         </Box>
       ))}
@@ -181,7 +181,7 @@ function Filters() {
   return (
     <Box direction='row' gap='xsmall' align='center' fill='horizontal'>
       {filters.map((filter) => (
-        <Box direction='row' round='xsmall' pad={{vertical: '2px', horizontal: 'xsmall'}} background='light-2' 
+        <Box key={`${filter.type}:${filter.value}`} direction='row' round='xsmall' pad={{vertical: '2px', horizontal: 'xsmall'}} background='light-2' 
              align='center' onClick={() => removeFilter(filter)} hoverIndicator='light-3' gap='xsmall'>
           <Text size='xsmall' weight={500}>{filter.type.toLowerCase()}</Text>
           {filter.value && <Text size='xsmall'>{filter.value}</Text>}
@@ -287,7 +287,7 @@ export function Incidents() {
             <TextInput 
               plain
               icon={<Search size='15px' />}
-              value={q}
+              value={q || ''}
               placeholder='search for an incident'
               onChange={({target: {value}}) => setQ(value)} />
           </Box>

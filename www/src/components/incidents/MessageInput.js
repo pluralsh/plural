@@ -160,7 +160,7 @@ function EmojiInput({editor}) {
     <>
     <Box ref={ref} flex={false}>
       <Control onClick={() => setOpen(true)} hoverIndicator='light-2' focusIndicator={false} 
-              tooltip='add attachment'  align='center' justify='center'>
+              tooltip='add emoji'  align='center' justify='center'>
         <Emoji size='15px' />
       </Control>
     </Box>

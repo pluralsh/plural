@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Box, Stack, Text } from "grommet"
 import Avatar from '../users/Avatar'
 import Markdown from './Markdown'
@@ -22,10 +22,18 @@ function isConsecutive(message, next) {
   return (firstTime.add(-10, 'minutes').isBefore(secondTime))
 }
 
-function MessageBody({message, next, setHover}) {
+function MessageBody({message, next, setHover, setSize}) {
+  const [painted, setPainted] = useState(false)
   const {present} = useContext(PresenceContext)
   const consecutive = isConsecutive(message, next)
   const formatted = dateFormat(moment(message.insertedAt))
+
+  useEffect(() => {
+    if (consecutive !== painted) {
+      setSize()
+    }
+    setPainted(consecutive)
+  }, [painted, setPainted, consecutive])
 
   return (
     <Box flex={false} direction='row' gap='xsmall' pad={{vertical: 'xsmall', left: 'small'}}>
@@ -64,7 +72,7 @@ export const Message = React.memo(({message, next, setSize}) => {
       <DateDivider message={message} next={next} setSize={setSize} />
       <Box flex={false} fill='horizontal' className={'message' + additionalClasses}>
         <Stack fill anchor='top-right'>
-          <MessageBody message={message} next={next} hover={hover} setHover={setHover} />
+          <MessageBody message={message} next={next} hover={hover} setHover={setHover} setSize={setSize} />
           <MessageControls message={message} setHover={setHover} />
         </Stack>
       </Box>

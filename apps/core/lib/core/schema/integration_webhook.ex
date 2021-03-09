@@ -31,7 +31,7 @@ defmodule Core.Schema.IntegrationWebhook do
 
   @valid ~w(name url actions account_id)a
 
-  @actions ~w(incident.create incident.update incident.message.create incident.message.delete)
+  @actions ~w(incident.create incident.update incident.message.create incident.message.update incident.message.delete)
 
   def changeset(model, attrs \\ %{}) do
     model

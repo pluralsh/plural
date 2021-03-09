@@ -22,6 +22,8 @@ import { Incidents } from './incidents/Incidents'
 import { Incident } from './incidents/Incident'
 import { Responses } from './incidents/Responses'
 import { IncidentContext } from './incidents/context'
+import { Integrations } from './integrations/Webhooks'
+import { Webhook } from './integrations/Webhook'
 
 export const TOOLBAR_SIZE = '50px'
 
@@ -61,6 +63,8 @@ export default function Forge() {
                     <Route path='/incidents/:incidentId/edit' component={(props) => <Incident {...props} editing />} />
                     <Route path='/incidents/:incidentId' component={Incident} />
                     <Route path='/incidents' component={Incidents} />
+                    <Route path='/webhooks/:id' component={Webhook} />
+                    <Route path='/webhooks' component={Integrations} />
                     <Route path='/' component={Explore} />
                   </Switch>
                 </Box>

@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react'
-import { Box, Text } from 'grommet';
+import { Box, Text, Collapsible } from 'grommet';
 import { Action } from './types';
 import Avatar from '../users/Avatar'
 import { dateFormat } from '../../utils/date'
@@ -77,7 +77,9 @@ function HistoryItem({history: {action, actor, insertedAt, changes}}) {
         </Box>
       )}
     </Box>
-    {open && <HistoryChanges changes={changes} />}
+    <Collapsible open={open}>
+      <HistoryChanges changes={changes} />
+    </Collapsible>
     </>
   )
 }

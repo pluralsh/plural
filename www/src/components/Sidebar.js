@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react'
 import { Box, Text } from 'grommet'
 import { useHistory, useLocation } from 'react-router-dom'
 import { Tooltip } from './utils/Tooltip'
-import { Aid, Book, Group, Package, Alert } from 'grommet-icons'
+import { Aid, Book, Group, Package, Alert, Network } from 'grommet-icons'
 
 const SIDEBAR_ROW_HEIGHT = '50px'
 const ICON_HEIGHT = '20px'
@@ -34,7 +34,8 @@ export function SidebarIcon({icon, text, selected, path}) {
       {icon}
     </Box>
     {hover  && (
-      <Tooltip pad='small' round='xsmall' justify='center' target={dropRef} side='right' align={{left: 'right'}}>
+      <Tooltip pad={{horizontal: 'small', vertical: 'xsmall'}} round='xsmall' justify='center' 
+               target={dropRef} side='right' align={{left: 'right'}}>
         <Text size='small' weight={500}>{text}</Text>
       </Tooltip>
     )}
@@ -47,7 +48,8 @@ const OPTIONS = [
   {text: 'Publishers', icon: <Book size={ICON_HEIGHT} />, path: '/publishers'},
   {text: 'Account', icon: <Group size={ICON_HEIGHT} />, path: '/accounts/edit/users'},
   {text: 'Incidents', icon: <Alert size={ICON_HEIGHT} />, path: '/incidents'},
-  {text: 'Responses', icon: <Aid size={ICON_HEIGHT} />, path: '/incidents/responses'}
+  {text: 'Responses', icon: <Aid size={ICON_HEIGHT} />, path: '/incidents/responses'},
+  {text: 'Integrations', icon: <Network size={ICON_HEIGHT} />, path: '/webhooks'}
 ]
 
 export default function Sidebar() {

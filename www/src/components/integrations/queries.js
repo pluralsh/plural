@@ -24,6 +24,7 @@ export const WEBHOOK_Q = gql`
     }
   }
   ${PageInfo}
+  ${IntegrationWebhookFragment}
   ${WebhookLogFragment}
 `
 

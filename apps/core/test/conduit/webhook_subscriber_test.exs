@@ -8,7 +8,7 @@ defmodule Core.Conduit.WebhookSubscriberTest do
       %{url: url} = webhook = insert(:integration_webhook)
       payload = %{action: "incident.created", payload: %{example: "payload"}}
       log     = insert(:webhook_log, webhook: webhook, payload: payload)
-      expect(HTTPoison, :post, fn ^url, _, body ->
+      expect(HTTPoison, :post, fn ^url, body, _ ->
         send self(), {:body, Jason.decode!(body)}
         {:ok, %HTTPoison.Response{status_code: 200, body: "OK"}}
       end)

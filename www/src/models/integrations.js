@@ -15,6 +15,7 @@ export const WebhookLogFragment = gql`
     id
     state
     status
+    payload
     response
     insertedAt
   }

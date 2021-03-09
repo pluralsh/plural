@@ -63,7 +63,7 @@ function WebhookHeader({webhook, setEdit}) {
   return (
     <Container flex={false} title={webhook.name} modifier={<WebhookControls webhook={webhook} setEdit={setEdit} />}>
       <Box flex={false} gap='small' pad='small'>
-        <Box background='light-3' pad='small' round='xsmall' gap='xsmall'>
+        <Box background='light-2' pad='small' round='xsmall' gap='xsmall'>
           <Attribute name='url'>
             <Text size='small'>{webhook.url}</Text>
           </Attribute>

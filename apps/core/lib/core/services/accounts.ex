@@ -240,7 +240,7 @@ defmodule Core.Services.Accounts do
       {"x-forge-signature", "sha1=#{signature}"},
       {"x-forge-timestamp", "#{time}"}
     ]
-    HTTPoison.post(url, headers, payload)
+    HTTPoison.post(url, payload, headers)
   end
 
   def hmac(secret, payload) when is_binary(payload) do

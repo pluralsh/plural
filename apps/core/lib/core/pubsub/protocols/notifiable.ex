@@ -3,6 +3,10 @@ defprotocol Core.PubSub.Notifiable do
   def notify(event)
 end
 
+defimpl Core.PubSub.Notifiable, for: Any do
+  def notify(_), do: :ok
+end
+
 defmodule Core.PubSub.Notification.Utils do
   def filter_preferences(followers, pref) do
     Enum.filter(followers, fn

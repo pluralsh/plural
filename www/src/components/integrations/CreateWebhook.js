@@ -21,16 +21,13 @@ export function ActionInput({actions, setActions}) {
   return (
     <Box flex={false} fill='horizontal'>
       <Box flex={false} fill='horizontal' direction='row' gap='small' align='center'>
-        <Box fill='horizontal'>
-          <TextInput
-            plain
-            value={value}
-            placeholder='add an action for this webhook'
-            onSelect={({suggestion: action}) => setActions([...actions, action])}
-            suggestions={ACTIONS.filter((action) => action.includes(value))}
-            onChange={({target: {value}}) => setValue(value)} />
-        </Box>
-        <SecondaryButton label='Add' onClick={() => setActions([...actions, value])} />
+        <TextInput
+          plain
+          value={value}
+          placeholder='add an action for this webhook'
+          onSelect={({suggestion: action}) => setActions([...actions, action])}
+          suggestions={ACTIONS.filter((action) => action.includes(value))}
+          onChange={({target: {value}}) => setValue(value)} />
       </Box>
       <Box flex={false} direction='row' gap='xxsmall' align='center' wrap>
         {actions.map((action) => (

@@ -8,7 +8,7 @@ import { useMutation, useQuery } from 'react-apollo'
 import { DELETE_WEBHOOK, UPDATE_WEBHOOK, WEBHOOK_Q } from './queries'
 import { ActionInput, ActionTab } from './CreateWebhook'
 import { BreadcrumbsContext } from '../Breadcrumbs'
-import { Close, Edit, Trash } from 'grommet-icons'
+import { Close, Edit, Refresh, Trash } from 'grommet-icons'
 
 function Container({title, children, modifier, ...props}) {
   return (
@@ -27,15 +27,15 @@ function Container({title, children, modifier, ...props}) {
   )
 }
 
-
-function WebhookLogs({webhook: {logs: {pageInfo, edges}, fetchMore}}) {
+function WebhookLogs({webhook: {logs: {pageInfo, edges}}, fetchMore, refetch}) {
   return (
-    <Container fill title='webhook logs'>
+    <Container title='webhook logs' 
+      modifier={<Control icon={<Refresh size='small' />} onClick={() => refetch()} />}>
       <Scroller
         id='webhooklogs'
         style={{width: '100%', height: '100%', overflow: 'auto'}}
         edges={edges}
-        mapper={({node}) => <WebhookLog key={node.id} log={node} />}
+        mapper={({node}, next) => <WebhookLog key={node.id} log={node} next={next.node} />}
         onLoadMore={() => pageInfo.hasNextPage && fetchMore({
           variables: {cursor: pageInfo.endCursor},
           updateQuery: (prev, {fetchMoreResult: {integrationWebhook: {logs}}}) => ({
@@ -48,8 +48,8 @@ function WebhookLogs({webhook: {logs: {pageInfo, edges}, fetchMore}}) {
 
 function Attribute({name, children}) {
   return (
-    <Box direction='row' align='center' fill='horizontal'>
-      <Box width='100px'>
+    <Box direction='row' align='center' fill='horizontal' pad='small'>
+      <Box width='80px' >
         <Text size='small' weight='bold'>{name}</Text>
       </Box>
       <Box fill='horizontal'>
@@ -63,19 +63,21 @@ function WebhookHeader({webhook, setEdit}) {
   return (
     <Container flex={false} title={webhook.name} modifier={<WebhookControls webhook={webhook} setEdit={setEdit} />}>
       <Box flex={false} gap='small' pad='small'>
-        <Box background='light-2' pad='small' round='xsmall' gap='xsmall'>
-          <Attribute name='url'>
-            <Text size='small'>{webhook.url}</Text>
-          </Attribute>
-          <Attribute name='secret'>
-            <Copyable noBorder pillText='Copied webhook secret' text={webhook.secret}
-              displayText={
-                <Text size='small' color='dark-3'>({webhook.secret.substring(0, 9) + "x".repeat(15)})</Text>
-              } />
-          </Attribute>
-        </Box>
-        <Box flex={false} direction='row' gap='xxsmall' align='center' wrap>
-          {webhook.actions.map((action) => <ActionTab key={action} action={action} />)}
+        <Box border={{color: 'light-5'}} round='xsmall'>
+          <Box gap='0px' border={{side: 'between', color: 'light-5'}}>
+            <Attribute name='url'>
+              <Text size='small'>{webhook.url}</Text>
+            </Attribute>
+            <Attribute name='secret'>
+              <Copyable noBorder pillText='Copied webhook secret' text={webhook.secret}
+                displayText={
+                  <Text size='small' color='dark-3'>({webhook.secret.substring(0, 9) + "x".repeat(15)})</Text>
+                } />
+            </Attribute>
+            <Box flex={false} pad='small' direction='row' gap='xxsmall' align='center' wrap>
+              {webhook.actions.map((action) => <ActionTab key={action} action={action} />)}
+            </Box>
+          </Box>
         </Box>
       </Box>
     </Container>
@@ -84,7 +86,7 @@ function WebhookHeader({webhook, setEdit}) {
 
 function Control({icon, onClick}) {
   return (
-    <Box width='25px' height='25px' onClick={onClick} hoverIndicator='light-4' focusIndicator={false}
+    <Box flex={false} width='25px' height='25px' onClick={onClick} hoverIndicator='light-4' focusIndicator={false}
          align='center' justify='center' round='xsmall'>
       {icon}
     </Box>
@@ -126,7 +128,8 @@ function WebhookControls({webhook, setEdit}) {
 function EditWebhook({webhook, setEdit}) {
   const [attributes, setAttributes] = useState({name: webhook.name, url: webhook.url, actions: webhook.actions})
   const [mutation, {loading}] = useMutation(UPDATE_WEBHOOK, {
-    variables: {id: webhook.id, attributes}
+    variables: {id: webhook.id, attributes},
+    onCompleted: () => setEdit(false)
   })
 
   return (
@@ -159,7 +162,7 @@ function EditWebhook({webhook, setEdit}) {
 export function Webhook() {
   const [edit, setEdit] = useState(false)
   const {id} = useParams()
-  const {data, fetchMore} = useQuery(WEBHOOK_Q, {variables: {id}, fetchPolicy: 'cache-and-network'})
+  const {data, fetchMore, refetch} = useQuery(WEBHOOK_Q, {variables: {id}, fetchPolicy: 'cache-and-network'})
   const {setBreadcrumbs} = useContext(BreadcrumbsContext)
   useEffect(() => {
     setBreadcrumbs([{url: `/webhooks`, text: 'webhooks'}, {url: `/webhooks/${id}`, text: id}])
@@ -168,11 +171,12 @@ export function Webhook() {
   if (!data) return null
 
   const {integrationWebhook: webhook} = data
+
   return (
     <Box fill pad='small' gap='small'>
       {!edit && <WebhookHeader webhook={webhook} setEdit={setEdit} />}
       {edit && <EditWebhook webhook={webhook} setEdit={setEdit} />}
-      <WebhookLogs webhook={webhook} fetchMore={fetchMore} />
+      <WebhookLogs webhook={webhook} fetchMore={fetchMore} refetch={refetch} />
     </Box>
   )
 }

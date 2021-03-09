@@ -17,7 +17,8 @@ export const DEFAULT_COLOR_THEME = {
   backgroundColor: '#2b2d33',
   orange: '#d7722c',
   error: '#CC4400',
-  presence: '#39E500'
+  presence: '#39E500',
+  success: 'action'
 }
 
 export const DEFAULT_THEME = {

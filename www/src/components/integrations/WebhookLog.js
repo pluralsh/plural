@@ -8,7 +8,8 @@ import moment from 'moment'
 
 function WebhookLogStatus({state}) {
   return (
-    <Box flex={false} pad={{horizontal: 'small', vertical: 'xsmall'}} background={StateToColor[state]}>
+    <Box flex={false} pad={{horizontal: 'small', vertical: 'xsmall'}} background={StateToColor[state]} 
+         width='80px' align='center' justify='center'>
       <Text size='small'>{state.toLowerCase()}</Text>
     </Box>
   )
@@ -17,7 +18,7 @@ function WebhookLogStatus({state}) {
 function WebhookResponse({log: {response, payload}}) {
   return (
     <Box flex={false}>
-      <Tabs defaultTab='response'>
+      <Tabs defaultTab='request'>
         <TabHeader>
           <TabHeaderItem name='request'>
             <Text weight={500} size='small'>Request</Text>
@@ -41,13 +42,13 @@ function WebhookResponse({log: {response, payload}}) {
   )
 }
 
-export function WebhookLog({log}) {
+export function WebhookLog({log, next}) {
   const [open, setOpen] = useState(false)
 
   return (
     <Box flex={false} fill='horizontal'>
       <Box flex={false} pad='small' fill='horizontal' direction='row' align='center' onClick={() => setOpen(!open)} hoverIndicator='light-3'
-        border={{side: 'bottom', color: 'light-5'}}>
+        border={next ? {side: 'bottom', color: 'light-5'} : null}>
         <Box fill='horizontal' direction='row' align='center' gap='xsmall'>
           <Text size='small'>Response {log.status}</Text>
           <Text size='small' color='dark-3'>{dateFormat(moment(log.insertedAt))}</Text>

@@ -9,6 +9,7 @@ defmodule Core.Schema.WebhookLog do
     field :status,   :integer
     field :response, :binary
     field :attempts, :integer
+    field :payload,  :map
 
     belongs_to :webhook, IntegrationWebhook
 
@@ -23,7 +24,7 @@ defmodule Core.Schema.WebhookLog do
     from(ql in query, order_by: ^order)
   end
 
-  @valid ~w(state status response webhook_id attempts)a
+  @valid ~w(state status response webhook_id attempts payload)a
 
   def changeset(model, attrs \\ %{}) do
     model

@@ -17,7 +17,7 @@ defmodule Core.PubSub.IntegrationWebhook.IncidentsTest do
       assert Enum.map(results, &elem(&1, 0))
              |> ids_equal(webhooks)
 
-      for {webhook, log, %{action: "incident.created", payload: payload}} <- results do
+      for {webhook, %{payload: %{action: "incident.created", payload: payload}} = log} <- results do
         assert webhook.id == log.webhook_id
         assert log.state == :sending
         assert log.attempts == 0
@@ -39,7 +39,7 @@ defmodule Core.PubSub.IntegrationWebhook.IncidentsTest do
       assert Enum.map(results, &elem(&1, 0))
              |> ids_equal(webhooks)
 
-      for {webhook, log, %{action: "incident.upated", payload: payload}} <- results do
+      for {webhook, %{payload: %{action: "incident.upated", payload: payload}} = log} <- results do
         assert webhook.id == log.webhook_id
         assert log.state == :sending
         assert log.attempts == 0
@@ -62,7 +62,7 @@ defmodule Core.PubSub.IntegrationWebhook.IncidentsTest do
       assert Enum.map(results, &elem(&1, 0))
              |> ids_equal(webhooks)
 
-      for {webhook, log, %{action: "incident.message.created", payload: payload}} <- results do
+      for {webhook, %{payload: %{action: "incident.message.created", payload: payload}} = log} <- results do
         assert webhook.id == log.webhook_id
         assert log.state == :sending
         assert log.attempts == 0
@@ -85,7 +85,7 @@ defmodule Core.PubSub.IntegrationWebhook.IncidentsTest do
       assert Enum.map(results, &elem(&1, 0))
              |> ids_equal(webhooks)
 
-      for {webhook, log, %{action: "incident.message.updated", payload: payload}} <- results do
+      for {webhook, %{payload: %{action: "incident.message.updated", payload: payload}} = log} <- results do
         assert webhook.id == log.webhook_id
         assert log.state == :sending
         assert log.attempts == 0
@@ -108,7 +108,7 @@ defmodule Core.PubSub.IntegrationWebhook.IncidentsTest do
       assert Enum.map(results, &elem(&1, 0))
              |> ids_equal(webhooks)
 
-      for {webhook, log, %{action: "incident.message.deleted", payload: payload}} <- results do
+      for {webhook, %{payload: %{action: "incident.message.deleted", payload: payload}} = log} <- results do
         assert webhook.id == log.webhook_id
         assert log.state == :sending
         assert log.attempts == 0

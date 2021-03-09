@@ -117,6 +117,7 @@ defmodule GraphQl.Schema.Account do
     field :state,    non_null(:webhook_log_state)
     field :status,   :integer
     field :response, :string
+    field :payload,  :map
 
     field :webhook, :integration_webhook, resolve: dataloader(Account)
 

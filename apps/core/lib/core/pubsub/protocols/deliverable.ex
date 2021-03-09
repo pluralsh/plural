@@ -15,7 +15,17 @@ defimpl Core.PubSub.Deliverable, for: Any do
   def payload(_), do: :ok
 end
 
+defmodule Core.PubSub.WebhookUtils do
+  defmacro __using__(_) do
+    quote do
+      import Piazza.Ecto.Schema, only: [mapify: 1]
+    end
+  end
+end
+
 defimpl Core.PubSub.Deliverable, for: [Core.PubSub.IncidentCreated, Core.PubSub.IncidentUpdated] do
+  use Core.PubSub.WebhookUtils
+
   def action(%Core.PubSub.IncidentCreated{}), do: "incident.created"
   def action(_), do: "incident.updated"
 
@@ -29,7 +39,7 @@ defimpl Core.PubSub.Deliverable, for: [Core.PubSub.IncidentCreated, Core.PubSub.
     |> Core.Repo.all()
   end
 
-  def payload(%{item: item}), do: item
+  def payload(%{item: item}), do: mapify(item)
 end
 
 defimpl Core.PubSub.Deliverable, for: [
@@ -37,6 +47,8 @@ defimpl Core.PubSub.Deliverable, for: [
                                     Core.PubSub.IncidentMessageUpdated,
                                     Core.PubSub.IncidentMessageDeleted
                                 ] do
+  use Core.PubSub.WebhookUtils
+
   def action(%Core.PubSub.IncidentMessageCreated{}), do: "incident.message.created"
   def action(%Core.PubSub.IncidentMessageUpdated{}), do: "incident.message.updated"
   def action(_), do: "incident.message.deleted"
@@ -51,5 +63,5 @@ defimpl Core.PubSub.Deliverable, for: [
     |> Core.Repo.all()
   end
 
-  def payload(%{item: item}), do: item
+  def payload(%{item: item}), do: mapify(item)
 end

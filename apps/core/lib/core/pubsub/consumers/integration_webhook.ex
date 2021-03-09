@@ -11,14 +11,17 @@ defmodule Core.PubSub.Consumers.IntegrationWebhook do
   def handle_event(event) do
     with [_ | _] = webhooks <- Deliverable.hooks(event) do
       action  = Deliverable.action(event)
-      payload = Deliverable.payload(event)
+      payload = %{action: action, payload: Deliverable.payload(event)}
 
-      log = Enum.map(webhooks, &timestamped(%{webhook_id: &1.id, status: 0, attempts: 0, state: :sending}))
-      {_, logs} = Core.Repo.insert_all(WebhookLog, log, returning: true)
+      logs = Enum.map(webhooks, &timestamped(%{
+        webhook_id: &1.id, status: 0, attempts: 0, state: :sending, payload: payload
+      }))
+
+      {_, logs} = Core.Repo.insert_all(WebhookLog, logs, returning: true)
 
       Enum.zip(webhooks, logs)
       |> Enum.map(fn {webhook, log} ->
-        body = {webhook, log, %{action: action, payload: payload}}
+        body = {webhook, log}
         Core.Conduit.Broker.publish(%Conduit.Message{body: body}, :webhook)
         body
       end)

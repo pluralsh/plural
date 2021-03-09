@@ -1,7 +1,7 @@
 defmodule Core.Policies.Account do
   use Piazza.Policy
   import Core.Policies.Utils
-  alias Core.Schema.{User, Account, Group, GroupMember, Invite, Role}
+  alias Core.Schema.{User, Account, Group, GroupMember, Invite, Role, IntegrationWebhook}
 
   def can?(%User{id: id}, %Account{root_user_id: id}, _), do: :pass
 
@@ -23,6 +23,14 @@ defmodule Core.Policies.Account do
   def can?(%User{} = user, %GroupMember{} = group, action) do
     %{group: group} = Core.Repo.preload(group, [group: :account])
     can?(user, group, action)
+  end
+
+  def can?(%User{account_id: aid}, %IntegrationWebhook{account_id: aid}, :access),
+    do: :pass
+
+  def can?(%User{} = user, %IntegrationWebhook{} = webhook, _) do
+    %{account: account} = Core.Repo.preload(webhook, [:account])
+    check_rbac(user, :integrations, account: account)
   end
 
   def can?(user, %Ecto.Changeset{} = cs, action),

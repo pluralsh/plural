@@ -4,6 +4,7 @@ defmodule GraphQl.Schema.Account do
   alias GraphQl.Resolvers.{Account, User}
 
   enum_from_list :permission, Core.Schema.Role, :permissions, []
+  ecto_enum :webhook_log_state, Core.Schema.WebhookLog.State
 
   input_object :account_attributes do
     field :name, :string
@@ -30,6 +31,12 @@ defmodule GraphQl.Schema.Account do
     field :id,       :id
     field :user_id,  :id
     field :group_id, :id
+  end
+
+  input_object :integration_webhook_attributes do
+    field :name, non_null(:string)
+    field :url,  non_null(:string)
+    field :actions, list_of(:string)
   end
 
   object :account do
@@ -89,9 +96,38 @@ defmodule GraphQl.Schema.Account do
     timestamps()
   end
 
+  object :integration_webhook do
+    field :id,      non_null(:id)
+    field :name,    non_null(:string)
+    field :url,     non_null(:string)
+    field :actions, list_of(:string)
+    field :secret,  non_null(:string)
+
+    field :account, :account, resolve: dataloader(Account)
+
+    connection field :logs, node_type: :webhook_log do
+      resolve &Account.list_webhook_logs/2
+    end
+
+    timestamps()
+  end
+
+  object :webhook_log do
+    field :id,       non_null(:id)
+    field :state,    non_null(:webhook_log_state)
+    field :status,   :integer
+    field :response, :string
+
+    field :webhook, :integration_webhook, resolve: dataloader(Account)
+
+    timestamps()
+  end
+
   connection node_type: :group
   connection node_type: :group_member
   connection node_type: :role
+  connection node_type: :integration_webhook
+  connection node_type: :webhook_log
 
   object :account_queries do
     field :invite, :invite do
@@ -125,6 +161,19 @@ defmodule GraphQl.Schema.Account do
       middleware Authenticated
 
       resolve &Account.list_roles/2
+    end
+
+    connection field :integration_webhooks, node_type: :integration_webhook do
+      middleware Authenticated
+
+      resolve &Account.list_webhooks/2
+    end
+
+    field :integration_webhook, :integration_webhook do
+      middleware Authenticated
+      arg :id, non_null(:id)
+
+      resolve &Account.resolve_webhook/2
     end
   end
 
@@ -200,6 +249,28 @@ defmodule GraphQl.Schema.Account do
       arg :id, non_null(:id)
 
       resolve safe_resolver(&Account.delete_role/2)
+    end
+
+    field :create_integration_webhook, :integration_webhook do
+      middleware Authenticated
+      arg :attributes, non_null(:integration_webhook_attributes)
+
+      resolve safe_resolver(&Account.create_webhook/2)
+    end
+
+    field :update_integration_webhook, :integration_webhook do
+      middleware Authenticated
+      arg :id, non_null(:id)
+      arg :attributes, non_null(:integration_webhook_attributes)
+
+      resolve safe_resolver(&Account.update_webhook/2)
+    end
+
+    field :delete_integration_webhook, :integration_webhook do
+      middleware Authenticated
+      arg :id, non_null(:id)
+
+      resolve safe_resolver(&Account.delete_webhook/2)
     end
   end
 end

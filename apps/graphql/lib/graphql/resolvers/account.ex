@@ -1,12 +1,14 @@
 defmodule GraphQl.Resolvers.Account do
   use GraphQl.Resolvers.Base, model: Core.Schema.Account
-  alias Core.Schema.{Group, GroupMember, Role, RoleBinding}
+  alias Core.Schema.{Group, GroupMember, Role, RoleBinding, IntegrationWebhook, WebhookLog}
   alias Core.Services.Accounts
 
   def query(Group, _), do: Group
   def query(Role, _), do: Role
   def query(RoleBinding, _), do: RoleBinding
   def query(GroupMember, _), do: GroupMember
+  def query(IntegrationWebhook, _), do: IntegrationWebhook
+  def query(WebhookLog, _), do: WebhookLog
   def query(_, _), do: Account
 
   def update_account(%{attributes: attrs}, %{context: %{current_user: user}}),
@@ -28,6 +30,23 @@ defmodule GraphQl.Resolvers.Account do
     Role.ordered()
     |> Role.for_account(aid)
     |> paginate(args)
+  end
+
+  def list_webhooks(args, %{context: %{current_user: %{account_id: aid}}}) do
+    IntegrationWebhook.for_account(aid)
+    |> IntegrationWebhook.ordered()
+    |> paginate(args)
+  end
+
+  def list_webhook_logs(args, %{source: %{id: webhook_id}}) do
+    WebhookLog.for_webhook(webhook_id)
+    |> WebhookLog.ordered()
+    |> paginate(args)
+  end
+
+  def resolve_webhook(%{id: id}, %{context: %{current_user: user}}) do
+    Accounts.get_webhook!(id)
+    |> Core.Policies.Account.allow(user, :access)
   end
 
   def resolve_role(%{id: id}, _),
@@ -66,6 +85,15 @@ defmodule GraphQl.Resolvers.Account do
 
   def delete_role(%{id: id}, %{context: %{current_user: user}}),
     do: Accounts.delete_role(id, user)
+
+  def create_webhook(%{attributes: attrs}, %{context: %{current_user: user}}),
+    do: Accounts.create_webhook(attrs, user)
+
+  def update_webhook(%{id: id, attributes: attrs}, %{context: %{current_user: user}}),
+    do: Accounts.update_webhook(attrs, id, user)
+
+  def delete_webhook(%{id: id}, %{context: %{current_user: user}}),
+    do: Accounts.delete_webhook(id, user)
 
   defp with_permissions(%{permissions: perms} = attrs) when is_list(perms) do
     perm_set = MapSet.new(perms)

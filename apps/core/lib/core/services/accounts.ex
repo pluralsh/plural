@@ -1,13 +1,14 @@
 defmodule Core.Services.Accounts do
   use Core.Services.Base
   import Core.Policies.Account
-  alias Core.Schema.{User, Account, Group, GroupMember, Invite, Role}
+  alias Core.Schema.{User, Account, Group, GroupMember, Invite, Role, IntegrationWebhook}
 
   @type account_resp :: {:ok, Account.t} | {:error, term}
   @type group_resp :: {:ok, Group.t} | {:error, term}
   @type group_member_resp :: {:ok, GroupMember.t} | {:error, term}
   @type invite_resp :: {:ok, Invite.t} | {:error, term}
   @type role_resp :: {:ok, Role.t} | {:error, term}
+  @type webhook_resp :: {:ok, IntegrationWebhook.t} | {:error, term}
 
   def get_account!(id), do: Core.Repo.get!(Account, id)
 
@@ -20,6 +21,8 @@ defmodule Core.Services.Accounts do
   def get_role(id), do: Core.Repo.get(Role, id)
 
   def get_role!(id), do: Core.Repo.get!(Role, id)
+
+  def get_webhook!(id), do: Core.Repo.get!(IntegrationWebhook, id)
 
   def get_group_member(group_id, user_id),
     do: Core.Repo.get_by(GroupMember, user_id: user_id, group_id: group_id)
@@ -187,5 +190,61 @@ defmodule Core.Services.Accounts do
     get_role!(id)
     |> allow(user, :delete)
     |> when_ok(:delete)
+  end
+
+
+  @doc """
+  Creates a new integration webhook for this account
+  """
+  @spec create_webhook(map, User.t) :: webhook_resp
+  def create_webhook(attrs, %User{account_id: account_id} = user) do
+    %IntegrationWebhook{account_id: account_id}
+    |> IntegrationWebhook.changeset(attrs)
+    |> allow(user, :create)
+    |> when_ok(:insert)
+  end
+
+  @doc """
+  Updates an integration webhook
+  """
+  @spec update_webhook(map, binary, User.t) :: webhook_resp
+  def update_webhook(attrs, webhook_id, user) do
+    get_webhook!(webhook_id)
+    |> IntegrationWebhook.changeset(attrs)
+    |> allow(user, :edit)
+    |> when_ok(:update)
+  end
+
+  @doc """
+  Deletes an integration webhook
+  """
+  @spec delete_webhook(binary, User.t) :: webhook_resp
+  def delete_webhook(webhook_id, user) do
+    get_webhook!(webhook_id)
+    |> allow(user, :edit)
+    |> when_ok(:delete)
+  end
+
+  @doc """
+  Makes a signed http POST to the given webhook url, with the payload:
+  """
+  @spec post_webhook(map, IntegrationWebhook.t) :: {:ok, %HTTPoison.Response{}} | {:error, term}
+  def post_webhook(message, %IntegrationWebhook{url: url, secret: secret}) do
+    time      = :os.system_time(:millisecond)
+    payload   = Jason.encode!(message)
+    signature = hmac(secret, "#{payload}\n#{time}")
+
+    headers   = [
+      {"content-type", "application/json"},
+      {"accept", "application/json"},
+      {"x-forge-signature", "sha1=#{signature}"},
+      {"x-forge-timestamp", "#{time}"}
+    ]
+    HTTPoison.post(url, headers, payload)
+  end
+
+  def hmac(secret, payload) when is_binary(payload) do
+    :crypto.hmac(:sha, secret, payload)
+    |> Base.encode16(case: :lower)
   end
 end

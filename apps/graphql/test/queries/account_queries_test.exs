@@ -102,4 +102,43 @@ defmodule GraphQl.AccountQueriesTest do
              |> ids_equal(roles)
     end
   end
+
+  describe "integrationWebhooks" do
+    setup [:setup_root_user]
+
+    test "it can list webhooks for an account", %{user: user, account: account} do
+      webhooks = insert_list(3, :integration_webhook, account: account)
+
+      {:ok, %{data: %{"integrationWebhooks" => found}}} = run_query("""
+        query {
+          integrationWebhooks(first: 5) { edges { node { id } } }
+        }
+      """, %{}, %{current_user: user})
+
+      assert from_connection(found)
+             |> ids_equal(webhooks)
+    end
+  end
+
+  describe "integrationWebhook" do
+    setup [:setup_root_user]
+
+    test "it can list webhook logs", %{user: user, account: account} do
+      webhook = insert(:integration_webhook, account: account)
+      logs    = insert_list(3, :webhook_log, webhook: webhook)
+
+      {:ok, %{data: %{"integrationWebhook" => found}}} = run_query("""
+        query Hook($id: ID!) {
+          integrationWebhook(id: $id) {
+            id
+            logs(first: 5) { edges { node { id } } }
+          }
+        }
+      """, %{"id" => webhook.id}, %{current_user: user})
+
+      assert found["id"] == webhook.id
+      assert from_connection(found["logs"])
+             |> ids_equal(logs)
+    end
+  end
 end

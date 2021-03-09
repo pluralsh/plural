@@ -8,6 +8,7 @@ defmodule Core.Conduit.Base do
         exchange "forge.topic", type: :topic, durable: true
 
         defqueue "forge.rtc"
+        defqueue "forge.webhook"
       end
 
       pipeline :out_tracking do
@@ -26,6 +27,7 @@ defmodule Core.Conduit.Base do
         pipe_through [:out_tracking]
 
         publish :rtc, exchange: "forge.topic", to: "forge.rtc"
+        publish :webhook, exchange: "forge.topic", to: "forge.webhook"
       end
 
       outgoing do

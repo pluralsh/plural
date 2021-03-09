@@ -199,4 +199,67 @@ defmodule GraphQl.AccountMutationTest do
       refute refetch(role)
     end
   end
+
+  describe "createIntegrationWebhook" do
+    setup [:setup_root_user]
+
+    test "it can create webhooks", %{user: user} do
+      {:ok, %{data: %{"createIntegrationWebhook" => create}}} = run_query("""
+        mutation Create($attrs: IntegrationWebhookAttributes!) {
+          createIntegrationWebhook(attributes: $attrs) {
+            id
+            url
+          }
+        }
+      """, %{"attrs" => %{
+        "name" => "hook",
+        "url" => "https://example.com",
+        "actions" => ["incident.create"]
+      }}, %{current_user: user})
+
+      assert create["id"]
+      assert create["url"] == "https://example.com"
+    end
+  end
+
+  describe "updateIntegrationWebhook" do
+    setup [:setup_root_user]
+
+    test "it can create webhooks", %{user: user, account: account} do
+      webhook = insert(:integration_webhook, account: account)
+      {:ok, %{data: %{"updateIntegrationWebhook" => update}}} = run_query("""
+        mutation Create($id: ID!, $attrs: IntegrationWebhookAttributes!) {
+          updateIntegrationWebhook(id: $id, attributes: $attrs) {
+            id
+            url
+          }
+        }
+      """, %{"id" => webhook.id, "attrs" => %{
+        "name" => "hook",
+        "url" => "https://example.com",
+        "actions" => ["incident.create"]
+      }}, %{current_user: user})
+
+      assert update["id"] == webhook.id
+      assert update["url"] == "https://example.com"
+    end
+  end
+
+  describe "deleteIntegrationWebhook" do
+    setup [:setup_root_user]
+
+    test "it can create webhooks", %{user: user, account: account} do
+      webhook = insert(:integration_webhook, account: account)
+      {:ok, %{data: %{"deleteIntegrationWebhook" => update}}} = run_query("""
+        mutation Create($id: ID!) {
+          deleteIntegrationWebhook(id: $id) {
+            id
+          }
+        }
+      """, %{"id" => webhook.id}, %{current_user: user})
+
+      assert update["id"] == webhook.id
+      refute refetch(webhook)
+    end
+  end
 end

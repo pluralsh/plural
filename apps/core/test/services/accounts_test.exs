@@ -196,4 +196,80 @@ defmodule Core.Services.AccountsTest do
       {:error, _} = Accounts.delete_role(role.id, insert(:user))
     end
   end
+
+  describe "#create_webhook/2" do
+    setup [:setup_root_user]
+
+    test "root users can create webhooks", %{user: user} do
+      {:ok, webhook} = Accounts.create_webhook(%{
+        name: "webhook",
+        url: "https://example.com",
+        actions: ["incident.create"]
+      }, user)
+
+      assert webhook.account_id == user.account_id
+      assert webhook.name == "webhook"
+      assert webhook.url == "https://example.com"
+      assert webhook.actions == ["incident.create"]
+    end
+
+    test "nonprivileged users cannot create", %{account: account} do
+      user = insert(:user, account: account)
+
+      {:error, _} = Accounts.create_webhook(%{
+        name: "webhook",
+        url: "https://example.com",
+        actions: ["incident.create"]
+      }, user)
+    end
+  end
+
+  describe "#update_webhook/3" do
+    setup [:setup_root_user]
+
+    test "root users can update webhooks", %{user: user} do
+      webhook = insert(:integration_webhook, account: user.account)
+      {:ok, updated} = Accounts.update_webhook(%{
+        name: "webhook",
+        url: "https://example.com",
+        actions: ["incident.create", "incident.update"]
+      }, webhook.id, user)
+
+      assert updated.id == webhook.id
+      assert updated.account_id == user.account_id
+      assert updated.name == "webhook"
+      assert updated.url == "https://example.com"
+      assert updated.actions == ["incident.create", "incident.update"]
+    end
+
+    test "nonprivileged users cannot update", %{account: account} do
+      user = insert(:user, account: account)
+      webhook = insert(:integration_webhook, account: user.account)
+
+      {:error, _} = Accounts.update_webhook(%{
+        name: "webhook",
+        url: "https://example.com",
+        actions: ["incident.create"]
+      }, webhook.id, user)
+    end
+  end
+
+  describe "#delete_webhook/2" do
+    setup [:setup_root_user]
+
+    test "root users can delete webhooks", %{user: user} do
+      webhook = insert(:integration_webhook, account: user.account)
+      {:ok, deleted} = Accounts.delete_webhook(webhook.id, user)
+
+      assert deleted.id == webhook.id
+      refute refetch(webhook)
+    end
+
+    test "nonprivileged users cannot delete", %{account: account} do
+      user = insert(:user, account: account)
+      webhook = insert(:integration_webhook, account: user.account)
+
+      {:error, _} = Accounts.delete_webhook(webhook.id, user)
+    end
+  end
 end

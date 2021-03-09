@@ -287,4 +287,24 @@ defmodule Core.Factory do
       user: build(:user)
     }
   end
+
+  def integration_webhook_factory do
+    %Schema.IntegrationWebhook{
+      name: sequence(:int_webhook, & "webhook-#{&1}"),
+      account: build(:account),
+      secret: "example-secret",
+      url: "https://example.com",
+      actions: ["incident.create"]
+    }
+  end
+
+  def webhook_log_factory do
+    %Schema.WebhookLog{
+      state: :sending,
+      status: 0,
+      attempts: 0,
+      response: "OK",
+      webhook: build(:integration_webhook)
+    }
+  end
 end

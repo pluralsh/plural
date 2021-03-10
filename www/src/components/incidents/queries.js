@@ -219,3 +219,9 @@ export const NOTIF_SUB = gql`
   }
   ${NotificationFragment}
 `
+
+export const ZOOM_MEETING = gql`
+  mutation Zoom($attributes: ZoomMeetingAttributes!) {
+    zoomMeeting(attributes: $attributes) { joinUrl password }
+  }
+`

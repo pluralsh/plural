@@ -54,7 +54,6 @@ export function StatusSelector({status, setStatus}) {
 export function Status({incident: {status, ...incident}, setActive}) {
   const ref = useRef()
   const [open, setOpen] = useState(false)
-  const [hover, setHover] = useState(false)
   const user = useContext(CurrentUserContext)
   const editable = canEdit(incident, user) && setActive
   useEffect(() => setOpen(false), [status])
@@ -62,10 +61,9 @@ export function Status({incident: {status, ...incident}, setActive}) {
   return (
     <>
     <Box ref={ref} flex={false} round='xsmall' direction='row' gap='xsmall' align='center'
-      onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} focusIndicator={false}
-      onClick={() => editable && setOpen(true)}>
+      focusIndicator={false} onClick={() => editable && setOpen(true)}>
       <Text size='small' weight={500} color={textColor(status)}>{normalize(status)}</Text>
-      {((hover && editable) || open) && <Down size='small' />}
+      {editable && <Down size='small' />}
     </Box>
     {open && (
       <Drop target={ref.current} onClickOutside={() => setOpen(false)} align={{top: 'bottom'}}>

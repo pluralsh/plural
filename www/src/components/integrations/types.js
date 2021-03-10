@@ -17,3 +17,11 @@ export const StateToColor = {
   DELIVERED: 'success',
   FAILED: 'failed'
 }
+
+export const OAuthService = {
+  ZOOM: 'ZOOM'
+}
+
+export const ParamToService = {
+  zoom: OAuthService.ZOOM
+}

@@ -3,7 +3,7 @@ import { Box, Text } from 'grommet'
 import { SIDEBAR_WIDTH } from '../constants'
 import { SectionChoice } from '../utils/SectionChoice'
 import { useHistory, useParams } from 'react-router'
-import { Edit, Group, Script, User } from 'grommet-icons'
+import { Edit, Group, Network, Script, User } from 'grommet-icons'
 import { useMutation } from 'react-apollo'
 import { UPDATE_ACCOUNT } from './queries'
 import { Button, InputCollection, ResponsiveInput } from 'forge-core'
@@ -15,6 +15,7 @@ import { BreadcrumbsContext } from '../Breadcrumbs'
 import { FaCreditCard, FaReceipt } from 'react-icons/fa'
 import { CardList } from '../users/BillingDetails'
 import Invoices from '../payments/Invoices'
+import { OAuthIntegrations } from '../integrations/OAuthIntegrations'
 
 const ICON_SIZE = '12px'
 
@@ -24,7 +25,8 @@ const ViewOptions = {
   GROUPS: 'groups',
   ROLES: 'roles',
   METHODS: 'methods',
-  INVOICES: 'invoices'
+  INVOICES: 'invoices',
+  INTEGRATIONS: 'integrations'
 }
 
 const VIEWS = [
@@ -34,6 +36,7 @@ const VIEWS = [
   {text: 'Roles', view: ViewOptions.ROLES, icon: <Script size={ICON_SIZE} />},
   {text: 'Payment Methods', view: ViewOptions.METHODS, icon: <FaCreditCard size={ICON_SIZE} />},
   {text: 'Invoices', view: ViewOptions.INVOICES, icon: <FaReceipt size={ICON_SIZE} />},
+  {text: 'OAuth Integrations', view: ViewOptions.INTEGRATIONS, icon: <Network size={ICON_SIZE} />},
 ]
 
 function EditAttributes() {
@@ -93,6 +96,7 @@ export function EditAccount({billing}) {
         {section === ViewOptions.ROLES && <Roles />}
         {section === ViewOptions.METHODS && <CardList />}
         {section === ViewOptions.INVOICES && <Invoices />}
+        {section === ViewOptions.INTEGRATIONS && <OAuthIntegrations />}
       </Box>
     </Box>
   )

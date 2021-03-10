@@ -57,7 +57,6 @@ export function severityColor(severity) {
 export function Severity({incident: {severity, ...incident}, setSeverity}) {
   const ref = useRef()
   const [open, setOpen] = useState(false)
-  const [hover, setHover] = useState(false)
   const user = useContext(CurrentUserContext)
   const color = severityColor(severity)
   const editable = canEdit(incident, user) && setSeverity
@@ -66,10 +65,9 @@ export function Severity({incident: {severity, ...incident}, setSeverity}) {
   return (
     <>
     <Box ref={ref} flex={false} background={color} round='xsmall' align='center' direction='row' gap='xsmall'
-         pad={{horizontal: 'xsmall', vertical: '1px'}} onClick={() => editable && setOpen(true)} focusIndicator={false}
-         onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
+         pad={{horizontal: 'xsmall', vertical: '1px'}} onClick={() => editable && setOpen(true)} focusIndicator={false}>
       <Text size='small' weight={500}>SEV {severity}</Text> 
-      {((hover && editable) || open) && <Down size='small' />}
+      {editable && <Down size='small' />}
     </Box>
     {open && (
       <Drop target={ref.current} align={{top: 'bottom'}} onClickOutside={() => setOpen(false)}>

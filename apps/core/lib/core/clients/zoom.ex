@@ -4,7 +4,9 @@ defmodule Core.Clients.Zoom do
   def create_token(code, redirect_uri) do
     query = URI.encode_query(%{code: code, redirect_uri: redirect_uri, grant_type: :authorization_code})
 
-    case HTTPoison.post("https://zoom.us/oauth/token?#{query}", "", [{"Authorization", "Basic #{basic_auth()}"}]) do
+    HTTPoison.post("https://zoom.us/oauth/token?#{query}", "", [{"Authorization", "Basic #{basic_auth()}"}])
+    |> IO.inspect()
+    |> case do
       {:ok, %{status_code: 200, body: body}} -> {:ok, Jason.decode!(body)}
       failed ->
         Logger.error "Failed to call zoom: #{inspect(failed)}"

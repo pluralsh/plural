@@ -24,6 +24,7 @@ import { Responses } from './incidents/Responses'
 import { IncidentContext } from './incidents/context'
 import { Integrations } from './integrations/Webhooks'
 import { Webhook } from './integrations/Webhook'
+import { OauthCreator } from './integrations/OauthCreator'
 
 export const TOOLBAR_SIZE = '50px'
 
@@ -65,6 +66,7 @@ export default function Forge() {
                     <Route path='/incidents' component={Incidents} />
                     <Route path='/webhooks/:id' component={Webhook} />
                     <Route path='/webhooks' component={Integrations} />
+                    <Route path='/oauth/accept/:service' component={OauthCreator} />
                     <Route path='/' component={Explore} />
                   </Switch>
                 </Box>

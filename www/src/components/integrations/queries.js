@@ -1,5 +1,5 @@
 import gql from 'graphql-tag'
-import { IntegrationWebhookFragment, WebhookLogFragment } from '../../models/integrations'
+import { IntegrationWebhookFragment, WebhookLogFragment, OauthIntegration } from '../../models/integrations'
 import { PageInfo } from '../../models/misc'
 
 export const WEBHOOKS_Q = gql`
@@ -53,4 +53,18 @@ export const DELETE_WEBHOOK = gql`
     }
   } 
   ${IntegrationWebhookFragment}
+`
+
+export const OAUTH_Q = gql`
+  query { oauthIntegrations { ...OauthIntegration } }
+  ${OauthIntegration}
+`
+
+export const CREATE_OAUTH = gql`
+  mutation Create($attributes: OauthIntegrationAttributes!) {
+    createOauthIntegration(attributes: $attributes) {
+      ...OauthIntegration
+    }
+  }
+  ${OauthIntegration}
 `

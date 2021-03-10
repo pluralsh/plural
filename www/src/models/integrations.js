@@ -20,3 +20,18 @@ export const WebhookLogFragment = gql`
     insertedAt
   }
 `
+
+export const OauthIntegration = gql`
+  fragment OauthIntegration on OauthIntegration {
+    id
+    service
+    insertedAt
+  }
+`
+
+export const ZoomMeeting = gql`
+  fragment ZoomMeeting on ZoomMeeting {
+    joinUrl
+    password
+  }
+`

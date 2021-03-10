@@ -71,7 +71,7 @@ end
 defimpl Core.PubSub.Fanout, for: Core.PubSub.ZoomMeetingCreated do
   def fanout(%{item: %{incident_id: id, join_url: join, password: password}, actor: actor}) when is_binary(id) do
     Core.Services.Incidents.create_message(%{
-      text: "I just created a zoom meeting here: #{join} (password is #{password})"
+      text: "I just created a zoom meeting, you can join here: #{join}"
     }, id, actor)
   end
 end

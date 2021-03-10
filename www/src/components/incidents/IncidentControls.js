@@ -128,7 +128,9 @@ function ZoomMeeting({incident: {id, title}}) {
   const meeting = data && data.createZoom
   return (
     <>
-    <Control icon={<Zoom size='17px' color='plain' />} onClick={mutation} />
+    <Box flex={false} pad={{horizontal: 'xsmall'}} onClick={mutation}>
+      <Zoom size='17px' color='plain' />
+    </Box>
     {meeting && open && (
       <Layer modal onClickOutside={() => setOpen(false)}>
         <Box width='40vw'>

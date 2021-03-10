@@ -13,7 +13,7 @@ defmodule Core.PubSub.Fanout.AccountsTest do
 
       {:ok, msg} = PubSub.Fanout.fanout(event)
 
-      assert msg.text == "I just created a zoom meeting here: join-url (password is pwd)"
+      assert msg.text == "I just created a zoom meeting, you can join here: join-url"
     end
   end
 end

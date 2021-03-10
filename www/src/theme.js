@@ -18,12 +18,13 @@ export const DEFAULT_COLOR_THEME = {
   orange: '#d7722c',
   error: '#CC4400',
   presence: '#39E500',
-  success: 'action'
+  success: 'action',
+  link: '#3366BB'
 }
 
 export const DEFAULT_THEME = {
   anchor: {
-    color: {light: 'sidebar', dark: 'white'},
+    color: {light: 'link', dark: 'white'},
     hover: {
       textDecoration: 'none',
       extend: 'font-weight: 600'

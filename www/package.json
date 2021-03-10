@@ -65,7 +65,7 @@
     "styled-components": "^5.1.1"
   },
   "scripts": {
-    "start": "PORT=3002 HTTPS=true react-scripts start",
+    "start": "PORT=3001 HTTPS=true react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

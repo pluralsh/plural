@@ -304,7 +304,7 @@ defmodule Core.Services.AccountsTest do
       oauth = insert(:oauth_integration)
       user  = insert(:user, account: oauth.account)
       expect(HTTPoison, :post, fn "https://api.zoom.us/v2/users/me/meetings", _, _ ->
-        {:ok, %{status_code: 200, body: Jason.encode!(%{join_url: "https://zoom.us/j/1100000"})}}
+        {:ok, %{status_code: 201, body: Jason.encode!(%{join_url: "https://zoom.us/j/1100000"})}}
       end)
 
       {:ok, result} = Accounts.create_zoom_meeting(%{topic: "A zoom meeting"}, user)

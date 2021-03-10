@@ -413,7 +413,7 @@ defmodule GraphQl.Schema.Incidents do
       arg :incident_id, :id
 
       config fn
-        %{incident_id: id}, context ->
+        %{incident_id: id}, context when is_binary(id) ->
           with {:ok, _} <- Incidents.authorize_incident(%{id: id}, context),
             do: {:ok, topic: "incidents:msgs:#{id}"}
 

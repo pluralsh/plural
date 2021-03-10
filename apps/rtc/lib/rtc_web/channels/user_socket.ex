@@ -19,14 +19,25 @@ defmodule RtcWeb.UserSocket do
 
   def build_context(params) do
     with {:ok, token} <- fetch_token(params),
-         {:ok, current_user, _claims} = Core.Guardian.resource_from_token(token) do
+         {:ok, current_user, _claims} = resource_from_token(token) do
       {:ok, %{current_user: current_user}}
     end
   end
 
-  def fetch_token(%{"Authorization" => "Bearer " <> token}), do: {:ok, token}
-  def fetch_token(%{"token" => "Bearer " <> token}), do: {:ok, token}
+  def fetch_token(%{"Authorization" => token}), do: {:ok, token}
+  def fetch_token(%{"token" => token}), do: {:ok, token}
   def fetch_token(_), do: {:error, :notoken}
+
+  defp resource_from_token("cmt" <> _ = token) do
+    with %{} = persisted <- Core.Services.Users.get_persisted_token(token),
+         %{user: user}   <- Core.Repo.preload(persisted, [:user]) do
+      {:ok, user, %{}}
+    else
+      _ -> {:error, :unauthorized}
+    end
+  end
+
+  defp resource_from_token("Bearer " <> token), do: Core.Guardian.resource_from_token(token)
 
   # Socket id's are topics that allow you to identify all sockets for a given user:
   #

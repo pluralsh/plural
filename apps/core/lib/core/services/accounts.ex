@@ -1,7 +1,8 @@
 defmodule Core.Services.Accounts do
   use Core.Services.Base
   import Core.Policies.Account
-  alias Core.Schema.{User, Account, Group, GroupMember, Invite, Role, IntegrationWebhook}
+  alias Core.PubSub
+  alias Core.Schema.{User, Account, Group, GroupMember, Invite, Role, IntegrationWebhook, OAuthIntegration}
 
   @type account_resp :: {:ok, Account.t} | {:error, term}
   @type group_resp :: {:ok, Group.t} | {:error, term}
@@ -26,6 +27,9 @@ defmodule Core.Services.Accounts do
 
   def get_group_member(group_id, user_id),
     do: Core.Repo.get_by(GroupMember, user_id: user_id, group_id: group_id)
+
+  def get_oauth_integration!(service, account_id),
+    do: Core.Repo.get_by!(OAuthIntegration, service: service, account_id: account_id)
 
   @doc """
   Creates a fresh account for the user, making him the root user. Returns everything to caller
@@ -247,4 +251,58 @@ defmodule Core.Services.Accounts do
     :crypto.hmac(:sha, secret, payload)
     |> Base.encode16(case: :lower)
   end
+
+  def create_oauth_integration(%{code: code, redirect_uri: redirect} = args, %User{} = user) do
+    start_transaction()
+    |> add_operation(:base, fn _ ->
+      %OAuthIntegration{account_id: user.account_id}
+      |> OAuthIntegration.changeset(args)
+      |> allow(user, :create)
+      |> when_ok(:insert)
+    end)
+    |> add_operation(:oauth, fn %{base: %{service: service}} -> create_token(service, code, redirect) end)
+    |> add_operation(:finished, fn %{base: base, oauth: response} -> apply_oauth(base, response) end)
+    |> execute(extract: :finished)
+  end
+
+  def create_zoom_meeting(%{topic: topic} = args, %User{account_id: account_id, email: email} = user) do
+    password = Core.Password.generate()
+
+    get_oauth_integration!(:zoom, account_id)
+    |> maybe_refresh()
+    |> Core.Clients.Zoom.create_meeting(topic, email, password)
+    |> when_ok(fn %{"join_url" => join} ->
+      {:ok, %{join_url: join, password: password, incident_id: args[:incident_id]}}
+    end)
+    |> notify(:zoom, user)
+  end
+
+  def maybe_refresh(%OAuthIntegration{service: service, refresh_token: rt, expires_at: expiry} = oauth) do
+    case Timex.after?(Timex.now(), expiry) do
+      true ->
+        {:ok, refresh} = refresh_token(service, rt)
+        {:ok, oauth} = apply_oauth(oauth, refresh)
+        oauth
+      false -> oauth
+    end
+  end
+
+  defp apply_oauth(%OAuthIntegration{} = oauth, %{"access_token" => at, "refresh_token" => rt, "expires_in" => expiry}) do
+    oauth
+    |> OAuthIntegration.changeset(%{
+      access_token: at,
+      refresh_token: rt,
+      expires_at: Timex.shift(Timex.now(), seconds: expiry)
+    })
+    |> Core.Repo.update()
+  end
+
+  defp create_token(:zoom, code, redirect), do: Core.Clients.Zoom.create_token(code, redirect)
+
+  defp refresh_token(:zoom, refresh), do: Core.Clients.Zoom.refresh_token(refresh)
+
+  defp notify({:ok, meeting}, :zoom, user),
+    do: handle_notify(PubSub.ZoomMeetingCreated, meeting, actor: user)
+
+  defp notify(pass, _, _), do: pass
 end

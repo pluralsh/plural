@@ -1,5 +1,7 @@
 defmodule Core.Services.AccountsTest do
   use Core.SchemaCase, async: true
+  use Mimic
+  alias Core.PubSub
   alias Core.Services.Accounts
 
   describe "#update_account/2" do
@@ -270,6 +272,70 @@ defmodule Core.Services.AccountsTest do
       webhook = insert(:integration_webhook, account: user.account)
 
       {:error, _} = Accounts.delete_webhook(webhook.id, user)
+    end
+  end
+
+  describe "#create_oauth_integration/2" do
+    setup [:setup_root_user]
+
+    test "It can create a zoom integration", %{user: user} do
+      expect(HTTPoison, :post, fn "https://zoom.us/oauth/token" <> _, _, _ ->
+        {:ok, %{status_code: 200, body: Jason.encode!(%{access_token: "at", refresh_token: "rt", expires_in: 3600})}}
+      end)
+
+      {:ok, oauth} = Accounts.create_oauth_integration(%{service: :zoom, code: "code", redirect_uri: "redirect"}, user)
+
+      assert oauth.account_id == user.account_id
+      assert oauth.access_token == "at"
+      assert oauth.refresh_token == "rt"
+      assert Timex.before?(Timex.now(), oauth.expires_at)
+    end
+
+    test "It fails for unauthed users", %{account: account} do
+      user = insert(:user, account: account)
+      reject(&HTTPoison.post/3)
+
+      {:error, _} = Accounts.create_oauth_integration(%{service: :zoom, code: "code", redirect_uri: "redirect"}, user)
+    end
+  end
+
+  describe "#create_zoom_meeting/2" do
+    test "it can create a zoom meeting with an active integration" do
+      oauth = insert(:oauth_integration)
+      user  = insert(:user, account: oauth.account)
+      expect(HTTPoison, :post, fn "https://api.zoom.us/v2/users/me/meetings", _, _ ->
+        {:ok, %{status_code: 200, body: Jason.encode!(%{join_url: "https://zoom.us/j/1100000"})}}
+      end)
+
+      {:ok, result} = Accounts.create_zoom_meeting(%{topic: "A zoom meeting"}, user)
+
+      assert result.join_url == "https://zoom.us/j/1100000"
+      assert result.password
+
+      assert_receive {:event, %PubSub.ZoomMeetingCreated{item: ^result, actor: ^user}}
+    end
+  end
+
+  describe "#maybe_refresh/1" do
+    test "An active access token is passed through" do
+      oauth = insert(:oauth_integration)
+      reject(&HTTPoison.post/3)
+
+      refreshed = Accounts.maybe_refresh(oauth)
+
+      assert refreshed.access_token == oauth.access_token
+    end
+
+    test "An expired access token is refreshed" do
+      oauth = insert(:oauth_integration, expires_at: Timex.shift(Timex.now(), hours: -1))
+      expect(HTTPoison, :post, fn "https://zoom.us/oauth/token" <> _, _, _ ->
+        {:ok, %{status_code: 200, body: Jason.encode!(%{access_token: "at-2", refresh_token: "rt", expires_in: 3600})}}
+      end)
+
+      refreshed = Accounts.maybe_refresh(oauth)
+
+      assert refreshed.access_token == "at-2"
+      assert Timex.before?(Timex.now(), refreshed.expires_at)
     end
   end
 end

@@ -141,4 +141,18 @@ defmodule GraphQl.AccountQueriesTest do
              |> ids_equal(logs)
     end
   end
+
+  describe "oauthIntegrations" do
+    setup [:setup_root_user]
+
+    test "it can list oauth integrations", %{user: user, account: account} do
+      oauth = insert(:oauth_integration, account: account)
+
+      {:ok, %{data: %{"oauthIntegrations" => [found]}}} = run_query("""
+        query { oauthIntegrations { id } }
+      """, %{}, %{current_user: user})
+
+      assert found["id"] == oauth.id
+    end
+  end
 end

@@ -1,6 +1,6 @@
 defmodule GraphQl.Resolvers.Account do
   use GraphQl.Resolvers.Base, model: Core.Schema.Account
-  alias Core.Schema.{Group, GroupMember, Role, RoleBinding, IntegrationWebhook, WebhookLog}
+  alias Core.Schema.{Group, GroupMember, Role, RoleBinding, IntegrationWebhook, WebhookLog, OAuthIntegration}
   alias Core.Services.Accounts
 
   def query(Group, _), do: Group
@@ -42,6 +42,12 @@ defmodule GraphQl.Resolvers.Account do
     WebhookLog.for_webhook(webhook_id)
     |> WebhookLog.ordered()
     |> paginate(args)
+  end
+
+  def list_oauth_integrations(_, %{context: %{current_user: %{account_id: aid}}}) do
+    {:ok, OAuthIntegration.for_account(aid)
+          |> OAuthIntegration.ordered()
+          |> Core.Repo.all()}
   end
 
   def resolve_webhook(%{id: id}, %{context: %{current_user: user}}) do
@@ -94,6 +100,12 @@ defmodule GraphQl.Resolvers.Account do
 
   def delete_webhook(%{id: id}, %{context: %{current_user: user}}),
     do: Accounts.delete_webhook(id, user)
+
+  def create_integration(%{attributes: attrs}, %{context: %{current_user: user}}),
+    do: Accounts.create_oauth_integration(attrs, user)
+
+  def create_zoom_meeting(%{attributes: attrs}, %{context: %{current_user: user}}),
+    do: Accounts.create_zoom_meeting(attrs, user)
 
   defp with_permissions(%{permissions: perms} = attrs) when is_list(perms) do
     perm_set = MapSet.new(perms)

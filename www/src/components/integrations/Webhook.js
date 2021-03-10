@@ -27,6 +27,14 @@ function Container({title, children, modifier, ...props}) {
   )
 }
 
+function NoLogs() {
+  return (
+    <Box pad='small'>
+      <Text size='small'><i>No webhooks delivered yet...</i></Text>
+    </Box>
+  )
+}
+
 function WebhookLogs({webhook: {logs: {pageInfo, edges}}, fetchMore, refetch}) {
   return (
     <Container title='webhook logs' 
@@ -35,6 +43,7 @@ function WebhookLogs({webhook: {logs: {pageInfo, edges}}, fetchMore, refetch}) {
         id='webhooklogs'
         style={{width: '100%', height: '100%', overflow: 'auto'}}
         edges={edges}
+        emptyState={<NoLogs />}
         mapper={({node}, next) => <WebhookLog key={node.id} log={node} next={next.node} />}
         onLoadMore={() => pageInfo.hasNextPage && fetchMore({
           variables: {cursor: pageInfo.endCursor},

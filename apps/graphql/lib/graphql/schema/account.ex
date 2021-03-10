@@ -5,6 +5,7 @@ defmodule GraphQl.Schema.Account do
 
   enum_from_list :permission, Core.Schema.Role, :permissions, []
   ecto_enum :webhook_log_state, Core.Schema.WebhookLog.State
+  ecto_enum :oauth_service, Core.Schema.OAuthIntegration.Service
 
   input_object :account_attributes do
     field :name, :string
@@ -37,6 +38,17 @@ defmodule GraphQl.Schema.Account do
     field :name, non_null(:string)
     field :url,  non_null(:string)
     field :actions, list_of(:string)
+  end
+
+  input_object :oauth_attributes do
+    field :service,      :oauth_service
+    field :code,         :string
+    field :redirect_uri, :string
+  end
+
+  input_object :meeting_attributes do
+    field :topic,       non_null(:string)
+    field :incident_id, :id
   end
 
   object :account do
@@ -124,6 +136,20 @@ defmodule GraphQl.Schema.Account do
     timestamps()
   end
 
+  object :oauth_integration do
+    field :id,      non_null(:id)
+    field :service, non_null(:oauth_service)
+
+    field :account, :account, resolve: dataloader(Account)
+
+    timestamps()
+  end
+
+  object :zoom_meeting do
+    field :join_url, non_null(:string)
+    field :password, :string
+  end
+
   connection node_type: :group
   connection node_type: :group_member
   connection node_type: :role
@@ -175,6 +201,12 @@ defmodule GraphQl.Schema.Account do
       arg :id, non_null(:id)
 
       resolve &Account.resolve_webhook/2
+    end
+
+    field :oauth_integrations, list_of(:oauth_integration) do
+      middleware Authenticated
+
+      resolve &Account.list_oauth_integrations/2
     end
   end
 
@@ -272,6 +304,20 @@ defmodule GraphQl.Schema.Account do
       arg :id, non_null(:id)
 
       resolve safe_resolver(&Account.delete_webhook/2)
+    end
+
+    field :create_oauth_integration, :oauth_integration do
+      middleware Authenticated
+      arg :attributes, non_null(:oauth_attributes)
+
+      resolve safe_resolver(&Account.create_integration/2)
+    end
+
+    field :create_zoom, :zoom_meeting do
+      middleware Authenticated
+      arg :attributes, non_null(:meeting_attributes)
+
+      resolve safe_resolver(&Account.create_zoom_meeting/2)
     end
   end
 end

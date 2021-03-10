@@ -40,4 +40,8 @@ config :rtc, Rtc.Conduit.Broker,
 
 config :piazza_core, aes_key: get_env("AES_KEY")
 
+config :core, Core.Clients.Zoom,
+  client_id: get_env("ZOOM_CLIENT_ID"),
+  client_secret: get_env("ZOOM_CLIENT_SECRET")
+
 config :core, :chartmuseum, "http://chartmuseum:8080"

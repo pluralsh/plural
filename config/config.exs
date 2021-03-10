@@ -82,4 +82,8 @@ config :rtc, start_broker: false
 config :lager, :error_logger_redirect, false
 config :lager, :error_logger_whitelist, [Logger.ErrorHandler]
 
+config :core, Core.Clients.Zoom,
+  client_id: "dummy-id",
+  client_secret: "dummy-secret"
+
 import_config "#{Mix.env()}.exs"

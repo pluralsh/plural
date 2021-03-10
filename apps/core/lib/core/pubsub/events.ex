@@ -10,3 +10,4 @@ defmodule Core.PubSub.IncidentMessageCreated, do: use Piazza.PubSub.Event
 defmodule Core.PubSub.IncidentMessageUpdated, do: use Piazza.PubSub.Event
 defmodule Core.PubSub.IncidentMessageDeleted, do: use Piazza.PubSub.Event
 defmodule Core.PubSub.NotificationCreated, do: use Piazza.PubSub.Event
+defmodule Core.PubSub.ZoomMeetingCreated, do: use Piazza.PubSub.Event

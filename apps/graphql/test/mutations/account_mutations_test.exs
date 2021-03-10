@@ -1,5 +1,6 @@
 defmodule GraphQl.AccountMutationTest do
   use Core.SchemaCase, async: true
+  use Mimic
   import GraphQl.TestHelpers
 
   describe "updateAccount" do
@@ -260,6 +261,48 @@ defmodule GraphQl.AccountMutationTest do
 
       assert update["id"] == webhook.id
       refute refetch(webhook)
+    end
+  end
+
+  describe "createOauthIntegration" do
+    setup [:setup_root_user]
+
+    test "It can create an oauth integration", %{user: user} do
+      expect(HTTPoison, :post, fn "https://zoom.us/oauth/token" <> _, _, _ ->
+        {:ok, %{status_code: 200, body: Jason.encode!(%{access_token: "at", refresh_token: "rt", expires_in: 3600})}}
+      end)
+
+      {:ok, %{data: %{"createOauthIntegration" => create}}} = run_query("""
+        mutation Create($attrs: OauthAttributes!) {
+          createOauthIntegration(attributes: $attrs) { id }
+        }
+      """, %{"attrs" => %{"redirectUri" => "uri", "code" => "code", "service" => "ZOOM"}}, %{current_user: user})
+
+      assert create["id"]
+    end
+  end
+
+  describe "createZoom" do
+    setup [:setup_root_user]
+
+    test "It can create zoom meetings", %{user: user, account: account} do
+      incident = insert(:incident, creator: user)
+      insert(:oauth_integration, account: account)
+      expect(HTTPoison, :post, fn "https://api.zoom.us/v2/users/me/meetings", _, _ ->
+        {:ok, %{status_code: 200, body: Jason.encode!(%{join_url: "https://zoom.us/j/1100000"})}}
+      end)
+
+      {:ok, %{data: %{"createZoom" => create}}} = run_query("""
+        mutation Create($attrs: ZoomAttributes!) {
+          createZoom(attributes: $attrs) {
+            joinUrl
+            password
+          }
+        }
+      """, %{"attrs" => %{"incidentId" => incident.id, "topic" => "topic"}}, %{current_user: user})
+
+      assert create["joinUrl"] == "https://zoom.us/j/1100000"
+      assert create["password"]
     end
   end
 end

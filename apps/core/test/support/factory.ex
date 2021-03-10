@@ -307,4 +307,14 @@ defmodule Core.Factory do
       webhook: build(:integration_webhook)
     }
   end
+
+  def oauth_integration_factory do
+    %Schema.OAuthIntegration{
+      account: build(:account),
+      service: :zoom,
+      access_token: "at",
+      refresh_token: "rt",
+      expires_at: Timex.now() |> Timex.shift(hours: 1)
+    }
+  end
 end

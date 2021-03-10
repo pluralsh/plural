@@ -4,6 +4,7 @@ import { Box, Text } from 'grommet'
 import { ZOOM_ICON, ZOOM_INSTALL_URL } from './constants'
 import { OAUTH_Q } from './queries'
 import { OAuthService } from './types'
+import { Checkmark } from 'grommet-icons'
 
 function redirectUrl(format, service) {
   const location = `${window.location.origin}/oauth/accept/${service.toLowerCase()}`
@@ -11,8 +12,8 @@ function redirectUrl(format, service) {
 }
 
 function Integration({icon, installUrl, integrations, service, children}) {
-  console.log(window.location)
-  const onClick = integrations[service] ? null : () => window.location = redirectUrl(installUrl, service)
+  const connected = !!integrations[service]
+  const onClick = connected ? null : () => window.location = redirectUrl(installUrl, service)
   return (
     <Box flex={false} pad='small' border={{color: 'light-5'}} hoverIndicator='light-2' onClick={onClick}
          direction='row' align='center' round='xsmall' gap='small'>
@@ -22,6 +23,12 @@ function Integration({icon, installUrl, integrations, service, children}) {
       <Box fill='horizontal'>
         {children}
       </Box>
+      {connected && (
+        <Box flex={false} direction='row' gap='xsmall' align='center'>
+          <Checkmark color='brand' size='15px' />
+          <Text size='small'>Connected</Text>
+        </Box>
+      )}
     </Box>
   )
 }
@@ -40,12 +47,7 @@ export function OAuthIntegrations() {
       </Box>
       <Integration 
         icon={ZOOM_ICON}  installUrl={ZOOM_INSTALL_URL}  integrations={integrations} service={OAuthService.ZOOM}>
-        <Box fill='horizontal'>
-          <Text size='small' weight={500}>Zoom.us</Text>
-        </Box>
-        <Box>
-          <Text size='small'><i>Create meetings in your zoom account for resolving incidents and more</i></Text>
-        </Box>
+        <Text size='small'><i>Create meetings in your zoom account for resolving incidents and more</i></Text>
       </Integration>
     </Box>
   )

@@ -28,7 +28,7 @@ defmodule Core.Clients.Zoom do
   def create_meeting(%{access_token: token}, topic, host, password) do
     body = Jason.encode!(%{
       topic: topic,
-      type: 0,
+      type: 1,
       password: password,
       settings: %{participant_video: true, alternate_hosts: host}
     })

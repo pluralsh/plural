@@ -21,7 +21,7 @@ export function OauthCreator() {
   const {service} = useParams()
   const {redirectUri, code} = useMemo(() => {
     const params = new URLSearchParams(location.search)
-    return {code: params.get('code'), redirectUri: params.get('redirect_uri')}
+    return {code: params.get('code'), redirectUri: `${window.location.origin}${window.location.pathname}`}
   }, [location])
   const [mutation, {loading, data, error}] = useMutation(CREATE_OAUTH, {
     variables: {attributes: {code, redirectUri, service: ParamToService[service]}}
@@ -32,7 +32,7 @@ export function OauthCreator() {
   }, [])
 
   useEffect(() => {
-    if (!error && data && data.oauthIntegration.id) {
+    if (!error && data) {
       history.push('/accounts/edit/integrations')
     }
   }, [data, error])

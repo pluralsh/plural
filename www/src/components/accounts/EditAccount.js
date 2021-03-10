@@ -83,6 +83,7 @@ export function EditAccount({billing}) {
         </Box>
         {VIEWS.map(({text, view, icon}) => (
           <SectionChoice
+            key={view}
             selected={section === view}
             label={text}
             icon={icon}

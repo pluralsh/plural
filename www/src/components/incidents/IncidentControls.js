@@ -1,15 +1,16 @@
 import React, { useCallback, useState } from 'react'
-import { Box, Layer } from 'grommet'
+import { Anchor, Box, Layer, Text } from 'grommet'
 import { Button, SecondaryButton, ModalHeader } from 'forge-core' 
-import { AddCircle, Checkmark, Notification } from 'grommet-icons'
+import { AddCircle, Checkmark, Notification, Zoom } from 'grommet-icons'
 import { useMutation } from 'react-apollo'
-import { ACCEPT_INCIDENT, COMPLETE_INCIDENT, FOLLOW, INCIDENT_Q, UNFOLLOW } from './queries'
+import { ACCEPT_INCIDENT, COMPLETE_INCIDENT, FOLLOW, INCIDENT_Q, UNFOLLOW, ZOOM_MEETING } from './queries'
 import { plainDeserialize, plainSerialize } from '../../utils/slate'
 import { Editable, Slate } from 'slate-react'
 import { IncidentStatus } from './types'
 import { updateCache } from '../../utils/graphql'
 import { NotificationPreferences } from './NotificationPreferences'
 import { useEditor } from '../utils/hooks'
+import { Attribute, Attributes } from './utils'
 
 function Control({icon, onClick}) {
   return (
@@ -117,9 +118,42 @@ function Follower({incident: {id, follower}}) {
   )
 }
 
+function ZoomMeeting({incident: {id, title}}) {
+  const [open, setOpen] = useState(true)
+  const [mutation, {data}] = useMutation(ZOOM_MEETING, {
+    variables: {attributes: {incidentId: id, topic: title}},
+    onCompleted: () => setOpen(true)
+  })
+
+  const meeting = data && data.createZoom
+  return (
+    <>
+    <Control icon={<Zoom size='17px' color='plain' />} onClick={mutation} />
+    {meeting && open && (
+      <Layer modal onClickOutside={() => setOpen(false)}>
+        <Box width='40vw'>
+          <ModalHeader text='Meeting Created!' setOpen={setOpen} />
+          <Box>
+            <Attributes>
+              <Attribute name='join url'>
+                <Anchor href={meeting.joinUrl} target='_blank' label={meeting.joinUrl} />
+              </Attribute>
+              <Attribute name='password'>
+                <Text size='small'>{meeting.password}</Text>
+              </Attribute>
+            </Attributes>
+          </Box>
+        </Box>
+      </Layer>
+    )}
+    </>
+  )
+}
+
 export function IncidentControls({incident}) {
   return (
     <Box flex={false} direction='row' gap='xsmall' align='center'>
+      <ZoomMeeting incident={incident} />
       {incident.status === IncidentStatus.RESOLVED && <CompleteIncident incident={incident} />}
       {!incident.owner && <AcceptIncident incident={incident} />}
       <Follower incident={incident} />

@@ -42,7 +42,7 @@ defmodule GraphQl.Resolvers.Terraform do
   end
 
   def create_terraform_installation(%{installation_id: inst_id, attributes: attrs}, %{context: %{current_user: user}}),
-    do: TfSvc.create_terraform_installation(attrs, inst_id, user)
+    do: TfSvc.upsert_terraform_installation(attrs, inst_id, user)
 
   def delete_terraform_installation(%{id: id}, %{context: %{current_user: user}}),
     do: TfSvc.delete_terraform_installation(id, user)

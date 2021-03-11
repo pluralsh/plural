@@ -88,20 +88,55 @@ defmodule GraphQl.Terraform.MutationsTest do
     test "A user can install terraform against one of their installations" do
       %{repository: repo, user: user} = inst = insert(:installation)
       terraform = insert(:terraform, repository: repo)
+      version = insert(:version, terraform: terraform, version: "0.1.0")
 
       {:ok, %{data: %{"installTerraform" => installed}}} = run_query("""
         mutation InstallTf($id: ID!, $attributes: TerraformInstallationAttributes!) {
           installTerraform(installationId: $id, attributes: $attributes) {
             id
-            terraform {
-              id
-            }
+            terraform { id }
+            version { id }
           }
         }
-      """, %{"id" => inst.id, "attributes" => %{"terraformId" => terraform.id}}, %{current_user: user})
+      """, %{
+        "id" => inst.id,
+        "attributes" => %{
+          "terraformId" => terraform.id,
+          "versionId" => version.id
+        }
+      }, %{current_user: user})
 
       assert installed["id"]
       assert installed["terraform"]["id"] == terraform.id
+      assert installed["version"]["id"] == version.id
+    end
+
+    test "It can update an existing installation" do
+      %{repository: repo, user: user} = inst = insert(:installation)
+      terraform = insert(:terraform, repository: repo)
+      version = insert(:version, terraform: terraform, version: "0.1.0")
+      tf_inst = insert(:terraform_installation, terraform: terraform, installation: inst, version: version)
+      new_version = insert(:version, terraform: terraform, version: "0.2.0")
+
+      {:ok, %{data: %{"installTerraform" => installed}}} = run_query("""
+        mutation InstallTf($id: ID!, $attributes: TerraformInstallationAttributes!) {
+          installTerraform(installationId: $id, attributes: $attributes) {
+            id
+            terraform { id }
+            version { id }
+          }
+        }
+      """, %{
+        "id" => inst.id,
+        "attributes" => %{
+          "terraformId" => terraform.id,
+          "versionId" => new_version.id
+        }
+      }, %{current_user: user})
+
+      assert installed["id"] == tf_inst.id
+      assert installed["terraform"]["id"] == terraform.id
+      assert installed["version"]["id"] == new_version.id
     end
   end
 

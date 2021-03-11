@@ -1,8 +1,8 @@
 artifact: {}
 terraform:
   ../terraform/bootstrap/aws-bootstrap: h1:6+BQlxoelJRLsiHWt3Azb+55/ruxPRUtIGvTt61HJ80=
-  ../terraform/bootstrap/gcp-bootstrap: h1:qVFa6nD9O2HeBlcOi4YOfmfdHM2SG/YdBzUi0qIDU1A=
-  ../terraform/bootstrap/kube: h1:0L7+Y8P1u9GF1BbzMjqeBz4iXpZOaavRG1bUmlYPLcA=
+  ../terraform/bootstrap/gcp-bootstrap: h1:L6lj+NlY69g/56+HYBVKkKp1nqfJ3ja8s72Irmn0+Co=
+  ../terraform/bootstrap/kube: h1:2VSsMe5CpTm5NWnVWzGWwD7RT48UXmvgM1/6D+P4xPE=
 helm:
   ../charts/bootstrap: h1:cjw9YHj2Tjk6rP9mcY8i6ZAXCiOEYUETVpp+93yaQcM=
   ../charts/watchman: h1:cvX5nVHicwvNmo8IQ96Flgf2ypWr197piZlNhKIJZEw=
@@ -21,5 +21,6 @@ crd:
   crds/dashboard.yaml: 73b6455275cc4e58c969e310f6216eea119a55f3a284aeaf47169aa833580418
   crds/logfilter.yaml: 9c70f4fc15bfec87865e698c4031cf62c2e8899ea90ae43024b7c4d1495a0c05
   crds/proxy.yaml: fa59c594b4049a3974a972b860d155a263298c45215ef95b083973b195e50110
+  crds/slashcommand.yaml: 3620ad77e3a1f06cac2bed01a7340673a85fd13bbdc0a4e3f8cde95b7772e2e3
   crds/traefik.yaml: f15563bc098295e13172978ac703836ba5264248586c5402c87d53ab5498e7b6
 ird: {}

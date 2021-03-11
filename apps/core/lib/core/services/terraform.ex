@@ -4,6 +4,8 @@ defmodule Core.Services.Terraform do
   alias Core.Services.{Repositories, Dependencies, Versions}
   alias Core.Schema.{Terraform, TerraformInstallation, User}
 
+  @type terraform_installation_resp :: {:ok, TerraformInstallation.t} | {:error, term}
+
   @spec get_tf!(binary) :: Terraform.t
   def get_tf!(id), do: Core.Repo.get!(Terraform, id)
 
@@ -100,7 +102,7 @@ defmodule Core.Services.Terraform do
   end
 
   @doc "self explanatory"
-  @spec create_terraform_installation(map, binary, User.t) :: {:ok, TerraformInstallation.t} | {:error, term}
+  @spec create_terraform_installation(map, binary, User.t) :: terraform_installation_resp
   def create_terraform_installation(attrs, installation_id, %User{} = user) do
     installation = Repositories.get_installation!(installation_id)
 
@@ -110,8 +112,21 @@ defmodule Core.Services.Terraform do
     |> when_ok(:insert)
   end
 
+  @doc "creates or updates a terraform installation"
+  @spec upsert_terraform_installation(map, binary, User.t) :: terraform_installation_resp
+  def upsert_terraform_installation(%{terraform_id: tf_id} = attrs, installation_id, %User{} = user) do
+    installation = Repositories.get_installation!(installation_id)
+    case get_terraform_installation(tf_id, user.id) do
+      %TerraformInstallation{} = inst -> inst
+      nil -> %TerraformInstallation{installation_id: installation_id, installation: installation}
+    end
+    |> TerraformInstallation.changeset(attrs)
+    |> allow(user, :create)
+    |> when_ok(&Core.Repo.insert_or_update/1)
+  end
+
   @doc "self explanatory"
-  @spec update_terraform_installation(map, binary, User.t) :: {:ok, TerraformInstallation.t} | {:error, term}
+  @spec update_terraform_installation(map, binary, User.t) :: terraform_installation_resp
   def update_terraform_installation(attrs, tf_inst_id, %User{} = user) do
     Core.Repo.get!(TerraformInstallation, tf_inst_id)
     |> Core.Repo.preload([:installation, :terraform])
@@ -121,7 +136,7 @@ defmodule Core.Services.Terraform do
   end
 
   @doc "self explanatory"
-  @spec delete_terraform_installation(binary, User.t) :: {:ok, TerraformInstallation.t} | {:error, term}
+  @spec delete_terraform_installation(binary, User.t) :: terraform_installation_resp
   def delete_terraform_installation(tf_inst_id, %User{} = user) do
     Core.Repo.get!(TerraformInstallation, tf_inst_id)
     |> Core.Repo.preload([:installation, :terraform])

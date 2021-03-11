@@ -15,6 +15,7 @@ defmodule GraphQl.Schema.Terraform do
 
   input_object :terraform_installation_attributes do
     field :terraform_id, :id
+    field :version_id,   :id
   end
 
   object :terraform_installation do

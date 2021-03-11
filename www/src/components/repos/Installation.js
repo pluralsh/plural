@@ -93,7 +93,7 @@ export default function Installation({repository, onUpdate, noHelm, open}) {
       <Tabs>
         {(!noHelm || installation) && <Tab name='Installation' setTab={setTab} selected={tab} />}
         {(hasPlans || repository.editable) && <Tab name='Plans' setTab={setTab} selected={tab} />}
-        <Tab name='Configuration' setTab={setTab} selected={tab} />
+        {installation && <Tab name='Configuration' setTab={setTab} selected={tab} />}
       </Tabs>
       <TabContent>
         {tab === 'Installation' && <InstallationInner installation={installation} repository={repository} />}

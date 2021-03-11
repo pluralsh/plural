@@ -1,8 +1,8 @@
 import gql from 'graphql-tag'
-import {RepoFragment, InstallationFragment, IntegrationFragment, ArtifactFragment, DashboardFragment} from '../../models/repo'
-import {ChartFragment, VersionFragment, ChartInstallationFragment, VersionTagFragment} from '../../models/chart'
-import {TerraformFragment} from '../../models/terraform'
-import {DockerRepoFragment, DockerImageFragment} from '../../models/docker'
+import { RepoFragment, InstallationFragment, IntegrationFragment, ArtifactFragment, DashboardFragment } from '../../models/repo'
+import { ChartFragment, VersionFragment, ChartInstallationFragment, VersionTagFragment } from '../../models/chart'
+import { TerraformFragment, TerraformInstallationFragment } from '../../models/terraform'
+import { DockerRepoFragment, DockerImageFragment } from '../../models/docker'
 import { RecipeFragment, RecipeSectionFragment } from '../../models/recipe'
 import { PlanFragment, SubscriptionFragment } from '../../models/payments'
 import { PageInfo } from '../../models/misc'
@@ -262,7 +262,7 @@ export const TF_Q = gql`
     terraformModule(id: $tfId) {
       ...TerraformFragment
       editable
-      installation { id }
+      installation { ...TerraformInstallationFragment }
       repository {
         ...RepoFragment
         installation { ...InstallationFragment }
@@ -284,6 +284,7 @@ export const TF_Q = gql`
   ${InstallationFragment}
   ${RepoFragment}
   ${TerraformFragment}
+  ${TerraformInstallationFragment}
 `;
 
 export const INSTALL_CHART = gql`
@@ -298,9 +299,10 @@ export const INSTALL_CHART = gql`
 export const INSTALL_TF = gql`
   mutation InstallTf($id: ID!, $attributes: TerraformInstallationAttributes!) {
     installTerraform(installationId: $id, attributes: $attributes) {
-      id
+      ...TerraformInstallationFragment
     }
   }
+  ${TerraformInstallationFragment}
 `;
 
 export const UNINSTALL_TF = gql`

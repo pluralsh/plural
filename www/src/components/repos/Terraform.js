@@ -10,6 +10,7 @@ import Installation from './Installation'
 import Dependencies, { FullDependencies, ShowFull } from './Dependencies'
 import { Versions } from '../versions/Versions'
 import { BreadcrumbsContext } from '../Breadcrumbs'
+import { updateCache, deepUpdate } from '../../utils/graphql'
 
 function Code({value, children, language}) {
   return (
@@ -39,31 +40,29 @@ function TemplateView({valuesTemplate}) {
   )
 }
 
-function TerraformInstaller({installation, terraformId, terraformInstallation}) {
-  const [mutation, {error}] = useMutation(terraformInstallation ? UNINSTALL_TF : INSTALL_TF, {
+function TerraformInstaller({installation, terraformId, terraformInstallation, version}) {
+  const installed = terraformInstallation && terraformInstallation.version.id === version.id
+  const [mutation, {error}] = useMutation(installed ? UNINSTALL_TF : INSTALL_TF, {
     variables: {
-      id: terraformInstallation ? terraformInstallation.id : installation.id,
-      attributes: {terraformId}
+      id: installed ? terraformInstallation.id : installation.id,
+      attributes: {terraformId, versionId: version.id}
     },
     update: (cache, {data}) => {
       const ti = data.installTerraform ? data.installTerraform : null
-      const prev = cache.readQuery({ query: TF_Q, variables: {tfId: terraformId} })
-      cache.writeQuery({query: TF_Q, variables: {tfId: terraformId}, data: {
-        ...prev,
-        terraformModule: {
-          ...prev.terraformModule,
-          installation: ti
-        }
-      }})
+      updateCache(cache, {
+        query: TF_Q,
+        variables: {tfId: terraformId},
+        update: (prev) => deepUpdate(prev, 'terraformModule.installation', () => ti)
+      })
     }
   })
 
-  return terraformInstallation ?
+  return installed ?
     <SecondaryButton round='xsmall' label='Uninstall' pad='small' error={error} onClick={mutation} /> :
     <Button round='xsmall' label='Install' pad='small' error={error} onClick={mutation} />
 }
 
-function TerraformHeader({id, name, description, installation, repository}) {
+function TerraformHeader({terraform: {id, name, description, installation, repository}, version}) {
   return (
     <Box direction='row' align='center' gap='medium' margin={{bottom: 'small'}} style={{minHeight: '50px'}}>
       <Box width='50px' heigh='50px'>
@@ -78,6 +77,7 @@ function TerraformHeader({id, name, description, installation, repository}) {
           <TerraformInstaller
             installation={repository.installation}
             terraformInstallation={installation}
+            version={version}
             terraformId={id} />
         </Box>
       )}
@@ -133,19 +133,9 @@ function DeleteTerraform({id}) {
 }
 
 function UpdateTerraform({id, name, description}) {
-  const [state, setState] = useState({name: name, description: description})
+  const [attributes, setAttributes] = useState({name: name, description: description})
   const [mutation, {loading}] = useMutation(UPDATE_TF, {
-    variables: {id, attributes: {...state}},
-    update: (cache, { data: {updateTerraform} }) => {
-      const prev = cache.readQuery({query: TF_Q, variables: {tfId: id}})
-      cache.writeQuery({query: TF_Q, variables: {tfId: id}, data: {
-        ...prev,
-        terraformModule: {
-          ...prev.terraform,
-          ...updateTerraform
-        }
-      }})
-    }
+    variables: {id, attributes}
   })
 
   return (
@@ -154,14 +144,14 @@ function UpdateTerraform({id, name, description}) {
         label='name'
         labelWidth={LABEL_WIDTH}
         placeholder='give it a  name'
-        value={state.name}
-        onChange={(e) => setState({...state, name: e.target.value})} />
+        value={attributes.name}
+        onChange={(e) => setAttributes({...attributes, name: e.target.value})} />
       <InputField
         label='description'
         labelWidth={LABEL_WIDTH}
         placeholder='a helpful description'
-        value={state.description}
-        onChange={(e) => setState({...state, description: e.target.value})} />
+        value={attributes.description}
+        onChange={(e) => setAttributes({...attributes, description: e.target.value})} />
       <Box direction='row' justify='end' gap='small'>
         <DeleteTerraform id={id} />
         <Button loading={loading} round='xsmall' label='Update' onClick={mutation} />
@@ -170,7 +160,7 @@ function UpdateTerraform({id, name, description}) {
   )
 }
 
-function Terraform() {
+export default function Terraform() {
   const [tab, setTab] = useState(null)
   const [full, setFull] = useState(false)
   const [version, setVersion] = useState(null)
@@ -198,7 +188,7 @@ function Terraform() {
     <ScrollableContainer>
       <Box pad='small' direction='row'>
         <Box width={`${width}%`} pad='small'>
-          <TerraformHeader {...terraformModule} />
+          <TerraformHeader terraform={terraformModule} version={currentVersion} />
           <Tabs defaultTab='readme' onTabChange={setTab} headerEnd={tab === 'dependencies' ?
             <ShowFull label={full ? 'Immediate' : 'Full'} onClick={() => setFull(!full)} /> : null
           }>
@@ -245,5 +235,3 @@ function Terraform() {
     </ScrollableContainer>
   )
 }
-
-export default Terraform

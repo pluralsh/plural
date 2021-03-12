@@ -11,9 +11,21 @@ defmodule GraphQl.Schema.Payments do
     field :name,       non_null(:string)
     field :cost,       non_null(:integer)
     field :period,     non_null(:string)
-    field :defalt,     :boolean
+    field :default,    :boolean
     field :line_items, :plan_line_item_attributes
     field :metadata,   :plan_metadata_attributes
+    field :service_levels, list_of(:service_level_attributes)
+  end
+
+  input_object :updatable_plan_attributes do
+    field :default,        :boolean
+    field :service_levels, list_of(:service_level_attributes)
+  end
+
+  input_object :service_level_attributes do
+    field :max_severity,  :integer
+    field :min_severity,  :integer
+    field :response_time, :integer
   end
 
   input_object :plan_metadata_attributes do
@@ -54,16 +66,23 @@ defmodule GraphQl.Schema.Payments do
   ### OBJECTS
 
   object :plan do
-    field :id,         non_null(:id)
-    field :name,       non_null(:string)
-    field :default,    :boolean
-    field :visible,    non_null(:boolean)
-    field :cost,       non_null(:integer)
-    field :period,     :string
-    field :line_items, :plan_line_items
-    field :metadata,   :plan_metadata
+    field :id,             non_null(:id)
+    field :name,           non_null(:string)
+    field :default,        :boolean
+    field :visible,        non_null(:boolean)
+    field :cost,           non_null(:integer)
+    field :period,         :string
+    field :line_items,     :plan_line_items
+    field :metadata,       :plan_metadata
+    field :service_levels, list_of(:service_level)
 
     timestamps()
+  end
+
+  object :service_level do
+    field :max_severity,  :integer
+    field :min_severity,  :integer
+    field :response_time, :integer
   end
 
   object :invoice do
@@ -188,6 +207,14 @@ defmodule GraphQl.Schema.Payments do
       arg :attributes, non_null(:plan_attributes)
 
       resolve safe_resolver(&Payments.create_plan/2)
+    end
+
+    field :update_plan_attributes, :plan do
+      middleware GraphQl.Middleware.Authenticated
+      arg :attributes, non_null(:updatable_plan_attributes)
+      arg :id,         non_null(:id)
+
+      resolve safe_resolver(&Payments.update_plan_attributes/2)
     end
 
     field :create_subscription, :repository_subscription do

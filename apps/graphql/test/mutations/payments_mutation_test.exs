@@ -85,6 +85,27 @@ defmodule GraphQl.PaymentsMutationsTest do
     end
   end
 
+  describe "updatePlanAttributes" do
+    test "it can update editable fields on a plan" do
+      %{publisher: pub} = repository = insert(:repository, publisher: build(:publisher, billing_account_id: "account_id"))
+      plan = insert(:plan, repository: repository)
+
+      {:ok, %{data: %{"updatePlanAttributes" => update}}} = run_query("""
+        mutation Update($id: ID!, $attrs: UpdatablePlanAttributes!) {
+          updatePlanAttributes(id: $id, attributes: $attrs) {
+            id
+            serviceLevels { minSeverity maxSeverity responseTime }
+          }
+        }
+      """, %{"id" => plan.id, "attrs" => %{"serviceLevels" => [
+        %{"minSeverity" => 0, "maxSeverity" => 4, "responseTime" => 40}
+      ]}}, %{current_user: pub.owner})
+
+      assert update["id"] == plan.id
+      assert update["serviceLevels"] == [%{"minSeverity" => 0, "maxSeverity" => 4, "responseTime" => 40}]
+    end
+  end
+
   describe "createSubscription" do
     test "A user can create a subscription for their installation" do
       user = insert(:user, customer_id: "cus_id")

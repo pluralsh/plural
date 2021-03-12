@@ -90,6 +90,24 @@ defmodule Core.Schema.Plan do
     end
   end
 
+  defmodule ServiceLevel do
+    use Piazza.Ecto.Schema
+
+    embedded_schema do
+      field :min_severity,  :integer
+      field :max_severity,  :integer
+      field :response_time, :integer
+    end
+
+    @valid ~w(min_severity max_severity response_time)a
+
+    def changeset(model, attrs \\ %{}) do
+      model
+      |> cast(attrs, @valid)
+      |> validate_required(@valid)
+    end
+  end
+
   schema "plans" do
     field :name,        :string
     field :default,     :boolean
@@ -98,9 +116,11 @@ defmodule Core.Schema.Plan do
     field :period,      Period
     field :external_id, :string
 
-    embeds_one :metadata,   Metadata, on_replace: :update
-    embeds_one :line_items, LineItems, on_replace: :update
-    belongs_to :repository, Core.Schema.Repository
+    embeds_one  :metadata,       Metadata, on_replace: :update
+    embeds_one  :line_items,     LineItems, on_replace: :update
+    embeds_many :service_levels, ServiceLevel, on_replace: :delete
+
+    belongs_to  :repository, Core.Schema.Repository
 
     timestamps()
   end
@@ -122,8 +142,15 @@ defmodule Core.Schema.Plan do
     |> cast(attrs, @valid)
     |> cast_embed(:line_items)
     |> cast_embed(:metadata)
+    |> cast_embed(:service_levels)
     |> validate_required([:name, :visible])
     |> foreign_key_constraint(:repository_id)
     |> unique_constraint(:name, name: index_name(:plans, [:repository_id, :name]))
+  end
+
+  def update_changeset(schema, attrs \\ %{}) do
+    schema
+    |> cast(attrs, [:default])
+    |> cast_embed(:service_levels)
   end
 end

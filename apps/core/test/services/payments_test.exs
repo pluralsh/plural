@@ -133,6 +133,29 @@ defmodule Core.Services.PaymentsTest do
     end
   end
 
+  describe "#update_plan_attributes" do
+    test "publishers can update SLAs for a plan" do
+      %{publisher: pub} = repository = insert(:repository, publisher: build(:publisher, billing_account_id: "account_id"))
+      plan = insert(:plan, repository: repository)
+
+      {:ok, plan} = Payments.update_plan_attributes(%{
+        service_levels: [
+          %{min_severity: 0, max_severity: 3, response_time: 30},
+          %{min_severity: 4, max_severity: 5, response_time: 120}
+        ]
+      }, plan.id, pub.owner)
+
+      [first, second] = plan.service_levels
+      assert first.min_severity == 0
+      assert first.max_severity == 3
+      assert first.response_time == 30
+
+      assert second.min_severity == 4
+      assert second.max_severity == 5
+      assert second.response_time == 120
+    end
+  end
+
   describe "#create_subscription" do
     test "A user can create a subscription for their installation" do
       user = insert(:user, customer_id: "cus_id")

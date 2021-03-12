@@ -65,6 +65,9 @@ defmodule GraphQl.Resolvers.Payments do
   def create_plan(%{attributes: attrs, repository_id: id}, %{context: %{current_user: user}}),
     do: Payments.create_plan(attrs, id, user)
 
+  def update_plan_attributes(%{attributes: attrs, id: id}, %{context: %{current_user: user}}),
+    do: Payments.update_plan_attributes(attrs, id, user)
+
   def update_line_item(%{attributes: attrs, subscription_id: id}, %{context: %{current_user: user}}),
     do: Payments.update_line_item(attrs, id, user)
 

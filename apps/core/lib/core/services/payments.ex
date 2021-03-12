@@ -14,6 +14,8 @@ defmodule Core.Services.Payments do
     Installation
   }
 
+  @type plan_resp :: {:ok, Plan.t} | {:error, term}
+
   @spec get_plan!(binary) :: Plan.t
   def get_plan!(id), do: Core.Repo.get!(Plan, id)
 
@@ -144,7 +146,7 @@ defmodule Core.Services.Payments do
 
   Fails if the user is not a publisher of the repo
   """
-  @spec create_plan(map, Repository.t | binary, User.t) :: {:ok, Plan.t} | {:error, any}
+  @spec create_plan(map, Repository.t | binary, User.t) :: plan_resp
   def create_plan(attrs, %Repository{id: id} = repo, %User{} = user) do
     %{publisher: publisher} = Core.Repo.preload(repo, [:publisher])
 
@@ -180,6 +182,18 @@ defmodule Core.Services.Payments do
   end
   def create_plan(attrs, repo_id, user),
     do: create_plan(attrs, Repositories.get_repository!(repo_id), user)
+
+  @doc """
+  Updates whitelisted plan fields (those without direct billing implications).
+
+  """
+  @spec update_plan_attributes(map, binary, User.t) :: plan_resp
+  def update_plan_attributes(attrs, id, %User{} = user) do
+    get_plan!(id)
+    |> Plan.update_changeset(attrs)
+    |> allow(user, :create)
+    |> when_ok(:update)
+  end
 
   defp build_plan_ops(ops, %{items: items}), do: build_plan_ops(ops, items)
   defp build_plan_ops(ops, items) when is_list(items) do

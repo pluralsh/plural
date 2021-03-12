@@ -314,7 +314,7 @@ defmodule GraphQl.Schema.Account do
     end
 
     field :create_zoom, :zoom_meeting do
-      middleware Authenticated
+      middleware Authenticated, :external
       arg :attributes, non_null(:meeting_attributes)
 
       resolve safe_resolver(&Account.create_zoom_meeting/2)

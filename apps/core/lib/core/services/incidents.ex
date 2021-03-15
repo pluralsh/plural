@@ -70,6 +70,7 @@ defmodule Core.Services.Incidents do
     |> add_operation(:change, fn _ ->
       get_incident!(incident_id)
       |> Incident.changeset(%{owner_id: user.id, status: :in_progress})
+      |> Ecto.Changeset.put_change(:next_response_at, nil)
       |> allow(user, :accept)
     end)
     |> add_operation(:update, fn %{change: change} -> Core.Repo.update(change) end)

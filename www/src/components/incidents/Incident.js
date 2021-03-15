@@ -31,6 +31,7 @@ import { Postmortem } from './Postmortem'
 import { applyMessages } from './applicators'
 import { LastMessage } from './LastMessage'
 import { PresenceProvider } from './Presence'
+import { SlaTimer } from './SlaTimer'
 
 export const canEdit = ({creator, owner}, {id}) => creator.id === id || owner.id === id
 
@@ -234,6 +235,7 @@ function IncidentInner({incident, fetchMore, subscribeToMore, loading, editing, 
           </Box>
         )}
         {incident.owner && (<IncidentOwner incident={incident} />)}
+        {incident.nextResponseAt && <SlaTimer incident={incident} />}
         <Status incident={incident} setActive={(status) => mutation({variables: {attributes: {status}}})} />
       </Box>
       <Box fill direction='row'>

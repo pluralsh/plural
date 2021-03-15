@@ -17,6 +17,7 @@ import { pulse } from 'react-animations';
 import { normalizeColor } from 'grommet/utils'
 import { IncidentFilter, IncidentSort, IncidentSortNames, Order } from './types'
 import { AlternatingBox } from '../utils/AlternatingBox'
+import { SlaTimer } from './SlaTimer'
 
 export const IncidentViewContext = React.createContext({})
 
@@ -83,6 +84,7 @@ export function IncidentRow({incident: {id, repository, title, insertedAt, owner
           <Text size='small' color='light-5'>created: {moment(insertedAt).fromNow()}, {owner ? `responder: ${owner.email}` : 'unassigned'}</Text>
         </Box>
       </Box>
+      <SlaTimer incident={incident} />
       <SubscriptionBadge incident={incident} />
       <Severity incident={incident} />
       {id === selected && <Checkmark color='brand' size='15px' />}

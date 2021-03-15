@@ -9629,6 +9629,13 @@ react-copy-to-clipboard@^5.0.2:
     copy-to-clipboard "^3"
     prop-types "^15.5.8"
 
+react-countdown@^2.3.1:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/react-countdown/-/react-countdown-2.3.1.tgz#6914538705075c74ac8f97fd8c31b29eadf44cbd"
+  integrity sha512-h66prF+Wwj3Ru4tDeqvXsW8iqaCyC54pjwTAlUUmUQ11EUqIO34xV4pO4q8MGT6917ep47ntKmBW99ZVN1ozdQ==
+  dependencies:
+    prop-types "^15.7.2"
+
 react-credit-cards@^0.8.0:
   version "0.8.0"
   resolved "https://registry.yarnpkg.com/react-credit-cards/-/react-credit-cards-0.8.0.tgz#5a568d01cb440275adf2d4cda29c0fb1bf97248a"

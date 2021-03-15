@@ -1,5 +1,4 @@
 import gql from 'graphql-tag'
-import { ServiceLevel } from '../components/incidents/Subscription'
 import { PlanFragment } from './payments'
 import { RepoFragment } from './repo'
 import { UserFragment } from './user'
@@ -46,6 +45,7 @@ export const IncidentFragment = gql`
     severity
     status
     notificationCount
+    nextResponseAt
     creator { ...UserFragment }
     owner { ...UserFragment }
     repository { ...RepoFragment }

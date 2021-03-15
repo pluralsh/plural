@@ -121,11 +121,12 @@ defmodule Core.Services.IncidentsTest do
       role = insert(:role, account: account, repositories: ["*"], permissions: %{support: true})
       insert(:role_binding, role: role, user: user)
 
-      incident = insert(:incident, repository: build(:repository, publisher: build(:publisher, account: account)))
+      incident = insert(:incident, next_response_at: Timex.now(), repository: build(:repository, publisher: build(:publisher, account: account)))
 
       {:ok, accepted} = Incidents.accept_incident(incident.id, user)
 
       assert accepted.owner_id == user.id
+      refute accepted.next_response_at
 
       assert_receive {:event, %PubSub.IncidentUpdated{item: ^accepted}}
     end

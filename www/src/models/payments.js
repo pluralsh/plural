@@ -7,31 +7,41 @@ export const LimitFragment = gql`
   }
 `;
 
+export const LineItem = gql`
+  fragment LineItem on LineItem {
+    name
+    dimension
+    cost
+    period
+  }
+`
+
+export const ServiceLevel = gql`
+  fragment ServiceLevel on ServiceLevel {
+    minSeverity
+    maxSeverity
+    responseTime
+  }
+`
+
 export const PlanFragment = gql`
   fragment PlanFragment on Plan {
     id
     name
     cost
     period
+    serviceLevels { ...ServiceLevel }
     lineItems {
-      included {
-        ...LimitFragment
-      }
-      items {
-        name
-        dimension
-        cost
-        period
-      }
+      included { ...LimitFragment }
+      items { ...LineItem }
     }
     metadata {
-      features {
-        name
-        description
-      }
+      features { name description }
     }
   }
   ${LimitFragment}
+  ${LineItem}
+  ${ServiceLevel}
 `;
 
 export const SubscriptionFragment = gql`

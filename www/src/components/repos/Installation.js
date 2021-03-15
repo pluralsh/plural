@@ -37,7 +37,13 @@ function Plans({repository}) {
     {modal}
     <Box pad='small' gap='small'>
       {plans.length > 0 ?
-        plans.map((plan) => <Plan key={plan.id} subscription={subscription} approvePlan={approvePlan} {...plan} />) :
+        plans.map((plan) => (
+          <Plan key={plan.id}  
+                subscription={subscription} 
+                approvePlan={approvePlan} 
+                repository={repository}
+                plan={plan} />
+        )) :
         <Text size='small'>This repo is currently free to use</Text>
       }
       {editable && (<CreateAnchor onClick={() => setOpen(true)} />)}

@@ -44,3 +44,5 @@ export function updateCache(cache, {query, variables, update, onFailure}) {
   //   onFailure && onFailure()
   // }
 }
+
+export const prune = ({__typename, ...rest}) => rest

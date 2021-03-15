@@ -19,6 +19,15 @@ const SeverityStatusOption = ({value}, {active}) => {
   )
 }
 
+export function SeverityNub({severity}) {
+  const color = severityColor(severity)
+  return (
+    <Box flex={false} background={color} round='xsmall' pad={{horizontal: 'xsmall', vertical: '1px'}}>
+      <Text size='small' weight={500}>SEV {severity}</Text> 
+    </Box>
+  )
+}
+
 function SeverityOption({value, active, setActive}) {
   const color = severityColor(value)
 

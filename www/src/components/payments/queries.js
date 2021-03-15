@@ -69,3 +69,10 @@ export const SUBSCRIPTION_Q = gql`
   ${InstallationFragment}
   ${InvoiceFragment}
 `;
+
+export const UPDATE_PLAN_ATTRS = gql`
+  mutation Update($id: ID!, $attributes: UpdatablePlanAttributes!) {
+    updatePlanAttributes(id: $id, attributes: $attributes) { ...PlanFragment }
+  }
+  ${PlanFragment}
+`

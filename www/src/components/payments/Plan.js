@@ -1,8 +1,13 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import styled from 'styled-components'
-import { Anchor, Box, Collapsible, Stack, Text } from 'grommet'
-import { Cube, Group, Checkmark, Down, Next } from 'grommet-icons'
+import { HoveredBackground, ModalHeader } from 'forge-core'
+import { Anchor, Box, Collapsible, Layer, Stack, Text } from 'grommet'
+import { Cube, Group, Checkmark, Edit } from 'grommet-icons'
 import { normalizeColor } from 'grommet/utils'
+import { ServiceLevel } from './CreatePlan'
+import { UpdatePlanForm } from './UpdatePlanForm'
+import { CurrentUserContext } from '../login/CurrentUser'
+import './plan.css'
 
 export function LineItemIcon({dimension, size}) {
   switch (dimension) {
@@ -45,11 +50,32 @@ function SubscribedBadge() {
   )
 }
 
-function Features({features, open}) {
+function FeatureSection({title, children}) {
+  return (
+    <Box gap='xsmall'>
+      <Text size='small' weight={500}>{title}</Text>
+      {children}
+    </Box>
+  )
+}
+
+function Features({features, serviceLevels, open}) {
+  const hasServiceLevels = serviceLevels && serviceLevels.length > 0
+  const hasFeatures = features.length > 0
+
   return (
     <Collapsible open={open}>
       <Box gap='small' pad={{vertical: 'small'}}>
-        {features.map((feature) => <Feature key={feature.name} {...feature} />)}
+        {hasServiceLevels && (
+          <FeatureSection title='SLAs:'>
+            {(serviceLevels || []).map((level) => <ServiceLevel level={level} />)}
+          </FeatureSection>
+        )}
+        {hasFeatures && (
+          <FeatureSection title='Features Included:'>
+            {features.map((feature) => <Feature key={feature.name} {...feature} />)}
+          </FeatureSection>
+        )}
       </Box>
     </Collapsible>
   )
@@ -57,28 +83,60 @@ function Features({features, open}) {
 
 export const hover = styled.div`
   &:hover {
-    border-color: ${props => normalizeColor('brand', props.theme)}
+    border-color: ${({theme}) => normalizeColor('brand', theme)}
   }
 `;
 
-export default function Plan({approvePlan, subscription, ...plan}) {
+function EditPlan({plan}) {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <>
+    <HoveredBackground>
+      <Box accentable className='edit' round='xsmall' onClick={() => setOpen(true)}>
+        <Edit size='small' />
+      </Box>
+    </HoveredBackground>
+    {open && (
+      <Layer modal onClickOutside={() => setOpen(false)}>
+        <Box width='50vw'>
+          <ModalHeader text='Update Plan' setOpen={setOpen} />
+          <Box pad='small'>
+            <UpdatePlanForm plan={plan} />
+          </Box>
+        </Box>
+      </Layer>
+    )}
+    </>
+  )
+}
+
+export default function Plan({approvePlan, subscription, repository, plan}) {
+  const me = useContext(CurrentUserContext)
   const {name, cost, period, lineItems: {items, included}, metadata} = plan
   const [open, setOpen] = useState(false)
   const hasFeatures = metadata && metadata.features && metadata.features.length > 0
+  const hasLevels = plan.serviceLevels  && plan.serviceLevels.length > 0
+  const hasMore = hasFeatures || hasLevels
+
   const includedByDimension = included.reduce((byDim, val) => {
     byDim[val.dimension] = val
     return byDim
   }, {})
 
   const subscribed = subscription && subscription.plan.id === plan.id
+
   return (
     <Stack width='70%' anchor='top-right'>
-      <Box as={hover} pad='small' focusIndicator={false} border={{color: subscribed ? 'brand' : 'light-5'}}
+      <Box className='plan' as={hover} pad='small' focusIndicator={false} border={{color: subscribed ? 'brand' : 'light-5'}}
            onClick={subscribed ? null : () => approvePlan(plan)}>
         <Box direction='row' align='center'>
           <Box gap='xsmall' fill='horizontal' direction='row'>
             <Text size='small' weight='bold'>{name}</Text>
             <Text size='small'>${cost /100} {period}</Text>
+            {me.id === repository.publisher.owner.id && (
+              <EditPlan plan={plan} />
+            )}
           </Box>
         </Box>
         <Box gap='xsmall' pad={{vertical: 'small'}}>
@@ -87,17 +145,16 @@ export default function Plan({approvePlan, subscription, ...plan}) {
                                 item={item}
                                 included={includedByDimension[item.dimension]} />)}
         </Box>
-        {hasFeatures && (
-          <Box direction='row' gap='xsmall' align='center'>
+        {hasMore && (<Features features={metadata.features} serviceLevels={plan.serviceLevels} open={open} />)}
+        {hasMore && (
+          <Box direction='row' justify='end' gap='xsmall' align='center'>
             <Anchor size='small' onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOpen(!open) }}>
-              {open ? 'Hide' : 'Show'} features
+              {open ? 'Hide' : 'Show'} details
             </Anchor>
-            {open ? <Down size='small' /> : <Next size='small' />}
           </Box>
         )}
-        {hasFeatures && (<Features features={metadata.features} open={open} />)}
       </Box>
-    {subscribed && <SubscribedBadge />}
+      {subscribed && <SubscribedBadge />}
     </Stack>
   )
 }

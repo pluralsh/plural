@@ -2,6 +2,7 @@ import React from 'react'
 import { Box, Text } from 'grommet'
 import { Checkmark, Cube, Group } from 'grommet-icons'
 import { RepoIcon } from '../repos/Repositories'
+import { SeverityNub } from './Severity'
 
 function NoPlan() {
   return (
@@ -19,6 +20,18 @@ function Feature({feature: {name, description}}) {
         <Text size='small' weight={500}>{name}</Text>
         <Text size='small'><i>{description}</i></Text>
       </Box>
+    </Box>
+  )
+}
+
+export function ServiceLevel({level: {minSeverity, maxSeverity, responseTime}}) {
+  return (
+    <Box direction='row' gap='xsmall'>
+      <SeverityNub severity={minSeverity} />
+      <Text size='small'>to</Text>
+      <SeverityNub severity={maxSeverity} />
+      <Text size='small' weight={500}>response time:</Text>
+      <Text size='small'>{responseTime}</Text>
     </Box>
   )
 }
@@ -43,30 +56,56 @@ function LineItem({item: {name, dimension}, included: {quantity}, consumed}) {
   )
 }
 
+
+function FeatureSection({title, children}) {
+  return (
+    <Box gap='xsmall'>
+      <Text size='small' weight={500}>{title}</Text>
+      {children}
+    </Box>
+  )
+}
+
+
 export function Subscription({incident: {repository, subscription}}) {
   if (!subscription) return <NoPlan />
 
   const {lineItems: {items}} = subscription
-  const {plan: {name, lineItems: {included, ...lineItems}, metadata}} = subscription
+  const {plan: {name, lineItems: {included, ...lineItems}, metadata, serviceLevels}} = subscription
   const includedByDimension = included.reduce((byDim, val) => ({...byDim, [val.dimension]: val}), {})
   const consumedByDimension = items.reduce((byDim, {quantity, dimension}) => ({...byDim, [dimension]: quantity}), {})
   const features = (metadata && metadata && metadata.features) || []
+  const hasFeatures = features.length > 0
+  const hasLevels = serviceLevels && serviceLevels.length > 0
 
   return (
-    <Box direction='row' gap='xsmall'>
-      <Box pad='small' fill='vertical' align='center'> 
-        <RepoIcon repo={repository} />
-      </Box>
-      <Box pad='small' gap='small'>
-        <Text size='small' weight={500}>Subscribed to {name}</Text>
-        <Box gap='xsmall'>
-          {(lineItems.items || []).map((item) => <LineItem
-                                  key={item.dimension}
-                                  item={item}
-                                  consumed={consumedByDimension[item.dimension]}
-                                  included={includedByDimension[item.dimension]} />)}
+    <Box pad='small' gap='small'>
+      <Box direction='row' gap='xsmall' align='center'>
+        <Box flex={false} pad='small' align='center'> 
+          <RepoIcon repo={repository} />
         </Box>
-        {features.map((feature) => <Feature key={feature.name} feature={feature} />)}
+        <Box>
+          <Text size='small' weight={500}>Subscribed to {name}</Text>
+          <Box gap='xsmall'>
+            {(lineItems.items || []).map((item) => <LineItem
+                                                      key={item.dimension}
+                                                      item={item}
+                                                      consumed={consumedByDimension[item.dimension]}
+                                                      included={includedByDimension[item.dimension]} />)}
+          </Box>
+        </Box>
+      </Box>
+      <Box fill pad='small'>
+        {hasFeatures && (
+          <FeatureSection title='Features:'>
+            {features.map((feature) => <Feature key={feature.name} feature={feature} />)}
+          </FeatureSection>
+        )}
+        {hasLevels && (
+          <FeatureSection title='SLAs:'>
+            {serviceLevels.map((level, ind) => <ServiceLevel key={ind} level={level} />)}
+          </FeatureSection>
+        )}
       </Box>
     </Box>
   )

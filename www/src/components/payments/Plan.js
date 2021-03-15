@@ -1,6 +1,6 @@
-import React, { useContext, useState } from 'react'
+import React, { useCallback, useContext, useState } from 'react'
 import styled from 'styled-components'
-import { HoveredBackground, ModalHeader } from 'forge-core'
+import { HoveredBackground } from 'forge-core'
 import { Anchor, Box, Collapsible, Layer, Stack, Text } from 'grommet'
 import { Cube, Group, Checkmark, Edit } from 'grommet-icons'
 import { normalizeColor } from 'grommet/utils'
@@ -8,6 +8,7 @@ import { ServiceLevel } from './CreatePlan'
 import { UpdatePlanForm } from './UpdatePlanForm'
 import { CurrentUserContext } from '../login/CurrentUser'
 import './plan.css'
+import { ignore, ModalHeader } from '../utils/ModalHeader'
 
 export function LineItemIcon({dimension, size}) {
   switch (dimension) {
@@ -87,20 +88,22 @@ export const hover = styled.div`
   }
 `;
 
+
 function EditPlan({plan}) {
   const [open, setOpen] = useState(false)
+  const doSetOpen = useCallback((val, e) => { ignore(e); setOpen(val) }, [setOpen])
 
   return (
     <>
     <HoveredBackground>
-      <Box accentable className='edit' round='xsmall' onClick={() => setOpen(true)}>
+      <Box accentable className='edit' round='xsmall' onClick={(e) => doSetOpen(true, e)}>
         <Edit size='small' />
       </Box>
     </HoveredBackground>
     {open && (
-      <Layer modal onClickOutside={() => setOpen(false)}>
+      <Layer modal onClickOutside={(e) => doSetOpen(false, e)}>
         <Box width='50vw'>
-          <ModalHeader text='Update Plan' setOpen={setOpen} />
+          <ModalHeader text='Update Plan' setOpen={doSetOpen} />
           <Box pad='small'>
             <UpdatePlanForm plan={plan} />
           </Box>
@@ -148,7 +151,7 @@ export default function Plan({approvePlan, subscription, repository, plan}) {
         {hasMore && (<Features features={metadata.features} serviceLevels={plan.serviceLevels} open={open} />)}
         {hasMore && (
           <Box direction='row' justify='end' gap='xsmall' align='center'>
-            <Anchor size='small' onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOpen(!open) }}>
+            <Anchor size='small' color='brand' onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOpen(!open) }}>
               {open ? 'Hide' : 'Show'} details
             </Anchor>
           </Box>

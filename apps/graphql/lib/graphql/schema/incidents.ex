@@ -90,11 +90,12 @@ defmodule GraphQl.Schema.Incidents do
   end
 
   object :incident do
-    field :id,          non_null(:id)
-    field :title,       non_null(:string)
-    field :description, :string
-    field :severity,    non_null(:integer)
-    field :status,      non_null(:incident_status)
+    field :id,               non_null(:id)
+    field :title,            non_null(:string)
+    field :description,      :string
+    field :severity,         non_null(:integer)
+    field :status,           non_null(:incident_status)
+    field :next_response_at, :datetime
 
     field :repository, non_null(:repository), resolve: dataloader(Repository)
     field :creator,    non_null(:user), resolve: dataloader(User)

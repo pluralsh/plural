@@ -7,7 +7,9 @@ defmodule Core.Services.IncidentsTest do
     test "repository installers can create incidents" do
       user = insert(:user)
       repository = insert(:repository)
-      insert(:installation, repository: repository, user: user)
+      plan = insert(:plan, repository: repository, service_levels: [%{min_severity: 0, max_severity: 3, response_time: 60}])
+      inst = insert(:installation, repository: repository, user: user)
+      insert(:subscription, installation: inst, plan: plan)
 
       {:ok, incident} = Incidents.create_incident(%{
         title: "wtf",
@@ -19,6 +21,7 @@ defmodule Core.Services.IncidentsTest do
       assert incident.creator_id == user.id
       assert incident.status == :open
       assert incident.title == "wtf"
+      assert Timex.after?(incident.next_response_at, Timex.now())
 
       %{history: [hist]} = Core.Repo.preload(incident, [:history])
 

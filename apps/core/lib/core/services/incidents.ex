@@ -1,6 +1,7 @@
 defmodule Core.Services.Incidents do
   use Core.Services.Base
   import Core.Policies.Incidents
+  alias Core.Services.Repositories
   alias Core.Schema.{User, Incident, IncidentMessage, Reaction, IncidentHistory, Follower}
   alias Core.PubSub
 
@@ -29,8 +30,21 @@ defmodule Core.Services.Incidents do
       |> IncidentHistory.changeset(%{action: :create}, change)
       |> Core.Repo.insert()
     end)
-    |> execute(extract: :insert)
+    |> add_operation(:hydrate, fn %{insert: incident} -> enforce_sla(incident, user) end)
+    |> execute(extract: :hydrate)
     |> notify(:create)
+  end
+
+  def enforce_sla(incident, user) do
+    installation = Repositories.get_installation(user.id, incident.repository_id)
+    with %{subscription: %{plan: %{service_levels: [_ | _] = levels}}} <- Core.Repo.preload(installation, [subscription: :plan]),
+         %{response_time: mins} <- Enum.find(levels, & incident.severity in &1.min_severity..&1.max_severity) do
+      incident
+      |> Ecto.Changeset.change(%{next_response_at: Timex.shift(Timex.now(), minutes: mins)})
+      |> Core.Repo.update()
+    else
+      _ -> {:ok, incident}
+    end
   end
 
   def update_incident(attrs, incident_id, %User{} = user) do

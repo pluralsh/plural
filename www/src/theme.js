@@ -19,7 +19,8 @@ export const DEFAULT_COLOR_THEME = {
   error: '#CC4400',
   presence: '#39E500',
   success: 'action',
-  link: '#3366BB'
+  link: '#3366BB',
+  notif: 'error'
 }
 
 export const DEFAULT_THEME = {

@@ -25,6 +25,7 @@ import { IncidentContext } from './incidents/context'
 import { Integrations } from './integrations/Webhooks'
 import { Webhook } from './integrations/Webhook'
 import { OauthCreator } from './integrations/OauthCreator'
+import { FlyoutContainer } from './utils/Flyout'
 
 export const TOOLBAR_SIZE = '50px'
 
@@ -71,6 +72,7 @@ export default function Forge() {
                   </Switch>
                 </Box>
               </Box>
+              <FlyoutContainer />
             </Box>
           </Grid>
         </CurrentUser>

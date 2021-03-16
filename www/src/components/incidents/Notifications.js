@@ -5,10 +5,10 @@ import { useApolloClient, useMutation, useQuery, useSubscription } from 'react-a
 import { NOTIFICATIONS_Q, NOTIF_SUB, READ_NOTIFICATIONS } from './queries'
 import Avatar from '../users/Avatar'
 import { NotificationTypes } from './types'
-import { dateFormat } from '../../utils/date'
 import moment from 'moment'
 import { appendConnection, extendConnection, updateCache, updateFragment } from '../../utils/graphql'
 import { IncidentFragment } from '../../models/incidents'
+import { truncate } from 'lodash'
 
 function notificationModifier(type) {
   switch (type) {
@@ -23,15 +23,27 @@ function notificationModifier(type) {
   }
 }
 
-function Notification({notification: {actor, type, insertedAt}}) {
+
+function NotificationContent({type, notification}) {
+  if (type === NotificationTypes.MESSAGE) {
+    return (
+      <Text size='small' color='dark-3'>"{truncate(notification.message.text, {length: 20})}"</Text>
+    )
+  }
+
+  return null
+}
+
+export function Notification({notification: {actor, type, insertedAt, ...notif}}) {
   return (
     <Box flex={false} pad={{horizontal: 'xsmall'}} direction='row' gap='small' align='center' margin={{top: 'xsmall'}}>
       <Avatar user={actor} size='35px' />
       <Box>
-        <Text size='small' color='dark-3'>{dateFormat(moment(insertedAt))}</Text>
         <Box direction='row' gap='xsmall' align='center' pad='xsmall' round='xsmall' background='light-2' style={{overflow: 'auto'}}>
-          <Text size='small' weight={500} style={{whiteSpace: 'nowrap'}}>{notificationModifier(type)}</Text>   
+          <Text size='small' weight={500} style={{whiteSpace: 'nowrap'}}>{notificationModifier(type)}</Text>
+          <NotificationContent notification={notif} type={type} />
         </Box>
+        <Text size='xsmall' color='dark-3'>{moment(insertedAt).format('lll')}</Text>
       </Box>
     </Box>
   )
@@ -46,6 +58,14 @@ export function useNotificationSubscription() {
         updateCache(client, {
           query: NOTIFICATIONS_Q,
           variables: {incidentId: id},
+          update: (prev) => appendConnection(prev, notification, 'Notification', 'notifications')
+        })
+      } catch { }
+
+      try {
+        updateCache(client, {
+          query: NOTIFICATIONS_Q,
+          variables: {},
           update: (prev) => appendConnection(prev, notification, 'Notification', 'notifications')
         })
       } catch { }

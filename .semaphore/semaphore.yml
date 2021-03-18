@@ -57,6 +57,10 @@ blocks:
       commands:
       - make build APP_NAME=rtc
       - make push APP_NAME=rtc
+    - name: "Build worker"
+      commands:
+      - make build APP_NAME=worker
+      - make push APP_NAME=worker
     - name: "Build www"
       commands:
       - make build APP_NAME=www

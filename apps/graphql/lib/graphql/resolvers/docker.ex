@@ -1,9 +1,11 @@
 defmodule GraphQl.Resolvers.Docker do
   use GraphQl.Resolvers.Base, model: Core.Schema.DockerRepository
-  alias Core.Schema.{DockerImage}
+  alias Core.Schema.{DockerImage, Vulnerability}
+  alias Core.Services.Repositories
 
   def query(DockerImage, _), do: DockerImage
-  def query(_, _), do: Core.Schema.DockerRepository
+  def query(Vulnerability, _), do: Vulnerability
+  def query(_, _), do: DockerRepository
 
   def list_repositories(%{repository_id: repo} = args, _) do
     DockerRepository.for_repository(repo)
@@ -16,4 +18,6 @@ defmodule GraphQl.Resolvers.Docker do
     |> DockerImage.ordered()
     |> paginate(args)
   end
+
+  def resolve_image(%{id: id}, _), do: {:ok, Repositories.get_dkr_image!(id)}
 end

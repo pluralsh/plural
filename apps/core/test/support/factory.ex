@@ -317,4 +317,11 @@ defmodule Core.Factory do
       expires_at: Timex.now() |> Timex.shift(hours: 1)
     }
   end
+
+  def vulnerability_factory do
+    %Schema.Vulnerability{
+      image: build(:docker_image),
+      vulnerability_id: "CVE-123"
+    }
+  end
 end

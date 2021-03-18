@@ -330,6 +330,23 @@ defmodule Core.Services.RepositoriesTest do
       assert image.tag == "latest"
       assert image.docker_repository_id == repo.id
       assert image.digest == "some_digest"
+
+      assert_receive {:event, %PubSub.DockerImageCreated{item:  ^image}}
+    end
+  end
+
+  describe "#add_vulnerabilities/2" do
+    test "it will add vulnerabilities to an image and grade it afterwards" do
+      image = insert(:docker_image)
+      vuln = Application.get_env(:core, :vulnerability) |> Jason.decode!()
+      vuln = Core.Docker.TrivySource.to_vulnerability(vuln)
+
+      {:ok, %{vulnerabilities: [vuln]} = image} = Repositories.add_vulnerabilities([vuln], image)
+
+      assert vuln.image_id == image.id
+
+      assert image.scanned_at
+      assert image.grade == :c
     end
   end
 

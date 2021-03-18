@@ -55,3 +55,12 @@ release :rtc do
     graphql: :load
   ]
 end
+
+release :worker do
+  set version: version
+  set applications: [
+    :runtime_tools,
+    worker: :permanent,
+    core: :permanent
+  ]
+end

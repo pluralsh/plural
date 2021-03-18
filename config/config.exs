@@ -78,6 +78,7 @@ config :libcluster, :topologies, []
 
 config :core, start_broker: false
 config :rtc, start_broker: false
+config :worker, start_broker: false
 
 config :lager, :error_logger_redirect, false
 config :lager, :error_logger_whitelist, [Logger.ErrorHandler]
@@ -85,5 +86,8 @@ config :lager, :error_logger_whitelist, [Logger.ErrorHandler]
 config :core, Core.Clients.Zoom,
   client_id: "dummy-id",
   client_secret: "dummy-secret"
+
+config :worker,
+  registry: "dkr.piazza.app"
 
 import_config "#{Mix.env()}.exs"

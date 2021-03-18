@@ -1,11 +1,16 @@
 defmodule Core.Schema.DockerImage do
   use Piazza.Ecto.Schema
-  alias Core.Schema.DockerRepository
+  alias Core.Schema.{DockerRepository, Vulnerability}
+
+  defenum Grade, a: 0, b: 1, c: 2, d: 3, f: 4
 
   schema "docker_images" do
-    field :tag,    :string
-    field :digest, :string
+    field :tag,        :string
+    field :digest,     :string
+    field :grade,      Grade
+    field :scanned_at, :utc_datetime_usec
 
+    has_many   :vulnerabilities,   Vulnerability, foreign_key: :image_id, on_replace: :delete
     belongs_to :docker_repository, DockerRepository
 
     timestamps()
@@ -25,5 +30,12 @@ defmodule Core.Schema.DockerImage do
     |> foreign_key_constraint(:repository_id)
     |> unique_constraint(:name, name: index_name(:docker_images, [:docker_repository_id, :tag]))
     |> validate_required([:docker_repository_id])
+  end
+
+  def vulnerability_changeset(model, attrs \\ %{}) do
+    model
+    |> cast(attrs, [:scanned_at, :grade])
+    |> cast_assoc(:vulnerabilities)
+    |> validate_required([:scanned_at, :grade])
   end
 end

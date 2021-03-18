@@ -45,4 +45,26 @@ defmodule GraphQl.DockerQueriesTest do
              |> ids_equal(docker_imgs)
     end
   end
+
+  describe "dockerImage" do
+    test "it can fetch an individual image" do
+      img = insert(:docker_image)
+      vuln = insert(:vulnerability, image: img)
+
+      {:ok, %{data: %{"dockerImage" => %{"vulnerabilities" => [vuln_found]} = found}}} = run_query("""
+        query Docker($id: ID!) {
+          dockerImage(id: $id) {
+            id
+            tag
+            vulnerabilities { id vulnerabilityId }
+          }
+        }
+      """, %{"id" => img.id}, %{current_user: insert(:user)})
+
+      assert found["id"] == img.id
+      assert found["tag"] == img.tag
+      assert vuln_found["id"] == vuln.id
+      assert vuln_found["vulnerabilityId"] == vuln.vulnerability_id
+    end
+  end
 end

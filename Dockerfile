@@ -72,6 +72,8 @@ RUN apk update && \
       bash \
       openssl-dev ca-certificates
 
+RUN curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.16.0
+
 ENV REPLACE_OS_VARS=true \
     APP_NAME=${APP_NAME}
 

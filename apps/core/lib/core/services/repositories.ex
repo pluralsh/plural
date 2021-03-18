@@ -53,6 +53,8 @@ defmodule Core.Services.Repositories do
     )
   end
 
+  def get_dkr_image!(image_id), do: Core.Repo.get!(DockerImage, image_id)
+
   @doc """
   Creates a new repository for the user's publisher
 
@@ -111,6 +113,32 @@ defmodule Core.Services.Repositories do
       upsert_image(tag, digest, repo)
     end)
     |> execute()
+    |> notify(:create)
+  end
+
+  @doc """
+  Appends vulnerabilities to a docker image
+  """
+  @spec add_vulnerabilities(list, Image.t) :: {:ok, DockerImage.t} | {:error, term}
+  def add_vulnerabilities(vulns, image) do
+    Core.Repo.preload(image, [:vulnerabilities])
+    |> DockerImage.vulnerability_changeset(%{
+      vulnerabilities: vulns,
+      scanned_at: Timex.now(),
+      grade: grade(vulns)
+    })
+    |> Core.Repo.update()
+  end
+
+  defp grade(vulns) when is_list(vulns) do
+    Enum.reduce(vulns, %{}, fn %{severity: severity}, acc -> Map.update(acc, severity, 0, & &1 + 1) end)
+    |> case do
+      %{critical: _} -> :f
+      %{high: _} -> :d
+      %{medium: _} -> :c
+      %{low: _} -> :b
+      _ -> :a
+    end
   end
 
   defp upsert_docker_repo(name, %Repository{id: id}) do
@@ -354,5 +382,11 @@ defmodule Core.Services.Repositories do
 
   defp notify({:ok, %Installation{} = inst}, :update),
     do: handle_notify(PubSub.InstallationUpdated, inst)
+
+  defp notify({:ok, %{image: %DockerImage{} = img}} = res, :create) do
+    handle_notify(PubSub.DockerImageCreated, img)
+    res
+  end
+
   defp notify(error, _), do: error
 end

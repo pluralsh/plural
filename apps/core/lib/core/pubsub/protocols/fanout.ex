@@ -75,3 +75,8 @@ defimpl Core.PubSub.Fanout, for: Core.PubSub.ZoomMeetingCreated do
     }, id, actor)
   end
 end
+
+defimpl Core.PubSub.Fanout, for: Core.PubSub.DockerImageCreated do
+  def fanout(%{item: img}),
+    do: Core.Conduit.Broker.publish(%Conduit.Message{body: img}, :dkr)
+end

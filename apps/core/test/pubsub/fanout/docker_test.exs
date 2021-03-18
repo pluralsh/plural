@@ -1,5 +1,6 @@
 defmodule Core.PubSub.Fanout.DockerTest do
   use Core.SchemaCase, async: true
+  use Mimic
   alias Core.PubSub
 
   describe "DockerNotification" do
@@ -22,6 +23,16 @@ defmodule Core.PubSub.Fanout.DockerTest do
       assert img.tag == "latest"
       assert img.digest == "digest"
       assert img.docker_repository_id == repo.id
+    end
+  end
+
+  describe "DockerImageCreated" do
+    test "it will send to rabbit" do
+      img = insert(:docker_image)
+      expect(Core.Conduit.Broker, :publish, fn %Conduit.Message{body: ^img}, :dkr -> :ok end)
+
+      event = %PubSub.DockerImageCreated{item: img}
+      Core.PubSub.Fanout.fanout(event)
     end
   end
 end

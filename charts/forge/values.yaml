@@ -9,6 +9,10 @@ rtc:
   repository: dkr.piazza.app/forge/rtc
   tag: '0.1.0'
 
+worker:
+  repository: dkr.piazza.app/forge/worker
+  tag: '0.1.0'
+
 www:
   image: dkr.piazza.app/forge/forge-www
   tag: '0.1.0'
@@ -72,7 +76,7 @@ registry:
       gcs:
         keyfile: /etc/docker/forge/gcp.json
     prometheus:
-      enabled: true      
+      enabled: true
     auth:
       token:
         realm: forge.piazza.app/dkr

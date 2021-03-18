@@ -1,5 +1,5 @@
 defmodule Worker.Conduit.Broker do
-  use Core.Conduit.Base, otp_app: :rtc
+  use Core.Conduit.Base, otp_app: :worker
 
   pipeline :in_tracking do
     plug Conduit.Plug.CorrelationId

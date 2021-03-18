@@ -74,6 +74,10 @@ config :rtc, Rtc.Conduit.Broker,
   adapter: ConduitAMQP,
   url: "amqp://rabbitmq:rabbitmq@localhost"
 
+config :worker, Worker.Conduit.Broker,
+  adapter: ConduitAMQP,
+  url: "amqp://rabbitmq:rabbitmq@localhost"
+
 config :libcluster, :topologies, []
 
 config :core, start_broker: false

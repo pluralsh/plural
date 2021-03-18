@@ -96,6 +96,8 @@ registry:
 postgresql:
   metrics:
     enabled: true
+  postgresqlExtendedConf:
+    max_connections: 100
   postgresqlUsername: forge
   postgresqlDatabase: forge
 

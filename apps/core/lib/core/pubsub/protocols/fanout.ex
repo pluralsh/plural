@@ -77,6 +77,10 @@ defimpl Core.PubSub.Fanout, for: Core.PubSub.ZoomMeetingCreated do
 end
 
 defimpl Core.PubSub.Fanout, for: Core.PubSub.DockerImageCreated do
-  def fanout(%{item: img}),
-    do: Core.Conduit.Broker.publish(%Conduit.Message{body: img}, :dkr)
+  require Logger
+
+  def fanout(%{item: img}) do
+    Logger.info "scheduling scan for image #{img.id}"
+    Core.Conduit.Broker.publish(%Conduit.Message{body: img}, :dkr)
+  end
 end

@@ -4,6 +4,8 @@ defmodule Worker.Conduit.Subscribers.Docker do
   alias Core.Docker.TrivySource
   alias Core.Services.Repositories
 
+  require Logger
+
   def process(message, _opts) do
     case scan_image(message.body) do
       {:ok, _} -> ack(message)
@@ -20,9 +22,12 @@ defmodule Worker.Conduit.Subscribers.Docker do
 
     case System.cmd("trivy", ["image", "--output", "json", "#{registry_name}:#{image.tag}"], env: env) do
       {output, 0} ->
-        vulns = Jason.decode!(output) |> Enum.map(&TrivySource.to_vulnerability/1)
-        Repositories.add_vulnerabilities(vulns, img)
-      _ -> :error
+        Jason.decode!(output)
+        |> Enum.map(&TrivySource.to_vulnerability/1)
+        |> Repositories.add_vulnerabilities(img)
+      {output, _} ->
+        Logger.info "Trivy failed with: #{output}"
+        :error
     end
   end
 

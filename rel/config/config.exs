@@ -38,6 +38,10 @@ config :rtc, Rtc.Conduit.Broker,
   adapter: ConduitAMQP,
   url: "amqp://user:#{get_env("RABBITMQ_PASSWORD")}@forge-rabbitmq"
 
+config :worker, Worker.Conduit.Broker,
+  adapter: ConduitAMQP,
+  url: "amqp://user:#{get_env("RABBITMQ_PASSWORD")}@forge-rabbitmq"
+
 config :piazza_core, aes_key: get_env("AES_KEY")
 
 config :core, Core.Clients.Zoom,

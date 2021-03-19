@@ -71,7 +71,7 @@ function ArtifactOption({onClick, text, border, round}) {
       as={optionHover}
       onClick={onClick}
       round={round}
-      pad='small'
+      pad={{horizontal: 'small', vertical: 'xsmall'}}
       border={border}>
       <Text size='small'>{text}</Text>
     </Box>
@@ -160,7 +160,7 @@ export function Artifact({name, type, platform, filesize, ...artifact}) {
       <ArtifactIcon type={type} />
       <Box ref={dropRef} gap='xsmall'>
         <Box direction='row' gap='xsmall' align='center'>
-          <Anchor size='small' weight='bold'>{name}</Anchor>
+          <Text size='small' weight={500}>{name}</Text>
           <ArtifactPlatform platform={platform} />
           <Text size='small' color='dark-3'>-- {fs(filesize)}</Text>
         </Box>

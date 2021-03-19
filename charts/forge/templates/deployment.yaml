@@ -152,8 +152,35 @@ spec:
             secretKeyRef:
               name: {{ .Values.rabbitPasswordSecret }}
               key: rabbitmq-password
+        - name: DOCKER_HOST
+          value: tcp://localhost:2375
         resources:
           {{- toYaml .Values.resources | nindent 12 }}
+      - name: dind-daemon
+        image: docker:19-dind
+        resources:
+          requests:
+            cpu: 20m
+            memory: 256Mi
+        securityContext:
+          privileged: true
+        env:
+        - name: DOCKER_TLS_CERTDIR
+          value: /certs
+        volumeMounts:
+        - name: share
+          mountPath: /tmp/shared
+        - name: docker-storage
+          mountPath: /var/lib/docker
+        - name: docker-certs
+          mountPath: /certs
+      volumes:
+      - name: share
+        emptyDir: {}
+      - name: docker-storage
+        emptyDir: {}
+      - name: docker-certs
+        emptyDir: {}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

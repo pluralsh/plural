@@ -92,7 +92,7 @@ config :core, Core.Clients.Zoom,
   client_secret: "dummy-secret"
 
 config :worker,
-  registry: "dkr.piazza.app"
+  registry: "dkr.piazza.app",
   docker_env: []
 
 import_config "#{Mix.env()}.exs"

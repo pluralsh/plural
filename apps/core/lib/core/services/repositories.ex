@@ -131,7 +131,10 @@ defmodule Core.Services.Repositories do
   end
 
   defp grade(vulns) when is_list(vulns) do
-    Enum.reduce(vulns, %{}, fn %{severity: severity}, acc -> Map.update(acc, severity, 0, & &1 + 1) end)
+    vulns
+    |> Enum.reduce(%{}, fn %{severity: severity}, acc ->
+      Map.update(acc, severity, 0, & &1 + 1)
+    end)
     |> case do
       %{critical: _} -> :f
       %{high: _} -> :d
@@ -140,6 +143,7 @@ defmodule Core.Services.Repositories do
       _ -> :a
     end
   end
+  defp grade(_), do: :a
 
   defp upsert_docker_repo(name, %Repository{id: id}) do
     case Core.Repo.get_by(DockerRepository, repository_id: id, name: name) do

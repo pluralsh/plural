@@ -4,8 +4,10 @@ defmodule Worker.Application do
   @moduledoc false
 
   use Application
+  require Logger
 
   def start(_type, _args) do
+    Logger.info "Starting worker"
     children = broker()
 
     # See https://hexdocs.pm/elixir/Supervisor.html

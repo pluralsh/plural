@@ -34,7 +34,7 @@ defmodule GraphQl.Schema.Docker do
   end
 
   object :vulnerability do
-    field :id, non_null(:id)
+    field :id,                non_null(:id)
     field :title,             :string
     field :description,       :string
     field :vulnerability_id,  :string

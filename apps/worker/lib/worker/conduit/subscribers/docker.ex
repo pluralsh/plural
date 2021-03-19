@@ -6,9 +6,11 @@ defmodule Worker.Conduit.Subscribers.Docker do
   require Logger
 
   def process(message, _opts) do
-    case scan_image(message.body) |> IO.inspect() do
+    case scan_image(message.body) do
       {:ok, _} -> ack(message)
-      _ -> nack(message)
+      error ->
+        Logger.error "Failed scan: #{inspect(error)}"
+        nack(message)
     end
   end
 
@@ -25,7 +27,7 @@ defmodule Worker.Conduit.Subscribers.Docker do
     case System.cmd("trivy", ["--quiet", "image", "--format", "json", image], env: env) do
       {output, 0} ->
         with {:ok, [%{"Vulnerabilities" => vulns} | _]} <- Jason.decode(output) do
-          vulns
+          (vulns || [])
           |> Enum.map(&TrivySource.to_vulnerability/1)
           |> Repositories.add_vulnerabilities(img)
         end

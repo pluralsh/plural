@@ -267,18 +267,19 @@ export function MessageInput() {
     if (disable) return
     const entities = [...extractEntities(editorState)]
     console.log(entities)
+    console.log(attachment)
     const file = attachment ? {blob: attachment} : null
     mutation({variables: {attributes: {text: plainSerialize(editorState), file, entities}}})
     Transforms.select(editor, SlateEditor.start(editor, []))
     setEditorState(plainDeserialize(''))
-  }, [mutation, setEditorState, editorState, editor, attachment, disable])
+  }, [mutation, setEditorState, editorState, editor, attachment, disable, attachment])
 
   const empty = isEmpty(editorState)
 
   return (
     <Box flex={false} fill='horizontal'>
       {(attachment || uploadProgress > 0) && (
-        <UploadProgress 
+        <UploadProgress
           attachment={attachment} 
           setAttachment={setAttachment} 
           uploadProgress={uploadProgress}

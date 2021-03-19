@@ -8,7 +8,7 @@ defmodule Core.Docker.TrivySource do
   deffetch "SeveritySource",   :source
   deffetch "PrimaryURL",       :url
   deffetch "Title",            :title
-  deffetch "Description",      :description
+  deffetch "Description",      :description, resolve: &truncate(&1, 700)
   deffetch "Severity",         :severity, resolve: &grade/1
   deffetch "Layer",            :layer, resolve: fn %{"Digest" => digest, "DiffID" => diff} -> %{digest: digest, diff_id: diff} end
 

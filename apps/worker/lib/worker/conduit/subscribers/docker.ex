@@ -17,11 +17,11 @@ defmodule Worker.Conduit.Subscribers.Docker do
     %{docker_repository: %{repository: repo} = dkr} = img = Core.Repo.preload(image, [docker_repository: :repository])
     %{publisher: %{owner: owner}} = Core.Repo.preload(repo, [publisher: :owner])
 
-    registry_name  = "#{registry()}/#{repo.name}/#{dkr.name}"
+    registry_name  = "#{Worker.conf(:registry)}/#{repo.name}/#{dkr.name}"
     image = "#{registry_name}:#{image.tag}"
 
     {:ok, registry_token} = Core.Services.Repositories.docker_token([:pull], registry_name, owner)
-    env = [{"TRIVY_REGISTRY_TOKEN", registry_token}]
+    env = [{"TRIVY_REGISTRY_TOKEN", registry_token} | Worker.conf(:docker_env)]
 
     Logger.info "Scanning image #{image}"
     case System.cmd("trivy", ["image", "--output", "json", image], env: env) do

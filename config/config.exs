@@ -93,5 +93,6 @@ config :core, Core.Clients.Zoom,
 
 config :worker,
   registry: "dkr.piazza.app"
+  docker_env: []
 
 import_config "#{Mix.env()}.exs"

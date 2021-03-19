@@ -30,7 +30,7 @@ config :core, Core.Email.Mailer,
   api_key: {:system, "SENGRID_API_KEY"}
 
 config :worker, docker_env: [
-  {"DOCKER_HOST", "tcp://localhost:2376"},
-  {"DOCKER_CERT_PATH", "/certs/client"},
-  {"DOCKER_TLS_VERIFY", "1"},
+  # {"DOCKER_HOST", "tcp://localhost:2376"},
+  # {"DOCKER_CERT_PATH", "/certs/client"},
+  # {"DOCKER_TLS_VERIFY", "1"},
 ]

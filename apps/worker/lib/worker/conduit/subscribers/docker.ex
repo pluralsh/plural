@@ -21,6 +21,7 @@ defmodule Worker.Conduit.Subscribers.Docker do
     image = "#{registry_name}:#{image.tag}"
 
     {:ok, registry_token} = Core.Services.Repositories.docker_token([:pull], registry_name, owner)
+    IO.inspect(registry_token)
     env = [{"TRIVY_REGISTRY_TOKEN", registry_token} | Worker.conf(:docker_env)]
 
     Logger.info "Scanning image #{image}"

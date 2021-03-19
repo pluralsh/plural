@@ -3,11 +3,14 @@ defmodule Worker.Conduit.Subscribers.Docker do
   import Conduit.Message
   alias Core.Docker.TrivySource
   alias Core.Services.Repositories
+  alias Core.Schema.DockerImage
   require Logger
 
   def process(message, _opts) do
     case scan_image(message.body) do
-      {:ok, _} -> ack(message)
+      {:ok, result} ->
+        log(result)
+        ack(message)
       error ->
         Logger.error "Failed scan: #{inspect(error)}"
         nack(message)
@@ -36,4 +39,9 @@ defmodule Worker.Conduit.Subscribers.Docker do
         :error
     end
   end
+
+  defp log(%DockerImage{id: id, vulnerabilities: vulns}) when is_list(vulns) do
+    Logger.info "Found #{length(vulns)} vulns for image #{id}"
+  end
+  defp log(_), do: :ok
 end

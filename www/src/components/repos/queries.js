@@ -2,7 +2,7 @@ import gql from 'graphql-tag'
 import { RepoFragment, InstallationFragment, IntegrationFragment, ArtifactFragment, DashboardFragment } from '../../models/repo'
 import { ChartFragment, VersionFragment, ChartInstallationFragment, VersionTagFragment } from '../../models/chart'
 import { TerraformFragment, TerraformInstallationFragment } from '../../models/terraform'
-import { DockerRepoFragment, DockerImageFragment } from '../../models/docker'
+import { DockerRepoFragment, DockerImageFragment, VulnerabilityFragment } from '../../models/docker'
 import { RecipeFragment, RecipeSectionFragment } from '../../models/recipe'
 import { PlanFragment, SubscriptionFragment } from '../../models/payments'
 import { PageInfo } from '../../models/misc'
@@ -167,9 +167,7 @@ export const DOCKER_IMG_Q = gql`
   query DockerImages($dockerRepositoryId: ID!, $cursor: String) {
     dockerImages(dockerRepositoryId: $dockerRepositoryId, after: $cursor, first: 15) {
       pageInfo { ...PageInfo }
-      edges {
-        node { ...DockerImageFragment }
-      }
+      edges { node { ...DockerImageFragment } }
     }
   }
   ${PageInfo}
@@ -286,6 +284,17 @@ export const TF_Q = gql`
   ${TerraformFragment}
   ${TerraformInstallationFragment}
 `;
+
+export const DOCKER_Q = gql`
+  query Docker($id: ID!) {
+    dockerImage(id: $id) {
+      ...DockerImageFragment
+      vulnerabilities { ...VulnerabilityFragment }
+    }
+  }
+  ${DockerImageFragment}
+  ${VulnerabilityFragment}
+`
 
 export const INSTALL_CHART = gql`
   mutation InstallChart($id: ID!, $attributes: ChartInstallationAttributes!) {

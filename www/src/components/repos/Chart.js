@@ -106,7 +106,6 @@ function ChartHeader({helm, chart, version, chartInstallation, id, installation}
       }
       </Box>
     </Box>
-
   )
 }
 

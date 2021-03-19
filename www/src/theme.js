@@ -20,7 +20,12 @@ export const DEFAULT_COLOR_THEME = {
   presence: '#39E500',
   success: 'action',
   link: '#3366BB',
-  notif: 'error'
+  notif: 'error',
+  good: '#00ac46',
+  low: '#fdc500',
+  medium: '#fd8c00',
+  high: '#dc0000',
+  critical: '#780000'
 }
 
 export const DEFAULT_THEME = {

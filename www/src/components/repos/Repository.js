@@ -1,16 +1,17 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { Box, Text, Anchor, Table, TableHeader, TableRow, TableCell, TableBody, CheckBox } from 'grommet'
-import { Bundle, FormPrevious, Lock } from 'grommet-icons'
+import { Box, Text, CheckBox } from 'grommet'
+import { Bundle, Lock } from 'grommet-icons'
 import { useQuery, useMutation } from 'react-apollo'
 import { useParams, useHistory } from 'react-router-dom'
 import { Scroller, Button, SecondaryButton, Modal, ModalHeader, Tabs, TabHeader,
         TabHeaderItem, TabContent, BORDER_COLOR, ScrollableContainer } from 'forge-core'
 import yaml from 'js-yaml'
 import { REPO_Q, UPDATE_REPO, DOCKER_IMG_Q } from './queries'
-import { DEFAULT_CHART_ICON, DEFAULT_TF_ICON, DEFAULT_DKR_ICON } from './constants'
+import { DEFAULT_CHART_ICON, DEFAULT_TF_ICON, DEFAULT_DKR_ICON, DKR_DNS } from './constants'
 import Installation from './Installation'
 import CreateTerraform from './CreateTerraform'
 import { RepoForm } from './CreateRepository'
+import { GradeNub } from './Docker'
 import Highlight from 'react-highlight'
 import Recipes from './Recipes'
 import moment from 'moment'
@@ -75,24 +76,10 @@ function DockerRepository({docker, repo, hasNext, setRepo}) {
           {docker.name}
         </Text>
         <Text size='small'>
-          docker pull dkr.piazza.app/{repo.name}/{docker.name} -- created {moment(docker.insertedAt).fromNow()}
+          docker pull {DKR_DNS}/{repo.name}/{docker.name} -- created {moment(docker.insertedAt).fromNow()}
         </Text>
       </Box>
     </Container>
-  )
-}
-
-function DockerImage({image}) {
-  return (
-    <TableRow>
-      <TableCell>
-        <Box direction='row' gap='xsmall' width='100px' align='center'>
-          <Bundle size='12px' /> {image.tag}
-        </Box>
-      </TableCell>
-      <TableCell>{image.digest}</TableCell>
-      <TableCell>{moment(image.insertedAt).fromNow()}</TableCell>
-    </TableRow>
   )
 }
 
@@ -153,7 +140,30 @@ function Terraform({edges, pageInfo, fetchMore}) {
   )
 }
 
-function DockerImages({dockerRepository, clear}) {
+const HeaderItem = ({text, width}) => <Box width={width}><Text size='small' weight={500}>{text}</Text></Box>
+
+function DockerImage({image}) {
+  let history = useHistory()
+
+  return (
+    <Box direction='row' align='center' hoverIndicator='light-2' border={{side: 'bottom', color: 'light-3'}}
+         onClick={() => history.push(`/docker/${image.id}`)} pad='xsmall' gap='xsmall'>
+      <Box width='15%' direction='row' align='center' gap='xsmall'>
+        <Bundle size='12px' /> 
+        <Text size='small'>{image.tag}</Text>
+      </Box>
+      <Box width='15%'>{moment(image.insertedAt).fromNow()}</Box>
+      <Box width='60%'><Text size='small' truncate>{image.digest}</Text></Box>
+      {image.scannedAt && (
+        <Box width='10%'>
+          <GradeNub text={image.grade} severity={image.grade} />
+        </Box>
+      )}
+    </Box>
+  )
+}
+
+export function DockerImages({dockerRepository}) {
   const {data, loading} = useQuery(DOCKER_IMG_Q, {
     variables: {dockerRepositoryId: dockerRepository.id}
   })
@@ -162,27 +172,15 @@ function DockerImages({dockerRepository, clear}) {
   const {edges} = data.dockerImages
 
   return (
-    <Box pad={{vertical: 'small'}} gap='small'>
-      <Box direction='row' gap='xxsmall' align='center'>
-        <FormPrevious size='14px' />
-        <Anchor onClick={clear}>
-          return to docker repositories
-        </Anchor>
+    <Box fill>
+      <Box flex={false} direction='row' align='center' border={{side: 'bottom', color: 'light-5'}} 
+           gap='xsmall' pad='xsmall'>
+        <HeaderItem text='tag' width='15%' />
+        <HeaderItem text='created' width='15%' />
+        <HeaderItem text='sha' width='60%' />
+        <HeaderItem text='grade' width='10%' />
       </Box>
-      <Box border>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableCell scope='col' border='bottom'>tag</TableCell>
-              <TableCell scope='col' border='bottom'>sha</TableCell>
-              <TableCell scope='col' border='bottom'>created</TableCell>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {edges.map(({node}) => <DockerImage key={node.id} image={node} clear={clear} />)}
-          </TableBody>
-        </Table>
-      </Box>
+      {edges.map(({node}) => <DockerImage key={node.id} image={node} />)}
     </Box>
   )
 }

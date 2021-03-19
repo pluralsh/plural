@@ -5,7 +5,7 @@ terraform:
   terraform/forge/aws: h1:9o3yy0lGLumOvqJKouSXYpYlH4JijLUweeRZA1K4E0A=
   terraform/forge/forge-gcp: h1:q0yav0+nnHu+9WnO7RwPkpAqzborwmFEWXYhpz/coug=
 helm:
-  charts/forge: h1:RFFP1lH73xNaWWlU5I1YtDoLVRdkmxTvMZvbEt6g5XA=
+  charts/forge: h1:3Dv311Ww2KXER6VIntdO/P0Tq3zStprdywGJQfajLnM=
 recipe:
   forge/recipes/gcp-kubernetes.yaml: 5db02eb02b9da40ccbe7e10906345a9f89c37e7aa0aa952a438fb74a1d8b2199
   forge/recipes/watchman-gcp.yaml: e0bec37378ab299b0168ba31f85d9b6378fcc9c0f1d432332194110ac951add7

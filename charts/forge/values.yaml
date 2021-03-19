@@ -2,20 +2,20 @@ replicaCount: 2
 
 image:
   repository: dkr.piazza.app/forge/forge
-  tag: '0.1.0'
+  tag: '0.1.1'
   pullPolicy: Always
 
 rtc:
   repository: dkr.piazza.app/forge/rtc
-  tag: '0.1.0'
+  tag: '0.1.1'
 
 worker:
   repository: dkr.piazza.app/forge/worker
-  tag: '0.1.0'
+  tag: '0.1.1'
 
 www:
   image: dkr.piazza.app/forge/forge-www
-  tag: '0.1.0'
+  tag: '0.1.1'
   port: 80
 
 imagePullSecrets:

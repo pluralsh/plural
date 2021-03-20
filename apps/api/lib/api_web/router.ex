@@ -12,7 +12,7 @@ defmodule ApiWeb.Router do
 
   forward "/graphiql", Absinthe.Plug.GraphiQL,
       schema: GraphQl,
-      interface: :advanced
+      interface: :playground
 
   scope "/gql" do
     pipe_through [:api, :auth]

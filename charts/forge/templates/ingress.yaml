@@ -35,6 +35,10 @@ spec:
         backend:
           serviceName: forge-api
           servicePort: http
+      - path: /graphiql
+        backend:
+          serviceName: forge-api
+          servicePort: http
       - path: /auth/.*
         backend:
           serviceName: forge-api

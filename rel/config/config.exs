@@ -22,7 +22,7 @@ config :core, Core.Repo,
   username: "forge",
   password: get_env("POSTGRES_PASSWORD"),
   hostname: "forge-postgresql",
-  pool_size: 10
+  pool_size: 5
 
 config :core, :jwt,
   pk: get_env("JWT_PRIVATE_KEY"),

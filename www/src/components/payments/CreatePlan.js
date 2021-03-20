@@ -346,13 +346,14 @@ export function SlaForm({attributes, setAttributes, serviceLevel: {minSeverity, 
 
 function NavigableSlaForm({state, setState, mutation, loading}) {
   const [serviceLevel, setServiceLevel] = useState({minSeverity: 0, maxSeverity: 3, responseTime: 30})
+  
   return (
     <Box fill>
       <SlaForm 
         attributes={state} 
         setAttributes={setState} 
         serviceLevel={serviceLevel} 
-        serviceLevel={setServiceLevel} />
+        setServiceLevel={setServiceLevel} />
       <Box direction='row' justify='end' gap='small' margin={{top: 'small'}}>
         <SecondaryButton
           label='Add service level'

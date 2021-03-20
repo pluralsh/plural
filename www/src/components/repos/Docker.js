@@ -1,15 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Loading, Tabs, TabHeader, TabHeaderItem, TabContent } from 'forge-core'
 import { useQuery } from 'react-apollo'
-import { useParams } from 'react-router'
-import { DOCKER_Q } from './queries'
+import { useHistory, useParams } from 'react-router'
+import { DOCKER_IMG_Q, DOCKER_Q } from './queries'
 import { AttackVector, ColorMap, DEFAULT_DKR_ICON, DKR_DNS } from './constants'
 import { DetailContainer } from './Installation'
 import moment from 'moment'
 import { Anchor, Box, Collapsible, Text } from 'grommet'
 import { Link } from 'grommet-icons'
 import { BreadcrumbsContext } from '../Breadcrumbs'
-import { DockerImages } from './Repository'
+import { DockerImages } from './DockerImages'
 
 function DockerHeader({image}) {
   return (
@@ -46,19 +46,6 @@ function NoVulnerabilities() {
   return (
     <Box fill justify='center' align='center'>
       <Text weight='bold'>This image is vulnerability free</Text>
-    </Box>
-  )
-}
-
-function TableItem({text, children}) {
-  return (
-    <Box direction='row' gap='xsmall' align='center'>
-      <Box width='30%'>
-        <Text size='small' weight={500}>{text}</Text>
-      </Box>
-      <Box fill='horizontal'>
-        {children}
-      </Box>
     </Box>
   )
 }
@@ -106,7 +93,7 @@ function VulnerabilityDetail({vuln}) {
           <Text size='small' weight={500}>CVSS V3 Vector</Text>
           <Text size='small'>(source {vuln.source}, score: <b>{vuln.score}</b>)</Text>
         </Box>
-        <Text size='small'>EXPLOITABILITY METRICS</Text>
+        <Text size='small' weight={500}>EXPLOITABILITY METRICS</Text>
         <Box flex={false} gap='xsmall'>
           <CVSSRow text='Attack Vector' value={vuln.cvss.attackVector} options={[
             {name: 'Physical', value: AttackVector.PHYSICAL},
@@ -122,7 +109,7 @@ function VulnerabilityDetail({vuln}) {
             {name: 'High', value: 'HIGH'},
             {name: 'Low', value: "LOW"},
             {name: 'None', value: "NONE"}
-          ]} colorMap={{'HIGH': 'low', 'LOW': 'medium', 'NONE': 'high'}}/>
+          ]} colorMap={{'HIGH': 'low', 'LOW': 'high', 'NONE': 'critical'}}/>
           <CVSSRow text='User Interaction' value={vuln.cvss.userInteraction} options={[
             {name: 'Required', value: 'REQUIRED'},
             {name: 'None', value: "NONE"}
@@ -155,10 +142,11 @@ function Vulnerability({vuln}) {
   const [open, setOpen] = useState(false)
   return (
     <Box flex={false} border={{side: 'bottom', color: 'light-3'}}>
-      <Box direction='row' gap='small' align='center' pad={{vertical: 'xsmall'}} onClick={() => setOpen(!open)} hoverIndicator='light-3' >
+      <Box direction='row' gap='small' align='center' pad='xsmall' onClick={() => setOpen(!open)} 
+          hoverIndicator='light-3' focusIndicator={false}>
         <Box width='30%' direction='row' gap='small'>
           <Text size='small' weight={500}>{vuln.vulnerabilityId}</Text>
-          {vuln.url && <Anchor size='small' href={vuln.url}><Link size='small' /></Anchor>}
+          {vuln.url && <Anchor size='small' href={vuln.url} target="_blank"><Link size='small' /></Anchor>}
         </Box>
         <Box width='10%' direction='row' gap='xsmall' align='center'>
           <Box width='15px' height='15px' round='xsmall' background={ColorMap[vuln.severity]} />
@@ -179,7 +167,7 @@ const HeaderItem = ({text, width, nobold}) => (<Box width={width}><Text size='sm
 
 function VulnerabilityHeader() {
   return (
-    <Box flex={false} direction='row' border={{side: 'bottom', color: 'light-5'}} align='center'>
+    <Box flex={false} direction='row' pad='xsmall' border={{side: 'bottom', color: 'light-5'}} align='center'>
       <HeaderItem text='ID' width='30%' />
       <HeaderItem text='Severity' width='10%' />
       <HeaderItem text='Package' width='30%' />
@@ -193,13 +181,28 @@ function Vulnerabilities({image: {vulnerabilities, ...image}}) {
   if (!vulnerabilities || vulnerabilities.length === 0) return <NoVulnerabilities />
 
   return (
-    <Box style={{overflow: 'auto'}} fill pad='small'>
+    <Box style={{overflow: 'auto'}} fill>
       <VulnerabilityHeader />
       {vulnerabilities.map((vuln) => (
         <Vulnerability key={vuln.id} vuln={vuln} />
       ))}
     </Box>
   )
+}
+
+export function DockerRepository() {
+  let history = useHistory()
+  const {id} = useParams()
+  const {data} = useQuery(DOCKER_IMG_Q, {variables: {dockerRepositoryId: id}})
+  useEffect(() => {
+    if (!data) return
+    const {dockerImages: {edges}} = data
+    if (edges.length === 0) return
+
+    history.push(`/dkr/img/${edges[0].node.id}`)
+  }, [data])
+
+  return <Loading />
 }
 
 export function Docker() {
@@ -212,7 +215,7 @@ export function Docker() {
     const repository = dockerImage.dockerRepository.repository
     setBreadcrumbs([
       {url: `/repositories/${repository.id}`, text: repository.name},
-      {url: `/docker/${dockerImage.id}`, text: `${dockerImage.dockerRepository.name}`}
+      {url: `/dkr/img/${dockerImage.id}`, text: `${dockerImage.dockerRepository.name}`}
     ])
   }, [data, setBreadcrumbs])
 
@@ -220,8 +223,8 @@ export function Docker() {
 
   const {dockerImage: image} = data
   return (
-    <Box fill direction='row'>
-      <Box fill width='70%' pad='small' gap='small'>
+    <Box fill direction='row' pad='medium' gap='medium'>
+      <Box fill width='70%' gap='small'>
         <DockerHeader image={image} />
         <Box fill>
           <Tabs defaultTab='imgs'>
@@ -242,7 +245,7 @@ export function Docker() {
           </Tabs>
         </Box>
       </Box>
-      <Box flex={false} fill='vertical' pad='small'>
+      <Box flex={false} fill='vertical'>
         <DockerSidebar image={image} />
       </Box>
     </Box>

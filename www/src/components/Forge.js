@@ -26,7 +26,7 @@ import { Integrations } from './integrations/Webhooks'
 import { Webhook } from './integrations/Webhook'
 import { OauthCreator } from './integrations/OauthCreator'
 import { FlyoutContainer } from './utils/Flyout'
-import { Docker } from './repos/Docker'
+import { Docker, DockerRepository } from './repos/Docker'
 
 export const TOOLBAR_SIZE = '50px'
 
@@ -55,7 +55,8 @@ export default function Forge() {
                     <Route path='/publishers/mine' component={MyPublisher} />
                     <Route path='/publishers/:publisherId' component={Publisher} />
                     <Route path='/publishers' component={Publishers} />
-                    <Route path='/docker/:id' component={Docker} />
+                    <Route path='/dkr/repo/:id' component={DockerRepository} />
+                    <Route path='/dkr/img/:id' component={Docker} />
                     <Route path='/repositories/:repositoryId/integrations' component={IntegrationPage} />
                     <Route path='/repositories/:repositoryId' component={Repository} />
                     <Route path='/charts/:chartId' component={Chart} />

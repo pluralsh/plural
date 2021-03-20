@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react'
 import styled from 'styled-components'
-import { Box, Text, Anchor, Drop, Markdown, Table, TableBody, TableRow, TableCell } from 'grommet'
+import { Box, Text, Drop, Markdown, Table, TableBody, TableRow, TableCell } from 'grommet'
 import { Apple, Windows, Ubuntu, Terminal, Previous, Cube } from 'grommet-icons'
 import { normalizeColor } from 'grommet/utils'
 import { download } from '../../utils/file'

@@ -1,17 +1,16 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { Box, Text, CheckBox } from 'grommet'
-import { Bundle, Lock } from 'grommet-icons'
+import { Lock } from 'grommet-icons'
 import { useQuery, useMutation } from 'react-apollo'
 import { useParams, useHistory } from 'react-router-dom'
 import { Scroller, Button, SecondaryButton, Modal, ModalHeader, Tabs, TabHeader,
         TabHeaderItem, TabContent, BORDER_COLOR, ScrollableContainer } from 'forge-core'
 import yaml from 'js-yaml'
-import { REPO_Q, UPDATE_REPO, DOCKER_IMG_Q } from './queries'
+import { REPO_Q, UPDATE_REPO } from './queries'
 import { DEFAULT_CHART_ICON, DEFAULT_TF_ICON, DEFAULT_DKR_ICON, DKR_DNS } from './constants'
 import Installation from './Installation'
 import CreateTerraform from './CreateTerraform'
 import { RepoForm } from './CreateRepository'
-import { GradeNub } from './Docker'
 import Highlight from 'react-highlight'
 import Recipes from './Recipes'
 import moment from 'moment'
@@ -65,9 +64,10 @@ function Chart({chart, hasNext}) {
   )
 }
 
-function DockerRepository({docker, repo, hasNext, setRepo}) {
+function DockerRepository({docker, repo, hasNext}) {
+  let history = useHistory()
   return (
-    <Container hasNext={hasNext} onClick={() => setRepo(docker)}>
+    <Container hasNext={hasNext} onClick={() => history.push(`/dkr/repo/${docker.id}`)}>
       <Box width='50px' heigh='50px'>
         <img alt='' width='50px' height='50px' src={DEFAULT_DKR_ICON} />
       </Box>
@@ -140,51 +140,6 @@ function Terraform({edges, pageInfo, fetchMore}) {
   )
 }
 
-const HeaderItem = ({text, width}) => <Box width={width}><Text size='small' weight={500}>{text}</Text></Box>
-
-function DockerImage({image}) {
-  let history = useHistory()
-
-  return (
-    <Box direction='row' align='center' hoverIndicator='light-2' border={{side: 'bottom', color: 'light-3'}}
-         onClick={() => history.push(`/docker/${image.id}`)} pad='xsmall' gap='xsmall'>
-      <Box width='15%' direction='row' align='center' gap='xsmall'>
-        <Bundle size='12px' /> 
-        <Text size='small'>{image.tag}</Text>
-      </Box>
-      <Box width='15%'>{moment(image.insertedAt).fromNow()}</Box>
-      <Box width='60%'><Text size='small' truncate>{image.digest}</Text></Box>
-      {image.scannedAt && (
-        <Box width='10%'>
-          <GradeNub text={image.grade} severity={image.grade} />
-        </Box>
-      )}
-    </Box>
-  )
-}
-
-export function DockerImages({dockerRepository}) {
-  const {data, loading} = useQuery(DOCKER_IMG_Q, {
-    variables: {dockerRepositoryId: dockerRepository.id}
-  })
-
-  if (!data || loading) return null
-  const {edges} = data.dockerImages
-
-  return (
-    <Box fill>
-      <Box flex={false} direction='row' align='center' border={{side: 'bottom', color: 'light-5'}} 
-           gap='xsmall' pad='xsmall'>
-        <HeaderItem text='tag' width='15%' />
-        <HeaderItem text='created' width='15%' />
-        <HeaderItem text='sha' width='60%' />
-        <HeaderItem text='grade' width='10%' />
-      </Box>
-      {edges.map(({node}) => <DockerImage key={node.id} image={node} />)}
-    </Box>
-  )
-}
-
 function EmptyTab({text}) {
   return (
     <Box pad='small'>
@@ -194,11 +149,6 @@ function EmptyTab({text}) {
 }
 
 function DockerRepos({edges, repo, pageInfo, fetchMore}) {
-  const [dockerRepository, setDockerRepository] = useState(null)
-  if (dockerRepository) {
-    return <DockerImages dockerRepository={dockerRepository} clear={() => setDockerRepository(null)} />
-  }
-
   return (
     <Scroller id='docker'
       edges={edges}
@@ -208,8 +158,7 @@ function DockerRepos({edges, repo, pageInfo, fetchMore}) {
           key={node.id}
           docker={node}
           repo={repo}
-          hasNext={!!next.node}
-          setRepo={setDockerRepository} />
+          hasNext={!!next.node} />
       )}
       emptyState={<EmptyTab text='no repos created yet' />}
       onLoadMore={() => pageInfo.hasNextPage && fetchMore({

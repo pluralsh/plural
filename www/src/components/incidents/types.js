@@ -68,3 +68,12 @@ export const IncidentFilter = {
   FOLLOWING: 'FOLLOWING',
   TAG: 'TAG'
 }
+
+export const SeverityColorMap = ['critical', 'high', 'medium', 'low', 'light-4', 'dark-6']
+
+export const StatusColorMap = {
+  OPEN: 'high',
+  IN_PROGRESS: 'progress',
+  RESOLVED: 'dark-3',
+  COMPLETE: 'good'
+}

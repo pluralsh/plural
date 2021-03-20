@@ -50,7 +50,7 @@ export function IncidentForm({attributes, setAttributes, statusEdit, children}) 
           editor={editor}
           value={editorState}
           onChange={setDescription}>
-          <Editable placeholder='Description of the incident (markdown allowed)' />
+          <Editable style={{minHeight: '30vh'}} placeholder='Description of the incident (markdown allowed)' />
         </Slate>
       </Box>
       <Box direction='row' gap='small' align='center'>

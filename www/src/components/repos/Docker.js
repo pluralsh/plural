@@ -148,11 +148,11 @@ function Vulnerability({vuln}) {
           <Text size='small' weight={500}>{vuln.vulnerabilityId}</Text>
           {vuln.url && <Anchor size='small' href={vuln.url} target="_blank"><Link size='small' /></Anchor>}
         </Box>
-        <Box width='10%' direction='row' gap='xsmall' align='center'>
+        <Box flex={false} width='15%' direction='row' gap='xsmall' align='center'>
           <Box width='15px' height='15px' round='xsmall' background={ColorMap[vuln.severity]} />
           <Text size='small'>{vuln.severity}</Text>
         </Box>
-        <HeaderItem text={vuln.package} width='30%' nobold />
+        <HeaderItem text={vuln.package} width='25%' nobold />
         <HeaderItem text={vuln.installedVersion} width='15%' nobold />
         <HeaderItem text={vuln.fixedVersion} width='15%' nobold />
       </Box>
@@ -169,8 +169,8 @@ function VulnerabilityHeader() {
   return (
     <Box flex={false} direction='row' pad='xsmall' border={{side: 'bottom', color: 'light-5'}} align='center'>
       <HeaderItem text='ID' width='30%' />
-      <HeaderItem text='Severity' width='10%' />
-      <HeaderItem text='Package' width='30%' />
+      <HeaderItem text='Severity' width='15%' />
+      <HeaderItem text='Package' width='25%' />
       <HeaderItem text='Version' width='15%' />
       <HeaderItem text='Fixed Version' width='15%' />
     </Box>

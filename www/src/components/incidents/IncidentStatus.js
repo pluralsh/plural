@@ -1,24 +1,13 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Box, Drop, Select, Text } from 'grommet'
-import { IncidentStatus } from './types'
+import { IncidentStatus, StatusColorMap } from './types'
 import { CurrentUserContext } from '../login/CurrentUser'
 import { canEdit } from './Incident'
 import { Down } from 'grommet-icons'
 
 const normalize = (val) => val.replace('_', ' ')
 
-function textColor(status) {
-  switch (status) {
-    case IncidentStatus.OPEN:
-      return 'error'
-    case IncidentStatus.IN_PROGRESS:
-      return 'progress'
-    case IncidentStatus.RESOLVED:
-      return 'status-ok'
-    default:
-      return null
-  }
-}
+const textColor = (status) => StatusColorMap[status]
 
 const StatusSelectOption = ({label, value}, {active}) => (
   <Box direction='row' background={active ? 'active' : null} gap='xsmall' align='center'

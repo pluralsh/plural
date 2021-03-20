@@ -48,12 +48,14 @@ function CompleteIncident({incident: {id}}) {
         <Box width='40vw'>
           <ModalHeader text='IncidentPostmortem' setOpen={setOpen} />
           <Box fill='horizontal' pad='small' gap='small'>
-            <Slate
-              editor={editor}
-              value={editorState}
-              onChange={setContent}>
-              <Editable placeholder='Write a few paragraphs debriefing this incident' />
-            </Slate>
+            <Box style={{minHeight: '30vh', overflow: 'auto', maxHeight: '80vh'}}>
+              <Slate
+                editor={editor}
+                value={editorState}
+                onChange={setContent}>
+                <Editable style={{minHeight: '30vh'}} placeholder='Write a few paragraphs debriefing this incident' />
+              </Slate>
+            </Box>
             <Box direction='row' justify='end' align='center' gap='xsmall'>
               <SecondaryButton label='Cancel' onClick={() => setOpen(false)} />
               <Button 

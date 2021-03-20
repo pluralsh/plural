@@ -101,6 +101,10 @@ postgresql:
   postgresqlUsername: forge
   postgresqlDatabase: forge
 
+rabbitmq:
+  metrics:
+    enabled: true
+
 nameOverride: ""
 fullnameOverride: ""
 

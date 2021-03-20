@@ -3,6 +3,7 @@ import { Box, Drop, Select, Text } from 'grommet'
 import { CurrentUserContext } from '../login/CurrentUser'
 import { canEdit } from './Incident'
 import { Down } from 'grommet-icons'
+import { SeverityColorMap } from './types'
 
 const severityOptions = [0, 1, 2, 3, 4, 5].map((sev) => ({value: sev, label: `SEV ${sev}`}))
 
@@ -56,12 +57,7 @@ export function SeveritySelect({severity, setSeverity}) {
   )
 }
 
-export function severityColor(severity) {
-  if (severity < 2) return 'error'
-  if (severity >= 2 && severity < 4) return 'status-warning'
-  if (severity === 4) return 'light-4'
-  return 'progress'
-}
+export const severityColor = (severity) => SeverityColorMap[severity]
 
 export function Severity({incident: {severity, ...incident}, setSeverity}) {
   const ref = useRef()

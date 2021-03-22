@@ -3,13 +3,14 @@ defmodule Core.Docker.Event do
 
   defmacro __using__(_) do
     quote do
-      defstruct [:repository, :tag, :digest]
+      defstruct [:repository, :tag, :digest, :actor]
 
       def new(%{"repository" => repo, "digest" => digest} = blob) do
         %__MODULE__{
           repository: repo,
           tag: blob["tag"],
-          digest: digest
+          digest: digest,
+          actor: blob["actor"]
         }
       end
     end

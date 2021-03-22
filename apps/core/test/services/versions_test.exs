@@ -44,7 +44,7 @@ defmodule Core.Services.VersionsTest do
       assert tag.version_id == version.id
       assert tag.tag == "stable"
 
-      assert_receive {:event, %PubSub.VersionUpdated{item: ^result}}
+      assert_receive {:event, %PubSub.VersionUpdated{item: ^result, actor: ^user}}
     end
 
     test "It can update with existing tags" do

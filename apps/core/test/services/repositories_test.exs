@@ -15,6 +15,8 @@ defmodule Core.Services.RepositoriesTest do
       assert repo.name == "piazza"
       assert is_binary(repo.public_key)
       assert is_binary(repo.private_key)
+
+      assert_receive {:event, %PubSub.RepositoryCreated{item: ^repo, actor: ^user}}
     end
 
     test "It can create an associated integration resource definition" do
@@ -41,6 +43,8 @@ defmodule Core.Services.RepositoriesTest do
       {:ok, updated} = Repositories.update_repository(%{name: "piazza"}, repo.id, user)
 
       assert updated.name == "piazza"
+
+      assert_receive {:event, %PubSub.RepositoryUpdated{item: ^updated, actor: ^user}}
     end
 
     test "It can update integration resource definitions" do
@@ -91,6 +95,8 @@ defmodule Core.Services.RepositoriesTest do
 
       assert installation.user_id == user.id
       assert installation.repository_id == repo.id
+
+      assert_receive {:event, %PubSub.InstallationCreated{item: ^installation, actor: ^user}}
     end
   end
 

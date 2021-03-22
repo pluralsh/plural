@@ -53,6 +53,7 @@ defmodule Core.Services.Terraform do
           |> Map.merge(added)
           |> Map.put(:version, v)
           |> Versions.create_version(:terraform, id, user)
+          |> Versions.notify(:create, user)
         _ -> {:ok, nil}
       end)
       |> execute(extract: :terraform)
@@ -89,7 +90,13 @@ defmodule Core.Services.Terraform do
           |> Versions.create_version(:terraform, id, user)
         _ -> {:ok, nil}
       end)
-      |> execute(extract: :terraform)
+      |> execute()
+      |> case do
+        {:ok, %{terraform: tf, version: v}} ->
+          Versions.notify({:ok, v}, :create, user)
+          {:ok, tf}
+        error -> error
+      end
     end
   end
 

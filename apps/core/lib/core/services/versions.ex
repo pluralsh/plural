@@ -77,7 +77,7 @@ defmodule Core.Services.Versions do
       |> when_ok(:update)
     end)
     |> execute(extract: :update)
-    |> notify(:update)
+    |> notify(:update, user)
   end
 
   defp maybe_clean_tags(transaction, %{tags: tags}) do
@@ -109,9 +109,11 @@ defmodule Core.Services.Versions do
   end
   defp sanitize_tags(attrs, _, _), do: attrs
 
-  def notify(%Version{} = v, :create),
-    do: handle_notify(PubSub.VersionCreated, v)
-  def notify({:ok, %Version{} = v}, :update),
-    do: handle_notify(PubSub.VersionUpdated, v)
+  def notify(%Version{} = v, :create, user),
+    do: handle_notify(PubSub.VersionCreated, v, actor: user)
+  def notify({:ok, %Version{} = v}, :create, user),
+    do: handle_notify(PubSub.VersionCreated, v, actor: user)
+  def notify({:ok, %Version{} = v}, :update, user),
+    do: handle_notify(PubSub.VersionUpdated, v, actor: user)
   def notify(error, _), do: error
 end

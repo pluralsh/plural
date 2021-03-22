@@ -127,7 +127,7 @@ defmodule Core.Services.Charts do
       |> execute()
       |> case do
         {:ok, %{sync: sync}} = res ->
-          Versions.notify(sync, :create)
+          Versions.notify(sync, :create, user)
           res
         error -> error
       end

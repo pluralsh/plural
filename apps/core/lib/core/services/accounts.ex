@@ -108,6 +108,7 @@ defmodule Core.Services.Accounts do
       |> Core.Repo.insert()
     end)
     |> execute(extract: :group)
+    |> notify(:create, user)
   end
 
   @doc """
@@ -119,6 +120,7 @@ defmodule Core.Services.Accounts do
     |> Group.changeset(attributes)
     |> allow(user, :update)
     |> when_ok(:update)
+    |> notify(:update, user)
   end
 
   @doc """
@@ -129,6 +131,7 @@ defmodule Core.Services.Accounts do
     get_group!(group_id)
     |> allow(user, :delete)
     |> when_ok(:delete)
+    |> notify(:delete, user)
   end
 
   @doc """
@@ -172,6 +175,7 @@ defmodule Core.Services.Accounts do
     |> Role.changeset(attrs)
     |> allow(user, :create)
     |> when_ok(:insert)
+    |> notify(:create, user)
   end
 
   @doc """
@@ -184,6 +188,7 @@ defmodule Core.Services.Accounts do
     |> Role.changeset(attrs)
     |> allow(user, :edit)
     |> when_ok(:update)
+    |> notify(:update, user)
   end
 
   @doc """
@@ -194,6 +199,7 @@ defmodule Core.Services.Accounts do
     get_role!(id)
     |> allow(user, :delete)
     |> when_ok(:delete)
+    |> notify(:delete, user)
   end
 
 
@@ -206,6 +212,7 @@ defmodule Core.Services.Accounts do
     |> IntegrationWebhook.changeset(attrs)
     |> allow(user, :create)
     |> when_ok(:insert)
+    |> notify(:create, user)
   end
 
   @doc """
@@ -217,6 +224,7 @@ defmodule Core.Services.Accounts do
     |> IntegrationWebhook.changeset(attrs)
     |> allow(user, :edit)
     |> when_ok(:update)
+    |> notify(:update, user)
   end
 
   @doc """
@@ -227,6 +235,7 @@ defmodule Core.Services.Accounts do
     get_webhook!(webhook_id)
     |> allow(user, :edit)
     |> when_ok(:delete)
+    |> notify(:delete, user)
   end
 
   @doc """
@@ -300,6 +309,27 @@ defmodule Core.Services.Accounts do
   defp create_token(:zoom, code, redirect), do: Core.Clients.Zoom.create_token(code, redirect)
 
   defp refresh_token(:zoom, refresh), do: Core.Clients.Zoom.refresh_token(refresh)
+
+  defp notify({:ok, %Group{} = g}, :create, user),
+    do: handle_notify(PubSub.GroupCreated, g, actor: user)
+  defp notify({:ok, %Group{} = g}, :update, user),
+    do: handle_notify(PubSub.GroupUpdated, g, actor: user)
+  defp notify({:ok, %Group{} = g}, :delete, user),
+    do: handle_notify(PubSub.GroupDeleted, g, actor: user)
+
+  defp notify({:ok, %Role{} = g}, :create, user),
+    do: handle_notify(PubSub.RoleCreated, g, actor: user)
+  defp notify({:ok, %Role{} = g}, :update, user),
+    do: handle_notify(PubSub.RoleUpdated, g, actor: user)
+  defp notify({:ok, %Role{} = g}, :delete, user),
+    do: handle_notify(PubSub.RoleDeleted, g, actor: user)
+
+  defp notify({:ok, %IntegrationWebhook{} = g}, :create, user),
+    do: handle_notify(PubSub.IntegrationWebhookCreated, g, actor: user)
+  defp notify({:ok, %IntegrationWebhook{} = g}, :update, user),
+    do: handle_notify(PubSub.IntegrationWebhookUpdated, g, actor: user)
+  defp notify({:ok, %IntegrationWebhook{} = g}, :delete, user),
+    do: handle_notify(PubSub.IntegrationWebhookDeleted, g, actor: user)
 
   defp notify({:ok, meeting}, :zoom, user),
     do: handle_notify(PubSub.ZoomMeetingCreated, meeting, actor: user)

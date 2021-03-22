@@ -23,6 +23,8 @@ defmodule Core.Services.AccountsTest do
       assert group.account_id == account.id
       assert group.name == "group"
       assert Accounts.get_group_member(group.id, user.id)
+
+      assert_receive {:event, %PubSub.GroupCreated{item: ^group, actor: ^user}}
     end
 
     test "random users cannot create groups", %{account: account} do
@@ -39,6 +41,8 @@ defmodule Core.Services.AccountsTest do
 
       assert updated.id == group.id
       assert updated.name == "updated"
+
+      assert_receive {:event, %PubSub.GroupUpdated{item: ^updated, actor: ^user}}
     end
 
     test "nonroot users cannot update groups", %{account: account} do
@@ -56,6 +60,8 @@ defmodule Core.Services.AccountsTest do
 
       assert deleted.id == group.id
       refute refetch(group)
+
+      assert_receive {:event, %PubSub.GroupDeleted{item: ^deleted, actor: ^user}}
     end
 
     test "nonroot users cannot delete groups", %{account: account} do
@@ -152,6 +158,8 @@ defmodule Core.Services.AccountsTest do
       [first, second] = role.role_bindings
       assert first.user_id == user.id
       assert second.group_id == group.id
+
+      assert_receive {:event, %PubSub.RoleCreated{item: ^role, actor: ^user}}
     end
 
     test "random users cannot create roles", %{account: account} do
@@ -175,6 +183,8 @@ defmodule Core.Services.AccountsTest do
 
       assert updated.id == role.id
       assert updated.name == "updated"
+
+      assert_receive {:event, %PubSub.RoleUpdated{item: ^updated, actor: ^user}}
     end
 
     test "random users cannot update", %{account: account} do
@@ -188,9 +198,11 @@ defmodule Core.Services.AccountsTest do
 
     test "it can delete a role", %{user: user, account: account} do
       role = insert(:role, account: account)
-      {:ok, _} = Accounts.delete_role(role.id, user)
+      {:ok, del} = Accounts.delete_role(role.id, user)
 
       refute refetch(role)
+
+      assert_receive {:event, %PubSub.RoleDeleted{item: ^del, actor: ^user}}
     end
 
     test "random users cannot delete a role", %{account: account} do
@@ -213,6 +225,8 @@ defmodule Core.Services.AccountsTest do
       assert webhook.name == "webhook"
       assert webhook.url == "https://example.com"
       assert webhook.actions == ["incident.create"]
+
+      assert_receive {:event, %PubSub.IntegrationWebhookCreated{item: ^webhook, actor: ^user}}
     end
 
     test "nonprivileged users cannot create", %{account: account} do
@@ -242,6 +256,8 @@ defmodule Core.Services.AccountsTest do
       assert updated.name == "webhook"
       assert updated.url == "https://example.com"
       assert updated.actions == ["incident.create", "incident.update"]
+
+      assert_receive {:event, %PubSub.IntegrationWebhookUpdated{item: ^updated, actor: ^user}}
     end
 
     test "nonprivileged users cannot update", %{account: account} do
@@ -265,6 +281,8 @@ defmodule Core.Services.AccountsTest do
 
       assert deleted.id == webhook.id
       refute refetch(webhook)
+
+      assert_receive {:event, %PubSub.IntegrationWebhookDeleted{item: ^deleted, actor: ^user}}
     end
 
     test "nonprivileged users cannot delete", %{account: account} do

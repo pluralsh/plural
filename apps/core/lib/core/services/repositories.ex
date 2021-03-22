@@ -74,6 +74,7 @@ defmodule Core.Services.Repositories do
       generate_keys(repo)
     end)
     |> execute(extract: :licensed)
+    |> notify(:create, user)
   end
 
   @doc """
@@ -200,6 +201,7 @@ defmodule Core.Services.Repositories do
     |> Repository.changeset(attrs)
     |> allow(user, :edit)
     |> when_ok(:update)
+    |> notify(:update, user)
   end
 
   @doc """
@@ -241,6 +243,7 @@ defmodule Core.Services.Repositories do
     |> Installation.changeset(attrs)
     |> allow(user, :create)
     |> when_ok(:insert)
+    |> notify(:create, user)
   end
 
   @doc """
@@ -254,7 +257,7 @@ defmodule Core.Services.Repositories do
     |> Installation.changeset(attrs)
     |> allow(user, :edit)
     |> when_ok(:update)
-    |> notify(:update)
+    |> notify(:update, user)
   end
 
   @doc """
@@ -384,8 +387,17 @@ defmodule Core.Services.Repositories do
   def authorize(%Repository{} = repo, user),
     do: allow(repo, user, :access)
 
-  defp notify({:ok, %Installation{} = inst}, :update),
-    do: handle_notify(PubSub.InstallationUpdated, inst)
+  defp notify({:ok, %Installation{} = inst}, :create, user),
+    do: handle_notify(PubSub.InstallationCreated, inst, actor: user)
+  defp notify({:ok, %Installation{} = inst}, :update, user),
+    do: handle_notify(PubSub.InstallationUpdated, inst, actor: user)
+
+  defp notify({:ok, %Repository{} = repo}, :create, user),
+    do: handle_notify(PubSub.RepositoryCreated, repo, actor: user)
+  defp notify({:ok, %Repository{} = repo}, :update, user),
+    do: handle_notify(PubSub.RepositoryUpdated, repo, actor: user)
+
+  defp notify(pass, _, _), do: pass
 
   defp notify({:ok, %{image: %DockerImage{} = img}} = res, :create) do
     handle_notify(PubSub.DockerImageCreated, img)

@@ -23,6 +23,7 @@ config :core, :consumers, [
   Core.PubSub.Consumers.Rtc,
   Core.PubSub.Consumers.Notification,
   Core.PubSub.Consumers.IntegrationWebhook,
+  Core.PubSub.Consumers.Audits
 ]
 
 config :core, Core.Email.Mailer,

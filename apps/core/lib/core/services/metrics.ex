@@ -7,7 +7,7 @@ defmodule Core.Services.Metrics do
   @default_precision "30m"
 
   def docker_pull(repo, tag) do
-    Docker.new(1, registry: repo, tag: tag)
+    Docker.new(1, repository: repo, tag: tag)
     |> Influx.write()
   end
 
@@ -16,7 +16,7 @@ defmodule Core.Services.Metrics do
     precision = Keyword.get(opts, :precision, @default_precision)
 
     Docker.repo_query(offset, precision)
-    |> Influx.query(params: %{registry: repo})
+    |> Influx.query(params: %{repository: repo})
     |> response()
   end
 
@@ -25,7 +25,7 @@ defmodule Core.Services.Metrics do
     precision = Keyword.get(opts, :precision, @default_precision)
 
     Docker.tag_query(offset, precision)
-    |> Influx.query(params: %{registry: repo, tag: tag})
+    |> Influx.query(params: %{repository: repo, tag: tag})
     |> response()
   end
 

@@ -12,3 +12,7 @@ defimpl Core.Docker.Publishable, for: Core.Docker.Push do
   def handle(%{repository: repo, tag: tag, digest: digest}),
     do: Core.Services.Repositories.create_docker_image(repo, tag, digest)
 end
+
+defimpl Core.Docker.Publishable, for: Core.Docker.Pull do
+  def handle(%{repository: repo, tag: tag}), do: Core.Services.Metrics.docker_pull(repo, tag)
+end

@@ -6,6 +6,7 @@ import { DockerRepoFragment, DockerImageFragment, VulnerabilityFragment } from '
 import { RecipeFragment, RecipeSectionFragment } from '../../models/recipe'
 import { PlanFragment, SubscriptionFragment } from '../../models/payments'
 import { PageInfo } from '../../models/misc'
+import { MetricFragment } from '../../models/metrics'
 
 export const CREATE_REPO = gql`
   mutation CreateRepository($attributes: RepositoryAttributes!) {
@@ -167,11 +168,17 @@ export const DOCKER_IMG_Q = gql`
   query DockerImages($dockerRepositoryId: ID!, $cursor: String) {
     dockerImages(dockerRepositoryId: $dockerRepositoryId, after: $cursor, first: 15) {
       pageInfo { ...PageInfo }
-      edges { node { ...DockerImageFragment } }
+      edges { 
+        node { 
+          ...DockerImageFragment 
+          dockerRepository { ...DockerRepoFragment }
+        } 
+      }
     }
   }
   ${PageInfo}
   ${DockerImageFragment}
+  ${DockerRepoFragment}
 `;
 
 export const CREATE_TF = gql`
@@ -286,14 +293,22 @@ export const TF_Q = gql`
 `;
 
 export const DOCKER_Q = gql`
-  query Docker($id: ID!) {
+  query Docker($id: ID!, $tag: String, $precision: String, $offset: String) {
     dockerImage(id: $id) {
       ...DockerImageFragment
+      dockerRepository {
+        ...DockerRepoFragment
+        metrics(tag: $tag, precision: $precision, offset: $offset) {
+          ...MetricFragment
+        }
+      }
       vulnerabilities { ...VulnerabilityFragment }
     }
   }
   ${DockerImageFragment}
+  ${DockerRepoFragment}
   ${VulnerabilityFragment}
+  ${MetricFragment}
 `
 
 export const INSTALL_CHART = gql`

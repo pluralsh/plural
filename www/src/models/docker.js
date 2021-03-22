@@ -17,12 +17,8 @@ export const DockerImageFragment = gql`
     digest
     scannedAt
     grade
-    dockerRepository {
-      ...DockerRepoFragment
-    }
     insertedAt
   }
-  ${DockerRepoFragment}
 `;
 
 export const VulnerabilityFragment = gql`

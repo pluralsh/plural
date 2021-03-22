@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { Loading, Tabs, TabHeader, TabHeaderItem, TabContent } from 'forge-core'
 import { useQuery } from 'react-apollo'
 import { useHistory, useParams } from 'react-router'
@@ -10,6 +10,7 @@ import { Anchor, Box, Collapsible, Text } from 'grommet'
 import { Link } from 'grommet-icons'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 import { DockerImages } from './DockerImages'
+import { Graph, RangePicker } from '../metrics/Graph'
 
 function DockerHeader({image}) {
   return (
@@ -28,17 +29,48 @@ function DockerHeader({image}) {
   )
 }
 
-function DockerSidebar({image: {dockerRepository: docker, ...image}}) {
-  return (
-    <DetailContainer pad='small' gap='small' >
-      <Text weight="bold" size='small'>Pull Command</Text>
-      <Box background='sidebar' pad='xsmall'>
-        <pre>docker pull {DKR_DNS}/{docker.repository.name}/{docker.name}:{image.tag}</pre>
-      </Box>
+function DockerSidebar({image: {dockerRepository: docker, ...image}, filter, setFilter}) {
+  const data = useMemo(() => {
+    return docker.metrics.map(({tags, values}) => {
+      const tag = tags.find(({name}) => name === 'tag')
+      
+      return {
+        id: tag ? tag.value : docker.name, 
+        data: values.map(({time, value}) => ({x: moment(time).toDate(), y: value}))
+      }
+    })
+  }, [docker.metrics])
+  console.log(data)
 
-      <Text weight="bold" size='small'>Created At</Text>
-      <Text size='small'>{moment(image.insertedAt).format('lll')}</Text>
-    </DetailContainer>
+  return (
+    <Box style={{overflow: 'auto'}} fill='vertical' gap='small'>
+      <DetailContainer flex={false} pad='small' gap='small' >
+        <Text weight="bold" size='small'>Pull Command</Text>
+        <Box background='sidebar' pad='xsmall'>
+          <pre>docker pull {DKR_DNS}/{docker.repository.name}/{docker.name}:{image.tag}</pre>
+        </Box>
+
+        <Text weight="bold" size='small'>Created At</Text>
+        <Text size='small'>{moment(image.insertedAt).format('lll')}</Text>
+      </DetailContainer>
+
+      <DetailContainer height='400px' pad='small' gap='small'>
+        <Box flex={false} direction='row' gap='xsmall' align='center'>
+          <Box direction='row' fill='horizontal'>
+            <Text size='small' weight={500}>Pull Metrics</Text>
+          </Box>
+          <RangePicker 
+            duration={{offset: filter.offset, step: filter.precision}} 
+            setDuration={({offset, step}) => setFilter({...filter, offset, precision: step})} />
+        </Box>
+        <Box fill>
+          <Graph
+            data={data}
+            precision={filter.precision} 
+            offset={filter.offset} />
+        </Box>
+      </DetailContainer>
+    </Box>
   )
 }
 
@@ -205,14 +237,25 @@ export function DockerRepository() {
   return <Loading />
 }
 
+const DEFAULT_FILTER = {tag: null, precision: '1h', offset: '1d'}
+
 export function Docker() {
   const {id} = useParams()
-  const {data} = useQuery(DOCKER_Q, {variables: {id}, fetchPolicy: 'cache-and-network'})
+  const [filter, setFilter] = useState(DEFAULT_FILTER)
+  const {data} = useQuery(DOCKER_Q, {
+    variables: {id, ...filter}, 
+    fetchPolicy: 'cache-and-network'
+  })
   const {setBreadcrumbs} = useContext(BreadcrumbsContext)
+  useEffect(() => {
+    setFilter(DEFAULT_FILTER)
+  }, [id])
+
   useEffect(() => {
     if (!data) return
     const {dockerImage} = data
     const repository = dockerImage.dockerRepository.repository
+    
     setBreadcrumbs([
       {url: `/repositories/${repository.id}`, text: repository.name},
       {url: `/dkr/img/${dockerImage.id}`, text: `${dockerImage.dockerRepository.name}`}
@@ -246,7 +289,7 @@ export function Docker() {
         </Box>
       </Box>
       <Box flex={false} fill='vertical'>
-        <DockerSidebar image={image} />
+        <DockerSidebar image={image} setFilter={setFilter} filter={filter} />
       </Box>
     </Box>
   )

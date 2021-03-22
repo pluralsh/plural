@@ -14,5 +14,6 @@ defimpl Core.Docker.Publishable, for: Core.Docker.Push do
 end
 
 defimpl Core.Docker.Publishable, for: Core.Docker.Pull do
+  def handle(%{tag: ""}), do: :ok
   def handle(%{repository: repo, tag: tag}), do: Core.Services.Metrics.docker_pull(repo, tag)
 end

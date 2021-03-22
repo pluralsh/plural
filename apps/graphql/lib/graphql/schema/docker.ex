@@ -3,7 +3,8 @@ defmodule GraphQl.Schema.Docker do
   alias GraphQl.Middleware.Accessible
   alias GraphQl.Resolvers.{
     Repository,
-    Docker
+    Docker,
+    Metrics
   }
   alias Core.Schema.Vulnerability
 
@@ -16,6 +17,14 @@ defmodule GraphQl.Schema.Docker do
     field :id,         non_null(:id)
     field :name,       non_null(:string)
     field :repository, :repository, resolve: dataloader(Repository)
+
+    field :metrics, list_of(:metric) do
+      arg :tag,       :string
+      arg :precision, :string
+      arg :offset,    :string
+
+      resolve &Metrics.resolve_docker/2
+    end
 
     timestamps()
   end

@@ -5,6 +5,7 @@ defmodule GraphQl do
   import_types Absinthe.Plug.Types
   import_types GraphQl.Schemas.Upload
   import_types GraphQl.Schema.Misc
+  import_types GraphQl.Schema.Metric
   import_types GraphQl.Schema.User
   import_types GraphQl.Schema.Payments
   import_types GraphQl.Schema.Repository

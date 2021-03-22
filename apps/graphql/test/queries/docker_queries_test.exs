@@ -66,5 +66,23 @@ defmodule GraphQl.DockerQueriesTest do
       assert vuln_found["id"] == vuln.id
       assert vuln_found["vulnerabilityId"] == vuln.vulnerability_id
     end
+
+    test "It can fetch docker metrics" do
+      %{docker_repository: %{repository: repo} = dkr} = img = insert(:docker_image)
+
+      Core.Services.Metrics.docker_pull("#{repo.name}/#{dkr.name}", img.tag)
+
+      {:ok, %{data: %{"dockerImage" => %{"dockerRepository" => %{"metrics" => [metrics]}}}}} = run_query("""
+        query Docker($id: ID!) {
+          dockerImage(id: $id) {
+            dockerRepository {
+              metrics { values { time value } tags { name value } }
+            }
+          }
+        }
+      """, %{"id" => img.id}, %{current_user: insert(:user)})
+
+      assert Enum.find(metrics["tags"], & &1["name"] == "repository")["value"] == "#{repo.name}/#{dkr.name}"
+    end
   end
 end

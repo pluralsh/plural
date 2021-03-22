@@ -7,6 +7,11 @@ rabbitmq:
     password: {{ dedupe . "forge.rabbitmq.auth.password" (randAlphaNum 26) }}
     erlangCookie: {{ dedupe . "forge.rabbitmq.auth.erlangCookie" (randAlphaNum 26) }}
 
+influxdb:
+  setDefaultUser:
+    user:
+      password: {{ dedupe . "forge.influxdb.setDefaultUser.user.password" (randAlphaNum 26) }}
+
 registry:
   configData:
     storage:

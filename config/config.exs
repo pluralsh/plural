@@ -95,4 +95,7 @@ config :worker,
   registry: "dkr.piazza.app",
   docker_env: []
 
+config :core, Core.Influx,
+  database: "forge"
+
 import_config "#{Mix.env()}.exs"

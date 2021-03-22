@@ -24,6 +24,12 @@ config :core, Core.Repo,
   hostname: "forge-postgresql",
   pool_size: 5
 
+config :core, Core.Influx,
+  database: "forge",
+  host: "forge-influxdb",
+  auth: [method: :basic, username: "forge", password: get_env("INFLUX_PAASSWORD")],
+  port: 8086
+
 config :core, :jwt,
   pk: get_env("JWT_PRIVATE_KEY"),
   cert: get_env("JWT_CERT"),

@@ -7,6 +7,11 @@ config :core, Core.Repo,
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
 
+config :core, Core.Influx,
+  host: "localhost",
+  auth: [method: :basic, username: "forge", password: "forgepwd"],
+  port: 8086
+
 config :api, ApiWeb.Endpoint,
   http: [port: 4002],
   server: false

@@ -8,6 +8,10 @@ defmodule Core.Services.Base do
     end
   end
 
+  def ok(val), do: {:ok, val}
+
+  def error(val), do: {:error, val}
+
   def start_transaction(), do: Ecto.Multi.new()
 
   def short_circuit(), do: []

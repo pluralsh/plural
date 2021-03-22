@@ -7,6 +7,7 @@ defmodule Core.Application do
       Core.PubSub.Broadcaster,
       Core.ReplicatedCache,
       Core.Cache,
+      Core.Influx,
     ] ++ conf(:consumers, [])
       ++ broker()
 

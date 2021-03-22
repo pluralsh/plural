@@ -105,6 +105,20 @@ rabbitmq:
   metrics:
     enabled: true
 
+influxdb:
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 0.2
+  env:
+  - name: INFLUXDB_DB
+    value: forge
+  setDefaultUser:
+    enabled: true
+    user:
+      username: forge
+      password: null
+
 nameOverride: ""
 fullnameOverride: ""
 

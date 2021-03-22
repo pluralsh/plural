@@ -5,5 +5,8 @@ dependencies:
 - name: rabbitmq
   repository: https://charts.bitnami.com/bitnami
   version: 7.6.6
-digest: sha256:89764722c07bf00b899962e20a30fac4f8cd200b3449adfe2e3736983fe00767
-generated: "2021-02-17T18:29:11.565075-05:00"
+- name: influxdb
+  repository: https://helm.influxdata.com
+  version: 4.9.14
+digest: sha256:d6bf9ede0893ccc5100db043231695ec1a3a949c80955ae147f11084652e05d0
+generated: "2021-03-21T20:22:37.160468-04:00"

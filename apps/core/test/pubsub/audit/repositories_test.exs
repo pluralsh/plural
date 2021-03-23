@@ -62,4 +62,19 @@ defmodule Core.PubSub.Audits.RepositoriesTest do
       assert audit.account_id == actor.account_id
     end
   end
+
+  describe "DockerImageCreated" do
+    test "it can post a message about the meeting" do
+      dkr   = insert(:docker_image)
+      actor = insert(:user)
+
+      event = %PubSub.DockerImageCreated{item: dkr, actor: actor}
+      {:ok, audit} = Audits.handle_event(event)
+
+      assert audit.action == "dkr:pushed"
+      assert audit.image_id == dkr.id
+      assert audit.actor_id == actor.id
+      assert audit.account_id == actor.account_id
+    end
+  end
 end

@@ -100,8 +100,8 @@ defmodule Core.Services.Repositories do
   Persists a given docker image with the given tag.  Called by the docker
   registry notification webhook.
   """
-  @spec create_docker_image(binary, binary, binary) :: {:ok, DockerImage.t} | {:error, term}
-  def create_docker_image(repo, tag, digest) do
+  @spec create_docker_image(binary, binary, binary, User.t) :: {:ok, DockerImage.t} | {:error, term}
+  def create_docker_image(repo, tag, digest, user) do
     [cm_repo | rest] = String.split(repo, "/")
     cm_repo = get_repository_by_name!(cm_repo)
 
@@ -114,7 +114,7 @@ defmodule Core.Services.Repositories do
       upsert_image(tag, digest, repo)
     end)
     |> execute()
-    |> notify(:create)
+    |> notify(:create, user)
   end
 
   @doc """
@@ -397,12 +397,10 @@ defmodule Core.Services.Repositories do
   defp notify({:ok, %Repository{} = repo}, :update, user),
     do: handle_notify(PubSub.RepositoryUpdated, repo, actor: user)
 
-  defp notify(pass, _, _), do: pass
-
-  defp notify({:ok, %{image: %DockerImage{} = img}} = res, :create) do
-    handle_notify(PubSub.DockerImageCreated, img)
+  defp notify({:ok, %{image: %DockerImage{} = img}} = res, :create, user) do
+    handle_notify(PubSub.DockerImageCreated, img, actor: user)
     res
   end
 
-  defp notify(error, _), do: error
+  defp notify(pass, _, _), do: pass
 end

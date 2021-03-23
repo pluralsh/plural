@@ -5,12 +5,12 @@ defmodule Core.Docker.Event do
     quote do
       defstruct [:repository, :tag, :digest, :actor]
 
-      def new(%{"repository" => repo, "digest" => digest} = blob) do
+      def new(%{"repository" => repo, "digest" => digest} = blob, actor \\ nil) do
         %__MODULE__{
           repository: repo,
           tag: blob["tag"],
           digest: digest,
-          actor: blob["actor"]
+          actor: actor
         }
       end
     end
@@ -20,8 +20,8 @@ defmodule Core.Docker.Event do
     Enum.map(events, &build/1)
     |> Enum.filter(& &1)
   end
-  def build(%{"action" => "pull", "target" => target}), do: Pull.new(target)
-  def build(%{"action" => "push", "target" => target}), do: Push.new(target)
+  def build(%{"action" => "pull", "target" => target} = event), do: Pull.new(target, event["actor"])
+  def build(%{"action" => "push", "target" => target} = event), do: Push.new(target, event["actor"])
   def build(_), do: nil
 end
 

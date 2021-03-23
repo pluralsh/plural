@@ -326,9 +326,10 @@ defmodule Core.Services.RepositoriesTest do
   describe "#create_docker_image/3" do
     test "It can upsert a new docker repo/image" do
       repository = insert(:repository)
+      user = insert(:user)
       repo_name = "#{repository.name}/dkr_repo"
 
-      {:ok, %{repo: repo, image: image}} = Repositories.create_docker_image(repo_name, "latest", "some_digest")
+      {:ok, %{repo: repo, image: image}} = Repositories.create_docker_image(repo_name, "latest", "some_digest", user)
 
       assert repo.name == "dkr_repo"
       assert repo.repository_id == repository.id
@@ -337,7 +338,7 @@ defmodule Core.Services.RepositoriesTest do
       assert image.docker_repository_id == repo.id
       assert image.digest == "some_digest"
 
-      assert_receive {:event, %PubSub.DockerImageCreated{item:  ^image}}
+      assert_receive {:event, %PubSub.DockerImageCreated{item:  ^image, actor: ^user}}
     end
   end
 

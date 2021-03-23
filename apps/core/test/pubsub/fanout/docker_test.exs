@@ -6,12 +6,14 @@ defmodule Core.PubSub.Fanout.DockerTest do
   describe "DockerNotification" do
     test "It will process all supported notifications" do
       repository = insert(:repository)
+      user = insert(:user)
       name = "#{repository.name}/dkr_image"
 
       event = %PubSub.DockerNotification{item: %{"events" => [
         %{
           "action" => "push",
-          "target" => %{"repository" => name, "tag" => "latest", "digest" => "digest"}
+          "target" => %{"repository" => name, "tag" => "latest", "digest" => "digest"},
+          "actor" => %{"name" => user.email}
         }
       ]}}
 

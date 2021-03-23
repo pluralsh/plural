@@ -12,6 +12,7 @@ defmodule Core.Schema.Audit do
     belongs_to :group, Schema.Group
     belongs_to :role, Schema.Role
     belongs_to :integration_webhook, Schema.IntegrationWebhook
+    belongs_to :image, Schema.DockerImage
 
     timestamps()
   end

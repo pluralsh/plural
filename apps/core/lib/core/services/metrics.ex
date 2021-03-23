@@ -32,8 +32,8 @@ defmodule Core.Services.Metrics do
   def response(%{results: [%{series: series} | _]}) do
     series
     |> Enum.map(fn %{values: vals} = ser ->
-      values = Enum.filter(fn [_, val] -> val end)
-               |> Enum.map(vals, &parse_value/1)
+      values = Enum.filter(vals, fn [_, val] -> val end)
+               |> Enum.map(&parse_value/1)
       %{ser | values: values}
     end)
     |> ok()

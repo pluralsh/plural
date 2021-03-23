@@ -9,8 +9,11 @@ defimpl Core.Docker.Publishable, for: Any do
 end
 
 defimpl Core.Docker.Publishable, for: Core.Docker.Push do
-  def handle(%{repository: repo, tag: tag, digest: digest}),
-    do: Core.Services.Repositories.create_docker_image(repo, tag, digest)
+  alias Core.Services.Users
+  def handle(%{repository: repo, tag: tag, digest: digest, actor: %{"name" => email}}) do
+    user = Users.get_user_by_email!(email)
+    Core.Services.Repositories.create_docker_image(repo, tag, digest, user)
+  end
 end
 
 defimpl Core.Docker.Publishable, for: Core.Docker.Pull do

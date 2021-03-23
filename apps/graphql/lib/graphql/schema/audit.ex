@@ -1,7 +1,7 @@
 defmodule GraphQl.Schema.Audit do
   use GraphQl.Schema.Base
   alias GraphQl.Middleware.Authenticated
-  alias GraphQl.Resolvers.{Audit, User, Repository, Version, Account}
+  alias GraphQl.Resolvers.{Audit, User, Repository, Version, Account, Docker}
 
   object :audit do
     field :id,     non_null(:id)
@@ -14,6 +14,7 @@ defmodule GraphQl.Schema.Audit do
 
     field :repository, :repository, resolve: dataloader(Repository)
     field :version,    :version, resolve: dataloader(Version)
+    field :image,      :docker_image, resolve: dataloader(Docker)
 
     timestamps()
   end

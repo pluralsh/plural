@@ -31,3 +31,16 @@ defimpl Core.PubSub.Auditable, for: [Core.PubSub.InstallationCreated, Core.PubSu
   defp action(PubSub.InstallationCreated), do: :created
   defp action(PubSub.InstallationUpdated), do: :updated
 end
+
+defimpl Core.PubSub.Auditable, for: Core.PubSub.DockerImageCreated do
+  alias Core.Schema.Audit
+
+  def audit(%{item: image, actor: %{id: actor_id, account_id: account_id}}) do
+    %Audit{
+      action: "dkr:pushed",
+      actor_id: actor_id,
+      account_id: account_id,
+      image_id: image.id
+    }
+  end
+end

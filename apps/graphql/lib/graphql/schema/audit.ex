@@ -13,7 +13,7 @@ defmodule GraphQl.Schema.Audit do
     field :integration_webhook, :integration_webhook, resolve: dataloader(Account)
 
     field :repository, :repository, resolve: dataloader(Repository)
-    field :version, :version, resolve: dataloader(Version)
+    field :version,    :version, resolve: dataloader(Version)
 
     timestamps()
   end

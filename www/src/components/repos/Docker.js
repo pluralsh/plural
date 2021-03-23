@@ -40,7 +40,6 @@ function DockerSidebar({image: {dockerRepository: docker, ...image}, filter, set
       }
     })
   }, [docker.metrics])
-  console.log(data)
 
   return (
     <Box style={{overflow: 'auto'}} fill='vertical' gap='small'>

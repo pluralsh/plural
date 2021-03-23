@@ -1,4 +1,5 @@
 import { gql } from 'apollo-boost'
+import { AuditFragment } from '../../models/account';
 import { PageInfo } from '../../models/misc';
 import { AccountFragment, GroupFragment, GroupMemberFragment, InviteFragment, RoleFragment, UserFragment } from '../../models/user';
 
@@ -171,3 +172,14 @@ export const ROLES_Q = gql`
   ${PageInfo}
   ${RoleFragment}
 `;
+
+export const AUDITS_Q = gql`
+  query Audits($cursor: String) {
+    audits(first: 50, after: $cursor) {
+      pageInfo { ...PageInfo }
+      edges { node { ...AuditFragment } }
+    }
+  }
+  ${PageInfo}
+  ${AuditFragment}
+`

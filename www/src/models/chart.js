@@ -7,9 +7,7 @@ export const ChartFragment = gql`
     name
     description
     latestVersion
-    dependencies {
-      ...DependenciesFragment
-    }
+    dependencies { ...DependenciesFragment }
   }
   ${DependenciesFragment}
 `;
@@ -18,9 +16,7 @@ export const VersionTagFragment = gql`
   fragment VersionTagFragment on VersionTag {
     id
     tag
-    version {
-      id
-    }
+    version { id }
   }
 `;
 
@@ -32,9 +28,8 @@ export const VersionFragment = gql`
     valuesTemplate
     version
     insertedAt
-    chart {
-      ...ChartFragment
-    }
+    chart { ...ChartFragment }
+    terraform { id name }
   }
   ${ChartFragment}
 `;
@@ -42,9 +37,6 @@ export const VersionFragment = gql`
 export const ChartInstallationFragment = gql`
   fragment ChartInstallationFragment on ChartInstallation {
     id
-    version {
-      id
-      version
-    }
+    version { id version }
   }
 `;

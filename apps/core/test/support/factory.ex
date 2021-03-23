@@ -324,4 +324,13 @@ defmodule Core.Factory do
       vulnerability_id: "CVE-123"
     }
   end
+
+  def audit_factory do
+    %Schema.Audit{
+      action: "repository:created",
+      actor: build(:user),
+      account: build(:account),
+      repository: build(:repository)
+    }
+  end
 end

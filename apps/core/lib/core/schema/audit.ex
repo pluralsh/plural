@@ -16,6 +16,14 @@ defmodule Core.Schema.Audit do
     timestamps()
   end
 
+  def for_account(query \\ __MODULE__, account_id) do
+    from(a in query, where: a.account_id == ^account_id)
+  end
+
+  def ordered(query \\ __MODULE__, order \\ [asc: :inserted_at]) do
+    from(a in query, order_by: ^order)
+  end
+
   @valid ~w(action)a
 
   def changeset(schema, attrs \\ %{}) do

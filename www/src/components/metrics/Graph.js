@@ -45,7 +45,6 @@ export function Graph({data, offset, precision}) {
     const dur = DURATIONS.find(({offset: o, step}) => o === offset && precision === step)
     return dur || 'every 10 minutes'
   }, [offset, precision])
-
   
   return <SimpleGraph data={data} tick={tick} />
 }

@@ -31,10 +31,14 @@ defmodule Core.Services.Metrics do
 
   def response(%{results: [%{series: series} | _]}) do
     series
-    |> Enum.map(fn %{values: vals} = ser -> %{ser | values: Enum.map(vals, &parse_values/1)} end)
+    |> Enum.map(fn %{values: vals} = ser ->
+      values = Enum.filter(fn [_, val] -> val end)
+               |> Enum.map(vals, &parse_value/1)
+      %{ser | values: values}
+    end)
     |> ok()
   end
   def response(pass), do: {:ok, []}
 
-  defp parse_values([time, val]), do: %{time: Timex.parse!(time, "{ISO:Extended}"), value: val}
+  defp parse_value([time, val]), do: %{time: Timex.parse!(time, "{ISO:Extended}"), value: val}
 end

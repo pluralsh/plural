@@ -50,6 +50,7 @@ export function Graph({data, yFormat, tick}) {
         useMesh
         lineWidth={2}
         enablePoints={false}
+        enableGridX={false}
         // enableSlices='x'
         animate={false}
         xScale={{type: 'time', format: 'native'}}

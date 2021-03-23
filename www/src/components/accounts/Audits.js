@@ -21,7 +21,7 @@ function AuditHeader() {
   )
 }
 
-function Resource({audit: {version, group, role, integrationWebhook, repository}}) {
+function resourceName({version, group, role, integrationWebhook, repository}) {
   if (version) return `Version{${version.chart ? version.chart.name : version.terraform.name}:${version.version}}`
   if (group) return `Group{${group.name}}`
   if (role) return `Role{${role.name}}`
@@ -41,7 +41,7 @@ function Audit({audit}) {
         <Text size='small'>{audit.actor.name}</Text>
       </Box>
       <Box width='25%'>
-        <Resource audit={audit} />
+        <Text size='small'>{resourceName(audit)}</Text>
       </Box>
       <Box width='25%'>
         <Text size='small'>{moment(audit.insertedAt).format('lll')}</Text>

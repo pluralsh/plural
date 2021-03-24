@@ -44,7 +44,6 @@ export function Graph({data, yFormat, tick}) {
   return (
     <ResponsiveLine
         data={graph}
-        curve='catmullRom'
         margin={{top: 50, right: 110, bottom: 75, left: 70}}
         areaOpacity={.5}
         useMesh

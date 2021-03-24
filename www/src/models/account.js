@@ -14,6 +14,7 @@ export const AuditFragment = gql`
     integrationWebhook { ...IntegrationWebhookFragment }
     role { ...RoleFragment }
     version { ...VersionFragment }
+    image { id tag dockerRepository { name } }
     insertedAt
   }
   ${UserFragment}

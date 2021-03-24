@@ -20,8 +20,10 @@ defmodule Core.Docker.Event do
     Enum.map(events, &build/1)
     |> Enum.filter(& &1)
   end
+
   def build(%{"action" => "pull", "target" => target} = event), do: Pull.new(target, event["actor"])
   def build(%{"action" => "push", "target" => target} = event), do: Push.new(target, event["actor"])
+
   def build(_), do: nil
 end
 

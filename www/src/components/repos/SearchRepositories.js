@@ -36,7 +36,7 @@ function SearchRepositories() {
          round='xsmall' style={animation} pad={{horizontal: 'xsmall'}} focusIndicator={false}
          border={focus ? 'bottom' : null} onClick={() => setFocus(true)}>
       <Search size='20px' />
-      {focus && (
+      {(focus || suggestions.length > 0) && (
         <TextInput
           type="search"
           plain

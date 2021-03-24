@@ -7,6 +7,7 @@ import Avatar from '../users/Avatar'
 import { AUDITS_Q } from './queries'
 import { extendConnection } from '../../utils/graphql'
 import { BreadcrumbsContext } from '../Breadcrumbs'
+import { Link } from 'react-router-dom'
 
 const HeaderItem = ({text, width, nobold}) => (<Box width={width}><Text size='small' weight={nobold ? null : 500}>{text}</Text></Box>)
 
@@ -21,12 +22,31 @@ function AuditHeader() {
   )
 }
 
-function resourceName({version, group, role, integrationWebhook, repository}) {
-  if (version) return `Version{${version.chart ? version.chart.name : version.terraform.name}:${version.version}}`
-  if (group) return `Group{${group.name}}`
-  if (role) return `Role{${role.name}}`
-  if (integrationWebhook) return `Webhook{${integrationWebhook.name}}`
-  return `Repository{${repository.name}}`
+const versionLink = ({chart, terraform}) => chart ? `/charts/${chart.id}` : `/terraform/${terraform.id}`
+
+function resourceInfo({version, group, role, integrationWebhook, repository, image}) {
+  if (version) return ({
+    link: versionLink(version),
+    text: `Version{${version.chart ? version.chart.name : version.terraform.name}:${version.version}}`
+  })
+
+  if (group) return {link: '/accounts/edit/groups', text: `Group{${group.name}}`}
+  if (role) return {link: '/accounts/edit/roles', text: `Role{${role.name}}`}
+  if (integrationWebhook) return {link: `/webhooks/${integrationWebhook.id}`, text: `Webhook{${integrationWebhook.name}}`}
+  if (image) {
+    return ({
+      link: `/dkr/img/${image.id}`,
+      text: `Docker{${image.dockerRepository.name}:${image.tag}}`
+    })
+  }
+
+  return {link: `/repository/${repository.id}`, text: `Repository{${repository.name}}`}
+}
+
+function Resource({audit}) {
+  const {link, text} = resourceInfo(audit)
+
+  return <Link to={link}>{text}</Link>
 }
 
 function Audit({audit}) {
@@ -41,7 +61,7 @@ function Audit({audit}) {
         <Text size='small'>{audit.actor.name}</Text>
       </Box>
       <Box width='25%'>
-        <Text size='small'>{resourceName(audit)}</Text>
+        <Resource audit={audit} />
       </Box>
       <Box width='25%'>
         <Text size='small'>{moment(audit.insertedAt).format('lll')}</Text>

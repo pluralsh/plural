@@ -51,6 +51,10 @@ function DockerSidebar({image: {dockerRepository: docker, ...image}, filter, set
 
         <Text weight="bold" size='small'>Created At</Text>
         <Text size='small'>{moment(image.insertedAt).format('lll')}</Text>
+
+        <Text weight="bold" size='small'>Scanned At</Text>
+        {image.scannedAt && <Text size='small'>{moment(image.scannedAt).format('lll')}</Text>}
+        {!image.scannedAt && <Text size='small'>unscanned</Text>}
       </DetailContainer>
 
       <DetailContainer height='400px' pad='small' gap='small'>

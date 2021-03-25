@@ -77,7 +77,7 @@ function DollarInput({value, onChange, ...props}) {
   return (
     <NumericInput 
       {...props}
-      icon={<FaDollarSign size='small' />}
+      icon={<FaDollarSign size='12px' />}
       value={value && (value / 100)} 
       onChange={(v) => onChange(v * 100)} />
   )
@@ -397,7 +397,8 @@ export default function CreatePlan({repository, setOpen}) {
   const [state, setState] = useState({
     name: '', cost: 500, period: 'monthly',
     lineItems: { items: [], included: [] },
-    metadata: { features: [] }
+    metadata: { features: [] },
+    serviceLevels: []
   })
   const [display, setDisplay] = useState(true)
   const [mutation, {loading}] = useMutation(CREATE_PLAN, {

@@ -2,6 +2,7 @@ defmodule Core.Schema.Plan do
   use Piazza.Ecto.Schema
 
   defenum Period, monthly: 0, yearly: 1
+  defenum Type, licensed: 0, metered: 1
 
   defmodule LineItem do
     use Piazza.Ecto.Schema
@@ -12,9 +13,10 @@ defmodule Core.Schema.Plan do
       field :external_id, :string
       field :cost,        :integer
       field :period,      Core.Schema.Plan.Period
+      field :type,        Type, default: :licensed
     end
 
-    @valid ~w(name cost period dimension external_id)a
+    @valid ~w(name cost period dimension external_id type)a
 
     def changeset(model, attrs \\ %{}) do
       model

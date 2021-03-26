@@ -104,6 +104,24 @@ defmodule Core.Services.Payments do
   end
 
   @doc """
+  Appends a new usage record for the given line item to stripe's api
+  """
+  @spec add_usage_record(map, atom, Subscription.t) :: {:ok, term} | {:error, term}
+  def add_usage_record(params, dimension, %Subscription{} = sub) do
+    %{installation: %{repository: %{publisher: pub}}} = Core.Repo.preload(sub, [installation: [repository: :publisher]])
+    timestamp = DateTime.utc_now() |> DateTime.to_unix()
+    params    = Map.put_new(params, :action, :set)
+                |> Map.put(:timestamp, timestamp)
+    with %{external_id: id, type: :metered} <- Subscription.line_item(sub, dimension),
+         {:ok, _} <- Stripe.SubscriptionItem.Usage.create(id, params, connect_account: pub.billing_account_id) do
+      {:ok, sub}
+    else
+      {:error, _} -> {:error, :stripe_error}
+      _ -> {:error, :invalid_line_item}
+    end
+  end
+
+  @doc """
   Creates a stripe customer with the given source and user email, saves
   the customer back to storage.
   """
@@ -197,8 +215,15 @@ defmodule Core.Services.Payments do
 
   defp build_plan_ops(ops, %{items: items}), do: build_plan_ops(ops, items)
   defp build_plan_ops(ops, items) when is_list(items) do
-    Enum.map(items, fn %{cost: cost, period: period, name: name, dimension: dim} ->
-      {dim, %{amount: cost, currency: "USD", interval: stripe_interval(period), product: %{name: name}}}
+    Enum.map(items, fn %{cost: cost, period: period, name: name, dimension: dim, type: type} ->
+      plan = %{
+        amount: cost,
+        currency: "USD",
+        interval: stripe_interval(period),
+        product: %{name: name},
+        usage_type: type || :licensed
+      }
+      {dim, plan}
     end)
     |> Enum.concat(ops)
   end

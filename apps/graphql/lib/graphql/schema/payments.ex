@@ -5,6 +5,8 @@ defmodule GraphQl.Schema.Payments do
     Repository
   }
 
+  ecto_enum :plan_type, Core.Schema.Plan.Type
+
   ### INPUTS
 
   input_object :plan_attributes do
@@ -53,6 +55,7 @@ defmodule GraphQl.Schema.Payments do
     field :dimension, non_null(:string)
     field :cost,      non_null(:integer)
     field :period,    non_null(:string)
+    field :type,      :plan_type
   end
 
   input_object :subscription_attributes do
@@ -152,6 +155,7 @@ defmodule GraphQl.Schema.Payments do
     field :dimension, non_null(:string)
     field :cost,      non_null(:integer)
     field :period,    :string
+    field :type,      :plan_type
   end
 
   object :limit do

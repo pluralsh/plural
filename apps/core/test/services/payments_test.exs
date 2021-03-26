@@ -267,6 +267,30 @@ defmodule Core.Services.PaymentsTest do
     end
   end
 
+  describe "#add_usage_record/3" do
+    test "It can add a usage record for a subscription" do
+      expect(Stripe.SubscriptionItem.Usage, :create, fn "si_id", %{quantity: 1, action: :set, timestamp: _}, [connect_account: "account_id"] ->
+        {:ok, %{}}
+      end)
+      user = insert(:user)
+      repository = insert(:repository, publisher: build(:publisher, billing_account_id: "account_id"))
+      installation = insert(:installation, user: user, repository: repository)
+      plan = insert(:plan,
+        repository: installation.repository,
+        external_id: "plan_id",
+        line_items: %{items: [%{name: "mem", dimension: "memory", external_id: "id_stor", period: :monthly, type: :metered}]}
+      )
+      subscription = insert(:subscription, installation: installation, plan: plan, line_items: %{
+        item_id: "some_id",
+        items: [%{id: Ecto.UUID.generate(), external_id: "si_id", quantity: 1, dimension: "memory", type: :metered}]
+      })
+
+      {:ok, sub} = Payments.add_usage_record(%{quantity: 1}, "memory", subscription)
+
+      assert subscription.id == sub.id
+    end
+  end
+
   describe "#update_line_item/3" do
     test "A subscriber can update individual line items" do
       expect(Stripe.SubscriptionItem, :update, fn "si_id", %{quantity: 2}, [connect_account: "account_id"] ->

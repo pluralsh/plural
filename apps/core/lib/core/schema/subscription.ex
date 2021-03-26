@@ -9,9 +9,10 @@ defmodule Core.Schema.Subscription do
       field :dimension,   :string
       field :quantity,    :integer
       field :external_id, :string
+      field :type,        Plan.Type
     end
 
-    @valid ~w(dimension quantity external_id)a
+    @valid ~w(dimension quantity external_id type)a
 
     def changeset(model, attrs \\ %{}) do
       model
@@ -72,6 +73,9 @@ defmodule Core.Schema.Subscription do
       _ -> 0
     end
   end
+
+  def line_item(%__MODULE__{line_items: %LineItems{items: items}}, dim),
+    do: Enum.find(items, & &1.dimension == dim)
 
   def changeset(schema, attrs \\ %{}) do
     schema

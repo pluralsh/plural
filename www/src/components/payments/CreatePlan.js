@@ -1,9 +1,9 @@
 import React, { useState, useCallback } from 'react'
 import { LabeledInput } from '../repos/CreateRepository'
-import { TextInput, Box, Select, Layer, Text, Anchor, Stack, RangeSelector } from 'grommet'
+import { TextInput, Box, Select, Layer, Text, Stack, RangeSelector } from 'grommet'
 import { FaDollarSign } from 'react-icons/fa'
 import { Button, SecondaryButton, ModalHeader, HoveredBackground } from 'forge-core'
-import { FormPrevious, Cube, FormNext, Trash, Add } from 'grommet-icons'
+import { Cube, Trash, Add } from 'grommet-icons'
 import { useMutation } from 'react-apollo'
 import { CREATE_PLAN } from './queries'
 import { REPO_Q } from '../repos/queries'
@@ -11,11 +11,7 @@ import { hover } from './Plan'
 import { deepUpdate, updateCache } from '../../utils/graphql'
 import { SeverityNub } from '../incidents/Severity'
 import { PlanType } from './types'
-
-const FEATURES = 'features'
-const LINE_ITEMS = 'items'
-const PLAN = 'plan'
-const SLAS = 'slas'
+import { Step, Steps } from '../utils/Steps'
 
 function LineItem({item: {cost, name, dimension}, included, state, setState}) {
   const {quantity} = included.find((inc) => inc.dimension === dimension)
@@ -84,7 +80,7 @@ function DollarInput({value, onChange, ...props}) {
   )
 }
 
-function FeatureCreator({state, setState, setDisplay, mutation, loading}) {
+function FeatureCreator({state, setState, mutation, loading}) {
   const [feature, setFeature] = useState({name: '', description: ''})
   const {metadata: {features}} = state
   function addFeature() {
@@ -96,13 +92,7 @@ function FeatureCreator({state, setState, setDisplay, mutation, loading}) {
   }
 
   return (
-    <Box gap='small' pad='small'>
-      <Box direction='row' align='center' gap='small'>
-        <FormPrevious size='20px' />
-        <Anchor size='small' onClick={() => setDisplay(PLAN)}>
-          Go back to plan form
-        </Anchor>
-      </Box>
+    <Box gap='small' pad='small' animation='fadeIn'>
       <Box direction='row' fill='horizontal'>
         <Box gap='xsmall' width='40%' fill='vertical' pad='medium'>
           {features.length > 0 ?
@@ -129,12 +119,6 @@ function FeatureCreator({state, setState, setDisplay, mutation, loading}) {
           </LabeledInput>
         </Box>
       </Box>
-      <Box direction='row' justify='end' gap='xsmall' align='center'>
-        <Anchor onClick={() => setDisplay(SLAS)} size='small'>
-          Add service levels
-        </Anchor>
-        <FormNext size='20px' />
-      </Box>
       <Box direction='row' justify='end' gap='small' margin={{top: 'small'}}>
         <SecondaryButton
           label='Add feature'
@@ -150,7 +134,7 @@ function FeatureCreator({state, setState, setDisplay, mutation, loading}) {
   )
 }
 
-function ItemCreator({state, setState, setDisplay, mutation, loading}) {
+function ItemCreator({state, setState, mutation, loading}) {
   const [lineItem, setLineItem] = useState({
     name: '',
     dimension: '',
@@ -172,13 +156,7 @@ function ItemCreator({state, setState, setDisplay, mutation, loading}) {
   }
 
   return (
-    <Box gap='small' pad='small'>
-      <Box direction='row' align='center' gap='small'>
-        <FormPrevious size='20px' />
-        <Anchor size='small' onClick={() => setDisplay(PLAN)}>
-          Go back to plan form
-        </Anchor>
-      </Box>
+    <Box gap='small' pad='small' animation='fadeIn'>
       <Box direction='row' fill='horizontal'>
         <Box gap='xsmall' width='40%' fill='vertical' pad='medium'>
           {items.length > 0 ?
@@ -225,12 +203,6 @@ function ItemCreator({state, setState, setDisplay, mutation, loading}) {
           </LabeledInput>
         </Box>
       </Box>
-      <Box direction='row' justify='end' gap='xsmall' align='center'>
-        <Anchor onClick={() => setDisplay(FEATURES)} size='small'>
-          Add features
-        </Anchor>
-        <FormNext size='20px' />
-      </Box>
       <Box direction='row' justify='end' gap='small' margin={{top: 'small'}}>
         <SecondaryButton
           label='Add line item'
@@ -246,7 +218,7 @@ function ItemCreator({state, setState, setDisplay, mutation, loading}) {
   )
 }
 
-function PlanForm({state, setState, setDisplay, mutation, loading}) {
+function PlanForm({state, setState, mutation, loading}) {
   const updatePeriod = (period) => deepUpdate(
     {...state, period}, 
     'lineItems.items', 
@@ -254,7 +226,7 @@ function PlanForm({state, setState, setDisplay, mutation, loading}) {
   )
 
   return (
-    <Box gap='small' pad='small'>
+    <Box gap='small' pad='small' animation='fadeIn'>
       <LabeledInput label='1. Give it a name'>
         <TextInput
           placeholder='a good name'
@@ -274,12 +246,6 @@ function PlanForm({state, setState, setDisplay, mutation, loading}) {
           options={['monthly', 'yearly']}
           onChange={({option}) => setState(updatePeriod(option))} />
       </LabeledInput>
-      <Box direction='row' justify='end' gap='xsmall' align='center'>
-        <Anchor onClick={() => setDisplay(LINE_ITEMS)} size='small'>
-          Add line items
-        </Anchor>
-        <FormNext size='20px' />
-      </Box>
       <Box direction='row' justify='end' margin={{top: 'small'}}>
         <Button
           label='Create'
@@ -357,7 +323,7 @@ function NavigableSlaForm({state, setState, mutation, loading}) {
   const [serviceLevel, setServiceLevel] = useState({minSeverity: 0, maxSeverity: 3, responseTime: 30})
   
   return (
-    <Box fill>
+    <Box fill pad='small' animation='fadeIn'>
       <SlaForm 
         attributes={state} 
         setAttributes={setState} 
@@ -429,7 +395,12 @@ export default function CreatePlan({repository, setOpen}) {
       onEsc={() => setOpen(false)}>
       <Box width='80vw'>
         <ModalHeader text='Create Plan' setOpen={setOpen} />
-        <Box gap='medium' pad='small'>
+        <Box gap='small' pad='small'>
+          <Steps>
+            {['plan', 'items', 'features', 'slas'].map((name) => (
+              <Step name={name} onStep={() => setDisplay(name)} />
+            ))}
+          </Steps>
           <FormSwitch
             display={display}
             setDisplay={setDisplay}

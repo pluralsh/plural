@@ -407,8 +407,10 @@ defmodule Core.Services.Payments do
   ) when is_list(line_items) and is_list(items) do
     by_dimension = Enum.into(items, %{}, & {&1.dimension, &1})
 
-    Enum.map(line_items, fn %{external_id: id, dimension: dim} ->
-      %{plan: id, quantity: fetch_quantity(by_dimension[dim])}
+    Enum.map(line_items, fn
+      %{external_id: id, type: :metered} -> %{plan: id}
+      %{external_id: id, dimension: dim} ->
+        %{plan: id, quantity: fetch_quantity(by_dimension[dim])}
     end)
   end
   defp sub_line_items(_, _), do: []

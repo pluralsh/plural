@@ -10,6 +10,7 @@ import { REPO_Q } from '../repos/queries'
 import { hover } from './Plan'
 import { deepUpdate, updateCache } from '../../utils/graphql'
 import { SeverityNub } from '../incidents/Severity'
+import { PlanType } from './types'
 
 const FEATURES = 'features'
 const LINE_ITEMS = 'items'
@@ -154,16 +155,17 @@ function ItemCreator({state, setState, setDisplay, mutation, loading}) {
     name: '',
     dimension: '',
     included: 1,
-    cost: 500
+    cost: 500,
+    type: PlanType.LICENSED
   })
   const {period, lineItems: {items, included}} = state
 
   function addLineItem() {
-    const {name, dimension, cost} = lineItem
+    const {name, dimension, cost, type} = lineItem
     return {
       ...state,
       lineItems: {
-        items: [...items, {name, dimension, period, cost}],
+        items: [...items, {name, dimension, period, cost, type}],
         included: [...included, {dimension, quantity: lineItem.included}]
       }
     }
@@ -213,6 +215,13 @@ function ItemCreator({state, setState, setDisplay, mutation, loading}) {
             <DollarInput
               value={lineItem.cost}
               onChange={(cost) => setLineItem({...lineItem, cost: cost})} />
+          </LabeledInput>
+          <LabeledInput label='5. Billing type for the line item'>
+            <Select
+              size='small'
+              value={lineItem.type}
+              options={Object.keys(PlanType)}
+              onChange={({option}) => setLineItem({...lineItem, type: option})} />
           </LabeledInput>
         </Box>
       </Box>

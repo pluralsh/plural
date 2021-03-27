@@ -1,20 +1,27 @@
 import React, { useState } from 'react'
 import { Box, Text, Anchor, Layer } from 'grommet'
 import { LineItemIcon } from './Plan'
-import { subscriptionCost, updateSubscription, pivotByDimension } from './utils'
+import { subscriptionCost, pivotByDimension } from './utils'
 import { ModalHeader, Button } from 'forge-core'
 import { useMutation } from 'react-apollo'
 import { UPDATE_LINE_ITEM } from './queries'
 import { NumericInput } from '../utils/NumericInput'
+import { PlanType } from './types'
+import { Refresh } from 'grommet-icons'
+import { deepUpdate, updateCache } from '../../utils/graphql'
+import { REPO_Q } from '../repos/queries'
 
 function LineItemUpdate({lineItem: {cost}, dimension, quantity, subscription, repository, setOpen}) {
   const [value, setValue] = useState(quantity)
   const [mutation, {loading}] = useMutation(UPDATE_LINE_ITEM, {
     variables: {subscriptionId: subscription.id, attributes: {dimension, quantity: value}},
-    update: (cache, {data: {updateLineItem}}) => {
-      updateSubscription(cache, repository.id, updateLineItem)
-    }
+    update: (cache, {data: {updateLineItem}}) => updateCache(cache, {
+      query: REPO_Q,
+      variables: {repositoryId: repository.id},
+      update: (prev) => deepUpdate(prev, 'repository.installation.subscription', () => updateLineItem)
+    })
   })
+
   return (
     <Layer modal position='center' onEsc={() => setOpen(false)}>
       <Box width='300px'>
@@ -36,25 +43,20 @@ function LineItemUpdate({lineItem: {cost}, dimension, quantity, subscription, re
 export function LineItemNub({dimension, quantity, subscription, repository, lineItem}) {
   const [open, setOpen] = useState(false)
   const [hover, setHover] = useState(false)
+  const metered = lineItem.type === PlanType.METERED
 
   return (
-    <Box
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      direction='row'
-      gap='xsmall'
-      align='center'>
+    <Box onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}
+      direction='row' gap='xsmall' align='center'>
       <LineItemIcon dimension={dimension} />
-      <Text size='small'>{quantity} - {dimension}</Text>
-      {hover && <Anchor size='small' onClick={() => setOpen(true)}>edit</Anchor>}
+      {!metered && <Text size='small'>{quantity} - {dimension}</Text>}
+      {metered && <Text size='small'>{dimension} <Refresh size='small' /></Text>}
+      {hover && !metered && <Anchor size='small' onClick={() => setOpen(true)}>edit</Anchor>}
       {open && (
-        <LineItemUpdate
-          setOpen={setOpen}
-          repository={repository}
-          subscription={subscription}
-          dimension={dimension}
-          lineItem={lineItem}
-          quantity={quantity} />)}
+        <LineItemUpdate 
+          setOpen={setOpen} repository={repository} subscription={subscription}
+          dimension={dimension} lineItem={lineItem} quantity={quantity} />
+      )}
     </Box>
   )
 }

@@ -2,13 +2,14 @@ import React, { useCallback, useContext, useState } from 'react'
 import styled from 'styled-components'
 import { HoveredBackground } from 'forge-core'
 import { Anchor, Box, Collapsible, Layer, Stack, Text } from 'grommet'
-import { Cube, Group, Checkmark, Edit } from 'grommet-icons'
+import { Cube, Group, Checkmark, Edit, Refresh } from 'grommet-icons'
 import { normalizeColor } from 'grommet/utils'
 import { ServiceLevel } from './CreatePlan'
 import { UpdatePlanForm } from './UpdatePlanForm'
 import { CurrentUserContext } from '../login/CurrentUser'
 import './plan.css'
 import { ignore, ModalHeader } from '../utils/ModalHeader'
+import { PlanType } from './types'
 
 export function LineItemIcon({dimension, size}) {
   switch (dimension) {
@@ -19,13 +20,16 @@ export function LineItemIcon({dimension, size}) {
   }
 }
 
-export function LineItem({item: {cost, name, dimension}, included: {quantity}}) {
+export function LineItem({item: {cost, name, dimension, type}, included: {quantity}}) {
+  const metered = type === PlanType.METERED
   return (
     <Box direction='row' align='center' gap='xsmall'>
       <LineItemIcon dimension={dimension} />
       <Text size='small' weight='bold'>{name}</Text>
       <Text size='small'>${cost / 100} / {dimension}</Text>
-      <Text size='small' color='dark-3'>({quantity} included)</Text>
+      {!metered && <Text size='small' color='dark-3'>({quantity} included)</Text>}
+      {metered && <Refresh size='small' color='dark-3' />}
+      {metered && <Text size='small' color='dark-3'>metered</Text>}
     </Box>
   )
 }

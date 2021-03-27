@@ -5,6 +5,8 @@ import { Add } from 'grommet-icons'
 import { useMutation } from 'react-apollo'
 import { CREATE_SUBSCRIPTION } from './queries'
 import { pivotByDimension, subscriptionCost, updateSubscription } from './utils'
+import { deepUpdate } from '../../utils/graphql'
+import { PlanType } from './types'
 
 function LineItemInput({item: {dimension, name, cost}, included, updateItem}) {
   return (
@@ -22,12 +24,11 @@ function PlanForm({plan: {name, cost, period, lineItems: {items, included}}, att
   const includedByDimension = pivotByDimension(included)
 
   function updateItem(dimension, quantity) {
-    setAttributes({
-      ...attributes, lineItems: {
-        ...attributes.lineItems,
-        items: attributes.lineItems.items.map((item) => (item.dimension === dimension ? {dimension, quantity} : item))
-      }
-    })
+    setAttributes(deepUpdate(
+      attributes, 
+      'lineItems.items', 
+      (items) => items.map((item) => (item.dimension === dimension ? {dimension, quantity} : item))
+    ))
   }
 
   return (
@@ -37,7 +38,8 @@ function PlanForm({plan: {name, cost, period, lineItems: {items, included}}, att
           <Text size='small' weight='bold'>{name}</Text>
           <Text size='small'>${cost /100} {period}</Text>
         </Box>
-        {items.map((item) => <LineItemInput
+        {items.filter(({type}) => type === PlanType.LICENSED)
+              .map((item) => <LineItemInput
                               key={item.dimension}
                               item={item}
                               included={includedByDimension[item.dimension]}
@@ -54,10 +56,8 @@ export default function SubscribeModal({plan, installationId, repositoryId, setO
 
   const [mutation, {loading}] = useMutation(CREATE_SUBSCRIPTION, {
     variables: {installationId, attributes, planId: plan.id},
-    update: (cache, {data: {createSubscription}}) => {
-      updateSubscription(cache, repositoryId, createSubscription)
-      setOpen(false)
-    }
+    update: (cache, {data: {createSubscription}}) => updateSubscription(cache, repositoryId, createSubscription),
+    onCompleted: () => setOpen(false)
   })
   const total = subscriptionCost(attributes, plan)
 

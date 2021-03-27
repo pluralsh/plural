@@ -1,5 +1,6 @@
 REPO forge
 
 HELM charts/forge
+RECIPE forge/recipes/forge-gcp.yaml
 TF terraform/forge/forge-gcp
 TF terraform/forge/aws

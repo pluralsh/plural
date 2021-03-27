@@ -1,3 +1,4 @@
+import { deepUpdate } from "../../utils/graphql"
 import { REPO_Q } from "../repos/queries"
 
 export function pivotByDimension(items) {
@@ -20,15 +21,6 @@ export function updateSubscription(cache, repositoryId, subscription) {
   cache.writeQuery({
     query: REPO_Q,
     variables: {repositoryId},
-    data: {
-      ...prev,
-      repository: {
-        ...prev.repository,
-        installation: {
-          ...prev.repository.installation,
-          subscription: subscription
-        }
-      }
-    }
+    data: deepUpdate(prev, 'repository.installation.subscription', () => subscription)
   })
 }

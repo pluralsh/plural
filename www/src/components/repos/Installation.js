@@ -64,18 +64,12 @@ export function DetailContainer({children, ...rest}) {
 function InstallationInner({installation, repository}) {
   const [mutation] = useMutation(INSTALL_REPO, {
     variables: {repositoryId: repository.id},
-    update: (cache, { data: { createInstallation } }) => {
-      const prev = cache.readQuery({ query: REPO_Q, variables: {repositoryId: repository.id} })
-      cache.writeQuery({query: REPO_Q,
-        variables: {repositoryId: repository.id},
-        data: {...prev, repository: { ...prev.repository, installation: createInstallation}}
-      })
-    }
+    refetchQueries: [{query: REPO_Q, variables: {repositoryId: repository.id}}]
   })
 
   if (installation) return (
     <Box gap='small' pad='small'>
-      {installation.subscription && (<SubscriptionBadge repository={repository} {...installation.subscription} />)}
+      {installation.subscription && (<SubscriptionBadge repository={repository} subscription={installation.subscription} />)}
       <Highlight language='bash'>
         {[`forge build --only ${repository.name}`, `forge deploy ${repository.name}`].join('\n')}
       </Highlight>

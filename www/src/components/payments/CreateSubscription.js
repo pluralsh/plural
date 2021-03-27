@@ -4,9 +4,10 @@ import { ModalHeader, NumericInput, Button } from 'forge-core'
 import { Add } from 'grommet-icons'
 import { useMutation } from 'react-apollo'
 import { CREATE_SUBSCRIPTION } from './queries'
-import { pivotByDimension, subscriptionCost, updateSubscription } from './utils'
+import { pivotByDimension, subscriptionCost } from './utils'
 import { deepUpdate } from '../../utils/graphql'
 import { PlanType } from './types'
+import { REPO_Q } from '../repos/queries'
 
 function LineItemInput({item: {dimension, name, cost}, included, updateItem}) {
   return (
@@ -56,7 +57,7 @@ export default function SubscribeModal({plan, installationId, repositoryId, setO
 
   const [mutation, {loading}] = useMutation(CREATE_SUBSCRIPTION, {
     variables: {installationId, attributes, planId: plan.id},
-    update: (cache, {data: {createSubscription}}) => updateSubscription(cache, repositoryId, createSubscription),
+    refetchQueries: [{query: REPO_Q, variables: {repositoryId}}],
     onCompleted: () => setOpen(false)
   })
   const total = subscriptionCost(attributes, plan)

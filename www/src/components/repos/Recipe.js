@@ -121,9 +121,10 @@ function EditSection({recipeSection, item, ctx, setCtx}) {
 function buildCtx(recipeSections) {
   return recipeSections.reduce((ctx, {repository}) => {
     ctx[repository.id] = {}
-    if (repository.installation) {
+    if (repository.installation && repository.installation.context) {
       ctx[repository.id] = repository.installation.context
     }
+    
     return ctx
   }, {})
 }

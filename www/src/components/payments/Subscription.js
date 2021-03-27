@@ -50,7 +50,8 @@ export function LineItemNub({dimension, quantity, subscription, repository, line
       direction='row' gap='xsmall' align='center'>
       <LineItemIcon dimension={dimension} />
       {!metered && <Text size='small'>{quantity} - {dimension}</Text>}
-      {metered && <Text size='small'>{dimension} <Refresh size='small' /></Text>}
+      {metered && <Text size='small'>{dimension}</Text>}
+      {metered && <Refresh size='small' />}
       {hover && !metered && <Anchor size='small' onClick={() => setOpen(true)}>edit</Anchor>}
       {open && (
         <LineItemUpdate 
@@ -61,7 +62,7 @@ export function LineItemNub({dimension, quantity, subscription, repository, line
   )
 }
 
-export function SubscriptionBadge({repository, ...subscription}) {
+export function SubscriptionBadge({repository, subscription}) {
   const {plan: {name, period, lineItems}, lineItems: {items}} = subscription
   const totalCost = subscriptionCost(subscription, subscription.plan)
   const itemsByDim = pivotByDimension(lineItems.items)

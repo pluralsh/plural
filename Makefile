@@ -38,6 +38,10 @@ connectdb: ## proxies the db in kubernetes via kubectl
 	@echo "run psql -U forge -h 127.0.0.1 forge to connect"
 	kubectl port-forward statefulset/forge-postgresql 5432 -n forge
 
+setup: ## sets up your environment for testing
+	mix do local.hex, deps.get
+	cd www && yarn install
+
 web: ## starts a local webserver
 	cd www && npm start
 

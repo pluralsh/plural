@@ -3,15 +3,12 @@ import { Box, Layer, Text } from 'grommet'
 import { useMutation } from 'react-apollo'
 import { UPDATE_PLAN } from './queries'
 import { ModalHeader, Button } from 'forge-core'
-import { updateSubscription } from './utils'
+import { REPO_Q } from '../repos/queries'
 
 export default function UpdatePlan({plan, repository: {id, installation: {subscription}}, setOpen}) {
   const [mutation, {loading}] = useMutation(UPDATE_PLAN, {
     variables: {subscriptionId: subscription.id, planId: plan.id},
-    update: (cache, {data: {updatePlan}}) => {
-      updateSubscription(cache, id, updatePlan)
-      setOpen(false)
-    }
+    refetchQueries: [{query: REPO_Q, variables: {repositoryId: id}}]
   })
 
   return (

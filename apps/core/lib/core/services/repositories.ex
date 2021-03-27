@@ -240,7 +240,7 @@ defmodule Core.Services.Repositories do
   @spec create_installation(map, binary, User.t) :: {:ok, Installation.t} | {:error, term}
   def create_installation(attrs, repository_id, %User{} = user) do
     %Installation{repository_id: repository_id, user_id: user.id}
-    |> Installation.changeset(attrs)
+    |> Installation.changeset(Map.put_new(attrs, :context, %{}))
     |> allow(user, :create)
     |> when_ok(:insert)
     |> notify(:create, user)

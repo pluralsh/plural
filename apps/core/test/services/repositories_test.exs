@@ -95,6 +95,7 @@ defmodule Core.Services.RepositoriesTest do
 
       assert installation.user_id == user.id
       assert installation.repository_id == repo.id
+      assert is_map(installation.context)
 
       assert_receive {:event, %PubSub.InstallationCreated{item: ^installation, actor: ^user}}
     end

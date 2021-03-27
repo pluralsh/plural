@@ -55,7 +55,7 @@ defmodule Core.Services.Recipes do
         installation_ctx = Map.get(context, repo_id, %{})
         case Repositories.get_installation(user.id, repo_id) do
           %Installation{id: id, context: ctx} ->
-            Repositories.update_installation(%{context: Map.merge(ctx, installation_ctx)}, id, user)
+            Repositories.update_installation(%{context: Map.merge(ctx || %{}, installation_ctx)}, id, user)
           _ -> Repositories.create_installation(%{context: installation_ctx}, repo_id, user)
         end
       end)
@@ -134,7 +134,7 @@ defmodule Core.Services.Recipes do
     version = Versions.get_version(:terraform, id, v)
     case TfSvc.get_terraform_installation(id, uid) do
       %{id: id} -> TfSvc.update_terraform_installation(%{version_id: version.id}, id, user)
-      _ -> TfSvc.create_terraform_installation(%{terraform_id: id}, installation.id, user)
+      _ -> TfSvc.create_terraform_installation(%{terraform_id: id, version_id: version.id}, installation.id, user)
     end
   end
 

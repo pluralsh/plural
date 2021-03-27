@@ -21,9 +21,7 @@ export const UPDATE_REPO = gql`
   mutation UpdateRepository($id: ID!, $attributes: RepositoryAttributes!) {
     updateRepository(repositoryId: $id, attributes: $attributes) {
       ...RepoFragment
-      dashboards {
-        ...DashboardFragment
-      }
+      dashboards { ...DashboardFragment }
     }
   }
   ${RepoFragment}
@@ -32,9 +30,7 @@ export const UPDATE_REPO = gql`
 
 export const DELETE_REPO = gql`
   mutation DeleteRepository($id: ID!) {
-    deleteRepository(repositoryId: $id) {
-      ...RepoFragment
-    }
+    deleteRepository(repositoryId: $id) { ...RepoFragment }
   }
   ${RepoFragment}
 `;
@@ -50,9 +46,7 @@ export const UPDATE_INSTALLATION = gql`
 
 export const DELETE_INSTALLATION = gql`
   mutation DeleteInstallation($id: ID!) {
-    deleteInstallation(id: $id) {
-      ...InstallationFragment
-    }
+    deleteInstallation(id: $id) { ...InstallationFragment }
   }
   ${InstallationFragment}
 `;
@@ -61,9 +55,7 @@ export const INSTALLATIONS_Q = gql`
   query Installations($cursor: String) {
     installations(after: $cursor, first: 15) {
       pageInfo { ...PageInfo }
-      edges {
-        node { ...InstallationFragment }
-      }
+      edges { node { ...InstallationFragment } }
     }
   }
   ${PageInfo}
@@ -74,9 +66,7 @@ export const REPOS_Q = gql`
   query Repos($publisherId: ID, $cursor: String) {
     repositories(publisherId: $publisherId, first: 15, after: $cursor) {
       pageInfo { ...PageInfo }
-      edges {
-        node { ...RepoFragment }
-      }
+      edges { node { ...RepoFragment } }
     }
   }
   ${PageInfo}
@@ -86,9 +76,7 @@ export const REPOS_Q = gql`
 export const SEARCH_REPOS = gql`
   query SearchRepos($query: String!) {
     searchRepositories(query: $query, first: 10) {
-      edges {
-        node { ...RepoFragment }
-      }
+      edges { node { ...RepoFragment } }
     }
   }
   ${RepoFragment}
@@ -96,9 +84,7 @@ export const SEARCH_REPOS = gql`
 
 export const INSTALL_REPO = gql`
   mutation CreateInstallation($repositoryId: ID!) {
-    createInstallation(repositoryId: $repositoryId) {
-      ...InstallationFragment
-    }
+    createInstallation(repositoryId: $repositoryId) { ...InstallationFragment }
   }
   ${InstallationFragment}
 `;
@@ -241,9 +227,7 @@ export const UPDATE_CHART = gql`
   mutation UpdateChart($id: ID!, $attributes: ChartAttributes!) {
     updateChart(id: $id, attributes: $attributes) {
       ...ChartFragment
-      tags {
-        ...VersionTagFragment
-      }
+      tags { ...VersionTagFragment }
     }
   }
   ${ChartFragment}
@@ -331,9 +315,7 @@ export const INSTALL_TF = gql`
 
 export const UNINSTALL_TF = gql`
   mutation UninstallTf($id: ID!) {
-    uninstallTerraform(id: $id) {
-      id
-    }
+    uninstallTerraform(id: $id) { id }
   }
 `;
 
@@ -351,17 +333,11 @@ export const CLOSURE_Q = gql`
     closure(type: $type, id: $id) {
       terraform {
         ...TerraformFragment
-        repository {
-          id
-          name
-        }
+        repository { id name }
       }
       helm {
         ...ChartFragment
-        repository {
-          id
-          name
-        }
+        repository { id name }
       }
     }
   }
@@ -414,9 +390,7 @@ export const INTEGRATIONS_Q = gql`
     }
     tags(id: $id, type: INTEGRATIONS, first: 20, after: $cursor) {
       pageInfo { ...PageInfo }
-      edges {
-        node { tag count }
-      }
+      edges { node { tag count } }
     }
   }
   ${PageInfo}
@@ -428,15 +402,11 @@ export const EXPLORE_REPOS = gql`
   query Repos($tag: String, $repoCursor: String, $cursor: String, $q: String) {
     repositories(tag: $tag, after: $repoCursor, first: 15) {
       pageInfo { ...PageInfo }
-      edges {
-        node { ...RepoFragment }
-      }
+      edges { node { ...RepoFragment } }
     }
     tags(type: REPOSITORIES, first: 20, after: $cursor, q: $q) {
       pageInfo { ...PageInfo }
-      edges {
-        node { tag count }
-      }
+      edges { node { tag count } }
     }
   }
   ${PageInfo}

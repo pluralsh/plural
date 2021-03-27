@@ -7,7 +7,7 @@ const ICON_SIZE = '25px'
 function BetweenStep({step, width}) {
   const {current} = useContext(StepContext)
   return (
-    <Box border={{color: current >= step ? 'brand' : 'light-3', size: '1px', side: 'bottom'}} width={width} />
+    <Box border={{color: current > step ? 'brand' : 'light-3', size: '1px', side: 'bottom'}} width={width} />
   )
 }
 

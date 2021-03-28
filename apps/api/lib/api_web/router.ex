@@ -42,6 +42,7 @@ defmodule ApiWeb.Router do
     pipe_through :api
 
     post "/email", EmailController, :email
+    post "/usage", PaymentsController, :usage_record
   end
 
   scope "/mart", ApiWeb do

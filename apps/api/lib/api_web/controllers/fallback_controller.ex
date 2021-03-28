@@ -13,6 +13,8 @@ defmodule ApiWeb.FallbackController do
   def error(:not_found), do: {404, "Not Found"}
   def error(:forbidden), do: {403, "You're not allowed to access that resource"}
   def error(%Ecto.Changeset{} = cs), do: {422, format_changeset(cs)}
+  def error(val) when is_atom(val), do: {422, val}
+  def error(_), do: {422, "unkown error"}
 
   defp format_changeset(changeset) do
     Ecto.Changeset.traverse_errors(changeset, fn {msg, opts} ->

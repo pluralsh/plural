@@ -30,16 +30,14 @@ function DockerHeader({image}) {
 }
 
 function DockerSidebar({image: {dockerRepository: docker, ...image}, filter, setFilter}) {
-  const data = useMemo(() => {
-    return docker.metrics.map(({tags, values}) => {
-      const tag = tags.find(({name}) => name === 'tag')
-      
-      return {
-        id: tag ? tag.value : docker.name, 
-        data: values.map(({time, value}) => ({x: moment(time).toDate(), y: value}))
-      }
-    })
-  }, [docker.metrics, docker.name])
+  const data = useMemo(() => docker.metrics.map(({tags, values}) => {
+    const tag = tags.find(({name}) => name === 'tag')
+    
+    return {
+      id: tag ? tag.value : docker.name, 
+      data: values.map(({time, value}) => ({x: moment(time).toDate(), y: value}))
+    }
+  }), [docker.metrics, docker.name])
 
   return (
     <Box style={{overflow: 'auto'}} fill='vertical' gap='small'>

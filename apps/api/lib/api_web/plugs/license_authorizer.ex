@@ -6,10 +6,12 @@ defmodule ApiWeb.Plugs.LicenseAuthorizer do
 
   def call(conn, _opts) do
     with ["Bearer " <> token | _] <- get_req_header(conn, "authorization"),
-         %{} <- Repositories.get_license_token(token) do
-      conn
+         %{} = license_token <- Repositories.get_license_token(token) do
+      assign(conn, :license_token, license_token)
     else
-      _ -> ApiWeb.FallbackController.call(conn, {:error, :forbidden}) |> halt()
+      _ ->
+        ApiWeb.FallbackController.call(conn, {:error, :forbidden})
+        |> halt()
     end
   end
 end

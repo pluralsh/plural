@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { Box, Text, Anchor } from 'grommet'
 import { HoveredBackground } from 'forge-core'
 import Recipe from './Recipe'
@@ -8,6 +8,7 @@ import { DELETE_RECIPE, REPO_Q } from './queries'
 import { Provider } from './misc'
 import { Container } from './Integrations'
 import { chunk } from '../../utils/array'
+import { extendConnection } from '../../utils/graphql'
 
 const PROVIDER_WIDTH = 40
 
@@ -65,18 +66,12 @@ function RecipeListItem({recipe, setRecipe, repository: {editable, id}}) {
 
 export default function Recipes({repository, edges, pageInfo, fetchMore}) {
   const [recipe, setRecipe] = useState(null)
+  const wrappedSetRecipe = useCallback((recipe) => setRecipe(recipe ? recipe : null), [setRecipe])
   if (edges.length === 0) return null
-  function wrappedSetRecipe(recipe) {
-    if (!recipe) {
-      setRecipe(null)
-      return
-    }
-    setRecipe(recipe)
-  }
 
   return (
     <>
-    {recipe && (<Recipe {...recipe} setOpen={wrappedSetRecipe} />)}
+    {recipe && (<Recipe recipe={recipe} repository={repository} setOpen={wrappedSetRecipe} />)}
     <Box pad='small' gap='medium'>
       {Array.from(chunk(edges, 2)).map((chunk, ind) => (
         <Box key={ind} direction='row' gap='small' fill='horizontal'>
@@ -86,11 +81,8 @@ export default function Recipes({repository, edges, pageInfo, fetchMore}) {
         </Box>
       ))}
       {pageInfo.hasNextPage && (<Anchor onClick={() => fetchMore({
-          variables: {recipeCursor: pageInfo.endCursor},
-          updateQuery: (prev, {fetchMoreResult: {recipes: {edges, pageInfo}}}) => ({
-              ...prev,
-              recipes: {...prev.recipes, pageInfo, edges: [...prev.recipes.edges, ...edges]}
-          })
+        variables: {recipeCursor: pageInfo.endCursor},
+        updateQuery: (prev, {fetchMoreResult}) => extendConnection(prev, fetchMoreResult, 'recipes')
       })}>show more</Anchor>)}
     </Box>
     </>

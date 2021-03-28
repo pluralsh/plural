@@ -349,9 +349,7 @@ export const RECIPE_Q = gql`
   query Recipe($id: ID!) {
     recipe(id: $id) {
       ...RecipeFragment
-      recipeSections {
-        ...RecipeSectionFragment
-      }
+      recipeSections { ...RecipeSectionFragment }
       repository { id }
     }
   }

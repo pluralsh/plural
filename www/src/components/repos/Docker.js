@@ -39,7 +39,7 @@ function DockerSidebar({image: {dockerRepository: docker, ...image}, filter, set
         data: values.map(({time, value}) => ({x: moment(time).toDate(), y: value}))
       }
     })
-  }, [docker.metrics])
+  }, [docker.metrics, docker.name])
 
   return (
     <Box style={{overflow: 'auto'}} fill='vertical' gap='small'>

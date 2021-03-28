@@ -1,10 +1,13 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useQuery, useMutation } from 'react-apollo'
 import { ModalHeader, Button, SecondaryButton, InputCollection, ResponsiveInput, ResponsiveInputContainer } from 'forge-core'
-import { RECIPE_Q, INSTALL_RECIPE, REPO_Q } from './queries'
+import { RECIPE_Q, INSTALL_RECIPE, REPO_Q, INSTALL_REPO } from './queries'
 import { Layer, Box, Text, CheckBox } from 'grommet'
 import { RepositoryIcon } from './Repository'
 import { DEFAULT_CHART_ICON, DEFAULT_TF_ICON } from './constants'
+import Plan from '../payments/Plan'
+import { AlternatingBox } from '../utils/AlternatingBox'
+import { Subscriber } from '../payments/CreateSubscription'
 
 function SubHeading({size, icon, name, description}) {
   return (
@@ -183,16 +186,60 @@ function RecipeSectionEditor({id, recipeSections, section, item, setState, repos
   )
 }
 
-export default function Recipe({id, name, setOpen}) {
+function Install({repository, setOpen}) {
+  const [mutation] = useMutation(INSTALL_REPO, {
+    variables: {repositoryId: repository.id},
+    refetchQueries: [{query: REPO_Q, variables: {repositoryId: repository.id}}]
+  })
+  useEffect(() => { !repository.installation && mutation() }, [repository])
+
+  if (!repository.installation) return null
+  
+  return (
+    <Layer modal>
+      <Box width='50vw'>
+        <ModalHeader text='Subscribe to a plan' setOpen={setOpen} />
+        <AlternatingBox>
+        {setAlternate => (
+          <Box pad='small' gap='small'>
+            {repository.plans.map((plan) => (
+              <Plan key={plan.id}  
+                    subscription={repository.installation.subscription} 
+                    approvePlan={(plan) => setAlternate(
+                      <Subscriber 
+                        plan={plan} 
+                        installationId={repository.installation.id}
+                        repositoryId={repository.id}
+                        setOpen={() => setAlternate(null)} />
+                    )} 
+                    repository={repository}
+                    plan={plan} />
+            ))}
+          </Box>
+        )}
+        </AlternatingBox>
+      </Box>
+    </Layer>
+    
+  )
+}
+
+function needsInstall({installation, plans}) {
+  if (!installation) return true
+  if (plans && plans.length > 0 && !installation.subscription) return true
+
+  return false
+}
+
+function RecipeInner({recipe: {id, name}, setOpen}) {
   const [{section, item}, setState] = useState({section: 0, item: 0})
   const {data, loading} = useQuery(RECIPE_Q, {variables: {id}})
   if (!data || loading) return null
+  
   const {recipeSections, repository} = data.recipe
+
   return (
-    <Layer
-      modal
-      position='center'
-      onEsc={() => setOpen(false)} >
+    <Layer  modal position='center' onEsc={() => setOpen(false)} >
       <Box width='80vw'>
         <ModalHeader text={name} setOpen={setOpen} />
         <Box pad='small'>
@@ -208,4 +255,11 @@ export default function Recipe({id, name, setOpen}) {
       </Box>
     </Layer>
   )
+}
+
+export default function Recipe({recipe, setOpen, repository}) {
+  const needs = needsInstall(repository)
+  if (needs) return <Install repository={repository} />
+
+  return <RecipeInner recipe={recipe} setOpen={setOpen} />
 }

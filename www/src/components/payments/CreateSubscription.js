@@ -50,7 +50,7 @@ function PlanForm({plan: {name, cost, period, lineItems: {items, included}}, att
   )
 }
 
-export default function SubscribeModal({plan, installationId, repositoryId, setOpen}) {
+export function Subscriber({plan, installationId, repositoryId, setOpen}) {
   const [attributes, setAttributes] = useState({
     lineItems: {items: plan.lineItems.items.map(({dimension}) => ({dimension, quantity: 0}))}
   })
@@ -63,17 +63,23 @@ export default function SubscribeModal({plan, installationId, repositoryId, setO
   const total = subscriptionCost(attributes, plan)
 
   return (
+    <Box pad='small' gap='small'>
+      <PlanForm plan={plan} attributes={attributes} setAttributes={setAttributes} />
+      <Box direction='row' justify='end' gap='small' align='center'>
+        <Text>Total</Text>
+        <Text color='green'>${total / 100}</Text>
+        <Button loading={loading} round='xsmall' label='Subscribe' onClick={mutation} />
+      </Box>
+    </Box>
+  )
+}
+
+export default function SubscribeModal({plan, installationId, repositoryId, setOpen}) {
+  return (
     <Layer modal position='center' onEsc={() => setOpen(false)}>
       <Box width='40vw'>
         <ModalHeader text={`Subscribe to the ${plan.name} plan?`} setOpen={setOpen} />
-        <Box pad='small' gap='small'>
-          <PlanForm plan={plan} attributes={attributes} setAttributes={setAttributes} />
-          <Box direction='row' justify='end' gap='small' align='center'>
-            <Text>Total</Text>
-            <Text color='green'>${total / 100}</Text>
-            <Button loading={loading} round='xsmall' label='Subscribe' onClick={mutation} />
-          </Box>
-        </Box>
+        <Subscriber plan={plan} installationId={installationId} repositoryId={repositoryId} setOpen={setOpen} />
       </Box>
     </Layer>
   )

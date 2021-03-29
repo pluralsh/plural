@@ -38,7 +38,7 @@ function Feature({name, description}) {
   return (
     <Box direction='row' gap='small' align='center'>
       <Checkmark size='15px' color='focus' />
-      <Box gap='xsmall'>
+      <Box>
         <Text size='small' weight={500}>{name}</Text>
         <Text size='small'><i>{description}</i></Text>
       </Box>
@@ -70,7 +70,7 @@ function Features({features, serviceLevels, open}) {
 
   return (
     <Collapsible open={open}>
-      <Box gap='small' pad={{vertical: 'small'}}>
+      <Box gap='small'>
         {hasServiceLevels && (
           <FeatureSection title='SLAs:'>
             {(serviceLevels || []).map((level) => <ServiceLevel level={level} />)}
@@ -136,7 +136,7 @@ export default function Plan({approvePlan, subscription, repository, plan}) {
   return (
     <Stack width='70%' anchor='top-right'>
       <Box className='plan' as={hover} pad='small' focusIndicator={false} border={{color: subscribed ? 'brand' : 'light-5'}}
-           onClick={subscribed ? null : () => approvePlan(plan)}>
+           onClick={subscribed ? null : () => approvePlan(plan)} gap='small'>
         <Box direction='row' align='center'>
           <Box gap='xsmall' fill='horizontal' direction='row'>
             <Text size='small' weight='bold'>{name}</Text>
@@ -146,7 +146,7 @@ export default function Plan({approvePlan, subscription, repository, plan}) {
             )}
           </Box>
         </Box>
-        <Box gap='xsmall' pad={{vertical: 'small'}}>
+        <Box gap='xsmall'>
           {items.map((item) => <LineItem
                                 key={item.dimension}
                                 item={item}

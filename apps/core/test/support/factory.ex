@@ -333,4 +333,17 @@ defmodule Core.Factory do
       repository: build(:repository)
     }
   end
+
+  def upgrade_queue_factory do
+    %Schema.UpgradeQueue{
+      user: build(:user)
+    }
+  end
+
+  def upgrade_factory do
+    %Schema.Upgrade{
+      queue: build(:upgrade_queue),
+      repository: build(:repository)
+    }
+  end
 end

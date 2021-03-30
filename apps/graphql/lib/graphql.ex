@@ -17,6 +17,7 @@ defmodule GraphQl do
   import_types GraphQl.Schema.Account
   import_types GraphQl.Schema.Incidents
   import_types GraphQl.Schema.Audit
+  import_types GraphQl.Schema.Upgrade
 
   alias GraphQl.Resolvers.{
     User,
@@ -94,6 +95,7 @@ defmodule GraphQl do
     import_fields :version_mutations
     import_fields :account_mutations
     import_fields :incident_mutations
+    import_fields :upgrade_mutations
   end
 
   subscription do

@@ -24,13 +24,15 @@ defimpl Core.PubSub.Fanout, for: [Core.PubSub.VersionCreated, Core.PubSub.Versio
     ChartInstallation.for_chart(version.chart_id)
     |> ChartInstallation.with_auto_upgrade(version.tags)
     |> ChartInstallation.ignore_version(version.id)
-    |> ChartInstallation.preload([installation: [:repository, user: :webhooks]])
+    |> ChartInstallation.preload([installation: [:repository, user: [:webhooks, :queue]]])
     |> ChartInstallation.ordered()
     |> Core.Repo.stream(method: :keyset)
     |> Flow.from_enumerable(stages: 5, max_demand: 20)
     |> Flow.map(&process(&1, version))
     |> Flow.flat_map(fn
-      {:ok, inst} -> derive_webhooks(inst)
+      {:ok, inst} ->
+        create_upgrade(inst, version)
+        |> derive_webhooks()
       {:error, error} ->
         Logger.error "Failed to update #{inspect(error)}"
         []
@@ -43,6 +45,18 @@ defimpl Core.PubSub.Fanout, for: [Core.PubSub.VersionCreated, Core.PubSub.Versio
     inst
     |> ChartInstallation.changeset(%{version_id: version.id})
     |> Core.Repo.update()
+  end
+
+  defp create_upgrade(
+    %ChartInstallation{installation: %{user: user, repository: repo}} = inst,
+    %{version: version, chart: %{name: chart}}
+  ) do
+    {:ok, _} = Core.Services.Upgrades.create_upgrade(%{
+      repository_id: repo.id,
+      message: "Upgraded #{chart} to #{version}"
+    }, user)
+
+    inst
   end
 
   defp derive_webhooks(%ChartInstallation{installation: %{user: %{webhooks: webhooks}, repository: repo}}),
@@ -84,5 +98,14 @@ defimpl Core.PubSub.Fanout, for: Core.PubSub.DockerImageCreated do
   def fanout(%{item: img}) do
     Logger.info "scheduling scan for image #{img.id}"
     Core.Conduit.Broker.publish(%Conduit.Message{body: img}, :dkr)
+  end
+end
+
+defimpl Core.PubSub.Fanout, for: Core.PubSub.UpgradeCreated do
+  require Logger
+
+  def fanout(%{item: up}) do
+    Logger.info "enqueueing upgrade #{up.id}"
+    Core.Conduit.Broker.publish(%Conduit.Message{body: up}, :upgrade)
   end
 end

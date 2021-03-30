@@ -1,14 +1,17 @@
 defmodule Core.Services.Users do
   use Core.Services.Base
   import Core.Policies.User
-  alias Core.Services.Accounts
+  alias Core.Services.{Accounts, Upgrades}
   alias Core.Schema.{
     PersistedToken,
     User,
     Publisher,
     Webhook,
-    Notification
+    Notification,
+    UpgradeQueue,
+    Upgrade
   }
+  alias Core.PubSub
 
   @spec get_user(binary) :: User.t | nil
   def get_user(user_id), do: Core.Repo.get(User, user_id)
@@ -89,6 +92,7 @@ defmodule Core.Services.Users do
       with {:ok, %{user: user}} <- Accounts.create_account(user),
         do: {:ok, user}
     end)
+    |> add_operation(:queue, fn %{user: user} -> Upgrades.create_queue(user) end)
     |> execute(extract: :user)
   end
 

@@ -5,6 +5,7 @@ defmodule RtcWeb.UserSocket do
 
   ## Channels
   channel "incidents:*", RtcWeb.IncidentChannel
+  channel "upgrades:*", RtcWeb.UpgradeChannel
 
   @impl true
   def connect(params, socket) do

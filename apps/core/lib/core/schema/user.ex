@@ -1,7 +1,16 @@
 defmodule Core.Schema.User do
   use Piazza.Ecto.Schema, derive_json: false
   use Arc.Ecto.Schema
-  alias Core.Schema.{Address, Publisher, Webhook, Account, Group, RoleBinding, Incident}
+  alias Core.Schema.{
+    Address,
+    Publisher,
+    Webhook,
+    Account,
+    Group,
+    RoleBinding,
+    Incident,
+    UpgradeQueue
+  }
 
   @email_re ~r/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-\.]+\.[a-zA-Z]{2,}$/
 
@@ -18,9 +27,11 @@ defmodule Core.Schema.User do
     field :phone,         :string
 
     embeds_one :address, Address, on_replace: :update
+
     belongs_to :account, Account
-    has_one :publisher,  Publisher,
-      foreign_key: :owner_id
+
+    has_one :publisher,  Publisher, foreign_key: :owner_id
+    has_one :queue, UpgradeQueue
 
     has_many :webhooks,  Webhook
     has_many :role_bindings, RoleBinding

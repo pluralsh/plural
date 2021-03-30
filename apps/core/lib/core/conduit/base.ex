@@ -10,6 +10,7 @@ defmodule Core.Conduit.Base do
         defqueue "forge.rtc"
         defqueue "forge.webhook"
         defqueue "forge.dkr"
+        defqueue "forge.upgrade"
       end
 
       pipeline :out_tracking do
@@ -30,6 +31,7 @@ defmodule Core.Conduit.Base do
         publish :rtc, exchange: "forge.topic", to: "forge.rtc"
         publish :webhook, exchange: "forge.topic", to: "forge.webhook"
         publish :dkr, exchange: "forge.topic", to: "forge.dkr"
+        publish :upgrade, exchange: "forge.topic", to: "forge.upgrade"
       end
 
       outgoing do

@@ -17,6 +17,7 @@ defmodule Rtc.Conduit.Broker do
 
   incoming Rtc.Conduit do
     pipe_through [:in_tracking, :error_handling, :deserialize]
-    subscribe :message, Subscriber, from: "forge.rtc"
+    subscribe :rtc, Subscriber, from: "forge.rtc"
+    subscribe :upgrade, UpgradeSubscriber, from: "forge.upgrade"
   end
 end

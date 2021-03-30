@@ -83,6 +83,7 @@ defmodule GraphQl do
     import_fields :account_queries
     import_fields :incident_queries
     import_fields :audit_queries
+    import_fields :upgrade_queries
   end
 
   mutation do
@@ -100,5 +101,6 @@ defmodule GraphQl do
 
   subscription do
     import_fields :incident_subscriptions
+    import_fields :upgrade_subscriptions
   end
 end

@@ -59,3 +59,20 @@ defimpl Rtc.Channels.Negotiator, for: Core.PubSub.NotificationCreated do
     {notification, [notification: "notifs:#{notification.user_id}"]}
   end
 end
+
+defimpl Rtc.Channels.Negotiator, for: Core.PubSub.UpgradeCreated do
+  def negotiate(%{item: upgrade}) do
+    %{queue: q} = up = Core.Repo.preload(upgrade, [:queue])
+    {up, [upgrade: "upgrades:#{q.user_id}"]}
+  end
+end
+
+defimpl Rtc.Channels.Negotiator, for: Core.PubSub.UpgradeQueueUpdated do
+  import Rtc.Channels.NegotiatorHelper
+
+  def negotiate(%{item: q}) do
+    {delta(q, delta_name(@for)), [upgrade_queue_delta: "upgrades:queue:#{q.user_id}"]}
+  end
+
+  defp delta_name(Core.PubSub.UpgradeQueueUpdated), do: :update
+end

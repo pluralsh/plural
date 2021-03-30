@@ -25,6 +25,8 @@ defmodule RtcWeb.UpgradeChannel do
     end
   end
 
+  def handle_info(_, socket), do: {:noreply, socket}
+
   def handle_in("next", _, socket) do
     case Upgrades.next(socket.assigns.queue) do
       %Upgrade{} = up -> {:reply, {:ok, up}, socket}

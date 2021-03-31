@@ -1,13 +1,14 @@
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { useQuery, useSubscription } from 'react-apollo'
 import { Loading, Scroller } from 'forge-core'
 import { QUEUE, UPGRADE_QUEUE_SUB, UPGRADE_SUB } from './queries'
-import { appendConnection, deepUpdate, extendConnection } from '../../utils/graphql'
+import { appendConnection, extendConnection } from '../../utils/graphql'
 import { Box, Text } from 'grommet'
 import { RepoIcon } from '../repos/Repositories'
 import moment from 'moment'
 import { BeatLoader } from 'react-spinners'
 import { Refresh } from 'grommet-icons'
+import { BreadcrumbsContext } from '../Breadcrumbs'
 
 function DeliveryProgress({delivered}) {
   return (
@@ -48,14 +49,19 @@ export function UpgradeQueue() {
 
   useSubscription(UPGRADE_QUEUE_SUB)
 
+  const {setBreadcrumbs} = useContext(BreadcrumbsContext)
+  useEffect(() => {
+    setBreadcrumbs([{url: `/upgrades`, text: 'upgrades'}])
+  }, [setBreadcrumbs])
+
   if (!data) return <Loading />
 
   const {upgrades: {edges, pageInfo}, acked} = data.upgradeQueue
 
   return (
     <Box fill>
-      <Box flex={false} pad='small' align='center' background='light-2' direction='row' 
-           border={{side: 'bottom', color: 'light-5'}}>
+      <Box flex={false}  direction='row' align='center' background='light-1'
+           pad={{vertical: 'xsmall', horizontal: 'small'}} border={{side: 'bottom', color: 'light-5'}}>
         <Box fill='horizontal'>
           <Text size='small' weight={500}>Upgrade Queue</Text>
         </Box>

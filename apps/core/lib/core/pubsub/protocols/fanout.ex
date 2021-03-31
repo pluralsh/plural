@@ -9,7 +9,7 @@ defimpl Core.PubSub.Fanout, for: Any do
 end
 
 defimpl Core.PubSub.Fanout, for: [Core.PubSub.VersionCreated, Core.PubSub.VersionUpdated] do
-  alias Core.Schema.{ChartInstallation, Repository, Webhook}
+  alias Core.Schema.{ChartInstallation}
   require Logger
 
   @doc """
@@ -31,13 +31,11 @@ defimpl Core.PubSub.Fanout, for: [Core.PubSub.VersionCreated, Core.PubSub.Versio
     |> Flow.map(&process(&1, version))
     |> Flow.flat_map(fn
       {:ok, inst} ->
-        create_upgrade(inst, version)
-        |> derive_webhooks()
+        [create_upgrade(inst, version)]
       {:error, error} ->
         Logger.error "Failed to update #{inspect(error)}"
         []
     end)
-    |> Flow.map(&post_webhook(&1, version))
     |> Enum.count()
   end
 
@@ -57,20 +55,6 @@ defimpl Core.PubSub.Fanout, for: [Core.PubSub.VersionCreated, Core.PubSub.Versio
     }, user)
 
     inst
-  end
-
-  defp derive_webhooks(%ChartInstallation{installation: %{user: %{webhooks: webhooks}, repository: repo}}),
-    do: Enum.map(webhooks, & {repo, &1})
-  defp derive_webhooks(_), do: []
-
-  defp post_webhook(
-    {%Repository{name: repo}, %Webhook{} = webhook},
-    %{version: version, chart: %{name: chart}}
-  ) do
-    Core.Services.Users.post_webhook(%{
-      repository: repo,
-      message: "Upgraded #{chart} to #{version}"
-    }, webhook)
   end
 end
 

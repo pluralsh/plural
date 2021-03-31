@@ -75,10 +75,11 @@ blocks:
     prologue:
       commands:
       - checkout
-      - wget -O forge.cmd https://storage.googleapis.com/forge-assets/uploads/artifacts/c3e93e69-7bb3-4d7b-a3e7-01b93abf10b4/forge?v=63751273416
+      - wget -O forge.cmd 'https://forge.piazza.app/artifacts/forge/forge?platform=linux&arch=amd64'
       - chmod +x ./forge.cmd
+      - ./forge.cmd config amend token ${FORGE_ACCESS_TOKEN}
     jobs:
     - name: "Deploy with watchman"
       commands:
       - export GIT_COMMIT_MESSAGE=$(git log -1 --pretty=%B | cat | head -n 1)
-      - ./forge.cmd webhook forge "${GIT_COMMIT_MESSAGE}" --secret "${FORGE_WEBHOOK_SECRET}" --url https://watchman.piazza.app/v1/webhook
+      - ./forge.cmd upgrade --name forge --message "${GIT_COMMIT_MESSAGE}"

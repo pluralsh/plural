@@ -78,7 +78,6 @@ defimpl Core.PubSub.Fanout, for: Core.PubSub.DockerNotification do
   def fanout(%{item: item}) do
     # don't parallelize for now for simplicity
     item
-    |> IO.inspect()
     |> Core.Docker.Event.build()
     |> Enum.map(&Core.Docker.Publishable.handle/1)
   end

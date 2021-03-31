@@ -1,7 +1,8 @@
 use Mix.Config
 
 config :core,
-  ecto_repos: [Core.Repo]
+  ecto_repos: [Core.Repo],
+  broker: Core.Conduit.Broker
 
 config :piazza_core,
   repos: [Core.Repo]

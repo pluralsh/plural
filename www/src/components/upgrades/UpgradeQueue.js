@@ -7,6 +7,7 @@ import { Box, Text } from 'grommet'
 import { RepoIcon } from '../repos/Repositories'
 import moment from 'moment'
 import { BeatLoader } from 'react-spinners'
+import { Refresh } from 'grommet-icons'
 
 function DeliveryProgress({delivered}) {
   return (
@@ -20,7 +21,7 @@ function DeliveryProgress({delivered}) {
 
 function Upgrade({upgrade, acked}) {
   return (
-    <Box direction='row' align='center' pad='small' round='xsmall' gap='small' border={{color: 'light-5'}} margin={{bottom: 'xsmall'}}>
+    <Box direction='row' align='center' pad='small' round='xsmall' gap='small' border={{color: 'light-5', side: 'bottom'}}>
       <RepoIcon repo={upgrade.repository} />
       <Box fill='horizontal'>
         <Box direction='row' gap='small' align='center'>
@@ -29,19 +30,20 @@ function Upgrade({upgrade, acked}) {
         </Box>
         <Text size='small'><i>{upgrade.message}</i></Text>
       </Box>
-      <DeliveryProgress delivered={acked && upgrade.id < acked} />
+      <DeliveryProgress delivered={acked && upgrade.id <= acked} />
     </Box>
   )
 }
 
 export function UpgradeQueue() {
-  const {data, fetchMore, subscribeToMore} = useQuery(QUEUE)
+  const {data, fetchMore, subscribeToMore, refetch} = useQuery(QUEUE)
 
   useEffect(() => subscribeToMore({
     document: UPGRADE_SUB,
-    updateQuery: (prev, {subsciptionData: {data: {upgrade}}}) => deepUpdate(
-      prev, 'upgradeQueue', (q) => appendConnection(q, upgrade, 'Upgrade', 'upgrades')
-    )
+    updateQuery: ({upgradeQueue, ...rest}, {subscriptionData: {data: {upgrade}}}) => {
+      console.log(upgrade)
+      return {...rest, upgradeQueue: appendConnection(upgradeQueue, upgrade, 'Upgrade', 'upgrades')}
+    }
   }), [])
 
   useSubscription(UPGRADE_QUEUE_SUB)
@@ -51,8 +53,16 @@ export function UpgradeQueue() {
   const {upgrades: {edges, pageInfo}, acked} = data.upgradeQueue
 
   return (
-    <Box fill pad='small' gap='small'>
-      <Text size='small' weight='bold'>Upgrade Queue</Text>
+    <Box fill>
+      <Box flex={false} pad='small' align='center' background='light-2' direction='row' 
+           border={{side: 'bottom', color: 'light-5'}}>
+        <Box fill='horizontal'>
+          <Text size='small' weight={500}>Upgrade Queue</Text>
+        </Box>
+        <Box flex={false} pad='xsmall' round='xsmall' onClick={refetch} hoverIndicator='light-3' focusIndicator={false}>
+          <Refresh size='small' />
+        </Box>
+      </Box>
       <Box fill>
         <Scroller 
           id='webhooks'

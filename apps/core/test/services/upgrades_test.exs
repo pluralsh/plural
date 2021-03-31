@@ -29,6 +29,8 @@ defmodule Core.Services.UpgradesTest do
       {:ok, q} = Upgrades.ack(upgrade.id, queue)
 
       assert q.acked == upgrade.id
+
+      assert_receive {:event, %PubSub.UpgradeQueueUpdated{item: ^q}}
     end
 
     test "it'll ack if the new id is later" do

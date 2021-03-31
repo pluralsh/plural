@@ -5,7 +5,9 @@ defmodule Core.PubSub.Consumers.Rtc do
 
   def handle_event(event) do
     if Core.PubSub.Realtime.publish?(event) do
-      Core.Conduit.Broker.publish(%Conduit.Message{body: event}, :rtc)
+      broker().publish(%Conduit.Message{body: event}, :rtc)
     end
   end
+
+  defp broker(), do: Core.conf(:broker)
 end

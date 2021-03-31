@@ -8,10 +8,7 @@ defmodule Core.Services.Users do
     Publisher,
     Webhook,
     Notification,
-    UpgradeQueue,
-    Upgrade
   }
-  alias Core.PubSub
 
   @spec get_user(binary) :: User.t | nil
   def get_user(user_id), do: Core.Repo.get(User, user_id)

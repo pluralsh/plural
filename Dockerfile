@@ -69,7 +69,7 @@ ARG APP_NAME
 
 RUN apk update && \
     apk add --no-cache \
-      bash curl \
+      bash curl busybox \
       openssl-dev ca-certificates
 
 RUN curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.16.0

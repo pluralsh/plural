@@ -28,6 +28,7 @@ import { OauthCreator } from './integrations/OauthCreator'
 import { FlyoutContainer } from './utils/Flyout'
 import { Docker, DockerRepository } from './repos/Docker'
 import { Audits } from './accounts/Audits'
+import { UpgradeQueue } from './upgrades/UpgradeQueue'
 
 export const TOOLBAR_SIZE = '50px'
 
@@ -73,6 +74,7 @@ export default function Forge() {
                     <Route path='/webhooks' component={Integrations} />
                     <Route path='/oauth/accept/:service' component={OauthCreator} />
                     <Route path='/audits' component={Audits} />
+                    <Route path='/upgrades' component={UpgradeQueue} />
                     <Route path='/' component={Explore} />
                   </Switch>
                 </Box>

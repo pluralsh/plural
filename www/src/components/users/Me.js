@@ -100,7 +100,7 @@ export default function Me({me}) {
           <Item
             icon={<User size='small' />}
             text='Edit user' round='xsmall'
-            onClick={() => history.push('/me/edit')} />
+            onClick={() => history.push('/me/edit/user')} />
           {me.publisher && <Publishers account={account} publisher={me.publisher} />}
           {!me.publisher && (
             <Item

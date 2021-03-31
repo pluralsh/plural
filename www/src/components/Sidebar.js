@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react'
 import { Box, Text } from 'grommet'
 import { useHistory, useLocation } from 'react-router-dom'
 import { Tooltip } from './utils/Tooltip'
-import { Aid, Book, Group, Package, Alert, Network, List, Upgrade } from 'grommet-icons'
+import { Aid, Group, Package, Alert, Network, List, Upgrade, User } from 'grommet-icons'
 
 const SIDEBAR_ROW_HEIGHT = '50px'
 const ICON_HEIGHT = '20px'
@@ -22,7 +22,7 @@ export function SidebarIcon({icon, text, selected, path}) {
       className={'sidebar-icon' + (selected ? ' selected' : '')}
       align='center'
       justify='center'
-      margin='xsmall'
+      margin='xxsmall'
       round='xsmall'
       height={SIDEBAR_ROW_HEIGHT}
       hoverIndicator='sidebarHover'
@@ -45,7 +45,7 @@ export function SidebarIcon({icon, text, selected, path}) {
 
 const OPTIONS = [
   {text: 'Explore', icon: <Package size={ICON_HEIGHT} />, path: '/explore'},
-  {text: 'Publishers', icon: <Book size={ICON_HEIGHT} />, path: '/publishers'},
+  {text: 'User', icon: <User size={ICON_HEIGHT} />, path: '/me/edit'},
   {text: 'Account', icon: <Group size={ICON_HEIGHT} />, path: '/accounts/edit/users'},
   {text: 'Upgrades', icon: <Upgrade size={ICON_HEIGHT} />, path: '/upgrades'},
   {text: 'Incidents', icon: <Alert size={ICON_HEIGHT} />, path: '/incidents'},

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Box, Grid } from 'grommet'
-import { Switch, Route } from 'react-router-dom'
+import { Switch, Route, Redirect } from 'react-router-dom'
 import CurrentUser from './login/CurrentUser'
 import MyPublisher from './publisher/MyPublisher'
 import Publisher from './publisher/Publisher'
@@ -63,7 +63,10 @@ export default function Forge() {
                     <Route path='/repositories/:repositoryId' component={Repository} />
                     <Route path='/charts/:chartId' component={Chart} />
                     <Route path='/terraform/:tfId' component={Terraform} />
-                    <Route path='/me/edit' component={EditUser} />
+                    <Route exact path='/me/edit'>
+                      <Redirect to='/me/edit/user' />
+                    </Route>
+                    <Route path='/me/edit/:editing' component={EditUser} />
                     <Route path='/billing/:section' component={Billing} />
                     <Route path='/me/invoices/:subscriptionId' component={Invoices} />
                     <Route path='/incidents/responses' component={Responses} />

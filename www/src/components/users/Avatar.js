@@ -19,7 +19,7 @@ export default function Avatar({size, user, round}) {
       width={size}
       height={size}
       background={!user.avatar ? user.backgroundColor : null}>
-      {!user.avatar && <Text>{initials(user.name)}</Text>}
+      {!user.avatar && <Text size='small'>{initials(user.name)}</Text>}
     </Box>
   )
 }

@@ -6,10 +6,12 @@ import { useMutation } from 'react-apollo'
 import { UPDATE_USER } from './queries'
 import Avatar from './Avatar'
 import { wipeToken } from '../../helpers/authentication'
-import { Logout, StatusCritical, Checkmark, User, Lock, Install, Network, Robot } from 'grommet-icons'
+import { Logout, StatusCritical, Checkmark, User, Lock, Install, Robot } from 'grommet-icons'
 import Installations from '../repos/Installations'
 import { CurrentUserContext } from '../login/CurrentUser'
 import { Tokens } from './Tokens'
+import { useHistory, useParams } from 'react-router'
+import { BreadcrumbsContext } from '../Breadcrumbs'
 
 export const EditContext = React.createContext({})
 
@@ -45,15 +47,16 @@ function ActionBox({onClick, text, icon}) {
   )
 }
 
-export function EditSelect({edit, icon}) {
-  const {editing, setEditing} = useContext(EditContext)
+export function EditSelect({name, edit, icon}) {
+  const {editing} = useParams()
+  let hist = useHistory()
   return (
     <Box pad={{horizontal: 'small', vertical: 'xsmall'}} round='xsmall'
          border={{color: edit === editing ? 'brand' : 'light-5'}} fill='horizontal'
          align='center' gap='small' direction='row' hoverIndicator='light-2'
-         focusIndicator={false} onClick={edit === editing ? null : () => setEditing(edit)}>
+         focusIndicator={false} onClick={edit === editing ? null : () => hist.push(`/me/edit/${edit}`)}>
       <Box fill='horizontal'>
-        {edit}
+        {name}
       </Box>
       <Box flex={false}>
         {icon}
@@ -71,7 +74,7 @@ export function EditHeader({text}) {
 }
 
 export function EditContent({edit, children}) {
-  const {editing} = useContext(EditContext)
+  const {editing} = useParams()
   if (editing !== edit) return null
 
   return (
@@ -94,11 +97,16 @@ export default function EditUser() {
   const [attributes, setAttributes] = useState({name: me.name, email: me.email})
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
-  const [editing, setEditing] = useState('User Attributes')
+  const {editing} = useParams()
   const mergedAttributes = password && password.length > 0 ? {...attributes, password} : attributes
   const [mutation, {loading}] = useMutation(UPDATE_USER, {variables: {attributes: mergedAttributes}})
   const {disabled, reason} = passwordValid(password, confirm)
   const color = disabled ? 'status-error' : 'status-ok'
+
+  const {setBreadcrumbs} = useContext(BreadcrumbsContext)
+  useEffect(() => {
+    setBreadcrumbs([{url: `/me/edit`, text: 'me'}, {url: `/me/edit/${editing}`, text: editing}])
+  }, [setBreadcrumbs, editing])
 
   return (
     <Box fill gap='small' pad='medium'>
@@ -118,16 +126,15 @@ export default function EditUser() {
             icon={<Logout size='12px' />} />
         </Box>
       </Box>
-      <EditContext.Provider value={{editing, setEditing}}>
       <Box fill direction='row' border={{side: 'between', color: 'light-5'}} gap='small'>
         <Box gap='small' width='25%' pad={{horizontal: 'small', vertical: 'medium'}}>
-          <EditSelect edit='User Attributes' icon={<User size='small' />} />
-          <EditSelect edit='Password' icon={<Lock size='small' />} />
-          <EditSelect edit='Installations' icon={<Install size='small' />} />
-          <EditSelect edit='Access Tokens' icon={<Robot size='small' />} />
+          <EditSelect edit='user' name='User Attributes' icon={<User size='small' />} />
+          <EditSelect edit='pwd' name='Password' icon={<Lock size='small' />} />
+          <EditSelect edit='installations' name='Installations' icon={<Install size='small' />} />
+          <EditSelect edit='tokens' name='Access Tokens' icon={<Robot size='small' />} />
         </Box>
         <Box width='75%'>
-          <EditContent edit='User Attributes'>
+          <EditContent edit='user'>
             <InputCollection>
               <ResponsiveInput
                 value={attributes.name}
@@ -142,7 +149,7 @@ export default function EditUser() {
               <Button loading={loading} onClick={mutation} flex={false} label='Update' />
             </Box>
           </EditContent>
-          <EditContent edit='Password'>
+          <EditContent edit='pwd'>
             <InputCollection>
               <ResponsiveInput
                 value={password}
@@ -171,15 +178,14 @@ export default function EditUser() {
                 label='Update' />
             </Box>
           </EditContent>
-          <EditContent edit='Installations'>
+          <EditContent edit='installations'>
             <Installations edit />
           </EditContent>
-          <EditContent edit='Access Tokens'>
+          <EditContent edit='tokens'>
             <Tokens />
           </EditContent>
         </Box>
       </Box>
-      </EditContext.Provider>
     </Box>
   )
 }

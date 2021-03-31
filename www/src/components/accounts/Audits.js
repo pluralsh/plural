@@ -40,11 +40,14 @@ function resourceInfo({version, group, role, integrationWebhook, repository, ima
     })
   }
 
-  return {link: `/repository/${repository.id}`, text: `Repository{${repository.name}}`}
+  if (repository) return {link: `/repository/${repository.id}`, text: `Repository{${repository.name}}`}
+
+  return {link: null, text: ''}
 }
 
 function Resource({audit}) {
   const {link, text} = resourceInfo(audit)
+  if (!link) return null
 
   return <Link to={link}>{text}</Link>
 }
@@ -57,7 +60,7 @@ function Audit({audit}) {
         <Text size='small'>{audit.action}</Text>
       </Box>
       <Box flex={false} width='25%' direction='row' gap='xsmall' align='center'>
-        <Avatar user={audit.actor} />
+        <Avatar user={audit.actor} size='30px' />
         <Text size='small'>{audit.actor.name}</Text>
       </Box>
       <Box width='25%'>

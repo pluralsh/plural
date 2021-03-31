@@ -8,7 +8,6 @@ import Avatar from './Avatar'
 import { wipeToken } from '../../helpers/authentication'
 import { Logout, StatusCritical, Checkmark, User, Lock, Install, Network, Robot } from 'grommet-icons'
 import Installations from '../repos/Installations'
-import Webhooks from './Webhooks'
 import { CurrentUserContext } from '../login/CurrentUser'
 import { Tokens } from './Tokens'
 
@@ -125,7 +124,6 @@ export default function EditUser() {
           <EditSelect edit='User Attributes' icon={<User size='small' />} />
           <EditSelect edit='Password' icon={<Lock size='small' />} />
           <EditSelect edit='Installations' icon={<Install size='small' />} />
-          <EditSelect edit='Webhooks' icon={<Network size='small' />} />
           <EditSelect edit='Access Tokens' icon={<Robot size='small' />} />
         </Box>
         <Box width='75%'>
@@ -175,9 +173,6 @@ export default function EditUser() {
           </EditContent>
           <EditContent edit='Installations'>
             <Installations edit />
-          </EditContent>
-          <EditContent edit='Webhooks'>
-            <Webhooks />
           </EditContent>
           <EditContent edit='Access Tokens'>
             <Tokens />

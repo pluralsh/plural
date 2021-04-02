@@ -10,10 +10,21 @@ defmodule Core.Schema.TerraformInstallation do
     timestamps()
   end
 
+  def with_auto_upgrade(query \\ __MODULE__, tags) do
+    tags = Enum.map(tags, & &1.tag)
+    from(ti in query,
+      join: inst in assoc(ti, :installation),
+      where: inst.auto_upgrade and inst.track_tag in ^tags)
+  end
+
+  def ignore_version(query \\ __MODULE__, version_id) do
+    from(ti in query, where: ti.version_id != ^version_id)
+  end
+
   def for_repo(query \\ __MODULE__, repo_id) do
     from(ti in query,
-      join: c in assoc(ti, :terraform), as: :terraform,
-      where: c.repository_id == ^repo_id)
+      join: t in assoc(ti, :terraform), as: :terraform,
+      where: t.repository_id == ^repo_id)
   end
 
   def for_repo_name(query \\ __MODULE__, repo_name) do
@@ -45,6 +56,15 @@ defmodule Core.Schema.TerraformInstallation do
         on: inst.id == ti.installation_id and c.repository_id == inst.repository_id,
       where: inst.user_id == ^user_id
     )
+  end
+
+  def ordered(query \\ __MODULE__, order \\ [asc: :id]) do
+    from(ti in query, order_by: ^order)
+  end
+
+
+  def preload(query \\ __MODULE__, preloads) do
+    from(ti in query, preload: ^preloads)
   end
 
   @valid ~w(installation_id terraform_id version_id)a

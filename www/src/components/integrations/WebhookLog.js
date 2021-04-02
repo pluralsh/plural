@@ -47,8 +47,9 @@ export function WebhookLog({log, next}) {
 
   return (
     <Box flex={false} fill='horizontal'>
-      <Box flex={false} pad='small' fill='horizontal' direction='row' align='center' onClick={() => setOpen(!open)} hoverIndicator='light-3'
-        border={next ? {side: 'bottom', color: 'light-5'} : null}>
+      <Box flex={false} pad='small' fill='horizontal' direction='row' align='center' 
+          onClick={() => setOpen(!open)} hoverIndicator='light-3' focusIndicator={false}
+          border={next ? {side: 'bottom', color: 'light-5'} : null}>
         <Box fill='horizontal' direction='row' align='center' gap='xsmall'>
           <Text size='small'>Response {log.status}</Text>
           <Text size='small' color='dark-3'>{dateFormat(moment(log.insertedAt))}</Text>
@@ -56,7 +57,7 @@ export function WebhookLog({log, next}) {
         <WebhookLogStatus state={log.state} />
       </Box>
       <Collapsible open={open}>
-        <Box pad='small'>
+        <Box pad='xsmall'>
           <WebhookResponse log={log} />
         </Box>
       </Collapsible>

@@ -9,7 +9,7 @@ defimpl Core.PubSub.Fanout, for: Any do
 end
 
 defimpl Core.PubSub.Fanout, for: [Core.PubSub.VersionCreated, Core.PubSub.VersionUpdated] do
-  alias Core.Schema.{ChartInstallation}
+  alias Core.Schema.{ChartInstallation, TerraformInstallation}
   require Logger
 
   @doc """
@@ -19,13 +19,10 @@ defimpl Core.PubSub.Fanout, for: [Core.PubSub.VersionCreated, Core.PubSub.Versio
   Pushes the whole process through flow for parallelism.  There's no
   checkpointing or persistence, so this must be considered best-effort.
   """
-  def fanout(%{item: version}) do
-    version = Core.Repo.preload(version, [:chart, :tags])
-    ChartInstallation.for_chart(version.chart_id)
-    |> ChartInstallation.with_auto_upgrade(version.tags)
-    |> ChartInstallation.ignore_version(version.id)
-    |> ChartInstallation.preload([installation: [:repository, user: [:webhooks, :queue]]])
-    |> ChartInstallation.ordered()
+  def fanout(%{item: %{chart_id: id} = version}) when is_binary(id) do
+    version = Core.Repo.preload(version, [:chart, :terraform, :tags])
+
+    stream_installations(version)
     |> Core.Repo.stream(method: :keyset)
     |> Flow.from_enumerable(stages: 5, max_demand: 20)
     |> Flow.map(&process(&1, version))
@@ -39,23 +36,42 @@ defimpl Core.PubSub.Fanout, for: [Core.PubSub.VersionCreated, Core.PubSub.Versio
     |> Enum.count()
   end
 
-  defp process(%ChartInstallation{} = inst, version) do
+  def stream_installations(%{chart_id: id} = version) when is_binary(id) do
+    ChartInstallation.for_chart(id)
+    |> ChartInstallation.with_auto_upgrade(version.tags)
+    |> ChartInstallation.ignore_version(version.id)
+    |> ChartInstallation.preload(installation: [:repository, user: [:queue]])
+    |> ChartInstallation.ordered()
+  end
+
+  def stream_installatinos(%{terraform_id: id} = version) when is_binary(id) do
+    TerraformInstallation.for_terraform(id)
+    |> TerraformInstallation.with_auto_upgrade(version.tags)
+    |> TerraformInstallation.ignore_version(version.id)
+    |> TerraformInstallation.preload(installation: [:repository, user: [:queue]])
+    |> TerraformInstallation.ordered()
+  end
+
+  defp process(%{} = inst, version) do
     inst
-    |> ChartInstallation.changeset(%{version_id: version.id})
+    |> Ecto.Changeset.change(%{version_id: version.id})
     |> Core.Repo.update()
   end
 
   defp create_upgrade(
-    %ChartInstallation{installation: %{user: user, repository: repo}} = inst,
+    %{installation: %{user: user, repository: repo}} = inst,
     %{version: version, chart: %{name: chart}}
   ) do
     {:ok, _} = Core.Services.Upgrades.create_upgrade(%{
       repository_id: repo.id,
-      message: "Upgraded #{chart} to #{version}"
+      message: "Upgraded #{type(inst)} #{chart} to #{version}"
     }, user)
 
     inst
   end
+
+  defp type(%ChartInstallation{}), do: "chart"
+  defp type(_), do: "terraform module"
 end
 
 defimpl Core.PubSub.Fanout, for: Core.PubSub.DockerNotification do

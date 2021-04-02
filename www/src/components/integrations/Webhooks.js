@@ -13,7 +13,7 @@ function Webhook({webhook}) {
   let hist = useHistory()
   return (
     <Box flex={false} fill='horizontal' hoverIndicator='light-2' onClick={() => hist.push(`/webhooks/${webhook.id}`)} 
-         pad='small' gap='small' border={{side: 'bottom', color: 'light-5'}}> 
+         pad='small' gap='small' border={{side: 'bottom', color: 'light-5'}} focusIndicator={false}> 
       <Box direction='row' align='center' gap='small'>
         <Text size='small' weight={500}>{webhook.name}</Text>
         <Text size='small' color='dark-3'>{webhook.url}</Text>

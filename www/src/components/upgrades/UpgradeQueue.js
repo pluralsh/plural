@@ -65,7 +65,7 @@ export function UpgradeQueue() {
         <Box fill='horizontal'>
           <Text size='small' weight={500}>Upgrade Queue</Text>
         </Box>
-        <Box flex={false} pad='xsmall' round='xsmall' onClick={refetch} hoverIndicator='light-3' focusIndicator={false}>
+        <Box flex={false} pad='xsmall' round='xsmall' onClick={() => refetch()} hoverIndicator='light-3' focusIndicator={false}>
           <Refresh size='small' />
         </Box>
       </Box>

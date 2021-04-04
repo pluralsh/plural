@@ -2,14 +2,11 @@ dependencies:
 - name: aws-bootstrap
   repo: bootstrap
   type: terraform
-- name: kube
-  repo: bootstrap
-  type: terraform
 
 providers:
 - aws
 description: forge aws setup
-version: 0.1.0
+version: 0.1.1
 
 wirings:
   terraform: {}

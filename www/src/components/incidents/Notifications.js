@@ -58,7 +58,7 @@ export function useNotificationSubscription() {
         updateCache(client, {
           query: NOTIFICATIONS_Q,
           variables: {incidentId: id},
-          update: (prev) => appendConnection(prev, notification, 'Notification', 'notifications')
+          update: (prev) => appendConnection(prev, notification, 'notifications')
         })
       } catch { }
 
@@ -66,7 +66,7 @@ export function useNotificationSubscription() {
         updateCache(client, {
           query: NOTIFICATIONS_Q,
           variables: {},
-          update: (prev) => appendConnection(prev, notification, 'Notification', 'notifications')
+          update: (prev) => appendConnection(prev, notification, 'notifications')
         })
       } catch { }
 

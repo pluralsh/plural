@@ -252,7 +252,7 @@ export function MessageInput() {
       variables: {id: incidentId},
       update: ({incident, ...prev}) => ({
         ...prev,
-        incident: appendConnection(incident, createMessage, 'Message', 'messages') 
+        incident: appendConnection(incident, createMessage, 'messages') 
       })
     }),
     onCompleted: () => {

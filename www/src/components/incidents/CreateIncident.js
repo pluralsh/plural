@@ -113,7 +113,7 @@ export function CreateIncident({onCompleted}) {
     update: (cache, {data: { createIncident }}) => updateCache(cache, {
       query: INCIDENTS_Q,
       variables: {q: null, filters, order, sort},
-      update: (prev) => appendConnection(prev, createIncident, 'Incident', 'incidents')
+      update: (prev) => appendConnection(prev, createIncident, 'incidents')
     }),
     onCompleted
   })

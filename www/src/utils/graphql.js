@@ -27,12 +27,12 @@ export function deepUpdate(prev, path, update) {
   return {...prev, [key]: deepUpdate(prev, path.slice(1), update)}
 }
 
-export function appendConnection(prev, next, type, key) {
+export function appendConnection(prev, next, key) {
   const {edges, pageInfo} = prev[key]
   if (edges.find(({node: {id}}) => id === next.id)) return prev
 
   return {...prev, [key]: {
-      ...prev[key],  pageInfo, edges: [{__typename: `${type}Edge`, node: next}, ...edges]
+      ...prev[key],  pageInfo, edges: [{__typename: `${next.__typename}Edge`, node: next}, ...edges]
     }
   }
 }

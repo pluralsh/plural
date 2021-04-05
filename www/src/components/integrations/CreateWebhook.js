@@ -44,7 +44,7 @@ export function CreateWebhook({cancel}) {
     variables: {attributes}, 
     update: (cache, { data: { createIntegrationWebhook }}) => updateCache(cache, {
       query: WEBHOOKS_Q,
-      update: (prev) => appendConnection(prev, createIntegrationWebhook, 'IntegrationWebhook', 'integrationWebhooks')
+      update: (prev) => appendConnection(prev, createIntegrationWebhook, 'integrationWebhooks')
     }),
     onCompleted: cancel
   })

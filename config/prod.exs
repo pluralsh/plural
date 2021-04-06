@@ -19,7 +19,7 @@ config :goth, json: {:system, "GCP_CREDENTIALS"}
 
 config :core, :consumers, [
   Core.PubSub.Consumers.Fanout,
-  Core.PubSub.Consumers.Webhook,
+  Core.PubSub.Consumers.Upgrade,
   Core.PubSub.Consumers.Rtc,
   Core.PubSub.Consumers.Notification,
   Core.PubSub.Consumers.IntegrationWebhook,

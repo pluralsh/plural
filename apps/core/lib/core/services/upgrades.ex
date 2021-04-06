@@ -11,7 +11,10 @@ defmodule Core.Services.Upgrades do
 
   def create_upgrade(params, %User{} = user) do
     %{queue: queue} = Core.Repo.preload(user, [:queue])
+    create_upgrade(params, queue)
+  end
 
+  def create_upgrade(params, %UpgradeQueue{} = queue) do
     %Upgrade{queue_id: queue.id}
     |> Upgrade.changeset(params)
     |> Core.Repo.insert()

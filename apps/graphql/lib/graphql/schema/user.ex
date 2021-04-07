@@ -7,6 +7,7 @@ defmodule GraphQl.Schema.User do
   }
 
   ecto_enum :notification_type, Core.Schema.Notification.Type
+  ecto_enum :reset_token_type, Core.Schema.ResetToken.Type
 
   input_object :user_attributes do
     field :name,     :string
@@ -34,6 +35,11 @@ defmodule GraphQl.Schema.User do
 
   input_object :webhook_attributes do
     field :url, non_null(:string)
+  end
+
+  input_object :reset_token_attributes do
+    field :type,  non_null(:reset_token_type)
+    field :email, :string
   end
 
   object :user do
@@ -120,6 +126,16 @@ defmodule GraphQl.Schema.User do
     field :headers,     :map
   end
 
+  object :reset_token do
+    field :id,          non_null(:id)
+    field :external_id, non_null(:id)
+    field :type,        non_null(:reset_token_type)
+    field :user,        non_null(:user), resolve: dataloader(User)
+    field :email,       non_null(:string)
+
+    timestamps()
+  end
+
   connection node_type: :user
   connection node_type: :publisher
   connection node_type: :webhook
@@ -129,6 +145,11 @@ defmodule GraphQl.Schema.User do
     field :me, :user do
       middleware GraphQl.Middleware.Authenticated, :external
       resolve fn _, %{context: %{current_user: user}} -> {:ok, user} end
+    end
+
+    field :reset_token, :reset_token do
+      arg :id, non_null(:id)
+      resolve &User.resolve_reset_token/2
     end
 
     connection field :tokens, node_type: :persisted_token do
@@ -186,6 +207,11 @@ defmodule GraphQl.Schema.User do
         {:ok, token, _} = Core.Guardian.encode_and_sign(user, %{"external" => true})
         {:ok, token}
       end
+    end
+
+    field :create_reset_token, :reset_token do
+      arg :attributes, non_null(:reset_token_attributes)
+      resolve safe_resolver(&User.create_reset_token/2)
     end
 
     field :create_token, :persisted_token do

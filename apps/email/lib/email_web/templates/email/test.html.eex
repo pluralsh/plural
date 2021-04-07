@@ -1,0 +1,3 @@
+<p>
+  <div>This is just a test email for <%= @user.email %></div>
+</p>

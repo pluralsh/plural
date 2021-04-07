@@ -49,7 +49,8 @@ defmodule Api.MixProject do
       {:prometheus_plugs, "~> 1.1.1"},
 
       {:core, in_umbrella: true},
-      {:graphql, in_umbrella: true}
+      {:graphql, in_umbrella: true},
+      {:email, in_umbrella: true}
     ]
   end
 

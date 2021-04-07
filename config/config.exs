@@ -26,6 +26,16 @@ config :rtc, RtcWeb.Endpoint,
   live_view: [signing_salt: "lFfrgo20"],
   server: true
 
+config :email, EmailWeb.Endpoint,
+  url: [host: "localhost"],
+  secret_key_base: "bzUBoQlghS+mt8b6EDUZkJ5LuZaJ1I8lJnnJX2PHpDrunEF7pk6iXIEhB4v2QZbe",
+  render_errors: [view: EmailWeb.ErrorView, accepts: ~w(html json), layout: false],
+  pubsub_server: Email.PubSub,
+  live_view: [signing_salt: "t06Iz3Dz"]
+
+config :email,
+  host: "example.com",
+  consumers: []
 
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",

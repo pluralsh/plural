@@ -191,4 +191,18 @@ defmodule GraphQl.UserQueriesTest do
              |> ids_equal(users)
     end
   end
+
+  describe "resetToken" do
+    test "it can fetch a reset token by external id" do
+      token = insert(:reset_token)
+
+      {:ok, %{data: %{"resetToken" => found}}} = run_query("""
+        query Reset($id: ID!) {
+          resetToken(id: $id) { id }
+        }
+      """, %{"id" => token.external_id})
+
+      assert found["id"] == token.id
+    end
+  end
 end

@@ -2,12 +2,14 @@ defmodule Core.Services.Users do
   use Core.Services.Base
   import Core.Policies.User
   alias Core.Services.{Accounts, Upgrades}
+  alias Core.PubSub
   alias Core.Schema.{
     PersistedToken,
     User,
     Publisher,
     Webhook,
     Notification,
+    ResetToken,
   }
 
   @spec get_user(binary) :: User.t | nil
@@ -41,6 +43,9 @@ defmodule Core.Services.Users do
 
   @spec get_webhook!(binary) :: Webhook.t
   def get_webhook!(id), do: Core.Repo.get!(Webhook, id)
+
+  @spec get_reset_token(binary) :: ResetToken.t
+  def get_reset_token(ext_id), do: Core.Repo.get_by!(ResetToken, external_id: ext_id)
 
   @doc """
   Validates the given password using Argon2
@@ -147,6 +152,27 @@ defmodule Core.Services.Users do
   end
 
   @doc """
+  Creates a reset token for a user which can be used for things like password resets
+  """
+  @spec create_reset_token(map) :: {:ok, ResetToken.t} | {:error, term}
+  def create_reset_token(attrs) do
+    start_transaction()
+    |> add_operation(:token, fn _ ->
+      %ResetToken{}
+      |> ResetToken.changeset(attrs)
+      |> Core.Repo.insert()
+    end)
+    |> add_operation(:valid, fn %{token: token} ->
+      case Core.Repo.preload(token, [:user]) do
+        %{user: %User{}} = token -> {:ok, token}
+        _ -> {:error, :not_found}
+      end
+    end)
+    |> execute(extract: :valid)
+    |> notify(:create)
+  end
+
+  @doc """
   Makes a signed http POST to the given webhook url, with the payload:
 
   ```
@@ -173,4 +199,8 @@ defmodule Core.Services.Users do
     :crypto.hmac(:sha, secret, payload)
     |> Base.encode16(case: :lower)
   end
+
+  def notify({:ok, %ResetToken{} = t}, :create),
+    do: handle_notify(PubSub.ResetTokenCreated, t)
+  def notify(error, _), do: error
 end

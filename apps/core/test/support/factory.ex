@@ -346,4 +346,12 @@ defmodule Core.Factory do
       repository: build(:repository)
     }
   end
+
+  def reset_token_factory do
+    %Schema.ResetToken{
+      user: build(:user),
+      type: :password,
+      external_id: sequence(:reset_token, &"tok_#{&1}")
+    }
+  end
 end

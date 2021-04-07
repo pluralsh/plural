@@ -13,6 +13,11 @@ config :rtc, RtcWeb.Endpoint,
   cache_static_manifest: "priv/static/cache_manifest.json",
   server: true
 
+config :email, EmailWeb.Endpoint,
+  url: [port: 4001],
+  cache_static_manifest: "priv/static/cache_manifest.json",
+  server: false
+
 config :logger, level: :info
 
 config :goth, json: {:system, "GCP_CREDENTIALS"}
@@ -24,6 +29,10 @@ config :core, :consumers, [
   Core.PubSub.Consumers.Notification,
   Core.PubSub.Consumers.IntegrationWebhook,
   Core.PubSub.Consumers.Audits
+]
+
+config :email, :consumers, [
+  Email.PubSub.Consumer
 ]
 
 config :core, Core.Email.Mailer,

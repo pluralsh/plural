@@ -38,8 +38,10 @@ release :forge do
     :runtime_tools,
     api: :permanent,
     core: :permanent,
+    email: :permanent,
     graphql: :load
   ]
+
   set commands: [
     migrate: "rel/commands/migrate.sh",
     drop: "rel/commands/drop.sh"

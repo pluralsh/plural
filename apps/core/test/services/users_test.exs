@@ -1,6 +1,7 @@
 defmodule Core.Services.UsersTest do
   use Core.SchemaCase, async: true
   alias Core.Services.Users
+  alias Core.PubSub
 
   describe "#create_user" do
     test "Users can be created" do
@@ -122,6 +123,31 @@ defmodule Core.Services.UsersTest do
       assert upserted.secret == webhook.secret
       assert upserted.url == webhook.url
       assert upserted.user_id == user.id
+    end
+  end
+
+  describe "#create_reset_token/1" do
+    test "it can create a pwd reset token" do
+      user = insert(:user)
+
+      {:ok, reset} = Users.create_reset_token(%{
+        email: user.email,
+        type: :password
+      })
+
+      assert reset.user.id == user.id
+      assert reset.type == :password
+      assert reset.external_id
+
+      assert_receive {:event, %PubSub.ResetTokenCreated{item: ^reset}}
+    end
+
+    test "it will fail on invalid emails" do
+
+      {:error, :not_found} = Users.create_reset_token(%{
+        email: "invalid@email.com",
+        type: :password
+      })
     end
   end
 end

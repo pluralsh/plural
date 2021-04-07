@@ -35,7 +35,7 @@ defmodule GraphQl.Resolvers.User do
   def resolve_publisher(_, %{context: %{current_user: user}}),
     do: {:ok, Users.get_publisher_by_owner(user.id)}
 
-  def resolve_reset_token(%{id: id}, _), do: {:ok, Users.get_reset_token(id)}
+  def resolve_reset_token(%{id: id}, _), do: {:ok, Users.get_reset_token!(id)}
 
   def list_users(args, %{context: %{current_user: %{account_id: id}}}) do
     User.ordered()
@@ -143,7 +143,15 @@ defmodule GraphQl.Resolvers.User do
     {:ok, count}
   end
 
-  def create_reset_token(%{attributes: attrs}, _), do: Users.create_reset_token(attrs)
+  def create_reset_token(%{attributes: attrs}, _) do
+    with {:ok, _} <- Users.create_reset_token(attrs),
+      do: {:ok, true}
+  end
+
+  def realize_reset_token(%{attributes: attrs, id: id}, _) do
+    with {:ok, _} <- Users.realize_reset_token(id, attrs),
+      do: {:ok, true}
+  end
 
   @colors ~w(#6b5b95 #feb236 #d64161 #ff7b25 #103A50 #CDCCC2 #FDC401 #8E5B3C #020001 #2F415B)
 

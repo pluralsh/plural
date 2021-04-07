@@ -7,6 +7,7 @@ defmodule Email.PubSub.Consumer do
   def handle_event(event) do
     with %Bamboo.Email{} = email <- Email.Deliverable.email(event) do
       Core.Email.Mailer.deliver_now(email)
+      |> IO.inspect()
     end
   end
 end

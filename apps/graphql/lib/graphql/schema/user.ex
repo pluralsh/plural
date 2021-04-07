@@ -42,6 +42,10 @@ defmodule GraphQl.Schema.User do
     field :email, :string
   end
 
+  input_object :reset_token_realization do
+    field :password, :string
+  end
+
   object :user do
     field :id,          non_null(:id)
     field :name,        non_null(:string)
@@ -209,9 +213,16 @@ defmodule GraphQl.Schema.User do
       end
     end
 
-    field :create_reset_token, :reset_token do
+    field :create_reset_token, :boolean do
       arg :attributes, non_null(:reset_token_attributes)
       resolve safe_resolver(&User.create_reset_token/2)
+    end
+
+    field :realize_reset_token, :boolean do
+      arg :id, non_null(:id)
+      arg :attributes, non_null(:reset_token_realization)
+
+      resolve safe_resolver(&User.realize_reset_token/2)
     end
 
     field :create_token, :persisted_token do

@@ -150,4 +150,16 @@ defmodule Core.Services.UsersTest do
       })
     end
   end
+
+  describe "#realize_reset_token/2" do
+    test "it can realize a reset token" do
+      token = insert(:reset_token)
+
+      {:ok, user} = Users.realize_reset_token(token, %{password: "a long password"})
+
+      assert user.id == token.user.id
+
+      {:ok, _} = Users.login_user(user.email, "a long password")
+    end
+  end
 end

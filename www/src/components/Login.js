@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useMutation } from 'react-apollo'
 import gql from 'graphql-tag'
-import { Box, Form, Keyboard, FormField } from 'grommet'
+import { Box, Form, Keyboard, FormField, Anchor, Text } from 'grommet'
 import { Error, Button } from 'forge-core'
 import {fetchToken, setToken} from '../helpers/authentication'
 import { Tab, TabContent, Tabs } from './utils/Tabs'
+import { Checkmark, StatusCritical } from 'grommet-icons'
 
 const SIGNUP_MUTATION = gql`
   mutation Signup($email: String!, $password: String!, $name: String!) {
@@ -27,6 +28,22 @@ const State = {
   SIGNUP: 'sign up'
 }
 
+export function disableState(password, confirm) {
+  if (password.length === 0) return {disabled: true, reason: 'enter a password'}
+  if (password.length < 10) return {disabled: true, reason: 'password is too short'}
+  if (password !== confirm) return {disabled: true, reason: 'passwords do not match'}
+  return {disabled: false, reason: 'passwords match!'}
+}
+
+export function PasswordStatus({disabled, reason}) {
+  return (
+    <Box direction='row' fill='horizontal' align='center' gap='xsmall'>
+      {disabled ? <StatusCritical color='error' size='12px' /> : <Checkmark color='good' size='12px' />}
+      <Text size='small' color={disabled ? 'error' : 'good'}>{reason}</Text>
+    </Box>
+  )
+}
+
 export default function Login(props) {
   const [tab, setTab] = useState(State.LOGIN)
   const [state, setState] = useState({
@@ -34,6 +51,7 @@ export default function Login(props) {
     password: '',
     name: '',
   })
+  const [confirm, setConfirm] = useState('')
   const login = tab === State.LOGIN
   const {email, name, password} = state
 
@@ -51,8 +69,10 @@ export default function Login(props) {
     }
   }, [])
 
+  const {disabled, reason} = disableState(password, confirm)
+
   return (
-    <Box direction="column" align="center" justify="center" height="100vh" background='light-1'>
+    <Box align="center" justify="center" height="100vh" background='light-1'>
       <Box width="60%" pad='medium'>
         <Tabs>
           <Tab name={State.LOGIN} setTab={setTab} selected={tab} />
@@ -87,8 +107,18 @@ export default function Login(props) {
                     onChange={e => setState({...state, password: e.target.value })}
                     placeholder="battery horse fire stapler"
                   />
+                  {!login && (
+                    <FormField
+                      value={confirm}
+                      label="Confirm Password"
+                      name="confirm"
+                      onChange={({target: {value}}) => setConfirm(value)}
+                      placeholder="your name"
+                    />)}
                 </Box>
-                <Box direction="row" align="center" justify='end'>
+                <Box direction="row" align="center" justify='end' gap='small'>
+                  {!login && <PasswordStatus disabled={disabled} reason={reason} />}
+                  {login && <Anchor href='/password-reset' color='dark-3'>forgot your password?</Anchor>}
                   <Button
                     onClick={mutation}
                     loading={loading}

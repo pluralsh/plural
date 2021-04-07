@@ -237,17 +237,25 @@ defmodule GraphQl.UserMutationTest do
 
       {:ok, %{data: %{"createResetToken" => token}}} = run_query("""
         mutation Create($attrs: ResetTokenAttributes!) {
-          createResetToken(attributes: $attrs) {
-            id
-            type
-            user { id }
-          }
+          createResetToken(attributes: $attrs)
         }
       """, %{"attrs" => %{"email" => user.email, "type" => "PASSWORD"}})
 
-      assert token["id"]
-      assert token["user"]["id"] == user.id
-      assert token["type"] == "PASSWORD"
+      assert token
+    end
+  end
+
+  describe "realizeResetToken" do
+    test "it will realize a pwd reset token" do
+      token = insert(:reset_token)
+
+      {:ok, %{data: %{"realizeResetToken" => res}}} = run_query("""
+        mutation Realize($id: ID!, $attrs: ResetTokenRealization!) {
+          realizeResetToken(id: $id, attributes: $attrs)
+        }
+      """, %{"id" => token.external_id, "attrs" => %{"password" => "a long password"}})
+
+      assert res
     end
   end
 end

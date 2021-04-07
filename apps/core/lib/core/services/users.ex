@@ -44,8 +44,8 @@ defmodule Core.Services.Users do
   @spec get_webhook!(binary) :: Webhook.t
   def get_webhook!(id), do: Core.Repo.get!(Webhook, id)
 
-  @spec get_reset_token(binary) :: ResetToken.t
-  def get_reset_token(ext_id), do: Core.Repo.get_by!(ResetToken, external_id: ext_id)
+  @spec get_reset_token!(binary) :: ResetToken.t
+  def get_reset_token!(ext_id), do: Core.Repo.get_by!(ResetToken, external_id: ext_id)
 
   @doc """
   Validates the given password using Argon2
@@ -170,6 +170,22 @@ defmodule Core.Services.Users do
     end)
     |> execute(extract: :valid)
     |> notify(:create)
+  end
+
+  @doc """
+  Performs whatever action the reset token is meant to represent
+  """
+  @spec realize_reset_token(ResetToken.t, map) :: {:ok, User.t} | {:error, term}
+  def realize_reset_token(%ResetToken{type: :password, user: %User{} = user}, %{password: pwd}) do
+    user
+    |> User.changeset(%{password: pwd})
+    |> Core.Repo.update()
+  end
+
+  def realize_reset_token(id, args) when is_binary(id) do
+    get_reset_token!(id)
+    |> Core.Repo.preload([:user])
+    |> realize_reset_token(args)
   end
 
   @doc """

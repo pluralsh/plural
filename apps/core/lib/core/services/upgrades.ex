@@ -17,14 +17,27 @@ defmodule Core.Services.Upgrades do
   def create_queue(%{name: name} = attrs, %User{id: user_id} = user) do
     queue = get_queue(user_id, name)
 
-    case queue do
-      %UpgradeQueue{} = q -> q
-      nil -> %UpgradeQueue{user_id: user.id}
-    end
-    |> UpgradeQueue.changeset(attrs)
-    |> Core.Repo.insert_or_update()
+    start_transaction()
+    |> add_operation(:queue, fn _ ->
+      case queue do
+        %UpgradeQueue{} = q -> q
+        nil -> %UpgradeQueue{user_id: user.id}
+      end
+      |> UpgradeQueue.changeset(attrs)
+      |> Core.Repo.insert_or_update()
+    end)
+    |> add_operation(:user, fn %{queue: q} ->
+      update_default_queue(q, user)
+    end)
+    |> execute(extract: :queue)
     |> notify(:upsert, queue)
   end
+
+  def update_default_queue(%UpgradeQueue{id: id}, %User{default_queue_id: nil} = user) do
+    Ecto.Changeset.change(user, %{default_queue_id: id})
+    |> Core.Repo.update()
+  end
+  def update_default_queue(_, %User{} = user), do: {:ok, user}
 
   def create_upgrade(params, %User{} = user) do
     %{queue: queue} = Core.Repo.preload(user, [:queue])
@@ -39,12 +52,19 @@ defmodule Core.Services.Upgrades do
     |> notify(:create)
   end
 
-  def next(%UpgradeQueue{acked: acked}) do
+  def next(%UpgradeQueue{id: id, acked: acked}) do
     Upgrade.after_seq(acked)
+    |> Upgrade.for_queue(id)
     |> Upgrade.ordered()
     |> Upgrade.limit(1)
     |> Core.Repo.one()
     |> Core.Repo.preload([:repository])
+  end
+
+  def ping(%UpgradeQueue{} = q) do
+    Ecto.Changeset.change(q, %{pinged_at: Timex.now()})
+    |> Core.Repo.update()
+    |> notify(:update)
   end
 
   def ack(id, %UpgradeQueue{acked: nil} = q) do

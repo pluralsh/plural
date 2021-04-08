@@ -12,6 +12,8 @@ defmodule Core.Services.UpgradesTest do
       assert queue.name == "cluster"
       assert queue.user_id == user.id
 
+      assert refetch(user).default_queue_id == queue.id
+
       assert_receive {:event, %PubSub.UpgradeQueueCreated{item: ^queue}}
     end
 
@@ -33,17 +35,31 @@ defmodule Core.Services.UpgradesTest do
     test "it'll create an upgrade for a repo" do
       queue = insert(:upgrade_queue)
       repo  = insert(:repository)
+      {:ok, user} = Upgrades.update_default_queue(queue, queue.user)
 
       {:ok, upgrade} = Upgrades.create_upgrade(%{
         repository_id: repo.id,
         message: "hey an upgrade"
-      }, queue.user)
+      }, user)
 
       assert upgrade.repository_id == repo.id
       assert upgrade.queue_id == queue.id
       assert upgrade.message == "hey an upgrade"
 
       assert_receive {:event, %PubSub.UpgradeCreated{item: ^upgrade}}
+    end
+  end
+
+  describe "#ping/2" do
+    test "it will set the pinged_at timestamp" do
+      queue = insert(:upgrade_queue)
+
+      {:ok, q} = Upgrades.ping(queue)
+
+      assert q.id == queue.id
+      assert q.pinged_at
+
+      assert_receive {:event, %PubSub.UpgradeQueueUpdated{item: ^q}}
     end
   end
 

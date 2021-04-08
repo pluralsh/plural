@@ -2,9 +2,18 @@ import gql from 'graphql-tag'
 import { PageInfo } from '../../models/misc'
 import { UpgradeFragment, UpgradeQueueFragment } from '../../models/upgrades'
 
+export const QUEUES = gql`
+  query {
+    upgradeQueues {
+      ...UpgradeQueueFragment
+    }
+  }
+  ${UpgradeQueueFragment}
+`
+
 export const QUEUE = gql`
-  query Queue($cursor: String) {
-    upgradeQueue {
+  query Queue($id: ID!, $cursor: String) {
+    upgradeQueue(id: $id) {
       ...UpgradeQueueFragment
       upgrades(after: $cursor, first: 50) {
         pageInfo { ...PageInfo }
@@ -18,8 +27,8 @@ export const QUEUE = gql`
 `
 
 export const UPGRADE_SUB = gql`
-  subscription {
-    upgrade { ...UpgradeFragment }
+  subscription Upgrades($id: ID!) {
+    upgrade(id: $id) { ...UpgradeFragment }
   }
   ${UpgradeFragment}
 `

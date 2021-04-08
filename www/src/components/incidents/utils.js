@@ -14,10 +14,10 @@ export function Attribute({name, children, size}) {
   )
 }
 
-export function Attributes({children}) {
+export function Attributes({children, ...props}) {
   return (
-    <Box border={{color: 'light-5'}} round='xsmall'>
-      <Box gap='0px' border={{side: 'between', color: 'light-5'}}>
+    <Box border={{color: 'light-5'}} round='xsmall' {...props}>
+      <Box fill='horizontal' gap='0px' border={{side: 'between', color: 'light-5'}}>
         {children}
       </Box>
     </Box>

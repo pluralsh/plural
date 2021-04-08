@@ -29,9 +29,9 @@ defmodule Core.Schema.User do
     embeds_one :address, Address, on_replace: :update
 
     belongs_to :account, Account
+    belongs_to :queue, UpgradeQueue, foreign_key: :default_queue_id
 
     has_one :publisher,  Publisher, foreign_key: :owner_id
-    has_one :queue, UpgradeQueue
 
     has_many :webhooks,  Webhook
     has_many :role_bindings, RoleBinding

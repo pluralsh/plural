@@ -3,11 +3,12 @@ defmodule Core.Schema.UpgradeQueue do
   alias Core.Schema.User
 
   schema "upgrade_queues" do
-    field :acked,    :binary_id
-    field :name,     :string
-    field :domain,   :string
-    field :git,      :string
-    field :provider, Core.Schema.Recipe.Provider
+    field :acked,     :binary_id
+    field :name,      :string
+    field :domain,    :string
+    field :git,       :string
+    field :provider,  Core.Schema.Recipe.Provider
+    field :pinged_at, :utc_datetime_usec
 
     belongs_to :user, User
 

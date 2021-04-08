@@ -47,11 +47,12 @@ defmodule GraphQl.Schema.User do
   end
 
   object :user do
-    field :id,          non_null(:id)
-    field :name,        non_null(:string)
-    field :email,       non_null(:string)
-    field :phone,       :string
-    field :address,     :address
+    field :id,               non_null(:id)
+    field :name,             non_null(:string)
+    field :email,            non_null(:string)
+    field :phone,            :string
+    field :address,          :address
+    field :default_queue_id, :id
 
     field :publisher, :publisher, resolve: dataloader(User)
     field :account,   :account, resolve: dataloader(Account)

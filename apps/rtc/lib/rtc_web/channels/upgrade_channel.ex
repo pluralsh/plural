@@ -4,6 +4,8 @@ defmodule RtcWeb.UpgradeChannel do
   alias Core.Schema.{Upgrade}
   alias Core.Services.Upgrades
 
+  @ping_interval 60 * 1000
+
   intercept ["new_upgrade"]
 
   def join("queues:" <> id, _params, socket) do
@@ -20,6 +22,8 @@ defmodule RtcWeb.UpgradeChannel do
     user = socket.assigns.user
     case Core.Services.Upgrades.authorize(id, user) do
       {:ok, queue} ->
+        :timer.send_interval(@ping_interval, :ping)
+
         socket =
           assign(socket, :queue, queue)
           |> assign(:user, user)
@@ -42,6 +46,13 @@ defmodule RtcWeb.UpgradeChannel do
       {:noreply, socket}
     else
       _ -> {:stop, {:shutdown, :unauthorized}, socket}
+    end
+  end
+
+  def handle_info(:ping, socket) do
+    case Upgrades.ping(socket.assigns.queue) do
+      {:ok, q} -> {:noreply, assign(socket, :queue, q)}
+      _ -> {:noreply, socket}
     end
   end
 

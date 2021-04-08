@@ -23,9 +23,9 @@ defmodule GraphQl.Resolvers.Upgrade do
   def create_upgrade_queue(%{attributes: attrs}, %{context: %{current_user: user}}),
     do: Upgrades.create_queue(attrs, user)
 
-  def create_upgrade(%{id: id, attributes: attrs}, %{context: %{current_user: user}}) when is_binary(id) do
+  def create_upgrade(%{id: id, attributes: attrs}, %{context: %{queue: q}}) when is_binary(id) do
     Map.put(attrs, :repository_id, id)
-    |> Upgrades.create_upgrade(user)
+    |> Upgrades.create_upgrade(q)
   end
 
   def create_upgrade(%{name: name} = args, context) do

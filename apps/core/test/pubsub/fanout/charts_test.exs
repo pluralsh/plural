@@ -13,9 +13,8 @@ defmodule Core.PubSub.Fanout.ChartsTest do
         )
       end
 
-      for %{installation: %{user: user}} <- auto_upgraded do
+      queues = for %{installation: %{user: user}} <- auto_upgraded do
         insert(:upgrade_queue, user: user)
-        insert(:webhook, user: user)
       end
 
       ignored = insert_list(2, :chart_installation, chart: chart, version: chart_version)
@@ -30,8 +29,7 @@ defmodule Core.PubSub.Fanout.ChartsTest do
       for ignore <- ignored,
         do: assert refetch(ignore).version_id == chart_version.id
 
-      for %{installation: %{user: user}} <- auto_upgraded do
-        %{queue: queue} = Core.Repo.preload(user, [:queue])
+      for queue <- queues do
         assert Core.Schema.Upgrade.for_queue(queue.id) |> Core.Repo.exists?()
       end
     end
@@ -48,9 +46,8 @@ defmodule Core.PubSub.Fanout.ChartsTest do
         )
       end
 
-      for %{installation: %{user: user}} <- auto_upgraded do
+      queues = for %{installation: %{user: user}} <- auto_upgraded do
         insert(:upgrade_queue, user: user)
-        insert(:webhook, user: user)
       end
 
       ignored = insert_list(2, :chart_installation, chart: chart, version: chart_version)
@@ -65,8 +62,7 @@ defmodule Core.PubSub.Fanout.ChartsTest do
       for ignore <- ignored,
         do: assert refetch(ignore).version_id == chart_version.id
 
-      for %{installation: %{user: user}} <- auto_upgraded do
-        %{queue: queue} = Core.Repo.preload(user, [:queue])
+      for queue <- queues do
         assert Core.Schema.Upgrade.for_queue(queue.id) |> Core.Repo.exists?()
       end
     end

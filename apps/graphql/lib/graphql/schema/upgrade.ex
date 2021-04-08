@@ -1,5 +1,6 @@
 defmodule GraphQl.Schema.Upgrade do
   use GraphQl.Schema.Base
+  alias GraphQl.Middleware.{Authenticated, UpgradeQueue}
   alias GraphQl.Resolvers.{
     User,
     Upgrade,
@@ -21,12 +22,13 @@ defmodule GraphQl.Schema.Upgrade do
   end
 
   object :upgrade_queue do
-    field :id,       non_null(:id)
-    field :acked,    :id
-    field :name,     :string
-    field :domain,   :string
-    field :git,      :string
-    field :provider, :provider
+    field :id,        non_null(:id)
+    field :acked,     :id
+    field :name,      :string
+    field :domain,    :string
+    field :git,       :string
+    field :provider,  :provider
+    field :pinged_at, :datetime
 
     field :user, non_null(:user), resolve: dataloader(User)
 
@@ -52,10 +54,14 @@ defmodule GraphQl.Schema.Upgrade do
 
   object :upgrade_queries do
     field :upgrade_queues, list_of(:upgrade_queue) do
+      middleware Authenticated
+
       resolve &Upgrade.list_queues/2
     end
 
     field :upgrade_queue, :upgrade_queue do
+      middleware Authenticated
+
       arg :id, :id
       resolve &Upgrade.resolve_queue/2
     end
@@ -63,14 +69,20 @@ defmodule GraphQl.Schema.Upgrade do
 
   object :upgrade_mutations do
     field :create_queue, :upgrade_queue do
+      middleware Authenticated
+
       arg :attributes, non_null(:upgrade_queue_attributes)
       resolve &Upgrade.create_upgrade_queue/2
     end
 
     field :create_upgrade, :upgrade do
+      middleware Authenticated
+      middleware UpgradeQueue
+
       arg :id,         :id
       arg :name,       :string
       arg :attributes, non_null(:upgrade_attributes)
+      arg :queue_id,   :id
 
       resolve &Upgrade.create_upgrade/2
     end

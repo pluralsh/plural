@@ -10,7 +10,7 @@ import { ActionInput, ActionTab } from './CreateWebhook'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 import { Close, Edit, Refresh, Trash } from 'grommet-icons'
 
-function Container({title, children, modifier, ...props}) {
+export function Container({title, children, modifier, ...props}) {
   return (
     <Box {...props} border={{color: 'light-4'}}>
       <Box flex={false} fill='horizontal' background='light-2' border={{side: 'bottom', color: 'light-4'}}
@@ -55,7 +55,7 @@ function WebhookLogs({webhook: {logs: {pageInfo, edges}}, fetchMore, refetch}) {
   )
 }
 
-function Attribute({name, children}) {
+export function Attribute({name, children}) {
   return (
     <Box direction='row' align='center' fill='horizontal' pad='small'>
       <Box width='80px' >
@@ -68,26 +68,34 @@ function Attribute({name, children}) {
   )
 }
 
+function Attributes({children}) {
+  return (
+    <Box border={{color: 'light-5'}} round='xsmall'>
+      <Box gap='0px' border={{side: 'between', color: 'light-5'}}>
+        {children}
+      </Box>
+    </Box>
+  )
+}
+
 function WebhookHeader({webhook, setEdit}) {
   return (
     <Container flex={false} title={webhook.name} modifier={<WebhookControls webhook={webhook} setEdit={setEdit} />}>
       <Box flex={false} gap='small' pad='small'>
-        <Box border={{color: 'light-5'}} round='xsmall'>
-          <Box gap='0px' border={{side: 'between', color: 'light-5'}}>
-            <Attribute name='url'>
-              <Text size='small'>{webhook.url}</Text>
-            </Attribute>
-            <Attribute name='secret'>
-              <Copyable noBorder pillText='Copied webhook secret' text={webhook.secret}
-                displayText={
-                  <Text size='small' color='dark-3'>({webhook.secret.substring(0, 9) + "x".repeat(15)})</Text>
-                } />
-            </Attribute>
-            <Box flex={false} pad='small' direction='row' gap='xxsmall' align='center' wrap>
-              {webhook.actions.map((action) => <ActionTab key={action} action={action} />)}
-            </Box>
+        <Attributes>
+          <Attribute name='url'>
+            <Text size='small'>{webhook.url}</Text>
+          </Attribute>
+          <Attribute name='secret'>
+            <Copyable noBorder pillText='Copied webhook secret' text={webhook.secret}
+              displayText={
+                <Text size='small' color='dark-3'>({webhook.secret.substring(0, 9) + "x".repeat(15)})</Text>
+              } />
+          </Attribute>
+          <Box flex={false} pad='small' direction='row' gap='xxsmall' align='center' wrap>
+            {webhook.actions.map((action) => <ActionTab key={action} action={action} />)}
           </Box>
-        </Box>
+        </Attributes>
       </Box>
     </Container>
   )

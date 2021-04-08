@@ -1,9 +1,7 @@
 import React from 'react'
-import { ProviderIcons } from './constants'
+import { DEFAULT_CHART_ICON, ProviderIcons } from './constants'
 
 export function Provider({provider, width}) {
-  const url = ProviderIcons[provider]
-  if (!url) return null
-
-  return <img alt='gcp' width={`${width}px`} height={`${width}px`} src={url} />
+  const url = ProviderIcons[provider] || DEFAULT_CHART_ICON
+  return <img alt={provider} width={`${width}px`} height={`${width}px`} src={url} />
 }

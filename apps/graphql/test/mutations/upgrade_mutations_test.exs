@@ -6,7 +6,8 @@ defmodule GraphQl.Upgrade.MutationsTest do
     test "it will create an upgrade for a user" do
       user = insert(:user)
       repo = insert(:repository)
-      insert(:upgrade_queue, user: user)
+      q    = insert(:upgrade_queue, user: user)
+      {:ok, user} = Core.Services.Upgrades.update_default_queue(q, user)
 
       {:ok, %{data: %{"createUpgrade" => up}}} = run_query("""
         mutation Upgrade($name: String, $attributes: UpgradeAttributes!) {

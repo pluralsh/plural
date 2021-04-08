@@ -5,6 +5,9 @@ export const UpgradeQueueFragment = gql`
   fragment UpgradeQueueFragment on UpgradeQueue {
     id
     acked
+    name
+    domain
+    git
   }
 `
 

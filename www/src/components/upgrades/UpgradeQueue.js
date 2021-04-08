@@ -1,14 +1,18 @@
 import React, { useContext, useEffect } from 'react'
-import { useQuery, useSubscription } from 'react-apollo'
+import { useQuery } from 'react-apollo'
 import { Loading, Scroller } from 'forge-core'
-import { QUEUE, UPGRADE_QUEUE_SUB, UPGRADE_SUB } from './queries'
+import { QUEUE, UPGRADE_SUB } from './queries'
 import { appendConnection, extendConnection } from '../../utils/graphql'
 import { Box, Text } from 'grommet'
 import { RepoIcon } from '../repos/Repositories'
 import moment from 'moment'
 import { BeatLoader } from 'react-spinners'
-import { Refresh } from 'grommet-icons'
+import { Github, Refresh } from 'grommet-icons'
 import { BreadcrumbsContext } from '../Breadcrumbs'
+import { Attributes } from '../incidents/utils'
+import { Attribute, Container } from '../integrations/Webhook'
+import { Provider } from '../repos/misc'
+import { useParams } from 'react-router'
 
 function DeliveryProgress({delivered}) {
   return (
@@ -37,38 +41,53 @@ function Upgrade({upgrade, acked}) {
 }
 
 export function UpgradeQueue() {
-  const {data, fetchMore, subscribeToMore, refetch} = useQuery(QUEUE, {fetchPolicy: 'cache-and-network'})
+  const {id} = useParams()
+  const {data, fetchMore, subscribeToMore, refetch} = useQuery(QUEUE, {
+    variables: {id},
+    fetchPolicy: 'cache-and-network'
+  })
 
   useEffect(() => subscribeToMore({
     document: UPGRADE_SUB,
+    variables: {id},
     updateQuery: ({upgradeQueue, ...rest}, {subscriptionData: {data: {upgrade}}}) => {
       return {...rest, upgradeQueue: appendConnection(upgradeQueue, upgrade, 'upgrades')}
     }
   }), [])
 
-  useSubscription(UPGRADE_QUEUE_SUB)
-
   const {setBreadcrumbs} = useContext(BreadcrumbsContext)
   useEffect(() => {
-    setBreadcrumbs([{url: `/upgrades`, text: 'upgrades'}])
-  }, [setBreadcrumbs])
+    setBreadcrumbs([
+      {url: `/upgrades`, text: 'upgrades'},
+      {url: `/upgrades/${id}`, text: id},
+    ])
+  }, [setBreadcrumbs, id])
 
   if (!data) return <Loading />
 
-  const {upgrades: {edges, pageInfo}, acked} = data.upgradeQueue
+  const queue = data.upgradeQueue
+  const {upgrades: {edges, pageInfo}, acked} = queue
 
   return (
-    <Box fill>
-      <Box flex={false}  direction='row' align='center' background='light-1'
-           pad={{vertical: 'xsmall', horizontal: 'small'}} border={{side: 'bottom', color: 'light-5'}}>
-        <Box fill='horizontal'>
-          <Text size='small' weight={500}>Upgrade Queue</Text>
+    <Box fill gap='small' pad='small'>
+      <Container title={queue.name || 'default'} flex={false}>
+        <Box direction='row' gap='small' align='center' pad='small'>
+          <Provider provider={queue.provider} width={60} />
+          <Box fill='horizontal' gap='xsmall'>
+            <Attributes fill='horizontal'>
+              <Attribute name='domain'>
+                <Text size='small'>{queue.domain}</Text>
+              </Attribute>
+              <Attribute name='git url'>
+                <Text size='small'><Github size='small' plain /> {queue.git}</Text>
+              </Attribute>
+            </Attributes>
+          </Box>
         </Box>
-        <Box flex={false} pad='xsmall' round='xsmall' onClick={() => refetch()} hoverIndicator='light-3' focusIndicator={false}>
+      </Container>
+      <Container fill title='upgrades' modifier={<Box flex={false} pad='xsmall' round='xsmall' onClick={() => refetch()} hoverIndicator='light-3' focusIndicator={false}>
           <Refresh size='small' />
-        </Box>
-      </Box>
-      <Box fill>
+        </Box>}>
         <Scroller 
           id='webhooks'
           style={{width: '100%', height: '100%', overflow: 'auto'}}
@@ -81,7 +100,7 @@ export function UpgradeQueue() {
             })
           })}
         />
-      </Box>
+      </Container>
     </Box>
   )
 }

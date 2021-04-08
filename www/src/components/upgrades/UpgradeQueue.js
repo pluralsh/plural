@@ -79,7 +79,16 @@ export function UpgradeQueue() {
                 <Text size='small'>{queue.domain}</Text>
               </Attribute>
               <Attribute name='git url'>
-                <Text size='small'><Github size='small' plain /> {queue.git}</Text>
+                <Box direction='row' gap='xsmall' align='center'>
+                  <Github size='small' plain />
+                  <Text size='small'>{queue.git}</Text>
+                </Box>
+              </Attribute>
+              <Attribute name='acked'>
+                <Text size='small'>{acked}</Text>
+              </Attribute>
+              <Attribute name='pinged'>
+                <Text size='small'>{moment(queue.pingedAt).format('lll')}</Text>
               </Attribute>
             </Attributes>
           </Box>

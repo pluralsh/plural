@@ -8,6 +8,7 @@ export const UpgradeQueueFragment = gql`
     name
     domain
     git
+    pingedAt
   }
 `
 

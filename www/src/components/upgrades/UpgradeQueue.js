@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react'
-import { useQuery } from 'react-apollo'
+import { useQuery, useSubscription } from 'react-apollo'
 import { Loading, Scroller } from 'forge-core'
-import { QUEUE, UPGRADE_SUB } from './queries'
+import { QUEUE, UPGRADE_QUEUE_SUB, UPGRADE_SUB } from './queries'
 import { appendConnection, extendConnection } from '../../utils/graphql'
 import { Box, Text } from 'grommet'
 import { RepoIcon } from '../repos/Repositories'
@@ -13,6 +13,7 @@ import { Attributes } from '../incidents/utils'
 import { Attribute, Container } from '../integrations/Webhook'
 import { Provider } from '../repos/misc'
 import { useParams } from 'react-router'
+import { QueueHealth } from './QueueHealth'
 
 function DeliveryProgress({delivered}) {
   return (
@@ -46,6 +47,8 @@ export function UpgradeQueue() {
     variables: {id},
     fetchPolicy: 'cache-and-network'
   })
+
+  useSubscription(UPGRADE_QUEUE_SUB)
 
   useEffect(() => subscribeToMore({
     document: UPGRADE_SUB,
@@ -88,7 +91,10 @@ export function UpgradeQueue() {
                 <Text size='small'>{acked}</Text>
               </Attribute>
               <Attribute name='pinged'>
-                <Text size='small'>{moment(queue.pingedAt).format('lll')}</Text>
+                <Box direction='row' gap='small' align='center'>
+                  <Text size='small'>{moment(queue.pingedAt).format('lll')}</Text>
+                  <QueueHealth queue={queue} size='15px' />
+                </Box>
               </Attribute>
             </Attributes>
           </Box>

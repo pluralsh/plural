@@ -8,6 +8,7 @@ import { Provider } from '../repos/misc'
 
 import { Github, Upgrade } from 'grommet-icons'
 import { BreadcrumbsContext } from '../Breadcrumbs'
+import { QueueHealth } from './QueueHealth'
 
 function Queue({q}) {
   let hist = useHistory()
@@ -26,20 +27,13 @@ function Queue({q}) {
           {!q.git && <Text size='small'>no git url provided</Text>}
         </Box>
       </Box>
-    </Box>
-  )
-}
-
-function QueueList({queues}) {
-  return (
-    <Box width='30%' flex={false} fill='vertical' style={{overflow: 'auto'}}>
-      {queues.map((q) => <Queue key={q.id} q={q} />)}
+      <QueueHealth queue={q} />
     </Box>
   )
 }
 
 export function UpgradeQueues() {
-  const {data, subscribeToMore} = useQuery(QUEUES)
+  const {data, subscribeToMore} = useQuery(QUEUES, {fetchPolicy: 'cache-and-network'})
 
   useEffect(() => subscribeToMore({
     document: UPGRADE_QUEUE_SUB,

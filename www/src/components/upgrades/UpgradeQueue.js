@@ -37,12 +37,11 @@ function Upgrade({upgrade, acked}) {
 }
 
 export function UpgradeQueue() {
-  const {data, fetchMore, subscribeToMore, refetch} = useQuery(QUEUE)
+  const {data, fetchMore, subscribeToMore, refetch} = useQuery(QUEUE, {fetchPolicy: 'cache-and-network'})
 
   useEffect(() => subscribeToMore({
     document: UPGRADE_SUB,
     updateQuery: ({upgradeQueue, ...rest}, {subscriptionData: {data: {upgrade}}}) => {
-      console.log(upgrade)
       return {...rest, upgradeQueue: appendConnection(upgradeQueue, upgrade, 'upgrades')}
     }
   }), [])

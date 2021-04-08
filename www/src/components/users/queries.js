@@ -141,3 +141,13 @@ export const REALIZE_TOKEN = gql`
     realizeResetToken(id: $id, attributes: $attributes)
   }
 `
+
+export const RESET_TOKEN = gql`
+  query Token($id: ID!) {
+    resetToken(id: $id) {
+      type
+      user { ...UserFragment }
+    }
+  }
+  ${UserFragment}
+`

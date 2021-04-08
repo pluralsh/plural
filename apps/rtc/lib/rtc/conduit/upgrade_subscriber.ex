@@ -10,7 +10,6 @@ defmodule Rtc.Conduit.UpgradeSubscriber do
   end
 
   def publish_event(upgrade) do
-    %{queue: q} = upgrade = Core.Repo.preload(upgrade, [:queue])
-    Phoenix.Channel.Server.broadcast(Rtc.PubSub, "upgrades:#{q.user_id}", "new_upgrade", upgrade)
+    Phoenix.Channel.Server.broadcast(Rtc.PubSub, "queues:#{upgrade.queue_id}", "new_upgrade", upgrade)
   end
 end

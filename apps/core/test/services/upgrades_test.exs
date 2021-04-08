@@ -3,6 +3,32 @@ defmodule Core.Services.UpgradesTest do
   alias Core.PubSub
   alias Core.Services.Upgrades
 
+  describe "#create_queue/2" do
+    test "it can create an upgrade queue for a user" do
+      user = insert(:user)
+
+      {:ok, queue} = Upgrades.create_queue(%{name: "cluster", provider: :aws}, user)
+
+      assert queue.name == "cluster"
+      assert queue.user_id == user.id
+
+      assert_receive {:event, %PubSub.UpgradeQueueCreated{item: ^queue}}
+    end
+
+    test "it can upsert upgrade queues" do
+      queue = insert(:upgrade_queue, name: "cluster")
+
+      {:ok, up} = Upgrades.create_queue(%{name: "cluster", provider: :aws}, queue.user)
+
+      assert up.id == queue.id
+      assert up.name == "cluster"
+      assert up.provider == :aws
+      assert up.user_id == queue.user.id
+
+      assert_receive {:event, %PubSub.UpgradeQueueUpdated{item: ^up}}
+    end
+  end
+
   describe "#create_upgrade/2" do
     test "it'll create an upgrade for a repo" do
       queue = insert(:upgrade_queue)

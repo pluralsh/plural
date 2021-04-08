@@ -27,12 +27,12 @@ defimpl Core.PubSub.Fanout, for: [Core.PubSub.VersionCreated, Core.PubSub.Versio
     |> Flow.from_enumerable(stages: 5, max_demand: 20)
     |> Flow.map(&process(&1, version))
     |> Flow.flat_map(fn
-      {:ok, inst} ->
-        [create_upgrade(inst, version)]
+      {:ok, inst} -> Core.Upgrades.Utils.for_user(inst.installation.user_id)
       {:error, error} ->
         Logger.error "Failed to update #{inspect(error)}"
         []
     end)
+    |> Flow.map(&create_upgrade(&1, version))
     |> Enum.count()
   end
 
@@ -40,7 +40,7 @@ defimpl Core.PubSub.Fanout, for: [Core.PubSub.VersionCreated, Core.PubSub.Versio
     ChartInstallation.for_chart(id)
     |> ChartInstallation.with_auto_upgrade(version.tags)
     |> ChartInstallation.ignore_version(version.id)
-    |> ChartInstallation.preload(installation: [:repository, user: [:queue]])
+    |> ChartInstallation.preload(installation: [:repository])
     |> ChartInstallation.ordered()
   end
 
@@ -48,7 +48,7 @@ defimpl Core.PubSub.Fanout, for: [Core.PubSub.VersionCreated, Core.PubSub.Versio
     TerraformInstallation.for_terraform(id)
     |> TerraformInstallation.with_auto_upgrade(version.tags)
     |> TerraformInstallation.ignore_version(version.id)
-    |> TerraformInstallation.preload(installation: [:repository, user: [:queue]])
+    |> TerraformInstallation.preload(installation: [:repository])
     |> TerraformInstallation.ordered()
   end
 
@@ -58,19 +58,22 @@ defimpl Core.PubSub.Fanout, for: [Core.PubSub.VersionCreated, Core.PubSub.Versio
     |> Core.Repo.update()
   end
 
-  defp create_upgrade(
-    %{installation: %{user: user, repository: repo}} = inst,
-    %{version: version, chart: %{name: chart}}
-  ) do
-    {:ok, _} = Core.Services.Upgrades.create_upgrade(%{
-      repository_id: repo.id,
-      message: "Upgraded #{type(inst)} #{chart} to #{version}"
-    }, user)
+  defp create_upgrade(queue, %{version: v} = version) do
+    {:ok, up} = Core.Services.Upgrades.create_upgrade(%{
+      repository_id: repo_id(version),
+      message: "Upgraded #{type(version)} #{name(version)} to #{v}"
+    }, queue)
 
-    inst
+    up
   end
 
-  defp type(%ChartInstallation{}), do: "chart"
+  defp repo_id(%{chart: %{repository_id: repo_id}}), do: repo_id
+  defp repo_id(%{terraform: %{repository_id: repo_id}}), do: repo_id
+
+  defp name(%{chart: %{name: name}}), do: name
+  defp name(%{terraform: %{name: name}}), do: name
+
+  defp type(%{chart: %{id: _}}), do: "chart"
   defp type(_), do: "terraform module"
 end
 

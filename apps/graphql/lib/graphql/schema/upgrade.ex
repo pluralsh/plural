@@ -13,11 +13,22 @@ defmodule GraphQl.Schema.Upgrade do
     field :type,    :upgrade_type
   end
 
-  object :upgrade_queue do
-    field :id,     non_null(:id)
-    field :acked, :id
+  input_object :upgrade_queue_attributes do
+    field :name,     non_null(:string)
+    field :domain,   :string
+    field :git,      :string
+    field :provider, :provider
+  end
 
-    field :user, :user, resolve: dataloader(User)
+  object :upgrade_queue do
+    field :id,       non_null(:id)
+    field :acked,    :id
+    field :name,     :string
+    field :domain,   :string
+    field :git,      :string
+    field :provider, :provider
+
+    field :user, non_null(:user), resolve: dataloader(User)
 
     connection field :upgrades, node_type: :upgrade do
       resolve &Upgrade.list_upgrades/2
@@ -40,12 +51,22 @@ defmodule GraphQl.Schema.Upgrade do
   delta :upgrade_queue
 
   object :upgrade_queries do
+    field :upgrade_queues, list_of(:upgrade_queue) do
+      resolve &Upgrade.list_queues/2
+    end
+
     field :upgrade_queue, :upgrade_queue do
+      arg :id, :id
       resolve &Upgrade.resolve_queue/2
     end
   end
 
   object :upgrade_mutations do
+    field :create_queue, :upgrade_queue do
+      arg :attributes, non_null(:upgrade_queue_attributes)
+      resolve &Upgrade.create_upgrade_queue/2
+    end
+
     field :create_upgrade, :upgrade do
       arg :id,         :id
       arg :name,       :string
@@ -57,8 +78,13 @@ defmodule GraphQl.Schema.Upgrade do
 
   object :upgrade_subscriptions do
     field :upgrade, :upgrade do
-      config fn _, %{context: %{current_user: %{id: id}}} ->
-        {:ok, topic: "upgrades:#{id}"}
+      arg :id, :id
+      config fn
+        %{id: id}, %{current_user: user} when is_binary(id) ->
+          with {:ok, _} <- Core.Services.Upgrades.authorize(id, user),
+            do: {:ok, topic: "queues:#{id}"}
+        _, %{context: %{current_user: %{id: id}}} ->
+          {:ok, topic: "upgrades:#{id}"}
       end
     end
 

@@ -2,9 +2,16 @@ defmodule GraphQl.Resolvers.Upgrade do
   use GraphQl.Resolvers.Base, model: Core.Schema.Upgrade
   alias Core.Services.{Upgrades, Repositories}
 
+  def resolve_queue(%{id: id}, %{context: %{current_user: user}}) when is_binary(id),
+    do: Upgrades.authorize(id, user)
+
   def resolve_queue(_, %{context: %{current_user: user}}) do
     %{queue: q} = Core.Repo.preload(user, [:queue])
     {:ok, q}
+  end
+
+  def list_queues(_, %{context: %{current_user: user}}) do
+    {:ok, Core.Upgrades.Utils.for_user(user)}
   end
 
   def list_upgrades(args, %{source: q}) do
@@ -12,6 +19,9 @@ defmodule GraphQl.Resolvers.Upgrade do
     |> Upgrade.ordered(desc: :id)
     |> paginate(args)
   end
+
+  def create_upgrade_queue(%{attributes: attrs}, %{context: %{current_user: user}}),
+    do: Upgrades.create_queue(attrs, user)
 
   def create_upgrade(%{id: id, attributes: attrs}, %{context: %{current_user: user}}) when is_binary(id) do
     Map.put(attrs, :repository_id, id)

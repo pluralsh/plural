@@ -336,6 +336,7 @@ defmodule Core.Factory do
 
   def upgrade_queue_factory do
     %Schema.UpgradeQueue{
+      name: sequence(:queue, &"cluster-#{&1}"),
       user: build(:user)
     }
   end

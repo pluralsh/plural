@@ -9,7 +9,7 @@ defmodule RtcWeb.UpgradeChannelTest do
       up   = insert(:upgrade, queue: q)
 
       {:ok, socket} = mk_socket(user)
-      {:ok, _, socket} = subscribe_and_join(socket, "upgrades:#{user.id}", %{})
+      {:ok, _, socket} = subscribe_and_join(socket, "queues:#{q.id}", %{})
 
       ref = push(socket, "next", %{})
       assert_reply ref, :ok, result
@@ -32,7 +32,7 @@ defmodule RtcWeb.UpgradeChannelTest do
       up   = insert(:upgrade, queue: q)
 
       {:ok, socket} = mk_socket(user)
-      {:ok, _, socket} = subscribe_and_join(socket, "upgrades:#{user.id}", %{})
+      {:ok, _, socket} = subscribe_and_join(socket, "queues:#{q.id}", %{})
 
       broadcast_from(socket, "new_upgrade", up)
 

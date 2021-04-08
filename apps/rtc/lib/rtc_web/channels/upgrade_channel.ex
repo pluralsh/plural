@@ -6,9 +6,29 @@ defmodule RtcWeb.UpgradeChannel do
 
   intercept ["new_upgrade"]
 
+  def join("queues:" <> id, _params, socket) do
+    send(self(), {:authorize, id})
+    {:ok, socket}
+  end
+
   def join("upgrades:" <> id, _params, socket) do
     send(self(), :after_join)
     {:ok, assign(socket, :upgrade_user, id)}
+  end
+
+  def handle_info({:authorize, id}, socket) do
+    user = socket.assigns.user
+    case Core.Services.Upgrades.authorize(id, user) do
+      {:ok, queue} ->
+        socket =
+          assign(socket, :queue, queue)
+          |> assign(:user, user)
+          |> assign(:buffer, UpgradeBuffer.new())
+        {:noreply, socket}
+
+      _ ->
+        {:stop, {:shutdown, :unauthorized}, socket}
+    end
   end
 
   def handle_info(:after_join, socket) do

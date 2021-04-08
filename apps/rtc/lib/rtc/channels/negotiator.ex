@@ -63,11 +63,11 @@ end
 defimpl Rtc.Channels.Negotiator, for: Core.PubSub.UpgradeCreated do
   def negotiate(%{item: upgrade}) do
     %{queue: q} = up = Core.Repo.preload(upgrade, [:queue])
-    {up, [upgrade: "upgrades:#{q.user_id}"]}
+    {up, [upgrade: "upgrades:#{q.user_id}", upgrade: "queues:#{upgrade.queue_id}"]}
   end
 end
 
-defimpl Rtc.Channels.Negotiator, for: Core.PubSub.UpgradeQueueUpdated do
+defimpl Rtc.Channels.Negotiator, for: [Core.PubSub.UpgradeQueueUpdated, Core.PubSub.UpgradeQueueCreated] do
   import Rtc.Channels.NegotiatorHelper
 
   def negotiate(%{item: q}) do
@@ -75,4 +75,5 @@ defimpl Rtc.Channels.Negotiator, for: Core.PubSub.UpgradeQueueUpdated do
   end
 
   defp delta_name(Core.PubSub.UpgradeQueueUpdated), do: :update
+  defp delta_name(Core.PubSub.UpgradeQueueCreated), do: :create
 end

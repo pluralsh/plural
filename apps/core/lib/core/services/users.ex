@@ -1,7 +1,7 @@
 defmodule Core.Services.Users do
   use Core.Services.Base
   import Core.Policies.User
-  alias Core.Services.{Accounts, Upgrades}
+  alias Core.Services.{Accounts}
   alias Core.PubSub
   alias Core.Schema.{
     PersistedToken,
@@ -94,7 +94,6 @@ defmodule Core.Services.Users do
       with {:ok, %{user: user}} <- Accounts.create_account(user),
         do: {:ok, user}
     end)
-    |> add_operation(:queue, fn %{user: user} -> Upgrades.create_queue(user) end)
     |> execute(extract: :user)
   end
 

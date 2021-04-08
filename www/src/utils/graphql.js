@@ -37,6 +37,10 @@ export function appendConnection(prev, next, key) {
   }
 }
 
+export function removeConnection(prev, val, key) {
+  return {...prev, [key]: {...prev[key], edges: prev[key].edges.filter(({node}) => node.id !== val.id)}}
+}
+
 export function updateCache(cache, {query, variables, update, onFailure}) {
   const prev = cache.readQuery({query, variables})
   cache.writeQuery({query, variables, data: update(prev)})

@@ -37,5 +37,6 @@ defmodule Core.PubSub.IntegrationWebhookDeleted, do: use Piazza.PubSub.Event
 
 defmodule Core.PubSub.UpgradeCreated, do: use Piazza.PubSub.Event
 defmodule Core.PubSub.UpgradeQueueUpdated, do: use Piazza.PubSub.Event
+defmodule Core.PubSub.UpgradeQueueCreated, do: use Piazza.PubSub.Event
 
 defmodule Core.PubSub.ResetTokenCreated, do: use Piazza.PubSub.Event

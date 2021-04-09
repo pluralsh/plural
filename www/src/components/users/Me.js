@@ -7,7 +7,8 @@ import CreatePublisher from '../publisher/CreatePublisher'
 import { useQuery } from 'react-apollo'
 import { ACCOUNT_PUBLISHERS } from '../publisher/queries'
 import Avatar from './Avatar'
-import { Add, Edit, User } from 'grommet-icons'
+import { Add, Edit, Logout, User } from 'grommet-icons'
+import { wipeToken } from '../../helpers/authentication'
 
 export function DropdownItem(props) {
   const {onClick, ...rest} = props
@@ -101,6 +102,13 @@ export default function Me({me}) {
             icon={<User size='small' />}
             text='Edit user' round='xsmall'
             onClick={() => history.push('/me/edit/user')} />
+          <Item
+            icon={<Logout size='small' />}
+            text='Logout' round='xsmall'
+            onClick={() => {
+              wipeToken()
+              window.location = '/login'
+            }} />
           {me.publisher && <Publishers account={account} publisher={me.publisher} />}
           {!me.publisher && (
             <Item

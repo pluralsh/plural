@@ -5,13 +5,13 @@ import { Button, InputCollection, ResponsiveInput } from 'forge-core'
 import { useMutation } from 'react-apollo'
 import { UPDATE_USER } from './queries'
 import Avatar from './Avatar'
-import { wipeToken } from '../../helpers/authentication'
-import { Logout, StatusCritical, Checkmark, User, Lock, Install, Robot } from 'grommet-icons'
+import { StatusCritical, Checkmark, User, Lock, Install, Robot } from 'grommet-icons'
 import Installations from '../repos/Installations'
 import { CurrentUserContext } from '../login/CurrentUser'
 import { Tokens } from './Tokens'
 import { useHistory, useParams } from 'react-router'
 import { BreadcrumbsContext } from '../Breadcrumbs'
+import { SIDEBAR_WIDTH } from '../constants'
 
 export const EditContext = React.createContext({})
 
@@ -26,24 +26,9 @@ function EditAvatar({me}) {
 
   return (
     <>
-      <Avatar user={me} size='80px' onClick={onClick} />
+      <Avatar user={me} size='50px' onClick={onClick} />
       <HiddenFileInput accept='.jpg, .jpeg, .png' multiple={false} />
     </>
-  )
-}
-
-function ActionBox({onClick, text, icon}) {
-  return (
-    <Box pad={{vertical: 'xsmall', horizontal: 'small'}} background='white' direction='row' round='xsmall'
-         border={{color: 'light-4', side: 'all'}} align='center'
-         justify='end' hoverIndicator='light-3' onClick={onClick}>
-      <Box fill='horizontal' align='center'>
-        <Text size='small' weight={500}>{text}</Text>
-      </Box>
-      <Box width='50px' direction='row' justify='end'>
-        {icon}
-      </Box>
-    </Box>
   )
 }
 
@@ -51,15 +36,14 @@ export function EditSelect({name, edit, icon, base}) {
   const {editing} = useParams()
   let hist = useHistory()
   return (
-    <Box pad={{horizontal: 'small', vertical: 'xsmall'}} round='xsmall'
-         border={{color: edit === editing ? 'brand' : 'light-5'}} fill='horizontal'
-         align='center' gap='small' direction='row' hoverIndicator='light-2'
-         focusIndicator={false} onClick={edit === editing ? null : () => hist.push(`${base || '/me/edit/'}${edit}`)}>
-      <Box fill='horizontal'>
-        {name}
-      </Box>
+    <Box pad='small' round='xsmall' background={editing === edit ? 'sidebar' : null} focusIndicator={false} 
+         fill='horizontal' align='center' gap='small' direction='row' hoverIndicator='sidebar'
+         onClick={edit === editing ? null : () => hist.push(`${base || '/me/edit/'}${edit}`)}>
       <Box flex={false}>
         {icon}
+      </Box>
+      <Box fill='horizontal'>
+        {name}
       </Box>
     </Box>
   )
@@ -73,13 +57,13 @@ export function EditHeader({text}) {
   )
 }
 
-export function EditContent({edit, children}) {
+export function EditContent({edit, name, children}) {
   const {editing} = useParams()
   if (editing !== edit) return null
 
   return (
     <Box pad={{horizontal: 'small'}} fill>
-      <EditHeader text={edit} />
+      <EditHeader text={name} />
       {children}
     </Box>
   )
@@ -109,32 +93,23 @@ export default function EditUser() {
   }, [setBreadcrumbs, editing])
 
   return (
-    <Box fill gap='small' pad='medium'>
-      <Box direction='row' align='center' gap='medium' pad='medium'>
-        <EditAvatar me={me} />
-        <Box flex={false}>
-          <Text>{attributes.name}</Text>
-          <Text size='small'>{attributes.email}</Text>
+    <Box fill>
+      <Box fill direction='row'>
+        <Box flex={false} background='backgroundColor' gap='xsmall' width={SIDEBAR_WIDTH} pad={{horizontal: 'small', vertical: 'medium'}}>
+          <Box flex={false} direction='row' gap='small' align='center' margin={{bottom: 'xsmall'}}>
+            <EditAvatar me={me} />
+            <Box flex={false}>
+              <Text size='small' weight='bold'>{attributes.name}</Text>
+              <Text size='small'>{attributes.email}</Text>
+            </Box>
+          </Box>
+          <EditSelect edit='user' name='User Attributes' icon={<User size='14px' />} />
+          <EditSelect edit='pwd' name='Password' icon={<Lock size='14px' />} />
+          <EditSelect edit='installations' name='Installations' icon={<Install size='14px' />} />
+          <EditSelect edit='tokens' name='Access Tokens' icon={<Robot size='14px' />} />
         </Box>
-        <Box fill direction='row' align='center' justify='end'>
-          <ActionBox
-            text='logout'
-            onClick={() => {
-              wipeToken()
-              window.location = '/login'
-            }}
-            icon={<Logout size='12px' />} />
-        </Box>
-      </Box>
-      <Box fill direction='row' border={{side: 'between', color: 'light-5'}} gap='small'>
-        <Box gap='small' width='25%' pad={{horizontal: 'small', vertical: 'medium'}}>
-          <EditSelect edit='user' name='User Attributes' icon={<User size='small' />} />
-          <EditSelect edit='pwd' name='Password' icon={<Lock size='small' />} />
-          <EditSelect edit='installations' name='Installations' icon={<Install size='small' />} />
-          <EditSelect edit='tokens' name='Access Tokens' icon={<Robot size='small' />} />
-        </Box>
-        <Box width='75%'>
-          <EditContent edit='user'>
+        <Box fill pad='medium'>
+          <EditContent edit='user' name='User Attributes'>
             <InputCollection>
               <ResponsiveInput
                 value={attributes.name}
@@ -149,7 +124,7 @@ export default function EditUser() {
               <Button loading={loading} onClick={mutation} flex={false} label='Update' />
             </Box>
           </EditContent>
-          <EditContent edit='pwd'>
+          <EditContent edit='pwd' name='Password'>
             <InputCollection>
               <ResponsiveInput
                 value={password}
@@ -178,10 +153,10 @@ export default function EditUser() {
                 label='Update' />
             </Box>
           </EditContent>
-          <EditContent edit='installations'>
+          <EditContent edit='installations' name='Installations'>
             <Installations edit />
           </EditContent>
-          <EditContent edit='tokens'>
+          <EditContent edit='tokens' name='Tokens'>
             <Tokens />
           </EditContent>
         </Box>

@@ -8,7 +8,7 @@ export function initials(name) {
           .join('')
 }
 
-export default function Avatar({size, user, round}) {
+export default function Avatar({size, user, round, ...rest}) {
   return (
     <Box
       flex={false}
@@ -18,7 +18,8 @@ export default function Avatar({size, user, round}) {
       justify='center'
       width={size}
       height={size}
-      background={!user.avatar ? user.backgroundColor : null}>
+      background={!user.avatar ? user.backgroundColor : null}
+      {...rest}>
       {!user.avatar && <Text size='small'>{initials(user.name)}</Text>}
     </Box>
   )

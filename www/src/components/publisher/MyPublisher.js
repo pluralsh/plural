@@ -19,8 +19,7 @@ import { deepUpdate, updateCache } from '../../utils/graphql'
 
 function AccountConnected() {
   return (
-    <Box pad='xsmall' justify='center' align='center' direction='row'
-         gap='xsmall' border={{color: 'light-5'}} round='xsmall'>
+    <Box pad='xsmall' align='center' direction='row' gap='xsmall' round='xsmall'>
       <Stripe color={STRIPE_BLUE} size='medium' />
       <Anchor href='https://dashboard.stripe.com/' size='small'>stripe dashboard</Anchor>
     </Box>
@@ -44,7 +43,7 @@ function PublisherPayments({publisher: {billingAccountId}}) {
   }, [token, billingAccountId, mutation])
 
   return (
-    <Box pad='small' align='center' justify='center' border={{color: 'light-5'}} round='xsmall'>
+    <Box pad='small' round='xsmall'>
       <a href={AUTHORIZE_URL}>
         <img alt='' src={CONNECT_ICON} />
       </a>
@@ -164,7 +163,7 @@ export default function MyPublisher() {
 
   return (
     <Box fill direction='row'>
-      <Box width={SIDEBAR_WIDTH} flex={false} pad='small' gap='small' border={{side: 'right', color: 'light-5'}}>
+      <Box width={SIDEBAR_WIDTH} flex={false} pad='small' gap='xsmall' background='backgroundColor'>
         <PublisherHeader publisher={{...me.publisher, owner: me}} size='60px' />
         <EditSelect base='/publishers/mine/' edit='repos' name='Repositories' icon={<List size='small' />} />
         <EditSelect base='/publishers/mine/' edit='attrs' name='Edit Attributes' icon={<Edit size='small' />} />

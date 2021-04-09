@@ -21,13 +21,16 @@ defimpl Core.PubSub.Fanout, for: [Core.PubSub.VersionCreated, Core.PubSub.Versio
   """
   def fanout(%{item: %{chart_id: id} = version}) when is_binary(id) do
     version = Core.Repo.preload(version, [:chart, :terraform, :tags])
+    Logger.info "Processing event #{@for}"
 
     stream_installations(version)
     |> Core.Repo.stream(method: :keyset)
     |> Flow.from_enumerable(stages: 5, max_demand: 20)
     |> Flow.map(&process(&1, version))
     |> Flow.flat_map(fn
-      {:ok, inst} -> Core.Upgrades.Utils.for_user(inst.installation.user_id)
+      {:ok, inst} ->
+        Logger.info "Delivering upgrade for installation: #{inst.id}"
+        Core.Upgrades.Utils.for_user(inst.installation.user_id)
       {:error, error} ->
         Logger.error "Failed to update #{inspect(error)}"
         []

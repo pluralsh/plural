@@ -12,6 +12,7 @@ import { normalizeColor } from 'grommet/utils'
 import { DetailContainer } from './Installation'
 import { DetailHeader } from './Artifacts'
 import { BreadcrumbsContext } from '../Breadcrumbs'
+import { extendConnection } from '../../utils/graphql'
 
 const ICON_SIZE = 50
 
@@ -120,17 +121,9 @@ function IntegrationGrid({integrations: {edges, pageInfo}, fetchMore}) {
         </Box>
       )}
       onLoadMore={() => pageInfo.hasNextPage && fetchMore({
-          variables: {intCursor: pageInfo.endCursor},
-          updateQuery: (prev, {fetchMoreResult}) => {
-            const {edges, pageInfo} = fetchMoreResult.integrations
-            return {...prev, integrations: {
-                ...prev.integrations,
-                pageInfo,
-                edges: [...prev.integrations.edges, ...edges]
-              }
-            }
-          }
-        })} />
+        variables: {intCursor: pageInfo.endCursor},
+        updateQuery: (prev, {fetchMoreResult: {integrations}}) => extendConnection(prev, integrations, 'integrations')
+      })} />
   )
 }
 

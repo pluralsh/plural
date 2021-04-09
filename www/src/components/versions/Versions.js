@@ -4,6 +4,7 @@ import moment from 'moment'
 import { Scroller } from 'forge-core'
 import { EditTags, VersionTag } from './VersionTags'
 import { DetailContainer } from '../repos/Installation'
+import { extendConnection } from '../../utils/graphql'
 
 export function Version({version, onSelect, refetch}) {
   const [open, setOpen] = useState(false)
@@ -48,9 +49,7 @@ export function Versions({setVersion, edges, refetch, pageInfo, fetchMore}) {
         )}
         onLoadMore={() => pageInfo.hasNextPage && fetchMore({
           variables: {cursor: pageInfo.endCursor},
-          updateQuery: (prev, {fetchMoreResult: {versions: {edges, pageInfo}}}) => (
-            {...prev, versions: {...prev.versions, pageInfo, edges: [...prev.versions.edges, ...edges]}}
-          )
+          updateQuery: (prev, {fetchMoreResult: {versions}}) => extendConnection(prev, versions, 'versions')
         })} />
     </DetailContainer>
   )

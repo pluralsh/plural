@@ -5,6 +5,7 @@ import { useQuery, useMutation } from 'react-apollo'
 import { WEBHOOKS_Q, PING_WEBHOOK } from './queries'
 import { Scroller, ModalHeader, Button, Copyable, InputField, HoveredBackground, BORDER_COLOR } from 'forge-core'
 import moment from 'moment'
+import { extendConnection } from '../../utils/graphql'
 
 const LABEL_WIDTH = '60px'
 const CELL_WIDTH='200px'
@@ -141,11 +142,7 @@ export default function Webhooks() {
       mapper={({node}, next) => (<Webhook key={node.id} webhook={node} hasNext={!!next.node} />)}
       onLoadMore={() => pageInfo.hasNextPage && fetchMore({
           variables: {cursor: pageInfo.endCursor},
-          updateQuery: (prev, {fetchMoreResult: {webhooks: {edges, pageInfo}}}) => (
-            {...prev, webhooks: { ...prev.webhooks, pageInfo,
-                edges: [...prev.webhooks.edges, ...edges]
-            }}
-          )
+          updateQuery: (prev, {fetchMoreResult: {webhooks}}) => extendConnection(prev, webhooks, 'webhooks')
         })
       } />
   )

@@ -9,6 +9,7 @@ import { UserRow } from './User'
 import CreateGroup from './CreateGroup'
 import CreateInvite from './CreateInvite'
 import RoleRow, { RoleCreator } from './Role'
+import { extendConnection } from '../../utils/graphql'
 
 export function Users() {
   const [q, setQ] = useState(null)
@@ -38,7 +39,10 @@ export function Users() {
         style={{height: '100%', overflow: 'auto'}}
         edges={edges}
         mapper={({node}, next) => <UserRow key={node.id} user={node} next={next.node} />}
-        onLoadMore={() => pageInfo.hasNextPage && fetchMore({variables: {userCursor: pageInfo.endCursor}})}
+        onLoadMore={() => pageInfo.hasNextPage && fetchMore({
+          variables: {userCursor: pageInfo.endCursor},
+          updateQuery: (prev, {fetchMoreResult: {users}}) => extendConnection(prev, users, 'users')
+        })}
       />
     </Box>
   )
@@ -72,7 +76,10 @@ export function Groups() {
         style={{height: '100%', overflow: 'auto'}}
         edges={edges}
         mapper={({node}, next) => <GroupRow key={node.id} group={node} next={next.node} />}
-        onLoadMore={() => pageInfo.hasNextPage && fetchMore({variables: {userCursor: pageInfo.endCursor}})}
+        onLoadMore={() => pageInfo.hasNextPage && fetchMore({
+          variables: {userCursor: pageInfo.endCursor},
+          updateQuery: (prev, {fetchMoreResult: {groups}}) => extendConnection(prev, groups, 'groups')
+        })}
       />
     </Box>
   )
@@ -104,7 +111,10 @@ export function Roles() {
         style={{height: '100%', overflow: 'auto'}}
         edges={edges}
         mapper={({node}, next) => <RoleRow key={node.id} role={node} next={next.node} />}
-        onLoadMore={() => pageInfo.hasNextPage && fetchMore({variables: {userCursor: pageInfo.endCursor}})}
+        onLoadMore={() => pageInfo.hasNextPage && fetchMore({
+          variables: {userCursor: pageInfo.endCursor},
+          updateQuery: (prev, {fetchMoreResult: {roles}}) => extendConnection(prev, roles, 'roles')
+        })}
       />
     </Box>
   )

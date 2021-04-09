@@ -21,6 +21,7 @@ import Integrations from './Integrations'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 import "ace-builds/src-noconflict/mode-yaml"
 import "ace-builds/src-noconflict/theme-terminal"
+import { extendConnection } from '../../utils/graphql'
 
 function Container({children, onClick, hasNext, noPad}) {
 
@@ -115,9 +116,7 @@ function Charts({edges, pageInfo, fetchMore}) {
       emptyState={<EmptyTab text='No charts uploaded yet' />}
       onLoadMore={() => pageInfo.hasNextPage && fetchMore({
         variables: {chartCursor: pageInfo.endCursor},
-        updateQuery: (prev, {fetchMoreResult: {charts: {edges, pageInfo}}}) => (
-          {...prev, charts: { ...prev.charts, pageInfo, edges: [...prev.charts.edges, ...edges] }}
-        )
+        updateQuery: (prev, {fetchMoreResult: {charts}}) => extendConnection(prev, charts, 'charts')
       })} />
   )
 }
@@ -131,11 +130,7 @@ function Terraform({edges, pageInfo, fetchMore}) {
       emptyState={<EmptyTab text='no terraform modules uploaded yet' />}
       onLoadMore={() => pageInfo.hasNextPage && fetchMore({
         variables: {tfCursor: pageInfo.endCursor},
-        updateQuery: (prev, {fetchMoreResult: {terraform: {edges, pageInfo}}}) => (
-          {...prev, terraform: {...prev.terraform,
-            pageInfo, edges: [...prev.terraform.edges, ...edges]
-          }}
-        )
+        updateQuery: (prev, {fetchMoreResult: {terraform}}) => extendConnection(prev, terraform, 'terraform')
       })} />
   )
 }
@@ -163,10 +158,7 @@ function DockerRepos({edges, repo, pageInfo, fetchMore}) {
       emptyState={<EmptyTab text='no repos created yet' />}
       onLoadMore={() => pageInfo.hasNextPage && fetchMore({
         variables: {dkrCursor: pageInfo.endCursor},
-        updateQuery: (prev, {fetchMoreResult: {dockerRepositories: {edges, pageInfo}}}) => ({
-          ...prev, dockerRepositories: {
-            ...prev.dockerRepositories, pageInfo, edges: [...prev.dockerRepositories.edges, ...edges]
-        }})
+        updateQuery: (prev, {fetchMoreResult: {dockerRepositories: dkr}}) => extendConnection(prev, dkr, 'dockerRepositories')
       })} />
   )
 }

@@ -5,6 +5,7 @@ import { useMutation, useQuery } from 'react-apollo'
 import { CREATE_TOKEN, TOKENS_Q, DELETE_TOKEN } from './queries'
 import { Button, Scroller, Copyable, HoveredBackground, BORDER_COLOR } from 'forge-core'
 import moment from 'moment'
+import { extendConnection } from '../../utils/graphql'
 
 const CELL_WIDTH='200px'
 
@@ -94,13 +95,7 @@ export function Tokens() {
           onLoadMore={() => {
             pageInfo.hasNextPage && fetchMore({
               variables: {cursor: pageInfo.endCursor},
-              updateQuery: (prev, {fetchMoreResult: {edges, pageInfo}}) => ({
-                ...prev, tokens: {
-                  ...prev.tokens,
-                  pageInfo,
-                  edges: [...prev.tokens.edges, ...edges]
-                }
-              })
+              updateQuery: (prev, {fetchMoreResult: {tokens}}) => extendConnection(prev, tokens, 'tokens')
             })
           }}
         />

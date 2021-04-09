@@ -7,6 +7,7 @@ import { Scroller, Loading, ModalHeader, TooltipContent, Button } from 'forge-co
 import { UserRow } from './User'
 import { fetchUsers } from './Typeaheads'
 import { addGroupMember, deleteGroup } from './utils'
+import { extendConnection } from '../../utils/graphql'
 
 function GroupMembers({group}) {
   const {data, fetchMore} = useQuery(GROUP_MEMBERS, {variables: {id: group.id}})
@@ -19,7 +20,10 @@ function GroupMembers({group}) {
       style={{height: '100%', overflow: 'auto'}}
       edges={edges}
       mapper={({node}, next) => <UserRow key={node.id} user={node.user} next={next.node} />}
-      onLoadMore={() => pageInfo.hasNextPage && fetchMore({variables: {cursor: pageInfo.endCursor}})} />
+      onLoadMore={() => pageInfo.hasNextPage && fetchMore({
+        variables: {cursor: pageInfo.endCursor},
+        updateQuery: (prev, {fetchMoreResult: {groupMembers}}) => extendConnection(prev, groupMembers, 'groupMembers')
+      })} />
   )
 }
 

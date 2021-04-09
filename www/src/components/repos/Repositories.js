@@ -7,6 +7,7 @@ import { useHistory } from 'react-router-dom'
 import { REPOS_Q, DELETE_REPO } from './queries'
 import { Container } from './Integrations'
 import { chunk } from '../../utils/array'
+import { extendConnection } from '../../utils/graphql'
 
 function DeleteRepository({repo, publisherId}) {
   const [mutation] = useMutation(DELETE_REPO, {
@@ -120,10 +121,7 @@ export function RepositoryList({repositores: {edges, pageInfo}, fetchMore, publi
       )}
       onLoadMore={() => pageInfo.hasNextPage && fetchMore({
         variables: {cursor: pageInfo.endCursor},
-        updateQuery: (prev, {repositores: {edges, pageInfo}}) => ({
-          ...prev, repositories: {
-            ...prev.repositories, pageInfo, edges: [...prev.repositories.edges, ...edges]
-        }})
+        updateQuery: (prev, {fetchMoreResult: {repositories}}) => extendConnection(prev, repositories, 'repositories')
       })}
     />
   )

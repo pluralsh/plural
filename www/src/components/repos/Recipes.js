@@ -82,7 +82,7 @@ export default function Recipes({repository, edges, pageInfo, fetchMore}) {
       ))}
       {pageInfo.hasNextPage && (<Anchor onClick={() => fetchMore({
         variables: {recipeCursor: pageInfo.endCursor},
-        updateQuery: (prev, {fetchMoreResult}) => extendConnection(prev, fetchMoreResult, 'recipes')
+        updateQuery: (prev, {fetchMoreResult: {recipes}}) => extendConnection(prev, recipes, 'recipes')
       })}>show more</Anchor>)}
     </Box>
     </>

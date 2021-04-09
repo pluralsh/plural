@@ -30,7 +30,7 @@ function Repositories({repository, setRepository}) {
       mapper={({node}) => <RepoOption key={node.id} repo={node} selected={repository} setRepository={setRepository} />}
       onLoadMore={() => pageInfo.hasNextPage && fetchMore({
         variables: {cursor: pageInfo.endCursor},
-        updateQuery: (prev, {fetchMoreResult}) => extendConnection(prev, fetchMoreResult, 'incidents')
+        updateQuery: (prev, {fetchMoreResult: {incidents}}) => extendConnection(prev, incidents, 'incidents')
       })}
     />
   )
@@ -83,7 +83,7 @@ function Incidents({repository: {id}}) {
           mapper={({node}, next) => <IncidentRow key={node.id} incident={node} next={next.node} />}
           onLoadMore={() => pageInfo.hasNextPage && fetchMore({
             variables: {cursor: pageInfo.endCursor},
-            updateQuery: (prev, {fetchMoreResult}) => extendConnection(prev, fetchMoreResult, 'incidents')
+            updateQuery: (prev, {fetchMoreResult: {incidents}}) => extendConnection(prev, incidents, 'incidents')
           })}
         />
       </Box>

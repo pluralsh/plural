@@ -9,7 +9,7 @@ export function updateFragment(cache, {fragment, id, update, fragmentName}) {
 }
 
 export function extendConnection(prev, next, key) {
-  const {edges, pageInfo} = next[key]
+  const {edges, pageInfo} = next
   return {...prev, [key]: {
       ...prev[key], pageInfo, edges: [...prev[key].edges, ...edges]
     }

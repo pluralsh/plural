@@ -28,8 +28,8 @@ export function Followers({incident: {followers: {edges, pageInfo}}, fetchMore})
         mapper={({node}) => <Follower key={node.id} follower={node} />}
         onLoadMore={() => pageInfo.hasNextPage && fetchMore({
           variables: {followerCursor: pageInfo.endCursor},
-          updateQuery: (prev, {fetchMoreResult: {incident}}) => ({
-            ...prev, incident: extendConnection(prev.incident, incident, 'followers')
+          updateQuery: (prev, {fetchMoreResult: {incident: {followers}}}) => ({
+            ...prev, incident: extendConnection(prev.incident, followers, 'followers')
           })
         })}
       />

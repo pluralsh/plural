@@ -92,7 +92,7 @@ export function IncidentHistory({incident: {history: {edges, pageInfo}}, fetchMo
         <Box margin={{top: 'xsmall'}} round='xsmall' pad='xsmall' hoverIndicator='light-2' onClick={() => fetchMore({
           variables: {historyCursor: pageInfo.endCursor},
           updateQuery: (prev, {fetchMoreResult: {incident: {history}}}) => ({
-            ...prev, incident: {...prev.incident, history: extendConnection(prev.incident.history, history)},
+            ...prev, incident: {...prev.incident, history: extendConnection(prev.incident.history, history, 'history')},
           })
         })}>
           <Text size='small'>load more...</Text>

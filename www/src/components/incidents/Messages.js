@@ -29,7 +29,7 @@ export function Messages({incident: {messages: {pageInfo: {hasNextPage, endCurso
       loadNextPage={() => hasNextPage && fetchMore({
         variables: {cursor: endCursor},
         updateQuery: (prev, {fetchMoreResult: {incident: {messages}}}) => ({
-          ...prev, incident: {...prev.incident, messages: extendConnection(prev.incident.messages, messages)},
+          ...prev, incident: extendConnection(prev.incident, messages, 'messages'),
         })
       })}
       hasNextPage={hasNextPage} />

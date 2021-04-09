@@ -139,8 +139,8 @@ export function Messages({incident, loading, fetchMore, subscribeToMore}) {
       loading={loading}
       loadNextPage={() => hasNextPage && fetchMore({
         variables: {cursor: endCursor},
-        updateQuery: (prev, {fetchMoreResult: {incident}}) => ({
-          ...prev, incident: extendConnection(prev.incident, incident, 'messages'),
+        updateQuery: (prev, {fetchMoreResult: {incident: {messages}}}) => ({
+          ...prev, incident: extendConnection(prev.incident, messages, 'messages'),
         })
       })}
       hasNextPage={hasNextPage} />

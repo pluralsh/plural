@@ -306,7 +306,7 @@ export function Incidents() {
           mapper={({node}, next) => <IncidentRow key={node.id} incident={node} next={next.node} selected={incidentId} />}
           onLoadMore={() => pageInfo.hasNextPage && fetchMore({
             variables: {cursor: pageInfo.endCursor},
-            updateQuery: (prev, {fetchMoreResult}) => extendConnection(prev, fetchMoreResult, 'incidents')
+            updateQuery: (prev, {fetchMoreResult: {incidents}}) => extendConnection(prev, incidents, 'incidents')
           })}
         />
       </Box>

@@ -54,7 +54,7 @@ function FlyoutBody({edges, pageInfo, fetchMore, setOpen}) {
         mapper={({node}, next) => <NotificationRow key={node.id} notification={node} next={next.node} />}
         onLoadMore={() => pageInfo.hasNextPage && fetchMore({
           variables: {cursor: pageInfo.endCursor},
-          updateQuery: (prev, {fetchMoreResult}) => extendConnection(prev, fetchMoreResult, 'notifications')
+          updateQuery: (prev, {fetchMoreResult: {notifications}}) => extendConnection(prev, notifications, 'notifications')
         })}
       />
     </Flyout>

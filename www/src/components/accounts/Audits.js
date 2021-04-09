@@ -94,7 +94,7 @@ export function Audits() {
         mapper={({node}) => <Audit key={node.id} audit={node} />}
         onLoadMore={() => pageInfo.hasNextPage && fetchMore({
           variables: {cursor: pageInfo.endCursor},
-          updateQuery: (prev, {fetchMoreResult}) => extendConnection(prev, fetchMoreResult, 'audits')
+          updateQuery: (prev, {fetchMoreResult: {audits}}) => extendConnection(prev, audits, 'audits')
         })} />
     </Box>
   )

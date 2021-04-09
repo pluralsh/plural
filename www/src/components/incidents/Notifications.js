@@ -111,7 +111,7 @@ export function Notifications({incident: {id}}) {
         mapper={({node}, next) => <Notification key={node.id} notification={node} next={next.node} />}
         onLoadMore={() => pageInfo.hasNextPage && fetchMore({
           variables: {cursor: pageInfo.endCursor},
-          updateQuery: (prev, {fetchMoreResult}) => extendConnection(prev, fetchMoreResult, 'notifications')
+          updateQuery: (prev, {fetchMoreResult: {notifications}}) => extendConnection(prev, notifications, 'notifications')
         })}
       />
     </Box>

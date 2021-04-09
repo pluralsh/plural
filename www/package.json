@@ -18,7 +18,7 @@
     "d3-selection": "^1.4.1",
     "emoji-mart": "^3.0.1",
     "filesize": "^6.1.0",
-    "forge-core": "^1.1.11",
+    "forge-core": "^1.2.0",
     "graphql": "^14.5.8",
     "grommet": "^2.14.0",
     "grommet-icons": "^4.5.0",

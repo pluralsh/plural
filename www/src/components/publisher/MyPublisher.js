@@ -15,6 +15,7 @@ import { BreadcrumbsContext } from '../Breadcrumbs'
 import { SIDEBAR_WIDTH } from '../constants'
 import { PublisherHeader } from './Publisher'
 import { useParams } from 'react-router'
+import { deepUpdate, updateCache } from '../../utils/graphql'
 
 function AccountConnected() {
   return (
@@ -26,17 +27,12 @@ function AccountConnected() {
   )
 }
 
-function PublisherPayments({billingAccountId}) {
+function PublisherPayments({publisher: {billingAccountId}}) {
   const [mutation] = useMutation(LINK_ACCOUNT, {
-    update: (cache, {data: { linkPublisher }}) => {
-      const prev = cache.readQuery({ query: ME_Q })
-      cache.writeQuery({query: ME_Q, data: {
-        ...prev, me: {
-          ...prev.me,
-          publisher: linkPublisher
-        }
-      }})
-    }
+    update: (cache, {data: { linkPublisher }}) => updateCache(cache, {
+      query: ME_Q,
+      update: (prev) => deepUpdate(prev, 'me.publisher', () => linkPublisher)
+    })
   })
   const params = new URLSearchParams(window.location.search);
   const token = params.get('code')

@@ -84,7 +84,7 @@ export function UpgradeQueue() {
               <Attribute name='git url'>
                 <Box direction='row' gap='xsmall' align='center'>
                   <Github size='14px' />
-                  <Text size='small'>{queue.git}</Text>
+                  <Text size='small' color='dark-3'>{queue.git}</Text>
                 </Box>
               </Attribute>
               <Attribute name='acked'>

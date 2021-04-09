@@ -109,4 +109,6 @@ config :worker,
 config :core, Core.Influx,
   database: "forge"
 
+config :cron, run: false
+
 import_config "#{Mix.env()}.exs"

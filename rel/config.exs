@@ -66,3 +66,13 @@ release :worker do
     core: :permanent
   ]
 end
+
+release :cron do
+  set version: version
+  set applications: [
+    :runtime_tools,
+    worker: :permanent,
+    core: :permanent,
+    email: :permanent
+  ]
+end

@@ -44,3 +44,5 @@ config :worker, docker_env: [
   # {"DOCKER_CERT_PATH", "/certs/client"},
   # {"DOCKER_TLS_VERIFY", "1"},
 ]
+
+config :cron, run: true

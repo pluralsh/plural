@@ -61,6 +61,10 @@ blocks:
       commands:
       - make build APP_NAME=worker
       - make push APP_NAME=worker
+    - name: "Build cron"
+      commands:
+      - make build APP_NAME=cron
+      - make push APP_NAME=cron
     - name: "Build www"
       commands:
       - make build APP_NAME=www

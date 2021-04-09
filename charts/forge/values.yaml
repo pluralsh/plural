@@ -18,6 +18,10 @@ www:
   tag: '0.1.1'
   port: 80
 
+cron:
+  image: dkr.piazza.app/forge/cron
+  tag: '0.1.1'
+
 imagePullSecrets:
 - name: forge-creds
 
@@ -27,6 +31,12 @@ api:
 
 dbPasswordSecret: forge-postgresql
 rabbitPasswordSecret: forge-rabbitmq
+
+crons:
+- cronName: forge-dkr-scan
+  cronModule: Task.Docker
+  crontab: "0 0 * * *"
+  envVars: []
 
 chartmuseum:
   repository: chartmuseum/chartmuseum

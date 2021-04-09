@@ -1,0 +1,78 @@
+{{- define "forge.envvar" -}}
+- name: {{ .name }}
+  value: {{ .value | quote }}
+{{- end -}}
+
+{{- define "forge.cron" -}}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ .cronName }}
+  labels:
+{{ include "forge.labels" . | indent 4 }}
+spec:
+  schedule: {{ .crontab }}
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          serviceAccountName: forge
+          {{- with .Values.imagePullSecrets }}
+          imagePullSecrets:
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
+          containers:
+          - name: cron
+            image: "{{ .Values.cron.image }}:{{ .Values.cron.tag }}"
+            imagePullPolicy: {{ .Values.image.pullPolicy }}
+            envFrom:
+            - secretRef:
+                name: forge-env
+            env:
+            - name: CRON
+              value: {{ .cronModule }}
+            - name: HOST
+              value: {{ .Values.ingress.dns }}
+            - name: DEPLOYED_AT
+              value: {{ now | unixEpoch | quote }}
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.dbPasswordSecret }}
+                  key: postgresql-password
+            - name: GCP_CREDENTIALS
+              valueFrom:
+                secretKeyRef:
+                  name: forge-serviceaccount
+                  key: gcp.json
+            - name: GCS_BUCKET
+              value: {{ .Values.api.bucket }}
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.rabbitPasswordSecret }}
+                  key: rabbitmq-password
+            {{ range .envVars }}
+              {{ include "forge.envvar" . | nindent 12 }}
+            {{ end }}
+            resources:
+              {{- toYaml .Values.cron.resources | nindent 14 }}
+{{- end -}}
+
+{{ $context := . }}
+{{ range $index, $cron := .Values.crons }}
+  {{- $args := mergeOverwrite $context $cron }}
+  {{ if $index }}
+---
+  {{ end }}
+  {{ include "forge.cron" $args | nindent 0 }}
+{{- end -}}

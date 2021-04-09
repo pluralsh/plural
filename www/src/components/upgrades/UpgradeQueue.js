@@ -83,7 +83,7 @@ export function UpgradeQueue() {
               </Attribute>
               <Attribute name='git url'>
                 <Box direction='row' gap='xsmall' align='center'>
-                  <Github size='small' plain />
+                  <Github size='14px' />
                   <Text size='small'>{queue.git}</Text>
                 </Box>
               </Attribute>

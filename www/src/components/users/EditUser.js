@@ -47,14 +47,14 @@ function ActionBox({onClick, text, icon}) {
   )
 }
 
-export function EditSelect({name, edit, icon}) {
+export function EditSelect({name, edit, icon, base}) {
   const {editing} = useParams()
   let hist = useHistory()
   return (
     <Box pad={{horizontal: 'small', vertical: 'xsmall'}} round='xsmall'
          border={{color: edit === editing ? 'brand' : 'light-5'}} fill='horizontal'
          align='center' gap='small' direction='row' hoverIndicator='light-2'
-         focusIndicator={false} onClick={edit === editing ? null : () => hist.push(`/me/edit/${edit}`)}>
+         focusIndicator={false} onClick={edit === editing ? null : () => hist.push(`${base || '/me/edit/'}${edit}`)}>
       <Box fill='horizontal'>
         {name}
       </Box>

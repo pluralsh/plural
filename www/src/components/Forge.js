@@ -55,7 +55,7 @@ export default function Forge() {
                   <Switch>
                     <Route path='/accounts/edit/:section' component={EditAccount} />
                     <Route path='/accounts/billing/:section' component={EditBilling} />
-                    <Route path='/publishers/mine' component={MyPublisher} />
+                    <Route path='/publishers/mine/:editing' component={MyPublisher} />
                     <Route path='/publishers/:publisherId' component={Publisher} />
                     <Route path='/publishers' component={Publishers} />
                     <Route path='/dkr/repo/:id' component={DockerRepository} />

@@ -3,7 +3,7 @@ import { Loading } from 'forge-core'
 import { useQuery } from 'react-apollo'
 import { QUEUES, UPGRADE_QUEUE_SUB } from './queries'
 import { useHistory } from 'react-router'
-import { Anchor, Box, Text } from 'grommet'
+import { Box, Text } from 'grommet'
 import { Provider } from '../repos/misc'
 
 import { Github, Upgrade } from 'grommet-icons'
@@ -21,11 +21,10 @@ function Queue({q}) {
           <Text size='small' weight={500}>{q.name || 'default'}</Text>
           <Text size='small' color='dark-3'>{q.domain}</Text>
         </Box>
-        <Box direction='row' gap='xsmall' align='center'>
-          <Github size='14px' plain />
-          {q.git && <Anchor size='small' href={q.git}>{q.git}</Anchor>}
-          {!q.git && <Text size='small'>no git url provided</Text>}
-        </Box>
+        {q.git && <Box direction='row' gap='xsmall' align='center'>
+          <Github size='14px' />
+          <Text size='small' color='dark-3'>{q.git}</Text>
+        </Box>}
       </Box>
       <QueueHealth queue={q} />
     </Box>

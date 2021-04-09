@@ -10,10 +10,11 @@ import { ME_Q } from '../users/queries'
 import { CONNECT_ICON, AUTHORIZE_URL } from './constants'
 import { Add, Edit, List, Stripe } from 'grommet-icons'
 import { STRIPE_BLUE } from '../payments/constants'
-import { EditContent, EditContext, EditSelect } from '../users/EditUser'
+import { EditContent, EditSelect } from '../users/EditUser'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 import { SIDEBAR_WIDTH } from '../constants'
 import { PublisherHeader } from './Publisher'
+import { useParams } from 'react-router'
 
 function AccountConnected() {
   return (
@@ -106,7 +107,7 @@ function AddressForm({address, onChange}) {
 
 const defaultAddress = {line1: '', line2: '', city: '', state: '', zip: '', country: 'United States'}
 
-function EditPublisher({description, phone, address: {__typename, ...address}}) {
+function EditPublisher({publisher: {description, phone, address: {__typename, ...address}}}) {
   const [attributes, setAttributes] = useState({description, phone, address: (address || defaultAddress)})
   const [mutation, {loading}] = useMutation(EDIT_PUBLISHER, {
     variables: {attributes},
@@ -154,37 +155,38 @@ function EditPublisher({description, phone, address: {__typename, ...address}}) 
 }
 
 export default function MyPublisher() {
+  const {editing} = useParams()
   const me = useContext(CurrentUserContext)
   const {setBreadcrumbs} = useContext(BreadcrumbsContext)
-  const [editing, setEditing] = useState('Repositories')
   useEffect(() => {
     if (!me.publisher) return
-    setBreadcrumbs([{url: `/publishers/${me.publisher.id}`, text: me.publisher.name}])
-  }, [me, setBreadcrumbs])
+    setBreadcrumbs([
+      {url: `/publishers/${me.publisher.id}`, text: me.publisher.name},
+      {url: `/publishers/${me.publisher.id}/${editing}`, text: editing}
+    ])
+  }, [me, setBreadcrumbs, editing])
 
   return (
-    <EditContext.Provider value={{editing, setEditing}}>
     <Box fill direction='row'>
       <Box width={SIDEBAR_WIDTH} flex={false} pad='small' gap='small' border={{side: 'right', color: 'light-5'}}>
         <PublisherHeader publisher={{...me.publisher, owner: me}} size='60px' />
-        <EditSelect edit='Repositories' icon={<List size='small' />} />
-        <EditSelect edit='Edit Attributes' icon={<Edit size='small' />} />
-        <EditSelect edit='Create Repository' icon={<Add size='small' />} />
+        <EditSelect base='/publishers/mine/' edit='repos' name='Repositories' icon={<List size='small' />} />
+        <EditSelect base='/publishers/mine/' edit='attrs' name='Edit Attributes' icon={<Edit size='small' />} />
+        <EditSelect base='/publishers/mine/' edit='create' name='Create Repository' icon={<Add size='small' />} />
         {me.publisher.billingAccountId && <AccountConnected />}
         {!me.publisher.billingAccountId && (<PublisherPayments {...me.publisher} />)}
       </Box>
       <Box fill style={{overflow: 'auto'}} pad='small'>
-        <EditContent edit='Repositories'>
+        <EditContent edit='repos'>
           <Repositories publisher={me.publisher} deletable columns={2} />
         </EditContent>
-        <EditContent edit='Edit Attributes'>
-          <EditPublisher {...me.publisher} />
+        <EditContent edit='attrs'>
+          <EditPublisher publisher={me.publisher} />
         </EditContent>
-        <EditContent edit='Create Repository'>
+        <EditContent edit='create'>
           <CreateRepository publisher={me.publisher} />
         </EditContent>
       </Box>
     </Box>
-    </EditContext.Provider>
   )
 }

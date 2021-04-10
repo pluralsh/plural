@@ -397,16 +397,27 @@ export const INTEGRATIONS_Q = gql`
 `;
 
 export const EXPLORE_REPOS = gql`
-  query Repos($tag: String, $repoCursor: String, $cursor: String, $q: String) {
-    repositories(tag: $tag, after: $repoCursor, first: 15) {
+  query Repos($installed: Boolean, $tag: String, $cursor: String) {
+    repositories(installed: $installed, tag: $tag, after: $cursor, first: 15) {
       pageInfo { ...PageInfo }
-      edges { node { ...RepoFragment } }
-    }
-    tags(type: REPOSITORIES, first: 20, after: $cursor, q: $q) {
-      pageInfo { ...PageInfo }
-      edges { node { tag count } }
+      edges { 
+        node { 
+          ...RepoFragment 
+          tags { tag }
+        } 
+      }
     }
   }
   ${PageInfo}
   ${RepoFragment}
 `;
+
+export const REPO_TAGS = gql`
+  query Tags($q: String, $cursor: String) {
+    tags(type: REPOSITORIES, first: 50, after: $cursor, q: $q) {
+      pageInfo { ...PageInfo }
+      edges { node { tag count } }
+    }
+  }
+  ${PageInfo}
+`

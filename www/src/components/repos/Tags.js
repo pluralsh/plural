@@ -42,6 +42,7 @@ export function TagContainer({enabled, children, gap, pad, onClick}) {
       onMouseLeave={() => setHover(false)}
       pad={pad || {horizontal: 'small', vertical: 'xxsmall'}}
       hoverIndicator='light-2'
+      background={enabled ? 'light-1' : null}
       focusIndicator={false}
       direction='row'
       align='center'

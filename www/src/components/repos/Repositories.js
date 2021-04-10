@@ -47,17 +47,23 @@ export function RepoIcon({repo: {icon}, round, size}) {
   )
 }
 
+export function RepoName({repo: {name, private: priv}}) {
+  return (
+    <Box direction='row' gap='xsmall' align='center'>
+      <Text size='small' weight='bold'>
+        {name}
+      </Text>
+      {priv && <Lock size='small' />}
+    </Box>
+  )
+}
+
 export function RepositoryInner({repo}) {
   return (
     <Box direction='row' gap='medium' fill='horizontal'>
       <RepoIcon repo={repo} />
       <Box gap='xxsmall' justify='center' width='100%'>
-        <Box direction='row' gap='xsmall' align='center'>
-          <Text size='small' weight='bold'>
-            {repo.name}
-          </Text>
-          {repo.private && <Lock size='small' />}
-        </Box>
+        <RepoName repo={repo} />
         <Text size='small'>
           {repo.description}
         </Text>

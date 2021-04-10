@@ -55,7 +55,7 @@ defmodule GraphQl.RepositoryQueriesTest do
 
       {:ok, %{data: %{"repositories" => repos}}} = run_query("""
         query {
-          repositories(first: 5) {
+          repositories(installed: true first: 5) {
             edges { node { id } }
           }
         }
@@ -108,6 +108,22 @@ defmodule GraphQl.RepositoryQueriesTest do
 
       assert from_connection(found)
              |> ids_equal([repo1, repo2])
+    end
+
+    test "it can list all public repositories" do
+      repos = insert_list(3, :repository)
+      insert(:repository, private: true)
+
+      {:ok, %{data: %{"repositories" => found}}} = run_query("""
+        query {
+          repositories(first: 5) {
+            edges { node { id } }
+          }
+        }
+      """, %{}, %{current_user: insert(:user)})
+
+      assert from_connection(found)
+             |> ids_equal(repos)
     end
   end
 

@@ -236,6 +236,7 @@ defmodule GraphQl.Schema.Repository do
       arg :publisher_id, :id
       arg :tag,          :string
       arg :supports,     :boolean
+      arg :installed,    :boolean
 
       resolve &Repository.list_repositories/2
     end

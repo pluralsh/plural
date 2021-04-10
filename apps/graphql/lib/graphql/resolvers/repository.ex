@@ -57,23 +57,29 @@ defmodule GraphQl.Resolvers.Repository do
     |> paginate(args)
   end
 
-  def list_repositories(%{tag: tag} = args, %{context: %{current_user: user}}) when not is_nil(tag) do
+  def list_repositories(%{tag: tag} = args, %{context: %{current_user: user}}) when is_binary(tag) do
     Repository.for_tag(tag)
     |> Repository.ordered()
     |> Repository.accessible(user)
     |> paginate(args)
   end
 
-  def list_repositories(%{publisher_id: pid} = args, %{context: %{current_user: user}}) when not is_nil(pid) do
+  def list_repositories(%{publisher_id: pid} = args, %{context: %{current_user: user}}) when is_binary(pid) do
     Repository.for_publisher(pid)
     |> Repository.ordered()
     |> Repository.accessible(user)
     |> paginate(args)
   end
 
-  def list_repositories(args, %{context: %{current_user: user}}) do
+  def list_repositories(%{installed: true} = args, %{context: %{current_user: user}}) do
     Repository.for_user(user.id)
     |> Repository.ordered()
+    |> Repository.accessible(user)
+    |> paginate(args)
+  end
+
+  def list_repositories(args, %{context: %{current_user: user}}) do
+    Repository.ordered()
     |> Repository.accessible(user)
     |> paginate(args)
   end

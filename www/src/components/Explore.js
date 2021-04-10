@@ -10,6 +10,7 @@ import { BreadcrumbsContext } from './Breadcrumbs'
 import { extendConnection } from '../utils/graphql'
 import { useHistory } from 'react-router'
 import { Link } from 'react-router-dom'
+import { sortBy } from 'lodash'
 
 const WIDTH = 15
 
@@ -40,7 +41,7 @@ function Repo({repo, setTag}) {
       <Box fill='horizontal' gap='2px'>
         <Box direction='row' align='center' gap='xsmall'>
           <RepoName repo={repo} />
-          {repo.tags.map(({tag}) => (
+          {sortBy(repo.tags, ['tag']).map(({tag}) => (
             <Box key={tag} round='xsmall' pad={{horizontal: 'xsmall', vertical: '1px'}} background='light-2'
               hoverIndicator='light-4' focusIndicator={false} onClick={(e) => {
                 e.stopPropagation()

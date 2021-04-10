@@ -48,39 +48,10 @@ defmodule GraphQl.Resolvers.Repository do
   def resolve_installation(%{id: repo_id}, %{context: %{current_user: user}}),
     do: {:ok, Repositories.get_installation(user.id, repo_id)}
 
-  def list_repositories(%{supports: true} = args, %{context: %{current_user: user}}) do
-    user = Core.Services.Rbac.preload(user)
-
-    Repository.for_account(user.account_id)
-    |> Repository.supported(user)
-    |> Repository.ordered()
-    |> paginate(args)
-  end
-
-  def list_repositories(%{tag: tag} = args, %{context: %{current_user: user}}) when is_binary(tag) do
-    Repository.for_tag(tag)
-    |> Repository.ordered()
-    |> Repository.accessible(user)
-    |> paginate(args)
-  end
-
-  def list_repositories(%{publisher_id: pid} = args, %{context: %{current_user: user}}) when is_binary(pid) do
-    Repository.for_publisher(pid)
-    |> Repository.ordered()
-    |> Repository.accessible(user)
-    |> paginate(args)
-  end
-
-  def list_repositories(%{installed: true} = args, %{context: %{current_user: user}}) do
-    Repository.for_user(user.id)
-    |> Repository.ordered()
-    |> Repository.accessible(user)
-    |> paginate(args)
-  end
-
   def list_repositories(args, %{context: %{current_user: user}}) do
     Repository.ordered()
     |> Repository.accessible(user)
+    |> apply_filters(args, user)
     |> paginate(args)
   end
 
@@ -90,6 +61,22 @@ defmodule GraphQl.Resolvers.Repository do
     |> Repository.accessible(user)
     |> paginate(args)
   end
+
+  defp apply_filters(query, args, user) do
+    Enum.reduce(args, query, &apply_filter(&2, &1, user))
+  end
+
+  defp apply_filter(query, {:installed, true}, user),
+    do: Repository.for_user(query, user.id)
+  defp apply_filter(query, {:supports, true}, user) do
+    user = Core.Services.Rbac.preload(user)
+
+    Repository.for_account(query, user.account_id)
+    |> Repository.supported(user)
+  end
+  defp apply_filter(query, {:tag, tag}, _) when is_binary(tag), do: Repository.for_tag(query, tag)
+  defp apply_filter(query, {:publisher_id, id}, _) when is_binary(id), do: Repository.for_publisher(query, id)
+  defp apply_filter(query, _, _), do: query
 
   def list_installations(args, %{context: %{current_user: user}}) do
     Installation.for_user(user.id)

@@ -3,13 +3,13 @@ import { gql } from 'apollo-boost'
 import { useParams } from 'react-router'
 import { useMutation, useQuery } from 'react-apollo'
 import { Box, Keyboard, FormField, TextInput, Text } from 'grommet'
-import { Button, InputCollection, ResponsiveInput, SecondaryButton } from 'forge-core'
+import { Button, InputCollection, ResponsiveInput, SecondaryButton, GqlError } from 'forge-core'
 import { StatusCritical, Checkmark } from 'grommet-icons'
 import { initials } from './users/Avatar'
 import { setToken } from '../helpers/authentication'
 
 const SIGNUP = gql`
-  mutation Signup($attributes: UserAttributes!, $inviteId: ID!) {
+  mutation Signup($attributes: UserAttributes!, $inviteId: String!) {
     signup(attributes: $attributes, inviteId: $inviteId) {
       jwt
     }
@@ -17,7 +17,7 @@ const SIGNUP = gql`
 `;
 
 const INVITE_Q = gql`
-  query Invite($id: ID!) {
+  query Invite($id: String!) {
     invite(id: $id) {
       email
     }
@@ -64,7 +64,7 @@ export default function Invite() {
   const [attributes, setAttributes] = useState({name: '', password: ''})
   const [confirm, setConfirm] = useState('')
   const [editPassword, setEditPassword] = useState(false)
-  const [mutation, {loading}] = useMutation(SIGNUP, {
+  const [mutation, {loading, error}] = useMutation(SIGNUP, {
     variables: {inviteId, attributes},
     onCompleted: ({signup: {jwt}}) => {
       setToken(jwt)
@@ -72,9 +72,9 @@ export default function Invite() {
     }
   })
 
-  const {data, error} = useQuery(INVITE_Q, {variables: {id: inviteId}})
+  const {data, error: inviteError} = useQuery(INVITE_Q, {variables: {id: inviteId}})
 
-  if (error) return <InvalidInvite />
+  if (inviteError) return <InvalidInvite />
   if (!data) return null
 
   const {disabled, reason} = disableState(attributes.password, confirm)
@@ -86,6 +86,7 @@ export default function Invite() {
       <Box width="60%" pad='medium' background='white'>
         <Keyboard onEnter={editPassword && filled ? mutation : null}>
           <Box gap='small'>
+            {error && <GqlError error={error} header='Something went wrong!' />}
             <Box justify='center' align='center'>
               <Text weight="bold">Accept your invite</Text>
             </Box>

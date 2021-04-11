@@ -5,6 +5,7 @@ APP_NAME ?= forge
 APP_VSN ?= `cat VERSION`
 BUILD ?= `git rev-parse --short HEAD`
 DKR_HOST ?= dkr.piazza.app
+dep ?= forge-core
 
 help:
 	@perl -nle'print $& if m{^[a-zA-Z_-]+:.*?## .*$$}' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -47,3 +48,6 @@ web: ## starts a local webserver
 
 migration:
 	cd apps/core && MIX_ENV=test mix ecto.gen.migration $(name)
+
+yarn-add: ## adds a yarn dep to the react interface
+	cd www && yarn add $(dep)

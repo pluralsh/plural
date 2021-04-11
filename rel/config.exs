@@ -71,7 +71,7 @@ release :cron do
   set version: version
   set applications: [
     :runtime_tools,
-    worker: :permanent,
+    cron: :permanent,
     core: :permanent,
     email: :permanent
   ]

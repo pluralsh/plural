@@ -68,12 +68,14 @@ defmodule GraphQl.Resolvers.Repository do
 
   defp apply_filter(query, {:installed, true}, user),
     do: Repository.for_user(query, user.id)
+
   defp apply_filter(query, {:supports, true}, user) do
     user = Core.Services.Rbac.preload(user)
 
     Repository.for_account(query, user.account_id)
     |> Repository.supported(user)
   end
+
   defp apply_filter(query, {:tag, tag}, _) when is_binary(tag), do: Repository.for_tag(query, tag)
   defp apply_filter(query, {:publisher_id, id}, _) when is_binary(id), do: Repository.for_publisher(query, id)
   defp apply_filter(query, _, _), do: query

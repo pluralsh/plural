@@ -22,6 +22,7 @@ defmodule GraphQl.Schema.Version do
     field :values_template, :string
     field :helm,            :map
     field :tags,            list_of(:version_tag), resolve: dataloader(Version)
+    field :dependencies,    :dependencies
     field :package,         :string, resolve: fn
       v, _, _ -> {:ok, Core.Storage.url({v.package, v}, :original)}
     end

@@ -9,8 +9,8 @@ import { Search } from 'grommet-icons'
 import { BreadcrumbsContext } from './Breadcrumbs'
 import { extendConnection } from '../utils/graphql'
 import { useHistory } from 'react-router'
-import { Link } from 'react-router-dom'
 import { sortBy } from 'lodash'
+import { SafeLink } from './utils/Link'
 
 const WIDTH = 15
 
@@ -25,7 +25,7 @@ function EmptyState() {
 
 function Detail({name, children}) {
   return (
-    <Box direction='row' gap='small' align='center' onClick={(e) => e.stopPropagation()} focusIndicator={false}>
+    <Box direction='row' gap='xsmall' align='center' >
       <Text size='small' weight={500}>{name}:</Text>
       {children}
     </Box>
@@ -53,7 +53,7 @@ function Repo({repo, setTag}) {
           ))}
         </Box>
         <Detail name='publisher'>
-          <Link to={`/publishers/${repo.publisher.id}`}>{repo.publisher.name}</Link>
+          <SafeLink to={`/publishers/${repo.publisher.id}`}>{repo.publisher.name}</SafeLink>
         </Detail>
         <Text size='small'><i>{repo.description}</i></Text>
       </Box>

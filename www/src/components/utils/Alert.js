@@ -19,7 +19,10 @@ function AlertIcon({status, color}) {
       return <Checkmark color={color} size='medium' />
     case AlertStatus.ERROR:
       return <AlertError color={color} size='medium'/>
+    default:
+      // nothing
   }
+
   return null
 }
 

@@ -1,4 +1,6 @@
 replicaCount: 2
+region: us-east-2
+provide: gcp
 
 image:
   repository: dkr.piazza.app/forge/forge

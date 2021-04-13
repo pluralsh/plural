@@ -45,4 +45,7 @@ config :worker, docker_env: [
   # {"DOCKER_TLS_VERIFY", "1"},
 ]
 
+config :ex_aws,
+  region: {:system, "AWS_REGION"}
+
 config :cron, run: true

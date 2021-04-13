@@ -11,6 +11,9 @@ defmodule Core.Application do
     ] ++ conf(:consumers, [])
       ++ broker()
 
+    Application.get_all_env(:arc)
+    |> IO.inspect()
+
     opts = [strategy: :one_for_one, name: Core.Supervisor]
     Supervisor.start_link(children, opts)
   end

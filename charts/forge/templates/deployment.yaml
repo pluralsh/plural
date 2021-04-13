@@ -55,7 +55,7 @@ spec:
             secretKeyRef:
               name: forge-serviceaccount
               key: gcp.json
-        - name: GCS_BUCKET
+        - name: BUCKET
           value: {{ .Values.api.bucket }}
         - name: RABBITMQ_PASSWORD
           valueFrom:
@@ -145,7 +145,7 @@ spec:
             secretKeyRef:
               name: forge-serviceaccount
               key: gcp.json
-        - name: GCS_BUCKET
+        - name: BUCKET
           value: {{ .Values.api.bucket }}
         - name: RABBITMQ_PASSWORD
           valueFrom:
@@ -224,7 +224,7 @@ spec:
             secretKeyRef:
               name: forge-serviceaccount
               key: gcp.json
-        - name: GCS_BUCKET
+        - name: BUCKET
           value: {{ .Values.api.bucket }}
         - name: RABBITMQ_PASSWORD
           valueFrom:

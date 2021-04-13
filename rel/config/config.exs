@@ -2,8 +2,6 @@ import Config
 import System, only: [get_env: 1]
 
 app = get_env("REPO_NAME") || "forge"
-IO.inspect(app)
-
 prefixed = fn name -> "#{app}-#{name}" end
 
 config :api, ApiWeb.Endpoint,
@@ -18,7 +16,7 @@ config :email, host: get_env("HOST")
 
 config :arc,
   storage: Arc.Storage.GCS,
-  bucket: get_env("GCS_BUCKET")
+  bucket: get_env("BUCKET")
 
 config :core, Core.Guardian,
   issuer: app,
@@ -73,4 +71,5 @@ end
 
 if provider != :gcp do
   config :goth, disabled: true
+  config :arc, storage: Arc.Storage.S3
 end

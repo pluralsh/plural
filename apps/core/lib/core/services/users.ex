@@ -110,7 +110,7 @@ defmodule Core.Services.Users do
   """
   @spec create_publisher(map, User.t) :: {:ok, Publisher.t} | {:error, term}
   def create_publisher(attrs, %User{} = user) do
-    %Publisher{owner_id: user.id}
+    %Publisher{owner_id: user.id, account_id: user.account_id}
     |> Publisher.changeset(attrs)
     |> Core.Repo.insert()
   end

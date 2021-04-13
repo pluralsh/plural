@@ -23,11 +23,13 @@ defmodule Core.Services.UsersTest do
 
   describe "#create_publisher" do
     test "Users can create publishers" do
-      user = insert(:user)
+      account = insert(:account)
+      user = insert(:user, account: account)
       {:ok, publisher} = Users.create_publisher(%{name: "somepublisher"}, user)
 
       assert publisher.name == "somepublisher"
       assert publisher.owner_id == user.id
+      assert publisher.account_id == account.id
     end
   end
 

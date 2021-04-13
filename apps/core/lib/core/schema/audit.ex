@@ -21,7 +21,7 @@ defmodule Core.Schema.Audit do
     from(a in query, where: a.account_id == ^account_id)
   end
 
-  def ordered(query \\ __MODULE__, order \\ [asc: :inserted_at]) do
+  def ordered(query \\ __MODULE__, order \\ [desc: :inserted_at]) do
     from(a in query, order_by: ^order)
   end
 

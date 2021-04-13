@@ -61,7 +61,7 @@ export function ShowFull({onClick, label}) {
   )
 }
 
-export function FullDependencies(resource) {
+export function FullDependencies({resource}) {
   const {data, loading} = useQuery(CLOSURE_Q, {
     variables: {id: resource.id, type: depType(resource)}
   })
@@ -76,8 +76,7 @@ export function FullDependencies(resource) {
   )
 }
 
-export default function Dependencies(resource) {
-  const {name, dependencies} = resource
+export default function Dependencies({name, dependencies, resource}) {
   if (!dependencies || !dependencies.dependencies) {
     return (
       <Box pad='small'>

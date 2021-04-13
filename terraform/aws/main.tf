@@ -6,7 +6,7 @@ module "asummable_role_autoscaler" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
   version                       = "2.14.0"
   create_role                   = true
-  role_name                     = "forge-s3"
+  role_name                     = "forge"
   provider_url                  = replace(aws_eks_cluster.cluster.identity[0].oidc[0].issuer, "https://", "")
   role_policy_arns              = [aws_iam_policy.s3_admin.arn]
   oidc_fully_qualified_subjects = ["system:serviceaccount:${var.forge_namespace}:${var.forge_serviceaccount}"]

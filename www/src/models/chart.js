@@ -30,8 +30,10 @@ export const VersionFragment = gql`
     insertedAt
     chart { ...ChartFragment }
     terraform { id name }
+    dependencies { ...DependenciesFragment }
   }
   ${ChartFragment}
+  ${DependenciesFragment}
 `;
 
 export const ChartInstallationFragment = gql`

@@ -1,13 +1,18 @@
 import Config
 import System, only: [get_env: 1]
 
+app = get_env("REPO_NAME") || "forge"
+IO.inspect(app)
+
+prefixed = fn name -> "#{app}-#{name}" end
+
 config :api, ApiWeb.Endpoint,
   url: [host: get_env("HOST"), port: 80],
-  check_origin: ["//#{get_env("HOST")}", "//forge-api"]
+  check_origin: ["//#{get_env("HOST")}", "//#{prefixed.("api")}"]
 
 config :rtc, RtcWeb.Endpoint,
   url: [host: get_env("HOST"), port: 80],
-  check_origin: ["//#{get_env("HOST")}", "//forge-rtc"]
+  check_origin: ["//#{get_env("HOST")}", "//#{prefixed.("rtc")}"]
 
 config :email, host: get_env("HOST")
 
@@ -16,20 +21,20 @@ config :arc,
   bucket: get_env("GCS_BUCKET")
 
 config :core, Core.Guardian,
-  issuer: "forge",
+  issuer: app,
   secret_key: get_env("JWT_SECRET")
 
 config :core, Core.Repo,
-  database: "forge",
-  username: "forge",
+  database: app,
+  username: app,
   password: get_env("POSTGRES_PASSWORD"),
-  hostname: "forge-postgresql",
+  hostname: "#{prefixed.("postgresql")}",
   pool_size: 5
 
 config :core, Core.Influx,
-  database: "forge",
-  host: "forge-influxdb",
-  auth: [method: :basic, username: "forge", password: get_env("INFLUX_PAASSWORD")],
+  database: app,
+  host: prefixed.("influxdb"),
+  auth: [method: :basic, username: app, password: get_env("INFLUX_PAASSWORD")],
   port: 8086
 
 config :core, :jwt,
@@ -40,15 +45,15 @@ config :core, :jwt,
 
 config :core, Core.Conduit.Broker,
   adapter: ConduitAMQP,
-  url: "amqp://user:#{get_env("RABBITMQ_PASSWORD")}@forge-rabbitmq"
+  url: "amqp://user:#{get_env("RABBITMQ_PASSWORD")}@#{prefixed.("rabbitmq")}"
 
 config :rtc, Rtc.Conduit.Broker,
   adapter: ConduitAMQP,
-  url: "amqp://user:#{get_env("RABBITMQ_PASSWORD")}@forge-rabbitmq"
+  url: "amqp://user:#{get_env("RABBITMQ_PASSWORD")}@#{prefixed.("rabbitmq")}"
 
 config :worker, Worker.Conduit.Broker,
   adapter: ConduitAMQP,
-  url: "amqp://user:#{get_env("RABBITMQ_PASSWORD")}@forge-rabbitmq"
+  url: "amqp://user:#{get_env("RABBITMQ_PASSWORD")}@#{prefixed.("rabbitmq")}"
 
 config :piazza_core, aes_key: get_env("AES_KEY")
 
@@ -57,3 +62,15 @@ config :core, Core.Clients.Zoom,
   client_secret: get_env("ZOOM_CLIENT_SECRET")
 
 config :core, :chartmuseum, "http://chartmuseum:8080"
+
+provider = case get_env("PROVIDER") || "google" do
+  "google" -> :gcp
+  "gcp" -> :gcp
+  "aws" -> :aws
+  "azure" -> :azure
+  _ -> :custom
+end
+
+if provider != :gcp do
+  config :goth, disabled: true
+end

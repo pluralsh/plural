@@ -215,7 +215,12 @@ export default function Terraform() {
               <TemplateView valuesTemplate={currentVersion.valuesTemplate} />
             </TabContent>
             <TabContent name='dependencies'>
-              {full ? <FullDependencies {...terraformModule} /> : <Dependencies {...terraformModule} />}
+              {full ? <FullDependencies {...terraformModule} /> : (
+                <Dependencies 
+                  name={terraformModule.name} 
+                  dependencies={(version || terraformModule).dependencies}
+                  resource={terraformModule} />
+              )}
             </TabContent>
             <TabContent name='edit'>
               <UpdateTerraform {...terraformModule} />

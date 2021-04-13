@@ -13,9 +13,9 @@ defmodule Core.Policies.Terraform do
   end
 
   def can?(%User{id: user_id} = user, %TerraformInstallation{installation: %{repository_id: repo_id, user_id: user_id}} = ti, :create) do
-    case Core.Repo.preload(ti, [:terraform]) do
-      %{terraform: %{repository_id: ^repo_id} = terraform} ->
-        Dependencies.validate(terraform.dependencies, user)
+    case Core.Repo.preload(ti, [:terraform, :version]) do
+      %{terraform: %{repository_id: ^repo_id} = tf, version: v} ->
+        Dependencies.validate((v || tf).dependencies, user)
       _ -> {:error, :forbidden}
     end
   end

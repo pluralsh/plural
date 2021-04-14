@@ -101,9 +101,10 @@ function AddressForm({address, onChange}) {
 }
 
 const defaultAddress = {line1: '', line2: '', city: '', state: '', zip: '', country: 'United States'}
+const prune = ({__typename, ...rest}) => rest
 
-function EditPublisher({publisher: {description, phone, address: {__typename, ...address}}}) {
-  const [attributes, setAttributes] = useState({description, phone, address: (address || defaultAddress)})
+function EditPublisher({publisher: {description, phone, address}}) {
+  const [attributes, setAttributes] = useState({description, phone, address: prune(address || defaultAddress)})
   const [mutation, {loading}] = useMutation(EDIT_PUBLISHER, {
     variables: {attributes},
     update: (cache, { data: { updatePublisher } }) => {
@@ -169,7 +170,7 @@ export default function MyPublisher() {
         <EditSelect base='/publishers/mine/' edit='attrs' name='Edit Attributes' icon={<Edit size='small' />} />
         <EditSelect base='/publishers/mine/' edit='create' name='Create Repository' icon={<Add size='small' />} />
         {me.publisher.billingAccountId && <AccountConnected />}
-        {!me.publisher.billingAccountId && (<PublisherPayments {...me.publisher} />)}
+        {!me.publisher.billingAccountId && (<PublisherPayments publisher={me.publisher} />)}
       </Box>
       <Box fill style={{overflow: 'auto'}} pad='small'>
         <EditContent edit='repos'>

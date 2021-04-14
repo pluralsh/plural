@@ -23,7 +23,7 @@ config :libcluster,
       strategy: Cluster.Strategy.Kubernetes,
       config: [
         mode: :ip,
-        kubernetes_node_basename: app,
+        kubernetes_node_basename: "forge",
         kubernetes_selector: "app=#{prefixed.("api")}",
         kubernetes_namespace: get_env("NAMESPACE"),
         polling_interval: 10_000

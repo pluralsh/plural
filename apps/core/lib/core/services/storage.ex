@@ -23,6 +23,11 @@ defmodule Core.Storage do
   end
   def validate(_), do: true
 
+  def asset_host() do
+    %{host: host, scheme: scheme} = ExAws.Config.new(:s3)
+    "#{scheme}#{bucket()}.#{host}"
+  end
+
   # def transform(:thumb, _) do
   #   {:convert, "-thumbnail 100x100^ -gravity center -extent 100x100 -format png", :png}
   # end

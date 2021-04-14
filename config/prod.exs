@@ -46,6 +46,9 @@ config :worker, docker_env: [
 ]
 
 config :ex_aws,
-  region: {:system, "AWS_REGION"}
+  region: {:system, "AWS_REGION"},
+  secret_access_key: [{:system, "AWS_ACCESS_KEY_ID"}, {:awscli, "profile_name", 30}],
+  access_key_id: [{:system, "AWS_SECRET_ACCESS_KEY"}, {:awscli, "profile_name", 30}],
+  awscli_auth_adapter: ExAws.STS.AuthCache.AssumeRoleWebIdentityAdapter
 
 config :cron, run: true

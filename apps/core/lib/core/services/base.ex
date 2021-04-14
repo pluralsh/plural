@@ -52,8 +52,6 @@ defmodule Core.Services.Base do
     end
   end
 
-  def ok(res), do: {:ok, res}
-
   def handle_notify(event_type, resource, additional \\ %{}) do
     Map.new(additional)
     |> Map.put(:item, resource)

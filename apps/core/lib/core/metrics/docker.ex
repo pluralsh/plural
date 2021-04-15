@@ -2,7 +2,7 @@ defmodule Core.Metrics.Docker do
   use Core.Metric.Base
 
   series do
-    database "forge"
+    database "plural"
     measurement "docker_pulls"
 
     tag :repository

@@ -107,7 +107,7 @@ config :worker,
   docker_env: []
 
 config :core, Core.Influx,
-  database: "forge"
+  database: "plural"
 
 config :cron, run: false
 

@@ -29,7 +29,7 @@ services:
     - INFLUXDB_HTTP_AUTH_ENABLED=true
     - INFLUXDB_ADMIN_USER=forge
     - INFLUXDB_ADMIN_PASSWORD=forgepwd
-    - INFLUXDB_DB=forge
+    - INFLUXDB_DB=plural
     ports:
     - "8086:8086"
   # chartmuseum:

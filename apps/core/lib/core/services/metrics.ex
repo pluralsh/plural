@@ -38,7 +38,7 @@ defmodule Core.Services.Metrics do
     end)
     |> ok()
   end
-  def response(pass), do: {:ok, []}
+  def response(_), do: {:ok, []}
 
   defp parse_value([time, val]), do: %{time: Timex.parse!(time, "{ISO:Extended}"), value: val}
 end

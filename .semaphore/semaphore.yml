@@ -39,20 +39,20 @@ blocks:
     secrets:
     - name: GCP
     - name: gcp-test
-    - name: forge
+    - name: plural
     prologue:
       commands:
       # Authenticate using the file injected from the secret
       - gcloud auth activate-service-account --key-file=.secrets/gcp-piazzaapp.json
       # Don't forget -q to silence confirmation prompts
       - gcloud auth configure-docker -q
-      - docker login -u mguarino46@gmail.com -p $FORGE_ACCESS_TOKEN dkr.piazza.app
+      - docker login -u mguarino46@gmail.com -p $PLURAL_ACCESS_TOKEN dkr.plural.sh
       - checkout
     jobs:
-    - name: "Build forge"
+    - name: "Build plural"
       commands:
-      - make build APP_NAME=forge
-      - make push APP_NAME=forge
+      - make build APP_NAME=plural
+      - make push APP_NAME=plural
     - name: "Build rtc"
       commands:
       - make build APP_NAME=rtc
@@ -68,22 +68,22 @@ blocks:
     - name: "Build www"
       commands:
       - make build APP_NAME=www
-      - make push APP_NAME=forge-www
+      - make push APP_NAME=plural-www
 - name: deploy
   dependencies: ['build']
   skip:
     when: "branch != 'master'"
   task:
     secrets:
-    - name: forge
+    - name: plural
     prologue:
       commands:
       - checkout
-      - wget -O forge.cmd 'https://forge.piazza.app/artifacts/forge/forge?platform=linux&arch=amd64'
-      - chmod +x ./forge.cmd
-      - ./forge.cmd config amend token ${FORGE_ACCESS_TOKEN}
+      - wget -O plural.cmd 'https://app.plural.sh/artifacts/plural/plural?platform=linux&arch=amd64'
+      - chmod +x ./plural.cmd
+      - ./plural.cmd config amend token ${PLURAL_ACCESS_TOKEN}
     jobs:
     - name: "Deploy with watchman"
       commands:
       - export GIT_COMMIT_MESSAGE=$(git log -1 --pretty=%B | cat | head -n 1)
-      - ./forge.cmd upgrade --name forge --message "${GIT_COMMIT_MESSAGE}"
+      - ./plural.cmd upgrade --name plural --message "${GIT_COMMIT_MESSAGE}"

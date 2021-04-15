@@ -1,16 +1,13 @@
 import Config
 import System, only: [get_env: 1]
 
-app = get_env("REPO_NAME") || "forge"
-prefixed = fn name -> "#{app}-#{name}" end
-
 config :api, ApiWeb.Endpoint,
   url: [host: get_env("HOST"), port: 80],
-  check_origin: ["//#{get_env("HOST")}", "//#{prefixed.("api")}"]
+  check_origin: ["//#{get_env("HOST")}", "//plural-api"]
 
 config :rtc, RtcWeb.Endpoint,
   url: [host: get_env("HOST"), port: 80],
-  check_origin: ["//#{get_env("HOST")}", "//#{prefixed.("rtc")}"]
+  check_origin: ["//#{get_env("HOST")}", "//plural-rtc"]
 
 config :email, host: get_env("HOST")
 
@@ -19,20 +16,20 @@ config :arc,
   bucket: get_env("BUCKET")
 
 config :core, Core.Guardian,
-  issuer: app,
+  issuer: "plural",
   secret_key: get_env("JWT_SECRET")
 
 config :core, Core.Repo,
-  database: app,
-  username: app,
+  database: "plural",
+  username: "plural",
   password: get_env("POSTGRES_PASSWORD"),
-  hostname: "#{prefixed.("postgresql")}",
+  hostname: "plural-postgresql",
   pool_size: 5
 
 config :core, Core.Influx,
-  database: app,
-  host: prefixed.("influxdb"),
-  auth: [method: :basic, username: app, password: get_env("INFLUX_PAASSWORD")],
+  database: "plural",
+  host: "plural-influxdb",
+  auth: [method: :basic, username: "plural", password: get_env("INFLUX_PAASSWORD")],
   port: 8086
 
 config :core, :jwt,
@@ -43,15 +40,15 @@ config :core, :jwt,
 
 config :core, Core.Conduit.Broker,
   adapter: ConduitAMQP,
-  url: "amqp://user:#{get_env("RABBITMQ_PASSWORD")}@#{prefixed.("rabbitmq")}"
+  url: "amqp://user:#{get_env("RABBITMQ_PASSWORD")}@plural-rabbitmq"
 
 config :rtc, Rtc.Conduit.Broker,
   adapter: ConduitAMQP,
-  url: "amqp://user:#{get_env("RABBITMQ_PASSWORD")}@#{prefixed.("rabbitmq")}"
+  url: "amqp://user:#{get_env("RABBITMQ_PASSWORD")}@plural-rabbitmq"
 
 config :worker, Worker.Conduit.Broker,
   adapter: ConduitAMQP,
-  url: "amqp://user:#{get_env("RABBITMQ_PASSWORD")}@#{prefixed.("rabbitmq")}"
+  url: "amqp://user:#{get_env("RABBITMQ_PASSWORD")}@plural-rabbitmq"
 
 config :piazza_core, aes_key: get_env("AES_KEY")
 

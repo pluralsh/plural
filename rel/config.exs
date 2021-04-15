@@ -32,7 +32,7 @@ environment :prod do
   ]
 end
 
-release :forge do
+release :plural do
   set version: version
   set applications: [
     :runtime_tools,

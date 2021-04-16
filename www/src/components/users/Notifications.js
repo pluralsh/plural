@@ -73,7 +73,7 @@ export function Notifications() {
            round onClick={() => setOpen(!open)}>
         <FaBolt size='20px' />
       </Box>
-      {notifications && <Badge notifications={data.notifications} />}
+      {notifications && notifications.edges.length > 0 && <Badge notifications={data.notifications} />}
     </Stack>
     {open && (
       <FlyoutBody

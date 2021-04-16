@@ -232,7 +232,7 @@ export function DockerRepository() {
     const {dockerImages: {edges}} = data
     if (edges.length === 0) return
 
-    history.push(`/dkr/img/${edges[0].node.id}`)
+    history.replace(`/dkr/img/${edges[0].node.id}`)
   }, [data])
 
   return <Loading />

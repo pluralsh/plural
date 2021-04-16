@@ -68,7 +68,7 @@ function Repositories({edges, pageInfo, fetchMore, setTag}) {
         id='repos'
         style={{height: '100%', width: '100%', overflow: 'auto'}}
         edges={edges}
-        mapper={({node}) => <Repo repo={node} setTag={setTag} />}
+        mapper={({node}) => <Repo key={node.id} repo={node} setTag={setTag} />}
         onLoadMore={() => pageInfo.hasNextPage && fetchMore({
           variables: {cursor: pageInfo.endCursor},
           updateQuery: (prev, {fetchMoreResult: {repositories}}) => extendConnection(prev, repositories, 'repositories')

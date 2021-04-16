@@ -11,6 +11,7 @@ import { extendConnection } from '../utils/graphql'
 import { useHistory } from 'react-router'
 import { sortBy } from 'lodash'
 import { SafeLink } from './utils/Link'
+import { CurrentUserContext } from './login/CurrentUser'
 
 const WIDTH = 15
 
@@ -100,11 +101,19 @@ function TagSidebar({tag, setTag}) {
   )
 }
 
+function filters(tab, me) {
+  if (tab === 'Installed') return {installed: true}
+  if (tab === 'Published') return {publisherId: me.publisher.id}
+  return {}
+}
+
 export default function Explore() {
   const [tag, setTag] = useState(null)
-  const [installed, setInstalled] = useState(false)
+  const [tab, setTab] = useState('Public')
+  const me = useContext(CurrentUserContext)
+  const args = filters(tab, me) 
   const {data, fetchMore} = useQuery(EXPLORE_REPOS, {
-    variables: {tag, installed},
+    variables: {tag, ...args},
     fetchPolicy: 'cache-and-network'
   })
   const {setBreadcrumbs} = useContext(BreadcrumbsContext)
@@ -117,7 +126,7 @@ export default function Explore() {
 
   return (
     <Box direction='row' fill>
-      <Tabs defaultTab='Public' onTabChange={(tab) => setInstalled(tab !== 'Public')}>
+      <Tabs defaultTab='Public' onTabChange={setTab}>
         <TabHeader>
           <TabHeaderItem name='Public'>
             <Text weight={500} size='small'>Public</Text>
@@ -125,6 +134,11 @@ export default function Explore() {
           <TabHeaderItem name='Installed'>
             <Text weight={500} size='small'>Installed</Text>
           </TabHeaderItem>
+          {me.publisher && (
+            <TabHeaderItem name='Published'>
+              <Text weight={500} size='small'>Published</Text>
+            </TabHeaderItem>
+          )}
         </TabHeader>
         <TabContent name='Public'>
           <Box fill direction='row' gap='0px' border={{side: 'between', color: 'light-5'}}>
@@ -137,6 +151,9 @@ export default function Explore() {
             <Repositories edges={edges} pageInfo={pageInfo} fetchMore={fetchMore} setTag={doSetTag} /> :
             <EmptyState />
           }
+        </TabContent>
+        <TabContent name='Published'>
+          <Repositories edges={edges} pageInfo={pageInfo} fetchMore={fetchMore} setTag={doSetTag} /> :
         </TabContent>
       </Tabs>
     </Box>

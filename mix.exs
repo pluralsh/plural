@@ -1,4 +1,4 @@
-defmodule Forge.MixProject do
+defmodule Plural.MixProject do
   use Mix.Project
 
   @vsn File.read!("VERSION")

@@ -80,6 +80,8 @@ defmodule Core.Services.AccountsTest do
 
       assert gm.group_id == group.id
       assert gm.user_id == other.id
+
+      assert_receive {:event, %PubSub.GroupMemberCreated{item: ^gm, actor: ^user}}
     end
 
     test "nonroot users cannot create group members", %{account: account} do
@@ -98,6 +100,8 @@ defmodule Core.Services.AccountsTest do
       {:ok, gm} = Accounts.delete_group_member(member.id, user)
 
       refute refetch(gm)
+
+      assert_receive {:event, %PubSub.GroupMemberDeleted{item: ^gm, actor: ^user}}
     end
 
     test "nonroot users cannot create group members", %{account: account} do

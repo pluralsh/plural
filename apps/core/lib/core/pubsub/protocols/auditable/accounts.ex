@@ -16,6 +16,23 @@ defimpl Core.PubSub.Auditable, for: [Core.PubSub.GroupCreated, Core.PubSub.Group
   defp action(PubSub.GroupDeleted), do: :deleted
 end
 
+defimpl Core.PubSub.Auditable, for: [Core.PubSub.GroupMemberCreated, Core.PubSub.GroupMemberDeleted] do
+  alias Core.Schema.Audit
+  alias Core.PubSub
+
+  def audit(%{item: member, actor: %{id: actor_id, account_id: account_id}}) do
+    %Audit{
+      action: "group:member:#{action(@for)}",
+      actor_id: actor_id,
+      account_id: account_id,
+      group_id: member.group_id
+    }
+  end
+
+  defp action(PubSub.GroupMemberCreated), do: :created
+  defp action(PubSub.GroupMemberDeleted), do: :deleted
+end
+
 defimpl Core.PubSub.Auditable, for: [Core.PubSub.RoleCreated, Core.PubSub.RoleDeleted, Core.PubSub.RoleUpdated] do
   alias Core.Schema.Audit
   alias Core.PubSub

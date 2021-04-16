@@ -48,6 +48,36 @@ defmodule Core.PubSub.Audits.AccountsTest do
     end
   end
 
+  describe "GroupMemberCreated" do
+    test "it can post a message about the meeting" do
+      gm = insert(:group_member)
+      actor = insert(:user)
+
+      event = %PubSub.GroupMemberCreated{item: gm, actor: actor}
+      {:ok, audit} = Audits.handle_event(event)
+
+      assert audit.action == "group:member:created"
+      assert audit.group_id == gm.group_id
+      assert audit.actor_id == actor.id
+      assert audit.account_id == actor.account_id
+    end
+  end
+
+  describe "GroupMemberDeleted" do
+    test "it can post a message about the meeting" do
+      gm = insert(:group_member)
+      actor = insert(:user)
+
+      event = %PubSub.GroupMemberDeleted{item: gm, actor: actor}
+      {:ok, audit} = Audits.handle_event(event)
+
+      assert audit.action == "group:member:deleted"
+      assert audit.group_id == gm.group_id
+      assert audit.actor_id == actor.id
+      assert audit.account_id == actor.account_id
+    end
+  end
+
   describe "RoleCreated" do
     test "it can post a message about the meeting" do
       role = insert(:role)

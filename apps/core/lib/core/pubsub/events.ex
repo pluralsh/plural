@@ -27,6 +27,9 @@ defmodule Core.PubSub.GroupCreated, do: use Piazza.PubSub.Event
 defmodule Core.PubSub.GroupDeleted, do: use Piazza.PubSub.Event
 defmodule Core.PubSub.GroupUpdated, do: use Piazza.PubSub.Event
 
+defmodule Core.PubSub.GroupMemberCreated, do: use Piazza.PubSub.Event
+defmodule Core.PubSub.GroupMemberDeleted, do: use Piazza.PubSub.Event
+
 defmodule Core.PubSub.RoleCreated, do: use Piazza.PubSub.Event
 defmodule Core.PubSub.RoleUpdated, do: use Piazza.PubSub.Event
 defmodule Core.PubSub.RoleDeleted, do: use Piazza.PubSub.Event

@@ -143,6 +143,7 @@ defmodule Core.Services.Accounts do
     |> GroupMember.changeset(attributes)
     |> allow(user, :create)
     |> when_ok(:insert)
+    |> notify(:create, user)
   end
 
   @doc """
@@ -158,6 +159,7 @@ defmodule Core.Services.Accounts do
     member
     |> allow(user, :delete)
     |> when_ok(:delete)
+    |> notify(:delete, user)
   end
 
   @spec delete_group_member(binary, binary, User.t) :: group_member_resp
@@ -330,6 +332,11 @@ defmodule Core.Services.Accounts do
     do: handle_notify(PubSub.IntegrationWebhookUpdated, g, actor: user)
   defp notify({:ok, %IntegrationWebhook{} = g}, :delete, user),
     do: handle_notify(PubSub.IntegrationWebhookDeleted, g, actor: user)
+
+  defp notify({:ok, %GroupMember{} = m}, :create, user),
+    do: handle_notify(PubSub.GroupMemberCreated, m, actor: user)
+  defp notify({:ok, %GroupMember{} = m}, :delete, user),
+    do: handle_notify(PubSub.GroupMemberDeleted, m, actor: user)
 
   defp notify({:ok, meeting}, :zoom, user),
     do: handle_notify(PubSub.ZoomMeetingCreated, meeting, actor: user)

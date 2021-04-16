@@ -28,7 +28,8 @@ config :core, :consumers, [
   Core.PubSub.Consumers.Rtc,
   Core.PubSub.Consumers.Notification,
   Core.PubSub.Consumers.IntegrationWebhook,
-  Core.PubSub.Consumers.Audits
+  Core.PubSub.Consumers.Audits,
+  Core.PubSub.Consumers.Cache
 ]
 
 config :email, :consumers, [

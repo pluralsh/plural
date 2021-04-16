@@ -17,6 +17,6 @@ defmodule Worker.Conduit.Broker do
 
   incoming Worker.Conduit.Subscribers do
     pipe_through [:in_tracking, :error_handling, :deserialize]
-    subscribe :dkr, Docker, from: "forge.dkr"
+    subscribe :dkr, Docker, from: "plural.dkr"
   end
 end

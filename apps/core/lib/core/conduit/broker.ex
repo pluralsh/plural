@@ -18,6 +18,6 @@ defmodule Core.Conduit.Broker do
   incoming Core.Conduit do
     pipe_through [:in_tracking, :error_handling, :deserialize]
 
-    subscribe :message, WebhookSubscriber, from: "forge.webhook"
+    subscribe :message, WebhookSubscriber, from: "plural.webhook"
   end
 end

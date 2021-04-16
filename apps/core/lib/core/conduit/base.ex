@@ -5,17 +5,17 @@ defmodule Core.Conduit.Base do
       import Core.Conduit.Base
 
       configure do
-        exchange "forge.topic", type: :topic, durable: true
+        exchange "plural.topic", type: :topic, durable: true
 
-        defqueue "forge.rtc"
-        defqueue "forge.webhook"
-        defqueue "forge.dkr"
-        defqueue "forge.upgrade"
+        defqueue "plural.rtc"
+        defqueue "plural.webhook"
+        defqueue "plural.dkr"
+        defqueue "plural.upgrade"
       end
 
       pipeline :out_tracking do
         plug Conduit.Plug.CorrelationId
-        plug Conduit.Plug.CreatedBy, app: "forge"
+        plug Conduit.Plug.CreatedBy, app: "plural"
         plug Conduit.Plug.CreatedAt
         plug Conduit.Plug.LogOutgoing
         plug Conduit.Plug.Format, content_type: "application/x-erlang-binary"
@@ -28,16 +28,16 @@ defmodule Core.Conduit.Base do
       outgoing do
         pipe_through [:out_tracking]
 
-        publish :rtc, exchange: "forge.topic", to: "forge.rtc"
-        publish :webhook, exchange: "forge.topic", to: "forge.webhook"
-        publish :dkr, exchange: "forge.topic", to: "forge.dkr"
-        publish :upgrade, exchange: "forge.topic", to: "forge.upgrade"
+        publish :rtc, exchange: "plural.topic", to: "plural.rtc"
+        publish :webhook, exchange: "plural.topic", to: "plural.webhook"
+        publish :dkr, exchange: "plural.topic", to: "plural.dkr"
+        publish :upgrade, exchange: "plural.topic", to: "plural.upgrade"
       end
 
       outgoing do
         pipe_through [:error_destination, :out_tracking]
 
-        publish :error, exchange: "forge.topic", to: "forge.error"
+        publish :error, exchange: "plural.topic", to: "plural.error"
       end
     end
   end
@@ -46,8 +46,8 @@ defmodule Core.Conduit.Base do
     deadletter = "zzz.#{name}"
 
     quote do
-      queue unquote(name), from: [unquote(name)], exchange: "forge.topic", durable: true
-      queue unquote(deadletter), from: [unquote(deadletter)], exchange: "forge.topic", durable: true
+      queue unquote(name), from: [unquote(name)], exchange: "plural.topic", durable: true
+      queue unquote(deadletter), from: [unquote(deadletter)], exchange: "plural.topic", durable: true
     end
   end
 end

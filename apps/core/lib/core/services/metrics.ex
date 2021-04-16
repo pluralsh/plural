@@ -9,7 +9,6 @@ defmodule Core.Services.Metrics do
   def docker_pull(repo, tag) do
     Docker.new(1, repository: repo, tag: tag)
     |> Influx.write()
-    |> IO.inspect()
   end
 
   def query_docker_pulls(repo, opts \\ []) do
@@ -18,7 +17,6 @@ defmodule Core.Services.Metrics do
 
     Docker.repo_query(offset, precision)
     |> Influx.query(params: %{repository: repo})
-    |> IO.inspect()
     |> response()
   end
 

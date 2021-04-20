@@ -7,6 +7,8 @@ import { FilePicker } from 'react-file-picker'
 import { CREATE_REPO, REPOS_Q } from './queries'
 import { generatePreview } from '../../utils/file'
 import { TagInput } from './Tags'
+import { appendConnection, updateCache } from '../../utils/graphql'
+import { useHistory } from 'react-router'
 
 const LABEL_WIDTH = '90px'
 
@@ -36,6 +38,7 @@ export function RepoForm({image, setImage, state, setState, label, mutation, loa
             extensions={['jpg', 'jpeg', 'png']}
             dims={{minWidth: 100, maxWidth: 500, minHeight: 100, maxHeight: 500}}
             onChange={(file) => generatePreview(file, setImage)}
+            onError={console.log}
           >
             <SecondaryButton round='xsmall' label='Upload an icon' />
           </FilePicker>
@@ -76,19 +79,18 @@ export function RepoForm({image, setImage, state, setState, label, mutation, loa
 }
 
 export default function CreateRepository({publisher}) {
+  let history = useHistory()
   const [state, setState] = useState({name: "", description: "", tags: [], private: false})
   const [image, setImage] = useState(null)
   const attributes = {...state, tags: state.tags.map((t) => ({tag: t}))}
   const [mutation, {loading}] = useMutation(CREATE_REPO, {
     variables: {attributes: {...attributes, icon: image && image.file}},
-    update: (cache, { data: { createRepository } }) => {
-      const prev = cache.readQuery({ query: REPOS_Q, variables: {publisherId: publisher.id} })
-      cache.writeQuery({query: REPOS_Q, variables: {publisherId: publisher.id}, data: {
-        ...prev, repositories: {
-          ...prev.repositories,
-          edges: [{__typename: 'RepositoryEdge', node: createRepository}, ...prev.repositories.edges]
-      }}})
-    }
+    update: (cache, { data: { createRepository } }) => updateCache(cache, {
+      query: REPOS_Q, 
+      variables: {publisherId: publisher.id},
+      update: (prev) => appendConnection(prev, createRepository, 'repositories')
+    }),
+    onCompleted: () => history.push('/publishers/mine/repos')
   })
 
   return (

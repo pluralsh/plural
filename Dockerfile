@@ -61,7 +61,21 @@ RUN \
   tar -xzf ${APP_NAME}.tar.gz && \
   rm ${APP_NAME}.tar.gz
 
-# From this line onwards, we're in a new image, which will be the image used in production
+FROM dkr.plural.sh/plural/plural-cli:0.1.0 as cmd
+
+FROM alpine:3 as helm
+
+ARG VERSION=3.3.1
+
+# ENV BASE_URL="https://storage.googleapis.com/kubernetes-helm"
+ENV BASE_URL="https://get.helm.sh"
+ENV TAR_FILE="helm-v${VERSION}-linux-amd64.tar.gz"
+
+RUN apk add --update --no-cache curl ca-certificates unzip wget openssl && \
+    curl -L ${BASE_URL}/${TAR_FILE} | tar xvz && \
+    mv linux-amd64/helm /usr/local/bin/helm && \
+    chmod +x /usr/local/bin/helm
+
 FROM erlang:22-alpine
 
 # The name of your application/release (required)
@@ -79,6 +93,8 @@ ENV REPLACE_OS_VARS=true \
 
 WORKDIR /opt/app
 
+COPY --from=helm /usr/local/bin/helm /usr/local/bin/helm
+COPY --from=cmd /go/bin/plural /usr/local/bin/plural
 COPY --from=builder /opt/built .
 
 CMD trap 'exit' INT; /opt/app/bin/${APP_NAME} foreground

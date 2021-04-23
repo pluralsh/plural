@@ -9,6 +9,17 @@ defmodule Core.Schema.DockerRepository do
     timestamps()
   end
 
+  def for_repository_name(query \\ __MODULE__, repo_name) do
+    from(dr in query,
+      join: r in assoc(dr, :repository),
+      where: r.name == ^repo_name
+    )
+  end
+
+  def for_name(query \\ __MODULE__, name) do
+    from(dr in query, where: dr.name == ^name)
+  end
+
   def for_repository(query \\ __MODULE__, repo_id),
     do: from(dr in query, where: dr.repository_id == ^repo_id)
 

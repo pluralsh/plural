@@ -3,7 +3,8 @@ defmodule GraphQl.Schema.Version do
   alias GraphQl.Resolvers.{
     Chart,
     Version,
-    Terraform
+    Terraform,
+    Docker
   }
 
   input_object :version_attributes do
@@ -30,6 +31,7 @@ defmodule GraphQl.Schema.Version do
     field :chart,     :chart, resolve: dataloader(Chart)
     field :terraform, :terraform, resolve: dataloader(Terraform)
     field :crds,      list_of(:crd), resolve: dataloader(Chart)
+    field :image_dependencies, list_of(:image_dependency), resolve: dataloader(Docker)
 
     timestamps()
   end

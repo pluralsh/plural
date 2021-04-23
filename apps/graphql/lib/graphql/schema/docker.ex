@@ -42,6 +42,14 @@ defmodule GraphQl.Schema.Docker do
     timestamps()
   end
 
+  object :image_dependency do
+    field :id,      non_null(:id)
+    field :image,   non_null(:docker_image), resolve: dataloader(Docker)
+    field :version, non_null(:version), resolve: dataloader(Version)
+
+    timestamps()
+  end
+
   object :vulnerability do
     field :id,                non_null(:id)
     field :title,             :string

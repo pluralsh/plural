@@ -18,6 +18,7 @@
   "basic_auth": {:hex, :basic_auth, "2.2.4", "d8c748237870dd1df3bc5c0f1ab4f1fad6270c75472d7e62b19302ec59e92a79", [:mix], [{:plug, "~> 0.14 or ~> 1.0", [hex: :plug, repo: "hexpm", optional: false]}], "hexpm", "a595b5f2a07e94cbde7be3dfeba24573e18655c88e74c8eb118364f856642e62"},
   "botanist": {:git, "https://github.com/michaeljguarino/botanist.git", "10244d96a88c3a5aa4f77f343bbb59643c623986", [branch: "ecto3"]},
   "bourne": {:hex, :bourne, "1.1.0", "60a8bb3d5ad533a3a18257de9304e70e6bb2f4d7f354a529ef3f47c327c2dd97", [:mix], [{:ecto, "~> 2.1", [hex: :ecto, repo: "hexpm", optional: false]}], "hexpm", "81a389611ad067dc305d5ba4674280ea2b99ef012bca5e7de48357545edc05bc"},
+  "briefly": {:git, "https://github.com/CargoSense/briefly", "b0fd495bf0c5ef2c44de2791a8cc7a20813c7d36", [ref: "b0fd495bf0c5ef2c44de2791a8cc7a20813c7d36"]},
   "castore": {:hex, :castore, "0.1.4", "e7fd082c0e755716826a20b95c479f5dd42f536f9d12b8da8f47c92f1d4aed58", [:mix], [], "hexpm", "7fe7a9308ac5810083770843b74c3b5b1003cc0626610dc1d859da101c9647c6"},
   "certifi": {:hex, :certifi, "2.6.1", "dbab8e5e155a0763eea978c913ca280a6b544bfa115633fa20249c3d396d9493", [:rebar3], [], "hexpm", "524c97b4991b3849dd5c17a631223896272c6b0af446778ba4675a1dff53bb7e"},
   "combine": {:hex, :combine, "0.10.0", "eff8224eeb56498a2af13011d142c5e7997a80c8f5b97c499f84c841032e429f", [:mix], [], "hexpm", "1b1dbc1790073076580d0d1d64e42eae2366583e7aecd455d1215b0d16f2451b"},

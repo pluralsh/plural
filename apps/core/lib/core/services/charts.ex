@@ -10,7 +10,8 @@ defmodule Core.Services.Charts do
     Version,
     Repository,
     VersionTag,
-    Crd
+    Crd,
+    ImageDependency
   }
 
   @spec get_chart(binary) :: Chart.t | nil
@@ -116,6 +117,18 @@ defmodule Core.Services.Charts do
       |> add_operation(:sync, fn %{chart: %{id: id}} ->
         sync_version(helm_info, id, version)
       end)
+      |> add_operation(:imgs, fn %{sync: version} ->
+        with {:ok, imgs} <- image_dependencies(chart.filename, helm_info.values_template) do
+          deps = Enum.map(imgs, &timestamped(%{image_id: &1.id, version_id: version.id}))
+
+          {_, deps} = Core.Repo.insert_all(ImageDependency, deps, [
+            returning: true,
+            on_conflict: :replace_all,
+            conflict_target: [:version_id, :image_id]
+          ])
+          {:ok, deps}
+        end
+      end)
       |> add_operation(:sync_chart, fn %{sync: version, chart: chart} ->
         chart
         |> Chart.changeset(
@@ -168,6 +181,31 @@ defmodule Core.Services.Charts do
     |> case do
       [chart | rest] -> {chart, Enum.join(rest, "-")}
       _ -> :error
+    end
+  end
+
+  defp image_dependencies(chart, values) do
+    {:ok, f} = Briefly.create()
+    File.write!(f, values)
+
+    with {:ok, tpl} <- Plural.Cmd.template(chart, f),
+         {:ok, imgs} <- Plural.Chart.images(tpl) do
+      dkr_dns = Core.conf(:registry)
+
+      imgs
+      |> Enum.filter(&String.starts_with?(&1, dkr_dns))
+      |> Enum.map(&String.trim_leading(&1, dkr_dns <> "/"))
+      |> Enum.map(fn registry ->
+        with [repo, repository] <- String.split(registry, "/"),
+             [repository, tag] <- String.split(repository, ":") do
+          Repositories.get_dkr_image(repo, repository, tag)
+        else
+          _ -> nil
+        end
+      end)
+      |> Enum.filter(& &1)
+      |> Enum.uniq_by(& &1.id)
+      |> ok()
     end
   end
 

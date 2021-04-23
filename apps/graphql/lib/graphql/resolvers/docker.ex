@@ -1,10 +1,11 @@
 defmodule GraphQl.Resolvers.Docker do
   use GraphQl.Resolvers.Base, model: Core.Schema.DockerRepository
-  alias Core.Schema.{DockerImage, Vulnerability}
+  alias Core.Schema.{DockerImage, Vulnerability, ImageDependency}
   alias Core.Services.Repositories
 
   def query(DockerImage, _), do: DockerImage
   def query(Vulnerability, _), do: Vulnerability
+  def query(ImageDependency, _), do: ImageDependency
   def query(_, _), do: DockerRepository
 
   def list_repositories(%{repository_id: repo} = args, _) do

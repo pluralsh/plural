@@ -182,17 +182,22 @@ defmodule Core.Services.ChartsTest do
 
   describe "#upload_chart/4" do
     test "It can upload a chart" do
-      path = Path.join(:code.priv_dir(:core), "forge-0.3.7.tgz")
-      repo = insert(:repository)
+      path = Path.join(:code.priv_dir(:core), "plural-0.6.23.tgz")
+      repo = insert(:repository, name: "plural")
+      registry = insert(:docker_repository, repository: repo, name: "plural")
+      img = insert(:docker_image, docker_repository: registry, tag: "0.1.1")
+
       expect(HTTPoison, :post, fn _, _, _, _ -> {:ok, %{}} end)
-      {:ok, %{sync_chart: chart}} = Charts.upload_chart(
+      {:ok, %{sync_chart: chart, imgs: [img_dep], sync: sync}} = Charts.upload_chart(
         %{"chart" => %{filename: path, path: path}},
         repo,
         repo.publisher.owner,
         %{opts: [], headers: []}
       )
 
-      assert length(chart.dependencies.dependencies) == 2
+      assert length(chart.dependencies.dependencies) == 1
+      assert img_dep.image_id == img.id
+      assert img_dep.version_id == sync.id
     end
   end
 

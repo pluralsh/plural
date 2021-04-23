@@ -6,7 +6,8 @@ defmodule Core.Schema.Version do
     Dependencies,
     VersionTag,
     Crd,
-    Terraform
+    Terraform,
+    ImageDependency
   }
 
   schema "versions" do
@@ -22,6 +23,7 @@ defmodule Core.Schema.Version do
 
     has_many :tags,        VersionTag, on_replace: :delete
     has_many :crds,        Crd
+    has_many :image_dependencies, ImageDependency
     belongs_to :chart,     Chart
     belongs_to :terraform, Terraform
 

@@ -55,6 +55,19 @@ defmodule Core.Services.Repositories do
 
   def get_dkr_image!(image_id), do: Core.Repo.get!(DockerImage, image_id)
 
+  def get_dkr_repository(repo_name, dkr_name) do
+    DockerRepository.for_repository_name(repo_name)
+    |> Core.Repo.get_by!(name: dkr_name)
+  end
+
+  def get_dkr_image(repo_name, dkr_name, tag) do
+    DockerRepository.for_repository_name(repo_name)
+    |> DockerRepository.for_name(dkr_name)
+    |> DockerImage.for_repositories()
+    |> DockerImage.for_tag(tag)
+    |> Core.Repo.one()
+  end
+
   @doc """
   Creates a new repository for the user's publisher
 

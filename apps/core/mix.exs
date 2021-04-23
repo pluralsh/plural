@@ -21,7 +21,7 @@ defmodule Core.MixProject do
   def application do
     [
       mod: {Core.Application, []},
-      extra_applications: [:logger]
+      extra_applications: [:logger, :crypto]
     ]
   end
 
@@ -57,6 +57,11 @@ defmodule Core.MixProject do
       {:decorator, "~> 1.3"},   #=> For using Caching Annotations
       {:botanist, "~> 0.1.0", git: "https://github.com/michaeljguarino/botanist.git", branch: "ecto3"},
       {:x509, "~> 0.7.0"},
+      {
+        :briefly,
+        git: "https://github.com/CargoSense/briefly",
+        ref: "b0fd495bf0c5ef2c44de2791a8cc7a20813c7d36"
+      },
       {:yaml_elixir, "~> 2.4"},
       {:timex, "~> 3.6"},
       {:tzdata, "~> 0.1.8", override: true},

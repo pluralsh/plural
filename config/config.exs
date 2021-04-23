@@ -103,12 +103,19 @@ config :core, Core.Clients.Zoom,
   client_secret: "dummy-secret"
 
 config :worker,
-  registry: "dkr.piazza.app",
+  registry: "dkr.plural.sh",
   docker_env: []
 
 config :core, Core.Influx,
   database: "plural"
 
 config :cron, run: false
+
+config :core, registry: "dkr.plural.sh"
+
+config :briefly,
+  directory: [{:system, "TMPDIR"}, {:system, "TMP"}, {:system, "TEMP"}, "/tmp"],
+  default_prefix: "briefly",
+  default_extname: ""
 
 import_config "#{Mix.env()}.exs"

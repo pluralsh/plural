@@ -70,3 +70,6 @@ if provider != :gcp do
   config :goth, disabled: true
   config :arc, storage: Arc.Storage.S3
 end
+
+config :core,
+  registry: get_env("DKR_DNS")

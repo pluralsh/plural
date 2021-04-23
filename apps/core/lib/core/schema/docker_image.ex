@@ -16,6 +16,17 @@ defmodule Core.Schema.DockerImage do
     timestamps()
   end
 
+  def for_repositories(query \\ __MODULE__, q) do
+    from(di in query,
+      join: dr in ^subquery(q),
+      where: di.docker_repository_id == dr.id
+    )
+  end
+
+  def for_tag(query \\ __MODULE__, tag) do
+    from(di in query, where: di.tag == ^tag)
+  end
+
   def scanned_before(query \\ __MODULE__, days) do
     prior = Timex.now() |> Timex.shift(days: -days)
     from(di in query, where: di.scanned_at < ^prior or is_nil(di.scanned_at))

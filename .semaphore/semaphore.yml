@@ -10,10 +10,26 @@ blocks:
   task:
     secrets:
     - name: gcp-test
+    prologue:
+      commands:
+      - wget -O plural.o 'https://app.plural.sh/artifacts/plural/plural?platform=linux&arch=amd64'
+      - chmod +x ./plural.o
+      - echo $PATH
+      - mkdir bin
+      - cp ./plural.o ./bin/plural
+      - curl -L https://get.helm.sh/helm-v3.3.1-linux-amd64.tar.gz | tar xvz
+      - mv linux-amd64/helm bin/helm
+      - chmod +x bin/helm
+      - export PATH="$(pwd)/bin:$PATH"
+      - pwd
     jobs:
     - name: Test
       commands:
       - checkout
+      - export PATH="$(pwd)/bin:$PATH"
+      - echo $PATH
+      - which plural
+      - which helm
       - echo $GOOGLE_APPLICATION_CREDENTIALS > key.json
       - export GOOGLE_APPLICATION_CREDENTIALS="$(pwd)/key.json"
       - sem-version elixir 1.9.0
@@ -21,16 +37,16 @@ blocks:
       - mix local.hex --force
       - mix local.rebar --force
 
-      - cache restore mix-deps3-$SEMAPHORE_GIT_BRANCH-$(checksum mix.lock),mix-deps3-$SEMAPHORE_GIT_BRANCH,mix-deps3-master
-      - cache restore mix-build3-$SEMAPHORE_GIT_BRANCH-$(checksum mix.lock),mix-build3-$SEMAPHORE_GIT_BRANCH,mix-build3-master
+      - cache restore mix-deps4-$SEMAPHORE_GIT_BRANCH-$(checksum mix.lock),mix-deps4-$SEMAPHORE_GIT_BRANCH,mix-deps4-master
+      - cache restore mix-build4-$SEMAPHORE_GIT_BRANCH-$(checksum mix.lock),mix-build4-$SEMAPHORE_GIT_BRANCH,mix-build4-master
 
       - mix deps.get
       - mix test
 
-      - cache store mix-deps3-$SEMAPHORE_GIT_BRANCH-$(checksum mix.lock) deps
-      - cache store mix-build3-$SEMAPHORE_GIT_BRANCH-$(checksum mix.lock) _build
-      - cache store mix-deps3-$SEMAPHORE_GIT_BRANCH deps
-      - cache store mix-build3-$SEMAPHORE_GIT_BRANCH _build
+      - cache store mix-deps4-$SEMAPHORE_GIT_BRANCH-$(checksum mix.lock) deps
+      - cache store mix-build4-$SEMAPHORE_GIT_BRANCH-$(checksum mix.lock) _build
+      - cache store mix-deps4-$SEMAPHORE_GIT_BRANCH deps
+      - cache store mix-build4-$SEMAPHORE_GIT_BRANCH _build
 - name: build
   dependencies: ['test']
   skip:

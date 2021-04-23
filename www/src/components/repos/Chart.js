@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { Box, Text, Anchor, Markdown } from 'grommet'
 import { useQuery, useMutation } from 'react-apollo'
-import { useParams } from 'react-router-dom'
+import { Link, useHistory, useParams } from 'react-router-dom'
 import { Button, ScrollableContainer, Tabs, TabHeader, TabHeaderItem, TabContent } from 'forge-core'
 import { CHART_Q, INSTALL_CHART, UPDATE_CHART_INST } from './queries'
 import moment from 'moment'
@@ -12,8 +12,10 @@ import Dependencies, { FullDependencies, ShowFull } from './Dependencies'
 import './chart.css'
 import { Versions } from '../versions/Versions'
 import { BreadcrumbsContext } from '../Breadcrumbs'
+import { Docker } from 'grommet-icons'
+import { dockerPull } from './misc'
 
-function ChartInfo({helm, insertedAt}) {
+function ChartInfo({version: {helm, insertedAt}}) {
   return (
     <DetailContainer pad='small' gap='small' style={{overflow: 'hidden'}}>
       <Text weight="bold" size='small'>App Version</Text>
@@ -46,7 +48,7 @@ export const MARKDOWN_STYLING = {
   }
 }
 
-function TemplateView({valuesTemplate}) {
+function TemplateView({version: {valuesTemplate}}) {
   return (
     <Box style={{overflow: 'auto', maxHeight: '100%'}} pad='small'>
       <Highlight language='yaml'>
@@ -85,7 +87,7 @@ function ChartInstaller({chartInstallation, versionId, chartId, installation}) {
   )
 }
 
-function ChartHeader({helm, chart, version, chartInstallation, id, installation}) {
+function ChartHeader({version: {helm, chart, version, id}, chartInstallation, installation}) {
   return (
     <Box direction='row' align='center' gap='medium' margin={{bottom: 'small'}} style={{minHeight: '50px'}}>
       <Box width='50px' heigh='50px'>
@@ -98,18 +100,20 @@ function ChartHeader({helm, chart, version, chartInstallation, id, installation}
       <Box width='100px' direction='row' justify='end'>
       {chartInstallation && chartInstallation.version.id === id ?
         <Box round='xsmall' pad='small' border>Installed</Box> :
-        installation && (<ChartInstaller
-          chartInstallation={chartInstallation}
-          installation={installation}
-          versionId={id}
-          chartId={chart.id} />)
+        installation && (
+          <ChartInstaller
+            chartInstallation={chartInstallation}
+            installation={installation}
+            versionId={id}
+            chartId={chart.id} />
+        )
       }
       </Box>
     </Box>
   )
 }
 
-function ChartReadme({readme}) {
+function ChartReadme({version: {readme}}) {
   return (
     <Box gap='small' pad='small' style={{maxHeight: '100%', overflow: 'auto'}}>
       <Box>
@@ -130,6 +134,27 @@ function updateInstallation(chartId) {
       data: {...prev, chart: {...prev.chart, repository: {...prev.chart.repository, installation: installation}}}
     })
   }
+}
+
+function ImageDependencies({version: {imageDependencies}}) {
+  let history = useHistory()
+  if (!imageDependencies || imageDependencies.length === 0) return null
+
+  return (
+    <DetailContainer style={{overflow: 'auto'}}>
+      <Box pad='small'>
+        <Text size='small' weight='bold'>Docker Images</Text>
+      </Box>
+      {imageDependencies.map(({id, image}) => (
+        <Box key={id} direction='row' gap='xsmall' align='center' pad={{horizontal: 'small', vertical: 'xsmall'}}
+             hoverIndicator='light-2' round='xsmall' focusIndicator={false}
+             onClick={() => history.push(`/dkr/img/${image.id}`)}>
+          <Docker color='plain' size='18px' />
+          <Text size='small'>{dockerPull(image)}</Text>
+        </Box>
+      ))}
+    </DetailContainer>
+  )
 }
 
 export default function Chart() {
@@ -161,7 +186,7 @@ export default function Chart() {
     <ScrollableContainer>
       <Box pad='small' direction='row'>
         <Box width={`${width}%`} pad='small'>
-          <ChartHeader {...currentVersion} chartInstallation={data.chart.installation} installation={repository.installation} />
+          <ChartHeader version={currentVersion} chartInstallation={data.chart.installation} installation={repository.installation} />
           <Tabs defaultTab='readme' onTabChange={setTab} headerEnd={tab === 'dependencies' ?
             <ShowFull label={full ? 'Immediate' : 'Full'} onClick={() => setFull(!full)} /> : null
           }>
@@ -177,10 +202,10 @@ export default function Chart() {
               </TabHeaderItem>
             </TabHeader>
             <TabContent name='readme'>
-              <ChartReadme {...currentVersion} />
+              <ChartReadme version={currentVersion} />
             </TabContent>
             <TabContent name='configuration'>
-              <TemplateView {...currentVersion} />
+              <TemplateView version={currentVersion} />
             </TabContent>
             <TabContent name='dependencies'>
               {full ? <FullDependencies {...chart} /> : (
@@ -201,7 +226,8 @@ export default function Chart() {
                 fetchMore={fetchMore}
                 refetch={refetch}
                 setVersion={setVersion} />
-              <ChartInfo {...currentVersion} />
+              <ChartInfo version={currentVersion} />
+              <ImageDependencies version={currentVersion} />
             </Box>
           )}
         </Box>

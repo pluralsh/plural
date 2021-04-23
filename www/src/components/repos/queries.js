@@ -210,6 +210,13 @@ export const CHART_Q = gql`
         node {
           ...VersionFragment
           tags { ...VersionTagFragment }
+          imageDependencies { 
+            id
+            image { 
+              ...DockerImageFragment
+              dockerRepository { ...DockerRepoFragment }
+            }
+          }
         }
       }
     }
@@ -221,6 +228,8 @@ export const CHART_Q = gql`
   ${VersionFragment}
   ${ChartInstallationFragment}
   ${VersionTagFragment}
+  ${DockerImageFragment}
+  ${DockerRepoFragment}
 `;
 
 export const UPDATE_CHART = gql`

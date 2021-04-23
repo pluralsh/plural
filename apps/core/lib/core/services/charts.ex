@@ -108,18 +108,11 @@ defmodule Core.Services.Charts do
         %{name: chart_name, latest_version: version}
         |> create_chart(repo_id, user)
       end)
-      |> add_operation(:cm, fn _ ->
-        url = Path.join([chartmuseum(), "cm", "api", repo, "charts"])
+      |> add_operation(:imgs, fn %{chart: %{id: chart_id}} ->
+        v = get_chart_version(chart_id, version)
 
-        opts = [timeout: :infinity, recv_timeout: :infinity] ++ context.opts
-        HTTPoison.post(url, {:multipart, uploads}, context.headers, opts)
-      end)
-      |> add_operation(:sync, fn %{chart: %{id: id}} ->
-        sync_version(helm_info, id, version)
-      end)
-      |> add_operation(:imgs, fn %{sync: version} ->
-        with {:ok, imgs} <- image_dependencies(chart.filename, helm_info.values_template) do
-          deps = Enum.map(imgs, &timestamped(%{image_id: &1.id, version_id: version.id}))
+        with {:ok, imgs} <- image_dependencies(chart.path, helm_info.values_template) do
+          deps = Enum.map(imgs, &timestamped(%{image_id: &1.id, version_id: v.id}))
 
           {_, deps} = Core.Repo.insert_all(ImageDependency, deps, [
             returning: true,
@@ -128,6 +121,15 @@ defmodule Core.Services.Charts do
           ])
           {:ok, deps}
         end
+      end)
+      |> add_operation(:cm, fn _ ->
+        url = Path.join([chartmuseum(), "cm", "api", repo, "charts"])
+
+        opts = [timeout: :infinity, recv_timeout: :infinity] ++ context.opts
+        HTTPoison.post(url, {:multipart, uploads}, context.headers, opts)
+      end)
+      |> add_operation(:sync, fn %{chart: %{id: id}} ->
+        sync_version(helm_info, id, version)
       end)
       |> add_operation(:sync_chart, fn %{sync: version, chart: chart} ->
         chart
@@ -193,6 +195,7 @@ defmodule Core.Services.Charts do
       dkr_dns = Core.conf(:registry)
 
       imgs
+      |> IO.inspect()
       |> Enum.filter(&String.starts_with?(&1, dkr_dns))
       |> Enum.map(&String.trim_leading(&1, dkr_dns <> "/"))
       |> Enum.map(fn registry ->

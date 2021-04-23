@@ -111,7 +111,9 @@ config :core, Core.Influx,
 
 config :cron, run: false
 
-config :core, registry: "dkr.plural.sh"
+config :core,
+  registry: "dkr.plural.sh",
+  plural_cmd: "plural"
 
 config :briefly,
   directory: [{:system, "TMPDIR"}, {:system, "TMP"}, {:system, "TEMP"}, "/tmp"],

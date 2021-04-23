@@ -57,6 +57,7 @@ config :core, Core.Clients.Zoom,
   client_secret: get_env("ZOOM_CLIENT_SECRET")
 
 config :core, :chartmuseum, "http://chartmuseum:8080"
+config :core, :plural_cmd, "/usr/local/bin/plural"
 
 provider = case get_env("PROVIDER") || "google" do
   "google" -> :gcp

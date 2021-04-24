@@ -355,4 +355,11 @@ defmodule Core.Factory do
       external_id: sequence(:reset_token, &"tok_#{&1}")
     }
   end
+
+  def image_dependency_factory do
+    %Schema.ImageDependency{
+      image: build(:docker_image),
+      version: build(:version)
+    }
+  end
 end

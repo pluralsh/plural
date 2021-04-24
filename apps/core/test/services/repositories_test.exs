@@ -339,7 +339,9 @@ defmodule Core.Services.RepositoriesTest do
       assert image.docker_repository_id == repo.id
       assert image.digest == "some_digest"
 
-      assert_receive {:event, %PubSub.DockerImageCreated{item:  ^image, actor: ^user}}
+      assert_receive {:event, %PubSub.DockerImageCreated{item: found, actor: ^user}}
+
+      assert found.id == image.id
     end
   end
 

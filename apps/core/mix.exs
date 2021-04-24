@@ -72,6 +72,7 @@ defmodule Core.MixProject do
       {:mime, "~> 1.2"},
       {:ex_image_info, "~> 0.2.4"},
       {:instream, "~> 1.0"},
+      {:swarm, "~> 3.4.0"},
 
       {:mimic, "~> 1.1", only: :test}
     ]

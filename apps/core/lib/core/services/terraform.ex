@@ -67,7 +67,6 @@ defmodule Core.Services.Terraform do
       %Terraform{id: id} -> update_terraform(attrs, id, user)
       _ -> create_terraform(attrs, repo_id, user)
     end
-    |> IO.inspect()
   end
 
   @doc """

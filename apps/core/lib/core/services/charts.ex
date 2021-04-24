@@ -195,7 +195,6 @@ defmodule Core.Services.Charts do
       dkr_dns = Core.conf(:registry)
 
       imgs
-      |> IO.inspect()
       |> Enum.filter(&String.starts_with?(&1, dkr_dns))
       |> Enum.map(&String.trim_leading(&1, dkr_dns <> "/"))
       |> Enum.map(fn registry ->

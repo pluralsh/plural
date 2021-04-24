@@ -11,5 +11,6 @@ Mimic.copy(Stripe.SubscriptionItem)
 Mimic.copy(Stripe.SubscriptionItem.Usage)
 Mimic.copy(Stripe.Card)
 Mimic.copy(Core.Conduit.Broker)
+Mimic.copy(Core.Buffers.Docker)
 
 {:ok, _} = Application.ensure_all_started(:ex_machina)

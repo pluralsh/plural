@@ -22,6 +22,15 @@ defmodule Core.Schema.ChartInstallation do
       where: ci.version_id != ^version_id)
   end
 
+  def for_images(query \\ __MODULE__, img_ids) do
+    from(ci in query,
+      join: v in assoc(ci, :version),
+      join: id in assoc(v, :image_dependencies),
+      where: id.image_id in ^img_ids,
+      distinct: true
+    )
+  end
+
   def for_chart(query \\ __MODULE__, chart_id) do
     from(ci in query,
       join: c in assoc(ci, :chart), as: :chart,

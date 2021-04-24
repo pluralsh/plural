@@ -411,6 +411,7 @@ defmodule Core.Services.Repositories do
     do: handle_notify(PubSub.RepositoryUpdated, repo, actor: user)
 
   defp notify({:ok, %{image: %DockerImage{} = img}} = res, :create, user) do
+    img = Core.Repo.preload(img, [docker_repository: :repository])
     handle_notify(PubSub.DockerImageCreated, img, actor: user)
     res
   end

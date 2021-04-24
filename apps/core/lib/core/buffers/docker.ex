@@ -1,5 +1,5 @@
 defmodule Core.Buffers.Docker do
-  use Core.Buffer.Base, state: &build_state/1, lifespan: 60_000
+  use Core.Buffer.Base, state: &build_state/1, lifespan: 120_000
   alias Core.Schema.ChartInstallation
 
   defmodule State, do: defstruct [images: []]

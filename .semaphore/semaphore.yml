@@ -21,7 +21,6 @@ blocks:
       - mv linux-amd64/helm bin/helm
       - chmod +x bin/helm
       - export PATH="$(pwd)/bin:$PATH"
-      - pwd
     jobs:
     - name: Test
       commands:
@@ -85,23 +84,3 @@ blocks:
       commands:
       - make build APP_NAME=www
       - make push APP_NAME=plural-www
-- name: deploy
-  dependencies: ['build']
-  skip:
-    when: "branch != 'master'"
-  task:
-    secrets:
-    - name: plural
-    prologue:
-      commands:
-      - checkout
-      - wget -O plural.o 'https://app.plural.sh/artifacts/plural/plural?platform=linux&arch=amd64'
-      - chmod +x ./plural.o
-      - ./plural.o config amend token ${PLURAL_ACCESS_TOKEN}
-    jobs:
-    - name: "Deploy with watchman"
-      commands:
-      - export GIT_COMMIT_MESSAGE=$(git log -1 --pretty=%B | cat | head -n 1)
-      - ./plural.o upgrade --name plural --message "${GIT_COMMIT_MESSAGE}"
-      - ./plural.o config amend token ${PLURAL_DEV_ACCESS_TOKEN}
-      - ./plural.o upgrade --name plural --message "${GIT_COMMIT_MESSAGE}"

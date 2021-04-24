@@ -102,7 +102,7 @@ defimpl Core.PubSub.Fanout, for: Core.PubSub.DockerImageCreated do
 
   def fanout(%{item: img}) do
     Logger.info "scheduling scan for image #{img.id}"
-    Core.Buffer.Orchestrator.submit(Core.Buffers.Docker, :all, img)
+    Core.Buffer.Orchestrator.submit(Core.Buffers.Docker, img.docker_repository.repository_id, img)
     Core.Conduit.Broker.publish(%Conduit.Message{body: img}, :dkr)
   end
 end

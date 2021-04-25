@@ -9,6 +9,7 @@ import { useNotificationSubscription } from '../incidents/Notifications'
 
 // const POLL_INTERVAL=30000
 export const CurrentUserContext = React.createContext({})
+export const PluralConfigurationContext = React.createContext({})
 
 export default function CurrentUser({children}) {
   const {loading, error, data} = useQuery(ME_Q)
@@ -26,5 +27,26 @@ export default function CurrentUser({children}) {
     <CurrentUserContext.Provider value={me}>
       {children}
     </CurrentUserContext.Provider>
+  )
+}
+
+export function PluralProvider({children}) {
+  const {loading, error, data} = useQuery(ME_Q)
+  useNotificationSubscription()
+
+  if (loading) return (<Box height='100vh'><Loading/></Box>)
+
+  if (error || !data || !data.me || !data.me.id) {
+    wipeToken()
+    return (<Redirect to='/login'/>)
+  }
+  const {me, configuration} = data
+
+  return (
+    <PluralConfigurationContext.Provider value={configuration}>
+    <CurrentUserContext.Provider value={me}>
+      {children}
+    </CurrentUserContext.Provider>
+    </PluralConfigurationContext.Provider>
   )
 }

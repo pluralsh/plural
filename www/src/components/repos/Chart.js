@@ -14,6 +14,7 @@ import { Versions } from '../versions/Versions'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 import { Docker } from 'grommet-icons'
 import { dockerPull } from './misc'
+import { PluralConfigurationContext } from '../login/CurrentUser'
 
 function ChartInfo({version: {helm, insertedAt}}) {
   return (
@@ -137,6 +138,7 @@ function updateInstallation(chartId) {
 }
 
 function ImageDependencies({version: {imageDependencies}}) {
+  const {registry} = useContext(PluralConfigurationContext)
   let history = useHistory()
   if (!imageDependencies || imageDependencies.length === 0) return null
 
@@ -150,7 +152,7 @@ function ImageDependencies({version: {imageDependencies}}) {
              hoverIndicator='light-2' round='xsmall' focusIndicator={false}
              onClick={() => history.push(`/dkr/img/${image.id}`)}>
           <Docker color='plain' size='18px' />
-          <Text size='small'>{dockerPull(image)}</Text>
+          <Text size='small'>{dockerPull(registry, image)}</Text>
         </Box>
       ))}
     </DetailContainer>

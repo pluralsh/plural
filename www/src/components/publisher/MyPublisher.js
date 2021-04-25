@@ -4,7 +4,7 @@ import { InputField, InputCollection, ResponsiveInput, Button } from 'forge-core
 import { Box, Anchor, Text, TextInput } from 'grommet'
 import Repositories from '../repos/Repositories'
 import CreateRepository from '../repos/CreateRepository'
-import { CurrentUserContext } from '../login/CurrentUser'
+import { CurrentUserContext, PluralConfigurationContext } from '../login/CurrentUser'
 import { EDIT_PUBLISHER, LINK_ACCOUNT } from './queries'
 import { ME_Q } from '../users/queries'
 import { CONNECT_ICON, AUTHORIZE_URL } from './constants'
@@ -27,6 +27,7 @@ function AccountConnected() {
 }
 
 function PublisherPayments({publisher: {billingAccountId}}) {
+  const {stripeConnectId} = useContext(PluralConfigurationContext)
   const [mutation] = useMutation(LINK_ACCOUNT, {
     update: (cache, {data: { linkPublisher }}) => updateCache(cache, {
       query: ME_Q,
@@ -44,7 +45,7 @@ function PublisherPayments({publisher: {billingAccountId}}) {
 
   return (
     <Box pad='small' round='xsmall'>
-      <a href={AUTHORIZE_URL}>
+      <a href={AUTHORIZE_URL.replace('{connect_id}', stripeConnectId)}>
         <img alt='' src={CONNECT_ICON} />
       </a>
     </Box>

@@ -11,6 +11,8 @@ import { Link } from 'grommet-icons'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 import { DockerImages } from './DockerImages'
 import { Graph, RangePicker } from '../metrics/Graph'
+import { PluralConfigurationContext } from '../login/CurrentUser'
+import { dockerPull } from './misc'
 
 function DockerHeader({image}) {
   return (
@@ -30,6 +32,7 @@ function DockerHeader({image}) {
 }
 
 function DockerSidebar({image: {dockerRepository: docker, ...image}, filter, setFilter}) {
+  const {registry} = useContext(PluralConfigurationContext)
   const data = useMemo(() => docker.metrics.map(({tags, values}) => {
     const tag = tags.find(({name}) => name === 'tag')
     
@@ -44,7 +47,7 @@ function DockerSidebar({image: {dockerRepository: docker, ...image}, filter, set
       <DetailContainer flex={false} pad='small' gap='small' >
         <Text weight="bold" size='small'>Pull Command</Text>
         <Box background='sidebar' pad='xsmall'>
-          <pre>docker pull {DKR_DNS}/{docker.repository.name}/{docker.name}:{image.tag}</pre>
+          <pre>docker pull {dockerPull(registry, {...image, dockerRepository: docker})}</pre>
         </Box>
 
         <Text weight="bold" size='small'>Created At</Text>

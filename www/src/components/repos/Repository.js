@@ -22,6 +22,7 @@ import { BreadcrumbsContext } from '../Breadcrumbs'
 import "ace-builds/src-noconflict/mode-yaml"
 import "ace-builds/src-noconflict/theme-terminal"
 import { extendConnection } from '../../utils/graphql'
+import { PluralConfigurationContext } from '../login/CurrentUser'
 
 function Container({children, onClick, hasNext, noPad}) {
 
@@ -66,6 +67,7 @@ function Chart({chart, hasNext}) {
 }
 
 function DockerRepository({docker, repo, hasNext}) {
+  const {registry} = useContext(PluralConfigurationContext)
   let history = useHistory()
   return (
     <Container hasNext={hasNext} onClick={() => history.push(`/dkr/repo/${docker.id}`)}>
@@ -77,7 +79,7 @@ function DockerRepository({docker, repo, hasNext}) {
           {docker.name}
         </Text>
         <Text size='small'>
-          docker pull {DKR_DNS}/{repo.name}/{docker.name} -- created {moment(docker.insertedAt).fromNow()}
+          docker pull {registry}/{repo.name}/{docker.name} -- created {moment(docker.insertedAt).fromNow()}
         </Text>
       </Box>
     </Container>

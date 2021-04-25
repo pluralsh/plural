@@ -16,6 +16,11 @@ export const ME_Q = gql`
         address { ...AddressFragment }
       }
     }
+    configuration {
+      stripeConnectId
+      stripePublishableKey
+      registry
+    }
   }
   ${UserFragment}
   ${AddressFragment}

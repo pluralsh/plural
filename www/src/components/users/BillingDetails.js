@@ -11,25 +11,32 @@ import { Visa, Mastercard, Amex, Trash } from 'grommet-icons'
 import { FaCreditCard } from 'react-icons/fa'
 import 'react-credit-cards/es/styles-compiled.css';
 import './stripe.css'
+import './billing.css'
+import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 
 function _CardForm({stripe, onCompleted}) {
-  const [mutation, {loading}] = useMutation(REGISTER_CARD, {
+  const [stripeError, setStripeError] = useState(null) 
+  const [mutation, {loading, error}] = useMutation(REGISTER_CARD, {
     refetchQueries: [{query: CARDS}],
     onCompleted
   })
   const onClick = useCallback(() => {
-    stripe.createToken().then(({token: {id}}) =>
-      mutation({variables: {source: id}})
-    )
+    stripe.createToken().then(({token, error}) => {
+      setStripeError(error)
+      if (token && token.id) return mutation({variables: {source: token.id}})
+      console.log(error)
+    })
   }, [stripe, mutation])
 
   return (
-    <Box fill='horizontal' direction='row' pad='small' gap='xsmall' align='center'>
+    <Box fill='horizontal' pad='small' gap='xsmall' align='center'>
+      {stripeError && <Alert header={stripeError.message} status={AlertStatus.ERROR} description='Try again with a different card' />}
+      {error && <GqlError error={error} header='Error registering card' />}
       <Box fill='horizontal'>
         <CardElement />
       </Box>
-      <Box flex={false}>
-        <Button loading={loading} label='Register' onClick={onClick} />
+      <Box flex={false} justify='end' fill='horizontal'>
+        <Button flex={false} loading={loading} label='Register' onClick={onClick} />
       </Box>
     </Box>
   )
@@ -50,13 +57,15 @@ const expiry = (expMonth, expYear) => `${expMonth > 10 ? expMonth : '0' + expMon
 
 function CardInner({card: {name, expMonth, expYear, brand, last4}}) {
   return (
-    <CardDisplay
-      expiry={expiry(expMonth, expYear)}
-      preview
-      number={cardNumber(last4)}
-      cvc='*'
-      issuer={brand}
-      name={name || 'John Doe'} />
+    <Box flex={false} width='300px'>
+      <CardDisplay
+        expiry={expiry(expMonth, expYear)}
+        preview
+        number={cardNumber(last4)}
+        cvc='*'
+        issuer={brand}
+        name={name || 'John Doe'} />
+    </Box>
   )
 }
 
@@ -69,12 +78,13 @@ function DeleteCard({card: {id}}) {
   return (
     <HoveredBackground>
       <Box
+        className='delete'
         accentable
         focusIndicator={false}
         onClick={() => !loading && mutation()}
-        margin={{top: 'xsmall', right: 'xsmall'}}
+        margin={{right: 'small', top: 'small'}}
         round='xsmall'
-        pad='small'
+        pad='xsmall'
         background='white'
         align='center'
         justify='center'>
@@ -85,21 +95,11 @@ function DeleteCard({card: {id}}) {
 }
 
 function Card({card, noDelete}) {
-  const [hover, setHover] = useState(false)
-
-  if (hover && !noDelete) {
-    return (
-      <Stack anchor='top-right' onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
-        <CardInner card={card} />
-        <DeleteCard card={card} />
-      </Stack>
-    )
-  }
-
   return (
-    <Box onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
+    <Stack className={'card ' + (noDelete ? 'no-delete' : '')}  width='300px' flex={false} anchor='top-right'>
       <CardInner card={card} />
-    </Box>
+      <DeleteCard card={card} />
+    </Stack>
   )
 }
 
@@ -131,7 +131,11 @@ export function CardOption({card, current, setCurrent}) {
 export function CardList() {
   const me = useContext(CurrentUserContext)
   const [open, setOpen] = useState(false)
-  const { data, loading } = useQuery(CARDS)
+  const { data, loading, refetch } = useQuery(CARDS)
+  const onCompleted = useCallback(() => {
+    setOpen(false)
+    refetch()
+  }, [refetch, setOpen])
   if (!data || loading) return null
 
   const {edges} = data.me.cards
@@ -142,8 +146,8 @@ export function CardList() {
       <Box flex={false} direction='row' fill='horizontal' pad='small'>
         <Button label='Add a card' onClick={() => setOpen(true)} />
       </Box>
-      <Box fill align='center' pad='small' style={{overflow: 'auto'}} gap='small'>
-        {edges.map(({node: card}) => <Card card={card} />)}
+      <Box fill pad='small' style={{overflow: 'auto'}} gap='small'>
+        {edges.map(({node: card}) => <Card key={card.id} card={card} />)}
       </Box>
     </Box>
     {open && (
@@ -154,7 +158,7 @@ export function CardList() {
             <CardInputForm
               header='Add another card'
               me={me}
-              onCompleted={() => setOpen(false)} />
+              onCompleted={onCompleted} />
           </Box>
         </Box>
       </Layer>

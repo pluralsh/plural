@@ -40,7 +40,7 @@ export function Alert({status, header, description}) {
   const theme = useContext(ThemeContext)
 
   return (
-    <Box pad='small' border={{color}} background={`${normalizeColor(color, theme).toLowerCase()}40`}
+    <Box fill='horizontal' pad='small' border={{color}} background={`${normalizeColor(color, theme).toLowerCase()}40`}
         direction='row' gap='medium' align='center' round='xsmall'>
       <AlertIcon status={status} color={color} />
       <Box gap='2px'>

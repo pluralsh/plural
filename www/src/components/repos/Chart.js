@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { Box, Text, Anchor, Markdown } from 'grommet'
 import { useQuery, useMutation } from 'react-apollo'
-import { Link, useHistory, useParams } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 import { Button, ScrollableContainer, Tabs, TabHeader, TabHeaderItem, TabContent } from 'forge-core'
 import { CHART_Q, INSTALL_CHART, UPDATE_CHART_INST } from './queries'
 import moment from 'moment'

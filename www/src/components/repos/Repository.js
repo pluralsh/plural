@@ -7,7 +7,7 @@ import { Scroller, Button, SecondaryButton, Modal, ModalHeader, Tabs, TabHeader,
         TabHeaderItem, TabContent, BORDER_COLOR, ScrollableContainer } from 'forge-core'
 import yaml from 'js-yaml'
 import { REPO_Q, UPDATE_REPO } from './queries'
-import { DEFAULT_CHART_ICON, DEFAULT_TF_ICON, DEFAULT_DKR_ICON, DKR_DNS } from './constants'
+import { DEFAULT_CHART_ICON, DEFAULT_TF_ICON, DEFAULT_DKR_ICON } from './constants'
 import Installation from './Installation'
 import CreateTerraform from './CreateTerraform'
 import { RepoForm } from './CreateRepository'

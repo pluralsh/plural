@@ -64,6 +64,10 @@ defmodule GraphQl do
   end
 
   query do
+    field :configuration, :plural_configuration do
+      resolve fn _, _ -> {:ok, Core.Configuration.new()} end
+    end
+
     connection field :tags, node_type: :grouped_tag do
       arg :id,   :id
       arg :type, non_null(:tag_group)

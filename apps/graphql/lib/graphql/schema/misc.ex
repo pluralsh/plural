@@ -44,5 +44,11 @@ defmodule GraphQl.Schema.Misc do
     field :count, non_null(:integer)
   end
 
+  object :plural_configuration do
+    field :stripe_connect_id, :string
+    field :stripe_publishable_key, :string
+    field :registry, :string
+  end
+
   connection node_type: :grouped_tag
 end

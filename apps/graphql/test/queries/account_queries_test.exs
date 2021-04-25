@@ -155,4 +155,15 @@ defmodule GraphQl.AccountQueriesTest do
       assert found["id"] == oauth.id
     end
   end
+
+  describe "configuration" do
+    test "it can fetch plural's configuration" do
+      {:ok, %{data: %{"configuration" => conf}}} = run_query("""
+        query { configuration { registry stripeConnectId } }
+      """, %{})
+
+      assert conf["registry"]
+      assert conf["stripeConnectId"]
+    end
+  end
 end

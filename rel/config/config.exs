@@ -59,7 +59,8 @@ config :core, Core.Clients.Zoom,
 config :core,
   chartmuseum: "http://chartmuseum:8080",
   plural_cmd: "/usr/local/bin/plural",
-  stripe_connect_id: get_env("STRIPE_CONNECT_ID")
+  stripe_connect_id: get_env("STRIPE_CONNECT_ID"),
+  stripe_publishable_key: get_env("STRIPE_PUBLISHABLE_KEY")
 
 provider = case get_env("PROVIDER") || "google" do
   "google" -> :gcp

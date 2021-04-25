@@ -100,7 +100,8 @@ config :lager, :error_logger_whitelist, [Logger.ErrorHandler]
 
 config :core, Core.Clients.Zoom,
   client_id: "dummy-id",
-  client_secret: "dummy-secret"
+  stripe_connect_id: "dummy-secret",
+  stripe_publishable_key: "pk-stripe"
 
 config :worker,
   registry: "dkr.plural.sh",

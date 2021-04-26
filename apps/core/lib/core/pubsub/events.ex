@@ -3,6 +3,7 @@ defmodule Core.PubSub.VersionUpdated, do: use Piazza.PubSub.Event
 
 defmodule Core.PubSub.DockerNotification, do: use Piazza.PubSub.Event
 defmodule Core.PubSub.DockerImageCreated, do: use Piazza.PubSub.Event
+defmodule Core.PubSub.DockerImagesPushed, do: use Piazza.PubSub.Event
 
 defmodule Core.PubSub.InstallationCreated, do: use Piazza.PubSub.Event
 defmodule Core.PubSub.InstallationUpdated, do: use Piazza.PubSub.Event
@@ -43,3 +44,6 @@ defmodule Core.PubSub.UpgradeQueueUpdated, do: use Piazza.PubSub.Event
 defmodule Core.PubSub.UpgradeQueueCreated, do: use Piazza.PubSub.Event
 
 defmodule Core.PubSub.ResetTokenCreated, do: use Piazza.PubSub.Event
+
+defmodule Core.PubSub.RolloutCreated, do: use Piazza.PubSub.Event
+defmodule Core.PubSub.RolloutUpdated, do: use Piazza.PubSub.Event

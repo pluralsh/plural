@@ -21,10 +21,12 @@ function Queue({q}) {
           <Text size='small' weight={500}>{q.name || 'default'}</Text>
           <Text size='small' color='dark-3'>{q.domain}</Text>
         </Box>
-        {q.git && <Box direction='row' gap='xsmall' align='center'>
-          <Github size='14px' />
-          <Text size='small' color='dark-3'>{q.git}</Text>
-        </Box>}
+        {q.git && (
+          <Box direction='row' gap='xsmall' align='center'>
+            <Github size='14px' />
+            <Text size='small' color='dark-3'>{q.git}</Text>
+          </Box>
+        )}
       </Box>
       <QueueHealth queue={q} />
     </Box>

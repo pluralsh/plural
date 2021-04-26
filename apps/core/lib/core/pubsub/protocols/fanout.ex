@@ -19,7 +19,7 @@ defimpl Core.PubSub.Fanout, for: [Core.PubSub.VersionCreated, Core.PubSub.Versio
   Pushes the whole process through flow for parallelism.  There's no
   checkpointing or persistence, so this must be considered best-effort.
   """
-  def fanout(%{item: %{chart_id: id} = version}) when is_binary(id) do
+  def fanout(%{item: version}) do
     version = Core.Repo.preload(version, [:chart, :terraform, :tags])
     Logger.info "Processing event #{@for}"
 

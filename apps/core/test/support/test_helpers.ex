@@ -6,6 +6,13 @@ defmodule Core.TestHelpers do
     MapSet.equal?(found, expected)
   end
 
+  def uuid(val) do
+    random = :crypto.strong_rand_bytes(10)
+    <<u0::48, _::4, u1::12, _::2, u2::62>> = <<val::48, random::binary>>
+    {:ok, res} = Ecto.UUID.load(<<u0::48, 4::4, u1::12, 2::2, u2::62>>)
+    res
+  end
+
   def by_ids(models) do
     Enum.into(models, %{}, & {id(&1), &1})
   end

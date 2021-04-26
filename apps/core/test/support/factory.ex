@@ -362,4 +362,10 @@ defmodule Core.Factory do
       version: build(:version)
     }
   end
+
+  def rollout_factory do
+    %Schema.Rollout{
+      repository: build(:repository)
+    }
+  end
 end

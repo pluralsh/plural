@@ -1,28 +1,44 @@
 defimpl Core.Rollouts.Rollable, for: [Core.PubSub.VersionCreated, Core.PubSub.VersionUpdated] do
+  use Core.Rollable.Base
   alias Core.Schema.{ChartInstallation, TerraformInstallation}
 
   def name(%Core.PubSub.VersionCreated{}), do: "version:created"
   def name(%Core.PubSub.VersionUpdated{}), do: "version:updated"
 
-  def preload(%{item: version} = event) do
-    version = Core.Repo.preload(version, [:chart, :terraform, :tags])
-    %{event | item: version}
+  def preload(event), do: preload_event(event, [:chart, :terraform, :tags])
+
+  def query(%{item: %{chart_id: chart_id} = version}) when is_binary(chart_id) do
+    ChartInstallation.for_chart(chart_id)
+    |> ChartInstallation.with_auto_upgrade(version.tags)
+    |> ChartInstallation.ignore_version(version.id)
+    |> ChartInstallation.preload(installation: [:repository])
+    |> ChartInstallation.ordered()
   end
 
-  def query(%{item: version}), do: stream_installations(version)
+  def query(%{item: %{terraform_id: tf_id} = version}) when is_binary(tf_id) do
+    TerraformInstallation.for_terraform(tf_id)
+    |> TerraformInstallation.with_auto_upgrade(version.tags)
+    |> TerraformInstallation.ignore_version(version.id)
+    |> TerraformInstallation.preload(installation: [:repository])
+    |> TerraformInstallation.ordered()
+  end
 
   def process(%{item: version}, inst) do
-    with {:ok, inst} <- update_installation(inst, version) do
-      Core.Upgrades.Utils.for_user(inst.installation.user_id)
-      |> Enum.map(fn queue ->
-        {:ok, up} = Core.Services.Upgrades.create_upgrade(%{
+    start_transaction()
+    |> add_operation(:inst, fn _ ->
+      inst
+      |> Ecto.Changeset.change(%{version_id: version.id})
+      |> Core.Repo.update()
+    end)
+    |> add_operation(:upgrades, fn %{inst: inst} ->
+      deliver_upgrades(inst.installation.user_id, fn queue ->
+        Core.Services.Upgrades.create_upgrade(%{
           repository_id: repo_id(version),
           message: "Upgraded #{type(version)} #{pkg_name(version)} to #{version.version}"
         }, queue)
-
-        up
       end)
-    end
+    end)
+    |> execute(extract: :upgrades)
   end
 
   defp repo_id(%{chart: %{repository_id: repo_id}}), do: repo_id
@@ -33,26 +49,4 @@ defimpl Core.Rollouts.Rollable, for: [Core.PubSub.VersionCreated, Core.PubSub.Ve
 
   defp type(%{chart: %{id: _}}), do: "chart"
   defp type(_), do: "terraform module"
-
-  defp stream_installations(%{chart_id: id} = version) when is_binary(id) do
-    ChartInstallation.for_chart(id)
-    |> ChartInstallation.with_auto_upgrade(version.tags)
-    |> ChartInstallation.ignore_version(version.id)
-    |> ChartInstallation.preload(installation: [:repository])
-    |> ChartInstallation.ordered()
-  end
-
-  defp stream_installations(%{terraform_id: id} = version) when is_binary(id) do
-    TerraformInstallation.for_terraform(id)
-    |> TerraformInstallation.with_auto_upgrade(version.tags)
-    |> TerraformInstallation.ignore_version(version.id)
-    |> TerraformInstallation.preload(installation: [:repository])
-    |> TerraformInstallation.ordered()
-  end
-
-  defp update_installation(%{} = inst, version) do
-    inst
-    |> Ecto.Changeset.change(%{version_id: version.id})
-    |> Core.Repo.update()
-  end
 end

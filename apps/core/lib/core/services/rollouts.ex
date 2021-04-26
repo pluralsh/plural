@@ -1,5 +1,6 @@
 defmodule Core.Services.Rollouts do
   use Core.Services.Base
+  alias Core.Services.Locks
   alias Core.Schema.Rollout
   alias Core.Rollouts.Rollable
   alias Core.PubSub
@@ -21,9 +22,11 @@ defmodule Core.Services.Rollouts do
   end
 
   def execute(%Rollout{event: event} = rollout) do
+    event = Rollable.preload(event)
+
     Rollable.query(event)
     |> Core.Repo.stream(method: :keyset)
-    |> Core.throttle(count: 10, pause: 500)
+    |> Core.throttle(count: 2, pause: 10)
     |> Enum.reduce(rollout, fn record, rollout ->
       {:ok, rollout} =
         start_transaction()
@@ -41,10 +44,14 @@ defmodule Core.Services.Rollouts do
     |> update_rollout(%{status: :finished})
   end
 
-  def poll() do
+  def poll(limit \\ 10) do
+    owner = Ecto.UUID.generate()
+
     start_transaction()
+    |> add_operation(:lock, fn _ -> Locks.acquire("rollout", owner) end)
     |> add_operation(:fetch, fn _ ->
-      Rollout.dequeue()
+      Rollout
+      |> Rollout.dequeue(limit)
       |> Core.Repo.all()
       |> ok()
     end)
@@ -57,6 +64,7 @@ defmodule Core.Services.Rollouts do
       |> elem(1)
       |> ok()
     end)
+    |> add_operation(:release, fn _ -> Locks.release("rollout") end)
     |> execute(extract: :mark)
     |> when_ok(&notify(&1, :update_all))
   end

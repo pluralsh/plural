@@ -17,17 +17,21 @@ defmodule Core.Schema.Rollout do
     timestamps()
   end
 
+  def for_repository(query \\ __MODULE__, id) do
+    from(r in query, where: r.repository_id == ^id)
+  end
+
   def can_dequeue(query \\ __MODULE__) do
     from(r in query, where: r.status == ^:queued or r.status == ^:running)
   end
 
-  def dequeue(query \\ __MODULE__) do
+  def dequeue(query \\ __MODULE__, amount \\ 20) do
     stale = Timex.now() |> Timex.shift(minutes: -5)
     from(r in query,
       join: d in subquery(to_dequeue()),
         on: d.first == r.id,
       where: r.status == ^:queued or (not is_nil(r.heartbeat) and r.heartbeat < ^stale),
-      limit: 20
+      limit: ^amount
     )
   end
 
@@ -37,6 +41,10 @@ defmodule Core.Schema.Rollout do
       group_by: r.repository_id,
       select: %{repository_id: r.repository_id, first: min(r.id)}
     )
+  end
+
+  def ordered(query \\ __MODULE__, order \\ [desc: :id]) do
+    from(r in query, order_by: ^order)
   end
 
   @valid ~w(status cursor heartbeat count)a
@@ -52,6 +60,6 @@ defmodule Core.Schema.Rollout do
   def changeset(model, attrs \\ %{}) do
     model
     |> cast(attrs, @valid)
-    |> validate_required([:cursor, :status, :heartbeat])
+    |> validate_required([:status, :heartbeat])
   end
 end

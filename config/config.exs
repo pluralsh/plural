@@ -122,4 +122,9 @@ config :briefly,
   default_prefix: "briefly",
   default_extname: ""
 
+config :worker, rollout_pipeline: [
+  Worker.Rollouts.Producer,
+  {Worker.Rollouts.Pipeline, Worker.Rollouts.Producer}
+]
+
 import_config "#{Mix.env()}.exs"

@@ -8,7 +8,7 @@ defmodule Worker.Application do
 
   def start(_type, _args) do
     Logger.info "Starting worker"
-    children = broker()
+    children = Worker.conf(:rollout_pipeline) ++ broker()
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options

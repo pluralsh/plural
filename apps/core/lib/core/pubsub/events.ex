@@ -47,3 +47,4 @@ defmodule Core.PubSub.ResetTokenCreated, do: use Piazza.PubSub.Event
 
 defmodule Core.PubSub.RolloutCreated, do: use Piazza.PubSub.Event
 defmodule Core.PubSub.RolloutUpdated, do: use Piazza.PubSub.Event
+defmodule Core.PubSub.RolloutPolled, do: use Piazza.PubSub.Event

@@ -16,7 +16,9 @@ defimpl Core.PubSub.Realtime, for: [
   Core.PubSub.NotificationCreated,
   Core.PubSub.UpgradeCreated,
   Core.PubSub.UpgradeQueueUpdated,
-  Core.PubSub.UpgradeQueueCreated
+  Core.PubSub.UpgradeQueueCreated,
+  Core.PubSub.RolloutCreated,
+  Core.PubSub.RolloutUpdated
 ] do
   def publish?(_), do: true
 end

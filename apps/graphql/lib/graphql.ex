@@ -18,6 +18,7 @@ defmodule GraphQl do
   import_types GraphQl.Schema.Incidents
   import_types GraphQl.Schema.Audit
   import_types GraphQl.Schema.Upgrade
+  import_types GraphQl.Schema.Rollout
 
   alias GraphQl.Resolvers.{
     User,
@@ -30,7 +31,8 @@ defmodule GraphQl do
     Payments,
     Version,
     Account,
-    Incidents
+    Incidents,
+    Rollout
   }
 
   @sources [
@@ -44,7 +46,8 @@ defmodule GraphQl do
     Payments,
     Version,
     Account,
-    Incidents
+    Incidents,
+    Rollout
   ]
 
   def context(ctx) do
@@ -88,6 +91,7 @@ defmodule GraphQl do
     import_fields :incident_queries
     import_fields :audit_queries
     import_fields :upgrade_queries
+    import_fields :rollout_queries
   end
 
   mutation do
@@ -106,5 +110,6 @@ defmodule GraphQl do
   subscription do
     import_fields :incident_subscriptions
     import_fields :upgrade_subscriptions
+    import_fields :rollout_subscriptions
   end
 end

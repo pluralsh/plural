@@ -6,6 +6,7 @@ import { ROLLOUTS, ROLLOUT_SUB } from './queries'
 import { appendConnection, extendConnection } from '../../utils/graphql' 
 import { HeaderItem } from '../repos/Docker'
 import { BeatLoader } from 'react-spinners'
+import { RolloutStatus as Status } from './types'
 import moment from 'moment'
 
 const ROW_HEIGHT = '50px'
@@ -14,16 +15,16 @@ const MAX_UUID = Math.pow(2, 128)
 const colors = {
   'QUEUED': 'light-4',
   'RUNNING': 'progress',
-  'FINISHED': 'ok'
+  'FINISHED': 'good'
 }
 
 function statusDescription({status, cursor}) {
   switch (status) {
-    case RolloutStatus.QUEUED:
+    case Status.QUEUED:
       return 'queued'
-    case RolloutStatus.FINISHED:
+    case Status.FINISHED:
       return 'finished'
-    case RolloutStatus.RUNNING:
+    case Status.RUNNING:
       const prog = cursor ? parseInt(cursor.replace('-', ''), 16) : 0
       return `${Math.floor((prog / MAX_UUID) * 100)}% completed`
     default:
@@ -32,10 +33,11 @@ function statusDescription({status, cursor}) {
 }
 
 function RolloutStatus({width, rollout}) {
+  console.log(rollout)
   return (
-    <Box width={width} >
-      <Box pad={{horizontal: 'small', vertical: 'xsmall'}} background={colors[rollout.status]} 
-           direction='row' gap='xsmall' align='center'>
+    <Box width={width} justify='start' direction='row'>
+      <Box flex={false} pad={{horizontal: 'small', vertical: 'xsmall'}} background={colors[rollout.status]} 
+           direction='row' gap='xsmall' align='center' round='xsmall'>
         {rollout.status === RolloutStatus.RUNNING && <BeatLoader size={5} margin={2} color='white' />}
         <Text size='small'>{statusDescription(rollout)}</Text>
       </Box>
@@ -47,9 +49,9 @@ function Rollout({rollout}) {
   return (
     <Box pad='small' flex={false} direction='row' gap='xsmall' height={ROW_HEIGHT} align='center' border={{side: 'bottom', color: 'light-3'}}>
       <HeaderItem text={rollout.event} width='20%' />
-      <HeaderItem text={`${rollout.count} clusters`} width='20%' nobold />
-      <HeaderItem text={moment(rollout.heartbeat).fromNow()} width='20%' nobold />
-      <RolloutStatus width='40%' rollout={rollout} />
+      <HeaderItem text={`${rollout.count} clusters`} width='30%' nobold />
+      <HeaderItem text={moment(rollout.heartbeat).fromNow()} width='30%' nobold />
+      <RolloutStatus width='20%' rollout={rollout} />
     </Box>
   )
 }
@@ -58,9 +60,9 @@ function RolloutHeader() {
   return (
     <Box flex={false} pad='small' direction='row' gap='xsmall' height={ROW_HEIGHT} align='center' border={{side: 'bottom', color: 'light-5'}}>
       <HeaderItem text='event' width='20%' />
-      <HeaderItem text='clusters updated' width='20%' />
-      <HeaderItem text='last ping' width='20%' />
-      <HeaderItem text='progress' width='40%' />
+      <HeaderItem text='clusters updated' width='30%' />
+      <HeaderItem text='last ping' width='30%' />
+      <HeaderItem text='progress' width='20%' />
     </Box>
   )
 }
@@ -75,7 +77,7 @@ export function Rollouts({repository: {id: repositoryId}}) {
   useEffect(() => subscribeToMore({
     document: ROLLOUT_SUB,
     variables: {repositoryId},
-    updateQuery: (prev, {subscriptionData: {data: {delta, payload}}}) => {
+    updateQuery: (prev, {subscriptionData: {data: {rolloutDelta: {delta, payload}}}}) => {
       return delta === 'CREATE' ? appendConnection(prev, payload, 'rollouts') : prev
     }
   }), [repositoryId])
@@ -83,7 +85,7 @@ export function Rollouts({repository: {id: repositoryId}}) {
   if (!data) return null
 
   const {edges, pageInfo} = data.rollouts
-
+  console.log(edges)
   return (
     <Box fill>
       <RolloutHeader />

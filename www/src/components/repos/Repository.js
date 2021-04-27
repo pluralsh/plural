@@ -352,8 +352,8 @@ export default function Repository() {
 
   return (
     <ScrollableContainer>
-      <Box pad='small' direction='row'>
-        <Box pad='small' width={`${WIDTH}%`}>
+      <Box pad='small' direction='row' fill='vertical'>
+        <Box pad='small' width={`${WIDTH}%`} fill='vertical'>
           <Box flex={false} fill='horizontal' direction='row' align='center' margin={{bottom: 'medium'}}>
             <RepositoryIcon size={IMG_SIZE} repository={repository} />
             {recipes && recipes.edges.length > 0 && (
@@ -363,7 +363,7 @@ export default function Repository() {
             )}
           </Box>
           {view === RepoView.PKG && (
-            <Box animation='fadeIn'>
+            <Box animation='fadeIn' fill>
               <DetailView
                 repository={repository}
                 terraform={terraform}
@@ -373,17 +373,17 @@ export default function Repository() {
             </Box>
           )}
           {view === RepoView.RECIPE && (
-            <Box pad='small' animation='fadeIn'>
+            <Box pad='small' animation='fadeIn' fill>
               <Recipes recipes={recipes} fetchMore={fetchMore} repository={repository} />
             </Box>
           )}
           {view === RepoView.DEPLOY && (
-            <Box pad='small' animation='fadeIn'>
+            <Box pad='small' animation='fadeIn' fill>
               <Rollouts repository={repository} />
             </Box>
           )}
         </Box>
-        <Box pad='small' gap='medium' width={`${100 - WIDTH}%`}>
+        <Box pad='small' gap='medium' width={`${100 - WIDTH}%`} fill='vertical' style={{overflow: 'auto'}}>
           <Installation
             repository={repository}
             integrations={integrations}

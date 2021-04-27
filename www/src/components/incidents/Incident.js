@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { Button, Scroller } from 'forge-core'
 import { CurrentUserContext } from '../login/CurrentUser'
-import { useMutation, useQuery } from 'react-apollo'
+import { useMutation, useQuery, useSubscription } from 'react-apollo'
 import { useParams } from 'react-router'
 import Markdown from './Markdown'
 import { INCIDENT_Q, INCIDENT_SUB, MESSAGE_SUB, UPDATE_INCIDENT } from './queries'
@@ -203,14 +203,6 @@ function IncidentInner({incident, fetchMore, subscribeToMore, loading, editing, 
     onCompleted: () => setEditing(false)
   })
 
-  useEffect(() => subscribeToMore({
-    document: INCIDENT_SUB,
-    variables: {id: incident.id},
-    updateQuery: ({incident, ...prev}, {subscriptionData: { data: { payload } }}) => (
-      {...prev, incident: {...incident, ...payload}}
-    )
-  }), [incident.id])
-
   const refreshList = useCallback(() => {
     listRef && listRef.resetAfterIndex(0, true)
   }, [listRef])
@@ -287,6 +279,11 @@ export function Incident({editing}) {
     variables: {id: incidentId}, 
     fetchPolicy: 'cache-and-network'
   })
+  
+  useSubscription(INCIDENT_SUB, {
+    variables: {id: incidentId}
+  })
+
   const {setBreadcrumbs} = useContext(BreadcrumbsContext)
   useEffect(() => {
     setBreadcrumbs([{url: `/incidents`, text: 'incidents'}, {url: `/incidents/${incidentId}`, text: incidentId}])

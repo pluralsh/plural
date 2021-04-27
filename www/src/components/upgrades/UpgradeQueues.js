@@ -38,7 +38,7 @@ export function UpgradeQueues() {
 
   useEffect(() => subscribeToMore({
     document: UPGRADE_QUEUE_SUB,
-    updateQuery: ({upgradeQueues, ...prev}, {subscriptionData: {data: {delta, payload}}}) => {
+    updateQuery: ({upgradeQueues, ...prev}, {subscriptionData: {data: {upgradeQueueDelta: {delta, payload}}}}) => {
       return delta === 'CREATE' ? {...prev, upgradeQueues: [payload, ...upgradeQueues]} :  prev
     }
   }), [])

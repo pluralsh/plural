@@ -8,3 +8,4 @@ config :goth,
   disabled: true
 
 config :worker, start_broker: true
+config :core, broker: Worker.Conduit.Broker

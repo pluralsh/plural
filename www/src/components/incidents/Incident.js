@@ -280,9 +280,7 @@ export function Incident({editing}) {
     fetchPolicy: 'cache-and-network'
   })
   
-  useSubscription(INCIDENT_SUB, {
-    variables: {id: incidentId}
-  })
+  useSubscription(INCIDENT_SUB, {variables: {id: incidentId}})
 
   const {setBreadcrumbs} = useContext(BreadcrumbsContext)
   useEffect(() => {

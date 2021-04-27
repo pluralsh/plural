@@ -64,7 +64,7 @@ function RecipeListItem({recipe, setRecipe, repository: {editable, id}}) {
   )
 }
 
-export default function Recipes({repository, edges, pageInfo, fetchMore}) {
+export default function Recipes({repository, recipes: {edges, pageInfo, fetchMore}}) {
   const [recipe, setRecipe] = useState(null)
   const wrappedSetRecipe = useCallback((recipe) => setRecipe(recipe ? recipe : null), [setRecipe])
   if (edges.length === 0) return null

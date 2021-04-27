@@ -1,6 +1,6 @@
 import gql from 'graphql-tag'
 import { PageInfo } from '../../models/misc'
-import { UpgradeFragment, UpgradeQueueFragment } from '../../models/upgrades'
+import { RolloutFragment, UpgradeFragment, UpgradeQueueFragment } from '../../models/upgrades'
 
 export const QUEUES = gql`
   query {
@@ -26,6 +26,17 @@ export const QUEUE = gql`
   ${UpgradeFragment}
 `
 
+export const ROLLOUTS = gql`
+  query Rollouts($repositoryId: ID!, $cursor: String) {
+    rollouts(repositoryId: $repositoryId, after: $cursor, first: 50) {
+      pageInfo { ...PageInfo }
+      edges { node { ...RolloutFragment } }
+    }
+  }
+  ${PageInfo}
+  ${RolloutFragment}
+`;
+
 export const UPGRADE_SUB = gql`
   subscription Upgrades($id: ID!) {
     upgrade(id: $id) { ...UpgradeFragment }
@@ -42,3 +53,13 @@ export const UPGRADE_QUEUE_SUB = gql`
   }
   ${UpgradeQueueFragment}
 `
+
+export const ROLLOUT_SUB = gql`
+  subscription Rollout($repositoryId: ID!) {
+    rolloutDelta(repositoryId: $repositoryId) {
+      delta
+      payload { ...RolloutFragment }
+    }
+  }
+  ${RolloutFragment}
+`;

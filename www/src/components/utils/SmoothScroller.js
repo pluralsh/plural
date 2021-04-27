@@ -2,6 +2,7 @@ import React, { useState, useRef, useCallback, useEffect } from 'react'
 import { Box } from 'grommet'
 import InfiniteLoader from 'react-window-infinite-loader'
 import { VariableSizeList } from 'react-window-reversed'
+import { VariableSizeList as List } from 'react-window'
 import Autosizer from 'react-virtualized-auto-sizer'
 import memoize from 'memoize-one'
 import { CellMeasurer } from 'forge-core'
@@ -120,6 +121,57 @@ export default function SmoothScroller({
         >
           {ItemWrapper}
         </VariableSizeList>
+      )}
+      </Autosizer>
+    )}
+    </InfiniteLoader>
+  )
+}
+
+export function StandardScroller({
+  hasNextPage, placeholder, loading, items, loadNextPage, mapper, listRef, setListRef, handleScroll, refreshKey, ...props}) {
+  const sizeMap = useRef({});
+  const setSize = useCallback((index, size) => {
+    sizeMap.current = { ...sizeMap.current, [index]: size };
+    listRef && listRef.resetAfterIndex(index, true)
+  }, [sizeMap, listRef]);
+  const getSize = useCallback(index => sizeMap.current[index] || 50, [sizeMap]);
+  const count = items.length
+  const itemCount = hasNextPage ? count + 7 : count;
+  const loadMoreItems = loading ? () => {} : loadNextPage;
+  const isItemLoaded = useCallback(index => !hasNextPage || index < count, [hasNextPage, count])
+
+  return (
+    <InfiniteLoader
+      isItemLoaded={isItemLoaded}
+      itemCount={itemCount}
+      loadMoreItems={loadMoreItems}
+      minimumBatchSize={50}
+      threshold={75}
+    >
+    {({ onItemsRendered, ref }) => (
+      <Autosizer>
+      {({height, width}) => (
+        <List
+          height={height}
+          width={width}
+          itemCount={itemCount}
+          itemSize={getSize}
+          itemKey={(index) => `${refreshKey}:${index}`}
+          itemData={buildItemData(setSize, mapper, isItemLoaded, items, listRef, width, placeholder, refreshKey, props)}
+          onScroll={({scrollOffset}) => handleScroll && handleScroll(scrollOffset > (height / 2))}
+          onItemsRendered={(ctx) => {
+            props.onRendered && props.onRendered(ctx)
+            onItemsRendered(ctx)
+          }}
+          ref={(listRef) => {
+            setListRef && setListRef(listRef)
+            ref(listRef)
+          }}
+          {...props}
+        >
+          {ItemWrapper}
+        </List>
       )}
       </Autosizer>
     )}

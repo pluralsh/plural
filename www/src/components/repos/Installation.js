@@ -71,7 +71,7 @@ function InstallationInner({installation, repository}) {
     <Box gap='small' pad='small'>
       {installation.subscription && (<SubscriptionBadge repository={repository} subscription={installation.subscription} />)}
       <Highlight language='bash'>
-        {[`forge build --only ${repository.name}`, `forge deploy ${repository.name}`].join('\n')}
+        {[`plural build --only ${repository.name}`, `plural deploy ${repository.name}`].join('\n')}
       </Highlight>
     </Box>
   )

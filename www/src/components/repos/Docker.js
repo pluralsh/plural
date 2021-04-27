@@ -199,7 +199,7 @@ function Vulnerability({vuln}) {
   )
 }
 
-const HeaderItem = ({text, width, nobold}) => (<Box width={width}><Text size='small' weight={nobold ? null : 500}>{text}</Text></Box>)
+export const HeaderItem = ({text, width, nobold}) => (<Box width={width}><Text size='small' weight={nobold ? null : 500}>{text}</Text></Box>)
 
 function VulnerabilityHeader() {
   return (

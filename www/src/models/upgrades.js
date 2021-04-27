@@ -13,6 +13,17 @@ export const UpgradeQueueFragment = gql`
   }
 `
 
+export const RolloutFragment = gql`
+  fragment RolloutFragment on Rollout {
+    id
+    event
+    cursor
+    count
+    status
+    heartbeat
+  }
+`;
+
 export const UpgradeFragment = gql`
   fragment UpgradeFragment on Upgrade {
     id

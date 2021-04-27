@@ -100,9 +100,11 @@ export function UpgradeQueue() {
           </Box>
         </Box>
       </Container>
-      <Container fill title='upgrades' modifier={<Box flex={false} pad='xsmall' round='xsmall' onClick={() => refetch()} hoverIndicator='light-3' focusIndicator={false}>
+      <Container fill title='upgrades' modifier={
+        <Box flex={false} pad='xsmall' round='xsmall' onClick={() => refetch()} hoverIndicator='light-3' focusIndicator={false}>
           <Refresh size='small' />
-        </Box>}>
+        </Box>
+      }>
         <Scroller 
           id='webhooks'
           style={{width: '100%', height: '100%', overflow: 'auto'}}

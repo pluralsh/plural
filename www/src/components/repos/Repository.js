@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { Box, Text, CheckBox } from 'grommet'
+import { Box, Text } from 'grommet'
 import { Lock } from 'grommet-icons'
 import { useQuery, useMutation } from 'react-apollo'
 import { useParams, useHistory } from 'react-router-dom'
@@ -19,10 +19,12 @@ import Artifacts from './Artifacts'
 import AceEditor from "react-ace"
 import Integrations from './Integrations'
 import { BreadcrumbsContext } from '../Breadcrumbs'
-import "ace-builds/src-noconflict/mode-yaml"
-import "ace-builds/src-noconflict/theme-terminal"
 import { extendConnection } from '../../utils/graphql'
 import { PluralConfigurationContext } from '../login/CurrentUser'
+import { RepoView, ViewToggle } from './ViewToggle'
+import { Rollouts } from '../upgrades/Rollouts'
+import "ace-builds/src-noconflict/mode-yaml"
+import "ace-builds/src-noconflict/theme-terminal"
 
 function Container({children, onClick, hasNext, noPad}) {
 
@@ -332,16 +334,18 @@ export default function Repository() {
     fetchPolicy: "cache-and-network"
   })
   const {setBreadcrumbs} = useContext(BreadcrumbsContext)
-  const [detail, setDetail] = useState(false)
+  const [view, setView] = useState(RepoView.PKG)
+
   useEffect(() => {
     if (!data) return
+    if (data.recipes && data.recipes.edges.length > 0) setView(RepoView.RECIPE)
     const {repository} = data
 
     setBreadcrumbs([
       {url: `/publishers/${repository.publisher.id}`, text: repository.publisher.name},
       {url: `/repositories/${repository.id}`, text: repository.name}
     ])
-  }, [setBreadcrumbs, data])
+  }, [setBreadcrumbs, data, setView])
 
   if (loading) return null
   const {charts, repository, terraform, dockerRepositories, recipes, integrations} = data
@@ -350,21 +354,15 @@ export default function Repository() {
     <ScrollableContainer>
       <Box pad='small' direction='row'>
         <Box pad='small' width={`${WIDTH}%`}>
-          <Box fill='horizontal' direction='row' align='center' margin={{bottom: 'medium'}}>
+          <Box flex={false} fill='horizontal' direction='row' align='center' margin={{bottom: 'medium'}}>
             <RepositoryIcon size={IMG_SIZE} repository={repository} />
             {recipes && recipes.edges.length > 0 && (
               <Box fill='horizontal' direction='row' justify='end'>
-                <Box flex={false}>
-                  <CheckBox
-                    toggle
-                    checked={detail}
-                    label={detail ? 'detail' : 'recipes'}
-                    onChange={({target: {checked}}) => setDetail(checked)} />
-                </Box>
+                <ViewToggle view={view} setView={setView} />
               </Box>
             )}
           </Box>
-          {(detail || recipes.edges.length <= 0) && (
+          {view === RepoView.PKG && (
             <Box animation='fadeIn'>
               <DetailView
                 repository={repository}
@@ -374,9 +372,14 @@ export default function Repository() {
                 fetchMore={fetchMore} />
             </Box>
           )}
-          {!detail && recipes.edges.length > 0 && (
+          {view === RepoView.RECIPE && (
             <Box pad='small' animation='fadeIn'>
-              <Recipes {...recipes} fetchMore={fetchMore} repository={repository} />
+              <Recipes recipes={recipes} fetchMore={fetchMore} repository={repository} />
+            </Box>
+          )}
+          {view === RepoView.DEPLOY && (
+            <Box pad='small' animation='fadeIn'>
+              <Rollouts repository={repository} />
             </Box>
           )}
         </Box>

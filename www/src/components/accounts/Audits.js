@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import moment from 'moment'
 import { Box, Text } from 'grommet'
 import { Loading, Scroller } from 'forge-core'
@@ -7,6 +7,7 @@ import Avatar from '../users/Avatar'
 import { AUDITS_Q } from './queries'
 import { extendConnection } from '../../utils/graphql'
 import { BreadcrumbsContext } from '../Breadcrumbs'
+import { StandardScroller } from '../utils/SmoothScroller'
 import { Link } from 'react-router-dom'
 
 const HeaderItem = ({text, width, nobold}) => (<Box width={width}><Text size='small' weight={nobold ? null : 500}>{text}</Text></Box>)
@@ -74,7 +75,8 @@ function Audit({audit}) {
 }
 
 export function Audits() {
-  const {data, fetchMore} = useQuery(AUDITS_Q, {fetchPolicy: 'cache-and-network'})
+  const [listRef, setListRef] = useState(null)
+  const {data, loading, fetchMore} = useQuery(AUDITS_Q, {fetchPolicy: 'cache-and-network'})
   const {setBreadcrumbs} = useContext(BreadcrumbsContext)
   useEffect(() => {    
     setBreadcrumbs([ {text: 'audits', url: '/audits'} ])
@@ -87,15 +89,19 @@ export function Audits() {
   return (
     <Box fill>
       <AuditHeader />
-      <Scroller
-        id='builds'
-        style={{height: '100%', overflow: 'auto'}}
-        edges={edges}
-        mapper={({node}) => <Audit key={node.id} audit={node} />}
-        onLoadMore={() => pageInfo.hasNextPage && fetchMore({
-          variables: {cursor: pageInfo.endCursor},
-          updateQuery: (prev, {fetchMoreResult: {audits}}) => extendConnection(prev, audits, 'audits')
-        })} />
+      <Box fill>
+        <StandardScroller
+          listRef={listRef}
+          setListRef={setListRef}
+          hasNextPage={pageInfo.hasNextPage}
+          items={edges}
+          loading={loading} 
+          mapper={({node}) => <Audit key={node.id} audit={node} />} 
+          loadNextPage={() => pageInfo.hasNextPage && fetchMore({
+            variables: {cursor: pageInfo.endCursor},
+            updateQuery: (prev, {fetchMoreResult: {audits}}) => extendConnection(prev, audits, 'audits')
+          })} />
+      </Box>
     </Box>
   )
 }

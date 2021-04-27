@@ -9,7 +9,7 @@ export const RepoView = {
   DEPLOY: 'd'
 }
 
-const ICON_SIZE = '15px'
+const ICON_SIZE = '13px'
 
 const ViewIcon = {
   r: <Script size={ICON_SIZE} />,
@@ -29,14 +29,28 @@ export function ViewToggle({view, setView}) {
   return (
     <>
     <Box ref={ref} flex={false}>
-      <Button background='brand' label={names[view]} icon={ViewIcon[view]} onClick={() => setOpen(true)} />
+      <Button 
+        flat
+        background='brand' 
+        gap='small' 
+        label={names[view]} 
+        icon={ViewIcon[view]} 
+        onClick={() => setOpen(true)} />
     </Box>
     {open && (
       <Drop target={ref.current} align={{top: 'bottom'}} onClickOutside={() => setOpen(false)}>
         <Box flex={false} pad='xsmall' gap='xsmall'>
           {Object.values(RepoView).map((v) => (
-            <Box direction='row' pad='xsmall' align='center' gap='xsmall' hoverIndicator='light-2' 
-                 round='xsmall' onClick={() => setView(v)} focusIndicator={false}>
+            <Box 
+              direction='row' 
+              pad='xsmall' 
+              align='center' 
+              gap='small' 
+              hoverIndicator='light-2' 
+              round='xsmall' 
+              onClick={() => setView(v)} 
+              focusIndicator={false}
+            >
               {ViewIcon[v]}
               <Text size='small'>{names[v]}</Text>
             </Box>

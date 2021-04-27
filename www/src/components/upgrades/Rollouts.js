@@ -45,12 +45,12 @@ function RolloutStatus({width, rollout}) {
   )
 }
 
-function Rollout({rollout}) {
+function Rollout({rollout: {event, count, heartbeat, ...rollout}}) {
   return (
     <Box pad='small' flex={false} direction='row' gap='xsmall' height={ROW_HEIGHT} align='center' border={{side: 'bottom', color: 'light-3'}}>
-      <HeaderItem text={rollout.event} width='20%' />
-      <HeaderItem text={`${rollout.count} clusters`} width='30%' nobold />
-      <HeaderItem text={moment(rollout.heartbeat).fromNow()} width='30%' nobold />
+      <HeaderItem text={event} width='20%' />
+      <HeaderItem text={`${count} clusters`} width='30%' nobold />
+      <HeaderItem text={heartbeat ? moment(heartbeat).fromNow() : 'pending'} width='30%' nobold />
       <RolloutStatus width='20%' rollout={rollout} />
     </Box>
   )

@@ -3,6 +3,11 @@ defmodule Core do
 
   def conf(key), do: Application.get_env(:core, key)
 
+  def pause(val, seconds) do
+    :timer.sleep(:timer.seconds(seconds))
+    val
+  end
+
   def throttle(enum, opts) when is_list(opts), do: throttle(enum, Map.new(opts))
   def throttle(enum, %{count: count, pause: pause}) do
     Stream.with_index(enum)

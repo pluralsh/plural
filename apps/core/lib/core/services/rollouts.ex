@@ -41,6 +41,7 @@ defmodule Core.Services.Rollouts do
         |> execute(extract: :mark)
       rollout
     end)
+    |> Core.pause(2)
     |> update_rollout(%{status: :finished})
   end
 

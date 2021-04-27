@@ -2,8 +2,6 @@ import React, { useRef, useState } from 'react'
 import { Button } from 'forge-core'
 import { Script, Package, Deploy } from 'grommet-icons'
 import { Box, Drop, Text } from 'grommet'
-import styled from 'styled-components'
-import { normalizeColor } from 'grommet/utils'
 
 export const RepoView = {
   RECIPE: 'r',
@@ -24,16 +22,6 @@ const names = {
   p: 'packages',
   d: 'deployments'
 }
-
-const toggleHover = styled.div`
-&:hover span {
-  color: ${props => normalizeColor('brand', props.theme)};
-}
-&:hover svg {
-  stroke: ${props => normalizeColor('brand', props.theme)} !important;
-  fill: ${props => normalizeColor('brand', props.theme)} !important;
-}
-`
 
 export function ViewToggle({view, setView}) {
   const ref = useRef()

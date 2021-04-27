@@ -37,6 +37,8 @@ const EditBilling = (props) => <EditAccount {...props} billing />
 
 function WrapStripe({children}) {
   const {stripePublishableKey} = useContext(PluralConfigurationContext)
+  if (!stripePublishableKey) return children
+
   return (
     <StripeProvider apiKey={stripePublishableKey}>
       {children}

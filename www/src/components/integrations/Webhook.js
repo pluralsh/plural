@@ -9,6 +9,7 @@ import { DELETE_WEBHOOK, UPDATE_WEBHOOK, WEBHOOK_Q } from './queries'
 import { ActionInput, ActionTab } from './CreateWebhook'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 import { Close, Edit, Refresh, Trash } from 'grommet-icons'
+import { StandardScroller } from '../utils/SmoothScroller'
 
 export function Container({title, children, modifier, ...props}) {
   return (
@@ -35,17 +36,20 @@ function NoLogs() {
   )
 }
 
-function WebhookLogs({webhook: {logs: {pageInfo, edges}}, fetchMore, refetch}) {
+function WebhookLogs({webhook: {logs: {pageInfo, edges}}, loading, fetchMore, refetch}) {
+  const [listRef, setListRef] = useState(null)
+
   return (
     <Container title='webhook logs' 
       modifier={<Control icon={<Refresh size='small' />} onClick={() => refetch()} />}>
-      <Scroller
-        id='webhooklogs'
-        style={{width: '100%', height: '100%', overflow: 'auto'}}
-        edges={edges}
-        emptyState={<NoLogs />}
-        mapper={({node}, next) => <WebhookLog key={node.id} log={node} next={next.node} />}
-        onLoadMore={() => pageInfo.hasNextPage && fetchMore({
+      <StandardScroller
+        listRef={listRef}
+        setListRef={setListRef}
+        hasNextPage={pageInfo.hasNextPage}
+        items={edges}
+        loading={loading}
+        mapper={({node}, {next}) => <WebhookLog key={node.id} log={node} next={next.node} />} 
+        loadNextPage={() => pageInfo.hasNextPage && fetchMore({
           variables: {cursor: pageInfo.endCursor},
           updateQuery: (prev, {fetchMoreResult: {integrationWebhook: {logs}}}) => ({
             ...prev, integrationWebhook: extendConnection(prev.integrationWebhook, logs, 'logs')
@@ -179,7 +183,7 @@ function EditWebhook({webhook, setEdit}) {
 export function Webhook() {
   const [edit, setEdit] = useState(false)
   const {id} = useParams()
-  const {data, fetchMore, refetch} = useQuery(WEBHOOK_Q, {variables: {id}, fetchPolicy: 'cache-and-network'})
+  const {data, fetchMore, loading, refetch} = useQuery(WEBHOOK_Q, {variables: {id}, fetchPolicy: 'cache-and-network'})
   const {setBreadcrumbs} = useContext(BreadcrumbsContext)
   useEffect(() => {
     setBreadcrumbs([{url: `/webhooks`, text: 'webhooks'}, {url: `/webhooks/${id}`, text: id}])
@@ -193,7 +197,7 @@ export function Webhook() {
     <Box fill pad='small' gap='small'>
       {!edit && <WebhookHeader webhook={webhook} setEdit={setEdit} />}
       {edit && <EditWebhook webhook={webhook} setEdit={setEdit} />}
-      <WebhookLogs webhook={webhook} fetchMore={fetchMore} refetch={refetch} />
+      <WebhookLogs webhook={webhook} loading={loading} fetchMore={fetchMore} refetch={refetch} />
     </Box>
   )
 }

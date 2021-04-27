@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useQuery, useSubscription } from 'react-apollo'
 import { Loading, Scroller } from 'forge-core'
 import { QUEUE, UPGRADE_QUEUE_SUB, UPGRADE_SUB } from './queries'
@@ -14,6 +14,7 @@ import { Attribute, Container } from '../integrations/Webhook'
 import { Provider } from '../repos/misc'
 import { useParams } from 'react-router'
 import { QueueHealth } from './QueueHealth'
+import { StandardScroller } from '../utils/SmoothScroller'
 
 function DeliveryProgress({delivered}) {
   return (
@@ -42,8 +43,9 @@ function Upgrade({upgrade, acked}) {
 }
 
 export function UpgradeQueue() {
+  const [listRef, setListRef] = useState(null)
   const {id} = useParams()
-  const {data, fetchMore, subscribeToMore, refetch} = useQuery(QUEUE, {
+  const {data, loading, fetchMore, subscribeToMore, refetch} = useQuery(QUEUE, {
     variables: {id},
     fetchPolicy: 'cache-and-network'
   })
@@ -105,12 +107,14 @@ export function UpgradeQueue() {
           <Refresh size='small' />
         </Box>
       }>
-        <Scroller 
-          id='webhooks'
-          style={{width: '100%', height: '100%', overflow: 'auto'}}
-          edges={edges}
-          mapper={({node}) => <Upgrade key={node.id} upgrade={node} acked={acked} />}
-          onLoadMore={() => pageInfo.hasNextPage && fetchMore({
+        <StandardScroller
+          listRef={listRef}
+          setListRef={setListRef}
+          hasNextPage={pageInfo.hasNextPage}
+          items={edges}
+          loading={loading} 
+          mapper={({node}) => <Upgrade key={node.id} upgrade={node} acked={acked} />} 
+          loadNextPage={() => pageInfo.hasNextPage && fetchMore({
             variables: {cursor: pageInfo.endCursor},
             updateQuery: (prev, {fetchMoreResult: {upgradeQueue: {upgrades}}}) => ({
               ...prev, upgradeQueue: extendConnection(prev.upgradeQueue, upgrades, 'upgrades')

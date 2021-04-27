@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react'
+import { Button } from 'forge-core'
 import { Script, Package, Deploy } from 'grommet-icons'
 import { Box, Drop, Text } from 'grommet'
 import styled from 'styled-components'
@@ -39,9 +40,8 @@ export function ViewToggle({view, setView}) {
   const [open, setOpen] = useState(false)
   return (
     <>
-    <Box flex={false} ref={ref} as={toggleHover} direction='row' gap='xsmall' align='center' onClick={() => setOpen(true)}>
-      {ViewIcon[view]}
-      <Text size='small'>{names[view]}</Text>
+    <Box ref={ref} flex={false}>
+      <Button background='brand' label={names[view]} icon={ViewIcon[view]} onClick={() => setOpen(true)} />
     </Box>
     {open && (
       <Drop target={ref.current} align={{top: 'bottom'}} onClickOutside={() => setOpen(false)}>

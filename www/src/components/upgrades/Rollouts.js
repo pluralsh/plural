@@ -10,12 +10,17 @@ import { RolloutStatus as Status } from './types'
 import moment from 'moment'
 
 const ROW_HEIGHT = '50px'
-const MAX_UUID = Math.pow(2, 128)
+const MAX_UUID = parseInt('ffffffffffffffffffffffffffffffff', 16)
 
 const colors = {
   'QUEUED': 'light-4',
   'RUNNING': 'progress',
   'FINISHED': 'good'
+}
+
+function progress(cursor) {
+  const prog = cursor ? parseInt(cursor.replaceAll('-', ''), 16) : 0
+  return Math.floor((prog / MAX_UUID) * 10000) / 100
 }
 
 function statusDescription({status, cursor}) {
@@ -25,15 +30,13 @@ function statusDescription({status, cursor}) {
     case Status.FINISHED:
       return 'finished'
     case Status.RUNNING:
-      const prog = cursor ? parseInt(cursor.replace('-', ''), 16) : 0
-      return `${Math.floor((prog / MAX_UUID) * 100)}% completed`
+      return `${progress(cursor)}% completed`
     default:
       return null
   }
 }
 
 function RolloutStatus({width, rollout}) {
-  console.log(rollout)
   return (
     <Box width={width} justify='start' direction='row'>
       <Box flex={false} pad={{horizontal: 'small', vertical: 'xsmall'}} background={colors[rollout.status]} 

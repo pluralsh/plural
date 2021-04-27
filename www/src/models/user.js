@@ -37,9 +37,7 @@ export const InviteFragment = gql`
 export const GroupMemberFragment = gql`
   fragment GroupMemberFragment on GroupMember {
     id
-    user {
-      ...UserFragment
-    }
+    user { ...UserFragment }
   }
   ${UserFragment}
 `;
@@ -68,6 +66,7 @@ export const PublisherFragment = gql`
     id
     name
     phone
+    avatar
     description
     owner { ...UserFragment }
     address { ...AddressFragment }

@@ -37,12 +37,12 @@ function RepoStub({id, icon, name}) {
   )
 }
 
-function Publisher({publisher: {id, name, owner, description, repositories}}) {
+function Publisher({publisher: {id, name, description, repositories, ...publisher}}) {
   let history = useHistory()
 
   return (
     <Container direction='row' gap='small' onClick={() => history.push(`/publishers/${id}`)}>
-      <Avatar size='65px' user={owner} />
+      <Avatar size='65px' user={{...publisher, name: name}} />
       <Box>
         <Anchor onClick={() => history.push(`/publishers/${id}`)} size='small' weight='bold'>
           {name}

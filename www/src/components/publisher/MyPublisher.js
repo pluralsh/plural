@@ -15,7 +15,9 @@ import { BreadcrumbsContext } from '../Breadcrumbs'
 import { SIDEBAR_WIDTH } from '../constants'
 import { PublisherHeader } from './Publisher'
 import { useParams } from 'react-router'
+import { useFilePicker } from 'react-sage'
 import { deepUpdate, updateCache } from '../../utils/graphql'
+import Avatar from '../users/Avatar'
 
 function AccountConnected() {
   return (
@@ -106,18 +108,7 @@ const prune = ({__typename, ...rest}) => rest
 
 function EditPublisher({publisher: {description, phone, address}}) {
   const [attributes, setAttributes] = useState({description, phone, address: prune(address || defaultAddress)})
-  const [mutation, {loading}] = useMutation(EDIT_PUBLISHER, {
-    variables: {attributes},
-    update: (cache, { data: { updatePublisher } }) => {
-      const prev = cache.readQuery({ query: ME_Q })
-      cache.writeQuery({query: ME_Q, data: {
-        ...prev, me: {
-          ...prev.me,
-          publisher: updatePublisher
-        }
-      }})
-    }
-  })
+  const [mutation, {loading}] = useMutation(EDIT_PUBLISHER, {variables: {attributes}})
 
   return (
     <Box gap='small' pad='small'>
@@ -151,6 +142,32 @@ function EditPublisher({publisher: {description, phone, address}}) {
   )
 }
 
+function EditAvatar({publisher}) {
+  const {files, onClick, HiddenFileInput} = useFilePicker({})
+  const [mutation] = useMutation(EDIT_PUBLISHER)
+  useEffect(() => {
+    if (files.length > 0) {
+      mutation({variables: {attributes: {avatar: files[0]}}})
+    }
+  }, [files])
+  console.log(publisher)
+
+  return (
+    <Box direction='row' align='center' gap='medium' pad='small'>
+      <>
+      <Avatar size='60px' user={publisher} onClick={onClick} />
+      <HiddenFileInput accept='.jpg, .jpeg, .png' multiple={false} />
+      </>
+      <Box gap='small'>
+        <Box>
+          <Text size='medium' weight={500}>{publisher.name}</Text>
+          <Text size='small'><i>{publisher.description}</i></Text>
+        </Box>
+      </Box>
+    </Box>
+  )
+}
+
 export default function MyPublisher() {
   const {editing} = useParams()
   const me = useContext(CurrentUserContext)
@@ -166,7 +183,7 @@ export default function MyPublisher() {
   return (
     <Box fill direction='row'>
       <Box width={SIDEBAR_WIDTH} flex={false} pad='small' gap='xsmall' background='backgroundColor'>
-        <PublisherHeader publisher={{...me.publisher, owner: me}} size='60px' />
+        <EditAvatar publisher={me.publisher} />
         <EditSelect base='/publishers/mine/' edit='repos' name='Repositories' icon={<List size='small' />} />
         <EditSelect base='/publishers/mine/' edit='attrs' name='Edit Attributes' icon={<Edit size='small' />} />
         <EditSelect base='/publishers/mine/' edit='create' name='Create Repository' icon={<Add size='small' />} />

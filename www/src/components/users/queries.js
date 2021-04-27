@@ -13,6 +13,7 @@ export const ME_Q = gql`
         phone
         description
         billingAccountId
+        avatar
         address { ...AddressFragment }
       }
     }

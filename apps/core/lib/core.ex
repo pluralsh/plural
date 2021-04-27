@@ -3,6 +3,8 @@ defmodule Core do
 
   def conf(key), do: Application.get_env(:core, key)
 
+  def broker(), do: conf(:broker)
+
   def pause(val, seconds) do
     :timer.sleep(:timer.seconds(seconds))
     val

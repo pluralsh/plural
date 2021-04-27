@@ -53,6 +53,6 @@ defimpl Core.PubSub.Fanout, for: Core.PubSub.UpgradeCreated do
 
   def fanout(%{item: up}) do
     Logger.info "enqueueing upgrade #{up.id}"
-    Core.Conduit.Broker.publish(%Conduit.Message{body: up}, :upgrade)
+    Core.broker().publish(%Conduit.Message{body: up}, :upgrade)
   end
 end

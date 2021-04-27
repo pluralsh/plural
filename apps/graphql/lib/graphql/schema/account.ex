@@ -9,6 +9,7 @@ defmodule GraphQl.Schema.Account do
 
   input_object :account_attributes do
     field :name, :string
+    field :icon, :upload_or_url
   end
 
   input_object :invite_attributes do
@@ -55,6 +56,10 @@ defmodule GraphQl.Schema.Account do
     field :id,                  non_null(:id)
     field :name,                :string
     field :billing_customer_id, :string
+
+    field :icon, :string, resolve: fn
+      account, _, _ -> {:ok, Core.Storage.url({account.icon, account}, :original)}
+    end
 
     field :root_user, :user, resolve: dataloader(Account)
 

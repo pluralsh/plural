@@ -1,20 +1,16 @@
 import gql from 'graphql-tag'
-import { UserFragment, TokenFragment, WebhookFragment, AddressFragment, AccountFragment } from '../../models/user'
+import { UserFragment, TokenFragment, WebhookFragment, AddressFragment, AccountFragment, PublisherFragment } from '../../models/user'
 import { CardFragment } from '../../models/payments';
+import { PageInfo } from '../../models/misc'
 
 export const ME_Q = gql`
   query {
     me {
       ...UserFragment
       account { ...AccountFragment }
-      publisher {
-        id
-        name
-        phone
-        description
+      publisher { 
+        ...PublisherFragment 
         billingAccountId
-        avatar
-        address { ...AddressFragment }
       }
     }
     configuration {
@@ -26,6 +22,7 @@ export const ME_Q = gql`
   ${UserFragment}
   ${AddressFragment}
   ${AccountFragment}
+  ${PublisherFragment}
 `;
 
 export const CARDS = gql`
@@ -34,11 +31,7 @@ export const CARDS = gql`
       ...UserFragment
       account { ...AccountFragment }
       cards(first: 5) {
-        edges {
-          node {
-            ...CardFragment
-          }
-        }
+        edges { node { ...CardFragment } }
       }
     }
   }
@@ -59,17 +52,13 @@ export const UPDATE_USER = gql`
 export const TOKENS_Q = gql`
   query Tokens($cursor: String) {
     tokens(after: $cursor, first: 10) {
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
+      pageInfo { ...PageInfo }
       edges {
-        node {
-          ...TokenFragment
-        }
+        node { ...TokenFragment }
       }
     }
   }
+  ${PageInfo}
   ${TokenFragment}
 `;
 
@@ -95,17 +84,13 @@ export const WEBHOOKS_Q = gql`
   query Webhooks($cursor: String) {
     webhooks(first: 10, after: $cursor) {
       edges {
-        node {
-          ...WebhookFragment
-        }
+        node { ...WebhookFragment }
       }
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
+      pageInfo { ...PageInfo }
     }
   }
   ${WebhookFragment}
+  ${PageInfo}
 `;
 
 export const PING_WEBHOOK = gql`

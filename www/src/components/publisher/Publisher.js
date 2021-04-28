@@ -13,10 +13,10 @@ function formatAddress({line1, line2, city, state, country, zip}) {
   return `${line1}, ${line2} ${city}, ${state}, ${country} ${zip}`
 }
 
-export function PublisherHeader({publisher: {name, description, owner}, size}) {
+export function PublisherHeader({publisher: {name, description, ...publisher}, size}) {
   return (
     <Box direction='row' align='center' gap='medium' pad='small'>
-      <Avatar size={size || '80px'} user={owner} />
+      <Avatar size={size || '80px'} user={{...publisher, name}} />
       <Box gap='small'>
         <Box>
           <Text size='medium' weight={500}>{name}</Text>
@@ -27,10 +27,10 @@ export function PublisherHeader({publisher: {name, description, owner}, size}) {
   )
 }
 
-function PublisherView({name, owner, description, phone, address}) {
+function PublisherView({publisher: {name, description, phone, owner, address, ...publisher}}) {
   return (
     <DetailContainer gap='small' pad='small'>
-      <PublisherHeader publisher={{name, description, owner}} />
+      <PublisherHeader publisher={{...publisher, name, description}} />
       <Box pad='small' border='top'>
         <InputCollection>
           <ResponsiveInputContainer label='email' content={<Text size='small'>{owner.email}</Text>} />
@@ -61,7 +61,7 @@ function Publisher() {
         <Repositories publisher={publisher} columns={2} />
       </Box>
       <Box width='40%' pad='small'>
-        <PublisherView {...publisher} />
+        <PublisherView publisher={publisher} />
       </Box>
     </Box>
   )

@@ -102,8 +102,13 @@ defmodule GraphQl.Schema.User do
     field :address,            :address
 
     field :owner,  :user, resolve: dataloader(User)
+
     field :avatar, :string, resolve: fn
       publisher, _, _ -> {:ok, Core.Storage.url({publisher.avatar, publisher}, :original)}
+    end
+
+    field :background_color, :string, resolve: fn
+      publisher, _, _ -> {:ok, User.background_color(publisher)}
     end
 
     field :repositories, list_of(:repository) do

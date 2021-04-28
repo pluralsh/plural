@@ -68,6 +68,7 @@ export const PublisherFragment = gql`
     phone
     avatar
     description
+    backgroundColor
     owner { ...UserFragment }
     address { ...AddressFragment }
   }

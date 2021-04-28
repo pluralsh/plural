@@ -42,7 +42,7 @@ function PublisherView({publisher: {name, description, phone, owner, address, ..
   )
 }
 
-function Publisher() {
+export default function Publisher() {
   const {publisherId} = useParams()
   const {loading, data} = useQuery(PUBLISHER_Q, {variables: {publisherId}})
   const {setBreadcrumbs} = useContext(BreadcrumbsContext)
@@ -66,5 +66,3 @@ function Publisher() {
     </Box>
   )
 }
-
-export default Publisher

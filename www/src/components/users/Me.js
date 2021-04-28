@@ -38,7 +38,7 @@ function CreatePublisherModal({setModal}) {
     <Layer modal position='center' onClickOutside={() => setModal(null)} onEsc={() => setModal(null)} >
       <Box width='30vw'>
         <ModalHeader text='Create Publisher' setOpen={setModal} />
-        <Box pad='medium'>
+        <Box pad='small'>
           <CreatePublisher onCreate={() => {
             setModal(null)
             history.push('/publishers/mine')

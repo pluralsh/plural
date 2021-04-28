@@ -21,7 +21,7 @@ defmodule Core.Services.Recipes do
   def create(%{sections: sections} = attrs, repository_id, user) do
     start_transaction()
     |> add_operation(:recipe, fn _ ->
-      %Recipe{repository_id: repository_id}
+      %Recipe{repository_id: repository_id, id: attrs[:id]}
       |> Recipe.changeset(build_dependencies(attrs))
       |> allow(user, :edit)
       |> when_ok(:insert)
@@ -86,10 +86,13 @@ defmodule Core.Services.Recipes do
     |> add_operation(:wipe, fn _ ->
       case get_by_name(name, repo_id) do
         %Recipe{} = recipe -> Core.Repo.delete(recipe)
-        _ -> {:ok, nil}
+        _ -> {:ok, %{id: nil}}
       end
     end)
-    |> add_operation(:create, fn _ -> create(attrs, repo_id, user) end)
+    |> add_operation(:create, fn %{wipe: %{id: id}} ->
+      Map.put(attrs, :id, id)
+      |> create(repo_id, user)
+    end)
     |> execute(extract: :create)
   end
 

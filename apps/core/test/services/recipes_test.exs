@@ -110,7 +110,7 @@ defmodule Core.Services.RecipesTest do
 
       verify_recipe.(recipe)
 
-      {:ok, recipe} = Recipes.upsert(%{
+      {:ok, new} = Recipes.upsert(%{
         name: "recipe",
         sections: [
           %{
@@ -129,7 +129,8 @@ defmodule Core.Services.RecipesTest do
         ]
       }, repo.id, user)
 
-      verify_recipe.(recipe)
+      verify_recipe.(new)
+      assert new.id == recipe.id
     end
   end
 

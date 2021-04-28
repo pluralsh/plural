@@ -26,6 +26,7 @@ defmodule ApiWeb.Router do
     pipe_through :api
 
     get "/auth/token", AuthController, :token
+    post "/auth/token", AuthController, :post_token
     post "/auth/license", AuthController, :refresh_license
 
     get "/health", HealthController, :ping

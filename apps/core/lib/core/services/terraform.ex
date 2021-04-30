@@ -2,7 +2,7 @@ defmodule Core.Services.Terraform do
   use Core.Services.Base
   import Core.Policies.Terraform
   alias Core.Services.{Repositories, Dependencies, Versions}
-  alias Core.Schema.{Terraform, TerraformInstallation, User}
+  alias Core.Schema.{Terraform, TerraformInstallation, User, Version}
 
   @type terraform_installation_resp :: {:ok, TerraformInstallation.t} | {:error, term}
 
@@ -40,23 +40,29 @@ defmodule Core.Services.Terraform do
   @spec create_terraform(map, binary, User.t) :: {:ok, Terraform.t} | {:error, term}
   def create_terraform(attrs, repo_id, user) do
     with {:ok, added} <- extract_tf_meta(attrs) do
+      attrs = Map.merge(attrs, added)
+
       start_transaction()
       |> add_operation(:terraform, fn _ ->
         %Terraform{repository_id: repo_id}
-        |> Terraform.changeset(Map.merge(attrs, added))
+        |> Terraform.changeset(attrs)
         |> allow(user, :create)
         |> when_ok(:insert)
       end)
-      |> add_operation(:version, fn
-        %{terraform: %Terraform{id: id, latest_version: v}} when not is_nil(v) ->
-          attrs
-          |> Map.merge(added)
-          |> Map.put(:version, v)
-          |> Versions.create_version(:terraform, id, user)
-          |> Versions.notify(:create, user)
-        _ -> {:ok, nil}
+      |> add_operation(:version, fn %{terraform: %{id: id}} ->
+        case attrs do
+          %{version: v} = attrs when not is_nil(v) ->
+            Versions.create_version(attrs, :terraform, id, user)
+          _ -> {:ok, nil}
+        end
       end)
-      |> execute(extract: :terraform)
+      |> execute()
+      |> case do
+        {:ok, %{version: v, terraform: tf}} ->
+          Versions.notify({:ok, v}, :upsert, user)
+          {:ok, get_tf!(tf.id)}
+        error -> error
+      end
     end
   end
 
@@ -75,26 +81,28 @@ defmodule Core.Services.Terraform do
   @spec update_terraform(map, binary, User.t) :: {:ok, Terraform.t} | {:error, term}
   def update_terraform(attrs, id, user) do
     with {:ok, added} <- extract_tf_meta(attrs) do
+      attrs = Map.merge(attrs, added)
+
       start_transaction()
       |> add_operation(:terraform, fn _ ->
         get_tf!(id)
-        |> Terraform.changeset(Map.merge(attrs, added))
+        |> Terraform.changeset(attrs)
         |> allow(user, :edit)
         |> when_ok(:update)
       end)
-      |> add_operation(:version, fn
-        %{terraform: %Terraform{latest_version: v}} when not is_nil(v) ->
-          attrs
-          |> Map.merge(added)
-          |> Map.put(:version, v)
-          |> Versions.create_version(:terraform, id, user)
-        _ -> {:ok, nil}
+      |> add_operation(:version, fn %{terraform: %{id: id}} ->
+        case attrs do
+          %{version: v} = attrs when not is_nil(v) ->
+            Versions.create_version(attrs, :terraform, id, user)
+          _ -> {:ok, nil}
+        end
       end)
       |> execute()
       |> case do
-        {:ok, %{terraform: tf, version: v}} ->
-          Versions.notify({:ok, v}, :create, user)
-          {:ok, tf}
+        {:ok, %{version: v}} ->
+          Versions.notify({:ok, v}, :upsert, user)
+          {:ok, get_tf!(id)}
+
         error -> error
       end
     end
@@ -173,7 +181,7 @@ defmodule Core.Services.Terraform do
         values_template: extract_tar_file(result, valt),
         dependencies: deps,
         description: deps["description"],
-        latest_version: deps["version"] || "0.1.0"
+        version: deps["version"] || "0.1.0"
       }}
     end
   end

@@ -31,7 +31,7 @@ defmodule Core.Services.Versions do
     |> add_operation(:version, fn _ ->
       case get_version(tool, id, version) do
         %Version{} = v -> v
-        _ -> struct(Version, %{tool_id => id})
+        _ -> struct(Version, %{tool_id => id, inserted: true})
       end
       |> Version.changeset(attrs)
       |> allow(user, :create)
@@ -111,9 +111,13 @@ defmodule Core.Services.Versions do
 
   def notify(%Version{} = v, :create, user),
     do: handle_notify(PubSub.VersionCreated, v, actor: user)
+  def notify({:ok, %Version{inserted: true} = v}, :upsert, user),
+    do: handle_notify(PubSub.VersionCreated, v, actor: user)
+  def notify({:ok, %Version{} = v}, :upsert, user),
+    do: handle_notify(PubSub.VersionUpdated, v, actor: user)
   def notify({:ok, %Version{} = v}, :create, user),
     do: handle_notify(PubSub.VersionCreated, v, actor: user)
   def notify({:ok, %Version{} = v}, :update, user),
     do: handle_notify(PubSub.VersionUpdated, v, actor: user)
-  def notify(error, _), do: error
+  def notify(error, _, _), do: error
 end

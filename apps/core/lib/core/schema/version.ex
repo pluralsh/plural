@@ -18,6 +18,7 @@ defmodule Core.Schema.Version do
     field :package_id,      :binary_id
     field :values_template, :string
     field :digest,          :string
+    field :inserted,        :boolean, virtual: true
 
     embeds_one :dependencies, Dependencies, on_replace: :update
 

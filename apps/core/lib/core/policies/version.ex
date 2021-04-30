@@ -5,10 +5,12 @@ defmodule Core.Policies.Version do
 
   @preload [chart: [repository: :publisher], terraform: [repository: :publisher]]
 
-  def can?(%User{} = user, %Version{} = chart_version, action) do
-    case Core.Repo.preload(chart_version, @preload) do
-      %{chart: %Chart{} = chart} -> Policies.Chart.can?(user, chart, action)
-      %{terraform: %Terraform{} = terraform} -> Policies.Terraform.can?(user, terraform, action)
+  def can?(%User{} = user, %Version{} = version, action) do
+    case Core.Repo.preload(version, @preload) do
+      %{chart: %Chart{} = chart} ->
+        Policies.Chart.can?(user, chart, action)
+      %{terraform: %Terraform{} = terraform} ->
+        Policies.Terraform.can?(user, terraform, action)
     end
   end
 

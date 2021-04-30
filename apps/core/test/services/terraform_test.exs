@@ -1,13 +1,14 @@
 defmodule Core.Services.TerraformTest do
   use Core.SchemaCase, async: true
   alias Core.Services.Terraform
+  alias Core.PubSub
 
   describe "#create_terraform/3" do
     test "A publisher can create tf repos" do
       %{owner: user} = pub = insert(:publisher)
       repo = insert(:repository, publisher: pub)
 
-      {:ok, tf} = Terraform.create_terraform(%{name: "gcp"}, repo.id, user)
+      {:ok, tf} = Terraform.create_terraform(%{name: "gcp", version: "0.1.0"}, repo.id, user)
 
       assert tf.name == "gcp"
       assert tf.repository_id == repo.id
@@ -25,7 +26,7 @@ defmodule Core.Services.TerraformTest do
     test "A publisher can update tf repos" do
       %{repository: repo} = tf = insert(:terraform)
 
-      {:ok, tf} = Terraform.update_terraform(%{name: "aws"}, tf.id, repo.publisher.owner)
+      {:ok, tf} = Terraform.update_terraform(%{name: "aws", version: "0.1.0"}, tf.id, repo.publisher.owner)
 
       assert tf.name == "aws"
       assert tf.repository_id == repo.id
@@ -62,20 +63,31 @@ defmodule Core.Services.TerraformTest do
       assert version.version == "0.1.0"
       assert version.dependencies.providers == [:gcp]
       assert Enum.empty?(tf.dependencies.dependencies)
+
+      assert_receive {:event, %PubSub.VersionCreated{item: v}}
+
+      assert v.version == tf.latest_version
+      assert v.terraform_id == tf.id
     end
 
     test "It will update if the tf exists" do
       repository = insert(:repository)
       terraform  = insert(:terraform, name: "upsert", repository: repository)
+      v = insert(:version, chart: nil, chart_id: nil, terraform: terraform, version: "0.1.0")
 
       {:ok, tf} = Terraform.upsert_terraform(
-        %{name: "upsert", description: "an upsert"},
+        %{name: "upsert", description: "an upsert", version: "0.1.0"},
         repository.id,
         "upsert",
         repository.publisher.owner)
 
       assert tf.id == terraform.id
       assert tf.description == "an upsert"
+
+      assert_receive {:event, %PubSub.VersionUpdated{item: found}}
+
+      assert found.terraform_id == tf.id
+      assert found.version == v.version
     end
   end
 
@@ -100,7 +112,7 @@ defmodule Core.Services.TerraformTest do
     test "It can find a readme and var template" do
       path = Path.join(:code.priv_dir(:core), "gcp-bootstrap.tgz")
 
-      {:ok, %{readme: readme, values_template: tmp, dependencies: deps, description: desc, latest_version: v}} = Terraform.extract_tf_meta(%{
+      {:ok, %{readme: readme, values_template: tmp, dependencies: deps, description: desc, version: v}} = Terraform.extract_tf_meta(%{
         package: %{path: path, filename: path}
       })
 

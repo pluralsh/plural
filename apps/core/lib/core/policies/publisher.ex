@@ -3,7 +3,7 @@ defmodule Core.Policies.Publisher do
   import Core.Policies.Utils
   alias Core.Schema.{User, Publisher}
 
-  def can?(%User{id: user_id}, %Publisher{owner_id: user_id}, _), do: :continue
+  def can?(%User{id: user_id}, %Publisher{owner_id: user_id}, _), do: :pass
 
   def can?(%User{} = user, %Publisher{} = pub, _) do
     %{account: account} = Core.Repo.preload(pub, [:account])

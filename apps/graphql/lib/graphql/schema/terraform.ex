@@ -11,6 +11,7 @@ defmodule GraphQl.Schema.Terraform do
     field :description,  :string
     field :package,      :upload_or_url
     field :dependencies, :yml
+    field :version,      :string
   end
 
   input_object :terraform_installation_attributes do

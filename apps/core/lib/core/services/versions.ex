@@ -48,7 +48,11 @@ defmodule Core.Services.Versions do
       |> VersionTag.changeset(%{version_id: version_id})
       |> Core.Repo.insert_or_update()
     end)
-    |> execute(extract: :version)
+    |> execute()
+    |> case do
+      {:ok, %{version: v, bump: r}} -> {:ok, %{v | tool => r}}
+      error -> error
+    end
   end
 
   def update_latest_version(:helm, id, version) do

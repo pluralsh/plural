@@ -79,5 +79,43 @@ defmodule Core.Rollable.VersionsTest do
         assert Core.Schema.Upgrade.for_queue(queue.id) |> Core.Repo.exists?()
       end
     end
+
+    test "it can execute version updated rollouts for terraform" do
+      tf = insert(:terraform)
+      tf_version = insert(:version, terraform: tf, chart: nil, chart_id: nil, version: "0.1.0")
+      auto_upgraded = for _ <- 1..3 do
+        insert(:terraform_installation,
+          installation: insert(:installation, auto_upgrade: true),
+          terraform: tf,
+          version: tf_version
+        )
+      end
+
+      queues = for %{installation: %{user: user}} <- auto_upgraded do
+        insert(:upgrade_queue, user: user)
+      end
+
+      ignored = insert_list(2, :terraform_installation, terraform: tf, version: tf_version)
+      version = insert(:version, chart: nil, chart_id: nil, version: "0.1.1", terraform: tf)
+      insert(:version_tag, version: version, terraform: tf, tag: "latest")
+
+      event = %PubSub.VersionUpdated{item: version}
+      {:ok, rollout} = Rollouts.create_rollout(tf.repository_id, event)
+
+      {:ok, rolled} = Rollouts.execute(rollout)
+
+      assert rolled.status == :finished
+      assert rolled.count == 3
+
+      for bumped <- auto_upgraded,
+        do: assert refetch(bumped).version_id == version.id
+
+      for ignore <- ignored,
+        do: assert refetch(ignore).version_id == tf_version.id
+
+      for queue <- queues do
+        assert Core.Schema.Upgrade.for_queue(queue.id) |> Core.Repo.exists?()
+      end
+    end
   end
 end

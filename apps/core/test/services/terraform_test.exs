@@ -68,6 +68,7 @@ defmodule Core.Services.TerraformTest do
 
       assert v.version == tf.latest_version
       assert v.terraform_id == tf.id
+      assert v.terraform.id == tf.id
     end
 
     test "It will update if the tf exists" do
@@ -88,6 +89,7 @@ defmodule Core.Services.TerraformTest do
 
       assert found.terraform_id == tf.id
       assert found.version == v.version
+      assert found.terraform.id == tf.id
     end
   end
 

@@ -10,7 +10,7 @@ defimpl Core.Rollouts.Rollable, for: [Core.PubSub.VersionCreated, Core.PubSub.Ve
   def query(%{item: %{chart_id: chart_id} = version}) when is_binary(chart_id) do
     ChartInstallation.for_chart(chart_id)
     |> ChartInstallation.with_auto_upgrade(version.tags)
-    |> ChartInstallation.ignore_version(version.id)
+    |> maybe_ignore_version(@for, ChartInstallation, version.id)
     |> ChartInstallation.preload(installation: [:repository])
     |> ChartInstallation.ordered()
   end
@@ -18,10 +18,13 @@ defimpl Core.Rollouts.Rollable, for: [Core.PubSub.VersionCreated, Core.PubSub.Ve
   def query(%{item: %{terraform_id: tf_id} = version}) when is_binary(tf_id) do
     TerraformInstallation.for_terraform(tf_id)
     |> TerraformInstallation.with_auto_upgrade(version.tags)
-    |> TerraformInstallation.ignore_version(version.id)
+    |> maybe_ignore_version(@for, TerraformInstallation, version.id)
     |> TerraformInstallation.preload(installation: [:repository])
     |> TerraformInstallation.ordered()
   end
+
+  defp maybe_ignore_version(q, Core.PubSub.VersionUpdated, _, _), do: q
+  defp maybe_ignore_version(q, _, mod, id), do: mod.ignore_version(q, id)
 
   def process(%{item: version}, inst) do
     start_transaction()

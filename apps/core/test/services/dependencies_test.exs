@@ -41,6 +41,43 @@ defmodule Core.Services.DependenciesTest do
       refute Dependencies.valid?(terraform.dependencies, user)
     end
 
+    test "If an optional dependency is missing it returns true" do
+      chart     = insert(:chart)
+      terraform = insert(:terraform)
+      user      = insert(:user)
+      insert(:chart_installation,
+        chart: chart,
+        installation: insert(:installation, user: user, repository: chart.repository)
+      )
+
+      terraform = insert(:terraform, dependencies: %{dependencies: [
+        %{type: :helm, repo: chart.repository.name, name: chart.name},
+        %{type: :terraform, repo: terraform.repository.name, name: terraform.name, optional: true}
+      ]})
+
+      assert Dependencies.valid?(terraform.dependencies, user)
+    end
+
+    test "If an optional dependency is present but at incorrect version it returns false" do
+      chart     = insert(:chart)
+      terraform = insert(:terraform, repository: chart.repository)
+      user      = insert(:user)
+      inst      = insert(:installation, user: user, repository: chart.repository)
+      insert(:chart_installation,
+        chart: chart,
+        installation: inst
+      )
+      version = insert(:version, terraform: terraform, version: "0.1.0")
+      insert(:terraform_installation, installation: inst, version: version, terraform: terraform)
+
+      terraform = insert(:terraform, dependencies: %{dependencies: [
+        %{type: :helm, repo: chart.repository.name, name: chart.name},
+        %{type: :terraform, repo: terraform.repository.name, name: terraform.name, optional: true, version: ">= 0.1.1"}
+      ]})
+
+      refute Dependencies.valid?(terraform.dependencies, user)
+    end
+
     test "Empty dependencies return true" do
       terraform = insert(:terraform)
       user = insert(:user)

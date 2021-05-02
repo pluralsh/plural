@@ -118,9 +118,6 @@ defmodule GraphQl.Schema.Repository do
     field :plans,         list_of(:plan), resolve: dataloader(Payments)
     field :tags,          list_of(:tag), resolve: dataloader(Repository)
     field :artifacts,     list_of(:artifact), resolve: dataloader(Repository)
-    field :dashboards,    list_of(:dashboard), resolve: dataloader(Repository)
-    field :shell,         :shell, resolve: dataloader(Repository)
-    field :database,      :database, resolve: dataloader(Repository)
 
     field :icon, :string, resolve: fn
       repo, _, _ -> {:ok, Core.Storage.url({repo.icon, repo}, :original)}
@@ -141,40 +138,6 @@ defmodule GraphQl.Schema.Repository do
     field :public_key, :string, resolve: fn
       repo, _, %{context: %{current_user: user}} -> Repository.resolve_public_key(repo, user)
     end
-
-    timestamps()
-  end
-
-  object :dashboard do
-    field :id,   non_null(:id)
-    field :name, non_null(:string)
-    field :uid,  non_null(:string)
-
-    timestamps()
-  end
-
-  object :database do
-    field :id,          non_null(:id)
-    field :engine,      non_null(:engine)
-    field :target,      non_null(:string)
-    field :port,        non_null(:integer)
-    field :name,        non_null(:string)
-    field :credentials, :credentials
-
-    timestamps()
-  end
-
-  object :credentials do
-    field :user,   non_null(:string)
-    field :secret, non_null(:string)
-    field :key,    non_null(:string)
-  end
-
-  object :shell do
-    field :id,      non_null(:id)
-    field :target,  non_null(:string)
-    field :command, :string
-    field :args,    list_of(:string)
 
     timestamps()
   end

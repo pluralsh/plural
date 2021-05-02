@@ -50,16 +50,18 @@ defmodule GraphQl.Schema.Version do
     field :providers,        list_of(:provider)
     field :application,      :boolean
     field :provider_wirings, :map
+    field :outputs,          :map
     field :wirings,          :wirings
   end
 
   ecto_enum :dependency_type, Core.Schema.Dependencies.Dependency.Type
 
   object :dependency do
-    field :type,    :dependency_type
-    field :name,    :string
-    field :repo,    :string
-    field :version, :string
+    field :type,     :dependency_type
+    field :name,     :string
+    field :repo,     :string
+    field :version,  :string
+    field :optional, :boolean
   end
 
   object :wirings do

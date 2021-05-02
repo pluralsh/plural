@@ -5,18 +5,20 @@ defmodule Core.Schema.Dependencies do
 
   defmodule Dependency do
     use Piazza.Ecto.Schema
+
     defenum Type, terraform: 0, helm: 1
 
     embedded_schema do
-      field :type,    Type
-      field :repo,    :string
-      field :name,    :string
-      field :version, Core.Schema.VersionRequirement
+      field :type,     Type
+      field :repo,     :string
+      field :name,     :string
+      field :version,  Core.Schema.VersionRequirement
+      field :optional, :boolean, default: false
 
       embeds_many :any_of, __MODULE__
     end
 
-    @valid ~w(type repo name version)a
+    @valid ~w(type repo name version optional)a
 
     def changeset(model, attrs \\ %{}) do
       model
@@ -43,15 +45,16 @@ defmodule Core.Schema.Dependencies do
   end
 
   embedded_schema do
-    field :providers, {:array, Provider}
+    field :providers,        {:array, Provider}
     field :provider_wirings, :map
-    field :application, :boolean, default: false
+    field :outputs,          :map
+    field :application,      :boolean, default: false
 
     embeds_many :dependencies, Dependency, on_replace: :delete
     embeds_one  :wirings, Wirings, on_replace: :update
   end
 
-  @valid ~w(providers provider_wirings application)a
+  @valid ~w(providers provider_wirings application outputs)a
 
   def changeset(model, attrs \\ %{}) do
     model

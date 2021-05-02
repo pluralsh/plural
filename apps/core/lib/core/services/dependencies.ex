@@ -79,9 +79,9 @@ defmodule Core.Services.Dependencies do
     by_name = Enum.into(deps, %{}, & {&1.name, &1})
     Enum.any?(versions, &valid_version?([&1], by_name[&1.name]))
   end
-  defp valid_version?([%{version: %{version: v}}], %{version: spec}) do
-    Version.match?(v, spec)
-  end
+  defp valid_version?([%{version: %{version: v}}], %{version: spec}),
+    do: Version.match?(v, spec)
+  defp valid_version?([], %{optional: true}), do: true
   defp valid_version?(_, _), do: false
 
   defp closure([], _, acc), do: acc

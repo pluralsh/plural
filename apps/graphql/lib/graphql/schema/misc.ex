@@ -24,9 +24,10 @@ defmodule GraphQl.Schema.Misc do
     field :tag, non_null(:string)
   end
 
-  object :closure do
-    field :helm, list_of(:chart)
-    field :terraform, list_of(:terraform)
+  object :closure_item do
+    field :helm,      :chart
+    field :terraform, :terraform
+    field :dep,       :dependency
   end
 
   object :tag do

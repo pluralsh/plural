@@ -69,7 +69,10 @@ defmodule Core.Services.Dependencies do
   @doc """
   Extracts all charts/tf modules which are transitive dependencies
   """
-  @spec closure(Dependencies.t | Dependencies.Dependency.t | nil) :: %{terraform: [Terraform.t], helm: [Helm.t]}
+  @spec closure(Dependencies.t | Dependencies.Dependency.t | nil) :: %{
+    terraform: [%{terraform: Terraform.t, dep: Dependencies.Dependency.t}],
+    helm: [%{helm: Helm.t, dep: Dependencies.Dependency.t}]
+  }
   def closure(%{dependencies: dependencies}), do: closure(dependencies)
   def closure(nil), do: []
   def closure(deps) when is_list(deps), do: closure(deps, MapSet.new(), [])
@@ -88,11 +91,12 @@ defmodule Core.Services.Dependencies do
   defp closure(deps, seen, acc) do
     level = traverse_level(deps, seen)
     seen = Enum.into(level, seen, fn
-      %Terraform{name: name, repository: %{name: repo}} -> {:terraform, repo, name}
-      %Chart{name: name, repository: %{name: repo}} -> {:helm, repo, name}
+      %{terraform: %Terraform{name: name, repository: %{name: repo}}} -> {:terraform, repo, name}
+      %{helm: %Chart{name: name, repository: %{name: repo}}} -> {:helm, repo, name}
     end)
 
     level
+    |> Enum.map(& &1[:helm] || &1[:terraform])
     |> Enum.filter(& &1.dependencies && &1.dependencies.dependencies)
     |> Enum.flat_map(& &1.dependencies.dependencies)
     |> closure(seen, level ++ acc)
@@ -105,6 +109,12 @@ defmodule Core.Services.Dependencies do
     |> Enum.reduce(Parallax.new(), fn {{type, repo} = key, group}, operation ->
       Parallax.operation(operation, key, fn ->
         find_dependencies(type, repo, Enum.flat_map(group, &find_names/1))
+        |> Enum.map(fn %{name: name} = resource ->
+          case Enum.map(group, & &1.name == name) do
+            %{} = dep -> %{type => resource, dep: dep}
+            _ -> %{type => resource}
+          end
+        end)
       end)
     end)
     |> Parallax.execute()
@@ -120,6 +130,7 @@ defmodule Core.Services.Dependencies do
     |> Terraform.preloaded()
     |> Core.Repo.all()
   end
+
   defp find_dependencies(:helm, repo_name, names) do
     Chart.for_repository_name(repo_name)
     |> Chart.for_name(names)

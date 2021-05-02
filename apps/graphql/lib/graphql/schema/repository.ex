@@ -226,7 +226,7 @@ defmodule GraphQl.Schema.Repository do
       resolve &Repository.list_integrations/2
     end
 
-    field :closure, :closure do
+    field :closure, list_of(:closure_item) do
       middleware GraphQl.Middleware.Authenticated
       arg :id, non_null(:id)
       arg :type, non_null(:dependency_type)

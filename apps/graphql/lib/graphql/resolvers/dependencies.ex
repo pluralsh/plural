@@ -1,5 +1,4 @@
 defmodule GraphQl.Resolvers.Dependencies do
-  alias Core.Schema.{Chart, Terraform}
   alias Core.Services.{Charts, Dependencies}
   alias Core.Services.Terraform, as: TfSvc
 
@@ -9,17 +8,7 @@ defmodule GraphQl.Resolvers.Dependencies do
     resource = find_resource(args)
     closure  = Dependencies.closure(resource)
 
-    {:ok, %Closure{
-      terraform: filter(closure, :terraform),
-      helm: filter(closure, :helm)
-    }}
-  end
-
-  defp filter(closure, type) do
-    Enum.filter(closure, fn
-      %Chart{} -> type == :helm
-      %Terraform{} -> type == :terraform
-    end)
+    {:ok, closure}
   end
 
   defp find_resource(%{type: :terraform, id: id}), do: TfSvc.get_tf!(id)

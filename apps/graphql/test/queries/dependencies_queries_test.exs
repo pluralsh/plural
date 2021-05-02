@@ -20,17 +20,14 @@ defmodule GraphQl.DependenciesQueriesTest do
       {:ok, %{data: %{"closure" => closure}}} = run_query("""
         query Closure($id: ID!) {
           closure(id: $id, type: TERRAFORM) {
-            terraform {
-              id
-            }
-            helm {
-              id
-            }
+            terraform { id }
+            helm { id }
           }
         }
       """, %{"id" => t2.id}, %{current_user: insert(:user)})
 
-      assert ids_equal(closure["helm"] ++ closure["terraform"], [t1, chart, chart3, chart2])
+      assert Enum.map(closure, & &1["helm"] || &1["terraform"])
+             |> ids_equal([t1, chart, chart3, chart2])
     end
   end
 end

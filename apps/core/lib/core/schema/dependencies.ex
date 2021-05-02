@@ -24,7 +24,7 @@ defmodule Core.Schema.Dependencies do
       model
       |> cast(attrs, @valid)
       |> cast_embed(:any_of)
-      |> validate_required([:type, :repo, :name])
+      |> validate_required([:type, :repo, :name, :version])
     end
   end
 

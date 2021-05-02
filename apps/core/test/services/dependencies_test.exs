@@ -204,7 +204,8 @@ defmodule Core.Services.DependenciesTest do
 
       closure = Dependencies.closure(t2)
 
-      assert ids_equal(closure, [chart, chart2, chart3, t1])
+      assert Enum.map(closure, & &1[:helm] || &1[:terraform])
+             |> ids_equal([chart, chart2, chart3, t1])
     end
   end
 end

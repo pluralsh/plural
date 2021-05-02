@@ -336,6 +336,7 @@ export const CLOSURE_Q = gql`
         ...ChartFragment
         repository { id name }
       }
+      dep { version optional }
     }
   }
   ${TerraformFragment}

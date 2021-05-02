@@ -5,12 +5,11 @@ import { SecondaryButton } from 'forge-core'
 import TreeGraph from '../utils/TreeGraph'
 import { DEFAULT_TF_ICON, DEFAULT_CHART_ICON, Tools } from './constants'
 import { CLOSURE_Q } from './queries'
-import { remove, cloneDeep } from 'lodash'
+import { remove, cloneDeep, groupBy } from 'lodash'
 
 const GRAPH_HEIGHT = '500px'
 
 function asDep({__typename, name: depname, version, children}) {
-  console.log(version)
   const name = `${depname} ${version || ''}`
   switch (__typename) {
     case "Terraform":
@@ -39,18 +38,25 @@ function mapify(deps) {
   return map
 }
 
-function compileGraph(resource, closure) {
+function closureDep({helm, terraform, dep}, children) {
+  const name = `${(helm|| terraform).name} ${dep.version || ''}`
+  const image = helm ? DEFAULT_CHART_ICON : DEFAULT_TF_ICON
+  return {name, image, children}
+}
+
+function compileGraph(res, closure) {
+  const resource = res.helm || res.terraform
   if (!resource.dependencies || !resource.dependencies.dependencies)
-    return asDep({...resource, children: []})
+    return closureDep(res, [])
 
   const {dependencies: {dependencies}} = resource
   const isHelmDep = mapify(dependencies.filter(({type}) => type === Tools.HELM))
   const isTfDep = mapify(dependencies.filter(({type}) => type === Tools.TERRAFORM))
 
-  let helmChildren = remove(closure.helm, ({name, repository}) => isHelmDep[`${repository.name}:${name}`])
-  let terraformChildren = remove(closure.terraform, ({name, repository}) => isTfDep[`${repository.name}:${name}`])
+  let helmChildren = remove(closure.helm, ({helm: {name, repository}}) => isHelmDep[`${repository.name}:${name}`])
+  let terraformChildren = remove(closure.terraform, ({terraform: {name, repository}}) => isTfDep[`${repository.name}:${name}`])
   let children = helmChildren.concat(terraformChildren).map((child) => compileGraph(child, closure))
-  return asDep({...resource, children})
+  return closureDep(res, children)
 }
 
 export function ShowFull({onClick, label}) {
@@ -62,12 +68,14 @@ export function ShowFull({onClick, label}) {
 }
 
 export function FullDependencies({resource}) {
+  const type = depType(resource)
   const {data, loading} = useQuery(CLOSURE_Q, {
-    variables: {id: resource.id, type: depType(resource)}
+    variables: {id: resource.id, type}
   })
 
   if (loading || !data) return null
-  const graph = compileGraph(resource, cloneDeep(data.closure))
+  const closure = groupBy(data.closure, ({helm, terraform}) => helm ? 'helm' : 'terraform')
+  const graph = compileGraph({[type.toLowerCase()]: resource, dep: {}}, cloneDeep(closure))
 
   return (
     <TreeGraph

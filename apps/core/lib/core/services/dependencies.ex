@@ -110,7 +110,7 @@ defmodule Core.Services.Dependencies do
       Parallax.operation(operation, key, fn ->
         find_dependencies(type, repo, Enum.flat_map(group, &find_names/1))
         |> Enum.map(fn %{name: name} = resource ->
-          case Enum.map(group, & &1.name == name) do
+          case Enum.find(group, & &1.name == name) do
             %{} = dep -> %{type => resource, dep: dep}
             _ -> %{type => resource}
           end

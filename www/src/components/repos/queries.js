@@ -100,40 +100,29 @@ export const REPO_Q = gql`
         ...InstallationFragment
         subscription { ...SubscriptionFragment }
       }
-      dashboards { ...DashboardFragment }
       plans { ...PlanFragment }
       tags { tag }
       artifacts { ...ArtifactFragment }
     }
     charts(repositoryId: $repositoryId, first: 15, after: $chartCursor) {
       pageInfo { ...PageInfo }
-      edges {
-        node { ...ChartFragment }
-      }
+      edges { node { ...ChartFragment } }
     }
     terraform(repositoryId: $repositoryId, first: 15, after: $tfCursor) {
       pageInfo { ...PageInfo }
-      edges {
-        node { ...TerraformFragment }
-      }
+      edges { node { ...TerraformFragment } }
     }
     dockerRepositories(repositoryId: $repositoryId, first: 15, after: $dkrCursor) {
       pageInfo { ...PageInfo }
-      edges {
-        node { ...DockerRepoFragment }
-      }
+      edges { node { ...DockerRepoFragment } }
     }
     recipes(repositoryId: $repositoryId, first: 5, after: $recipeCursor) {
       pageInfo { ...PageInfo }
-      edges {
-        node { ...RecipeFragment }
-      }
+      edges { node { ...RecipeFragment } }
     }
     integrations(repositoryId: $repositoryId, first: 5, after: $intCursor) {
       pageInfo { ...PageInfo }
-      edges {
-        node { ...IntegrationFragment }
-      }
+      edges { node { ...IntegrationFragment } }
     }
   }
   ${PageInfo}
@@ -147,7 +136,6 @@ export const REPO_Q = gql`
   ${RecipeFragment}
   ${IntegrationFragment}
   ${ArtifactFragment}
-  ${DashboardFragment}
 `;
 
 export const DOCKER_IMG_Q = gql`

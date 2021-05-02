@@ -210,7 +210,7 @@ export default function Chart() {
               <TemplateView version={currentVersion} />
             </TabContent>
             <TabContent name='dependencies'>
-              {full ? <FullDependencies {...chart} /> : (
+              {full ? <FullDependencies resource={chart} /> : (
                 <Dependencies 
                   name={chart.name} 
                   resource={chart}

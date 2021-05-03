@@ -42,6 +42,7 @@ export const DependenciesFragment = gql`
       repo
       type
       version
+      optional
     }
     providers
     application

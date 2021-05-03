@@ -32,7 +32,7 @@ function renderTree(id, tree, height, width) {
     .append('path')
     .attr("d", diagonal)
     .style("fill", 'none')
-    .attr("stroke", '#ccc')
+    .attr("stroke", (d) => d.data.strokeColor || '#ccc')
 
   var nodes = svg.selectAll("g")
     .data(root.descendants())

@@ -165,7 +165,10 @@ export default function Terraform() {
   const [full, setFull] = useState(false)
   const [version, setVersion] = useState(null)
   const {tfId} = useParams()
-  const {loading, data, refetch, fetchMore} = useQuery(TF_Q, {variables: {tfId}})
+  const {loading, data, refetch, fetchMore} = useQuery(TF_Q, {
+    variables: {tfId},
+    fetchPolicy: 'cache-and-network'
+  })
   const width = 65
   const {setBreadcrumbs} = useContext(BreadcrumbsContext)
 

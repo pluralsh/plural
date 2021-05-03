@@ -164,7 +164,10 @@ export default function Chart() {
   const [version, setVersion] = useState(null)
   const [tab, setTab] = useState(false)
   const [full, setFull] = useState(false)
-  const {loading, data, fetchMore, refetch} = useQuery(CHART_Q, {variables: {chartId}})
+  const {loading, data, fetchMore, refetch} = useQuery(CHART_Q, {
+    variables: {chartId}, 
+    fetchPolicy: 'cache-and-network'
+  })
   const {setBreadcrumbs} = useContext(BreadcrumbsContext)
   useEffect(() => {
     if (!data) return

@@ -8,6 +8,7 @@ import { CLOSURE_Q } from './queries'
 import { remove, cloneDeep, groupBy } from 'lodash'
 
 const GRAPH_HEIGHT = '500px'
+const OPTIONAL_COLOR = '#fdc500'
 
 function asDep({__typename, name: depname, version, children}) {
   const name = `${depname} ${version || ''}`
@@ -41,7 +42,7 @@ function mapify(deps) {
 function closureDep({helm, terraform, dep}, children) {
   const name = `${(helm|| terraform).name} ${dep.version || ''}`
   const image = helm ? DEFAULT_CHART_ICON : DEFAULT_TF_ICON
-  return {name, image, children}
+  return {name, image, children, strokeColor: dep.optional ? OPTIONAL_COLOR : null}
 }
 
 function compileGraph(res, closure) {
@@ -94,10 +95,13 @@ export default function Dependencies({name, dependencies, resource}) {
   }
 
   const deps = dependencies.dependencies.map(({name, version, ...dep}) => {
-    if (dep.type === Tools.TERRAFORM) return {...dep, name: `${name} ${version || ''}`, image: DEFAULT_TF_ICON}
-    if (dep.type === Tools.HELM) return {...dep, name: `${name} ${version || ''}`,image: DEFAULT_CHART_ICON}
+    console.log(dep)
+    const strokeColor = dep.optional ? OPTIONAL_COLOR : null
+    if (dep.type === Tools.TERRAFORM) return {...dep, strokeColor, name: `${name} ${version || ''}`, image: DEFAULT_TF_ICON}
+    if (dep.type === Tools.HELM) return {...dep, strokeColor, name: `${name} ${version || ''}`, image: DEFAULT_CHART_ICON}
     return dep
   })
+  console.log(deps)
 
   return (
     <Box pad='small'>

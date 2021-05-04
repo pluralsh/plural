@@ -93,7 +93,7 @@ defmodule Core.Services.Charts do
   with inferring the appropriate version and persisting everything to the
   repository.  It will also send the update to chartmuseum transactionally.
 
-  Fails if the user is not the publisher of the repository.
+  Fails if the user is not the rzpublisher of the repository.
   """
   @spec upload_chart(map, Repository.t, User.t, map) :: {:ok, Chart.t} | {:error, term}
   def upload_chart(%{"chart" => chart} = uploads, %Repository{id: repo_id, name: repo}, user, context) do
@@ -176,12 +176,15 @@ defmodule Core.Services.Charts do
   defp from_version(%Version{helm: helm}), do: %{description: helm && helm["description"]}
   defp from_version(_), do: %{}
 
-  defp chart_info(%{filename: filename}) do
+  def chart_info(%{filename: filename}) do
     Path.rootname(filename)
     |> Path.basename()
     |> String.split("-")
+    |> Enum.reverse()
     |> case do
-      [chart | rest] -> {chart, Enum.join(rest, "-")}
+      [version | rest] ->
+        chart = Enum.reverse(rest) |> Enum.join("-")
+        {chart, version}
       _ -> :error
     end
   end
@@ -254,8 +257,8 @@ defmodule Core.Services.Charts do
 
     with {:ok, result} <- String.to_charlist(path)
                           |> :erl_tar.extract([:memory, :compressed, {:files, files}]),
-         {_, readme} <- Enum.find(result, &elem(&1, 0) == readme_file),
-         {_, chart_yaml} <- Enum.find(result, &elem(&1, 0) == chart_file),
+         {:readme, {_, readme}} <- {:readme, Enum.find(result, &elem(&1, 0) == readme_file)},
+         {:chart, {_, chart_yaml}} <- {:chart, Enum.find(result, &elem(&1, 0) == chart_file)},
          {:ok, chart_decoded} <- YamlElixir.read_from_string(chart_yaml),
          {:ok, deps} <- Dependencies.extract_dependencies(result, deps_tmplate) do
       {:ok, %{
@@ -264,6 +267,10 @@ defmodule Core.Services.Charts do
         digest: Piazza.File.hash(path),
         values_template: extract_val_template(result, val_template),
         dependencies: deps}}
+    else
+      {:readme, _} -> {:error, "could not find README.md"}
+      {:chart, _} -> {:error, "could not find Chart.yaml"}
+      error -> error
     end
   end
 

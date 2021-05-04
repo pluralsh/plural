@@ -172,11 +172,20 @@ defmodule Core.Services.ChartsTest do
 
   describe "#extract_chart_meta/2" do
     test "It can extract info from a tar file" do
-      path = Path.join(:code.priv_dir(:core), "forge-0.3.7.tgz")
-      {:ok, %{readme: _, helm: _, values_template: template, dependencies: deps}} = Charts.extract_chart_meta("forge", path)
+      path = Path.join(:code.priv_dir(:core), "azure-identity-0.1.1.tgz")
+      {:ok, %{readme: _, helm: _, values_template: template, dependencies: deps}} = Charts.extract_chart_meta("azure-identity", path)
 
       assert is_binary(template)
       assert deps["dependencies"]
+    end
+  end
+
+  describe "#chart_info/2" do
+    test "it can extract chart name and version from the filename" do
+      {name, version} = Charts.chart_info(%{filename: "azure-identity-0.1.1.tgz"})
+
+      assert name == "azure-identity"
+      assert version == "0.1.1"
     end
   end
 

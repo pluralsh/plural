@@ -3,7 +3,7 @@ defmodule Plural.Cmd do
     do: plural("template", [chart, "--values", vals])
 
   defp plural(cmd, args) do
-    case System.cmd(plural_cmd(), [cmd | args]) do
+    case System.cmd(plural_cmd(), [cmd | args], stderr_to_stdout: true) do
       {res, 0} -> {:ok, res}
       {out, _} -> {:error, out}
     end

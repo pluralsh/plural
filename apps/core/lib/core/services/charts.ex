@@ -190,7 +190,7 @@ defmodule Core.Services.Charts do
     {:ok, f} = Briefly.create()
     File.write!(f, values)
 
-    with {:ok, tpl} <- Plural.Cmd.template(chart, f),
+    with {:ok, tpl} <- Plural.Cmd.template(chart, f) |> IO.inspect(),
          {:ok, imgs} <- Plural.Chart.images(tpl) do
       dkr_dns = Core.conf(:registry)
 

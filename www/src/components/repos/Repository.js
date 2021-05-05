@@ -90,7 +90,7 @@ function DockerRepository({docker, repo, hasNext}) {
 
 function Tf({terraform, hasNext}) {
   let history = useHistory()
-  console.log(terraform)
+
   return (
     <Container onClick={() => history.push(`/terraform/${terraform.id}`)} hasNext={hasNext}>
       <Box width='50px' heigh='50px'>

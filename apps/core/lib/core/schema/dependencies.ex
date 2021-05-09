@@ -48,13 +48,14 @@ defmodule Core.Schema.Dependencies do
     field :providers,        {:array, Provider}
     field :provider_wirings, :map
     field :outputs,          :map
+    field :secrets,          {:array, :string}
     field :application,      :boolean, default: false
 
     embeds_many :dependencies, Dependency, on_replace: :delete
     embeds_one  :wirings, Wirings, on_replace: :update
   end
 
-  @valid ~w(providers provider_wirings application outputs)a
+  @valid ~w(providers provider_wirings application outputs secrets)a
 
   def changeset(model, attrs \\ %{}) do
     model

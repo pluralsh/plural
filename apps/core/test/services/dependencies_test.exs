@@ -208,4 +208,19 @@ defmodule Core.Services.DependenciesTest do
              |> ids_equal([chart, chart2, chart3, t1])
     end
   end
+
+  describe "#parse/1" do
+    test "it can parse k8s-formatted dependencies" do
+      deps_str = priv_file(:core, "deps.yaml") |> File.read!()
+
+      {:ok, result} = Dependencies.parse(deps_str)
+
+      assert result["version"] == "0.1.1"
+      assert result["description"] == "Creates an EKS cluster and prepares it for bootstrapping"
+      assert result["dependencies"] == []
+      assert result["providers"] == ["aws"]
+      assert result["outputs"] == %{"endpoint" => "cluster_endpoint"}
+      assert result["provider_wirings"] == %{"cluster" => "module.aws-bootstrap.cluster_name"}
+    end
+  end
 end

@@ -140,13 +140,25 @@ defmodule Core.Services.Dependencies do
 
   def extract_dependencies(tar, filename) do
     with deps when is_binary(deps) <- extract_tar_file(tar, filename),
-          {:ok, map} <- YamlElixir.read_from_string(deps) do
+          {:ok, map} <- parse(deps) do
       {:ok, map}
     else
       {:error, _} = error -> error
       _ -> {:ok, nil}
     end
   end
+
+  def parse(str) when is_binary(str) do
+    YamlElixir.read_from_string(str)
+    |> parse()
+  end
+
+  def parse({:ok, %{"apiVersion" => _, "kind" => _, "spec" => spec} = deps}) do
+    deps = Map.merge(spec, Map.get(deps, "metadata", %{}))
+    {:ok, deps}
+  end
+
+  def parse(pass), do: pass
 
   defp extract_tar_file(tar, val_template) do
     case Enum.find(tar, &elem(&1, 0) == val_template) do

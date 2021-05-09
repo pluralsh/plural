@@ -1,0 +1,13 @@
+apiVersion: plural.sh/v1alpha1
+kind: Dependencies
+metadata:
+  version: 0.1.1
+  description: Creates an EKS cluster and prepares it for bootstrapping
+spec:
+  dependencies: []
+  providers:
+  - aws
+  outputs:
+    endpoint: cluster_endpoint
+  provider_wirings:
+    cluster: module.aws-bootstrap.cluster_name

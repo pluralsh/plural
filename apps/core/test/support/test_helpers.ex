@@ -26,4 +26,6 @@ defmodule Core.TestHelpers do
   def id(id) when is_binary(id), do: id
 
   def refetch(%{__struct__: schema, id: id}), do: Core.Repo.get(schema, id)
+
+  def priv_file(app, path), do: Path.join(:code.priv_dir(app), path)
 end

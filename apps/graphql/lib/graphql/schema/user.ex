@@ -196,6 +196,7 @@ defmodule GraphQl.Schema.User do
       middleware GraphQl.Middleware.Authenticated
       arg :q, :string
       arg :service_account, :boolean
+      arg :all, :boolean
 
       resolve &User.list_users/2
     end

@@ -73,6 +73,24 @@ defmodule GraphQl.UserQueriesTest do
              |> ids_equal(svcs)
     end
 
+    test "it can list both svc and users for an account" do
+      account = insert(:account)
+      users = insert_list(2, :user, account: account)
+      svcs = insert_list(2, :user, account: account, service_account: true)
+      insert(:user)
+
+      {:ok, %{data: %{"users" => found}}} = run_query("""
+        query {
+          users(first: 5, all: true) {
+            edges { node { id } }
+          }
+        }
+      """, %{}, %{current_user: hd(users)})
+
+      assert from_connection(found)
+             |> ids_equal(svcs ++ users)
+    end
+
     test "it can search users for an account" do
       account = insert(:account)
       user = insert(:user, account: account, name: "search name")

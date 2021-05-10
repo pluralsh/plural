@@ -47,6 +47,7 @@ defmodule GraphQl.Resolvers.User do
     |> paginate(args)
   end
 
+  defp is_service_account(q, %{all: true}), do: q
   defp is_service_account(q, %{service_account: true}),
     do: User.service_account(q, :yes)
   defp is_service_account(q, _),

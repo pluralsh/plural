@@ -368,4 +368,16 @@ defmodule Core.Factory do
       repository: build(:repository)
     }
   end
+
+  def impersonation_policy_factory do
+    %Schema.ImpersonationPolicy{
+      user: build(:user)
+    }
+  end
+
+  def impersonation_policy_binding_factory do
+    %Schema.ImpersonationPolicyBinding{
+      policy: build(:impersonation_policy)
+    }
+  end
 end

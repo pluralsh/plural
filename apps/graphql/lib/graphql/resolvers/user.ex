@@ -170,9 +170,9 @@ defmodule GraphQl.Resolvers.User do
     Enum.at(@colors, rem(integral, length(@colors)))
   end
 
-  defp with_jwt({:ok, user}) do
+  def with_jwt({:ok, user}) do
     with {:ok, token, _} <- Core.Guardian.encode_and_sign(user),
         do: {:ok, %{user | jwt: token}}
   end
-  defp with_jwt(error), do: error
+  def with_jwt(error), do: error
 end

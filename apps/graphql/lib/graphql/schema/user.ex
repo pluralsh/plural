@@ -60,9 +60,8 @@ defmodule GraphQl.Schema.User do
     field :impersonation_policy, :impersonation_policy, resolve: dataloader(User)
 
     field :jwt, :string, resolve: fn
-      %{id: id, jwt: jwt}, _, %{context: %{current_user: %{id: id}}} -> {:ok, jwt}
-      _, _, %{context: %{current_user: %{}}} -> {:error, "you can only query your own jwt"}
-      %{jwt: jwt}, _, _ -> {:ok, jwt}
+      %{jwt: jwt}, _, %{context: %{allow_jwt: true}} -> {:ok, jwt}
+      _, _, _ -> {:error, "forbidden"}
     end
 
     field :avatar, :string, resolve: fn
@@ -225,6 +224,7 @@ defmodule GraphQl.Schema.User do
 
   object :user_mutations do
     field :login, :user do
+      middleware GraphQl.Middleware.AllowJwt
       arg :email, non_null(:string)
       arg :password, non_null(:string)
 
@@ -264,6 +264,7 @@ defmodule GraphQl.Schema.User do
     end
 
     field :signup, :user do
+      middleware GraphQl.Middleware.AllowJwt
       arg :invite_id,  :string
       arg :attributes, non_null(:user_attributes)
 

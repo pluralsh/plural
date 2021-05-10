@@ -65,6 +65,30 @@ defmodule GraphQl.AccountMutationTest do
     end
   end
 
+  describe "impersonateServiceAccount" do
+    test "a user can impersonate a service account" do
+      user = insert(:user)
+      sa = insert(:user, service_account: true, account: user.account)
+      %{group: group} = insert(:impersonation_policy_binding,
+        policy: build(:impersonation_policy, user: sa),
+        group: insert(:group, account: user.account)
+      )
+      insert(:group_member, group: group, user: user)
+
+      {:ok, %{data: %{"impersonateServiceAccount" => imp}}} = run_query("""
+        mutation Impersonate($email: String) {
+          impersonateServiceAccount(email: $email) {
+            id
+            jwt
+          }
+        }
+      """, %{"email" => sa.email}, %{current_user: user})
+
+      assert imp["id"] == sa.id
+      assert imp["jwt"]
+    end
+  end
+
   describe "updateAccount" do
     setup [:setup_root_user]
 

@@ -113,6 +113,23 @@ defmodule Core.Services.Accounts do
   end
 
   @doc """
+  Authorizes the acting user to impersonate a service account, allowing jwts to be issued for it
+  """
+  @spec impersonate_service_account(:email | :id, binary, User.t) :: user_resp
+  def impersonate_service_account(:email, email, user) do
+    Users.get_user_by_email!(email)
+    |> impersonate_service_account(user)
+  end
+
+  def impersonate_service_account(:id, id, user) do
+    Users.get_user(id)
+    |> impersonate_service_account(user)
+  end
+
+  def impersonate_service_account(%User{} = service_account, %User{} = user),
+    do: allow(service_account, user, :impersonate)
+
+  @doc """
   Accepts the invite and creates a new user
   """
   @spec realize_invite(map, binary) :: user_resp

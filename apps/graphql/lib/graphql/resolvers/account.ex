@@ -67,6 +67,16 @@ defmodule GraphQl.Resolvers.Account do
   def update_service_account(%{attributes: attrs, id: id}, %{context: %{current_user: user}}),
     do: Accounts.update_service_account(attrs, id, user)
 
+  def impersonate_service_account(%{id: id}, %{context: %{current_user: user}}) when is_binary(id) do
+    Accounts.impersonate_service_account(:id, id, user)
+    |> GraphQl.Resolvers.User.with_jwt()
+  end
+
+  def impersonate_service_account(%{email: email}, %{context: %{current_user: user}}) when is_binary(email) do
+    Accounts.impersonate_service_account(:email, email, user)
+    |> GraphQl.Resolvers.User.with_jwt()
+  end
+
   def create_invite(%{attributes: attrs}, %{context: %{current_user: user}}),
     do: Accounts.create_invite(attrs, user)
 

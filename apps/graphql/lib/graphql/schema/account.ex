@@ -247,6 +247,15 @@ defmodule GraphQl.Schema.Account do
       resolve safe_resolver(&Account.update_service_account/2)
     end
 
+    field :impersonate_service_account, :user do
+      middleware Authenticated
+      middleware GraphQl.Middleware.AllowJwt
+      arg :id,    :id
+      arg :email, :string
+
+      resolve safe_resolver(&Account.impersonate_service_account/2)
+    end
+
     field :update_account, :account do
       middleware Authenticated
       arg :attributes, non_null(:account_attributes)

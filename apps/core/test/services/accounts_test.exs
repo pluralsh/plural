@@ -55,6 +55,33 @@ defmodule Core.Services.AccountsTest do
     end
   end
 
+  describe "#impersonate_service_account/3" do
+    test "it can assume a service account with a matching policy" do
+      user = insert(:user)
+      sa = insert(:user, service_account: true, account: user.account)
+      %{group: group} = insert(:impersonation_policy_binding,
+        policy: build(:impersonation_policy, user: sa),
+        group: insert(:group, account: user.account)
+      )
+      insert(:group_member, group: group, user: user)
+
+      {:ok, imp} = Accounts.impersonate_service_account(:email, sa.email, user)
+
+      assert imp.id == sa.id
+    end
+
+    test "it cannot assume if the policy doesn't match" do
+      user = insert(:user)
+      sa = insert(:user, service_account: true, account: user.account)
+      insert(:impersonation_policy_binding,
+        policy: build(:impersonation_policy, user: sa),
+        group: insert(:group, account: user.account)
+      )
+
+      {:error, _} = Accounts.impersonate_service_account(:email, sa.email, user)
+    end
+  end
+
   describe "#update_account/2" do
     setup [:setup_root_user]
 

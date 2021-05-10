@@ -1,7 +1,7 @@
 defmodule GraphQl.Resolvers.User do
   use GraphQl.Resolvers.Base, model: Core.Schema.User
   alias Core.Services.{Users, Accounts}
-  alias Core.Schema.{Publisher, PersistedToken, Webhook, Notification}
+  alias Core.Schema.{Publisher, PersistedToken, Webhook, Notification, ImpersonationPolicy, ImpersonationPolicyBinding}
 
   def data(args) do
     Dataloader.Ecto.new(Core.Repo,
@@ -13,6 +13,8 @@ defmodule GraphQl.Resolvers.User do
 
   def query(Publisher, _), do: Publisher
   def query(Webhook, _), do: Webhook
+  def query(ImpersonationPolicy, _), do: ImpersonationPolicy
+  def query(ImpersonationPolicyBinding, _), do: ImpersonationPolicyBinding
   def query(_, _), do: User
 
   def run_batch(_, _, :repositories, publishers, repo_opts) do
@@ -41,8 +43,14 @@ defmodule GraphQl.Resolvers.User do
     User.ordered()
     |> User.for_account(id)
     |> maybe_search(User, args)
+    |> is_service_account(args)
     |> paginate(args)
   end
+
+  defp is_service_account(q, %{service_account: true}),
+    do: User.service_account(q, :yes)
+  defp is_service_account(q, _),
+    do: User.service_account(q, :no)
 
   def search_users(%{incident_id: id} = args, %{context: %{current_user: user}}) do
     incident =

@@ -10,6 +10,11 @@ defmodule Core.Policies.Account do
     check_rbac(user, :users, account: account)
   end
 
+  def can?(%User{account_id: id} = user, %User{account_id: id}, :create) do
+    %{account: account} = Core.Repo.preload(user, [:account])
+    check_rbac(user, :users, account: account)
+  end
+
   def can?(%User{} = user, %Role{} = role, _) do
     %{account: account} = Core.Repo.preload(role, [:account])
     check_rbac(user, :users, account: account)

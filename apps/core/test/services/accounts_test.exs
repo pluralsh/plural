@@ -4,6 +4,57 @@ defmodule Core.Services.AccountsTest do
   alias Core.PubSub
   alias Core.Services.Accounts
 
+  describe "#create_service_account/2" do
+    setup [:setup_root_user]
+
+    test "root users can create service account", %{user: user} do
+      group = insert(:group, account: user.account)
+
+      {:ok, srv_acct} = Accounts.create_service_account(%{
+        name: "service account",
+        impersonation_policy: %{bindings: [%{group_id: group.id}]}
+      }, user)
+
+      assert srv_acct.service_account
+      assert srv_acct.email == "service.account@srv.plural.sh"
+      assert srv_acct.name == "service account"
+      %{bindings: [binding]} = srv_acct.impersonation_policy
+
+      assert binding.group_id == group.id
+    end
+  end
+
+  describe "#update_service_account/2" do
+    setup [:setup_root_user]
+
+    test "root users can update service accounts", %{user: user} do
+      srv = insert(:user, service_account: true, account: user.account)
+      group = insert(:group, account: user.account)
+
+      {:ok, srv_acct} = Accounts.update_service_account(%{
+        name: "service account",
+        impersonation_policy: %{bindings: [%{group_id: group.id}]}
+      }, srv.id, user)
+
+      assert srv_acct.id == srv.id
+      assert srv_acct.email == srv.email
+      assert srv_acct.name == "service account"
+      %{bindings: [binding]} = srv_acct.impersonation_policy
+
+      assert binding.group_id == group.id
+    end
+
+    test "non service accts cannot be updated", %{user: user} do
+      srv = insert(:user, account: user.account)
+      group = insert(:group, account: user.account)
+
+      {:error, _} = Accounts.update_service_account(%{
+        name: "service account",
+        impersonation_policy: %{bindings: [%{group_id: group.id}]}
+      }, srv.id, user)
+    end
+  end
+
   describe "#update_account/2" do
     setup [:setup_root_user]
 

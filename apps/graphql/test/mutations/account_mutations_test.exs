@@ -3,6 +3,68 @@ defmodule GraphQl.AccountMutationTest do
   use Mimic
   import GraphQl.TestHelpers
 
+  describe "createServiceAccount" do
+    setup [:setup_root_user]
+
+    test "it can create service accounts", %{user: user} do
+      group = insert(:group, account: user.account)
+      {:ok, %{data: %{"createServiceAccount" => svc}}} = run_query("""
+        mutation createSvcAccount($attributes: ServiceAccountAttributes!) {
+          createServiceAccount(attributes: $attributes) {
+            id
+            serviceAccount
+            impersonationPolicy {
+              bindings { group { id } }
+            }
+          }
+        }
+      """,
+      %{
+        "attributes" => %{
+          "name" => "svc",
+          "impersonationPolicy" => %{"bindings" => [%{"groupId" => group.id}]}
+        }
+      },
+      %{current_user: user})
+
+      assert svc["serviceAccount"]
+      assert hd(svc["impersonationPolicy"]["bindings"])["group"]["id"] == group.id
+    end
+  end
+
+  describe "updateServiceAccount" do
+    setup [:setup_root_user]
+
+    test "it can create service accounts", %{user: user} do
+      svc_account = insert(:user, service_account: true, account: user.account)
+      group = insert(:group, account: user.account)
+
+      {:ok, %{data: %{"updateServiceAccount" => svc}}} = run_query("""
+        mutation updateSvcAccount($id: ID!, $attributes: ServiceAccountAttributes!) {
+          updateServiceAccount(id: $id, attributes: $attributes) {
+            id
+            serviceAccount
+            impersonationPolicy {
+              bindings { group { id } }
+            }
+          }
+        }
+      """,
+      %{
+        "id" => svc_account.id,
+        "attributes" => %{
+          "name" => "svc",
+          "impersonationPolicy" => %{"bindings" => [%{"groupId" => group.id}]}
+        }
+      },
+      %{current_user: user})
+
+      assert svc["id"] == svc_account.id
+      assert svc["serviceAccount"]
+      assert hd(svc["impersonationPolicy"]["bindings"])["group"]["id"] == group.id
+    end
+  end
+
   describe "updateAccount" do
     setup [:setup_root_user]
 

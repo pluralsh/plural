@@ -29,7 +29,23 @@ defmodule GraphQl.Schema.Account do
     field :permissions, list_of(:permission)
   end
 
+  input_object :service_account_attributes do
+    field :name, :string
+    field :impersonation_policy, :impersonation_policy_attributes
+  end
+
   input_object :binding_attributes do
+    field :id,       :id
+    field :user_id,  :id
+    field :group_id, :id
+  end
+
+  input_object :impersonation_policy_attributes do
+    field :id,       :id
+    field :bindings, list_of(:impersonation_policy_binding_attributes)
+  end
+
+  input_object :impersonation_policy_binding_attributes do
     field :id,       :id
     field :user_id,  :id
     field :group_id, :id
@@ -216,6 +232,21 @@ defmodule GraphQl.Schema.Account do
   end
 
   object :account_mutations do
+    field :create_service_account, :user do
+      middleware Authenticated
+      arg :attributes, non_null(:service_account_attributes)
+
+      resolve safe_resolver(&Account.create_service_account/2)
+    end
+
+    field :update_service_account, :user do
+      middleware Authenticated
+      arg :id, non_null(:id)
+      arg :attributes, non_null(:service_account_attributes)
+
+      resolve safe_resolver(&Account.update_service_account/2)
+    end
+
     field :update_account, :account do
       middleware Authenticated
       arg :attributes, non_null(:account_attributes)

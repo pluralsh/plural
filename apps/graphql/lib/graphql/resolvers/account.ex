@@ -61,6 +61,12 @@ defmodule GraphQl.Resolvers.Account do
   def resolve_invite(%{id: secure_id}, _),
     do: {:ok, Accounts.get_invite(secure_id)}
 
+  def create_service_account(%{attributes: attrs}, %{context: %{current_user: user}}),
+    do: Accounts.create_service_account(attrs, user)
+
+  def update_service_account(%{attributes: attrs, id: id}, %{context: %{current_user: user}}),
+    do: Accounts.update_service_account(attrs, id, user)
+
   def create_invite(%{attributes: attrs}, %{context: %{current_user: user}}),
     do: Accounts.create_invite(attrs, user)
 

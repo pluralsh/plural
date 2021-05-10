@@ -53,9 +53,12 @@ defmodule GraphQl.Schema.User do
     field :phone,            :string
     field :address,          :address
     field :default_queue_id, :id
+    field :service_account,  :boolean
 
-    field :publisher, :publisher, resolve: dataloader(User)
-    field :account,   :account, resolve: dataloader(Account)
+    field :publisher,            :publisher, resolve: dataloader(User)
+    field :account,              :account, resolve: dataloader(Account)
+    field :impersonation_policy, :impersonation_policy, resolve: dataloader(User)
+
     field :jwt, :string, resolve: fn
       %{id: id, jwt: jwt}, _, %{context: %{current_user: %{id: id}}} -> {:ok, jwt}
       _, _, %{context: %{current_user: %{}}} -> {:error, "you can only query your own jwt"}
@@ -73,6 +76,21 @@ defmodule GraphQl.Schema.User do
     connection field :cards, node_type: :card do
       resolve &Payments.list_cards/3
     end
+
+    timestamps()
+  end
+
+  object :impersonation_policy do
+    field :id, non_null(:id)
+    field :bindings, list_of(:impersonation_policy_binding), resolve: dataloader(User)
+
+    timestamps()
+  end
+
+  object :impersonation_policy_binding do
+    field :id,    non_null(:id)
+    field :user,  :user, resolve: dataloader(User)
+    field :group, :group, resolve: dataloader(Account)
 
     timestamps()
   end
@@ -177,6 +195,7 @@ defmodule GraphQl.Schema.User do
     connection field :users, node_type: :user do
       middleware GraphQl.Middleware.Authenticated
       arg :q, :string
+      arg :service_account, :boolean
 
       resolve &User.list_users/2
     end

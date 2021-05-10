@@ -2,13 +2,24 @@ defmodule Core.Services.Accounts do
   use Core.Services.Base
   import Core.Policies.Account
   alias Core.PubSub
-  alias Core.Schema.{User, Account, Group, GroupMember, Invite, Role, IntegrationWebhook, OAuthIntegration}
+  alias Core.Services.Users
+  alias Core.Schema.{
+    User,
+    Account,
+    Group,
+    GroupMember,
+    Invite,
+    Role,
+    IntegrationWebhook,
+    OAuthIntegration
+  }
 
   @type account_resp :: {:ok, Account.t} | {:error, term}
   @type group_resp :: {:ok, Group.t} | {:error, term}
   @type group_member_resp :: {:ok, GroupMember.t} | {:error, term}
   @type invite_resp :: {:ok, Invite.t} | {:error, term}
   @type role_resp :: {:ok, Role.t} | {:error, term}
+  @type user_resp :: {:ok, User.t} | {:error, term}
   @type webhook_resp :: {:ok, IntegrationWebhook.t} | {:error, term}
 
   def get_account!(id), do: Core.Repo.get!(Account, id)
@@ -74,9 +85,37 @@ defmodule Core.Services.Accounts do
   end
 
   @doc """
+  Creates a service account for the user's account, which is an assumable identity allowing multiple
+  users to share credentials for instance to manage a set of installations
+  """
+  @spec create_service_account(map, User.t) :: user_resp
+  def create_service_account(attrs, %User{account_id: id} = user) do
+    %User{account_id: id, service_account: true}
+    |> User.service_account_changeset(attrs)
+    |> allow(user, :create)
+    |> when_ok(:insert)
+  end
+
+  @doc """
+  Updates a service account
+  """
+  @spec update_service_account(map, binary, User.t) :: user_resp
+  def update_service_account(attrs, id, %User{} = user) do
+    case Users.get_user(id) do
+      %User{service_account: true} = srv ->
+        srv
+        |> Core.Repo.preload([impersonation_policy: [:bindings]])
+        |> User.service_account_changeset(attrs)
+        |> allow(user, :create)
+        |> when_ok(:update)
+      _ -> {:error, "not a service account"}
+    end
+  end
+
+  @doc """
   Accepts the invite and creates a new user
   """
-  @spec realize_invite(map, binary) :: {:ok, User.t} | {:error, term}
+  @spec realize_invite(map, binary) :: user_resp
   def realize_invite(attributes, invite_id) do
     invite = get_invite!(invite_id)
 

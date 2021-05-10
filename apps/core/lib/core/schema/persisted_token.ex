@@ -31,7 +31,7 @@ defmodule Core.Schema.PersistedToken do
     |> unique_constraint(:token)
   end
 
-  defp gen_token() do
+  def gen_token() do
     "cmt-" <>
     (:crypto.strong_rand_bytes(64)
     |> Base.url_encode64())

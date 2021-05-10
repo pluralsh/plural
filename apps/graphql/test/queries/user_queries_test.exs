@@ -40,6 +40,7 @@ defmodule GraphQl.UserQueriesTest do
     test "it can list users for an account" do
       account = insert(:account)
       users = insert_list(3, :user, account: account)
+      insert(:user, account: account, service_account: true)
       insert(:user)
 
       {:ok, %{data: %{"users" => found}}} = run_query("""
@@ -52,6 +53,24 @@ defmodule GraphQl.UserQueriesTest do
 
       assert from_connection(found)
              |> ids_equal(users)
+    end
+
+    test "it can list service accounts for an account" do
+      account = insert(:account)
+      users = insert_list(3, :user, account: account)
+      svcs = insert_list(3, :user, account: account, service_account: true)
+      insert(:user)
+
+      {:ok, %{data: %{"users" => found}}} = run_query("""
+        query {
+          users(first: 5, serviceAccount: true) {
+            edges { node { id } }
+          }
+        }
+      """, %{}, %{current_user: hd(users)})
+
+      assert from_connection(found)
+             |> ids_equal(svcs)
     end
 
     test "it can search users for an account" do

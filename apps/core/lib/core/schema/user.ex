@@ -9,22 +9,24 @@ defmodule Core.Schema.User do
     Group,
     RoleBinding,
     Incident,
-    UpgradeQueue
+    UpgradeQueue,
+    ImpersonationPolicy
   }
 
   @email_re ~r/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-\.]+\.[a-zA-Z]{2,}$/
 
   schema "users" do
-    field :name,          :string
-    field :email,         :string
-    field :password_hash, :string
-    field :password,      :string, virtual: true
-    field :jwt,           :string, virtual: true
-    field :external,      :boolean, virtual: true, default: false
-    field :avatar_id,     :binary_id
-    field :avatar,        Core.Storage.Type
-    field :customer_id,   :string
-    field :phone,         :string
+    field :name,            :string
+    field :email,           :string
+    field :password_hash,   :string
+    field :password,        :string, virtual: true
+    field :jwt,             :string, virtual: true
+    field :external,        :boolean, virtual: true, default: false
+    field :service_account, :boolean, default: false
+    field :avatar_id,       :binary_id
+    field :avatar,          Core.Storage.Type
+    field :customer_id,     :string
+    field :phone,           :string
 
     embeds_one :address, Address, on_replace: :update
 
@@ -32,6 +34,7 @@ defmodule Core.Schema.User do
     belongs_to :queue, UpgradeQueue, foreign_key: :default_queue_id
 
     has_one :publisher,  Publisher, foreign_key: :owner_id
+    has_one :impersonation_policy, ImpersonationPolicy, on_replace: :delete
 
     has_many :webhooks,  Webhook
     has_many :role_bindings, RoleBinding
@@ -39,6 +42,16 @@ defmodule Core.Schema.User do
     has_many :group_role_bindings, through: [:groups, :role_bindings]
 
     timestamps()
+  end
+
+  def service_account(query \\ __MODULE__, is_svc \\ :yes)
+
+  def service_account(query, :yes) do
+    from(u in query, where: u.service_account)
+  end
+
+  def service_account(query, _) do
+    from(u in query, where: not u.service_account)
   end
 
   def roles(%__MODULE__{role_bindings: roles, group_role_bindings: group_roles})
@@ -82,6 +95,39 @@ defmodule Core.Schema.User do
     |> hash_password()
     |> generate_uuid(:avatar_id)
     |> cast_attachments(attrs, [:avatar], allow_urls: true)
+  end
+
+  def service_account_changeset(model, attrs \\ %{}) do
+    model
+    |> cast(attrs, [:name])
+    |> cast_assoc(:impersonation_policy)
+    |> add_email(model)
+    |> validate_length(:email,    max: 255)
+    |> validate_length(:name,     max: 255)
+    |> validate_length(:password, min: 10)
+    |> validate_format(:email, @email_re)
+    |> unique_constraint(:email)
+    |> validate_required([:name, :email])
+    |> hash_password()
+  end
+
+  defp add_email(changeset, %__MODULE__{email: nil}) do
+    name = get_field(changeset, :name)
+    changeset
+    |> put_change(:email, "#{srv_acct_name(name)}@srv.plural.sh")
+    |> put_change(:password, srv_acct_pwd())
+  end
+  defp add_email(changeset, _), do: changeset
+
+  defp srv_acct_name(name) do
+    name
+    |> String.downcase()
+    |> String.replace(" ", ".")
+  end
+
+  defp srv_acct_pwd() do
+    :crypto.strong_rand_bytes(64)
+    |> Base.url_encode64()
   end
 
   @stripe_valid ~w(customer_id)a

@@ -17,12 +17,15 @@ export const USERS_Q = gql`
     users(q: $q, first: 20, after: $ursor, serviceAccount: $serviceAccount) {
       pageInfo { ...PageInfo }
       edges {
-        node { ...UserFragment  }
+        node { ...UserFragment 
+          impersonationPolicy { ...ImpersonationPolicy }
+        }
       }
     }
   }
   ${PageInfo}
   ${UserFragment}
+  ${ImpersonationPolicy}
 `;
 
 export const GROUPS_Q = gql`
@@ -171,8 +174,8 @@ export const CREATE_SERVICE_ACCOUNT = gql`
 `;
 
 export const UPDATE_SERVICE_ACCOUNT = gql`
-  mutation Create($attributes: ServiceAccountAttributes!) {
-    updateServiceAccount(attributes: $attributes) {
+  mutation Create($id: ID!, $attributes: ServiceAccountAttributes!) {
+    updateServiceAccount(id: $id, attributes: $attributes) {
       ...UserFragment
       impersonationPolicy { ...ImpersonationPolicy }
     }

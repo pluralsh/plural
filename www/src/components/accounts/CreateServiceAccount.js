@@ -4,12 +4,13 @@ import { Button, ModalHeader, InputCollection, ResponsiveInput } from 'forge-cor
 import { BindingInput, sanitize } from './Role'
 import { fetchGroups, fetchUsers } from './Typeaheads'
 import { Box, Layer } from 'grommet'
-import { CREATE_SERVICE_ACCOUNT, USERS_Q } from './queries'
+import { CREATE_SERVICE_ACCOUNT, UPDATE_SERVICE_ACCOUNT, USERS_Q } from './queries'
 import { updateCache, appendConnection } from '../../utils/graphql'
+import { GqlError } from '../utils/Alert'
 
 export function ServiceAccountForm({attributes, setAttributes, bindings, setBindings}) {
   return (
-    <Box fill pad='small'>
+    <Box fill pad='small' gap='small'>
       <InputCollection>
         <ResponsiveInput
           label='name'
@@ -37,27 +38,55 @@ export function ServiceAccountForm({attributes, setAttributes, bindings, setBind
   )
 }
 
-function CreateInner() {
+function CreateInner({setOpen}) {
   const [attributes, setAttributes] = useState({name: ''})
   const [bindings, setBindings] = useState([])
-  const [mutation, {loading}] = useMutation(CREATE_SERVICE_ACCOUNT, {
+  const [mutation, {loading, error}] = useMutation(CREATE_SERVICE_ACCOUNT, {
     variables: {attributes: {...attributes, impersonationPolicy: {bindings: bindings.map(sanitize)}}},
     update: (cache, {data: {createServiceAccount}}) => updateCache(cache, {
       query: USERS_Q,
       variables: {q: null, serviceAccount: true},
       update: (prev) => appendConnection(prev, createServiceAccount, 'users')
-    })
+    }),
+    onCompleted: () => setOpen(false)
   })
 
   return (
-    <Box fill gap='xsmall'>
+    <Box fill>
+      {error && <GqlError error={error} header='Error creating service account' />}
       <ServiceAccountForm 
         attributes={attributes} 
         setAttributes={setAttributes}
         bindings={bindings}
         setBindings={setBindings} />
-      <Box fill='horizontal' justify='end' pad='small'>
-        <Button label='Create' loading={loading} onClick={mutation} />
+      <Box direction='row' fill='horizontal' justify='end' pad='small'>
+        <Button flex={false} label='Create' loading={loading} onClick={mutation} />
+      </Box>
+    </Box>
+  )
+}
+
+export function UpdateServiceAccount({user, setOpen}) {
+  const [attributes, setAttributes] = useState({name: user.name})
+  const [bindings, setBindings] = useState(user.impersonationPolicy.bindings)
+  const [mutation, {loading, error}] = useMutation(UPDATE_SERVICE_ACCOUNT, {
+    variables: {
+      id: user.id, 
+      attributes: {...attributes, impersonationPolicy: {bindings: bindings.map(sanitize)}}
+    },
+    onCompleted: () => setOpen(false)
+  })
+
+  return (
+    <Box fill gap='xsmall'>
+      {error && <GqlError error={error} header='Error creating service account' />}
+      <ServiceAccountForm
+        attributes={attributes}
+        setAttributes={setAttributes}
+        bindings={bindings}
+        setBindings={setBindings} />
+      <Box direction='row' fill='horizontal' justify='end' pad='small'>
+        <Button flex={false} label='Update' loading={loading} onClick={mutation} />
       </Box>
     </Box>
   )
@@ -68,12 +97,12 @@ export function CreateServiceAccount() {
 
   return (
     <>
-    <Button label='Create Service Account' />
+    <Button label='Create Service Account' onClick={() => setOpen(true)} />
     {open && (
       <Layer modal>
         <ModalHeader text='Create a new service account' setOpen={setOpen} />
         <Box width='40vw'>
-          <CreateInner />
+          <CreateInner setOpen={setOpen} />
         </Box>
       </Layer>
     )}

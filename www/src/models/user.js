@@ -24,6 +24,7 @@ export const UserFragment = gql`
     email
     avatar
     backgroundColor
+    serviceAccount
   }
 `;
 

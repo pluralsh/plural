@@ -3,7 +3,7 @@ import { Box, Text } from 'grommet'
 import { SIDEBAR_WIDTH } from '../constants'
 import { SectionChoice } from '../utils/SectionChoice'
 import { useHistory, useParams } from 'react-router'
-import { Edit, Group, Network, Script, User } from 'grommet-icons'
+import { Edit, Group, Network, Robot, Script, User } from 'grommet-icons'
 import { useMutation } from 'react-apollo'
 import { UPDATE_ACCOUNT } from './queries'
 import { Button, InputCollection, ResponsiveInput } from 'forge-core'
@@ -34,7 +34,7 @@ const ViewOptions = {
 const VIEWS = [
   {text: 'Edit Attributes', view: ViewOptions.EDIT, icon: <Edit size={ICON_SIZE} />},
   {text: "Users", view: ViewOptions.USERS, icon: <User size={ICON_SIZE} />},
-  {text: "Service Accounts", view: ViewOptions.SRV_ACCTS, icon: <User size={ICON_SIZE} />},
+  {text: "Service Accounts", view: ViewOptions.SRV_ACCTS, icon: <Robot size={ICON_SIZE} />},
   {text: "Groups", view: ViewOptions.GROUPS, icon: <Group size={ICON_SIZE} />},
   {text: 'Roles', view: ViewOptions.ROLES, icon: <Script size={ICON_SIZE} />},
   {text: 'Payment Methods', view: ViewOptions.METHODS, icon: <FaCreditCard size={ICON_SIZE} />},

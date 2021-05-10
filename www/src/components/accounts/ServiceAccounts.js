@@ -1,24 +1,45 @@
 import React, { useState } from 'react'
 import { Box, Layer, Text, TextInput } from 'grommet'
+import { useMutation } from 'react-apollo'
 import { Edit, Search } from 'grommet-icons'
-import { Scroller, Loading, ModalHeader } from 'forge-core'
-import { USERS_Q } from './queries'
+import { Scroller, Loading, ModalHeader, SecondaryButton } from 'forge-core'
+import { IMPERSONATE_SERVICE_ACCOUNT, USERS_Q } from './queries'
 import { CreateServiceAccount, UpdateServiceAccount } from './CreateServiceAccount'
 import { UserRow } from './User'
 import { extendConnection } from '../../utils/graphql'
 import { useQuery } from 'react-apollo'
+import { GqlError } from '../utils/Alert'
+import { setToken } from '../../helpers/authentication'
 
 function ServiceAccount({user, next}) {
   const [open, setOpen] = useState(false)
+  const [showError, setShowError] = useState(true)
+  const [mutation, {loading, error}] = useMutation(IMPERSONATE_SERVICE_ACCOUNT, {
+    variables: {id: user.id},
+    update: (cache, {data: {impersonateServiceAccount: {jwt}}}) => {
+      setToken(jwt)
+      window.location = '/'
+    }
+  })
+
   return (
     <>
     <Box fill='horizontal' gap='small' direction='row' align='center'>
       <UserRow user={user} next={next.node} />
+      <SecondaryButton label='impersonate' onClick={mutation} loading={loading} />
       <Box flex={false} pad='small' round='xsmall' onClick={() => setOpen(true)}
            hoverIndicator='light-2' focusIndicator={false}>
         <Edit size='small' />
       </Box>
     </Box>
+    {showError && error && (
+      <Layer modal>
+        <ModalHeader text='Impersonation error' setOpen={setShowError} />
+        <Box width='40vw'>
+          <GqlError error={error} header={`error attempting to impersonate ${user.name}`} />
+        </Box>
+      </Layer>
+    )}
     {open && (
       <Layer modal>
         <ModalHeader text='Create a new service account' setOpen={setOpen} />

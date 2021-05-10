@@ -207,3 +207,9 @@ export const AUDITS_Q = gql`
   ${PageInfo}
   ${AuditFragment}
 `
+
+export const IMPERSONATE_SERVICE_ACCOUNT = gql`
+  mutation Impersonate($id: ID) {
+    impersonateServiceAccount(id: $id) { jwt }
+  }
+`

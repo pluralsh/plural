@@ -16,12 +16,14 @@ import { FaCreditCard, FaReceipt } from 'react-icons/fa'
 import { CardList } from '../users/BillingDetails'
 import Invoices from '../payments/Invoices'
 import { OAuthIntegrations } from '../integrations/OAuthIntegrations'
+import { ServiceAccounts } from './ServiceAccounts'
 
 const ICON_SIZE = '12px'
 
 const ViewOptions = {
   EDIT: 'attributes',
   USERS: 'users',
+  SRV_ACCTS: 'service-accounts',
   GROUPS: 'groups',
   ROLES: 'roles',
   METHODS: 'methods',
@@ -32,6 +34,7 @@ const ViewOptions = {
 const VIEWS = [
   {text: 'Edit Attributes', view: ViewOptions.EDIT, icon: <Edit size={ICON_SIZE} />},
   {text: "Users", view: ViewOptions.USERS, icon: <User size={ICON_SIZE} />},
+  {text: "Service Accounts", view: ViewOptions.SRV_ACCTS, icon: <User size={ICON_SIZE} />},
   {text: "Groups", view: ViewOptions.GROUPS, icon: <Group size={ICON_SIZE} />},
   {text: 'Roles', view: ViewOptions.ROLES, icon: <Script size={ICON_SIZE} />},
   {text: 'Payment Methods', view: ViewOptions.METHODS, icon: <FaCreditCard size={ICON_SIZE} />},
@@ -92,6 +95,7 @@ export function EditAccount({billing}) {
       <Box fill>
         {section === ViewOptions.EDIT && <EditAttributes />}
         {section === ViewOptions.USERS && <Users />}
+        {section === ViewOptions.SRV_ACCTS && <ServiceAccounts />}
         {section === ViewOptions.GROUPS && <Groups />}
         {section === ViewOptions.ROLES && <Roles />}
         {section === ViewOptions.METHODS && <CardList />}

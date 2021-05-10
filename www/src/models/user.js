@@ -27,6 +27,17 @@ export const UserFragment = gql`
   }
 `;
 
+export const ImpersonationPolicy = gql`
+  fragment ImpersonationPolicy on ImpersonationPolicy {
+    id
+    bindings {
+      id
+      group { id name }
+      user { id name email }
+    }
+  }
+`
+
 export const InviteFragment = gql`
   fragment InviteFragment on Invite {
     secureId

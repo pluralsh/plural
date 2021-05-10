@@ -44,7 +44,7 @@ function PermissionToggle({permission, description, attributes, setAttributes}) 
   )
 }
 
-function BindingInput({label, placeholder, fetcher, bindings, remove, add}) {
+export function BindingInput({label, placeholder, fetcher, bindings, remove, add}) {
   const client = useApolloClient()
   const [suggestions, setSuggestions] = useState([])
   return (
@@ -119,7 +119,7 @@ function RoleForm({attributes, setAttributes, roleBindings, setRoleBindings}) {
   )
 }
 
-const sanitize = ({id, user, group}) => ({id, userId: user && user.id, groupId: group && group.id})
+export const sanitize = ({id, user, group}) => ({id, userId: user && user.id, groupId: group && group.id})
 
 function EditRole({role, setOpen}) {
   const [attributes, setAttributes] = useState({

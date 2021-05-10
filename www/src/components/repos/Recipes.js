@@ -8,23 +8,18 @@ import { DELETE_RECIPE, REPO_Q } from './queries'
 import { Provider } from './misc'
 import { Container } from './Integrations'
 import { chunk } from '../../utils/array'
-import { extendConnection } from '../../utils/graphql'
+import { extendConnection, updateCache, removeConnection } from '../../utils/graphql'
 
 const PROVIDER_WIDTH = 40
 
 function DeleteRecipe({recipe: {id}, repositoryId}) {
   const [mutation] = useMutation(DELETE_RECIPE, {
     variables: {id},
-    update: (cache, {data: {deleteRecipe}}) => {
-      const prev = cache.readQuery({query: REPO_Q, variables: {repositoryId}})
-      cache.writeQuery({query: REPO_Q, variables: {repositoryId}, data: {
-        ...prev,
-        recipes: {
-          ...prev.recipes,
-          edges: prev.recipes.edges.filter(({node}) => node.id !== deleteRecipe.id)
-        }
-      }})
-    }
+    update: (cache, {data: {deleteRecipe}}) => updateCache(cache, {
+      query: REPO_Q,
+      variables: {repositoryId},
+      update: (prev) => removeConnection(prev, 'recipes', deleteRecipe)
+    })
   })
 
   return (
@@ -49,6 +44,7 @@ function RecipeListItem({recipe, setRecipe, repository: {editable, id}}) {
       direction='row'
       gap='medium'
       pad='medium'
+      width='50%'
       modifier={editable ? <DeleteRecipe recipe={recipe} repositoryId={id} /> : null}
       onClick={() => setRecipe(recipe)}>
       {provider && (
@@ -76,7 +72,11 @@ export default function Recipes({repository, recipes: {edges, pageInfo, fetchMor
       {Array.from(chunk(edges, 2)).map((chunk, ind) => (
         <Box key={ind} direction='row' gap='small' fill='horizontal'>
           {chunk.map(({node}) => (
-            <RecipeListItem key={node.id} recipe={node} setRecipe={wrappedSetRecipe} repository={repository} />
+            <RecipeListItem 
+              key={node.id} 
+              recipe={node} 
+              setRecipe={wrappedSetRecipe} 
+              repository={repository} />
           ))}
         </Box>
       ))}

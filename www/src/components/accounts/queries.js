@@ -1,7 +1,7 @@
 import { gql } from 'apollo-boost'
 import { AuditFragment } from '../../models/account';
 import { PageInfo } from '../../models/misc';
-import { AccountFragment, GroupFragment, GroupMemberFragment, InviteFragment, RoleFragment, UserFragment } from '../../models/user';
+import { AccountFragment, GroupFragment, GroupMemberFragment, ImpersonationPolicy, InviteFragment, RoleFragment, UserFragment } from '../../models/user';
 
 export const UPDATE_ACCOUNT = gql`
   mutation UpdateAccount($attributes: AccountAttributes!) {
@@ -13,11 +13,11 @@ export const UPDATE_ACCOUNT = gql`
 `;
 
 export const USERS_Q = gql`
-  query Users($q: String, $ursor: String) {
-    users(q: $q, first: 20, after: $ursor) {
+  query Users($q: String, $serviceAccount: Boolean, $ursor: String) {
+    users(q: $q, first: 20, after: $ursor, serviceAccount: $serviceAccount) {
       pageInfo { ...PageInfo }
       edges {
-        node { ...UserFragment }
+        node { ...UserFragment  }
       }
     }
   }
@@ -159,6 +159,27 @@ export const DELETE_ROLE = gql`
   ${RoleFragment}
 `;
 
+export const CREATE_SERVICE_ACCOUNT = gql`
+  mutation Create($attributes: ServiceAccountAttributes!) {
+    createServiceAccount(attributes: $attributes) {
+      ...UserFragment
+      impersonationPolicy { ...ImpersonationPolicy }
+    }
+  }
+  ${ImpersonationPolicy}
+  ${UserFragment}
+`;
+
+export const UPDATE_SERVICE_ACCOUNT = gql`
+  mutation Create($attributes: ServiceAccountAttributes!) {
+    updateServiceAccount(attributes: $attributes) {
+      ...UserFragment
+      impersonationPolicy { ...ImpersonationPolicy }
+    }
+  }
+  ${ImpersonationPolicy}
+  ${UserFragment}
+`;
 
 export const ROLES_Q = gql`
   query Roles($cursor: String) {

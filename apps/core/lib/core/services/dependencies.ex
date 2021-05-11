@@ -144,7 +144,7 @@ defmodule Core.Services.Dependencies do
       {:ok, map}
     else
       {:error, _} = error -> error
-      _ -> {:ok, nil}
+      _ -> {:error, "no deps.yaml file found"}
     end
   end
 

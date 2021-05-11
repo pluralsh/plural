@@ -54,7 +54,7 @@ function Chart({chart, hasNext}) {
           <Text size='small' weight={500}>
             {chart.name}
           </Text>
-          {chart.dependencies.application && (
+          {chart.dependencies && chart.dependencies.application && (
             <Box round='xsmall' pad={{vertical: '3px', horizontal: '5px'}} background='light-4'>
               <Text size='12px'>APP</Text>
             </Box>

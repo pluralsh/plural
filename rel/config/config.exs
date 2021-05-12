@@ -40,15 +40,15 @@ config :core, :jwt,
 
 config :core, Core.Conduit.Broker,
   adapter: ConduitAMQP,
-  url: "amqp://user:#{get_env("RABBITMQ_PASSWORD")}@plural-rabbitmq"
+  url: "amqp://#{get_env("RABBIT_USERNAME")}:#{get_env("RABBIT_PASSWORD")}@rabbitmq.#{get_env("RABBIT_NAMESPACE")}"
 
 config :rtc, Rtc.Conduit.Broker,
   adapter: ConduitAMQP,
-  url: "amqp://user:#{get_env("RABBITMQ_PASSWORD")}@plural-rabbitmq"
+  url: "amqp://#{get_env("RABBIT_USERNAME")}:#{get_env("RABBIT_PASSWORD")}@rabbitmq.#{get_env("RABBIT_NAMESPACE")}"
 
 config :worker, Worker.Conduit.Broker,
   adapter: ConduitAMQP,
-  url: "amqp://user:#{get_env("RABBITMQ_PASSWORD")}@plural-rabbitmq"
+  url: "amqp://#{get_env("RABBIT_USERNAME")}:#{get_env("RABBIT_PASSWORD")}@rabbitmq.#{get_env("RABBIT_NAMESPACE")}"
 
 config :piazza_core, aes_key: get_env("AES_KEY")
 

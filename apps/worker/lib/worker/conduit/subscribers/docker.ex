@@ -29,17 +29,22 @@ defmodule Worker.Conduit.Subscribers.Docker do
     Logger.info "Scanning image #{image}"
     case System.cmd("trivy", ["--quiet", "image", "--format", "json", image], env: env) do
       {output, 0} ->
-        with {:ok, [%{"Vulnerabilities" => vulns} | _]} <- Jason.decode(output) do
-          (vulns || [])
-          |> Enum.map(&TrivySource.to_vulnerability/1)
-          |> Repositories.add_vulnerabilities(img)
-        else
-          error -> Logger.info "irregular trivy output #{inspect(error)}"
+        case Jason.decode(output) do
+          {:ok, [%{"Vulnerabilities" => vulns} | _]} -> insert_vulns(vulns, img)
+          res ->
+            Logger.info "irregular trivy output #{inspect(res)}"
+            insert_vulns([], img)
         end
       {output, _} ->
         Logger.info "Trivy failed with: #{output}"
         :error
     end
+  end
+
+  defp insert_vulns(vulns, img) do
+    (vulns || [])
+    |> Enum.map(&TrivySource.to_vulnerability/1)
+    |> Repositories.add_vulnerabilities(img)
   end
 
   defp log(%DockerImage{id: id, vulnerabilities: vulns}) when is_list(vulns) do

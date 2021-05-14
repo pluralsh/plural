@@ -17,7 +17,7 @@ defmodule Cron.Task.Docker do
   end
 
   defp deliver(%DockerImage{} = img) do
-    Logger.info "Scheduling scan for img #{img}"
+    Logger.info "Scheduling scan for img #{inspect(img)}"
     Core.Conduit.Broker.publish(%Conduit.Message{body: img}, :dkr)
   end
 end

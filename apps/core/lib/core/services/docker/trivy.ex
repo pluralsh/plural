@@ -5,7 +5,7 @@ defmodule Core.Docker.TrivySource do
   deffetch "PkgName",          :package
   deffetch "InstalledVersion", :installed_version
   deffetch "FixedVersion",     :fixed_version
-  deffetch "SeveritySource",   :source
+  deffetch "SeveritySource",   :source, resolve: &default(&1, "redhat")
   deffetch "PrimaryURL",       :url
   deffetch "Title",            :title
   deffetch "Description",      :description, resolve: &truncate(&1, 700)
@@ -25,4 +25,5 @@ defmodule Core.Docker.TrivySource do
   end
 
   def get_cvss(%{"SeveritySource" => source, "CVSS" => cvss}), do: Map.get(cvss, source)
+  def get_cvss(%{"CVSS" => %{"redhat" => redhat}}), do: redhat
 end

@@ -7,5 +7,6 @@ config :worker,
 config :goth,
   disabled: true
 
+config :core, start_broker: false
 config :worker, start_broker: true
 config :core, broker: Worker.Conduit.Broker

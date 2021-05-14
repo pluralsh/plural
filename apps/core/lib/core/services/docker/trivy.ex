@@ -5,7 +5,6 @@ defmodule Core.Docker.TrivySource do
   deffetch "PkgName",          :package
   deffetch "InstalledVersion", :installed_version
   deffetch "FixedVersion",     :fixed_version
-  deffetch "SeveritySource",   :source, resolve: &default(&1, "redhat")
   deffetch "PrimaryURL",       :url
   deffetch "Title",            :title
   deffetch "Description",      :description, resolve: &truncate(&1, 700)
@@ -20,10 +19,19 @@ defmodule Core.Docker.TrivySource do
   end
 
   def __field__(payload, :score) do
-    get_cvss(payload)
-    |> Map.get("V3Score")
+    case get_cvss(payload) do
+      %{"V3Score" => score} -> score
+      _ -> nil
+    end
   end
+
+  def __field__(%{"SeveritySource" => source}, :source) when is_binary(source), do: source
+  def __field__(%{"CVSS" => %{"redhat" => _}}, :source), do: "redhat"
+  def __field__(%{"CVSS" => %{"nvd" => _}}, :source), do: "nvd"
+  def __field__(_, :source), do: nil
 
   def get_cvss(%{"SeveritySource" => source, "CVSS" => cvss}), do: Map.get(cvss, source)
   def get_cvss(%{"CVSS" => %{"redhat" => redhat}}), do: redhat
+  def get_cvss(%{"CVSS" => %{"nvd" => nvd}}), do: nvd
+  def get_cvss(_), do: nil
 end

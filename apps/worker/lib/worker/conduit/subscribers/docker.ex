@@ -33,6 +33,8 @@ defmodule Worker.Conduit.Subscribers.Docker do
           (vulns || [])
           |> Enum.map(&TrivySource.to_vulnerability/1)
           |> Repositories.add_vulnerabilities(img)
+        else
+          error -> Logger.info "irregular trivy output #{inspect(error)}"
         end
       {output, _} ->
         Logger.info "Trivy failed with: #{output}"

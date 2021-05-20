@@ -21,7 +21,7 @@ defmodule Core.MixProject do
   def application do
     [
       mod: {Core.Application, []},
-      extra_applications: [:logger, :crypto]
+      extra_applications: [:logger, :crypto, :porcelain]
     ]
   end
 
@@ -46,6 +46,7 @@ defmodule Core.MixProject do
       {:guardian, "~> 1.2.1"},
       {:arc, "~> 0.11.0"},
       {:arc_gcs, "~> 0.1.0"},
+      {:porcelain, "~> 2.0"},
       {:ex_aws, "~> 2.1"},
       {:ex_aws_s3, "~> 2.0"},
       {:ex_aws_sts, "~> 2.0"},

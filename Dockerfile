@@ -74,7 +74,9 @@ ENV TAR_FILE="helm-v${VERSION}-linux-amd64.tar.gz"
 RUN apk add --update --no-cache curl ca-certificates unzip wget openssl && \
     curl -L ${BASE_URL}/${TAR_FILE} | tar xvz && \
     mv linux-amd64/helm /usr/local/bin/helm && \
-    chmod +x /usr/local/bin/helm
+    chmod +x /usr/local/bin/helm && \
+    curl -L https://github.com/alco/goon/releases/download/v1.1.1/goon_linux_amd64.tar.gz | tar xvz && \
+    mv goon /usr/local/bin/goon && chmod +x /usr/local/bin/goon
 
 FROM erlang:22-alpine
 
@@ -95,6 +97,7 @@ WORKDIR /opt/app
 
 COPY --from=helm /usr/local/bin/helm /usr/local/bin/helm
 COPY --from=cmd /go/bin/plural /usr/local/bin/plural
+COPY --from=helm /usr/local/bin/goon /usr/local/bin/goon
 COPY --from=builder /opt/built .
 
 CMD trap 'exit' INT; /opt/app/bin/${APP_NAME} foreground

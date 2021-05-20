@@ -187,16 +187,27 @@ function RecipeSectionEditor({id, recipeSections, section, item, setState, repos
 }
 
 function Install({repository, setOpen}) {
-  const [mutation] = useMutation(INSTALL_REPO, {
+  const [mutation, {loading}] = useMutation(INSTALL_REPO, {
     variables: {repositoryId: repository.id},
     refetchQueries: [{query: REPO_Q, variables: {repositoryId: repository.id}}]
   })
-  useEffect(() => { !repository.installation && mutation() }, [repository])
 
-  if (!repository.installation) return null
-  
+  if (!repository.installation) return (
+    <Layer modal onEsc={() => setOpen(false)} onClickOutside={() => setOpen(false)}>
+      <Box width='50vw'>
+        <ModalHeader text={`Install ${repository.name}`} setOpen={setOpen} />
+        <Box pad='small' gap='small'>
+          <Text size='small'>Are you sure you want to install {repository.name}?</Text>
+          <Box fill='horizontal' direction='row' justify='end'>
+            <Button label='Install' loading={loading} onClick={mutation} />
+          </Box>
+        </Box>
+      </Box>
+    </Layer>
+  )
+
   return (
-    <Layer modal>
+    <Layer modal onEsc={() => setOpen(false)} onClickOutside={() => setOpen(false)}>
       <Box width='50vw'>
         <ModalHeader text='Subscribe to a plan' setOpen={setOpen} />
         <AlternatingBox>
@@ -259,7 +270,7 @@ function RecipeInner({recipe: {id, name}, setOpen}) {
 
 export default function Recipe({recipe, setOpen, repository}) {
   const needs = needsInstall(repository)
-  if (needs) return <Install repository={repository} />
+  if (needs) return <Install repository={repository} setOpen={setOpen} />
 
   return <RecipeInner recipe={recipe} setOpen={setOpen} />
 }

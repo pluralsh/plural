@@ -1,0 +1,90 @@
+default:
+  image: gcr.io/google.com/cloudsdktool/cloud-sdk:latest
+  services:
+  - docker:19.03.13-dind
+  before_script:
+  - docker info
+
+variables:
+  DOCKER_HOST: tcp://docker:2376
+  DOCKER_TLS_CERTDIR: "/certs"
+  DOCKER_TLS_VERIFY: 1
+  DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
+
+stages:
+- test
+- push
+
+build:
+  stage: test
+  image: circleci/elixir:1.9.4
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+    - _build
+    - deps
+  script:
+  - wget -O plural.o 'https://app.plural.sh/artifacts/plural/plural?platform=linux&arch=amd64'
+  - mkdir bin
+  - chmod +x ./plural.o
+  - cp ./plural.o ./bin/plural
+  - curl -L https://get.helm.sh/helm-v3.3.1-linux-amd64.tar.gz | tar xvz
+  - mv linux-amd64/helm bin/helm && chmod +x bin/helm
+  - export PATH="$(pwd)/bin:$PATH"
+  - make testup
+  - mix local.hex --force
+  - mix local.rebar --force
+  - mix deps.get
+  - mix test
+
+.push_globals: &push-globs
+  before_script:
+  - until docker info; do sleep 1; done
+  - gcloud auth activate-service-account --key-file=$GOOGLE_PIAZZA_CREDENTIALS
+  - gcloud auth configure-docker -q
+  - docker login -u mguarino46@gmail.com -p $PLURAL_ACCESS_TOKEN dkr.plural.sh
+
+build-plural:
+  stage: push
+  <<: *push-globs
+  only:
+  - master
+  script:
+  - make build APP_NAME=plural
+  - make push APP_NAME=plural
+
+build-rtc:
+  stage: push
+  <<: *push-globs
+  only:
+  - master
+  script:
+  - make build APP_NAME=rtc
+  - make push APP_NAME=rtc
+
+build-cron:
+  stage: push
+  <<: *push-globs
+  only:
+  - master  
+  script:
+  - make build APP_NAME=cron
+  - make push APP_NAME=cron
+
+build-worker:
+  stage: push
+  <<: *push-globs
+  only:
+  - master
+  script:
+  - make build APP_NAME=worker
+  - make push APP_NAME=worker
+
+build-www:
+  stage: push
+  <<: *push-globs
+  only:
+  - master
+  script:
+  - make build APP_NAME=www
+  - make push APP_NAME=plural-www

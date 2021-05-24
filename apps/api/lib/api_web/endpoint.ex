@@ -1,4 +1,5 @@
 defmodule ApiWeb.Endpoint do
+  use Sentry.PlugCapture
   use Phoenix.Endpoint, otp_app: :api
 
   @upload_maximum 75_000_000
@@ -35,6 +36,7 @@ defmodule ApiWeb.Endpoint do
     pass: ["*/*"],
     json_decoder: Phoenix.json_library()
 
+  plug Sentry.PlugContext
   plug Plug.MethodOverride
   plug Plug.Head
   plug ApiWeb.Plugs.MetricsExporter

@@ -2,6 +2,10 @@ defmodule Core.Application do
   use Application
 
   def start(_type, _args) do
+    if Application.get_env(:sentry, :dsn) do
+      Logger.add_backend(Sentry.LoggerBackend)
+    end
+
     children = [
       Core.Repo,
       Core.PubSub.Broadcaster,

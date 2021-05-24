@@ -1,4 +1,5 @@
 defmodule RtcWeb.Endpoint do
+  use Sentry.PlugCapture
   use Phoenix.Endpoint, otp_app: :rtc
   use Absinthe.Phoenix.Endpoint
 
@@ -41,6 +42,7 @@ defmodule RtcWeb.Endpoint do
     pass: ["*/*"],
     json_decoder: Phoenix.json_library()
 
+  plug Sentry.PlugContext
   plug Plug.MethodOverride
   plug Plug.Head
   plug RtcWeb.Plugs.MetricsExporter

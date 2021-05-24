@@ -37,6 +37,7 @@ defmodule Rtc.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:sentry, "8.0.5"},
       {:phoenix, "~> 1.5.7"},
       {:phoenix_html, "~> 2.11"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},

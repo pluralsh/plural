@@ -31,6 +31,7 @@ defmodule Core.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:sentry, "8.0.5"},
       {:ecto_sql, "~> 3.3.4"},
       {:ecto, "~> 3.3.2", override: true},
       {:postgrex, ">= 0.0.0"},

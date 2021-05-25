@@ -1,5 +1,0 @@
-REPO forge
-
-HELM charts/forge
-RECIPE forge/recipes/forge-gcp.yaml
-TF terraform/*

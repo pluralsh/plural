@@ -3,7 +3,7 @@ default:
   services:
   - docker:19.03.13-dind
   before_script:
-  - docker info
+  - until docker info; do sleep 1; done
 
 variables:
   DOCKER_HOST: tcp://docker:2376

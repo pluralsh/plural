@@ -1,21 +1,21 @@
-# Forge
+# Plural
 
-A repository of helm charts, implementing authorization on top of chartmuseum along with bookkeeping around installations, discovery, etc.
+A full lifecycle third party deployment control plane .
 
 There are three components, a web-app/api, a cli, and a webhook receiver installable in-cluster.  You can select the repos you'd like to install and the chart versions/terraform modules you specifically want, then with a few commands, the cli will build a production-ready workspace for it which can be easily deployed.  If you're a developer, you can register a publisher for yourself and upload your own charts/repos for use by others.  And if you choose, the auto-upgrader can listen to webhooks and handle the deployment process entirely for you, including the annoying git minutiae.
 
 The workflow is basically (after selecting your preferences):
 
 ```bash
-forge build
-forge deploy <repo>
+plural build
+plural deploy
 ```
 
-An example deployment can be found at: https://forge.piazza.app
+An example deployment can be found at: https://app.plural.sh
 
 ## Features
 
-The charmart workflow provides the following:
+The plural workflow provides the following:
 
 * Authenticated docker registry per repository
 * License generation using RSA + AES
@@ -40,7 +40,7 @@ brew install kubernetes-helm
 helm plugin install https://github.com/chartmuseum/helm-push
 ```
 
-## Build
+## Build & Test
 
 To run tests for the api:
 
@@ -50,12 +50,12 @@ make testup
 mix test
 ```
 
-To build the `forge` cli:
+## CLI install
+
+The cli is split into the plural-cli repo, and can be installed using plural's artifacts api, eg
 
 ```bash
-make cli
+wget -O plural 'https://app.plural.sh/artifacts/plural/plural?platform=mac&arch=amd64'
+chmod +x ./plural
+mv plural /usr/local/bin/plural # or another dir on your path
 ```
-
-and copy cmd/forge to your path.
-
-alternatively, if you don't mind `go install`, you can `cd cmd && go install`

@@ -1,7 +1,7 @@
 .PHONY: help
 
-GCP_PROJECT ?= piazzaapp
-APP_NAME ?= forge
+GCP_PROJECT ?= pluralsh
+APP_NAME ?= plural
 APP_VSN ?= `cat VERSION`
 BUILD ?= `git rev-parse --short HEAD`
 DKR_HOST ?= dkr.plural.sh

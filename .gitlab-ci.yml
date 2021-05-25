@@ -1,9 +1,14 @@
 default:
   image: gcr.io/google.com/cloudsdktool/cloud-sdk:latest
   services:
-  - docker:19.03.13-dind
+  - name: gcr.io/pluralsh/docker:19.03.13-dind
+    alias: docker
   before_script:
   - until docker info; do sleep 1; done
+  retry:
+    max: 2
+    when:
+    - runner_system_failure
 
 variables:
   DOCKER_HOST: tcp://docker:2376
@@ -40,7 +45,7 @@ build:
 .push_globals: &push-globs
   before_script:
   - until docker info; do sleep 1; done
-  - gcloud auth activate-service-account --key-file=$GOOGLE_PIAZZA_CREDENTIALS
+  - gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
   - gcloud auth configure-docker -q
   - docker login -u mguarino46@gmail.com -p $PLURAL_ACCESS_TOKEN dkr.plural.sh
 

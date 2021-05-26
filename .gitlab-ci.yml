@@ -22,7 +22,7 @@ stages:
 
 build:
   stage: test
-  image: circleci/elixir:1.9.4
+  image: gcr.io/pluralsh/circleci/elixir:1.9.4
   cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:

@@ -34,7 +34,7 @@ RUN apk update && \
     yarn \
     git \
     build-base && \
-  mix local.rebar --force && \
+  # mix local.rebar --force && \
   mix local.hex --force
 
 # This copies our app source code into the build container

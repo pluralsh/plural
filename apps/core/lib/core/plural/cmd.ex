@@ -5,7 +5,7 @@ defmodule Plural.Cmd do
     do: plural("template", [chart, "--values", vals])
 
   defp plural(cmd, args) do
-    case Porcelain.exec(plural_cmd(), [cmd | args]) do
+    case Porcelain.exec(plural_cmd(), [cmd | args], err: :string) do
       %Result{status: 0, out: res} -> {:ok, res}
       err -> {:error, error_msg(err)}
     end

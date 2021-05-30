@@ -242,6 +242,21 @@ defmodule GraphQl.RepositoryQueriesTest do
     end
   end
 
+  describe "installation" do
+    test "it can fetch a repository installation by name" do
+      repo = insert(:repository)
+      inst = insert(:installation, repository: repo)
+
+      {:ok, %{data: %{"installation" => found}}} = run_query("""
+        query Installation($name: String!) {
+          installation(name: $name) { id }
+        }
+      """, %{"name" => repo.name}, %{current_user: inst.user})
+
+      assert found["id"] == inst.id
+    end
+  end
+
   describe "search_repositories" do
     test "It can search for substrings of a repo name" do
       repos = for i <- 1..3, do: insert(:repository, name: "query #{i}")

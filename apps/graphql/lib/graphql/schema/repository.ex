@@ -193,6 +193,14 @@ defmodule GraphQl.Schema.Repository do
       resolve &Repository.resolve_repository/2
     end
 
+    field :installation, :installation do
+      middleware GraphQl.Middleware.Authenticated
+      arg :id,   :id
+      arg :name, :string
+
+      resolve &Repository.resolve_installation/2
+    end
+
 
     connection field :repositories, node_type: :repository do
       middleware GraphQl.Middleware.Authenticated

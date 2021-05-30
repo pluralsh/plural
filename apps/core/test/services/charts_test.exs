@@ -191,10 +191,10 @@ defmodule Core.Services.ChartsTest do
 
   describe "#upload_chart/4" do
     test "It can upload a chart" do
-      path = Path.join(:code.priv_dir(:core), "plural-0.6.23.tgz")
-      repo = insert(:repository, name: "plural")
-      registry = insert(:docker_repository, repository: repo, name: "plural")
-      img = insert(:docker_image, docker_repository: registry, tag: "0.1.1")
+      path = Path.join(:code.priv_dir(:core), "console-0.5.24.tgz")
+      repo = insert(:repository, name: "console")
+      registry = insert(:docker_repository, repository: repo, name: "console")
+      img = insert(:docker_image, docker_repository: registry, tag: "0.1.0")
 
       expect(HTTPoison, :post, fn _, _, _, _ -> {:ok, %{}} end)
       {:ok, %{sync_chart: chart, imgs: [img_dep], sync: sync}} = Charts.upload_chart(
@@ -204,7 +204,7 @@ defmodule Core.Services.ChartsTest do
         %{opts: [], headers: []}
       )
 
-      assert length(chart.dependencies.dependencies) == 1
+      assert length(chart.dependencies.dependencies) == 4
       assert img_dep.image_id == img.id
       assert img_dep.version_id == sync.id
     end

@@ -3,6 +3,7 @@ defmodule Core.Schema.PublicKey do
   alias Core.Schema.User
 
   schema "public_keys" do
+    field :name,    :string
     field :content, :binary
     field :digest,  :string
     belongs_to :user, User
@@ -25,15 +26,16 @@ defmodule Core.Schema.PublicKey do
     from(pk in query, where: pk.user_id == ^user_id)
   end
 
-  @valid ~w(content user_id)a
+  @valid ~w(content user_id name)a
 
   def changeset(model, attrs \\ %{}) do
     model
     |> cast(attrs, @valid)
     |> add_digest()
     |> unique_constraint(:digest)
+    |> unique_constraint(:name, name: index_name(:public_keys, [:user_id, :name]))
     |> foreign_key_constraint(:user_id)
-    |> validate_required([:content])
+    |> validate_required([:content, :name])
   end
 
   defp add_digest(cs) do

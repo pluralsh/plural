@@ -384,6 +384,7 @@ defmodule Core.Factory do
   def public_key_factory do
     %Schema.PublicKey{
       user: build(:user),
+      name: sequence(:public_key, &"key-#{&1}"),
       content: sequence(:public_key, &"dummy-key-#{&1}")
     }
   end

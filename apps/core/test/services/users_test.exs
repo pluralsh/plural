@@ -169,8 +169,9 @@ defmodule Core.Services.UsersTest do
     test "it can create a public key for a user" do
       user = insert(:user)
 
-      {:ok, key} = Users.create_public_key(%{content: "bogus key"}, user)
+      {:ok, key} = Users.create_public_key(%{content: "bogus key", name: "example"}, user)
 
+      assert key.name == "example"
       assert key.user_id == user.id
       assert key.digest
     end

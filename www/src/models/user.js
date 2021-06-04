@@ -118,3 +118,12 @@ export const RoleFragment = gql`
   }
   ${RoleBindingFragment}
 `;
+
+export const PublicKeyFragment = gql`
+  fragment PublicKeyFragment on PublicKey {
+    id
+    name
+    digest
+    insertedAt
+  }
+`;

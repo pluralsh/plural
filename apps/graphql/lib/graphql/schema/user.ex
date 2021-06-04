@@ -48,6 +48,7 @@ defmodule GraphQl.Schema.User do
   end
 
   input_object :public_key_attributes do
+    field :name,    non_null(:string)
     field :content, non_null(:string)
   end
 
@@ -170,6 +171,7 @@ defmodule GraphQl.Schema.User do
 
   object :public_key do
     field :id,      non_null(:id)
+    field :name,    non_null(:string)
     field :content, non_null(:string)
     field :digest,  non_null(:string)
     field :user,    non_null(:user), resolve: dataloader(User)

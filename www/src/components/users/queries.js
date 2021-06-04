@@ -1,5 +1,5 @@
 import gql from 'graphql-tag'
-import { UserFragment, TokenFragment, WebhookFragment, AddressFragment, AccountFragment, PublisherFragment } from '../../models/user'
+import { UserFragment, TokenFragment, WebhookFragment, AddressFragment, AccountFragment, PublisherFragment, PublicKeyFragment } from '../../models/user'
 import { CardFragment } from '../../models/payments';
 import { PageInfo } from '../../models/misc'
 
@@ -141,4 +141,23 @@ export const RESET_TOKEN = gql`
     }
   }
   ${UserFragment}
+`
+
+export const LIST_KEYS = gql`
+  query Keys($cursor: String) {
+    publicKeys(after: $cursor, first: 20) {
+      pageInfo { ...PageInfo }
+      edges { node { ...PublicKeyFragment } }
+    }
+  }
+  ${PageInfo}
+  ${PublicKeyFragment}
+`
+
+export const DELETE_KEY = gql`
+  mutation Delete($id: ID!) {
+    deletePublicKey(id: $id) {
+      id
+    }
+  }
 `

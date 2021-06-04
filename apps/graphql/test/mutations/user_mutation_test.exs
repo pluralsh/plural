@@ -264,15 +264,17 @@ defmodule GraphQl.UserMutationTest do
       user = insert(:user)
 
       {:ok, %{data: %{"createPublicKey" => res}}} = run_query("""
-        mutation Create($key: String!) {
-          createPublicKey(attributes: {content: $key}) {
+        mutation Create($attributes: PublicKeyAttributes!) {
+          createPublicKey(attributes: $attributes) {
             id
+            name
             digest
           }
         }
-      """, %{"key" => "a bogus key"}, %{current_user: user})
+      """, %{"attributes" => %{"content" => "a bogus key", "name" => "example"}}, %{current_user: user})
 
       assert res["id"]
+      assert res["name"] == "example"
       assert res["digest"]
     end
   end

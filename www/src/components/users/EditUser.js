@@ -5,13 +5,14 @@ import { Button, InputCollection, ResponsiveInput } from 'forge-core'
 import { useMutation } from 'react-apollo'
 import { UPDATE_USER } from './queries'
 import Avatar from './Avatar'
-import { StatusCritical, Checkmark, User, Lock, Install, Robot } from 'grommet-icons'
+import { StatusCritical, Checkmark, User, Lock, Install, Robot, License } from 'grommet-icons'
 import Installations from '../repos/Installations'
 import { CurrentUserContext } from '../login/CurrentUser'
 import { Tokens } from './Tokens'
 import { useHistory, useParams } from 'react-router'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 import { SIDEBAR_WIDTH } from '../constants'
+import { Keys } from './Keys'
 
 export const EditContext = React.createContext({})
 
@@ -107,6 +108,7 @@ export default function EditUser() {
           <EditSelect edit='pwd' name='Password' icon={<Lock size='14px' />} />
           <EditSelect edit='installations' name='Installations' icon={<Install size='14px' />} />
           <EditSelect edit='tokens' name='Access Tokens' icon={<Robot size='14px' />} />
+          <EditSelect edit='keys' name='Public Keys' icon={<License size='14px' />} />
         </Box>
         <Box fill pad='medium'>
           <EditContent edit='user' name='User Attributes'>
@@ -158,6 +160,9 @@ export default function EditUser() {
           </EditContent>
           <EditContent edit='tokens' name='Tokens'>
             <Tokens />
+          </EditContent>
+          <EditContent edit='keys' name='Public Keys'>
+            <Keys />
           </EditContent>
         </Box>
       </Box>

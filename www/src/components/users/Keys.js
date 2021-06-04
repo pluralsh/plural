@@ -25,8 +25,8 @@ function Key({publicKey}) {
   return (
     <Box round='xsmall' border={{color: 'light-3'}} margin={{bottom: 'small'}} 
          pad='small' direction='row' align='center' gap='small'>
-      <Box flex={false}>
-        <License size='20px' />
+      <Box flex={false} width='50px' align='center' justify='center'>
+        <License size='25px' />
       </Box>
       <Box fill='horizontal' gap='2px'>
         <Text size='small' weight={500}>{publicKey.name}</Text>

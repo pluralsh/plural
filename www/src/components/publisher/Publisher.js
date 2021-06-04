@@ -28,16 +28,17 @@ export function PublisherHeader({publisher: {name, description, ...publisher}, s
 }
 
 function PublisherView({publisher: {name, description, phone, owner, address, ...publisher}}) {
+  const showDetails = !!address
   return (
     <DetailContainer gap='small' pad='small'>
       <PublisherHeader publisher={{...publisher, name, description}} />
-      <Box pad='small' border='top'>
-        <InputCollection>
-          <ResponsiveInputContainer label='email' content={<Text size='small'>{owner.email}</Text>} />
-          <ResponsiveInputContainer label='phone' content={<Text size='small'>{phone}</Text>} />
-          {address && <ResponsiveInputContainer label='address' content={<Text size='small'>{formatAddress(address)}</Text>} />}
-        </InputCollection>
-      </Box>
+      {showDetails && (
+        <Box pad='small' border='top'>
+          <InputCollection>
+            {address && <ResponsiveInputContainer label='address' content={<Text size='small'>{formatAddress(address)}</Text>} />}
+          </InputCollection>
+        </Box>
+      )}
     </DetailContainer>
   )
 }

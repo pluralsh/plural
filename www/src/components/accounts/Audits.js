@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import moment from 'moment'
 import { Box, Text } from 'grommet'
-import { Loading, Scroller } from 'forge-core'
+import { Loading } from 'forge-core'
 import { useQuery } from 'react-apollo'
 import Avatar from '../users/Avatar'
 import { AUDITS_Q } from './queries'

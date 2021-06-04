@@ -164,4 +164,33 @@ defmodule Core.Services.UsersTest do
       {:ok, _} = Users.login_user(user.email, "a long password")
     end
   end
+
+  describe "#create_public_key/2" do
+    test "it can create a public key for a user" do
+      user = insert(:user)
+
+      {:ok, key} = Users.create_public_key(%{content: "bogus key"}, user)
+
+      assert key.user_id == user.id
+      assert key.digest
+    end
+  end
+
+  describe "#delete_public_key/2" do
+    test "it can delete a user's public key" do
+      user = insert(:user)
+      key = insert(:public_key, user: user)
+
+      {:ok, _} = Users.delete_public_key(key.id, user)
+
+      refute refetch(key)
+    end
+
+    test "it cannot delete others' keys" do
+      user = insert(:user)
+      key = insert(:public_key)
+
+      {:error, _} = Users.delete_public_key(key.id, user)
+    end
+  end
 end

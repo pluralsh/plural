@@ -242,4 +242,40 @@ defmodule GraphQl.UserQueriesTest do
       assert found["id"] == token.id
     end
   end
+
+  describe "publicKeys" do
+    test "it can list public keys for a user" do
+      user = insert(:user)
+      keys = insert_list(3, :public_key, user: user)
+      insert(:public_key, user: build(:user, account: user.account))
+
+      {:ok, %{data: %{"publicKeys" => found}}} = run_query("""
+        query {
+          publicKeys(first: 5) {
+            edges { node { id } }
+          }
+        }
+      """, %{}, %{current_user: user})
+
+      assert from_connection(found)
+             |> ids_equal(keys)
+    end
+
+    test "it can list all the keys for users by their email" do
+      user = insert(:user)
+      keys = insert_list(3, :public_key, user: user)
+      key = insert(:public_key, user: build(:user, account: user.account))
+
+      {:ok, %{data: %{"publicKeys" => found}}} = run_query("""
+        query Keys($emails: [String]) {
+          publicKeys(emails: $emails, first: 5) {
+            edges { node { id } }
+          }
+        }
+      """, %{"emails" => [user.email, key.user.email]}, %{current_user: user})
+
+      assert from_connection(found)
+             |> ids_equal([key | keys])
+    end
+  end
 end

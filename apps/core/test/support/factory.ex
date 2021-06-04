@@ -380,4 +380,11 @@ defmodule Core.Factory do
       policy: build(:impersonation_policy)
     }
   end
+
+  def public_key_factory do
+    %Schema.PublicKey{
+      user: build(:user),
+      content: sequence(:public_key, &"dummy-key-#{&1}")
+    }
+  end
 end

@@ -10,6 +10,11 @@ defmodule Core do
     val
   end
 
+  def sha(str) do
+    :crypto.hash(:sha256, str)
+    |> Base.encode32()
+  end
+
   def throttle(enum, opts) when is_list(opts), do: throttle(enum, Map.new(opts))
   def throttle(enum, %{count: count, pause: pause}) do
     Stream.with_index(enum)

@@ -1,7 +1,15 @@
 defmodule GraphQl.Resolvers.User do
   use GraphQl.Resolvers.Base, model: Core.Schema.User
   alias Core.Services.{Users, Accounts}
-  alias Core.Schema.{Publisher, PersistedToken, Webhook, Notification, ImpersonationPolicy, ImpersonationPolicyBinding}
+  alias Core.Schema.{
+    Publisher,
+    PersistedToken,
+    Webhook,
+    Notification,
+    ImpersonationPolicy,
+    ImpersonationPolicyBinding,
+    PublicKey,
+  }
 
   def data(args) do
     Dataloader.Ecto.new(Core.Repo,
@@ -13,6 +21,7 @@ defmodule GraphQl.Resolvers.User do
 
   def query(Publisher, _), do: Publisher
   def query(Webhook, _), do: Webhook
+  def query(PublicKey, _), do: PublicKey
   def query(ImpersonationPolicy, _), do: ImpersonationPolicy
   def query(ImpersonationPolicyBinding, _), do: ImpersonationPolicyBinding
   def query(_, _), do: User
@@ -44,6 +53,18 @@ defmodule GraphQl.Resolvers.User do
     |> User.for_account(id)
     |> maybe_search(User, args)
     |> is_service_account(args)
+    |> paginate(args)
+  end
+
+  def list_keys(%{emails: emails} = args, %{context: %{current_user: user}}) do
+    PublicKey.for_emails(emails, user.account_id)
+    |> PublicKey.ordered()
+    |> paginate(args)
+  end
+
+  def list_keys(args, %{context: %{current_user: user}}) do
+    PublicKey.for_user(user.id)
+    |> PublicKey.ordered()
     |> paginate(args)
   end
 
@@ -161,6 +182,12 @@ defmodule GraphQl.Resolvers.User do
     with {:ok, _} <- Users.realize_reset_token(id, attrs),
       do: {:ok, true}
   end
+
+  def create_public_key(%{attributes: attrs}, %{context: %{current_user: user}}),
+    do: Users.create_public_key(attrs, user)
+
+  def delete_public_key(%{id: id}, %{context: %{current_user: user}}),
+    do: Users.delete_public_key(id, user)
 
   @colors ~w(#6b5b95 #feb236 #d64161 #ff7b25 #103A50 #CDCCC2 #FDC401 #8E5B3C #020001 #2F415B)
 

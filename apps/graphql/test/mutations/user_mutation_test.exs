@@ -258,4 +258,38 @@ defmodule GraphQl.UserMutationTest do
       assert res
     end
   end
+
+  describe "createPublicKey" do
+    test "it can create a key for a user" do
+      user = insert(:user)
+
+      {:ok, %{data: %{"createPublicKey" => res}}} = run_query("""
+        mutation Create($key: String!) {
+          createPublicKey(attributes: {content: $key}) {
+            id
+            digest
+          }
+        }
+      """, %{"key" => "a bogus key"}, %{current_user: user})
+
+      assert res["id"]
+      assert res["digest"]
+    end
+  end
+
+  describe "deletePublicKey" do
+    test "it can create a key for a user" do
+      user = insert(:user)
+      key  = insert(:public_key, user: user)
+
+      {:ok, %{data: %{"deletePublicKey" => res}}} = run_query("""
+        mutation Delete($id: ID!) {
+          deletePublicKey(id: $id) { id }
+        }
+      """, %{"id" => key.id}, %{current_user: user})
+
+      assert res["id"] == key.id
+      refute refetch(key)
+    end
+  end
 end

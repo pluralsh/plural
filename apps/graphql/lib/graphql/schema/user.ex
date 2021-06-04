@@ -5,6 +5,7 @@ defmodule GraphQl.Schema.User do
     Payments,
     Account
   }
+  alias GraphQl.Middleware.Authenticated
 
   ecto_enum :notification_type, Core.Schema.Notification.Type
   ecto_enum :reset_token_type, Core.Schema.ResetToken.Type
@@ -44,6 +45,10 @@ defmodule GraphQl.Schema.User do
 
   input_object :reset_token_realization do
     field :password, :string
+  end
+
+  input_object :public_key_attributes do
+    field :content, non_null(:string)
   end
 
   object :user do
@@ -163,14 +168,24 @@ defmodule GraphQl.Schema.User do
     timestamps()
   end
 
+  object :public_key do
+    field :id,      non_null(:id)
+    field :content, non_null(:string)
+    field :digest,  non_null(:string)
+    field :user,    non_null(:user), resolve: dataloader(User)
+
+    timestamps()
+  end
+
   connection node_type: :user
   connection node_type: :publisher
   connection node_type: :webhook
   connection node_type: :persisted_token
+  connection node_type: :public_key
 
   object :user_queries do
     field :me, :user do
-      middleware GraphQl.Middleware.Authenticated, :external
+      middleware Authenticated, :external
       resolve fn _, %{context: %{current_user: user}} -> {:ok, user} end
     end
 
@@ -180,19 +195,19 @@ defmodule GraphQl.Schema.User do
     end
 
     connection field :tokens, node_type: :persisted_token do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       resolve &User.list_tokens/2
     end
 
     field :publisher, :publisher do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :id, :id
 
       resolve &User.resolve_publisher/2
     end
 
     connection field :users, node_type: :user do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :q, :string
       arg :service_account, :boolean
       arg :all, :boolean
@@ -201,7 +216,7 @@ defmodule GraphQl.Schema.User do
     end
 
     connection field :search_users, node_type: :user do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :incident_id, non_null(:id)
       arg :q,           non_null(:string)
 
@@ -209,16 +224,23 @@ defmodule GraphQl.Schema.User do
     end
 
     connection field :publishers, node_type: :publisher do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :account_id, :id
 
       resolve &User.list_publishers/2
     end
 
     connection field :webhooks, node_type: :webhook do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
 
       resolve &User.list_webhooks/2
+    end
+
+    connection field :public_keys, node_type: :public_key do
+      middleware Authenticated
+      arg :emails, list_of(:string)
+
+      resolve &User.list_keys/2
     end
   end
 
@@ -232,7 +254,7 @@ defmodule GraphQl.Schema.User do
     end
 
     field :external_token, :string do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       resolve fn _, %{context: %{current_user: user}} ->
         {:ok, token, _} = Core.Guardian.encode_and_sign(user, %{"external" => true})
         {:ok, token}
@@ -252,12 +274,12 @@ defmodule GraphQl.Schema.User do
     end
 
     field :create_token, :persisted_token do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       resolve safe_resolver(&User.create_token/2)
     end
 
     field :delete_token, :persisted_token do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :id, non_null(:id)
 
       resolve safe_resolver(&User.delete_token/2)
@@ -272,28 +294,28 @@ defmodule GraphQl.Schema.User do
     end
 
     field :update_user, :user do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :attributes, non_null(:user_attributes)
 
       resolve safe_resolver(&User.update_user/2)
     end
 
     field :create_publisher, :publisher do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :attributes, non_null(:publisher_attributes)
 
       resolve safe_resolver(&User.create_publisher/2)
     end
 
     field :create_webhook, :webhook do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :attributes, non_null(:webhook_attributes)
 
       resolve safe_resolver(&User.create_webhook/2)
     end
 
     field :ping_webhook, :webhook_response do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :id,   non_null(:id)
       arg :repo, non_null(:string)
       arg :message, :string
@@ -302,10 +324,24 @@ defmodule GraphQl.Schema.User do
     end
 
     field :update_publisher, :publisher do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :attributes, non_null(:publisher_attributes)
 
       resolve safe_resolver(&User.update_publisher/2)
+    end
+
+    field :create_public_key, :public_key do
+      middleware Authenticated
+      arg :attributes, non_null(:public_key_attributes)
+
+      resolve safe_resolver(&User.create_public_key/2)
+    end
+
+    field :delete_public_key, :public_key do
+      middleware Authenticated
+      arg :id, non_null(:id)
+
+      resolve safe_resolver(&User.delete_public_key/2)
     end
   end
 end

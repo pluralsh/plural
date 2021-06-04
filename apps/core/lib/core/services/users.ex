@@ -10,6 +10,7 @@ defmodule Core.Services.Users do
     Webhook,
     Notification,
     ResetToken,
+    PublicKey,
   }
 
   @spec get_user(binary) :: User.t | nil
@@ -47,6 +48,9 @@ defmodule Core.Services.Users do
   @spec get_reset_token!(binary) :: ResetToken.t
   def get_reset_token!(ext_id), do: Core.Repo.get_by!(ResetToken, external_id: ext_id)
 
+  @spec get_public_key!(binary) :: PublicKey.t
+  def get_public_key!(id), do: Core.Repo.get!(PublicKey, id)
+
   @doc """
   Validates the given password using Argon2
   """
@@ -76,6 +80,24 @@ defmodule Core.Services.Users do
   def delete_persisted_token(token_id, %User{} = user) do
     Core.Repo.get!(PersistedToken, token_id)
     |> allow(user, :edit)
+    |> when_ok(:delete)
+  end
+
+  @doc "self explanatory"
+  @spec create_public_key(map, User.t) :: {:ok, PublicKey.t} | {:error, term}
+  def create_public_key(attrs, %User{} = user) do
+    %PublicKey{user_id: user.id}
+    |> PublicKey.changeset(attrs)
+    |> Core.Repo.insert()
+  end
+
+  @doc """
+  Deletes a public key, and fails if it's owned by a different user
+  """
+  @spec delete_public_key(binary, User.t) :: {:ok, PublicKey.t} | {:error, term}
+  def delete_public_key(id, %User{} = user) do
+    get_public_key!(id)
+    |> allow(user, :delete)
     |> when_ok(:delete)
   end
 

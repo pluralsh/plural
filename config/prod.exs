@@ -53,3 +53,10 @@ config :ex_aws,
   awscli_auth_adapter: ExAws.STS.AuthCache.AssumeRoleWebIdentityAdapter
 
 config :cron, run: true
+
+
+config :worker, upgrade_pipeline: [
+  {Worker.Upgrades.Producer, [type: :chart, name: Worker.Upgrades.ChartProducer]},
+  {Worker.Upgrades.Producer, [type: :terraform, name: Worker.Upgrades.TFProducer]},
+  {Worker.Upgrades.Pipeline, [Worker.Upgrades.ChartProducer, Worker.Upgrades.TFProducer]}
+]

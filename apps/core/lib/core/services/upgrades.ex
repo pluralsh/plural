@@ -1,6 +1,15 @@
 defmodule Core.Services.Upgrades do
   use Core.Services.Base
-  alias Core.Schema.{User, UpgradeQueue, Upgrade}
+  import Core.Rollable.Utils
+  alias Core.Schema.{
+    User,
+    UpgradeQueue,
+    Upgrade,
+    DeferredUpdate,
+    ChartInstallation,
+    TerraformInstallation
+  }
+  alias Core.Services.{Dependencies, Locks}
   alias Core.PubSub
 
   def get_queue(id), do: Core.Repo.get(UpgradeQueue, id)
@@ -13,6 +22,76 @@ defmodule Core.Services.Upgrades do
       _ -> {:error, :unauthorized}
     end
   end
+
+  def poll_deferred_updates(type, limit) do
+    start_transaction()
+    |> add_operation(:lock, fn _ -> Locks.acquire("deferred_updates", Ecto.UUID.generate()) end)
+    |> add_operation(:updates, fn _ ->
+      DeferredUpdate.dequeue(:"#{type}_installation_id", limit)
+      |> Core.Repo.all()
+      |> ok()
+    end)
+    |> add_operation(:release, fn _ -> Locks.release("deferred_updates") end)
+    |> execute(extract: :updates)
+  end
+
+  def create_deferred_update(version_id, %ChartInstallation{id: id}, %User{id: user_id}) do
+    %DeferredUpdate{user_id: user_id}
+    |> DeferredUpdate.changeset(%{
+      chart_installation_id: id,
+      version_id: version_id,
+      dequeue_at: Timex.now()
+    })
+    |> Core.Repo.insert()
+  end
+
+  def create_deferred_update(version_id, %TerraformInstallation{id: id}, %User{id: user_id}) do
+    %DeferredUpdate{user_id: user_id}
+    |> DeferredUpdate.changeset(%{
+      terraform_installation_id: id,
+      version_id: version_id,
+      dequeue_at: Timex.now()
+    })
+    |> Core.Repo.insert()
+  end
+
+  def deferred_apply(%DeferredUpdate{} = update) do
+    %{user: user, version: version} = update =
+      Core.Repo.preload(update, [:user, :terraform_installation, :chart_installation, version: [:chart, :terraform]])
+
+    case Dependencies.valid?(version.dependencies, user) do
+      true ->
+        apply_deferred_update(update)
+      false ->
+        dequeue = Timex.now() |> Timex.shift(hours: DeferredUpdate.wait_time(update))
+
+        update
+        |> Ecto.Changeset.change(%{dequeue_at: dequeue, attempts: update.attempts + 1})
+        |> Core.Repo.update()
+    end
+  end
+
+  defp apply_deferred_update(%DeferredUpdate{version_id: id, version: version} = update) do
+    start_transaction()
+    |> add_operation(:update, fn _ ->
+      update_inst(update)
+      |> Ecto.Changeset.change(%{version_id: id})
+      |> Core.Repo.update()
+    end)
+    |> add_operation(:upgrade, fn _ ->
+      Core.Rollable.Base.deliver_upgrades(update.user_id, fn queue ->
+        Core.Services.Upgrades.create_upgrade(%{
+          repository_id: repo_id(version),
+          message: "Upgraded #{type(version)} #{pkg_name(version)} to #{version.version}"
+        }, queue)
+      end)
+    end)
+    |> add_operation(:clean, fn _ -> Core.Repo.delete(update) end)
+    |> execute(extract: :clean)
+  end
+
+  defp update_inst(%{chart_installation: %ChartInstallation{} = inst}), do: inst
+  defp update_inst(%{terraform_installation: %TerraformInstallation{} = inst}), do: inst
 
   def create_queue(%{name: name} = attrs, %User{id: user_id} = user) do
     queue = get_queue(user_id, name)

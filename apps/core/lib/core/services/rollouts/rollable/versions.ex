@@ -1,5 +1,7 @@
 defimpl Core.Rollouts.Rollable, for: [Core.PubSub.VersionCreated, Core.PubSub.VersionUpdated] do
   use Core.Rollable.Base
+  import Core.Rollable.Utils
+  alias Core.Services.{Dependencies, Upgrades}
   alias Core.Schema.{ChartInstallation, TerraformInstallation}
 
   def name(%Core.PubSub.VersionCreated{}), do: "version:created"
@@ -11,7 +13,7 @@ defimpl Core.Rollouts.Rollable, for: [Core.PubSub.VersionCreated, Core.PubSub.Ve
     ChartInstallation.for_chart(chart_id)
     |> ChartInstallation.with_auto_upgrade(version.tags)
     |> maybe_ignore_version(@for, ChartInstallation, version.id)
-    |> ChartInstallation.preload(installation: [:repository])
+    |> ChartInstallation.preload(installation: [:repository, :user])
     |> ChartInstallation.ordered()
   end
 
@@ -19,14 +21,21 @@ defimpl Core.Rollouts.Rollable, for: [Core.PubSub.VersionCreated, Core.PubSub.Ve
     TerraformInstallation.for_terraform(tf_id)
     |> TerraformInstallation.with_auto_upgrade(version.tags)
     |> maybe_ignore_version(@for, TerraformInstallation, version.id)
-    |> TerraformInstallation.preload(installation: [:repository])
+    |> TerraformInstallation.preload(installation: [:repository, :user])
     |> TerraformInstallation.ordered()
   end
 
   defp maybe_ignore_version(q, Core.PubSub.VersionUpdated, _, _), do: q
   defp maybe_ignore_version(q, _, mod, id), do: mod.ignore_version(q, id)
 
-  def process(%{item: version}, inst) do
+  def process(%{item: version}, %{installation: %{user: user}} = inst) do
+    case Dependencies.valid?(version.dependencies, user) do
+      true -> directly_install(version, inst)
+      false -> Upgrades.create_deferred_update(version.id, inst, user)
+    end
+  end
+
+  defp directly_install(version, inst) do
     start_transaction()
     |> add_operation(:inst, fn _ ->
       inst
@@ -43,13 +52,4 @@ defimpl Core.Rollouts.Rollable, for: [Core.PubSub.VersionCreated, Core.PubSub.Ve
     end)
     |> execute(extract: :upgrades)
   end
-
-  defp repo_id(%{chart: %{repository_id: repo_id}}), do: repo_id
-  defp repo_id(%{terraform: %{repository_id: repo_id}}), do: repo_id
-
-  defp pkg_name(%{chart: %{name: name}}), do: name
-  defp pkg_name(%{terraform: %{name: name}}), do: name
-
-  defp type(%{chart: %{id: _}}), do: "chart"
-  defp type(_), do: "terraform module"
 end

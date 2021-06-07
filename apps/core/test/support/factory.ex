@@ -388,4 +388,12 @@ defmodule Core.Factory do
       content: sequence(:public_key, &"dummy-key-#{&1}")
     }
   end
+
+  def deferred_update_factory do
+    %Schema.DeferredUpdate{
+      user: build(:user),
+      version: build(:version),
+      dequeue_at: Timex.now()
+    }
+  end
 end

@@ -127,4 +127,6 @@ config :worker, rollout_pipeline: [
   {Worker.Rollouts.Pipeline, Worker.Rollouts.Producer}
 ]
 
+config :worker, upgrade_pipeline: []
+
 import_config "#{Mix.env()}.exs"

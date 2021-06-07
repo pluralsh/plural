@@ -35,7 +35,7 @@ function PublisherView({publisher: {name, description, phone, owner, address, ..
       {showDetails && (
         <Box pad='small' border='top'>
           <InputCollection>
-            {address && <ResponsiveInputContainer label='address' content={<Text size='small'>{formatAddress(address)}</Text>} />}
+            <ResponsiveInputContainer label='address' content={<Text size='small'>{formatAddress(address)}</Text>} />
           </InputCollection>
         </Box>
       )}

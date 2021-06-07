@@ -73,4 +73,8 @@ config :core, vulnerability: ~s(
   }
 )
 
-config :worker, rollout_pipeline: []
+config :worker,
+  rollout_pipeline: []
+
+config :worker,
+  upgrade_pipeline: []

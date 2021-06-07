@@ -93,6 +93,7 @@ defmodule Core.Services.RepositoriesTest do
 
       {:ok, installation} = Repositories.create_installation(%{}, repo.id, user)
 
+      assert installation.auto_upgrade
       assert installation.user_id == user.id
       assert installation.repository_id == repo.id
       assert is_map(installation.context)

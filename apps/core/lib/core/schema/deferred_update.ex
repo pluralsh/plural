@@ -40,8 +40,19 @@ defmodule Core.Schema.DeferredUpdate do
     timestamps()
   end
 
-
   def wait_time(%__MODULE__{attempts: attempts}), do: max(attempts + 1, 24)
+
+  def for_chart_installation(query \\ __MODULE__, id) do
+    from(u in query, where: u.chart_installation_id == ^id)
+  end
+
+  def for_terraform_installation(query \\ __MODULE__, id) do
+    from(u in query, where: u.terraform_installation_id == ^id)
+  end
+
+  def ordered(query \\ __MODULE__, order \\ [asc: :id]) do
+    from(u in query, order_by: ^order)
+  end
 
   def dequeue(query \\ __MODULE__, col, limit) do
     now = Timex.now()

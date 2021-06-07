@@ -4,6 +4,7 @@ defmodule GraphQl.Resolvers.Chart do
   alias Core.Schema.{Version, ChartInstallation, Crd}
 
   def query(Crd, _), do: Crd
+  def query(ChartInstallation, _), do: ChartInstallation
   def query(_, _), do: Chart
 
   def resolve_chart_installation(chart, user),

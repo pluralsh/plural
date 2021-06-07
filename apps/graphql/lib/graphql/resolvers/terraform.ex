@@ -3,6 +3,7 @@ defmodule GraphQl.Resolvers.Terraform do
   alias Core.Schema.TerraformInstallation
   alias Core.Services.Terraform, as: TfSvc
 
+  def query(TerraformInstallation, _), do: TerraformInstallation
   def query(_, _), do: Terraform
 
   def resolve_terraform(%{id: id}, %{context: %{current_user: user}}) do

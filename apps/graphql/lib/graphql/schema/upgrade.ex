@@ -4,7 +4,9 @@ defmodule GraphQl.Schema.Upgrade do
   alias GraphQl.Resolvers.{
     User,
     Upgrade,
-    Repository
+    Repository,
+    Chart,
+    Terraform
   }
 
   ecto_enum :upgrade_type, Core.Schema.Upgrade.Type
@@ -49,7 +51,21 @@ defmodule GraphQl.Schema.Upgrade do
     timestamps()
   end
 
+  object :deferred_update do
+    field :id,         non_null(:id)
+    field :dequeue_at, :datetime
+    field :attempts,   :integer
+
+    field :chart_installation,     :chart_installation, resolve: dataloader(Chart)
+    field :terraform_installation, :terraform_installation, resolve: dataloader(Terraform)
+    field :version,                :version, resolve: dataloader(Version)
+
+    timestamps()
+  end
+
   connection node_type: :upgrade
+  connection node_type: :deferred_update
+
   delta :upgrade_queue
 
   object :upgrade_queries do
@@ -57,6 +73,14 @@ defmodule GraphQl.Schema.Upgrade do
       middleware Authenticated
 
       resolve &Upgrade.list_queues/2
+    end
+
+    connection field :deferred_updates, node_type: :deferred_update do
+      middleware Authenticated
+      arg :chart_installation_id,     :id
+      arg :terraform_installation_id, :id
+
+      resolve &Upgrade.list_deferred_updates/2
     end
 
     field :upgrade_queue, :upgrade_queue do

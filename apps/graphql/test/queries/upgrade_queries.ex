@@ -17,6 +17,25 @@ defmodule GraphQl.UpgradeQueriesTest do
     end
   end
 
+  describe "deferredUpdates" do
+    test "it can list deferred updates for a package installation" do
+      chart_inst = insert(:chart_installation)
+      updates = insert_list(3, :deferred_update, chart_installation: chart_inst)
+      insert(:deferred_update)
+
+      {:ok, %{data: %{"deferredUpdate" => found}}} = run_query("""
+        query Deferred($chartInst: ID) {
+          deferredUpdates(first: 5, chartInstallationId: $chartInst) {
+            edges { node { id } }
+          }
+        }
+      """, %{}, %{current_user: insert(:user)})
+
+      assert from_connection(found)
+             |> ids_equal(updates)
+    end
+  end
+
   describe "upgradeQueue" do
     test "it can query your upgrade queue" do
       queue = insert(:upgrade_queue)

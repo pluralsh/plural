@@ -422,7 +422,7 @@ export const REPO_TAGS = gql`
 `
 
 export const DEFERRED_UPDATES = gql`
-  query Deferred($chartInst: ID, $tfInst: ID!, $cursor: String) {
+  query Deferred($chartInst: ID, $tfInst: ID, $cursor: String) {
     deferredUpdates(chartInstallationId: $chartInst, terraformInstallationId: $tfInst, first: 50, after: $cursor) {
       pageInfo { ...PageInfo }
       edges { node { ...DeferredUpdateFragment } }

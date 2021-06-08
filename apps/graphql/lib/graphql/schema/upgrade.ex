@@ -6,7 +6,8 @@ defmodule GraphQl.Schema.Upgrade do
     Upgrade,
     Repository,
     Chart,
-    Terraform
+    Terraform,
+    Version
   }
 
   ecto_enum :upgrade_type, Core.Schema.Upgrade.Type

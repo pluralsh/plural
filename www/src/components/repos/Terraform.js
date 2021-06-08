@@ -11,6 +11,7 @@ import Dependencies, { FullDependencies, ShowFull } from './Dependencies'
 import { Versions } from '../versions/Versions'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 import { updateCache, deepUpdate } from '../../utils/graphql'
+import { DeferredUpdates } from './DeferredUpdates'
 
 function Code({value, children, language}) {
   return (
@@ -186,6 +187,7 @@ export default function Terraform() {
   const {terraformModule, versions} = data
   const {edges, pageInfo} = versions
   const currentVersion = version || edges[0].node
+  const tfInst = terraformModule.installation
 
   return (
     <ScrollableContainer>
@@ -210,6 +212,11 @@ export default function Terraform() {
                   <Text size='small' weight={500}>Edit</Text>
                 </TabHeaderItem>
               )}
+              {tfInst && (
+                <TabHeaderItem name='updates'>
+                  <Text size='small' weight={500}>Update Queue</Text>
+                </TabHeaderItem>
+              )}
             </TabHeader>
             <TabContent name='readme'>
               <Readme readme={currentVersion.readme} />
@@ -228,6 +235,11 @@ export default function Terraform() {
             <TabContent name='edit'>
               <UpdateTerraform {...terraformModule} />
             </TabContent>
+            {tfInst && (
+              <TabContent name='updates'>
+                <DeferredUpdates tfInst={tfInst.id} />
+              </TabContent>
+            )}
           </Tabs>
         </Box>
         <Box pad='small' width={`${100 - width}%`} gap='small'>

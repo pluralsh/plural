@@ -21,9 +21,9 @@ export function LabeledInput({label, children}) {
   )
 }
 
-export function RepoForm({image, setImage, state, setState, label, mutation, loading, update}) {
+export function RepoForm({image, setImage, state, setState, mutation, loading, update}) {
   return (
-    <Box pad='medium' gap='medium'>
+    <Box flex={false} pad='medium' gap='medium'>
       <LabeledInput label='1. Upload an image'>
       <Box direction='row' gap='small' align='center'>
         <Box width='70px' height='70px' border pad='xsmall'

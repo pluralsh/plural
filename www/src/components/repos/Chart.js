@@ -15,6 +15,7 @@ import { BreadcrumbsContext } from '../Breadcrumbs'
 import { Docker } from 'grommet-icons'
 import { dockerPull } from './misc'
 import { PluralConfigurationContext } from '../login/CurrentUser'
+import { DeferredUpdates } from './DeferredUpdates'
 
 function ChartInfo({version: {helm, insertedAt}}) {
   return (
@@ -186,12 +187,12 @@ export default function Chart() {
   const {edges, pageInfo} = versions
   const currentVersion = version || edges[0].node
   const width = tab === 'configuration' ? 65 : 70
-
+  const chartInst = data.chart.installation
   return (
     <ScrollableContainer>
       <Box pad='small' direction='row'>
         <Box width={`${width}%`} pad='small'>
-          <ChartHeader version={currentVersion} chartInstallation={data.chart.installation} installation={repository.installation} />
+          <ChartHeader version={currentVersion} chartInstallation={chartInst} installation={repository.installation} />
           <Tabs defaultTab='readme' onTabChange={setTab} headerEnd={tab === 'dependencies' ?
             <ShowFull label={full ? 'Immediate' : 'Full'} onClick={() => setFull(!full)} /> : null
           }>
@@ -205,6 +206,11 @@ export default function Chart() {
               <TabHeaderItem name='dependencies'>
                 <Text size='small' weight={500}>Dependencies</Text>
               </TabHeaderItem>
+              {chartInst && (
+                <TabHeaderItem name='updates'>
+                  <Text size='small' weight={500}>Update Queue</Text>
+                </TabHeaderItem>
+              )}
             </TabHeader>
             <TabContent name='readme'>
               <ChartReadme version={currentVersion} />
@@ -220,6 +226,11 @@ export default function Chart() {
                   dependencies={(version || chart).dependencies} />
               )}
             </TabContent>
+            {chartInst && (
+              <TabContent name='updates'>
+                <DeferredUpdates chartInst={chartInst.id} />
+              </TabContent>
+            )}
           </Tabs>
         </Box>
         <Box pad='small' width={`${100 - width}%`}>

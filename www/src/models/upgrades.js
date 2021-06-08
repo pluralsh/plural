@@ -33,3 +33,13 @@ export const UpgradeFragment = gql`
   }
   ${RepoFragment}
 `
+
+export const DeferredUpdateFragment = gql`
+  fragment DeferredUpdateFragment on DeferredUpdate {
+    id
+    dequeueAt
+    attempts
+    version { version }
+    insertedAt
+  }
+`

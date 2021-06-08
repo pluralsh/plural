@@ -7,6 +7,7 @@ import { RecipeFragment, RecipeSectionFragment } from '../../models/recipe'
 import { PlanFragment, SubscriptionFragment } from '../../models/payments'
 import { PageInfo } from '../../models/misc'
 import { MetricFragment } from '../../models/metrics'
+import { DeferredUpdateFragment } from '../../models/upgrades'
 
 export const CREATE_REPO = gql`
   mutation CreateRepository($attributes: RepositoryAttributes!) {
@@ -418,4 +419,15 @@ export const REPO_TAGS = gql`
     }
   }
   ${PageInfo}
+`
+
+export const DEFERRED_UPDATES = gql`
+  query Deferred($chartInst: ID, $tfInst: ID!, $cursor: String) {
+    deferredUpdates(chartInstallationId: $chartInst, terraformInstallationId: $tfInst, first: 50, after: $cursor) {
+      pageInfo { ...PageInfo }
+      edges { node { ...DeferredUpdateFragment } }
+    }
+  }
+  ${PageInfo}
+  ${DeferredUpdateFragment}
 `

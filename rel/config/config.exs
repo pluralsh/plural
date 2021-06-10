@@ -23,7 +23,8 @@ config :core, Core.Repo,
   database: "plural",
   username: "plural",
   password: get_env("POSTGRES_PASSWORD"),
-  hostname: "plural-postgresql",
+  hostname: get_env("DBHOST") || "plural-postgresql",
+  ssl: String.to_existing_atom(get_env("DBSSL") || "false"),
   pool_size: 5
 
 config :core, Core.Influx,

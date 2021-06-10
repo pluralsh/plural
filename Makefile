@@ -25,6 +25,11 @@ else
 		-t $(DKR_HOST)/plural/$(APP_NAME):$(APP_VSN) .
 endif
 
+build-dump:
+	cd dockerfiles && docker build -f Dockerfile.dump \
+		-t gcr.io/$(GCP_PROJECT)/dumper:`cat ../VERSION` .
+	docker push gcr.io/$(GCP_PROJECT)/dumper:$(APP_VSN)
+
 push: ## push to gcr
 	docker push gcr.io/$(GCP_PROJECT)/$(APP_NAME):$(APP_VSN)
 	docker push $(DKR_HOST)/plural/${APP_NAME}:$(APP_VSN)

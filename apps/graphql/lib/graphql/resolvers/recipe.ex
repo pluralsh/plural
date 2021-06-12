@@ -1,20 +1,28 @@
 defmodule GraphQl.Resolvers.Recipe do
   use GraphQl.Resolvers.Base, model: Core.Schema.Recipe
   alias Core.Schema.{RecipeSection, RecipeItem}
-  alias Core.Services.Recipes
+  alias Core.Services.{Recipes, Repositories}
 
   def query(RecipeItem, _), do: RecipeItem
   def query(RecipeSection, _), do: RecipeSection
   def query(_, _), do: Recipe
 
-  def list_recipes(%{repository_id: repo_id} = args, _) do
+  def list_recipes(args, %{context: %{repo: %{id: repo_id}}}) do
     Recipe.for_repository(repo_id)
     |> Recipe.ordered()
     |> paginate(args)
   end
 
-  def resolve_recipe(%{id: id}, %{context: %{current_user: user}}) do
+  def resolve_recipe(%{id: id}, %{context: %{current_user: user}}) when is_binary(id) do
     Recipes.get!(id)
+    |> Recipes.hydrate()
+    |> accessible(user)
+  end
+
+  def resolve_recipe(%{name: name, repo: repo}, %{context: %{current_user: user}}) do
+    %{id: repo_id} = Repositories.get_repository_by_name!(repo)
+
+    Recipes.get_by_name(name, repo_id)
     |> Recipes.hydrate()
     |> accessible(user)
   end
@@ -24,7 +32,7 @@ defmodule GraphQl.Resolvers.Recipe do
   def create_recipe(%{repository_id: repo_id, attributes: attrs}, %{context: %{current_user: user}})
     when is_binary(repo_id), do: Recipes.upsert(attrs, repo_id, user)
   def create_recipe(%{repository_name: name} = args, context) do
-    repo = Core.Services.Repositories.get_repository_by_name!(name)
+    repo = Repositories.get_repository_by_name!(name)
 
     Map.put(args, :repository_id, repo.id)
     |> create_recipe(context)

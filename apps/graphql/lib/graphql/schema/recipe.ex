@@ -1,12 +1,12 @@
 defmodule GraphQl.Schema.Recipe do
   use GraphQl.Schema.Base
-  alias GraphQl.Middleware.Accessible
   alias GraphQl.Resolvers.{
     Recipe,
     Repository,
     Chart,
     Terraform
   }
+  alias GraphQl.Middleware.{Accessible, Authenticated}
 
   ### INPUTS
 
@@ -95,24 +95,27 @@ defmodule GraphQl.Schema.Recipe do
 
   object :recipe_queries do
     field :recipe, :recipe do
-      middleware GraphQl.Middleware.Authenticated
-      arg :id, non_null(:id)
+      middleware Authenticated
+      arg :id,   :id
+      arg :name, :string
+      arg :repo, :string
 
       resolve &Recipe.resolve_recipe/2
     end
 
     connection field :recipes, node_type: :recipe do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       middleware Accessible
-      arg :repository_id, non_null(:id)
+      arg :repository_id,   :id
+      arg :repository_name, :string
 
       resolve &Recipe.list_recipes/2
     end
   end
 
   object :recipe_mutations do
-     field :create_recipe, :recipe do
-      middleware GraphQl.Middleware.Authenticated
+    field :create_recipe, :recipe do
+      middleware Authenticated
       arg :repository_name, :string
       arg :repository_id,   :string
       arg :attributes,      non_null(:recipe_attributes)
@@ -121,14 +124,14 @@ defmodule GraphQl.Schema.Recipe do
     end
 
     field :delete_recipe, :recipe do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :id, non_null(:id)
 
       resolve safe_resolver(&Recipe.delete_recipe/2)
     end
 
     field :install_recipe, list_of(:installation) do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :recipe_id, non_null(:id)
       arg :context, non_null(:map)
 

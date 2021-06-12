@@ -1,7 +1,6 @@
 defmodule Worker.Upgrades.PipelineTest do
   use Core.SchemaCase, async: false
   alias Worker.Upgrades
-  alias Core.PubSub
 
   describe "rollout pipeline" do
     test "it can poll and process upgrades" do

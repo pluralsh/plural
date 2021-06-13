@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useQuery, useMutation } from 'react-apollo'
 import { ModalHeader, Button, SecondaryButton, InputCollection, ResponsiveInput, ResponsiveInputContainer } from 'forge-core'
 import { RECIPE_Q, INSTALL_RECIPE, REPO_Q, INSTALL_REPO } from './queries'
@@ -8,6 +8,7 @@ import { DEFAULT_CHART_ICON, DEFAULT_TF_ICON } from './constants'
 import Plan from '../payments/Plan'
 import { AlternatingBox } from '../utils/AlternatingBox'
 import { Subscriber } from '../payments/CreateSubscription'
+import { Code } from '../incidents/Markdown'
 
 function SubHeading({size, icon, name, description}) {
   return (
@@ -268,9 +269,25 @@ function RecipeInner({recipe: {id, name}, setOpen}) {
   )
 }
 
+function BundleInstall({recipe, repository, setOpen}) {
+  return (
+    <Layer modal position='center' onEsc={() => setOpen(false)} >
+      <Box width='80vw'>
+        <ModalHeader text={recipe.name} setOpen={setOpen} />
+        <Box pad='medium' gap='medium'>
+          <Text size='small'>In your installation repository, run:</Text>
+          <Code className='lang-bash'>
+            {`plural bundle install ${repository.name} ${recipe.name}`}
+          </Code>
+        </Box>
+      </Box>
+    </Layer>
+  )
+}
+
 export default function Recipe({recipe, setOpen, repository}) {
   const needs = needsInstall(repository)
   if (needs) return <Install repository={repository} setOpen={setOpen} />
 
-  return <RecipeInner recipe={recipe} setOpen={setOpen} />
+  return <BundleInstall recipe={recipe} repository={repository} setOpen={setOpen} />
 }

@@ -18,7 +18,7 @@ function Blockquote({children}) {
   )
 }
 
-function Code({children, className, multiline}) {
+export function Code({children, className, multiline}) {
   const theme = useContext(ThemeContext)
   if (className && className.startsWith('lang-')) {
     const lang = className && className.slice(5)

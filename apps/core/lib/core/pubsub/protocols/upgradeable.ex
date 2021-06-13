@@ -20,17 +20,6 @@ defmodule Core.Upgrades.Utils do
   end
 end
 
-defimpl Core.PubSub.Upgradeable, for: Core.PubSub.InstallationUpdated do
-  import Core.Upgrades.Utils
-
-  def derive(%{item: installation}) do
-    %{repository: repo, user: user} =
-      Core.Repo.preload(installation, [:repository, :user])
-
-    {%{repository_id: repo.id, message: "updated repository configuration"}, for_user(user)}
-  end
-end
-
 defimpl Core.PubSub.Upgradeable, for: [Core.PubSub.SubscriptionUpdated, Core.PubSub.SubscriptionCreated] do
   import Core.Upgrades.Utils
   alias Core.PubSub

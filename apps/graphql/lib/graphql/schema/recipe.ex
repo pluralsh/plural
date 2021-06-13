@@ -133,7 +133,7 @@ defmodule GraphQl.Schema.Recipe do
     field :install_recipe, list_of(:installation) do
       middleware Authenticated
       arg :recipe_id, non_null(:id)
-      arg :context, non_null(:map)
+      arg :context,   non_null(:map)
 
       resolve safe_resolver(&Recipe.install_recipe/2)
     end

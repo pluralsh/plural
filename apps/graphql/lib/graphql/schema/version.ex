@@ -7,6 +7,13 @@ defmodule GraphQl.Schema.Version do
     Docker
   }
 
+  input_object :version_spec do
+    field :repository, :string
+    field :chart,      :string
+    field :terraform,  :string
+    field :version,    :string
+  end
+
   input_object :version_attributes do
     field :tags, list_of(:version_tag_attributes)
   end
@@ -85,7 +92,8 @@ defmodule GraphQl.Schema.Version do
   object :version_mutations do
     field :update_version, :version do
       middleware GraphQl.Middleware.Authenticated
-      arg :id,         non_null(:id)
+      arg :id,         :id
+      arg :spec,       :version_spec
       arg :attributes, non_null(:version_attributes)
 
       resolve safe_resolver(&Version.update_version/2)

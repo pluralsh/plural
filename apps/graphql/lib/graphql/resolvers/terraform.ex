@@ -2,6 +2,7 @@ defmodule GraphQl.Resolvers.Terraform do
   use GraphQl.Resolvers.Base, model: Core.Schema.Terraform
   alias Core.Schema.TerraformInstallation
   alias Core.Services.Terraform, as: TfSvc
+  alias Core.Services.Repositories
 
   def query(TerraformInstallation, _), do: TerraformInstallation
   def query(_, _), do: Terraform
@@ -53,5 +54,10 @@ defmodule GraphQl.Resolvers.Terraform do
       {:error, _} -> {:ok, false}
       _ -> {:ok, true}
     end
+  end
+
+  def get_tf_by_name(repo, tf) do
+    with %{id: id} <- Repositories.get_repository_by_name(repo),
+      do: TfSvc.get_terraform_by_name(id, tf)
   end
 end

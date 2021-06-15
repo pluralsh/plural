@@ -1,6 +1,6 @@
 defmodule GraphQl.Resolvers.Version do
   use GraphQl.Resolvers.Base, model: Core.Schema.Version
-  alias Core.Services.Versions
+  alias Core.Services.{Versions}
   alias Core.Schema.VersionTag
 
   def query(VersionTag, _), do: VersionTag
@@ -20,6 +20,25 @@ defmodule GraphQl.Resolvers.Version do
 
   def list_versions(_, _), do: {:error, "requires at least a terraformId or chartId"}
 
+  def update_version(%{attributes: attrs, spec: %{} = spec}, %{context: %{current_user: user}}) do
+    with {:ok, %{id: id}} <- find_version(spec),
+      do: Versions.update_version(attrs, id, user)
+  end
+
   def update_version(%{attributes: attrs, id: id}, %{context: %{current_user: user}}),
     do: Versions.update_version(attrs, id, user)
+
+  def find_version(%{version: v} = args) do
+    with {tool, %{id: id}} <- get_resource(args),
+         %{} = v <- Versions.get_version(tool, id, v) do
+      {:ok, v}
+    else
+      _ -> {:error, :not_found}
+    end
+  end
+
+  def get_resource(%{repository: r, chart: c}) when is_binary(c),
+    do: {:helm, GraphQl.Resolvers.Chart.get_by_chart_name(r, c)}
+  def get_resource(%{repository: r, terraform: tf}) when is_binary(tf),
+    do: {:terraform, GraphQl.Resolvers.Terraform.get_tf_by_name(r, tf)}
 end

@@ -69,19 +69,35 @@ defmodule Core.Services.Versions do
     start_transaction()
     |> add_operation(:version, fn _ ->
       Core.Repo.get!(Version, version_id)
-      |> Core.Repo.preload([:tags])
-      |> ok()
-    end)
-    |> maybe_clean_tags(attrs)
-    |> add_operation(:update, fn %{version: version} ->
-      tool = derive_tool(version)
-      version
-      |> Version.changeset(sanitize_tags(attrs, tool, version))
       |> allow(user, :edit)
-      |> when_ok(:update)
+    end)
+    |> maybe_insert_tags(attrs)
+    |> add_operation(:update, fn %{version: version} ->
+      version
+      |> Version.changeset(Map.delete(attrs, :tags))
+      |> Core.Repo.update()
+      |> when_ok(&Core.Repo.preload(&1, [:tags]))
     end)
     |> execute(extract: :update)
     |> notify(:update, user)
+  end
+
+  defp maybe_insert_tags(transaction, %{tags: tags}) do
+    tags
+    |> Enum.filter(& &1.tag != "latest")
+    |> Enum.reduce(transaction, fn tag, xaction ->
+      add_operation(xaction, {:tag, tag.tag}, fn %{version: version} ->
+        tool = derive_tool(version)
+        tool_id = tool_id(tool)
+        id = Map.get(version, tool_id)
+        case get_tag(tool, id, tag.tag) do
+          %VersionTag{} = tag -> tag
+          _ -> struct(VersionTag, %{tool_id => id, tag: tag.tag})
+        end
+        |> VersionTag.changeset(%{version_id: version.id})
+        |> Core.Repo.insert_or_update()
+      end)
+    end)
   end
 
   defp maybe_clean_tags(transaction, %{tags: tags}) do

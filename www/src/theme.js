@@ -81,6 +81,8 @@ export const DEFAULT_THEME = {
   drop: {border: {radius: '4px'}},
   global: {
     colors: DEFAULT_COLOR_THEME,
+    focus: {shadow: { size: '1px' } },
+    control: {border: {radius: '2px'}},
     drop: {
       border: {
         radius: '4px'

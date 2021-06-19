@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { Box, Text, TextInput } from 'grommet'
 import { useQuery } from 'react-apollo'
-import { Search } from 'grommet-icons'
 import { GROUPS_Q, ROLES_Q, USERS_Q } from './queries'
 import { Scroller, Loading } from 'forge-core'
 import GroupRow from './Group'
@@ -10,6 +9,7 @@ import CreateGroup from './CreateGroup'
 import CreateInvite from './CreateInvite'
 import RoleRow, { RoleCreator } from './Role'
 import { extendConnection } from '../../utils/graphql'
+import { SearchIcon } from './utils'
 
 export function Users() {
   const [q, setQ] = useState(null)
@@ -26,7 +26,7 @@ export function Users() {
           <Text weight={500}>Users</Text>
         </Box>
         <TextInput
-          icon={<Search />}
+          icon={<SearchIcon />}
           placeholder='search for users'
           value={q || ''}
           onChange={({target: {value}}) => setQ(value)} />
@@ -63,7 +63,7 @@ export function Groups() {
           <Text weight={500}>Groups</Text>
         </Box>
         <TextInput
-          icon={<Search />}
+          icon={<SearchIcon />}
           placeholder='search for groups'
           value={q || ''}
           onChange={({target: {value}}) => setQ(value)} />
@@ -100,7 +100,7 @@ export function Roles() {
           <Text weight={500}>Roles</Text>
         </Box>
         <TextInput
-          icon={<Search />}
+          icon={<SearchIcon />}
           placeholder='search for roles'
           value={q || ''}
           onChange={({target: {value}}) => setQ(value)} />

@@ -25,7 +25,9 @@ export const DEFAULT_COLOR_THEME = {
   low: '#fdc500',
   medium: '#fd8c00',
   high: '#dc0000',
-  critical: '#780000'
+  critical: '#780000',
+  label: 'light-2',
+  'input-border': 'light-5',
 }
 
 export const DEFAULT_THEME = {
@@ -68,11 +70,7 @@ export const DEFAULT_THEME = {
       }
     }
   },
-  textField: {
-    extend: {
-      fontWeight: 400
-    }
-  },
+  textField: { extend: { fontWeight: 400 } },
   select: {
     options: {
       text: {size: 'small'}
@@ -81,7 +79,7 @@ export const DEFAULT_THEME = {
   drop: {border: {radius: '4px'}},
   global: {
     colors: DEFAULT_COLOR_THEME,
-    focus: {shadow: { size: '1px' } },
+    focus: {shadow: null, border: {color: 'brand'} },
     control: {border: {radius: '2px'}},
     drop: {
       border: {

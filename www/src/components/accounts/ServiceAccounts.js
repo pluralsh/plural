@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Box, Layer, Text, TextInput } from 'grommet'
 import { useMutation } from 'react-apollo'
-import { Edit, Search } from 'grommet-icons'
+import { Edit } from 'grommet-icons'
 import { Scroller, Loading, ModalHeader, SecondaryButton } from 'forge-core'
 import { IMPERSONATE_SERVICE_ACCOUNT, USERS_Q } from './queries'
 import { CreateServiceAccount, UpdateServiceAccount } from './CreateServiceAccount'
@@ -10,6 +10,7 @@ import { extendConnection } from '../../utils/graphql'
 import { useQuery } from 'react-apollo'
 import { GqlError } from '../utils/Alert'
 import { setToken } from '../../helpers/authentication'
+import { SearchIcon } from './utils'
 
 function ServiceAccount({user, next}) {
   const [open, setOpen] = useState(false)
@@ -70,7 +71,7 @@ export function ServiceAccounts() {
           <Text weight={500}>Service Accounts</Text>
         </Box>
         <TextInput
-          icon={<Search />}
+          icon={<SearchIcon />}
           placeholder='search for service accounts'
           value={q || ''}
           onChange={({target: {value}}) => setQ(value)} />

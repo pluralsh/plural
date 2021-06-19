@@ -2,11 +2,11 @@ import React, { useState, useRef } from 'react'
 import { Box, Text, Collapsible, Layer, TextInput } from 'grommet'
 import { useQuery, useMutation, useApolloClient } from 'react-apollo'
 import { GROUP_MEMBERS, CREATE_GROUP_MEMBERS, UPDATE_GROUP, DELETE_GROUP } from './queries'
-import { Group, UserAdd, Search, Edit, Trash } from 'grommet-icons'
+import { Group, UserAdd, Edit, Trash } from 'grommet-icons'
 import { Scroller, Loading, ModalHeader, TooltipContent, Button } from 'forge-core'
 import { UserRow } from './User'
 import { fetchUsers } from './Typeaheads'
-import { addGroupMember, deleteGroup } from './utils'
+import { addGroupMember, deleteGroup, SearchIcon } from './utils'
 import { extendConnection } from '../../utils/graphql'
 
 function GroupMembers({group}) {
@@ -78,7 +78,7 @@ function MemberAdd({group, setModal}) {
   return (
     <Box gap='small' pad='medium'>
       <TextInput
-        icon={<Search />}
+        icon={<SearchIcon />}
         placeholder='search for a user'
         value={q}
         suggestions={suggestions}

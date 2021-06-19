@@ -71,8 +71,8 @@ export default function Sidebar() {
           ))}
         </Box>
       </Box>
-      <Box flex={false} margin={{bottom: '50px'}} align='center'>
-        <Avatar user={me} round='full' onClick={() => hist.push('/me/edit/user')} size='45px' />
+      <Box flex={false} margin={{bottom: '30px'}} align='center'>
+        <Avatar user={me} onClick={() => hist.push('/me/edit/user')} size='45px' />
       </Box>
     </Box>
   )

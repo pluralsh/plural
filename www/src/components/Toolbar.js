@@ -8,7 +8,7 @@ import { SIDEBAR_WIDTH } from './Sidebar'
 import { Breadcrumbs } from './Breadcrumbs'
 import { Notifications } from './users/Notifications'
 
-const FORGE_ICON = `${process.env.PUBLIC_URL}/forge.png`
+const PLRL_ICON = `${process.env.PUBLIC_URL}/plural-white.png`
 
 export default function Toolbar() {
   const me = useContext(CurrentUserContext)
@@ -18,7 +18,7 @@ export default function Toolbar() {
     <Box direction='row' fill='horizontal' align='center' gap='small'>
       <Box focusIndicator={false} width={SIDEBAR_WIDTH} height='100%' justify='center' align='center'
            onClick={() => history.push('/')} flex={false}>
-        <Image src={FORGE_ICON} height='30px' />
+        <Image src={PLRL_ICON} height='30px' />
       </Box>
       <Breadcrumbs />
       <Box direction='row' width='100%' align='center' justify='end'>

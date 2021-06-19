@@ -1,5 +1,5 @@
 import gql from 'graphql-tag'
-import { RepoFragment, InstallationFragment, IntegrationFragment, ArtifactFragment, DashboardFragment } from '../../models/repo'
+import { RepoFragment, InstallationFragment, IntegrationFragment, ArtifactFragment } from '../../models/repo'
 import { ChartFragment, VersionFragment, ChartInstallationFragment, VersionTagFragment } from '../../models/chart'
 import { TerraformFragment, TerraformInstallationFragment } from '../../models/terraform'
 import { DockerRepoFragment, DockerImageFragment, VulnerabilityFragment } from '../../models/docker'
@@ -22,11 +22,9 @@ export const UPDATE_REPO = gql`
   mutation UpdateRepository($id: ID!, $attributes: RepositoryAttributes!) {
     updateRepository(repositoryId: $id, attributes: $attributes) {
       ...RepoFragment
-      dashboards { ...DashboardFragment }
     }
   }
   ${RepoFragment}
-  ${DashboardFragment}
 `;
 
 export const DELETE_REPO = gql`

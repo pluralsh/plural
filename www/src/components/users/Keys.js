@@ -34,7 +34,7 @@ function Key({publicKey}) {
         <Text size='small'>added on {moment(publicKey.insertedAt).format('lll')}</Text>
       </Box>
       <Box flex={false}>
-        <Button label='delete' background='notif' onClick={mutation} /> 
+        <Button label='delete' background='red-light' onClick={mutation} /> 
       </Box>
     </Box>
   )

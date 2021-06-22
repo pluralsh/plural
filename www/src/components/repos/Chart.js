@@ -165,7 +165,7 @@ export default function Chart() {
   const [version, setVersion] = useState(null)
   const [tab, setTab] = useState(false)
   const [full, setFull] = useState(false)
-  const {loading, data, fetchMore, refetch} = useQuery(CHART_Q, {
+  const {data, fetchMore, refetch} = useQuery(CHART_Q, {
     variables: {chartId}, 
     fetchPolicy: 'cache-and-network'
   })
@@ -180,7 +180,7 @@ export default function Chart() {
     ])
   }, [data, setBreadcrumbs])
 
-  if (loading || !data) return null
+  if (!data) return null
 
   const {versions, chart} = data
   const repository = chart.repository

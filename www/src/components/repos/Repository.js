@@ -27,12 +27,11 @@ import "ace-builds/src-noconflict/mode-yaml"
 import "ace-builds/src-noconflict/theme-terminal"
 
 function Container({children, onClick, hasNext, noPad}) {
-
   return (
     <Box
       onClick={onClick}
       focusIndicator={false}
-      hoverIndicator='light-2'
+      hoverIndicator='tone-light'
       pad={noPad ? null : 'small'}
       direction='row'
       border={hasNext ? {side: 'bottom', color: BORDER_COLOR} : null}

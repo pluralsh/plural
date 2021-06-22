@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { Box, Text, Markdown } from 'grommet'
-import { Tabs, TabHeader, TabHeaderItem, TabContent, Button, SecondaryButton, ScrollableContainer, InputField } from 'forge-core'
+import { Tabs, TabHeader, TabHeaderItem, TabContent, Button, SecondaryButton, ScrollableContainer, InputField, InputCollection, ResponsiveInput } from 'forge-core'
 import { useQuery, useMutation } from 'react-apollo'
 import { useParams, useHistory } from 'react-router-dom'
 import { TF_Q, UPDATE_TF, INSTALL_TF, UNINSTALL_TF, DELETE_TF } from './queries'
@@ -114,8 +114,6 @@ function updateInstallation(tfId) {
   }
 }
 
-const LABEL_WIDTH = '90px'
-
 function DeleteTerraform({id}) {
   let history = useHistory()
   const [mutation, {loading}] = useMutation(DELETE_TF, {
@@ -125,7 +123,7 @@ function DeleteTerraform({id}) {
 
   return (
     <Button
-      background='status-error'
+      background='red-light'
       loading={loading}
       round='xsmall'
       label='Delete'
@@ -141,18 +139,18 @@ function UpdateTerraform({id, name, description}) {
 
   return (
     <Box pad='medium' gap='small'>
-      <InputField
-        label='name'
-        labelWidth={LABEL_WIDTH}
-        placeholder='give it a  name'
-        value={attributes.name}
-        onChange={(e) => setAttributes({...attributes, name: e.target.value})} />
-      <InputField
-        label='description'
-        labelWidth={LABEL_WIDTH}
-        placeholder='a helpful description'
-        value={attributes.description}
-        onChange={(e) => setAttributes({...attributes, description: e.target.value})} />
+      <InputCollection>
+        <ResponsiveInput
+          label='name'
+          placeholder='give it a  name'
+          value={attributes.name}
+          onChange={(e) => setAttributes({...attributes, name: e.target.value})} />
+        <ResponsiveInput
+          label='description'
+          placeholder='a helpful description'
+          value={attributes.description}
+          onChange={(e) => setAttributes({...attributes, description: e.target.value})} />
+      </InputCollection>
       <Box direction='row' justify='end' gap='small'>
         <DeleteTerraform id={id} />
         <Button loading={loading} round='xsmall' label='Update' onClick={mutation} />
@@ -166,7 +164,7 @@ export default function Terraform() {
   const [full, setFull] = useState(false)
   const [version, setVersion] = useState(null)
   const {tfId} = useParams()
-  const {loading, data, refetch, fetchMore} = useQuery(TF_Q, {
+  const {data, refetch, fetchMore} = useQuery(TF_Q, {
     variables: {tfId},
     fetchPolicy: 'cache-and-network'
   })
@@ -183,7 +181,7 @@ export default function Terraform() {
     ])
   }, [data, setBreadcrumbs])
 
-  if (loading || !data) return null
+  if (!data) return null
   const {terraformModule, versions} = data
   const {edges, pageInfo} = versions
   const currentVersion = version || edges[0].node

@@ -11,19 +11,6 @@ import { ThemeContext } from 'styled-components'
 const sevOptions = (sev) => ({value: sev, label: `SEV ${sev}`})
 const severityOptions = [0, 1, 2, 3, 4, 5].map(sevOptions)
 
-const SeverityStatusOption = ({value}, {active}) => {
-  const color = severityColor(value)
-
-  return (
-    <Box direction='row' background={active ? 'active' : null} gap='xsmall' align='center' 
-         pad={{vertical: 'xsmall', horizontal: 'small'}}>
-      <Box flex={false} background={color} round='xsmall' pad={{horizontal: 'xsmall', vertical: '1px'}}>
-        <Text size='small' weight={500}>SEV {value}</Text> 
-      </Box>
-    </Box>
-  )
-}
-
 export function SeverityNub({severity}) {
   const color = severityColor(severity)
   return (

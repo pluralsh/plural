@@ -1,11 +1,15 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { Box, Drop, Select, Text } from 'grommet'
+import { Box, Drop, Text } from 'grommet'
+import { Select } from 'forge-core'
 import { CurrentUserContext } from '../login/CurrentUser'
 import { canEdit } from './Incident'
 import { Down } from 'grommet-icons'
 import { SeverityColorMap } from './types'
+import { normalizeColor } from 'grommet/utils'
+import { ThemeContext } from 'styled-components'
 
-const severityOptions = [0, 1, 2, 3, 4, 5].map((sev) => ({value: sev, label: `SEV ${sev}`}))
+const sevOptions = (sev) => ({value: sev, label: `SEV ${sev}`})
+const severityOptions = [0, 1, 2, 3, 4, 5].map(sevOptions)
 
 const SeverityStatusOption = ({value}, {active}) => {
   const color = severityColor(value)
@@ -42,18 +46,37 @@ function SeverityOption({value, active, setActive}) {
   )
 }
 
+function dot(color, theme) {
+  const clr = normalizeColor(color, theme)
+  return {
+    alignItems: 'center',
+    display: 'flex',
+
+    ':before': {
+      backgroundColor: clr,
+      borderRadius: 10,
+      content: '" "',
+      display: 'block',
+      marginRight: 8,
+      height: 10,
+      width: 10,
+    },
+  }
+} 
+
 export function SeveritySelect({severity, setSeverity}) {
+  const theme = useContext(ThemeContext)
   return (
-    <Select 
-      multiple={false}
-      options={severityOptions}
-      valueKey={{key: 'value', reduce: true}}
-      labelKey='label'
-      value={severity}
-      onChange={({value}) => setSeverity(value)}
-    >
-      {SeverityStatusOption}
-    </Select>
+    <Box flex={false} width='150px'>
+      <Select
+        styles={{
+          option: (styles, { data }) => ({...styles, ...dot(severityColor(data.value), theme)}),
+          singleValue: (styles, { data }) => ({...styles, ...dot(severityColor(data.value), theme)})
+        }}
+        options={severityOptions}
+        value={sevOptions(severity)}
+        onChange={({value}) => setSeverity(value)} />
+    </Box>
   )
 }
 

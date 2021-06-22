@@ -1,8 +1,8 @@
 import React, { useState, useCallback } from 'react'
 import { LabeledInput } from '../repos/CreateRepository'
-import { TextInput, Box, Select, Layer, Text, Stack, RangeSelector } from 'grommet'
+import { TextInput, Box, Layer, Text, Stack, RangeSelector } from 'grommet'
 import { FaDollarSign } from 'react-icons/fa'
-import { Button, SecondaryButton, ModalHeader, HoveredBackground } from 'forge-core'
+import { Button, SecondaryButton, Select, ModalHeader, HoveredBackground } from 'forge-core'
 import { Cube, Trash, Add } from 'grommet-icons'
 import { useMutation } from 'react-apollo'
 import { CREATE_PLAN } from './queries'
@@ -80,7 +80,7 @@ function DollarInput({value, onChange, ...props}) {
   )
 }
 
-function FeatureCreator({state, setState, mutation, loading}) {
+function FeatureCreator({state, setState, setDisplay, loading}) {
   const [feature, setFeature] = useState({name: '', description: ''})
   const {metadata: {features}} = state
   function addFeature() {
@@ -126,15 +126,15 @@ function FeatureCreator({state, setState, mutation, loading}) {
           onClick={() => setState(addFeature())} />
         <Button
           loading={loading}
-          label='Create'
+          label='Next'
           round='xsmall'
-          onClick={mutation} />
+          onClick={() => setDisplay('slas')} />
       </Box>
     </Box>
   )
 }
 
-function ItemCreator({state, setState, mutation, loading}) {
+function ItemCreator({state, setState, setDisplay, loading}) {
   const [lineItem, setLineItem] = useState({
     name: '',
     dimension: '',
@@ -197,9 +197,9 @@ function ItemCreator({state, setState, mutation, loading}) {
           <LabeledInput label='5. Billing type for the line item'>
             <Select
               size='small'
-              value={lineItem.type}
-              options={Object.keys(PlanType)}
-              onChange={({option}) => setLineItem({...lineItem, type: option})} />
+              value={{value: lineItem.type, label: lineItem.type.toLocaleLowerCase()}}
+              options={Object.keys(PlanType).map((t) => ({value: t, label: t.toLowerCase()}))}
+              onChange={({value}) => setLineItem({...lineItem, type: value})} />
           </LabeledInput>
         </Box>
       </Box>
@@ -210,15 +210,16 @@ function ItemCreator({state, setState, mutation, loading}) {
           onClick={() => setState(addLineItem())} />
         <Button
           loading={loading}
-          label='Create'
+          label='Next'
           round='xsmall'
-          onClick={mutation} />
+          onClick={() => setDisplay('features')} />
       </Box>
     </Box>
   )
 }
 
-function PlanForm({state, setState, mutation, loading}) {
+function PlanForm({state, setState, setDisplay, loading}) {
+  console.log(state.lineItems.items)
   const updatePeriod = (period) => deepUpdate(
     {...state, period}, 
     'lineItems.items', 
@@ -242,16 +243,16 @@ function PlanForm({state, setState, mutation, loading}) {
       <LabeledInput label='3. Give it a billing period (monthly/yearly)'>
         <Select
           size='small'
-          value={state.period}
-          options={['monthly', 'yearly']}
-          onChange={({option}) => setState(updatePeriod(option))} />
+          value={{value: state.period, label: state.period}}
+          options={['monthly', 'yearly'].map((v) => ({value: v, label: v}))}
+          onChange={({value}) => setState(updatePeriod(value))} />
       </LabeledInput>
       <Box direction='row' justify='end' margin={{top: 'small'}}>
         <Button
-          label='Create'
+          label='Next'
           round='xsmall'
           loading={loading}
-          onClick={mutation} />
+          onClick={() => setDisplay('items')} />
       </Box>
     </Box>
   )
@@ -396,9 +397,9 @@ export default function CreatePlan({repository, setOpen}) {
       <Box width='80vw'>
         <ModalHeader text='Create Plan' setOpen={setOpen} />
         <Box gap='small' pad='small'>
-          <Steps>
+          <Steps step={display}>
             {['plan', 'items', 'features', 'slas'].map((name) => (
-              <Step name={name} onStep={() => setDisplay(name)} />
+              <Step key={name} name={name} onStep={() => setDisplay(name)} />
             ))}
           </Steps>
           <FormSwitch

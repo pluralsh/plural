@@ -10,7 +10,8 @@ export function Version({version, onSelect, refetch}) {
   const [open, setOpen] = useState(false)
 
   return (
-    <Box direction='row' align='center' className='chart-version' height='30px'>
+    <Box direction='row' align='center' className='chart-version' height='30px' 
+        hoverIndicator='tone-light' onClick={() => null} pad={{horizontal: 'small'}}>
       <Box direction='row' fill='horizontal' align='center' gap='xsmall'>
         <Anchor size='small' onClick={() => onSelect(version)}>
           {version.version}
@@ -34,8 +35,8 @@ export function Version({version, onSelect, refetch}) {
 
 export function Versions({setVersion, edges, refetch, pageInfo, fetchMore}) {
   return (
-    <DetailContainer gap='xsmall' pad='small' style={{maxHeight: '50%'}}>
-      <Text size='small' weight='bold'>Versions</Text>
+    <DetailContainer gap='xsmall' pad={{vertical: 'small'}} style={{maxHeight: '50%'}}>
+      <Text size='small' weight='bold' margin={{left: 'small'}}>Versions</Text>
       <Scroller id='chart'
         edges={edges}
         style={{overflow: 'auto', width: '100%', maxHeight: '50vh'}}

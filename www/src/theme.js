@@ -4,21 +4,38 @@ const boxStyle = css`
   outline: none;
 `;
 
+export const PLURAL_THEME = {
+  'plural-blk': '#000b11',
+  'tone-dark': '#01131a',
+  'tone-medium':'#c9d1d3',
+  'tone-light': '#edf1f2',
+  'plrl-white': '#fff',
+  'key-dark': '#001b8c',
+  'key-light': '#0022b2',
+  'alt-dark': '#006e96',
+  'alt-light': '#0090c4',
+  'red-dark': '#ba4348',
+  'red-light': '#da4447',
+  'green-dark': '#23422b',
+  'green-light': '#35844d',
+}
+
 export const DEFAULT_COLOR_THEME = {
-  brand: '#3B1D98',
-  action: '#007a5a',
-  sidebar: '#13141a',
+  brand: 'key-light',
+  // action: '#007a5a',
+  action: 'key-light',
+  sidebar: 'plural-blk',
   sidebarHover: '#000000',
   sidebarActive: '#000000',
-  focus: '#3B1D98',
+  focus: 'key-light',
   progress: '#007bff',
-  tagMedium: '#3B1D98',
-  tagLight: '#624aad',
-  backgroundColor: '#2b2d33',
+  tagMedium: 'key-light',
+  tagLight: 'key-light',
+  backgroundColor: 'tone-dark',
   orange: '#d7722c',
-  error: '#CC4400',
+  error: 'red-light',
   presence: '#39E500',
-  success: 'action',
+  success: 'green-light',
   link: '#3366BB',
   notif: 'error',
   good: '#00ac46',
@@ -28,6 +45,7 @@ export const DEFAULT_COLOR_THEME = {
   critical: '#780000',
   label: 'light-2',
   'input-border': 'light-5',
+  ...PLURAL_THEME
 }
 
 export const DEFAULT_THEME = {
@@ -44,6 +62,10 @@ export const DEFAULT_THEME = {
       horizontal: '6px',
       vertical: '2px'
     }
+  },
+  checkBox: {
+    size: '20px',
+    toggle: {radius: '20px', size: '40px'},
   },
   box: {
     extend: boxStyle
@@ -80,15 +102,11 @@ export const DEFAULT_THEME = {
   global: {
     colors: DEFAULT_COLOR_THEME,
     focus: {shadow: null, border: {color: 'brand'} },
-    control: {border: {radius: '2px'}},
+    control: { border: {radius: '2px'} },
     drop: {
-      border: {
-        radius: '4px'
-      }
+      border: { radius: '4px' }
     },
-    box: {
-      extend: boxStyle
-    },
+    box: { extend: boxStyle },
     font: {
       family: 'Roboto',
       size: '14px',

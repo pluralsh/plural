@@ -1,5 +1,5 @@
 import { Box, Text } from 'grommet'
-import React, { useCallback, useContext, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
 
 const StepContext = React.createContext({})
 const ICON_SIZE = '25px'
@@ -11,23 +11,33 @@ function BetweenStep({step, width}) {
   )
 }
 
-function StepProvider({current: curr, children}) {
-  const [current, setCurrent] = useState(curr || 0)
+function StepProvider({step, children}) {
+  const steps = useRef({})
+  const [current, setCurrent] = useState(0)
+  const register = useCallback((name, ind) => {
+    steps.current = {...steps.current, [name]: ind}
+  }, [steps])
+  useEffect(() => {
+    if (steps.current[step] !== undefined) setCurrent(steps.current[step])
+  }, [step, steps])
+  console.log(steps)
+
   return (
-    <StepContext.Provider value={{current, setCurrent}}>
+    <StepContext.Provider value={{current, setCurrent, register}}>
       {children}
     </StepContext.Provider>
   )
 }
 
 export function Step({step, name, onStep}) {
-  const {current, setCurrent} = useContext(StepContext)
+  const {current, setCurrent, register} = useContext(StepContext)
   const onSelect = useCallback(() => {
     onStep()
     setCurrent(step)
   }, [setCurrent, onStep, current])
-  console.log(step)
-  console.log(current)
+  useEffect(() => {
+    register(name, step)
+  }, [register])
 
   return (
     <Box flex={false} pad='small' direction='row' align='center' gap='xsmall' onClick={onSelect} focusIndicator={false}>
@@ -44,14 +54,14 @@ function* intersperse(steps) {
   let len = steps.length
   yield React.cloneElement(steps[0], {step: 0})
   for (let i = 1; i < len; i++) {
-    yield <BetweenStep step={i - 1} width={`${100 / (len - 1)}%`} />
-    yield React.cloneElement(steps[i], {step: i})
+    yield <BetweenStep key={`btw-${i}`} step={i - 1} width={`${100 / (len - 1)}%`} />
+    yield React.cloneElement(steps[i], {key: `stp-${i}`, step: i})
   }
 }
 
-export function Steps({current, children}) {
+export function Steps({step, children}) {
   return (
-    <StepProvider current={current}>
+    <StepProvider step={step}>
       <Box direction='row' align='center' justify='center'>
         {[...intersperse(children)]}
       </Box>

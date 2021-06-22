@@ -19,12 +19,14 @@ export function extendConnection(prev, next, key) {
 export function deepUpdate(prev, path, update) {
   if (isString(path)) return deepUpdate(prev, path.split('.'), update)
 
+  console.log(prev)
+  console.log(path)
   const key = path[0]
   if (path.length === 1) {
     return {...prev, [key]: update(prev[key])}
   }
 
-  return {...prev, [key]: deepUpdate(prev, path.slice(1), update)}
+  return {...prev, [key]: deepUpdate(prev[key], path.slice(1), update)}
 }
 
 export function appendConnection(prev, next, key) {
@@ -44,9 +46,6 @@ export function removeConnection(prev, val, key) {
 export function updateCache(cache, {query, variables, update, onFailure}) {
   const prev = cache.readQuery({query, variables})
   cache.writeQuery({query, variables, data: update(prev)})
-  // } catch {
-  //   onFailure && onFailure()
-  // }
 }
 
 export const prune = ({__typename, ...rest}) => rest

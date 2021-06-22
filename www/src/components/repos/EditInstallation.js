@@ -1,34 +1,30 @@
 import React, { useState } from 'react'
 import { useMutation } from 'react-apollo'
-import { Button, Pill } from 'forge-core'
-import { Box, CheckBox, Select, Text } from 'grommet'
-import { Alert, Close } from 'grommet-icons'
-import AceEditor from "react-ace"
-import yaml from 'js-yaml'
+import { Button, Pill, Select } from 'forge-core'
+import { Box, CheckBox, Text } from 'grommet'
+import { Close } from 'grommet-icons'
 import { REPO_Q, UPDATE_INSTALLATION } from './queries'
 import { TAGS } from '../versions/VersionTags'
-import "ace-builds/src-noconflict/mode-yaml"
-import "ace-builds/src-noconflict/theme-terminal"
+import { deepUpdate, updateCache } from '../../utils/graphql'
 
 function update(cache, repositoryId, installation) {
-  const prev = cache.readQuery({ query: REPO_Q, variables: {repositoryId} })
-  cache.writeQuery({query: REPO_Q,
-    variables: {repositoryId},
-    data: {...prev, repository: { ...prev.repository, installation: installation}}
+  updateCache(cache, { 
+    query: REPO_Q, 
+    variables: {repositoryId}, 
+    update: (prev) => deepUpdate(prev, 'repository.installation', () => installation)
   })
 }
 
 export function EditInstallation({installation, repository, onUpdate}) {
-  const [ctx, setCtx] = useState(yaml.safeDump(installation.context || {}, null, 2))
   const [autoUpgrade, setAutoUpgrade] = useState(installation.autoUpgrade)
   const [trackTag, setTrackTag] = useState(installation.trackTag)
   const [notif, setNotif] = useState(false)
-  const [mutation, {loading, errors}] = useMutation(UPDATE_INSTALLATION, {
-    variables: {id: installation.id, attributes: {context: ctx, autoUpgrade, trackTag}},
+  const [mutation, {loading}] = useMutation(UPDATE_INSTALLATION, {
+    variables: {id: installation.id, attributes: {autoUpgrade, trackTag}},
     update: (cache, {data: {updateInstallation}}) => {
       (onUpdate || update)(cache, repository.id, updateInstallation)
-      setNotif(true)
-    }
+    },
+    onCompleted: () => setNotif(true)
   })
 
   return (
@@ -42,37 +38,22 @@ export function EditInstallation({installation, repository, onUpdate}) {
       </Pill>
     )}
     <Box gap='small' fill='horizontal' pad='small'>
-      <Box>
-        <AceEditor
-          mode='yaml'
-          theme='terminal'
-          height='300px'
-          width='100%'
-          name='Configuration'
-          value={ctx}
-          showGutter
-          showPrintMargin
-          highlightActiveLine
-          editorProps={{ $blockScrolling: true }}
-          onChange={setCtx} />
-      </Box>
-      {errors && (
-        <Box direction='row' gap='small'>
-          <Alert size='15px' color='notif' />
-          <Text size='small' color='notif'>Must be in json format</Text>
-        </Box>)}
-      <Box direction='row' justify='end' gap='small' align='center'>
-        <CheckBox
-          toggle
-          label='Auto Upgrade'
-          checked={autoUpgrade}
-          onChange={(e) => setAutoUpgrade(e.target.checked)}
-        />
+      <Box height='50px' direction='row' gap='small' align='center' fill='horizontal'>
+        <Box flex={false}>
+          <CheckBox
+            toggle
+            label='Auto Upgrade'
+            checked={autoUpgrade}
+            onChange={(e) => setAutoUpgrade(e.target.checked)}
+          />
+        </Box>
         {autoUpgrade && (
-          <Select
-            value={trackTag}
-            options={TAGS}
-            onChange={({option}) => setTrackTag(option)} />
+          <Box fill='horizontal'>
+            <Select
+              value={{value: trackTag, label: trackTag}}
+              options={TAGS.map((tag) => ({value: tag, label: tag}))}
+              onChange={({value}) => setTrackTag(value)} />
+          </Box>
         )}
       </Box>
       <Box pad='small' direction='row' justify='end'>

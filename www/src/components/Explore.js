@@ -43,8 +43,8 @@ function Repo({repo, setTag}) {
         <Box direction='row' align='center' gap='xsmall'>
           <RepoName repo={repo} />
           {sortBy(repo.tags, ['tag']).map(({tag}) => (
-            <Box key={tag} round='xsmall' pad={{horizontal: 'xsmall', vertical: '1px'}} background='light-2'
-              hoverIndicator='light-4' focusIndicator={false} onClick={(e) => {
+            <Box key={tag} round='xsmall' pad={{horizontal: 'xsmall', vertical: '1px'}} background='tone-light'
+              hoverIndicator='tone-medium' focusIndicator={false} onClick={(e) => {
                 e.stopPropagation()
                 e.preventDefault()
                 setTag(tag)
@@ -141,7 +141,7 @@ export default function Explore() {
           )}
         </TabHeader>
         <TabContent name='Public'>
-          <Box fill direction='row' gap='0px' border={{side: 'between', color: 'light-5'}}>
+          <Box fill direction='row' gap='0px' border={{side: 'between', color: 'light-5', size: 'xsmall'}}>
             <TagSidebar setTag={doSetTag} tag={tag} />
             <Repositories edges={edges} pageInfo={pageInfo} fetchMore={fetchMore} setTag={doSetTag} />
           </Box>

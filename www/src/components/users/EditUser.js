@@ -13,7 +13,6 @@ import { useHistory, useParams } from 'react-router'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 import { SIDEBAR_WIDTH } from '../constants'
 import { Keys } from './Keys'
-import { LabelledInput } from '../utils/LabeledInput'
 
 export const EditContext = React.createContext({})
 

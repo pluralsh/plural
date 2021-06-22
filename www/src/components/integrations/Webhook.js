@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router'
-import { Scroller, Copyable, ModalHeader, Button, SecondaryButton } from 'forge-core'
+import { Copyable, ModalHeader, Button, SecondaryButton } from 'forge-core'
 import { extendConnection } from '../../utils/graphql'
 import { Box, Layer, Text, TextInput } from 'grommet'
 import { WebhookLog } from './WebhookLog'
@@ -24,14 +24,6 @@ export function Container({title, children, modifier, ...props}) {
       <Box fill>
         {children}
       </Box>
-    </Box>
-  )
-}
-
-function NoLogs() {
-  return (
-    <Box pad='small'>
-      <Text size='small'><i>No webhooks delivered yet...</i></Text>
     </Box>
   )
 }

@@ -6,7 +6,7 @@ defmodule Core.Buffers.TokenAuditTest do
     test "it will collect token audits and aggregate conuts" do
       tok = insert(:persisted_token)
       now = Timex.now()
-      ip = "1.2.3.4"
+      ip = '1.2.3.4'
 
       {:ok, pid} = TokenAudit.start()
       Process.monitor(pid)
@@ -18,7 +18,7 @@ defmodule Core.Buffers.TokenAuditTest do
 
       [audit] = Core.Repo.all(Core.Schema.AccessTokenAudit)
 
-      assert audit.ip == ip
+      assert audit.ip == "#{ip}"
       assert audit.token_id == tok.id
       assert audit.timestamp == now
       assert audit.count == 2

@@ -21,12 +21,13 @@ defmodule Core.Buffers.TokenAudit do
   end
 
   def handle_info(:flush, %State{id: id, timestamp: ts, ip: ip, count: count} = state) do
-    %AccessTokenAudit{token_id: id, timestamp: ts, ip: ip}
+    %AccessTokenAudit{token_id: id, timestamp: ts, ip: "#{ip}"}
     |> AccessTokenAudit.changeset(%{count: count})
     |> Core.Repo.insert(
       conflict_target: [:token_id, :ip, :timestamp],
       on_conflict: [inc: [count: count]]
     )
+    |> IO.inspect()
 
     {:stop, :shutdown, state}
   end

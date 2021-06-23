@@ -1,5 +1,5 @@
 import gql from 'graphql-tag'
-import { UserFragment, TokenFragment, WebhookFragment, AddressFragment, AccountFragment, PublisherFragment, PublicKeyFragment } from '../../models/user'
+import { UserFragment, TokenFragment, WebhookFragment, AddressFragment, AccountFragment, PublisherFragment, PublicKeyFragment, TokenAuditFragment } from '../../models/user'
 import { CardFragment } from '../../models/payments';
 import { PageInfo } from '../../models/misc'
 
@@ -79,6 +79,20 @@ export const DELETE_TOKEN = gql`
   }
   ${TokenFragment}
 `;
+
+export const TOKEN_AUDITS = gql`
+  query Token($id: ID!, $cursor: String) {
+    token(id: $id) {
+      id
+      audits(first: 100, after: $cursor) {
+        pageInfo { ...PageInfo }
+        edges { node { ...TokenAuditFragment } }
+      }
+    }
+  }
+  ${PageInfo}
+  ${TokenAuditFragment}
+`
 
 export const WEBHOOKS_Q = gql`
   query Webhooks($cursor: String) {

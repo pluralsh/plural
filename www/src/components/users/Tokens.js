@@ -1,31 +1,85 @@
-import React from 'react'
-import { Box, Text } from 'grommet'
+import React, { useState } from 'react'
+import { Box, Collapsible, Text } from 'grommet'
 import { Trash } from 'grommet-icons'
 import { useMutation, useQuery } from 'react-apollo'
-import { CREATE_TOKEN, TOKENS_Q, DELETE_TOKEN } from './queries'
+import { CREATE_TOKEN, TOKENS_Q, DELETE_TOKEN, TOKEN_AUDITS } from './queries'
 import { Button, Scroller, Copyable, HoveredBackground, BORDER_COLOR } from 'forge-core'
 import moment from 'moment'
-import { extendConnection } from '../../utils/graphql'
+import { deepUpdate, extendConnection, removeConnection, updateCache } from '../../utils/graphql'
+import { StandardScroller } from '../utils/SmoothScroller'
+import { HeaderItem } from '../repos/Docker'
 
 const CELL_WIDTH='200px'
 
+function AuditHeader() {
+  return (
+    <Box flex={false} direction='row' pad='small' gap='xsmall' border={{side: 'bottom', color: 'light-5'}} align='center'>
+      <HeaderItem text='IP' width='33%' />
+      <HeaderItem text='Timestamp' width='33%' />
+      <HeaderItem text='Count' width='33%' />
+    </Box>
+  )
+}
+
+function TokenAudit({audit}) {
+  return (
+    <Box flex={false} direction='row' pad='small' border={{side: 'bottom', color: 'light-5'}} align='center'>
+      <HeaderItem text={audit.ip} width='33%' nobold />
+      <HeaderItem text={moment(audit.timestamp).format('lll')} width='33%' nobold />
+      <HeaderItem text={audit.count} width='33%' nobold />
+    </Box>
+  )
+}
+
+function TokenAudits({id}) {
+  const [listRef, setListRef] = useState(null)
+  const {data, loading, fetchMore} = useQuery(TOKEN_AUDITS, {variables: {id}, fetchPolicy: 'cache-and-network'})
+
+  if (!data) return null
+
+  const {audits: {pageInfo, edges}} = data.token
+
+  if (edges.length === 0) {
+    return (
+      <Box fill='horizontal' align='center' justify='center' pad='medium'>
+        <Text size='small' weight={500}>Token has yet to be used</Text>
+      </Box>
+    )
+  }
+
+  return (
+    <Box fill='horizontal' style={{maxHeight: '400px'}}>
+      <AuditHeader />
+      <StandardScroller
+        listRef={listRef}
+        setListRef={setListRef}
+        hasNextPage={pageInfo.hasNextPage}
+        items={edges}
+        loading={loading} 
+        mapper={({node}) => <TokenAudit key={node.id} audit={node} />} 
+        loadNextPage={() => pageInfo.hasNextPage && fetchMore({
+          variables: {cursor: pageInfo.endCursor},
+          updateQuery: (prev, {fetchMoreResult: {token}}) => deepUpdate(prev, 'token', (prevToken) => (
+            extendConnection(prevToken, token.audits, 'audits')
+          ))
+        })} />
+    </Box>
+  )
+}
+
 function Token({token: {token, insertedAt, id}, hasNext}) {
+  const [open, setOpen] = useState(false)
   const [mutation] = useMutation(DELETE_TOKEN, {
     variables: {id},
-    update: (cache, { data: { deleteToken } }) => {
-      const prev = cache.readQuery({query: TOKENS_Q})
-      cache.writeQuery({query: TOKENS_Q, data: {
-        ...prev,
-        tokens: {
-          ...prev.tokens,
-          edges: prev.tokens.edges.filter(({node: {id}}) => id !== deleteToken.id)
-        }
-      }})
-    }
+    update: (cache, { data: { deleteToken } }) => updateCache(cache, {
+      query: TOKENS_Q,
+      update: (prev) => removeConnection(prev, deleteToken, 'tokens')
+    })
   })
 
   return (
-    <Box onClick={() => null} hoverIndicator='light-2' direction='row'
+    <>
+    <Box onClick={() => setOpen(!open)} hoverIndicator='light-2' direction='row'
       border={hasNext ? {side: 'bottom', color: BORDER_COLOR} : null}>
       <Box width='100%' pad={{left: 'small', vertical: 'xsmall'}} direction='row' gap='xsmall' align='center'>
         <Copyable
@@ -43,6 +97,10 @@ function Token({token: {token, insertedAt, id}, hasNext}) {
         </HoveredBackground>
       </Box>
     </Box>
+    <Collapsible open={open} direction='vertical'>
+      <TokenAudits id={id} />
+    </Collapsible>
+    </>
   )
 }
 

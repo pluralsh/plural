@@ -62,6 +62,14 @@ export const TokenFragment = gql`
   }
 `;
 
+export const TokenAuditFragment = gql`
+  fragment TokenAuditFragment on PersistedTokenAudit {
+    ip
+    timestamp
+    count
+  }
+`
+
 export const AddressFragment = gql`
   fragment AddressFragment on Address {
     line1

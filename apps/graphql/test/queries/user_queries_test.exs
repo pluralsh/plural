@@ -192,6 +192,31 @@ defmodule GraphQl.UserQueriesTest do
     end
   end
 
+  describe "token" do
+    test "it can fetch audits for a token" do
+      token = insert(:persisted_token)
+      audits = for i <- 1..3 do
+        insert(:access_token_audit,
+          token: token,
+          timestamp: Timex.now() |> Timex.shift(minutes: -i)
+        )
+      end
+
+      {:ok, %{data: %{"token" => found}}} = run_query("""
+        query Token($id: ID!) {
+          token(id: $id) {
+            id
+            audits(first: 10) { edges { node { id } } }
+          }
+        }
+      """, %{"id" => token.id}, %{current_user: token.user})
+
+      assert found["id"] == token.id
+      assert from_connection(found["audits"])
+             |> ids_equal(audits)
+    end
+  end
+
   describe "webhooks" do
     test "A user can list their webhooks" do
       user = insert(:user)

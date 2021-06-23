@@ -9,6 +9,7 @@ defmodule Api.Plugs.VerifyPersistedToken do
     key = storage_key(conn, opts)
     with {:ok, token} <- fetch_token(conn),
          %{} = persisted <- Users.get_persisted_token(token) do
+      broadcast(persisted, conn)
       conn
       |> Guardian.Plug.put_current_token(token, key: key)
       |> Guardian.Plug.put_current_claims(build_claims(persisted), key: key)
@@ -20,6 +21,13 @@ defmodule Api.Plugs.VerifyPersistedToken do
   def fetch_token(conn) do
     get_req_header(conn, "authorization")
     |> fetch_token_from_header()
+  end
+
+  def broadcast(token, conn) do
+    Core.PubSub.Broadcaster.notify(%Core.PubSub.AccessTokenUsage{
+      item: token,
+      context: conn.remote_ip
+    })
   end
 
   defp fetch_token_from_header(["cmt-" <> _ = match | _]), do: {:ok, String.trim(match)}

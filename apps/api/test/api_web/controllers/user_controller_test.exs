@@ -63,6 +63,10 @@ defmodule ApiWeb.UserControllerTest do
       |> Plug.Conn.put_req_header("authorization", "Bearer #{token.token}")
       |> get(path)
       |> json_response(200)
+
+      assert_receive {:event, %Core.PubSub.AccessTokenUsage{item: found}}
+
+      assert found.id == token.id
     end
   end
 

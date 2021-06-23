@@ -44,10 +44,7 @@ export const MARKDOWN_STYLING = {
   p: {props: {size: 'small', style: {maxWidth: '100%'}, margin: {top: 'xsmall', bottom: 'xsmall'}}},
   h1: {props: {style: {borderBottom: '1px solid #eaecef', paddingBottom: '.3em', maxWidth: '100%'}, size: 'small', margin: {top: 'small', bottom: 'small'}}},
   h2: {props: {style: {borderBottom: '1px solid #eaecef', paddingBottom: '.3em', maxWidth: '100%'}, size: 'xsmall', margin: {top: 'small', bottom: 'small'}}},
-  pre: {
-    component: Code,
-    props: {}
-  }
+  pre: { component: Code, props: {} }
 }
 
 function TemplateView({version: {valuesTemplate}}) {
@@ -188,6 +185,7 @@ export default function Chart() {
   const currentVersion = version || edges[0].node
   const width = tab === 'configuration' ? 65 : 70
   const chartInst = data.chart.installation
+
   return (
     <ScrollableContainer>
       <Box pad='small' direction='row'>

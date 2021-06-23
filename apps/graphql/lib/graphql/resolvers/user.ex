@@ -9,6 +9,7 @@ defmodule GraphQl.Resolvers.User do
     ImpersonationPolicy,
     ImpersonationPolicyBinding,
     PublicKey,
+    AccessTokenAudit
   }
 
   def data(args) do
@@ -48,6 +49,14 @@ defmodule GraphQl.Resolvers.User do
 
   def resolve_reset_token(%{id: id}, _), do: {:ok, Users.get_reset_token!(id)}
 
+  def resolve_token(%{id: id}, %{context: %{current_user: %{id: user_id}}}) do
+    Core.Repo.get!(PersistedToken, id)
+    |> case do
+      %{user_id: ^user_id} = token -> {:ok, token}
+      _ -> {:error, "forbidden"}
+    end
+  end
+
   def list_users(args, %{context: %{current_user: %{account_id: id}}}) do
     User.ordered()
     |> User.for_account(id)
@@ -65,6 +74,12 @@ defmodule GraphQl.Resolvers.User do
   def list_keys(args, %{context: %{current_user: user}}) do
     PublicKey.for_user(user.id)
     |> PublicKey.ordered()
+    |> paginate(args)
+  end
+
+  def list_token_audits(args, %{source: %{id: id}}) do
+    AccessTokenAudit.for_token(id)
+    |> AccessTokenAudit.ordered()
     |> paginate(args)
   end
 

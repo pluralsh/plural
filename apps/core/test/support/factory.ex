@@ -396,4 +396,12 @@ defmodule Core.Factory do
       dequeue_at: Timex.now()
     }
   end
+
+  def access_token_audit_factory do
+    %Schema.AccessTokenAudit{
+      token: build(:persisted_token),
+      ip: "1.2.3.4",
+      timestamp: Timex.now()
+    }
+  end
 end

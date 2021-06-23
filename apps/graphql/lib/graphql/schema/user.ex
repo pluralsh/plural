@@ -113,6 +113,19 @@ defmodule GraphQl.Schema.User do
     field :id,    :id
     field :token, :string
 
+    connection field :audits, node_type: :persisted_token_audit do
+      resolve &User.list_token_audits/2
+    end
+
+    timestamps()
+  end
+
+  object :persisted_token_audit do
+    field :id,        :id
+    field :ip,        :string
+    field :timestamp, :datetime
+    field :count,     :integer
+
     timestamps()
   end
 
@@ -184,6 +197,7 @@ defmodule GraphQl.Schema.User do
   connection node_type: :webhook
   connection node_type: :persisted_token
   connection node_type: :public_key
+  connection node_type: :persisted_token_audit
 
   object :user_queries do
     field :me, :user do
@@ -199,6 +213,13 @@ defmodule GraphQl.Schema.User do
     connection field :tokens, node_type: :persisted_token do
       middleware Authenticated
       resolve &User.list_tokens/2
+    end
+
+    field :token, :persisted_token do
+      middleware Authenticated
+      arg :id, non_null(:id)
+
+      resolve &User.resolve_token/2
     end
 
     field :publisher, :publisher do

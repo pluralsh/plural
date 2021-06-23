@@ -48,6 +48,7 @@ defmodule Api.MixProject do
       {:libcluster, "~> 3.1.1"},
       {:prometheus_ex, "~> 3.0"},
       {:prometheus_plugs, "~> 1.1.1"},
+      {:remote_ip, "~> 0.2.0"},
 
       {:core, in_umbrella: true},
       {:graphql, in_umbrella: true},

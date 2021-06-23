@@ -27,6 +27,7 @@ defmodule ApiWeb.Endpoint do
   end
 
   plug CORSPlug
+  plug ApiWeb.Plugs.RemoteIp
 
   plug Plug.RequestId
   plug Plug.Telemetry, event_prefix: [:phoenix, :endpoint]

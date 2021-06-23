@@ -56,3 +56,14 @@ defimpl Core.PubSub.Fanout, for: Core.PubSub.UpgradeCreated do
     Core.broker().publish(%Conduit.Message{body: up}, :upgrade)
   end
 end
+
+defimpl Core.PubSub.Fanout, for: Core.PubSub.AccessTokenUsage do
+  def fanout(%{item: token, context: ip}) do
+    ip = :inet.ntoa(ip)
+    trunc = Timex.now()
+            |> Timex.set(minute: 0, second: 0, microsecond: {0, 0})
+    key = "#{token.id}:#{ip}:#{Timex.format!(trunc, "{ISO:Extended}")}"
+
+    Core.Buffer.Orchestrator.submit(Core.Buffers.TokenAudit, key, {token.id, trunc, ip})
+  end
+end

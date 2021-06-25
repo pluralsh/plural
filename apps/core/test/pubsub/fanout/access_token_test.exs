@@ -19,7 +19,7 @@ defmodule Core.PubSub.Fanout.AccessTokenTest do
 
       assert token.id == id
       assert Timex.now()
-             |> Timex.set(minutes: 0, seconds: 0, millisecond: {0, 0})
+             |> Timex.set(minutes: 0, seconds: 0, millisecond: {0, 6})
              |> Timex.equal?(ts)
       assert ip == :inet.ntoa(erl_ip)
     end

@@ -61,7 +61,7 @@ defimpl Core.PubSub.Fanout, for: Core.PubSub.AccessTokenUsage do
   def fanout(%{item: token, context: ip}) do
     ip = :inet.ntoa(ip)
     trunc = Timex.now()
-            |> Timex.set(minute: 0, second: 0, microsecond: {0, 0})
+            |> Timex.set(minute: 0, second: 0, microsecond: {0, 6})
     key = "#{token.id}:#{ip}:#{Timex.format!(trunc, "{ISO:Extended}")}"
 
     Core.Buffer.Orchestrator.submit(Core.Buffers.TokenAudit, key, {token.id, trunc, ip})

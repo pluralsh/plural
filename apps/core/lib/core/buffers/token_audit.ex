@@ -27,7 +27,6 @@ defmodule Core.Buffers.TokenAudit do
       conflict_target: [:token_id, :ip, :timestamp],
       on_conflict: [inc: [count: count]]
     )
-    |> IO.inspect()
 
     {:stop, :shutdown, state}
   end

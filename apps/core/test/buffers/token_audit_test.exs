@@ -6,6 +6,7 @@ defmodule Core.Buffers.TokenAuditTest do
     test "it will collect token audits and aggregate conuts" do
       tok = insert(:persisted_token)
       now = Timex.now()
+            |> Timex.set(minute: 0, second: 0, microsecond: {0, 6})
       ip = '1.2.3.4'
 
       {:ok, pid} = TokenAudit.start()

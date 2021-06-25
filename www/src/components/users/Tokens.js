@@ -48,14 +48,14 @@ function TokenAudits({id}) {
   }
 
   return (
-    <Box fill='horizontal' style={{maxHeight: '400px'}}>
+    <Box fill='horizontal' style={{maxHeight: '400px', minHeight: '200px'}}>
       <AuditHeader />
       <StandardScroller
         listRef={listRef}
         setListRef={setListRef}
         hasNextPage={pageInfo.hasNextPage}
         items={edges}
-        loading={loading} 
+        loading={loading}
         mapper={({node}) => <TokenAudit key={node.id} audit={node} />} 
         loadNextPage={() => pageInfo.hasNextPage && fetchMore({
           variables: {cursor: pageInfo.endCursor},

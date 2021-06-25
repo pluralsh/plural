@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { useMutation } from 'react-apollo'
 import gql from 'graphql-tag'
-import { Box, Form, Keyboard, FormField, Anchor, Text } from 'grommet'
-import { Error, Button } from 'forge-core'
+import { Box, Form, Keyboard, Anchor, Text } from 'grommet'
+import { Errors, Button, InputCollection, ResponsiveInput } from 'forge-core'
 import {fetchToken, setToken} from '../helpers/authentication'
 import { Tab, TabContent, Tabs } from './utils/Tabs'
 import { Checkmark, StatusCritical } from 'grommet-icons'
+import { GqlError } from './utils/Alert'
 
 const SIGNUP_MUTATION = gql`
   mutation Signup($email: String!, $password: String!, $name: String!) {
@@ -80,41 +81,43 @@ export default function Login(props) {
         </Tabs>
         <TabContent>
           <Box pad='medium' background='white'>
-            {error && <Error errors={error} />}
+            {error && <GqlError error={error} header='Login Failed' />}
             <Keyboard onEnter={mutation}>
               <Form onSubmit={mutation}>
                 <Box margin={{bottom: '10px'}}>
+                  <InputCollection>
                   {!login && (
-                    <FormField
+                    <ResponsiveInput
                       value={name}
                       label="Name"
                       name="name"
                       onChange={e => setState({...state, name: e.target.value })}
                       placeholder="your name"
                     />)}
-                  <FormField
+                  <ResponsiveInput
                     value={email}
                     name="email"
                     label="Email"
                     onChange={e => setState({...state, email: e.target.value })}
                     placeholder="Your email address"
                   />
-                  <FormField
+                  <ResponsiveInput
                     value={password}
                     name="password"
-                    label="Password (at least 10 chars)"
+                    label="Password"
                     type="password"
                     onChange={e => setState({...state, password: e.target.value })}
                     placeholder="battery horse fire stapler"
                   />
                   {!login && (
-                    <FormField
+                    <ResponsiveInput
                       value={confirm}
                       label="Confirm Password"
                       name="confirm"
                       onChange={({target: {value}}) => setConfirm(value)}
                       placeholder="your name"
                     />)}
+                  </InputCollection>
                 </Box>
                 <Box direction="row" align="center" justify='end' gap='small'>
                   {!login && <PasswordStatus disabled={disabled} reason={reason} />}

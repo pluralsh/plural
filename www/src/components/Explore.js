@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect, useCallback } from 'react'
-import { Tabs, TabHeader, TabHeaderItem, TabContent, Scroller } from 'forge-core'
+import { Scroller } from 'forge-core'
 import { useQuery } from 'react-apollo'
 import { CATEGORIES, CATEGORY, EXPLORE_REPOS } from './repos/queries'
 import { Box, Collapsible, Text } from 'grommet'
@@ -7,11 +7,11 @@ import { Tag } from './repos/Tags'
 import { RepoIcon, RepoName } from './repos/Repositories'
 import { BreadcrumbsContext } from './Breadcrumbs'
 import { extendConnection } from '../utils/graphql'
-import { useHistory } from 'react-router'
+import { useHistory, useParams } from 'react-router'
 import { sortBy } from 'lodash'
 import { SafeLink } from './utils/Link'
 import { CurrentUserContext } from './login/CurrentUser'
-import { Down, Next } from 'grommet-icons'
+import { Down, InstallOption, Next, Share, ShareOption } from 'grommet-icons'
 import './explore.css'
 
 const WIDTH = 20
@@ -157,23 +157,68 @@ function TagSidebar({tag, setTag}) {
 }
 
 function filters(tab, me) {
-  if (tab === 'Installed') return {installed: true}
-  if (tab === 'Published') return {publisherId: me.publisher.id}
+  if (tab === 'installed') return {installed: true}
+  if (tab === 'published') return {publisherId: me.publisher.id}
   return {}
 }
 
+export function SectionItem({name, label, icon}) {
+  const {group} = useParams()
+  let hist = useHistory()
+  const selected = name === group
+
+  return (
+    <Box pad='small' round='xsmall' background={selected ? '#000' : null} fill='horizontal' 
+         align='center' gap='small' direction='row' hoverIndicator='#000'
+         onClick={selected ? null : () => hist.push(`/explore/${name}`)}>
+      <Box flex={false}>
+        {icon}
+      </Box>
+      <Box fill='horizontal'>
+        {label}
+      </Box>
+    </Box>
+  )
+}
+
+function SectionContent({name, header, children}) {
+  const {group} = useParams()
+  if (group !== name) return null
+
+  return (
+    <Box fill>
+      <Box flex={false} pad='small' border={{side: 'bottom', color: 'light-5'}}>
+        <Text size='small' weight={500}>{header}</Text>
+      </Box>
+      <Box fill>
+        {children}
+      </Box>
+    </Box>
+  )
+}
+
 export default function Explore() {
-  const [tag, setTag] = useState(null)
-  const [tab, setTab] = useState('Public')
+  const {group, tag} = useParams()
+  let history = useHistory()
   const me = useContext(CurrentUserContext)
-  const args = filters(tab, me) 
+  const args = filters(group, me) 
   const {data, fetchMore} = useQuery(EXPLORE_REPOS, {
     variables: {tag, ...args},
     fetchPolicy: 'cache-and-network'
   })
   const {setBreadcrumbs} = useContext(BreadcrumbsContext)
-  useEffect(() => setBreadcrumbs([]), [])
-  const doSetTag = useCallback((t) => t === tag ? setTag(null) : setTag(t), [tag, setTag])
+  useEffect(() => {
+    let crumbs = [
+      {url: '/explore', text: 'explore'},
+      {url: `/explore/${group}`, text: group}
+    ]
+    if (tag) crumbs.push({url: `/explore/${group}/${tag}`, text: tag})
+    setBreadcrumbs(crumbs)
+  }, [group, tag])
+  const doSetTag = useCallback((t) => (
+    t === tag ? history.push('/explore/public') : 
+                history.push(`/explore/public/${t}`)
+  ), [tag])
 
   if (!data) return null
 
@@ -181,36 +226,28 @@ export default function Explore() {
 
   return (
     <Box direction='row' fill>
-      <Tabs defaultTab='Public' onTabChange={setTab}>
-        <TabHeader>
-          <TabHeaderItem name='Public'>
-            <Text weight={500} size='small'>Public</Text>
-          </TabHeaderItem>
-          <TabHeaderItem name='Installed'>
-            <Text weight={500} size='small'>Installed</Text>
-          </TabHeaderItem>
-          {me.publisher && (
-            <TabHeaderItem name='Published'>
-              <Text weight={500} size='small'>Published</Text>
-            </TabHeaderItem>
-          )}
-        </TabHeader>
-        <TabContent name='Public'>
+      <Box background='backgroundColor' width='300px' fill='vertical' pad='medium' gap='small'>
+        <SectionItem name='public' label='Public Repositories' icon={<ShareOption size='14px' />} />
+        <SectionItem name='installed' label='Installed Repositories' icon={<InstallOption size='14px' />} />
+        {me.publisher && <SectionItem name='published' label='Published Repositories' icon={<Share size='14px' />} />}
+      </Box>
+      <Box fill>
+        <SectionContent name='public' header='Public Repositories'>
           <Box fill direction='row' gap='0px' border={{side: 'between', color: 'light-5', size: 'xsmall'}}>
             <TagSidebar setTag={doSetTag} tag={tag} />
             <Repositories edges={edges} pageInfo={pageInfo} fetchMore={fetchMore} setTag={doSetTag} />
           </Box>
-        </TabContent>
-        <TabContent name='Installed'>
+        </SectionContent>
+        <SectionContent name='installed' header='Installed Repositories'>
           {edges.length > 0 ? 
             <Repositories edges={edges} pageInfo={pageInfo} fetchMore={fetchMore} setTag={doSetTag} /> :
             <EmptyState />
           }
-        </TabContent>
-        <TabContent name='Published'>
+        </SectionContent>
+        <SectionContent name='published' header='Published Repositories'>
           <Repositories edges={edges} pageInfo={pageInfo} fetchMore={fetchMore} setTag={doSetTag} /> :
-        </TabContent>
-      </Tabs>
+        </SectionContent>
+      </Box>
     </Box>
   )
 }

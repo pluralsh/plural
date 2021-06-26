@@ -91,7 +91,11 @@ export default function Plural() {
                   <Route path='/audits' component={Audits} />
                   <Route path='/upgrades/:id' component={UpgradeQueue} />
                   <Route path='/upgrades' component={UpgradeQueues} />
-                  <Route path='/' component={Explore} />
+                  <Route path='/explore/:group/:tag' component={Explore} />
+                  <Route path='/explore/:group' component={Explore} />
+                  <Route path='/'>
+                    <Redirect to='/explore/public' />
+                  </Route>
                 </Switch>
               </Box>
             </Box>

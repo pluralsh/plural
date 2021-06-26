@@ -1,6 +1,5 @@
 defmodule GraphQl.Schema.Audit do
   use GraphQl.Schema.Base
-  alias GraphQl.Middleware.Authenticated
   alias GraphQl.Resolvers.{Audit, User, Repository, Version, Account, Docker}
 
   object :audit do

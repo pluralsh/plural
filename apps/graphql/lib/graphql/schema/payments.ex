@@ -169,7 +169,7 @@ defmodule GraphQl.Schema.Payments do
 
   object :payment_queries do
     field :repository_subscription, :repository_subscription do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :id, non_null(:id)
 
       resolve &Payments.resolve_subscription/2
@@ -177,7 +177,7 @@ defmodule GraphQl.Schema.Payments do
 
 
     connection field :subscriptions, node_type: :repository_subscription do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
 
       resolve &Payments.list_subscriptions/2
     end
@@ -185,28 +185,28 @@ defmodule GraphQl.Schema.Payments do
 
   object :payment_mutations do
     field :create_card, :account do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :source, non_null(:string)
 
       resolve safe_resolver(&Payments.create_card/2)
     end
 
     field :delete_card, :account do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :id, non_null(:id)
 
       resolve safe_resolver(&Payments.delete_card/2)
     end
 
     field :link_publisher, :publisher do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :token, non_null(:string)
 
       resolve safe_resolver(&Payments.link_publisher/2)
     end
 
     field :create_plan, :plan do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :repository_id, non_null(:id)
       arg :attributes, non_null(:plan_attributes)
 
@@ -214,7 +214,7 @@ defmodule GraphQl.Schema.Payments do
     end
 
     field :update_plan_attributes, :plan do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :attributes, non_null(:updatable_plan_attributes)
       arg :id,         non_null(:id)
 
@@ -222,7 +222,7 @@ defmodule GraphQl.Schema.Payments do
     end
 
     field :create_subscription, :repository_subscription do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :installation_id, non_null(:id)
       arg :plan_id, non_null(:id)
       arg :attributes, :subscription_attributes
@@ -231,7 +231,7 @@ defmodule GraphQl.Schema.Payments do
     end
 
     field :update_plan, :repository_subscription do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :plan_id, non_null(:id)
       arg :subscription_id, non_null(:id)
 
@@ -239,7 +239,7 @@ defmodule GraphQl.Schema.Payments do
     end
 
     field :update_line_item, :repository_subscription do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :attributes, non_null(:limit_attributes)
       arg :subscription_id, non_null(:id)
 

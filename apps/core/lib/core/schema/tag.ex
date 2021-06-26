@@ -1,7 +1,7 @@
 defmodule Core.Schema.Tag do
   use Piazza.Ecto.Schema
 
-  alias Core.Schema.{Integration}
+  alias Core.Schema.{Integration, Repository}
 
   defenum ResourceType, integration: 0, repository: 1, incident: 2
 
@@ -27,6 +27,14 @@ defmodule Core.Schema.Tag do
 
   def repository_tags(query \\ __MODULE__) do
     from(t in query, where: t.resource_type == ^:repository)
+  end
+
+  def category_tags(query \\ __MODULE__, category) do
+    from(t in query,
+      join: r in Repository,
+        on: t.resource_id == r.id,
+      where: t.resource_type == ^:repository and r.category == ^category
+    )
   end
 
   def grouped(query \\ __MODULE__) do

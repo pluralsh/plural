@@ -328,4 +328,49 @@ defmodule GraphQl.RepositoryQueriesTest do
              |> ids_equal([first, second])
     end
   end
+
+  describe "categories" do
+    test "it will render categories and repo counts" do
+      insert_list(2, :repository, category: :devops)
+      insert(:repository, category: :database)
+
+      {:ok, %{data: %{"categories" => cats}}} = run_query("""
+        query {
+          categories { category count }
+        }
+      """, %{}, %{current_user: insert(:user)})
+
+      by_category = Enum.into(cats, %{}, & {&1["category"], &1})
+
+      assert by_category["DEVOPS"]["count"] == 2
+      assert by_category["DATABASE"]["count"] == 1
+    end
+  end
+
+  describe "category" do
+    test "it can paginate tags for a category" do
+      insert(:repository, category: :devops, tags: [%{tag: "tag", resource_type: :repository}])
+      insert(:repository, category: :devops, tags: [%{tag: "other", resource_type: :repository}])
+      insert(:repository, category: :devops, tags: [%{tag: "other", resource_type: :repository}])
+
+      {:ok, %{data: %{"category" => category}}} = run_query("""
+        query Cat($category: Category!) {
+          category(name: $category) {
+            category
+            tags(first: 5) {
+              edges { node { tag count } }
+            }
+          }
+        }
+      """, %{"category" => "DEVOPS"}, %{current_user: insert(:user)})
+
+      assert category["category"] == "DEVOPS"
+      [first, second] = from_connection(category["tags"])
+      assert first["tag"] == "other"
+      assert first["count"] == 2
+
+      assert second["tag"] == "tag"
+      assert second["count"] == 1
+    end
+  end
 end

@@ -1,6 +1,5 @@
 defmodule GraphQl.Schema.Account do
   use GraphQl.Schema.Base
-  alias GraphQl.Middleware.Authenticated
   alias GraphQl.Resolvers.{Account, User}
 
   enum_from_list :permission, Core.Schema.Role, :permissions, []

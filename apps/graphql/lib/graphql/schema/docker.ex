@@ -88,7 +88,7 @@ defmodule GraphQl.Schema.Docker do
 
   object :docker_queries do
     connection field :docker_repositories, node_type: :docker_repository do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       middleware Accessible
       arg :repository_id, non_null(:id)
 
@@ -96,14 +96,14 @@ defmodule GraphQl.Schema.Docker do
     end
 
     connection field :docker_images, node_type: :docker_image do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :docker_repository_id, non_null(:id)
 
       resolve &Docker.list_images/2
     end
 
     field :docker_image, :docker_image do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :id, non_null(:id)
 
       resolve &Docker.resolve_image/2

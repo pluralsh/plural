@@ -4,15 +4,19 @@ defmodule GraphQl.Schema.Repository do
     User,
     Payments,
     Repository,
-    Dependencies
+    Dependencies,
+    Tag
   }
 
   ### INPUTS
+
+  ecto_enum :category, Core.Schema.Repository.Category
 
   input_object :repository_attributes do
     field :name,          :string
     field :description,   :string
     field :documentation, :string
+    field :category,      :category
     field :secrets,       :yml
     field :icon,          :upload_or_url
     field :integration_resource_definition, :resource_definition_attributes
@@ -92,6 +96,16 @@ defmodule GraphQl.Schema.Repository do
 
   ## OBJECTS
 
+  object :category_info do
+    field :category, :category
+    field :count,    :integer
+
+    connection field :tags, node_type: :grouped_tag do
+      arg :q, :string
+      resolve &Tag.category_tags/2
+    end
+  end
+
   object :installation do
     field :id,           :id
     field :context,      :map
@@ -113,6 +127,7 @@ defmodule GraphQl.Schema.Repository do
     field :name,          non_null(:string)
     field :description,   :string
     field :documentation, :string
+    field :category,      :category
     field :private,       :boolean
     field :publisher,     :publisher, resolve: dataloader(User)
     field :plans,         list_of(:plan), resolve: dataloader(Payments)
@@ -186,7 +201,7 @@ defmodule GraphQl.Schema.Repository do
 
   object :repository_queries do
     field :repository, :repository do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :id,   :id
       arg :name, :string
 
@@ -194,7 +209,7 @@ defmodule GraphQl.Schema.Repository do
     end
 
     field :installation, :installation do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :id,   :id
       arg :name, :string
 
@@ -203,7 +218,7 @@ defmodule GraphQl.Schema.Repository do
 
 
     connection field :repositories, node_type: :repository do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :publisher_id, :id
       arg :tag,          :string
       arg :supports,     :boolean
@@ -213,14 +228,14 @@ defmodule GraphQl.Schema.Repository do
     end
 
     connection field :search_repositories, node_type: :repository do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :query, non_null(:string)
 
       resolve &Repository.search_repositories/2
     end
 
     connection field :installations, node_type: :installation do
-      middleware GraphQl.Middleware.Authenticated, :external
+      middleware Authenticated, :external
 
       resolve &Repository.list_installations/2
     end
@@ -235,17 +250,30 @@ defmodule GraphQl.Schema.Repository do
     end
 
     field :closure, list_of(:closure_item) do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :id, non_null(:id)
       arg :type, non_null(:dependency_type)
 
       resolve &Dependencies.resolve_closure/2
     end
+
+    field :categories, list_of(:category_info) do
+      middleware Authenticated
+
+      resolve &Repository.list_categories/2
+    end
+
+    field :category, :category_info do
+      middleware Authenticated
+      arg :name, non_null(:category)
+
+      resolve &Repository.resolve_category/2
+    end
   end
 
   object :repository_mutations do
     field :create_repository, :repository do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :attributes, non_null(:repository_attributes)
 
       resolve safe_resolver(&Repository.create_repository/2)
@@ -253,7 +281,7 @@ defmodule GraphQl.Schema.Repository do
 
 
     field :update_repository, :repository do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :repository_id,   :id
       arg :repository_name, :string
       arg :attributes,      non_null(:repository_attributes)
@@ -262,21 +290,21 @@ defmodule GraphQl.Schema.Repository do
     end
 
     field :delete_repository, :repository do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :repository_id, non_null(:id)
 
       resolve safe_resolver(&Repository.delete_repository/2)
     end
 
     field :create_installation, :installation do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :repository_id, non_null(:id)
 
       resolve safe_resolver(&Repository.create_installation/2)
     end
 
     field :update_installation, :installation do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :id, non_null(:id)
       arg :attributes, non_null(:installation_attributes)
 
@@ -284,14 +312,14 @@ defmodule GraphQl.Schema.Repository do
     end
 
     field :delete_installation, :installation do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :id, non_null(:id)
 
       resolve safe_resolver(&Repository.delete_installation/2)
     end
 
     field :create_integration, :integration do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :repository_name, non_null(:string)
       arg :attributes, non_null(:integration_attributes)
 
@@ -299,7 +327,7 @@ defmodule GraphQl.Schema.Repository do
     end
 
     field :create_artifact, :artifact do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :repository_id,   :id
       arg :repository_name, :string
       arg :attributes, non_null(:artifact_attributes)

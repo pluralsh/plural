@@ -18,4 +18,12 @@ defmodule GraphQl.Resolvers.Tag do
     |> maybe_search(Tag, args)
     |> paginate(args)
   end
+
+  def category_tags(args, %{source: %{category: category}}) do
+    Tag.category_tags(category)
+    |> Tag.ordered()
+    |> Tag.grouped()
+    |> maybe_search(Tag, args)
+    |> paginate(args)
+  end
 end

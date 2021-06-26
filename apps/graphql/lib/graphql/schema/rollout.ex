@@ -21,7 +21,7 @@ defmodule GraphQl.Schema.Rollout do
 
   object :rollout_queries do
     connection field :rollouts, node_type: :rollout do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :repository_id, non_null(:id)
       resolve &Rollout.list_rollouts/2
     end

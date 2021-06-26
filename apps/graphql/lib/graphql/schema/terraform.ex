@@ -58,14 +58,14 @@ defmodule GraphQl.Schema.Terraform do
 
   object :terraform_queries do
     field :terraform_module, :terraform do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :id, non_null(:id)
 
       resolve &Terraform.resolve_terraform/2
     end
 
     connection field :terraform, node_type: :terraform do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       middleware GraphQl.Middleware.Accessible
       arg :repository_id, non_null(:id)
 
@@ -73,7 +73,7 @@ defmodule GraphQl.Schema.Terraform do
     end
 
     connection field :terraform_installations, node_type: :terraform_installation do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :repository_id, non_null(:id)
 
       resolve &Terraform.list_terraform_installations/2
@@ -82,7 +82,7 @@ defmodule GraphQl.Schema.Terraform do
 
   object :terraform_mutations do
     field :create_terraform, :terraform do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :repository_id, non_null(:id)
       arg :attributes, non_null(:terraform_attributes)
 
@@ -90,7 +90,7 @@ defmodule GraphQl.Schema.Terraform do
     end
 
     field :update_terraform, :terraform do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :id, non_null(:id)
       arg :attributes, non_null(:terraform_attributes)
 
@@ -98,14 +98,14 @@ defmodule GraphQl.Schema.Terraform do
     end
 
     field :delete_terraform, :terraform do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :id, non_null(:id)
 
       resolve safe_resolver(&Terraform.delete_terraform/2)
     end
 
     field :upload_terraform, :terraform do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :repository_name, non_null(:string)
       arg :name, non_null(:string)
       arg :attributes, non_null(:terraform_attributes)
@@ -114,7 +114,7 @@ defmodule GraphQl.Schema.Terraform do
     end
 
     field :install_terraform, :terraform_installation do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :installation_id, non_null(:id)
       arg :attributes, non_null(:terraform_installation_attributes)
 
@@ -122,7 +122,7 @@ defmodule GraphQl.Schema.Terraform do
     end
 
     field :uninstall_terraform, :terraform_installation do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :id, non_null(:id)
 
       resolve safe_resolver(&Terraform.delete_terraform_installation/2)

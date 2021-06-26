@@ -6,6 +6,7 @@ defmodule GraphQl.Schema.Base do
       import Absinthe.Resolution.Helpers
       import GraphQl.Schema.Helpers
       import GraphQl.Schema.Base
+      alias GraphQl.Middleware.Authenticated
     end
   end
 

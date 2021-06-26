@@ -272,7 +272,7 @@ defmodule GraphQl.Schema.Incidents do
 
   object :incident_queries do
     connection field :incidents, node_type: :incident do
-      middleware GraphQl.Middleware.Authenticated, :external
+      middleware Authenticated, :external
       arg :repository_id, :id
 
       arg :q,       :string
@@ -284,14 +284,14 @@ defmodule GraphQl.Schema.Incidents do
     end
 
     field :incident, :incident do
-      middleware GraphQl.Middleware.Authenticated, :external
+      middleware Authenticated, :external
       arg :id, non_null(:id)
 
       resolve safe_resolver(&Incidents.authorize_incident/2)
     end
 
     connection field :notifications, node_type: :notification do
-      middleware GraphQl.Middleware.Authenticated, :external
+      middleware Authenticated, :external
       arg :incident_id, :id
 
       resolve &User.list_notifications/2
@@ -300,7 +300,7 @@ defmodule GraphQl.Schema.Incidents do
 
   object :incident_mutations do
     field :create_incident, :incident do
-      middleware GraphQl.Middleware.Authenticated, :external
+      middleware Authenticated, :external
       arg :repository_id, non_null(:id)
       arg :attributes,    non_null(:incident_attributes)
 
@@ -308,7 +308,7 @@ defmodule GraphQl.Schema.Incidents do
     end
 
     field :update_incident, :incident do
-      middleware GraphQl.Middleware.Authenticated, :external
+      middleware Authenticated, :external
       arg :id, non_null(:id)
       arg :attributes,  non_null(:incident_attributes)
 
@@ -316,14 +316,14 @@ defmodule GraphQl.Schema.Incidents do
     end
 
     field :accept_incident, :incident do
-      middleware GraphQl.Middleware.Authenticated, :external
+      middleware Authenticated, :external
       arg :id, non_null(:id)
 
       resolve safe_resolver(&Incidents.accept_incident/2)
     end
 
     field :complete_incident, :incident do
-      middleware GraphQl.Middleware.Authenticated, :external
+      middleware Authenticated, :external
       arg :id, non_null(:id)
       arg :postmortem, non_null(:postmortem_attributes)
 
@@ -331,7 +331,7 @@ defmodule GraphQl.Schema.Incidents do
     end
 
     field :follow_incident, :follower do
-      middleware GraphQl.Middleware.Authenticated, :external
+      middleware Authenticated, :external
       arg :id, non_null(:id)
       arg :attributes, non_null(:follower_attributes)
 
@@ -339,14 +339,14 @@ defmodule GraphQl.Schema.Incidents do
     end
 
     field :unfollow_incident, :follower do
-      middleware GraphQl.Middleware.Authenticated, :external
+      middleware Authenticated, :external
       arg :id, non_null(:id)
 
       resolve safe_resolver(&Incidents.unfollow_incident/2)
     end
 
     field :create_message, :incident_message do
-      middleware GraphQl.Middleware.Authenticated, :external
+      middleware Authenticated, :external
       arg :incident_id, non_null(:id)
       arg :attributes,  non_null(:incident_message_attributes)
 
@@ -354,7 +354,7 @@ defmodule GraphQl.Schema.Incidents do
     end
 
     field :update_message, :incident_message do
-      middleware GraphQl.Middleware.Authenticated, :external
+      middleware Authenticated, :external
       arg :id,         non_null(:id)
       arg :attributes, non_null(:incident_message_attributes)
 
@@ -362,14 +362,14 @@ defmodule GraphQl.Schema.Incidents do
     end
 
     field :delete_message, :incident_message do
-      middleware GraphQl.Middleware.Authenticated, :external
+      middleware Authenticated, :external
       arg :id, non_null(:id)
 
       resolve safe_resolver(&Incidents.delete_message/2)
     end
 
     field :create_reaction, :incident_message do
-      middleware GraphQl.Middleware.Authenticated, :external
+      middleware Authenticated, :external
       arg :message_id, non_null(:id)
       arg :name, non_null(:string)
 
@@ -377,7 +377,7 @@ defmodule GraphQl.Schema.Incidents do
     end
 
     field :delete_reaction, :incident_message do
-      middleware GraphQl.Middleware.Authenticated, :external
+      middleware Authenticated, :external
       arg :message_id, non_null(:id)
       arg :name, non_null(:string)
 
@@ -385,7 +385,7 @@ defmodule GraphQl.Schema.Incidents do
     end
 
     field :read_notifications, :integer do
-      middleware GraphQl.Middleware.Authenticated, :external
+      middleware Authenticated, :external
       arg :incident_id, :id
 
       resolve &User.read_notifications/2

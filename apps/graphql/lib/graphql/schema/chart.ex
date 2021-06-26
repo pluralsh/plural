@@ -67,14 +67,14 @@ defmodule GraphQl.Schema.Chart do
 
   object :chart_queries do
     field :chart, :chart do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :id, non_null(:id)
 
       resolve &Chart.resolve_chart/2
     end
 
     connection field :charts, node_type: :chart do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       middleware Accessible
       arg :repository_id, non_null(:id)
 
@@ -82,7 +82,7 @@ defmodule GraphQl.Schema.Chart do
     end
 
     connection field :chart_installations, node_type: :chart_installation do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :repository_id, non_null(:id)
 
       resolve &Chart.list_chart_installations/2
@@ -91,7 +91,7 @@ defmodule GraphQl.Schema.Chart do
 
   object :chart_mutations do
     field :update_chart, :chart do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :id,         non_null(:id)
       arg :attributes, non_null(:chart_attributes)
 
@@ -99,7 +99,7 @@ defmodule GraphQl.Schema.Chart do
     end
 
     field :create_crd, :crd do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :chart_id,   :id
       arg :chart_name, :chart_name
       arg :attributes, non_null(:crd_attributes)
@@ -108,7 +108,7 @@ defmodule GraphQl.Schema.Chart do
     end
 
     field :install_chart, :chart_installation do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :installation_id, non_null(:id)
       arg :attributes, non_null(:chart_installation_attributes)
 
@@ -116,7 +116,7 @@ defmodule GraphQl.Schema.Chart do
     end
 
     field :update_chart_installation, :chart_installation do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :chart_installation_id, non_null(:id)
       arg :attributes, non_null(:chart_installation_attributes)
 

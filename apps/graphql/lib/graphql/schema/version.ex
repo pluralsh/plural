@@ -81,7 +81,7 @@ defmodule GraphQl.Schema.Version do
 
   object :version_queries do
     connection field :versions, node_type: :version do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :chart_id,     :id
       arg :terraform_id, :id
 
@@ -91,7 +91,7 @@ defmodule GraphQl.Schema.Version do
 
   object :version_mutations do
     field :update_version, :version do
-      middleware GraphQl.Middleware.Authenticated
+      middleware Authenticated
       arg :id,         :id
       arg :spec,       :version_spec
       arg :attributes, non_null(:version_attributes)

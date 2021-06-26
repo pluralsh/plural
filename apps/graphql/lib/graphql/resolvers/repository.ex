@@ -1,5 +1,6 @@
 defmodule GraphQl.Resolvers.Repository do
   use GraphQl.Resolvers.Base, model: Core.Schema.Repository
+  import Core.Services.Base, only: [ok: 1]
   alias Core.Services.Repositories
   alias Core.Schema.{
     Installation,
@@ -58,6 +59,21 @@ defmodule GraphQl.Resolvers.Repository do
     |> Repository.accessible(user)
     |> apply_filters(args, user)
     |> paginate(args)
+  end
+
+  def list_categories(_, %{context: %{current_user: user}}) do
+    Repository.accessible(user)
+    |> Repository.categories()
+    |> Core.Repo.all()
+    |> ok()
+  end
+
+  def resolve_category(%{name: cat}, %{context: %{current_user: user}}) do
+    Repository.accessible(user)
+    |> Repository.for_category(cat)
+    |> Repository.categories()
+    |> Core.Repo.one()
+    |> ok()
   end
 
   def search_repositories(%{query: q} = args, %{context: %{current_user: user}}) do

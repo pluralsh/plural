@@ -14,6 +14,16 @@ defmodule Core.Schema.Repository do
     User
   }
 
+  defenum Category,
+    devops: 0,
+    database: 1,
+    messaging: 2,
+    security: 3,
+    data: 4,
+    productivity: 5,
+    network: 6,
+    storage: 7
+
   schema "repositories" do
     field :name,          :string, null: false
     field :icon_id,       :binary_id
@@ -24,6 +34,7 @@ defmodule Core.Schema.Repository do
     field :private_key,   Piazza.Ecto.EncryptedString
     field :secrets,       :map
     field :private,       :boolean, default: false
+    field :category,      Category
 
     belongs_to :integration_resource_definition, ResourceDefinition, on_replace: :update
     belongs_to :publisher, Publisher
@@ -40,6 +51,18 @@ defmodule Core.Schema.Repository do
         on_replace: :delete
 
     timestamps()
+  end
+
+  def for_category(query \\ __MODULE__, category) do
+    from(r in query, where: r.category == ^category)
+  end
+
+  def categories(query \\ __MODULE__) do
+    from(r in query,
+      group_by: r.category,
+      select: %{category: r.category, count: count(r.id)},
+      order_by: [asc: r.category]
+    )
   end
 
   def search(query \\ __MODULE__, sq),
@@ -94,7 +117,7 @@ defmodule Core.Schema.Repository do
   def ordered(query \\ __MODULE__, order \\ [asc: :name]),
     do: from(r in query, order_by: ^order)
 
-  @valid ~w(name publisher_id description documentation secrets private)a
+  @valid ~w(name publisher_id description documentation secrets private category)a
 
   def changeset(model, attrs \\ %{}) do
     model

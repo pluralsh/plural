@@ -34,22 +34,20 @@ export function TagInput({addTag, removeTag, tags, round, ...rest}) {
 }
 
 export function TagContainer({enabled, children, gap, pad, onClick}) {
-  const [hover, setHover] = useState(false)
-  const border = (hover || enabled) ? {side: 'right', color: 'focus', size: '2px'} : null
+  const border = enabled ? {side: 'right', color: 'focus', size: '2px'} : null
   return (
-    <Box
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      pad={pad || {horizontal: 'small', vertical: 'xxsmall'}}
-      hoverIndicator='tone-light'
-      background={enabled ? 'tone-light' : null}
-      focusIndicator={false}
-      direction='row'
-      align='center'
-      gap={gap || 'xsmall'}
-      border={border}
-      onClick={onClick} >
-      {children}
+    <Box pad={pad || {horizontal: 'small'}} border={border}>
+      <Box
+        hoverIndicator='tone-light'
+        focusIndicator={false}
+        direction='row'
+        align='center'
+        round='xsmall'
+        pad='xsmall'
+        gap={gap || 'xsmall'}
+        onClick={onClick}>
+        {children}
+      </Box>
     </Box>
   )
 }

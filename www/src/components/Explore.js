@@ -82,6 +82,12 @@ function Repositories({edges, pageInfo, fetchMore, setTag}) {
 
 function CategoryTags({category, tag, setTag}) {
   const {data, fetchMore} = useQuery(CATEGORY, {variables: {category: category.category}})
+  const loadMore = useCallback(() => fetchMore({
+    variables: {cursor: data.category.tags.pageInfo.endCursor},
+    updateQuery: (prev, {fetchMoreResult: {category}}) => ({
+      ...prev, category: extendConnection(prev.category, category.tags, 'tags')
+    })
+  }), [data, fetchMore])
 
   if (!data) return null
 
@@ -93,16 +99,9 @@ function CategoryTags({category, tag, setTag}) {
         <Tag tag={node} setTag={setTag} enabled={tag === node.tag} />
       ))}
       {tags.pageInfo.hasNextPage && (
-        <Box flex={false} fill='horizontal' pad={{vertical: 'xsmall', horizontal: 'small'}} 
-             hoverIndicator='light-1' 
-             onClick={() => fetchMore({
-               variables: {cursor: tags.pageInfo.endCursor},
-               updateQuery: (prev, {fetchMoreResult: {category}}) => ({
-                 ...prev, category: extendConnection(prev.category, category.tags, 'tags')
-               })
-             })}
-        >
-          <Text size='small'>more...</Text>
+        <Box flex={false} pad='xsmall' margin={{horizontal: 'small'}} 
+             round='xsmall' hoverIndicator='tone-light' onClick={loadMore}>
+          <Text size='small'>see more...</Text>
         </Box>
       )}
     </Box>

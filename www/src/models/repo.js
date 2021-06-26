@@ -1,6 +1,12 @@
 import gql from 'graphql-tag'
 import { UserFragment, PublisherFragment } from './user'
 
+export const CategoryFragment = gql`
+  fragment CategoryFragment on CategoryInfo {
+    category
+    count
+  }
+`
 
 export const RepoFragment = gql`
   fragment RepoFragment on Repository {
@@ -10,6 +16,7 @@ export const RepoFragment = gql`
     documentation
     icon
     private
+    category
     publisher { ...PublisherFragment }
   }
   ${PublisherFragment}

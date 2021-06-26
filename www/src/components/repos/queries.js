@@ -1,5 +1,5 @@
 import gql from 'graphql-tag'
-import { RepoFragment, InstallationFragment, IntegrationFragment, ArtifactFragment } from '../../models/repo'
+import { RepoFragment, InstallationFragment, IntegrationFragment, ArtifactFragment, CategoryFragment } from '../../models/repo'
 import { ChartFragment, VersionFragment, ChartInstallationFragment, VersionTagFragment } from '../../models/chart'
 import { TerraformFragment, TerraformInstallationFragment } from '../../models/terraform'
 import { DockerRepoFragment, DockerImageFragment, VulnerabilityFragment } from '../../models/docker'
@@ -428,4 +428,25 @@ export const DEFERRED_UPDATES = gql`
   }
   ${PageInfo}
   ${DeferredUpdateFragment}
+`
+
+export const CATEGORIES = gql`
+  query {
+    categories { ...CategoryFragment }
+  }
+  ${CategoryFragment}
+`
+
+export const CATEGORY = gql`
+  query Category($category: Category!, $cursor: String) {
+    category(name: $category) {
+      ...CategoryFragment
+      tags(after: $cursor, first: 5) {
+        edges { node { tag count } }
+        pageInfo { ...PageInfo }
+      }
+    }
+  }
+  ${PageInfo}
+  ${CategoryFragment}
 `

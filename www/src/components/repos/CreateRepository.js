@@ -2,13 +2,14 @@ import React, { useState } from 'react'
 import { Box, CheckBox, Text, TextInput } from 'grommet'
 import { DocumentImage } from 'grommet-icons'
 import { useMutation } from 'react-apollo'
-import { Button, SecondaryButton } from 'forge-core'
+import { Button, SecondaryButton, Select } from 'forge-core'
 import { FilePicker } from 'react-file-picker'
 import { CREATE_REPO, REPOS_Q } from './queries'
 import { generatePreview } from '../../utils/file'
 import { TagInput } from './Tags'
 import { appendConnection, updateCache } from '../../utils/graphql'
 import { useHistory } from 'react-router'
+import { Categories } from './constants'
 
 const LABEL_WIDTH = '90px'
 
@@ -60,6 +61,13 @@ export function RepoForm({image, setImage, state, setState, mutation, loading, u
           value={state.description}
           onChange={(e) => setState({...state, description: e.target.value})} />
       </LabeledInput>
+      <LabeledInput label='4. Select a category for the repo'>
+        <Select
+          size='small'
+          value={{value: state.category, label: state.category.toLowerCase()}}
+          options={Object.keys(Categories).map((t) => ({value: t, label: t.toLowerCase()}))}
+          onChange={({value}) => setState({...state, category: value})} />
+      </LabeledInput>
       <LabeledInput label='4. Add tags as needed'>
         <TagInput
           tags={state.tags || []}
@@ -80,7 +88,13 @@ export function RepoForm({image, setImage, state, setState, mutation, loading, u
 
 export default function CreateRepository({publisher}) {
   let history = useHistory()
-  const [state, setState] = useState({name: "", description: "", tags: [], private: false})
+  const [state, setState] = useState({
+    name: "", 
+    description: "", 
+    tags: [], 
+    private: false, 
+    category: Categories.DEVOPS
+  })
   const [image, setImage] = useState(null)
   const attributes = {...state, tags: state.tags.map((t) => ({tag: t}))}
   const [mutation, {loading}] = useMutation(CREATE_REPO, {

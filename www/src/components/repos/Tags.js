@@ -54,7 +54,7 @@ export function TagContainer({enabled, children, gap, pad, onClick}) {
   )
 }
 
-function Tag({tag: {tag, count}, setTag, enabled}) {
+export function Tag({tag: {tag, count}, setTag, enabled}) {
   return (
     <TagContainer enabled={enabled} onClick={() => setTag && setTag(tag)}>
       <Text size='small'># {tag} ({count})</Text>

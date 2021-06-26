@@ -13,6 +13,17 @@ export const ProviderIcons = {
   AZURE: DEFAULT_AZURE_ICON,
 }
 
+export const Categories = {
+  DEVOPS: 'DEVOPS',
+  DATABASE: 'DATABASE',
+  MESSAGING: 'MESSAGING',
+  SECURITY: 'SECURITY',
+  DATA: 'DATA',
+  PRODUCTIVITY: 'PRODUCTIVITY',
+  NETWORK: 'NETWORK',
+  STORAGE: 'STORAGE'
+}
+
 export const Tools = {
   HELM: 'HELM',
   TERRAFORM: 'TERRAFORM'

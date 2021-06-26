@@ -7,7 +7,7 @@ import { Scroller, Button, SecondaryButton, Modal, ModalHeader, Tabs, TabHeader,
         TabHeaderItem, TabContent, BORDER_COLOR, ScrollableContainer } from 'forge-core'
 import yaml from 'js-yaml'
 import { REPO_Q, UPDATE_REPO } from './queries'
-import { DEFAULT_CHART_ICON, DEFAULT_TF_ICON, DEFAULT_DKR_ICON } from './constants'
+import { DEFAULT_CHART_ICON, DEFAULT_TF_ICON, DEFAULT_DKR_ICON, Categories } from './constants'
 import Installation from './Installation'
 import CreateTerraform from './CreateTerraform'
 import { RepoForm } from './CreateRepository'
@@ -196,7 +196,8 @@ function RepoUpdate({repository}) {
     name: repository.name,
     description: repository.description,
     tags: repository.tags.map(({tag}) => tag),
-    private: repository.private
+    private: repository.private,
+    category: repository.category || Categories.DEVOPS
   })
   const [image, setImage] = useState(null)
   const attributes = {...state, tags: state.tags.map((t) => ({tag: t}))}

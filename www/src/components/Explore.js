@@ -1,19 +1,21 @@
 import React, { useState, useContext, useEffect, useCallback } from 'react'
 import { Tabs, TabHeader, TabHeaderItem, TabContent, Scroller } from 'forge-core'
 import { useQuery } from 'react-apollo'
-import { EXPLORE_REPOS, REPO_TAGS } from './repos/queries'
-import { Box, Text, TextInput } from 'grommet'
-import Tags from './repos/Tags'
+import { CATEGORIES, CATEGORY, EXPLORE_REPOS } from './repos/queries'
+import { Box, Collapsible, Text } from 'grommet'
+import { Tag } from './repos/Tags'
 import { RepoIcon, RepoName } from './repos/Repositories'
-import { Search } from 'grommet-icons'
 import { BreadcrumbsContext } from './Breadcrumbs'
 import { extendConnection } from '../utils/graphql'
 import { useHistory } from 'react-router'
 import { sortBy } from 'lodash'
 import { SafeLink } from './utils/Link'
 import { CurrentUserContext } from './login/CurrentUser'
+import { Down, Next } from 'grommet-icons'
+import './explore.css'
 
-const WIDTH = 15
+
+const WIDTH = 20
 
 function EmptyState() {
   return (
@@ -79,24 +81,79 @@ function Repositories({edges, pageInfo, fetchMore, setTag}) {
   )
 }
 
-function TagSidebar({tag, setTag}) {
-  const [q, setQ] = useState('')
-  const {data, fetchMore} = useQuery(REPO_TAGS, {
-    variables: {q: q === '' ? null : q}
-  })
+function CategoryTags({category, tag, setTag}) {
+  const {data, fetchMore} = useQuery(CATEGORY, {variables: {category: category.category}})
 
   if (!data) return null
 
-  const {tags} = data
+  const {tags} = data.category
 
   return (
-    <Box width={`${WIDTH}%`} height='100%' border={{side: 'right', color: 'light-6'}}>
-      <Box flex={false} margin='small' direction='row' align='center'
-            gap='xsmall' border={{side: 'bottom', color: 'light-3'}}>
-        <Search size='14px' />
-        <TextInput plain value={q || ''} onChange={({target: {value}}) => setQ(value)} />
+    <Box flex={false} fill='horizontal'  pad={{vertical: 'xsmall'}} border={{side: 'bottom', color: 'light-6'}}>
+      {tags.edges.map(({node}) => (
+        <Tag tag={node} setTag={setTag} enabled={tag === node.tag} />
+      ))}
+      {tags.pageInfo.hasNextPage && (
+        <Box flex={false} fill='horizontal' pad={{vertical: 'xsmall', horizontal: 'small'}} 
+             hoverIndicator='light-1' 
+             onClick={() => fetchMore({
+               variables: {cursor: tags.pageInfo.endCursor},
+               updateQuery: (prev, {fetchMoreResult: {category}}) => ({
+                 ...prev, category: extendConnection(prev.category, category.tags, 'tags')
+               })
+             })}
+        >
+          <Text size='small'>more...</Text>
+        </Box>
+      )}
+    </Box>
+  )
+}
+
+function Category({category, tag, setTag, unfurl}) {
+  const [open, setOpen] = useState(unfurl)
+  return (
+    <>
+    <Box className='category-header' flex={false} direction='row' align='center' hoverIndicator='light-1' 
+         pad={{horizontal: 'small', vertical: 'xsmall'}}  border={open ? {side: 'bottom', color: 'light-6'} : null}
+         onClick={() => setOpen(!open)}>
+      <Box fill='horizontal' align='center' gap='xsmall' direction='row'>
+        <Text size='small' weight={500}>{category.category.toLowerCase()}</Text>
+        <Box className='hoverable' >
+          <Text size='small' color='dark-3'>({category.count})</Text>
+        </Box>
       </Box>
-      <Tags pad={{vertical: 'xsmall'}} tags={tags} setTag={setTag} fetchMore={fetchMore} tag={tag} />
+      <Box flex={false}>
+        {open && <Down size='small' />}
+        {!open && <Next size='small' />}
+      </Box>
+    </Box>
+    <Collapsible open={open} direction='vertical'>
+      <CategoryTags category={category} tag={tag} setTag={setTag} />
+    </Collapsible>
+    </>
+  )
+}
+
+function TagSidebar({tag, setTag}) {
+  const {data} = useQuery(CATEGORIES)
+
+  if (!data) return null
+
+  const {categories} = data
+
+  return (
+    <Box flex={false} width={`${WIDTH}%`} height='100%' style={{overflow: 'auto'}}>
+      <Box flex={false}>
+        {categories.map((category, ind) => (
+          <Category 
+            key={category.category}
+            unfurl={ind === 0}
+            category={category}
+            tag={tag}
+            setTag={setTag} />
+        ))}
+      </Box>
     </Box>
   )
 }

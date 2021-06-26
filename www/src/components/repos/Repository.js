@@ -191,6 +191,19 @@ function RepoCredentials({publicKey}) {
   )
 }
 
+function buildAttributes(attrs, image, darkImage) {
+  let attributes = {...attrs}
+  if (image) {
+    attributes['icon'] = image.file
+  }  
+
+  if (darkImage) {
+    attributes['darkIcon'] = darkImage.file
+  }
+
+  return attributes
+}
+
 function RepoUpdate({repository}) {
   const [state, setState] = useState({
     name: repository.name,
@@ -200,9 +213,10 @@ function RepoUpdate({repository}) {
     category: repository.category || Categories.DEVOPS
   })
   const [image, setImage] = useState(null)
+  const [darkImage, setDarkImage] = useState(null)
   const attributes = {...state, tags: state.tags.map((t) => ({tag: t}))}
   const [mutation, {loading}] = useMutation(UPDATE_REPO, {
-    variables: {id: repository.id, attributes: image ? {...attributes, icon: image.file} : attributes},
+    variables: {id: repository.id, attributes: buildAttributes(attributes, image, darkImage)},
     update: (cache, { data: { updateRepository } }) => {
       const prev = cache.readQuery({ query: REPO_Q, variables: {repositoryId: repository.id} })
       cache.writeQuery({query: REPO_Q, variables: {repositoryId: repository.id}, data: {
@@ -217,6 +231,8 @@ function RepoUpdate({repository}) {
       setState={setState}
       image={image}
       setImage={setImage}
+      darkImage={darkImage}
+      setDarkImage={setDarkImage}
       mutation={mutation}
       loading={loading}
       update

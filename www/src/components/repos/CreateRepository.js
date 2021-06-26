@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Box, CheckBox, Text, TextInput } from 'grommet'
-import { DocumentImage } from 'grommet-icons'
+import { Add } from 'grommet-icons'
 import { useMutation } from 'react-apollo'
 import { Button, SecondaryButton, Select } from 'forge-core'
 import { FilePicker } from 'react-file-picker'
@@ -22,29 +22,41 @@ export function LabeledInput({label, children}) {
   )
 }
 
-export function RepoForm({image, setImage, state, setState, mutation, loading, update}) {
+function ImagePicker({image, setImage, background, label}) {
+  return (
+    <Box direction='row' gap='small' align='center'>
+      <Box width='70px' height='70px' border pad='xsmall' 
+           align='center' justify='center' background={background}>
+        {image ? <img alt='' width='50px' height='50px' src={image.previewUrl} /> :
+          <Add size='20px' />
+        }
+      </Box>
+      <Box gap='xsmall'>
+        <Text size='small'>{image ? image.file.name : 'Select an image'}</Text>
+        <FilePicker
+          extensions={['jpg', 'jpeg', 'png']}
+          dims={{minWidth: 100, maxWidth: 500, minHeight: 100, maxHeight: 500}}
+          onChange={(file) => generatePreview(file, setImage)}
+        >
+          <SecondaryButton round='xsmall' label={label || 'Upload an icon'} />
+        </FilePicker>
+      </Box>
+    </Box>
+  )
+}
+
+export function RepoForm({image, setImage, darkImage, setDarkImage, state, setState, mutation, loading, update}) {
   return (
     <Box flex={false} pad='medium' gap='medium'>
-      <LabeledInput label='1. Upload an image'>
-      <Box direction='row' gap='small' align='center'>
-        <Box width='70px' height='70px' border pad='xsmall'
-          align='center' justify='center'>
-          {image ? <img alt='' width='50px' height='50px' src={image.previewUrl} /> :
-            <DocumentImage size='20px' />
-          }
+      <LabeledInput label='1. Upload icons for your repo'>
+        <Box direction='row' gap='medium'>
+          <ImagePicker image={image} setImage={setImage} />
+          <ImagePicker 
+            image={darkImage} 
+            setImage={setDarkImage}
+            background='backgroundColor'
+            label='Icon for dark backgrounds (optional)' />
         </Box>
-        <Box gap='xsmall'>
-          <Text size='small'>{image ? image.file.name : 'Select an image'}</Text>
-          <FilePicker
-            extensions={['jpg', 'jpeg', 'png']}
-            dims={{minWidth: 100, maxWidth: 500, minHeight: 100, maxHeight: 500}}
-            onChange={(file) => generatePreview(file, setImage)}
-            onError={console.log}
-          >
-            <SecondaryButton round='xsmall' label='Upload an icon' />
-          </FilePicker>
-        </Box>
-      </Box>
       </LabeledInput>
       <LabeledInput label='2. Give it a name'>
         <TextInput
@@ -96,9 +108,12 @@ export default function CreateRepository({publisher}) {
     category: Categories.DEVOPS
   })
   const [image, setImage] = useState(null)
+  const [darkImage, setDarkImage] = useState(null)
   const attributes = {...state, tags: state.tags.map((t) => ({tag: t}))}
   const [mutation, {loading}] = useMutation(CREATE_REPO, {
-    variables: {attributes: {...attributes, icon: image && image.file}},
+    variables: {attributes: {
+      ...attributes, icon: image && image.file, darkIcon: darkImage && darkImage.file}
+    },
     update: (cache, { data: { createRepository } }) => updateCache(cache, {
       query: REPOS_Q, 
       variables: {publisherId: publisher.id},
@@ -112,6 +127,8 @@ export default function CreateRepository({publisher}) {
       label='Create a new repository'
       image={image}
       setImage={setImage}
+      darkImage={darkImage}
+      setDarkImage={setDarkImage}
       state={state}
       setState={setState}
       mutation={mutation}

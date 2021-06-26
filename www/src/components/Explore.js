@@ -99,7 +99,7 @@ function CategoryTags({category, tag, setTag}) {
         <Tag tag={node} setTag={setTag} enabled={tag === node.tag} />
       ))}
       {tags.pageInfo.hasNextPage && (
-        <Box flex={false} pad='xsmall' margin={{horizontal: 'small'}} 
+        <Box flex={false} pad='xsmall' margin={{horizontal: 'xsmall'}} 
              round='xsmall' hoverIndicator='tone-light' onClick={loadMore}>
           <Text size='small'>see more...</Text>
         </Box>
@@ -226,7 +226,7 @@ export default function Explore() {
 
   return (
     <Box direction='row' fill>
-      <Box background='backgroundColor' width='300px' fill='vertical' pad='medium' gap='small'>
+      <Box flex={false} background='backgroundColor' fill='vertical' pad={{vertical: 'medium', horizontal: 'small'}} gap='xsmall'>
         <SectionItem name='public' label='Public Repositories' icon={<ShareOption size='14px' />} />
         <SectionItem name='installed' label='Installed Repositories' icon={<InstallOption size='14px' />} />
         {me.publisher && <SectionItem name='published' label='Published Repositories' icon={<Share size='14px' />} />}

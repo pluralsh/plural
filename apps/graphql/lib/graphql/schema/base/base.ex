@@ -56,4 +56,13 @@ defmodule GraphQl.Schema.Base do
       end
     end
   end
+
+  defmacro image(name, opts \\ []) do
+    field_name = Keyword.get(opts, :field, name)
+    quote do
+      field unquote(name), :string, resolve: fn
+        res, _, _ -> {:ok, Core.Storage.url({Map.get(res, unquote(field_name)), res}, :original)}
+      end
+    end
+  end
 end

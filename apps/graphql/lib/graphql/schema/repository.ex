@@ -19,6 +19,7 @@ defmodule GraphQl.Schema.Repository do
     field :category,      :category
     field :secrets,       :yml
     field :icon,          :upload_or_url
+    field :dark_icon,     :upload_or_url
     field :integration_resource_definition, :resource_definition_attributes
     field :tags,          list_of(:tag_attributes)
     field :dashboards,    list_of(:dashboard_attributes)
@@ -134,9 +135,8 @@ defmodule GraphQl.Schema.Repository do
     field :tags,          list_of(:tag), resolve: dataloader(Repository)
     field :artifacts,     list_of(:artifact), resolve: dataloader(Repository)
 
-    field :icon, :string, resolve: fn
-      repo, _, _ -> {:ok, Core.Storage.url({repo.icon, repo}, :original)}
-    end
+    image :icon
+    image :dark_icon
 
     field :installation, :installation, resolve: fn
       repo, _, context -> Repository.resolve_installation(repo, context)

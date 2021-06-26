@@ -14,7 +14,6 @@ import { CurrentUserContext } from './login/CurrentUser'
 import { Down, Next } from 'grommet-icons'
 import './explore.css'
 
-
 const WIDTH = 20
 
 function EmptyState() {

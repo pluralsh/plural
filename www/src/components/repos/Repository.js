@@ -110,7 +110,7 @@ function Tf({terraform, hasNext}) {
   )
 }
 
-function Charts({edges, pageInfo, fetchMore}) {
+export function Charts({edges, pageInfo, fetchMore}) {
   return (
     <Scroller id='charts'
       edges={edges}
@@ -124,7 +124,7 @@ function Charts({edges, pageInfo, fetchMore}) {
   )
 }
 
-function Terraform({edges, pageInfo, fetchMore}) {
+export function Terraform({edges, pageInfo, fetchMore}) {
   return (
     <Scroller id='terraform'
       edges={edges}
@@ -146,7 +146,7 @@ function EmptyTab({text}) {
   )
 }
 
-function DockerRepos({edges, repo, pageInfo, fetchMore}) {
+export function DockerRepos({edges, repo, pageInfo, fetchMore}) {
   return (
     <Scroller id='docker'
       edges={edges}
@@ -181,12 +181,15 @@ function TerraformCreateModal({repositoryId}) {
   )
 }
 
-function RepoCredentials({publicKey}) {
+export function RepoCredentials({publicKey}) {
   return (
-    <Box pad='small'>
-      <Highlight language='plaintext'>
+    <Box fill pad='small'>
+      {publicKey && <Highlight language='plaintext'>
         {publicKey}
-      </Highlight>
+      </Highlight>}
+      {!publicKey && (
+        <Text size='small'>You are not allowed to view repository keys</Text>
+      )}
     </Box>
   )
 }
@@ -204,7 +207,7 @@ function buildAttributes(attrs, image, darkImage) {
   return attributes
 }
 
-function RepoUpdate({repository}) {
+export function RepoUpdate({repository}) {
   const [state, setState] = useState({
     name: repository.name,
     description: repository.description,
@@ -224,6 +227,7 @@ function RepoUpdate({repository}) {
       }})
     }
   })
+
   return (
     <RepoForm
       label={`Update ${repository.name}`}
@@ -240,7 +244,7 @@ function RepoUpdate({repository}) {
   )
 }
 
-function UpdateSecrets({repository}) {
+export function UpdateSecrets({repository}) {
   const [secrets, setSecrets] = useState(yaml.safeDump(repository.secrets || {}, null, 2))
   const [mutation, {loading}] = useMutation(UPDATE_REPO, {
     variables: {id: repository.id, attributes: {secrets}},
@@ -268,18 +272,18 @@ function UpdateSecrets({repository}) {
   )
 }
 
-export function RepositoryIcon({size, repository, headingSize}) {
+export function RepositoryIcon({size, repository, headingSize, dark}) {
   return (
     <Box direction='row' align='center' gap='small' fill='horizontal'>
       <Box width={size} height={size} flex={false}>
-        <img alt='' width={size} height={size} src={repository.icon} />
+        <img alt='' width={size} height={size} src={dark ? repository.darkIcon || repository.icon : repository.icon} />
       </Box>
-      <Box pad='small' flex={false}>
+      <Box pad='small' fill='horizontal' wrap>
         <Box direction='row' gap='xsmall' align='center'>
           <Text weight='bold' size={headingSize}>{repository.name}</Text>
           {repository.private && <Lock size='small' />}
         </Box>
-        <Text size='small' color='dark-3'>{repository.description}</Text>
+        <Text size='small' color={dark ? null : 'dark-3'}>{repository.description}</Text>
       </Box>
     </Box>
   )

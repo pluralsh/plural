@@ -15,6 +15,7 @@ export const RepoFragment = gql`
     description
     documentation
     icon
+    darkIcon
     private
     category
     publisher { ...PublisherFragment }
@@ -71,6 +72,7 @@ export const ArtifactFragment = gql`
     blob
     type
     platform
+    arch
     filesize
     sha
     readme

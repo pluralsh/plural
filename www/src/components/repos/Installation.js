@@ -13,7 +13,7 @@ import { EditInstallation } from './EditInstallation'
 import { Tab, TabContent, Tabs } from '../utils/Tabs'
 import './container.css'
 
-function Plans({repository}) {
+export function Plans({repository, nocreate}) {
   const [open, setOpen] = useState(false)
   const [modal, setModal] = useState(null)
   const {plans, editable, installation} = repository
@@ -48,7 +48,7 @@ function Plans({repository}) {
       }
       {editable && (<CreateAnchor onClick={() => setOpen(true)} />)}
     </Box>
-    {open && <CreatePlan repository={repository} setOpen={setOpen} />}
+    {open && !nocreate && <CreatePlan repository={repository} setOpen={setOpen} />}
     </>
   )
 }
@@ -61,7 +61,7 @@ export function DetailContainer({children, ...rest}) {
   )
 }
 
-function InstallationInner({installation, repository}) {
+export function InstallationInner({installation, repository}) {
   const [mutation] = useMutation(INSTALL_REPO, {
     variables: {repositoryId: repository.id},
     refetchQueries: [{query: REPO_Q, variables: {repositoryId: repository.id}}]

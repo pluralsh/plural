@@ -1,12 +1,16 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useCallback } from 'react'
 import styled from 'styled-components'
-import { Box, Text, Drop, Markdown, Table, TableBody, TableRow, TableCell } from 'grommet'
-import { Apple, Windows, Ubuntu, Terminal, Previous, Cube } from 'grommet-icons'
+import { Box, Text, Drop, Markdown, Table, TableBody, TableRow, TableCell, Header } from 'grommet'
+import { Apple, Windows, Ubuntu, Terminal, Previous, Cube, DocumentText, List, Download } from 'grommet-icons'
 import { normalizeColor } from 'grommet/utils'
 import { download } from '../../utils/file'
 import { MARKDOWN_STYLING } from './Chart'
 import fs from 'filesize'
 import { DetailContainer } from './Installation'
+import { HeaderItem } from './Docker'
+import { Icon } from '../accounts/Group'
+import Collapsible from 'react-collapsible'
+import moment from 'moment'
 
 const ICON_SIZE = '20px'
 const SMALL_ICON_SIZE = '13px'
@@ -40,7 +44,7 @@ function ArtifactIcon({type}) {
 
 function Readme({readme}) {
   return (
-    <Box pad={{horizontal: 'small', bottom: 'small'}} style={{maxWidth: '40vw', overflow: 'auto'}}>
+    <Box pad={{horizontal: 'small', bottom: 'small'}} style={{overflow: 'auto'}}>
       <Markdown components={MARKDOWN_STYLING}>
         {readme}
       </Markdown>
@@ -183,6 +187,67 @@ export function DetailHeader({text, modifier}) {
         <Text weight={500} size='small'>{text}</Text>
       </Box>
       {modifier}
+    </Box>
+  )
+}
+
+const ROW_HEIGHT = '50px'
+
+function ArtifactRow({artifact}) {
+  const [open, setOpen] = useState(null)
+  const doSetOpen = useCallback((tab) => open === tab ? setOpen(null) : setOpen(tab), [setOpen, open])
+
+  return (
+    <>
+    <Box flex={false} height={ROW_HEIGHT} direction='row' gap='small' align='center' 
+         pad={{horizontal: 'small'}} border={{side: 'bottom', color: 'light-5'}}>
+      <Box width='20%' direction='row' gap='small' align='horizontal' align='center'>
+        <ArtifactIcon type={artifact.type} />
+        <Text size='small' weigth={500}>{artifact.name}</Text>
+      </Box>
+      <Box width='20%' direction='row' gap='small' align='horizontal' align='center'>
+        <ArtifactPlatform platform={artifact.platform} />
+        <Text size='small' color='dark-3'>({artifact.arch})</Text>
+      </Box>
+      <HeaderItem text={fs(artifact.filesize)} width='20%' nobold />
+      <HeaderItem text={moment(artifact.updatedAt || artifact.insertedAt).format('lll')} width='20%' nobold />
+      <Box width='20%' direction='row' align='center' gap='small'>
+        <Icon icon={DocumentText} tooltip='readme' onClick={() => doSetOpen('readme')} />
+        <Icon icon={List} tooltip='details' onClick={() => doSetOpen('details')} />
+        <Icon icon={Download} tooltip='download' onClick={() => download(artifact.blob)} />
+      </Box>
+    </Box>
+    <Collapsible open={!!open} direction='vertical'>
+      <Box fill='horizontal' pad='small'>
+        {open === 'readme' && <Readme readme={artifact.readme} />}
+        {open == 'details' && <ArtifactDetails {...artifact} />}
+      </Box>
+    </Collapsible>
+    </>
+  )
+}
+
+
+function ArtifactHeader() {
+  return (
+    <Box flex={false} height={ROW_HEIGHT} direction='row' gap='small' align='center' 
+         pad={{horizontal: 'small'}} border={{side: 'bottom', color: 'light-5'}}>
+      <HeaderItem text='Name' width='20%' />
+      <HeaderItem text='Platform' width='20%' />
+      <HeaderItem text='Filesize' width='20%' />
+      <HeaderItem text='Created' width='20%' />
+      <Box width='20%' />
+    </Box>
+  )
+}
+
+export function ArtifactTable({artifacts}) {
+  return (
+    <Box fill style={{overflow: 'auto'}}>
+      <ArtifactHeader />
+      <Box flex={false}>
+      {artifacts.map((art) => <ArtifactRow key={art.id} artifact={art} />)}
+      </Box>
     </Box>
   )
 }

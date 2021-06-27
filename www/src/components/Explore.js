@@ -96,7 +96,7 @@ function CategoryTags({category, tag, setTag}) {
   return (
     <Box flex={false} fill='horizontal'  pad={{vertical: 'xsmall'}} border={{side: 'bottom', color: 'light-6'}}>
       {tags.edges.map(({node}) => (
-        <Tag tag={node} setTag={setTag} enabled={tag === node.tag} />
+        <Tag key={node.tag} tag={node} setTag={setTag} enabled={tag === node.tag} />
       ))}
       {tags.pageInfo.hasNextPage && (
         <Box flex={false} pad='xsmall' margin={{horizontal: 'xsmall'}} 
@@ -162,15 +162,12 @@ function filters(tab, me) {
   return {}
 }
 
-export function SectionItem({name, label, icon}) {
-  const {group} = useParams()
+export function SectionItemContainer({label, icon, selected, location, ...props}) {
   let hist = useHistory()
-  const selected = name === group
-
   return (
-    <Box pad='small' round='xsmall' background={selected ? '#000' : null} fill='horizontal' 
+    <Box flex={false} pad='small' round='xsmall' background={selected ? '#000' : null} fill='horizontal' 
          align='center' gap='small' direction='row' hoverIndicator='#000'
-         onClick={selected ? null : () => hist.push(`/explore/${name}`)}>
+         onClick={selected ? null : () => hist.push(location)} {...props}>
       <Box flex={false}>
         {icon}
       </Box>
@@ -178,6 +175,17 @@ export function SectionItem({name, label, icon}) {
         {label}
       </Box>
     </Box>
+  )
+}
+
+export function SectionItem({name, label, icon}) {
+  const {group} = useParams()
+  return (
+    <SectionItemContainer
+      label={label}
+      icon={icon}
+      selected={name === group}
+      location={`/explore/${name}`} />
   )
 }
 

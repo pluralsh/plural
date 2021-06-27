@@ -92,18 +92,20 @@ export function Rollouts({repository: {id: repositoryId}}) {
   return (
     <Box fill>
       <RolloutHeader />
-      <StandardScroller
-        listRef={listRef}
-        setListRef={setListRef}
-        refreshKey={repositoryId}
-        hasNextPage={pageInfo.hasNextPage}
-        items={edges}
-        loading={loading} 
-        mapper={({node}) => <Rollout rollout={node} />} 
-        loadNextPage={() => pageInfo.hasNextPage && fetchMore({
-          variables: {cursor: pageInfo.endCursor},
-          updateQuery: (prev, {fetchMoreResult: {rollouts}}) => extendConnection(prev, rollouts, 'rollouts')
-        })} />
+      <Box fill>
+        <StandardScroller
+          listRef={listRef}
+          setListRef={setListRef}
+          refreshKey={repositoryId}
+          hasNextPage={pageInfo.hasNextPage}
+          items={edges}
+          loading={loading} 
+          mapper={({node}) => <Rollout rollout={node} />} 
+          loadNextPage={() => pageInfo.hasNextPage && fetchMore({
+            variables: {cursor: pageInfo.endCursor},
+            updateQuery: (prev, {fetchMoreResult: {rollouts}}) => extendConnection(prev, rollouts, 'rollouts')
+          })} />
+      </Box>
     </Box>
   )
 }

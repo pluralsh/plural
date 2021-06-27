@@ -5,7 +5,6 @@ import { PluralConfigurationContext, PluralProvider } from './login/CurrentUser'
 import MyPublisher from './publisher/MyPublisher'
 import Publisher from './publisher/Publisher'
 import Toolbar from './Toolbar'
-import Repository from './repos/Repository'
 import Chart from './repos/Chart'
 import Terraform from './repos/Terraform'
 import EditUser from './users/EditUser'
@@ -30,6 +29,7 @@ import { Docker, DockerRepository } from './repos/Docker'
 import { Audits } from './accounts/Audits'
 import { UpgradeQueues } from './upgrades/UpgradeQueues'
 import { UpgradeQueue } from './upgrades/UpgradeQueue'
+import { RepoDirectory } from './repos/RepoDirectory'
 
 export const TOOLBAR_SIZE = '50px'
 
@@ -74,8 +74,18 @@ export default function Plural() {
                   <Route path='/publishers' component={Publishers} />
                   <Route path='/dkr/repo/:id' component={DockerRepository} />
                   <Route path='/dkr/img/:id' component={Docker} />
-                  <Route path='/repositories/:repositoryId/integrations' component={IntegrationPage} />
-                  <Route path='/repositories/:repositoryId' component={Repository} />
+                  <Route path='/repositories/:id/integrations' component={IntegrationPage} />
+                  <Route exact path='/repositories/:id' render={(props) => (
+                    <Redirect to={`/repositories/${props.match.params.id}/bundles`} />
+                  )} />
+                  <Route exact path='/repositories/:id/packages' render={(props) => (
+                    <Redirect to={`/repositories/${props.match.params.id}/packages/helm`} />
+                  )} />
+                  <Route exact path='/repositories/:id/edit' render={(props) => (
+                    <Redirect to={`/repositories/${props.match.params.id}/edit/details`} />
+                  )} />
+                  <Route path='/repositories/:id/:group/:subgroup' component={RepoDirectory} />
+                  <Route path='/repositories/:id/:group' component={RepoDirectory} />
                   <Route path='/charts/:chartId' component={Chart} />
                   <Route path='/terraform/:tfId' component={Terraform} />
                   <Route exact path='/me/edit'>

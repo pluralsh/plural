@@ -27,11 +27,12 @@ export function SidebarIcon({icon, text, selected, path}) {
       margin='xxsmall'
       round='xsmall'
       height={SIDEBAR_ICON_HEIGHT}
+      width={SIDEBAR_ICON_HEIGHT}
       hoverIndicator='sidebarHover'
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       onClick={() => history.push(path)}
-      background={selected ? 'black' : null}
+      background={selected ? 'sidebarHover' : null}
       direction='row'>
       {icon}
     </Box>
@@ -48,10 +49,10 @@ export function SidebarIcon({icon, text, selected, path}) {
 const OPTIONS = [
   {text: 'Explore', icon: <Package size={ICON_HEIGHT} />, path: '/explore'},
   {text: 'User', icon: <User size={ICON_HEIGHT} />, path: '/me/edit'},
-  {text: 'Account', icon: <Group size={ICON_HEIGHT} />, path: '/accounts/edit/users'},
+  {text: 'Account', icon: <Group size={ICON_HEIGHT} />, path: '/accounts/edit'},
   {text: 'Upgrades', icon: <Upgrade size={ICON_HEIGHT} />, path: '/upgrades'},
-  {text: 'Incidents', icon: <Alert size={ICON_HEIGHT} />, path: '/incidents'},
   {text: 'Responses', icon: <Aid size={ICON_HEIGHT} />, path: '/incidents/responses'},
+  {text: 'Incidents', icon: <Alert size={ICON_HEIGHT} />, path: '/incidents'},
   {text: 'Integrations', icon: <Network size={ICON_HEIGHT} />, path: '/webhooks'},
   {text: 'Audits', icon: <List size={ICON_HEIGHT} />, path: '/audits'},
 ]
@@ -60,7 +61,8 @@ export default function Sidebar() {
   const me = useContext(CurrentUserContext)
   let hist = useHistory()
   const loc = useLocation()
-  const active = Math.max(OPTIONS.findIndex(({path}) => path === loc.pathname), 0)
+  console.log(loc.pathname)
+  const active = Math.max(OPTIONS.findIndex(({path}) => loc.pathname.startsWith(path)), 0)
 
   return (
     <Box width={SIDEBAR_WIDTH} flex={false} background='sidebar' fill='vertical'>

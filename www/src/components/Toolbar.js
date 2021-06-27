@@ -15,13 +15,13 @@ export default function Toolbar() {
   let history = useHistory()
 
   return (
-    <Box direction='row' fill='horizontal' align='center' gap='small'>
+    <Box direction='row' fill='horizontal' align='center'>
       <Box focusIndicator={false} width={SIDEBAR_WIDTH} height='100%' justify='center' align='center'
            onClick={() => history.push('/')} flex={false}>
         <Image src={PLRL_ICON} height='30px' />
       </Box>
       <Breadcrumbs />
-      <Box direction='row' width='100%' align='center' justify='end'>
+      <Box direction='row' width='100%' align='center' justify='end' margin={{right: 'small'}}>
         <SearchRepositories />
       </Box>
       <Notifications />

@@ -65,6 +65,9 @@ export default function Plural() {
               <Box background='white' fill>
                 <Switch>
                   <Route path='/accounts/edit/:section' component={EditAccount} />
+                  <Route exact path='/accounts/edit'>
+                    <Redirect to='/accounts/edit/users' />
+                  </Route>
                   <Route path='/accounts/billing/:section' component={EditBilling} />
                   <Route path='/publishers/mine/:editing' component={MyPublisher} />
                   <Route path='/publishers/:publisherId' component={Publisher} />

@@ -226,10 +226,10 @@ export default function Explore() {
 
   return (
     <Box direction='row' fill>
-      <Box flex={false} background='backgroundColor' fill='vertical' pad={{vertical: 'medium', horizontal: 'small'}} gap='xsmall'>
-        <SectionItem name='public' label='Public Repositories' icon={<ShareOption size='14px' />} />
-        <SectionItem name='installed' label='Installed Repositories' icon={<InstallOption size='14px' />} />
-        {me.publisher && <SectionItem name='published' label='Published Repositories' icon={<Share size='14px' />} />}
+      <Box flex={false} width='175px' background='backgroundColor' fill='vertical' pad={{vertical: 'medium', right: 'small'}} gap='xsmall'>
+        <SectionItem name='public' label='Public' icon={<ShareOption size='14px' />} />
+        <SectionItem name='installed' label='Installed' icon={<InstallOption size='14px' />} />
+        {me.publisher && <SectionItem name='published' label='Published' icon={<Share size='14px' />} />}
       </Box>
       <Box fill>
         <SectionContent name='public' header='Public Repositories'>

@@ -84,7 +84,7 @@ export default function Me({me}) {
     <>
     <Box flex={false} ref={ref} height={TOOLBAR_SIZE} direction='row'
          gap='small' onClick={() => setOpen(true)} focusIndicator={false} align='center'
-         justify='center' hoverIndicator='sidebarHover' pad={{right: 'medium'}}>
+         justify='center' hoverIndicator='sidebarHover' pad={{right: 'medium', left: 'small'}}>
       <Avatar user={account} size='40px' />
       <Box>
         <Text size='small' weight={500}>{account && account.name}</Text>

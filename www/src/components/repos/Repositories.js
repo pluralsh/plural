@@ -138,7 +138,7 @@ export default function Repositories({publisher, deletable, columns}) {
   if (loading || !data) return null
 
   return (
-    <Box pad='small'>
+    <Box fill pad='small'>
       <RepositoryList
         repositores={data.repositories}
         fetchMore={fetchMore}

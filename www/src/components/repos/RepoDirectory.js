@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import { Loading, ModalHeader } from 'forge-core'
-import { SectionItemContainer } from '../Explore'
+import { SectionContentContainer, SectionItemContainer } from '../Explore'
 import { Add, Configure, Deploy, Edit, Install, Package, Script, Plan as PlanIcon } from 'grommet-icons'
 import Collapsible from 'react-collapsible'
 import { RepositoryIcon } from './Repository'
 import { InstallationInner, Plans } from './Installation'
-import { Box, Layer, Text } from 'grommet'
+import { Box, Layer } from 'grommet'
 import { EditInstallation } from './EditInstallation'
 import CreatePlan from '../payments/CreatePlan'
 import Recipes from './Recipes'
@@ -20,21 +20,15 @@ import { ArtifactTable } from './Artifacts'
 const ICON_SIZE = '14px'
 const IMG_SIZE = '75px'
 
+
 function SectionContent({name, header, children, subgroup: subgroupName}) {
   const {group, subgroup} = useParams()
-  console.log(group)
-  console.log(subgroup)
   if (subgroup !== subgroupName || group !== name) return null
 
   return (
-    <Box fill>
-      <Box flex={false} pad='small' border={{side: 'bottom', color: 'light-5'}}>
-        <Text size='small' weight={500}>{header}</Text>
-      </Box>
-      <Box fill>
-        {children}
-      </Box>
-    </Box>
+    <SectionContentContainer header={header}>
+      {children}
+    </SectionContentContainer>
   )
 }
 
@@ -105,23 +99,6 @@ export function RepoDirectory() {
             name='bundles' 
             label='Bundles' 
             icon={Script} />
-          {repository.installation && (
-            <>
-            <SectionItem
-              name='config'
-              label='Configure'
-              icon={Configure}
-              onClick={() => setOpen('config')} />
-            {open === 'config' && (
-              <Layer modal onClickOutside={() => setOpen(null)}>
-                <Box width='400px'>
-                  <ModalHeader text={`Configure installation of ${repository.name}`} setOpen={setOpen} />
-                  <EditInstallation installation={repository.installation} repository={repository} />
-                </Box>
-              </Layer>
-            )}
-            </>
-          )}
           <Box flex={false}>
             <SectionItem
               name='packages'
@@ -143,6 +120,23 @@ export function RepoDirectory() {
                 label='Docker' />
             </SubgroupContainer>
           </Box>
+          {repository.installation && (
+            <>
+            <SectionItem
+              name='config'
+              label='Configure'
+              icon={Configure}
+              onClick={() => setOpen('config')} />
+            {open === 'config' && (
+              <Layer modal onClickOutside={() => setOpen(null)}>
+                <Box width='400px'>
+                  <ModalHeader text={`Configure installation of ${repository.name}`} setOpen={setOpen} />
+                  <EditInstallation installation={repository.installation} repository={repository} />
+                </Box>
+              </Layer>
+            )}
+            </>
+          )}
           <SectionItem
             name='deployments'
             label='Deployments'

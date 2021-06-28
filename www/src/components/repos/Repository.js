@@ -25,6 +25,7 @@ import { RepoView, ViewToggle } from './ViewToggle'
 import { Rollouts } from '../upgrades/Rollouts'
 import "ace-builds/src-noconflict/mode-yaml"
 import "ace-builds/src-noconflict/theme-terminal"
+import { SectionPortal } from '../Explore'
 
 function Container({children, onClick, hasNext, noPad}) {
   return (
@@ -265,9 +266,9 @@ export function UpdateSecrets({repository}) {
       <AceEditor mode='yaml' theme='terminal' height='300px' width='100%' name='secrets'
         value={secrets} onChange={setSecrets} showGutter showPrintMargin
         highlightActiveLine editorProps={{ $blockScrolling: true }} />
-      <Box direction='row' justify='end'>
+      <SectionPortal>
         <Button loading={loading} label='Save' onClick={mutation} />
-      </Box>
+      </SectionPortal>
     </Box>
   )
 }

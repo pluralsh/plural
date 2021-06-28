@@ -13,6 +13,7 @@ import { useHistory, useParams } from 'react-router'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 import { SIDEBAR_WIDTH } from '../constants'
 import { Keys } from './Keys'
+import { SectionContentContainer, SectionPortal } from '../Explore'
 
 export const EditContext = React.createContext({})
 
@@ -63,10 +64,9 @@ export function EditContent({edit, name, children}) {
   if (editing !== edit) return null
 
   return (
-    <Box pad={{horizontal: 'small'}} fill>
-      <EditHeader text={name} />
+    <SectionContentContainer header={name}>
       {children}
-    </Box>
+    </SectionContentContainer>
   )
 }
 
@@ -110,53 +110,59 @@ export default function EditUser() {
           <EditSelect edit='tokens' name='Access Tokens' icon={<Robot size='14px' />} />
           <EditSelect edit='keys' name='Public Keys' icon={<License size='14px' />} />
         </Box>
-        <Box fill pad='medium'>
+        <Box fill>
           <EditContent edit='user' name='User Attributes'>
-            <InputCollection>
-              <ResponsiveInput
-                value={attributes.name}
-                label='name'
-                onChange={({target: {value}}) => setAttributes({...attributes, name: value})} />
-              <ResponsiveInput
-                value={attributes.email}
-                label='email'
-                onChange={({target: {value}}) => setAttributes({...attributes, email: value})} />
-            </InputCollection>
-            <Box direction='row' justify='end'>
-              <Button loading={loading} onClick={mutation} flex={false} label='Update' />
+            <Box pad='small'>
+              <InputCollection>
+                <ResponsiveInput
+                  value={attributes.name}
+                  label='name'
+                  onChange={({target: {value}}) => setAttributes({...attributes, name: value})} />
+                <ResponsiveInput
+                  value={attributes.email}
+                  label='email'
+                  onChange={({target: {value}}) => setAttributes({...attributes, email: value})} />
+              </InputCollection>
+              <SectionPortal>
+                <Button loading={loading} onClick={mutation} flex={false} label='Update' />
+              </SectionPortal>
             </Box>
           </EditContent>
           <EditContent edit='pwd' name='Password'>
-            <InputCollection>
-              <ResponsiveInput
-                value={password}
-                label='password'
-                type='password'
-                onChange={({target: {value}}) => setPassword(value)} />
-              <ResponsiveInput
-                value={confirm}
-                label='confirm'
-                type='password'
-                onChange={({target: {value}}) => setConfirm(value)} />
-            </InputCollection>
-            <Box direction='row' justify='end' align='center'>
-              <Box fill='horizontal' align='center' direction='row' gap='small'>
-                {disabled ?
-                  <StatusCritical size='15px' color={color} /> :
-                  <Checkmark size='15px' color={color} />}
-                <Text size='small' color={color}>
-                  {reason}
-                </Text>
-              </Box>
-              <Button
-                disabled={disabled}
-                loading={loading}
-                onClick={mutation}
-                label='Update' />
+            <Box pad='small'>
+              <InputCollection>
+                <ResponsiveInput
+                  value={password}
+                  label='password'
+                  type='password'
+                  onChange={({target: {value}}) => setPassword(value)} />
+                <ResponsiveInput
+                  value={confirm}
+                  label='confirm'
+                  type='password'
+                  onChange={({target: {value}}) => setConfirm(value)} />
+              </InputCollection>
+              <SectionPortal>
+                <Box flex={false} gap='small' direction='row' align='center'>
+                  {disabled ?
+                    <StatusCritical size='15px' color={color} /> :
+                    <Checkmark size='15px' color={color} />}
+                  <Text size='small' color={color}>
+                    {reason}
+                  </Text>
+                  <Button
+                    disabled={disabled}
+                    loading={loading}
+                    onClick={mutation}
+                    label='Update' />
+                </Box>
+              </SectionPortal>
             </Box>
           </EditContent>
           <EditContent edit='installations' name='Installations'>
-            <Installations edit />
+            <Box fill pad='small'>
+              <Installations edit />
+            </Box>
           </EditContent>
           <EditContent edit='tokens' name='Tokens'>
             <Tokens />

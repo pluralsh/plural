@@ -13,6 +13,7 @@ import 'react-credit-cards/es/styles-compiled.css';
 import './stripe.css'
 import './billing.css'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
+import { SectionPortal } from '../Explore'
 
 function _CardForm({stripe, onCompleted}) {
   const [stripeError, setStripeError] = useState(null) 
@@ -143,12 +144,10 @@ export function CardList() {
   return (
     <>
     <Box fill pad='medium'>
-      <Box flex={false} direction='row' fill='horizontal' pad='small'>
+      {edges.map(({node: card}) => <Card key={card.id} card={card} />)}
+      <SectionPortal>
         <Button label='Add a card' onClick={() => setOpen(true)} />
-      </Box>
-      <Box fill pad='small' style={{overflow: 'auto'}} gap='small'>
-        {edges.map(({node: card}) => <Card key={card.id} card={card} />)}
-      </Box>
+      </SectionPortal>
     </Box>
     {open && (
       <Layer modal onEsc={() => setOpen(false)} onClickOutside={() => setOpen(false)}>

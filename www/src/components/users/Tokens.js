@@ -8,6 +8,7 @@ import moment from 'moment'
 import { deepUpdate, extendConnection, removeConnection, updateCache } from '../../utils/graphql'
 import { StandardScroller } from '../utils/SmoothScroller'
 import { HeaderItem } from '../repos/Docker'
+import { SectionPortal } from '../Explore'
 
 const CELL_WIDTH='200px'
 
@@ -113,8 +114,8 @@ function EmptyTokens() {
 }
 
 export function Tokens() {
-  const {data, loading, fetchMore} = useQuery(TOKENS_Q)
-  const [mutation] = useMutation(CREATE_TOKEN, {
+  const {data, fetchMore} = useQuery(TOKENS_Q)
+  const [mutation, {loading}] = useMutation(CREATE_TOKEN, {
     update: (cache, { data: { createToken } }) => {
       const prev = cache.readQuery({query: TOKENS_Q})
       cache.writeQuery({query: TOKENS_Q, data: {
@@ -124,40 +125,35 @@ export function Tokens() {
     }
   })
 
-  if (!data || loading) return null
+  if (!data) return null
+
   const {edges, pageInfo} = data.tokens
+
   return (
-    <Box>
-      <Box direction='row' border={{side: 'bottom', color: BORDER_COLOR}}
-        align='center' justify='end' pad={{vertical: 'xsmall', horizontal: 'small'}}>
-        <Box width={CELL_WIDTH}>
-          <Button
-            pad={{horizontal: 'medium', vertical: 'xsmall'}}
-            label='Create'
-            onClick={mutation}
-            round='xsmall' />
-        </Box>
-      </Box>
-      <Box>
-        <Scroller
-          id='tokens'
-          edges={edges}
-          emptyState={<EmptyTokens />}
-          style={{overflow: 'auto', height: '100%', width: '100%'}}
-          mapper={({node}, next) => (
-            <Token
-              key={node.id}
-              token={node}
-              hasNext={!!next.node} />
-          )}
-          onLoadMore={() => {
-            pageInfo.hasNextPage && fetchMore({
-              variables: {cursor: pageInfo.endCursor},
-              updateQuery: (prev, {fetchMoreResult: {tokens}}) => extendConnection(prev, tokens, 'tokens')
-            })
-          }}
-        />
-      </Box>
+    <>
+    <Box fill>
+      <Scroller
+        id='tokens'
+        edges={edges}
+        emptyState={<EmptyTokens />}
+        style={{overflow: 'auto', height: '100%', width: '100%'}}
+        mapper={({node}, next) => (
+          <Token
+            key={node.id}
+            token={node}
+            hasNext={!!next.node} />
+        )}
+        onLoadMore={() => {
+          pageInfo.hasNextPage && fetchMore({
+            variables: {cursor: pageInfo.endCursor},
+            updateQuery: (prev, {fetchMoreResult: {tokens}}) => extendConnection(prev, tokens, 'tokens')
+          })
+        }}
+      />
     </Box>
+    <SectionPortal>
+      <Button label='Create' onClick={mutation} loading={loading} />
+    </SectionPortal>
+    </>
   )
 }

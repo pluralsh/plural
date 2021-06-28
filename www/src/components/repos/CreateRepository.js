@@ -10,6 +10,7 @@ import { TagInput } from './Tags'
 import { appendConnection, updateCache } from '../../utils/graphql'
 import { useHistory } from 'react-router'
 import { Categories } from './constants'
+import { SectionPortal } from '../Explore'
 
 const LABEL_WIDTH = '90px'
 
@@ -45,7 +46,7 @@ function ImagePicker({image, setImage, background, label}) {
   )
 }
 
-export function RepoForm({image, setImage, darkImage, setDarkImage, state, setState, mutation, loading, update}) {
+export function RepoForm({image, setImage, darkImage, setDarkImage, state, setState, mutation, loading, update, portal}) {
   return (
     <Box flex={false} pad='medium' gap='medium'>
       <LabeledInput label='1. Upload icons for your repo'>
@@ -86,14 +87,16 @@ export function RepoForm({image, setImage, darkImage, setDarkImage, state, setSt
           addTag={(tag) => setState({...state, tags: [tag, ...(state.tags || [])]})}
           removeTag={(tag) => setState({...state, tags: state.tags.filter((t) => t !== tag)})} />
       </LabeledInput>
-      <Box direction='row' justify='end' align='center' gap='small'>
-        <CheckBox
-          toggle
-          label={state.private ? 'private' : 'public'}
-          checked={state.private}
-          onChange={({target: {checked}}) => setState({...state, private: !!checked})} />
-        <Button loading={loading} round='xsmall' label={update ? 'Update' : 'Create'} onClick={mutation} />
-      </Box>
+      <SectionPortal>
+        <Box direction='row' justify='end' align='center' gap='small'>
+          <CheckBox
+            toggle
+            label={state.private ? 'private' : 'public'}
+            checked={!state.private}
+            onChange={({target: {checked}}) => setState({...state, private: !checked})} />
+          <Button loading={loading} round='xsmall' label={update ? 'Update' : 'Create'} onClick={mutation} />
+        </Box>
+      </SectionPortal>
     </Box>
   )
 }

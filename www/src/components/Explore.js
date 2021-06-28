@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useCallback } from 'react'
+import React, { useState, useContext, useEffect, useCallback, useMemo } from 'react'
 import { Scroller } from 'forge-core'
 import { useQuery } from 'react-apollo'
 import { CATEGORIES, CATEGORY, EXPLORE_REPOS } from './repos/queries'
@@ -12,6 +12,8 @@ import { sortBy } from 'lodash'
 import { SafeLink } from './utils/Link'
 import { CurrentUserContext } from './login/CurrentUser'
 import { Down, InstallOption, Next, Share, ShareOption } from 'grommet-icons'
+import { Portal } from 'react-portal'
+import { v4 as uuidv4 } from 'uuid'
 import './explore.css'
 
 const WIDTH = 20
@@ -160,6 +162,38 @@ function filters(tab, me) {
   if (tab === 'installed') return {installed: true}
   if (tab === 'published') return {publisherId: me.publisher.id}
   return {}
+}
+
+export const SectionContext = React.createContext({})
+
+export function SectionPortal({children}) {
+  const {id} = useContext(SectionContext)
+
+  return (
+    <Portal node={document && document.getElementById(id)}>
+      {children}
+    </Portal>
+  )
+}
+
+export function SectionContentContainer({header, children}) {
+  const id = useMemo(() => uuidv4(), [])
+
+  return (
+    <SectionContext.Provider value={{id}}>
+      <Box fill>
+        <Box flex={false} direction='row' pad='small' border={{side: 'bottom', color: 'light-5'}} align='center'>
+          <Box fill='horizontal'>
+            <Text size='small' weight={500}>{header}</Text>
+          </Box>
+          <Box id={id} flex={false} />
+        </Box>
+        <Box fill>
+          {children}
+        </Box>
+      </Box>
+    </SectionContext.Provider>
+  )
 }
 
 export function SectionItemContainer({label, icon, selected, location, ...props}) {

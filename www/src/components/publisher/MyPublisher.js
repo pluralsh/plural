@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useMutation } from 'react-apollo'
-import { InputField, InputCollection, ResponsiveInput, Button } from 'forge-core'
-import { Box, Anchor, Text, TextInput } from 'grommet'
+import { InputCollection, ResponsiveInput, Button } from 'forge-core'
+import { Box, Anchor, Text } from 'grommet'
 import Repositories from '../repos/Repositories'
 import CreateRepository from '../repos/CreateRepository'
 import { CurrentUserContext, PluralConfigurationContext } from '../login/CurrentUser'
@@ -17,6 +17,7 @@ import { useParams } from 'react-router'
 import { useFilePicker } from 'react-sage'
 import { deepUpdate, updateCache } from '../../utils/graphql'
 import Avatar from '../users/Avatar'
+import { SectionPortal } from '../Explore'
 
 function AccountConnected() {
   return (
@@ -53,64 +54,12 @@ function PublisherPayments({publisher: {billingAccountId}}) {
   )
 }
 
-function AddressForm({address, onChange}) {
-  return (
-    <Box pad={{horizontal: 'small'}}>
-      <InputCollection>
-        <ResponsiveInput
-          label='line 1'
-          value={address.line1}
-          placeholder='street address'
-          onChange={({target: {value}}) => onChange({...address, line1: value})} />
-        <ResponsiveInput
-          label='line 2'
-          value={address.line2}
-          placeholder='apt number, suite number, etc'
-          onChange={({target: {value}}) => onChange({...address, line2: value})} />
-        <ResponsiveInput
-          label='city'
-          value={address.city}
-          placeholder='city'
-          onChange={({target: {value}}) => onChange({...address, city: value})} />
-        <ResponsiveInput
-          label='state'
-          value={address.state}
-          placeholder='state'
-          onChange={({target: {value}}) => onChange({...address, state: value})} />
-        <tr>
-          <td>
-            <Text size='small' weight='bold'>country</Text>
-          </td>
-          <td>
-            <Box direction='row' gap='small'>
-              <TextInput
-                label='country'
-                value={address.country}
-                placeholder='country'
-                onChange={({target: {value}}) => onChange({...address, country: value})} />
-              <InputField
-                label='zip'
-                value={address.zip}
-                labelWidth='30px'
-                placeholder='zip'
-                onChange={({target: {value}}) => onChange({...address, zip: value})} />
-            </Box>
-          </td>
-        </tr>
-      </InputCollection>
-    </Box>
-  )
-}
-
-const defaultAddress = {line1: '', line2: '', city: '', state: '', zip: '', country: 'United States'}
-const prune = ({__typename, ...rest}) => rest
-
-function EditPublisher({publisher: {description, phone, address}}) {
-  const [attributes, setAttributes] = useState({description, phone, address: prune(address || defaultAddress)})
+function EditPublisher({publisher: {description, phone}}) {
+  const [attributes, setAttributes] = useState({description, phone})
   const [mutation, {loading}] = useMutation(EDIT_PUBLISHER, {variables: {attributes}})
 
   return (
-    <Box gap='small' pad='small'>
+    <Box fill gap='small' pad='small'>
       <Box pad={{horizontal: 'small'}}>
         <InputCollection>
           <ResponsiveInput
@@ -123,20 +72,14 @@ function EditPublisher({publisher: {description, phone, address}}) {
             onChange={({target: {value}}) => setAttributes({...attributes, phone: value})} />
         </InputCollection>
       </Box>
-      <Box border='top' pad={{top: 'small'}} gap='small'>
-        <Text size='small' margin={{left: 'small'}} weight={500}>Address</Text>
-        <AddressForm
-          address={attributes.address}
-          onChange={(address) => setAttributes({...attributes, address})} />
-      </Box>
-      <Box direction='row' justify='end' pad={{horizontal: '16px'}}>
+      <SectionPortal>
         <Button
           loading={loading}
           pad={{horizontal: 'medium', vertical: 'xsmall'}}
           round='xsmall'
           label='Update'
           onClick={mutation} />
-      </Box>
+      </SectionPortal>
     </Box>
   )
 }
@@ -189,14 +132,14 @@ export default function MyPublisher() {
         {me.publisher.billingAccountId && <AccountConnected />}
         {!me.publisher.billingAccountId && (<PublisherPayments publisher={me.publisher} />)}
       </Box>
-      <Box fill style={{overflow: 'auto'}} pad='small'>
-        <EditContent edit='repos'>
+      <Box fill style={{overflow: 'auto'}}>
+        <EditContent edit='repos' name='Repositories'>
           <Repositories publisher={me.publisher} deletable columns={2} />
         </EditContent>
-        <EditContent edit='attrs'>
+        <EditContent edit='attrs' name='Edit Attributes'>
           <EditPublisher publisher={me.publisher} />
         </EditContent>
-        <EditContent edit='create'>
+        <EditContent edit='create' name='Create Repository'>
           <CreateRepository publisher={me.publisher} />
         </EditContent>
       </Box>

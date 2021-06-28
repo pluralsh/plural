@@ -68,7 +68,8 @@
     "slate": "^0.59.0",
     "slate-history": "^0.59.0",
     "slate-react": "^0.59.0",
-    "styled-components": "^5.1.1"
+    "styled-components": "^5.1.1",
+    "uuid": "^8.3.2"
   },
   "scripts": {
     "start": "PORT=3001 HTTPS=true react-scripts start",

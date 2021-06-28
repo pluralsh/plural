@@ -41,10 +41,7 @@ export function OAuthIntegrations() {
   const integrations = data.oauthIntegrations.reduce((acc, int) => ({...acc, [int.service]: int}), {})
 
   return (
-    <Box pad='small' gap='xsmall'>
-      <Box fill='horizontal' align='center' pad='medium'>
-        <Text size='small' weight={500}>OAuth Integrations</Text>
-      </Box>
+    <Box fill pad='small' gap='xsmall'>
       <Integration 
         icon={ZOOM_ICON}  installUrl={ZOOM_INSTALL_URL}  integrations={integrations} service={OAuthService.ZOOM}>
         <Text size='small'><i>Create meetings in your zoom account for resolving incidents and more</i></Text>

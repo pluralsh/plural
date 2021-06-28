@@ -17,6 +17,7 @@ import { CardList } from '../users/BillingDetails'
 import Invoices from '../payments/Invoices'
 import { OAuthIntegrations } from '../integrations/OAuthIntegrations'
 import { ServiceAccounts } from './ServiceAccounts'
+import { SectionContentContainer, SectionPortal } from '../Explore'
 
 const ICON_SIZE = '12px'
 
@@ -48,18 +49,19 @@ function EditAttributes() {
   const [mutation, {loading}] = useMutation(UPDATE_ACCOUNT, {variables: {attributes}})
 
   return (
-    <Box fill pad={{horizontal: 'small', vertical: 'medium'}} gap='xsmall'>
-      <EditHeader text='Edit Attributes' />
-      <InputCollection>
-        <ResponsiveInput
-          value={attributes.name}
-          label='name'
-          onChange={({target: {value}}) => setAttributes({...attributes, name: value})} />
-      </InputCollection>
-      <Box direction='row' justify='end'>
-        <Button label='Update' loading={loading} onClick={mutation} />
+    <SectionContentContainer header='Edit Attributes'>
+      <Box fill pad='small'>
+        <InputCollection>
+          <ResponsiveInput
+            value={attributes.name}
+            label='name'
+            onChange={({target: {value}}) => setAttributes({...attributes, name: value})} />
+        </InputCollection>
       </Box>
-    </Box>
+      <SectionPortal>
+        <Button label='Update' loading={loading} onClick={mutation} />
+      </SectionPortal>
+    </SectionContentContainer>
   )
 }
 
@@ -98,9 +100,21 @@ export function EditAccount({billing}) {
         {section === ViewOptions.SRV_ACCTS && <ServiceAccounts />}
         {section === ViewOptions.GROUPS && <Groups />}
         {section === ViewOptions.ROLES && <Roles />}
-        {section === ViewOptions.METHODS && <CardList />}
-        {section === ViewOptions.INVOICES && <Invoices />}
-        {section === ViewOptions.INTEGRATIONS && <OAuthIntegrations />}
+        {section === ViewOptions.METHODS && (
+          <SectionContentContainer header='Payment Methods'>
+            <CardList />
+          </SectionContentContainer>
+        )}
+        {section === ViewOptions.INVOICES && (
+          <SectionContentContainer header='Invoices'>
+            <Invoices />
+          </SectionContentContainer>
+        )}
+        {section === ViewOptions.INTEGRATIONS && (
+          <SectionContentContainer header='Oauth Integrations'>
+            <OAuthIntegrations />
+          </SectionContentContainer>
+        )}
       </Box>
     </Box>
   )

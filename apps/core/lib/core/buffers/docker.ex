@@ -1,5 +1,5 @@
 defmodule Core.Buffers.Docker do
-  use Core.Buffer.Base, state: &build_state/1, lifespan: 180_000
+  use Core.Buffer.Base, state: &build_state/1, lifespan: 5 * 60 * 1000
 
   defmodule State, do: defstruct [images: []]
 

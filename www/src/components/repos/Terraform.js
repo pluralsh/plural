@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { Box, Text, Markdown } from 'grommet'
-import { Tabs, TabHeader, TabHeaderItem, TabContent, Button, SecondaryButton, ScrollableContainer, InputField, InputCollection, ResponsiveInput } from 'forge-core'
+import { Tabs, TabHeader, TabHeaderItem, TabContent, Button, SecondaryButton, ScrollableContainer, InputCollection, ResponsiveInput } from 'forge-core'
 import { useQuery, useMutation } from 'react-apollo'
 import { useParams, useHistory } from 'react-router-dom'
 import { TF_Q, UPDATE_TF, INSTALL_TF, UNINSTALL_TF, DELETE_TF } from './queries'

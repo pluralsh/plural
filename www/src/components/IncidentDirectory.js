@@ -14,7 +14,7 @@ function SectionItem({name, label, icon}) {
     <SectionItemContainer
       label={label}
       selected={group === name}
-      location={`/incident/${name}`}
+      location={`/incidents/${name}`}
       icon={React.createElement(icon, {size: ICON_SIZE})} />
   )
 }

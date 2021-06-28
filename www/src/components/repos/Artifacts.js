@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback } from 'react'
 import styled from 'styled-components'
-import { Box, Text, Drop, Markdown, Table, TableBody, TableRow, TableCell, Header } from 'grommet'
+import { Box, Text, Drop, Markdown, Table, TableBody, TableRow, TableCell } from 'grommet'
 import { Apple, Windows, Ubuntu, Terminal, Previous, Cube, DocumentText, List, Download } from 'grommet-icons'
 import { normalizeColor } from 'grommet/utils'
 import { download } from '../../utils/file'
@@ -105,7 +105,7 @@ function WithBack({children, setAlternate}) {
 }
 
 
-function ArtifactDetails({sha, filesize}) {
+function ArtifactDetails({sha, filesize, arch, platform}) {
   return (
     <Table>
       <TableBody>
@@ -116,6 +116,14 @@ function ArtifactDetails({sha, filesize}) {
         <TableRow>
           <TableCell border='right'><b>filesize</b></TableCell>
           <TableCell>{fs(filesize)}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell border='right'><b>arch</b></TableCell>
+          <TableCell>{arch}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell border='right'><b>platform</b></TableCell>
+          <TableCell>{platform.toLowerCase()}</TableCell>
         </TableRow>
       </TableBody>
     </Table>
@@ -220,7 +228,7 @@ function ArtifactRow({artifact}) {
     <Collapsible open={!!open} direction='vertical'>
       <Box fill='horizontal' pad='small'>
         {open === 'readme' && <Readme readme={artifact.readme} />}
-        {open == 'details' && <ArtifactDetails {...artifact} />}
+        {open === 'details' && <ArtifactDetails {...artifact} />}
       </Box>
     </Collapsible>
     </>

@@ -19,7 +19,6 @@ import BreadcrumbProvider from './Breadcrumbs'
 import { EditAccount } from './accounts/EditAccount'
 import { Incidents } from './incidents/Incidents'
 import { Incident } from './incidents/Incident'
-import { Responses } from './incidents/Responses'
 import { IncidentContext } from './incidents/context'
 import { Integrations } from './integrations/Webhooks'
 import { Webhook } from './integrations/Webhook'
@@ -95,12 +94,12 @@ export default function Plural() {
                   <Route path='/me/edit/:editing' component={EditUser} />
                   <Route path='/billing/:section' component={Billing} />
                   <Route path='/me/invoices/:subscriptionId' component={Invoices} />
-                  <Route path='/incident/:group' component={IncidentDirectory} />
-                  <Route exact path='/incident'>
-                    <Redirect to='/incident/all' />
+                  <Route path='/incidents/:group' component={IncidentDirectory} />
+                  <Route exact path='/incidents'>
+                    <Redirect to='/incidents/all' />
                   </Route>
-                  <Route path='/incidents/:incidentId/edit' component={(props) => <Incident {...props} editing />} />
-                  <Route path='/incidents/:incidentId' component={Incident} />
+                  <Route path='/incident/:incidentId/edit' component={(props) => <Incident {...props} editing />} />
+                  <Route path='/incident/:incidentId' component={Incident} />
                   <Route path='/incidents' component={Incidents} />
                   <Route path='/webhooks/:id' component={Webhook} />
                   <Route path='/webhooks' component={Integrations} />

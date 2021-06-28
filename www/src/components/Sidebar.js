@@ -51,7 +51,7 @@ const OPTIONS = [
   {text: 'User', icon: <User size={ICON_HEIGHT} />, path: '/me/edit'},
   {text: 'Account', icon: <Group size={ICON_HEIGHT} />, path: '/accounts/edit'},
   {text: 'Upgrades', icon: <Upgrade size={ICON_HEIGHT} />, path: '/upgrades'},
-  {text: 'Incidents', icon: <Alert size={ICON_HEIGHT} />, path: '/incident'},
+  {text: 'Incidents', icon: <Alert size={ICON_HEIGHT} />, path: '/incidents', prefix: '/incident'},
   {text: 'Integrations', icon: <Network size={ICON_HEIGHT} />, path: '/webhooks'},
   {text: 'Audits', icon: <List size={ICON_HEIGHT} />, path: '/audits'},
 ]
@@ -60,8 +60,7 @@ export default function Sidebar() {
   const me = useContext(CurrentUserContext)
   let hist = useHistory()
   const loc = useLocation()
-  console.log(loc.pathname)
-  const active = Math.max(OPTIONS.findIndex(({path}) => loc.pathname.startsWith(path)), 0)
+  const active = Math.max(OPTIONS.findIndex(({path, prefix}) => loc.pathname.startsWith(prefix || path)), 0)
 
   return (
     <Box width={SIDEBAR_WIDTH} flex={false} background='sidebar' fill='vertical'>

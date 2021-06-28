@@ -70,7 +70,7 @@ export function IncidentRow({incident: {id, repository, title, insertedAt, owner
 
   return (
     <Box flex={false} fill='horizontal' pad='small' border={{side: 'bottom', color: 'light-3'}} direction='row' 
-        align='center' gap='small' hoverIndicator='light-2' onClick={() => history.push(`/incidents/${id}`)}
+        align='center' gap='small' hoverIndicator='light-2' onClick={() => history.push(`/incident/${id}`)}
         height='75px'>
       <RepoIcon repo={repository} />
       <Box fill='horizontal' direction='row' gap='xsmall' align='center'>

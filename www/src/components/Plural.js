@@ -30,6 +30,7 @@ import { Audits } from './accounts/Audits'
 import { UpgradeQueues } from './upgrades/UpgradeQueues'
 import { UpgradeQueue } from './upgrades/UpgradeQueue'
 import { RepoDirectory } from './repos/RepoDirectory'
+import { IncidentDirectory } from './IncidentDirectory'
 
 export const TOOLBAR_SIZE = '50px'
 
@@ -94,7 +95,10 @@ export default function Plural() {
                   <Route path='/me/edit/:editing' component={EditUser} />
                   <Route path='/billing/:section' component={Billing} />
                   <Route path='/me/invoices/:subscriptionId' component={Invoices} />
-                  <Route path='/incidents/responses' component={Responses} />
+                  <Route path='/incident/:group' component={IncidentDirectory} />
+                  <Route exact path='/incident'>
+                    <Redirect to='/incident/all' />
+                  </Route>
                   <Route path='/incidents/:incidentId/edit' component={(props) => <Incident {...props} editing />} />
                   <Route path='/incidents/:incidentId' component={Incident} />
                   <Route path='/incidents' component={Incidents} />

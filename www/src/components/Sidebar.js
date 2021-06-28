@@ -2,7 +2,7 @@ import React, { useState, useRef, useContext } from 'react'
 import { Box, Text } from 'grommet'
 import { useHistory, useLocation } from 'react-router-dom'
 import { Tooltip } from './utils/Tooltip'
-import { Aid, Group, Package, Alert, Network, List, Upgrade, User } from 'grommet-icons'
+import { Group, Package, Alert, Network, List, Upgrade, User } from 'grommet-icons'
 import { CurrentUserContext } from './login/CurrentUser'
 import Avatar from './users/Avatar'
 
@@ -51,8 +51,7 @@ const OPTIONS = [
   {text: 'User', icon: <User size={ICON_HEIGHT} />, path: '/me/edit'},
   {text: 'Account', icon: <Group size={ICON_HEIGHT} />, path: '/accounts/edit'},
   {text: 'Upgrades', icon: <Upgrade size={ICON_HEIGHT} />, path: '/upgrades'},
-  {text: 'Responses', icon: <Aid size={ICON_HEIGHT} />, path: '/incidents/responses'},
-  {text: 'Incidents', icon: <Alert size={ICON_HEIGHT} />, path: '/incidents'},
+  {text: 'Incidents', icon: <Alert size={ICON_HEIGHT} />, path: '/incident'},
   {text: 'Integrations', icon: <Network size={ICON_HEIGHT} />, path: '/webhooks'},
   {text: 'Audits', icon: <List size={ICON_HEIGHT} />, path: '/audits'},
 ]
@@ -66,8 +65,8 @@ export default function Sidebar() {
 
   return (
     <Box width={SIDEBAR_WIDTH} flex={false} background='sidebar' fill='vertical'>
-      <Box width={SIDEBAR_WIDTH} background='sidebar' height='100%' justify='center'>
-        <Box flex={false}>
+      <Box width={SIDEBAR_WIDTH} background='sidebar' height='100%' justify='center' align='center'>
+        <Box flex={false} align='center'>
           {OPTIONS.map((opt, ind) => (
             <SidebarIcon key={opt.path} selected={ind === active} {...opt} />
           ))}

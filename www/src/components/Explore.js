@@ -182,7 +182,8 @@ export function SectionContentContainer({header, children}) {
   return (
     <SectionContext.Provider value={{id}}>
       <Box fill>
-        <Box flex={false} direction='row' pad='small' border={{side: 'bottom', color: 'light-5'}} align='center'>
+        <Box flex={false} direction='row' pad='small' height='45px'  
+             border={{side: 'bottom', color: 'light-5'}} align='center'>
           <Box fill='horizontal'>
             <Text size='small' weight={500}>{header}</Text>
           </Box>
@@ -223,19 +224,14 @@ export function SectionItem({name, label, icon}) {
   )
 }
 
-function SectionContent({name, header, children}) {
+export function SectionContent({name, header, children}) {
   const {group} = useParams()
   if (group !== name) return null
 
   return (
-    <Box fill>
-      <Box flex={false} pad='small' border={{side: 'bottom', color: 'light-5'}}>
-        <Text size='small' weight={500}>{header}</Text>
-      </Box>
-      <Box fill>
-        {children}
-      </Box>
-    </Box>
+    <SectionContentContainer header={header}>
+      {children}
+    </SectionContentContainer>
   )
 }
 

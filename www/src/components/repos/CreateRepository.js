@@ -56,7 +56,7 @@ export function RepoForm({image, setImage, darkImage, setDarkImage, state, setSt
             image={darkImage} 
             setImage={setDarkImage}
             background='backgroundColor'
-            label='Icon for dark backgrounds (optional)' />
+            label='Darkmode icon (optional)' />
         </Box>
       </LabeledInput>
       <LabeledInput label='2. Give it a name'>

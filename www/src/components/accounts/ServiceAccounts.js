@@ -25,8 +25,8 @@ function ServiceAccount({user, next}) {
 
   return (
     <>
-    <Box fill='horizontal' gap='small' direction='row' align='center'>
-      <UserRow user={user} next={next.node} />
+    <Box fill='horizontal' gap='small' direction='row' align='center' border={{side: 'bottom', color: 'light-6'}}>
+      <UserRow user={user} next={next.node} noborder />
       <SecondaryButton label='impersonate' onClick={mutation} loading={loading} />
       <Box flex={false} pad='small' round='xsmall' onClick={() => setOpen(true)}
            hoverIndicator='light-2' focusIndicator={false}>

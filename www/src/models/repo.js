@@ -76,5 +76,7 @@ export const ArtifactFragment = gql`
     filesize
     sha
     readme
+    insertedAt
+    updatedAt
   }
 `;

@@ -144,7 +144,7 @@ export default function GroupRow({group}) {
   })
 
   return (
-    <Box ref={ref} border='bottom'>
+    <Box ref={ref} border={{side: 'bottom', color: 'light-6'}}>
       <Box direction='row' pad='small' align='center'>
         {edit ? <GroupEdit group={group} setEdit={setEdit} /> : <GroupName group={group} />}
         <Box flex={false} direction='row'>

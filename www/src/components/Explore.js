@@ -15,6 +15,7 @@ import { Down, InstallOption, Next, Share, ShareOption } from 'grommet-icons'
 import { Portal } from 'react-portal'
 import { v4 as uuidv4 } from 'uuid'
 import './explore.css'
+import { SIDEBAR_WIDTH } from './constants'
 
 const WIDTH = 20
 
@@ -264,7 +265,7 @@ export default function Explore() {
 
   return (
     <Box direction='row' fill>
-      <Box flex={false} width='175px' background='backgroundColor' fill='vertical' pad={{vertical: 'medium', right: 'small'}} gap='xsmall'>
+      <Box flex={false} width={SIDEBAR_WIDTH} background='backgroundColor' fill='vertical' pad={{vertical: 'medium', right: 'small'}} gap='xsmall'>
         <SectionItem name='public' label='Public' icon={<ShareOption size='14px' />} />
         <SectionItem name='installed' label='Installed' icon={<InstallOption size='14px' />} />
         {me.publisher && <SectionItem name='published' label='Published' icon={<Share size='14px' />} />}

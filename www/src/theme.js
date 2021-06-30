@@ -110,7 +110,7 @@ export const DEFAULT_THEME = {
     },
     box: { extend: boxStyle },
     font: {
-      family: 'Roboto',
+      family: 'Monument',
       size: '14px',
       height: '20px',
     },

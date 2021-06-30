@@ -52,7 +52,7 @@ function RecipeListItem({recipe, setRecipe, repository: {editable, id}}) {
           <Provider provider={provider} width={PROVIDER_WIDTH - 5} />
         </Box>
       )}
-      <Box gap='small' fill='horizontal'>
+      <Box fill='horizontal'>
         <Text weight='bold' size='small'>{name}</Text>
         <Text size='small'>{description}</Text>
       </Box>

@@ -188,9 +188,7 @@ export const ROLES_Q = gql`
   query Roles($cursor: String) {
     roles(first: 20, after: $cursor) {
       pageInfo { ...PageInfo }
-      edges {
-        node { ...RoleFragment }
-      }
+      edges { node { ...RoleFragment } }
     }
   }
   ${PageInfo}

@@ -168,27 +168,28 @@ function filters(tab, me) {
 export const SectionContext = React.createContext({})
 
 export function SectionPortal({children}) {
-  const {id} = useContext(SectionContext)
+  const {ref} = useContext(SectionContext)
 
   return (
-    <Portal node={document && document.getElementById(id)}>
+    <Portal node={ref}>
       {children}
     </Portal>
   )
 }
 
 export function SectionContentContainer({header, children}) {
+  const [ref, setRef] = useState(null)
   const id = useMemo(() => uuidv4(), [])
 
   return (
-    <SectionContext.Provider value={{id}}>
+    <SectionContext.Provider value={{id, ref}}>
       <Box fill>
         <Box flex={false} direction='row' pad='small' height='45px'  
              border={{side: 'bottom', color: 'light-5'}} align='center'>
           <Box fill='horizontal'>
             <Text size='small' weight={500}>{header}</Text>
           </Box>
-          <Box id={id} flex={false} />
+          <Box ref={setRef} id={id} flex={false} />
         </Box>
         <Box fill>
           {children}

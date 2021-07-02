@@ -11,6 +11,7 @@ import { useQuery } from 'react-apollo'
 import { GqlError } from '../utils/Alert'
 import { setToken } from '../../helpers/authentication'
 import { SearchIcon } from './utils'
+import { SectionContentContainer, SectionPortal } from '../Explore'
 
 function ServiceAccount({user, next}) {
   const [open, setOpen] = useState(false)
@@ -65,21 +66,7 @@ export function ServiceAccounts() {
   const {users: {pageInfo, edges}} = data
 
   return (
-    <Box pad='small' gap='small'>
-      <Box direction='row' pad='small' align='center' gap='small'>
-        <Box fill='horizontal'>
-          <Text weight={500}>Service Accounts</Text>
-        </Box>
-        <TextInput
-          icon={<SearchIcon />}
-          reverse
-          placeholder='search for service accounts'
-          value={q || ''}
-          onChange={({target: {value}}) => setQ(value)} />
-        <Box flex={false}>
-          <CreateServiceAccount />
-        </Box>
-      </Box>
+    <SectionContentContainer header='Service Accounts'>
       <Scroller
         id='service-accounts'
         style={{height: '100%', overflow: 'auto'}}
@@ -90,6 +77,19 @@ export function ServiceAccounts() {
           updateQuery: (prev, {fetchMoreResult: {users}}) => extendConnection(prev, users, 'users')
         })}
       />
-    </Box>
+      <SectionPortal>
+        <Box flex={false} align='center' gap='small' direction='row' width='400px'>
+          <TextInput
+            icon={<SearchIcon />}
+            reverse
+            placeholder='search for service accounts'
+            value={q || ''}
+            onChange={({target: {value}}) => setQ(value)} />
+          <Box flex={false}>
+            <CreateServiceAccount />
+          </Box>
+        </Box>
+      </SectionPortal>
+    </SectionContentContainer>
   )
 }

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Box, Text } from 'grommet'
+import { Box, Text, ThemeContext } from 'grommet'
 import { SIDEBAR_WIDTH } from '../constants'
 import { SectionChoice } from '../utils/SectionChoice'
 import { useHistory, useParams } from 'react-router'
@@ -78,6 +78,7 @@ export function EditAccount({billing}) {
   }, [setBreadcrumbs, section, billing])
 
   return (
+    <ThemeContext.Extend value={{global: {input: {padding: '9px'}}}}>
     <Box fill direction='row'>
       <Box gap='xsmall' flex={false} width={SIDEBAR_WIDTH} height='100%' background='backgroundColor' pad='small'>
         <Box pad={{vertical: 'small'}} direction='row' align='center' gap='small'>
@@ -110,11 +111,12 @@ export function EditAccount({billing}) {
           </SectionContentContainer>
         )}
         {section === ViewOptions.INTEGRATIONS && (
-          <SectionContentContainer header='Oauth Integrations'>
+          <SectionContentContainer header='OAuth Integrations'>
             <OAuthIntegrations />
           </SectionContentContainer>
         )}
       </Box>
     </Box>
+    </ThemeContext.Extend>
   )
 }

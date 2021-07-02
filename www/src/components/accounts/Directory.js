@@ -10,6 +10,8 @@ import CreateInvite from './CreateInvite'
 import RoleRow, { RoleCreator } from './Role'
 import { extendConnection } from '../../utils/graphql'
 import { SearchIcon } from './utils'
+import { SectionContentContainer, SectionPortal } from '../Explore'
+
 
 export function Users() {
   const [q, setQ] = useState(null)
@@ -20,21 +22,7 @@ export function Users() {
   const {users: {pageInfo, edges}} = data
 
   return (
-    <Box pad='small' gap='small'>
-      <Box direction='row' pad='small' align='center' gap='small'>
-        <Box fill='horizontal'>
-          <Text weight={500}>Users</Text>
-        </Box>
-        <TextInput
-          icon={<SearchIcon />}
-          reverse
-          placeholder='search for users'
-          value={q || ''}
-          onChange={({target: {value}}) => setQ(value)} />
-        <Box flex={false}>
-          <CreateInvite />
-        </Box>
-      </Box>
+    <SectionContentContainer header='Users'>
       <Scroller
         id='users'
         style={{height: '100%', overflow: 'auto'}}
@@ -45,7 +33,20 @@ export function Users() {
           updateQuery: (prev, {fetchMoreResult: {users}}) => extendConnection(prev, users, 'users')
         })}
       />
-    </Box>
+      <SectionPortal>
+        <Box flex={false} gap='small' align='center' direction='row' width='400px'>
+          <TextInput
+            icon={<SearchIcon />}
+            reverse
+            placeholder='search for users'
+            value={q || ''}
+            onChange={({target: {value}}) => setQ(value)} />
+          <Box flex={false}>
+            <CreateInvite />
+          </Box>
+        </Box>
+      </SectionPortal>
+    </SectionContentContainer>
   )
 }
 
@@ -58,21 +59,7 @@ export function Groups() {
   const {groups: {pageInfo, edges}} = data
 
   return (
-    <Box pad='small' gap='small'>
-      <Box direction='row' pad='small' align='center' gap='small'>
-        <Box fill='horizontal'>
-          <Text weight={500}>Groups</Text>
-        </Box>
-        <TextInput
-          icon={<SearchIcon />}
-          reverse
-          placeholder='search for groups'
-          value={q || ''}
-          onChange={({target: {value}}) => setQ(value)} />
-        <Box flex={false}>
-          <CreateGroup />
-        </Box>
-      </Box>
+    <SectionContentContainer header='Groups'>    
       <Scroller
         id='groups'
         style={{height: '100%', overflow: 'auto'}}
@@ -83,7 +70,20 @@ export function Groups() {
           updateQuery: (prev, {fetchMoreResult: {groups}}) => extendConnection(prev, groups, 'groups')
         })}
       />
-    </Box>
+      <SectionPortal>
+        <Box flex={false} direction='row' align='center' gap='small' width='400px'>
+          <TextInput
+            icon={<SearchIcon />}
+            reverse
+            placeholder='search for groups'
+            value={q || ''}
+            onChange={({target: {value}}) => setQ(value)} />
+          <Box flex={false}>
+            <CreateGroup />
+          </Box>
+        </Box>
+      </SectionPortal>
+    </SectionContentContainer>
   )
 }
 
@@ -96,19 +96,7 @@ export function Roles() {
   const {roles: {pageInfo, edges}} = data
 
   return (
-    <Box pad='small' gap='small'>
-      <Box direction='row' pad='small' align='center' gap='small'>
-        <Box fill='horizontal'>
-          <Text weight={500}>Roles</Text>
-        </Box>
-        <TextInput
-          icon={<SearchIcon />}
-          reverse
-          placeholder='search for roles'
-          value={q || ''}
-          onChange={({target: {value}}) => setQ(value)} />
-        <RoleCreator />
-      </Box>
+    <SectionContentContainer header='Roles'>
       <Scroller
         id='roles'
         style={{height: '100%', overflow: 'auto'}}
@@ -119,6 +107,17 @@ export function Roles() {
           updateQuery: (prev, {fetchMoreResult: {roles}}) => extendConnection(prev, roles, 'roles')
         })}
       />
-    </Box>
+      <SectionPortal>
+        <Box flex={false} direction='row' align='center' gap='small' width='400px'>
+          <TextInput
+            icon={<SearchIcon />}
+            reverse
+            placeholder='search for roles'
+            value={q || ''}
+            onChange={({target: {value}}) => setQ(value)} />
+          <RoleCreator />
+        </Box>
+      </SectionPortal>
+    </SectionContentContainer>
   )
 }

@@ -97,7 +97,7 @@ export function CreateServiceAccount() {
 
   return (
     <>
-    <Button label='Create Service Account' onClick={() => setOpen(true)} />
+    <Button label='Create' onClick={() => setOpen(true)} />
     {open && (
       <Layer modal>
         <ModalHeader text='Create a new service account' setOpen={setOpen} />

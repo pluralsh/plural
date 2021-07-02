@@ -31,7 +31,7 @@ import { UpgradeQueue } from './upgrades/UpgradeQueue'
 import { RepoDirectory } from './repos/RepoDirectory'
 import { IncidentDirectory } from './IncidentDirectory'
 
-export const TOOLBAR_SIZE = '50px'
+export const TOOLBAR_SIZE = '55px'
 
 const EditBilling = (props) => <EditAccount {...props} billing />
 

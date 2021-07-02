@@ -25,7 +25,9 @@ export default function Toolbar() {
         <SearchRepositories />
       </Box>
       <Notifications />
-      <Me me={me} />
+      <Box flex={false} margin='small' round='xsmall'>
+        <Me me={me} />
+      </Box>
     </Box>
   )
 }

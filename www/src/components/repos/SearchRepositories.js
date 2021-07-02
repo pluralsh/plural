@@ -1,15 +1,13 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
+import styled from 'styled-components'
 import { useApolloClient } from 'react-apollo'
 import { useHistory } from 'react-router-dom'
-import { TextInput, Box } from 'grommet'
+import { TextInput, Box, ThemeContext } from 'grommet'
 import { Search } from 'grommet-icons'
 import { SEARCH_REPOS } from './queries'
 import { Repository } from './Repositories'
-
-const animation = {
-  outline: 'none',
-  transition: 'width 0.75s cubic-bezier(0.000, 0.795, 0.000, 1.000)'
-};
+import { SearchIcon } from '../utils/SearchIcon'
+import { PLURAL_THEME } from '../../theme'
 
 export function searchRepositories(client, query, callback) {
   if (query.length === 0) return
@@ -24,37 +22,39 @@ export function searchRepositories(client, query, callback) {
   }).then(callback)
 }
 
+const hoverable = styled.div`
+  &:focus-within {
+    background-color: ${PLURAL_THEME['tone-dark-2']};
+  }
+`
+
 function SearchRepositories() {
+  const theme = useContext(ThemeContext)
   const client = useApolloClient()
-  const [focus, setFocus] = useState(false)
   const [value, setValue] = useState('')
   const [suggestions, setSuggestions] = useState([])
   let history = useHistory()
+  console.log(theme)
 
   return (
-    <Box width={focus ? '80%' : '50px'} direction='row' justify='end' align='center'
-         round='xsmall' style={animation} pad={{horizontal: 'xsmall'}} focusIndicator={false}
-         border={focus ? 'bottom' : null} onClick={() => setFocus(true)}>
-      <Search size='20px' />
-      {(focus || suggestions.length > 0) && (
-        <TextInput
-          type="search"
-          plain
-          onFocus={() => setFocus(true)}
-          onBlur={() => setFocus(false)}
-          value={value}
-          suggestions={suggestions}
-          placeholder='search for a repo'
-          onSelect={({suggestion}) => {
-            setValue('')
-            setSuggestions([])
-            history.push(`/repositories/${suggestion.value.id}`)
-          }}
-          onChange={({target: {value}}) => {
-            setValue(value)
-            searchRepositories(client, value, setSuggestions)
-          }}  />
-      )}
+    <Box as={hoverable} width='350px' direction='row' align='center' background='sidebarHover'
+        round='xsmall' pad={{horizontal: 'xsmall', vertical: '2px'}} focusIndicator={false}>
+      <TextInput
+        plain
+        type="search"
+        value={value}
+        suggestions={suggestions}
+        placeholder='search for a repo'
+        onSelect={({suggestion}) => {
+          setValue('')
+          setSuggestions([])
+          history.push(`/repositories/${suggestion.value.id}`)
+        }}
+        onChange={({target: {value}}) => {
+          setValue(value)
+          searchRepositories(client, value, setSuggestions)
+        }}  />
+      <SearchIcon size={20} />
     </Box>
   )
 }

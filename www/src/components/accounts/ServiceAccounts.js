@@ -72,6 +72,7 @@ export function ServiceAccounts() {
         </Box>
         <TextInput
           icon={<SearchIcon />}
+          reverse
           placeholder='search for service accounts'
           value={q || ''}
           onChange={({target: {value}}) => setQ(value)} />

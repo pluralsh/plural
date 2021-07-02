@@ -43,6 +43,7 @@ function SearchRepositories() {
         plain
         type="search"
         value={value}
+        name='search-repo'
         suggestions={suggestions}
         placeholder='search for a repo'
         onSelect={({suggestion}) => {

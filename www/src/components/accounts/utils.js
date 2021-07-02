@@ -1,8 +1,8 @@
 import React from 'react'
-import { Search } from "grommet-icons"
+import { SearchIcon as SI } from "../utils/SearchIcon"
 import { GROUP_MEMBERS, GROUPS_Q, ROLES_Q } from "./queries"
 
-export const SearchIcon = () => <Search size='16px' />
+export const SearchIcon = () => <SI size={16} border='tone-medium' />
 
 export function addGroupMember(cache, group, member) {
   const {members, ...data} = cache.readQuery({

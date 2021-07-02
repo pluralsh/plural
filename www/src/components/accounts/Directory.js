@@ -27,6 +27,7 @@ export function Users() {
         </Box>
         <TextInput
           icon={<SearchIcon />}
+          reverse
           placeholder='search for users'
           value={q || ''}
           onChange={({target: {value}}) => setQ(value)} />
@@ -64,6 +65,7 @@ export function Groups() {
         </Box>
         <TextInput
           icon={<SearchIcon />}
+          reverse
           placeholder='search for groups'
           value={q || ''}
           onChange={({target: {value}}) => setQ(value)} />
@@ -101,6 +103,7 @@ export function Roles() {
         </Box>
         <TextInput
           icon={<SearchIcon />}
+          reverse
           placeholder='search for roles'
           value={q || ''}
           onChange={({target: {value}}) => setQ(value)} />

@@ -1,9 +1,10 @@
 import React from 'react'
 import { Box, Text } from 'grommet'
 
-export function SearchIcon({border, size}) {
+export function SearchIcon({border, size, pad}) {
+  const padding = pad || 10
   return (
-    <Box flex={false} width={`${size + 10}px`} height={`${size + 10}px`}  pad='small' 
+    <Box flex={false} width={`${size + padding}px`} height={`${size + padding}px`}
          border={{side: 'all', color: border}} align='center' justify='center'>
       <Text size={`${size}px`} color={border}>/</Text>
     </Box>

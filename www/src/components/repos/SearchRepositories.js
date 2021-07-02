@@ -39,8 +39,9 @@ function SearchRepositories() {
   return (
     <Box as={hoverable} width='350px' direction='row' align='center' background='sidebarHover'
         round='xsmall' pad={{horizontal: 'xsmall', vertical: '2px'}} focusIndicator={false}>
+      <ThemeContext.Extend value={{global: {input: {padding: '7px'}}}}>
       <TextInput
-        plain
+        plain='full'
         type="search"
         value={value}
         name='search-repo'
@@ -55,7 +56,8 @@ function SearchRepositories() {
           setValue(value)
           searchRepositories(client, value, setSuggestions)
         }}  />
-      <SearchIcon size={20} />
+      </ThemeContext.Extend>
+      <SearchIcon size={15} pad={8} />
     </Box>
   )
 }

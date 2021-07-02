@@ -84,11 +84,10 @@ export default function Me({me}) {
     <>
     <Box flex={false} ref={ref} direction='row' gap='small' focusIndicator={false} align='center'
          onClick={() => setOpen(true)}  justify='center' hoverIndicator='sidebarHover' 
-         pad={{right: 'medium', left: 'small', vertical: '2px'}} round='xsmall'>
-      <Avatar user={account} size='40px' />
-      <Box>
+         pad={{right: 'medium', left: 'small', vertical: '2px'}} round='xsmall' height='35px'>
+      <Avatar user={account} size='30px' />
+      <Box flex={false}>
         <Text size='small' weight={500}>{account && account.name}</Text>
-        <Text size='xsmall'>{me.name}</Text>
       </Box>
     </Box>
     {open && (

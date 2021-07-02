@@ -71,7 +71,7 @@ export function Notifications() {
     <Stack anchor='top-right' margin={{horizontal: 'small'}}>
       <Box flex={false} pad='xsmall' hoverIndicator='sidebarHover' background='backgroundColor'
            round onClick={() => setOpen(!open)}>
-        <FaBolt size='20px' />
+        <FaBolt size='17px' />
       </Box>
       {notifications && notifications.edges.length > 0 && <Badge notifications={data.notifications} />}
     </Stack>

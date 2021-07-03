@@ -12,6 +12,7 @@ import { GqlError } from '../utils/Alert'
 import { setToken } from '../../helpers/authentication'
 import { SearchIcon } from './utils'
 import { SectionContentContainer, SectionPortal } from '../Explore'
+import { INPUT_WIDTH } from './constants'
 
 function ServiceAccount({user, next}) {
   const [open, setOpen] = useState(false)
@@ -78,7 +79,7 @@ export function ServiceAccounts() {
         })}
       />
       <SectionPortal>
-        <Box flex={false} align='center' gap='small' direction='row' width='400px'>
+        <Box flex={false} align='center' gap='small' direction='row' width={INPUT_WIDTH}>
           <TextInput
             icon={<SearchIcon />}
             reverse

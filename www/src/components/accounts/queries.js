@@ -185,8 +185,8 @@ export const UPDATE_SERVICE_ACCOUNT = gql`
 `;
 
 export const ROLES_Q = gql`
-  query Roles($cursor: String) {
-    roles(first: 20, after: $cursor) {
+  query Roles($cursor: String, $q: String) {
+    roles(first: 20, after: $cursor, q: $q) {
       pageInfo { ...PageInfo }
       edges { node { ...RoleFragment } }
     }

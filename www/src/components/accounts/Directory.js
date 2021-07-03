@@ -11,7 +11,7 @@ import RoleRow, { RoleCreator } from './Role'
 import { extendConnection } from '../../utils/graphql'
 import { SearchIcon } from './utils'
 import { SectionContentContainer, SectionPortal } from '../Explore'
-
+import { INPUT_WIDTH } from './constants'
 
 export function Users() {
   const [q, setQ] = useState(null)
@@ -34,7 +34,7 @@ export function Users() {
         })}
       />
       <SectionPortal>
-        <Box flex={false} gap='small' align='center' direction='row' width='400px'>
+        <Box flex={false} gap='small' align='center' direction='row' width={INPUT_WIDTH}>
           <TextInput
             icon={<SearchIcon />}
             reverse
@@ -71,7 +71,7 @@ export function Groups() {
         })}
       />
       <SectionPortal>
-        <Box flex={false} direction='row' align='center' gap='small' width='400px'>
+        <Box flex={false} direction='row' align='center' gap='small' width={INPUT_WIDTH}>
           <TextInput
             icon={<SearchIcon />}
             reverse
@@ -89,7 +89,7 @@ export function Groups() {
 
 export function Roles() {
   const [q, setQ] = useState(null)
-  const {data, fetchMore} = useQuery(ROLES_Q)
+  const {data, fetchMore} = useQuery(ROLES_Q, {variables: {q}})
 
   if (!data) return <Loading />
 
@@ -108,7 +108,7 @@ export function Roles() {
         })}
       />
       <SectionPortal>
-        <Box flex={false} direction='row' align='center' gap='small' width='400px'>
+        <Box flex={false} direction='row' align='center' gap='small' width={INPUT_WIDTH}>
           <TextInput
             icon={<SearchIcon />}
             reverse

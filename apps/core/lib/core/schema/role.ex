@@ -27,6 +27,10 @@ defmodule Core.Schema.Role do
     from(r in query, order_by: ^order)
   end
 
+  def search(query \\ __MODULE__, name) do
+    from(r in query, where: like(r.name, ^"#{name}%"))
+  end
+
   def permissions(%__MODULE__{permissions: perms}) do
     permissions()
     |> Enum.filter(&Map.get(perms, &1))

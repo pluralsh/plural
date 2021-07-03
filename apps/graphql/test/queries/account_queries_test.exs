@@ -87,7 +87,7 @@ defmodule GraphQl.AccountQueriesTest do
 
   describe "roles" do
     setup [:setup_root_user]
-    test "it can fetch a role by id", %{user: user, account: account} do
+    test "it can list a roles for an account", %{user: user, account: account} do
       roles = insert_list(3, :role, account: account)
 
       {:ok, %{data: %{"roles" => found}}} = run_query("""
@@ -97,6 +97,22 @@ defmodule GraphQl.AccountQueriesTest do
           }
         }
       """, %{}, %{current_user: user})
+
+      assert from_connection(found)
+             |> ids_equal(roles)
+    end
+
+    test "it can search roles by name", %{user: user, account: account} do
+      roles = for i <- 1..3, do: insert(:role, account: account, name: "search #{i}")
+      insert(:role, account: account)
+
+      {:ok, %{data: %{"roles" => found}}} = run_query("""
+        query Roles($q: String) {
+          roles(first: 5, q: $q) {
+            edges { node { id } }
+          }
+        }
+      """, %{"q" => "search"}, %{current_user: user})
 
       assert from_connection(found)
              |> ids_equal(roles)

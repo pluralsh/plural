@@ -29,6 +29,7 @@ defmodule GraphQl.Resolvers.Account do
   def list_roles(args, %{context: %{current_user: %{account_id: aid}}}) do
     Role.ordered()
     |> Role.for_account(aid)
+    |> maybe_search(Role, args)
     |> paginate(args)
   end
 

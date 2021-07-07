@@ -25,7 +25,7 @@ export default function Toolbar() {
         <SearchRepositories />
       </Box>
       <Notifications />
-      <Box flex={false} margin='small' round='xsmall'>
+      <Box flex={false} margin={{horizontal: 'small'}} round='xsmall'>
         <Me me={me} />
       </Box>
     </Box>

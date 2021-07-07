@@ -68,7 +68,7 @@ export function Notifications() {
 
   return (
     <>
-    <Stack anchor='top-right' margin={{horizontal: 'small'}}>
+    <Stack anchor='top-right' margin={{left: 'small'}}>
       <Box flex={false} pad='xsmall' hoverIndicator='sidebarHover' background='backgroundColor'
            round onClick={() => setOpen(!open)}>
         <FaBolt size='17px' />

@@ -11,6 +11,7 @@ defmodule Core.Services.Users do
     Notification,
     ResetToken,
     PublicKey,
+    PasswordlessLogin
   }
 
   @spec get_user(binary) :: User.t | nil
@@ -19,6 +20,10 @@ defmodule Core.Services.Users do
   @spec  get_user_by_email!(binary) :: User.t
   def get_user_by_email!(email),
     do: Core.Repo.get_by!(User, email: email)
+
+  @spec  get_user_by_email(binary) :: User.t | nil
+  def get_user_by_email(email),
+    do: Core.Repo.get_by(User, email: email)
 
   @spec get_publisher!(binary) :: Publisher.t
   def get_publisher!(id),
@@ -63,6 +68,46 @@ defmodule Core.Services.Users do
       _ -> {:error, :invalid_password}
     end
   end
+
+  @doc """
+  Realizes a passwordless login
+  """
+  @spec passwordless_login(binary) :: {:ok, User.t} | {:error, :invalid_token}
+  def passwordless_login(token) do
+    start_transaction()
+    |> add_operation(:login, fn _ ->
+      Core.Repo.get_by(PasswordlessLogin, token: token)
+      |> Core.Repo.preload([:user])
+      |> case do
+        %PasswordlessLogin{} = l -> {:ok, l}
+        _ -> {:error, :not_found}
+      end
+    end)
+    |> add_operation(:delete, fn %{login: login} -> Core.Repo.delete(login) end)
+    |> add_operation(:user, fn %{login: %{user: user}} -> {:ok, user} end)
+    |> execute(extract: :user)
+  end
+
+  @doc """
+  Determines the login method for a user and triggers any necessary background processing
+  """
+  @spec login_method(binary) :: {:ok, %{login_method: atom}} | {:error, term}
+  def login_method(email) do
+    with %User{login_method: method} = user <- get_user_by_email(email),
+         {:ok, _} <- handle_login_method(user) do
+      {:ok, %{login_method: method}}
+    else
+      _ -> {:error, :not_found}
+    end
+  end
+
+  defp handle_login_method(%User{login_method: :passwordless} = user) do
+    %PasswordlessLogin{}
+    |> PasswordlessLogin.changeset(%{user_id: user.id})
+    |> Core.Repo.insert()
+    |> notify(:create)
+  end
+  defp handle_login_method(_), do: {:ok, :ignore}
 
   @doc """
   Creates a new persisted token for the user which can substitute for jwt bearer
@@ -239,5 +284,7 @@ defmodule Core.Services.Users do
 
   def notify({:ok, %ResetToken{} = t}, :create),
     do: handle_notify(PubSub.ResetTokenCreated, t)
+  def notify({:ok, %PasswordlessLogin{} = l}, :create),
+    do: handle_notify(PubSub.PasswordlessLoginCreated, l)
   def notify(error, _), do: error
 end

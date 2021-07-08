@@ -145,8 +145,15 @@ defmodule GraphQl.Resolvers.User do
   def delete_token(%{id: id}, %{context: %{current_user: user}}),
     do: Users.delete_persisted_token(id, user)
 
+  def login_method(%{email: email}, _), do: Users.login_method(email)
+
   def login_user(%{email: email, password: pwd}, _) do
     Users.login_user(email, pwd)
+    |> with_jwt()
+  end
+
+  def passwordless_login(%{token: token}, _) do
+    Users.passwordless_login(token)
     |> with_jwt()
   end
 

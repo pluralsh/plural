@@ -303,4 +303,18 @@ defmodule GraphQl.UserQueriesTest do
              |> ids_equal([key | keys])
     end
   end
+
+  describe "loginMethod" do
+    test "it can fetch the login method for a user" do
+      user = insert(:user, login_method: :passwordless)
+
+      {:ok, %{data: %{"loginMethod" => method}}} = run_query("""
+        query LoginMethod($email: String!) {
+          loginMethod(email: $email) { loginMethod }
+        }
+      """, %{"email" => user.email})
+
+      assert method["loginMethod"] == "PASSWORDLESS"
+    end
+  end
 end

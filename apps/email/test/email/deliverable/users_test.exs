@@ -15,4 +15,15 @@ defmodule Email.Deliverable.UsersTest do
       assert_delivered_email Email.Builder.ResetToken.email(token)
     end
   end
+
+  describe "PasswordlessLoginCreated" do
+    test "it can send reset emails" do
+      login = insert(:passwordless_login)
+
+      event = %PubSub.PasswordlessLoginCreated{item: login}
+      Consumer.handle_event(event)
+
+      assert_delivered_email Email.Builder.PasswordlessLogin.email(login)
+    end
+  end
 end

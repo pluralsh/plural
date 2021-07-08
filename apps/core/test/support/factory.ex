@@ -404,4 +404,11 @@ defmodule Core.Factory do
       timestamp: Timex.now()
     }
   end
+
+  def passwordless_login_factory do
+    %Schema.PasswordlessLogin{
+      user: build(:user),
+      token: sequence(:passworless, &"login-#{&1}")
+    }
+  end
 end

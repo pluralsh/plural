@@ -15,9 +15,12 @@ defmodule Core.Schema.User do
 
   @email_re ~r/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-\.]+\.[a-zA-Z]{2,}$/
 
+  defenum LoginMethod, password: 0, passwordless: 1
+
   schema "users" do
     field :name,            :string
     field :email,           :string
+    field :login_method,    LoginMethod, default: :password
     field :password_hash,   :string
     field :password,        :string, virtual: true
     field :jwt,             :string, virtual: true
@@ -80,7 +83,7 @@ defmodule Core.Schema.User do
   def ordered(query \\ __MODULE__, order \\ [asc: :name]),
     do: from(p in query, order_by: ^order)
 
-  @valid ~w(name email password phone)a
+  @valid ~w(name email password phone login_method)a
 
   def changeset(model, attrs \\ %{}) do
     model

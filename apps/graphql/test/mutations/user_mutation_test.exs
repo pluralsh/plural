@@ -42,6 +42,21 @@ defmodule GraphQl.UserMutationTest do
     end
   end
 
+  describe "passwordlessLogin" do
+    test "it will login based on a pwdless login token" do
+      login = insert(:passwordless_login)
+
+      {:ok, %{data: %{"passwordlessLogin" => user}}} = run_query("""
+        mutation Login($token: String!) {
+          passwordlessLogin(token: $token) { id jwt }
+        }
+      """, %{"token" => login.token})
+
+      assert user["id"] == login.user_id
+      assert user["jwt"]
+    end
+  end
+
   describe "signup" do
     test "it can create a new user" do
       {:ok, %{data: %{"signup" => signup}}} = run_query("""

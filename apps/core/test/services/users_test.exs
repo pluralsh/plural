@@ -59,6 +59,23 @@ defmodule Core.Services.UsersTest do
     end
   end
 
+  describe "#login_method" do
+    test "if the login method is passwordless, it will create a passwordless login record" do
+      user = insert(:user, login_method: :passwordless)
+
+      {:ok, %{login_method: :passwordless}} = Users.login_method(user.email)
+
+      assert_receive {:event, %PubSub.PasswordlessLoginCreated{item: item}}
+
+      assert item.user_id == user.id
+      assert item.token
+    end
+
+    test "if the user doesn't exist, it will return an error" do
+      {:error, :not_found} = Users.login_method("some@email.com")
+    end
+  end
+
   describe "#login_user" do
     test "You can log in by password" do
       {:ok, user} = Users.create_user(%{
@@ -72,6 +89,21 @@ defmodule Core.Services.UsersTest do
       assert login.id == user.id
 
       {:error, :invalid_password} = Users.login_user(user.email, "incorrectpassword")
+    end
+  end
+
+  describe "#passwordless_login/1" do
+    test "it will return the user if valid" do
+      login = insert(:passwordless_login)
+
+      {:ok, user} = Users.passwordless_login(login.token)
+
+      assert user.id == login.user_id
+      refute refetch(login)
+    end
+
+    test "it will return an error if there is no login record" do
+      {:error, _} = Users.passwordless_login("bogus")
     end
   end
 

@@ -9,12 +9,14 @@ defmodule GraphQl.Schema.User do
 
   ecto_enum :notification_type, Core.Schema.Notification.Type
   ecto_enum :reset_token_type, Core.Schema.ResetToken.Type
+  ecto_enum :login_method, Core.Schema.User.LoginMethod
 
   input_object :user_attributes do
-    field :name,     :string
-    field :email,    :string
-    field :password, :string
-    field :avatar,   :upload_or_url
+    field :name,         :string
+    field :email,        :string
+    field :password,     :string
+    field :avatar,       :upload_or_url
+    field :login_method, :login_method
   end
 
   input_object :publisher_attributes do
@@ -58,6 +60,7 @@ defmodule GraphQl.Schema.User do
     field :email,            non_null(:string)
     field :phone,            :string
     field :address,          :address
+    field :login_method,     :login_method
     field :default_queue_id, :id
     field :service_account,  :boolean
 
@@ -192,6 +195,10 @@ defmodule GraphQl.Schema.User do
     timestamps()
   end
 
+  object :login_method_response do
+    field :login_method, non_null(:login_method)
+  end
+
   connection node_type: :user
   connection node_type: :publisher
   connection node_type: :webhook
@@ -203,6 +210,12 @@ defmodule GraphQl.Schema.User do
     field :me, :user do
       middleware Authenticated, :external
       resolve fn _, %{context: %{current_user: user}} -> {:ok, user} end
+    end
+
+    field :login_method, :login_method_response do
+      arg :email, non_null(:string)
+
+      resolve &User.login_method/2
     end
 
     field :reset_token, :reset_token do
@@ -274,6 +287,13 @@ defmodule GraphQl.Schema.User do
       arg :password, non_null(:string)
 
       resolve safe_resolver(&User.login_user/2)
+    end
+
+    field :passwordless_login, :user do
+      middleware GraphQl.Middleware.AllowJwt
+      arg :token, non_null(:string)
+
+      resolve &User.passwordless_login/2
     end
 
     field :external_token, :string do

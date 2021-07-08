@@ -209,11 +209,11 @@ function ArtifactRow({artifact}) {
     <>
     <Box flex={false} height={ROW_HEIGHT} direction='row' gap='small' align='center' 
          pad={{horizontal: 'small'}} border={{side: 'bottom', color: 'light-5'}}>
-      <Box width='20%' direction='row' gap='small' align='horizontal' align='center'>
+      <Box width='20%' direction='row' gap='small' align='center'>
         <ArtifactIcon type={artifact.type} />
         <Text size='small' weigth={500}>{artifact.name}</Text>
       </Box>
-      <Box width='20%' direction='row' gap='small' align='horizontal' align='center'>
+      <Box width='20%' direction='row' gap='small' align='center'>
         <ArtifactPlatform platform={artifact.platform} />
         <Text size='small' color='dark-3'>({artifact.arch})</Text>
       </Box>

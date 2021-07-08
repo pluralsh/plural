@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Box, Text, TextInput } from 'grommet'
+import { Box, TextInput } from 'grommet'
 import { useQuery } from 'react-apollo'
 import { GROUPS_Q, ROLES_Q, USERS_Q } from './queries'
 import { Scroller, Loading } from 'forge-core'

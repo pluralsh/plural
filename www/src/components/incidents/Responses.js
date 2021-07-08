@@ -30,7 +30,7 @@ function Repositories({repository, setRepository}) {
       mapper={({node}) => <RepoOption key={node.id} repo={node} selected={repository} setRepository={setRepository} />}
       onLoadMore={() => pageInfo.hasNextPage && fetchMore({
         variables: {cursor: pageInfo.endCursor},
-        updateQuery: (prev, {fetchMoreResult: {incidents}}) => extendConnection(prev, incidents, 'incidents')
+        updateQuery: (prev, {fetchMoreResult: {repositories}}) => extendConnection(prev, repositories, 'repositories')
       })}
     />
   )
@@ -39,7 +39,7 @@ function Repositories({repository, setRepository}) {
 function EmptyState() {
   return (
     <Box fill align='center' justify='center'>
-      <Box flex={false} pad='medium' round='small' border={{color: 'light-5'}}>
+      <Box flex={false} pad='medium' round='small' gap='xsmall'>
         <Box fill='horizontal' align='center'>
           <Aid size='medium' />
         </Box>

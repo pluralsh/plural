@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Box, Layer, Text, TextInput } from 'grommet'
+import { Box, Layer, TextInput } from 'grommet'
 import { useMutation } from 'react-apollo'
 import { Edit } from 'grommet-icons'
 import { Scroller, Loading, ModalHeader, SecondaryButton } from 'forge-core'

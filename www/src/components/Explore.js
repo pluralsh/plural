@@ -57,9 +57,10 @@ function Repo({repo, setTag}) {
             </Box>
           ))}
         </Box>
-        <Detail name='publisher'>
+        <Box direction='row' gap='xsmall' align='center' >
+          <Text size='small' color='dark-3' weight={500}>publisher:</Text>
           <SafeLink to={`/publishers/${repo.publisher.id}`}>{repo.publisher.name}</SafeLink>
-        </Detail>
+        </Box>
         <Text size='small'><i>{repo.description}</i></Text>
       </Box>
     </Box>

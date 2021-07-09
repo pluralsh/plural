@@ -7,6 +7,7 @@ import { Button, InputCollection, ResponsiveInput, SecondaryButton, GqlError } f
 import { StatusCritical, Checkmark } from 'grommet-icons'
 import { initials } from './users/Avatar'
 import { setToken } from '../helpers/authentication'
+import { LabelledInput, LoginPortal } from './users/MagicLogin'
 
 const SIGNUP = gql`
   mutation Signup($attributes: UserAttributes!, $inviteId: String!) {
@@ -82,13 +83,13 @@ export default function Invite() {
   const filled = attributes.name.length > 0
 
   return (
-    <Box align="center" justify="center" height="100vh" background='backgroundColor'>
+    <LoginPortal>
       <Box width="60%" pad='medium' background='white'>
         <Keyboard onEnter={editPassword && filled ? mutation : null}>
           <Box gap='small'>
             {error && <GqlError error={error} header='Something went wrong!' />}
             <Box justify='center' align='center'>
-              <Text weight="bold">Accept your invite</Text>
+              <Text size='large'>Accept your invite</Text>
             </Box>
             <Box direction='row' gap='small' align='center'>
               <DummyAvatar name={attributes.name} />
@@ -99,32 +100,35 @@ export default function Invite() {
             </Box>
             {editPassword ? (
               <Box animation={{type: 'fadeIn', duration: 500}}>
-                <InputCollection>
-                  <ResponsiveInput
+                <Box gap='small' fill='horizontal'>
+                  <LabelledInput
+                    width='100%'
                     type='password'
                     label='password'
                     value={attributes.password}
                     placeholder='battery horse fire stapler'
-                    onChange={({target: {value}}) => setAttributes({...attributes, password: value})} />
-                  <ResponsiveInput
+                    onChange={(password) => setAttributes({...attributes, password})} />
+                  <LabelledInput
+                    width='100%'
                     type='password'
                     label='confirm'
                     value={confirm}
                     placeholder='type it again'
-                    onChange={({target: {value}}) => setConfirm(value)} />
-                </InputCollection>
+                    onChange={setConfirm} />
+                </Box>
               </Box>
             ) : (
-              <Box animation={{type: 'fadeIn', duration: 500}}>
-                <FormField label='email' disabled>
-                  <TextInput value={email} />
-                </FormField>
-                <FormField label='name'>
-                  <TextInput
-                    value={attributes.name}
-                    placeholder='John Doe'
-                    onChange={({target: {value}}) => setAttributes({...attributes, name: value})} />
-                </FormField>
+              <Box animation={{type: 'fadeIn', duration: 500}} gap='small' fill='horizontal'>
+                <LabelledInput 
+                  width='100%'
+                  label='Email' 
+                  value={email} />
+                <LabelledInput
+                  width='100%'
+                  label='Name'
+                  value={attributes.name}
+                  placeholder='John Doe'
+                  onChange={(name) => setAttributes({...attributes, name})} />
               </Box>
             )}
             <Box direction='row' justify='end' align='center'>
@@ -136,13 +140,13 @@ export default function Invite() {
                 <Button
                   loading={loading}
                   disabled={editPassword ? disabled : !filled}
-                  label={editPassword ? 'Sign up' : 'continue'}
+                  label={editPassword ? 'Sign up' : 'Continue'}
                   onClick={editPassword ? mutation : () => setEditPassword(true)} />
               </Box>
             </Box>
           </Box>
         </Keyboard>
       </Box>
-    </Box>
+    </LoginPortal>
   )
 }

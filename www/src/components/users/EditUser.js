@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { Box, RadioButtonGroup, Text } from 'grommet'
 import { useFilePicker } from 'react-sage'
-import { Button, InputCollection, ResponsiveInput } from 'forge-core'
+import { Button, InputCollection, ResponsiveInput, Select } from 'forge-core'
 import { useMutation } from 'react-apollo'
 import { UPDATE_USER } from './queries'
 import Avatar from './Avatar'
@@ -125,16 +125,20 @@ export default function EditUser() {
                   label='email'
                   onChange={({target: {value}}) => setAttributes({...attributes, email: value})} />
               </InputCollection>
-              <Box gap='small'>
-                <Text size='small' weight={500}>Login Method:</Text>
-                <RadioButtonGroup
-                  name='login-method'
-                  value={attributes.loginMethod}
-                  onChange={({target: {value}}) => setAttributes({...attributes, loginMethod: value})}
-                  options={Object.values(LoginMethod).map((m) => ({
-                    label: m.toLocaleLowerCase(), 
-                    value: m
-                  }))} />
+              <Box gap='small' width='40%' direction='row' align='center'>
+                <Box flex={false}>
+                  <Text size='small' weight={500}>Login Method:</Text>
+                </Box>
+                <Box fill='horizontal'>
+                  <Select
+                    name='login-method'
+                    value={{value: attributes.loginMethod, label: attributes.loginMethod.toLocaleLowerCase()}}
+                    onChange={({value}) => setAttributes({...attributes, loginMethod: value})}
+                    options={Object.values(LoginMethod).map((m) => ({
+                      label: m.toLocaleLowerCase(), 
+                      value: m
+                    }))} />
+                </Box>
               </Box>
               <SectionPortal>
                 <Button loading={loading} onClick={mutation} flex={false} label='Update' />

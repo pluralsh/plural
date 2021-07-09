@@ -15,7 +15,7 @@ import { Down, InstallOption, Next, Share, ShareOption } from 'grommet-icons'
 import { Portal } from 'react-portal'
 import { v4 as uuidv4 } from 'uuid'
 import './explore.css'
-import { PLURAL_ICON, SIDEBAR_WIDTH } from './constants'
+import { PLURAL_WORD, SIDEBAR_WIDTH } from './constants'
 
 const WIDTH = 20
 
@@ -269,7 +269,7 @@ export default function Explore() {
     <Box direction='row' fill>
       <Box flex={false} width={SIDEBAR_WIDTH} background='backgroundColor' fill='vertical' pad={{vertical: 'medium', right: 'small'}} gap='xsmall'>
         <Box flex={false} pad='small' align='center'>
-            <img width='220px' src={PLURAL_ICON} />
+            <img width='220px' src={PLURAL_WORD} />
         </Box> 
         <SectionItem name='public' label='Public' icon={<ShareOption size='14px' />} />
         <SectionItem name='installed' label='Installed' icon={<InstallOption size='14px' />} />

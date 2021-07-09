@@ -25,7 +25,7 @@ export function LabelledInput({label, value, onChange, placeholder, width, type,
         name={label}
         type={type}
         value={value || ''}
-        onChange={({target: {value}}) => onChange(value)}
+        onChange={onChange && (({target: {value}}) => onChange(value))}
         placeholder={placeholder} />
     </Box>
   )

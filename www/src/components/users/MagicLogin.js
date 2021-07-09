@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Box, Form, Keyboard, TextInput, Collapsible, Text, Anchor } from 'grommet'
 import { Button } from 'forge-core'
-import { LOGIN_METHOD, LOGIN_MUTATION } from './queries'
+import { LOGIN_METHOD, LOGIN_MUTATION, PASSWORDLESS_LOGIN } from './queries'
 import { useLazyQuery, useMutation } from 'react-apollo'
 import { LoginMethod } from './types'
-import { Redirect, useHistory } from 'react-router'
+import { Redirect, useHistory, useParams } from 'react-router'
 import { fetchToken, setToken } from '../../helpers/authentication'
-import { GqlError } from '../utils/Alert'
+import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 import { disableState, PasswordStatus } from '../Login'
 import { PLURAL_ICON, PLURAL_MARK } from '../constants'
 
@@ -44,6 +44,34 @@ function LoginPortal({children}) {
   )
 }
 
+export function PasswordlessLogin() {
+  let history = useHistory()
+  const {token} = useParams()
+  const [mutation, {error, loading}] = useMutation(PASSWORDLESS_LOGIN, {
+    variables: {token},
+    onCompleted: ({passwordlessLogin: {jwt}}) => {
+      setToken(jwt)
+      history.push(`/`)
+    }
+  })
+  useEffect(() => {
+    mutation()
+  }, [])
+
+  return (
+    <LoginPortal>
+      <Box gap='medium'>
+        <Box gap='xsmall' align='center'>
+          <img src={PLURAL_MARK} width='45px' />
+          <Text size='large'>Magic Login</Text>
+        </Box>
+        {loading && <Text size='small' color='dark-3'>Validating your login token...</Text>}
+        {error && <GqlError error={error} header='Error validating login' />}
+      </Box>
+    </LoginPortal>
+  )
+}
+
 export function Login() {
   let history = useHistory()
   const [email, setEmail] = useState('')
@@ -51,7 +79,8 @@ export function Login() {
   const [getLoginMethod, {data, loading: qLoading, error: qError}] = useLazyQuery(LOGIN_METHOD, {variables: {email}})
 
   const loginMethod = data && data.loginMethod && data.loginMethod.loginMethod
-  const open = loginMethod && loginMethod === LoginMethod.PASSWORD
+  const open = loginMethod === LoginMethod.PASSWORD
+  const passwordless = loginMethod === LoginMethod.PASSWORDLESS
 
   const [mutation, {loading: mLoading, error}] = useMutation(LOGIN_MUTATION, {
     variables: { email, password },
@@ -79,34 +108,44 @@ export function Login() {
         <Box gap='xsmall' align='center'>
           <img src={PLURAL_MARK} width='45px' />
           <Text size='large'>Welcome</Text>
-          <Text size='small' color='dark-3'>{open ? 'good to see you again' : 'Tell us you email to get started'}</Text>
+          <Text size='small' color='dark-3'>{open ? 'good to see you again' : 'Tell us your email to get started'}</Text>
         </Box>
-        <Keyboard onEnter={submit}>
-          <Form onSubmit={submit}>
-            <Box gap='xsmall'>
-              {error && <GqlError error={error} header='Login Failed' />}
-              <LabelledInput 
-                label='Email'
-                value={email}
-                onChange={open ? null : setEmail} 
-                placeholder='you@example.com' />
-              <Collapsible open={open} direction='vertical'>
+        {passwordless && (
+          <Box>
+            <Alert 
+              status={AlertStatus.SUCCESS} 
+              header='Check your email!' 
+              description='Check your email to verify your identity and log in' />
+          </Box>
+        )}
+        {!passwordless && (
+          <Keyboard onEnter={submit}>
+            <Form onSubmit={submit}>
+              <Box gap='xsmall'>
+                {error && <GqlError error={error} header='Login Failed' />}
                 <LabelledInput 
-                  label='Password' 
-                  type='password'
-                  modifier={<Anchor onClick={() => history.push('/password-reset')} color='dark-6'>forgot your password?</Anchor>}
-                  value={password}
-                  onChange={setPassword}
-                  placeholder='a strong password' />
-              </Collapsible>
-              <Button 
-                fill='horizontal' 
-                pad={{vertical: '8px'}} 
-                margin={{top: 'small'}}
-                label="Continue" loading={loading} onClick={submit} />
-            </Box>
-          </Form>
-        </Keyboard>
+                  label='Email'
+                  value={email}
+                  onChange={open ? null : setEmail} 
+                  placeholder='you@example.com' />
+                <Collapsible open={open} direction='vertical'>
+                  <LabelledInput 
+                    label='Password' 
+                    type='password'
+                    modifier={<Anchor onClick={() => history.push('/password-reset')} color='dark-6'>forgot your password?</Anchor>}
+                    value={password}
+                    onChange={setPassword}
+                    placeholder='a strong password' />
+                </Collapsible>
+                <Button 
+                  fill='horizontal' 
+                  pad={{vertical: '8px'}} 
+                  margin={{top: 'small'}}
+                  label="Continue" loading={loading} onClick={submit} />
+              </Box>
+            </Form>
+          </Keyboard>
+        )}
       </Box>
     </LoginPortal>
   )

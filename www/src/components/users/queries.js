@@ -195,3 +195,9 @@ export const LOGIN_MUTATION = gql`
     login(email: $email, password: $password) { jwt }
   }
 `;
+
+export const PASSWORDLESS_LOGIN = gql`
+  mutation Passwordless($token: String!) {
+    passwordlessLogin(token: $token) { jwt }
+  }
+`

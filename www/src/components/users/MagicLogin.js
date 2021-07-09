@@ -10,7 +10,7 @@ import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 import { disableState, PasswordStatus } from '../Login'
 import { PLURAL_ICON, PLURAL_MARK } from '../constants'
 
-function LabelledInput({label, value, onChange, placeholder, width, type, modifier}) {
+export function LabelledInput({label, value, onChange, placeholder, width, type, modifier}) {
   return (
     <Box gap='xsmall' width={width || '300px'}>
       <Box direction='row' align='center'>
@@ -31,7 +31,7 @@ function LabelledInput({label, value, onChange, placeholder, width, type, modifi
   )
 }
 
-function LoginPortal({children}) {
+export function LoginPortal({children}) {
   return (
     <Box height='100vh' fill='horizontal' direction='row'>
       <Box width='40%' fill='vertical' justify='center' align='center' background='plural-blk'>

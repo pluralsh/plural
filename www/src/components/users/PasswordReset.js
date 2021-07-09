@@ -9,6 +9,7 @@ import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 import { useParams } from 'react-router'
 import { PasswordStatus, disableState } from '../Login'
 import { wipeToken } from '../../helpers/authentication'
+import { LabelledInput, LoginPortal } from './MagicLogin'
 
 export function ResetPassword() {
   const {id} = useParams()
@@ -28,10 +29,10 @@ export function ResetPassword() {
   if (!data) return null
 
   return (
-    <Box align="center" justify="center" height="100vh" background='light-1'>
-      <Box width="70%" pad='medium' background='white' border={{color: 'light-3'}} gap='small'>
+    <LoginPortal>
+      <Box gap='small' width='400px'>
         <Box pad={{vertical: 'xsmall'}} align='center'>
-          <Text size='small' weight={500}>Reset your password</Text>
+          <Text size='large'>Reset your password</Text>
         </Box>
         {realized && realized.realizeResetToken && (
           <Alert 
@@ -42,24 +43,26 @@ export function ResetPassword() {
         {error && <GqlError header="Failed!" error={error} />}
         <Keyboard onEnter={mutation}>
           <Form onSubmit={mutation}>
-            <Box margin={{bottom: 'small'}}>
-              <FormField label='email' disabled>
-                <TextInput value={data.resetToken.user.email} />
-              </FormField>
-              <FormField label='password'>
-                <TextInput
-                  type='password'
-                  value={attributes.password}
-                  placeholder='a strong password'
-                  onChange={({target: {value}}) => setAttributes({...attributes, password: value})} />
-              </FormField>
-              <FormField label='confirm password'>
-                <TextInput
-                  type='password'
-                  value={confirm}
-                  placeholder='confirm your password'
-                  onChange={({target: {value}}) => setConfirm(value)} />
-              </FormField>
+            <Box margin={{bottom: 'small'}} gap='small'>
+              <LabelledInput 
+                width='100%'
+                label='Email' 
+                name='email' 
+                value={data.resetToken.user.email} />
+              <LabelledInput
+                width='100%'
+                label='Password'
+                type='password'
+                placeholder='a strong password'
+                value={attributes.password}
+                onChange={(password) => setAttributes({...attributes, password})} />
+              <LabelledInput
+                width='100%'
+                label='Confim Password'
+                type='password'
+                placeholder='confirm your password'
+                value={confirm}
+                onChange={setConfirm} />
             </Box>
             <Box direction="row" align="center" justify='end' gap='small'>
               <PasswordStatus disabled={disabled} reason={reason} />
@@ -68,7 +71,7 @@ export function ResetPassword() {
           </Form>
         </Keyboard>
       </Box>
-    </Box>
+    </LoginPortal>
   )
 }
 
@@ -79,10 +82,10 @@ export function PasswordReset() {
   const reset = data && data.createResetToken
 
   return (
-    <Box align="center" justify="center" height="100vh" background='light-1'>
-      <Box width="70%" pad='medium' background='white' border={{color: 'light-3'}} gap='small'>
+    <LoginPortal>
+      <Box pad='medium' gap='small' width='400px'>
         <Box pad={{vertical: 'xsmall'}} align='center'>
-          <Text size='small' weight={500}>Reset your password</Text>
+          <Text size='large'>Reset your password</Text>
         </Box>
         {reset && (
           <Alert 
@@ -93,19 +96,18 @@ export function PasswordReset() {
         {error && <GqlError header="Failed!" error={error} />}
         <Keyboard onEnter={mutation}>
           <Form onSubmit={mutation}>
-            <Box margin={{bottom: 'small'}}>
-              <FormField
+            <Box gap='small' fill='horizontal'>
+              <LabelledInput
+                width='100%'
                 value={attributes.email}
-                label="email"
-                name="email"
-                onChange={({target: {value}}) => setAttributes({...attributes, email: value})}
-                placeholder="your email"
-              />
-            </Box>
-            <Box direction="row" align="center" justify='end'>
+                label='Email'
+                name='email'
+                placeholder='your email'
+                onChange={(email) => setAttributes({...attributes, email})} />
               <Button
                 onClick={mutation}
                 loading={loading}
+                fill='horizontal'
                 size='small'
                 round='xsmall'
                 pad={{vertical: 'xsmall', horizontal: 'medium'}}
@@ -114,6 +116,6 @@ export function PasswordReset() {
           </Form>
         </Keyboard>
       </Box>
-    </Box>
+    </LoginPortal>
   )
 }

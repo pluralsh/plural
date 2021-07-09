@@ -44,6 +44,8 @@ defmodule Core.Services.UsersTest do
       {:ok, updated} = Users.update_user(%{name: "real user"}, user)
 
       assert updated.name == "real user"
+
+      assert_receive {:event, %PubSub.UserUpdated{item: ^updated}}
     end
   end
 

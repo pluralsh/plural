@@ -7,6 +7,7 @@ export const ME_Q = gql`
   query {
     me {
       ...UserFragment
+      loginMethod
       account { ...AccountFragment }
       publisher { 
         ...PublisherFragment 
@@ -44,6 +45,7 @@ export const UPDATE_USER = gql`
   mutation UpdateUser($attributes: UserAttributes!) {
     updateUser(attributes: $attributes) {
       ...UserFragment
+      loginMethod
     }
   }
   ${UserFragment}
@@ -175,3 +177,21 @@ export const DELETE_KEY = gql`
     }
   }
 `
+
+export const LOGIN_METHOD = gql`
+  query LoginMethod($email: String!) {
+    loginMethod(email: $email) { loginMethod }
+  }
+`
+
+export const SIGNUP_MUTATION = gql`
+  mutation Signup($email: String!, $password: String!, $name: String!) {
+    signup(attributes: {email: $email, password: $password, name: $name}) { jwt }
+  }
+`;
+
+export const LOGIN_MUTATION = gql`
+  mutation Login($email: String!, $password: String!) {
+    login(email: $email, password: $password) { jwt }
+  }
+`;

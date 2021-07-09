@@ -170,6 +170,7 @@ defmodule Core.Services.Users do
     user
     |> User.changeset(attrs)
     |> Core.Repo.update()
+    |> notify(:update)
   end
 
   @doc """
@@ -286,5 +287,7 @@ defmodule Core.Services.Users do
     do: handle_notify(PubSub.ResetTokenCreated, t)
   def notify({:ok, %PasswordlessLogin{} = l}, :create),
     do: handle_notify(PubSub.PasswordlessLoginCreated, l)
+  def notify({:ok, %User{} = u}, :update),
+    do: handle_notify(PubSub.UserUpdated, u)
   def notify(error, _), do: error
 end

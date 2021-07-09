@@ -107,16 +107,18 @@ defmodule GraphQl.UserMutationTest do
       })
 
       {:ok, %{data: %{"updateUser" => updated}}} = run_query("""
-        mutation UpdateUser($name: String) {
-          updateUser(attributes: {name: $name}) {
+        mutation UpdateUser($name: String, $loginMethod: LoginMethod) {
+          updateUser(attributes: {name: $name, loginMethod: $loginMethod}) {
             id
             name
+            loginMethod
           }
         }
-      """, %{"name" => "Updated User"}, %{current_user: user})
+      """, %{"name" => "Updated User", "loginMethod" => "PASSWORDLESS"}, %{current_user: user})
 
       assert updated["id"] == user.id
       assert updated["name"] == "Updated User"
+      assert updated["loginMethod"] == "PASSWORDLESS"
     end
   end
 

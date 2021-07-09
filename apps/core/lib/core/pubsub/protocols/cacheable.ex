@@ -14,3 +14,10 @@ defimpl Core.PubSub.Cacheable, for: [Core.PubSub.GroupMemberCreated, Core.PubSub
     {:set, {:login, user.id}, user}
   end
 end
+
+defimpl Core.PubSub.Cacheable, for: [Core.PubSub.UserUpdated] do
+  def cache(%{item: user}) do
+    user = Core.Services.Rbac.preload(user)
+    {:set, {:login, user.id}, user}
+  end
+end

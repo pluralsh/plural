@@ -51,3 +51,5 @@ defmodule Core.PubSub.RolloutPolled, do: use Piazza.PubSub.Event
 
 defmodule Core.PubSub.AccessTokenUsage, do: use Piazza.PubSub.Event
 defmodule Core.PubSub.PasswordlessLoginCreated, do: use Piazza.PubSub.Event
+
+defmodule Core.PubSub.UserUpdated, do: use Piazza.PubSub.Event

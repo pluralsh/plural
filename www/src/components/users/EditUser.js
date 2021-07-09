@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { Box, Text } from 'grommet'
+import { Box, RadioButtonGroup, Text } from 'grommet'
 import { useFilePicker } from 'react-sage'
 import { Button, InputCollection, ResponsiveInput } from 'forge-core'
 import { useMutation } from 'react-apollo'
@@ -14,6 +14,7 @@ import { BreadcrumbsContext } from '../Breadcrumbs'
 import { SIDEBAR_WIDTH } from '../constants'
 import { Keys } from './Keys'
 import { SectionContentContainer, SectionPortal } from '../Explore'
+import { LoginMethod } from './types'
 
 export const EditContext = React.createContext({})
 
@@ -79,7 +80,8 @@ function passwordValid(password, confirm) {
 
 export default function EditUser() {
   const me = useContext(CurrentUserContext)
-  const [attributes, setAttributes] = useState({name: me.name, email: me.email})
+  console.log(me)
+  const [attributes, setAttributes] = useState({name: me.name, email: me.email, loginMethod: me.loginMethod})
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
   const {editing} = useParams()
@@ -112,7 +114,7 @@ export default function EditUser() {
         </Box>
         <Box fill>
           <EditContent edit='user' name='User Attributes'>
-            <Box pad='small'>
+            <Box pad='small' gap='small'>
               <InputCollection>
                 <ResponsiveInput
                   value={attributes.name}
@@ -123,6 +125,17 @@ export default function EditUser() {
                   label='email'
                   onChange={({target: {value}}) => setAttributes({...attributes, email: value})} />
               </InputCollection>
+              <Box gap='small'>
+                <Text size='small' weight={500}>Login Method:</Text>
+                <RadioButtonGroup
+                  name='login-method'
+                  value={attributes.loginMethod}
+                  onChange={({target: {value}}) => setAttributes({...attributes, loginMethod: value})}
+                  options={Object.values(LoginMethod).map((m) => ({
+                    label: m.toLocaleLowerCase(), 
+                    value: m
+                  }))} />
+              </Box>
               <SectionPortal>
                 <Button loading={loading} onClick={mutation} flex={false} label='Update' />
               </SectionPortal>

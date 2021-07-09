@@ -1,7 +1,6 @@
 import React from 'react'
 import { Switch, Route } from 'react-router-dom'
 import { Grommet } from 'grommet'
-import Login from './components/Login'
 import Plural from './components/Plural'
 import { DEFAULT_THEME } from './theme'
 import hljs from 'highlight.js'
@@ -10,6 +9,7 @@ import Invite from './components/Invite'
 import { PasswordReset, ResetPassword } from './components/users/PasswordReset'
 
 import '@brainhubeu/react-carousel/lib/style.css'
+import { Login, Signup } from './components/users/MagicLogin'
 
 hljs.registerLanguage('terraform', hljsDefineTerraform)
 
@@ -21,6 +21,7 @@ export default function App() {
         <Route exact path='/password-reset' component={PasswordReset} />
         <Route path='/invite/:inviteId' component={Invite} />
         <Route exact path="/login" component={Login} />
+        <Route exact path='/signup' component={Signup} />
         <Route path="/" component={Plural} />
       </Switch>
     </Grommet>

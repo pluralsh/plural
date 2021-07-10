@@ -114,13 +114,14 @@ defmodule GraphQl.Schema.Repository do
   end
 
   object :installation do
-    field :id,           :id
-    field :context,      :map
-    field :auto_upgrade, :boolean
-    field :repository,   :repository, resolve: dataloader(Repository)
-    field :user,         :user, resolve: dataloader(User)
-    field :subscription, :repository_subscription, resolve: dataloader(Payments)
-    field :track_tag,    non_null(:string)
+    field :id,            non_null(:id)
+    field :context,       :map
+    field :auto_upgrade,  :boolean
+    field :repository,    :repository, resolve: dataloader(Repository)
+    field :user,          :user, resolve: dataloader(User)
+    field :subscription,  :repository_subscription, resolve: dataloader(Payments)
+    field :oidc_provider, :oidc_provider, resolve: dataloader(Repository)
+    field :track_tag,     non_null(:string)
 
     field :license, :string, resolve: fn
       installation, _, _ -> Core.Services.Repositories.generate_license(installation)
@@ -358,6 +359,14 @@ defmodule GraphQl.Schema.Repository do
       arg :attributes, non_null(:artifact_attributes)
 
       resolve safe_resolver(&Repository.create_artifact/2)
+    end
+
+    field :create_oidc_provider, :oidc_provider do
+      middleware Authenticated
+      arg :installation_id, non_null(:id)
+      arg :attributes, non_null(:oidc_attributes)
+
+      resolve safe_resolver(&Repository.create_oidc_provider/2)
     end
   end
 end

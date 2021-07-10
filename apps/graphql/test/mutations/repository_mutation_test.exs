@@ -1,6 +1,7 @@
 defmodule GraphQl.RepositoryMutationsTest do
   use Core.SchemaCase, async: true
   import GraphQl.TestHelpers
+  use Mimic
 
   describe "createRepository" do
     test "A user can create a repo for his publisher" do
@@ -205,6 +206,39 @@ defmodule GraphQl.RepositoryMutationsTest do
       assert art["readme"] == "blank"
       assert art["type"] == "CLI"
       assert art["platform"] == "MAC"
+    end
+  end
+
+  describe "createOidcProvider" do
+    test "it will create an oidc provider for an installation" do
+      account = insert(:account)
+      installation = insert(:installation, user: build(:user, account: account))
+      group = insert(:group, account: account)
+      expect(HTTPoison, :post, fn _, _, _ ->
+        {:ok, %{status_code: 200, body: Jason.encode!(%{client_id: "123", client_secret: "secret"})}}
+      end)
+
+      {:ok, %{data: %{"createOidcProvider" => provider}}} = run_query("""
+        mutation Create($id: ID!, $attributes: OidcAttributes!) {
+          createOidcProvider(installationId: $id, attributes: $attributes) {
+            id
+            clientId
+            clientSecret
+            redirectUris
+            bindings { user { id } group { id } }
+          }
+        }
+      """, %{"id" => installation.id, "attributes" => %{
+        "redirectUris" => ["example.com"],
+        "bindings" => [%{"groupId" => group.id}]
+      }}, %{current_user: installation.user})
+
+      assert provider["id"]
+      assert provider["clientId"] == "123"
+      assert provider["clientSecret"] == "secret"
+      assert provider["redirectUris"] == ["example.com"]
+      [%{"group" => g}] = provider["bindings"]
+      assert g["id"] == group.id
     end
   end
 end

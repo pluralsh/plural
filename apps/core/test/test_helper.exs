@@ -13,5 +13,6 @@ Mimic.copy(Stripe.Card)
 Mimic.copy(Core.Conduit.Broker)
 Mimic.copy(Core.Buffers.Docker)
 Mimic.copy(Core.Buffers.TokenAudit)
+Mimic.copy(Core.Clients.Hydra)
 
 {:ok, _} = Application.ensure_all_started(:ex_machina)

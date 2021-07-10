@@ -10,7 +10,9 @@ defmodule GraphQl.Resolvers.Repository do
     Artifact,
     Dashboard,
     Shell,
-    Database
+    Database,
+    OIDCProvider,
+    OIDCProviderBinding
   }
 
   def query(Tag, _), do: Tag
@@ -21,6 +23,8 @@ defmodule GraphQl.Resolvers.Repository do
   def query(Artifact, _), do: Artifact.ordered()
   def query(Database, _), do: Database
   def query(Shell, _), do: Shell
+  def query(OIDCProvider, _), do: OIDCProvider
+  def query(OIDCProviderBinding, _), do: OIDCProviderBinding
   def query(_, _), do: Repository
 
   def resolve_public_key(repo, user) do
@@ -171,6 +175,9 @@ defmodule GraphQl.Resolvers.Repository do
 
   def delete_installation(%{id: id}, %{context: %{current_user: user}}),
     do: Repositories.delete_installation(id, user)
+
+  def create_oidc_provider(%{attributes: attrs, installation_id: id}, %{context: %{current_user: user}}),
+    do: Repositories.create_oidc_provider(attrs, id, user)
 
   def create_artifact(%{repository_id: repo_id, attributes: attrs}, %{context: %{current_user: user}}),
     do: Repositories.create_artifact(attrs, repo_id, user)

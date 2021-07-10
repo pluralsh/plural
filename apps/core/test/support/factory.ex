@@ -411,4 +411,18 @@ defmodule Core.Factory do
       token: sequence(:passworless, &"login-#{&1}")
     }
   end
+
+  def oidc_provider_factory do
+    %Schema.OIDCProvider{
+      installation: build(:installation),
+      client_id: sequence(:oidc, &"id-#{&1}"),
+      client_secret: sequence(:oidc, &"id-#{&1}")
+    }
+  end
+
+  def oidc_provider_binding_factory do
+    %Schema.OIDCProviderBinding{
+      provider: build(:oidc_provider)
+    }
+  end
 end

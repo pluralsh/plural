@@ -61,7 +61,8 @@ config :core,
   chartmuseum: "http://chartmuseum:8080",
   plural_cmd: "/usr/local/bin/plural",
   stripe_connect_id: get_env("STRIPE_CONNECT_ID"),
-  stripe_publishable_key: get_env("STRIPE_PUBLISHABLE_KEY")
+  stripe_publishable_key: get_env("STRIPE_PUBLISHABLE_KEY"),
+  hydra_public_url: get_env("HYDRA_URL") || "https://oidc.plural.sh"
 
 provider = case get_env("PROVIDER") || "google" do
   "google" -> :gcp

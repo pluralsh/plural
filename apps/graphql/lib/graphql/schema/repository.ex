@@ -5,7 +5,8 @@ defmodule GraphQl.Schema.Repository do
     Payments,
     Repository,
     Dependencies,
-    Tag
+    Tag,
+    Account
   }
 
   ### INPUTS
@@ -93,6 +94,11 @@ defmodule GraphQl.Schema.Repository do
     field :user,   non_null(:string)
     field :secret, non_null(:string)
     field :key,    non_null(:string)
+  end
+
+  input_object :oidc_attributes do
+    field :redirect_uris, list_of(:string)
+    field :bindings, list_of(:binding_attributes)
   end
 
   ## OBJECTS
@@ -191,6 +197,25 @@ defmodule GraphQl.Schema.Repository do
     field :repository, :repository, resolve: dataloader(Repository)
     field :publisher,  :publisher, resolve: dataloader(User)
     field :tags,       list_of(:tag), resolve: dataloader(Repository)
+
+    timestamps()
+  end
+
+  object :oidc_provider do
+    field :id,            non_null(:id)
+    field :client_secret, non_null(:string)
+    field :client_id,     non_null(:string)
+    field :redirect_uris, list_of(:string)
+
+    field :bindings, list_of(:oidc_provider_binding), resolve: dataloader(Repository)
+
+    timestamps()
+  end
+
+  object :oidc_provider_binding do
+    field :id,    non_null(:id)
+    field :user,  :user, resolve: dataloader(User)
+    field :group, :group, resolve: dataloader(Account)
 
     timestamps()
   end

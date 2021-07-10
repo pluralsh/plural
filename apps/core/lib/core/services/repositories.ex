@@ -5,6 +5,7 @@ defmodule Core.Services.Repositories do
   alias Core.PubSub
   alias Core.Services.Users
   alias Core.Auth.Jwt
+  alias Core.Clients.Hydra
   alias Core.Schema.{
     Repository,
     Installation,
@@ -16,7 +17,8 @@ defmodule Core.Services.Repositories do
     Integration,
     Subscription,
     Plan,
-    Artifact
+    Artifact,
+    OIDCProvider
   }
   alias Piazza.Crypto.RSA
 
@@ -66,6 +68,11 @@ defmodule Core.Services.Repositories do
     |> DockerImage.for_repositories()
     |> DockerImage.for_tag(tag)
     |> Core.Repo.one()
+  end
+
+  def get_oidc_provider_by_client!(client_id) do
+    Core.Repo.get_by!(OIDCProvider, client_id: client_id)
+    |> Core.Repo.preload([:bindings, installation: :repository])
   end
 
   @doc """
@@ -297,6 +304,52 @@ defmodule Core.Services.Repositories do
     |> execute(extract: :installation)
   end
   def delete_installation(inst_id, user), do: get_installation!(inst_id) |> delete_installation(user)
+
+  @doc """
+  Creates a new oidc provider for a given installation, enabling a log-in with plural experience
+  """
+  @spec create_oidc_provider(map, binary, User.t) :: {:ok, OIDCProvider.t} | {:error, term}
+  def create_oidc_provider(attrs, installation_id, %User{} = user) do
+    start_transaction()
+    |> add_operation(:installation, fn _ ->
+      get_installation!(installation_id)
+      |> allow(user, :edit)
+    end)
+    |> add_operation(:client, fn _ ->
+      Map.take(attrs, [:redirect_uris])
+      |> Hydra.create_client()
+    end)
+    |> add_operation(:oidc_provider, fn
+      %{installation: %{id: id}, client: %{client_id: cid, client_secret: secret}} ->
+        %OIDCProvider{installation_id: id}
+        |> OIDCProvider.changeset(Map.merge(attrs, %{client_id: cid, client_secret: secret}))
+        |> Core.Repo.insert()
+    end)
+    |> execute(extract: :oidc_provider)
+  end
+
+  @doc """
+  Updates the spec of an installation's oidc provider
+  """
+  @spec update_oidc_provider(map, binary, User.t) :: {:ok, OIDCProvider.t} | {:error, term}
+  def update_oidc_provider(attrs, installation_id, %User{} = user) do
+    start_transaction()
+    |> add_operation(:installation, fn _ ->
+      get_installation!(installation_id)
+      |> Core.Repo.preload([oidc_provider: :provider_bindings])
+      |> allow(user, :edit)
+    end)
+    |> add_operation(:client, fn
+      %{installation: %{oidc_provider: %{client_id: id}}} ->
+        Hydra.update_client(id, Map.take(attrs, [:redirect_uris]))
+    end)
+    |> add_operation(:oidc_provider, fn %{installation: %{oidc_provider: provider}} ->
+      provider
+      |> OIDCProvider.changeset(attrs)
+      |> Core.Repo.update()
+    end)
+    |> execute(extract: :oidc_provider)
+  end
 
   @doc """
   Creates a new artifact for the repository, representing a downloadable resource

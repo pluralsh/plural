@@ -8,4 +8,5 @@ Mimic.copy(Stripe.Subscription)
 Mimic.copy(Stripe.SubscriptionItem)
 Mimic.copy(Stripe.Invoice)
 Mimic.copy(Stripe.Card)
+
 ExUnit.start()

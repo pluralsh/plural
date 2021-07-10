@@ -1,6 +1,6 @@
 defmodule Core.Schema.Installation do
   use Piazza.Ecto.Schema
-  alias Core.Schema.{Repository, User, Subscription}
+  alias Core.Schema.{Repository, User, Subscription, OIDCProvider}
 
   defmodule Policy do
     use Piazza.Ecto.Schema
@@ -26,6 +26,7 @@ defmodule Core.Schema.Installation do
     belongs_to :user,       User
     belongs_to :repository, Repository
     has_one :subscription,  Subscription
+    has_one :oidc_provider, OIDCProvider
 
     timestamps()
   end

@@ -19,6 +19,7 @@ defmodule GraphQl do
   import_types GraphQl.Schema.Audit
   import_types GraphQl.Schema.Upgrade
   import_types GraphQl.Schema.Rollout
+  import_types GraphQl.Schema.OAuth
 
   alias GraphQl.Resolvers.{
     User,
@@ -92,6 +93,7 @@ defmodule GraphQl do
     import_fields :audit_queries
     import_fields :upgrade_queries
     import_fields :rollout_queries
+    import_fields :oauth_queries
   end
 
   mutation do
@@ -105,6 +107,7 @@ defmodule GraphQl do
     import_fields :account_mutations
     import_fields :incident_mutations
     import_fields :upgrade_mutations
+    import_fields :oauth_mutations
   end
 
   subscription do

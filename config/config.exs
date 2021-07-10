@@ -129,4 +129,7 @@ config :worker, rollout_pipeline: [
 
 config :worker, upgrade_pipeline: []
 
+config :core, Core.Clients.Hydra,
+  hydra_admin: "http://plural-hydra-admin:4445"
+
 import_config "#{Mix.env()}.exs"

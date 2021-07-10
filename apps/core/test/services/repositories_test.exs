@@ -389,4 +389,29 @@ defmodule Core.Services.RepositoriesTest do
       }, repo.id, insert(:user))
     end
   end
+
+  describe "#create_oidc_provider/3" do
+    test "a user can create a provider for their installation" do
+      account = insert(:account)
+      installation = insert(:installation, user: build(:user, account: account))
+      group = insert(:group, account: account)
+      expect(HTTPoison, :post, fn _, _, _ ->
+        {:ok, %{status_code: 200, body: Jason.encode!(%{client_id: "123", client_secret: "secret"})}}
+      end)
+
+      {:ok, oidc} = Repositories.create_oidc_provider(%{
+        redirect_uris: ["https://example.com"],
+        bindings: [%{user_id: installation.user_id}, %{group_id: group.id}]
+      }, installation.id, installation.user)
+
+      assert oidc.client_id == "123"
+      assert oidc.client_secret == "secret"
+      assert oidc.redirect_uris == ["https://example.com"]
+
+      [first, second] = oidc.bindings
+
+      assert first.user_id == installation.user_id
+      assert second.group_id == group.id
+    end
+  end
 end

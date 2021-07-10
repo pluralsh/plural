@@ -7,7 +7,7 @@ import Collapsible from 'react-collapsible'
 import { RepositoryIcon } from './Repository'
 import { InstallationInner, Plans } from './Installation'
 import { Box, Layer } from 'grommet'
-import { EditInstallation } from './EditInstallation'
+import { EditInstallation, UpdateInstallation } from './EditInstallation'
 import CreatePlan from '../payments/CreatePlan'
 import Recipes from './Recipes'
 import { Charts, Terraform, DockerRepos, RepoUpdate, UpdateSecrets, RepoCredentials } from './Repository'
@@ -16,6 +16,7 @@ import { useQuery } from 'react-apollo'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 import { REPO_Q } from './queries'
 import { ArtifactTable } from './Artifacts'
+import { OIDCProvider } from '../oidc/OIDCProvider'
 
 const ICON_SIZE = '14px'
 const IMG_SIZE = '75px'
@@ -121,21 +122,23 @@ export function RepoDirectory() {
             </SubgroupContainer>
           </Box>
           {repository.installation && (
-            <>
-            <SectionItem
-              name='config'
-              label='Configure'
-              icon={Configure}
-              onClick={() => setOpen('config')} />
-            {open === 'config' && (
-              <Layer modal onClickOutside={() => setOpen(null)}>
-                <Box width='400px'>
-                  <ModalHeader text={`Configure installation of ${repository.name}`} setOpen={setOpen} />
-                  <EditInstallation installation={repository.installation} repository={repository} />
-                </Box>
-              </Layer>
-            )}
-            </>
+            <Box flex={false}>
+              <SectionItem
+                name='configure'
+                label='Configure'
+                icon={Configure}
+                location={`/repositories/${id}/configure/upgrades`} />
+              <SubgroupContainer name='configure'>
+                <SectionItem
+                  name='configure'
+                  subgroup='upgrades'
+                  label='Upgrades' />
+                <SectionItem
+                  name='configure'
+                  subgroup='oidc'
+                  label='OIDC' />
+              </SubgroupContainer>
+            </Box>
           )}
           <SectionItem
             name='deployments'
@@ -204,6 +207,12 @@ export function RepoDirectory() {
         </SectionContent>
         <SectionContent name='packages' subgroup='docker' header='Docker Repositories'>
           <DockerRepos {...dockerRepositories} repo={repository} fetchMore={fetchMore} />
+        </SectionContent>
+        <SectionContent name='configure' subgroup='upgrades' header='Configure Upgrades'>
+          <UpdateInstallation installation={repository.installation} />
+        </SectionContent>
+        <SectionContent name='configure' subgroup='oidc' header='Configure OIDC Connect Provider'>
+          <OIDCProvider installation={repository.installation} />
         </SectionContent>
         <SectionContent name='deployments' header='Deployments'>
           <Rollouts repository={repository} />

@@ -25,7 +25,7 @@ defmodule Core.Clients.Hydra do
   @duration 60 * 60 * 24
 
   def create_client(attrs) do
-    admin_url("#{conf(:hydra_admin)}/clients")
+    admin_url("/clients")
     |> HTTPoison.post(Jason.encode!(attrs), headers())
     |> handle_response(%Client{})
   end

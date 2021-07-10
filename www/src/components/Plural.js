@@ -84,6 +84,9 @@ export default function Plural() {
                   <Route exact path='/repositories/:id/edit' render={(props) => (
                     <Redirect to={`/repositories/${props.match.params.id}/edit/details`} />
                   )} />
+                  <Route exact path='/repositories/:id/configure' render={(props) => (
+                    <Redirect to={`/repositories/${props.match.params.id}/configure/upgrades`} />
+                  )} />
                   <Route path='/repositories/:id/:group/:subgroup' component={RepoDirectory} />
                   <Route path='/repositories/:id/:group' component={RepoDirectory} />
                   <Route path='/charts/:chartId' component={Chart} />

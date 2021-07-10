@@ -1,5 +1,6 @@
 defmodule GraphQl.Schema.Helpers do
   import Absinthe.Resolution.Helpers
+  require Logger
 
   def resolve_changeset(%Ecto.Changeset{errors: errors}) do
     Enum.map(errors, fn {field, {msg, _}} -> "#{field} #{msg}" end)
@@ -24,7 +25,9 @@ defmodule GraphQl.Schema.Helpers do
           error -> error
         end
       rescue
-        error -> {:error, Exception.message(error)}
+        error ->
+          Logger.error(Exception.format(:error, error, __STACKTRACE__))
+          {:error, Exception.message(error)}
       end
     end
   end

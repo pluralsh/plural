@@ -12,9 +12,7 @@ defmodule GraphQl.RepositoryMutationsTest do
           createRepository(attributes: $attrs) {
             id
             name
-            publisher {
-              id
-            }
+            publisher { id }
           }
         }
       """, %{"attrs" => %{
@@ -225,18 +223,24 @@ defmodule GraphQl.RepositoryMutationsTest do
             clientId
             clientSecret
             redirectUris
-            bindings { user { id } group { id } }
+            bindings {
+              user { id }
+              group { id }
+            }
           }
         }
-      """, %{"id" => installation.id, "attributes" => %{
-        "redirectUris" => ["example.com"],
-        "bindings" => [%{"groupId" => group.id}]
+      """, %{
+        "id" => installation.id,
+        "attributes" => %{
+          "redirectUris" => ["example.com"],
+          "bindings" => [%{"groupId" => group.id}]
       }}, %{current_user: installation.user})
 
       assert provider["id"]
       assert provider["clientId"] == "123"
       assert provider["clientSecret"] == "secret"
       assert provider["redirectUris"] == ["example.com"]
+
       [%{"group" => g}] = provider["bindings"]
       assert g["id"] == group.id
     end

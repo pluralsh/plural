@@ -35,7 +35,7 @@ export function OAuthConsent() {
           <RepoIcon repo={oauthConsent} size='60px' />
         </Box>
         <Text size='medium'>{oauthConsent.name} would like access to your profile</Text>
-        <Box width='300px' pad={{vertical: 'small'}}>
+        <Box width='300px' pad={{vertical: 'small'}} gap='small'>
           {error && <GqlError error={error} header="Consent request failed" />}
           <Button loading={loading} onClick={mutation} label='Allow' />
         </Box>

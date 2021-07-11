@@ -401,6 +401,7 @@ defmodule Core.Services.RepositoriesTest do
 
       {:ok, oidc} = Repositories.create_oidc_provider(%{
         redirect_uris: ["https://example.com"],
+        auth_method: :basic,
         bindings: [%{user_id: installation.user_id}, %{group_id: group.id}]
       }, installation.id, installation.user)
 
@@ -412,6 +413,24 @@ defmodule Core.Services.RepositoriesTest do
 
       assert first.user_id == installation.user_id
       assert second.group_id == group.id
+    end
+  end
+
+  describe "#update_oidc_provider/3" do
+    test "it can update an oidc provider's attributes" do
+      installation = insert(:installation)
+      oidc = insert(:oidc_provider, installation: installation)
+      expect(HTTPoison, :put, fn _, _, _ ->
+        {:ok, %{status_code: 200, body: Jason.encode!(%{client_id: "123", client_secret: "secret"})}}
+      end)
+
+      {:ok, updated} = Repositories.update_oidc_provider(%{
+        redirect_uris: ["https://example.com"],
+        auth_method: :basic
+      }, installation.id, installation.user)
+
+      assert updated.id == oidc.id
+      assert updated.auth_method == :basic
     end
   end
 

@@ -12,6 +12,7 @@ defmodule GraphQl.Schema.Repository do
   ### INPUTS
 
   ecto_enum :category, Core.Schema.Repository.Category
+  ecto_enum :oidc_auth_method, Core.Schema.OIDCProvider.AuthMethod
 
   input_object :repository_attributes do
     field :name,          :string
@@ -98,6 +99,7 @@ defmodule GraphQl.Schema.Repository do
 
   input_object :oidc_attributes do
     field :redirect_uris, list_of(:string)
+    field :auth_method, non_null(:oidc_auth_method)
     field :bindings, list_of(:binding_attributes)
   end
 
@@ -207,6 +209,7 @@ defmodule GraphQl.Schema.Repository do
     field :client_secret, non_null(:string)
     field :client_id,     non_null(:string)
     field :redirect_uris, list_of(:string)
+    field :auth_method,   non_null(:oidc_auth_method)
 
     field :bindings, list_of(:oidc_provider_binding), resolve: dataloader(Repository)
 
@@ -367,6 +370,14 @@ defmodule GraphQl.Schema.Repository do
       arg :attributes, non_null(:oidc_attributes)
 
       resolve safe_resolver(&Repository.create_oidc_provider/2)
+    end
+
+    field :update_oidc_provider, :oidc_provider do
+      middleware Authenticated
+      arg :installation_id, non_null(:id)
+      arg :attributes, non_null(:oidc_attributes)
+
+      resolve safe_resolver(&Repository.update_oidc_provider/2)
     end
   end
 end

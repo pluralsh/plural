@@ -223,6 +223,7 @@ defmodule GraphQl.RepositoryMutationsTest do
             clientId
             clientSecret
             redirectUris
+            authMethod
             bindings {
               user { id }
               group { id }
@@ -232,12 +233,14 @@ defmodule GraphQl.RepositoryMutationsTest do
       """, %{
         "id" => installation.id,
         "attributes" => %{
+          "authMethod" => "BASIC",
           "redirectUris" => ["example.com"],
           "bindings" => [%{"groupId" => group.id}]
       }}, %{current_user: installation.user})
 
       assert provider["id"]
       assert provider["clientId"] == "123"
+      assert provider["authMethod"] == "BASIC"
       assert provider["clientSecret"] == "secret"
       assert provider["redirectUris"] == ["example.com"]
 

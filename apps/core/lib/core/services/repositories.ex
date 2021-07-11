@@ -318,6 +318,7 @@ defmodule Core.Services.Repositories do
     |> add_operation(:client, fn _ ->
       Map.take(attrs, [:redirect_uris])
       |> Map.put(:scope, "profile code")
+      |> Map.put(:token_endpoint_auth_method, oidc_auth_method(attrs.auth_method))
       |> Hydra.create_client()
     end)
     |> add_operation(:oidc_provider, fn
@@ -341,9 +342,10 @@ defmodule Core.Services.Repositories do
       |> allow(user, :edit)
     end)
     |> add_operation(:client, fn
-      %{installation: %{oidc_provider: %{client_id: id}}} ->
+      %{installation: %{oidc_provider: %{client_id: id, auth_method: auth_method}}} ->
         attrs = Map.take(attrs, [:redirect_uris])
                 |> Map.put(:scope, "profile code")
+                |> Map.put(:token_endpoint_auth_method, oidc_auth_method(auth_method))
         Hydra.update_client(id, attrs)
     end)
     |> add_operation(:oidc_provider, fn %{installation: %{oidc_provider: provider}} ->
@@ -353,6 +355,9 @@ defmodule Core.Services.Repositories do
     end)
     |> execute(extract: :oidc_provider)
   end
+
+  defp oidc_auth_method(:basic), do: "client_secret_basic"
+  defp oidc_auth_method(:post), do: "client_secret_post"
 
   @doc """
   Deletes an oidc provider and its hydra counterpart

@@ -41,7 +41,7 @@ defmodule Core.Clients.Hydra do
 
   def update_client(client_id, attrs) do
     admin_url("/clients/#{client_id}")
-    |> HTTPoison.post(Jason.encode!(attrs), headers())
+    |> HTTPoison.put(Jason.encode!(attrs), headers())
     |> handle_response(%Client{})
   end
 

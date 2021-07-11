@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { Box, RadioButtonGroup, Text } from 'grommet'
+import { Box, Text } from 'grommet'
 import { useFilePicker } from 'react-sage'
 import { Button, InputCollection, ResponsiveInput, Select } from 'forge-core'
 import { useMutation } from 'react-apollo'

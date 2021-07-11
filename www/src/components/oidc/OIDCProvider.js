@@ -129,6 +129,6 @@ export function UpdateProvider({installation}) {
 }
 
 export function OIDCProvider({installation}) {
-  if (installation.provider) return <UpdateProvider installation={installation} />
+  if (installation.oidcProvider) return <UpdateProvider installation={installation} />
   return <CreateProvider installation={installation} />
 }

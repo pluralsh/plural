@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router'
-import { Loading, ModalHeader } from 'forge-core'
+import { Loading } from 'forge-core'
 import { SectionContentContainer, SectionItemContainer } from '../Explore'
 import { Add, Configure, Deploy, Edit, Install, Package, Script, Plan as PlanIcon } from 'grommet-icons'
 import Collapsible from 'react-collapsible'
 import { RepositoryIcon } from './Repository'
 import { InstallationInner, Plans } from './Installation'
-import { Box, Layer } from 'grommet'
-import { EditInstallation, UpdateInstallation } from './EditInstallation'
+import { Box } from 'grommet'
+import { UpdateInstallation } from './EditInstallation'
 import CreatePlan from '../payments/CreatePlan'
 import Recipes from './Recipes'
 import { Charts, Terraform, DockerRepos, RepoUpdate, UpdateSecrets, RepoCredentials } from './Repository'
@@ -211,7 +211,7 @@ export function RepoDirectory() {
         <SectionContent name='configure' subgroup='upgrades' header='Configure Upgrades'>
           <UpdateInstallation installation={repository.installation} />
         </SectionContent>
-        <SectionContent name='configure' subgroup='oidc' header='Configure OIDC Connect Provider'>
+        <SectionContent name='configure' subgroup='oidc' header='Configure OIDC Provider'>
           <OIDCProvider installation={repository.installation} />
         </SectionContent>
         <SectionContent name='deployments' header='Deployments'>

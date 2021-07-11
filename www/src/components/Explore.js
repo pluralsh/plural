@@ -28,15 +28,6 @@ function EmptyState() {
   )
 }
 
-function Detail({name, children}) {
-  return (
-    <Box direction='row' gap='xsmall' align='center' >
-      <Text size='small' weight={500}>{name}:</Text>
-      {children}
-    </Box>
-  )
-}
-
 function Repo({repo, setTag}) {
   let hist = useHistory()
   return (

@@ -1,15 +1,16 @@
 import React, { useCallback, useState } from 'react'
-import { Button } from 'forge-core'
+import { Button, Select } from 'forge-core'
 import { Box, Keyboard, Text, TextInput } from 'grommet'
 import { useMutation } from 'react-apollo'
 import { BindingInput, sanitize } from '../accounts/Role'
 import { fetchGroups, fetchUsers } from '../accounts/Typeaheads'
-import { CREATE_PROVIDER } from './queries'
+import { CREATE_PROVIDER, UPDATE_PROVIDER } from './queries'
 import { SectionPortal } from '../Explore'
 import { GqlError } from '../utils/Alert'
 import { deepUpdate, updateCache } from '../../utils/graphql'
 import { REPO_Q } from '../repos/queries'
 import { Attribute, Attributes } from '../integrations/Webhook'
+import { AuthMethod } from './types'
 
 function UrlTab({url, onClick}) {
   return (
@@ -29,22 +30,27 @@ function UrlsInput({urls, setUrls}) {
 
   return (
     <Keyboard onEnter={addUrl}>
-      <Box flex={false} fill='horizontal'>
+      <Box flex={false} fill='horizontal' gap='xsmall'>
+        <Box direction='row' gap='small' align='center'>
+          <Box flex={false}>
+            <Text size='small' weight={500}>Redirect URIs</Text>
+          </Box>
+          <Box flex={false} fill='horizontal' direction='row' gap='xxsmall' align='center' wrap>
+            {urls.map((url) => (
+              <UrlTab 
+                key={url} 
+                url={url} 
+                onClick={() => setUrls(urls.filter((u) => u !== url))} />
+            ))}
+          </Box>
+        </Box>
         <Box flex={false} fill='horizontal' direction='row' gap='small' align='center'>
           <TextInput
             plain
             value={value}
-            placeholder='add a redirect url'
+            placeholder='add another redirect url'
             onChange={({target: {value}}) => setValue(value)} />
           <Button label='Add' onClick={addUrl} />
-        </Box>
-        <Box flex={false} direction='row' gap='xxsmall' align='center' wrap>
-          {urls.map((url) => (
-            <UrlTab 
-              key={url} 
-              url={url} 
-              onClick={() => setUrls(urls.filter((u) => u !== url))} />
-          ))}
         </Box>
       </Box>
     </Keyboard>
@@ -53,7 +59,7 @@ function UrlsInput({urls, setUrls}) {
 
 export function ProviderForm({attributes, setAttributes, bindings, setBindings}) {
   return (
-    <Box fill gap='small'>
+    <Box fill gap='medium'>
       <UrlsInput 
         urls={attributes.redirectUris} 
         setUrls={(redirectUris) => setAttributes({...attributes, redirectUris})} />
@@ -73,12 +79,27 @@ export function ProviderForm({attributes, setAttributes, bindings, setBindings})
           add={(group) => setBindings([...bindings, {group}])}
           remove={(name) => setBindings(bindings.filter(({group}) => !group || group.name !== name))} />
       </Box>
+      <Box gap='small' width='40%' direction='row' align='center'>
+        <Box flex={false}>
+          <Text size='small' weight={500}>Auth Method:</Text>
+        </Box>
+        <Box fill='horizontal'>
+          <Select
+            name='login-method'
+            value={{value: attributes.authMethod, label: attributes.authMethod.toLocaleLowerCase()}}
+            onChange={({value}) => setAttributes({...attributes, authMethod: value})}
+            options={Object.values(AuthMethod).map((m) => ({
+              label: m.toLocaleLowerCase(), 
+              value: m
+            }))} />
+        </Box>
+      </Box>
     </Box>
   )
 }
 
 export function CreateProvider({installation}) {
-  const [attributes, setAttributes] = useState({redirectUris: []})
+  const [attributes, setAttributes] = useState({redirectUris: [], authMethod: AuthMethod.POST})
   const [bindings, setBindings] = useState([])
   const [mutation, {loading, error}] = useMutation(CREATE_PROVIDER, {
     variables: {id: installation.id, attributes: {
@@ -111,12 +132,18 @@ export function CreateProvider({installation}) {
 
 export function UpdateProvider({installation}) {
   const provider = installation.oidcProvider
-  const [attributes, setAttributes] = useState({redirectUris: provider.redirectUris})
+  const [attributes, setAttributes] = useState({
+    redirectUris: provider.redirectUris, 
+    authMethod: provider.authMethod
+  })
   const [bindings, setBindings] = useState(provider.bindings)
+  const [mutation, {loading, error}] = useMutation(UPDATE_PROVIDER, {
+    variables: {id: installation.id, attributes: {...attributes, bindings: bindings.map(sanitize)}}
+  })
 
   return (
     <Box fill pad='small' gap='small'>
-      {/* {error && <GqlError error={error} header='Could not update provider' />} */}
+      {error && <GqlError error={error} header='Could not update provider' />}
       <Attributes>
         <Attribute width='100px' name='client id'>
           <Text size='small'>{provider.clientId}</Text>
@@ -131,7 +158,7 @@ export function UpdateProvider({installation}) {
         bindings={bindings}
         setBindings={setBindings} />
       <SectionPortal>
-        <Button label='Update' />
+        <Button label='Update' loading={loading} onClick={mutation} />
       </SectionPortal>
     </Box>
   )

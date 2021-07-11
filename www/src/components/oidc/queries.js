@@ -11,6 +11,15 @@ export const CREATE_PROVIDER = gql`
   ${OIDCProvider}
 `
 
+export const UPDATE_PROVIDER = gql`
+  mutation Update($id: ID!, $attributes: OIDCAttributes!) {
+    updateOidcProvider(installationId: $id, attributes: $attributes) {
+      ...OIDCProvider
+    }
+  }
+  ${OIDCProvider}
+`
+
 export const OAUTH_LOGIN = gql`
   query Login($challenge: String!) {
     oauthLogin(challenge: $challenge) { 

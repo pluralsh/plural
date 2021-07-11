@@ -5,6 +5,7 @@ export const OIDCProvider = gql`
   fragment OIDCProvider on OidcProvider {
     id
     clientId
+    authMethod
     clientSecret
     redirectUris
     bindings {

@@ -305,6 +305,8 @@ defmodule Core.Services.Repositories do
   end
   def delete_installation(inst_id, user), do: get_installation!(inst_id) |> delete_installation(user)
 
+  @oidc_scopes "profile code openid"
+
   @doc """
   Creates a new oidc provider for a given installation, enabling a log-in with plural experience
   """
@@ -317,7 +319,7 @@ defmodule Core.Services.Repositories do
     end)
     |> add_operation(:client, fn _ ->
       Map.take(attrs, [:redirect_uris])
-      |> Map.put(:scope, "profile code")
+      |> Map.put(:scope, @oidc_scopes)
       |> Map.put(:token_endpoint_auth_method, oidc_auth_method(attrs.auth_method))
       |> Hydra.create_client()
     end)
@@ -344,7 +346,7 @@ defmodule Core.Services.Repositories do
     |> add_operation(:client, fn
       %{installation: %{oidc_provider: %{client_id: id, auth_method: auth_method}}} ->
         attrs = Map.take(attrs, [:redirect_uris])
-                |> Map.put(:scope, "profile code")
+                |> Map.put(:scope, @oidc_scopes)
                 |> Map.put(:token_endpoint_auth_method, oidc_auth_method(auth_method))
         Hydra.update_client(id, attrs)
     end)

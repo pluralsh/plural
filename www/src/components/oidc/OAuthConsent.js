@@ -15,7 +15,7 @@ export function OAuthConsent() {
   const location = useLocation()
   const {consent_challenge: challenge} = queryString.parse(location.search)
   const [mutation, {loading, error}] = useMutation(OAUTH_CONSENT, {
-    variables: {challenge, scopes: ['profile']},
+    variables: {challenge, scopes: ['profile', 'openid']},
     onCompleted: ({oauthConsent: {redirectTo}}) => {
       window.location = redirectTo
     }

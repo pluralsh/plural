@@ -116,7 +116,7 @@ export function CreateProvider({installation}) {
   })
 
   return (
-    <Box fill pad='small' gap='small'>
+    <Box fill pad='medium' gap='small'>
       {error && <GqlError error={error} header='Could not create provider' />}
       <ProviderForm 
         attributes={attributes} 
@@ -142,7 +142,7 @@ export function UpdateProvider({installation}) {
   })
 
   return (
-    <Box fill pad='small' gap='small'>
+    <Box fill pad='medium' gap='small'>
       {error && <GqlError error={error} header='Could not update provider' />}
       <Attributes>
         <Attribute width='100px' name='client id'>

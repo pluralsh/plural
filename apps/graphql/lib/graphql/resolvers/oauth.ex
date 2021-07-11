@@ -16,5 +16,5 @@ defmodule GraphQl.Resolvers.OAuth do
     do: OAuth.handle_login(challenge, user)
 
   def accept_consent(%{challenge: challenge, scopes: scopes}, %{context: %{current_user: user}}),
-    do: OAuth.consent(challenge, Enum.join(scopes, " "), user)
+    do: OAuth.consent(challenge, scopes, user)
 end

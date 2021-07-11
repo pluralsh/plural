@@ -9,7 +9,7 @@ import { Transaction } from 'grommet-icons'
 import { GqlError } from '../utils/Alert'
 import { Box, Text } from 'grommet'
 import { PLURAL_MARK } from '../constants'
-import { RepositoryIcon } from '../repos/Repository'
+import { RepoIcon } from '../repos/Repositories'
 
 export function OAuthConsent() {
   const location = useLocation()
@@ -22,19 +22,19 @@ export function OAuthConsent() {
   })
   const {data} = useQuery(GET_CONSENT, {variables: {challenge}})
 
-  if (!data) return <Loading />
+  if (!data) return <Box fill><Loading /></Box>
 
   const {oauthConsent} = data
 
   return (
     <LoginPortal>
-      <Box gap='small'>
-        <Box direction='row' align='center' gap='small'>
+      <Box width='350px' gap='small' align='center'>
+        <Box direction='row' align='center' justify='center' gap='small' fill='horizontal'>
           <img src={PLURAL_MARK} width='60px' />
           <Transaction size='15px' />
-          <RepositoryIcon repository={oauthConsent} size='60px' />
+          <RepoIcon repo={oauthConsent} size='60px' />
         </Box>
-        <Text size='small'>{oauthConsent.name} would like access to your profile</Text>
+        <Text size='medium'>{oauthConsent.name} would like access to your profile</Text>
         <Box width='300px' pad={{vertical: 'small'}}>
           {error && <GqlError error={error} header="Consent request failed" />}
           <Button loading={loading} onClick={mutation} label='Allow' />

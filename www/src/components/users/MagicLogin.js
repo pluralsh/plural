@@ -90,11 +90,11 @@ export function Login() {
     }
   })
 
-  useEffect(() => {
-    if (fetchToken()) {
-      history.push('/')
-    }
-  }, [])
+  // useEffect(() => {
+  //   if (fetchToken()) {
+  //     history.push('/')
+  //   }
+  // }, [])
 
   const submit = useCallback(() => open ? mutation() : getLoginMethod(), [mutation, getLoginMethod, open])
 

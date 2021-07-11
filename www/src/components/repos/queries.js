@@ -8,6 +8,7 @@ import { PlanFragment, SubscriptionFragment } from '../../models/payments'
 import { PageInfo } from '../../models/misc'
 import { MetricFragment } from '../../models/metrics'
 import { DeferredUpdateFragment } from '../../models/upgrades'
+import { OIDCProvider } from '../../models/oauth'
 
 export const CREATE_REPO = gql`
   mutation CreateRepository($attributes: RepositoryAttributes!) {
@@ -98,6 +99,7 @@ export const REPO_Q = gql`
       installation {
         ...InstallationFragment
         subscription { ...SubscriptionFragment }
+        oidcProvider { ...OIDCProvider }
       }
       plans { ...PlanFragment }
       tags { tag }
@@ -135,6 +137,7 @@ export const REPO_Q = gql`
   ${RecipeFragment}
   ${IntegrationFragment}
   ${ArtifactFragment}
+  ${OIDCProvider}
 `;
 
 export const DOCKER_IMG_Q = gql`

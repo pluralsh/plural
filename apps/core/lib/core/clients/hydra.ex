@@ -36,6 +36,17 @@ defmodule Core.Clients.Hydra do
     |> handle_response(%Client{})
   end
 
+  def delete_client(client_id) do
+    admin_url("/clients/#{client_id}")
+    |> HTTPoison.delete(headers())
+    |> case do
+      {:ok, %{status_code: 204}} -> :ok
+      error ->
+        Logger.error "Failed to delete hydra client: #{inspect(error)}"
+        {:error, :unauthorized}
+    end
+  end
+
   def get_login(challenge) do
     admin_url("/oauth2/auth/requests/login?login_challenge=#{challenge}")
     |> HTTPoison.get(headers())
@@ -76,7 +87,7 @@ defmodule Core.Clients.Hydra do
     |> handle_response(%Response{})
   end
 
-  defp handle_response({:ok, %{status_code: 200, body: body}}, type),
+  defp handle_response({:ok, %{status_code: code, body: body}}, type) when code in 200..299,
     do: {:ok, Poison.decode!(body, as: type)}
   defp handle_response(error, _) do
     Logger.error "Failed to call hydra: #{inspect(error)}"

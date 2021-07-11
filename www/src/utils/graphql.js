@@ -19,8 +19,6 @@ export function extendConnection(prev, next, key) {
 export function deepUpdate(prev, path, update) {
   if (isString(path)) return deepUpdate(prev, path.split('.'), update)
 
-  console.log(prev)
-  console.log(path)
   const key = path[0]
   if (path.length === 1) {
     return {...prev, [key]: update(prev[key])}

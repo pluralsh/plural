@@ -1,12 +1,14 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { Button } from 'forge-core'
-import { Box, Text, TextInput } from 'grommet'
+import { Box, Keyboard, Text, TextInput } from 'grommet'
 import { useMutation } from 'react-apollo'
 import { BindingInput, sanitize } from '../accounts/Role'
 import { fetchGroups, fetchUsers } from '../accounts/Typeaheads'
 import { CREATE_PROVIDER } from './queries'
 import { SectionPortal } from '../Explore'
 import { GqlError } from '../utils/Alert'
+import { deepUpdate, updateCache } from '../../utils/graphql'
+import { REPO_Q } from '../repos/queries'
 
 function UrlTab({url, onClick}) {
   return (
@@ -19,26 +21,32 @@ function UrlTab({url, onClick}) {
 
 function UrlsInput({urls, setUrls}) {
   const [value, setValue] = useState('')
+  const addUrl = useCallback(() => {
+    setUrls([...urls, value])
+    setValue('')
+  }, [urls, value, setValue])
 
   return (
-    <Box flex={false} fill='horizontal'>
-      <Box flex={false} fill='horizontal' direction='row' gap='small' align='center'>
-        <TextInput
-          plain
-          value={value}
-          placeholder='add a redirect url'
-          onChange={({target: {value}}) => setValue(value)} />
-        <Button label='Add' onClick={() => setUrls([...urls, value])} />
+    <Keyboard onEnter={addUrl}>
+      <Box flex={false} fill='horizontal'>
+        <Box flex={false} fill='horizontal' direction='row' gap='small' align='center'>
+          <TextInput
+            plain
+            value={value}
+            placeholder='add a redirect url'
+            onChange={({target: {value}}) => setValue(value)} />
+          <Button label='Add' onClick={addUrl} />
+        </Box>
+        <Box flex={false} direction='row' gap='xxsmall' align='center' wrap>
+          {urls.map((url) => (
+            <UrlTab 
+              key={url} 
+              url={url} 
+              onClick={() => setUrls(urls.filter((u) => u !== url))} />
+          ))}
+        </Box>
       </Box>
-      <Box flex={false} direction='row' gap='xxsmall' align='center' wrap>
-        {urls.map((url) => (
-          <UrlTab 
-            key={url} 
-            url={url} 
-            onClick={() => setUrls(urls.filter((u) => u !== url))} />
-        ))}
-      </Box>
-    </Box>
+    </Keyboard>
   )
 }
 
@@ -73,9 +81,16 @@ export function CreateProvider({installation}) {
   const [bindings, setBindings] = useState([])
   const [mutation, {loading, error}] = useMutation(CREATE_PROVIDER, {
     variables: {id: installation.id, attributes: {
-      ...attributes,
-      bindings: bindings.map(sanitize)
-    }}
+      ...attributes, bindings: bindings.map(sanitize)
+    }},
+    update: (cache, {data: {createOidcProvider}}) => updateCache(cache, {
+      query: REPO_Q,
+      variables: {repositoryId: installation.repository.id},
+      update: (prev) => {
+        console.log(prev)
+        return deepUpdate(prev, 'repository.installation.oidcProvider', () => createOidcProvider)
+      }
+    })
   })
 
   return (

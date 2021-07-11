@@ -336,7 +336,7 @@ defmodule Core.Services.Repositories do
     start_transaction()
     |> add_operation(:installation, fn _ ->
       get_installation!(installation_id)
-      |> Core.Repo.preload([oidc_provider: :provider_bindings])
+      |> Core.Repo.preload([oidc_provider: :bindings])
       |> allow(user, :edit)
     end)
     |> add_operation(:client, fn
@@ -347,6 +347,27 @@ defmodule Core.Services.Repositories do
       provider
       |> OIDCProvider.changeset(attrs)
       |> Core.Repo.update()
+    end)
+    |> execute(extract: :oidc_provider)
+  end
+
+  @doc """
+  Deletes an oidc provider and its hydra counterpart
+  """
+  @spec delete_oidc_provider(binary, User.t) :: {:ok, OIDCProvider.t} | {:error, term}
+  def delete_oidc_provider(installation_id, %User{} = user) do
+    start_transaction()
+    |> add_operation(:installation, fn _ ->
+      get_installation!(installation_id)
+      |> Core.Repo.preload([oidc_provider: :bindings])
+      |> allow(user, :edit)
+    end)
+    |> add_operation(:client, fn %{installation: %{oidc_provider: %{client_id: id}}} ->
+      with :ok <- Hydra.delete_client(id),
+        do: {:ok, nil}
+    end)
+    |> add_operation(:oidc_provider, fn %{installation: %{oidc_provider: provider}} ->
+      Core.Repo.delete(provider)
     end)
     |> execute(extract: :oidc_provider)
   end

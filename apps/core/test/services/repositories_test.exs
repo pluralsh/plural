@@ -414,4 +414,17 @@ defmodule Core.Services.RepositoriesTest do
       assert second.group_id == group.id
     end
   end
+
+  describe "#delete_oidc_provider/2" do
+    test "it can delete an oidc provider for an installation" do
+      installation = insert(:installation)
+      oidc = insert(:oidc_provider, installation: installation)
+      expect(HTTPoison, :delete, fn _, _ -> {:ok, %{status_code: 204, body: ""}} end)
+
+      {:ok, deleted} = Repositories.delete_oidc_provider(installation.id, installation.user)
+
+      assert deleted.id == oidc.id
+      refute refetch(deleted)
+    end
+  end
 end

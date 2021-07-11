@@ -12,6 +12,12 @@ defmodule GraphQl.Schema.OAuth do
 
       resolve &OAuth.resolve_login/2
     end
+
+    field :oauth_consent, :repository do
+      arg :challenge, non_null(:string)
+
+      resolve &OAuth.resolve_consent/2
+    end
   end
 
   object :oauth_mutations do

@@ -22,6 +22,15 @@ defmodule Core.Clients.Hydra do
     ]
   end
 
+  defmodule ConsentRequest do
+    defstruct [
+      :client,
+      :oidc_context,
+      :requested_scope,
+      :subject
+    ]
+  end
+
   @duration 60 * 60 * 24
 
   def create_client(attrs) do
@@ -64,6 +73,12 @@ defmodule Core.Clients.Hydra do
     admin_url("/oauth2/auth/requests/login/reject?login_challenge=#{challenge}")
     |> HTTPoison.put("{}", headers())
     |> handle_response(%Response{})
+  end
+
+  def get_consent(challenge) do
+    admin_url("/oauth2/auth/requests/consent?consent_challenge=#{challenge}")
+    |> HTTPoison.get(headers())
+    |> handle_response(%ConsentRequest{client: %Client{}})
   end
 
   def accept_consent(user, challenge, scopes) do

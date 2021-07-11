@@ -7,6 +7,11 @@ defmodule GraphQl.Resolvers.OAuth do
       do: {:ok, inst.repository}
   end
 
+  def resolve_consent(%{challenge: challenge}, _) do
+    with {:ok, %{installation: inst}} <- OAuth.get_consent(challenge),
+      do: {:ok, inst.repository}
+  end
+
   def accept_login(%{challenge: challenge}, %{context: %{current_user: user}}),
     do: OAuth.handle_login(challenge, user)
 

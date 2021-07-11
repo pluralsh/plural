@@ -18,6 +18,16 @@ defmodule Core.Services.OAuth do
   end
 
   @doc """
+  Get the data related to a consent screen
+  """
+  @spec get_consent(binary) :: {:ok, OIDCProvider.t} | error
+  def get_consent(challenge) do
+    with {:ok, %{client: client}} <- Hydra.get_consent(challenge) do
+      {:ok, Repositories.get_oidc_provider_by_client!(client.client_id)}
+    end
+  end
+
+  @doc """
   Determines if a user is eligible to login, and either accepts or rejects the login
   request appropriately.
   """

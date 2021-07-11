@@ -20,6 +20,15 @@ export const OAUTH_LOGIN = gql`
   ${RepoFragment}
 `
 
+export const GET_CONSENT = gql`
+  query Consent($challenge: String!) {
+    oauthConsent(challenge: $challenge) {
+      ...RepoFragment
+    }
+  }
+  ${RepoFragment}
+`
+
 export const ACCEPT_LOGIN = gql`
   mutation AcceptLogin($challenge: String!) {
     acceptLogin(challenge: $challenge) { redirectTo }

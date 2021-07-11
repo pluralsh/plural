@@ -2,13 +2,15 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { Box, Form, Keyboard, TextInput, Collapsible, Text, Anchor } from 'grommet'
 import { Button } from 'forge-core'
 import { LOGIN_METHOD, LOGIN_MUTATION, PASSWORDLESS_LOGIN } from './queries'
-import { useLazyQuery, useMutation } from 'react-apollo'
+import { useApolloClient, useLazyQuery, useMutation } from 'react-apollo'
 import { LoginMethod } from './types'
-import { Redirect, useHistory, useParams } from 'react-router'
+import { Redirect, useHistory, useLocation, useParams } from 'react-router'
 import { fetchToken, setToken } from '../../helpers/authentication'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 import { disableState, PasswordStatus } from '../Login'
 import { PLURAL_ICON, PLURAL_MARK } from '../constants'
+import { ACCEPT_LOGIN } from '../oidc/queries'
+import queryString from 'query-string'
 
 export function LabelledInput({label, value, onChange, placeholder, width, type, modifier}) {
   return (
@@ -74,6 +76,9 @@ export function PasswordlessLogin() {
 
 export function Login() {
   let history = useHistory()
+  const client = useApolloClient()
+  const location = useLocation()
+  const {login_challenge: challenge} = queryString.parse(location.search)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [getLoginMethod, {data, loading: qLoading, error: qError}] = useLazyQuery(LOGIN_METHOD, {variables: {email}})
@@ -86,15 +91,32 @@ export function Login() {
     variables: { email, password },
     onCompleted: ({login: {jwt}}) => {
       setToken(jwt)
-      history.push(`/`)
+      if (challenge) {
+        client.mutate({
+          mutation: ACCEPT_LOGIN,
+          variables: {challenge}
+        }).then(({data: {acceptLogin: {redirectTo}}}) => {
+          console.log(redirectTo)
+        })
+      } else {
+        history.push(`/`)
+      }
     }
   })
 
-  // useEffect(() => {
-  //   if (fetchToken()) {
-  //     history.push('/')
-  //   }
-  // }, [])
+  useEffect(() => {
+    const jwt = fetchToken()
+    if (jwt && !challenge) {
+      history.push('/')
+    } else if (jwt) {
+      client.mutate({
+        mutation: ACCEPT_LOGIN,
+        variables: {challenge}
+      }).then(({data: {acceptLogin: {redirectTo}}}) => {
+        window.location = redirectTo
+      })
+    }
+  }, [challenge])
 
   const submit = useCallback(() => open ? mutation() : getLoginMethod(), [mutation, getLoginMethod, open])
 

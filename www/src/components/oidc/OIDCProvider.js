@@ -9,6 +9,7 @@ import { SectionPortal } from '../Explore'
 import { GqlError } from '../utils/Alert'
 import { deepUpdate, updateCache } from '../../utils/graphql'
 import { REPO_Q } from '../repos/queries'
+import { Attribute, Attributes } from '../integrations/Webhook'
 
 function UrlTab({url, onClick}) {
   return (
@@ -116,6 +117,14 @@ export function UpdateProvider({installation}) {
   return (
     <Box fill pad='small' gap='small'>
       {/* {error && <GqlError error={error} header='Could not update provider' />} */}
+      <Attributes>
+        <Attribute width='100px' name='client id'>
+          <Text size='small'>{provider.clientId}</Text>
+        </Attribute>
+        <Attribute width='100px' name='client secret'>
+          <Text size='small'>{provider.clientSecret}</Text>
+        </Attribute>
+      </Attributes>
       <ProviderForm
         attributes={attributes} 
         setAttributes={setAttributes}

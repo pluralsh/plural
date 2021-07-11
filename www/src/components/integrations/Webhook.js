@@ -51,10 +51,10 @@ function WebhookLogs({webhook: {logs: {pageInfo, edges}}, loading, fetchMore, re
   )
 }
 
-export function Attribute({name, children}) {
+export function Attribute({name, width, children}) {
   return (
     <Box direction='row' align='center' fill='horizontal' pad='small'>
-      <Box width='80px' >
+      <Box width={width || '80px'} >
         <Text size='small' weight='bold'>{name}</Text>
       </Box>
       <Box fill='horizontal'>
@@ -64,7 +64,7 @@ export function Attribute({name, children}) {
   )
 }
 
-function Attributes({children}) {
+export function Attributes({children}) {
   return (
     <Box border={{color: 'light-5'}} round='xsmall'>
       <Box gap='0px' border={{side: 'between', color: 'light-5'}}>

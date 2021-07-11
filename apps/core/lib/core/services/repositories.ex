@@ -317,6 +317,7 @@ defmodule Core.Services.Repositories do
     end)
     |> add_operation(:client, fn _ ->
       Map.take(attrs, [:redirect_uris])
+      |> Map.put(:scope, "profile code")
       |> Hydra.create_client()
     end)
     |> add_operation(:oidc_provider, fn
@@ -341,7 +342,9 @@ defmodule Core.Services.Repositories do
     end)
     |> add_operation(:client, fn
       %{installation: %{oidc_provider: %{client_id: id}}} ->
-        Hydra.update_client(id, Map.take(attrs, [:redirect_uris]))
+        attrs = Map.take(attrs, [:redirect_uris])
+                |> Map.put(:scope, "profile code")
+        Hydra.update_client(id, attrs)
     end)
     |> add_operation(:oidc_provider, fn %{installation: %{oidc_provider: provider}} ->
       provider

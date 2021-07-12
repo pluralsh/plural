@@ -197,6 +197,7 @@ defmodule GraphQl.Schema.User do
 
   object :login_method_response do
     field :login_method, non_null(:login_method)
+    field :token,        :string
   end
 
   connection node_type: :user
@@ -294,6 +295,13 @@ defmodule GraphQl.Schema.User do
       arg :token, non_null(:string)
 
       resolve &User.passwordless_login/2
+    end
+
+    field :login_token, :user do
+      middleware GraphQl.Middleware.AllowJwt
+      arg :token, non_null(:string)
+
+      resolve &User.poll_login_token/2
     end
 
     field :external_token, :string do

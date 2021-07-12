@@ -425,4 +425,11 @@ defmodule Core.Factory do
       provider: build(:oidc_provider)
     }
   end
+
+  def login_token_factory do
+    %Schema.LoginToken{
+      token: sequence(:login_token, &"lt-#{&1}"),
+      user: build(:user)
+    }
+  end
 end

@@ -11,7 +11,8 @@ defmodule Core.Services.Users do
     Notification,
     ResetToken,
     PublicKey,
-    PasswordlessLogin
+    PasswordlessLogin,
+    LoginToken
   }
 
   @spec get_user(binary) :: User.t | nil
@@ -56,6 +57,9 @@ defmodule Core.Services.Users do
   @spec get_public_key!(binary) :: PublicKey.t
   def get_public_key!(id), do: Core.Repo.get!(PublicKey, id)
 
+  @spec get_login_token(binary) :: LoginToken.t | nil
+  def get_login_token(token), do: Core.Repo.get_by(LoginToken, token: token)
+
   @doc """
   Validates the given password using Argon2
   """
@@ -83,9 +87,30 @@ defmodule Core.Services.Users do
         _ -> {:error, :not_found}
       end
     end)
+    |> add_operation(:token, fn %{login: %{login_token_id: id}} ->
+      Core.Repo.get(LoginToken, id)
+      |> LoginToken.changeset(%{active: true})
+      |> Core.Repo.update()
+    end)
     |> add_operation(:delete, fn %{login: login} -> Core.Repo.delete(login) end)
     |> add_operation(:user, fn %{login: %{user: user}} -> {:ok, user} end)
     |> execute(extract: :user)
+  end
+
+  def poll_login_token(token) do
+    start_transaction()
+    |> add_operation(:token, fn _ ->
+      Core.Repo.get_by(LoginToken, token: token)
+      |> Core.Repo.preload([:user])
+      |> case do
+        %LoginToken{active: true} = token -> {:ok, token}
+        %LoginToken{} -> {:error, :inactive}
+        nil -> {:error, :not_found}
+      end
+    end)
+    |> add_operation(:rm , fn %{token: token} -> Core.Repo.delete(token) end)
+    |> execute(extract: :token)
+    |> when_ok(& {:ok, Map.get(&1, :user)})
   end
 
   @doc """
@@ -94,18 +119,35 @@ defmodule Core.Services.Users do
   @spec login_method(binary) :: {:ok, %{login_method: atom}} | {:error, term}
   def login_method(email) do
     with %User{login_method: method} = user <- get_user_by_email(email),
-         {:ok, _} <- handle_login_method(user) do
-      {:ok, %{login_method: method}}
+         {:ok, login} <- handle_login_method(user) do
+      {:ok, build_login_method(method, login)}
     else
       _ -> {:error, :not_found}
     end
   end
 
+  defp build_login_method(method, %{token: token}), do: %{login_method: method, token: token}
+  defp build_login_method(method, _), do: %{login_method: method}
+
   defp handle_login_method(%User{login_method: :passwordless} = user) do
-    %PasswordlessLogin{}
-    |> PasswordlessLogin.changeset(%{user_id: user.id})
-    |> Core.Repo.insert()
-    |> notify(:create)
+    start_transaction()
+    |> add_operation(:token, fn _ ->
+      %LoginToken{}
+      |> LoginToken.changeset(%{user_id: user.id})
+      |> Core.Repo.insert()
+    end)
+    |> add_operation(:passwordless, fn %{token: %{id: id}} ->
+      %PasswordlessLogin{}
+      |> PasswordlessLogin.changeset(%{user_id: user.id, login_token_id: id})
+      |> Core.Repo.insert()
+    end)
+    |> execute()
+    |> case do
+      {:ok, %{passwordless: pwdless, token: token}} ->
+        notify({:ok, pwdless}, :create)
+        {:ok, token}
+      error -> error
+    end
   end
   defp handle_login_method(_), do: {:ok, :ignore}
 

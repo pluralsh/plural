@@ -1,11 +1,11 @@
-defmodule Core.Schema.PasswordlessLogin do
+defmodule Core.Schema.LoginToken do
   use Piazza.Ecto.Schema
-  alias Core.Schema.{User, LoginToken}
+  alias Core.Schema.{User}
 
-  schema "passwordless_logins" do
-    field :token, :string
+  schema "login_tokens" do
+    field :token,  :string
+    field :active, :boolean, default: false
 
-    belongs_to :login_token, LoginToken
     belongs_to :user, User
 
     timestamps()
@@ -16,7 +16,7 @@ defmodule Core.Schema.PasswordlessLogin do
     from(l in query, where: l.inserted_at < ^prior)
   end
 
-  @valid ~w(user_id login_token_id)a
+  @valid ~w(user_id active)a
 
   def changeset(model, attrs \\ %{}) do
     model
@@ -24,12 +24,11 @@ defmodule Core.Schema.PasswordlessLogin do
     |> put_new_change(:token, &gen_token/0)
     |> validate_required([:token, :user_id])
     |> foreign_key_constraint(:user_id)
-    |> foreign_key_constraint(:login_token_id)
     |> unique_constraint(:token)
   end
 
   def gen_token() do
-    "login-" <>
+    "lt-" <>
     (:crypto.strong_rand_bytes(64)
     |> Base.url_encode64())
   end

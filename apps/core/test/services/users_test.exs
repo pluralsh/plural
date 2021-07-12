@@ -65,12 +65,14 @@ defmodule Core.Services.UsersTest do
     test "if the login method is passwordless, it will create a passwordless login record" do
       user = insert(:user, login_method: :passwordless)
 
-      {:ok, %{login_method: :passwordless}} = Users.login_method(user.email)
+      {:ok, %{login_method: :passwordless, token: token}} = Users.login_method(user.email)
 
       assert_receive {:event, %PubSub.PasswordlessLoginCreated{item: item}}
 
       assert item.user_id == user.id
       assert item.token
+
+      assert Users.get_login_token(token)
     end
 
     test "if the user doesn't exist, it will return an error" do
@@ -96,16 +98,39 @@ defmodule Core.Services.UsersTest do
 
   describe "#passwordless_login/1" do
     test "it will return the user if valid" do
-      login = insert(:passwordless_login)
+      token = insert(:login_token)
+      login = insert(:passwordless_login, login_token: token, user: token.user)
 
       {:ok, user} = Users.passwordless_login(login.token)
 
       assert user.id == login.user_id
       refute refetch(login)
+
+      assert refetch(token).active
     end
 
     test "it will return an error if there is no login record" do
       {:error, _} = Users.passwordless_login("bogus")
+    end
+  end
+
+  describe "#poll_login_token" do
+    test "if the token is active, it will return the associated user" do
+      token = insert(:login_token, active: true)
+
+      {:ok, user} = Users.poll_login_token(token.token)
+
+      assert user.id == token.user_id
+    end
+
+    test "if the token is inactive, it will error" do
+      token = insert(:login_token)
+
+      {:error, :inactive} = Users.poll_login_token(token.token)
+    end
+
+    test "if the token doesn't exist, it will error" do
+      {:error, :not_found} = Users.poll_login_token("bogus")
     end
   end
 

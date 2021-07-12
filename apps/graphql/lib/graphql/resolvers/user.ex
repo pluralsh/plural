@@ -157,6 +157,11 @@ defmodule GraphQl.Resolvers.User do
     |> with_jwt()
   end
 
+  def poll_login_token(%{token: token}, _) do
+    Users.poll_login_token(token)
+    |> with_jwt()
+  end
+
   def signup_user(%{invite_id: id, attributes: attrs}, _) when is_binary(id) do
     Accounts.realize_invite(attrs, id)
     |> with_jwt()

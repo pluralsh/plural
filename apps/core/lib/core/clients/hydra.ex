@@ -112,7 +112,7 @@ defmodule Core.Clients.Hydra do
   defp user_details(user) do
     %{
       groups: user_groups(user),
-      avatar: Core.Storage.url({user.avatar, user}, :original),
+      profile: Core.Storage.url({user.avatar, user}, :original),
       name: user.name,
       email: user.email
     }

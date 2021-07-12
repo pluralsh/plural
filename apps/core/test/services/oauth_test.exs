@@ -74,7 +74,7 @@ defmodule Core.Services.OAuthTest do
       {:ok, %{redirect_to: _}} = OAuth.consent("challenge", "profile", user)
 
       assert_receive {:body, %{
-        "session" => %{"id_token" => %{"groups" => _, "name" => _, "avatar" => _}}
+        "session" => %{"id_token" => %{"groups" => _, "name" => _, "profile" => _}}
       }}
     end
   end

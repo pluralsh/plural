@@ -330,6 +330,7 @@ defmodule Core.Services.Repositories do
         |> Core.Repo.insert()
     end)
     |> execute(extract: :oidc_provider)
+    |> notify(:create)
   end
 
   @doc """
@@ -356,6 +357,7 @@ defmodule Core.Services.Repositories do
       |> Core.Repo.update()
     end)
     |> execute(extract: :oidc_provider)
+    |> notify(:update)
   end
 
   defp oidc_auth_method(:basic), do: "client_secret_basic"
@@ -501,4 +503,11 @@ defmodule Core.Services.Repositories do
   end
 
   defp notify(pass, _, _), do: pass
+
+  defp notify({:ok, %OIDCProvider{} = oidc}, :create),
+    do: handle_notify(PubSub.OIDCProviderCreated, oidc)
+  defp notify({:ok, %OIDCProvider{} = oidc}, :update),
+    do: handle_notify(PubSub.OIDCProviderUpdated, oidc)
+
+  defp notify(pass, _), do: pass
 end

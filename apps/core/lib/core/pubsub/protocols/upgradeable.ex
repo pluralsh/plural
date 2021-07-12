@@ -34,3 +34,18 @@ defimpl Core.PubSub.Upgradeable, for: [Core.PubSub.SubscriptionUpdated, Core.Pub
   defp modifier(PubSub.SubscriptionUpdated), do: "updated"
   defp modifier(PubSub.SubscriptionCreated), do: "created"
 end
+
+defimpl Core.PubSub.Upgradeable, for: [Core.PubSub.OIDCProviderUpdated, Core.PubSub.OIDCProviderCreated] do
+  import Core.Upgrades.Utils
+  alias Core.PubSub
+
+  def derive(%{item: oidc}) do
+    %{installation: %{repository: repo, user: user}} =
+      Core.Repo.preload(oidc, [installation: [:repository, :user]])
+
+    {%{repository_id: repo.id, message: "#{modifier(@for)} oidc provider"}, for_user(user)}
+  end
+
+  defp modifier(PubSub.OIDCProviderUpdated), do: "updated"
+  defp modifier(PubSub.OIDCProviderCreated), do: "created"
+end

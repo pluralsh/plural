@@ -413,6 +413,8 @@ defmodule Core.Services.RepositoriesTest do
 
       assert first.user_id == installation.user_id
       assert second.group_id == group.id
+
+      assert_receive {:event, %PubSub.OIDCProviderCreated{item: ^oidc}}
     end
   end
 
@@ -431,6 +433,8 @@ defmodule Core.Services.RepositoriesTest do
 
       assert updated.id == oidc.id
       assert updated.auth_method == :basic
+
+      assert_receive {:event, %PubSub.OIDCProviderUpdated{item: ^updated}}
     end
   end
 

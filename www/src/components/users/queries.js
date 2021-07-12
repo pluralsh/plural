@@ -180,7 +180,7 @@ export const DELETE_KEY = gql`
 
 export const LOGIN_METHOD = gql`
   query LoginMethod($email: String!) {
-    loginMethod(email: $email) { loginMethod }
+    loginMethod(email: $email) { loginMethod token }
   }
 `
 
@@ -199,5 +199,11 @@ export const LOGIN_MUTATION = gql`
 export const PASSWORDLESS_LOGIN = gql`
   mutation Passwordless($token: String!) {
     passwordlessLogin(token: $token) { jwt }
+  }
+`
+
+export const POLL_LOGIN_TOKEN = gql`
+  mutation Poll($token: String!) {
+    loginToken(token: $token) { jwt }
   }
 `

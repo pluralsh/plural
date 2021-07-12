@@ -136,7 +136,7 @@ export function RepoDirectory() {
                 <SectionItem
                   name='configure'
                   subgroup='oidc'
-                  label='OIDC' />
+                  label='OpenID Connect' />
               </SubgroupContainer>
             </Box>
           )}

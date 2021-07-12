@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Box, Form, Keyboard, TextInput, Collapsible, Text, Anchor } from 'grommet'
 import { Button } from 'forge-core'
-import { LOGIN_METHOD, LOGIN_MUTATION, PASSWORDLESS_LOGIN } from './queries'
+import { LOGIN_METHOD, LOGIN_MUTATION, PASSWORDLESS_LOGIN, POLL_LOGIN_TOKEN } from './queries'
 import { useApolloClient, useLazyQuery, useMutation } from 'react-apollo'
 import { LoginMethod } from './types'
 import { Redirect, useHistory, useLocation, useParams } from 'react-router'
@@ -74,6 +74,56 @@ export function PasswordlessLogin() {
   )
 }
 
+function handleOauthChallenge(client, challenge) {
+  client.mutate({
+    mutation: ACCEPT_LOGIN,
+    variables: {challenge}
+  }).then(({data: {acceptLogin: {redirectTo}}}) => {
+    window.location = redirectTo
+  })
+}
+
+function LoginPoller({challenge, token}) {
+  let history = useHistory()
+  const client = useApolloClient()
+  const [success, setSuccess] = useState(false)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      client.mutate({
+        mutation: POLL_LOGIN_TOKEN,
+        variables: {token}
+      }).then(({data: {loginToken: {jwt}}}) => {
+        setToken(jwt)
+        setSuccess(true)
+        if (challenge) {
+          handleOauthChallenge(client, challenge)
+        } else {
+          history.push('/')
+        }
+      })
+    }, 2000)
+
+    return () => clearInterval(interval)
+  }, [token, challenge])
+
+  if (success) {
+    return (
+      <Alert 
+        status={AlertStatus.SUCCESS} 
+        header='Login Verified!' 
+        description="we'll redirect you to the app shortly" />
+    )
+  }
+
+  return (
+    <Alert 
+      status={AlertStatus.SUCCESS} 
+      header='Check your email!' 
+      description='Check your email to verify your identity and log in' />
+  )
+}
+
 export function Login() {
   let history = useHistory()
   const client = useApolloClient()
@@ -92,12 +142,7 @@ export function Login() {
     onCompleted: ({login: {jwt}}) => {
       setToken(jwt)
       if (challenge) {
-        client.mutate({
-          mutation: ACCEPT_LOGIN,
-          variables: {challenge}
-        }).then(({data: {acceptLogin: {redirectTo}}}) => {
-          console.log(redirectTo)
-        })
+        handleOauthChallenge(client, challenge)
       } else {
         history.push(`/`)
       }
@@ -106,15 +151,11 @@ export function Login() {
 
   useEffect(() => {
     const jwt = fetchToken()
-    if (jwt && !challenge) {
+    if (!jwt) return
+    if (challenge) {
+      handleOauthChallenge(client, jwt)
+    } else {
       history.push('/')
-    } else if (jwt) {
-      client.mutate({
-        mutation: ACCEPT_LOGIN,
-        variables: {challenge}
-      }).then(({data: {acceptLogin: {redirectTo}}}) => {
-        window.location = redirectTo
-      })
     }
   }, [challenge])
 
@@ -134,10 +175,7 @@ export function Login() {
         </Box>
         {passwordless && (
           <Box>
-            <Alert 
-              status={AlertStatus.SUCCESS} 
-              header='Check your email!' 
-              description='Check your email to verify your identity and log in' />
+            <LoginPoller token={data.loginMethod.token} challenge={challenge} />
           </Box>
         )}
         {!passwordless && (

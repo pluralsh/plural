@@ -210,6 +210,7 @@ defmodule GraphQl.Schema.Repository do
     field :client_id,     non_null(:string)
     field :redirect_uris, list_of(:string)
     field :auth_method,   non_null(:oidc_auth_method)
+    field :configuration, :ouath_configuration, resolve: &GraphQl.Resolvers.OAuth.resolve_configuration/2
 
     field :bindings, list_of(:oidc_provider_binding), resolve: dataloader(Repository)
 

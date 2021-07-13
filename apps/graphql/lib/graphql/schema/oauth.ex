@@ -6,6 +6,14 @@ defmodule GraphQl.Schema.OAuth do
     field :redirect_to, non_null(:string)
   end
 
+  object :ouath_configuration do
+    field :issuer,                 :string
+    field :authorization_endpoint, :string
+    field :token_endpoint,         :string
+    field :jwks_uri,               :string
+    field :userinfo_endpoint,      :string
+  end
+
   object :oauth_queries do
     field :oauth_login, :repository do
       arg :challenge, non_null(:string)

@@ -47,8 +47,10 @@ defmodule Core.Services.OAuth do
   Consents to the scopes granted in the login exchanges and hydrates an id token
   """
   @spec consent(binary, [binary], User.t) :: oauth_resp
-  def consent(challenge, scopes \\ ["profile"], %User{} = user),
-    do: Hydra.accept_consent(user, challenge, scopes)
+  def consent(challenge, scopes \\ ["profile"], %User{} = user) do
+    user = Core.Repo.preload(user, [:groups])
+    Hydra.accept_consent(user, challenge, scopes)
+  end
 
   @doc """
   Determines if a user can use this provider to log in, based on its configured policy

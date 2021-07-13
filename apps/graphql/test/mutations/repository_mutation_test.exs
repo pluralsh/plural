@@ -216,6 +216,10 @@ defmodule GraphQl.RepositoryMutationsTest do
         {:ok, %{status_code: 200, body: Jason.encode!(%{client_id: "123", client_secret: "secret"})}}
       end)
 
+      expect(HTTPoison, :get, fn _, _ ->
+        {:ok, %{status_code: 200, body: Jason.encode!(%{issuer: "https://oidc.plural.sh/"})}}
+      end)
+
       {:ok, %{data: %{"createOidcProvider" => provider}}} = run_query("""
         mutation Create($id: ID!, $attributes: OidcAttributes!) {
           createOidcProvider(installationId: $id, attributes: $attributes) {
@@ -227,6 +231,9 @@ defmodule GraphQl.RepositoryMutationsTest do
             bindings {
               user { id }
               group { id }
+            }
+            configuration {
+              issuer
             }
           }
         }
@@ -243,6 +250,7 @@ defmodule GraphQl.RepositoryMutationsTest do
       assert provider["authMethod"] == "BASIC"
       assert provider["clientSecret"] == "secret"
       assert provider["redirectUris"] == ["example.com"]
+      assert provider["configuration"]["issuer"] == "https://oidc.plural.sh/"
 
       [%{"group" => g}] = provider["bindings"]
       assert g["id"] == group.id

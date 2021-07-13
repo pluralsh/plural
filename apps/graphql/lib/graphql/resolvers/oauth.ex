@@ -7,6 +7,8 @@ defmodule GraphQl.Resolvers.OAuth do
       do: {:ok, inst.repository}
   end
 
+  def resolve_configuration(_, _), do: Core.Clients.Hydra.get_configuration()
+
   def resolve_consent(%{challenge: challenge}, _) do
     with {:ok, %{installation: inst}} <- OAuth.get_consent(challenge),
       do: {:ok, inst.repository}

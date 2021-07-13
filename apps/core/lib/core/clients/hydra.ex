@@ -31,7 +31,23 @@ defmodule Core.Clients.Hydra do
     ]
   end
 
+  defmodule Configuration do
+    defstruct [
+      :issuer,
+      :authorization_endpoint,
+      :token_endpoint,
+      :jwks_uri,
+      :userinfo_endpoint
+    ]
+  end
+
   @duration 60 * 60 * 24
+
+  def get_configuration() do
+    public_url("/.well-known/openid-configuration")
+    |> HTTPoison.get(headers())
+    |> handle_response(%Configuration{})
+  end
 
   def create_client(attrs) do
     admin_url("/clients")
@@ -88,7 +104,7 @@ defmodule Core.Clients.Hydra do
       remember_for: @duration,
       session: %{
         id_token: user_details(user),
-        access_token: %{}
+        access_token: user_details(user)
       }
     })
     admin_url("/oauth2/auth/requests/consent/accept?consent_challenge=#{challenge}")
@@ -122,6 +138,8 @@ defmodule Core.Clients.Hydra do
   defp user_groups(_), do: []
 
   defp admin_url(path), do: "#{conf(:hydra_admin)}#{path}"
+
+  defp public_url(path), do: "#{conf(:hydra_public)}#{path}"
 
   defp conf(key), do: Application.get_env(:core, __MODULE__)[key]
 

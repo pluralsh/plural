@@ -37,6 +37,11 @@ defmodule Core.Schema.Repository do
     field :private,       :boolean, default: false
     field :category,      Category
 
+    embeds_one :oauth_settings, OAuthSettings, on_replace: :update do
+      field :uri_format, :string
+      field :auth_method, Core.Schema.OIDCProvider.AuthMethod
+    end
+
     belongs_to :integration_resource_definition, ResourceDefinition, on_replace: :update
     belongs_to :publisher, Publisher
 
@@ -123,6 +128,7 @@ defmodule Core.Schema.Repository do
   def changeset(model, attrs \\ %{}) do
     model
     |> cast(attrs, @valid)
+    |> cast_embed(:oauth_settings, with: &oauth_settings/2)
     |> cast_assoc(:tags, with: &Tag.tag_changeset(&1, &2, :repository))
     |> cast_assoc(:dashboards)
     |> cast_assoc(:database)
@@ -141,5 +147,11 @@ defmodule Core.Schema.Repository do
     model
     |> cast(attrs, @keyvalid)
     |> validate_required([:public_key, :private_key])
+  end
+
+  def oauth_settings(model, attrs \\ %{}) do
+    model
+    |> cast(attrs, [:auth_method, :uri_format])
+    |> validate_required([:auth_method, :uri_format])
   end
 end

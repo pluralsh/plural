@@ -15,19 +15,22 @@ defmodule GraphQl.Schema.Repository do
   ecto_enum :oidc_auth_method, Core.Schema.OIDCProvider.AuthMethod
 
   input_object :repository_attributes do
-    field :name,          :string
-    field :description,   :string
-    field :documentation, :string
-    field :category,      :category
-    field :secrets,       :yml
-    field :icon,          :upload_or_url
-    field :dark_icon,     :upload_or_url
+    field :name,           :string
+    field :description,    :string
+    field :documentation,  :string
+    field :category,       :category
+    field :secrets,        :yml
+    field :icon,           :upload_or_url
+    field :dark_icon,      :upload_or_url
+    field :tags,           list_of(:tag_attributes)
+    field :private,        :boolean
+    field :oauth_settings, :oauth_settings_attributes
     field :integration_resource_definition, :resource_definition_attributes
-    field :tags,          list_of(:tag_attributes)
-    field :dashboards,    list_of(:dashboard_attributes)
-    field :database,      :database_attributes
-    field :shell,         :shell_attributes
-    field :private,       :boolean
+  end
+
+  input_object :oauth_settings_attributes do
+    field :uri_format,  non_null(:string)
+    field :auth_method, non_null(:oidc_auth_method)
   end
 
   input_object :installation_attributes do
@@ -133,16 +136,17 @@ defmodule GraphQl.Schema.Repository do
   end
 
   object :repository do
-    field :id,            :id
-    field :name,          non_null(:string)
-    field :description,   :string
-    field :documentation, :string
-    field :category,      :category
-    field :private,       :boolean
-    field :publisher,     :publisher, resolve: dataloader(User)
-    field :plans,         list_of(:plan), resolve: dataloader(Payments)
-    field :tags,          list_of(:tag), resolve: dataloader(Repository)
-    field :artifacts,     list_of(:artifact), resolve: dataloader(Repository)
+    field :id,             non_null(:id)
+    field :name,           non_null(:string)
+    field :description,    :string
+    field :documentation,  :string
+    field :category,       :category
+    field :private,        :boolean
+    field :publisher,      :publisher, resolve: dataloader(User)
+    field :plans,          list_of(:plan), resolve: dataloader(Payments)
+    field :tags,           list_of(:tag), resolve: dataloader(Repository)
+    field :artifacts,      list_of(:artifact), resolve: dataloader(Repository)
+    field :oauth_settings, :oauth_settings
 
     image :icon
     image :dark_icon
@@ -223,6 +227,11 @@ defmodule GraphQl.Schema.Repository do
     field :group, :group, resolve: dataloader(Account)
 
     timestamps()
+  end
+
+  object :oauth_settings do
+    field :uri_format,  non_null(:string)
+    field :auth_method, non_null(:oidc_auth_method)
   end
 
   connection node_type: :repository

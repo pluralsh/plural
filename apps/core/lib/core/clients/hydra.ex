@@ -49,6 +49,12 @@ defmodule Core.Clients.Hydra do
     |> handle_response(%Configuration{})
   end
 
+  def get_client(id) do
+    admin_url("/clients/#{id}")
+    |> HTTPoison.get(headers())
+    |> handle_response(%Client{})
+  end
+
   def create_client(attrs) do
     admin_url("/clients")
     |> HTTPoison.post(Jason.encode!(attrs), headers())

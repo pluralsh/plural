@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Box, Layer, TextInput } from 'grommet'
 import { useMutation } from 'react-apollo'
 import { Edit } from 'grommet-icons'
-import { Scroller, Loading, ModalHeader, SecondaryButton } from 'forge-core'
+import { Scroller, ModalHeader, SecondaryButton } from 'forge-core'
 import { IMPERSONATE_SERVICE_ACCOUNT, USERS_Q } from './queries'
 import { CreateServiceAccount, UpdateServiceAccount } from './CreateServiceAccount'
 import { UserRow } from './User'
@@ -13,6 +13,7 @@ import { setToken } from '../../helpers/authentication'
 import { SearchIcon } from './utils'
 import { SectionContentContainer, SectionPortal } from '../Explore'
 import { INPUT_WIDTH } from './constants'
+import { LoopingLogo } from '../utils/AnimatedLogo'
 
 function ServiceAccount({user, next}) {
   const [open, setOpen] = useState(false)
@@ -62,7 +63,7 @@ export function ServiceAccounts() {
     fetchPolicy: 'cache-and-network'
   })
 
-  if (!data) return <Loading />
+  if (!data) return <LoopingLogo />
 
   const {users: {pageInfo, edges}} = data
 

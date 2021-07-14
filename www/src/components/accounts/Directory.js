@@ -12,12 +12,13 @@ import { extendConnection } from '../../utils/graphql'
 import { SearchIcon } from './utils'
 import { SectionContentContainer, SectionPortal } from '../Explore'
 import { INPUT_WIDTH } from './constants'
+import { LoopingLogo } from '../utils/AnimatedLogo'
 
 export function Users() {
   const [q, setQ] = useState(null)
   const {data, fetchMore} = useQuery(USERS_Q, {variables: {q}})
 
-  if (!data) return <Loading />
+  if (!data) return <LoopingLogo scale='0.75' />
 
   const {users: {pageInfo, edges}} = data
 
@@ -54,7 +55,7 @@ export function Groups() {
   const [q, setQ] = useState(null)
   const {data, fetchMore} = useQuery(GROUPS_Q, {variables: {q}})
 
-  if (!data) return <Loading />
+  if (!data) return <LoopingLogo scale='0.75' />
 
   const {groups: {pageInfo, edges}} = data
 
@@ -91,7 +92,7 @@ export function Roles() {
   const [q, setQ] = useState(null)
   const {data, fetchMore} = useQuery(ROLES_Q, {variables: {q}})
 
-  if (!data) return <Loading />
+  if (!data) return <LoopingLogo scale='0.75' />
 
   const {roles: {pageInfo, edges}} = data
 

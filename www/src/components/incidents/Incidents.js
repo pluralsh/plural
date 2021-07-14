@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { Box, Drop, Text, TextInput, ThemeContext } from 'grommet'
-import { Loading, Scroller, Button } from 'forge-core'
+import { Scroller, Button } from 'forge-core'
 import { useQuery } from 'react-apollo'
 import { INCIDENTS_Q } from './queries'
 import { extendConnection } from '../../utils/graphql'
@@ -18,6 +18,7 @@ import { normalizeColor } from 'grommet/utils'
 import { IncidentFilter, IncidentSort, IncidentSortNames, Order } from './types'
 import { AlternatingBox } from '../utils/AlternatingBox'
 import { SlaTimer } from './SlaTimer'
+import { LoopingLogo } from '../utils/AnimatedLogo'
 
 export const IncidentViewContext = React.createContext({})
 
@@ -275,7 +276,7 @@ export function Incidents() {
     setBreadcrumbs([{url: `/incidents`, text: 'incidents'}])
   }, [setBreadcrumbs])
 
-  if (!data) return <Loading />
+  if (!data) return <LoopingLogo />
 
   const {incidents: {edges, pageInfo}} = data
 

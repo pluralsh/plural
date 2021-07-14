@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import { Box } from 'grommet'
-import { Loading, Button } from 'forge-core'
+import { Button } from 'forge-core'
 import { useMutation, useQuery } from 'react-apollo'
 import { useHistory, useParams } from 'react-router'
 import { INCIDENT_Q, UPDATE_INCIDENT } from './queries'
 import { IncidentForm } from './CreateIncident'
+import { LoopingLogo } from '../utils/AnimatedLogo'
 
 function UpdateInner({incident}) {
   let history = useHistory()
@@ -34,7 +35,7 @@ export function UpdateIncident() {
   const {incidentId} = useParams()
   const {data} = useQuery(INCIDENT_Q, {variables: {id: incidentId}})
 
-  if (!data) return <Loading />
+  if (!data) return <LoopingLogo />
 
   return <UpdateInner incident={data.incident} />
 }

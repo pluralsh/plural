@@ -15,6 +15,7 @@ import { Provider } from '../repos/misc'
 import { useParams } from 'react-router'
 import { QueueHealth } from './QueueHealth'
 import { StandardScroller } from '../utils/SmoothScroller'
+import { LoopingLogo } from '../utils/AnimatedLogo'
 
 function DeliveryProgress({delivered}) {
   return (
@@ -68,7 +69,7 @@ export function UpgradeQueue() {
     ])
   }, [setBreadcrumbs, id])
 
-  if (!data) return <Loading />
+  if (!data) return <LoopingLogo />
 
   const queue = data.upgradeQueue
   const {upgrades: {edges, pageInfo}, acked} = queue

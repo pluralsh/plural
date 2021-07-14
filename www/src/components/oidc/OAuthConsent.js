@@ -1,6 +1,6 @@
 import React from 'react'
 import { useLocation } from 'react-router'
-import { Loading, Button } from 'forge-core'
+import { Button } from 'forge-core'
 import queryString from 'query-string'
 import { useMutation, useQuery } from 'react-apollo'
 import { GET_CONSENT, OAUTH_CONSENT } from './queries'
@@ -10,6 +10,7 @@ import { GqlError } from '../utils/Alert'
 import { Box, Text } from 'grommet'
 import { PLURAL_MARK } from '../constants'
 import { RepoIcon } from '../repos/Repositories'
+import { LoopingLogo } from '../utils/AnimatedLogo'
 
 export function OAuthConsent() {
   const location = useLocation()
@@ -22,7 +23,7 @@ export function OAuthConsent() {
   })
   const {data} = useQuery(GET_CONSENT, {variables: {challenge}})
 
-  if (!data) return <Box fill><Loading /></Box>
+  if (!data) return <Box height='100vh' width='100%'><LoopingLogo /></Box>
 
   const {oauthConsent} = data
 

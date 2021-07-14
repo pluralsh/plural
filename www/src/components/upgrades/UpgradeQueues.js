@@ -9,6 +9,7 @@ import { Provider } from '../repos/misc'
 import { Github, Upgrade } from 'grommet-icons'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 import { QueueHealth } from './QueueHealth'
+import { LoopingLogo } from '../utils/AnimatedLogo'
 
 function Queue({q}) {
   let hist = useHistory()
@@ -49,7 +50,7 @@ export function UpgradeQueues() {
     setBreadcrumbs([{url: `/upgrades`, text: 'upgrades'}])
   }, [setBreadcrumbs])
 
-  if (!data) return <Loading />
+  if (!data) return <LoopingLogo />
 
   return (
     <Box fill>

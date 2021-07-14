@@ -6,6 +6,7 @@ import { Loading } from 'forge-core'
 import {ME_Q} from '../users/queries'
 import {wipeToken} from '../../helpers/authentication'
 import { useNotificationSubscription } from '../incidents/Notifications'
+import { LoopingLogo } from '../utils/AnimatedLogo'
 
 // const POLL_INTERVAL=30000
 export const CurrentUserContext = React.createContext({})
@@ -15,7 +16,7 @@ export default function CurrentUser({children}) {
   const {loading, error, data} = useQuery(ME_Q)
   useNotificationSubscription()
 
-  if (loading) return (<Box height='100vh'><Loading/></Box>)
+  if (loading) return (<Box height='100vh'><LoopingLogo/></Box>)
 
   if (error || !data || !data.me || !data.me.id) {
     wipeToken()
@@ -34,7 +35,7 @@ export function PluralProvider({children}) {
   const {loading, error, data} = useQuery(ME_Q)
   useNotificationSubscription()
 
-  if (loading) return (<Box height='100vh'><Loading/></Box>)
+  if (loading) return (<Box height='100vh'><LoopingLogo /></Box>)
 
   if (error || !data || !data.me || !data.me.id) {
     wipeToken()

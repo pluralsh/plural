@@ -17,6 +17,7 @@ import { BreadcrumbsContext } from '../Breadcrumbs'
 import { REPO_Q } from './queries'
 import { ArtifactTable } from './Artifacts'
 import { OIDCProvider } from '../oidc/OIDCProvider'
+import { LoopingLogo } from '../utils/AnimatedLogo'
 
 const ICON_SIZE = '14px'
 const IMG_SIZE = '75px'
@@ -81,7 +82,7 @@ export function RepoDirectory() {
     setBreadcrumbs(crumbs)
   }, [setBreadcrumbs, data, group, subgroup])
 
-  if (!data) return <Loading />
+  if (!data) return <LoopingLogo />
 
   const {recipes, repository, charts, terraform, dockerRepositories} = data
   const hasPlans = repository.plans && repository.plans.length > 0

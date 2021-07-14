@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo } from 'react'
-import { Loading, Errors } from 'forge-core'
+import { Errors } from 'forge-core'
 import { useParams, useLocation, useHistory } from 'react-router'
 import { useMutation } from 'react-apollo'
 import { CREATE_OAUTH } from './queries'
 import { ParamToService } from './types'
 import { Box, Text } from 'grommet'
+import { LoopingLogo } from '../utils/AnimatedLogo'
 
 function OauthError({error, service}) {
   return (
@@ -37,7 +38,7 @@ export function OauthCreator() {
     }
   }, [data, error])
 
-  if (loading) return <Loading />
+  if (loading) return <LoopingLogo />
 
   if (error) return <OauthError error={error} service={service} />
 

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react'
-import { Loading, Tabs, TabHeader, TabHeaderItem, TabContent } from 'forge-core'
+import { Tabs, TabHeader, TabHeaderItem, TabContent } from 'forge-core'
 import { useQuery } from 'react-apollo'
 import { useHistory, useParams } from 'react-router'
 import { DOCKER_IMG_Q, DOCKER_Q } from './queries'
@@ -13,6 +13,7 @@ import { DockerImages } from './DockerImages'
 import { Graph, RangePicker } from '../metrics/Graph'
 import { PluralConfigurationContext } from '../login/CurrentUser'
 import { dockerPull } from './misc'
+import { LoopingLogo } from '../utils/AnimatedLogo'
 
 function DockerHeader({image}) {
   return (
@@ -242,7 +243,7 @@ export function DockerRepository() {
     history.replace(`/dkr/img/${edges[0].node.id}`)
   }, [data])
 
-  return <Loading />
+  return <LoopingLogo />
 }
 
 const DEFAULT_FILTER = {tag: null, precision: '1h', offset: '1d'}
@@ -270,7 +271,7 @@ export function Docker() {
     ])
   }, [data, setBreadcrumbs])
 
-  if (!data) return <Loading />
+  if (!data) return <LoopingLogo />
 
   const {dockerImage: image} = data
   return (

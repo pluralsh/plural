@@ -3,15 +3,16 @@ import { Box, Text, Collapsible, Layer, TextInput } from 'grommet'
 import { useQuery, useMutation, useApolloClient } from 'react-apollo'
 import { GROUP_MEMBERS, CREATE_GROUP_MEMBERS, UPDATE_GROUP, DELETE_GROUP } from './queries'
 import { Group, UserAdd, Edit, Trash } from 'grommet-icons'
-import { Scroller, Loading, ModalHeader, TooltipContent, Button } from 'forge-core'
+import { Scroller, ModalHeader, TooltipContent, Button } from 'forge-core'
 import { UserRow } from './User'
 import { fetchUsers } from './Typeaheads'
 import { addGroupMember, deleteGroup, SearchIcon } from './utils'
 import { extendConnection } from '../../utils/graphql'
+import { LoopingLogo } from '../utils/AnimatedLogo'
 
 function GroupMembers({group}) {
   const {data, fetchMore} = useQuery(GROUP_MEMBERS, {variables: {id: group.id}})
-  if (!data) return <Loading />
+  if (!data) return <LoopingLogo />
   const {groupMembers: {pageInfo, edges}} = data
 
   return (

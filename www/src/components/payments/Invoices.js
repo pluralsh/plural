@@ -9,6 +9,7 @@ import { TagContainer } from '../repos/Tags'
 import moment from 'moment'
 import { TOOLBAR_SIZE } from '../Plural'
 import { BreadcrumbsContext } from '../Breadcrumbs'
+import { LoopingLogo } from '../utils/AnimatedLogo'
 
 const ICON_SIZE = '30px'
 
@@ -58,7 +59,7 @@ function InvoicesInner({current: {id}}) {
   let history = useHistory()
   const {loading, data} = useQuery(SUBSCRIPTION_Q, {variables: {id}})
   if (!data) return null
-  if (loading) return <Loading />
+  if (loading) return <LoopingLogo />
 
   const {invoices: {edges}, installation: {repository}} = data.repositorySubscription
   return (

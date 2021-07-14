@@ -7,6 +7,7 @@ import { extendConnection } from '../../utils/graphql'
 import { HeaderItem } from './Docker'
 import moment from 'moment'
 import { StandardScroller } from '../utils/SmoothScroller'
+import { LoopingLogo } from '../utils/AnimatedLogo'
 
 const ROW_HEIGHT = '50px'
 const format = (dt) => moment(dt).format('lll')
@@ -40,7 +41,7 @@ export function DeferredUpdates({chartInst, tfInst}) {
     fetchPolicy: 'cache-and-network'
   })
 
-  if (!data) return <Loading />
+  if (!data) return <LoopingLogo />
 
   const {edges, pageInfo} = data.deferredUpdates
 

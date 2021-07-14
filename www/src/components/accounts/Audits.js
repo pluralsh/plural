@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import moment from 'moment'
 import { Box, Text } from 'grommet'
-import { Loading } from 'forge-core'
 import { useQuery } from 'react-apollo'
 import Avatar from '../users/Avatar'
 import { AUDITS_Q } from './queries'
@@ -9,6 +8,7 @@ import { extendConnection } from '../../utils/graphql'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 import { StandardScroller } from '../utils/SmoothScroller'
 import { Link } from 'react-router-dom'
+import { LoopingLogo } from '../utils/AnimatedLogo'
 
 const HeaderItem = ({text, width, nobold}) => (<Box width={width}><Text size='small' weight={nobold ? null : 500}>{text}</Text></Box>)
 
@@ -82,7 +82,7 @@ export function Audits() {
     setBreadcrumbs([ {text: 'audits', url: '/audits'} ])
   }, [setBreadcrumbs])
 
-  if (!data) return <Loading />
+  if (!data) return <LoopingLogo />
 
   const {edges, pageInfo} = data.audits
 

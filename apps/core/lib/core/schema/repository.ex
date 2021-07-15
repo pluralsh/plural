@@ -59,6 +59,13 @@ defmodule Core.Schema.Repository do
     timestamps()
   end
 
+  defimpl Jason.Encoder, for: __MODULE__.OAuthSettings do
+    def encode(struct, opts) do
+      Piazza.Ecto.Schema.mapify(struct)
+      |> Jason.Encode.map(opts)
+    end
+  end
+
   def for_category(query \\ __MODULE__, category) do
     from(r in query, where: r.category == ^category)
   end

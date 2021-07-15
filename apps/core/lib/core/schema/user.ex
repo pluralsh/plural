@@ -9,7 +9,6 @@ defmodule Core.Schema.User do
     Group,
     RoleBinding,
     Incident,
-    UpgradeQueue,
     ImpersonationPolicy
   }
 
@@ -34,7 +33,6 @@ defmodule Core.Schema.User do
     embeds_one :address, Address, on_replace: :update
 
     belongs_to :account, Account
-    belongs_to :queue, UpgradeQueue, foreign_key: :default_queue_id
 
     has_one :publisher,  Publisher, foreign_key: :owner_id
     has_one :impersonation_policy, ImpersonationPolicy, on_replace: :delete

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { Box, CheckBox, Text, TextInput } from 'grommet'
 import { Add } from 'grommet-icons'
 import { useMutation } from 'react-apollo'
@@ -11,6 +11,7 @@ import { appendConnection, updateCache } from '../../utils/graphql'
 import { useHistory } from 'react-router'
 import { Categories } from './constants'
 import { SectionPortal } from '../Explore'
+import { AuthMethod } from '../oidc/types'
 
 const LABEL_WIDTH = '90px'
 
@@ -46,57 +47,78 @@ function ImagePicker({image, setImage, background, label}) {
   )
 }
 
-export function RepoForm({image, setImage, darkImage, setDarkImage, state, setState, mutation, loading, update, portal}) {
+export function RepoForm({image, setImage, darkImage, setDarkImage, state, setState, mutation, loading, update}) {
+  const setOauthSettings = useCallback((key, value) => (
+    setState({...state, oauthSettings: {...state.oauthSettings, [key]: value}})
+  ), [setState, state])
+  
   return (
-    <Box flex={false} pad='medium' gap='medium'>
-      <LabeledInput label='1. Upload icons for your repo'>
-        <Box direction='row' gap='medium'>
-          <ImagePicker image={image} setImage={setImage} />
-          <ImagePicker 
-            image={darkImage} 
-            setImage={setDarkImage}
-            background='backgroundColor'
-            label='Darkmode icon (optional)' />
-        </Box>
-      </LabeledInput>
-      <LabeledInput label='2. Give it a name'>
-        <TextInput
-          labelWidth={LABEL_WIDTH}
-          placeholder='a good name'
-          value={state.name}
-          onChange={(e) => setState({...state, name: e.target.value})} />
-      </LabeledInput>
-      <LabeledInput label='3. Give it a quick description'>
-        <TextInput
-          label='description'
-          labelWidth={LABEL_WIDTH}
-          placeholder='a helpful description'
-          value={state.description}
-          onChange={(e) => setState({...state, description: e.target.value})} />
-      </LabeledInput>
-      <LabeledInput label='4. Select a category for the repo'>
-        <Select
-          size='small'
-          value={{value: state.category, label: state.category.toLowerCase()}}
-          options={Object.keys(Categories).map((t) => ({value: t, label: t.toLowerCase()}))}
-          onChange={({value}) => setState({...state, category: value})} />
-      </LabeledInput>
-      <LabeledInput label='4. Add tags as needed'>
-        <TagInput
-          tags={state.tags || []}
-          addTag={(tag) => setState({...state, tags: [tag, ...(state.tags || [])]})}
-          removeTag={(tag) => setState({...state, tags: state.tags.filter((t) => t !== tag)})} />
-      </LabeledInput>
-      <SectionPortal>
-        <Box direction='row' justify='end' align='center' gap='small'>
-          <CheckBox
-            toggle
-            label={state.private ? 'private' : 'public'}
-            checked={!state.private}
-            onChange={({target: {checked}}) => setState({...state, private: !checked})} />
-          <Button loading={loading} round='xsmall' label={update ? 'Update' : 'Create'} onClick={mutation} />
-        </Box>
-      </SectionPortal>
+    <Box fill style={{overflow: 'auto'}}>
+      <Box flex={false} pad='medium' gap='medium'>
+        <LabeledInput label='1. Upload icons for your repo'>
+          <Box direction='row' gap='medium'>
+            <ImagePicker image={image} setImage={setImage} />
+            <ImagePicker 
+              image={darkImage} 
+              setImage={setDarkImage}
+              background='backgroundColor'
+              label='Darkmode icon (optional)' />
+          </Box>
+        </LabeledInput>
+        <LabeledInput label='2. Give it a name'>
+          <TextInput
+            labelWidth={LABEL_WIDTH}
+            placeholder='a good name'
+            value={state.name}
+            onChange={(e) => setState({...state, name: e.target.value})} />
+        </LabeledInput>
+        <LabeledInput label='3. Give it a quick description'>
+          <TextInput
+            label='description'
+            labelWidth={LABEL_WIDTH}
+            placeholder='a helpful description'
+            value={state.description}
+            onChange={(e) => setState({...state, description: e.target.value})} />
+        </LabeledInput>
+        <LabeledInput label='4. Select a category for the repo'>
+          <Select
+            size='small'
+            value={{value: state.category, label: state.category.toLowerCase()}}
+            options={Object.keys(Categories).map((t) => ({value: t, label: t.toLowerCase()}))}
+            onChange={({value}) => setState({...state, category: value})} />
+        </LabeledInput>
+        <LabeledInput label='5. Configure OAuth Settings (if relevant)'>
+          <Box flex={false} fill='horizontal' gap='xsmall'>
+            <TextInput
+              label='uri format'
+              labelWidth={LABEL_WIDTH}
+              placeholder='https://{domain}/oauth/callback'
+              value={state.oauthSettings.uriFormat || ''}
+              onChange={({target: {value}}) => setOauthSettings('uriFormat', value)} />
+            <Select
+              size='small'
+              value={{value: state.oauthSettings.authMethod, label: state.oauthSettings.authMethod.toLowerCase()}}
+              options={Object.keys(AuthMethod).map((t) => ({value: t, label: t.toLowerCase()}))}
+              onChange={({value}) => setOauthSettings('authMethod', value)} />
+          </Box>
+        </LabeledInput>
+        <LabeledInput label='6. Add tags as needed'>
+          <TagInput
+            tags={state.tags || []}
+            addTag={(tag) => setState({...state, tags: [tag, ...(state.tags || [])]})}
+            removeTag={(tag) => setState({...state, tags: state.tags.filter((t) => t !== tag)})} />
+        </LabeledInput>
+        <SectionPortal>
+          <Box direction='row' justify='end' align='center' gap='small'>
+            <CheckBox
+              toggle
+              label={state.private ? 'private' : 'public'}
+              checked={!state.private}
+              onChange={({target: {checked}}) => setState({...state, private: !checked})} />
+            <Button loading={loading} round='xsmall' label={update ? 'Update' : 'Create'} onClick={mutation} />
+          </Box>
+        </SectionPortal>
+      </Box>
     </Box>
   )
 }
@@ -108,7 +130,8 @@ export default function CreateRepository({publisher}) {
     description: "", 
     tags: [], 
     private: false, 
-    category: Categories.DEVOPS
+    category: Categories.DEVOPS,
+    ouathSettings: {uriFormat: null, authMethod: AuthMethod.POST}
   })
   const [image, setImage] = useState(null)
   const [darkImage, setDarkImage] = useState(null)

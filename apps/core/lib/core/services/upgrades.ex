@@ -105,22 +105,8 @@ defmodule Core.Services.Upgrades do
       |> UpgradeQueue.changeset(attrs)
       |> Core.Repo.insert_or_update()
     end)
-    |> add_operation(:user, fn %{queue: q} ->
-      update_default_queue(q, user)
-    end)
     |> execute(extract: :queue)
     |> notify(:upsert, queue)
-  end
-
-  def update_default_queue(%UpgradeQueue{id: id}, %User{default_queue_id: nil} = user) do
-    Ecto.Changeset.change(user, %{default_queue_id: id})
-    |> Core.Repo.update()
-  end
-  def update_default_queue(_, %User{} = user), do: {:ok, user}
-
-  def create_upgrade(params, %User{} = user) do
-    %{queue: queue} = Core.Repo.preload(user, [:queue])
-    create_upgrade(params, queue)
   end
 
   def create_upgrade(params, %UpgradeQueue{} = queue) do

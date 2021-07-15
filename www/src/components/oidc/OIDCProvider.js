@@ -21,10 +21,11 @@ function UrlTab({url, onClick}) {
   )
 }
 
-function UrlsInput({urls, setUrls}) {
+function UrlsInput({uriFormat, urls, setUrls}) {
   const [value, setValue] = useState('')
   const addUrl = useCallback(() => {
-    setUrls([...urls, value])
+    const url = uriFormat ? uriFormat.replace('{domain}', value) : value
+    setUrls([...urls, url])
     setValue('')
   }, [urls, value, setValue])
 
@@ -48,7 +49,10 @@ function UrlsInput({urls, setUrls}) {
           <TextInput
             plain
             value={value}
-            placeholder='add another redirect url'
+            placeholder={uriFormat ? 
+              `enter a domain, and the uri will be formatted with ${uriFormat}` : 
+              'add another redirect url'
+            }
             onChange={({target: {value}}) => setValue(value)} />
           <Button label='Add' onClick={addUrl} />
         </Box>
@@ -57,10 +61,12 @@ function UrlsInput({urls, setUrls}) {
   )
 }
 
-export function ProviderForm({attributes, setAttributes, bindings, setBindings}) {
+export function ProviderForm({attributes, setAttributes, bindings, setBindings, repository}) {
+  const settings = repository.oauthSettings || {}
   return (
     <Box fill gap='medium'>
       <UrlsInput 
+        uriFormat={settings.uriFormat}
         urls={attributes.redirectUris} 
         setUrls={(redirectUris) => setAttributes({...attributes, redirectUris})} />
       <Box flex={false} gap='xsmall'>
@@ -83,23 +89,27 @@ export function ProviderForm({attributes, setAttributes, bindings, setBindings})
         <Box flex={false}>
           <Text size='small' weight={500}>Auth Method:</Text>
         </Box>
-        <Box fill='horizontal'>
-          <Select
-            name='login-method'
-            value={{value: attributes.authMethod, label: attributes.authMethod.toLocaleLowerCase()}}
-            onChange={({value}) => setAttributes({...attributes, authMethod: value})}
-            options={Object.values(AuthMethod).map((m) => ({
-              label: m.toLocaleLowerCase(), 
-              value: m
-            }))} />
-        </Box>
+        {!settings.authMethod && (
+          <Box fill='horizontal'>
+            <Select
+              name='login-method'
+              value={{value: attributes.authMethod, label: attributes.authMethod.toLocaleLowerCase()}}
+              onChange={({value}) => setAttributes({...attributes, authMethod: value})}
+              options={Object.values(AuthMethod).map((m) => ({
+                label: m.toLocaleLowerCase(), 
+                value: m
+              }))} />
+          </Box>
+        )}
+        {settings.authMethod && <Text size='small'>{settings.authMethod}</Text>}
       </Box>
     </Box>
   )
 }
 
 export function CreateProvider({installation}) {
-  const [attributes, setAttributes] = useState({redirectUris: [], authMethod: AuthMethod.POST})
+  const settings = installation.repository.oauthSettings || {}
+  const [attributes, setAttributes] = useState({redirectUris: [], authMethod: settings.authMethod || AuthMethod.POST})
   const [bindings, setBindings] = useState([])
   const [mutation, {loading, error}] = useMutation(CREATE_PROVIDER, {
     variables: {id: installation.id, attributes: {
@@ -119,6 +129,7 @@ export function CreateProvider({installation}) {
     <Box fill pad='medium' gap='small'>
       {error && <GqlError error={error} header='Could not create provider' />}
       <ProviderForm 
+        repository={installation.repository}
         attributes={attributes} 
         setAttributes={setAttributes}
         bindings={bindings}
@@ -153,6 +164,7 @@ export function UpdateProvider({installation}) {
         </Attribute>
       </Attributes>
       <ProviderForm
+        repository={installation.repository}
         attributes={attributes} 
         setAttributes={setAttributes}
         bindings={bindings}

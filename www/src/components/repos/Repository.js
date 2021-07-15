@@ -26,6 +26,7 @@ import { Rollouts } from '../upgrades/Rollouts'
 import "ace-builds/src-noconflict/mode-yaml"
 import "ace-builds/src-noconflict/theme-terminal"
 import { SectionPortal } from '../Explore'
+import { AuthMethod } from '../oidc/types'
 
 function Container({children, onClick, hasNext, noPad}) {
   return (
@@ -214,7 +215,8 @@ export function RepoUpdate({repository}) {
     description: repository.description,
     tags: repository.tags.map(({tag}) => tag),
     private: repository.private,
-    category: repository.category || Categories.DEVOPS
+    category: repository.category || Categories.DEVOPS,
+    oauthSettings: repository.oauthSettings || {authMethod: AuthMethod.POST, uriFormat: null}
   })
   const [image, setImage] = useState(null)
   const [darkImage, setDarkImage] = useState(null)

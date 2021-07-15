@@ -1,6 +1,6 @@
 defmodule GraphQl.Schema.Upgrade do
   use GraphQl.Schema.Base
-  alias GraphQl.Middleware.{Authenticated, UpgradeQueue}
+  alias GraphQl.Middleware.{Authenticated}
   alias GraphQl.Resolvers.{
     User,
     Upgrade,
@@ -98,18 +98,6 @@ defmodule GraphQl.Schema.Upgrade do
 
       arg :attributes, non_null(:upgrade_queue_attributes)
       resolve &Upgrade.create_upgrade_queue/2
-    end
-
-    field :create_upgrade, :upgrade do
-      middleware Authenticated
-      middleware UpgradeQueue
-
-      arg :id,         :id
-      arg :name,       :string
-      arg :attributes, non_null(:upgrade_attributes)
-      arg :queue_id,   :id
-
-      resolve &Upgrade.create_upgrade/2
     end
   end
 

@@ -38,7 +38,7 @@ defmodule Core.Schema.Repository do
     field :category,      Category
 
     embeds_one :oauth_settings, OAuthSettings, on_replace: :update do
-      field :uri_format, :string
+      field :uri_format,  :string
       field :auth_method, Core.Schema.OIDCProvider.AuthMethod
     end
 

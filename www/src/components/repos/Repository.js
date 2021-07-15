@@ -210,13 +210,14 @@ function buildAttributes(attrs, image, darkImage) {
 }
 
 export function RepoUpdate({repository}) {
+  const {authMethod, uriFormat} = repository.oauthSettings || {authMethod: AuthMethod.POST}
   const [state, setState] = useState({
     name: repository.name,
     description: repository.description,
     tags: repository.tags.map(({tag}) => tag),
     private: repository.private,
     category: repository.category || Categories.DEVOPS,
-    oauthSettings: repository.oauthSettings || {authMethod: AuthMethod.POST, uriFormat: null}
+    oauthSettings: {authMethod, uriFormat}
   })
   const [image, setImage] = useState(null)
   const [darkImage, setDarkImage] = useState(null)

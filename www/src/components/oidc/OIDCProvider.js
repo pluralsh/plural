@@ -85,11 +85,11 @@ export function ProviderForm({attributes, setAttributes, bindings, setBindings, 
           add={(group) => setBindings([...bindings, {group}])}
           remove={(name) => setBindings(bindings.filter(({group}) => !group || group.name !== name))} />
       </Box>
-      <Box gap='small' width='40%' direction='row' align='center'>
-        <Box flex={false}>
-          <Text size='small' weight={500}>Auth Method:</Text>
-        </Box>
-        {!settings.authMethod && (
+      {!settings.authMethod && (
+        <Box gap='small' width='40%' direction='row' align='center'>
+          <Box flex={false}>
+            <Text size='small' weight={500}>Auth Method:</Text>
+          </Box>
           <Box fill='horizontal'>
             <Select
               name='login-method'
@@ -100,9 +100,8 @@ export function ProviderForm({attributes, setAttributes, bindings, setBindings, 
                 value: m
               }))} />
           </Box>
-        )}
-        {settings.authMethod && <Text size='small'>{settings.authMethod}</Text>}
-      </Box>
+        </Box>
+      )}
     </Box>
   )
 }

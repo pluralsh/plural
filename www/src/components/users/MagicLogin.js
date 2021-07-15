@@ -47,15 +47,11 @@ export function LoginPortal({children}) {
 }
 
 export function PasswordlessLogin() {
-  let history = useHistory()
   const {token} = useParams()
-  const [mutation, {error, loading}] = useMutation(PASSWORDLESS_LOGIN, {
-    variables: {token},
-    onCompleted: ({passwordlessLogin: {jwt}}) => {
-      setToken(jwt)
-      history.push(`/`)
-    }
+  const [mutation, {error, loading, data}] = useMutation(PASSWORDLESS_LOGIN, {
+    variables: {token}
   })
+
   useEffect(() => {
     mutation()
   }, [])
@@ -65,10 +61,16 @@ export function PasswordlessLogin() {
       <Box gap='medium'>
         <Box gap='xsmall' align='center'>
           <img src={PLURAL_MARK} width='45px' />
-          <Text size='large'>Magic Login</Text>
+          <Text size='large'>Passwordless Login</Text>
         </Box>
         {loading && <Text size='small' color='dark-3'>Validating your login token...</Text>}
         {error && <GqlError error={error} header='Error validating login' />}
+        {data && (
+          <Alert 
+            status={AlertStatus.SUCCESS} 
+            header="You're now logged in!" 
+            description="Navigate back to wherever you initiated the login to begin using plural." /> 
+        )}
       </Box>
     </LoginPortal>
   )

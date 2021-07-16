@@ -6,7 +6,7 @@ defmodule GraphQl.Schema.Audit do
     field :id,     non_null(:id)
     field :action, non_null(:string)
 
-    field :actor, non_null(:user), resolve: dataloader(User)
+    field :actor, :user,  resolve: dataloader(User)
     field :group, :group, resolve: dataloader(Account)
     field :role,  :role,  resolve: dataloader(Account)
     field :integration_webhook, :integration_webhook, resolve: dataloader(Account)

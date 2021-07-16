@@ -61,8 +61,8 @@ function Audit({audit}) {
         <Text size='small'>{audit.action}</Text>
       </Box>
       <Box flex={false} width='25%' direction='row' gap='xsmall' align='center'>
-        <Avatar user={audit.actor} size='30px' />
-        <Text size='small'>{audit.actor.name}</Text>
+        {audit.actor && <Avatar user={audit.actor} size='30px' />}
+        {audit.actor && <Text size='small'>{audit.actor.name}</Text>}
       </Box>
       <Box width='25%'>
         <Resource audit={audit} />

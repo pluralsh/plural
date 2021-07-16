@@ -221,8 +221,9 @@ export function RepoUpdate({repository}) {
   })
   const [image, setImage] = useState(null)
   const [darkImage, setDarkImage] = useState(null)
-  const attributes = {...state, tags: state.tags.map((t) => ({tag: t}))}
-  const [mutation, {loading}] = useMutation(UPDATE_REPO, {
+  const { oauthSettings, ...base } = state
+  const attributes = {...base, tags: state.tags.map((t) => ({tag: t})), oauthSettings: oauthSettings.uriFormat ? oauthSettings : null}
+  const [mutation, {loading, error}] = useMutation(UPDATE_REPO, {
     variables: {id: repository.id, attributes: buildAttributes(attributes, image, darkImage)},
     update: (cache, { data: { updateRepository } }) => {
       const prev = cache.readQuery({ query: REPO_Q, variables: {repositoryId: repository.id} })
@@ -235,6 +236,7 @@ export function RepoUpdate({repository}) {
   return (
     <RepoForm
       label={`Update ${repository.name}`}
+      error={error}
       state={state}
       setState={setState}
       image={image}

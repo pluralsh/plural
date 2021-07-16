@@ -12,6 +12,7 @@ import { useHistory } from 'react-router'
 import { Categories } from './constants'
 import { SectionPortal } from '../Explore'
 import { AuthMethod } from '../oidc/types'
+import { GqlError } from '../utils/Alert'
 
 const LABEL_WIDTH = '90px'
 
@@ -47,7 +48,7 @@ function ImagePicker({image, setImage, background, label}) {
   )
 }
 
-export function RepoForm({image, setImage, darkImage, setDarkImage, state, setState, mutation, loading, update}) {
+export function RepoForm({image, setImage, darkImage, setDarkImage, state, setState, mutation, loading, update, error}) {
   const setOauthSettings = useCallback((key, value) => (
     setState({...state, oauthSettings: {...state.oauthSettings, [key]: value}})
   ), [setState, state])
@@ -55,6 +56,7 @@ export function RepoForm({image, setImage, darkImage, setDarkImage, state, setSt
   return (
     <Box fill style={{overflow: 'auto'}}>
       <Box flex={false} pad='medium' gap='medium'>
+        {error && <GqlError error={error} header='Something went wrong...' />}
         <LabeledInput label='1. Upload icons for your repo'>
           <Box direction='row' gap='medium'>
             <ImagePicker image={image} setImage={setImage} />
@@ -135,8 +137,9 @@ export default function CreateRepository({publisher}) {
   })
   const [image, setImage] = useState(null)
   const [darkImage, setDarkImage] = useState(null)
-  const attributes = {...state, tags: state.tags.map((t) => ({tag: t}))}
-  const [mutation, {loading}] = useMutation(CREATE_REPO, {
+  const {oauthSettings, ...base} = state
+  const attributes = {...base, tags: state.tags.map((t) => ({tag: t})), oauthSettings: oauthSettings.uriFormat ? oauthSettings : null}
+  const [mutation, {loading, error}] = useMutation(CREATE_REPO, {
     variables: {attributes: {
       ...attributes, icon: image && image.file, darkIcon: darkImage && darkImage.file}
     },
@@ -151,6 +154,7 @@ export default function CreateRepository({publisher}) {
   return (
     <RepoForm
       label='Create a new repository'
+      error={error}
       image={image}
       setImage={setImage}
       darkImage={darkImage}

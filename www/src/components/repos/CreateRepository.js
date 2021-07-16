@@ -131,7 +131,7 @@ export default function CreateRepository({publisher}) {
     tags: [], 
     private: false, 
     category: Categories.DEVOPS,
-    ouathSettings: {uriFormat: null, authMethod: AuthMethod.POST}
+    oauthSettings: {uriFormat: null, authMethod: AuthMethod.POST}
   })
   const [image, setImage] = useState(null)
   const [darkImage, setDarkImage] = useState(null)

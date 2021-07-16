@@ -32,6 +32,17 @@ function UrlsInput({uriFormat, urls, setUrls}) {
   return (
     <Keyboard onEnter={addUrl}>
       <Box flex={false} fill='horizontal' gap='xsmall'>
+        <Box flex={false} fill='horizontal' direction='row' gap='small' align='center'>
+          <TextInput
+            plain
+            value={value}
+            placeholder={uriFormat ? 
+              `enter a domain, and the uri will be formatted with ${uriFormat}` : 
+              'add another redirect url'
+            }
+            onChange={({target: {value}}) => setValue(value)} />
+          <Button label='Add' onClick={addUrl} />
+        </Box>
         <Box direction='row' gap='small' align='center'>
           <Box flex={false}>
             <Text size='small' weight={500}>Redirect URIs</Text>
@@ -44,17 +55,6 @@ function UrlsInput({uriFormat, urls, setUrls}) {
                 onClick={() => setUrls(urls.filter((u) => u !== url))} />
             ))}
           </Box>
-        </Box>
-        <Box flex={false} fill='horizontal' direction='row' gap='small' align='center'>
-          <TextInput
-            plain
-            value={value}
-            placeholder={uriFormat ? 
-              `enter a domain, and the uri will be formatted with ${uriFormat}` : 
-              'add another redirect url'
-            }
-            onChange={({target: {value}}) => setValue(value)} />
-          <Button label='Add' onClick={addUrl} />
         </Box>
       </Box>
     </Keyboard>

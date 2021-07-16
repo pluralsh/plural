@@ -53,6 +53,7 @@ export function BindingInput({label, placeholder, fetcher, bindings, remove, add
         <Text size='small' weight={500}>{label}</Text>
       </Box>
       <TagInput
+        noborder
         placeholder={placeholder}
         round='xsmall'
         suggestions={suggestions}

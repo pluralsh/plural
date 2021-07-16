@@ -55,6 +55,7 @@ export function UserTypeahead({users, setUsers, children}) {
     <TagInput
       placeholder="Search for users by name or email..."
       round='xsmall'
+      noborder
       suggestions={suggestions}
       value={users.map((u) => u.email)}
       onRemove={(email) => setUsers(users.filter((u) => u.email !== email))}
@@ -72,6 +73,7 @@ export function GroupTypeahead({groups, setGroups, children}) {
     <TagInput
       placeholder="Search for groups by handle..."
       round='xsmall'
+      noborder
       suggestions={suggestions}
       value={groups.map((u) => u.name)}
       onRemove={(name) => setGroups(groups.filter((u) => u.name !== name))}

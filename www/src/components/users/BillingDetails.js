@@ -1,19 +1,19 @@
 import React, { useCallback, useContext, useState } from 'react'
 import { Elements, CardElement, injectStripe } from 'react-stripe-elements'
-import { CurrentUserContext } from '../login/CurrentUser'
-import { Box, Text, Stack, Layer } from 'grommet'
+import { Box, Text, Layer } from 'grommet'
 import { useMutation, useQuery } from 'react-apollo'
 import { REGISTER_CARD, CARDS, DELETE_CARD } from './queries'
-import CardDisplay from 'react-credit-cards'
-import { Button, HoveredBackground, ModalHeader } from 'forge-core'
+import { Button, ModalHeader } from 'forge-core'
 import { TagContainer } from '../repos/Tags'
-import { Visa, Mastercard, Amex, Trash } from 'grommet-icons'
-import { FaCreditCard } from 'react-icons/fa'
+import { Visa, Mastercard, Amex, Trash, CreditCard } from 'grommet-icons'
 import 'react-credit-cards/es/styles-compiled.css';
 import './stripe.css'
 import './billing.css'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 import { SectionPortal } from '../Explore'
+import { HeaderItem } from '../repos/Docker'
+import { Icon } from '../accounts/Group'
+import { CurrentUserContext } from '../login/CurrentUser'
 
 function _CardForm({stripe, onCompleted}) {
   const [stripeError, setStripeError] = useState(null) 
@@ -56,65 +56,56 @@ function CardInputForm({me, onCompleted}) {
 const cardNumber = (last4) => `**** **** **** ${last4}`
 const expiry = (expMonth, expYear) => `${expMonth > 10 ? expMonth : '0' + expMonth}/${expYear}`
 
-function CardInner({card: {name, expMonth, expYear, brand, last4}}) {
+export function CardIcon({brand}) {
+  switch (brand.toLowerCase()) {
+    case 'visa':
+      return <Visa color='plain' size='medium' />
+    case 'mastercard':
+      return <Mastercard color='plain' size='medium' />
+    case 'amex':
+      return <Amex color='plain' size='medium' />
+    default:
+      return <CreditCard size='medium' />
+  }
+}
+
+function CardHeader() {
   return (
-    <Box flex={false} width='300px'>
-      <CardDisplay
-        expiry={expiry(expMonth, expYear)}
-        preview
-        number={cardNumber(last4)}
-        cvc='*'
-        issuer={brand}
-        name={name || 'John Doe'} />
+    <Box direction='row' pad='small' gap='xsmall' border={{side: 'bottom', color: 'light-5'}} 
+         align='center'>
+      <HeaderItem text='Brand' width='20%' />
+      <HeaderItem text='Number' width='25%' />
+      <HeaderItem text='Name' width='25%' />
+      <HeaderItem text='Expiration' width='30%' />
     </Box>
   )
 }
 
-function DeleteCard({card: {id}}) {
-  const [mutation, {loading}] = useMutation(DELETE_CARD, {
-    variables: {id},
+function CardRow({card, noDelete}) {
+  const [mutation] = useMutation(DELETE_CARD, {
+    variables: {id: card.id},
     refetchQueries: [{query: CARDS}]
   })
 
   return (
-    <HoveredBackground>
-      <Box
-        className='delete'
-        accentable
-        focusIndicator={false}
-        onClick={() => !loading && mutation()}
-        margin={{right: 'small', top: 'small'}}
-        round='xsmall'
-        pad='xsmall'
-        background='white'
-        align='center'
-        justify='center'>
-        <Trash size='14px' />
+    <Box direction='row' pad={{horizontal: 'small', vertical: 'xsmall'}} gap='xsmall' align='center'
+         border={{side: 'bottom', color: 'light-5'}}>
+      <Box width='20%' gap='small' direction='row' align='center'>
+        <CardIcon brand={card.brand} />
+        <Text size='small'>{card.brand}</Text>
       </Box>
-    </HoveredBackground>
+      <HeaderItem nobold text={`**** **** **** ${card.last4}`} width='25%' />
+      <HeaderItem nobold text={card.name || 'John Doe'} width='25%' />
+      {!noDelete && (
+        <Box width='30%' direction='row' gap='small' align='center'>
+          <Box fill='horizontal'>
+            <Text size='small'>{card.expMonth} / {card.expYear}</Text>
+          </Box>
+          <Icon icon={Trash} tooltip='delete' onClick={mutation} />
+        </Box>
+      )}
+    </Box>
   )
-}
-
-function Card({card, noDelete}) {
-  return (
-    <Stack className={'card ' + (noDelete ? 'no-delete' : '')}  width='300px' flex={false} anchor='top-right'>
-      <CardInner card={card} />
-      <DeleteCard card={card} />
-    </Stack>
-  )
-}
-
-export function CardIcon({brand}) {
-  switch (brand.toLowerCase()) {
-    case 'visa':
-      return <Visa color='focus' size='medium' />
-    case 'mastercard':
-      return <Mastercard color='focus' size='medium' />
-    case 'amex':
-      return <Amex color='focus' size='medium' />
-    default:
-      return <FaCreditCard size='16px' />
-  }
 }
 
 export function CardOption({card, current, setCurrent}) {
@@ -143,8 +134,9 @@ export function CardList() {
 
   return (
     <>
-    <Box fill pad='medium'>
-      {edges.map(({node: card}) => <Card key={card.id} card={card} />)}
+    <Box fill>
+      <CardHeader />
+      {edges.map(({node: card}) => <CardRow key={card.id} card={card} />)}
       <SectionPortal>
         <Button label='Add a card' onClick={() => setOpen(true)} />
       </SectionPortal>

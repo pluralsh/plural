@@ -34,6 +34,7 @@ defmodule Core.Services.OAuth do
   @spec handle_login(binary, User.t) :: oauth_resp
   def handle_login(challenge, %User{} = user) do
     user = Core.Services.Rbac.preload(user)
+           |> Core.Repo.preload([:groups])
     with {:ok, provider} <- get_login(challenge),
          true <- eligible?(provider, user) do
       Hydra.accept_login(challenge, user)

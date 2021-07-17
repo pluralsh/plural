@@ -1,5 +1,6 @@
 defmodule Core.Clients.Hydra do
   require Logger
+  alias Core.Schema.User
 
   defmodule Response, do: defstruct [:redirect_to]
   defmodule Client do
@@ -140,7 +141,8 @@ defmodule Core.Clients.Hydra do
     }
   end
 
-  defp user_groups(groups) when is_list(groups), do: Enum.map(groups, & &1.name)
+  defp user_groups(%User{groups: groups}) when is_list(groups),
+    do: Enum.map(groups, & &1.name)
   defp user_groups(_), do: []
 
   defp admin_url(path), do: "#{conf(:hydra_admin)}#{path}"

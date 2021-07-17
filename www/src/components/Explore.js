@@ -16,6 +16,7 @@ import { Portal } from 'react-portal'
 import { v4 as uuidv4 } from 'uuid'
 import './explore.css'
 import { PLURAL_WORD, SIDEBAR_WIDTH } from './constants'
+import { StandardScroller } from './utils/SmoothScroller'
 
 const WIDTH = 20
 
@@ -58,15 +59,31 @@ function Repo({repo, setTag}) {
   )
 }
 
-function Repositories({edges, pageInfo, fetchMore, setTag}) {
+function Placeholder() {
+  return (
+    <Box height='90px' direction='row' pad='small'>
+      <Box height='50px' width='50px' background='tone-light' />
+      <Box fill='horizontal' gap='xsmall'>
+        <Box width='200px' height='13px' background='tone-light' />
+        <Box width='400px' height='13px' background='tone-light' />
+      </Box>
+    </Box>
+  )
+}
+
+function Repositories({edges, pageInfo, loading, fetchMore, setTag}) {
+  const [listRef, setListRef] = useState(null)
   return (
     <Box fill>
-      <Scroller
-        id='repos'
-        style={{height: '100%', width: '100%', overflow: 'auto'}}
-        edges={edges}
+      <StandardScroller
+        listRef={listRef}
+        setListRef={setListRef}
+        hasNextPage={pageInfo.hasNextPage}
+        items={edges}
+        loading={loading}
+        placeholder={Placeholder}
         mapper={({node}) => <Repo key={node.id} repo={node} setTag={setTag} />}
-        onLoadMore={() => pageInfo.hasNextPage && fetchMore({
+        loadNextPage={() => pageInfo.hasNextPage && fetchMore({
           variables: {cursor: pageInfo.endCursor},
           updateQuery: (prev, {fetchMoreResult: {repositories}}) => extendConnection(prev, repositories, 'repositories')
         })}
@@ -234,7 +251,7 @@ export default function Explore() {
   let history = useHistory()
   const me = useContext(CurrentUserContext)
   const args = filters(group, me) 
-  const {data, fetchMore} = useQuery(EXPLORE_REPOS, {
+  const {data, loading, fetchMore} = useQuery(EXPLORE_REPOS, {
     variables: {tag, ...args},
     fetchPolicy: 'cache-and-network'
   })
@@ -270,17 +287,17 @@ export default function Explore() {
         <SectionContent name='public' header='Public Repositories'>
           <Box fill direction='row' gap='0px' border={{side: 'between', color: 'light-5', size: 'xsmall'}}>
             <TagSidebar setTag={doSetTag} tag={tag} />
-            <Repositories edges={edges} pageInfo={pageInfo} fetchMore={fetchMore} setTag={doSetTag} />
+            <Repositories edges={edges} loading={loading} pageInfo={pageInfo} fetchMore={fetchMore} setTag={doSetTag} />
           </Box>
         </SectionContent>
         <SectionContent name='installed' header='Installed Repositories'>
           {edges.length > 0 ? 
-            <Repositories edges={edges} pageInfo={pageInfo} fetchMore={fetchMore} setTag={doSetTag} /> :
+            <Repositories edges={edges} loading={loading} pageInfo={pageInfo} fetchMore={fetchMore} setTag={doSetTag} /> :
             <EmptyState />
           }
         </SectionContent>
         <SectionContent name='published' header='Published Repositories'>
-          <Repositories edges={edges} pageInfo={pageInfo} fetchMore={fetchMore} setTag={doSetTag} /> :
+          <Repositories edges={edges} loading={loading} pageInfo={pageInfo} fetchMore={fetchMore} setTag={doSetTag} /> :
         </SectionContent>
       </Box>
     </Box>

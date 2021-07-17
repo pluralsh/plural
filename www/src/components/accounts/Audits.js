@@ -53,6 +53,12 @@ function Resource({audit}) {
   return <Link to={link}>{text}</Link>
 }
 
+function Placeholder() {
+  return (
+    <Box flex={false} height='50px' pad='small' />
+  )
+}
+
 function Audit({audit}) {
   return (
     <Box flex={false} direction='row' pad='small' gap='xsmall' border={{side: 'bottom', color: 'light-3'}} 
@@ -96,6 +102,7 @@ export function Audits() {
           hasNextPage={pageInfo.hasNextPage}
           items={edges}
           loading={loading} 
+          placeholder={Placeholder}
           mapper={({node}) => <Audit key={node.id} audit={node} />} 
           loadNextPage={() => pageInfo.hasNextPage && fetchMore({
             variables: {cursor: pageInfo.endCursor},

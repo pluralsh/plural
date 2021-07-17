@@ -151,11 +151,13 @@ export default function EditUser() {
                 <ResponsiveInput
                   value={password}
                   label='password'
+                  placeholder='a long password'
                   type='password'
                   onChange={({target: {value}}) => setPassword(value)} />
                 <ResponsiveInput
                   value={confirm}
                   label='confirm'
+                  placeholder='confirm your password'
                   type='password'
                   onChange={({target: {value}}) => setConfirm(value)} />
               </InputCollection>

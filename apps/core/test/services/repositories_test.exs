@@ -238,12 +238,25 @@ defmodule Core.Services.RepositoriesTest do
     end
   end
 
+  describe "#update_docker_repository/3" do
+    test "a publisher can update a dkr repository" do
+      %{owner: user} = pub = insert(:publisher)
+      dkr = insert(:docker_repository, repository: build(:repository, publisher: pub))
+
+      {:ok, updated} = Repositories.update_docker_repository(%{public: true}, dkr.id, user)
+
+      assert updated.public
+
+      assert_receive {:event, %PubSub.DockerRepositoryUpdated{item: ^updated}}
+    end
+  end
+
   describe "#authorize_docker/2" do
     test "A repo owner can push/pull" do
       %{owner: user} = pub = insert(:publisher)
       repo = insert(:repository, publisher: pub)
 
-      allowed = Repositories.authorize_docker(repo.name, user)
+      allowed = Repositories.authorize_docker(repo.name, "some/image", user)
 
       assert [:pull, :push] == Enum.sort(allowed)
     end
@@ -252,13 +265,19 @@ defmodule Core.Services.RepositoriesTest do
       repo = insert(:repository)
       %{user: user} = insert(:installation, repository: repo)
 
-      [:pull] = Repositories.authorize_docker(repo.name, user)
+      [:pull] = Repositories.authorize_docker(repo.name, "some/image", user)
+    end
+
+    test "public repositories can authorize unauthenticated users" do
+      %{repository: repo} = registry = insert(:docker_repository, public: true)
+
+      [:pull] = Repositories.authorize_docker(repo.name, registry.name, nil)
     end
 
     test "Arbitrary users have no access" do
       repo = insert(:repository)
 
-      [] = Repositories.authorize_docker(repo.name, insert(:user))
+      [] = Repositories.authorize_docker(repo.name, "some/image", insert(:user))
     end
   end
 

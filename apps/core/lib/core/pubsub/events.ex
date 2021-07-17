@@ -56,3 +56,5 @@ defmodule Core.PubSub.UserUpdated, do: use Piazza.PubSub.Event
 
 defmodule Core.PubSub.OIDCProviderUpdated, do: use Piazza.PubSub.Event
 defmodule Core.PubSub.OIDCProviderCreated, do: use Piazza.PubSub.Event
+
+defmodule Core.PubSub.DockerRepositoryUpdated, do: use Piazza.PubSub.Event

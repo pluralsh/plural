@@ -101,9 +101,19 @@ defmodule Core.Services.Repositories do
   Returns the list of docker accesses available for `user` against the
   given repository
   """
-  @spec authorize_docker(binary, User.t) :: [:push | :pull]
-  def authorize_docker(repo_name, %User{} = user) do
-    repo = get_repository_by_name!(repo_name) |> Core.Repo.preload([:publisher])
+  @spec authorize_docker(binary, binary, User.t | nil) :: [:push | :pull]
+  def authorize_docker(repo_name, dkr_name, nil) do
+    DockerRepository.for_repository_name(repo_name)
+    |> Core.Repo.get_by(name: dkr_name)
+    |> case do
+      %DockerRepository{public: true} -> [:pull]
+      _ -> []
+    end
+  end
+
+  def authorize_docker(repo_name, dkr_name, %User{} = user) do
+    repo = get_repository_by_name!(repo_name)
+           |> Core.Repo.preload([:publisher])
 
     Parallax.new()
     |> Parallax.operation(:push, fn -> allow(repo, user, :edit) end)
@@ -114,6 +124,8 @@ defmodule Core.Services.Repositories do
       _ -> false
     end)
     |> Enum.map(&elem(&1, 0))
+    |> Enum.concat(authorize_docker(repo_name, dkr_name, nil))
+    |> Enum.uniq()
   end
 
   @doc """
@@ -185,17 +197,28 @@ defmodule Core.Services.Repositories do
     |> Core.Repo.insert_or_update()
   end
 
+  def update_docker_repository(attrs, id, %User{} = user) do
+    Core.Repo.get!(DockerRepository, id)
+    |> DockerRepository.changeset(attrs)
+    |> allow(user, :edit)
+    |> when_ok(:update)
+    |> notify(:update, user)
+  end
+
   @doc """
   Constructs a docker-compliant jwt for the given repo and scopes.
   """
-  @spec docker_token([binary | atom], binary, User.t) :: {:ok, binary} | {:error, term}
+  @spec docker_token([binary | atom], binary, User.t | nil) :: {:ok, binary} | {:error, term}
   def docker_token(scopes, repo_name, user) do
     signer = Jwt.signer()
     access = [%{"type" => "repository", "name" => repo_name, "actions" => scopes}]
-    with {:ok, claims} <- Jwt.generate_claims(%{"sub" => user.email, "access" => access}),
+    with {:ok, claims} <- Jwt.generate_claims(%{"sub" => dkr_sub(user), "access" => access}),
          {:ok, token, _} <- Jwt.encode_and_sign(claims, signer),
       do: {:ok, token}
   end
+
+  defp dkr_sub(%{email: email}), do: email
+  defp dkr_sub(_), do: ""
 
 
   @doc """
@@ -490,6 +513,9 @@ defmodule Core.Services.Repositories do
     do: handle_notify(PubSub.InstallationCreated, inst, actor: user)
   defp notify({:ok, %Installation{} = inst}, :update, user),
     do: handle_notify(PubSub.InstallationUpdated, inst, actor: user)
+
+  defp notify({:ok, %DockerRepository{} = repo}, :update, user),
+    do: handle_notify(PubSub.DockerRepositoryUpdated, repo, actor: user)
 
   defp notify({:ok, %Repository{} = repo}, :create, user),
     do: handle_notify(PubSub.RepositoryCreated, repo, actor: user)

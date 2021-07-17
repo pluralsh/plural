@@ -3,7 +3,7 @@ defmodule ApiWeb.AuthController do
   alias Core.Services.Repositories
   alias Core.Services.Users
 
-  plug BasicAuth, [callback: &__MODULE__.fetch_user/3] when action == :token
+  plug :fetch_user when action == :token
 
   def post_token(conn, %{"scope" => "repository:" <> repo, "password" => token}) do
     with %Core.Schema.PersistedToken{user: %{} = user} <- Users.get_persisted_token(token),
@@ -17,7 +17,7 @@ defmodule ApiWeb.AuthController do
   end
 
   def token(conn, %{"scope" => "repository:" <> repo}) do
-    user = conn.assigns.token.user
+    user = conn.assigns.user
     {allowed_scopes, full_name} = fetch_scopes(repo, user)
 
     with {:ok, token} <- Repositories.docker_token(allowed_scopes, full_name, user) do
@@ -37,16 +37,18 @@ defmodule ApiWeb.AuthController do
     end
   end
 
-  def fetch_user(conn, _name, token) do
-    case Users.get_persisted_token(token) do
-      nil -> ApiWeb.FallbackController.call(conn, {:error, :unauthorized}) |> halt()
-      token -> assign(conn, :token, token)
+  def fetch_user(conn, _) do
+    with {_, pass} <- Plug.BasicAuth.parse_basic_auth(conn),
+         %{user: user} <- Users.get_persisted_token(pass) do
+      assign(conn, :user, user)
+    else
+      _ -> assign(conn, :user, nil)
     end
   end
 
   defp fetch_scopes(repo, user) do
     [full_name, _] = String.split(repo, ":")
-    [repo_name | _] = String.split(full_name, "/")
-    {Repositories.authorize_docker(repo_name, user), full_name}
+    [repo_name | rest] = String.split(full_name, "/")
+    {Repositories.authorize_docker(repo_name, Enum.join(rest, "/"), user), full_name}
   end
 end

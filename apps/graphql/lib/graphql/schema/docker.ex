@@ -13,9 +13,14 @@ defmodule GraphQl.Schema.Docker do
   ecto_enum :vuln_vector,      Vulnerability.Vector
   ecto_enum :vuln_requirement, Vulnerability.Requirement
 
+  input_object :docker_repository_attributes do
+    field :public, non_null(:boolean)
+  end
+
   object :docker_repository do
     field :id,         non_null(:id)
     field :name,       non_null(:string)
+    field :public,     :boolean
     field :repository, :repository, resolve: dataloader(Repository)
 
     field :metrics, list_of(:metric) do
@@ -111,6 +116,12 @@ defmodule GraphQl.Schema.Docker do
   end
 
   object :docker_mutations do
+    field :update_docker_repository, :docker_repository do
+      middleware Authenticated
+      arg :id, non_null(:id)
+      arg :attributes, non_null(:docker_repository_attributes)
 
+      resolve safe_resolver(&Docker.update_docker_repository/2)
+    end
   end
 end

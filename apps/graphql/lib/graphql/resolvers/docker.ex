@@ -21,4 +21,7 @@ defmodule GraphQl.Resolvers.Docker do
   end
 
   def resolve_image(%{id: id}, _), do: {:ok, Repositories.get_dkr_image!(id)}
+
+  def update_docker_repository(%{attributes: attrs, id: id}, %{context: %{current_user: user}}),
+    do: Repositories.update_docker_repository(attrs, id, user)
 end

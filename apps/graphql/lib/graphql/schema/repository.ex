@@ -73,33 +73,6 @@ defmodule GraphQl.Schema.Repository do
     field :blob,     :upload_or_url
   end
 
-  input_object :dashboard_attributes do
-    field :name, non_null(:string)
-    field :uid,  non_null(:string)
-  end
-
-  input_object :shell_attributes do
-    field :target,  non_null(:string)
-    field :command, :string
-    field :args,    list_of(:string)
-  end
-
-  ecto_enum :engine, Core.Schema.Database.Engine
-
-  input_object :database_attributes do
-    field :engine,      non_null(:engine)
-    field :target,      non_null(:string)
-    field :port,        non_null(:integer)
-    field :credentials, :credentials_attributes
-    field :name,        non_null(:string)
-  end
-
-  input_object :credentials_attributes do
-    field :user,   non_null(:string)
-    field :secret, non_null(:string)
-    field :key,    non_null(:string)
-  end
-
   input_object :oidc_attributes do
     field :redirect_uris, list_of(:string)
     field :auth_method, non_null(:oidc_auth_method)

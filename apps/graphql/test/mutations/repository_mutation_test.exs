@@ -256,4 +256,23 @@ defmodule GraphQl.RepositoryMutationsTest do
       assert g["id"] == group.id
     end
   end
+
+  describe "updateDockerRepository" do
+    test "it can set a repo to public" do
+      %{owner: user} = pub = insert(:publisher)
+      dkr = insert(:docker_repository, repository: build(:repository, publisher: pub))
+
+      {:ok, %{data: %{"updateDockerRepository" => updated}}} = run_query("""
+        mutation Update($id: ID!, $attrs: DockerRepositoryAttributes!) {
+          updateDockerRepository(id: $id, attributes: $attrs) {
+            id
+            public
+          }
+        }
+      """, %{"id" => dkr.id, "attrs" => %{"public" => true}}, %{current_user: user})
+
+      assert updated["id"] == dkr.id
+      assert updated["public"]
+    end
+  end
 end

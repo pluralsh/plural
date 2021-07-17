@@ -23,6 +23,40 @@ defmodule ApiWeb.AuthControllerTest do
       assert perms["type"] == "repository"
       assert Enum.sort(perms["actions"]) == ["pull"]
     end
+
+    test "It can fetch a pull token for a public repository", %{conn: conn} do
+      %{repository: repo} = registry = insert(:docker_repository, public: true)
+      path = Routes.auth_path(conn, :token)
+
+      %{"token" => bearer_token} =
+        conn
+        |> get(path, %{"scope" => "repository:#{repo.name}/#{registry.name}:push,pull"})
+        |> json_response(200)
+
+      signer = Jwt.signer()
+      {:ok, %{"access" => [perms]}} = Jwt.verify(bearer_token, signer)
+
+      assert perms["name"] == "#{repo.name}/#{registry.name}"
+      assert perms["type"] == "repository"
+      assert Enum.sort(perms["actions"]) == ["pull"]
+    end
+
+    test "Nonpublic repos get no perms", %{conn: conn} do
+      %{repository: repo} = registry = insert(:docker_repository)
+      path = Routes.auth_path(conn, :token)
+
+      %{"token" => bearer_token} =
+        conn
+        |> get(path, %{"scope" => "repository:#{repo.name}/#{registry.name}:push,pull"})
+        |> json_response(200)
+
+      signer = Jwt.signer()
+      {:ok, %{"access" => [perms]}} = Jwt.verify(bearer_token, signer)
+
+      assert perms["name"] == "#{repo.name}/#{registry.name}"
+      assert perms["type"] == "repository"
+      assert Enum.sort(perms["actions"]) == []
+    end
   end
 
   describe "#post_token/2" do

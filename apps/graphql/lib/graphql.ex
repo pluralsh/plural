@@ -108,6 +108,7 @@ defmodule GraphQl do
     import_fields :incident_mutations
     import_fields :upgrade_mutations
     import_fields :oauth_mutations
+    import_fields :docker_mutations
   end
 
   subscription do

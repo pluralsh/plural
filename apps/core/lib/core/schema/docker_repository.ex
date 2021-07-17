@@ -4,6 +4,7 @@ defmodule Core.Schema.DockerRepository do
 
   schema "docker_repositories" do
     field :name, :string
+    field :public, :boolean, default: false
     belongs_to :repository, Repository
 
     timestamps()
@@ -26,7 +27,7 @@ defmodule Core.Schema.DockerRepository do
   def ordered(query \\ __MODULE__, order \\ [asc: :name]),
     do: from(dr in query, order_by: ^order)
 
-  @valid ~w(name)a
+  @valid ~w(name public)a
 
   def changeset(model, attrs \\ %{}) do
     model

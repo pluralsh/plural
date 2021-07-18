@@ -28,7 +28,7 @@ function GroupMembers({group}) {
   )
 }
 
-export function Icon({icon, iconAttrs, tooltip, onClick}) {
+export function Icon({icon, iconAttrs, tooltip, onClick, hover}) {
   const dropRef = useRef()
   const [open, setOpen] = useState(false)
   return (
@@ -40,7 +40,7 @@ export function Icon({icon, iconAttrs, tooltip, onClick}) {
       onClick={onClick}
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
-      hoverIndicator='light-2'
+      hoverIndicator={hover || 'light-2'}
       focusIndicator={false}>
       {React.createElement(icon, {size: '14px', ...(iconAttrs || {})})}
     </Box>

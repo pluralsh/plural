@@ -15,7 +15,7 @@ export function SeverityNub({severity}) {
   return (
     <Box flex={false} direction='row' align='center' gap='xsmall'>
       <Box flex={false} round='full' height='12px' width='12px' background={color} />
-      <Text size='16px' weight={500}>SEV {severity}</Text> 
+      <Text size='16px'>SEV {severity}</Text> 
     </Box>
   )
 }

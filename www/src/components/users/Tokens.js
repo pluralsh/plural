@@ -1,14 +1,17 @@
-import React, { useState } from 'react'
-import { Box, Collapsible, Text } from 'grommet'
+import React, { useCallback, useState } from 'react'
+import { Box, Collapsible, Text, Layer } from 'grommet'
 import { Trash } from 'grommet-icons'
 import { useMutation, useQuery } from 'react-apollo'
 import { CREATE_TOKEN, TOKENS_Q, DELETE_TOKEN, TOKEN_AUDITS } from './queries'
-import { Button, Scroller, Copyable, HoveredBackground, BORDER_COLOR } from 'forge-core'
+import { Button, Scroller, Copyable, HoveredBackground, BORDER_COLOR, ModalHeader } from 'forge-core'
 import moment from 'moment'
 import { deepUpdate, extendConnection, removeConnection, updateCache } from '../../utils/graphql'
 import { StandardScroller } from '../utils/SmoothScroller'
 import { HeaderItem } from '../repos/Docker'
 import { SectionPortal } from '../Explore'
+import { Placeholder } from '../accounts/Audits'
+import { Icon } from '../accounts/Group'
+import { Confirm } from '../utils/Confirm'
 
 const CELL_WIDTH='200px'
 
@@ -42,46 +45,57 @@ function TokenAudits({id}) {
 
   if (edges.length === 0) {
     return (
-      <Box fill='horizontal' align='center' justify='center' pad='medium'>
+      <Box fill align='center' justify='center' pad='medium'>
         <Text size='small' weight={500}>Token has yet to be used</Text>
       </Box>
     )
   }
 
   return (
-    <Box fill='horizontal' style={{maxHeight: '400px', minHeight: '200px'}}>
+    <Box fill>
       <AuditHeader />
-      <StandardScroller
-        listRef={listRef}
-        setListRef={setListRef}
-        hasNextPage={pageInfo.hasNextPage}
-        items={edges}
-        loading={loading}
-        mapper={({node}) => <TokenAudit key={node.id} audit={node} />} 
-        loadNextPage={() => pageInfo.hasNextPage && fetchMore({
-          variables: {cursor: pageInfo.endCursor},
-          updateQuery: (prev, {fetchMoreResult: {token}}) => deepUpdate(prev, 'token', (prevToken) => (
-            extendConnection(prevToken, token.audits, 'audits')
-          ))
-        })} />
+      <Box fill>
+        <StandardScroller
+          listRef={listRef}
+          setListRef={setListRef}
+          hasNextPage={pageInfo.hasNextPage}
+          items={edges}
+          loading={loading}
+          placeholder={Placeholder}
+          mapper={({node}) => <TokenAudit key={node.id} audit={node} />} 
+          loadNextPage={() => pageInfo.hasNextPage && fetchMore({
+            variables: {cursor: pageInfo.endCursor},
+            updateQuery: (prev, {fetchMoreResult: {token}}) => deepUpdate(prev, 'token', (prevToken) => (
+              extendConnection(prevToken, token.audits, 'audits')
+            ))
+          })} />
+      </Box>
     </Box>
   )
 }
 
-function Token({token: {token, insertedAt, id}, hasNext}) {
+function Token({token: {token, insertedAt, id}}) {
   const [open, setOpen] = useState(false)
-  const [mutation] = useMutation(DELETE_TOKEN, {
+  const [confirm, setConfirm] = useState(false)
+  const doConfirm = useCallback((e) => {
+    e.stopPropagation()
+    e.preventDefault()
+    setConfirm(true)
+  }, [setConfirm])
+
+  const [mutation, {loading}] = useMutation(DELETE_TOKEN, {
     variables: {id},
     update: (cache, { data: { deleteToken } }) => updateCache(cache, {
       query: TOKENS_Q,
       update: (prev) => removeConnection(prev, deleteToken, 'tokens')
-    })
+    }),
+    onCompleted: () => setConfirm(false)
   })
 
   return (
     <>
-    <Box onClick={() => setOpen(!open)} hoverIndicator='light-2' direction='row'
-      border={hasNext ? {side: 'bottom', color: BORDER_COLOR} : null}>
+    <Box onClick={() => setOpen(!open)} hoverIndicator='light-1' direction='row'
+      border={{side: 'bottom', color: BORDER_COLOR}}>
       <Box width='100%' pad={{left: 'small', vertical: 'xsmall'}} direction='row' gap='xsmall' align='center'>
         <Copyable
           noBorder
@@ -91,16 +105,25 @@ function Token({token: {token, insertedAt, id}, hasNext}) {
       </Box>
       <Box width={CELL_WIDTH} pad='xsmall' direction='row' gap='medium' align='center' justify='end'>
         <Text size='small'>{moment(insertedAt).fromNow()}</Text>
-        <HoveredBackground>
-          <Box accentable pad='xsmall' focusIndicator={false} onClick={mutation}>
-            <Trash size='12px' />
-          </Box>
-        </HoveredBackground>
+        <Icon icon={Trash} tooltip='Delete' hover='light-3' onClick={doConfirm} />
       </Box>
     </Box>
-    <Collapsible open={open} direction='vertical'>
-      <TokenAudits id={id} />
-    </Collapsible>
+    {confirm && (
+      <Confirm 
+        description='Double check to ensure no automation is still using it'
+        cancel={() => setConfirm(false)}
+        submit={mutation}
+        loading={loading}
+        label='Delete' />
+    )}
+    {open && (
+      <Layer onEsc={() => setOpen(false)} onClickOutside={() => setOpen(false)}>
+        <Box width='50vw' height='60vh'>
+          <ModalHeader text='Audit Logs' setOpen={setOpen} />
+          <TokenAudits id={id} />
+        </Box>
+      </Layer>
+    )}
     </>
   )
 }

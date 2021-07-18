@@ -260,7 +260,7 @@ function PlanForm({state, setState, setDisplay, loading}) {
 
 export function ServiceLevel({level: {minSeverity, maxSeverity, responseTime}, deleteLevel}) {
   return (
-    <Box direction='row' gap='xsmall'>
+    <Box direction='row' gap='xsmall' align='center'>
       <SeverityNub severity={minSeverity} />
       <Text size='small'>to</Text>
       <SeverityNub severity={maxSeverity} />

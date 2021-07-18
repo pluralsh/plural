@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { useHistory } from 'react-router-dom'
 import { Box, Text, Anchor, Table, TableRow, TableCell, TableBody, TableHeader } from 'grommet'
-import { Loading } from 'forge-core'
 import { useQuery } from 'react-apollo'
 import { SUBSCRIPTIONS_Q, SUBSCRIPTION_Q } from './queries'
 import { subscriptionCost } from './utils'

@@ -53,7 +53,7 @@ function Resource({audit}) {
   return <Link to={link}>{text}</Link>
 }
 
-function Placeholder() {
+export function Placeholder() {
   return (
     <Box flex={false} height='50px' pad='small' />
   )

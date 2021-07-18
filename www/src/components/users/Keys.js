@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Scroller, Button } from 'forge-core'
 import { DELETE_KEY, LIST_KEYS } from './queries'
 import { Box, Markdown, Text } from 'grommet'
@@ -6,6 +6,7 @@ import { License } from 'grommet-icons'
 import moment from 'moment'
 import { extendConnection } from '../../utils/graphql'
 import { useMutation, useQuery } from 'react-apollo'
+import { Confirm } from '../utils/Confirm'
 
 function NoKeys() {
   return (
@@ -17,12 +18,15 @@ function NoKeys() {
 
 
 function Key({publicKey}) {
-  const [mutation] = useMutation(DELETE_KEY, {
+  const [confirm, setConfirm] = useState(false)
+  const [mutation, {loading}] = useMutation(DELETE_KEY, {
     variables: {id: publicKey.id},
-    refetchQueries: [{query: LIST_KEYS}]
+    refetchQueries: [{query: LIST_KEYS}],
+    onCompleted: () => setConfirm(false)
   })
 
   return (
+    <>
     <Box border={{side: 'bottom', color: 'light-3'}} pad='small' direction='row' 
          align='center' gap='small'>
       <Box flex={false} width='50px' align='center' justify='center'>
@@ -34,9 +38,18 @@ function Key({publicKey}) {
         <Text size='small'>added on {moment(publicKey.insertedAt).format('lll')}</Text>
       </Box>
       <Box flex={false}>
-        <Button label='delete' background='red-light' onClick={mutation} /> 
+        <Button label='delete' background='red-light' onClick={() => setConfirm(true)} /> 
       </Box>
     </Box>
+    {confirm && (
+      <Confirm
+        description='Please ensure the key is no longer being used for repo encryption first'
+        label='Delete'
+        submit={mutation}
+        loading={loading}
+        cancel={() => setConfirm(false)} />
+    )}
+    </>
   )
 } 
 

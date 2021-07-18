@@ -1,16 +1,18 @@
 import React, { useContext } from 'react'
 import { Box, Text, ThemeContext } from 'grommet'
-import { Checkmark, Alert as AlertError } from 'grommet-icons'
+import { Checkmark, Alert as AlertError, StatusInfo } from 'grommet-icons'
 import { normalizeColor } from 'grommet/utils'
 
 export const AlertStatus = {
   ERROR: 'er',
-  SUCCESS: 'su'
+  SUCCESS: 'su',
+  INFO: 'in',
 }
 
 const StatusToColor = {
   er: 'error',
-  su: 'good'
+  su: 'good',
+  in: 'progress',
 }
 
 function AlertIcon({status, color}) {
@@ -19,6 +21,8 @@ function AlertIcon({status, color}) {
       return <Checkmark color={color} size='medium' />
     case AlertStatus.ERROR:
       return <AlertError color={color} size='medium'/>
+    case AlertStatus.INFO:
+      return <StatusInfo color={color} size='medium' />
     default:
       // nothing
   }

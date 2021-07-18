@@ -225,7 +225,8 @@ defmodule Core.Services.Repositories do
   Constructs a dummy jwt for user on docker login
   """
   @spec dkr_login_token(User.t) :: {:ok, binary} | {:error, term}
-  def dkr_login_token(user) do
+  def dkr_login_token(nil), do: {:error, :invalid_password}
+  def dkr_login_token(%User{} = user) do
     signer = Jwt.signer()
     with {:ok, claims} <- Jwt.generate_claims(%{"sub" => user.email, "access" => []}),
          {:ok, token, _} <- Jwt.encode_and_sign(claims, signer),

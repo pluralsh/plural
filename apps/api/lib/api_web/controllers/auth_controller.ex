@@ -26,7 +26,7 @@ defmodule ApiWeb.AuthController do
   end
 
   def token(conn, %{"account" => _, "service" => _}) do
-    with {:ok, token} <- Repositories.dkr_login_token(conn.assigns.token.user) do
+    with {:ok, token} <- Repositories.dkr_login_token(conn.assigns.user) do
       json(conn, %{token: token, access_token: token})
     end
   end

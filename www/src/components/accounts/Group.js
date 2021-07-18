@@ -1,30 +1,71 @@
-import React, { useState, useRef } from 'react'
-import { Box, Text, Collapsible, Layer, TextInput } from 'grommet'
+import React, { useState, useRef, useEffect } from 'react'
+import { Box, Text, Layer, TextInput } from 'grommet'
 import { useQuery, useMutation, useApolloClient } from 'react-apollo'
-import { GROUP_MEMBERS, CREATE_GROUP_MEMBERS, UPDATE_GROUP, DELETE_GROUP } from './queries'
+import { GROUP_MEMBERS, CREATE_GROUP_MEMBERS, UPDATE_GROUP, DELETE_GROUP, DELETE_GROUP_MEMBER } from './queries'
 import { Group, UserAdd, Edit, Trash } from 'grommet-icons'
-import { Scroller, ModalHeader, TooltipContent, Button } from 'forge-core'
-import { UserRow } from './User'
+import { ModalHeader, TooltipContent, Button, Scroller } from 'forge-core'
 import { fetchUsers } from './Typeaheads'
 import { addGroupMember, deleteGroup, SearchIcon } from './utils'
-import { extendConnection } from '../../utils/graphql'
+import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
 import { LoopingLogo } from '../utils/AnimatedLogo'
+import Avatar from '../users/Avatar'
+
+const GroupMemberRow = React.memo(({group, user, listRef}) => {
+  const [ref, setRef] = useState(null)
+  const [mutation] = useMutation(DELETE_GROUP_MEMBER, {
+    variables: {groupId: group.id, userId: user.id},
+    update: (cache, {data: {deleteGroupMember}}) => updateCache(cache, {
+      query: GROUP_MEMBERS,
+      variables: {id: group.id},
+      update: (prev) => removeConnection(prev, deleteGroupMember, 'groupMembers')
+    })
+  })
+  useEffect(() => {
+    if (ref && listRef) listRef.resetAfterIndex(0, true)
+  }, [ref, listRef])
+
+  return (
+    <Box flex={false} fill='horizontal' direction='row' gap='small'  border={{side: 'bottom', color: 'light-3'}} 
+          align='center' pad={{horizontal: 'small'}} height='75px'>
+      <Box fill='horizontal' direction='row' align='center' gap='small'>
+        <Avatar user={user} size='50px' />
+        <Box justify='center'>
+          <Text size='small' weight='bold' >{user.email}</Text>
+          <Text size='small'>{user.name}</Text>
+        </Box>
+      </Box>
+      <Box ref={ref} flex={false}>
+        <Icon 
+          icon={Trash} 
+          tooltip='delete' 
+          onClick={mutation} 
+          iconAttrs={{color: 'error'}} />
+      </Box>
+    </Box>
+  )
+})
 
 function GroupMembers({group}) {
-  const {data, fetchMore} = useQuery(GROUP_MEMBERS, {variables: {id: group.id}})
+  const {data, fetchMore} = useQuery(GROUP_MEMBERS, {
+    variables: {id: group.id},
+    fetchPolicy: 'cache-and-network'
+  })
+
   if (!data) return <LoopingLogo />
   const {groupMembers: {pageInfo, edges}} = data
 
   return (
-    <Scroller
-      id={`group-members-${group.id}`}
-      style={{height: '100%', overflow: 'auto'}}
-      edges={edges}
-      mapper={({node}, next) => <UserRow key={node.id} user={node.user} next={next.node} />}
-      onLoadMore={() => pageInfo.hasNextPage && fetchMore({
-        variables: {cursor: pageInfo.endCursor},
-        updateQuery: (prev, {fetchMoreResult: {groupMembers}}) => extendConnection(prev, groupMembers, 'groupMembers')
-      })} />
+    <Box fill>
+      <Scroller
+        id='group-members'
+        style={{height: '100%', overflow: 'auto'}}
+        edges={edges}
+        mapper={({node}) => <GroupMemberRow key={node.user.id} user={node.user} group={group} />}
+        onLoadMore={() => pageInfo.hasNextPage && fetchMore({
+          variables: {cursor: pageInfo.endCursor},
+          updateQuery: (prev, {fetchMoreResult: {groupMembers}}) => extendConnection(prev, groupMembers, 'groupMembers')
+        })} />
+    </Box>
   )
 }
 
@@ -136,7 +177,6 @@ function GroupEdit({group, setEdit}) {
 
 export default function GroupRow({group}) {
   const ref = useRef()
-  const [open, setOpen] = useState(false)
   const [modal, setModal] = useState(null)
   const [edit, setEdit] = useState(false)
   const [mutation] = useMutation(DELETE_GROUP, {
@@ -157,18 +197,25 @@ export default function GroupRow({group}) {
               text: `Add user to ${group.name}`,
               body: <MemberAdd group={group} setModal={setModal} />
             })} />
-          <Icon icon={Group} tooltip='members' onClick={() => setOpen(!open)} />
-          <Icon icon={Trash} tooltip='delete' onClick={mutation} iconAttrs={{color: 'error'}} />
+          <Icon 
+            icon={Group} 
+            tooltip='members' 
+            onClick={() => setModal({
+              text: `${group.name} members`,
+              body: <GroupMembers group={group} />,
+              width: '50vw',
+              height: '60vh'
+            })} />
+          <Icon 
+            icon={Trash}
+            tooltip='delete' 
+            onClick={mutation} 
+            iconAttrs={{color: 'error'}} />
         </Box>
       </Box>
-      <Collapsible open={open} direction='vertical'>
-        <Box pad='small'>
-          {open && <GroupMembers group={group} />}
-        </Box>
-      </Collapsible>
       {modal && (
-        <Layer modal position='center' onClickOutside={() => setOpen(false)} onEsc={() => setOpen(false)}>
-          <Box width='30vw'>
+        <Layer modal position='center' onClickOutside={() => setModal(null)} onEsc={() => setModal(null)}>
+          <Box width={modal.width || '30vw'} height={modal.height}>
             <ModalHeader text={modal.text} setOpen={setModal} />
             {modal.body}
           </Box>

@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import { Box, Collapsible, Text, Layer } from 'grommet'
-import { Trash } from 'grommet-icons'
+import { List, Trash } from 'grommet-icons'
 import { useMutation, useQuery } from 'react-apollo'
 import { CREATE_TOKEN, TOKENS_Q, DELETE_TOKEN, TOKEN_AUDITS } from './queries'
 import { Button, Scroller, Copyable, HoveredBackground, BORDER_COLOR, ModalHeader } from 'forge-core'
@@ -94,18 +94,25 @@ function Token({token: {token, insertedAt, id}}) {
 
   return (
     <>
-    <Box onClick={() => setOpen(!open)} hoverIndicator='light-1' direction='row'
-      border={{side: 'bottom', color: BORDER_COLOR}}>
-      <Box width='100%' pad={{left: 'small', vertical: 'xsmall'}} direction='row' gap='xsmall' align='center'>
+    <Box direction='row' border={{side: 'bottom', color: BORDER_COLOR}}>
+      <Box fill='horizontal' pad={{left: 'small', vertical: 'xsmall'}} direction='row' gap='xsmall' align='center'>
         <Copyable
           noBorder
           pillText='Copied access token'
           text={token}
           displayText={token.substring(0, 9) + "x".repeat(15)} />
       </Box>
-      <Box width={CELL_WIDTH} pad='xsmall' direction='row' gap='medium' align='center' justify='end'>
-        <Text size='small'>{moment(insertedAt).fromNow()}</Text>
-        <Icon icon={Trash} tooltip='Delete' hover='light-3' onClick={doConfirm} />
+      <Box flex={false} pad='xsmall' direction='row' gap='small' align='center' justify='end'>
+        <Box pad={{right: 'small'}}>
+          <Text size='small'>{moment(insertedAt).fromNow()}</Text>
+        </Box>
+        <Icon icon={List} tooltip='Audits' hover='light-3' onClick={() => setOpen(true)} />
+        <Icon 
+          icon={Trash} 
+          tooltip='Delete' 
+          hover='light-3' 
+          onClick={doConfirm}
+          iconAttrs={{color: 'error'}} />
       </Box>
     </Box>
     {confirm && (

@@ -89,6 +89,15 @@ export const CREATE_GROUP_MEMBERS = gql`
   ${GroupMemberFragment}
 `;
 
+export const DELETE_GROUP_MEMBER = gql`
+  mutation DeleteMember($groupId: ID!, $userId: ID!) {
+    deleteGroupMember(groupId: $groupId, userId: $userId) {
+      ...GroupMemberFragment
+    }
+  }
+  ${GroupMemberFragment}
+`
+
 export const EDIT_USER = gql`
   mutation UpdateUser($id: ID, $attributes: UserAttributes!) {
     updateUser(id: $id, attributes: $attributes) {

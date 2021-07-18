@@ -220,11 +220,10 @@ defmodule Core.Services.Repositories do
   defp dkr_sub(%{email: email}), do: email
   defp dkr_sub(_), do: ""
 
-
   @doc """
   Constructs a dummy jwt for user on docker login
   """
-  @spec dkr_login_token(User.t) :: {:ok, binary} | {:error, term}
+  @spec dkr_login_token(User.t | nil) :: {:ok, binary} | {:error, term}
   def dkr_login_token(nil), do: {:error, :invalid_password}
   def dkr_login_token(%User{} = user) do
     signer = Jwt.signer()

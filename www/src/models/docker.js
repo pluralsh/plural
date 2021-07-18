@@ -4,11 +4,23 @@ export const DockerRepoFragment = gql`
   fragment DockerRepoFragment on DockerRepository {
     id
     name
+    public
     repository { id name }
     insertedAt
     updatedAt
   }
 `;
+
+export const DockerRepository = gql`
+  fragment DockerRepository on DockerRepository {
+    id
+    name
+    public
+    repository { id name editable }
+    insertedAt
+    updatedAt
+  }
+`
 
 export const DockerImageFragment = gql`
   fragment DockerImageFragment on DockerImage {

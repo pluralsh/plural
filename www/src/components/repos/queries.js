@@ -2,7 +2,7 @@ import gql from 'graphql-tag'
 import { RepoFragment, InstallationFragment, IntegrationFragment, ArtifactFragment, CategoryFragment } from '../../models/repo'
 import { ChartFragment, VersionFragment, ChartInstallationFragment, VersionTagFragment } from '../../models/chart'
 import { TerraformFragment, TerraformInstallationFragment } from '../../models/terraform'
-import { DockerRepoFragment, DockerImageFragment, VulnerabilityFragment } from '../../models/docker'
+import { DockerRepoFragment, DockerImageFragment, VulnerabilityFragment, DockerRepository } from '../../models/docker'
 import { RecipeFragment, RecipeSectionFragment } from '../../models/recipe'
 import { PlanFragment, SubscriptionFragment } from '../../models/payments'
 import { PageInfo } from '../../models/misc'
@@ -147,14 +147,14 @@ export const DOCKER_IMG_Q = gql`
       edges { 
         node { 
           ...DockerImageFragment 
-          dockerRepository { ...DockerRepoFragment }
+          dockerRepository { ...DockerRepository }
         } 
       }
     }
   }
   ${PageInfo}
   ${DockerImageFragment}
-  ${DockerRepoFragment}
+  ${DockerRepository}
 `;
 
 export const CREATE_TF = gql`
@@ -280,7 +280,7 @@ export const DOCKER_Q = gql`
     dockerImage(id: $id) {
       ...DockerImageFragment
       dockerRepository {
-        ...DockerRepoFragment
+        ...DockerRepository
         metrics(tag: $tag, precision: $precision, offset: $offset) {
           ...MetricFragment
         }
@@ -289,7 +289,7 @@ export const DOCKER_Q = gql`
     }
   }
   ${DockerImageFragment}
-  ${DockerRepoFragment}
+  ${DockerRepository}
   ${VulnerabilityFragment}
   ${MetricFragment}
 `
@@ -452,4 +452,13 @@ export const CATEGORY = gql`
   }
   ${PageInfo}
   ${CategoryFragment}
+`
+
+export const UPDATE_DOCKER = gql`
+  mutation Update($id: ID!, $attributes: DockerRepositoryAttributes!) {
+    updateDockerRepository(id: $id, attributes: $attributes) {
+      ...DockerRepository
+    }
+  }
+  ${DockerRepository}
 `

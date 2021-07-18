@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { Tabs, TabHeader, TabHeaderItem, TabContent } from 'forge-core'
-import { useQuery } from 'react-apollo'
+import { useMutation, useQuery } from 'react-apollo'
 import { useHistory, useParams } from 'react-router'
-import { DOCKER_IMG_Q, DOCKER_Q } from './queries'
+import { DOCKER_IMG_Q, DOCKER_Q, UPDATE_DOCKER } from './queries'
 import { AttackVector, ColorMap, DEFAULT_DKR_ICON } from './constants'
 import { DetailContainer } from './Installation'
 import moment from 'moment'
-import { Anchor, Box, Collapsible, Text } from 'grommet'
-import { Link } from 'grommet-icons'
+import { Anchor, Box, Collapsible, Text, CheckBox } from 'grommet'
+import { Language, Link } from 'grommet-icons'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 import { DockerImages } from './DockerImages'
 import { Graph, RangePicker } from '../metrics/Graph'
@@ -15,14 +15,38 @@ import { PluralConfigurationContext } from '../login/CurrentUser'
 import { dockerPull } from './misc'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
+function RepositoryPublic({dockerRepo}) {
+  const pub = dockerRepo.public
+  const [mutation] = useMutation(UPDATE_DOCKER, {
+    variables: {id: dockerRepo.id}
+  })
+
+  if (!dockerRepo.repository.editable && dockerRepo.public) return <Language size='12px' />
+  if (!dockerRepo.repository.editable) return null
+
+  return (
+    <CheckBox 
+      toggle
+      label={pub ? 'public' : 'private'}
+      checked={pub}
+      onChange={({target: {checked}}) => mutation({
+        variables: {attributes: {public: checked}}
+      })}
+    />
+  )
+}
+
 function DockerHeader({image}) {
   return (
     <Box flex={false} direction='row' align='center' gap='medium'>
       <Box flex={false} width='50px' heigh='50px'>
         <img alt='' width='50px' height='50px' src={DEFAULT_DKR_ICON} />
       </Box>
-      <Box fill='horizontal'>
-        <Text size='medium'>{image.dockerRepository.name}:{image.tag}</Text>
+      <Box fill='horizontal' gap='xxsmall'>
+        <Box direction='row' gap='small' align='center'>
+          <Text size='medium'>{image.dockerRepository.name}:{image.tag}</Text>
+          <RepositoryPublic dockerRepo={image.dockerRepository} />
+        </Box>
         <Text size='small' color='dark-3'>{image.digest}</Text>
       </Box>
       <Box flex={false}>

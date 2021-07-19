@@ -1,5 +1,6 @@
 export const ResetTokenType = {
-  PASSWORD: 'PASSWORD'
+  PASSWORD: 'PASSWORD',
+  EMAIL: 'EMAIL'
 }
 
 export const LoginMethod = {

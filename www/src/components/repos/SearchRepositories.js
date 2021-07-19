@@ -28,12 +28,10 @@ const hoverable = styled.div`
 `
 
 function SearchRepositories() {
-  const theme = useContext(ThemeContext)
   const client = useApolloClient()
   const [value, setValue] = useState('')
   const [suggestions, setSuggestions] = useState([])
   let history = useHistory()
-  console.log(theme)
 
   return (
     <Box as={hoverable} width='350px' direction='row' align='center' background='sidebarHover'

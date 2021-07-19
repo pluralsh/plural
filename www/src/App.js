@@ -9,8 +9,7 @@ import Invite from './components/Invite'
 import { PasswordReset, ResetPassword } from './components/users/PasswordReset'
 import { Login, PasswordlessLogin, Signup } from './components/users/MagicLogin'
 import { OAuthConsent } from './components/oidc/OAuthConsent'
-
-import '@brainhubeu/react-carousel/lib/style.css'
+import { EmailConfirmed } from './components/users/EmailConfirmation'
 
 hljs.registerLanguage('terraform', hljsDefineTerraform)
 
@@ -20,6 +19,7 @@ export default function App() {
       <Switch>
         <Route path='/reset-password/:id' component={ResetPassword} />
         <Route exact path='/password-reset' component={PasswordReset} />
+        <Route path='/confirm-email/:id' component={EmailConfirmed} />
         <Route path='/invite/:inviteId' component={Invite} />
         <Route path='/passwordless-login/:token' component={PasswordlessLogin} />
         <Route exact path="/login" component={Login} />

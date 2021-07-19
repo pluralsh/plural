@@ -30,6 +30,7 @@ import { UpgradeQueues } from './upgrades/UpgradeQueues'
 import { UpgradeQueue } from './upgrades/UpgradeQueue'
 import { RepoDirectory } from './repos/RepoDirectory'
 import { IncidentDirectory } from './IncidentDirectory'
+import { VerifyEmailConfirmed } from './users/EmailConfirmation'
 
 export const TOOLBAR_SIZE = '55px'
 
@@ -52,6 +53,7 @@ export default function Plural() {
     <IncidentContext.Provider value={{}}>
     <WrapStripe>
       <BreadcrumbProvider>
+        <VerifyEmailConfirmed />
         <Grid fill rows={[TOOLBAR_SIZE, 'flex']} columns={['100vw']} areas={[
             {name: 'toolbarTop', start: [0, 0], end: [0, 0]},
             {name: 'viewport', start: [0, 1], end: [0, 1]}

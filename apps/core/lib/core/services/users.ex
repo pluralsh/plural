@@ -204,6 +204,7 @@ defmodule Core.Services.Users do
         do: {:ok, user}
     end)
     |> execute(extract: :user)
+    |> notify(:create)
   end
 
   @doc "self explanatory"
@@ -331,5 +332,8 @@ defmodule Core.Services.Users do
     do: handle_notify(PubSub.PasswordlessLoginCreated, l)
   def notify({:ok, %User{} = u}, :update),
     do: handle_notify(PubSub.UserUpdated, u)
+  def notify({:ok, %User{} = u}, :create),
+    do: handle_notify(PubSub.UserCreated, u)
+
   def notify(error, _), do: error
 end

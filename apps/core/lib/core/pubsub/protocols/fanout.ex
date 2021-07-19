@@ -30,6 +30,12 @@ defimpl Core.PubSub.Fanout, for: Core.PubSub.DockerNotification do
   end
 end
 
+defimpl Core.PubSub.Fanout, for: Core.PubSub.UserCreated do
+  def fanout(%{item: user}) do
+    Core.Services.Users.create_reset_token(%{type: :email, email: user.email})
+  end
+end
+
 defimpl Core.PubSub.Fanout, for: Core.PubSub.ZoomMeetingCreated do
   def fanout(%{item: %{incident_id: id, join_url: join}, actor: actor}) when is_binary(id) do
     Core.Services.Incidents.create_message(%{

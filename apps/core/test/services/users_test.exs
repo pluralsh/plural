@@ -18,6 +18,8 @@ defmodule Core.Services.UsersTest do
       %{account: account} = Core.Repo.preload(user, [:account])
       assert account.name == user.email
       assert account.root_user_id == user.id
+
+      assert_receive {:event, %PubSub.UserCreated{item: ^user}}
     end
   end
 

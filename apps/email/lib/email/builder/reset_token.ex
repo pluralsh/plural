@@ -13,6 +13,8 @@ defmodule Email.Builder.ResetToken do
   end
 
   defp render_view(%{type: :password}), do: :reset_password
+  defp render_view(%{type: :email}), do: :confirm_email
 
+  defp email_subject(%{type: :email}), do: "Confirm your email"
   defp email_subject(%{type: :password}), do: "Reset your password"
 end

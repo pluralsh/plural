@@ -2,7 +2,7 @@ defmodule Core.Schema.ResetToken do
   use Piazza.Ecto.Schema
   alias Core.Schema.{User}
 
-  defenum Type, password: 0
+  defenum Type, password: 0, email: 1
 
   schema "reset_tokens" do
     field :type, Type

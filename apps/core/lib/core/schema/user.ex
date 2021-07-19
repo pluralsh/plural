@@ -30,6 +30,9 @@ defmodule Core.Schema.User do
     field :customer_id,     :string
     field :phone,           :string
 
+    field :email_confirmed,  :boolean
+    field :email_confirm_by, :utc_datetime_usec
+
     embeds_one :address, Address, on_replace: :update
 
     belongs_to :account, Account

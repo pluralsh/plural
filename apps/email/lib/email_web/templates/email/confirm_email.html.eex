@@ -1,0 +1,3 @@
+<p>
+  Click <a target="_blank" href='<%= url("/confirm-email/#{@token.external_id}") %>'>here</a> to confirm your email
+</p>

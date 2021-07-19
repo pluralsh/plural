@@ -1,0 +1,1 @@
+Confirm your email here: <%= url("/confirm-email/#{@token.external_id}") %>

@@ -63,6 +63,8 @@ defmodule GraphQl.Schema.User do
     field :login_method,     :login_method
     field :default_queue_id, :id
     field :service_account,  :boolean
+    field :email_confirmed,  :boolean
+    field :email_confirm_by, :datetime
 
     field :publisher,            :publisher, resolve: dataloader(User)
     field :account,              :account, resolve: dataloader(Account)
@@ -314,6 +316,7 @@ defmodule GraphQl.Schema.User do
 
     field :create_reset_token, :boolean do
       arg :attributes, non_null(:reset_token_attributes)
+
       resolve safe_resolver(&User.create_reset_token/2)
     end
 

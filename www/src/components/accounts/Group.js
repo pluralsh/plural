@@ -3,15 +3,15 @@ import { Box, Text, Layer, TextInput } from 'grommet'
 import { useQuery, useMutation, useApolloClient } from 'react-apollo'
 import { GROUP_MEMBERS, CREATE_GROUP_MEMBERS, UPDATE_GROUP, DELETE_GROUP, DELETE_GROUP_MEMBER } from './queries'
 import { Group, UserAdd, Edit, Trash } from 'grommet-icons'
-import { ModalHeader, TooltipContent, Button, Scroller } from 'forge-core'
+import { ModalHeader, TooltipContent, Button } from 'forge-core'
 import { fetchUsers } from './Typeaheads'
 import { addGroupMember, deleteGroup, SearchIcon } from './utils'
 import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import Avatar from '../users/Avatar'
+import { FixedScroller } from '../utils/SmoothScroller'
 
-const GroupMemberRow = React.memo(({group, user, listRef}) => {
-  const [ref, setRef] = useState(null)
+const GroupMemberRow = React.memo(({group, user}) => {
   const [mutation] = useMutation(DELETE_GROUP_MEMBER, {
     variables: {groupId: group.id, userId: user.id},
     update: (cache, {data: {deleteGroupMember}}) => updateCache(cache, {
@@ -20,9 +20,6 @@ const GroupMemberRow = React.memo(({group, user, listRef}) => {
       update: (prev) => removeConnection(prev, deleteGroupMember, 'groupMembers')
     })
   })
-  useEffect(() => {
-    if (ref && listRef) listRef.resetAfterIndex(0, true)
-  }, [ref, listRef])
 
   return (
     <Box flex={false} fill='horizontal' direction='row' gap='small'  border={{side: 'bottom', color: 'light-3'}} 
@@ -34,7 +31,7 @@ const GroupMemberRow = React.memo(({group, user, listRef}) => {
           <Text size='small'>{user.name}</Text>
         </Box>
       </Box>
-      <Box ref={ref} flex={false}>
+      <Box flex={false}>
         <Icon 
           icon={Trash} 
           tooltip='delete' 
@@ -45,8 +42,20 @@ const GroupMemberRow = React.memo(({group, user, listRef}) => {
   )
 })
 
+function Placeholder() {
+  return (
+    <Box height='75px' direction='row' pad='small'>
+      <Box height='50px' width='50px' background='tone-light' />
+      <Box fill='horizontal' gap='xsmall'>
+        <Box width='200px' height='13px' background='tone-light' />
+        <Box width='400px' height='13px' background='tone-light' />
+      </Box>
+    </Box>
+  )
+}
+
 function GroupMembers({group}) {
-  const {data, fetchMore} = useQuery(GROUP_MEMBERS, {
+  const {data, loading, fetchMore} = useQuery(GROUP_MEMBERS, {
     variables: {id: group.id},
     fetchPolicy: 'cache-and-network'
   })
@@ -56,12 +65,14 @@ function GroupMembers({group}) {
 
   return (
     <Box fill>
-      <Scroller
-        id='group-members'
-        style={{height: '100%', overflow: 'auto'}}
-        edges={edges}
+      <FixedScroller
+        items={edges}
+        loading={loading}
+        itemSize={75}
+        placeholder={Placeholder}
+        hasNextPage={pageInfo.hasNextPage}
         mapper={({node}) => <GroupMemberRow key={node.user.id} user={node.user} group={group} />}
-        onLoadMore={() => pageInfo.hasNextPage && fetchMore({
+        loadNextPage={() => pageInfo.hasNextPage && fetchMore({
           variables: {cursor: pageInfo.endCursor},
           updateQuery: (prev, {fetchMoreResult: {groupMembers}}) => extendConnection(prev, groupMembers, 'groupMembers')
         })} />

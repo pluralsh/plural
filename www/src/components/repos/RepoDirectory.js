@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router'
-import { Loading } from 'forge-core'
 import { SectionContentContainer, SectionItemContainer } from '../Explore'
 import { Add, Configure, Deploy, Edit, Install, Package, Script, Plan as PlanIcon } from 'grommet-icons'
 import Collapsible from 'react-collapsible'

@@ -1,11 +1,9 @@
 import React, { useContext, useEffect } from 'react'
-import { Loading } from 'forge-core'
 import { useQuery } from 'react-apollo'
 import { QUEUES, UPGRADE_QUEUE_SUB } from './queries'
 import { useHistory } from 'react-router'
 import { Box, Text } from 'grommet'
 import { Provider } from '../repos/misc'
-
 import { Github, Upgrade } from 'grommet-icons'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 import { QueueHealth } from './QueueHealth'

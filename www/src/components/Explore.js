@@ -1,5 +1,4 @@
 import React, { useState, useContext, useEffect, useCallback, useMemo } from 'react'
-import { Scroller } from 'forge-core'
 import { useQuery } from 'react-apollo'
 import { CATEGORIES, CATEGORY, EXPLORE_REPOS } from './repos/queries'
 import { Box, Collapsible, Text } from 'grommet'

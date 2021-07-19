@@ -1,19 +1,18 @@
 import React, { useCallback, useState } from 'react'
-import { Box, Collapsible, Text, Layer } from 'grommet'
+import { Box, Text, Layer } from 'grommet'
 import { List, Trash } from 'grommet-icons'
 import { useMutation, useQuery } from 'react-apollo'
 import { CREATE_TOKEN, TOKENS_Q, DELETE_TOKEN, TOKEN_AUDITS } from './queries'
-import { Button, Scroller, Copyable, HoveredBackground, BORDER_COLOR, ModalHeader } from 'forge-core'
+import { Button, Scroller, Copyable, BORDER_COLOR, ModalHeader } from 'forge-core'
 import moment from 'moment'
 import { deepUpdate, extendConnection, removeConnection, updateCache } from '../../utils/graphql'
-import { StandardScroller } from '../utils/SmoothScroller'
+import { FixedScroller } from '../utils/SmoothScroller'
 import { HeaderItem } from '../repos/Docker'
 import { SectionPortal } from '../Explore'
 import { Placeholder } from '../accounts/Audits'
 import { Icon } from '../accounts/Group'
 import { Confirm } from '../utils/Confirm'
 
-const CELL_WIDTH='200px'
 
 function AuditHeader() {
   return (
@@ -27,7 +26,7 @@ function AuditHeader() {
 
 function TokenAudit({audit}) {
   return (
-    <Box flex={false} direction='row' pad='small' border={{side: 'bottom', color: 'light-5'}} align='center'>
+    <Box flex={false} direction='row' pad='small' border={{side: 'bottom', color: 'light-5'}} align='center' height='50px'>
       <HeaderItem text={audit.ip} width='33%' nobold />
       <HeaderItem text={moment(audit.timestamp).format('lll')} width='33%' nobold />
       <HeaderItem text={audit.count} width='33%' nobold />
@@ -36,7 +35,6 @@ function TokenAudit({audit}) {
 }
 
 function TokenAudits({id}) {
-  const [listRef, setListRef] = useState(null)
   const {data, loading, fetchMore} = useQuery(TOKEN_AUDITS, {variables: {id}, fetchPolicy: 'cache-and-network'})
 
   if (!data) return null
@@ -55,10 +53,9 @@ function TokenAudits({id}) {
     <Box fill>
       <AuditHeader />
       <Box fill>
-        <StandardScroller
-          listRef={listRef}
-          setListRef={setListRef}
+        <FixedScroller
           hasNextPage={pageInfo.hasNextPage}
+          itemSize={50}
           items={edges}
           loading={loading}
           placeholder={Placeholder}

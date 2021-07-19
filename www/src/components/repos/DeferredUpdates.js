@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { useQuery } from 'react-apollo'
-import { Loading } from 'forge-core'
 import { DEFERRED_UPDATES } from './queries'
 import { Box } from 'grommet'
 import { extendConnection } from '../../utils/graphql'

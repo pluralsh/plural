@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useQuery, useSubscription } from 'react-apollo'
-import { Loading } from 'forge-core'
 import { QUEUE, UPGRADE_QUEUE_SUB, UPGRADE_SUB } from './queries'
 import { appendConnection, extendConnection } from '../../utils/graphql'
 import { Box, Text } from 'grommet'

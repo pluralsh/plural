@@ -14,6 +14,7 @@ defmodule Core.Services.UsersTest do
       assert user.name == "some user"
       assert user.email == "something@example.com"
       assert user.password_hash
+      assert Timex.after?(user.email_confirm_by, Timex.now())
 
       %{account: account} = Core.Repo.preload(user, [:account])
       assert account.name == user.email
@@ -223,6 +224,18 @@ defmodule Core.Services.UsersTest do
       assert user.id == token.user.id
 
       {:ok, _} = Users.login_user(user.email, "a long password")
+    end
+
+    test "it will confirm an email for email tokens" do
+      user = insert(:user)
+      token = insert(:reset_token, type: :email, user: user)
+
+      {:ok, reset} = Users.realize_reset_token(token, %{})
+
+      assert reset.id == token.user.id
+      assert reset.email_confirmed
+
+      assert_receive {:event, %PubSub.EmailConfirmed{item: ^reset}}
     end
   end
 

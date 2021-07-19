@@ -195,7 +195,8 @@ defmodule Core.Services.Users do
   def create_user(attrs) do
     start_transaction()
     |> add_operation(:pre, fn _ ->
-      %User{}
+      confirm_by = Timex.now() |> Timex.shift(days: 7)
+      %User{email_confirm_by: confirm_by}
       |> User.changeset(attrs)
       |> Core.Repo.insert()
     end)
@@ -292,6 +293,13 @@ defmodule Core.Services.Users do
     |> Core.Repo.update()
   end
 
+  def realize_reset_token(%ResetToken{type: :email, user: %User{} = user}, _) do
+    user
+    |> Ecto.Changeset.change(%{email_confirmed: true})
+    |> Core.Repo.update()
+    |> notify(:confirmed)
+  end
+
   def realize_reset_token(id, args) when is_binary(id) do
     get_reset_token!(id)
     |> Core.Repo.preload([:user])
@@ -334,6 +342,8 @@ defmodule Core.Services.Users do
     do: handle_notify(PubSub.UserUpdated, u)
   def notify({:ok, %User{} = u}, :create),
     do: handle_notify(PubSub.UserCreated, u)
+  def notify({:ok, %User{} = u}, :confirmed),
+    do: handle_notify(PubSub.EmailConfirmed, u)
 
   def notify(error, _), do: error
 end

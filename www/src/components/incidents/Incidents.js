@@ -19,6 +19,7 @@ import { IncidentFilter, IncidentSort, IncidentSortNames, Order } from './types'
 import { AlternatingBox } from '../utils/AlternatingBox'
 import { SlaTimer } from './SlaTimer'
 import { LoopingLogo } from '../utils/AnimatedLogo'
+import { FixedScroller } from '../utils/SmoothScroller'
 
 export const IncidentViewContext = React.createContext({})
 
@@ -259,14 +260,27 @@ export function IncidentToolbar() {
   )
 }
 
+function Placeholder() {
+  return (
+    <Box height='75px' direction='row' pad='small'>
+      <Box height='50px' width='50px' background='tone-light' />
+      <Box fill='horizontal' gap='xsmall'>
+        <Box width='200px' height='13px' background='tone-light' />
+        <Box width='400px' height='13px' background='tone-light' />
+      </Box>
+    </Box>
+  )
+}
+
 export function Incidents() {
   const [open, setOpen] = useState(false)
   const {incidentId} = useParams()
   const [q, setQ] = useState(null)
   const [filters, setFilters] = useState([])
+  const [loader, setLoader] = useState(null)
   const [sort, setSort] = useState(IncidentSort.INSERTED_AT)
   const [order, setOrder] = useState(Order.DESC)
-  const {data, fetchMore} = useQuery(INCIDENTS_Q, {
+  const {data, loading, fetchMore} = useQuery(INCIDENTS_Q, {
     variables: {q, order, sort, filters}, 
     fetchPolicy: 'cache-and-network'
   })
@@ -275,6 +289,10 @@ export function Incidents() {
   useEffect(() => {
     setBreadcrumbs([{url: `/incidents`, text: 'incidents'}])
   }, [setBreadcrumbs])
+
+  useEffect(() => {
+    loader && loader.resetloadMoreItemsCache()
+  }, [loader, q, order, sort, filters])
 
   if (!data) return <LoopingLogo />
 
@@ -300,12 +318,15 @@ export function Incidents() {
       {open && <CreateIncident onCompleted={() => setOpen(false)} />}
       <IncidentToolbar />
       <Box fill>
-        <Scroller
-          id='incidents'
-          style={{width: '100%', height: '100%', overflow: 'auto'}}
-          edges={edges}
-          mapper={({node}, next) => <IncidentRow key={node.id} incident={node} next={next.node} selected={incidentId} />}
-          onLoadMore={() => pageInfo.hasNextPage && fetchMore({
+        <FixedScroller
+          setLoader={setLoader}
+          loading={loading}
+          hasNextPage={pageInfo.hasNextPage}
+          itemSize={75}
+          items={edges}
+          placeholder={Placeholder}
+          mapper={({node}) => <IncidentRow key={node.id} incident={node} selected={incidentId} />}
+          loadNextPage={() => pageInfo.hasNextPage && fetchMore({
             variables: {cursor: pageInfo.endCursor},
             updateQuery: (prev, {fetchMoreResult: {incidents}}) => extendConnection(prev, incidents, 'incidents')
           })}

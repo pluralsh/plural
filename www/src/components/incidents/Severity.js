@@ -14,7 +14,7 @@ export function SeverityNub({severity}) {
   const color = severityColor(severity)
   return (
     <Box flex={false} direction='row' align='center' gap='xsmall'>
-      <Box flex={false} round='full' height='12px' width='12px' background={color} />
+      <Box flex={false} round='full' height='10px' width='10px' background={color} />
       <Text size='16px'>SEV {severity}</Text> 
     </Box>
   )

@@ -33,7 +33,7 @@ import { LastMessage } from './LastMessage'
 import { PresenceProvider } from './Presence'
 import { SlaTimer } from './SlaTimer'
 
-export const canEdit = ({creator, owner}, {id}) => creator.id === id || owner.id === id
+export const canEdit = ({creator, owner}, {id}) => (creator || {}).id === id || (owner || {}).id === id
 
 function EditButton({editing, setEditing}) {
   return (

@@ -70,11 +70,22 @@ function Placeholder() {
   )
 }
 
-function Repositories({edges, pageInfo, loading, fetchMore, setTag}) {
+function Repositories({refreshBy, edges, pageInfo, loading, fetchMore, setTag}) {
   const [listRef, setListRef] = useState(null)
+  const [loader, setLoader] = useState(null)
+
+  useEffect(() => {
+    if (loader) {
+      console.log('here')
+      loader.resetloadMoreItemsCache()
+    }
+  }, [refreshBy, loader])
+
   return (
     <Box fill>
       <StandardScroller
+        loader={loader}
+        setLoader={setLoader}
         listRef={listRef}
         setListRef={setListRef}
         hasNextPage={pageInfo.hasNextPage}
@@ -268,6 +279,8 @@ export default function Explore() {
                 history.push(`/explore/public/${t}`)
   ), [tag])
 
+  const refreshBy = `${group}:${tag}`
+
   if (!data) return null
 
   const {repositories: {edges, pageInfo}} = data
@@ -286,17 +299,35 @@ export default function Explore() {
         <SectionContent name='public' header='Public Repositories'>
           <Box fill direction='row' gap='0px' border={{side: 'between', color: 'light-5', size: 'xsmall'}}>
             <TagSidebar setTag={doSetTag} tag={tag} />
-            <Repositories edges={edges} loading={loading} pageInfo={pageInfo} fetchMore={fetchMore} setTag={doSetTag} />
+            <Repositories 
+              refreshBy={refreshBy} 
+              edges={edges} 
+              loading={loading} 
+              pageInfo={pageInfo} 
+              fetchMore={fetchMore} 
+              setTag={doSetTag} />
           </Box>
         </SectionContent>
         <SectionContent name='installed' header='Installed Repositories'>
           {edges.length > 0 ? 
-            <Repositories edges={edges} loading={loading} pageInfo={pageInfo} fetchMore={fetchMore} setTag={doSetTag} /> :
+            <Repositories 
+              refreshBy={refreshBy} 
+              edges={edges} 
+              loading={loading} 
+              pageInfo={pageInfo} 
+              fetchMore={fetchMore} 
+              setTag={doSetTag} /> :
             <EmptyState />
           }
         </SectionContent>
         <SectionContent name='published' header='Published Repositories'>
-          <Repositories edges={edges} loading={loading} pageInfo={pageInfo} fetchMore={fetchMore} setTag={doSetTag} /> :
+          <Repositories
+            refreshBy={refreshBy}
+            edges={edges} 
+            loading={loading} 
+            pageInfo={pageInfo} 
+            fetchMore={fetchMore} 
+            setTag={doSetTag} /> :
         </SectionContent>
       </Box>
     </Box>

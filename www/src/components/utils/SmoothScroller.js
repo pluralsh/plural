@@ -90,7 +90,7 @@ const buildItemData = memoize((setSize, mapper, isItemLoaded, items, parentRef, 
 ))
 
 export default function SmoothScroller({
-  hasNextPage, placeholder, loading, items, loadNextPage, mapper, listRef, setListRef, handleScroll, refreshKey, ...props}) {
+  hasNextPage, placeholder, loading, items, loadNextPage, mapper, listRef, setListRef, handleScroll, refreshKey, setLoader, ...props}) {
   const sizeMap = useRef({});
   const setSize = useCallback((index, size) => {
     sizeMap.current = { ...sizeMap.current, [index]: size };
@@ -104,6 +104,7 @@ export default function SmoothScroller({
 
   return (
     <InfiniteLoader
+      ref={setLoader}
       isItemLoaded={isItemLoaded}
       itemCount={itemCount}
       loadMoreItems={loadMoreItems}
@@ -142,7 +143,7 @@ export default function SmoothScroller({
 }
 
 export function StandardScroller({
-  hasNextPage, placeholder, loading, items, loadNextPage, mapper, listRef, setListRef, handleScroll, refreshKey, ...props}) {
+  hasNextPage, placeholder, loading, items, loadNextPage, mapper, listRef, setListRef, handleScroll, refreshKey, setLoader, ...props}) {
   const sizeMap = useRef({});
   const setSize = useCallback((index, size) => {
     sizeMap.current = { ...sizeMap.current, [index]: size };
@@ -156,6 +157,7 @@ export function StandardScroller({
 
   return (
     <InfiniteLoader
+      ref={setLoader}
       isItemLoaded={isItemLoaded}
       itemCount={itemCount}
       loadMoreItems={loadMoreItems}
@@ -192,7 +194,7 @@ export function StandardScroller({
   )
 }
 
-export function FixedScroller({hasNextPage, loading, items, loadNextPage, mapper, itemSize, placeholder}) {
+export function FixedScroller({hasNextPage, loading, items, loadNextPage, mapper, itemSize, placeholder, setLoader}) {
   const count = items.length
   const itemCount = hasNextPage ? count + 7 : count;
   const loadMoreItems = loading ? () => {} : loadNextPage;
@@ -200,6 +202,7 @@ export function FixedScroller({hasNextPage, loading, items, loadNextPage, mapper
   
   return (
     <InfiniteLoader
+      ref={setLoader}
       isItemLoaded={isItemLoaded}
       itemCount={itemCount}
       loadMoreItems={loadMoreItems}

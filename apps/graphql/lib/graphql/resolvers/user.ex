@@ -218,6 +218,9 @@ defmodule GraphQl.Resolvers.User do
   def delete_public_key(%{id: id}, %{context: %{current_user: user}}),
     do: Users.delete_public_key(id, user)
 
+  def device_login(_, _),
+    do: Users.device_login()
+
   @colors ~w(#6b5b95 #feb236 #d64161 #ff7b25 #103A50 #CDCCC2 #FDC401 #8E5B3C #020001 #2F415B)
 
   def background_color(%{id: id}) do

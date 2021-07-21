@@ -368,4 +368,17 @@ defmodule GraphQl.UserMutationTest do
       refute refetch(key)
     end
   end
+
+  describe "deviceLogin" do
+    test "it will fetch a deviceToken and loginUrl" do
+      {:ok, %{data: %{"deviceLogin" => login}}} = run_query("""
+        mutation {
+          deviceLogin { deviceToken loginUrl }
+        }
+      """, %{})
+
+      assert login["deviceToken"]
+      assert login["loginUrl"]
+    end
+  end
 end

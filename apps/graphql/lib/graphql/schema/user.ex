@@ -202,6 +202,11 @@ defmodule GraphQl.Schema.User do
     field :token,        :string
   end
 
+  object :device_login do
+    field :login_url,    non_null(:string)
+    field :device_token, non_null(:string)
+  end
+
   connection node_type: :user
   connection node_type: :publisher
   connection node_type: :webhook
@@ -291,6 +296,10 @@ defmodule GraphQl.Schema.User do
       arg :device_token,    :string
 
       resolve safe_resolver(&User.login_user/2)
+    end
+
+    field :device_login, :device_login do
+      resolve &User.device_login/2
     end
 
     field :passwordless_login, :user do

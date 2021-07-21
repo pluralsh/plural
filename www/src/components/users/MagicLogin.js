@@ -153,10 +153,9 @@ export function Login() {
 
   useEffect(() => {
     const jwt = fetchToken()
-    if (!jwt) return
-    if (challenge) {
+    if (jwt && challenge) {
       handleOauthChallenge(client, challenge)
-    } else {
+    } else if (!deviceToken) {
       history.push('/')
     }
   }, [challenge])

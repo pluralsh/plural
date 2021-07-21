@@ -191,8 +191,8 @@ export const SIGNUP_MUTATION = gql`
 `;
 
 export const LOGIN_MUTATION = gql`
-  mutation Login($email: String!, $password: String!) {
-    login(email: $email, password: $password) { jwt }
+  mutation Login($email: String!, $password: String!, $deviceToken: String) {
+    login(email: $email, password: $password, deviceToken: $deviceToken) { jwt }
   }
 `;
 
@@ -203,7 +203,7 @@ export const PASSWORDLESS_LOGIN = gql`
 `
 
 export const POLL_LOGIN_TOKEN = gql`
-  mutation Poll($token: String!) {
-    loginToken(token: $token) { jwt }
+  mutation Poll($token: String!, $deviceToken: String) {
+    loginToken(token: $token, deviceToken: $deviceToken) { jwt }
   }
 `

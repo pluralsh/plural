@@ -232,7 +232,7 @@ defmodule GraphQl.Resolvers.User do
   end
   def with_jwt(error), do: error
 
-  defp activate_token({:ok, %User{} = user}, %{device_token: token}) do
+  defp activate_token({:ok, %User{} = user}, %{device_token: token}) when is_binary(token) do
     with {:ok, _} <- Users.activate_login_token(token, user),
       do: {:ok, user}
   end

@@ -85,7 +85,7 @@ function handleOauthChallenge(client, challenge) {
   })
 }
 
-function LoginPoller({challenge, token}) {
+function LoginPoller({challenge, token, deviceToken}) {
   let history = useHistory()
   const client = useApolloClient()
   const [success, setSuccess] = useState(false)
@@ -94,7 +94,7 @@ function LoginPoller({challenge, token}) {
     const interval = setInterval(() => {
       client.mutate({
         mutation: POLL_LOGIN_TOKEN,
-        variables: {token}
+        variables: {token, deviceToken}
       }).then(({data: {loginToken: {jwt}}}) => {
         setToken(jwt)
         setSuccess(true)
@@ -130,7 +130,7 @@ export function Login() {
   let history = useHistory()
   const client = useApolloClient()
   const location = useLocation()
-  const {login_challenge: challenge} = queryString.parse(location.search)
+  const {login_challenge: challenge, deviceToken} = queryString.parse(location.search)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [getLoginMethod, {data, loading: qLoading, error: qError}] = useLazyQuery(LOGIN_METHOD, {variables: {email}})
@@ -140,7 +140,7 @@ export function Login() {
   const passwordless = loginMethod === LoginMethod.PASSWORDLESS
 
   const [mutation, {loading: mLoading, error}] = useMutation(LOGIN_MUTATION, {
-    variables: { email, password },
+    variables: { email, password, deviceToken },
     onCompleted: ({login: {jwt}}) => {
       setToken(jwt)
       if (challenge) {
@@ -177,7 +177,10 @@ export function Login() {
         </Box>
         {passwordless && (
           <Box>
-            <LoginPoller token={data.loginMethod.token} challenge={challenge} />
+            <LoginPoller 
+              token={data.loginMethod.token} 
+              challenge={challenge}
+              deviceToken={deviceToken} />
           </Box>
         )}
         {!passwordless && (

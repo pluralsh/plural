@@ -55,7 +55,7 @@ build-plural:
   only:
   - master
   script:
-  - make build APP_NAME=plural
+  - make build APP_NAME=plural GIT_COMMIT=$CI_COMMIT_SHORT_SHA
   - make push APP_NAME=plural
 
 build-rtc:
@@ -64,7 +64,7 @@ build-rtc:
   only:
   - master
   script:
-  - make build APP_NAME=rtc
+  - make build APP_NAME=rtc GIT_COMMIT=$CI_COMMIT_SHORT_SHA
   - make push APP_NAME=rtc
 
 build-cron:
@@ -73,7 +73,7 @@ build-cron:
   only:
   - master  
   script:
-  - make build APP_NAME=cron
+  - make build APP_NAME=cron GIT_COMMIT=$CI_COMMIT_SHORT_SHA
   - make push APP_NAME=cron
 
 build-worker:
@@ -82,7 +82,7 @@ build-worker:
   only:
   - master
   script:
-  - make build APP_NAME=worker
+  - make build APP_NAME=worker GIT_COMMIT=$CI_COMMIT_SHORT_SHA
   - make push APP_NAME=worker
 
 build-www:

@@ -46,9 +46,10 @@ defmodule GraphQl.Schema.Misc do
   end
 
   object :plural_configuration do
-    field :stripe_connect_id, :string
+    field :stripe_connect_id,      :string
     field :stripe_publishable_key, :string
-    field :registry, :string
+    field :registry,               :string
+    field :git_commit,             :string
   end
 
   connection node_type: :grouped_tag

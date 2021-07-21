@@ -82,6 +82,7 @@ FROM gcr.io/pluralsh/erlang:22-alpine
 
 # The name of your application/release (required)
 ARG APP_NAME
+ARG GIT_COMMIT
 
 RUN apk update && \
     apk add --no-cache \
@@ -91,7 +92,8 @@ RUN apk update && \
 RUN curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.16.0
 
 ENV REPLACE_OS_VARS=true \
-    APP_NAME=${APP_NAME}
+    APP_NAME=${APP_NAME} \
+    GIT_COMMIT=${GIT_COMMIT}
 
 WORKDIR /opt/app
 

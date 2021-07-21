@@ -6,6 +6,7 @@ APP_VSN ?= `cat VERSION`
 BUILD ?= `git rev-parse --short HEAD`
 DKR_HOST ?= dkr.plural.sh
 dep ?= forge-core
+GIT_COMMIT ?= abe123
 
 help:
 	@perl -nle'print $& if m{^[a-zA-Z_-]+:.*?## .*$$}' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -17,7 +18,7 @@ ifeq ($(APP_NAME), www)
 							-t gcr.io/$(GCP_PROJECT)/plural-www:`cat ../VERSION` \
 							-t $(DKR_HOST)/plural/plural-www:`cat ../VERSION` .
 else
-	docker build --build-arg APP_NAME=$(APP_NAME) \
+	docker build --build-arg APP_NAME=$(APP_NAME) --build-arg GIT_COMMIT=$(GIT_COMMIT) \
 		--build-arg APP_VSN=$(APP_VSN) \
 		-t $(APP_NAME):$(APP_VSN) \
 		-t $(APP_NAME):latest \

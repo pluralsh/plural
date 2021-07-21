@@ -24,10 +24,10 @@ function ToolbarIcon() {
     }
 
     setAnimated(true)
-    setTimeout(() => setAnimated(false), 2000)
+    setTimeout(() => setAnimated(false), 1500)
   }, [location])
 
-  if (animated && !animated) return <LoopingLogo scale='0.5' />
+  if (animated) return <LoopingLogo scale='0.2' dark />
 
   return <Image src={PLRL_ICON} height='30px' />
 }

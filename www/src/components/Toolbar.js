@@ -8,6 +8,7 @@ import { SIDEBAR_WIDTH } from './Sidebar'
 import { Breadcrumbs } from './Breadcrumbs'
 import { Notifications } from './users/Notifications'
 import { LoopingLogo } from './utils/AnimatedLogo'
+import TinyCrossfade from "react-tiny-crossfade";
 import './toolbar.css'
 
 const PLRL_ICON = `${process.env.PUBLIC_URL}/plural-white.png`
@@ -24,12 +25,19 @@ function ToolbarIcon() {
     }
 
     setAnimated(true)
-    setTimeout(() => setAnimated(false), 1500)
+    const timeout = setTimeout(() => setAnimated(false), 1500)
+    return () => clearTimeout(timeout)
   }, [location])
 
-  if (animated) return <LoopingLogo scale='0.2' dark />
-
-  return <Image src={PLRL_ICON} height='30px' />
+  return (
+    <TinyCrossfade className='component-wrapper'>
+      {animated ? 
+        <LoopingLogo scale='0.25' dark /> :
+        (<Box fill align='center' justify='center'>
+          <Image src={PLRL_ICON} height='35px' />
+        </Box>)}
+    </TinyCrossfade>
+  )
 }
 
 export default function Toolbar() {

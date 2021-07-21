@@ -1,7 +1,22 @@
-.plrl-main-icon svg path {
-  fill: #fff !important;
+.component-wrapper {
+  /* transition: height 0.5s; */
+  overflow: hidden;
 }
 
-.plrl-main-icon svg circle {
-  fill: #fff !important;
+.before-enter {
+  opacity: 0;
+}
+
+.entering {
+  opacity: 1;
+  transition: opacity 0.5s;
+}
+
+.before-leave {
+  opacity: 1;
+}
+
+.leaving {
+  opacity: 0;
+  transition: opacity 0.5s;
 }

@@ -37,6 +37,9 @@ config :email,
   host: "example.com",
   consumers: []
 
+config :core,
+  host: "https://app.plural.sh"
+
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]

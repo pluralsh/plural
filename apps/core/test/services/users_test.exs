@@ -268,4 +268,28 @@ defmodule Core.Services.UsersTest do
       {:error, _} = Users.delete_public_key(key.id, user)
     end
   end
+
+  describe "#device_login/0" do
+    test "it will create a login token and print a url" do
+      {:ok, login} = Users.device_login()
+
+       token = Users.get_login_token(login.device_token)
+       assert token
+       refute token.active
+
+       assert is_binary(login.login_url)
+    end
+  end
+
+  describe "#activate_login_token/2" do
+    test "it will set the login token to active" do
+      token = insert(:login_token)
+      user  = insert(:user)
+
+      {:ok, active} = Users.activate_login_token(token.token, user)
+
+      assert active.active
+      assert active.user_id == user.id
+    end
+  end
 end

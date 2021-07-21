@@ -40,6 +40,31 @@ defmodule GraphQl.UserMutationTest do
         }
       """, %{"email" => "mguarino46@gmail.com", "password" => "incorrect password"})
     end
+
+    test "it can activate login tokens" do
+      {:ok, user} = Users.create_user(%{
+        name: "Michael Guarino",
+        email: "mguarino46@gmail.com",
+        password: "super strong password"
+      })
+      token = insert(:login_token)
+
+      {:ok, %{data: %{"login" => found}}} = run_query("""
+        mutation Login($email: String!, $password: String!, $deviceToken: String) {
+          login(email: $email, password: $password, deviceToken: $deviceToken) {
+            id
+            jwt
+          }
+        }
+      """, %{
+        "email" => "mguarino46@gmail.com",
+        "password" => "super strong password",
+        "deviceToken" => token.token
+      })
+
+      assert found["id"] == user.id
+      assert refetch(token).active
+    end
   end
 
   describe "passwordlessLogin" do
@@ -70,6 +95,22 @@ defmodule GraphQl.UserMutationTest do
 
       assert user["id"] == token.user.id
       assert user["jwt"]
+    end
+
+    test "it can activate ancillary login tokens" do
+      token = insert(:login_token, active: true)
+      device = insert(:login_token)
+
+      {:ok, %{data: %{"loginToken" => user}}} = run_query("""
+        mutation Poll($token: String!, $deviceToken: String) {
+          loginToken(token: $token, deviceToken: $deviceToken) { id jwt }
+        }
+      """, %{"token" => token.token, "deviceToken" => device.token})
+
+      assert user["id"] == token.user.id
+      assert user["jwt"]
+
+      assert refetch(device).active
     end
   end
 

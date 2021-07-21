@@ -22,7 +22,7 @@ defmodule Core.Schema.LoginToken do
     model
     |> cast(attrs, @valid)
     |> put_new_change(:token, &gen_token/0)
-    |> validate_required([:token, :user_id])
+    |> validate_required([:token])
     |> foreign_key_constraint(:user_id)
     |> unique_constraint(:token)
   end

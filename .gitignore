@@ -33,3 +33,6 @@ erl_crash.dump
 /cmd/forge
 
 log/
+
+.DS_STORE
+/**/.DS_STORE

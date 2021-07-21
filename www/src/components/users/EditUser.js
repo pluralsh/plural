@@ -1,11 +1,11 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext, useState, useEffect, useCallback } from 'react'
 import { Box, Text } from 'grommet'
 import { useFilePicker } from 'react-sage'
 import { Button, InputCollection, ResponsiveInput, Select } from 'forge-core'
 import { useMutation } from 'react-apollo'
 import { UPDATE_USER } from './queries'
 import Avatar from './Avatar'
-import { StatusCritical, Checkmark, User, Lock, Install, Robot, License } from 'grommet-icons'
+import { StatusCritical, Checkmark, User, Lock, Install, Robot, License, Logout } from 'grommet-icons'
 import Installations from '../repos/Installations'
 import { CurrentUserContext } from '../login/CurrentUser'
 import { Tokens } from './Tokens'
@@ -15,6 +15,7 @@ import { SIDEBAR_WIDTH } from '../constants'
 import { Keys } from './Keys'
 import { SectionContentContainer, SectionPortal } from '../Explore'
 import { LoginMethod } from './types'
+import { wipeToken } from '../../helpers/authentication'
 
 export const EditContext = React.createContext({})
 
@@ -35,13 +36,11 @@ function EditAvatar({me}) {
   )
 }
 
-export function EditSelect({name, edit, icon, base}) {
-  const {editing} = useParams()
-  let hist = useHistory()
+function SelectorContent({name, icon, onClick, background}) {
   return (
-    <Box pad='small' round='xsmall' background={editing === edit ? 'sidebar' : null} focusIndicator={false} 
-         fill='horizontal' align='center' gap='small' direction='row' hoverIndicator='sidebar'
-         onClick={edit === editing ? null : () => hist.push(`${base || '/me/edit/'}${edit}`)}>
+    <Box pad='small' round='xsmall' background={background} focusIndicator={false} 
+         fill='horizontal' align='center' gap='small' direction='row' 
+         hoverIndicator='sidebar' onClick={onClick}>
       <Box flex={false}>
         {icon}
       </Box>
@@ -49,6 +48,19 @@ export function EditSelect({name, edit, icon, base}) {
         {name}
       </Box>
     </Box>
+  )
+}
+
+export function EditSelect({name, edit, icon, base}) {
+  const {editing} = useParams()
+  let hist = useHistory()
+
+  return (
+    <SelectorContent
+      name={name}
+      icon={icon}
+      onClick={edit === editing ? null : () => hist.push(`${base || '/me/edit/'}${edit}`)}
+      background={editing === edit ? 'sidebar' : null} />
   )
 }
 
@@ -95,6 +107,11 @@ export default function EditUser() {
     setBreadcrumbs([{url: `/me/edit`, text: 'me'}, {url: `/me/edit/${editing}`, text: editing}])
   }, [setBreadcrumbs, editing])
 
+  const logout = useCallback(() => {
+    wipeToken()
+    window.location = '/'
+  }, [])
+
   return (
     <Box fill>
       <Box fill direction='row'>
@@ -111,6 +128,10 @@ export default function EditUser() {
           <EditSelect edit='installations' name='Installations' icon={<Install size='14px' />} />
           <EditSelect edit='tokens' name='Access Tokens' icon={<Robot size='14px' />} />
           <EditSelect edit='keys' name='Public Keys' icon={<License size='14px' />} />
+          <SelectorContent 
+            name='Logout' 
+            icon={<Logout size='14px' />}
+            onClick={logout} />
         </Box>
         <Box fill>
           <EditContent edit='user' name='User Attributes'>

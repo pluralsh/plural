@@ -286,8 +286,9 @@ defmodule GraphQl.Schema.User do
   object :user_mutations do
     field :login, :user do
       middleware GraphQl.Middleware.AllowJwt
-      arg :email, non_null(:string)
+      arg :email,    non_null(:string)
       arg :password, non_null(:string)
+      arg :device_token,    :string
 
       resolve safe_resolver(&User.login_user/2)
     end
@@ -302,6 +303,7 @@ defmodule GraphQl.Schema.User do
     field :login_token, :user do
       middleware GraphQl.Middleware.AllowJwt
       arg :token, non_null(:string)
+      arg :device_token, :string
 
       resolve &User.poll_login_token/2
     end

@@ -5,6 +5,8 @@ defmodule Core do
 
   def broker(), do: conf(:broker)
 
+  def url(path), do: "#{conf(:host)}#{path}"
+
   def pause(val, seconds) do
     :timer.sleep(:timer.seconds(seconds))
     val

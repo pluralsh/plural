@@ -9,7 +9,8 @@ config :rtc, RtcWeb.Endpoint,
   url: [host: get_env("HOST"), port: 80],
   check_origin: ["//#{get_env("HOST")}", "//plural-rtc"]
 
-config :email, host: get_env("HOST")
+config :email, host: "https://#{get_env("HOST")}"
+config :core, host: "https://#{get_env("HOST")}"
 
 config :arc,
   storage: Arc.Storage.GCS,

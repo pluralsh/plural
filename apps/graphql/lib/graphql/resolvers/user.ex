@@ -147,9 +147,10 @@ defmodule GraphQl.Resolvers.User do
 
   def login_method(%{email: email}, _), do: Users.login_method(email)
 
-  def login_user(%{email: email, password: pwd}, _) do
+  def login_user(%{email: email, password: pwd} = args, _) do
     Users.login_user(email, pwd)
     |> with_jwt()
+    |> activate_token(args)
   end
 
   def passwordless_login(%{token: token}, _) do
@@ -157,9 +158,10 @@ defmodule GraphQl.Resolvers.User do
     |> with_jwt()
   end
 
-  def poll_login_token(%{token: token}, _) do
+  def poll_login_token(%{token: token} = args, _) do
     Users.poll_login_token(token)
     |> with_jwt()
+    |> activate_token(args)
   end
 
   def signup_user(%{invite_id: id, attributes: attrs}, _) when is_binary(id) do
@@ -229,4 +231,10 @@ defmodule GraphQl.Resolvers.User do
         do: {:ok, %{user | jwt: token}}
   end
   def with_jwt(error), do: error
+
+  defp activate_token({:ok, %User{} = user}, %{device_token: token}) do
+    with {:ok, _} <- Users.activate_login_token(token, user),
+      do: {:ok, user}
+  end
+  defp activate_token(pass, _), do: pass
 end

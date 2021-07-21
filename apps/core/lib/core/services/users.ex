@@ -12,7 +12,8 @@ defmodule Core.Services.Users do
     ResetToken,
     PublicKey,
     PasswordlessLogin,
-    LoginToken
+    LoginToken,
+    DeviceLogin
   }
 
   @spec get_user(binary) :: User.t | nil
@@ -323,6 +324,35 @@ defmodule Core.Services.Users do
       {"x-watchman-signature", "sha1=#{signature}"}
     ]
     Mojito.post(sanitize(url), headers, payload, pool: false)
+  end
+
+  @doc """
+  Initiates a device login by creating a login token and formatting a login url for the device client
+  """
+  @spec device_login() :: {:ok, %DeviceLogin{}} | {:error, term}
+  def device_login() do
+    %LoginToken{}
+    |> LoginToken.changeset()
+    |> Core.Repo.insert()
+    |> when_ok(fn %{token: token} ->
+      ok(%DeviceLogin{
+        device_token: token,
+        login_url: Core.url("/login?deviceToken=#{token}")
+      })
+    end)
+  end
+
+  @doc """
+  Takes a given login token, marks it as active, and sets its user to the current user
+  """
+  @spec activate_login_token(binary, User.t) :: {:ok, %LoginToken{}} | {:error, term}
+  def activate_login_token(token, %User{id: user_id}) do
+    with %LoginToken{} = token <- get_login_token(token) do
+      LoginToken.changeset(token, %{user_id: user_id, active: true})
+      |> Core.Repo.update()
+    else
+      _ -> {:error, :not_found}
+    end
   end
 
   defp sanitize("https://" <> _ = url), do: url

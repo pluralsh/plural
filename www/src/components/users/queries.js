@@ -18,6 +18,7 @@ export const ME_Q = gql`
       stripeConnectId
       stripePublishableKey
       registry
+      gitCommit
     }
   }
   ${UserFragment}

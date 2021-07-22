@@ -155,7 +155,7 @@ export function Login() {
     const jwt = fetchToken()
     if (jwt && challenge) {
       handleOauthChallenge(client, challenge)
-    } else if (!deviceToken) {
+    } else if (!deviceToken && jwt) {
       history.push('/')
     }
   }, [challenge])

@@ -12,10 +12,17 @@ export function AutoRefresh() {
   const [open, setOpen] = useState(true)
   const config = useContext(PluralConfigurationContext)
   const reload = useCallback(() => {
-    setCommit(config.gitCommit)
-    serviceWorker.unregister().then(() => {
-      window.location.reload()
-    })
+    console.log('reloading')
+    if (process.env.NODE_ENV === 'production') {
+      const promise = serviceWorker.unregister() || Promise.resolve('done')
+      promise.then(() => {
+        setCommit(config.gitCommit)
+        window.location.reload()
+      })
+    } else {
+      setCommit(config.gitCommit)
+      setOpen(false)
+    }
   })
 
   console.log(config.gitCommit)

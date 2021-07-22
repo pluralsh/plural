@@ -1276,6 +1276,7 @@
 .plrl-logomark-anim.anim01 {
   /* hover effects */
   /* looping version */
+  opacity: 1.0;
 }
 .plrl-logomark-anim.anim01 .plrl-logomark-outer-wrapper {
   position: relative;
@@ -1288,11 +1289,11 @@
   width: 100px;
   height: 100px;
   left: -50px;
-  opacity: 0.9;
+  /* opacity: 0.9;
   -webkit-transition: opacity 200ms cubic-bezier(0.4, 0.37, 0.19, 0.99);
   -moz-transition: opacity 200ms cubic-bezier(0.4, 0.37, 0.19, 0.99);
   -o-transition: opacity 200ms cubic-bezier(0.4, 0.37, 0.19, 0.99);
-  transition: opacity 200ms cubic-bezier(0.4, 0.37, 0.19, 0.99);
+  transition: opacity 200ms cubic-bezier(0.4, 0.37, 0.19, 0.99); */
 }
 .plrl-logomark-anim.anim01.upres4x .plrl-logomark-outer-wrapper {
   min-height: 400px;

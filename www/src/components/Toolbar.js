@@ -29,15 +29,7 @@ function ToolbarIcon() {
     return () => clearTimeout(timeout)
   }, [location])
 
-  return (
-    <TinyCrossfade className='component-wrapper'>
-      {animated ? 
-        <LoopingLogo scale='0.25' dark /> :
-        (<Box fill align='center' justify='center'>
-          <Image src={PLRL_ICON} height='35px' />
-        </Box>)}
-    </TinyCrossfade>
-  )
+  return <LoopingLogo scale='0.25' dark still={!animated} />
 }
 
 export default function Toolbar() {

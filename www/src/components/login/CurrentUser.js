@@ -31,7 +31,7 @@ export default function CurrentUser({children}) {
 }
 
 export function PluralProvider({children}) {
-  const {loading, error, data} = useQuery(ME_Q)
+  const {loading, error, data} = useQuery(ME_Q, {pollInterval: 60000})
   useNotificationSubscription()
 
   if (loading) return (<Box height='100vh'><LoopingLogo /></Box>)

@@ -9,10 +9,12 @@ import { Provider } from './misc'
 import { Container } from './Integrations'
 import { chunk } from '../../utils/array'
 import { extendConnection, updateCache, removeConnection } from '../../utils/graphql'
+import { Confirm } from '../utils/Confirm'
 
 const PROVIDER_WIDTH = 40
 
 function DeleteRecipe({recipe: {id}, repositoryId}) {
+  const [confirm, setConfirm] = useState(false)
   const [mutation] = useMutation(DELETE_RECIPE, {
     variables: {id},
     update: (cache, {data: {deleteRecipe}}) => updateCache(cache, {
@@ -23,6 +25,7 @@ function DeleteRecipe({recipe: {id}, repositoryId}) {
   })
 
   return (
+    <>
     <HoveredBackground>
       <Box
         accentable
@@ -30,10 +33,18 @@ function DeleteRecipe({recipe: {id}, repositoryId}) {
         background='white'
         pad='xsmall'
         round='xsmall'
-        onClick={mutation}>
+        onClick={() => setConfirm(true)}>
         <Trash size='15px' />
       </Box>
     </HoveredBackground>
+    {confirm && (
+      <Confirm
+        label='Delete'
+        description='This will delete the bundle permanently'
+        submit={mutation}
+        cancel={() => setConfirm(false)} />
+    )}
+    </>
   )
 }
 

@@ -168,20 +168,22 @@ export default function EditUser() {
           </EditContent>
           <EditContent edit='pwd' name='Password'>
             <Box pad='small'>
-              <InputCollection>
-                <ResponsiveInput
-                  value={password}
-                  label='password'
-                  placeholder='a long password'
-                  type='password'
-                  onChange={({target: {value}}) => setPassword(value)} />
-                <ResponsiveInput
-                  value={confirm}
-                  label='confirm'
-                  placeholder='confirm your password'
-                  type='password'
-                  onChange={({target: {value}}) => setConfirm(value)} />
-              </InputCollection>
+              <form autocomplete="off" onSubmit={disabled ? null : mutation}>
+                <InputCollection>
+                  <ResponsiveInput
+                    value={password}
+                    label='password'
+                    placeholder='a long password'
+                    type='password'
+                    onChange={({target: {value}}) => setPassword(value)} />
+                  <ResponsiveInput
+                    value={confirm}
+                    label='confirm'
+                    placeholder='confirm your password'
+                    type='password'
+                    onChange={({target: {value}}) => setConfirm(value)} />
+                </InputCollection>
+              </form>
               <SectionPortal>
                 <Box flex={false} gap='small' direction='row' align='center'>
                   {disabled ?

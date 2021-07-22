@@ -27,7 +27,7 @@ const hoverable = styled.div`
   }
 `
 
-function SearchRepositories() {
+export default function SearchRepositories() {
   const client = useApolloClient()
   const [value, setValue] = useState('')
   const [suggestions, setSuggestions] = useState([])
@@ -41,7 +41,7 @@ function SearchRepositories() {
         plain='full'
         type="search"
         value={value}
-        name='search-repo'
+        name='search'
         suggestions={suggestions}
         placeholder='search for a repo'
         onSelect={({suggestion}) => {
@@ -58,5 +58,3 @@ function SearchRepositories() {
     </Box>
   )
 }
-
-export default SearchRepositories

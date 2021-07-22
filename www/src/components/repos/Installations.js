@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Box, Text } from 'grommet'
 import { Trash} from 'grommet-icons'
 import { useHistory } from 'react-router-dom'
@@ -8,6 +8,7 @@ import { INSTALLATIONS_Q, DELETE_INSTALLATION } from './queries'
 import { Repository, RepositoryInner } from './Repositories'
 import { Container } from './Integrations'
 import { chunk } from '../../utils/array'
+import { Confirm } from '../utils/Confirm'
 
 function NoInstallations() {
   return (
@@ -21,6 +22,7 @@ function NoInstallations() {
 }
 
 function DeleteInstallation({installation}) {
+  const [confirm, setConfirm] = useState(false)
   const [mutation] = useMutation(DELETE_INSTALLATION, {
     variables: {id: installation.id},
     update: (cache, {data: {deleteInstallation}}) => {
@@ -35,11 +37,18 @@ function DeleteInstallation({installation}) {
   })
 
   return (
+    <>
     <HoveredBackground>
-      <Box accentable width='20px' margin={{top: 'xsmall'}}  onClick={mutation}>
+      <Box accentable width='20px' margin={{top: 'xsmall'}}  onClick={() => setConfirm(true)}>
         <Trash size='15px' />
       </Box>
     </HoveredBackground>
+    {confirm && <Confirm 
+      label='Delete'
+      description="this will delete the installation for the repo and all installed packages"
+      submit={mutation}
+      cancel={() => setConfirm(false)} />}
+    </>
   )
 }
 

@@ -43,18 +43,13 @@ function UrlsInput({uriFormat, urls, setUrls}) {
             onChange={({target: {value}}) => setValue(value)} />
           <Button label='Add' onClick={addUrl} />
         </Box>
-        <Box direction='row' gap='small' align='center'>
-          <Box flex={false}>
-            <Text size='small' weight={500}>Redirect URIs</Text>
-          </Box>
-          <Box flex={false} fill='horizontal' direction='row' gap='xxsmall' align='center' wrap>
-            {urls.map((url) => (
-              <UrlTab 
-                key={url} 
-                url={url} 
-                onClick={() => setUrls(urls.filter((u) => u !== url))} />
-            ))}
-          </Box>
+        <Box flex={false} fill='horizontal' direction='row' gap='xxsmall' align='center' wrap>
+          {urls.map((url) => (
+            <UrlTab 
+              key={url} 
+              url={url} 
+              onClick={() => setUrls(urls.filter((u) => u !== url))} />
+          ))}
         </Box>
       </Box>
     </Keyboard>
@@ -65,12 +60,17 @@ export function ProviderForm({attributes, setAttributes, bindings, setBindings, 
   const settings = repository.oauthSettings || {}
   return (
     <Box fill gap='medium'>
-      <UrlsInput 
-        uriFormat={settings.uriFormat}
-        urls={attributes.redirectUris} 
-        setUrls={(redirectUris) => setAttributes({...attributes, redirectUris})} />
+      <Box gap='xsmall'>
+        <Text size='small' weight='bold'>1. Provide redirect urls</Text>
+        <UrlsInput 
+          uriFormat={settings.uriFormat}
+          urls={attributes.redirectUris} 
+          setUrls={(redirectUris) => setAttributes({...attributes, redirectUris})} />
+      </Box>
       <Box flex={false} gap='xsmall'>
+        <Text size='small' weight='bold'>2. Attach users and groups</Text>
         <BindingInput
+          type='user'
           label='user bindings'
           placeholder='search for users to add'
           bindings={bindings.filter(({user}) => !!user).map(({user: {email}}) => email)}
@@ -78,6 +78,7 @@ export function ProviderForm({attributes, setAttributes, bindings, setBindings, 
           add={(user) => setBindings([...bindings, {user}])}
           remove={(email) => setBindings(bindings.filter(({user}) => !user || user.email !== email))} />
         <BindingInput
+          type='group'
           label='group bindings'
           placeholder='search for groups to add'
           bindings={bindings.filter(({group}) => !!group).map(({group: {name}}) => name)}
@@ -154,14 +155,16 @@ export function UpdateProvider({installation}) {
   return (
     <Box fill pad='medium' gap='small'>
       {error && <GqlError error={error} header='Could not update provider' />}
-      <Attributes>
-        <Attribute width='100px' name='client id'>
-          <Text size='small'>{provider.clientId}</Text>
-        </Attribute>
-        <Attribute width='100px' name='client secret'>
-          <Text size='small'>{provider.clientSecret}</Text>
-        </Attribute>
-      </Attributes>
+      <Box border={{side: 'bottom'}} pad={{bottom: 'small'}}>
+        <Attributes>
+          <Attribute width='100px' name='client id'>
+            <Text size='small'>{provider.clientId}</Text>
+          </Attribute>
+          <Attribute width='100px' name='client secret'>
+            <Text size='small'>{provider.clientSecret}</Text>
+          </Attribute>
+        </Attributes>
+      </Box>
       <ProviderForm
         repository={installation.repository}
         attributes={attributes} 

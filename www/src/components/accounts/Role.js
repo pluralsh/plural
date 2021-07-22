@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useState } from 'react'
 import { Box, CheckBox, Layer, Text } from 'grommet'
 import { ModalHeader, InputCollection, ResponsiveInput, Button, TagInput } from 'forge-core'
-import { Edit, Trash } from 'grommet-icons'
+import { Edit, Trash, User, Group } from 'grommet-icons'
 import { Icon } from './Group'
 import { CREATE_ROLE, DELETE_ROLE, UPDATE_ROLE } from './queries'
 import { addRole, deleteRole } from './utils'
@@ -44,12 +44,25 @@ function PermissionToggle({permission, description, attributes, setAttributes}) 
   )
 }
 
-export function BindingInput({label, placeholder, fetcher, bindings, remove, add}) {
+const ICONS = {
+  'user': <User size='14px' />,
+  'group': <Group size='14px' />,
+}
+
+const TEXT = {
+  'user': {label: 'user bindings', placeholder: 'search for users to add'},
+  'group': {label: 'group bindings', placeholder: 'search for groups to add'},
+}
+
+export function BindingInput({type, fetcher, bindings, remove, add}) {
   const client = useApolloClient()
   const [suggestions, setSuggestions] = useState([])
+  const {placeholder, label} = TEXT[type]
+
   return (
     <Box direction='row' align='center' gap='small'>
-      <Box flex={false} width='100px'>
+      <Box flex={false} width='125px' direction='row' gap='small' align='center'>
+        {type && ICONS[type]}
         <Text size='small' weight={500}>{label}</Text>
       </Box>
       <TagInput
@@ -91,15 +104,13 @@ function RoleForm({attributes, setAttributes, roleBindings, setRoleBindings}) {
       </InputCollection>
       <Box pad='small' gap='xsmall' border='horizontal'>
         <BindingInput
-          label='user bindings'
-          placeholder='search for users to add'
+          type='user'
           bindings={roleBindings.filter(({user}) => !!user).map(({user: {email}}) => email)}
           fetcher={fetchUsers}
           add={(user) => setRoleBindings([...roleBindings, {user}])}
           remove={(email) => setRoleBindings(roleBindings.filter(({user}) => !user || user.email !== email))} />
         <BindingInput
-          label='group bindings'
-          placeholder='search for groups to add'
+          type='group'
           bindings={roleBindings.filter(({group}) => !!group).map(({group: {name}}) => name)}
           fetcher={fetchGroups}
           add={(group) => setRoleBindings([...roleBindings, {group}])}

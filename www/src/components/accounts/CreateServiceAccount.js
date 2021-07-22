@@ -20,15 +20,13 @@ export function ServiceAccountForm({attributes, setAttributes, bindings, setBind
       </InputCollection>
       <Box pad='small' gap='xsmall' border='horizontal'>
         <BindingInput
-          label='user bindings'
-          placeholder='search for users to add'
+          type='user'
           bindings={bindings.filter(({user}) => !!user).map(({user: {email}}) => email)}
           fetcher={fetchUsers}
           add={(user) => setBindings([...bindings, {user}])}
           remove={(email) => setBindings(bindings.filter(({user}) => !user || user.email !== email))} />
         <BindingInput
-          label='group bindings'
-          placeholder='search for groups to add'
+          type='group'
           bindings={bindings.filter(({group}) => !!group).map(({group: {name}}) => name)}
           fetcher={fetchGroups}
           add={(group) => setBindings([...bindings, {group}])}

@@ -398,7 +398,7 @@ export const INTEGRATIONS_Q = gql`
 
 export const EXPLORE_REPOS = gql`
   query Repos($installed: Boolean, $publisherId: ID, $tag: String, $cursor: String) {
-    repositories(installed: $installed, publisherId: $publisherId, tag: $tag, after: $cursor, first: 15) {
+    repositories(installed: $installed, publisherId: $publisherId, tag: $tag, after: $cursor, first: 50) {
       pageInfo { ...PageInfo }
       edges { 
         node { 

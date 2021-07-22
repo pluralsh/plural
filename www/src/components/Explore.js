@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useCallback, useMemo } from 'react'
+import React, { useState, useContext, useEffect, useCallback, useMemo, useRef } from 'react'
 import { useQuery } from 'react-apollo'
 import { CATEGORIES, CATEGORY, EXPLORE_REPOS } from './repos/queries'
 import { Box, Collapsible, Text } from 'grommet'
@@ -73,13 +73,15 @@ function Placeholder() {
 function Repositories({refreshBy, edges, pageInfo, loading, fetchMore, setTag}) {
   const [listRef, setListRef] = useState(null)
   const [loader, setLoader] = useState(null)
+  const mounted = useRef(false)
 
   useEffect(() => {
-    if (loader) {
+    if (mounted.current && loader) {
       console.log('here')
       loader.resetloadMoreItemsCache()
     }
-  }, [refreshBy, loader])
+    mounted.current = true
+  }, [mounted, refreshBy, loader])
 
   return (
     <Box fill>

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Box, Form, Keyboard, TextInput, Collapsible, Text, Anchor } from 'grommet'
 import { Button } from 'forge-core'
-import { LOGIN_METHOD, LOGIN_MUTATION, PASSWORDLESS_LOGIN, POLL_LOGIN_TOKEN } from './queries'
+import { LOGIN_METHOD, LOGIN_MUTATION, PASSWORDLESS_LOGIN, POLL_LOGIN_TOKEN, SIGNUP_MUTATION } from './queries'
 import { useApolloClient, useLazyQuery, useMutation } from 'react-apollo'
 import { LoginMethod } from './types'
 import { Redirect, useHistory, useLocation, useParams } from 'react-router'
@@ -221,7 +221,7 @@ export function Signup() {
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
   const [confirm, setConfirm] = useState('')
-  const [mutation, {loading, error}] = useMutation(LOGIN_MUTATION, {
+  const [mutation, {loading, error}] = useMutation(SIGNUP_MUTATION, {
     variables: { email, password, name },
     onCompleted: ({signup: {jwt}}) => {
       setToken(jwt)

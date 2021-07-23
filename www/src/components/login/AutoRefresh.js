@@ -20,7 +20,6 @@ export function AutoRefresh() {
         window.location.reload()
       })
     } else {
-      setCommit(config.gitCommit)
       setOpen(false)
     }
   })
@@ -29,6 +28,11 @@ export function AutoRefresh() {
   const stale = getCommit() !== config.gitCommit
 
   if (!stale || !open) return null
+
+  if (getCommit() === 'example') {
+    setCommit(config.gitCommit)
+    return null
+  }
 
   return (
     <Confirm

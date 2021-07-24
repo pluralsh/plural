@@ -28,7 +28,7 @@ import "ace-builds/src-noconflict/theme-terminal"
 import { SectionPortal } from '../Explore'
 import { AuthMethod } from '../oidc/types'
 
-function Container({children, onClick, hasNext, noPad}) {
+function Container({children, onClick, noPad}) {
   return (
     <Box
       onClick={onClick}
@@ -36,7 +36,7 @@ function Container({children, onClick, hasNext, noPad}) {
       hoverIndicator='tone-light'
       pad={noPad ? null : 'small'}
       direction='row'
-      border={hasNext ? {side: 'bottom', color: BORDER_COLOR} : null}
+      border={{side: 'bottom', color: BORDER_COLOR}}
       gap='small'>
       {children}
     </Box>

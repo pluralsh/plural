@@ -11,6 +11,8 @@ import { deepUpdate, updateCache } from '../../utils/graphql'
 import { REPO_Q } from '../repos/queries'
 import { Attribute, Attributes } from '../integrations/Webhook'
 import { AuthMethod } from './types'
+import { obfuscate } from '../../utils/string'
+import { Copyable } from '../utils/Copyable'
 
 function UrlTab({url, onClick}) {
   return (
@@ -112,9 +114,10 @@ export function CreateProvider({installation}) {
   const [attributes, setAttributes] = useState({redirectUris: [], authMethod: settings.authMethod || AuthMethod.POST})
   const [bindings, setBindings] = useState([])
   const [mutation, {loading, error}] = useMutation(CREATE_PROVIDER, {
-    variables: {id: installation.id, attributes: {
-      ...attributes, bindings: bindings.map(sanitize)
-    }},
+    variables: {
+      id: installation.id, 
+      attributes: {...attributes, bindings: bindings.map(sanitize)}
+    },
     update: (cache, {data: {createOidcProvider}}) => updateCache(cache, {
       query: REPO_Q,
       variables: {repositoryId: installation.repository.id},
@@ -149,19 +152,27 @@ export function UpdateProvider({installation}) {
   })
   const [bindings, setBindings] = useState(provider.bindings)
   const [mutation, {loading, error}] = useMutation(UPDATE_PROVIDER, {
-    variables: {id: installation.id, attributes: {...attributes, bindings: bindings.map(sanitize)}}
+    variables: {
+      id: installation.id, 
+      attributes: {...attributes, bindings: bindings.map(sanitize)}
+    }
   })
 
   return (
-    <Box fill pad='medium' gap='small'>
+    <Box fill pad='medium' gap='medium'>
       {error && <GqlError error={error} header='Could not update provider' />}
-      <Box border={{side: 'bottom'}} pad={{bottom: 'small'}}>
+      <Box flex={false} border={{side: 'bottom'}} pad={{bottom: 'medium'}} gap='small'>
+        <Text size='small' weight={500}>OIDC Client Attributes</Text>
         <Attributes>
           <Attribute width='100px' name='client id'>
             <Text size='small'>{provider.clientId}</Text>
           </Attribute>
           <Attribute width='100px' name='client secret'>
-            <Text size='small'>{provider.clientSecret}</Text>
+            <Copyable
+              noBorder
+              pillText='copied client secret'
+              text={provider.clientSecret}
+              displayText={obfuscate(provider.clientSecret)} />
           </Attribute>
         </Attributes>
       </Box>

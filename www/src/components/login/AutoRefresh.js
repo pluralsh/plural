@@ -20,6 +20,7 @@ export function AutoRefresh() {
         window.location.reload()
       })
     } else {
+      setCommit(config.gitCommit)
       setOpen(false)
     }
   })

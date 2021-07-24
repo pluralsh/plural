@@ -96,7 +96,7 @@ export function Icon({icon, iconAttrs, tooltip, onClick, hover}) {
       focusIndicator={false}>
       {React.createElement(icon, {size: '14px', ...(iconAttrs || {})})}
     </Box>
-    {open && (
+    {open && tooltip && (
       <TooltipContent
         pad='xsmall'
         round='xsmall'

@@ -90,7 +90,7 @@ export function RepoDirectory() {
     <Box direction='row' fill>
       <Box flex={false} width='30%' background='backgroundColor' fill='vertical' 
            pad={{vertical: 'medium', right: 'small'}}>
-        <Box flex={false} pad={{vertical: 'small'}}>
+        <Box flex={false} pad={{vertical: 'small', left: 'small'}}>
           <RepositoryIcon repository={data.repository} size={IMG_SIZE} dark />
         </Box>
         <Box fill style={{overflow: 'auto'}}>

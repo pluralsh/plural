@@ -6,14 +6,17 @@ import { DOCKER_IMG_Q, DOCKER_Q, UPDATE_DOCKER } from './queries'
 import { AttackVector, ColorMap, DEFAULT_DKR_ICON } from './constants'
 import { DetailContainer } from './Installation'
 import moment from 'moment'
-import { Anchor, Box, Collapsible, Text, CheckBox } from 'grommet'
-import { Language, Link } from 'grommet-icons'
+import { Anchor, Box, Collapsible, Text, CheckBox, Stack } from 'grommet'
+import { Copy, Language, Link } from 'grommet-icons'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 import { DockerImages } from './DockerImages'
 import { Graph, RangePicker } from '../metrics/Graph'
 import { PluralConfigurationContext } from '../login/CurrentUser'
 import { dockerPull } from './misc'
 import { LoopingLogo } from '../utils/AnimatedLogo'
+import CopyToClipboard from 'react-copy-to-clipboard'
+import { truncate } from 'lodash'
+import { CopyNotice } from '../utils/Copyable'
 
 function RepositoryPublic({dockerRepo}) {
   const pub = dockerRepo.public
@@ -58,6 +61,7 @@ function DockerHeader({image}) {
 
 function DockerSidebar({image: {dockerRepository: docker, ...image}, filter, setFilter}) {
   const {registry} = useContext(PluralConfigurationContext)
+  const [copied, setCopied] = useState(false)
   const data = useMemo(() => docker.metrics.map(({tags, values}) => {
     const tag = tags.find(({name}) => name === 'tag')
     
@@ -66,14 +70,24 @@ function DockerSidebar({image: {dockerRepository: docker, ...image}, filter, set
       data: values.map(({time, value}) => ({x: moment(time).toDate(), y: value}))
     }
   }), [docker.metrics, docker.name])
+  
+  const imageName = dockerPull(registry, {...image, dockerRepository: docker})
 
   return (
-    <Box style={{overflow: 'auto'}} fill='vertical' gap='small'>
+    <>
+    <Box style={{overflow: 'auto'}} gap='small'>
       <DetailContainer flex={false} pad='small' gap='small' >
         <Text weight="bold" size='small'>Pull Command</Text>
-        <Box background='sidebar' pad='xsmall'>
-          <pre>docker pull {dockerPull(registry, {...image, dockerRepository: docker})}</pre>
-        </Box>
+        <Stack anchor='right'>
+          <CopyToClipboard text={`docker pull ${imageName}`} onCopy={() => setCopied(true)}>
+            <Box flex={false} background='sidebar' pad='xsmall'>
+              <pre>docker pull {truncate(imageName, {length: 40})}</pre>
+            </Box>
+          </CopyToClipboard>
+          <Box flex={false} margin={{right: 'small'}}>
+            <Copy size='small' color='light-6' />
+          </Box>
+        </Stack>
 
         <Text weight="bold" size='small'>Created At</Text>
         <Text size='small'>{moment(image.insertedAt).format('lll')}</Text>
@@ -100,6 +114,12 @@ function DockerSidebar({image: {dockerRepository: docker, ...image}, filter, set
         </Box>
       </DetailContainer>
     </Box>
+    {copied && (
+      <CopyNotice 
+        text='copied docker pull command' 
+        onClose={() => setCopied(false)} />
+    )}
+    </>
   )
 }
 
@@ -321,7 +341,7 @@ export function Docker() {
           </Tabs>
         </Box>
       </Box>
-      <Box flex={false} fill='vertical'>
+      <Box flex={false} fill='vertical' width='40%'>
         <DockerSidebar image={image} setFilter={setFilter} filter={filter} />
       </Box>
     </Box>

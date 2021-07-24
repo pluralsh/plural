@@ -5,9 +5,25 @@ import CopyToClipboard from 'react-copy-to-clipboard'
 import { Icon } from '../accounts/Group'
 import { truncate } from 'lodash'
 
+export function CopyNotice({text, onClose}) {
+  return (
+    <Layer position='top' plain onEsc={onClose} 
+             onClickOutside={onClose}>
+      <Box direction='row' align='center' gap='small' background='white' 
+            border={{color: 'light-3'}} round='xsmall' margin={{top: 'small'}}
+            pad={{horizontal: 'small', vertical: 'xsmall'}}>
+        <CircleInformation color='progress' size='medium' />
+        <Text>{text}</Text>
+        <Icon icon={Close} onClick={onClose} />
+      </Box>
+    </Layer>
+  )
+}
+
 export function Copyable({text, pillText, displayText, onCopy}) {
   const [display, setDisplay] = useState(false)
   const [hover, setHover] = useState(false)
+
   return (
     <>
     <CopyToClipboard text={text} onCopy={() => onCopy ? onCopy() : setDisplay(true)}>
@@ -27,18 +43,7 @@ export function Copyable({text, pillText, displayText, onCopy}) {
         )}
       </Box>
     </CopyToClipboard>
-    {display && (
-      <Layer position='top' plain onEsc={() => setDisplay(false)} 
-             onClickOutside={() => setDisplay(false)}>
-        <Box direction='row' align='center' gap='small' background='white' 
-             border={{color: 'light-3'}} round='xsmall' margin={{top: 'small'}}
-             pad={{horizontal: 'small', vertical: 'xsmall'}}>
-          <CircleInformation color='progress' size='medium' />
-          <Text>{pillText}</Text>
-          <Icon icon={Close} onClick={() => setDisplay(false)} />
-        </Box>
-      </Layer>
-    )}
+    {display && <CopyNotice text={pillText} onClose={() => setDisplay(false)} />}
     </>
   )
 }

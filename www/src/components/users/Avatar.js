@@ -1,11 +1,13 @@
 import React from 'react'
 import { Box, Text } from 'grommet'
+import { last } from 'lodash'
 
 export function initials(name) {
-  return name
+  const initials = name
           .split(' ')
           .map((n) => n.charAt(0).toUpperCase())
-          .join('')
+  if (initials.length <= 1) return initials[0]
+  return `${initials[0]}${last(initials)}`
 }
 
 export default function Avatar({size, user, round, ...rest}) {

@@ -1,5 +1,5 @@
 {
- "name": "App",
+ "name": "Plural",
  "icons": [
   {
    "src": "\/android-icon-36x36.png",
@@ -37,5 +37,9 @@
    "type": "image\/png",
    "density": "4.0"
   }
- ]
+ ],
+ "start_url": "/",
+ "theme_color": "#000b11",
+ "background_color": "#000b11",
+ "display": "minimal-ui"
 }

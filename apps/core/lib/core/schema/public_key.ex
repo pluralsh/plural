@@ -32,7 +32,7 @@ defmodule Core.Schema.PublicKey do
     model
     |> cast(attrs, @valid)
     |> add_digest()
-    |> unique_constraint(:digest)
+    |> unique_constraint(:digest, name: index_name(:public_keys, [:digest, :user_id]))
     |> unique_constraint(:name, name: index_name(:public_keys, [:user_id, :name]))
     |> foreign_key_constraint(:user_id)
     |> validate_required([:content, :name])

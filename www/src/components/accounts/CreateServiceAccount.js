@@ -17,6 +17,11 @@ export function ServiceAccountForm({attributes, setAttributes, bindings, setBind
           value={attributes.name}
           placeholder='name of the service account'
           onChange={({target: {value}}) => setAttributes({...attributes, name: value})} />
+        <ResponsiveInput
+          label='email'
+          value={attributes.email}
+          placeholder='email for the service account'
+          onChange={({target: {value}}) => setAttributes({...attributes, email: value})} />
       </InputCollection>
       <Box pad='small' gap='xsmall' border='horizontal'>
         <BindingInput
@@ -37,7 +42,7 @@ export function ServiceAccountForm({attributes, setAttributes, bindings, setBind
 }
 
 function CreateInner({setOpen}) {
-  const [attributes, setAttributes] = useState({name: ''})
+  const [attributes, setAttributes] = useState({name: '', email: ''})
   const [bindings, setBindings] = useState([])
   const [mutation, {loading, error}] = useMutation(CREATE_SERVICE_ACCOUNT, {
     variables: {attributes: {...attributes, impersonationPolicy: {bindings: bindings.map(sanitize)}}},
@@ -65,7 +70,7 @@ function CreateInner({setOpen}) {
 }
 
 export function UpdateServiceAccount({user, setOpen}) {
-  const [attributes, setAttributes] = useState({name: user.name})
+  const [attributes, setAttributes] = useState({name: user.name, email: user.email})
   const [bindings, setBindings] = useState(user.impersonationPolicy.bindings)
   const [mutation, {loading, error}] = useMutation(UPDATE_SERVICE_ACCOUNT, {
     variables: {

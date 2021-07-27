@@ -29,7 +29,8 @@ defmodule GraphQl.Schema.Account do
   end
 
   input_object :service_account_attributes do
-    field :name, :string
+    field :name,  :string
+    field :email, :string
     field :impersonation_policy, :impersonation_policy_attributes
   end
 

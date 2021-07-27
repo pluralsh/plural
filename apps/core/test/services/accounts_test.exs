@@ -22,6 +22,20 @@ defmodule Core.Services.AccountsTest do
 
       assert binding.group_id == group.id
     end
+
+    test "you can manually specify service account emails", %{user: user} do
+      group = insert(:group, account: user.account)
+
+      {:ok, srv_acct} = Accounts.create_service_account(%{
+        name: "service account",
+        email: "someone@example.com",
+        impersonation_policy: %{bindings: [%{group_id: group.id}]}
+      }, user)
+
+      assert srv_acct.service_account
+      assert srv_acct.email == "someone@example.com"
+      assert srv_acct.name == "service account"
+    end
   end
 
   describe "#update_service_account/2" do

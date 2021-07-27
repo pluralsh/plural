@@ -103,7 +103,7 @@ defmodule Core.Schema.User do
 
   def service_account_changeset(model, attrs \\ %{}) do
     model
-    |> cast(attrs, [:name])
+    |> cast(attrs, [:name, :email])
     |> cast_assoc(:impersonation_policy)
     |> add_email(model)
     |> validate_length(:email,    max: 255)
@@ -118,7 +118,7 @@ defmodule Core.Schema.User do
   defp add_email(changeset, %__MODULE__{email: nil}) do
     name = get_field(changeset, :name)
     changeset
-    |> put_change(:email, "#{srv_acct_name(name)}@srv.plural.sh")
+    |> put_new_change(:email, fn -> "#{srv_acct_name(name)}@srv.plural.sh" end)
     |> put_change(:password, srv_acct_pwd())
   end
   defp add_email(changeset, _), do: changeset

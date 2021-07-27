@@ -10,7 +10,7 @@ export function fetchUsers(client, query, setSuggestions) {
 
   client.query({
     query: SEARCH_USERS,
-    variables: {q: query}
+    variables: {q: query, all: true}
   }).then(({data: {users: {edges}}}) => edges.map(({node}) => ({value: node, label: userSuggestion(node)})))
     .then(setSuggestions)
 }

@@ -13,8 +13,8 @@ export const UPDATE_ACCOUNT = gql`
 `;
 
 export const USERS_Q = gql`
-  query Users($q: String, $serviceAccount: Boolean, $ursor: String) {
-    users(q: $q, first: 20, after: $ursor, serviceAccount: $serviceAccount) {
+  query Users($q: String, $serviceAccount: Boolean, $all: Boolean, $ursor: String) {
+    users(q: $q, first: 20, after: $ursor, serviceAccount: $serviceAccount, all: $all) {
       pageInfo { ...PageInfo }
       edges {
         node { ...UserFragment 
@@ -43,7 +43,7 @@ export const GROUPS_Q = gql`
 
 export const SEARCH_USERS = gql`
   query SearchUsers($q: String, $cursor: String) {
-    users(q: $q, after: $cursor, first: 5) {
+    users(q: $q, after: $cursor, first: 5, all: true) {
       pageInfo { ...PageInfo }
       edges {
         node { ...UserFragment }

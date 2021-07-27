@@ -14,6 +14,7 @@ import { SearchIcon } from './utils'
 import { SectionContentContainer, SectionPortal } from '../Explore'
 import { INPUT_WIDTH } from './constants'
 import { LoopingLogo } from '../utils/AnimatedLogo'
+import { Icon } from './Group'
 
 function ServiceAccount({user, next}) {
   const [open, setOpen] = useState(false)
@@ -28,13 +29,10 @@ function ServiceAccount({user, next}) {
 
   return (
     <>
-    <Box fill='horizontal' gap='small' direction='row' align='center' border={{side: 'bottom', color: 'light-6'}}>
+    <Box fill='horizontal' gap='small' direction='row' align='center' border={{side: 'bottom', color: 'light-6'}} pad={{right: 'small'}}>
       <UserRow user={user} next={next.node} noborder />
       <SecondaryButton label='impersonate' onClick={mutation} loading={loading} />
-      <Box flex={false} pad='small' round='xsmall' onClick={() => setOpen(true)}
-           hoverIndicator='light-2' focusIndicator={false}>
-        <Edit size='small' />
-      </Box>
+      <Icon icon={Edit} tooltip='edit' onClick={() => setOpen(true)} />
     </Box>
     {showError && error && (
       <Layer modal>

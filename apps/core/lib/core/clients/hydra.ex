@@ -86,7 +86,7 @@ defmodule Core.Clients.Hydra do
   end
 
   def accept_login(challenge, user) do
-    body = Jason.encode!(%{subject: user.id, remember: true, remember_for: 60 * 60 * 24})
+    body = Jason.encode!(%{subject: user.id, remember: false})
     admin_url("/oauth2/auth/requests/login/accept?login_challenge=#{challenge}")
     |> HTTPoison.put(body, headers())
     |> handle_response(%Response{})
@@ -107,8 +107,7 @@ defmodule Core.Clients.Hydra do
   def accept_consent(user, challenge, scopes) do
     body = Jason.encode!(%{
       grant_scope: scopes,
-      remember: true,
-      remember_for: @duration,
+      remember: false,
       session: %{
         id_token: user_details(user),
         access_token: user_details(user)

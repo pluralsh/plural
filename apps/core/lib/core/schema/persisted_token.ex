@@ -32,7 +32,7 @@ defmodule Core.Schema.PersistedToken do
   end
 
   def gen_token() do
-    "cmt-" <>
+    "plrl-" <>
     (:crypto.strong_rand_bytes(64)
     |> Base.url_encode64())
   end

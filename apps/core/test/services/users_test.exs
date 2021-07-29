@@ -141,9 +141,10 @@ defmodule Core.Services.UsersTest do
     test "A user can create a persisted token for themselves" do
       user = insert(:user)
 
-      {:ok, %{token: "cmt-" <> _} = token} = Users.create_persisted_token(user)
+      {:ok, %{token: "plrl-" <> _} = token} = Users.create_persisted_token(user)
 
       assert token.token
+      assert token.user_id == user.id
       assert Users.get_persisted_token(token.token)
     end
   end

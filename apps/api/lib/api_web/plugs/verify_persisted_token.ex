@@ -30,16 +30,23 @@ defmodule Api.Plugs.VerifyPersistedToken do
     })
   end
 
+  defp fetch_token_from_header(["plrl-" <> _ = match | _]), do: {:ok, String.trim(match)}
   defp fetch_token_from_header(["cmt-" <> _ = match | _]), do: {:ok, String.trim(match)}
   defp fetch_token_from_header([token | _tail]) do
     trimmed_token = String.trim(token)
 
-    case Regex.run(~r/^Bearer\:?\s+(.*)$/, trimmed_token) do
+    with :error <- match_and_extract(~r/^Bearer\:?\s+(.*)$/, trimmed_token),
+      do: match_and_extract(~r/^Token\:?\s+(.*)$/, trimmed_token)
+  end
+  defp fetch_token_from_header(_), do: :error
+
+  defp match_and_extract(regex, token) do
+    case Regex.run(regex, token) do
       [_, "cmt-" <> _ = match] -> {:ok, String.trim(match)}
+      [_, "plrl-" <> _ = match] -> {:ok, String.trim(match)}
       _ -> :error
     end
   end
-  defp fetch_token_from_header(_), do: :error
 
   defp build_claims(persisted), do: %{"sub" => "user:#{persisted.user_id}"}
 

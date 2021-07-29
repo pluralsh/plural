@@ -112,7 +112,7 @@ defmodule Core.Factory do
 
   def persisted_token_factory do
     %Schema.PersistedToken{
-      token: sequence(:token, &"token-#{&1}"),
+      token: sequence(:token, &"plrl-#{&1}"),
       user: build(:user)
     }
   end

@@ -64,7 +64,7 @@ function GroupMembers({group}) {
   const {groupMembers: {pageInfo, edges}} = data
 
   return (
-    <Box fill>
+    <Box fill border={{side: 'top', color: 'light-3'}} margin={{top: 'small'}}>
       <FixedScroller
         items={edges}
         loading={loading}

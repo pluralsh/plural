@@ -36,6 +36,23 @@ defmodule GraphQl.RecipeQueriesTest do
       assert from_connection(found)
              |> ids_equal(recipes)
     end
+
+    test "it can filter recipes by provider" do
+      repo    = insert(:repository)
+      recipes = insert_list(3, :recipe, repository: repo, provider: :aws)
+      insert(:recipe, repository: repo, provider: :gcp)
+
+      {:ok, %{data: %{"recipes" => found}}} = run_query("""
+        query Recipes($name: String!) {
+          recipes(repositoryName: $name, first: 5, provider: AWS) {
+            edges { node { id } }
+          }
+        }
+      """, %{"name" => repo.name}, %{current_user: insert(:user)})
+
+      assert from_connection(found)
+             |> ids_equal(recipes)
+    end
   end
 
   describe "recipe" do

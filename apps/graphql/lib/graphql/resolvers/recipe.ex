@@ -9,9 +9,14 @@ defmodule GraphQl.Resolvers.Recipe do
 
   def list_recipes(args, %{context: %{repo: %{id: repo_id}}}) do
     Recipe.for_repository(repo_id)
+    |> maybe_filter_provider(args)
     |> Recipe.ordered()
     |> paginate(args)
   end
+
+  defp maybe_filter_provider(q, %{provider: p}) when not is_nil(p),
+    do: Recipe.for_provider(q, p)
+  defp maybe_filter_provider(q, _), do: q
 
   def resolve_recipe(%{id: id}, %{context: %{current_user: user}}) when is_binary(id) do
     Recipes.get!(id)

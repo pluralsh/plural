@@ -108,6 +108,7 @@ defmodule GraphQl.Schema.Recipe do
       middleware Accessible
       arg :repository_id,   :id
       arg :repository_name, :string
+      arg :provider,        :provider
 
       resolve &Recipe.list_recipes/2
     end

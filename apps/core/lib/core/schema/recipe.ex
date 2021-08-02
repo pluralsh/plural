@@ -19,6 +19,9 @@ defmodule Core.Schema.Recipe do
   def for_repository(query \\ __MODULE__, repo_id),
     do: from(r in query, where: r.repository_id == ^repo_id)
 
+  def for_provider(query \\ __MODULE__, provider),
+    do: from(r in query, where: r.provider == ^provider)
+
   def ordered(query \\ __MODULE__, order \\ [asc: :name]),
     do: from(r in query, order_by: ^order)
 

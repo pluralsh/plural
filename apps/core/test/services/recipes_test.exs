@@ -132,6 +132,37 @@ defmodule Core.Services.RecipesTest do
       verify_recipe.(new)
       assert new.id == recipe.id
     end
+
+    test "it can upsert when dependencies exist" do
+      %{publisher: %{owner: user} = pub} = repo = insert(:repository)
+      other_repo = insert(:repository, publisher: pub)
+      chart = insert(:chart, repository: other_repo)
+      other_chart = insert(:chart, repository: repo)
+
+      {:ok, recipe} = Recipes.upsert(%{name: "dep", sections: [
+        %{name: other_repo.name, items: [
+          %{name: chart.name, type: :helm}
+        ]}
+      ]}, other_repo.id, user)
+
+      {:ok, recipe} = Recipes.upsert(%{
+        name: "recipe",
+        dependencies: [
+          %{repo: other_repo.name, name: "dep"}
+        ],
+        sections: [
+          %{name: repo.name, items: [
+            %{name: other_chart.name, type: :helm}
+          ]}
+        ]
+      }, repo.id, user)
+
+      {:ok, _} = Recipes.upsert(%{name: "dep", sections: [
+        %{name: other_repo.name, items: [
+          %{name: chart.name, type: :helm}
+        ]}
+      ]}, other_repo.id, user)
+    end
   end
 
   describe "#delete" do

@@ -3,7 +3,12 @@ defmodule Core.Schema.Audit do
   alias Core.Schema
 
   schema "audit_logs" do
-    field :action,  :string
+    field :action,    :string
+    field :ip,        :string
+    field :country,   :string
+    field :city,      :string
+    field :latitude,  :string
+    field :longitude, :string
 
     belongs_to :actor, Schema.User
     belongs_to :account, Schema.Account
@@ -25,7 +30,7 @@ defmodule Core.Schema.Audit do
     from(a in query, order_by: ^order)
   end
 
-  @valid ~w(action)a
+  @valid ~w(action country city latitude longitude ip)a
 
   def changeset(schema, attrs \\ %{}) do
     schema

@@ -6,6 +6,10 @@ defmodule Core.Schema.AccessTokenAudit do
     field :ip,        :string
     field :timestamp, :utc_datetime_usec
     field :count,     :integer, default: 0
+    field :country,   :string
+    field :city,      :string
+    field :latitude,  :string
+    field :longitude, :string
 
     belongs_to :token, PersistedToken
 
@@ -20,7 +24,7 @@ defmodule Core.Schema.AccessTokenAudit do
     from(t in query, order_by: ^order)
   end
 
-  @valid ~w(ip timestamp token_id count)a
+  @valid ~w(ip timestamp token_id count country city latitude longitude)a
 
   def changeset(model, attrs \\ %{}) do
     model

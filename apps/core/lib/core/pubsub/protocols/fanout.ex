@@ -64,8 +64,7 @@ defimpl Core.PubSub.Fanout, for: Core.PubSub.UpgradeCreated do
 end
 
 defimpl Core.PubSub.Fanout, for: Core.PubSub.AccessTokenUsage do
-  def fanout(%{item: token, context: ip}) do
-    ip = :inet.ntoa(ip)
+  def fanout(%{item: token, context: %{ip: ip}}) do
     trunc = Timex.now()
             |> Timex.set(minute: 0, second: 0, microsecond: {0, 6})
     key = "#{token.id}:#{ip}:#{Timex.format!(trunc, "{ISO:Extended}")}"

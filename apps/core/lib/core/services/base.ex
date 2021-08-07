@@ -55,6 +55,7 @@ defmodule Core.Services.Base do
   def handle_notify(event_type, resource, additional \\ %{}) do
     Map.new(additional)
     |> Map.put(:item, resource)
+    |> Map.put(:context, Core.Services.Audits.context())
     |> event_type.__struct__()
     |> Core.PubSub.Broadcaster.notify()
     |> case do

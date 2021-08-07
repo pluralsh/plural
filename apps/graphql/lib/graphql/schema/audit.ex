@@ -3,8 +3,13 @@ defmodule GraphQl.Schema.Audit do
   alias GraphQl.Resolvers.{Audit, User, Repository, Version, Account, Docker}
 
   object :audit do
-    field :id,     non_null(:id)
-    field :action, non_null(:string)
+    field :id,        non_null(:id)
+    field :action,    non_null(:string)
+    field :ip,        :string
+    field :city,      :string
+    field :country,   :string
+    field :latitude,  :string
+    field :longitude, :string
 
     field :actor, :user,  resolve: dataloader(User)
     field :group, :group, resolve: dataloader(Account)

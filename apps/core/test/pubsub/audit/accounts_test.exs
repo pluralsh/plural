@@ -4,17 +4,29 @@ defmodule Core.PubSub.Audits.AccountsTest do
   alias Core.PubSub.Consumers.Audits
 
   describe "GroupCreated" do
-    test "it can post a message about the meeting" do
+    setup [:set_context]
+
+    test "it can post a message about the meeting", %{audit_context: ctx} do
       group = insert(:group)
       actor = insert(:user)
 
-      event = %PubSub.GroupCreated{item: group, actor: actor}
+      event = %PubSub.GroupCreated{
+        item: group,
+        actor: actor,
+        context: Core.Services.Audits.context()
+      }
       {:ok, audit} = Audits.handle_event(event)
 
       assert audit.action == "group:created"
       assert audit.group_id == group.id
       assert audit.actor_id == actor.id
       assert audit.account_id == actor.account_id
+
+      assert audit.ip        == ctx.ip
+      assert audit.country   == ctx.country
+      assert audit.city      == ctx.city
+      assert audit.latitude  == ctx.latitude
+      assert audit.longitude == ctx.longitude
     end
   end
 
@@ -166,5 +178,18 @@ defmodule Core.PubSub.Audits.AccountsTest do
       assert audit.actor_id == actor.id
       assert audit.account_id == actor.account_id
     end
+  end
+
+  def set_context(_) do
+    ctx = %Core.Schema.AuditContext{
+      ip: "1.2.3.4",
+      country: "US",
+      city: "New York",
+      latitude: "13",
+      longitude: "31"
+    }
+    Core.Services.Audits.set_context(ctx)
+
+    [audit_context: ctx]
   end
 end

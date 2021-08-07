@@ -139,13 +139,13 @@ defmodule Core.Services.RecipesTest do
       chart = insert(:chart, repository: other_repo)
       other_chart = insert(:chart, repository: repo)
 
-      {:ok, recipe} = Recipes.upsert(%{name: "dep", sections: [
+      {:ok, _} = Recipes.upsert(%{name: "dep", sections: [
         %{name: other_repo.name, items: [
           %{name: chart.name, type: :helm}
         ]}
       ]}, other_repo.id, user)
 
-      {:ok, recipe} = Recipes.upsert(%{
+      {:ok, _} = Recipes.upsert(%{
         name: "recipe",
         dependencies: [
           %{repo: other_repo.name, name: "dep"}

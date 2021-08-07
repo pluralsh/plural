@@ -130,6 +130,10 @@ defmodule GraphQl.Schema.User do
     field :ip,        :string
     field :timestamp, :datetime
     field :count,     :integer
+    field :city,      :string
+    field :country,   :string
+    field :latitude,  :string
+    field :longitude, :string
 
     timestamps()
   end

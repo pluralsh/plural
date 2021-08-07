@@ -28,6 +28,7 @@ defmodule ApiWeb.Endpoint do
 
   plug CORSPlug
   plug ApiWeb.Plugs.RemoteIp
+  plug ApiWeb.Plugs.AuditContext
 
   plug Plug.RequestId
   plug Plug.Telemetry, event_prefix: [:phoenix, :endpoint]

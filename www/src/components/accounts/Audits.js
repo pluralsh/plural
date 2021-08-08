@@ -71,10 +71,10 @@ function Audit({audit}) {
         {audit.actor && <Avatar user={audit.actor} size='30px' />}
         {audit.actor && <Text size='small'>{audit.actor.name}</Text>}
       </Box>
-      <Box width='25%'>
+      <Box width='15%'>
         <Resource audit={audit} />
       </Box>
-      <HeaderItem text={moment(audit.insertedAt).format('lll')} nobold width='25%' />
+      <HeaderItem text={moment(audit.insertedAt).format('lll')} nobold width='15%' />
       <HeaderItem text={audit.ip} nobold width='10%' />
       <HeaderItem text={formatLocation(audit.country, audit.city)} nobold width='10%' />
     </Box>

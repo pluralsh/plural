@@ -9,6 +9,7 @@ import { BreadcrumbsContext } from '../Breadcrumbs'
 import { StandardScroller } from '../utils/SmoothScroller'
 import { Link } from 'react-router-dom'
 import { LoopingLogo } from '../utils/AnimatedLogo'
+import { formatLocation } from '../../utils/geo'
 
 const HeaderItem = ({text, width, nobold}) => (<Box width={width}><Text size='small' weight={nobold ? null : 500}>{text}</Text></Box>)
 
@@ -17,8 +18,10 @@ function AuditHeader() {
     <Box flex={false} direction='row' pad='small' gap='xsmall' border={{side: 'bottom', color: 'light-5'}} align='center'>
       <HeaderItem text='Action' width='25%' />
       <HeaderItem text='Actor' width='25%' />
-      <HeaderItem text='Resource' width='25%' />
-      <HeaderItem text='Event Time' width='25%' />
+      <HeaderItem text='Resource' width='15%' />
+      <HeaderItem text='Event Time' width='15%' />
+      <HeaderItem text='IP' width='10%' />
+      <HeaderItem text='Location' width='10%' />
     </Box>
   )
 }
@@ -63,9 +66,7 @@ function Audit({audit}) {
   return (
     <Box flex={false} direction='row' pad='small' gap='xsmall' border={{side: 'bottom', color: 'light-3'}} 
          align='center' onClick={() => null} hoverIndicator='light-2' focusIndicator={false}>
-      <Box width='25%'>
-        <Text size='small'>{audit.action}</Text>
-      </Box>
+      <HeaderItem text={audit.action} nobold width='25%' />
       <Box flex={false} width='25%' direction='row' gap='xsmall' align='center'>
         {audit.actor && <Avatar user={audit.actor} size='30px' />}
         {audit.actor && <Text size='small'>{audit.actor.name}</Text>}
@@ -73,9 +74,9 @@ function Audit({audit}) {
       <Box width='25%'>
         <Resource audit={audit} />
       </Box>
-      <Box width='25%'>
-        <Text size='small'>{moment(audit.insertedAt).format('lll')}</Text>
-      </Box>
+      <HeaderItem text={moment(audit.insertedAt).format('lll')} nobold width='25%' />
+      <HeaderItem text={audit.ip} nobold width='10%' />
+      <HeaderItem text={formatLocation(audit.country, audit.city)} nobold width='10%' />
     </Box>
   )
 }

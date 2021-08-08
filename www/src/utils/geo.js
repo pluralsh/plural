@@ -4,3 +4,9 @@ export function intersectRect(r1, r2) {
            r2.top > r1.bottom ||
            r2.bottom < r1.top);
 }
+
+export function formatLocation(country, city) {
+  if (!country) return ''
+  if (!city) return country
+  return `${city} / ${country}`
+}

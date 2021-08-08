@@ -69,6 +69,10 @@ export const TokenAuditFragment = gql`
     ip
     timestamp
     count
+    country
+    city
+    latitude
+    longitude
   }
 `
 

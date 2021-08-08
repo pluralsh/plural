@@ -8,6 +8,11 @@ export const AuditFragment = gql`
   fragment AuditFragment on Audit {
     id
     action
+    ip
+    country
+    city
+    latitude
+    longitude
     actor { ...UserFragment }
     repository { ...RepoFragment }
     group { ...GroupFragment }

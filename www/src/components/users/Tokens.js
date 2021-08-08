@@ -12,14 +12,16 @@ import { SectionPortal } from '../Explore'
 import { Placeholder } from '../accounts/Audits'
 import { Icon } from '../accounts/Group'
 import { Confirm } from '../utils/Confirm'
+import { formatLocation } from '../../utils/geo'
 
 
 function AuditHeader() {
   return (
     <Box flex={false} direction='row' pad='small' gap='xsmall' border={{side: 'bottom', color: 'light-5'}} align='center'>
       <HeaderItem text='IP' width='33%' />
-      <HeaderItem text='Timestamp' width='33%' />
-      <HeaderItem text='Count' width='33%' />
+      <HeaderItem text='Location' width='20%' />
+      <HeaderItem text='Timestamp' width='23%' />
+      <HeaderItem text='Count' width='23%' />
     </Box>
   )
 }
@@ -28,8 +30,9 @@ function TokenAudit({audit}) {
   return (
     <Box flex={false} direction='row' pad='small' border={{side: 'bottom', color: 'light-5'}} align='center' height='50px'>
       <HeaderItem text={audit.ip} width='33%' nobold />
-      <HeaderItem text={moment(audit.timestamp).format('lll')} width='33%' nobold />
-      <HeaderItem text={audit.count} width='33%' nobold />
+      <HeaderItem text={formatLocation(audit.country, audit.city)} width='20%' nobold />
+      <HeaderItem text={moment(audit.timestamp).format('lll')} width='23%' nobold />
+      <HeaderItem text={audit.count} width='23%' nobold />
     </Box>
   )
 }

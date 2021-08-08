@@ -24,6 +24,18 @@ defmodule Core.Schema.AccessTokenAudit do
     from(t in query, order_by: ^order)
   end
 
+  def created_after(query \\ __MODULE__, dt) do
+    from(t in query, where: t.inserted_at >= ^dt)
+  end
+
+  def aggregate(query \\ __MODULE__) do
+    from(t in query,
+      where: not is_nil(t.country),
+      group_by: t.country,
+      select: %{country: t.country, count: count(t.id)}
+    )
+  end
+
   @valid ~w(ip timestamp token_id count country city latitude longitude)a
 
   def changeset(model, attrs \\ %{}) do

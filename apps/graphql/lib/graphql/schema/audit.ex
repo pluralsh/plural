@@ -23,6 +23,11 @@ defmodule GraphQl.Schema.Audit do
     timestamps()
   end
 
+  object :audit_metric do
+    field :country, :string
+    field :count,   :integer
+  end
+
   connection node_type: :audit
 
   object :audit_queries do
@@ -30,6 +35,12 @@ defmodule GraphQl.Schema.Audit do
       middleware Authenticated
 
       resolve &Audit.list_audits/2
+    end
+
+    field :audit_metrics, list_of(:audit_metric) do
+      middleware Authenticated
+
+      resolve &Audit.audit_metrics/2
     end
   end
 end

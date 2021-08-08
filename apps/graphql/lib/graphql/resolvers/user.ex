@@ -83,6 +83,15 @@ defmodule GraphQl.Resolvers.User do
     |> paginate(args)
   end
 
+  def audit_metrics(_, %{source: %{id: id}}) do
+    cutoff = Timex.now() |> Timex.shift(months: -1)
+    AccessTokenAudit.for_token(id)
+    |> AccessTokenAudit.created_after(cutoff)
+    |> AccessTokenAudit.aggregate()
+    |> Core.Repo.all()
+    |> ok()
+  end
+
   defp is_service_account(q, %{all: true}), do: q
   defp is_service_account(q, %{service_account: true}),
     do: User.service_account(q, :yes)

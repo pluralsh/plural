@@ -17,9 +17,7 @@ defmodule ApiWeb.Plugs.AuditContext do
   end
 
   defp fetch_header(conn, header) do
-    get_req_header(conn, header)
-    |> IO.inspect()
-    |> case do
+    case get_req_header(conn, header) do
       [h | _] -> h
       _ -> nil
     end

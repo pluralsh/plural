@@ -30,6 +30,18 @@ defmodule Core.Schema.Audit do
     from(a in query, order_by: ^order)
   end
 
+  def created_after(query \\ __MODULE__, dt) do
+    from(a in query, where: a.inserted_at >= ^dt)
+  end
+
+  def aggregate(query \\ __MODULE__) do
+    from(a in query,
+      where: not is_nil(a.country),
+      group_by: a.country,
+      select: %{country: a.country, count: count(a.id)}
+    )
+  end
+
   @valid ~w(action country city latitude longitude ip)a
 
   def changeset(schema, attrs \\ %{}) do

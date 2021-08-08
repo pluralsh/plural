@@ -20,4 +20,25 @@ defmodule GraphQl.AuditQueriesTest do
              |> ids_equal(audits)
     end
   end
+
+  describe "auditMetrics" do
+    test "it will aggregate country level audit log stats" do
+      user = insert(:user)
+      insert_list(3, :audit, account: user.account, country: "US")
+      insert_list(2, :audit, account: user.account, country: "CN")
+      insert(:audit, country: "UK")
+
+      {:ok, %{data: %{"auditMetrics" => metrics}}} = run_query("""
+        query {
+          auditMetrics { country count }
+        }
+      """, %{}, %{current_user: user})
+
+      grouped = Enum.into(metrics, %{}, & {&1["country"], &1["count"]})
+
+      assert grouped["US"] == 3
+      assert grouped["CN"] == 2
+      refute grouped["UK"]
+    end
+  end
 end

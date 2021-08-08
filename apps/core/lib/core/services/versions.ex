@@ -100,34 +100,12 @@ defmodule Core.Services.Versions do
     end)
   end
 
-  defp maybe_clean_tags(transaction, %{tags: tags}) do
-    add_operation(transaction, :clean, fn %{version: %{id: id} = version} ->
-      tool = derive_tool(version)
-      tool_id = Map.get(version, tool_id(tool))
-      version_tags(tool, tool_id)
-      |> VersionTag.for_tags(Enum.map(tags, & &1.tag))
-      |> VersionTag.ignore_version(id)
-      |> Core.Repo.delete_all()
-      |> elem(0)
-      |> ok()
-    end)
-  end
-  defp maybe_clean_tags(transaction, _), do: transaction
-
   defp tool_id(:helm), do: :chart_id
   defp tool_id(:terraform), do: :terraform_id
 
   defp derive_tool(%Version{chart_id: id}) when not is_nil(id), do: :helm
   defp derive_tool(%Version{terraform_id: id}) when not is_nil(id), do: :terraform
 
-  defp version_tags(:helm, id), do: VersionTag.for_chart(id)
-  defp version_tags(:terraform, id), do: VersionTag.for_terraform(id)
-
-  defp sanitize_tags(%{tags: tags} = attrs, tool, version) do
-    tool_id = tool_id(tool)
-    Map.put(attrs, :tags, Enum.map(tags, &Map.put(&1, tool_id(tool), Map.get(version, tool_id))))
-  end
-  defp sanitize_tags(attrs, _, _), do: attrs
 
   def notify(%Version{} = v, :create, user),
     do: handle_notify(PubSub.VersionCreated, v, actor: user)

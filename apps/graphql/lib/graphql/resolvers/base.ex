@@ -35,4 +35,7 @@ defmodule GraphQl.Resolvers.Base do
   def paginate(query, args) do
     Relay.Connection.from_query(query, &Core.Repo.all/1, args)
   end
+
+  @compile {:inline, ok: 1}
+  def ok(result), do: {:ok, result}
 end

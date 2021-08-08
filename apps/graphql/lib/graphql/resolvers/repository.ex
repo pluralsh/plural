@@ -1,6 +1,5 @@
 defmodule GraphQl.Resolvers.Repository do
   use GraphQl.Resolvers.Base, model: Core.Schema.Repository
-  import Core.Services.Base, only: [ok: 1]
   alias Core.Services.Repositories
   alias Core.Schema.{
     Installation,

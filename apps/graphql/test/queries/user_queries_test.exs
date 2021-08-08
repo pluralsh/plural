@@ -215,6 +215,27 @@ defmodule GraphQl.UserQueriesTest do
       assert from_connection(found["audits"])
              |> ids_equal(audits)
     end
+
+    test "It can fetch audit metrics for a token" do
+      token = insert(:persisted_token)
+      insert_list(3, :access_token_audit, token: token, country: "US")
+      insert_list(2, :access_token_audit, token: token, country: "CN")
+      insert(:access_token_audit, country: "UK")
+
+      {:ok, %{data: %{"token" => %{"metrics" => metrics}}}} = run_query("""
+        query Token($id: ID!) {
+          token(id: $id) {
+            id
+            metrics { country count }
+          }
+        }
+      """, %{"id" => token.id}, %{current_user: token.user})
+
+      grouped = Enum.into(metrics, %{}, & {&1["country"], &1["count"]})
+      assert grouped["US"] == 3
+      assert grouped["CN"] == 2
+      refute grouped["UK"]
+    end
   end
 
   describe "webhooks" do

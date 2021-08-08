@@ -122,6 +122,10 @@ defmodule GraphQl.Schema.User do
       resolve &User.list_token_audits/2
     end
 
+    field :metrics, list_of(:audit_metric) do
+      resolve &User.audit_metrics/2
+    end
+
     timestamps()
   end
 

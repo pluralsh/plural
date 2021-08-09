@@ -3,6 +3,7 @@ import { ResponsiveLine } from '@nivo/line'
 import moment from 'moment'
 import { last } from 'lodash'
 import { Box, Text } from 'grommet'
+import { normalizeColor } from 'grommet/utils'
 
 export function dateFormat(date) {
   return moment(date).format('MM/DD h:mm:ss a')
@@ -28,6 +29,44 @@ function SliceTooltip({point: {serieColor, serieId, data}}) {
       <Text size='small' weight='bold'>{data.yFormatted}</Text>
     </Box>
   )
+}
+
+const COLOR_MAP = [
+  'blue', 
+  'orange', 
+  'green', 
+  'purple', 
+  'red',
+
+  'blue-light', 
+  'orange-light', 
+  'green-light', 
+  'purple-light', 
+  'red-light',
+  
+  'blue-dark', 
+  'orange-dark', 
+  'green-dark', 
+  'purple-dark', 
+  'red-dark',
+
+  'blue-light-2', 
+  'orange-light-2', 
+  'green-light-2', 
+  'purple-light-2', 
+  'red-light-2',
+
+  'blue-dark-2', 
+  'orange-dark-2', 
+  'green-dark-2', 
+  'purple-dark-2', 
+  'red-dark-2',
+]
+
+export function useColorMap(theme, colors) {
+  return useMemo(() => {
+    return (colors || COLOR_MAP).map((c) => normalizeColor(c, theme))
+  }, [theme])
 }
 
 export function Graph({data, yFormat, tick}) {

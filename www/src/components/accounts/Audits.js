@@ -1,15 +1,21 @@
 import React, { useContext, useEffect, useState } from 'react'
 import moment from 'moment'
 import { Box, Text } from 'grommet'
+import { List, PieChart } from 'grommet-icons'
 import { useQuery } from 'react-apollo'
 import Avatar from '../users/Avatar'
-import { AUDITS_Q } from './queries'
+import { AUDITS_Q, AUDIT_METRICS } from './queries'
 import { extendConnection } from '../../utils/graphql'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 import { StandardScroller } from '../utils/SmoothScroller'
 import { Link } from 'react-router-dom'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { formatLocation } from '../../utils/geo'
+import { SectionChoice } from '../utils/SectionChoice'
+import { Chloropleth } from '../utils/Chloropleth'
+import { SIDEBAR_WIDTH } from '../constants'
+import lookup from 'country-code-lookup'
+import { SectionContentContainer } from '../Explore'
 
 const HeaderItem = ({text, width, nobold}) => (<Box width={width}><Text size='small' weight={nobold ? null : 500}>{text}</Text></Box>)
 
@@ -81,7 +87,26 @@ function Audit({audit}) {
   )
 }
 
+function AuditChloro() {
+  const {data} = useQuery(AUDIT_METRICS, {fetchPolicy: 'cache-and-network'})
+
+  if (!data) return null
+
+  const metrics = data.auditMetrics.map(({country, count}) => ({
+    id: lookup.byIso(country).iso3, value: count
+  }))
+
+  return (
+    <SectionContentContainer header='Geodistribution'>
+      <Box fill>
+        <Chloropleth data={metrics} />
+      </Box>
+    </SectionContentContainer>
+  )
+}
+
 export function Audits() {
+  const [graph, setGraph] = useState(false)
   const [listRef, setListRef] = useState(null)
   const {data, loading, fetchMore} = useQuery(AUDITS_Q, {fetchPolicy: 'cache-and-network'})
   const {setBreadcrumbs} = useContext(BreadcrumbsContext)
@@ -94,22 +119,40 @@ export function Audits() {
   const {edges, pageInfo} = data.audits
 
   return (
-    <Box fill>
-      <AuditHeader />
-      <Box fill>
-        <StandardScroller
-          listRef={listRef}
-          setListRef={setListRef}
-          hasNextPage={pageInfo.hasNextPage}
-          items={edges}
-          loading={loading} 
-          placeholder={Placeholder}
-          mapper={({node}) => <Audit key={node.id} audit={node} />} 
-          loadNextPage={() => pageInfo.hasNextPage && fetchMore({
-            variables: {cursor: pageInfo.endCursor},
-            updateQuery: (prev, {fetchMoreResult: {audits}}) => extendConnection(prev, audits, 'audits')
-          })} />
+    <Box fill direction='row'>
+      <Box flex={false} fill='vertical' width={SIDEBAR_WIDTH} background='backgroundColor' 
+           pad={{vertical: 'medium', horizontal: 'small'}} gap='small'>
+        <SectionChoice
+          icon={<List size='14px' />}
+          label='List View'
+          selected={!graph}
+          onClick={() => setGraph(false)} />
+        <SectionChoice
+          icon={<PieChart size='14px' />}
+          label='Graph View'
+          selected={graph}
+          onClick={() => setGraph(true)} />
       </Box>
+      {graph && <AuditChloro />}
+      {!graph && (
+        <Box fill>
+          <AuditHeader />
+          <Box fill>
+            <StandardScroller
+              listRef={listRef}
+              setListRef={setListRef}
+              hasNextPage={pageInfo.hasNextPage}
+              items={edges}
+              loading={loading} 
+              placeholder={Placeholder}
+              mapper={({node}) => <Audit key={node.id} audit={node} />} 
+              loadNextPage={() => pageInfo.hasNextPage && fetchMore({
+                variables: {cursor: pageInfo.endCursor},
+                updateQuery: (prev, {fetchMoreResult: {audits}}) => extendConnection(prev, audits, 'audits')
+              })} />
+          </Box>
+        </Box>
+      )}
     </Box>
   )
 }

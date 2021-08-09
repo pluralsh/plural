@@ -215,6 +215,12 @@ export const AUDITS_Q = gql`
   ${AuditFragment}
 `
 
+export const AUDIT_METRICS = gql`
+  query {
+    auditMetrics { country count }
+  }
+`
+
 export const IMPERSONATE_SERVICE_ACCOUNT = gql`
   mutation Impersonate($id: ID) {
     impersonateServiceAccount(id: $id) { jwt }

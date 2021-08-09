@@ -97,6 +97,14 @@ export const TOKEN_AUDITS = gql`
   ${TokenAuditFragment}
 `
 
+export const TOKEN_METRICS = gql`
+  query Token($id: ID!) {
+    token(id: $id) {
+      metrics { country count }
+    }
+  }
+`
+
 export const WEBHOOKS_Q = gql`
   query Webhooks($cursor: String) {
     webhooks(first: 10, after: $cursor) {

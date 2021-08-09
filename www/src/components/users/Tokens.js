@@ -1,8 +1,8 @@
 import React, { useCallback, useState } from 'react'
 import { Box, Text, Layer } from 'grommet'
-import { List, Trash } from 'grommet-icons'
+import { List, Trash, PieChart } from 'grommet-icons'
 import { useMutation, useQuery } from 'react-apollo'
-import { CREATE_TOKEN, TOKENS_Q, DELETE_TOKEN, TOKEN_AUDITS } from './queries'
+import { CREATE_TOKEN, TOKENS_Q, DELETE_TOKEN, TOKEN_AUDITS, TOKEN_METRICS } from './queries'
 import { Button, Scroller, Copyable, BORDER_COLOR, ModalHeader } from 'forge-core'
 import moment from 'moment'
 import { deepUpdate, extendConnection, removeConnection, updateCache } from '../../utils/graphql'
@@ -13,7 +13,8 @@ import { Placeholder } from '../accounts/Audits'
 import { Icon } from '../accounts/Group'
 import { Confirm } from '../utils/Confirm'
 import { formatLocation } from '../../utils/geo'
-
+import lookup from 'country-code-lookup'
+import { Chloropleth } from '../utils/Chloropleth'
 
 function AuditHeader() {
   return (
@@ -74,8 +75,27 @@ function TokenAudits({id}) {
   )
 }
 
+function TokenMetrics({id}) {
+  const {data} = useQuery(TOKEN_METRICS, {
+    variables: {id},
+    fetchPolicy: 'cache-and-network'
+  })
+
+  if (!data) return null
+
+  const metrics = data.token.metrics.map(({country, count}) => ({
+    id: lookup.byIso(country).iso3, value: count
+  }))
+
+  return (
+    <Box fill='horizontal' height='50vh' pad='small'>
+      <Chloropleth data={metrics} />
+    </Box>
+  )
+}
+
 function Token({token: {token, insertedAt, id}}) {
-  const [open, setOpen] = useState(false)
+  const [modal, setModal] = useState(null)
   const [confirm, setConfirm] = useState(false)
   const doConfirm = useCallback((e) => {
     e.stopPropagation()
@@ -91,6 +111,7 @@ function Token({token: {token, insertedAt, id}}) {
     }),
     onCompleted: () => setConfirm(false)
   })
+  const close = useCallback(() => setModal(null), [setModal])
 
   return (
     <>
@@ -106,7 +127,22 @@ function Token({token: {token, insertedAt, id}}) {
         <Box pad={{right: 'small'}}>
           <Text size='small'>{moment(insertedAt).fromNow()}</Text>
         </Box>
-        <Icon icon={List} tooltip='Audits' hover='light-3' onClick={() => setOpen(true)} />
+        <Icon
+          icon={PieChart}
+          tooltip='Metrics'
+          hover='light-3'
+          onClick={() => setModal({
+            header: 'Usage Metrics',
+            content: <TokenMetrics id={id} />
+          })} />
+        <Icon 
+          icon={List} 
+          tooltip='Audits' 
+          hover='light-3' 
+          onClick={() => setModal({
+            header: 'Audit Logs',
+            content: <TokenAudits id={id} />
+          })} />
         <Icon 
           icon={Trash} 
           tooltip='Delete' 
@@ -123,11 +159,11 @@ function Token({token: {token, insertedAt, id}}) {
         loading={loading}
         label='Delete' />
     )}
-    {open && (
-      <Layer onEsc={() => setOpen(false)} onClickOutside={() => setOpen(false)}>
+    {modal && (
+      <Layer onEsc={close} onClickOutside={close}>
         <Box width='50vw' height='60vh'>
-          <ModalHeader text='Audit Logs' setOpen={setOpen} />
-          <TokenAudits id={id} />
+          <ModalHeader text={modal.header} setOpen={close} />
+          {modal.content}
         </Box>
       </Layer>
     )}

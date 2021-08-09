@@ -4,7 +4,8 @@ defmodule ApiWeb.Plugs.RemoteIp do
   def init(opts), do: RemoteIp.init(opts)
 
   def call(%{req_headers: headers} = conn, %RemoteIp.Config{headers: allowed}) do
-    ips = RemoteIp.Headers.parse(headers, allowed) |> Enum.reverse()
+    ips = RemoteIp.Headers.parse(headers, allowed)
+          |> Enum.reverse()
     %{conn | remote_ip: find_ip(ips, conn.remote_ip)}
   end
 

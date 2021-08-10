@@ -1,8 +1,9 @@
 import React, { useContext } from 'react'
-import { Box, Text, ThemeContext } from 'grommet'
+import { ThemeContext } from 'grommet'
 import { ResponsiveChoropleth } from '@nivo/geo'
 import countries from './world_countries'
 import { useColorMap } from './Graph'
+import { max } from 'lodash'
 
 const COLOR_MAP = [
   'blue-light-2',
@@ -13,7 +14,7 @@ const COLOR_MAP = [
 ]
 
 export function Chloropleth({data}) {
-  const max = Math.max(data.map(({value}) => value))
+  const maximum = max(data.map(({value}) => value))
   const theme = useContext(ThemeContext)
   const colors = useColorMap(theme, COLOR_MAP)
 
@@ -23,7 +24,7 @@ export function Chloropleth({data}) {
       features={countries.features}
       label="properties.name"
       valueFormat=".2s"
-      domain={[ 0, max + 1 ]}
+      domain={[ 0, maximum + 1 ]}
       colors={colors}
       unknownColor="#666666"
       enableGraticule={true}

@@ -90,6 +90,10 @@ RUN apk update && \
       openssl-dev ca-certificates git
 
 RUN curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.16.0
+RUN curl -L https://github.com/accurics/terrascan/releases/download/v1.9.0/terrascan_1.9.0_Linux_x86_64.tar.gz > terrascan.tar.gz && \
+      tar -xf terrascan.tar.gz terrascan && rm terrascan.tar.gz && \
+      chmod +x terrascan && \
+      mv terrascan /usr/local/bin/terrascan
 
 ENV REPLACE_OS_VARS=true \
     APP_NAME=${APP_NAME} \

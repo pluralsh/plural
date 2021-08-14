@@ -1,6 +1,6 @@
 import gql from 'graphql-tag'
 import { RepoFragment, InstallationFragment, IntegrationFragment, ArtifactFragment, CategoryFragment } from '../../models/repo'
-import { ChartFragment, VersionFragment, ChartInstallationFragment, VersionTagFragment } from '../../models/chart'
+import { ChartFragment, VersionFragment, ChartInstallationFragment, VersionTagFragment, PackageScan } from '../../models/chart'
 import { TerraformFragment, TerraformInstallationFragment } from '../../models/terraform'
 import { DockerRepoFragment, DockerImageFragment, VulnerabilityFragment, DockerRepository } from '../../models/docker'
 import { RecipeFragment, RecipeSectionFragment } from '../../models/recipe'
@@ -200,9 +200,10 @@ export const CHART_Q = gql`
         node {
           ...VersionFragment
           tags { ...VersionTagFragment }
+          scan { ...PackageScan }
           imageDependencies { 
             id
-            image { 
+            image {
               ...DockerImageFragment
               dockerRepository { ...DockerRepoFragment }
             }
@@ -220,6 +221,7 @@ export const CHART_Q = gql`
   ${VersionTagFragment}
   ${DockerImageFragment}
   ${DockerRepoFragment}
+  ${PackageScan}
 `;
 
 export const UPDATE_CHART = gql`
@@ -261,6 +263,7 @@ export const TF_Q = gql`
       edges {
         node {
           ...VersionFragment
+          scan { ...PackageScan }
           tags { ...VersionTagFragment }
         }
       }
@@ -273,6 +276,7 @@ export const TF_Q = gql`
   ${RepoFragment}
   ${TerraformFragment}
   ${TerraformInstallationFragment}
+  ${PackageScan}
 `;
 
 export const DOCKER_Q = gql`

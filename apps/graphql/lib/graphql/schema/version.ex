@@ -38,9 +38,38 @@ defmodule GraphQl.Schema.Version do
     field :chart,     :chart, resolve: dataloader(Chart)
     field :terraform, :terraform, resolve: dataloader(Terraform)
     field :crds,      list_of(:crd), resolve: dataloader(Chart)
+    field :scan,      :package_scan, resolve: dataloader(Version)
     field :image_dependencies, list_of(:image_dependency), resolve: dataloader(Docker)
 
     timestamps()
+  end
+
+  object :package_scan do
+    field :id, non_null(:id)
+    field :grade, :image_grade
+
+    field :violations, list_of(:scan_violation), resolve: dataloader(Version)
+    field :errors, list_of(:scan_error), resolve: dataloader(Version)
+
+    timestamps()
+  end
+
+  object :scan_violation do
+    field :rule_name,     :string
+    field :description,   :string
+    field :rule_id,       :string
+    field :severity,      :vuln_grade
+    field :category,      :string
+    field :resource_name, :string
+    field :resource_type, :string
+    field :line,          :integer
+    field :file,          :string
+
+    timestamps()
+  end
+
+  object :scan_error do
+    field :message, :string
   end
 
   object :version_tag do

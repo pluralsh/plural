@@ -12,6 +12,7 @@ import { Versions } from '../versions/Versions'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 import { updateCache, deepUpdate } from '../../utils/graphql'
 import { DeferredUpdates } from './DeferredUpdates'
+import { PackageGrade, ScanResults } from './PackageScan'
 
 function Code({value, children, language}) {
   return (
@@ -59,8 +60,8 @@ function TerraformInstaller({installation, terraformId, terraformInstallation, v
   })
 
   return installed ?
-    <SecondaryButton round='xsmall' label='Uninstall' pad='small' error={error} onClick={mutation} /> :
-    <Button round='xsmall' label='Install' pad='small' error={error} onClick={mutation} />
+    <SecondaryButton round='xsmall' label='Uninstall' error={error} onClick={mutation} /> :
+    <Button round='xsmall' label='Install' error={error} onClick={mutation} />
 }
 
 function TerraformHeader({terraform: {id, name, description, installation, repository}, version}) {
@@ -73,6 +74,7 @@ function TerraformHeader({terraform: {id, name, description, installation, repos
         <Text size='medium'>{name}</Text>
         <Text size='small'><i>{description}</i></Text>
       </Box>
+      {version.scan && <PackageGrade scan={version.scan} />}
       {repository.installation && (
         <Box width='100px' direction='row' justify='end'>
           <TerraformInstaller
@@ -205,6 +207,11 @@ export default function Terraform() {
               <TabHeaderItem name='dependencies'>
                 <Text size='small' weight={500}>Dependencies</Text>
               </TabHeaderItem>
+              {currentVersion.scan && (
+                <TabHeaderItem name='scan'>
+                  <Text size='small' weight={500}>Security</Text>
+                </TabHeaderItem>
+              )}
               {terraformModule.editable && (
                 <TabHeaderItem name='edit'>
                   <Text size='small' weight={500}>Edit</Text>
@@ -218,6 +225,9 @@ export default function Terraform() {
             </TabHeader>
             <TabContent name='readme'>
               <Readme readme={currentVersion.readme} />
+            </TabContent>
+            <TabContent name='scan'>
+              <ScanResults scan={currentVersion.scan} />
             </TabContent>
             <TabContent name='configuration'>
               <TemplateView valuesTemplate={currentVersion.valuesTemplate} />

@@ -4,7 +4,7 @@ defmodule Core.Services.Versions do
 
   alias Core.PubSub
   alias Core.Services.{Charts, Terraform}
-  alias Core.Schema.{Version, User, VersionTag}
+  alias Core.Schema.{Version, User, VersionTag, PackageScan}
 
   @type tool_type :: :helm | :terraform
   @type version_resp :: {:ok, Version.t} | {:error, term}
@@ -81,6 +81,44 @@ defmodule Core.Services.Versions do
     |> execute(extract: :update)
     |> notify(:update, user)
   end
+
+  def record_scan(scan, %Version{} = version) when is_binary(scan) do
+    Poison.decode!(scan, as: Core.Scan.type())
+    |> record_scan(version)
+  end
+
+  def record_scan(%{results: scan_result}, %Version{id: version_id}) do
+    case Core.Repo.get_by(PackageScan, version_id: version_id) do
+      %PackageScan{} = scan -> Core.Repo.preload(scan, [:errors, :violations])
+      nil -> %PackageScan{version_id: version_id}
+    end
+    |> PackageScan.changeset(scan_attributes(scan_result))
+    |> Core.Repo.insert_or_update()
+  end
+
+  def scan_attributes(%{violations: violations, scan_errors: errors, scan_summary: summary}) do
+    %{
+      violations: scan_violations(violations),
+      errors: scan_errors(errors),
+      grade: grade(summary),
+    }
+  end
+
+  defp scan_violations([_ | _] = violations) do
+    violations
+    |> Enum.map(&Map.put(&1, :severity, String.downcase(&1.severity)))
+    |> Enum.map(&Map.from_struct/1)
+  end
+
+  defp scan_errors([_ | _] = errors) do
+    Enum.map(errors, & %{message: &1.errMsg})
+  end
+  defp scan_errors(_), do: []
+
+  defp grade(%{high: v}) when v > 0, do: :d
+  defp grade(%{medium: v}) when v > 0, do: :c
+  defp grade(%{low: v}) when v > 0, do: :b
+  defp grade(_), do: :a
 
   defp maybe_insert_tags(transaction, %{tags: tags}) do
     tags

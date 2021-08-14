@@ -1,14 +1,16 @@
 defmodule Core.PubSub.Fanout.ChartsTest do
   use Core.SchemaCase, async: false
   alias Core.PubSub
+  use Mimic
 
   describe "VersionCreated" do
     test "On version create it will bump all subscribing chart installations" do
       chart = insert(:chart)
       version = insert(:version, version: "0.1.1", chart: chart)
       insert(:version_tag, version: version, chart: chart, tag: "latest")
-
+      expect(Core.Conduit.Broker, :publish, fn %Conduit.Message{body: _}, :scan -> :ok end)
       event = %PubSub.VersionCreated{item: version}
+
       {:ok, rollout} = Core.PubSub.Fanout.fanout(event)
 
       assert rollout.event.__struct__ == PubSub.VersionCreated
@@ -22,6 +24,7 @@ defmodule Core.PubSub.Fanout.ChartsTest do
       chart = insert(:chart)
       version = insert(:version, version: "0.1.1", chart: chart)
       insert(:version_tag, version: version, chart: chart, tag: "latest")
+      expect(Core.Conduit.Broker, :publish, fn %Conduit.Message{body: _}, :scan -> :ok end)
 
       event = %PubSub.VersionUpdated{item: version}
       {:ok, rollout} = Core.PubSub.Fanout.fanout(event)

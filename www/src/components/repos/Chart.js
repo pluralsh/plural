@@ -16,6 +16,7 @@ import { Docker } from 'grommet-icons'
 import { dockerPull } from './misc'
 import { PluralConfigurationContext } from '../login/CurrentUser'
 import { DeferredUpdates } from './DeferredUpdates'
+import { PackageGrade, ScanResults } from './PackageScan'
 
 function ChartInfo({version: {helm, insertedAt}}) {
   return (
@@ -80,13 +81,12 @@ function ChartInstaller({chartInstallation, versionId, chartId, installation}) {
     <Button
       round='xsmall'
       label='Install'
-      pad='small'
       error={error}
       onClick={mutation} />
   )
 }
 
-function ChartHeader({version: {helm, chart, version, id}, chartInstallation, installation}) {
+function ChartHeader({version: {helm, chart, version, scan, id}, chartInstallation, installation}) {
   return (
     <Box direction='row' align='center' gap='medium' margin={{bottom: 'small'}} style={{minHeight: '50px'}}>
       <Box width='50px' heigh='50px'>
@@ -96,9 +96,10 @@ function ChartHeader({version: {helm, chart, version, id}, chartInstallation, in
         <Text size='medium'>{chart.name} - {version}</Text>
         <Text size='small'><i>{helm.description}</i></Text>
       </Box>
+      {scan && <PackageGrade scan={scan} />}
       <Box width='100px' direction='row' justify='end'>
       {chartInstallation && chartInstallation.version.id === id ?
-        <Box round='xsmall' pad='small' border>Installed</Box> :
+        <Box round='xsmall' pad={{horizontal: 'small', vertical: 'xsmall'}} border>Installed</Box> :
         installation && (
           <ChartInstaller
             chartInstallation={chartInstallation}
@@ -204,6 +205,11 @@ export default function Chart() {
               <TabHeaderItem name='dependencies'>
                 <Text size='small' weight={500}>Dependencies</Text>
               </TabHeaderItem>
+              {currentVersion.scan && (
+                <TabHeaderItem name='scan'>
+                  <Text size='small' weight={500}>Security</Text>
+                </TabHeaderItem>
+              )}
               {chartInst && (
                 <TabHeaderItem name='updates'>
                   <Text size='small' weight={500}>Update Queue</Text>
@@ -212,6 +218,9 @@ export default function Chart() {
             </TabHeader>
             <TabContent name='readme'>
               <ChartReadme version={currentVersion} />
+            </TabContent>
+            <TabContent name='scan'>
+              <ScanResults scan={currentVersion.scan} />
             </TabContent>
             <TabContent name='configuration'>
               <TemplateView version={currentVersion} />

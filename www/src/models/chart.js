@@ -42,3 +42,34 @@ export const ChartInstallationFragment = gql`
     version { id version }
   }
 `;
+
+export const ScanViolation = gql`
+  fragment ScanViolation on ScanViolation {
+    ruleName
+    description
+    ruleId
+    severity
+    category
+    resourceName
+    resourceType
+    file
+    line
+  }
+`
+
+export const ScanError = gql`
+  fragment ScanError on ScanError {
+    message
+  }
+`
+
+export const PackageScan = gql`
+  fragment PackageScan on PackageScan {
+    id
+    grade
+    violations { ...ScanViolation }
+    errors { ...ScanError }
+  }
+  ${ScanViolation}
+  ${ScanError}
+`

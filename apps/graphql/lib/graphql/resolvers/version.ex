@@ -1,9 +1,12 @@
 defmodule GraphQl.Resolvers.Version do
   use GraphQl.Resolvers.Base, model: Core.Schema.Version
   alias Core.Services.{Versions}
-  alias Core.Schema.VersionTag
+  alias Core.Schema.{VersionTag, PackageScan, ScanViolation, ScanError}
 
   def query(VersionTag, _), do: VersionTag
+  def query(PackageScan, _), do: PackageScan
+  def query(ScanViolation, _), do: ScanViolation
+  def query(ScanError, _), do: ScanError
   def query(_, _), do: Version
 
   def list_versions(%{chart_id: chart_id} = args, _) when not is_nil(chart_id) do

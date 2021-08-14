@@ -70,8 +70,8 @@ export const DEFAULT_COLOR_THEME = {
   good: '#00ac46',
   low: 'orange-light',
   medium: 'orange',
-  high: 'red',
-  critical: 'red-dark',
+  high: 'red-dark',
+  critical: 'red-dark-2',
   label: 'light-2',
   'input-border': 'light-5',
   ...PLURAL_THEME

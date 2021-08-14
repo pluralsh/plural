@@ -11,6 +11,7 @@ defmodule Core.Conduit.Base do
         defqueue "plural.webhook"
         defqueue "plural.dkr"
         defqueue "plural.upgrade"
+        defqueue "plural.scan"
       end
 
       pipeline :out_tracking do
@@ -32,6 +33,7 @@ defmodule Core.Conduit.Base do
         publish :webhook, exchange: "plural.topic", to: "plural.webhook"
         publish :dkr, exchange: "plural.topic", to: "plural.dkr"
         publish :upgrade, exchange: "plural.topic", to: "plural.upgrade"
+        publish :scan, exchange: "plural.topic", to: "plural.scan"
       end
 
       outgoing do

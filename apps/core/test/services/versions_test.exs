@@ -69,4 +69,18 @@ defmodule Core.Services.VersionsTest do
       assert_receive {:event, %PubSub.VersionUpdated{item: ^result}}
     end
   end
+
+  describe "record_scan/2" do
+    test "it can persist a scan result" do
+      version = insert(:version)
+      result = Path.join(:code.priv_dir(:core), "scan.json") |> File.read!()
+
+      {:ok, scan} = Versions.record_scan(result, version)
+
+      assert scan.grade == :d
+      assert length(scan.violations) == 7
+
+      {:ok, _} = Versions.record_scan(result, version)
+    end
+  end
 end

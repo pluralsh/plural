@@ -109,6 +109,7 @@ defmodule Core.Services.Versions do
     |> Enum.map(&Map.put(&1, :severity, String.downcase(&1.severity)))
     |> Enum.map(&Map.from_struct/1)
   end
+  defp scan_violations(_), do: []
 
   defp scan_errors([_ | _] = errors) do
     Enum.map(errors, & %{message: &1.errMsg})

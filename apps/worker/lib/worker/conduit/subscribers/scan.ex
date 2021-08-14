@@ -30,7 +30,7 @@ defmodule Worker.Conduit.Subscribers.Scan do
     version: v,
     chart: %Chart{name: chart, repository: %{name: name}}
   }) do
-    {"helm", "http://chartmuseum:8080/cm/#{name}/#{chart}-#{v}.tgz"}
+    {"helm", "http://chartmuseum:8080/cm/#{name}/charts/#{chart}-#{v}.tgz"}
   end
   defp scan_details(%Version{terraform: %Terraform{}} = v),
     do: {"terraform", Core.Storage.url({v.package, v}, :original)}

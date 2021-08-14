@@ -32,7 +32,7 @@ defmodule Worker.Conduit.Subscribers.ScanTest do
     test "it can scan a chart version" do
       result = Path.join(:code.priv_dir(:core), "scan.json") |> File.read!()
       version = insert(:version, chart: insert(:chart))
-      url = "http://chartmuseum:8080/cm/#{version.chart.repository.name}/#{version.chart.name}-#{version.version}.tgz"
+      url = "http://chartmuseum:8080/cm/#{version.chart.repository.name}/charts/#{version.chart.name}-#{version.version}.tgz"
       expect(System, :cmd, fn
         "terrascan", [
           "scan",

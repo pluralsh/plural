@@ -43,6 +43,10 @@ defmodule Core.Schema.Version do
   def ordered(query \\ __MODULE__, order \\ [desc: :inserted_at]),
     do: from(v in query, order_by: ^order)
 
+  def preloaded(query \\ __MODULE__, preloads \\ [:terraform, [chart: :repository]]) do
+    from(v in query, preload: ^preloads)
+  end
+
   @valid ~w(version chart_id readme values_template)a
 
   def changeset(model, attrs \\ %{}) do

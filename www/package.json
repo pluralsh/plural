@@ -54,7 +54,7 @@
     "react-json-view": "^1.21.3",
     "react-markdown": "^4.2.2",
     "react-portal": "^4.2.1",
-    "react-quill": "^1.3.3",
+    "react-quill": "1.3.5",
     "react-router": "^5.1.2",
     "react-router-dom": "^5.1.2",
     "react-sage": "^0.1.5",

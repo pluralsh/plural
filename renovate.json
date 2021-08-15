@@ -1,0 +1,25 @@
+{
+  "extends": [
+    "config:base",
+    ":dependencyDashboard",
+    ":prHourlyLimitNone"
+  ],
+  "packageRules": [
+    {
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "enabled": true
+    },
+    {
+      "description": "Disable major update k8s client-go",
+      "matchPackagePatterns": ["^k8s.io/client-go"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    }
+  ],
+  "separateMinorPatch": true
+}

@@ -6,6 +6,9 @@ defmodule Core.Services.Rbac do
   end
 
   def validate(user, action, opts \\ [])
+  def validate(%User{id: id, account: %{id: aid, root_user_id: id}}, _, %{account: %{id: aid}}),
+    do: true
+  def validate(%User{id: id, account: %{root_user_id: id}}, _, %{account: %{}}), do: false
   def validate(%User{id: id, account: %{root_user_id: id}}, _, _), do: true
   def validate(%User{} = user, action, opts) do
     options = Map.new(opts)

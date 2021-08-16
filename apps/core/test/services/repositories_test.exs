@@ -78,8 +78,9 @@ defmodule Core.Services.RepositoriesTest do
       assert repo_id == repo.id
     end
 
-    test "Nonpublishers cannot update their repositories" do
+    test "Nonpublishers cannot update other's repositories" do
       user = insert(:user)
+      {:ok, %{user: user}} = Core.Services.Accounts.create_account(user)
       repo = insert(:repository)
 
       {:error, _} = Repositories.update_repository(%{name: "piazza"}, repo.id, user)

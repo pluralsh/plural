@@ -60,7 +60,7 @@ function Publishers({account: {id: accountId}, publisher: {id}}) {
       {edges.map(({node}) => (
         <Box key={node.id} pad={{horizontal: 'small', vertical: 'xsmall'}} direction='row'
              align='center' gap='small' hoverIndicator='light-2' focusIndicator={false}
-             onClick={() => history.push(node.id === id ? '/publishers/mine/repos' : `/publisher/${id}`)}>
+             onClick={() => history.push(node.id === id ? '/publishers/mine/repos' : `/publisher/${id}/repos`)}>
           <Avatar user={node} size='35px' />
           <Box>
             <Text size='small' weight={500}>{node.name}</Text>

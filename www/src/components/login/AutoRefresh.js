@@ -40,7 +40,7 @@ export function AutoRefresh() {
       submit={reload}
       cancel={() => setOpen(false)}
       header='New version available'
-      label='Reboot'
+      label='Refresh'
       description="It looks like there's a new version of plural available to use" />
   )
 }

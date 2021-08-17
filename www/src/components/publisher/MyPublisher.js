@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { useMutation } from 'react-apollo'
+import { useMutation, useQuery } from 'react-apollo'
 import { InputCollection, ResponsiveInput, Button } from 'forge-core'
 import { Box, Anchor, Text } from 'grommet'
 import Repositories from '../repos/Repositories'
 import CreateRepository from '../repos/CreateRepository'
 import { CurrentUserContext, PluralConfigurationContext } from '../login/CurrentUser'
-import { EDIT_PUBLISHER, LINK_ACCOUNT } from './queries'
+import { EDIT_PUBLISHER, FULL_PUBLISHER_Q, LINK_ACCOUNT } from './queries'
 import { ME_Q } from '../users/queries'
 import { CONNECT_ICON, AUTHORIZE_URL } from './constants'
 import { Add, Edit, List, Stripe } from 'grommet-icons'
@@ -18,6 +18,7 @@ import { useFilePicker } from 'react-sage'
 import { deepUpdate, updateCache } from '../../utils/graphql'
 import Avatar from '../users/Avatar'
 import { SectionPortal } from '../Explore'
+import { LoopingLogo } from '../utils/AnimatedLogo'
 
 function AccountConnected() {
   return (
@@ -111,7 +112,7 @@ function EditAvatar({publisher}) {
 }
 
 export default function MyPublisher() {
-  const {editing} = useParams()
+  const {editing, id} = useParams()
   const me = useContext(CurrentUserContext)
   const {setBreadcrumbs} = useContext(BreadcrumbsContext)
   useEffect(() => {
@@ -122,25 +123,36 @@ export default function MyPublisher() {
     ])
   }, [me, setBreadcrumbs, editing])
 
+  const pubId = id === 'mine' ? me.publisher.id : id
+  const {data} = useQuery(FULL_PUBLISHER_Q, {
+    variables: {id: pubId},
+    fetchPolicy: 'cache-and-network'
+  })
+
+  if (!data) return <LoopingLogo />
+
+  const {publisher} = data
+  const base = `/publishers/${publisher.id}/`
+
   return (
     <Box fill direction='row'>
       <Box width={SIDEBAR_WIDTH} flex={false} pad='small' gap='xsmall' background='backgroundColor'>
-        <EditAvatar publisher={me.publisher} />
-        <EditSelect base='/publishers/mine/' edit='repos' name='Repositories' icon={<List size='small' />} />
-        <EditSelect base='/publishers/mine/' edit='attrs' name='Edit Attributes' icon={<Edit size='small' />} />
-        <EditSelect base='/publishers/mine/' edit='create' name='Create Repository' icon={<Add size='small' />} />
-        {me.publisher.billingAccountId && <AccountConnected />}
-        {!me.publisher.billingAccountId && (<PublisherPayments publisher={me.publisher} />)}
+        <EditAvatar publisher={publisher} />
+        <EditSelect base={base} edit='repos' name='Repositories' icon={<List size='small' />} />
+        <EditSelect base={base} edit='attrs' name='Edit Attributes' icon={<Edit size='small' />} />
+        <EditSelect base={base} edit='create' name='Create Repository' icon={<Add size='small' />} />
+        {publisher.billingAccountId && <AccountConnected />}
+        {!publisher.billingAccountId && (<PublisherPayments publisher={publisher} />)}
       </Box>
       <Box fill style={{overflow: 'auto'}}>
         <EditContent edit='repos' name='Repositories'>
-          <Repositories publisher={me.publisher} deletable columns={2} />
+          <Repositories publisher={publisher} deletable columns={2} />
         </EditContent>
         <EditContent edit='attrs' name='Edit Attributes'>
-          <EditPublisher publisher={me.publisher} />
+          <EditPublisher publisher={publisher} />
         </EditContent>
         <EditContent edit='create' name='Create Repository'>
-          <CreateRepository publisher={me.publisher} />
+          <CreateRepository publisher={publisher} />
         </EditContent>
       </Box>
     </Box>

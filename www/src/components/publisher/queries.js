@@ -44,6 +44,16 @@ export const PUBLISHER_Q = gql`
   ${PublisherFragment}
 `;
 
+export const FULL_PUBLISHER_Q = gql`
+  query Publisher($publisherId: ID) {
+    publisher(id: $publisherId) {
+      ...PublisherFragment
+      billingAccountId
+    }
+  }
+  ${PublisherFragment}
+`;
+
 export const EDIT_PUBLISHER = gql`
   mutation EditPublisher($attributes: PublisherAttributes!) {
     updatePublisher(attributes: $attributes) {

@@ -39,7 +39,7 @@
     "react-codemirror": "^1.0.0",
     "react-collapsible": "^2.6.0",
     "react-contenteditable": "^3.3.2",
-    "react-copy-to-clipboard": "^5.0.2",
+    "react-copy-to-clipboard": "5.0.4",
     "react-countdown": "^2.3.1",
     "react-credit-cards": "^0.8.0",
     "react-diff-viewer": "^3.1.1",

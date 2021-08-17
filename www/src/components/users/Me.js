@@ -48,12 +48,13 @@ function CreatePublisherModal({setModal}) {
   )
 }
 
-function Publishers({account: {id: accountId}, publisher: {id}}) {
+function Publishers({account: {id: accountId}, publisher}) {
   let history = useHistory()
   const {data} = useQuery(ACCOUNT_PUBLISHERS, {variables: {accountId}})
 
   if (!data) return null
   const {edges} = data.publishers
+  const id = publisher && publisher.id
 
   return (
     <Box fill='horizontal' gap='xsmall'>

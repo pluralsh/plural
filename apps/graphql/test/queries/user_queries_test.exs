@@ -172,6 +172,26 @@ defmodule GraphQl.UserQueriesTest do
       assert from_connection(found)
              |> ids_equal(publishers)
     end
+
+    test "it can list publishable publishers for a users account" do
+      account = insert(:account)
+      user = insert(:user, account: account)
+      publishers = insert_list(3, :publisher, account: account)
+      role = insert(:role, repositories: ["*"], permissions: %{publish: true}, account: account)
+      insert(:role_binding, user: user, role: role)
+      user = Core.Services.Rbac.preload(user)
+
+      {:ok, %{data: %{"publishers" => found}}} = run_query("""
+        query {
+          publishers(first: 5, publishable: true) {
+            edges { node { id } }
+          }
+        }
+      """, %{}, %{current_user: user})
+
+      assert from_connection(found)
+             |> ids_equal(publishers)
+    end
   end
 
   describe "tokens" do

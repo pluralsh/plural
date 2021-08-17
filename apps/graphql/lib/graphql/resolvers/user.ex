@@ -117,6 +117,13 @@ defmodule GraphQl.Resolvers.User do
     |> paginate(args)
   end
 
+  def list_publishers(%{publishable: true} = args, %{context: %{current_user: user}}) do
+    Publisher.for_account(user.account_id)
+    |> Publisher.publishable(user)
+    |> Publisher.ordered()
+    |> paginate(args)
+  end
+
   def list_publishers(args, _) do
     Publisher.ordered()
     |> paginate(args)

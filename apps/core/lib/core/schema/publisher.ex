@@ -44,6 +44,23 @@ defmodule Core.Schema.Publisher do
     )
   end
 
+  def publishable(query \\ __MODULE__, user)
+  def publishable(query, %User{id: id, account: %{root_user_id: id}}), do: query
+  def publishable(query, %User{} = user) do
+    subquery =
+      user
+      |> User.roles()
+      |> Enum.filter(& &1.permissions.publish)
+      |> Enum.reduce(dynamic([p], p.name == "~~never-used~~"), fn %{repositories: repos}, acc ->
+        Enum.reduce(repos, acc, fn repo, q ->
+          like = String.replace(repo, "*", "%")
+          dynamic([p], ilike(p.name, ^like) or ^q)
+        end)
+      end)
+
+    from(r in query, where: ^subquery)
+  end
+
   @valid ~w(name owner_id description phone)a
 
   def changeset(model, attrs \\ %{}) do

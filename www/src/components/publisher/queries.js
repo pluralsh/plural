@@ -25,8 +25,8 @@ export const PUBLISHERS_Q = gql`
 `;
 
 export const ACCOUNT_PUBLISHERS = gql`
-  query AccountPubs($accountId: ID!, $cursor: String) {
-    publishers(first: 20, after: $cursor, accountId: $accountId) {
+  query AccountPubs($cursor: String) {
+    publishers(first: 50, after: $cursor, publishable: true) {
       pageInfo { ...PageInfo }
       edges { node { ...PublisherFragment } }
     }

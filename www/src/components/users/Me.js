@@ -48,9 +48,9 @@ function CreatePublisherModal({setModal}) {
   )
 }
 
-function Publishers({account: {id: accountId}, publisher}) {
+function Publishers({publisher}) {
   let history = useHistory()
-  const {data} = useQuery(ACCOUNT_PUBLISHERS, {variables: {accountId}})
+  const {data} = useQuery(ACCOUNT_PUBLISHERS)
 
   if (!data) return null
   const {edges} = data.publishers

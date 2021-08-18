@@ -61,7 +61,7 @@ function Publishers({publisher}) {
       {edges.map(({node}) => (
         <Box key={node.id} pad={{horizontal: 'small', vertical: 'xsmall'}} direction='row'
              align='center' gap='small' hoverIndicator='light-2' focusIndicator={false}
-             onClick={() => history.push(node.id === id ? '/publishers/mine/repos' : `/publisher/${id}/repos`)}>
+             onClick={() => history.push(node.id === id ? '/publishers/mine/repos' : `/publishers/${node.id}/repos`)}>
           <Avatar user={node} size='35px' />
           <Box>
             <Text size='small' weight={500}>{node.name}</Text>
@@ -108,7 +108,7 @@ export default function Me({me}) {
               wipeToken()
               window.location = '/login'
             }} />
-          {me.publisher && <Publishers account={account} publisher={me.publisher} />}
+          <Publishers account={account} publisher={me.publisher} />
           {!me.publisher && (
             <Item
               icon={<Add size='small' />}

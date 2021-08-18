@@ -45,8 +45,8 @@ export const PUBLISHER_Q = gql`
 `;
 
 export const FULL_PUBLISHER_Q = gql`
-  query Publisher($publisherId: ID) {
-    publisher(id: $publisherId) {
+  query Publisher($id: ID) {
+    publisher(id: $id) {
       ...PublisherFragment
       billingAccountId
     }

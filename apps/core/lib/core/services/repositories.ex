@@ -83,12 +83,21 @@ defmodule Core.Services.Repositories do
   @spec create_repository(map, User.t) :: {:ok, Repository.t} | {:error, term}
   def create_repository(attrs, %User{} = user) do
     publisher = Users.get_publisher_by_owner!(user.id)
+    create_repository(attrs, publisher.id, user)
+  end
 
+  @doc """
+  Creates a repository for a publisher id.  Will fail if the user does not have publish
+  permissions, or is not the owner of the publisher.
+  """
+  @spec create_repository(map, binary, User.t) :: {:ok, Repository.t} | {:error, term}
+  def create_repository(attrs, publisher_id, %User{} = user) do
     start_transaction()
     |> add_operation(:repo, fn _ ->
-      %Repository{publisher_id: publisher.id}
+      %Repository{publisher_id: publisher_id}
       |> Repository.changeset(attrs)
-      |> Core.Repo.insert()
+      |> allow(user, :create)
+      |> when_ok(:insert)
     end)
     |> add_operation(:licensed, fn %{repo: repo} ->
       generate_keys(repo)

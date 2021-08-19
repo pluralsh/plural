@@ -286,6 +286,7 @@ defmodule GraphQl.Schema.Repository do
   object :repository_mutations do
     field :create_repository, :repository do
       middleware Authenticated
+      arg :id,         :id
       arg :attributes, non_null(:repository_attributes)
 
       resolve safe_resolver(&Repository.create_repository/2)

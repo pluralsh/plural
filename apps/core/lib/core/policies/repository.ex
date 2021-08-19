@@ -40,7 +40,7 @@ defmodule Core.Policies.Repository do
     end
   end
 
-  def can?(%User{} = user, %Repository{} = repo, :edit) do
+  def can?(%User{} = user, %Repository{} = repo, action) when action in [:create, :edit] do
     case Core.Repo.preload(repo, [publisher: :account]) do
       %{publisher: pub} -> Core.Policies.Publisher.can?(user, pub, :edit)
       _ -> {:error, :forbidden}

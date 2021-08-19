@@ -151,6 +151,8 @@ defmodule GraphQl.Resolvers.Repository do
     Repositories.upsert_integration(attrs, repo.id, user)
   end
 
+  def create_repository(%{attributes: attrs, id: id}, %{context: %{current_user: user}}) when is_binary(id),
+    do: Repositories.create_repository(attrs, id, user)
   def create_repository(%{attributes: attrs}, %{context: %{current_user: user}}),
     do: Repositories.create_repository(attrs, user)
 

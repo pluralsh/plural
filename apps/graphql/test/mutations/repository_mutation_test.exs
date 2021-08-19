@@ -32,6 +32,40 @@ defmodule GraphQl.RepositoryMutationsTest do
       assert repo["name"] == "my repo"
       assert repo["publisher"]["id"] == id
     end
+
+    test "users with publish permissions can create repositories" do
+      account = insert(:account)
+      user = insert(:user, account: account)
+      pub  = insert(:publisher, account: account)
+      role = insert(:role, account: account, repositories: ["*"], permissions: %{publish: true})
+      insert(:role_binding, role: role, user: user)
+      user = Core.Services.Rbac.preload(user)
+
+      {:ok, %{data: %{"createRepository" => repo}}} = run_query("""
+        mutation CreateRepository($id: ID!, $attrs: RepositoryAttributes!) {
+          createRepository(id: $id, attributes: $attrs) {
+            id
+            name
+            publisher { id }
+          }
+        }
+      """, %{"id" => pub.id, "attrs" => %{
+        "name" => "my repo",
+        "integration_resource_definition" => %{
+          "name" => "definition",
+          "spec" => [
+            %{"type" => "STRING", "name" => "str"},
+            %{"type" => "OBJECT", "name" => "nest", "spec" => [
+              %{"type" => "STRING", "name" => "nested"}
+            ]}
+          ]
+        }
+      }}, %{current_user: user})
+
+      assert repo["id"]
+      assert repo["name"] == "my repo"
+      assert repo["publisher"]["id"] == pub.id
+    end
   end
 
   describe "updateRepository" do

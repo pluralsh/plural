@@ -11,8 +11,8 @@ import { DeferredUpdateFragment } from '../../models/upgrades'
 import { OIDCProvider } from '../../models/oauth'
 
 export const CREATE_REPO = gql`
-  mutation CreateRepository($attributes: RepositoryAttributes!) {
-    createRepository(attributes: $attributes) {
+  mutation CreateRepository($id: ID!, $attributes: RepositoryAttributes!) {
+    createRepository(id: $id, attributes: $attributes) {
       ...RepoFragment
     }
   }

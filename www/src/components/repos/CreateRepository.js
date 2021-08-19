@@ -140,15 +140,18 @@ export default function CreateRepository({publisher}) {
   const {oauthSettings, ...base} = state
   const attributes = {...base, tags: state.tags.map((t) => ({tag: t})), oauthSettings: oauthSettings.uriFormat ? oauthSettings : null}
   const [mutation, {loading, error}] = useMutation(CREATE_REPO, {
-    variables: {attributes: {
-      ...attributes, icon: image && image.file, darkIcon: darkImage && darkImage.file}
+    variables: {
+      id: publisher.id,
+      attributes: {
+        ...attributes, icon: image && image.file, darkIcon: darkImage && darkImage.file
+      }
     },
     update: (cache, { data: { createRepository } }) => updateCache(cache, {
       query: REPOS_Q, 
       variables: {publisherId: publisher.id},
       update: (prev) => appendConnection(prev, createRepository, 'repositories')
     }),
-    onCompleted: () => history.push('/publishers/mine/repos')
+    onCompleted: () => history.push(`/publishers/${publisher.id}/repos`)
   })
 
   return (

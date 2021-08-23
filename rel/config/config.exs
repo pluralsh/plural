@@ -26,7 +26,11 @@ config :core, Core.Repo,
   password: get_env("POSTGRES_PASSWORD"),
   hostname: get_env("DBHOST") || "plural-postgresql",
   ssl: String.to_existing_atom(get_env("DBSSL") || "false"),
+  cloudflare_zone: get_env("CLOUDFLARE_ZONE"),
   pool_size: 5
+
+config :cloudflare,
+  auth_token: get_env("CLOUDFLARE_AUTH_TOKEN")
 
 config :core, Core.Influx,
   database: "plural",

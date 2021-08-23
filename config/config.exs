@@ -118,7 +118,8 @@ config :cron, run: false
 config :core,
   registry: "dkr.plural.sh",
   plural_cmd: "plural",
-  stripe_connect_id: "ca_dummy"
+  stripe_connect_id: "ca_dummy",
+  onplural_domain: "onplural.sh"
 
 config :briefly,
   directory: [{:system, "TMPDIR"}, {:system, "TMP"}, {:system, "TEMP"}, "/tmp"],

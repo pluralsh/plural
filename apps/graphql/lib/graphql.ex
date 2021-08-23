@@ -20,6 +20,7 @@ defmodule GraphQl do
   import_types GraphQl.Schema.Upgrade
   import_types GraphQl.Schema.Rollout
   import_types GraphQl.Schema.OAuth
+  import_types GraphQl.Schema.Dns
 
   alias GraphQl.Resolvers.{
     User,
@@ -33,7 +34,8 @@ defmodule GraphQl do
     Version,
     Account,
     Incidents,
-    Rollout
+    Rollout,
+    Dns
   }
 
   @sources [
@@ -48,7 +50,8 @@ defmodule GraphQl do
     Version,
     Account,
     Incidents,
-    Rollout
+    Rollout,
+    Dns
   ]
 
   def context(ctx) do
@@ -94,6 +97,7 @@ defmodule GraphQl do
     import_fields :upgrade_queries
     import_fields :rollout_queries
     import_fields :oauth_queries
+    import_fields :dns_queries
   end
 
   mutation do
@@ -109,6 +113,7 @@ defmodule GraphQl do
     import_fields :upgrade_mutations
     import_fields :oauth_mutations
     import_fields :docker_mutations
+    import_fields :dns_mutations
   end
 
   subscription do

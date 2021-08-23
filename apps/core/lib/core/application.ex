@@ -6,6 +6,8 @@ defmodule Core.Application do
       Logger.add_backend(Sentry.LoggerBackend)
     end
 
+    Cloudflare.Client.init()
+
     children = [
       Core.Repo,
       Core.PubSub.Broadcaster,

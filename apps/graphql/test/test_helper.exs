@@ -8,5 +8,5 @@ Mimic.copy(Stripe.Subscription)
 Mimic.copy(Stripe.SubscriptionItem)
 Mimic.copy(Stripe.Invoice)
 Mimic.copy(Stripe.Card)
-
+Mimic.copy(Cloudflare.DnsRecord)
 ExUnit.start()

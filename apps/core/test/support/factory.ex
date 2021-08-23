@@ -432,4 +432,25 @@ defmodule Core.Factory do
       user: build(:user)
     }
   end
+
+  def dns_domain_factory do
+    %Schema.DnsDomain{
+      name: sequence(:domain, & "some-#{&1}.onplural.sh"),
+      creator: build(:user),
+      account: build(:account)
+    }
+  end
+
+  def dns_record_factory do
+    %Schema.DnsRecord{
+      name: sequence(:record, & "some-#{&1}.domain.onplural.sh"),
+      creator: build(:user),
+      domain: build(:dns_domain, name: "domain.onplural.sh"),
+      cluster: "cluster",
+      provider: :aws,
+      type: :a,
+      records: ["1.2.3.4"],
+      external_id: sequence(:external_id, & "ext-#{&1}")
+    }
+  end
 end

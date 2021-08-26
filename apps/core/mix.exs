@@ -76,7 +76,7 @@ defmodule Core.MixProject do
       {:instream, "~> 1.0"},
       {:swarm, "~> 3.4.0"},
       {:poison, "~> 3.0"},
-      {:cloudflare, git: "https://github.com/princemaple/elixir-cloudflare-api-client"},
+      {:cloudflare, "~> 0.2"},
       {:mint, "~> 1.0", override: true},
       {:mimic, "~> 1.1", only: :test}
     ]

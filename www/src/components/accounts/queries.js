@@ -1,5 +1,5 @@
 import { gql } from 'apollo-boost'
-import { AuditFragment } from '../../models/account';
+import { AuditFragment, DnsDomainFragment, DnsRecordFragment } from '../../models/account';
 import { PageInfo } from '../../models/misc';
 import { AccountFragment, GroupFragment, GroupMemberFragment, ImpersonationPolicy, InviteFragment, RoleFragment, UserFragment } from '../../models/user';
 
@@ -226,3 +226,35 @@ export const IMPERSONATE_SERVICE_ACCOUNT = gql`
     impersonateServiceAccount(id: $id) { jwt }
   }
 `
+
+export const DNS_DOMAINS = gql`
+  query Domains($cursor: String) {
+    dnsDomains(after: $cursor, first: 50) {
+      pageInfo { ...PageInfo }
+      edges { node { ...DnsDomainFragment } }
+    }
+  }
+  ${PageInfo}
+  ${DnsDomainFragment}
+`;
+
+
+export const DNS_RECORDS = gql`
+  query Records($id: ID!, $cursor: String) {
+    dnsRecords(id: $id, after: $cursor, first: 50) {
+      pageInfo { ...PageInfo }
+      edges { node { ...DnsRecordFragment } }
+    }
+  }
+  ${PageInfo}
+  ${DnsRecordFragment}
+`;
+
+export const CREATE_DOMAIN = gql`
+  mutation Create($attributes: DnsDomainAttributes!) {
+    createDomain(attributes: $attributes) {
+      ...DnsDomainFragment
+    }
+  }
+  ${DnsDomainFragment}
+`;

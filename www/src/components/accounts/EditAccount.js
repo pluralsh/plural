@@ -3,7 +3,7 @@ import { Box, Text, ThemeContext } from 'grommet'
 import { SIDEBAR_WIDTH } from '../constants'
 import { SectionChoice } from '../utils/SectionChoice'
 import { useHistory, useParams } from 'react-router'
-import { Edit, Group, Network, Robot, Script, User } from 'grommet-icons'
+import { Domain, Edit, Group, Network, Robot, Script, User } from 'grommet-icons'
 import { useMutation } from 'react-apollo'
 import { UPDATE_ACCOUNT } from './queries'
 import { Button, InputCollection, ResponsiveInput } from 'forge-core'
@@ -17,6 +17,7 @@ import Invoices from '../payments/Invoices'
 import { OAuthIntegrations } from '../integrations/OAuthIntegrations'
 import { ServiceAccounts } from './ServiceAccounts'
 import { SectionContentContainer, SectionPortal } from '../Explore'
+import { Domains } from './Domains'
 
 const ICON_SIZE = '12px'
 
@@ -28,7 +29,8 @@ const ViewOptions = {
   ROLES: 'roles',
   METHODS: 'methods',
   INVOICES: 'invoices',
-  INTEGRATIONS: 'integrations'
+  INTEGRATIONS: 'integrations',
+  DOMAINS: 'domains',
 }
 
 const VIEWS = [
@@ -37,6 +39,7 @@ const VIEWS = [
   {text: "Service Accounts", view: ViewOptions.SRV_ACCTS, icon: <Robot size={ICON_SIZE} />},
   {text: "Groups", view: ViewOptions.GROUPS, icon: <Group size={ICON_SIZE} />},
   {text: 'Roles', view: ViewOptions.ROLES, icon: <Script size={ICON_SIZE} />},
+  {text: 'Domains', view: ViewOptions.DOMAINS, icon: <Domain size={ICON_SIZE} />},
   {text: 'Payment Methods', view: ViewOptions.METHODS, icon: <FaCreditCard size={ICON_SIZE} />},
   {text: 'Invoices', view: ViewOptions.INVOICES, icon: <FaReceipt size={ICON_SIZE} />},
   {text: 'OAuth Integrations', view: ViewOptions.INTEGRATIONS, icon: <Network size={ICON_SIZE} />},
@@ -100,6 +103,7 @@ export function EditAccount({billing}) {
         {section === ViewOptions.SRV_ACCTS && <ServiceAccounts />}
         {section === ViewOptions.GROUPS && <Groups />}
         {section === ViewOptions.ROLES && <Roles />}
+        {section === ViewOptions.DOMAINS && <Domains />}
         {section === ViewOptions.METHODS && (
           <SectionContentContainer header='Payment Methods'>
             <CardList />

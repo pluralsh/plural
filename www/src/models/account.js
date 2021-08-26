@@ -29,3 +29,26 @@ export const AuditFragment = gql`
   ${RoleFragment}
   ${VersionFragment}
 `
+
+export const DnsDomainFragment = gql`
+  fragment DnsDomainFragment on DnsDomain {
+    id
+    name
+    creator { ...UserFragment }
+    insertedAt
+  }
+  ${UserFragment}
+`;
+
+export const DnsRecordFragment = gql`
+  fragment DnsRecordFragment on DnsRecord {
+    id
+    name
+    type
+    records
+    cluster
+    provider
+    creator { ...UserFragment }
+  }
+  ${UserFragment}
+`;

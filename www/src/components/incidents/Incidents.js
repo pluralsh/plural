@@ -277,7 +277,6 @@ export function Incidents() {
   const {incidentId} = useParams()
   const [q, setQ] = useState(null)
   const [filters, setFilters] = useState([])
-  const [loader, setLoader] = useState(null)
   const [sort, setSort] = useState(IncidentSort.INSERTED_AT)
   const [order, setOrder] = useState(Order.DESC)
   const {data, loading, fetchMore} = useQuery(INCIDENTS_Q, {
@@ -289,10 +288,6 @@ export function Incidents() {
   useEffect(() => {
     setBreadcrumbs([{url: `/incidents`, text: 'incidents'}])
   }, [setBreadcrumbs])
-
-  useEffect(() => {
-    loader && loader.resetloadMoreItemsCache()
-  }, [loader, q, order, sort, filters])
 
   if (!data) return <LoopingLogo />
 
@@ -319,7 +314,6 @@ export function Incidents() {
       <IncidentToolbar />
       <Box fill>
         <FixedScroller
-          setLoader={setLoader}
           loading={loading}
           hasNextPage={pageInfo.hasNextPage}
           itemSize={75}

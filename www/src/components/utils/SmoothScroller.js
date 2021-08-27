@@ -1,11 +1,82 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react'
+import React, { useState, useRef, useCallback, useEffect, PureComponent } from 'react'
 import { Box } from 'grommet'
-import InfiniteLoader from 'react-window-infinite-loader'
 import { VariableSizeList } from 'react-window-reversed'
 import { VariableSizeList as List, FixedSizeList as FixedList } from 'react-window'
 import Autosizer from 'react-virtualized-auto-sizer'
 import memoize from 'memoize-one'
 import { CellMeasurer } from 'forge-core'
+
+class SmartLoader extends PureComponent {
+  _listRef = null
+  _lastRenderedStartIndex = -1;
+  _lastRenderedStopIndex = -1;
+
+  render() {
+    const { children } = this.props;
+
+    return children({
+      onItemsRendered: this._onItemsRendered,
+      ref: this._setRef,
+    });
+  }
+
+  _setRef = (listRef) => {
+    this._listRef = listRef;
+  }
+
+  _onItemsRendered = ({visibleStartIndex, visibleStopIndex}) => {
+
+    this._lastRenderedStartIndex = visibleStartIndex;
+    this._lastRenderedStopIndex = visibleStopIndex;
+
+    this._ensureRowsLoaded(visibleStartIndex, visibleStopIndex);
+  };
+
+  _ensureRowsLoaded = (startIndex, stopIndex) => {
+    const {
+      isItemLoaded,
+      itemCount,
+      threshold = 15,
+    } = this.props;
+    
+    startIndex = Math.max(0, startIndex - threshold)
+    stopIndex = Math.min(itemCount - 1, stopIndex + threshold)
+
+    if (!isItemLoaded(startIndex) || !isItemLoaded(stopIndex)) {
+      this._loadUnloadedRanges(startIndex, stopIndex);
+    }
+  }
+
+  _loadUnloadedRanges = (startIndex, stopIndex) => {
+    // loadMoreRows was renamed to loadMoreItems in v1.0.3; will be removed in v2.0
+    const loadMoreItems = this.props.loadMoreItems || this.props.loadMoreRows;
+    const promise = loadMoreItems()
+    if (!promise) return
+
+    promise.then(() => {
+      if (startIndex > this._lastRenderedStopIndex || stopIndex < this._lastRenderedStartIndex) {
+        // Handle an unmount while promises are still in flight.
+        if (this._listRef == null) {
+          return;
+        }
+
+        // Resize cached row sizes for VariableSizeList,
+        // otherwise just re-render the list.
+        if (typeof this._listRef.resetAfterIndex === 'function') {
+          this._listRef.resetAfterIndex(startIndex, true);
+        } else {
+          // HACK reset temporarily cached item styles to force PureComponent to re-render.
+          // This is pretty gross, but I'm okay with it for now.
+          // Don't judge me.
+          if (typeof this._listRef._getItemStyleCache === 'function') {
+            this._listRef._getItemStyleCache(-1);
+          }
+          this._listRef.forceUpdate();
+        }
+      }
+    })
+  }
+}
 
 function shallowDiffers(prev, next) {
   for (let attribute in prev) {
@@ -103,7 +174,7 @@ export default function SmoothScroller({
   const isItemLoaded = useCallback(index => !hasNextPage || index < count, [hasNextPage, count])
 
   return (
-    <InfiniteLoader
+    <SmartLoader
       ref={setLoader}
       isItemLoaded={isItemLoaded}
       itemCount={itemCount}
@@ -138,7 +209,7 @@ export default function SmoothScroller({
       )}
       </Autosizer>
     )}
-    </InfiniteLoader>
+    </SmartLoader>
   )
 }
 
@@ -156,7 +227,7 @@ export function StandardScroller({
   const isItemLoaded = useCallback(index => !hasNextPage || index < count, [hasNextPage, count])
 
   return (
-    <InfiniteLoader
+    <SmartLoader
       ref={setLoader}
       isItemLoaded={isItemLoaded}
       itemCount={itemCount}
@@ -190,7 +261,7 @@ export function StandardScroller({
       )}
       </Autosizer>
     )}
-    </InfiniteLoader>
+    </SmartLoader>
   )
 }
 
@@ -201,7 +272,7 @@ export function FixedScroller({hasNextPage, loading, items, loadNextPage, mapper
   const isItemLoaded = useCallback(index => !hasNextPage || index < count, [hasNextPage, count])
   
   return (
-    <InfiniteLoader
+    <SmartLoader
       ref={setLoader}
       isItemLoaded={isItemLoaded}
       itemCount={itemCount}
@@ -225,6 +296,6 @@ export function FixedScroller({hasNextPage, loading, items, loadNextPage, mapper
       )} 
       </Autosizer>
     )}
-    </InfiniteLoader>
+    </SmartLoader>
   )
 }

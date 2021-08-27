@@ -114,7 +114,7 @@ function IncidentHeader({incident, editable, editing, setEditing, mutation, attr
 }
 
 export function Messages({incident, loading, fetchMore, subscribeToMore}) {
-  const {loader, setLoader, setListRef, listRef} = useContext(MessageScrollContext)
+  const {setListRef, listRef} = useContext(MessageScrollContext)
   const {messages: {pageInfo: {hasNextPage, endCursor}, edges}} = incident
 
   useEffect(() => subscribeToMore({
@@ -127,8 +127,6 @@ export function Messages({incident, loading, fetchMore, subscribeToMore}) {
 
   return (
     <SmoothScroller
-      loader={loader}
-      setLoader={setLoader}
       listRef={listRef}
       setListRef={setListRef}
       items={[...edges, 'end']}
@@ -190,7 +188,6 @@ function IncidentOwner({incident: {owner}}) {
 function IncidentInner({incident, fetchMore, subscribeToMore, loading, editing, setEditing}) {
   const [view, setView] = useState(IncidentView.MSGS)
   const [listRef, setListRef] = useState(null)
-  const [loader, setLoader] = useState(null)
   const currentUser = useContext(CurrentUserContext)
   const editable = canEdit(incident, currentUser)
   const [attributes, setAttributes] = useState({
@@ -209,11 +206,10 @@ function IncidentInner({incident, fetchMore, subscribeToMore, loading, editing, 
 
   const returnToBeginning = useCallback(() => {
     listRef.scrollToItem(0)
-    loader && loader.resetloadMoreItemsCache()
-  }, [loader, listRef])
+  }, [listRef])
 
   return (
-    <MessageScrollContext.Provider value={{listRef, setListRef, loader, setLoader, refreshList, returnToBeginning}}>
+    <MessageScrollContext.Provider value={{listRef, setListRef, refreshList, returnToBeginning}}>
     <Box fill>
       <AttachmentProvider>
       <Box flex={false} pad='small' direction='row' align='center' gap='small' border={{side: 'bottom', color: 'light-5'}}>

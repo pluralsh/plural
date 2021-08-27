@@ -14,7 +14,7 @@ import { Down, InstallOption, Next, Share, ShareOption } from 'grommet-icons'
 import { Portal } from 'react-portal'
 import { v4 as uuidv4 } from 'uuid'
 import './explore.css'
-import { PLURAL_WORD, SIDEBAR_WIDTH } from './constants'
+import { PLURAL_ICON, SIDEBAR_WIDTH } from './constants'
 import { StandardScroller } from './utils/SmoothScroller'
 
 const WIDTH = 20
@@ -70,24 +70,12 @@ function Placeholder() {
   )
 }
 
-function Repositories({refreshBy, edges, pageInfo, loading, fetchMore, setTag}) {
+function Repositories({edges, pageInfo, loading, fetchMore, setTag}) {
   const [listRef, setListRef] = useState(null)
-  const [loader, setLoader] = useState(null)
-  const mounted = useRef(false)
-
-  useEffect(() => {
-    if (mounted.current && loader) {
-      console.log('here')
-      loader.resetloadMoreItemsCache()
-    }
-    mounted.current = true
-  }, [mounted, refreshBy, loader])
 
   return (
     <Box fill>
       <StandardScroller
-        loader={loader}
-        setLoader={setLoader}
         listRef={listRef}
         setListRef={setListRef}
         hasNextPage={pageInfo.hasNextPage}
@@ -291,7 +279,7 @@ export default function Explore() {
     <Box direction='row' fill>
       <Box flex={false} width={SIDEBAR_WIDTH} background='backgroundColor' fill='vertical' pad={{vertical: 'medium', right: 'small'}} gap='xsmall'>
         <Box flex={false} pad='small' align='center'>
-            <img width='220px' src={PLURAL_WORD} />
+            <img width='220px' src={PLURAL_ICON} />
         </Box> 
         <SectionItem name='public' label='Public' icon={<ShareOption size='14px' />} />
         <SectionItem name='installed' label='Installed' icon={<InstallOption size='14px' />} />

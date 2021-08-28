@@ -28,6 +28,12 @@ defmodule GraphQl.Schema.Recipe do
     field :items, list_of(:recipe_item_attributes)
   end
 
+  input_object :recipe_condition_attributes do
+    field :field,     non_null(:string)
+    field :value,     :string
+    field :operation, non_null(:operation)
+  end
+
   input_object :recipe_item_attributes do
     field :name,          non_null(:string)
     field :type,          non_null(:recipe_item_type)
@@ -40,6 +46,7 @@ defmodule GraphQl.Schema.Recipe do
     field :default,       :string
     field :documentation, :string
     field :placeholder,   :string
+    field :condition,     :recipe_condition_attributes
   end
 
   enum :recipe_item_type do
@@ -48,6 +55,7 @@ defmodule GraphQl.Schema.Recipe do
   end
 
   ecto_enum :datatype, Core.Schema.RecipeItem.Configuration.Type
+  ecto_enum :operation, Core.Schema.RecipeItem.Configuration.Condition.Operation
   ecto_enum :provider, Core.Schema.Recipe.Provider
 
   ### OBJECTS
@@ -83,12 +91,20 @@ defmodule GraphQl.Schema.Recipe do
     timestamps()
   end
 
+
   object :recipe_configuration do
     field :type,          :datatype
     field :name,          :string
     field :default,       :string
     field :documentation, :string
     field :placeholder,   :string
+    field :condition,     :recipe_condition
+  end
+
+  object :recipe_condition do
+    field :field,     non_null(:string)
+    field :value,     :string
+    field :operation, non_null(:operation)
   end
 
   connection node_type: :recipe

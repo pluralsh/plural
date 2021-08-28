@@ -12,8 +12,7 @@ defmodule GraphQl.Resolvers.Dns do
     |> paginate(args)
   end
 
-  def list_records(%{domain_id: id} = args, %{context: %{current_user: user}})
-      when is_binary(id) do
+  def list_records(%{domain_id: id} = args, _) when is_binary(id) do
     DnsRecord.for_domain(id)
     |> DnsRecord.ordered()
     |> paginate(args)

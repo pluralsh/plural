@@ -44,7 +44,8 @@ defmodule Core.Services.Dns do
         DnsRecord.changeset(record, attrs)
         |> allow(user, :edit)
         |> when_ok(:update)
-      %{fetch: %DnsRecord{cluster: c, provider: p}} -> {:error, "This record already is in use by #{p}/#{c}"}
+      %{fetch: %DnsRecord{cluster: c, provider: p}} ->
+        {:error, "This record already is in use by #{p}/#{c}"}
     end)
     |> add_operation(:external, fn
       %{fetch: nil, record: record} ->

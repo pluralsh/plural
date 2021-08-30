@@ -103,6 +103,57 @@ defmodule GraphQl.RepositoryMutationsTest do
     end
   end
 
+  describe "upsertRepository" do
+    test "if the repository doesn't exist it will create" do
+      %{owner: user, id: id, name: pub} = insert(:publisher)
+
+      {:ok, %{data: %{"upsertRepository" => repo}}} = run_query("""
+        mutation upsertRepository($attrs: RepositoryAttributes!, $name: String!, $publisher: String!) {
+          upsertRepository(attributes: $attrs, name: $name, publisher: $publisher) {
+            id
+            name
+            description
+            publisher { id }
+          }
+        }
+      """, %{
+        "attrs" => %{"description" => "desc"},
+        "name" => "my-repo",
+        "publisher" => pub,
+      }, %{current_user: user})
+
+      assert repo["id"]
+      assert repo["name"] == "my-repo"
+      assert repo["description"] == "desc"
+      assert repo["publisher"]["id"] == id
+    end
+
+    test "if the repository exists it will update" do
+      %{owner: user, id: id} = pub = insert(:publisher)
+      repo = insert(:repository, publisher: pub)
+
+      {:ok, %{data: %{"upsertRepository" => updated}}} = run_query("""
+        mutation upsertRepository($attrs: RepositoryAttributes!, $name: String!, $publisher: String!) {
+          upsertRepository(attributes: $attrs, name: $name, publisher: $publisher) {
+            id
+            name
+            description
+            publisher { id }
+          }
+        }
+      """, %{
+        "attrs" => %{"description" => "desc"},
+        "name" => repo.name,
+        "publisher" => pub.name,
+      }, %{current_user: user})
+
+      assert updated["id"] == repo.id
+      assert updated["name"] == repo.name
+      assert updated["description"] == "desc"
+      assert updated["publisher"]["id"] == id
+    end
+  end
+
   describe "deleteRepository" do
     test "Publishers can delete repositories" do
       %{owner: user} = pub = insert(:publisher)

@@ -1,6 +1,6 @@
 defmodule GraphQl.Resolvers.Repository do
   use GraphQl.Resolvers.Base, model: Core.Schema.Repository
-  alias Core.Services.Repositories
+  alias Core.Services.{Repositories, Users}
   alias Core.Schema.{
     Installation,
     Integration,
@@ -163,6 +163,11 @@ defmodule GraphQl.Resolvers.Repository do
 
     Map.put(args, :repository_id, repo.id)
     |> update_repository(context)
+  end
+
+  def upsert_repository(%{attributes: attrs, name: name, publisher: pub}, %{context: %{current_user: user}}) do
+    publisher = Users.get_publisher_by_name!(pub)
+    Repositories.upsert_repository(attrs, name, publisher.id, user)
   end
 
   def delete_repository(%{repository_id: repo_id}, %{context: %{current_user: user}}),

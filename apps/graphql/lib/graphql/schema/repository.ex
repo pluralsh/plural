@@ -302,6 +302,15 @@ defmodule GraphQl.Schema.Repository do
       resolve safe_resolver(&Repository.update_repository/2)
     end
 
+    field :upsert_repository, :repository do
+      middleware Authenticated
+      arg :attributes, non_null(:repository_attributes)
+      arg :name,       non_null(:string)
+      arg :publisher,  non_null(:string)
+
+      resolve safe_resolver(&Repository.upsert_repository/2)
+    end
+
     field :delete_repository, :repository do
       middleware Authenticated
       arg :repository_id, non_null(:id)

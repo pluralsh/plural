@@ -22,6 +22,9 @@ defmodule Core.Services.Repositories do
   }
   alias Piazza.Crypto.RSA
 
+  @type error :: {:error, term}
+  @type repository_resp :: {:ok, Repository.t} | error
+
   @spec get_installation!(binary) :: Installation.t
   def get_installation!(id),
     do: Core.Repo.get!(Installation, id)
@@ -80,7 +83,7 @@ defmodule Core.Services.Repositories do
 
   Will throw if there is no publisher
   """
-  @spec create_repository(map, User.t) :: {:ok, Repository.t} | {:error, term}
+  @spec create_repository(map, User.t) :: repository_resp
   def create_repository(attrs, %User{} = user) do
     publisher = Users.get_publisher_by_owner!(user.id)
     create_repository(attrs, publisher.id, user)
@@ -90,7 +93,7 @@ defmodule Core.Services.Repositories do
   Creates a repository for a publisher id.  Will fail if the user does not have publish
   permissions, or is not the owner of the publisher.
   """
-  @spec create_repository(map, binary, User.t) :: {:ok, Repository.t} | {:error, term}
+  @spec create_repository(map, binary, User.t) :: repository_resp
   def create_repository(attrs, publisher_id, %User{} = user) do
     start_transaction()
     |> add_operation(:repo, fn _ ->
@@ -104,6 +107,45 @@ defmodule Core.Services.Repositories do
     end)
     |> execute(extract: :licensed)
     |> notify(:create, user)
+  end
+
+  @doc """
+  Updates the given repository.
+
+  Fails if the user is not the publisher
+  """
+  @spec update_repository(map, binary, User.t) :: repository_resp
+  def update_repository(attrs, repo_id, %User{} = user) do
+    get_repository!(repo_id)
+    |> Core.Repo.preload([:integration_resource_definition, :tags, :dashboards, :shell, :database])
+    |> Repository.changeset(attrs)
+    |> allow(user, :edit)
+    |> when_ok(:update)
+    |> notify(:update, user)
+  end
+
+  @doc """
+  Deletes the repository.  This might be deprecated as it's inherently unsafe.
+
+  Fails if the user is not the publisher.
+  """
+  @spec delete_repository(binary, User.t) :: repository_resp
+  def delete_repository(repo_id, %User{} = user) do
+    get_repository!(repo_id)
+    |> allow(user, :edit)
+    |> when_ok(:delete)
+  end
+
+  @doc """
+  Creates or updates a repository depending on whether one exists for `name`.  All
+  access policies for the delegated operations apply
+  """
+  @spec upsert_repository(map, binary, binary, User.t) :: repository_resp
+  def upsert_repository(attrs, name, publisher_id, %User{} = user) do
+    case get_repository_by_name(name) do
+      %Repository{id: id} -> update_repository(attrs, id, user)
+      nil -> create_repository(Map.put(attrs, :name, name), publisher_id, user)
+    end
   end
 
   @doc """
@@ -241,31 +283,6 @@ defmodule Core.Services.Repositories do
       do: {:ok, token}
   end
 
-  @doc """
-  Updates the given repository.
-
-  Fails if the user is not the publisher
-  """
-  @spec update_repository(map, binary, User.t) :: {:ok, Repository.t} | {:error, term}
-  def update_repository(attrs, repo_id, %User{} = user) do
-    get_repository!(repo_id)
-    |> Core.Repo.preload([:integration_resource_definition, :tags, :dashboards, :shell, :database])
-    |> Repository.changeset(attrs)
-    |> allow(user, :edit)
-    |> when_ok(:update)
-    |> notify(:update, user)
-  end
-
-  @doc """
-  Deletes the repository.  This might be deprecated as it's inherently unsafe.
-
-  Fails if the user is not the publisher.
-  """
-  def delete_repository(repo_id, %User{} = user) do
-    get_repository!(repo_id)
-    |> allow(user, :edit)
-    |> when_ok(:delete)
-  end
 
   @doc """
   Creates or updates the given integration for the repo.

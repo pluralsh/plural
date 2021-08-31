@@ -94,8 +94,14 @@ defmodule Core.Services.Dns do
   end
 
   defp domain_name(name) do
-    [_ | rest] = String.split(name, ".")
-    Enum.join(rest, ".")
+    String.trim(name, ".")
+    |> String.split(".")
+    |> Enum.reverse()
+    |> case do
+      [tld, onplural, domain | _] ->
+        Enum.join([domain, onplural, tld], ".")
+      _ -> "__bogus__"
+    end
   end
 
   defp zone_id(), do: Core.conf(:cloudflare_zone)

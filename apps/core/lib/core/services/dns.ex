@@ -21,6 +21,7 @@ defmodule Core.Services.Dns do
 
   @spec create_record(map, binary, atom, User.t) :: {:ok, DnsRecord.t} | error
   def create_record(%{name: name, type: t} = attrs, cluster, provider, %User{} = user) do
+    Logger.info "Attempting to create record for #{name}"
     start_transaction()
     |> add_operation(:domain, fn _ ->
       domain_name(name)

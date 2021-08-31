@@ -6,7 +6,7 @@ defmodule Core.Services.Dns do
   alias Cloudflare.DnsRecord, as: Record
   require Logger
 
-  @ttl 30
+  @ttl 120
   @type error :: {:error, term}
 
   def get_domain(name), do: Core.Repo.get_by(DnsDomain, name: name)
@@ -49,7 +49,8 @@ defmodule Core.Services.Dns do
     end)
     |> add_operation(:external, fn
       %{fetch: nil, record: record} ->
-        Record.create(cloudflare_record(record), params: [zone_id: zone_id()])
+        cloudflare_record(record)
+        |> Record.create(params: [zone_id: zone_id()])
         |> extract_id()
       %{record: %{external_id: id} = record} ->
         Record.update(id, cloudflare_record(record), params: [zone_id: zone_id()])

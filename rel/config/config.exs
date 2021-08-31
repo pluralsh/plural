@@ -26,7 +26,6 @@ config :core, Core.Repo,
   password: get_env("POSTGRES_PASSWORD"),
   hostname: get_env("DBHOST") || "plural-postgresql",
   ssl: String.to_existing_atom(get_env("DBSSL") || "false"),
-  cloudflare_zone: get_env("CLOUDFLARE_ZONE"),
   pool_size: 5
 
 config :cloudflare,
@@ -68,7 +67,8 @@ config :core,
   stripe_connect_id: get_env("STRIPE_CONNECT_ID"),
   stripe_publishable_key: get_env("STRIPE_PUBLISHABLE_KEY"),
   hydra_public_url: get_env("HYDRA_URL") || "https://oidc.plural.sh",
-  git_commit: get_env("GIT_COMMIT")
+  git_commit: get_env("GIT_COMMIT"),
+  cloudflare_zone: get_env("CLOUDFLARE_ZONE")
 
 provider = case get_env("PROVIDER") || "google" do
   "google" -> :gcp

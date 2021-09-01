@@ -20,11 +20,11 @@ import { Confirm } from '../utils/Confirm'
 function DnsRecordHeader() {
   return (
     <TableRow>
-      <HeaderItem text='Name' width='25%' />
+      <HeaderItem text='Name' width='30%' />
       <HeaderItem text='Type' width='10%' />
-      <HeaderItem text='Cluster' width='20%' />
-      <HeaderItem text='Creator' width='25%' />
-      <HeaderItem text='Created On' width='20%' />
+      <HeaderItem text='Cluster' width='15%' />
+      <HeaderItem text='Creator' width='15%' />
+      <HeaderItem text='Created On' width='30%' />
     </TableRow>
   )
 }
@@ -32,17 +32,17 @@ function DnsRecordHeader() {
 function DnsRecord({record, domain}) {
   return (
     <TableRow>
-      <HeaderItem text={record.name} width='25%' />
+      <HeaderItem text={record.name} width='30%' />
       <HeaderItem text={record.type.toUpperCase()} width='10%' />
-      <Box width='20%' direction='row' align='center' gap='xsmall'>
+      <Box width='15%' direction='row' align='center' gap='xsmall'>
         <Provider provider={record.provider} width='25px' />
         <Text size='small' weight={500}>{record.cluster}</Text>
       </Box>
-      <Box width='25%' direction='row' align='center' gap='xsmall'>
+      <Box width='15%' direction='row' align='center' gap='xsmall'>
         <Avatar user={record.creator} size='30px' />
         <Text size='small'>{record.creator.name}</Text>
       </Box>
-      <Box width='20%' direction='row' align='center'>
+      <Box width='30%' direction='row' align='center'>
         <Box fill='horizontal'>
           <Text size='small'>{moment(record.insertedAt).format('lll')}</Text>
         </Box>

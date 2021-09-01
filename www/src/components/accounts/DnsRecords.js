@@ -15,6 +15,7 @@ import { TableRow } from './Domains'
 import { DELETE_DNS_RECORD, DNS_RECORDS } from './queries'
 import { Return, Trash } from 'grommet-icons'
 import { Icon } from './Group'
+import { Confirm } from '../utils/Confirm'
 
 function DnsRecordHeader() {
   return (
@@ -52,7 +53,8 @@ function DnsRecord({record, domain}) {
 }
 
 function DeleteRecord({record, domain}) {
-  const [mutation] = useMutation(DELETE_DNS_RECORD, {
+  const [confirm, setConfirm] = useState(false)
+  const [mutation, {loading, error}] = useMutation(DELETE_DNS_RECORD, {
     variables: {name: record.name, type: record.type},
     update: (cache, {data: {deleteDnsRecord}}) => updateCache(cache, {
       query: DNS_RECORDS,
@@ -66,11 +68,23 @@ function DeleteRecord({record, domain}) {
   })
 
   return (
+    <>
     <Icon
       icon={Trash} 
       tooltip='delete' 
-      onClick={mutation} 
+      onClick={() => setConfirm(true)} 
       iconAttrs={{color: 'error'}} />
+    {confirm && (
+      <Confirm
+        error={error}
+        header={`Delete ${record.name}?`}
+        description={`This will delete the ${record.type} record for ${record.name} permanently`}
+        submit={mutation}
+        cancel={() => setConfirm(false)}
+        label='Delete'
+        loading={loading} />
+    )}
+    </>
   )
 }
 

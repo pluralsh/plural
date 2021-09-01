@@ -1,12 +1,13 @@
 import React from 'react'
 import { Layer, Box } from 'grommet'
 import { Button, SecondaryButton } from 'forge-core'
-import { Alert, AlertStatus } from './Alert'
+import { Alert, AlertStatus, GqlError } from './Alert'
 
-export function Confirm({submit, loading, label, header, cancel, description}) {
+export function Confirm({submit, error, loading, label, header, cancel, description}) {
   return (
     <Layer onClickOutside={cancel} onEsc={cancel}>
       <Box width='40vw' pad='medium' gap='medium'>
+        {error && <GqlError header='Something went wrong' error={error} />}
         <Alert 
           status={AlertStatus.INFO} 
           header={header || 'Are you sure?'} 

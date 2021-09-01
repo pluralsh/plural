@@ -6,9 +6,18 @@ defmodule GraphQl.Resolvers.Dns do
   def query(DnsRecord, _), do: DnsRecord
   def query(_, _), do: DnsDomain
 
+  def resolve_domain(%{id: id}, %{context: %{current_user: user}}),
+    do: Dns.authorized(id, user)
+
   def list_domains(args, %{context: %{current_user: user}}) do
     DnsDomain.for_account(user.account_id)
     |> DnsDomain.ordered()
+    |> paginate(args)
+  end
+
+  def list_records(args, %{source: %{id: id}}) do
+    DnsRecord.for_domain(id)
+    |> DnsRecord.ordered()
     |> paginate(args)
   end
 

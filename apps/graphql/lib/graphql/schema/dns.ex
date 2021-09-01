@@ -21,6 +21,10 @@ defmodule GraphQl.Schema.Dns do
     field :creator, :user, resolve: dataloader(User)
     field :account, :account, resolve: dataloader(Account)
 
+    connection field :dns_records, node_type: :dns_record do
+      resolve &Dns.list_records/2
+    end
+
     timestamps()
   end
 
@@ -42,6 +46,13 @@ defmodule GraphQl.Schema.Dns do
   connection node_type: :dns_record
 
   object :dns_queries do
+    field :dns_domain, :dns_domain do
+      middleware Authenticated
+      arg :id, non_null(:id)
+
+      resolve &Dns.resolve_domain/2
+    end
+
     connection field :dns_domains, node_type: :dns_domain do
       middleware Authenticated
 

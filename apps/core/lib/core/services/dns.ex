@@ -8,10 +8,18 @@ defmodule Core.Services.Dns do
 
   @ttl 120
   @type error :: {:error, term}
+  @type domain_resp :: {:ok, DnsDomain.t} | error
+  @type record_resp :: {:ok, DnsRecord.t} | error
 
   def get_domain(name), do: Core.Repo.get_by(DnsDomain, name: name)
 
-  @spec create_domain(map, User.t) :: {:ok, DnsDomain.t} | error
+  @spec authorized(binary, User.t) :: domain_resp
+  def authorized(id, %User{} = user) do
+    Core.Repo.get(DnsDomain, id)
+    |> allow(user, :access)
+  end
+
+  @spec create_domain(map, User.t) :: domain_resp
   def create_domain(attrs, %User{id: id, account_id: aid} = user) do
     %DnsDomain{creator_id: id, account_id: aid}
     |> DnsDomain.changeset(attrs)
@@ -19,7 +27,7 @@ defmodule Core.Services.Dns do
     |> when_ok(:insert)
   end
 
-  @spec create_record(map, binary, atom, User.t) :: {:ok, DnsRecord.t} | error
+  @spec create_record(map, binary, atom, User.t) :: record_resp
   def create_record(%{name: name, type: t} = attrs, cluster, provider, %User{} = user) do
     Logger.info "Attempting to create record for #{name}"
     start_transaction()
@@ -64,7 +72,7 @@ defmodule Core.Services.Dns do
     |> execute(extract: :hydrate)
   end
 
-  @spec delete_record(binary, atom, User.t) :: {:ok, DnsRecord.t} | error
+  @spec delete_record(binary, atom, User.t) :: record_resp
   def delete_record(name, type, %User{} = user) do
     start_transaction()
     |> add_operation(:record, fn _ ->

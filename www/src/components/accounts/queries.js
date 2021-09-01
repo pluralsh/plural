@@ -241,9 +241,13 @@ export const DNS_DOMAINS = gql`
 
 export const DNS_RECORDS = gql`
   query Records($id: ID!, $cursor: String) {
-    dnsRecords(domainId: $id, after: $cursor, first: 50) {
-      pageInfo { ...PageInfo }
-      edges { node { ...DnsRecordFragment } }
+    dnsDomain(id: $id) {
+      id
+      name
+      dnsRecords(after: $cursor, first: 50) {
+        pageInfo { ...PageInfo }
+        edges { node { ...DnsRecordFragment } }
+      }
     }
   }
   ${PageInfo}
@@ -258,3 +262,12 @@ export const CREATE_DOMAIN = gql`
   }
   ${DnsDomainFragment}
 `;
+
+export const DELETE_DNS_RECORD = gql`
+  mutation Delete($name: String!, $type: DnsRecordType!) {
+    deleteDnsRecord(name: $name, type: $type) {
+      ...DnsRecordFragment
+    }
+  }
+  ${DnsRecordFragment}
+`

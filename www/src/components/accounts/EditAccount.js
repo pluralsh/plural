@@ -17,7 +17,7 @@ import Invoices from '../payments/Invoices'
 import { OAuthIntegrations } from '../integrations/OAuthIntegrations'
 import { ServiceAccounts } from './ServiceAccounts'
 import { SectionContentContainer, SectionPortal } from '../Explore'
-import { Domains } from './Domains'
+import { DnsDirectory } from './Domains'
 
 const ICON_SIZE = '12px'
 
@@ -103,7 +103,7 @@ export function EditAccount({billing}) {
         {section === ViewOptions.SRV_ACCTS && <ServiceAccounts />}
         {section === ViewOptions.GROUPS && <Groups />}
         {section === ViewOptions.ROLES && <Roles />}
-        {section === ViewOptions.DOMAINS && <Domains />}
+        {section === ViewOptions.DOMAINS && <DnsDirectory />}
         {section === ViewOptions.METHODS && (
           <SectionContentContainer header='Payment Methods'>
             <CardList />

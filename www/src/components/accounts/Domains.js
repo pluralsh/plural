@@ -10,11 +10,13 @@ import { Placeholder } from './Audits'
 import { CREATE_DOMAIN, DNS_DOMAINS } from './queries'
 import { Box, Text, TextInput } from 'grommet'
 import Avatar from '../users/Avatar'
+import { Route, Switch, useHistory, useRouteMatch } from 'react-router'
+import { DnsRecords } from './DnsRecords'
 
-export function TableRow({children, border}) {
+export function TableRow({children, border, ...props}) {
   return (
     <Box flex={false} border={{side: 'bottom', color: border || 'light-5'}} 
-         pad='small' direction='row' align='center' gap='small'>
+         pad='small' direction='row' align='center' gap='small' {...props}>
       {children}
     </Box>
   )
@@ -31,8 +33,10 @@ function DomainHeader() {
 }
 
 function DomainRow({domain}) {
+  let history = useHistory()
   return (
-    <TableRow>
+    <TableRow onClick={() => history.push(`/accounts/edit/domains/${domain.id}`)}
+      hoverIndicator='tone-light'>
       <HeaderItem text={domain.name} width='35%' />
       <Box flex={false} width='35%' align='center' direction='row' gap='xsmall'>
         <Avatar user={domain.creator} size='30px' />
@@ -112,5 +116,16 @@ export function Domains() {
       </Box>
       <CreateDomain />
     </SectionContentContainer>
+  )
+}
+
+export function DnsDirectory() {
+  let {url} = useRouteMatch()
+
+  return (
+    <Switch>
+      <Route exact path={url} component={Domains} />
+      <Route path={`${url}/:id`} component={DnsRecords} />
+    </Switch>
   )
 }

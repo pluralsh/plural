@@ -241,7 +241,7 @@ export const DNS_DOMAINS = gql`
 
 export const DNS_RECORDS = gql`
   query Records($id: ID!, $cursor: String) {
-    dnsRecords(id: $id, after: $cursor, first: 50) {
+    dnsRecords(domainId: $id, after: $cursor, first: 50) {
       pageInfo { ...PageInfo }
       edges { node { ...DnsRecordFragment } }
     }

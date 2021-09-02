@@ -30,14 +30,27 @@ export const AuditFragment = gql`
   ${VersionFragment}
 `
 
+export const PolicyBindingFragment = gql`
+  fragment PolicyBindingFragment on PolicyBinding {
+    id
+    group { id name }
+    user { id name email }
+  }
+`
+
 export const DnsDomainFragment = gql`
   fragment DnsDomainFragment on DnsDomain {
     id
     name
     creator { ...UserFragment }
+    accessPolicy { 
+      id
+      bindings { ...PolicyBindingFragment }
+    }
     insertedAt
   }
   ${UserFragment}
+  ${PolicyBindingFragment}
 `;
 
 export const DnsRecordFragment = gql`

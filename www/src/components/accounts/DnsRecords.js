@@ -13,7 +13,7 @@ import { StandardScroller } from '../utils/SmoothScroller'
 import { Placeholder } from './Audits'
 import { TableRow } from './Domains'
 import { DELETE_DNS_RECORD, DNS_RECORDS } from './queries'
-import { Return, Trash } from 'grommet-icons'
+import { Refresh, Return, Trash } from 'grommet-icons'
 import { Icon } from './Group'
 import { Confirm } from '../utils/Confirm'
 
@@ -88,15 +88,21 @@ function DeleteRecord({record, domain}) {
   )
 }
 
-function RecordsControls() {
+function RecordsControls({refetch}) {
   let history = useHistory()
 
   return (
     <SectionPortal>
-      <SecondaryButton 
-        icon={<Return size='small' />}
-        label='Return' 
-        onClick={() => history.push('/accounts/edit/domains')} />
+      <Box direction='row' align='center' gap='small'>
+        <Icon
+          icon={Refresh}
+          onClick={refetch}
+          tooltip='refresh list' />
+        <SecondaryButton 
+          icon={<Return size='small' />}
+          label='Return' 
+          onClick={() => history.push('/accounts/edit/domains')} />
+      </Box>
     </SectionPortal>
   )
 }
@@ -104,7 +110,7 @@ function RecordsControls() {
 export function DnsRecords() {
   const [listRef, setListRef] = useState(null)
   const {id} = useParams()
-  const {data, loading, fetchMore} = useQuery(DNS_RECORDS, {
+  const {data, loading, fetchMore, refetch} = useQuery(DNS_RECORDS, {
     variables: {id},
     fetchPolicy: 'cache-and-network'
   })
@@ -136,7 +142,7 @@ export function DnsRecords() {
             })} />
         </Box>
       </Box>
-      <RecordsControls />
+      <RecordsControls refetch={refetch} />
     </SectionContentContainer>
   )
 }

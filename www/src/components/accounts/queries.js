@@ -263,6 +263,15 @@ export const CREATE_DOMAIN = gql`
   ${DnsDomainFragment}
 `;
 
+export const UPDATE_DOMAIN = gql`
+  mutation Update($id: ID!, $attributes: DnsDomainAttributes!) {
+    updateDomain(id: $id, attributes: $attributes) {
+      ...DnsDomainFragment
+    }
+  }
+  ${DnsDomainFragment}
+`;
+
 export const DELETE_DNS_RECORD = gql`
   mutation Delete($name: String!, $type: DnsRecordType!) {
     deleteDnsRecord(name: $name, type: $type) {

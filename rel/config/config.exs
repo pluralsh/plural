@@ -68,7 +68,9 @@ config :core,
   stripe_publishable_key: get_env("STRIPE_PUBLISHABLE_KEY"),
   hydra_public_url: get_env("HYDRA_URL") || "https://oidc.plural.sh",
   git_commit: get_env("GIT_COMMIT"),
-  cloudflare_zone: get_env("CLOUDFLARE_ZONE")
+  cloudflare_zone: get_env("CLOUDFLARE_ZONE"),
+  acme_key_id: get_env("ACME_KEY_ID"),
+  acme_secret: get_env("ACME_SECRET")
 
 provider = case get_env("PROVIDER") || "google" do
   "google" -> :gcp

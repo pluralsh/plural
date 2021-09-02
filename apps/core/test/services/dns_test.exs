@@ -29,6 +29,31 @@ defmodule Core.Services.DnsTest do
     end
   end
 
+  describe "#update_domain/3" do
+    test "A domain creator can update his domains' access policies" do
+      domain = insert(:dns_domain)
+      other_user = insert(:user)
+
+      {:ok, updated} = Dns.update_domain(%{
+        access_policy: %{bindings: [%{user_id: other_user.id}]}
+      }, domain.id, domain.creator)
+
+      assert updated.id == domain.id
+      [binding] = updated.access_policy.bindings
+
+      assert binding.user_id == other_user.id
+    end
+
+    test "Non-creators cannot update" do
+      domain = insert(:dns_domain)
+      other_user = insert(:user)
+
+      {:error, _} = Dns.update_domain(%{
+        access_policy: %{bindings: [%{user_id: other_user.id}]}
+      }, domain.id, insert(:user, account: domain.creator.account))
+    end
+  end
+
   describe "#create_record/4" do
     test "a user can create a record for their accounts domain" do
       user = insert(:user)
@@ -48,6 +73,38 @@ defmodule Core.Services.DnsTest do
       assert record.external_id == "12345"
       assert record.name == "some.#{domain.name}"
       assert record.type == :a
+    end
+
+    test "It will respect access policies" do
+      user = insert(:user)
+      domain = insert(:dns_domain, account: user.account)
+      insert(:dns_access_policy_binding,
+        policy: build(:dns_access_policy, domain: domain),
+        user: user
+      )
+
+      external_id = "12345"
+      expect(DnsRecord, :create, fn _, _ -> dns_resp(external_id) end)
+
+      {:ok, record} = Dns.create_record(%{
+        type: :a,
+        name: "some.#{domain.name}",
+        records: ["1.2.3.4"],
+      }, "cluster", :aws, user)
+
+      assert record.creator_id == user.id
+      assert record.cluster == "cluster"
+      assert record.provider == :aws
+      assert record.external_id == "12345"
+      assert record.name == "some.#{domain.name}"
+      assert record.type == :a
+
+      other_user = insert(:user, account: user.account)
+      {:error, _} = Dns.create_record(%{
+        type: :a,
+        name: "other.#{domain.name}",
+        records: ["1.2.3.4"],
+      }, "cluster", :aws, other_user)
     end
 
     test "if a record already exists, it will update" do

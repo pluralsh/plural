@@ -1,9 +1,11 @@
 defmodule GraphQl.Resolvers.Dns do
   use GraphQl.Resolvers.Base, model: Core.Schema.DnsDomain
-  alias Core.Schema.DnsRecord
+  alias Core.Schema.{DnsRecord, DnsAccessPolicy, DnsAccessPolicyBinding}
   alias Core.Services.Dns
 
   def query(DnsRecord, _), do: DnsRecord
+  def query(DnsAccessPolicy, _), do: DnsAccessPolicy
+  def query(DnsAccessPolicyBinding, _), do: DnsAccessPolicyBinding
   def query(_, _), do: DnsDomain
 
   def resolve_domain(%{id: id}, %{context: %{current_user: user}}),
@@ -37,6 +39,9 @@ defmodule GraphQl.Resolvers.Dns do
 
   def create_domain(%{attributes: attrs}, %{context: %{current_user: user}}),
     do: Dns.create_domain(attrs, user)
+
+  def update_domain(%{id: id, attributes: attrs}, %{context: %{current_user: user}}),
+    do: Dns.update_domain(attrs, id, user)
 
   def create_record(%{attributes: attrs, cluster: cluster, provider: prov}, %{context: %{current_user: user}}),
     do: Dns.create_record(attrs, cluster, prov, user)

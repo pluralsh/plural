@@ -453,4 +453,16 @@ defmodule Core.Factory do
       external_id: sequence(:external_id, & "ext-#{&1}")
     }
   end
+
+  def dns_access_policy_factory do
+    %Schema.DnsAccessPolicy{
+      domain: build(:dns_domain)
+    }
+  end
+
+  def dns_access_policy_binding_factory do
+    %Schema.DnsAccessPolicyBinding{
+      policy: build(:dns_access_policy)
+    }
+  end
 end

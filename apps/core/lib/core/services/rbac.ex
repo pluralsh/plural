@@ -5,6 +5,22 @@ defmodule Core.Services.Rbac do
     Core.Repo.preload(user, [:account, role_bindings: :role, group_role_bindings: :role])
   end
 
+  def evaluate_policy(user, policy) do
+    %{groups: user_groups} = Core.Repo.preload(user, [:groups])
+    %{bindings: bindings} = Core.Repo.preload(policy, [:bindings])
+
+    {users, groups} = Enum.split_with(bindings, & &1.user_id)
+    group_set = Enum.map(groups, & &1.group_id) |> MapSet.new()
+    user_group_set = Enum.map(user_groups, & &1.id) |> MapSet.new()
+
+    with false <- Enum.any?(users, & &1.user_id == user.id),
+         true <- MapSet.disjoint?(group_set, user_group_set) do
+      {:error, "forbidden"}
+    else
+      _ -> :pass
+    end
+  end
+
   def validate(user, action, opts \\ [])
   def validate(%User{id: id, account: %{id: aid, root_user_id: id}}, _, %{account: %{id: aid}}),
     do: true

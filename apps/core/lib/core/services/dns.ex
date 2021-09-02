@@ -27,6 +27,15 @@ defmodule Core.Services.Dns do
     |> when_ok(:insert)
   end
 
+  @spec update_domain(map, binary, User.t) :: domain_resp
+  def update_domain(attrs, id, %User{} = user) do
+    Core.Repo.get(DnsDomain, id)
+    |> Core.Repo.preload(access_policy: :bindings)
+    |> DnsDomain.update_changeset(attrs)
+    |> allow(user, :edit)
+    |> when_ok(:update)
+  end
+
   @spec create_record(map, binary, atom, User.t) :: record_resp
   def create_record(%{name: name, type: t} = attrs, cluster, provider, %User{} = user) do
     Logger.info "Attempting to create record for #{name}"
@@ -34,6 +43,7 @@ defmodule Core.Services.Dns do
     |> add_operation(:domain, fn _ ->
       domain_name(name)
       |> get_domain()
+      |> Core.Repo.preload([access_policy: :bindings])
       |> case do
         %DnsDomain{} = d -> {:ok, d}
         nil -> {:error, "domain not found"}

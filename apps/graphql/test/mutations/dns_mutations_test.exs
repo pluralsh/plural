@@ -21,6 +21,32 @@ defmodule GraphQl.DnsMutationsTest do
     end
   end
 
+  describe "updateDomain" do
+    test "a creator can update their domains" do
+      user = insert(:user)
+      domain = insert(:dns_domain, account: user.account, creator: user)
+      other_user = insert(:user, account: user.account)
+
+      {:ok, %{data: %{"updateDomain" => found}}} = run_query("""
+        mutation Update($id: ID!, $attrs: DnsDomainAttributes!) {
+          updateDomain(id: $id, attributes: $attrs) {
+            id
+            accessPolicy { bindings { user { id } } }
+          }
+        }
+      """, %{
+        "id" => domain.id,
+        "attrs" => %{"accessPolicy" => %{
+          "bindings" => [%{"userId" => other_user.id}]
+        }}
+      }, %{current_user: user})
+
+      assert found["id"] == domain.id
+      %{"bindings" => [binding]} = found["accessPolicy"]
+      assert binding["user"]["id"] == other_user.id
+    end
+  end
+
   describe "createDnsRecord" do
     test "A user can create a record for their account's domains" do
       user = insert(:user)

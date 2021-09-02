@@ -5,7 +5,13 @@ defmodule GraphQl.Schema.Dns do
   ecto_enum :dns_record_type, Core.Schema.DnsRecord.Type
 
   input_object :dns_domain_attributes do
-    field :name, non_null(:string)
+    field :name, :string
+    field :access_policy, :dns_access_policy_attributes
+  end
+
+  input_object :dns_access_policy_attributes do
+    field :id,       :id
+    field :bindings, list_of(:binding_attributes)
   end
 
   input_object :dns_record_attributes do
@@ -18,6 +24,7 @@ defmodule GraphQl.Schema.Dns do
     field :id,   non_null(:id)
     field :name, non_null(:string)
 
+    field :access_policy, :dns_access_policy, resolve: dataloader(Dns)
     field :creator, :user, resolve: dataloader(User)
     field :account, :account, resolve: dataloader(Account)
 
@@ -38,6 +45,20 @@ defmodule GraphQl.Schema.Dns do
 
     field :creator, :user, resolve: dataloader(User)
     field :domain,  :dns_domain, resolve: dataloader(Dns)
+
+    timestamps()
+  end
+
+  object :dns_access_policy do
+    field :id, non_null(:id)
+    field :bindings, list_of(:policy_binding), resolve: dataloader(Dns)
+    timestamps()
+  end
+
+  object :policy_binding do
+    field :id,    non_null(:id)
+    field :user,  :user, resolve: dataloader(User)
+    field :group, :group, resolve: dataloader(Account)
 
     timestamps()
   end
@@ -75,6 +96,14 @@ defmodule GraphQl.Schema.Dns do
       arg :attributes, non_null(:dns_domain_attributes)
 
       resolve &Dns.create_domain/2
+    end
+
+    field :update_domain, :dns_domain do
+      middleware Authenticated
+      arg :id,         non_null(:id)
+      arg :attributes, non_null(:dns_domain_attributes)
+
+      resolve &Dns.update_domain/2
     end
 
     field :create_dns_record, :dns_record do

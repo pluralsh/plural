@@ -1,12 +1,15 @@
 defmodule Core.Schema.DnsDomain do
   use Piazza.Ecto.Schema
-  alias Core.Schema.{Account, User}
+  alias Core.Schema.{Account, User, DnsAccessPolicy}
 
   schema "dns_domains" do
     field :name, :string
 
     belongs_to :creator, User
     belongs_to :account, Account
+    has_one :access_policy, DnsAccessPolicy,
+      on_replace: :delete,
+      foreign_key: :domain_id
 
     timestamps()
   end
@@ -24,13 +27,21 @@ defmodule Core.Schema.DnsDomain do
 
   def changeset(model, attrs \\ %{}) do
     domain = Core.conf(:onplural_domain)
+
     model
     |> cast(attrs, @valid)
     |> unique_constraint(:name)
+    |> cast_assoc(:access_policy)
     |> foreign_key_constraint(:creator_id)
     |> foreign_key_constraint(:account_id)
     |> validate_format(:name, regex(domain), message: "must be a dns complaint domain ending with #{domain}")
     |> validate_required(@required)
+  end
+
+  def update_changeset(model, attrs \\ %{}) do
+    model
+    |> cast(attrs, [])
+    |> cast_assoc(:access_policy)
   end
 
   def regex(base_domain) do

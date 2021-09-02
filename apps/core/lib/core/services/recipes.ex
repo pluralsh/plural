@@ -50,7 +50,6 @@ defmodule Core.Services.Recipes do
   def install(%Recipe{} = recipe, context, user) do
     hydrate(recipe)
     |> Map.get(:recipe_sections)
-    |> IO.inspect()
     |> Enum.reduce(start_transaction(), fn %{id: id, repository_id: repo_id} = section, acc ->
       add_operation(acc, id, fn _ ->
         installation_ctx = Map.get(context, repo_id, %{})

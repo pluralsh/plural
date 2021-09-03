@@ -91,7 +91,8 @@ defmodule Core.Services.Dns do
       |> when_ok(:delete)
     end)
     |> add_operation(:external, fn %{record: r} ->
-      Record.delete(r.external_id)
+      Record.delete(r.external_id, params: [zone_id: zone_id()])
+      |> extract_id()
     end)
     |> execute(extract: :record)
   end

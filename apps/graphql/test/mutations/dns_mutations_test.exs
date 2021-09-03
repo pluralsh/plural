@@ -86,7 +86,7 @@ defmodule GraphQl.DnsMutationsTest do
     test "it can delete a dns record" do
       user = insert(:user)
       record = insert(:dns_record, creator: user)
-      expect(DnsRecord, :delete, fn _ -> {:ok, %{}} end)
+      expect(DnsRecord, :delete, fn _, _ -> dns_resp("ext-id") end)
 
       {:ok, %{data: %{"deleteDnsRecord" => delete}}} = run_query("""
         mutation Delete($name: String!, $type: DnsRecordType!) {

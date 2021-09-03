@@ -162,7 +162,7 @@ defmodule Core.Services.DnsTest do
     test "users can delete their own records" do
       user = insert(:user)
       record = insert(:dns_record, creator: user)
-      expect(DnsRecord, :delete, fn _ -> {:ok, %{body: %{}}} end)
+      expect(DnsRecord, :delete, fn _, _ -> dns_resp("ext-id") end)
 
       {:ok, del} = Dns.delete_record(record.name, record.type, user)
 

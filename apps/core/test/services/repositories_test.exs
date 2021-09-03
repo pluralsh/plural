@@ -458,6 +458,52 @@ defmodule Core.Services.RepositoriesTest do
     end
   end
 
+  describe "#upsert_oidc_provider/3" do
+    test "a user can create a provider for their installation" do
+      account = insert(:account)
+      installation = insert(:installation, user: build(:user, account: account))
+      group = insert(:group, account: account)
+      expect(HTTPoison, :post, fn _, _, _ ->
+        {:ok, %{status_code: 200, body: Jason.encode!(%{client_id: "123", client_secret: "secret"})}}
+      end)
+
+      {:ok, oidc} = Repositories.upsert_oidc_provider(%{
+        redirect_uris: ["https://example.com"],
+        auth_method: :basic,
+        bindings: [%{user_id: installation.user_id}, %{group_id: group.id}]
+      }, installation.id, installation.user)
+
+      assert oidc.client_id == "123"
+      assert oidc.client_secret == "secret"
+      assert oidc.redirect_uris == ["https://example.com"]
+
+      [first, second] = oidc.bindings
+
+      assert first.user_id == installation.user_id
+      assert second.group_id == group.id
+
+      assert_receive {:event, %PubSub.OIDCProviderCreated{item: ^oidc}}
+    end
+
+    test "it can update an oidc provider's attributes" do
+      installation = insert(:installation)
+      oidc = insert(:oidc_provider, installation: installation)
+      expect(HTTPoison, :put, fn _, _, _ ->
+        {:ok, %{status_code: 200, body: Jason.encode!(%{client_id: "123", client_secret: "secret"})}}
+      end)
+
+      {:ok, updated} = Repositories.upsert_oidc_provider(%{
+        redirect_uris: ["https://example.com"],
+        auth_method: :basic
+      }, installation.id, installation.user)
+
+      assert updated.id == oidc.id
+      assert updated.auth_method == :basic
+
+      assert_receive {:event, %PubSub.OIDCProviderUpdated{item: ^updated}}
+    end
+  end
+
   describe "#delete_oidc_provider/2" do
     test "it can delete an oidc provider for an installation" do
       installation = insert(:installation)

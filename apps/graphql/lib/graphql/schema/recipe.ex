@@ -11,11 +11,18 @@ defmodule GraphQl.Schema.Recipe do
   ### INPUTS
 
   input_object :recipe_attributes do
-    field :name,         non_null(:string)
-    field :description,  :string
-    field :provider,     :provider
-    field :sections,     list_of(:recipe_section_attributes)
-    field :dependencies, list_of(:recipe_dependency_attributes)
+    field :name,          non_null(:string)
+    field :description,   :string
+    field :provider,      :provider
+    field :sections,      list_of(:recipe_section_attributes)
+    field :dependencies,  list_of(:recipe_dependency_attributes)
+    field :oidc_settings, :oidc_settings_attributes
+  end
+
+  input_object :oidc_settings_attributes do
+    field :uri_format,  non_null(:string)
+    field :auth_method, non_null(:oidc_auth_method)
+    field :domain_key,  non_null(:string)
   end
 
   input_object :recipe_dependency_attributes do
@@ -65,10 +72,17 @@ defmodule GraphQl.Schema.Recipe do
     field :name,            non_null(:string)
     field :description,     :string
     field :provider,        :provider
+    field :oidc_settings,   :oidc_settings
     field :repository,      :repository, resolve: dataloader(Repository)
     field :recipe_sections, list_of(:recipe_section)
 
     timestamps()
+  end
+
+  object :oidc_settings do
+    field :uri_format,  non_null(:string)
+    field :auth_method, non_null(:oidc_auth_method)
+    field :domain_key,  non_null(:string)
   end
 
   object :recipe_section do

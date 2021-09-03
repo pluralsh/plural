@@ -4,10 +4,30 @@ defmodule Core.Schema.Recipe do
 
   defenum Provider, gcp: 0, aws: 1, azure: 2, custom: 3, kubernetes: 4
 
+  defmodule OIDCSettings do
+    use Piazza.Ecto.Schema
+
+    embedded_schema do
+      field :uri_format,  :string
+      field :auth_method, Core.Schema.OIDCProvider.AuthMethod
+      field :domain_key,  :string
+    end
+
+    @valid ~w(uri_format auth_method domain_key)a
+
+    def changeset(model, attrs \\ %{}) do
+      model
+      |> cast(attrs, @valid)
+      |> validate_required(@valid)
+    end
+  end
+
   schema "recipes" do
     field :name, :string
     field :description, :string
     field :provider, Provider
+
+    embeds_one :oidc_settings, OIDCSettings, on_replace: :update
 
     belongs_to :repository, Repository
     has_many :recipe_sections, RecipeSection
@@ -31,6 +51,7 @@ defmodule Core.Schema.Recipe do
     model
     |> cast(attrs, @valid)
     |> cast_assoc(:dependencies)
+    |> cast_embed(:oidc_settings)
     |> foreign_key_constraint(:repository_id)
     |> unique_constraint(:name, index: index_name(:recipes, [:repository_id, :name]))
     |> validate_required([:name, :repository_id])

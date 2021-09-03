@@ -383,6 +383,18 @@ defmodule Core.Services.Repositories do
   end
 
   @doc """
+  Inserts or updates the oidc provider for an installation
+  """
+  @spec upsert_oidc_provider(map, binary, User.t) :: {:ok, OIDCProvider.t} | {:error, term}
+  def upsert_oidc_provider(attrs, installation_id, %User{} = user) do
+    case Core.Repo.get_by(OIDCProvider, installation_id: installation_id) do
+      %OIDCProvider{} ->
+        update_oidc_provider(attrs, installation_id, user)
+      _ -> create_oidc_provider(attrs, installation_id, user)
+    end
+  end
+
+  @doc """
   Updates the spec of an installation's oidc provider
   """
   @spec update_oidc_provider(map, binary, User.t) :: {:ok, OIDCProvider.t} | {:error, term}

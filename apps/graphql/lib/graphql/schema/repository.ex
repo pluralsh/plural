@@ -380,5 +380,13 @@ defmodule GraphQl.Schema.Repository do
 
       resolve safe_resolver(&Repository.update_oidc_provider/2)
     end
+
+    field :upsert_oidc_provider, :oidc_provider do
+      middleware Authenticated
+      arg :installation_id, non_null(:id)
+      arg :attributes, non_null(:oidc_attributes)
+
+      resolve safe_resolver(&Repository.upsert_oidc_provider/2)
+    end
   end
 end

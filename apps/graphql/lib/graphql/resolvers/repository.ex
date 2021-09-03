@@ -188,6 +188,9 @@ defmodule GraphQl.Resolvers.Repository do
   def update_oidc_provider(%{attributes: attrs, installation_id: id}, %{context: %{current_user: user}}),
     do: Repositories.update_oidc_provider(attrs, id, user)
 
+  def upsert_oidc_provider(%{attributes: attrs, installation_id: id}, %{context: %{current_user: user}}),
+    do: Repositories.upsert_oidc_provider(attrs, id, user)
+
   def create_artifact(%{repository_id: repo_id, attributes: attrs}, %{context: %{current_user: user}}),
     do: Repositories.create_artifact(attrs, repo_id, user)
   def create_artifact(%{repository_name: name, attributes: attrs}, %{context: %{current_user: user}}) do

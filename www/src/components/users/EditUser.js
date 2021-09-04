@@ -5,7 +5,7 @@ import { Button, InputCollection, ResponsiveInput, Select } from 'forge-core'
 import { useMutation } from 'react-apollo'
 import { UPDATE_USER } from './queries'
 import Avatar from './Avatar'
-import { StatusCritical, Checkmark, User, Lock, Install, Robot, License, Logout } from 'grommet-icons'
+import { StatusCritical, Checkmark, User, Lock, Install, Robot, License, Logout, UsbKey } from 'grommet-icons'
 import Installations from '../repos/Installations'
 import { CurrentUserContext } from '../login/CurrentUser'
 import { Tokens } from './Tokens'
@@ -16,6 +16,7 @@ import { Keys } from './Keys'
 import { SectionContentContainer, SectionPortal } from '../Explore'
 import { LoginMethod } from './types'
 import { wipeToken } from '../../helpers/authentication'
+import { EabCredentials } from './EabCredentials'
 
 export const EditContext = React.createContext({})
 
@@ -128,6 +129,7 @@ export default function EditUser() {
           <EditSelect edit='installations' name='Installations' icon={<Install size='14px' />} />
           <EditSelect edit='tokens' name='Access Tokens' icon={<Robot size='14px' />} />
           <EditSelect edit='keys' name='Public Keys' icon={<License size='14px' />} />
+          <EditSelect edit='credentials' name='Eab Credentials' icon={<UsbKey size='14px' />} />
           <SelectorContent 
             name='Logout' 
             icon={<Logout size='14px' />}
@@ -211,6 +213,9 @@ export default function EditUser() {
           </EditContent>
           <EditContent edit='keys' name='Public Keys'>
             <Keys />
+          </EditContent>
+          <EditContent edit='credentials' name='Eab Credentials'>
+            <EabCredentials />
           </EditContent>
         </Box>
       </Box>

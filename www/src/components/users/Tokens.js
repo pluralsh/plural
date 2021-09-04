@@ -15,6 +15,7 @@ import { Confirm } from '../utils/Confirm'
 import { formatLocation } from '../../utils/geo'
 import lookup from 'country-code-lookup'
 import { Chloropleth } from '../utils/Chloropleth'
+import { obscure } from './utils'
 
 function AuditHeader() {
   return (
@@ -121,7 +122,7 @@ function Token({token: {token, insertedAt, id}}) {
           noBorder
           pillText='Copied access token'
           text={token}
-          displayText={token.substring(0, 9) + "x".repeat(15)} />
+          displayText={obscure(token)} />
       </Box>
       <Box flex={false} pad='xsmall' direction='row' gap='small' align='center' justify='end'>
         <Box pad={{right: 'small'}}>

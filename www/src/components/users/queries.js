@@ -1,5 +1,5 @@
 import gql from 'graphql-tag'
-import { UserFragment, TokenFragment, WebhookFragment, AddressFragment, AccountFragment, PublisherFragment, PublicKeyFragment, TokenAuditFragment } from '../../models/user'
+import { UserFragment, TokenFragment, WebhookFragment, AddressFragment, AccountFragment, PublisherFragment, PublicKeyFragment, TokenAuditFragment, EabCredentialFragment } from '../../models/user'
 import { CardFragment } from '../../models/payments';
 import { PageInfo } from '../../models/misc'
 
@@ -215,4 +215,19 @@ export const POLL_LOGIN_TOKEN = gql`
   mutation Poll($token: String!, $deviceToken: String) {
     loginToken(token: $token, deviceToken: $deviceToken) { jwt }
   }
+`
+export const EAB_CREDENTIALS = gql`
+  query {
+    eabCredentials { ...EabCredentialFragment }
+  }
+  ${EabCredentialFragment}
+`
+
+export const DELETE_EAB_CREDENTIALS = gql`
+  mutation Delete($id: ID!) {
+    deleteEabCredentials(id: $id) {
+      ...EabCredentialFragment
+    }
+  }
+  ${EabCredentialFragment}
 `

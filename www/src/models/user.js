@@ -141,3 +141,14 @@ export const PublicKeyFragment = gql`
     insertedAt
   }
 `;
+
+export const EabCredentialFragment = gql`
+  fragment EabCredentialFragment on EabCredential {
+    id
+    keyId
+    hmacKey
+    cluster
+    provider
+    insertedAt
+  }
+`;

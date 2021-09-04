@@ -1,0 +1,1 @@
+export const obscure = (token) => token.substring(0, 9) + "x".repeat(15)

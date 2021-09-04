@@ -205,6 +205,16 @@ defmodule GraphQl.Schema.User do
     timestamps()
   end
 
+  object :eab_credential do
+    field :id,       non_null(:id)
+    field :cluster,  non_null(:string)
+    field :provider, non_null(:provider)
+    field :key_id,   non_null(:string)
+    field :hmac_key, non_null(:string)
+
+    timestamps()
+  end
+
   object :login_method_response do
     field :login_method, non_null(:login_method)
     field :token,        :string
@@ -294,6 +304,20 @@ defmodule GraphQl.Schema.User do
       arg :emails, list_of(:string)
 
       resolve &User.list_keys/2
+    end
+
+    field :eab_credential, :eab_credential do
+      middleware Authenticated
+      arg :cluster,  non_null(:string)
+      arg :provider, non_null(:provider)
+
+      resolve &User.get_eab_key/2
+    end
+
+    field :eab_credentials, list_of(:eab_credential) do
+      middleware Authenticated
+
+      resolve &User.list_eab_keys/2
     end
   end
 
@@ -416,6 +440,13 @@ defmodule GraphQl.Schema.User do
       arg :id, non_null(:id)
 
       resolve safe_resolver(&User.delete_public_key/2)
+    end
+
+    field :delete_eab_key, :eab_credential do
+      middleware Authenticated
+      arg :id, non_null(:id)
+
+      resolve safe_resolver(&User.delete_eab_key/2)
     end
   end
 end

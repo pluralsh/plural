@@ -70,7 +70,8 @@ config :core,
   git_commit: get_env("GIT_COMMIT"),
   cloudflare_zone: get_env("CLOUDFLARE_ZONE"),
   acme_key_id: get_env("ACME_KEY_ID"),
-  acme_secret: get_env("ACME_SECRET")
+  acme_secret: get_env("ACME_SECRET"),
+  zerossl_access_key: get_env("ZEROSSL_ACCESS_KEY")
 
 provider = case get_env("PROVIDER") || "google" do
   "google" -> :gcp

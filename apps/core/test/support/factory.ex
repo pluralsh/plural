@@ -465,4 +465,14 @@ defmodule Core.Factory do
       policy: build(:dns_access_policy)
     }
   end
+
+  def eab_credential_factory do
+    %Schema.EabCredential{
+      user: build(:user),
+      cluster: sequence(:eab, &"cluster-#{&1}"),
+      provider: :aws,
+      key_id: "abc",
+      hmac_key: "123"
+    }
+  end
 end

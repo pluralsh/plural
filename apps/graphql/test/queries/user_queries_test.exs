@@ -358,4 +358,35 @@ defmodule GraphQl.UserQueriesTest do
       assert method["loginMethod"] == "PASSWORDLESS"
     end
   end
+
+  describe "eabCredential" do
+    test "it will fetch an eab credential for a user" do
+      eab = insert(:eab_credential, provider: :aws)
+
+      {:ok, %{data: %{"eabCredential" => found}}} = run_query("""
+        query Eab($cluster: String!, $provider: Provider!) {
+          eabCredential(cluster: $cluster, provider: $provider) {
+            id
+          }
+        }
+      """, %{"cluster" => eab.cluster, "provider" => "AWS"}, %{current_user: eab.user})
+
+      assert found["id"] == eab.id
+    end
+  end
+
+  describe "eabCredentials" do
+    test "it will fetch the credentials for a user" do
+      user = insert(:user)
+      eabs = insert_list(3, :eab_credential, user: user)
+
+      {:ok, %{data: %{"eabCredentials" => found}}} = run_query("""
+        query {
+          eabCredentials { id }
+        }
+      """, %{}, %{current_user: user})
+
+      assert ids_equal(found, eabs)
+    end
+  end
 end

@@ -1,7 +1,9 @@
 defmodule Core.Services.Users do
   use Core.Services.Base
+  use Nebulex.Caching
   import Core.Policies.User
   alias Core.Services.{Accounts}
+  alias Core.Clients.ZeroSSL
   alias Core.PubSub
   alias Core.Schema.{
     PersistedToken,
@@ -13,8 +15,11 @@ defmodule Core.Services.Users do
     PublicKey,
     PasswordlessLogin,
     LoginToken,
-    DeviceLogin
+    DeviceLogin,
+    EabCredential
   }
+
+  @ttl Nebulex.Time.expiry_time(12, :hour)
 
   @spec get_user(binary) :: User.t | nil
   def get_user(user_id), do: Core.Repo.get(User, user_id)
@@ -352,6 +357,52 @@ defmodule Core.Services.Users do
       |> Core.Repo.update()
     else
       _ -> {:error, :not_found}
+    end
+  end
+
+  @doc """
+  Fetches or creates an eab key for the user mapped to that (cluster, provider)
+  """
+  @spec get_eab_key(binary, binary, User.t) :: {:ok, EabCredential.t} | {:error, term}
+  @decorate cacheable(cache: Core.Cache, key: {:eab, cluster, provider, user_id}, opts: [ttl: @ttl], match: &cacheit/1)
+  def get_eab_key(cluster, provider, %User{id: user_id} = user) do
+    Core.Repo.get_by(EabCredential,
+      cluster: cluster,
+      provider: provider,
+      user_id: user_id
+    )
+    |> case do
+      %EabCredential{} = cred -> {:ok, cred}
+      _ -> materialize_eab_key(cluster, provider, user)
+    end
+  end
+
+  def cacheit({:ok, _}), do: true
+  def cacheit(_), do: false
+
+
+  @doc """
+  Removes an eab key to permit regeneration, for instance where a cluster is recreated
+  """
+  @spec delete_eab_key(binary, User.t) :: {:ok, EabCredential.t} | {:error, term}
+  def delete_eab_key(id, %User{} = user) do
+    Core.Repo.get(EabCredential, id)
+    |> allow(user, :delete)
+    |> when_ok(&delete_eab_key/1)
+  end
+
+  @decorate cache_evict(cache: Core.Cache, keys: [{:eab, c, p, u}])
+  def delete_eab_key(%EabCredential{user_id: u, cluster: c, provider: p} = eab),
+    do: Core.Repo.delete(eab)
+
+  defp materialize_eab_key(cluster, provider, %User{id: user_id}) do
+    with {:ok, resp} <- ZeroSSL.generate_eab_credentials() do
+      %EabCredential{user_id: user_id, cluster: cluster, provider: provider}
+      |> EabCredential.changeset(%{
+        key_id: resp.eab_kid,
+        hmac_key: resp.eab_hmac_key
+      })
+      |> Core.Repo.insert()
     end
   end
 

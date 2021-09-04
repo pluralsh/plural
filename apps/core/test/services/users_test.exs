@@ -1,5 +1,6 @@
 defmodule Core.Services.UsersTest do
   use Core.SchemaCase, async: true
+  use Mimic
   alias Core.Services.Users
   alias Core.PubSub
 
@@ -291,6 +292,38 @@ defmodule Core.Services.UsersTest do
 
       assert active.active
       assert active.user_id == user.id
+    end
+  end
+
+  describe "#get_eab_key/3" do
+    test "it will generate and persist an eab keypair for a user" do
+      user = insert(:user)
+      expect(HTTPoison, :post, fn _, _ ->
+        {:ok, %{status_code: 200, body: Jason.encode!(%{
+          success: 1,
+          eab_kid: "abc",
+          eab_hmac_key: "123"
+        })}}
+      end)
+
+      {:ok, eab} = Users.get_eab_key("cluster", :aws, user)
+
+      assert eab.cluster == "cluster"
+      assert eab.provider == :aws
+      assert eab.user_id == user.id
+      assert eab.key_id == "abc"
+      assert eab.hmac_key == "123"
+    end
+  end
+
+  describe "#delete_eab_key/2" do
+    test "a user can delete their eab creds" do
+      user = insert(:user)
+      eab = insert(:eab_credential, user: user)
+
+      {:ok, _} = Users.delete_eab_key(eab.id, user)
+
+      refute refetch(eab)
     end
   end
 end

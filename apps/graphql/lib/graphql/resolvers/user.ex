@@ -9,7 +9,8 @@ defmodule GraphQl.Resolvers.User do
     ImpersonationPolicy,
     ImpersonationPolicyBinding,
     PublicKey,
-    AccessTokenAudit
+    AccessTokenAudit,
+    EabCredential
   }
 
   def data(args) do
@@ -236,6 +237,17 @@ defmodule GraphQl.Resolvers.User do
 
   def device_login(_, _),
     do: Users.device_login()
+
+  def get_eab_key(%{cluster: cluster, provider: prov}, %{context: %{current_user: user}}),
+    do: Users.get_eab_key(cluster, prov, user)
+
+  def delete_eab_key(%{id: id}, %{context: %{current_user: user}}),
+    do: Users.delete_eab_key(id, user)
+
+  def list_eab_keys(_, %{context: %{current_user: user}}) do
+    keys = EabCredential.for_user(user.id) |> Core.Repo.all()
+    {:ok, keys}
+  end
 
   @colors ~w(#6b5b95 #feb236 #d64161 #ff7b25 #103A50 #CDCCC2 #FDC401 #8E5B3C #020001 #2F415B)
 

@@ -381,4 +381,19 @@ defmodule GraphQl.UserMutationTest do
       assert login["loginUrl"]
     end
   end
+
+  describe "deleteEabKey" do
+    test "it will delete an eab key for a user" do
+      eab = insert(:eab_credential)
+
+      {:ok, %{data: %{"deleteEabKey" => del}}} = run_query("""
+        mutation Delete($id: ID!) {
+          deleteEabKey(id: $id) { id }
+        }
+      """, %{"id" => eab.id}, %{current_user: eab.user})
+
+      assert del["id"] == eab.id
+      refute refetch(eab)
+    end
+  end
 end

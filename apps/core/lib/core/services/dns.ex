@@ -38,7 +38,7 @@ defmodule Core.Services.Dns do
 
   @spec create_record(map, binary, atom, User.t) :: record_resp
   def create_record(%{name: name, type: t} = attrs, cluster, provider, %User{} = user) do
-    Logger.info "Attempting to create record for #{name}"
+    Logger.info "Attempting to create record #{t}:#{name}"
     start_transaction()
     |> add_operation(:domain, fn _ ->
       domain_name(name)
@@ -84,6 +84,7 @@ defmodule Core.Services.Dns do
 
   @spec delete_record(binary, atom, User.t) :: record_resp
   def delete_record(name, type, %User{} = user) do
+    Logger.info "Attempting to delete record #{type}:#{name}"
     start_transaction()
     |> add_operation(:record, fn _ ->
       Core.Repo.get_by!(DnsRecord, name: name, type: type)

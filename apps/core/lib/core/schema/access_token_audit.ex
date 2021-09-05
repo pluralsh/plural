@@ -32,7 +32,7 @@ defmodule Core.Schema.AccessTokenAudit do
     from(t in query,
       where: not is_nil(t.country),
       group_by: t.country,
-      select: %{country: t.country, count: count(t.id)}
+      select: %{country: t.country, count: sum(t.count)}
     )
   end
 

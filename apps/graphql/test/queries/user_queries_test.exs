@@ -238,8 +238,8 @@ defmodule GraphQl.UserQueriesTest do
 
     test "It can fetch audit metrics for a token" do
       token = insert(:persisted_token)
-      insert_list(3, :access_token_audit, token: token, country: "US")
-      insert_list(2, :access_token_audit, token: token, country: "CN")
+      insert_list(3, :access_token_audit, token: token, country: "US", count: 1)
+      insert_list(2, :access_token_audit, token: token, country: "CN", count: 2)
       insert(:access_token_audit, country: "UK")
 
       {:ok, %{data: %{"token" => %{"metrics" => metrics}}}} = run_query("""
@@ -253,7 +253,7 @@ defmodule GraphQl.UserQueriesTest do
 
       grouped = Enum.into(metrics, %{}, & {&1["country"], &1["count"]})
       assert grouped["US"] == 3
-      assert grouped["CN"] == 2
+      assert grouped["CN"] == 4
       refute grouped["UK"]
     end
   end

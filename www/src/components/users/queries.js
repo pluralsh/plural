@@ -231,3 +231,10 @@ export const DELETE_EAB_CREDENTIALS = gql`
   }
   ${EabCredentialFragment}
 `
+
+export const DELETE_USER = gql`
+  mutation DeleteUser($id: ID!) {
+    deleteUser(id: $id) { ...UserFragment }
+  }
+  ${UserFragment}
+`

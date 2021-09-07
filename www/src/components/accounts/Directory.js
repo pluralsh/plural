@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { Box, TextInput } from 'grommet'
 import { useQuery } from 'react-apollo'
 import { GROUPS_Q, ROLES_Q, USERS_Q } from './queries'
@@ -8,7 +8,7 @@ import { UserRow } from './User'
 import CreateGroup from './CreateGroup'
 import CreateInvite from './CreateInvite'
 import RoleRow, { RoleCreator } from './Role'
-import { extendConnection } from '../../utils/graphql'
+import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
 import { SearchIcon } from './utils'
 import { SectionContentContainer, SectionPortal } from '../Explore'
 import { INPUT_WIDTH } from './constants'
@@ -16,7 +16,12 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 
 export function Users() {
   const [q, setQ] = useState(null)
-  const {data, fetchMore} = useQuery(USERS_Q, {variables: {q}})
+  const {data, fetchMore} = useQuery(USERS_Q, {variables: {q}, fetchPolicy: 'cache-and-network'})
+  const update = useCallback((cache, {data: {deleteUser}}) => updateCache(cache, {
+    query: USERS_Q,
+    variables: {q},
+    update: (prev) => removeConnection(prev, deleteUser, 'users')
+  }), [q])
 
   if (!data) return <LoopingLogo scale='0.75' />
 
@@ -28,7 +33,9 @@ export function Users() {
         id='users'
         style={{height: '100%', overflow: 'auto'}}
         edges={edges}
-        mapper={({node}, next) => <UserRow key={node.id} user={node} next={next.node} />}
+        mapper={({node}, next) => (
+          <UserRow key={node.id} user={node} next={next.node} deletable update={update} />
+        )}
         onLoadMore={() => pageInfo.hasNextPage && fetchMore({
           variables: {userCursor: pageInfo.endCursor},
           updateQuery: (prev, {fetchMoreResult: {users}}) => extendConnection(prev, users, 'users')

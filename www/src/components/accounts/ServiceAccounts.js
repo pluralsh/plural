@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { Box, Layer, TextInput } from 'grommet'
 import { useMutation } from 'react-apollo'
 import { Edit } from 'grommet-icons'
@@ -6,7 +6,7 @@ import { Scroller, ModalHeader, SecondaryButton } from 'forge-core'
 import { IMPERSONATE_SERVICE_ACCOUNT, USERS_Q } from './queries'
 import { CreateServiceAccount, UpdateServiceAccount } from './CreateServiceAccount'
 import { UserRow } from './User'
-import { extendConnection } from '../../utils/graphql'
+import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
 import { useQuery } from 'react-apollo'
 import { GqlError } from '../utils/Alert'
 import { setToken } from '../../helpers/authentication'
@@ -15,8 +15,9 @@ import { SectionContentContainer, SectionPortal } from '../Explore'
 import { INPUT_WIDTH } from './constants'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { Icon } from './Group'
+import { DeleteUser } from '../users/DeleteUser'
 
-function ServiceAccount({user, next}) {
+function ServiceAccount({user, next, update}) {
   const [open, setOpen] = useState(false)
   const [showError, setShowError] = useState(true)
   const [mutation, {loading, error}] = useMutation(IMPERSONATE_SERVICE_ACCOUNT, {
@@ -33,6 +34,7 @@ function ServiceAccount({user, next}) {
       <UserRow user={user} next={next.node} noborder />
       <SecondaryButton label='impersonate' onClick={mutation} loading={loading} />
       <Icon icon={Edit} tooltip='edit' onClick={() => setOpen(true)} />
+      <DeleteUser id={user.id} update={update} />
     </Box>
     {showError && error && (
       <Layer modal>
@@ -60,6 +62,11 @@ export function ServiceAccounts() {
     variables: {q, serviceAccount: true}, 
     fetchPolicy: 'cache-and-network'
   })
+  const update = useCallback((cache, {data: {deleteUser}}) => updateCache(cache, {
+    query: USERS_Q,
+    variables: {q, serviceAccount: true},
+    update: (prev) => removeConnection(prev, deleteUser, 'users')
+  }))
 
   if (!data) return <LoopingLogo />
 
@@ -71,7 +78,7 @@ export function ServiceAccounts() {
         id='service-accounts'
         style={{height: '100%', overflow: 'auto'}}
         edges={edges}
-        mapper={({node}, next) => <ServiceAccount key={node.id} user={node} next={next} />}
+        mapper={({node}, next) => <ServiceAccount key={node.id} user={node} next={next} update={update} />}
         onLoadMore={() => pageInfo.hasNextPage && fetchMore({
           variables: {userCursor: pageInfo.endCursor},
           updateQuery: (prev, {fetchMoreResult: {users}}) => extendConnection(prev, users, 'users')

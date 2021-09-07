@@ -18,6 +18,9 @@ defmodule Core.Schema.Audit do
     belongs_to :role, Schema.Role
     belongs_to :integration_webhook, Schema.IntegrationWebhook
     belongs_to :image, Schema.DockerImage
+    belongs_to :user,  Schema.User
+    belongs_to :dns_domain, Schema.DnsDomain
+    belongs_to :dns_record, Schema.DnsRecord
 
     timestamps()
   end

@@ -73,3 +73,16 @@ defimpl Core.PubSub.Auditable, for: [
   defp action(PubSub.IntegrationWebhookUpdated), do: :updated
   defp action(PubSub.IntegrationWebhookDeleted), do: :deleted
 end
+
+defimpl Core.PubSub.Auditable, for: [Core.PubSub.UserDeleted] do
+  alias Core.Schema.Audit
+
+  def audit(%{item: user, actor: %{id: actor_id}}) do
+    %Audit{
+      action: "user:deleted",
+      actor_id: actor_id,
+      account_id: user.account_id,
+      user_id: user.id
+    }
+  end
+end

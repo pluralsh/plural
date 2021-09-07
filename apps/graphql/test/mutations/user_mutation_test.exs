@@ -396,4 +396,20 @@ defmodule GraphQl.UserMutationTest do
       refute refetch(eab)
     end
   end
+
+  describe "deleteUser" do
+    setup [:setup_root_user]
+    test "it can delete a user", %{account: account, user: admin} do
+      user = insert(:user, account: account)
+
+      {:ok, %{data: %{"deleteUser" => del}}} = run_query("""
+        mutation Delete($id: ID!) {
+          deleteUser(id: $id) { id }
+        }
+      """, %{"id" => user.id}, %{current_user: admin})
+
+      assert del["id"] == user.id
+      refute refetch(user)
+    end
+  end
 end

@@ -4,7 +4,6 @@ import { ModalHeader, InputCollection, ResponsiveInput, Button, TagInput } from 
 import { Edit, Trash, User, Group } from 'grommet-icons'
 import { Icon } from './Group'
 import { CREATE_ROLE, DELETE_ROLE, ROLES_Q, UPDATE_ROLE } from './queries'
-import { addRole, deleteRole } from './utils'
 import { useApolloClient, useMutation } from 'react-apollo'
 import { PermissionTypes } from './types'
 import { fetchGroups, fetchUsers } from './Typeaheads'

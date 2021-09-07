@@ -14,6 +14,7 @@ defmodule GraphQl.Schema.Audit do
     field :actor, :user,  resolve: dataloader(User)
     field :group, :group, resolve: dataloader(Account)
     field :role,  :role,  resolve: dataloader(Account)
+    field :user,  :user,  resolve: dataloader(User)
     field :integration_webhook, :integration_webhook, resolve: dataloader(Account)
 
     field :repository, :repository, resolve: dataloader(Repository)

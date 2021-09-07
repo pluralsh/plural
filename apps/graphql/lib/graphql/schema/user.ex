@@ -398,6 +398,13 @@ defmodule GraphQl.Schema.User do
       resolve safe_resolver(&User.update_user/2)
     end
 
+    field :delete_user, :user do
+      middleware Authenticated
+      arg :id, non_null(:id)
+
+      resolve safe_resolver(&User.delete_user/2)
+    end
+
     field :create_publisher, :publisher do
       middleware Authenticated
       arg :attributes, non_null(:publisher_attributes)

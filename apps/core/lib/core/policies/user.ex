@@ -15,5 +15,10 @@ defmodule Core.Policies.User do
   def can?(%User{id: user_id}, %PersistedToken{user_id: user_id}, :edit),
     do: :pass
 
+  def can?(%User{account_id: aid} = actor, %User{account_id: aid}, :delete) do
+    %{account: account} = actor = Core.Repo.preload(actor, [:account])
+    check_rbac(actor, :users, account: account)
+  end
+
   def can?(_, _, _), do: {:error, :forbidden}
 end

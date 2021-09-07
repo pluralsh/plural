@@ -19,6 +19,9 @@ defmodule Core.Services.Users do
     EabCredential
   }
 
+  @type error :: {:error, term}
+  @type user_resp :: {:ok, User.t} | error
+
   @ttl Nebulex.Time.expiry_time(12, :hour)
 
   @spec get_user(binary) :: User.t | nil
@@ -103,6 +106,10 @@ defmodule Core.Services.Users do
     |> execute(extract: :user)
   end
 
+  @doc """
+  Checks if a login token is active, and if so, discards it and returns its user
+  """
+  @spec poll_login_token(binary) :: user_resp
   def poll_login_token(token) do
     start_transaction()
     |> add_operation(:token, fn _ ->
@@ -197,7 +204,7 @@ defmodule Core.Services.Users do
   @doc """
   Creates a new user
   """
-  @spec create_user(map) :: {:ok, User.t} | {:error, term}
+  @spec create_user(map) :: user_resp
   def create_user(attrs) do
     start_transaction()
     |> add_operation(:pre, fn _ ->
@@ -215,12 +222,21 @@ defmodule Core.Services.Users do
   end
 
   @doc "self explanatory"
-  @spec update_user(map, User.t) :: {:ok, User.t} | {:error, term}
+  @spec update_user(map, User.t) :: user_resp
   def update_user(attrs, %User{} = user) do
     user
     |> User.changeset(attrs)
     |> Core.Repo.update()
     |> notify(:update)
+  end
+
+  @doc "self explanatory"
+  @spec delete_user(binary, User.t) :: user_resp
+  def delete_user(id, %User{} = user) do
+    get_user(id)
+    |> allow(user, :delete)
+    |> when_ok(:delete)
+    |> notify(:delete, user)
   end
 
   @doc """
@@ -292,7 +308,7 @@ defmodule Core.Services.Users do
   @doc """
   Performs whatever action the reset token is meant to represent
   """
-  @spec realize_reset_token(ResetToken.t, map) :: {:ok, User.t} | {:error, term}
+  @spec realize_reset_token(ResetToken.t, map) :: user_resp
   def realize_reset_token(%ResetToken{type: :password, user: %User{} = user}, %{password: pwd}) do
     user
     |> User.changeset(%{password: pwd})
@@ -415,14 +431,18 @@ defmodule Core.Services.Users do
     |> Base.encode16(case: :lower)
   end
 
+  def notify({:ok, %User{} = u}, :delete, actor),
+    do: handle_notify(PubSub.UserDeleted, u, actor: actor)
+  def notify(pass, _, _), do: pass
+
   def notify({:ok, %ResetToken{} = t}, :create),
     do: handle_notify(PubSub.ResetTokenCreated, t)
   def notify({:ok, %PasswordlessLogin{} = l}, :create),
     do: handle_notify(PubSub.PasswordlessLoginCreated, l)
   def notify({:ok, %User{} = u}, :update),
-    do: handle_notify(PubSub.UserUpdated, u)
+  do: handle_notify(PubSub.UserUpdated, u)
   def notify({:ok, %User{} = u}, :create),
-    do: handle_notify(PubSub.UserCreated, u)
+  do: handle_notify(PubSub.UserCreated, u)
   def notify({:ok, %User{} = u}, :confirmed),
     do: handle_notify(PubSub.EmailConfirmed, u)
 

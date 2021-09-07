@@ -53,6 +53,19 @@ defmodule Core.Services.UsersTest do
     end
   end
 
+  describe "#delete_user" do
+    setup [:setup_root_user]
+    test "root users can delete users in their accounts", %{account: account, user: user} do
+      other_user = insert(:user, account: account)
+
+      {:ok, del} = Users.delete_user(other_user.id, user)
+
+      refute refetch(del)
+
+      assert_receive {:event, %PubSub.UserDeleted{item: ^del, actor: ^user}}
+    end
+  end
+
   describe "#update_publisher" do
     test "Users can update their own publisher" do
       user = insert(:user)

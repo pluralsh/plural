@@ -180,6 +180,21 @@ defmodule Core.PubSub.Audits.AccountsTest do
     end
   end
 
+  describe "UserDeleted" do
+    test "it can post a message about the meeting" do
+      actor = insert(:user)
+      user  = insert(:user)
+
+      event = %PubSub.UserDeleted{item: user, actor: actor}
+      {:ok, audit} = Audits.handle_event(event)
+
+      assert audit.action == "user:deleted"
+      assert audit.user_id == user.id
+      assert audit.actor_id == actor.id
+      assert audit.account_id == user.account_id
+    end
+  end
+
   def set_context(_) do
     ctx = %Core.Schema.AuditContext{
       ip: "1.2.3.4",

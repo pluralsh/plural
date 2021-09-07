@@ -3,11 +3,12 @@ import { Box, CheckBox, Layer, Text } from 'grommet'
 import { ModalHeader, InputCollection, ResponsiveInput, Button, TagInput } from 'forge-core'
 import { Edit, Trash, User, Group } from 'grommet-icons'
 import { Icon } from './Group'
-import { CREATE_ROLE, DELETE_ROLE, UPDATE_ROLE } from './queries'
+import { CREATE_ROLE, DELETE_ROLE, ROLES_Q, UPDATE_ROLE } from './queries'
 import { addRole, deleteRole } from './utils'
 import { useApolloClient, useMutation } from 'react-apollo'
 import { PermissionTypes } from './types'
 import { fetchGroups, fetchUsers } from './Typeaheads'
+import { appendConnection, removeConnection, updateCache } from '../../utils/graphql'
 
 function RoleName({role: {name, description}}) {
   return (
@@ -160,13 +161,20 @@ function EditRole({role, setOpen}) {
   )
 }
 
-export function CreateRole() {
+export function CreateRole({setOpen}) {
   const [attributes, setAttributes] = useState({name: '', description: '', repositories: [], permissions: []})
   const [roleBindings, setRoleBindings] = useState([])
-  const [mutation, {loading}] = useMutation(CREATE_ROLE, {variables: {
-    attributes: {...attributes, roleBindings: roleBindings.map(sanitize)},
-    update: (cache, {data: {createRole}}) => addRole(cache, createRole)
-  }})
+  const [mutation, {loading}] = useMutation(CREATE_ROLE, {
+    variables: {
+      attributes: {...attributes, roleBindings: roleBindings.map(sanitize)},
+    },
+    update: (cache, {data: {createRole}}) => updateCache(cache, {
+      query: ROLES_Q,
+      variables: {q: null},
+      update: (prev) => appendConnection(prev, createRole, 'roles')
+    }),
+    onCompleted: () => setOpen && setOpen(false)
+  })
 
   return (
     <Box gap='small' pad='small'>
@@ -194,7 +202,7 @@ export function RoleCreator() {
       <Layer modal>
         <ModalHeader text='Create a new role' setOpen={setOpen} />
         <Box width='40vw'>
-          <CreateRole />
+          <CreateRole setOpen={setOpen} />
         </Box>
       </Layer>
     )}
@@ -207,7 +215,11 @@ export default function RoleRow({role}) {
   const [modal, setModal] = useState(null)
   const [mutation] = useMutation(DELETE_ROLE, {
     variables: {id: role.id},
-    update: (cache, {data}) => deleteRole(cache, data.deleteRole)
+    update: (cache, {data}) => updateCache(cache, {
+      query: ROLES_Q,
+      variables: {q: null},
+      update: (prev) => removeConnection(prev, data.deleteRole, 'roles')
+    })
   })
 
   return (

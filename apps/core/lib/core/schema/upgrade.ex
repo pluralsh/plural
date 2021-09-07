@@ -39,6 +39,7 @@ defmodule Core.Schema.Upgrade do
     model
     |> cast(attrs, @valid)
     |> put_change(:id, UUID.generate_monotonic())
+    |> validate_length(:message, max: 10_000)
     |> foreign_key_constraint(:queue_id)
     |> foreign_key_constraint(:repository_id)
     |> validate_required([:queue_id, :repository_id])

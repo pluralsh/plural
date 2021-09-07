@@ -27,9 +27,9 @@ function DeleteCredential({eab}) {
   const [confirm, setConfirm] = useState(false)
   const [mutation, {loading, error}] = useMutation(DELETE_EAB_CREDENTIALS, {
     variables: {id: eab.id},
-    update: (cache, {data: {deleteEabCredential}}) => updateCache(cache, {
+    update: (cache, {data: {deleteEabKey}}) => updateCache(cache, {
       query: EAB_CREDENTIALS,
-      update: (prev) => ({...prev, eabCredentials: prev.eabCredentials.filter(({id}) => id !== deleteEabCredential.id)})
+      update: (prev) => ({...prev, eabCredentials: prev.eabCredentials.filter(({id}) => id !== deleteEabKey.id)})
     })
   })
 

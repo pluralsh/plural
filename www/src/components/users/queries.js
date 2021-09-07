@@ -225,7 +225,7 @@ export const EAB_CREDENTIALS = gql`
 
 export const DELETE_EAB_CREDENTIALS = gql`
   mutation Delete($id: ID!) {
-    deleteEabCredentials(id: $id) {
+    deleteEabKey(id: $id) {
       ...EabCredentialFragment
     }
   }

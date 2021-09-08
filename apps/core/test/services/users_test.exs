@@ -64,6 +64,34 @@ defmodule Core.Services.UsersTest do
 
       assert_receive {:event, %PubSub.UserDeleted{item: ^del, actor: ^user}}
     end
+
+    test "Users with user management perms can delete users", %{account: account} do
+      user = insert(:user, account: account)
+      role = insert(:role, account: account, permissions: %{users: true})
+      insert(:role_binding, role: role, user: user)
+      other_user = insert(:user, account: account)
+
+      user = Core.Services.Rbac.preload(user)
+      {:ok, _} = Users.delete_user(other_user.id, user)
+    end
+
+    test "You cannot delete your own user", %{account: account} do
+      user = insert(:user, account: account)
+      role = insert(:role, account: account, permissions: %{users: true})
+      insert(:role_binding, role: role, user: user)
+
+      user = Core.Services.Rbac.preload(user)
+      {:error, _} = Users.delete_user(user.id, user)
+    end
+
+    test "You cannot delete an account's root user", %{account: account, user: root} do
+      user = insert(:user, account: account)
+      role = insert(:role, account: account, permissions: %{users: true})
+      insert(:role_binding, role: role, user: user)
+
+      user = Core.Services.Rbac.preload(user)
+      {:error, _} = Users.delete_user(root.id, user)
+    end
   end
 
   describe "#update_publisher" do

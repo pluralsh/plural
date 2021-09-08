@@ -40,13 +40,13 @@ function ServiceAccount({user, next, update}) {
       <Layer modal>
         <ModalHeader text='Impersonation error' setOpen={setShowError} />
         <Box width='40vw'>
-          <GqlError error={error} header={`error attempting to impersonate ${user.name}`} />
+          <GqlError error={error} header={`error attempting to impersonate ${user.email}`} />
         </Box>
       </Layer>
     )}
     {open && (
       <Layer modal>
-        <ModalHeader text='Create a new service account' setOpen={setOpen} />
+        <ModalHeader text={`Update ${user.name}`} setOpen={setOpen} />
         <Box width='40vw'>
           <UpdateServiceAccount user={user} setOpen={setOpen} />
         </Box>

@@ -42,7 +42,9 @@ export default function Toolbar() {
            onClick={() => history.push('/')} flex={false} className='plrl-main-icon'>
         <ToolbarIcon />
       </Box>
-      <Breadcrumbs />
+      <Box flex={false} style={{zIndex: 1}}>
+        <Breadcrumbs />
+      </Box>
       <Box direction='row' width='100%' align='center' justify='end' margin={{right: 'small'}}>
         <SearchRepositories />
       </Box>

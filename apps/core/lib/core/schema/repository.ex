@@ -36,6 +36,7 @@ defmodule Core.Schema.Repository do
     field :secrets,       :map
     field :private,       :boolean, default: false
     field :category,      Category
+    field :notes,         :binary
 
     embeds_one :oauth_settings, OAuthSettings, on_replace: :update do
       field :uri_format,  :string
@@ -130,7 +131,7 @@ defmodule Core.Schema.Repository do
   def ordered(query \\ __MODULE__, order \\ [asc: :name]),
     do: from(r in query, order_by: ^order)
 
-  @valid ~w(name publisher_id description documentation secrets private category)a
+  @valid ~w(name publisher_id description documentation secrets private category notes)a
 
   def changeset(model, attrs \\ %{}) do
     model

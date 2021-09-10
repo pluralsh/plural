@@ -33,8 +33,8 @@ config :cloudflare,
 
 config :core, Core.Influx,
   database: "plural",
-  host: "plural-influxdb",
-  auth: [method: :basic, username: "plural", password: get_env("INFLUX_PAASSWORD")],
+  host: "influxdb.influx",
+  auth: [method: :basic, username: "admin", password: get_env("INFLUX_PAASSWORD")],
   port: 8086
 
 config :core, :jwt,

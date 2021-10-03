@@ -101,8 +101,13 @@ defmodule GraphQl.Resolvers.Incidents do
       do: Core.Policies.Incidents.allow(dummy, user, :accept)
   end
 
-  def create_incident(%{attributes: attrs, repository_id: id}, %{context: %{current_user: user}}),
+  def create_incident(%{attributes: attrs, repository_id: id}, %{context: %{current_user: user}}) when is_binary(id),
     do: Incidents.create_incident(attrs, id, user)
+
+  def create_incident(%{attributes: attrs, repository: repo}, %{context: %{current_user: user}}) when is_binary(repo) do
+    repo = Repositories.get_repository_by_name!(repo)
+    Incidents.create_incident(attrs, repo.id, user)
+  end
 
   def update_incident(%{attributes: attrs, id: id}, %{context: %{current_user: user}}),
     do: Incidents.update_incident(attrs, id, user)

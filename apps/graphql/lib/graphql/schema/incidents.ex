@@ -301,7 +301,8 @@ defmodule GraphQl.Schema.Incidents do
   object :incident_mutations do
     field :create_incident, :incident do
       middleware Authenticated, :external
-      arg :repository_id, non_null(:id)
+      arg :repository_id, :id
+      arg :repository,    :string
       arg :attributes,    non_null(:incident_attributes)
 
       resolve safe_resolver(&Incidents.create_incident/2)

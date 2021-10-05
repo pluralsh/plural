@@ -40,5 +40,28 @@ defmodule Core.Services.Metrics do
   end
   def response(_), do: {:ok, []}
 
+  def provision() do
+    Influx.query("""
+    CREATE DATABASE "plural"
+    """, method: :post) |> IO.inspect()
+
+    Influx.query("""
+    CREATE RETENTION POLICY "two_hours" ON "plural" DURATION 2h REPLICATION 1 DEFAULT
+    """, method: :post) |> IO.inspect()
+
+    Influx.query("""
+    CREATE RETENTION POLICY "permanent" ON "plural" DURATION INF REPLICATION 1
+    """, method: :post) |> IO.inspect()
+
+    Influx.query("""
+    CREATE CONTINUOUS QUERY "cq_15m" ON "plural" BEGIN
+      SELECT sum(value) as value
+      INTO "plural"."permanent"."downsampled_docker_pulls"
+      FROM "docker_pulls"
+      GROUP BY time(15m), *
+    END
+    """, method: :post) |> IO.inspect()
+  end
+
   defp parse_value([time, val]), do: %{time: Timex.parse!(time, "{ISO:Extended}"), value: val}
 end

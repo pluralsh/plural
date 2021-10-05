@@ -14,7 +14,7 @@ defmodule Core.Metrics.Docker do
   def repo_query(offset, precision) do
     ~s[
         SELECT sum(value)
-        FROM docker_pulls
+        FROM "plural"#{table()}
         WHERE time > now() - #{offset} and "repository" = $repository
         GROUP BY time(#{precision}), *
     ]
@@ -23,9 +23,11 @@ defmodule Core.Metrics.Docker do
   def tag_query(offset, precision) do
     ~s[
         SELECT sum(value)
-        FROM docker_pulls
+        FROM "plural"#{table()}
         WHERE time > now() - #{offset} and "repository" = $repository and "tag" = $tag
         GROUP BY time(#{precision})
     ]
   end
+
+  defp table(), do: Application.get_env(:core, :docker_metrics_table, "..\"docker_pulls\"")
 end

@@ -4,7 +4,7 @@ defmodule Core.Schema.RecipeItem do
 
   defmodule Configuration do
     use Piazza.Ecto.Schema
-    defenum Type, string: 0, int: 1, bool: 2
+    defenum Type, string: 0, int: 1, bool: 2, domain: 3
 
     defmodule Condition do
       use Piazza.Ecto.Schema

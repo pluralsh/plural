@@ -54,6 +54,28 @@ defmodule Core.Services.DnsTest do
     end
   end
 
+  describe "#upsert_domain/3" do
+    test "if the domain doesn't exist it will create" do
+      user = insert(:user)
+
+      {:ok, domain} = Dns.upsert_domain(%{}, "some.onplural.sh", user)
+
+      assert domain.creator_id == user.id
+      assert domain.account_id == user.account_id
+    end
+
+    test "if the domain does exist it will update" do
+      domain = insert(:dns_domain)
+      other_user = insert(:user)
+
+      {:ok, updated} = Dns.upsert_domain(%{
+        access_policy: %{bindings: [%{user_id: other_user.id}]}
+      }, domain.name, domain.creator)
+
+      assert updated.id == domain.id
+    end
+  end
+
   describe "#create_record/4" do
     test "a user can create a record for their accounts domain" do
       user = insert(:user)

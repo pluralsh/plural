@@ -36,6 +36,14 @@ defmodule Core.Services.Dns do
     |> when_ok(:update)
   end
 
+  @spec upsert_domain(map, binary, User.t) :: domain_resp
+  def upsert_domain(attrs, name, %User{} = user) do
+    case get_domain(name) do
+      %DnsDomain{id: id} -> update_domain(attrs, id, user)
+      _ -> create_domain(Map.put(attrs, :name, name), user)
+    end
+  end
+
   @spec create_record(map, binary, atom, User.t) :: record_resp
   def create_record(%{name: name, type: t} = attrs, cluster, provider, %User{} = user) do
     Logger.info "Attempting to create record #{t}:#{name}"

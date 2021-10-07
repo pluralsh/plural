@@ -12,8 +12,8 @@ defmodule Core.Schema.RecipeItem do
       defenum Operation, not: 0, gt: 1, lt: 2, eq: 3, gte: 4, lte: 5
 
       embedded_schema do
-        field :field, :string
-        field :value, :string
+        field :field,     :string
+        field :value,     :string
         field :operation, Operation
       end
 
@@ -48,8 +48,8 @@ defmodule Core.Schema.RecipeItem do
 
   schema "recipe_items" do
     belongs_to :recipe_section, RecipeSection
-    belongs_to :chart, Chart
-    belongs_to :terraform, Terraform
+    belongs_to :chart,          Chart
+    belongs_to :terraform,      Terraform
     embeds_many :configuration, Configuration, on_replace: :delete
 
     timestamps()

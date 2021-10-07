@@ -106,11 +106,11 @@ defmodule GraphQl.Schema.Dns do
       resolve &Dns.update_domain/2
     end
 
-    field :upsert_domain, :dns_domain do
+    field :provision_domain, :dns_domain do
       middleware Authenticated
-      arg :attributes, non_null(:dns_domain_attributes)
+      arg :name, non_null(:string)
 
-      resolve &Dns.upsert_domain/2
+      resolve &Dns.provision_domain/2
     end
 
     field :create_dns_record, :dns_record do

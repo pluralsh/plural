@@ -36,12 +36,17 @@ defmodule Core.Services.Dns do
     |> when_ok(:update)
   end
 
-  @spec upsert_domain(map, binary, User.t) :: domain_resp
-  def upsert_domain(attrs, name, %User{} = user) do
+  @spec provision_domain(binary, User.t) :: domain_resp
+  def provision_domain(name, %User{} = user) do
     case get_domain(name) do
-      %DnsDomain{id: id} -> update_domain(attrs, id, user)
-      _ -> create_domain(Map.put(attrs, :name, name), user)
+      %DnsDomain{} = domain -> domain_accessible(domain, user)
+      _ -> create_domain(%{name: name}, user)
     end
+  end
+
+  def domain_accessible(%DnsDomain{} = domain, %User{} = user) do
+    with {:ok, _} <- allow(%DnsRecord{domain: domain}, user, :create),
+      do: {:ok, domain}
   end
 
   @spec create_record(map, binary, atom, User.t) :: record_resp

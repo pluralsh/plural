@@ -43,8 +43,8 @@ defmodule GraphQl.Resolvers.Dns do
   def update_domain(%{id: id, attributes: attrs}, %{context: %{current_user: user}}),
     do: Dns.update_domain(attrs, id, user)
 
-  def upsert_domain(%{attributes: %{name: name} = attrs}, %{context: %{current_user: user}}),
-    do: Dns.upsert_domain(attrs, name, user)
+  def provision_domain(%{name: name}, %{context: %{current_user: user}}),
+    do: Dns.provision_domain(name, user)
 
   def create_record(%{attributes: attrs, cluster: cluster, provider: prov}, %{context: %{current_user: user}}),
     do: Dns.create_record(attrs, cluster, prov, user)

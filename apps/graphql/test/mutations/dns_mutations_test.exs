@@ -47,6 +47,23 @@ defmodule GraphQl.DnsMutationsTest do
     end
   end
 
+  describe "provisionDomain" do
+    test "A user can create a domain for his account" do
+      user = insert(:user)
+
+      {:ok, %{data: %{"provisionDomain" => found}}} = run_query("""
+        mutation Create($name: String!) {
+          provisionDomain(name: $name) {
+            id
+            name
+          }
+        }
+      """, %{"name" => "some.onplural.sh"}, %{current_user: user})
+
+      assert found["name"] == "some.onplural.sh"
+    end
+  end
+
   describe "createDnsRecord" do
     test "A user can create a record for their account's domains" do
       user = insert(:user)

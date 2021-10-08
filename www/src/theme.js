@@ -67,7 +67,7 @@ export const DEFAULT_COLOR_THEME = {
   orange: '#d7722c',
   error: 'red-light',
   presence: '#39E500',
-  success: 'green-light',
+  success: 'green',
   link: '#3366BB',
   notif: 'error',
   good: '#00ac46',

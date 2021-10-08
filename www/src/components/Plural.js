@@ -67,7 +67,7 @@ export default function Plural() {
           </Box>
           <Box style={{height: `calc(100vh - ${TOOLBAR_SIZE})`}} direction='row' gridArea='viewport'>
             <Sidebar />
-            <Box fill pad='small' background='backgroundColor'>
+            <Box fill background='backgroundColor'>
               <Box background='white' fill>
                 <Switch>
                   <Route path='/accounts/edit/:section' component={EditAccount} />

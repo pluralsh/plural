@@ -6,9 +6,9 @@ import { CurrentUserContext } from './login/CurrentUser'
 import Avatar from './users/Avatar'
 import { Submenu, SubmenuContext } from './navigation/Submenu'
 
-const SIDEBAR_ICON_HEIGHT = '40px'
+export const SIDEBAR_ICON_HEIGHT = '40px'
 const ICON_HEIGHT = '18px'
-export const SIDEBAR_WIDTH = '185px'
+export const SIDEBAR_WIDTH = '200px'
 
 export function SidebarIcon({icon, text, name: sidebarName, selected, path}) {
   const {name} = useContext(SubmenuContext)
@@ -51,9 +51,10 @@ export default function Sidebar() {
   const active = Math.max(OPTIONS.findIndex(({path, prefix}) => loc.pathname.startsWith(prefix || path)), 0)
 
   return (
-    <Box width={SIDEBAR_WIDTH} flex={false} background='sidebarBackground' fill='vertical'>
+    <Box width={SIDEBAR_WIDTH} flex={false} background='sidebar' fill='vertical'
+         border={{side: 'right', color: 'sidebarBorder'}}>
       <Box fill='horizontal' height='100%' align='center' 
-           pad={{top: 'medium', horizontal: 'small'}} gap='2px'>
+           pad={{top: 'medium', horizontal: 'small'}} gap='4px'>
         {OPTIONS.map((opt, ind) => (
           <SidebarIcon key={opt.path} selected={ind === active} {...opt} />
         ))}

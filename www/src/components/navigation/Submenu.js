@@ -5,7 +5,6 @@ import { useEffect } from 'react'
 import { useContext } from 'react'
 import { Portal } from 'react-portal'
 import { useHistory } from 'react-router'
-import { ignore } from '../utils/ModalHeader'
 
 export const SubmenuContext = React.createContext({})
 
@@ -27,6 +26,8 @@ export function Submenu() {
 
   return <Box ref={setRef} flex={false} />
 }
+
+const ignore = (e) => { e.preventDefault(); e.stopPropagation(); }
 
 export function SubmenuItem({icon, label, selected, url}) {
   let history = useHistory()

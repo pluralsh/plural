@@ -17,6 +17,7 @@ import { SectionContentContainer, SectionPortal } from '../Explore'
 import { LoginMethod } from './types'
 import { wipeToken } from '../../helpers/authentication'
 import { EabCredentials } from './EabCredentials'
+import { SectionChoice } from '../utils/SectionChoice'
 
 export const EditContext = React.createContext({})
 
@@ -37,31 +38,17 @@ function EditAvatar({me}) {
   )
 }
 
-function SelectorContent({name, icon, onClick, background}) {
-  return (
-    <Box pad='small' round='xsmall' background={background} focusIndicator={false} 
-         fill='horizontal' align='center' gap='small' direction='row' 
-         hoverIndicator='sidebar' onClick={onClick}>
-      <Box flex={false}>
-        {icon}
-      </Box>
-      <Box fill='horizontal'>
-        {name}
-      </Box>
-    </Box>
-  )
-}
-
 export function EditSelect({name, edit, icon, base}) {
   const {editing} = useParams()
   let hist = useHistory()
 
   return (
-    <SelectorContent
+    <SectionChoice
       name={name}
+      label={name}
       icon={icon}
       onClick={edit === editing ? null : () => hist.push(`${base || '/me/edit/'}${edit}`)}
-      background={editing === edit ? 'sidebar' : null} />
+      selected={editing === edit} />
   )
 }
 
@@ -130,8 +117,8 @@ export default function EditUser() {
           <EditSelect edit='tokens' name='Access Tokens' icon={<Robot size='14px' />} />
           <EditSelect edit='keys' name='Public Keys' icon={<License size='14px' />} />
           <EditSelect edit='credentials' name='Eab Credentials' icon={<UsbKey size='14px' />} />
-          <SelectorContent 
-            name='Logout' 
+          <SectionChoice 
+            label='Logout' 
             icon={<Logout size='14px' />}
             onClick={logout} />
         </Box>

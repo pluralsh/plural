@@ -1,4 +1,5 @@
 import { css } from 'styled-components'
+import { alpha } from './utils/color';
 
 const boxStyle = css`
   outline: none;
@@ -60,7 +61,8 @@ export const DEFAULT_COLOR_THEME = {
   progress: '#007bff',
   tagMedium: 'key-light',
   tagLight: 'key-light',
-  backgroundColor: '#20222b',
+  backgroundColor: 'sidebarBackground',
+  sidebarBorder: alpha('#363840', .5),
   sidebarBackground: '#0d1215',
   orange: '#d7722c',
   error: 'red-light',

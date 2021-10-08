@@ -1,0 +1,1 @@
+export const alpha = (hex, alph) => `${hex}${Math.floor(alph * 255).toString(16).padStart(2, 0)}` 

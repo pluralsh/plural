@@ -84,7 +84,7 @@ export function EditAccount({billing}) {
     <ThemeContext.Extend value={{global: {input: {padding: '9px'}}}}>
     <Box fill direction='row'>
       <Box gap='xsmall' flex={false} width={SIDEBAR_WIDTH} height='100%' background='backgroundColor' pad='small'>
-        <Box pad={{vertical: 'small'}} direction='row' align='center' gap='small'>
+        <Box direction='row' align='center' gap='small'>
           <Avatar user={account} size='40px' />
           <Text size='small'>{account.name}</Text>
         </Box>

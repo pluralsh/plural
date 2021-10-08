@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import moment from 'moment'
 import { Box, Text } from 'grommet'
+import { useParams } from 'react-router'
 import { List, PieChart } from 'grommet-icons'
 import { useQuery } from 'react-apollo'
 import Avatar from '../users/Avatar'
@@ -11,11 +12,10 @@ import { StandardScroller } from '../utils/SmoothScroller'
 import { Link } from 'react-router-dom'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { formatLocation } from '../../utils/geo'
-import { SectionChoice } from '../utils/SectionChoice'
 import { Chloropleth } from '../utils/Chloropleth'
-import { SIDEBAR_WIDTH } from '../constants'
 import lookup from 'country-code-lookup'
 import { SectionContentContainer } from '../Explore'
+import { SubmenuItem, SubmenuPortal } from '../navigation/Submenu'
 
 const HeaderItem = ({text, width, nobold}) => (<Box width={width}><Text size='small' weight={nobold ? null : 500}>{text}</Text></Box>)
 
@@ -106,7 +106,7 @@ function AuditChloro() {
 }
 
 export function Audits() {
-  const [graph, setGraph] = useState(false)
+  const {graph} = useParams()
   const [listRef, setListRef] = useState(null)
   const {data, loading, fetchMore} = useQuery(AUDITS_Q, {fetchPolicy: 'cache-and-network'})
   const {setBreadcrumbs} = useContext(BreadcrumbsContext)
@@ -120,21 +120,20 @@ export function Audits() {
 
   return (
     <Box fill direction='row'>
-      <Box flex={false} fill='vertical' width={SIDEBAR_WIDTH} background='backgroundColor' 
-           pad={{vertical: 'medium', horizontal: 'small'}} gap='small'>
-        <SectionChoice
+      <SubmenuPortal name='audits'>
+        <SubmenuItem
           icon={<List size='14px' />}
           label='List View'
-          selected={!graph}
-          onClick={() => setGraph(false)} />
-        <SectionChoice
+          selected={graph === 'table'}
+          url='/audits/table' />
+        <SubmenuItem
           icon={<PieChart size='14px' />}
           label='Graph View'
-          selected={graph}
-          onClick={() => setGraph(true)} />
-      </Box>
-      {graph && <AuditChloro />}
-      {!graph && (
+          selected={graph === 'graph'}
+          url='/audits/graph' />
+      </SubmenuPortal>
+      {graph === 'graph' && <AuditChloro />}
+      {graph === 'table' && (
         <Box fill>
           <AuditHeader />
           <Box fill>

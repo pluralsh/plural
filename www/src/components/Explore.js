@@ -16,6 +16,7 @@ import { v4 as uuidv4 } from 'uuid'
 import './explore.css'
 import { PLURAL_ICON, SIDEBAR_WIDTH } from './constants'
 import { StandardScroller } from './utils/SmoothScroller'
+import { SubmenuItem, SubmenuPortal } from './navigation/Submenu'
 
 const WIDTH = 20
 
@@ -277,14 +278,25 @@ export default function Explore() {
 
   return (
     <Box direction='row' fill>
-      <Box flex={false} width={SIDEBAR_WIDTH} background='backgroundColor' fill='vertical' pad={{vertical: 'medium', right: 'small'}} gap='xsmall'>
-        <Box flex={false} pad='small' align='center'>
-            <img width='220px' src={PLURAL_ICON} />
-        </Box> 
-        <SectionItem name='public' label='Public' icon={<ShareOption size='14px' />} />
-        <SectionItem name='installed' label='Installed' icon={<InstallOption size='14px' />} />
-        {me.publisher && <SectionItem name='published' label='Published' icon={<Share size='14px' />} />}
-      </Box>
+      <SubmenuPortal name='explore'>
+        <SubmenuItem 
+          url='/explore/public' 
+          label='Public' 
+          selected={group === 'public'}
+          icon={<ShareOption size='14px' />} />
+        <SubmenuItem 
+          url='/explore/installed' 
+          label='Installed' 
+          selected={group === 'installed'}
+          icon={<InstallOption size='14px' />} />
+        {me.publisher && (
+          <SubmenuItem 
+            url='/explore/published' 
+            label='Published'
+            selected={group === 'published'}
+            icon={<Share size='14px' />} />
+        )}
+      </SubmenuPortal>
       <Box fill>
         <SectionContent name='public' header='Public Repositories'>
           <Box fill direction='row' gap='0px' border={{side: 'between', color: 'light-5', size: 'xsmall'}}>

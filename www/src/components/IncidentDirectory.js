@@ -5,6 +5,7 @@ import { Aid, Alert } from 'grommet-icons'
 import { Incidents } from './incidents/Incidents'
 import { Responses } from './incidents/Responses'
 import { useParams } from 'react-router'
+import { SubmenuItem, SubmenuPortal } from './navigation/Submenu'
 
 const ICON_SIZE = '14px'
 
@@ -20,12 +21,21 @@ function SectionItem({name, label, icon}) {
 }
 
 export function IncidentDirectory() {
+  const {group} = useParams()
   return (
     <Box fill direction='row'>
-      <Box flex={false} width='175px' background='backgroundColor' fill='vertical' pad={{vertical: 'medium', right: 'small'}} gap='xsmall'>
-        <SectionItem name='all' label='Incidents' icon={Alert} />
-        <SectionItem name='responses' label='Responses' icon={Aid} />
-      </Box>
+      <SubmenuPortal name='incidents'>
+        <SubmenuItem 
+          selected={group === 'all'}
+          url='/incidents/all'
+          label='My Incidents' 
+          icon={<Alert size='small' />} />
+        <SubmenuItem 
+          selected={group === 'responses'}
+          url='/incidents/responses' 
+          label='Responses' 
+          icon={<Aid size='small' />} />
+      </SubmenuPortal>
       <Box fill>
         <SectionContent name='all' header='Incidents'>
           <Incidents />

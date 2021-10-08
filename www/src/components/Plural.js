@@ -32,6 +32,7 @@ import { RepoDirectory } from './repos/RepoDirectory'
 import { IncidentDirectory } from './IncidentDirectory'
 import { VerifyEmailConfirmed } from './users/EmailConfirmation'
 import { AutoRefresh } from './login/AutoRefresh'
+import { NavigationContext } from './navigation/Submenu'
 
 export const TOOLBAR_SIZE = '55px'
 
@@ -51,6 +52,7 @@ function WrapStripe({children}) {
 export default function Plural() {
   return (
     <PluralProvider>
+    <NavigationContext>
     <IncidentContext.Provider value={{}}>
     <WrapStripe>
       <BreadcrumbProvider>
@@ -112,7 +114,10 @@ export default function Plural() {
                   <Route path='/webhooks/:id' component={Webhook} />
                   <Route path='/webhooks' component={Integrations} />
                   <Route path='/oauth/accept/:service' component={OauthCreator} />
-                  <Route path='/audits' component={Audits} />
+                  <Route path='/audits/:graph' component={Audits} />
+                  <Route exact path='/audits'>
+                    <Redirect to='/audits/table' />
+                  </Route>
                   <Route path='/upgrades/:id' component={UpgradeQueue} />
                   <Route path='/upgrades' component={UpgradeQueues} />
                   <Route path='/explore/:group/:tag' component={Explore} />
@@ -129,6 +134,7 @@ export default function Plural() {
       </BreadcrumbProvider>
     </WrapStripe>
     </IncidentContext.Provider>
+    </NavigationContext>
     </PluralProvider>
   )
 }

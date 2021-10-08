@@ -12,6 +12,7 @@ import TinyCrossfade from "react-tiny-crossfade";
 import './toolbar.css'
 
 const PLRL_ICON = `${process.env.PUBLIC_URL}/plural-white.png`
+const PLRL_WORD = `${process.env.PUBLIC_URL}/plural-white-word.png`
 
 function ToolbarIcon() {
   const location = useLocation()
@@ -29,7 +30,7 @@ function ToolbarIcon() {
     return () => clearTimeout(timeout)
   }, [location])
 
-  return <LoopingLogo scale='0.25' dark still={!animated} />
+  return <LoopingLogo nofill scale='0.25' dark still={!animated} />
 }
 
 export default function Toolbar() {
@@ -38,9 +39,12 @@ export default function Toolbar() {
 
   return (
     <Box direction='row' fill='horizontal' align='center'>
-      <Box focusIndicator={false} width={SIDEBAR_WIDTH} height='100%' justify='center' align='center'
-           onClick={() => history.push('/')} flex={false} className='plrl-main-icon'>
-        <ToolbarIcon />
+      <Box focusIndicator={false} width={SIDEBAR_WIDTH} height='100%' direction='row' align='center'
+           onClick={() => history.push('/')} flex={false} className='plrl-main-icon' pad={{left: 'small'}}>
+        <Box flex={false} width='50px'>
+          <ToolbarIcon />
+        </Box>
+        <img src={PLRL_WORD} height='45px' />
       </Box>
       <Box flex={false} style={{zIndex: 1}}>
         <Breadcrumbs />

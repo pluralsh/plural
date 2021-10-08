@@ -60,7 +60,7 @@ export const DEFAULT_COLOR_THEME = {
   progress: '#007bff',
   tagMedium: 'key-light',
   tagLight: 'key-light',
-  backgroundColor: 'tone-dark-2',
+  backgroundColor: '#20222b',
   orange: '#d7722c',
   error: 'red-light',
   presence: '#39E500',

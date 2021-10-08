@@ -19,10 +19,10 @@ export function SidebarIcon({icon, text, name: sidebarName, selected, path}) {
   return (
     <Box flex={false} fill='horizontal' background={(selected && !inSubmenu) ? 'sidebarHover' : null} round='xsmall'>
       <Box focusIndicator={false} fill='horizontal' align='center' direction='row' 
-        round='xsmall' height={SIDEBAR_ICON_HEIGHT} gap='small'
+        round='xsmall' height={SIDEBAR_ICON_HEIGHT}
         hoverIndicator='sidebarHover' onClick={!inSubmenu && selected ? null : () => history.push(path)} 
         pad={{horizontal: 'small'}}>
-        <Box direction='row' align='center' gap='small' fill='horizontal'>
+        <Box direction='row' align='center' gap='15px' fill='horizontal'>
           {icon}
           <Text size='small' color={textColor}>{text}</Text>
         </Box>

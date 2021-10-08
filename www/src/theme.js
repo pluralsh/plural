@@ -61,7 +61,7 @@ export const DEFAULT_COLOR_THEME = {
   tagMedium: 'key-light',
   tagLight: 'key-light',
   backgroundColor: '#20222b',
-  sidebarBackground: '#101519',
+  sidebarBackground: '#0d1215',
   orange: '#d7722c',
   error: 'red-light',
   presence: '#39E500',

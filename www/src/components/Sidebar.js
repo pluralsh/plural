@@ -54,7 +54,7 @@ export default function Sidebar() {
     <Box width={SIDEBAR_WIDTH} flex={false} background='sidebar' fill='vertical'
          border={{side: 'right', color: 'sidebarBorder'}}>
       <Box fill='horizontal' height='100%' align='center' 
-           pad={{top: 'medium', horizontal: 'small'}} gap='4px'>
+           pad='small' gap='4px'>
         {OPTIONS.map((opt, ind) => (
           <SidebarIcon key={opt.path} selected={ind === active} {...opt} />
         ))}

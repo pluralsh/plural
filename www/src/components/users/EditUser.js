@@ -103,7 +103,8 @@ export default function EditUser() {
   return (
     <Box fill>
       <Box fill direction='row'>
-        <Box flex={false} background='backgroundColor' gap='xsmall' width={SIDEBAR_WIDTH} pad={{horizontal: 'small', vertical: 'medium'}}>
+        <Box flex={false} background='backgroundColor' gap='xsmall' width={SIDEBAR_WIDTH} 
+             pad='small'>
           <Box flex={false} direction='row' gap='small' align='center' margin={{bottom: 'xsmall'}}>
             <EditAvatar me={me} />
             <Box flex={false}>

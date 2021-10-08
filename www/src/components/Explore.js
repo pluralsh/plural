@@ -212,8 +212,8 @@ export function SectionContentContainer({header, children}) {
 export function SectionItemContainer({label, icon, selected, location, ...props}) {
   let hist = useHistory()
   return (
-    <Box flex={false} pad='small' round='xsmall' background={selected ? '#000' : null} fill='horizontal' 
-         align='center' gap='small' direction='row' hoverIndicator='#000'
+    <Box flex={false} pad='small' round='xsmall' background={selected ? 'sidebarHover' : null} fill='horizontal' 
+         align='center' gap='small' direction='row' hoverIndicator='sidebarHover'
          onClick={selected ? null : () => hist.push(location)} {...props}>
       <Box flex={false}>
         {icon}

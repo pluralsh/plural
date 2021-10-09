@@ -2,13 +2,18 @@ import React, { useState } from 'react'
 import { Box, Text } from 'grommet'
 import { Trash} from 'grommet-icons'
 import { useHistory } from 'react-router-dom'
-import { Scroller, HoveredBackground } from 'forge-core'
+import { HoveredBackground } from 'forge-core'
 import { useQuery, useMutation } from 'react-apollo'
 import { INSTALLATIONS_Q, DELETE_INSTALLATION } from './queries'
 import { Repository, RepositoryInner } from './Repositories'
 import { Container } from './Integrations'
 import { chunk } from '../../utils/array'
 import { Confirm } from '../utils/Confirm'
+import { StandardScroller } from '../utils/SmoothScroller'
+import { Placeholder } from '../accounts/Audits'
+import { extendConnection } from '../../utils/graphql'
+import { Icon } from '../accounts/Group'
+import { ignore } from '../utils/ModalHeader'
 
 function NoInstallations() {
   return (
@@ -38,11 +43,11 @@ function DeleteInstallation({installation}) {
 
   return (
     <>
-    <HoveredBackground>
-      <Box accentable width='20px' margin={{top: 'xsmall'}}  onClick={() => setConfirm(true)}>
-        <Trash size='15px' />
-      </Box>
-    </HoveredBackground>
+    <Icon
+      icon={Trash} 
+      tooltip='delete' 
+      onClick={(e) => { ignore(e); setConfirm(true) }} 
+      iconAttrs={{color: 'error'}} />
     {confirm && <Confirm 
       label='Delete'
       description="this will delete the installation for the repo and all installed packages"
@@ -52,45 +57,41 @@ function DeleteInstallation({installation}) {
   )
 }
 
-function EditableInstallation({installation}) {
+function InstallationRow({installation, edit}) {
   let history = useHistory()
   return (
-    <Container
-      width='48%'
-      onClick={() => history.push(`/repositories/${installation.repository.id}`)}
-      modifier={<DeleteInstallation installation={installation} />}>
+    <Box flex={false} pad='small' border={{side: 'bottom', color: 'tone-light'}}
+         direction='row' align='center' hoverIndicator='light-1'
+         onClick={() => history.push(`/repositories/${installation.repository.id}`)}>
       <RepositoryInner repo={installation.repository} />
-    </Container>
+      {edit && <DeleteInstallation installation={installation} />}
+    </Box> 
   )
 }
 
 export default function Installations({edit}) {
+  const [listRef, setListRef] = useState(null)
   const {data, loading, fetchMore} = useQuery(INSTALLATIONS_Q, {fetchPolicy: "cache-and-network"})
 
-  if (!data || loading) return null
+  if (!data) return null
   const {edges, pageInfo} = data.installations
 
+  if (edges.length === 0) return <NoInstallations />
+
   return (
-    <Box gap='small' fill='horizontal'>
-      <Scroller
-        id='installations'
-        edges={Array.from(chunk(edges, 2))}
-        style={{overflow: 'auto', width: '100%'}}
-        emptyState={<NoInstallations />}
-        mapper={(chunk) => (
-          <Box key={chunk[0].id} direction='row' gap='small' margin={{bottom: 'small'}}>
-            {chunk.map(({node}) => (
-              edit ? <EditableInstallation key={node.id} installation={node} /> :
-                     <Repository key={node.id} repo={node.repository} />
-            ))}
-          </Box>
-        )}
-        onLoadMore={() => pageInfo.hasNextPage && fetchMore({
+    <Box fill>
+      <StandardScroller
+        listRef={listRef}
+        setListRef={setListRef}
+        items={edges}
+        hasNextPage={pageInfo.hasNextPage}
+        placeholder={Placeholder}
+        loading={loading}
+        mapper={({node}) => <InstallationRow key={node.id} installation={node} edit={edit} />}
+        loadNextPage={() => pageInfo.hasNextPage && fetchMore({
           variables: {chartCursor: pageInfo.endCursor},
-          updateQuery: (prev, {fetchMoreResult: {installations: {edges, pageInfo}}}) => {
-            return {...prev, installations: {
-              ...prev.installations, pageInfo, edges: [...prev.installations.edges, ...edges]
-            }}
+          updateQuery: (prev, {fetchMoreResult: {installations}}) => {
+            return extendConnection(prev, 'installations', installations)
           }
         })
       } />

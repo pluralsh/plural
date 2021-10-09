@@ -4,8 +4,8 @@ import { SIDEBAR_ICON_HEIGHT } from '../Sidebar'
 
 export function SectionChoice({label, selected, icon, onClick}) {
   return (
-    <Box background={selected ? 'sidebarHover' : null} focusIndicator={false}
-      hoverIndicator='sidebarHover' direction='row' align='center' gap='small'
+    <Box background={selected ? '#000' : null} focusIndicator={false}
+      hoverIndicator='#000' direction='row' align='center' gap='small'
       round='xsmall' pad={{horizontal: 'small'}} height={SIDEBAR_ICON_HEIGHT} onClick={onClick}>
       {icon}
       <Box fill='horizontal'>

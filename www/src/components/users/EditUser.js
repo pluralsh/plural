@@ -192,9 +192,7 @@ export default function EditUser() {
             </Box>
           </EditContent>
           <EditContent edit='installations' name='Installations'>
-            <Box fill pad='small'>
-              <Installations edit />
-            </Box>
+            <Installations edit />
           </EditContent>
           <EditContent edit='tokens' name='Tokens'>
             <Tokens />

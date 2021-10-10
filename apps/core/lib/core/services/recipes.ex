@@ -113,6 +113,7 @@ defmodule Core.Services.Recipes do
 
     %{recipe | recipe_sections: dependencies ++ sections}
   end
+  def hydrate(nil), do: nil
 
   defp sort_sections(sections) do
     sections

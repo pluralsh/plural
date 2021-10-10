@@ -32,7 +32,8 @@ defmodule GraphQl.Resolvers.Recipe do
     |> accessible(user)
   end
 
-  def accessible(recipe, user), do: Core.Policies.Recipe.allow(recipe, user, :access)
+  def accessible(%Recipe{} = recipe, user), do: Core.Policies.Recipe.allow(recipe, user, :access)
+  def accessible(nil, _), do: {:error, "recipe not found"}
 
   def create_recipe(%{repository_id: repo_id, attributes: attrs}, %{context: %{current_user: user}})
     when is_binary(repo_id), do: Recipes.upsert(attrs, repo_id, user)

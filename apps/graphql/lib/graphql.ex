@@ -70,6 +70,11 @@ defmodule GraphQl do
     [Absinthe.Middleware.Dataloader] ++ Absinthe.Plugin.defaults()
   end
 
+  def middleware(middleware, _field, %{identifier: type}) when type in [:query, :mutation] do
+    Enum.map(middleware, &GraphQl.ExceptionMiddleware.wrap/1)
+  end
+  def middleware(middleware, _, _), do: middleware
+
   query do
     field :configuration, :plural_configuration do
       resolve fn _, _ -> {:ok, Core.Configuration.new()} end

@@ -1,5 +1,5 @@
 import { css } from 'styled-components'
-import { alpha } from './utils/color';
+import { alpha, shadeColor } from './utils/color';
 
 const boxStyle = css`
   outline: none;
@@ -55,7 +55,8 @@ export const DEFAULT_COLOR_THEME = {
   // action: '#007a5a',
   action: 'key-light',
   sidebar: 'plural-blk',
-  sidebarHover: 'tone-dark-3',
+  card: '#222732',
+  sidebarHover: shadeColor('#222732', 2),
   sidebarActive: 'tone-dark-3',
   focus: 'key-light',
   progress: '#007bff',
@@ -65,7 +66,7 @@ export const DEFAULT_COLOR_THEME = {
   sidebarBorder: alpha('#363840', .4),
   sidebarBackground: '#0d1215',
   orange: '#d7722c',
-  error: 'red-light',
+  error: 'red',
   presence: '#39E500',
   success: 'green',
   link: '#3366BB',

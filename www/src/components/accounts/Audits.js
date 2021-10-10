@@ -21,7 +21,7 @@ const HeaderItem = ({text, width, nobold}) => (<Box width={width}><Text size='sm
 
 function AuditHeader() {
   return (
-    <Box flex={false} direction='row' pad='small' gap='xsmall' border={{side: 'bottom', color: 'light-5'}} align='center'>
+    <Box flex={false} direction='row' pad='small' gap='xsmall' border={{side: 'bottom'}} align='center'>
       <HeaderItem text='Action' width='25%' />
       <HeaderItem text='Actor' width='25%' />
       <HeaderItem text='Resource' width='15%' />
@@ -70,8 +70,8 @@ export function Placeholder() {
 
 function Audit({audit}) {
   return (
-    <Box flex={false} direction='row' pad='small' gap='xsmall' border={{side: 'bottom', color: 'light-3'}} 
-         align='center' onClick={() => null} hoverIndicator='light-2' focusIndicator={false}>
+    <Box flex={false} direction='row' pad='small' gap='xsmall' border={{side: 'bottom'}} 
+         align='center' onClick={() => null} hoverIndicator='hover' focusIndicator={false}>
       <HeaderItem text={audit.action} nobold width='25%' />
       <Box flex={false} width='25%' direction='row' gap='xsmall' align='center'>
         {audit.actor && <Avatar user={audit.actor} size='30px' />}
@@ -114,12 +114,12 @@ export function Audits() {
     setBreadcrumbs([ {text: 'audits', url: '/audits'} ])
   }, [setBreadcrumbs])
 
-  if (!data) return <LoopingLogo />
+  if (!data) return <LoopingLogo dark darkbg />
 
   const {edges, pageInfo} = data.audits
 
   return (
-    <Box fill direction='row'>
+    <Box fill direction='row' background='backgroundColor'>
       <SubmenuPortal name='audits'>
         <SubmenuItem
           icon={<List size='14px' />}

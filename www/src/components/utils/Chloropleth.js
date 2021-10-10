@@ -4,6 +4,7 @@ import { ResponsiveChoropleth } from '@nivo/geo'
 import countries from './world_countries'
 import { useColorMap } from './Graph'
 import { max } from 'lodash'
+import { normalizeColor } from 'grommet/utils'
 
 const COLOR_MAP = [
   'blue-light-2',
@@ -28,11 +29,11 @@ export function Chloropleth({data}) {
       colors={colors}
       unknownColor="#666666"
       enableGraticule={true}
-      graticuleLineColor="#dddddd"
+      graticuleLineColor={normalizeColor('card', theme)}
       borderWidth={0.5}
       isInteractive={true}
       onClick={console.log}
-      borderColor="#152538"
+      borderColor={normalizeColor('cardHover', theme)}
       projectionType='naturalEarth1'
       legends={[
         {
@@ -45,14 +46,14 @@ export function Chloropleth({data}) {
             itemWidth: 94,
             itemHeight: 18,
             itemDirection: 'left-to-right',
-            itemTextColor: '#444444',
+            itemTextColor: normalizeColor('dark-3', theme),
             itemOpacity: 0.85,
             symbolSize: 18,
             effects: [
                 {
                     on: 'hover',
                     style: {
-                        itemTextColor: '#000000',
+                        itemTextColor: '#fff',
                         itemOpacity: 1
                     }
                 }

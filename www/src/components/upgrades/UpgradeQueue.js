@@ -28,8 +28,8 @@ function DeliveryProgress({delivered}) {
 
 function Upgrade({upgrade, acked}) {
   return (
-    <Box direction='row' align='center' pad='small' round='xsmall' gap='small' border={{color: 'light-5', side: 'bottom'}}>
-      <RepoIcon repo={upgrade.repository} />
+    <Box direction='row' align='center' pad='small' round='xsmall' gap='small' border={{side: 'bottom'}}>
+      <RepoIcon repo={upgrade.repository} dark />
       <Box fill='horizontal'>
         <Box direction='row' gap='small' align='center'>
           <Text size='small' weight={500}>{upgrade.repository.name}</Text>
@@ -68,13 +68,13 @@ export function UpgradeQueue() {
     ])
   }, [setBreadcrumbs, id])
 
-  if (!data) return <LoopingLogo />
+  if (!data) return <LoopingLogo dark darkbg />
 
   const queue = data.upgradeQueue
   const {upgrades: {edges, pageInfo}, acked} = queue
 
   return (
-    <Box fill gap='small' pad='small'>
+    <Box fill gap='small' pad='small' background='backgroundColor'>
       <Container title={queue.name || 'default'} flex={false}>
         <Box direction='row' gap='small' align='center' pad='small'>
           <Provider provider={queue.provider} width={60} />
@@ -103,7 +103,8 @@ export function UpgradeQueue() {
         </Box>
       </Container>
       <Container fill title='upgrades' modifier={
-        <Box flex={false} pad='xsmall' round='xsmall' onClick={() => refetch()} hoverIndicator='light-3' focusIndicator={false}>
+        <Box flex={false} pad='xsmall' round='xsmall' onClick={() => refetch()} 
+             hoverIndicator='hover' focusIndicator={false}>
           <Refresh size='small' />
         </Box>
       }>

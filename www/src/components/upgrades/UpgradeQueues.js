@@ -12,8 +12,8 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 function Queue({q}) {
   let hist = useHistory()
   return (
-    <Box flex={false} pad='small' onClick={() => hist.push(`/upgrades/${q.id}`)} hoverIndicator='light-2'
-         border={{side: 'bottom', color: 'light-4'}} direction='row' gap='small' align='center' fill='horizontal'>
+    <Box flex={false} pad='small' onClick={() => hist.push(`/upgrades/${q.id}`)} hoverIndicator='hover'
+         border={{side: 'bottom'}} direction='row' gap='small' align='center' fill='horizontal'>
       <Provider provider={q.provider} width={40} />
       <Box fill='horizontal' gap='xsmall'>
         <Box direction='row' gap='xsmall' align='center'>
@@ -48,11 +48,11 @@ export function UpgradeQueues() {
     setBreadcrumbs([{url: `/upgrades`, text: 'upgrades'}])
   }, [setBreadcrumbs])
 
-  if (!data) return <LoopingLogo />
+  if (!data) return <LoopingLogo dark darkbg />
 
   return (
-    <Box fill>
-      <Box flex={false} pad='small' direction='row' align='center' gap='xsmall' border={{side: 'bottom', color: 'light-5'}}>
+    <Box fill background='backgroundColor'>
+      <Box flex={false} pad='small' direction='row' align='center' gap='xsmall' border={{side: 'bottom'}}>
         <Upgrade size='15px' />
         <Text size='small' weight={500}>Upgrade Queues</Text>
       </Box>

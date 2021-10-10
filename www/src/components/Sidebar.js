@@ -1,14 +1,27 @@
 import React, { useContext } from 'react'
 import { Box, Text } from 'grommet'
+import { normalizeColor } from 'grommet/utils'
 import { useHistory, useLocation } from 'react-router-dom'
 import { Group, Package, Alert, Network, List, Upgrade, User, Next, Down } from 'grommet-icons'
 import { CurrentUserContext } from './login/CurrentUser'
 import Avatar from './users/Avatar'
 import { Submenu, SubmenuContext } from './navigation/Submenu'
+import styled from 'styled-components'
 
 export const SIDEBAR_ICON_HEIGHT = '40px'
 const ICON_HEIGHT = '15px'
 export const SIDEBAR_WIDTH = '200px'
+
+const hoverable = styled.div`
+  &:hover span {
+    color: ${props => normalizeColor('white', props.theme)};
+  }
+
+  &:hover svg {
+    stroke: ${props => normalizeColor('white', props.theme)} !important;
+    fill: ${props => normalizeColor('white', props.theme)} !important;
+  }
+`
 
 export function SidebarIcon({icon, text, name: sidebarName, selected, path}) {
   const {name} = useContext(SubmenuContext)
@@ -17,7 +30,7 @@ export function SidebarIcon({icon, text, name: sidebarName, selected, path}) {
   const textColor = selected && !inSubmenu ? 'white' : 'light-5'
 
   return (
-    <Box flex={false} fill='horizontal' background={(selected && !inSubmenu) ? 'sidebarHover' : null}>
+    <Box as={hoverable} flex={false} fill='horizontal' background={(selected && !inSubmenu) ? 'sidebarHover' : null}>
       <Box focusIndicator={false} fill='horizontal' align='center' direction='row' 
         height={SIDEBAR_ICON_HEIGHT} hoverIndicator='sidebarHover' 
         onClick={!inSubmenu && selected ? null : () => history.push(path)} 
@@ -53,8 +66,7 @@ export default function Sidebar() {
   return (
     <Box width={SIDEBAR_WIDTH} flex={false} background='sidebar' fill='vertical'
          border={{side: 'right', color: 'sidebarBorder'}}>
-      <Box fill='horizontal' height='100%' align='center' 
-           pad={{vertical: 'small'}}>
+      <Box fill='horizontal' height='100%' align='center'>
         {OPTIONS.map((opt, ind) => (
           <SidebarIcon key={opt.path} selected={ind === active} {...opt} />
         ))}

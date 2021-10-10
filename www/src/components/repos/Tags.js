@@ -33,12 +33,12 @@ export function TagInput({addTag, removeTag, tags, round, ...rest}) {
   )
 }
 
-export function TagContainer({enabled, children, gap, pad, onClick}) {
+export function TagContainer({enabled, hoverIndicator, children, gap, pad, onClick}) {
   const border = enabled ? {side: 'right', color: 'focus', size: '2px'} : null
   return (
     <Box pad={pad || {horizontal: 'xsmall'}} border={border}>
       <Box
-        hoverIndicator='tone-light'
+        hoverIndicator='hover'
         focusIndicator={false}
         direction='row'
         align='center'

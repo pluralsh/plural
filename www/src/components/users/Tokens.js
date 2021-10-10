@@ -131,7 +131,7 @@ function Token({token: {token, insertedAt, id}}) {
         <Icon
           icon={PieChart}
           tooltip='Metrics'
-          hover='light-3'
+          hover='hover'
           onClick={() => setModal({
             header: 'Usage Metrics',
             content: <TokenMetrics id={id} />
@@ -139,7 +139,7 @@ function Token({token: {token, insertedAt, id}}) {
         <Icon 
           icon={List} 
           tooltip='Audits' 
-          hover='light-3' 
+          hover='hover' 
           onClick={() => setModal({
             header: 'Audit Logs',
             content: <TokenAudits id={id} />
@@ -147,9 +147,9 @@ function Token({token: {token, insertedAt, id}}) {
         <Icon 
           icon={Trash} 
           tooltip='Delete' 
-          hover='light-3' 
+          hover='hover' 
           onClick={doConfirm}
-          iconAttrs={{color: 'error'}} />
+          iconAttrs={{color: 'red-dark'}} />
       </Box>
     </Box>
     {confirm && (

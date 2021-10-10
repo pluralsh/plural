@@ -38,11 +38,11 @@ function DeleteRepository({repo, publisherId}) {
 }
 
 
-export function RepoIcon({repo: {icon}, round, size}) {
+export function RepoIcon({repo: {icon, darkIcon}, round, size, dark}) {
   const dim = size || '50px'
   return (
     <Box flex={false} align='center' justify='center' width={dim} round={round}>
-      <img alt='' width={dim} height={dim} src={icon} />
+      <img alt='' width={dim} height={dim} src={dark ? darkIcon || icon : icon} />
     </Box>
   )
 }

@@ -12,14 +12,14 @@ import { BreadcrumbsContext } from '../Breadcrumbs'
 function Webhook({webhook}) {
   let hist = useHistory()
   return (
-    <Box flex={false} fill='horizontal' hoverIndicator='light-2' onClick={() => hist.push(`/webhooks/${webhook.id}`)} 
-         pad='small' gap='small' border={{side: 'bottom', color: 'light-5'}} focusIndicator={false}> 
+    <Box flex={false} fill='horizontal' hoverIndicator='hover' onClick={() => hist.push(`/webhooks/${webhook.id}`)} 
+         pad='small' gap='small' border={{side: 'bottom'}} focusIndicator={false}> 
       <Box direction='row' align='center' gap='small'>
         <Text size='small' weight={500}>{webhook.name}</Text>
         <Text size='small' color='dark-3'>{webhook.url}</Text>
       </Box>
       <Box direction='row' gap='xsmall' wrap>
-        {webhook.actions.map((action) => <ActionTab key={action} action={action} />)}
+        {webhook.actions.map((action) => <ActionTab key={action} action={action} colors={{bg: 'card', hover: 'cardHover'}} />)}
       </Box>
     </Box>
   )
@@ -58,8 +58,8 @@ export function Integrations() {
   }, [setBreadcrumbs])
 
   return (
-    <Box fill>
-      <Box border={{side: 'bottom', color: 'light-5'}} pad='small' direction='row' align='center'>
+    <Box fill background='backgroundColor'>
+      <Box border={{side: 'bottom'}} pad='small' direction='row' align='center'>
         <Box fill='horizontal' direction='row' align='center' gap='small'>
           <Network size='15px' />
           <Text size='small' weight='bold'>Webhooks</Text>

@@ -27,7 +27,7 @@ function Key({publicKey}) {
 
   return (
     <>
-    <Box border={{side: 'bottom', color: 'light-3'}} pad='small' direction='row' 
+    <Box border={{side: 'bottom'}} pad='small' direction='row' 
          align='center' gap='small'>
       <Box flex={false} width='50px' align='center' justify='center'>
         <License size='25px' />
@@ -38,7 +38,7 @@ function Key({publicKey}) {
         <Text size='small'>added on {moment(publicKey.insertedAt).format('lll')}</Text>
       </Box>
       <Box flex={false}>
-        <Button label='delete' background='red-light' onClick={() => setConfirm(true)} /> 
+        <Button label='delete' background='red-dark' onClick={() => setConfirm(true)} /> 
       </Box>
     </Box>
     {confirm && (

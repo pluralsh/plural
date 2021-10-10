@@ -13,8 +13,8 @@ import { StandardScroller } from '../utils/SmoothScroller'
 
 export function Container({title, children, modifier, ...props}) {
   return (
-    <Box {...props} border={{color: 'light-4'}}>
-      <Box flex={false} fill='horizontal' background='light-2' border={{side: 'bottom', color: 'light-4'}}
+    <Box {...props} border>
+      <Box flex={false} fill='horizontal' background='card' border={{side: 'bottom'}}
         pad={{horizontal: 'small', vertical: 'xsmall'}} align='center' direction='row'>
         <Box  fill='horizontal' >
           <Text size='small' weight={500}>{title}</Text>
@@ -66,8 +66,8 @@ export function Attribute({name, width, children}) {
 
 export function Attributes({children}) {
   return (
-    <Box border={{color: 'light-5'}} round='xsmall'>
-      <Box gap='0px' border={{side: 'between', color: 'light-5'}}>
+    <Box border round='xsmall'>
+      <Box gap='0px' border={{side: 'between'}}>
         {children}
       </Box>
     </Box>
@@ -89,7 +89,7 @@ function WebhookHeader({webhook, setEdit}) {
               } />
           </Attribute>
           <Box flex={false} pad='small' direction='row' gap='xxsmall' align='center' wrap>
-            {webhook.actions.map((action) => <ActionTab key={action} action={action} />)}
+            {webhook.actions.map((action) => <ActionTab key={action} action={action} colors={{bg: 'card', hover: 'cardHover'}} />)}
           </Box>
         </Attributes>
       </Box>
@@ -99,7 +99,8 @@ function WebhookHeader({webhook, setEdit}) {
 
 function Control({icon, onClick}) {
   return (
-    <Box flex={false} width='25px' height='25px' onClick={onClick} hoverIndicator='light-4' focusIndicator={false}
+    <Box flex={false} width='25px' height='25px' onClick={onClick} 
+         hoverIndicator='hover' focusIndicator={false}
          align='center' justify='center' round='xsmall'>
       {icon}
     </Box>
@@ -146,11 +147,11 @@ function EditWebhook({webhook, setEdit}) {
   })
 
   return (
-    <Box flex={false} border={{color: 'light-4'}}>
-      <Box flex={false} fill='horizontal' background='light-2' border={{side: 'bottom', color: 'light-4'}}
+    <Box flex={false} border>
+      <Box flex={false} fill='horizontal' background='card' border={{side: 'bottom'}}
         pad={{horizontal: 'small', vertical: 'xsmall'}} align='center' direction='row' gap='small'>
         <Box fill='horizontal'>
-          <Box flex={false} background='white'>
+          <Box flex={false} border={{color: 'sidebar'}}>
             <TextInput
               value={attributes.name} 
               onChange={({target: {value}}) => setAttributes({...attributes, name: value})} />
@@ -166,7 +167,10 @@ function EditWebhook({webhook, setEdit}) {
           placeholder='url to deliver to' 
           value={attributes.url} 
           onChange={({target: {value}}) => setAttributes({...attributes, url: value})} />
-        <ActionInput actions={attributes.actions} setActions={(actions) => setAttributes({...attributes, actions})} />
+        <ActionInput 
+          actions={attributes.actions} 
+          colors={{bg: 'card', hover: 'cardHover'}}
+          setActions={(actions) => setAttributes({...attributes, actions})} />
       </Box>
     </Box>
   )
@@ -186,7 +190,7 @@ export function Webhook() {
   const {integrationWebhook: webhook} = data
 
   return (
-    <Box fill pad='small' gap='small'>
+    <Box fill pad='small' gap='small' background='backgroundColor'>
       {!edit && <WebhookHeader webhook={webhook} setEdit={setEdit} />}
       {edit && <EditWebhook webhook={webhook} setEdit={setEdit} />}
       <WebhookLogs webhook={webhook} loading={loading} fetchMore={fetchMore} refetch={refetch} />

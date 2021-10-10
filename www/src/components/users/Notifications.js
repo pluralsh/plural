@@ -31,7 +31,7 @@ function NotificationRow({notification, next}) {
   const {incident} = notification
 
   return (
-    <Box flex={false} direction='row' pad='xsmall' gap='small' align='center' hoverIndicator='light-3' 
+    <Box flex={false} direction='row' pad='xsmall' gap='small' align='center' hoverIndicator='hover' 
          onClick={() => history.push(`/incidents/${incident.id}`)}>
       <Box fill='horizontal'>
         <Notif notification={notification} next={next} />
@@ -46,7 +46,7 @@ function NotificationRow({notification, next}) {
 
 function FlyoutBody({edges, pageInfo, fetchMore, setOpen}) {
   return (
-    <Flyout width='30vw' setOpen={setOpen} title='Notifications'>
+    <Flyout width='30vw' setOpen={setOpen} title='Notifications' background='backgroundColor'>
       <Scroller
         id='all-notifications'
         style={{width: '100%', height: '100%', overflow: 'auto'}}

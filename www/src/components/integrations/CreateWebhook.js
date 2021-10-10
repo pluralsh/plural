@@ -6,16 +6,22 @@ import { ACTIONS } from './types'
 import { CREATE_WEBHOOK, WEBHOOKS_Q } from './queries'
 import { appendConnection, updateCache } from '../../utils/graphql'
 
-export function ActionTab({action, onClick}) {
+const TAB_COLORS = {
+  bg: 'light-3',
+  hover: 'light-5'
+}
+
+export function ActionTab({action, onClick, colors}) {
+  const {bg, hover} = colors || TAB_COLORS
   return (
-    <Box key={action} background='light-3' round='xsmall' pad={{vertical: '2px', horizontal: 'small'}}
-         hoverIndicator='light-5' onClick={onClick}>
+    <Box key={action} background={bg} round='xsmall' pad={{vertical: '2px', horizontal: 'small'}}
+         hoverIndicator={hover} onClick={onClick}>
       <Text size='small' weight={500}>{action}</Text>
     </Box>
   )
 }
 
-export function ActionInput({actions, setActions}) {
+export function ActionInput({actions, setActions, colors}) {
   const [value, setValue] = useState('')
 
   return (
@@ -31,7 +37,11 @@ export function ActionInput({actions, setActions}) {
       </Box>
       <Box flex={false} direction='row' gap='xxsmall' align='center' wrap>
         {actions.map((action) => (
-          <ActionTab key={action} action={action} onClick={() => setActions(actions.filter((a) => a !== action))} />
+          <ActionTab 
+            key={action} 
+            action={action} 
+            colors={colors}
+            onClick={() => setActions(actions.filter((a) => a !== action))} />
         ))}
       </Box>
     </Box>

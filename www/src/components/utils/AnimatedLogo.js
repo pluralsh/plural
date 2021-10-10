@@ -15,9 +15,9 @@ function scaling(scale) {
 
 const image = (img, dark) => img.replace('{color}', dark ? 'wht' : 'blk') 
 
-export function LoopingLogo({nofill, height, scale, dark, still}) {
+export function LoopingLogo({nofill, darkbg, height, scale, dark, still}) {
   return (
-    <Box fill={!nofill} height={height} align='center' justify='center'>
+    <Box fill={!nofill} background={darkbg ? 'backgroundColor' : null} height={height} align='center' justify='center'>
       <div class={`plrl-logomark-anim anim01 ${still ? '' : 'looping'}`}>
         <div class="plrl-logomark-outer-wrapper">
           <div style={scaling(scale)} class="plrl-logomark-inner-wrapper">

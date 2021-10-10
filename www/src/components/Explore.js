@@ -17,6 +17,7 @@ import './explore.css'
 import { PLURAL_ICON, SIDEBAR_WIDTH } from './constants'
 import { StandardScroller } from './utils/SmoothScroller'
 import { SubmenuItem, SubmenuPortal } from './navigation/Submenu'
+import { LoopingLogo } from './utils/AnimatedLogo'
 
 const WIDTH = 20
 
@@ -32,15 +33,15 @@ function EmptyState() {
 function Repo({repo, setTag}) {
   let hist = useHistory()
   return (
-    <Box direction='row' gap='medium' align='center' pad='small' border={{side: 'bottom', color: 'light-5'}}
-      hoverIndicator='light-1' focusIndicator={false} onClick={() => hist.push(`/repositories/${repo.id}`)}>
-      <RepoIcon repo={repo} />
+    <Box direction='row' gap='medium' align='center' pad='small' border={{side: 'bottom'}}
+      hoverIndicator='hover' focusIndicator={false} onClick={() => hist.push(`/repositories/${repo.id}`)}>
+      <RepoIcon repo={repo} dark />
       <Box fill='horizontal' gap='2px'>
         <Box direction='row' align='center' gap='xsmall'>
           <RepoName repo={repo} />
           {sortBy(repo.tags, ['tag']).map(({tag}) => (
-            <Box key={tag} round='xsmall' pad={{horizontal: 'xsmall', vertical: '1px'}} background='tone-light'
-              hoverIndicator='tone-medium' focusIndicator={false} onClick={(e) => {
+            <Box key={tag} round='xsmall' pad={{horizontal: 'xsmall', vertical: '1px'}} background='card'
+              hoverIndicator='cardHover' focusIndicator={false} onClick={(e) => {
                 e.stopPropagation()
                 e.preventDefault()
                 setTag(tag)
@@ -107,13 +108,13 @@ function CategoryTags({category, tag, setTag}) {
   const {tags} = data.category
 
   return (
-    <Box flex={false} fill='horizontal'  pad={{vertical: 'xsmall'}} border={{side: 'bottom', color: 'light-6'}}>
+    <Box flex={false} fill='horizontal'  pad={{vertical: 'xsmall'}} border={{side: 'bottom'}}>
       {tags.edges.map(({node}) => (
         <Tag key={node.tag} tag={node} setTag={setTag} enabled={tag === node.tag} />
       ))}
       {tags.pageInfo.hasNextPage && (
         <Box flex={false} pad='xsmall' margin={{horizontal: 'xsmall'}} 
-             round='xsmall' hoverIndicator='tone-light' onClick={loadMore}>
+             round='xsmall' hoverIndicator='hover' onClick={loadMore}>
           <Text size='small'>see more...</Text>
         </Box>
       )}
@@ -123,10 +124,11 @@ function CategoryTags({category, tag, setTag}) {
 
 function Category({category, tag, setTag, unfurl}) {
   const [open, setOpen] = useState(unfurl)
+
   return (
     <>
-    <Box className='category-header' flex={false} direction='row' align='center' hoverIndicator='light-1' 
-         pad={{horizontal: 'small', vertical: 'xsmall'}}  border={open ? {side: 'bottom', color: 'light-6'} : null}
+    <Box className='category-header' flex={false} direction='row' align='center' hoverIndicator='hover' 
+         pad={{horizontal: 'small', vertical: 'xsmall'}}  border={open ? {side: 'bottom'} : null}
          onClick={() => setOpen(!open)}>
       <Box fill='horizontal' align='center' gap='xsmall' direction='row'>
         <Text size='small' weight={500}>{category.category.toLowerCase()}</Text>
@@ -194,8 +196,8 @@ export function SectionContentContainer({header, children}) {
   return (
     <SectionContext.Provider value={{id, ref}}>
       <Box fill>
-        <Box flex={false} direction='row' pad='small' height='45px'  
-             border={{side: 'bottom', color: 'light-5'}} align='center'>
+        <Box flex={false} direction='row' pad='small' height='45px' 
+             border={{side: 'bottom'}} align='center'>
           <Box fill='horizontal'>
             <Text size='small' weight={500}>{header}</Text>
           </Box>
@@ -272,7 +274,7 @@ export default function Explore() {
 
   const refreshBy = `${group}:${tag}`
 
-  if (!data) return null
+  if (!data) return <LoopingLogo dark darkbg />
 
   const {repositories: {edges, pageInfo}} = data
 
@@ -297,9 +299,9 @@ export default function Explore() {
             icon={<Share size='14px' />} />
         )}
       </SubmenuPortal>
-      <Box fill>
+      <Box fill background='backgroundColor'>
         <SectionContent name='public' header='Public Repositories'>
-          <Box fill direction='row' gap='0px' border={{side: 'between', color: 'light-5', size: 'xsmall'}}>
+          <Box fill direction='row' gap='0px' border={{side: 'between'}}>
             <TagSidebar setTag={doSetTag} tag={tag} />
             <Repositories 
               refreshBy={refreshBy} 

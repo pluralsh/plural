@@ -5,19 +5,20 @@ import { Portal } from 'react-portal'
 
 const FLYOUT_ID = 'flyout-container'
 
-export function Flyout({width, title, setOpen, children}) {
+export function Flyout({width, title, setOpen, children, ...rest}) {
   return (
     <Portal node={document.getElementById(FLYOUT_ID)}>
-      <Box width={width} flex={false} fill='vertical' background='white'>
-        <Box flex={false} pad='small' direction='row' align='center' border={{side: 'bottom', color: 'light-5'}}>
+      <Box width={width} flex={false} fill='vertical' border={{side: 'left'}} {...rest}>
+        <Box flex={false} pad='small' direction='row' align='center' 
+             height='45px' border={{side: 'bottom'}}>
           <Box fill='horizontal'>
             <Text size='small' weight={500}>{title}</Text>
           </Box>
-          <Box flex={false} pad='xsmall' round='xsmall' onClick={() => setOpen(false)} hoverIndicator='light-3'>
+          <Box flex={false} pad='xsmall' round='xsmall' onClick={() => setOpen(false)} hoverIndicator='hover'>
             <Next size='small' />
           </Box>
         </Box>
-        <Box fill background='white'>
+        <Box fill>
           {children}
         </Box>
       </Box>

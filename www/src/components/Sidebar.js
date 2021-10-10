@@ -7,7 +7,7 @@ import Avatar from './users/Avatar'
 import { Submenu, SubmenuContext } from './navigation/Submenu'
 
 export const SIDEBAR_ICON_HEIGHT = '40px'
-const ICON_HEIGHT = '18px'
+const ICON_HEIGHT = '15px'
 export const SIDEBAR_WIDTH = '200px'
 
 export function SidebarIcon({icon, text, name: sidebarName, selected, path}) {
@@ -17,10 +17,10 @@ export function SidebarIcon({icon, text, name: sidebarName, selected, path}) {
   const textColor = selected && !inSubmenu ? 'white' : 'light-5'
 
   return (
-    <Box flex={false} fill='horizontal' background={(selected && !inSubmenu) ? 'sidebarHover' : null} round='xsmall'>
+    <Box flex={false} fill='horizontal' background={(selected && !inSubmenu) ? 'sidebarHover' : null}>
       <Box focusIndicator={false} fill='horizontal' align='center' direction='row' 
-        round='xsmall' height={SIDEBAR_ICON_HEIGHT}
-        hoverIndicator='sidebarHover' onClick={!inSubmenu && selected ? null : () => history.push(path)} 
+        height={SIDEBAR_ICON_HEIGHT} hoverIndicator='sidebarHover' 
+        onClick={!inSubmenu && selected ? null : () => history.push(path)} 
         pad={{horizontal: 'small'}}>
         <Box direction='row' align='center' gap='15px' fill='horizontal'>
           {icon}
@@ -54,7 +54,7 @@ export default function Sidebar() {
     <Box width={SIDEBAR_WIDTH} flex={false} background='sidebar' fill='vertical'
          border={{side: 'right', color: 'sidebarBorder'}}>
       <Box fill='horizontal' height='100%' align='center' 
-           pad='small' gap='4px'>
+           pad={{vertical: 'small'}}>
         {OPTIONS.map((opt, ind) => (
           <SidebarIcon key={opt.path} selected={ind === active} {...opt} />
         ))}

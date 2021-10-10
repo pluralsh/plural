@@ -14,7 +14,7 @@ export function SubmenuPortal({children, name}) {
 
   return (
     <Portal node={ref}>
-      <Box pad={{vertical: 'xsmall'}} gap='3px'>
+      <Box pad={{vertical: 'xsmall'}}>
         {children}
       </Box>
     </Portal>
@@ -34,7 +34,7 @@ export function SubmenuItem({icon, label, selected, url}) {
   return (
     <Box background={selected ? 'sidebarHover' : null} focusIndicator={false}
       hoverIndicator='sidebarHover' direction='row' align='center' gap='small'
-      round='xsmall' pad={{right: 'small', vertical: '7px', left: '20px'}} 
+      pad={{right: 'small', vertical: '7px', left: '20px'}} 
       onClick={(e) => { ignore(e); history.push(url) }}>
       {icon}
       <Box fill='horizontal'>

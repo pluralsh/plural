@@ -54,7 +54,7 @@ export default function SearchRepositories() {
           searchRepositories(client, value, setSuggestions)
         }}  />
       </ThemeContext.Extend>
-      <SearchIcon size={15} pad={8} />
+      <SearchIcon border='dark-3' color='white' size={15} pad={8} />
     </Box>
   )
 }

@@ -99,7 +99,7 @@ function ChartHeader({version: {helm, chart, version, scan, id}, chartInstallati
       {scan && <PackageGrade scan={scan} />}
       <Box width='100px' direction='row' justify='end'>
       {chartInstallation && chartInstallation.version.id === id ?
-        <Box round='xsmall' pad={{horizontal: 'small', vertical: 'xsmall'}} align='center' justify='center' border>Installed</Box> :
+        <Box round='xsmall' pad={{horizontal: 'small', vertical: 'xsmall'}} align='center' justify='center' border={{color: 'light-5'}}>Installed</Box> :
         installation && (
           <ChartInstaller
             chartInstallation={chartInstallation}

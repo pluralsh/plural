@@ -78,6 +78,7 @@ export const DEFAULT_COLOR_THEME = {
   critical: 'red-dark-2',
   label: 'light-2',
   'input-border': 'light-5',
+  border: 'tone-light',
   ...PLURAL_THEME
 }
 

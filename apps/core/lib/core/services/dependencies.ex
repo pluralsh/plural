@@ -40,9 +40,21 @@ defmodule Core.Services.Dependencies do
   """
   @spec validate(nil | Dependencies.t | [Dependencies.Dependency.t], User.t) :: :pass | {:error, {:missing_dep, term}}
   def validate(nil, _), do: :pass
-  def validate(%{dependencies: nil}, _), do: :pass
-  def validate(%{dependencies: deps}, user) when is_list(deps),
-    do: validate(deps, user)
+  def validate(%Dependencies{dependencies: deps}, %User{provider: nil} = user),
+    do: validate(deps || [], user)
+
+  def validate(
+    %Dependencies{providers: [_ | _] = providers, dependencies: deps},
+    %User{provider: prov} = user
+  ) do
+    case prov in providers do
+      true -> validate(deps || [], user)
+      false -> {:error, "provider #{prov} does not match supported providers [#{Enum.join(providers, ",")}]"}
+    end
+  end
+
+  def validate(%Dependencies{dependencies: deps}, user),
+    do: validate(deps || [], user)
   def validate([dep | rest], user) do
     case valid?(dep, user) do
       true -> validate(rest, user)

@@ -48,33 +48,45 @@ defmodule Core.Services.Recipes do
   """
   @spec install(Recipe.t | binary, map, User.t) :: {:ok, [Installation.t]} | {:error, term}
   def install(%Recipe{} = recipe, context, user) do
-    hydrate(recipe)
-    |> Map.get(:recipe_sections)
-    |> Enum.reduce(start_transaction(), fn %{id: id, repository_id: repo_id} = section, acc ->
-      add_operation(acc, id, fn _ ->
-        installation_ctx = Map.get(context, repo_id, %{})
-        case Repositories.get_installation(user.id, repo_id) do
-          %Installation{id: id, context: ctx} ->
-            Repositories.update_installation(%{context: Map.merge(ctx || %{}, installation_ctx)}, id, user)
-          _ -> Repositories.create_installation(%{context: installation_ctx}, repo_id, user)
-        end
-      end)
-      |> install_items(section.recipe_items, id, user)
-    end)
-    |> execute()
-    |> case do
-      {:ok, result} ->
-        Enum.map(result, fn
-          {_, %Installation{} = inst} -> inst
-          _ -> nil
+    with {:ok, user} <- register_provider(recipe, user) do
+      hydrate(recipe)
+      |> Map.get(:recipe_sections)
+      |> Enum.reduce(start_transaction(), fn %{id: id, repository_id: repo_id} = section, acc ->
+        add_operation(acc, id, fn _ ->
+          installation_ctx = Map.get(context, repo_id, %{})
+          case Repositories.get_installation(user.id, repo_id) do
+            %Installation{id: id, context: ctx} ->
+              Repositories.update_installation(%{context: Map.merge(ctx || %{}, installation_ctx)}, id, user)
+            _ -> Repositories.create_installation(%{context: installation_ctx}, repo_id, user)
+          end
         end)
-        |> Enum.filter(& &1)
-        |> ok()
-      error -> error
+        |> install_items(section.recipe_items, id, user)
+      end)
+      |> execute()
+      |> case do
+        {:ok, result} ->
+          Enum.map(result, fn
+            {_, %Installation{} = inst} -> inst
+            _ -> nil
+          end)
+          |> Enum.filter(& &1)
+          |> ok()
+        error -> error
+      end
     end
   end
   def install(recipe_id, ctx, user) when is_binary(recipe_id),
     do: get!(recipe_id) |> install(ctx, user)
+
+  def register_provider(%Recipe{provider: prov}, %User{provider: nil} = user) when prov in ~w(gcp aws azure)a do
+    Ecto.Changeset.change(user, %{provider: prov})
+    |> Core.Repo.update()
+    |> case do
+      {:ok, user} -> handle_notify(Core.PubSub.UserUpdated, user)
+      error -> error
+    end
+  end
+  def register_provider(_, user), do: {:ok, user}
 
   @doc """
   Either creates a new recipe, or deletes the entire old recipe and

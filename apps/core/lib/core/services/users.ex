@@ -396,6 +396,24 @@ defmodule Core.Services.Users do
   def cacheit({:ok, _}), do: true
   def cacheit(_), do: false
 
+  def get_provider(%User{} = user) do
+    Core.Schema.TerraformInstallation.all_for_user(user.id)
+    |> Core.Schema.TerraformInstallation.preload([:version])
+    |> Core.Repo.all()
+    |> Enum.find_value(fn
+      %{version: %{dependencies: %{providers: [prov]}}} -> prov
+      _ -> nil
+    end)
+  end
+
+  def backfill_providers() do
+    Core.Repo.all(Core.Schema.User)
+    |> Enum.each(fn user ->
+      {:ok, _} =
+        Ecto.Changeset.change(user, %{provider: get_provider(user)})
+        |> Core.Repo.update()
+    end)
+  end
 
   @doc """
   Removes an eab key to permit regeneration, for instance where a cluster is recreated

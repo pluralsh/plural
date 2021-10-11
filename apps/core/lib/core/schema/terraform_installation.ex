@@ -58,10 +58,16 @@ defmodule Core.Schema.TerraformInstallation do
     )
   end
 
+  def all_for_user(query \\ __MODULE__, user_id) do
+    from(ti in query,
+      join: inst in assoc(ti, :installation),
+      where: inst.user_id == ^user_id
+    )
+  end
+
   def ordered(query \\ __MODULE__, order \\ [asc: :id]) do
     from(ti in query, order_by: ^order)
   end
-
 
   def preload(query \\ __MODULE__, preloads) do
     from(ti in query, preload: ^preloads)

@@ -185,7 +185,7 @@ defmodule Core.Services.RecipesTest do
   describe "#install" do
     setup [:setup_root_user]
     test "It can install all components in a recipe", %{user: user} do
-      recipe = insert(:recipe)
+      recipe = insert(:recipe, provider: :aws)
       %{repository: repo} = section = insert(:recipe_section, recipe: recipe)
       %{repository: repo2} = section2 = insert(:recipe_section, recipe: recipe)
       chart = insert(:chart, repository: repo)
@@ -209,6 +209,8 @@ defmodule Core.Services.RecipesTest do
 
       # you can still install if previous installations are present
       {:ok, _} = Recipes.install(recipe, %{}, user)
+
+      assert refetch(user).provider == :aws
     end
   end
 end

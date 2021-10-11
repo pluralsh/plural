@@ -27,6 +27,7 @@ defmodule Core.Schema.User do
     field :service_account, :boolean, default: false
     field :avatar_id,       :binary_id
     field :avatar,          Core.Storage.Type
+    field :provider,        Core.Schema.Dependencies.Provider
     field :customer_id,     :string
     field :phone,           :string
 

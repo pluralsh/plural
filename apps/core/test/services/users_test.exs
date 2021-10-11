@@ -367,4 +367,28 @@ defmodule Core.Services.UsersTest do
       refute refetch(eab)
     end
   end
+
+  describe "#backfill_providers/0" do
+    test "it will set providers based on terraform installations" do
+      user = insert(:user)
+      insert(:terraform_installation,
+        installation: build(:installation, user: user),
+        version: build(:version, dependencies: %{providers: [:gcp]})
+      )
+
+      user2 = insert(:user)
+      insert(:terraform_installation,
+        installation: build(:installation, user: user2),
+        version: build(:version, dependencies: %{providers: [:aws]})
+      )
+
+      user3 = insert(:user)
+
+      Users.backfill_providers()
+
+      assert refetch(user).provider == :gcp
+      assert refetch(user2).provider == :aws
+      refute refetch(user3).provider
+    end
+  end
 end

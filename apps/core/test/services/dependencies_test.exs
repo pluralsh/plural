@@ -132,6 +132,30 @@ defmodule Core.Services.DependenciesTest do
       assert Dependencies.validate(terraform.dependencies, user) == :pass
     end
 
+    test "It will fail on unmatched providers" do
+      chart     = insert(:chart)
+      terraform = insert(:terraform)
+      user      = insert(:user, provider: :aws)
+      insert(:chart_installation,
+        chart: chart,
+        installation: insert(:installation, user: user, repository: chart.repository)
+      )
+      insert(:terraform_installation,
+        terraform: terraform,
+        installation: insert(:installation, user: user, repository: terraform.repository)
+      )
+
+      terraform = insert(:terraform, dependencies: %{
+        providers: [:gcp],
+        dependencies: [
+          %{type: :helm, repo: chart.repository.name, name: chart.name},
+          %{type: :terraform, repo: terraform.repository.name, name: terraform.name}
+        ]
+      })
+
+      {:error, _} = Dependencies.validate(terraform.dependencies, user)
+    end
+
     test "It will validate dep versions" do
       chart     = insert(:chart)
       terraform = insert(:terraform)

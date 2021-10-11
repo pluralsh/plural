@@ -29,7 +29,7 @@ function DeliveryProgress({delivered}) {
 function Upgrade({upgrade, acked}) {
   return (
     <Box direction='row' align='center' pad='small' round='xsmall' gap='small' border={{side: 'bottom'}}>
-      <RepoIcon repo={upgrade.repository} dark />
+      <RepoIcon size='30px' repo={upgrade.repository} dark />
       <Box fill='horizontal'>
         <Box direction='row' gap='small' align='center'>
           <Text size='small' weight={500}>{upgrade.repository.name}</Text>
@@ -77,7 +77,7 @@ export function UpgradeQueue() {
     <Box fill gap='small' pad='small' background='backgroundColor'>
       <Container title={queue.name || 'default'} flex={false}>
         <Box direction='row' gap='small' align='center' pad='small'>
-          <Provider provider={queue.provider} width={60} />
+          <Provider dark provider={queue.provider} width={45} />
           <Box fill='horizontal' gap='xsmall'>
             <Attributes fill='horizontal'>
               <Attribute name='domain'>

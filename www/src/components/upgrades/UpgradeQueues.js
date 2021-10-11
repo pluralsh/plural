@@ -14,7 +14,7 @@ function Queue({q}) {
   return (
     <Box flex={false} pad='small' onClick={() => hist.push(`/upgrades/${q.id}`)} hoverIndicator='hover'
          border={{side: 'bottom'}} direction='row' gap='small' align='center' fill='horizontal'>
-      <Provider provider={q.provider} width={40} />
+      <Provider dark provider={q.provider} width={30} />
       <Box fill='horizontal' gap='xsmall'>
         <Box direction='row' gap='xsmall' align='center'>
           <Text size='small' weight={500}>{q.name || 'default'}</Text>

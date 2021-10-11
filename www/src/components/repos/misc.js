@@ -1,9 +1,13 @@
 import React from 'react'
-import { DEFAULT_CHART_ICON, ProviderIcons } from './constants'
+import { DarkProviderIcons, DEFAULT_CHART_ICON, ProviderIcons } from './constants'
 
-export function Provider({provider, width}) {
-  const url = ProviderIcons[provider] || DEFAULT_CHART_ICON
-  return <img alt={provider} width={`${width}px`} height={`${width}px`} src={url} />
+export function Provider({dark, provider, width}) {
+  let url = ProviderIcons[provider] || DEFAULT_CHART_ICON
+  if (dark && DarkProviderIcons[provider]) {
+    url = DarkProviderIcons[provider]
+  }
+
+  return <img alt={provider} height={`${width}px`} src={url} />
 }
 
 export function dockerPull(registry, {tag, dockerRepository: {name, repository}}) {

@@ -8,6 +8,7 @@ config :core, Core.Repo,
   pool: Ecto.Adapters.SQL.Sandbox
 
 config :core, Core.Influx,
+  database: "plural",
   host: "localhost",
   auth: [method: :basic, username: "forge", password: "forgepwd"],
   port: 8086

@@ -1,5 +1,5 @@
 import Botanist
 
 seed do
-  Core.Services.Users.provider_backfill()
+  Core.Services.Users.backfill_providers()
 end

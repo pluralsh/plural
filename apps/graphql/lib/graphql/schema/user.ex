@@ -65,6 +65,7 @@ defmodule GraphQl.Schema.User do
     field :service_account,  :boolean
     field :email_confirmed,  :boolean
     field :email_confirm_by, :datetime
+    field :provider,         :provider
 
     field :publisher,            :publisher, resolve: dataloader(User)
     field :account,              :account, resolve: dataloader(Account)

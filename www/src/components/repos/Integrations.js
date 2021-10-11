@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { useParams, useHistory } from 'react-router-dom'
 import { Carousel, ScrollableContainer, Scroller, HoveredBackground } from 'forge-core'
-import { Box, Text, Anchor, Stack } from 'grommet'
+import { Box, Text, Anchor, Stack, ThemeContext } from 'grommet'
 import { INTEGRATIONS_Q } from './queries'
 import { useQuery } from 'react-apollo'
 import Tags from './Tags'
@@ -53,15 +53,15 @@ function Integration({name, description, icon, tags, sourceUrl, publisher, width
 }
 
 const containerStyling = styled.div`
-  border-color: ${props => normalizeColor('light-4', props.theme)};
+  border-color: ${props => props.borderColor};
   border-width: 1px;
   border-style: solid;
   border-radius: ${props => props.theme.global.edgeSize[props.round || 'medium']} !important;
   ${props => props.width && `width: ${props.width} !important;`}
 
   ${props => !props.noHover && `&:hover {
-      border-color: ${normalizeColor('brand', props.theme)};
-      box-shadow: ${props.theme.global.elevation[props.theme.dark ? 'dark' : 'light'].medium};
+      border-color: ${props.brandColor};
+      box-shadow: ${props.elevation};
     }`
   }
   &:hover .modifier {
@@ -70,11 +70,18 @@ const containerStyling = styled.div`
 `
 
 export function Container({pad, width, hover, setHover, children, modifier, noHover, ...rest}) {
+  const theme = useContext(ThemeContext)
+  const border = normalizeColor('border', theme)
+  console.log(border)
+
   return (
     <Stack
       as={containerStyling}
       width={width}
       noHover={noHover}
+      elevation={theme.dark ? theme.global.elevation.dark.medium : theme.global.elevation.light.medium}
+      brandColor={normalizeColor('brand', theme)}
+      borderColor={normalizeColor('border', theme)}
       round='xsmall'
       anchor="top-right"
       onMouseEnter={() => setHover && setHover(true)}

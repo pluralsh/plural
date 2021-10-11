@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Text, Anchor } from 'grommet'
+import { Box, Text } from 'grommet'
 import { Scroller, HoveredBackground } from 'forge-core'
 import { Lock, Trash } from 'grommet-icons'
 import { useQuery, useMutation } from 'react-apollo'
@@ -94,9 +94,7 @@ export function Repository({repo, hasNext, deletable, publisherId}) {
       </Box>
       <Box gap='xxsmall' justify='center' width='100%'>
         <Box direction='row' gap='xsmall' align='center'>
-          <Anchor size='small' weight='bold' onClick={() => history.push(`/repositories/${repo.id}`)}>
-            {repo.name}
-          </Anchor>
+          <Text size='small' weight='bold'>{repo.name}</Text>
           {repo.private && <Lock size='small' />}
         </Box>
         <Text size='small'>

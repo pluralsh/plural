@@ -143,6 +143,14 @@ export const DEFAULT_THEME = {
       border: { radius: '4px' }
     },
     box: { extend: boxStyle },
+    elevation: {
+      light: {
+        medium: '0px 3px 8px rgba(100, 100, 100, 0.50)',
+      },
+      dark: {
+        medium: `0px 6px 8px ${alpha('#363840', .4)}`
+      }
+    },
     font: {
       family: 'Monument',
       size: '14px',

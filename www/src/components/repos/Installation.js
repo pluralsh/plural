@@ -55,7 +55,7 @@ export function Plans({repository, nocreate}) {
 
 export function DetailContainer({children, ...rest}) {
   return (
-    <Box {...rest} border={{color: 'light-4'}}>
+    <Box {...rest} border>
       {children}
     </Box>
   )

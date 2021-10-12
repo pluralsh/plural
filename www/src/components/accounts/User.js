@@ -2,6 +2,7 @@ import React from 'react'
 import { Box, Text } from 'grommet'
 import Avatar from '../users/Avatar'
 import { DeleteUser } from '../users/DeleteUser'
+import { Provider } from '../repos/misc'
 
 export function UserRow({user, next, noborder, deletable, update}) {
   return (
@@ -12,6 +13,7 @@ export function UserRow({user, next, noborder, deletable, update}) {
         <Text size='small' weight='bold' >{user.email}</Text>
         <Text size='small'>{user.name}</Text>
       </Box>
+      {user.provider && <Provider provider={user.provider} width={40} />}
       {deletable && <DeleteUser id={user.id} update={update} />}
     </Box>
   )

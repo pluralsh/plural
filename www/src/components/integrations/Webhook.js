@@ -64,9 +64,9 @@ export function Attribute({name, width, children}) {
   )
 }
 
-export function Attributes({children}) {
+export function Attributes({children, ...props}) {
   return (
-    <Box border round='xsmall'>
+    <Box border round='xsmall' {...props}>
       <Box gap='0px' border={{side: 'between'}}>
         {children}
       </Box>

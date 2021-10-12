@@ -18,6 +18,8 @@ import { LoginMethod } from './types'
 import { wipeToken } from '../../helpers/authentication'
 import { EabCredentials } from './EabCredentials'
 import { SectionChoice } from '../utils/SectionChoice'
+import { Provider } from '../repos/misc'
+import { Attribute, Attributes } from '../integrations/Webhook'
 
 export const EditContext = React.createContext({})
 
@@ -136,11 +138,13 @@ export default function EditUser() {
                   label='email'
                   onChange={({target: {value}}) => setAttributes({...attributes, email: value})} />
               </InputCollection>
-              <Box gap='small' width='40%' direction='row' align='center'>
-                <Box flex={false}>
-                  <Text size='small' weight={500}>Login Method:</Text>
-                </Box>
-                <Box fill='horizontal'>
+              <Attributes width='50%'>
+                {me.provider && (
+                  <Attribute name='Provider'>
+                    <Provider provider={me.provider} width={40} />
+                  </Attribute>
+                )}
+                <Attribute name='Login Method'>
                   <Select
                     name='login-method'
                     value={{value: attributes.loginMethod, label: attributes.loginMethod.toLocaleLowerCase()}}
@@ -149,8 +153,8 @@ export default function EditUser() {
                       label: m.toLocaleLowerCase(), 
                       value: m
                     }))} />
-                </Box>
-              </Box>
+                </Attribute>
+              </Attributes>
               <SectionPortal>
                 <Button loading={loading} onClick={mutation} flex={false} label='Update' />
               </SectionPortal>

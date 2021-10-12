@@ -7,7 +7,7 @@ export function Provider({dark, provider, width}) {
     url = DarkProviderIcons[provider]
   }
 
-  return <img alt={provider} height={`${width}px`} src={url} />
+  return <img alt={provider} width={`${width}px`} src={url} />
 }
 
 export function dockerPull(registry, {tag, dockerRepository: {name, repository}}) {

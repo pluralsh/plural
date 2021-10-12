@@ -23,6 +23,7 @@ export const UserFragment = gql`
     name
     email
     avatar
+    provider
     emailConfirmed
     emailConfirmBy
     backgroundColor

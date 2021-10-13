@@ -8,6 +8,7 @@ export const ME_Q = gql`
     me {
       ...UserFragment
       loginMethod
+      hasInstallations
       account { ...AccountFragment }
       publisher { 
         ...PublisherFragment 

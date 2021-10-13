@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { Box, Grid } from 'grommet'
 import { Switch, Route, Redirect } from 'react-router-dom'
-import { PluralConfigurationContext, PluralProvider } from './login/CurrentUser'
+import { CurrentUserContext, PluralConfigurationContext, PluralProvider } from './login/CurrentUser'
 import MyPublisher from './publisher/MyPublisher'
 import Publisher from './publisher/Publisher'
 import Toolbar from './Toolbar'
@@ -49,9 +49,9 @@ function WrapStripe({children}) {
   )
 }
 
-export default function Plural() {
+export function PluralInner() {
+  const me = useContext(CurrentUserContext)
   return (
-    <PluralProvider>
     <NavigationContext>
     <IncidentContext.Provider value={{}}>
     <WrapStripe>
@@ -123,7 +123,7 @@ export default function Plural() {
                   <Route path='/explore/:group/:tag' component={Explore} />
                   <Route path='/explore/:group' component={Explore} />
                   <Route path='/'>
-                    <Redirect to='/explore/public' />
+                    <Redirect to={me.hasInstallations ? '/explore/installed' : '/explore/public'} />
                   </Route>
                 </Switch>
               </Box>
@@ -135,6 +135,13 @@ export default function Plural() {
     </WrapStripe>
     </IncidentContext.Provider>
     </NavigationContext>
+  )
+}
+
+export default function Plural() {
+  return (
+    <PluralProvider>
+      <PluralInner />
     </PluralProvider>
   )
 }

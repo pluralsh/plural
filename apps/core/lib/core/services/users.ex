@@ -377,6 +377,16 @@ defmodule Core.Services.Users do
   end
 
   @doc """
+  Returns whether the user has installations or not.  This operation is cached and can lag
+  """
+  @spec has_installations?(User.t) :: boolean
+  @decorate cacheable(cache: Core.Cache, key: {:has_installations, user_id}, opts: [ttl: @ttl])
+  def has_installations?(%User{id: user_id}) do
+    Core.Schema.Installation.for_user(user_id)
+    |> Core.Repo.exists?()
+  end
+
+  @doc """
   Fetches or creates an eab key for the user mapped to that (cluster, provider)
   """
   @spec get_eab_key(binary, binary, User.t) :: {:ok, EabCredential.t} | {:error, term}

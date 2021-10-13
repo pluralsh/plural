@@ -15,7 +15,7 @@ defimpl Core.PubSub.Auditable, for: [Core.PubSub.RepositoryCreated, Core.PubSub.
   defp action(PubSub.RepositoryUpdated), do: :updated
 end
 
-defimpl Core.PubSub.Auditable, for: [Core.PubSub.InstallationCreated, Core.PubSub.InstallationUpdated] do
+defimpl Core.PubSub.Auditable, for: [Core.PubSub.InstallationCreated, Core.PubSub.InstallationUpdated, Core.PubSub.InstallationDeleted] do
   alias Core.Schema.Audit
   alias Core.PubSub
 
@@ -30,6 +30,7 @@ defimpl Core.PubSub.Auditable, for: [Core.PubSub.InstallationCreated, Core.PubSu
 
   defp action(PubSub.InstallationCreated), do: :created
   defp action(PubSub.InstallationUpdated), do: :updated
+  defp action(PubSub.InstallationDeleted), do: :deleted
 end
 
 defimpl Core.PubSub.Auditable, for: Core.PubSub.DockerImageCreated do

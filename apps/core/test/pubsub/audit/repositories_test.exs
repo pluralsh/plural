@@ -63,6 +63,21 @@ defmodule Core.PubSub.Audits.RepositoriesTest do
     end
   end
 
+  describe "InstallationDeleted" do
+    test "it can post a message about the meeting" do
+      installation = insert(:installation)
+      actor = insert(:user)
+
+      event = %PubSub.InstallationDeleted{item: installation, actor: actor}
+      {:ok, audit} = Audits.handle_event(event)
+
+      assert audit.action == "repository:installation:deleted"
+      assert audit.repository_id == installation.repository_id
+      assert audit.actor_id == actor.id
+      assert audit.account_id == actor.account_id
+    end
+  end
+
   describe "DockerImageCreated" do
     test "it can post a message about the meeting" do
       dkr   = insert(:docker_image)

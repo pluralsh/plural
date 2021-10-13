@@ -76,6 +76,11 @@ defmodule GraphQl.Schema.User do
       _, _, _ -> {:error, "forbidden"}
     end
 
+    field :has_installations, :boolean, resolve: fn
+      user, _, _ ->
+        {:ok, Core.Services.Users.has_installations?(user)}
+    end
+
     field :avatar, :string, resolve: fn
       user, _, _ -> {:ok, Core.Storage.url({user.avatar, user}, :original)}
     end

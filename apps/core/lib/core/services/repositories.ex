@@ -351,6 +351,7 @@ defmodule Core.Services.Repositories do
       |> when_ok(:delete)
     end)
     |> execute(extract: :installation)
+    |> notify(:delete, user)
   end
   def delete_installation(inst_id, user), do: get_installation!(inst_id) |> delete_installation(user)
 
@@ -551,6 +552,8 @@ defmodule Core.Services.Repositories do
     do: handle_notify(PubSub.InstallationCreated, inst, actor: user)
   defp notify({:ok, %Installation{} = inst}, :update, user),
     do: handle_notify(PubSub.InstallationUpdated, inst, actor: user)
+  defp notify({:ok, %Installation{} = inst}, :delete, user),
+    do: handle_notify(PubSub.InstallationDeleted, inst, actor: user)
 
   defp notify({:ok, %DockerRepository{} = repo}, :update, user),
     do: handle_notify(PubSub.DockerRepositoryUpdated, repo, actor: user)

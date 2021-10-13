@@ -7,6 +7,7 @@ defmodule Core.PubSub.DockerImagesPushed, do: use Piazza.PubSub.Event
 
 defmodule Core.PubSub.InstallationCreated, do: use Piazza.PubSub.Event
 defmodule Core.PubSub.InstallationUpdated, do: use Piazza.PubSub.Event
+defmodule Core.PubSub.InstallationDeleted, do: use Piazza.PubSub.Event
 
 defmodule Core.PubSub.SubscriptionUpdated, do: use Piazza.PubSub.Event
 defmodule Core.PubSub.SubscriptionCreated, do: use Piazza.PubSub.Event

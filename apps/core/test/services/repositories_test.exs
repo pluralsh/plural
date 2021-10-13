@@ -129,6 +129,8 @@ defmodule Core.Services.RepositoriesTest do
 
       assert deleted.id == inst.id
       refute refetch(deleted)
+
+      assert_receive {:event, %PubSub.InstallationDeleted{item: ^deleted, actor: ^user}}
     end
 
     test "It will cancel associated subscriptions when present" do

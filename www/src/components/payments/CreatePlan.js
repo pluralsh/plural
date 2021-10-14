@@ -219,7 +219,6 @@ function ItemCreator({state, setState, setDisplay, loading}) {
 }
 
 function PlanForm({state, setState, setDisplay, loading}) {
-  console.log(state.lineItems.items)
   const updatePeriod = (period) => deepUpdate(
     {...state, period}, 
     'lineItems.items', 

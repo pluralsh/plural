@@ -25,7 +25,6 @@ function _CardForm({stripe, onCompleted}) {
     stripe.createToken().then(({token, error}) => {
       setStripeError(error)
       if (token && token.id) return mutation({variables: {source: token.id}})
-      console.log(error)
     })
   }, [stripe, mutation])
 

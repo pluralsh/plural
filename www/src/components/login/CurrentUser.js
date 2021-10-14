@@ -34,7 +34,7 @@ export function PluralProvider({children}) {
   const {loading, error, data} = useQuery(ME_Q, {pollInterval: 60000})
   useNotificationSubscription()
 
-  if (loading) return (<Box height='100vh'><LoopingLogo /></Box>)
+  if (loading) return (<Box height='100vh'><LoopingLogo dark /></Box>)
 
   if (error || !data || !data.me || !data.me.id) {
     wipeToken()

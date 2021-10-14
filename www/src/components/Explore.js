@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect, useCallback, useMemo, useRef } from 'react'
 import { useQuery } from 'react-apollo'
 import { CATEGORIES, CATEGORY, EXPLORE_REPOS } from './repos/queries'
-import { Box, Collapsible, Text } from 'grommet'
+import { Box, Collapsible, Text, ThemeContext } from 'grommet'
 import { Tag } from './repos/Tags'
 import { RepoIcon, RepoName } from './repos/Repositories'
 import { BreadcrumbsContext } from './Breadcrumbs'
@@ -18,6 +18,7 @@ import { PLURAL_ICON, SIDEBAR_WIDTH } from './constants'
 import { StandardScroller } from './utils/SmoothScroller'
 import { SubmenuItem, SubmenuPortal } from './navigation/Submenu'
 import { LoopingLogo } from './utils/AnimatedLogo'
+import { ignore } from './utils/ModalHeader'
 
 const WIDTH = 20
 
@@ -30,7 +31,21 @@ function EmptyState() {
   )
 }
 
+function RepoTag({tag, setTag}) {
+  const {dark} = useContext(ThemeContext)
+  return (
+    <Box 
+      round='xsmall' background={dark ? 'card' : 'light-2'}
+      pad={{horizontal: 'xsmall', vertical: '1px'}} 
+      hoverIndicator={dark ? 'hover' : 'light-4'} focusIndicator={false} 
+      onClick={(e) => { ignore(e); setTag(tag)}}>
+      <Text size='small' color={dark ? 'light-6' : null}>{tag}</Text>
+    </Box>
+  )
+}
+
 function Repo({repo, setTag}) {
+  const {dark} = useContext(ThemeContext)
   let hist = useHistory()
   return (
     <Box direction='row' gap='medium' align='center' pad='small' border={{side: 'bottom'}}
@@ -40,21 +55,14 @@ function Repo({repo, setTag}) {
         <Box direction='row' align='center' gap='xsmall'>
           <RepoName repo={repo} />
           {sortBy(repo.tags, ['tag']).map(({tag}) => (
-            <Box key={tag} round='xsmall' pad={{horizontal: 'xsmall', vertical: '1px'}} background='card'
-              hoverIndicator='cardHover' focusIndicator={false} onClick={(e) => {
-                e.stopPropagation()
-                e.preventDefault()
-                setTag(tag)
-              }}>
-              <Text size='small'>{tag}</Text>
-            </Box>
+            <RepoTag key={tag} tag={tag} setTag={setTag} />
           ))}
         </Box>
         <Box direction='row' gap='xsmall' align='center' >
-          <Text size='small' color='dark-3' weight={500}>publisher:</Text>
+          <Text size='small' color={dark ? 'light-6' : 'dark-3'}>publisher:</Text>
           <SafeLink to={`/publishers/${repo.publisher.id}`}>{repo.publisher.name}</SafeLink>
         </Box>
-        <Text size='small'><i>{repo.description}</i></Text>
+        <Text size='small' color='dark-3'><i>{repo.description}</i></Text>
       </Box>
     </Box>
   )
@@ -190,14 +198,16 @@ export function SectionPortal({children}) {
 }
 
 export function SectionContentContainer({header, children}) {
+  const theme = useContext(ThemeContext)
+  console.log(theme)
   const [ref, setRef] = useState(null)
   const id = useMemo(() => uuidv4(), [])
 
   return (
     <SectionContext.Provider value={{id, ref}}>
-      <Box fill>
+      <Box fill border={theme.dark ? {side: 'left'} : null}>
         <Box flex={false} direction='row' pad='small' height='45px' 
-             border={{side: 'bottom'}} align='center'>
+             border={{side: 'bottom'}} align='center' background={theme.dark ? 'card' : null}>
           <Box fill='horizontal'>
             <Text size='small' weight={500}>{header}</Text>
           </Box>
@@ -299,7 +309,7 @@ export default function Explore() {
             icon={<Share size='14px' />} />
         )}
       </SubmenuPortal>
-      <Box fill background='backgroundColor'>
+      <Box fill>
         <SectionContent name='public' header='Public Repositories'>
           <Box fill direction='row' gap='0px' border={{side: 'between'}}>
             <TagSidebar setTag={doSetTag} tag={tag} />

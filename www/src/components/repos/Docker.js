@@ -6,7 +6,7 @@ import { DOCKER_IMG_Q, DOCKER_Q, UPDATE_DOCKER } from './queries'
 import { AttackVector, ColorMap, DEFAULT_DKR_ICON } from './constants'
 import { DetailContainer } from './Installation'
 import moment from 'moment'
-import { Anchor, Box, Collapsible, Text, CheckBox, Stack } from 'grommet'
+import { Anchor, Box, Collapsible, Text, Stack } from 'grommet'
 import { Copy, Language, Link } from 'grommet-icons'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 import { DockerImages } from './DockerImages'
@@ -17,6 +17,7 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { truncate } from 'lodash'
 import { CopyNotice } from '../utils/Copyable'
+import Toggle from 'react-toggle'
 
 function RepositoryPublic({dockerRepo}) {
   const pub = dockerRepo.public
@@ -28,14 +29,15 @@ function RepositoryPublic({dockerRepo}) {
   if (!dockerRepo.repository.editable) return null
 
   return (
-    <CheckBox 
-      toggle
-      label={pub ? 'public' : 'private'}
-      checked={pub}
-      onChange={({target: {checked}}) => mutation({
-        variables: {attributes: {public: checked}}
-      })}
-    />
+    <Box direction='row' gap='xsmall' align='center'>
+      <Toggle 
+        checked={pub}
+        onChange={({target: {checked}}) => mutation({
+          variables: {attributes: {public: checked}}
+        })}
+      />
+      <Text size='small'>{pub ? 'public' : 'private'}</Text>
+    </Box>
   )
 }
 

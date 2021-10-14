@@ -82,7 +82,6 @@ function passwordValid(password, confirm) {
 
 export default function EditUser() {
   const me = useContext(CurrentUserContext)
-  console.log(me)
   const [attributes, setAttributes] = useState({name: me.name, email: me.email, loginMethod: me.loginMethod})
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')

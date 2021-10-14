@@ -8,6 +8,7 @@ import { TAGS } from '../versions/VersionTags'
 import { deepUpdate, updateCache } from '../../utils/graphql'
 import { SectionPortal } from '../Explore'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
+import Toggle from 'react-toggle'
 
 function update(cache, repositoryId, installation) {
   updateCache(cache, { 
@@ -34,12 +35,10 @@ export function UpdateInstallation({installation}) {
       )}
       {error && <GqlError error={error} header='Failed to update' />}
       <Box direction='row' gap='small' align='center'>
-        <CheckBox
-            toggle
-            label='Auto Upgrade'
+          <Toggle 
             checked={autoUpgrade}
-            onChange={({target: {checked}}) => setAutoUpgrade(checked)}
-          />
+            onChange={({target: {checked}}) => setAutoUpgrade(checked)} />
+        <Text size='small'>Auto Upgrade</Text>
         {autoUpgrade && (
           <Box fill='horizontal'>
             <Select

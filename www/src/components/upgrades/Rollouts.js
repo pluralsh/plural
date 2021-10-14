@@ -50,7 +50,7 @@ function RolloutStatus({width, rollout}) {
 
 function Rollout({rollout: {event, count, heartbeat, ...rollout}}) {
   return (
-    <Box pad='small' flex={false} direction='row' gap='xsmall' height={ROW_HEIGHT} align='center' border={{side: 'bottom', color: 'light-3'}}>
+    <Box pad='small' flex={false} direction='row' gap='xsmall' height={ROW_HEIGHT} align='center' border={{side: 'bottom'}}>
       <HeaderItem text={event} width='20%' />
       <HeaderItem text={`${count} clusters`} width='30%' nobold />
       <HeaderItem text={heartbeat ? moment(heartbeat).fromNow() : 'pending'} width='30%' nobold />
@@ -61,7 +61,7 @@ function Rollout({rollout: {event, count, heartbeat, ...rollout}}) {
 
 function RolloutHeader() {
   return (
-    <Box flex={false} pad='small' direction='row' gap='xsmall' height={ROW_HEIGHT} align='center' border={{side: 'bottom', color: 'light-5'}}>
+    <Box flex={false} pad='small' direction='row' gap='xsmall' height={ROW_HEIGHT} align='center' border={{side: 'bottom'}}>
       <HeaderItem text='event' width='20%' />
       <HeaderItem text='clusters updated' width='30%' />
       <HeaderItem text='last ping' width='30%' />
@@ -88,7 +88,7 @@ export function Rollouts({repository: {id: repositoryId}}) {
   if (!data) return null
 
   const {edges, pageInfo} = data.rollouts
-  console.log(edges)
+
   return (
     <Box fill>
       <RolloutHeader />

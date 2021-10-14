@@ -10,6 +10,7 @@ import { PasswordReset, ResetPassword } from './components/users/PasswordReset'
 import { Login, PasswordlessLogin, Signup } from './components/users/MagicLogin'
 import { OAuthConsent } from './components/oidc/OAuthConsent'
 import { EmailConfirmed } from './components/users/EmailConfirmation'
+import "react-toggle/style.css"
 
 hljs.registerLanguage('terraform', hljsDefineTerraform)
 

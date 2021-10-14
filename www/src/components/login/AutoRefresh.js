@@ -25,7 +25,6 @@ export function AutoRefresh() {
     }
   })
 
-  console.log(config.gitCommit)
   const stale = getCommit() !== config.gitCommit
 
   if (!stale || !open) return null

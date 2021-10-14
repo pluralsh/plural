@@ -78,7 +78,6 @@ export function RepoDirectory() {
       {url: `/repositories/${repository.id}/${group}`, text: group.toLowerCase()}
     ]
     if (subgroup) crumbs.push({url: `/repositories/${repository.id}/${group}/${subgroup}`, text: subgroup})
-    console.log(crumbs)
     setBreadcrumbs(crumbs)
   }, [setBreadcrumbs, data, group, subgroup])
 

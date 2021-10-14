@@ -65,9 +65,9 @@ export function PluralInner() {
           <Box background='sidebar' gridArea='toolbarTop' align='center' justify='center'>
             <Toolbar />
           </Box>
-          <Box style={{height: `calc(100vh - ${TOOLBAR_SIZE})`}} direction='row' gridArea='viewport'>
+          <Box style={{height: `calc(100vh - ${TOOLBAR_SIZE})`}} direction='row' gridArea='viewport' background='backgroundColor'>
             <Sidebar />
-            <Box fill background='backgroundColor'>
+            <Box fill>
               <Box background='white' fill>
                 <Switch>
                   <Route path='/accounts/edit/:section' component={EditAccount} />

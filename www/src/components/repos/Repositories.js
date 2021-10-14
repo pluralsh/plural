@@ -1,5 +1,5 @@
-import React from 'react'
-import { Box, Text } from 'grommet'
+import React, { useContext } from 'react'
+import { Box, Text, ThemeContext } from 'grommet'
 import { Scroller, HoveredBackground } from 'forge-core'
 import { Lock, Trash } from 'grommet-icons'
 import { useQuery, useMutation } from 'react-apollo'
@@ -38,7 +38,8 @@ function DeleteRepository({repo, publisherId}) {
 }
 
 
-export function RepoIcon({repo: {icon, darkIcon}, round, size, dark}) {
+export function RepoIcon({repo: {icon, darkIcon}, round, size,}) {
+  const {dark} = useContext(ThemeContext)
   const dim = size || '50px'
   return (
     <Box flex={false} align='center' justify='center' width={dim} round={round}>

@@ -71,8 +71,6 @@ const containerStyling = styled.div`
 
 export function Container({pad, width, hover, setHover, children, modifier, noHover, ...rest}) {
   const theme = useContext(ThemeContext)
-  const border = normalizeColor('border', theme)
-  console.log(border)
 
   return (
     <Stack

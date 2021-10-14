@@ -95,13 +95,11 @@ export default function Dependencies({name, dependencies, resource}) {
   }
 
   const deps = dependencies.dependencies.map(({name, version, ...dep}) => {
-    console.log(dep)
     const strokeColor = dep.optional ? OPTIONAL_COLOR : null
     if (dep.type === Tools.TERRAFORM) return {...dep, strokeColor, name: `${name} ${version || ''}`, image: DEFAULT_TF_ICON}
     if (dep.type === Tools.HELM) return {...dep, strokeColor, name: `${name} ${version || ''}`, image: DEFAULT_CHART_ICON}
     return dep
   })
-  console.log(deps)
 
   return (
     <Box pad='small'>

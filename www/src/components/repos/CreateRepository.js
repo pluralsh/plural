@@ -13,6 +13,7 @@ import { Categories } from './constants'
 import { SectionPortal } from '../Explore'
 import { AuthMethod } from '../oidc/types'
 import { GqlError } from '../utils/Alert'
+import Toggle from 'react-toggle'
 
 const LABEL_WIDTH = '90px'
 
@@ -112,11 +113,10 @@ export function RepoForm({image, setImage, darkImage, setDarkImage, state, setSt
         </LabeledInput>
         <SectionPortal>
           <Box direction='row' justify='end' align='center' gap='small'>
-            <CheckBox
-              toggle
-              label={state.private ? 'private' : 'public'}
+            <Toggle
               checked={!state.private}
               onChange={({target: {checked}}) => setState({...state, private: !checked})} />
+            <Text size='small'>{state.private ? 'private' : 'public'}</Text>
             <Button loading={loading} round='xsmall' label={update ? 'Update' : 'Create'} onClick={mutation} />
           </Box>
         </SectionPortal>

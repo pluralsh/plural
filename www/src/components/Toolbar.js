@@ -38,7 +38,7 @@ export default function Toolbar() {
   let history = useHistory()
 
   return (
-    <Box direction='row' fill='horizontal' align='center' border={{side: 'bottom', color: 'sidebarBorder'}}>
+    <Box direction='row' fill='horizontal' align='center' border={{side: 'bottom'}}>
       <Box focusIndicator={false} width={SIDEBAR_WIDTH} height='100%' direction='row' align='center'
            onClick={() => history.push('/')} flex={false} className='plrl-main-icon' pad={{left: 'small'}}>
         <Box flex={false} width='50px'>

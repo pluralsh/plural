@@ -20,7 +20,6 @@ function StepProvider({step, children}) {
   useEffect(() => {
     if (steps.current[step] !== undefined) setCurrent(steps.current[step])
   }, [step, steps])
-  console.log(steps)
 
   return (
     <StepContext.Provider value={{current, setCurrent, register}}>

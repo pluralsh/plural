@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState } from 'react'
-import { Box, CheckBox, Layer, Text } from 'grommet'
+import { Box, Layer, Text } from 'grommet'
 import { ModalHeader, InputCollection, ResponsiveInput, Button, TagInput } from 'forge-core'
 import { Edit, Trash, User, Group } from 'grommet-icons'
 import { Icon } from './Group'
@@ -8,6 +8,7 @@ import { useApolloClient, useMutation } from 'react-apollo'
 import { PermissionTypes } from './types'
 import { fetchGroups, fetchUsers } from './Typeaheads'
 import { appendConnection, removeConnection, updateCache } from '../../utils/graphql'
+import Toggle from 'react-toggle'
 
 function RoleName({role: {name, description}}) {
   return (
@@ -35,8 +36,7 @@ function PermissionToggle({permission, description, attributes, setAttributes}) 
         <Text size='small'><i>{description}</i></Text>
       </Box>
       <Box flex={false}>
-        <CheckBox
-          toggle
+        <Toggle
           checked={!!attributes.permissions.find((perm) => perm === permission)}
           onChange={({target: {checked}}) => toggle(checked)} />
       </Box>

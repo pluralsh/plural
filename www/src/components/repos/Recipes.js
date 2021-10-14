@@ -1,6 +1,5 @@
-import React, { useCallback, useState } from 'react'
-import { Box, Text, Anchor } from 'grommet'
-import { HoveredBackground } from 'forge-core'
+import React, { useCallback, useContext, useState } from 'react'
+import { Box, Text, Anchor, ThemeContext } from 'grommet'
 import Recipe from './Recipe'
 import { Trash } from 'grommet-icons'
 import { useMutation } from 'react-apollo'
@@ -26,17 +25,14 @@ function DeleteRecipe({recipe: {id}, repositoryId}) {
 
   return (
     <>
-    <HoveredBackground>
-      <Box
-        accentable
-        focusIndicator={false}
-        background='white'
-        pad='xsmall'
-        round='xsmall'
-        onClick={() => setConfirm(true)}>
-        <Trash size='15px' />
-      </Box>
-    </HoveredBackground>
+    <Box
+      focusIndicator={false}
+      pad='xsmall'
+      round='xsmall'
+      hoverIndicator='hover'
+      onClick={() => setConfirm(true)}>
+      <Trash size='15px' />
+    </Box>
     {confirm && (
       <Confirm
         label='Delete'

@@ -93,7 +93,6 @@ function EditAvatar({publisher}) {
       mutation({variables: {attributes: {avatar: files[0]}}})
     }
   }, [files])
-  console.log(publisher)
 
   return (
     <Box direction='row' align='center' gap='medium' pad='small'>

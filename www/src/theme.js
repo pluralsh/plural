@@ -143,6 +143,7 @@ export const DEFAULT_THEME = {
       border: { radius: '4px' }
     },
     box: { extend: boxStyle },
+    checkBox: {toggle: {color: 'brand'}},
     elevation: {
       light: {
         medium: '0px 3px 8px rgba(100, 100, 100, 0.50)',

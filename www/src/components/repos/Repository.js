@@ -1,10 +1,10 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { Box, Text } from 'grommet'
+import { Box, Text, ThemeContext } from 'grommet'
 import { Lock } from 'grommet-icons'
 import { useQuery, useMutation } from 'react-apollo'
 import { useParams, useHistory } from 'react-router-dom'
 import { Scroller, Button, SecondaryButton, Modal, ModalHeader, Tabs, TabHeader,
-        TabHeaderItem, TabContent, BORDER_COLOR, ScrollableContainer } from 'forge-core'
+        TabHeaderItem, TabContent, ScrollableContainer } from 'forge-core'
 import yaml from 'js-yaml'
 import { REPO_Q, UPDATE_REPO } from './queries'
 import { DEFAULT_CHART_ICON, DEFAULT_TF_ICON, DEFAULT_DKR_ICON, Categories } from './constants'
@@ -33,10 +33,10 @@ function Container({children, onClick, noPad}) {
     <Box
       onClick={onClick}
       focusIndicator={false}
-      hoverIndicator='tone-light'
+      hoverIndicator='hover'
       pad={noPad ? null : 'small'}
       direction='row'
-      border={{side: 'bottom', color: BORDER_COLOR}}
+      border={{side: 'bottom'}}
       gap='small'>
       {children}
     </Box>
@@ -44,6 +44,7 @@ function Container({children, onClick, noPad}) {
 }
 
 function Chart({chart, hasNext}) {
+  const {dark} = useContext(ThemeContext)
   let history = useHistory()
   return (
     <Container onClick={() => history.push(`/charts/${chart.id}`)} hasNext={hasNext}>
@@ -56,7 +57,7 @@ function Chart({chart, hasNext}) {
             {chart.name}
           </Text>
           {chart.dependencies && chart.dependencies.application && (
-            <Box round='xsmall' pad={{vertical: '3px', horizontal: '5px'}} background='light-4'>
+            <Box round='xsmall' pad={{vertical: '3px', horizontal: '5px'}} background={dark ? 'card' : 'light-4'}>
               <Text size='12px'>APP</Text>
             </Box>
           )}

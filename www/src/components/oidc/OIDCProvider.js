@@ -1,6 +1,6 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useContext, useState } from 'react'
 import { Button, Select } from 'forge-core'
-import { Box, Keyboard, Text, TextInput } from 'grommet'
+import { Box, Keyboard, Text, TextInput, ThemeContext } from 'grommet'
 import { useMutation } from 'react-apollo'
 import { BindingInput, sanitize } from '../accounts/Role'
 import { fetchGroups, fetchUsers } from '../accounts/Typeaheads'
@@ -15,9 +15,10 @@ import { obfuscate } from '../../utils/string'
 import { Copyable } from '../utils/Copyable'
 
 function UrlTab({url, onClick}) {
+  const theme = useContext(ThemeContext)
   return (
-    <Box background='light-3' round='xsmall'  pad={{vertical: '2px', horizontal: 'small'}} 
-        hoverIndicator='light-5' onClick={onClick}>
+    <Box background={theme.dark ? 'card' : 'light-2'} round='xsmall'  pad={{vertical: '2px', horizontal: 'small'}} 
+        hoverIndicator='hover' onClick={onClick}>
       <Text size='small' weight={500}>{url}</Text>
     </Box>
   )
@@ -122,7 +123,6 @@ export function CreateProvider({installation}) {
       query: REPO_Q,
       variables: {repositoryId: installation.repository.id},
       update: (prev) => {
-        console.log(prev)
         return deepUpdate(prev, 'repository.installation.oidcProvider', () => createOidcProvider)
       }
     })

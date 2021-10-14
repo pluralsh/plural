@@ -205,7 +205,7 @@ export function SectionContentContainer({header, children}) {
 
   return (
     <SectionContext.Provider value={{id, ref}}>
-      <Box fill border={theme.dark ? {side: 'left'} : null}>
+      <Box fill>
         <Box flex={false} direction='row' pad='small' height='45px' 
              border={{side: 'bottom'}} align='center' background={theme.dark ? 'card' : null}>
           <Box fill='horizontal'>
@@ -224,7 +224,7 @@ export function SectionContentContainer({header, children}) {
 export function SectionItemContainer({label, icon, selected, location, ...props}) {
   let hist = useHistory()
   return (
-    <Box flex={false} pad='small' round='xsmall' background={selected ? 'sidebarHover' : null} fill='horizontal' 
+    <Box flex={false} pad='small' round='3px' background={selected ? 'sidebarHover' : null} fill='horizontal' 
          align='center' gap='small' direction='row' hoverIndicator='sidebarHover'
          onClick={selected ? null : () => hist.push(location)} {...props}>
       <Box flex={false}>

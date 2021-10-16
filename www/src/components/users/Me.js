@@ -1,12 +1,12 @@
 import React, { useState, useRef } from 'react'
 import { useHistory } from 'react-router-dom'
 import { Box, Text, Layer, Drop } from 'grommet'
-import { MenuItem, ModalHeader } from 'forge-core'
+import { MenuItem, ModalHeader, EditField, User, Logout } from 'forge-core'
 import CreatePublisher from '../publisher/CreatePublisher'
 import { useQuery } from 'react-apollo'
 import { ACCOUNT_PUBLISHERS } from '../publisher/queries'
 import Avatar from './Avatar'
-import { Add, Edit, Logout, User } from 'grommet-icons'
+import { Add } from 'grommet-icons'
 import { wipeToken } from '../../helpers/authentication'
 
 export function DropdownItem(props) {
@@ -94,7 +94,7 @@ export default function Me({me}) {
       <Drop target={ref.current} align={{top: "bottom"}} onClickOutside={() => setOpen(false)}>
         <Box width='300px' gap='xsmall' pad='xsmall'>
           <Item
-            icon={<Edit size='small' />}
+            icon={<EditField size='small' />}
             text='Update Account' round='xsmall'
             onClick={() => history.push('/accounts/edit/attributes')} />
           <Item

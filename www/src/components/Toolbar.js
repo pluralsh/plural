@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
-import { Box, Image } from 'grommet'
+import { Box } from 'grommet'
 import Me from './users/Me'
 import SearchRepositories from './repos/SearchRepositories'
 import { CurrentUserContext } from './login/CurrentUser'
@@ -8,7 +8,6 @@ import { SIDEBAR_WIDTH } from './Sidebar'
 import { Breadcrumbs } from './Breadcrumbs'
 import { Notifications } from './users/Notifications'
 import { LoopingLogo } from './utils/AnimatedLogo'
-import TinyCrossfade from "react-tiny-crossfade";
 import './toolbar.css'
 
 const PLRL_ICON = `${process.env.PUBLIC_URL}/plural-white.png`

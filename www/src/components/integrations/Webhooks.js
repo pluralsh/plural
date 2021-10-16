@@ -1,12 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useQuery } from 'react-apollo'
-import { Scroller, Button, ModalHeader } from 'forge-core'
+import { Scroller, Button, ModalHeader, Webhooks as WebhooksI } from 'forge-core'
 import { WEBHOOKS_Q } from './queries'
 import { Box, Layer, Text } from 'grommet'
 import { extendConnection } from '../../utils/graphql'
 import { useHistory } from 'react-router'
 import { ActionTab, CreateWebhook } from './CreateWebhook'
-import { Network } from 'grommet-icons'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 
 function Webhook({webhook}) {
@@ -61,7 +60,7 @@ export function Integrations() {
     <Box fill background='backgroundColor'>
       <Box border={{side: 'bottom'}} pad='small' direction='row' align='center'>
         <Box fill='horizontal' direction='row' align='center' gap='small'>
-          <Network size='15px' />
+          <WebhooksI size='15px' />
           <Text size='small' weight='bold'>Webhooks</Text>
         </Box>
         <Button label='Create' onClick={() => setOpen(true)} />

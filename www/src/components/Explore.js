@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useCallback, useMemo, useRef } from 'react'
+import React, { useState, useContext, useEffect, useCallback, useMemo } from 'react'
 import { useQuery } from 'react-apollo'
 import { CATEGORIES, CATEGORY, EXPLORE_REPOS } from './repos/queries'
 import { Box, Collapsible, Text, ThemeContext } from 'grommet'

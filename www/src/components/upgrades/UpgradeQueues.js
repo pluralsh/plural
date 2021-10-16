@@ -4,7 +4,8 @@ import { QUEUES, UPGRADE_QUEUE_SUB } from './queries'
 import { useHistory } from 'react-router'
 import { Box, Text } from 'grommet'
 import { Provider } from '../repos/misc'
-import { Github, Upgrade } from 'grommet-icons'
+import { Github } from 'grommet-icons'
+import { Update } from 'forge-core'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 import { QueueHealth } from './QueueHealth'
 import { LoopingLogo } from '../utils/AnimatedLogo'
@@ -53,7 +54,7 @@ export function UpgradeQueues() {
   return (
     <Box fill background='backgroundColor'>
       <Box flex={false} pad='small' direction='row' align='center' gap='xsmall' border={{side: 'bottom'}}>
-        <Upgrade size='15px' />
+        <Update size='15px' />
         <Text size='small' weight={500}>Upgrade Queues</Text>
       </Box>
       <Box fill>

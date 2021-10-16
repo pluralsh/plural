@@ -1,11 +1,12 @@
 import React, { useContext, useState, useEffect, useCallback } from 'react'
 import { Box, Text } from 'grommet'
 import { useFilePicker } from 'react-sage'
-import { Button, InputCollection, ResponsiveInput, Select } from 'forge-core'
+import { Button, InputCollection, ResponsiveInput, Select, User, Installed, 
+        AccessTokens, PublicKeys, Credentials, Password, Logout } from 'forge-core'
 import { useMutation } from 'react-apollo'
 import { UPDATE_USER } from './queries'
 import Avatar from './Avatar'
-import { StatusCritical, Checkmark, User, Lock, Install, Robot, License, Logout, UsbKey } from 'grommet-icons'
+import { StatusCritical, Checkmark, } from 'grommet-icons'
 import Installations from '../repos/Installations'
 import { CurrentUserContext } from '../login/CurrentUser'
 import { Tokens } from './Tokens'
@@ -114,11 +115,11 @@ export default function EditUser() {
             </Box>
           </Box>
           <EditSelect edit='user' name='User Attributes' icon={<User size='14px' />} />
-          <EditSelect edit='pwd' name='Password' icon={<Lock size='14px' />} />
-          <EditSelect edit='installations' name='Installations' icon={<Install size='14px' />} />
-          <EditSelect edit='tokens' name='Access Tokens' icon={<Robot size='14px' />} />
-          <EditSelect edit='keys' name='Public Keys' icon={<License size='14px' />} />
-          <EditSelect edit='credentials' name='Eab Credentials' icon={<UsbKey size='14px' />} />
+          <EditSelect edit='pwd' name='Password' icon={<Password size='14px' />} />
+          <EditSelect edit='installations' name='Installations' icon={<Installed size='14px' />} />
+          <EditSelect edit='tokens' name='Access Tokens' icon={<AccessTokens size='14px' />} />
+          <EditSelect edit='keys' name='Public Keys' icon={<PublicKeys size='14px' />} />
+          <EditSelect edit='credentials' name='Eab Credentials' icon={<Credentials size='14px' />} />
           <SectionChoice 
             label='Logout' 
             icon={<Logout size='14px' />}

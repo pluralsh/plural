@@ -1,6 +1,7 @@
-import React, { useContext } from 'react'
-import { Box, Text } from 'grommet'
+import React, { useContext, useRef, useState } from 'react'
+import { Box, Drop, Text } from 'grommet'
 import { Explore, User, Group, Incidents, Update, Webhooks, Audits } from 'forge-core'
+import { Menu, Previous } from 'grommet-icons'
 import { normalizeColor } from 'grommet/utils'
 import { useHistory, useLocation } from 'react-router-dom'
 import { Next, Down } from 'grommet-icons'
@@ -12,6 +13,7 @@ import styled from 'styled-components'
 export const SIDEBAR_ICON_HEIGHT = '40px'
 const ICON_HEIGHT = '17px'
 export const SIDEBAR_WIDTH = '200px'
+export const SMALL_WIDTH = '60px'
 
 const hoverable = styled.div`
   &:hover span {
@@ -48,6 +50,32 @@ export function SidebarIcon({icon, text, name: sidebarName, selected, path}) {
   )
 }
 
+function CompressedIcon({icon, text, selected, path}) {
+  const ref = useRef()
+  const [hover, setHover] = useState(false)
+  let history = useHistory()
+
+  return (
+    <>
+      <Box ref={ref} focusIndicator={false} align='center' justify='center' direction='row' 
+        height={SIDEBAR_ICON_HEIGHT} width={SIDEBAR_ICON_HEIGHT} hoverIndicator='sidebarHover' 
+        background={selected ? 'sidebarHover' : null} margin={{bottom: 'xsmall'}}
+        onClick={selected ? null : () => history.push(path)} 
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}>
+        {icon}
+      </Box>
+      {hover && (
+        <Drop plain target={ref.current} align={{left: "right"}}>
+          <Box round='3px' background='sidebar' pad='small'>
+            <Text size='small' weight={500}>{text}</Text>
+          </Box>
+        </Drop>
+      )}
+    </>
+  )  
+}
+
 const OPTIONS = [
   {text: 'Explore', name: 'explore', icon: <Explore size={ICON_HEIGHT} />, path: '/explore'},
   {text: 'User', icon: <User size={ICON_HEIGHT} />, path: '/me/edit'},
@@ -58,29 +86,62 @@ const OPTIONS = [
   {text: 'Audits', name: 'audits', icon: <Audits size={ICON_HEIGHT} />, path: '/audits'},
 ]
 
+const animation = {
+  transition: 'width 0.75s cubic-bezier(0.000, 0.795, 0.000, 1.000)'
+}
+
+function Collapse({setExpanded}) {
+  return (
+    <Box direction='row' fill='horizontal' align='center' gap='xsmall' round='xsmall'
+          pad='xsmall' hoverIndicator='sidebarHover' onClick={() => setExpanded(false)}>
+      <Previous size='15px' />
+      <Text size='small'>Collapse</Text>
+    </Box>
+  )
+}
+
+function Expand({setExpanded}) {
+  return (
+    <Box pad='xsmall' align='center' justify='center' hoverIndicator='sidebarHover'
+         onClick={() => setExpanded(true)} round='xsmall'>
+      <Menu size='15px' />
+    </Box>
+  )
+}
+
 export default function Sidebar() {
+  const [expanded, setExpanded] = useState(false)
   const me = useContext(CurrentUserContext)
   let hist = useHistory()
   const loc = useLocation()
-  const active = Math.max(OPTIONS.findIndex(({path, prefix}) => loc.pathname.startsWith(prefix || path)), 0)
+  const active = OPTIONS.findIndex(({path, prefix}) => loc.pathname.startsWith(prefix || path))
+  const isExpanded = expanded || (active >= 0 && !!OPTIONS[active].name)
 
   return (
-    <Box width={SIDEBAR_WIDTH} flex={false} background='sidebar' fill='vertical'
-         border={{side: 'right'}}>
+    <Box style={animation} width={isExpanded ? SIDEBAR_WIDTH : SMALL_WIDTH} flex={false} 
+         background='sidebar' fill='vertical' border={{side: 'right'}}>
       <Box fill='horizontal' height='100%' align='center'>
         {OPTIONS.map((opt, ind) => (
-          <SidebarIcon key={opt.path} selected={ind === active} {...opt} />
+          isExpanded ? 
+            <SidebarIcon key={opt.path} selected={ind === active} {...opt} /> :
+            <CompressedIcon key={opt.path} selected={ind === active} {...opt} />
         ))}
       </Box>
-      <Box flex={false} margin={{bottom: '30px'}} align='center'>
-        <Box direction='row' gap='xsmall' align='center' hoverIndicator='sidebarHover' 
-             onClick={() => hist.push('/me/edit/user')} pad='xsmall' round='xsmall'>
-          <Avatar user={me} size='45px' />
-          <Box>
-            <Text size='small' truncate>{me.name}</Text>
-            <Text size='small'>{me.email}</Text>
-          </Box>
+      <Box flex={false} margin={{bottom: '15px'}} align='center' gap='xsmall' pad={{horizontal: 'xsmall'}} >
+        <Box fill='horizontal' direction='row' gap='xsmall' align='center' 
+             hoverIndicator='sidebarHover' pad='xsmall' round='xsmall'
+             justify={!isExpanded ? 'center' : null}
+             onClick={() => hist.push('/me/edit/user')}>
+          <Avatar user={me} size={isExpanded ? '45px' : '30px'} />
+          {isExpanded && (
+            <Box>
+              <Text size='small' truncate>{me.name}</Text>
+              <Text size='small'>{me.email}</Text>
+            </Box>
+          )}
         </Box>
+        {isExpanded && <Collapse setExpanded={setExpanded} />}
+        {!isExpanded && <Expand setExpanded={setExpanded} />}
       </Box>
     </Box>
   )

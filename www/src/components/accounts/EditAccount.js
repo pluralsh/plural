@@ -3,7 +3,9 @@ import { Box, Text, ThemeContext } from 'grommet'
 import { SIDEBAR_WIDTH } from '../constants'
 import { SectionChoice } from '../utils/SectionChoice'
 import { useHistory, useParams } from 'react-router'
-import { Domain, Edit, Group, Network, Robot, Script, User } from 'grommet-icons'
+import { Domain } from 'grommet-icons'
+import { User, ServiceAccounts as ServiceAccountsI, EditField, Group, Oauth, 
+         Invoices as InvoicesI, PaymentMethods, Roles as RolesI } from 'forge-core'
 import { useMutation } from 'react-apollo'
 import { UPDATE_ACCOUNT } from './queries'
 import { Button, InputCollection, ResponsiveInput } from 'forge-core'
@@ -11,7 +13,6 @@ import { CurrentUserContext } from '../login/CurrentUser'
 import { Groups, Roles, Users } from './Directory'
 import Avatar from '../users/Avatar'
 import { BreadcrumbsContext } from '../Breadcrumbs'
-import { FaCreditCard, FaReceipt } from 'react-icons/fa'
 import { CardList } from '../users/BillingDetails'
 import Invoices from '../payments/Invoices'
 import { OAuthIntegrations } from '../integrations/OAuthIntegrations'
@@ -34,15 +35,15 @@ const ViewOptions = {
 }
 
 const VIEWS = [
-  {text: 'Edit Attributes', view: ViewOptions.EDIT, icon: <Edit size={ICON_SIZE} />},
+  {text: 'Edit Attributes', view: ViewOptions.EDIT, icon: <EditField size={ICON_SIZE} />},
   {text: "Users", view: ViewOptions.USERS, icon: <User size={ICON_SIZE} />},
-  {text: "Service Accounts", view: ViewOptions.SRV_ACCTS, icon: <Robot size={ICON_SIZE} />},
+  {text: "Service Accounts", view: ViewOptions.SRV_ACCTS, icon: <ServiceAccountsI size={ICON_SIZE} />},
   {text: "Groups", view: ViewOptions.GROUPS, icon: <Group size={ICON_SIZE} />},
-  {text: 'Roles', view: ViewOptions.ROLES, icon: <Script size={ICON_SIZE} />},
+  {text: 'Roles', view: ViewOptions.ROLES, icon: <RolesI size={ICON_SIZE} />},
   {text: 'Domains', view: ViewOptions.DOMAINS, icon: <Domain size={ICON_SIZE} />},
-  {text: 'Payment Methods', view: ViewOptions.METHODS, icon: <FaCreditCard size={ICON_SIZE} />},
-  {text: 'Invoices', view: ViewOptions.INVOICES, icon: <FaReceipt size={ICON_SIZE} />},
-  {text: 'OAuth Integrations', view: ViewOptions.INTEGRATIONS, icon: <Network size={ICON_SIZE} />},
+  {text: 'Payment Methods', view: ViewOptions.METHODS, icon: <PaymentMethods size={ICON_SIZE} />},
+  {text: 'Invoices', view: ViewOptions.INVOICES, icon: <InvoicesI size={ICON_SIZE} />},
+  {text: 'OAuth Integrations', view: ViewOptions.INTEGRATIONS, icon: <Oauth size={ICON_SIZE} />},
 ]
 
 function EditAttributes() {

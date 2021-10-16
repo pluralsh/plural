@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import moment from 'moment'
 import { Box, Text } from 'grommet'
 import { useParams } from 'react-router'
-import { List, PieChart } from 'grommet-icons'
+import { ListView, GraphView } from 'forge-core'
 import { useQuery } from 'react-apollo'
 import Avatar from '../users/Avatar'
 import { AUDITS_Q, AUDIT_METRICS } from './queries'
@@ -122,12 +122,12 @@ export function Audits() {
     <Box fill direction='row' background='backgroundColor'>
       <SubmenuPortal name='audits'>
         <SubmenuItem
-          icon={<List size='14px' />}
+          icon={<ListView size='14px' />}
           label='List View'
           selected={graph === 'table'}
           url='/audits/table' />
         <SubmenuItem
-          icon={<PieChart size='14px' />}
+          icon={<GraphView size='14px' />}
           label='Graph View'
           selected={graph === 'graph'}
           url='/audits/graph' />

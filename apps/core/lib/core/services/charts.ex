@@ -271,10 +271,9 @@ defmodule Core.Services.Charts do
     chart_file   = String.to_charlist("#{chart}/Chart.yaml")
     val_template = String.to_charlist("#{chart}/values.yaml.tpl")
     deps_tmplate = String.to_charlist("#{chart}/deps.yaml")
-    files = [readme_file, chart_file, val_template, deps_tmplate]
 
     with {:ok, result} <- String.to_charlist(path)
-                          |> :erl_tar.extract([:memory, :compressed, {:files, files}]),
+                          |> :erl_tar.extract([:memory, :compressed]),
          {:readme, {_, readme}} <- {:readme, Enum.find(result, &elem(&1, 0) == readme_file)},
          {:chart, {_, chart_yaml}} <- {:chart, Enum.find(result, &elem(&1, 0) == chart_file)},
          {:ok, chart_decoded} <- YamlElixir.read_from_string(chart_yaml),
@@ -296,6 +295,7 @@ defmodule Core.Services.Charts do
 
   def get_crds(tarball, prefix) do
     Enum.map(tarball, fn {name, val} -> {to_string(name), val} end)
+    |> Enum.map(&IO.inspect/1)
     |> Enum.map(fn {name, val} ->
       case String.starts_with?(name, prefix) do
         true -> {name, val}

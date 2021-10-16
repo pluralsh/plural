@@ -295,7 +295,6 @@ defmodule Core.Services.Charts do
 
   def get_crds(tarball, prefix) do
     Enum.map(tarball, fn {name, val} -> {to_string(name), val} end)
-    |> Enum.map(&IO.inspect/1)
     |> Enum.map(fn {name, val} ->
       case String.starts_with?(name, prefix) do
         true -> {name, val}

@@ -475,4 +475,11 @@ defmodule Core.Factory do
       hmac_key: "123"
     }
   end
+
+  def apply_lock_factory do
+    %Schema.ApplyLock{
+      lock: "dummy",
+      repository: build(:repository)
+    }
+  end
 end

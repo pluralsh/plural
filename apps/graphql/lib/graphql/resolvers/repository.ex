@@ -197,4 +197,14 @@ defmodule GraphQl.Resolvers.Repository do
     repo = Repositories.get_repository_by_name!(name)
     Repositories.create_artifact(attrs, repo.id, user)
   end
+
+  def acquire_apply_lock(%{repository: name}, %{context: %{current_user: user}}) do
+    repo = Repositories.get_repository_by_name!(name)
+    Repositories.acquire_apply_lock(repo.id, user)
+  end
+
+  def release_apply_lock(%{attributes: attrs, repository: name}, %{context: %{current_user: user}}) do
+    repo = Repositories.get_repository_by_name!(name)
+    Repositories.release_apply_lock(attrs, repo.id, user)
+  end
 end

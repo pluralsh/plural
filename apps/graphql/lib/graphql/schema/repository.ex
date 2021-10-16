@@ -80,6 +80,10 @@ defmodule GraphQl.Schema.Repository do
     field :bindings, list_of(:binding_attributes)
   end
 
+  input_object :lock_attributes do
+    field :lock, non_null(:string)
+  end
+
   ## OBJECTS
 
   object :category_info do
@@ -215,6 +219,16 @@ defmodule GraphQl.Schema.Repository do
   object :oauth_settings do
     field :uri_format,  non_null(:string)
     field :auth_method, non_null(:oidc_auth_method)
+  end
+
+  object :apply_lock do
+    field :id,   non_null(:id)
+    field :lock, :string
+
+    field :repository, :repository, resolve: dataloader(Repository)
+    field :owner, :user, resolve: dataloader(User)
+
+    timestamps()
   end
 
   connection node_type: :repository
@@ -389,6 +403,21 @@ defmodule GraphQl.Schema.Repository do
       arg :attributes, non_null(:oidc_attributes)
 
       resolve safe_resolver(&Repository.upsert_oidc_provider/2)
+    end
+
+    field :acquire_lock, :apply_lock do
+      middleware Authenticated
+      arg :repository, non_null(:string)
+
+      resolve safe_resolver(&Repository.acquire_apply_lock/2)
+    end
+
+    field :release_lock, :apply_lock do
+      middleware Authenticated
+      arg :repository, non_null(:string)
+      arg :attributes, non_null(:lock_attributes)
+
+      resolve safe_resolver(&Repository.release_apply_lock/2)
     end
   end
 end

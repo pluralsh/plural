@@ -518,4 +518,61 @@ defmodule Core.Services.RepositoriesTest do
       refute refetch(deleted)
     end
   end
+
+  describe "#acquire_apply_lock/2" do
+    test "A user can create an apply lock if they have repo edit permission" do
+      %{owner: user} = pub = insert(:publisher)
+      repo = insert(:repository, publisher: pub)
+
+      {:ok, lock} = Repositories.acquire_apply_lock(repo.id, user)
+
+      assert lock.owner_id == user.id
+      assert lock.repository_id == repo.id
+    end
+
+    test "A user can create an existing apply lock if there is no owner" do
+      %{owner: user} = pub = insert(:publisher)
+      repo = insert(:repository, publisher: pub)
+      lock = insert(:apply_lock, repository: repo)
+
+      {:ok, acquired} = Repositories.acquire_apply_lock(repo.id, user)
+
+      assert acquired.id == lock.id
+      assert acquired.owner_id == user.id
+    end
+
+    test "a lock with an owner cannot be acquired" do
+      %{owner: user} = pub = insert(:publisher)
+      repo = insert(:repository, publisher: pub)
+      insert(:apply_lock, repository: repo, owner: build(:user))
+
+      {:error, _} = Repositories.acquire_apply_lock(repo.id, user)
+    end
+  end
+
+  describe "#release_apply_lock/3" do
+    test "A lock owner can save a lock and release ownership" do
+      lock = insert(:apply_lock, owner: build(:user))
+
+      {:ok, release} = Repositories.release_apply_lock(
+        %{lock: "test"},
+        lock.repository_id,
+        lock.owner
+      )
+
+      assert release.id == lock.id
+      assert release.lock == "test"
+      refute release.owner_id
+    end
+
+    test "non-owners cannot release locks" do
+      lock = insert(:apply_lock, owner: build(:user))
+
+      {:error, _} = Repositories.release_apply_lock(
+        %{lock: "test"},
+        lock.repository_id,
+        insert(:user)
+      )
+    end
+  end
 end

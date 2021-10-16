@@ -360,4 +360,43 @@ defmodule GraphQl.RepositoryMutationsTest do
       assert updated["public"]
     end
   end
+
+  describe "acquireLock" do
+    test "it can acquire an apply lock" do
+      %{owner: user} = pub = insert(:publisher)
+      repo = insert(:repository, publisher: pub)
+
+      {:ok, %{data: %{"acquireLock" => lock}}} = run_query("""
+        mutation Acquire($name: String!) {
+          acquireLock(repository: $name) {
+            repository { id }
+            owner { id }
+          }
+        }
+      """, %{"name" => repo.name}, %{current_user: user})
+
+      assert lock["repository"]["id"] == repo.id
+      assert lock["owner"]["id"] == user.id
+    end
+  end
+
+  describe "releaseLock" do
+    test "it will release ownership from an apply lock" do
+      %{owner: user} = lock = insert(:apply_lock, owner: build(:user))
+
+      {:ok, %{data: %{"releaseLock" => release}}} = run_query("""
+        mutation Release($name: String!, $attrs: ApplyLockAttributes!) {
+          releaseLock(repository: $name, attributes: $attrs) {
+            id
+            lock
+            owner { id }
+          }
+        }
+      """, %{"name" => lock.repository.name, "attrs" => %{"lock" => "test"}}, %{current_user: user})
+
+      assert release["id"] == lock.id
+      assert release["lock"] == "test"
+      refute release["owner"]
+    end
+  end
 end

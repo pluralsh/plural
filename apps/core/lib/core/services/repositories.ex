@@ -18,7 +18,8 @@ defmodule Core.Services.Repositories do
     Subscription,
     Plan,
     Artifact,
-    OIDCProvider
+    OIDCProvider,
+    ApplyLock
   }
   alias Piazza.Crypto.RSA
 
@@ -420,6 +421,36 @@ defmodule Core.Services.Repositories do
     end)
     |> execute(extract: :oidc_provider)
     |> notify(:update)
+  end
+
+  @doc """
+  Gets or creates a new apply lock to use in plural apply commands.  The user performing this
+  action will own the lock until manually released
+  """
+  @spec acquire_apply_lock(binary, User.t) :: {:ok, ApplyLock.t} | {:error, term}
+  def acquire_apply_lock(repository_id, %User{} = user) do
+    case Core.Repo.get_by(ApplyLock, repository_id: repository_id) do
+      %ApplyLock{} = lock -> lock
+      nil -> %ApplyLock{repository_id: repository_id}
+    end
+    |> allow(user, :create)
+    |> when_ok(fn lock ->
+      ApplyLock.changeset(lock, %{owner_id: user.id})
+      |> Core.Repo.insert_or_update()
+    end)
+  end
+
+  @doc """
+  Updates the lock and releases ownership by the given user
+  """
+  @spec release_apply_lock(map, binary, User.t) :: {:ok, ApplyLock.t} | {:error, term}
+  def release_apply_lock(attrs, repository_id, %User{id: user_id}) do
+    case Core.Repo.get_by(ApplyLock, repository_id: repository_id) do
+      %ApplyLock{owner_id: ^user_id} = lock ->
+        ApplyLock.changeset(lock, Map.put(attrs, :owner_id, nil))
+        |> Core.Repo.update()
+      _ -> {:error, :not_found}
+    end
   end
 
   defp oidc_auth_method(:basic), do: "client_secret_basic"

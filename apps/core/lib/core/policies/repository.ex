@@ -1,7 +1,7 @@
 defmodule Core.Policies.Repository do
   use Piazza.Policy
   import Core.Policies.Utils
-  alias Core.Schema.{User, Installation, Repository, Integration, Artifact, DockerRepository}
+  alias Core.Schema.{User, Installation, Repository, Integration, Artifact, DockerRepository, ApplyLock}
 
   def can?(%User{} = user, %Integration{} = integ, policy) do
     %{repository: repo} = Core.Repo.preload(integ, [:repository])
@@ -27,6 +27,12 @@ defmodule Core.Policies.Repository do
     %{repository: repo} = Core.Repo.preload(dkr, [repository: [publisher: :account]])
     can?(user, repo, :edit)
   end
+
+  def can?(%User{id: user_id} = user, %ApplyLock{owner_id: nil} = lock, :create) do
+    %{repository: repo} = Core.Repo.preload(lock, [repository: [publisher: :account]])
+    can?(user, repo, :edit)
+  end
+  def can?(_, %ApplyLock{}, :create), do: {:error, "lock already in use"}
 
   def can?(%User{}, %Repository{}, :access), do: :continue
 

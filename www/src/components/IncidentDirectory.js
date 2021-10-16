@@ -2,6 +2,7 @@ import React from 'react'
 import { Box } from 'grommet'
 import { SectionItemContainer, SectionContent } from './Explore'
 import { Aid, Alert } from 'grommet-icons'
+import { Incidents as IncidentsIcon, Responses as ResponsesIcon } from 'forge-core'
 import { Incidents } from './incidents/Incidents'
 import { Responses } from './incidents/Responses'
 import { useParams } from 'react-router'
@@ -29,12 +30,12 @@ export function IncidentDirectory() {
           selected={group === 'all'}
           url='/incidents/all'
           label='My Incidents' 
-          icon={<Alert size='small' />} />
+          icon={<IncidentsIcon size='small' />} />
         <SubmenuItem 
           selected={group === 'responses'}
           url='/incidents/responses' 
           label='Responses' 
-          icon={<Aid size='small' />} />
+          icon={<ResponsesIcon size='small' />} />
       </SubmenuPortal>
       <Box fill>
         <SectionContent name='all' header='Incidents'>

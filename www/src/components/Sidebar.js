@@ -1,15 +1,16 @@
 import React, { useContext } from 'react'
 import { Box, Text } from 'grommet'
+import { Explore, User, Group, Incidents, Update, Webhooks, Audits } from 'forge-core'
 import { normalizeColor } from 'grommet/utils'
 import { useHistory, useLocation } from 'react-router-dom'
-import { Group, Package, Alert, Network, List, Upgrade, User, Next, Down } from 'grommet-icons'
+import { Next, Down } from 'grommet-icons'
 import { CurrentUserContext } from './login/CurrentUser'
 import Avatar from './users/Avatar'
 import { Submenu, SubmenuContext } from './navigation/Submenu'
 import styled from 'styled-components'
 
 export const SIDEBAR_ICON_HEIGHT = '40px'
-const ICON_HEIGHT = '15px'
+const ICON_HEIGHT = '17px'
 export const SIDEBAR_WIDTH = '200px'
 
 const hoverable = styled.div`
@@ -48,13 +49,13 @@ export function SidebarIcon({icon, text, name: sidebarName, selected, path}) {
 }
 
 const OPTIONS = [
-  {text: 'Explore', name: 'explore', icon: <Package size={ICON_HEIGHT} />, path: '/explore'},
+  {text: 'Explore', name: 'explore', icon: <Explore size={ICON_HEIGHT} />, path: '/explore'},
   {text: 'User', icon: <User size={ICON_HEIGHT} />, path: '/me/edit'},
   {text: 'Account', icon: <Group size={ICON_HEIGHT} />, path: '/accounts/edit'},
-  {text: 'Upgrades', icon: <Upgrade size={ICON_HEIGHT} />, path: '/upgrades'},
-  {text: 'Incidents', name: 'incidents', icon: <Alert size={ICON_HEIGHT} />, path: '/incidents', prefix: '/incident'},
-  {text: 'Integrations', icon: <Network size={ICON_HEIGHT} />, path: '/webhooks'},
-  {text: 'Audits', name: 'audits', icon: <List size={ICON_HEIGHT} />, path: '/audits'},
+  {text: 'Upgrades', icon: <Update size={ICON_HEIGHT} />, path: '/upgrades'},
+  {text: 'Incidents', name: 'incidents', icon: <Incidents size={ICON_HEIGHT} />, path: '/incidents', prefix: '/incident'},
+  {text: 'Integrations', icon: <Webhooks size={ICON_HEIGHT} />, path: '/webhooks'},
+  {text: 'Audits', name: 'audits', icon: <Audits size={ICON_HEIGHT} />, path: '/audits'},
 ]
 
 export default function Sidebar() {

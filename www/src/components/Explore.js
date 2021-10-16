@@ -10,11 +10,11 @@ import { useHistory, useParams } from 'react-router'
 import { sortBy } from 'lodash'
 import { SafeLink } from './utils/Link'
 import { CurrentUserContext } from './login/CurrentUser'
-import { Down, InstallOption, Next, Share, ShareOption } from 'grommet-icons'
+import { Down, Next } from 'grommet-icons'
+import { Public, Installed, Publisher } from 'forge-core'
 import { Portal } from 'react-portal'
 import { v4 as uuidv4 } from 'uuid'
 import './explore.css'
-import { PLURAL_ICON, SIDEBAR_WIDTH } from './constants'
 import { StandardScroller } from './utils/SmoothScroller'
 import { SubmenuItem, SubmenuPortal } from './navigation/Submenu'
 import { LoopingLogo } from './utils/AnimatedLogo'
@@ -295,18 +295,18 @@ export default function Explore() {
           url='/explore/public' 
           label='Public' 
           selected={group === 'public'}
-          icon={<ShareOption size='14px' />} />
+          icon={<Public size='14px' />} />
         <SubmenuItem 
           url='/explore/installed' 
           label='Installed' 
           selected={group === 'installed'}
-          icon={<InstallOption size='14px' />} />
+          icon={<Installed size='14px' />} />
         {me.publisher && (
           <SubmenuItem 
             url='/explore/published' 
             label='Published'
             selected={group === 'published'}
-            icon={<Share size='14px' />} />
+            icon={<Publisher size='14px' />} />
         )}
       </SubmenuPortal>
       <Box fill>

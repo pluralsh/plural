@@ -2,7 +2,7 @@
 # This should match the version of Alpine that the `elixir:1.7.2-alpine` image uses
 ARG ALPINE_VERSION=3.8
 
-FROM gcr.io/pluralsh/elixir:1.9-alpine AS builder
+FROM gcr.io/pluralsh/elixir:1.9-alpine-old AS builder
 
 # The following are build arguments used to change variable parts of the image.
 # The name of your application/release (required)
@@ -78,7 +78,7 @@ RUN apk add --update --no-cache curl ca-certificates unzip wget openssl && \
     curl -L https://github.com/alco/goon/releases/download/v1.1.1/goon_linux_amd64.tar.gz | tar xvz && \
     mv goon /usr/local/bin/goon && chmod +x /usr/local/bin/goon
 
-FROM gcr.io/pluralsh/erlang:22-alpine
+FROM gcr.io/pluralsh/erlang:22-alpine-old
 
 # The name of your application/release (required)
 ARG APP_NAME

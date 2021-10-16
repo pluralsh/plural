@@ -228,4 +228,19 @@ defmodule Core.Services.ChartsTest do
       {:error, _} = Charts.create_crd(%{name: "example.yaml"}, version.id, user)
     end
   end
+
+  describe "#get_crds" do
+    test "it will find the contents of the crd folder" do
+      chart_contents = Enum.map([
+        {"Chart.yaml", "chart: value"},
+        {"templates/deployment.yaml", "example"},
+        {"crds/mycrd.yaml", "a crd"}
+      ], fn {name, val} -> {String.to_charlist("chart/#{name}"), val} end)
+
+      [{name, val}] = Charts.get_crds(chart_contents, "chart/crds/")
+
+      assert name == "chart/crds/mycrd.yaml"
+      assert val == "a crd"
+    end
+  end
 end

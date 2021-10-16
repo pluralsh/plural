@@ -139,6 +139,7 @@ defmodule Core.Services.Charts do
         )
         |> Core.Repo.update()
       end)
+      |> sync_crds(helm_info.crds, user)
       |> execute()
       |> case do
         {:ok, %{sync: sync}} = res ->
@@ -172,6 +173,23 @@ defmodule Core.Services.Charts do
     |> allow(user, :create)
     |> when_ok(&Core.Repo.insert_or_update/1)
   end
+
+  def sync_crds(transaction, [_ | _] = crds, user) do
+    Enum.reduce(crds, transaction, fn {name, content}, xact ->
+      add_operation(xact, {:crd, name}, fn %{sync: %{id: id}} ->
+        {:ok, path} = Briefly.create()
+        File.write!(path, IO.inspect(content))
+        name = Path.basename(name)
+        create_crd(%{name: name, blob: %{
+          __struct__: Plug.Upload,
+          path: path,
+          filename: name,
+          content_type: MIME.from_path(name)
+        }}, id, user)
+      end)
+    end)
+  end
+  def sync_crds(transaction, _, _), do: transaction
 
   defp from_version(%Version{helm: helm}), do: %{description: helm && helm["description"]}
   defp from_version(_), do: %{}
@@ -266,12 +284,25 @@ defmodule Core.Services.Charts do
         helm: chart_decoded,
         digest: Piazza.File.hash(path),
         values_template: extract_val_template(result, val_template),
-        dependencies: deps}}
+        dependencies: deps,
+        crds: get_crds(result, "#{chart}/crds/")
+      }}
     else
       {:readme, _} -> {:error, "could not find README.md"}
       {:chart, _} -> {:error, "could not find Chart.yaml"}
       error -> error
     end
+  end
+
+  def get_crds(tarball, prefix) do
+    Enum.map(tarball, fn {name, val} -> {to_string(name), val} end)
+    |> Enum.map(fn {name, val} ->
+      case String.starts_with?(name, prefix) do
+        true -> {name, val}
+        _ -> nil
+      end
+    end)
+    |> Enum.filter(& &1)
   end
 
   defp extract_val_template(result, val_template) do

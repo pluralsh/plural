@@ -2,8 +2,17 @@ defmodule GraphQl.Schema.OAuth do
   use GraphQl.Schema.Base
   alias GraphQl.Resolvers.OAuth
 
+  enum :oauth_provider do
+    value :github
+  end
+
   object :oauth_response do
     field :redirect_to, non_null(:string)
+  end
+
+  object :oauth_info do
+    field :provider, non_null(:oauth_provider)
+    field :authorize_url, non_null(:string)
   end
 
   object :ouath_configuration do
@@ -26,6 +35,10 @@ defmodule GraphQl.Schema.OAuth do
 
       resolve &OAuth.resolve_consent/2
     end
+
+    field :oauth_urls, :oauth_info do
+      resolve &OAuth.list_urls/2
+    end
   end
 
   object :oauth_mutations do
@@ -42,6 +55,14 @@ defmodule GraphQl.Schema.OAuth do
       arg :scopes, list_of(:string)
 
       resolve &OAuth.accept_consent/2
+    end
+
+    field :oauth_callback, :user do
+      middleware GraphQl.Middleware.AllowJwt
+      arg :provider, non_null(:oauth_provider)
+      arg :code, non_null(:string)
+
+      resolve &OAuth.resolve_callback/2
     end
   end
 end

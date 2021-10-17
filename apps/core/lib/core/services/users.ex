@@ -221,6 +221,13 @@ defmodule Core.Services.Users do
     |> notify(:create)
   end
 
+  def bootstrap_user(%{"email" => email} = attrs) do
+    case get_user_by_email(email) do
+      nil -> create_user(attrs)
+      %User{} = user -> user
+    end
+  end
+
   @doc "self explanatory"
   @spec update_user(map, User.t) :: user_resp
   def update_user(attrs, %User{} = user) do

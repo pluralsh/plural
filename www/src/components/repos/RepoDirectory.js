@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import { SectionContentContainer, SectionItemContainer } from '../Explore'
-import { Add, Configure, Deploy, Edit, Install, Package, Script, Plan as PlanIcon } from 'grommet-icons'
+import { Add, Package, Plan as PlanIcon } from 'grommet-icons'
+import { Roles, Update, Installed, Configuration, EditField as Edit } from 'forge-core'
 import Collapsible from 'react-collapsible'
 import { RepositoryIcon } from './Repository'
 import { InstallationInner, Plans } from './Installation'
@@ -99,7 +100,7 @@ export function RepoDirectory() {
           <SectionItem
             name='bundles' 
             label='Bundles' 
-            icon={Script} />
+            icon={Roles} />
           <Box flex={false}>
             <SectionItem
               name='packages'
@@ -126,7 +127,7 @@ export function RepoDirectory() {
               <SectionItem
                 name='configure'
                 label='Configure'
-                icon={Configure}
+                icon={Configuration}
                 location={`/repositories/${id}/configure/upgrades`} />
               <SubgroupContainer name='configure'>
                 <SectionItem
@@ -143,11 +144,11 @@ export function RepoDirectory() {
           <SectionItem
             name='deployments'
             label='Deployments'
-            icon={Deploy} />
+            icon={Update} />
           {repository.artifacts && repository.artifacts.length > 0 && (<SectionItem
             name='artifacts'
             label='Artifacts'
-            icon={Install} />)}
+            icon={Installed} />)}
           {repository.editable && (
             <Box flex={false}>
               <SectionItem

@@ -1,9 +1,9 @@
 import React, { useCallback, useState } from 'react'
 import { Box, Text, Layer } from 'grommet'
-import { List, Trash, PieChart } from 'grommet-icons'
+import { Trash } from 'grommet-icons'
 import { useMutation, useQuery } from 'react-apollo'
 import { CREATE_TOKEN, TOKENS_Q, DELETE_TOKEN, TOKEN_AUDITS, TOKEN_METRICS } from './queries'
-import { Button, Scroller, Copyable, BORDER_COLOR, ModalHeader } from 'forge-core'
+import { Button, Scroller, Copyable, BORDER_COLOR, ModalHeader, ListView, GraphView } from 'forge-core'
 import moment from 'moment'
 import { deepUpdate, extendConnection, removeConnection, updateCache } from '../../utils/graphql'
 import { FixedScroller } from '../utils/SmoothScroller'
@@ -129,7 +129,7 @@ function Token({token: {token, insertedAt, id}}) {
           <Text size='small'>{moment(insertedAt).fromNow()}</Text>
         </Box>
         <Icon
-          icon={PieChart}
+          icon={GraphView}
           tooltip='Metrics'
           hover='hover'
           onClick={() => setModal({
@@ -137,7 +137,7 @@ function Token({token: {token, insertedAt, id}}) {
             content: <TokenMetrics id={id} />
           })} />
         <Icon 
-          icon={List} 
+          icon={ListView} 
           tooltip='Audits' 
           hover='hover' 
           onClick={() => setModal({

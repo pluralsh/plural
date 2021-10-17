@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import moment from 'moment'
-import { Button, ModalHeader } from 'forge-core'
+import { Button, ModalHeader, Roles } from 'forge-core'
 import { useMutation, useQuery } from 'react-apollo'
 import { appendConnection, extendConnection, updateCache } from '../../utils/graphql'
 import { SectionContentContainer, SectionPortal } from '../Explore'
@@ -15,7 +15,6 @@ import { DnsRecords } from './DnsRecords'
 import { BindingInput, sanitize } from './Role'
 import { fetchGroups, fetchUsers } from './Typeaheads'
 import { Icon } from './Group'
-import { Script } from 'grommet-icons'
 import { ignore } from '../utils/ModalHeader'
 
 export function TableRow({children, border, ...props}) {
@@ -59,7 +58,7 @@ function DomainRow({domain}) {
           <Text size='small'>{moment(domain.insertedAt).format('lll')}</Text>
         </Box>
         <Icon
-          icon={Script}
+          icon={Roles}
           hover='light-4'
           tooltip='Edit Access Policy'
           onClick={(e) => doOpen(true, e)} />

@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Box, Drop, Text } from 'grommet'
 import { Explore, User, Group, Incidents, Update, Webhooks, Audits } from 'forge-core'
 import { Menu, Previous } from 'grommet-icons'
@@ -51,13 +51,13 @@ export function SidebarIcon({icon, text, name: sidebarName, selected, path}) {
 }
 
 function CompressedIcon({icon, text, selected, path}) {
-  const ref = useRef()
+  const [ref, setRef] = useState(null)
   const [hover, setHover] = useState(false)
   let history = useHistory()
 
   return (
     <>
-      <Box ref={ref} focusIndicator={false} align='center' justify='center' direction='row' 
+      <Box ref={setRef} focusIndicator={false} align='center' justify='center' direction='row' 
         height={SIDEBAR_ICON_HEIGHT} width={SIDEBAR_ICON_HEIGHT} hoverIndicator='sidebarHover' 
         background={selected ? 'sidebarHover' : null} margin={{top: 'xsmall'}}
         onClick={selected ? null : () => history.push(path)} round='3px'
@@ -65,8 +65,8 @@ function CompressedIcon({icon, text, selected, path}) {
         onMouseLeave={() => setHover(false)}>
         {icon}
       </Box>
-      {hover && (
-        <Drop plain target={ref.current} align={{left: "right"}}>
+      {hover && ref && (
+        <Drop plain target={ref} align={{left: "right"}}>
           <Box round='3px' background='sidebar' pad='small'>
             <Text size='small' weight={500}>{text}</Text>
           </Box>

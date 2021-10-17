@@ -59,8 +59,8 @@ function CompressedIcon({icon, text, selected, path}) {
     <>
       <Box ref={ref} focusIndicator={false} align='center' justify='center' direction='row' 
         height={SIDEBAR_ICON_HEIGHT} width={SIDEBAR_ICON_HEIGHT} hoverIndicator='sidebarHover' 
-        background={selected ? 'sidebarHover' : null} margin={{bottom: 'xsmall'}}
-        onClick={selected ? null : () => history.push(path)} 
+        background={selected ? 'sidebarHover' : null} margin={{top: 'xsmall'}}
+        onClick={selected ? null : () => history.push(path)} round='3px'
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}>
         {icon}
@@ -92,7 +92,7 @@ const animation = {
 
 function Collapse({setExpanded}) {
   return (
-    <Box direction='row' fill='horizontal' align='center' gap='xsmall' round='xsmall'
+    <Box direction='row' fill='horizontal' align='center' gap='xsmall' round='3px'
           pad='xsmall' hoverIndicator='sidebarHover' onClick={() => setExpanded(false)}>
       <Previous size='15px' />
       <Text size='small'>Collapse</Text>
@@ -103,7 +103,7 @@ function Collapse({setExpanded}) {
 function Expand({setExpanded}) {
   return (
     <Box pad='xsmall' align='center' justify='center' hoverIndicator='sidebarHover'
-         onClick={() => setExpanded(true)} round='xsmall'>
+         onClick={() => setExpanded(true)} round='3px'>
       <Menu size='15px' />
     </Box>
   )
@@ -129,7 +129,7 @@ export default function Sidebar() {
       </Box>
       <Box flex={false} margin={{bottom: '15px'}} align='center' gap='xsmall' pad={{horizontal: 'xsmall'}} >
         <Box fill='horizontal' direction='row' gap='xsmall' align='center' 
-             hoverIndicator='sidebarHover' pad='xsmall' round='xsmall'
+             hoverIndicator='sidebarHover' pad='xsmall' round='3px'
              justify={!isExpanded ? 'center' : null}
              onClick={() => hist.push('/me/edit/user')}>
           <Avatar user={me} size={isExpanded ? '45px' : '30px'} />

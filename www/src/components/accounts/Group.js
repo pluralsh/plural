@@ -2,8 +2,8 @@ import React, { useState, useRef } from 'react'
 import { Box, Text, Layer, TextInput } from 'grommet'
 import { useQuery, useMutation, useApolloClient } from 'react-apollo'
 import { GROUP_MEMBERS, CREATE_GROUP_MEMBERS, UPDATE_GROUP, DELETE_GROUP, DELETE_GROUP_MEMBER } from './queries'
-import { Group, UserAdd, Edit, Trash } from 'grommet-icons'
-import { ModalHeader, TooltipContent, Button } from 'forge-core'
+import { Trash } from 'grommet-icons'
+import { ModalHeader, TooltipContent, Button, Group, AddUser, EditField as Edit } from 'forge-core'
 import { fetchUsers } from './Typeaheads'
 import { addGroupMember, deleteGroup, SearchIcon } from './utils'
 import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
@@ -202,7 +202,7 @@ export default function GroupRow({group}) {
         <Box flex={false} direction='row'>
           <Icon icon={Edit} tooltip='edit' onClick={() => setEdit(!edit)} />
           <Icon
-            icon={UserAdd}
+            icon={AddUser}
             tooltip='add user'
             onClick={() => setModal({
               text: `Add user to ${group.name}`,

@@ -66,8 +66,9 @@ function CompressedIcon({icon, text, selected, path}) {
         {icon}
       </Box>
       {hover && ref && (
-        <Drop plain target={ref} align={{left: "right"}}>
-          <Box round='3px' background='sidebar' pad='small'>
+        <Drop plain target={ref} align={{left: "right"}} margin={{left: 'xsmall'}}>
+          <Box round='3px' height={SIDEBAR_ICON_HEIGHT} background='sidebarHover' 
+               pad={{horizontal: 'small'}} elevation='small' align='center' justify='center'>
             <Text size='small' weight={500}>{text}</Text>
           </Box>
         </Drop>

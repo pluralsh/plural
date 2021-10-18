@@ -4,6 +4,7 @@ defmodule GraphQl.Schema.OAuth do
 
   enum :oauth_provider do
     value :github
+    value :google
   end
 
   object :oauth_response do

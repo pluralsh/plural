@@ -1,5 +1,5 @@
 defmodule Core.OAuth do
-  @providers ~w(github)a
+  @providers ~w(github google)a
 
   def urls() do
     Enum.map(@providers, & %{provider: &1, authorize_url: authorize_url(&1)})
@@ -16,4 +16,5 @@ defmodule Core.OAuth do
   end
 
   def strategy(:github), do: Core.OAuth.Github
+  def strategy(:google), do: Core.OAuth.Google
 end

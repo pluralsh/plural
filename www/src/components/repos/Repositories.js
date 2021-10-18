@@ -1,7 +1,6 @@
 import React, { useContext } from 'react'
 import { Box, Text, ThemeContext } from 'grommet'
-import { Scroller, HoveredBackground } from 'forge-core'
-import { Lock, Trash } from 'grommet-icons'
+import { Scroller, HoveredBackground, Trash, Password } from 'forge-core'
 import { useQuery, useMutation } from 'react-apollo'
 import { useHistory } from 'react-router-dom'
 import { REPOS_Q, DELETE_REPO } from './queries'
@@ -54,7 +53,7 @@ export function RepoName({repo: {name, private: priv}}) {
       <Text size='small' weight='bold'>
         {name}
       </Text>
-      {priv && <Lock size='small' />}
+      {priv && <Password size='small' />}
     </Box>
   )
 }
@@ -87,7 +86,6 @@ function RepositoryCell({repo, deletable, publisherId, width}) {
 }
 
 export function Repository({repo, hasNext, deletable, publisherId}) {
-  let history = useHistory()
   return (
     <Box pad='small' direction='row' gap='small' border={hasNext ? 'bottom' : null}>
       <Box width='50px' heigh='50px'>
@@ -96,7 +94,7 @@ export function Repository({repo, hasNext, deletable, publisherId}) {
       <Box gap='xxsmall' justify='center' width='100%'>
         <Box direction='row' gap='xsmall' align='center'>
           <Text size='small' weight='bold'>{repo.name}</Text>
-          {repo.private && <Lock size='small' />}
+          {repo.private && <Password size='small' />}
         </Box>
         <Text size='small'>
           {repo.description}

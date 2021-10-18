@@ -3,9 +3,9 @@ import { Elements, CardElement, injectStripe } from 'react-stripe-elements'
 import { Box, Text, Layer } from 'grommet'
 import { useMutation, useQuery } from 'react-apollo'
 import { REGISTER_CARD, CARDS, DELETE_CARD } from './queries'
-import { Button, ModalHeader } from 'forge-core'
+import { Button, ModalHeader, Trash, PaymentMethods } from 'forge-core'
 import { TagContainer } from '../repos/Tags'
-import { Visa, Mastercard, Amex, Trash, CreditCard } from 'grommet-icons'
+import { Visa, Mastercard, Amex } from 'grommet-icons'
 import 'react-credit-cards/es/styles-compiled.css';
 import './stripe.css'
 import './billing.css'
@@ -64,7 +64,7 @@ export function CardIcon({brand}) {
     case 'amex':
       return <Amex color='plain' size='medium' />
     default:
-      return <CreditCard size='medium' />
+      return <PaymentMethods size='medium' />
   }
 }
 

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router'
-import { Copyable, ModalHeader, Button, SecondaryButton } from 'forge-core'
+import { Copyable, ModalHeader, Button, SecondaryButton, Trash, Close, Reload } from 'forge-core'
 import { extendConnection } from '../../utils/graphql'
 import { Box, Layer, Text, TextInput } from 'grommet'
 import { WebhookLog } from './WebhookLog'
@@ -8,7 +8,7 @@ import { useMutation, useQuery } from 'react-apollo'
 import { DELETE_WEBHOOK, UPDATE_WEBHOOK, WEBHOOK_Q } from './queries'
 import { ActionInput, ActionTab } from './CreateWebhook'
 import { BreadcrumbsContext } from '../Breadcrumbs'
-import { Close, Edit, Refresh, Trash } from 'grommet-icons'
+import { Edit } from 'grommet-icons'
 import { StandardScroller } from '../utils/SmoothScroller'
 
 export function Container({title, children, modifier, ...props}) {
@@ -33,7 +33,7 @@ function WebhookLogs({webhook: {logs: {pageInfo, edges}}, loading, fetchMore, re
 
   return (
     <Container title='webhook logs' 
-      modifier={<Control icon={<Refresh size='small' />} onClick={() => refetch()} />}>
+      modifier={<Control icon={<Reload size='small' />} onClick={() => refetch()} />}>
       <StandardScroller
         listRef={listRef}
         setListRef={setListRef}

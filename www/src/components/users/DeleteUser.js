@@ -1,5 +1,5 @@
-import { Trash } from 'grommet-icons'
 import React, { useState } from 'react'
+import { Trash } from 'forge-core'
 import { useMutation } from 'react-apollo'
 import { Icon } from '../accounts/Group'
 import { Confirm } from '../utils/Confirm'

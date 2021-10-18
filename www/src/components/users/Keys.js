@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
-import { Scroller, Button } from 'forge-core'
+import { Scroller, Button, Key as KeyIcon } from 'forge-core'
 import { DELETE_KEY, LIST_KEYS } from './queries'
 import { Box, Markdown, Text } from 'grommet'
-import { License } from 'grommet-icons'
 import moment from 'moment'
 import { extendConnection } from '../../utils/graphql'
 import { useMutation, useQuery } from 'react-apollo'
@@ -30,7 +29,7 @@ function Key({publicKey}) {
     <Box border={{side: 'bottom'}} pad='small' direction='row' 
          align='center' gap='small'>
       <Box flex={false} width='50px' align='center' justify='center'>
-        <License size='25px' />
+        <KeyIcon size='25px' />
       </Box>
       <Box fill='horizontal' gap='2px'>
         <Text size='small' weight={500}>{publicKey.name}</Text>

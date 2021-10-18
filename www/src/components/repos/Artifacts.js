@@ -1,7 +1,8 @@
 import React, { useState, useRef, useCallback } from 'react'
 import styled from 'styled-components'
 import { Box, Text, Drop, Markdown, Table, TableBody, TableRow, TableCell } from 'grommet'
-import { Apple, Windows, Ubuntu, Terminal, Previous, Cube, DocumentText, List, Download } from 'grommet-icons'
+import { Apple, Windows, Ubuntu, Previous, DocumentText } from 'grommet-icons'
+import { ListView as List, Install as Download } from 'forge-core'
 import { normalizeColor } from 'grommet/utils'
 import { download } from '../../utils/file'
 import { MARKDOWN_STYLING } from './Chart'
@@ -12,7 +13,6 @@ import { Icon } from '../accounts/Group'
 import Collapsible from 'react-collapsible'
 import moment from 'moment'
 
-const ICON_SIZE = '20px'
 const SMALL_ICON_SIZE = '13px'
 const SHA_LENGTH  = 20
 
@@ -28,17 +28,6 @@ function ArtifactPlatform({platform}) {
       return <Ubuntu size={SMALL_ICON_SIZE} />
     default:
       return null
-  }
-}
-
-const ICON_COLOR = 'focus'
-
-function ArtifactIcon({type}) {
-  switch (type) {
-    case "CLI":
-      return <Terminal color={ICON_COLOR} size={ICON_SIZE} />
-    default:
-      return <Cube color={ICON_COLOR} size={ICON_SIZE} />
   }
 }
 
@@ -169,7 +158,6 @@ export function Artifact({name, type, platform, filesize, ...artifact}) {
     <>
     <Box focusIndicator={false} onClick={() => setOpen(!open)} hoverIndicator='light-3'
       direction='row' gap='small' align='center' pad='small'>
-      <ArtifactIcon type={type} />
       <Box ref={dropRef} gap='xsmall'>
         <Box direction='row' gap='xsmall' align='center'>
           <Text size='small' weight={500}>{name}</Text>
@@ -210,7 +198,6 @@ function ArtifactRow({artifact}) {
     <Box flex={false} height={ROW_HEIGHT} direction='row' gap='small' align='center' 
          pad={{horizontal: 'small'}} border={{side: 'bottom', color: 'light-5'}}>
       <Box width='20%' direction='row' gap='small' align='center'>
-        <ArtifactIcon type={artifact.type} />
         <Text size='small' weigth={500}>{artifact.name}</Text>
       </Box>
       <Box width='20%' direction='row' gap='small' align='center'>

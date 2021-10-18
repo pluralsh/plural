@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import { SectionContentContainer, SectionItemContainer } from '../Explore'
 import { Add, Package, Plan as PlanIcon } from 'grommet-icons'
-import { Roles, Update, Installed, Configuration, EditField as Edit } from 'forge-core'
+import { Update, Install, Configuration, EditField as Edit, Bundle } from 'forge-core'
 import Collapsible from 'react-collapsible'
 import { RepositoryIcon } from './Repository'
 import { InstallationInner, Plans } from './Installation'
@@ -100,7 +100,7 @@ export function RepoDirectory() {
           <SectionItem
             name='bundles' 
             label='Bundles' 
-            icon={Roles} />
+            icon={Bundle} />
           <Box flex={false}>
             <SectionItem
               name='packages'
@@ -148,7 +148,7 @@ export function RepoDirectory() {
           {repository.artifacts && repository.artifacts.length > 0 && (<SectionItem
             name='artifacts'
             label='Artifacts'
-            icon={Installed} />)}
+            icon={Install} />)}
           {repository.editable && (
             <Box flex={false}>
               <SectionItem

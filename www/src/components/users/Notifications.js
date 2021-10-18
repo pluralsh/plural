@@ -1,13 +1,12 @@
 import React, { useState } from 'react'
 import { Box, Text, Stack } from 'grommet'
-import { Scroller } from 'forge-core'
+import { Scroller, Notification as NotificationI } from 'forge-core'
 import { useQuery } from 'react-apollo'
 import { NOTIFICATIONS_Q } from '../incidents/queries'
 import { Flyout } from '../utils/Flyout'
 import { Notification as Notif } from '../incidents/Notifications'
 import { extendConnection } from '../../utils/graphql'
 import { useHistory } from 'react-router'
-import { FaBolt } from 'react-icons/fa'
 import { RepoIcon } from '../repos/Repositories'
 
 const countDetails = ({edges, pageInfo}) => {
@@ -71,7 +70,7 @@ export function Notifications() {
     <Stack anchor='top-right' margin={{left: 'small'}}>
       <Box flex={false} pad='xsmall' hoverIndicator='sidebarHover' background='backgroundColor'
            round onClick={() => setOpen(!open)}>
-        <FaBolt size='17px' />
+        <NotificationI size='17px' />
       </Box>
       {notifications && notifications.edges.length > 0 && <Badge notifications={data.notifications} />}
     </Stack>

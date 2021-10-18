@@ -4,7 +4,7 @@ import { Box } from 'grommet'
 import Me from './users/Me'
 import SearchRepositories from './repos/SearchRepositories'
 import { CurrentUserContext } from './login/CurrentUser'
-import { SIDEBAR_WIDTH } from './Sidebar'
+import { SIDEBAR_WIDTH, SMALL_WIDTH } from './Sidebar'
 import { Breadcrumbs } from './Breadcrumbs'
 import { Notifications } from './users/Notifications'
 import { LoopingLogo } from './utils/AnimatedLogo'
@@ -39,8 +39,8 @@ export default function Toolbar() {
   return (
     <Box direction='row' fill='horizontal' align='center' border={{side: 'bottom'}}>
       <Box focusIndicator={false} width={SIDEBAR_WIDTH} height='100%' direction='row' align='center'
-           onClick={() => history.push('/')} flex={false} className='plrl-main-icon' pad={{left: 'small'}}>
-        <Box flex={false} width='50px'>
+           onClick={() => history.push('/')} flex={false} className='plrl-main-icon' gap='small'>
+        <Box flex={false} width={SMALL_WIDTH}>
           <ToolbarIcon />
         </Box>
         <img src={PLRL_WORD} height='45px' />

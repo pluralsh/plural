@@ -14,7 +14,11 @@ defmodule Core.Schema.User do
 
   @email_re ~r/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-\.]+\.[a-zA-Z]{2,}$/
 
-  defenum LoginMethod, password: 0, passwordless: 1
+  defenum LoginMethod,
+    password: 0,
+    passwordless: 1,
+    google: 2,
+    github: 3
 
   schema "users" do
     field :name,            :string

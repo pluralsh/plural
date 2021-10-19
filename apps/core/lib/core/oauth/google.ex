@@ -1,7 +1,6 @@
-defmodule Core.Oauth.Google do
+defmodule Core.OAuth.Google do
   use OAuth2.Strategy
-  import System, only: [get_env: 1]
-  require Logger
+  use Core.OAuth.Base
 
   def client() do
     OAuth2.Client.new([
@@ -27,7 +26,7 @@ defmodule Core.Oauth.Google do
   def get_user(client) do
     case OAuth2.Client.get(client, "https://www.googleapis.com/oauth2/v3/userinfo") do
       {:ok, %OAuth2.Response{body: user}} ->
-        {:ok, IO.inspect(user)}
+        {:ok, build_user(user)}
       {:error, %OAuth2.Response{status_code: 401, body: body}} ->
         Logger.error("Unauthorized token, #{inspect(body)}")
         {:error, :unauthorized}

@@ -222,8 +222,9 @@ defmodule GraphQl.Schema.User do
   end
 
   object :login_method_response do
-    field :login_method, non_null(:login_method)
-    field :token,        :string
+    field :login_method,  non_null(:login_method)
+    field :token,         :string
+    field :authorize_url, :string
   end
 
   object :device_login do

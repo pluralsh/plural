@@ -140,6 +140,10 @@ defmodule Core.Services.Users do
   end
 
   defp build_login_method(method, %{token: token}), do: %{login_method: method, token: token}
+  defp build_login_method(:github, _),
+    do: %{login_method: :github, authorize_url: Core.OAuth.Github.authorize_url!()}
+  defp build_login_method(:google, _),
+    do: %{login_method: :google, authorize_url: Core.OAuth.Google.authorize_url!()}
   defp build_login_method(method, _), do: %{login_method: method}
 
   defp handle_login_method(%User{login_method: :passwordless} = user) do
@@ -221,10 +225,14 @@ defmodule Core.Services.Users do
     |> notify(:create)
   end
 
-  def bootstrap_user(%{"email" => email} = attrs) do
+  def bootstrap_user(service, %{email: email} = attrs) do
     case get_user_by_email(email) do
-      nil -> create_user(attrs)
-      %User{} = user -> user
+      nil ->
+        attrs
+        |> Map.merge(%{login_method: service, password: Ecto.UUID.generate()})
+        |> create_user()
+      %User{} = user ->
+        update_user(%{login_method: service}, user)
     end
   end
 

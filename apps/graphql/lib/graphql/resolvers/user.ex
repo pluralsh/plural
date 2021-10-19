@@ -244,6 +244,13 @@ defmodule GraphQl.Resolvers.User do
   def get_eab_key(%{cluster: cluster, provider: prov}, %{context: %{current_user: user}}),
     do: Users.get_eab_key(cluster, prov, user)
 
+  def delete_eab_key(%{cluster: cluster, provider: prov}, %{context: %{current_user: user}})
+      when is_binary(cluster) do
+    case Users.fetch_eab_key(cluster, prov, user) do
+      nil -> {:error, :not_found}
+      %{id: id} -> Users.delete_eab_key(id, user)
+    end
+  end
   def delete_eab_key(%{id: id}, %{context: %{current_user: user}}),
     do: Users.delete_eab_key(id, user)
 

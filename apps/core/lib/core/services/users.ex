@@ -418,6 +418,17 @@ defmodule Core.Services.Users do
     end
   end
 
+  @doc """
+  Get the user's EAB credential for this cluster/provider pair
+  """
+  def fetch_eab_key(cluster, provider, %User{id: user_id}) do
+    Core.Repo.get_by(EabCredential,
+      cluster: cluster,
+      provider: provider,
+      user_id: user_id
+    )
+  end
+
   def cacheit({:ok, _}), do: true
   def cacheit(_), do: false
 

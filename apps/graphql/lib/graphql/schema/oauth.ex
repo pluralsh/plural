@@ -37,7 +37,7 @@ defmodule GraphQl.Schema.OAuth do
       resolve &OAuth.resolve_consent/2
     end
 
-    field :oauth_urls, :oauth_info do
+    field :oauth_urls, list_of(:oauth_info) do
       resolve &OAuth.list_urls/2
     end
   end

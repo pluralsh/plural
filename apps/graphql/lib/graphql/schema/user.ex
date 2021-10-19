@@ -458,7 +458,9 @@ defmodule GraphQl.Schema.User do
 
     field :delete_eab_key, :eab_credential do
       middleware Authenticated
-      arg :id, non_null(:id)
+      arg :id,       :id
+      arg :cluster,  :string
+      arg :provider, :provider
 
       resolve safe_resolver(&User.delete_eab_key/2)
     end

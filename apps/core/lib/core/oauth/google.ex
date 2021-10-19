@@ -16,7 +16,7 @@ defmodule Core.OAuth.Google do
   end
 
   def authorize_url!(redirect \\ nil) do
-    OAuth2.Client.authorize_url!(client(redirect), scope: "profile")
+    OAuth2.Client.authorize_url!(client(redirect), scope: "profile email")
   end
 
   def get_token!(redirect \\ nil, code) do

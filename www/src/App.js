@@ -11,6 +11,7 @@ import { Login, PasswordlessLogin, Signup } from './components/users/MagicLogin'
 import { OAuthConsent } from './components/oidc/OAuthConsent'
 import { EmailConfirmed } from './components/users/EmailConfirmation'
 import "react-toggle/style.css"
+import { OAuthCallback } from './components/users/OAuthCallback'
 
 hljs.registerLanguage('terraform', hljsDefineTerraform)
 
@@ -23,6 +24,7 @@ export default function App() {
         <Route path='/confirm-email/:id' component={EmailConfirmed} />
         <Route path='/invite/:inviteId' component={Invite} />
         <Route path='/passwordless-login/:token' component={PasswordlessLogin} />
+        <Route path='/oauth/callback/:service' component={OAuthCallback} />
         <Route exact path="/login" component={Login} />
         <Route exact path='/signup' component={Signup} />
         <Route exact path='/oauth/consent' component={OAuthConsent} />

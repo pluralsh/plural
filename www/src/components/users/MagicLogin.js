@@ -11,6 +11,7 @@ import { disableState, PasswordStatus } from '../Login'
 import { PLURAL_ICON, PLURAL_MARK } from '../constants'
 import { ACCEPT_LOGIN } from '../oidc/queries'
 import queryString from 'query-string'
+import { saveChallenge, wipeChallenge } from './utils'
 
 export function LabelledInput({label, value, onChange, placeholder, width, type, modifier}) {
   return (
@@ -76,7 +77,7 @@ export function PasswordlessLogin() {
   )
 }
 
-function handleOauthChallenge(client, challenge) {
+export function handleOauthChallenge(client, challenge) {
   client.mutate({
     mutation: ACCEPT_LOGIN,
     variables: {challenge}
@@ -150,6 +151,14 @@ export function Login() {
       }
     }
   })
+
+  useEffect(() => {
+    wipeChallenge()
+    if (loginMethod.authorizeUrl) {
+      if (challenge) saveChallenge(challenge)
+      window.location = loginMethod.authorizeUrl
+    }
+  }, [loginMethod])
 
   useEffect(() => {
     const jwt = fetchToken()

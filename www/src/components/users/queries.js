@@ -239,3 +239,17 @@ export const DELETE_USER = gql`
   }
   ${UserFragment}
 `
+
+export const OAUTH_URLS = gql`
+  query Urls($host: String) {
+    oauthUrls(host: $host) { provider authorizeUrl }
+  }
+`
+
+export const OAUTH_CALLBACK = gql`
+  mutation OAuthCallback($host: String, $code: String!, $provider: OauthProvider!) {
+    oauthCallback(code: $code, host: $host, provider: $provider) {
+      jwt
+    }
+  }
+`

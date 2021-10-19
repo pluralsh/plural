@@ -8,6 +8,14 @@ export function localized(path) {
   return `${proto}//${hostname}:${port}${path}`
 }
 
+export function host() {
+  const {hostname, protocol, port} = window.location
+  const base = `${protocol}//${hostname}`
+  if (port) return `${base}:${port}`
+
+  return base
+}
+
 export function apiHost() {
   switch (window.location.hostname) {
     case "localhost":

@@ -3,8 +3,8 @@ import { Box, Text } from 'grommet'
 import { useFilePicker } from 'react-sage'
 import { Button, InputCollection, ResponsiveInput, Select, User, Installed, 
         AccessTokens, PublicKeys, Credentials, Password, Logout } from 'forge-core'
-import { useMutation } from 'react-apollo'
-import { UPDATE_USER } from './queries'
+import { useMutation, useQuery } from 'react-apollo'
+import { OAUTH_URLS, UPDATE_USER } from './queries'
 import Avatar from './Avatar'
 import { StatusCritical, Checkmark, } from 'grommet-icons'
 import Installations from '../repos/Installations'
@@ -21,6 +21,8 @@ import { EabCredentials } from './EabCredentials'
 import { SectionChoice } from '../utils/SectionChoice'
 import { Provider } from '../repos/misc'
 import { Attribute, Attributes } from '../integrations/Webhook'
+import { OauthEnabler } from './OauthEnabler'
+import { host } from '../../helpers/hostname'
 
 export const EditContext = React.createContext({})
 
@@ -90,6 +92,7 @@ export default function EditUser() {
   const mergedAttributes = password && password.length > 0 ? {...attributes, password} : attributes
   const [mutation, {loading}] = useMutation(UPDATE_USER, {variables: {attributes: mergedAttributes}})
   const {disabled, reason} = passwordValid(password, confirm)
+  const {data} = useQuery(OAUTH_URLS, {variables: {host: host()}})
   const color = disabled ? 'status-error' : 'status-ok'
 
   const {setBreadcrumbs} = useContext(BreadcrumbsContext)
@@ -144,6 +147,7 @@ export default function EditUser() {
                     <Provider provider={me.provider} width={40} />
                   </Attribute>
                 )}
+              
                 <Attribute name='Login Method'>
                   <Select
                     name='login-method'
@@ -154,6 +158,9 @@ export default function EditUser() {
                       value: m
                     }))} />
                 </Attribute>
+                {data && data.oauthUrls.map((url) => (
+                  <OauthEnabler url={url} me={me} />
+                ))}
               </Attributes>
               <SectionPortal>
                 <Button loading={loading} onClick={mutation} flex={false} label='Update' />

@@ -2,12 +2,12 @@ defmodule Core.OAuth.Github do
   use OAuth2.Strategy
   use Core.OAuth.Base
 
-  def client() do
+  def client(redirect \\ nil) do
     OAuth2.Client.new([
       strategy: __MODULE__,
       client_id: get_env("GITHUB_CLIENT_ID"),
       client_secret: get_env("GITHUB_CLIENT_SECRET"),
-      redirect_uri: "#{host()}/oauth/callback/github",
+      redirect_uri: "#{redirect || host()}/oauth/callback/github",
       site: "https://api.github.com",
       authorize_url: "https://github.com/login/oauth/authorize",
       token_url: "https://github.com/login/oauth/access_token"
@@ -15,12 +15,12 @@ defmodule Core.OAuth.Github do
     |> OAuth2.Client.put_serializer("application/json", Jason)
   end
 
-  def authorize_url!() do
-    OAuth2.Client.authorize_url!(client(), scope: "user")
+  def authorize_url!(redirect) do
+    OAuth2.Client.authorize_url!(client(redirect), scope: "user")
   end
 
-  def get_token!(code) do
-    OAuth2.Client.get_token!(client(), code: code)
+  def get_token!(redirect, code) do
+    OAuth2.Client.get_token!(client(redirect), code: code)
   end
 
   def get_user(client) do

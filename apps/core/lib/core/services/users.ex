@@ -130,21 +130,21 @@ defmodule Core.Services.Users do
   Determines the login method for a user and triggers any necessary background processing
   """
   @spec login_method(binary) :: {:ok, %{login_method: atom}} | {:error, term}
-  def login_method(email) do
+  def login_method(email, host \\ nil) do
     with %User{login_method: method} = user <- get_user_by_email(email),
          {:ok, login} <- handle_login_method(user) do
-      {:ok, build_login_method(method, login)}
+      {:ok, build_login_method(method, login, host)}
     else
       _ -> {:error, :not_found}
     end
   end
 
-  defp build_login_method(method, %{token: token}), do: %{login_method: method, token: token}
-  defp build_login_method(:github, _),
-    do: %{login_method: :github, authorize_url: Core.OAuth.Github.authorize_url!()}
-  defp build_login_method(:google, _),
-    do: %{login_method: :google, authorize_url: Core.OAuth.Google.authorize_url!()}
-  defp build_login_method(method, _), do: %{login_method: method}
+  defp build_login_method(method, %{token: token}, _), do: %{login_method: method, token: token}
+  defp build_login_method(:github, _, host),
+    do: %{login_method: :github, authorize_url: Core.OAuth.Github.authorize_url!(host)}
+  defp build_login_method(:google, _, host),
+    do: %{login_method: :google, authorize_url: Core.OAuth.Google.authorize_url!(host)}
+  defp build_login_method(method, _, _), do: %{login_method: method}
 
   defp handle_login_method(%User{login_method: :passwordless} = user) do
     start_transaction()

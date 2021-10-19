@@ -38,6 +38,8 @@ defmodule GraphQl.Schema.OAuth do
     end
 
     field :oauth_urls, list_of(:oauth_info) do
+      arg :host, :string
+
       resolve &OAuth.list_urls/2
     end
   end
@@ -61,6 +63,7 @@ defmodule GraphQl.Schema.OAuth do
     field :oauth_callback, :user do
       middleware GraphQl.Middleware.AllowJwt
       arg :provider, non_null(:oauth_provider)
+      arg :host, :string
       arg :code, non_null(:string)
 
       resolve &OAuth.resolve_callback/2

@@ -247,6 +247,7 @@ defmodule GraphQl.Schema.User do
 
     field :login_method, :login_method_response do
       arg :email, non_null(:string)
+      arg :host,  :string
 
       resolve &User.login_method/2
     end

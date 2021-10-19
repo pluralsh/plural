@@ -2,12 +2,12 @@ defmodule Core.OAuth.Google do
   use OAuth2.Strategy
   use Core.OAuth.Base
 
-  def client() do
+  def client(redirect \\ nil) do
     OAuth2.Client.new([
       strategy: __MODULE__,
       client_id: get_env("GOOGLE_CLIENT_ID"),
       client_secret: get_env("GOOGLE_CLIENT_SECRET"),
-      redirect_uri: "#{host()}/oauth/callback/google",
+      redirect_uri: "#{redirect || host()}/oauth/callback/google",
       site: "https://accounts.google.com",
       authorize_url: "/o/oauth2/v2/auth",
       token_url: "https://www.googleapis.com/oauth2/v4/token"
@@ -15,12 +15,12 @@ defmodule Core.OAuth.Google do
     |> OAuth2.Client.put_serializer("application/json", Jason)
   end
 
-  def authorize_url!() do
-    OAuth2.Client.authorize_url!(client(), scope: "profile")
+  def authorize_url!(redirect \\ nil) do
+    OAuth2.Client.authorize_url!(client(redirect), scope: "profile")
   end
 
-  def get_token!(code) do
-    OAuth2.Client.get_token!(client(), code: code)
+  def get_token!(redirect \\ nil, code) do
+    OAuth2.Client.get_token!(client(redirect), code: code)
   end
 
   def get_user(client) do

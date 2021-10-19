@@ -1,8 +1,8 @@
 import React from 'react'
 import { Box, Text } from 'grommet'
+import { DockerTag } from 'forge-core'
 import { useQuery } from 'react-apollo' 
 import { DOCKER_IMG_Q } from './queries'
-import { Bundle } from 'grommet-icons'
 import { GradeNub } from './Docker'
 import { useHistory } from 'react-router'
 import moment from 'moment'
@@ -16,7 +16,7 @@ export function DockerImage({image}) {
     <Box direction='row' align='center' hoverIndicator='light-2' border={{side: 'bottom', color: 'light-3'}}
          onClick={() => history.push(`/dkr/img/${image.id}`)} pad='xsmall' gap='xsmall'>
       <Box width='15%' direction='row' align='center' gap='xsmall'>
-        <Bundle size='12px' /> 
+        <DockerTag size='12px' /> 
         <Text size='small'>{image.tag}</Text>
       </Box>
       <Box width='15%'>{moment(image.insertedAt).fromNow()}</Box>

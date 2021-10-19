@@ -2,7 +2,8 @@ import React, { useRef, useState } from 'react'
 import { Box, Text } from 'grommet'
 import { Tooltip } from '../utils/Tooltip'
 import { IncidentStatus, IncidentView } from './types'
-import { Chat, Checkmark, Resources } from 'grommet-icons'
+import { Folder, Check as Checkmark } from 'forge-core'
+import { Chat } from 'grommet-icons'
 
 export function ViewOption({icon, selected, view, setView, text, side, size, width}) {
   const ref = useRef()
@@ -35,7 +36,7 @@ export function ViewSwitcher({incident, view, setView}) {
         setView={setView}
         text='Messages' />
       <ViewOption 
-        icon={Resources} 
+        icon={Folder} 
         selected={view} 
         view={IncidentView.FILES}
         setView={setView}

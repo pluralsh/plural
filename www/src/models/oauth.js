@@ -17,3 +17,10 @@ export const OIDCProvider = gql`
   ${UserFragment}
   ${GroupFragment}
 `;
+
+export const OAuthInfo = gql`
+  fragment OAuthInfo on OauthInfo {
+    provider
+    authorizeUrl
+  }
+`;

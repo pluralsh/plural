@@ -1,10 +1,10 @@
 import React from 'react'
 import { useQuery } from 'react-apollo'
 import { Box, Text } from 'grommet'
+import { Check as Checkmark } from 'forge-core'
 import { ZOOM_ICON, ZOOM_INSTALL_URL } from './constants'
 import { OAUTH_Q } from './queries'
 import { OAuthService } from './types'
-import { Checkmark } from 'grommet-icons'
 
 function redirectUrl(format, service) {
   const location = `${window.location.origin}/oauth/accept/${service.toLowerCase()}`

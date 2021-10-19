@@ -1,6 +1,8 @@
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { Box, Drop, Text, TextInput, ThemeContext } from 'grommet'
-import { Scroller, Button } from 'forge-core'
+import { Scroller, Button, Check as Checkmark, Close, Notification, Explore as Search, User, Tag as TagIcon } from 'forge-core'
+import { SortAsc as Ascend, SortDesc as Descend, Filters as FiltersI } from 'forge-core'
+import { Next } from 'grommet-icons'
 import { useQuery } from 'react-apollo'
 import { INCIDENTS_Q } from './queries'
 import { extendConnection } from '../../utils/graphql'
@@ -8,7 +10,6 @@ import { RepoIcon } from '../repos/Repositories'
 import moment from 'moment'
 import { Severity } from './Severity'
 import { useHistory, useParams } from 'react-router'
-import { Checkmark, Close, Notification, Search, User, Tag as TagIcon, Descend, Ascend, Next, BladesVertical } from 'grommet-icons'
 import { Status } from './IncidentStatus'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 import { CreateIncident } from './CreateIncident'
@@ -142,7 +143,7 @@ export function FilterSelect() {
     <Box flex={false} ref={ref} direction='row' gap='xsmall' align='center' background='light-3'  
          hoverIndicator='light-5' round='xsmall' onClick={() => setOpen(true)} focusIndicator={false} 
          pad={{horizontal: 'small', vertical: 'xsmall'}}>
-      <BladesVertical size='small' />
+      <FiltersI size='small' />
       <Text size='small'>Filters</Text>
     </Box>
     {open && (

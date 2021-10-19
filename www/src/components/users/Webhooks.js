@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Box, Text, Layer, Anchor, Table, TableBody, TableRow, TableCell } from 'grommet'
-import { Refresh } from 'grommet-icons'
+import { Reload as Refresh } from 'forge-core'
 import { useQuery, useMutation } from 'react-apollo'
 import { WEBHOOKS_Q, PING_WEBHOOK } from './queries'
 import { Scroller, ModalHeader, Button, Copyable, InputField, HoveredBackground, BORDER_COLOR } from 'forge-core'

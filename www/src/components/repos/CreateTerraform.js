@@ -1,11 +1,11 @@
-import React, {useState} from 'react'
-import {Box, Text} from 'grommet'
-import {Archive} from 'grommet-icons'
-import {useMutation} from 'react-apollo'
+import React, { useState } from 'react'
+import { Box, Text } from 'grommet'
+import { Archive } from 'grommet-icons'
+import { useMutation } from 'react-apollo'
 import { InputField, Button, SecondaryButton } from 'forge-core'
-import {FilePicker} from 'react-file-picker'
-import {CREATE_TF, REPO_Q} from './queries'
-import {DEFAULT_TF_ICON} from './constants'
+import { FilePicker } from 'react-file-picker'
+import { CREATE_TF, REPO_Q } from './queries'
+import { DEFAULT_TF_ICON } from './constants'
 
 const LABEL_WIDTH = '90px'
 

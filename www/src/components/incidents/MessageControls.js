@@ -1,7 +1,6 @@
 import React, { useCallback, useContext, useRef, useState } from 'react'
 import { Box, Drop, Text } from 'grommet'
-import { Edit, Emoji } from 'grommet-icons'
-import { TooltipContent, Trash } from 'forge-core'
+import { TooltipContent, Trash, Edit, Emoji } from 'forge-core'
 import { CurrentUserContext } from '../login/CurrentUser'
 import { EmojiPicker } from './Emoji'
 import { useMutation } from 'react-apollo'

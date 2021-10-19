@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
-import { Button, Scroller } from 'forge-core'
+import { Button, Scroller, Edit, Close, Folder } from 'forge-core'
 import { CurrentUserContext } from '../login/CurrentUser'
 import { useMutation, useQuery, useSubscription } from 'react-apollo'
 import { useParams } from 'react-router'
@@ -11,7 +11,7 @@ import { Status } from './IncidentStatus'
 import { MessageInput, MessageScrollContext } from './MessageInput'
 import { dateFormat } from '../../utils/date'
 import moment from 'moment'
-import { Chat, Close, Edit, Resources } from 'grommet-icons'
+import { Chat } from 'grommet-icons'
 import SmoothScroller from '../utils/SmoothScroller'
 import { Message } from './Message'
 import { extendConnection } from '../../utils/graphql'
@@ -148,7 +148,7 @@ export function Messages({incident, loading, fetchMore, subscribeToMore}) {
 function NoFiles() {
   return (
     <Box fill pad='medium' gap='small' align='center' justify='center' round='xsmall'>
-      <Resources size='40px' />
+      <Folder size='40px' />
       <Text size='small'>No files uploaded yet</Text>
     </Box>
   )

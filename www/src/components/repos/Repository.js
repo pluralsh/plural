@@ -1,10 +1,9 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { Box, Text, ThemeContext } from 'grommet'
-import { Lock } from 'grommet-icons'
 import { useQuery, useMutation } from 'react-apollo'
 import { useParams, useHistory } from 'react-router-dom'
 import { Scroller, Button, SecondaryButton, Modal, ModalHeader, Tabs, TabHeader,
-        TabHeaderItem, TabContent, ScrollableContainer } from 'forge-core'
+        TabHeaderItem, TabContent, ScrollableContainer, Password as Lock } from 'forge-core'
 import yaml from 'js-yaml'
 import { REPO_Q, UPDATE_REPO } from './queries'
 import { DEFAULT_CHART_ICON, DEFAULT_TF_ICON, DEFAULT_DKR_ICON, Categories } from './constants'
@@ -21,7 +20,6 @@ import Integrations from './Integrations'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 import { extendConnection } from '../../utils/graphql'
 import { PluralConfigurationContext } from '../login/CurrentUser'
-import { RepoView, ViewToggle } from './ViewToggle'
 import { Rollouts } from '../upgrades/Rollouts'
 import "ace-builds/src-noconflict/mode-yaml"
 import "ace-builds/src-noconflict/theme-terminal"
@@ -351,76 +349,5 @@ function DetailView({repository, terraform, dockerRepositories, charts, fetchMor
         <RepoUpdate repository={repository} />
       </TabContent>
     </Tabs>
-  )
-}
-
-export default function Repository() {
-  const {repositoryId} = useParams()
-  const {loading, data, fetchMore} = useQuery(REPO_Q, {
-    variables: {repositoryId},
-    fetchPolicy: "cache-and-network"
-  })
-  const {setBreadcrumbs} = useContext(BreadcrumbsContext)
-  const [view, setView] = useState(RepoView.PKG)
-
-  useEffect(() => {
-    if (!data) return
-    if (data.recipes && data.recipes.edges.length > 0) setView(RepoView.RECIPE)
-    const {repository} = data
-
-    setBreadcrumbs([
-      {url: `/publishers/${repository.publisher.id}`, text: repository.publisher.name},
-      {url: `/repositories/${repository.id}`, text: repository.name}
-    ])
-  }, [setBreadcrumbs, data, setView])
-
-  if (loading) return null
-  const {charts, repository, terraform, dockerRepositories, recipes, integrations} = data
-
-  return (
-    <ScrollableContainer>
-      <Box pad='small' direction='row' fill='vertical'>
-        <Box pad='small' width={`${WIDTH}%`} fill='vertical'>
-          <Box flex={false} fill='horizontal' direction='row' align='center' margin={{bottom: 'medium'}}>
-            <RepositoryIcon size={IMG_SIZE} repository={repository} />
-            {recipes && recipes.edges.length > 0 && (
-              <Box fill='horizontal' direction='row' justify='end'>
-                <ViewToggle view={view} setView={setView} />
-              </Box>
-            )}
-          </Box>
-          {view === RepoView.PKG && (
-            <Box animation='fadeIn' fill>
-              <DetailView
-                repository={repository}
-                terraform={terraform}
-                charts={charts}
-                dockerRepositories={dockerRepositories}
-                fetchMore={fetchMore} />
-            </Box>
-          )}
-          {view === RepoView.RECIPE && (
-            <Box pad='small' animation='fadeIn' fill>
-              <Recipes recipes={recipes} fetchMore={fetchMore} repository={repository} />
-            </Box>
-          )}
-          {view === RepoView.DEPLOY && (
-            <Box pad='small' animation='fadeIn' fill>
-              <Rollouts repository={repository} />
-            </Box>
-          )}
-        </Box>
-        <Box pad='small' gap='medium' width={`${100 - WIDTH}%`} fill='vertical' style={{overflow: 'auto'}}>
-          <Installation
-            repository={repository}
-            integrations={integrations}
-            fetchMore={fetchMore} />
-          {integrations && integrations.edges.length > 0 && (
-            <Integrations integrations={integrations} fetchMore={fetchMore} repository={repository} />
-          )}
-          <Artifacts artifacts={repository.artifacts} />
-        </Box>
-      </Box>
-    </ScrollableContainer>
   )
 }

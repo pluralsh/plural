@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react'
 import { Anchor, Box, Layer, Text } from 'grommet'
-import { Button, SecondaryButton, ModalHeader } from 'forge-core' 
-import { AddCircle, Checkmark, Notification, Zoom } from 'grommet-icons'
+import { Button, SecondaryButton, ModalHeader, Notification, Check as Checkmark, Owner } from 'forge-core' 
+import { Zoom } from 'grommet-icons'
 import { useMutation } from 'react-apollo'
 import { ACCEPT_INCIDENT, COMPLETE_INCIDENT, FOLLOW, INCIDENT_Q, UNFOLLOW, ZOOM_MEETING } from './queries'
 import { plainDeserialize, plainSerialize } from '../../utils/slate'
@@ -23,7 +23,7 @@ function Control({icon, onClick}) {
 function AcceptIncident({incident: {id}}) {
   const [mutation] = useMutation(ACCEPT_INCIDENT, {variables: {id}})
   
-  return <Control icon={<AddCircle size='small' />} onClick={mutation} />
+  return <Control icon={<Owner size='small' />} onClick={mutation} />
 }
 
 function CompleteIncident({incident: {id}}) {

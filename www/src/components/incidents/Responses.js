@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useQuery } from 'react-apollo'
 import { Box, Text, TextInput } from 'grommet'
-import { Aid, Search } from 'grommet-icons'
+import { Explore as Search, Incidents as IncidentsI } from 'forge-core'
 import { Scroller } from 'forge-core'
 import { INCIDENTS_Q, REPOS_Q } from './queries'
 import { extendConnection } from '../../utils/graphql'
@@ -41,7 +41,7 @@ function EmptyState() {
     <Box fill align='center' justify='center'>
       <Box flex={false} pad='medium' round='small' gap='xsmall'>
         <Box fill='horizontal' align='center'>
-          <Aid size='medium' />
+          <IncidentsI size='medium' />
         </Box>
         <Text size='small' weight={500}>No incidents yet...</Text>
       </Box>

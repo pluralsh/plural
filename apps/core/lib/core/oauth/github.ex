@@ -53,7 +53,7 @@ defmodule Core.OAuth.Github do
     end
   end
 
-  defp add_name(%{name: name} = user, %{"login" => login}), do: %{user | name: login}
+  defp add_name(%{name: _} = user, %{"login" => login}), do: %{user | name: login}
   defp add_name(user, _), do: user
 
   def authorize_url(client, params) do

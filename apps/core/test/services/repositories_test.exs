@@ -97,6 +97,7 @@ defmodule Core.Services.RepositoriesTest do
       assert installation.auto_upgrade
       assert installation.user_id == user.id
       assert installation.repository_id == repo.id
+      assert installation.license_key
       assert is_map(installation.context)
 
       assert_receive {:event, %PubSub.InstallationCreated{item: ^installation, actor: ^user}}

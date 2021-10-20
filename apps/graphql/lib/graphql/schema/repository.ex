@@ -104,6 +104,7 @@ defmodule GraphQl.Schema.Repository do
     field :user,          :user, resolve: dataloader(User)
     field :subscription,  :repository_subscription, resolve: dataloader(Payments)
     field :oidc_provider, :oidc_provider, resolve: dataloader(Repository)
+    field :license_key,   :string
     field :track_tag,     non_null(:string)
 
     field :acme_key_id, :string, resolve: fn
@@ -113,6 +114,7 @@ defmodule GraphQl.Schema.Repository do
     field :acme_secret, :string, resolve: fn
       _, _, _ -> {:ok, Core.conf(:acme_secret)}
     end
+
 
     field :license, :string, resolve: fn
       installation, _, _ -> Core.Services.Repositories.generate_license(installation)

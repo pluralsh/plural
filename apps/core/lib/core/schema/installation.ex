@@ -18,9 +18,10 @@ defmodule Core.Schema.Installation do
   end
 
   schema "installations" do
-    field :context, :map
+    field :context,      :map
     field :auto_upgrade, :boolean, default: false
-    field :track_tag, :string, default: "latest"
+    field :track_tag,    :string, default: "latest"
+    field :license_key,  :string
 
     embeds_one :policy,     Policy, on_replace: :update
     belongs_to :user,       User
@@ -46,5 +47,12 @@ defmodule Core.Schema.Installation do
     |> unique_constraint(:repository_id, name: index_name(:installations, [:user_id, :repository_id]))
     |> foreign_key_constraint(:user_id)
     |> foreign_key_constraint(:repository_id)
+    |> put_new_change(:license_key, &gen_license_key/0)
+  end
+
+  defp gen_license_key() do
+    :crypto.strong_rand_bytes(32)
+    |> Base.url_encode64()
+    |> String.replace("/", "")
   end
 end

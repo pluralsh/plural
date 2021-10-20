@@ -35,6 +35,12 @@ defmodule Core.Services.Repositories do
     Core.Repo.get_by(Installation, repository_id: repo_id, user_id: user_id)
   end
 
+  def get_installation_by_key!(key),
+    do: Core.Repo.get_by!(Installation, license_key: key)
+
+  def get_installation_by_key(key),
+    do: Core.Repo.get_by(Installation, license_key: key)
+
   @spec get_repository!(binary) :: Repository.t
   def get_repository!(id), do: Core.Repo.get(Repository, id)
 
@@ -517,6 +523,14 @@ defmodule Core.Services.Repositories do
     else
       _ -> {:ok, nil}
     end
+  end
+
+  def license(%Installation{} = installation) do
+    %{repository: repo} = installation =
+      Core.Repo.preload(installation, [:repository, [subscription: :plan]])
+
+    with {:ok, policy} <- mk_policy(installation, Core.Services.Payments.has_plans?(repo.id)),
+      do: {:ok, License.new(policy: policy, secrets: repo.secrets)}
   end
 
   defp mk_policy(%Installation{subscription: %Subscription{line_items: %{items: items}, plan: plan} = sub}, _) do

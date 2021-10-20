@@ -92,6 +92,7 @@ defmodule Core.Factory do
     %Schema.Installation{
       repository: build(:repository),
       user: build(:user),
+      license_key: sequence(:installation, & "key-#{&1}"),
     }
   end
 

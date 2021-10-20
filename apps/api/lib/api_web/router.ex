@@ -44,6 +44,8 @@ defmodule ApiWeb.Router do
 
     post "/email", EmailController, :email
     post "/usage", PaymentsController, :usage_record
+
+    get "/license/:key", LicenseController, :get
   end
 
   scope "/mart", ApiWeb do

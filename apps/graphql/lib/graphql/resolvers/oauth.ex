@@ -12,8 +12,10 @@ defmodule GraphQl.Resolvers.OAuth do
     {:ok, OAuthHandler.urls(args[:host])}
   end
 
-  def resolve_callback(%{code: code, provider: provider} = args, _),
-    do: OAuthHandler.callback(provider, args[:host], code)
+  def resolve_callback(%{code: code, provider: provider} = args, _) do
+    OAuthHandler.callback(provider, args[:host], code)
+    |> GraphQl.Resolvers.User.with_jwt()
+  end
 
   def resolve_configuration(_, _), do: Core.Clients.Hydra.get_configuration()
 

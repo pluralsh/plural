@@ -12,6 +12,7 @@ import { PLURAL_ICON, PLURAL_MARK } from '../constants'
 import { ACCEPT_LOGIN } from '../oidc/queries'
 import queryString from 'query-string'
 import { saveChallenge, wipeChallenge } from './utils'
+import { host } from '../../helpers/hostname'
 
 export function LabelledInput({label, value, onChange, placeholder, width, type, modifier}) {
   return (
@@ -134,7 +135,9 @@ export function Login() {
   const {login_challenge: challenge, deviceToken} = queryString.parse(location.search)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [getLoginMethod, {data, loading: qLoading, error: qError}] = useLazyQuery(LOGIN_METHOD, {variables: {email}})
+  const [getLoginMethod, {data, loading: qLoading, error: qError}] = useLazyQuery(LOGIN_METHOD, {
+    variables: {email, host: host()}
+  })
 
   const loginMethod = data && data.loginMethod && data.loginMethod.loginMethod
   const open = loginMethod === LoginMethod.PASSWORD
@@ -154,11 +157,11 @@ export function Login() {
 
   useEffect(() => {
     wipeChallenge()
-    if (loginMethod.authorizeUrl) {
+    if (data && data.loginMethod.authorizeUrl) {
       if (challenge) saveChallenge(challenge)
-      window.location = loginMethod.authorizeUrl
+      window.location = data.loginMethod.authorizeUrl
     }
-  }, [loginMethod])
+  }, [data])
 
   useEffect(() => {
     const jwt = fetchToken()

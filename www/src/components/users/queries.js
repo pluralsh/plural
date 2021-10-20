@@ -189,8 +189,8 @@ export const DELETE_KEY = gql`
 `
 
 export const LOGIN_METHOD = gql`
-  query LoginMethod($email: String!) {
-    loginMethod(email: $email) { loginMethod token }
+  query LoginMethod($email: String!, $host: String) {
+    loginMethod(email: $email, host: $host) { loginMethod token authorizeUrl }
   }
 `
 

@@ -16,7 +16,7 @@ defmodule Core.OAuth.Github do
   end
 
   def authorize_url!(redirect) do
-    OAuth2.Client.authorize_url!(client(redirect), scope: "user")
+    OAuth2.Client.authorize_url!(client(redirect), scope: "user user:email user:name")
   end
 
   def get_token!(redirect, code) do

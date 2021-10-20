@@ -3,7 +3,7 @@ import { Github, Google } from 'grommet-icons'
 import { Box, Text } from 'grommet'
 import { Check } from 'forge-core'
 
-const METHOD_ICONS = {
+export const METHOD_ICONS = {
   GOOGLE: Google,
   GITHUB: Github
 }

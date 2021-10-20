@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Box, Form, Keyboard, TextInput, Collapsible, Text, Anchor } from 'grommet'
-import { Button } from 'forge-core'
-import { LOGIN_METHOD, LOGIN_MUTATION, PASSWORDLESS_LOGIN, POLL_LOGIN_TOKEN, SIGNUP_MUTATION } from './queries'
-import { useApolloClient, useLazyQuery, useMutation } from 'react-apollo'
+import { Button, Divider } from 'forge-core'
+import { LOGIN_METHOD, LOGIN_MUTATION, OAUTH_URLS, PASSWORDLESS_LOGIN, POLL_LOGIN_TOKEN, SIGNUP_MUTATION } from './queries'
+import { useApolloClient, useLazyQuery, useMutation, useQuery } from 'react-apollo'
 import { LoginMethod } from './types'
 import { Redirect, useHistory, useLocation, useParams } from 'react-router'
 import { fetchToken, setToken } from '../../helpers/authentication'
@@ -13,6 +13,7 @@ import { ACCEPT_LOGIN } from '../oidc/queries'
 import queryString from 'query-string'
 import { saveChallenge, wipeChallenge } from './utils'
 import { host } from '../../helpers/hostname'
+import { METHOD_ICONS } from './OauthEnabler'
 
 export function LabelledInput({label, value, onChange, placeholder, width, type, modifier}) {
   return (
@@ -227,6 +228,21 @@ export function Login() {
   )
 }
 
+const WIDTH = '350px'
+
+function OAuthOption({url: {authorizeUrl, provider}}) {
+  const icon = METHOD_ICONS[provider]
+
+  return (
+    <Box border round='xsmall' align='center' justify='center' 
+         direction='row' gap='small' fill='horizontal' pad={{vertical: '7px'}}
+         hoverIndicator='tone-light' onClick={() => { window.location = authorizeUrl }}>
+      {React.createElement(icon, {size: 'medium', color: 'plain'})}
+      <Text size='small'>Sign up with {provider.toLowerCase()}</Text>
+    </Box>
+  )
+}
+
 export function Signup() {
   let history = useHistory()
   const [email, setEmail] = useState('')
@@ -240,6 +256,7 @@ export function Signup() {
       history.push(`/`)
     }
   })
+  const {data} = useQuery(OAUTH_URLS, {variables: {host: host()}})
 
   useEffect(() => {
     if (fetchToken()) {
@@ -256,33 +273,41 @@ export function Signup() {
           <img src={PLURAL_MARK} width='45px' />
           <Text size='large'>Sign up to get started with plural</Text>
         </Box>
+        <Box gap='xsmall' justify='center' gap='xsmall'>
+          {data && data.oauthUrls.map((url) => <OAuthOption key={url.provider} url={url} />)}
+        </Box> 
+        <Divider text='Or' margin='0px' fontWeight={400} />
         <Keyboard onEnter={mutation}>
           <Form onSubmit={mutation}>
-            <Box gap='xsmall'>
+            <Box gap='xsmall' width={WIDTH}>
               {error && <GqlError error={error} header='Login Failed' />}
               <LabelledInput 
-                label='Name' 
+                label='Name'
                 value={name} 
+                width={WIDTH}
                 onChange={setName} 
                 placeholder='Your name' />
               <LabelledInput 
                 label='Email' 
                 value={email} 
+                width={WIDTH}
                 onChange={setEmail} 
                 placeholder='you@example.com' />
               <LabelledInput 
                 label='Password' 
                 value={password}
+                width={WIDTH}
                 type='password'
                 onChange={setPassword}
                 placeholder='a strong password' />
               <LabelledInput 
                 label='Confirm Password' 
                 value={confirm}
+                width={WIDTH}
                 type='password'
                 onChange={setConfirm}
                 placeholder='confirm your password' />
-              <Box direction='row' align='center' justify='end' gap='small'>
+              <Box direction='row' align='center' justify='end' gap='small' margin={{top: 'small'}}>
                 <PasswordStatus disabled={disabled} reason={reason} />
                 <Button 
                   label="Sign Up" 

@@ -1,0 +1,13 @@
+dependencies:
+- name: gcp-bootstrap
+  repo: bootstrap
+  type: terraform
+  version: '>= 0.1.1'
+
+providers:
+- gcp
+description: forge gcp credentials
+version: 0.1.0
+
+wirings:
+  terraform: {}

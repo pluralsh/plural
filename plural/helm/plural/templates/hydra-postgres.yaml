@@ -1,0 +1,65 @@
+apiVersion: acid.zalan.do/v1
+kind: postgresql
+metadata:
+  name: plural-hydra
+  labels:
+    app: postgres-hydra
+  {{ include "plural.labels" . | nindent 4 }}
+spec:
+  teamId: plural
+  volume:
+    size: 25Gi
+  numberOfInstances: 2
+  {{ if .Values.postgres.hydra.resources }}
+  resources:
+  {{ mergeOverwrite .Values.postgres.default.resources .Values.postgres.hydra.resources | toYaml | nindent 4 }}
+  {{ end }}
+  users:
+    hydra:  # database owner
+    - superuser
+    - createdb
+  databases:
+    hydra: hydra  # dbname: owner
+  postgresql:
+    version: "13"
+  sidecars:
+  - image: gcr.io/pluralsh/postgres-exporter:0.8.0
+    name: exporter
+    ports:
+    - containerPort: 9187
+      name: http-metrics
+      protocol: TCP
+    env:
+    - name: "DATA_SOURCE_URI"
+      value: "127.0.0.1:5432/hydra?sslmode=disable"
+    - name: "DATA_SOURCE_USER"
+      valueFrom:
+        secretKeyRef:
+          name: postgres.plural-hydra.credentials.postgresql.acid.zalan.do
+          key: username
+    - name: "DATA_SOURCE_PASS"
+      valueFrom:
+        secretKeyRef:
+          name: postgres.plural-hydra.credentials.postgresql.acid.zalan.do
+          key: password
+    livenessProbe:
+      failureThreshold: 6
+      httpGet:
+        path: /
+        port: http-metrics
+        scheme: HTTP
+      initialDelaySeconds: 5
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 5
+    readinessProbe:
+      livenessProbe:
+      failureThreshold: 6
+      httpGet:
+        path: /
+        port: http-metrics
+        scheme: HTTP
+      initialDelaySeconds: 5
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 5

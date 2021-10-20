@@ -1,0 +1,105 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: plural-registry
+  labels:
+{{ include "plural.labels" . | indent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: plural-registry
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  replicas: {{ .Values.registry.replicaCount }}
+{{- if .Values.registry.updateStrategy }}
+  strategy:
+{{ toYaml .Values.registry.updateStrategy | indent 4 }}
+{{- end }}
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: plural-registry
+        app.kubernetes.io/instance: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/registry-config.yaml") . | sha256sum }}
+{{- if $.Values.registry.podAnnotations }}
+{{ toYaml $.Values.registry.podAnnotations | indent 8 }}
+{{- end }}
+    spec:
+      serviceAccountName: plural
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+      {{- end }}
+{{- if .Values.registry.priorityClassName }}
+      priorityClassName: "{{ .Values.registry.priorityClassName }}"
+{{- end }}
+{{- if .Values.registry.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.registry.securityContext.fsGroup }}
+        runAsUser: {{ .Values.registry.securityContext.runAsUser }}
+{{- end }}
+      containers:
+        - name: registry
+          image: "{{ .Values.registry.image.repository }}:{{ .Values.registry.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+          - /bin/registry
+          - serve
+          - /etc/docker/registry/config.yml
+          {{ if .Values.registry.resources }}
+          resources:
+          {{ toYaml .Values.registry.resources | nindent 12 }}
+          {{ end }}
+          ports:
+          - containerPort: 5000
+            name: http
+            protocol: TCP
+          livenessProbe:
+            httpGet:
+{{- if .Values.tlsSecretName }}
+              scheme: HTTPS
+{{- end }}
+              path: /
+              port: 5000
+          readinessProbe:
+            httpGet:
+{{- if .Values.tlsSecretName }}
+              scheme: HTTPS
+{{- end }}
+              path: /
+              port: 5000
+          resources:
+{{ toYaml .Values.registry.resources | indent 12 }}
+          env:
+          - name: AWS_SDK_LOAD_CONFIG
+            value: "1"
+          - name: REGISTRY_HTTP_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: plural-registry-secret
+                key: haSharedSecret
+{{- if .Values.registry.persistence.deleteEnabled }}
+          - name: REGISTRY_STORAGE_DELETE_ENABLED
+            value: "true"
+{{- end }}
+          volumeMounts:
+          - name: plural-registry-config
+            mountPath: "/etc/docker/registry"
+          - name: plural-registry-aws-config
+            mountPath: "/root/.aws"
+{{- if .Values.registry.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.registry.nodeSelector | indent 8 }}
+{{- end }}
+{{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.registry.tolerations | indent 8 }}
+{{- end }}
+      volumes:
+      - name: plural-registry-config
+        configMap:
+          name: plural-registry-config
+      - name: plural-registry-aws-config
+        configMap:
+          name: plural-registry-aws-config

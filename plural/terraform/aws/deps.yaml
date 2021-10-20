@@ -1,0 +1,13 @@
+dependencies:
+- name: aws-bootstrap
+  repo: bootstrap
+  type: terraform
+  version: '>= 0.1.1'
+
+providers:
+- aws
+description: forge aws setup
+version: 0.1.1
+
+wirings:
+  terraform: {}

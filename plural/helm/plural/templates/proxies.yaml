@@ -1,0 +1,87 @@
+apiVersion: platform.plural.sh/v1alpha1
+kind: Proxy
+metadata:
+  name: dbsh
+  labels:
+{{ include "plural.labels" . | indent 4 }}
+spec:
+  type: sh
+  target: statefulset/plural-plural
+  shConfig:
+    command: "/bin/bash"
+    args: []
+---
+apiVersion: platform.plural.sh/v1alpha1
+kind: Proxy
+metadata:
+  name: db
+  labels:
+{{ include "plural.labels" . | indent 4 }}
+spec:
+  type: db
+  target: service/plural-master
+  credentials:
+    secret: plural.plural-plural.credentials.postgresql.acid.zalan.do
+    key: password
+    user: plural
+  dbConfig:
+    name: plural
+    engine: postgres
+    port: 5432
+---
+apiVersion: platform.plural.sh/v1alpha1
+kind: Proxy
+metadata:
+  name: hydradb
+  labels:
+{{ include "plural.labels" . | indent 4 }}
+spec:
+  type: db
+  target: service/plural-hydra
+  credentials:
+    secret: hydra.plural-hydra.credentials.postgresql.acid.zalan.do
+    key: password
+    user: hydra
+  dbConfig:
+    name: hydra
+    engine: postgres
+    port: 5432
+---
+apiVersion: platform.plural.sh/v1alpha1
+kind: Proxy
+metadata:
+  name: sh
+  labels:
+{{ include "plural.labels" . | indent 4 }}
+spec:
+  type: sh
+  target: deployment/plural-api
+  shConfig:
+    command: /opt/app/bin/plural
+    args: [remote_console]
+---
+apiVersion: platform.plural.sh/v1alpha1
+kind: Proxy
+metadata:
+  name: rtcsh
+  labels:
+{{ include "plural.labels" . | indent 4 }}
+spec:
+  type: sh
+  target: deployment/plural-rtc
+  shConfig:
+    command: /opt/app/bin/rtc
+    args: [remote_console]
+---
+apiVersion: platform.plural.sh/v1alpha1
+kind: Proxy
+metadata:
+  name: worker-sh
+  labels:
+{{ include "plural.labels" . | indent 4 }}
+spec:
+  type: sh
+  target: deployment/plural-worker
+  shConfig:
+    command: /opt/app/bin/worker
+    args: [remote_console]

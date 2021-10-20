@@ -1,0 +1,64 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  creationTimestamp: null
+  labels:
+    prometheus: example
+    role: alert-rules
+  name: plural-rules
+spec:
+  groups:
+  - name: plural
+    rules:
+    - alert: PluralHydraCPU
+      expr: |
+        (
+          sum(rate(container_cpu_usage_seconds_total{namespace="{{ .Release.Namespace }}",pod=~"plural-hydra-[0-9]+"}[5m])) 
+          / sum(kube_pod_container_resource_requests{endpoint="http",namespace="{{ .Release.Namespace }}", pod=~"plural-hydra-[0-9]+", resource="cpu"})
+        )  > 0.6
+      for: 5m
+      labels:
+        severity: warning
+        namespace: {{ .Release.Namespace }}
+      annotations:
+        summary: plural hydra dbs's cpu has gotten too high
+        description: the cpu utilization of your plural hydra is higher than recommended
+    - alert: PluralHydraMEM
+      expr: |
+        (
+          sum(container_memory_working_set_bytes{namespace="{{ .Release.Namespace }}",pod=~"plural-hydra-[0-9]+"})
+          / sum(kube_pod_container_resource_requests{endpoint="http",resource="memory",namespace="{{ .Release.Namespace }}", pod=~"plural-hydra-[0-9]+"})
+        )  > 0.5
+      for: 5m
+      labels:
+        severity: warning
+        namespace: {{ .Release.Namespace }}
+      annotations:
+        summary: plural hydra db's memory has gotten too high
+        description: the memory utilization of your plural hydra db is higher than recommended
+    - alert: PluralDbCPU
+      expr: |
+        (
+          sum(rate(container_cpu_usage_seconds_total{namespace="{{ .Release.Namespace }}",pod=~"plural-plural-[0-9]+"}[5m])) 
+          / sum(kube_pod_container_resource_requests{endpoint="http",namespace="{{ .Release.Namespace }}", pod=~"plural-plural-[0-9]+", resource="cpu"})
+        )  > 0.6
+      for: 5m
+      labels:
+        severity: critical
+        namespace: {{ .Release.Namespace }}
+      annotations:
+        summary: plural's postgres cpu has gotten too high
+        description: the cpu utilization of your plural deployment's postgres db is higher than recommended
+    - alert: PluralDbMEM
+      expr: |
+        (
+          sum(container_memory_working_set_bytes{namespace="{{ .Release.Namespace }}",pod=~"plural-plural-[0-9]+"})
+          / sum(kube_pod_container_resource_requests{endpoint="http",resource="memory",namespace="{{ .Release.Namespace }}", pod=~"plural-plural-[0-9]+"})
+        )  > 0.6
+      for: 5m
+      labels:
+        severity: critical
+        namespace: {{ .Release.Namespace }}
+      annotations:
+        summary: plural postgres memory has gotten too high
+        description: the memory utilization of your plural deployment's postgres db is higher than recommended

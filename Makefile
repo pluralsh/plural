@@ -26,6 +26,12 @@ else
 		-t $(DKR_HOST)/plural/$(APP_NAME):$(APP_VSN) .
 endif
 
+deploy: ## deploy artifacts to plural
+	cd plural && plural apply
+
+bump-version: ## bumps the image version of this chart
+	plural utils image-bump plural/helm/plural --tag $(APP_VSN) --path "image.tag"
+
 build-dump:
 	cd dockerfiles && docker build -f Dockerfile.dump \
 		-t gcr.io/$(GCP_PROJECT)/dumper:`cat ../VERSION` .

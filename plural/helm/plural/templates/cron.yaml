@@ -1,0 +1,50 @@
+{{- define "plural.envvar" -}}
+- name: {{ .name }}
+  value: {{ .value | quote }}
+{{- end -}}
+
+{{- define "plural.cron" -}}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ .cronName }}
+  labels:
+{{ include "plural.labels" . | indent 4 }}
+spec:
+  schedule: {{ .crontab }}
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          serviceAccountName: plural
+          {{- with .Values.imagePullSecrets }}
+          imagePullSecrets:
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
+          containers:
+          - name: cron
+            image: "{{ .Values.cron.image }}:{{ .Values.cron.tag }}"
+            imagePullPolicy: {{ .Values.image.pullPolicy }}
+            envFrom:
+            - secretRef:
+                name: plural-env
+            env:
+            - name: CRON
+              value: {{ .cronModule }}
+            {{ include "plural.env" . | nindent 12 }}
+            {{ range .envVars }}
+              {{ include "plural.envvar" . | nindent 12 }}
+            {{ end }}
+            resources:
+              {{- toYaml .Values.cron.resources | nindent 14 }}
+{{- end -}}
+
+{{ $context := . }}
+{{ range $index, $cron := .Values.crons }}
+  {{- $args := mergeOverwrite $context $cron }}
+  {{ if $index }}
+---
+  {{ end }}
+  {{ include "plural.cron" $args | nindent 0 }}
+{{- end -}}

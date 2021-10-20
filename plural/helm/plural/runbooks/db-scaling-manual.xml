@@ -1,0 +1,43 @@
+<root gap='medium'>
+  <box pad='small' gap='medium' direction='row' align='center'>
+    <box direction='row' align='center' gap='small'>
+      <box gap='small' align='center'>
+        <timeseries datasource="cpu" label="CPU Usage" />
+        <text size='small'>You should set a reservation to 
+          roughly correspond to 30% utilization</text>
+      </box>
+      <box gap='small' align='center'>
+        <timeseries datasource="memory" label="Memory Usage" />
+        <text size='small'>You should set a reservation to 
+          roughly correspond to 60% utilization</text>
+      </box>
+    </box>
+    <box gap='small'>
+      <box gap='xsmall'>
+        <input placeholder="250m" label='CPU Request' name='cpu'>
+          <valueFrom 
+            datasource="statefulset" 
+            doc="kubernetes.raw" 
+            path="spec.template.spec.containers[0].resources.requests.cpu" />
+        </input>
+        <input placeholder="1Gi" label='Memory Request' name='memory'>
+          <valueFrom 
+            datasource="statefulset" 
+            doc="kubernetes.raw" 
+            path="spec.template.spec.containers[0].resources.requests.memory" />
+        </input>
+      </box>
+      <box direction='row' justify='end'>
+        <button label='Scale' action='scale' primary='true' />
+      </box>
+    </box>
+  </box>
+  <box width='100%' gap='small'>
+    <text size='small'>Be sure to scale your rabbitmq nodes within your nodes capacities, listed here:</text>
+    <table width='100%' datasource='nodes' path='nodes'>
+      <tableColumn path='metadata.name' header='name' width='33%' />
+      <tableColumn path='status.capacity.cpu' header='cpu' width='33%' />
+      <tableColumn path='status.capacity.memory' header='memory' width='33%' />
+    </table>
+  </box>
+</root>

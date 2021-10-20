@@ -19,6 +19,7 @@ variables:
 stages:
 - test
 - push
+- deploy
 
 build:
   stage: test
@@ -93,3 +94,15 @@ build-www:
   script:
   - make build APP_NAME=www
   - make push APP_NAME=plural-www
+
+
+deploy:
+  stage: deploy
+  only:
+  - master
+  image: gcr.io/pluralsh/plrl-base:0.1.5
+  before_script:
+  - cat /root/configure.sh
+  - source /root/configure.sh
+  script:
+  - make deploy

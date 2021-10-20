@@ -1,0 +1,38 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: plural-dump
+  namespace: plural
+spec:
+  template:
+    spec:
+      containers:
+      - name: dump
+        image: gcr.io/pluralsh/dumper:0.1.1
+        imagePullPolicy: Always
+        env:
+        - name: SOURCE_USER
+          value: plural
+        - name: SOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: plural-postgresql
+              key: postgresql-password
+        - name: SOURCE_HOST
+          value: plural-postgresql
+        - name: SOURCE_DB
+          value: plural
+        - name: DEST_USER
+          value: plural
+        - name: DEST_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: plural.plural-plural.credentials.postgresql.acid.zalan.do
+              key: password
+        - name: DEST_HOST
+          value: plural-plural
+        - name: DEST_DB
+          value: plural
+      restartPolicy: Never
+  backoffLimit: 5
+        

@@ -1,0 +1,79 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: plural-migration-{{ randAlphaNum 4 | lower }}
+spec:
+  template:
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+      containers:
+      - name: migrator
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        command: ["/opt/app/bin/plural",  "migrate"]
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        envFrom:
+        - secretRef:
+            name: plural-env
+        - secretRef:
+            name: plural-migration-env
+        env:
+        {{ include "plural.env" . | nindent 8 }}
+      restartPolicy: Never
+  backoffLimit: 5
+{{ if .Values.scanPackages }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: scan-packages-{{ randAlphaNum 4 | lower }}
+  labels:
+{{ include "plural.labels" . | indent 4 }}
+spec:
+  backoffLimit: 10
+  template:
+    spec:
+      restartPolicy: Never
+      serviceAccountName: plural
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: cron
+        image: "{{ .Values.cron.image }}:{{ .Values.cron.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        envFrom:
+        - secretRef:
+            name: plural-env
+        env:
+        - name: CRON
+          value: Task.VersionScan
+        {{ include "plural.env" . | nindent 8 }}
+        resources:
+          {{- toYaml .Values.cron.resources | nindent 10 }}
+{{ end }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: hydra-migration-{{ randAlphaNum 4 | lower }}
+spec:
+  backoffLimit: 10
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: hydra-migration
+        image: "{{ .Values.hydraImage.repository }}:{{ .Values.hydraImage.tag }}"
+        imagePullPolicy: {{ .Values.hydraImage.pullPolicy }}
+        command: ["hydra"]
+        args: ["migrate", "sql", "-e", "--yes"]
+        env:
+        - name: DSN
+          valueFrom:
+            secretKeyRef:
+              name: plural-hydra
+              key: dsn

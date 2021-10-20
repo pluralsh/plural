@@ -1,0 +1,63 @@
+{{- if .Values.ingress.enabled -}}
+{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
+apiVersion: networking.k8s.io/v1beta1
+{{ else }}
+apiVersion: extensions/v1beta1
+{{ end -}}
+kind: Ingress
+metadata:
+  name: plural
+  labels:
+{{ include "plural.labels" . | indent 4 }}
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  tls:
+  - hosts:
+    - {{ .Values.ingress.dns }}
+    - {{ .Values.ingress.dkr_dns }}
+    secretName: plural-tls
+  rules:
+  - host: {{ .Values.ingress.dns }}
+    http:
+      paths:
+      - path: /artifacts/.*
+        backend:
+          serviceName: plural-api
+          servicePort: http
+      - path: /cm/.*
+        backend:
+          serviceName: plural-api
+          servicePort: http
+      - path: /gql
+        backend:
+          serviceName: plural-api
+          servicePort: http
+      - path: /graphiql
+        backend:
+          serviceName: plural-api
+          servicePort: http
+      - path: /auth/.*
+        backend:
+          serviceName: plural-api
+          servicePort: http
+      - path: /api/.*
+        backend:
+          serviceName: plural-api
+          servicePort: http
+      - path: /socket.*
+        backend:
+          serviceName: plural-rtc
+          servicePort: http
+      - backend:
+          serviceName: plural-www
+          servicePort: http
+  - host: {{ .Values.ingress.dkr_dns }}
+    http:
+      paths:
+      - backend:
+          serviceName: plural-registry
+          servicePort: http
+{{- end }}

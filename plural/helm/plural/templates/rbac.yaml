@@ -1,0 +1,34 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: plural-endpoint-reader
+  labels:
+{{ include "plural.labels" . | indent 4 }}
+spec:
+rules:
+- apiGroups: [""]
+  resources: ["endpoints"]
+  verbs: ["get", "list"]
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: plural
+  labels:
+{{ include "plural.labels" . | indent 4 }}
+  annotations:
+  {{ toYaml .Values.rbac.serviceAccountAnnotations | nindent 4 }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: plural-endpoint-reader
+  labels:
+{{ include "plural.labels" . | indent 4 }}
+subjects:
+- kind: ServiceAccount
+  name: plural
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: plural-endpoint-reader

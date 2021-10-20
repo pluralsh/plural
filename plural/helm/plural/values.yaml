@@ -1,0 +1,266 @@
+replicaCount: 2
+rabbitmqNamespace: rabbitmq
+influxNamespace: influx
+
+rbac:
+  serviceAccountAnnotations: {}
+
+secrets:
+  jwt: dummy
+  erlang: dummy
+  jwt_pk: dummy
+  jwt_cert: dummy
+  jwt_iss: dummy
+  jwt_aud: dummy
+  aes_key: dummy
+
+admin:
+  enabled: false
+
+postgres:
+  plural:
+    resources: {}
+  hydra:
+    resources: {}
+  default:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 100Mi
+      limits:
+        cpu: '2'
+        memory: 1Gi
+      
+
+image:
+  repository: dkr.plural.sh/plural/plural
+  tag: '0.1.2' ## PLRL-REPLACE[  tag: '%s']
+  pullPolicy: Always
+
+rtc:
+  repository: dkr.plural.sh/plural/rtc
+  tag: '0.1.2' ## PLRL-REPLACE[  tag: '%s']
+
+worker:
+  repository: dkr.plural.sh/plural/worker
+  tag: '0.1.2' ## PLRL-REPLACE[  tag: '%s']
+  minReplicas: 1
+  maxReplicas: 10
+
+www:
+  image: dkr.plural.sh/plural/plural-www
+  tag: '0.1.2' ## PLRL-REPLACE[  tag: '%s']
+  port: 80
+
+cron:
+  image: dkr.plural.sh/plural/cron
+  tag: '0.1.2' ## PLRL-REPLACE[  tag: '%s']
+
+imagePullSecrets:
+- name: plural-creds
+
+provider: aws
+region: us-east-1
+
+api:
+  port: 4000
+  bucket: plural-assets
+
+dbPasswordSecret: plural.plural-plural.credentials.postgresql.acid.zalan.do
+rabbitPasswordSecret: plural-rabbitmq
+
+crons:
+- cronName: plural-dkr-scan
+  cronModule: Task.Docker
+  crontab: "0 0 * * *"
+  envVars: []
+- cronName: plrl-login-prune
+  cronModule: Prune.Passwordless
+  crontab: "0 10 * * *"
+  envVars: []
+- cronName: plrl-prune-queues
+  cronModule: Prune.Queues
+  crontab: "0 15 * * *"
+  envVars: []
+
+hydraSecrets:
+  dsn: memory
+  system: dummy
+  cookie: dummy
+
+hydraImage:
+  # ORY Hydra image
+  repository: oryd/hydra
+  # ORY Hydra version
+  tag: v1.8.5
+  # Image pull policy
+  pullPolicy: IfNotPresent
+
+hydra:
+  replicaCount: 2
+
+  maester:
+    enabled: false
+  hydra:
+    dangerousForceHttp: true
+    existingSecret: false
+    autoMigrate: false
+  pdb:
+    enabled: true
+  deployment:
+    autoscaling:
+      enabled: false
+    
+  ingress:
+    public:
+      enabled: true
+      annotations:
+        kubernetes.io/tls-acme: "true"
+        kubernetes.io/ingress.class: "nginx"
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+        nginx.ingress.kubernetes.io/force-ssl-redirect: 'true'
+        nginx.ingress.kubernetes.io/use-regex: "true"
+  
+chartmuseum:
+  resources: {}
+  replicaCount: 1
+  rbac:
+    serviceAccountAnnotations: {}
+  repository: dkr.plural.sh/plural/chartmuseum
+  tag: v0.13.2
+  bucket: plural-charts
+  pullPolicy: Always
+
+registry:
+  replicaCount: 1
+  podAnnotations: {}
+  podLabels: {}
+  podDisruptionBudget: {}
+  nodeSelector: {}
+  tolerations: []
+  rbac:
+    serviceAccountAnnotations: {}
+  
+  resources:
+    requests:
+      cpu: 100m
+      memory: 100Mi
+
+  persistence:
+    accessMode: ReadWriteOnce
+    enabled: false
+    size: 10Gi
+
+  securityContext:
+    enabled: false
+    runAsUser: 1000
+    fsGroup: 1000
+
+  secrets:
+    haSharedSecret: ""
+
+  image: 
+    repository: gcr.io/pluralsh/registry
+    tag: 2.7.2
+
+  configData:
+    version: 0.1
+    notifications:
+      endpoints:
+      - name: plural
+        url: http://plural-api:4000/dkr/callback
+        timeout: 500ms
+        threshold: 5
+        backoff: 1s
+    log:
+      fields:
+        service: registry
+    storage:
+      cache:
+        blobdescriptor: inmemory
+    prometheus:
+      enabled: true
+    auth:
+      token:
+        realm: plural.piazza.app/dkr
+        service: plural.piazza.app/dkr
+        issuer: plural.piazza.app
+        rootcertbundle: /etc/docker/registry/cert.pem
+    http:
+      addr: :5000
+      headers:
+        X-Content-Type-Options: [nosniff]
+    health:
+      storagedriver:
+        enabled: true
+        interval: 10s
+        threshold: 3
+
+postgresql:
+  image:
+    registry: gcr.io
+    repository: pluralsh/postgres
+    tag: 11.7.0-debian-10-r9
+  metrics:
+    enabled: true
+    image:
+      registry: gcr.io
+      repository: pluralsh/postgres-exporter
+      tag: 0.8.0
+    serviceMonitor:
+      enabled: true
+  postgresqlExtendedConf:
+    max_connections: 100
+  postgresqlUsername: plural
+  postgresqlDatabase: plural
+
+rabbitmqCredentials:
+  namespace: "rabbitmq"
+
+rabbitmq:
+  metrics:
+    enabled: true
+
+influxdb:
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 0.2
+  env:
+  - name: INFLUXDB_DB
+    value: plural
+  setDefaultUser:
+    enabled: true
+    user:
+      username: plural
+      password: null
+
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  dns: app.plural.sh
+  dkr_dns: dkr.plural.sh
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/force-ssl-redirect: 'true'
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/affinity: cookie
+    nginx.ingress.kubernetes.io/session-cookie-path: /socket
+    nginx.ingress.kubernetes.io/proxy-read-timeout: '3600'
+    nginx.ingress.kubernetes.io/proxy-send-timeout: '3600'
+  
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

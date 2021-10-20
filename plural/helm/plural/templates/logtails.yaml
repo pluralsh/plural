@@ -1,0 +1,27 @@
+apiVersion: platform.plural.sh/v1alpha1
+kind: LogFilter
+metadata:
+  name: dns-creates
+  labels:
+{{ include "plural.labels" . | indent 4 }}
+spec:
+  name: dns entry creates
+  description: stream of calls to create dns entries
+  query: Attempted to create record
+  labels:
+  - name: job
+    value: plural/plural-api
+---
+apiVersion: platform.plural.sh/v1alpha1
+kind: LogFilter
+metadata:
+  name: dns-deletes
+  labels:
+{{ include "plural.labels" . | indent 4 }}
+spec:
+  name: dns entry deletes
+  description: stream of calls to remove dns entries
+  query: Attempted to delete record
+  labels:
+  - name: job
+    value: plural/plural-api

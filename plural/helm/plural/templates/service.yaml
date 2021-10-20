@@ -1,0 +1,96 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: plural-api
+  labels:
+    app: plural-api
+{{ include "plural.labels" . | indent 4 }}
+spec:
+  type: NodePort
+  ports:
+  - port: {{ .Values.api.port }}
+    targetPort: http
+    protocol: TCP
+    name: http
+  - port: 4369
+    targetPort: epmd
+    protocol: TCP
+    name: epmd
+  selector:
+    app.kubernetes.io/name: plural-api
+    app.kubernetes.io/instance: {{ .Release.Name }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: plural-rtc
+  labels:
+    app: plural-rtc
+{{ include "plural.labels" . | indent 4 }}
+spec:
+  type: NodePort
+  ports:
+  - port: {{ .Values.api.port }}
+    targetPort: http
+    protocol: TCP
+    name: http
+  - port: 4369
+    targetPort: epmd
+    protocol: TCP
+    name: epmd
+  selector:
+    app.kubernetes.io/name: plural-rtc
+    app.kubernetes.io/instance: {{ .Release.Name }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chartmuseum
+  labels:
+{{ include "plural.labels" . | indent 4 }}
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector:
+    app.kubernetes.io/name: chartmuseum
+    app.kubernetes.io/instance: {{ .Release.Name }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: plural-www
+  labels:
+    app: plural-www
+{{ include "plural.labels" . | indent 4 }}
+spec:
+  type: NodePort
+  ports:
+  - port: {{ .Values.www.port }}
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector:
+    app.kubernetes.io/name: plural-www
+    app.kubernetes.io/instance: {{ .Release.Name }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: plural-registry
+  labels:
+    app: plural-registry
+{{ include "plural.labels" . | indent 4 }}
+spec:
+  type: NodePort
+  ports:
+  - port: 5000
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector:
+    app.kubernetes.io/name: plural-registry
+    app.kubernetes.io/instance: {{ .Release.Name }}

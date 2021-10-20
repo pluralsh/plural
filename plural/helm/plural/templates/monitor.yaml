@@ -1,0 +1,20 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: {{ include "plural.fullname" . }}
+  labels:
+{{ include "plural.labels" . | indent 4 }}
+spec:
+  podMetricsEndpoints:
+  - port: http
+    path: '/metrics'
+  namespaceSelector:
+    matchNames:
+    - {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      plural.sh/monitoring: scrape
+  podTargetLabels:
+    - app.kubernetes.io/name
+    - app.kubernetes.io/instance

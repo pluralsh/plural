@@ -1,0 +1,115 @@
+apiVersion: platform.plural.sh/v1alpha1
+kind: Runbook
+metadata:
+  name: db-scaling
+  labels:
+    platform.plural.sh/pinned: 'true'
+{{ include "plural.labels" . | indent 4 }}
+spec:
+  name: Postgres Scaling
+  description: overview of how to accurately scale plural's postgres instance
+  alerts:
+  - name: PluralDbCPU
+  - name: PluralDbMEM
+  display: |-
+{{ .Files.Get "runbooks/db-scaling-manual.xml" | indent 4 }}
+  datasources:
+  - name: cpu
+    type: prometheus
+    prometheus:
+      format: cpu
+      legend: $pod
+      query: sum(rate(container_cpu_usage_seconds_total{namespace="{{ .Release.Namespace }}",pod=~"plural-plural-[0-9]+"}[5m])) by (pod)
+  - name: memory
+    type: prometheus
+    prometheus:
+      format: memory
+      legend: $pod
+      query: sum(container_memory_working_set_bytes{namespace="{{ .Release.Namespace }}",pod=~"plural-plural-[0-9]+"}) by (pod)
+  - name: statefulset
+    type: kubernetes
+    kubernetes:
+      resource: statefulset
+      name: plural-plural
+  - name: nodes
+    type: nodes
+  actions:
+  - name: scale
+    action: config
+    redirectTo: '/'
+    configuration:
+      updates:
+      - path: 
+        - plural
+        - postgres
+        - plural
+        - resources
+        - requests
+        - cpu
+        valueFrom: cpu
+      - path:
+        - plural
+        - postgres
+        - plural
+        - resources
+        - requests
+        - memory
+        valueFrom: memory
+---
+apiVersion: platform.plural.sh/v1alpha1
+kind: Runbook
+metadata:
+  name: hydra-db-scaling
+  labels:
+    platform.plural.sh/pinned: 'true'
+{{ include "plural.labels" . | indent 4 }}
+spec:
+  name: Hydra Postgres Scaling
+  description: overview of how to accurately scale hydra's postgres instance
+  alerts:
+  - name: PluralHydraCPU
+  - name: PluralHydraMEM
+  display: |-
+{{ .Files.Get "runbooks/db-scaling-manual.xml" | indent 4 }}
+  datasources:
+  - name: cpu
+    type: prometheus
+    prometheus:
+      format: cpu
+      legend: $pod
+      query: sum(rate(container_cpu_usage_seconds_total{namespace="{{ .Release.Namespace }}",pod=~"plural-hydra-[0-9]+"}[5m])) by (pod)
+  - name: memory
+    type: prometheus
+    prometheus:
+      format: memory
+      legend: $pod
+      query: sum(container_memory_working_set_bytes{namespace="{{ .Release.Namespace }}",pod=~"plural-hydra-[0-9]+"}) by (pod)
+  - name: statefulset
+    type: kubernetes
+    kubernetes:
+      resource: statefulset
+      name: plural-hydra
+  - name: nodes
+    type: nodes
+  actions:
+  - name: scale
+    action: config
+    redirectTo: '/'
+    configuration:
+      updates:
+      - path: 
+        - plural
+        - postgres
+        - hydra
+        - resources
+        - requests
+        - cpu
+        valueFrom: cpu
+      - path:
+        - plural
+        - postgres
+        - hydra
+        - resources
+        - requests
+        - memory
+        valueFrom: memory

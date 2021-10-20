@@ -26,7 +26,7 @@ defmodule Core.OAuth.Github do
   def get_user(client) do
     case OAuth2.Client.get(client, "/user") do
       {:ok, %OAuth2.Response{body: user}} ->
-        {:ok, build_user(user)}
+        construct_user(client, user)
       {:error, %OAuth2.Response{status_code: 401, body: body}} ->
         Logger.error("Unauthorized token, #{inspect(body)}")
         {:error, :unauthorized}
@@ -35,6 +35,26 @@ defmodule Core.OAuth.Github do
         {:error, reason}
     end
   end
+
+  defp construct_user(_, %{"email" => email} = user) when is_binary(email) do
+    {:ok, build_user(user) |> add_name(user)}
+  end
+
+  defp construct_user(client, user) do
+    case OAuth2.Client.get(client, "/user/emails") do
+      {:ok, %OAuth2.Response{body: [_ | _] = emails}} ->
+        %{"email" => email} = Enum.find(emails, & &1["primary"])
+        user =
+          build_user(user)
+          |> Map.put(:email, email)
+          |> add_name(user)
+        {:ok, user}
+      _ -> {:error, :no_email}
+    end
+  end
+
+  defp add_name(%{name: name} = user, %{"login" => login}), do: %{user | name: login}
+  defp add_name(user, _), do: user
 
   def authorize_url(client, params) do
     OAuth2.Strategy.AuthCode.authorize_url(client, params)

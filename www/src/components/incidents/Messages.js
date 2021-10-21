@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Chat } from 'grommet-icons'
+import { Messages } from 'forge-core'
 import { Box, Text } from 'grommet'
 import SmoothScroller from '../utils/SmoothScroller'
 import { Message } from './Message'
@@ -8,7 +8,7 @@ import { extendConnection } from '../../utils/graphql'
 function Empty() {
   return (
     <Box width='100%' height='100%' pad='medium' gap='small' align='center' justify='center'>
-      <Chat size='40px' />
+      <Messages size='40px' />
       <Text size='small'>Get the conversation started</Text>
     </Box>
   )

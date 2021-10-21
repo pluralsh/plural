@@ -1,7 +1,6 @@
 import React, { useContext, useRef, useState } from 'react'
 import { Markdown, Box, Text, Anchor, ThemeContext, Drop } from "grommet"
-import { WithCopy, TooltipContent } from 'forge-core'
-import { Copy } from 'grommet-icons'
+import { WithCopy, TooltipContent, Copy } from 'forge-core'
 import Highlight from 'react-highlight.js'
 import hljs from 'highlight.js'
 import { EntityType } from './types'

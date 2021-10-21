@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import { Box, Stack, Text } from 'grommet';
-import { History, Eye as Hide, Notification, Package, User, Nodes as Cluster } from 'forge-core'
+import { History, Eye as Hide, Notification, Package, User, Cluster } from 'forge-core'
 import { IncidentHistory } from './IncidentHistory';
 import { SidebarView } from './types';
 import { ViewOption } from './ViewSwitcher';

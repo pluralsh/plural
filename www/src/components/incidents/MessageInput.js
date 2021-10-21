@@ -5,7 +5,6 @@ import { useMutation } from 'react-apollo'
 import { CREATE_MESSAGE, INCIDENT_Q, SEARCH_USERS } from './queries'
 import { Box, Drop, Keyboard, Layer, Stack, Text } from 'grommet'
 import { plainDeserialize, plainSerialize, isEmpty } from '../../utils/slate'
-import { Send } from '../utils/icons'
 import { MoonLoader } from 'react-spinners'
 import { Progress } from 'react-sweet-progress'
 import { Transforms, Editor as SlateEditor } from 'slate'
@@ -14,8 +13,7 @@ import { useParams } from 'react-router'
 import { appendConnection, updateCache } from '../../utils/graphql'
 import { AttachmentContext } from './AttachmentProvider'
 import { Control } from './MessageControls'
-import { Attachment } from 'grommet-icons'
-import { Emoji, Close } from 'forge-core'
+import { Emoji, Close, Attachment, SendMessage } from 'forge-core'
 import fs from 'filesize'
 import { emojiIndex, NimbleEmoji } from 'emoji-mart'
 import { EntityType } from './types'
@@ -131,10 +129,10 @@ function SendMsg({loading, empty, onClick}) {
   return (
     <Box flex={false} focusIndicator={false} margin='4px' height='35px'
       width="35px" round='xxsmall' align='center' justify='center'
-      onClick={empty ? null : onClick} background={loading ? null : (empty ? null : 'action')} >
+      onClick={empty ? null : onClick} background={loading ? null : (empty ? null : 'success')} >
       {loading ?
         <MoonLoader size={20} /> :
-        <Send size='23px' color={empty ? 'light-3' : 'white'} />
+        <SendMessage size='23px' color={empty ? 'light-3' : 'white'} />
       }
     </Box>
   )

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Box, Layer, Text } from 'grommet'
-import { CircleInformation, Copy, Close } from 'grommet-icons'
+import { CircleInformation } from 'grommet-icons'
+import { Copy, Close } from 'forge-core'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { Icon } from '../accounts/Group'
 import { truncate } from 'lodash'

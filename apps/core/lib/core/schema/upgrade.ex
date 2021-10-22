@@ -3,7 +3,7 @@ defmodule Core.Schema.Upgrade do
   alias Core.Schema.{UpgradeQueue, Repository}
   alias Piazza.Ecto.UUID
 
-  defenum Type, deploy: 0, approval: 1
+  defenum Type, deploy: 0, approval: 1, bounce: 2
 
   schema "upgrades" do
     field :type,    Type

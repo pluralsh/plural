@@ -27,6 +27,7 @@ defmodule Core.Rollable.DockerTest do
 
       [upgrade] = Core.Repo.all(Core.Schema.Upgrade)
       assert upgrade.queue_id == q.id
+      assert upgrade.type == :bounce
     end
   end
 end

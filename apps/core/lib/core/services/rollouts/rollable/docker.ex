@@ -19,6 +19,7 @@ defimpl Core.Rollouts.Rollable, for: Core.PubSub.DockerImagesPushed do
     deliver_upgrades(chart_inst.installation.user_id, fn queue ->
       Core.Services.Upgrades.create_upgrade(%{
         repository_id: chart_inst.installation.repository_id,
+        type: :bounce,
         message: "New images pushed for #{Enum.join(names, ", ")}"
       }, queue)
     end)

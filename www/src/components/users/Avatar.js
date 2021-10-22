@@ -14,7 +14,7 @@ export default function Avatar({size, user, round, ...rest}) {
   return (
     <Box
       flex={false}
-      round={round || 'xsmall'}
+      round={round || '3px'}
       style={user.avatar ? {backgroundImage: `url(${user.avatar})`, backgroundPosition: 'center', backgroundSize: 'cover'} : null}
       align='center'
       justify='center'

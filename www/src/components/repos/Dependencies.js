@@ -68,7 +68,7 @@ export function ShowFull({onClick, label}) {
   )
 }
 
-export function FullDependencies({resource}) {
+export const FullDependencies = React.memo(({resource}) => {
   const type = depType(resource)
   const {data, loading} = useQuery(CLOSURE_Q, {
     variables: {id: resource.id, type}
@@ -83,9 +83,9 @@ export function FullDependencies({resource}) {
       id={`${resource.name}-full-tree`} tree={graph}
       width='100%' height={GRAPH_HEIGHT} />
   )
-}
+})
 
-export default function Dependencies({name, dependencies, resource}) {
+export default React.memo(({name, dependencies, resource}) => {
   if (!dependencies || !dependencies.dependencies) {
     return (
       <Box pad='small'>
@@ -110,4 +110,4 @@ export default function Dependencies({name, dependencies, resource}) {
         height={GRAPH_HEIGHT} />
     </Box>
   )
-}
+})

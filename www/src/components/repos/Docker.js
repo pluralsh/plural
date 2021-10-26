@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react'
-import { Tabs, TabHeader, TabHeaderItem, TabContent, Copy, Link } from 'forge-core'
+import { Tabs, TabHeader, TabHeaderItem, TabContent, Copy, Links } from 'forge-core'
 import { useMutation, useQuery } from 'react-apollo'
 import { useHistory, useParams } from 'react-router'
 import { DOCKER_IMG_Q, DOCKER_Q, UPDATE_DOCKER } from './queries'
@@ -227,13 +227,14 @@ function VulnerabilityDetail({vuln}) {
 
 function Vulnerability({vuln}) {
   const [open, setOpen] = useState(false)
+
   return (
     <Box flex={false} border={{side: 'bottom', color: 'light-3'}}>
       <Box direction='row' gap='small' align='center' pad='xsmall' onClick={() => setOpen(!open)} 
           hoverIndicator='light-3' focusIndicator={false}>
         <Box width='30%' direction='row' gap='small'>
           <Text size='small' weight={500}>{vuln.vulnerabilityId}</Text>
-          {vuln.url && <Anchor size='small' href={vuln.url} target="_blank"><Link size='small' /></Anchor>}
+          {vuln.url && <Anchor size='small' href={vuln.url} target="_blank"><Links size='small' /></Anchor>}
         </Box>
         <Box flex={false} width='15%' direction='row' gap='xsmall' align='center'>
           <Box width='15px' height='15px' round='xsmall' background={ColorMap[vuln.severity]} />

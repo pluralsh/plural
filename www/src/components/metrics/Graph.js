@@ -13,7 +13,7 @@ export const DURATIONS = [
 function RangeOption({duration, current, setDuration, first, last}) {
   const selected = duration.offset === current.offset && duration.step === current.step
   return (
-    <Box round={(first || last) ? {corner: (first ? 'left' : 'right'), size: 'xsmall'} : null}
+    <Box round={(first || last) ? {corner: (first ? 'left' : 'right'), size: '3px'} : null}
       pad='small' align='center' justify='center' focusIndicator={false}
       background={selected ? 'light-3' : null} hoverIndicator='light-2'
       onClick={() => setDuration(duration)}>
@@ -25,8 +25,8 @@ function RangeOption({duration, current, setDuration, first, last}) {
 export function RangePicker({duration, setDuration}) {
   const count = DURATIONS.length
   return (
-    <Box round='xsmall' border={{color: 'light-5'}} flex={false}>
-      <Box direction='row' round='xsmall' gap='0px' border={{side: 'between', color: 'light-5'}}>
+    <Box round='3px' border={{color: 'light-5'}} flex={false}>
+      <Box direction='row' round='3px' gap='0px' border={{side: 'between', color: 'light-5'}}>
         {DURATIONS.map((dur, ind) => (
           <RangeOption
             key={ind}

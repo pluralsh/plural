@@ -6,6 +6,7 @@ import TreeGraph from '../utils/TreeGraph'
 import { DEFAULT_TF_ICON, DEFAULT_CHART_ICON, Tools } from './constants'
 import { CLOSURE_Q } from './queries'
 import { remove, cloneDeep, groupBy } from 'lodash'
+import { uniqueId } from 'lodash'
 
 const GRAPH_HEIGHT = '500px'
 const OPTIONAL_COLOR = '#fdc500'
@@ -80,8 +81,10 @@ export const FullDependencies = React.memo(({resource}) => {
 
   return (
     <TreeGraph
-      id={`${resource.name}-full-tree`} tree={graph}
-      width='100%' height={GRAPH_HEIGHT} />
+      id={`${uniqueId('full_')}-full-tree`} 
+      tree={graph}
+      width='100%' 
+      height={GRAPH_HEIGHT} />
   )
 })
 
@@ -102,12 +105,10 @@ export default React.memo(({name, dependencies, resource}) => {
   })
 
   return (
-    <Box pad='small'>
-      <TreeGraph
-        id={`${name}-tree`}
-        tree={asDep({...resource, children: deps})}
-        width='100%'
-        height={GRAPH_HEIGHT} />
-    </Box>
+    <TreeGraph
+      id={`${uniqueId(name)}-tree`}
+      tree={asDep({...resource, children: deps})}
+      width='100%'
+      height={GRAPH_HEIGHT} />
   )
 })

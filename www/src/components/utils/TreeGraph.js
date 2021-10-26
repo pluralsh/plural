@@ -1,7 +1,7 @@
-import React, {useEffect, useRef} from 'react'
-import {Box} from 'grommet'
-import {hierarchy, tree as treeLayout} from 'd3-hierarchy'
-import {select} from 'd3-selection'
+import React, { useEffect, useRef } from 'react'
+import { Box } from 'grommet'
+import { hierarchy, tree as treeLayout } from 'd3-hierarchy'
+import { select } from 'd3-selection'
 
 function diagonal(d) {
   return `M${d.x},${d.y}C${d.x},${(d.y + d.parent.y) / 2} ${d.parent.x},${(d.y + d.parent.y) / 2} ${d.parent.x},${d.parent.y}`
@@ -62,8 +62,15 @@ export default function TreeGraph({id, tree, width, height}) {
     if (!boxRef.current) return
     const {width, height} = boxRef.current.getBoundingClientRect()
     renderTree(id, tree, height, width)
-  }, [id, boxRef, tree])
+    return () => boxRef.current.removeChild(boxRef.current.children[0])
+  }, [id, boxRef])
+
   return (
-    <Box style={{overflow: 'auto'}} ref={boxRef} id={id} width={width} height={height} />
+    <Box 
+      style={{overflow: 'auto'}} 
+      ref={boxRef} 
+      id={id} 
+      width={width} 
+      height={height} />
   )
 }

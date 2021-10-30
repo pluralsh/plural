@@ -28,7 +28,7 @@ spec:
         (
           sum(container_memory_working_set_bytes{namespace="{{ .Release.Namespace }}",pod=~"plural-hydra-[0-9]+"})
           / sum(kube_pod_container_resource_requests{endpoint="http",resource="memory",namespace="{{ .Release.Namespace }}", pod=~"plural-hydra-[0-9]+"})
-        )  > 0.5
+        )  > 1
       for: 5m
       labels:
         severity: warning
@@ -54,7 +54,7 @@ spec:
         (
           sum(container_memory_working_set_bytes{namespace="{{ .Release.Namespace }}",pod=~"plural-plural-[0-9]+"})
           / sum(kube_pod_container_resource_requests{endpoint="http",resource="memory",namespace="{{ .Release.Namespace }}", pod=~"plural-plural-[0-9]+"})
-        )  > 0.6
+        )  > 1
       for: 5m
       labels:
         severity: critical

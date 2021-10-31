@@ -213,4 +213,33 @@ defmodule Core.Services.RecipesTest do
       assert refetch(user).provider == :aws
     end
   end
+
+  describe "#hydrate/1" do
+    test "it can hydrate a depth > 2 tree of recipe dependencies" do
+      recipe = insert(:recipe)
+      %{repository: repo0} = section0 = insert(:recipe_section, recipe: recipe)
+      insert(:recipe_item, recipe_section: section0, chart: build(:chart))
+
+      [%{dependent_recipe: level_1_1}, %{dependent_recipe: level_1_2}] = for i <- 1..2,
+        do: insert(:recipe_dependency, recipe: recipe, index: i)
+      %{repository: repo} = section = insert(:recipe_section, recipe: level_1_1)
+      %{repository: repo2} = section2 = insert(:recipe_section, recipe: level_1_2)
+      insert(:recipe_item, recipe_section: section, chart: insert(:chart, dependencies: %{dependencies: [
+        %{type: :terraform, repo: repo.name, name: "name"},
+        %{type: :helm, repo: repo0.name, name: "zero"},
+      ]}))
+      insert(:recipe_item, recipe_section: section2, terraform: insert(:terraform, dependencies: %{dependencies: [
+        %{type: :helm, repo: repo.name, name: "another-name"},
+      ]}))
+      %{dependent_recipe: level_2_1} = insert(:recipe_dependency, recipe: level_1_1, index: 1)
+      section3 = insert(:recipe_section, recipe: level_2_1)
+      insert(:recipe_item, recipe_section: section3, chart: insert(:chart, dependencies: %{dependencies: [
+        %{type: :helm, repo: repo2.name, name: "name"},
+      ]}))
+
+      %{recipe_sections: sections} = Recipes.hydrate(recipe)
+
+      assert Enum.map(sections, & &1.id) == Enum.map([section0, section, section2, section3], & &1.id)
+    end
+  end
 end

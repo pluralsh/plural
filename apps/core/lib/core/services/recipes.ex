@@ -108,7 +108,7 @@ defmodule Core.Services.Recipes do
     |> execute(extract: :create)
   end
 
-  @recipe_preloads [recipe_sections: [recipe_items: [:terraform, :chart]]]
+  @recipe_preloads [recipe_sections: [:repository, [recipe_items: [:terraform, :chart]]]]
   @preloads [dependencies: [dependent_recipe: @recipe_preloads]] ++ @recipe_preloads
 
   @doc """
@@ -117,15 +117,36 @@ defmodule Core.Services.Recipes do
   """
   @spec hydrate(Recipe.t) :: Recipe.t
   def hydrate(%Recipe{} = recipe) do
-    %{recipe_sections: sections, dependencies: deps} = recipe = Core.Repo.preload(recipe, @preloads)
-    sections = sort_sections(sections)
-    dependencies =
-      Enum.sort_by(deps, & &1.index)
-      |> Enum.flat_map(fn %{dependent_recipe: %{recipe_sections: sections}} -> sort_sections(sections) end)
+    recursive_sections = resolve_dependencies([], recipe)
+    deduped = Enum.reduce(recursive_sections, %{}, fn %{repository_id: repository_id, recipe_items: items} = section, acc ->
+      case Map.get(acc, repository_id) do
+        %{recipe_items: moar} = section ->
+          Map.put(acc, repository_id, %{section | recipe_items: items ++ moar})
+        _ -> Map.put(acc, repository_id, section)
+      end
+    end)
 
-    %{recipe | recipe_sections: dependencies ++ sections}
+    sections =
+      Map.values(deduped)
+      |> topsort_sections()
+      |> Enum.map(fn %{recipe_items: items} = section ->
+        %{section | recipe_items: Enum.dedup_by(items, &as_node/1)}
+      end)
+      |> sort_sections()
+
+    %{recipe | recipe_sections: sections}
   end
   def hydrate(nil), do: nil
+
+  defp resolve_dependencies(prev, %Recipe{} = recipe) do
+    case Core.Repo.preload(recipe, @preloads) do
+      %{recipe_sections: sections, dependencies: [_ | _] = deps} ->
+        Enum.flat_map(deps, &resolve_dependencies([], &1.dependent_recipe))
+        |> Enum.concat(prev)
+        |> Enum.concat(sections)
+      %{recipe_sections: sections} -> sections ++ prev
+    end
+  end
 
   defp sort_sections(sections) do
     sections
@@ -159,6 +180,35 @@ defmodule Core.Services.Recipes do
     case Charts.get_chart_installation(id, uid) do
       %{id: cinst_id} -> Charts.update_chart_installation(%{version_id: version.id}, cinst_id, user)
       _ -> Charts.create_chart_installation(%{chart_id: id, version_id: version.id}, installation.id, user)
+    end
+  end
+
+  defp topsort_sections(sections) do
+    graph = :digraph.new()
+    by_name = Enum.into(sections, %{}, & {&1.repository.name, &1})
+
+    try do
+      Enum.each(sections, fn %{repository: %{name: name}} ->
+        :digraph.add_vertex(graph, name)
+      end)
+
+      Enum.reduce(sections, MapSet.new(), fn %{recipe_items: items, repository: %{name: out_repo}}, seen ->
+        Enum.flat_map(items, &dependencies/1)
+        |> Enum.map(fn %{repo: in_repo} -> {in_repo, out_repo} end)
+        |> Enum.reject(&MapSet.member?(seen, &1))
+        |> Enum.into(seen, fn {in_repo, out_repo} = pair ->
+          :digraph.add_edge(graph, in_repo, out_repo)
+          pair
+        end)
+      end)
+
+      if sorted = :digraph_utils.topsort(graph) do
+        Enum.map(sorted, &Map.get(by_name, &1))
+      else
+        raise ArgumentError, message: "dependency cycle detected"
+      end
+    after
+      :digraph.delete(graph)
     end
   end
 

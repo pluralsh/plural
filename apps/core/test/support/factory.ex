@@ -169,6 +169,13 @@ defmodule Core.Factory do
     }
   end
 
+  def recipe_dependency_factory do
+    %Schema.RecipeDependency{
+      recipe: insert(:recipe),
+      dependent_recipe: insert(:recipe),
+    }
+  end
+
   def resource_definition_factory do
     %Schema.ResourceDefinition{
       name: sequence(:resource_def, &"resource-definition-#{&1}"),
@@ -205,13 +212,6 @@ defmodule Core.Factory do
     %Schema.Subscription{
       installation: build(:installation),
       plan: build(:plan)
-    }
-  end
-
-  def recipe_dependency_factory do
-    %Schema.RecipeDependency{
-      recipe: build(:recipe),
-      dependent_recipe: build(:recipe)
     }
   end
 

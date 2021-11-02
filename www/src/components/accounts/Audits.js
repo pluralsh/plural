@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import moment from 'moment'
 import { Box, Text } from 'grommet'
 import { useParams } from 'react-router'
@@ -16,6 +16,7 @@ import { Chloropleth } from '../utils/Chloropleth'
 import lookup from 'country-code-lookup'
 import { SectionContentContainer } from '../Explore'
 import { SubmenuItem, SubmenuPortal } from '../navigation/Submenu'
+import { ReturnToBeginning } from '../utils/ReturnToBeginning'
 
 const HeaderItem = ({text, width, nobold}) => (<Box width={width}><Text size='small' weight={nobold ? null : 500}>{text}</Text></Box>)
 
@@ -108,11 +109,16 @@ function AuditChloro() {
 export function Audits() {
   const {graph} = useParams()
   const [listRef, setListRef] = useState(null)
+  const [scrolled, setScrolled] = useState(false)
   const {data, loading, fetchMore} = useQuery(AUDITS_Q, {fetchPolicy: 'cache-and-network'})
   const {setBreadcrumbs} = useContext(BreadcrumbsContext)
-  useEffect(() => {    
+  useEffect(() => {
     setBreadcrumbs([ {text: 'audits', url: '/audits'} ])
   }, [setBreadcrumbs])
+
+  const returnToBeginning = useCallback(() => {
+    listRef.scrollToItem(0)
+  }, [listRef])
 
   if (!data) return <LoopingLogo dark darkbg />
 
@@ -137,12 +143,14 @@ export function Audits() {
         <Box fill>
           <AuditHeader />
           <Box fill>
+            {scrolled && <ReturnToBeginning beginning={returnToBeginning} />}
             <StandardScroller
               listRef={listRef}
               setListRef={setListRef}
               hasNextPage={pageInfo.hasNextPage}
               items={edges}
               loading={loading} 
+              handleScroll={setScrolled}
               placeholder={Placeholder}
               mapper={({node}) => <Audit key={node.id} audit={node} />} 
               loadNextPage={() => pageInfo.hasNextPage && fetchMore({

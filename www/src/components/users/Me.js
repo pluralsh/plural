@@ -1,12 +1,11 @@
 import React, { useState, useRef } from 'react'
 import { useHistory } from 'react-router-dom'
 import { Box, Text, Layer, Drop } from 'grommet'
-import { MenuItem, ModalHeader, EditField, User, Logout } from 'forge-core'
+import { MenuItem, ModalHeader, EditField, User, Logout, CreatePublisher as CreatePublisherIcon } from 'forge-core'
 import CreatePublisher from '../publisher/CreatePublisher'
 import { useQuery } from 'react-apollo'
 import { ACCOUNT_PUBLISHERS } from '../publisher/queries'
 import Avatar from './Avatar'
-import { Add } from 'grommet-icons'
 import { wipeToken } from '../../helpers/authentication'
 
 export function DropdownItem(props) {
@@ -111,7 +110,7 @@ export default function Me({me}) {
           <Publishers account={account} publisher={me.publisher} />
           {!me.publisher && (
             <Item
-              icon={<Add size='small' />}
+              icon={<CreatePublisherIcon size='small' />}
               text='Create new publisher' round='xsmall'
               onClick={() => setModal(<CreatePublisherModal setModal={setModal} />)} />
           )}

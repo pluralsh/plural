@@ -37,7 +37,7 @@ defmodule Rtc.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:sentry, "8.0.5"},
+      {:sentry, "8.0.6"},
       {:phoenix, "~> 1.5.7"},
       {:phoenix_html, "~> 2.11"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
@@ -45,7 +45,7 @@ defmodule Rtc.MixProject do
       {:telemetry_poller, "~> 0.4"},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 2.0"},
+      {:plug_cowboy, "~> 2.5", override: true},
       {:absinthe_phoenix, "~> 2.0"},
       {:libcluster, "~> 3.1.1"},
       {:prometheus_ex, "~> 3.0"},

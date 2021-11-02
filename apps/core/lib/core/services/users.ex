@@ -53,7 +53,7 @@ defmodule Core.Services.Users do
 
   @spec get_persisted_token(binary) :: PersistedToken.t | nil
   def get_persisted_token(token) do
-    Core.Repo.get_by!(PersistedToken, token: token)
+    Core.Repo.get_by(PersistedToken, token: token)
     |> Core.Repo.preload([:user])
   end
 

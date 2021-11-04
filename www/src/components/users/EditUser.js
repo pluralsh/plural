@@ -2,11 +2,11 @@ import React, { useContext, useState, useEffect, useCallback } from 'react'
 import { Box, Text } from 'grommet'
 import { useFilePicker } from 'react-sage'
 import { Button, InputCollection, ResponsiveInput, Select, User, Installed, 
-        AccessTokens, PublicKeys, Credentials, Password, Logout } from 'forge-core'
+        AccessTokens, PublicKeys, Credentials, Password, Logout, Fingerprint } from 'forge-core'
 import { useMutation, useQuery } from 'react-apollo'
 import { OAUTH_URLS, UPDATE_USER } from './queries'
 import Avatar from './Avatar'
-import { StatusCritical, Checkmark, } from 'grommet-icons'
+import { StatusCritical, Checkmark } from 'grommet-icons'
 import Installations from '../repos/Installations'
 import { CurrentUserContext } from '../login/CurrentUser'
 import { Tokens } from './Tokens'
@@ -120,7 +120,7 @@ export default function EditUser() {
           <EditSelect edit='user' name='User Attributes' icon={<User size='14px' />} />
           <EditSelect edit='pwd' name='Password' icon={<Password size='14px' />} />
           <EditSelect edit='installations' name='Installations' icon={<Installed size='14px' />} />
-          <EditSelect edit='tokens' name='Access Tokens' icon={<AccessTokens size='14px' />} />
+          <EditSelect edit='tokens' name='Access Tokens' icon={<Fingerprint size='14px' />} />
           <EditSelect edit='keys' name='Public Keys' icon={<PublicKeys size='14px' />} />
           <EditSelect edit='credentials' name='Eab Credentials' icon={<Credentials size='14px' />} />
           <SectionChoice 

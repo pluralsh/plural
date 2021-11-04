@@ -2,6 +2,7 @@ defmodule GraphQl.Resolvers.OAuth do
   use GraphQl.Resolvers.Base, model: Core.Schema.OIDCProvider
   alias Core.Services.OAuth
   alias Core.OAuth, as: OAuthHandler
+  alias GraphQl.Resolvers.User
 
   def resolve_login(%{challenge: challenge}, _) do
     with {:ok, %{installation: inst}} <- OAuth.get_login(challenge),
@@ -14,7 +15,8 @@ defmodule GraphQl.Resolvers.OAuth do
 
   def resolve_callback(%{code: code, provider: provider} = args, _) do
     OAuthHandler.callback(provider, args[:host], code)
-    |> GraphQl.Resolvers.User.with_jwt()
+    |> User.with_jwt()
+    |> User.activate_token(args)
   end
 
   def resolve_configuration(_, _), do: Core.Clients.Hydra.get_configuration()

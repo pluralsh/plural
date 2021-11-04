@@ -65,6 +65,7 @@ defmodule GraphQl.Schema.OAuth do
       arg :provider, non_null(:oauth_provider)
       arg :host, :string
       arg :code, non_null(:string)
+      arg :device_token, :string
 
       resolve &OAuth.resolve_callback/2
     end

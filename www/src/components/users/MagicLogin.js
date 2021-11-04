@@ -158,8 +158,10 @@ export function Login() {
 
   useEffect(() => {
     wipeChallenge()
+    wipeDeviceToken()
     if (data && data.loginMethod.authorizeUrl) {
       if (challenge) saveChallenge(challenge)
+      if (deviceToken) saveDeviceToken(deviceToken)
       window.location = data.loginMethod.authorizeUrl
     }
   }, [data])

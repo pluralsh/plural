@@ -11,7 +11,7 @@ import { disableState, PasswordStatus } from '../Login'
 import { PLURAL_ICON, PLURAL_MARK } from '../constants'
 import { ACCEPT_LOGIN } from '../oidc/queries'
 import queryString from 'query-string'
-import { saveChallenge, wipeChallenge } from './utils'
+import { saveChallenge, saveDeviceToken, wipeChallenge, wipeDeviceToken } from './utils'
 import { host } from '../../helpers/hostname'
 import { METHOD_ICONS } from './OauthEnabler'
 

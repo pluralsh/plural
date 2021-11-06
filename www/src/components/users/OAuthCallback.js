@@ -8,7 +8,7 @@ import { GqlError } from '../utils/Alert'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { handleOauthChallenge } from './MagicLogin'
 import { OAUTH_CALLBACK } from './queries'
-import { getChallenge } from './utils'
+import { getChallenge, getDeviceToken } from './utils'
 import qs from 'query-string'
 
 
@@ -19,7 +19,7 @@ export function OAuthCallback() {
   const {code} = qs.parse(location.search)
 
   const [mutation, {error, loading}] = useMutation(OAUTH_CALLBACK, {
-    variables: {code, host: host(), provider: service.toUpperCase()},
+    variables: {code, host: host(), provider: service.toUpperCase(), deviceToken: getDeviceToken()},
     onCompleted: (result) => {
       setToken(result.oauthCallback.jwt)
       const challenge = getChallenge()

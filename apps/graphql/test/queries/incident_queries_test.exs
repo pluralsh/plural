@@ -4,8 +4,8 @@ defmodule GraphQl.IncidentQueriesTest do
 
   describe "incidents" do
     test "it will list incidents for a repo" do
-      user = insert(:user)
       repo = insert(:repository)
+      user = insert(:user, account: repo.publisher.account)
       role = insert(:role, repositories: ["*"], permissions: %{support: true}, account: repo.publisher.account)
       insert(:role_binding, role: role, user: user)
       incidents = insert_list(3, :incident, repository: repo)

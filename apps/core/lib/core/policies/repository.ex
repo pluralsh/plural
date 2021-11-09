@@ -13,8 +13,13 @@ defmodule Core.Policies.Repository do
     can?(user, repo, policy)
   end
 
-  def can?(%User{} = user, %Repository{} = repo, :support),
-    do: check_rbac(user, :support, repository: repo.name)
+  def can?(%User{account_id: aid} = user, %Repository{} = repo, :support) do
+    case Core.Repo.preload(repo, [:publisher]) do
+      %{publisher: %{account_id: ^aid}} ->
+        check_rbac(user, :support, repository: repo.name)
+      _ -> {:error, :forbidden}
+    end
+  end
 
   def can?(%User{account_id: aid}, %Repository{private: true} = repo, :access) do
     case Core.Repo.preload(repo, [:publisher]) do
@@ -28,7 +33,7 @@ defmodule Core.Policies.Repository do
     can?(user, repo, :edit)
   end
 
-  def can?(%User{id: user_id} = user, %ApplyLock{owner_id: nil} = lock, :create) do
+  def can?(%User{} = user, %ApplyLock{owner_id: nil} = lock, :create) do
     %{repository: repo} = Core.Repo.preload(lock, [repository: [publisher: :account]])
     can?(user, repo, :edit)
   end

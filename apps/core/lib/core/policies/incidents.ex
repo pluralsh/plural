@@ -25,7 +25,7 @@ defmodule Core.Policies.Incidents do
     can?(user, incident, :access)
   end
 
-  def can?(%User{account_id: account_id}, %Incident{} = incident, :access) do
+  def can?(%User{account_id: account_id} = user, %Incident{} = incident, :access) do
     incident = Core.Repo.preload(incident, @preloads)
 
     Enum.any?(@preloads, fn key ->
@@ -36,7 +36,7 @@ defmodule Core.Policies.Incidents do
     end)
     |> case do
       true -> :pass
-      _ -> {:error, :forbidden}
+      _ -> can?(user, incident, :accept)
     end
   end
 

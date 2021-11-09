@@ -4,7 +4,7 @@ defmodule Core.Schema.RecipeItem do
 
   defmodule Configuration do
     use Piazza.Ecto.Schema
-    defenum Type, string: 0, int: 1, bool: 2, domain: 3
+    defenum Type, string: 0, int: 1, bool: 2, domain: 3, bucket: 4
 
     defmodule Condition do
       use Piazza.Ecto.Schema
@@ -36,7 +36,7 @@ defmodule Core.Schema.RecipeItem do
       embeds_one :condition, Condition
     end
 
-    @valid ~w(type name default documentation placeholder)a
+    @valid ~w(type name default documentation placeholder value)a
 
     def changeset(model, attrs \\ %{}) do
       model

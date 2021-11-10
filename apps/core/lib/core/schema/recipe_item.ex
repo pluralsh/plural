@@ -36,7 +36,7 @@ defmodule Core.Schema.RecipeItem do
       embeds_one :condition, Condition
     end
 
-    @valid ~w(type name default documentation placeholder value)a
+    @valid ~w(type name default documentation placeholder)a
 
     def changeset(model, attrs \\ %{}) do
       model

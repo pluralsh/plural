@@ -4,12 +4,12 @@ defmodule Core.Schema.RecipeItem do
 
   defmodule Configuration do
     use Piazza.Ecto.Schema
-    defenum Type, string: 0, int: 1, bool: 2, domain: 3, bucket: 4
+    defenum Type, string: 0, int: 1, bool: 2, domain: 3, bucket: 4, file: 5
 
     defmodule Condition do
       use Piazza.Ecto.Schema
 
-      defenum Operation, not: 0, gt: 1, lt: 2, eq: 3, gte: 4, lte: 5
+      defenum Operation, not: 0, gt: 1, lt: 2, eq: 3, gte: 4, lte: 5, prefix: 6, suffix: 7
 
       embedded_schema do
         field :field,     :string

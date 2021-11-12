@@ -4,6 +4,7 @@ metadata:
   name: plural-plural
   labels:
     app: postgres
+    db: plural
   {{ include "plural.labels" . | nindent 4 }}
 spec:
   teamId: plural
@@ -71,6 +72,26 @@ metadata:
   labels:
     spilo-role: master
     {{ include "plural.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+  - name: postgres
+    port: 5432
+    targetPort: 5432
+  - name: http-metrics
+    port: 9187
+    targetPort: http-metrics
+  selector:
+    spilo-role: master
+    db: plural
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: plural-master-scrape
+  labels:
+    spilo-role: master
+    {{ include "plural.labels" . | nindent 4 }}
   annotations:
     prometheus.io/scrape: "true"
     prometheus.io/port: "9187"
@@ -107,3 +128,4 @@ spec:
     targetPort: http-metrics
   selector:
     spilo-role: replica
+    db: plural

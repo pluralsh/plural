@@ -26,6 +26,26 @@ defmodule Core.Schema.RecipeItem do
       end
     end
 
+    defmodule Validation do
+      use Piazza.Ecto.Schema
+
+      defenum Type, regex: 0
+
+      embedded_schema do
+        field :type,    Type
+        field :regex,   :string
+        field :message, :string
+      end
+
+      @valid ~w(type regex message)a
+
+      def changeset(model, attrs \\ %{}) do
+        model
+        |> cast(attrs, @valid)
+        |> validate_required([:type, :message])
+      end
+    end
+
     embedded_schema do
       field :type,           Type
       field :name,           :string
@@ -34,6 +54,7 @@ defmodule Core.Schema.RecipeItem do
       field :placeholder,    :string
 
       embeds_one :condition, Condition
+      embeds_one :validation, Validation
     end
 
     @valid ~w(type name default documentation placeholder)a
@@ -42,6 +63,7 @@ defmodule Core.Schema.RecipeItem do
       model
       |> cast(attrs, @valid)
       |> cast_embed(:condition)
+      |> cast_embed(:validation)
       |> validate_required([:type, :name])
     end
   end

@@ -41,6 +41,12 @@ defmodule GraphQl.Schema.Recipe do
     field :operation, non_null(:operation)
   end
 
+  input_object :recipe_validation_attributes do
+    field :type,    non_null(:validation_type)
+    field :regex,   :string
+    field :message, non_null(:string)
+  end
+
   input_object :recipe_item_attributes do
     field :name,          non_null(:string)
     field :type,          non_null(:recipe_item_type)
@@ -63,6 +69,7 @@ defmodule GraphQl.Schema.Recipe do
 
   ecto_enum :datatype, Core.Schema.RecipeItem.Configuration.Type
   ecto_enum :operation, Core.Schema.RecipeItem.Configuration.Condition.Operation
+  ecto_enum :validation_type, Core.Schema.RecipeItem.Configuration.Validation.Type
   ecto_enum :provider, Core.Schema.Recipe.Provider
 
   ### OBJECTS
@@ -113,12 +120,19 @@ defmodule GraphQl.Schema.Recipe do
     field :documentation, :string
     field :placeholder,   :string
     field :condition,     :recipe_condition
+    field :validation,    :recipe_validation
   end
 
   object :recipe_condition do
     field :field,     non_null(:string)
     field :value,     :string
     field :operation, non_null(:operation)
+  end
+
+  object :recipe_validation do
+    field :type,     non_null(:validation_type)
+    field :regex,    :string
+    field :message,  non_null(:string)
   end
 
   connection node_type: :recipe

@@ -121,6 +121,9 @@ defmodule GraphQl.Schema.Recipe do
     field :placeholder,   :string
     field :condition,     :recipe_condition
     field :validation,    :recipe_validation
+
+    field :function_name, :string
+    field :args,          list_of(:string)
   end
 
   object :recipe_condition do

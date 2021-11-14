@@ -1,0 +1,19 @@
+{{- define "airflow.config-overlay" -}}
+apiVersion: platform.plural.sh/v1alpha1
+kind: ConfigurationOverlay
+metadata:
+  name: {{ .name }}
+  labels:
+{{ include "plural.labels" . | indent 4 }}
+spec:
+{{ toYaml .spec | nindent 2 }}
+{{- end -}}
+
+{{ $context := . }}
+{{ range $index, $overlay := .Values.configOverlays }}
+  {{- $args := mergeOverwrite $context $overlay }}
+  {{ if $index }}
+---
+  {{ end }}
+  {{ include "airflow.config-overlay" $args | nindent 0 }}
+{{- end -}}

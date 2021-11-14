@@ -60,6 +60,8 @@ defmodule GraphQl.Schema.Recipe do
     field :documentation, :string
     field :placeholder,   :string
     field :condition,     :recipe_condition_attributes
+    field :validation,    :recipe_validation_attributes
+    field :function_name, :string
   end
 
   enum :recipe_item_type do

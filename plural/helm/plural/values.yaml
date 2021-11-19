@@ -50,7 +50,7 @@ configOverlays:
     - path: ['plural', 'secrets', 'cloudflare_token']
 - name: cloudflare-zone
   spec:
-    name: Cloudflare Zoon
+    name: Cloudflare Zone
     documentation: zone id for cloudflare dns
     updates:
     - path: ['plural', 'secrets', 'cloudflare_zone']
@@ -78,18 +78,118 @@ configOverlays:
     documentation: client id for google authentication
     updates:
     - path: ['plural', 'secrets', 'google', 'client_id']
-- name: google-client-id
+- name: google-client-secret
   spec:
-    name: Google Client Id
-    documentation: client id for google authentication
+    name: Google Client Secret
+    documentation: client secret for google authentication
     updates:
-    - path: ['plural', 'secrets', 'google', 'client_id']
+    - path: ['plural', 'secrets', 'google', 'client_secret']
 - name: sentry-dsn
   spec:
     name: Sentry DSN
     documentation: dsn address for sentry error collection
     updates:
     - path: ['plural', 'sentryDsn']
+- name: api-cpu
+  labels:
+    platform.plural.sh/component: plural-api
+    platform.plural.sh/kind: deployment
+    platform.plural.sh/resource: cpu
+  spec:
+    name: API CPU
+    documentation: cpu requests for api deployment
+    updates:
+    - path: ['plural', 'api', 'resources', 'requests', 'cpu']
+- name: api-mem
+  labels:
+    platform.plural.sh/component: plural-api
+    platform.plural.sh/kind: deployment
+    platform.plural.sh/resource: memory
+  spec:
+    name: API Memory
+    documentation: memory requests for api deployment
+    updates:
+    - path: ['plural', 'api', 'resources', 'requests', 'memory']
+- name: rtc-cpu
+  labels:
+    platform.plural.sh/component: plural-rtc
+    platform.plural.sh/kind: deployment
+    platform.plural.sh/resource: cpu
+  spec:
+    name: rtc cpu
+    documentation: cpu requests for rtc deployment
+    updates:
+    - path: ['plural', 'rtc', 'resources', 'requests', 'cpu']
+- name: rtc-mem
+  labels:
+    platform.plural.sh/component: plural-rtc
+    platform.plural.sh/kind: deployment
+    platform.plural.sh/resource: memory
+  spec:
+    name: rtc memory
+    documentation: memory requests for rtc deployment
+    updates:
+    - path: ['plural', 'rtc', 'resources', 'requests', 'memory']
+- name: worker-cpu
+  labels:
+    platform.plural.sh/component: plural-worker
+    platform.plural.sh/kind: deployment
+    platform.plural.sh/resource: cpu
+  spec:
+    name: worker cpu
+    documentation: cpu requests for worker deployment
+    updates:
+    - path: ['plural', 'worker', 'resources', 'requests', 'cpu']
+- name: worker-mem
+  labels:
+    platform.plural.sh/component: plural-worker
+    platform.plural.sh/kind: deployment
+    platform.plural.sh/resource: memory
+  spec:
+    name: worker memory
+    documentation: memory requests for worker deployment
+    updates:
+    - path: ['plural', 'worker', 'resources', 'requests', 'memory']
+- name: registry-cpu
+  labels:
+    platform.plural.sh/component: plural-registry
+    platform.plural.sh/kind: deployment
+    platform.plural.sh/resource: cpu
+  spec:
+    name: registry cpu
+    documentation: cpu requests for registry deployment
+    updates:
+    - path: ['plural', 'registry', 'resources', 'requests', 'cpu']
+- name: registry-mem
+  labels:
+    platform.plural.sh/component: plural-registry
+    platform.plural.sh/kind: deployment
+    platform.plural.sh/resource: memory
+  spec:
+    name: registry memory
+    documentation: memory requests for registry deployment
+    updates:
+    - path: ['plural', 'registry', 'resources', 'requests', 'memory']
+- name: chartmuseum-cpu
+  labels:
+    platform.plural.sh/component: chartmuseum
+    platform.plural.sh/kind: deployment
+    platform.plural.sh/resource: cpu
+  spec:
+    name: chartmuseum cpu
+    documentation: cpu requests for chartmuseum deployment
+    updates:
+    - path: ['plural', 'chartmuseum', 'resources', 'requests', 'cpu']
+- name: chartmuseum-mem
+  labels:
+    platform.plural.sh/component: chartmuseum
+    platform.plural.sh/kind: deployment
+    platform.plural.sh/resource: memory
+  spec:
+    name: chartmuseum memory
+    documentation: memory requests for chartmuseum deployment
+    updates:
+    - path: ['plural', 'chartmuseum', 'resources', 'requests', 'memory']
 
 secrets:
   jwt: dummy
@@ -126,17 +226,20 @@ image:
 rtc:
   repository: dkr.plural.sh/plural/rtc
   tag: '0.1.2' ## PLRL-REPLACE[  tag: '%s']
+  resources: {}
 
 worker:
   repository: dkr.plural.sh/plural/worker
   tag: '0.1.2' ## PLRL-REPLACE[  tag: '%s']
   minReplicas: 1
   maxReplicas: 10
+  resources: {}
 
 www:
   image: dkr.plural.sh/plural/plural-www
   tag: '0.1.2' ## PLRL-REPLACE[  tag: '%s']
   port: 80
+  resources: {}
 
 cron:
   image: dkr.plural.sh/plural/cron
@@ -151,6 +254,7 @@ region: us-east-1
 api:
   port: 4000
   bucket: plural-assets
+  resources: {}
 
 dbPasswordSecret: plural.plural-plural.credentials.postgresql.acid.zalan.do
 rabbitPasswordSecret: plural-rabbitmq

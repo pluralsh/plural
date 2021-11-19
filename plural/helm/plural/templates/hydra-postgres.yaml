@@ -65,7 +65,6 @@ spec:
       successThreshold: 1
       timeoutSeconds: 5
 ---
----
 apiVersion: v1
 kind: Service
 metadata:
@@ -84,4 +83,4 @@ spec:
     targetPort: http-metrics
   selector:
     spilo-role: master
-    db: hydra
+    cluster-name: plural-hydra

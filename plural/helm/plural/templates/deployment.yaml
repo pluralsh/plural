@@ -51,7 +51,7 @@ spec:
             path: /health
             port: http
         resources:
-          {{- toYaml .Values.resources | nindent 12 }}
+          {{- toYaml .Values.api.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -98,7 +98,7 @@ spec:
         env:
         {{ include "plural.env" . | nindent 8 }}
         resources:
-          {{- toYaml .Values.resources | nindent 12 }}
+          {{- toYaml .Values.worker.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -165,7 +165,7 @@ spec:
             path: /health
             port: http
         resources:
-          {{- toYaml .Values.resources | nindent 12 }}
+          {{- toYaml .Values.rtc.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

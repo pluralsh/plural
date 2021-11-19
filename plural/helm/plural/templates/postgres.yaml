@@ -83,7 +83,7 @@ spec:
     targetPort: http-metrics
   selector:
     spilo-role: master
-    db: plural
+    cluster-name: plural-plural
 ---
 apiVersion: v1
 kind: Service
@@ -128,4 +128,4 @@ spec:
     targetPort: http-metrics
   selector:
     spilo-role: replica
-    db: plural
+    cluster-name: plural-plural

@@ -3,7 +3,7 @@ appVersion: "1.0"
 dependencies:
 - name: hydra
   repository: https://k8s.ory.sh/helm/charts
-  version: 0.16.0
+  version: 0.21.1
 description: A helm chart for installing plural
 maintainers:
 - email: mjg@plural.sh

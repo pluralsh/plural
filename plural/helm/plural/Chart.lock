@@ -1,6 +1,6 @@
 dependencies:
 - name: hydra
   repository: https://k8s.ory.sh/helm/charts
-  version: 0.16.0
-digest: sha256:1843316e67e28ab90734c24a70a932f597d7a085bd613acb9fe58c078485dcd8
-generated: "2021-09-09T22:26:52.976735-04:00"
+  version: 0.21.1
+digest: sha256:282514fa75d9ea3f542393cdfc61ec8f6746a26c6d8eac8a02b99d62ef35c8f6
+generated: "2021-11-23T09:58:54.144291542Z"

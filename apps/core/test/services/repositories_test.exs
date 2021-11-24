@@ -35,6 +35,20 @@ defmodule Core.Services.RepositoriesTest do
     end
   end
 
+  describe "#upsert_repository" do
+    test "It will create a repository for the user's publisher" do
+      %{owner: user} = pub = insert(:publisher)
+
+      {:ok, repo} = Repositories.upsert_repository(%{}, "piazza", pub.id,  user)
+
+      assert repo.name == "piazza"
+      assert is_binary(repo.public_key)
+      assert is_binary(repo.private_key)
+
+      assert_receive {:event, %PubSub.RepositoryCreated{item: ^repo, actor: ^user}}
+    end
+  end
+
   describe "#update_repository" do
     test "Users can update their repositories" do
       %{owner: user} = publisher = insert(:publisher)

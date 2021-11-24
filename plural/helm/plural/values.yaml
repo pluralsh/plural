@@ -295,6 +295,10 @@ hydra:
     dangerousForceHttp: true
     existingSecret: false
     autoMigrate: false
+    config:
+      ttl:
+        id_token: 12h
+
   pdb:
     enabled: true
   deployment:

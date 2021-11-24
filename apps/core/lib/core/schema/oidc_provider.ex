@@ -5,10 +5,11 @@ defmodule Core.Schema.OIDCProvider do
   defenum AuthMethod, post: 0, basic: 1
 
   schema "oidc_providers" do
-    field :client_id,     :string
-    field :client_secret, :string
-    field :redirect_uris, {:array, :string}
-    field :auth_method,   AuthMethod
+    field :client_id,         :string
+    field :client_secret,     :string
+    field :redirect_uris,     {:array, :string}
+    field :auth_method,       AuthMethod
+
     belongs_to :installation, Installation
 
     has_many :bindings, OIDCProviderBinding,

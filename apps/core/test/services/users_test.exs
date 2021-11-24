@@ -23,6 +23,20 @@ defmodule Core.Services.UsersTest do
 
       assert_receive {:event, %PubSub.UserCreated{item: ^user}}
     end
+
+    test "if the email is on a mapped domain, the user will be added to the right account" do
+      mapping = insert(:domain_mapping, domain: "example.com")
+
+      {:ok, user} = Users.create_user(%{
+        name: "some user",
+        password: "superstrongpassword",
+        email: "something@example.com"
+      })
+
+      assert user.name == "some user"
+      assert user.email == "something@example.com"
+      assert user.account_id == mapping.account.id
+    end
   end
 
   describe "#create_publisher" do

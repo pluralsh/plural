@@ -94,14 +94,19 @@ defmodule GraphQl.AccountMutationTest do
 
     test "it can update accounts", %{user: user} do
       {:ok, %{data: %{"updateAccount" => account}}} = run_query("""
-        mutation updateAccount($name: String) {
-          updateAccount(attributes: {name: $name}) {
+        mutation updateAccount($attrs: AccountAttributes!) {
+          updateAccount(attributes: $attrs) {
             name
+            domainMappings { domain }
           }
         }
-      """, %{"name" => "updated"}, %{current_user: user})
+      """, %{"attrs" => %{
+        "name" => "updated",
+        "domainMappings" => [%{"domain" => "example.com"}]
+      }}, %{current_user: user})
 
       assert account["name"] == "updated"
+      assert account["domainMappings"] == [%{"domain" => "example.com"}]
     end
   end
 

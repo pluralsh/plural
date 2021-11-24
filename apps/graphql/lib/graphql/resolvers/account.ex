@@ -1,6 +1,6 @@
 defmodule GraphQl.Resolvers.Account do
   use GraphQl.Resolvers.Base, model: Core.Schema.Account
-  alias Core.Schema.{Group, GroupMember, Role, RoleBinding, IntegrationWebhook, WebhookLog, OAuthIntegration}
+  alias Core.Schema.{Group, GroupMember, Role, RoleBinding, IntegrationWebhook, WebhookLog, OAuthIntegration, DomainMapping}
   alias Core.Services.Accounts
 
   def query(Group, _), do: Group
@@ -9,6 +9,7 @@ defmodule GraphQl.Resolvers.Account do
   def query(GroupMember, _), do: GroupMember
   def query(IntegrationWebhook, _), do: IntegrationWebhook
   def query(WebhookLog, _), do: WebhookLog
+  def query(DomainMapping, _), do: DomainMapping
   def query(_, _), do: Account
 
   def update_account(%{attributes: attrs}, %{context: %{current_user: user}}),

@@ -1,7 +1,7 @@
 defmodule Core.Schema.Account do
   use Piazza.Ecto.Schema
   use Arc.Ecto.Schema
-  alias Core.Schema.{User}
+  alias Core.Schema.{User, DomainMapping}
 
   schema "accounts" do
     field :name,                :string
@@ -10,6 +10,7 @@ defmodule Core.Schema.Account do
     field :billing_customer_id, :string
 
     belongs_to :root_user, User
+    has_many :domain_mappings, DomainMapping
 
     timestamps()
   end
@@ -19,6 +20,7 @@ defmodule Core.Schema.Account do
   def changeset(model, attrs \\ %{}) do
     model
     |> cast(attrs, @valid)
+    |> cast_assoc(:domain_mappings)
     |> unique_constraint(:name)
     |> validate_required([:name])
     |> generate_uuid(:icon_id)

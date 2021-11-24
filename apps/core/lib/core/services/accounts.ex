@@ -11,7 +11,8 @@ defmodule Core.Services.Accounts do
     Invite,
     Role,
     IntegrationWebhook,
-    OAuthIntegration
+    OAuthIntegration,
+    DomainMapping
   }
 
   @type account_resp :: {:ok, Account.t} | {:error, term}
@@ -42,17 +43,36 @@ defmodule Core.Services.Accounts do
   def get_oauth_integration!(service, account_id),
     do: Core.Repo.get_by!(OAuthIntegration, service: service, account_id: account_id)
 
+  def get_domain_mapping(domain),
+    do: Core.Repo.get_by(DomainMapping, domain: domain)
+
   @doc """
   Creates a fresh account for the user, making him the root user. Returns everything to caller
   """
   @spec create_account(User.t) :: {:ok, %{account: Account.t, user: User.t}} | {:error, term}
   def create_account(%User{email: email} = user) do
     start_transaction()
-    |> add_operation(:account, fn _ ->
-      %Account{}
-      |> Account.changeset(%{name: email})
-      |> Ecto.Changeset.change(%{root_user_id: user.id})
-      |> Core.Repo.insert()
+    |> add_operation(:domain_name, fn _ ->
+      case String.split(email, "@") do
+        [_, domain] -> {:ok, domain}
+        _ -> {:error, "invalid email #{email}"}
+      end
+    end)
+    |> add_operation(:autoassign, fn %{domain_name: domain} ->
+      get_domain_mapping(domain)
+      |> Core.Repo.preload([:account])
+      |> case do
+        %DomainMapping{account: account} -> {:ok, account}
+        _ -> {:ok, nil}
+      end
+    end)
+    |> add_operation(:account, fn
+      %{autoassign: nil} ->
+        %Account{}
+        |> Account.changeset(%{name: email})
+        |> Ecto.Changeset.change(%{root_user_id: user.id})
+        |> Core.Repo.insert()
+      %{autoassign: %Account{} = account} -> {:ok, account}
     end)
     |> add_operation(:user, fn %{account: %{id: id}} ->
       user
@@ -68,6 +88,7 @@ defmodule Core.Services.Accounts do
   @spec update_account(map, User.t) :: account_resp
   def update_account(attributes, %User{account_id: aid} = user) do
     get_account!(aid)
+    |> Core.Repo.preload([:domain_mappings])
     |> Account.changeset(attributes)
     |> allow(user, :edit)
     |> when_ok(:update)

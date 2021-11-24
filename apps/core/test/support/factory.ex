@@ -483,4 +483,11 @@ defmodule Core.Factory do
       repository: build(:repository)
     }
   end
+
+  def domain_mapping_factory do
+    %Schema.DomainMapping{
+      account: build(:account),
+      domain: sequence(:domain_mapping, & "domain-#{&1}.com")
+    }
+  end
 end

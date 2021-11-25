@@ -29,7 +29,7 @@
     "js-yaml": "^3.13.1",
     "lodash": "^4.17.21",
     "memoize-one": "^5.1.1",
-    "moment": "^2.24.0",
+    "moment": "2.29.1",
     "phoenix": "^1.5.7",
     "query-string": "^7.0.1",
     "react": "^16.14.0",

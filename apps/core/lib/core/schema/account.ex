@@ -10,7 +10,7 @@ defmodule Core.Schema.Account do
     field :billing_customer_id, :string
 
     belongs_to :root_user, User
-    has_many :domain_mappings, DomainMapping
+    has_many :domain_mappings, DomainMapping, on_replace: :delete
 
     timestamps()
   end

@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { Box, Text, ThemeContext } from 'grommet'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
+import { Box, Text, ThemeContext, TextInput } from 'grommet'
 import { SIDEBAR_WIDTH } from '../constants'
 import { SectionChoice } from '../utils/SectionChoice'
 import { useHistory, useParams } from 'react-router'
@@ -7,7 +7,7 @@ import { User, ServiceAccounts as ServiceAccountsI, EditField, Group, Oauth,
          Invoices as InvoicesI, PaymentMethods, Roles as RolesI, Browser as Domain } from 'forge-core'
 import { useMutation } from 'react-apollo'
 import { UPDATE_ACCOUNT } from './queries'
-import { Button, InputCollection, ResponsiveInput } from 'forge-core'
+import { Button, InputCollection, ResponsiveInput, Trash } from 'forge-core'
 import { CurrentUserContext } from '../login/CurrentUser'
 import { Groups, Roles, Users } from './Directory'
 import Avatar from '../users/Avatar'
@@ -18,6 +18,8 @@ import { OAuthIntegrations } from '../integrations/OAuthIntegrations'
 import { ServiceAccounts } from './ServiceAccounts'
 import { SectionContentContainer, SectionPortal } from '../Explore'
 import { DnsDirectory } from './Domains'
+import { Icon } from './Group'
+import { GqlError } from '../utils/Alert'
 
 const ICON_SIZE = '12px'
 
@@ -45,20 +47,58 @@ const VIEWS = [
   {text: 'OAuth Integrations', view: ViewOptions.INTEGRATIONS, icon: <Oauth size={ICON_SIZE} />},
 ]
 
+function DomainRow({domain: {domain}, removeDomain}) {
+  return (
+    <Box direction='row' fill='horizontal' align='center' gap='small'>
+      <Box fill='horizontal'><Text size='small' weight='bold'>{domain}</Text></Box>
+      <Icon 
+        icon={Trash}
+        tooltip='delete' 
+        onClick={() => removeDomain(domain)} 
+        iconAttrs={{color: 'error'}} />
+    </Box>
+  )
+}
+
+export const sanitize = ({__typename, ...rest}) => rest
+
 function EditAttributes() {
   const {account} = useContext(CurrentUserContext)
-  const [attributes, setAttributes] = useState({name: account.name})
-  const [mutation, {loading}] = useMutation(UPDATE_ACCOUNT, {variables: {attributes}})
+  const [attributes, setAttributes] = useState({name: account.name, domainMappings: account.domainMappings.map(sanitize)})
+  const [domain, setDomain] = useState('')
+  const [mutation, {loading, error}] = useMutation(UPDATE_ACCOUNT, {variables: {attributes}})
+  const removeDomain = useCallback((domain) => {
+    setAttributes({...attributes, domainMappings: attributes.domainMappings.filter((d) => d.domain !== domain)})
+  }, [attributes, setAttributes])
+  const addDomain = useCallback(() => {
+    setAttributes({...attributes, domainMappings: [{domain}, ...attributes.domainMappings]})
+    setDomain('')
+  }, [domain, setDomain, attributes, setAttributes])
 
   return (
     <SectionContentContainer header='Edit Attributes'>
-      <Box fill pad='small'>
+      <Box fill pad='small' gap='medium' border='between'>
+        {error && <GqlError error={error} header='Failed to update account' />}
         <InputCollection>
           <ResponsiveInput
             value={attributes.name}
             label='name'
             onChange={({target: {value}}) => setAttributes({...attributes, name: value})} />
         </InputCollection>
+        <Box gap='small' width='50%'>
+          <Text size='small' weight={500}>Domain Mappings</Text>
+          <Text size='small'><i>register email domains to automatically add users to your account</i></Text>
+          {attributes.domainMappings.map((domain) => (
+            <DomainRow key={domain.id} domain={domain} removeDomain={removeDomain} />
+          ))}
+          <Box direction='row' align='center' gap='small'>
+            <TextInput
+              placeholder='Enter a domain for this account'
+              value={domain}
+              onChange={({target: {value}}) => setDomain(value)} />
+            <Button label='Add domain' onClick={addDomain} />
+          </Box>
+        </Box>
       </Box>
       <SectionPortal>
         <Button label='Update' loading={loading} onClick={mutation} />

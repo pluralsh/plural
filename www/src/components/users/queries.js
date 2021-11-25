@@ -9,7 +9,10 @@ export const ME_Q = gql`
       ...UserFragment
       loginMethod
       hasInstallations
-      account { ...AccountFragment }
+      account { 
+        ...AccountFragment 
+        domainMappings { id domain }
+      }
       publisher { 
         ...PublisherFragment 
         billingAccountId

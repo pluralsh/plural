@@ -44,7 +44,7 @@ defmodule Email.MixProject do
       {:telemetry_metrics, "~> 0.4"},
       {:telemetry_poller, "~> 0.4"},
       {:bamboo_phoenix, "~> 1.0"},
-      {:gettext, "~> 0.11"},
+      {:gettext, "~> 0.18"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
 

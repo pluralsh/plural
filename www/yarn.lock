@@ -10033,10 +10033,10 @@ rc@^1.2.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-ace@^8.0.0:
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/react-ace/-/react-ace-8.0.0.tgz#e6fc155ec3cf240e92bdf2e156a50458a78ed0a4"
-  integrity sha512-EvU14vXbZpAenb1ZVKdn8yTQs/shZ9RghFulHtt67bBXT6sjrNHcfOEXHYtSEmwMb6pQVVNNuulzzd8o+Uouig==
+react-ace@8.1.0:
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/react-ace/-/react-ace-8.1.0.tgz#6680accb7306a1850e6ef4370a00f0007eadc8b4"
+  integrity sha512-n3rm9gRNZjLGlXJQ587RASOQCPn6WlcV2gjRYwvG3gyVpBf4pY6lh/uI9tDkx2zYdEKJUfnGbTmzEGL5yyDWuw==
   dependencies:
     ace-builds "^1.4.6"
     diff-match-patch "^1.0.4"

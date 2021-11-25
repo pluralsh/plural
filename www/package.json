@@ -71,7 +71,7 @@
     "react-window": "^1.8.6",
     "react-window-infinite-loader": "^1.0.7",
     "react-window-reversed": "^1.4.1",
-    "slate": "^0.59.0",
+    "slate": "0.71.0",
     "slate-history": "^0.59.0",
     "slate-react": "^0.59.0",
     "styled-components": "^5.1.1",

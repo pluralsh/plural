@@ -62,7 +62,7 @@
     "react-select": "^4.3.1",
     "react-spinners": "^0.10.6",
     "react-spring": "^9.2.6",
-    "react-stripe-elements": "^6.0.1",
+    "react-stripe-elements": "6.1.2",
     "react-sweet-progress": "^1.1.2",
     "react-tiny-crossfade": "^2.0.0",
     "react-toggle": "^4.1.2",

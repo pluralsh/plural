@@ -23,7 +23,7 @@
     "filesize": "^6.1.0",
     "forge-core": "^1.4.0",
     "graphql": "^14.5.8",
-    "grommet": "2.14.0",
+    "grommet": "2.19.1",
     "grommet-icons": "^4.5.0",
     "highlight.js": "^10.6.0",
     "js-yaml": "^3.13.1",

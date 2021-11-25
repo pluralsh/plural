@@ -46,7 +46,7 @@ defmodule Core.MixProject do
       {:joken, "~> 2.1.0"},
       {:guardian, "~> 1.2.1"},
       {:arc, "~> 0.11.0"},
-      {:arc_gcs, "~> 0.1.0"},
+      {:arc_gcs, "~> 0.2.0"},
       {:porcelain, "~> 2.0"},
       {:ex_aws, "~> 2.1"},
       {:ex_aws_s3, "~> 2.0"},

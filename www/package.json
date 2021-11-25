@@ -20,7 +20,7 @@
     "d3-force": "^2.0.1",
     "d3-selection": "^1.4.1",
     "emoji-mart": "^3.0.1",
-    "filesize": "^6.1.0",
+    "filesize": "6.4.0",
     "forge-core": "^1.4.0",
     "graphql": "^14.5.8",
     "grommet": "2.14.0",

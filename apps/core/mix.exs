@@ -54,7 +54,7 @@ defmodule Core.MixProject do
       {:configparser_ex, "~> 4.0"},
       {:sweet_xml, "~> 0.6"},
       {:arc_ecto, "~> 0.11.1"},
-      {:mojito, "~> 0.3.0"},
+      {:mojito, "~> 0.7.0"},
       {:nebulex, "2.0.0-rc.1"},
       {:decorator, "~> 1.3"},   #=> For using Caching Annotations
       {:botanist, "~> 0.1.0", git: "https://github.com/michaeljguarino/botanist.git", branch: "ecto3"},

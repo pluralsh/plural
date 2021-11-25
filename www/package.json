@@ -60,7 +60,7 @@
     "react-sage": "^0.1.5",
     "react-scripts": "3.2.0",
     "react-select": "^4.3.1",
-    "react-spinners": "^0.10.6",
+    "react-spinners": "0.11.0",
     "react-spring": "^9.2.6",
     "react-stripe-elements": "^6.0.1",
     "react-sweet-progress": "^1.1.2",

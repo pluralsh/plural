@@ -52,7 +52,7 @@
     "react-highlight.js": "^1.0.7",
     "react-icons": "^3.8.0",
     "react-json-view": "^1.21.3",
-    "react-markdown": "^4.2.2",
+    "react-markdown": "7.1.0",
     "react-portal": "^4.2.1",
     "react-quill": "^1.3.3",
     "react-router": "^5.1.2",

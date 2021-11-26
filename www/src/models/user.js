@@ -28,6 +28,7 @@ export const UserFragment = gql`
     emailConfirmBy
     backgroundColor
     serviceAccount
+    roles { admin }
   }
 `;
 

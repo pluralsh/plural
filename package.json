@@ -1,0 +1,5 @@
+{
+  "devDependencies": {
+    "@babel/plugin-proposal-optional-chaining": "^7.16.0"
+  }
+}

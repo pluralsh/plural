@@ -11,6 +11,7 @@ export const ME_Q = gql`
       hasInstallations
       account { 
         ...AccountFragment 
+        rootUser { id }
         domainMappings { id domain }
       }
       publisher { 

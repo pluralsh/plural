@@ -99,6 +99,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-optional-chaining": "^7.16.0",
     "customize-cra": "^1.0.0",
     "react-app-rewired": "^2.1.8"
   }

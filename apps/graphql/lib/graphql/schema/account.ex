@@ -82,7 +82,7 @@ defmodule GraphQl.Schema.Account do
       account, _, _ -> {:ok, Core.Storage.url({account.icon, account}, :original)}
     end
 
-    field :root_user, :user, resolve: dataloader(Account)
+    field :root_user, :user, resolve: dataloader(User)
     field :domain_mappings, list_of(:domain_mapping), resolve: dataloader(Account)
 
     field :background_color, :string, resolve: fn

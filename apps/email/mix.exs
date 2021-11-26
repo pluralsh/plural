@@ -41,7 +41,7 @@ defmodule Email.MixProject do
       {:phoenix_html, "~> 2.11"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_dashboard, "~> 0.4"},
-      {:telemetry_metrics, "~> 0.4"},
+      {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 0.4"},
       {:bamboo_phoenix, "~> 1.0"},
       {:gettext, "~> 0.11"},

@@ -4,7 +4,7 @@ data "aws_eks_cluster" "cluster" {
 
 module "asummable_role_autoscaler" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-  version                       = "3.14.0"
+  version                       = "4.7.0"
   create_role                   = true
   role_name                     = "${var.cluster_name}-plural"
   provider_url                  = replace(data.aws_eks_cluster.cluster.identity[0].oidc[0].issuer, "https://", "")

@@ -39,6 +39,9 @@ defmodule Core.Schema.User do
     field :email_confirm_by, :utc_datetime_usec
 
     embeds_one :address, Address, on_replace: :update
+    embeds_one :roles, Roles, on_replace: :update do
+      boolean_fields [:admin]
+    end
 
     belongs_to :account, Account
 
@@ -95,6 +98,7 @@ defmodule Core.Schema.User do
     model
     |> cast(attrs, @valid)
     |> cast_embed(:address)
+    |> cast_embed(:roles, with: &roles_changeset/2)
     |> unique_constraint(:email)
     |> validate_required([:name, :email])
     |> validate_length(:email,    max: 255)
@@ -104,6 +108,11 @@ defmodule Core.Schema.User do
     |> hash_password()
     |> generate_uuid(:avatar_id)
     |> cast_attachments(attrs, [:avatar], allow_urls: true)
+  end
+
+  def roles_changeset(model, attrs \\ %{}) do
+    model
+    |> cast(attrs, [:admin])
   end
 
   def service_account_changeset(model, attrs \\ %{}) do

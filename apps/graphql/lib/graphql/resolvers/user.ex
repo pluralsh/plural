@@ -205,6 +205,8 @@ defmodule GraphQl.Resolvers.User do
     end
   end
 
+  def update_user(%{id: id, attributes: attrs}, %{context: %{current_user: user}}) when is_binary(id),
+    do: Users.update_user(attrs, id, user)
   def update_user(%{attributes: attrs}, %{context: %{current_user: user}}),
     do: Users.update_user(attrs, user)
 

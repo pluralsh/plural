@@ -241,8 +241,18 @@ defmodule Core.Services.Users do
   def update_user(attrs, %User{} = user) do
     user
     |> User.changeset(attrs)
-    |> Core.Repo.update()
-    |> notify(:update)
+    |> allow(user, :edit)
+    |> when_ok(:update)
+    |> notify(:update, user)
+  end
+
+  @spec update_user(map, binary, User.t) :: user_resp
+  def update_user(attrs, id, %User{} = user) do
+    get_user(id)
+    |> User.changeset(attrs)
+    |> allow(user, :edit)
+    |> when_ok(:update)
+    |> notify(:update, user)
   end
 
   @doc "self explanatory"
@@ -487,6 +497,8 @@ defmodule Core.Services.Users do
 
   def notify({:ok, %User{} = u}, :delete, actor),
     do: handle_notify(PubSub.UserDeleted, u, actor: actor)
+  def notify({:ok, %User{} = u}, :update, actor),
+    do: handle_notify(PubSub.UserUpdated, u, actor: actor)
   def notify(pass, _, _), do: pass
 
   def notify({:ok, %ResetToken{} = t}, :create),

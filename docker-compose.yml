@@ -1,7 +1,7 @@
 version: '3'
 services:
   db:
-    image: gcr.io/pluralsh/postgres:13.5
+    image: postgres:latest
     restart: always
     ports:
     - 5432:5432
@@ -10,7 +10,7 @@ services:
     volumes:
     - database_data:/var/lib/postgresql/data
   rabbit:
-    image: gcr.io/pluralsh/rabbitmq:3-management
+    image: rabbitmq:3-management
     hostname: "rabbit1"
     environment:
       RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
@@ -21,7 +21,7 @@ services:
       - "15672:15672"
       - "5672:5672"
   influxdb:
-    image: gcr.io/pluralsh/influxdb:1.8
+    image: influxdb:1.8
     volumes:
     # Mount for influxdb data directory and configuration
     - influxdb:/var/lib/influxdb

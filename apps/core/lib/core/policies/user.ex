@@ -24,5 +24,22 @@ defmodule Core.Policies.User do
     end
   end
 
+  def can?(%User{account_id: aid, roles: %{admin: true}}, %User{account_id: aid}, :edit), do: :pass
+  def can?(%User{account_id: aid} = actor, %User{account_id: aid, id: id} = user, :edit) do
+    %{account: account} = actor = Core.Repo.preload(actor, [:account])
+    case {account.root_user_id == actor.id, actor.id == id}  do
+      {true, _} -> :pass
+      {false, true} -> no_role_change(actor, user)
+      _ -> {:error, "only admins can edit other users"}
+    end
+  end
+
+  def can?(user, %Ecto.Changeset{} = cs, action),
+    do: can?(user, apply_changes(cs), action)
+
   def can?(_, _, _), do: {:error, :forbidden}
+
+  defp no_role_change(%{roles: %{admin: true}}, _), do: :pass
+  defp no_role_change(_, %{roles: %{admin: true}}), do: {:error, "cannot elevate yourself to admin"}
+  defp no_role_change(_, _), do: :pass
 end

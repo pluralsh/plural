@@ -17,6 +17,11 @@ defmodule GraphQl.Schema.User do
     field :password,     :string
     field :avatar,       :upload_or_url
     field :login_method, :login_method
+    field :roles,        :roles_attributes
+  end
+
+  input_object :roles_attributes do
+    field :admin, :boolean
   end
 
   input_object :publisher_attributes do
@@ -66,6 +71,7 @@ defmodule GraphQl.Schema.User do
     field :email_confirmed,  :boolean
     field :email_confirm_by, :datetime
     field :provider,         :provider
+    field :roles,            :roles
 
     field :publisher,            :publisher, resolve: dataloader(User)
     field :account,              :account, resolve: dataloader(Account)
@@ -94,6 +100,10 @@ defmodule GraphQl.Schema.User do
     end
 
     timestamps()
+  end
+
+  object :roles do
+    field :admin, :boolean
   end
 
   object :impersonation_policy do
@@ -401,6 +411,7 @@ defmodule GraphQl.Schema.User do
 
     field :update_user, :user do
       middleware Authenticated
+      arg :id,         :id
       arg :attributes, non_null(:user_attributes)
 
       resolve safe_resolver(&User.update_user/2)

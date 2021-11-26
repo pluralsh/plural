@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@absinthe/socket-apollo-link": "^0.2.1",
-    "@apollo/react-hooks": "^3.1.3",
+    "@apollo/react-hooks": "4.0.0",
     "@brainhubeu/react-carousel": "^1.10.30",
     "@jumpn/utils-graphql": "^0.6.0",
     "@nivo/core": "^0.67.0",

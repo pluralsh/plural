@@ -28,7 +28,7 @@
     "highlight.js": "^10.6.0",
     "js-yaml": "^3.13.1",
     "lodash": "^4.17.21",
-    "memoize-one": "^5.1.1",
+    "memoize-one": "6.0.0",
     "moment": "^2.24.0",
     "phoenix": "^1.5.7",
     "query-string": "^7.0.1",

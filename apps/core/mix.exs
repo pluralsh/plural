@@ -67,7 +67,7 @@ defmodule Core.MixProject do
       {:yaml_elixir, "~> 2.4"},
       {:timex, "~> 3.6"},
       {:oauth2, "~> 2.0"},
-      {:tzdata, "~> 0.1.8", override: true},
+      {:tzdata, "~> 0.5.0", override: true},
       {:prometheus_ex, "~> 3.0"},
       {:stripity_stripe, "~> 2.7"},
       {:conduit, "~> 0.12"},

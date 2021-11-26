@@ -36,7 +36,7 @@ const ViewOptions = {
 }
 
 const VIEWS = [
-  {text: 'Edit Attributes', view: ViewOptions.EDIT, icon: <EditField size={ICON_SIZE} />},
+  {text: 'Edit Attributes', view: ViewOptions.EDIT, icon: <EditField size={ICON_SIZE} />, optional: true},
   {text: "Users", view: ViewOptions.USERS, icon: <User size={ICON_SIZE} />},
   {text: "Service Accounts", view: ViewOptions.SRV_ACCTS, icon: <ServiceAccountsI size={ICON_SIZE} />},
   {text: "Groups", view: ViewOptions.GROUPS, icon: <Group size={ICON_SIZE} />},
@@ -61,6 +61,10 @@ function DomainRow({domain: {domain}, removeDomain}) {
 }
 
 export const sanitize = ({__typename, ...rest}) => rest
+
+export const canEdit = ({roles, id}, {rootUser}) => (
+  (roles && roles.admin) || id == rootUser.id
+)
 
 function EditAttributes() {
   const {account} = useContext(CurrentUserContext)
@@ -108,7 +112,7 @@ function EditAttributes() {
 }
 
 export function EditAccount({billing}) {
-  const {account} = useContext(CurrentUserContext)
+  const {account, ...me} = useContext(CurrentUserContext)
   let history = useHistory()
   const {section} = useParams()
   const {setBreadcrumbs} = useContext(BreadcrumbsContext)
@@ -129,8 +133,8 @@ export function EditAccount({billing}) {
           <Avatar user={account} size='40px' />
           <Text size='small'>{account.name}</Text>
         </Box>
-        {VIEWS.map(({text, view, icon}) => (
-          <SectionChoice
+        {VIEWS.map(({text, view, icon, optional}) => (
+          (!optional || canEdit(me, account)) && <SectionChoice
             key={view}
             selected={section === view}
             label={text}

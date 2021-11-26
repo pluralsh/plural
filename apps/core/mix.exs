@@ -72,7 +72,7 @@ defmodule Core.MixProject do
       {:stripity_stripe, "~> 2.7"},
       {:conduit, "~> 0.12"},
       {:conduit_amqp, "~> 0.6.3"},
-      {:mime, "~> 1.2"},
+      {:mime, "~> 2.0"},
       {:ex_image_info, "~> 0.2.4"},
       {:instream, "~> 1.0"},
       {:swarm, "~> 3.4.0"},

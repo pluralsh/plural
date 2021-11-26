@@ -22,7 +22,7 @@
     "emoji-mart": "^3.0.1",
     "filesize": "^6.1.0",
     "forge-core": "^1.4.0",
-    "graphql": "^14.5.8",
+    "graphql": "16.0.1",
     "grommet": "2.14.0",
     "grommet-icons": "^4.5.0",
     "highlight.js": "^10.6.0",

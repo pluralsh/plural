@@ -127,7 +127,7 @@
   "tzdata": {:hex, :tzdata, "0.1.201805", "feb76b48b1621e7f66a024798d3f293656a00296d426471939c22f4f08bc5c7d", [:mix], [], "hexpm", "0de5d69a9336152cbeb2f88c902e5109103eca672604e48290233c04e3fadeef"},
   "unicode_util_compat": {:hex, :unicode_util_compat, "0.7.0", "bc84380c9ab48177092f43ac89e4dfa2c6d62b40b8bd132b1059ecc7232f9a78", [:rebar3], [], "hexpm", "25eee6d67df61960cf6a794239566599b09e17e668d3700247bc498638152521"},
   "uri_query": {:hex, :uri_query, "0.1.2", "ae35b83b472f3568c2c159eee3f3ccf585375d8a94fb5382db1ea3589e75c3b4", [:mix], [], "hexpm", "e3bc81816c98502c36498b9b2f239b89c71ce5eadfff7ceb2d6c0a2e6ae2ea0c"},
-  "x509": {:hex, :x509, "0.7.0", "001b762cd99e1a33bc876bb090bd34d9cadc66eb7df3deb76d9f4d8a37b89612", [:mix], [], "hexpm", "5ff9c79e77d64a62ccffd90aaeb23e8f5b6e47844ef7bc8fed931ecf238662e0"},
+  "x509": {:hex, :x509, "0.8.3", "2306b7e9e9dce35cf16a2608c8d85027fa35f37b33c500b775362bbfd388d224", [:mix], [], "hexpm", "101650f2f35de8528878ae9cd449cb2d0cdcd9974733640ef320fad757594684"},
   "yamerl": {:hex, :yamerl, "0.7.0", "e51dba652dce74c20a88294130b48051ebbbb0be7d76f22de064f0f3ccf0aaf5", [:rebar3], [], "hexpm", "cb5a4481e2e2ad36db83bd9962153e1a9208e2b2484185e33fc2caac6a50b108"},
   "yaml_elixir": {:hex, :yaml_elixir, "2.4.0", "2f444abc3c994c902851fde56b6a9cb82895c291c05a0490a289035c2e62ae71", [:mix], [{:yamerl, "~> 0.7", [hex: :yamerl, repo: "hexpm", optional: false]}], "hexpm", "4e25a6d5c873e393689c6f1062c5ec90f6cd1be2527b073178ae37eae4c78bee"},
 }

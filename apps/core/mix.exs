@@ -58,7 +58,7 @@ defmodule Core.MixProject do
       {:nebulex, "2.0.0-rc.1"},
       {:decorator, "~> 1.3"},   #=> For using Caching Annotations
       {:botanist, "~> 0.1.0", git: "https://github.com/michaeljguarino/botanist.git", branch: "ecto3"},
-      {:x509, "~> 0.7.0"},
+      {:x509, "~> 0.8.0"},
       {
         :briefly,
         git: "https://github.com/CargoSense/briefly",

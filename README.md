@@ -43,7 +43,7 @@ Plural's server side is written in elixir, and exposes a graphql api. The fronte
 To begin developing the web app, install npm & yarn, then run:
 
 ```sh
-cd assets && yarn start && cd -
+cd assets && yarn install && cd -
 make web
 ```
 

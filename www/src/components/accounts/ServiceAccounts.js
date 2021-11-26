@@ -31,7 +31,7 @@ function ServiceAccount({user, next, update}) {
   return (
     <>
     <Box fill='horizontal' gap='small' direction='row' align='center' border={{side: 'bottom', color: 'light-6'}} pad={{right: 'small'}}>
-      <UserRow user={user} next={next.node} noborder />
+      <UserRow user={user} next={next.node} noborder notoggle />
       <SecondaryButton label='impersonate' onClick={mutation} loading={loading} />
       <Icon icon={Edit} tooltip='edit' onClick={() => setOpen(true)} />
       <DeleteUser id={user.id} update={update} />

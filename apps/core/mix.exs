@@ -52,7 +52,7 @@ defmodule Core.MixProject do
       {:ex_aws_s3, "~> 2.0"},
       {:ex_aws_sts, "~> 2.0"},
       {:configparser_ex, "~> 4.0"},
-      {:sweet_xml, "~> 0.6"},
+      {:sweet_xml, "~> 0.7"},
       {:arc_ecto, "~> 0.11.1"},
       {:mojito, "~> 0.3.0"},
       {:nebulex, "2.0.0-rc.1"},

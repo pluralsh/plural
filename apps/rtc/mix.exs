@@ -39,7 +39,7 @@ defmodule Rtc.MixProject do
     [
       {:sentry, "8.0.6"},
       {:phoenix, "~> 1.5.7"},
-      {:phoenix_html, "~> 2.11"},
+      {:phoenix_html, "~> 3.0"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:telemetry_metrics, "~> 0.4"},
       {:telemetry_poller, "~> 0.4"},

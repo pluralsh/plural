@@ -130,9 +130,8 @@ defmodule Core.Services.Recipes do
       Map.values(deduped)
       |> topsort_sections()
       |> Enum.map(fn %{recipe_items: items} = section ->
-        %{section | recipe_items: Enum.dedup_by(items, &as_node/1)}
+        %{section | recipe_items: topsort(Enum.dedup_by(items, &as_node/1))}
       end)
-      |> sort_sections()
 
     %{recipe | recipe_sections: Enum.map(sections, &fix_configuration/1)}
   end
@@ -155,14 +154,6 @@ defmodule Core.Services.Recipes do
         |> Enum.concat(sections)
       %{recipe_sections: sections} -> sections ++ prev
     end
-  end
-
-  defp sort_sections(sections) do
-    sections
-    |> Enum.map(fn %{recipe_items: items} = section ->
-      %{section | recipe_items: topsort(items)}
-    end)
-    |> Enum.sort_by(& &1.index)
   end
 
   defp install_items(transaction, items, id, user) do

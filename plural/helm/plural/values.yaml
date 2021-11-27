@@ -8,66 +8,88 @@ rbac:
 configOverlays:
 - name: stripe-secret-key
   spec:
+    folder: secrets
+    subfolder: stripe
     name: Stripe Secret Key
     documentation: secret key for platform stripe account
     updates:
     - path: ['plural', 'secrets', 'stripe_secret']
 - name: stripe-public-key
   spec:
+    folder: secrets
+    subfolder: stripe
     name: Stripe Publishable Key
     documentation: publishable key for platform stripe account
     updates:
     - path: ['plural', 'secrets', 'stripe_publishable_key']
 - name: stripe-connect-id
   spec:
+    folder: secrets
+    subfolder: stripe
     name: Stripe Connect Id
     documentation: id for stripe connect account
     updates:
     - path: ['plural', 'secrets', 'stripe_connect_id']
 - name: zerossl-access-key
   spec:
+    folder: secrets
+    subfolder: zerossl
     name: ZeroSSL Access Key
     documentation: key for zerossl account
     updates:
     - path: ['plural', 'secrets', 'zerossl_access_key']
 - name: zoom-client-id
   spec:
+    folder: secrets
+    subfolder: zoom
     name: Zoom Client Id
     documentation: client id for zoom aouth
     updates:
     - path: ['plural', 'secrets', 'zoom_client_id']
 - name: zoom-client-secret
   spec:
+    folder: secrets
+    subfolder: zoom
     name: Zoom Client Secret
     documentation: client secret for zoom aouth
     updates:
     - path: ['plural', 'secrets', 'zoom_client_secret']
 - name: cloudflare-token
   spec:
+    folder: secrets
+    subfolder: cloudflare
     name: Cloudflare Token
     documentation: token for cloudflare auth
     updates:
     - path: ['plural', 'secrets', 'cloudflare_token']
 - name: cloudflare-zone
   spec:
+    folder: secrets
+    subfolder: cloudflare
     name: Cloudflare Zone
     documentation: zone id for cloudflare dns
     updates:
     - path: ['plural', 'secrets', 'cloudflare_zone']
 - name: sendgrid-secret
   spec:
+    folder: secrets
+    subfolder: sendgrid
     name: Sendgrid Secret
     documentation: secret for sendgrid authentication
     updates:
     - path: ['plural', 'secrets', 'sendgrid_secret']
 - name: github-client-id
   spec:
+    folder: secrets
+    subfolder: github
     name: Github Client Id
     documentation: client id for github oauth
     updates:
     - path: ['plural', 'secrets', 'github', 'client_id']
 - name: github-client-secret
   spec:
+    folder: secrets
+    subfolder: github
     name: Github Client secret
     documentation: client secret for github oauth
     updates:
@@ -75,18 +97,24 @@ configOverlays:
 - name: google-client-id
   spec:
     name: Google Client Id
+    folder: secrets
+    subfolder: google
     documentation: client id for google authentication
     updates:
     - path: ['plural', 'secrets', 'google', 'client_id']
 - name: google-client-secret
   spec:
     name: Google Client Secret
+    folder: secrets
+    subfolder: google
     documentation: client secret for google authentication
     updates:
     - path: ['plural', 'secrets', 'google', 'client_secret']
 - name: sentry-dsn
   spec:
     name: Sentry DSN
+    folder: secrets
+    subfolder: sentry
     documentation: dsn address for sentry error collection
     updates:
     - path: ['plural', 'sentryDsn']

@@ -52,6 +52,8 @@ defmodule Core.Services.RecipesTest do
       assert repo_section
       assert other_repo_section
 
+      assert length(repo_section.configuration) == 1 # dedupes on the name "something"
+
       [%{terraform: %{id: tf_id}}, %{chart: %{id: chart_id}} = helm] = repo_section.recipe_items
       assert tf_id == tf.id
       assert chart_id == chart.id

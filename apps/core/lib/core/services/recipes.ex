@@ -134,9 +134,18 @@ defmodule Core.Services.Recipes do
       end)
       |> sort_sections()
 
-    %{recipe | recipe_sections: sections}
+    %{recipe | recipe_sections: Enum.map(sections, &fix_configuration/1)}
   end
   def hydrate(nil), do: nil
+
+  defp fix_configuration(%RecipeSection{configuration: conf, recipe_items: items} = section) do
+    configuration =
+      Enum.flat_map(items, & (&1.configuration || []))
+      |> Enum.concat(conf || [])
+      |> Enum.dedup_by(& &1.name)
+
+    %{section | configuration: configuration}
+  end
 
   defp resolve_dependencies(prev, %Recipe{} = recipe) do
     case Core.Repo.preload(recipe, @preloads) do

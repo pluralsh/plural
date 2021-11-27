@@ -31,8 +31,9 @@ defmodule GraphQl.Schema.Recipe do
   end
 
   input_object :recipe_section_attributes do
-    field :name,  non_null(:string)
-    field :items, list_of(:recipe_item_attributes)
+    field :name,          non_null(:string)
+    field :items,         list_of(:recipe_item_attributes)
+    field :configuration, list_of(:recipe_configuration_attributes)
   end
 
   input_object :recipe_condition_attributes do
@@ -95,11 +96,12 @@ defmodule GraphQl.Schema.Recipe do
   end
 
   object :recipe_section do
-    field :id,           :id
-    field :repository,   :repository, resolve: dataloader(Repository)
-    field :recipe,       :recipe, resolve: dataloader(Recipe)
-    field :index,        :integer
-    field :recipe_items, list_of(:recipe_item), resolve: dataloader(Recipe)
+    field :id,            :id
+    field :repository,    :repository, resolve: dataloader(Repository)
+    field :recipe,        :recipe, resolve: dataloader(Recipe)
+    field :index,         :integer
+    field :recipe_items,  list_of(:recipe_item), resolve: dataloader(Recipe)
+    field :configuration, list_of(:recipe_configuration)
 
     timestamps()
   end

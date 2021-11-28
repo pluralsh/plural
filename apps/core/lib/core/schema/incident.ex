@@ -51,6 +51,13 @@ defmodule Core.Schema.Incident do
     )
   end
 
+  def supported(query \\ __MODULE__, user) do
+    from(i in query,
+      join: r in ^Repository.supported(user),
+        on: i.repository_id == r.id
+    )
+  end
+
   def with_notifications(query \\ __MODULE__, user_id) do
     notifs = from(
       f in Notification.for_user(user_id),

@@ -33,22 +33,20 @@ defmodule GraphQl.Resolvers.Incidents do
     Dataloader.Ecto.run_batch(Core.Repo, queryable, query, col, inputs, repo_opts)
   end
 
-  def list_incidents(%{repository_id: id} = args, %{context: %{current_user: user}}) do
-    Incident.for_repository(id)
+  def list_incidents(args, %{context: %{current_user: user}}) do
+    base_query(args, user)
     |> incident_sort(args)
-    |> maybe_filter_creator(user, supports_repo?(id, user))
     |> maybe_search(Incident, args)
     |> apply_filters(args, user)
     |> paginate(args)
   end
 
-  def list_incidents(args, %{context: %{current_user: user}}) do
-    Incident.for_creator(user.id)
-    |> maybe_search(Incident, args)
-    |> incident_sort(args)
-    |> apply_filters(args, user)
-    |> paginate(args)
+  defp base_query(%{supports: true}, user), do: Incident.supported(user)
+  defp base_query(%{repository_id: id}, user) when is_binary(id) do
+    Incident.for_repository(id)
+    |> maybe_filter_creator(user, supports_repo?(id, user))
   end
+  defp base_query(_, user), do: Incident.for_creator(user.id)
 
   defp incident_sort(query, %{sort: sort, order: order}) when not is_nil(sort) and not is_nil(order),
     do: Incident.ordered(query, [{order, sort}])

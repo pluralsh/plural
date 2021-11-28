@@ -274,6 +274,7 @@ defmodule GraphQl.Schema.Incidents do
     connection field :incidents, node_type: :incident do
       middleware Authenticated, :external
       arg :repository_id, :id
+      arg :supports,      :boolean
 
       arg :q,       :string
       arg :sort,    :incident_sort

@@ -83,7 +83,8 @@ defmodule Core.Schema.Repository do
     do: from(r in query, where: like(r.name, ^"#{sq}%"))
 
   def supported(query \\ __MODULE__, user)
-  def supported(query, %User{id: id, account: %{root_user_id: id}}), do: query
+  def supported(query, %User{id: id, account: %{id: aid, root_user_id: id}}),
+    do: for_account(query, aid)
   def supported(query, %User{} = user) do
     subquery =
       user
@@ -96,6 +97,7 @@ defmodule Core.Schema.Repository do
         end)
       end)
 
+    query = for_account(query, user.account_id)
     from(r in query, where: ^subquery)
   end
 

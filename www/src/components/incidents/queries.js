@@ -101,6 +101,15 @@ export const UPDATE_INCIDENT = gql`
   ${IncidentFragment}
 `
 
+export const DELETE_INCIDENT = gql`
+  mutation Delete($id: ID!) {
+    deleteIncident(id: $id) {
+      ...IncidentFragment
+    }
+  }
+  ${IncidentFragment}
+`
+
 export const ACCEPT_INCIDENT = gql`
   mutation Accept($id: ID!) {
     acceptIncident(id: $id) {

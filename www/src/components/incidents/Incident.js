@@ -1,12 +1,12 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
-import { Button, Scroller, Edit, Close, File, Messages as MessagesI } from 'forge-core'
+import { Button, Scroller, Edit, Close, File, Messages as MessagesI, ModalHeader } from 'forge-core'
 import { CurrentUserContext } from '../login/CurrentUser'
 import { useMutation, useQuery, useSubscription } from 'react-apollo'
-import { useParams } from 'react-router'
+import { useHistory, useParams } from 'react-router'
 import Markdown from './Markdown'
-import { INCIDENT_Q, INCIDENT_SUB, MESSAGE_SUB, UPDATE_INCIDENT } from './queries'
+import { DELETE_INCIDENT, INCIDENT_Q, INCIDENT_SUB, MESSAGE_SUB, UPDATE_INCIDENT } from './queries'
 import { Severity } from './Severity'
-import { Box, Text, TextInput } from 'grommet'
+import { Box, Text, TextInput, Layer } from 'grommet'
 import { Status } from './IncidentStatus'
 import { MessageInput, MessageScrollContext } from './MessageInput'
 import { dateFormat } from '../../utils/date'
@@ -48,6 +48,15 @@ function Empty() {
       <MessagesI size='40px' />
       <Text size='small'>Get the conversation started</Text>
     </Box>
+  )
+}
+
+function DeleteIncident({incident}) {
+  const [mutation, {loading}] = useMutation(DELETE_INCIDENT, {variables: {id: incident.id}})
+
+
+  return (
+    <Button label='Delete' background='red-dark' onClick={mutation} loading={loading} />
   )
 }
 
@@ -184,6 +193,10 @@ function IncidentOwner({incident: {owner}}) {
   )
 }
 
+const canDelete = (incident, me) => (
+  me.id === incident.creator.id || (incident.owner && incident.owner.id === me.id)
+)
+
 function IncidentInner({incident, fetchMore, subscribeToMore, loading, editing, setEditing}) {
   const [view, setView] = useState(IncidentView.MSGS)
   const [listRef, setListRef] = useState(null)
@@ -224,6 +237,7 @@ function IncidentInner({incident, fetchMore, subscribeToMore, loading, editing, 
         {incident.owner && (<IncidentOwner incident={incident} />)}
         {incident.nextResponseAt && <SlaTimer incident={incident} />}
         <Status incident={incident} setActive={(status) => mutation({variables: {attributes: {status}}})} />
+        {canDelete(incident, currentUser) && <DeleteIncident incident={incident} />}
       </Box>
       <Box fill direction='row'>
         <Box fill>
@@ -268,6 +282,8 @@ function IncidentInner({incident, fetchMore, subscribeToMore, loading, editing, 
 }
 
 export function Incident({editing}) {
+  let history = useHistory()
+  const [deleted, setDeleted] = useState(false)
   const {incidentId} = useParams()
   const [edit, setEdit] = useState(editing)
   const {data, loading, fetchMore, subscribeToMore} = useQuery(INCIDENT_Q, {
@@ -275,7 +291,12 @@ export function Incident({editing}) {
     fetchPolicy: 'cache-and-network'
   })
   
-  useSubscription(INCIDENT_SUB, {variables: {id: incidentId}})
+  useSubscription(INCIDENT_SUB, {
+    variables: {id: incidentId},
+    onSubscriptionData: ({subscriptionData: {data: {incidentDelta: {delta}}}}) => (
+      delta === 'DELETE' && setDeleted(true)
+    )
+  })
 
   const {setBreadcrumbs} = useContext(BreadcrumbsContext)
   useEffect(() => {
@@ -286,6 +307,19 @@ export function Incident({editing}) {
 
   return (
     <PresenceProvider incidentId={incidentId}>
+      {deleted && (
+        <Layer modal>
+          <Box width='50vw'>
+            <ModalHeader text='Incident Deleted!' />
+            <Box pad='medium' gap='small'>
+              <Text size='small'>This incident was deleted</Text>
+              <Box direction='row' justify='end'>
+                <Button label='Return' onClick={() => history.push('/incidents')} />
+              </Box>
+            </Box>
+          </Box>
+        </Layer>
+      )}
       <IncidentInner
         editing={edit}
         setEditing={setEdit}

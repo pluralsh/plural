@@ -36,6 +36,12 @@ defmodule RtcWeb.Channels.IncidentSubscriptionTest do
       assert doc["delta"] == "UPDATE"
       assert doc["payload"]["id"] == incident.id
       assert doc["payload"]["title"] == incident.title
+
+      publish_event(%PubSub.IncidentDeleted{item: incident})
+      assert_push("subscription:data", %{result: %{data: %{"incidentDelta" => doc}}})
+      assert doc["delta"] == "DELETE"
+      assert doc["payload"]["id"] == incident.id
+      assert doc["payload"]["title"] == incident.title
     end
   end
 

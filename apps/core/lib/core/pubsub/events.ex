@@ -14,6 +14,7 @@ defmodule Core.PubSub.SubscriptionCreated, do: use Piazza.PubSub.Event
 
 defmodule Core.PubSub.IncidentCreated, do: use Piazza.PubSub.Event
 defmodule Core.PubSub.IncidentUpdated, do: use Piazza.PubSub.Event
+defmodule Core.PubSub.IncidentDeleted, do: use Piazza.PubSub.Event
 
 defmodule Core.PubSub.IncidentMessageCreated, do: use Piazza.PubSub.Event
 defmodule Core.PubSub.IncidentMessageUpdated, do: use Piazza.PubSub.Event

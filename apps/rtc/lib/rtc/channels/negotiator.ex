@@ -18,7 +18,11 @@ defimpl Rtc.Channels.Negotiator, for: Any do
   def negotiate(_), do: :ok
 end
 
-defimpl Rtc.Channels.Negotiator, for: [Core.PubSub.IncidentCreated, Core.PubSub.IncidentUpdated] do
+defimpl Rtc.Channels.Negotiator, for: [
+                                  Core.PubSub.IncidentCreated,
+                                  Core.PubSub.IncidentUpdated,
+                                  Core.PubSub.IncidentDeleted
+                                ] do
   import Rtc.Channels.NegotiatorHelper
 
   def negotiate(%{item: %{repository_id: repo_id, id: id} = incident}) do
@@ -31,6 +35,7 @@ defimpl Rtc.Channels.Negotiator, for: [Core.PubSub.IncidentCreated, Core.PubSub.
 
   defp delta_name(Core.PubSub.IncidentCreated), do: :create
   defp delta_name(Core.PubSub.IncidentUpdated), do: :update
+  defp delta_name(Core.PubSub.IncidentDeleted), do: :delete
 end
 
 defimpl Rtc.Channels.Negotiator, for: [

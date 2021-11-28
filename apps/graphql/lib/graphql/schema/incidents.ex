@@ -316,6 +316,13 @@ defmodule GraphQl.Schema.Incidents do
       resolve safe_resolver(&Incidents.update_incident/2)
     end
 
+    field :delete_incident, :incident do
+      middleware Authenticated, :external
+      arg :id, non_null(:id)
+
+      resolve safe_resolver(&Incidents.delete_incident/2)
+    end
+
     field :accept_incident, :incident do
       middleware Authenticated, :external
       arg :id, non_null(:id)

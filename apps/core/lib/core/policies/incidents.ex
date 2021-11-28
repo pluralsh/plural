@@ -9,6 +9,9 @@ defmodule Core.Policies.Incidents do
         do: :continue, else: {:error, :forbidden}
   end
 
+  def can?(%User{id: owner_id}, %Incident{owner_id: owner_id, status: :complete}, :delete), do: :pass
+  def can?(%User{id: creator_id}, %Incident{creator_id: creator_id}, :delete), do: :pass
+
   def can?(%User{id: owner_id}, %Incident{owner_id: owner_id}, :edit), do: :pass
   def can?(%User{id: creator_id}, %Incident{creator_id: creator_id}, :edit), do: :pass
 

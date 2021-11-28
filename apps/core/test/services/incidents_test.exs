@@ -113,6 +113,38 @@ defmodule Core.Services.IncidentsTest do
     end
   end
 
+  describe "#delete_incident/3" do
+    test "Incident creators can delete" do
+      incident = insert(:incident)
+
+      {:ok, del} = Incidents.delete_incident(incident.id, incident.creator)
+
+      refute refetch(del)
+
+      assert_receive {:event, %PubSub.IncidentDeleted{item: ^del}}
+    end
+
+    test "incident owners can delete completed incidents" do
+      user = insert(:user)
+      incident = insert(:incident, status: :complete, owner: user)
+
+      {:ok, del} = Incidents.delete_incident(incident.id, user)
+
+      refute refetch(del)
+
+      incident = insert(:incident, owner: user)
+
+      {:error, _} = Incidents.delete_incident(incident.id, user)
+    end
+
+    test "non-owner/creators cannot delete" do
+      user = insert(:user)
+      incident = insert(:incident)
+
+      {:error, _} = Incidents.delete_incident(incident.id, user)
+    end
+  end
+
   describe "#accept_incident/2" do
     test "account users can accept incidents" do
       account = insert(:account)

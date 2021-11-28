@@ -65,6 +65,13 @@ defmodule Core.Services.Incidents do
     |> notify(:update, user)
   end
 
+  def delete_incident(incident_id, %User{} = user) do
+    get_incident!(incident_id)
+    |> allow(user, :delete)
+    |> when_ok(:delete)
+    |> notify(:delete, user)
+  end
+
   def accept_incident(incident_id, %User{} = user) do
     start_transaction()
     |> add_operation(:change, fn _ ->
@@ -180,6 +187,9 @@ defmodule Core.Services.Incidents do
 
   defp notify({:ok, %Incident{} = msg}, :update, user),
     do: handle_notify(PubSub.IncidentUpdated, msg, actor: user)
+
+  defp notify({:ok, %Incident{} = msg}, :delete, user),
+    do: handle_notify(PubSub.IncidentDeleted, msg, actor: user)
 
   defp notify(pass, _, _), do: pass
 end

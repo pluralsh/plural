@@ -66,6 +66,23 @@ defmodule GraphQl.IncidentMutationsTest do
     end
   end
 
+  describe "deleteIncident" do
+    test "responders can accept" do
+      incident = insert(:incident)
+
+      {:ok, %{data: %{"deleteIncident" => deleted}}} = run_query("""
+        mutation Delete($id: ID!) {
+          deleteIncident(id: $id) {
+            id
+          }
+        }
+      """, %{"id" => incident.id}, %{current_user: incident.creator})
+
+      assert deleted["id"] == incident.id
+      refute refetch(incident)
+    end
+  end
+
   describe "acceptIncident" do
     test "responders can accept" do
       incident = insert(:incident)

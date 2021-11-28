@@ -10,6 +10,7 @@ end
 defimpl Core.PubSub.Realtime, for: [
   Core.PubSub.IncidentCreated,
   Core.PubSub.IncidentUpdated,
+  Core.PubSub.IncidentDeleted,
   Core.PubSub.IncidentMessageCreated,
   Core.PubSub.IncidentMessageUpdated,
   Core.PubSub.IncidentMessageDeleted,

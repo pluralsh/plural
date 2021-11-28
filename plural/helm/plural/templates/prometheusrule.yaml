@@ -57,7 +57,7 @@ spec:
         )  > 1
       for: 5m
       labels:
-        severity: critical
+        severity: warning
         namespace: {{ .Release.Namespace }}
       annotations:
         summary: plural postgres memory has gotten too high

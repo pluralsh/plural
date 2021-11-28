@@ -14,40 +14,39 @@ dependencies:
   name: influx-aws
 sections:
 - name: plural
+  configuration:
+  - name: chartmuseum_bucket
+    documentation: Bucket for helm charts
+    type: STRING
+  - name: assets_bucket
+    documentation: bucket for misc assets (docker imgs/terraform modules)
+    type: STRING
+  - name: images_bucket
+    documentation: bucket for images and icons
+    type: STRING
+  - name: plural_dns
+    documentation: FQDN to use for your plural cluster
+    type: DOMAIN
+  - name: plural_dkr_dns
+    documentaion: FQDN for your plural docker registry
+    type: DOMAIN
+  - name: admin_name
+    documentation: name for initial admin user
+    type: STRING
+  - name: admin_email
+    documentation: email for initial admin user
+    type: STRING
+  - name: publisher
+    documentation: name for initial publisher
+    type: STRING
+  - name: publisher_description
+    documentation: description for initial publisher
+    type: STRING
+  - name: hydra_host
+    documentation: the fqdn to use for hydra, for managing plural oauth
+    type: STRING
   items:
   - type: TERRAFORM
     name: aws
-    configuration:
-    - name: chartmuseum_bucket
-      documentation: Bucket for helm charts
-      type: STRING
-    - name: assets_bucket
-      documentation: bucket for misc assets (docker imgs/terraform modules)
-      type: STRING
-    - name: images_bucket
-      documentation: bucket for images and icons
-      type: STRING
   - type: HELM
     name: plural
-    configuration:
-    - name: plural_dns
-      documentation: FQDN to use for your plural cluster
-      type: DOMAIN
-    - name: plural_dkr_dns
-      documentaion: FQDN for your plural docker registry
-      type: DOMAIN
-    - name: admin_name
-      documentation: name for initial admin user
-      type: STRING
-    - name: admin_email
-      documentation: email for initial admin user
-      type: STRING
-    - name: publisher
-      documentation: name for initial publisher
-      type: STRING
-    - name: publisher_description
-      documentation: description for initial publisher
-      type: STRING
-    - name: hydra_host
-      documentation: the fqdn to use for hydra, for managing plural oauth
-      type: STRING

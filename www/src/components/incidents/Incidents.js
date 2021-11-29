@@ -251,10 +251,11 @@ function SortOptions() {
   )
 }
 
-export function IncidentToolbar() {
+export function IncidentToolbar({children}) {
   return (
     <Box flex={false} border={{side: 'bottom', color: 'light-5'}} align='center' direction='row' 
          pad={{vertical: 'xsmall', horizontal: 'small'}}>
+      {children}
       <Filters />
       <SortOptions />
     </Box>

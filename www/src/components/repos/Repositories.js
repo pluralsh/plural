@@ -37,7 +37,7 @@ function DeleteRepository({repo, publisherId}) {
 }
 
 
-export function RepoIcon({repo: {icon, darkIcon}, round, size,}) {
+export function RepoIcon({repo: {icon, darkIcon}, round, size}) {
   const {dark} = useContext(ThemeContext)
   const dim = size || '50px'
   return (

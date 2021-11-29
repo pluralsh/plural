@@ -72,7 +72,7 @@ export function RepoOption({repo, selected, setRepository}) {
         <Text size='small' weight={500}>{repo.name}</Text>
         <Text size='small'><i>{repo.description}</i></Text>
       </Box>
-      {selected.id === repo.id && (
+      {selected && selected.id === repo.id && (
         <Checkmark size='15px' color='brand' />
       )}
     </Box>

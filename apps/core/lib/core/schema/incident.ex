@@ -28,6 +28,12 @@ defmodule Core.Schema.Incident do
 
   @valid ~w(title description severity owner_id status)a
 
+  def with_status(query \\ __MODULE__, statuses)
+  def with_status(query, statuses) when is_list(statuses) do
+    from(i in query, where: i.status in ^statuses)
+  end
+  def with_status(query, status), do: from(i in query, where: i.status == ^status)
+
   def search(query \\ __MODULE__, q) do
     from(i in query, where: ilike(i.title, ^"%#{q}%"))
   end

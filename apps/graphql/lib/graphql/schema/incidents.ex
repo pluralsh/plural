@@ -19,6 +19,7 @@ defmodule GraphQl.Schema.Incidents do
     value :notifications
     value :following
     value :tag
+    value :status
   end
 
   input_object :incident_attributes do
@@ -81,6 +82,8 @@ defmodule GraphQl.Schema.Incidents do
   input_object :incident_filter do
     field :type,  non_null(:incident_filter_type)
     field :value, :string
+
+    field :statuses, list_of(:incident_status)
   end
 
   object :slim_subscription do

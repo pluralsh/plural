@@ -59,6 +59,7 @@ defmodule GraphQl.Resolvers.Incidents do
   defp apply_incident_filter(query, %{type: :following}, user), do: Incident.following(query, user.id)
   defp apply_incident_filter(query, %{type: :notifications}, user), do: Incident.with_notifications(query, user.id)
   defp apply_incident_filter(query, %{type: :tag, value: tag}, _), do: Incident.for_tag(query, tag)
+  defp apply_incident_filter(query, %{type: :status, statuses: status}, _), do: Incident.with_status(query, status)
 
   def list_messages(args, %{source: incident}) do
     IncidentMessage.for_incident(incident.id)

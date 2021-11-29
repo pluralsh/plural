@@ -24,6 +24,28 @@ defmodule GraphQl.IncidentQueriesTest do
              |> ids_equal(incidents)
     end
 
+    test "it will list incidents for supported repos" do
+      account = insert(:account)
+      repo = insert(:repository, publisher: build(:publisher, account: account))
+      user = insert(:user, account: account)
+      role = insert(:role, repositories: ["*"], permissions: %{support: true}, account: account)
+      insert(:role_binding, role: role, user: user)
+      incidents = insert_list(3, :incident, repository: repo)
+
+      {:ok, %{data: %{"incidents" => found}}} = run_query("""
+        query {
+          incidents(supports: true, first: 5) {
+            edges {
+              node { id }
+            }
+          }
+        }
+      """, %{}, %{current_user: Core.Services.Rbac.preload(user)})
+
+      assert from_connection(found)
+             |> ids_equal(incidents)
+    end
+
     test "it will list incidents by creator if no repo specified" do
       user = insert(:user)
       incidents = insert_list(3, :incident, creator: user)

@@ -41,11 +41,11 @@ defmodule GraphQl.Resolvers.Incidents do
     |> paginate(args)
   end
 
-  defp base_query(%{supports: true}, user), do: Incident.supported(user)
   defp base_query(%{repository_id: id}, user) when is_binary(id) do
     Incident.for_repository(id)
     |> maybe_filter_creator(user, supports_repo?(id, user))
   end
+  defp base_query(%{supports: true}, user), do: Incident.supported(user)
   defp base_query(_, user), do: Incident.for_creator(user.id)
 
   defp incident_sort(query, %{sort: sort, order: order}) when not is_nil(sort) and not is_nil(order),

@@ -52,8 +52,9 @@ defmodule Core.Schema.Incident do
   end
 
   def supported(query \\ __MODULE__, user) do
+    supported_query = Repository.supported(user)
     from(i in query,
-      join: r in ^Repository.supported(user),
+      join: r in subquery(supported_query),
         on: i.repository_id == r.id
     )
   end

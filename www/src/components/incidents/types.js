@@ -66,7 +66,8 @@ export const IncidentSortNames = {
 export const IncidentFilter = {
   NOTIFICATIONS: 'NOTIFICATIONS',
   FOLLOWING: 'FOLLOWING',
-  TAG: 'TAG'
+  TAG: 'TAG',
+  STATUS: 'STATUS',
 }
 
 export const SeverityColorMap = ['critical', 'high', 'medium', 'low', 'light-4', 'dark-6']

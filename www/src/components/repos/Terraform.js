@@ -71,7 +71,12 @@ function TerraformHeader({terraform: {id, name, description, installation, repos
         <img alt='' width='50px' height='50px' src={DEFAULT_TF_ICON} />
       </Box>
       <Box width='100%'>
-        <Text size='medium'>{name}</Text>
+        <Box direction='row' gap='small' align='center'>
+          <Text size='medium'>{name}</Text>
+          {installation && (
+            <Text size='small' color='dark-3'>(installed: {installation.version.version})</Text>
+          )}
+        </Box>
         <Text size='small'><i>{description}</i></Text>
       </Box>
       {version.scan && <PackageGrade scan={version.scan} />}

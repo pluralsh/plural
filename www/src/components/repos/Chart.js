@@ -93,7 +93,12 @@ function ChartHeader({version: {helm, chart, version, scan, id}, chartInstallati
         <img alt='' width='50px' height='50px' src={chart.icon || DEFAULT_CHART_ICON} />
       </Box>
       <Box width='100%'>
-        <Text size='medium'>{chart.name} - {version}</Text>
+        <Box direction='row' align='center' gap='small'>
+          <Text size='medium'>{chart.name} - {version}</Text>
+          {chartInstallation && (
+            <Text size='small' color='dark-3'>(installed: {chartInstallation.version.version})</Text>
+          )}
+        </Box>
         <Text size='small'><i>{helm.description}</i></Text>
       </Box>
       {scan && <PackageGrade scan={scan} />}

@@ -102,6 +102,7 @@ defmodule Core.Services.RecipesTest do
           },
           %{
             name: other_repo.name,
+            configuration: [%{type: :int, name: "something"}],
             items: [
               %{name: other_chart.name, type: :helm}
             ]
@@ -111,6 +112,9 @@ defmodule Core.Services.RecipesTest do
 
 
       verify_recipe.(recipe)
+
+      other_repo_section = Enum.find(recipe.recipe_sections, & &1.repository_id == other_repo.id)
+      assert length(other_repo_section.configuration) == 1
 
       {:ok, new} = Recipes.upsert(%{
         name: "recipe",

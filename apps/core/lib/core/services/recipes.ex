@@ -252,11 +252,12 @@ defmodule Core.Services.Recipes do
   defp build_sections(transaction, sections) when is_list(sections) do
     sections
     |> Enum.with_index()
-    |> Enum.reduce(transaction, fn {%{name: repo_name, items: items}, ind}, acc ->
+    |> Enum.reduce(transaction, fn {%{name: repo_name, items: items} = attrs, ind}, acc ->
       repo = Repositories.get_repository_by_name!(repo_name)
       add_operation(acc, {:section, repo_name}, fn %{recipe: %{id: id}} ->
+        attrs = Map.drop(attrs, [:name, :items])
         %RecipeSection{recipe_id: id}
-        |> RecipeSection.changeset(%{repository_id: repo.id, index: ind})
+        |> RecipeSection.changeset(Map.merge(attrs, %{repository_id: repo.id, index: ind}))
         |> Core.Repo.insert()
       end)
       |> build_items({:section, repo_name}, repo, items)

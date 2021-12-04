@@ -26,6 +26,8 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 6 }}
     {{- end }}
+      initContainers:
+      {{ include "plural.wait-for-migration" . | nindent 6 }}
       containers:
       - name: api
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -88,6 +90,8 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 6 }}
     {{- end }}
+      initContainers:
+      {{ include "plural.wait-for-migration" . | nindent 6 }}
       containers:
       - name: worker
         image: "{{ .Values.worker.repository }}:{{ .Values.worker.tag }}"
@@ -140,6 +144,8 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 6 }}
     {{- end }}
+      initContainers:
+      {{ include "plural.wait-for-migration" . | nindent 6 }}
       containers:
       - name: rtc
         image: "{{ .Values.rtc.repository }}:{{ .Values.rtc.tag }}"

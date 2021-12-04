@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: plural-migration-{{ randAlphaNum 4 | lower }}
+  name: {{ include "plural.migration-name" . }}
 spec:
   template:
     spec:

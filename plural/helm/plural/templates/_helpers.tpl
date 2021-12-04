@@ -89,3 +89,16 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
   value: {{ .Values.sentryDsn | quote }}
 {{ end }}
 {{- end -}}
+
+{{- define "plural.migration-name" -}}
+plural-migration-{{ .Release.Revision }}
+{{- end -}}
+
+{{- define "plural.wait-for-migration" -}}
+- name: wait-for-migration
+  image: gcr.io/pluralsh/groundnuty/k8s-wait-for:v1.3
+  imagePullPolicy: Always
+  args:
+  - job
+  - {{ include "plural.migration-name" . }}
+{{- end -}}

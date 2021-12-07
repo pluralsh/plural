@@ -10,6 +10,7 @@ import { handleOauthChallenge } from './MagicLogin'
 import { OAUTH_CALLBACK } from './queries'
 import { getChallenge, getDeviceToken } from './utils'
 import qs from 'query-string'
+import { finishedDeviceLogin } from './DeviceLoginNotif'
 
 
 export function OAuthCallback() {
@@ -17,11 +18,13 @@ export function OAuthCallback() {
   const client = useApolloClient()
   const {service} = useParams()
   const {code} = qs.parse(location.search)
+  const deviceToken = getDeviceToken()
 
   const [mutation, {error, loading}] = useMutation(OAUTH_CALLBACK, {
-    variables: {code, host: host(), provider: service.toUpperCase(), deviceToken: getDeviceToken()},
+    variables: {code, host: host(), provider: service.toUpperCase(), deviceToken},
     onCompleted: (result) => {
       setToken(result.oauthCallback.jwt)
+      deviceToken && finishedDeviceLogin()
       const challenge = getChallenge()
       if (challenge) {
         handleOauthChallenge(client, challenge)

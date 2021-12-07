@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect, useCallback } from 'react'
 import { Box, Text } from 'grommet'
 import { useFilePicker } from 'react-sage'
 import { Button, InputCollection, ResponsiveInput, Select, User, Installed, 
-        AccessTokens, PublicKeys, Credentials, Password, Logout, Fingerprint } from 'forge-core'
+         PublicKeys, Credentials, Password, Logout, Fingerprint } from 'forge-core'
 import { useMutation, useQuery } from 'react-apollo'
 import { OAUTH_URLS, UPDATE_USER } from './queries'
 import Avatar from './Avatar'

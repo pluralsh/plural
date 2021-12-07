@@ -14,6 +14,7 @@ import queryString from 'query-string'
 import { saveChallenge, saveDeviceToken, wipeChallenge, wipeDeviceToken } from './utils'
 import { host } from '../../helpers/hostname'
 import { METHOD_ICONS } from './OauthEnabler'
+import { finishedDeviceLogin } from './DeviceLoginNotif'
 
 export function LabelledInput({label, value, onChange, placeholder, width, type, modifier}) {
   return (
@@ -101,6 +102,7 @@ function LoginPoller({challenge, token, deviceToken}) {
       }).then(({data: {loginToken: {jwt}}}) => {
         setToken(jwt)
         setSuccess(true)
+        deviceToken && finishedDeviceLogin()
         if (challenge) {
           handleOauthChallenge(client, challenge)
         } else {
@@ -148,6 +150,7 @@ export function Login() {
     variables: { email, password, deviceToken },
     onCompleted: ({login: {jwt}}) => {
       setToken(jwt)
+      deviceToken && finishedDeviceLogin()
       if (challenge) {
         handleOauthChallenge(client, challenge)
       } else {

@@ -33,6 +33,7 @@ import { IncidentDirectory } from './IncidentDirectory'
 import { VerifyEmailConfirmed } from './users/EmailConfirmation'
 import { AutoRefresh } from './login/AutoRefresh'
 import { NavigationContext } from './navigation/Submenu'
+import { DeviceLoginNotif } from './users/DeviceLoginNotif'
 
 export const TOOLBAR_SIZE = '55px'
 
@@ -58,6 +59,7 @@ export function PluralInner() {
       <BreadcrumbProvider>
         <VerifyEmailConfirmed />
         <AutoRefresh />
+        <DeviceLoginNotif />
         <Grid fill rows={[TOOLBAR_SIZE, 'flex']} columns={['100vw']} areas={[
             {name: 'toolbarTop', start: [0, 0], end: [0, 0]},
             {name: 'viewport', start: [0, 1], end: [0, 1]}

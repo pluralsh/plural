@@ -12,6 +12,10 @@ defmodule Core.Services.Recipes do
   def get_by_name(name, repo_id),
     do: Core.Repo.get_by(Recipe, name: name, repository_id: repo_id)
 
+  @spec get_by_name!(binary, binary) :: Recipe.t
+  def get_by_name!(name, repo_id),
+    do: Core.Repo.get_by!(Recipe, name: name, repository_id: repo_id)
+
   @doc """
   Will persist the given recipe for repository `repository_id`
 
@@ -269,7 +273,7 @@ defmodule Core.Services.Recipes do
       Enum.with_index(deps)
       |> Enum.map(fn {%{repo: repo, name: recipe}, ind} ->
         repo = Repositories.get_repository_by_name!(repo)
-        recipe = get_by_name(recipe, repo.id)
+        recipe = get_by_name!(recipe, repo.id)
         %{dependent_recipe_id: recipe.id, index: ind}
       end)
     %{attrs | dependencies: dependencies}

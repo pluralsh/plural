@@ -1,10 +1,12 @@
 # Plural
 
-![Plural](www/public/plural-lockup-dark.png)
+## What is Plural?
 
 A full lifecycle application control plane.
 
 The plural platform ingests all deployment artifacts needed to deploy cloud-native applications and tracks their dependencies, allowing for seamless installations and no-touch upgrades post-install. All applications are managed via GitOps, allowing you to reconfigure them at will, or even eject them from Plural entirely.  It's your application, we just want to help you use it as easily as possible.
+
+## The Plural Workflow
 
 The workflow is literally two commands:
 
@@ -14,10 +16,6 @@ plural deploy
 ```
 
 Our tooling will take care of the rest.
-
-Here's an example of how a deployment on Plural will look:
-
-[![Deployment](https://www.plural.sh/assets/img/placeholders/plrl-video-init-frame.jpg)](https://plural.sh)
 
 ## Features
 
@@ -33,6 +31,23 @@ The Plural platform provides the following:
 * DNS service to register fqdns under onplural.sh to eliminate the hassle of dns registration for users
 * Security scanning of all docker images, helm charts, and terraform modules so you know exactly what you're installing
 * Unified incident management, ensuring all Plural applications have a consistent, top-quality support experience.
+
+## Documentation
+
+* To get started with Plural see the [Getting Started guide](https://docs.plural.sh/getting-started)
+* The full documentation is available on our [Documentation site](https://docs.plural.sh/)
+
+## Community Support
+
+For general help, please refer to the Plural documentation. For additional help you can use the following channels:
+
+* [Discord](https://discord.gg/CKc2kfeXxQ) (For live discussions with the Plural team)
+* [GitHub](https://github.com/pluralsh/plural/) (Bug reports, feature requests, contributions)
+* [Twitter](https://twitter.com/plural_sh) (For our latest news)
+
+## Get Swag
+
+Swag coming soon!
 
 ## Development
 
@@ -72,4 +87,8 @@ The Plural server codebase uses an elixir umbrella application to organize itsel
 
 These apps will all depend on core, where most Plural business logic should live, and their releases are configured under `/rel`.
 
+## Contributing
+Details on contributing coming soon!
 
+## License
+See [LICENSE](LICENSE) for licensing information.

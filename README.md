@@ -1,10 +1,19 @@
 # Plural
 
+![Plural](www/public/plural-lockup-dark.png)
+
 ## What is Plural?
 
 A full lifecycle application control plane.
 
 The plural platform ingests all deployment artifacts needed to deploy cloud-native applications and tracks their dependencies, allowing for seamless installations and no-touch upgrades post-install. All applications are managed via GitOps, allowing you to reconfigure them at will, or even eject them from Plural entirely.  It's your application, we just want to help you use it as easily as possible.
+
+Go to https://app.plural.sh to create an account, deploy some applications, and play around!
+
+## Documentation
+
+* To get started with Plural see the [Getting Started guide](https://docs.plural.sh/getting-started)
+* The full documentation is available on our [Documentation site](https://docs.plural.sh/)
 
 ## The Plural Workflow
 
@@ -32,10 +41,7 @@ The Plural platform provides the following:
 * Security scanning of all docker images, helm charts, and terraform modules so you know exactly what you're installing
 * Unified incident management, ensuring all Plural applications have a consistent, top-quality support experience.
 
-## Documentation
-
-* To get started with Plural see the [Getting Started guide](https://docs.plural.sh/getting-started)
-* The full documentation is available on our [Documentation site](https://docs.plural.sh/)
+also check out the [Plural Console](https://github.com/pluralsh/console) for our feature rich administration console to help you manage any plural applications with ease.
 
 ## Community Support
 

@@ -63,6 +63,7 @@ defmodule GraphQl.Schema.Recipe do
     field :condition,     :recipe_condition_attributes
     field :validation,    :recipe_validation_attributes
     field :function_name, :string
+    field :optional,      :boolean
   end
 
   enum :recipe_item_type do
@@ -123,6 +124,7 @@ defmodule GraphQl.Schema.Recipe do
     field :default,       :string
     field :documentation, :string
     field :placeholder,   :string
+    field :optional,      :boolean
     field :condition,     :recipe_condition
     field :validation,    :recipe_validation
 

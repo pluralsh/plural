@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [ master ]
 jobs:
-  docker-build:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -16,6 +16,15 @@ jobs:
         with:
           elixir-version: '1.11.3' # Define the elixir version [required]
           otp-version: '23.1' # Define the OTP version [required]
+      - name: install plural cli
+        run: |
+          wget -O plural.o 'https://app.plural.sh/artifacts/plural/plural?platform=linux&arch=amd64'
+          mkdir bin
+          chmod +x ./plural.o
+          cp ./plural.o ./bin/plural
+          curl -L https://get.helm.sh/helm-v3.3.1-linux-amd64.tar.gz | tar xvz
+          mv linux-amd64/helm bin/helm && chmod +x bin/helm
+          export PATH="$(pwd)/bin:$PATH"
       - name: test dependencies
         run: make testup
       - name: Restore dependencies cache

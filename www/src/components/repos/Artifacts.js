@@ -2,7 +2,7 @@ import React, { useState, useRef, useCallback } from 'react'
 import styled from 'styled-components'
 import { Box, Text, Drop, Markdown, Table, TableBody, TableRow, TableCell } from 'grommet'
 import { Apple, Windows, Ubuntu, Previous, DocumentText } from 'grommet-icons'
-import { ListView as List, Download } from 'forge-core'
+import { ListView as List, Download, Copyable } from 'forge-core'
 import { normalizeColor } from 'grommet/utils'
 import { download } from '../../utils/file'
 import { MARKDOWN_STYLING } from './Chart'
@@ -14,9 +14,6 @@ import Collapsible from 'react-collapsible'
 import moment from 'moment'
 
 const SMALL_ICON_SIZE = '13px'
-const SHA_LENGTH  = 20
-
-const trim = (sha) => `${sha.substring(0, SHA_LENGTH)}...`
 
 function ArtifactPlatform({platform}) {
   switch (platform) {
@@ -99,8 +96,10 @@ function ArtifactDetails({sha, filesize, arch, platform}) {
     <Table>
       <TableBody>
         <TableRow>
-          <TableCell border='right'><b>sha</b></TableCell>
-          <TableCell>{trim(sha)}</TableCell>
+          <TableCell border='right'><b>sha256</b></TableCell>
+          <TableCell>
+            <Copyable text={sha} pillText='Copied sha256 checksum' />
+          </TableCell>
         </TableRow>
         <TableRow>
           <TableCell border='right'><b>filesize</b></TableCell>

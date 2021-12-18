@@ -12,7 +12,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Set up Elixir
-        uses: erlef/setup-beam@988e02bfe678367a02564f65ca2e37726dc0268f
+        uses: erlef/setup-beam@v1
         with:
           elixir-version: '1.11.3' # Define the elixir version [required]
           otp-version: '23.1' # Define the OTP version [required]
@@ -31,6 +31,12 @@ jobs:
         uses: actions/cache@v2
         with:
           path: deps
+          key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-mix-
+      - name: Restore _build
+        uses: actions/cache@v2
+        with:
+          path: _build
           key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
           restore-keys: ${{ runner.os }}-mix-
       - name: Install dependencies

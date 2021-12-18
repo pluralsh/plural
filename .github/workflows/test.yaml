@@ -14,8 +14,8 @@ jobs:
       - name: Set up Elixir
         uses: erlef/setup-beam@v1
         with:
-          elixir-version: '1.11.3' # Define the elixir version [required]
-          otp-version: '23.1' # Define the OTP version [required]
+          elixir-version: '1.9.0' # Define the elixir version [required]
+          otp-version: '22.1' # Define the OTP version [required]
       - name: install plural cli
         run: |
           wget -O plural.o 'https://app.plural.sh/artifacts/plural/plural?platform=linux&arch=amd64'

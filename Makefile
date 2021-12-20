@@ -38,8 +38,13 @@ build-dump:
 	docker push gcr.io/$(GCP_PROJECT)/dumper:$(APP_VSN)
 
 push: ## push to gcr
+ifeq ($(APP_NAME), www)
+	docker push gcr.io/$(GCP_PROJECT)/plural-www:$(APP_VSN)
+	docker push $(DKR_HOST)/plural/plural-www:$(APP_VSN)
+else
 	docker push gcr.io/$(GCP_PROJECT)/$(APP_NAME):$(APP_VSN)
 	docker push $(DKR_HOST)/plural/${APP_NAME}:$(APP_VSN)
+endif
 
 testup: ## sets up dependent services for test
 	docker-compose up -d

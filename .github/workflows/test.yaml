@@ -41,11 +41,12 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     if: github.ref == 'refs/heads/master'
+    strategy:
+      matrix:
+        app: [plural, cron, worker, rtc, www]
     permissions:
       contents: 'read'
       id-token: 'write'
-    env:
-      PROJECT_ID: ${{ secrets.GOOGLE_PROJECT_ID }}
     steps:
     - uses: actions/checkout@v2
     - uses: google-github-actions/auth@v0
@@ -57,32 +58,16 @@ jobs:
     - uses: google-github-actions/setup-gcloud@v0.3.0
     - name: Login to gcr
       run: gcloud auth configure-docker -q
-    - name: Login to GitHub Container Registry
+    - name: Login to plural registry
       uses: docker/login-action@v1
       with:
         registry: dkr.plural.sh
         username: mjg@plural.sh
         password: ${{ secrets.PLURAL_ACCESS_TOKEN }}
-    - name: publish plural
+    - name: publish ${{ matrix.app }}
       run: |
-        make build APP_NAME=plural GIT_COMMIT=$GITHUB_SHA
-        make push APP_NAME=plural
-    - name: publish rtc
-      run: |
-        make build APP_NAME=rtc GIT_COMMIT=$GITHUB_SHA
-        make push APP_NAME=rtc
-    - name: publish cron
-      run: |
-        make build APP_NAME=cron GIT_COMMIT=$GITHUB_SHA
-        make push APP_NAME=cron
-    - name: publish worker
-      run: |
-        make build APP_NAME=worker GIT_COMMIT=$GITHUB_SHA
-        make push APP_NAME=worker
-    - name: publish www
-      run: |
-        make build APP_NAME=www
-        make push APP_NAME=www
+        make build APP_NAME=${{ matrix.app }} GIT_COMMIT=$GITHUB_SHA
+        make push APP_NAME=${{ matrix.app }}
   deploy:
     runs-on: ubuntu-latest
     needs: publish

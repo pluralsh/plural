@@ -78,15 +78,7 @@ jobs:
     - uses: azure/setup-helm@v1
       with:
         version: latest
-    - name: "install plural cli"
-      run: |
-        wget -O plural.o 'https://app.plural.sh/artifacts/plural/plural?platform=linux&arch=amd64'
-        echo "chmod +x plural.o"
-        chmod +x plural.o
-        echo "mv plural.o /usr/local/bin/plural"
-        mv plural.o /usr/local/bin/plural
-        echo "mkdir"
-        mkdir -p $HOME/.plural
-        echo "echo <secret>"
-        echo ${{ secrets.PLURAL_CONF }} > $HOME/.plural/config.yml
+    - uses: pluralsh/setup-plural@v0
+      with: 
+        config: ${{ secrets.PLURAL_CONF }}
     - run: make deploy

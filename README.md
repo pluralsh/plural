@@ -1,6 +1,6 @@
-# Plural
 
-![Plural](www/public/plural-lockup-dark.png)
+# Welcome to Plural
+<img src="www/public/plural-lockup-dark.png" width=30%/>
 
 ## What is Plural?
 
@@ -51,9 +51,9 @@ For general help, please refer to the Plural documentation. For additional help 
 * [GitHub](https://github.com/pluralsh/plural/) (Bug reports, feature requests, contributions)
 * [Twitter](https://twitter.com/plural_sh) (For our latest news)
 
-## Get Swag
+## Get Free Swag!
 
-Swag coming soon!
+Get free Plural swag [here](https://pluralsh.typeform.com/to/jMj5GaM4) :-)
 
 ## Development
 

@@ -1,4 +1,4 @@
-name: Elixir-CI
+name: plural-ci
 
 on:
   push:
@@ -9,24 +9,20 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Set up Elixir
-        uses: erlef/setup-beam@v1
+      - uses: actions/checkout@v2
+      - uses: erlef/setup-beam@v1
         with:
           elixir-version: '1.9.0' # Define the elixir version [required]
           otp-version: '22.1' # Define the OTP version [required]
+      - uses: azure/setup-helm@v1
+        with:
+          version: latest
       - name: install plural cli
         run: |
           wget -O plural.o 'https://app.plural.sh/artifacts/plural/plural?platform=linux&arch=amd64'
-          mkdir bin
           chmod +x ./plural.o
-          cp ./plural.o ./bin/plural
-          curl -L https://get.helm.sh/helm-v3.3.1-linux-amd64.tar.gz | tar xvz
-          mv linux-amd64/helm bin/helm && chmod +x bin/helm
-          export PATH="$(pwd)/bin:$PATH"
-      - name: test dependencies
-        run: make testup
+          cp ./plural.o /usr/local/bin/plural
+      - run: make testup
       - name: Restore dependencies cache
         uses: actions/cache@v2
         with:
@@ -39,7 +35,68 @@ jobs:
           path: _build
           key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
           restore-keys: ${{ runner.os }}-mix-
-      - name: Install dependencies
-        run: mix deps.get
-      - name: Run tests
-        run: mix test
+      - run: mix deps.get
+      - run: mix test
+  publish:
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/master'
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    env:
+      PROJECT_ID: ${{ secrets.GOOGLE_PROJECT_ID }}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: google-github-actions/auth@v0
+      with:
+        workload_identity_provider: 'projects/${{ secrets.GOOGLE_PROJECT_ID }}/locations/global/workloadIdentityPools/github/providers/github'
+        service_account: 'terraform@pluralsh.iam.gserviceaccount.com'
+        token_format: 'access_token'
+        create_credentials_file: true
+    - uses: google-github-actions/setup-gcloud@v0.3.0
+    - name: Login to gcr
+      run: gcloud auth configure-docker -q
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v1
+      with:
+        registry: dkr.plural.sh
+        username: mjg@plural.sh
+        password: ${{ secrets.PLURAL_ACCESS_TOKEN }}
+    - name: publish plural
+      run: |
+        make build APP_NAME=plural GIT_COMMIT=$GITHUB_SHA
+        make push APP_NAME=plural
+    - name: publish rtc
+      run: |
+        make build APP_NAME=rtc GIT_COMMIT=$GITHUB_SHA
+        make push APP_NAME=rtc
+    - name: publish cron
+      run: |
+        make build APP_NAME=cron GIT_COMMIT=$GITHUB_SHA
+        make push APP_NAME=cron
+    - name: publish worker
+      run: |
+        make build APP_NAME=worker GIT_COMMIT=$GITHUB_SHA
+        make push APP_NAME=worker
+    - name: publish www
+      run: |
+        make build APP_NAME=www
+        make push APP_NAME=www
+  deploy:
+    runs-on: ubuntu-latest
+    needs: publish
+    steps:
+    - uses: actions/checkout@v2
+    - uses: hashicorp/setup-terraform@v1
+    - uses: azure/setup-helm@v1
+      with:
+        version: latest
+    - name: "install plural cli"
+      run: |
+        wget -O plural 'https://app.plural.sh/artifacts/plural/plural?platform=linux&arch=amd64'
+        chmod +x plural
+        mv plural /usr/local/bin/plural
+        mkdir -p ~/.plural
+        echo $PLURAL_CONF > ~/.plural/config.yml
+    - run: make deploy

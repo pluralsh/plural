@@ -79,6 +79,6 @@ jobs:
         version: latest
     - name: installing plural
       uses: pluralsh/setup-plural@v0.1.1
-      with: 
+      with:
         config: ${{ secrets.PLURAL_CONF }}
     - run: make deploy

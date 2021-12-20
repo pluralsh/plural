@@ -70,23 +70,15 @@ jobs:
         make push APP_NAME=${{ matrix.app }}
   deploy:
     runs-on: ubuntu-latest
-    needs: test
-    if: github.ref == 'refs/heads/master'
+    needs: publish
     steps:
     - uses: actions/checkout@v2
     - uses: hashicorp/setup-terraform@v1
     - uses: azure/setup-helm@v1
       with:
         version: latest
-    - name: "install plural cli"
-      run: |
-        wget -O plural.o 'https://app.plural.sh/artifacts/plural/plural?platform=linux&arch=amd64'
-        echo "chmod +x plural.o"
-        chmod +x plural.o
-        echo "mv plural.o /usr/local/bin/plural"
-        mv plural.o /usr/local/bin/plural
-        echo "mkdir"
-        mkdir -p $HOME/.plural
-        echo "echo <secret>"
-        echo ${{ secrets.PLURAL_CONF }} > $HOME/.plural/config.yml
+    - name: installing plural
+      uses: pluralsh/setup-plural@v0.1.1
+      with: 
+        config: ${{ secrets.PLURAL_CONF }}
     - run: make deploy

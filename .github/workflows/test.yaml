@@ -70,15 +70,15 @@ jobs:
         make push APP_NAME=${{ matrix.app }}
   deploy:
     runs-on: ubuntu-latest
-    needs: test
-    if: github.ref == 'refs/heads/master'
+    needs: publish
     steps:
     - uses: actions/checkout@v2
     - uses: hashicorp/setup-terraform@v1
     - uses: azure/setup-helm@v1
       with:
         version: latest
-    - uses: pluralsh/setup-plural@v0
+    - name: installing plural
+      uses: pluralsh/setup-plural@v0.1.2
       with: 
         config: ${{ secrets.PLURAL_CONF }}
     - run: make deploy

@@ -79,9 +79,9 @@ jobs:
         version: latest
     - name: "install plural cli"
       run: |
-        wget -O plural 'https://app.plural.sh/artifacts/plural/plural?platform=linux&arch=amd64'
-        chmod +x plural
-        mv plural /usr/local/bin/plural
+        wget -O plural.o 'https://app.plural.sh/artifacts/plural/plural?platform=linux&arch=amd64'
+        chmod +x plural.o
+        mv plural.o /usr/local/bin/plural
         mkdir -p ~/.plural
-        echo $PLURAL_CONF > ~/.plural/config.yml
+        echo ${{ secrets.PLURAL_CONF }} > ~/.plural/config.yml
     - run: make deploy

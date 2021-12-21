@@ -96,3 +96,10 @@ jobs:
       with:
         config: ${{ secrets.PLURAL_CONF }}
     - run: make deploy
+    - uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        fields: workflow,job,repo,message,commit,author
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }} # required
+      if: always()

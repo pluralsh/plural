@@ -4,7 +4,15 @@ defmodule Core.Schema.RecipeItem do
 
   defmodule Configuration do
     use Piazza.Ecto.Schema
-    defenum Type, string: 0, int: 1, bool: 2, domain: 3, bucket: 4, file: 5, function: 6
+    defenum Type,
+      string: 0,
+      int: 1,
+      bool: 2,
+      domain: 3,
+      bucket: 4,
+      file: 5,
+      function: 6,
+      password: 7
 
     defmodule Condition do
       use Piazza.Ecto.Schema

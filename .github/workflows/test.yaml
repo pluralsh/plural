@@ -37,6 +37,12 @@ jobs:
           restore-keys: ${{ runner.os }}-mix-
       - run: mix deps.get
       - run: mix test
+      - uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }} # required
+        if: always()
   publish:
     runs-on: ubuntu-latest
     needs: test
@@ -68,6 +74,12 @@ jobs:
       run: |
         make build APP_NAME=${{ matrix.app }} GIT_COMMIT=$GITHUB_SHA
         make push APP_NAME=${{ matrix.app }}
+    - uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }} # required
+      if: always()
   deploy:
     runs-on: ubuntu-latest
     needs: publish
@@ -82,3 +94,9 @@ jobs:
       with: 
         config: ${{ secrets.PLURAL_CONF }}
     - run: make deploy
+    - uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }} # required
+      if: always()

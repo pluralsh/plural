@@ -65,4 +65,10 @@ defmodule GraphQl.Schema.Base do
       end
     end
   end
+
+  defmacro safe_resolve(func) do
+    quote do
+      resolve safe_resolver(unquote(func))
+    end
+  end
 end

@@ -5,8 +5,6 @@ defmodule Cron.Task.VersionScan do
   use Cron
   alias Core.Schema.Version
 
-  @scan_interval 7
-
   def run() do
     Version
     |> Version.ordered(asc: :id)

@@ -49,7 +49,7 @@ defmodule GraphQl.Schema.OAuth do
       middleware Authenticated
       arg :challenge, non_null(:string)
 
-      resolve &OAuth.accept_login/2
+      safe_resolve &OAuth.accept_login/2
     end
 
     field :oauth_consent, :oauth_response do
@@ -57,7 +57,7 @@ defmodule GraphQl.Schema.OAuth do
       arg :challenge, non_null(:string)
       arg :scopes, list_of(:string)
 
-      resolve &OAuth.accept_consent/2
+      safe_resolve &OAuth.accept_consent/2
     end
 
     field :oauth_callback, :user do
@@ -67,7 +67,7 @@ defmodule GraphQl.Schema.OAuth do
       arg :code, non_null(:string)
       arg :device_token, :string
 
-      resolve &OAuth.resolve_callback/2
+      safe_resolve &OAuth.resolve_callback/2
     end
   end
 end

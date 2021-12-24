@@ -13,4 +13,8 @@ defmodule ApiWeb.ArtifactController do
       nil -> {:error, :not_found}
     end
   end
+
+  def show(conn, _) do
+    resp(conn, 400, "You must specify both platform and arch")
+  end
 end

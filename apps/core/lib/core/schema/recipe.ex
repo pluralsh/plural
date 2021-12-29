@@ -26,6 +26,7 @@ defmodule Core.Schema.Recipe do
     field :name, :string
     field :description, :string
     field :provider, Provider
+    field :recipe_dependencies, :map, virtual: true
 
     embeds_one :oidc_settings, OIDCSettings, on_replace: :update
 

@@ -121,7 +121,8 @@ defmodule Core.Services.Recipes do
   """
   @spec hydrate(Recipe.t) :: Recipe.t
   def hydrate(%Recipe{} = recipe) do
-    recursive_sections = resolve_dependencies([], recipe)
+    dependencies = resolve_dependencies([], recipe)
+    recursive_sections = Enum.flat_map(dependencies, & &1.recipe_sections || [])
     deduped = Enum.reduce(recursive_sections, %{}, fn %{repository_id: repository_id, recipe_items: items} = section, acc ->
       case Map.get(acc, repository_id) do
         %{recipe_items: moar} = section ->
@@ -137,7 +138,8 @@ defmodule Core.Services.Recipes do
         %{section | recipe_items: topsort(Enum.dedup_by(items, &as_node/1))}
       end)
 
-    %{recipe | recipe_sections: Enum.map(sections, &fix_configuration/1)}
+    clean_deps = Enum.reject(dependencies, & &1.id == recipe.id)
+    %{recipe | recipe_sections: Enum.map(sections, &fix_configuration/1), recipe_dependencies: clean_deps}
   end
   def hydrate(nil), do: nil
 
@@ -152,11 +154,10 @@ defmodule Core.Services.Recipes do
 
   defp resolve_dependencies(prev, %Recipe{} = recipe) do
     case Core.Repo.preload(recipe, @preloads) do
-      %{recipe_sections: sections, dependencies: [_ | _] = deps} ->
+      %{dependencies: [_ | _] = deps} = recipe ->
         Enum.flat_map(deps, &resolve_dependencies([], &1.dependent_recipe))
-        |> Enum.concat(prev)
-        |> Enum.concat(sections)
-      %{recipe_sections: sections} -> sections ++ prev
+        |> Enum.concat([recipe | prev])
+      recipe -> [recipe | prev]
     end
   end
 

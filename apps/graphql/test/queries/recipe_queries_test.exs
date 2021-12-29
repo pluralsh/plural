@@ -60,11 +60,15 @@ defmodule GraphQl.RecipeQueriesTest do
       recipe = insert(:recipe)
       section = insert(:recipe_section, recipe: recipe)
       item = insert(:recipe_item, recipe_section: section, chart: build(:chart, repository: section.repository))
+      dep  = insert(:recipe_dependency, recipe: recipe, index: 1)
+      dep2 = insert(:recipe_dependency, recipe: dep.dependent_recipe, index: 1)
+      dep3 = insert(:recipe_dependency, recipe: recipe, index: 2)
 
       {:ok, %{data: %{"recipe" => found}}} = run_query("""
         query Recipe($id: ID!) {
           recipe(id: $id) {
             id
+            recipeDependencies { id }
             recipeSections {
               id
               recipeItems {
@@ -86,6 +90,9 @@ defmodule GraphQl.RecipeQueriesTest do
       found_item = hd(found_section["recipeItems"])
       assert found_item["id"] == item.id
       assert found_item["chart"]["id"] == item.chart.id
+
+      assert Enum.map([dep, dep2, dep3], & &1.dependent_recipe)
+             |> ids_equal(found["recipeDependencies"])
     end
 
     test "It will fetch a recipe by name" do

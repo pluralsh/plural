@@ -137,9 +137,15 @@ defmodule Core.Services.Recipes do
       |> Enum.map(fn %{recipe_items: items} = section ->
         %{section | recipe_items: topsort(Enum.dedup_by(items, &as_node/1))}
       end)
+      |> Enum.map(&fix_configuration/1)
 
-    clean_deps = Enum.reject(dependencies, & &1.id == recipe.id)
-    %{recipe | recipe_sections: Enum.map(sections, &fix_configuration/1), recipe_dependencies: clean_deps}
+    dependencies =
+      Enum.reject(dependencies, & &1.id == recipe.id)
+      |> Enum.uniq_by(& &1.id)
+
+    recipe
+    |> Map.put(:recipe_sections, sections)
+    |> Map.put(:recipe_dependencies, dependencies)
   end
   def hydrate(nil), do: nil
 

@@ -9,7 +9,7 @@ metadata:
 spec:
   teamId: plural
   volume:
-    size: 25Gi
+    size: {{ .Values.postgres.hydra.size }}
   numberOfInstances: 2
   {{ if .Values.postgres.hydra.resources }}
   resources:

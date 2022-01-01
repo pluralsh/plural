@@ -234,8 +234,10 @@ admin:
 postgres:
   plural:
     resources: {}
+    size: 50Gi
   hydra:
     resources: {}
+    size: 25Gi
   default:
     resources:
       requests:
@@ -338,7 +340,6 @@ hydra:
       enabled: true
       annotations:
         kubernetes.io/tls-acme: "true"
-        kubernetes.io/ingress.class: "nginx"
         cert-manager.io/cluster-issuer: letsencrypt-prod
         nginx.ingress.kubernetes.io/force-ssl-redirect: 'true'
         nginx.ingress.kubernetes.io/use-regex: "true"

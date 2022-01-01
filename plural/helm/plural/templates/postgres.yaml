@@ -9,7 +9,7 @@ metadata:
 spec:
   teamId: plural
   volume:
-    size: 50Gi
+    size: {{ .Values.postgres.plural.size }}
   numberOfInstances: 2
   {{ if .Values.postgres.plural.resources }}
   resources:

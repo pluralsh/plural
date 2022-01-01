@@ -26,6 +26,12 @@ spec:
       format: memory
       legend: $pod
       query: sum(container_memory_working_set_bytes{namespace="{{ .Release.Namespace }}",pod=~"plural-plural-[0-9]+"}) by (pod)
+  - name: volume
+    type: prometheus
+    prometheus:
+      format: none
+      legend: $persistentvolumeclaim
+      query: (kubelet_volume_stats_capacity_bytes{namespace="{{ .Release.Namespace }}", persistentvolumeclaim=~"pgdata-plural-plural-.*"} - kubelet_volume_stats_available_bytes{namespace="{{ .Release.Namespace }}", persistentvolumeclaim=~"pgdata-plural-plural-.*"}) / kubelet_volume_stats_capacity_bytes{namespace="{{ .Release.Namespace }}", persistentvolumeclaim=~"pgdata-plural-plural-.*"}
   - name: statefulset
     type: kubernetes
     kubernetes:
@@ -55,6 +61,12 @@ spec:
         - requests
         - memory
         valueFrom: memory
+      - path:
+        - plural
+        - postgres
+        - plural
+        - size
+        valueFrom: volume
 ---
 apiVersion: platform.plural.sh/v1alpha1
 kind: Runbook
@@ -91,6 +103,12 @@ spec:
       name: plural-hydra
   - name: nodes
     type: nodes
+  - name: volume
+    type: prometheus
+    prometheus:
+      format: none
+      legend: $persistentvolumeclaim
+      query: (kubelet_volume_stats_capacity_bytes{namespace="{{ .Release.Namespace }}", persistentvolumeclaim=~"pgdata-plural-hydra-.*"} - kubelet_volume_stats_available_bytes{namespace="{{ .Release.Namespace }}", persistentvolumeclaim=~"pgdata-plural-hydra-.*"}) / kubelet_volume_stats_capacity_bytes{namespace="{{ .Release.Namespace }}", persistentvolumeclaim=~"pgdata-plural-hydra-.*"}
   actions:
   - name: scale
     action: config
@@ -113,3 +131,9 @@ spec:
         - requests
         - memory
         valueFrom: memory
+      - path:
+        - plural
+        - postgres
+        - hydra
+        - size
+        valueFrom: volume

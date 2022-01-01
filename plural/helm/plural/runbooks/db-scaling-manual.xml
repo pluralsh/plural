@@ -32,8 +32,22 @@
       </box>
     </box>
   </box>
+  <box direction='row' align='center' gap='small'>
+    <box gap='small' align='center'>
+      <timeseries datasource="volume" label="Volume Usage" />
+      <text size='small'>You should resize at around 80% utilization (or based on dataset growth)</text>
+    </box>
+    <box gap='small'>
+      <input placeholder="25Gi" label='Volume Size' name='volume'>
+        <valueFrom 
+          datasource="statefulset" 
+          doc="kubernetes.raw" 
+          path="spec.volumeClaimTemplates[0].spec.resources.requests.storage" />
+      </input>
+    </box>
+  </box>
   <box width='100%' gap='small'>
-    <text size='small'>Be sure to scale your rabbitmq nodes within your nodes capacities, listed here:</text>
+    <text size='small'>Be sure to scale your postgres pods within your nodes capacities, listed here:</text>
     <table width='100%' datasource='nodes' path='nodes'>
       <tableColumn path='metadata.name' header='name' width='33%' />
       <tableColumn path='status.capacity.cpu' header='cpu' width='33%' />

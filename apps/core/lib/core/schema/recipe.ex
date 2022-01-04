@@ -11,14 +11,15 @@ defmodule Core.Schema.Recipe do
       field :uri_format,  :string
       field :auth_method, Core.Schema.OIDCProvider.AuthMethod
       field :domain_key,  :string
+      field :subdomain,   :boolean
     end
 
-    @valid ~w(uri_format auth_method domain_key)a
+    @valid ~w(uri_format auth_method domain_key subdomain)a
 
     def changeset(model, attrs \\ %{}) do
       model
       |> cast(attrs, @valid)
-      |> validate_required(@valid)
+      |> validate_required([:uri_format, :auth_method])
     end
   end
 

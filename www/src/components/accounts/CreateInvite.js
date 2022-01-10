@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button, ModalHeader, InputCollection, ResponsiveInput, Copyable } from 'forge-core'
+import { Button, ModalHeader, InputCollection, ResponsiveInput, Copyable, GqlError } from 'forge-core'
 import { Layer, Box } from 'grommet'
 import { useMutation } from 'react-apollo'
 import { CREATE_INVITE } from './queries'
@@ -7,7 +7,7 @@ import { apiHost } from '../../helpers/hostname'
 
 export function InviteForm() {
   const [email, setEmail] = useState('')
-  const [mutation, {loading, data}] = useMutation(CREATE_INVITE, {
+  const [mutation, {loading, data, error}] = useMutation(CREATE_INVITE, {
     variables: {attributes: {email}}
   })
 
@@ -19,6 +19,7 @@ export function InviteForm() {
           <Copyable text={`https://${apiHost()}/invite/${invite.secureId}`} pillText='Invite link copied!' />
         </Box>
       )}
+      {error && <GqlError error={error} header='Could not create invite' />}
       <InputCollection>
         <ResponsiveInput
           label='email'

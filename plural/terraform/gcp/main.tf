@@ -23,6 +23,7 @@ resource "kubernetes_namespace" "plural" {
 
     labels = {
       "app.kubernetes.io/managed-by" = "plural"
+      "platform.plural.sh/sync-target" = "pg"
     }
   }
 }

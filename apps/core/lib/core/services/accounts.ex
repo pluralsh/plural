@@ -98,11 +98,21 @@ defmodule Core.Services.Accounts do
   Creates a new invite for this account
   """
   @spec create_invite(map, User.t) :: invite_resp
-  def create_invite(attributes, %User{account_id: aid} = user) do
-    %Invite{account_id: aid}
-    |> Invite.changeset(attributes)
-    |> allow(user, :create)
-    |> when_ok(:insert)
+  def create_invite(%{email: email} = attributes, %User{account_id: aid} = user) do
+    start_transaction()
+    |> add_operation(:check, fn _ ->
+      case Users.get_user_by_email(email) do
+        %User{} -> {:error, "there's already a user for #{email}"}
+        _ -> {:ok, %{}}
+      end
+    end)
+    |> add_operation(:invite, fn _ ->
+      %Invite{account_id: aid}
+      |> Invite.changeset(attributes)
+      |> allow(user, :create)
+      |> when_ok(:insert)
+    end)
+    |> execute(extract: :invite)
   end
 
   @doc """

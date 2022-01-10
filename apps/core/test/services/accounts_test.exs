@@ -214,6 +214,11 @@ defmodule Core.Services.AccountsTest do
       assert invite.account_id == account.id
     end
 
+    test "you cannot create invites for existing users", %{user: admin} do
+      user = insert(:user)
+      {:error, _} = Accounts.create_invite(%{email: user.email}, admin)
+    end
+
     test "nonroot users can create group members", %{account: account} do
       {:error, _} = Accounts.create_invite(%{email: "some@example.com"}, insert(:user, account: account))
     end

@@ -19,6 +19,7 @@ defmodule Core.Schema.Invite do
     |> put_new_change(:secure_id, &gen_external_id/0)
     |> foreign_key_constraint(:account_id)
     |> unique_constraint(:secure_id)
+    |> unique_constraint(:email)
     |> validate_required([:email, :account_id,  :secure_id])
   end
 

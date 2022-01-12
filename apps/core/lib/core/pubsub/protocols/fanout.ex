@@ -73,3 +73,14 @@ defimpl Core.PubSub.Fanout, for: Core.PubSub.AccessTokenUsage do
     Core.Buffer.Orchestrator.submit(Core.Buffers.TokenAudit, key, {token.id, trunc, ip})
   end
 end
+
+defimpl Core.PubSub.Fanout, for: Core.PubSub.InstallationDeleted do
+  alias Core.Services.Users
+
+  def fanout(%{item: _, actor: user}) do
+    case Users.get_provider(user) do
+      nil -> Users.update_provider(nil, user)
+      _ -> :ok
+    end
+  end
+end

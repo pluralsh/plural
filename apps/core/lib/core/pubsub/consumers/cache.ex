@@ -10,6 +10,10 @@ defmodule Core.PubSub.Consumers.Cache do
     end
   end
 
+  defp handle_cache(act, [_ | _] = l, [_ | _] = l2) do
+    Enum.zip(l, l2)
+    |> Enum.map(fn {k, i} -> handle_cache(act, k, i) end)
+  end
   defp handle_cache(:set, key, item), do: Core.Cache.put(key, item)
   defp handle_cache(:del, key, _), do: Core.Cache.delete(key)
 end

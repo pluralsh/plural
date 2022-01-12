@@ -52,7 +52,7 @@ export function VerifyEmailConfirmed() {
 
   const close = useCallback(() => setOpen(false), [setOpen])
 
-  if (me.emailConfirmed || !open) return null
+  if (me.emailConfirmed || me.serviceAccount || !open) return null
   console.log(me)
   return (
     <Layer plain modal={false} position='top' margin={{top: 'medium'}} 

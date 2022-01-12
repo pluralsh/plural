@@ -246,6 +246,15 @@ defmodule Core.Services.Users do
     |> notify(:update, user)
   end
 
+  @doc "self explanatory"
+  @spec update_provider(atom, User.t) :: user_resp
+  def update_provider(provider, %User{} = user) do
+    user
+    |> Ecto.Changeset.change(%{provider: provider})
+    |> Core.Repo.update()
+    |> notify(:update, user)
+  end
+
   @spec update_user(map, binary, User.t) :: user_resp
   def update_user(attrs, id, %User{} = user) do
     get_user(id)

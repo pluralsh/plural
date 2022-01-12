@@ -112,9 +112,9 @@ export default function EditUser() {
              pad='small'>
           <Box flex={false} direction='row' gap='small' align='center' margin={{bottom: 'xsmall'}}>
             <EditAvatar me={me} />
-            <Box flex={false}>
-              <Text size='small' weight='bold'>{attributes.name}</Text>
-              <Text size='small'>{attributes.email}</Text>
+            <Box fill='horizontal'>
+              <Text size='small' weight='bold' truncate>{attributes.name}</Text>
+              <Text size='small' truncate>{attributes.email}</Text>
             </Box>
           </Box>
           <EditSelect edit='user' name='User Attributes' icon={<User size='14px' />} />

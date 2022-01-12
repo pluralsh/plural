@@ -43,8 +43,10 @@ export function LoginPortal({children}) {
       <Box width='40%' fill='vertical' justify='center' align='center' background='plural-blk'>
         <img src={PLURAL_ICON} width='200px' />
       </Box>
-      <Box fill align='center' justify='center'>
-        {children}
+      <Box style={{overflow: 'auto'}} fill align='center' justify='center'>
+        <Box flex={false}>
+          {children}
+        </Box>
       </Box>
     </Box>
   )
@@ -253,9 +255,10 @@ export function Signup() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
+  const [account, setAccount] = useState('')
   const [confirm, setConfirm] = useState('')
   const [mutation, {loading, error}] = useMutation(SIGNUP_MUTATION, {
-    variables: { email, password, name },
+    variables: { attributes: {email, password, name}, account: {name: account} },
     onCompleted: ({signup: {jwt}}) => {
       setToken(jwt)
       history.push(`/`)
@@ -286,6 +289,12 @@ export function Signup() {
           <Form onSubmit={mutation}>
             <Box gap='xsmall' width={WIDTH}>
               {error && <GqlError error={error} header='Login Failed' />}
+              <LabelledInput 
+                label='Account'
+                value={account} 
+                width={WIDTH}
+                onChange={setAccount} 
+                placeholder='The name of your account (must be unique)' />
               <LabelledInput 
                 label='Name'
                 value={name} 

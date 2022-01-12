@@ -137,7 +137,7 @@ export default function Sidebar() {
           {isExpanded && (
             <Box>
               <Text size='small' truncate>{me.name}</Text>
-              <Text size='small'>{me.email}</Text>
+              <Text size='small' truncate>{me.email}</Text>
             </Box>
           )}
         </Box>

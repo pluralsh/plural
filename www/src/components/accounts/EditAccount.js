@@ -131,7 +131,7 @@ export function EditAccount({billing}) {
            background='backgroundColor' pad='small'>
         <Box direction='row' align='center' gap='small'>
           <Avatar user={account} size='40px' />
-          <Text size='small'>{account.name}</Text>
+          <Text size='small' truncate>{account.name}</Text>
         </Box>
         {VIEWS.map(({text, view, icon, optional}) => (
           (!optional || canEdit(me, account)) && <SectionChoice

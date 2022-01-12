@@ -199,8 +199,8 @@ export const LOGIN_METHOD = gql`
 `
 
 export const SIGNUP_MUTATION = gql`
-  mutation Signup($email: String!, $password: String!, $name: String!) {
-    signup(attributes: {email: $email, password: $password, name: $name}) { jwt }
+  mutation Signup($attributes: UserAttributes!, $account: AccountAttributes) {
+    signup(attributes: $attributes, account: $account) { jwt }
   }
 `;
 

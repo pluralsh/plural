@@ -181,13 +181,15 @@ defmodule GraphQl.Resolvers.User do
     |> activate_token(args)
   end
 
-  def signup_user(%{invite_id: id, attributes: attrs}, _) when is_binary(id) do
-    Accounts.realize_invite(attrs, id)
+  def signup_user(%{invite_id: id, attributes: attrs} = args, _) when is_binary(id) do
+    Map.put(attrs, :account, args[:account] || %{})
+    |> Accounts.realize_invite(id)
     |> with_jwt()
   end
 
-  def signup_user(%{attributes: attrs}, _) do
-    Users.create_user(attrs)
+  def signup_user(%{attributes: attrs} = args, _) do
+    Map.put(attrs, :account, args[:account] || %{})
+    |> Users.create_user()
     |> with_jwt()
   end
 

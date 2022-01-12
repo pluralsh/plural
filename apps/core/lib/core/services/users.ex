@@ -218,7 +218,7 @@ defmodule Core.Services.Users do
       |> Core.Repo.insert()
     end)
     |> add_operation(:user, fn %{pre: user} ->
-      with {:ok, %{user: user}} <- Accounts.create_account(user),
+      with {:ok, %{user: user}} <- Accounts.create_account(Map.get(attrs, :account, %{}), user),
         do: {:ok, user}
     end)
     |> execute(extract: :user)

@@ -50,7 +50,7 @@ defmodule Core.Services.Accounts do
   Creates a fresh account for the user, making him the root user. Returns everything to caller
   """
   @spec create_account(User.t) :: {:ok, %{account: Account.t, user: User.t}} | {:error, term}
-  def create_account(%User{email: email} = user) do
+  def create_account(attrs \\ %{}, %User{email: email} = user) do
     start_transaction()
     |> add_operation(:domain_name, fn _ ->
       case String.split(email, "@") do
@@ -69,7 +69,7 @@ defmodule Core.Services.Accounts do
     |> add_operation(:account, fn
       %{autoassign: nil} ->
         %Account{}
-        |> Account.changeset(%{name: email})
+        |> Account.changeset(Map.merge(%{name: email}, attrs))
         |> Ecto.Changeset.change(%{root_user_id: user.id})
         |> Core.Repo.insert()
       %{autoassign: %Account{} = account} -> {:ok, account}

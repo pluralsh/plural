@@ -39,7 +39,7 @@ function ServiceAccount({user, next, update}) {
     {showError && error && (
       <Layer modal>
         <ModalHeader text='Impersonation error' setOpen={setShowError} />
-        <Box width='40vw'>
+        <Box width='40vw' pad='small'>
           <GqlError error={error} header={`error attempting to impersonate ${user.email}`} />
         </Box>
       </Layer>

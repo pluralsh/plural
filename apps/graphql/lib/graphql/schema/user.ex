@@ -405,6 +405,7 @@ defmodule GraphQl.Schema.User do
       middleware GraphQl.Middleware.AllowJwt
       arg :invite_id,  :string
       arg :attributes, non_null(:user_attributes)
+      arg :account,    :account_attributes
 
       resolve safe_resolver(&User.signup_user/2)
     end

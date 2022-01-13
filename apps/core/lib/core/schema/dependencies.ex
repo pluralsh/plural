@@ -1,7 +1,7 @@
 defmodule Core.Schema.Dependencies do
   use Piazza.Ecto.Schema
 
-  defenum Provider, gcp: 0, aws: 1, azure: 2
+  defenum Provider, gcp: 0, aws: 1, azure: 2, equinix: 3
 
   defmodule Dependency do
     use Piazza.Ecto.Schema

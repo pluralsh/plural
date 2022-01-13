@@ -62,11 +62,6 @@ export function DetailContainer({children, ...rest}) {
 }
 
 export function InstallationInner({installation, repository}) {
-  const [mutation] = useMutation(INSTALL_REPO, {
-    variables: {repositoryId: repository.id},
-    refetchQueries: [{query: REPO_Q, variables: {repositoryId: repository.id}}]
-  })
-
   if (installation) return (
     <Box gap='small' pad='small'>
       {installation.subscription && (<SubscriptionBadge repository={repository} subscription={installation.subscription} />)}
@@ -76,11 +71,7 @@ export function InstallationInner({installation, repository}) {
     </Box>
   )
 
-  return (
-    <Box pad='small'>
-      <Button label='Install Repository' round='xsmall' onClick={mutation} />
-    </Box>
-  )
+  return null
 }
 
 export default function Installation({repository, onUpdate, noHelm, open}) {

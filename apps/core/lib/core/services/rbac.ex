@@ -22,18 +22,21 @@ defmodule Core.Services.Rbac do
   end
 
   def validate(user, action, opts \\ [])
+  def validate(user, action, opts) when is_list(opts) do
+    validate(user, action, Map.new(opts))
+  end
   def validate(%User{id: id, account: %{id: aid, root_user_id: id}}, _, %{account: %{id: aid}}),
+    do: true
+  def validate(%User{account_id: id, roles: %{admin: true}}, _, %{account: %{id: id}}),
     do: true
   def validate(%User{id: id, account: %{root_user_id: id}}, _, %{account: %{}}), do: false
   def validate(%User{id: id, account: %{root_user_id: id}}, _, _), do: true
-  def validate(%User{} = user, action, opts) do
-    options = Map.new(opts)
-
+  def validate(%User{} = user, action, opts) when is_map(opts) do
     user
     |> preload()
     |> User.roles()
-    |> maybe_filter(:repo, options)
-    |> maybe_filter(:account, options)
+    |> maybe_filter(:repo, opts)
+    |> maybe_filter(:account, opts)
     |> Enum.any?(&permits_action?(&1, action))
   end
 

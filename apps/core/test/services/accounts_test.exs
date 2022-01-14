@@ -104,6 +104,14 @@ defmodule Core.Services.AccountsTest do
 
       assert account.name == "updated"
     end
+
+    test "account admins can update accounts", %{user: user} do
+      admin = insert(:user, account: user.account, roles: %{admin: true})
+
+      {:ok, account} = Accounts.update_account(%{name: "updated"}, admin)
+
+      assert account.name == "updated"
+    end
   end
 
   describe "#create_group/2" do
@@ -117,6 +125,17 @@ defmodule Core.Services.AccountsTest do
       assert Accounts.get_group_member(group.id, user.id)
 
       assert_receive {:event, %PubSub.GroupCreated{item: ^group, actor: ^user}}
+    end
+
+    test "admins can create groups", %{account: account} do
+      admin = insert(:user, account: account, roles: %{admin: true})
+      {:ok, group} = Accounts.create_group(%{name: "group"}, admin)
+
+      assert group.account_id == account.id
+      assert group.name == "group"
+      assert Accounts.get_group_member(group.id, admin.id)
+
+      assert_receive {:event, %PubSub.GroupCreated{item: ^group, actor: ^admin}}
     end
 
     test "random users cannot create groups", %{account: account} do

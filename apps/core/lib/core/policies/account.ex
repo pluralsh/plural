@@ -13,6 +13,7 @@ defmodule Core.Policies.Account do
   }
 
   def can?(%User{id: id}, %Account{root_user_id: id}, _), do: :pass
+  def can?(%User{account_id: id, roles: %{admin: true}}, %Account{id: id}, _), do: :pass
 
   def can?(%User{} = user, %Group{} = group, _) do
     %{account: account} = Core.Repo.preload(group, [:account])

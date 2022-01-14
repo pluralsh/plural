@@ -53,6 +53,7 @@ export function VerifyEmailConfirmed() {
   const close = useCallback(() => setOpen(false), [setOpen])
 
   if (me.emailConfirmed || me.serviceAccount || !open) return null
+
   console.log(me)
   return (
     <Layer plain modal={false} position='top' margin={{top: 'medium'}} 
@@ -64,7 +65,7 @@ export function VerifyEmailConfirmed() {
         </Box>
         <Box fill='horizontal'>
           <Text size='small' weight={500}>Your email is not confirmed</Text>
-          <Text size='small'>you have {moment(me.emailConfirmBy).fromNow(true)} to confirm your email</Text>
+          {me.emailConfirmBy && <Text size='small'>you have {moment(me.emailConfirmBy).fromNow(true)} to confirm your email</Text>}
         </Box>
         <Box flex={false} gap='xsmall' direction='row' align='center'>
           <Icon

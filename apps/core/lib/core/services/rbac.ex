@@ -22,9 +22,8 @@ defmodule Core.Services.Rbac do
   end
 
   def validate(user, action, opts \\ [])
-  def validate(user, action, opts) when is_list(opts) do
-    validate(user, action, Map.new(opts))
-  end
+  def validate(user, action, opts) when is_list(opts),
+    do: validate(user, action, Map.new(opts))
   def validate(%User{id: id, account: %{id: aid, root_user_id: id}}, _, %{account: %{id: aid}}),
     do: true
   def validate(%User{account_id: id, roles: %{admin: true}}, _, %{account: %{id: id}}),

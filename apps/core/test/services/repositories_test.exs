@@ -563,6 +563,18 @@ defmodule Core.Services.RepositoriesTest do
 
       {:error, _} = Repositories.acquire_apply_lock(repo.id, user)
     end
+
+    test "an owned lock that expired can be acquired" do
+      %{owner: user} = pub = insert(:publisher)
+      repo = insert(:repository, publisher: pub)
+      old = Timex.now() |> Timex.shift(minutes: -7)
+      lock = insert(:apply_lock, repository: repo, owner: build(:user), updated_at: old)
+
+      {:ok, acquired} = Repositories.acquire_apply_lock(repo.id, user)
+
+      assert acquired.id == lock.id
+      assert acquired.owner_id == user.id
+    end
   end
 
   describe "#release_apply_lock/3" do

@@ -54,16 +54,15 @@ export function VerifyEmailConfirmed() {
 
   if (me.emailConfirmed || me.serviceAccount || !open) return null
 
-  console.log(me)
   return (
     <Layer plain modal={false} position='top' margin={{top: 'medium'}} 
            onEsc={close} onClickOutside={close}>
       <Box round='xsmall' direction='row' gap='small' background='plrl-white'
            pad='small' align='center' border={{color: 'light-3'}}>
-        <Box flex={false}>
+        <Box flex={false} align='center'>
           <CircleAlert size='medium' color='error' />
         </Box>
-        <Box fill='horizontal'>
+        <Box fill='horizontal' align='center'>
           <Text size='small' weight={500}>Your email is not confirmed</Text>
           {me.emailConfirmBy && <Text size='small'>you have {moment(me.emailConfirmBy).fromNow(true)} to confirm your email</Text>}
         </Box>

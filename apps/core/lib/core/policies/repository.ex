@@ -37,7 +37,16 @@ defmodule Core.Policies.Repository do
     %{repository: repo} = Core.Repo.preload(lock, [repository: [publisher: :account]])
     can?(user, repo, :edit)
   end
-  def can?(_, %ApplyLock{}, :create), do: {:error, "lock already in use"}
+  def can?(_, %ApplyLock{inserted_at: ins, updated_at: upd}, :create) do
+    touched = upd || ins
+    Timex.now()
+    |> Timex.shift(minutes: -5)
+    |> Timex.before?(touched)
+    |> case do
+      true -> {:error, "lock already in use"}
+      false -> :pass
+    end
+  end
 
   def can?(%User{}, %Repository{}, :access), do: :continue
 

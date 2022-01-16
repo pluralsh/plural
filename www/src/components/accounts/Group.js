@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react'
 import { Box, Text, Layer, TextInput } from 'grommet'
 import { useQuery, useMutation, useApolloClient } from 'react-apollo'
 import { GROUP_MEMBERS, CREATE_GROUP_MEMBERS, UPDATE_GROUP, DELETE_GROUP, DELETE_GROUP_MEMBER } from './queries'
-import { ModalHeader, TooltipContent, Button, Group, AddUser, EditField as Edit, Trash } from 'forge-core'
+import { ModalHeader, TooltipContent, Button, Group, AddUser, EditField as Edit, Trash, GqlError } from 'forge-core'
 import { fetchUsers } from './Typeaheads'
 import { addGroupMember, deleteGroup, SearchIcon } from './utils'
 import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
@@ -115,7 +115,7 @@ function MemberAdd({group, setModal}) {
   const client = useApolloClient()
   const [q, setQ] = useState('')
   const [suggestions, setSuggestions] = useState([])
-  const [mutation] = useMutation(CREATE_GROUP_MEMBERS, {
+  const [mutation, {error}] = useMutation(CREATE_GROUP_MEMBERS, {
     variables: {groupId: group.id},
     update: (cache, {data: {createGroupMember}}) => {
       try {
@@ -129,6 +129,7 @@ function MemberAdd({group, setModal}) {
 
   return (
     <Box gap='small' pad='medium'>
+      {error && <GqlError error={error} header='Could not add group member' />}
       <TextInput
         icon={<SearchIcon />}
         placeholder='search for a user'

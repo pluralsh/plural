@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
-import { ModalHeader, Button, ResponsiveInput, InputCollection } from 'forge-core'
+import { ModalHeader, Button, ResponsiveInput, InputCollection, GqlError } from 'forge-core'
 import { Layer, Box } from 'grommet'
 import { useMutation } from 'react-apollo'
 import { CREATE_GROUP, GROUPS_Q } from './queries'
 
 export function GroupForm() {
   const [name, setName] = useState('')
-  const [mutation, {loading}] = useMutation(CREATE_GROUP, {
+  const [mutation, {loading, error}] = useMutation(CREATE_GROUP, {
     variables: {attributes: {name}},
     update: (cache, {data: {createGroup}}) => {
       const {groups, ...data} = cache.readQuery({query: GROUPS_Q, variables: {q: null}})
@@ -22,6 +22,11 @@ export function GroupForm() {
 
   return (
     <Box gap='small'>
+      {error && (
+        <Box pad='small'>
+          <GqlError error={error} header='Could not create group' />
+        </Box>
+      )}
       <InputCollection>
         <ResponsiveInput
           label='name'

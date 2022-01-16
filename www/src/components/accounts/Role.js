@@ -1,6 +1,6 @@
 import React, { useCallback, useRef, useState } from 'react'
 import { Box, Layer, Text } from 'grommet'
-import { ModalHeader, InputCollection, ResponsiveInput, Button, TagInput, User, Group, Trash } from 'forge-core'
+import { ModalHeader, InputCollection, ResponsiveInput, Button, TagInput, User, Group, Trash, GqlError } from 'forge-core'
 import { Edit } from 'grommet-icons'
 import { Icon } from './Group'
 import { CREATE_ROLE, DELETE_ROLE, ROLES_Q, UPDATE_ROLE } from './queries'
@@ -141,13 +141,14 @@ function EditRole({role, setOpen}) {
     permissions: role.permissions
   })
   const [roleBindings, setRoleBindings] = useState(role.roleBindings)
-  const [mutation, {loading}] = useMutation(UPDATE_ROLE, {
+  const [mutation, {loading, error}] = useMutation(UPDATE_ROLE, {
     variables: {id: role.id, attributes: {...attributes, roleBindings: roleBindings.map(sanitize)}},
     onCompleted: () => setOpen(null)
   })
 
   return (
     <Box gap='small' pad='small'>
+      {error && <GqlError error={error} header='Could not create role' />}
       <RoleForm
         attributes={attributes}
         setAttributes={setAttributes}
@@ -163,7 +164,7 @@ function EditRole({role, setOpen}) {
 export function CreateRole({setOpen}) {
   const [attributes, setAttributes] = useState({name: '', description: '', repositories: [], permissions: []})
   const [roleBindings, setRoleBindings] = useState([])
-  const [mutation, {loading}] = useMutation(CREATE_ROLE, {
+  const [mutation, {loading, error}] = useMutation(CREATE_ROLE, {
     variables: {
       attributes: {...attributes, roleBindings: roleBindings.map(sanitize)},
     },
@@ -177,6 +178,7 @@ export function CreateRole({setOpen}) {
 
   return (
     <Box gap='small' pad='small'>
+      {error && <GqlError error={error} header='Could not create role' />}
       <RoleForm
         attributes={attributes}
         setAttributes={setAttributes}

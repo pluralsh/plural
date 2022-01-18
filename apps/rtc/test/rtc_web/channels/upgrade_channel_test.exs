@@ -1,7 +1,6 @@
 defmodule RtcWeb.UpgradeChannelTest do
   use RtcWeb.ChannelCase, async: false
 
-
   describe "upgrade queue" do
     test "it can send and ack the next upgrade through the socket" do
       user = insert(:user)

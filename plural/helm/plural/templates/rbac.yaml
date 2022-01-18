@@ -13,6 +13,18 @@ rules:
   resources: ["jobs"]
   verbs: ["get", "list", "watch"]
 ---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: plural-shell-role
+  labels:
+{{ include "plural.labels" . | indent 4 }}
+spec:
+rules:
+- apiGroups: [""]
+  resources: ["pods", "pods/exec", "pods/status"]
+  verbs: ["*"]
+---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -34,4 +46,19 @@ subjects:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
+  name: plural-role
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: plural-shell-role
+  labels:
+{{ include "plural.labels" . | indent 4 }}
+subjects:
+- kind: ServiceAccount
+  name: plural
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
   name: plural-role

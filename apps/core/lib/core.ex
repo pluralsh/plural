@@ -12,6 +12,12 @@ defmodule Core do
     val
   end
 
+  def random_string(len \\ 32) do
+    :crypto.strong_rand_bytes(len)
+    |> Base.url_encode64()
+    |> String.replace("/", "")
+  end
+
   def sha(str) do
     :crypto.hash(:sha256, str)
     |> Base.encode32()

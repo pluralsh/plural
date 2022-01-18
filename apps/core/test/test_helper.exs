@@ -15,5 +15,6 @@ Mimic.copy(Core.Buffers.Docker)
 Mimic.copy(Core.Buffers.TokenAudit)
 Mimic.copy(Core.Clients.Hydra)
 Mimic.copy(Cloudflare.DnsRecord)
+Mimic.copy(Kazan)
 
 {:ok, _} = Application.ensure_all_started(:ex_machina)

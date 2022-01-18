@@ -21,6 +21,7 @@ defmodule GraphQl do
   import_types GraphQl.Schema.Rollout
   import_types GraphQl.Schema.OAuth
   import_types GraphQl.Schema.Dns
+  import_types GraphQl.Schema.Shell
 
   alias GraphQl.Resolvers.{
     User,
@@ -103,6 +104,7 @@ defmodule GraphQl do
     import_fields :rollout_queries
     import_fields :oauth_queries
     import_fields :dns_queries
+    import_fields :shell_queries
   end
 
   mutation do
@@ -119,6 +121,7 @@ defmodule GraphQl do
     import_fields :oauth_mutations
     import_fields :docker_mutations
     import_fields :dns_mutations
+    import_fields :shell_mutations
   end
 
   subscription do

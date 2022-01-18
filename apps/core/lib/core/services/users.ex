@@ -169,6 +169,20 @@ defmodule Core.Services.Users do
   defp handle_login_method(_), do: {:ok, :ignore}
 
   @doc """
+  Returns the first persisted token for a user, or creates one
+  """
+  @spec access_token(User.t) :: {:ok, PersistedToken.t} | {:error, term}
+  def access_token(%User{} = user) do
+    # TODO: add a limit to this query
+    PersistedToken.for_user(user.id)
+    |> Core.Repo.all()
+    |> case do
+      [token | _] -> {:ok, token}
+      _ -> create_persisted_token(user)
+    end
+  end
+
+  @doc """
   Creates a new persisted token for the user which can substitute for jwt bearer
   tokens for use in the forge cli.
   """

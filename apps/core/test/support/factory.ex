@@ -490,4 +490,11 @@ defmodule Core.Factory do
       domain: sequence(:domain_mapping, & "domain-#{&1}.com")
     }
   end
+
+  def cloud_shell_factory do
+    %Schema.CloudShell{
+      user: build(:user),
+      pod_name: sequence(:pod_name, & "plrl-shell-#{&1}")
+    }
+  end
 end

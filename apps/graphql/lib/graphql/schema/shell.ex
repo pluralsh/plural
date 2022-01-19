@@ -4,11 +4,20 @@ defmodule GraphQl.Schema.Shell do
 
   input_object :cloud_shell_attributes do
     field :provider,        :provider
-    field :git_url,         non_null(:string)
-    field :ssh_public_key,  non_null(:string)
-    field :ssh_private_key, non_null(:string)
     field :workspace,       non_null(:workspace_attributes)
     field :credentials,     non_null(:shell_credentials_attributes)
+    field :scm,             :scm_attributes
+  end
+
+  enum :scm_provider do
+    value :github
+  end
+
+  input_object :scm_attributes do
+    field :provider, :scm_provider
+    field :token,    non_null(:string)
+    field :name,     non_null(:string)
+    field :org,      :string
   end
 
   input_object :workspace_attributes do

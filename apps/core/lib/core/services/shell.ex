@@ -2,6 +2,7 @@ defmodule Core.Services.Shell do
   use Core.Services.Base
   alias Core.Schema.{CloudShell, User}
   alias Core.Services.{Shell.Pods, Dns}
+  alias Core.Shell.Scm
 
   @type error :: {:error, term}
   @type shell_resp :: {:ok, CloudShell.t} | error
@@ -33,13 +34,23 @@ defmodule Core.Services.Shell do
     |> add_operation(:dns, fn %{create: %CloudShell{workspace: %CloudShell.Workspace{subdomain: sub}}} ->
       Dns.provision_domain(sub, user)
     end)
+    |> add_operation(:git, fn
+      %{fetch: nil, create: shell} ->
+        %{provider: p, token: t, name: n} = args = attrs[:scm]
+        with {:ok, url, pub, priv} <- Scm.setup_repository(p, user.email, t, args[:org], n) do
+          shell
+          |> CloudShell.changeset(%{git_url: url, ssh_public_key: pub, ssh_private_key: priv})
+          |> Core.Repo.update()
+        end
+      %{create: shell} -> {:ok, shell}
+    end)
     |> add_operation(:init, fn %{create: %CloudShell{pod_name: name}} ->
       case Pods.fetch(name) do
         {:ok, pod} -> {:ok, pod}
         _ -> Pods.create(name)
       end
     end)
-    |> execute(extract: :create)
+    |> execute(extract: :git)
   end
 
   @doc """

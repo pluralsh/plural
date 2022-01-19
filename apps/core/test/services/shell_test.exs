@@ -12,14 +12,22 @@ defmodule Core.Services.ShellTest do
         {:ok, Shell.Pods.pod("plrl-shell-1")}
       end)
 
+      expect(HTTPoison, :post, 2, fn
+        "https://api.github.com/user/repos", _, _ ->
+          {:ok, %HTTPoison.Response{status_code: 200, body: Jason.encode!(%{
+            ssh_url: "git@github.com:pluralsh/installations.git",
+            full_name: "pluralsh/installations"
+          })}}
+        "https://api.github.com/repos/pluralsh/installations/keys", _, _ ->
+          {:ok, %HTTPoison.Response{status_code: 200, body: "OK"}}
+      end)
+
       {:ok, shell} = Shell.create_shell(%{
         provider: :aws,
-        ssh_public_key: "ssh-pub",
-        ssh_private_key: "ssh-priv",
-        git_url: "git@github.com:pluralsh/installations.git",
         credentials: %{
           aws: %{access_key_id: "access_key", secret_access_key: "secret"}
         },
+        scm: %{token: "tok", provider: :github, name: "installations"},
         workspace: %{
           cluster: "plural",
           bucket_prefix: "plrl",
@@ -30,8 +38,9 @@ defmodule Core.Services.ShellTest do
 
       assert shell.user_id == user.id
       assert shell.aes_key
-      assert shell.ssh_public_key == "ssh-pub"
-      assert shell.ssh_private_key == "ssh-priv"
+      assert shell.ssh_public_key
+      assert shell.ssh_private_key
+      assert shell.git_url == "git@github.com:pluralsh/installations.git"
       assert shell.provider == :aws
       assert shell.credentials.aws.access_key_id == "access_key"
       assert shell.credentials.aws.secret_access_key == "secret"

@@ -91,10 +91,10 @@ defmodule Core.Schema.CloudShell do
     |> cast_embed(:credentials)
     |> put_new_change(:pod_name, &pod_name/0)
     |> put_new_change(:aes_key, &aes_key/0)
-    |> validate_required(@valid)
+    |> validate_required([:provider, :pod_name, :aes_key])
   end
 
   defp pod_name(), do: "plrl-shell-#{Core.random_string(4)}-#{Core.random_string(4)}"
 
-  defp aes_key(), do: Core.random_string(50)
+  defp aes_key(), do: Core.random_string(32)
 end

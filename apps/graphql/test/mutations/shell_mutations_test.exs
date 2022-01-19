@@ -6,15 +6,17 @@ defmodule GraphQl.ShellMutationsTest do
 
   describe "createShell" do
     test "it will create a new shell instance" do
-      user = insert(:user)
+      %{email: e} = user = insert(:user)
 
       expect(Pods, :fetch, fn _ -> {:ok, Pods.pod("plrl-shell-1")} end)
+      expect(Core.Shell.Scm, :setup_repository, fn
+        :github, ^e, "tok", nil, "demo" ->
+          {:ok, "git@github.com:pluralsh/demo.git", "pub-key", "priv-key"}
+      end)
 
       attrs = %{
         "provider" => "AWS",
-        "sshPublicKey" => "pub-key",
-        "sshPrivateKey" => "priv-key",
-        "gitUrl" => "git@github.com:pluralsh/demo.git",
+        "scm" => %{"provider" => "GITHUB", "token" => "tok", "name" => "demo"},
         "workspace" => %{
           "cluster" => "plural",
           "region" => "us-east-1",

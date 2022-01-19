@@ -31,10 +31,10 @@ import { UpgradeQueue } from './upgrades/UpgradeQueue'
 import { RepoDirectory } from './repos/RepoDirectory'
 import { IncidentDirectory } from './IncidentDirectory'
 import { VerifyEmailConfirmed } from './users/EmailConfirmation'
-import { AutoRefresh } from './login/AutoRefresh'
+// import { AutoRefresh } from './login/AutoRefresh'
 import { NavigationContext } from './navigation/Submenu'
 import { DeviceLoginNotif } from './users/DeviceLoginNotif'
-import { CloudShell } from '../shell/CloudShell'
+import { CloudShell } from './shell/CloudShell'
 
 export const TOOLBAR_SIZE = '55px'
 
@@ -59,7 +59,7 @@ export function PluralInner() {
     <WrapStripe>
       <BreadcrumbProvider>
         <VerifyEmailConfirmed />
-        <AutoRefresh />
+        {/* <AutoRefresh /> */}
         <DeviceLoginNotif />
         <Grid fill rows={[TOOLBAR_SIZE, 'flex']} columns={['100vw']} areas={[
             {name: 'toolbarTop', start: [0, 0], end: [0, 0]},

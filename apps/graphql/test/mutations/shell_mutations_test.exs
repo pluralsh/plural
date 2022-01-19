@@ -48,4 +48,21 @@ defmodule GraphQl.ShellMutationsTest do
       assert created["aesKey"]
     end
   end
+
+  describe "rebootShell" do
+    test "it will reboot a shell's pod" do
+      user = insert(:user)
+      shell = insert(:cloud_shell, user: user)
+
+      expect(Kazan, :run, fn _ -> {:ok, %{}} end)
+
+      {:ok, %{data: %{"rebootShell" => r}}} = run_query("""
+        mutation {
+          rebootShell { id }
+        }
+      """, %{}, %{current_user: user})
+
+      assert r["id"] == shell.id
+    end
+  end
 end

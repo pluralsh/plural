@@ -44,12 +44,7 @@ defmodule Core.Services.Shell do
         end
       %{create: shell} -> {:ok, shell}
     end)
-    |> add_operation(:init, fn %{create: %CloudShell{pod_name: name}} ->
-      case Pods.fetch(name) do
-        {:ok, pod} -> {:ok, pod}
-        _ -> Pods.create(name)
-      end
-    end)
+    |> add_operation(:init, fn %{create: %CloudShell{} = shell} -> reboot(shell) end)
     |> execute(extract: :git)
   end
 
@@ -61,6 +56,29 @@ defmodule Core.Services.Shell do
     case Pods.fetch(name) do
       {:ok, pod} -> Pods.liveness(pod)
       _ -> false
+    end
+  end
+
+  @doc """
+  Reboots a cloud shell instance
+  """
+  @spec reboot(CloudShell.t | binary) :: {:ok, CloudShell.t} | error
+  def reboot(%CloudShell{pod_name: name} = shell) do
+    with {:ok, _} <- do_reboot(name),
+      do: {:ok, shell}
+  end
+
+  def reboot(user_id) when is_binary(user_id) do
+    get_shell(user_id)
+    |> reboot()
+  end
+
+  def reboot(nil), do: {:error, "no shell available"}
+
+  defp do_reboot(name) do
+    case Pods.fetch(name) do
+      {:ok, pod} -> {:ok, pod}
+      _ -> Pods.create(name)
     end
   end
 

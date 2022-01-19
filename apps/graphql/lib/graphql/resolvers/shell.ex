@@ -9,6 +9,8 @@ defmodule GraphQl.Resolvers.Shell do
   def create_shell(%{attributes: attrs}, %{context: %{current_user: user}}),
     do: Shell.create_shell(attrs, user)
 
+  def reboot(_, %{context: %{current_user: user}}), do: Shell.reboot(user.id)
+
   def liveness(shell), do: {:ok, Shell.alive?(shell)}
 
   def authorize_urls(_, _), do: {:ok, Scm.authorize_urls()}

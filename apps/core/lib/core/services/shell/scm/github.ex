@@ -45,7 +45,7 @@ defmodule Core.Shell.Scm.Github do
 
   defp oauth_client(), do: Github.client(nil, "/shell")
 
-  defp headers(token), do: [{"Authorization", "Bearer #{token}", "accept", "application/vnd.github.v3+json"}]
+  defp headers(token), do: [{"Authorization", "Bearer #{token}"}, {"accept", "application/vnd.github.v3+json"}]
 
   defp create_repo_url(nil), do: url("/user/repos")
   defp create_repo_url(org), do: url("/orgs/#{org}/repos")

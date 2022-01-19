@@ -21,4 +21,35 @@ defmodule GraphQl.ShellQueriesTest do
       refute found["alive"]
     end
   end
+
+  describe "scmAuthorization" do
+    test "it can list authz urls for scm providers" do
+      user = insert(:user)
+
+      {:ok, %{data: %{"scmAuthorization" => [res]}}} = run_query("""
+        query {
+          scmAuthorization { provider url }
+        }
+      """, %{}, %{current_user: user})
+
+      assert res["provider"] == "GITHUB"
+      assert res["url"]
+    end
+  end
+
+  describe "scmToken" do
+    test "it can fetch an access token for an scm provider" do
+      user = insert(:user)
+
+      expect(Core.Shell.Scm, :get_token, fn :github, "code" -> {:ok, "access"} end)
+
+      {:ok, %{data: %{"scmToken" => tok}}} = run_query("""
+        query Token($code: String!, $prov: ScmProvider!) {
+          scmToken(code: $code, provider: $prov)
+        }
+      """, %{"code" => "code", "prov" => "GITHUB"}, %{current_user: user})
+
+      assert tok == "access"
+    end
+  end
 end

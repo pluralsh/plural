@@ -24,6 +24,7 @@ export default function App() {
         <Route path='/confirm-email/:id' component={EmailConfirmed} />
         <Route path='/invite/:inviteId' component={Invite} />
         <Route path='/passwordless-login/:token' component={PasswordlessLogin} />
+        <Route exact path='/oauth/callback/github/shell' component={Plural} />
         <Route path='/oauth/callback/:service' component={OAuthCallback} />
         <Route exact path="/login" component={Login} />
         <Route exact path='/signup' component={Signup} />

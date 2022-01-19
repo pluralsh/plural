@@ -15,6 +15,7 @@
     "apollo-link-context": "^1.0.19",
     "apollo-link-persisted-queries": "^0.2.2",
     "apollo-link-retry": "^2.2.16",
+    "client-oauth2": "^4.3.3",
     "country-code-lookup": "^0.0.19",
     "country-list": "^2.2.0",
     "d3-force": "^2.0.1",

@@ -49,10 +49,28 @@ defmodule GraphQl.Schema.Shell do
     timestamps()
   end
 
+  object :authorization_url do
+    field :provider, non_null(:scm_provider)
+    field :url,      non_null(:string)
+  end
+
   object :shell_queries do
     field :shell, :cloud_shell do
       middleware Authenticated
       resolve &Shell.resolve_shell/2
+    end
+
+    field :scm_authorization, list_of(:authorization_url) do
+      middleware Authenticated
+      resolve &Shell.authorize_urls/2
+    end
+
+    field :scm_token, :string do
+      middleware Authenticated
+      arg :provider, non_null(:scm_provider)
+      arg :code,     non_null(:string)
+
+      resolve &Shell.get_token/2
     end
   end
 

@@ -2,12 +2,12 @@ defmodule Core.OAuth.Github do
   use OAuth2.Strategy
   use Core.OAuth.Base
 
-  def client(redirect \\ nil) do
+  def client(redirect \\ nil, suffix \\ "") do
     OAuth2.Client.new([
       strategy: __MODULE__,
       client_id: get_env("GITHUB_CLIENT_ID"),
       client_secret: get_env("GITHUB_CLIENT_SECRET"),
-      redirect_uri: "#{redirect || host()}/oauth/callback/github",
+      redirect_uri: "#{redirect || host()}/oauth/callback/github#{suffix}",
       site: "https://api.github.com",
       authorize_url: "https://github.com/login/oauth/authorize",
       token_url: "https://github.com/login/oauth/access_token"

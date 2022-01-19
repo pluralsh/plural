@@ -1,5 +1,5 @@
 defmodule Core.Shell.Scm.Github do
-  import System, only: [get_env: 1]
+  alias Core.OAuth.Github
   require Logger
 
   def create_repository(access_token, name, org) do
@@ -26,6 +26,24 @@ defmodule Core.Shell.Scm.Github do
         {:error, "could not register deploy keys against github repository #{n}"}
     end
   end
+
+  def authorize_url() do
+    oauth_client()
+    |> OAuth2.Client.authorize_url!(scope: "repo read:org")
+  end
+
+  def get_token(code) do
+    oauth_client()
+    |> OAuth2.Client.get_token!(code: code)
+    |> case do
+      %OAuth2.Client{token: %OAuth2.AccessToken{access_token: tok}} -> {:ok, tok}
+      err  ->
+        Logger.error "unrecognized token #{inspect(err)}"
+        {:error, "invalid access code"}
+    end
+  end
+
+  defp oauth_client(), do: Github.client(nil, "/shell")
 
   defp headers(token), do: [{"Authorization", "Bearer #{token}", "accept", "application/vnd.github.v3+json"}]
 

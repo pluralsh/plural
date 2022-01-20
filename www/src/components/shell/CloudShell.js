@@ -1,16 +1,16 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { Box, Table, TableCell, Text } from 'grommet'
+import { Box, Text } from 'grommet'
 import { Github } from 'grommet-icons'
 import { useLocation } from 'react-router'
 import { useMutation, useQuery } from 'react-apollo'
-import { Divider, Button, SecondaryButton } from 'forge-core'
+import { Button } from 'forge-core'
 import { AUTH_URLS, CLOUD_SHELL, CREATE_SHELL, REBOOT_SHELL, SCM_TOKEN } from './query'
 import { LoopingLogo } from '../utils/AnimatedLogo'
-import { GithubRepositoryInput } from './scm/github'
-import { AwsForm } from './cloud/aws'
-import { WorkspaceForm } from './WorkspaceForm'
-import { TableRow } from '../accounts/Domains'
+import { GithubRepositoryInput, GITHUB_VALIDATIONS } from './scm/github'
+import { AwsForm, AWS_VALIDATIONS } from './cloud/aws'
+import { WorkspaceForm, WORKSPACE_VALIDATIONS } from './WorkspaceForm'
 import { Terminal } from './Terminal'
+import { Exceptions, getExceptions } from './validation'
 
 const SECTIONS = {
   'git': ['cloud', null],
@@ -19,24 +19,28 @@ const SECTIONS = {
   'finish': [null, 'workspace']
 }
 
-function SynopsisTable({items}) {
+const VALIDATIONS = {
+  'git': GITHUB_VALIDATIONS,
+  'cloud': AWS_VALIDATIONS,
+  'workspace': WORKSPACE_VALIDATIONS
+}
+
+function SynopsisTable({items, width}) {
   return (
-    <Table>
+    <Box gap='xsmall' border={{side: 'between'}}>
       {items.map(({name, value}) => (
-        <TableRow key={name}>
-          <TableCell scope="row">
-            <strong>{name}</strong>
-          </TableCell>
-          <TableCell>{value}</TableCell>
-        </TableRow>
+        <Box direction='row' key={name} gap='small' align='center'>
+          <Box flex={false} width={width || '120px'}><Text size='small' weight={500}>{name}</Text></Box> 
+          <Box fill='horizontal'>{value}</Box>
+        </Box>
       ))}
-    </Table>
+    </Box>
   )
 }
 
 function SynopsisSection({header, children}) {
   return (
-    <Box pad='small' round='xsmall' background='tone-light' gap='xsmall'>
+    <Box pad='small' round='xsmall' background='card' gap='xsmall'>
       <Box direction='row' justify='center'>
         <Text size='small' weight={500}>{header}</Text>
       </Box>
@@ -45,13 +49,15 @@ function SynopsisSection({header, children}) {
   )
 }
 
+const SecondaryButton = ({label, onClick}) => <Button background='sidebarHover' label={label} onClick={onClick} />
+
 function Synopsis({scm, credentials, workspace}) {
   return (
     <Box gap='small'>
-      <Text>You've completed the configuration for your shell, but let's verify everything looks good just to be safe</Text>
+      <Text size='small'>You've completed the configuration for your shell, but let's verify everything looks good just to be safe</Text>
       <Box gap='medium' direction='row'>
         <SynopsisSection header='Git Setup'>
-          <SynopsisTable items={[{name: 'Repository', value: scm.org ? `${scm.org}/${scm.name}` : scm.name}]} />
+          <SynopsisTable width='80px' items={[{name: 'Repository', value: scm.org ? `${scm.org}/${scm.name}` : scm.name}]} />
         </SynopsisSection>
         <SynopsisSection header='Cloud Credentials'>
           <SynopsisTable items={[
@@ -61,13 +67,21 @@ function Synopsis({scm, credentials, workspace}) {
           ]} />
         </SynopsisSection>
         <SynopsisSection header='Workspace'>
-          <SynopsisTable items={[
+          <SynopsisTable width='100px' items={[
             {name: 'Cluster', value: workspace.cluster},
             {name: 'Bucket Prefix', value: workspace.bucketPrefix},
             {name: 'Subdomain', value: workspace.subdomain},
           ]} />
         </SynopsisSection>
       </Box>
+    </Box>
+  )
+}
+
+function Header({text}) {
+  return (
+    <Box fill='horizontal' align='center' pad='small'>
+      <Text size='small' weight={500}>{text}</Text>
     </Box>
   )
 }
@@ -82,24 +96,28 @@ function CreateShell({accessToken, onCreate}) {
     onCompleted: onCreate
   })
   const next = useCallback(() => {
-    if (section !== 'finish') setSection(SECTIONS[section][0])
-    if (section === 'finish') mutation()
+    const hasNext = !!SECTIONS[section][0]
+    if (hasNext) setSection(SECTIONS[section][0])
+    if (!hasNext) mutation()
   }, [section, mutation])
-  
-  console.log(accessToken)
+
+  const validations = VALIDATIONS[section]
+  const {error, exceptions, ...rest} = getExceptions(validations, {credentials, workspace, scm})
 
   return (
-    <Box style={{overflow: 'auto', height: '100%', width: '100%'}} align='center' justify='center' pad='small'>
+    <Box style={{overflow: 'auto', height: '100%', width: '100%'}} 
+         background='backgroundColor' align='center' justify='center' pad='small'>
       <Box flex={false} gap='small' width={section !== 'finish' ? '40%' : null}>
+        {exceptions && <Exceptions exceptions={exceptions} />}
         {section === 'git' && (
           <>
-          <Divider text='Git Setup' />
+          <Header text='Git Setup' />
           <GithubRepositoryInput accessToken={accessToken} scm={scm} setScm={setScm} />
           </>
         )}
         {section === 'cloud' && (
           <>
-          <Divider text='Cloud Credentials' />
+          <Header text='Cloud Credentials' />
           <AwsForm
             workspace={workspace}
             setWorkspace={setWorkspace}
@@ -109,7 +127,7 @@ function CreateShell({accessToken, onCreate}) {
         )}
         {section === 'workspace' && (
           <>
-          <Divider text='Workspace' />
+          <Header text='Workspace' />
           <WorkspaceForm workspace={workspace} setWorkspace={setWorkspace} />
           </>
         )}
@@ -117,9 +135,15 @@ function CreateShell({accessToken, onCreate}) {
           <Synopsis workspace={workspace} credentials={credentials} scm={scm} />
         )}
         <Box direction='row' justify='end' gap='small'>
-          {section !== 'git' && <SecondaryButton label='Previous' onClick={() => setSection(SECTIONS[section][1])} />}
+          {SECTIONS[section][1] && (
+            <SecondaryButton 
+              label='Previous' 
+              onClick={() => setSection(SECTIONS[section][1])} />
+          )}
           <Button 
             onClick={next} 
+            border={!!error}
+            disabled={error}
             loading={loading} 
             label={section !== 'finish' ? 'Next' : 'Create'} />
         </Box>
@@ -160,11 +184,10 @@ export function CloudShell() {
     }
   }, [shellData, setCreated])
 
-  console.log(shellData)
-
-  if (!shellData) return <LoopingLogo />
+  if (!shellData) return <LoopingLogo dark />
   
   if ((shellData && shellData.shell) || created) return <Terminal />
+
 
   if (params.get('code')) return (
     <OAuthCallback 
@@ -173,9 +196,9 @@ export function CloudShell() {
   )
 
   return (
-    <Box fill align='center' justify='center'>
+    <Box background='backgroundColor' fill align='center' justify='center'>
       <Box flex={false} pad='small' round='xsmall' direction='row' gap='small' border
-           align='center' hoverIndicator='tone-light' onClick={onClick}>
+           align='center' hoverIndicator='card' onClick={onClick}>
         <Github size='15px' />
         <Text size='small' weight={500}>Log In With Github To Start</Text>
       </Box>

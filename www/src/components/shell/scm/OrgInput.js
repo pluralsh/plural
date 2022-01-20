@@ -27,7 +27,7 @@ export function OrgInput({name, setName, org, orgs, setOrg, render}) {
       {org && (
         <>
         <Box ref={ref} flex={false} style={{borderRightStyle: 'none'}} border height='40px' align='center' justify='center'
-             pad={{horizontal: 'small'}} hoverIndicator='tone-light'
+             pad={{horizontal: 'small'}} hoverIndicator='card' background='sidebarHover'
              direction='row' gap='small' onClick={() => setOpen(true)}>
           {render(org)}
           <Down size='small' />

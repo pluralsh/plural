@@ -7,6 +7,7 @@ const boxStyle = css`
 
 export const PLURAL_THEME = {
   'plural-blk': '#000b11',
+  'plrl-black': '#000b11',
   'tone-dark': '#01131a',
   'tone-dark-2': '#1a2b31',
   'tone-dark-3': '#2f3b41',

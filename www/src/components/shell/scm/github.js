@@ -2,6 +2,11 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Octokit } from "@octokit/core";
 import { Box, Text } from 'grommet';
 import { OrgInput } from './OrgInput';
+import { isAlphanumeric } from '../validation';
+
+export const GITHUB_VALIDATIONS = [
+  {field: 'scm.name', name: 'repository', func: isAlphanumeric}
+]
 
 function OrgDisplay({org: {login, avatar_url}}) {
   return (
@@ -38,8 +43,6 @@ export function GithubRepositoryInput({scm, setScm, accessToken}) {
     }
     if (!orgs) fetch()
   }, [client, setOrgs, orgs, doSetOrg])
-
-  console.log(scm)
 
   return (
     <Box>

@@ -2,7 +2,7 @@ import React from 'react'
 import { Box, TextInput, Text } from 'grommet'
 import { trimSuffix } from '../../utils/array'
 
-export function SuffixedInput({suffix, value, onChange, placeholder}) {
+export function SuffixedInput({suffix, value, onChange, placeholder, background}) {
   return (
     <Box direction='row' align='center'>
       <TextInput
@@ -10,8 +10,8 @@ export function SuffixedInput({suffix, value, onChange, placeholder}) {
         value={value ? trimSuffix(value, suffix) : ''}
         placeholder={placeholder}
         onChange={({target: {value}}) => onChange(`${value}${suffix}`)} />
-      <Box flex={false} style={{borderLeftStyle: 'none'}} border={{color: 'light-5'}} 
-            pad={{horizontal: 'small'}} background='tone-light' height='41px' justify='center'>
+      <Box flex={false} style={{borderLeftStyle: 'none'}} border={{color: 'border'}} 
+            pad={{horizontal: 'small'}} background={background || 'tone-light'} height='41px' justify='center'>
         <Text size='small' weight={500}>{suffix}</Text>
       </Box>
     </Box>

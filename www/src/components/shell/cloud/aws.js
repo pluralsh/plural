@@ -1,13 +1,19 @@
 import React, { useCallback, useEffect } from 'react'
-import { Select } from 'forge-core'
 import { LabelledInput } from '../../users/MagicLogin'
 import { Box, Text } from 'grommet'
+import { DarkSelect } from '../../utils/DarkSelect'
+import { exists } from '../validation'
 
 const REGIONS = [
   'us-east-1',
   'us-east-2',
   'us-west-2',
   'eu-west-1'
+]
+
+export const AWS_VALIDATIONS = [
+  {field: 'credentials.aws.accessKeyId', func: exists, name: 'access key id'},
+  {field: 'credentials.aws.secretAccessKey', func: exists, name: 'secret access key'}
 ]
 
 export function AwsForm({credentials, setCredentials, workspace, setWorkspace}) {
@@ -27,7 +33,7 @@ export function AwsForm({credentials, setCredentials, workspace, setWorkspace}) 
       <Box flex={false} fill='horizontal' direction='row' gap='xsmall' align='center'>
         <Text weight={500} size='small'>Region:</Text>
         <Box fill='horizontal'>
-          <Select
+          <DarkSelect
             size='small'
             value={{value: region, label: region}}
             options={REGIONS.map((r) => ({value: r, label: r}))}

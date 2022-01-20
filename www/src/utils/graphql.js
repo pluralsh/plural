@@ -47,3 +47,13 @@ export function updateCache(cache, {query, variables, update, onFailure}) {
 }
 
 export const prune = ({__typename, ...rest}) => rest
+
+export function deepFetch(map, path) {
+  if (isString(path)) return deepFetch(map, path.split('.'))
+
+  const key = path[0]
+  if (path.length === 1) return map[key]
+  if (!map[key]) return null
+
+  return deepFetch(map[key], path.slice(1))
+}

@@ -40,7 +40,9 @@ defmodule Core.Services.Shell.Pods do
     %CoreV1.Pod{
       metadata: %MetaV1.ObjectMeta{
         name: name,
-        namespace: @ns
+        namespace: @ns,
+        annotations: %{"platform.plural.sh/expire-after" => "1d"},
+        labels: %{"app.plural.sh/type" => "shell"}
       },
       spec: %CoreV1.PodSpec{containers: [container()]}
     }

@@ -41,3 +41,11 @@ export function* chunk(array, chunkSize) {
     yield array.slice(i,i + chunkSize);
   }
 }
+
+export function trimSuffix(str, suff) {
+  if (str.endsWith(suff)) {
+    return str.slice(0, str.length - suff.length)
+  }
+
+  return str
+}

@@ -10,6 +10,7 @@
     "@nivo/core": "^0.67.0",
     "@nivo/geo": "^0.67.0",
     "@nivo/line": "^0.67.0",
+    "@octokit/core": "^3.5.1",
     "apollo-absinthe-upload-link": "^1.5.0",
     "apollo-boost": "^0.4.4",
     "apollo-link-context": "^1.0.19",
@@ -77,7 +78,10 @@
     "slate-history": "^0.59.0",
     "slate-react": "^0.59.0",
     "styled-components": "^5.1.1",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "xterm-addon-fit": "^0.5.0",
+    "xterm-for-react": "^1.0.4",
+    "xterm-theme": "^1.1.0"
   },
   "scripts": {
     "start": "PORT=3001 HTTPS=true react-app-rewired start",

@@ -9,6 +9,9 @@ defmodule GraphQl.Resolvers.Shell do
   def create_shell(%{attributes: attrs}, %{context: %{current_user: user}}),
     do: Shell.create_shell(attrs, user)
 
+  def delete_shell(_, %{context: %{current_user: user}}),
+    do: Shell.delete(user.id)
+
   def reboot(_, %{context: %{current_user: user}}), do: Shell.reboot(user.id)
 
   def liveness(shell), do: {:ok, Shell.alive?(shell)}

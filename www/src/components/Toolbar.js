@@ -9,6 +9,7 @@ import { Breadcrumbs } from './Breadcrumbs'
 import { Notifications } from './users/Notifications'
 import { LoopingLogo } from './utils/AnimatedLogo'
 import './toolbar.css'
+import { AutoRefresh } from './login/AutoRefresh'
 
 const PLRL_ICON = `${process.env.PUBLIC_URL}/plural-white.png`
 const PLRL_WORD = `${process.env.PUBLIC_URL}/plural-white-word.png`
@@ -52,6 +53,7 @@ export default function Toolbar() {
         <SearchRepositories />
       </Box>
       <Notifications />
+      <AutoRefresh />
       <Box flex={false} margin={{horizontal: 'small'}} round='xsmall'>
         <Me me={me} />
       </Box>

@@ -48,6 +48,25 @@ defmodule Core.Services.Shell do
     |> execute(extract: :git)
   end
 
+
+  @doc """
+  Deletes the shell record from the db and destroys its associated pod if it exists
+  """
+  @spec delete(CloudShell.t | binary) :: shell_resp
+  def delete(%CloudShell{} = shell) do
+    start_transaction()
+    |> add_operation(:shell, fn _ -> Core.Repo.delete(shell) end)
+    |> add_operation(:pod, fn _ -> stop(shell) end)
+    |> execute(extract: :shell)
+  end
+
+  def delete(user_id) when is_binary(user_id) do
+    get_shell(user_id)
+    |> delete()
+  end
+
+  def delete(nil), do: {:error, "no shell available for this user"}
+
   @doc """
   Determines if a shell's pod is currently alive
   """
@@ -92,8 +111,13 @@ defmodule Core.Services.Shell do
   end
 
   def stop(%CloudShell{pod_name: name}) do
-    with {:ok, _} <- Pods.delete(name),
-      do: {:ok, true}
+    with {:pod, {:ok, _}} <- {:pod, Pods.fetch(name)},
+         {:ok, _} <- Pods.delete(name) do
+      {:ok, true}
+    else
+      {:pod, _} -> {:ok, true}
+      err -> err
+    end
   end
 
   def stop(_), do: {:error, :not_found}

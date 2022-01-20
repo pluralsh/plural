@@ -102,7 +102,7 @@ function CreateShell({accessToken, onCreate}) {
   }, [section, mutation])
 
   const validations = VALIDATIONS[section]
-  const {error, exceptions, ...rest} = getExceptions(validations, {credentials, workspace, scm})
+  const {error, exceptions} = getExceptions(validations, {credentials, workspace, scm})
 
   return (
     <Box style={{overflow: 'auto', height: '100%', width: '100%'}} 

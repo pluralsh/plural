@@ -80,8 +80,21 @@ defmodule Core.Services.ShellTest do
       user = insert(:user)
       insert(:cloud_shell, user: user, pod_name: "plrl-shell-1")
 
-      expect(Kazan, :run, fn _ -> {:ok, Shell.Pods.pod("plrl-shell-1")} end)
+      expect(Kazan, :run, 2, fn _ -> {:ok, Shell.Pods.pod("plrl-shell-1")} end)
       {:ok, true} = Shell.stop(user)
+    end
+  end
+
+  describe "#delete/1" do
+    test "it will delete the shell instance for a user" do
+      user = insert(:user)
+      shell = insert(:cloud_shell, user: user, pod_name: "plrl-shell-1")
+
+      expect(Kazan, :run, 2, fn _ -> {:ok, Shell.Pods.pod("plrl-shell-1")} end)
+      {:ok, s} = Shell.delete(user.id)
+
+      assert s.id == shell.id
+      refute refetch(shell)
     end
   end
 end

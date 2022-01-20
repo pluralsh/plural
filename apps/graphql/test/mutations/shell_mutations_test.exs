@@ -65,4 +65,24 @@ defmodule GraphQl.ShellMutationsTest do
       assert r["id"] == shell.id
     end
   end
+
+  describe "deleteShell" do
+    test "it will delete a shell for a user" do
+      user = insert(:user)
+      shell = insert(:cloud_shell, user: user, pod_name: "plrl-shell-1")
+
+      expect(Pods, :fetch, fn "plrl-shell-1" -> {:ok, Pods.pod("plrl-shell-1")} end)
+      expect(Pods, :delete, fn "plrl-shell-1" -> {:ok, Pods.pod("plrl-shell-1")} end)
+
+      {:ok, %{data: %{"deleteShell" => s}}} = run_query("""
+        mutation {
+          deleteShell { id }
+        }
+      """, %{}, %{current_user: user})
+      |> IO.inspect()
+
+      assert s["id"] == shell.id
+      refute refetch(shell)
+    end
+  end
 end

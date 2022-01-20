@@ -1,7 +1,9 @@
-import React, { useContext, useEffect, useState, useCallback } from 'react'
+import React, { useContext, useState, useCallback } from 'react'
 import * as serviceWorker from '../../serviceWorker';
 import { PluralConfigurationContext } from './CurrentUser'
-import { Confirm } from '../utils/Confirm'
+import { Icon } from '../utils/Icon';
+import { Download } from 'forge-core'
+import { Box } from 'grommet'
 
 const COMMIT_KEY = 'git-commit'
 
@@ -35,11 +37,12 @@ export function AutoRefresh() {
   }
 
   return (
-    <Confirm
-      submit={reload}
-      cancel={() => setOpen(false)}
-      header='New version available'
-      label='Refresh'
-      description="It looks like there's a new version of plural available to use" />
+    <Box margin={{horizontal: 'xsmall'}}>
+      <Icon
+        icon={<Download size='15px' color='orange' />}
+        onClick={reload}
+        text='New Update Available'
+        align={{top: 'bottom'}} />
+    </Box>
   )
 }

@@ -86,5 +86,10 @@ defmodule GraphQl.Schema.Shell do
       middleware Authenticated
       resolve &Shell.reboot/2
     end
+
+    field :delete_shell, :cloud_shell do
+      middleware Authenticated
+      resolve &Shell.delete_shell/2
+    end
   end
 end

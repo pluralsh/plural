@@ -46,6 +46,7 @@ defmodule Core.Services.Shell.Pods do
       },
       spec: %CoreV1.PodSpec{
         containers: [container()],
+        termination_grace_period_seconds: 30,
         automount_service_account_token: false, # this *MUST* be set to prevent kubectl from using in-cluster auth
       }
     }

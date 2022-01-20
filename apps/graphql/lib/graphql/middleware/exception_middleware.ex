@@ -1,5 +1,6 @@
 defmodule GraphQl.ExceptionMiddleware do
   alias GraphQl.ExceptionHandler
+  require Logger
   @behaviour Absinthe.Middleware
   @default_config []
 
@@ -16,6 +17,7 @@ defmodule GraphQl.ExceptionMiddleware do
       if ExceptionHandler.capture(error) do
         Sentry.capture_exception(error, __STACKTRACE__)
       end
+      Logger.error(Exception.format(:error, error, __STACKTRACE__))
       Absinthe.Resolution.put_result(resolution, {:error, ExceptionHandler.message(error)})
   end
 

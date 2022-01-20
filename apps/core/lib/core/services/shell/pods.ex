@@ -44,7 +44,10 @@ defmodule Core.Services.Shell.Pods do
         annotations: %{"platform.plural.sh/expire-after" => "1d"},
         labels: %{"app.plural.sh/type" => "shell"}
       },
-      spec: %CoreV1.PodSpec{containers: [container()]}
+      spec: %CoreV1.PodSpec{
+        containers: [container()],
+        automount_service_account_token: false, # this *MUST* be set to prevent kubectl from using in-cluster auth
+      }
     }
   end
 

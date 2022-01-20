@@ -1,6 +1,6 @@
 defmodule GraphQl.Resolvers.Account do
   use GraphQl.Resolvers.Base, model: Core.Schema.Account
-  alias Core.Schema.{Group, GroupMember, Role, RoleBinding, IntegrationWebhook, WebhookLog, OAuthIntegration, DomainMapping}
+  alias Core.Schema.{Group, GroupMember, Role, RoleBinding, IntegrationWebhook, WebhookLog, OAuthIntegration, DomainMapping, Invite}
   alias Core.Services.Accounts
 
   def query(Group, _), do: Group
@@ -52,6 +52,11 @@ defmodule GraphQl.Resolvers.Account do
           |> Core.Repo.all()}
   end
 
+  def list_invites(args, %{context: %{current_user: %{account_id: aid}}}) do
+    Invite.for_account(aid)
+    |> paginate(args)
+  end
+
   def resolve_webhook(%{id: id}, %{context: %{current_user: user}}) do
     Accounts.get_webhook!(id)
     |> Core.Policies.Account.allow(user, :access)
@@ -81,6 +86,9 @@ defmodule GraphQl.Resolvers.Account do
 
   def create_invite(%{attributes: attrs}, %{context: %{current_user: user}}),
     do: Accounts.create_invite(attrs, user)
+
+  def delete_invite(%{secure_id: id}, %{context: %{current_user: user}}),
+    do: Accounts.delete_invite(id, user)
 
   def create_group(%{attributes: attrs}, %{context: %{current_user: user}}),
     do: Accounts.create_group(attrs, user)

@@ -127,6 +127,24 @@ defmodule GraphQl.AccountMutationTest do
     end
   end
 
+  describe "deleteInvite" do
+    setup [:setup_root_user]
+
+    test "deletes an invite", %{user: user, account: account} do
+      invite = insert(:invite, account: account, secure_id: "a-id")
+      {:ok, %{data: %{"deleteInvite" => del}}} = run_query("""
+        mutation Delete($id: String!) {
+          deleteInvite(secureId: $id) {
+            secureId
+          }
+        }
+      """, %{"id" => "a-id"}, %{current_user: user})
+
+      assert del["secureId"] == invite.secure_id
+      refute refetch(invite)
+    end
+  end
+
   describe "createGroup" do
     setup [:setup_root_user]
 

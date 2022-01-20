@@ -101,8 +101,11 @@ defmodule GraphQl.Schema.Account do
   end
 
   object :invite do
+    field :id,        non_null(:id)
     field :secure_id, non_null(:string)
-    field :email, :string
+    field :email,     :string
+
+    timestamps()
   end
 
   object :group do
@@ -190,12 +193,17 @@ defmodule GraphQl.Schema.Account do
   connection node_type: :role
   connection node_type: :integration_webhook
   connection node_type: :webhook_log
+  connection node_type: :invite
 
   object :account_queries do
     field :invite, :invite do
       arg :id, non_null(:string)
 
       resolve &Account.resolve_invite/2
+    end
+
+    connection field :invites, node_type: :invite do
+      resolve &Account.list_invites/2
     end
 
     connection field :groups, node_type: :group  do
@@ -282,6 +290,12 @@ defmodule GraphQl.Schema.Account do
       arg :attributes, non_null(:invite_attributes)
 
       resolve safe_resolver(&Account.create_invite/2)
+    end
+
+    field :delete_invite, :invite do
+      arg :secure_id, non_null(:string)
+
+      resolve safe_resolver(&Account.delete_invite/2)
     end
 
     field :create_group, :group do

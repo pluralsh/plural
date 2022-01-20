@@ -243,6 +243,18 @@ defmodule Core.Services.AccountsTest do
     end
   end
 
+  describe "#delete_invite/2" do
+    setup [:setup_root_user]
+
+    test "root users can delete invites", %{user: user} do
+      {:ok, invite} = Accounts.create_invite(%{email: "some@example.com"}, user)
+      {:ok, del} = Accounts.delete_invite(invite.secure_id, user)
+
+      assert invite.id == del.id
+      refute refetch(invite)
+    end
+  end
+
   describe "#realize_invite/3" do
     setup [:setup_root_user]
 

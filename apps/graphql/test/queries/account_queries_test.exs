@@ -182,4 +182,22 @@ defmodule GraphQl.AccountQueriesTest do
       assert conf["stripeConnectId"]
     end
   end
+
+  describe "invites" do
+    setup [:setup_root_user]
+
+    test "it can list invites for an account", %{user: user, account: account} do
+      invites = insert_list(3, :invite, account: account)
+      insert_list(2, :invite)
+
+      {:ok, %{data: %{"invites" => found}}} = run_query("""
+        query {
+          invites(first: 5) { edges { node { id } } }
+        }
+      """, %{}, %{current_user: user})
+
+      assert from_connection(found)
+             |> ids_equal(invites)
+    end
+  end
 end

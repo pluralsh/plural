@@ -79,7 +79,6 @@ defmodule GraphQl.ShellMutationsTest do
           deleteShell { id }
         }
       """, %{}, %{current_user: user})
-      |> IO.inspect()
 
       assert s["id"] == shell.id
       refute refetch(shell)

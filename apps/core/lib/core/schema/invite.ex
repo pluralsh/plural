@@ -11,6 +11,10 @@ defmodule Core.Schema.Invite do
     timestamps()
   end
 
+  def for_account(query \\ __MODULE__, aid) do
+    from(i in query, where: i.account_id == ^aid)
+  end
+
   @valid ~w(email account_id)a
 
   def changeset(model, attrs \\ %{}) do

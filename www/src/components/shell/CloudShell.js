@@ -160,9 +160,11 @@ export function CloudShell() {
     }
   }, [shellData, setCreated])
 
+  console.log(shellData)
+
   if (!shellData) return <LoopingLogo />
   
-  if (shellData || created) return <Terminal />
+  if ((shellData && shellData.shell) || created) return <Terminal />
 
   if (params.get('code')) return (
     <OAuthCallback 

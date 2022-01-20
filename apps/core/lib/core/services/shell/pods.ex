@@ -58,7 +58,8 @@ defmodule Core.Services.Shell.Pods do
           container_port: 8080,
           name: "http"
         }
-      ]
+      ],
+      env: [%CoreV1.EnvVar{name: "IGNORE_IN_CLUSTER", value: "true"}]
     }
   end
 end

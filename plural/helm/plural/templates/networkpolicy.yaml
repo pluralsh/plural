@@ -1,0 +1,33 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: shell-network-policy
+  namespace: plrl-shell
+spec:
+  podSelector:
+    matchLabels:
+      app.plural.sh/type: shell
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          "kubernetes.io/metadata.name": {{ .Release.Namespace }}
+    ports:
+    - protocol: TCP
+      port: 8080
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          k8s-app: kube-dns
+      namespaceSelector:
+        matchLabels:
+          "kubernetes.io/metadata.name": kube-system
+    - ipBlock:
+        cidr: 0.0.0.0/0
+        except:
+        - 169.0.0.0/8
+        - 10.0.0.0/8

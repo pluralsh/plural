@@ -4,7 +4,7 @@ import { SIDEBAR_WIDTH } from '../constants'
 import { SectionChoice } from '../utils/SectionChoice'
 import { useHistory, useParams } from 'react-router'
 import { User, ServiceAccounts as ServiceAccountsI, EditField, Group, Oauth, 
-         Invoices as InvoicesI, PaymentMethods, Roles as RolesI, Browser as Domain } from 'forge-core'
+         Invoices as InvoicesI, PaymentMethods, Roles as RolesI, Browser as Domain, Messages } from 'forge-core'
 import { useMutation } from 'react-apollo'
 import { UPDATE_ACCOUNT } from './queries'
 import { Button, InputCollection, ResponsiveInput, Trash } from 'forge-core'
@@ -20,6 +20,7 @@ import { SectionContentContainer, SectionPortal } from '../Explore'
 import { DnsDirectory } from './Domains'
 import { Icon } from './Group'
 import { GqlError } from '../utils/Alert'
+import { Invites } from './Invites'
 
 const ICON_SIZE = '12px'
 
@@ -33,11 +34,13 @@ const ViewOptions = {
   INVOICES: 'invoices',
   INTEGRATIONS: 'integrations',
   DOMAINS: 'domains',
+  INVITES: 'invites'
 }
 
 const VIEWS = [
   {text: 'Edit Attributes', view: ViewOptions.EDIT, icon: <EditField size={ICON_SIZE} />, optional: true},
   {text: "Users", view: ViewOptions.USERS, icon: <User size={ICON_SIZE} />},
+  {text: 'Invites', view: ViewOptions.INVITES, icon: <Messages size={ICON_SIZE} />, optional: true},
   {text: "Service Accounts", view: ViewOptions.SRV_ACCTS, icon: <ServiceAccountsI size={ICON_SIZE} />},
   {text: "Groups", view: ViewOptions.GROUPS, icon: <Group size={ICON_SIZE} />},
   {text: 'Roles', view: ViewOptions.ROLES, icon: <RolesI size={ICON_SIZE} />},
@@ -145,6 +148,7 @@ export function EditAccount({billing}) {
       <Box fill>
         {section === ViewOptions.EDIT && <EditAttributes />}
         {section === ViewOptions.USERS && <Users />}
+        {section === ViewOptions.INVITES && <Invites />}
         {section === ViewOptions.SRV_ACCTS && <ServiceAccounts />}
         {section === ViewOptions.GROUPS && <Groups />}
         {section === ViewOptions.ROLES && <Roles />}

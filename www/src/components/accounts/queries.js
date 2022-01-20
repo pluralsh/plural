@@ -1,7 +1,7 @@
 import { gql } from 'apollo-boost'
-import { AuditFragment, DnsDomainFragment, DnsRecordFragment } from '../../models/account';
+import { AuditFragment, DnsDomainFragment, DnsRecordFragment, InviteFragment } from '../../models/account';
 import { PageInfo } from '../../models/misc';
-import { AccountFragment, GroupFragment, GroupMemberFragment, ImpersonationPolicy, InviteFragment, RoleFragment, UserFragment } from '../../models/user';
+import { AccountFragment, GroupFragment, GroupMemberFragment, ImpersonationPolicy, RoleFragment, UserFragment } from '../../models/user';
 
 export const UPDATE_ACCOUNT = gql`
   mutation UpdateAccount($attributes: AccountAttributes!) {
@@ -279,4 +279,22 @@ export const DELETE_DNS_RECORD = gql`
     }
   }
   ${DnsRecordFragment}
+`
+
+export const INVITES_Q = gql`
+  query Invites($cursor: String) {
+    invites(first: 50, after: $cursor) {
+      pageInfo { ...PageInfo }
+      edges { node { ...InviteFragment } }
+    }
+  }
+  ${PageInfo}
+  ${InviteFragment}
+`
+
+export const DELETE_INVITE = gql`
+  mutation Delete($id: String!) {
+    deleteInvite(secureId: $id) { ...InviteFragment }
+  }
+  ${InviteFragment}
 `

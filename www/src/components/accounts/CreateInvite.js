@@ -5,6 +5,8 @@ import { useMutation } from 'react-apollo'
 import { CREATE_INVITE } from './queries'
 import { apiHost } from '../../helpers/hostname'
 
+export const inviteLink = (invite) => `https://${apiHost()}/invite/${invite.secureId}`
+
 export function InviteForm() {
   const [email, setEmail] = useState('')
   const [mutation, {loading, data, error}] = useMutation(CREATE_INVITE, {
@@ -12,11 +14,12 @@ export function InviteForm() {
   })
 
   const invite = data && data.createInvite
+
   return (
     <Box gap='small'>
       {invite && (
         <Box background='light-3' pad='small' round='small'>
-          <Copyable text={`https://${apiHost()}/invite/${invite.secureId}`} pillText='Invite link copied!' />
+          <Copyable text={inviteLink(invite)} pillText='Invite link copied!' />
         </Box>
       )}
       {error && <GqlError error={error} header='Could not create invite' />}

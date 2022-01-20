@@ -1,6 +1,8 @@
 defmodule Core do
   @moduledoc nil
 
+  @chars String.codepoints("abcdefghijklmnopqrstuvwxyz")
+
   def conf(key), do: Application.get_env(:core, key)
 
   def broker(), do: conf(:broker)
@@ -16,6 +18,11 @@ defmodule Core do
     :crypto.strong_rand_bytes(len)
     |> Base.url_encode64()
     |> String.replace("/", "")
+  end
+
+  def random_alphanum(len) do
+    Enum.map((1..len), fn _ -> Enum.random(@chars) end)
+    |> Enum.join("")
   end
 
   def sha(str) do

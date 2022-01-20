@@ -6,7 +6,7 @@ defmodule Core.Shell.Scm.Github do
     create_repo_url(org)
     |> HTTPoison.post(Jason.encode!(create_repo_body(name)), headers(access_token))
     |> case do
-      {:ok, %{status_code: 200, body: body}} -> Jason.decode(body)
+      {:ok, %{status_code: code, body: body}} when code >= 200 and code < 300 -> Jason.decode(body)
       err ->
         Logger.error "Failed to create repository #{inspect(err)}"
         {:error, "could not create github repository"}
@@ -20,7 +20,7 @@ defmodule Core.Shell.Scm.Github do
       headers(access_token)
     )
     |> case do
-      {:ok, %{status_code: 200}} -> :ok
+      {:ok, %{status_code: code}} when code >= 200 and code < 300 -> :ok
       err ->
         Logger.error "Failed to register deploy keys #{inspect(err)}"
         {:error, "could not register deploy keys against github repository #{n}"}

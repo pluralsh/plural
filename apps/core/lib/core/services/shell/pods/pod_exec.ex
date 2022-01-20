@@ -5,7 +5,7 @@ defmodule Core.Services.Shell.Pods.PodExec do
 
   def exec_url(name) do
     args = URI.encode_query(%{
-      container: "server",
+      container: "shell",
       command: "zsh",
       tty: "true",
       stdin: "true",

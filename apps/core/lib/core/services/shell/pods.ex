@@ -48,7 +48,9 @@ defmodule Core.Services.Shell.Pods do
 
   defp container() do
     %CoreV1.Container{
+      name: "shell",
       image: @image,
+      image_pull_policy: "Always",
       ports: [
         %CoreV1.ContainerPort{
           container_port: 8080,

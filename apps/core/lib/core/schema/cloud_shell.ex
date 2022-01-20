@@ -94,7 +94,7 @@ defmodule Core.Schema.CloudShell do
     |> validate_required([:provider, :pod_name, :aes_key])
   end
 
-  defp pod_name(), do: "plrl-shell-#{Core.random_string(4)}-#{Core.random_string(4)}"
+  defp pod_name(), do: "plrl-shell-#{Core.random_alphanum(6)}-#{Core.random_alphanum(6)}"
 
   defp aes_key(), do: Core.random_string(32)
 end

@@ -50,7 +50,7 @@ export function ShellStatus({shell: {status}}) {
         <Status name='Initialized' state={status.initialized} />
         <Status name='Pod Scheduled' state={status.podScheduled} />
         <Status name='Containers Ready' state={status.containersReady} />
-        <Status name='ready' state={status.ready} />
+        <Status name='Ready' state={status.ready} />
       </Box>
     </Box>
   )

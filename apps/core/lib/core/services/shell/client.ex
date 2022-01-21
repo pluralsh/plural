@@ -4,12 +4,15 @@ defmodule Core.Shell.Client do
   alias Core.Services.Shell.Pods
   require Logger
 
+  @timeout 50_000
+  @timeout_opts [timeout: @timeout, recv_timeout: @timeout]
+
   @headers [{"accept", "*/*"}, {"content-type", "application/json"}]
 
   def setup(%CloudShell{pod_name: name} = shell) do
     with {:ok, ip} <- Pods.ip(name),
          {:ok, req} <- request(shell) do
-      case HTTPoison.post("http://#{ip}:8080/v1/setup", Poison.encode!(req), @headers) do
+      case HTTPoison.post("http://#{ip}:8080/v1/setup", Poison.encode!(req), @headers, @timeout_opts) do
         {:ok, %HTTPoison.Response{status_code: 200}} -> {:ok, true}
         error ->
           Logger.error "Failed to setup shell: #{inspect(error)}"

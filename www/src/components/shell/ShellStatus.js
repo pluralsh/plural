@@ -1,15 +1,15 @@
 import React from 'react'
-import { BeatLoader } from 'react-spinners'
 import { Checkmark } from 'grommet-icons'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { Box, Text } from 'grommet'
+import { PulsyDiv } from '../utils/animations'
 
-const SIZE = '30px'
+const SIZE = '25px'
 
-function StatusContainer({children, background}) {
+function StatusContainer({children, background, base, size}) {
   return (
-    <Box flex={false} width={SIZE} height={SIZE} background={background} 
-         round='full' align='center' justify='center'>
+    <Box flex={false} width={size || SIZE} height={size || SIZE} background={background} 
+         round='full' align='center' justify='center' as={base}>
       {children}
     </Box>
   )
@@ -17,15 +17,13 @@ function StatusContainer({children, background}) {
 
 function UnreadyStatus() {
   return (
-    <StatusContainer background='progress'>
-      <BeatLoader size={5} />
-    </StatusContainer>
+    <StatusContainer background='progress' base={PulsyDiv} />
   )
 }
 
 function ReadyStatus() {
   return (
-    <StatusContainer background=''>
+    <StatusContainer background='success'>
       <Checkmark size='15px' />
     </StatusContainer>
   )
@@ -33,7 +31,7 @@ function ReadyStatus() {
 
 function Status({name, state}) {
   return (
-    <Box background='card' round='xsmall' direction='row' fill='horizontal' align='center'>
+    <Box background='card' round='xsmall' direction='row' fill='horizontal' align='center' pad='small'>
       <Box fill='horizontal'>
         <Text size='small' weight={500}>{name}</Text>
       </Box>
@@ -47,7 +45,7 @@ export function ShellStatus({shell: {status}}) {
   if (!status) return <LoopingLogo dark />
 
   return (
-    <Box fill align='center' justify='center'>
+    <Box background='backgroundColor' fill align='center' justify='center'>
       <Box width='40%' gap='xsmall'>
         <Status name='Initialized' state={status.initialized} />
         <Status name='Pod Scheduled' state={status.podScheduled} />

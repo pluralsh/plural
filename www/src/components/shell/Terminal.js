@@ -73,7 +73,7 @@ export function Terminal() {
 
   if (loading || !data || !data.shell) return <LoopingLogo dark /> 
 
-  if (!data.shell.active) return <ShellStatus shell={data.shell} />
+  if (!data.shell.alive) return <ShellStatus shell={data.shell} />
 
   const {shell} = data
   return (

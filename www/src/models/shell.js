@@ -10,7 +10,7 @@ export const CloudShellFragment = gql`
       ready
       initialized
       containersReady
-      podInitialized
+      podScheduled
     }
   }
 `

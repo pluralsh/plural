@@ -6,7 +6,7 @@ defmodule Core.Services.Shell.Pods.PodExec do
   def exec_url(name) do
     args = URI.encode_query(%{
       container: "shell",
-      command: "zsh",
+      command: "start-session.sh",
       tty: "true",
       stdin: "true",
       stdout: "true",

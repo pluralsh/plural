@@ -6,6 +6,8 @@ defmodule Core.Services.Shell.Pods do
   @ns "plrl-shell"
   @conditions ~w(Initialized Ready ContainersReady PodScheduled)
 
+  defmodule Status, do: defstruct [:initialized, :ready, :containers_ready, :pod_scheduled]
+
   def fetch(name) do
     CoreV1.read_namespaced_pod!(@ns, name)
     |> Kazan.run()
@@ -30,11 +32,28 @@ defmodule Core.Services.Shell.Pods do
 
   def conditions(), do: @conditions
 
+  def status(%CoreV1.Pod{status: %CoreV1.PodStatus{conditions: [_ | _] = conditions}}) do
+    by_type = condition_map(conditions)
+    %Status{
+      initialized: status_active(by_type["Initialized"]),
+      ready: status_active(by_type["Ready"]),
+      containers_ready: status_active(by_type["ContainersReady"]),
+      pod_scheduled: status_active(by_type["PodScheduled"]),
+    }
+  end
+  def status(_), do: %Status{}
+
   def liveness(%CoreV1.Pod{status: %CoreV1.PodStatus{conditions: [_ | _] = conditions}}) do
-    by_type = Enum.into(conditions, %{}, fn %{type: t} = condition -> {t, condition} end)
-    Enum.all?(@conditions, & (by_type[&1] && by_type[&1].status == "True"))
+    by_type = condition_map(conditions)
+    Enum.all?(@conditions, &status_active(by_type[&1]))
   end
   def liveness(_), do: false
+
+  defp status_active(%{status: "True"}), do: true
+  defp status_active(_), do: false
+
+  defp condition_map(conditions),
+    do: Enum.into(conditions, %{}, fn %{type: t} = condition -> {t, condition} end)
 
   def pod(name) do
     %CoreV1.Pod{

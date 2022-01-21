@@ -42,11 +42,20 @@ defmodule GraphQl.Schema.Shell do
     field :provider,    non_null(:provider)
     field :git_url,     non_null(:string)
     field :aes_key,     non_null(:string)
+
     field :alive,       non_null(:boolean), resolve: fn
       shell, _, _ -> Shell.liveness(shell)
     end
 
+    field :status, :shell_status, resolve: fn
+      shell, _, _ -> Shell.status(shell)
+    end
+
     timestamps()
+  end
+
+  object :shell_status do
+    field :ready, :boolean
   end
 
   object :authorization_url do

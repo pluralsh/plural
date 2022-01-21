@@ -16,6 +16,8 @@ defmodule GraphQl.Resolvers.Shell do
 
   def liveness(shell), do: {:ok, Shell.alive?(shell)}
 
+  def status(shell), do: {:ok, Shell.status(shell)}
+
   def authorize_urls(_, _), do: {:ok, Scm.authorize_urls()}
 
   def get_token(%{provider: p, code: c}, _), do: Scm.get_token(p, c)

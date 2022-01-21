@@ -79,6 +79,17 @@ defmodule Core.Services.Shell do
   end
 
   @doc """
+  Gets a descriptive status struct for the status of the shell's pod
+  """
+  @spec status(CloudShell.t) :: Pods.Status.t | nil
+  def status(%CloudShell{pod_name: name}) do
+    case Pods.fetch(name) do
+      {:ok, pod} -> Pods.status(pod)
+      _ -> nil
+    end
+  end
+
+  @doc """
   Reboots a cloud shell instance
   """
   @spec reboot(CloudShell.t | binary) :: {:ok, CloudShell.t} | error

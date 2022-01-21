@@ -9,6 +9,7 @@ import { ThemeSelector } from './ThemeSelector'
 import { CLOUD_SHELL } from './query'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { useQuery } from 'react-apollo'
+import { ShellStatus } from './ShellStatus'
 
 export function Shell({room, header, children: [title, sidebar]}) {
   const xterm = useRef(null)
@@ -70,7 +71,9 @@ function CommandDetails({command, description}) {
 export function Terminal() {
   const {data, loading} = useQuery(CLOUD_SHELL, {pollInterval: 5000})
 
-  if (loading || !data || !data.shell || !data.shell.alive) return <LoopingLogo />
+  if (loading || !data || !data.shell) return <LoopingLogo dark /> 
+
+  if (!data.shell.active) return <ShellStatus shell={data.shell} />
 
   const {shell} = data
   return (

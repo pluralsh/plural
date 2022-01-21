@@ -6,5 +6,11 @@ export const CloudShellFragment = gql`
     gitUrl
     alive
     provider
+    status {
+      ready
+      initialized
+      containersReady
+      podInitialized
+    }
   }
 `

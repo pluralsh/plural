@@ -55,7 +55,10 @@ defmodule GraphQl.Schema.Shell do
   end
 
   object :shell_status do
-    field :ready, :boolean
+    field :ready,            :boolean
+    field :initialized,      :boolean
+    field :containers_ready, :boolean
+    field :pod_scheduled,    :boolean
   end
 
   object :authorization_url do

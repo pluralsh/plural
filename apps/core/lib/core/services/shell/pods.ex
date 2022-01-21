@@ -82,7 +82,18 @@ defmodule Core.Services.Shell.Pods do
           name: "http"
         }
       ],
-      env: [%CoreV1.EnvVar{name: "IGNORE_IN_CLUSTER", value: "true"}]
+      env: [%CoreV1.EnvVar{name: "IGNORE_IN_CLUSTER", value: "true"}],
+      liveness_probe: healthcheck(),
+      readiness_probe: healthcheck(),
+    }
+  end
+
+  defp healthcheck() do
+    %CoreV1.Probe{
+      http_get: %CoreV1.HTTPGetAction{
+        path: "/v1/health",
+        port: "http"
+      }
     }
   end
 end

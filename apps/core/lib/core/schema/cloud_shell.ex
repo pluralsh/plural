@@ -96,5 +96,8 @@ defmodule Core.Schema.CloudShell do
 
   defp pod_name(), do: "plrl-shell-#{Core.random_alphanum(6)}-#{Core.random_alphanum(6)}"
 
-  defp aes_key(), do: Core.random_string(32)
+  defp aes_key() do
+    :crypto.strong_rand_bytes(32)
+    |> Base.encode64()
+  end
 end

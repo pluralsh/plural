@@ -155,10 +155,10 @@ function CreateShell({accessToken, onCreate}) {
 function OAuthCallback({code, onCreate}) {
   const {data} = useQuery(SCM_TOKEN, {variables: {code, provider: 'GITHUB'}})
 
-  if (!data) return <LoopingLogo />
+  if (!data) return <LoopingLogo dark />
 
   return (
-    <Box fill align='center' justify='center'>
+    <Box background='backgroundColor' fill align='center' justify='center'>
       <CreateShell accessToken={data.scmToken} onCreate={onCreate} />
     </Box>
   )
@@ -187,7 +187,6 @@ export function CloudShell() {
   if (!shellData) return <LoopingLogo dark />
   
   if ((shellData && shellData.shell) || created) return <Terminal />
-
 
   if (params.get('code')) return (
     <OAuthCallback 

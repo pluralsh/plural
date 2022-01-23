@@ -60,7 +60,7 @@ defmodule Core.Services.Shell.Pods do
       metadata: %MetaV1.ObjectMeta{
         name: name,
         namespace: @ns,
-        annotations: %{"platform.plural.sh/expire-after" => "1d"},
+        annotations: %{"platform.plural.sh/expire-after" => "24h"},
         labels: %{"app.plural.sh/type" => "shell"}
       },
       spec: %CoreV1.PodSpec{
@@ -82,6 +82,10 @@ defmodule Core.Services.Shell.Pods do
           name: "http"
         }
       ],
+      resources: %CoreV1.ResourceRequirements{
+        limits: %{cpu: "100m", memory: "1Gi"},
+        requests: %{cpu: "20m", memory: "150Mi"}
+      },
       env: [%CoreV1.EnvVar{name: "IGNORE_IN_CLUSTER", value: "true"}],
       liveness_probe: healthcheck(),
       readiness_probe: healthcheck(),

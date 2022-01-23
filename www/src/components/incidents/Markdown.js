@@ -17,7 +17,7 @@ function Blockquote({children}) {
   )
 }
 
-export function Code({children, className, multiline}) {
+export function Code({children, header, className, multiline}) {
   const theme = useContext(ThemeContext)
   if (className && className.startsWith('lang-')) {
     const lang = className && className.slice(5)
@@ -26,6 +26,11 @@ export function Code({children, className, multiline}) {
         <Box fill='horizontal' round='xxsmall' border={{color: 'light-5'}}>
           <Box fill='horizontal' border={{side: 'bottom', color: 'light-5'}} direction='row' justify='end'
             gap='xsmall' background='light-3' pad='xsmall' align='center'>
+            {header && (
+              <Box fill='horizontal'>
+                <Text size='small' weight={500}>{header}</Text>
+              </Box>
+            )}
             <Text size='small' weight={500} color='dark-3'>language:</Text>
             <Text size='small' color='dark-3'>{lang}</Text>
             <WithCopy text={children} pillText={`copied ${lang} contents`}>

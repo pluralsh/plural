@@ -10,6 +10,7 @@ import { Notifications } from './users/Notifications'
 import { LoopingLogo } from './utils/AnimatedLogo'
 import './toolbar.css'
 import { AutoRefresh } from './login/AutoRefresh'
+import { SocialLinks } from './Socials'
 
 const PLRL_ICON = `${process.env.PUBLIC_URL}/plural-white.png`
 const PLRL_WORD = `${process.env.PUBLIC_URL}/plural-white-word.png`
@@ -52,6 +53,7 @@ export default function Toolbar() {
       <Box direction='row' width='100%' align='center' justify='end' margin={{right: 'small'}}>
         <SearchRepositories />
       </Box>
+      <SocialLinks />
       <Notifications />
       <AutoRefresh />
       <Box flex={false} margin={{horizontal: 'small'}} round='xsmall'>

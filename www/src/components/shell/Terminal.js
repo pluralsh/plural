@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Box, Layer, Text } from 'grommet'
+import { Box, Layer, Text, Drop } from 'grommet'
 import { socket } from '../../helpers/client'
 import { XTerm } from 'xterm-for-react'
 import { FitAddon } from 'xterm-addon-fit'
@@ -11,12 +11,13 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 import { useQuery } from 'react-apollo'
 import { ShellStatus } from './ShellStatus'
 import { CircleInformation } from 'grommet-icons'
-import { ModalHeader } from 'forge-core'
+import { ModalHeader, Update } from 'forge-core'
 import { Code } from '../incidents/Markdown'
 
-export function Shell({room, header, children: [title, sidebar]}) {
+export function Shell({room, header, title, children}) {
   const xterm = useRef(null)
   const [channel, setChannel] = useState(null)
+  const [dims, setDims] = useState({})
   const fitAddon = useMemo(() => new FitAddon(), [])
   const theme = savedTheme() || 'chalk'
   const themeStruct = normalizedThemes[theme]
@@ -34,6 +35,7 @@ export function Shell({room, header, children: [title, sidebar]}) {
     
     const {cols, rows} = fitAddon.proposeDimensions()
     chan.push('resize', {width: cols, height: rows})
+    setDims({cols, rows})
     setChannel(chan)
     const ref = socket.onOpen(() => setTimeout(() => chan.push('resize', {width: cols, height: rows}), 1000))
     return () => {
@@ -42,14 +44,23 @@ export function Shell({room, header, children: [title, sidebar]}) {
     }
   }, [room, xterm, fitAddon])
 
+  const resetSize = useCallback(() => channel.push('resize', {width: dims.cols, height: dims.rows}), [channel, dims])
+
   return (
     <Box fill background='backgroundColor'>
       <Box flex={false} pad='small' direction='row' align='center'>
-        {title}
+        <Box fill='horizontal' direction='row' align='center' gap='small'>
+          <Text size='small' weight={500}>{title}</Text>
+          <Information />
+          <Icon 
+            icon={<Update size='20px' />}
+            onClick={resetSize}
+            tooltip='repair viewport' />
+        </Box>
         <ThemeSelector theme={theme} />
       </Box>
       <Box fill border direction='row'>
-        {sidebar}
+        {children}
         <Box fill pad='small' background={themeStruct.background}>
           <XTerm 
             className='terminal'
@@ -75,16 +86,36 @@ function CommandDetails({command, description}) {
   )
 }
 
+function Icon({icon, onClick, tooltip}) {
+  const ref = useRef()
+  const [hover, setHover] = useState(false)
+
+  return (
+    <>
+    <Box ref={ref} pad='xsmall' align='center' justify='center' onClick={onClick}
+         hoverIndicator='card' round='xsmall' onMouseEnter={() => setHover(true)}
+         onMouseLeave={() => setHover(false)}>
+      {icon}
+    </Box>
+    {tooltip && hover && ref.current && (
+      <Drop plain target={ref.current} align={{left: "right"}} margin={{left: 'xsmall'}}>
+        <Box round='3px' background='sidebarHover'  pad='xsmall' elevation='small' 
+              align='center' justify='center'>
+          <Text size='small' weight={500}>{tooltip}</Text>
+        </Box>
+      </Drop>
+    )}
+    </>
+  )
+}
+
 function Information() {
   const [open, setOpen] = useState(false)
   const close = useCallback(() => setOpen(false), [setOpen])
 
   return (
     <>
-    <Box pad='small' align='center' justify='center' onClick={() => setOpen(true)}
-         hoverIndicator='card' round='xsmall'>
-      <CircleInformation size='20px' />
-    </Box>
+    <Icon icon={<CircleInformation size='20px' />} onClick={() => setOpen(true)} />
     {open && (
       <Layer modal onEsc={close} onClickOutside={close}>
         <Box width='50vw'>
@@ -119,11 +150,8 @@ export function Terminal() {
 
   const {shell} = data
   return (
-    <Shell room='shells:me' header={`Booting into your ${shell.provider} shell...`}>
-      <Box fill='horizontal' direction='row' align='center' gap='small'>
-        <Text size='small' weight={500}>Cloud Shell [Provider={shell.provider}, Git={shell.gitUrl}]</Text>
-        <Information />
-      </Box>
+    <Shell title={`Cloud Shell [Provider=${shell.provider}, Git=${shell.gitUrl}]`}
+           room='shells:me' header={`Booting into your ${shell.provider} shell...`}>
       <Box border={{side: 'right'}} fill='vertical' width='300px' gap='small' pad='small'>
         <Text size='small'>Here's a few commands to help you get going:</Text>
         <CommandDetails

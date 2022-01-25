@@ -23,6 +23,8 @@ spec:
     plural: plural  # dbname: owner
   postgresql:
     version: "13"
+    parameters:
+      max_connections: '101'
   sidecars:
   - image: gcr.io/pluralsh/postgres-exporter:0.8.0
     name: exporter

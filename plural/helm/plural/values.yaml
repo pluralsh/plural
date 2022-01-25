@@ -257,6 +257,7 @@ rtc:
   repository: dkr.plural.sh/plural/rtc
   tag: '0.1.2' ## PLRL-REPLACE[  tag: '%s']
   resources: {}
+  replicaCount: 2
 
 worker:
   repository: dkr.plural.sh/plural/worker
@@ -264,6 +265,7 @@ worker:
   minReplicas: 1
   maxReplicas: 10
   resources: {}
+  replicaCount: 2
 
 www:
   image: dkr.plural.sh/plural/plural-www

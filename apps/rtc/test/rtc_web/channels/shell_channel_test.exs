@@ -28,11 +28,15 @@ defmodule RtcWeb.ShellChannelTest do
 
       ref = push(socket, "command", %{"cmd" => "echo 'hello world'"})
       assert_reply ref, :ok, _
-      assert_push "stdo", %{message: "echo 'hello world'"}
+      assert_push "stdo", %{message: res}
+
+      assert Base.decode64!(res) == "echo 'hello world'"
 
       ref = push(socket, "resize", %{"width" => 1, "height" => 2})
       assert_reply ref, :ok, _
-      assert_push "stdo", %{message: "resized"}
+      assert_push "stdo", %{message: res}
+
+      assert Base.decode64!(res) == "resized"
     end
   end
 end

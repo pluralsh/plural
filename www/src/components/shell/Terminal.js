@@ -30,9 +30,9 @@ export function Shell({room, header, title, children}) {
     term.write(header + "\r\n\r\n")
     const chan = socket.channel(room, {})
     chan.onError(console.log)
-    chan.on("stdo", ({message}) => term.write(message))
+    chan.on("stdo", ({message}) => term.write(atob(message)))
     chan.join()
-    
+
     const {cols, rows} = fitAddon.proposeDimensions()
     chan.push('resize', {width: cols, height: rows})
     setDims({cols, rows})

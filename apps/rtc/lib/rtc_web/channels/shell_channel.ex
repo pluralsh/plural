@@ -25,7 +25,7 @@ defmodule RtcWeb.ShellChannel do
   end
 
   def handle_info({:stdo, data}, socket) do
-    push(socket, "stdo", %{message: data})
+    push(socket, "stdo", %{message: Base.encode64(data)})
     {:noreply, socket}
   end
 

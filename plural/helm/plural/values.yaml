@@ -328,6 +328,8 @@ hydra:
     config:
       ttl:
         id_token: 12h
+        access_token: 12h
+        refresh_token: 96h
 
   pdb:
     enabled: true

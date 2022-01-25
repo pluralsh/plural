@@ -35,7 +35,11 @@ export function Shell({room, header, children: [title, sidebar]}) {
     const {cols, rows} = fitAddon.proposeDimensions()
     chan.push('resize', {width: cols, height: rows})
     setChannel(chan)
-    return () => chan.leave()
+    const ref = socket.onOpen(() => setTimeout(() => chan.push('resize', {width: cols, height: rows}), 1000))
+    return () => {
+      socket.off([ref])
+      chan.leave()
+    }
   }, [room, xterm, fitAddon])
 
   return (
@@ -72,7 +76,6 @@ function CommandDetails({command, description}) {
 }
 
 function Information() {
-  const ref = useRef()
   const [open, setOpen] = useState(false)
   const close = useCallback(() => setOpen(false), [setOpen])
 

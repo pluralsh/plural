@@ -14,6 +14,8 @@ import { CircleInformation } from 'grommet-icons'
 import { ModalHeader, Update } from 'forge-core'
 import { Code } from '../incidents/Markdown'
 
+const decodeBase64 = (str) => (new Buffer(str, 'base64')).toString('utf-8')
+
 export function Shell({room, header, title, children}) {
   const xterm = useRef(null)
   const [channel, setChannel] = useState(null)
@@ -30,7 +32,7 @@ export function Shell({room, header, title, children}) {
     term.write(header + "\r\n\r\n")
     const chan = socket.channel(room, {})
     chan.onError(console.log)
-    chan.on("stdo", ({message}) => term.write(atob(message)))
+    chan.on("stdo", ({message}) => term.write(decodeBase64(message)))
     chan.join()
 
     const {cols, rows} = fitAddon.proposeDimensions()

@@ -312,7 +312,7 @@ hydraSecrets:
 
 hydraImage:
   # ORY Hydra image
-  repository: oryd/hydra
+  repository: gcr.io/pluralsh/oryd/hydra
   # ORY Hydra version
   tag: v1.8.5
   # Image pull policy
@@ -320,6 +320,9 @@ hydraImage:
 
 hydra:
   replicaCount: 2
+
+  image:
+    repository: gcr.io/pluralsh/oryd/hydra
 
   maester:
     enabled: false

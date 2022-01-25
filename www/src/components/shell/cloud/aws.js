@@ -3,6 +3,7 @@ import { LabelledInput } from '../../users/MagicLogin'
 import { Box, Text } from 'grommet'
 import { DarkSelect } from '../../utils/DarkSelect'
 import { exists } from '../validation'
+import { Provider } from '../../repos/misc'
 
 const REGIONS = [
   'us-east-1',
@@ -30,6 +31,10 @@ export function AwsForm({credentials, setCredentials, workspace, setWorkspace}) 
 
   return (
     <Box gap='small'>
+      <Box flex={false} fill='horizontal' direction='row' gap='small' align='center'>
+        <Text weight={500} size='small'>Provider</Text>
+        <Provider provider='AWS' width={50} />
+      </Box>
       <Box flex={false} fill='horizontal' direction='row' gap='xsmall' align='center'>
         <Text weight={500} size='small'>Region:</Text>
         <Box fill='horizontal'>

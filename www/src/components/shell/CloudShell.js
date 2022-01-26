@@ -157,6 +157,8 @@ function OAuthCallback({code, onCreate}) {
 
   if (!data) return <LoopingLogo dark />
 
+  console.log(data)
+
   return (
     <Box background='backgroundColor' fill align='center' justify='center'>
       <CreateShell accessToken={data.scmToken} onCreate={onCreate} />

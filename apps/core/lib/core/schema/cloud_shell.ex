@@ -51,18 +51,37 @@ defmodule Core.Schema.CloudShell do
     end
   end
 
+  defmodule GCP do
+    use Piazza.Ecto.Schema
+    alias Piazza.Ecto.EncryptedString
+
+    embedded_schema do
+      field :application_credentials, EncryptedString
+    end
+
+    @valid ~w(application_credentials)a
+
+    def changeset(model, attrs \\ %{}) do
+      model
+      |> cast(attrs, @valid)
+      |> validate_required(@valid)
+    end
+  end
+
   defmodule Credentials do
     use Piazza.Ecto.Schema
     alias Core.Schema.CloudShell
 
     embedded_schema do
       embeds_one :aws, CloudShell.AWS
+      embeds_one :gcp, CloudShell.GCP
     end
 
     def changeset(model, attrs \\ %{}) do
       model
       |> cast(attrs, [])
       |> cast_embed(:aws)
+      |> cast_embed(:gcp)
     end
   end
 

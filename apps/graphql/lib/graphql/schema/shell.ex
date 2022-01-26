@@ -3,10 +3,10 @@ defmodule GraphQl.Schema.Shell do
   alias GraphQl.Resolvers.Shell
 
   input_object :cloud_shell_attributes do
-    field :provider,        :provider
-    field :workspace,       non_null(:workspace_attributes)
-    field :credentials,     non_null(:shell_credentials_attributes)
-    field :scm,             :scm_attributes
+    field :provider,    :provider
+    field :workspace,   non_null(:workspace_attributes)
+    field :credentials, non_null(:shell_credentials_attributes)
+    field :scm,         :scm_attributes
   end
 
   enum :scm_provider do
@@ -30,11 +30,16 @@ defmodule GraphQl.Schema.Shell do
 
   input_object :shell_credentials_attributes do
     field :aws, :aws_shell_credentials_attributes
+    field :gcp, :gcp_shell_credentials_attributes
   end
 
   input_object :aws_shell_credentials_attributes do
     field :access_key_id,     non_null(:string)
     field :secret_access_key, non_null(:string)
+  end
+
+  input_object :gcp_shell_credentials_attributes do
+    field :application_credentials, non_null(:string)
   end
 
   object :cloud_shell do

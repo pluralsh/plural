@@ -318,6 +318,9 @@ hydraImage:
   # Image pull policy
   pullPolicy: IfNotPresent
 
+autoscaling:
+  enabled: true
+
 hydra:
   replicaCount: 2
 

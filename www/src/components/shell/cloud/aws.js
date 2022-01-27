@@ -3,7 +3,6 @@ import { LabelledInput } from '../../users/MagicLogin'
 import { Box, Text } from 'grommet'
 import { DarkSelect } from '../../utils/DarkSelect'
 import { exists } from '../validation'
-import { Provider } from '../../repos/misc'
 
 const REGIONS = [
   'us-east-1',
@@ -16,6 +15,14 @@ export const AWS_VALIDATIONS = [
   {field: 'credentials.aws.accessKeyId', func: exists, name: 'access key id'},
   {field: 'credentials.aws.secretAccessKey', func: exists, name: 'secret access key'}
 ]
+
+export const awsSynopsis = ({workspace, credentials}) => (
+  [
+    {name: "Region", value: workspace.region},
+    {name: 'Access Key Id', value: credentials.aws.accessKeyId},
+    {name: 'Secret Access Key', value: credentials.aws.secretAccessKey}
+  ]
+)
 
 export function AwsForm({credentials, setCredentials, workspace, setWorkspace}) {
   const aws = credentials.aws || {}
@@ -30,11 +37,7 @@ export function AwsForm({credentials, setCredentials, workspace, setWorkspace}) 
   }, [aws, region, setRegion])
 
   return (
-    <Box gap='small'>
-      <Box flex={false} fill='horizontal' direction='row' gap='small' align='center'>
-        <Text weight={500} size='small'>Provider</Text>
-        <Provider provider='AWS' width={50} />
-      </Box>
+    <Box fill gap='small'>
       <Box flex={false} fill='horizontal' direction='row' gap='xsmall' align='center'>
         <Text weight={500} size='small'>Region:</Text>
         <Box fill='horizontal'>

@@ -1,1 +1,1 @@
-export const CLOUDS = ['aws']
+export const CLOUDS = ['AWS', 'GCP']

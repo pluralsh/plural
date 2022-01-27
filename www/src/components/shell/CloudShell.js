@@ -7,10 +7,10 @@ import { Button } from 'forge-core'
 import { AUTH_URLS, CLOUD_SHELL, CREATE_SHELL, REBOOT_SHELL, SCM_TOKEN } from './query'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { GithubRepositoryInput, GITHUB_VALIDATIONS } from './scm/github'
-import { AwsForm, AWS_VALIDATIONS } from './cloud/aws'
 import { WorkspaceForm, WORKSPACE_VALIDATIONS } from './WorkspaceForm'
 import { Terminal } from './Terminal'
 import { Exceptions, getExceptions } from './validation'
+import { CLOUD_VALIDATIONS, ProviderForm, synopsis } from './cloud/provider'
 
 const SECTIONS = {
   'git': ['cloud', null],
@@ -21,7 +21,6 @@ const SECTIONS = {
 
 const VALIDATIONS = {
   'git': GITHUB_VALIDATIONS,
-  'cloud': AWS_VALIDATIONS,
   'workspace': WORKSPACE_VALIDATIONS
 }
 
@@ -51,7 +50,7 @@ function SynopsisSection({header, children}) {
 
 const SecondaryButton = ({label, onClick}) => <Button background='sidebarHover' label={label} onClick={onClick} />
 
-function Synopsis({scm, credentials, workspace}) {
+function Synopsis({scm, credentials, workspace, provider}) {
   return (
     <Box gap='small'>
       <Text size='small'>You've completed the configuration for your shell, but let's verify everything looks good just to be safe</Text>
@@ -60,11 +59,7 @@ function Synopsis({scm, credentials, workspace}) {
           <SynopsisTable width='80px' items={[{name: 'Repository', value: scm.org ? `${scm.org}/${scm.name}` : scm.name}]} />
         </SynopsisSection>
         <SynopsisSection header='Cloud Credentials'>
-          <SynopsisTable items={[
-            {name: "Region", value: workspace.region},
-            {name: 'Access Key Id', value: credentials.aws.accessKeyId},
-            {name: 'Secret Access Key', value: credentials.aws.secretAccessKey}
-          ]} />
+          <SynopsisTable items={synopsis({provider, credentials, workspace})} />
         </SynopsisSection>
         <SynopsisSection header='Workspace'>
           <SynopsisTable width='100px' items={[
@@ -78,7 +73,7 @@ function Synopsis({scm, credentials, workspace}) {
   )
 }
 
-function Header({text}) {
+export function Header({text}) {
   return (
     <Box fill='horizontal' align='center' pad='small'>
       <Text size='small' weight={500}>{text}</Text>
@@ -88,26 +83,34 @@ function Header({text}) {
 
 function CreateShell({accessToken, onCreate}) {
   const [section, setSection] = useState('git')
+  const [provider, setProvider] = useState('AWS')
   const [scm, setScm] = useState({name: '', provider: 'GITHUB', token: accessToken})
   const [credentials, setCredentials] = useState({})
   const [workspace, setWorkspace] = useState({})
   const [mutation, {loading}] = useMutation(CREATE_SHELL, {
-    variables: {attributes: {credentials, workspace, scm, provider: "AWS"}},
+    variables: {attributes: {credentials, workspace, scm, provider}},
     onCompleted: onCreate
   })
+
+  const doSetProvider = useCallback((provider) => {
+    setProvider(provider)
+    setCredentials({})
+    setWorkspace({...workspace, region: null})
+  }, [setProvider, setCredentials, setWorkspace])
+
   const next = useCallback(() => {
     const hasNext = !!SECTIONS[section][0]
     if (hasNext) setSection(SECTIONS[section][0])
     if (!hasNext) mutation()
   }, [section, mutation])
 
-  const validations = VALIDATIONS[section]
+  const validations = section === 'cloud' ? CLOUD_VALIDATIONS[provider] : VALIDATIONS[section]
   const {error, exceptions} = getExceptions(validations, {credentials, workspace, scm})
 
   return (
     <Box style={{overflow: 'auto', height: '100%', width: '100%'}} 
          background='backgroundColor' align='center' justify='center' pad='small'>
-      <Box flex={false} gap='small' width={section !== 'finish' ? '40%' : null}>
+      <Box flex={false} gap='small' width={section !== 'finish' ? '50%' : null}>
         {exceptions && <Exceptions exceptions={exceptions} />}
         {section === 'git' && (
           <>
@@ -116,14 +119,13 @@ function CreateShell({accessToken, onCreate}) {
           </>
         )}
         {section === 'cloud' && (
-          <>
-          <Header text='Cloud Credentials' />
-          <AwsForm
+          <ProviderForm 
+            provider={provider}
+            setProvider={doSetProvider}
             workspace={workspace}
             setWorkspace={setWorkspace}
             credentials={credentials} 
             setCredentials={setCredentials} />
-          </>
         )}
         {section === 'workspace' && (
           <>
@@ -132,7 +134,7 @@ function CreateShell({accessToken, onCreate}) {
           </>
         )}
         {section === 'finish' && (
-          <Synopsis workspace={workspace} credentials={credentials} scm={scm} />
+          <Synopsis provider={provider} workspace={workspace} credentials={credentials} scm={scm} />
         )}
         <Box direction='row' justify='end' gap='small'>
           {SECTIONS[section][1] && (

@@ -13,12 +13,12 @@ export function Icon({icon, text, selected, path, onClick, size, align}) {
   return (
     <>
     <Box
+      flex={false}
       ref={dropRef}
       focusIndicator={false}
-      className={'sidebar-icon' + (selected ? ' selected' : '')}
       align='center'
       justify='center'
-      margin={{horizontal: 'xsmall'}}
+      // margin={{horizontal: 'xsmall'}}
       round='xsmall'
       height={size || SIDEBAR_ICON_HEIGHT}
       width={size || SIDEBAR_ICON_HEIGHT}

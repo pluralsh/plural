@@ -37,11 +37,11 @@ export function AutoRefresh() {
   }
 
   return (
-    <Box margin={{horizontal: 'xsmall'}}>
+    <Box flex={false} margin={{left: 'small'}}>
       <Icon
         icon={<Download size='15px' color='orange' />}
         onClick={reload}
-        text='New Update Available'
+        text='Update Ready!'
         align={{top: 'bottom'}} />
     </Box>
   )

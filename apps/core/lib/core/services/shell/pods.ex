@@ -83,8 +83,8 @@ defmodule Core.Services.Shell.Pods do
         }
       ],
       resources: %CoreV1.ResourceRequirements{
-        limits: %{cpu: "100m", memory: "1Gi"},
-        requests: %{cpu: "20m", memory: "150Mi"}
+        limits: %{cpu: "500m", memory: "1Gi"},
+        requests: %{cpu: "50m", memory: "150Mi"}
       },
       env: [%CoreV1.EnvVar{name: "IGNORE_IN_CLUSTER", value: "true"}],
       liveness_probe: healthcheck(),

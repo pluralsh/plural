@@ -11,6 +11,7 @@ import { WorkspaceForm, WORKSPACE_VALIDATIONS } from './WorkspaceForm'
 import { Terminal } from './Terminal'
 import { Exceptions, getExceptions } from './validation'
 import { CLOUD_VALIDATIONS, ProviderForm, synopsis } from './cloud/provider'
+import { GqlError } from '../utils/Alert'
 
 const SECTIONS = {
   'git': ['cloud', null],
@@ -87,7 +88,7 @@ function CreateShell({accessToken, onCreate}) {
   const [scm, setScm] = useState({name: '', provider: 'GITHUB', token: accessToken})
   const [credentials, setCredentials] = useState({})
   const [workspace, setWorkspace] = useState({})
-  const [mutation, {loading}] = useMutation(CREATE_SHELL, {
+  const [mutation, {loading, error: gqlError}] = useMutation(CREATE_SHELL, {
     variables: {attributes: {credentials, workspace, scm, provider}},
     onCompleted: onCreate
   })
@@ -112,6 +113,7 @@ function CreateShell({accessToken, onCreate}) {
          background='backgroundColor' align='center' justify='center' pad='small'>
       <Box flex={false} gap='small' width={section !== 'finish' ? '50%' : null}>
         {exceptions && <Exceptions exceptions={exceptions} />}
+        {gqlError && <GqlError error={gqlError} header='Failed to create shell' />}
         {section === 'git' && (
           <>
           <Header text='Git Setup' />
@@ -166,14 +168,16 @@ export function OAuthCallback() {
 
   return (
     <Box background='backgroundColor' fill align='center' justify='center'>
-      <CreateShell accessToken={data.scmToken} onCreate={() => history.push('/shell')} />
+      <CreateShell 
+        accessToken={data.scmToken} 
+        onCreate={() => history.push('/shell')} />
     </Box>
   )
 }
 
 export function CloudShell() {
   const {data} = useQuery(AUTH_URLS)
-  const {data: shellData, loading} = useQuery(CLOUD_SHELL, {fetchPolicy: 'cache-and-network'})
+  const {data: shellData} = useQuery(CLOUD_SHELL, {fetchPolicy: 'cache-and-network'})
   const [mutation] = useMutation(REBOOT_SHELL)
   const [created, setCreated] = useState(false)
   const onClick = useCallback(() => {
@@ -189,7 +193,7 @@ export function CloudShell() {
     }
   }, [shellData, setCreated])
 
-  if (!shellData || loading) return <LoopingLogo dark />
+  if (!shellData) return <LoopingLogo dark />
   
   if ((shellData && shellData.shell) || created) return <Terminal />
 

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Box, Text } from 'grommet'
 import { Github } from 'grommet-icons'
-import { useLocation } from 'react-router'
+import { useHistory, useLocation } from 'react-router'
 import { useMutation, useQuery } from 'react-apollo'
 import { Button } from 'forge-core'
 import { AUTH_URLS, CLOUD_SHELL, CREATE_SHELL, REBOOT_SHELL, SCM_TOKEN } from './query'
@@ -154,8 +154,11 @@ function CreateShell({accessToken, onCreate}) {
   )
 }
 
-function OAuthCallback({code, onCreate}) {
-  const {data} = useQuery(SCM_TOKEN, {variables: {code, provider: 'GITHUB'}})
+export function OAuthCallback() {
+  const loc = useLocation()
+  let history = useHistory()
+  const params = new URLSearchParams(loc.search)
+  const {data} = useQuery(SCM_TOKEN, {variables: {code: params.get('code'), provider: 'GITHUB'}})
 
   if (!data) return <LoopingLogo dark />
 
@@ -163,16 +166,14 @@ function OAuthCallback({code, onCreate}) {
 
   return (
     <Box background='backgroundColor' fill align='center' justify='center'>
-      <CreateShell accessToken={data.scmToken} onCreate={onCreate} />
+      <CreateShell accessToken={data.scmToken} onCreate={() => history.push('/shell')} />
     </Box>
   )
 }
 
 export function CloudShell() {
-  const loc = useLocation()
-  const params = new URLSearchParams(loc.search)
   const {data} = useQuery(AUTH_URLS)
-  const {data: shellData} = useQuery(CLOUD_SHELL)
+  const {data: shellData, loading} = useQuery(CLOUD_SHELL, {fetchPolicy: 'cache-and-network'})
   const [mutation] = useMutation(REBOOT_SHELL)
   const [created, setCreated] = useState(false)
   const onClick = useCallback(() => {
@@ -188,15 +189,9 @@ export function CloudShell() {
     }
   }, [shellData, setCreated])
 
-  if (!shellData) return <LoopingLogo dark />
+  if (!shellData || loading) return <LoopingLogo dark />
   
   if ((shellData && shellData.shell) || created) return <Terminal />
-
-  if (params.get('code')) return (
-    <OAuthCallback 
-      code={params.get('code')} 
-      onCreate={() => setCreated(true)} />
-  )
 
   return (
     <Box background='backgroundColor' fill align='center' justify='center'>

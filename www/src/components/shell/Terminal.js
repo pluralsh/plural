@@ -144,7 +144,7 @@ function Information() {
 }
 
 export function Terminal() {
-  const {data, loading} = useQuery(CLOUD_SHELL, {pollInterval: 5000})
+  const {data, loading} = useQuery(CLOUD_SHELL, {pollInterval: 5000, fetchPolicy: 'cache-and-network'})
 
   if (loading || !data || !data.shell) return <LoopingLogo dark /> 
 

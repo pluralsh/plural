@@ -34,7 +34,7 @@ import { VerifyEmailConfirmed } from './users/EmailConfirmation'
 // import { AutoRefresh } from './login/AutoRefresh'
 import { NavigationContext } from './navigation/Submenu'
 import { DeviceLoginNotif } from './users/DeviceLoginNotif'
-import { CloudShell } from './shell/CloudShell'
+import { CloudShell, OAuthCallback } from './shell/CloudShell'
 
 export const TOOLBAR_SIZE = '55px'
 
@@ -85,7 +85,7 @@ export function PluralInner() {
                   <Route path='/dkr/repo/:id' component={DockerRepository} />
                   <Route path='/dkr/img/:id' component={Docker} />
                   <Route path='/shell' component={CloudShell} />
-                  <Route path='/oauth/callback/github/shell' component={CloudShell} />
+                  <Route path='/oauth/callback/github/shell' component={OAuthCallback} />
                   <Route path='/repositories/:id/integrations' component={IntegrationPage} />
                   <Route exact path='/repositories/:id' render={(props) => (
                     <Redirect to={`/repositories/${props.match.params.id}/bundles`} />

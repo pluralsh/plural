@@ -114,11 +114,17 @@ defmodule Core.Schema.Repository do
         on: i.repository_id == r.id)
   end
 
-  def accessible(query \\ __MODULE__, %User{account_id: aid}) do
+  def accessible(query \\ __MODULE__, user)
+
+  def accessible(query, %User{account_id: aid}) do
     from(r in query,
       join: p in assoc(r, :publisher),
       where: not r.private or p.account_id == ^aid
     )
+  end
+
+  def acessible(query, nil) do
+    from(r in query, where: not r.private)
   end
 
   def for_tag(query \\ __MODULE__, tag) do

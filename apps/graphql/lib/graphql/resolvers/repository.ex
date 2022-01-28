@@ -57,7 +57,8 @@ defmodule GraphQl.Resolvers.Repository do
   def resolve_installation(%{id: repo_id}, %{context: %{current_user: user}}),
     do: {:ok, Repositories.get_installation(user.id, repo_id)}
 
-  def list_repositories(args, %{context: %{current_user: user}}) do
+  def list_repositories(args, %{context: ctx}) do
+    user = ctx[:current_user]
     Repository.ordered()
     |> Repository.accessible(user)
     |> apply_filters(args, user)
@@ -79,10 +80,10 @@ defmodule GraphQl.Resolvers.Repository do
     |> ok()
   end
 
-  def search_repositories(%{query: q} = args, %{context: %{current_user: user}}) do
+  def search_repositories(%{query: q} = args, %{context: ctx}) do
     Repository.search(q)
     |> Repository.ordered()
-    |> Repository.accessible(user)
+    |> Repository.accessible(ctx[:current_user])
     |> paginate(args)
   end
 
@@ -90,16 +91,14 @@ defmodule GraphQl.Resolvers.Repository do
     Enum.reduce(args, query, &apply_filter(&2, &1, user))
   end
 
-  defp apply_filter(query, {:installed, true}, user),
-    do: Repository.for_user(query, user.id)
-
-  defp apply_filter(query, {:supports, true}, user) do
+  defp apply_filter(query, {:installed, true}, %{id: id} = user),
+    do: Repository.for_user(query, id)
+  defp apply_filter(query, {:supports, true}, %{id: _} = user) do
     user = Core.Services.Rbac.preload(user)
 
     Repository.for_account(query, user.account_id)
     |> Repository.supported(user)
   end
-
   defp apply_filter(query, {:tag, tag}, _) when is_binary(tag), do: Repository.for_tag(query, tag)
   defp apply_filter(query, {:publisher_id, id}, _) when is_binary(id), do: Repository.for_publisher(query, id)
   defp apply_filter(query, _, _), do: query

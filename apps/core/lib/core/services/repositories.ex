@@ -450,13 +450,19 @@ defmodule Core.Services.Repositories do
   Updates the lock and releases ownership by the given user
   """
   @spec release_apply_lock(map, binary, User.t) :: {:ok, ApplyLock.t} | {:error, term}
-  def release_apply_lock(attrs, repository_id, %User{id: user_id}) do
+  def release_apply_lock(attrs, repository_id, %User{id: user_id} = user) do
     case Core.Repo.get_by(ApplyLock, repository_id: repository_id) do
-      %ApplyLock{owner_id: ^user_id} = lock ->
-        ApplyLock.changeset(lock, Map.put(attrs, :owner_id, nil))
-        |> Core.Repo.update()
+      %ApplyLock{owner_id: ^user_id} = lock -> flush_lock(lock, attrs, user)
+      nil -> flush_lock(%ApplyLock{repository_id: repository_id}, attrs, user)
       _ -> {:error, :not_found}
     end
+  end
+
+  defp flush_lock(lock, attrs, user) do
+    lock
+    |> allow(user, :create)
+    |> when_ok(&ApplyLock.changeset(&1, Map.put(attrs, :owner_id, nil)))
+    |> when_ok(&Core.Repo.insert_or_update/1)
   end
 
   defp oidc_auth_method(:basic), do: "client_secret_basic"

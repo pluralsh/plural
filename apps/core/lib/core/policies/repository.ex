@@ -33,6 +33,7 @@ defmodule Core.Policies.Repository do
     can?(user, repo, :edit)
   end
 
+  def can?(%User{id: id}, %ApplyLock{owner_id: id}, _), do: :pass
   def can?(%User{} = user, %ApplyLock{owner_id: nil} = lock, :create) do
     %{repository: repo} = Core.Repo.preload(lock, [repository: [publisher: :account]])
     can?(user, repo, :edit)

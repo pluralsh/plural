@@ -22,6 +22,7 @@ defmodule Core.Schema.Installation do
     field :auto_upgrade, :boolean, default: false
     field :track_tag,    :string, default: "latest"
     field :license_key,  :string
+    field :pinged_at,    :utc_datetime_usec
 
     embeds_one :policy,     Policy, on_replace: :update
     belongs_to :user,       User

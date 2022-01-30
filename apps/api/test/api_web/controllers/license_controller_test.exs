@@ -10,6 +10,9 @@ defmodule ApiWeb.LicenseControllerTest do
         |> json_response(200)
 
       assert res["policy"]["free"]
+
+      assert_receive {:event, %Core.PubSub.LicensePing{item: %{id: id}}}
+      assert id == inst.id
     end
   end
 end

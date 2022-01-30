@@ -84,3 +84,27 @@ defimpl Core.PubSub.Fanout, for: Core.PubSub.InstallationDeleted do
     end
   end
 end
+
+defimpl Core.PubSub.Fanout, for: Core.PubSub.LicensePing do
+  @moduledoc """
+  records a ping timestamp on license fetches to track health of installations
+  """
+
+  def fanout(%{item: %{pinged_at: nil} = inst}), do: record_ping(inst)
+
+  def fanout(%{item: inst}) do
+    Timex.now()
+    |> Timex.shift(hours: -2)
+    |> Timex.after?(inst.pinged_at)
+    |> case do
+      true -> record_ping(inst)
+      _ -> :ok
+    end
+  end
+
+  defp record_ping(inst) do
+    inst
+    |> Ecto.Changeset.change(%{pinged_at: Timex.now()})
+    |> Core.Repo.update()
+  end
+end

@@ -310,6 +310,7 @@ defmodule Core.Services.RepositoriesTest do
       installation = insert(:installation, repository: repo)
 
       {:ok, license} = Repositories.generate_license(installation)
+
       {:ok, decoded} = RSA.decrypt(license, ExPublicKey.loads!(repo.public_key))
       %{"refresh_token" => token, "expires_at" => expiry, "secrets" => secrets} = Jason.decode!(decoded)
       assert secrets["token"] == "a"

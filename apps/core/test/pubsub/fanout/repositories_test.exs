@@ -14,4 +14,31 @@ defmodule Core.PubSub.Fanout.InstallationsTest do
       refute update.provider
     end
   end
+
+  describe "LicensePing" do
+    test "if there's no ping set, it will record" do
+      inst = insert(:installation)
+
+      event = %PubSub.LicensePing{item: inst}
+      {:ok, up} = PubSub.Fanout.fanout(event)
+
+      assert up.pinged_at
+    end
+
+    test "if pinged_at is stale, it will update" do
+      inst = insert(:installation, pinged_at: Timex.now() |> Timex.shift(hours: -3))
+
+      event = %PubSub.LicensePing{item: inst}
+      {:ok, up} = PubSub.Fanout.fanout(event)
+
+      assert Timex.after?(up.pinged_at, inst.pinged_at)
+    end
+
+    test "if pinged_at is recent, it will ignore" do
+      inst = insert(:installation, pinged_at: Timex.now())
+
+      event = %PubSub.LicensePing{item: inst}
+      :ok = PubSub.Fanout.fanout(event)
+    end
+  end
 end

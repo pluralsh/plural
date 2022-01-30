@@ -532,6 +532,8 @@ defmodule Core.Services.Repositories do
   end
 
   def license(%Installation{} = installation) do
+    handle_notify(PubSub.LicensePing, installation)
+
     %{repository: repo} = installation =
       Core.Repo.preload(installation, [:repository, [subscription: :plan]])
 

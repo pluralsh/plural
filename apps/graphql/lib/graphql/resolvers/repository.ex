@@ -65,15 +65,15 @@ defmodule GraphQl.Resolvers.Repository do
     |> paginate(args)
   end
 
-  def list_categories(_, %{context: %{current_user: user}}) do
-    Repository.accessible(user)
+  def list_categories(_, %{context: ctx}) do
+    Repository.accessible(ctx[:current_user])
     |> Repository.categories()
     |> Core.Repo.all()
     |> ok()
   end
 
-  def resolve_category(%{name: cat}, %{context: %{current_user: user}}) do
-    Repository.accessible(user)
+  def resolve_category(%{name: cat}, %{context: ctx}) do
+    Repository.accessible(ctx[:current_user])
     |> Repository.for_category(cat)
     |> Repository.categories()
     |> Core.Repo.one()
@@ -91,7 +91,7 @@ defmodule GraphQl.Resolvers.Repository do
     Enum.reduce(args, query, &apply_filter(&2, &1, user))
   end
 
-  defp apply_filter(query, {:installed, true}, %{id: id} = user),
+  defp apply_filter(query, {:installed, true}, %{id: id}),
     do: Repository.for_user(query, id)
   defp apply_filter(query, {:supports, true}, %{id: _} = user) do
     user = Core.Services.Rbac.preload(user)

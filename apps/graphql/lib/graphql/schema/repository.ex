@@ -256,7 +256,6 @@ defmodule GraphQl.Schema.Repository do
 
 
     connection field :repositories, node_type: :repository do
-      middleware Authenticated
       arg :publisher_id, :id
       arg :tag,          :string
       arg :supports,     :boolean
@@ -266,7 +265,6 @@ defmodule GraphQl.Schema.Repository do
     end
 
     connection field :search_repositories, node_type: :repository do
-      middleware Authenticated
       arg :query, non_null(:string)
 
       resolve &Repository.search_repositories/2

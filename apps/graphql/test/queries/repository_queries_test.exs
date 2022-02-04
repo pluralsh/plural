@@ -120,7 +120,7 @@ defmodule GraphQl.RepositoryQueriesTest do
             edges { node { id } }
           }
         }
-      """, %{}, %{current_user: insert(:user)})
+      """, %{})
 
       assert from_connection(found)
              |> ids_equal(repos)

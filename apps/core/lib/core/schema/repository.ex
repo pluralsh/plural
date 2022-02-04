@@ -123,7 +123,7 @@ defmodule Core.Schema.Repository do
     )
   end
 
-  def acessible(query, nil) do
+  def accessible(query, nil) do
     from(r in query, where: not r.private)
   end
 

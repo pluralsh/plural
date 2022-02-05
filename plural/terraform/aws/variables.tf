@@ -47,3 +47,7 @@ variable "plural_serviceaccount" {
 The k8s service account that will be used for plural deployments 
 EOF
 }
+
+variable "shell_subnet_ids" {
+  type = list(string)
+}

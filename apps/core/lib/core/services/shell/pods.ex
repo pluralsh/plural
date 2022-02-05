@@ -3,6 +3,7 @@ defmodule Core.Services.Shell.Pods do
   alias Kazan.Models.Apimachinery.Meta.V1, as: MetaV1
 
   @image "gcr.io/pluralsh/plural-cli:0.1.1-cloud"
+  @busybox_img "gcr.io/pluralsh/busybox:latest"
   @ns "plrl-shell"
   @conditions ~w(Initialized Ready ContainersReady PodScheduled)
 
@@ -65,9 +66,25 @@ defmodule Core.Services.Shell.Pods do
       },
       spec: %CoreV1.PodSpec{
         containers: [container()],
+        init_containers: [init_container()],
+        node_selector: %{"platform.plural.sh/instance-class" => "shell"},
+        tolerations: [%CoreV1.Toleration{
+          key: "platform.plural.sh/taint",
+          value: "SHELL",
+          operator: "Equal"
+        }],
         termination_grace_period_seconds: 30,
         automount_service_account_token: false, # this *MUST* be set to prevent kubectl from using in-cluster auth
       }
+    }
+  end
+
+  def init_container() do
+    %CoreV1.Container{
+      name: "limits",
+      image: @busybox_img,
+      security_context: %CoreV1.SecurityContext{privileged: true},
+      command: ["sh", "-c", "ulimit -u 100"]
     }
   end
 

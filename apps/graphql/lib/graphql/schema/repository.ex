@@ -257,6 +257,7 @@ defmodule GraphQl.Schema.Repository do
 
     connection field :repositories, node_type: :repository do
       arg :publisher_id, :id
+      arg :q,            :string
       arg :tag,          :string
       arg :supports,     :boolean
       arg :installed,    :boolean

@@ -101,6 +101,7 @@ defmodule GraphQl.Resolvers.Repository do
   end
   defp apply_filter(query, {:tag, tag}, _) when is_binary(tag), do: Repository.for_tag(query, tag)
   defp apply_filter(query, {:publisher_id, id}, _) when is_binary(id), do: Repository.for_publisher(query, id)
+  defp apply_filter(query, {:q, q}, _) when is_binary(q), do: Repository.search(query, q)
   defp apply_filter(query, _, _), do: query
 
   def list_installations(args, %{context: %{current_user: user}}) do

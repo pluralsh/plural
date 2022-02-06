@@ -125,6 +125,22 @@ defmodule GraphQl.RepositoryQueriesTest do
       assert from_connection(found)
              |> ids_equal(repos)
     end
+
+    test "it can search all public repositories" do
+      repos = for i <- 1..3, do: insert(:repository, name: "query #{i}")
+      insert(:repository)
+
+      {:ok, %{data: %{"repositories" => found}}} = run_query("""
+        query Search($q: String!) {
+          repositories(q: $q, first: 5) {
+            edges { node { id } }
+          }
+        }
+      """, %{"q" => "query"})
+
+      assert from_connection(found)
+             |> ids_equal(repos)
+    end
   end
 
   describe "repository" do
@@ -257,7 +273,7 @@ defmodule GraphQl.RepositoryQueriesTest do
     end
   end
 
-  describe "search_repositories" do
+  describe "searchRepositories" do
     test "It can search for substrings of a repo name" do
       repos = for i <- 1..3, do: insert(:repository, name: "query #{i}")
       insert(:repository)

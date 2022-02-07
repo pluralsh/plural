@@ -261,6 +261,7 @@ defmodule GraphQl.Schema.Repository do
       arg :tag,          :string
       arg :supports,     :boolean
       arg :installed,    :boolean
+      arg :category,     :category
 
       resolve &Repository.list_repositories/2
     end

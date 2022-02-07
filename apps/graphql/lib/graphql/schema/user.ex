@@ -304,7 +304,6 @@ defmodule GraphQl.Schema.User do
     end
 
     connection field :publishers, node_type: :publisher do
-      middleware Authenticated
       arg :account_id,  :id
       arg :publishable, :boolean
 

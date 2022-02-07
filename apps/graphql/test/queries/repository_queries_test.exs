@@ -141,6 +141,22 @@ defmodule GraphQl.RepositoryQueriesTest do
       assert from_connection(found)
              |> ids_equal(repos)
     end
+
+    test "it will filter by category" do
+      repos = insert_list(3, :repository, category: :data)
+      insert(:repository)
+
+      {:ok, %{data: %{"repositories" => found}}} = run_query("""
+        query Search($cat: Category!) {
+          repositories(category: $cat, first: 5) {
+            edges { node { id } }
+          }
+        }
+      """, %{"cat" => "DATA"})
+
+      assert from_connection(found)
+             |> ids_equal(repos)
+    end
   end
 
   describe "repository" do

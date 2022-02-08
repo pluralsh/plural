@@ -135,6 +135,7 @@ defmodule GraphQl.Schema.Repository do
     field :plans,          list_of(:plan), resolve: dataloader(Payments)
     field :tags,           list_of(:tag), resolve: dataloader(Repository)
     field :artifacts,      list_of(:artifact), resolve: dataloader(Repository)
+    field :recipes,        list_of(:recipe), resolve: dataloader(Repository)
     field :oauth_settings, :oauth_settings
 
     image :icon

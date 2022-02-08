@@ -1,10 +1,25 @@
 defmodule Core.Services.Metrics do
   use Core.Services.Base
+  use Nebulex.Caching
   alias Core.Metrics.Docker
   alias Core.Influx
+  alias Core.Schema
 
   @default_offset "1d"
   @default_precision "30m"
+
+  @ttl Nebulex.Time.expiry_time(6, :hour)
+
+  @decorate cacheable(cache: Core.Cache, key: {:platform_metric, name}, opts: [ttl: @ttl])
+  def count(name) do
+    query(name)
+    |> Core.Repo.aggregate(:count)
+  end
+
+  defp query(:repositories), do: Schema.Repository
+  defp query(:rollouts), do: Schema.Rollout
+  defp query(:clusters), do: Schema.UpgradeQueue
+  defp query(:publishers), do: Schema.Publisher
 
   def docker_pull(repo, tag) do
     Docker.new(1, repository: repo, tag: tag)

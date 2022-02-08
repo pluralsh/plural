@@ -105,6 +105,7 @@ defmodule GraphQl do
     import_fields :oauth_queries
     import_fields :dns_queries
     import_fields :shell_queries
+    import_fields :metric_queries
   end
 
   mutation do

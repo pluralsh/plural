@@ -1,0 +1,22 @@
+name: <%= application %>
+description: Installs <%= application %> on an aws eks cluster
+provider: <%= String.upcase(provider) %>
+dependencies:
+- repo: bootstrap
+  name: <%= provider %>-k8s
+<%= if ingress do %>
+- repo: ingress-nginx
+  name: ingress-nginx-<%= provider %>
+<% end %>
+<%= if postgres do %>
+- repo: postgres
+  name: <%= provider %>-postgres
+<% end %>
+sections:
+- name: <%= application %>
+  configuration: []
+  items:
+  - type: TERRAFORM
+    name: <%= provider %>
+  - type: HELM
+    name: dagster

@@ -208,4 +208,12 @@ defmodule GraphQl.Resolvers.Repository do
     repo = Repositories.get_repository_by_name!(name)
     Repositories.release_apply_lock(attrs, repo.id, user)
   end
+
+  def generate_scaffold(%{application: app} = ctx, _) do
+    Core.Services.Scaffolds.generate(app, ctx)
+    |> Enum.map(fn {file, content} ->
+      %{path: file, content: content}
+    end)
+    |> ok()
+  end
 end

@@ -1,0 +1,38 @@
+apiVersion: plural.sh/v1alpha1
+kind: Dependencies
+metadata:
+  application: true
+  description: Deploys <%= application %> crafted for the target cloud
+spec:
+  dependencies:
+  - type: helm
+    name: bootstrap
+    repo: bootstrap
+    version: '>= 0.5.1'
+  <%= if ingress do %>
+  - type: helm
+    name: ingress-nginx
+    repo: ingress-nginx
+    version: ">= 0.1.2"
+  <% end %>
+  <%= if postgres do %>
+  - type: helm
+    name: postgres
+    repo: postgres
+    version: ">= 0.1.6"
+  <% end %>
+  - type: terraform
+    name: aws
+    repo: <%= application %>
+    version: '>= 0.1.0'
+    optional: true
+  - type: terraform
+    name: azure
+    repo: <%= application %>
+    version: '>= 0.1.0'
+    optional: true
+  - type: terraform
+    name: gcp
+    repo: <%= application %>
+    version: '>= 0.1.0'
+    optional: true

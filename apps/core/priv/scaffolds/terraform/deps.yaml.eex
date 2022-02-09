@@ -1,0 +1,13 @@
+apiVersion: plural.sh/v1alpha1
+kind: Dependencies
+metadata:
+  description: <%= application %> <%= provider %> setup
+  version: 0.1.0
+spec:
+  dependencies:
+  - name: <%= provider %>-bootstrap
+    repo: bootstrap
+    type: terraform
+    version: '>= 0.1.1'
+  providers:
+  - <%= provider %>

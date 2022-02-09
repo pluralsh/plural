@@ -1,0 +1,12 @@
+resource "kubernetes_namespace" "<%= application %>" {
+  metadata {
+    name = var.namespace
+    labels = {
+      "app.kubernetes.io/managed-by" = "plural"
+      "app.plural.sh/name" = "<%= application %>"
+<% if postgres do %>
+      "platform.plural.sh/sync-target" = "pg"
+<% end %>
+    }
+  }
+}

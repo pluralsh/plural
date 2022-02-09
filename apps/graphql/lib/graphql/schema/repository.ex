@@ -234,6 +234,11 @@ defmodule GraphQl.Schema.Repository do
     timestamps()
   end
 
+  object :scaffold_file do
+    field :path,    :string
+    field :content, :string
+  end
+
   connection node_type: :repository
   connection node_type: :installation
   connection node_type: :integration
@@ -307,6 +312,16 @@ defmodule GraphQl.Schema.Repository do
       arg :name, non_null(:category)
 
       resolve &Repository.resolve_category/2
+    end
+
+    field :scaffold, list_of(:scaffold_file) do
+      arg :application, non_null(:string)
+      arg :category,    non_null(:category)
+      arg :publisher,   non_null(:string)
+      arg :ingress,     :boolean
+      arg :postgres,    :boolean
+
+      resolve &Repository.generate_scaffold/2
     end
   end
 

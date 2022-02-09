@@ -405,4 +405,14 @@ defmodule GraphQl.RepositoryQueriesTest do
       assert second["count"] == 1
     end
   end
+
+  describe "scaffold" do
+    test "it won't explode" do
+      {:ok, %{data: %{"scaffold" => _}}} = run_query("""
+        query Scaffold($app: String!, $pub: String!, $cat: Category!) {
+          scaffold(application: $app, category: $cat, publisher: $pub) { path content }
+        }
+      """, %{"app" => "app", "pub" => "Pub", "cat" => "DATA"})
+    end
+  end
 end

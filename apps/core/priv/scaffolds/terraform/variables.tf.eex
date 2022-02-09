@@ -2,3 +2,7 @@ variable "namespace" {
   type = string
   default = "<%= application %>"
 }
+
+variable "cluster_name" {
+  type = string
+}

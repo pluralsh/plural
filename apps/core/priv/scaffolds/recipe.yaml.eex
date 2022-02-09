@@ -1,4 +1,4 @@
-name: <%= application %>
+name: <%= application %>-<%= provider %>
 description: Installs <%= application %> on an aws eks cluster
 provider: <%= String.upcase(provider) %>
 dependencies:
@@ -19,4 +19,4 @@ sections:
   - type: TERRAFORM
     name: <%= provider %>
   - type: HELM
-    name: dagster
+    name: <%= application %>

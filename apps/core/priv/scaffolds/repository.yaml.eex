@@ -1,6 +1,6 @@
 name: <%= application %>
 description: <%= application %> deployed on plural
-category: <%= category %>
+category: <%= String.upcase("#{category}") %>
 private: true
 icon: plural/icons/<%= application %>.png
 notes: plural/notes.tpl

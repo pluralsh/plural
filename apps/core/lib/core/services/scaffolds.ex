@@ -21,7 +21,8 @@ defmodule Core.Services.Scaffolds do
     [
       {"helm/#{app}/deps.yaml", eval("helm/deps.yaml.eex", app, "AWS", ctx)},
       {"helm/#{app}/values.yaml.tpl", eval("helm/values.yaml.tpl.eex", app, "AWS", ctx)},
-      {"helm/#{app}/Chart.yaml", eval("helm/Chart.yaml.eex", app, "AWS" ,ctx)},
+      {"helm/#{app}/Chart.yaml", eval("helm/Chart.yaml.eex", app, "AWS", ctx)},
+      {"helm/#{app}/README.md", eval("helm/README.md.eex", app, "AWS", ctx)},
     ]
   end
 

@@ -1,0 +1,12 @@
+apiVersion: v2
+name: <%= application %>
+description: helm chart for <%= application %>
+type: application
+version: 0.1.0
+appVersion: "v1.0.0"
+<%= if postgres do %>
+dependencies:
+- name: postgres
+  version: 0.1.5
+  repository: https://pluralsh.github.io/module-library
+<% end %>

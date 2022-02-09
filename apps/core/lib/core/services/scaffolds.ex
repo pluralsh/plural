@@ -12,13 +12,16 @@ defmodule Core.Services.Scaffolds do
   defp repo_scaffolds(application, ctx) do
     [
       {"Pluralfile", eval("Pluralfile.eex", application, "AWS", ctx)},
-      {"repository.yaml", eval("repository.yaml.eex", application, "AWS", ctx)}
+      {"repository.yaml", eval("repository.yaml.eex", application, "AWS", ctx)},
+      {"plural/notes.tpl", eval("notes.tpl.eex", application, "AWS", ctx)},
     ]
   end
 
-  defp helm_scaffolds(application, ctx) do
+  defp helm_scaffolds(app, ctx) do
     [
-      {"helm/#{application}/deps.yaml", eval("helm/deps.yaml.eex", application, "AWS", ctx)}
+      {"helm/#{app}/deps.yaml", eval("helm/deps.yaml.eex", app, "AWS", ctx)},
+      {"helm/#{app}/values.yaml.tpl", eval("helm/values.yaml.tpl.eex", app, "AWS", ctx)},
+      {"helm/#{app}/Chart.yaml", eval("helm/Chart.yaml.eex", app, "AWS" ,ctx)},
     ]
   end
 

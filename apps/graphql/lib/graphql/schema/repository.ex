@@ -253,7 +253,7 @@ defmodule GraphQl.Schema.Repository do
     end
 
     field :installation, :installation do
-      middleware Authenticated
+      middleware Authenticated, :external
       arg :id,   :id
       arg :name, :string
 
@@ -400,7 +400,7 @@ defmodule GraphQl.Schema.Repository do
     end
 
     field :create_oidc_provider, :oidc_provider do
-      middleware Authenticated
+      middleware Authenticated, :external
       arg :installation_id, non_null(:id)
       arg :attributes, non_null(:oidc_attributes)
 
@@ -408,7 +408,7 @@ defmodule GraphQl.Schema.Repository do
     end
 
     field :update_oidc_provider, :oidc_provider do
-      middleware Authenticated
+      middleware Authenticated, :external
       arg :installation_id, non_null(:id)
       arg :attributes, non_null(:oidc_attributes)
 
@@ -416,7 +416,7 @@ defmodule GraphQl.Schema.Repository do
     end
 
     field :upsert_oidc_provider, :oidc_provider do
-      middleware Authenticated
+      middleware Authenticated, :external
       arg :installation_id, non_null(:id)
       arg :attributes, non_null(:oidc_attributes)
 

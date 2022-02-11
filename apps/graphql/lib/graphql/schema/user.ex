@@ -287,7 +287,7 @@ defmodule GraphQl.Schema.User do
     end
 
     connection field :users, node_type: :user do
-      middleware Authenticated
+      middleware Authenticated, :external
       arg :q, :string
       arg :service_account, :boolean
       arg :all, :boolean

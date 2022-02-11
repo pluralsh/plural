@@ -207,7 +207,7 @@ defmodule GraphQl.Schema.Account do
     end
 
     connection field :groups, node_type: :group  do
-      middleware Authenticated
+      middleware Authenticated, :external
       arg :q, :string
 
       resolve &Account.list_groups/2

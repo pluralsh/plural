@@ -499,7 +499,7 @@ defmodule Core.Services.Users do
     do: Core.Repo.delete(eab)
 
   defp materialize_eab_key(cluster, provider, %User{id: user_id}) do
-    with {:ok, %{success: 1} = resp} <- ZeroSSL.generate_eab_credentials() do
+    with {:ok, %{success: valid} = resp} when valid in [1, true] <- ZeroSSL.generate_eab_credentials() do
       %EabCredential{user_id: user_id, cluster: cluster, provider: provider}
       |> EabCredential.changeset(%{
         key_id: resp.eab_kid,

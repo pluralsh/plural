@@ -20,7 +20,7 @@ assignees: ''
 
 
 
-## Dagit UI/UX Issue Screenshots
+## Plural UI/UX Issue Screenshots
 <!-- (Optional) -->
 
 

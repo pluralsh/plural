@@ -89,6 +89,13 @@ defmodule GraphQl.Schema.Version do
     field :provider_wirings, :map
     field :outputs,          :map
     field :wirings,          :wirings
+    field :breaking,         :boolean
+    field :instructions,     :change_instructions
+  end
+
+  object :change_instructions do
+    field :script,       :string
+    field :instructions, :string
   end
 
   ecto_enum :dependency_type, Core.Schema.Dependencies.Dependency.Type

@@ -27,6 +27,15 @@ defmodule GraphQl.Schema.Rollout do
     end
   end
 
+  object :rollout_mutations do
+    field :unlock_repository, :integer do
+      middleware Authenticated
+      arg :name, non_null(:string)
+
+      resolve &Rollout.unlock/2
+    end
+  end
+
   object :rollout_subscriptions do
     field :rollout_delta, :rollout_delta do
       arg :repository_id, non_null(:id)

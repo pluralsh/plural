@@ -123,6 +123,7 @@ defmodule GraphQl do
     import_fields :docker_mutations
     import_fields :dns_mutations
     import_fields :shell_mutations
+    import_fields :rollout_mutations
   end
 
   subscription do

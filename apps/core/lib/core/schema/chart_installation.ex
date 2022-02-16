@@ -3,6 +3,8 @@ defmodule Core.Schema.ChartInstallation do
   alias Core.Schema.{Chart, Installation, Version}
 
   schema "chart_installations" do
+    field :locked, :boolean, default: false
+
     belongs_to :installation, Installation
     belongs_to :chart,        Chart
     belongs_to :version,      Version

@@ -24,6 +24,28 @@ defmodule Core.Services.DependenciesTest do
       assert Dependencies.valid?(terraform.dependencies, user)
     end
 
+    test "If a dependency is locked, it will return false" do
+      chart     = insert(:chart)
+      terraform = insert(:terraform)
+      user      = insert(:user)
+      insert(:chart_installation,
+        chart: chart,
+        locked: true,
+        installation: insert(:installation, user: user, repository: chart.repository)
+      )
+      insert(:terraform_installation,
+        terraform: terraform,
+        installation: insert(:installation, user: user, repository: terraform.repository)
+      )
+
+      terraform = insert(:terraform, dependencies: %{dependencies: [
+        %{type: :helm, repo: chart.repository.name, name: chart.name, providers: [:gcp]},
+        %{type: :terraform, repo: terraform.repository.name, name: terraform.name}
+      ]})
+
+      refute Dependencies.valid?(terraform.dependencies, user)
+    end
+
     test "If a dependency is missing it returns false" do
       chart     = insert(:chart)
       terraform = insert(:terraform)

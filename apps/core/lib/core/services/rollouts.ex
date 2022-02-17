@@ -1,11 +1,41 @@
 defmodule Core.Services.Rollouts do
   use Core.Services.Base
   alias Core.Services.Locks
-  alias Core.Schema.Rollout
+  alias Core.Schema.{Rollout, Version, Dependencies, ChartInstallation, TerraformInstallation}
   alias Core.Rollouts.Rollable
   alias Core.PubSub
 
   def get_rollout!(id), do: Core.Repo.get!(Rollout, id)
+
+  def unlock(name, user) do
+    start_transaction()
+    |> add_operation(:charts, fn _ ->
+      unlock_module(ChartInstallation, name, user)
+    end)
+    |> add_operation(:tfs, fn _ ->
+      unlock_module(TerraformInstallation, name, user)
+    end)
+    |> Core.Repo.transaction()
+    |> case do
+      {:ok, %{charts: c, tfs: t}} -> {:ok, c + t}
+      err -> err
+    end
+  end
+
+  defp unlock_module(mod, name, user) do
+    mod.for_repo_name(name)
+    |> mod.for_user(user.id)
+    |> Core.Repo.update_all(set: [locked: false])
+    |> elem(0)
+    |> ok()
+  end
+
+  def lock_installation(%Version{dependencies: %Dependencies{breaking: true}}, inst) do
+    Ecto.Changeset.change(inst, %{locked: true})
+    |> Core.Repo.update()
+    |> notify(:locked)
+  end
+  def lock_installation(_, inst), do: {:ok, inst}
 
   def create_rollout(repository_id, event) do
     %Rollout{repository_id: repository_id}
@@ -70,6 +100,8 @@ defmodule Core.Services.Rollouts do
     |> when_ok(&notify(&1, :update_all))
   end
 
+  defp notify({:ok, inst}, :locked),
+    do: handle_notify(PubSub.InstallationLocked, inst)
   defp notify({:ok, %Rollout{} = r}, :create),
     do: handle_notify(PubSub.RolloutCreated, r)
   defp notify({:ok, %Rollout{} = r}, :update),

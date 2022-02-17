@@ -65,3 +65,5 @@ defmodule Core.PubSub.OIDCProviderCreated, do: use Piazza.PubSub.Event
 defmodule Core.PubSub.DockerRepositoryUpdated, do: use Piazza.PubSub.Event
 
 defmodule Core.PubSub.LicensePing, do: use Piazza.PubSub.Event
+
+defmodule Core.PubSub.InstallationLocked, do: use Piazza.PubSub.Event

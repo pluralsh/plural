@@ -3,6 +3,8 @@ defmodule Core.Schema.TerraformInstallation do
   alias Core.Schema.{Terraform, Installation, Version}
 
   schema "terraform_installations" do
+    field :locked, :boolean, default: false
+
     belongs_to :installation, Installation
     belongs_to :terraform, Terraform
     belongs_to :version, Version

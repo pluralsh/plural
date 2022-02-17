@@ -3,6 +3,25 @@ defmodule Core.Services.RolloutsTest do
   alias Core.Services.Rollouts
   alias Core.PubSub
 
+  describe "#unlock/1" do
+    test "it will unlock locked module installations" do
+      user = insert(:user)
+      repo = insert(:repository)
+      inst = insert(:installation, repository: repo, user: user)
+      cl = insert(:chart_installation, installation: inst, locked: true, chart: insert(:chart, repository: repo))
+      tl = insert(:terraform_installation, installation: inst, locked: true, terraform: insert(:terraform, repository: repo))
+
+      ignore = insert(:chart_installation, locked: true, chart: cl.chart)
+
+      {:ok, 2} = Rollouts.unlock(repo.name, user)
+
+      refute refetch(cl).locked
+      refute refetch(tl).locked
+
+      assert refetch(ignore).locked
+    end
+  end
+
   describe "#create_rollout/2" do
     test "it can create a rollout for a repository and event" do
       repo = insert(:repository)

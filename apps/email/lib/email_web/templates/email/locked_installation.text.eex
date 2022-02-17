@@ -1,0 +1,17 @@
+Repository <%= @repo.name %> has unapplied breaking changes, to apply them,
+check out your repo locally and run the folling commands:
+
+```
+<%= if @deps.instructions.script do %>
+<%= @deps.instructions.script %>
+<% end %>
+plural build --only <%= @repo.name %>
+plural deploy --commit "applying breaking changes to <%= @repo.name %>"
+plural repos unlock <%= @repo.name %>
+```
+
+<%= if @deps.instructions.instructions do %>
+The maintainers also have provided these instructions:
+
+<%= @deps.instructions.instructions %>
+<% end %>

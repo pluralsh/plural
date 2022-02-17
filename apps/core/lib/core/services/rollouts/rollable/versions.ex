@@ -1,7 +1,7 @@
 defimpl Core.Rollouts.Rollable, for: [Core.PubSub.VersionCreated, Core.PubSub.VersionUpdated] do
   use Core.Rollable.Base
   import Core.Rollable.Utils
-  alias Core.Services.{Dependencies, Upgrades}
+  alias Core.Services.{Dependencies, Upgrades, Rollouts}
   alias Core.Schema.{ChartInstallation, TerraformInstallation}
 
   def name(%Core.PubSub.VersionCreated{}), do: "version:created"
@@ -37,13 +37,15 @@ defimpl Core.Rollouts.Rollable, for: [Core.PubSub.VersionCreated, Core.PubSub.Ve
 
   defp directly_install(version, inst) do
     start_transaction()
-    |> add_operation(:inst, fn _ ->
+    |> add_operation(:lock, fn _ -> Rollouts.lock_installation(version, inst) end)
+    |> add_operation(:inst, fn %{lock: inst} ->
       inst
       |> Ecto.Changeset.change(%{version_id: version.id})
       |> Core.Repo.update()
     end)
-    |> add_operation(:upgrades, fn %{inst: inst} ->
-      deliver_upgrades(inst.installation.user_id, fn queue ->
+    |> add_operation(:upgrades, fn
+      %{inst: %{locked: true} = inst} -> {:ok, []}
+      %{inst: inst} -> deliver_upgrades(inst.installation.user_id, fn queue ->
         Core.Services.Upgrades.create_upgrade(%{
           repository_id: repo_id(version),
           message: "Upgraded #{type(version)} #{pkg_name(version)} to #{version.version}"

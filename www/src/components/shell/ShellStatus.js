@@ -51,6 +51,7 @@ export function ShellStatus({shell: {status}}) {
         <Status name='Pod Scheduled' state={status.podScheduled} />
         <Status name='Containers Ready' state={status.containersReady} />
         <Status name='Ready' state={status.ready} />
+        <Text size='small' color='dark-3'>Give us a minute as your shell instance is provisioning</Text>
       </Box>
     </Box>
   )

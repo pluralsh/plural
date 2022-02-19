@@ -157,6 +157,9 @@ export function Terminal() {
       <Box border={{side: 'right'}} fill='vertical' width='300px' gap='small' pad='small'>
         <Text size='small'>Here's a few commands to help you get going:</Text>
         <CommandDetails
+          command='plural repos list --query <repo-name>'
+          description='Searches for repositories to install (omit --query flag to list all)' />
+        <CommandDetails
           command='plural bundle list APP'
           description='Lists the bundles for an app, eg: plural bundle list airbyte' />
         <CommandDetails

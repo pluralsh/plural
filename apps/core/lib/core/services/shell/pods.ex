@@ -114,7 +114,8 @@ defmodule Core.Services.Shell.Pods do
       http_get: %CoreV1.HTTPGetAction{
         path: "/v1/health",
         port: "http"
-      }
+      },
+      initial_delay_seconds: 5,
     }
   end
 end

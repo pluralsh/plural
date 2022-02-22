@@ -43,6 +43,10 @@ defmodule Core.Services.Scaffolds do
     end)
   end
 
+  def available_providers(), do: Core.Schema.ProviderScaffold.available()
+
+  def provider(name), do: Core.Schema.ProviderScaffold.new(name)
+
   defp eval(file, application, provider, ctx) do
     scaffold_file(file)
     |> eval_file(

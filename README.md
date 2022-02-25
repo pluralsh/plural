@@ -94,7 +94,7 @@ The Plural server codebase uses an elixir umbrella application to organize itsel
 These apps will all depend on core, where most Plural business logic should live, and their releases are configured under `/rel`.
 
 ## Contributing
-Details on contributing coming soon!
+We love contributions to Plural, big or small! If you're not sure where to start, or if you have any questions, please open a draft PR or visit our [Discord](https://discord.gg/CKc2kfeXxQ) server where the core team can help answer your questions.
 
 ## License
 See [LICENSE](LICENSE) for licensing information.

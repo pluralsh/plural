@@ -83,10 +83,10 @@ export default function Invite() {
   const filled = attributes.name.length > 0
 
   return (
-    <LoginPortal>
-      <Box width="60%" pad='medium' background='white'>
+    <LoginPortal style={{minWidth: '50%'}}>
+      <Box fill pad='medium' background='white'>
         <Keyboard onEnter={editPassword && filled ? mutation : null}>
-          <Box gap='small'>
+          <Box flex={false} gap='small'>
             {error && <GqlError error={error} header='Something went wrong!' />}
             <Box justify='center' align='center'>
               <Text size='large'>Accept your invite</Text>
@@ -118,20 +118,22 @@ export default function Invite() {
                 </Box>
               </Box>
             ) : (
-              <Box animation={{type: 'fadeIn', duration: 500}} gap='small' fill='horizontal'>
-                <LabelledInput 
-                  width='100%'
-                  label='Email' 
-                  value={email} />
-                <LabelledInput
-                  width='100%'
-                  label='Name'
-                  value={attributes.name}
-                  placeholder='John Doe'
-                  onChange={(name) => setAttributes({...attributes, name})} />
+              <Box animation={{type: 'fadeIn', duration: 500}}>
+                <Box gap='small' fill='horizontal'>
+                  <LabelledInput 
+                    width='100%'
+                    label='Email' 
+                    value={email} />
+                  <LabelledInput
+                    width='100%'
+                    label='Name'
+                    value={attributes.name}
+                    placeholder='John Doe'
+                    onChange={(name) => setAttributes({...attributes, name})} />
+                </Box>
               </Box>
             )}
-            <Box direction='row' justify='end' align='center'>
+            <Box direction='row' justify='end' align='center' gap='small'>
               {editPassword && (<PasswordStatus disabled={disabled} reason={reason} />)}
               <Box flex={false} direction='row' gap='small'>
                 {editPassword && (<SecondaryButton

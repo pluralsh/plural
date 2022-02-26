@@ -37,14 +37,14 @@ export function LabelledInput({label, value, onChange, placeholder, width, type,
   )
 }
 
-export function LoginPortal({children}) {
+export function LoginPortal({children, ...props}) {
   return (
     <Box height='100vh' fill='horizontal' direction='row'>
       <Box width='40%' fill='vertical' justify='center' align='center' background='plural-blk'>
         <img src={PLURAL_ICON} width='200px' />
       </Box>
       <Box style={{overflow: 'auto'}} fill align='center' justify='center'>
-        <Box flex={false}>
+        <Box flex={false} {...props}>
           {children}
         </Box>
       </Box>

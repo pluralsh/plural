@@ -255,7 +255,7 @@ defmodule Core.Services.Charts do
   @spec update_chart_installation(map, binary, User.t) :: {:ok, ChartInstallation.t} | {:error, term}
   def update_chart_installation(attrs, chart_inst_id, %User{} = user) do
     Core.Repo.get!(ChartInstallation, chart_inst_id)
-    |> Core.Repo.preload([:installation, :chart, :version])
+    |> Core.Repo.preload([:installation])
     |> ChartInstallation.changeset(attrs)
     |> allow(user, :create)
     |> when_ok(:update)

@@ -1,9 +1,10 @@
-import React from 'react'
-import {useQuery} from 'react-apollo'
-import {Redirect} from 'react-router-dom'
-import {Box} from 'grommet'
-import {ME_Q} from '../users/queries'
-import {wipeToken} from '../../helpers/authentication'
+import React, { useEffect } from 'react'
+import { useQuery } from 'react-apollo'
+import { useLocation } from 'react-router'
+import { Redirect } from 'react-router-dom'
+import { Box } from 'grommet'
+import { ME_Q } from '../users/queries'
+import { wipeToken } from '../../helpers/authentication'
 import { useNotificationSubscription } from '../incidents/Notifications'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
@@ -31,8 +32,24 @@ export default function CurrentUser({children}) {
 }
 
 export function PluralProvider({children}) {
+  const location = useLocation()
   const {loading, error, data} = useQuery(ME_Q, {pollInterval: 60000})
   useNotificationSubscription()
+
+  useEffect(() => {
+    if (!data || !data.me) return
+    window.Intercom("boot", {
+      api_base: "https://api-iam.intercom.io",
+      app_id: "p127zb9y",
+      name: data.me.name,
+      email: data.me.email,
+      user_id: data.me.id,
+    })
+  }, [data])
+
+  useEffect(() => {
+    if (data && data.me) window.Intercom("update");
+  }, [location, data])
 
   if (loading) return (<Box height='100vh'><LoopingLogo dark /></Box>)
 
@@ -40,6 +57,7 @@ export function PluralProvider({children}) {
     wipeToken()
     return (<Redirect to='/login'/>)
   }
+
   const {me, configuration} = data
 
   return (

@@ -4,15 +4,22 @@
 
 ## What is Plural?
 
-A full lifecycle application control plane.
+Plural is a unified application deployment platform that makes it easy to run open-source software on Kubernetes. It aims to make applications as portable as possible, without sacrificing the ability for the users to own the applications they desire to use.
 
 The plural platform ingests all deployment artifacts needed to deploy cloud-native applications and tracks their dependencies, allowing for seamless installations and no-touch upgrades post-install. All applications are managed via GitOps, allowing you to reconfigure them at will, or even eject them from Plural entirely.  It's your application, we just want to help you use it as easily as possible.
 
-Go to https://app.plural.sh to create an account, deploy some applications, and play around!
+## Getting Started
+
+1. Go to https://app.plural.sh to create an account. Note: This is simply to track your installations and allow for the delivery of automated upgrades, you will not be asked to provide any infrastructure credentials or sensitive information.
+2. Install the Plural CLI by following steps 1, 2, and 3 of the [Getting Started guide](https://docs.plural.sh/getting-started)
+3. [Create and initialize a new git repo](https://docs.plural.sh/getting-started#4.-create-and-initialize-plural-repo) to store your Plural installation 
+4. Install, build and deploy applications from the Plural catalogue by following steps 5 and 6 of the [Getting Started guide](https://docs.plural.sh/getting-started#5.-install-plural-applications)
+5. [Install the Plural Management Console](https://docs.plural.sh/getting-started#7.-install-plural-admin-console)
+
+You should now have a fully functioning Plural environment with apps and the management console running. For more details or further information check out the rest of the docs on the docs below.
 
 ## Documentation
 
-* To get started with Plural see the [Getting Started guide](https://docs.plural.sh/getting-started)
 * The full documentation is available on our [Documentation site](https://docs.plural.sh/)
 
 ## The Plural Workflow

@@ -35,8 +35,13 @@ defmodule GraphQl.OAuthMutationsTest do
   describe "oauthConsent" do
     test "it can consent to an oauth login" do
       user = insert(:user)
+      provider = insert(:oidc_provider)
+
       expect(HTTPoison, :put, fn _, _, _ ->
         {:ok, %{status_code: 200, body: Jason.encode!(%{redirect_to: "example.com"})}}
+      end)
+      expect(HTTPoison, :get, fn _, _ ->
+        {:ok, %{status_code: 200, body: Jason.encode!(%{client: %{client_id: provider.client_id}})}}
       end)
 
       {:ok, %{data: %{"oauthConsent" => result}}} = run_query("""

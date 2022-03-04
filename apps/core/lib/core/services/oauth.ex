@@ -1,6 +1,6 @@
 defmodule Core.Services.OAuth do
   use Core.Services.Base
-  alias Core.Schema.{User, OIDCProvider}
+  alias Core.Schema.{User, OIDCProvider, OIDCLogin}
   alias Core.Clients.Hydra
   alias Core.Services.Repositories
 
@@ -50,7 +50,10 @@ defmodule Core.Services.OAuth do
   @spec consent(binary, [binary], User.t) :: oauth_resp
   def consent(challenge, scopes \\ ["profile"], %User{} = user) do
     user = Core.Repo.preload(user, [:groups])
-    Hydra.accept_consent(user, challenge, scopes)
+    with {:ok, provider} <- get_consent(challenge),
+         {:ok, _} = res <- Hydra.accept_consent(user, challenge, scopes),
+         {:ok, _} <- persist_login(user, provider),
+      do: res
   end
 
   @doc """
@@ -65,5 +68,11 @@ defmodule Core.Services.OAuth do
 
     with false <- Enum.any?(bindings, & &1.user_id == user.id),
       do: !MapSet.disjoint?(user_groups, group_ids)
+  end
+
+  defp persist_login(%User{id: user_id}, %OIDCProvider{id: prov_id}) do
+    %OIDCLogin{user_id: user_id, provider_id: prov_id}
+    |> OIDCLogin.changeset()
+    |> Core.Repo.insert()
   end
 end

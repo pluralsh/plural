@@ -1,6 +1,7 @@
 defmodule Core.Services.OAuthTest do
   use Core.SchemaCase, async: true
   alias Core.Services.OAuth
+  alias Core.Schema.OIDCLogin
   use Mimic
 
   describe "#get_login/1" do
@@ -66,9 +67,14 @@ defmodule Core.Services.OAuthTest do
     test "it will accept an oauth consent request" do
       me = self()
       user = insert(:user)
+      provider = insert(:oidc_provider)
       expect(HTTPoison, :put, fn _, body, _ ->
         send(me, {:body, Jason.decode!(body)})
         {:ok, %{status_code: 200, body: Jason.encode!(%{redirect_to: "example.com"})}}
+      end)
+
+      expect(HTTPoison, :get, fn _, _ ->
+        {:ok, %{status_code: 200, body: Jason.encode!(%{client: %{client_id: provider.client_id}})}}
       end)
 
       {:ok, %{redirect_to: _}} = OAuth.consent("challenge", "profile", user)
@@ -76,6 +82,10 @@ defmodule Core.Services.OAuthTest do
       assert_receive {:body, %{
         "session" => %{"id_token" => %{"groups" => _, "name" => _, "profile" => _}}
       }}
+
+      [login] = Core.Repo.all(OIDCLogin)
+      assert login.user_id == user.id
+      assert login.provider_id == provider.id
     end
   end
 end

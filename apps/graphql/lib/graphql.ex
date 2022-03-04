@@ -38,7 +38,6 @@ defmodule GraphQl do
     Incidents,
     Rollout,
     Dns,
-    Scaffolds
   }
 
   @sources [

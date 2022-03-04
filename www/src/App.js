@@ -12,11 +12,14 @@ import { OAuthConsent } from './components/oidc/OAuthConsent'
 import { EmailConfirmed } from './components/users/EmailConfirmation'
 import "react-toggle/style.css"
 import { OAuthCallback } from './components/users/OAuthCallback'
+import { IntercomProvider } from 'react-use-intercom'
 
+const INTERCOM_APP_ID = 'p127zb9y'
 hljs.registerLanguage('terraform', hljsDefineTerraform)
 
 export default function App() {
   return (
+    <IntercomProvider appId={INTERCOM_APP_ID}>
     <Grommet theme={DEFAULT_THEME}>
       <Switch>
         <Route path='/reset-password/:id' component={ResetPassword} />
@@ -32,5 +35,6 @@ export default function App() {
         <Route path="/" component={Plural} />
       </Switch>
     </Grommet>
+    </IntercomProvider>
   )
 }

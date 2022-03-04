@@ -10774,6 +10774,11 @@ react-transition-group@^4.3.0:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
 
+react-use-intercom@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/react-use-intercom/-/react-use-intercom-1.5.0.tgz#a44661f95dc68ae4bc2bcf17aca1d8574f05f37a"
+  integrity sha512-ck+rfDdh5l4tnvXDPIm6fXgwvX8AnB/zLhyCwHECAHTNpcBdIR07Y5oEOquCz7LQFrWDuhEqcKuDcTLaWQ4YBA==
+
 react-virtualized-auto-sizer@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/react-virtualized-auto-sizer/-/react-virtualized-auto-sizer-1.0.4.tgz#2b83adb5ecdee8dcb33784e96ee0074eb5369665"

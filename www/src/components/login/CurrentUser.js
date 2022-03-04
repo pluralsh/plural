@@ -7,6 +7,7 @@ import { ME_Q } from '../users/queries'
 import { wipeToken } from '../../helpers/authentication'
 import { useNotificationSubscription } from '../incidents/Notifications'
 import { LoopingLogo } from '../utils/AnimatedLogo'
+import { useIntercom } from 'react-use-intercom'
 
 // const POLL_INTERVAL=30000
 export const CurrentUserContext = React.createContext({})
@@ -34,21 +35,16 @@ export default function CurrentUser({children}) {
 export function PluralProvider({children}) {
   const location = useLocation()
   const {loading, error, data} = useQuery(ME_Q, {pollInterval: 60000})
+  const { boot, update } = useIntercom()
   useNotificationSubscription()
 
   useEffect(() => {
     if (!data || !data.me) return
-    window.Intercom("boot", {
-      api_base: "https://api-iam.intercom.io",
-      app_id: "p127zb9y",
-      name: data.me.name,
-      email: data.me.email,
-      user_id: data.me.id,
-    })
+    boot({name: data.me.name, email: data.me.email, user_id: data.me.id})
   }, [data])
 
   useEffect(() => {
-    if (data && data.me) window.Intercom("update");
+    if (data && data.me) update()
   }, [location, data])
 
   if (loading) return (<Box height='100vh'><LoopingLogo dark /></Box>)

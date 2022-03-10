@@ -14,6 +14,7 @@ defmodule GraphQl.Schema.Recipe do
     field :name,          non_null(:string)
     field :description,   :string
     field :provider,      :provider
+    field :tests,         list_of(:recipe_test_attributes)
     field :sections,      list_of(:recipe_section_attributes)
     field :dependencies,  list_of(:recipe_dependency_attributes)
     field :oidc_settings, :oidc_settings_attributes
@@ -29,6 +30,18 @@ defmodule GraphQl.Schema.Recipe do
   input_object :recipe_dependency_attributes do
     field :repo, non_null(:string)
     field :name, non_null(:string)
+  end
+
+  input_object :recipe_test_attributes do
+    field :type,    non_null(:test_type)
+    field :message, :string
+    field :name,    non_null(:string)
+    field :args,    list_of(:test_argument_attributes)
+  end
+
+  input_object :test_argument_attributes do
+    field :name, non_null(:string)
+    field :path, list_of(:string)
   end
 
   input_object :recipe_section_attributes do
@@ -73,6 +86,7 @@ defmodule GraphQl.Schema.Recipe do
   end
 
   ecto_enum :datatype, Core.Schema.RecipeItem.Configuration.Type
+  ecto_enum :test_type, Core.Schema.RecipeTest.Type
   ecto_enum :operation, Core.Schema.RecipeItem.Configuration.Condition.Operation
   ecto_enum :validation_type, Core.Schema.RecipeItem.Configuration.Validation.Type
   ecto_enum :provider, Core.Schema.Recipe.Provider
@@ -85,11 +99,24 @@ defmodule GraphQl.Schema.Recipe do
     field :description,     :string
     field :provider,        :provider
     field :oidc_settings,   :oidc_settings
+    field :tests,           list_of(:recipe_test)
     field :repository,      :repository, resolve: dataloader(Repository)
     field :recipe_sections, list_of(:recipe_section)
     field :recipe_dependencies,    list_of(:recipe)
 
     timestamps()
+  end
+
+  object :recipe_test do
+    field :type,    non_null(:test_type)
+    field :name,    non_null(:string)
+    field :message, :string
+    field :args,    list_of(:test_argument)
+  end
+
+  object :test_argument do
+    field :name, non_null(:string)
+    field :path, list_of(:string)
   end
 
   object :oidc_settings do

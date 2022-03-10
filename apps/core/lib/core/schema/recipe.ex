@@ -1,6 +1,6 @@
 defmodule Core.Schema.Recipe do
   use Piazza.Ecto.Schema
-  alias Core.Schema.{Repository, RecipeSection, RecipeDependency}
+  alias Core.Schema.{Repository, RecipeSection, RecipeDependency, RecipeTest}
 
   defenum Provider, gcp: 0, aws: 1, azure: 2, custom: 3, kubernetes: 4, equinix: 5
 
@@ -30,6 +30,7 @@ defmodule Core.Schema.Recipe do
     field :recipe_dependencies, :map, virtual: true
 
     embeds_one :oidc_settings, OIDCSettings, on_replace: :update
+    embeds_many :tests, RecipeTest, on_replace: :delete
 
     belongs_to :repository, Repository
     has_many :recipe_sections, RecipeSection
@@ -54,6 +55,7 @@ defmodule Core.Schema.Recipe do
     |> cast(attrs, @valid)
     |> cast_assoc(:dependencies)
     |> cast_embed(:oidc_settings)
+    |> cast_embed(:tests)
     |> foreign_key_constraint(:repository_id)
     |> unique_constraint(:name, index: index_name(:recipes, [:repository_id, :name]))
     |> validate_required([:name, :repository_id])

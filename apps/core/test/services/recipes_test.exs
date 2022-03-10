@@ -18,6 +18,9 @@ defmodule Core.Services.RecipesTest do
       {:ok, recipe} = Recipes.create(%{
         name: "recipe",
         dependencies: [%{name: dep1.name, repo: other_repo.name}, %{name: dep2.name, repo: other_repo.name}],
+        tests: [
+          %{type: :git, name: "test", message: "wtf", args: [%{name: "arg", path: ~w(console git_repo)}]}
+        ],
         sections: [
           %{
             name: repo.name,
@@ -37,6 +40,13 @@ defmodule Core.Services.RecipesTest do
 
       assert recipe.repository_id == repo.id
       assert recipe.name == "recipe"
+
+      [%{args: [arg]} = test] = recipe.tests
+      assert test.type == :git
+      assert test.name == "test"
+      assert test.message == "wtf"
+      assert arg.name == "arg"
+      assert arg.path == ~w(console git_repo)
 
       [first, second] = recipe.dependencies
       assert first.index == 0

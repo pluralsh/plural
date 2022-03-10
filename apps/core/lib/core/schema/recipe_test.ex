@@ -10,7 +10,8 @@ defmodule Core.Schema.RecipeTest do
 
     embeds_many :args, Argument, on_replace: :delete do
       field :name, :string
-      field :path, {:array, :string}
+      field :repo, :string
+      field :key,  :string
     end
   end
 
@@ -18,8 +19,8 @@ defmodule Core.Schema.RecipeTest do
 
   def argument_changeset(model, attrs \\ %{}) do
     model
-    |> cast(attrs, [:path, :name])
-    |> validate_required([:path, :name])
+    |> cast(attrs, [:repo, :key, :name])
+    |> validate_required([:repo, :key, :name])
   end
 
   def changeset(model, attrs \\ %{}) do

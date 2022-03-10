@@ -41,7 +41,8 @@ defmodule GraphQl.Schema.Recipe do
 
   input_object :test_argument_attributes do
     field :name, non_null(:string)
-    field :path, list_of(:string)
+    field :repo, non_null(:string)
+    field :key,  non_null(:string)
   end
 
   input_object :recipe_section_attributes do
@@ -116,7 +117,8 @@ defmodule GraphQl.Schema.Recipe do
 
   object :test_argument do
     field :name, non_null(:string)
-    field :path, list_of(:string)
+    field :repo, non_null(:string)
+    field :key,  non_null(:string)
   end
 
   object :oidc_settings do

@@ -95,15 +95,15 @@ defmodule GraphQl.Schema.Recipe do
   ### OBJECTS
 
   object :recipe do
-    field :id,              non_null(:id)
-    field :name,            non_null(:string)
-    field :description,     :string
-    field :provider,        :provider
-    field :oidc_settings,   :oidc_settings
-    field :tests,           list_of(:recipe_test)
-    field :repository,      :repository, resolve: dataloader(Repository)
-    field :recipe_sections, list_of(:recipe_section)
-    field :recipe_dependencies,    list_of(:recipe)
+    field :id,                  non_null(:id)
+    field :name,                non_null(:string)
+    field :description,         :string
+    field :provider,            :provider
+    field :oidc_settings,       :oidc_settings
+    field :tests,               list_of(:recipe_test)
+    field :repository,          :repository, resolve: dataloader(Repository)
+    field :recipe_sections,     list_of(:recipe_section)
+    field :recipe_dependencies, list_of(:recipe)
 
     timestamps()
   end

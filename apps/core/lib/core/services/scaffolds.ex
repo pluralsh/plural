@@ -47,6 +47,13 @@ defmodule Core.Services.Scaffolds do
 
   def provider(name), do: Core.Schema.ProviderScaffold.new(name)
 
+  def quote_if_necessary(str) do
+    case String.match?(str, ~r/\s+/) do
+      true -> ~w("#{str}")
+      false -> str
+    end
+  end
+
   defp eval(file, application, provider, ctx) do
     scaffold_file(file)
     |> eval_file(

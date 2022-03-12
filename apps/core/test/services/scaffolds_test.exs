@@ -18,4 +18,14 @@ defmodule Core.Services.ScaffoldsTest do
       |> Enum.map(&Scaffolds.provider/1)
     end
   end
+
+  describe "#quote_if_necessary/1" do
+    test "strings w/o spaces are not quoted" do
+      assert Scaffolds.quote_if_necessary("plural") == "plural"
+    end
+
+    test "strings w/ spaces are quoted" do
+      assert Scaffolds.quote_if_necessary("Alexander Thamm") == ~w("Alexander Thamm")
+    end
+  end
 end

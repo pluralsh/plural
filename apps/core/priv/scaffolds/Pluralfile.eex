@@ -1,5 +1,5 @@
 REPO <%= application %>
-ATTRIBUTES <%= publisher %> repository.yaml
+ATTRIBUTES <%= Core.Services.Scaffolds.quote_if_necessary(publisher) %> repository.yaml
 
 TF terraform/*
 HELM helm/*

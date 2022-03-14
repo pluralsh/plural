@@ -18,7 +18,8 @@ defmodule Core.Schema.User do
     password: 0,
     passwordless: 1,
     google: 2,
-    github: 3
+    github: 3,
+    sso: 4
 
   schema "users" do
     field :name,            :string

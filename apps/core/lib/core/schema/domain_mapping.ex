@@ -3,7 +3,8 @@ defmodule Core.Schema.DomainMapping do
   alias Core.Schema.Account
 
   schema "domain_mappings" do
-    field :domain, :string
+    field :domain,       :string
+    field :enable_sso,   :boolean
     belongs_to :account, Account
 
     timestamps()
@@ -11,7 +12,7 @@ defmodule Core.Schema.DomainMapping do
 
   @restricted ~w(gmail.com outlook.com hotmail.com yahoo.com)
 
-  @valid ~w(domain account_id)a
+  @valid ~w(domain account_id enable_sso)a
 
   def changeset(model, attrs \\ %{}) do
     model

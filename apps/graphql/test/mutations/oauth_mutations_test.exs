@@ -53,4 +53,25 @@ defmodule GraphQl.OAuthMutationsTest do
       assert result["redirectTo"] == "example.com"
     end
   end
+
+  describe "ssoCallback" do
+    test "it will query workos and bootstrap a new user" do
+      expect(WorkOS.SSO, :get_profile, fn "code" ->
+        {:ok, %{"email" => "someone@example.com", "first_name" => "SSO", "last_name" => "User"}}
+      end)
+
+      {:ok, %{data: %{"ssoCallback" => user}}} = run_query("""
+        mutation Callback($code: String!) {
+          ssoCallback(code: $code) {
+            id
+            email
+            loginMethod
+          }
+        }
+      """, %{"code" => "code"})
+
+      assert user["email"] == "someone@example.com"
+      assert user["loginMethod"] == "SSO"
+    end
+  end
 end

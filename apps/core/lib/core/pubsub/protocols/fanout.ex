@@ -32,7 +32,15 @@ defimpl Core.PubSub.Fanout, for: Core.PubSub.DockerNotification do
 end
 
 defimpl Core.PubSub.Fanout, for: Core.PubSub.UserCreated do
-  def fanout(%{item: user}) do
+  alias Core.Schema.Group
+  alias Core.Services.Accounts
+
+  def fanout(%{item: %{account_id: aid} = user}) do
+    Group.for_account(aid)
+    |> Group.global()
+    |> Core.Repo.all()
+    |> Enum.each(fn %{id: id} -> Accounts.create_group_member(user, id) end)
+
     Core.Services.Users.create_reset_token(%{type: :email, email: user.email})
   end
 end
@@ -83,6 +91,19 @@ defimpl Core.PubSub.Fanout, for: Core.PubSub.InstallationDeleted do
       _ -> :ok
     end
   end
+end
+
+defimpl Core.PubSub.Fanout, for: Core.PubSub.GroupUpdated do
+  alias Core.Services.Accounts
+  alias Core.Schema.User
+
+  def fanout(%{item: %{globalized: true} = group}) do
+    User.for_account(group.account_id)
+    |> User.not_member(group.id)
+    |> Core.Repo.all()
+    |> Enum.each(fn user -> Accounts.create_group_member(user, group.id) end)
+  end
+  def fanout(_), do: :ignore
 end
 
 defimpl Core.PubSub.Fanout, for: Core.PubSub.LicensePing do

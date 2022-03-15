@@ -69,5 +69,13 @@ defmodule GraphQl.Schema.OAuth do
 
       safe_resolve &OAuth.resolve_callback/2
     end
+
+    field :sso_callback, :user do
+      middleware GraphQl.Middleware.AllowJwt
+      arg :code, non_null(:string)
+      arg :device_token, :string
+
+      safe_resolve &OAuth.sso_callback/2
+    end
   end
 end

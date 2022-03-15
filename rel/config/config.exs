@@ -74,6 +74,10 @@ config :core,
   zerossl_access_key: get_env("ZEROSSL_ACCESS_KEY"),
   docker_metrics_table: ~s("permanent"."downsampled_docker_pulls")
 
+config :workos,
+  client_id: get_env("WORKOS_CLIENT_ID"),
+  api_key: get_env("WORKOS_API_KEY")
+
 provider = case get_env("PROVIDER") || "google" do
   "google" -> :gcp
   "gcp" -> :gcp

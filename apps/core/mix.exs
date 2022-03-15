@@ -57,6 +57,7 @@ defmodule Core.MixProject do
       {:mojito, "~> 0.3.0"},
       {:nebulex, "2.0.0-rc.1"},
       {:kazan, "~> 0.11", github: "michaeljguarino/kazan"},
+      {:workos, "~> 0.1.2"},
       {:decorator, "~> 1.3"},   #=> For using Caching Annotations
       {:botanist, "~> 0.1.0", git: "https://github.com/michaeljguarino/botanist.git", branch: "ecto3"},
       {:x509, "~> 0.7.0"},

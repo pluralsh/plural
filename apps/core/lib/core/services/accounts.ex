@@ -46,6 +46,15 @@ defmodule Core.Services.Accounts do
   def get_domain_mapping(domain),
     do: Core.Repo.get_by(DomainMapping, domain: domain)
 
+  def get_mapping_for_email(email) do
+    case String.split(email, "@") do
+      [_, domain] ->
+        get_domain_mapping(domain)
+        |> Core.Repo.preload([:account])
+      _ -> nil
+    end
+  end
+
   @doc """
   Creates a fresh account for the user, making him the root user. Returns everything to caller
   """

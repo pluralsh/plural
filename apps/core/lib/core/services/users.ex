@@ -16,7 +16,8 @@ defmodule Core.Services.Users do
     PasswordlessLogin,
     LoginToken,
     DeviceLogin,
-    EabCredential
+    EabCredential,
+    DomainMapping
   }
 
   @type error :: {:error, term}
@@ -131,10 +132,12 @@ defmodule Core.Services.Users do
   """
   @spec login_method(binary) :: {:ok, %{login_method: atom}} | {:error, term}
   def login_method(email, host \\ nil) do
-    with %User{login_method: method} = user <- get_user_by_email(email),
+    with nil <- determine_sso(email, host),
+         %User{login_method: method} = user <- get_user_by_email(email),
          {:ok, login} <- handle_login_method(user) do
       {:ok, build_login_method(method, login, host)}
     else
+      {:sso, url} -> {:ok, %{login_method: :sso, authorize_url: url}}
       _ -> {:error, :not_found}
     end
   end
@@ -145,6 +148,15 @@ defmodule Core.Services.Users do
   defp build_login_method(:google, _, host),
     do: %{login_method: :google, authorize_url: Core.OAuth.Google.authorize_url!(host)}
   defp build_login_method(method, _, _), do: %{login_method: method}
+
+  defp determine_sso(email, host) do
+    with %DomainMapping{enable_sso: true, domain: d, account: a} <- Accounts.get_mapping_for_email(email),
+         {:ok, url} <- WorkOS.SSO.get_authorization_url(%{domain: d, redirect_uri: Core.OAuth.SSO.redirect_url(host)}) do
+      {:sso, url}
+    else
+      _ -> nil
+    end
+  end
 
   defp handle_login_method(%User{login_method: :passwordless} = user) do
     start_transaction()
@@ -167,6 +179,16 @@ defmodule Core.Services.Users do
     end
   end
   defp handle_login_method(_), do: {:ok, :ignore}
+
+  @doc """
+  Handles a WorkOS sso callback
+  """
+  @spec sso_callback(binary) :: user_resp
+  def sso_callback(code) do
+    with {:ok, profile} <- WorkOS.SSO.get_profile(code),
+         user <- Core.OAuth.SSO.normalize(profile),
+      do: bootstrap_user(:sso, user)
+  end
 
   @doc """
   Returns the first persisted token for a user, or creates one

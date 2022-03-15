@@ -13,7 +13,8 @@ defmodule GraphQl.Schema.Account do
   end
 
   input_object :domain_mapping_input do
-    field :domain, :string
+    field :domain,     :string
+    field :enable_sso, :boolean
   end
 
   input_object :invite_attributes do
@@ -74,9 +75,10 @@ defmodule GraphQl.Schema.Account do
   end
 
   object :account do
-    field :id,                  non_null(:id)
-    field :name,                :string
-    field :billing_customer_id, :string
+    field :id,                   non_null(:id)
+    field :name,                 :string
+    field :billing_customer_id,  :string
+    field :workos_connection_id, :string
 
     field :icon, :string, resolve: fn
       account, _, _ -> {:ok, Core.Storage.url({account.icon, account}, :original)}

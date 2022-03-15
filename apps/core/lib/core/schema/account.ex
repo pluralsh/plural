@@ -4,10 +4,11 @@ defmodule Core.Schema.Account do
   alias Core.Schema.{User, DomainMapping}
 
   schema "accounts" do
-    field :name,                :string
-    field :icon_id,             :binary_id
-    field :icon,                Core.Storage.Type
-    field :billing_customer_id, :string
+    field :name,                 :string
+    field :icon_id,              :binary_id
+    field :workos_connection_id, :string
+    field :icon,                 Core.Storage.Type
+    field :billing_customer_id,  :string
 
     belongs_to :root_user, User
     has_many :domain_mappings, DomainMapping, on_replace: :delete
@@ -15,7 +16,7 @@ defmodule Core.Schema.Account do
     timestamps()
   end
 
-  @valid ~w(name)a
+  @valid ~w(name workos_connection_id)a
 
   def changeset(model, attrs \\ %{}) do
     model

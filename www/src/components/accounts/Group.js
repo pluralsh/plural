@@ -2,13 +2,14 @@ import React, { useState, useRef } from 'react'
 import { Box, Text, Layer, TextInput } from 'grommet'
 import { useQuery, useMutation, useApolloClient } from 'react-apollo'
 import { GROUP_MEMBERS, CREATE_GROUP_MEMBERS, UPDATE_GROUP, DELETE_GROUP, DELETE_GROUP_MEMBER } from './queries'
-import { ModalHeader, TooltipContent, Button, Group, AddUser, EditField as Edit, Trash, GqlError } from 'forge-core'
+import { ModalHeader, TooltipContent, Button, Group, AddUser, EditField as Edit, Trash, GqlError, Public } from 'forge-core'
 import { fetchUsers } from './Typeaheads'
 import { addGroupMember, deleteGroup, SearchIcon } from './utils'
 import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import Avatar from '../users/Avatar'
 import { FixedScroller } from '../utils/SmoothScroller'
+import Toggle from 'react-toggle'
 
 const GroupMemberRow = React.memo(({group, user}) => {
   const [mutation] = useMutation(DELETE_GROUP_MEMBER, {
@@ -147,10 +148,11 @@ function MemberAdd({group, setModal}) {
   )
 }
 
-function GroupName({group: {name, description}}) {
+function GroupName({group: {name, description, global}}) {
   return (
-    <Box fill='horizontal' gap='xsmall' direction='row'>
+    <Box fill='horizontal' gap='xsmall' direction='row' align='center'>
       <Text size='small' weight={500}>{name}</Text>
+      {global && <Public size='small' />}
       <Text size='small'>--</Text>
       <Text size='small'><i>{description || 'no description'}</i></Text>
     </Box>
@@ -160,13 +162,14 @@ function GroupName({group: {name, description}}) {
 function GroupEdit({group, setEdit}) {
   const [name, setName] = useState(group.name)
   const [description, setDescription] = useState(group.description)
+  const [global, setGlobal] = useState(group.global)
   const [mutation, {loading}] = useMutation(UPDATE_GROUP, {
-    variables: {id: group.id, attributes: {name, description}},
+    variables: {id: group.id, attributes: {name, description, global}},
     onCompleted: () => setEdit(false)
   })
 
   return (
-    <Box fill='horizontal' gap='xsmall' direction='row'>
+    <Box fill='horizontal' gap='small' direction='row' align='center'>
       <Box width='70%' direction='row' align='center' gap='xsmall'>
         <TextInput
           name='name'
@@ -181,6 +184,9 @@ function GroupEdit({group, setEdit}) {
           placeholder='enter a description'
           onChange={({target: {value}}) => setDescription(value)} />
       </Box>
+      <Toggle
+        checked={global}
+        onChange={({target: {checked}}) => setGlobal(checked)} />
       <Button label='update' loading={loading} onClick={mutation} />
     </Box>
   )

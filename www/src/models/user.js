@@ -13,6 +13,7 @@ export const GroupFragment = gql`
   fragment GroupFragment on Group {
     id
     name
+    global
     description
   }
 `;

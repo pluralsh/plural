@@ -9,7 +9,8 @@ defmodule Core.Schema.User do
     Group,
     RoleBinding,
     Incident,
-    ImpersonationPolicy
+    ImpersonationPolicy,
+    GroupMember
   }
 
   @email_re ~r/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-\.]+\.[a-zA-Z]{2,}$/
@@ -80,6 +81,14 @@ defmodule Core.Schema.User do
 
   def for_account(query \\ __MODULE__, account_id) do
     from(u in query, where: u.account_id == ^account_id)
+  end
+
+  def not_member(query \\ __MODULE__, group_id) do
+    groups = GroupMember.for_group(group_id)
+    from(u in query,
+      left_join: gm in ^groups, on: gm.user_id == u.id,
+      where: is_nil(gm.id)
+    )
   end
 
   def without_account(query \\ __MODULE__) do

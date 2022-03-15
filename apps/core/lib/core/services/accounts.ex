@@ -249,6 +249,17 @@ defmodule Core.Services.Accounts do
   end
 
   @doc """
+  low-level group member creation
+  """
+  @spec create_group_member(binary, binary) :: group_member_resp
+  def create_group_member(%User{} = user, group_id) do
+    %GroupMember{group_id: group_id}
+    |> GroupMember.changeset(%{user_id: user.id})
+    |> Core.Repo.insert()
+    |> notify(:create, user)
+  end
+
+  @doc """
   Deletes a group member by id
   """
   @spec delete_group_member(binary | GroupMember.t, User.t) :: group_member_resp

@@ -5,7 +5,8 @@ defmodule Core.Schema.Group do
   schema "groups" do
     field :name, :string
     field :description, :string
-    field :global, :boolean
+    field :global, :boolean, default: false
+    field :globalized, :boolean, virtual: true
 
     belongs_to :account, Account
     has_many :role_bindings, RoleBinding
@@ -29,7 +30,7 @@ defmodule Core.Schema.Group do
     from(q in query, order_by: ^order)
   end
 
-  @valid ~w(name description account_id)a
+  @valid ~w(name description account_id global)a
 
   def changeset(model, attrs \\ %{}) do
     model
@@ -37,5 +38,13 @@ defmodule Core.Schema.Group do
     |> foreign_key_constraint(:account_id)
     |> unique_constraint(:name, name: index_name(:groups, [:account_id, :name]))
     |> validate_required([:name, :account_id])
+    |> set_globalized(model)
+  end
+
+  def set_globalized(cs, model) do
+    case {get_change(cs, :global), !!model.global} do
+      {true, false} -> put_change(cs, :globalized, true)
+      _ -> cs
+    end
   end
 end

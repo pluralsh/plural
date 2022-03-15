@@ -156,6 +156,18 @@ defmodule Core.Services.AccountsTest do
       assert_receive {:event, %PubSub.GroupUpdated{item: ^updated, actor: ^user}}
     end
 
+    test "if global is updated, the group is marked globalized", %{user: user, account: account} do
+      group = insert(:group, account: account)
+      {:ok, updated} = Accounts.update_group(%{name: "updated", global: true}, group.id, user)
+
+      assert updated.id == group.id
+      assert updated.name == "updated"
+      assert updated.global
+      assert updated.globalized
+
+      assert_receive {:event, %PubSub.GroupUpdated{item: ^updated, actor: ^user}}
+    end
+
     test "nonroot users cannot update groups", %{account: account} do
       group = insert(:group, account: account)
       {:error, _} = Accounts.update_group(%{name: "updated"}, group.id, insert(:user, account: account))

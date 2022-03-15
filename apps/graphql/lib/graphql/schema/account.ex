@@ -22,8 +22,9 @@ defmodule GraphQl.Schema.Account do
   end
 
   input_object :group_attributes do
-    field :name,  non_null(:string)
+    field :name,        non_null(:string)
     field :description, :string
+    field :global,      :boolean
   end
 
   input_object :role_attributes do
@@ -111,8 +112,9 @@ defmodule GraphQl.Schema.Account do
   end
 
   object :group do
-    field :id, non_null(:id)
-    field :name, non_null(:string)
+    field :id,          non_null(:id)
+    field :name,        non_null(:string)
+    field :global,      :boolean
     field :description, :string
 
     timestamps()

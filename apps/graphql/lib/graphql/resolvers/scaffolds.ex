@@ -5,7 +5,7 @@ defmodule GraphQl.Resolvers.Scaffolds do
     {:ok, Scaffolds.available_providers()}
   end
 
-  def provider(%{name: name}, _) do
-    {:ok, Scaffolds.provider(name)}
+  def provider(%{name: name} = args, _) do
+    {:ok, Scaffolds.provider(name, args[:vsn])}
   end
 end

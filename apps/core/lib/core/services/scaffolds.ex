@@ -45,7 +45,7 @@ defmodule Core.Services.Scaffolds do
 
   def available_providers(), do: Core.Schema.ProviderScaffold.available()
 
-  def provider(name), do: Core.Schema.ProviderScaffold.new(name)
+  def provider(name, vsn \\ nil), do: Core.Schema.ProviderScaffold.new(name, vsn || :default)
 
   def quote_if_necessary(str) do
     case String.match?(str, ~r/\s+/) do

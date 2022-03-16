@@ -43,6 +43,9 @@ defmodule GraphQl.Resolvers.Dns do
   def update_domain(%{id: id, attributes: attrs}, %{context: %{current_user: user}}),
     do: Dns.update_domain(attrs, id, user)
 
+  def delete_domain(%{id: id}, %{context: %{current_user: user}}),
+    do: Dns.delete_domain(id, user)
+
   def provision_domain(%{name: name}, %{context: %{current_user: user}}),
     do: Dns.provision_domain(name, user)
 

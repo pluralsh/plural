@@ -95,7 +95,7 @@ defmodule GraphQl.Schema.Dns do
       middleware Authenticated
       arg :attributes, non_null(:dns_domain_attributes)
 
-      resolve safe_resolver(&Dns.create_domain/2)
+      safe_resolve &Dns.create_domain/2
     end
 
     field :update_domain, :dns_domain do
@@ -103,14 +103,21 @@ defmodule GraphQl.Schema.Dns do
       arg :id,         non_null(:id)
       arg :attributes, non_null(:dns_domain_attributes)
 
-      resolve safe_resolver(&Dns.update_domain/2)
+      safe_resolve &Dns.update_domain/2
+    end
+
+    field :delete_domain, :dns_domain do
+      middleware Authenticated
+      arg :id,         non_null(:id)
+
+      safe_resolve &Dns.delete_domain/2
     end
 
     field :provision_domain, :dns_domain do
       middleware Authenticated
       arg :name, non_null(:string)
 
-      resolve safe_resolver(&Dns.provision_domain/2)
+      safe_resolve &Dns.provision_domain/2
     end
 
     field :create_dns_record, :dns_record do
@@ -119,7 +126,7 @@ defmodule GraphQl.Schema.Dns do
       arg :cluster,    non_null(:string)
       arg :provider,   non_null(:provider)
 
-      resolve safe_resolver(&Dns.create_record/2)
+      safe_resolve &Dns.create_record/2
     end
 
     field :delete_dns_record, :dns_record do
@@ -127,7 +134,7 @@ defmodule GraphQl.Schema.Dns do
       arg :name, non_null(:string)
       arg :type, non_null(:dns_record_type)
 
-      resolve safe_resolver(&Dns.delete_record/2)
+      safe_resolve &Dns.delete_record/2
     end
   end
 end

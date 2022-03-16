@@ -13,6 +13,12 @@ defmodule Core.Services.Dns do
 
   def get_domain(name), do: Core.Repo.get_by(DnsDomain, name: name)
 
+  @spec nonempty?(DnsDomain.t) :: boolean
+  def nonempty?(%DnsDomain{id: id}) do
+    DnsRecord.for_domain(id)
+    |> Core.Repo.exists?()
+  end
+
   @spec authorized(binary, User.t) :: domain_resp
   def authorized(id, %User{} = user) do
     Core.Repo.get(DnsDomain, id)
@@ -34,6 +40,13 @@ defmodule Core.Services.Dns do
     |> DnsDomain.update_changeset(attrs)
     |> allow(user, :edit)
     |> when_ok(:update)
+  end
+
+  def delete_domain(id, %User{} = user) do
+    Core.Repo.get(DnsDomain, id)
+    |> Core.Repo.preload(access_policy: :bindings)
+    |> allow(user, :delete)
+    |> when_ok(:delete)
   end
 
   @spec provision_domain(binary, User.t) :: domain_resp

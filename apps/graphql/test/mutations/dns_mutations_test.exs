@@ -47,6 +47,24 @@ defmodule GraphQl.DnsMutationsTest do
     end
   end
 
+  describe "deletedomain" do
+    test "a creator can delete their domains" do
+      user = insert(:user)
+      domain = insert(:dns_domain, account: user.account, creator: user)
+
+      {:ok, %{data: %{"deleteDomain" => found}}} = run_query("""
+        mutation Update($id: ID!) {
+          deleteDomain(id: $id) {
+            id
+          }
+        }
+      """, %{"id" => domain.id}, %{current_user: user})
+
+      assert found["id"] == domain.id
+      refute refetch(domain)
+    end
+  end
+
   describe "provisionDomain" do
     test "A user can create a domain for his account" do
       user = insert(:user)

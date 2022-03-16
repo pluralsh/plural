@@ -54,6 +54,28 @@ defmodule Core.Services.DnsTest do
     end
   end
 
+  describe "#delete_domain/3" do
+    test "A domain creator can delete his domain if empty" do
+      domain = insert(:dns_domain)
+
+      {:ok, _} = Dns.delete_domain(domain.id, domain.creator)
+
+      refute refetch(domain)
+    end
+
+    test "nonempty domains cannot be deleted" do
+      domain = insert(:dns_domain)
+      insert(:dns_record, domain: domain)
+
+      {:error, "domain is not empty"} = Dns.delete_domain(domain.id, domain.creator)
+    end
+
+    test "Non-creators cannot delete" do
+      domain = insert(:dns_domain)
+      {:error, _} = Dns.delete_domain(domain.id, insert(:user, account: domain.creator.account))
+    end
+  end
+
   describe "#provision_domain/3" do
     test "if the domain doesn't exist it will create" do
       user = insert(:user)

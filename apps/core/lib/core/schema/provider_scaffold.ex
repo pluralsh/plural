@@ -4,15 +4,20 @@ defmodule Core.Schema.ProviderScaffold do
 
   def available(), do: @providers
 
-  def new(name) when name in @providers do
+  def new(name, vsn \\ :default) when name in @providers do
     %__MODULE__{
       name: name,
-      content: provider_file(name)
+      content: provider_file(name, vsn)
     }
   end
 
-  defp provider_file(name) do
+  defp provider_file(name, :default) do
     Path.join([:code.priv_dir(:core), "scaffolds/terraform/providers", "#{name}.eex"])
+    |> File.read!
+  end
+
+  defp provider_file(name, vsn) do
+    Path.join([:code.priv_dir(:core), "scaffolds/terraform/providers/#{vsn}", "#{name}.eex"])
     |> File.read!
   end
 end

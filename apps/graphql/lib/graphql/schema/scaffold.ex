@@ -15,6 +15,7 @@ defmodule GraphQl.Schema.Scaffold do
 
     field :terraform_provider, :terraform_provider do
       arg :name,   non_null(:provider)
+      arg :vsn,    :string
 
       resolve &Scaffolds.provider/2
     end

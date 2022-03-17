@@ -1,13 +1,13 @@
 import React, { useCallback, useState } from 'react'
 import moment from 'moment'
-import { Button, ModalHeader, Roles } from 'forge-core'
+import { Button, ModalHeader, Roles, Trash } from 'forge-core'
 import { useMutation, useQuery } from 'react-apollo'
-import { appendConnection, extendConnection, updateCache } from '../../utils/graphql'
+import { appendConnection, extendConnection, removeConnection, updateCache } from '../../utils/graphql'
 import { SectionContentContainer, SectionPortal } from '../Explore'
 import { HeaderItem } from '../repos/Docker'
 import { StandardScroller } from '../utils/SmoothScroller'
 import { Placeholder } from './Audits'
-import { CREATE_DOMAIN, DNS_DOMAINS, UPDATE_DOMAIN } from './queries'
+import { CREATE_DOMAIN, DELETE_DOMAIN, DNS_DOMAINS, UPDATE_DOMAIN } from './queries'
 import { Box, Layer, Text, TextInput } from 'grommet'
 import Avatar from '../users/Avatar'
 import { Route, Switch, useHistory, useRouteMatch } from 'react-router'
@@ -16,6 +16,7 @@ import { BindingInput, sanitize } from './Role'
 import { fetchGroups, fetchUsers } from './Typeaheads'
 import { Icon } from './Group'
 import { ignore } from '../utils/ModalHeader'
+import { GqlError } from '../utils/Alert'
 
 export function TableRow({children, border, ...props}) {
   return (
@@ -53,7 +54,7 @@ function DomainRow({domain}) {
         <Avatar user={domain.creator} size='30px' />
         <Text size='small'>{domain.creator.name}</Text>
       </Box>
-      <Box width='30%' direction='row' align='center'>
+      <Box width='30%' direction='row' align='center' gap='small'>
         <Box fill='horizontal'>
           <Text size='small'>{moment(domain.insertedAt).format('lll')}</Text>
         </Box>
@@ -61,18 +62,53 @@ function DomainRow({domain}) {
           icon={Roles}
           hover='light-4'
           tooltip='Edit Access Policy'
-          onClick={(e) => doOpen(true, e)} />
+          onClick={(e) => doOpen('edit', e)} />
+        <Icon 
+          icon={Trash}
+          tooltip='delete' 
+          onClick={(e) => doOpen('delete', e)} 
+          iconAttrs={{color: 'error'}} />
       </Box>
     </TableRow>
     {open && (
       <Layer modal onEsc={(e) => setOpen(false, e)} onClickOutside={(e) => setOpen(false, e)}>
-        <Box width='50vw'>
-          <ModalHeader text='Set Access Policy' setOpen={setOpen} />
-          <UpdateDomainPolicy domain={domain} />
-        </Box>
+        {open === 'edit' && (
+          <Box width='50vw'>
+            <ModalHeader text='Set Access Policy' setOpen={setOpen} />
+            <UpdateDomainPolicy domain={domain} />
+          </Box>
+        )}
+        {open === 'delete' && (
+          <Box width='50vw'>
+            <ModalHeader text='Delete Domain' setOpen={setOpen} />
+            <DeleteDomain domain={domain} />
+          </Box>
+        )}
       </Layer>
     )}
     </>
+  )
+}
+
+function DeleteDomain({domain: {id}}) {
+  const [mutation, {loading, error}] = useMutation(DELETE_DOMAIN, {
+    variables: {id},
+    update: (cache, {data: {deleteDomain}}) => {
+      updateCache(cache, {
+        query: DNS_DOMAINS,
+        update: (prev) => removeConnection(prev, deleteDomain, 'dnsDomains')
+      })
+    }
+  })
+
+  return (
+    <Box pad='medium' gap='small'>
+      {error && <GqlError error={error} header='Could not delete domain' />}
+      <Text size='small'>Ensure the domain is empty before deleting</Text>
+      <Box justify='end' direction='row' align='center'>
+         <Button label='Delete' background='error' loading={loading} onClick={mutation} />
+      </Box>
+    </Box>
   )
 }
 

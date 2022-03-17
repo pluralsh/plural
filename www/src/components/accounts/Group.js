@@ -184,9 +184,12 @@ function GroupEdit({group, setEdit}) {
           placeholder='enter a description'
           onChange={({target: {value}}) => setDescription(value)} />
       </Box>
-      <Toggle
-        checked={global}
-        onChange={({target: {checked}}) => setGlobal(checked)} />
+      <Box direction='row' align='center' gap='xsmall'>
+        <Toggle
+          checked={global}
+          onChange={({target: {checked}}) => setGlobal(checked)} />
+        <Text size='small'>global</Text>
+      </Box>
       <Button label='update' loading={loading} onClick={mutation} />
     </Box>
   )

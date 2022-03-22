@@ -84,6 +84,7 @@ provider = case get_env("PROVIDER") || "google" do
   "aws" -> :aws
   "azure" -> :azure
   "equinix" -> :equinix
+  "kind" -> :kind
   _ -> :custom
 end
 

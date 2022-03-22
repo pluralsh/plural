@@ -2,7 +2,7 @@ defmodule Core.Schema.Recipe do
   use Piazza.Ecto.Schema
   alias Core.Schema.{Repository, RecipeSection, RecipeDependency, RecipeTest}
 
-  defenum Provider, gcp: 0, aws: 1, azure: 2, custom: 3, kubernetes: 4, equinix: 5
+  defenum Provider, gcp: 0, aws: 1, azure: 2, custom: 3, kubernetes: 4, equinix: 5, kind: 6
 
   defmodule OIDCSettings do
     use Piazza.Ecto.Schema

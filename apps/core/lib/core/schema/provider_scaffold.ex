@@ -1,6 +1,6 @@
 defmodule Core.Schema.ProviderScaffold do
   defstruct [:name, :content]
-  @providers ~w(aws gcp azure equinix)a
+  @providers ~w(aws gcp azure equinix kind)a
 
   def available(), do: @providers
 

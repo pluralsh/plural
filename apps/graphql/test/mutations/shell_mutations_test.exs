@@ -8,7 +8,7 @@ defmodule GraphQl.ShellMutationsTest do
     test "it will create a new shell instance" do
       %{email: e} = user = insert(:user)
 
-      expect(Pods, :fetch, fn _ -> {:ok, Pods.pod("plrl-shell-1")} end)
+      expect(Pods, :fetch, fn _ -> {:ok, Pods.pod("plrl-shell-1", e)} end)
       expect(Core.Shell.Scm, :setup_repository, fn
         :github, ^e, "tok", nil, "demo" ->
           {:ok, "git@github.com:pluralsh/demo.git", "pub-key", "priv-key"}
@@ -71,8 +71,8 @@ defmodule GraphQl.ShellMutationsTest do
       user = insert(:user)
       shell = insert(:cloud_shell, user: user, pod_name: "plrl-shell-1")
 
-      expect(Pods, :fetch, fn "plrl-shell-1" -> {:ok, Pods.pod("plrl-shell-1")} end)
-      expect(Pods, :delete, fn "plrl-shell-1" -> {:ok, Pods.pod("plrl-shell-1")} end)
+      expect(Pods, :fetch, fn "plrl-shell-1" -> {:ok, Pods.pod("plrl-shell-1", user.email)} end)
+      expect(Pods, :delete, fn "plrl-shell-1" -> {:ok, Pods.pod("plrl-shell-1", user.email)} end)
 
       {:ok, %{data: %{"deleteShell" => s}}} = run_query("""
         mutation {

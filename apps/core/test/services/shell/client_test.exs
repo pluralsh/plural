@@ -7,7 +7,7 @@ defmodule Core.Shell.ClientTest do
 
   describe "#setup/1" do
     test "it will post to the setup endpoint of the shell pod" do
-      pod = Pods.pod("plrl-shell-1")
+      pod = Pods.pod("plrl-shell-1", "mjg@plural.sh")
       expect(Kazan, :run, fn _ -> {:ok, %{pod | status: %CoreV1.PodStatus{pod_ip: "10.0.1.0"}}} end)
       expect(HTTPoison, :post, fn "http://10.0.1.0:8080/v1/setup", _, _, _ ->
         {:ok, %HTTPoison.Response{status_code: 200, body: "OK"}}

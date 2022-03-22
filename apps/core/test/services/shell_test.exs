@@ -9,7 +9,7 @@ defmodule Core.Services.ShellTest do
       user = insert(:user)
 
       expect(Kazan, :run, fn _ ->
-        {:ok, Shell.Pods.pod("plrl-shell-1")}
+        {:ok, Shell.Pods.pod("plrl-shell-1", user.email)}
       end)
 
       expect(HTTPoison, :post, 2, fn
@@ -56,7 +56,7 @@ defmodule Core.Services.ShellTest do
 
   describe "#alive?/1" do
     test "it will return true if the pods conditions are all true" do
-      pod = Shell.Pods.pod("plrl-shell-1")
+      pod = Shell.Pods.pod("plrl-shell-1", "mjg@plural.sh")
       conditions = Shell.Pods.conditions()
                    |> Enum.map(& %CoreV1.PodCondition{type: &1, status: "True"})
       pod = %{pod | status: %CoreV1.PodStatus{conditions: conditions}}
@@ -67,7 +67,7 @@ defmodule Core.Services.ShellTest do
     end
 
     test "if the conditions haven't been marked true, it will return false" do
-      pod = Shell.Pods.pod("plrl-shell-1")
+      pod = Shell.Pods.pod("plrl-shell-1", "mjg@plural.sh")
       expect(Kazan, :run, fn _ -> {:ok, pod} end)
 
       shell = insert(:cloud_shell, pod_name: "plrl-shell-1")
@@ -80,7 +80,7 @@ defmodule Core.Services.ShellTest do
       user = insert(:user)
       insert(:cloud_shell, user: user, pod_name: "plrl-shell-1")
 
-      expect(Kazan, :run, 2, fn _ -> {:ok, Shell.Pods.pod("plrl-shell-1")} end)
+      expect(Kazan, :run, 2, fn _ -> {:ok, Shell.Pods.pod("plrl-shell-1", user.email)} end)
       {:ok, true} = Shell.stop(user)
     end
   end
@@ -90,7 +90,7 @@ defmodule Core.Services.ShellTest do
       user = insert(:user)
       shell = insert(:cloud_shell, user: user, pod_name: "plrl-shell-1")
 
-      expect(Kazan, :run, 2, fn _ -> {:ok, Shell.Pods.pod("plrl-shell-1")} end)
+      expect(Kazan, :run, 2, fn _ -> {:ok, Shell.Pods.pod("plrl-shell-1", user.email)} end)
       {:ok, s} = Shell.delete(user.id)
 
       assert s.id == shell.id

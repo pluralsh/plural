@@ -94,7 +94,8 @@ defmodule Core.Services.Shell do
   """
   @spec reboot(CloudShell.t | binary) :: {:ok, CloudShell.t} | error
   def reboot(%CloudShell{pod_name: name} = shell) do
-    with {:ok, _} <- do_reboot(name),
+    shell = Core.Repo.preload(shell, [:user])
+    with {:ok, _} <- do_reboot(shell),
       do: {:ok, shell}
   end
 
@@ -105,10 +106,10 @@ defmodule Core.Services.Shell do
 
   def reboot(nil), do: {:error, "no shell available"}
 
-  defp do_reboot(name) do
+  defp do_reboot(%CloudShell{pod_name: name} = shell) do
     case Pods.fetch(name) do
       {:ok, pod} -> {:ok, pod}
-      _ -> Pods.create(name)
+      _ -> Pods.create(name, shell.user.email)
     end
   end
 

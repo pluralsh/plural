@@ -6,7 +6,7 @@ defmodule GraphQl.ShellQueriesTest do
 
   describe "shell" do
     test "it can fetch a cloud shell instance including its liveness" do
-      pod = Pods.pod("plrl-shell-1")
+      pod = Pods.pod("plrl-shell-1", "mjg@plural.sh")
       expect(Pods, :fetch, fn "plrl-shell-1" -> {:ok, pod} end)
 
       shell = insert(:cloud_shell, pod_name: "plrl-shell-1")

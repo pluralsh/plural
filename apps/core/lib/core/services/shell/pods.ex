@@ -14,8 +14,8 @@ defmodule Core.Services.Shell.Pods do
     |> Kazan.run()
   end
 
-  def create(name) do
-    pod(name)
+  def create(name, email) do
+    pod(name, email)
     |> CoreV1.create_namespaced_pod!(@ns)
     |> Kazan.run()
   end
@@ -56,12 +56,12 @@ defmodule Core.Services.Shell.Pods do
   defp condition_map(conditions),
     do: Enum.into(conditions, %{}, fn %{type: t} = condition -> {t, condition} end)
 
-  def pod(name) do
+  def pod(name, email) do
     %CoreV1.Pod{
       metadata: %MetaV1.ObjectMeta{
         name: name,
         namespace: @ns,
-        annotations: %{"platform.plural.sh/expire-after" => "24h"},
+        annotations: %{"platform.plural.sh/expire-after" => "24h", "platform.plural.sh/shell-email" => email},
         labels: %{"app.plural.sh/type" => "shell"}
       },
       spec: %CoreV1.PodSpec{

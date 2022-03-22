@@ -13,9 +13,9 @@ terraform {
 
 {{- if .Values.ClusterCreated }}
 provider "kubernetes" {
-  host = {{ .Values.Cluster }}.api_server_url
-  cluster_ca_certificate = {{ .Values.Cluster }}.ca_crt
-  client_certificate = {{ .Values.Cluster }}.client_cert
+  host = {{ .Values.Cluster }}.endpoint
+  cluster_ca_certificate = {{ .Values.Cluster }}.cluster_ca_certificate
+  client_certificate = {{ .Values.Cluster }}.client_certificate
   client_key = {{ .Values.Cluster }}.client_key
 }
 {{- else }}

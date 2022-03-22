@@ -1,0 +1,25 @@
+terraform {
+  backend "local" {
+    path = "../../{{ .Values.Bucket }}/{{ .Values.__CLUSTER__ }}/{{ .Values.Prefix }}/terraform.tfstate"
+  }
+
+  required_providers {
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "~> 2.8.0"
+    }
+  }
+}
+
+{{- if .Values.ClusterCreated }}
+provider "kubernetes" {
+  host = {{ .Values.Cluster }}.endpoint
+  cluster_ca_certificate = {{ .Values.Cluster }}.cluster_ca_certificate
+  client_certificate = {{ .Values.Cluster }}.client_certificate
+  client_key = {{ .Values.Cluster }}.client_key
+}
+{{- else }}
+provider "kubernetes" {
+  config_path    = "../../bootstrap/terraform/kube_config_cluster.yaml"
+}
+{{- end }}

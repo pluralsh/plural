@@ -11,10 +11,10 @@ defmodule Core.Shell.Scm do
   """
   @spec keypair(binary) :: {:ok, binary, binary} | error
   def keypair(email) do
-    with {:ok, {private, public}} <- Piazza.Crypto.RSA.generate_keypair(),
-         {:ok, pem_private} <- ExPublicKey.pem_encode(private),
-         {:ok, pub_key} <- ExPublicKey.RSAPublicKey.as_sequence(public),
-         ssh_public <- :public_key.ssh_encode([{pub_key, [{:comment, email}]}], :openssh_public_key),
+    with {_, _, _, params, public} = private <- :public_key.generate_key({:namedCurve, :secp256r1}),
+         entry <- :public_key.pem_entry_encode(:ECPrivateKey, private),
+         pem_private <- :public_key.pem_encode([entry]),
+         ssh_public <- :public_key.ssh_encode([{{{:ECPoint, public}, params}, [{:comment, email}]}], :openssh_public_key),
       do: {:ok, pem_private, ssh_public}
   end
 

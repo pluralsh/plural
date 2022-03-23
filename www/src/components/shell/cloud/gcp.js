@@ -71,7 +71,7 @@ export function GcpForm({workspace, setWorkspace, credentials, setCredentials}) 
   ), [setCredentials, credentials])
   const setRegion = useCallback((r) => setWorkspace({...workspace, region: r}), [setWorkspace, workspace])
   const setProject = useCallback((p) => setWorkspace({...workspace, project: p}), [setWorkspace, workspace])
-  const region = workspace.region || 'us-east1-b'
+  const region = workspace.region || 'us-east1'
   
   useEffect(() => {
     !workspace.region && setRegion(region)

@@ -150,7 +150,7 @@ defmodule GraphQl.AccountMutationTest do
       user = insert(:user)
       invite = insert(:invite, user: user, email: user.email)
 
-      {:ok, %{data: %{"realizeInvite" => inv}}} = run_query("""
+      {:ok, %{data: %{"realizeInvite" => _}}} = run_query("""
         mutation Realize($id: String!) {
           realizeInvite(id: $id) {
             id

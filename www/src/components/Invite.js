@@ -18,10 +18,19 @@ const SIGNUP = gql`
   }
 `;
 
+const REALIZE = gql`
+  mutation Realize($id: String!) {
+    realizeInvite(id: $id) {
+      jwt
+    }
+  }
+`
+
 const INVITE_Q = gql`
   query Invite($id: String!) {
     invite(id: $id) {
       email
+      account { name }
       user { ...UserFragment }
     }
   }
@@ -63,6 +72,39 @@ export function PasswordStatus({disabled, reason}) {
   )
 }
 
+function ExistingInvite({invite: {user, account}, id}) {
+  const [mutation, {loading, error}] = useMutation(REALIZE, {
+    variables: {id},
+    onCompleted: ({realizeInvite: {jwt}}) => {
+      setToken(jwt)
+      window.location = '/'
+    }
+  })
+
+
+  return (
+    <LoginPortal style={{minWidth: '50%'}}>
+      <Box fill pad='medium' background='white'>
+        <Box flex={false} gap='small'>
+          {error && <GqlError error={error} header='Something went wrong!' />}
+          <Box justify='center' align='center'>
+            <Text size='large'>Join the {account.name} account</Text>
+          </Box>
+          <Box direction='row'>
+            <Button
+              onClick={mutation}
+              loading={loading}
+              size='small'
+              round='xsmall'
+              pad={{vertical: 'xsmall', horizontal: 'medium'}}
+              label='Join Now' />
+          </Box>
+        </Box>
+      </Box>
+    </LoginPortal>
+  )
+}
+
 export default function Invite() {
   const {inviteId} = useParams()
   const [attributes, setAttributes] = useState({name: '', password: ''})
@@ -83,6 +125,9 @@ export default function Invite() {
 
   const {disabled, reason} = disableState(attributes.password, confirm)
   const email = data.invite.email
+
+  if (data.user) return <ExistingInvite invite={data.invite} id={inviteId} />
+
   const filled = attributes.name.length > 0
 
   return (

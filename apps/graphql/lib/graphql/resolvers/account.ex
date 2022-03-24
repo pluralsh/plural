@@ -1,5 +1,6 @@
 defmodule GraphQl.Resolvers.Account do
   use GraphQl.Resolvers.Base, model: Core.Schema.Account
+  import GraphQl.Resolvers.User, only: [with_jwt: 1]
   alias Core.Schema.{Group, GroupMember, Role, RoleBinding, IntegrationWebhook, WebhookLog, OAuthIntegration, DomainMapping, Invite}
   alias Core.Services.Accounts
 
@@ -81,7 +82,7 @@ defmodule GraphQl.Resolvers.Account do
 
   def impersonate_service_account(%{email: email}, %{context: %{current_user: user}}) when is_binary(email) do
     Accounts.impersonate_service_account(:email, email, user)
-    |> GraphQl.Resolvers.User.with_jwt()
+    |> with_jwt()
   end
 
   def create_invite(%{attributes: attrs}, %{context: %{current_user: user}}),
@@ -90,8 +91,10 @@ defmodule GraphQl.Resolvers.Account do
   def delete_invite(%{secure_id: id}, %{context: %{current_user: user}}),
     do: Accounts.delete_invite(id, user)
 
-  def realize_invite(%{id: id}, _),
-    do: Accounts.realize_invite(%{}, id)
+  def realize_invite(%{id: id}, _) do
+    Accounts.realize_invite(%{}, id)
+    |> with_jwt()
+  end
 
   def create_group(%{attributes: attrs}, %{context: %{current_user: user}}),
     do: Accounts.create_group(attrs, user)

@@ -108,6 +108,8 @@ defmodule GraphQl.Schema.Account do
     field :secure_id, non_null(:string)
     field :email,     :string
 
+    field :user, :user, resolve: dataloader(User)
+
     timestamps()
   end
 

@@ -38,8 +38,8 @@ defmodule Core.Services.ShellTest do
 
       assert shell.user_id == user.id
       assert shell.aes_key
-      assert IO.inspect(shell.ssh_public_key)
-      assert IO.inspect(shell.ssh_private_key)
+      assert shell.ssh_public_key
+      assert shell.ssh_private_key
       assert shell.git_url == "git@github.com:pluralsh/installations.git"
       assert shell.provider == :aws
       assert shell.credentials.aws.access_key_id == "access_key"

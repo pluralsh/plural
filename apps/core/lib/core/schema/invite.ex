@@ -1,11 +1,12 @@
 defmodule Core.Schema.Invite do
   use Piazza.Ecto.Schema
-  alias Core.Schema.{Account}
+  alias Core.Schema.{Account, User}
 
   schema "invites" do
     field :email,     :string
     field :secure_id, :string
 
+    belongs_to :user,    User
     belongs_to :account, Account
 
     timestamps()
@@ -15,7 +16,7 @@ defmodule Core.Schema.Invite do
     from(i in query, where: i.account_id == ^aid)
   end
 
-  @valid ~w(email account_id)a
+  @valid ~w(email account_id user_id)a
 
   def changeset(model, attrs \\ %{}) do
     model

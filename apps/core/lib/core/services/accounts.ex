@@ -111,12 +111,12 @@ defmodule Core.Services.Accounts do
     start_transaction()
     |> add_operation(:check, fn _ ->
       case Users.get_user_by_email(email) do
-        %User{} -> {:error, "there's already a user for #{email}"}
-        _ -> {:ok, %{}}
+        %User{id: user_id} -> {:ok, user_id}
+        _ -> {:ok, nil}
       end
     end)
-    |> add_operation(:invite, fn _ ->
-      %Invite{account_id: aid}
+    |> add_operation(:invite, fn %{check: user_id} ->
+      %Invite{account_id: aid, user_id: user_id}
       |> Invite.changeset(attributes)
       |> allow(user, :create)
       |> when_ok(:insert)
@@ -180,16 +180,22 @@ defmodule Core.Services.Accounts do
   """
   @spec realize_invite(map, binary) :: user_resp
   def realize_invite(attributes, invite_id) do
-    invite = get_invite!(invite_id)
+    invite = get_invite!(invite_id) |> Core.Repo.preload([:user])
 
     start_transaction()
     |> add_operation(:user, fn _ ->
-      %User{account_id: invite.account_id, email: invite.email}
+      case invite do
+        %{user: %User{} = user} -> {:ok, user}
+        _ -> {:ok, %User{account_id: invite.account_id, email: invite.email}}
+      end
+    end)
+    |> add_operation(:upsert, fn %{user: user} ->
+      user
       |> User.changeset(attributes)
-      |> Core.Repo.insert()
+      |> Core.Repo.insert_or_update()
     end)
     |> add_operation(:invite, fn _ -> Core.Repo.delete(invite) end)
-    |> execute(extract: :user)
+    |> execute(extract: :upsert)
   end
 
   @doc """

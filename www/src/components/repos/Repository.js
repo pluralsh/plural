@@ -1,26 +1,19 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext } from 'react'
 import { Box, Text, ThemeContext } from 'grommet'
-import { useQuery, useMutation } from 'react-apollo'
-import { useParams, useHistory } from 'react-router-dom'
-import { Scroller, Button, SecondaryButton, Modal, ModalHeader, Tabs, TabHeader,
-        TabHeaderItem, TabContent, ScrollableContainer, Password as Lock } from 'forge-core'
+import { useMutation } from 'react-apollo'
+import { useHistory } from 'react-router-dom'
+import { Scroller, Button, SecondaryButton, Modal, ModalHeader, Password as Lock } from 'forge-core'
 import yaml from 'js-yaml'
 import { REPO_Q, UPDATE_REPO } from './queries'
 import { DEFAULT_CHART_ICON, DEFAULT_TF_ICON, DEFAULT_DKR_ICON, Categories } from './constants'
-import Installation from './Installation'
 import CreateTerraform from './CreateTerraform'
 import { RepoForm } from './CreateRepository'
 import Highlight from 'react-highlight'
-import Recipes from './Recipes'
 import moment from 'moment'
 import { Provider } from './misc'
-import Artifacts from './Artifacts'
 import AceEditor from "react-ace"
-import Integrations from './Integrations'
-import { BreadcrumbsContext } from '../Breadcrumbs'
 import { extendConnection } from '../../utils/graphql'
 import { PluralConfigurationContext } from '../login/CurrentUser'
-import { Rollouts } from '../upgrades/Rollouts'
 import "ace-builds/src-noconflict/mode-yaml"
 import "ace-builds/src-noconflict/theme-terminal"
 import { SectionPortal } from '../Explore'
@@ -291,63 +284,5 @@ export function RepositoryIcon({size, repository, headingSize, dark}) {
         <Text size='small' color={dark ? null : 'dark-3'}>{repository.description}</Text>
       </Box>
     </Box>
-  )
-}
-
-const IMG_SIZE = '75px'
-const WIDTH = 65
-
-function DetailView({repository, terraform, dockerRepositories, charts, fetchMore}) {
-  const [tab, setTab] = useState(null)
-  return (
-    <Tabs
-      defaultTab='charts'
-      onTabChange={setTab}
-      headerEnd={tab === 'terraform' && repository.editable ? <TerraformCreateModal /> : null}>
-      <TabHeader>
-        <TabHeaderItem name='charts'>
-          <Text weight={500} size='small'>Charts</Text>
-        </TabHeaderItem>
-        <TabHeaderItem name='terraform'>
-          <Text weight={500} size='small'>Terraform</Text>
-        </TabHeaderItem>
-        <TabHeaderItem name='docker'>
-          <Text weight={500} size='small'>Docker</Text>
-        </TabHeaderItem>
-        {repository.publicKey && (
-          <TabHeaderItem name='credentials'>
-            <Text weight={500} size='small'>Credentials</Text>
-          </TabHeaderItem>
-        )}
-        {repository.editable && (
-          <TabHeaderItem name='secrets'>
-            <Text weight={500} size='small'>Secrets</Text>
-          </TabHeaderItem>
-        )}
-        {repository.editable && (
-          <TabHeaderItem name='edit'>
-            <Text weight={500} size='small'>Edit</Text>
-          </TabHeaderItem>
-        )}
-      </TabHeader>
-      <TabContent name='charts'>
-        <Charts {...charts} fetchMore={fetchMore} />
-      </TabContent>
-      <TabContent name='terraform'>
-        <Terraform {...terraform} fetchMore={fetchMore} />
-      </TabContent>
-      <TabContent name='docker'>
-        <DockerRepos repo={repository} {...dockerRepositories} fetchMore={fetchMore} />
-      </TabContent>
-      <TabContent name='credentials'>
-        <RepoCredentials {...repository} />
-      </TabContent>
-      <TabContent name='secrets'>
-        <UpdateSecrets repository={repository} />
-      </TabContent>
-      <TabContent name='edit'>
-        <RepoUpdate repository={repository} />
-      </TabContent>
-    </Tabs>
   )
 }

@@ -85,19 +85,20 @@ function ExistingInvite({invite: {user, account}, id}) {
   return (
     <LoginPortal style={{minWidth: '50%'}}>
       <Box fill pad='medium' background='white'>
-        <Box flex={false} gap='small'>
+        <Box flex={false} gap='medium'>
           {error && <GqlError error={error} header='Something went wrong!' />}
           <Box justify='center' align='center'>
-            <Text size='large'>Join the {account.name} account</Text>
-          </Box>
-          <Box direction='row'>
+            <Text>You were invited to join another account</Text>
+          </Box> 
+          <Box direction='row' fill='horizontal'>
             <Button
               onClick={mutation}
               loading={loading}
+              fill='horizontal'
               size='small'
               round='xsmall'
               pad={{vertical: 'xsmall', horizontal: 'medium'}}
-              label='Join Now' />
+              label={`Join ${account.name}`} />
           </Box>
         </Box>
       </Box>
@@ -126,7 +127,7 @@ export default function Invite() {
   const {disabled, reason} = disableState(attributes.password, confirm)
   const email = data.invite.email
 
-  if (data.user) return <ExistingInvite invite={data.invite} id={inviteId} />
+  if (data.invite.user) return <ExistingInvite invite={data.invite} id={inviteId} />
 
   const filled = attributes.name.length > 0
 

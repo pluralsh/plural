@@ -1,7 +1,6 @@
 import React from 'react'
 import { Box } from 'grommet'
 import { SectionItemContainer, SectionContent } from './Explore'
-import { Aid, Alert } from 'grommet-icons'
 import { Incidents as IncidentsIcon, Responses as ResponsesIcon } from 'forge-core'
 import { Incidents } from './incidents/Incidents'
 import { Responses } from './incidents/Responses'

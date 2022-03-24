@@ -66,7 +66,7 @@ function DomainRow({domain: {domain}, removeDomain}) {
 export const sanitize = ({__typename, ...rest}) => rest
 
 export const canEdit = ({roles, id}, {rootUser}) => (
-  (roles && roles.admin) || id == rootUser.id
+  (roles && roles.admin) || id === rootUser.id
 )
 
 function EditAttributes() {

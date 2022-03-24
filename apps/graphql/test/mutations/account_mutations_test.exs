@@ -145,6 +145,23 @@ defmodule GraphQl.AccountMutationTest do
     end
   end
 
+  describe "realizeInvite" do
+    test "it can realize an invite" do
+      user = insert(:user)
+      invite = insert(:invite, user: user, email: user.email)
+
+      {:ok, %{data: %{"realizeInvite" => inv}}} = run_query("""
+        mutation Realize($id: String!) {
+          realizeInvite(id: $id) {
+            id
+          }
+        }
+      """, %{"id" => invite.secure_id})
+
+      assert refetch(user).account_id == invite.account_id
+    end
+  end
+
   describe "createGroup" do
     setup [:setup_root_user]
 

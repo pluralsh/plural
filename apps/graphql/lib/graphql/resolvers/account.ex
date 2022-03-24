@@ -90,6 +90,9 @@ defmodule GraphQl.Resolvers.Account do
   def delete_invite(%{secure_id: id}, %{context: %{current_user: user}}),
     do: Accounts.delete_invite(id, user)
 
+  def realize_invite(%{id: id}, _),
+    do: Accounts.realize_invite(%{}, id)
+
   def create_group(%{attributes: attrs}, %{context: %{current_user: user}}),
     do: Accounts.create_group(attrs, user)
 

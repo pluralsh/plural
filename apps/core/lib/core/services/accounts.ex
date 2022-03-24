@@ -186,12 +186,13 @@ defmodule Core.Services.Accounts do
     |> add_operation(:user, fn _ ->
       case invite do
         %{user: %User{} = user} -> {:ok, user}
-        _ -> {:ok, %User{account_id: invite.account_id, email: invite.email}}
+        _ -> {:ok, %User{email: invite.email}}
       end
     end)
     |> add_operation(:upsert, fn %{user: user} ->
       user
       |> User.changeset(attributes)
+      |> Ecto.Changeset.change(%{account_id: invite.account_id})
       |> Core.Repo.insert_or_update()
     end)
     |> add_operation(:invite, fn _ -> Core.Repo.delete(invite) end)

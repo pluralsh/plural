@@ -8,6 +8,7 @@ import { StatusCritical, Checkmark } from 'grommet-icons'
 import { initials } from './users/Avatar'
 import { setToken } from '../helpers/authentication'
 import { LabelledInput, LoginPortal } from './users/MagicLogin'
+import { UserFragment } from '../models/user'
 
 const SIGNUP = gql`
   mutation Signup($attributes: UserAttributes!, $inviteId: String!) {
@@ -21,8 +22,10 @@ const INVITE_Q = gql`
   query Invite($id: String!) {
     invite(id: $id) {
       email
+      user { ...UserFragment }
     }
   }
+  ${UserFragment}
 `;
 
 function InvalidInvite() {

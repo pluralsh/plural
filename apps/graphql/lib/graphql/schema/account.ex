@@ -304,6 +304,12 @@ defmodule GraphQl.Schema.Account do
       resolve safe_resolver(&Account.delete_invite/2)
     end
 
+    field :realize_invite, :user do
+      arg :id, non_null(:string)
+
+      safe_resolve &Account.realize_invite/2
+    end
+
     field :create_group, :group do
       middleware Authenticated
       arg :attributes, non_null(:group_attributes)

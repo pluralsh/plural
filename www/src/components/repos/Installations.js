@@ -8,9 +8,9 @@ import { RepositoryInner } from './Repositories'
 import { Confirm } from '../utils/Confirm'
 import { StandardScroller } from '../utils/SmoothScroller'
 import { Placeholder } from '../accounts/Audits'
-import { extendConnection } from '../../utils/graphql'
+import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
 import { Icon } from '../accounts/Group'
-import { ignore } from '../utils/ModalHeader'
+import { ignored } from '../../utils/event'
 
 function NoInstallations() {
   return (
@@ -28,13 +28,10 @@ function DeleteInstallation({installation}) {
   const [mutation] = useMutation(DELETE_INSTALLATION, {
     variables: {id: installation.id},
     update: (cache, {data: {deleteInstallation}}) => {
-      const {installations, ...prev} = cache.readQuery({query: INSTALLATIONS_Q})
-      cache.writeQuery({query: INSTALLATIONS_Q, data: {
-        ...prev, installations: {
-          ...installations,
-          edges: installations.edges.filter(({node}) => node.id !== deleteInstallation.id)
-        }
-      }})
+      updateCache(cache, {
+        query: INSTALLATIONS_Q,
+        update: (prev) => removeConnection(prev, deleteInstallation, 'installations')
+      })
     }
   })
 
@@ -43,12 +40,12 @@ function DeleteInstallation({installation}) {
     <Icon
       icon={Trash} 
       tooltip='delete' 
-      onClick={(e) => { ignore(e); setConfirm(true) }} 
+      onClick={ignored(() => setConfirm(true))}
       iconAttrs={{color: 'error'}} />
     {confirm && <Confirm 
       label='Delete'
-      description="this will delete the installation for the repo and all installed packages"
-      submit={mutation}
+      description="Be sure to run `plural destroy` in your installation repo before deleting.  This will delete all installed packages and prevent future upgrades."
+      submit={ignored(() => mutation())}
       cancel={() => setConfirm(false)} />}
     </>
   )
@@ -87,9 +84,7 @@ export default function Installations({edit}) {
         mapper={({node}) => <InstallationRow key={node.id} installation={node} edit={edit} />}
         loadNextPage={() => pageInfo.hasNextPage && fetchMore({
           variables: {chartCursor: pageInfo.endCursor},
-          updateQuery: (prev, {fetchMoreResult: {installations}}) => {
-            return extendConnection(prev, 'installations', installations)
-          }
+          updateQuery: (prev, {fetchMoreResult: {installations}}) => extendConnection(prev, 'installations', installations)
         })
       } />
     </Box>

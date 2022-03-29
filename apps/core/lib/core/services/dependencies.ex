@@ -67,13 +67,16 @@ defmodule Core.Services.Dependencies do
   Converts a validation error to a gql suitable response
   """
   @spec pretty_print({:error, {:missing_dep, %{type: :terraform | :helm, repo: binary}}}) :: {:error, binary}
-  def pretty_print({:error, {:missing_dep, %{type: :terraform, repo: repo} = dep}}),
-    do: {:error, "Missing #{mod(dep)} terraform module #{pretty_name(dep)} from repo #{repo}"}
-  def pretty_print({:error, {:missing_dep, %{type: :helm, repo: repo} = dep}}),
-    do: {:error, "Missing #{mod(dep)} helm chart #{pretty_name(dep)} from repo #{repo}"}
+  def pretty_print({:error, {:missing_dep, %{type: :terraform, repo: repo, version: v} = dep}}),
+    do: {:error, "Missing #{mod(dep)} terraform module #{pretty_name(dep)} from repo #{repo}, #{pretty_vsn(v)}"}
+  def pretty_print({:error, {:missing_dep, %{type: :helm, repo: repo, version: v} = dep}}),
+    do: {:error, "Missing #{mod(dep)} helm chart #{pretty_name(dep)} from repo #{repo}, #{pretty_vsn(v)}"}
+
 
   defp mod(%{any: [_ | _]}), do: "any"
   defp mod(_), do: ""
+
+  defp pretty_vsn(v), do: "version #{v} required"
 
   defp pretty_name(%{any_of: [_ | _] = deps}), do: "in [#{Enum.map_join(deps, ", ", & &1.name)}]"
   defp pretty_name(%{name: name}), do: name

@@ -2,7 +2,8 @@
   "extends": [
     "config:base",
     ":dependencyDashboard",
-    ":prHourlyLimitNone"
+    ":prHourlyLimit4",
+    ":prConcurrentLimit10"
   ],
   "packageRules": [
     {
@@ -21,5 +22,6 @@
       "enabled": false
     }
   ],
-  "separateMinorPatch": true
+  "separateMinorPatch": true,
+  "dependencyDashboardApproval": true
 }

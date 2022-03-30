@@ -17,7 +17,7 @@ import { SIDEBAR_WIDTH } from '../constants'
 import { Keys } from './Keys'
 import { SectionContentContainer, SectionPortal } from '../Explore'
 import { LoginMethod } from './types'
-import { wipeToken, getPreviousUserData, setToken } from '../../helpers/authentication'
+import { wipeToken, getPreviousUserData, setPreviousUserData, setToken } from '../../helpers/authentication'
 import { EabCredentials } from './EabCredentials'
 import { SectionChoice } from '../utils/SectionChoice'
 import { Provider } from '../repos/misc'
@@ -110,13 +110,14 @@ export default function EditUser() {
 
   function handlePreviousUserClick() {
     setToken(previousUserData.jwt)
+    setPreviousUserData(null)
     window.location.reload()
   }
 
   return (
     <Box fill>
       <Box fill direction='row'>
-        <Box flex={false} direction="column" background='backgroundColor' gap='xsmall' width={SIDEBAR_WIDTH}
+        <Box flex={false} background='backgroundColor' gap='xsmall' width={SIDEBAR_WIDTH}
              pad='small'>
           <Box flex={false} direction='row' gap='small' align='center' margin={{bottom: 'xsmall'}}>
             <EditAvatar me={me} />
@@ -134,19 +135,14 @@ export default function EditUser() {
           <SectionChoice
             label='Logout'
             icon={<Logout size='14px' />}
-            onClick={logout} />
-          <Box flex="grow" />
+            onClick={logout}
+          />
           {previousUserData && previousUserData.me.id !== me.id && (
-            <Box direction='row' gap='small' align='center' margin={{bottom: 'xsmall'}} overflow='hidden' style={{ cursor: 'pointer'}} onClick={handlePreviousUserClick}>
-              <Transaction size="small" />
-              <Box flex={false} direction='row' gap='small' align='center' margin={{bottom: 'xsmall'}}>
-                <EditAvatar me={previousUserData.me} noClick />
-                <Box fill='horizontal'>
-                  <Text size='small' weight='bold' truncate>{previousUserData.me.name}</Text>
-                  <Text size='small' truncate>{previousUserData.me.email}</Text>
-                </Box>
-              </Box>
-            </Box>
+            <SectionChoice
+              label={`Log back as ${previousUserData.me.name}`}
+              icon={<Transaction size='14px' />}
+              onClick={handlePreviousUserClick}
+            />
           )}
         </Box>
         <Box fill>

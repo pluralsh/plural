@@ -30,7 +30,7 @@ function ServiceAccount({user, next, update}) {
   })
   const me = useContext(CurrentUserContext)
 
-  function handleImpressonateClick() {
+  function handleImpersonateClick() {
     setPreviousUserData({
       me,
       jwt: fetchToken(),
@@ -42,7 +42,7 @@ function ServiceAccount({user, next, update}) {
     <>
     <Box fill='horizontal' gap='small' direction='row' align='center' border={{side: 'bottom', color: 'light-6'}} pad={{right: 'small'}}>
       <UserRow user={user} next={next.node} noborder notoggle />
-      <SecondaryButton label='impersonate' onClick={handleImpressonateClick} loading={loading} />
+      <SecondaryButton label='impersonate' onClick={handleImpersonateClick} loading={loading} />
       <Icon icon={Edit} tooltip='edit' onClick={() => setOpen(true)} />
       <DeleteUser id={user.id} update={update} />
     </Box>

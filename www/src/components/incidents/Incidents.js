@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { Box, Drop, Text, TextInput, ThemeContext } from 'grommet'
-import { Scroller, Button, Check as Checkmark, Close, Notification, Explore as Search, User, Tag as TagIcon } from 'forge-core'
+import { Button, Check as Checkmark, Close, Notification, Explore as Search, User, Tag as TagIcon } from 'forge-core'
 import { SortAsc as Ascend, SortDesc as Descend, Filters as FiltersI } from 'forge-core'
 import { Next } from 'grommet-icons'
 import { useQuery } from 'react-apollo'
@@ -47,9 +47,9 @@ export function NotificationBadge({size, color, count}) {
   const background = color || 'error'
 
   return (
-    <Box as={BouncyDiv} 
-         style={{boxShadow: `0 0 3px ${normalizeColor(background, theme)}`}} 
-         width={size} height={size} 
+    <Box as={BouncyDiv}
+         style={{boxShadow: `0 0 3px ${normalizeColor(background, theme)}`}}
+         width={size} height={size}
          align='center' justify='center'
          round='full' background={background}>
       {count && <Text size='10px'>{count > 10 ? '!!' : count}</Text>}
@@ -61,7 +61,7 @@ function SubscriptionBadge({incident: {subscription}}) {
   if (!subscription) return null
 
   return (
-    <Box pad={{horizontal: 'small', vertical: 'xsmall'}} round='xsmall' border={{color: 'light-5'}} 
+    <Box pad={{horizontal: 'small', vertical: 'xsmall'}} round='xsmall' border={{color: 'light-5'}}
          align='center' justify='center'>
       <Text size='small'>{subscription.plan.name}</Text>
     </Box>
@@ -72,7 +72,7 @@ export function IncidentRow({incident: {id, repository, title, insertedAt, owner
   let history = useHistory()
 
   return (
-    <Box flex={false} fill='horizontal' pad='small' border={{side: 'bottom', color: 'light-3'}} direction='row' 
+    <Box flex={false} fill='horizontal' pad='small' border={{side: 'bottom', color: 'light-3'}} direction='row'
         align='center' gap='small' hoverIndicator='light-2' onClick={() => history.push(`/incident/${id}`)}
         height='75px'>
       <RepoIcon repo={repository} />
@@ -97,7 +97,7 @@ export function IncidentRow({incident: {id, repository, title, insertedAt, owner
 
 function FilterOption({icon, filter, onClick, next}) {
   return (
-    <Box direction='row' align='center' fill='horizontal' onClick={onClick} hoverIndicator='light-2' 
+    <Box direction='row' align='center' fill='horizontal' onClick={onClick} hoverIndicator='light-2'
          pad={{horizontal: 'small', vertical: 'xsmall'}}>
       <Box direction='row' fill='horizontal' gap='small' align='center'>
         {icon}
@@ -140,30 +140,30 @@ export function FilterSelect() {
 
   return (
     <>
-    <Box flex={false} ref={ref} direction='row' gap='xsmall' align='center' background='light-3'  
-         hoverIndicator='light-5' round='xsmall' onClick={() => setOpen(true)} focusIndicator={false} 
+    <Box flex={false} ref={ref} direction='row' gap='xsmall' align='center' background='light-3'
+         hoverIndicator='light-5' round='xsmall' onClick={() => setOpen(true)} focusIndicator={false}
          pad={{horizontal: 'small', vertical: 'xsmall'}}>
       <FiltersI size='small' />
       <Text size='small'>Filters</Text>
     </Box>
     {open && (
-      <Drop target={ref.current} onClickOutside={() => setOpen(false)} align={{top: 'bottom'}}> 
+      <Drop target={ref.current} onClickOutside={() => setOpen(false)} align={{top: 'bottom'}}>
         <Box flex={false} width={FILTER_DROP_WIDTH}>
           <AlternatingBox>
           {setAlternate => (
             <Box pad={{vertical: 'xsmall'}}>
-              <FilterOption 
+              <FilterOption
                 icon={<Notification size='small' />}
-                filter={IncidentFilter.NOTIFICATIONS} 
+                filter={IncidentFilter.NOTIFICATIONS}
                 onClick={() => setFilters([...filters, {type: IncidentFilter.NOTIFICATIONS}])} />
-              <FilterOption 
+              <FilterOption
                 icon={<User size='small' />}
-                filter={IncidentFilter.FOLLOWING} 
+                filter={IncidentFilter.FOLLOWING}
                 onClick={() => setFilters([...filters, {type: IncidentFilter.FOLLOWING}])} />
               <FilterOption
                 next
                 icon={<TagIcon size='small' />}
-                filter={IncidentFilter.TAG} 
+                filter={IncidentFilter.TAG}
                 onClick={() => setAlternate(
                   <TagInput setFilters={setFilters} filters={filters} setAlternate={setAlternate} />
                 )} />
@@ -186,7 +186,7 @@ function Filters() {
   return (
     <Box direction='row' gap='xsmall' align='center' fill='horizontal'>
       {filters.map((filter) => (
-        <Box key={`${filter.type}:${filter.value}`} direction='row' round='xsmall' pad={{vertical: '2px', horizontal: 'xsmall'}} background='light-2' 
+        <Box key={`${filter.type}:${filter.value}`} direction='row' round='xsmall' pad={{vertical: '2px', horizontal: 'xsmall'}} background='light-2'
              align='center' onClick={() => removeFilter(filter)} hoverIndicator='light-3' gap='xsmall'>
           <Text size='xsmall' weight={500}>{filter.type.toLowerCase()}</Text>
           {filter.value && <Text size='xsmall'>{filter.value}</Text>}
@@ -253,7 +253,7 @@ function SortOptions() {
 
 export function IncidentToolbar({children}) {
   return (
-    <Box flex={false} border={{side: 'bottom', color: 'light-5'}} align='center' direction='row' 
+    <Box flex={false} border={{side: 'bottom', color: 'light-5'}} align='center' direction='row'
          pad={{vertical: 'xsmall', horizontal: 'small'}}>
       {children}
       <Filters />
@@ -282,7 +282,7 @@ export function Incidents() {
   const [sort, setSort] = useState(IncidentSort.INSERTED_AT)
   const [order, setOrder] = useState(Order.DESC)
   const {data, loading, fetchMore} = useQuery(INCIDENTS_Q, {
-    variables: {q, order, sort, filters}, 
+    variables: {q, order, sort, filters},
     fetchPolicy: 'cache-and-network'
   })
 
@@ -302,7 +302,7 @@ export function Incidents() {
         <Box fill='horizontal' pad='small' align='center' direction='row' gap='xsmall' justify='end'>
           <FilterSelect />
           <Box fill='horizontal'>
-            <TextInput 
+            <TextInput
               plain
               icon={<Search size='15px' />}
               value={q || ''}

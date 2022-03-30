@@ -2,7 +2,6 @@ import React, { useCallback, useContext, useEffect } from 'react'
 import { Box, Text } from 'grommet'
 import { File } from 'forge-core'
 import { AttachmentContext, AttachmentProvider, Dropzone } from '../../incidents/AttachmentProvider'
-import { LabelledInput } from '../../users/MagicLogin'
 import { DarkSelect } from '../../utils/DarkSelect'
 import { exists, isAlphanumeric } from '../validation'
 
@@ -56,7 +55,7 @@ function FileInput({updateCreds, gcp, setProject}) {
   const loaded = !!gcp.applicationCredentials
 
   return (
-    <Box fill='horizontal' height='200px' align='center' justify='center' 
+    <Box fill='horizontal' height='200px' align='center' justify='center'
          border={{side: 'all', color: gcp.applicationCredentials ? 'brand' : 'border'}} round='xsmall'>
       <File size='25px' color={loaded ? 'brand' : null} />
       <Text size='small'>drop your service account credentials here</Text>
@@ -72,7 +71,7 @@ export function GcpForm({workspace, setWorkspace, credentials, setCredentials}) 
   const setRegion = useCallback((r) => setWorkspace({...workspace, region: r}), [setWorkspace, workspace])
   const setProject = useCallback((p) => setWorkspace({...workspace, project: p}), [setWorkspace, workspace])
   const region = workspace.region || 'us-east1'
-  
+
   useEffect(() => {
     !workspace.region && setRegion(region)
   }, [workspace.region, region, setRegion])
@@ -91,8 +90,8 @@ export function GcpForm({workspace, setWorkspace, credentials, setCredentials}) 
       </Box>
       <AttachmentProvider>
         <Dropzone>
-          <FileInput 
-            updateCreds={updateCreds} 
+          <FileInput
+            updateCreds={updateCreds}
             gcp={gcp}
             setProject={setProject} />
         </Dropzone>

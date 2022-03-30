@@ -1,39 +1,39 @@
 import React from 'react'
 import { Box } from 'grommet'
-import { SectionItemContainer, SectionContent } from './Explore'
+import { SectionContent } from './Explore'
 import { Incidents as IncidentsIcon, Responses as ResponsesIcon } from 'forge-core'
 import { Incidents } from './incidents/Incidents'
 import { Responses } from './incidents/Responses'
 import { useParams } from 'react-router'
 import { SubmenuItem, SubmenuPortal } from './navigation/Submenu'
 
-const ICON_SIZE = '14px'
+// const ICON_SIZE = '14px'
 
-function SectionItem({name, label, icon}) {
-  const {group} = useParams()
-  return (
-    <SectionItemContainer
-      label={label}
-      selected={group === name}
-      location={`/incidents/${name}`}
-      icon={React.createElement(icon, {size: ICON_SIZE})} />
-  )
-}
+// function SectionItem({name, label, icon}) {
+//   const {group} = useParams()
+//   return (
+//     <SectionItemContainer
+//       label={label}
+//       selected={group === name}
+//       location={`/incidents/${name}`}
+//       icon={React.createElement(icon, {size: ICON_SIZE})} />
+//   )
+// }
 
 export function IncidentDirectory() {
   const {group} = useParams()
   return (
     <Box fill direction='row'>
       <SubmenuPortal name='incidents'>
-        <SubmenuItem 
+        <SubmenuItem
           selected={group === 'all'}
           url='/incidents/all'
-          label='My Incidents' 
+          label='My Incidents'
           icon={<IncidentsIcon size='small' />} />
-        <SubmenuItem 
+        <SubmenuItem
           selected={group === 'responses'}
-          url='/incidents/responses' 
-          label='Responses' 
+          url='/incidents/responses'
+          label='Responses'
           icon={<ResponsesIcon size='small' />} />
       </SubmenuPortal>
       <Box fill>

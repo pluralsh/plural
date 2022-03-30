@@ -83,6 +83,8 @@ cd www && yarn install && cd ..
 make web
 ```
 
+In chrome, you may get a warning saying "Your connection is not private". To resolve it, enable the `chrome://flags/#allow-insecure-localhost` flag and restart your browser.
+
 ### Developing Server
 
 To make changes to the server codebase, you'll want to [install elixir](https://elixir-lang.org/install.html) on your machine. For mac desktops, we do this via [asdf](https://asdf-vm.com/guide/getting-started.html), which can be done simply at the root of the repo like so:
@@ -101,7 +103,7 @@ All server dependencies are managed via [docker-compose](https://www.docker.com/
 ```sh
 docker compose up
 ```
-
+`
 Tests can be run via `mix`, like so:
 
 ```sh

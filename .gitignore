@@ -27,7 +27,8 @@ erl_crash.dump
 
 /secrets/
 
-/.vscode
+/.vscode/**/*
+!/.vscode/settings.json
 
 /cmd/build
 /cmd/forge

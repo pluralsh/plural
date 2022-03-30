@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useState, useContext } from 'react'
 import { Box, Layer, TextInput } from 'grommet'
 import { useMutation } from 'react-apollo'
 import { Edit } from 'grommet-icons'
@@ -9,13 +9,14 @@ import { UserRow } from './User'
 import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
 import { useQuery } from 'react-apollo'
 import { GqlError } from '../utils/Alert'
-import { setToken } from '../../helpers/authentication'
+import { setToken, setPreviousUserData, fetchToken } from '../../helpers/authentication'
 import { SearchIcon } from './utils'
 import { SectionContentContainer, SectionPortal } from '../Explore'
 import { INPUT_WIDTH } from './constants'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { Icon } from './Group'
 import { DeleteUser } from '../users/DeleteUser'
+import { CurrentUserContext } from '../login/CurrentUser'
 
 function ServiceAccount({user, next, update}) {
   const [open, setOpen] = useState(false)
@@ -27,12 +28,21 @@ function ServiceAccount({user, next, update}) {
       window.location = '/'
     }
   })
+  const currentUser = useContext(CurrentUserContext)
+
+  function handleImpressonateClick() {
+    setPreviousUserData({
+      user: currentUser,
+      jwt: fetchToken(),
+    })
+    mutation()
+  }
 
   return (
     <>
     <Box fill='horizontal' gap='small' direction='row' align='center' border={{side: 'bottom', color: 'light-6'}} pad={{right: 'small'}}>
       <UserRow user={user} next={next.node} noborder notoggle />
-      <SecondaryButton label='impersonate' onClick={mutation} loading={loading} />
+      <SecondaryButton label='impersonate' onClick={handleImpressonateClick} loading={loading} />
       <Icon icon={Edit} tooltip='edit' onClick={() => setOpen(true)} />
       <DeleteUser id={user.id} update={update} />
     </Box>
@@ -59,7 +69,7 @@ function ServiceAccount({user, next, update}) {
 export function ServiceAccounts() {
   const [q, setQ] = useState(null)
   const {data, fetchMore} = useQuery(USERS_Q, {
-    variables: {q, serviceAccount: true}, 
+    variables: {q, serviceAccount: true},
     fetchPolicy: 'cache-and-network'
   })
   const update = useCallback((cache, {data: {deleteUser}}) => updateCache(cache, {

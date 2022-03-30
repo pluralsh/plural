@@ -28,11 +28,11 @@ function ServiceAccount({user, next, update}) {
       window.location = '/'
     }
   })
-  const currentUser = useContext(CurrentUserContext)
+  const me = useContext(CurrentUserContext)
 
   function handleImpressonateClick() {
     setPreviousUserData({
-      user: currentUser,
+      me,
       jwt: fetchToken(),
     })
     mutation()

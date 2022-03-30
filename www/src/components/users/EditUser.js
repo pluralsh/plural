@@ -137,11 +137,11 @@ export default function EditUser() {
             onClick={logout} />
           <Box flex="grow" />
           {previousUserData && previousUserData.me.id !== me.id && (
-            <Box direction='row' gap='small' align='center' margin={{bottom: 'xsmall'}} overflow="hidden" style={{ cursor: 'pointer'}} onClick={handlePreviousUserClick}>
+            <Box direction='row' gap='small' align='center' margin={{bottom: 'xsmall'}} overflow='hidden' style={{ cursor: 'pointer'}} onClick={handlePreviousUserClick}>
               <Transaction size="small" />
-              <Box flex={false} direction='row' gap='small' align='center' margin={{bottom: 'xsmall'}} overflow="hidden">
+              <Box flex={false} direction='row' gap='small' align='center' margin={{bottom: 'xsmall'}}>
                 <EditAvatar me={previousUserData.me} noClick />
-                <Box fill='horizontal' overflow="hidden">
+                <Box fill='horizontal'>
                   <Text size='small' weight='bold' truncate>{previousUserData.me.name}</Text>
                   <Text size='small' truncate>{previousUserData.me.email}</Text>
                 </Box>

@@ -1,6 +1,14 @@
 
 # Welcome to Plural
 <img src="www/public/plural-lockup-dark.png" width=30%/>
+<p>
+  <a href="https://discord.gg/CKc2kfeXxQ" target="_blank">
+    <img alt="Discord" src="https://img.shields.io/discord/880830238723047424?style=flat-square">
+  </a>
+  <a href="#contributing">
+    <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square">
+  </a>
+</p>
 
 ## What is Plural?
 
@@ -12,7 +20,7 @@ The plural platform ingests all deployment artifacts needed to deploy cloud-nati
 
 1. Go to https://app.plural.sh to create an account. Note: This is simply to track your installations and allow for the delivery of automated upgrades, you will not be asked to provide any infrastructure credentials or sensitive information.
 2. Install the Plural CLI by following steps 1, 2, and 3 of the [Getting Started guide](https://docs.plural.sh/getting-started)
-3. [Create and initialize a new git repo](https://docs.plural.sh/getting-started#4.-create-and-initialize-plural-repo) to store your Plural installation 
+3. [Create and initialize a new git repo](https://docs.plural.sh/getting-started#4.-create-and-initialize-plural-repo) to store your Plural installation
 4. Install, build and deploy applications from the Plural catalogue by following steps 5 and 6 of the [Getting Started guide](https://docs.plural.sh/getting-started#5.-install-plural-applications)
 5. [Install the Plural Management Console](https://docs.plural.sh/getting-started#7.-install-plural-admin-console)
 
@@ -68,22 +76,22 @@ Plural's server side is written in elixir, and exposes a graphql api. The fronte
 
 
 ### Developing Web
-To begin developing the web app, install npm & yarn, then run:
+To begin developing the web app, install [node](https://nodejs.org/en/download/) & [yarn](https://classic.yarnpkg.com/en/docs/getting-started/), then run:
 
 ```sh
-cd assets && yarn install && cd -
+cd www && yarn install && cd ..
 make web
 ```
 
 ### Developing Server
 
-To make changes to the server codebase, you'll want to install elixir on your machine.  For mac desktops, we do this via asdf, which can be done simply at the root of the repo like so:
+To make changes to the server codebase, you'll want to [install elixir](https://elixir-lang.org/install.html) on your machine. For mac desktops, we do this via [asdf](https://asdf-vm.com/guide/getting-started.html), which can be done simply at the root of the repo like so:
 
 ```sh
 asdf install
 ```
 
-Once elixir is available, all server dependencies are managed via docker-compose, and tests can be run via `mix`, like so:
+Once elixir is available, all server dependencies are managed via [docker-compose](https://www.docker.com/), and tests can be run via `mix`, like so:
 
 ```sh
 make testup
@@ -92,7 +100,7 @@ mix test
 
 ### Server Architecture
 
-The Plural server codebase uses an elixir umbrella application to organize itself, and splits into three main deployments: 
+The Plural server codebase uses an elixir umbrella application to organize itself, and splits into three main deployments:
 
 * api - hosting the main graphql api
 * worker - background workers, for things like upgrade delivery and artifact scanning
@@ -101,7 +109,9 @@ The Plural server codebase uses an elixir umbrella application to organize itsel
 These apps will all depend on core, where most Plural business logic should live, and their releases are configured under `/rel`.
 
 ## Contributing
+
 We love contributions to Plural, big or small! If you're not sure where to start, or if you have any questions, please open a draft PR or visit our [Discord](https://discord.gg/CKc2kfeXxQ) server where the core team can help answer your questions.
 
 ## License
+
 See [LICENSE](LICENSE) for licensing information.

@@ -96,7 +96,13 @@ asdf install
 </!-->
 In case you're running into this error: `configure: error: cannot find required auxiliary files: install-sh config.guess config.sub` you may consider this [GitHub issue](https://github.com/asdf-vm/asdf-erlang/issues/195#issuecomment-815999279)
 
-Once elixir is available, all server dependencies are managed via [docker-compose](https://www.docker.com/), and tests can be run via `mix`, like so:
+All server dependencies are managed via [docker-compose](https://www.docker.com/):
+
+```sh
+docker compose up
+```
+
+Tests can be run via `mix`, like so:
 
 ```sh
 make testup

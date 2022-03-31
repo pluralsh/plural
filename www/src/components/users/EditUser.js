@@ -1,9 +1,10 @@
 import React, { useContext, useState, useEffect, useCallback } from 'react'
 import { Box, Text } from 'grommet'
 import { useFilePicker } from 'react-sage'
-import { Button, InputCollection, ResponsiveInput, Select, User, Installed, 
+import { Button, InputCollection, ResponsiveInput, Select, User, Installed,
          PublicKeys, Credentials, Password, Logout, Fingerprint } from 'forge-core'
 import { useMutation, useQuery } from 'react-apollo'
+import { Transaction } from 'grommet-icons'
 import { OAUTH_URLS, UPDATE_USER } from './queries'
 import Avatar from './Avatar'
 import { StatusCritical, Checkmark } from 'grommet-icons'
@@ -16,7 +17,7 @@ import { SIDEBAR_WIDTH } from '../constants'
 import { Keys } from './Keys'
 import { SectionContentContainer, SectionPortal } from '../Explore'
 import { LoginMethod } from './types'
-import { wipeToken } from '../../helpers/authentication'
+import { wipeToken, getPreviousUserData, setPreviousUserData, setToken } from '../../helpers/authentication'
 import { EabCredentials } from './EabCredentials'
 import { SectionChoice } from '../utils/SectionChoice'
 import { Provider } from '../repos/misc'
@@ -26,7 +27,7 @@ import { host } from '../../helpers/hostname'
 
 export const EditContext = React.createContext({})
 
-function EditAvatar({me}) {
+function EditAvatar({me, noClick=false}) {
   const {files, onClick, HiddenFileInput} = useFilePicker({})
   const [mutation] = useMutation(UPDATE_USER)
   useEffect(() => {
@@ -37,7 +38,7 @@ function EditAvatar({me}) {
 
   return (
     <>
-      <Avatar user={me} size='50px' onClick={onClick} />
+      <Avatar user={me} size='50px' onClick={noClick ? null : onClick} />
       <HiddenFileInput accept='.jpg, .jpeg, .png' multiple={false} />
     </>
   )
@@ -105,10 +106,18 @@ export default function EditUser() {
     window.location = '/'
   }, [])
 
+  const previousUserData = getPreviousUserData()
+
+  function handlePreviousUserClick() {
+    setToken(previousUserData.jwt)
+    setPreviousUserData(null)
+    window.location.reload()
+  }
+
   return (
     <Box fill>
       <Box fill direction='row'>
-        <Box flex={false} background='backgroundColor' gap='xsmall' width={SIDEBAR_WIDTH} 
+        <Box flex={false} background='backgroundColor' gap='xsmall' width={SIDEBAR_WIDTH}
              pad='small'>
           <Box flex={false} direction='row' gap='small' align='center' margin={{bottom: 'xsmall'}}>
             <EditAvatar me={me} />
@@ -123,10 +132,18 @@ export default function EditUser() {
           <EditSelect edit='tokens' name='Access Tokens' icon={<Fingerprint size='14px' />} />
           <EditSelect edit='keys' name='Public Keys' icon={<PublicKeys size='14px' />} />
           <EditSelect edit='credentials' name='Eab Credentials' icon={<Credentials size='14px' />} />
-          <SectionChoice 
-            label='Logout' 
+          <SectionChoice
+            label='Logout'
             icon={<Logout size='14px' />}
-            onClick={logout} />
+            onClick={logout}
+          />
+          {previousUserData && previousUserData.me.id !== me.id && (
+            <SectionChoice
+              label={`Log back as ${previousUserData.me.name}`}
+              icon={<Transaction size='14px' />}
+              onClick={handlePreviousUserClick}
+            />
+          )}
         </Box>
         <Box fill>
           <EditContent edit='user' name='User Attributes'>
@@ -147,19 +164,19 @@ export default function EditUser() {
                     <Provider provider={me.provider} width={40} />
                   </Attribute>
                 )}
-              
+
                 <Attribute name='Login Method'>
                   <Select
                     name='login-method'
                     value={{value: attributes.loginMethod, label: attributes.loginMethod.toLocaleLowerCase()}}
                     onChange={({value}) => setAttributes({...attributes, loginMethod: value})}
                     options={Object.values(LoginMethod).map((m) => ({
-                      label: m.toLocaleLowerCase(), 
+                      label: m.toLocaleLowerCase(),
                       value: m
                     }))} />
                 </Attribute>
-                {data && data.oauthUrls.map((url) => (
-                  <OauthEnabler url={url} me={me} />
+                {data && data.oauthUrls.map((url, i) => (
+                  <OauthEnabler url={url} me={me} key={url + i} />
                 ))}
               </Attributes>
               <SectionPortal>

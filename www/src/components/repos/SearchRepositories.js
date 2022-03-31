@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { useApolloClient } from 'react-apollo'
 import { useHistory } from 'react-router-dom'

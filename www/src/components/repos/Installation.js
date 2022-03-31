@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from 'react'
 import { Box, Text } from 'grommet'
-import { REPO_Q } from './queries'
 import Highlight from 'react-highlight.js'
 import Plan from '../payments/Plan'
 import CreatePlan, { CreateAnchor } from '../payments/CreatePlan'
@@ -36,9 +35,9 @@ export function Plans({repository, nocreate}) {
     <Box pad='small' gap='small'>
       {plans.length > 0 ?
         plans.map((plan) => (
-          <Plan key={plan.id}  
-                subscription={subscription} 
-                approvePlan={approvePlan} 
+          <Plan key={plan.id}
+                subscription={subscription}
+                approvePlan={approvePlan}
                 repository={repository}
                 plan={plan} />
         )) :

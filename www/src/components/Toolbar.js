@@ -12,7 +12,7 @@ import './toolbar.css'
 import { AutoRefresh } from './login/AutoRefresh'
 import { SocialLinks } from './Socials'
 
-const PLRL_ICON = `${process.env.PUBLIC_URL}/plural-white.png`
+// const PLRL_ICON = `${process.env.PUBLIC_URL}/plural-white.png`
 const PLRL_WORD = `${process.env.PUBLIC_URL}/plural-white-word.png`
 
 function ToolbarIcon() {

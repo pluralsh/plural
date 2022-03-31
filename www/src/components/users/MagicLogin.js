@@ -72,10 +72,10 @@ export function PasswordlessLogin() {
         {loading && <Text size='small' color='dark-3'>Validating your login token...</Text>}
         {error && <GqlError error={error} header='Error validating login' />}
         {data && (
-          <Alert 
-            status={AlertStatus.SUCCESS} 
-            header="You're now logged in!" 
-            description="Navigate back to wherever you initiated the login to begin using plural." /> 
+          <Alert
+            status={AlertStatus.SUCCESS}
+            header="You're now logged in!"
+            description="Navigate back to wherever you initiated the login to begin using plural." />
         )}
       </Box>
     </LoginPortal>
@@ -118,17 +118,17 @@ function LoginPoller({challenge, token, deviceToken}) {
 
   if (success) {
     return (
-      <Alert 
-        status={AlertStatus.SUCCESS} 
-        header='Login Verified!' 
+      <Alert
+        status={AlertStatus.SUCCESS}
+        header='Login Verified!'
         description="we'll redirect you to the app shortly" />
     )
   }
 
   return (
-    <Alert 
-      status={AlertStatus.SUCCESS} 
-      header='Check your email!' 
+    <Alert
+      status={AlertStatus.SUCCESS}
+      header='Check your email!'
       description='Check your email to verify your identity and log in' />
   )
 }
@@ -196,8 +196,8 @@ export function Login() {
         </Box>
         {passwordless && (
           <Box>
-            <LoginPoller 
-              token={data.loginMethod.token} 
+            <LoginPoller
+              token={data.loginMethod.token}
               challenge={challenge}
               deviceToken={deviceToken} />
           </Box>
@@ -207,23 +207,23 @@ export function Login() {
             <Form onSubmit={submit}>
               <Box gap='xsmall'>
                 {error && <GqlError error={error} header='Login Failed' />}
-                <LabelledInput 
+                <LabelledInput
                   label='Email'
                   value={email}
-                  onChange={open ? null : setEmail} 
+                  onChange={open ? null : setEmail}
                   placeholder='you@example.com' />
                 <Collapsible open={open} direction='vertical'>
-                  <LabelledInput 
-                    label='Password' 
+                  <LabelledInput
+                    label='Password'
                     type='password'
                     modifier={<Anchor onClick={() => history.push('/password-reset')} color='dark-6'>forgot your password?</Anchor>}
                     value={password}
                     onChange={setPassword}
                     placeholder='a strong password' />
                 </Collapsible>
-                <Button 
-                  fill='horizontal' 
-                  pad={{vertical: '8px'}} 
+                <Button
+                  fill='horizontal'
+                  pad={{vertical: '8px'}}
                   margin={{top: 'small'}}
                   label="Continue" loading={loading} onClick={submit} />
               </Box>
@@ -241,7 +241,7 @@ function OAuthOption({url: {authorizeUrl, provider}}) {
   const icon = METHOD_ICONS[provider]
 
   return (
-    <Box border round='xsmall' align='center' justify='center' 
+    <Box border round='xsmall' align='center' justify='center'
          direction='row' gap='small' fill='horizontal' pad={{vertical: '7px'}}
          hoverIndicator='tone-light' onClick={() => { window.location = authorizeUrl }}>
       {React.createElement(icon, {size: 'medium', color: 'plain'})}
@@ -281,41 +281,41 @@ export function Signup() {
           <img src={PLURAL_MARK} width='45px' />
           <Text size='large'>Sign up to get started with plural</Text>
         </Box>
-        <Box gap='xsmall' justify='center' gap='xsmall'>
+        <Box gap='xsmall' justify='center'>
           {data && data.oauthUrls.map((url) => <OAuthOption key={url.provider} url={url} />)}
-        </Box> 
+        </Box>
         <Divider text='Or' margin='0px' fontWeight={400} />
         <Keyboard onEnter={mutation}>
           <Form onSubmit={mutation}>
             <Box gap='xsmall' width={WIDTH}>
               {error && <GqlError error={error} header='Login Failed' />}
-              <LabelledInput 
+              <LabelledInput
                 label='Account'
-                value={account} 
+                value={account}
                 width={WIDTH}
-                onChange={setAccount} 
+                onChange={setAccount}
                 placeholder='The name of your account (must be unique)' />
-              <LabelledInput 
+              <LabelledInput
                 label='Name'
-                value={name} 
+                value={name}
                 width={WIDTH}
-                onChange={setName} 
+                onChange={setName}
                 placeholder='Your name' />
-              <LabelledInput 
-                label='Email' 
-                value={email} 
+              <LabelledInput
+                label='Email'
+                value={email}
                 width={WIDTH}
-                onChange={setEmail} 
+                onChange={setEmail}
                 placeholder='you@example.com' />
-              <LabelledInput 
-                label='Password' 
+              <LabelledInput
+                label='Password'
                 value={password}
                 width={WIDTH}
                 type='password'
                 onChange={setPassword}
                 placeholder='a strong password' />
-              <LabelledInput 
-                label='Confirm Password' 
+              <LabelledInput
+                label='Confirm Password'
                 value={confirm}
                 width={WIDTH}
                 type='password'
@@ -323,10 +323,10 @@ export function Signup() {
                 placeholder='confirm your password' />
               <Box direction='row' align='center' justify='end' gap='small' margin={{top: 'small'}}>
                 <PasswordStatus disabled={disabled} reason={reason} />
-                <Button 
-                  label="Sign Up" 
+                <Button
+                  label="Sign Up"
                   disabled={disabled}
-                  loading={loading} 
+                  loading={loading}
                   onClick={mutation} />
               </Box>
             </Box>

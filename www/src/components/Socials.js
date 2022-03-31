@@ -8,7 +8,7 @@ const BOX_SIZE  = '28px'
 
 function SocialLink({icon, url}) {
   return (
-    <a href={url} target='_blank'>
+    <a href={url} target='_blank' rel='noopener noreferrer'>
     <Box width={BOX_SIZE} height={BOX_SIZE} align='center' justify='center'
          onClick={() => null} hoverIndicator='backgroundColor' round='xsmall'>
       {icon}
@@ -19,9 +19,9 @@ function SocialLink({icon, url}) {
 
 export function SocialLinks() {
   return (
-    <Box flex={false} background='sidebarHover' direction='row' gap='xsmall' 
+    <Box flex={false} background='sidebarHover' direction='row' gap='xsmall'
          border round='xsmall' pad={{horizontal: 'xsmall'}} height='32px' align='center'>
-      <SocialLink 
+      <SocialLink
         icon={<Github size={ICON_SIZE} />}
         url='https://github.com/pluralsh/plural' />
       <SocialLink

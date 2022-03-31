@@ -8,7 +8,7 @@ import { inviteLink } from './CreateInvite'
 import moment from 'moment'
 import { Icon } from './Group'
 import { Confirm } from '../utils/Confirm'
-import { deepUpdate, extendConnection, removeConnection, updateCache } from '../../utils/graphql'
+import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
 import { Placeholder } from './Audits'
 import { Box, Text } from 'grommet'
 import { StandardScroller } from '../utils/SmoothScroller'
@@ -38,9 +38,9 @@ function DeleteInvite({invite}) {
   return (
     <>
     <Icon
-      icon={Trash} 
-      tooltip='delete' 
-      onClick={() => setOpen(true)} 
+      icon={Trash}
+      tooltip='delete'
+      onClick={() => setOpen(true)}
       iconAttrs={{color: 'error'}} />
     {open && (
       <Confirm
@@ -53,7 +53,7 @@ function DeleteInvite({invite}) {
         loading={loading} />
     )}
     </>
-  )  
+  )
 }
 
 function InviteRow({invite}) {
@@ -91,9 +91,9 @@ export function Invites() {
             setListRef={setListRef}
             hasNextPage={pageInfo.hasNextPage}
             items={edges}
-            loading={loading} 
+            loading={loading}
             placeholder={Placeholder}
-            mapper={({node}) => <InviteRow key={node.id} invite={node} />} 
+            mapper={({node}) => <InviteRow key={node.id} invite={node} />}
             loadNextPage={() => pageInfo.hasNextPage && fetchMore({
               variables: {cursor: pageInfo.endCursor},
               updateQuery: (prev, {fetchMoreResult: {invites}}) => extendConnection(prev, invites, 'invites')

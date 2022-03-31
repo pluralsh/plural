@@ -2,11 +2,12 @@ import React, { useState, useContext } from 'react'
 import { Box, Text, ThemeContext } from 'grommet'
 import { useMutation } from 'react-apollo'
 import { useHistory } from 'react-router-dom'
-import { Scroller, Button, SecondaryButton, Modal, ModalHeader, Password as Lock } from 'forge-core'
+// import { Scroller, Button, SecondaryButton, Modal, ModalHeader, Password as Lock } from 'forge-core'
+import { Scroller, Button, Password as Lock } from 'forge-core'
 import yaml from 'js-yaml'
 import { REPO_Q, UPDATE_REPO } from './queries'
 import { DEFAULT_CHART_ICON, DEFAULT_TF_ICON, DEFAULT_DKR_ICON, Categories } from './constants'
-import CreateTerraform from './CreateTerraform'
+// import CreateTerraform from './CreateTerraform'
 import { RepoForm } from './CreateRepository'
 import Highlight from 'react-highlight'
 import moment from 'moment'
@@ -160,20 +161,20 @@ export function DockerRepos({edges, repo, pageInfo, fetchMore}) {
   )
 }
 
-function TerraformCreateModal({repositoryId}) {
-  return (
-    <Modal target={<SecondaryButton round='xsmall' label='Create' />}>
-    {setOpen => (
-      <Box width='40vw'>
-        <ModalHeader text='Create Terraform Module' setOpen={setOpen} />
-        <Box pad='small'>
-        <CreateTerraform repositoryId={repositoryId} onCreate={() => setOpen(false)} />
-        </Box>
-      </Box>
-    )}
-    </Modal>
-  )
-}
+// function TerraformCreateModal({repositoryId}) {
+//   return (
+//     <Modal target={<SecondaryButton round='xsmall' label='Create' />}>
+//     {setOpen => (
+//       <Box width='40vw'>
+//         <ModalHeader text='Create Terraform Module' setOpen={setOpen} />
+//         <Box pad='small'>
+//         <CreateTerraform repositoryId={repositoryId} onCreate={() => setOpen(false)} />
+//         </Box>
+//       </Box>
+//     )}
+//     </Modal>
+//   )
+// }
 
 export function RepoCredentials({publicKey}) {
   return (
@@ -192,7 +193,7 @@ function buildAttributes(attrs, image, darkImage) {
   let attributes = {...attrs}
   if (image) {
     attributes['icon'] = image.file
-  }  
+  }
 
   if (darkImage) {
     attributes['darkIcon'] = darkImage.file

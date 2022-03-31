@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react'
-import { Box, CheckBox, Text, TextInput } from 'grommet'
+import { Box, Text, TextInput } from 'grommet'
 import { Add } from 'grommet-icons'
 import { useMutation } from 'react-apollo'
 import { Button, SecondaryButton, Select } from 'forge-core'
@@ -29,7 +29,7 @@ export function LabeledInput({label, children}) {
 function ImagePicker({image, setImage, background, label}) {
   return (
     <Box direction='row' gap='small' align='center'>
-      <Box width='70px' height='70px' border pad='xsmall' 
+      <Box width='70px' height='70px' border pad='xsmall'
            align='center' justify='center' background={background}>
         {image ? <img alt='' width='50px' height='50px' src={image.previewUrl} /> :
           <Add size='20px' />
@@ -53,7 +53,7 @@ export function RepoForm({image, setImage, darkImage, setDarkImage, state, setSt
   const setOauthSettings = useCallback((key, value) => (
     setState({...state, oauthSettings: {...state.oauthSettings, [key]: value}})
   ), [setState, state])
-  
+
   return (
     <Box fill style={{overflow: 'auto'}}>
       <Box flex={false} pad='medium' gap='medium'>
@@ -61,8 +61,8 @@ export function RepoForm({image, setImage, darkImage, setDarkImage, state, setSt
         <LabeledInput label='1. Upload icons for your repo'>
           <Box direction='row' gap='medium'>
             <ImagePicker image={image} setImage={setImage} />
-            <ImagePicker 
-              image={darkImage} 
+            <ImagePicker
+              image={darkImage}
               setImage={setDarkImage}
               background='backgroundColor'
               label='Darkmode icon (optional)' />
@@ -128,10 +128,10 @@ export function RepoForm({image, setImage, darkImage, setDarkImage, state, setSt
 export default function CreateRepository({publisher}) {
   let history = useHistory()
   const [state, setState] = useState({
-    name: "", 
-    description: "", 
-    tags: [], 
-    private: false, 
+    name: "",
+    description: "",
+    tags: [],
+    private: false,
     category: Categories.DEVOPS,
     oauthSettings: {uriFormat: null, authMethod: AuthMethod.POST}
   })
@@ -147,7 +147,7 @@ export default function CreateRepository({publisher}) {
       }
     },
     update: (cache, { data: { createRepository } }) => updateCache(cache, {
-      query: REPOS_Q, 
+      query: REPOS_Q,
       variables: {publisherId: publisher.id},
       update: (prev) => appendConnection(prev, createRepository, 'repositories')
     }),

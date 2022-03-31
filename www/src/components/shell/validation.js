@@ -1,6 +1,5 @@
 import React from 'react'
 import { Box, Text } from 'grommet'
-import { Alert } from 'grommet-icons'
 import { deepFetch } from '../../utils/graphql'
 
 export function validator(object, field, name, func) {
@@ -21,7 +20,7 @@ export function exists(val) {
 
 export function isAlphanumeric(val) {
   console.log(val)
-  if (/[a-z][a-z0-9\-]+/.test(val)) return null
+  if (/[a-z][a-z0-9-]+/.test(val)) return null
 
   return 'must be an alphanumeric string (hyphens allowed)'
 }

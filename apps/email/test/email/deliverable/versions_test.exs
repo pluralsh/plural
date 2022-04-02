@@ -9,7 +9,7 @@ defmodule Email.Deliverable.VersionsTest do
     test "it can send reset emails" do
       ci = insert(:chart_installation,
         version: build(:version,
-          dependencies: %{instructions: %{script: "blach", instructions: nil}},
+          dependencies: %{instructions: %{script: "blach", instructions: nil}}
         )
       )
 

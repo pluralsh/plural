@@ -4,7 +4,7 @@ defmodule Core.Services.Versions do
 
   alias Core.PubSub
   alias Core.Services.{Charts, Terraform}
-  alias Core.Schema.{Version, User, VersionTag, PackageScan}
+  alias Core.Schema.{Version, User, VersionTag, PackageScan, ChartInstallation, TerraformInstallation}
 
   @type tool_type :: :helm | :terraform
   @type version_resp :: {:ok, Version.t} | {:error, term}
@@ -80,6 +80,27 @@ defmodule Core.Services.Versions do
     end)
     |> execute(extract: :update)
     |> notify(:update, user)
+  end
+
+  @spec installed_versions(binary, User.t) :: [binary]
+  def installed_versions(repo_id, %User{id: user_id}) do
+    Parallax.new()
+    |> Parallax.operation(:chart, fn ->
+      ChartInstallation.for_repo(repo_id)
+      |> ChartInstallation.for_user(user_id)
+      |> ChartInstallation.preload([:version])
+      |> Core.Repo.all()
+      |> Enum.map(& &1.version)
+    end)
+    |> Parallax.operation(:tf, fn ->
+      TerraformInstallation.for_repo(repo_id)
+      |> TerraformInstallation.for_user(user_id)
+      |> TerraformInstallation.preload([:version])
+      |> Core.Repo.all()
+      |> Enum.map(& &1.version)
+    end)
+    |> Parallax.execute()
+    |> Enum.flat_map(fn {_, results} -> results end)
   end
 
   def record_scan(scan, %Version{} = version) when is_binary(scan) do

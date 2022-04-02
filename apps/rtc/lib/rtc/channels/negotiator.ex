@@ -93,3 +93,14 @@ defimpl Rtc.Channels.Negotiator, for: [Core.PubSub.RolloutUpdated, Core.PubSub.R
   defp delta_name(Core.PubSub.RolloutUpdated), do: :update
   defp delta_name(Core.PubSub.RolloutCreated), do: :create
 end
+
+defimpl Rtc.Channels.Negotiator, for: [Core.PubSub.TestUpdated, Core.PubSub.TestCreated] do
+  import Rtc.Channels.NegotiatorHelper
+
+  def negotiate(%{item: test}) do
+    {delta(test, delta_name(@for)), [test_delta: "tests:#{test.repository_id}"]}
+  end
+
+  defp delta_name(Core.PubSub.TestUpdated), do: :update
+  defp delta_name(Core.PubSub.TestCreated), do: :create
+end

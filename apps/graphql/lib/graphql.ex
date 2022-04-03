@@ -23,6 +23,7 @@ defmodule GraphQl do
   import_types GraphQl.Schema.Dns
   import_types GraphQl.Schema.Shell
   import_types GraphQl.Schema.Scaffold
+  import_types GraphQl.Schema.Test
 
   alias GraphQl.Resolvers.{
     User,
@@ -38,6 +39,7 @@ defmodule GraphQl do
     Incidents,
     Rollout,
     Dns,
+    Test
   }
 
   @sources [
@@ -53,7 +55,8 @@ defmodule GraphQl do
     Account,
     Incidents,
     Rollout,
-    Dns
+    Dns,
+    Test
   ]
 
   def context(ctx) do
@@ -108,6 +111,7 @@ defmodule GraphQl do
     import_fields :shell_queries
     import_fields :metric_queries
     import_fields :provider_queries
+    import_fields :test_queries
   end
 
   mutation do
@@ -126,11 +130,13 @@ defmodule GraphQl do
     import_fields :dns_mutations
     import_fields :shell_mutations
     import_fields :rollout_mutations
+    import_fields :test_mutations
   end
 
   subscription do
     import_fields :incident_subscriptions
     import_fields :upgrade_subscriptions
     import_fields :rollout_subscriptions
+    import_fields :test_subscriptions
   end
 end

@@ -1,3 +1,4 @@
+#!python3
 import boto3
 import click
 import time

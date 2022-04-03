@@ -38,4 +38,10 @@ defmodule GraphQl.Resolvers.Base do
 
   @compile {:inline, ok: 1}
   def ok(result), do: {:ok, result}
+
+  def get_repo_id(%{name: name}) do
+    Core.Services.Repositories.get_repository_by_name!(name)
+    |> Map.get(:id)
+  end
+  def get_repo_id(%{repository_id: id}), do: id
 end

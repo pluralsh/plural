@@ -497,4 +497,28 @@ defmodule Core.Factory do
       pod_name: sequence(:pod_name, & "plrl-shell-#{&1}")
     }
   end
+
+  def test_factory do
+    %Schema.Test{
+      creator: build(:user),
+      repository: build(:repository),
+      status: :queued,
+      promote_tag: "warm",
+      source_tag: "latest",
+    }
+  end
+
+  def test_step_factory do
+    %Schema.TestStep{
+      name: sequence(:test_step, & "step-#{&1}"),
+      test: build(:test),
+    }
+  end
+
+  def test_binding_factory do
+    %Schema.TestBinding{
+      test: build(:test),
+      version: build(:version)
+    }
+  end
 end

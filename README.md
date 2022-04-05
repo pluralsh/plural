@@ -121,6 +121,21 @@ The Plural server codebase uses an elixir umbrella application to organize itsel
 
 These apps will all depend on core, where most Plural business logic should live, and their releases are configured under `/rel`.
 
+### Email Development
+
+We use elixir's bamboo framework for templating and delivering emails, one benefit of which is it creates a local server to view in-progress emails.  You can get this set up by doing:
+
+```bash
+mix ecto.create && mix ecto.migrate # ensure your dev db is set up
+cd apps/email && iex -S mix phx.server
+```
+
+You should be able to view your emails at http://localhost:4002/sent_emails
+
+You'll need to send an email to see them, which you can use the iex repl to do for you.
+
+To actually write an email, you'll want to modify the templates in `apps/email/lib/email_web/templates/email` and the layout is in `apps/email/lib/email_web/templates/layout/email.html.eex`
+
 ## Contributing
 
 We love contributions to Plural, big or small! If you're not sure where to start, or if you have any questions, please open a draft PR or visit our [Discord](https://discord.gg/CKc2kfeXxQ) server where the core team can help answer your questions.

@@ -34,6 +34,8 @@ defmodule EmailWeb.Router do
   if Mix.env() in [:dev, :test] do
     import Phoenix.LiveDashboard.Router
 
+    forward "/sent_emails", Bamboo.SentEmailViewerPlug
+
     scope "/" do
       pipe_through :browser
       live_dashboard "/dashboard", metrics: EmailWeb.Telemetry

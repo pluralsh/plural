@@ -8,6 +8,9 @@ config :core, Core.Repo,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
+config :core, Core.Email.Mailer,
+  adapter: Bamboo.LocalAdapter
+
 config :api, ApiWeb.Endpoint,
   http: [port: 4000],
   debug_errors: true,

@@ -75,13 +75,17 @@ config :core, :consumers, [
   Core.PubSub.Consumers.Cache
 ]
 
-# Watch static and templates for browser reloading.
-config :email, EmailWeb.Endpoint,
-  live_reload: [
-    patterns: [
-      ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
-      ~r"priv/gettext/.*(po)$",
-      ~r"lib/email_web/(live|views)/.*(ex)$",
-      ~r"lib/email_web/templates/.*(eex)$"
-    ]
-  ]
+config :email, :consumers, [
+  Email.PubSub.Consumer
+]
+
+# # Watch static and templates for browser reloading.
+# config :email, EmailWeb.Endpoint,
+#   live_reload: [
+#     patterns: [
+#       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
+#       ~r"priv/gettext/.*(po)$",
+#       ~r"lib/email_web/(live|views)/.*(ex)$",
+#       ~r"lib/email_web/templates/.*(eex)$"
+#     ]
+#   ]

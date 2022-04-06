@@ -1,16 +1,27 @@
 import React from 'react'
 import { ModalHeader } from 'forge-core'
-import { Layer, Box, Text } from 'grommet'
+import { Box, Layer, Text } from 'grommet'
+
 import { Code } from '../incidents/Markdown'
 
-function BundleInstall({recipe, repository, setOpen}) {
+function BundleInstall({ recipe, repository, setOpen }) {
   return (
-    <Layer modal position='center' onEsc={() => setOpen(false)} >
-      <Box width='80vw'>
-        <ModalHeader text={recipe.name} setOpen={setOpen} />
-        <Box pad='medium' gap='medium'>
-          <Text size='small'>In your installation repository, run:</Text>
-          <Code className='lang-bash'>
+    <Layer
+      modal
+      position="center"
+      onEsc={() => setOpen(false)}
+    >
+      <Box width="80vw">
+        <ModalHeader
+          text={recipe.name}
+          setOpen={setOpen}
+        />
+        <Box
+          pad="medium"
+          gap="medium"
+        >
+          <Text size="small">In your installation repository, run:</Text>
+          <Code className="lang-bash">
             {`plural bundle install ${repository.name} ${recipe.name}`}
           </Code>
         </Box>
@@ -19,11 +30,12 @@ function BundleInstall({recipe, repository, setOpen}) {
   )
 }
 
-export default function Recipe({recipe, setOpen, repository}) {
+export default function Recipe({ recipe, setOpen, repository }) {
   return (
     <BundleInstall 
       recipe={recipe} 
       repository={repository} 
-      setOpen={setOpen} />
+      setOpen={setOpen}
+    />
   )
 }

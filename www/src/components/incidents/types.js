@@ -1,24 +1,24 @@
 export const EntityType = {
   MENTION: 'MENTION',
-  EMOJI: 'EMOJI'
+  EMOJI: 'EMOJI',
 }
 
 export const IncidentStatus = {
   OPEN: 'OPEN',
   IN_PROGRESS: 'IN_PROGRESS',
   RESOLVED: 'RESOLVED',
-  COMPLETE: 'COMPLETE'
+  COMPLETE: 'COMPLETE',
 }
 
 export const FileTypes = {
   OTHER: 'OTHER',
-  IMAGE: 'IMAGE'
+  IMAGE: 'IMAGE',
 }
 
 export const IncidentView = {
   MSGS: 'm',
   FILES: 'f',
-  POST: 'p'
+  POST: 'p',
 }
 
 export const Action = {
@@ -27,7 +27,7 @@ export const Action = {
   ACCEPT: 'ACCEPT',
   COMPLETE: 'COMPLETE',
   STATUS: 'STATUS',
-  SEVERITY: 'SEVERITY'
+  SEVERITY: 'SEVERITY',
 }
 
 export const SidebarView = {
@@ -35,32 +35,32 @@ export const SidebarView = {
   NOTIF: 'notifications',
   FOLLOW: 'followers',
   SUBSCRIPTION: 'subscription',
-  CLUSTER: 'cluster'
+  CLUSTER: 'cluster',
 }
 
 export const NotificationTypes = {
   MESSAGE: 'MESSAGE',
   INCIDENT_UPDATE: 'INCIDENT_UPDATE',
-  MENTION: 'MENTION'
+  MENTION: 'MENTION',
 }
 
 export const Order = {
   ASC: 'ASC',
-  DESC: 'DESC'
+  DESC: 'DESC',
 }
 
 export const IncidentSort = {
   INSERTED_AT: 'INSERTED_AT',
   SEVERITY: 'SEVERITY',
   STATUS: 'STATUS',
-  TITLE: 'TITLE'
+  TITLE: 'TITLE',
 }
 
 export const IncidentSortNames = {
   INSERTED_AT: 'Creation Date',
   SEVERITY: 'Severity',
   STATUS: 'Status',
-  TITLE: 'Title'
+  TITLE: 'Title',
 }
 
 export const IncidentFilter = {
@@ -76,5 +76,5 @@ export const StatusColorMap = {
   OPEN: 'red',
   IN_PROGRESS: 'orange',
   RESOLVED: 'blue',
-  COMPLETE: 'green'
+  COMPLETE: 'green',
 }

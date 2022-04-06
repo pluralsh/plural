@@ -1,24 +1,45 @@
 import React from 'react'
 import { Box, Layer, Text } from 'grommet'
 import { useMutation } from 'react-apollo'
-import { UPDATE_PLAN } from './queries'
-import { ModalHeader, Button } from 'forge-core'
+
+import { Button, ModalHeader } from 'forge-core'
+
 import { REPO_Q } from '../repos/queries'
 
-export default function UpdatePlan({plan, repository: {id, installation: {subscription}}, setOpen}) {
-  const [mutation, {loading}] = useMutation(UPDATE_PLAN, {
-    variables: {subscriptionId: subscription.id, planId: plan.id},
-    refetchQueries: [{query: REPO_Q, variables: {repositoryId: id}}]
+import { UPDATE_PLAN } from './queries'
+
+export default function UpdatePlan({ plan, repository: { id, installation: { subscription } }, setOpen }) {
+  const [mutation, { loading }] = useMutation(UPDATE_PLAN, {
+    variables: { subscriptionId: subscription.id, planId: plan.id },
+    refetchQueries: [{ query: REPO_Q, variables: { repositoryId: id } }],
   })
 
   return (
-    <Layer modal position='center' onEsc={() => setOpen(false)}>
-      <Box width='40vw'>
-        <ModalHeader text={`Switch to the ${plan.name} plan?`} setOpen={setOpen} />
-        <Box pad='medium' gap='small'>
-          <Text size='small'><i>We will migrate all existing line items to match the new plan for you</i></Text>
-          <Box direction='row' align='center' justify='end'>
-            <Button loading={loading} label='Update' onClick={mutation} />
+    <Layer
+      modal
+      position="center"
+      onEsc={() => setOpen(false)}
+    >
+      <Box width="40vw">
+        <ModalHeader
+          text={`Switch to the ${plan.name} plan?`}
+          setOpen={setOpen}
+        />
+        <Box
+          pad="medium"
+          gap="small"
+        >
+          <Text size="small"><i>We will migrate all existing line items to match the new plan for you</i></Text>
+          <Box
+            direction="row"
+            align="center"
+            justify="end"
+          >
+            <Button
+              loading={loading}
+              label="Update"
+              onClick={mutation}
+            />
           </Box>
         </Box>
       </Box>

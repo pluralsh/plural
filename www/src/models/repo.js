@@ -1,5 +1,6 @@
 import gql from 'graphql-tag'
-import { UserFragment, PublisherFragment } from './user'
+
+import { PublisherFragment, UserFragment } from './user'
 
 export const CategoryFragment = gql`
   fragment CategoryFragment on CategoryInfo {
@@ -22,7 +23,7 @@ export const RepoFragment = gql`
     publisher { ...PublisherFragment }
   }
   ${PublisherFragment}
-`;
+`
 
 export const InstallationFragment = gql`
   fragment InstallationFragment on Installation {
@@ -36,7 +37,7 @@ export const InstallationFragment = gql`
   }
   ${RepoFragment}
   ${UserFragment}
-`;
+`
 
 export const DependenciesFragment = gql`
   fragment DependenciesFragment on Dependencies {
@@ -51,7 +52,7 @@ export const DependenciesFragment = gql`
     application
     wirings { terraform helm }
   }
-`;
+`
 
 export const IntegrationFragment = gql`
   fragment IntegrationFragment on Integration {
@@ -64,7 +65,7 @@ export const IntegrationFragment = gql`
     publisher { ...PublisherFragment }
   }
   ${PublisherFragment}
-`;
+`
 
 export const ArtifactFragment = gql`
   fragment ArtifactFragment on Artifact {
@@ -80,4 +81,4 @@ export const ArtifactFragment = gql`
     insertedAt
     updatedAt
   }
-`;
+`

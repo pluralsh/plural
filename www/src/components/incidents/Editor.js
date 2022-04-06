@@ -1,6 +1,8 @@
 import React from 'react'
-import TypeaheadEditor from '../utils/TypeaheadEditor'
+
 import { useApolloClient } from 'react-apollo'
+
+import TypeaheadEditor from '../utils/TypeaheadEditor'
 
 // export function fetchUsers(client, query) {
 //   if (!query) return
@@ -37,8 +39,9 @@ import { useApolloClient } from 'react-apollo'
 //   {trigger: /^@(\w+)$/, suggestions: fetchUsers}
 // ]
 
-export default function Editor({incidentId, editorState, editor, handlers, disableSubmit, setEditorState}) {
+export default function Editor({ incidentId, editorState, editor, handlers, disableSubmit, setEditorState }) {
   const client = useApolloClient()
+
   return (
     <TypeaheadEditor
       value={editorState}
@@ -55,7 +58,8 @@ export default function Editor({incidentId, editorState, editor, handlers, disab
         maxHeight: '160px',
         paddingLeft: '10px',
         paddingTop: '3px',
-        paddingBottom: '3px'
-      }} />
+        paddingBottom: '3px',
+      }}
+    />
   )
 }

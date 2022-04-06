@@ -1,8 +1,9 @@
 import gql from 'graphql-tag'
-import { RepoFragment, InstallationFragment, IntegrationFragment, ArtifactFragment, CategoryFragment } from '../../models/repo'
-import { ChartFragment, VersionFragment, ChartInstallationFragment, VersionTagFragment, PackageScan } from '../../models/chart'
+
+import { ArtifactFragment, CategoryFragment, InstallationFragment, IntegrationFragment, RepoFragment } from '../../models/repo'
+import { ChartFragment, ChartInstallationFragment, PackageScan, VersionFragment, VersionTagFragment } from '../../models/chart'
 import { TerraformFragment, TerraformInstallationFragment } from '../../models/terraform'
-import { DockerRepoFragment, DockerImageFragment, VulnerabilityFragment, DockerRepository } from '../../models/docker'
+import { DockerImageFragment, DockerRepoFragment, DockerRepository, VulnerabilityFragment } from '../../models/docker'
 import { RecipeFragment, RecipeSectionFragment } from '../../models/recipe'
 import { PlanFragment, SubscriptionFragment } from '../../models/payments'
 import { PageInfo } from '../../models/misc'
@@ -17,7 +18,7 @@ export const CREATE_REPO = gql`
     }
   }
   ${RepoFragment}
-`;
+`
 
 export const UPDATE_REPO = gql`
   mutation UpdateRepository($id: ID!, $attributes: RepositoryAttributes!) {
@@ -26,14 +27,14 @@ export const UPDATE_REPO = gql`
     }
   }
   ${RepoFragment}
-`;
+`
 
 export const DELETE_REPO = gql`
   mutation DeleteRepository($id: ID!) {
     deleteRepository(repositoryId: $id) { ...RepoFragment }
   }
   ${RepoFragment}
-`;
+`
 
 export const UPDATE_INSTALLATION = gql`
   mutation UpdateInstallation($id: ID!, $attributes: InstallationAttributes!) {
@@ -42,14 +43,14 @@ export const UPDATE_INSTALLATION = gql`
     }
   }
   ${InstallationFragment}
-`;
+`
 
 export const DELETE_INSTALLATION = gql`
   mutation DeleteInstallation($id: ID!) {
     deleteInstallation(id: $id) { ...InstallationFragment }
   }
   ${InstallationFragment}
-`;
+`
 
 export const INSTALLATIONS_Q = gql`
   query Installations($cursor: String) {
@@ -60,7 +61,7 @@ export const INSTALLATIONS_Q = gql`
   }
   ${PageInfo}
   ${InstallationFragment}
-`;
+`
 
 export const REPOS_Q = gql`
   query Repos($publisherId: ID, $cursor: String) {
@@ -71,7 +72,7 @@ export const REPOS_Q = gql`
   }
   ${PageInfo}
   ${RepoFragment}
-`;
+`
 
 export const SEARCH_REPOS = gql`
   query SearchRepos($query: String!) {
@@ -80,14 +81,14 @@ export const SEARCH_REPOS = gql`
     }
   }
   ${RepoFragment}
-`;
+`
 
 export const INSTALL_REPO = gql`
   mutation CreateInstallation($repositoryId: ID!) {
     createInstallation(repositoryId: $repositoryId) { ...InstallationFragment }
   }
   ${InstallationFragment}
-`;
+`
 
 export const REPO_Q = gql`
   query Repo($repositoryId: ID!, $chartCursor: String, $tfCursor: String, $dkrCursor: String, $recipeCursor: String, $intCursor: String) {
@@ -138,7 +139,7 @@ export const REPO_Q = gql`
   ${IntegrationFragment}
   ${ArtifactFragment}
   ${OIDCProvider}
-`;
+`
 
 export const DOCKER_IMG_Q = gql`
   query DockerImages($dockerRepositoryId: ID!, $cursor: String) {
@@ -155,7 +156,7 @@ export const DOCKER_IMG_Q = gql`
   ${PageInfo}
   ${DockerImageFragment}
   ${DockerRepository}
-`;
+`
 
 export const CREATE_TF = gql`
   mutation CreateTerraform($repositoryId: ID!, $attributes: TerraformAttributes!) {
@@ -164,7 +165,7 @@ export const CREATE_TF = gql`
     }
   }
   ${TerraformFragment}
-`;
+`
 
 export const UPDATE_TF = gql`
   mutation UpdateTerraform($id: ID!, $attributes: TerraformAttributes!) {
@@ -173,7 +174,7 @@ export const UPDATE_TF = gql`
     }
   }
   ${TerraformFragment}
-`;
+`
 
 export const DELETE_TF = gql`
   mutation DeleteTerraform($id: ID!) {
@@ -182,7 +183,7 @@ export const DELETE_TF = gql`
     }
   }
   ${TerraformFragment}
-`;
+`
 
 export const CHART_Q = gql`
   query Charts($chartId: ID!, $cursor: String) {
@@ -222,7 +223,7 @@ export const CHART_Q = gql`
   ${DockerImageFragment}
   ${DockerRepoFragment}
   ${PackageScan}
-`;
+`
 
 export const UPDATE_CHART = gql`
   mutation UpdateChart($id: ID!, $attributes: ChartAttributes!) {
@@ -233,8 +234,7 @@ export const UPDATE_CHART = gql`
   }
   ${ChartFragment}
   ${VersionTagFragment}
-`;
-
+`
 
 export const UPDATE_VERSION = gql`
   mutation UpdateVersion($id: ID!, $attributes: VersionAttributes!) {
@@ -277,7 +277,7 @@ export const TF_Q = gql`
   ${TerraformFragment}
   ${TerraformInstallationFragment}
   ${PackageScan}
-`;
+`
 
 export const DOCKER_Q = gql`
   query Docker($id: ID!, $tag: String, $precision: String, $offset: String) {
@@ -314,13 +314,13 @@ export const INSTALL_TF = gql`
     }
   }
   ${TerraformInstallationFragment}
-`;
+`
 
 export const UNINSTALL_TF = gql`
   mutation UninstallTf($id: ID!) {
     uninstallTerraform(id: $id) { id }
   }
-`;
+`
 
 export const UPDATE_CHART_INST = gql`
   mutation UpdateChartInst($id: ID!, $attributes: ChartInstallationAttributes!) {
@@ -329,7 +329,7 @@ export const UPDATE_CHART_INST = gql`
     }
   }
   ${ChartInstallationFragment}
-`;
+`
 
 export const CLOSURE_Q = gql`
   query Closure($type: DependencyType!, $id: ID!) {
@@ -347,7 +347,7 @@ export const CLOSURE_Q = gql`
   }
   ${TerraformFragment}
   ${ChartFragment}
-`;
+`
 
 export const RECIPE_Q = gql`
   query Recipe($id: ID!) {
@@ -359,7 +359,7 @@ export const RECIPE_Q = gql`
   }
   ${RecipeFragment}
   ${RecipeSectionFragment}
-`;
+`
 
 export const INSTALL_RECIPE = gql`
   mutation InstallRecipe($id: ID!, $ctx: Map!) {
@@ -368,7 +368,7 @@ export const INSTALL_RECIPE = gql`
     }
   }
   ${InstallationFragment}
-`;
+`
 
 export const DELETE_RECIPE = gql`
   mutation DeleteRecipe($id: ID!) {
@@ -377,7 +377,7 @@ export const DELETE_RECIPE = gql`
     }
   }
   ${RecipeFragment}
-`;
+`
 
 export const INTEGRATIONS_Q = gql`
   query Integrations($id: ID!, $tag: String, $cursor: String, $intCursor: String) {
@@ -398,7 +398,7 @@ export const INTEGRATIONS_Q = gql`
   ${PageInfo}
   ${RepoFragment}
   ${IntegrationFragment}
-`;
+`
 
 export const EXPLORE_REPOS = gql`
   query Repos($installed: Boolean, $publisherId: ID, $tag: String, $cursor: String) {
@@ -414,7 +414,7 @@ export const EXPLORE_REPOS = gql`
   }
   ${PageInfo}
   ${RepoFragment}
-`;
+`
 
 export const REPO_TAGS = gql`
   query Tags($q: String, $cursor: String) {

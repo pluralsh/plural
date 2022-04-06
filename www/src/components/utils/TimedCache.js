@@ -18,7 +18,7 @@ class TimedCache {
   }
 
   clear() {
-    for (let timeout of Object.values(this.cache)) {
+    for (const timeout of Object.values(this.cache)) {
       clearTimeout(timeout)
     }
   }

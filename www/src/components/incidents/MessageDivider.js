@@ -9,7 +9,7 @@ export function sameDay(message, next) {
   const firstTime = moment(message.insertedAt)
   const secondTime = moment(next.insertedAt)
 
-  return firstTime.isSame(secondTime, 'day');
+  return firstTime.isSame(secondTime, 'day')
 }
 
 export function formatDate(dt) {
@@ -18,11 +18,11 @@ export function formatDate(dt) {
     nextDay: '[Tomorrow]',
     lastDay: '[Yesterday]',
     lastWeek: 'dddd',
-    sameElse: 'dddd, MMMM Do'
-  });
+    sameElse: 'dddd, MMMM Do',
+  })
 }
 
-export function DateDivider({message, next, setSize}) {
+export function DateDivider({ message, next, setSize }) {
   const same = sameDay(message, next)
   const [painted, setPainted] = useState(!same)
 

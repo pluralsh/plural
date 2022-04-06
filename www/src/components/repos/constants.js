@@ -1,12 +1,12 @@
-export const DEFAULT_CHART_ICON   = process.env.PUBLIC_URL + '/chart.png'
-export const DEFAULT_TF_ICON      = process.env.PUBLIC_URL + '/terraform.png'
-export const DEFAULT_DKR_ICON     = process.env.PUBLIC_URL + '/docker.png'
-export const DEFAULT_GCP_ICON     = process.env.PUBLIC_URL + '/gcp.png'
-export const DEFAULT_AZURE_ICON   = process.env.PUBLIC_URL + '/azure.png'
-export const DEFAULT_AWS_ICON     = process.env.PUBLIC_URL + '/aws.png'
-export const DEFAULT_EQUINIX_ICON = process.env.PUBLIC_URL + '/equinix-metal.png'
-export const DEFAULT_KIND_ICON    = process.env.PUBLIC_URL + '/kind.png'
-export const DARK_AWS_ICON        = process.env.PUBLIC_URL + '/aws-icon.png'
+export const DEFAULT_CHART_ICON = `${process.env.PUBLIC_URL}/chart.png`
+export const DEFAULT_TF_ICON = `${process.env.PUBLIC_URL}/terraform.png`
+export const DEFAULT_DKR_ICON = `${process.env.PUBLIC_URL}/docker.png`
+export const DEFAULT_GCP_ICON = `${process.env.PUBLIC_URL}/gcp.png`
+export const DEFAULT_AZURE_ICON = `${process.env.PUBLIC_URL}/azure.png`
+export const DEFAULT_AWS_ICON = `${process.env.PUBLIC_URL}/aws.png`
+export const DEFAULT_EQUINIX_ICON = `${process.env.PUBLIC_URL}/equinix-metal.png`
+export const DEFAULT_KIND_ICON = `${process.env.PUBLIC_URL}/kind.png`
+export const DARK_AWS_ICON = `${process.env.PUBLIC_URL}/aws-icon.png`
 
 export const DKR_DNS = 'dkr.plural.sh'
 
@@ -30,12 +30,12 @@ export const Categories = {
   DATA: 'DATA',
   PRODUCTIVITY: 'PRODUCTIVITY',
   NETWORK: 'NETWORK',
-  STORAGE: 'STORAGE'
+  STORAGE: 'STORAGE',
 }
 
 export const Tools = {
   HELM: 'HELM',
-  TERRAFORM: 'TERRAFORM'
+  TERRAFORM: 'TERRAFORM',
 }
 
 export const Severity = {
@@ -43,14 +43,14 @@ export const Severity = {
   MEDIUM: 'MEDIUM',
   HIGH: 'HIGH',
   CRITICAL: 'CRITICAL',
-  NONE: 'NONE'
+  NONE: 'NONE',
 }
 
 export const AttackVector = {
   PHYSICAL: 'PHYSICAL',
   LOCAL: 'LOCAL',
   ADJACENT: 'ADJACENT',
-  NETWORK: 'NETWORK'
+  NETWORK: 'NETWORK',
 }
 
 export const ColorMap = {
@@ -67,5 +67,5 @@ export const ColorMap = {
   PHYSICAL: 'low',
   LOCAL: 'medium',
   ADJACENT: 'high',
-  NETWORK: 'critical'
+  NETWORK: 'critical',
 }

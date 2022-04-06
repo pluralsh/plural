@@ -1,10 +1,14 @@
 import React from 'react'
-import { Box, Text, TableBody, TableCell, TableHeader, TableRow, Table } from 'grommet'
+import { Box, Table, TableBody, TableCell, TableHeader, TableRow, Text } from 'grommet'
 
 function NoInformation() {
   return (
-    <Box fill align='center' justify='center'>
-      <Text size='small'>No cluster information present</Text>
+    <Box
+      fill
+      align="center"
+      justify="center"
+    >
+      <Text size="small">No cluster information present</Text>
     </Box>
   )
 }
@@ -13,10 +17,16 @@ function Header() {
   return (
     <TableHeader>
       <TableRow>
-        <TableCell scope="col" border="bottom">
+        <TableCell
+          scope="col"
+          border="bottom"
+        >
           Name
         </TableCell>
-        <TableCell scope="col" border="bottom">
+        <TableCell
+          scope="col"
+          border="bottom"
+        >
           Value
         </TableCell>
       </TableRow>
@@ -24,9 +34,9 @@ function Header() {
   )
 }
 
-const truncate = (str) => str && str.length > 20 ? `${str.substring(0, 17)}...` : str
+const truncate = str => str && str.length > 20 ? `${str.substring(0, 17)}...` : str
 
-function Row({name, value}) {
+function Row({ name, value }) {
   return (
     <TableRow>
       <TableCell scope="row">
@@ -37,17 +47,25 @@ function Row({name, value}) {
   )
 }
 
-export function ClusterInformation({incident: {clusterInformation}}) {
+export function ClusterInformation({ incident: { clusterInformation } }) {
   if (!clusterInformation) return <NoInformation />
 
-  const {__typename, ...info} = clusterInformation
+  const { __typename, ...info } = clusterInformation
+
   return (
-    <Box fill pad='small'>
+    <Box
+      fill
+      pad="small"
+    >
       <Table>
         <Header />
         <TableBody>
           {Object.entries(info).map(([key, value]) => (
-            <Row key={key} name={key} value={value} />
+            <Row
+              key={key}
+              name={key}
+              value={value}
+            />
           ))}
         </TableBody>
       </Table>

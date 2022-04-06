@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Box, Layer, Text } from 'grommet'
-import { ModalHeader, Fingerprint } from 'forge-core'
+import { Fingerprint, ModalHeader } from 'forge-core'
 
 const LOGIN_KEY = 'dli-key'
 
@@ -20,12 +20,26 @@ export function DeviceLoginNotif() {
   if (!open) return null
 
   return (
-    <Layer modal onEsc={() => setOpen(false)} onClickOutside={() => setOpen(false)}>
-      <Box width='30vw'>
-        <ModalHeader text='Device Login Successful' setOpen={setOpen} />
-        <Box fill='horizontal' direction='row' align='center' justify='center' gap='small' pad='medium'>
-          <Fingerprint size='15px' />
-          <Text size='small'>The device you requested on should now have access</Text>
+    <Layer
+      modal
+      onEsc={() => setOpen(false)}
+      onClickOutside={() => setOpen(false)}
+    >
+      <Box width="30vw">
+        <ModalHeader
+          text="Device Login Successful"
+          setOpen={setOpen}
+        />
+        <Box
+          fill="horizontal"
+          direction="row"
+          align="center"
+          justify="center"
+          gap="small"
+          pad="medium"
+        >
+          <Fingerprint size="15px" />
+          <Text size="small">The device you requested on should now have access</Text>
         </Box>
       </Box> 
     </Layer>

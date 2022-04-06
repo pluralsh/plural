@@ -1,5 +1,6 @@
-import { gql } from "apollo-boost";
-import { GroupFragment, UserFragment } from "./user";
+import { gql } from 'apollo-boost'
+
+import { GroupFragment, UserFragment } from './user'
 
 export const OIDCProvider = gql`
   fragment OIDCProvider on OidcProvider {
@@ -16,11 +17,11 @@ export const OIDCProvider = gql`
   }
   ${UserFragment}
   ${GroupFragment}
-`;
+`
 
 export const OAuthInfo = gql`
   fragment OAuthInfo on OauthInfo {
     provider
     authorizeUrl
   }
-`;
+`

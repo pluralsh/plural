@@ -3,25 +3,25 @@ export const ACTIONS = [
   'incident.update',
   'incident.message.create',
   'incident.message.update',
-  'incident.message.delete'
+  'incident.message.delete',
 ]
 
 export const WebhookState = {
   SENDING: 'SENDING',
   DELIVERED: 'DELIVERED',
-  FAILED: 'FAILED'
+  FAILED: 'FAILED',
 }
 
 export const StateToColor = {
   SENDING: 'progress',
   DELIVERED: 'success',
-  FAILED: 'failed'
+  FAILED: 'failed',
 }
 
 export const OAuthService = {
-  ZOOM: 'ZOOM'
+  ZOOM: 'ZOOM',
 }
 
 export const ParamToService = {
-  zoom: OAuthService.ZOOM
+  zoom: OAuthService.ZOOM,
 }

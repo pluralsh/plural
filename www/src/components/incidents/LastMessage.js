@@ -1,5 +1,8 @@
 import React from 'react'
 import { Divider } from 'forge-core'
+
 import { formatDate } from './MessageDivider'
 
-export const LastMessage = ({date}) => <Divider text={formatDate(date)} />
+export function LastMessage({ date }) {
+  return <Divider text={formatDate(date)} />
+}

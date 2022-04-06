@@ -1,7 +1,7 @@
 import React from 'react'
 import { Box, Text, TextInput } from 'grommet'
-import styled from 'styled-components';
-import { normalizeColor } from 'grommet/utils';
+import styled from 'styled-components'
+import { normalizeColor } from 'grommet/utils'
 
 const BORDER = 'light-5'
 
@@ -12,7 +12,7 @@ const InputContainer = styled.td`
   }
   border: 1px solid ${props => normalizeColor(BORDER, props.theme)};
   border-radius: 0px 3px 3px 0px;
-`;
+`
 
 const LabelContainer = styled.td`
   border-color: ${props => normalizeColor(BORDER, props.theme)};
@@ -23,12 +23,16 @@ const LabelContainer = styled.td`
   border-radius: 3px 0px 0px 3px;
 `
 
-export function LabelledInput({label, type, value, placeholder, onChange}) {
+export function LabelledInput({ label, type, value, placeholder, onChange }) {
   return (
     <tr>
       <LabelContainer>
-        <Box pad={{horizontal: 'small'}}>
-          <Text weight={500} size='small'>{label}</Text>
+        <Box pad={{ horizontal: 'small' }}>
+          <Text
+            weight={500}
+            size="small"
+          >{label}
+          </Text>
         </Box>
       </LabelContainer>
       <InputContainer>
@@ -37,7 +41,8 @@ export function LabelledInput({label, type, value, placeholder, onChange}) {
           type={type}
           value={value}
           placeholder={placeholder}
-          onChange={({target: {value}}) => onChange(value)} />
+          onChange={({ target: { value } }) => onChange(value)}
+        />
       </InputContainer>
     </tr>
   )

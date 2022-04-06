@@ -8,7 +8,7 @@ export const IntegrationWebhookFragment = gql`
     secret
     actions
   }
-`;
+`
 
 export const WebhookLogFragment = gql`
   fragment WebhookLogFragment on WebhookLog {

@@ -1,41 +1,53 @@
 import React, { useState } from 'react'
-import { ModalHeader, Button, ResponsiveInput, InputCollection, GqlError } from 'forge-core'
-import { Layer, Box } from 'grommet'
+import { Button, GqlError, InputCollection, ModalHeader, ResponsiveInput } from 'forge-core'
+import { Box, Layer } from 'grommet'
 import { useMutation } from 'react-apollo'
+
 import { CREATE_GROUP, GROUPS_Q } from './queries'
 
 export function GroupForm() {
   const [name, setName] = useState('')
-  const [mutation, {loading, error}] = useMutation(CREATE_GROUP, {
-    variables: {attributes: {name}},
-    update: (cache, {data: {createGroup}}) => {
-      const {groups, ...data} = cache.readQuery({query: GROUPS_Q, variables: {q: null}})
+  const [mutation, { loading, error }] = useMutation(CREATE_GROUP, {
+    variables: { attributes: { name } },
+    update: (cache, { data: { createGroup } }) => {
+      const { groups, ...data } = cache.readQuery({ query: GROUPS_Q, variables: { q: null } })
       cache.writeQuery({
         query: GROUPS_Q,
-        variables: {q: null},
+        variables: { q: null },
         data: {
           ...data,
-          groups: {...groups, edges: [{__typename: "GroupEdge", node: createGroup}, ...groups.edges]}
-      }})
-    }
+          groups: { ...groups, edges: [{ __typename: 'GroupEdge', node: createGroup }, ...groups.edges] },
+        } })
+    },
   })
 
   return (
-    <Box gap='small'>
+    <Box gap="small">
       {error && (
-        <Box pad='small'>
-          <GqlError error={error} header='Could not create group' />
+        <Box pad="small">
+          <GqlError
+            error={error}
+            header="Could not create group"
+          />
         </Box>
       )}
       <InputCollection>
         <ResponsiveInput
-          label='name'
+          label="name"
           value={name}
-          placeholder='short name'
-          onChange={({target: {value}}) => setName(value)} />
+          placeholder="short name"
+          onChange={({ target: { value } }) => setName(value)}
+        />
       </InputCollection>
-      <Box direction='row' justify='end'>
-        <Button label='create' onClick={mutation} loading={loading} />
+      <Box
+        direction="row"
+        justify="end"
+      >
+        <Button
+          label="create"
+          onClick={mutation}
+          loading={loading}
+        />
       </Box>
     </Box>
   )
@@ -43,14 +55,26 @@ export function GroupForm() {
 
 export default function CreateGroup() {
   const [open, setOpen] = useState(false)
+
   return (
     <>
-      <Button label='Create' onClick={() => setOpen(true)} />
+      <Button
+        label="Create"
+        onClick={() => setOpen(true)}
+      />
       {open && (
-        <Layer modal position='center' onClickOutside={() => setOpen(false)} onEsc={() => setOpen(false)}>
-          <Box width='30vw'>
-            <ModalHeader text='Create a new group' setOpen={setOpen} />
-            <Box pad='small'>
+        <Layer
+          modal
+          position="center"
+          onClickOutside={() => setOpen(false)}
+          onEsc={() => setOpen(false)}
+        >
+          <Box width="30vw">
+            <ModalHeader
+              text="Create a new group"
+              setOpen={setOpen}
+            />
+            <Box pad="small">
               <GroupForm />
             </Box>
           </Box>

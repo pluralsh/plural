@@ -1,5 +1,6 @@
 import gql from 'graphql-tag'
-import { IntegrationWebhookFragment, WebhookLogFragment, OauthIntegration } from '../../models/integrations'
+
+import { IntegrationWebhookFragment, OauthIntegration, WebhookLogFragment } from '../../models/integrations'
 import { PageInfo } from '../../models/misc'
 
 export const WEBHOOKS_Q = gql`

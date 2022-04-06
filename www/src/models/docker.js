@@ -9,7 +9,7 @@ export const DockerRepoFragment = gql`
     insertedAt
     updatedAt
   }
-`;
+`
 
 export const DockerRepository = gql`
   fragment DockerRepository on DockerRepository {
@@ -31,7 +31,7 @@ export const DockerImageFragment = gql`
     grade
     insertedAt
   }
-`;
+`
 
 export const VulnerabilityFragment = gql`
   fragment VulnerabilityFragment on Vulnerability {

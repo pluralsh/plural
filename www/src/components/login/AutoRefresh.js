@@ -1,14 +1,19 @@
-import React, { useContext, useState, useCallback } from 'react'
-import * as serviceWorker from '../../serviceWorker';
-import { PluralConfigurationContext } from './CurrentUser'
-import { Icon } from '../utils/Icon';
+import React, { useCallback, useContext, useState } from 'react'
+
 import { Download } from 'forge-core'
+
 import { Box } from 'grommet'
+
+import * as serviceWorker from '../../serviceWorker'
+
+import { Icon } from '../utils/Icon'
+
+import { PluralConfigurationContext } from './CurrentUser'
 
 const COMMIT_KEY = 'git-commit'
 
 const getCommit = () => localStorage.getItem(COMMIT_KEY) || 'example'
-const setCommit = (sha) => localStorage.setItem(COMMIT_KEY, sha)
+const setCommit = sha => localStorage.setItem(COMMIT_KEY, sha)
 
 export function AutoRefresh() {
   const [open, setOpen] = useState(true)
@@ -21,7 +26,8 @@ export function AutoRefresh() {
         setCommit(config.gitCommit)
         window.location.reload()
       })
-    } else {
+    }
+    else {
       setCommit(config.gitCommit)
       setOpen(false)
     }
@@ -33,16 +39,26 @@ export function AutoRefresh() {
 
   if (getCommit() === 'example') {
     setCommit(config.gitCommit)
+
     return null
   }
 
   return (
-    <Box flex={false} margin={{left: 'small'}}>
+    <Box
+      flex={false}
+      margin={{ left: 'small' }}
+    >
       <Icon
-        icon={<Download size='15px' color='orange' />}
+        icon={(
+          <Download
+            size="15px"
+            color="orange"
+          />
+        )}
         onClick={reload}
-        text='Update Ready!'
-        align={{top: 'bottom'}} />
+        text="Update Ready!"
+        align={{ top: 'bottom' }}
+      />
     </Box>
   )
 }

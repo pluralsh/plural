@@ -1,50 +1,67 @@
 import React, { useContext } from 'react'
 import { Box, Text } from 'grommet'
 import { Select } from 'forge-core'
-import { IncidentStatus, StatusColorMap } from './types'
-import { CurrentUserContext } from '../login/CurrentUser'
-import { canEdit } from './Incident'
+
 import { ThemeContext } from 'styled-components'
+
 import { normalizeColor } from 'grommet/utils'
 
-const normalize = (val) => val.replace('_', ' ')
+import { CurrentUserContext } from '../login/CurrentUser'
 
-const textColor = (status) => StatusColorMap[status]
+import { IncidentStatus, StatusColorMap } from './types'
+import { canEdit } from './Incident'
 
-const options = Object.keys(IncidentStatus).map((status) => ({value: status, label: normalize(status)}))
+const normalize = val => val.replace('_', ' ')
 
-export function StatusSelector({status, setStatus}) {
+const textColor = status => StatusColorMap[status]
+
+const options = Object.keys(IncidentStatus).map(status => ({ value: status, label: normalize(status) }))
+
+export function StatusSelector({ status, setStatus }) {
   const theme = useContext(ThemeContext)
+
   return (
     <Select 
       options={options}
       styles={{
-        option: (styles, {data, isFocused, isSelected}) => (
-          (isFocused || isSelected) ? styles : {...styles, color: normalizeColor(textColor(data.value), theme)}
+        option: (styles, { data, isFocused, isSelected }) => (
+          (isFocused || isSelected) ? styles : { ...styles, color: normalizeColor(textColor(data.value), theme) }
         ),
-        singleValue: (styles, {data}) => ({...styles, color: normalizeColor(textColor(data.value), theme)})
+        singleValue: (styles, { data }) => ({ ...styles, color: normalizeColor(textColor(data.value), theme) }),
       }}
-      value={{value: status, label: normalize(status)}}
-      onChange={({value}) => setStatus(value)} />
+      value={{ value: status, label: normalize(status) }}
+      onChange={({ value }) => setStatus(value)}
+    />
   )
 }
 
-export function Status({incident: {status, ...incident}, setActive}) {
+export function Status({ incident: { status, ...incident }, setActive }) {
   const user = useContext(CurrentUserContext)
   const editable = canEdit(incident, user) && setActive
 
   return (
     <>
-    {editable && (
-      <Box flex={false} width='150px'>
-        <StatusSelector status={status} setStatus={setActive} />
-      </Box>
-    )}
-    {!editable && (
-      <Box flex={false}>
-        <Text size='small' weight={500} color={textColor(status)}>{normalize(status)}</Text>
-      </Box>
-    )}
+      {editable && (
+        <Box
+          flex={false}
+          width="150px"
+        >
+          <StatusSelector
+            status={status}
+            setStatus={setActive}
+          />
+        </Box>
+      )}
+      {!editable && (
+        <Box flex={false}>
+          <Text
+            size="small"
+            weight={500}
+            color={textColor(status)}
+          >{normalize(status)}
+          </Text>
+        </Box>
+      )}
     </>
   )
 }

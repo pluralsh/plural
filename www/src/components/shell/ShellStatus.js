@@ -1,15 +1,25 @@
 import React from 'react'
 import { Checkmark } from 'grommet-icons'
-import { LoopingLogo } from '../utils/AnimatedLogo'
+
 import { Box, Text } from 'grommet'
+
+import { LoopingLogo } from '../utils/AnimatedLogo'
 import { PulsyDiv } from '../utils/animations'
 
 const SIZE = '25px'
 
-function StatusContainer({children, background, base, size}) {
+function StatusContainer({ children, background, base, size }) {
   return (
-    <Box flex={false} width={size || SIZE} height={size || SIZE} background={background} 
-         round='full' align='center' justify='center' as={base}>
+    <Box
+      flex={false}
+      width={size || SIZE}
+      height={size || SIZE}
+      background={background} 
+      round="full"
+      align="center"
+      justify="center"
+      as={base}
+    >
       {children}
     </Box>
   )
@@ -17,23 +27,37 @@ function StatusContainer({children, background, base, size}) {
 
 function UnreadyStatus() {
   return (
-    <StatusContainer background='progress' base={PulsyDiv} />
+    <StatusContainer
+      background="progress"
+      base={PulsyDiv}
+    />
   )
 }
 
 function ReadyStatus() {
   return (
-    <StatusContainer background='success'>
-      <Checkmark size='15px' />
+    <StatusContainer background="success">
+      <Checkmark size="15px" />
     </StatusContainer>
   )
 }
 
-function Status({name, state}) {
+function Status({ name, state }) {
   return (
-    <Box background='card' round='xsmall' direction='row' fill='horizontal' align='center' pad='small'>
-      <Box fill='horizontal'>
-        <Text size='small' weight={500}>{name}</Text>
+    <Box
+      background="card"
+      round="xsmall"
+      direction="row"
+      fill="horizontal"
+      align="center"
+      pad="small"
+    >
+      <Box fill="horizontal">
+        <Text
+          size="small"
+          weight={500}
+        >{name}
+        </Text>
       </Box>
       {state && <ReadyStatus />}
       {!state && <UnreadyStatus />}
@@ -41,17 +65,41 @@ function Status({name, state}) {
   )
 } 
 
-export function ShellStatus({shell: {status}}) {
+export function ShellStatus({ shell: { status } }) {
   if (!status) return <LoopingLogo dark />
 
   return (
-    <Box background='backgroundColor' fill align='center' justify='center'>
-      <Box width='40%' gap='xsmall'>
-        <Status name='Initialized' state={status.initialized} />
-        <Status name='Pod Scheduled' state={status.podScheduled} />
-        <Status name='Containers Ready' state={status.containersReady} />
-        <Status name='Ready' state={status.ready} />
-        <Text size='small' color='dark-3'>Give us a minute as your shell instance is provisioning</Text>
+    <Box
+      background="backgroundColor"
+      fill
+      align="center"
+      justify="center"
+    >
+      <Box
+        width="40%"
+        gap="xsmall"
+      >
+        <Status
+          name="Initialized"
+          state={status.initialized}
+        />
+        <Status
+          name="Pod Scheduled"
+          state={status.podScheduled}
+        />
+        <Status
+          name="Containers Ready"
+          state={status.containersReady}
+        />
+        <Status
+          name="Ready"
+          state={status.ready}
+        />
+        <Text
+          size="small"
+          color="dark-3"
+        >Give us a minute as your shell instance is provisioning
+        </Text>
       </Box>
     </Box>
   )

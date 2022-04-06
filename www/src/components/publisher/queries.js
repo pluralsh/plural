@@ -1,5 +1,6 @@
 import gql from 'graphql-tag'
-import { PageInfo } from '../../models/misc';
+
+import { PageInfo } from '../../models/misc'
 import { PublisherFragment } from '../../models/user'
 
 export const PUBLISHERS_Q = gql`
@@ -22,7 +23,7 @@ export const PUBLISHERS_Q = gql`
   }
   ${PublisherFragment}
   ${PageInfo}
-`;
+`
 
 export const ACCOUNT_PUBLISHERS = gql`
   query AccountPubs($cursor: String) {
@@ -33,7 +34,7 @@ export const ACCOUNT_PUBLISHERS = gql`
   }
   ${PageInfo}
   ${PublisherFragment}
-`;
+`
 
 export const PUBLISHER_Q = gql`
   query Publisher($publisherId: ID) {
@@ -42,7 +43,7 @@ export const PUBLISHER_Q = gql`
     }
   }
   ${PublisherFragment}
-`;
+`
 
 export const FULL_PUBLISHER_Q = gql`
   query Publisher($id: ID) {
@@ -52,7 +53,7 @@ export const FULL_PUBLISHER_Q = gql`
     }
   }
   ${PublisherFragment}
-`;
+`
 
 export const EDIT_PUBLISHER = gql`
   mutation EditPublisher($attributes: PublisherAttributes!) {
@@ -61,7 +62,7 @@ export const EDIT_PUBLISHER = gql`
     }
   }
   ${PublisherFragment}
-`;
+`
 
 export const CREATE_PUBLISHER = gql`
   mutation CreatePublisher($attributes: PublisherAttributes!) {
@@ -70,7 +71,7 @@ export const CREATE_PUBLISHER = gql`
     }
   }
   ${PublisherFragment}
-`;
+`
 
 export const LINK_ACCOUNT = gql`
   mutation LinkPublisher($token: String!) {
@@ -80,4 +81,4 @@ export const LINK_ACCOUNT = gql`
     }
   }
   ${PublisherFragment}
-`;
+`

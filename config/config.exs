@@ -29,8 +29,7 @@ config :rtc, RtcWeb.Endpoint,
 config :email, EmailWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "bzUBoQlghS+mt8b6EDUZkJ5LuZaJ1I8lJnnJX2PHpDrunEF7pk6iXIEhB4v2QZbe",
-  render_errors: [view: EmailWeb.ErrorView, accepts: ~w(html json), layout: false],
-  live_view: [signing_salt: "t06Iz3Dz"]
+  render_errors: [view: EmailWeb.ErrorView, accepts: ~w(html json), layout: false]
 
 config :email,
   host: "example.com",

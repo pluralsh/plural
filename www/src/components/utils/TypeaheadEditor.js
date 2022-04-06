@@ -1,28 +1,27 @@
-import React, { useCallback, useRef, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import ReactDOM from 'react-dom'
-import { Editor, Transforms, Range } from 'slate'
+import { Editor, Range, Transforms } from 'slate'
 import {
-  Slate,
   Editable,
   ReactEditor,
-  useSelected,
+  Slate,
   useFocused,
+  useSelected,
 } from 'slate-react'
 import { Emoji } from 'emoji-mart'
+
 import { EntityType } from '../incidents/types'
 
-
-function Portal({children}) {
+function Portal({ children }) {
   return ReactDOM.createPortal(children, document.body)
 }
 
-export default function TypeaheadEditor({editor, value, setValue, style, onOpen, searchQuery, handlers}) {
+export default function TypeaheadEditor({ editor, value, setValue, style, onOpen, searchQuery, handlers }) {
   const ref = useRef()
   const [target, setTarget] = useState(null)
   const [index, setIndex] = useState(0)
   const [suggestions, setSuggestions] = useState([])
   const renderElement = useCallback(props => <Element {...props} />, [])
-
 
   const onKeyDown = useCallback(
     event => {
@@ -93,7 +92,7 @@ export default function TypeaheadEditor({editor, value, setValue, style, onOpen,
           const afterText = Editor.string(editor, afterRange)
           const afterMatch = afterText.match(/^(\s|$)/)
 
-          for (const {trigger, begin, suggestions} of handlers) {
+          for (const { trigger, begin, suggestions } of handlers) {
             if (begin && (!wordBefore || wordBefore.offset > 1)) continue
 
             const beforeMatch = beforeText && beforeText.match(trigger)
@@ -102,6 +101,7 @@ export default function TypeaheadEditor({editor, value, setValue, style, onOpen,
               onOpen && onOpen(true)
               searchQuery(beforeMatch[1], suggestions).then(setSuggestions)
               setIndex(0)
+
               return
             }
           }
@@ -132,7 +132,7 @@ export default function TypeaheadEditor({editor, value, setValue, style, onOpen,
               boxShadow: '0 1px 5px rgba(0,0,0,.2)',
             }}
           >
-            {suggestions.map(({key, suggestion}, i) => (
+            {suggestions.map(({ key, suggestion }, i) => (
               <div
                 key={key}
                 style={{
@@ -156,24 +156,20 @@ const SPECIAL_ELEMENTS = Object.values(EntityType)
 export const withMentions = editor => {
   const { isInline, isVoid } = editor
 
-  editor.isInline = element => {
-    return SPECIAL_ELEMENTS.includes(element.type) ? true : isInline(element)
-  }
+  editor.isInline = element => SPECIAL_ELEMENTS.includes(element.type) ? true : isInline(element)
 
-  editor.isVoid = element => {
-    return SPECIAL_ELEMENTS.includes(element.type) ? true : isVoid(element)
-  }
+  editor.isVoid = element => SPECIAL_ELEMENTS.includes(element.type) ? true : isVoid(element)
 
   return editor
 }
 
 const insertMention = (editor, val) => {
-  const mention = val.type ? val : { text: val + ' ' }
+  const mention = val.type ? val : { text: `${val} ` }
   Transforms.insertNodes(editor, mention)
   Transforms.move(editor)
 }
 
-const Element = props => {
+function Element(props) {
   const { attributes, children, element } = props
   switch (element.type) {
     case EntityType.MENTION:
@@ -185,13 +181,22 @@ const Element = props => {
   }
 }
 
-const EmojiElement = ({element: {emoji}}) => {
-  return <Emoji forceSize set='google' emoji={emoji.name} size={16} sheetSize={16} />
+function EmojiElement({ element: { emoji } }) {
+  return (
+    <Emoji
+      forceSize
+      set="google"
+      emoji={emoji.name}
+      size={16}
+      sheetSize={16}
+    />
+  )
 }
 
-const MentionElement = ({ attributes, children, element }) => {
+function MentionElement({ attributes, children, element }) {
   const selected = useSelected()
   const focused = useFocused()
+
   return (
     <span
       {...attributes}

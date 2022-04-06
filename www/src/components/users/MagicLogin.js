@@ -1,27 +1,44 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { Box, Form, Keyboard, TextInput, Collapsible, Text, Anchor } from 'grommet'
+import { Anchor, Box, Collapsible, Form, Keyboard, Text, TextInput } from 'grommet'
 import { Button, Divider } from 'forge-core'
-import { LOGIN_METHOD, LOGIN_MUTATION, OAUTH_URLS, PASSWORDLESS_LOGIN, POLL_LOGIN_TOKEN, SIGNUP_MUTATION } from './queries'
+
 import { useApolloClient, useLazyQuery, useMutation, useQuery } from 'react-apollo'
-import { LoginMethod } from './types'
+
 import { Redirect, useHistory, useLocation, useParams } from 'react-router'
+
+import queryString from 'query-string'
+
 import { fetchToken, setToken } from '../../helpers/authentication'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
-import { disableState, PasswordStatus } from '../Login'
+import { PasswordStatus, disableState } from '../Login'
 import { PLURAL_ICON, PLURAL_MARK } from '../constants'
 import { ACCEPT_LOGIN } from '../oidc/queries'
-import queryString from 'query-string'
-import { saveChallenge, saveDeviceToken, wipeChallenge, wipeDeviceToken } from './utils'
+
 import { host } from '../../helpers/hostname'
+
+import { saveChallenge, saveDeviceToken, wipeChallenge, wipeDeviceToken } from './utils'
+
+import { LoginMethod } from './types'
+import { LOGIN_METHOD, LOGIN_MUTATION, OAUTH_URLS, PASSWORDLESS_LOGIN, POLL_LOGIN_TOKEN, SIGNUP_MUTATION } from './queries'
 import { METHOD_ICONS } from './OauthEnabler'
 import { finishedDeviceLogin } from './DeviceLoginNotif'
 
-export function LabelledInput({label, value, onChange, placeholder, width, type, modifier}) {
+export function LabelledInput({ label, value, onChange, placeholder, width, type, modifier }) {
   return (
-    <Box gap='xsmall' width={width || '300px'}>
-      <Box direction='row' align='center'>
-        <Box fill='horizontal'>
-          <Text size='small' color='dark-4'>{label}</Text>
+    <Box
+      gap="xsmall"
+      width={width || '300px'}
+    >
+      <Box
+        direction="row"
+        align="center"
+      >
+        <Box fill="horizontal">
+          <Text
+            size="small"
+            color="dark-4"
+          >{label}
+          </Text>
         </Box>
         <Box flex={false}>
           {modifier}
@@ -31,20 +48,42 @@ export function LabelledInput({label, value, onChange, placeholder, width, type,
         name={label}
         type={type}
         value={value || ''}
-        onChange={onChange && (({target: {value}}) => onChange(value))}
-        placeholder={placeholder} />
+        onChange={onChange && (({ target: { value } }) => onChange(value))}
+        placeholder={placeholder}
+      />
     </Box>
   )
 }
 
-export function LoginPortal({children, ...props}) {
+export function LoginPortal({ children, ...props }) {
   return (
-    <Box height='100vh' fill='horizontal' direction='row'>
-      <Box width='40%' fill='vertical' justify='center' align='center' background='plural-blk'>
-        <img src={PLURAL_ICON} width='200px' />
+    <Box
+      height="100vh"
+      fill="horizontal"
+      direction="row"
+    >
+      <Box
+        width="40%"
+        fill="vertical"
+        justify="center"
+        align="center"
+        background="plural-blk"
+      >
+        <img
+          src={PLURAL_ICON}
+          width="200px"
+        />
       </Box>
-      <Box style={{overflow: 'auto'}} fill align='center' justify='center'>
-        <Box flex={false} {...props}>
+      <Box
+        style={{ overflow: 'auto' }}
+        fill
+        align="center"
+        justify="center"
+      >
+        <Box
+          flex={false}
+          {...props}
+        >
           {children}
         </Box>
       </Box>
@@ -53,9 +92,9 @@ export function LoginPortal({children, ...props}) {
 }
 
 export function PasswordlessLogin() {
-  const {token} = useParams()
-  const [mutation, {error, loading, data}] = useMutation(PASSWORDLESS_LOGIN, {
-    variables: {token}
+  const { token } = useParams()
+  const [mutation, { error, loading, data }] = useMutation(PASSWORDLESS_LOGIN, {
+    variables: { token },
   })
 
   useEffect(() => {
@@ -64,18 +103,36 @@ export function PasswordlessLogin() {
 
   return (
     <LoginPortal>
-      <Box gap='medium'>
-        <Box gap='xsmall' align='center'>
-          <img src={PLURAL_MARK} width='45px' />
-          <Text size='large'>Passwordless Login</Text>
+      <Box gap="medium">
+        <Box
+          gap="xsmall"
+          align="center"
+        >
+          <img
+            src={PLURAL_MARK}
+            width="45px"
+          />
+          <Text size="large">Passwordless Login</Text>
         </Box>
-        {loading && <Text size='small' color='dark-3'>Validating your login token...</Text>}
-        {error && <GqlError error={error} header='Error validating login' />}
+        {loading && (
+          <Text
+            size="small"
+            color="dark-3"
+          >Validating your login token...
+          </Text>
+        )}
+        {error && (
+          <GqlError
+            error={error}
+            header="Error validating login"
+          />
+        )}
         {data && (
           <Alert
             status={AlertStatus.SUCCESS}
             header="You're now logged in!"
-            description="Navigate back to wherever you initiated the login to begin using plural." />
+            description="Navigate back to wherever you initiated the login to begin using plural."
+          />
         )}
       </Box>
     </LoginPortal>
@@ -85,14 +142,14 @@ export function PasswordlessLogin() {
 export function handleOauthChallenge(client, challenge) {
   client.mutate({
     mutation: ACCEPT_LOGIN,
-    variables: {challenge}
-  }).then(({data: {acceptLogin: {redirectTo}}}) => {
+    variables: { challenge },
+  }).then(({ data: { acceptLogin: { redirectTo } } }) => {
     window.location = redirectTo
   })
 }
 
-function LoginPoller({challenge, token, deviceToken}) {
-  let history = useHistory()
+function LoginPoller({ challenge, token, deviceToken }) {
+  const history = useHistory()
   const client = useApolloClient()
   const [success, setSuccess] = useState(false)
 
@@ -100,14 +157,15 @@ function LoginPoller({challenge, token, deviceToken}) {
     const interval = setInterval(() => {
       client.mutate({
         mutation: POLL_LOGIN_TOKEN,
-        variables: {token, deviceToken}
-      }).then(({data: {loginToken: {jwt}}}) => {
+        variables: { token, deviceToken },
+      }).then(({ data: { loginToken: { jwt } } }) => {
         setToken(jwt)
         setSuccess(true)
         deviceToken && finishedDeviceLogin()
         if (challenge) {
           handleOauthChallenge(client, challenge)
-        } else {
+        }
+        else {
           history.push('/')
         }
       })
@@ -120,45 +178,48 @@ function LoginPoller({challenge, token, deviceToken}) {
     return (
       <Alert
         status={AlertStatus.SUCCESS}
-        header='Login Verified!'
-        description="we'll redirect you to the app shortly" />
+        header="Login Verified!"
+        description="we'll redirect you to the app shortly"
+      />
     )
   }
 
   return (
     <Alert
       status={AlertStatus.SUCCESS}
-      header='Check your email!'
-      description='Check your email to verify your identity and log in' />
+      header="Check your email!"
+      description="Check your email to verify your identity and log in"
+    />
   )
 }
 
 export function Login() {
-  let history = useHistory()
+  const history = useHistory()
   const client = useApolloClient()
   const location = useLocation()
-  const {login_challenge: challenge, deviceToken} = queryString.parse(location.search)
+  const { login_challenge: challenge, deviceToken } = queryString.parse(location.search)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [getLoginMethod, {data, loading: qLoading, error: qError}] = useLazyQuery(LOGIN_METHOD, {
-    variables: {email, host: host()}
+  const [getLoginMethod, { data, loading: qLoading, error: qError }] = useLazyQuery(LOGIN_METHOD, {
+    variables: { email, host: host() },
   })
 
   const loginMethod = data && data.loginMethod && data.loginMethod.loginMethod
   const open = loginMethod === LoginMethod.PASSWORD
   const passwordless = loginMethod === LoginMethod.PASSWORDLESS
 
-  const [mutation, {loading: mLoading, error}] = useMutation(LOGIN_MUTATION, {
+  const [mutation, { loading: mLoading, error }] = useMutation(LOGIN_MUTATION, {
     variables: { email, password, deviceToken },
-    onCompleted: ({login: {jwt}}) => {
+    onCompleted: ({ login: { jwt } }) => {
       setToken(jwt)
       deviceToken && finishedDeviceLogin()
       if (challenge) {
         handleOauthChallenge(client, challenge)
-      } else {
-        history.push(`/`)
       }
-    }
+      else {
+        history.push('/')
+      }
+    },
   })
 
   useEffect(() => {
@@ -175,7 +236,8 @@ export function Login() {
     const jwt = fetchToken()
     if (jwt && challenge) {
       handleOauthChallenge(client, challenge)
-    } else if (!deviceToken && jwt) {
+    }
+    else if (!deviceToken && jwt) {
       history.push('/')
     }
   }, [challenge])
@@ -184,48 +246,78 @@ export function Login() {
 
   const loading = qLoading || mLoading
 
-  if (qError) return <Redirect to='/signup' />
+  if (qError) return <Redirect to="/signup" />
 
   return (
     <LoginPortal>
-      <Box gap='medium'>
-        <Box gap='xsmall' align='center'>
-          <img src={PLURAL_MARK} width='45px' />
-          <Text size='large'>Welcome</Text>
-          <Text size='small' color='dark-3'>{open ? 'good to see you again' : 'Tell us your email to get started'}</Text>
+      <Box gap="medium">
+        <Box
+          gap="xsmall"
+          align="center"
+        >
+          <img
+            src={PLURAL_MARK}
+            width="45px"
+          />
+          <Text size="large">Welcome</Text>
+          <Text
+            size="small"
+            color="dark-3"
+          >{open ? 'good to see you again' : 'Tell us your email to get started'}
+          </Text>
         </Box>
         {passwordless && (
           <Box>
             <LoginPoller
               token={data.loginMethod.token}
               challenge={challenge}
-              deviceToken={deviceToken} />
+              deviceToken={deviceToken}
+            />
           </Box>
         )}
         {!passwordless && (
           <Keyboard onEnter={submit}>
             <Form onSubmit={submit}>
-              <Box gap='xsmall'>
-                {error && <GqlError error={error} header='Login Failed' />}
+              <Box gap="xsmall">
+                {error && (
+                  <GqlError
+                    error={error}
+                    header="Login Failed"
+                  />
+                )}
                 <LabelledInput
-                  label='Email'
+                  label="Email"
                   value={email}
                   onChange={open ? null : setEmail}
-                  placeholder='you@example.com' />
-                <Collapsible open={open} direction='vertical'>
+                  placeholder="you@example.com"
+                />
+                <Collapsible
+                  open={open}
+                  direction="vertical"
+                >
                   <LabelledInput
-                    label='Password'
-                    type='password'
-                    modifier={<Anchor onClick={() => history.push('/password-reset')} color='dark-6'>forgot your password?</Anchor>}
+                    label="Password"
+                    type="password"
+                    modifier={(
+                      <Anchor
+                        onClick={() => history.push('/password-reset')}
+                        color="dark-6"
+                      >forgot your password?
+                      </Anchor>
+                    )}
                     value={password}
                     onChange={setPassword}
-                    placeholder='a strong password' />
+                    placeholder="a strong password"
+                  />
                 </Collapsible>
                 <Button
-                  fill='horizontal'
-                  pad={{vertical: '8px'}}
-                  margin={{top: 'small'}}
-                  label="Continue" loading={loading} onClick={submit} />
+                  fill="horizontal"
+                  pad={{ vertical: '8px' }}
+                  margin={{ top: 'small' }}
+                  label="Continue"
+                  loading={loading}
+                  onClick={submit}
+                />
               </Box>
             </Form>
           </Keyboard>
@@ -237,34 +329,45 @@ export function Login() {
 
 const WIDTH = '350px'
 
-function OAuthOption({url: {authorizeUrl, provider}}) {
+function OAuthOption({ url: { authorizeUrl, provider } }) {
   const icon = METHOD_ICONS[provider]
 
   return (
-    <Box border round='xsmall' align='center' justify='center'
-         direction='row' gap='small' fill='horizontal' pad={{vertical: '7px'}}
-         hoverIndicator='tone-light' onClick={() => { window.location = authorizeUrl }}>
-      {React.createElement(icon, {size: 'medium', color: 'plain'})}
-      <Text size='small'>Sign up with {provider.toLowerCase()}</Text>
+    <Box
+      border
+      round="xsmall"
+      align="center"
+      justify="center"
+      direction="row"
+      gap="small"
+      fill="horizontal"
+      pad={{ vertical: '7px' }}
+      hoverIndicator="tone-light"
+      onClick={() => {
+        window.location = authorizeUrl 
+      }}
+    >
+      {React.createElement(icon, { size: 'medium', color: 'plain' })}
+      <Text size="small">Sign up with {provider.toLowerCase()}</Text>
     </Box>
   )
 }
 
 export function Signup() {
-  let history = useHistory()
+  const history = useHistory()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
   const [account, setAccount] = useState('')
   const [confirm, setConfirm] = useState('')
-  const [mutation, {loading, error}] = useMutation(SIGNUP_MUTATION, {
-    variables: { attributes: {email, password, name}, account: {name: account} },
-    onCompleted: ({signup: {jwt}}) => {
+  const [mutation, { loading, error }] = useMutation(SIGNUP_MUTATION, {
+    variables: { attributes: { email, password, name }, account: { name: account } },
+    onCompleted: ({ signup: { jwt } }) => {
       setToken(jwt)
-      history.push(`/`)
-    }
+      history.push('/')
+    },
   })
-  const {data} = useQuery(OAUTH_URLS, {variables: {host: host()}})
+  const { data } = useQuery(OAUTH_URLS, { variables: { host: host() } })
 
   useEffect(() => {
     if (fetchToken()) {
@@ -272,68 +375,119 @@ export function Signup() {
     }
   }, [])
 
-  const {disabled, reason} = disableState(password, confirm)
+  const { disabled, reason } = disableState(password, confirm)
 
   return (
     <LoginPortal>
-      <Box gap='medium'>
-        <Box gap='xsmall' align='center'>
-          <img src={PLURAL_MARK} width='45px' />
-          <Text size='large'>Sign up to get started with plural</Text>
+      <Box gap="medium">
+        <Box
+          gap="xsmall"
+          align="center"
+        >
+          <img
+            src={PLURAL_MARK}
+            width="45px"
+          />
+          <Text size="large">Sign up to get started with plural</Text>
         </Box>
-        <Box gap='xsmall' justify='center'>
-          {data && data.oauthUrls.map((url) => <OAuthOption key={url.provider} url={url} />)}
+        <Box
+          gap="xsmall"
+          justify="center"
+        >
+          {data && data.oauthUrls.map(url => (
+            <OAuthOption
+              key={url.provider}
+              url={url}
+            />
+          ))}
         </Box>
-        <Divider text='Or' margin='0px' fontWeight={400} />
+        <Divider
+          text="Or"
+          margin="0px"
+          fontWeight={400}
+        />
         <Keyboard onEnter={mutation}>
           <Form onSubmit={mutation}>
-            <Box gap='xsmall' width={WIDTH}>
-              {error && <GqlError error={error} header='Login Failed' />}
+            <Box
+              gap="xsmall"
+              width={WIDTH}
+            >
+              {error && (
+                <GqlError
+                  error={error}
+                  header="Login Failed"
+                />
+              )}
               <LabelledInput
-                label='Account'
+                label="Account"
                 value={account}
                 width={WIDTH}
                 onChange={setAccount}
-                placeholder='The name of your account (must be unique)' />
+                placeholder="The name of your account (must be unique)"
+              />
               <LabelledInput
-                label='Name'
+                label="Name"
                 value={name}
                 width={WIDTH}
                 onChange={setName}
-                placeholder='Your name' />
+                placeholder="Your name"
+              />
               <LabelledInput
-                label='Email'
+                label="Email"
                 value={email}
                 width={WIDTH}
                 onChange={setEmail}
-                placeholder='you@example.com' />
+                placeholder="you@example.com"
+              />
               <LabelledInput
-                label='Password'
+                label="Password"
                 value={password}
                 width={WIDTH}
-                type='password'
+                type="password"
                 onChange={setPassword}
-                placeholder='a strong password' />
+                placeholder="a strong password"
+              />
               <LabelledInput
-                label='Confirm Password'
+                label="Confirm Password"
                 value={confirm}
                 width={WIDTH}
-                type='password'
+                type="password"
                 onChange={setConfirm}
-                placeholder='confirm your password' />
-              <Box direction='row' align='center' justify='end' gap='small' margin={{top: 'small'}}>
-                <PasswordStatus disabled={disabled} reason={reason} />
+                placeholder="confirm your password"
+              />
+              <Box
+                direction="row"
+                align="center"
+                justify="end"
+                gap="small"
+                margin={{ top: 'small' }}
+              >
+                <PasswordStatus
+                  disabled={disabled}
+                  reason={reason}
+                />
                 <Button
                   label="Sign Up"
                   disabled={disabled}
                   loading={loading}
-                  onClick={mutation} />
+                  onClick={mutation}
+                />
               </Box>
             </Box>
           </Form>
         </Keyboard>
-        <Box fill='horizontal' align='center' justify='center' direction='row' gap='xsmall'>
-          <Text size='small' color='dark-6'>Already have an account?</Text>
+        <Box
+          fill="horizontal"
+          align="center"
+          justify="center"
+          direction="row"
+          gap="xsmall"
+        >
+          <Text
+            size="small"
+            color="dark-6"
+          >Already have an account?
+          </Text>
           <Anchor onClick={() => history.push('/login')}>Login</Anchor>
         </Box>
       </Box>

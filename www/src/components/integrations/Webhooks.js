@@ -1,48 +1,90 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useQuery } from 'react-apollo'
-import { Scroller, Button, ModalHeader, Webhooks as WebhooksI } from 'forge-core'
-import { WEBHOOKS_Q } from './queries'
+import { Button, ModalHeader, Scroller, Webhooks as WebhooksI } from 'forge-core'
+
 import { Box, Layer, Text } from 'grommet'
-import { extendConnection } from '../../utils/graphql'
+
 import { useHistory } from 'react-router'
-import { ActionTab, CreateWebhook } from './CreateWebhook'
+
+import { extendConnection } from '../../utils/graphql'
+
 import { BreadcrumbsContext } from '../Breadcrumbs'
 
-function Webhook({webhook}) {
-  let hist = useHistory()
+import { ActionTab, CreateWebhook } from './CreateWebhook'
+
+import { WEBHOOKS_Q } from './queries'
+
+function Webhook({ webhook }) {
+  const hist = useHistory()
+
   return (
-    <Box flex={false} fill='horizontal' hoverIndicator='hover' onClick={() => hist.push(`/webhooks/${webhook.id}`)} 
-         pad='small' gap='small' border={{side: 'bottom'}} focusIndicator={false}> 
-      <Box direction='row' align='center' gap='small'>
-        <Text size='small' weight={500}>{webhook.name}</Text>
-        <Text size='small' color='dark-3'>{webhook.url}</Text>
+    <Box
+      flex={false}
+      fill="horizontal"
+      hoverIndicator="hover"
+      onClick={() => hist.push(`/webhooks/${webhook.id}`)} 
+      pad="small"
+      gap="small"
+      border={{ side: 'bottom' }}
+      focusIndicator={false}
+    > 
+      <Box
+        direction="row"
+        align="center"
+        gap="small"
+      >
+        <Text
+          size="small"
+          weight={500}
+        >{webhook.name}
+        </Text>
+        <Text
+          size="small"
+          color="dark-3"
+        >{webhook.url}
+        </Text>
       </Box>
-      <Box direction='row' gap='xsmall' wrap>
-        {webhook.actions.map((action) => <ActionTab key={action} action={action} colors={{bg: 'card', hover: 'cardHover'}} />)}
+      <Box
+        direction="row"
+        gap="xsmall"
+        wrap
+      >
+        {webhook.actions.map(action => (
+          <ActionTab
+            key={action}
+            action={action}
+            colors={{ bg: 'card', hover: 'cardHover' }}
+          />
+        ))}
       </Box>
     </Box>
   )
 }
 
 export function Webhooks() {
-  const {data, fetchMore} = useQuery(WEBHOOKS_Q, {fetchPolicy: 'cache-and-network'})
+  const { data, fetchMore } = useQuery(WEBHOOKS_Q, { fetchPolicy: 'cache-and-network' })
 
   if (!data) return null
 
-  const {pageInfo, edges} = data.integrationWebhooks
+  const { pageInfo, edges } = data.integrationWebhooks
 
   return (
     <Box fill>
       <Scroller
-        id='webhooks'
-        style={{width: '100%', height: '100%', overflow: 'auto'}}
+        id="webhooks"
+        style={{ width: '100%', height: '100%', overflow: 'auto' }}
         edges={edges}
-        mapper={({node}) => <Webhook key={node.id} webhook={node} />}
+        mapper={({ node }) => (
+          <Webhook
+            key={node.id}
+            webhook={node}
+          />
+        )}
         onLoadMore={() => pageInfo.hasNextPage && fetchMore({
-          variables: {cursor: pageInfo.endCursor},
-          updateQuery: (prev, {fetchMoreResult: {integrationWebhooks}}) => extendConnection(
+          variables: { cursor: pageInfo.endCursor },
+          updateQuery: (prev, { fetchMoreResult: { integrationWebhooks } }) => extendConnection(
             prev, integrationWebhooks, 'integrationWebhooks'
-          )
+          ),
         })}
       />
     </Box>
@@ -51,23 +93,49 @@ export function Webhooks() {
 
 export function Integrations() {
   const [open, setOpen] = useState(false)
-  const {setBreadcrumbs} = useContext(BreadcrumbsContext)
+  const { setBreadcrumbs } = useContext(BreadcrumbsContext)
   useEffect(() => {
-    setBreadcrumbs([{url: `/webhooks`, text: 'webhooks'}])
+    setBreadcrumbs([{ url: '/webhooks', text: 'webhooks' }])
   }, [setBreadcrumbs])
 
   return (
-    <Box fill background='backgroundColor'>
-      <Box border={{side: 'bottom'}} pad='small' direction='row' align='center'>
-        <Box fill='horizontal' direction='row' align='center' gap='small'>
-          <WebhooksI size='15px' />
-          <Text size='small' weight='bold'>Webhooks</Text>
+    <Box
+      fill
+      background="backgroundColor"
+    >
+      <Box
+        border={{ side: 'bottom' }}
+        pad="small"
+        direction="row"
+        align="center"
+      >
+        <Box
+          fill="horizontal"
+          direction="row"
+          align="center"
+          gap="small"
+        >
+          <WebhooksI size="15px" />
+          <Text
+            size="small"
+            weight="bold"
+          >Webhooks
+          </Text>
         </Box>
-        <Button label='Create' onClick={() => setOpen(true)} />
+        <Button
+          label="Create"
+          onClick={() => setOpen(true)}
+        />
         {open && (
-          <Layer model onClickOutside={() => setOpen(false)}>
-            <Box width='50vw'>
-              <ModalHeader text='Create a new webhook' setOpen={setOpen} />
+          <Layer
+            model
+            onClickOutside={() => setOpen(false)}
+          >
+            <Box width="50vw">
+              <ModalHeader
+                text="Create a new webhook"
+                setOpen={setOpen}
+              />
               <Box fill>
                 <CreateWebhook cancel={() => setOpen(false)} />
               </Box>

@@ -1,6 +1,7 @@
 import gql from 'graphql-tag'
-import { UserFragment, TokenFragment, WebhookFragment, AddressFragment, AccountFragment, PublisherFragment, PublicKeyFragment, TokenAuditFragment, EabCredentialFragment } from '../../models/user'
-import { CardFragment } from '../../models/payments';
+
+import { AccountFragment, AddressFragment, EabCredentialFragment, PublicKeyFragment, PublisherFragment, TokenAuditFragment, TokenFragment, UserFragment, WebhookFragment } from '../../models/user'
+import { CardFragment } from '../../models/payments'
 import { PageInfo } from '../../models/misc'
 
 export const ME_Q = gql`
@@ -30,7 +31,7 @@ export const ME_Q = gql`
   ${AddressFragment}
   ${AccountFragment}
   ${PublisherFragment}
-`;
+`
 
 export const CARDS = gql`
   query {
@@ -55,7 +56,7 @@ export const UPDATE_USER = gql`
     }
   }
   ${UserFragment}
-`;
+`
 
 export const TOKENS_Q = gql`
   query Tokens($cursor: String) {
@@ -68,7 +69,7 @@ export const TOKENS_Q = gql`
   }
   ${PageInfo}
   ${TokenFragment}
-`;
+`
 
 export const CREATE_TOKEN = gql`
   mutation {
@@ -77,7 +78,7 @@ export const CREATE_TOKEN = gql`
     }
   }
   ${TokenFragment}
-`;
+`
 
 export const DELETE_TOKEN = gql`
   mutation DeleteToken($id: ID!) {
@@ -86,7 +87,7 @@ export const DELETE_TOKEN = gql`
     }
   }
   ${TokenFragment}
-`;
+`
 
 export const TOKEN_AUDITS = gql`
   query Token($id: ID!, $cursor: String) {
@@ -121,7 +122,7 @@ export const WEBHOOKS_Q = gql`
   }
   ${WebhookFragment}
   ${PageInfo}
-`;
+`
 
 export const PING_WEBHOOK = gql`
   mutation PingWebhook($repo: String!, $id: ID!) {
@@ -131,7 +132,7 @@ export const PING_WEBHOOK = gql`
       headers
     }
   }
-`;
+`
 
 export const REGISTER_CARD = gql`
   mutation RegisterCard($source: String!) {
@@ -140,7 +141,7 @@ export const REGISTER_CARD = gql`
     }
   }
   ${AccountFragment}
-`;
+`
 
 export const DELETE_CARD = gql`
   mutation DeleteCard($id: ID!) {
@@ -149,7 +150,7 @@ export const DELETE_CARD = gql`
     }
   }
   ${AccountFragment}
-`;
+`
 
 export const CREATE_RESET_TOKEN = gql`
   mutation Reset($attributes: ResetTokenAttributes!) {
@@ -202,13 +203,13 @@ export const SIGNUP_MUTATION = gql`
   mutation Signup($attributes: UserAttributes!, $account: AccountAttributes) {
     signup(attributes: $attributes, account: $account) { jwt }
   }
-`;
+`
 
 export const LOGIN_MUTATION = gql`
   mutation Login($email: String!, $password: String!, $deviceToken: String) {
     login(email: $email, password: $password, deviceToken: $deviceToken) { jwt }
   }
-`;
+`
 
 export const PASSWORDLESS_LOGIN = gql`
   mutation Passwordless($token: String!) {

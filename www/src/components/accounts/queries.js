@@ -1,7 +1,8 @@
 import { gql } from 'apollo-boost'
-import { AuditFragment, DnsDomainFragment, DnsRecordFragment, InviteFragment } from '../../models/account';
-import { PageInfo } from '../../models/misc';
-import { AccountFragment, GroupFragment, GroupMemberFragment, ImpersonationPolicy, RoleFragment, UserFragment } from '../../models/user';
+
+import { AuditFragment, DnsDomainFragment, DnsRecordFragment, InviteFragment } from '../../models/account'
+import { PageInfo } from '../../models/misc'
+import { AccountFragment, GroupFragment, GroupMemberFragment, ImpersonationPolicy, RoleFragment, UserFragment } from '../../models/user'
 
 export const UPDATE_ACCOUNT = gql`
   mutation UpdateAccount($attributes: AccountAttributes!) {
@@ -10,7 +11,7 @@ export const UPDATE_ACCOUNT = gql`
     }
   }
   ${AccountFragment}
-`;
+`
 
 export const USERS_Q = gql`
   query Users($q: String, $serviceAccount: Boolean, $all: Boolean, $ursor: String) {
@@ -26,7 +27,7 @@ export const USERS_Q = gql`
   ${PageInfo}
   ${UserFragment}
   ${ImpersonationPolicy}
-`;
+`
 
 export const GROUPS_Q = gql`
   query Groups($q: String, $cursor: String) {
@@ -39,7 +40,7 @@ export const GROUPS_Q = gql`
   }
   ${PageInfo}
   ${GroupFragment}
-`;
+`
 
 export const SEARCH_USERS = gql`
   query SearchUsers($q: String, $cursor: String) {
@@ -78,7 +79,7 @@ export const GROUP_MEMBERS = gql`
   }
   ${PageInfo}
   ${GroupMemberFragment}
-`;
+`
 
 export const CREATE_GROUP_MEMBERS = gql`
   mutation CreateGroupMember($groupId: ID!, $userId: ID!) {
@@ -87,7 +88,7 @@ export const CREATE_GROUP_MEMBERS = gql`
     }
   }
   ${GroupMemberFragment}
-`;
+`
 
 export const DELETE_GROUP_MEMBER = gql`
   mutation DeleteMember($groupId: ID!, $userId: ID!) {
@@ -105,7 +106,7 @@ export const EDIT_USER = gql`
     }
   }
   ${UserFragment}
-`;
+`
 
 export const CREATE_GROUP = gql`
   mutation CreateGroup($attributes: GroupAttributes!) {
@@ -114,7 +115,7 @@ export const CREATE_GROUP = gql`
     }
   }
   ${GroupFragment}
-`;
+`
 
 export const UPDATE_GROUP = gql`
   mutation UpdateGroup($id: ID!, $attributes: GroupAttributes!) {
@@ -123,7 +124,7 @@ export const UPDATE_GROUP = gql`
     }
   }
   ${GroupFragment}
-`;
+`
 
 export const DELETE_GROUP = gql`
   mutation DeleteGroup($id: ID!) {
@@ -132,7 +133,7 @@ export const DELETE_GROUP = gql`
     }
   }
   ${GroupFragment}
-`;
+`
 
 export const CREATE_INVITE = gql`
   mutation CreateInvite($attributes: InviteAttributes!) {
@@ -141,8 +142,7 @@ export const CREATE_INVITE = gql`
     }
   }
   ${InviteFragment}
-`;
-
+`
 
 export const CREATE_ROLE = gql`
   mutation CreateRole($attributes: RoleAttributes!) {
@@ -151,7 +151,7 @@ export const CREATE_ROLE = gql`
     }
   }
   ${RoleFragment}
-`;
+`
 
 export const UPDATE_ROLE = gql`
   mutation UpdateRole($id: ID!, $attributes: RoleAttributes!) {
@@ -160,7 +160,7 @@ export const UPDATE_ROLE = gql`
     }
   }
   ${RoleFragment}
-`;
+`
 
 export const DELETE_ROLE = gql`
   mutation DeleteRow($id: ID!) {
@@ -169,7 +169,7 @@ export const DELETE_ROLE = gql`
     }
   }
   ${RoleFragment}
-`;
+`
 
 export const CREATE_SERVICE_ACCOUNT = gql`
   mutation Create($attributes: ServiceAccountAttributes!) {
@@ -180,7 +180,7 @@ export const CREATE_SERVICE_ACCOUNT = gql`
   }
   ${ImpersonationPolicy}
   ${UserFragment}
-`;
+`
 
 export const UPDATE_SERVICE_ACCOUNT = gql`
   mutation Create($id: ID!, $attributes: ServiceAccountAttributes!) {
@@ -191,7 +191,7 @@ export const UPDATE_SERVICE_ACCOUNT = gql`
   }
   ${ImpersonationPolicy}
   ${UserFragment}
-`;
+`
 
 export const ROLES_Q = gql`
   query Roles($cursor: String, $q: String) {
@@ -202,7 +202,7 @@ export const ROLES_Q = gql`
   }
   ${PageInfo}
   ${RoleFragment}
-`;
+`
 
 export const AUDITS_Q = gql`
   query Audits($cursor: String) {
@@ -236,8 +236,7 @@ export const DNS_DOMAINS = gql`
   }
   ${PageInfo}
   ${DnsDomainFragment}
-`;
-
+`
 
 export const DNS_RECORDS = gql`
   query Records($id: ID!, $cursor: String) {
@@ -252,7 +251,7 @@ export const DNS_RECORDS = gql`
   }
   ${PageInfo}
   ${DnsRecordFragment}
-`;
+`
 
 export const CREATE_DOMAIN = gql`
   mutation Create($attributes: DnsDomainAttributes!) {
@@ -261,7 +260,7 @@ export const CREATE_DOMAIN = gql`
     }
   }
   ${DnsDomainFragment}
-`;
+`
 
 export const UPDATE_DOMAIN = gql`
   mutation Update($id: ID!, $attributes: DnsDomainAttributes!) {
@@ -270,7 +269,7 @@ export const UPDATE_DOMAIN = gql`
     }
   }
   ${DnsDomainFragment}
-`;
+`
 
 export const DELETE_DOMAIN = gql`
   mutation Delete($id: ID!) {

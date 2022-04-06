@@ -1,8 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import {forceSimulation, forceLink, forceManyBody, forceCenter} from 'd3-force';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { forceCenter, forceLink, forceManyBody, forceSimulation } from 'd3-force'
 
-import {XYPlot, MarkSeriesCanvas, LineSeriesCanvas} from 'index';
+import { LineSeriesCanvas, MarkSeriesCanvas, XYPlot } from 'index'
 
 const colors = [
   '#19CDD7',
@@ -18,8 +18,8 @@ const colors = [
   '#FFCB99',
   '#F89570',
   '#E79FD5',
-  '#89DAC1'
-];
+  '#89DAC1',
+]
 
 /**
  * Create the list of nodes to render.
@@ -27,39 +27,39 @@ const colors = [
  * @private
  */
 function generateSimulation(props) {
-  const {data, height, width, maxSteps, strength} = props;
+  const { data, height, width, maxSteps, strength } = props
   if (!data) {
-    return {nodes: [], links: []};
+    return { nodes: [], links: [] }
   }
   // copy the data
-  const nodes = data.nodes.map(d => ({...d}));
-  const links = data.links.map(d => ({...d}));
+  const nodes = data.nodes.map(d => ({ ...d }))
+  const links = data.links.map(d => ({ ...d }))
   // build the simuatation
   const simulation = forceSimulation(nodes)
     .force('link', forceLink().id(d => d.id))
     .force('charge', forceManyBody().strength(strength))
     .force('center', forceCenter(width / 2, height / 2))
-    .stop();
+    .stop()
 
-  simulation.force('link').links(links);
+  simulation.force('link').links(links)
 
   const upperBound = Math.ceil(
     Math.log(simulation.alphaMin()) / Math.log(1 - simulation.alphaDecay())
-  );
+  )
   for (let i = 0; i < Math.min(maxSteps, upperBound); ++i) {
-    simulation.tick();
+    simulation.tick()
   }
 
-  return {nodes, links};
+  return { nodes, links }
 }
 
 class ForceDirectedGraph extends React.Component {
   static get defaultProps() {
     return {
       className: '',
-      data: {nodes: [], links: []},
-      maxSteps: 50
-    };
+      data: { nodes: [], links: [] },
+      maxSteps: 50,
+    }
   }
 
   static get propTypes() {
@@ -68,53 +68,56 @@ class ForceDirectedGraph extends React.Component {
       data: PropTypes.object.isRequired,
       height: PropTypes.number.isRequired,
       width: PropTypes.number.isRequired,
-      steps: PropTypes.number
-    };
+      steps: PropTypes.number,
+    }
   }
 
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
-      data: generateSimulation(props)
-    };
+      data: generateSimulation(props),
+    }
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      data: generateSimulation(nextProps)
-    });
+      data: generateSimulation(nextProps),
+    })
   }
 
   render() {
-    const {className, height, width, animation} = this.props;
-    const {data} = this.state;
-    const {nodes, links} = data;
+    const { className, height, width, animation } = this.props
+    const { data } = this.state
+    const { nodes, links } = data
+
     return (
-      <XYPlot width={width} height={height} className={className}>
-        {links.map(({source, target}, index) => {
-          return (
-            <LineSeriesCanvas
-              animation={animation}
-              color={'#B3AD9E'}
-              key={`link-${index}`}
-              opacity={0.3}
-              data={[{...source, color: null}, {...target, color: null}]}
-            />
-          );
-        })}
+      <XYPlot
+        width={width}
+        height={height}
+        className={className}
+      >
+        {links.map(({ source, target }, index) => (
+          <LineSeriesCanvas
+            animation={animation}
+            color="#B3AD9E"
+            key={`link-${index}`}
+            opacity={0.3}
+            data={[{ ...source, color: null }, { ...target, color: null }]}
+          />
+        ))}
         <MarkSeriesCanvas
           data={nodes}
           animation={animation}
-          colorType={'category'}
-          stroke={'#ddd'}
+          colorType="category"
+          stroke="#ddd"
           strokeWidth={2}
           colorRange={colors}
         />
       </XYPlot>
-    );
+    )
   }
 }
 
-ForceDirectedGraph.displayName = 'ForceDirectedGraph';
+ForceDirectedGraph.displayName = 'ForceDirectedGraph'
 
-export default ForceDirectedGraph;
+export default ForceDirectedGraph

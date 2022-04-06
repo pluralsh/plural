@@ -1,4 +1,5 @@
 import gql from 'graphql-tag'
+
 import { DependenciesFragment } from './repo'
 
 export const TerraformFragment = gql`
@@ -13,7 +14,7 @@ export const TerraformFragment = gql`
     valuesTemplate
   }
   ${DependenciesFragment}
-`;
+`
 
 export const TerraformInstallationFragment = gql`
   fragment TerraformInstallationFragment on TerraformInstallation {

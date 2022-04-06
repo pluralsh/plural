@@ -1,4 +1,5 @@
 import gql from 'graphql-tag'
+
 import { PageInfo } from '../../models/misc'
 import { RolloutFragment, UpgradeFragment, UpgradeQueueFragment } from '../../models/upgrades'
 
@@ -35,7 +36,7 @@ export const ROLLOUTS = gql`
   }
   ${PageInfo}
   ${RolloutFragment}
-`;
+`
 
 export const UPGRADE_SUB = gql`
   subscription Upgrades($id: ID!) {
@@ -62,4 +63,4 @@ export const ROLLOUT_SUB = gql`
     }
   }
   ${RolloutFragment}
-`;
+`

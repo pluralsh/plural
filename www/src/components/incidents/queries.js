@@ -1,6 +1,7 @@
 import gql from 'graphql-tag'
+
 import { RepoFragment } from '../../models/repo'
-import { FileFragment, FollowerFragment, IncidentFragment, IncidentHistoryFragment, IncidentMessageFragment, NotificationFragment, PostmortemFragment } from '../../models/incidents';
+import { FileFragment, FollowerFragment, IncidentFragment, IncidentHistoryFragment, IncidentMessageFragment, NotificationFragment, PostmortemFragment } from '../../models/incidents'
 import { PageInfo } from '../../models/misc'
 
 export const INCIDENTS_Q = gql`
@@ -12,7 +13,7 @@ export const INCIDENTS_Q = gql`
   }
   ${PageInfo}
   ${IncidentFragment}
-`;
+`
 
 export const SEARCH_USERS = gql`
   query Search($incidentId: ID!, $q: String!, $cursor: String) {
@@ -22,7 +23,7 @@ export const SEARCH_USERS = gql`
     }
   }
   ${PageInfo}
-`;
+`
 
 export const INCIDENT_Q = gql`
   query Incident($id: ID! $cursor: String, $fileCursor: String, $historyCursor: String, $followerCursor: String) {
@@ -137,14 +138,14 @@ export const FOLLOW = gql`
     }
   }
   ${FollowerFragment}
-`;
+`
 
 export const UNFOLLOW = gql`
   mutation Unfollow($id: ID!) {
     unfollowIncident(id: $id) { ...FollowerFragment }
   }
   ${FollowerFragment}
-`;
+`
 
 export const CREATE_MESSAGE = gql`
   mutation CreateMessage($incidentId: ID!, $attributes: IncidentMessageAttributes!) {
@@ -185,7 +186,7 @@ export const DELETE_REACTION = gql`
     deleteReaction(messageId: $id, name: $name) { ...IncidentMessageFragment }
   }
   ${IncidentMessageFragment}
-`;
+`
 
 export const READ_NOTIFICATIONS = gql`
   mutation Read($incidentId: ID!) {

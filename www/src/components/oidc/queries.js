@@ -1,6 +1,7 @@
-import { gql } from "apollo-boost";
-import { OIDCProvider } from "../../models/oauth";
-import { RepoFragment } from "../../models/repo";
+import { gql } from 'apollo-boost'
+
+import { OIDCProvider } from '../../models/oauth'
+import { RepoFragment } from '../../models/repo'
 
 export const CREATE_PROVIDER = gql`
   mutation Provider($id: ID!, $attributes: OIDCAttributes!) {

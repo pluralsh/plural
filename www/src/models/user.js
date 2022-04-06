@@ -7,7 +7,7 @@ export const AccountFragment = gql`
     billingCustomerId
     backgroundColor
   }
-`;
+`
 
 export const GroupFragment = gql`
   fragment GroupFragment on Group {
@@ -16,7 +16,7 @@ export const GroupFragment = gql`
     global
     description
   }
-`;
+`
 
 export const UserFragment = gql`
   fragment UserFragment on User {
@@ -31,7 +31,7 @@ export const UserFragment = gql`
     serviceAccount
     roles { admin }
   }
-`;
+`
 
 export const ImpersonationPolicy = gql`
   fragment ImpersonationPolicy on ImpersonationPolicy {
@@ -49,7 +49,7 @@ export const InviteFragment = gql`
     secureId
     email
   }
-`;
+`
 
 export const GroupMemberFragment = gql`
   fragment GroupMemberFragment on GroupMember {
@@ -57,7 +57,7 @@ export const GroupMemberFragment = gql`
     user { ...UserFragment }
   }
   ${UserFragment}
-`;
+`
 
 export const TokenFragment = gql`
   fragment TokenFragment on PersistedToken {
@@ -65,7 +65,7 @@ export const TokenFragment = gql`
     token
     insertedAt
   }
-`;
+`
 
 export const TokenAuditFragment = gql`
   fragment TokenAuditFragment on PersistedTokenAudit {
@@ -88,7 +88,7 @@ export const AddressFragment = gql`
     state
     zip
   }
-`;
+`
 
 export const PublisherFragment = gql`
   fragment PublisherFragment on Publisher {
@@ -103,7 +103,7 @@ export const PublisherFragment = gql`
   }
   ${UserFragment}
   ${AddressFragment}
-`;
+`
 
 export const WebhookFragment = gql`
   fragment WebhookFragment on Webhook {
@@ -112,7 +112,7 @@ export const WebhookFragment = gql`
     secret
     insertedAt
   }
-`;
+`
 
 export const RoleBindingFragment = gql`
   fragment RoleBindingFragment on RoleBinding {
@@ -122,7 +122,7 @@ export const RoleBindingFragment = gql`
   }
   ${UserFragment}
   ${GroupFragment}
-`;
+`
 
 export const RoleFragment = gql`
   fragment RoleFragment on Role {
@@ -134,7 +134,7 @@ export const RoleFragment = gql`
     roleBindings { ...RoleBindingFragment }
   }
   ${RoleBindingFragment}
-`;
+`
 
 export const PublicKeyFragment = gql`
   fragment PublicKeyFragment on PublicKey {
@@ -143,7 +143,7 @@ export const PublicKeyFragment = gql`
     digest
     insertedAt
   }
-`;
+`
 
 export const EabCredentialFragment = gql`
   fragment EabCredentialFragment on EabCredential {
@@ -154,4 +154,4 @@ export const EabCredentialFragment = gql`
     provider
     insertedAt
   }
-`;
+`

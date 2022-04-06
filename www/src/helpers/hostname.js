@@ -1,15 +1,16 @@
 export function localized(path) {
-  const hostname = window.location.hostname
-  const proto    = window.location.protocol
-  const port     = window.location.port
+  const { hostname } = window.location
+  const proto = window.location.protocol
+  const { port } = window.location
   if (!port) {
     return `${proto}//${hostname}${path}`
   }
+
   return `${proto}//${hostname}:${port}${path}`
 }
 
 export function host() {
-  const {hostname, protocol, port} = window.location
+  const { hostname, protocol, port } = window.location
   const base = `${protocol}//${hostname}`
   if (port) return `${base}:${port}`
 
@@ -18,8 +19,8 @@ export function host() {
 
 export function apiHost() {
   switch (window.location.hostname) {
-    case "localhost":
-      return "app.plural.sh"
+    case 'localhost':
+      return 'app.plural.sh'
     default:
       return window.location.hostname
   }

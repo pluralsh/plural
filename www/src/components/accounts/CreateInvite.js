@@ -1,41 +1,63 @@
 import React, { useState } from 'react'
-import { Button, ModalHeader, InputCollection, ResponsiveInput, Copyable, GqlError } from 'forge-core'
-import { Layer, Box } from 'grommet'
+import { Button, Copyable, GqlError, InputCollection, ModalHeader, ResponsiveInput } from 'forge-core'
+import { Box, Layer } from 'grommet'
 import { useMutation } from 'react-apollo'
-import { CREATE_INVITE } from './queries'
+
 import { apiHost } from '../../helpers/hostname'
 
-export const inviteLink = (invite) => `https://${apiHost()}/invite/${invite.secureId}`
+import { CREATE_INVITE } from './queries'
+
+export const inviteLink = invite => `https://${apiHost()}/invite/${invite.secureId}`
 
 export function InviteForm() {
   const [email, setEmail] = useState('')
-  const [mutation, {loading, data, error}] = useMutation(CREATE_INVITE, {
-    variables: {attributes: {email}}
+  const [mutation, { loading, data, error }] = useMutation(CREATE_INVITE, {
+    variables: { attributes: { email } },
   })
 
   const invite = data && data.createInvite
 
   return (
-    <Box gap='small'>
+    <Box gap="small">
       {invite && (
-        <Box background='light-3' pad='small' round='small'>
-          <Copyable text={inviteLink(invite)} pillText='Invite link copied!' />
+        <Box
+          background="light-3"
+          pad="small"
+          round="small"
+        >
+          <Copyable
+            text={inviteLink(invite)}
+            pillText="Invite link copied!"
+          />
         </Box>
       )}
-      {error && <GqlError error={error} header='Could not create invite' />}
+      {error && (
+        <GqlError
+          error={error}
+          header="Could not create invite"
+        />
+      )}
       <InputCollection>
         <ResponsiveInput
-          label='email'
+          label="email"
           value={email}
-          placeholder='email of person to invite'
-          onChange={({target: {value}}) => setEmail(value)} />
+          placeholder="email of person to invite"
+          onChange={({ target: { value } }) => setEmail(value)}
+        />
       </InputCollection>
       {/* <Box gap='xsmall'>
         <Text size='small' weight='bold'>assign to groups (optional)</Text>
         <GroupTypeahead groups={groups} setGroups={setGroups} />
       </Box> */}
-      <Box direction='row' justify='end'>
-        <Button label='Invite' onClick={mutation} loading={loading} />
+      <Box
+        direction="row"
+        justify="end"
+      >
+        <Button
+          label="Invite"
+          onClick={mutation}
+          loading={loading}
+        />
       </Box>
     </Box>
   )
@@ -43,14 +65,26 @@ export function InviteForm() {
 
 export default function CreateInvite() {
   const [open, setOpen] = useState(false)
+
   return (
     <>
-      <Button label='Invite' onClick={() => setOpen(true)} />
+      <Button
+        label="Invite"
+        onClick={() => setOpen(true)}
+      />
       {open && (
-        <Layer modal position='center' onClickOutside={() => setOpen(false)} onEsc={() => setOpen(false)}>
-          <Box width='35vw'>
-            <ModalHeader text='Invite a user' setOpen={setOpen} />
-            <Box pad='small'>
+        <Layer
+          modal
+          position="center"
+          onClickOutside={() => setOpen(false)}
+          onEsc={() => setOpen(false)}
+        >
+          <Box width="35vw">
+            <ModalHeader
+              text="Invite a user"
+              setOpen={setOpen}
+            />
+            <Box pad="small">
               <InviteForm />
             </Box>
           </Box>

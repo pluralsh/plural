@@ -1,8 +1,9 @@
-import gql from "graphql-tag";
-import { VersionFragment } from "./chart";
-import { IntegrationWebhookFragment } from "./integrations";
-import { RepoFragment } from "./repo";
-import { GroupFragment, RoleFragment, UserFragment } from "./user";
+import gql from 'graphql-tag'
+
+import { VersionFragment } from './chart'
+import { IntegrationWebhookFragment } from './integrations'
+import { RepoFragment } from './repo'
+import { GroupFragment, RoleFragment, UserFragment } from './user'
 
 export const AuditFragment = gql`
   fragment AuditFragment on Audit {
@@ -51,7 +52,7 @@ export const DnsDomainFragment = gql`
   }
   ${UserFragment}
   ${PolicyBindingFragment}
-`;
+`
 
 export const DnsRecordFragment = gql`
   fragment DnsRecordFragment on DnsRecord {
@@ -64,7 +65,7 @@ export const DnsRecordFragment = gql`
     creator { ...UserFragment }
   }
   ${UserFragment}
-`;
+`
 
 export const InviteFragment = gql`
   fragment InviteFragment on Invite {

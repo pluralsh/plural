@@ -1,6 +1,7 @@
 import gql from 'graphql-tag'
-import { PlanFragment, SubscriptionFragment, InvoiceFragment } from '../../models/payments';
-import { InstallationFragment } from '../../models/repo';
+
+import { InvoiceFragment, PlanFragment, SubscriptionFragment } from '../../models/payments'
+import { InstallationFragment } from '../../models/repo'
 
 export const CREATE_PLAN = gql`
   mutation CreatePlan($repositoryId: ID!, $attributes: PlanAttributes!) {
@@ -9,7 +10,7 @@ export const CREATE_PLAN = gql`
     }
   }
   ${PlanFragment}
-`;
+`
 
 export const CREATE_SUBSCRIPTION = gql`
   mutation CreateSubscription($installationId: ID!, $planId: ID!, $attributes: SubscriptionAttributes!) {
@@ -18,7 +19,7 @@ export const CREATE_SUBSCRIPTION = gql`
     }
   }
   ${SubscriptionFragment}
-`;
+`
 
 export const UPDATE_LINE_ITEM = gql`
   mutation UpdateLineItem($subscriptionId: ID!, $attributes: LimitAttributes!) {
@@ -27,7 +28,7 @@ export const UPDATE_LINE_ITEM = gql`
     }
   }
   ${SubscriptionFragment}
-`;
+`
 
 export const UPDATE_PLAN = gql`
   mutation UpdatePlan($subscriptionId: ID!, $planId: ID!) {
@@ -37,7 +38,7 @@ export const UPDATE_PLAN = gql`
   }
   ${SubscriptionFragment}
 
-`;
+`
 
 export const SUBSCRIPTIONS_Q = gql`
   query Subscriptions($cursor: String) {
@@ -52,7 +53,7 @@ export const SUBSCRIPTIONS_Q = gql`
   }
   ${SubscriptionFragment}
   ${InstallationFragment}
-`;
+`
 
 export const SUBSCRIPTION_Q = gql`
   query Subscription($id: ID!) {
@@ -68,7 +69,7 @@ export const SUBSCRIPTION_Q = gql`
   }
   ${InstallationFragment}
   ${InvoiceFragment}
-`;
+`
 
 export const UPDATE_PLAN_ATTRS = gql`
   mutation Update($id: ID!, $attributes: UpdatablePlanAttributes!) {

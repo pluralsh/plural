@@ -1,4 +1,5 @@
 import gql from 'graphql-tag'
+
 import { DependenciesFragment } from './repo'
 
 export const ChartFragment = gql`
@@ -10,7 +11,7 @@ export const ChartFragment = gql`
     dependencies { ...DependenciesFragment }
   }
   ${DependenciesFragment}
-`;
+`
 
 export const VersionTagFragment = gql`
   fragment VersionTagFragment on VersionTag {
@@ -18,7 +19,7 @@ export const VersionTagFragment = gql`
     tag
     version { id }
   }
-`;
+`
 
 export const VersionFragment = gql`
   fragment VersionFragment on Version {
@@ -34,14 +35,14 @@ export const VersionFragment = gql`
   }
   ${ChartFragment}
   ${DependenciesFragment}
-`;
+`
 
 export const ChartInstallationFragment = gql`
   fragment ChartInstallationFragment on ChartInstallation {
     id
     version { id version }
   }
-`;
+`
 
 export const ScanViolation = gql`
   fragment ScanViolation on ScanViolation {

@@ -5,7 +5,7 @@ export const LimitFragment = gql`
     dimension
     quantity
   }
-`;
+`
 
 export const LineItem = gql`
   fragment LineItem on LineItem {
@@ -41,7 +41,7 @@ export const PlanFragment = gql`
   ${LimitFragment}
   ${LineItem}
   ${ServiceLevel}
-`;
+`
 
 export const SubscriptionFragment = gql`
   fragment SubscriptionFragment on RepositorySubscription {
@@ -51,7 +51,7 @@ export const SubscriptionFragment = gql`
   }
   ${PlanFragment}
   ${LimitFragment}
-`;
+`
 
 export const InvoiceItemFragment = gql`
   fragment InvoiceItemFragment on InvoiceItem {
@@ -59,7 +59,7 @@ export const InvoiceItemFragment = gql`
     currency
     description
   }
-`;
+`
 
 export const InvoiceFragment = gql`
   fragment InvoiceFragment on Invoice {
@@ -73,7 +73,7 @@ export const InvoiceFragment = gql`
     lines { ...InvoiceItemFragment }
   }
   ${InvoiceItemFragment}
-`;
+`
 
 export const CardFragment = gql`
   fragment CardFragment on Card {
@@ -84,4 +84,4 @@ export const CardFragment = gql`
     name
     brand
   }
-`;
+`

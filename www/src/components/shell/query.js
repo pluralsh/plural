@@ -1,4 +1,5 @@
 import gql from 'graphql-tag'
+
 import { CloudShellFragment } from '../../models/shell'
 
 export const AUTH_URLS = gql`

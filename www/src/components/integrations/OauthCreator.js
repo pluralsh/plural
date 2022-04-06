@@ -1,31 +1,43 @@
 import React, { useEffect, useMemo } from 'react'
 import { Errors } from 'forge-core'
-import { useParams, useLocation, useHistory } from 'react-router'
+import { useHistory, useLocation, useParams } from 'react-router'
 import { useMutation } from 'react-apollo'
-import { CREATE_OAUTH } from './queries'
-import { ParamToService } from './types'
+
 import { Box, Text } from 'grommet'
+
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
-function OauthError({error, service}) {
+import { CREATE_OAUTH } from './queries'
+import { ParamToService } from './types'
+
+function OauthError({ error, service }) {
   return (
-    <Box fill gap='small' pad='medium'>
-      <Text size='small' weight='bold'>Error creating oauth integration with {service}</Text>
+    <Box
+      fill
+      gap="small"
+      pad="medium"
+    >
+      <Text
+        size="small"
+        weight="bold"
+      >Error creating oauth integration with {service}
+      </Text>
       <Errors errors={error} />
     </Box>
   )
 }
 
 export function OauthCreator() {
-  let history = useHistory()
+  const history = useHistory()
   const location = useLocation()
-  const {service} = useParams()
-  const {redirectUri, code} = useMemo(() => {
+  const { service } = useParams()
+  const { redirectUri, code } = useMemo(() => {
     const params = new URLSearchParams(location.search)
-    return {code: params.get('code'), redirectUri: `${window.location.origin}${window.location.pathname}`}
+
+    return { code: params.get('code'), redirectUri: `${window.location.origin}${window.location.pathname}` }
   }, [location])
-  const [mutation, {loading, data, error}] = useMutation(CREATE_OAUTH, {
-    variables: {attributes: {code, redirectUri, service: ParamToService[service]}}
+  const [mutation, { loading, data, error }] = useMutation(CREATE_OAUTH, {
+    variables: { attributes: { code, redirectUri, service: ParamToService[service] } },
   })
 
   useEffect(() => {
@@ -40,11 +52,26 @@ export function OauthCreator() {
 
   if (loading) return <LoopingLogo />
 
-  if (error) return <OauthError error={error} service={service} />
+  if (error) {
+    return (
+      <OauthError
+        error={error}
+        service={service}
+      />
+    )
+  }
 
   return (
-    <Box fill align='center' justify='center'>
-      <Text size='small' weight='bold'>Created {service} oauth integration</Text>
+    <Box
+      fill
+      align="center"
+      justify="center"
+    >
+      <Text
+        size="small"
+        weight="bold"
+      >Created {service} oauth integration
+      </Text>
     </Box>
   )
 }

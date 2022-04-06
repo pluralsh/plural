@@ -1,7 +1,8 @@
 import gql from 'graphql-tag'
+
 import { ChartFragment } from './chart'
 import { TerraformFragment } from './terraform'
-import { RepoFragment, InstallationFragment } from './repo';
+import { InstallationFragment, RepoFragment } from './repo'
 
 export const RecipeFragment = gql`
   fragment RecipeFragment on Recipe {
@@ -10,7 +11,7 @@ export const RecipeFragment = gql`
     description
     provider
   }
-`;
+`
 
 export const RecipeItemFragment = gql`
   fragment RecipeItemFragment on RecipeItem {
@@ -27,7 +28,7 @@ export const RecipeItemFragment = gql`
   }
   ${ChartFragment}
   ${TerraformFragment}
-`;
+`
 
 export const RecipeSectionFragment = gql`
   fragment RecipeSectionFragment on RecipeSection {
@@ -41,4 +42,4 @@ export const RecipeSectionFragment = gql`
   ${RepoFragment}
   ${RecipeItemFragment}
   ${InstallationFragment}
-`;
+`

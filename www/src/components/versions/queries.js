@@ -1,4 +1,5 @@
 import gql from 'graphql-tag'
+
 import { VersionFragment, VersionTagFragment } from '../../models/chart'
 
 export const UPDATE_VERSION = gql`

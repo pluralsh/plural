@@ -5,6 +5,7 @@ defmodule Core.Services.Tests do
   alias Core.Schema.{
     User,
     Test,
+    Version
   }
   alias Core.Services.{Versions, Repositories}
 
@@ -51,7 +52,12 @@ defmodule Core.Services.Tests do
 
     bindings
     |> Enum.reduce(start_transaction(), fn %{version: version}, tx ->
-      add_operation(tx, version.id, fn _ -> Versions.create_tag(version, tag) end)
+      add_operation(tx, version.id, fn _ ->
+        case compare_vsn(version, tag) do
+          :gt -> Versions.create_tag(version, tag)
+          _ -> {:ok, :ignore}
+        end
+      end)
     end)
     |> execute()
     |> case do
@@ -60,11 +66,22 @@ defmodule Core.Services.Tests do
     end
   end
 
+  defp compare_vsn(%Version{version: vsn} = v, tag) do
+    Versions.get_tag(v, tag)
+    |> Core.Repo.preload([:version])
+    |> case do
+      %{version: %{version: vsn2}} -> Elixir.Version.compare(vsn, vsn2)
+      _ -> :gt
+    end
+  end
+
   defp send_notifs(results, user) do
-    Enum.map(results, fn {k, vt} ->
-      %{version: vsn} = Core.Repo.preload(vt, [:version])
-      {:ok, _} = Versions.notify({:ok, vsn}, :update, user)
-      {k, vsn}
+    Enum.map(results, fn
+      {k, :ignore} -> {k, :ignore}
+      {k, vt} ->
+        %{version: vsn} = Core.Repo.preload(vt, [:version])
+        {:ok, _} = Versions.notify({:ok, vsn}, :update, user)
+        {k, vsn}
     end)
     |> Enum.into(%{})
     |> ok()

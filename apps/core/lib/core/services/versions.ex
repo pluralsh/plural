@@ -19,6 +19,12 @@ defmodule Core.Services.Versions do
   def get_tag(:terraform, id, tag),
     do: Core.Repo.get_by(VersionTag, terraform_id: id, tag: tag)
 
+  def get_tag(%Version{} = version, tag) do
+    tool = derive_tool(version)
+    resource_id = resource_id(version)
+    get_tag(tool, resource_id, tag)
+  end
+
   @doc """
   Creates a new version for a chart.  Fails if the user is not the publisher
   """

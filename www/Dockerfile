@@ -1,4 +1,4 @@
-FROM node:16.9-alpine as build
+FROM node:12.22-alpine as build
 
 WORKDIR /app
 
@@ -25,7 +25,7 @@ COPY yarn.lock /app/yarn.lock
 
 RUN yarn install
 RUN npm config set unsafe-perm true
-RUN npm install react-scripts@3.0.1 -g --silent
+# RUN npm install react-scripts@4.0.3 -g --silent
 
 COPY . /app
 

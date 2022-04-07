@@ -93,13 +93,7 @@
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
-    "extends": "react-app",
-    "rules": {
-      "default-case": "off",
-      "no-mixed-operators": "off",
-      "react-hooks/exhaustive-deps": "off",
-      "jsx-a11y/alt-text": "off"
-    }
+    "extends": "pluralsh"
   },
   "browserslist": {
     "production": [

@@ -35,6 +35,7 @@
     "memoize-one": "^5.1.1",
     "moment": "^2.24.0",
     "phoenix": "^1.5.7",
+    "pluralsh-design-system": "^1.0.0",
     "query-string": "^7.0.1",
     "react": "17",
     "react-ace": "^8.0.0",

@@ -2,9 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 
 import { Add } from 'grommet-icons'
-
-import { Bundle, Configuration, EditField as Edit, Install, Package, Plan as PlanIcon, Update } from 'forge-core'
-
+import { Update, Install, Configuration, Package, EditField as Edit, Bundle, Plan as PlanIcon, Incidents } from 'forge-core'
 import Collapsible from 'react-collapsible'
 
 import { Box } from 'grommet'
@@ -22,6 +20,7 @@ import { BreadcrumbsContext } from '../Breadcrumbs'
 import { OIDCProvider } from '../oidc/OIDCProvider'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
+import { RepositoryTests } from './RepositoryTests'
 
 import { Charts, DockerRepos, RepoCredentials, RepoUpdate, RepositoryIcon, Terraform, UpdateSecrets } from './Repository'
 import { InstallationInner, Plans } from './Installation'
@@ -169,6 +168,11 @@ export function RepoDirectory() {
                 />
               </SubgroupContainer>
             </Box>
+            <SectionItem
+              name="tests" 
+              label="Tests" 
+              icon={Incidents}
+            />
             {repository.installation && (
               <Box flex={false}>
                 <SectionItem
@@ -361,6 +365,9 @@ export function RepoDirectory() {
           header="Artifacts"
         >
           <ArtifactTable artifacts={repository.artifacts} />
+        </SectionContent>
+        <SectionContent name='tests' header='Tests'>
+          <RepositoryTests repository={repository} />
         </SectionContent>
       </Box>
     </Box>

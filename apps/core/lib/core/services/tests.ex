@@ -46,6 +46,30 @@ defmodule Core.Services.Tests do
     |> notify(:update)
   end
 
+  def promote(%Test{status: :succeeded, promote_tag: tag} = test) do
+    %Test{bindings: bindings, creator: user} = Core.Repo.preload(test, [:creator, bindings: :version])
+
+    bindings
+    |> Enum.reduce(start_transaction(), fn %{version: version}, tx ->
+      add_operation(tx, version.id, fn _ -> Versions.create_tag(version, tag) end)
+    end)
+    |> execute()
+    |> case do
+      {:ok, results} -> send_notifs(results, user)
+      err -> err
+    end
+  end
+
+  defp send_notifs(results, user) do
+    Enum.map(results, fn {k, vt} ->
+      %{version: vsn} = Core.Repo.preload(vt, [:version])
+      {:ok, _} = Versions.notify({:ok, vsn}, :update, user)
+      {k, vsn}
+    end)
+    |> Enum.into(%{})
+    |> ok()
+  end
+
   defp notify({:ok, %Test{} = test}, :create),
     do: handle_notify(PubSub.TestCreated, test)
   defp notify({:ok, %Test{} = test}, :update),

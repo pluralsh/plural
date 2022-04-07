@@ -82,3 +82,18 @@ export const ArtifactFragment = gql`
     updatedAt
   }
 `
+
+export const TestFragment = gql`
+  fragment TestFragment on Test {
+    id
+    promoteTag
+    status
+    insertedAt
+    updatedAt
+    steps {
+      name
+      description
+      status
+    }
+  }
+`

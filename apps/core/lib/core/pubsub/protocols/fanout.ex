@@ -106,6 +106,13 @@ defimpl Core.PubSub.Fanout, for: Core.PubSub.GroupUpdated do
   def fanout(_), do: :ignore
 end
 
+defimpl Core.PubSub.Fanout, for: Core.PubSub.TestUpdated do
+  def fanout(%{item: %{status: :succeeded} = test}) do
+    Core.Services.Tests.promote(test)
+  end
+  def fanout(_), do: :ok
+end
+
 defimpl Core.PubSub.Fanout, for: Core.PubSub.LicensePing do
   @moduledoc """
   records a ping timestamp on license fetches to track health of installations

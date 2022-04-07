@@ -1,7 +1,6 @@
 import gql from 'graphql-tag'
-
-import { ArtifactFragment, CategoryFragment, InstallationFragment, IntegrationFragment, RepoFragment } from '../../models/repo'
-import { ChartFragment, ChartInstallationFragment, PackageScan, VersionFragment, VersionTagFragment } from '../../models/chart'
+import { RepoFragment, InstallationFragment, IntegrationFragment, ArtifactFragment, CategoryFragment, TestFragment } from '../../models/repo'
+import { ChartFragment, VersionFragment, ChartInstallationFragment, VersionTagFragment, PackageScan } from '../../models/chart'
 import { TerraformFragment, TerraformInstallationFragment } from '../../models/terraform'
 import { DockerImageFragment, DockerRepoFragment, DockerRepository, VulnerabilityFragment } from '../../models/docker'
 import { RecipeFragment, RecipeSectionFragment } from '../../models/recipe'
@@ -465,4 +464,25 @@ export const UPDATE_DOCKER = gql`
     }
   }
   ${DockerRepository}
+`
+
+export const TESTS_Q = gql`
+  query Tests($repositoryId: ID, $versionId: ID, $cursor: String) {
+    tests(after: $cursor, first: 50, repositoryId: $repositoryId, versionId: $versionId) {
+      pageInfo { ...PageInfo }
+      edges { node { ...TestFragment } }
+    }
+  }
+  ${PageInfo}
+  ${TestFragment}
+`
+
+export const TESTS_SUB = gql`
+  subscription Tests($repositoryId: ID!) {
+    testDelta(repositoryId: $repositoryId) {
+      delta
+      payload { ...TestFragment }
+    }
+  }
+  ${TestFragment}
 `

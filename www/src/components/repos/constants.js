@@ -69,3 +69,10 @@ export const ColorMap = {
   ADJACENT: 'high',
   NETWORK: 'critical',
 }
+
+export const TestStatus = {
+  QUEUED: 'QUEUED',
+  RUNNING: 'RUNNING',
+  FAILED: 'FAILED',
+  SUCEEDED: 'SUCCEEDED',
+}

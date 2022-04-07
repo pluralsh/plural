@@ -125,6 +125,19 @@ defmodule Core.Services.Versions do
     }
   end
 
+  def create_tag(%Version{} = version, tag) do
+    tool = derive_tool(version)
+    resource_id = resource_id(version)
+    tool_id = tool_id(tool)
+
+    case get_tag(tool, resource_id, tag) do
+      %VersionTag{} = tag -> tag
+      _ -> struct(VersionTag, %{tool_id => resource_id, tag: tag})
+    end
+    |> VersionTag.changeset(%{version_id: version.id})
+    |> Core.Repo.insert_or_update()
+  end
+
   defp scan_violations([_ | _] = violations) do
     violations
     |> Enum.map(&Map.put(&1, :severity, String.downcase(&1.severity)))
@@ -147,15 +160,7 @@ defmodule Core.Services.Versions do
     |> Enum.filter(& &1.tag != "latest")
     |> Enum.reduce(transaction, fn tag, xaction ->
       add_operation(xaction, {:tag, tag.tag}, fn %{version: version} ->
-        tool = derive_tool(version)
-        tool_id = tool_id(tool)
-        id = Map.get(version, tool_id)
-        case get_tag(tool, id, tag.tag) do
-          %VersionTag{} = tag -> tag
-          _ -> struct(VersionTag, %{tool_id => id, tag: tag.tag})
-        end
-        |> VersionTag.changeset(%{version_id: version.id})
-        |> Core.Repo.insert_or_update()
+        create_tag(version, tag.tag)
       end)
     end)
   end
@@ -166,6 +171,8 @@ defmodule Core.Services.Versions do
   defp derive_tool(%Version{chart_id: id}) when not is_nil(id), do: :helm
   defp derive_tool(%Version{terraform_id: id}) when not is_nil(id), do: :terraform
 
+  defp resource_id(%Version{chart_id: id}) when not is_nil(id), do: id
+  defp resource_id(%Version{terraform_id: id}) when not is_nil(id), do: id
 
   def notify(%Version{} = v, :create, user),
     do: handle_notify(PubSub.VersionCreated, v, actor: user)

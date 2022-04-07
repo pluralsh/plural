@@ -1,6 +1,6 @@
 defmodule Core.Services.TestsTest do
   use Core.SchemaCase, async: true
-  alias Core.Services.Tests
+  alias Core.Services.{Tests, Versions}
   alias Core.PubSub
 
   describe "#create_test/3" do
@@ -66,6 +66,20 @@ defmodule Core.Services.TestsTest do
     test "random users cannot update tests" do
       test = insert(:test)
       {:error, _} = Tests.update_test(%{status: :succeeded}, test.id, insert(:user))
+    end
+  end
+
+  describe "#promote/1" do
+    test "it will set all bound versions to the promote tag" do
+      test = insert(:test, status: :succeeded, promote_tag: "stable")
+      bindings = insert_list(3, :test_binding, test: test)
+
+      {:ok, _} = Tests.promote(test)
+
+      for %{version: %{id: id} = version} <- bindings do
+        assert Versions.get_tag(:helm, version.chart_id, "stable").version_id == id
+        assert_receive {:event, %PubSub.VersionUpdated{item: %{id: ^id}}}
+      end
     end
   end
 end

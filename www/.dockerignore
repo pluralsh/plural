@@ -1,0 +1,14 @@
+node_modules/
+deps/
+charts/
+.vscode/
+log/
+.git/
+.gitignore
+.dockerignore
+Dockerfile*
+Makefile
+README*
+test/
+priv/static/
+creds/

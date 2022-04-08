@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Messages } from 'forge-core'
+import { Messages as ForgeMessages } from 'forge-core'
 import { Box, Text } from 'grommet'
 import SmoothScroller from '../utils/SmoothScroller'
 import { Message } from './Message'
@@ -8,7 +8,7 @@ import { extendConnection } from '../../utils/graphql'
 function Empty() {
   return (
     <Box width='100%' height='100%' pad='medium' gap='small' align='center' justify='center'>
-      <Messages size='40px' />
+      <ForgeMessages size='40px' />
       <Text size='small'>Get the conversation started</Text>
     </Box>
   )

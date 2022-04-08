@@ -112,7 +112,21 @@ defmodule Core.Services.RepositoriesTest do
       assert installation.user_id == user.id
       assert installation.repository_id == repo.id
       assert installation.license_key
-      assert is_map(installation.context)
+      assert installation.track_tag == "latest"
+
+      assert_receive {:event, %PubSub.InstallationCreated{item: ^installation, actor: ^user}}
+    end
+
+    test "repositories can delegate track_tag", %{user: user} do
+      repo = insert(:repository, default_tag: "stable")
+
+      {:ok, installation} = Repositories.create_installation(%{}, repo.id, user)
+
+      assert installation.auto_upgrade
+      assert installation.user_id == user.id
+      assert installation.repository_id == repo.id
+      assert installation.license_key
+      assert installation.track_tag == "stable"
 
       assert_receive {:event, %PubSub.InstallationCreated{item: ^installation, actor: ^user}}
     end

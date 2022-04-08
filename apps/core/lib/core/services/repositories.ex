@@ -315,12 +315,18 @@ defmodule Core.Services.Repositories do
   """
   @spec create_installation(map, binary, User.t) :: {:ok, Installation.t} | {:error, term}
   def create_installation(attrs, repository_id, %User{} = user) do
+    repo = get_repository!(repository_id)
+    attrs = add_track_tag(attrs, repo)
     %Installation{repository_id: repository_id, user_id: user.id, auto_upgrade: true}
     |> Installation.changeset(Map.put_new(attrs, :context, %{}))
     |> allow(user, :create)
     |> when_ok(:insert)
     |> notify(:create, user)
   end
+
+  defp add_track_tag(attrs, %Repository{default_tag: tag}) when is_binary(tag) and byte_size(tag) > 0,
+    do: Map.put(attrs, :track_tag, tag)
+  defp add_track_tag(attrs, _), do: attrs
 
   @doc """
   Updates the given installation.

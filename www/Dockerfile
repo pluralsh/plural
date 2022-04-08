@@ -1,33 +1,14 @@
-FROM node:16.9-alpine as build
+FROM node:16-slim as build
 
 WORKDIR /app
 
-RUN apk update && \
-  apk upgrade --no-cache && \
-  apk add --no-cache \
-    git \
-    build-base
+COPY package.json ./package.json
+COPY yarn.lock ./yarn.lock
 
-RUN apk add --no-cache --virtual .build-deps \
-    ca-certificates \
-    wget \
-    tar && \
-    cd /usr/local/bin && \
-    wget https://yarnpkg.com/latest.tar.gz && \
-    tar zvxf latest.tar.gz && \
-    ln -s /usr/local/bin/dist/bin/yarn.js /usr/local/bin/yarn.js && \
-    apk del .build-deps
-
-ENV PATH /app/node_modules/.bin:$PATH
-
-COPY package.json /app/package.json
-COPY yarn.lock /app/yarn.lock
-
-RUN yarn install
 RUN npm config set unsafe-perm true
-RUN npm install react-scripts@4 -g --silent
+RUN yarn
 
-COPY . /app
+COPY . ./
 
 RUN yarn run build
 

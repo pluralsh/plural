@@ -6,7 +6,7 @@ COPY package.json ./package.json
 COPY yarn.lock ./yarn.lock
 
 RUN npm config set unsafe-perm true
-RUN yarn install --production
+RUN yarn
 
 COPY . ./
 

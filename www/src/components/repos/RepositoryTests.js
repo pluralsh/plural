@@ -34,12 +34,13 @@ function Status({width, status}) {
   )
 }
 
-function Test({test: {status, insertedAt, updatedAt, promoteTag}, setTest}) {
+function Test({test: {status, name, insertedAt, updatedAt, promoteTag}, setTest}) {
   return (
     <Box pad='small' flex={false} direction='row' gap='xsmall' onClick={setTest} hoverIndicator='tone-light'
          height={ROW_HEIGHT} align='center' border={{side: 'bottom'}}>
-      <HeaderItem text={promoteTag} width='20%' />
-      <HeaderItem text={moment(insertedAt).format('lll')} width='30%' nobold />
+      <HeaderItem text={promoteTag} width='10%' />
+      <HeaderItem text={name || '<unspecified>'} width='20%' />
+      <HeaderItem text={moment(insertedAt).format('lll')} width='20%' nobold />
       <HeaderItem text={updatedAt && moment(updatedAt).format('lll')} width='30%' nobold />
       <Status width='20%' status={status} />
     </Box>
@@ -92,8 +93,9 @@ function TestStepHeader() {
 function TestHeader() {
   return (
     <Box flex={false} pad='small' direction='row' gap='xsmall' height={ROW_HEIGHT} align='center' border={{side: 'bottom'}}>
-      <HeaderItem text='Promote To' width='20%' />
-      <HeaderItem text='created on' width='30%' />
+      <HeaderItem text='Promote To' width='10%' />
+      <HeaderItem text='Name' width='20%' />
+      <HeaderItem text='created on' width='20%' />
       <HeaderItem text='last updated' width='30%' />
       <HeaderItem text='progress' width='20%' />
     </Box>

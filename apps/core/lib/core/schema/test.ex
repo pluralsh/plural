@@ -5,6 +5,7 @@ defmodule Core.Schema.Test do
   defenum Status, queued: 0, running: 1, succeeded: 2, failed: 3
 
   schema "tests" do
+    field :name,        :string
     field :source_tag,  :string
     field :promote_tag, :string
     field :status,      Status
@@ -33,7 +34,7 @@ defmodule Core.Schema.Test do
     from(t in query, order_by: ^order)
   end
 
-  @valid ~w(source_tag promote_tag status repository_id creator_id)a
+  @valid ~w(name source_tag promote_tag status repository_id creator_id)a
 
   def changeset(model, attrs \\ %{}) do
     model

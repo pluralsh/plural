@@ -9,6 +9,7 @@ defmodule GraphQl.Schema.Test do
   ecto_enum :test_status, Core.Schema.Test.Status
 
   input_object :test_attributes do
+    field :name,        :string
     field :status,      :test_status
     field :promote_tag, :string
     field :steps,       list_of(:test_step_attributes)
@@ -24,6 +25,7 @@ defmodule GraphQl.Schema.Test do
 
   object :test do
     field :id,          non_null(:id)
+    field :name,        :string
     field :status,      non_null(:test_status)
     field :source_tag,  non_null(:string)
     field :promote_tag, non_null(:string)

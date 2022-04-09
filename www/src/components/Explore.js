@@ -326,14 +326,14 @@ export function SectionPortal({ children }) {
   )
 }
 
-export function SectionContentContainer({ header, children }) {
+export function SectionContentContainer({ header: h, children }) {
   const theme = useContext(ThemeContext)
-  console.log(theme)
+  const [header, setHeader] = useState(h)
   const [ref, setRef] = useState(null)
   const id = useMemo(() => uuidv4(), [])
 
   return (
-    <SectionContext.Provider value={{ id, ref }}>
+    <SectionContext.Provider value={{ id, ref, setHeader }}>
       <Box fill>
         <Box
           flex={false}

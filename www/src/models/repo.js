@@ -94,6 +94,8 @@ export const TestFragment = gql`
       name
       description
       status
+      insertedAt
+      updatedAt
     }
   }
 `

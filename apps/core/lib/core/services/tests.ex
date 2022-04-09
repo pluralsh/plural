@@ -14,6 +14,8 @@ defmodule Core.Services.Tests do
 
   def get_test!(id), do: Core.Repo.get!(Test, id)
 
+  def get_test(id), do: Core.Repo.get(Test, id)
+
   @doc """
   Will create a new test object for the given repo, with bindings
   for all the user's current installations

@@ -1,6 +1,6 @@
 import { ApolloClient } from 'apollo-client'
 import { createLink } from 'apollo-absinthe-upload-link'
-import { createPersistedQueryLink } from 'apollo-link-persisted-queries'
+// import { createPersistedQueryLink } from 'apollo-link-persisted-queries'
 import { setContext } from 'apollo-link-context'
 import { onError } from 'apollo-link-error'
 import { RetryLink } from 'apollo-link-retry'
@@ -60,11 +60,12 @@ export const socket = new PhoenixSocket(WS_URI, {
 const absintheSocket = AbsintheSocket.create(socket)
 
 const socketLink = createAbsintheSocketLink(absintheSocket)
+// const persistedQueryLink = createPersistedQueryLink()
 
 const splitLink = split(
   operation => hasSubscription(operation.query),
   socketLink,
-  createPersistedQueryLink().concat(retryLink).concat(resetToken).concat(httpLink),
+  retryLink.concat(resetToken).concat(httpLink),
 )
 
 export const client = new ApolloClient({

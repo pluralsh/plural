@@ -1,4 +1,4 @@
-import { Box, Layer, Text } from 'grommet'
+import { Box, Collapsible, Layer, Text } from 'grommet'
 import moment from 'moment'
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-apollo'
@@ -53,76 +53,73 @@ function Test({test: {status, name, insertedAt, updatedAt, promoteTag}, setTest}
   )
 }
 
-function TestLogs({channel, step: {name, id}, close}) {
+function TestLogs({step: {name, id}, testId, close}) {
   const xterm = useRef(null)
   const fitAddon = useMemo(() => new FitAddon(), [])
   useEffect(() => {
+    console.log(xterm)
     if (!xterm || !xterm.current || !xterm.current.terminal) return
-    const term = xterm.current.terminal
+    xterm.current.terminal.setOption('disableStdin', true)
     fitAddon.fit()
-    channel && channel.on("stdo", ({ line, step }) => {
-      console.log({line, step})
-      step === id && term.write(line)
+    console.log('joining test channel')
+    const chan = socket.channel(`tests:${testId}`, {})
+    chan.on("stdo", ({ line, step }) => {
+      console.log({line, step, id})
+      step === id && xterm.current.terminal.writeln(line)
     })
-  }, [xterm, fitAddon, channel])
+    chan.onError(console.log)
+    chan.join()
+    return () => { chan.leave() }
+  }, [testId, xterm, fitAddon])
 
   return (
-    <Layer modal onEsc={close} onClickOutside={close}>
-      <Box width='60vw' height='60vh'>
-        <ModalHeader text={`${name} step logs`} setOpen={close} />
-        <Box fill background={Chalk.background}>
-          <XTerm 
-            className="log-term"
-            ref={xterm}
-            addons={[fitAddon]}
-            options={{ theme: Chalk }}
-          />
-        </Box>
+    <Box fill='horizontal' height='500px'>
+      <ModalHeader text={`${name} step logs`} setOpen={close} />
+      <Box fill background={Chalk.background} pad='small'>
+        <XTerm
+          ref={xterm}
+          addons={[fitAddon]}
+          options={{ theme: Chalk }}
+          onResize={console.log}
+          onData={console.log}
+        />
       </Box>
-    </Layer>
+    </Box>
   )
 }
 
-function Step({step: {status, insertedAt, updatedAt, name, description, ...rest}, channel}) {
+function Step({step: {status, insertedAt, updatedAt, name, description, ...rest}, testId}) {
   const [open, setOpen] = useState(false)
 
   return (
-    <>
-    <Box pad='small' flex={false} direction='row' gap='xsmall' height={ROW_HEIGHT} align='center' border={{side: 'bottom'}}>
-      <HeaderItem text={name} width='20%' />
-      <HeaderItem text={description} width='30%' nobold />
-      <HeaderItem text={moment(updatedAt || insertedAt).format('lll')} width='20%' nobold />
-      <Box width='10%' justify='start' direction='row'>
-        <Icon icon={Logs} onClick={() => setOpen(true)} />
+    <Box border={{side: 'bottom'}}>
+      <Box pad='small' flex={false} direction='row' gap='xsmall' height={ROW_HEIGHT} align='center'>
+        <HeaderItem text={name} width='20%' />
+        <HeaderItem text={description} width='30%' nobold />
+        <HeaderItem text={moment(updatedAt || insertedAt).format('lll')} width='20%' nobold />
+        <Box width='10%' justify='start' direction='row'>
+          <Icon icon={Logs} onClick={() => setOpen(true)} />
+        </Box>
+        <Status width='20%' status={status} />
       </Box>
-      <Status width='20%' status={status} />
+      {open && <TestLogs step={{name, ...rest}} testId={testId} close={() => setOpen(false)} />}
     </Box>
-    {open && <TestLogs step={{name, ...rest}} channel={channel} close={() => setOpen(false)} />}
-    </>
   )
 }
 
 function TestDetails({test: {steps, id}, setTest}) {
   const {setHeader} = useContext(SectionContext)
-  const [channel, setChannel] = useState(null)
 
   useEffect(() => {
     setHeader(`Test ${id}`)
-    const chan = socket.channel(`tests:${id}`, {})
-    chan.onError(console.log)
-    setChannel(chan)
-    chan.join()
-    return () => {
-      chan.leave()
-      setHeader('Tests')
-    }
+    return () => { setHeader('Tests') }
   }, [id])
 
   return (
     <>
     <Box fill>
       <TestStepHeader />
-      {steps.map((step) => <Step key={step.id} step={step} channel={channel} />)}
+      {steps.map((step) => <Step key={step.id} testId={id} step={step} />)}
     </Box>
     <SectionPortal>
       <SecondaryButton label='Return' onClick={() => setTest(null)} />

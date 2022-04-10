@@ -92,6 +92,7 @@ export const TestFragment = gql`
     insertedAt
     updatedAt
     steps {
+      id
       name
       description
       status

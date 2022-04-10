@@ -12,7 +12,8 @@ defmodule Core.Storage do
     Version,
     File,
     Publisher,
-    Account
+    Account,
+    TestStep
   }
 
   @acl :public_read
@@ -45,6 +46,7 @@ defmodule Core.Storage do
   def storage_dir(_, {_file, %Crd{blob_id: blob_id}}), do: "uploads/crds/#{blob_id}"
   def storage_dir(_, {_file, %File{blob_id: blob_id}}), do: "uploads/files/#{blob_id}"
   def storage_dir(_, {_file, %Account{icon_id: icon_id}}), do: "uploads/accounts/#{icon_id}"
+  def storage_dir(_, {_file, %TestStep{id: id}}), do: "uploads/test_logs/#{id}"
 
   def default_url(_), do: nil
 end

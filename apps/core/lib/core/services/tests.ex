@@ -39,10 +39,14 @@ defmodule Core.Services.Tests do
   @doc """
   Will update a test for given attrs
   """
-  @spec update_test(map, binary, User.t) :: test_resp
-  def update_test(attrs, test_id, %User{} = user) do
-    get_test!(test_id)
-    |> Core.Repo.preload([:bindings, :steps])
+  @spec update_test(map, binary | Test.t, User.t) :: test_resp
+  def update_test(attrs, test_id, %User{} = user) when is_binary(test_id) and is_map(attrs) do
+    test = get_test!(test_id) |> Core.Repo.preload([:bindings, :steps])
+    update_test(attrs, test, user)
+  end
+
+  def update_test(attrs, test, %User{} = user) do
+    test
     |> Test.changeset(attrs)
     |> allow(user, :edit)
     |> when_ok(:update)

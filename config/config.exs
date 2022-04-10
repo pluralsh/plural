@@ -135,4 +135,6 @@ config :core, Core.Clients.Hydra,
   hydra_admin: "http://plural-hydra-admin:4445",
   hydra_public: "http://plural-hydra-public:4444"
 
+config :rtc, :flushable, false
+
 import_config "#{Mix.env()}.exs"

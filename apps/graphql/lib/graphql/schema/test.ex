@@ -41,7 +41,9 @@ defmodule GraphQl.Schema.Test do
     field :status,      non_null(:test_status)
     field :name,        non_null(:string)
     field :description, non_null(:string)
-    field :logs,        :string
+    field :logs,        :string, resolve: fn
+      step, _, _ -> {:ok, Core.Storage.url({step.logs, step}, :original)}
+    end
 
     timestamps()
   end

@@ -3,6 +3,7 @@ defmodule RtcWeb.TestChannel do
   alias Core.Schema.Test
   alias Core.Policies.Test, as: TestPolicy
   alias Core.Services.Tests
+  alias Rtc.TestLogger
   require Logger
 
   def join("tests:" <> id, _, socket) do
@@ -19,18 +20,28 @@ defmodule RtcWeb.TestChannel do
 
   def handle_in("stdo", %{"line" => line, "step" => step}, socket) do
     Logger.info "received log line"
-    case socket.assigns.publishable do
-      true ->
+    case socket.assigns do
+      %{publishable: true, test_logger: logger} ->
         broadcast!(socket, "stdo", %{line: line, step: step})
-        {:reply, :ok, socket}
+        logger = TestLogger.add_line(logger, step, line)
+        {:reply, :ok, assign(socket, :test_logger, logger)}
       _ -> {:reply, {:error, :forbidden}, socket}
     end
   end
 
+  def terminate(%{assigns: %{test_logger: logger, test: test, user: user, publishable: true}}, _) do
+    TestLogger.flush(logger, test, user)
+    |> IO.inspect()
+  end
+  def terminate(_, _), do: :ok
+
   defp hydrate_socket(socket, %Test{} = test) do
-    case TestPolicy.allow(test, socket.assigns.user, :edit) do
+    TestPolicy.allow(test, socket.assigns.user, :edit)
+    |> case do
       {:ok, _} -> assign(socket, :publishable, true)
       _ -> assign(socket, :publishable, false)
     end
+    |> assign(:test_logger, TestLogger.new())
+    |> assign(:test, test)
   end
 end

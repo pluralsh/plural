@@ -53,16 +53,16 @@ function Test({test: {status, name, insertedAt, updatedAt, promoteTag}, setTest}
   )
 }
 
-function TestLogs({channel, step: {name, id: stepId}, close}) {
+function TestLogs({channel, step: {name, id}, close}) {
   const xterm = useRef(null)
   const fitAddon = useMemo(() => new FitAddon(), [])
   useEffect(() => {
     if (!xterm || !xterm.current || !xterm.current.terminal) return
     const term = xterm.current.terminal
     fitAddon.fit()
-    channel && channel.on("stdo", ({ line, id }) => {
-      console.log({line, id})
-      id === stepId && term.write(line)
+    channel && channel.on("stdo", ({ line, step }) => {
+      console.log({line, step})
+      step === id && term.write(line)
     })
   }, [xterm, fitAddon, channel])
 

@@ -1,6 +1,7 @@
 defmodule Rtc.TestLogger do
   alias Core.Schema.{Test, User}
   alias Core.Services.Tests
+  require Logger
 
   defstruct [:handles, :flushable]
 
@@ -13,6 +14,7 @@ defmodule Rtc.TestLogger do
   end
 
   def flush(%__MODULE__{handles: handles, flushable: true}, %Test{} = test, %User{} = user) do
+    Logger.info "Flushing logs for test #{test.id}"
     test = Tests.get_test(test.id)
            |> Core.Repo.preload([:steps])
            |> filter_steps(handles)

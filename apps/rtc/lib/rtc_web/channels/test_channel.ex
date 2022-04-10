@@ -30,8 +30,8 @@ defmodule RtcWeb.TestChannel do
   end
 
   def terminate(%{assigns: %{test_logger: logger, test: test, user: user, publishable: true}}, _) do
-    TestLogger.flush(logger, test, user)
-    |> IO.inspect()
+    res = TestLogger.flush(logger, test, user)
+    Logger.info "Flush result: #{inspect(res)}"
   end
   def terminate(_, _), do: :ok
 

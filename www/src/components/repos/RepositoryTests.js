@@ -53,7 +53,13 @@ function Test({test: {status, name, insertedAt, updatedAt, promoteTag}, setTest}
   )
 }
 
-function TestLogs({step: {name, id}, testId, close}) {
+async function fetchLogs(logs, term) {
+  const res = await fetch(logs)
+  const body = await res.text()
+  term.write(body)
+}
+
+function TestLogs({step: {name, id, logs}, testId, close}) {
   const xterm = useRef(null)
   const fitAddon = useMemo(() => new FitAddon(), [])
   useEffect(() => {
@@ -71,6 +77,14 @@ function TestLogs({step: {name, id}, testId, close}) {
     chan.join()
     return () => { chan.leave() }
   }, [testId, xterm, fitAddon])
+
+  useEffect(() => {
+    if (!logs || !xterm || !xterm.current || !xterm.current.terminal) return
+    console.log(logs)
+    const term = xterm.current.terminal
+    term.clear()
+    fetchLogs(logs, term)
+  }, [logs, xterm])
 
   return (
     <Box fill='horizontal' height='500px'>

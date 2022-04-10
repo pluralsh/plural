@@ -3,6 +3,7 @@ defmodule RtcWeb.TestChannel do
   alias Core.Schema.Test
   alias Core.Policies.Test, as: TestPolicy
   alias Core.Services.Tests
+  require Logger
 
   def join("tests:" <> id, _, socket) do
     send(self(), {:connect, id})
@@ -17,6 +18,7 @@ defmodule RtcWeb.TestChannel do
   end
 
   def handle_in("stdo", %{"line" => line, "step" => step}, socket) do
+    Logger.info "received log line"
     case socket.assigns.publishable do
       true ->
         broadcast!(socket, "stdo", %{line: line, step: step})

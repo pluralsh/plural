@@ -54,9 +54,13 @@ function Test({test: {status, name, insertedAt, updatedAt, promoteTag}, setTest}
 }
 
 async function fetchLogs(client, id, step, term) {
-  const {data, ...rest} = await client.query({query: TEST_LOGS, variables: {id, step}})
-  console.log(rest)
-  if (data && data.testLogs) term.write(data.testLogs)
+  const {data} = await client.query({query: TEST_LOGS, variables: {id, step}})
+  if (data && data.testLogs) {
+    const lines = data.testLogs.split(/\r?\n/)
+    for (const l of lines) {
+      term.writeln(l)
+    }
+  }
 }
 
 function TestLogs({step: {name, id, hasLogs}, testId, close}) {

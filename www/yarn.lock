@@ -9978,10 +9978,10 @@ pkg-up@3.1.0, pkg-up@^3.1.0:
   dependencies:
     find-up "^3.0.0"
 
-pluralsh-design-system@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/pluralsh-design-system/-/pluralsh-design-system-1.0.0.tgz#d391b06b74e87d06c4dc9e79af14450e089dce98"
-  integrity sha512-Tb2SswYT32DxAc27EMrZzkhvMTLOtPmAcFaEuIRk7l0mWGxHuM3Tkntg5VUT+pkBLsrCB8WWLRbOh5r3f47hzg==
+pluralsh-design-system@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/pluralsh-design-system/-/pluralsh-design-system-1.1.0.tgz#6d65254107ef291d57fdca11dd2f7694ba57a49f"
+  integrity sha512-kzECwuoOefn1yxIW0vBPpcetU8C70HiKs0zu2ObxtEyGvoWHI2yB8kned8/wVxnWu9eRodDJX2RZnqc9+BJhtg==
   dependencies:
     prop-types "^15.8.1"
 

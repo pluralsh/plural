@@ -1,11 +1,12 @@
 import React from 'react'
-import { Route, Switch } from 'react-router-dom'
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import { Grommet } from 'grommet'
-
+import { ApolloProvider } from 'react-apollo'
 import hljs from 'highlight.js'
 
 import { IntercomProvider } from 'react-use-intercom'
 
+import { client } from './helpers/client'
 import Plural from './components/Plural'
 import { DEFAULT_THEME } from './theme'
 import hljsDefineTerraform from './highlight/terraform'
@@ -22,60 +23,64 @@ hljs.registerLanguage('terraform', hljsDefineTerraform)
 
 export default function App() {
   return (
-    <IntercomProvider appId={INTERCOM_APP_ID}>
-      <Grommet theme={DEFAULT_THEME}>
-        <Switch>
-          <Route
-            path="/reset-password/:id"
-            component={ResetPassword}
-          />
-          <Route
-            exact
-            path="/password-reset"
-            component={PasswordReset}
-          />
-          <Route
-            path="/confirm-email/:id"
-            component={EmailConfirmed}
-          />
-          <Route
-            path="/invite/:inviteId"
-            component={Invite}
-          />
-          <Route
-            path="/passwordless-login/:token"
-            component={PasswordlessLogin}
-          />
-          <Route
-            exact
-            path="/oauth/callback/github/shell"
-            component={Plural}
-          />
-          <Route
-            path="/oauth/callback/:service"
-            component={OAuthCallback}
-          />
-          <Route
-            exact
-            path="/login"
-            component={Login}
-          />
-          <Route
-            exact
-            path="/signup"
-            component={Signup}
-          />
-          <Route
-            exact
-            path="/oauth/consent"
-            component={OAuthConsent}
-          />
-          <Route
-            path="/"
-            component={Plural}
-          />
-        </Switch>
-      </Grommet>
-    </IntercomProvider>
+    <ApolloProvider client={client}>
+      <IntercomProvider appId={INTERCOM_APP_ID}>
+        <Grommet theme={DEFAULT_THEME}>
+          <BrowserRouter>
+            <Switch>
+              <Route
+                path="/reset-password/:id"
+                component={ResetPassword}
+              />
+              <Route
+                exact
+                path="/password-reset"
+                component={PasswordReset}
+              />
+              <Route
+                path="/confirm-email/:id"
+                component={EmailConfirmed}
+              />
+              <Route
+                path="/invite/:inviteId"
+                component={Invite}
+              />
+              <Route
+                path="/passwordless-login/:token"
+                component={PasswordlessLogin}
+              />
+              <Route
+                exact
+                path="/oauth/callback/github/shell"
+                component={Plural}
+              />
+              <Route
+                path="/oauth/callback/:service"
+                component={OAuthCallback}
+              />
+              <Route
+                exact
+                path="/login"
+                component={Login}
+              />
+              <Route
+                exact
+                path="/signup"
+                component={Signup}
+              />
+              <Route
+                exact
+                path="/oauth/consent"
+                component={OAuthConsent}
+              />
+              <Route
+                path="/"
+                component={Plural}
+              />
+            </Switch>
+          </BrowserRouter>
+        </Grommet>
+      </IntercomProvider>
+    </ApolloProvider>
   )
 }

@@ -9,7 +9,10 @@
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
-    "extends": "pluralsh"
+    "extends": "pluralsh",
+    "rules": {
+      "no-unused-vars": ["warn", { "varsIgnorePattern": "^React$" }]
+    }
   },
   "browserslist": {
     "production": [

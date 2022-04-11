@@ -1,6 +1,7 @@
 import gql from 'graphql-tag'
-import { RepoFragment, InstallationFragment, IntegrationFragment, ArtifactFragment, CategoryFragment, TestFragment } from '../../models/repo'
-import { ChartFragment, VersionFragment, ChartInstallationFragment, VersionTagFragment, PackageScan } from '../../models/chart'
+
+import { ArtifactFragment, CategoryFragment, InstallationFragment, IntegrationFragment, RepoFragment, TestFragment } from '../../models/repo'
+import { ChartFragment, ChartInstallationFragment, PackageScan, VersionFragment, VersionTagFragment } from '../../models/chart'
 import { TerraformFragment, TerraformInstallationFragment } from '../../models/terraform'
 import { DockerImageFragment, DockerRepoFragment, DockerRepository, VulnerabilityFragment } from '../../models/docker'
 import { RecipeFragment, RecipeSectionFragment } from '../../models/recipe'

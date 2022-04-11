@@ -44,12 +44,12 @@ function RepoTag({ tag, setTag }) {
   const { dark } = useContext(ThemeContext)
 
   return (
-    <Box 
+    <Box
       round="xsmall"
       background={dark ? 'card' : 'light-2'}
-      pad={{ horizontal: 'xsmall', vertical: '1px' }} 
+      pad={{ horizontal: 'xsmall', vertical: '1px' }}
       hoverIndicator={dark ? 'hover' : 'light-4'}
-      focusIndicator={false} 
+      focusIndicator={false}
       onClick={e => {
         ignore(e); setTag(tag)
       }}
@@ -213,7 +213,7 @@ function CategoryTags({ category, tag, setTag }) {
         <Box
           flex={false}
           pad="xsmall"
-          margin={{ horizontal: 'xsmall' }} 
+          margin={{ horizontal: 'xsmall' }}
           round="xsmall"
           hoverIndicator="hover"
           onClick={loadMore}
@@ -235,7 +235,7 @@ function Category({ category, tag, setTag, unfurl }) {
         flex={false}
         direction="row"
         align="center"
-        hoverIndicator="hover" 
+        hoverIndicator="hover"
         pad={{ horizontal: 'small', vertical: 'xsmall' }}
         border={open ? { side: 'bottom' } : null}
         onClick={() => setOpen(!open)}
@@ -294,7 +294,7 @@ function TagSidebar({ tag, setTag }) {
     >
       <Box flex={false}>
         {categories.map((category, ind) => (
-          <Category 
+          <Category
             key={category.category}
             unfurl={ind === 0}
             category={category}
@@ -339,7 +339,7 @@ export function SectionContentContainer({ header: h, children }) {
           flex={false}
           direction="row"
           pad="small"
-          height="45px" 
+          height="45px"
           border={{ side: 'bottom' }}
           align="center"
           background={theme.dark ? 'card' : null}
@@ -374,7 +374,7 @@ export function SectionItemContainer({ label, icon, selected, location, ...props
       pad="small"
       round="3px"
       background={selected ? 'sidebarHover' : null}
-      fill="horizontal" 
+      fill="horizontal"
       align="center"
       gap="small"
       direction="row"
@@ -420,7 +420,7 @@ export default function Explore() {
   const { group, tag } = useParams()
   const history = useHistory()
   const me = useContext(CurrentUserContext)
-  const args = filters(group, me) 
+  const args = filters(group, me)
   const { data, loading, fetchMore } = useQuery(EXPLORE_REPOS, {
     variables: { tag, ...args },
     fetchPolicy: 'cache-and-network',
@@ -435,7 +435,7 @@ export default function Explore() {
     setBreadcrumbs(crumbs)
   }, [group, tag])
   const doSetTag = useCallback(t => (
-    t === tag ? history.push('/explore/public') : 
+    t === tag ? history.push('/explore/public') :
       history.push(`/explore/public/${t}`)
   ), [tag])
 
@@ -458,21 +458,21 @@ export default function Explore() {
       fill
     >
       <SubmenuPortal name="explore">
-        <SubmenuItem 
-          url="/explore/public" 
-          label="Public" 
+        <SubmenuItem
+          url="/explore/public"
+          label="Public"
           selected={group === 'public'}
           icon={<Public size="14px" />}
         />
-        <SubmenuItem 
-          url="/explore/installed" 
-          label="Installed" 
+        <SubmenuItem
+          url="/explore/installed"
+          label="Installed"
           selected={group === 'installed'}
           icon={<Installed size="14px" />}
         />
         {me.publisher && (
-          <SubmenuItem 
-            url="/explore/published" 
+          <SubmenuItem
+            url="/explore/published"
             label="Published"
             selected={group === 'published'}
             icon={<Publisher size="14px" />}
@@ -494,12 +494,12 @@ export default function Explore() {
               setTag={doSetTag}
               tag={tag}
             />
-            <Repositories 
-              refreshBy={refreshBy} 
-              edges={edges} 
-              loading={loading} 
-              pageInfo={pageInfo} 
-              fetchMore={fetchMore} 
+            <Repositories
+              refreshBy={refreshBy}
+              edges={edges}
+              loading={loading}
+              pageInfo={pageInfo}
+              fetchMore={fetchMore}
               setTag={doSetTag}
             />
           </Box>
@@ -509,12 +509,12 @@ export default function Explore() {
           header="Installed Repositories"
         >
           {edges.length > 0 ? (
-            <Repositories 
-              refreshBy={refreshBy} 
-              edges={edges} 
-              loading={loading} 
-              pageInfo={pageInfo} 
-              fetchMore={fetchMore} 
+            <Repositories
+              refreshBy={refreshBy}
+              edges={edges}
+              loading={loading}
+              pageInfo={pageInfo}
+              fetchMore={fetchMore}
               setTag={doSetTag}
             />
           ) :
@@ -526,10 +526,10 @@ export default function Explore() {
         >
           <Repositories
             refreshBy={refreshBy}
-            edges={edges} 
-            loading={loading} 
-            pageInfo={pageInfo} 
-            fetchMore={fetchMore} 
+            edges={edges}
+            loading={loading}
+            pageInfo={pageInfo}
+            fetchMore={fetchMore}
             setTag={doSetTag}
           /> :
         </SectionContent>

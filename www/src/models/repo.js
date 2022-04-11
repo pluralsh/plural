@@ -86,14 +86,19 @@ export const ArtifactFragment = gql`
 export const TestFragment = gql`
   fragment TestFragment on Test {
     id
+    name
     promoteTag
     status
     insertedAt
     updatedAt
     steps {
+      id
       name
-      description
       status
+      hasLogs
+      description
+      insertedAt
+      updatedAt
     }
   }
 `

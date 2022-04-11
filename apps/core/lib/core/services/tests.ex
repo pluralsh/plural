@@ -5,6 +5,7 @@ defmodule Core.Services.Tests do
   alias Core.Schema.{
     User,
     Test,
+    Version
   }
   alias Core.Services.{Versions, Repositories}
 
@@ -12,6 +13,8 @@ defmodule Core.Services.Tests do
   @type test_resp :: {:ok, Test.t} | error
 
   def get_test!(id), do: Core.Repo.get!(Test, id)
+
+  def get_test(id), do: Core.Repo.get(Test, id)
 
   @doc """
   Will create a new test object for the given repo, with bindings
@@ -36,10 +39,14 @@ defmodule Core.Services.Tests do
   @doc """
   Will update a test for given attrs
   """
-  @spec update_test(map, binary, User.t) :: test_resp
-  def update_test(attrs, test_id, %User{} = user) do
-    get_test!(test_id)
-    |> Core.Repo.preload([:bindings, :steps])
+  @spec update_test(map, binary | Test.t, User.t) :: test_resp
+  def update_test(attrs, test_id, %User{} = user) when is_binary(test_id) and is_map(attrs) do
+    test = get_test!(test_id) |> Core.Repo.preload([:bindings, :steps])
+    update_test(attrs, test, user)
+  end
+
+  def update_test(attrs, test, %User{} = user) do
+    test
     |> Test.changeset(attrs)
     |> allow(user, :edit)
     |> when_ok(:update)
@@ -51,7 +58,12 @@ defmodule Core.Services.Tests do
 
     bindings
     |> Enum.reduce(start_transaction(), fn %{version: version}, tx ->
-      add_operation(tx, version.id, fn _ -> Versions.create_tag(version, tag) end)
+      add_operation(tx, version.id, fn _ ->
+        case compare_vsn(version, tag) do
+          :gt -> Versions.create_tag(version, tag)
+          _ -> {:ok, :ignore}
+        end
+      end)
     end)
     |> execute()
     |> case do
@@ -60,11 +72,22 @@ defmodule Core.Services.Tests do
     end
   end
 
+  defp compare_vsn(%Version{version: vsn} = v, tag) do
+    Versions.get_tag(v, tag)
+    |> Core.Repo.preload([:version])
+    |> case do
+      %{version: %{version: vsn2}} -> Elixir.Version.compare(vsn, vsn2)
+      _ -> :gt
+    end
+  end
+
   defp send_notifs(results, user) do
-    Enum.map(results, fn {k, vt} ->
-      %{version: vsn} = Core.Repo.preload(vt, [:version])
-      {:ok, _} = Versions.notify({:ok, vsn}, :update, user)
-      {k, vsn}
+    Enum.map(results, fn
+      {k, :ignore} -> {k, :ignore}
+      {k, vt} ->
+        %{version: vsn} = Core.Repo.preload(vt, [:version])
+        {:ok, _} = Versions.notify({:ok, vsn}, :update, user)
+        {k, vsn}
     end)
     |> Enum.into(%{})
     |> ok()

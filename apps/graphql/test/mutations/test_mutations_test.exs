@@ -12,18 +12,21 @@ defmodule GraphQl.TestMutationsTest do
         mutation Create($id: ID!, $attrs: TestAttributes!) {
           createTest(repositoryId: $id, attributes: $attrs) {
             id
+            name
             status
             promoteTag
             steps { id name description status }
           }
         }
       """, %{"id" => repo.id, "attrs" => %{
+        "name" => "example-name",
         "promoteTag" => "warm",
         "status" => "QUEUED",
         "steps" => [%{"name" => "name", "description" => "description", "status" => "QUEUED"}]
       }}, %{current_user: owner})
 
       assert test["id"]
+      assert test["name"] == "example-name"
       assert test["promoteTag"] == "warm"
       assert test["status"] == "QUEUED"
 

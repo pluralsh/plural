@@ -25,7 +25,7 @@ defimpl Core.Rollouts.Rollable, for: [Core.PubSub.VersionCreated, Core.PubSub.Ve
     |> TerraformInstallation.ordered()
   end
 
-  defp maybe_ignore_version(q, Core.PubSub.VersionUpdated, _, _), do: q
+  # defp maybe_ignore_version(q, Core.PubSub.VersionUpdated, _, _), do: q
   defp maybe_ignore_version(q, _, mod, id), do: mod.ignore_version(q, id)
 
   def process(%{item: version}, %{installation: %{user: user}} = inst) do
@@ -44,7 +44,7 @@ defimpl Core.Rollouts.Rollable, for: [Core.PubSub.VersionCreated, Core.PubSub.Ve
       |> Core.Repo.update()
     end)
     |> add_operation(:upgrades, fn
-      %{inst: %{locked: true} = inst} -> {:ok, []}
+      %{inst: %{locked: true}} -> {:ok, []}
       %{inst: inst} -> deliver_upgrades(inst.installation.user_id, fn queue ->
         Core.Services.Upgrades.create_upgrade(%{
           repository_id: repo_id(version),

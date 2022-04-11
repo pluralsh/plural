@@ -1,6 +1,0 @@
-spec:
-  chart: plural
-  version: 0.6.65
-tags:
-- stable
-- warm

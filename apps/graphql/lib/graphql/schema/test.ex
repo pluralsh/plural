@@ -9,6 +9,7 @@ defmodule GraphQl.Schema.Test do
   ecto_enum :test_status, Core.Schema.Test.Status
 
   input_object :test_attributes do
+    field :name,        :string
     field :status,      :test_status
     field :promote_tag, :string
     field :steps,       list_of(:test_step_attributes)
@@ -24,6 +25,7 @@ defmodule GraphQl.Schema.Test do
 
   object :test do
     field :id,          non_null(:id)
+    field :name,        :string
     field :status,      non_null(:test_status)
     field :source_tag,  non_null(:string)
     field :promote_tag, non_null(:string)
@@ -39,7 +41,9 @@ defmodule GraphQl.Schema.Test do
     field :status,      non_null(:test_status)
     field :name,        non_null(:string)
     field :description, non_null(:string)
-    field :logs,        :string
+    field :has_logs,    :boolean, resolve: fn
+      %{logs: logs}, _, _ -> {:ok, !!logs}
+    end
 
     timestamps()
   end
@@ -59,6 +63,13 @@ defmodule GraphQl.Schema.Test do
       arg :id, non_null(:id)
 
       safe_resolve &Test.resolve_test/2
+    end
+
+    field :test_logs, :string do
+      arg :id,   non_null(:id)
+      arg :step, non_null(:id)
+
+      safe_resolve &Test.resolve_logs/2
     end
   end
 

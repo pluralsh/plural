@@ -4,4 +4,3 @@ ATTRIBUTES Plural repository.yaml
 TF terraform/*
 HELM helm/plural
 RECIPE plural/recipes/*
-TAG plural/tags/**/*

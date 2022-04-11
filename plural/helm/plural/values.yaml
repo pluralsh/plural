@@ -512,3 +512,9 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+test-base:
+  enabled: false
+  repository: plural
+  testName: plural-integration
+  promoteTag: warm

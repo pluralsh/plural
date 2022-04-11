@@ -25,6 +25,7 @@ defmodule GraphQl.Schema.Repository do
     field :tags,           list_of(:tag_attributes)
     field :private,        :boolean
     field :notes,          :string
+    field :default_tag,    :string
     field :oauth_settings, :oauth_settings_attributes
     field :integration_resource_definition, :resource_definition_attributes
   end
@@ -131,6 +132,7 @@ defmodule GraphQl.Schema.Repository do
     field :category,       :category
     field :private,        :boolean
     field :notes,          :string
+    field :default_tag,    :string
     field :publisher,      :publisher, resolve: dataloader(User)
     field :plans,          list_of(:plan), resolve: dataloader(Payments)
     field :tags,           list_of(:tag), resolve: dataloader(Repository)

@@ -467,7 +467,7 @@ export const UPDATE_DOCKER = gql`
 `
 
 export const TESTS_Q = gql`
-  query Tests($repositoryId: ID, $versionId: ID, $cursor: String) {
+  query RepoTests($repositoryId: ID, $versionId: ID, $cursor: String) {
     tests(after: $cursor, first: 50, repositoryId: $repositoryId, versionId: $versionId) {
       pageInfo { ...PageInfo }
       edges { node { ...TestFragment } }
@@ -485,4 +485,10 @@ export const TESTS_SUB = gql`
     }
   }
   ${TestFragment}
+`
+
+export const TEST_LOGS = gql`
+  query Logs($id: ID!, $step: ID!) {
+    testLogs(id: $id, step: $step)
+  }
 `

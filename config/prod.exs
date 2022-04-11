@@ -61,3 +61,4 @@ config :worker, upgrade_pipeline: [
 ]
 
 config :kazan, :server, :in_cluster
+config :rtc, :flushable, true

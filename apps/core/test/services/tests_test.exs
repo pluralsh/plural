@@ -15,11 +15,13 @@ defmodule Core.Services.TestsTest do
       ti = insert(:terraform_installation, terraform: tf, installation: inst, version: build(:version, terraform: tf, chart_id: nil, chart: nil))
 
       {:ok, test} = Tests.create_test(%{
+        name:  "example-name",
         steps: [%{name: "validate", description: "ensures the package is valid", status: :queued}],
         status: :queued,
         promote_tag: "warm",
       }, repo.id, user)
 
+      assert test.name == "example-name"
       assert test.status == :queued
       assert test.creator_id == user.id
       assert test.repository_id == repo.id

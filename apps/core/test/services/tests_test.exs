@@ -71,6 +71,28 @@ defmodule Core.Services.TestsTest do
     end
   end
 
+  describe "#update_step/3" do
+    test "test creators can update test steps" do
+      user = insert(:user)
+      step = insert(:test_step, test: build(:test, creator: user))
+
+      {:ok, updated} = Tests.update_step(%{name: "update"}, step.id, user)
+
+      assert updated.name == "update"
+
+      assert_receive {:event, %PubSub.TestUpdated{item: test}}
+
+      assert test.id == step.test_id
+    end
+
+    test "random users cannot update" do
+      user = insert(:user)
+      step = insert(:test_step)
+
+      {:error, _} = Tests.update_step(%{name: "update"}, step.id, user)
+    end
+  end
+
   describe "#promote/1" do
     test "it will set all bound versions to the promote tag" do
       test = insert(:test, status: :succeeded, promote_tag: "stable")

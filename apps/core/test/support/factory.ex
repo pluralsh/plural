@@ -512,6 +512,8 @@ defmodule Core.Factory do
     %Schema.TestStep{
       name: sequence(:test_step, & "step-#{&1}"),
       test: build(:test),
+      status: :queued,
+      description: "description"
     }
   end
 

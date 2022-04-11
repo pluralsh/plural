@@ -35,4 +35,7 @@ defmodule GraphQl.Resolvers.Test do
 
   def update_test(%{attributes: attrs, id: id}, %{context: %{current_user: user}}),
     do: Tests.update_test(attrs, id, user)
+
+  def update_step(%{attributes: attrs, id: id}, %{context: %{current_user: user}}),
+    do: Tests.update_step(attrs, id, user)
 end

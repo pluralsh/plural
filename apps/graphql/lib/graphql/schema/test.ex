@@ -20,7 +20,7 @@ defmodule GraphQl.Schema.Test do
     field :name,        non_null(:string)
     field :description, non_null(:string)
     field :status,      non_null(:test_status)
-    field :logs,        :string
+    field :logs,        :upload_or_url
   end
 
   object :test do
@@ -89,6 +89,14 @@ defmodule GraphQl.Schema.Test do
       arg :attributes, non_null(:test_attributes)
 
       safe_resolve &Test.update_test/2
+    end
+
+    field :update_step, :test_step do
+      middleware Authenticated
+      arg :id,         non_null(:id)
+      arg :attributes, non_null(:test_attributes)
+
+      safe_resolve &Test.update_step/2
     end
   end
 

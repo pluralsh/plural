@@ -5,16 +5,20 @@ defmodule Core.Services.Tests do
   alias Core.Schema.{
     User,
     Test,
+    TestStep,
     Version
   }
   alias Core.Services.{Versions, Repositories}
 
   @type error :: {:error, term}
   @type test_resp :: {:ok, Test.t} | error
+  @type step_resp :: {:ok, TestStep.t} | error
 
   def get_test!(id), do: Core.Repo.get!(Test, id)
 
   def get_test(id), do: Core.Repo.get(Test, id)
+
+  def get_step!(id), do: Core.Repo.get!(TestStep, id)
 
   @doc """
   Will create a new test object for the given repo, with bindings
@@ -45,9 +49,22 @@ defmodule Core.Services.Tests do
     update_test(attrs, test, user)
   end
 
-  def update_test(attrs, test, %User{} = user) do
+  def update_test(attrs, %Test{} = test, %User{} = user) do
     test
     |> Test.changeset(attrs)
+    |> allow(user, :edit)
+    |> when_ok(:update)
+    |> notify(:update)
+  end
+
+  @doc """
+  Will edit the attributes of a test step (useful for setting log objects)
+  """
+  @spec update_step(map, binary, User.t) :: step_resp
+  def update_step(attrs, step_id, %User{} = user) do
+    get_step!(step_id)
+    |> Core.Repo.preload([:test])
+    |> TestStep.changeset(attrs)
     |> allow(user, :edit)
     |> when_ok(:update)
     |> notify(:update)
@@ -97,6 +114,10 @@ defmodule Core.Services.Tests do
     do: handle_notify(PubSub.TestCreated, test)
   defp notify({:ok, %Test{} = test}, :update),
     do: handle_notify(PubSub.TestUpdated, test)
+  defp notify({:ok, %TestStep{test: %Test{} = t} = step}, :update) do
+    handle_notify(PubSub.TestUpdated, t)
+    {:ok, step}
+  end
 
   defp notify(pass, _), do: pass
 end

@@ -55,4 +55,23 @@ defmodule GraphQl.TestMutationsTest do
       assert t["status"] == "SUCCEEDED"
     end
   end
+
+  describe "updateStep" do
+    test "owners can update tests" do
+      owner = insert(:user)
+      step  = insert(:test_step, test: build(:test, creator: owner))
+
+      {:ok, %{data: %{"updateStep" => t}}} = run_query("""
+        mutation Update($id: ID!, $attrs: TestAttributes!) {
+          updateStep(id: $id, attributes: $attrs) {
+            id
+            status
+          }
+        }
+      """, %{"id" => step.id, "attrs" => %{"status" => "SUCCEEDED"}}, %{current_user: owner})
+
+      assert t["id"] == step.id
+      assert t["status"] == "SUCCEEDED"
+    end
+  end
 end

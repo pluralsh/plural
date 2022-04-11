@@ -13,47 +13,44 @@ import {
 
 import { CurrentUserContext } from './login/CurrentUser'
 
-console.log(
-  InstalledIcon,
-  ListIcon,
-  MagnifyingGlassIcon,
-  PeopleIcon,
-  PersonIcon,
-  PluralSidebar,
-  SirenIcon,
-  WebhooksIcon
-)
-
 const items = [
-  { name: 'Explore',
+  {
+    name: 'Explore',
     Icon: MagnifyingGlassIcon,
     url: '/explore',
   },
-  { name: 'Installed',
+  {
+    name: 'Installed',
     Icon: InstalledIcon,
     url: '/installed',
   },
-  { name: 'User',
+  {
+    name: 'User',
     Icon: PersonIcon,
     url: '/me/edit',
   },
-  { name: 'Accounts',
+  {
+    name: 'Accounts',
     Icon: PeopleIcon,
     url: '/accounts/edit',
   },
-  { name: 'Upgrades',
+  {
+    name: 'Upgrades',
     Icon: PeopleIcon,
     url: '/upgrades',
   },
-  { name: 'Incidents',
+  {
+    name: 'Incidents',
     Icon: SirenIcon,
     url: '/incidents',
   },
-  { name: 'Integrations',
+  {
+    name: 'Integrations',
     Icon: WebhooksIcon,
     url: '/webhooks',
   },
-  { name: 'Audits',
+  {
+    name: 'Audits',
     Icon: ListIcon,
     url: '/audits',
   },

@@ -62,7 +62,7 @@ defmodule GraphQl.TestMutationsTest do
       step  = insert(:test_step, test: build(:test, creator: owner))
 
       {:ok, %{data: %{"updateStep" => t}}} = run_query("""
-        mutation Update($id: ID!, $attrs: TestAttributes!) {
+        mutation Update($id: ID!, $attrs: TestStepAttributes!) {
           updateStep(id: $id, attributes: $attrs) {
             id
             status

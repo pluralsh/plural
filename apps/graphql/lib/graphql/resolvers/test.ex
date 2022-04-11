@@ -20,6 +20,14 @@ defmodule GraphQl.Resolvers.Test do
 
   def resolve_test(%{id: id}, _), do: {:ok, Tests.get_test!(id)}
 
+  def resolve_logs(%{id: id, step: step}, _) do
+    %{steps: steps} = Tests.get_test!(id) |> Core.Repo.preload([:steps])
+    with %TestStep{} = step <- Enum.find(steps, & &1.id == step),
+         {:ok, url} <- Core.Storage.url({step.logs, step}, :original),
+         {:ok, %HTTPoison.Response{body: body}} <- HTTPoison.get(url),
+      do: {:ok, body}
+  end
+
   def create_test(%{attributes: attrs} = args, %{context: %{current_user: user}}) do
     repo_id = get_repo_id(args)
     Tests.create_test(attrs, repo_id, user)

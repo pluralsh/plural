@@ -41,8 +41,8 @@ defmodule GraphQl.Schema.Test do
     field :status,      non_null(:test_status)
     field :name,        non_null(:string)
     field :description, non_null(:string)
-    field :logs,        :string, resolve: fn
-      step, _, _ -> {:ok, Core.Storage.url({step.logs, step}, :original)}
+    field :has_logs,    :boolean, resolve: fn
+      %{logs: logs}, _, _ -> {:ok, !!logs}
     end
 
     timestamps()
@@ -63,6 +63,13 @@ defmodule GraphQl.Schema.Test do
       arg :id, non_null(:id)
 
       safe_resolve &Test.resolve_test/2
+    end
+
+    field :test_logs, :string do
+      arg :id,   non_null(:id)
+      arg :step, non_null(:id)
+
+      safe_resolve &Test.resolve_logs/2
     end
   end
 

@@ -1,3 +1,6 @@
+// DEPRECATED
+// In favor of plural-design-system/theme
+
 import { css } from 'styled-components'
 
 import { alpha, shadeColor } from './utils/color'

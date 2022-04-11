@@ -3,6 +3,8 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import { Grommet } from 'grommet'
 import { ApolloProvider } from 'react-apollo'
 import hljs from 'highlight.js'
+import merge from 'lodash.merge'
+import { theme as pluralTheme } from 'pluralsh-design-system'
 
 import { IntercomProvider } from 'react-use-intercom'
 
@@ -25,7 +27,7 @@ export default function App() {
   return (
     <ApolloProvider client={client}>
       <IntercomProvider appId={INTERCOM_APP_ID}>
-        <Grommet theme={DEFAULT_THEME}>
+        <Grommet theme={merge({}, pluralTheme, DEFAULT_THEME)}> {/* TODO: DELETE DEFAULT_THEME */}
           <BrowserRouter>
             <Switch>
               <Route

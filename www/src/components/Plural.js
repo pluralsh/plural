@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useMemo } from 'react'
 import { Box, Grid } from 'grommet'
 import { Redirect, Route, Switch } from 'react-router-dom'
 
@@ -40,6 +40,15 @@ import { CloudShell, OAuthCallback } from './shell/CloudShell'
 
 export const TOOLBAR_SIZE = '55px'
 
+function EditIncident(props) {
+  return (
+    <Incident
+      {...props}
+      editing
+    />
+  )
+}
+
 function EditBilling(props) {
   return (
     <EditAccount
@@ -51,6 +60,7 @@ function EditBilling(props) {
 
 function WrapStripe({ children }) {
   const { stripePublishableKey } = useContext(PluralConfigurationContext)
+
   if (!stripePublishableKey) return children
 
   return (
@@ -65,7 +75,7 @@ export function PluralInner() {
 
   return (
     <NavigationContext>
-      <IncidentContext.Provider value={{}}>
+      <IncidentContext.Provider value={useMemo(() => ({}), [])}>
         <WrapStripe>
           <BreadcrumbProvider>
             <VerifyEmailConfirmed />
@@ -122,7 +132,7 @@ export function PluralInner() {
                       <Route
                         path="/publishers/:id/:editing"
                         component={MyPublisher}
-                      />              
+                      />
                       <Route
                         path="/publishers/:publisherId"
                         component={Publisher}
@@ -225,12 +235,7 @@ export function PluralInner() {
                       </Route>
                       <Route
                         path="/incident/:incidentId/edit"
-                        component={props => (
-                          <Incident
-                            {...props}
-                            editing
-                          />
-                        )}
+                        component={EditIncident}
                       />
                       <Route
                         path="/incident/:incidentId"

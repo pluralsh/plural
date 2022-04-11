@@ -486,3 +486,9 @@ export const TESTS_SUB = gql`
   }
   ${TestFragment}
 `
+
+export const TEST_LOGS = gql`
+  query Logs($id: ID!, $step: ID!) {
+    testLogs(id: $id, step: $step)
+  }
+`

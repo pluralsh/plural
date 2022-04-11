@@ -94,9 +94,9 @@ export const TestFragment = gql`
     steps {
       id
       name
-      logs
-      description
       status
+      hasLogs
+      description
       insertedAt
       updatedAt
     }

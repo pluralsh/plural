@@ -1,7 +1,7 @@
-import { Box, Collapsible, Layer, Text } from 'grommet'
-import moment from 'moment'
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
-import { useQuery } from 'react-apollo'
+import moment from 'moment'
+import { Box, Text } from 'grommet'
+import { useApolloClient, useQuery } from 'react-apollo'
 import { SecondaryButton, Logs } from 'forge-core'
 import { BeatLoader } from 'react-spinners'
 import { appendConnection, extendConnection } from '../../utils/graphql'
@@ -9,7 +9,7 @@ import { SectionContext, SectionPortal } from '../Explore'
 import { StandardScroller } from '../utils/SmoothScroller'
 import { TestStatus } from './constants'
 import { HeaderItem } from './Docker'
-import { TESTS_Q, TESTS_SUB } from './queries'
+import { TESTS_Q, TESTS_SUB, TEST_LOGS } from './queries'
 import { XTerm } from 'xterm-for-react'
 import { FitAddon } from 'xterm-addon-fit'
 import { Chalk } from 'xterm-theme'
@@ -53,13 +53,14 @@ function Test({test: {status, name, insertedAt, updatedAt, promoteTag}, setTest}
   )
 }
 
-async function fetchLogs(logs, term) {
-  const res = await fetch(logs)
-  const body = await res.text()
-  term.write(body)
+async function fetchLogs(client, id, step, term) {
+  const {data, ...rest} = await client.query({query: TEST_LOGS, variables: {id, step}})
+  console.log(rest)
+  if (data && data.testLogs) term.write(data.testLogs)
 }
 
-function TestLogs({step: {name, id, logs}, testId, close}) {
+function TestLogs({step: {name, id, hasLogs}, testId, close}) {
+  const client = useApolloClient()
   const xterm = useRef(null)
   const fitAddon = useMemo(() => new FitAddon(), [])
   useEffect(() => {
@@ -79,12 +80,11 @@ function TestLogs({step: {name, id, logs}, testId, close}) {
   }, [testId, xterm, fitAddon])
 
   useEffect(() => {
-    if (!logs || !xterm || !xterm.current || !xterm.current.terminal) return
-    console.log(logs)
+    if (!hasLogs || !xterm || !xterm.current || !xterm.current.terminal) return
     const term = xterm.current.terminal
     term.clear()
-    fetchLogs(logs, term)
-  }, [logs, xterm])
+    fetchLogs(client, testId, id, term)
+  }, [hasLogs, client, testId, id, xterm])
 
   return (
     <Box fill='horizontal' height='500px'>

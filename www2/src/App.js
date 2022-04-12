@@ -1,9 +1,9 @@
 function App() {
   return (
     <>
-      {'foo'}
+      foo
     </>
-  );
+  )
 }
 
-export default App;
+export default App

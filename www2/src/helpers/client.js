@@ -9,7 +9,7 @@ import { RetryLink } from '@apollo/client/link/retry'
 import { createLink } from 'apollo-absinthe-upload-link'
 import { Socket as PhoenixSocket } from 'phoenix'
 import * as AbsintheSocket from '@absinthe/socket'
-import { createAbsintheSocketLink } from '@absinthe/socket-apollo-link'
+import { createAbsintheSocketLink } from 'pluralsh-absinthe-socket-apollo-link'
 
 import { apiHost } from './hostname'
 import customFetch from './uploadLink'

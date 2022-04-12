@@ -32,12 +32,11 @@ const retryLink = new RetryLink({
   },
 })
 
-const authLink = setContext((_, { headers }) => {
+const authLink = setContext(() => {
   const token = fetchToken()
-  const authHeaders = token ? { authorization: `Bearer ${token}` } : {}
 
   return {
-    headers: Object.assign(headers || {}, authHeaders),
+    headers: token ? { authorization: `Bearer ${token}` } : {},
   }
 })
 
@@ -62,11 +61,12 @@ const absintheSocket = AbsintheSocket.create(socket)
 const socketLink = createAbsintheSocketLink(absintheSocket)
 
 const splitLink = split(
+  () => false,
   socketLink,
   retryLink.concat(resetToken).concat(httpLink),
 )
 
 export const client = new ApolloClient({
-  uri: authLink.concat(splitLink),
+  link: authLink.concat(splitLink),
   cache: new InMemoryCache(),
 })

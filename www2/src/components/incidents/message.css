@@ -1,0 +1,58 @@
+.message.selected {
+  background: rgba(255, 229, 119, 0.5);
+}
+.message.pin {
+  background: rgba(var(--sk_secondary_highlight,242,199,68),.1);
+}
+.message.nohover {
+  background: #FFFFFF !important;
+}
+.message.nohover.override .message-controls {
+  display: none !important;
+}
+.mesage.nohover.override .message-reactions {
+  display: none !important;
+}
+
+.message:hover .unread-badge {
+  display: none !important;
+}
+
+.message.hovered .unread-badge {
+  display: none !important;
+}
+
+.message.selected:hover {
+  background: rgba(255, 229, 119, 0.5);
+}
+.message.pin:hover {
+  background: rgba(var(--sk_secondary_highlight,242,199,68),.1);
+}
+.message:hover {
+  background: #F2F2F2;
+}
+.message.hovered {
+  background: #F2F2F2;
+}
+
+.message:hover .message-controls {
+  display: flex !important;
+}
+.message:hover .message-reactions {
+  display: flex !important;
+}
+.message.hovered .message-controls {
+  display: flex !important;
+}
+
+.message.hovered .message-reactions {
+  display: flex !important;
+}
+
+.message .message-controls {
+  display: none;
+  z-index: 20;
+}
+.message .message-reactions {
+  display: none;
+}

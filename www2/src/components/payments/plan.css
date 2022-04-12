@@ -1,0 +1,7 @@
+.plan:hover .edit {
+  display: block !important;
+}
+
+.plan .edit {
+  display: none !important;
+}

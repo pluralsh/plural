@@ -1,0 +1,7 @@
+.category-header .hoverable {
+  display: none;
+}
+
+.category-header:hover .hoverable {
+  display: block !important;
+}

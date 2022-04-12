@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from 'react'
 import { Errors } from 'forge-core'
-import { useHistory, useLocation, useParams } from 'react-router'
-import { useMutation } from 'react-apollo'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { useMutation } from '@apollo/client'
 
 import { Box, Text } from 'grommet'
 
@@ -28,7 +28,7 @@ function OauthError({ error, service }) {
 }
 
 export function OauthCreator() {
-  const history = useHistory()
+  const navigate = useNavigate()
   const location = useLocation()
   const { service } = useParams()
   const { redirectUri, code } = useMemo(() => {
@@ -46,7 +46,7 @@ export function OauthCreator() {
 
   useEffect(() => {
     if (!error && data) {
-      history.push('/accounts/edit/integrations')
+      navigate('/accounts/edit/integrations')
     }
   }, [data, error])
 

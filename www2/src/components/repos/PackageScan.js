@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Box, Collapsible, Text } from 'grommet'
 
 import { Alert, AlertStatus } from '../utils/Alert'
@@ -59,7 +59,7 @@ function ScanViolation({ violation }) {
         direction="row"
         fill="horizontal"
         gap="xsmall"
-        align="center" 
+        align="center"
         pad="small"
         border={{ side: 'bottom', color: 'tone-light' }}
         height={ROW_HEIGHT_PX}
@@ -76,19 +76,19 @@ function ScanViolation({ violation }) {
           width="25%"
         >
           <GradeNub
-            text={violation.severity.toLowerCase()} 
+            text={violation.severity.toLowerCase()}
             severity={violation.severity}
           />
         </Box>
-        <HeaderItem 
-          text={`${violation.file}:${violation.line}`} 
-          width="30%" 
+        <HeaderItem
+          text={`${violation.file}:${violation.line}`}
+          width="30%"
           truncate
           nobold
         />
-        <HeaderItem 
-          text={`${violation.resourceType}.${violation.resourceName}`} 
-          width="30%" 
+        <HeaderItem
+          text={`${violation.resourceType}.${violation.resourceName}`}
+          width="30%"
           nobold
         />
       </Box>
@@ -133,9 +133,9 @@ export function ScanResults({ scan: { errors, violations } }) {
         >
           {errors.map((error, ind) => (
             <Alert
-              key={`${ind}`} 
-              status={AlertStatus.ERROR} 
-              header="Scan failure" 
+              key={`${ind}`}
+              status={AlertStatus.ERROR}
+              header="Scan failure"
               description={error.message}
             />
           ))}

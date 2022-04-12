@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react'
 import { Anchor, Box, Text } from 'grommet'
 
 import { Trash } from 'forge-core'
-import { useMutation } from 'react-apollo'
+import { useMutation } from '@apollo/client'
 
 import { chunk } from '../../utils/array'
 
@@ -119,10 +119,10 @@ export default function Recipes({ repository, recipes: { edges, pageInfo, fetchM
             fill="horizontal"
           >
             {chunk.map(({ node }) => (
-              <RecipeListItem 
-                key={node.id} 
-                recipe={node} 
-                setRecipe={wrappedSetRecipe} 
+              <RecipeListItem
+                key={node.id}
+                recipe={node}
+                setRecipe={wrappedSetRecipe}
                 repository={repository}
               />
             ))}

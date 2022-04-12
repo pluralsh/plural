@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import moment from 'moment'
 import { Box, Text } from 'grommet'
-import { useApolloClient, useQuery } from 'react-apollo'
+import { useApolloClient, useQuery } from '@apollo/client'
 import { Logs, SecondaryButton } from 'forge-core'
 import { BeatLoader } from 'react-spinners'
 
@@ -33,7 +33,7 @@ const colors = {
   FAILED: 'error',
 }
 
-const statusDescription = s => s.toLowerCase() 
+const statusDescription = s => s.toLowerCase()
 
 function Status({ width, status }) {
   return (
@@ -45,7 +45,7 @@ function Status({ width, status }) {
       <Box
         flex={false}
         pad={{ horizontal: 'small', vertical: 'xsmall' }}
-        background={colors[status] || 'light-4'} 
+        background={colors[status] || 'light-4'}
         direction="row"
         gap="xsmall"
         align="center"
@@ -128,7 +128,7 @@ function TestLogs({ step: { name, id, hasLogs }, testId, close }) {
     chan.join()
 
     return () => {
-      chan.leave() 
+      chan.leave()
     }
   }, [testId, xterm, fitAddon])
 
@@ -225,7 +225,7 @@ function TestDetails({ test: { steps, id }, setTest }) {
     setHeader(`Test ${id}`)
 
     return () => {
-      setHeader('Tests') 
+      setHeader('Tests')
     }
   }, [id])
 
@@ -358,13 +358,13 @@ export function RepositoryTests({ repository: { id: repositoryId } }) {
           refreshKey={repositoryId}
           hasNextPage={pageInfo.hasNextPage}
           items={edges}
-          loading={loading} 
+          loading={loading}
           mapper={({ node }) => (
             <Test
               test={node}
               setTest={() => setTest(node)}
             />
-          )} 
+          )}
           loadNextPage={() => pageInfo.hasNextPage && fetchMore({
             variables: { cursor: pageInfo.endCursor },
             updateQuery: (prev, { fetchMoreResult: { tests } }) => extendConnection(prev, tests, 'tests'),

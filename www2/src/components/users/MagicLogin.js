@@ -224,7 +224,8 @@ export function Login() {
   useEffect(() => {
     wipeChallenge()
     wipeDeviceToken()
-    if (data && data.loginMethod.authorizeUrl) {
+
+    if (data && data.loginMethod && data.loginMethod.authorizeUrl) {
       if (challenge) saveChallenge(challenge)
       if (deviceToken) saveDeviceToken(deviceToken)
       window.location = data.loginMethod.authorizeUrl
@@ -246,11 +247,6 @@ export function Login() {
   const loading = qLoading || mLoading
 
   if (qError) {
-    console.error('qError', qError)
-    console.log('graphQLErrors', qError.graphQLErrors)
-    console.log('clientErrors', qError.clientErrors)
-    console.log('networkError', qError.networkError)
-
     return <Navigate to="/signup" />
   }
 

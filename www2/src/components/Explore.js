@@ -1,11 +1,9 @@
+import './explore.css'
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import { useQuery } from 'react-apollo'
-
+import { useQuery } from '@apollo/client'
 import { Box, Collapsible, Text, ThemeContext } from 'grommet'
-
-import { useHistory, useParams } from 'react-router'
-import { sortBy } from 'lodash'
-
+import { useNavigate, useParams } from 'react-router-dom'
+import sortBy from 'lodash.sortby'
 import { Down, Next } from 'grommet-icons'
 import { Installed, Public, Publisher } from 'forge-core'
 import { Portal } from 'react-portal'
@@ -19,7 +17,6 @@ import { BreadcrumbsContext } from './Breadcrumbs'
 import { RepoIcon, RepoName } from './repos/Repositories'
 import { Tag } from './repos/Tags'
 import { CATEGORIES, CATEGORY, EXPLORE_REPOS } from './repos/queries'
-import './explore.css'
 import { StandardScroller } from './utils/SmoothScroller'
 import { SubmenuItem, SubmenuPortal } from './navigation/Submenu'
 import { LoopingLogo } from './utils/AnimatedLogo'
@@ -65,7 +62,7 @@ function RepoTag({ tag, setTag }) {
 
 function Repo({ repo, setTag }) {
   const { dark } = useContext(ThemeContext)
-  const hist = useHistory()
+  const hist = useNavigate()
 
   return (
     <Box
@@ -331,9 +328,10 @@ export function SectionContentContainer({ header: h, children }) {
   const [header, setHeader] = useState(h)
   const [ref, setRef] = useState(null)
   const id = useMemo(() => uuidv4(), [])
+  const value = useMemo(() => ({ id, ref, setHeader }), [id, ref, setHeader])
 
   return (
-    <SectionContext.Provider value={{ id, ref, setHeader }}>
+    <SectionContext.Provider value={value}>
       <Box fill>
         <Box
           flex={false}
@@ -366,7 +364,7 @@ export function SectionContentContainer({ header: h, children }) {
 }
 
 export function SectionItemContainer({ label, icon, selected, location, ...props }) {
-  const hist = useHistory()
+  const hist = useNavigate()
 
   return (
     <Box
@@ -418,7 +416,7 @@ export function SectionContent({ name, header, children }) {
 
 export default function Explore() {
   const { group, tag } = useParams()
-  const history = useHistory()
+  const navigate = useNavigate()
   const me = useContext(CurrentUserContext)
   const args = filters(group, me)
   const { data, loading, fetchMore } = useQuery(EXPLORE_REPOS, {
@@ -433,11 +431,11 @@ export default function Explore() {
     ]
     if (tag) crumbs.push({ url: `/explore/${group}/${tag}`, text: tag })
     setBreadcrumbs(crumbs)
-  }, [group, tag])
+  }, [group, tag, setBreadcrumbs])
   const doSetTag = useCallback(t => (
-    t === tag ? history.push('/explore/public') :
-      history.push(`/explore/public/${t}`)
-  ), [tag])
+    t === tag ? navigate('/explore/public') :
+      navigate(`/explore/public/${t}`)
+  ), [tag, navigate])
 
   const refreshBy = `${group}:${tag}`
 

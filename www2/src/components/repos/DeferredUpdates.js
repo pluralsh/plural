@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { useQuery } from 'react-apollo'
+import { useState } from 'react'
+import { useQuery } from '@apollo/client'
 
 import { Box } from 'grommet'
 
@@ -101,8 +101,8 @@ export function DeferredUpdates({ chartInst, tfInst }) {
         refreshKey={chartInst || tfInst}
         hasNextPage={pageInfo.hasNextPage}
         items={edges}
-        loading={loading} 
-        mapper={({ node }) => <DeferredUpdate deferred={node} />} 
+        loading={loading}
+        mapper={({ node }) => <DeferredUpdate deferred={node} />}
         loadNextPage={() => pageInfo.hasNextPage && fetchMore({
           variables: { cursor: pageInfo.endCursor },
           updateQuery: (prev, { fetchMoreResult: { deferredUpdates } }) => (

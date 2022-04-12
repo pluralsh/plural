@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Box, Text } from 'grommet'
 import { Archive } from 'grommet-icons'
-import { useMutation } from 'react-apollo'
+import { useMutation } from '@apollo/client'
 import { Button, InputField, SecondaryButton } from 'forge-core'
 import { FilePicker } from 'react-file-picker'
 

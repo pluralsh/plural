@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { Box, Text } from 'grommet'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Trash } from 'forge-core'
-import { useMutation, useQuery } from 'react-apollo'
+import { useMutation, useQuery } from '@apollo/client'
 
 import { Confirm } from '../utils/Confirm'
 import { StandardScroller } from '../utils/SmoothScroller'
@@ -40,13 +40,13 @@ function DeleteInstallation({ installation }) {
   return (
     <>
       <Icon
-        icon={Trash} 
-        tooltip="delete" 
+        icon={Trash}
+        tooltip="delete"
         onClick={ignored(() => setConfirm(true))}
         iconAttrs={{ color: 'error' }}
       />
       {confirm && (
-        <Confirm 
+        <Confirm
           label="Delete"
           description="Be sure to run `plural destroy` in your installation repo before deleting.  This will delete all installed packages and prevent future upgrades."
           submit={ignored(() => mutation())}
@@ -58,7 +58,7 @@ function DeleteInstallation({ installation }) {
 }
 
 function InstallationRow({ installation, edit }) {
-  const history = useHistory()
+  const navigate = useNavigate()
 
   return (
     <Box
@@ -68,11 +68,11 @@ function InstallationRow({ installation, edit }) {
       direction="row"
       align="center"
       hoverIndicator="light-1"
-      onClick={() => history.push(`/repositories/${installation.repository.id}`)}
+      onClick={() => navigate(`/repositories/${installation.repository.id}`)}
     >
       <RepositoryInner repo={installation.repository} />
       {edit && <DeleteInstallation installation={installation} />}
-    </Box> 
+    </Box>
   )
 }
 

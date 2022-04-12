@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { useParams } from 'react-router'
+import { useParams } from 'react-router-dom'
 
 import { Add } from 'grommet-icons'
 import { Bundle, Configuration, EditField as Edit, Incidents, Install, Package, Plan as PlanIcon, Update } from 'forge-core'
@@ -7,7 +7,7 @@ import Collapsible from 'react-collapsible'
 
 import { Box } from 'grommet'
 
-import { useQuery } from 'react-apollo'
+import { useQuery } from '@apollo/client'
 
 import { SectionContentContainer, SectionItemContainer } from '../Explore'
 
@@ -62,7 +62,7 @@ function SectionItem({ name, label, icon, subgroup: subgroupName, location, ...p
 
 function SubgroupContainer({ name, children }) {
   const { group } = useParams()
-  
+
   return (
     <Collapsible
       open={group === name}
@@ -87,7 +87,7 @@ export function RepoDirectory() {
   })
 
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
-  
+
   useEffect(() => {
     if (!data) return
     const { repository } = data
@@ -114,7 +114,7 @@ export function RepoDirectory() {
         flex={false}
         width="30%"
         background="backgroundColor"
-        fill="vertical" 
+        fill="vertical"
         pad={{ vertical: 'small', horizontal: 'small' }}
       >
         <Box
@@ -140,8 +140,8 @@ export function RepoDirectory() {
               installation={repository.installation}
             />
             <SectionItem
-              name="bundles" 
-              label="Bundles" 
+              name="bundles"
+              label="Bundles"
               icon={Bundle}
             />
             <Box flex={false}>
@@ -170,8 +170,8 @@ export function RepoDirectory() {
               </SubgroupContainer>
             </Box>
             <SectionItem
-              name="tests" 
-              label="Tests" 
+              name="tests"
+              label="Tests"
               icon={Incidents}
             />
             {repository.installation && (

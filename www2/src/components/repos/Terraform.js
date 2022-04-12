@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Box, Markdown, Text } from 'grommet'
 import { Button, InputCollection, ResponsiveInput, ScrollableContainer, SecondaryButton, TabContent, TabHeader, TabHeaderItem, Tabs } from 'forge-core'
-import { useMutation, useQuery } from 'react-apollo'
-import { useHistory, useParams } from 'react-router-dom'
+import { useMutation, useQuery } from '@apollo/client'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import Highlight from 'react-highlight.js'
 
@@ -174,7 +174,7 @@ function updateInstallation(tfId) {
 }
 
 function DeleteTerraform({ id }) {
-  const history = useHistory()
+  const navigate = useNavigate()
   const [mutation, { loading }] = useMutation(DELETE_TF, {
     variables: { id },
     onCompleted: () => history.goBack(),
@@ -346,8 +346,8 @@ export default function Terraform() {
             </TabContent>
             <TabContent name="dependencies">
               {full ? <FullDependencies resource={terraformModule} /> : (
-                <Dependencies 
-                  name={terraformModule.name} 
+                <Dependencies
+                  name={terraformModule.name}
                   dependencies={(version || terraformModule).dependencies}
                   resource={terraformModule}
                 />

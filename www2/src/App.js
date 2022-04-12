@@ -1,3 +1,4 @@
+import 'react-toggle/style.css'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { ApolloProvider } from '@apollo/client'
 import { IntercomProvider } from 'react-use-intercom'
@@ -9,7 +10,13 @@ import { client } from './helpers/client'
 import { INTERCOM_APP_ID } from './constants'
 import { DEFAULT_THEME as oldTheme } from './theme'
 
-import { Login } from './components/users/MagicLogin'
+// import Plural from './components/Plural'
+import Invite from './components/Invite'
+import { Login, PasswordlessLogin, Signup } from './components/users/MagicLogin'
+import { PasswordReset, ResetPassword } from './components/users/PasswordReset'
+import { OAuthConsent } from './components/oidc/OAuthConsent'
+import { EmailConfirmed } from './components/users/EmailConfirmation'
+import { OAuthCallback } from './components/users/OAuthCallback'
 
 function App() {
   return (
@@ -21,7 +28,7 @@ function App() {
         >
           <BrowserRouter>
             <Routes>
-              {/* <Route
+              <Route
                 path="/reset-password/:id"
                 element={<ResetPassword />}
               />
@@ -42,21 +49,23 @@ function App() {
                 path="/passwordless-login/:token"
                 element={<PasswordlessLogin />}
               />
+              {/*
               <Route
                 exact
                 path="/oauth/callback/github/shell"
                 element={<Plural />}
               />
+               */}
               <Route
                 path="/oauth/callback/:service"
                 element={<OAuthCallback />}
-              /> */}
+              />
               <Route
                 exact
                 path="/login"
                 element={<Login />}
               />
-              {/* <Route
+              <Route
                 exact
                 path="/signup"
                 element={<Signup />}
@@ -66,10 +75,12 @@ function App() {
                 path="/oauth/consent"
                 element={<OAuthConsent />}
               />
+              {/*
               <Route
                 path="/"
                 element={<Plural />}
-              /> */}
+              />
+               */}
             </Routes>
           </BrowserRouter>
         </Grommet>

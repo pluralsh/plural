@@ -82,13 +82,13 @@ export default function Login(props) {
     variables: { email, password, name },
     onCompleted: ({ login, signup }) => {
       setToken(login ? login.jwt : signup.jwt)
-      history.push('/')
+      navigate('/')
     },
   })
 
   useEffect(() => {
     if (fetchToken()) {
-      history.push('/')
+      navigate('/')
     }
   }, [history])
 

@@ -1,7 +1,6 @@
-import React, { useState } from 'react'
-import { gql } from 'apollo-boost'
-import { useParams } from 'react-router'
-import { useMutation, useQuery } from 'react-apollo'
+import { useState } from 'react'
+import { useParams } from 'react-router-dom'
+import { gql, useMutation, useQuery } from '@apollo/client'
 import { Box, Keyboard, Text } from 'grommet'
 import { Button, GqlError, SecondaryButton } from 'forge-core'
 import { Checkmark, StatusCritical } from 'grommet-icons'
@@ -109,7 +108,7 @@ export function PasswordStatus({ disabled, reason }) {
   )
 }
 
-function ExistingInvite({ invite: { user, account }, id }) {
+function ExistingInvite({ invite: { account }, id }) {
   const [mutation, { loading, error }] = useMutation(REALIZE, {
     variables: { id },
     onCompleted: ({ realizeInvite: { jwt } }) => {
@@ -140,7 +139,7 @@ function ExistingInvite({ invite: { user, account }, id }) {
             align="center"
           >
             <Text>You were invited to join another account</Text>
-          </Box> 
+          </Box>
           <Box
             direction="row"
             fill="horizontal"
@@ -266,9 +265,9 @@ export default function Invite() {
                   gap="small"
                   fill="horizontal"
                 >
-                  <LabelledInput 
+                  <LabelledInput
                     width="100%"
-                    label="Email" 
+                    label="Email"
                     value={email}
                   />
                   <LabelledInput

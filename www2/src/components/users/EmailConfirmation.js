@@ -1,12 +1,12 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
-import { useMutation } from 'react-apollo'
+import { useMutation } from '@apollo/client'
 import { Box, Layer, Text } from 'grommet'
 import { Reload as Refresh } from 'forge-core'
 import { CircleAlert, Close } from 'grommet-icons'
 
 import moment from 'moment'
 
-import { useParams } from 'react-router'
+import { useParams } from 'react-router-dom'
 
 import { CurrentUserContext } from '../login/CurrentUser'
 import { Icon } from '../accounts/Group'
@@ -26,11 +26,11 @@ export function EmailConfirmed() {
     variables: { id, attributes: {} },
     onCompleted: () => {
       setTimeout(() => {
-        window.location = '/' 
+        window.location = '/'
       }, 2000)
     },
   })
-  
+
   useEffect(() => {
     mutation()
   }, [id])
@@ -43,9 +43,9 @@ export function EmailConfirmed() {
       >
         {!data && !error && <LoopingLogo scale="0.75" />}
         {data && (
-          <Alert 
-            status={AlertStatus.SUCCESS} 
-            header="Email confirmed" 
+          <Alert
+            status={AlertStatus.SUCCESS}
+            header="Email confirmed"
             description="we'll redirect you to Plural shortly"
           />
         )}
@@ -77,7 +77,7 @@ export function VerifyEmailConfirmed() {
       plain
       modal={false}
       position="top"
-      margin={{ top: 'medium' }} 
+      margin={{ top: 'medium' }}
       onEsc={close}
       onClickOutside={close}
     >

@@ -1,4 +1,4 @@
-import gql from 'graphql-tag'
+import { gql } from '@apollo/client'
 
 import { ArtifactFragment, CategoryFragment, InstallationFragment, IntegrationFragment, RepoFragment, TestFragment } from '../../models/repo'
 import { ChartFragment, ChartInstallationFragment, PackageScan, VersionFragment, VersionTagFragment } from '../../models/chart'
@@ -145,11 +145,11 @@ export const DOCKER_IMG_Q = gql`
   query DockerImages($dockerRepositoryId: ID!, $cursor: String) {
     dockerImages(dockerRepositoryId: $dockerRepositoryId, after: $cursor, first: 15) {
       pageInfo { ...PageInfo }
-      edges { 
-        node { 
-          ...DockerImageFragment 
+      edges {
+        node {
+          ...DockerImageFragment
           dockerRepository { ...DockerRepository }
-        } 
+        }
       }
     }
   }
@@ -202,7 +202,7 @@ export const CHART_Q = gql`
           ...VersionFragment
           tags { ...VersionTagFragment }
           scan { ...PackageScan }
-          imageDependencies { 
+          imageDependencies {
             id
             image {
               ...DockerImageFragment
@@ -404,11 +404,11 @@ export const EXPLORE_REPOS = gql`
   query Repos($installed: Boolean, $publisherId: ID, $tag: String, $cursor: String) {
     repositories(installed: $installed, publisherId: $publisherId, tag: $tag, after: $cursor, first: 50) {
       pageInfo { ...PageInfo }
-      edges { 
-        node { 
-          ...RepoFragment 
+      edges {
+        node {
+          ...RepoFragment
           tags { tag }
-        } 
+        }
       }
     }
   }

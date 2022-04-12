@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { useApolloClient } from 'react-apollo'
-import { useHistory } from 'react-router-dom'
+import { useApolloClient } from '@apollo/client'
+import { useNavigate } from 'react-router-dom'
 import { Box, TextInput, ThemeContext } from 'grommet'
 
 import { SearchIcon } from '../utils/SearchIcon'
@@ -30,7 +30,7 @@ export default function SearchRepositories() {
   const client = useApolloClient()
   const [value, setValue] = useState('')
   const [suggestions, setSuggestions] = useState([])
-  const history = useHistory()
+  const navigate = useNavigate()
 
   return (
     <Box
@@ -54,7 +54,7 @@ export default function SearchRepositories() {
           onSelect={({ suggestion }) => {
             setValue('')
             setSuggestions([])
-            history.push(`/repositories/${suggestion.value.id}`)
+            navigate(`/repositories/${suggestion.value.id}`)
           }}
           onChange={({ target: { value } }) => {
             setValue(value)

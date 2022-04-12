@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react'
 import { Box, Text, ThemeContext } from 'grommet'
-import { useMutation } from 'react-apollo'
-import { useHistory } from 'react-router-dom'
+import { useMutation } from '@apollo/client'
+import { useNavigate } from 'react-router-dom'
 // import { Scroller, Button, SecondaryButton, Modal, ModalHeader, Password as Lock } from 'forge-core'
 import { Button, Password as Lock, Scroller } from 'forge-core'
 import yaml from 'js-yaml'
@@ -42,11 +42,11 @@ function Container({ children, onClick, noPad }) {
 
 function Chart({ chart, hasNext }) {
   const { dark } = useContext(ThemeContext)
-  const history = useHistory()
+  const navigate = useNavigate()
 
   return (
     <Container
-      onClick={() => history.push(`/charts/${chart.id}`)}
+      onClick={() => navigate(`/charts/${chart.id}`)}
       hasNext={hasNext}
     >
       <Box
@@ -95,12 +95,12 @@ function Chart({ chart, hasNext }) {
 
 function DockerRepository({ docker, repo, hasNext }) {
   const { registry } = useContext(PluralConfigurationContext)
-  const history = useHistory()
+  const navigate = useNavigate()
 
   return (
     <Container
       hasNext={hasNext}
-      onClick={() => history.push(`/dkr/repo/${docker.id}`)}
+      onClick={() => navigate(`/dkr/repo/${docker.id}`)}
     >
       <Box
         width="50px"
@@ -129,11 +129,11 @@ function DockerRepository({ docker, repo, hasNext }) {
 }
 
 function Tf({ terraform, hasNext }) {
-  const history = useHistory()
+  const navigate = useNavigate()
 
   return (
     <Container
-      onClick={() => history.push(`/terraform/${terraform.id}`)}
+      onClick={() => navigate(`/terraform/${terraform.id}`)}
       hasNext={hasNext}
     >
       <Box

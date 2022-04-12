@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Anchor, Box, Layer, Table, TableBody, TableCell, TableRow, Text } from 'grommet'
 import { BORDER_COLOR, Button, Copyable, HoveredBackground, InputField, ModalHeader, Reload as Refresh, Scroller } from 'forge-core'
-import { useMutation, useQuery } from 'react-apollo'
+import { useMutation, useQuery } from '@apollo/client'
 
 import moment from 'moment'
 

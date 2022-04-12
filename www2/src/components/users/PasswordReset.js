@@ -1,9 +1,8 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
+import { useParams } from 'react-router-dom'
+import { useMutation, useQuery } from '@apollo/client'
 import { Box, Form, Keyboard, Text } from 'grommet'
 import { Button } from 'forge-core'
-import { useMutation, useQuery } from 'react-apollo'
-
-import { useParams } from 'react-router'
 
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 import { PasswordStatus, disableState } from '../Login'
@@ -22,7 +21,7 @@ export function ResetPassword() {
     variables: { id, attributes },
     onCompleted: () => {
       wipeToken()
-      window.location = '/login' 
+      window.location = '/login'
     },
   })
 
@@ -43,9 +42,9 @@ export function ResetPassword() {
           <Text size="large">Reset your password</Text>
         </Box>
         {realized && realized.realizeResetToken && (
-          <Alert 
-            status={AlertStatus.SUCCESS} 
-            header="Password updated!" 
+          <Alert
+            status={AlertStatus.SUCCESS}
+            header="Password updated!"
             description="log back in to complete the process"
           />
         )}
@@ -61,10 +60,10 @@ export function ResetPassword() {
               margin={{ bottom: 'small' }}
               gap="small"
             >
-              <LabelledInput 
+              <LabelledInput
                 width="100%"
-                label="Email" 
-                name="email" 
+                label="Email"
+                name="email"
                 value={data.resetToken.user.email}
               />
               <LabelledInput
@@ -127,9 +126,9 @@ export function PasswordReset() {
           <Text size="large">Reset your password</Text>
         </Box>
         {reset && (
-          <Alert 
-            status={AlertStatus.SUCCESS} 
-            header="Password reset email sent" 
+          <Alert
+            status={AlertStatus.SUCCESS}
+            header="Password reset email sent"
             description="Check your inbox for the reset link to complete your password reset"
           />
         )}

@@ -1,9 +1,8 @@
 import { Box, Text } from 'grommet'
 import { Close } from 'grommet-icons'
-import React from 'react'
 
 export const ignore = e => {
-  e.preventDefault(); e.stopPropagation() 
+  e.preventDefault(); e.stopPropagation()
 }
 
 export function ModalHeader({ text, setOpen }) {

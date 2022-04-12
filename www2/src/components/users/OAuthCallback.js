@@ -1,7 +1,7 @@
 import { Box } from 'grommet'
 import React, { useEffect } from 'react'
-import { useApolloClient, useMutation } from 'react-apollo'
-import { useLocation, useParams } from 'react-router'
+import { useApolloClient, useMutation } from '@apollo/client'
+import { useLocation, useParams } from 'react-router-dom'
 
 import qs from 'query-string'
 

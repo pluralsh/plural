@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Button, SecondaryButton } from 'forge-core'
 import { Box } from 'grommet'
 
-import { useMutation } from 'react-apollo'
+import { useMutation } from '@apollo/client'
 
 import { prune } from '../../utils/graphql'
 
@@ -16,10 +16,10 @@ export function UpdatePlanForm({ plan: { id, serviceLevels } }) {
 
   return (
     <Box fill>
-      <SlaForm 
-        attributes={attributes} 
-        setAttributes={setAttributes} 
-        serviceLevel={serviceLevel} 
+      <SlaForm
+        attributes={attributes}
+        setAttributes={setAttributes}
+        serviceLevel={serviceLevel}
         setServiceLevel={setServiceLevel}
       />
       <Box

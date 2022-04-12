@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useRef, useState } from 'react'
 
 import { FilePicker } from 'react-file-picker'
-import { useMutation } from 'react-apollo'
+import { useMutation } from '@apollo/client'
 
 import { Box, Drop, Keyboard, Layer, Stack, Text } from 'grommet'
 
@@ -9,7 +9,7 @@ import { MoonLoader, SyncLoader } from 'react-spinners'
 import { Progress } from 'react-sweet-progress'
 import { Editor as SlateEditor, Transforms } from 'slate'
 
-import { useParams } from 'react-router'
+import { useParams } from 'react-router-dom'
 
 import { Attachment, Close, Emoji, SendMessage } from 'forge-core'
 import fs from 'filesize'
@@ -205,7 +205,7 @@ function FileInput() {
         onClick={() => null}
         hoverIndicator="light-2"
         focusIndicator={false}
-        tooltip="add attachment" 
+        tooltip="add attachment"
         align="center"
         justify="center"
       >
@@ -231,7 +231,7 @@ function EmojiInput({ editor }) {
         <Control
           onClick={() => setOpen(true)}
           hoverIndicator="light-2"
-          focusIndicator={false} 
+          focusIndicator={false}
           tooltip="add emoji"
           align="center"
           justify="center"
@@ -382,7 +382,7 @@ export function MessageInput() {
       variables: { id: incidentId },
       update: ({ incident, ...prev }) => ({
         ...prev,
-        incident: appendConnection(incident, createMessage, 'messages'), 
+        incident: appendConnection(incident, createMessage, 'messages'),
       }),
     }),
     onCompleted: () => {
@@ -411,8 +411,8 @@ export function MessageInput() {
     >
       {(attachment || uploadProgress > 0) && (
         <UploadProgress
-          attachment={attachment} 
-          setAttachment={setAttachment} 
+          attachment={attachment}
+          setAttachment={setAttachment}
           uploadProgress={uploadProgress}
           empty={empty}
         />
@@ -421,7 +421,7 @@ export function MessageInput() {
         flex={false}
         background="white"
         border={{ color: 'dark-3' }}
-        style={{ maxHeight: '210px', minHeight: 'auto' }} 
+        style={{ maxHeight: '210px', minHeight: 'auto' }}
         round="xsmall"
         margin={{ horizontal: 'small', bottom: 'small' }}
       >

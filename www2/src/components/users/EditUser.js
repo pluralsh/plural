@@ -3,10 +3,10 @@ import { Box, Text } from 'grommet'
 import { useFilePicker } from 'react-sage'
 import { Button, Credentials, Fingerprint, InputCollection, Installed, Logout,
   Password, PublicKeys, ResponsiveInput, Select, User } from 'forge-core'
-import { useMutation, useQuery } from 'react-apollo'
+import { useMutation, useQuery } from '@apollo/client'
 import { Checkmark, StatusCritical, Transaction } from 'grommet-icons'
 
-import { useHistory, useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import Installations from '../repos/Installations'
 import { CurrentUserContext } from '../login/CurrentUser'
@@ -59,7 +59,7 @@ function EditAvatar({ me, noClick = false }) {
 
 export function EditSelect({ name, edit, icon, base }) {
   const { editing } = useParams()
-  const hist = useHistory()
+  const hist = useNavigate()
 
   return (
     <SectionChoice

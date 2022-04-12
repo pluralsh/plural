@@ -1,5 +1,5 @@
 import React from 'react'
-import { useQuery } from 'react-apollo'
+import { useQuery } from '@apollo/client'
 import { Box, Text } from 'grommet'
 import { Check as Checkmark } from 'forge-core'
 
@@ -71,7 +71,7 @@ export function OAuthIntegrations() {
       pad="small"
       gap="xsmall"
     >
-      <Integration 
+      <Integration
         icon={ZOOM_ICON}
         installUrl={ZOOM_INSTALL_URL}
         integrations={integrations}

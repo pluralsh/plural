@@ -1,11 +1,9 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Anchor, Box, Layer, Text } from 'grommet'
-
 import { Button, ModalHeader, Reload as Refresh } from 'forge-core'
-import { useMutation } from 'react-apollo'
+import { useMutation } from '@apollo/client'
 
 import { NumericInput } from '../utils/NumericInput'
-
 import { deepUpdate, updateCache } from '../../utils/graphql'
 import { REPO_Q } from '../repos/queries'
 
@@ -96,7 +94,7 @@ export function LineItemNub({ dimension, quantity, subscription, repository, lin
         </Anchor>
       )}
       {open && (
-        <LineItemUpdate 
+        <LineItemUpdate
           setOpen={setOpen}
           repository={repository}
           subscription={subscription}

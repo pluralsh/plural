@@ -1,5 +1,5 @@
 import { ThemeContext } from 'grommet'
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 
 import { DEFAULT_CHART_ICON, DarkProviderIcons, ProviderIcons } from './constants'
 

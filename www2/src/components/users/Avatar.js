@@ -1,6 +1,5 @@
-import React from 'react'
 import { Box, Text } from 'grommet'
-import { last } from 'lodash'
+import last from 'lodash.last'
 
 export function initials(name) {
   const initials = name

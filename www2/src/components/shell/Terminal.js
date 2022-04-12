@@ -5,7 +5,7 @@ import { XTerm } from 'xterm-for-react'
 import { FitAddon } from 'xterm-addon-fit'
 
 import './shell.css'
-import { useQuery } from 'react-apollo'
+import { useQuery } from '@apollo/client'
 
 import { CircleInformation } from 'grommet-icons'
 import { ModalHeader, Update } from 'forge-core'
@@ -33,7 +33,7 @@ export function Shell({ room, header, title, children }) {
   useEffect(() => {
     if (!xterm || !xterm.current || !xterm.current.terminal) return
     const term = xterm.current.terminal
-  
+
     fitAddon.fit()
     term.write(`${header}\r\n\r\n`)
     const chan = socket.channel(room, {})
@@ -78,7 +78,7 @@ export function Shell({ room, header, title, children }) {
           >{title}
           </Text>
           <Information />
-          <Icon 
+          <Icon
             icon={<Update size="20px" />}
             onClick={resetSize}
             tooltip="repair viewport"
@@ -97,7 +97,7 @@ export function Shell({ room, header, title, children }) {
           pad="small"
           background={themeStruct.background}
         >
-          <XTerm 
+          <XTerm
             className="terminal"
             ref={xterm}
             addons={[fitAddon]}
@@ -156,7 +156,7 @@ function Icon({ icon, onClick, tooltip }) {
             round="3px"
             background="sidebarHover"
             pad="xsmall"
-            elevation="small" 
+            elevation="small"
             align="center"
             justify="center"
           >
@@ -227,7 +227,7 @@ function Information() {
 export function Terminal() {
   const { data } = useQuery(CLOUD_SHELL, { pollInterval: 5000, fetchPolicy: 'cache-and-network' })
 
-  if (!data || !data.shell) return <LoopingLogo dark /> 
+  if (!data || !data.shell) return <LoopingLogo dark />
 
   if (!data.shell.alive) return <ShellStatus shell={data.shell} />
 

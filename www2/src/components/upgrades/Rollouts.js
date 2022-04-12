@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Box, Text } from 'grommet'
-import { useQuery } from 'react-apollo'
+import { useQuery } from '@apollo/client'
 
 import { BeatLoader } from 'react-spinners'
 
@@ -8,7 +8,7 @@ import moment from 'moment'
 
 import { StandardScroller } from '../utils/SmoothScroller'
 
-import { appendConnection, extendConnection } from '../../utils/graphql' 
+import { appendConnection, extendConnection } from '../../utils/graphql'
 import { HeaderItem } from '../repos/Docker'
 
 import { ROLLOUTS, ROLLOUT_SUB } from './queries'
@@ -52,7 +52,7 @@ function RolloutStatus({ width, rollout }) {
       <Box
         flex={false}
         pad={{ horizontal: 'small', vertical: 'xsmall' }}
-        background={colors[rollout.status]} 
+        background={colors[rollout.status]}
         direction="row"
         gap="xsmall"
         align="center"
@@ -162,8 +162,8 @@ export function Rollouts({ repository: { id: repositoryId } }) {
           refreshKey={repositoryId}
           hasNextPage={pageInfo.hasNextPage}
           items={edges}
-          loading={loading} 
-          mapper={({ node }) => <Rollout rollout={node} />} 
+          loading={loading}
+          mapper={({ node }) => <Rollout rollout={node} />}
           loadNextPage={() => pageInfo.hasNextPage && fetchMore({
             variables: { cursor: pageInfo.endCursor },
             updateQuery: (prev, { fetchMoreResult: { rollouts } }) => extendConnection(prev, rollouts, 'rollouts'),

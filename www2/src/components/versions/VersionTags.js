@@ -1,8 +1,7 @@
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Box, Select, Text } from 'grommet'
 import { Button, ModalHeader, SecondaryButton } from 'forge-core'
-
-import { useMutation } from 'react-apollo'
+import { useMutation } from '@apollo/client'
 
 import { UPDATE_VERSION } from './queries'
 
@@ -38,7 +37,7 @@ export function EditTags({ version, setOpen, refetch }) {
   const [mutation, { loading }] = useMutation(UPDATE_VERSION, {
     variables: { id: version.id, attributes: { tags: current } },
     onCompleted: () => {
-      setOpen(false); refetch() 
+      setOpen(false); refetch()
     },
   })
 

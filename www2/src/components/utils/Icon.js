@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react'
 import { Box, Text } from 'grommet'
-import { useHistory } from 'react-router'
+import { useNavigate } from 'react-router-dom'
 
 import { Tooltip } from './Tooltip'
 
@@ -8,7 +8,7 @@ const SIDEBAR_ICON_HEIGHT = '35px'
 
 export function Icon({ icon, text, selected, path, onClick, size, align }) {
   const dropRef = useRef()
-  const history = useHistory()
+  const navigate = useNavigate()
   const [hover, setHover] = useState(false)
 
   return (
@@ -26,7 +26,7 @@ export function Icon({ icon, text, selected, path, onClick, size, align }) {
         hoverIndicator="sidebarHover"
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
-        onClick={() => onClick ? onClick() : history.push(path)}
+        onClick={() => onClick ? onClick() : navigate(path)}
         background={selected ? 'sidebarHover' : null}
         direction="row"
       >
@@ -37,7 +37,7 @@ export function Icon({ icon, text, selected, path, onClick, size, align }) {
           pad="small"
           round="xsmall"
           justify="center"
-          background="sidebarHover" 
+          background="sidebarHover"
           target={dropRef}
           side="right"
           align={align || { left: 'right' }}

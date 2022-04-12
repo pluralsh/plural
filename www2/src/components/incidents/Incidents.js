@@ -2,11 +2,11 @@ import React, { useCallback, useContext, useEffect, useRef, useState } from 'rea
 import { Box, Drop, Text, TextInput, ThemeContext } from 'grommet'
 import { SortAsc as Ascend, Button, Check as Checkmark, Close, SortDesc as Descend, Filters as FiltersI, Notification, Explore as Search, Tag as TagIcon, User } from 'forge-core'
 import { Next } from 'grommet-icons'
-import { useQuery } from 'react-apollo'
+import { useQuery } from '@apollo/client'
 
 import moment from 'moment'
 
-import { useHistory, useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import styled, { keyframes } from 'styled-components'
 import { pulse } from 'react-animations'
@@ -95,7 +95,7 @@ function SubscriptionBadge({ incident: { subscription } }) {
 }
 
 export function IncidentRow({ incident: { id, repository, title, insertedAt, owner, ...incident }, selected }) {
-  const history = useHistory()
+  const navigate = useNavigate()
 
   return (
     <Box
@@ -107,7 +107,7 @@ export function IncidentRow({ incident: { id, repository, title, insertedAt, own
       align="center"
       gap="small"
       hoverIndicator="light-2"
-      onClick={() => history.push(`/incident/${id}`)}
+      onClick={() => navigate(`/incident/${id}`)}
       height="75px"
     >
       <RepoIcon repo={repository} />

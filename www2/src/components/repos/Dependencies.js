@@ -1,9 +1,11 @@
-import React from 'react'
+import { memo } from 'react'
 import { Box, Text } from 'grommet'
-import { useQuery } from 'react-apollo'
+import { useQuery } from '@apollo/client'
 import { SecondaryButton } from 'forge-core'
-
-import { cloneDeep, groupBy, remove, uniqueId } from 'lodash'
+import cloneDeep from 'lodash.clonedeep'
+import groupBy from 'lodash.groupby'
+import remove from 'lodash.remove'
+import uniqueId from 'lodash.uniqueid'
 
 import TreeGraph from '../utils/TreeGraph'
 
@@ -77,7 +79,7 @@ export function ShowFull({ onClick, label }) {
   )
 }
 
-export const FullDependencies = React.memo(({ resource }) => {
+export const FullDependencies = memo(({ resource }) => {
   const type = depType(resource)
   const { data, loading } = useQuery(CLOSURE_Q, {
     variables: { id: resource.id, type },
@@ -89,15 +91,15 @@ export const FullDependencies = React.memo(({ resource }) => {
 
   return (
     <TreeGraph
-      id={`${uniqueId('full_')}-full-tree`} 
+      id={`${uniqueId('full_')}-full-tree`}
       tree={graph}
-      width="100%" 
+      width="100%"
       height={GRAPH_HEIGHT}
     />
   )
 })
 
-export default React.memo(({ name, dependencies, resource }) => {
+export default memo(({ name, dependencies, resource }) => {
   if (!dependencies || !dependencies.dependencies) {
     return (
       <Box pad="small">

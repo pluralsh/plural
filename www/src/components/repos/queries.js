@@ -1,5 +1,5 @@
 import gql from 'graphql-tag'
-import { RepoFragment, InstallationFragment, IntegrationFragment, ArtifactFragment, CategoryFragment, TestFragment } from '../../models/repo'
+import { RepoFragment, InstallationFragment, IntegrationFragment, ArtifactFragment, CategoryFragment, TestFragment, StepFragment } from '../../models/repo'
 import { ChartFragment, VersionFragment, ChartInstallationFragment, VersionTagFragment, PackageScan } from '../../models/chart'
 import { TerraformFragment, TerraformInstallationFragment } from '../../models/terraform'
 import { DockerImageFragment, DockerRepoFragment, DockerRepository, VulnerabilityFragment } from '../../models/docker'
@@ -491,4 +491,14 @@ export const TEST_LOGS = gql`
   query Logs($id: ID!, $step: ID!) {
     testLogs(id: $id, step: $step)
   }
+`
+
+export const LOGS_SUB = gql`
+  subscription Logs($testId: ID!) {
+    testLogs(testId: $testId) {
+      step { ...StepFragment }
+      logs
+    }
+  }
+  ${StepFragment}
 `

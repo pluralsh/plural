@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import moment from 'moment'
 import { Box, Text } from 'grommet'
-import { useApolloClient, useQuery } from 'react-apollo'
+import { useApolloClient, useQuery, useSubscription } from 'react-apollo'
 import { SecondaryButton, Logs } from 'forge-core'
 import { BeatLoader } from 'react-spinners'
 import { appendConnection, extendConnection } from '../../utils/graphql'
@@ -9,12 +9,11 @@ import { SectionContext, SectionPortal } from '../Explore'
 import { StandardScroller } from '../utils/SmoothScroller'
 import { TestStatus } from './constants'
 import { HeaderItem } from './Docker'
-import { TESTS_Q, TESTS_SUB, TEST_LOGS } from './queries'
+import { LOGS_SUB, TESTS_Q, TESTS_SUB, TEST_LOGS } from './queries'
 import { XTerm } from 'xterm-for-react'
 import { FitAddon } from 'xterm-addon-fit'
 import { Chalk } from 'xterm-theme'
 
-import { socket } from '../../helpers/client'
 import { ModalHeader } from '../utils/ModalHeader'
 import { Icon } from '../accounts/Group'
 
@@ -67,21 +66,23 @@ function TestLogs({step: {name, id, hasLogs}, testId, close}) {
   const client = useApolloClient()
   const xterm = useRef(null)
   const fitAddon = useMemo(() => new FitAddon(), [])
+  const { data } = useSubscription(LOGS_SUB, {
+    variables: {testId}
+  })
+
   useEffect(() => {
     console.log(xterm)
     if (!xterm || !xterm.current || !xterm.current.terminal) return
     xterm.current.terminal.setOption('disableStdin', true)
     fitAddon.fit()
     console.log('joining test channel')
-    const chan = socket.channel(`tests:${testId}`, {})
-    chan.on("stdo", ({ line, step }) => {
-      console.log({line, step, id})
-      step === id && xterm.current.terminal.writeln(line)
-    })
-    chan.onError(console.log)
-    chan.join()
-    return () => { chan.leave() }
-  }, [testId, xterm, fitAddon])
+    
+    if (data && data.testLogs && data.testLogs.step.id == id) {
+      for (const l of data.testLogs.logs) {
+        xterm.current.terminal.writeln(l)
+      }
+    }
+  }, [id, data, xterm, fitAddon])
 
   useEffect(() => {
     if (!hasLogs || !xterm || !xterm.current || !xterm.current.terminal) return
@@ -190,7 +191,11 @@ export function RepositoryTests({repository: {id: repositoryId}}) {
 
   const {edges, pageInfo} = data.tests
 
-  if (test) return <TestDetails test={test} setTest={setTest} />
+  if (test) return (
+    <TestDetails 
+      test={edges.find(({node: {id}}) => id === test.id).node} // to receive cache updates
+      setTest={setTest} />
+  )
 
   return (
     <Box fill>

@@ -5,7 +5,6 @@ import { Button, Credentials, Fingerprint, InputCollection, Installed, Logout,
   Password, PublicKeys, ResponsiveInput, Select, User } from 'forge-core'
 import { useMutation, useQuery } from '@apollo/client'
 import { Checkmark, StatusCritical, Transaction } from 'grommet-icons'
-
 import { useNavigate, useParams } from 'react-router-dom'
 
 import Installations from '../repos/Installations'

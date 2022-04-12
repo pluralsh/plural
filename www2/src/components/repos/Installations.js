@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Box, Text } from 'grommet'
 import { useNavigate } from 'react-router-dom'
 import { Trash } from 'forge-core'

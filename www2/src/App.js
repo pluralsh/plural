@@ -10,7 +10,7 @@ import { client } from './helpers/client'
 import { INTERCOM_APP_ID } from './constants'
 import { DEFAULT_THEME as oldTheme } from './theme'
 
-// import Plural from './components/Plural'
+import Plural from './components/Plural'
 import Invite from './components/Invite'
 import { Login, PasswordlessLogin, Signup } from './components/users/MagicLogin'
 import { PasswordReset, ResetPassword } from './components/users/PasswordReset'
@@ -49,13 +49,11 @@ function App() {
                 path="/passwordless-login/:token"
                 element={<PasswordlessLogin />}
               />
-              {/*
               <Route
                 exact
                 path="/oauth/callback/github/shell"
                 element={<Plural />}
               />
-               */}
               <Route
                 path="/oauth/callback/:service"
                 element={<OAuthCallback />}
@@ -75,12 +73,10 @@ function App() {
                 path="/oauth/consent"
                 element={<OAuthConsent />}
               />
-              {/*
               <Route
                 path="/"
                 element={<Plural />}
               />
-               */}
             </Routes>
           </BrowserRouter>
         </Grommet>

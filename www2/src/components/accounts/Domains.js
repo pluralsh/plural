@@ -1,11 +1,9 @@
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import moment from 'moment'
 import { Button, ModalHeader, Roles, Trash } from 'forge-core'
 import { useMutation, useQuery } from '@apollo/client'
-
 import { Box, Layer, Text, TextInput } from 'grommet'
-
-import { Route, Switch, useNavigate, useRouteMatch } from 'react-router-dom'
+import { Route, Routes, useMatch, useNavigate } from 'react-router-dom'
 
 import { appendConnection, extendConnection, removeConnection, updateCache } from '../../utils/graphql'
 import { SectionContentContainer, SectionPortal } from '../Explore'
@@ -331,10 +329,10 @@ export function Domains() {
 }
 
 export function DnsDirectory() {
-  const { url } = useRouteMatch()
+  const { url } = useMatch()
 
   return (
-    <Switch>
+    <Routes>
       <Route
         exact
         path={url}
@@ -344,6 +342,6 @@ export function DnsDirectory() {
         path={`${url}/:id`}
         component={DnsRecords}
       />
-    </Switch>
+    </Routes>
   )
 }

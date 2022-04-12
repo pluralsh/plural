@@ -1,7 +1,6 @@
-import React, { useContext, useMemo } from 'react'
+import { useContext, useMemo } from 'react'
 import { Box, Grid } from 'grommet'
-import { Redirect, Route, Switch } from 'react-router-dom'
-
+import { Navigate, Route, Routes } from 'react-router-dom'
 import { StripeProvider } from 'react-stripe-elements'
 
 import { CurrentUserContext, PluralConfigurationContext, PluralProvider } from './login/CurrentUser'
@@ -110,7 +109,7 @@ export function PluralInner() {
                     background="white"
                     fill
                   >
-                    <Switch>
+                    <Routes>
                       <Route
                         path="/accounts/edit/:section"
                         component={EditAccount}
@@ -119,7 +118,7 @@ export function PluralInner() {
                         exact
                         path="/accounts/edit"
                       >
-                        <Redirect to="/accounts/edit/users" />
+                        <Navigate to="/accounts/edit/users" />
                       </Route>
                       <Route
                         path="/accounts/billing/:section"
@@ -165,28 +164,28 @@ export function PluralInner() {
                         exact
                         path="/repositories/:id"
                         render={props => (
-                          <Redirect to={`/repositories/${props.match.params.id}/bundles`} />
+                          <Navigate to={`/repositories/${props.match.params.id}/bundles`} />
                         )}
                       />
                       <Route
                         exact
                         path="/repositories/:id/packages"
                         render={props => (
-                          <Redirect to={`/repositories/${props.match.params.id}/packages/helm`} />
+                          <Navigate to={`/repositories/${props.match.params.id}/packages/helm`} />
                         )}
                       />
                       <Route
                         exact
                         path="/repositories/:id/edit"
                         render={props => (
-                          <Redirect to={`/repositories/${props.match.params.id}/edit/details`} />
+                          <Navigate to={`/repositories/${props.match.params.id}/edit/details`} />
                         )}
                       />
                       <Route
                         exact
                         path="/repositories/:id/configure"
                         render={props => (
-                          <Redirect to={`/repositories/${props.match.params.id}/configure/upgrades`} />
+                          <Navigate to={`/repositories/${props.match.params.id}/configure/upgrades`} />
                         )}
                       />
                       <Route
@@ -209,7 +208,7 @@ export function PluralInner() {
                         exact
                         path="/me/edit"
                       >
-                        <Redirect to="/me/edit/user" />
+                        <Navigate to="/me/edit/user" />
                       </Route>
                       <Route
                         path="/me/edit/:editing"
@@ -231,7 +230,7 @@ export function PluralInner() {
                         exact
                         path="/incidents"
                       >
-                        <Redirect to="/incidents/all" />
+                        <Navigate to="/incidents/all" />
                       </Route>
                       <Route
                         path="/incident/:incidentId/edit"
@@ -265,7 +264,7 @@ export function PluralInner() {
                         exact
                         path="/audits"
                       >
-                        <Redirect to="/audits/table" />
+                        <Navigate to="/audits/table" />
                       </Route>
                       <Route
                         path="/upgrades/:id"
@@ -284,9 +283,9 @@ export function PluralInner() {
                         component={Explore}
                       />
                       <Route path="/">
-                        <Redirect to={me.hasInstallations ? '/explore/installed' : '/explore/public'} />
+                        <Navigate to={me.hasInstallations ? '/explore/installed' : '/explore/public'} />
                       </Route>
-                    </Switch>
+                    </Routes>
                   </Box>
                 </Box>
                 <FlyoutContainer />

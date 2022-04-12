@@ -1,12 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
 import { Button, Edit, InputCollection, ListView as List, ResponsiveInput } from 'forge-core'
 import { Anchor, Box, Text } from 'grommet'
-
 import { Add, Stripe } from 'grommet-icons'
-
 import { useParams } from 'react-router-dom'
-
 import { useFilePicker } from 'react-sage'
 
 import { STRIPE_BLUE } from '../payments/constants'

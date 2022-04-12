@@ -70,6 +70,11 @@ defmodule Core.Services.Tests do
     |> notify(:update)
   end
 
+  @doc """
+  Tags all bound versions to this test with its promote tag and sends appropriate update events to trigger downstream
+  upgrades
+  """
+  @spec promote(Test.t) :: {:ok, map} | error
   def promote(%Test{status: :succeeded, promote_tag: tag} = test) do
     %Test{bindings: bindings, creator: user} = Core.Repo.preload(test, [:creator, bindings: :version])
 
@@ -86,6 +91,18 @@ defmodule Core.Services.Tests do
     |> case do
       {:ok, results} -> send_notifs(results, user)
       err -> err
+    end
+  end
+
+  @doc """
+  Sends a StepLogs event for the given logs, provided the user has edit permissions for the test
+  """
+  @spec publish_logs(binary, binary, User.t) :: step_resp
+  def publish_logs(logs, step_id, %User{} = user) do
+    step = get_step!(step_id)
+    with {:ok, step} <- allow(step, user, :edit) do
+      handle_notify(PubSub.StepLogs, {step, String.split(logs, ~r/\R/)})
+      {:ok, step}
     end
   end
 

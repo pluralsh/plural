@@ -21,7 +21,7 @@ defmodule RtcWeb.TestChannel do
     Logger.info "received log line"
     case socket.assigns do
       %{publishable: true} ->
-        broadcast!(socket, "stdo", %{line: line, step: step})
+        broadcast(socket, "stdo", %{line: line, step: step})
         {:reply, :ok, socket}
       _ -> {:reply, {:error, :forbidden}, socket}
     end

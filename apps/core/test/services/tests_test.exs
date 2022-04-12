@@ -106,4 +106,23 @@ defmodule Core.Services.TestsTest do
       end
     end
   end
+
+  describe "#publish_logs/3" do
+    test "test creators can publish logs" do
+      user = insert(:user)
+      step = insert(:test_step, test: build(:test, creator: user))
+
+      {:ok, _} = Tests.publish_logs("logz", step.id, user)
+
+      assert_receive {:event, %PubSub.StepLogs{item: {found, ["logz"]}}}
+      assert found.id == step.id
+    end
+
+    test "random users cannot publish logs" do
+      user = insert(:user)
+      step = insert(:test_step)
+
+      {:error, _} = Tests.publish_logs("logz", step.id, user)
+    end
+  end
 end

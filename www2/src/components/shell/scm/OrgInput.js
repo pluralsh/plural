@@ -66,7 +66,7 @@ export function OrgInput({ name, setName, org, orgs, setOrg, render }) {
               onEsc={close}
             >
               <Box
-                gap="0px"
+                gap="none"
                 border={{ side: 'between' }}
               >
                 {orgs.map(o => (

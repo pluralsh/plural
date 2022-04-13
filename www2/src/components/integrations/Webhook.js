@@ -115,7 +115,7 @@ export function Attributes({ children, ...props }) {
       {...props}
     >
       <Box
-        gap="0px"
+        gap="none"
         border={{ side: 'between' }}
       >
         {children}

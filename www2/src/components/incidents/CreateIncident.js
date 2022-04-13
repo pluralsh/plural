@@ -187,7 +187,7 @@ export function CreateIncident({ onCompleted }) {
         flex={false}
         direction="row"
         border={{ side: 'between', color: 'light-5' }}
-        gap="0px"
+        gap="none"
       >
         <RepositorySelect
           repository={repository}

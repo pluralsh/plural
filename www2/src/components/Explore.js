@@ -62,7 +62,7 @@ function RepoTag({ tag, setTag }) {
 
 function Repo({ repo, setTag }) {
   const { dark } = useContext(ThemeContext)
-  const hist = useNavigate()
+  const navigate = useNavigate()
 
   return (
     <Box
@@ -73,7 +73,7 @@ function Repo({ repo, setTag }) {
       border={{ side: 'bottom' }}
       hoverIndicator="hover"
       focusIndicator={false}
-      onClick={() => hist.push(`/repositories/${repo.id}`)}
+      onClick={() => navigate(`/repositories/${repo.id}`)}
     >
       <RepoIcon
         repo={repo}
@@ -364,7 +364,7 @@ export function SectionContentContainer({ header: h, children }) {
 }
 
 export function SectionItemContainer({ label, icon, selected, location, ...props }) {
-  const hist = useNavigate()
+  const navigate = useNavigate()
 
   return (
     <Box
@@ -377,7 +377,7 @@ export function SectionItemContainer({ label, icon, selected, location, ...props
       gap="small"
       direction="row"
       hoverIndicator="sidebarHover"
-      onClick={selected ? null : () => hist.push(location)}
+      onClick={selected ? null : () => navigate(location)}
       {...props}
     >
       <Box flex={false}>

@@ -390,7 +390,7 @@ export default function Artifacts({ artifacts }) {
     <DetailContainer>
       <DetailHeader text="Artifacts" />
       <Box
-        gap="0px"
+        gap="none"
         border={{ side: 'between', color: 'light-5' }}
       >
         {artifacts.map(artifact => (

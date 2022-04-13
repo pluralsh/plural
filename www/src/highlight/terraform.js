@@ -45,8 +45,8 @@ export default function hljsDefineTerraform(hljs) {
                 end: '\\)',
               }],
             }],
-          		},
-          	'self'],
+          },
+          'self'],
       }],
     }],
   }

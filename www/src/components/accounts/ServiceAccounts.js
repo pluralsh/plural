@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useState } from 'react'
 import { Box, Layer, TextInput } from 'grommet'
-import { useMutation, useQuery } from 'react-apollo'
+import { useMutation, useQuery } from '@apollo/client'
 import { Edit } from 'grommet-icons'
 import { ModalHeader, Scroller, SecondaryButton } from 'forge-core'
 

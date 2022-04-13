@@ -1,9 +1,9 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { Button, Close, Edit, File, Messages as MessagesI, ModalHeader, Scroller } from 'forge-core'
 
-import { useMutation, useQuery, useSubscription } from 'react-apollo'
+import { useMutation, useQuery, useSubscription } from '@apollo/client'
 
-import { useHistory, useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import { Box, Layer, Text, TextInput } from 'grommet'
 
@@ -122,7 +122,7 @@ function IncidentHeader({ incident, editable, editing, setEditing, mutation, att
         direction="row"
         align="center"
         background="light-1"
-        pad={{ vertical: 'xsmall', horizontal: 'small' }} 
+        pad={{ vertical: 'xsmall', horizontal: 'small' }}
         border={{ side: 'bottom', color: 'light-3' }}
         gap="xsmall"
         round={{ corner: 'top', size: 'xsmall' }}
@@ -234,7 +234,7 @@ export function Messages({ incident, loading, fetchMore, subscribeToMore }) {
     variables: { id: incident.id },
     updateQuery: (prev, { subscriptionData: { data } }) => applyMessages(prev, data),
   }), [incident.id])
-  
+
   if (edges.length === 0) return <Empty />
 
   return (
@@ -339,7 +339,7 @@ function IncidentInner({ incident, fetchMore, subscribeToMore, loading, editing,
   const currentUser = useContext(CurrentUserContext)
   const editable = canEdit(incident, currentUser)
   const [attributes, setAttributes] = useState({
-    description: incident.description, 
+    description: incident.description,
     title: incident.title,
     tags: incident.tags.map(({ tag }) => tag),
   })
@@ -413,14 +413,14 @@ function IncidentInner({ incident, fetchMore, subscribeToMore, loading, editing,
                 pad={{ horizontal: 'small' }}
                 margin={{ top: 'small' }}
               >
-                <IncidentHeader 
+                <IncidentHeader
                   attributes={attributes}
                   setAttributes={setAttributes}
-                  incident={incident} 
-                  editable={editable} 
-                  editing={editing} 
+                  incident={incident}
+                  editable={editable}
+                  editing={editing}
                   setEditing={setEditing}
-                  updating={updating} 
+                  updating={updating}
                   mutation={mutation}
                 />
               </Box>
@@ -443,12 +443,12 @@ function IncidentInner({ incident, fetchMore, subscribeToMore, loading, editing,
                   )}
                   {view === IncidentView.MSGS && (
                     <Dropzone>
-                      <Messages 
+                      <Messages
                         updating={updating}
                         editing={editing}
                         mutation={mutation}
-                        incident={incident} 
-                        fetchMore={fetchMore} 
+                        incident={incident}
+                        fetchMore={fetchMore}
                         subscribeToMore={subscribeToMore}
                         loading={loading}
                       />
@@ -470,15 +470,15 @@ function IncidentInner({ incident, fetchMore, subscribeToMore, loading, editing,
 }
 
 export function Incident({ editing }) {
-  const history = useHistory()
+  const navigate = useNavigate()
   const [deleted, setDeleted] = useState(false)
   const { incidentId } = useParams()
   const [edit, setEdit] = useState(editing)
   const { data, loading, fetchMore, subscribeToMore } = useQuery(INCIDENT_Q, {
-    variables: { id: incidentId }, 
+    variables: { id: incidentId },
     fetchPolicy: 'cache-and-network',
   })
-  
+
   useSubscription(INCIDENT_SUB, {
     variables: { id: incidentId },
     onSubscriptionData: ({ subscriptionData: { data: { incidentDelta: { delta } } } }) => (
@@ -510,7 +510,7 @@ export function Incident({ editing }) {
               >
                 <Button
                   label="Return"
-                  onClick={() => history.push('/incidents')}
+                  onClick={() => navigate('/incidents')}
                 />
               </Box>
             </Box>

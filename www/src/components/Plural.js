@@ -1,7 +1,6 @@
-import React, { useContext, useMemo } from 'react'
+import { useContext, useMemo } from 'react'
 import { Box, Grid } from 'grommet'
-import { Redirect, Route, Switch } from 'react-router-dom'
-
+import { Navigate, Route, Routes, useParams } from 'react-router-dom'
 import { StripeProvider } from 'react-stripe-elements'
 
 import { CurrentUserContext, PluralConfigurationContext, PluralProvider } from './login/CurrentUser'
@@ -70,6 +69,14 @@ function WrapStripe({ children }) {
   )
 }
 
+function NavigateId({ to }) {
+  const { id } = useParams()
+
+  return (
+    <Navigate to={to.replaceAll(':id', id)} />
+  )
+}
+
 export function PluralInner() {
   const me = useContext(CurrentUserContext)
 
@@ -110,183 +117,173 @@ export function PluralInner() {
                     background="white"
                     fill
                   >
-                    <Switch>
+                    <Routes>
                       <Route
                         path="/accounts/edit/:section"
-                        component={EditAccount}
+                        element={<EditAccount />}
                       />
                       <Route
                         exact
                         path="/accounts/edit"
-                      >
-                        <Redirect to="/accounts/edit/users" />
-                      </Route>
+                        element={<Navigate to="/accounts/edit/users" />}
+                      />
                       <Route
                         path="/accounts/billing/:section"
-                        component={EditBilling}
+                        element={<EditBilling />}
                       />
                       <Route
                         path="/publishers/mine/:editing"
-                        component={MyPublisher}
+                        element={<MyPublisher />}
                       />
                       <Route
                         path="/publishers/:id/:editing"
-                        component={MyPublisher}
+                        element={<MyPublisher />}
                       />
                       <Route
                         path="/publishers/:publisherId"
-                        component={Publisher}
+                        element={<Publisher />}
                       />
                       <Route
                         path="/publishers"
-                        component={Publishers}
+                        element={<Publishers />}
                       />
                       <Route
                         path="/dkr/repo/:id"
-                        component={DockerRepository}
+                        element={<DockerRepository />}
                       />
                       <Route
                         path="/dkr/img/:id"
-                        component={Docker}
+                        element={<Docker />}
                       />
                       <Route
                         path="/shell"
-                        component={CloudShell}
+                        element={<CloudShell />}
                       />
                       <Route
                         path="/oauth/callback/github/shell"
-                        component={OAuthCallback}
+                        element={<OAuthCallback />}
                       />
                       <Route
                         path="/repositories/:id/integrations"
-                        component={IntegrationPage}
+                        element={<IntegrationPage />}
                       />
                       <Route
                         exact
                         path="/repositories/:id"
-                        render={props => (
-                          <Redirect to={`/repositories/${props.match.params.id}/bundles`} />
-                        )}
+                        element={<NavigateId to="/repositories/:id/bundles" />}
                       />
                       <Route
                         exact
                         path="/repositories/:id/packages"
-                        render={props => (
-                          <Redirect to={`/repositories/${props.match.params.id}/packages/helm`} />
-                        )}
+                        element={<NavigateId to="/repositories/:id/packages/helm" />}
                       />
                       <Route
                         exact
                         path="/repositories/:id/edit"
-                        render={props => (
-                          <Redirect to={`/repositories/${props.match.params.id}/edit/details`} />
-                        )}
+                        element={<NavigateId to="/repositories/:id/edit/details" />}
                       />
                       <Route
                         exact
                         path="/repositories/:id/configure"
-                        render={props => (
-                          <Redirect to={`/repositories/${props.match.params.id}/configure/upgrades`} />
-                        )}
+                        element={<NavigateId to="/repositories/:id/configure/upgrades" />}
                       />
                       <Route
                         path="/repositories/:id/:group/:subgroup"
-                        component={RepoDirectory}
+                        element={<RepoDirectory />}
                       />
                       <Route
                         path="/repositories/:id/:group"
-                        component={RepoDirectory}
+                        element={<RepoDirectory />}
                       />
                       <Route
                         path="/charts/:chartId"
-                        component={Chart}
+                        element={<Chart />}
                       />
                       <Route
                         path="/terraform/:tfId"
-                        component={Terraform}
+                        element={<Terraform />}
                       />
                       <Route
                         exact
                         path="/me/edit"
-                      >
-                        <Redirect to="/me/edit/user" />
-                      </Route>
+                        element={<Navigate to="/me/edit/user" />}
+                      />
                       <Route
                         path="/me/edit/:editing"
-                        component={EditUser}
+                        element={<EditUser />}
                       />
                       <Route
                         path="/billing/:section"
-                        component={Billing}
+                        element={<Billing />}
                       />
                       <Route
                         path="/me/invoices/:subscriptionId"
-                        component={Invoices}
+                        element={<Invoices />}
                       />
                       <Route
                         path="/incidents/:group"
-                        component={IncidentDirectory}
+                        element={<IncidentDirectory />}
                       />
                       <Route
                         exact
                         path="/incidents"
-                      >
-                        <Redirect to="/incidents/all" />
-                      </Route>
+                        element={<Navigate to="/incidents/all" />}
+                      />
                       <Route
                         path="/incident/:incidentId/edit"
-                        component={EditIncident}
+                        element={<EditIncident />}
                       />
                       <Route
                         path="/incident/:incidentId"
-                        component={Incident}
+                        element={<Incident />}
                       />
                       <Route
                         path="/incidents"
-                        component={Incidents}
+                        element={<Incidents />}
                       />
                       <Route
                         path="/webhooks/:id"
-                        component={Webhook}
+                        element={<Webhook />}
                       />
                       <Route
                         path="/webhooks"
-                        component={Integrations}
+                        element={<Integrations />}
                       />
                       <Route
                         path="/oauth/accept/:service"
-                        component={OauthCreator}
+                        element={<OauthCreator />}
                       />
                       <Route
                         path="/audits/:graph"
-                        component={Audits}
+                        element={<Audits />}
                       />
                       <Route
                         exact
                         path="/audits"
-                      >
-                        <Redirect to="/audits/table" />
-                      </Route>
+                        element={<Navigate to="/audits/table" />}
+                      />
                       <Route
                         path="/upgrades/:id"
-                        component={UpgradeQueue}
+                        element={<UpgradeQueue />}
                       />
                       <Route
                         path="/upgrades"
-                        component={UpgradeQueues}
+                        element={<UpgradeQueues />}
                       />
                       <Route
                         path="/explore/:group/:tag"
-                        component={Explore}
+                        element={<Explore />}
                       />
                       <Route
                         path="/explore/:group"
-                        component={Explore}
+                        element={<Explore />}
                       />
-                      <Route path="/">
-                        <Redirect to={me.hasInstallations ? '/explore/installed' : '/explore/public'} />
-                      </Route>
-                    </Switch>
+                      <Route
+                        exact
+                        path="/"
+                        element={<Navigate to={me.hasInstallations ? '/explore/installed' : '/explore/public'} />}
+                      />
+                    </Routes>
                   </Box>
                 </Box>
                 <FlyoutContainer />

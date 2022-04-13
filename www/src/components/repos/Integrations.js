@@ -1,18 +1,15 @@
-import React, { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
+import { useQuery } from '@apollo/client'
 import styled from 'styled-components'
-import { useHistory, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { Carousel, HoveredBackground, ScrollableContainer, Scroller } from 'forge-core'
 import { Anchor, Box, Stack, Text, ThemeContext } from 'grommet'
-
-import { useQuery } from 'react-apollo'
-
 import { FormNextLink, FormPrevious } from 'grommet-icons'
 import { normalizeColor } from 'grommet/utils'
 
 import { chunk } from '../../utils/array'
-
-import { BreadcrumbsContext } from '../Breadcrumbs'
 import { extendConnection } from '../../utils/graphql'
+import { BreadcrumbsContext } from '../Breadcrumbs'
 
 import { DetailContainer } from './Installation'
 import { DetailHeader } from './Artifacts'
@@ -22,7 +19,7 @@ import { INTEGRATIONS_Q } from './queries'
 const ICON_SIZE = 50
 
 function Integration({ name, description, icon, tags, sourceUrl, publisher, width }) {
-  const hist = useHistory()
+  const hist = useNavigate()
   const [hover, setHover] = useState(false)
 
   return (
@@ -298,7 +295,7 @@ export function IntegrationPage() {
 }
 
 function ViewAll({ repositoryId }) {
-  const hist = useHistory()
+  const hist = useNavigate()
 
   return (
     <Box flex={false}>

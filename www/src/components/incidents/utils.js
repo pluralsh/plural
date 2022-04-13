@@ -32,7 +32,7 @@ export function Attributes({ children, ...props }) {
     >
       <Box
         fill="horizontal"
-        gap="0px"
+        gap="none"
         border={{ side: 'between' }}
       >
         {children}

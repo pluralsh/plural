@@ -1,4 +1,4 @@
-export const alpha = (hex, alph) => `${hex}${Math.floor(alph * 255).toString(16).padStart(2, 0)}` 
+export const alpha = (hex, alph) => `${hex}${Math.floor(alph * 255).toString(16).padStart(2, 0)}`
 
 const coerce = color => (color < 255 ? (color < 1 ? 0 : color) : 255)
 

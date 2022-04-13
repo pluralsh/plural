@@ -1,6 +1,5 @@
-import React from 'react'
 import { Box, Layer, Text } from 'grommet'
-import { useMutation } from 'react-apollo'
+import { useMutation } from '@apollo/client'
 
 import { Button, ModalHeader } from 'forge-core'
 

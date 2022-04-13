@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { Box, Stack, Text } from 'grommet'
 import { Notification as NotificationI, Scroller } from 'forge-core'
-import { useQuery } from 'react-apollo'
+import { useQuery } from '@apollo/client'
 
-import { useHistory } from 'react-router'
+import { useNavigate } from 'react-router-dom'
 
 import { NOTIFICATIONS_Q } from '../incidents/queries'
 import { Flyout } from '../utils/Flyout'
@@ -33,7 +33,7 @@ function Badge({ notifications }) {
 }
 
 function NotificationRow({ notification, next }) {
-  const history = useHistory()
+  const navigate = useNavigate()
   const { incident } = notification
 
   return (
@@ -43,8 +43,8 @@ function NotificationRow({ notification, next }) {
       pad="xsmall"
       gap="small"
       align="center"
-      hoverIndicator="hover" 
-      onClick={() => history.push(`/incidents/${incident.id}`)}
+      hoverIndicator="hover"
+      onClick={() => navigate(`/incidents/${incident.id}`)}
     >
       <Box fill="horizontal">
         <Notif
@@ -69,7 +69,7 @@ function NotificationRow({ notification, next }) {
           size="25px"
         />
       </Box>
-    </Box> 
+    </Box>
   )
 }
 
@@ -127,8 +127,8 @@ export function Notifications() {
       {open && (
         <FlyoutBody
           setOpen={setOpen}
-          edges={notifications.edges} 
-          pageInfo={notifications.pageInfo} 
+          edges={notifications.edges}
+          pageInfo={notifications.pageInfo}
           fetchMore={fetchMore}
         />
       )}

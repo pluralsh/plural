@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from 'react'
-import { useMutation } from 'react-apollo'
-import gql from 'graphql-tag'
+import { useEffect, useState } from 'react'
+import { gql, useMutation } from '@apollo/client'
 import { Anchor, Box, Form, Keyboard, Text } from 'grommet'
 import { Button, InputCollection, ResponsiveInput } from 'forge-core'
-
 import { Checkmark, StatusCritical } from 'grommet-icons'
 
 import { fetchToken, setToken } from '../helpers/authentication'
@@ -69,6 +67,7 @@ export function PasswordStatus({ disabled, reason }) {
 }
 
 export default function Login(props) {
+  const { history } = props
   const [tab, setTab] = useState(State.LOGIN)
   const [state, setState] = useState({
     email: '',
@@ -83,15 +82,15 @@ export default function Login(props) {
     variables: { email, password, name },
     onCompleted: ({ login, signup }) => {
       setToken(login ? login.jwt : signup.jwt)
-      props.history.push('/')
+      navigate('/')
     },
   })
 
   useEffect(() => {
     if (fetchToken()) {
-      props.history.push('/')
+      navigate('/')
     }
-  }, [])
+  }, [history])
 
   const { disabled, reason } = disableState(password, confirm)
 

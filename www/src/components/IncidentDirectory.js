@@ -3,7 +3,7 @@ import { Box } from 'grommet'
 
 import { Incidents as IncidentsIcon, Responses as ResponsesIcon } from 'forge-core'
 
-import { useParams } from 'react-router'
+import { useParams } from 'react-router-dom'
 
 import { SectionContent } from './Explore'
 import { Incidents } from './incidents/Incidents'

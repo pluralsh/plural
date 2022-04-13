@@ -1,17 +1,16 @@
-import React, { useContext, useEffect, useState } from 'react'
+import './chart.css'
+
+import { useContext, useEffect, useState } from 'react'
 import { Anchor, Box, Markdown, Text } from 'grommet'
-import { useMutation, useQuery } from 'react-apollo'
-import { useHistory, useParams } from 'react-router-dom'
+import { useMutation, useQuery } from '@apollo/client'
+import { useNavigate, useParams } from 'react-router-dom'
 import { Button, ScrollableContainer, TabContent, TabHeader, TabHeaderItem, Tabs } from 'forge-core'
-
 import moment from 'moment'
-
 import Highlight from 'react-highlight.js'
-
 import { Docker } from 'grommet-icons'
 
 import { Versions } from '../versions/Versions'
-
+import { PluralConfigurationContext } from '../login/CurrentUser'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 
 import { CHART_Q, INSTALL_CHART, UPDATE_CHART_INST } from './queries'
@@ -19,13 +18,7 @@ import { DEFAULT_CHART_ICON } from './constants'
 
 import Installation, { DetailContainer } from './Installation'
 import Dependencies, { FullDependencies, ShowFull } from './Dependencies'
-
-import './chart.css'
-
 import { dockerPull } from './misc'
-
-import { PluralConfigurationContext } from '../login/CurrentUser'
-
 import { DeferredUpdates } from './DeferredUpdates'
 import { PackageGrade, ScanResults } from './PackageScan'
 
@@ -225,7 +218,7 @@ function updateInstallation(chartId) {
 
 function ImageDependencies({ version: { imageDependencies } }) {
   const { registry } = useContext(PluralConfigurationContext)
-  const history = useHistory()
+  const navigate = useNavigate()
   if (!imageDependencies || imageDependencies.length === 0) return null
 
   return (
@@ -247,7 +240,7 @@ function ImageDependencies({ version: { imageDependencies } }) {
           hoverIndicator="light-2"
           round="xsmall"
           focusIndicator={false}
-          onClick={() => history.push(`/dkr/img/${image.id}`)}
+          onClick={() => navigate(`/dkr/img/${image.id}`)}
         >
           <Docker
             color="plain"
@@ -266,7 +259,7 @@ export default function Chart() {
   const [tab, setTab] = useState(false)
   const [full, setFull] = useState(false)
   const { data, fetchMore, refetch } = useQuery(CHART_Q, {
-    variables: { chartId }, 
+    variables: { chartId },
     fetchPolicy: 'cache-and-network',
   })
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
@@ -366,8 +359,8 @@ export default function Chart() {
             </TabContent>
             <TabContent name="dependencies">
               {full ? <FullDependencies resource={chart} /> : (
-                <Dependencies 
-                  name={chart.name} 
+                <Dependencies
+                  name={chart.name}
                   resource={chart}
                   dependencies={(version || chart).dependencies}
                 />

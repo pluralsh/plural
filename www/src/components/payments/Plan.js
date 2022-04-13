@@ -1,4 +1,6 @@
-import React, { useCallback, useContext, useState } from 'react'
+import './plan.css'
+
+import { useCallback, useContext, useState } from 'react'
 import styled from 'styled-components'
 import { Check as Checkmark, Edit, Group, HoveredBackground, Reload as Refresh } from 'forge-core'
 import { Anchor, Box, Collapsible, Layer, Stack, Text } from 'grommet'
@@ -6,14 +8,11 @@ import { Cube } from 'grommet-icons'
 import { normalizeColor } from 'grommet/utils'
 
 import { CurrentUserContext } from '../login/CurrentUser'
-
 import { ModalHeader, ignore } from '../utils/ModalHeader'
 
+import { PlanType } from './types'
 import { ServiceLevel } from './CreatePlan'
 import { UpdatePlanForm } from './UpdatePlanForm'
-import './plan.css'
-
-import { PlanType } from './types'
 
 export function LineItemIcon({ dimension, size }) {
   switch (dimension) {
@@ -161,7 +160,7 @@ export const hover = styled.div`
 function EditPlan({ plan }) {
   const [open, setOpen] = useState(false)
   const doSetOpen = useCallback((val, e) => {
-    ignore(e); setOpen(val) 
+    ignore(e); setOpen(val)
   }, [setOpen])
 
   return (
@@ -273,7 +272,7 @@ export default function Plan({ approvePlan, subscription, repository, plan }) {
               size="small"
               color="brand"
               onClick={e => {
-                e.preventDefault(); e.stopPropagation(); setOpen(!open) 
+                e.preventDefault(); e.stopPropagation(); setOpen(!open)
               }}
             >
               {open ? 'Hide' : 'Show'} details

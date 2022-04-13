@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useState } from 'react'
 import { CardElement, Elements, injectStripe } from 'react-stripe-elements'
 import { Box, Layer, Text } from 'grommet'
-import { useMutation, useQuery } from 'react-apollo'
+import { useMutation, useQuery } from '@apollo/client'
 
 import { Button, ModalHeader, PaymentMethods, Trash } from 'forge-core'
 
@@ -20,7 +20,7 @@ import { CurrentUserContext } from '../login/CurrentUser'
 import { CARDS, DELETE_CARD, REGISTER_CARD } from './queries'
 
 function _CardForm({ stripe, onCompleted }) {
-  const [stripeError, setStripeError] = useState(null) 
+  const [stripeError, setStripeError] = useState(null)
   const [mutation, { loading, error }] = useMutation(REGISTER_CARD, {
     refetchQueries: [{ query: CARDS }],
     onCompleted,
@@ -121,7 +121,7 @@ function CardHeader() {
       direction="row"
       pad="small"
       gap="xsmall"
-      border={{ side: 'bottom', color: 'light-5' }} 
+      border={{ side: 'bottom', color: 'light-5' }}
       align="center"
     >
       <HeaderItem

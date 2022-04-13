@@ -1,4 +1,4 @@
-import { gql } from 'apollo-boost'
+import { gql } from '@apollo/client'
 
 import { OIDCProvider } from '../../models/oauth'
 import { RepoFragment } from '../../models/repo'
@@ -23,8 +23,8 @@ export const UPDATE_PROVIDER = gql`
 
 export const OAUTH_LOGIN = gql`
   query Login($challenge: String!) {
-    oauthLogin(challenge: $challenge) { 
-      ...RepoFragment 
+    oauthLogin(challenge: $challenge) {
+      ...RepoFragment
     }
   }
   ${RepoFragment}

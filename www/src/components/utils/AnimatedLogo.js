@@ -1,6 +1,5 @@
-import React from 'react'
-import { Box } from 'grommet' 
 import './logo-animation.css'
+import { Box } from 'grommet'
 
 const BOTTOM_LEFT = `${process.env.PUBLIC_URL}/plural-logomark-mechanical-for-animation-{color}_bottom-left_100px.svg`
 const BOTTOM_RIGHT = `${process.env.PUBLIC_URL}/plural-logomark-mechanical-for-animation-{color}_bottom-right_100px.svg`
@@ -14,7 +13,7 @@ function scaling(scale) {
   return { transform: `scale(${scale})` }
 }
 
-const image = (img, dark) => img.replace('{color}', dark ? 'wht' : 'blk') 
+const image = (img, dark) => img.replace('{color}', dark ? 'wht' : 'blk')
 
 export function LoopingLogo({ nofill, darkbg, height, scale, dark, still }) {
   return (

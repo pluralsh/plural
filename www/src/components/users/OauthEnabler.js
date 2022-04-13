@@ -1,4 +1,4 @@
-import React from 'react'
+import { createElement } from 'react'
 import { Github, Google } from 'grommet-icons'
 import { Box, Text } from 'grommet'
 import { Check } from 'forge-core'
@@ -18,12 +18,12 @@ export function OauthEnabler({ url: { provider, authorizeUrl }, me }) {
       align="center"
       hoverIndicator="tone-light"
       onClick={() => {
-        window.location = authorizeUrl 
+        window.location = authorizeUrl
       }}
       pad="small"
     >
       <Box flex={false}>
-        {React.createElement(icon, { size: 'medium', color: 'plain' })}
+        {createElement(icon, { size: 'medium', color: 'plain' })}
       </Box>
       <Box
         direction="row"

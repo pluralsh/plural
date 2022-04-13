@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { Copy, Links, TabContent, TabHeader, TabHeaderItem, Tabs } from 'forge-core'
-import { useMutation, useQuery } from 'react-apollo'
-import { useHistory, useParams } from 'react-router'
+import { useMutation, useQuery } from '@apollo/client'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import moment from 'moment'
 import { Anchor, Box, Collapsible, Stack, Text } from 'grommet'
@@ -44,7 +44,7 @@ function RepositoryPublic({ dockerRepo }) {
       gap="xsmall"
       align="center"
     >
-      <Toggle 
+      <Toggle
         checked={pub}
         onChange={({ target: { checked } }) => mutation({
           variables: { attributes: { public: checked } },
@@ -108,13 +108,13 @@ function DockerSidebar({ image: { dockerRepository: docker, ...image }, filter, 
   const [copied, setCopied] = useState(false)
   const data = useMemo(() => docker.metrics.map(({ tags, values }) => {
     const tag = tags.find(({ name }) => name === 'tag')
-    
+
     return {
-      id: tag ? tag.value : docker.name, 
+      id: tag ? tag.value : docker.name,
       data: values.map(({ time, value }) => ({ x: moment(time).toDate(), y: value })),
     }
   }), [docker.metrics, docker.name])
-  
+
   const imageName = dockerPull(registry, { ...image, dockerRepository: docker })
 
   return (
@@ -194,23 +194,23 @@ function DockerSidebar({ image: { dockerRepository: docker, ...image }, filter, 
               >Pull Metrics
               </Text>
             </Box>
-            <RangePicker 
-              duration={{ offset: filter.offset, step: filter.precision }} 
+            <RangePicker
+              duration={{ offset: filter.offset, step: filter.precision }}
               setDuration={({ offset, step }) => setFilter({ ...filter, offset, precision: step })}
             />
           </Box>
           <Box fill>
             <Graph
               data={data}
-              precision={filter.precision} 
+              precision={filter.precision}
               offset={filter.offset}
             />
           </Box>
         </DetailContainer>
       </Box>
       {copied && (
-        <CopyNotice 
-          text="copied docker pull command" 
+        <CopyNotice
+          text="copied docker pull command"
           onClose={() => setCopied(false)}
         />
       )}
@@ -251,7 +251,7 @@ function VectorSection({ text, background }) {
     <Box
       pad={{ vertical: 'xsmall' }}
       width="150px"
-      background="light-1" 
+      background="light-1"
       align="center"
       justify="center"
       border={background && { side: 'bottom', size: '3px', color: background }}
@@ -440,7 +440,7 @@ function Vulnerability({ vuln }) {
         gap="small"
         align="center"
         pad="xsmall"
-        onClick={() => setOpen(!open)} 
+        onClick={() => setOpen(!open)}
         hoverIndicator="light-3"
         focusIndicator={false}
       >
@@ -566,7 +566,7 @@ function Vulnerabilities({ image: { vulnerabilities, ...image } }) {
 }
 
 export function DockerRepository() {
-  const history = useHistory()
+  const navigate = useNavigate()
   const { id } = useParams()
   const { data } = useQuery(DOCKER_IMG_Q, { variables: { dockerRepositoryId: id } })
   useEffect(() => {
@@ -586,7 +586,7 @@ export function Docker() {
   const { id } = useParams()
   const [filter, setFilter] = useState(DEFAULT_FILTER)
   const { data } = useQuery(DOCKER_Q, {
-    variables: { id, ...filter }, 
+    variables: { id, ...filter },
     fetchPolicy: 'cache-and-network',
   })
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
@@ -598,7 +598,7 @@ export function Docker() {
     if (!data) return
     const { dockerImage } = data
     const { repository } = dockerImage.dockerRepository
-    
+
     setBreadcrumbs([
       { url: `/repositories/${repository.id}`, text: repository.name },
       { url: `/dkr/img/${dockerImage.id}`, text: `${dockerImage.dockerRepository.name}` },

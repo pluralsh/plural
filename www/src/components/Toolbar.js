@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Box } from 'grommet'
 
 import Me from './users/Me'
@@ -46,7 +46,7 @@ function ToolbarIcon() {
 
 export default function Toolbar() {
   const me = useContext(CurrentUserContext)
-  const history = useHistory()
+  const navigate = useNavigate()
 
   return (
     <Box
@@ -61,7 +61,7 @@ export default function Toolbar() {
         height="100%"
         direction="row"
         align="center"
-        onClick={() => history.push('/')}
+        onClick={() => navigate('/')}
         flex={false}
         className="plrl-main-icon"
         gap="small"

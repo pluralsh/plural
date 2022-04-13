@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { useQuery, useSubscription } from 'react-apollo'
+import { useQuery, useSubscription } from '@apollo/client'
 import { Reload as Refresh } from 'forge-core'
 
 import { Box, Text } from 'grommet'
@@ -10,7 +10,7 @@ import { BeatLoader } from 'react-spinners'
 
 import { Github } from 'grommet-icons'
 
-import { useParams } from 'react-router'
+import { useParams } from 'react-router-dom'
 
 import { appendConnection, extendConnection } from '../../utils/graphql'
 import { RepoIcon } from '../repos/Repositories'
@@ -197,7 +197,7 @@ export function UpgradeQueue() {
             flex={false}
             pad="xsmall"
             round="xsmall"
-            onClick={() => refetch()} 
+            onClick={() => refetch()}
             hoverIndicator="hover"
             focusIndicator={false}
           >
@@ -210,14 +210,14 @@ export function UpgradeQueue() {
           setListRef={setListRef}
           hasNextPage={pageInfo.hasNextPage}
           items={edges}
-          loading={loading} 
+          loading={loading}
           mapper={({ node }) => (
             <Upgrade
               key={node.id}
               upgrade={node}
               acked={acked}
             />
-          )} 
+          )}
           loadNextPage={() => pageInfo.hasNextPage && fetchMore({
             variables: { cursor: pageInfo.endCursor },
             updateQuery: (prev, { fetchMoreResult: { upgradeQueue: { upgrades } } }) => ({

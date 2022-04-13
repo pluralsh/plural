@@ -3,7 +3,7 @@ import { Box, Text } from 'grommet'
 
 import Toggle from 'react-toggle'
 
-import { useMutation } from 'react-apollo'
+import { useMutation } from '@apollo/client'
 
 import Avatar from '../users/Avatar'
 import { DeleteUser } from '../users/DeleteUser'
@@ -27,7 +27,7 @@ export function UserRow({ user, next, noborder, notoggle, deletable, update }) {
       pad="small"
       direction="row"
       align="center"
-      gap="small" 
+      gap="small"
       border={next && !noborder ? { side: 'bottom', color: 'light-6' } : null}
     >
       <Avatar

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Anchor, Box, Table, TableBody, TableCell, TableHeader, TableRow, Text } from 'grommet'
-import { useQuery } from 'react-apollo'
+import { useQuery } from '@apollo/client'
 
 import moment from 'moment'
 
@@ -65,7 +65,7 @@ function Invoice({ invoice: { number, hostedInvoiceUrl, amountPaid, createdAt, c
         size="small"
         color="green"
       >{amountPaid / 100} {currency}
-                 </Text>
+      </Text>
       </TableCell>
       <TableCell><Anchor href={hostedInvoiceUrl}>invoice</Anchor></TableCell>
     </TableRow>
@@ -84,7 +84,7 @@ function SubscriptionBar({ edges, current, setCurrent }) {
 }
 
 function InvoicesInner({ current: { id } }) {
-  const history = useHistory()
+  const navigate = useNavigate()
   const { loading, data } = useQuery(SUBSCRIPTION_Q, { variables: { id } })
   if (!data) return null
   if (loading) return <LoopingLogo />
@@ -102,7 +102,7 @@ function InvoicesInner({ current: { id } }) {
           weight={500}
         >Invoices for
         </Text>
-        <Anchor onClick={() => history.push(`/repositories/${repository.id}`)}>
+        <Anchor onClick={() => navigate(`/repositories/${repository.id}`)}>
           <Text
             size="small"
             weight={500}

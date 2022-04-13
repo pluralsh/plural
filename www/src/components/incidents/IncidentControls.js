@@ -1,8 +1,8 @@
 import React, { useCallback, useState } from 'react'
 import { Anchor, Box, Layer, Text } from 'grommet'
-import { Button, Check as Checkmark, ModalHeader, Notification, Owner, SecondaryButton } from 'forge-core' 
+import { Button, Check as Checkmark, ModalHeader, Notification, Owner, SecondaryButton } from 'forge-core'
 import { Zoom } from 'grommet-icons'
-import { useMutation } from 'react-apollo'
+import { useMutation } from '@apollo/client'
 
 import { Editable, Slate } from 'slate-react'
 
@@ -36,7 +36,7 @@ function Control({ icon, onClick }) {
 
 function AcceptIncident({ incident: { id } }) {
   const [mutation] = useMutation(ACCEPT_INCIDENT, { variables: { id } })
-  
+
   return (
     <Control
       icon={<Owner size="small" />}
@@ -103,10 +103,10 @@ function CompleteIncident({ incident: { id } }) {
                   label="Cancel"
                   onClick={() => setOpen(false)}
                 />
-                <Button 
-                  label="Complete" 
-                  disabled={attributes.content.length === 0} 
-                  loading={loading} 
+                <Button
+                  label="Complete"
+                  disabled={attributes.content.length === 0}
+                  loading={loading}
                   onClick={mutation}
                 />
               </Box>
@@ -134,7 +134,7 @@ function Follower({ incident: { id, follower } }) {
       query: INCIDENT_Q,
       variables: { id },
       update: ({ incident, ...prev }) => ({ ...prev, incident: { ...incident, follower: followIncident } }),
-    }),  
+    }),
   })
   const [unfollow, { loading: unfollowing }] = useMutation(UNFOLLOW, {
     variables: { id },

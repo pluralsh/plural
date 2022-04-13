@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Box, Text } from 'grommet'
 import { Github } from 'grommet-icons'
-import { useHistory, useLocation } from 'react-router'
-import { useMutation, useQuery } from 'react-apollo'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { useMutation, useQuery } from '@apollo/client'
 import { Button } from 'forge-core'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
@@ -49,7 +49,7 @@ function SynopsisTable({ items, width }) {
             weight={500}
             >{name}
            </Text>
-          </Box> 
+          </Box>
           <Box fill="horizontal">{value}</Box>
         </Box>
       ))}
@@ -166,7 +166,7 @@ function CreateShell({ accessToken, onCreate }) {
 
   return (
     <Box
-      style={{ overflow: 'auto', height: '100%', width: '100%' }} 
+      style={{ overflow: 'auto', height: '100%', width: '100%' }}
       background="backgroundColor"
       align="center"
       justify="center"
@@ -195,12 +195,12 @@ function CreateShell({ accessToken, onCreate }) {
           </>
         )}
         {section === 'cloud' && (
-          <ProviderForm 
+          <ProviderForm
             provider={provider}
             setProvider={doSetProvider}
             workspace={workspace}
             setWorkspace={setWorkspace}
-            credentials={credentials} 
+            credentials={credentials}
             setCredentials={setCredentials}
           />
         )}
@@ -227,16 +227,16 @@ function CreateShell({ accessToken, onCreate }) {
           gap="small"
         >
           {SECTIONS[section][1] && (
-            <SecondaryButton 
-              label="Previous" 
+            <SecondaryButton
+              label="Previous"
               onClick={() => setSection(SECTIONS[section][1])}
             />
           )}
-          <Button 
-            onClick={next} 
+          <Button
+            onClick={next}
             border={!!error}
             disabled={error}
-            loading={loading} 
+            loading={loading}
             label={section !== 'finish' ? 'Next' : 'Create'}
           />
         </Box>
@@ -247,7 +247,7 @@ function CreateShell({ accessToken, onCreate }) {
 
 export function OAuthCallback() {
   const loc = useLocation()
-  const history = useHistory()
+  const navigate = useNavigate()
   const params = new URLSearchParams(loc.search)
   const { data } = useQuery(SCM_TOKEN, { variables: { code: params.get('code'), provider: 'GITHUB' } })
 
@@ -262,9 +262,9 @@ export function OAuthCallback() {
       align="center"
       justify="center"
     >
-      <CreateShell 
-        accessToken={data.scmToken} 
-        onCreate={() => history.push('/shell')}
+      <CreateShell
+        accessToken={data.scmToken}
+        onCreate={() => navigate('/shell')}
       />
     </Box>
   )
@@ -277,7 +277,7 @@ export function CloudShell() {
   const [created, setCreated] = useState(false)
   const onClick = useCallback(() => {
     if (!data) return
-    const [{ url }] = data.scmAuthorization 
+    const [{ url }] = data.scmAuthorization
     window.location = url
   }, [data])
 
@@ -289,7 +289,7 @@ export function CloudShell() {
   }, [shellData, setCreated])
 
   if (!shellData) return <LoopingLogo dark />
-  
+
   if ((shellData && shellData.shell) || created) return <Terminal />
 
   return (

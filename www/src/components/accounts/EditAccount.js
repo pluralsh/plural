@@ -1,10 +1,10 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { Box, Text, TextInput, ThemeContext } from 'grommet'
 
-import { useHistory, useParams } from 'react-router'
-import { Button, Browser as Domain, EditField, Group, InputCollection, 
+import { useNavigate, useParams } from 'react-router-dom'
+import { Button, Browser as Domain, EditField, Group, InputCollection,
   Invoices as InvoicesI, Messages, Oauth, PaymentMethods, ResponsiveInput, Roles as RolesI, ServiceAccounts as ServiceAccountsI, Trash, User } from 'forge-core'
-import { useMutation } from 'react-apollo'
+import { useMutation } from '@apollo/client'
 
 import { SectionChoice } from '../utils/SectionChoice'
 import { SIDEBAR_WIDTH } from '../constants'
@@ -69,10 +69,10 @@ function DomainRow({ domain: { domain }, removeDomain }) {
       >{domain}
                              </Text>
       </Box>
-      <Icon 
+      <Icon
         icon={Trash}
-        tooltip="delete" 
-        onClick={() => removeDomain(domain)} 
+        tooltip="delete"
+        onClick={() => removeDomain(domain)}
         iconAttrs={{ color: 'error' }}
       />
     </Box>
@@ -166,10 +166,10 @@ function EditAttributes() {
 
 export function EditAccount({ billing }) {
   const { account, ...me } = useContext(CurrentUserContext)
-  const history = useHistory()
+  const navigate = useNavigate()
   const { section } = useParams()
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
-  useEffect(() => {    
+  useEffect(() => {
     const prefix = billing ? '/accounts/billing' : '/accounts/edit'
     setBreadcrumbs([
       { text: 'account', url: '/accounts/edit/attributes' },
@@ -187,7 +187,7 @@ export function EditAccount({ billing }) {
           gap="xsmall"
           flex={false}
           width={SIDEBAR_WIDTH}
-          height="100%" 
+          height="100%"
           background="backgroundColor"
           pad="small"
         >
@@ -213,7 +213,7 @@ export function EditAccount({ billing }) {
                 selected={section === view}
                 label={text}
                 icon={icon}
-                onClick={() => history.push(`/accounts/edit/${view}`)}
+                onClick={() => navigate(`/accounts/edit/${view}`)}
               />
             )
           ))}

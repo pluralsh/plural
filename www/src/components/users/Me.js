@@ -1,9 +1,9 @@
 import React, { useRef, useState } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Box, Drop, Layer, Text } from 'grommet'
 import { CreatePublisher as CreatePublisherIcon, EditField, Logout, MenuItem, ModalHeader, User } from 'forge-core'
 
-import { useQuery } from 'react-apollo'
+import { useQuery } from '@apollo/client'
 
 import CreatePublisher from '../publisher/CreatePublisher'
 import { ACCOUNT_PUBLISHERS } from '../publisher/queries'
@@ -51,7 +51,7 @@ export function Item({ onClick, icon, text, round }) {
 }
 
 function CreatePublisherModal({ setModal }) {
-  const history = useHistory()
+  const navigate = useNavigate()
 
   return (
     <Layer
@@ -68,7 +68,7 @@ function CreatePublisherModal({ setModal }) {
         <Box pad="small">
           <CreatePublisher onCreate={() => {
             setModal(null)
-            history.push('/publishers/mine')
+            navigate('/publishers/mine')
           }}
           />
         </Box>
@@ -78,7 +78,7 @@ function CreatePublisherModal({ setModal }) {
 }
 
 function Publishers({ publisher }) {
-  const history = useHistory()
+  const navigate = useNavigate()
   const { data } = useQuery(ACCOUNT_PUBLISHERS)
 
   if (!data) return null
@@ -99,7 +99,7 @@ function Publishers({ publisher }) {
           gap="small"
           hoverIndicator="light-2"
           focusIndicator={false}
-          onClick={() => history.push(node.id === id ? '/publishers/mine/repos' : `/publishers/${node.id}/repos`)}
+          onClick={() => navigate(node.id === id ? '/publishers/mine/repos' : `/publishers/${node.id}/repos`)}
         >
           <Avatar
             user={node}
@@ -120,7 +120,7 @@ function Publishers({ publisher }) {
 }
 
 export default function Me({ me }) {
-  const history = useHistory()
+  const navigate = useNavigate()
   const ref = useRef()
   const [modal, setModal] = useState(null)
   const [open, setOpen] = useState(false)
@@ -137,7 +137,7 @@ export default function Me({ me }) {
         align="center"
         onClick={() => setOpen(true)}
         justify="center"
-        hoverIndicator="sidebarHover" 
+        hoverIndicator="sidebarHover"
         pad={{ right: 'medium', left: 'small' }}
         round="xsmall"
         height="40px"
@@ -169,13 +169,13 @@ export default function Me({ me }) {
               icon={<EditField size="small" />}
               text="Update Account"
               round="xsmall"
-              onClick={() => history.push('/accounts/edit/attributes')}
+              onClick={() => navigate('/accounts/edit/attributes')}
             />
             <Item
               icon={<User size="small" />}
               text="Edit user"
               round="xsmall"
-              onClick={() => history.push('/me/edit/user')}
+              onClick={() => navigate('/me/edit/user')}
             />
             <Item
               icon={<Logout size="small" />}

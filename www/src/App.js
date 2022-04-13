@@ -1,88 +1,88 @@
-import React from 'react'
-import { BrowserRouter, Route, Switch } from 'react-router-dom'
-import { Grommet } from 'grommet'
-import { ApolloProvider } from 'react-apollo'
-import hljs from 'highlight.js'
-import merge from 'lodash.merge'
-import { theme as pluralTheme } from 'pluralsh-design-system'
-
+import 'react-toggle/style.css'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { ApolloProvider } from '@apollo/client'
 import { IntercomProvider } from 'react-use-intercom'
+import { Grommet } from 'grommet'
+import { theme } from 'pluralsh-design-system'
+import merge from 'lodash.merge'
 
 import { client } from './helpers/client'
+import { INTERCOM_APP_ID } from './constants'
+import { DEFAULT_THEME as oldTheme } from './theme'
+
 import Plural from './components/Plural'
-import { DEFAULT_THEME } from './theme'
-import hljsDefineTerraform from './highlight/terraform'
 import Invite from './components/Invite'
-import { PasswordReset, ResetPassword } from './components/users/PasswordReset'
 import { Login, PasswordlessLogin, Signup } from './components/users/MagicLogin'
+import { PasswordReset, ResetPassword } from './components/users/PasswordReset'
 import { OAuthConsent } from './components/oidc/OAuthConsent'
 import { EmailConfirmed } from './components/users/EmailConfirmation'
-import 'react-toggle/style.css'
 import { OAuthCallback } from './components/users/OAuthCallback'
 
-const INTERCOM_APP_ID = 'p127zb9y'
-hljs.registerLanguage('terraform', hljsDefineTerraform)
-
-export default function App() {
+function App() {
   return (
     <ApolloProvider client={client}>
       <IntercomProvider appId={INTERCOM_APP_ID}>
-        <Grommet theme={merge({}, pluralTheme, DEFAULT_THEME)}> {/* TODO: DELETE DEFAULT_THEME */}
+        <Grommet
+          full
+          theme={merge({}, oldTheme, theme)}
+        >
           <BrowserRouter>
-            <Switch>
+            <Routes>
               <Route
                 path="/reset-password/:id"
-                component={ResetPassword}
+                element={<ResetPassword />}
               />
               <Route
                 exact
                 path="/password-reset"
-                component={PasswordReset}
+                element={<PasswordReset />}
               />
               <Route
                 path="/confirm-email/:id"
-                component={EmailConfirmed}
+                element={<EmailConfirmed />}
               />
               <Route
                 path="/invite/:inviteId"
-                component={Invite}
+                element={<Invite />}
               />
               <Route
                 path="/passwordless-login/:token"
-                component={PasswordlessLogin}
+                element={<PasswordlessLogin />}
               />
               <Route
                 exact
                 path="/oauth/callback/github/shell"
-                component={Plural}
+                element={<Plural />}
               />
               <Route
                 path="/oauth/callback/:service"
-                component={OAuthCallback}
+                element={<OAuthCallback />}
               />
               <Route
                 exact
                 path="/login"
-                component={Login}
+                element={<Login />}
               />
               <Route
                 exact
                 path="/signup"
-                component={Signup}
+                element={<Signup />}
               />
               <Route
                 exact
                 path="/oauth/consent"
-                component={OAuthConsent}
+                element={<OAuthConsent />}
               />
               <Route
-                path="/"
-                component={Plural}
+                path="*"
+                element={<Plural />}
               />
-            </Switch>
+            </Routes>
           </BrowserRouter>
         </Grommet>
       </IntercomProvider>
     </ApolloProvider>
   )
 }
+
+export default App

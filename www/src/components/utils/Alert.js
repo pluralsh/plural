@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import { Box, Text, ThemeContext } from 'grommet'
 import { Alert as AlertError, Checkmark, StatusInfo } from 'grommet-icons'
 import { normalizeColor } from 'grommet/utils'

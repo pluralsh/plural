@@ -1,11 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Anchor, Box, Collapsible, Form, Keyboard, Text, TextInput } from 'grommet'
 import { Button, Divider } from 'forge-core'
-
-import { useApolloClient, useLazyQuery, useMutation, useQuery } from 'react-apollo'
-
-import { Redirect, useHistory, useLocation, useParams } from 'react-router'
-
+import { useApolloClient, useLazyQuery, useMutation, useQuery } from '@apollo/client'
+import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
 import queryString from 'query-string'
 
 import { fetchToken, setToken } from '../../helpers/authentication'
@@ -99,7 +96,7 @@ export function PasswordlessLogin() {
 
   useEffect(() => {
     mutation()
-  }, [])
+  }, [mutation])
 
   return (
     <LoginPortal>
@@ -149,7 +146,7 @@ export function handleOauthChallenge(client, challenge) {
 }
 
 function LoginPoller({ challenge, token, deviceToken }) {
-  const history = useHistory()
+  const navigate = useNavigate()
   const client = useApolloClient()
   const [success, setSuccess] = useState(false)
 
@@ -161,18 +158,20 @@ function LoginPoller({ challenge, token, deviceToken }) {
       }).then(({ data: { loginToken: { jwt } } }) => {
         setToken(jwt)
         setSuccess(true)
-        deviceToken && finishedDeviceLogin()
+
+        if (deviceToken) finishedDeviceLogin()
+
         if (challenge) {
           handleOauthChallenge(client, challenge)
         }
         else {
-          history.push('/')
+          navigate('/')
         }
       })
     }, 2000)
 
     return () => clearInterval(interval)
-  }, [token, challenge])
+  }, [token, challenge, deviceToken, navigate, client])
 
   if (success) {
     return (
@@ -194,7 +193,7 @@ function LoginPoller({ challenge, token, deviceToken }) {
 }
 
 export function Login() {
-  const history = useHistory()
+  const navigate = useNavigate()
   const client = useApolloClient()
   const location = useLocation()
   const { login_challenge: challenge, deviceToken } = queryString.parse(location.search)
@@ -212,12 +211,12 @@ export function Login() {
     variables: { email, password, deviceToken },
     onCompleted: ({ login: { jwt } }) => {
       setToken(jwt)
-      deviceToken && finishedDeviceLogin()
+      if (deviceToken) finishedDeviceLogin()
       if (challenge) {
         handleOauthChallenge(client, challenge)
       }
       else {
-        history.push('/')
+        navigate('/')
       }
     },
   })
@@ -225,12 +224,13 @@ export function Login() {
   useEffect(() => {
     wipeChallenge()
     wipeDeviceToken()
-    if (data && data.loginMethod.authorizeUrl) {
+
+    if (data && data.loginMethod && data.loginMethod.authorizeUrl) {
       if (challenge) saveChallenge(challenge)
       if (deviceToken) saveDeviceToken(deviceToken)
       window.location = data.loginMethod.authorizeUrl
     }
-  }, [data])
+  }, [data, challenge, deviceToken])
 
   useEffect(() => {
     const jwt = fetchToken()
@@ -238,15 +238,17 @@ export function Login() {
       handleOauthChallenge(client, challenge)
     }
     else if (!deviceToken && jwt) {
-      history.push('/')
+      navigate('/')
     }
-  }, [challenge])
+  }, [challenge, deviceToken, navigate, client])
 
   const submit = useCallback(() => open ? mutation() : getLoginMethod(), [mutation, getLoginMethod, open])
 
   const loading = qLoading || mLoading
 
-  if (qError) return <Redirect to="/signup" />
+  if (qError) {
+    return <Navigate to="/signup" />
+  }
 
   return (
     <LoginPortal>
@@ -300,7 +302,7 @@ export function Login() {
                     type="password"
                     modifier={(
                       <Anchor
-                        onClick={() => history.push('/password-reset')}
+                        onClick={() => navigate('/password-reset')}
                         color="dark-6"
                       >forgot your password?
                       </Anchor>
@@ -344,7 +346,7 @@ function OAuthOption({ url: { authorizeUrl, provider } }) {
       pad={{ vertical: '7px' }}
       hoverIndicator="tone-light"
       onClick={() => {
-        window.location = authorizeUrl 
+        window.location = authorizeUrl
       }}
     >
       {React.createElement(icon, { size: 'medium', color: 'plain' })}
@@ -354,7 +356,7 @@ function OAuthOption({ url: { authorizeUrl, provider } }) {
 }
 
 export function Signup() {
-  const history = useHistory()
+  const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
@@ -364,16 +366,16 @@ export function Signup() {
     variables: { attributes: { email, password, name }, account: { name: account } },
     onCompleted: ({ signup: { jwt } }) => {
       setToken(jwt)
-      history.push('/')
+      navigate('/')
     },
   })
   const { data } = useQuery(OAUTH_URLS, { variables: { host: host() } })
 
   useEffect(() => {
     if (fetchToken()) {
-      history.push('/')
+      navigate('/')
     }
-  }, [])
+  }, [navigate])
 
   const { disabled, reason } = disableState(password, confirm)
 
@@ -488,7 +490,7 @@ export function Signup() {
             color="dark-6"
           >Already have an account?
           </Text>
-          <Anchor onClick={() => history.push('/login')}>Login</Anchor>
+          <Anchor onClick={() => navigate('/login')}>Login</Anchor>
         </Box>
       </Box>
     </LoginPortal>

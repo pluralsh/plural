@@ -1,6 +1,5 @@
-import React from 'react'
-import { Box, Text } from 'grommet'
 import './installation.css'
+import { Box, Text } from 'grommet'
 
 const BORDER_ATTRS = { side: 'top', size: '2px' }
 

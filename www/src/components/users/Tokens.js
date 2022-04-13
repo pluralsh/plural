@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import { Box, Layer, Text } from 'grommet'
-import { useMutation, useQuery } from 'react-apollo'
+import { useMutation, useQuery } from '@apollo/client'
 
 import { BORDER_COLOR, Button, Copyable, GraphView, ListView, ModalHeader, Scroller, Trash } from 'forge-core'
 import moment from 'moment'
@@ -123,7 +123,7 @@ function TokenAudits({ id }) {
               key={node.id}
               audit={node}
             />
-          )} 
+          )}
           loadNextPage={() => pageInfo.hasNextPage && fetchMore({
             variables: { cursor: pageInfo.endCursor },
             updateQuery: (prev, { fetchMoreResult: { token } }) => deepUpdate(prev, 'token', prevToken => (
@@ -218,26 +218,26 @@ function Token({ token: { token, insertedAt, id } }) {
               content: <TokenMetrics id={id} />,
             })}
           />
-          <Icon 
-            icon={ListView} 
-            tooltip="Audits" 
-            hover="hover" 
+          <Icon
+            icon={ListView}
+            tooltip="Audits"
+            hover="hover"
             onClick={() => setModal({
               header: 'Audit Logs',
               content: <TokenAudits id={id} />,
             })}
           />
-          <Icon 
-            icon={Trash} 
-            tooltip="Delete" 
-            hover="hover" 
+          <Icon
+            icon={Trash}
+            tooltip="Delete"
+            hover="hover"
             onClick={doConfirm}
             iconAttrs={{ color: 'red-dark' }}
           />
         </Box>
       </Box>
       {confirm && (
-        <Confirm 
+        <Confirm
           description="Double check to ensure no automation is still using it"
           cancel={() => setConfirm(false)}
           submit={mutation}

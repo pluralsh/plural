@@ -1,16 +1,16 @@
-import React, { useContext, useState } from 'react'
-import { useHistory } from 'react-router-dom'
+import { createContext, useContext, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Anchor, Box, Text } from 'grommet'
 
 import { lookahead } from '../utils/array'
 
-export const BreadcrumbsContext = React.createContext({
+export const BreadcrumbsContext = createContext({
   breadcrumbs: [],
   setBreadcrumbs: () => null,
 })
 
 function CrumbLink({ crumb: { url, text, disable } }) {
-  const history = useHistory()
+  const navigate = useNavigate()
   if (disable) {
     return (
       <Text
@@ -24,7 +24,7 @@ function CrumbLink({ crumb: { url, text, disable } }) {
   return (
     <Anchor
       size="small"
-      onClick={() => history.push(url)}
+      onClick={() => navigate(url)}
     >{text}
     </Anchor>
   )

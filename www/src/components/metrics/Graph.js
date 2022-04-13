@@ -46,7 +46,7 @@ export function RangePicker({ duration, setDuration }) {
       <Box
         direction="row"
         round="3px"
-        gap="0px"
+        gap="none"
         border={{ side: 'between', color: 'light-5' }}
       >
         {DURATIONS.map((dur, ind) => (
@@ -70,7 +70,7 @@ export function Graph({ data, offset, precision }) {
 
     return dur || 'every 10 minutes'
   }, [offset, precision])
-  
+
   return (
     <SimpleGraph
       data={data}

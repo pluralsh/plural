@@ -1,11 +1,9 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import moment from 'moment'
 import { Box, Text } from 'grommet'
-import { useParams } from 'react-router'
+import { Link, useParams } from 'react-router-dom'
 import { GraphView, ListView } from 'forge-core'
-import { useQuery } from 'react-apollo'
-
-import { Link } from 'react-router-dom'
+import { useQuery } from '@apollo/client'
 
 import lookup from 'country-code-lookup'
 
@@ -29,7 +27,7 @@ function HeaderItem({ text, width, nobold }) {
       size="small"
       weight={nobold ? null : 500}
     >{text}
-                       </Text>
+    </Text>
     </Box>
   )
 }
@@ -121,7 +119,7 @@ function Audit({ audit }) {
       direction="row"
       pad="small"
       gap="xsmall"
-      border={{ side: 'bottom' }} 
+      border={{ side: 'bottom' }}
       align="center"
       onClick={() => null}
       hoverIndicator="hover"
@@ -243,7 +241,7 @@ export function Audits() {
               setListRef={setListRef}
               hasNextPage={pageInfo.hasNextPage}
               items={edges}
-              loading={loading} 
+              loading={loading}
               handleScroll={setScrolled}
               placeholder={Placeholder}
               mapper={({ node }) => (
@@ -251,7 +249,7 @@ export function Audits() {
                   key={node.id}
                   audit={node}
                 />
-              )} 
+              )}
               loadNextPage={() => pageInfo.hasNextPage && fetchMore({
                 variables: { cursor: pageInfo.endCursor },
                 updateQuery: (prev, { fetchMoreResult: { audits } }) => extendConnection(prev, audits, 'audits'),

@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { useQuery } from 'react-apollo'
+import { useQuery } from '@apollo/client'
 import { Button, ModalHeader, Scroller, Webhooks as WebhooksI } from 'forge-core'
 
 import { Box, Layer, Text } from 'grommet'
 
-import { useHistory } from 'react-router'
+import { useNavigate } from 'react-router-dom'
 
 import { extendConnection } from '../../utils/graphql'
 
@@ -15,19 +15,19 @@ import { ActionTab, CreateWebhook } from './CreateWebhook'
 import { WEBHOOKS_Q } from './queries'
 
 function Webhook({ webhook }) {
-  const hist = useHistory()
+  const hist = useNavigate()
 
   return (
     <Box
       flex={false}
       fill="horizontal"
       hoverIndicator="hover"
-      onClick={() => hist.push(`/webhooks/${webhook.id}`)} 
+      onClick={() => hist.push(`/webhooks/${webhook.id}`)}
       pad="small"
       gap="small"
       border={{ side: 'bottom' }}
       focusIndicator={false}
-    > 
+    >
       <Box
         direction="row"
         align="center"

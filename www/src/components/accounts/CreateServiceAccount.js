@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useMutation } from 'react-apollo'
+import { useMutation } from '@apollo/client'
 import { Button, InputCollection, ModalHeader, ResponsiveInput } from 'forge-core'
 
 import { Box, Layer } from 'grommet'
@@ -78,8 +78,8 @@ function CreateInner({ setOpen }) {
           header="Error creating service account"
         />
       )}
-      <ServiceAccountForm 
-        attributes={attributes} 
+      <ServiceAccountForm
+        attributes={attributes}
         setAttributes={setAttributes}
         bindings={bindings}
         setBindings={setBindings}
@@ -106,7 +106,7 @@ export function UpdateServiceAccount({ user, setOpen }) {
   const [bindings, setBindings] = useState(user.impersonationPolicy.bindings)
   const [mutation, { loading, error }] = useMutation(UPDATE_SERVICE_ACCOUNT, {
     variables: {
-      id: user.id, 
+      id: user.id,
       attributes: { ...attributes, impersonationPolicy: { bindings: bindings.map(sanitize) } },
     },
     onCompleted: () => setOpen(false),

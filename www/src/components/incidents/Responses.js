@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useMemo, useRef, useState } from 'react'
-import { useQuery } from 'react-apollo'
+import { useQuery } from '@apollo/client'
 import { Box, Drop, Text, TextInput } from 'grommet'
 import { Bundle, Incidents as IncidentsI, Explore as Search } from 'forge-core'
 
@@ -112,7 +112,7 @@ function StatusSelector({ statuses, setStatuses }) {
         align="center"
         gap="xsmall"
         ref={ref}
-        flex={false} 
+        flex={false}
         onClick={() => setOpen(true)}
         pad={{ horizontal: 'small', vertical: 'xsmall' }}
       >
@@ -122,7 +122,7 @@ function StatusSelector({ statuses, setStatuses }) {
       {open && (
         <Drop
           target={ref.current}
-          align={{ top: 'bottom' }} 
+          align={{ top: 'bottom' }}
           onEsc={() => setOpen(false)}
           onClickOutside={() => setOpen(false)}
         >
@@ -198,7 +198,7 @@ function Incidents({ repository, setSelect, select }) {
       >
         <FilterSelect />
         <Box fill="horizontal">
-          <TextInput 
+          <TextInput
             plain
             icon={<Search size="15px" />}
             value={q}
@@ -212,7 +212,7 @@ function Incidents({ repository, setSelect, select }) {
           flex={false}
           direction="row"
           align="center"
-          gap="xsmall" 
+          gap="xsmall"
           round="xsmall"
           onClick={() => setSelect(!select)}
         >
@@ -268,7 +268,7 @@ export function Responses() {
     setRepository(repo.id === (repository && repository.id) ? null : repo)
     setSelect(false)
   }, [setRepository, setSelect, repository])
-  
+
   return (
     <IncidentViewContext.Provider value={{ q, setQ, sort, setSort, order, setOrder, filters, setFilters }}>
       <Box

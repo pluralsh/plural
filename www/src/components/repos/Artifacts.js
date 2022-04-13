@@ -1,14 +1,11 @@
-import React, { useCallback, useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { Box, Drop, Markdown, Table, TableBody, TableCell, TableRow, Text } from 'grommet'
 import { Apple, DocumentText, Previous, Ubuntu, Windows } from 'grommet-icons'
 import { Copyable, Download, ListView as List } from 'forge-core'
 import { normalizeColor } from 'grommet/utils'
-
 import fs from 'filesize'
-
 import Collapsible from 'react-collapsible'
-
 import moment from 'moment'
 
 import { download } from '../../utils/file'
@@ -257,7 +254,7 @@ function ArtifactRow({ artifact }) {
         height={ROW_HEIGHT}
         direction="row"
         gap="small"
-        align="center" 
+        align="center"
         pad={{ horizontal: 'small' }}
         border={{ side: 'bottom', color: 'light-5' }}
       >
@@ -342,7 +339,7 @@ function ArtifactHeader() {
       height={ROW_HEIGHT}
       direction="row"
       gap="small"
-      align="center" 
+      align="center"
       pad={{ horizontal: 'small' }}
       border={{ side: 'bottom', color: 'light-5' }}
     >
@@ -393,7 +390,7 @@ export default function Artifacts({ artifacts }) {
     <DetailContainer>
       <DetailHeader text="Artifacts" />
       <Box
-        gap="0px"
+        gap="none"
         border={{ side: 'between', color: 'light-5' }}
       >
         {artifacts.map(artifact => (

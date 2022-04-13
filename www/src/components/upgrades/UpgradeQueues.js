@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react'
-import { useQuery } from 'react-apollo'
+import { useQuery } from '@apollo/client'
 
-import { useHistory } from 'react-router'
+import { useNavigate } from 'react-router-dom'
 import { Box, Text } from 'grommet'
 
 import { Github } from 'grommet-icons'
@@ -16,7 +16,7 @@ import { QueueHealth } from './QueueHealth'
 import { QUEUES, UPGRADE_QUEUE_SUB } from './queries'
 
 function Queue({ q }) {
-  const hist = useHistory()
+  const hist = useNavigate()
 
   return (
     <Box

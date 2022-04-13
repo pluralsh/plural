@@ -1,13 +1,11 @@
-import React, { useState } from 'react'
-import { useMutation } from 'react-apollo'
+import { useState } from 'react'
+import { useMutation } from '@apollo/client'
 import { Button, Pill, Select } from 'forge-core'
 import { Box, CheckBox, Text } from 'grommet'
 import { Close } from 'grommet-icons'
-
 import Toggle from 'react-toggle'
 
 import { TAGS } from '../versions/VersionTags'
-
 import { deepUpdate, updateCache } from '../../utils/graphql'
 import { SectionPortal } from '../Explore'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
@@ -15,9 +13,9 @@ import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 import { REPO_Q, UPDATE_INSTALLATION } from './queries'
 
 function update(cache, repositoryId, installation) {
-  updateCache(cache, { 
-    query: REPO_Q, 
-    variables: { repositoryId }, 
+  updateCache(cache, {
+    query: REPO_Q,
+    variables: { repositoryId },
     update: prev => deepUpdate(prev, 'repository.installation', () => installation),
   })
 }
@@ -37,8 +35,8 @@ export function UpdateInstallation({ installation }) {
     >
       {data && (
         <Alert
-          status={AlertStatus.SUCCESS} 
-          header="Installation updated!" 
+          status={AlertStatus.SUCCESS}
+          header="Installation updated!"
           description="the changes will take effect immediately"
         />
       )}
@@ -53,7 +51,7 @@ export function UpdateInstallation({ installation }) {
         gap="small"
         align="center"
       >
-        <Toggle 
+        <Toggle
           checked={autoUpgrade}
           onChange={({ target: { checked } }) => setAutoUpgrade(checked)}
         />

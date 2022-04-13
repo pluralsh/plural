@@ -1,4 +1,4 @@
-import gql from 'graphql-tag'
+import { gql } from '@apollo/client'
 
 export const LimitFragment = gql`
   fragment LimitFragment on Limit {

@@ -485,7 +485,6 @@ export default function Explore() {
           <Box
             fill
             direction="row"
-            gap="0px"
             border={{ side: 'between' }}
           >
             <TagSidebar

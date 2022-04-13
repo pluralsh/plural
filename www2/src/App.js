@@ -74,7 +74,7 @@ function App() {
                 element={<OAuthConsent />}
               />
               <Route
-                path="/"
+                path="*"
                 element={<Plural />}
               />
             </Routes>

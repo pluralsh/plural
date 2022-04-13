@@ -21,7 +21,8 @@ defimpl Core.PubSub.Realtime, for: [
   Core.PubSub.RolloutCreated,
   Core.PubSub.RolloutUpdated,
   Core.PubSub.TestCreated,
-  Core.PubSub.TestUpdated
+  Core.PubSub.TestUpdated,
+  Core.PubSub.StepLogs,
 ] do
   def publish?(_), do: true
 end

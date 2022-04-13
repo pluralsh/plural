@@ -17,10 +17,10 @@ defmodule GraphQl.Schema.Test do
 
   input_object :test_step_attributes do
     field :id,          :id
-    field :name,        non_null(:string)
-    field :description, non_null(:string)
-    field :status,      non_null(:test_status)
-    field :logs,        :string
+    field :name,        :string
+    field :description, :string
+    field :status,      :test_status
+    field :logs,        :upload_or_url
   end
 
   object :test do
@@ -46,6 +46,11 @@ defmodule GraphQl.Schema.Test do
     end
 
     timestamps()
+  end
+
+  object :step_logs do
+    field :step, :test_step
+    field :logs, list_of(:string)
   end
 
   connection node_type: :test
@@ -90,12 +95,33 @@ defmodule GraphQl.Schema.Test do
 
       safe_resolve &Test.update_test/2
     end
+
+    field :update_step, :test_step do
+      middleware Authenticated
+      arg :id,         non_null(:id)
+      arg :attributes, non_null(:test_step_attributes)
+
+      safe_resolve &Test.update_step/2
+    end
+
+    field :publish_logs, :test_step do
+      middleware Authenticated
+      arg :id,   non_null(:id)
+      arg :logs, non_null(:string)
+
+      safe_resolve &Test.publish_logs/2
+    end
   end
 
   object :test_subscriptions do
     field :test_delta, :test_delta do
       arg :repository_id, non_null(:id)
       config fn %{repository_id: id}, _ -> {:ok, topic: "tests:#{id}"} end
+    end
+
+    field :test_logs, :step_logs do
+      arg :test_id, non_null(:id)
+      config fn %{test_id: id}, _ -> {:ok, topic: "test_logs:#{id}"} end
     end
   end
 end

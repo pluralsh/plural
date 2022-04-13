@@ -1,21 +1,16 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import moment from 'moment'
 import { Box, Text } from 'grommet'
-import { useApolloClient, useQuery } from '@apollo/client'
+import { useApolloClient, useQuery, useSubscription } from '@apollo/client'
 import { Logs, SecondaryButton } from 'forge-core'
 import { BeatLoader } from 'react-spinners'
-
 import { XTerm } from 'xterm-for-react'
-
 import { FitAddon } from 'xterm-addon-fit'
-
 import { Chalk } from 'xterm-theme'
 
 import { appendConnection, extendConnection } from '../../utils/graphql'
 import { SectionContext, SectionPortal } from '../Explore'
 import { StandardScroller } from '../utils/SmoothScroller'
-
-import { socket } from '../../helpers/client'
 
 import { ModalHeader } from '../utils/ModalHeader'
 
@@ -23,7 +18,7 @@ import { Icon } from '../accounts/Group'
 
 import { TestStatus } from './constants'
 import { HeaderItem } from './Docker'
-import { TESTS_Q, TESTS_SUB, TEST_LOGS } from './queries'
+import { LOGS_SUB, TESTS_Q, TESTS_SUB, TEST_LOGS } from './queries'
 
 const ROW_HEIGHT = '50px'
 const colors = {
@@ -104,33 +99,36 @@ function Test({ test: { status, name, insertedAt, updatedAt, promoteTag }, setTe
 }
 
 async function fetchLogs(client, id, step, term) {
-  const { data, ...rest } = await client.query({ query: TEST_LOGS, variables: { id, step } })
-  console.log(rest)
-  if (data && data.testLogs) term.write(data.testLogs)
+  const { data } = await client.query({ query: TEST_LOGS, variables: { id, step } })
+  if (data && data.testLogs) {
+    const lines = data.testLogs.split(/\r?\n/)
+    for (const l of lines) {
+      term.writeln(l)
+    }
+  }
 }
 
 function TestLogs({ step: { name, id, hasLogs }, testId, close }) {
   const client = useApolloClient()
   const xterm = useRef(null)
   const fitAddon = useMemo(() => new FitAddon(), [])
+  const { data } = useSubscription(LOGS_SUB, {
+    variables: { testId },
+  })
+
   useEffect(() => {
     console.log(xterm)
     if (!xterm || !xterm.current || !xterm.current.terminal) return
     xterm.current.terminal.setOption('disableStdin', true)
     fitAddon.fit()
     console.log('joining test channel')
-    const chan = socket.channel(`tests:${testId}`, {})
-    chan.on('stdo', ({ line, step }) => {
-      console.log({ line, step, id })
-      step === id && xterm.current.terminal.writeln(line)
-    })
-    chan.onError(console.log)
-    chan.join()
 
-    return () => {
-      chan.leave()
+    if (data && data.testLogs && data.testLogs.step.id == id) { // eslint-disable-line
+      for (const l of data.testLogs.logs) {
+        xterm.current.terminal.writeln(l)
+      }
     }
-  }, [testId, xterm, fitAddon])
+  }, [id, data, xterm, fitAddon])
 
   useEffect(() => {
     if (!hasLogs || !xterm || !xterm.current || !xterm.current.terminal) return
@@ -227,7 +225,7 @@ function TestDetails({ test: { steps, id }, setTest }) {
     return () => {
       setHeader('Tests')
     }
-  }, [id])
+  }, [id, setHeader])
 
   return (
     <>
@@ -333,7 +331,7 @@ export function RepositoryTests({ repository: { id: repositoryId } }) {
     document: TESTS_SUB,
     variables: { repositoryId },
     updateQuery: (prev, { subscriptionData: { data: { testDelta: { delta, payload } } } }) => delta === 'CREATE' ? appendConnection(prev, payload, 'tests') : prev,
-  }), [repositoryId])
+  }), [repositoryId, subscribeToMore])
 
   if (!data) return null
 
@@ -342,7 +340,7 @@ export function RepositoryTests({ repository: { id: repositoryId } }) {
   if (test) {
     return (
       <TestDetails
-        test={test}
+        test={edges.find(({ node: { id } }) => id === test.id).node} // to receive cache updates
         setTest={setTest}
       />
     )

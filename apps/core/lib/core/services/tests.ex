@@ -5,16 +5,20 @@ defmodule Core.Services.Tests do
   alias Core.Schema.{
     User,
     Test,
+    TestStep,
     Version
   }
   alias Core.Services.{Versions, Repositories}
 
   @type error :: {:error, term}
   @type test_resp :: {:ok, Test.t} | error
+  @type step_resp :: {:ok, TestStep.t} | error
 
   def get_test!(id), do: Core.Repo.get!(Test, id)
 
   def get_test(id), do: Core.Repo.get(Test, id)
+
+  def get_step!(id), do: Core.Repo.get!(TestStep, id)
 
   @doc """
   Will create a new test object for the given repo, with bindings
@@ -45,7 +49,7 @@ defmodule Core.Services.Tests do
     update_test(attrs, test, user)
   end
 
-  def update_test(attrs, test, %User{} = user) do
+  def update_test(attrs, %Test{} = test, %User{} = user) do
     test
     |> Test.changeset(attrs)
     |> allow(user, :edit)
@@ -53,6 +57,24 @@ defmodule Core.Services.Tests do
     |> notify(:update)
   end
 
+  @doc """
+  Will edit the attributes of a test step (useful for setting log objects)
+  """
+  @spec update_step(map, binary, User.t) :: step_resp
+  def update_step(attrs, step_id, %User{} = user) do
+    get_step!(step_id)
+    |> Core.Repo.preload([:test])
+    |> TestStep.changeset(attrs)
+    |> allow(user, :edit)
+    |> when_ok(:update)
+    |> notify(:update)
+  end
+
+  @doc """
+  Tags all bound versions to this test with its promote tag and sends appropriate update events to trigger downstream
+  upgrades
+  """
+  @spec promote(Test.t) :: {:ok, map} | error
   def promote(%Test{status: :succeeded, promote_tag: tag} = test) do
     %Test{bindings: bindings, creator: user} = Core.Repo.preload(test, [:creator, bindings: :version])
 
@@ -69,6 +91,18 @@ defmodule Core.Services.Tests do
     |> case do
       {:ok, results} -> send_notifs(results, user)
       err -> err
+    end
+  end
+
+  @doc """
+  Sends a StepLogs event for the given logs, provided the user has edit permissions for the test
+  """
+  @spec publish_logs(binary, binary, User.t) :: step_resp
+  def publish_logs(logs, step_id, %User{} = user) do
+    step = get_step!(step_id)
+    with {:ok, step} <- allow(step, user, :edit) do
+      handle_notify(PubSub.StepLogs, {step, String.split(logs, ~r/\R/)})
+      {:ok, step}
     end
   end
 
@@ -97,6 +131,10 @@ defmodule Core.Services.Tests do
     do: handle_notify(PubSub.TestCreated, test)
   defp notify({:ok, %Test{} = test}, :update),
     do: handle_notify(PubSub.TestUpdated, test)
+  defp notify({:ok, %TestStep{test: %Test{} = t} = step}, :update) do
+    handle_notify(PubSub.TestUpdated, t)
+    {:ok, step}
+  end
 
   defp notify(pass, _), do: pass
 end

@@ -83,6 +83,18 @@ export const ArtifactFragment = gql`
   }
 `
 
+export const StepFragment = gql`
+  fragment StepFragment on TestStep {
+    id
+    name
+    status
+    hasLogs
+    description
+    insertedAt
+    updatedAt
+  }
+`
+
 export const TestFragment = gql`
   fragment TestFragment on Test {
     id
@@ -91,14 +103,7 @@ export const TestFragment = gql`
     status
     insertedAt
     updatedAt
-    steps {
-      id
-      name
-      status
-      hasLogs
-      description
-      insertedAt
-      updatedAt
-    }
+    steps { ...StepFragment }
   }
+  ${StepFragment}
 `

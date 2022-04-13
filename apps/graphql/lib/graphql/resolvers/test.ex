@@ -35,4 +35,10 @@ defmodule GraphQl.Resolvers.Test do
 
   def update_test(%{attributes: attrs, id: id}, %{context: %{current_user: user}}),
     do: Tests.update_test(attrs, id, user)
+
+  def update_step(%{attributes: attrs, id: id}, %{context: %{current_user: user}}),
+    do: Tests.update_step(attrs, id, user)
+
+  def publish_logs(%{id: id, logs: logs}, %{context: %{current_user: user}}),
+    do: Tests.publish_logs(logs, id, user)
 end

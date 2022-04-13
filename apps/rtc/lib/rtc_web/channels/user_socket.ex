@@ -17,7 +17,7 @@ defmodule RtcWeb.UserSocket do
         socket = assign(socket, :user_id, context.current_user.id)
         socket = assign(socket, :user, context.current_user)
         {:ok, Absinthe.Phoenix.Socket.put_options(socket, context: context)}
-      _ -> {:error, :unauthorized}
+      _ -> :error
     end
   end
 

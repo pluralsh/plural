@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client'
 
-import { ArtifactFragment, CategoryFragment, InstallationFragment, IntegrationFragment, RepoFragment, TestFragment } from '../../models/repo'
+import { ArtifactFragment, CategoryFragment, InstallationFragment, IntegrationFragment, RepoFragment, StepFragment, TestFragment } from '../../models/repo'
 import { ChartFragment, ChartInstallationFragment, PackageScan, VersionFragment, VersionTagFragment } from '../../models/chart'
 import { TerraformFragment, TerraformInstallationFragment } from '../../models/terraform'
 import { DockerImageFragment, DockerRepoFragment, DockerRepository, VulnerabilityFragment } from '../../models/docker'
@@ -492,4 +492,14 @@ export const TEST_LOGS = gql`
   query Logs($id: ID!, $step: ID!) {
     testLogs(id: $id, step: $step)
   }
+`
+
+export const LOGS_SUB = gql`
+  subscription Logs($testId: ID!) {
+    testLogs(testId: $testId) {
+      step { ...StepFragment }
+      logs
+    }
+  }
+  ${StepFragment}
 `

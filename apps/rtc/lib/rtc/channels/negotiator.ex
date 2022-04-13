@@ -104,3 +104,9 @@ defimpl Rtc.Channels.Negotiator, for: [Core.PubSub.TestUpdated, Core.PubSub.Test
   defp delta_name(Core.PubSub.TestUpdated), do: :update
   defp delta_name(Core.PubSub.TestCreated), do: :create
 end
+
+defimpl Rtc.Channels.Negotiator, for: Core.PubSub.StepLogs do
+  def negotiate(%{item: {%{test_id: id} = step, logs}}) do
+    {%{step: step, logs: logs}, [test_logs: "test_logs:#{id}"]}
+  end
+end

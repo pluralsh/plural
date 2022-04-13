@@ -70,3 +70,4 @@ defmodule Core.PubSub.InstallationLocked, do: use Piazza.PubSub.Event
 
 defmodule Core.PubSub.TestCreated, do: use Piazza.PubSub.Event
 defmodule Core.PubSub.TestUpdated, do: use Piazza.PubSub.Event
+defmodule Core.PubSub.StepLogs, do: use Piazza.PubSub.Event

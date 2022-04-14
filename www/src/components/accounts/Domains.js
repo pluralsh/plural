@@ -3,7 +3,7 @@ import moment from 'moment'
 import { Button, ModalHeader, Roles, Trash } from 'forge-core'
 import { useMutation, useQuery } from '@apollo/client'
 import { Box, Layer, Text, TextInput } from 'grommet'
-import { Route, Routes, useMatch, useNavigate } from 'react-router-dom'
+import { Route, Routes, useMatch, useNavigate, useResolvedPath } from 'react-router-dom'
 
 import { appendConnection, extendConnection, removeConnection, updateCache } from '../../utils/graphql'
 import { SectionContentContainer, SectionPortal } from '../Explore'
@@ -291,6 +291,7 @@ function CreateDomain() {
 }
 
 export function Domains() {
+  console.log('Domains')
   const [listRef, setListRef] = useState(null)
   const { data, loading, fetchMore } = useQuery(DNS_DOMAINS, { fetchPolicy: 'cache-and-network' })
 
@@ -329,18 +330,17 @@ export function Domains() {
 }
 
 export function DnsDirectory() {
-  const { url } = useMatch()
+  console.log('foo')
 
   return (
     <Routes>
       <Route
-        exact
-        path={url}
-        component={Domains}
+        path="/"
+        element={<Domains />}
       />
       <Route
-        path={`${url}/:id`}
-        component={DnsRecords}
+        path="/:id"
+        element={<DnsRecords />}
       />
     </Routes>
   )

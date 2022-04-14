@@ -119,7 +119,7 @@ export function PluralInner() {
                   >
                     <Routes>
                       <Route
-                        path="/accounts/edit/:section"
+                        path="/accounts/edit/:section/*"
                         element={<EditAccount />}
                       />
                       <Route

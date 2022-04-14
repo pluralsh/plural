@@ -63,11 +63,13 @@ function DomainRow({ domain: { domain }, removeDomain }) {
       align="center"
       gap="small"
     >
-      <Box fill="horizontal"><Text
-        size="small"
-        weight="bold"
-      >{domain}
-                             </Text>
+      <Box fill="horizontal">
+        <Text
+          size="small"
+          weight="bold"
+        >
+          {domain}
+        </Text>
       </Box>
       <Icon
         icon={Trash}
@@ -168,6 +170,7 @@ export function EditAccount({ billing }) {
   const { account, ...me } = useContext(CurrentUserContext)
   const navigate = useNavigate()
   const { section } = useParams()
+  console.log('section', section)
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
   useEffect(() => {
     const prefix = billing ? '/accounts/billing' : '/accounts/edit'

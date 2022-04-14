@@ -283,6 +283,11 @@ export function PluralInner() {
                         path="/"
                         element={<Navigate to={me.hasInstallations ? '/explore/installed' : '/explore/public'} />}
                       />
+                      <Route
+                        exact
+                        path="/explore"
+                        element={<Navigate to="/explore/public" />}
+                      />
                     </Routes>
                   </Box>
                 </Box>

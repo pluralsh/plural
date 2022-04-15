@@ -24,9 +24,10 @@ defmodule Core.Schema.Recipe do
   end
 
   schema "recipes" do
-    field :name, :string
+    field :name,        :string
     field :description, :string
-    field :provider, Provider
+    field :provider,    Provider
+    field :private,     :boolean, default: false
     field :recipe_dependencies, :map, virtual: true
 
     embeds_one :oidc_settings, OIDCSettings, on_replace: :update
@@ -45,10 +46,13 @@ defmodule Core.Schema.Recipe do
   def for_provider(query \\ __MODULE__, provider),
     do: from(r in query, where: r.provider == ^provider)
 
+  def public(query \\ __MODULE__),
+    do: from(r in query, where: not r.private)
+
   def ordered(query \\ __MODULE__, order \\ [asc: :name]),
     do: from(r in query, order_by: ^order)
 
-  @valid ~w(name description repository_id provider)a
+  @valid ~w(name description repository_id provider private)a
 
   def changeset(model, attrs \\ %{}) do
     model

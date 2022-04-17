@@ -94,7 +94,7 @@ function TestLogs({step: {name, id, hasLogs}, testId, close}) {
   return (
     <Box fill='horizontal' height='500px'>
       <ModalHeader text={`${name} step logs`} setOpen={close} />
-      <Box fill background={Chalk.background} pad='small'>
+      <Box style={{overflow: 'auto'}} fill background={Chalk.background} pad='small'>
         <XTerm
           ref={xterm}
           addons={[fitAddon]}
@@ -136,7 +136,7 @@ function TestDetails({test: {steps, id}, setTest}) {
 
   return (
     <>
-    <Box fill>
+    <Box fill flex={false} style={{overflow: 'auto'}}>
       <TestStepHeader />
       {steps.map((step) => <Step key={step.id} testId={id} step={step} />)}
     </Box>

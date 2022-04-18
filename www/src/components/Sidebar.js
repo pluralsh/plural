@@ -174,7 +174,7 @@ function Expand({ setExpanded }) {
 export default function Sidebar() {
   const [expanded, setExpanded] = useState(false)
   const me = useContext(CurrentUserContext)
-  const hist = useNavigate()
+  const navigate = useNavigate()
   const loc = useLocation()
   const active = OPTIONS.findIndex(({ path, prefix }) => loc.pathname.startsWith(prefix || path))
   const isExpanded = expanded || (active >= 0 && !!OPTIONS[active].name)
@@ -225,7 +225,7 @@ export default function Sidebar() {
           pad="xsmall"
           round="3px"
           justify={!isExpanded ? 'center' : null}
-          onClick={() => hist.push('/me/edit/user')}
+          onClick={() => navigate('/me/edit/user')}
         >
           <Avatar
             user={me}

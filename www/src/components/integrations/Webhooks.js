@@ -15,14 +15,14 @@ import { ActionTab, CreateWebhook } from './CreateWebhook'
 import { WEBHOOKS_Q } from './queries'
 
 function Webhook({ webhook }) {
-  const hist = useNavigate()
+  const navigate = useNavigate()
 
   return (
     <Box
       flex={false}
       fill="horizontal"
       hoverIndicator="hover"
-      onClick={() => hist.push(`/webhooks/${webhook.id}`)}
+      onClick={() => navigate(`/webhooks/${webhook.id}`)}
       pad="small"
       gap="small"
       border={{ side: 'bottom' }}

@@ -35,11 +35,12 @@ export const EditContext = React.createContext({})
 function EditAvatar({ me, noClick = false }) {
   const { files, onClick, HiddenFileInput } = useFilePicker({})
   const [mutation] = useMutation(UPDATE_USER)
+
   useEffect(() => {
     if (files.length > 0) {
       mutation({ variables: { attributes: { avatar: files[0] } } })
     }
-  }, [files])
+  }, [files, mutation])
 
   return (
     <>
@@ -58,14 +59,14 @@ function EditAvatar({ me, noClick = false }) {
 
 export function EditSelect({ name, edit, icon, base }) {
   const { editing } = useParams()
-  const hist = useNavigate()
+  const navigate = useNavigate()
 
   return (
     <SectionChoice
       name={name}
       label={name}
       icon={icon}
-      onClick={edit === editing ? null : () => hist.push(`${base || '/me/edit/'}${edit}`)}
+      onClick={edit === editing ? null : () => navigate(`${base || '/me/edit/'}${edit}`)}
       selected={editing === edit}
     />
   )
@@ -163,12 +164,14 @@ export default function EditUser() {
                 size="small"
                 weight="bold"
                 truncate
-              >{attributes.name}
+              >
+                {attributes.name}
               </Text>
               <Text
                 size="small"
                 truncate
-              >{attributes.email}
+              >
+                {attributes.email}
               </Text>
             </Box>
           </Box>

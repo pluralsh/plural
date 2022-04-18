@@ -19,7 +19,7 @@ import { INTEGRATIONS_Q } from './queries'
 const ICON_SIZE = 50
 
 function Integration({ name, description, icon, tags, sourceUrl, publisher, width }) {
-  const hist = useNavigate()
+  const navigate = useNavigate()
   const [hover, setHover] = useState(false)
 
   return (
@@ -62,7 +62,7 @@ function Integration({ name, description, icon, tags, sourceUrl, publisher, widt
                 <Text size="small">by: </Text>
                 <Anchor
                   size="small"
-                  onClick={() => hist.push(`/publishers/${publisher.id}`)}
+                  onClick={() => navigate(`/publishers/${publisher.id}`)}
                 >
                   {publisher.name}
                 </Anchor>
@@ -295,13 +295,13 @@ export function IntegrationPage() {
 }
 
 function ViewAll({ repositoryId }) {
-  const hist = useNavigate()
+  const navigate = useNavigate()
 
   return (
     <Box flex={false}>
       <Anchor
         color="focus"
-        onClick={() => hist.push(`/repositories/${repositoryId}/integrations`)}
+        onClick={() => navigate(`/repositories/${repositoryId}/integrations`)}
       >
         <Box
           direction="row"

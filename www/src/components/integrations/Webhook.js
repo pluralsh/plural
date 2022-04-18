@@ -200,11 +200,11 @@ function Control({ icon, onClick }) {
 }
 
 function WebhookControls({ webhook, setEdit }) {
-  const hist = useNavigate()
+  const navigate = useNavigate()
   const [open, setOpen] = useState(false)
   const [mutation, { loading }] = useMutation(DELETE_WEBHOOK, {
     variables: { id: webhook.id },
-    onCompleted: () => hist.push('/webhooks'),
+    onCompleted: () => navigate('/webhooks'),
   })
 
   return (

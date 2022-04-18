@@ -16,13 +16,13 @@ import { QueueHealth } from './QueueHealth'
 import { QUEUES, UPGRADE_QUEUE_SUB } from './queries'
 
 function Queue({ q }) {
-  const hist = useNavigate()
+  const navigate = useNavigate()
 
   return (
     <Box
       flex={false}
       pad="small"
-      onClick={() => hist.push(`/upgrades/${q.id}`)}
+      onClick={() => navigate(`/upgrades/${q.id}`)}
       hoverIndicator="hover"
       border={{ side: 'bottom' }}
       direction="row"

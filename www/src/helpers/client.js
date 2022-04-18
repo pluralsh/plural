@@ -32,11 +32,11 @@ const retryLink = new RetryLink({
   },
 })
 
-const authLink = setContext(() => {
+const authLink = setContext(({ headers }) => {
   const token = fetchToken()
 
   return {
-    headers: token ? { authorization: `Bearer ${token}` } : {},
+    headers: token ? { ...headers, authorization: `Bearer ${token}` } : headers,
   }
 })
 

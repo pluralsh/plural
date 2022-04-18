@@ -168,7 +168,6 @@ function RecordsControls({ refetch }) {
 }
 
 export function DnsRecords() {
-  console.log('DnsRecords')
   const [listRef, setListRef] = useState(null)
   const { id } = useParams()
   const { data, loading, fetchMore, refetch } = useQuery(DNS_RECORDS, {

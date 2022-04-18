@@ -291,7 +291,6 @@ function CreateDomain() {
 }
 
 export function Domains() {
-  console.log('Domains')
   const [listRef, setListRef] = useState(null)
   const { data, loading, fetchMore } = useQuery(DNS_DOMAINS, { fetchPolicy: 'cache-and-network' })
 
@@ -330,8 +329,6 @@ export function Domains() {
 }
 
 export function DnsDirectory() {
-  console.log('foo')
-
   return (
     <Routes>
       <Route

@@ -67,6 +67,7 @@ defmodule Core.Schema.Dependencies do
     field :secrets,          {:array, :string}
     field :application,      :boolean, default: false
     field :breaking,         :boolean, default: false
+    field :wait,             :boolean, default: false
     field :provider_vsn,     :string
 
     embeds_many :dependencies, Dependency, on_replace: :delete
@@ -74,7 +75,7 @@ defmodule Core.Schema.Dependencies do
     embeds_one  :wirings,      Wirings, on_replace: :update
   end
 
-  @valid ~w(providers provider_wirings application outputs secrets breaking provider_vsn)a
+  @valid ~w(providers provider_wirings application outputs secrets breaking provider_vsn wait)a
 
   def changeset(model, attrs \\ %{}) do
     model

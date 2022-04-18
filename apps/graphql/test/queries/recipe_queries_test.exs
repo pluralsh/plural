@@ -6,6 +6,7 @@ defmodule GraphQl.RecipeQueriesTest do
     test "It will list recipes for a repo" do
       repo    = insert(:repository)
       recipes = insert_list(3, :recipe, repository: repo)
+      insert(:recipe, private: true, repository: repo)
       insert(:recipe)
 
       {:ok, %{data: %{"recipes" => found}}} = run_query("""

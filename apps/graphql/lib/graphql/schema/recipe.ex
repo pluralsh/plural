@@ -18,6 +18,7 @@ defmodule GraphQl.Schema.Recipe do
     field :sections,      list_of(:recipe_section_attributes)
     field :dependencies,  list_of(:recipe_dependency_attributes)
     field :oidc_settings, :oidc_settings_attributes
+    field :private,       :boolean
   end
 
   input_object :oidc_settings_attributes do
@@ -100,6 +101,7 @@ defmodule GraphQl.Schema.Recipe do
     field :description,         :string
     field :provider,            :provider
     field :oidc_settings,       :oidc_settings
+    field :private,             :boolean
     field :tests,               list_of(:recipe_test)
     field :repository,          :repository, resolve: dataloader(Repository)
     field :recipe_sections,     list_of(:recipe_section)

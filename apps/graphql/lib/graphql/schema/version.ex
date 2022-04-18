@@ -91,6 +91,7 @@ defmodule GraphQl.Schema.Version do
     field :outputs,          :map
     field :wirings,          :wirings
     field :breaking,         :boolean
+    field :wait,             :boolean
     field :instructions,     :change_instructions
   end
 

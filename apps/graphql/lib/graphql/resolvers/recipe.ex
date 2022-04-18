@@ -9,6 +9,7 @@ defmodule GraphQl.Resolvers.Recipe do
 
   def list_recipes(args, %{context: %{repo: %{id: repo_id}}}) do
     Recipe.for_repository(repo_id)
+    |> Recipe.public()
     |> maybe_filter_provider(args)
     |> Recipe.ordered()
     |> paginate(args)

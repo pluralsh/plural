@@ -150,6 +150,7 @@ function TestLogs({ step: { name, id, hasLogs }, testId, close }) {
         fill
         background={Chalk.background}
         pad="small"
+        style={{ overflow: 'auto' }}
       >
         <XTerm
           ref={xterm}
@@ -229,7 +230,11 @@ function TestDetails({ test: { steps, id }, setTest }) {
 
   return (
     <>
-      <Box fill>
+      <Box
+        fill
+        flex={false}
+        style={{ overflow: 'auto' }}
+      >
         <TestStepHeader />
         {steps.map(step => (
           <Step

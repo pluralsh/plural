@@ -57,8 +57,8 @@ connectdb: ## proxies the db in kubernetes via kubectl
 	kubectl port-forward statefulset/forge-postgresql 5432 -n forge
 
 setup: ## sets up your environment for testing
-	mix do local.hex, deps.get
-	cd www && yarn install
+	mix do local.hex, local.rebar, deps.get
+	cd www && npm install
 
 web: ## starts a local webserver
 	cd www && npm start

@@ -14,8 +14,7 @@
     "extends": "pluralsh",
     "rules": {
       "import/prefer-default-export": "off",
-      "react/no-unstable-nested-components": "off",
-      "no-multiple-empty-lines": ["error", { "max": 1, "maxBOF": 0, "maxEOF": 1 }]
+      "react/no-unstable-nested-components": "off"
     }
   },
   "browserslist": {
@@ -111,7 +110,7 @@
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-react": "^7.16.7",
     "eslint": "^8.13.0",
-    "eslint-config-pluralsh": "^3.0.0",
+    "eslint-config-pluralsh": "^3.1.0",
     "postcss-import": "^8.2.0"
   }
 }

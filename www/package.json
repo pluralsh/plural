@@ -7,7 +7,7 @@
     "start": "PORT=3001 HTTPS=true react-scripts start",
     "build": "react-scripts build",
     "lint": "eslint ./src",
-    "unimported": " npx unimported"
+    "unimported": "npx unimported"
   },
   "eslintConfig": {
     "parser": "@babel/eslint-parser",

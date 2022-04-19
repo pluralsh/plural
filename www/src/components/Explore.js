@@ -1,5 +1,5 @@
 import './explore.css'
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { useQuery } from '@apollo/client'
 import { Box, Collapsible, Text, ThemeContext } from 'grommet'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -311,7 +311,7 @@ function filters(tab, me) {
   return {}
 }
 
-export const SectionContext = React.createContext({})
+export const SectionContext = createContext({})
 
 export function SectionPortal({ children }) {
   const { ref } = useContext(SectionContext)

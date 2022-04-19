@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Box, Text } from 'grommet'
 import { useQuery } from '@apollo/client'
-
 import { BeatLoader } from 'react-spinners'
-
 import moment from 'moment'
 
 import { StandardScroller } from '../utils/SmoothScroller'
@@ -15,6 +13,7 @@ import { ROLLOUTS, ROLLOUT_SUB } from './queries'
 import { RolloutStatus as Status } from './types'
 
 const ROW_HEIGHT = '50px'
+// eslint-disable-next-line
 const MAX_UUID = 0xffffffffffffffffffffffffffffffff
 
 const colors = {
@@ -146,7 +145,7 @@ export function Rollouts({ repository: { id: repositoryId } }) {
     document: ROLLOUT_SUB,
     variables: { repositoryId },
     updateQuery: (prev, { subscriptionData: { data: { rolloutDelta: { delta, payload } } } }) => delta === 'CREATE' ? appendConnection(prev, payload, 'rollouts') : prev,
-  }), [repositoryId])
+  }), [repositoryId, subscribeToMore])
 
   if (!data) return null
 

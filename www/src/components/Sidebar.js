@@ -1,18 +1,25 @@
 import { useContext } from 'react'
 import { useLocation } from 'react-router-dom'
 import {
+  BotIcon,
+  BrowserIcon,
+  CreditCardIcon,
   FingerPrintIcon,
   IdIcon,
   InstalledIcon,
+  InvoicesIcon,
   KeyPairIcon,
   ListIcon,
   LogoutIcon,
   MagnifyingGlassIcon,
+  MessagesIcon,
+  OAuthIcon,
   PadlockIcon,
   PeopleIcon,
   PersonIcon,
   Sidebar as PluralSidebar,
   ReloadIcon,
+  ScrollIcon,
   SirenIcon,
   WebhooksIcon,
 } from 'pluralsh-design-system'
@@ -62,9 +69,6 @@ function Sidebar() {
             {
               name: 'User Attributes',
               url: '/me/edit/user',
-              Icon: () => ( // TODO in design-system
-                <span style={{ width: 14 }} />
-              ),
             },
             {
               name: 'Password',
@@ -109,6 +113,53 @@ function Sidebar() {
           name: 'Accounts',
           Icon: PeopleIcon,
           url: '/accounts/edit',
+          items: [
+            {
+              name: 'Users',
+              url: '/accounts/edit/users',
+              Icon: PersonIcon,
+            },
+            {
+              name: 'Invites',
+              url: '/accounts/edit/invites',
+              Icon: MessagesIcon,
+            },
+            {
+              name: 'Service Accounts',
+              url: '/accounts/edit/service-accounts',
+              Icon: BotIcon,
+            },
+            {
+              name: 'Groups',
+              url: '/accounts/edit/groups',
+              Icon: PeopleIcon,
+            },
+            {
+              name: 'Roles',
+              url: '/accounts/edit/roles',
+              Icon: ScrollIcon,
+            },
+            {
+              name: 'Domains',
+              url: '/accounts/edit/domains',
+              Icon: BrowserIcon,
+            },
+            {
+              name: 'Payment Methods',
+              url: '/accounts/edit/methods',
+              Icon: CreditCardIcon,
+            },
+            {
+              name: 'Invoices',
+              url: '/accounts/edit/invoices',
+              Icon: InvoicesIcon,
+            },
+            {
+              name: 'OAuth Integrations',
+              url: '/accounts/edit/integrations',
+              Icon: OAuthIcon,
+            },
+          ],
         },
         {
           name: 'Upgrades',

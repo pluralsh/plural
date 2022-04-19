@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Button, SecondaryButton } from 'forge-core'
 import { Box } from 'grommet'
 

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import { Box, Text } from 'grommet'
 import { Select } from 'forge-core'
 
@@ -21,7 +21,7 @@ export function StatusSelector({ status, setStatus }) {
   const theme = useContext(ThemeContext)
 
   return (
-    <Select 
+    <Select
       options={options}
       styles={{
         option: (styles, { data, isFocused, isSelected }) => (

@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { Button, Select } from 'forge-core'
 import { Box, Keyboard, Text, TextInput, ThemeContext } from 'grommet'
 import { useMutation } from '@apollo/client'
@@ -44,7 +44,7 @@ function UrlsInput({ uriFormat, urls, setUrls }) {
     const url = uriFormat ? uriFormat.replace('{domain}', value) : value
     setUrls([...urls, url])
     setValue('')
-  }, [urls, value, setValue])
+  }, [urls, value, setValue, setUrls, uriFormat])
 
   return (
     <Keyboard onEnter={addUrl}>

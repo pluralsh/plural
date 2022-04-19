@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Box, Text } from 'grommet'
 import { Github } from 'grommet-icons'
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -44,11 +44,13 @@ function SynopsisTable({ items, width }) {
           <Box
             flex={false}
             width={width || '120px'}
-          ><Text
+          >
+            <Text
               size="small"
-            weight={500}
-            >{name}
-           </Text>
+              weight={500}
+            >
+              {name}
+            </Text>
           </Box>
           <Box fill="horizontal">{value}</Box>
         </Box>
@@ -153,7 +155,7 @@ function CreateShell({ accessToken, onCreate }) {
     setProvider(provider)
     setCredentials({})
     setWorkspace({ ...workspace, region: null })
-  }, [setProvider, setCredentials, setWorkspace])
+  }, [setProvider, setCredentials, setWorkspace, workspace])
 
   const next = useCallback(() => {
     const hasNext = !!SECTIONS[section][0]
@@ -286,7 +288,7 @@ export function CloudShell() {
       mutation()
       setCreated(true)
     }
-  }, [shellData, setCreated])
+  }, [shellData, setCreated, mutation])
 
   if (!shellData) return <LoopingLogo dark />
 

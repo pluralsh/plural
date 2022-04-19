@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 import { Box, Text, ThemeContext } from 'grommet'
 import { useMutation } from '@apollo/client'
 import { useNavigate } from 'react-router-dom'

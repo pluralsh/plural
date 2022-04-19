@@ -1,4 +1,5 @@
-import React, { PureComponent, useCallback, useEffect, useRef, useState } from 'react'
+/* eslint-disable */
+import { PureComponent, memo, useCallback, useEffect, useRef, useState } from 'react'
 import { Box } from 'grommet'
 import { VariableSizeList } from 'react-window-reversed'
 import { FixedSizeList as FixedList, VariableSizeList as List } from 'react-window'
@@ -112,7 +113,7 @@ const Item = ({ index, mapper, isItemLoaded, placeholder, items, setSize }) => {
 
   return mapper(items[index], { next: items[index + 1] || {}, prev: items[index - 1] || {} }, { setSize, index })
 }
-const ItemWrapper = React.memo(({ data: { setSize, width, refreshKey, items, isItemLoaded, placeholder, mapper }, style, index, ...props }) => {
+const ItemWrapper = memo(({ data: { setSize, width, refreshKey, items, isItemLoaded, placeholder, mapper }, style, index, ...props }) => {
   const [rowRef, setRowRef] = useState(null)
   const item = items[index]
   const sizeCallback = useCallback(() => {
@@ -155,7 +156,7 @@ const ItemWrapper = React.memo(({ data: { setSize, width, refreshKey, items, isI
   )
 }, areEqual)
 
-const FixedItemWrapper = React.memo(({ data: { items, isItemLoaded, placeholder, mapper }, style, index }) => (
+const FixedItemWrapper = memo(({ data: { items, isItemLoaded, placeholder, mapper }, style, index }) => (
   <div style={style}>
     <Item
       index={index}

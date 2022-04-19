@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { Box, Text, TextInput } from 'grommet'
 import { Button, Check as Checkmark, SecondaryButton } from 'forge-core'
 import { Editable, Slate } from 'slate-react'

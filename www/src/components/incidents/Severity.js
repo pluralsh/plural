@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import { Box, Text } from 'grommet'
 import { Select } from 'forge-core'
 
@@ -31,7 +31,7 @@ export function SeverityNub({ severity }) {
         width="10px"
         background={color}
       />
-      <Text size="16px">SEV {severity}</Text> 
+      <Text size="16px">SEV {severity}</Text>
     </Box>
   )
 }
@@ -53,7 +53,7 @@ function dot(color, theme) {
       width: 10,
     },
   }
-} 
+}
 
 export function SeveritySelect({ severity, setSeverity }) {
   const theme = useContext(ThemeContext)
@@ -90,7 +90,7 @@ export function Severity({ incident: { severity, ...incident }, setSeverity }) {
           severity={severity}
           setSeverity={setSeverity}
         />
-      )} 
+      )}
     </>
   )
 }

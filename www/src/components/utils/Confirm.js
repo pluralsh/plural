@@ -1,4 +1,4 @@
-import React from 'react'
+
 import { Box, Layer } from 'grommet'
 import { Button, SecondaryButton } from 'forge-core'
 
@@ -21,9 +21,9 @@ export function Confirm({ submit, error, loading, label, header, cancel, descrip
             error={error}
           />
         )}
-        <Alert 
-          status={AlertStatus.INFO} 
-          header={header || 'Are you sure?'} 
+        <Alert
+          status={AlertStatus.INFO}
+          header={header || 'Are you sure?'}
           description={description}
         />
         <Box
@@ -36,9 +36,9 @@ export function Confirm({ submit, error, loading, label, header, cancel, descrip
             label="Cancel"
             onClick={cancel}
           />
-          <Button 
-            label={label || 'Continue'} 
-            onClick={submit} 
+          <Button
+            label={label || 'Continue'}
+            onClick={submit}
             loading={loading}
           />
         </Box>

@@ -1,4 +1,3 @@
-import React from 'react'
 
 import { SearchIcon as SI } from '../utils/SearchIcon'
 

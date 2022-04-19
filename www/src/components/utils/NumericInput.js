@@ -34,7 +34,7 @@ export function NumericInput({ value, onChange, ...rest }) {
           value={`${current}`}
           onChange={({ target: { value } }) => {
             const parsed = parseInt(value)
-            if (!isNaN(parsed)) {
+            if (parsed === parsed) {
               updateValue(parsed)
             }
           }}

@@ -1,6 +1,6 @@
 import { Box, Drop, TextInput } from 'grommet'
 import { Checkmark, Down } from 'grommet-icons'
-import React, { useCallback, useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 
 function OrgOption({ org, current, setOrg, render }) {
   const isCurrent = org.id === current.id

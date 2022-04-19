@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Divider } from 'forge-core'
 import moment from 'moment'
 
@@ -31,7 +31,7 @@ export function DateDivider({ message, next, setSize }) {
       setSize()
     }
     setPainted(!same)
-  }, [painted, setPainted, same])
+  }, [painted, setPainted, same, setSize])
 
   // if (unread) return <Waterline />
   if (!same) return <Divider text={formatDate(message.insertedAt)} />

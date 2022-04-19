@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Box, TextInput } from 'grommet'
 import { useQuery } from '@apollo/client'
 

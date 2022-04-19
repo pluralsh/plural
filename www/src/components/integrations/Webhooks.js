@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useQuery } from '@apollo/client'
 import { Button, ModalHeader, Scroller, Webhooks as WebhooksI } from 'forge-core'
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
 
 import { Copyable, Trash } from 'forge-core'

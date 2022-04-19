@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import { memo, useContext, useEffect, useState } from 'react'
 import { Box, Stack, Text } from 'grommet'
 import moment from 'moment'
 
@@ -35,7 +35,7 @@ function MessageBody({ message, next, setHover, setSize }) {
       setSize()
     }
     setPainted(consecutive)
-  }, [painted, setPainted, consecutive])
+  }, [painted, setPainted, consecutive, setSize])
 
   return (
     <Box
@@ -106,7 +106,7 @@ function MessageBody({ message, next, setHover, setSize }) {
   )
 }
 
-export const Message = React.memo(({ message, next, setSize }) => {
+export const Message = memo(({ message, next, setSize }) => {
   const [hover, setHover] = useState(false)
   const additionalClasses = hover ? ' hovered' : ''
 

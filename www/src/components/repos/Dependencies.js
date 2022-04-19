@@ -86,7 +86,7 @@ export const FullDependencies = memo(({ resource }) => {
   })
 
   if (loading || !data) return null
-  const closure = groupBy(data.closure, ({ helm, terraform }) => helm ? 'helm' : 'terraform')
+  const closure = groupBy(data.closure, ({ helm }) => helm ? 'helm' : 'terraform')
   const graph = compileGraph({ [type.toLowerCase()]: resource, dep: {} }, cloneDeep(closure))
 
   return (

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import { createElement, useCallback, useEffect, useState } from 'react'
 import { Anchor, Box, Collapsible, Form, Keyboard, Text, TextInput } from 'grommet'
 import { Button, Divider } from 'forge-core'
 import { useApolloClient, useLazyQuery, useMutation, useQuery } from '@apollo/client'
@@ -349,7 +349,7 @@ function OAuthOption({ url: { authorizeUrl, provider } }) {
         window.location = authorizeUrl
       }}
     >
-      {React.createElement(icon, { size: 'medium', color: 'plain' })}
+      {createElement(icon, { size: 'medium', color: 'plain' })}
       <Text size="small">Sign up with {provider.toLowerCase()}</Text>
     </Box>
   )

@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect } from 'react'
-
+import { useCallback, useEffect, useMemo } from 'react'
 import { Box, Text } from 'grommet'
 
 import { LabelledInput } from '../../users/MagicLogin'
@@ -27,7 +26,8 @@ export const awsSynopsis = ({ workspace, credentials }) => (
 )
 
 export function AwsForm({ credentials, setCredentials, workspace, setWorkspace }) {
-  const aws = credentials.aws || {}
+  const aws = useMemo(() => credentials.aws || {}, [credentials])
+
   const update = useCallback((field, val) => (
     setCredentials({ ...credentials, aws: { ...credentials.aws, [field]: val } })
   ), [setCredentials, credentials])
@@ -35,8 +35,8 @@ export function AwsForm({ credentials, setCredentials, workspace, setWorkspace }
   const region = workspace.region || 'us-east-2'
 
   useEffect(() => {
-    !workspace.region && setRegion(region)
-  }, [aws, region, setRegion])
+    if (!workspace.region) setRegion(region)
+  }, [aws, region, setRegion, workspace])
 
   return (
     <Box
@@ -64,14 +64,14 @@ export function AwsForm({ credentials, setCredentials, workspace, setWorkspace }
           />
         </Box>
       </Box>
-      <LabelledInput 
-        label="Access Key Id" 
+      <LabelledInput
+        label="Access Key Id"
         width="100%"
         value={aws.accessKeyId || ''}
         onChange={value => update('accessKeyId', value)}
       />
-      <LabelledInput 
-        label="Secret Access Key" 
+      <LabelledInput
+        label="Secret Access Key"
         width="100%"
         value={aws.secretAccessKey || ''}
         onChange={value => update('secretAccessKey', value)}

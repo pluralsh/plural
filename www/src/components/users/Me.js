@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import { createElement, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Box, Drop, Layer, Text } from 'grommet'
 import { CreatePublisher as CreatePublisherIcon, EditField, Logout, MenuItem, ModalHeader, User } from 'forge-core'
@@ -12,8 +12,8 @@ import { wipeToken } from '../../helpers/authentication'
 
 import Avatar from './Avatar'
 
-export function DropdownItem(props) {
-  const { onClick, ...rest } = props
+export function DropdownItem({ onClick, ...rest }) {
+  const { icon, text } = rest
 
   return (
     <MenuItem
@@ -25,8 +25,8 @@ export function DropdownItem(props) {
         align="center"
         gap="xsmall"
       >
-        {props.icon && React.createElement(props.icon, { size: '12px' })}
-        <Text size="small">{props.text}</Text>
+        {icon && createElement(icon, { size: '12px' })}
+        <Text size="small">{text}</Text>
       </Box>
     </MenuItem>
   )

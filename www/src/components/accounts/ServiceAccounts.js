@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { Box, Layer, TextInput } from 'grommet'
 import { useMutation, useQuery } from '@apollo/client'
 import { Edit } from 'grommet-icons'
@@ -118,7 +118,7 @@ export function ServiceAccounts() {
     query: USERS_Q,
     variables: { q, serviceAccount: true },
     update: prev => removeConnection(prev, deleteUser, 'users'),
-  }))
+  }), [q])
 
   if (!data) return <LoopingLogo />
 

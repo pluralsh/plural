@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Box } from 'grommet'
 
@@ -32,7 +32,7 @@ function ToolbarIcon() {
     const timeout = setTimeout(() => setAnimated(false), 1500)
 
     return () => clearTimeout(timeout)
-  }, [location])
+  }, [location, loaded])
 
   return (
     <LoopingLogo

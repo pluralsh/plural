@@ -1,6 +1,5 @@
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Box, Text, TextInput } from 'grommet'
-
 import { Button } from 'forge-core'
 
 import { normalizedThemes, saveTheme } from './themes'
@@ -47,7 +46,7 @@ function ThemeOption({ name, theme }) {
 }
 
 const filterThemes = value => Object.entries(normalizedThemes)
-    .filter(([key, _]) => key.includes(value))
+    .filter(([key]) => key.includes(value))
     .map(([key, theme]) => (
       { value: key,
         label: <ThemeOption

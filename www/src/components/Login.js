@@ -4,6 +4,8 @@ import { Anchor, Box, Form, Keyboard, Text } from 'grommet'
 import { Button, InputCollection, ResponsiveInput } from 'forge-core'
 import { Checkmark, StatusCritical } from 'grommet-icons'
 
+import { useNavigate } from 'react-router-dom'
+
 import { fetchToken, setToken } from '../helpers/authentication'
 
 import { Tab, TabContent, Tabs } from './utils/Tabs'
@@ -66,8 +68,7 @@ export function PasswordStatus({ disabled, reason }) {
   )
 }
 
-export default function Login(props) {
-  const { history } = props
+export default function Login() {
   const [tab, setTab] = useState(State.LOGIN)
   const [state, setState] = useState({
     email: '',
@@ -77,6 +78,7 @@ export default function Login(props) {
   const [confirm, setConfirm] = useState('')
   const login = tab === State.LOGIN
   const { email, name, password } = state
+  const navigate = useNavigate()
 
   const [mutation, { loading, error }] = useMutation(login ? LOGIN_MUTATION : SIGNUP_MUTATION, {
     variables: { email, password, name },
@@ -90,7 +92,7 @@ export default function Login(props) {
     if (fetchToken()) {
       navigate('/')
     }
-  }, [history])
+  }, [navigate])
 
   const { disabled, reason } = disableState(password, confirm)
 

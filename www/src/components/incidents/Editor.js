@@ -1,4 +1,3 @@
-import React from 'react'
 
 import { useApolloClient } from '@apollo/client'
 

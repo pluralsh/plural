@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import { createElement, useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 import { Add } from 'grommet-icons'
@@ -52,7 +52,7 @@ function SectionItem({ name, label, icon, subgroup: subgroupName, location, ...p
   return (
     <SectionItemContainer
       label={label}
-      icon={icon && React.createElement(icon, { size: ICON_SIZE })}
+      icon={icon && createElement(icon, { size: ICON_SIZE })}
       selected={subgroupName === subgroup && group === name}
       location={location || (subgroupName ? `${baseLocation}/${subgroupName}` : baseLocation)}
       {...props}

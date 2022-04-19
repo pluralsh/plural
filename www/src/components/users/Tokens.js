@@ -1,10 +1,8 @@
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Box, Layer, Text } from 'grommet'
 import { useMutation, useQuery } from '@apollo/client'
-
 import { BORDER_COLOR, Button, Copyable, GraphView, ListView, ModalHeader, Scroller, Trash } from 'forge-core'
 import moment from 'moment'
-
 import lookup from 'country-code-lookup'
 
 import { deepUpdate, extendConnection, removeConnection, updateCache } from '../../utils/graphql'
@@ -307,10 +305,12 @@ export function Tokens() {
             />
           )}
           onLoadMore={() => {
-            pageInfo.hasNextPage && fetchMore({
-              variables: { cursor: pageInfo.endCursor },
-              updateQuery: (prev, { fetchMoreResult: { tokens } }) => extendConnection(prev, tokens, 'tokens'),
-            })
+            if (pageInfo.hasNextPage) {
+              fetchMore({
+                variables: { cursor: pageInfo.endCursor },
+                updateQuery: (prev, { fetchMoreResult: { tokens } }) => extendConnection(prev, tokens, 'tokens'),
+              })
+            }
           }}
         />
       </Box>

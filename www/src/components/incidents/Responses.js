@@ -1,8 +1,7 @@
-import React, { useCallback, useContext, useMemo, useRef, useState } from 'react'
+import { useCallback, useContext, useMemo, useRef, useState } from 'react'
 import { useQuery } from '@apollo/client'
 import { Box, Drop, Text, TextInput } from 'grommet'
 import { Bundle, Incidents as IncidentsI, Explore as Search } from 'forge-core'
-
 import { Checkmark } from 'grommet-icons'
 
 import { extendConnection } from '../../utils/graphql'
@@ -93,7 +92,7 @@ function EmptyState() {
 function StatusSelector({ statuses, setStatuses }) {
   const ref = useRef()
   const [open, setOpen] = useState(false)
-  const hasStatus = new Set(statuses)
+  const hasStatus = useMemo(() => new Set(statuses), [statuses])
   const onClick = useCallback(status => {
     if (hasStatus.has(status)) {
       setStatuses(statuses.filter(s => s !== status))
@@ -268,9 +267,10 @@ export function Responses() {
     setRepository(repo.id === (repository && repository.id) ? null : repo)
     setSelect(false)
   }, [setRepository, setSelect, repository])
+  const value = useMemo(() => ({ q, setQ, sort, setSort, order, setOrder, filters, setFilters }), [q, sort, order, filters])
 
   return (
-    <IncidentViewContext.Provider value={{ q, setQ, sort, setSort, order, setOrder, filters, setFilters }}>
+    <IncidentViewContext.Provider value={value}>
       <Box
         direction="row"
         fill

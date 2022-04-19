@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { Box, Text } from 'grommet'
 import { useFilePicker } from 'react-sage'
 import { Button, Credentials, Fingerprint, InputCollection, Installed, Logout,
@@ -30,7 +30,7 @@ import Avatar from './Avatar'
 import { OAUTH_URLS, UPDATE_USER } from './queries'
 import { Keys } from './Keys'
 
-export const EditContext = React.createContext({})
+export const EditContext = createContext({})
 
 function EditAvatar({ me, noClick = false }) {
   const { files, onClick, HiddenFileInput } = useFilePicker({})

@@ -1,9 +1,7 @@
-import React, { useContext, useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import { useQuery } from '@apollo/client'
-
 import { useNavigate } from 'react-router-dom'
 import { Box, Text } from 'grommet'
-
 import { Github } from 'grommet-icons'
 import { Update } from 'forge-core'
 
@@ -81,7 +79,7 @@ export function UpgradeQueues() {
   useEffect(() => subscribeToMore({
     document: UPGRADE_QUEUE_SUB,
     updateQuery: ({ upgradeQueues, ...prev }, { subscriptionData: { data: { upgradeQueueDelta: { delta, payload } } } }) => delta === 'CREATE' ? { ...prev, upgradeQueues: [payload, ...upgradeQueues] } : prev,
-  }), [])
+  }), [subscribeToMore])
 
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
   useEffect(() => {

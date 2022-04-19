@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Anchor, Box, Table, TableBody, TableCell, TableHeader, TableRow, Text } from 'grommet'
 import { useQuery } from '@apollo/client'
@@ -61,11 +61,13 @@ function Invoice({ invoice: { number, hostedInvoiceUrl, amountPaid, createdAt, c
     <TableRow>
       <TableCell>{moment(createdAt).format('LLL')}</TableCell>
       <TableCell>{number}</TableCell>
-      <TableCell><Text
-        size="small"
-        color="green"
-      >{amountPaid / 100} {currency}
-      </Text>
+      <TableCell>
+        <Text
+          size="small"
+          color="green"
+        >
+          {amountPaid / 100} {currency}
+        </Text>
       </TableCell>
       <TableCell><Anchor href={hostedInvoiceUrl}>invoice</Anchor></TableCell>
     </TableRow>
@@ -168,7 +170,7 @@ export default function Invoices() {
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
   useEffect(() => {
     setBreadcrumbs([])
-  }, [])
+  }, [setBreadcrumbs])
 
   if (loading && !data) return null
   const { edges } = data.subscriptions

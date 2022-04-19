@@ -1,16 +1,12 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 import { Copy, Links, TabContent, TabHeader, TabHeaderItem, Tabs } from 'forge-core'
 import { useMutation, useQuery } from '@apollo/client'
 import { useNavigate, useParams } from 'react-router-dom'
-
 import moment from 'moment'
 import { Anchor, Box, Collapsible, Stack, Text } from 'grommet'
 import { Language } from 'grommet-icons'
-
 import CopyToClipboard from 'react-copy-to-clipboard'
-
-import { truncate } from 'lodash'
-
+import truncate from 'lodash.truncate'
 import Toggle from 'react-toggle'
 
 import { BreadcrumbsContext } from '../Breadcrumbs'
@@ -270,11 +266,13 @@ function CVSSRow({ text, value, options, colorMap }) {
       <Box
         width="150px"
         flex={false}
-      ><Text
+      >
+        <Text
           size="small"
-        weight={500}
-        >{text}
-       </Text>
+          weight={500}
+        >
+          {text}
+        </Text>
       </Box>
       <Box
         direction="row"
@@ -503,12 +501,14 @@ function Vulnerability({ vuln }) {
 
 export function HeaderItem({ text, width, nobold, truncate }) {
   return (
-    <Box width={width}><Text
-      size="small"
-      weight={nobold ? null : 500}
-      truncate={truncate}
-    >{text}
-                       </Text>
+    <Box width={width}>
+      <Text
+        size="small"
+        weight={nobold ? null : 500}
+        truncate={truncate}
+      >
+        {text}
+      </Text>
     </Box>
   )
 }
@@ -546,7 +546,7 @@ function VulnerabilityHeader() {
   )
 }
 
-function Vulnerabilities({ image: { vulnerabilities, ...image } }) {
+function Vulnerabilities({ image: { vulnerabilities } }) {
   if (!vulnerabilities || vulnerabilities.length === 0) return <NoVulnerabilities />
 
   return (
@@ -569,13 +569,14 @@ export function DockerRepository() {
   const navigate = useNavigate()
   const { id } = useParams()
   const { data } = useQuery(DOCKER_IMG_Q, { variables: { dockerRepositoryId: id } })
+
   useEffect(() => {
     if (!data) return
     const { dockerImages: { edges } } = data
     if (edges.length === 0) return
 
-    history.replace(`/dkr/img/${edges[0].node.id}`)
-  }, [data])
+    navigate(`/dkr/img/${edges[0].node.id}`, { replace: true })
+  }, [data, navigate])
 
   return <LoopingLogo />
 }

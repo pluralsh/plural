@@ -1,24 +1,23 @@
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import { Box, Text, ThemeContext } from 'grommet'
 import { ResponsiveChoropleth } from '@nivo/geo'
-
-import { max } from 'lodash'
-
+import max from 'lodash.max'
 import { normalizeColor } from 'grommet/utils'
 
-import countries from './world_countries'
+import countries from './world_countries.json'
 import { useColorMap } from './Graph'
 
 const COLOR_MAP = [
   'blue-light-2',
-  'blue-light', 
-  'blue', 
+  'blue-light',
+  'blue',
   'blue-dark',
   'blue-dark-2',
 ]
 
 function Tooltip({ feature }) {
   if (!feature.data) return null
+
   const { id, value } = feature.data
 
   return (
@@ -26,7 +25,7 @@ function Tooltip({ feature }) {
       flex={false}
       direction="row"
       pad="xsmall"
-      round="2px" 
+      round="2px"
       gap="xsmall"
       background="white"
       align="center"
@@ -40,7 +39,8 @@ function Tooltip({ feature }) {
       <Text
         size="12px"
         weight={500}
-      >{id} {value}
+      >
+        {id} {value}
       </Text>
     </Box>
   )

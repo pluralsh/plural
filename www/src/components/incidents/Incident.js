@@ -1,32 +1,20 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { Button, Close, Edit, File, Messages as MessagesI, ModalHeader, Scroller } from 'forge-core'
-
+import { Editable, Slate } from 'slate-react'
 import { useMutation, useQuery, useSubscription } from '@apollo/client'
-
 import { useNavigate, useParams } from 'react-router-dom'
-
 import { Box, Layer, Text, TextInput } from 'grommet'
-
 import moment from 'moment'
 
-import { Editable, Slate } from 'slate-react'
-
-import { CurrentUserContext } from '../login/CurrentUser'
-
 import { dateFormat } from '../../utils/date'
-
 import SmoothScroller from '../utils/SmoothScroller'
-
 import { extendConnection } from '../../utils/graphql'
-
-import { BreadcrumbsContext } from '../Breadcrumbs'
-
 import { plainDeserialize, plainSerialize } from '../../utils/slate'
-
 import { useEditor } from '../utils/hooks'
 
 import { TagInput } from '../repos/Tags'
-
+import { CurrentUserContext } from '../login/CurrentUser'
+import { BreadcrumbsContext } from '../Breadcrumbs'
 import Avatar from '../users/Avatar'
 
 import Markdown from './Markdown'
@@ -233,7 +221,7 @@ export function Messages({ incident, loading, fetchMore, subscribeToMore }) {
     document: MESSAGE_SUB,
     variables: { id: incident.id },
     updateQuery: (prev, { subscriptionData: { data } }) => applyMessages(prev, data),
-  }), [incident.id])
+  }), [incident.id, subscribeToMore])
 
   if (edges.length === 0) return <Empty />
 
@@ -349,15 +337,17 @@ function IncidentInner({ incident, fetchMore, subscribeToMore, loading, editing,
   })
 
   const refreshList = useCallback(() => {
-    listRef && listRef.resetAfterIndex(0, true)
+    if (listRef) listRef.resetAfterIndex(0, true)
   }, [listRef])
 
   const returnToBeginning = useCallback(() => {
     listRef.scrollToItem(0)
   }, [listRef])
 
+  const value = useMemo(() => ({ listRef, setListRef, refreshList, returnToBeginning }), [listRef, setListRef, refreshList, returnToBeginning])
+
   return (
-    <MessageScrollContext.Provider value={{ listRef, setListRef, refreshList, returnToBeginning }}>
+    <MessageScrollContext.Provider value={value}>
       <Box fill>
         <AttachmentProvider>
           <Box

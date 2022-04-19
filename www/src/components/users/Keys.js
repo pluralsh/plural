@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Button, Key as KeyIcon, Scroller } from 'forge-core'
 
 import { Box, Markdown, Text } from 'grommet'

@@ -1,4 +1,4 @@
-import gql from 'graphql-tag'
+import { gql } from '@apollo/client'
 
 import { IntegrationWebhookFragment, OauthIntegration, WebhookLogFragment } from '../../models/integrations'
 import { PageInfo } from '../../models/misc'
@@ -34,7 +34,7 @@ export const CREATE_WEBHOOK = gql`
     createIntegrationWebhook(attributes: $attributes) {
       ...IntegrationWebhookFragment
     }
-  } 
+  }
   ${IntegrationWebhookFragment}
 `
 
@@ -43,7 +43,7 @@ export const UPDATE_WEBHOOK = gql`
     updateIntegrationWebhook(id: $id, attributes: $attributes) {
       ...IntegrationWebhookFragment
     }
-  } 
+  }
   ${IntegrationWebhookFragment}
 `
 
@@ -52,7 +52,7 @@ export const DELETE_WEBHOOK = gql`
     deleteIntegrationWebhook(id: $id) {
       ...IntegrationWebhookFragment
     }
-  } 
+  }
   ${IntegrationWebhookFragment}
 `
 

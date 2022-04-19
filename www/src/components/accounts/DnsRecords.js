@@ -1,6 +1,6 @@
 import { Box, Text } from 'grommet'
 import moment from 'moment'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
 import { SecondaryButton, Trash } from 'forge-core'
 import { useNavigate, useParams } from 'react-router-dom'

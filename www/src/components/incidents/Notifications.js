@@ -1,11 +1,9 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { Box, Text } from 'grommet'
 import { Scroller } from 'forge-core'
 import { useApolloClient, useMutation, useQuery, useSubscription } from '@apollo/client'
-
 import moment from 'moment'
-
-import { truncate } from 'lodash'
+import truncate from 'lodash.truncate'
 
 import Avatar from '../users/Avatar'
 
@@ -100,7 +98,9 @@ export function useNotificationSubscription() {
           update: prev => appendConnection(prev, notification, 'notifications'),
         })
       }
-      catch { }
+      catch (error) {
+         //
+      }
 
       try {
         updateCache(client, {
@@ -109,7 +109,9 @@ export function useNotificationSubscription() {
           update: prev => appendConnection(prev, notification, 'notifications'),
         })
       }
-      catch { }
+      catch (error) {
+        //
+      }
 
       updateFragment(client, {
         id: `Incident:${id}`,
@@ -137,7 +139,10 @@ export function Notifications({ incident: { id } }) {
       })
     },
   })
-  useEffect(() => mutation, [id])
+
+  useEffect(() => {
+    mutation()
+  }, [mutation])
 
   if (!data) return null
 

@@ -1,15 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useQuery, useSubscription } from '@apollo/client'
 import { Reload as Refresh } from 'forge-core'
-
 import { Box, Text } from 'grommet'
-
 import moment from 'moment'
-
 import { BeatLoader } from 'react-spinners'
-
 import { Github } from 'grommet-icons'
-
 import { useParams } from 'react-router-dom'
 
 import { appendConnection, extendConnection } from '../../utils/graphql'
@@ -103,7 +98,7 @@ export function UpgradeQueue() {
     document: UPGRADE_SUB,
     variables: { id },
     updateQuery: ({ upgradeQueue, ...rest }, { subscriptionData: { data: { upgrade } } }) => ({ ...rest, upgradeQueue: appendConnection(upgradeQueue, upgrade, 'upgrades') }),
-  }), [])
+  }), [id, subscribeToMore])
 
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
   useEffect(() => {

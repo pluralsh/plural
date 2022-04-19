@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { Button, SecondaryButton } from 'forge-core'
 import { Box, FormField, Text, TextInput } from 'grommet'

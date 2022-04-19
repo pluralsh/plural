@@ -1,4 +1,5 @@
-import React, { useContext } from 'react'
+/* eslint-disable camelcase */
+import { useContext } from 'react'
 import { useMutation } from '@apollo/client'
 import { Box, Text } from 'grommet'
 import { Tooltip } from 'forge-core'

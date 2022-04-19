@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Box, Markdown, Text } from 'grommet'
 import { Button, InputCollection, ResponsiveInput, ScrollableContainer, SecondaryButton, TabContent, TabHeader, TabHeaderItem, Tabs } from 'forge-core'
 import { useMutation, useQuery } from '@apollo/client'
@@ -177,7 +177,7 @@ function DeleteTerraform({ id }) {
   const navigate = useNavigate()
   const [mutation, { loading }] = useMutation(DELETE_TF, {
     variables: { id },
-    onCompleted: () => history.goBack(),
+    onCompleted: () => navigate(-1),
   })
 
   return (

@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { Box, Drop, Text, TextInput, ThemeContext } from 'grommet'
 import { SortAsc as Ascend, Button, Check as Checkmark, Close, SortDesc as Descend, Filters as FiltersI, Notification, Explore as Search, Tag as TagIcon, User } from 'forge-core'
 import { Next } from 'grommet-icons'
@@ -29,7 +29,7 @@ import { IncidentFilter, IncidentSort, IncidentSortNames, Order } from './types'
 import { SlaTimer } from './SlaTimer'
 import { INCIDENTS_Q } from './queries'
 
-export const IncidentViewContext = React.createContext({})
+export const IncidentViewContext = createContext({})
 
 const pulseAnimation = keyframes`${pulse}`
 
@@ -189,7 +189,7 @@ function TagInput({ setAlternate }) {
   const accept = useCallback(() => {
     setFilters([{ type: IncidentFilter.TAG, value: tag }, ...filters])
     setAlternate(null)
-  }, [tag, setFilters, setAlternate])
+  }, [tag, setFilters, setAlternate, filters])
 
   return (
     <Box
@@ -496,12 +496,14 @@ export function Incidents() {
     setBreadcrumbs([{ url: '/incidents', text: 'incidents' }])
   }, [setBreadcrumbs])
 
+  const value = useMemo(() => ({ filters, setFilters, order, setOrder, sort, setSort }), [filters, order, sort])
+
   if (!data) return <LoopingLogo />
 
   const { incidents: { edges, pageInfo } } = data
 
   return (
-    <IncidentViewContext.Provider value={{ filters, setFilters, order, setOrder, sort, setSort }}>
+    <IncidentViewContext.Provider value={value}>
       <Box fill>
         {!open && (
           <Box

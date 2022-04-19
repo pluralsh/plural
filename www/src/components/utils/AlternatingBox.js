@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Box } from 'grommet'
 
 const slideAnimate = type => ({ type, duration: 150, delay: 0, size: 'xlarge' })

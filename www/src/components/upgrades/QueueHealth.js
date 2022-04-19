@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 import { Box, ThemeContext } from 'grommet'
 import { normalizeColor } from 'grommet/utils'
 import moment from 'moment'
@@ -19,10 +19,10 @@ export function QueueHealth({ queue, size }) {
   const color = normalizeColor(healthy ? 'good' : 'error', theme)
 
   return (
-    <Box 
+    <Box
       flex={false}
       round="full"
-      width={size || DEFAULT_SIZE} 
+      width={size || DEFAULT_SIZE}
       height={size || DEFAULT_SIZE}
       background={color}
       style={{ boxShadow: `0 0 10px ${color}` }}

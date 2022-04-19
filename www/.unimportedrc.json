@@ -1,0 +1,10 @@
+{
+  "ignoreUnresolved": [
+  ],
+  "ignoreUnused": [
+    "cra-template",
+    "react-scripts"
+  ],
+  "ignoreUnimported": [
+  ]
+}

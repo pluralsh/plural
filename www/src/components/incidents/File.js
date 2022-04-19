@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Box, Stack, Text } from 'grommet'
 import { FileIcon, defaultStyles } from 'react-file-icon'
 import { Download, HoveredBackground, Tooltip } from 'forge-core'
@@ -197,7 +197,7 @@ export function StandardFile({ file: { filename, blob, insertedAt, ...file } }) 
         border={hover ? { color: 'focus' } : { color: 'light-5' }}
         background="#fff"
         round="xsmall"
-        align="center" 
+        align="center"
         direction="row"
         pad="small"
         gap="small"

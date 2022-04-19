@@ -1,6 +1,7 @@
-import React, { useCallback, useContext, useEffect } from 'react'
+import { useCallback, useContext, useEffect } from 'react'
 import { Box, Text } from 'grommet'
 import { File } from 'forge-core'
+
 import { AttachmentContext, AttachmentProvider, Dropzone } from '../../incidents/AttachmentProvider'
 import { DarkSelect } from '../../utils/DarkSelect'
 import { exists, isAlphanumeric } from '../validation'
@@ -24,68 +25,94 @@ const ZONES = [
 ]
 
 export const GCP_VALIDATIONS = [
-  {field: 'credentials.gcp.applicationCredentials', func: exists, name: 'application credentials'},
-  {field: 'workspace.project', func: isAlphanumeric, name: 'project'}
+  { field: 'credentials.gcp.applicationCredentials', func: exists, name: 'application credentials' },
+  { field: 'workspace.project', func: isAlphanumeric, name: 'project' },
 ]
 
-export const gcpSynopsis = ({workspace}) => (
+export const gcpSynopsis = ({ workspace }) => (
   [
-    {name: "Region", value: workspace.region},
-    {name: 'Application Credentials', value: '*****REDACTED****'},
-    {name: 'Project', value: workspace.project}
+    { name: 'Region', value: workspace.region },
+    { name: 'Application Credentials', value: '*****REDACTED****' },
+    { name: 'Project', value: workspace.project },
   ]
 )
 
-function FileInput({updateCreds, gcp, setProject}) {
-  const {attachment} = useContext(AttachmentContext)
+function FileInput({ updateCreds, gcp, setProject }) {
+  const { attachment } = useContext(AttachmentContext)
   useEffect(() => {
     if (!attachment) return
 
-    var reader = new FileReader();
-    reader.onload = function({target: {result}}) {
+    const reader = new FileReader()
+    reader.onload = ({ target: { result } }) => {
       try {
         const creds = JSON.parse(result)
         setProject(creds.project_id)
         updateCreds('applicationCredentials', result)
-      } catch {}
-    };
+      }
+      catch (error) {
+        //
+      }
+    }
     reader.readAsText(attachment)
-  }, [attachment])
+  }, [attachment, setProject, updateCreds])
 
   const loaded = !!gcp.applicationCredentials
 
   return (
-    <Box fill='horizontal' height='200px' align='center' justify='center'
-         border={{side: 'all', color: gcp.applicationCredentials ? 'brand' : 'border'}} round='xsmall'>
-      <File size='25px' color={loaded ? 'brand' : null} />
-      <Text size='small'>drop your service account credentials here</Text>
+    <Box
+      fill="horizontal"
+      height="200px"
+      align="center"
+      justify="center"
+      border={{ side: 'all', color: gcp.applicationCredentials ? 'brand' : 'border' }}
+      round="xsmall"
+    >
+      <File
+        size="25px"
+        color={loaded ? 'brand' : null}
+      />
+      <Text size="small">drop your service account credentials here</Text>
     </Box>
   )
 }
 
-export function GcpForm({workspace, setWorkspace, credentials, setCredentials}) {
+export function GcpForm({ workspace, setWorkspace, credentials, setCredentials }) {
   const gcp = credentials.gcp || {}
   const updateCreds = useCallback((field, val) => (
-    setCredentials({...credentials, gcp: {...credentials.gcp, [field]: val}})
+    setCredentials({ ...credentials, gcp: { ...credentials.gcp, [field]: val } })
   ), [setCredentials, credentials])
-  const setRegion = useCallback((r) => setWorkspace({...workspace, region: r}), [setWorkspace, workspace])
-  const setProject = useCallback((p) => setWorkspace({...workspace, project: p}), [setWorkspace, workspace])
+  const setRegion = useCallback(r => setWorkspace({ ...workspace, region: r }), [setWorkspace, workspace])
+  const setProject = useCallback(p => setWorkspace({ ...workspace, project: p }), [setWorkspace, workspace])
   const region = workspace.region || 'us-east1'
 
   useEffect(() => {
-    !workspace.region && setRegion(region)
+    if (!workspace.region) setRegion(region)
   }, [workspace.region, region, setRegion])
 
   return (
-    <Box fill gap='small'>
-      <Box flex={false} fill='horizontal' direction='row' gap='xsmall' align='center'>
-        <Text weight={500} size='small'>Zone:</Text>
-        <Box fill='horizontal'>
+    <Box
+      fill
+      gap="small"
+    >
+      <Box
+        flex={false}
+        fill="horizontal"
+        direction="row"
+        gap="xsmall"
+        align="center"
+      >
+        <Text
+          weight={500}
+          size="small"
+        >Zone:
+        </Text>
+        <Box fill="horizontal">
           <DarkSelect
-            size='small'
-            value={{value: region, label: region}}
-            options={ZONES.map((r) => ({value: r, label: r}))}
-            onChange={({value}) => setRegion(value)} />
+            size="small"
+            value={{ value: region, label: region }}
+            options={ZONES.map(r => ({ value: r, label: r }))}
+            onChange={({ value }) => setRegion(value)}
+          />
         </Box>
       </Box>
       <AttachmentProvider>
@@ -93,7 +120,8 @@ export function GcpForm({workspace, setWorkspace, credentials, setCredentials}) 
           <FileInput
             updateCreds={updateCreds}
             gcp={gcp}
-            setProject={setProject} />
+            setProject={setProject}
+          />
         </Dropzone>
       </AttachmentProvider>
     </Box>

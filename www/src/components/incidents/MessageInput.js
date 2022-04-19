@@ -1,22 +1,15 @@
-import React, { useCallback, useContext, useRef, useState } from 'react'
-
+import { createContext, useCallback, useContext, useRef, useState } from 'react'
 import { FilePicker } from 'react-file-picker'
 import { useMutation } from '@apollo/client'
-
 import { Box, Drop, Keyboard, Layer, Stack, Text } from 'grommet'
-
 import { MoonLoader, SyncLoader } from 'react-spinners'
 import { Progress } from 'react-sweet-progress'
 import { Editor as SlateEditor, Transforms } from 'slate'
-
 import { useParams } from 'react-router-dom'
-
 import { Attachment, Close, Emoji, SendMessage } from 'forge-core'
 import fs from 'filesize'
 import { NimbleEmoji, emojiIndex } from 'emoji-mart'
-
 import { ThemeContext } from 'styled-components'
-
 import { normalizeColor } from 'grommet/utils'
 
 import Avatar from '../users/Avatar'
@@ -37,7 +30,7 @@ import Editor from './Editor'
 
 import { CREATE_MESSAGE, INCIDENT_Q, SEARCH_USERS } from './queries'
 
-export const MessageScrollContext = React.createContext({})
+export const MessageScrollContext = createContext({})
 
 export function fetchUsers(client, query, incidentId) {
   if (!query) return
@@ -400,7 +393,7 @@ export function MessageInput() {
     mutation({ variables: { attributes: { text: plainSerialize(editorState), file, entities } } })
     Transforms.select(editor, SlateEditor.start(editor, []))
     setEditorState(plainDeserialize(''))
-  }, [mutation, setEditorState, editorState, editor, attachment, disable, attachment])
+  }, [mutation, setEditorState, editorState, editor, disable, attachment])
 
   const empty = isEmpty(editorState)
 

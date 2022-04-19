@@ -1,5 +1,5 @@
 import { Box } from 'grommet'
-import React, { useContext, useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import { FaCreditCard, FaReceipt } from 'react-icons/fa'
 import { useNavigate, useParams } from 'react-router-dom'
 

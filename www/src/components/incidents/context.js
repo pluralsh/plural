@@ -1,3 +1,3 @@
-import React from 'react'
+import { createContext } from 'react'
 
-export const IncidentContext = React.createContext({})
+export const IncidentContext = createContext({})

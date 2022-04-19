@@ -1,4 +1,4 @@
-import gql from 'graphql-tag'
+import { gql } from '@apollo/client'
 
 import { PageInfo } from '../../models/misc'
 import { RolloutFragment, UpgradeFragment, UpgradeQueueFragment } from '../../models/upgrades'

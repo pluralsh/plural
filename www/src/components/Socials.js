@@ -1,4 +1,3 @@
-import React from 'react'
 import { Box } from 'grommet'
 import { Github, Twitter } from 'grommet-icons'
 import { Discord } from 'forge-core'

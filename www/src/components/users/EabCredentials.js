@@ -1,7 +1,7 @@
 import { Box, Text } from 'grommet'
 import { Trash } from 'forge-core'
 import moment from 'moment'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
 
 import { updateCache } from '../../utils/graphql'

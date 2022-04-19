@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import ReactDOM from 'react-dom'
 import { Editor, Range, Transforms } from 'slate'
 import {
@@ -27,34 +27,38 @@ export default function TypeaheadEditor({ editor, value, setValue, style, onOpen
     event => {
       if (target) {
         switch (event.key) {
-          case 'ArrowDown':
+          case 'ArrowDown': {
             event.preventDefault()
             const prevIndex = index >= suggestions.length - 1 ? 0 : index + 1
             setIndex(prevIndex)
             break
-          case 'ArrowUp':
+          }
+          case 'ArrowUp': {
             event.preventDefault()
             const nextIndex = index <= 0 ? suggestions.length - 1 : index - 1
             setIndex(nextIndex)
             break
+          }
           case 'Tab':
-          case 'Enter':
+          case 'Enter': {
             if (target === null || suggestions.length === 0) break
             event.preventDefault()
             Transforms.select(editor, target)
             insertMention(editor, suggestions[index].value)
             setTarget(null)
             break
-          case 'Escape':
+          }
+          case 'Escape': {
             event.preventDefault()
             setTarget(null)
             break
+          }
           default:
             // ignore
         }
       }
     },
-    [index, suggestions, target]
+    [index, suggestions, target, editor]
   )
 
   useEffect(() => {
@@ -98,7 +102,7 @@ export default function TypeaheadEditor({ editor, value, setValue, style, onOpen
             const beforeMatch = beforeText && beforeText.match(trigger)
             if (beforeMatch && afterMatch) {
               setTarget(beforeRange)
-              onOpen && onOpen(true)
+              if (onOpen) onOpen(true)
               searchQuery(beforeMatch[1], suggestions).then(setSuggestions)
               setIndex(0)
 
@@ -107,7 +111,7 @@ export default function TypeaheadEditor({ editor, value, setValue, style, onOpen
           }
         }
 
-        onOpen && onOpen(false)
+        if (onOpen) onOpen(false)
         setTarget(null)
       }}
     >

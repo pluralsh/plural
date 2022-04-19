@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { Errors } from 'forge-core'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useMutation } from '@apollo/client'
@@ -42,13 +42,13 @@ export function OauthCreator() {
 
   useEffect(() => {
     mutation()
-  }, [])
+  }, [mutation])
 
   useEffect(() => {
     if (!error && data) {
       navigate('/accounts/edit/integrations')
     }
-  }, [data, error])
+  }, [data, error, navigate])
 
   if (loading) return <LoopingLogo />
 

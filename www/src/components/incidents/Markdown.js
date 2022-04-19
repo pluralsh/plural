@@ -1,11 +1,10 @@
-import React, { useContext, useRef, useState } from 'react'
+import { cloneElement, memo, useContext, useRef, useState } from 'react'
 import { Anchor, Box, Drop, Markdown, Text, ThemeContext } from 'grommet'
 import { Copy, TooltipContent, WithCopy } from 'forge-core'
 import Highlight from 'react-highlight.js'
 import hljs from 'highlight.js'
-
 import { normalizeColor } from 'grommet/utils'
-import { sortBy } from 'lodash'
+import sortBy from 'lodash.sortby'
 import { Emoji as Emojii } from 'emoji-mart'
 
 import Avatar from '../users/Avatar'
@@ -104,7 +103,7 @@ function Preformat({ children }) {
       flex={false}
       pad={{ vertical: 'xsmall' }}
     >
-      {React.cloneElement(children, { multiline: true })}
+      {cloneElement(children, { multiline: true })}
     </Box>
   )
 }
@@ -115,7 +114,7 @@ function Mention({ text, user }) {
 
   return (
     <>
-      <Box 
+      <Box
         ref={ref}
         style={{ display: 'inline-block' }}
         round="xsmall"
@@ -234,7 +233,7 @@ function* splitText(text, entities) {
   }
 }
 
-export default React.memo(({ text, entities }) => {
+export default memo(({ text, entities }) => {
   const parsed = [...splitText(text, entities || [])].join('')
   const entityMap = (entities || []).reduce((map, entity) => ({ ...map, [entity.id]: entity }), {})
   function Entity({ id }) {

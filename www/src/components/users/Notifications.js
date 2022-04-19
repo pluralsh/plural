@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Box, Stack, Text } from 'grommet'
 import { Notification as NotificationI, Scroller } from 'forge-core'
 import { useQuery } from '@apollo/client'

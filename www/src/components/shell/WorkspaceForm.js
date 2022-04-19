@@ -1,5 +1,4 @@
 import { Box } from 'grommet'
-import React from 'react'
 
 import { LabelledInput } from '../users/MagicLogin'
 import { SuffixedInput } from '../utils/AffixedInput'

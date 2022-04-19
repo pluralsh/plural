@@ -1,12 +1,9 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import './shell.css'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Box, Drop, Layer, Text } from 'grommet'
-
 import { XTerm } from 'xterm-for-react'
 import { FitAddon } from 'xterm-addon-fit'
-
-import './shell.css'
 import { useQuery } from '@apollo/client'
-
 import { CircleInformation } from 'grommet-icons'
 import { ModalHeader, Update } from 'forge-core'
 
@@ -20,7 +17,7 @@ import { CLOUD_SHELL } from './query'
 import { ThemeSelector } from './ThemeSelector'
 import { normalizedThemes, savedTheme } from './themes'
 
-const decodeBase64 = str => (new Buffer(str, 'base64')).toString('utf-8')
+const decodeBase64 = str => Buffer.from(str, 'base64').toString('utf-8')
 
 export function Shell({ room, header, title, children }) {
   const xterm = useRef(null)
@@ -51,7 +48,7 @@ export function Shell({ room, header, title, children }) {
       socket.off([ref])
       chan.leave()
     }
-  }, [room, xterm, fitAddon])
+  }, [room, xterm, fitAddon, header])
 
   const resetSize = useCallback(() => channel.push('resize', { width: dims.cols, height: dims.rows }), [channel, dims])
 
@@ -103,7 +100,7 @@ export function Shell({ room, header, title, children }) {
             addons={[fitAddon]}
             options={{ theme: themeStruct }}
             onResize={({ cols, rows }) => {
-              channel && channel.push('resize', { width: cols, height: rows })
+              if (channel) channel.push('resize', { width: cols, height: rows })
             }}
             onData={text => channel.push('command', { cmd: text })}
           />

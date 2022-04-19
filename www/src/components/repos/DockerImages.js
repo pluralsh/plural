@@ -1,4 +1,3 @@
-import React from 'react'
 import { Box, Text } from 'grommet'
 import { DockerTag } from 'forge-core'
 import { useQuery } from '@apollo/client'
@@ -12,11 +11,13 @@ import { GradeNub } from './Docker'
 
 export function HeaderItem({ text, width }) {
   return (
-    <Box width={width}><Text
-      size="small"
-      weight={500}
-    >{text}
-                       </Text>
+    <Box width={width}>
+      <Text
+        size="small"
+        weight={500}
+      >
+        {text}
+      </Text>
     </Box>
   )
 }
@@ -44,11 +45,13 @@ export function DockerImage({ image }) {
         <Text size="small">{image.tag}</Text>
       </Box>
       <Box width="15%">{moment(image.insertedAt).fromNow()}</Box>
-      <Box width="60%"><Text
-        size="small"
-        truncate
-      >{image.digest}
-                       </Text>
+      <Box width="60%">
+        <Text
+          size="small"
+          truncate
+        >
+          {image.digest}
+        </Text>
       </Box>
       {image.scannedAt && (
         <Box width="10%">

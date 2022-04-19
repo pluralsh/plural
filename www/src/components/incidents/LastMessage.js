@@ -1,4 +1,3 @@
-import React from 'react'
 import { Divider } from 'forge-core'
 
 import { formatDate } from './MessageDivider'

@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import moment from 'moment'
 import { Box, Text } from 'grommet'
 import { Link, useParams } from 'react-router-dom'
@@ -23,11 +23,13 @@ import { AUDITS_Q, AUDIT_METRICS } from './queries'
 
 function HeaderItem({ text, width, nobold }) {
   return (
-    <Box width={width}><Text
-      size="small"
-      weight={nobold ? null : 500}
-    >{text}
-    </Text>
+    <Box width={width}>
+      <Text
+        size="small"
+        weight={nobold ? null : 500}
+      >
+        {text}
+      </Text>
     </Box>
   )
 }

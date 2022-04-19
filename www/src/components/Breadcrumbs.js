@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Anchor, Box, Text } from 'grommet'
 
@@ -16,7 +16,8 @@ function CrumbLink({ crumb: { url, text, disable } }) {
       <Text
         size="small"
         color="dark-6"
-      >{text}
+      >
+        {text}
       </Text>
     )
   }
@@ -25,7 +26,8 @@ function CrumbLink({ crumb: { url, text, disable } }) {
     <Anchor
       size="small"
       onClick={() => navigate(url)}
-    >{text}
+    >
+      {text}
     </Anchor>
   )
 }
@@ -75,9 +77,10 @@ export function Breadcrumbs() {
 
 export default function BreadcrumbProvider({ children }) {
   const [breadcrumbs, setBreadcrumbs] = useState([])
+  const value = useMemo(() => ({ breadcrumbs, setBreadcrumbs }), [breadcrumbs])
 
   return (
-    <BreadcrumbsContext.Provider value={{ breadcrumbs, setBreadcrumbs }}>
+    <BreadcrumbsContext.Provider value={value}>
       {children}
     </BreadcrumbsContext.Provider>
   )

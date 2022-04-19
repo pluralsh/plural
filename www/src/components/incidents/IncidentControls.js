@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Anchor, Box, Layer, Text } from 'grommet'
 import { Button, Check as Checkmark, ModalHeader, Notification, Owner, SecondaryButton } from 'forge-core'
 import { Zoom } from 'grommet-icons'

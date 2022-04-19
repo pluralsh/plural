@@ -1,5 +1,5 @@
+import { createContext, useContext, useMemo, useState } from 'react'
 import { Box } from 'grommet'
-import React, { useContext, useState } from 'react'
 import { DndProvider, useDrop } from 'react-dnd'
 import { HTML5Backend, NativeTypes } from 'react-dnd-html5-backend'
 
@@ -9,7 +9,7 @@ const FILE_DROP_PROPS = {
   background: DROP_BACKGROUND,
 }
 
-export const AttachmentContext = React.createContext({})
+export const AttachmentContext = createContext({})
 
 export function Dropzone({ children }) {
   const { setAttachment } = useContext(AttachmentContext)
@@ -37,9 +37,10 @@ export function Dropzone({ children }) {
 
 export function AttachmentProvider({ children }) {
   const [attachment, setAttachment] = useState(null)
+  const value = useMemo(() => ({ attachment, setAttachment }), [attachment, setAttachment])
 
   return (
-    <AttachmentContext.Provider value={{ attachment, setAttachment }}>
+    <AttachmentContext.Provider value={value}>
       <DndProvider backend={HTML5Backend}>
         {children}
       </DndProvider>

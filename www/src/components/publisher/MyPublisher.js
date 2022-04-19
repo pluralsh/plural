@@ -122,7 +122,7 @@ function EditAvatar({ publisher }) {
     if (files.length > 0) {
       mutation({ variables: { attributes: { avatar: files[0] } } })
     }
-  }, [files])
+  }, [files, mutation])
 
   return (
     <Box

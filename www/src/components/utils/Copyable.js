@@ -1,10 +1,9 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Box, Layer, Text } from 'grommet'
 import { CircleInformation } from 'grommet-icons'
 import { Close, Copy } from 'forge-core'
 import CopyToClipboard from 'react-copy-to-clipboard'
-
-import { truncate } from 'lodash'
+import truncate from 'lodash.truncate'
 
 import { Icon } from '../accounts/Group'
 
@@ -13,14 +12,14 @@ export function CopyNotice({ text, onClose }) {
     <Layer
       position="top"
       plain
-      onEsc={onClose} 
+      onEsc={onClose}
       onClickOutside={onClose}
     >
       <Box
         direction="row"
         align="center"
         gap="small"
-        background="white" 
+        background="white"
         border={{ color: 'light-3' }}
         round="xsmall"
         margin={{ top: 'small' }}

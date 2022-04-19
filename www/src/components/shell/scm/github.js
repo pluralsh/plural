@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+/* eslint-disable camelcase */
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Octokit } from '@octokit/core'
 import { Box, Text } from 'grommet'
 
@@ -65,11 +66,11 @@ export function GithubRepositoryInput({ scm, setScm, accessToken }) {
 
   return (
     <Box>
-      <OrgInput 
+      <OrgInput
         name={scm.name}
         setName={name => setScm({ ...scm, name })}
-        org={org} 
-        orgs={orgs} 
+        org={org}
+        orgs={orgs}
         setOrg={doSetOrg}
         render={org => <OrgDisplay org={org} />}
       />

@@ -1,4 +1,3 @@
-import React from 'react'
 import { Box, CheckBox, Text } from 'grommet'
 
 export function NotificationPreferences({ preferences, setPreferences }) {
@@ -14,20 +13,20 @@ export function NotificationPreferences({ preferences, setPreferences }) {
         weight={500}
       >Notify me on:
       </Text>
-      <CheckBox 
-        toggle 
-        label="every message" 
+      <CheckBox
+        toggle
+        label="every message"
         checked={preferences.message}
         onChange={({ target: { checked } }) => setPreferences({ ...preferences, message: checked })}
       />
-      <CheckBox 
-        toggle 
-        label="every update" 
+      <CheckBox
+        toggle
+        label="every update"
         checked={preferences.incidentUpdate}
         onChange={({ target: { checked } }) => setPreferences({ ...preferences, incidentUpdate: checked })}
       />
-      <CheckBox 
-        toggle 
+      <CheckBox
+        toggle
         label="every mention"
         checked={preferences.mention}
         onChange={({ target: { checked } }) => setPreferences({ ...preferences, incidentUpdate: checked })}

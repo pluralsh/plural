@@ -1,4 +1,3 @@
-import React from 'react'
 import { ModalHeader } from 'forge-core'
 import { Box, Layer, Text } from 'grommet'
 
@@ -32,9 +31,9 @@ function BundleInstall({ recipe, repository, setOpen }) {
 
 export default function Recipe({ recipe, setOpen, repository }) {
   return (
-    <BundleInstall 
-      recipe={recipe} 
-      repository={repository} 
+    <BundleInstall
+      recipe={recipe}
+      repository={repository}
       setOpen={setOpen}
     />
   )

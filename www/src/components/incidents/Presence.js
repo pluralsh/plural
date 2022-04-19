@@ -1,13 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react'
-
+import { createContext, useEffect, useMemo, useState } from 'react'
 import { Presence } from 'phoenix'
-
 import { Box } from 'grommet'
 
 import { socket } from '../../helpers/client'
 import TimedCache from '../utils/TimedCache'
 
-export const PresenceContext = React.createContext({})
+export const PresenceContext = createContext({})
 
 export function PresenceIndicator({ border, margin }) {
   const width = border ? '12px' : '8px'
@@ -16,7 +14,7 @@ export function PresenceIndicator({ border, margin }) {
     <Box
       flex={false}
       background="presence"
-      border={border ? { color: 'white', size: '2px' } : null} 
+      border={border ? { color: 'white', size: '2px' } : null}
       width={width}
       height={width}
       round="full"
@@ -56,8 +54,10 @@ export function PresenceProvider({ incidentId, children }) {
 // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [incidentId])
 
+  const value = useMemo(() => ({ present, channel, typists }), [present, channel, typists])
+
   return (
-    <PresenceContext.Provider value={{ present, channel, typists }}>
+    <PresenceContext.Provider value={value}>
       {children}
     </PresenceContext.Provider>
   )

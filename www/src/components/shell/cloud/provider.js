@@ -1,13 +1,10 @@
-import React, { useCallback, useRef, useState } from 'react'
-
+import { createElement, useCallback, useRef, useState } from 'react'
 import { Down } from 'grommet-icons'
-
 import { Box, Drop, Text } from 'grommet'
 
 import { Provider } from '../../repos/misc'
 
 import { CLOUDS } from '../constants'
-
 import { Header } from '../CloudShell'
 
 import { AWS_VALIDATIONS, AwsForm, awsSynopsis } from './aws'
@@ -92,7 +89,7 @@ export function ProviderForm({ provider, setProvider, workspace, setWorkspace, c
           />
           <Down size="small" />
         </Box>
-        {React.createElement(form, { workspace, setWorkspace, credentials, setCredentials })}
+        {createElement(form, { workspace, setWorkspace, credentials, setCredentials })}
       </Box>
       {open && (
         <Drop

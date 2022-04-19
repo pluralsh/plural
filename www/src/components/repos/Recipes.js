@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Anchor, Box, Text } from 'grommet'
 
 import { Trash } from 'forge-core'

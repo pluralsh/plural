@@ -1,4 +1,3 @@
-import React from 'react'
 import { Box, Table, TableBody, TableCell, TableHeader, TableRow, Text } from 'grommet'
 
 function NoInformation() {

@@ -1,4 +1,3 @@
-import React from 'react'
 import 'emoji-mart/css/emoji-mart.css'
 import emojiData from 'emoji-mart/data/google.json'
 import { NimblePicker } from 'emoji-mart'

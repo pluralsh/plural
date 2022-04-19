@@ -3,7 +3,7 @@ import moment from 'moment'
 import { Button, ModalHeader, Roles, Trash } from 'forge-core'
 import { useMutation, useQuery } from '@apollo/client'
 import { Box, Layer, Text, TextInput } from 'grommet'
-import { Route, Routes, useMatch, useNavigate, useResolvedPath } from 'react-router-dom'
+import { Route, Routes, useNavigate } from 'react-router-dom'
 
 import { appendConnection, extendConnection, removeConnection, updateCache } from '../../utils/graphql'
 import { SectionContentContainer, SectionPortal } from '../Explore'

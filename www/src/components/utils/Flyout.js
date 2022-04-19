@@ -1,4 +1,3 @@
-
 import { Box, Text } from 'grommet'
 import { Next } from 'grommet-icons'
 import { Portal } from 'react-portal'

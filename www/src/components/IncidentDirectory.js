@@ -1,4 +1,3 @@
-
 import { Box } from 'grommet'
 
 import { Incidents as IncidentsIcon, Responses as ResponsesIcon } from 'forge-core'

@@ -1,10 +1,10 @@
 {
   "ignoreUnresolved": [
-    "./world_countries"
   ],
   "ignoreUnused": [
     "cra-template",
     "react-scripts"
   ],
-  "ignoreUnimported": []
+  "ignoreUnimported": [
+  ]
 }

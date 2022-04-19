@@ -1,4 +1,3 @@
-
 import { Box, Text, TextInput } from 'grommet'
 
 import { trimSuffix } from '../../utils/array'

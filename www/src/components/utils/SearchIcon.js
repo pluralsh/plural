@@ -1,4 +1,3 @@
-
 import { Box, Text } from 'grommet'
 
 export function SearchIcon({ border, color, size, pad }) {

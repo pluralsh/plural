@@ -1,4 +1,3 @@
-
 import { SearchIcon as SI } from '../utils/SearchIcon'
 
 import { GROUPS_Q, GROUP_MEMBERS, ROLES_Q } from './queries'

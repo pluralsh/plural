@@ -14,7 +14,8 @@
     "extends": "pluralsh",
     "rules": {
       "import/prefer-default-export": "off",
-      "react/no-unstable-nested-components": "off"
+      "react/no-unstable-nested-components": "off",
+      "no-multiple-empty-lines": ["error", { "max": 1, "maxBOF": 0, "maxEOF": 1 }]
     }
   },
   "browserslist": {

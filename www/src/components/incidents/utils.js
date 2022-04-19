@@ -1,4 +1,3 @@
-
 import { Box, Text } from 'grommet'
 
 export function Attribute({ name, children, size }) {

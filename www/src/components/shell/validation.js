@@ -1,4 +1,3 @@
-
 import { Box, Text } from 'grommet'
 
 import { deepFetch } from '../../utils/graphql'

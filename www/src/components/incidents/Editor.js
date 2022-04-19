@@ -1,4 +1,3 @@
-
 import { useApolloClient } from '@apollo/client'
 
 import TypeaheadEditor from '../utils/TypeaheadEditor'

@@ -1,4 +1,3 @@
-
 import { ModalHeader } from 'forge-core'
 import { Box, Layer, Text } from 'grommet'
 

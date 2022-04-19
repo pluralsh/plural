@@ -1,4 +1,3 @@
-
 import { Box, Layer, Text } from 'grommet'
 import { Up } from 'grommet-icons'
 

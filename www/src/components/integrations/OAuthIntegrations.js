@@ -1,4 +1,3 @@
-
 import { useQuery } from '@apollo/client'
 import { Box, Text } from 'grommet'
 import { Check as Checkmark } from 'forge-core'

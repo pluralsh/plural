@@ -1,4 +1,3 @@
-
 import { Divider } from 'forge-core'
 
 import { formatDate } from './MessageDivider'

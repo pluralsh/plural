@@ -103,9 +103,9 @@ export const NotificationFragment = gql`
     type
     msg
     actor { ...UserFragment }
-    incident { id title repository { id name icon } }
+    incident { id title repository { id name icon darkIcon } }
     message { text }
-    repository { id name icon }
+    repository { id name icon darkIcon }
     insertedAt
   }
   ${UserFragment}

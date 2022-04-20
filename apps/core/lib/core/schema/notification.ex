@@ -7,6 +7,7 @@ defmodule Core.Schema.Notification do
   schema "notifications" do
     field :type, Type
     field :msg,  :binary
+    field :cli,  :boolean
 
     belongs_to :incident,   Incident
     belongs_to :user,       User
@@ -25,11 +26,15 @@ defmodule Core.Schema.Notification do
     from(n in query, where: n.incident_id == ^incident_id)
   end
 
+  def cli(query \\ __MODULE__) do
+    from(n in query, where: n.cli)
+  end
+
   def ordered(query \\ __MODULE__, order \\ [desc: :inserted_at]) do
     from(n in query, order_by: ^order)
   end
 
-  @valid ~w(type incident_id user_id actor_id repository_id msg)a
+  @valid ~w(type incident_id user_id actor_id repository_id msg cli)a
 
   def changeset(model, attrs \\ %{}) do
     model

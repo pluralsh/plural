@@ -11,6 +11,8 @@ import { Notification as Notif } from '../incidents/Notifications'
 import { extendConnection } from '../../utils/graphql'
 import { RepoIcon } from '../repos/Repositories'
 
+import { NotificationType } from './types'
+
 const countDetails = ({ edges, pageInfo }) => {
   const len = edges.length
   if (len > 50) return { count: len, more: true }
@@ -32,9 +34,21 @@ function Badge({ notifications }) {
   )
 }
 
+function notifUrl({ type, repository, incident }) {
+  if (type === NotificationType.LOCKED) return `/repositories/${repository.id}`
+
+  return `/incidents/${incident.id}`
+}
+
+function notifMessage({ type, repository, incident }) {
+  if (type === NotificationType.LOCKED) return `Installation for ${repository.name} locked`
+
+  return incident.title
+}
+
 function NotificationRow({ notification, next }) {
   const navigate = useNavigate()
-  const { incident } = notification
+  const { incident, repository } = notification
 
   return (
     <Box
@@ -44,7 +58,7 @@ function NotificationRow({ notification, next }) {
       gap="small"
       align="center"
       hoverIndicator="hover"
-      onClick={() => navigate(`/incidents/${incident.id}`)}
+      onClick={() => navigate(notifUrl(notification))}
     >
       <Box fill="horizontal">
         <Notif
@@ -61,10 +75,11 @@ function NotificationRow({ notification, next }) {
         <Text
           size="small"
           weight={500}
-        >{incident.title}
+        >
+          {notifMessage(notification)}
         </Text>
         <RepoIcon
-          repo={incident.repository}
+          repo={repository || incident.repository}
           round="xsmall"
           size="25px"
         />

@@ -8,12 +8,21 @@ defimpl Core.PubSub.Notifiable, for: Any do
 end
 
 defmodule Core.PubSub.Notification.Utils do
+  import EEx, only: [eval_file: 2]
+
   def filter_preferences(followers, pref) do
     Enum.filter(followers, fn
       %{preferences: %{^pref => false}} -> false
       _ -> true
     end)
   end
+
+  def eval(file, ctx) do
+    notif_file(file)
+    |> eval_file(ctx)
+  end
+
+  defp notif_file(file), do: Path.join([:code.priv_dir(:core), "notifications", file])
 end
 
 defimpl Core.PubSub.Notifiable, for: Core.PubSub.IncidentUpdated do
@@ -83,4 +92,25 @@ defimpl Core.PubSub.Notifiable, for: Core.PubSub.IncidentMessageCreated do
     end)
   end
   defp mentions(_, _), do: []
+end
+
+defimpl Core.PubSub.Notifiable, for: Core.PubSub.InstallationLocked do
+  import Core.Services.Base, only: [timestamped: 1]
+  import Core.PubSub.Notification.Utils, only: [eval: 2]
+
+  def notify(%{item: inst}) do
+    %{installation: %{repository_id: repo_id, user_id: user_id, repository: repo}, version: v} = Core.Repo.preload(inst, [
+      :version,
+      installation: :repository,
+    ])
+    [
+      timestamped(%{
+        type: :locked,
+        repository_id: repo_id,
+        actor_id: user_id,
+        user_id: user_id,
+        msg: eval("locked_inst.eex", repo: repo, deps: v.dependencies),
+      })
+    ]
+  end
 end

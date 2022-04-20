@@ -90,7 +90,17 @@ In chrome, you may get a warning saying "Your connection is not private". To res
 To make changes to the server codebase, you'll want to [install elixir](https://elixir-lang.org/install.html) on your machine. For mac desktops, we do this via [asdf](https://asdf-vm.com/guide/getting-started.html), which can be done simply at the root of the repo like so:
 
 ```sh
+asdf plugin add erlang
+asdf plugin add elixir
 asdf install
+```
+
+asdf can be finnicky when instlalling erlang with mac, in which case you can reshim it like so from homebrew:
+
+```sh
+brew install erlang@23
+cp -r /opt/homebrew/opt/erlang@23/lib/erlang ~/.asdf/installs/erlang/23.2
+asdf reshim erlang 23.2
 ```
 
 <!-- >

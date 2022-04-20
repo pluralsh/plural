@@ -109,7 +109,7 @@ export function PluralInner() {
                 style={{ height: `calc(100vh - ${TOOLBAR_SIZE})` }}
                 direction="row"
                 gridArea="viewport"
-                background="backgroundColor"
+                background="background"
               >
                 <Sidebar />
                 <Box fill>

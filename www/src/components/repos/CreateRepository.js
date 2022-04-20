@@ -110,7 +110,7 @@ export function RepoForm({ image, setImage, darkImage, setDarkImage, state, setS
             <ImagePicker
               image={darkImage}
               setImage={setDarkImage}
-              background="backgroundColor"
+              background="background"
               label="Darkmode icon (optional)"
             />
           </Box>

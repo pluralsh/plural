@@ -55,7 +55,7 @@ export function Shell({ room, header, title, children }) {
   return (
     <Box
       fill
-      background="backgroundColor"
+      background="background"
     >
       <Box
         flex={false}

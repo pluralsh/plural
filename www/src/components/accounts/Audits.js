@@ -216,7 +216,7 @@ export function Audits() {
     <Box
       fill
       direction="row"
-      background="backgroundColor"
+      background="background"
     >
       <SubmenuPortal name="audits">
         <SubmenuItem

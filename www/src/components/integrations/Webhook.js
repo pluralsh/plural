@@ -353,7 +353,7 @@ export function Webhook() {
       fill
       pad="small"
       gap="small"
-      background="backgroundColor"
+      background="background"
     >
       {!edit && (
         <WebhookHeader

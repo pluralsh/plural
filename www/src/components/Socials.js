@@ -18,7 +18,7 @@ function SocialLink({ icon, url }) {
         align="center"
         justify="center"
         onClick={() => null}
-        hoverIndicator="backgroundColor"
+        hoverIndicator="background"
         round="xsmall"
       >
         {icon}

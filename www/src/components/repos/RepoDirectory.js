@@ -113,7 +113,7 @@ export function RepoDirectory() {
       <Box
         flex={false}
         width="30%"
-        background="backgroundColor"
+        background="background"
         fill="vertical"
         pad={{ vertical: 'small', horizontal: 'small' }}
       >

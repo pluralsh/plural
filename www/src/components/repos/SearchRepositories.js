@@ -2,9 +2,8 @@ import { useState } from 'react'
 import styled from 'styled-components'
 import { useApolloClient } from '@apollo/client'
 import { useNavigate } from 'react-router-dom'
-import { Box, TextInput, ThemeContext } from 'grommet'
-
-import { SearchIcon } from '../utils/SearchIcon'
+import { Box, ThemeContext } from 'grommet'
+import { MagnifyingGlassIcon, TextInput } from 'pluralsh-design-system'
 
 import { PLURAL_THEME } from '../../theme'
 
@@ -20,12 +19,6 @@ export function searchRepositories(client, query, callback) {
   }).then(({ data: { searchRepositories } }) => searchRepositories.edges.map(({ node }) => ({ value: node, label: <Repository repo={node} /> }))).then(callback)
 }
 
-const hoverable = styled.div`
-  &:focus-within {
-    background-color: ${PLURAL_THEME['tone-dark-2']};
-  }
-`
-
 export default function SearchRepositories() {
   const client = useApolloClient()
   const [value, setValue] = useState('')
@@ -34,12 +27,11 @@ export default function SearchRepositories() {
 
   return (
     <Box
-      as={hoverable}
       width="350px"
       direction="row"
       align="center"
-      background="sidebarHover"
-      round="xsmall"
+      border={{ side: 'all' }}
+      style={{ borderRadius: 2 }}
       pad={{ horizontal: 'xsmall', vertical: '2px' }}
       focusIndicator={false}
     >
@@ -49,6 +41,7 @@ export default function SearchRepositories() {
           type="search"
           value={value}
           name="search"
+          icon={<MagnifyingGlassIcon color="text-weak" />}
           suggestions={suggestions}
           placeholder="search for a repo"
           onSelect={({ suggestion }) => {
@@ -62,12 +55,6 @@ export default function SearchRepositories() {
           }}
         />
       </ThemeContext.Extend>
-      <SearchIcon
-        border="dark-3"
-        color="white"
-        size={15}
-        pad={8}
-      />
     </Box>
   )
 }

@@ -130,8 +130,6 @@ export function Notifications() {
         <Box
           flex={false}
           pad="xsmall"
-          hoverIndicator="sidebarHover"
-          background="backgroundColor"
           round
           onClick={() => setOpen(!open)}
         >

@@ -98,7 +98,7 @@ export function PluralInner() {
               ]}
             >
               <Box
-                background="sidebar"
+                background="background-front"
                 gridArea="toolbarTop"
                 align="center"
                 justify="center"

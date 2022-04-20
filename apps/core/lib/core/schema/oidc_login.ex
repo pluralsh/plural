@@ -7,6 +7,7 @@ defmodule Core.Schema.OIDCLogin do
     belongs_to :user,     User
     belongs_to :provider, OIDCProvider
     has_one    :repository, through: [:provider, :installation, :repository]
+    has_one    :owner,      through: [:provider, :installation, :user]
 
     timestamps()
   end

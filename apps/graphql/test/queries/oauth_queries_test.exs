@@ -52,6 +52,7 @@ defmodule GraphQl.OAuthQueriesTest do
               node {
                 id
                 repository { id }
+                owner { id }
               }
             }
           }
@@ -63,6 +64,8 @@ defmodule GraphQl.OAuthQueriesTest do
 
       assert from_connection(found)
              |> Enum.all?(& &1["repository"]["id"])
+      assert from_connection(found)
+             |> Enum.all?(& &1["owner"]["id"])
     end
   end
 end

@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react'
 import moment from 'moment'
 import { Box, Text } from 'grommet'
 import { useParams } from 'react-router'
-import { GraphView, ListView } from 'forge-core'
+import { GraphView, ListView, Oauth } from 'forge-core'
 import { useQuery } from 'react-apollo'
 
 import { Link } from 'react-router-dom'
@@ -21,7 +21,8 @@ import { SectionContentContainer } from '../Explore'
 import { SubmenuItem, SubmenuPortal } from '../navigation/Submenu'
 import { ReturnToBeginning } from '../utils/ReturnToBeginning'
 
-import { AUDITS_Q, AUDIT_METRICS } from './queries'
+import { AUDITS_Q, AUDIT_METRICS, LOGINS_Q } from './queries'
+import { RepoIcon } from '../repos/Repositories'
 
 function HeaderItem({ text, width, nobold }) {
   return (
@@ -68,6 +69,73 @@ function AuditHeader() {
         text="Location"
         width="10%"
       />
+    </Box>
+  )
+}
+
+function LoginHeader() {
+  return (
+    <Box
+      flex={false}
+      direction="row"
+      pad="small"
+      gap="xsmall"
+      border={{ side: 'bottom' }}
+      align="center"
+    >
+      <HeaderItem
+        text="User"
+        width="30%"
+      />
+      <HeaderItem
+        text="Event Time"
+        width="20%"
+      />
+      <HeaderItem
+        text="Repository"
+        width="50%"
+      />
+    </Box>
+  )
+}
+
+function LoginRow({login}) {
+  return (
+    <Box
+      flex={false}
+      direction="row"
+      pad="small"
+      gap="xsmall"
+      border={{ side: 'bottom' }} 
+      align="center"
+      onClick={() => null}
+      hoverIndicator="hover"
+      focusIndicator={false}
+    >
+      <Box
+        flex={false}
+        width="30%"
+        direction="row"
+        gap="xsmall"
+        align="center"
+      >
+        {login.user && (
+          <Avatar
+            user={login.user}
+            size="30px"
+          />
+        )}
+        {login.user && <Text size="small">{login.user.name}</Text>}
+      </Box>
+      <HeaderItem
+        text={moment(login.insertedAt).format('lll')}
+        nobold
+        width="20%"
+      />
+      <Box flex={false} width='50%' direction='row' gap='xsmall' align='center'>
+        <RepoIcon repo={login.repository} />
+        <Text size='small'>{login.repository.name}</Text>
+      </Box>
     </Box>
   )
 }
@@ -187,6 +255,54 @@ function AuditChloro() {
   )
 }
 
+function LoginAudits() {
+  const [listRef, setListRef] = useState(null)
+  const [scrolled, setScrolled] = useState(false)
+  const { data, loading, fetchMore } = useQuery(LOGINS_Q, { fetchPolicy: 'cache-and-network' })
+  const returnToBeginning = useCallback(() => {
+    listRef.scrollToItem(0)
+  }, [listRef])
+
+  if (!data) {
+    return (
+      <LoopingLogo
+        dark
+        darkbg
+      />
+    )
+  }
+
+  const { edges, pageInfo } = data.oidcLogins
+
+  return (
+    <Box fill>
+      <LoginHeader />
+      <Box fill>
+        {scrolled && <ReturnToBeginning beginning={returnToBeginning} />}
+        <StandardScroller
+          listRef={listRef}
+          setListRef={setListRef}
+          hasNextPage={pageInfo.hasNextPage}
+          items={edges}
+          loading={loading} 
+          handleScroll={setScrolled}
+          placeholder={Placeholder}
+          mapper={({ node }) => (
+            <LoginRow
+              key={node.id}
+              login={node}
+            />
+          )} 
+          loadNextPage={() => pageInfo.hasNextPage && fetchMore({
+            variables: { cursor: pageInfo.endCursor },
+            updateQuery: (prev, { fetchMoreResult: { oidcLogins } }) => extendConnection(prev, oidcLogins, 'oidcLogins'),
+          })}
+        />
+      </Box>
+    </Box>
+  )  
+}
+
 export function Audits() {
   const { graph } = useParams()
   const [listRef, setListRef] = useState(null)
@@ -231,8 +347,15 @@ export function Audits() {
           selected={graph === 'graph'}
           url="/audits/graph"
         />
+        <SubmenuItem
+          icon={<Oauth size="14px" />}
+          label="Logins View"
+          selected={graph === 'logins'}
+          url="/audits/logins"
+        />
       </SubmenuPortal>
       {graph === 'graph' && <AuditChloro />}
+      {graph === 'logins' && <LoginAudits />}
       {graph === 'table' && (
         <Box fill>
           <AuditHeader />

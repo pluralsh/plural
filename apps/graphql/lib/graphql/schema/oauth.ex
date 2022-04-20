@@ -26,7 +26,9 @@ defmodule GraphQl.Schema.OAuth do
 
   object :oidc_login do
     field :id, non_null(:id)
-    field :user, :user, resolve: dataloader(User)
+
+    field :user,       :user, resolve: dataloader(User)
+    field :owner,      :user, resolve: dataloader(User)
     field :repository, :repository, resolve: dataloader(Repository)
 
     timestamps()

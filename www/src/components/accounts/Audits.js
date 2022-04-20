@@ -85,19 +85,27 @@ function LoginHeader() {
     >
       <HeaderItem
         text="User"
-        width="25%"
+        width="20%"
       />
       <HeaderItem
         text="Event Time"
-        width="25%"
+        width="20%"
       />
       <HeaderItem
         text="Owner"
-        width="25%"
+        width="20%"
       />
       <HeaderItem
         text="Repository"
-        width="25%"
+        width="20%"
+      />
+      <HeaderItem
+        text="IP"
+        width="10%"
+      />
+      <HeaderItem
+        text="Location"
+        width="10%"
       />
     </Box>
   )
@@ -134,17 +142,27 @@ function LoginRow({login}) {
       hoverIndicator="hover"
       focusIndicator={false}
     >
-      <AuditUser user={login.user} />
+      <AuditUser user={login.user} width='20%' />
       <HeaderItem
         text={moment(login.insertedAt).format('lll')}
         nobold
-        width="25%"
+        width="20%"
       />
-      <AuditUser user={login.owner} />
-      <Box flex={false} width='25%' direction='row' gap='xsmall' align='center'>
+      <AuditUser user={login.owner} width='20%' />
+      <Box flex={false} width='20%' direction='row' gap='xsmall' align='center'>
         <RepoIcon repo={login.repository} />
         <Text size='small'>{login.repository.name}</Text>
       </Box>
+      <HeaderItem
+        text={login.ip}
+        nobold
+        width="10%"
+      />
+      <HeaderItem
+        text={formatLocation(login.country, login.city)}
+        nobold
+        width="10%"
+      />
     </Box>
   )
 }

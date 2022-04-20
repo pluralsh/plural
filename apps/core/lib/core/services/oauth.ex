@@ -70,8 +70,8 @@ defmodule Core.Services.OAuth do
       do: !MapSet.disjoint?(user_groups, group_ids)
   end
 
-  defp persist_login(%User{id: user_id}, %OIDCProvider{id: prov_id}) do
-    %OIDCLogin{user_id: user_id, provider_id: prov_id}
+  defp persist_login(%User{id: user_id, account_id: aid}, %OIDCProvider{id: prov_id}) do
+    %OIDCLogin{user_id: user_id, provider_id: prov_id, account_id: aid}
     |> OIDCLogin.changeset()
     |> Core.Repo.insert()
   end

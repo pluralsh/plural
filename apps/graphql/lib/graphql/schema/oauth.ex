@@ -1,6 +1,6 @@
 defmodule GraphQl.Schema.OAuth do
   use GraphQl.Schema.Base
-  alias GraphQl.Resolvers.OAuth
+  alias GraphQl.Resolvers.{OAuth, User, Repository}
 
   enum :oauth_provider do
     value :github
@@ -24,6 +24,16 @@ defmodule GraphQl.Schema.OAuth do
     field :userinfo_endpoint,      :string
   end
 
+  object :oidc_login do
+    field :id, non_null(:id)
+    field :user, :user, resolve: dataloader(User)
+    field :repository, :repository, resolve: dataloader(Repository)
+
+    timestamps()
+  end
+
+  connection node_type: :oidc_login
+
   object :oauth_queries do
     field :oauth_login, :repository do
       arg :challenge, non_null(:string)
@@ -41,6 +51,12 @@ defmodule GraphQl.Schema.OAuth do
       arg :host, :string
 
       resolve &OAuth.list_urls/2
+    end
+
+    connection field :oidc_logins, node_type: :oidc_login do
+      middleware Authenticated
+
+      safe_resolve &OAuth.list_logins/2
     end
   end
 

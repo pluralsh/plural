@@ -238,12 +238,14 @@ defmodule GraphQl.Schema.Incidents do
   end
 
   object :notification do
-    field :id,       non_null(:id)
-    field :type,     non_null(:notification_type)
-    field :user,     non_null(:user), resolve: dataloader(User)
-    field :actor,    non_null(:user), resolve: dataloader(User)
-    field :incident, :incident, resolve: dataloader(Incidents)
-    field :message,  :incident_message, resolve: dataloader(Incidents)
+    field :id,         non_null(:id)
+    field :type,       non_null(:notification_type)
+    field :msg,        :string
+    field :user,       non_null(:user), resolve: dataloader(User)
+    field :actor,      non_null(:user), resolve: dataloader(User)
+    field :incident,   :incident, resolve: dataloader(Incidents)
+    field :message,    :incident_message, resolve: dataloader(Incidents)
+    field :repository, :repository, resolve: dataloader(Repository)
 
     timestamps()
   end

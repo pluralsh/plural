@@ -2,7 +2,7 @@ defmodule Core.Services.OAuth do
   use Core.Services.Base
   alias Core.Schema.{User, OIDCProvider, OIDCLogin}
   alias Core.Clients.Hydra
-  alias Core.Services.Repositories
+  alias Core.Services.{Repositories, Audits}
 
   @type error :: {:error, term}
   @type oauth_resp :: {:ok, %Hydra.Response{}} | error
@@ -71,8 +71,10 @@ defmodule Core.Services.OAuth do
   end
 
   defp persist_login(%User{id: user_id, account_id: aid}, %OIDCProvider{id: prov_id}) do
+    ctx = Audits.context_attributes()
+
     %OIDCLogin{user_id: user_id, provider_id: prov_id, account_id: aid}
-    |> OIDCLogin.changeset()
+    |> OIDCLogin.changeset(ctx)
     |> Core.Repo.insert()
   end
 end

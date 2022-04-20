@@ -85,16 +85,38 @@ function LoginHeader() {
     >
       <HeaderItem
         text="User"
-        width="30%"
+        width="25%"
       />
       <HeaderItem
         text="Event Time"
-        width="20%"
+        width="25%"
+      />
+      <HeaderItem
+        text="Owner"
+        width="25%"
       />
       <HeaderItem
         text="Repository"
-        width="50%"
+        width="25%"
       />
+    </Box>
+  )
+}
+
+function AuditUser({user, width='25%'}) {
+  return (
+    <Box
+      flex={false}
+      width={width}
+      direction="row"
+      gap="xsmall"
+      align="center"
+    >
+      <Avatar
+        user={user}
+        size="30px"
+      />
+      <Text size="small">{user.name}</Text>
     </Box>
   )
 }
@@ -104,7 +126,7 @@ function LoginRow({login}) {
     <Box
       flex={false}
       direction="row"
-      pad="small"
+      pad={{horizontal: "small"}}
       gap="xsmall"
       border={{ side: 'bottom' }} 
       align="center"
@@ -112,27 +134,14 @@ function LoginRow({login}) {
       hoverIndicator="hover"
       focusIndicator={false}
     >
-      <Box
-        flex={false}
-        width="30%"
-        direction="row"
-        gap="xsmall"
-        align="center"
-      >
-        {login.user && (
-          <Avatar
-            user={login.user}
-            size="30px"
-          />
-        )}
-        {login.user && <Text size="small">{login.user.name}</Text>}
-      </Box>
+      <AuditUser user={login.user} />
       <HeaderItem
         text={moment(login.insertedAt).format('lll')}
         nobold
-        width="20%"
+        width="25%"
       />
-      <Box flex={false} width='50%' direction='row' gap='xsmall' align='center'>
+      <AuditUser user={login.owner} />
+      <Box flex={false} width='25%' direction='row' gap='xsmall' align='center'>
         <RepoIcon repo={login.repository} />
         <Text size='small'>{login.repository.name}</Text>
       </Box>
@@ -200,21 +209,8 @@ function Audit({ audit }) {
         nobold
         width="25%"
       />
-      <Box
-        flex={false}
-        width="25%"
-        direction="row"
-        gap="xsmall"
-        align="center"
-      >
-        {audit.actor && (
-          <Avatar
-            user={audit.actor}
-            size="30px"
-          />
-        )}
-        {audit.actor && <Text size="small">{audit.actor.name}</Text>}
-      </Box>
+      {audit.actor && <AuditUser user={audit.actor} />}
+      {!audit.actor && <Box flex={false} width='25%' />}
       <Box width="15%">
         <Resource audit={audit} />
       </Box>

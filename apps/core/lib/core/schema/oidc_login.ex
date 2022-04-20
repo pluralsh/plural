@@ -3,6 +3,12 @@ defmodule Core.Schema.OIDCLogin do
   alias Core.Schema.{User, OIDCProvider, Account}
 
   schema "oidc_logins" do
+    field :ip,        :string
+    field :country,   :string
+    field :city,      :string
+    field :latitude,  :string
+    field :longitude, :string
+
     belongs_to :account,  Account
     belongs_to :user,     User
     belongs_to :provider, OIDCProvider
@@ -20,7 +26,7 @@ defmodule Core.Schema.OIDCLogin do
     from(n in query, order_by: ^order)
   end
 
-  @valid ~w(user_id provider_id account_id)a
+  @valid ~w(user_id provider_id account_id ip country city latitude longitude)a
 
   def changeset(model, attrs \\ %{}) do
     model

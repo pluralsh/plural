@@ -7,4 +7,11 @@ defmodule Core.Services.Audits do
     do: Process.put(@context_key, ctx)
 
   def context(), do: Process.get(@context_key)
+
+  def context_attributes() do
+    case context() do
+      %AuditContext{} = ctx -> Map.from_struct(ctx)
+      _ -> %{}
+    end
+  end
 end

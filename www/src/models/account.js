@@ -79,6 +79,7 @@ export const InviteFragment = gql`
 export const OidcLoginFragment = gql`
   fragment OidcLoginFragment on OidcLogin {
     user { ...UserFragment }
+    owner { ...UserFragment }
     repository { ...RepoFragment }
     insertedAt
   }

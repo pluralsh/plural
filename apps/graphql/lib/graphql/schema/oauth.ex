@@ -25,7 +25,12 @@ defmodule GraphQl.Schema.OAuth do
   end
 
   object :oidc_login do
-    field :id, non_null(:id)
+    field :id,        non_null(:id)
+    field :ip,        :string
+    field :country,   :string
+    field :city,      :string
+    field :latitude,  :string
+    field :longitude, :string
 
     field :user,       :user, resolve: dataloader(User)
     field :owner,      :user, resolve: dataloader(User)

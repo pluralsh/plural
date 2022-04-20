@@ -9,6 +9,7 @@ import moment from 'moment'
 import { appendConnection, extendConnection, updateCache, updateFragment } from '../../utils/graphql'
 import { IncidentFragment } from '../../models/incidents'
 import { truncate } from 'lodash'
+import Markdown from './Markdown'
 
 function notificationModifier(type) {
   switch (type) {
@@ -18,6 +19,8 @@ function notificationModifier(type) {
       return 'updated the incident'
     case NotificationTypes.MENTION:
       return 'mentioned you'
+    case NotificationTypes.LOCKED:
+      return 'locked your installation'
     default:
       return null
   }
@@ -28,6 +31,14 @@ function NotificationContent({type, notification}) {
   if (type === NotificationTypes.MESSAGE) {
     return (
       <Text size='small' color='dark-3'>"{truncate(notification.message.text, {length: 20})}"</Text>
+    )
+  }
+
+  if (notification.msg) {
+    return (
+      <Box style={{maxHeight: '150px', overflow: 'auto'}}>
+        <Markdown text={notification.msg} />
+      </Box>
     )
   }
 

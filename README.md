@@ -18,7 +18,7 @@ The plural platform ingests all deployment artifacts needed to deploy cloud-nati
 
 ## A Video Demo
 
-https://assets.plural.sh/PA_Plural_Sessions-2021-08-24_Reshoot_Edit_Rebuild_10.mp4
+https://assets.plural.sh/PA_Plural_Sessions-2021-08-24_Reshoot_Edit_Rebuild_10-1080p.mp4
 
 ## Getting Started
 

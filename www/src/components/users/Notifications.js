@@ -40,8 +40,8 @@ function notifUrl({ type, repository, incident }) {
   return `/incidents/${incident.id}`
 }
 
-function notifMessage({ type, repository, incident }) {
-  if (type === NotificationType.LOCKED) return `Installation for ${repository.name} locked`
+function notifMessage({ type, incident }) {
+  if (type === NotificationType.LOCKED) return null
 
   return incident.title
 }

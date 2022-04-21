@@ -1,8 +1,24 @@
 defmodule GraphQl.Resolvers.OAuth do
   use GraphQl.Resolvers.Base, model: Core.Schema.OIDCProvider
+  alias Core.Schema.OIDCLogin
   alias Core.Services.{OAuth, Users}
   alias Core.OAuth, as: OAuthHandler
   alias GraphQl.Resolvers.User
+
+  def list_logins(args, %{context: %{current_user: %{account_id: aid}}}) do
+    OIDCLogin.for_account(aid)
+    |> OIDCLogin.ordered()
+    |> paginate(args)
+  end
+
+  def login_metrics(_, %{context: %{current_user: user}}) do
+    cutoff = Timex.now() |> Timex.shift(months: -1)
+    OIDCLogin.for_account(user.account_id)
+    |> OIDCLogin.created_after(cutoff)
+    |> OIDCLogin.aggregate()
+    |> Core.Repo.all()
+    |> ok()
+  end
 
   def resolve_login(%{challenge: challenge}, _) do
     with {:ok, %{installation: inst}} <- OAuth.get_login(challenge),

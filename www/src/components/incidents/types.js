@@ -42,6 +42,7 @@ export const NotificationTypes = {
   MESSAGE: 'MESSAGE',
   INCIDENT_UPDATE: 'INCIDENT_UPDATE',
   MENTION: 'MENTION',
+  LOCKED: 'LOCKED',
 }
 
 export const Order = {

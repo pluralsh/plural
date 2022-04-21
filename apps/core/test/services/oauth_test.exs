@@ -86,6 +86,7 @@ defmodule Core.Services.OAuthTest do
       [login] = Core.Repo.all(OIDCLogin)
       assert login.user_id == user.id
       assert login.provider_id == provider.id
+      assert login.account_id == user.account_id
     end
   end
 end

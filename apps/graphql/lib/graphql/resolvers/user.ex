@@ -149,6 +149,7 @@ defmodule GraphQl.Resolvers.User do
     |> paginate(args)
   end
 
+  def filter_notifs(query, %{cli: true}), do: Notification.cli(query)
   def filter_notifs(query, %{incident_id: id}) when is_binary(id),
     do: Notification.for_incident(query, id)
   def filter_notifs(query, _), do: query

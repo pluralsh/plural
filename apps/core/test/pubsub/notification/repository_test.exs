@@ -10,6 +10,7 @@ defmodule Core.PubSub.Notification.RepositoryTest do
       event = %PubSub.InstallationLocked{item: ci}
       [notif] = Notification.handle_event(event)
 
+      assert notif.cli
       assert notif.type == :locked
       assert notif.user_id == ci.installation.user_id
       assert notif.repository_id == ci.installation.repository_id

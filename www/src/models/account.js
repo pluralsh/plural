@@ -75,3 +75,19 @@ export const InviteFragment = gql`
     insertedAt
   }
 `
+
+export const OidcLoginFragment = gql`
+  fragment OidcLoginFragment on OidcLogin {
+    ip
+    country
+    city
+    latitude
+    longitude
+    user { ...UserFragment }
+    owner { ...UserFragment }
+    repository { ...RepoFragment }
+    insertedAt
+  }
+  ${UserFragment}
+  ${RepoFragment}
+`

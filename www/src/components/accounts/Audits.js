@@ -2,9 +2,9 @@ import { useCallback, useContext, useEffect, useState } from 'react'
 import moment from 'moment'
 import { Box, Text } from 'grommet'
 import { Link, useParams } from 'react-router-dom'
-import { GraphView, ListView } from 'forge-core'
 import { useQuery } from '@apollo/client'
-
+import { GraphView, ListView, Oauth } from 'forge-core'
+import Toggle from 'react-toggle'
 import lookup from 'country-code-lookup'
 
 import { extendConnection } from '../../utils/graphql'
@@ -14,12 +14,14 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 import { formatLocation } from '../../utils/geo'
 import { Chloropleth } from '../utils/Chloropleth'
 
+import { RepoIcon } from '../repos/Repositories'
+
 import Avatar from '../users/Avatar'
-import { SectionContentContainer } from '../Explore'
+import { SectionContentContainer, SectionPortal } from '../Explore'
 import { SubmenuItem, SubmenuPortal } from '../navigation/Submenu'
 import { ReturnToBeginning } from '../utils/ReturnToBeginning'
 
-import { AUDITS_Q, AUDIT_METRICS } from './queries'
+import { AUDITS_Q, AUDIT_METRICS, LOGINS_Q, LOGIN_METRICS } from './queries'
 
 function HeaderItem({ text, width, nobold }) {
   return (
@@ -66,6 +68,112 @@ function AuditHeader() {
       />
       <HeaderItem
         text="Location"
+        width="10%"
+      />
+    </Box>
+  )
+}
+
+function LoginHeader() {
+  return (
+    <Box
+      flex={false}
+      direction="row"
+      pad="small"
+      gap="xsmall"
+      border={{ side: 'bottom' }}
+      align="center"
+    >
+      <HeaderItem
+        text="User"
+        width="20%"
+      />
+      <HeaderItem
+        text="Event Time"
+        width="20%"
+      />
+      <HeaderItem
+        text="Owner"
+        width="20%"
+      />
+      <HeaderItem
+        text="Repository"
+        width="20%"
+      />
+      <HeaderItem
+        text="IP"
+        width="10%"
+      />
+      <HeaderItem
+        text="Location"
+        width="10%"
+      />
+    </Box>
+  )
+}
+
+function AuditUser({ user, width = '25%' }) {
+  return (
+    <Box
+      flex={false}
+      width={width}
+      direction="row"
+      gap="xsmall"
+      align="center"
+    >
+      <Avatar
+        user={user}
+        size="30px"
+      />
+      <Text size="small">{user.name}</Text>
+    </Box>
+  )
+}
+
+function LoginRow({ login }) {
+  return (
+    <Box
+      flex={false}
+      direction="row"
+      pad={{ horizontal: 'small' }}
+      gap="xsmall"
+      border={{ side: 'bottom' }}
+      align="center"
+      onClick={() => null}
+      hoverIndicator="hover"
+      focusIndicator={false}
+    >
+      <AuditUser
+        user={login.user}
+        width="20%"
+      />
+      <HeaderItem
+        text={moment(login.insertedAt).format('lll')}
+        nobold
+        width="20%"
+      />
+      <AuditUser
+        user={login.owner}
+        width="20%"
+      />
+      <Box
+        flex={false}
+        width="20%"
+        direction="row"
+        gap="xsmall"
+        align="center"
+      >
+        <RepoIcon repo={login.repository} />
+        <Text size="small">{login.repository.name}</Text>
+      </Box>
+      <HeaderItem
+        text={login.ip}
+        nobold
+        width="10%"
+      />
+      <HeaderItem
+        text={formatLocation(login.country, login.city)}
+        nobold
         width="10%"
       />
     </Box>
@@ -132,21 +240,13 @@ function Audit({ audit }) {
         nobold
         width="25%"
       />
-      <Box
-        flex={false}
-        width="25%"
-        direction="row"
-        gap="xsmall"
-        align="center"
-      >
-        {audit.actor && (
-          <Avatar
-            user={audit.actor}
-            size="30px"
-          />
-        )}
-        {audit.actor && <Text size="small">{audit.actor.name}</Text>}
-      </Box>
+      {audit.actor && <AuditUser user={audit.actor} />}
+      {!audit.actor && (
+        <Box
+          flex={false}
+          width="25%"
+        />
+      )}
       <Box width="15%">
         <Resource audit={audit} />
       </Box>
@@ -170,11 +270,13 @@ function Audit({ audit }) {
 }
 
 function AuditChloro() {
-  const { data } = useQuery(AUDIT_METRICS, { fetchPolicy: 'cache-and-network' })
+  const [login, setLogin] = useState(false)
+  const { data } = useQuery(login ? LOGIN_METRICS : AUDIT_METRICS, { fetchPolicy: 'cache-and-network' })
 
   if (!data) return null
 
-  const metrics = data.auditMetrics.map(({ country, count }) => ({
+  const results = data.auditMetrics || data.loginMetrics
+  const metrics = results.map(({ country, count }) => ({
     id: lookup.byIso(country).iso3, value: count,
   }))
 
@@ -183,7 +285,68 @@ function AuditChloro() {
       <Box fill>
         <Chloropleth data={metrics} />
       </Box>
+      <SectionPortal>
+        <Box
+          direction="row"
+          align="center"
+          gap="small"
+        >
+          <Toggle
+            checked={login}
+            onChange={({ target: { checked } }) => setLogin(checked)}
+          />
+          <Text size="small">{login ? 'Logins' : 'Audits'}</Text>
+        </Box>
+      </SectionPortal>
     </SectionContentContainer>
+  )
+}
+
+function LoginAudits() {
+  const [listRef, setListRef] = useState(null)
+  const [scrolled, setScrolled] = useState(false)
+  const { data, loading, fetchMore } = useQuery(LOGINS_Q, { fetchPolicy: 'cache-and-network' })
+  const returnToBeginning = useCallback(() => {
+    listRef.scrollToItem(0)
+  }, [listRef])
+
+  if (!data) {
+    return (
+      <LoopingLogo
+        dark
+        darkbg
+      />
+    )
+  }
+
+  const { edges, pageInfo } = data.oidcLogins
+
+  return (
+    <Box fill>
+      <LoginHeader />
+      <Box fill>
+        {scrolled && <ReturnToBeginning beginning={returnToBeginning} />}
+        <StandardScroller
+          listRef={listRef}
+          setListRef={setListRef}
+          hasNextPage={pageInfo.hasNextPage}
+          items={edges}
+          loading={loading}
+          handleScroll={setScrolled}
+          placeholder={Placeholder}
+          mapper={({ node }) => (
+            <LoginRow
+              key={node.id}
+              login={node}
+            />
+          )}
+          loadNextPage={() => pageInfo.hasNextPage && fetchMore({
+            variables: { cursor: pageInfo.endCursor },
+            updateQuery: (prev, { fetchMoreResult: { oidcLogins } }) => extendConnection(prev, oidcLogins, 'oidcLogins'),
+          })}
+        />
+      </Box>
+    </Box>
   )
 }
 
@@ -221,18 +384,25 @@ export function Audits() {
       <SubmenuPortal name="audits">
         <SubmenuItem
           icon={<ListView size="14px" />}
-          label="List View"
+          label="Audits"
           selected={graph === 'table'}
           url="/audits/table"
         />
         <SubmenuItem
+          icon={<Oauth size="14px" />}
+          label="Logins"
+          selected={graph === 'logins'}
+          url="/audits/logins"
+        />
+        <SubmenuItem
           icon={<GraphView size="14px" />}
-          label="Graph View"
+          label="Geodistribution"
           selected={graph === 'graph'}
           url="/audits/graph"
         />
       </SubmenuPortal>
       {graph === 'graph' && <AuditChloro />}
+      {graph === 'logins' && <LoginAudits />}
       {graph === 'table' && (
         <Box fill>
           <AuditHeader />

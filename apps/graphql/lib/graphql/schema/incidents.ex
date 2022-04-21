@@ -299,6 +299,7 @@ defmodule GraphQl.Schema.Incidents do
     connection field :notifications, node_type: :notification do
       middleware Authenticated, :external
       arg :incident_id, :id
+      arg :cli, :boolean
 
       resolve &User.list_notifications/2
     end

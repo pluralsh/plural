@@ -2,7 +2,7 @@ defmodule Core.Services.OAuth do
   use Core.Services.Base
   alias Core.Schema.{User, OIDCProvider, OIDCLogin}
   alias Core.Clients.Hydra
-  alias Core.Services.Repositories
+  alias Core.Services.{Repositories, Audits}
 
   @type error :: {:error, term}
   @type oauth_resp :: {:ok, %Hydra.Response{}} | error
@@ -70,9 +70,11 @@ defmodule Core.Services.OAuth do
       do: !MapSet.disjoint?(user_groups, group_ids)
   end
 
-  defp persist_login(%User{id: user_id}, %OIDCProvider{id: prov_id}) do
-    %OIDCLogin{user_id: user_id, provider_id: prov_id}
-    |> OIDCLogin.changeset()
+  defp persist_login(%User{id: user_id, account_id: aid}, %OIDCProvider{id: prov_id}) do
+    ctx = Audits.context_attributes()
+
+    %OIDCLogin{user_id: user_id, provider_id: prov_id, account_id: aid}
+    |> OIDCLogin.changeset(ctx)
     |> Core.Repo.insert()
   end
 end

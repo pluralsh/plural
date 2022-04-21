@@ -109,6 +109,7 @@ defimpl Core.PubSub.Notifiable, for: Core.PubSub.InstallationLocked do
         repository_id: repo_id,
         actor_id: user_id,
         user_id: user_id,
+        cli: true,
         msg: eval("locked_inst.eex", repo: repo, deps: v.dependencies),
       })
     ]

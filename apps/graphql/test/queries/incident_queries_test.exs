@@ -366,5 +366,20 @@ defmodule GraphQl.IncidentQueriesTest do
       assert from_connection(found)
              |> ids_equal(notifs)
     end
+
+    test "it can filter notifications by cli flag" do
+      user   = insert(:user)
+      notifs = insert_list(3, :notification, cli: true, user: user)
+      insert(:notification, user: user)
+
+      {:ok, %{data: %{"notifications" => found}}} = run_query("""
+        query {
+          notifications(cli: true, first: 5) { edges { node { id } } }
+        }
+      """, %{}, %{current_user: user})
+
+      assert from_connection(found)
+             |> ids_equal(notifs)
+    end
   end
 end

@@ -146,6 +146,9 @@ export const DEFAULT_THEME = {
     control: { border: { radius: '2px' } },
     drop: {
       border: { radius: '4px' },
+      extend: css`
+        box-shadow: 0px 0px 4px 4px rgba(0, 0, 0, 0.2);
+      `,
     },
     box: { extend: boxStyle },
     checkBox: { toggle: { color: 'brand' } },

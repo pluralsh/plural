@@ -169,7 +169,7 @@ function CreateShell({ accessToken, onCreate }) {
   return (
     <Box
       style={{ overflow: 'auto', height: '100%', width: '100%' }}
-      background="backgroundColor"
+      background="background"
       align="center"
       justify="center"
       pad="small"
@@ -259,7 +259,7 @@ export function OAuthCallback() {
 
   return (
     <Box
-      background="backgroundColor"
+      background="background"
       fill
       align="center"
       justify="center"
@@ -296,7 +296,7 @@ export function CloudShell() {
 
   return (
     <Box
-      background="backgroundColor"
+      background="background"
       fill
       align="center"
       justify="center"

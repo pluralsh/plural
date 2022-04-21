@@ -98,7 +98,7 @@ export function UpgradeQueues() {
   return (
     <Box
       fill
-      background="backgroundColor"
+      background="background"
     >
       <Box
         flex={false}

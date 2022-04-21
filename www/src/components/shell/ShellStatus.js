@@ -69,7 +69,7 @@ export function ShellStatus({ shell: { status } }) {
 
   return (
     <Box
-      background="backgroundColor"
+      background="background"
       fill
       align="center"
       justify="center"

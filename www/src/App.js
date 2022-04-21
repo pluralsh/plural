@@ -18,13 +18,42 @@ import { OAuthConsent } from './components/oidc/OAuthConsent'
 import { EmailConfirmed } from './components/users/EmailConfirmation'
 import { OAuthCallback } from './components/users/OAuthCallback'
 
+const xtheme = merge({}, oldTheme, theme, {
+  mode: 'dark',
+  defaultMode: 'dark',
+  // HACK
+  // To remove once the following bug is fixed
+  // Grommet behaves as if it had the light theme mode on even if dark mode is on
+  global: {
+    colors: {
+      background: {
+        light: '#111525',
+        dark: '#111525',
+      },
+      'background-back': {
+        dark: '#111525',
+        light: '#111525',
+      },
+      'background-front': {
+        dark: '#181B29',
+        light: '#181B29',
+      },
+      'background-contrast': {
+        dark: '#222534',
+        light: '#222534',
+      },
+    },
+  },
+})
+
 function App() {
   return (
     <ApolloProvider client={client}>
       <IntercomProvider appId={INTERCOM_APP_ID}>
         <Grommet
           full
-          theme={merge({}, oldTheme, theme)}
+          theme={xtheme}
+          themeMode="dark"
         >
           <BrowserRouter>
             <Routes>

@@ -125,7 +125,7 @@ export function UpgradeQueue() {
       fill
       gap="small"
       pad="small"
-      background="backgroundColor"
+      background="background"
     >
       <Container
         title={queue.name || 'default'}

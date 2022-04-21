@@ -1,8 +1,7 @@
 import { Box } from 'grommet'
-import { Github, Twitter } from 'grommet-icons'
-import { Discord } from 'forge-core'
+import { DiscordIcon, GitHubLogoIcon, TwitterIcon } from 'pluralsh-design-system'
 
-const ICON_SIZE = '17px'
+const ICON_SIZE = '22px'
 const BOX_SIZE = '28px'
 
 function SocialLink({ icon, url }) {
@@ -11,6 +10,7 @@ function SocialLink({ icon, url }) {
       href={url}
       target="_blank"
       rel="noopener noreferrer"
+      style={{ marginLeft: '0.25rem' }}
     >
       <Box
         width={BOX_SIZE}
@@ -18,7 +18,7 @@ function SocialLink({ icon, url }) {
         align="center"
         justify="center"
         onClick={() => null}
-        hoverIndicator="backgroundColor"
+        hoverIndicator="background"
         round="xsmall"
       >
         {icon}
@@ -31,22 +31,17 @@ export function SocialLinks() {
   return (
     <Box
       flex={false}
-      background="sidebarHover"
+      margin={{ left: '16px' }}
       direction="row"
-      gap="xsmall"
-      border
-      round="xsmall"
-      pad={{ horizontal: 'xsmall' }}
-      height="32px"
       align="center"
     >
       <SocialLink
-        icon={<Github size={ICON_SIZE} />}
+        icon={<GitHubLogoIcon size={ICON_SIZE} />}
         url="https://github.com/pluralsh/plural"
       />
       <SocialLink
         icon={(
-          <Discord
+          <DiscordIcon
             size={ICON_SIZE}
             color="white"
           />
@@ -54,7 +49,7 @@ export function SocialLinks() {
         url="https://discord.gg/bEBAMXV64s"
       />
       <SocialLink
-        icon={<Twitter size={ICON_SIZE} />}
+        icon={<TwitterIcon size={ICON_SIZE} />}
         url="https://twitter.com/plural_sh"
       />
     </Box>

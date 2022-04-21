@@ -94,7 +94,7 @@ function FlyoutBody({ edges, pageInfo, fetchMore, setOpen }) {
       width="30vw"
       setOpen={setOpen}
       title="Notifications"
-      background="backgroundColor"
+      background="background"
     >
       <Scroller
         id="all-notifications"
@@ -130,8 +130,6 @@ export function Notifications() {
         <Box
           flex={false}
           pad="xsmall"
-          hoverIndicator="sidebarHover"
-          background="backgroundColor"
           round
           onClick={() => setOpen(!open)}
         >

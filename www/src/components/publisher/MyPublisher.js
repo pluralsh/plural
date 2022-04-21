@@ -189,7 +189,7 @@ export default function MyPublisher() {
         flex={false}
         pad="small"
         gap="xsmall"
-        background="backgroundColor"
+        background="background"
       >
         <EditAvatar publisher={publisher} />
         <EditSelect

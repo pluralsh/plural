@@ -101,7 +101,7 @@ export function Integrations() {
   return (
     <Box
       fill
-      background="backgroundColor"
+      background="background"
     >
       <Box
         border={{ side: 'bottom' }}

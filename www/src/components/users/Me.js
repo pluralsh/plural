@@ -2,6 +2,7 @@ import { createElement, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Box, Drop, Layer, Text } from 'grommet'
 import { CreatePublisher as CreatePublisherIcon, EditField, Logout, MenuItem, ModalHeader, User } from 'forge-core'
+import { Avatar } from 'pluralsh-design-system'
 
 import { useQuery } from '@apollo/client'
 
@@ -9,8 +10,6 @@ import CreatePublisher from '../publisher/CreatePublisher'
 import { ACCOUNT_PUBLISHERS } from '../publisher/queries'
 
 import { wipeToken } from '../../helpers/authentication'
-
-import Avatar from './Avatar'
 
 export function DropdownItem({ onClick, ...rest }) {
   const { icon, text } = rest
@@ -102,8 +101,8 @@ function Publishers({ publisher }) {
           onClick={() => navigate(node.id === id ? '/publishers/mine/repos' : `/publishers/${node.id}/repos`)}
         >
           <Avatar
-            user={node}
-            size="35px"
+            name={node.fullName}
+            imageUrl={node.imageUrl}
           />
           <Box>
             <Text
@@ -137,14 +136,12 @@ export default function Me({ me }) {
         align="center"
         onClick={() => setOpen(true)}
         justify="center"
-        hoverIndicator="sidebarHover"
         pad={{ right: 'medium', left: 'small' }}
         round="xsmall"
         height="40px"
       >
         <Avatar
-          user={account}
-          size="30px"
+          name={me.name}
         />
         <Box flex={false}>
           <Text

@@ -4,6 +4,7 @@ import { Box, Text } from 'grommet'
 import { useParams } from 'react-router'
 import { GraphView, ListView, Oauth } from 'forge-core'
 import { useQuery } from 'react-apollo'
+import Toggle from 'react-toggle'
 
 import { Link } from 'react-router-dom'
 
@@ -17,11 +18,11 @@ import { formatLocation } from '../../utils/geo'
 import { Chloropleth } from '../utils/Chloropleth'
 
 import Avatar from '../users/Avatar'
-import { SectionContentContainer } from '../Explore'
+import { SectionContentContainer, SectionPortal } from '../Explore'
 import { SubmenuItem, SubmenuPortal } from '../navigation/Submenu'
 import { ReturnToBeginning } from '../utils/ReturnToBeginning'
 
-import { AUDITS_Q, AUDIT_METRICS, LOGINS_Q } from './queries'
+import { AUDITS_Q, AUDIT_METRICS, LOGINS_Q, LOGIN_METRICS } from './queries'
 import { RepoIcon } from '../repos/Repositories'
 
 function HeaderItem({ text, width, nobold }) {
@@ -252,11 +253,13 @@ function Audit({ audit }) {
 }
 
 function AuditChloro() {
-  const { data } = useQuery(AUDIT_METRICS, { fetchPolicy: 'cache-and-network' })
+  const [login, setLogin] = useState(false)
+  const { data } = useQuery(login ? LOGIN_METRICS : AUDIT_METRICS, { fetchPolicy: 'cache-and-network' })
 
   if (!data) return null
 
-  const metrics = data.auditMetrics.map(({ country, count }) => ({
+  const results = data.auditMetrics || data.loginMetrics
+  const metrics = results.map(({ country, count }) => ({
     id: lookup.byIso(country).iso3, value: count,
   }))
 
@@ -265,6 +268,15 @@ function AuditChloro() {
       <Box fill>
         <Chloropleth data={metrics} />
       </Box>
+      <SectionPortal>
+        <Box direction='row' align='center' gap='small'>
+          <Toggle
+            checked={login}
+            onChange={({ target: { checked } }) => setLogin(checked)}
+          />
+          <Text size="small">{login ? 'Logins' : 'Audits'}</Text>
+        </Box>
+      </SectionPortal>
     </SectionContentContainer>
   )
 }
@@ -351,21 +363,21 @@ export function Audits() {
       <SubmenuPortal name="audits">
         <SubmenuItem
           icon={<ListView size="14px" />}
-          label="List View"
+          label="Audits"
           selected={graph === 'table'}
           url="/audits/table"
         />
         <SubmenuItem
-          icon={<GraphView size="14px" />}
-          label="Graph View"
-          selected={graph === 'graph'}
-          url="/audits/graph"
-        />
-        <SubmenuItem
           icon={<Oauth size="14px" />}
-          label="Logins View"
+          label="Logins"
           selected={graph === 'logins'}
           url="/audits/logins"
+        />
+        <SubmenuItem
+          icon={<GraphView size="14px" />}
+          label="Geodistribution"
+          selected={graph === 'graph'}
+          url="/audits/graph"
         />
       </SubmenuPortal>
       {graph === 'graph' && <AuditChloro />}

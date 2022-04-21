@@ -232,6 +232,12 @@ export const AUDIT_METRICS = gql`
   }
 `
 
+export const LOGIN_METRICS = gql`
+  query {
+    loginMetrics { country count }
+  }
+`
+
 export const IMPERSONATE_SERVICE_ACCOUNT = gql`
   mutation Impersonate($id: ID) {
     impersonateServiceAccount(id: $id) { jwt }

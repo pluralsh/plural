@@ -68,4 +68,25 @@ defmodule GraphQl.OAuthQueriesTest do
              |> Enum.all?(& &1["owner"]["id"])
     end
   end
+
+  describe "loginMetrics" do
+    test "it will aggregate country level login stats" do
+      user = insert(:user)
+      insert_list(3, :oidc_login, account: user.account, country: "US")
+      insert_list(2, :oidc_login, account: user.account, country: "CN")
+      insert(:oidc_login, country: "UK")
+
+      {:ok, %{data: %{"loginMetrics" => metrics}}} = run_query("""
+        query {
+          loginMetrics { country count }
+        }
+      """, %{}, %{current_user: user})
+
+      grouped = Enum.into(metrics, %{}, & {&1["country"], &1["count"]})
+
+      assert grouped["US"] == 3
+      assert grouped["CN"] == 2
+      refute grouped["UK"]
+    end
+  end
 end

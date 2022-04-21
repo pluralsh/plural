@@ -65,6 +65,12 @@ defmodule GraphQl.Schema.OAuth do
 
       safe_resolve &OAuth.list_logins/2
     end
+
+    field :login_metrics, list_of(:geo_metric) do
+      middleware Authenticated
+
+      resolve &OAuth.login_metrics/2
+    end
   end
 
   object :oauth_mutations do

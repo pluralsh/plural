@@ -11,6 +11,15 @@ defmodule GraphQl.Resolvers.OAuth do
     |> paginate(args)
   end
 
+  def login_metrics(_, %{context: %{current_user: user}}) do
+    cutoff = Timex.now() |> Timex.shift(months: -1)
+    OIDCLogin.for_account(user.account_id)
+    |> OIDCLogin.created_after(cutoff)
+    |> OIDCLogin.aggregate()
+    |> Core.Repo.all()
+    |> ok()
+  end
+
   def resolve_login(%{challenge: challenge}, _) do
     with {:ok, %{installation: inst}} <- OAuth.get_login(challenge),
       do: {:ok, inst.repository}

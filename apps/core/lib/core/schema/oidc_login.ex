@@ -19,11 +19,23 @@ defmodule Core.Schema.OIDCLogin do
   end
 
   def for_account(query \\ __MODULE__, account_id) do
-    from(n in query, where: n.account_id == ^account_id)
+    from(l in query, where: l.account_id == ^account_id)
   end
 
   def ordered(query \\ __MODULE__, order \\ [desc: :inserted_at]) do
-    from(n in query, order_by: ^order)
+    from(l in query, order_by: ^order)
+  end
+
+  def created_after(query \\ __MODULE__, dt) do
+    from(l in query, where: l.inserted_at >= ^dt)
+  end
+
+  def aggregate(query \\ __MODULE__) do
+    from(l in query,
+      where: not is_nil(l.country),
+      group_by: l.country,
+      select: %{country: l.country, count: count(l.id)}
+    )
   end
 
   @valid ~w(user_id provider_id account_id ip country city latitude longitude)a

@@ -15,7 +15,14 @@ export function searchRepositories(client, query, callback) {
   client.query({
     query: SEARCH_REPOS,
     variables: { query },
-  }).then(({ data: { searchRepositories } }) => searchRepositories.edges.map(({ node }) => ({ value: node, label: <Repository repo={node} /> }))).then(callback)
+  }).then(({ data: { searchRepositories } }) => searchRepositories.edges.map(({ node }) => ({
+    value: node,
+    label: (
+      <Box style={{ maxWidth: 350 }}>
+        <Repository repo={node} />
+      </Box>
+    ),
+  }))).then(callback)
 }
 
 export default function SearchRepositories() {
@@ -31,29 +38,32 @@ export default function SearchRepositories() {
       align="center"
       border={{ side: 'all' }}
       style={{ borderRadius: 2 }}
-      pad={{ horizontal: 'xsmall', vertical: '2px' }}
+      pad={{ vertical: '4px' }}
       focusIndicator={false}
     >
-      <ThemeContext.Extend value={{ global: { input: { padding: '7px' } } }}>
-        <TextInput
-          plain="full"
-          type="search"
-          value={value}
-          name="search"
-          icon={<SearchIcon color="text-weak" />}
-          suggestions={suggestions}
-          placeholder="search for a repo"
-          onSelect={({ suggestion }) => {
-            setValue('')
-            setSuggestions([])
-            navigate(`/repositories/${suggestion.value.id}`)
-          }}
-          onChange={({ target: { value } }) => {
-            setValue(value)
+      <TextInput
+        plain="full"
+        type="search"
+        value={value}
+        name="search"
+        icon={<SearchIcon color="text-weak" />}
+        suggestions={suggestions}
+        placeholder="search for a repository"
+        onSelect={({ suggestion }) => {
+          setValue('')
+          setSuggestions([])
+          navigate(`/repositories/${suggestion.value.id}`)
+        }}
+        onChange={({ target: { value } }) => {
+          setValue(value)
+          if (value) {
             searchRepositories(client, value, setSuggestions)
-          }}
-        />
-      </ThemeContext.Extend>
+          }
+          else {
+            setSuggestions([])
+          }
+        }}
+      />
     </Box>
   )
 }

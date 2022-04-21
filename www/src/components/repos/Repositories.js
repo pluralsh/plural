@@ -138,7 +138,7 @@ export function Repository({ repo, hasNext, deletable, publisherId }) {
     >
       <Box
         width="50px"
-        heigh="50px"
+        margin={{ right: 'small' }}
       >
         <img
           alt=""

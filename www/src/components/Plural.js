@@ -114,7 +114,6 @@ export function PluralInner() {
                 <Sidebar />
                 <Box fill>
                   <Box
-                    background="white"
                     fill
                   >
                     <Routes>

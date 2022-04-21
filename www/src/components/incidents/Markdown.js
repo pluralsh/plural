@@ -31,15 +31,16 @@ export function Code({ children, header, className, multiline }) {
         <Box
           fill="horizontal"
           round="xxsmall"
-          border={{ color: 'light-5' }}
+          background="#2e3440"
+          border={{ color: 'border' }}
         >
           <Box
             fill="horizontal"
-            border={{ side: 'bottom', color: 'light-5' }}
+            border={{ side: 'bottom', color: 'border' }}
             direction="row"
             justify="end"
             gap="xsmall"
-            background="light-3"
+            background="background-contrast"
             pad="xsmall"
             align="center"
           >
@@ -48,20 +49,23 @@ export function Code({ children, header, className, multiline }) {
                 <Text
                   size="small"
                   weight={500}
-                >{header}
+                >
+                  {header}
                 </Text>
               </Box>
             )}
             <Text
               size="small"
               weight={500}
-              color="dark-3"
-            >language:
+              color="text-weak"
+            >
+              language:
             </Text>
             <Text
               size="small"
-              color="dark-3"
-            >{lang}
+              color="text-weak"
+            >
+              {lang}
             </Text>
             <WithCopy
               text={children}
@@ -70,6 +74,7 @@ export function Code({ children, header, className, multiline }) {
               <Copy
                 style={{ cursor: 'pointer' }}
                 size="small"
+                color="text-weak"
               />
             </WithCopy>
           </Box>
@@ -118,11 +123,11 @@ function Mention({ text, user }) {
         ref={ref}
         style={{ display: 'inline-block' }}
         round="xsmall"
-        background="light-3"
+        background="background-contrast"
         focusIndicator={false}
         pad={{ horizontal: 'xxsmall' }}
         onClick={() => setOpen(!open)}
-        hoverIndicator="light-5"
+        hoverIndicator="border"
       >
         <Text
           size="small"

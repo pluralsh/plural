@@ -20,9 +20,9 @@ function update(cache, repositoryId, installation) {
   })
 }
 
-export function UpdateInstallation({ installation }) {
-  const [autoUpgrade, setAutoUpgrade] = useState(installation.autoUpgrade)
-  const [trackTag, setTrackTag] = useState(installation.trackTag)
+export function UpdateInstallation({ installation = {} }) {
+  const [autoUpgrade, setAutoUpgrade] = useState(installation.autoUpgrade || false)
+  const [trackTag, setTrackTag] = useState(installation.trackTag || '')
 
   const [mutation, { loading, data, error }] = useMutation(UPDATE_INSTALLATION, {
     variables: { id: installation.id, attributes: { autoUpgrade, trackTag } },

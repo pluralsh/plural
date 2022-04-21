@@ -29,7 +29,6 @@ function Queue({ q }) {
       fill="horizontal"
     >
       <Provider
-        dark
         provider={q.provider}
         width={30}
       />
@@ -88,10 +87,7 @@ export function UpgradeQueues() {
 
   if (!data) {
     return (
-      <LoopingLogo
-        dark
-        darkbg
-      />
+      <LoopingLogo />
     )
   }
 

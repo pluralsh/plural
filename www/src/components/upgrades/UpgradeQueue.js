@@ -58,7 +58,6 @@ function Upgrade({ upgrade, acked }) {
       <RepoIcon
         size="30px"
         repo={upgrade.repository}
-        dark
       />
       <Box fill="horizontal">
         <Box
@@ -110,10 +109,7 @@ export function UpgradeQueue() {
 
   if (!data) {
     return (
-      <LoopingLogo
-        dark
-        darkbg
-      />
+      <LoopingLogo />
     )
   }
 
@@ -138,7 +134,6 @@ export function UpgradeQueue() {
           pad="small"
         >
           <Provider
-            dark
             provider={queue.provider}
             width={45}
           />

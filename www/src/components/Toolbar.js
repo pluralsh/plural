@@ -38,7 +38,6 @@ function ToolbarIcon() {
     <LoopingLogo
       nofill
       scale="0.25"
-      dark
       still={!animated}
     />
   )

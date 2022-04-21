@@ -77,7 +77,6 @@ function Repo({ repo, setTag }) {
     >
       <RepoIcon
         repo={repo}
-        dark
       />
       <Box
         fill="horizontal"
@@ -340,7 +339,7 @@ export function SectionContentContainer({ header: h, children }) {
           height="45px"
           border={{ side: 'bottom' }}
           align="center"
-          background={theme.dark ? 'card' : null}
+          background="background-contrast"
         >
           <Box fill="horizontal">
             <Text
@@ -371,12 +370,12 @@ export function SectionItemContainer({ label, icon, selected, location, ...props
       flex={false}
       pad="small"
       round="3px"
-      background={selected ? 'sidebarHover' : null}
+      background={selected ? 'background-contrast' : null}
       fill="horizontal"
       align="center"
       gap="small"
       direction="row"
-      hoverIndicator="sidebarHover"
+      hoverIndicator="background-contrast"
       onClick={selected ? null : () => navigate(location)}
       {...props}
     >
@@ -441,10 +440,7 @@ export default function Explore() {
 
   if (!data) {
     return (
-      <LoopingLogo
-        dark
-        darkbg
-      />
+      <LoopingLogo />
     )
   }
 

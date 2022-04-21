@@ -19,7 +19,7 @@ export function LoopingLogo({ nofill, darkbg, height, scale, dark, still }) {
   return (
     <Box
       fill={!nofill}
-      background={darkbg ? 'backgroundColor' : null}
+      background={darkbg ? 'background' : null}
       height={height}
       align="center"
       justify="center"
@@ -34,7 +34,7 @@ export function LoopingLogo({ nofill, darkbg, height, scale, dark, still }) {
               <div className="plrl-logo-layer-mask">
                 <div className="plrl-logo-layer-mask-inner">
                   <img
-                    src={image(BOTTOM_LEFT, dark)}
+                    src={image(BOTTOM_LEFT, !dark)}
                     alt=""
                   />
                 </div>
@@ -44,7 +44,7 @@ export function LoopingLogo({ nofill, darkbg, height, scale, dark, still }) {
               <div className="plrl-logo-layer-mask">
                 <div className="plrl-logo-layer-mask-inner">
                   <img
-                    src={image(BOTTOM_RIGHT, dark)}
+                    src={image(BOTTOM_RIGHT, !dark)}
                     alt=""
                   />
                 </div>
@@ -54,7 +54,7 @@ export function LoopingLogo({ nofill, darkbg, height, scale, dark, still }) {
               <div className="plrl-logo-layer-mask">
                 <div className="plrl-logo-layer-mask-inner">
                   <img
-                    src={image(TOP_LEFT, dark)}
+                    src={image(TOP_LEFT, !dark)}
                     alt=""
                   />
                 </div>
@@ -64,7 +64,7 @@ export function LoopingLogo({ nofill, darkbg, height, scale, dark, still }) {
               <div className="plrl-logo-layer-mask">
                 <div className="plrl-logo-layer-mask-inner">
                   <img
-                    src={image(TOP_RIGHT, dark)}
+                    src={image(TOP_RIGHT, !dark)}
                     alt=""
                   />
                 </div>
@@ -74,7 +74,7 @@ export function LoopingLogo({ nofill, darkbg, height, scale, dark, still }) {
               <div className="plrl-logo-layer-mask">
                 <div className="plrl-logo-layer-mask-inner">
                   <img
-                    src={image(DOT, dark)}
+                    src={image(DOT, !dark)}
                     alt=""
                   />
                 </div>

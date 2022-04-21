@@ -55,11 +55,12 @@ function Sidebar() {
           name: 'Explore',
           Icon: MagnifyingGlassIcon,
           url: '/explore',
+          matchedUrl: /^(?!.*\/(explore|repositories)(?:\/installed)).*\/(explore|repositories)\/?.*/i,
         },
         {
           name: 'Installed',
           Icon: InstalledIcon,
-          url: '/installed',
+          url: '/explore/installed',
         },
         {
           name: 'User',

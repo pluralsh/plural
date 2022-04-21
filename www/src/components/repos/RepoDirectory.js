@@ -124,7 +124,6 @@ export function RepoDirectory() {
           <RepositoryIcon
             repository={data.repository}
             size={IMG_SIZE}
-            dark
           />
         </Box>
         <Box

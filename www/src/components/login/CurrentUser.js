@@ -49,7 +49,7 @@ export function PluralProvider({ children }) {
     if (data && data.me) update()
   }, [location, data, update])
 
-  if (loading) return (<Box height="100vh"><LoopingLogo dark /></Box>)
+  if (loading) return (<Box height="100vh"><LoopingLogo /></Box>)
 
   if (error || !data || !data.me || !data.me.id) {
     wipeToken()

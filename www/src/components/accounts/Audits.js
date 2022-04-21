@@ -312,10 +312,7 @@ function LoginAudits() {
 
   if (!data) {
     return (
-      <LoopingLogo
-        dark
-        darkbg
-      />
+      <LoopingLogo />
     )
   }
 
@@ -366,10 +363,7 @@ export function Audits() {
 
   if (!data) {
     return (
-      <LoopingLogo
-        dark
-        darkbg
-      />
+      <LoopingLogo />
     )
   }
 

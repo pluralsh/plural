@@ -142,12 +142,14 @@ export default function Me({ me }) {
       >
         <Avatar
           name={me.name}
+          size={36}
         />
         <Box flex={false}>
           <Text
             size="small"
             weight={500}
-          >{account && account.name}
+          >
+            {account && account.name}
           </Text>
         </Box>
       </Box>

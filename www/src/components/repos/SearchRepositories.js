@@ -1,11 +1,10 @@
 import { useState } from 'react'
-import styled from 'styled-components'
 import { useApolloClient } from '@apollo/client'
 import { useNavigate } from 'react-router-dom'
 import { Box, ThemeContext } from 'grommet'
-import { MagnifyingGlassIcon, TextInput } from 'pluralsh-design-system'
+import { TextInput } from 'pluralsh-design-system'
 
-import { PLURAL_THEME } from '../../theme'
+import { SearchIcon } from '../utils/SearchIcon'
 
 import { SEARCH_REPOS } from './queries'
 import { Repository } from './Repositories'
@@ -41,7 +40,7 @@ export default function SearchRepositories() {
           type="search"
           value={value}
           name="search"
-          icon={<MagnifyingGlassIcon color="text-weak" />}
+          icon={<SearchIcon color="text-weak" />}
           suggestions={suggestions}
           placeholder="search for a repo"
           onSelect={({ suggestion }) => {

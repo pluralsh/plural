@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useApolloClient } from '@apollo/client'
 import { useNavigate } from 'react-router-dom'
-import { Box, ThemeContext } from 'grommet'
+import { Box } from 'grommet'
 import { TextInput } from 'pluralsh-design-system'
 
 import { SearchIcon } from '../utils/SearchIcon'

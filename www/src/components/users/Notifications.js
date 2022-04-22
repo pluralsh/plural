@@ -57,7 +57,7 @@ function NotificationRow({ notification, next }) {
       pad="xsmall"
       gap="small"
       align="center"
-      hoverIndicator="hover"
+      hoverIndicator="background-contrast"
       onClick={() => navigate(notifUrl(notification))}
     >
       <Box fill="horizontal">

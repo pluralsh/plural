@@ -21,7 +21,7 @@ function Webhook({ webhook }) {
     <Box
       flex={false}
       fill="horizontal"
-      hoverIndicator="hover"
+      hoverIndicator="background-contrast"
       onClick={() => navigate(`/webhooks/${webhook.id}`)}
       pad="small"
       gap="small"

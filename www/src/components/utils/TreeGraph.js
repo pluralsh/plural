@@ -40,6 +40,7 @@ function renderTree(id, tree, height, width) {
       .attr('transform', d => `translate(${d.x}, ${d.y})`)
 
   nodes.append('text')
+      .style('fill', 'white')
       .attr('dy', '.35em')
       .attr('y', d => d.children ? -32 : 32)
       .style('text-anchor', 'middle')

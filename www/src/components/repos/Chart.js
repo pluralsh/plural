@@ -312,21 +312,24 @@ export default function Chart() {
                 <Text
                   weight={500}
                   size="small"
-                >Readme
+                >
+                  Readme
                 </Text>
               </TabHeaderItem>
               <TabHeaderItem name="configuration">
                 <Text
                   weight={500}
                   size="small"
-                >Configuration
+                >
+                  Configuration
                 </Text>
               </TabHeaderItem>
               <TabHeaderItem name="dependencies">
                 <Text
                   size="small"
                   weight={500}
-                >Dependencies
+                >
+                  Dependencies
                 </Text>
               </TabHeaderItem>
               {currentVersion.scan && (
@@ -334,7 +337,8 @@ export default function Chart() {
                   <Text
                     size="small"
                     weight={500}
-                  >Security
+                  >
+                    Security
                   </Text>
                 </TabHeaderItem>
               )}
@@ -343,7 +347,8 @@ export default function Chart() {
                   <Text
                     size="small"
                     weight={500}
-                  >Update Queue
+                  >
+                    Update Queue
                   </Text>
                 </TabHeaderItem>
               )}

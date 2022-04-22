@@ -43,7 +43,7 @@ export default function SearchRepositories() {
     >
       <TextInput
         plain="full"
-        type="search"
+        type="text"
         value={value}
         name="search"
         icon={<SearchIcon color="text-weak" />}

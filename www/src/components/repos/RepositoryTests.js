@@ -12,7 +12,7 @@ import { appendConnection, extendConnection } from '../../utils/graphql'
 import { SectionContext, SectionPortal } from '../Explore'
 import { StandardScroller } from '../utils/SmoothScroller'
 
-import { ModalHeader } from '../utils/ModalHeader'
+import { ModalHeader } from '../ModalHeader'
 
 import { Icon } from '../accounts/Group'
 

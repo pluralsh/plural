@@ -1,11 +1,11 @@
 import { createElement, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Box, Drop, Layer, Text } from 'grommet'
-import { CreatePublisher as CreatePublisherIcon, EditField, Logout, MenuItem, ModalHeader, User } from 'forge-core'
+import { CreatePublisher as CreatePublisherIcon, EditField, Logout, MenuItem, User } from 'forge-core'
 import { Avatar } from 'pluralsh-design-system'
-
 import { useQuery } from '@apollo/client'
 
+import { ModalHeader } from '../ModalHeader'
 import CreatePublisher from '../publisher/CreatePublisher'
 import { ACCOUNT_PUBLISHERS } from '../publisher/queries'
 

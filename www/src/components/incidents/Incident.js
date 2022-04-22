@@ -1,11 +1,12 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import { Button, Close, Edit, File, Messages as MessagesI, ModalHeader, Scroller } from 'forge-core'
+import { Button, Close, Edit, File, Messages as MessagesI, Scroller } from 'forge-core'
 import { Editable, Slate } from 'slate-react'
 import { useMutation, useQuery, useSubscription } from '@apollo/client'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Box, Layer, Text, TextInput } from 'grommet'
 import moment from 'moment'
 
+import { ModalHeader } from '../ModalHeader'
 import { dateFormat } from '../../utils/date'
 import SmoothScroller from '../utils/SmoothScroller'
 import { extendConnection } from '../../utils/graphql'

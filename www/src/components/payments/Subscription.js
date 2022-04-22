@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { Anchor, Box, Layer, Text } from 'grommet'
-import { Button, ModalHeader, Reload as Refresh } from 'forge-core'
+import { Button, Reload as Refresh } from 'forge-core'
 import { useMutation } from '@apollo/client'
 
 import { NumericInput } from '../utils/NumericInput'
 import { deepUpdate, updateCache } from '../../utils/graphql'
 import { REPO_Q } from '../repos/queries'
+import { ModalHeader } from '../ModalHeader'
 
 import { PlanType } from './types'
 import { UPDATE_LINE_ITEM } from './queries'

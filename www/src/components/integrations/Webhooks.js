@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from 'react'
 import { useQuery } from '@apollo/client'
-import { Button, ModalHeader, Scroller, Webhooks as WebhooksI } from 'forge-core'
-
+import { Button, Scroller, Webhooks as WebhooksI } from 'forge-core'
 import { Box, Layer, Text } from 'grommet'
-
 import { useNavigate } from 'react-router-dom'
+
+import { ModalHeader } from '../ModalHeader'
 
 import { extendConnection } from '../../utils/graphql'
 

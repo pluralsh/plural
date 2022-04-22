@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 import moment from 'moment'
-import { Button, ModalHeader, Roles, Trash } from 'forge-core'
+import { Button, Roles, Trash } from 'forge-core'
 import { useMutation, useQuery } from '@apollo/client'
 import { Box, Layer, Text, TextInput } from 'grommet'
 import { Route, Routes, useNavigate } from 'react-router-dom'
@@ -12,8 +12,9 @@ import { StandardScroller } from '../utils/SmoothScroller'
 
 import Avatar from '../users/Avatar'
 
-import { ignore } from '../utils/ModalHeader'
+import { ModalHeader } from '../ModalHeader'
 
+import { ignore } from '../utils/ModalHeader'
 import { GqlError } from '../utils/Alert'
 
 import { Placeholder } from './Audits'

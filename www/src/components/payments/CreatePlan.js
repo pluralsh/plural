@@ -1,13 +1,14 @@
 import { useCallback, useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { Box, Layer, RangeSelector, Stack, Text, TextInput } from 'grommet'
-import { Button, HoveredBackground, ModalHeader, SecondaryButton, Select, Trash } from 'forge-core'
+import { Button, HoveredBackground, SecondaryButton, Select, Trash } from 'forge-core'
 import { FaDollarSign } from 'react-icons/fa'
 import { Add, Cube } from 'grommet-icons'
 
 import { LabeledInput } from '../repos/CreateRepository'
 
 import { REPO_Q } from '../repos/queries'
+import { ModalHeader } from '../ModalHeader'
 
 import { deepUpdate, updateCache } from '../../utils/graphql'
 import { SeverityNub } from '../incidents/Severity'

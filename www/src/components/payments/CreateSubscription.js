@@ -1,12 +1,14 @@
 import { useState } from 'react'
 import { Box, Layer, Text } from 'grommet'
-import { Button, ModalHeader, NumericInput } from 'forge-core'
+import { Button, NumericInput } from 'forge-core'
 import { Add } from 'grommet-icons'
 import { useMutation } from '@apollo/client'
 
 import { deepUpdate } from '../../utils/graphql'
 
 import { REPO_Q } from '../repos/queries'
+
+import { ModalHeader } from '../ModalHeader'
 
 import { CREATE_SUBSCRIPTION } from './queries'
 import { pivotByDimension, subscriptionCost } from './utils'

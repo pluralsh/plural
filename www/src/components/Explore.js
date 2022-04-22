@@ -336,7 +336,7 @@ export function SectionContentContainer({ header: h, children, borderLeft }) {
           direction="row"
           pad="small"
           height="45px"
-          border={[{ side: 'bottom' }, borderLeft && { side: 'left' }]}
+          border={borderLeft ? [{ side: 'bottom' }, { side: 'left' }] : [{ side: 'bottom' }]}
           align="center"
           background="background-contrast"
         >
@@ -344,7 +344,8 @@ export function SectionContentContainer({ header: h, children, borderLeft }) {
             <Text
               size="small"
               weight={500}
-            >{header}
+            >
+              {header}
             </Text>
           </Box>
           <Box

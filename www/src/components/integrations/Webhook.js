@@ -1,15 +1,13 @@
 import { useContext, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Button, Close, Copyable, Edit, ModalHeader, Reload, SecondaryButton, Trash } from 'forge-core'
-
+import { Button, Close, Copyable, Edit, Reload, SecondaryButton, Trash } from 'forge-core'
 import { Box, Layer, Text, TextInput } from 'grommet'
 
 import { useMutation, useQuery } from '@apollo/client'
 
+import { ModalHeader } from '../ModalHeader'
 import { extendConnection } from '../../utils/graphql'
-
 import { BreadcrumbsContext } from '../Breadcrumbs'
-
 import { StandardScroller } from '../utils/SmoothScroller'
 
 import { WebhookLog } from './WebhookLog'

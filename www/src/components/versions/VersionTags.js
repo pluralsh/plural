@@ -1,7 +1,9 @@
 import { useCallback, useState } from 'react'
 import { Box, Select, Text } from 'grommet'
-import { Button, ModalHeader, SecondaryButton } from 'forge-core'
+import { Button, SecondaryButton } from 'forge-core'
 import { useMutation } from '@apollo/client'
+
+import { ModalHeader } from '../ModalHeader'
 
 import { UPDATE_VERSION } from './queries'
 

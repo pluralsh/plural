@@ -2,11 +2,9 @@ import { useContext, useState } from 'react'
 import { Box, Text, ThemeContext } from 'grommet'
 import { useMutation } from '@apollo/client'
 import { useNavigate } from 'react-router-dom'
-// import { Scroller, Button, SecondaryButton, Modal, ModalHeader, Password as Lock } from 'forge-core'
 import { Button, Password as Lock, Scroller } from 'forge-core'
 import yaml from 'js-yaml'
 
-// import CreateTerraform from './CreateTerraform'
 import Highlight from 'react-highlight'
 import moment from 'moment'
 

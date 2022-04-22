@@ -85,9 +85,12 @@ function RecipeListItem({ recipe, setRecipe, repository: { editable, id } }) {
         <Text
           weight="bold"
           size="small"
-        >{name}
+        >
+          {name}
         </Text>
-        <Text size="small">{description}</Text>
+        <Text size="small">
+          {description}
+        </Text>
       </Box>
     </Container>
   )

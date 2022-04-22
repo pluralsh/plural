@@ -322,8 +322,7 @@ export function SectionPortal({ children }) {
   )
 }
 
-export function SectionContentContainer({ header: h, children }) {
-  const theme = useContext(ThemeContext)
+export function SectionContentContainer({ header: h, children, borderLeft }) {
   const [header, setHeader] = useState(h)
   const [ref, setRef] = useState(null)
   const id = useMemo(() => uuidv4(), [])
@@ -337,7 +336,7 @@ export function SectionContentContainer({ header: h, children }) {
           direction="row"
           pad="small"
           height="45px"
-          border={{ side: 'bottom' }}
+          border={[{ side: 'bottom' }, borderLeft && { side: 'left' }]}
           align="center"
           background="background-contrast"
         >

@@ -1,11 +1,11 @@
 import { memo } from 'react'
 import { Box, Text } from 'grommet'
 import { useQuery } from '@apollo/client'
-import { SecondaryButton } from 'forge-core'
 import cloneDeep from 'lodash.clonedeep'
 import groupBy from 'lodash.groupby'
 import remove from 'lodash.remove'
 import uniqueId from 'lodash.uniqueid'
+import { Button } from 'pluralsh-design-system'
 
 import TreeGraph from '../utils/TreeGraph'
 
@@ -69,13 +69,12 @@ function compileGraph(res, closure) {
 
 export function ShowFull({ onClick, label }) {
   return (
-    <Box width="100px">
-      <SecondaryButton
-        label={label}
-        round="xsmall"
-        onClick={onClick}
-      />
-    </Box>
+    <Button
+      primary
+      size="small"
+      label={label}
+      onClick={onClick}
+    />
   )
 }
 

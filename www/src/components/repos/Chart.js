@@ -129,6 +129,7 @@ function ChartHeader({ version: { helm, chart, version, scan, id }, chartInstall
       direction="row"
       align="center"
       gap="medium"
+      width="100%"
       margin={{ bottom: 'small' }}
       style={{ minHeight: '50px' }}
     >
@@ -154,37 +155,47 @@ function ChartHeader({ version: { helm, chart, version, scan, id }, chartInstall
             <Text
               size="small"
               color="dark-3"
-            >(installed: {chartInstallation.version.version})
+            >
+              (installed: {chartInstallation.version.version})
             </Text>
           )}
         </Box>
-        <Text size="small"><i>{helm.description}</i></Text>
+        <Text size="small">
+          <i>{helm.description}</i>
+        </Text>
       </Box>
       {scan && <PackageGrade scan={scan} />}
-      <Box
-        width="100px"
-        direction="row"
-        justify="end"
-      >
-        {chartInstallation && chartInstallation.version.id === id ? (
+      {chartInstallation && chartInstallation.version.id === id ? (
+        <Box
+          width="100px"
+          direction="row"
+          justify="end"
+        >
           <Box
             round="xsmall"
             pad={{ horizontal: 'small', vertical: 'xsmall' }}
             align="center"
             justify="center"
             border={{ color: 'light-5' }}
-          >Installed
+          >
+            Installed
           </Box>
-        ) :
-          installation && (
+        </Box>
+      ) :
+        installation && (
+          <Box
+            width="100px"
+            direction="row"
+            justify="end"
+          >
             <ChartInstaller
               chartInstallation={chartInstallation}
               installation={installation}
               versionId={id}
               chartId={chart.id}
             />
-          )}
-      </Box>
+          </Box>
+        )}
     </Box>
   )
 }

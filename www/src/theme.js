@@ -91,10 +91,9 @@ export const DEFAULT_COLOR_THEME = {
 
 export const DEFAULT_THEME = {
   anchor: {
-    color: { light: 'link', dark: 'white' },
+    color: 'text',
     hover: {
-      textDecoration: 'none',
-      extend: 'font-weight: 600',
+      textDecoration: 'underline',
     },
     fontWeight: 400,
   },

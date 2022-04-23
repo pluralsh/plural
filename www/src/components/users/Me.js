@@ -35,7 +35,7 @@ export function Item({ onClick, icon, text, round }) {
   return (
     <Box
       pad={{ horizontal: 'small', vertical: 'xsmall' }}
-      hoverIndicator="light-2"
+      hoverIndicator="background-front"
       round={round}
       focusIndicator={false}
       direction="row"
@@ -157,6 +157,7 @@ export default function Me({ me }) {
         <Drop
           target={ref.current}
           align={{ top: 'bottom' }}
+          background="background-contrast"
           onClickOutside={() => setOpen(false)}
         >
           <Box

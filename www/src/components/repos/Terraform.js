@@ -88,6 +88,7 @@ function TerraformInstaller({ installation, terraformId, terraformInstallation, 
 function TerraformHeader({ terraform: { id, name, description, installation, repository }, version }) {
   return (
     <Box
+      fill
       direction="row"
       align="center"
       gap="medium"
@@ -105,7 +106,7 @@ function TerraformHeader({ terraform: { id, name, description, installation, rep
           src={DEFAULT_TF_ICON}
         />
       </Box>
-      <Box width="100%">
+      <Box flex={1}>
         <Box
           direction="row"
           gap="small"
@@ -116,13 +117,16 @@ function TerraformHeader({ terraform: { id, name, description, installation, rep
             <Text
               size="small"
               color="dark-3"
-            >(installed: {installation.version.version})
+            >
+              (installed: {installation.version.version})
             </Text>
           )}
         </Box>
-        <Text size="small"><i>{description}</i></Text>
+        <Text size="small"><em>{description}</em></Text>
       </Box>
-      {version.scan && <PackageGrade scan={version.scan} />}
+      {version.scan && (
+        <PackageGrade scan={version.scan} />
+      )}
       {repository.installation && (
         <Box
           width="100px"
@@ -297,14 +301,16 @@ export default function Terraform() {
                 <Text
                   size="small"
                   weight={500}
-                >Configuration
+                >
+                  Configuration
                 </Text>
               </TabHeaderItem>
               <TabHeaderItem name="dependencies">
                 <Text
                   size="small"
                   weight={500}
-                >Dependencies
+                >
+                  Dependencies
                 </Text>
               </TabHeaderItem>
               {currentVersion.scan && (
@@ -312,7 +318,8 @@ export default function Terraform() {
                   <Text
                     size="small"
                     weight={500}
-                  >Security
+                  >
+                    Security
                   </Text>
                 </TabHeaderItem>
               )}
@@ -321,7 +328,8 @@ export default function Terraform() {
                   <Text
                     size="small"
                     weight={500}
-                  >Edit
+                  >
+                    Edit
                   </Text>
                 </TabHeaderItem>
               )}
@@ -330,7 +338,8 @@ export default function Terraform() {
                   <Text
                     size="small"
                     weight={500}
-                  >Update Queue
+                  >
+                    Update Queue
                   </Text>
                 </TabHeaderItem>
               )}

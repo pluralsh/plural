@@ -112,8 +112,8 @@ export const DEFAULT_THEME = {
     extend: boxStyle,
   },
   tab: {
-    active: { color: 'focus' },
-    border: { active: { color: 'focus' }, hover: { color: 'focus' } },
+    // active: { color: 'focus' },
+    // border: { active: { color: 'focus' }, hover: { color: 'border' } },
   },
   textArea: {
     extend: {

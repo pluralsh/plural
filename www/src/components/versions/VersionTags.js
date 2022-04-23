@@ -13,7 +13,7 @@ export function VersionTag({ tag: { tag }, onClick }) {
       round="xsmall"
       align="center"
       justify="center"
-      background="sidebar"
+      background="background-contrast"
       onClick={onClick}
       pad={{ horizontal: 'small', vertical: 'xxsmall' }}
     >
@@ -51,7 +51,7 @@ export function EditTags({ version, setOpen, refetch }) {
       />
       <Box
         gap="small"
-        pad="small"
+        pad="medium"
       >
         <Box
           direction="row"

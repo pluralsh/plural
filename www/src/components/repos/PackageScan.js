@@ -127,8 +127,8 @@ export function ScanResults({ scan: { errors, violations } }) {
       {errors && (
         <Box
           fill
-          pad="small"
-          gap="xsmall"
+          gap="small"
+          pad={{ vertical: 'small' }}
         >
           {errors.map((error, ind) => (
             <Alert

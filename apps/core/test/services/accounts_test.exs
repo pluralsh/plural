@@ -502,4 +502,17 @@ defmodule Core.Services.AccountsTest do
       assert Timex.before?(Timex.now(), refreshed.expires_at)
     end
   end
+
+  describe "#enable_sso/3" do
+    setup [:setup_root_user]
+    test "an admin can set up sso", %{user: user} do
+      mapping = insert(:domain_mapping, account: user.account, domain: "example.com")
+
+      {:ok, acc} = Accounts.enable_sso("example.com", "conn", user)
+
+      assert acc.id == user.account_id
+      assert acc.workos_connection_id == "conn"
+      assert refetch(mapping).enable_sso
+    end
+  end
 end

@@ -104,6 +104,23 @@ defmodule Core.Services.Accounts do
   end
 
   @doc """
+  Helper function to simplify sso setup for an account
+  """
+  @spec enable_sso(binary, binary, User.t) :: account_resp
+  def enable_sso(domain, connection_id, %User{} = user) do
+    start_transaction()
+    |> add_operation(:domain, fn _ ->
+      get_domain_mapping(domain)
+      |> DomainMapping.changeset(%{enable_sso: true})
+      |> Core.Repo.update()
+    end)
+    |> add_operation(:account, fn _ ->
+      update_account(%{workos_connection_id: connection_id}, user)
+    end)
+    |> execute(extract: :account)
+  end
+
+  @doc """
   Creates a new invite for this account
   """
   @spec create_invite(map, User.t) :: invite_resp

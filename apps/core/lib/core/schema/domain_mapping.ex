@@ -14,6 +14,10 @@ defmodule Core.Schema.DomainMapping do
     from(dm in query, where: dm.account_id == ^aid)
   end
 
+  def for_domains(query \\ __MODULE__, domains) do
+    from(dm in query, where: dm.domain in ^domains)
+  end
+
   @restricted ~w(gmail.com outlook.com hotmail.com yahoo.com)
 
   @valid ~w(domain account_id enable_sso)a

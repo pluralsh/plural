@@ -531,4 +531,18 @@ defmodule Core.Factory do
       version: build(:version)
     }
   end
+
+  def account_organization_factory do
+    %Schema.AccountOrganization{
+      account: build(:account),
+      organization_id: sequence(:ao, & "ao_#{&1}")
+    }
+  end
+
+  def account_directory_factory do
+    %Schema.AccountDirectory{
+      account: build(:account),
+      directory_id: sequence(:ad, & "ad_#{&1}")
+    }
+  end
 end

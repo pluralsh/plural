@@ -124,14 +124,12 @@ export function EditInstallation({ installation, repository, onUpdate }) {
           align="center"
           fill="horizontal"
         >
-          <Box flex={false}>
-            <CheckBox
-              toggle
-              label="Auto Upgrade"
-              checked={autoUpgrade}
-              onChange={e => setAutoUpgrade(e.target.checked)}
-            />
-          </Box>
+          <CheckBox
+            toggle
+            label="Auto upgrade"
+            checked={autoUpgrade}
+            onChange={e => setAutoUpgrade(e.target.checked)}
+          />
           {autoUpgrade && (
             <Box fill="horizontal">
               <Select

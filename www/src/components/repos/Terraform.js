@@ -122,7 +122,7 @@ function TerraformHeader({ terraform: { id, name, description, installation, rep
             </Text>
           )}
         </Box>
-        <Text size="small"><em>{description}</em></Text>
+        <Text size="small"><i>{description}</i></Text>
       </Box>
       {version.scan && (
         <PackageGrade scan={version.scan} />

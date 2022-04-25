@@ -121,6 +121,23 @@ defmodule Core.Services.Accounts do
   end
 
   @doc """
+  Helper function to disable sso for a user's account
+  """
+  @spec disable_sso(User.t) :: account_resp
+  def disable_sso(%User{account_id: aid} = user) do
+    start_transaction()
+    |> add_operation(:account, fn _ ->
+      update_account(%{workos_connection_id: nil}, user)
+    end)
+    |> add_operation(:mappings, fn _ ->
+      DomainMapping.for_account(aid)
+      |> Core.Repo.update_all(set: [enable_sso: false])
+      |> ok()
+    end)
+    |> execute(extract: :account)
+  end
+
+  @doc """
   Creates a new invite for this account
   """
   @spec create_invite(map, User.t) :: invite_resp

@@ -10,6 +10,10 @@ defmodule Core.Schema.DomainMapping do
     timestamps()
   end
 
+  def for_account(query \\ __MODULE__, aid) do
+    from(dm in query, where: dm.account_id == ^aid)
+  end
+
   @restricted ~w(gmail.com outlook.com hotmail.com yahoo.com)
 
   @valid ~w(domain account_id enable_sso)a

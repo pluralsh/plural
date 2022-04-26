@@ -7,9 +7,10 @@ defimpl Core.WorkOS.Handler, for: [Core.WorkOS.Events.GroupCreated, Core.WorkOS.
 
     case Resources.get_group(eid) do
       %Group{} = group -> group
-      _ -> %Group{account_id: aid, external_id: eid}
+      _ -> %Group{account_id: aid}
     end
     |> Group.changeset(attrs)
+    |> Ecto.Changeset.change(%{external_id: eid})
     |> Core.Repo.insert_or_update()
   end
 end

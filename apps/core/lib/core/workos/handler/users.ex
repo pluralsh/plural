@@ -7,9 +7,10 @@ defimpl Core.WorkOS.Handler, for: [Core.WorkOS.Events.UserCreated, Core.WorkOS.E
 
     case Core.Repo.get_by(User, external_id: eid) do
       %User{} = user -> user
-      _ -> %User{account_id: aid, external_id: eid}
+      _ -> %User{account_id: aid}
     end
     |> User.changeset(attrs)
+    |> Ecto.Changeset.change(%{external_id: eid})
     |> Core.Repo.insert_or_update()
   end
 end

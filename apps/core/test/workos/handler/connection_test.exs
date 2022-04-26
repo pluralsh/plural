@@ -7,13 +7,15 @@ defmodule Core.WorkOS.Handler.ConnectionsTest do
       mapping = insert(:domain_mapping)
       payload = Jason.encode!(%{
         event: "connection.activated",
-        data: %{organization_id: "org", domains: [%{domain: mapping.domain}]}
+        data: %{id: "conn_id", organization_id: "org", domains: [%{domain: mapping.domain}]}
       })
 
       event = Jason.decode!(payload) |> Event.parse()
       Handler.handle(event)
 
-      assert refetch(mapping).enable_sso
+      mapping = refetch(mapping)
+      assert mapping.enable_sso
+      assert mapping.workos_connection_id == "conn_id"
 
       org = Resources.get_organization("org")
       assert org.account_id == mapping.account_id
@@ -22,7 +24,7 @@ defmodule Core.WorkOS.Handler.ConnectionsTest do
 
   describe "ConnectionDeactivated" do
     test "it will toggle off sso" do
-      mapping = insert(:domain_mapping)
+      mapping = insert(:domain_mapping, enable_sso: true, workos_connection_id: "conn_id")
       payload = Jason.encode!(%{
         event: "connection.deactivated",
         data: %{organization_id: "org", domains: [%{domain: mapping.domain}]}
@@ -31,7 +33,9 @@ defmodule Core.WorkOS.Handler.ConnectionsTest do
       event = Jason.decode!(payload) |> Event.parse()
       Handler.handle(event)
 
-      refute refetch(mapping).enable_sso
+      mapping = refetch(mapping)
+      refute mapping.enable_sso
+      refute mapping.workos_connection_id
     end
   end
 end

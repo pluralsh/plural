@@ -24,9 +24,9 @@ defmodule Core.WorkOS.Resources do
 
   def get_directory(id), do: Core.Repo.get_by(AccountDirectory, directory_id: id)
 
-  def toggle_sso(domains, enabled) do
+  def toggle_sso(domains, enabled, conn_id \\ nil) do
     DomainMapping.for_domains(domains)
-    |> Core.Repo.update_all(set: [enable_sso: enabled])
+    |> Core.Repo.update_all(set: [enable_sso: enabled, workos_connection_id: conn_id])
   end
 
   def create_directory(id, domains) do

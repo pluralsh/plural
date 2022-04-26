@@ -185,7 +185,7 @@ defmodule Core.Services.Users do
   """
   @spec sso_callback(binary) :: user_resp
   def sso_callback(code) do
-    with {:ok, profile} <- WorkOS.SSO.get_profile(code) |> IO.inspect(),
+    with {:ok, %{"profile" => profile}} <- WorkOS.SSO.get_profile(code),
          user <- Core.OAuth.SSO.normalize(profile),
       do: bootstrap_user(:sso, user)
   end

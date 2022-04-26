@@ -3,8 +3,10 @@ defmodule Core.Schema.DomainMapping do
   alias Core.Schema.Account
 
   schema "domain_mappings" do
-    field :domain,       :string
-    field :enable_sso,   :boolean
+    field :domain,               :string
+    field :enable_sso,           :boolean
+    field :workos_connection_id, :string
+
     belongs_to :account, Account
 
     timestamps()

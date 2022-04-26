@@ -150,8 +150,8 @@ defmodule Core.Services.Users do
   defp build_login_method(method, _, _), do: %{login_method: method}
 
   defp determine_sso(email, host) do
-    with %DomainMapping{enable_sso: true, domain: d, account: a} <- Accounts.get_mapping_for_email(email),
-         {:ok, url} <- WorkOS.SSO.get_authorization_url(%{domain: d, redirect_uri: Core.OAuth.SSO.redirect_url(host)}) do
+    with %DomainMapping{enable_sso: true, workos_connection_id: id} <- Accounts.get_mapping_for_email(email),
+         {:ok, url} <- WorkOS.SSO.get_authorization_url(%{connection: id, redirect_uri: Core.OAuth.SSO.redirect_url(host)}) do
       {:sso, url}
     else
       _ -> nil

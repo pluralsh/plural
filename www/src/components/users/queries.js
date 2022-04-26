@@ -253,8 +253,12 @@ export const OAUTH_URLS = gql`
 
 export const OAUTH_CALLBACK = gql`
   mutation OAuthCallback($host: String, $code: String!, $provider: OauthProvider!, $deviceToken: String) {
-    oauthCallback(code: $code, host: $host, provider: $provider, deviceToken: $deviceToken) {
-      jwt
-    }
+    oauthCallback(code: $code, host: $host, provider: $provider, deviceToken: $deviceToken) { jwt }
+  }
+`
+
+export const SSO_CALLBACK = gql`
+  mutation SSOCallback($code: String!, $deviceToken: String) { 
+    ssoCallback(code: $code, deviceToken: $deviceToken) { jwt }
   }
 `

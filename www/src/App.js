@@ -16,6 +16,7 @@ import { OAuthConsent } from './components/oidc/OAuthConsent'
 import { EmailConfirmed } from './components/users/EmailConfirmation'
 import 'react-toggle/style.css'
 import { OAuthCallback } from './components/users/OAuthCallback'
+import { SSOCallback } from './components/users/SSOCallback'
 
 const INTERCOM_APP_ID = 'p127zb9y'
 hljs.registerLanguage('terraform', hljsDefineTerraform)
@@ -54,6 +55,10 @@ export default function App() {
           <Route
             path="/oauth/callback/:service"
             component={OAuthCallback}
+          />
+          <Route
+            path='/sso/callback'
+            component={SSOCallback}
           />
           <Route
             exact

@@ -126,6 +126,14 @@ configOverlays:
     documentation: api key for workos authentication
     updates:
     - path: ['plural', 'secrets', 'workos', 'api_key']
+- name: workos-webhook-secret
+  spec:
+    name: WorkOS Webhook Secret
+    folder: secrets
+    subfolder: workos
+    documentation: signing secret for workos webhooks 
+    updates:
+    - path: ['plural', 'secrets', 'workos', 'webhook_secret']
 - name: sentry-dsn
   spec:
     name: Sentry DSN

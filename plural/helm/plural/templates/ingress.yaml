@@ -62,6 +62,13 @@ spec:
             name: plural-api
             port:
               name: http
+      - path: /webhooks/.*
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: plural-api
+            port:
+              name: http
       - path: /socket.*
         pathType: ImplementationSpecific
         backend:

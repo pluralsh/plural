@@ -6,7 +6,6 @@ import { useLocation } from 'react-router'
 import qs from 'query-string'
 
 import { setToken } from '../../helpers/authentication'
-import { host } from '../../helpers/hostname'
 import { GqlError } from '../utils/Alert'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
@@ -24,7 +23,7 @@ export function SSOCallback() {
   const [mutation, { error, loading }] = useMutation(SSO_CALLBACK, {
     variables: { code, deviceToken },
     onCompleted: result => {
-      setToken(result.oauthCallback.jwt)
+      setToken(result.ssoCallback.jwt)
       deviceToken && finishedDeviceLogin()
       const challenge = getChallenge()
       if (challenge) {

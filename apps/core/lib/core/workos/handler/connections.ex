@@ -19,3 +19,12 @@ defimpl Core.WorkOS.Handler, for: Core.WorkOS.Events.ConnectionDeactivated do
   alias Core.WorkOS.Resources
   def handle(%@for{domains: domains}), do: Resources.toggle_sso(domains, false)
 end
+
+defimpl Core.WorkOS.Handler, for: Core.WorkOS.Events.ConnectionDeleted do
+  alias Core.Schema.DomainMapping
+
+  def handle(%@for{id: id}) do
+    DomainMapping.for_connection(id)
+    |> Core.Repo.update_all(set: [enable_sso: false, workos_connection_id: nil])
+  end
+end

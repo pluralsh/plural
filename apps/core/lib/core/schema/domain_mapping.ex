@@ -20,6 +20,10 @@ defmodule Core.Schema.DomainMapping do
     from(dm in query, where: dm.domain in ^domains)
   end
 
+  def for_connection(query \\ __MODULE__, conn_id) do
+    from(dm in query, where: dm.workos_connection_id == ^conn_id)
+  end
+
   @restricted ~w(gmail.com outlook.com hotmail.com yahoo.com)
 
   @valid ~w(domain account_id enable_sso)a

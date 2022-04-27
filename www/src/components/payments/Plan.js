@@ -8,7 +8,8 @@ import { Cube } from 'grommet-icons'
 import { normalizeColor } from 'grommet/utils'
 
 import { CurrentUserContext } from '../login/CurrentUser'
-import { ModalHeader, ignore } from '../utils/ModalHeader'
+import { ignore } from '../utils/ModalHeader'
+import { ModalHeader } from '../ModalHeader'
 
 import { PlanType } from './types'
 import { ServiceLevel } from './CreatePlan'

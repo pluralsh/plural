@@ -96,9 +96,10 @@ defmodule GraphQl.Schema.Account do
   end
 
   object :domain_mapping do
-    field :id,      non_null(:id)
-    field :domain,  non_null(:string)
-    field :account, :account, resolve: dataloader(Account)
+    field :id,         non_null(:id)
+    field :domain,     non_null(:string)
+    field :enable_sso, :boolean
+    field :account,    :account, resolve: dataloader(Account)
 
     timestamps()
   end

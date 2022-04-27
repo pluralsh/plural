@@ -1,11 +1,13 @@
 import { useCallback, useRef, useState } from 'react'
 import { Box, Layer, Text } from 'grommet'
-import { Button, GqlError, Group, InputCollection, ModalHeader, ResponsiveInput, TagInput, Trash, User } from 'forge-core'
+import { Button, GqlError, Group, InputCollection, ResponsiveInput, TagInput, Trash, User } from 'forge-core'
 import { Edit } from 'grommet-icons'
 
 import { useApolloClient, useMutation } from '@apollo/client'
 
 import Toggle from 'react-toggle'
+
+import { ModalHeader } from '../ModalHeader'
 
 import { appendConnection, removeConnection, updateCache } from '../../utils/graphql'
 

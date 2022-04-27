@@ -150,8 +150,8 @@ defmodule Core.Services.Users do
   defp build_login_method(method, _, _), do: %{login_method: method}
 
   defp determine_sso(email, host) do
-    with %DomainMapping{enable_sso: true, domain: d, account: a} <- Accounts.get_mapping_for_email(email),
-         {:ok, url} <- WorkOS.SSO.get_authorization_url(%{domain: d, redirect_uri: Core.OAuth.SSO.redirect_url(host)}) do
+    with %DomainMapping{enable_sso: true, workos_connection_id: id} <- Accounts.get_mapping_for_email(email),
+         {:ok, url} <- WorkOS.SSO.get_authorization_url(%{connection: id, redirect_uri: Core.OAuth.SSO.redirect_url(host)}) do
       {:sso, url}
     else
       _ -> nil
@@ -185,7 +185,7 @@ defmodule Core.Services.Users do
   """
   @spec sso_callback(binary) :: user_resp
   def sso_callback(code) do
-    with {:ok, profile} <- WorkOS.SSO.get_profile(code),
+    with {:ok, %{"profile" => profile}} <- WorkOS.SSO.get_profile(code),
          user <- Core.OAuth.SSO.normalize(profile),
       do: bootstrap_user(:sso, user)
   end
@@ -265,12 +265,16 @@ defmodule Core.Services.Users do
     case get_user_by_email(email) do
       nil ->
         attrs
-        |> Map.merge(%{login_method: service, password: Ecto.UUID.generate()})
+        |> Map.merge(login_args(service))
+        |> Map.put(:password, Ecto.UUID.generate())
         |> create_user()
       %User{} = user ->
-        update_user(%{login_method: service}, user)
+        update_user(login_args(:sso), user)
     end
   end
+
+  defp login_args(:sso), do: %{}
+  defp login_args(service), do: %{login_method: service}
 
   @doc "self explanatory"
   @spec update_user(map, User.t) :: user_resp

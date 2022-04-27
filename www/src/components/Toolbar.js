@@ -49,6 +49,7 @@ export default function Toolbar() {
 
   return (
     <Box
+      height="55px"
       direction="row"
       fill="horizontal"
       align="center"

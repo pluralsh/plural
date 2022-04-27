@@ -91,10 +91,9 @@ export const DEFAULT_COLOR_THEME = {
 
 export const DEFAULT_THEME = {
   anchor: {
-    color: { light: 'link', dark: 'white' },
+    color: 'text',
     hover: {
-      textDecoration: 'none',
-      extend: 'font-weight: 600',
+      textDecoration: 'underline',
     },
     fontWeight: 400,
   },
@@ -112,8 +111,8 @@ export const DEFAULT_THEME = {
     extend: boxStyle,
   },
   tab: {
-    active: { color: 'focus' },
-    border: { active: { color: 'focus' }, hover: { color: 'focus' } },
+    // active: { color: 'focus' },
+    // border: { active: { color: 'focus' }, hover: { color: 'border' } },
   },
   textArea: {
     extend: {
@@ -146,6 +145,9 @@ export const DEFAULT_THEME = {
     control: { border: { radius: '2px' } },
     drop: {
       border: { radius: '4px' },
+      extend: css`
+        box-shadow: 0px 0px 4px 4px rgba(0, 0, 0, 0.2);
+      `,
     },
     box: { extend: boxStyle },
     checkBox: { toggle: { color: 'brand' } },

@@ -1,7 +1,9 @@
 import { useState } from 'react'
-import { Button, GqlError, InputCollection, ModalHeader, ResponsiveInput } from 'forge-core'
+import { Button, GqlError, InputCollection, ResponsiveInput } from 'forge-core'
 import { Box, Layer } from 'grommet'
 import { useMutation } from '@apollo/client'
+
+import { ModalHeader } from '../ModalHeader'
 
 import { CREATE_GROUP, GROUPS_Q } from './queries'
 

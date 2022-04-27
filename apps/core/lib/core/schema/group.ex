@@ -7,6 +7,7 @@ defmodule Core.Schema.Group do
     field :description, :string
     field :global, :boolean, default: false
     field :globalized, :boolean, virtual: true
+    field :external_id, :string
 
     belongs_to :account, Account
     has_many :role_bindings, RoleBinding
@@ -36,6 +37,7 @@ defmodule Core.Schema.Group do
     model
     |> cast(attrs, @valid)
     |> foreign_key_constraint(:account_id)
+    |> unique_constraint(:external_id)
     |> unique_constraint(:name, name: index_name(:groups, [:account_id, :name]))
     |> validate_required([:name, :account_id])
     |> set_globalized(model)

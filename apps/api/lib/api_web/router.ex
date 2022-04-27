@@ -37,6 +37,10 @@ defmodule ApiWeb.Router do
     post "/dkr/callback", DockerController, :events
 
     get "/artifacts/:repository/:name", ArtifactController, :show
+
+    scope "/webhooks" do
+      post "/workos", WebhookController, :workos
+    end
   end
 
   scope "/api", ApiWeb do

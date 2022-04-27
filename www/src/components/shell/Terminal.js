@@ -5,11 +5,12 @@ import { XTerm } from 'xterm-for-react'
 import { FitAddon } from 'xterm-addon-fit'
 import { useQuery } from '@apollo/client'
 import { CircleInformation } from 'grommet-icons'
-import { ModalHeader, Update } from 'forge-core'
+import { Update } from 'forge-core'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { socket } from '../../helpers/client'
 import { Code } from '../incidents/Markdown'
+import { ModalHeader } from '../ModalHeader'
 
 import { ShellStatus } from './ShellStatus'
 

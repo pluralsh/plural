@@ -72,11 +72,13 @@ config :core,
   acme_key_id: get_env("ACME_KEY_ID"),
   acme_secret: get_env("ACME_SECRET"),
   zerossl_access_key: get_env("ZEROSSL_ACCESS_KEY"),
-  docker_metrics_table: ~s("permanent"."downsampled_docker_pulls")
+  docker_metrics_table: ~s("permanent"."downsampled_docker_pulls"),
+  workos_webhook: get_env("WORKOS_WEBHOOK_SECRET")
 
 config :workos,
   client_id: get_env("WORKOS_CLIENT_ID"),
   api_key: get_env("WORKOS_API_KEY")
+
 
 provider = case get_env("PROVIDER") || "google" do
   "google" -> :gcp

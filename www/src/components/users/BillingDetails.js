@@ -1,16 +1,15 @@
+import 'react-credit-cards/es/styles-compiled.css'
+import './stripe.css'
+import './billing.css'
 import { useCallback, useContext, useState } from 'react'
 import { CardElement, Elements, injectStripe } from 'react-stripe-elements'
 import { Box, Layer, Text } from 'grommet'
 import { useMutation, useQuery } from '@apollo/client'
-
-import { Button, ModalHeader, PaymentMethods, Trash } from 'forge-core'
-
+import { Button, PaymentMethods, Trash } from 'forge-core'
 import { Amex, Mastercard, Visa } from 'grommet-icons'
 
+import { ModalHeader } from '../ModalHeader'
 import { TagContainer } from '../repos/Tags'
-import 'react-credit-cards/es/styles-compiled.css'
-import './stripe.css'
-import './billing.css'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 import { SectionPortal } from '../Explore'
 import { HeaderItem } from '../repos/Docker'

@@ -1,5 +1,6 @@
 defmodule Core.OAuth.SSO do
-  def redirect_url(h \\ nil), do: "https://#{h || host()}/sso/callback"
+  def redirect_url(nil), do: "https://#{host()}/sso/callback"
+  def redirect_url(url) when is_binary(url), do: "#{url}/sso/callback"
 
   def host(), do: Application.get_env(:core, :host)
 

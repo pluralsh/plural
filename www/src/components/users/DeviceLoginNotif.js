@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Box, Layer, Text } from 'grommet'
-import { Fingerprint, ModalHeader } from 'forge-core'
+import { Fingerprint } from 'forge-core'
+
+import { ModalHeader } from '../ModalHeader'
 
 const LOGIN_KEY = 'dli-key'
 

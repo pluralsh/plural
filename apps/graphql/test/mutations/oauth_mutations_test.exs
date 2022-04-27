@@ -57,7 +57,7 @@ defmodule GraphQl.OAuthMutationsTest do
   describe "ssoCallback" do
     test "it will query workos and bootstrap a new user" do
       expect(WorkOS.SSO, :get_profile, fn "code" ->
-        {:ok, %{"email" => "someone@example.com", "first_name" => "SSO", "last_name" => "User"}}
+        {:ok, %{"profile" => %{"email" => "someone@example.com", "first_name" => "SSO", "last_name" => "User"}}}
       end)
 
       {:ok, %{data: %{"ssoCallback" => user}}} = run_query("""
@@ -65,13 +65,15 @@ defmodule GraphQl.OAuthMutationsTest do
           ssoCallback(code: $code) {
             id
             email
+            name
             loginMethod
           }
         }
       """, %{"code" => "code"})
 
       assert user["email"] == "someone@example.com"
-      assert user["loginMethod"] == "SSO"
+      assert user["name"] == "SSO User"
+      assert user["loginMethod"] == "PASSWORD"
     end
   end
 end

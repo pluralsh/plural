@@ -121,7 +121,6 @@ export function Container({ pad, width, hover, setHover, children, modifier, noH
       as={containerStyling}
       width={width}
       noHover={noHover}
-      elevation={theme.dark ? theme.global.elevation.dark.medium : theme.global.elevation.light.medium}
       brandColor={normalizeColor('brand', theme)}
       borderColor={normalizeColor('border', theme)}
       round="xsmall"

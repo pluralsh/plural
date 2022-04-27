@@ -24,8 +24,11 @@ function Blockquote({ children }) {
 
 export function Code({ children, header, className, multiline }) {
   const theme = useContext(ThemeContext)
+
   if (className && className.startsWith('lang-')) {
+
     const lang = className && className.slice(5)
+
     if (hljs.getLanguage(lang)) {
       return (
         <Box

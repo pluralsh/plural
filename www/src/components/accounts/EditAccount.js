@@ -41,7 +41,7 @@ const ViewOptions = {
   INVITES: 'invites',
 }
 
-function DomainRow({ domain: { domain }, removeDomain }) {
+function DomainRow({ domain: { domain, enableSso }, removeDomain }) {
   return (
     <Box
       direction="row"
@@ -49,13 +49,26 @@ function DomainRow({ domain: { domain }, removeDomain }) {
       align="center"
       gap="small"
     >
-      <Box fill="horizontal">
+      <Box
+        fill="horizontal"
+        direction="row"
+        gap="small"
+        align="center"
+      >
         <Text
           size="small"
           weight="bold"
-        >
-          {domain}
+        >{domain}
         </Text>
+        {enableSso && (
+          <Box
+            background="tone-light"
+            pad="xsmall"
+            round="xsmall"
+          >
+            SSO
+          </Box>
+        )}
       </Box>
       <Icon
         icon={Trash}

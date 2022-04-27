@@ -35,7 +35,7 @@ function DeleteRecipe({ recipe: { id }, repositoryId }) {
         focusIndicator={false}
         pad="xsmall"
         round="xsmall"
-        hoverIndicator="hover"
+        hoverIndicator="background-contrast"
         onClick={() => setConfirm(true)}
       >
         <Trash size="15px" />
@@ -85,9 +85,12 @@ function RecipeListItem({ recipe, setRecipe, repository: { editable, id } }) {
         <Text
           weight="bold"
           size="small"
-        >{name}
+        >
+          {name}
         </Text>
-        <Text size="small">{description}</Text>
+        <Text size="small">
+          {description}
+        </Text>
       </Box>
     </Container>
   )

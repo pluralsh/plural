@@ -1,11 +1,11 @@
 import { createElement, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Box, Drop, Layer, Text } from 'grommet'
-import { CreatePublisher as CreatePublisherIcon, EditField, Logout, MenuItem, ModalHeader, User } from 'forge-core'
+import { CreatePublisher as CreatePublisherIcon, EditField, Logout, MenuItem, User } from 'forge-core'
 import { Avatar } from 'pluralsh-design-system'
-
 import { useQuery } from '@apollo/client'
 
+import { ModalHeader } from '../ModalHeader'
 import CreatePublisher from '../publisher/CreatePublisher'
 import { ACCOUNT_PUBLISHERS } from '../publisher/queries'
 
@@ -35,7 +35,7 @@ export function Item({ onClick, icon, text, round }) {
   return (
     <Box
       pad={{ horizontal: 'small', vertical: 'xsmall' }}
-      hoverIndicator="light-2"
+      hoverIndicator="background-front"
       round={round}
       focusIndicator={false}
       direction="row"
@@ -157,6 +157,7 @@ export default function Me({ me }) {
         <Drop
           target={ref.current}
           align={{ top: 'bottom' }}
+          background="background-contrast"
           onClickOutside={() => setOpen(false)}
         >
           <Box

@@ -1,7 +1,8 @@
 import { Box, Layer, Text } from 'grommet'
 import { useMutation } from '@apollo/client'
+import { Button } from 'forge-core'
 
-import { Button, ModalHeader } from 'forge-core'
+import { ModalHeader } from '../ModalHeader'
 
 import { REPO_Q } from '../repos/queries'
 

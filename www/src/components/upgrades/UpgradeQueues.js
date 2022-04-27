@@ -21,7 +21,7 @@ function Queue({ q }) {
       flex={false}
       pad="small"
       onClick={() => navigate(`/upgrades/${q.id}`)}
-      hoverIndicator="hover"
+      hoverIndicator="background-contrast"
       border={{ side: 'bottom' }}
       direction="row"
       gap="small"

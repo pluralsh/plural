@@ -29,7 +29,7 @@ import { getPreviousUserData, setPreviousUserData, setToken, wipeToken } from '.
 import { CurrentUserContext } from './login/CurrentUser'
 
 export const SIDEBAR_ICON_HEIGHT = '40px'
-export const SIDEBAR_WIDTH = '200px'
+export const SIDEBAR_WIDTH = '224px'
 export const SMALL_WIDTH = '60px'
 
 function Sidebar() {
@@ -184,7 +184,6 @@ function Sidebar() {
         },
       ]}
       activeUrl={pathname}
-      user={me}
     />
   )
 }

@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { Box, Collapsible, Text } from 'grommet'
-
-import { Alert, AlertStatus } from '../utils/Alert'
+import { Alert } from 'pluralsh-design-system'
 
 import { GradeNub, HeaderItem } from './Docker'
 
@@ -128,16 +127,17 @@ export function ScanResults({ scan: { errors, violations } }) {
       {errors && (
         <Box
           fill
-          pad="small"
-          gap="xsmall"
+          gap="small"
+          pad={{ vertical: 'small' }}
         >
           {errors.map((error, ind) => (
             <Alert
-              key={`${ind}`}
-              status={AlertStatus.ERROR}
-              header="Scan failure"
-              description={error.message}
-            />
+              key={ind}
+              title="Scan failure"
+              severity="error"
+            >
+              {error.message}
+            </Alert>
           ))}
         </Box>
       )}

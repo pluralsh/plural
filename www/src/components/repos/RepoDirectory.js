@@ -1,28 +1,19 @@
 import { createElement, useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-
 import { Add } from 'grommet-icons'
 import { Bundle, Configuration, EditField as Edit, Incidents, Install, Package, Plan as PlanIcon, Update } from 'forge-core'
 import Collapsible from 'react-collapsible'
-
 import { Box } from 'grommet'
-
 import { useQuery } from '@apollo/client'
 
 import { SectionContentContainer, SectionItemContainer } from '../Explore'
-
 import CreatePlan from '../payments/CreatePlan'
-
 import { Rollouts } from '../upgrades/Rollouts'
-
 import { BreadcrumbsContext } from '../Breadcrumbs'
-
 import { OIDCProvider } from '../oidc/OIDCProvider'
-
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
 import { RepositoryTests } from './RepositoryTests'
-
 import { Charts, DockerRepos, RepoCredentials, RepoUpdate, RepositoryIcon, Terraform, UpdateSecrets } from './Repository'
 import { InstallationInner, Plans } from './Installation'
 import { UpdateInstallation } from './EditInstallation'
@@ -34,12 +25,15 @@ import { ArtifactTable } from './Artifacts'
 const ICON_SIZE = '14px'
 const IMG_SIZE = '75px'
 
-function SectionContent({ name, header, children, subgroup: subgroupName }) {
+function SectionContent({ name, header, children, subgroup: subgroupName, borderLeft }) {
   const { group, subgroup } = useParams()
   if (subgroup !== subgroupName || group !== name) return null
 
   return (
-    <SectionContentContainer header={header}>
+    <SectionContentContainer
+      header={header}
+      borderLeft={borderLeft}
+    >
       {children}
     </SectionContentContainer>
   )
@@ -272,6 +266,7 @@ export function RepoDirectory() {
         <SectionContent
           name="bundles"
           header="Bundles"
+          borderLeft
         >
           <Recipes
             recipes={recipes}

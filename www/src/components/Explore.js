@@ -5,7 +5,6 @@ import { Box, Collapsible, Text, ThemeContext } from 'grommet'
 import { useNavigate, useParams } from 'react-router-dom'
 import sortBy from 'lodash.sortby'
 import { Down, Next } from 'grommet-icons'
-import { Installed, Public, Publisher } from 'forge-core'
 import { Portal } from 'react-portal'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -18,7 +17,6 @@ import { RepoIcon, RepoName } from './repos/Repositories'
 import { Tag } from './repos/Tags'
 import { CATEGORIES, CATEGORY, EXPLORE_REPOS } from './repos/queries'
 import { StandardScroller } from './utils/SmoothScroller'
-import { SubmenuItem, SubmenuPortal } from './navigation/Submenu'
 import { LoopingLogo } from './utils/AnimatedLogo'
 import { ignore } from './utils/ModalHeader'
 
@@ -71,7 +69,7 @@ function Repo({ repo, setTag }) {
       align="center"
       pad="small"
       border={{ side: 'bottom' }}
-      hoverIndicator="hover"
+      hoverIndicator="background-contrast"
       focusIndicator={false}
       onClick={() => navigate(`/repositories/${repo.id}`)}
     >
@@ -211,7 +209,7 @@ function CategoryTags({ category, tag, setTag }) {
           pad="xsmall"
           margin={{ horizontal: 'xsmall' }}
           round="xsmall"
-          hoverIndicator="hover"
+          hoverIndicator="background-contrast"
           onClick={loadMore}
         >
           <Text size="small">see more...</Text>
@@ -231,7 +229,7 @@ function Category({ category, tag, setTag, unfurl }) {
         flex={false}
         direction="row"
         align="center"
-        hoverIndicator="hover"
+        hoverIndicator="background-contrast"
         pad={{ horizontal: 'small', vertical: 'xsmall' }}
         border={open ? { side: 'bottom' } : null}
         onClick={() => setOpen(!open)}
@@ -245,13 +243,15 @@ function Category({ category, tag, setTag, unfurl }) {
           <Text
             size="small"
             weight={500}
-          >{category.category.toLowerCase()}
+          >
+            {category.category.toLowerCase()}
           </Text>
           <Box className="hoverable">
             <Text
               size="small"
               color="dark-3"
-            >({category.count})
+            >
+              ({category.count})
             </Text>
           </Box>
         </Box>
@@ -292,7 +292,7 @@ function TagSidebar({ tag, setTag }) {
         {categories.map((category, ind) => (
           <Category
             key={category.category}
-            unfurl={ind === 0}
+            unfurl={false}
             category={category}
             tag={tag}
             setTag={setTag}
@@ -322,8 +322,7 @@ export function SectionPortal({ children }) {
   )
 }
 
-export function SectionContentContainer({ header: h, children }) {
-  const theme = useContext(ThemeContext)
+export function SectionContentContainer({ header: h, children, borderLeft }) {
   const [header, setHeader] = useState(h)
   const [ref, setRef] = useState(null)
   const id = useMemo(() => uuidv4(), [])
@@ -337,7 +336,7 @@ export function SectionContentContainer({ header: h, children }) {
           direction="row"
           pad="small"
           height="45px"
-          border={{ side: 'bottom' }}
+          border={borderLeft ? [{ side: 'bottom' }, { side: 'left' }] : [{ side: 'bottom' }]}
           align="center"
           background="background-contrast"
         >
@@ -345,7 +344,8 @@ export function SectionContentContainer({ header: h, children }) {
             <Text
               size="small"
               weight={500}
-            >{header}
+            >
+              {header}
             </Text>
           </Box>
           <Box
@@ -451,28 +451,6 @@ export default function Explore() {
       direction="row"
       fill
     >
-      <SubmenuPortal name="explore">
-        <SubmenuItem
-          url="/explore/public"
-          label="Public"
-          selected={group === 'public'}
-          icon={<Public size="14px" />}
-        />
-        <SubmenuItem
-          url="/explore/installed"
-          label="Installed"
-          selected={group === 'installed'}
-          icon={<Installed size="14px" />}
-        />
-        {me.publisher && (
-          <SubmenuItem
-            url="/explore/published"
-            label="Published"
-            selected={group === 'published'}
-            icon={<Publisher size="14px" />}
-          />
-        )}
-      </SubmenuPortal>
       <Box fill>
         <SectionContent
           name="public"

@@ -36,6 +36,7 @@ defmodule Core.Schema.User do
     field :provider,        Core.Schema.Dependencies.Provider
     field :customer_id,     :string
     field :phone,           :string
+    field :external_id,     :string
 
     field :email_confirmed,  :boolean, default: false
     field :email_confirm_by, :utc_datetime_usec
@@ -110,6 +111,7 @@ defmodule Core.Schema.User do
     |> cast_embed(:address)
     |> cast_embed(:roles, with: &roles_changeset/2)
     |> unique_constraint(:email)
+    |> unique_constraint(:external_id)
     |> validate_required([:name, :email])
     |> validate_length(:email,    max: 255)
     |> validate_length(:name,     max: 255)

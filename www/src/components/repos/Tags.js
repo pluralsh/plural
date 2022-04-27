@@ -61,7 +61,7 @@ export function TagContainer({ enabled, children, gap, pad, onClick }) {
       border={border}
     >
       <Box
-        hoverIndicator="hover"
+        hoverIndicator="background-contrast"
         focusIndicator={false}
         direction="row"
         align="center"
@@ -82,7 +82,9 @@ export function Tag({ tag: { tag, count }, setTag, enabled }) {
       enabled={enabled}
       onClick={() => setTag && setTag(tag)}
     >
-      <Text size="small"># {tag} ({count})</Text>
+      <Text size="small">
+        # {tag} ({count})
+      </Text>
     </TagContainer>
   )
 }

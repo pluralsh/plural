@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import { useApolloClient } from '@apollo/client'
 import { useNavigate } from 'react-router-dom'
-import { Box } from 'grommet'
-import { Input } from 'pluralsh-design-system'
+import { Box, TextInput } from 'grommet'
 
 import { SearchIcon } from '../utils/SearchIcon'
 
@@ -36,17 +35,19 @@ export default function SearchRepositories() {
       width="350px"
       direction="row"
       align="center"
-      border={{ side: 'all' }}
       style={{ borderRadius: 2 }}
       pad={{ vertical: '4px' }}
       focusIndicator={false}
     >
-      <Input
-        plain="full"
+      <TextInput
         type="text"
         value={value}
         name="search"
-        icon={<SearchIcon color="text-weak" />}
+        icon={(
+          <SearchIcon
+            color="text-weak"
+          />
+        )}
         suggestions={suggestions}
         placeholder="search for a repository"
         onSelect={({ suggestion }) => {
@@ -62,6 +63,11 @@ export default function SearchRepositories() {
           else {
             setSuggestions([])
           }
+        }}
+        style={{
+          borderRadius: 2,
+          height: 32,
+          paddingLeft: '1.5rem',
         }}
       />
     </Box>

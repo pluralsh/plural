@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useApolloClient } from '@apollo/client'
 import { useNavigate } from 'react-router-dom'
 import { Box } from 'grommet'
-import { TextInput } from 'pluralsh-design-system'
+import { Input } from 'pluralsh-design-system'
 
 import { SearchIcon } from '../utils/SearchIcon'
 
@@ -41,7 +41,7 @@ export default function SearchRepositories() {
       pad={{ vertical: '4px' }}
       focusIndicator={false}
     >
-      <TextInput
+      <Input
         plain="full"
         type="text"
         value={value}

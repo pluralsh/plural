@@ -5,7 +5,7 @@ import cloneDeep from 'lodash.clonedeep'
 import groupBy from 'lodash.groupby'
 import remove from 'lodash.remove'
 import uniqueId from 'lodash.uniqueid'
-import { Button } from 'pluralsh-design-system'
+import { Button } from 'honorable'
 
 import TreeGraph from '../utils/TreeGraph'
 

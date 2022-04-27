@@ -1,5 +1,5 @@
 import { useContext, useMemo } from 'react'
-import { Box, Grid } from 'grommet'
+import { Box } from 'grommet'
 import { Navigate, Route, Routes, useParams } from 'react-router-dom'
 import { StripeProvider } from 'react-stripe-elements'
 
@@ -88,211 +88,194 @@ export function PluralInner() {
             <VerifyEmailConfirmed />
             {/* <AutoRefresh /> */}
             <DeviceLoginNotif />
-            <Grid
-              fill
-              rows={[TOOLBAR_SIZE, 'flex']}
-              columns={['100vw']}
-              areas={[
-                { name: 'toolbarTop', start: [0, 0], end: [0, 0] },
-                { name: 'viewport', start: [0, 1], end: [0, 1] },
-              ]}
+            <Toolbar />
+            <Box
+              style={{ height: `calc(100vh - ${TOOLBAR_SIZE})` }}
+              direction="row"
+              gridArea="viewport"
+              background="background"
             >
-              <Box
-                background="background-front"
-                gridArea="toolbarTop"
-                align="center"
-                justify="center"
-              >
-                <Toolbar />
-              </Box>
-              <Box
-                style={{ height: `calc(100vh - ${TOOLBAR_SIZE})` }}
-                direction="row"
-                gridArea="viewport"
-                background="background"
-              >
-                <Sidebar />
-                <Box fill>
-                  <Box
-                    fill
-                  >
-                    <Routes>
-                      <Route
-                        path="/accounts/edit/:section/*"
-                        element={<EditAccount />}
-                      />
-                      <Route
-                        exact
-                        path="/accounts/edit"
-                        element={<Navigate to="/accounts/edit/users" />}
-                      />
-                      <Route
-                        path="/accounts/billing/:section"
-                        element={<EditBilling />}
-                      />
-                      <Route
-                        path="/publishers/mine/:editing"
-                        element={<MyPublisher />}
-                      />
-                      <Route
-                        path="/publishers/:id/:editing"
-                        element={<MyPublisher />}
-                      />
-                      <Route
-                        path="/publishers/:publisherId"
-                        element={<Publisher />}
-                      />
-                      <Route
-                        path="/publishers"
-                        element={<Publishers />}
-                      />
-                      <Route
-                        path="/dkr/repo/:id"
-                        element={<DockerRepository />}
-                      />
-                      <Route
-                        path="/dkr/img/:id"
-                        element={<Docker />}
-                      />
-                      <Route
-                        path="/shell"
-                        element={<CloudShell />}
-                      />
-                      <Route
-                        path="/oauth/callback/github/shell"
-                        element={<OAuthCallback />}
-                      />
-                      <Route
-                        path="/repositories/:id/integrations"
-                        element={<IntegrationPage />}
-                      />
-                      <Route
-                        exact
-                        path="/repositories/:id"
-                        element={<NavigateId to="/repositories/:id/bundles" />}
-                      />
-                      <Route
-                        exact
-                        path="/repositories/:id/packages"
-                        element={<NavigateId to="/repositories/:id/packages/helm" />}
-                      />
-                      <Route
-                        exact
-                        path="/repositories/:id/edit"
-                        element={<NavigateId to="/repositories/:id/edit/details" />}
-                      />
-                      <Route
-                        exact
-                        path="/repositories/:id/configure"
-                        element={<NavigateId to="/repositories/:id/configure/upgrades" />}
-                      />
-                      <Route
-                        path="/repositories/:id/:group/:subgroup"
-                        element={<RepoDirectory />}
-                      />
-                      <Route
-                        path="/repositories/:id/:group"
-                        element={<RepoDirectory />}
-                      />
-                      <Route
-                        path="/charts/:chartId"
-                        element={<Chart />}
-                      />
-                      <Route
-                        path="/terraform/:tfId"
-                        element={<Terraform />}
-                      />
-                      <Route
-                        exact
-                        path="/me/edit"
-                        element={<Navigate to="/me/edit/user" />}
-                      />
-                      <Route
-                        path="/me/edit/:editing"
-                        element={<EditUser />}
-                      />
-                      <Route
-                        path="/billing/:section"
-                        element={<Billing />}
-                      />
-                      <Route
-                        path="/me/invoices/:subscriptionId"
-                        element={<Invoices />}
-                      />
-                      <Route
-                        path="/incidents/:group"
-                        element={<IncidentDirectory />}
-                      />
-                      <Route
-                        exact
-                        path="/incidents"
-                        element={<Navigate to="/incidents/all" />}
-                      />
-                      <Route
-                        path="/incident/:incidentId/edit"
-                        element={<EditIncident />}
-                      />
-                      <Route
-                        path="/incident/:incidentId"
-                        element={<Incident />}
-                      />
-                      <Route
-                        path="/incidents"
-                        element={<Incidents />}
-                      />
-                      <Route
-                        path="/webhooks/:id"
-                        element={<Webhook />}
-                      />
-                      <Route
-                        path="/webhooks"
-                        element={<Integrations />}
-                      />
-                      <Route
-                        path="/oauth/accept/:service"
-                        element={<OauthCreator />}
-                      />
-                      <Route
-                        path="/audits/:graph"
-                        element={<Audits />}
-                      />
-                      <Route
-                        exact
-                        path="/audits"
-                        element={<Navigate to="/audits/table" />}
-                      />
-                      <Route
-                        path="/upgrades/:id"
-                        element={<UpgradeQueue />}
-                      />
-                      <Route
-                        path="/upgrades"
-                        element={<UpgradeQueues />}
-                      />
-                      <Route
-                        path="/explore/:group/:tag"
-                        element={<Explore />}
-                      />
-                      <Route
-                        path="/explore/:group"
-                        element={<Explore />}
-                      />
-                      <Route
-                        exact
-                        path="/"
-                        element={<Navigate to={me.hasInstallations ? '/explore/installed' : '/explore/public'} />}
-                      />
-                      <Route
-                        exact
-                        path="/explore"
-                        element={<Navigate to="/explore/public" />}
-                      />
-                    </Routes>
-                  </Box>
+              <Sidebar />
+              <Box fill>
+                <Box
+                  fill
+                >
+                  <Routes>
+                    <Route
+                      path="/accounts/edit/:section/*"
+                      element={<EditAccount />}
+                    />
+                    <Route
+                      exact
+                      path="/accounts/edit"
+                      element={<Navigate to="/accounts/edit/users" />}
+                    />
+                    <Route
+                      path="/accounts/billing/:section"
+                      element={<EditBilling />}
+                    />
+                    <Route
+                      path="/publishers/mine/:editing"
+                      element={<MyPublisher />}
+                    />
+                    <Route
+                      path="/publishers/:id/:editing"
+                      element={<MyPublisher />}
+                    />
+                    <Route
+                      path="/publishers/:publisherId"
+                      element={<Publisher />}
+                    />
+                    <Route
+                      path="/publishers"
+                      element={<Publishers />}
+                    />
+                    <Route
+                      path="/dkr/repo/:id"
+                      element={<DockerRepository />}
+                    />
+                    <Route
+                      path="/dkr/img/:id"
+                      element={<Docker />}
+                    />
+                    <Route
+                      path="/shell"
+                      element={<CloudShell />}
+                    />
+                    <Route
+                      path="/oauth/callback/github/shell"
+                      element={<OAuthCallback />}
+                    />
+                    <Route
+                      path="/repositories/:id/integrations"
+                      element={<IntegrationPage />}
+                    />
+                    <Route
+                      exact
+                      path="/repositories/:id"
+                      element={<NavigateId to="/repositories/:id/bundles" />}
+                    />
+                    <Route
+                      exact
+                      path="/repositories/:id/packages"
+                      element={<NavigateId to="/repositories/:id/packages/helm" />}
+                    />
+                    <Route
+                      exact
+                      path="/repositories/:id/edit"
+                      element={<NavigateId to="/repositories/:id/edit/details" />}
+                    />
+                    <Route
+                      exact
+                      path="/repositories/:id/configure"
+                      element={<NavigateId to="/repositories/:id/configure/upgrades" />}
+                    />
+                    <Route
+                      path="/repositories/:id/:group/:subgroup"
+                      element={<RepoDirectory />}
+                    />
+                    <Route
+                      path="/repositories/:id/:group"
+                      element={<RepoDirectory />}
+                    />
+                    <Route
+                      path="/charts/:chartId"
+                      element={<Chart />}
+                    />
+                    <Route
+                      path="/terraform/:tfId"
+                      element={<Terraform />}
+                    />
+                    <Route
+                      exact
+                      path="/me/edit"
+                      element={<Navigate to="/me/edit/user" />}
+                    />
+                    <Route
+                      path="/me/edit/:editing"
+                      element={<EditUser />}
+                    />
+                    <Route
+                      path="/billing/:section"
+                      element={<Billing />}
+                    />
+                    <Route
+                      path="/me/invoices/:subscriptionId"
+                      element={<Invoices />}
+                    />
+                    <Route
+                      path="/incidents/:group"
+                      element={<IncidentDirectory />}
+                    />
+                    <Route
+                      exact
+                      path="/incidents"
+                      element={<Navigate to="/incidents/all" />}
+                    />
+                    <Route
+                      path="/incident/:incidentId/edit"
+                      element={<EditIncident />}
+                    />
+                    <Route
+                      path="/incident/:incidentId"
+                      element={<Incident />}
+                    />
+                    <Route
+                      path="/incidents"
+                      element={<Incidents />}
+                    />
+                    <Route
+                      path="/webhooks/:id"
+                      element={<Webhook />}
+                    />
+                    <Route
+                      path="/webhooks"
+                      element={<Integrations />}
+                    />
+                    <Route
+                      path="/oauth/accept/:service"
+                      element={<OauthCreator />}
+                    />
+                    <Route
+                      path="/audits/:graph"
+                      element={<Audits />}
+                    />
+                    <Route
+                      exact
+                      path="/audits"
+                      element={<Navigate to="/audits/table" />}
+                    />
+                    <Route
+                      path="/upgrades/:id"
+                      element={<UpgradeQueue />}
+                    />
+                    <Route
+                      path="/upgrades"
+                      element={<UpgradeQueues />}
+                    />
+                    <Route
+                      path="/explore/:group/:tag"
+                      element={<Explore />}
+                    />
+                    <Route
+                      path="/explore/:group"
+                      element={<Explore />}
+                    />
+                    <Route
+                      exact
+                      path="/"
+                      element={<Navigate to={me.hasInstallations ? '/explore/installed' : '/explore/public'} />}
+                    />
+                    <Route
+                      exact
+                      path="/explore"
+                      element={<Navigate to="/explore/public" />}
+                    />
+                  </Routes>
                 </Box>
-                <FlyoutContainer />
               </Box>
-            </Grid>
+              <FlyoutContainer />
+            </Box>
           </BreadcrumbProvider>
         </WrapStripe>
       </IncidentContext.Provider>

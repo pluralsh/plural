@@ -179,7 +179,7 @@ defmodule Core.Services.UsersTest do
     end
 
     test "if the email is on an sso-enabled domain, it will return an sso login method" do
-      insert(:domain_mapping, domain: "example.com", enable_sso: true)
+      insert(:domain_mapping, domain: "example.com", enable_sso: true, workos_connection_id: "conn_id")
       {:ok, %{login_method: :sso, authorize_url: url}} = Users.login_method("someone@example.com")
 
       assert is_binary(url)

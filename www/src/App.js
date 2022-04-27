@@ -17,6 +17,7 @@ import { PasswordReset, ResetPassword } from './components/users/PasswordReset'
 import { OAuthConsent } from './components/oidc/OAuthConsent'
 import { EmailConfirmed } from './components/users/EmailConfirmation'
 import { OAuthCallback } from './components/users/OAuthCallback'
+import { SSOCallback } from './components/users/SSOCallback'
 
 const xtheme = merge({}, oldTheme, theme, {
   mode: 'dark',
@@ -86,6 +87,10 @@ function App() {
               <Route
                 path="/oauth/callback/:service"
                 element={<OAuthCallback />}
+              />
+              <Route
+                path="/sso/callback"
+                element={<SSOCallback />}
               />
               <Route
                 exact

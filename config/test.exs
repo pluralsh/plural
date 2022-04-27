@@ -80,3 +80,7 @@ config :worker,
 
 config :worker,
   upgrade_pipeline: []
+
+
+config :core,
+  workos_webhook: "supersecret"

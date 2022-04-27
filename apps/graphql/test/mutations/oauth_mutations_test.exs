@@ -65,13 +65,15 @@ defmodule GraphQl.OAuthMutationsTest do
           ssoCallback(code: $code) {
             id
             email
+            name
             loginMethod
           }
         }
       """, %{"code" => "code"})
 
       assert user["email"] == "someone@example.com"
-      assert user["loginMethod"] == "SSO"
+      assert user["name"] == "SSO User"
+      assert user["loginMethod"] == "PASSWORD"
     end
   end
 end

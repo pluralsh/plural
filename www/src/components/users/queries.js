@@ -13,7 +13,7 @@ export const ME_Q = gql`
       account { 
         ...AccountFragment 
         rootUser { id }
-        domainMappings { id domain }
+        domainMappings { id domain enableSso }
       }
       publisher { 
         ...PublisherFragment 

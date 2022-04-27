@@ -265,12 +265,16 @@ defmodule Core.Services.Users do
     case get_user_by_email(email) do
       nil ->
         attrs
-        |> Map.merge(%{login_method: service, password: Ecto.UUID.generate()})
+        |> Map.merge(login_args(service))
+        |> Map.put(:password, Ecto.UUID.generate())
         |> create_user()
       %User{} = user ->
-        update_user(%{login_method: service}, user)
+        update_user(login_args(:sso), user)
     end
   end
+
+  defp login_args(:sso), do: %{}
+  defp login_args(service), do: %{login_method: service}
 
   @doc "self explanatory"
   @spec update_user(map, User.t) :: user_resp

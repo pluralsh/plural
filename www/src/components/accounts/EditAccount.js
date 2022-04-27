@@ -55,7 +55,7 @@ const VIEWS = [
   { text: 'OAuth Integrations', view: ViewOptions.INTEGRATIONS, icon: <Oauth size={ICON_SIZE} /> },
 ]
 
-function DomainRow({ domain: { domain }, removeDomain }) {
+function DomainRow({ domain: { domain, enableSso }, removeDomain }) {
   return (
     <Box
       direction="row"
@@ -63,11 +63,15 @@ function DomainRow({ domain: { domain }, removeDomain }) {
       align="center"
       gap="small"
     >
-      <Box fill="horizontal"><Text
-        size="small"
-        weight="bold"
-      >{domain}
-                             </Text>
+      <Box fill="horizontal" direction='row' gap='small' align='center'>
+        <Text
+          size="small"
+          weight="bold"
+        >{domain}
+        </Text>
+        {enableSso && (
+          <Box background='tone-light' pad='xsmall' round='xsmall'>SSO</Box>
+        )}
       </Box>
       <Icon 
         icon={Trash}

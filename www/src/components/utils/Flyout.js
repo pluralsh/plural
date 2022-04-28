@@ -34,7 +34,7 @@ export function Flyout({ width, title, setOpen, children, ...rest }) {
             pad="xsmall"
             round="xsmall"
             onClick={() => setOpen(false)}
-            hoverIndicator="background-contrast"
+            hoverIndicator="background-light"
           >
             <Next size="small" />
           </Box>

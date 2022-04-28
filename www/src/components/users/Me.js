@@ -157,7 +157,7 @@ export default function Me({ me }) {
         <Drop
           target={ref.current}
           align={{ top: 'bottom' }}
-          background="background-contrast"
+          background="background-light"
           onClickOutside={() => setOpen(false)}
         >
           <Box

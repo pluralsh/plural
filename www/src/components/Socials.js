@@ -18,7 +18,7 @@ function SocialLink({ icon, url }) {
         align="center"
         justify="center"
         onClick={() => null}
-        hoverIndicator="background"
+        hoverIndicator="background-light"
         round="xsmall"
       >
         {icon}
@@ -36,7 +36,12 @@ export function SocialLinks() {
       align="center"
     >
       <SocialLink
-        icon={<GitHubLogoIcon size={ICON_SIZE} />}
+        icon={(
+          <GitHubLogoIcon
+            size={ICON_SIZE}
+            color="white"
+          />
+        )}
         url="https://github.com/pluralsh/plural"
       />
       <SocialLink
@@ -49,7 +54,12 @@ export function SocialLinks() {
         url="https://discord.gg/bEBAMXV64s"
       />
       <SocialLink
-        icon={<TwitterIcon size={ICON_SIZE} />}
+        icon={(
+          <TwitterIcon
+            size={ICON_SIZE}
+            color="white"
+          />
+        )}
         url="https://twitter.com/plural_sh"
       />
     </Box>

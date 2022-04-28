@@ -186,7 +186,7 @@ function Control({ icon, onClick }) {
       width="25px"
       height="25px"
       onClick={onClick}
-      hoverIndicator="background-contrast"
+      hoverIndicator="background-light"
       focusIndicator={false}
       align="center"
       justify="center"

@@ -4,7 +4,6 @@ import { ApolloProvider } from '@apollo/client'
 import { IntercomProvider } from 'react-use-intercom'
 import { Grommet } from 'grommet'
 import { theme } from 'pluralsh-design-system'
-import merge from 'lodash.merge'
 import { CssBaseline, ThemeProvider } from 'honorable'
 
 import { client } from './helpers/client'
@@ -20,33 +19,7 @@ import { EmailConfirmed } from './components/users/EmailConfirmation'
 import { OAuthCallback } from './components/users/OAuthCallback'
 import { SSOCallback } from './components/users/SSOCallback'
 
-const grommetTheme = merge({}, DEFAULT_THEME, {
-  mode: 'dark',
-  defaultMode: 'dark',
-  // HACK
-  // To remove once the following bug is fixed
-  // Grommet behaves as if it had the light theme mode on even if dark mode is on
-  global: {
-    colors: {
-      background: {
-        light: '#111525',
-        dark: '#111525',
-      },
-      'background-back': {
-        dark: '#111525',
-        light: '#111525',
-      },
-      'background-front': {
-        dark: '#181B29',
-        light: '#181B29',
-      },
-      'background-contrast': {
-        dark: '#222534',
-        light: '#222534',
-      },
-    },
-  },
-})
+console.log('theme', theme)
 
 function App() {
   return (
@@ -56,7 +29,7 @@ function App() {
           <CssBaseline />
           <Grommet
             full
-            theme={grommetTheme}
+            theme={DEFAULT_THEME}
             themeMode="dark"
           >
             <BrowserRouter>

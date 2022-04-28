@@ -27,7 +27,7 @@ function Container({ children, onClick, noPad }) {
     <Box
       onClick={onClick}
       focusIndicator={false}
-      hoverIndicator="background-contrast"
+      hoverIndicator="background-light"
       pad={noPad ? null : 'small'}
       direction="row"
       border={{ side: 'bottom' }}

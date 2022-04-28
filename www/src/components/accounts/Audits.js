@@ -140,7 +140,7 @@ function LoginRow({ login }) {
       border={{ side: 'bottom' }}
       align="center"
       onClick={() => null}
-      hoverIndicator="background-contrast"
+      hoverIndicator="background-light"
       focusIndicator={false}
     >
       <AuditUser
@@ -232,7 +232,7 @@ function Audit({ audit }) {
       border={{ side: 'bottom' }}
       align="center"
       onClick={() => null}
-      hoverIndicator="background-contrast"
+      hoverIndicator="background-light"
       focusIndicator={false}
     >
       <HeaderItem

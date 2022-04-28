@@ -4,11 +4,13 @@ import {
   BotIcon,
   BrowserIcon,
   CreditCardIcon,
+  DashboardIcon,
   FingerPrintIcon,
   IdIcon,
   InstalledIcon,
   InvoicesIcon,
   KeyPairIcon,
+  LifePreserverIcon,
   ListIcon,
   LogoutIcon,
   MagnifyingGlassIcon,
@@ -70,6 +72,7 @@ function Sidebar() {
             {
               name: 'User Attributes',
               url: '/me/edit/user',
+              Icon: PersonIcon,
             },
             {
               name: 'Password',
@@ -171,6 +174,18 @@ function Sidebar() {
           name: 'Incidents',
           Icon: SirenIcon,
           url: '/incidents',
+          items: [
+            {
+              name: 'My incidents',
+              url: '/incidents/all',
+              Icon: SirenIcon,
+            },
+            {
+              name: 'Responses',
+              url: '/incidents/responses',
+              Icon: LifePreserverIcon,
+            },
+          ],
         },
         {
           name: 'Integrations',
@@ -181,6 +196,23 @@ function Sidebar() {
           name: 'Audits',
           Icon: ListIcon,
           url: '/audits',
+          items: [
+            {
+              name: 'Audits',
+              Icon: ListIcon,
+              url: 'audits/table',
+            },
+            {
+              name: 'Login',
+              Icon: OAuthIcon,
+              url: '/audits/logins',
+            },
+            {
+              name: 'Geodistribution',
+              Icon: DashboardIcon,
+              url: '/audits/graph',
+            },
+          ],
         },
       ]}
       activeUrl={pathname}

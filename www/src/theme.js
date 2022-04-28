@@ -1,5 +1,6 @@
 // DEPRECATED
 // In favor of plural-design-system/theme
+import { normalizeColor } from 'grommet/utils'
 import { css } from 'styled-components'
 
 import { alpha, shadeColor } from './utils/color'
@@ -205,6 +206,7 @@ export const DEFAULT_THEME = {
     focus: { shadow: null, border: { color: 'brand' } },
     control: { border: { radius: '2px' } },
     drop: {
+      background: 'background-top',
       border: { radius: '4px' },
       extend: css`
         box-shadow: 0px 0px 4px 4px rgba(0, 0, 0, 0.2);

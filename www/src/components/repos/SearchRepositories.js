@@ -17,7 +17,10 @@ export function searchRepositories(client, query, callback) {
   }).then(({ data: { searchRepositories } }) => searchRepositories.edges.map(({ node }) => ({
     value: node,
     label: (
-      <Box style={{ maxWidth: 350 }}>
+      <Box
+        style={{ maxWidth: 350 }}
+        hoverIndicator="background-middle"
+      >
         <Repository repo={node} />
       </Box>
     ),

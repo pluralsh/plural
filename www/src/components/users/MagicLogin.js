@@ -16,7 +16,7 @@ import { ACCEPT_LOGIN } from '../oidc/queries'
 
 import { host } from '../../helpers/hostname'
 
-import { saveChallenge, saveDeviceToken, wipeChallenge, wipeDeviceToken } from './utils'
+import { getDeviceToken, saveChallenge, saveDeviceToken, wipeChallenge, wipeDeviceToken } from './utils'
 
 import { LoginMethod } from './types'
 import { LOGIN_METHOD, LOGIN_MUTATION, OAUTH_URLS, PASSWORDLESS_LOGIN, POLL_LOGIN_TOKEN, SIGNUP_MUTATION } from './queries'
@@ -26,7 +26,7 @@ import { finishedDeviceLogin } from './DeviceLoginNotif'
 export function LabelledInput({ label, value, onChange, placeholder, width, type, modifier }) {
   return (
     <Box
-      gap="xsmall"
+      gap="2px"
       width={width || '300px'}
     >
       <Box
@@ -246,7 +246,10 @@ export function Login() {
 
   const loading = qLoading || mLoading
 
-  if (qError) return <Redirect to="/signup" />
+  if (qError) {
+    if (deviceToken) saveDeviceToken(deviceToken)
+    return <Redirect to="/signup" />
+  }
 
   return (
     <LoginPortal>
@@ -360,11 +363,13 @@ export function Signup() {
   const [name, setName] = useState('')
   const [account, setAccount] = useState('')
   const [confirm, setConfirm] = useState('')
+  const deviceToken = getDeviceToken()
   const [mutation, { loading, error }] = useMutation(SIGNUP_MUTATION, {
-    variables: { attributes: { email, password, name }, account: { name: account } },
+    variables: { attributes: { email, password, name }, account: { name: account }, deviceToken },
     onCompleted: ({ signup: { jwt } }) => {
+      deviceToken && finishedDeviceLogin()
       setToken(jwt)
-      history.push('/')
+      window.location = '/'
     },
   })
   const { data } = useQuery(OAUTH_URLS, { variables: { host: host() } })
@@ -379,7 +384,7 @@ export function Signup() {
 
   return (
     <LoginPortal>
-      <Box gap="medium">
+      <Box flex={false} gap="small">
         <Box
           gap="xsmall"
           align="center"
@@ -388,7 +393,7 @@ export function Signup() {
             src={PLURAL_MARK}
             width="45px"
           />
-          <Text size="large">Sign up to get started with plural</Text>
+          <Text size="medium">Sign up to get started with plural</Text>
         </Box>
         <Box
           gap="xsmall"

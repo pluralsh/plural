@@ -200,8 +200,8 @@ export const LOGIN_METHOD = gql`
 `
 
 export const SIGNUP_MUTATION = gql`
-  mutation Signup($attributes: UserAttributes!, $account: AccountAttributes) {
-    signup(attributes: $attributes, account: $account) { jwt }
+  mutation Signup($attributes: UserAttributes!, $account: AccountAttributes, $deviceToken: String) {
+    signup(attributes: $attributes, account: $account, deviceToken: $deviceToken) { jwt }
   }
 `
 

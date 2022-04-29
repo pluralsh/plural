@@ -1,6 +1,6 @@
 import { createElement, useCallback, useEffect, useState } from 'react'
 import { Anchor, Box, Collapsible, Form, Keyboard, Text } from 'grommet'
-import { Divider } from 'forge-core'
+import { Divider } from 'pluralsh-design-system'
 import { useApolloClient, useLazyQuery, useMutation, useQuery } from '@apollo/client'
 import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
 import queryString from 'query-string'

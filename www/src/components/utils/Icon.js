@@ -35,7 +35,6 @@ export function Icon({ icon, text, selected, path, onClick, size, align }) {
       {hover && (
         <Tooltip
           pad="small"
-          round="xsmall"
           justify="center"
           background="sidebarHover"
           target={dropRef}
@@ -46,7 +45,8 @@ export function Icon({ icon, text, selected, path, onClick, size, align }) {
           <Text
             size="small"
             weight={500}
-          >{text}
+          >
+            {text}
           </Text>
         </Tooltip>
       )}

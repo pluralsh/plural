@@ -4,6 +4,8 @@ import { useCallback, useState } from 'react'
 import { Box, Text } from 'grommet'
 import Highlight from 'react-highlight.js'
 
+import { useTheme } from 'honorable'
+
 import Plan from '../payments/Plan'
 import CreatePlan, { CreateAnchor } from '../payments/CreatePlan'
 import SubscribeModal from '../payments/CreateSubscription'
@@ -82,6 +84,8 @@ export function DetailContainer({ children, ...rest }) {
 }
 
 export function InstallationInner({ installation, repository }) {
+  const theme = useTheme()
+
   if (installation) {
     return (
       <Box
@@ -94,7 +98,10 @@ export function InstallationInner({ installation, repository }) {
             subscription={installation.subscription}
           />
         )}
-        <Highlight language="bash">
+        <Highlight
+          language="bash"
+          style={{ backgroundColor: theme.utils.resolveColor('background-middle') }}
+        >
           {[`plural build --only ${repository.name}`, `plural deploy ${repository.name}`].join('\n')}
         </Highlight>
       </Box>

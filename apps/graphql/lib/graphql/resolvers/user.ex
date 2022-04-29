@@ -191,6 +191,7 @@ defmodule GraphQl.Resolvers.User do
   def signup_user(%{attributes: attrs} = args, _) do
     Map.put(attrs, :account, args[:account] || %{})
     |> Users.create_user()
+    |> activate_token(args)
     |> with_jwt()
   end
 

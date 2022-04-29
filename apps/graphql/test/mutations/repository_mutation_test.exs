@@ -399,4 +399,20 @@ defmodule GraphQl.RepositoryMutationsTest do
       refute release["owner"]
     end
   end
+
+  describe "resetInstallations" do
+    test "it can reset all a user's installations" do
+      user  = insert(:user)
+      insts = insert_list(3, :installation, user: user)
+
+      {:ok, %{data: %{"resetInstallations" => 3}}} = run_query("""
+        mutation {
+          resetInstallations
+        }
+      """, %{}, %{current_user: user})
+
+      for inst <- insts,
+        do: refute refetch(inst)
+    end
+  end
 end

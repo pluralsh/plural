@@ -333,7 +333,7 @@ defmodule GraphQl.Schema.Repository do
       arg :id,         :id
       arg :attributes, non_null(:repository_attributes)
 
-      resolve safe_resolver(&Repository.create_repository/2)
+      safe_resolve &Repository.create_repository/2
     end
 
 
@@ -343,7 +343,7 @@ defmodule GraphQl.Schema.Repository do
       arg :repository_name, :string
       arg :attributes,      non_null(:repository_attributes)
 
-      resolve safe_resolver(&Repository.update_repository/2)
+      safe_resolve &Repository.update_repository/2
     end
 
     field :upsert_repository, :repository do
@@ -352,21 +352,21 @@ defmodule GraphQl.Schema.Repository do
       arg :name,       non_null(:string)
       arg :publisher,  non_null(:string)
 
-      resolve safe_resolver(&Repository.upsert_repository/2)
+      safe_resolve &Repository.upsert_repository/2
     end
 
     field :delete_repository, :repository do
       middleware Authenticated
       arg :repository_id, non_null(:id)
 
-      resolve safe_resolver(&Repository.delete_repository/2)
+      safe_resolve &Repository.delete_repository/2
     end
 
     field :create_installation, :installation do
       middleware Authenticated
       arg :repository_id, non_null(:id)
 
-      resolve safe_resolver(&Repository.create_installation/2)
+      safe_resolve &Repository.create_installation/2
     end
 
     field :update_installation, :installation do
@@ -374,14 +374,20 @@ defmodule GraphQl.Schema.Repository do
       arg :id, non_null(:id)
       arg :attributes, non_null(:installation_attributes)
 
-      resolve safe_resolver(&Repository.update_installation/2)
+      safe_resolve &Repository.update_installation/2
     end
 
     field :delete_installation, :installation do
       middleware Authenticated
       arg :id, non_null(:id)
 
-      resolve safe_resolver(&Repository.delete_installation/2)
+      safe_resolve &Repository.delete_installation/2
+    end
+
+    field :reset_installations, :integer do
+      middleware Authenticated
+
+      safe_resolve &Repository.reset_installations/2
     end
 
     field :create_integration, :integration do
@@ -389,7 +395,7 @@ defmodule GraphQl.Schema.Repository do
       arg :repository_name, non_null(:string)
       arg :attributes, non_null(:integration_attributes)
 
-      resolve safe_resolver(&Repository.upsert_integration/2)
+      safe_resolve &Repository.upsert_integration/2
     end
 
     field :create_artifact, :artifact do
@@ -398,7 +404,7 @@ defmodule GraphQl.Schema.Repository do
       arg :repository_name, :string
       arg :attributes, non_null(:artifact_attributes)
 
-      resolve safe_resolver(&Repository.create_artifact/2)
+      safe_resolve &Repository.create_artifact/2
     end
 
     field :create_oidc_provider, :oidc_provider do
@@ -406,7 +412,7 @@ defmodule GraphQl.Schema.Repository do
       arg :installation_id, non_null(:id)
       arg :attributes, non_null(:oidc_attributes)
 
-      resolve safe_resolver(&Repository.create_oidc_provider/2)
+      safe_resolve &Repository.create_oidc_provider/2
     end
 
     field :update_oidc_provider, :oidc_provider do
@@ -414,7 +420,7 @@ defmodule GraphQl.Schema.Repository do
       arg :installation_id, non_null(:id)
       arg :attributes, non_null(:oidc_attributes)
 
-      resolve safe_resolver(&Repository.update_oidc_provider/2)
+      safe_resolve &Repository.update_oidc_provider/2
     end
 
     field :upsert_oidc_provider, :oidc_provider do
@@ -422,14 +428,14 @@ defmodule GraphQl.Schema.Repository do
       arg :installation_id, non_null(:id)
       arg :attributes, non_null(:oidc_attributes)
 
-      resolve safe_resolver(&Repository.upsert_oidc_provider/2)
+      safe_resolve &Repository.upsert_oidc_provider/2
     end
 
     field :acquire_lock, :apply_lock do
       middleware Authenticated
       arg :repository, non_null(:string)
 
-      resolve safe_resolver(&Repository.acquire_apply_lock/2)
+      safe_resolve &Repository.acquire_apply_lock/2
     end
 
     field :release_lock, :apply_lock do
@@ -437,7 +443,7 @@ defmodule GraphQl.Schema.Repository do
       arg :repository, non_null(:string)
       arg :attributes, non_null(:lock_attributes)
 
-      resolve safe_resolver(&Repository.release_apply_lock/2)
+      safe_resolve &Repository.release_apply_lock/2
     end
   end
 end

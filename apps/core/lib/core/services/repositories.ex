@@ -368,6 +368,27 @@ defmodule Core.Services.Repositories do
   end
   def delete_installation(inst_id, user), do: get_installation!(inst_id) |> delete_installation(user)
 
+  @doc """
+  Will delete all installations for a user and reset their provider pin
+  """
+  @spec reset_installations(User.t) :: {:ok, integer} | {:error, term}
+  def reset_installations(%User{} = user) do
+    Installation.for_user(user.id)
+    |> Core.Repo.all()
+    |> Enum.reduce(start_transaction(), fn inst, tx ->
+      add_operation(tx, inst.id, fn _ ->
+        delete_installation(inst, user)
+      end)
+    end)
+    |> add_operation(:user, fn _ -> Users.update_provider(nil, user) end)
+    |> execute()
+    |> when_ok(fn results ->
+      Map.keys(results)
+      |> Enum.reject(& &1 == :user)
+      |> Enum.count()
+    end)
+  end
+
   @oidc_scopes "profile code openid"
 
   @doc """

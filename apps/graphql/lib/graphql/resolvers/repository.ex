@@ -183,6 +183,9 @@ defmodule GraphQl.Resolvers.Repository do
   def delete_installation(%{id: id}, %{context: %{current_user: user}}),
     do: Repositories.delete_installation(id, user)
 
+  def reset_installations(_, %{context: %{current_user: user}}),
+    do: Repositories.reset_installations(user)
+
   def create_oidc_provider(%{attributes: attrs, installation_id: id}, %{context: %{current_user: user}}),
     do: Repositories.create_oidc_provider(attrs, id, user)
 

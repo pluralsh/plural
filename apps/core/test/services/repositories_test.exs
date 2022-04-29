@@ -617,4 +617,17 @@ defmodule Core.Services.RepositoriesTest do
       )
     end
   end
+
+  describe "#reset_installations/1" do
+    test "it will delete all installations for a user and reset their provider pin" do
+      user = insert(:user, provider: :aws)
+      insts = insert_list(3, :installation, user: user)
+
+      {:ok, 3} = Repositories.reset_installations(user)
+
+      refute refetch(user).provider
+      for inst <- insts,
+        do: refute refetch(inst)
+    end
+  end
 end

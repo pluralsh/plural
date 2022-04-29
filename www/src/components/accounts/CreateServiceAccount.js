@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { useMutation } from '@apollo/client'
-import { Button, InputCollection, ResponsiveInput } from 'forge-core'
+import { Button, InputCollection } from 'forge-core'
 
 import { Box, Layer } from 'grommet'
 
 import { appendConnection, updateCache } from '../../utils/graphql'
 
+import ResponsiveInput from '../ResponsiveInput'
 import { ModalHeader } from '../ModalHeader'
 import { GqlError } from '../utils/Alert'
 

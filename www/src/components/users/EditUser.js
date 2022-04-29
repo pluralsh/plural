@@ -1,15 +1,16 @@
 import { createContext, useContext, useEffect, useState } from 'react'
+import { Div } from 'honorable'
 import { Box, Text } from 'grommet'
 import {
   Button,
   InputCollection,
-  ResponsiveInput,
   Select,
 } from 'forge-core'
 import { useMutation, useQuery } from '@apollo/client'
 import { Checkmark, StatusCritical } from 'grommet-icons'
 import { useNavigate, useParams } from 'react-router-dom'
 
+import ResponsiveInput from '../ResponsiveInput'
 import Installations from '../repos/Installations'
 import { CurrentUserContext } from '../login/CurrentUser'
 import { BreadcrumbsContext } from '../Breadcrumbs'
@@ -111,15 +112,19 @@ export default function EditUser() {
         >
           <InputCollection>
             <ResponsiveInput
-              value={attributes.name}
               label="name"
+              labelWidth={64 + 4}
+              value={attributes.name}
               onChange={({ target: { value } }) => setAttributes({ ...attributes, name: value })}
             />
-            <ResponsiveInput
-              value={attributes.email}
-              label="email"
-              onChange={({ target: { value } }) => setAttributes({ ...attributes, email: value })}
-            />
+            <Div mt={0.5}>
+              <ResponsiveInput
+                label="email"
+                labelWidth={64 + 4}
+                value={attributes.email}
+                onChange={({ target: { value } }) => setAttributes({ ...attributes, email: value })}
+              />
+            </Div>
           </InputCollection>
           <Attributes width="50%">
             {me.provider && (

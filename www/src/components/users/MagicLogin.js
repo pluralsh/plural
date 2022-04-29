@@ -1,14 +1,15 @@
 import { createElement, useCallback, useEffect, useState } from 'react'
-import { Anchor, Box, Collapsible, Form, Keyboard, Text, TextInput } from 'grommet'
-import { Button, Divider } from 'forge-core'
+import { Anchor, Box, Collapsible, Form, Keyboard, Text } from 'grommet'
+import { Divider } from 'pluralsh-design-system'
 import { useApolloClient, useLazyQuery, useMutation, useQuery } from '@apollo/client'
 import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
 import queryString from 'query-string'
+import { Button, Div, Input } from 'honorable'
 
 import { fetchToken, setToken } from '../../helpers/authentication'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 import { PasswordStatus, disableState } from '../Login'
-import { PLURAL_ICON, PLURAL_MARK } from '../constants'
+import { PLURAL_ICON, PLURAL_MARK_WHITE } from '../constants'
 import { ACCEPT_LOGIN } from '../oidc/queries'
 
 import { host } from '../../helpers/hostname'
@@ -41,7 +42,7 @@ export function LabelledInput({ label, value, onChange, placeholder, width, type
           {modifier}
         </Box>
       </Box>
-      <TextInput
+      <Input
         name={label}
         type={type}
         value={value || ''}
@@ -59,18 +60,17 @@ export function LoginPortal({ children, ...props }) {
       fill="horizontal"
       direction="row"
     >
-      <Box
+      <Div
+        xflex="x5"
         width="40%"
-        fill="vertical"
-        justify="center"
-        align="center"
-        background="plural-blk"
+        height="100%"
+        background="darken(background, 2)"
       >
         <img
           src={PLURAL_ICON}
-          width="200px"
+          width={256}
         />
-      </Box>
+      </Div>
       <Box
         style={{ overflow: 'auto' }}
         fill
@@ -106,16 +106,19 @@ export function PasswordlessLogin() {
           align="center"
         >
           <img
-            src={PLURAL_MARK}
+            src={PLURAL_MARK_WHITE}
             width="45px"
           />
-          <Text size="large">Passwordless Login</Text>
+          <Text size="large">
+            Passwordless Login
+          </Text>
         </Box>
         {loading && (
           <Text
             size="small"
             color="dark-3"
-          >Validating your login token...
+          >
+            Validating your login token...
           </Text>
         )}
         {error && (
@@ -258,14 +261,17 @@ export function Login() {
           align="center"
         >
           <img
-            src={PLURAL_MARK}
+            src={PLURAL_MARK_WHITE}
             width="45px"
           />
-          <Text size="large">Welcome</Text>
+          <Text size="large">
+            Welcome
+          </Text>
           <Text
             size="small"
             color="dark-3"
-          >{open ? 'good to see you again' : 'Tell us your email to get started'}
+          >
+            {open ? 'good to see you again' : 'Tell us your email to get started'}
           </Text>
         </Box>
         {passwordless && (
@@ -313,13 +319,13 @@ export function Login() {
                   />
                 </Collapsible>
                 <Button
-                  fill="horizontal"
-                  pad={{ vertical: '8px' }}
-                  margin={{ top: 'small' }}
-                  label="Continue"
+                  width="100%"
+                  mt={0.5}
                   loading={loading}
                   onClick={submit}
-                />
+                >
+                  Continue
+                </Button>
               </Box>
             </Form>
           </Keyboard>
@@ -330,6 +336,11 @@ export function Login() {
 }
 
 const WIDTH = '350px'
+
+const providerToName = {
+  github: 'GitHub',
+  google: 'Google',
+}
 
 function OAuthOption({ url: { authorizeUrl, provider } }) {
   const icon = METHOD_ICONS[provider]
@@ -344,13 +355,13 @@ function OAuthOption({ url: { authorizeUrl, provider } }) {
       gap="small"
       fill="horizontal"
       pad={{ vertical: '7px' }}
-      hoverIndicator="tone-light"
+      hoverIndicator="background-light"
       onClick={() => {
         window.location = authorizeUrl
       }}
     >
-      {createElement(icon, { size: 'medium', color: 'plain' })}
-      <Text size="small">Sign up with {provider.toLowerCase()}</Text>
+      {createElement(icon, { size: 'medium', color: provider.toLowerCase() === 'github' ? 'white' : 'plain' })}
+      <Text size="small">Sign up with {providerToName[provider.toLowerCase()]}</Text>
     </Box>
   )
 }
@@ -387,7 +398,7 @@ export function Signup() {
           align="center"
         >
           <img
-            src={PLURAL_MARK}
+            src={PLURAL_MARK_WHITE}
             width="45px"
           />
           <Text size="large">Sign up to get started with plural</Text>
@@ -469,11 +480,13 @@ export function Signup() {
                   reason={reason}
                 />
                 <Button
-                  label="Sign Up"
+                  secondary
                   disabled={disabled}
                   loading={loading}
                   onClick={mutation}
-                />
+                >
+                  Sign Up
+                </Button>
               </Box>
             </Box>
           </Form>

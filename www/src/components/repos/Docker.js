@@ -127,7 +127,8 @@ function DockerSidebar({ image: { dockerRepository: docker, ...image }, filter, 
           <Text
             weight="bold"
             size="small"
-          >Pull Command
+          >
+            Pull Command
           </Text>
           <Stack anchor="right">
             <CopyToClipboard
@@ -136,7 +137,7 @@ function DockerSidebar({ image: { dockerRepository: docker, ...image }, filter, 
             >
               <Box
                 flex={false}
-                background="sidebar"
+                background="background-middle"
                 pad="xsmall"
               >
                 <pre>docker pull {truncate(imageName, { length: 40 })}</pre>

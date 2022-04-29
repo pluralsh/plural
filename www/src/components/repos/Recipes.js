@@ -35,7 +35,7 @@ function DeleteRecipe({ recipe: { id }, repositoryId }) {
         focusIndicator={false}
         pad="xsmall"
         round="xsmall"
-        hoverIndicator="background-contrast"
+        hoverIndicator="background-light"
         onClick={() => setConfirm(true)}
       >
         <Trash size="15px" />

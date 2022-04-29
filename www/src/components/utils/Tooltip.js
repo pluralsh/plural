@@ -4,6 +4,7 @@ export function Tooltip({ children, background, align, target, side, ...props })
   return (
     <Drop
       plain
+      style={{ boxShadow: 'none' }}
       className={`tooltip ${side || 'bottom'}`}
       align={align || { bottom: 'top' }}
       target={target.current}

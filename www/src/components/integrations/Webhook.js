@@ -91,7 +91,7 @@ export function Attribute({ name, width, children }) {
       fill="horizontal"
       pad="small"
     >
-      <Box width={width || '80px'}>
+      <Box width={width || '128px'}>
         <Text
           size="small"
           weight="bold"
@@ -186,7 +186,7 @@ function Control({ icon, onClick }) {
       width="25px"
       height="25px"
       onClick={onClick}
-      hoverIndicator="background-contrast"
+      hoverIndicator="background-light"
       focusIndicator={false}
       align="center"
       justify="center"

@@ -13,7 +13,7 @@ export function VersionTag({ tag: { tag }, onClick }) {
       round="xsmall"
       align="center"
       justify="center"
-      background="background-contrast"
+      background="background-light"
       onClick={onClick}
       pad={{ horizontal: 'small', vertical: 'xxsmall' }}
     >

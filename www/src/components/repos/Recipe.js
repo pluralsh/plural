@@ -8,7 +8,7 @@ function BundleInstall({ recipe, repository, setOpen }) {
     <Layer
       modal
       animation="fadeIn"
-      background="background-front"
+      background="background-middle"
       position="center"
       onEsc={() => setOpen(false)}
       onClickOutside={() => setOpen(false)}

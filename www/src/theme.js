@@ -1,6 +1,6 @@
 // DEPRECATED
 // In favor of plural-design-system/theme
-
+import { normalizeColor } from 'grommet/utils'
 import { css } from 'styled-components'
 
 import { alpha, shadeColor } from './utils/color'
@@ -73,9 +73,7 @@ export const DEFAULT_COLOR_THEME = {
   sidebarBorder: alpha('#363840', 0.4),
   sidebarBackground: '#0d1215',
   orange: '#d7722c',
-  error: '#b52d31',
   presence: '#39E500',
-  success: 'green',
   link: '#3366BB',
   notif: 'error',
   good: '#00ac46',
@@ -85,7 +83,71 @@ export const DEFAULT_COLOR_THEME = {
   critical: 'red-dark-2',
   label: 'light-2',
   'input-border': 'light-5',
-  border: { light: 'light-5', dark: 'card' },
+  primary: '#0639FF',
+  background: {
+    light: 'white',
+    dark: '#111525',
+  },
+  'background-light': {
+    light: '#f5f7f9',
+    dark: '#22293b',
+  },
+  text: {
+    light: '#3b454e',
+    dark: 'white',
+  },
+  'text-light': {
+    light: 'lighten(text, 15)',
+    dark: 'darken(text, 15)',
+  },
+  border: {
+    light: '#CCCCCC',
+    dark: '#303340',
+  },
+  shadow: {
+    light: 'rgba(0, 0, 0, 0.2)',
+    dark: 'rgba(64, 64, 64, 0.2)',
+  },
+  success: '#07E5A7',
+  error: '#E03E43',
+  warning: '#EF931D',
+  secondary: '#222534',
+  'background-middle': {
+    light: '#EEEEEE',
+    dark: '#222534',
+  },
+  'background-top': {
+    light: 'white',
+    dark: '#323643',
+  },
+  'text-strong': {
+    light: '#000000',
+    dark: 'white',
+  },
+  'text-weak': {
+    light: '#444444',
+    dark: '#CCCCCC',
+  },
+  'text-xweak': {
+    light: '#666666',
+    dark: '#999999',
+  },
+  'background-success': '#07E5A733',
+  'background-warning': '#EF931D66',
+  'background-error': '#E03E4366',
+  'background-info': '#0190C266',
+  'accent-blue': {
+    dark: '#0190C2',
+    light: '#0190C2',
+  },
+  'accent-purple': {
+    dark: '#9510A1',
+    light: '#9510A1',
+  },
+  'accent-green': {
+    dark: '#058E4B',
+    light: '#058E4B',
+  },
   ...PLURAL_THEME,
 }
 
@@ -144,6 +206,7 @@ export const DEFAULT_THEME = {
     focus: { shadow: null, border: { color: 'brand' } },
     control: { border: { radius: '2px' } },
     drop: {
+      background: 'background-top',
       border: { radius: '4px' },
       extend: css`
         box-shadow: 0px 0px 4px 4px rgba(0, 0, 0, 0.2);

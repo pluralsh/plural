@@ -67,6 +67,7 @@ export default function Toolbar() {
         gap="small"
       >
         <Box
+          margin={{ left: '8px', right: '-8px' }}
           flex={false}
           width={SMALL_WIDTH}
         >

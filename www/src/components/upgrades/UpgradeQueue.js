@@ -188,7 +188,7 @@ export function UpgradeQueue() {
             pad="xsmall"
             round="xsmall"
             onClick={() => refetch()}
-            hoverIndicator="background-contrast"
+            hoverIndicator="background-light"
             focusIndicator={false}
           >
             <Refresh size="small" />

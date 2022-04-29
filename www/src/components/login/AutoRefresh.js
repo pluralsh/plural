@@ -56,7 +56,7 @@ export function AutoRefresh() {
           />
         )}
         onClick={reload}
-        text="Update Ready!"
+        text="Update ready!"
         align={{ top: 'bottom' }}
       />
     </Box>

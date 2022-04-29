@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { Button, Copyable, GqlError, InputCollection, ResponsiveInput } from 'forge-core'
+import { Button, Copyable, GqlError, InputCollection } from 'forge-core'
 import { Box, Layer } from 'grommet'
 import { useMutation } from '@apollo/client'
 
 import { apiHost } from '../../helpers/hostname'
 
+import ResponsiveInput from '../ResponsiveInput'
 import { ModalHeader } from '../ModalHeader'
 
 import { CREATE_INVITE } from './queries'

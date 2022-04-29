@@ -341,9 +341,9 @@ defmodule GraphQl.Schema.User do
   object :user_mutations do
     field :login, :user do
       middleware GraphQl.Middleware.AllowJwt
-      arg :email,    non_null(:string)
-      arg :password, non_null(:string)
-      arg :device_token,    :string
+      arg :email,        non_null(:string)
+      arg :password,     non_null(:string)
+      arg :device_token, :string
 
       resolve safe_resolver(&User.login_user/2)
     end
@@ -402,9 +402,10 @@ defmodule GraphQl.Schema.User do
 
     field :signup, :user do
       middleware GraphQl.Middleware.AllowJwt
-      arg :invite_id,  :string
-      arg :attributes, non_null(:user_attributes)
-      arg :account,    :account_attributes
+      arg :invite_id,    :string
+      arg :attributes,   non_null(:user_attributes)
+      arg :account,      :account_attributes
+      arg :device_token, :string
 
       resolve safe_resolver(&User.signup_user/2)
     end

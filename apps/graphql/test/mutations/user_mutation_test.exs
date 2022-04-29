@@ -116,22 +116,28 @@ defmodule GraphQl.UserMutationTest do
 
   describe "signup" do
     test "it can create a new user" do
+      token = insert(:login_token)
       {:ok, %{data: %{"signup" => signup}}} = run_query("""
-        mutation Signup($attributes: UserAttributes!) {
-          signup(attributes: $attributes) {
+        mutation Signup($attributes: UserAttributes!, $deviceToken: String) {
+          signup(attributes: $attributes, deviceToken: $deviceToken) {
             id name email jwt
           }
         }
-      """, %{"attributes" => %{
-        "email" => "mguarino46@gmail.com",
-        "password" => "super strong password",
-        "name" => "Michael Guarino"
-      }})
+      """, %{
+        "attributes" => %{
+          "email" => "mguarino46@gmail.com",
+          "password" => "super strong password",
+          "name" => "Michael Guarino"
+        },
+        "deviceToken" => token.token
+      })
 
       assert signup["id"]
       assert signup["name"] == "Michael Guarino"
       assert signup["email"] == "mguarino46@gmail.com"
       assert signup["jwt"]
+
+      assert refetch(token).active
     end
 
     test "it can set account name" do

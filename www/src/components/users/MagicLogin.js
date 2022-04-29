@@ -4,6 +4,7 @@ import { Button, Divider } from 'forge-core'
 import { useApolloClient, useLazyQuery, useMutation, useQuery } from '@apollo/client'
 import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
 import queryString from 'query-string'
+import { Div } from 'honorable'
 
 import { fetchToken, setToken } from '../../helpers/authentication'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
@@ -59,18 +60,17 @@ export function LoginPortal({ children, ...props }) {
       fill="horizontal"
       direction="row"
     >
-      <Box
+      <Div
+        xflex="x5"
         width="40%"
-        fill="vertical"
-        justify="center"
-        align="center"
-        background="plural-blk"
+        height="100%"
+        background="darken(background, 2)"
       >
         <img
           src={PLURAL_ICON}
-          width="200px"
+          width={256}
         />
-      </Box>
+      </Div>
       <Box
         style={{ overflow: 'auto' }}
         fill

@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 import { Box, Markdown, Text } from 'grommet'
-import { Button, InputCollection, ResponsiveInput, ScrollableContainer, SecondaryButton, TabContent, TabHeader, TabHeaderItem, Tabs } from 'forge-core'
+import { Button, InputCollection, ScrollableContainer, SecondaryButton, TabContent, TabHeader, TabHeaderItem, Tabs } from 'forge-core'
 import { useMutation, useQuery } from '@apollo/client'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -8,6 +8,7 @@ import Highlight from 'react-highlight.js'
 
 import { Versions } from '../versions/Versions'
 
+import ResponsiveInput from '../ResponsiveInput'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 
 import { deepUpdate, updateCache } from '../../utils/graphql'

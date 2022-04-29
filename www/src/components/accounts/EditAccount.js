@@ -5,13 +5,13 @@ import { useParams } from 'react-router-dom'
 import {
   Button,
   InputCollection,
-  ResponsiveInput,
   Trash,
 } from 'forge-core'
 import { useMutation } from '@apollo/client'
 
 import { CurrentUserContext } from '../login/CurrentUser'
 
+import ResponsiveInput from '../ResponsiveInput'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 import { CardList } from '../users/BillingDetails'
 import Invoices from '../payments/Invoices'

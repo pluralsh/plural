@@ -51,7 +51,7 @@
     "grommet-icons": "^4.7.0",
     "highlight.js": "^11.5.1",
     "honorable": "^0.53.0",
-    "honorable-theme-default": "^0.29.0",
+    "honorable-theme-default": "^0.30.0",
     "js-yaml": "^4.1.0",
     "lodash.clonedeep": "^4.5.0",
     "lodash.groupby": "^4.6.0",
@@ -109,9 +109,9 @@
     "xterm-theme": "^1.1.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.17.9",
+    "@babel/core": "^7.17.10",
     "@babel/eslint-parser": "^7.17.0",
-    "@babel/preset-env": "^7.16.11",
+    "@babel/preset-env": "^7.17.10",
     "@babel/preset-react": "^7.16.7",
     "eslint": "^8.14.0",
     "eslint-config-pluralsh": "^3.1.0",

@@ -1,5 +1,6 @@
 defmodule GraphQl.Schema.User do
   use GraphQl.Schema.Base
+  alias Core.Schema
   alias GraphQl.Resolvers.{
     User,
     Payments,
@@ -7,9 +8,10 @@ defmodule GraphQl.Schema.User do
   }
   alias GraphQl.Middleware.Authenticated
 
-  ecto_enum :notification_type, Core.Schema.Notification.Type
-  ecto_enum :reset_token_type, Core.Schema.ResetToken.Type
-  ecto_enum :login_method, Core.Schema.User.LoginMethod
+  ecto_enum :notification_type, Schema.Notification.Type
+  ecto_enum :reset_token_type, Schema.ResetToken.Type
+  ecto_enum :login_method, Schema.User.LoginMethod
+  ecto_enum :user_event_status, Schema.UserEvent.Status
 
   input_object :user_attributes do
     field :name,         :string
@@ -60,8 +62,9 @@ defmodule GraphQl.Schema.User do
   end
 
   input_object :user_event_attributes do
-    field :event, non_null(:string)
-    field :data,  :string
+    field :event,  non_null(:string)
+    field :data,   :string
+    field :status, :user_event_status
   end
 
   object :user do

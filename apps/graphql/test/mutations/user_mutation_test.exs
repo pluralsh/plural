@@ -442,4 +442,16 @@ defmodule GraphQl.UserMutationTest do
       refute refetch(user)
     end
   end
+
+  describe "createUserEvent" do
+    test "it can create an event for a user" do
+      user = insert(:user)
+
+      {:ok, %{data: %{"createUserEvent" => true}}} = run_query("""
+        mutation Event($attrs: UserEventAttributes!) {
+          createUserEvent(attributes: $attrs)
+        }
+      """, %{"attrs" => %{"event" => "an.event"}}, %{current_user: user})
+    end
+  end
 end

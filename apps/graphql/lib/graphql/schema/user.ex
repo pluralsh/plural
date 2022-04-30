@@ -59,6 +59,11 @@ defmodule GraphQl.Schema.User do
     field :content, non_null(:string)
   end
 
+  input_object :user_event_attributes do
+    field :event, non_null(:string)
+    field :data,  :string
+  end
+
   object :user do
     field :id,               non_null(:id)
     field :name,             non_null(:string)
@@ -345,7 +350,7 @@ defmodule GraphQl.Schema.User do
       arg :password,     non_null(:string)
       arg :device_token, :string
 
-      resolve safe_resolver(&User.login_user/2)
+      safe_resolve &User.login_user/2
     end
 
     field :device_login, :device_login do
@@ -378,26 +383,26 @@ defmodule GraphQl.Schema.User do
     field :create_reset_token, :boolean do
       arg :attributes, non_null(:reset_token_attributes)
 
-      resolve safe_resolver(&User.create_reset_token/2)
+      safe_resolve &User.create_reset_token/2
     end
 
     field :realize_reset_token, :boolean do
       arg :id, non_null(:id)
       arg :attributes, non_null(:reset_token_realization)
 
-      resolve safe_resolver(&User.realize_reset_token/2)
+      safe_resolve &User.realize_reset_token/2
     end
 
     field :create_token, :persisted_token do
       middleware Authenticated
-      resolve safe_resolver(&User.create_token/2)
+      safe_resolve &User.create_token/2
     end
 
     field :delete_token, :persisted_token do
       middleware Authenticated
       arg :id, non_null(:id)
 
-      resolve safe_resolver(&User.delete_token/2)
+      safe_resolve &User.delete_token/2
     end
 
     field :signup, :user do
@@ -407,7 +412,7 @@ defmodule GraphQl.Schema.User do
       arg :account,      :account_attributes
       arg :device_token, :string
 
-      resolve safe_resolver(&User.signup_user/2)
+      safe_resolve &User.signup_user/2
     end
 
     field :update_user, :user do
@@ -415,28 +420,28 @@ defmodule GraphQl.Schema.User do
       arg :id,         :id
       arg :attributes, non_null(:user_attributes)
 
-      resolve safe_resolver(&User.update_user/2)
+      safe_resolve &User.update_user/2
     end
 
     field :delete_user, :user do
       middleware Authenticated
       arg :id, non_null(:id)
 
-      resolve safe_resolver(&User.delete_user/2)
+      safe_resolve &User.delete_user/2
     end
 
     field :create_publisher, :publisher do
       middleware Authenticated
       arg :attributes, non_null(:publisher_attributes)
 
-      resolve safe_resolver(&User.create_publisher/2)
+      safe_resolve &User.create_publisher/2
     end
 
     field :create_webhook, :webhook do
       middleware Authenticated
       arg :attributes, non_null(:webhook_attributes)
 
-      resolve safe_resolver(&User.create_webhook/2)
+      safe_resolve &User.create_webhook/2
     end
 
     field :ping_webhook, :webhook_response do
@@ -445,28 +450,28 @@ defmodule GraphQl.Schema.User do
       arg :repo, non_null(:string)
       arg :message, :string
 
-      resolve safe_resolver(&User.ping_webhook/2)
+      safe_resolve &User.ping_webhook/2
     end
 
     field :update_publisher, :publisher do
       middleware Authenticated
       arg :attributes, non_null(:publisher_attributes)
 
-      resolve safe_resolver(&User.update_publisher/2)
+      safe_resolve &User.update_publisher/2
     end
 
     field :create_public_key, :public_key do
       middleware Authenticated
       arg :attributes, non_null(:public_key_attributes)
 
-      resolve safe_resolver(&User.create_public_key/2)
+      safe_resolve &User.create_public_key/2
     end
 
     field :delete_public_key, :public_key do
       middleware Authenticated
       arg :id, non_null(:id)
 
-      resolve safe_resolver(&User.delete_public_key/2)
+      safe_resolve &User.delete_public_key/2
     end
 
     field :delete_eab_key, :eab_credential do
@@ -475,7 +480,14 @@ defmodule GraphQl.Schema.User do
       arg :cluster,  :string
       arg :provider, :provider
 
-      resolve safe_resolver(&User.delete_eab_key/2)
+      safe_resolve &User.delete_eab_key/2
+    end
+
+    field :create_user_event, :boolean do
+      middleware Authenticated
+      arg :attributes, non_null(:user_event_attributes)
+
+      safe_resolve &User.create_event/2
     end
   end
 end

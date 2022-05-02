@@ -101,7 +101,7 @@
     "react-window-reversed": "^1.4.1",
     "slate": "^0.78.0",
     "slate-history": "^0.66.0",
-    "slate-react": "^0.77.4",
+    "slate-react": "^0.78.1",
     "styled-components": "^5.3.5",
     "uuid": "^8.3.2",
     "xterm-addon-fit": "^0.5.0",

@@ -17,7 +17,8 @@ defmodule Core.Services.Users do
     LoginToken,
     DeviceLogin,
     EabCredential,
-    DomainMapping
+    DomainMapping,
+    UserEvent
   }
 
   @type error :: {:error, term}
@@ -475,6 +476,16 @@ defmodule Core.Services.Users do
       %EabCredential{} = cred -> {:ok, cred}
       _ -> materialize_eab_key(cluster, provider, user)
     end
+  end
+
+  @doc """
+  Will create an event for a user
+  """
+  @spec create_event(map, User.t) :: {:ok, UserEvent.t} | {:error, term}
+  def create_event(attrs, %User{id: user_id}) do
+    %UserEvent{user_id: user_id}
+    |> UserEvent.changeset(attrs)
+    |> Core.Repo.insert()
   end
 
   @doc """

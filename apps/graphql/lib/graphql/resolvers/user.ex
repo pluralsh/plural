@@ -163,6 +163,13 @@ defmodule GraphQl.Resolvers.User do
   def delete_token(%{id: id}, %{context: %{current_user: user}}),
     do: Users.delete_persisted_token(id, user)
 
+  def create_event(%{attributes: attrs}, %{context: %{current_user: user}}) do
+    case Users.create_event(attrs, user) do
+      {:ok, _} -> {:ok, true}
+      _ -> {:ok, false}
+    end
+  end
+
   def login_method(%{email: email} = args, _), do: Users.login_method(email, args[:host])
 
   def login_user(%{email: email, password: pwd} = args, _) do

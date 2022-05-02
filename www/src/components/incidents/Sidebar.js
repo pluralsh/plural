@@ -95,7 +95,7 @@ function SidebarContent({ view, setView, incident, fetchMore, setOpen }) {
         align="center"
         pad="xsmall"
         gap="xsmall"
-        border={{ side: 'bottom', color: 'light-5' }}
+        border={{ side: 'bottom', color: 'border' }}
       >
         <Box
           direction="row"
@@ -205,7 +205,7 @@ export function Sidebar({ incident, fetchMore }) {
       flex={false}
       style={animation}
       width={open ? '25%' : '50px'}
-      border={{ side: 'left', color: 'light-5' }}
+      border={{ side: 'left', color: 'border' }}
     >
       {!open && (
         <SmallSidebar

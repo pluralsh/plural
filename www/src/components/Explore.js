@@ -51,7 +51,7 @@ function RepoTag({ tag, setTag }) {
     >
       <Text
         size="small"
-        color={dark ? 'light-6' : null}
+        color={dark ? 'border' : null}
       >{tag}
       </Text>
     </Box>
@@ -101,7 +101,7 @@ function Repo({ repo, setTag }) {
         >
           <Text
             size="small"
-            color={dark ? 'light-6' : 'dark-3'}
+            color={dark ? 'border' : 'dark-3'}
           >publisher:
           </Text>
           <SafeLink to={`/publishers/${repo.publisher.id}`}>{repo.publisher.name}</SafeLink>

@@ -14,7 +14,7 @@ import { EntityType } from './types'
 function Blockquote({ children }) {
   return (
     <Box
-      border={{ side: 'left', size: '2px', color: 'light-6' }}
+      border={{ side: 'left', size: '2px', color: 'border' }}
       pad={{ horizontal: 'small' }}
     >
       {children}
@@ -94,7 +94,7 @@ export function Code({ children, header, className, multiline }) {
         style={{ display: 'inline-block', color: multiline ? null : normalizeColor('notif', theme) }}
         pad={multiline ? 'xsmall' : { horizontal: 'xxsmall' }}
         round="xxsmall"
-        border={{ color: 'light-6' }}
+        border={{ color: 'border' }}
         background="light-2"
       >
         <pre>

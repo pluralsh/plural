@@ -116,7 +116,7 @@ export function SubscriptionBadge({ repository, subscription }) {
   return (
     <Box
       direction="row"
-      border={{ color: 'light-6' }}
+      border={{ color: 'border' }}
       round="xsmall"
       pad="small"
     >

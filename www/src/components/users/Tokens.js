@@ -26,7 +26,7 @@ function AuditHeader() {
       direction="row"
       pad="small"
       gap="xsmall"
-      border={{ side: 'bottom', color: 'light-5' }}
+      border={{ side: 'bottom', color: 'border' }}
       align="center"
     >
       <HeaderItem
@@ -55,7 +55,7 @@ function TokenAudit({ audit }) {
       flex={false}
       direction="row"
       pad="small"
-      border={{ side: 'bottom', color: 'light-5' }}
+      border={{ side: 'bottom', color: 'border' }}
       align="center"
       height="50px"
     >

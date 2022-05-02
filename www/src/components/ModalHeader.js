@@ -1,28 +1,33 @@
-import { Box, Text } from 'grommet'
+import { Div, P } from 'honorable'
 import { CloseIcon } from 'pluralsh-design-system'
 
 export function ModalHeader({ text, setOpen }) {
   return (
-    <Box
-      direction="row"
+    <Div
+      xflex="x4"
+      pt={1}
+      px={1}
       pad={{ horizontal: 'medium', top: 'medium' }}
-      align="center"
     >
-      <Text>
+      <P body0>
         {text}
-      </Text>
-      <div style={{ flexGrow: 1 }} />
+      </P>
+      <Div flexGrow={1} />
       {typeof setOpen === 'function' && (
-        <Box
-          hoverIndicator="background"
+        <Div
+          p={0.5}
+          margin={-0.5}
+          xflex="x5"
+          width="2rem"
+          height="2rem"
+          hoverIndicator="background-light"
           onClick={() => setOpen(false)}
-          round="full"
-          pad="small"
-          style={{ margin: -12 }}
+          borderRadius="50%"
+          cursor="pointer"
         >
-          <CloseIcon />
-        </Box>
+          <CloseIcon size={12} />
+        </Div>
       )}
-    </Box>
+    </Div>
   )
 }

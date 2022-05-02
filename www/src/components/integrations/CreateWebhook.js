@@ -10,7 +10,7 @@ import { CREATE_WEBHOOK, WEBHOOKS_Q } from './queries'
 
 const TAB_COLORS = {
   bg: 'light-3',
-  hover: 'light-5',
+  hover: 'border',
 }
 
 export function ActionTab({ action, onClick, colors }) {

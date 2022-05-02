@@ -147,7 +147,7 @@ export function Icon({ icon, iconAttrs, tooltip, onClick, hover }) {
         onClick={onClick}
         onMouseEnter={() => setOpen(true)}
         onMouseLeave={() => setOpen(false)}
-        hoverIndicator={hover || 'light-2'}
+        hoverIndicator={hover || 'background-middle'}
         focusIndicator={false}
       >
         {createElement(icon, { size: '14px', ...(iconAttrs || {}) })}
@@ -308,7 +308,7 @@ export default function GroupRow({ group }) {
   return (
     <Box
       ref={ref}
-      border={{ side: 'bottom', color: 'light-6' }}
+      border={{ side: 'bottom', color: 'border' }}
     >
       <Box
         direction="row"

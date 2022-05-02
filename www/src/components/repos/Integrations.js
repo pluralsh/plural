@@ -260,7 +260,7 @@ export function IntegrationPage() {
         <Box
           width={`${WIDTH}%`}
           height="100%"
-          border={{ side: 'right', color: 'light-6' }}
+          border={{ side: 'right', color: 'border' }}
         >
           <Tags
             tags={tags}

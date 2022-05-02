@@ -85,7 +85,7 @@ function SubscriptionBadge({ incident: { subscription } }) {
     <Box
       pad={{ horizontal: 'small', vertical: 'xsmall' }}
       round="xsmall"
-      border={{ color: 'light-5' }}
+      border={{ color: 'border' }}
       align="center"
       justify="center"
     >
@@ -139,7 +139,7 @@ export function IncidentRow({ incident: { id, repository, title, insertedAt, own
           </Box>
           <Text
             size="small"
-            color="light-5"
+            color="border"
           >created: {moment(insertedAt).fromNow()}, {owner ? `responder: ${owner.email}` : 'unassigned'}
           </Text>
         </Box>
@@ -206,7 +206,7 @@ function TagInput({ setAlternate }) {
       </Text>
       <Box
         fill="horizontal"
-        border={{ side: 'bottom', color: 'light-5' }}
+        border={{ side: 'bottom', color: 'border' }}
       >
         <TextInput
           plain
@@ -250,7 +250,7 @@ export function FilterSelect() {
         gap="xsmall"
         align="center"
         background="light-3"
-        hoverIndicator="light-5"
+        hoverIndicator="border"
         round="xsmall"
         onClick={() => setOpen(true)}
         focusIndicator={false}
@@ -436,7 +436,7 @@ export function IncidentToolbar({ children }) {
   return (
     <Box
       flex={false}
-      border={{ side: 'bottom', color: 'light-5' }}
+      border={{ side: 'bottom', color: 'border' }}
       align="center"
       direction="row"
       pad={{ vertical: 'xsmall', horizontal: 'small' }}

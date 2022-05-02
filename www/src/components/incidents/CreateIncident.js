@@ -70,7 +70,7 @@ export function IncidentForm({ attributes, setAttributes, statusEdit, children }
       <Box
         style={{ maxHeight: '80%', minHeight: '30vh' }}
         pad="small"
-        border={{ color: 'light-5' }}
+        border={{ color: 'border' }}
         round="xsmall"
       >
         <Slate
@@ -180,13 +180,13 @@ export function CreateIncident({ onCompleted }) {
   return (
     <Box
       flex={false}
-      border={{ side: 'bottom', color: 'light-5' }}
+      border={{ side: 'bottom', color: 'border' }}
     >
       <Box
         animation="fadeIn"
         flex={false}
         direction="row"
-        border={{ side: 'between', color: 'light-5' }}
+        border={{ side: 'between', color: 'border' }}
         gap="none"
       >
         <RepositorySelect

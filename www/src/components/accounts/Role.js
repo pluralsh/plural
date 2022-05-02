@@ -330,7 +330,7 @@ export default function RoleRow({ role }) {
   return (
     <Box
       ref={ref}
-      border={{ side: 'bottom', color: 'light-6' }}
+      border={{ side: 'bottom', color: 'border' }}
     >
       <Box
         direction="row"

@@ -120,7 +120,7 @@ function CardHeader() {
       direction="row"
       pad="small"
       gap="xsmall"
-      border={{ side: 'bottom', color: 'light-5' }}
+      border={{ side: 'bottom', color: 'border' }}
       align="center"
     >
       <HeaderItem
@@ -155,7 +155,7 @@ function CardRow({ card, noDelete }) {
       pad={{ horizontal: 'small', vertical: 'xsmall' }}
       gap="xsmall"
       align="center"
-      border={{ side: 'bottom', color: 'light-5' }}
+      border={{ side: 'bottom', color: 'border' }}
     >
       <Box
         width="20%"

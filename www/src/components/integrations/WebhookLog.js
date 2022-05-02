@@ -84,7 +84,7 @@ export function WebhookLog({ log, next }) {
         onClick={() => setOpen(!open)}
         hoverIndicator="light-3"
         focusIndicator={false}
-        border={next ? { side: 'bottom', color: 'light-5' } : null}
+        border={next ? { side: 'bottom', color: 'border' } : null}
       >
         <Box
           fill="horizontal"

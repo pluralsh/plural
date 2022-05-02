@@ -149,7 +149,7 @@ function DockerSidebar({ image: { dockerRepository: docker, ...image }, filter, 
             >
               <Copy
                 size="small"
-                color="light-6"
+                color="border"
               />
             </Box>
           </Stack>
@@ -520,7 +520,7 @@ function VulnerabilityHeader() {
       flex={false}
       direction="row"
       pad="xsmall"
-      border={{ side: 'bottom', color: 'light-5' }}
+      border={{ side: 'bottom', color: 'border' }}
       align="center"
     >
       <HeaderItem

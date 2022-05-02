@@ -176,7 +176,7 @@ function ChartHeader({ version: { helm, chart, version, scan, id }, chartInstall
             pad={{ horizontal: 'small', vertical: 'xsmall' }}
             align="center"
             justify="center"
-            border={{ color: 'light-5' }}
+            border={{ color: 'border' }}
           >
             Installed
           </Box>

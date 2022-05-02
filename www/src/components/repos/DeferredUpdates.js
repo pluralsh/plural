@@ -25,7 +25,7 @@ function DeferredUpdateHeader() {
       gap="xsmall"
       height={ROW_HEIGHT}
       align="center"
-      border={{ side: 'bottom', color: 'light-5' }}
+      border={{ side: 'bottom', color: 'border' }}
     >
       <HeaderItem
         text="version"

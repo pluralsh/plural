@@ -29,7 +29,7 @@ export function TableRow({ children, border, ...props }) {
   return (
     <Box
       flex={false}
-      border={{ side: 'bottom', color: border || 'light-5' }}
+      border={{ side: 'bottom', color: border || 'border' }}
       pad="small"
       direction="row"
       align="center"
@@ -266,7 +266,7 @@ function CreateDomain() {
             <Box
               background="tone-light"
               pad={{ horizontal: 'xsmall' }}
-              border={{ color: 'light-5' }}
+              border={{ color: 'border' }}
               style={{ borderLeftStyle: 'none', ...rightRadius('2px') }}
               height="34px"
               flex={false}

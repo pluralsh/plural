@@ -30,7 +30,7 @@ function TabFiller() {
   return (
     <Box
       fill="horizontal"
-      border={{ side: 'bottom', color: 'light-5' }}
+      border={{ side: 'bottom', color: 'border' }}
     />
   )
 }

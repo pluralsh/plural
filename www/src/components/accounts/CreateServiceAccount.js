@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { Button, InputCollection } from 'forge-core'
-
+import { Div } from 'honorable'
 import { Box, Layer } from 'grommet'
 
 import { appendConnection, updateCache } from '../../utils/graphql'
@@ -28,12 +28,14 @@ export function ServiceAccountForm({ attributes, setAttributes, bindings, setBin
           placeholder="name of the service account"
           onChange={({ target: { value } }) => setAttributes({ ...attributes, name: value })}
         />
-        <ResponsiveInput
-          label="email"
-          value={attributes.email}
-          placeholder="email for the service account"
-          onChange={({ target: { value } }) => setAttributes({ ...attributes, email: value })}
-        />
+        <Div mt={0.5}>
+          <ResponsiveInput
+            label="email"
+            value={attributes.email}
+            placeholder="email for the service account"
+            onChange={({ target: { value } }) => setAttributes({ ...attributes, email: value })}
+          />
+        </Div>
       </InputCollection>
       <Box
         pad="small"

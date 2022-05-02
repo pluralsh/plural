@@ -112,7 +112,7 @@ function IncidentHeader({ incident, editable, editing, setEditing, mutation, att
         align="center"
         background="light-1"
         pad={{ vertical: 'xsmall', horizontal: 'small' }}
-        border={{ side: 'bottom', color: 'light-3' }}
+        border={{ side: 'bottom', color: 'border' }}
         gap="xsmall"
         round={{ corner: 'top', size: 'xsmall' }}
       >

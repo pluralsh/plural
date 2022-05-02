@@ -27,7 +27,7 @@ function DownloadAffordance({ blob }) {
             e.preventDefault()
             download(blob)
           }}
-          border={{ color: 'light-3' }}
+          border={{ color: 'border' }}
         >
           <Download size="15px" />
         </Box>

@@ -102,7 +102,7 @@ export function IncidentRow({ incident: { id, repository, title, insertedAt, own
       flex={false}
       fill="horizontal"
       pad="small"
-      border={{ side: 'bottom', color: 'light-3' }}
+      border={{ side: 'bottom', color: 'border' }}
       direction="row"
       align="center"
       gap="small"

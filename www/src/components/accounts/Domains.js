@@ -72,7 +72,7 @@ function DomainRow({ domain }) {
     <>
       <TableRow
         onClick={() => navigate(`/accounts/edit/domains/${domain.id}`)}
-        hoverIndicator="light-2"
+        hoverIndicator="background-light"
       >
         <HeaderItem
           text={domain.name}
@@ -102,7 +102,6 @@ function DomainRow({ domain }) {
           </Box>
           <Icon
             icon={Roles}
-            hover="light-4"
             tooltip="Edit Access Policy"
             onClick={e => doOpen('edit', e)}
           />

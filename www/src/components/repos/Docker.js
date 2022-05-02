@@ -432,7 +432,7 @@ function Vulnerability({ vuln }) {
   return (
     <Box
       flex={false}
-      border={{ side: 'bottom', color: 'light-3' }}
+      border={{ side: 'bottom', color: 'border' }}
     >
       <Box
         direction="row"

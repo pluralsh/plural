@@ -88,7 +88,7 @@ export function VerifyEmailConfirmed() {
         background="plrl-white"
         pad="small"
         align="center"
-        border={{ color: 'light-3' }}
+        border={{ color: 'border' }}
       >
         <Box
           flex={false}

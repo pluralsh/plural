@@ -56,7 +56,7 @@ function DeferredUpdate({ deferred }) {
       gap="xsmall"
       height={ROW_HEIGHT}
       align="center"
-      border={{ side: 'bottom', color: 'light-3' }}
+      border={{ side: 'bottom', color: 'border' }}
     >
       <HeaderItem
         text={deferred.version.version}

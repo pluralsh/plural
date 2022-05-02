@@ -26,7 +26,7 @@ function ScanHeader() {
       gap="xsmall"
       align="center"
       pad="small"
-      border={{ side: 'bottom', color: 'light-3' }}
+      border={{ side: 'bottom', color: 'border' }}
       height={ROW_HEIGHT_PX}
     >
       <HeaderItem

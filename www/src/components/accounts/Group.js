@@ -30,7 +30,7 @@ const GroupMemberRow = memo(({ group, user }) => {
       fill="horizontal"
       direction="row"
       gap="small"
-      border={{ side: 'bottom', color: 'light-3' }}
+      border={{ side: 'bottom', color: 'border' }}
       align="center"
       pad={{ horizontal: 'small' }}
       height="75px"
@@ -109,7 +109,7 @@ function GroupMembers({ group }) {
   return (
     <Box
       fill
-      border={{ side: 'top', color: 'light-3' }}
+      border={{ side: 'top', color: 'border' }}
       margin={{ top: 'small' }}
     >
       <FixedScroller
@@ -158,14 +158,14 @@ export function Icon({ icon, iconAttrs, tooltip, onClick, hover }) {
           round="xsmall"
           justify="center"
           targetRef={dropRef}
-          margin={{ bottom: 'xsmall' }}
           side="top"
           align={{ bottom: 'top' }}
         >
           <Text
             size="small"
             weight={500}
-          >{tooltip}
+          >
+            {tooltip}
           </Text>
         </TooltipContent>
       )}

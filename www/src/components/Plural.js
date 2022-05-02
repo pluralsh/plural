@@ -14,7 +14,7 @@ import { IntegrationPage } from './repos/Integrations'
 import Invoices from './payments/Invoices'
 import Sidebar from './Sidebar'
 import Publishers from './publisher/Publishers'
-import Explore from './Explore'
+import Explore from './explore/Explore'
 import { Billing } from './users/Billing'
 import BreadcrumbProvider from './Breadcrumbs'
 import { EditAccount } from './accounts/EditAccount'
@@ -90,10 +90,9 @@ export function PluralInner() {
             <DeviceLoginNotif />
             <Toolbar />
             <Box
-              style={{ height: `calc(100vh - ${TOOLBAR_SIZE})` }}
               direction="row"
-              gridArea="viewport"
               background="background"
+              style={{ height: `calc(100vh - ${TOOLBAR_SIZE})` }}
             >
               <Sidebar />
               <Box fill>
@@ -253,15 +252,15 @@ export function PluralInner() {
                       path="/upgrades"
                       element={<UpgradeQueues />}
                     />
-                    <Route
+                    {/* <Route
                       path="/explore/:group/:tag"
                       element={<Explore />}
                     />
                     <Route
                       path="/explore/:group"
                       element={<Explore />}
-                    />
-                    <Route
+                    /> */}
+                    {/* <Route
                       exact
                       path="/"
                       element={<Navigate to={me.hasInstallations ? '/explore/installed' : '/explore/public'} />}
@@ -270,6 +269,10 @@ export function PluralInner() {
                       exact
                       path="/explore"
                       element={<Navigate to="/explore/public" />}
+                    /> */}
+                    <Route
+                      path="/explore"
+                      element={<Explore />}
                     />
                   </Routes>
                 </Box>

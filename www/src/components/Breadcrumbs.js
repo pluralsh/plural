@@ -68,7 +68,7 @@ export function Breadcrumbs() {
       direction="row"
       gap="xsmall"
       align="center"
-      pad={{ horizontal: 'small' }}
+      pad={{ right: 'small', left: '1px' }}
     >
       {children}
     </Box>

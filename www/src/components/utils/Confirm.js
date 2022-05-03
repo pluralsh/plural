@@ -1,5 +1,5 @@
 import { Box, Layer } from 'grommet'
-import { Button, SecondaryButton } from 'forge-core'
+import { Button } from 'honorable'
 
 import { Alert, AlertStatus, GqlError } from './Alert'
 
@@ -31,15 +31,18 @@ export function Confirm({ submit, error, loading, label, header, cancel, descrip
           justify="end"
           gap="xsmall"
         >
-          <SecondaryButton
-            label="Cancel"
-            onClick={cancel}
-          />
           <Button
-            label={label || 'Continue'}
+            secondary
+            onClick={cancel}
+          >
+            Cancel
+          </Button>
+          <Button
             onClick={submit}
             loading={loading}
-          />
+          >
+            {label || 'Continue'}
+          </Button>
         </Box>
       </Box>
     </Layer>

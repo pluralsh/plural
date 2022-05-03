@@ -66,13 +66,13 @@ export function Step({ step, name, onStep }) {
       >
         <Text
           size="small"
-          color={current >= step ? null : 'light-5'}
+          color={current >= step ? null : 'border'}
         >{step + 1}
         </Text>
       </Box>
       <Text
         size="small"
-        color={current >= step ? null : 'light-5'}
+        color={current >= step ? null : 'border'}
       >{name}
       </Text>
     </Box>

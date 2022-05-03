@@ -20,7 +20,7 @@ function Integration({ icon, installUrl, integrations, service, children }) {
     <Box
       flex={false}
       pad="small"
-      border={{ color: 'light-5' }}
+      border={{ color: 'border' }}
       hoverIndicator="light-2"
       onClick={onClick}
       direction="row"

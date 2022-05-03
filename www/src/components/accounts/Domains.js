@@ -29,7 +29,7 @@ export function TableRow({ children, border, ...props }) {
   return (
     <Box
       flex={false}
-      border={{ side: 'bottom', color: border || 'light-5' }}
+      border={{ side: 'bottom', color: border || 'border' }}
       pad="small"
       direction="row"
       align="center"
@@ -72,7 +72,7 @@ function DomainRow({ domain }) {
     <>
       <TableRow
         onClick={() => navigate(`/accounts/edit/domains/${domain.id}`)}
-        hoverIndicator="light-2"
+        hoverIndicator="background-light"
       >
         <HeaderItem
           text={domain.name}
@@ -102,7 +102,6 @@ function DomainRow({ domain }) {
           </Box>
           <Icon
             icon={Roles}
-            hover="light-4"
             tooltip="Edit Access Policy"
             onClick={e => doOpen('edit', e)}
           />
@@ -266,7 +265,7 @@ function CreateDomain() {
             <Box
               background="tone-light"
               pad={{ horizontal: 'xsmall' }}
-              border={{ color: 'light-5' }}
+              border={{ color: 'border' }}
               style={{ borderLeftStyle: 'none', ...rightRadius('2px') }}
               height="34px"
               flex={false}

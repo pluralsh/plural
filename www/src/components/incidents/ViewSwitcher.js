@@ -57,7 +57,7 @@ export function ViewSwitcher({ incident, view, setView }) {
       gap="small"
       align="center"
       pad={{ vertical: 'small' }}
-      border={{ side: 'right', color: 'light-5' }}
+      border={{ side: 'right', color: 'border' }}
     >
       <ViewOption
         icon={Messages}

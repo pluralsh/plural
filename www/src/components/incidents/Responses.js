@@ -280,7 +280,7 @@ export function Responses() {
             flex={false}
             width="30%"
             fill="vertical"
-            border={{ side: 'right', color: 'light-5' }}
+            border={{ side: 'right', color: 'border' }}
           >
             <Repositories
               repository={repository}

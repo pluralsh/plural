@@ -79,7 +79,7 @@ export function DockerImages({ dockerRepository }) {
         flex={false}
         direction="row"
         align="center"
-        border={{ side: 'bottom', color: 'light-5' }}
+        border={{ side: 'bottom', color: 'border' }}
         gap="xsmall"
         pad="xsmall"
       >

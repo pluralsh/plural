@@ -112,7 +112,7 @@ function IncidentHeader({ incident, editable, editing, setEditing, mutation, att
         align="center"
         background="light-1"
         pad={{ vertical: 'xsmall', horizontal: 'small' }}
-        border={{ side: 'bottom', color: 'light-3' }}
+        border={{ side: 'bottom', color: 'border' }}
         gap="xsmall"
         round={{ corner: 'top', size: 'xsmall' }}
       >
@@ -154,7 +154,7 @@ function IncidentHeader({ incident, editable, editing, setEditing, mutation, att
         <Box
           flex={false}
           gap="xsmall"
-          border={{ side: 'between', color: 'light-5' }}
+          border={{ side: 'between', color: 'border' }}
         >
           <Box pad="small">
             <Markdown text={incident.description || ''} />
@@ -185,7 +185,7 @@ function IncidentHeader({ incident, editable, editing, setEditing, mutation, att
         <Box
           flex={false}
           gap="xsmall"
-          border={{ side: 'between', color: 'light-5' }}
+          border={{ side: 'between', color: 'border' }}
         >
           <Box pad="small">
             <Slate
@@ -357,7 +357,7 @@ function IncidentInner({ incident, fetchMore, subscribeToMore, loading, editing,
             direction="row"
             align="center"
             gap="small"
-            border={{ side: 'bottom', color: 'light-5' }}
+            border={{ side: 'bottom', color: 'border' }}
           >
             <Severity
               incident={incident}

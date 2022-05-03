@@ -1,7 +1,7 @@
 import './explore.css'
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { useQuery } from '@apollo/client'
-import { Box, Collapsible, Text, ThemeContext } from 'grommet'
+import { Box, Collapsible, Text } from 'grommet'
 import { useNavigate, useParams } from 'react-router-dom'
 import sortBy from 'lodash.sortby'
 import { Down, Next } from 'grommet-icons'
@@ -28,7 +28,8 @@ function EmptyState() {
       <Text
         weight={500}
         size="small"
-      >It looks like you haven't installed any repos yet, use the search bar or browse by tag
+      >
+        It looks like you haven't installed any repos yet, use the search bar or browse by tag
         to find what you're looking for
       </Text>
     </Box>
@@ -36,30 +37,29 @@ function EmptyState() {
 }
 
 function RepoTag({ tag, setTag }) {
-  const { dark } = useContext(ThemeContext)
-
   return (
     <Box
       round="xsmall"
-      background={dark ? 'card' : 'light-2'}
+      background="card"
       pad={{ horizontal: 'xsmall', vertical: '1px' }}
-      hoverIndicator={dark ? 'hover' : 'light-4'}
+      hoverIndicator="hover"
       focusIndicator={false}
       onClick={e => {
-        ignore(e); setTag(tag)
+        ignore(e)
+        setTag(tag)
       }}
     >
       <Text
         size="small"
-        color={dark ? 'light-6' : null}
-      >{tag}
+        color="text"
+      >
+        {tag}
       </Text>
     </Box>
   )
 }
 
 function Repo({ repo, setTag }) {
-  const { dark } = useContext(ThemeContext)
   const navigate = useNavigate()
 
   return (
@@ -101,7 +101,7 @@ function Repo({ repo, setTag }) {
         >
           <Text
             size="small"
-            color={dark ? 'light-6' : 'dark-3'}
+            color="text-light"
           >publisher:
           </Text>
           <SafeLink to={`/publishers/${repo.publisher.id}`}>{repo.publisher.name}</SafeLink>
@@ -289,7 +289,7 @@ function TagSidebar({ tag, setTag }) {
       style={{ overflow: 'auto' }}
     >
       <Box flex={false}>
-        {categories.map((category, ind) => (
+        {categories.map(category => (
           <Category
             key={category.category}
             unfurl={false}

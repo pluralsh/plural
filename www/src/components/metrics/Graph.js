@@ -40,14 +40,14 @@ export function RangePicker({ duration, setDuration }) {
   return (
     <Box
       round="3px"
-      border={{ color: 'light-5' }}
+      border={{ color: 'border' }}
       flex={false}
     >
       <Box
         direction="row"
         round="3px"
         gap="none"
-        border={{ side: 'between', color: 'light-5' }}
+        border={{ side: 'between', color: 'border' }}
       >
         {DURATIONS.map((dur, ind) => (
           <RangeOption

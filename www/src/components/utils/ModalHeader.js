@@ -9,7 +9,7 @@ export function ModalHeader({ text, setOpen }) {
   return (
     <Box
       direction="row"
-      border={{ side: 'bottom', color: 'light-3' }}
+      border={{ side: 'bottom', color: 'border' }}
       pad="small"
     >
       <Box fill="horizontal">

@@ -2,7 +2,8 @@ import { useCallback, useContext, useState } from 'react'
 import { Box, Layer, TextInput } from 'grommet'
 import { useMutation, useQuery } from '@apollo/client'
 import { Edit } from 'grommet-icons'
-import { Scroller, SecondaryButton } from 'forge-core'
+import { Scroller } from 'forge-core'
+import { Button } from 'honorable'
 
 import { ModalHeader } from '../ModalHeader'
 import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
@@ -50,7 +51,7 @@ function ServiceAccount({ user, next, update }) {
         gap="small"
         direction="row"
         align="center"
-        border={{ side: 'bottom', color: 'light-6' }}
+        border={{ side: 'bottom', color: 'border' }}
         pad={{ right: 'small' }}
       >
         <UserRow
@@ -59,11 +60,13 @@ function ServiceAccount({ user, next, update }) {
           noborder
           notoggle
         />
-        <SecondaryButton
-          label="impersonate"
+        <Button
+          secondary
           onClick={handleImpersonateClick}
           loading={loading}
-        />
+        >
+          Impersonate
+        </Button>
         <Icon
           icon={Edit}
           tooltip="edit"

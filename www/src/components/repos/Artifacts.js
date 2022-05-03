@@ -224,7 +224,7 @@ export function DetailHeader({ text, modifier }) {
   return (
     <Box
       direction="row"
-      border={{ color: 'light-6', side: 'bottom' }}
+      border={{ color: 'border', side: 'bottom' }}
       pad="small"
       background="light-1"
       justify="end"
@@ -256,7 +256,7 @@ function ArtifactRow({ artifact }) {
         gap="small"
         align="center"
         pad={{ horizontal: 'small' }}
-        border={{ side: 'bottom', color: 'light-5' }}
+        border={{ side: 'bottom', color: 'border' }}
       >
         <Box
           width="20%"
@@ -341,7 +341,7 @@ function ArtifactHeader() {
       gap="small"
       align="center"
       pad={{ horizontal: 'small' }}
-      border={{ side: 'bottom', color: 'light-5' }}
+      border={{ side: 'bottom', color: 'border' }}
     >
       <HeaderItem
         text="Name"
@@ -391,7 +391,7 @@ export default function Artifacts({ artifacts }) {
       <DetailHeader text="Artifacts" />
       <Box
         gap="none"
-        border={{ side: 'between', color: 'light-5' }}
+        border={{ side: 'between', color: 'border' }}
       >
         {artifacts.map(artifact => (
           <Artifact

@@ -108,7 +108,7 @@ export default function MessageReactions({ message, setHover }) {
           direction="row"
           gap="2px"
           background="white"
-          border={{ color: 'light-6' }}
+          border={{ color: 'border' }}
           round="xsmall"
           {...BOX_ATTRS}
         />

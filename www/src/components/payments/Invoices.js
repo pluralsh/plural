@@ -189,7 +189,7 @@ export default function Invoices() {
         flex={false}
         width="250px"
         style={{ height: '100%', scroll: 'auto' }}
-        border={{ side: 'right', color: 'light-3' }}
+        border={{ side: 'right', color: 'border' }}
       >
         <SubscriptionBar
           edges={edges}

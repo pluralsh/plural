@@ -28,7 +28,7 @@ export function UserRow({ user, next, noborder, notoggle, deletable, update }) {
       direction="row"
       align="center"
       gap="small"
-      border={next && !noborder ? { side: 'bottom', color: 'light-6' } : null}
+      border={next && !noborder ? { side: 'bottom', color: 'border' } : null}
     >
       <Avatar
         user={user}

@@ -41,7 +41,7 @@ export function Billing() {
         flex={false}
         width={SIDEBAR_WIDTH}
         height="100%"
-        border={{ side: 'right', color: 'light-3' }}
+        border={{ side: 'right', color: 'border' }}
         pad="small"
       >
         {VIEWS.map(({ text, view, icon }) => (

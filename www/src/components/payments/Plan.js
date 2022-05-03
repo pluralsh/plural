@@ -222,7 +222,7 @@ export default function Plan({ approvePlan, subscription, repository, plan }) {
         as={hover}
         pad="small"
         focusIndicator={false}
-        border={{ color: subscribed ? 'brand' : 'light-5' }}
+        border={{ color: subscribed ? 'brand' : 'border' }}
         onClick={subscribed ? null : () => approvePlan(plan)}
         gap="small"
       >

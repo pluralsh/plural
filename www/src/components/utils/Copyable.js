@@ -20,7 +20,7 @@ export function CopyNotice({ text, onClose }) {
         align="center"
         gap="small"
         background="white"
-        border={{ color: 'light-3' }}
+        border={{ color: 'border' }}
         round="xsmall"
         margin={{ top: 'small' }}
         pad={{ horizontal: 'small', vertical: 'xsmall' }}

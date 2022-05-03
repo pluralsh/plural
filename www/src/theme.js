@@ -82,7 +82,7 @@ export const DEFAULT_COLOR_THEME = {
   high: 'red-dark',
   critical: 'red-dark-2',
   label: 'light-2',
-  'input-border': 'light-5',
+  'input-border': 'border',
   primary: '#0639FF',
   background: {
     light: 'white',
@@ -201,6 +201,9 @@ export const DEFAULT_THEME = {
     },
   },
   drop: { border: { radius: '4px' } },
+  layer: {
+    background: 'background',
+  },
   global: {
     colors: DEFAULT_COLOR_THEME,
     focus: { shadow: null, border: { color: 'brand' } },

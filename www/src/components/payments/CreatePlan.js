@@ -458,7 +458,7 @@ export function SlaForm({ attributes, setAttributes, serviceLevel: { minSeverity
               max={5}
               size="full"
               round="small"
-              color="light-5"
+              color="border"
               values={[minSeverity, maxSeverity]}
               onChange={([minSeverity, maxSeverity]) => setServiceLevel({ responseTime, minSeverity, maxSeverity })}
             />
@@ -532,7 +532,7 @@ export function CreateAnchor({ onClick }) {
   return (
     <Box
       as={hover}
-      border={{ color: 'light-5' }}
+      border={{ color: 'border' }}
       focusIndicator={false}
       pad="small"
       direction="row"

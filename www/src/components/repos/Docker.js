@@ -149,7 +149,7 @@ function DockerSidebar({ image: { dockerRepository: docker, ...image }, filter, 
             >
               <Copy
                 size="small"
-                color="light-6"
+                color="border"
               />
             </Box>
           </Stack>
@@ -432,7 +432,7 @@ function Vulnerability({ vuln }) {
   return (
     <Box
       flex={false}
-      border={{ side: 'bottom', color: 'light-3' }}
+      border={{ side: 'bottom', color: 'border' }}
     >
       <Box
         direction="row"
@@ -440,7 +440,7 @@ function Vulnerability({ vuln }) {
         align="center"
         pad="xsmall"
         onClick={() => setOpen(!open)}
-        hoverIndicator="light-3"
+        hoverIndicator="background-light"
         focusIndicator={false}
       >
         <Box
@@ -520,7 +520,7 @@ function VulnerabilityHeader() {
       flex={false}
       direction="row"
       pad="xsmall"
-      border={{ side: 'bottom', color: 'light-5' }}
+      border={{ side: 'bottom', color: 'border' }}
       align="center"
     >
       <HeaderItem

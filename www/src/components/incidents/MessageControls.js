@@ -141,7 +141,7 @@ export function MessageControls({ message, setHover }) {
   return (
     <Box
       className="message-controls"
-      border={{ color: 'light-5' }}
+      border={{ color: 'border' }}
       elevation="xsmall"
       background="white"
       direction="row"

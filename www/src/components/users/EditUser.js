@@ -1,8 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'
-import { Div } from 'honorable'
+import { Button, Div } from 'honorable'
 import { Box, Text } from 'grommet'
 import {
-  Button,
   InputCollection,
   Select,
 } from 'forge-core'
@@ -76,9 +75,9 @@ export function EditContent({ edit, name, children }) {
 }
 
 function passwordValid(password, confirm) {
-  if (password === '') return { disabled: true, reason: 'please enter a password' }
-  if (password !== confirm) return { disabled: true, reason: 'passwords must match' }
-  if (password.length < 12) return { disabled: true, reason: 'passwords must be more than 12 characters' }
+  if (password === '') return { disabled: true, reason: 'Please enter a password' }
+  if (password !== confirm) return { disabled: true, reason: 'Passwords must match' }
+  if (password.length < 12) return { disabled: true, reason: 'Passwords must be more than 12 characters' }
 
   return { disabled: false, reason: 'passwords match!' }
 }
@@ -159,9 +158,10 @@ export default function EditUser() {
             <Button
               loading={loading}
               onClick={mutation}
-              flex={false}
-              label="Update"
-            />
+              flexShrink={0}
+            >
+              Update
+            </Button>
           </SectionPortal>
         </Box>
       </EditContent>
@@ -176,19 +176,23 @@ export default function EditUser() {
           >
             <InputCollection>
               <ResponsiveInput
+                labelWidth={64 + 32 - 8}
                 value={password}
                 label="password"
                 placeholder="a long password"
                 type="password"
                 onChange={({ target: { value } }) => setPassword(value)}
               />
-              <ResponsiveInput
-                value={confirm}
-                label="confirm"
-                placeholder="confirm your password"
-                type="password"
-                onChange={({ target: { value } }) => setConfirm(value)}
-              />
+              <Div mt={0.5}>
+                <ResponsiveInput
+                  labelWidth={64 + 32 - 8}
+                  value={confirm}
+                  label="confirm"
+                  placeholder="confirm your password"
+                  type="password"
+                  onChange={({ target: { value } }) => setConfirm(value)}
+                />
+              </Div>
             </InputCollection>
           </form>
           <SectionPortal>
@@ -216,11 +220,13 @@ export default function EditUser() {
                 {reason}
               </Text>
               <Button
+                ml={0.5}
                 disabled={disabled}
                 loading={loading}
                 onClick={mutation}
-                label="Update"
-              />
+              >
+                Update
+              </Button>
             </Box>
           </SectionPortal>
         </Box>

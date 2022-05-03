@@ -36,7 +36,13 @@ function ExploreRepositories({ scrollRef }) {
     }
   }, [scrollRef, fetchMoreRepositories, loading])
 
-  if (!repositories.length) return null
+  if (!repositories.length) {
+    return (
+      <Div xflex="x5">
+        Loading... TODO use plural animated logo
+      </Div>
+    )
+  }
 
   const sortedRepositories = repositories.slice().sort((a, b) => a.name.localeCompare(b.name))
   const featuredA = sortedRepositories.shift()

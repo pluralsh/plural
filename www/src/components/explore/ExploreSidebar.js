@@ -46,7 +46,7 @@ function ExploreSidebarCheckbox({ toggled, onClick, label }) {
 function ExploreSidebar() {
   const [nDisplayedTags, setNDisplayedTags] = useState(12)
   const { data: categoriesData } = useQuery(CATEGORIES)
-  const [tags, hasMoreTags, fetchMoreTags] = usePaginatedQuery(
+  const [tags,, hasMoreTags, fetchMoreTags] = usePaginatedQuery(
     REPO_TAGS,
     {
       variables: {

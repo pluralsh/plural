@@ -3,11 +3,13 @@ import { useSearchParams } from 'react-router-dom'
 import { Div, P } from 'honorable'
 import { RepositoryCard } from 'pluralsh-design-system'
 
+import { useEffect } from 'react'
+
 import { EXPLORE_REPOS } from '../repos/queries'
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 
-function ExploreRepositories() {
-  const [repositories, hasMoreRepositories, fetchMoreRepositories] = usePaginatedQuery(
+function ExploreRepositories({ scrollRef }) {
+  const [repositories, loading, hasMoreRepositories, fetchMoreRepositories] = usePaginatedQuery(
     EXPLORE_REPOS,
     {
       variables: {
@@ -16,15 +18,29 @@ function ExploreRepositories() {
     data => data.repositories
   )
 
+  useEffect(() => {
+    const { current } = scrollRef
+
+    if (!current) return
+
+    function handleScroll(event) {
+      if (!loading && Math.abs(event.target.scrollTop - (event.target.scrollHeight - event.target.offsetHeight)) < 6) {
+        fetchMoreRepositories()
+      }
+    }
+
+    current.addEventListener('scroll', handleScroll)
+
+    return () => {
+      current.removeEventListener('scroll', handleScroll)
+    }
+  }, [scrollRef, fetchMoreRepositories, loading])
+
   if (!repositories.length) return null
 
-  console.log('featuredA', repositories)
   const sortedRepositories = repositories.slice().sort((a, b) => a.name.localeCompare(b.name))
   const featuredA = sortedRepositories.shift()
-
   const featuredB = sortedRepositories.shift()
-
-  console.log('featuredA', featuredA)
 
   return (
     <Div pt={4}>

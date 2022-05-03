@@ -29,7 +29,7 @@ function usePaginatedQuery(query, options = {}, getResults = x => x) {
     setCursor(workingResults?.pageInfo?.endCursor)
   }, [workingResults])
 
-  return [[...previousEdges, ...mapNode(workingResults.edges)], hasMore, handleFetchMore]
+  return [[...previousEdges, ...mapNode(workingResults.edges)], results.loading, hasMore, handleFetchMore]
 }
 
 export default usePaginatedQuery

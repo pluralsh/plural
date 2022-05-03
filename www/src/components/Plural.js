@@ -6,7 +6,7 @@ import { StripeProvider } from 'react-stripe-elements'
 import { CurrentUserContext, PluralConfigurationContext, PluralProvider } from './login/CurrentUser'
 import MyPublisher from './publisher/MyPublisher'
 import Publisher from './publisher/Publisher'
-import Toolbar from './Toolbar'
+import Toolbar, { TOOLBAR_SIZE } from './Toolbar'
 import Chart from './repos/Chart'
 import Terraform from './repos/Terraform'
 import EditUser from './users/EditUser'
@@ -36,8 +36,6 @@ import { VerifyEmailConfirmed } from './users/EmailConfirmation'
 import { NavigationContext } from './navigation/Submenu'
 import { DeviceLoginNotif } from './users/DeviceLoginNotif'
 import { CloudShell, OAuthCallback } from './shell/CloudShell'
-
-export const TOOLBAR_SIZE = '55px'
 
 function EditIncident(props) {
   return (
@@ -92,7 +90,7 @@ export function PluralInner() {
             <Box
               direction="row"
               background="background"
-              style={{ height: `calc(100vh - ${TOOLBAR_SIZE})` }}
+              style={{ height: `calc(100vh - ${TOOLBAR_SIZE}px)` }}
             >
               <Sidebar />
               <Box fill>

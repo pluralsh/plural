@@ -6,7 +6,7 @@ import { useQuery } from '@apollo/client'
 import moment from 'moment'
 
 import { TagContainer } from '../repos/Tags'
-import { TOOLBAR_SIZE } from '../Plural'
+import { TOOLBAR_SIZE } from '../Toolbar'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
@@ -183,7 +183,7 @@ export default function Invoices() {
     <Box
       direction="row"
       width="100%"
-      height={`calc(100vh - ${TOOLBAR_SIZE})`}
+      height={`calc(100vh - ${TOOLBAR_SIZE}px)`}
     >
       <Box
         flex={false}

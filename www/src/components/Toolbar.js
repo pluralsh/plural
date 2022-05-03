@@ -13,6 +13,8 @@ import './toolbar.css'
 import { AutoRefresh } from './login/AutoRefresh'
 import { SocialLinks } from './Socials'
 
+export const TOOLBAR_SIZE = 55
+
 // const PLRL_ICON = `${process.env.PUBLIC_URL}/plural-white.png`
 const PLRL_WORD = `${process.env.PUBLIC_URL}/plural-white-word.png`
 

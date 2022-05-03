@@ -469,7 +469,7 @@ export const UPDATE_DOCKER = gql`
 
 export const TESTS_Q = gql`
   query RepoTests($repositoryId: ID, $versionId: ID, $cursor: String) {
-    tests(after: $cursor, first: 50, repositoryId: $repositoryId, versionId: $versionId) {
+    tests(after: $cursor, first: 20, repositoryId: $repositoryId, versionId: $versionId) {
       pageInfo { ...PageInfo }
       edges { node { ...TestFragment } }
     }

@@ -8,9 +8,10 @@ function Explore() {
     <Div
       xflex="x1"
       height="100%"
+      maxHeight="100%"
+      overflowY="auto"
     >
       <Div
-        height="100%"
         width={256}
         flexShrink={0}
       >

@@ -1,8 +1,12 @@
 import { useQuery } from '@apollo/client'
 import { useSearchParams } from 'react-router-dom'
-import { Checkbox, Div, P } from 'honorable'
+import { A, Checkbox, Div, P } from 'honorable'
 
-import { CATEGORIES } from '../repos/queries'
+import { useState } from 'react'
+
+import { CATEGORIES, REPO_TAGS } from '../repos/queries'
+
+import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 
 const hoverStyle = {
   '&:hover': {
@@ -29,18 +33,36 @@ function ExploreSidebarCheckbox({ toggled, onClick, label }) {
       {...hoverStyle}
     >
       <Checkbox checked={toggled} />
-      <P ml={0.5}>
-        {capitalize(label)}
+      <P
+        body2
+        ml={0.5}
+      >
+        {label}
       </P>
     </Div>
   )
 }
 
 function ExploreSidebar() {
+  const [nDisplayedTags, setNDisplayedTags] = useState(12)
   const { data: categoriesData } = useQuery(CATEGORIES)
+  const [tags, hasMoreTags, fetchMoreTags] = usePaginatedQuery(
+    REPO_TAGS,
+    {
+      variables: {
+        q: '',
+      },
+    },
+    data => data.tags
+  )
   const [searchParams, setSearchParams] = useSearchParams()
 
   if (!categoriesData) return null
+
+  function handleMoreTagsClick() {
+    if (tags.length > nDisplayedTags) setNDisplayedTags(x => x + 12)
+    else fetchMoreTags()
+  }
 
   function handleToggle(key, value) {
     const existing = searchParams.getAll(key)
@@ -65,10 +87,11 @@ function ExploreSidebar() {
 
   const sortedCategories = categoriesData.categories.slice().sort((a, b) => a.category.localeCompare(b.category))
   const sortedPublishers = ['Plural']
+  const sortedTags = tags.slice().sort((a, b) => a.tag.localeCompare(b.tag)).filter((x, i) => i < nDisplayedTags)
 
   return (
     <Div
-      pt={4}
+      py={4}
       pl={4}
     >
       <P
@@ -83,7 +106,7 @@ function ExploreSidebar() {
           key={category}
           toggled={isToggled('category', category)}
           onClick={() => handleToggle('category', category)}
-          label={category}
+          label={capitalize(category)}
         />
       ))}
       <P
@@ -99,9 +122,36 @@ function ExploreSidebar() {
           key={publisher}
           toggled={isToggled('publisher', publisher)}
           onClick={() => handleToggle('publisher', publisher)}
-          label={publisher}
+          label={capitalize(publisher)}
         />
       ))}
+      <P
+        mt={2}
+        mb={1}
+        body0
+        fontWeight="bold"
+      >
+        Tags
+      </P>
+      {sortedTags.map(({ tag, count }) => (
+        <ExploreSidebarCheckbox
+          key={tag}
+          toggled={isToggled('tag', tag)}
+          onClick={() => handleToggle('tag', tag)}
+          label={`${tag} (${count})`}
+        />
+      ))}
+      {((nDisplayedTags < tags.length) || hasMoreTags) && (
+        <A
+          mt={0.5}
+          ml="22px"
+          color="text-light"
+          onClick={handleMoreTagsClick}
+          {...hoverStyle}
+        >
+          See More +
+        </A>
+      )}
     </Div>
   )
 }

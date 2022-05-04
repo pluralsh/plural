@@ -139,6 +139,7 @@ export function Header({ text }) {
 }
 
 function CreateShell({ accessToken, onCreate }) {
+  const [demo, setDemo] = useState(false)
   const [section, setSection] = useState('git')
   const [provider, setProvider] = useState('AWS')
   const [scm, setScm] = useState({ name: '', provider: 'GITHUB', token: accessToken })
@@ -202,6 +203,9 @@ function CreateShell({ accessToken, onCreate }) {
             setWorkspace={setWorkspace}
             credentials={credentials} 
             setCredentials={setCredentials}
+            demo={demo}
+            setDemo={setDemo}
+            next={next}
           />
         )}
         {section === 'workspace' && (

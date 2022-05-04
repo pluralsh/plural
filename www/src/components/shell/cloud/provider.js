@@ -3,6 +3,7 @@ import React, { useCallback, useRef, useState } from 'react'
 import { Down } from 'grommet-icons'
 
 import { Box, Drop, Text } from 'grommet'
+import { Divider, Button } from 'forge-core'
 
 import { Provider } from '../../repos/misc'
 
@@ -12,6 +13,7 @@ import { Header } from '../CloudShell'
 
 import { AWS_VALIDATIONS, AwsForm, awsSynopsis } from './aws'
 import { GCP_VALIDATIONS, GcpForm, gcpSynopsis } from './gcp'
+import { DemoProject } from './demo'
 
 function CloudItem({ provider, setProvider }) {
   return (
@@ -55,12 +57,24 @@ export const synopsis = ({ provider, ...rest }) => {
   }
 }
 
-export function ProviderForm({ provider, setProvider, workspace, setWorkspace, credentials, setCredentials }) {
+export function ProviderForm({ provider, setProvider, workspace, setWorkspace, credentials, setCredentials, demo, setDemo, next }) {
   const ref = useRef()
   const [open, setOpen] = useState(false)
   const close = useCallback(() => setOpen(false), [setOpen])
 
   const form = ProviderForms[provider]
+
+  if (demo) {
+    return (
+      <DemoProject 
+        setProvider={setProvider}
+        workspace={workspace}
+        setWorkspace={setWorkspace}
+        credentials={credentials}
+        setCredentials={setCredentials}
+        next={next} />
+    )
+  }
 
   return (
     <>
@@ -93,6 +107,13 @@ export function ProviderForm({ provider, setProvider, workspace, setWorkspace, c
           <Down size="small" />
         </Box>
         {React.createElement(form, { workspace, setWorkspace, credentials, setCredentials })}
+        <Divider text='OR' />
+        <Box flex={false} fill='horizontal' align='center' justify='center'>
+          <Button 
+            background='sidebarHover' 
+            label='Use one of our demo GCP projects'
+            onClick={() => setDemo(true)} />
+        </Box>
       </Box>
       {open && (
         <Drop

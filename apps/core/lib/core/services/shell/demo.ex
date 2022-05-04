@@ -145,7 +145,7 @@ defmodule Core.Services.Shell.Demo do
 
   defp binding(email, role), do: %Binding{members: ["serviceAccount:#{email}"], role: role}
 
-  defp project_id(%User{id: user_id}), do: "plrl-demo-#{user_id}"
+  defp project_id(%User{id: user_id}), do: String.slice("plrl-demo-#{user_id}", 0..29)
 
   defp projects_conn(), do: ProjectsConnection.new(oauth_token())
 

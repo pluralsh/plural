@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { Div, P } from 'honorable'
 import { RepositoryCard } from 'pluralsh-design-system'
 
@@ -10,6 +10,8 @@ import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
 function ExploreRepositories({ scrollRef }) {
+  const [searchParams] = useSearchParams()
+  const categories = searchParams.getAll('category')
   const [repositories, loadingRepositories, hasMoreRepositories, fetchMoreRepositories] = usePaginatedQuery(
     EXPLORE_REPOS,
     {
@@ -48,52 +50,63 @@ function ExploreRepositories({ scrollRef }) {
     )
   }
 
-  const sortedRepositories = repositories.slice().sort((a, b) => a.name.localeCompare(b.name))
-  const featuredA = sortedRepositories.shift()
-  const featuredB = sortedRepositories.shift()
+  const sortedRepositories = repositories.slice()
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .filter(repository => categories.length ? categories.includes(repository.category) : true)
+
+  function renderFeatured() {
+    const featuredA = sortedRepositories.shift()
+    const featuredB = sortedRepositories.shift()
+
+    return (
+      <>
+        <P
+          px={3}
+          body0
+          fontWeight="bold"
+        >
+          Featured Repositories
+        </P>
+        <Div
+          px={3}
+          mt={1}
+          xflex="x4s"
+        >
+          <RepositoryCard
+            as={Link}
+            to={`/repositories/${featuredA.id}`}
+            flexGrow={1}
+            flexShrink={0}
+            flexBasis="calc(50% - 1 * 16px)"
+            featured
+            title={featuredA.name}
+            imageUrl={featuredA.darkIcon || featuredA.icon}
+            subtitle={featuredA.description}
+          >
+            {featuredA.description}
+          </RepositoryCard>
+          <RepositoryCard
+            as={Link}
+            to={`/repositories/${featuredB.id}`}
+            ml={2}
+            flexGrow={1}
+            flexShrink={0}
+            flexBasis="calc(50% - 1 * 16px)"
+            featured
+            title={featuredB.name}
+            imageUrl={featuredB.darkIcon || featuredB.icon}
+            subtitle={featuredB.description}
+          >
+            {featuredB.description}
+          </RepositoryCard>
+        </Div>
+      </>
+    )
+  }
 
   return (
     <Div py={2}>
-      <P
-        px={3}
-        body0
-        fontWeight="bold"
-      >
-        Featured Repositories
-      </P>
-      <Div
-        px={3}
-        mt={1}
-        xflex="x4s"
-      >
-        <RepositoryCard
-          as={Link}
-          to={`/repositories/${featuredA.id}`}
-          flexGrow={1}
-          flexShrink={0}
-          flexBasis="calc(50% - 1 * 16px)"
-          featured
-          title={featuredA.name}
-          imageUrl={featuredA.darkIcon || featuredA.icon}
-          subtitle={featuredA.description}
-        >
-          {featuredA.description}
-        </RepositoryCard>
-        <RepositoryCard
-          as={Link}
-          to={`/repositories/${featuredB.id}`}
-          ml={2}
-          flexGrow={1}
-          flexShrink={0}
-          flexBasis="calc(50% - 1 * 16px)"
-          featured
-          title={featuredB.name}
-          imageUrl={featuredB.darkIcon || featuredB.icon}
-          subtitle={featuredB.description}
-        >
-          {featuredB.description}
-        </RepositoryCard>
-      </Div>
+      {!categories.length && renderFeatured()}
       <P
         px={3}
         mt={2}
@@ -107,16 +120,16 @@ function ExploreRepositories({ scrollRef }) {
         mt={1}
         xflex="x11s"
       >
-        {sortedRepositories.map(repository => console.log('repository', repository) || (
+        {sortedRepositories.map(repository => (
           <RepositoryCard
             as={Link}
             to={`/repositories/${repository.id}`}
             key={repository.id}
             mx={1}
             mb={2}
-            flexGrow={1}
+            flexGrow={0}
             flexShrink={0}
-            flexBasis="calc(33.333% - 3 * 16px)"
+            width="calc(33.333% - 2 * 16px)"
             title={repository.name}
             imageUrl={repository.darkIcon || repository.icon}
             subtitle={repository.description}

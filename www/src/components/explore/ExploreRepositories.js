@@ -49,23 +49,23 @@ function ExploreRepositories({ scrollRef }) {
   const featuredB = sortedRepositories.shift()
 
   return (
-    <Div pt={4}>
+    <Div pt={2}>
       <P
-        px={1.5}
+        px={3}
         body0
         fontWeight="bold"
       >
         Featured Repositories
       </P>
       <Div
-        px={1.5}
+        px={3}
         mt={1}
         xflex="x4s"
       >
         <RepositoryCard
           flexGrow={1}
           flexShrink={0}
-          flexBasis="calc(50% - 1.5 * 16px)"
+          flexBasis="calc(50% - 1 * 16px)"
           featured
           title={featuredA.name}
           imageUrl={featuredA.icon}
@@ -74,10 +74,10 @@ function ExploreRepositories({ scrollRef }) {
           {featuredA.description}
         </RepositoryCard>
         <RepositoryCard
-          ml={3}
+          ml={2}
           flexGrow={1}
           flexShrink={0}
-          flexBasis="calc(50% - 1.5 * 16px)"
+          flexBasis="calc(50% - 1 * 16px)"
           featured
           title={featuredB.name}
           imageUrl={featuredB.icon}
@@ -87,21 +87,22 @@ function ExploreRepositories({ scrollRef }) {
         </RepositoryCard>
       </Div>
       <P
-        px={1.5}
-        mt={3}
+        px={3}
+        mt={2}
         body0
         fontWeight="bold"
       >
         All Repositories
       </P>
       <Div
+        px={2}
         mt={1}
         xflex="x11s"
       >
         {sortedRepositories.map(repository => (
           <RepositoryCard
-            mx={1.5}
-            mb={3}
+            mx={1}
+            mb={2}
             flexGrow={1}
             flexShrink={0}
             flexBasis="calc(33.333% - 3 * 16px)"

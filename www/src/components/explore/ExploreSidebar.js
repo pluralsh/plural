@@ -91,8 +91,9 @@ function ExploreSidebar() {
 
   return (
     <Div
-      py={4}
-      pl={4}
+      pt={2}
+      pb={3}
+      pl={2}
       maxHeight="100%"
       overflowY="auto"
     >

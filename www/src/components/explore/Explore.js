@@ -23,9 +23,10 @@ function Explore() {
         position="sticky"
         top={0}
         left={0}
-        width={256}
+        width={256 - 32}
         height={`calc(100vh - ${TOOLBAR_SIZE}px)`}
         overflowY="auto"
+        borderRight="1px solid border"
       >
         <ExploreSidebar />
       </Div>

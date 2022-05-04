@@ -27,7 +27,7 @@ export function SocialLinks() {
     <Div
       ml={1}
       xflex="x4"
-      flexShrink={false}
+      flexShrink={0}
     >
       <SocialLink
         icon={(

@@ -8,7 +8,6 @@ function mapNode(edges) {
 function usePaginatedQuery(query, options = {}, getResults = x => x) {
   const [previousEdges, setPreviousEdges] = useState([])
   const [cursor, setCursor] = useState(null)
-  const [hasMore, setHasMore] = useState(true)
 
   const results = useQuery(query, {
     ...options,
@@ -20,16 +19,17 @@ function usePaginatedQuery(query, options = {}, getResults = x => x) {
 
   const workingResults = useMemo(() => results.data ? getResults(results.data) : {}, [results.data, getResults])
 
-  useEffect(() => {
-    setHasMore(workingResults?.pageInfo?.hasNextPage)
-  }, [workingResults])
-
   const handleFetchMore = useCallback(() => {
     setPreviousEdges(x => [...x, ...mapNode(workingResults.edges)])
     setCursor(workingResults?.pageInfo?.endCursor)
   }, [workingResults])
 
-  return [[...previousEdges, ...mapNode(workingResults.edges)], results.loading, hasMore, handleFetchMore]
+  return [
+    [...previousEdges, ...mapNode(workingResults.edges)],
+    results.loading,
+    workingResults?.pageInfo?.hasNextPage || false,
+    handleFetchMore,
+  ]
 }
 
 export default usePaginatedQuery

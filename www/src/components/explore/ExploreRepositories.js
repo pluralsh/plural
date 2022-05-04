@@ -8,8 +8,10 @@ import { useEffect } from 'react'
 import { EXPLORE_REPOS } from '../repos/queries'
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 
+import { LoopingLogo } from '../utils/AnimatedLogo'
+
 function ExploreRepositories({ scrollRef }) {
-  const [repositories, loading, hasMoreRepositories, fetchMoreRepositories] = usePaginatedQuery(
+  const [repositories, loadingRepositories, hasMoreRepositories, fetchMoreRepositories] = usePaginatedQuery(
     EXPLORE_REPOS,
     {
       variables: {
@@ -24,7 +26,7 @@ function ExploreRepositories({ scrollRef }) {
     if (!current) return
 
     function handleScroll(event) {
-      if (!loading && Math.abs(event.target.scrollTop - (event.target.scrollHeight - event.target.offsetHeight)) < 6) {
+      if (!loadingRepositories && hasMoreRepositories && Math.abs(event.target.scrollTop - (event.target.scrollHeight - event.target.offsetHeight)) < 32) {
         fetchMoreRepositories()
       }
     }
@@ -34,12 +36,15 @@ function ExploreRepositories({ scrollRef }) {
     return () => {
       current.removeEventListener('scroll', handleScroll)
     }
-  }, [scrollRef, fetchMoreRepositories, loading])
+  }, [scrollRef, fetchMoreRepositories, loadingRepositories, hasMoreRepositories])
 
   if (!repositories.length) {
     return (
-      <Div xflex="x5">
-        Loading... TODO use plural animated logo
+      <Div
+        pt={12}
+        xflex="x5"
+      >
+        <LoopingLogo />
       </Div>
     )
   }
@@ -49,7 +54,7 @@ function ExploreRepositories({ scrollRef }) {
   const featuredB = sortedRepositories.shift()
 
   return (
-    <Div pt={2}>
+    <Div py={2}>
       <P
         px={3}
         body0
@@ -114,6 +119,14 @@ function ExploreRepositories({ scrollRef }) {
           </RepositoryCard>
         ))}
       </Div>
+      {loadingRepositories && (
+        <Div
+          mt={2}
+          xflex="x5"
+        >
+          <LoopingLogo />
+        </Div>
+      )}
     </Div>
   )
 }

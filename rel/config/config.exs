@@ -103,6 +103,7 @@ end
 if get_env("GCP_CREDENTIALS") do
   config :goth,
     json: {:system, "GCP_CREDENTIALS"},
+    project_id: get_env("GCP_PROJECT") || "pluralsh",
     disabled: false
 end
 

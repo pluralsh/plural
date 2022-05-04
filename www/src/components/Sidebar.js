@@ -23,6 +23,7 @@ import {
   ReloadIcon,
   ScrollIcon,
   SirenIcon,
+  UpdatesIcon,
   WebhooksIcon,
 } from 'pluralsh-design-system'
 
@@ -167,7 +168,7 @@ function Sidebar() {
         },
         {
           name: 'Upgrades',
-          Icon: PeopleIcon,
+          Icon: UpdatesIcon,
           url: '/upgrades',
         },
         {

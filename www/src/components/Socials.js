@@ -1,39 +1,33 @@
-import { Box } from 'grommet'
+import { A, Div } from 'honorable'
 import { DiscordIcon, GitHubLogoIcon, TwitterIcon } from 'pluralsh-design-system'
 
-const ICON_SIZE = '22px'
-const BOX_SIZE = '28px'
+const ICON_SIZE = 22
+const BOX_SIZE = 28
 
 function SocialLink({ icon, url }) {
   return (
-    <a
+    <A
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      style={{ marginLeft: '0.25rem' }}
+      ml={0.25}
+      xflex="x5"
+      width={BOX_SIZE}
+      height={BOX_SIZE}
+      hoverIndicator="background-light"
+      borderRadius={4}
     >
-      <Box
-        width={BOX_SIZE}
-        height={BOX_SIZE}
-        align="center"
-        justify="center"
-        onClick={() => null}
-        hoverIndicator="background-light"
-        round="xsmall"
-      >
-        {icon}
-      </Box>
-    </a>
+      {icon}
+    </A>
   )
 }
 
 export function SocialLinks() {
   return (
-    <Box
-      flex={false}
-      margin={{ left: '16px' }}
-      direction="row"
-      align="center"
+    <Div
+      ml={1}
+      xflex="x4"
+      flexShrink={0}
     >
       <SocialLink
         icon={(
@@ -62,6 +56,6 @@ export function SocialLinks() {
         )}
         url="https://twitter.com/plural_sh"
       />
-    </Box>
+    </Div>
   )
 }

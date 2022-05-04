@@ -67,11 +67,14 @@ function WrapStripe({ children }) {
   )
 }
 
-function NavigateId({ to }) {
+function NavigateId({ to, replace }) {
   const { id } = useParams()
 
   return (
-    <Navigate to={to.replaceAll(':id', id)} />
+    <Navigate
+      replace={replace}
+      to={to.replaceAll(':id', id)}
+    />
   )
 }
 
@@ -105,7 +108,12 @@ export function PluralInner() {
                     <Route
                       exact
                       path="/accounts/edit"
-                      element={<Navigate to="/accounts/edit/users" />}
+                      element={(
+                        <Navigate
+                          replace
+                          to="/accounts/edit/users"
+                        />
+                      )}
                     />
                     <Route
                       path="/accounts/billing/:section"
@@ -150,22 +158,42 @@ export function PluralInner() {
                     <Route
                       exact
                       path="/repositories/:id"
-                      element={<NavigateId to="/repositories/:id/bundles" />}
+                      element={(
+                        <NavigateId
+                          replace
+                          to="/repositories/:id/bundles"
+                        />
+                      )}
                     />
                     <Route
                       exact
                       path="/repositories/:id/packages"
-                      element={<NavigateId to="/repositories/:id/packages/helm" />}
+                      element={(
+                        <NavigateId
+                          replace
+                          to="/repositories/:id/packages/helm"
+                        />
+                      )}
                     />
                     <Route
                       exact
                       path="/repositories/:id/edit"
-                      element={<NavigateId to="/repositories/:id/edit/details" />}
+                      element={(
+                        <NavigateId
+                          replace
+                          to="/repositories/:id/edit/details"
+                        />
+                      )}
                     />
                     <Route
                       exact
                       path="/repositories/:id/configure"
-                      element={<NavigateId to="/repositories/:id/configure/upgrades" />}
+                      element={(
+                        <NavigateId
+                          replace
+                          to="/repositories/:id/configure/upgrades"
+                        />
+                      )}
                     />
                     <Route
                       path="/repositories/:id/:group/:subgroup"
@@ -207,7 +235,12 @@ export function PluralInner() {
                     <Route
                       exact
                       path="/incidents"
-                      element={<Navigate to="/incidents/all" />}
+                      element={(
+                        <Navigate
+                          replace
+                          to="/incidents/all"
+                        />
+                      )}
                     />
                     <Route
                       path="/incident/:incidentId/edit"
@@ -240,7 +273,12 @@ export function PluralInner() {
                     <Route
                       exact
                       path="/audits"
-                      element={<Navigate to="/audits/table" />}
+                      element={(
+                        <Navigate
+                          replace
+                          to="/audits/table"
+                        />
+                      )}
                     />
                     <Route
                       path="/upgrades/:id"

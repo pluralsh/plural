@@ -15,6 +15,30 @@ defmodule Core.PubSub.Fanout.InstallationsTest do
     end
   end
 
+  describe "RepositoryCreated" do
+    test "it will fetch and persist a repositories readme" do
+      repo = insert(:repository, git_url: "https://github.com/pluralsh/plural")
+
+      event = %PubSub.RepositoryCreated{item: repo}
+      {:ok, updated} = PubSub.Fanout.fanout(event)
+
+      assert updated.id == repo.id
+      assert is_binary(updated.readme)
+    end
+  end
+
+  describe "RepositoryUpdated" do
+    test "it will fetch and persist a repositories readme" do
+      repo = insert(:repository, git_url: "https://github.com/pluralsh/plural")
+
+      event = %PubSub.RepositoryUpdated{item: repo}
+      {:ok, updated} = PubSub.Fanout.fanout(event)
+
+      assert updated.id == repo.id
+      assert is_binary(updated.readme)
+    end
+  end
+
   describe "LicensePing" do
     test "if there's no ping set, it will record" do
       inst = insert(:installation)

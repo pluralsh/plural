@@ -136,3 +136,15 @@ defimpl Core.PubSub.Fanout, for: Core.PubSub.LicensePing do
     |> Core.Repo.update()
   end
 end
+
+
+defimpl Core.PubSub.Fanout, for: [Core.PubSub.RepositoryCreated, Core.PubSub.RepositoryUpdated] do
+  alias Core.Services.Repositories
+
+  def fanout(%{item: repo}) do
+    with readme when is_binary(readme) <- Repositories.fetch_readme(repo) do
+      Ecto.Changeset.change(repo, %{readme: readme})
+      |> Core.Repo.update()
+    end
+  end
+end

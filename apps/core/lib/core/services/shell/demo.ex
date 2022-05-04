@@ -50,7 +50,14 @@ defmodule Core.Services.Shell.Demo do
   need to poll the project afterwards.
   """
   @spec create_demo_project(User.t) :: {:ok, DemoProject.t} | error
-  def create_demo_project(%User{id: user_id} = user) do
+  def create_demo_project(%User{id: id} = user) do
+    case Core.Repo.get_by(DemoProject, user_id: id) do
+      %DemoProject{} = p -> {:ok, p}
+      _ -> do_create_demo_project(user)
+    end
+  end
+
+  def do_create_demo_project(%User{id: user_id} = user) do
     projs = projects_conn()
     start_transaction()
     |> add_operation(:db, fn _ ->

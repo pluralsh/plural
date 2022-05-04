@@ -110,6 +110,22 @@ configOverlays:
     documentation: client secret for google authentication
     updates:
     - path: ['plural', 'secrets', 'google', 'client_secret']
+- name: google-org-id
+  spec:
+    name: Google Org ID
+    folder: secrets
+    subfolder: google
+    documentation: your gcp organization id
+    updates:
+    - path: ['plural', 'secrets', 'google', 'org_id']
+- name: google-credentials
+  spec:
+    name: Google Credentials
+    folder: secrets
+    subfolder: google
+    documentation: service account credentials to use for gcp demos
+    updates:
+    - path: ['plural', 'secrets', 'google', 'gcp_credentials']
 - name: workos-client-id
   spec:
     name: WorkOS Client Id

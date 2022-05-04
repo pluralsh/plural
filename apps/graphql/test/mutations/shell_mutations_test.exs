@@ -84,4 +84,24 @@ defmodule GraphQl.ShellMutationsTest do
       refute refetch(shell)
     end
   end
+
+  describe "createDemoProject" do
+    test "it will create a new demo project" do
+      user = insert(:user)
+      expect(Goth.Token, :for_scope, fn _ -> {:ok, %{token: "token"}} end)
+      expect(GoogleApi.CloudResourceManager.V3.Api.Projects, :cloudresourcemanager_projects_create, fn _, [body: _] ->
+        {:ok, %{name: "operations/123"}}
+      end)
+
+      {:ok, %{data: %{"createDemoProject" => demo}}} = run_query("""
+        mutation {
+          createDemoProject { id projectId ready }
+        }
+      """, %{}, %{current_user: user})
+
+      assert demo["id"]
+      assert demo["projectId"]
+      refute demo["ready"]
+    end
+  end
 end

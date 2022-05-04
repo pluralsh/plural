@@ -60,5 +60,10 @@ config :worker, upgrade_pipeline: [
   {Worker.Upgrades.Pipeline, [Worker.Upgrades.ChartProducer, Worker.Upgrades.TFProducer]}
 ]
 
+config :worker, demo_projects_pipeline: [
+  Worker.DemoProjects.Producer,
+  {Worker.DemoProjects.Pipeline, Worker.DemoProjects.Producer}
+]
+
 config :kazan, :server, :in_cluster
 config :rtc, :flushable, true

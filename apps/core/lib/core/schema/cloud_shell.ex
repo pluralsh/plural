@@ -1,7 +1,7 @@
 defmodule Core.Schema.CloudShell do
   use Piazza.Ecto.Schema
   alias Piazza.Ecto.EncryptedString
-  alias Core.Schema.{User, Dependencies.Provider}
+  alias Core.Schema.{User, Dependencies.Provider, DemoProject}
 
   defmodule Workspace do
     use Piazza.Ecto.Schema
@@ -97,17 +97,20 @@ defmodule Core.Schema.CloudShell do
     embeds_one :credentials, Credentials
 
     belongs_to :user, User
+    belongs_to :demo, DemoProject
 
     timestamps()
   end
 
-  @valid ~w(provider git_url ssh_public_key ssh_private_key)a
+  @valid ~w(provider git_url ssh_public_key ssh_private_key demo_id)a
 
   def changeset(model, attrs \\ %{}) do
     model
     |> cast(attrs, @valid)
     |> cast_embed(:workspace)
     |> cast_embed(:credentials)
+    |> foreign_key_constraint(:demo_id)
+    |> foreign_key_constraint(:user_id)
     |> put_new_change(:pod_name, &pod_name/0)
     |> put_new_change(:aes_key, &aes_key/0)
     |> validate_required([:provider, :pod_name, :aes_key])

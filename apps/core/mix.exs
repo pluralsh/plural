@@ -83,7 +83,9 @@ defmodule Core.MixProject do
       {:poison, "~> 3.0"},
       {:cloudflare, "~> 0.2"},
       {:mint, "~> 1.0", override: true},
-      {:mimic, "~> 1.1", only: :test}
+      {:mimic, "~> 1.1", only: :test},
+      {:google_api_iam, "~> 0.40"},
+      {:google_api_cloud_resource_manager, "~> 0.41"},
     ]
   end
 

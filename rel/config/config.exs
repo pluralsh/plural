@@ -95,5 +95,16 @@ if provider != :gcp do
   config :arc, storage: Arc.Storage.S3
 end
 
+if org_id = get_env("GCP_ORG_ID") do
+  config :core,
+    gcp_organization: org_id
+end
+
+if get_env("GCP_CREDENTIALS") do
+  config :goth,
+    json: {:system, "GCP_CREDENTIALS"},
+    disabled: false
+end
+
 config :core,
   registry: get_env("DKR_DNS")

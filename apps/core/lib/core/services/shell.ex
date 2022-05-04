@@ -93,7 +93,7 @@ defmodule Core.Services.Shell do
   Reboots a cloud shell instance
   """
   @spec reboot(CloudShell.t | binary) :: {:ok, CloudShell.t} | error
-  def reboot(%CloudShell{pod_name: name} = shell) do
+  def reboot(%CloudShell{} = shell) do
     shell = Core.Repo.preload(shell, [:user])
     with {:ok, _} <- do_reboot(shell),
       do: {:ok, shell}

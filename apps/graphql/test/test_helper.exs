@@ -13,4 +13,10 @@ Mimic.copy(Core.Services.Shell.Pods)
 Mimic.copy(Core.Shell.Scm)
 Mimic.copy(Kazan)
 Mimic.copy(WorkOS.SSO)
+
+Mimic.copy(Goth.Token)
+Mimic.copy(GoogleApi.CloudResourceManager.V3.Api.Projects)
+Mimic.copy(GoogleApi.CloudResourceManager.V3.Api.Operations)
+Mimic.copy(GoogleApi.IAM.V1.Api.Projects)
+
 ExUnit.start()

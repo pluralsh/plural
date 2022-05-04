@@ -117,7 +117,8 @@ config :core,
   registry: "dkr.plural.sh",
   plural_cmd: "plural",
   stripe_connect_id: "ca_dummy",
-  onplural_domain: "onplural.sh"
+  onplural_domain: "onplural.sh",
+  gcp_organization: "1323"
 
 config :briefly,
   directory: [{:system, "TMPDIR"}, {:system, "TMP"}, {:system, "TEMP"}, "/tmp"],
@@ -130,6 +131,7 @@ config :worker, rollout_pipeline: [
 ]
 
 config :worker, upgrade_pipeline: []
+config :worker, demo_projects_pipeline: []
 
 config :core, Core.Clients.Hydra,
   hydra_admin: "http://plural-hydra-admin:4445",

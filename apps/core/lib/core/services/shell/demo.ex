@@ -125,11 +125,13 @@ defmodule Core.Services.Shell.Demo do
     |> add_operation(:policy, fn _ ->
       Projects.cloudresourcemanager_projects_get_iam_policy(projs, proj_id)
     end)
-    |> add_operation(:iam, fn %{service_account: %{email: email}, policy: %{bindings: bindings}} ->
+    |> add_operation(:iam, fn %{service_account: %{email: email}, policy: %{bindings: bindings} = policy} ->
+      bindings =
+        add_binding(bindings, email, "roles/owner")
+        |> add_binding(email, "roles/storage.admin")
+        |> IO.inspect()
       Projects.cloudresourcemanager_projects_set_iam_policy(projs, proj_id, body: %SetIamPolicyRequest{
-        policy: %Policy{
-          bindings: add_binding(bindings, email, "roles/owner") |> add_binding(email, "roles/storage.admin")
-        }
+        policy: %{policy | bindings: bindings}
       })
     end)
     |> add_operation(:creds, fn %{service_account: %{uniqueId: id}} ->

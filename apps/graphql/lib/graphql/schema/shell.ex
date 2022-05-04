@@ -75,7 +75,7 @@ defmodule GraphQl.Schema.Shell do
   object :demo_project do
     field :id,          non_null(:id)
     field :project_id,  non_null(:string)
-    field :credentials, non_null(:string)
+    field :credentials, :string
     field :ready,       :boolean
 
     timestamps()

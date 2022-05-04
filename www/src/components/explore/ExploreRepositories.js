@@ -74,20 +74,20 @@ function ExploreRepositories({ scrollRef }) {
         >
           <RepositoryCard
             as={Link}
-            to={`/repositories/${featuredA.id}`}
+            to={`/repository/${featuredA.id}`}
             flexGrow={1}
             flexShrink={0}
             flexBasis="calc(50% - 1 * 16px)"
             featured
             title={featuredA.name}
             imageUrl={featuredA.darkIcon || featuredA.icon}
-            subtitle={featuredA.description}
+            subtitle={featuredA.publisher?.name?.toUpperCase()}
           >
             {featuredA.description}
           </RepositoryCard>
           <RepositoryCard
             as={Link}
-            to={`/repositories/${featuredB.id}`}
+            to={`/repository/${featuredB.id}`}
             ml={2}
             flexGrow={1}
             flexShrink={0}
@@ -95,7 +95,7 @@ function ExploreRepositories({ scrollRef }) {
             featured
             title={featuredB.name}
             imageUrl={featuredB.darkIcon || featuredB.icon}
-            subtitle={featuredB.description}
+            subtitle={featuredB.publisher?.name?.toUpperCase()}
           >
             {featuredB.description}
           </RepositoryCard>
@@ -123,7 +123,7 @@ function ExploreRepositories({ scrollRef }) {
         {sortedRepositories.map(repository => (
           <RepositoryCard
             as={Link}
-            to={`/repositories/${repository.id}`}
+            to={`/repository/${repository.id}`}
             key={repository.id}
             mx={1}
             mb={2}
@@ -132,7 +132,7 @@ function ExploreRepositories({ scrollRef }) {
             width="calc(33.333% - 2 * 16px)"
             title={repository.name}
             imageUrl={repository.darkIcon || repository.icon}
-            subtitle={repository.description}
+            subtitle={repository.publisher?.name?.toUpperCase()}
           >
             {repository.description}
           </RepositoryCard>

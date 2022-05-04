@@ -15,6 +15,7 @@ import Invoices from './payments/Invoices'
 import Sidebar from './Sidebar'
 import Publishers from './publisher/Publishers'
 import Explore from './explore/Explore'
+import Repository from './repository/Repository'
 import { Billing } from './users/Billing'
 import BreadcrumbProvider from './Breadcrumbs'
 import { EditAccount } from './accounts/EditAccount'
@@ -67,18 +68,8 @@ function WrapStripe({ children }) {
   )
 }
 
-function NavigateId({ to, replace }) {
-  const { id } = useParams()
-
-  return (
-    <Navigate
-      replace={replace}
-      to={to.replaceAll(':id', id)}
-    />
-  )
-}
-
 export function PluralInner() {
+  const { id } = useParams()
   const me = useContext(CurrentUserContext)
 
   return (
@@ -155,12 +146,13 @@ export function PluralInner() {
                       path="/repositories/:id/integrations"
                       element={<IntegrationPage />}
                     />
-                    <Route
+                    {/* <Route
                       exact
                       path="/repositories/:id"
                       element={(
-                        <NavigateId
+                        <Navigate
                           replace
+                          state={{ id }}
                           to="/repositories/:id/bundles"
                         />
                       )}
@@ -169,8 +161,9 @@ export function PluralInner() {
                       exact
                       path="/repositories/:id/packages"
                       element={(
-                        <NavigateId
+                        <Navigate
                           replace
+                          state={{ id }}
                           to="/repositories/:id/packages/helm"
                         />
                       )}
@@ -179,8 +172,9 @@ export function PluralInner() {
                       exact
                       path="/repositories/:id/edit"
                       element={(
-                        <NavigateId
+                        <Navigate
                           replace
+                          state={{ id }}
                           to="/repositories/:id/edit/details"
                         />
                       )}
@@ -189,8 +183,9 @@ export function PluralInner() {
                       exact
                       path="/repositories/:id/configure"
                       element={(
-                        <NavigateId
+                        <Navigate
                           replace
+                          state={{ id }}
                           to="/repositories/:id/configure/upgrades"
                         />
                       )}
@@ -198,10 +193,10 @@ export function PluralInner() {
                     <Route
                       path="/repositories/:id/:group/:subgroup"
                       element={<RepoDirectory />}
-                    />
+                    /> */}
                     <Route
-                      path="/repositories/:id/:group"
-                      element={<RepoDirectory />}
+                      path="/repository/:id"
+                      element={<Repository />}
                     />
                     <Route
                       path="/charts/:chartId"

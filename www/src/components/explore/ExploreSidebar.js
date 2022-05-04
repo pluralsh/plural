@@ -7,6 +7,7 @@ import { useState } from 'react'
 import { CATEGORIES, REPO_TAGS } from '../repos/queries'
 
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
+import { capitalize } from '../../utils/string'
 
 const hoverStyle = {
   '&:hover': {
@@ -15,10 +16,6 @@ const hoverStyle = {
       borderColor: 'primary',
     },
   },
-}
-
-function capitalize(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase()
 }
 
 function ExploreSidebarCheckbox({ toggled, onClick, label }) {

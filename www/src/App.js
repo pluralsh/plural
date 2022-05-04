@@ -19,7 +19,6 @@ import { EmailConfirmed } from './components/users/EmailConfirmation'
 import { OAuthCallback } from './components/users/OAuthCallback'
 import { SSOCallback } from './components/users/SSOCallback'
 
-console.log('theme', theme.global[3]({ elevation: 2 }))
 function App() {
   return (
     <ApolloProvider client={client}>

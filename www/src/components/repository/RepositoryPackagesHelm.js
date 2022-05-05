@@ -5,6 +5,7 @@ import { Tag } from 'pluralsh-design-system'
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
+import InfiniteScroller from '../utils/InfiniteScroller'
 
 import { CHARTS_QUERY } from './queries'
 
@@ -76,14 +77,18 @@ function RepositoryPackagesHelm() {
   }
 
   return (
-    <Div>
+    <InfiniteScroller
+      loading={loadingCharts}
+      hasMore={hasMoreCharts}
+      loadMore={fetchMoreCharts}
+    >
       {charts.map(chart => (
         <Chart
           key={chart.id}
           chart={chart}
         />
       ))}
-    </Div>
+    </InfiniteScroller>
   )
 }
 

@@ -57,7 +57,7 @@ function RepositoryPackages() {
           active={pathname.endsWith('docker')}
         />
       </Flex>
-      <Div mt={2}>
+      <Div mt={1}>
         <Outlet />
       </Div>
     </Div>

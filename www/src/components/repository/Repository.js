@@ -69,18 +69,15 @@ function Repository() {
         align="flex-start"
       >
         <Div
+          mt={-0.5}
           mr={3}
           width={128 + 32}
+          flexShrink={0}
         >
           <Tab
             label="Description"
             to={`/repository/${id}`}
             active={pathname === `/repository/${id}`}
-          />
-          <Tab
-            label="Bundles"
-            to={`/repository/${id}/bundles`}
-            active={pathname.startsWith(`/repository/${id}/bundles`)}
           />
           <Tab
             label="Packages"
@@ -98,7 +95,9 @@ function Repository() {
             active={pathname.startsWith(`/repository/${id}/deployments`)}
           />
         </Div>
-        <Outlet />
+        <Div flexGrow={1}>
+          <Outlet />
+        </Div>
       </Flex>
     </Div>
   )

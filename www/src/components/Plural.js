@@ -17,8 +17,10 @@ import Publishers from './publisher/Publishers'
 import Explore from './explore/Explore'
 import Repository from './repository/Repository'
 import RepositoryDescription from './repository/RepositoryDescription'
-import RepositoryBundles from './repository/RepositoryBundles'
 import RepositoryPackages from './repository/RepositoryPackages'
+import RepositoryPackagesHelm from './repository/RepositoryPackagesHelm'
+import RepositoryPackagesTerraform from './repository/RepositoryPackagesTerraform'
+import RepositoryPackagesDocker from './repository/RepositoryPackagesDocker'
 import RepositoryTests from './repository/RepositoryTests'
 import RepositoryDeployments from './repository/RepositoryDeployments'
 import { Billing } from './users/Billing'
@@ -207,13 +209,31 @@ export function PluralInner() {
                         element={<RepositoryDescription />}
                       />
                       <Route
-                        path="bundles"
-                        element={<RepositoryBundles />}
-                      />
-                      <Route
                         path="packages"
                         element={<RepositoryPackages />}
-                      />
+                      >
+                        <Route
+                          index
+                          element={(
+                            <Navigate
+                              replace
+                              to="helm"
+                            />
+                          )}
+                        />
+                        <Route
+                          path="helm"
+                          element={<RepositoryPackagesHelm />}
+                        />
+                        <Route
+                          path="terraform"
+                          element={<RepositoryPackagesTerraform />}
+                        />
+                        <Route
+                          path="docker"
+                          element={<RepositoryPackagesDocker />}
+                        />
+                      </Route>
                       <Route
                         path="tests"
                         element={<RepositoryTests />}

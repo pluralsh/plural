@@ -75,6 +75,8 @@ function ExploreRepositories({ scrollRef }) {
           <RepositoryCard
             as={Link}
             to={`/repository/${featuredA.id}`}
+            color="text"
+            textDecoration="none"
             flexGrow={1}
             flexShrink={0}
             flexBasis="calc(50% - 1 * 16px)"
@@ -88,6 +90,8 @@ function ExploreRepositories({ scrollRef }) {
           <RepositoryCard
             as={Link}
             to={`/repository/${featuredB.id}`}
+            color="text"
+            textDecoration="none"
             ml={2}
             flexGrow={1}
             flexShrink={0}
@@ -122,9 +126,11 @@ function ExploreRepositories({ scrollRef }) {
       >
         {sortedRepositories.map(repository => (
           <RepositoryCard
+            key={repository.id}
             as={Link}
             to={`/repository/${repository.id}`}
-            key={repository.id}
+            color="text"
+            textDecoration="none"
             mx={1}
             mb={2}
             flexGrow={0}

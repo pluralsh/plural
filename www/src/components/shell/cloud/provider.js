@@ -67,6 +67,7 @@ export function ProviderForm({ provider, setProvider, workspace, setWorkspace, c
   if (demo) {
     return (
       <DemoProject 
+        setDemo={setDemo}
         setProvider={setProvider}
         workspace={workspace}
         setWorkspace={setWorkspace}

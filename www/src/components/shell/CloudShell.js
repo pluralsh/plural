@@ -139,14 +139,14 @@ export function Header({ text }) {
 }
 
 function CreateShell({ accessToken, onCreate }) {
-  const [demo, setDemo] = useState(false)
+  const [demo, setDemo] = useState(null)
   const [section, setSection] = useState('git')
   const [provider, setProvider] = useState('AWS')
   const [scm, setScm] = useState({ name: '', provider: 'GITHUB', token: accessToken })
   const [credentials, setCredentials] = useState({})
   const [workspace, setWorkspace] = useState({})
   const [mutation, { loading, error: gqlError }] = useMutation(CREATE_SHELL, {
-    variables: { attributes: { credentials, workspace, scm, provider } },
+    variables: { attributes: { credentials, workspace, scm, provider, demoId: demo && demo.id} },
     onCompleted: onCreate,
   })
 
@@ -162,7 +162,7 @@ function CreateShell({ accessToken, onCreate }) {
     if (!hasNext) mutation()
   }, [section, mutation])
 
-  const validations = section === 'cloud' ? CLOUD_VALIDATIONS[provider] : VALIDATIONS[section]
+  const validations = (demo && section === 'cloud') ? [] : (section === 'cloud' ? CLOUD_VALIDATIONS[provider] : VALIDATIONS[section])
   const { error, exceptions } = getExceptions(validations, { credentials, workspace, scm })
 
   return (

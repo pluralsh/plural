@@ -4,6 +4,8 @@ defmodule Core.Services.Shell.DemoTest do
   alias GoogleApi.CloudResourceManager.V3.Api.Projects
   alias GoogleApi.CloudResourceManager.V3.Api.Operations
   alias GoogleApi.CloudResourceManager.V3.Model.Operation
+  alias GoogleApi.CloudBilling.V1.Api.Projects, as: BillingProjects
+  alias GoogleApi.CloudBilling.V1.Model.ProjectBillingInfo
   alias GoogleApi.IAM.V1.Api.Projects, as: IAMProjects
   alias GoogleApi.IAM.V1.Model.{ServiceAccountKey, Policy, ServiceAccount}
   alias Core.Services.Shell.Demo
@@ -44,7 +46,7 @@ defmodule Core.Services.Shell.DemoTest do
     test "if the operation is ready, it will create a service account and creds" do
       demo = insert(:demo_project)
 
-      expect(Goth.Token, :for_scope, 3, fn _ -> {:ok, %{token: "token"}} end)
+      expect(Goth.Token, :for_scope, 4, fn _ -> {:ok, %{token: "token"}} end)
       expect(Operations, :cloudresourcemanager_operations_get, fn _, _ ->
         {:ok, %Operation{done: true}}
       end)
@@ -60,6 +62,11 @@ defmodule Core.Services.Shell.DemoTest do
       key = Jason.encode!(%{dummy: "key"}) |> Base.encode64()
       expect(IAMProjects, :iam_projects_service_accounts_keys_create, fn _, _, _ ->
         {:ok, %ServiceAccountKey{privateKeyData: key}}
+      end)
+
+      expect(BillingProjects, :cloudbilling_projects_get_billing_info, fn _, _ -> {:ok, %ProjectBillingInfo{}} end)
+      expect(BillingProjects, :cloudbilling_projects_update_billing_info, fn _, _, [body: %ProjectBillingInfo{billingEnabled: true}] ->
+        {:ok, %ProjectBillingInfo{}}
       end)
 
       {:ok, polled} = Demo.poll_demo_project(demo)

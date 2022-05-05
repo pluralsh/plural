@@ -5,22 +5,20 @@ import { LoopingLogo } from '../../utils/AnimatedLogo'
 import { Box, Text } from 'grommet'
 
 
-function PollProject({ demo, setProvider, workspace, setWorkspace, credentials, setCredentials, next }) {
-    const {data} = useQuery(POLL_DEMO_PROJECT, {variables: {id: demo.id}})
-
-    const polled = data.demoProject
+function PollProject({ demo, setDemo, setProvider, workspace, setWorkspace, credentials, setCredentials, next }) {
+    const {data} = useQuery(POLL_DEMO_PROJECT, {variables: {id: demo.id}, pollInterval: 10000})
 
     useEffect(() => {
+        if (!data) return
+        const polled = data.demoProject
         if (polled.ready) {
+            setDemo(polled)
             setProvider('GCP')
             setWorkspace({...workspace, region: 'us-east1', project: polled.projectId})
             setCredentials({...credentials, gcp: {applicationCredentials: polled.credentials}})
             next()
         }
-    }, [polled])
-    
-
-    console.log(data)
+    }, [data])
 
     return (
         <Box fill>
@@ -30,7 +28,7 @@ function PollProject({ demo, setProvider, workspace, setWorkspace, credentials, 
     )
 }
 
-export function DemoProject({ setProvider, workspace, setWorkspace, credentials, setCredentials, next } ) {
+export function DemoProject({ setProvider, workspace, setWorkspace, credentials, setCredentials, next, setDemo } ) {
     const [mutation, {data}] = useMutation(CREATE_DEMO_PROJECT)
 
     useEffect(() => {
@@ -40,7 +38,8 @@ export function DemoProject({ setProvider, workspace, setWorkspace, credentials,
     if (data) {
         return (
             <PollProject 
-                demo={data.createDemoProject} 
+                demo={data.createDemoProject}
+                setDemo={setDemo}
                 setProvider={setProvider}
                 workspace={workspace}
                 setWorkspace={setWorkspace}

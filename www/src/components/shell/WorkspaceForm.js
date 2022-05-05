@@ -1,5 +1,5 @@
 import { Box } from 'grommet'
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import { LabelledInput } from '../users/MagicLogin'
 import { SuffixedInput } from '../utils/AffixedInput'
@@ -18,7 +18,14 @@ export const WORKSPACE_VALIDATIONS = [
   { field: 'workspace.subdomain', func: isSubdomain, name: 'subdomain' },
 ]
 
-export function WorkspaceForm({ workspace, setWorkspace }) {
+export function WorkspaceForm({ demo, workspace, setWorkspace }) {
+  useEffect(() => {
+    if (demo) {
+      const rand = Math.random().toString(36).substring(2, 5)
+      setWorkspace({ ...workspace, cluster: 'pluraldemo', bucketPrefix: `plrlt-${rand}`})
+    }
+  }, [demo])
+
   return (
     <Box gap="small">
       <LabelledInput

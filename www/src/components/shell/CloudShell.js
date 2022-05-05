@@ -212,6 +212,7 @@ function CreateShell({ accessToken, onCreate }) {
           <>
             <Header text="Workspace" />
             <WorkspaceForm
+              demo={demo}
               workspace={workspace}
               setWorkspace={setWorkspace}
             />

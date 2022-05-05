@@ -4,9 +4,9 @@ import { Div, Flex } from 'honorable'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
-import { REPO_Q } from '../repos/queries'
-
 import RepositoryHeader from './RepositoryHeader'
+
+import { REPOSITORY_QUERY } from './queries'
 
 function Tab({ to, label, active }) {
   const hoverStyle = {
@@ -39,9 +39,10 @@ function Tab({ to, label, active }) {
 
 function Repository() {
   const { id } = useParams()
-  const { data } = useQuery(REPO_Q, {
-    variables: { repositoryId: id },
-    fetchPolicy: 'cache-and-network',
+  const { data } = useQuery(REPOSITORY_QUERY, {
+    variables: {
+      repositoryId: id,
+    },
   })
   const { pathname } = useLocation()
 

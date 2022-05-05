@@ -4,16 +4,17 @@ import { RepositoryCard } from 'pluralsh-design-system'
 
 import { useEffect } from 'react'
 
-import { EXPLORE_REPOS } from '../repos/queries'
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
+
+import { EXPLORE_QUERY } from './queries'
 
 function ExploreRepositories({ scrollRef }) {
   const [searchParams] = useSearchParams()
   const categories = searchParams.getAll('category')
   const [repositories, loadingRepositories, hasMoreRepositories, fetchMoreRepositories] = usePaginatedQuery(
-    EXPLORE_REPOS,
+    EXPLORE_QUERY,
     {
       variables: {
       },

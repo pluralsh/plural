@@ -7,7 +7,7 @@ defmodule Core.Services.Shell.Demo do
   alias GoogleApi.CloudResourceManager.V3.Connection, as: ProjectsConnection
   alias GoogleApi.IAM.V1.Connection, as: IAMConnection
   alias GoogleApi.IAM.V1.Api.Projects, as: IAMProjects
-  alias GoogleApi.IAM.V1.Model.{CreateServiceAccountRequest, Policy, Binding}
+  alias GoogleApi.IAM.V1.Model.{CreateServiceAccountRequest, Binding, ServiceAccountKey}
 
   @type error :: {:error, term}
 
@@ -127,9 +127,9 @@ defmodule Core.Services.Shell.Demo do
     end)
     |> add_operation(:iam, fn %{service_account: %{email: email}, policy: %{bindings: bindings} = policy} ->
       bindings =
-        add_binding(bindings, email, "roles/owner")
-        |> add_binding(email, "roles/storage.admin")
-        |> IO.inspect()
+        add_binding(bindings, email, "roles/owner", "serviceAccount")
+        |> add_binding(email, "roles/storage.admin", "serviceAccount")
+        |> add_binding(Core.conf(:gcp_identity), "roles/owner", "user")
       Projects.cloudresourcemanager_projects_set_iam_policy(projs, proj_id, body: %SetIamPolicyRequest{
         policy: %{policy | bindings: bindings}
       })
@@ -138,21 +138,24 @@ defmodule Core.Services.Shell.Demo do
       IAMProjects.iam_projects_service_accounts_keys_create(iams, proj_id, id)
     end)
     |> add_operation(:final, fn %{creds: creds} ->
-      DemoProject.changeset(demo, %{ready: true, credentials: Poison.encode!(creds)})
+      DemoProject.changeset(demo, %{ready: true, credentials: format_creds(creds)})
       |> Core.Repo.update()
     end)
     |> execute(extract: :final)
   end
 
-  defp add_binding(bindings, email, role) do
+  defp add_binding(bindings, email, role, type) do
     case Enum.split_with(bindings, & &1.role == role) do
-      {[%Binding{members: members} = bind], bindings} ->
-        [%{bind | members: ["serviceAccount:#{email}" | members]} | bindings]
-      {_, bindings} -> [binding(email, role) | bindings]
+      {[%Binding{members: members} = bind | rest], bindings} ->
+        [%{bind | members: ["#{type}:#{email}" | members]} | rest] ++ bindings
+      {_, bindings} -> [binding(email, role, type) | bindings]
     end
   end
 
-  defp binding(email, role), do: %Binding{members: ["serviceAccount:#{email}"], role: role}
+  defp format_creds(%ServiceAccountKey{privateKeyData: pk}), do: Base.decode64!(pk)
+
+
+  defp binding(email, role, type), do: %Binding{members: ["#{type}:#{email}"], role: role}
 
   defp project_id(%User{id: user_id}), do: String.slice("plrl-demo-#{user_id}", 0..29)
 

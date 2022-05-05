@@ -73,7 +73,8 @@ config :core,
   acme_secret: get_env("ACME_SECRET"),
   zerossl_access_key: get_env("ZEROSSL_ACCESS_KEY"),
   docker_metrics_table: ~s("permanent"."downsampled_docker_pulls"),
-  workos_webhook: get_env("WORKOS_WEBHOOK_SECRET")
+  workos_webhook: get_env("WORKOS_WEBHOOK_SECRET"),
+  gcp_identity: get_env("GCP_USER_EMAIL") || "mjg@plural.sh"
 
 config :workos,
   client_id: get_env("WORKOS_CLIENT_ID"),

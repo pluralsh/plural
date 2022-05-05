@@ -118,7 +118,8 @@ config :core,
   plural_cmd: "plural",
   stripe_connect_id: "ca_dummy",
   onplural_domain: "onplural.sh",
-  gcp_organization: "1323"
+  gcp_organization: "1323",
+  gcp_identity: "someone@example.com"
 
 config :briefly,
   directory: [{:system, "TMPDIR"}, {:system, "TMP"}, {:system, "TEMP"}, "/tmp"],

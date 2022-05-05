@@ -57,8 +57,9 @@ defmodule Core.Services.Shell.DemoTest do
       expect(Projects, :cloudresourcemanager_projects_set_iam_policy, fn _, _, [body: _] ->
         {:ok, %Policy{bindings: []}}
       end)
+      key = Jason.encode!(%{dummy: "key"}) |> Base.encode64()
       expect(IAMProjects, :iam_projects_service_accounts_keys_create, fn _, _, _ ->
-        {:ok, %ServiceAccountKey{}}
+        {:ok, %ServiceAccountKey{privateKeyData: key}}
       end)
 
       {:ok, polled} = Demo.poll_demo_project(demo)

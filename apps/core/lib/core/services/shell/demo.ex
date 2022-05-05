@@ -10,6 +10,7 @@ defmodule Core.Services.Shell.Demo do
   alias GoogleApi.IAM.V1.Model.{CreateServiceAccountRequest, Binding, ServiceAccountKey}
   alias GoogleApi.CloudBilling.V1.Connection, as: BillingConnection
   alias GoogleApi.CloudBilling.V1.Api.Projects, as: BillingProjects
+  alias GoogleApi.CloudBilling.V1.Api.BillingAccounts
 
   @type error :: {:error, term}
 
@@ -147,11 +148,16 @@ defmodule Core.Services.Shell.Demo do
     |> execute(extract: :final)
   end
 
-  defp enable_billing(project_id) do
+  @doc """
+  enables billing on a project
+  """
+  @spec enable_billing(binary) :: {:ok, term} | error
+  def enable_billing(project_id) do
     conn = BillingConnection.new(oauth_token())
     full_id = "projects/#{project_id}"
     with {:ok, billing} <- BillingProjects.cloudbilling_projects_get_billing_info(conn, full_id),
-      do: BillingProjects.cloudbilling_projects_update_billing_info(conn, full_id, body: %{billing | billingEnabled: true})
+         {:ok, %{billingAccounts: [%{name: name} | _]}} <- BillingAccounts.cloudbilling_billing_accounts_list(conn),
+      do: BillingProjects.cloudbilling_projects_update_billing_info(conn, full_id, body: %{billing | billingEnabled: true, billingAccountName: name})
   end
 
   defp add_binding(bindings, email, role, type) do

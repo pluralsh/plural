@@ -8,6 +8,7 @@ defmodule Core.Services.Shell.DemoTest do
   alias GoogleApi.CloudBilling.V1.Model.ProjectBillingInfo
   alias GoogleApi.IAM.V1.Api.Projects, as: IAMProjects
   alias GoogleApi.IAM.V1.Model.{ServiceAccountKey, Policy, ServiceAccount}
+  alias GoogleApi.CloudBilling.V1.Api.BillingAccounts
   alias Core.Services.Shell.Demo
 
   describe "#create_demo_project/1" do
@@ -65,8 +66,12 @@ defmodule Core.Services.Shell.DemoTest do
       end)
 
       expect(BillingProjects, :cloudbilling_projects_get_billing_info, fn _, _ -> {:ok, %ProjectBillingInfo{}} end)
-      expect(BillingProjects, :cloudbilling_projects_update_billing_info, fn _, _, [body: %ProjectBillingInfo{billingEnabled: true}] ->
-        {:ok, %ProjectBillingInfo{}}
+      expect(BillingAccounts, :cloudbilling_billing_accounts_list, fn _ ->
+        {:ok, %{billingAccounts: [%{name: "billingAccounts/1342"}]}}
+      end)
+      expect(BillingProjects, :cloudbilling_projects_update_billing_info, fn
+        _, _, [body: %ProjectBillingInfo{billingAccountName: "billingAccounts/1342", billingEnabled: true}] ->
+          {:ok, %ProjectBillingInfo{}}
       end)
 
       {:ok, polled} = Demo.poll_demo_project(demo)

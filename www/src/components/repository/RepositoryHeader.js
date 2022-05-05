@@ -8,7 +8,9 @@ function RepositoryHeader({ repository }) {
 
   return (
     <Div
+      py={2}
       xflex="x1"
+      borderBottom="1px solid border"
     >
       <Div
         p={1}

@@ -16,6 +16,11 @@ import Sidebar from './Sidebar'
 import Publishers from './publisher/Publishers'
 import Explore from './explore/Explore'
 import Repository from './repository/Repository'
+import RepositoryDescription from './repository/RepositoryDescription'
+import RepositoryBundles from './repository/RepositoryBundles'
+import RepositoryPackages from './repository/RepositoryPackages'
+import RepositoryTests from './repository/RepositoryTests'
+import RepositoryDeployments from './repository/RepositoryDeployments'
 import { Billing } from './users/Billing'
 import BreadcrumbProvider from './Breadcrumbs'
 import { EditAccount } from './accounts/EditAccount'
@@ -30,7 +35,6 @@ import { Docker, DockerRepository } from './repos/Docker'
 import { Audits } from './accounts/Audits'
 import { UpgradeQueues } from './upgrades/UpgradeQueues'
 import { UpgradeQueue } from './upgrades/UpgradeQueue'
-import { RepoDirectory } from './repos/RepoDirectory'
 import { IncidentDirectory } from './IncidentDirectory'
 import { VerifyEmailConfirmed } from './users/EmailConfirmation'
 // import { AutoRefresh } from './login/AutoRefresh'
@@ -197,7 +201,28 @@ export function PluralInner() {
                     <Route
                       path="/repository/:id"
                       element={<Repository />}
-                    />
+                    >
+                      <Route
+                        index
+                        element={<RepositoryDescription />}
+                      />
+                      <Route
+                        path="bundles"
+                        element={<RepositoryBundles />}
+                      />
+                      <Route
+                        path="packages"
+                        element={<RepositoryPackages />}
+                      />
+                      <Route
+                        path="tests"
+                        element={<RepositoryTests />}
+                      />
+                      <Route
+                        path="deployments"
+                        element={<RepositoryDeployments />}
+                      />
+                    </Route>
                     <Route
                       path="/charts/:chartId"
                       element={<Chart />}

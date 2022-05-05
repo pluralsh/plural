@@ -22,10 +22,12 @@ function RepositoryHeader({ repository }) {
         <Img
           src={repository.darkIcon || repository.icon}
           alt={repository.name}
-          width={120}
+          width={106}
         />
       </Div>
-      <Div ml={3.5}>
+      <Div
+        ml={3.5}
+      >
         <H1
           fontSize={32}
           lineHeight="32px"
@@ -36,8 +38,6 @@ function RepositoryHeader({ repository }) {
           mt={1}
           xflex="x4"
           color="text-xlight"
-          fontWeight={500}
-          fontSize={16}
         >
           <P>
             Publised by {repository.publisher?.name?.toUpperCase()}
@@ -47,10 +47,8 @@ function RepositoryHeader({ repository }) {
           </P>
         </Div>
         <Div
-          mt={1}
+          mt={0.5}
           xflex="x4"
-          fontSize={16}
-          fontWeight={500}
         >
           <A>
             <LinksIcon

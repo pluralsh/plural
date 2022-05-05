@@ -72,7 +72,7 @@ function Repository() {
         <Div
           mt={-0.5}
           mr={3}
-          width={128 + 32}
+          width={142}
           flexShrink={0}
         >
           <Tab

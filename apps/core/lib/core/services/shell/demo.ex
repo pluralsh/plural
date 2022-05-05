@@ -11,7 +11,9 @@ defmodule Core.Services.Shell.Demo do
   alias GoogleApi.CloudBilling.V1.Connection, as: BillingConnection
   alias GoogleApi.CloudBilling.V1.Api.Projects, as: BillingProjects
   alias GoogleApi.CloudBilling.V1.Api.BillingAccounts
-
+  alias GoogleApi.ServiceUsage.V1.Api.Services, as: ServiceUsage
+  alias GoogleApi.ServiceUsage.V1.Connection, as: SvcsConnection
+  alias GoogleApi.ServiceUsage.V1.Model.BatchEnableServicesRequest
   @type error :: {:error, term}
 
   @lock "demo-projects"
@@ -123,6 +125,7 @@ defmodule Core.Services.Shell.Demo do
 
     start_transaction()
     |> add_operation(:billing, fn _ -> enable_billing(proj_id) end)
+    |> add_operation(:svcs, fn _  -> enable_services(proj_id) end)
     |> add_operation(:service_account, fn _ ->
       IAMProjects.iam_projects_service_accounts_create(iams, proj_id, body: %CreateServiceAccountRequest{accountId: "plural"})
     end)
@@ -158,6 +161,14 @@ defmodule Core.Services.Shell.Demo do
     with {:ok, billing} <- BillingProjects.cloudbilling_projects_get_billing_info(conn, full_id),
          {:ok, %{billingAccounts: [%{name: name} | _]}} <- BillingAccounts.cloudbilling_billing_accounts_list(conn),
       do: BillingProjects.cloudbilling_projects_update_billing_info(conn, full_id, body: %{billing | billingEnabled: true, billingAccountName: name})
+  end
+
+  @spec enable_services(binary) :: {:ok, term} | error
+  def enable_services(project_id) do
+    conn = SvcsConnection.new(oauth_token())
+    ServiceUsage.serviceusage_services_batch_enable(conn, "projects/#{project_id}", body: %BatchEnableServicesRequest{
+      serviceIds: ["serviceusage.googleapis.com", "cloudresourcemanager.googleapis.com"]
+    })
   end
 
   defp add_binding(bindings, email, role, type) do

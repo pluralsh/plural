@@ -47,7 +47,7 @@ defmodule Core.Services.Shell.DemoTest do
     test "if the operation is ready, it will create a service account and creds" do
       demo = insert(:demo_project)
 
-      expect(Goth.Token, :for_scope, 4, fn _ -> {:ok, %{token: "token"}} end)
+      expect(Goth.Token, :for_scope, 5, fn _ -> {:ok, %{token: "token"}} end)
       expect(Operations, :cloudresourcemanager_operations_get, fn _, _ ->
         {:ok, %Operation{done: true}}
       end)
@@ -73,6 +73,7 @@ defmodule Core.Services.Shell.DemoTest do
         _, _, [body: %ProjectBillingInfo{billingAccountName: "billingAccounts/1342", billingEnabled: true}] ->
           {:ok, %ProjectBillingInfo{}}
       end)
+      expect(GoogleApi.ServiceUsage.V1.Api.Services, :serviceusage_services_batch_enable, fn _, _, [body: _] -> {:ok, %{}} end)
 
       {:ok, polled} = Demo.poll_demo_project(demo)
 

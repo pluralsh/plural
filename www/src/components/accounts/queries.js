@@ -14,8 +14,8 @@ export const UPDATE_ACCOUNT = gql`
 `
 
 export const USERS_Q = gql`
-  query Users($q: String, $serviceAccount: Boolean, $all: Boolean, $ursor: String) {
-    users(q: $q, first: 20, after: $ursor, serviceAccount: $serviceAccount, all: $all) {
+  query Users($q: String, $serviceAccount: Boolean, $all: Boolean, $cursor: String) {
+    users(q: $q, first: 20, after: $cursor, serviceAccount: $serviceAccount, all: $all) {
       pageInfo { ...PageInfo }
       edges {
         node { ...UserFragment 

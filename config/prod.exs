@@ -20,8 +20,6 @@ config :email, EmailWeb.Endpoint,
 
 config :logger, level: :info
 
-config :goth, json: {:system, "GCP_CREDENTIALS"}
-
 config :core, :consumers, [
   Core.PubSub.Consumers.Fanout,
   Core.PubSub.Consumers.Upgrade,
@@ -64,6 +62,9 @@ config :worker, demo_projects_pipeline: [
   Worker.DemoProjects.Producer,
   {Worker.DemoProjects.Pipeline, Worker.DemoProjects.Producer}
 ]
+
+config :goth,
+  disabled: true
 
 config :kazan, :server, :in_cluster
 config :rtc, :flushable, true

@@ -23,7 +23,7 @@ function PollProject({ demo, setDemo, setProvider, workspace, setWorkspace, cred
     return (
         <Box fill>
             <Text size='small'>Creating your demo project, this might take a minute...</Text>
-            <LoopingLogo />
+            <LoopingLogo dark />
         </Box>
     )
 }
@@ -51,7 +51,7 @@ export function DemoProject({ setProvider, workspace, setWorkspace, credentials,
 
     return (
         <Box fill>
-            <LoopingLogo />
+            <LoopingLogo dark />
         </Box>
     )
 }

@@ -14,10 +14,9 @@ function Explore() {
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
 
   useEffect(() => {
-    const crumbs = [
+    setBreadcrumbs([
       { url: '/explore', text: 'Explore' },
-    ]
-    setBreadcrumbs(crumbs)
+    ])
   }, [setBreadcrumbs])
 
   return (

@@ -53,11 +53,10 @@ function Repository() {
   useEffect(() => {
     if (!data) return
 
-    const crumbs = [
+    setBreadcrumbs([
       { url: '/explore', text: 'Explore' },
       { url: `/repositories/${data.repository.id}`, text: data.repository.name },
-    ]
-    setBreadcrumbs(crumbs)
+    ])
   }, [setBreadcrumbs, data])
 
   if (!data) {

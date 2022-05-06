@@ -29,8 +29,10 @@ function RepositoryPackagesTab({ to, label, active }) {
   )
 }
 
-function RepositoryPackages() {
+function RepositoryPackages({ foo }) {
   const { pathname } = useLocation()
+
+  console.log('foo', foo)
 
   return (
     <Div>

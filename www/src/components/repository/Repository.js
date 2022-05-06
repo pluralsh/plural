@@ -1,11 +1,12 @@
-import { useContext, useEffect } from 'react'
 import { useQuery } from '@apollo/client'
 import { Link, Outlet, useLocation, useParams } from 'react-router-dom'
 import { Div, Flex } from 'honorable'
 
-import { LoopingLogo } from '../utils/AnimatedLogo'
+import RepositoryContext from '../../contexts/RepositoryContext'
 
-import { BreadcrumbsContext } from '../Breadcrumbs'
+import useBreadcrumbs from '../../hooks/useBreadcrumbs'
+
+import { LoopingLogo } from '../utils/AnimatedLogo'
 
 import RepositoryHeader from './RepositoryHeader'
 
@@ -48,16 +49,11 @@ function Repository() {
     },
   })
   const { pathname } = useLocation()
-  const { setBreadcrumbs } = useContext(BreadcrumbsContext)
 
-  useEffect(() => {
-    if (!data) return
-
-    setBreadcrumbs([
-      { url: '/explore', text: 'Explore' },
-      { url: `/repositories/${data.repository.id}`, text: data.repository.name },
-    ])
-  }, [setBreadcrumbs, data])
+  useBreadcrumbs(data && [
+    { url: '/explore', text: 'Explore' },
+    { url: `/repository/${data.repository.id}`, text: data.repository.name },
+  ])
 
   if (!data) {
     return (
@@ -118,7 +114,9 @@ function Repository() {
           pt={1.5}
           px={2}
         >
-          <Outlet />
+          <RepositoryContext.Provider value={repository}>
+            <Outlet />
+          </RepositoryContext.Provider>
         </Div>
       </Flex>
     </Flex>

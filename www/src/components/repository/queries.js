@@ -84,7 +84,7 @@ export const REPOSITORY_QUERY = gql`
 
 export const CHARTS_QUERY = gql`
   query Repo($repositoryId: ID!, $cursor: String) {
-    charts(repositoryId: $repositoryId, first: 15, after: $cursor) {
+    charts(repositoryId: $repositoryId, first: 12, after: $cursor) {
       pageInfo {
         ...PageInfo
       }
@@ -101,7 +101,7 @@ export const CHARTS_QUERY = gql`
 
 export const TERRAFORM_QUERY = gql`
   query Repo($repositoryId: ID! $cursor: String) {
-    terraform(repositoryId: $repositoryId, first: 15, after: $cursor) {
+    terraform(repositoryId: $repositoryId, first: 12, after: $cursor) {
       pageInfo {
         ...PageInfo
       }
@@ -114,4 +114,20 @@ export const TERRAFORM_QUERY = gql`
   }
   ${PageInfo}
   ${TerraformFragment}
+`
+export const DOCKER_QUERY = gql`
+  query Repo($repositoryId: ID!, $cursor: String) {
+    dockerRepositories(repositoryId: $repositoryId, first: 12, after: $cursor) {
+      pageInfo {
+        ...PageInfo
+      }
+      edges {
+        node {
+          ...DockerRepoFragment
+        }
+      }
+    }
+  }
+  ${PageInfo}
+  ${DockerRepoFragment}
 `

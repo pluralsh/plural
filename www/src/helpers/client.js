@@ -3,6 +3,7 @@ import {
   InMemoryCache,
   split,
 } from '@apollo/client'
+import { getMainDefinition } from '@apollo/client/utilities'
 import { setContext } from '@apollo/client/link/context'
 import { onError } from '@apollo/client/link/error'
 import { RetryLink } from '@apollo/client/link/retry'
@@ -61,7 +62,14 @@ const absintheSocket = AbsintheSocket.create(socket)
 const socketLink = createAbsintheSocketLink(absintheSocket)
 
 const splitLink = split(
-  () => false,
+  ({ query }) => {
+    const definition = getMainDefinition(query)
+
+    return (
+      definition.kind === 'OperationDefinition' &&
+      definition.operation === 'subscription'
+    )
+  },
   socketLink,
   retryLink.concat(resetToken).concat(httpLink),
 )

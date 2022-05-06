@@ -1,6 +1,7 @@
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
+import { useSubscription } from '@apollo/client'
 import moment from 'moment'
-import { Flex, H2, P, Span } from 'honorable'
+import { Flex, H2, H3, Modal, P, Span } from 'honorable'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 
@@ -9,7 +10,7 @@ import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import InfiniteScroller from '../utils/InfiniteScroller'
 
-import { TESTS_QUERY } from './queries'
+import { TESTS_QUERY, TEST_LOGS_SUBSCRIPTION } from './queries'
 
 const statusToColor = {
   QUEUED: 'background-light',
@@ -31,49 +32,96 @@ function Status({ status }) {
   )
 }
 
-function Test({ test }) {
+function TestLogsModal({ test, ...props }) {
+  const { data, loading } = useSubscription(TEST_LOGS_SUBSCRIPTION, {
+    variables: {
+      testId: test.id,
+    },
+    skip: !props.open,
+  })
+
+  function renderContent() {
+    if (loading) {
+      return (
+        <Flex
+          direction="row"
+          justify="center"
+        >
+          <LoopingLogo />
+        </Flex>
+      )
+    }
+
+    console.log('data', data)
+
+    return null
+  }
+
   return (
-    <Flex
-      borderBottom="1px solid border"
-      hoverIndicator="background-light"
-      cursor="pointer"
+    <Modal
+      {...props}
     >
-      <P
-        py={1}
-        pr={1}
-        width="calc(100% / 5)"
-      >
-        {test.promoteTag}
-      </P>
-      <P
-        py={1}
-        pr={1}
-        width="calc(100% / 5)"
-      >
+      <H3 mb={1}>
         {test.name}
-      </P>
-      <P
-        py={1}
-        pr={1}
-        width="calc(100% / 5)"
+      </H3>
+      {renderContent()}
+    </Modal>
+  )
+}
+
+function Test({ test }) {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  return (
+    <>
+      <Flex
+        borderBottom="1px solid border"
+        hoverIndicator="background-light"
+        cursor="pointer"
+        onClick={() => setIsModalOpen(true)}
       >
-        {moment(test.insertedAt).format('MMMM Do YYYY, h:mm:ss a')}
-      </P>
-      <P
-        py={1}
-        pr={1}
-        width="calc(100% / 5)"
-      >
-        {moment(test.updatedAt).format('MMMM Do YYYY, h:mm:ss a')}
-      </P>
-      <P
-        py={1}
-        pr={1}
-        width="calc(100% / 5)"
-      >
-        <Status status={test.status} />
-      </P>
-    </Flex>
+        <P
+          py={1}
+          px={1}
+          width="calc(100% / 5)"
+        >
+          {test.promoteTag}
+        </P>
+        <P
+          py={1}
+          px={1}
+          width="calc(100% / 5)"
+        >
+          {test.name}
+        </P>
+        <P
+          py={1}
+          px={1}
+          width="calc(100% / 5)"
+        >
+          {moment(test.insertedAt).format('MMMM Do YYYY, h:mm:ss a')}
+        </P>
+        <P
+          py={1}
+          px={1}
+          width="calc(100% / 5)"
+        >
+          {moment(test.updatedAt).format('MMMM Do YYYY, h:mm:ss a')}
+        </P>
+        <P
+          py={1}
+          px={1}
+          width="calc(100% / 5)"
+        >
+          <Status status={test.status} />
+        </P>
+      </Flex>
+      <TestLogsModal
+        test={test}
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
+    </>
   )
 }
 
@@ -120,35 +168,35 @@ function RepositoryTests() {
         >
           <P
             py={0.5}
-            pr={1}
+            px={1}
             width="calc(100% / 5)"
           >
             Promote to
           </P>
           <P
             py={0.5}
-            pr={1}
+            px={1}
             width="calc(100% / 5)"
           >
             Name
           </P>
           <P
             py={0.5}
-            pr={1}
+            px={1}
             width="calc(100% / 5)"
           >
             Created on
           </P>
           <P
             py={0.5}
-            pr={1}
+            px={1}
             width="calc(100% / 5)"
           >
             Last updated on
           </P>
           <P
             py={0.5}
-            pr={1}
+            px={1}
             width="calc(100% / 5)"
           >
             Progress

@@ -147,3 +147,15 @@ export const TESTS_QUERY = gql`
   ${PageInfo}
   ${TestFragment}
 `
+
+export const TEST_LOGS_SUBSCRIPTION = gql`
+  subscription Logs($testId: ID!) {
+    testLogs(testId: $testId) {
+      step {
+        ...StepFragment
+      }
+      logs
+    }
+  }
+  ${StepFragment}
+`

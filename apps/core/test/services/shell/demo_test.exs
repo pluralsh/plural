@@ -26,6 +26,12 @@ defmodule Core.Services.Shell.DemoTest do
       assert demo.operation_id == "123"
       refute demo.ready
     end
+
+    test "users that have already created demoes cannot create" do
+      user = insert(:user, demoed: true)
+
+      {:error, _} = Demo.create_demo_project(user)
+    end
   end
 
   describe "#delete_demo_project/1" do
@@ -40,6 +46,7 @@ defmodule Core.Services.Shell.DemoTest do
       {:ok, _} = Demo.delete_demo_project(demo)
 
       refute refetch(demo)
+      assert refetch(demo.user).demoed
     end
   end
 

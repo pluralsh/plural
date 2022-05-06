@@ -31,6 +31,7 @@ defmodule Core.Schema.User do
     field :jwt,             :string, virtual: true
     field :external,        :boolean, virtual: true, default: false
     field :service_account, :boolean, default: false
+    field :demoed,          :boolean, default: false
     field :avatar_id,       :binary_id
     field :avatar,          Core.Storage.Type
     field :provider,        Core.Schema.Dependencies.Provider
@@ -103,7 +104,7 @@ defmodule Core.Schema.User do
   def ordered(query \\ __MODULE__, order \\ [asc: :name]),
     do: from(p in query, order_by: ^order)
 
-  @valid ~w(name email password phone login_method)a
+  @valid ~w(name email password phone login_method demoed)a
 
   def changeset(model, attrs \\ %{}) do
     model

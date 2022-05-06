@@ -1,7 +1,7 @@
 defmodule Core.Services.Shell.Demo do
   use Core.Services.Base
   alias Core.Schema.{User, DemoProject}
-  alias Core.Services.Locks
+  alias Core.Services.{Locks, Users}
   alias GoogleApi.CloudResourceManager.V3.Api.{Projects, Operations}
   alias GoogleApi.CloudResourceManager.V3.Model.{Project, Operation, SetIamPolicyRequest}
   alias GoogleApi.CloudResourceManager.V3.Connection, as: ProjectsConnection
@@ -14,6 +14,8 @@ defmodule Core.Services.Shell.Demo do
   alias GoogleApi.ServiceUsage.V1.Api.Services, as: ServiceUsage
   alias GoogleApi.ServiceUsage.V1.Connection, as: SvcsConnection
   alias GoogleApi.ServiceUsage.V1.Model.BatchEnableServicesRequest
+
+
   @type error :: {:error, term}
 
   @lock "demo-projects"
@@ -55,6 +57,7 @@ defmodule Core.Services.Shell.Demo do
   need to poll the project afterwards.
   """
   @spec create_demo_project(User.t) :: {:ok, DemoProject.t} | error
+  def create_demo_project(%User{demoed: true}), do: {:error, "You're only allowed one demo project"}
   def create_demo_project(%User{id: id} = user) do
     case Core.Repo.get_by(DemoProject, user_id: id) do
       %DemoProject{} = p -> {:ok, p}
@@ -89,12 +92,14 @@ defmodule Core.Services.Shell.Demo do
   """
   @spec delete_demo_project(DemoProject.t) :: {:ok, DemoProject.t} | error
   def delete_demo_project(%DemoProject{project_id: proj_id} = proj) do
+    %{user: user} = Core.Repo.preload(proj, [:user])
     start_transaction()
     |> add_operation(:proj, fn _ ->
       projects_conn()
       |> Projects.cloudresourcemanager_projects_delete(proj_id)
     end)
     |> add_operation(:db, fn _ -> Core.Repo.delete(proj) end)
+    |> add_operation(:user, fn _ -> Users.update_user(%{demoed: true}, user) end)
     |> execute(extract: :db)
   end
 

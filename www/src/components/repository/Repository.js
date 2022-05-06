@@ -1,8 +1,11 @@
+import { useContext, useEffect } from 'react'
 import { useQuery } from '@apollo/client'
 import { Link, Outlet, useLocation, useParams } from 'react-router-dom'
 import { Div, Flex } from 'honorable'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
+
+import { BreadcrumbsContext } from '../Breadcrumbs'
 
 import RepositoryHeader from './RepositoryHeader'
 
@@ -45,6 +48,17 @@ function Repository() {
     },
   })
   const { pathname } = useLocation()
+  const { setBreadcrumbs } = useContext(BreadcrumbsContext)
+
+  useEffect(() => {
+    if (!data) return
+
+    const crumbs = [
+      { url: '/explore', text: 'Explore' },
+      { url: `/repositories/${data.repository.id}`, text: data.repository.name },
+    ]
+    setBreadcrumbs(crumbs)
+  }, [setBreadcrumbs, data])
 
   if (!data) {
     return (
@@ -60,20 +74,24 @@ function Repository() {
   const { repository } = data
 
   return (
-    <Div
-      pb={4}
-      px={4}
+    <Flex
+      height="100%"
+      maxHeight="100%"
+      direction="column"
     >
-      <RepositoryHeader repository={repository} />
+      <RepositoryHeader
+        repository={repository}
+        flexShrink={0}
+      />
       <Flex
-        mt={2}
-        align="flex-start"
+        flexGrow={1}
       >
         <Div
-          mt={-0.5}
-          mr={3}
-          width={142}
+          px={2}
+          pt={1}
+          width={128 + 64 + 32 - 16}
           flexShrink={0}
+          borderRight="1px  solid border"
         >
           <Tab
             label="Description"
@@ -96,11 +114,15 @@ function Repository() {
             active={pathname.startsWith(`/repository/${id}/deployments`)}
           />
         </Div>
-        <Div flexGrow={1}>
+        <Div
+          flexGrow={1}
+          pt={1.5}
+          px={2}
+        >
           <Outlet />
         </Div>
       </Flex>
-    </Div>
+    </Flex>
   )
 }
 

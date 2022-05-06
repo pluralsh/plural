@@ -3,14 +3,16 @@ import { GitHubIcon, LinksIcon, Tag } from 'pluralsh-design-system'
 
 import { capitalize } from '../../utils/string'
 
-function RepositoryHeader({ repository }) {
+function RepositoryHeader({ repository, ...props }) {
   console.log('repository', repository)
 
   return (
     <Div
       py={2}
+      px={2}
       xflex="x1"
       borderBottom="1px solid border"
+      {...props}
     >
       <Div
         p={1}
@@ -26,7 +28,7 @@ function RepositoryHeader({ repository }) {
         />
       </Div>
       <Div
-        ml={3.5}
+        ml={2}
       >
         <H1
           fontSize={32}

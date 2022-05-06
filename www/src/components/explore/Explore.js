@@ -1,13 +1,24 @@
-import { useRef } from 'react'
+import { useContext, useEffect, useRef } from 'react'
 import { Div } from 'honorable'
 
 import { TOOLBAR_SIZE } from '../Toolbar'
+
+import { BreadcrumbsContext } from '../Breadcrumbs'
 
 import ExploreSidebar from './ExploreSidebar'
 import ExploreRepositories from './ExploreRepositories'
 
 function Explore() {
   const scrollRef = useRef()
+
+  const { setBreadcrumbs } = useContext(BreadcrumbsContext)
+
+  useEffect(() => {
+    const crumbs = [
+      { url: '/explore', text: 'Explore' },
+    ]
+    setBreadcrumbs(crumbs)
+  }, [setBreadcrumbs])
 
   return (
     <Div

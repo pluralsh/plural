@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { Div, Flex, Img, P } from 'honorable'
 import moment from 'moment'
 
@@ -18,7 +18,7 @@ const defaultDockerIcon = `${process.env.PUBLIC_URL}/docker.png`
 
 function DockerRepository({ dockerRepository }) {
   const { registry } = useContext(PluralConfigurationContext)
-  const repository = useContext(RepositoryContext)
+  const { name } = useContext(RepositoryContext)
 
   return (
     <Flex
@@ -47,7 +47,7 @@ function DockerRepository({ dockerRepository }) {
           {dockerRepository.name}
         </P>
         <P mt={0.5}>
-          docker pull {registry}/{repository.name}/{dockerRepository.name} - created {moment(dockerRepository.insertedAt).fromNow()}
+          docker pull {registry}/{name}/{dockerRepository.name} - created {moment(dockerRepository.insertedAt).fromNow()}
         </P>
       </Div>
     </Flex>
@@ -55,7 +55,7 @@ function DockerRepository({ dockerRepository }) {
 }
 
 function RepositoryPackagesDocker() {
-  const { id } = useParams()
+  const { id } = useContext(RepositoryContext)
   const [dockerRepositories, loadingCharts, hasMoreCharts, fetchMoreCharts] = usePaginatedQuery(
     DOCKER_QUERY,
     {
@@ -66,7 +66,7 @@ function RepositoryPackagesDocker() {
     data => data.dockerRepositories
   )
 
-  if (loadingCharts) {
+  if (dockerRepositories.length === 0 && loadingCharts) {
     return (
       <Flex
         pt={2}
@@ -82,6 +82,9 @@ function RepositoryPackagesDocker() {
       loading={loadingCharts}
       hasMore={hasMoreCharts}
       loadMore={fetchMoreCharts}
+      // Allow for scrolling in a flexbox layout
+      flexGrow={1}
+      height={0}
     >
       {dockerRepositories.map(dockerRepository => (
         <DockerRepository

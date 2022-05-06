@@ -25,6 +25,7 @@ function InfiniteScroller({ loading, hasMore, loadMore, children, ...props }) {
   return (
     <Div
       ref={scrollRef}
+      overflowY="auto"
       {...props}
     >
       {children}

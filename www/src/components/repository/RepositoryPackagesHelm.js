@@ -1,6 +1,9 @@
-import { Link, useParams } from 'react-router-dom'
+import { useContext } from 'react'
+import { Link } from 'react-router-dom'
 import { Div, Flex, Img, P } from 'honorable'
 import { Tag } from 'pluralsh-design-system'
+
+import RepositoryContext from '../../contexts/RepositoryContext'
 
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 
@@ -54,7 +57,7 @@ function Chart({ chart }) {
 }
 
 function RepositoryPackagesHelm() {
-  const { id } = useParams()
+  const { id } = useContext(RepositoryContext)
   const [charts, loadingCharts, hasMoreCharts, fetchMoreCharts] = usePaginatedQuery(
     CHARTS_QUERY,
     {
@@ -65,7 +68,7 @@ function RepositoryPackagesHelm() {
     data => data.charts
   )
 
-  if (loadingCharts) {
+  if (charts.length === 0 && loadingCharts) {
     return (
       <Flex
         pt={2}
@@ -81,6 +84,9 @@ function RepositoryPackagesHelm() {
       loading={loadingCharts}
       hasMore={hasMoreCharts}
       loadMore={fetchMoreCharts}
+      // Allow for scrolling in a flexbox layout
+      flexGrow={1}
+      height={0}
     >
       {charts.map(chart => (
         <Chart

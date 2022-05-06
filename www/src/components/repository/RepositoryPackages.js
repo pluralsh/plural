@@ -29,13 +29,14 @@ function RepositoryPackagesTab({ to, label, active }) {
   )
 }
 
-function RepositoryPackages({ foo }) {
+function RepositoryPackages() {
   const { pathname } = useLocation()
 
-  console.log('foo', foo)
-
   return (
-    <Div>
+    <Flex
+      direction="column"
+      height="100%"
+    >
       <H2>
         Packages
       </H2>
@@ -59,10 +60,14 @@ function RepositoryPackages({ foo }) {
           active={pathname.endsWith('docker')}
         />
       </Flex>
-      <Div mt={1}>
+      <Flex
+        mt={1}
+        direction="column"
+        flexGrow={1}
+      >
         <Outlet />
-      </Div>
-    </Div>
+      </Flex>
+    </Flex>
   )
 }
 

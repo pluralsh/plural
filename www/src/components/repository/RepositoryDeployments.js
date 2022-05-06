@@ -1,6 +1,12 @@
+import { Div, H2 } from 'honorable'
+
 function RepositoryDeployments() {
   return (
-    'RepositoryDeployments'
+    <Div>
+      <H2>
+        Deployments
+      </H2>
+    </Div>
   )
 }
 

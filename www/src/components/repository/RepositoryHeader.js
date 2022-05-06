@@ -1,10 +1,13 @@
+import { useContext } from 'react'
 import { A, Div, H1, Img, P, Span } from 'honorable'
 import { GitHubIcon, LinksIcon, Tag } from 'pluralsh-design-system'
 
+import RepositoryContext from '../../contexts/RepositoryContext'
+
 import { capitalize } from '../../utils/string'
 
-function RepositoryHeader({ repository, ...props }) {
-  console.log('repository', repository)
+function RepositoryHeader(props) {
+  const repository = useContext(RepositoryContext)
 
   return (
     <Div

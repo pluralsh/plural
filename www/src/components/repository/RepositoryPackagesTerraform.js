@@ -1,5 +1,8 @@
-import { Link, useParams } from 'react-router-dom'
+import { useContext } from 'react'
+import { Link } from 'react-router-dom'
 import { Div, Flex, Img, P } from 'honorable'
+
+import RepositoryContext from '../../contexts/RepositoryContext'
 
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 
@@ -74,7 +77,7 @@ function Terraform({ terraform }) {
 }
 
 function RepositoryPackagesTerraform() {
-  const { id } = useParams()
+  const { id } = useContext(RepositoryContext)
   const [terraforms, loadingTerraforms, hasMoreTerraforms, fetchMoreTerraforms] = usePaginatedQuery(
     TERRAFORM_QUERY,
     {
@@ -85,7 +88,7 @@ function RepositoryPackagesTerraform() {
     data => data.terraform
   )
 
-  if (loadingTerraforms) {
+  if (terraforms.length === 0 && loadingTerraforms) {
     return (
       <Flex
         pt={2}
@@ -101,6 +104,9 @@ function RepositoryPackagesTerraform() {
       loading={loadingTerraforms}
       hasMore={hasMoreTerraforms}
       loadMore={fetchMoreTerraforms}
+      // Allow for scrolling in a flexbox layout
+      flexGrow={1}
+      height={0}
     >
       {terraforms.map(terraform => (
         <Terraform

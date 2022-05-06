@@ -131,3 +131,19 @@ export const DOCKER_QUERY = gql`
   ${PageInfo}
   ${DockerRepoFragment}
 `
+export const TESTS_QUERY = gql`
+  query RepoTests($repositoryId: ID, $cursor: String) {
+    tests(after: $cursor, first: 12, repositoryId: $repositoryId) {
+      pageInfo {
+        ...PageInfo
+      }
+      edges {
+        node {
+          ...TestFragment
+        }
+      }
+    }
+  }
+  ${PageInfo}
+  ${TestFragment}
+`

@@ -69,57 +69,59 @@ function Repository() {
   const { repository } = data
 
   return (
-    <Flex
-      height="100%"
-      maxHeight="100%"
-      direction="column"
-    >
-      <RepositoryHeader
-        repository={repository}
-        flexShrink={0}
-      />
+    <RepositoryContext.Provider value={repository}> {/* Provide the repository to children */}
       <Flex
-        flexGrow={1}
+        height="100%"
+        maxHeight="100%"
+        direction="column"
+        overflowY="hidden"
       >
-        <Div
-          px={2}
-          pt={1}
-          width={128 + 64 + 32 - 16}
-          flexShrink={0}
-          borderRight="1px  solid border"
-        >
-          <Tab
-            label="Description"
-            to={`/repository/${id}`}
-            active={pathname === `/repository/${id}`}
-          />
-          <Tab
-            label="Packages"
-            to={`/repository/${id}/packages`}
-            active={pathname.startsWith(`/repository/${id}/packages`)}
-          />
-          <Tab
-            label="Tests"
-            to={`/repository/${id}/tests`}
-            active={pathname.startsWith(`/repository/${id}/tests`)}
-          />
-          <Tab
-            label="Deployments"
-            to={`/repository/${id}/deployments`}
-            active={pathname.startsWith(`/repository/${id}/deployments`)}
-          />
-        </Div>
-        <Div
+        <RepositoryHeader flexShrink={0} />
+        <Flex
           flexGrow={1}
-          pt={1.5}
-          px={2}
+          height={0}
         >
-          <RepositoryContext.Provider value={repository}>
+          <Div
+            px={2}
+            pt={1}
+            width={128 + 64 + 32 - 16}
+            flexShrink={0}
+            borderRight="1px  solid border"
+          >
+            <Tab
+              label="Description"
+              to={`/repository/${id}`}
+              active={pathname === `/repository/${id}`}
+            />
+            <Tab
+              label="Packages"
+              to={`/repository/${id}/packages`}
+              active={pathname.startsWith(`/repository/${id}/packages`)}
+            />
+            <Tab
+              label="Tests"
+              to={`/repository/${id}/tests`}
+              active={pathname.startsWith(`/repository/${id}/tests`)}
+            />
+            <Tab
+              label="Deployments"
+              to={`/repository/${id}/deployments`}
+              active={pathname.startsWith(`/repository/${id}/deployments`)}
+            />
+          </Div>
+          <Div
+            flexGrow={1}
+            pt={1.5}
+            px={2}
+            height="100%"
+            maxHeight="100%"
+            overflow="hidden"
+          >
             <Outlet />
-          </RepositoryContext.Provider>
-        </Div>
+          </Div>
+        </Flex>
       </Flex>
-    </Flex>
+    </RepositoryContext.Provider>
   )
 }
 

@@ -53,6 +53,7 @@ defmodule Core.Schema.Repository do
 
     has_one  :database,      Database, on_replace: :update
     has_one  :shell,         Shell, on_replace: :update
+    has_one  :installation,  Installation # for use in sideloads
     has_many :installations, Installation
     has_many :plans,         Plan
     has_many :artifacts,     Artifact

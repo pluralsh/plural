@@ -149,9 +149,7 @@ defmodule GraphQl.Schema.Repository do
     image :icon
     image :dark_icon
 
-    field :installation, :installation, resolve: fn
-      repo, _, context -> Repository.resolve_installation(repo, context)
-    end
+    field :installation, :installation, resolve: dataloader(Repository)
 
     field :editable, :boolean, resolve: fn
       repo, _, %{context: %{current_user: user}} -> Repository.editable(repo, user)

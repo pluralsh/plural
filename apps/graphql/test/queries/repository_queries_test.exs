@@ -19,6 +19,34 @@ defmodule GraphQl.RepositoryQueriesTest do
              |> ids_equal(repos)
     end
 
+    test "it can sideload your installed repositories" do
+      user = insert(:user)
+      [first, second | _] = repos = insert_list(3, :repository)
+      inst = insert(:installation, repository: first, user: user)
+      insert(:installation, repository: second)
+      insert(:installation, repository: first)
+
+      {:ok, %{data: %{"repositories" => found}}} = run_query("""
+        query {
+          repositories(first: 5) {
+            edges {
+              node {
+                id
+                installation { id }
+              }
+            }
+          }
+        }
+      """, %{}, %{current_user: user})
+
+      list = from_connection(found)
+      assert ids_equal(list, repos)
+
+      {[repo], rest} = Enum.split_with(list, & &1["id"] == first.id)
+      assert repo["installation"]["id"] == inst.id
+      refute Enum.any?(rest, & &1["installation"])
+    end
+
     test "It can respect private repositories" do
       account = insert(:account)
       publisher = insert(:publisher, account: account)
@@ -55,7 +83,7 @@ defmodule GraphQl.RepositoryQueriesTest do
 
       {:ok, %{data: %{"repositories" => repos}}} = run_query("""
         query {
-          repositories(installed: true first: 5) {
+          repositories(installed: true, first: 5) {
             edges { node { id } }
           }
         }

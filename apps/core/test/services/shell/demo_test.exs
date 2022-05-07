@@ -24,6 +24,7 @@ defmodule Core.Services.Shell.DemoTest do
       assert demo.user_id == user.id
       assert is_binary(demo.project_id)
       assert demo.operation_id == "123"
+      assert demo.state == :created
       refute demo.ready
     end
 
@@ -80,12 +81,27 @@ defmodule Core.Services.Shell.DemoTest do
         _, _, [body: %ProjectBillingInfo{billingAccountName: "billingAccounts/1342", billingEnabled: true}] ->
           {:ok, %ProjectBillingInfo{}}
       end)
-      expect(GoogleApi.ServiceUsage.V1.Api.Services, :serviceusage_services_batch_enable, fn _, _, [body: _] -> {:ok, %{}} end)
+      expect(GoogleApi.ServiceUsage.V1.Api.Services, :serviceusage_services_batch_enable, fn _, _, [body: _] -> {:ok, %{
+        name: "operations/1234"
+      }} end)
 
       {:ok, polled} = Demo.poll_demo_project(demo)
 
       assert polled.ready
+      assert polled.state == :ready
+      assert polled.enabled_op_id == "1234"
+
       {:ok, _} = Poison.decode(polled.credentials)
+    end
+
+    test "if the demo project is ready, then it will query the services enabled op" do
+      demo = insert(:demo_project, state: :ready, enabled_op_id: "1234")
+      expect(Goth.Token, :for_scope, fn _ -> {:ok, %{token: "token"}} end)
+      expect(GoogleApi.ServiceUsage.V1.Api.Operations, :serviceusage_operations_get, fn _, "1234"-> {:ok, %{done: true}} end)
+
+      {:ok, polled} = Demo.poll_demo_project(demo)
+
+      assert polled.state == :enabled
     end
 
     test "if the operation is not ready, it'll just echo back the demo project record" do

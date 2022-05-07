@@ -95,12 +95,13 @@ defmodule GraphQl.ShellMutationsTest do
 
       {:ok, %{data: %{"createDemoProject" => demo}}} = run_query("""
         mutation {
-          createDemoProject { id projectId ready }
+          createDemoProject { id projectId ready state }
         }
       """, %{}, %{current_user: user})
 
       assert demo["id"]
       assert demo["projectId"]
+      assert demo["state"] == "CREATED"
       refute demo["ready"]
     end
   end

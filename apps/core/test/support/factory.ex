@@ -549,6 +549,7 @@ defmodule Core.Factory do
   def demo_project_factory do
     %Schema.DemoProject{
       user: build(:user),
+      state: :created,
       project_id: sequence(:dp, &"proj-#{&1}")
     }
   end

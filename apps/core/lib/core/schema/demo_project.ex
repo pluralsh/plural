@@ -4,12 +4,16 @@ defmodule Core.Schema.DemoProject do
 
   @expiry [hours: -6]
 
+  defenum State, created: 0, ready: 1, enabled: 2
+
   schema "demo_projects" do
-    field :project_id,   :string
-    field :credentials,  Piazza.Ecto.EncryptedString
-    field :ready,        :boolean
-    field :operation_id, :string
-    field :heartbeat,    :utc_datetime_usec
+    field :project_id,    :string
+    field :state,         State
+    field :credentials,   Piazza.Ecto.EncryptedString
+    field :ready,         :boolean
+    field :operation_id,  :string
+    field :enabled_op_id, :string
+    field :heartbeat,     :utc_datetime_usec
 
     belongs_to :user, User
 
@@ -33,7 +37,7 @@ defmodule Core.Schema.DemoProject do
     from(dp in query, where: dp.inserted_at < ^expiry)
   end
 
-  @valid ~w(project_id credentials user_id ready operation_id)a
+  @valid ~w(project_id credentials user_id ready operation_id state enabled_op_id)a
 
   def changeset(model, attrs \\ %{}) do
     model

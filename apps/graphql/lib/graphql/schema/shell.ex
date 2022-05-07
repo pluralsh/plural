@@ -2,6 +2,8 @@ defmodule GraphQl.Schema.Shell do
   use GraphQl.Schema.Base
   alias GraphQl.Resolvers.Shell
 
+  ecto_enum :demo_project_state, Core.Schema.DemoProject.State
+
   input_object :cloud_shell_attributes do
     field :provider,    :provider
     field :workspace,   non_null(:workspace_attributes)
@@ -77,6 +79,7 @@ defmodule GraphQl.Schema.Shell do
     field :project_id,  non_null(:string)
     field :credentials, :string
     field :ready,       :boolean
+    field :state,       :demo_project_state
 
     timestamps()
   end

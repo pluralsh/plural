@@ -12,6 +12,7 @@ defmodule Core.Services.Shell.Demo do
   alias GoogleApi.CloudBilling.V1.Api.Projects, as: BillingProjects
   alias GoogleApi.CloudBilling.V1.Api.BillingAccounts
   alias GoogleApi.ServiceUsage.V1.Api.Services, as: ServiceUsage
+  alias GoogleApi.ServiceUsage.V1.Api.Operations, as: SvcsOperations
   alias GoogleApi.ServiceUsage.V1.Connection, as: SvcsConnection
   alias GoogleApi.ServiceUsage.V1.Model.BatchEnableServicesRequest
 
@@ -69,7 +70,7 @@ defmodule Core.Services.Shell.Demo do
     projs = projects_conn()
     start_transaction()
     |> add_operation(:db, fn _ ->
-      %DemoProject{user_id: user_id}
+      %DemoProject{user_id: user_id, state: :created}
       |> DemoProject.changeset(%{project_id: project_id(user)})
       |> Core.Repo.insert()
     end)
@@ -108,6 +109,19 @@ defmodule Core.Services.Shell.Demo do
   that project to be used in the cloud shell
   """
   @spec poll_demo_project(DemoProject.t) :: {:ok, DemoProject.t} | error
+  def poll_demo_project(%DemoProject{state: :enabled} = proj), do: {:ok, proj}
+
+  def poll_demo_project(%DemoProject{state: :ready, enabled_op_id: op_id} = proj) do
+    svcs_conn()
+    |> SvcsOperations.serviceusage_operations_get(op_id)
+    |> case do
+      {:ok, %{done: true}} ->
+        Ecto.Changeset.change(proj, %{state: :enabled})
+        |> Core.Repo.update()
+      _ -> {:ok, proj}
+    end
+  end
+
   def poll_demo_project(%DemoProject{ready: true} = proj), do: {:ok, proj}
 
   def poll_demo_project(%DemoProject{operation_id: op_id} = proj) do
@@ -149,8 +163,13 @@ defmodule Core.Services.Shell.Demo do
     |> add_operation(:creds, fn %{service_account: %{uniqueId: id}} ->
       IAMProjects.iam_projects_service_accounts_keys_create(iams, proj_id, id)
     end)
-    |> add_operation(:final, fn %{creds: creds} ->
-      DemoProject.changeset(demo, %{ready: true, credentials: format_creds(creds)})
+    |> add_operation(:final, fn %{creds: creds, svcs: %{name: "operations/" <> op_id}} ->
+      DemoProject.changeset(demo, %{
+        ready: true,
+        credentials: format_creds(creds),
+        state: :ready,
+        enabled_op_id: op_id,
+      })
       |> Core.Repo.update()
     end)
     |> execute(extract: :final)
@@ -170,10 +189,13 @@ defmodule Core.Services.Shell.Demo do
 
   @spec enable_services(binary) :: {:ok, term} | error
   def enable_services(project_id) do
-    conn = SvcsConnection.new(oauth_token())
-    ServiceUsage.serviceusage_services_batch_enable(conn, "projects/#{project_id}", body: %BatchEnableServicesRequest{
-      serviceIds: ["serviceusage.googleapis.com", "cloudresourcemanager.googleapis.com"]
-    })
+    svcs_conn()
+    |> ServiceUsage.serviceusage_services_batch_enable(
+      "projects/#{project_id}",
+      body: %BatchEnableServicesRequest{
+        serviceIds: ["serviceusage.googleapis.com", "cloudresourcemanager.googleapis.com"]
+      }
+    )
   end
 
   defp add_binding(bindings, email, role, type) do
@@ -194,6 +216,8 @@ defmodule Core.Services.Shell.Demo do
   defp projects_conn(), do: ProjectsConnection.new(oauth_token())
 
   defp iam_conn(), do: IAMConnection.new(oauth_token())
+
+  defp svcs_conn(), do: SvcsConnection.new(oauth_token())
 
   defp oauth_token() do
     {:ok, token} = Goth.Token.for_scope("https://www.googleapis.com/auth/cloud-platform")

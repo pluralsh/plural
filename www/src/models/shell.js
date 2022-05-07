@@ -21,5 +21,6 @@ export const DemoProjectFragment = gql`
     projectId
     credentials
     ready
+    state
   }
 `

@@ -3,6 +3,8 @@ import { useMutation, useQuery } from 'react-apollo'
 import { CREATE_DEMO_PROJECT, POLL_DEMO_PROJECT } from '../query'
 import { LoopingLogo } from '../../utils/AnimatedLogo'
 import { Box, Text } from 'grommet'
+import { DemoStatus } from './types'
+import { Status } from '../ShellStatus'
 
 
 function PollProject({ demo, setDemo, setProvider, workspace, setWorkspace, credentials, setCredentials, next }) {
@@ -11,7 +13,7 @@ function PollProject({ demo, setDemo, setProvider, workspace, setWorkspace, cred
     useEffect(() => {
         if (!data) return
         const polled = data.demoProject
-        if (polled.ready) {
+        if (polled.state === DemoStatus.ENABLED) {
             setDemo(polled)
             setProvider('GCP')
             setWorkspace({...workspace, region: 'us-east1', project: polled.projectId})
@@ -20,10 +22,15 @@ function PollProject({ demo, setDemo, setProvider, workspace, setWorkspace, cred
         }
     }, [data])
 
+    const project = data ? data.demoProject : {}
+    const ready = project.ready
+    const enabled = project.state === DemoStatus.ENABLED
+
     return (
-        <Box fill>
+        <Box fill gap='xsmall'>
             <Text size='small'>Creating your demo project, this might take a minute...</Text>
-            <LoopingLogo dark />
+            <Status name={`GCP Project ${project.projectId} Created`} state={ready} />
+            <Status name='Necessary services enabled' state={enabled} />
         </Box>
     )
 }

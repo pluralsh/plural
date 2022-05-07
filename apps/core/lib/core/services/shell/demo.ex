@@ -114,10 +114,10 @@ defmodule Core.Services.Shell.Demo do
   def poll_demo_project(%DemoProject{state: :ready, enabled_op_id: op_id} = proj) do
     svcs_conn()
     |> SvcsOperations.serviceusage_operations_get(op_id)
+    |> IO.inspect()
     |> case do
-      {:ok, %{done: true}} ->
-        Ecto.Changeset.change(proj, %{state: :enabled})
-        |> Core.Repo.update()
+      {:error, %Tesla.Env{status: 404}} -> enable(proj)
+      {:ok, %{done: true}} -> enable(proj)
       _ -> {:ok, proj}
     end
   end
@@ -128,6 +128,7 @@ defmodule Core.Services.Shell.Demo do
     projects_conn()
     |> Operations.cloudresourcemanager_operations_get(op_id)
     |> case do
+      {:error, %Tesla.Env{status: 404}} -> provision(proj)
       {:ok, %Operation{done: true}} -> provision(proj)
       _ -> {:ok, proj}
     end
@@ -136,6 +137,11 @@ defmodule Core.Services.Shell.Demo do
   def poll_demo_project(id) when is_binary(id) do
     get_demo_project(id)
     |> poll_demo_project()
+  end
+
+  defp enable(%DemoProject{} = proj) do
+    DemoProject.changeset(proj, %{state: :enabled})
+    |> Core.Repo.update()
   end
 
   defp provision(%DemoProject{project_id: proj_id} = demo) do

@@ -1,5 +1,5 @@
-import { useContext } from 'react'
-import { A, Div, H1, Img, P, Span } from 'honorable'
+import { useContext, useState } from 'react'
+import { A, Div, DropdownButton, ExtendTheme, Flex, H1, H2, Img, MenuItem, Modal, P, Span } from 'honorable'
 import { GitHubIcon, LinksIcon, Tag } from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
@@ -7,6 +7,8 @@ import RepositoryContext from '../../contexts/RepositoryContext'
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 
 import { capitalize } from '../../utils/string'
+
+import { Code } from '../incidents/Markdown'
 
 import { RECIPES_QUERY } from './queries'
 
@@ -26,6 +28,121 @@ const providerToIconHeight = {
   KIND: 14,
 }
 
+const providerToDisplayName = {
+  AWS: 'Amazon Web Services',
+  AZURE: 'Azure',
+  EQUINIX: 'Equinix Metal',
+  GCP: 'Google Cloud Platform',
+  KIND: 'Kind',
+}
+
+const extendedTheme = {
+  DropdownButton: {
+    partStyles: {
+      Menu: [
+        {
+          width: 256 + 64 - 16,
+          left: 'unset',
+        },
+      ],
+    },
+  },
+  MenuItem: {
+    defaultStyles: [
+      {
+        borderBottom: '1px solid border',
+        '&:last-of-type': {
+          borderBottom: 'none',
+        },
+      },
+    ],
+  },
+}
+
+function InstallDropdownButton({ recipes, ...props }) {
+  const { name } = useContext(RepositoryContext)
+  const [recipe, setRecipe] = useState(null)
+
+  function renderModalContent() {
+    if (!recipe) return null
+
+    return (
+      <Div minWidth={512}>
+        <Flex
+          align="center"
+          as={H2}
+        >
+          Install {recipe.name} on {providerToDisplayName[recipe.provider]}
+          <Img
+            ml={0.5}
+            alt={recipe.name}
+            src={providerToIcon[recipe.provider]}
+            height={1.5 * providerToIconHeight[recipe.provider]}
+          />
+        </Flex>
+        <P
+          mt={2}
+          mb={1}
+        >
+          In your installation repository run:
+        </P>
+        <Code className="lang-bash">
+          {`plural bundle install ${name} ${recipe.name}`}
+        </Code>
+      </Div>
+    )
+  }
+
+  return (
+    <>
+      <ExtendTheme theme={extendedTheme}>
+        <DropdownButton
+          fade
+          label="Install"
+          onChange={event => setRecipe(event.target.value)}
+          {...props}
+        >
+          {recipes.map(recipe => (
+            <MenuItem
+              key={recipe.id}
+              value={recipe}
+            >
+              <Flex align="center">
+                <Flex
+                  align="center"
+                  justify="center"
+                  width={3 * 16}
+                  height={3 * 16}
+                  background="background-top"
+                  flexShrink={0}
+                >
+                  <Img
+                    alt={recipe.name}
+                    src={providerToIcon[recipe.provider]}
+                    height={1.5 * providerToIconHeight[recipe.provider]}
+                  />
+                </Flex>
+                <P
+                  ml={1}
+                  flexShrink={0}
+                >
+                  Install on {providerToDisplayName[recipe.provider]}
+                </P>
+              </Flex>
+            </MenuItem>
+          ))}
+        </DropdownButton>
+      </ExtendTheme>
+      <Modal
+        open={!!recipe}
+        onClose={() => setRecipe(null)}
+      >
+        {renderModalContent()}
+      </Modal>
+    </>
+  )
+}
+
 function RepositoryHeader(props) {
   const repository = useContext(RepositoryContext)
   const [recipes] = usePaginatedQuery(
@@ -39,16 +156,17 @@ function RepositoryHeader(props) {
   )
 
   return (
-    <Div
+    <Flex
       py={2}
       px={2}
-      xflex="x1"
+      align="flex-start"
       borderBottom="1px solid border"
       {...props}
     >
-      <Div
+      <Flex
         p={1}
-        xflex="x5"
+        align="center"
+        justify="center"
         backgroundColor="background-light"
         border="2px solid border"
         borderRadius={4}
@@ -58,7 +176,7 @@ function RepositoryHeader(props) {
           alt={repository.name}
           width={106}
         />
-      </Div>
+      </Flex>
       <Div
         ml={2}
       >
@@ -93,9 +211,9 @@ function RepositoryHeader(props) {
             ))}
           </Div>
         </Div>
-        <Div
+        <Flex
           mt={0.5}
-          xflex="x4"
+          align="center"
         >
           <A>
             <LinksIcon
@@ -115,10 +233,11 @@ function RepositoryHeader(props) {
               github.com/airbytehq/airbyte
             </Span>
           </A>
-        </Div>
-        <Div
+        </Flex>
+        <Flex
           mt={1}
-          xflex="x11"
+          align="flex-start"
+          wrap="wrap"
         >
           {repository.tags.map(({ tag }) => (
             <Tag
@@ -129,9 +248,11 @@ function RepositoryHeader(props) {
               {tag}
             </Tag>
           ))}
-        </Div>
+        </Flex>
       </Div>
-    </Div>
+      <Div flexGrow={1} />
+      <InstallDropdownButton recipes={recipes} />
+    </Flex>
   )
 }
 

@@ -29,7 +29,7 @@ defmodule Graphql.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:absinthe, "~> 1.5.0"},
+      {:absinthe, "~> 1.7.0"},
       {:absinthe_relay, "~> 1.5.0"},
       {:absinthe_plug, "~> 1.5.0", override: true},
       {:dataloader, "== 1.0.6", override: true},

@@ -43,12 +43,12 @@ function Tab({ to, label, active }) {
 
 function Repository() {
   const { id } = useParams()
+  const { pathname } = useLocation()
   const { data } = useQuery(REPOSITORY_QUERY, {
     variables: {
       repositoryId: id,
     },
   })
-  const { pathname } = useLocation()
 
   useBreadcrumbs(data && [
     { url: '/explore', text: 'Explore' },

@@ -64,7 +64,7 @@ import { RolloutFragment, UpgradeFragment, UpgradeQueueFragment } from '../../mo
 // `
 
 export const REPOSITORY_QUERY = gql`
-  query Repo($repositoryId: ID!) {
+  query Repository($repositoryId: ID!) {
     repository(id: $repositoryId) {
       ...RepoFragment
       editable
@@ -82,8 +82,25 @@ export const REPOSITORY_QUERY = gql`
   ${InstallationFragment}
 `
 
+export const RECIPES_QUERY = gql`
+  query RepositoryRecipes($repositoryId: ID!, $cursor: String) {
+    recipes(repositoryId: $repositoryId, first: 100, after: $cursor) {
+      pageInfo {
+        ...PageInfo
+      }
+      edges {
+        node {
+          ...RecipeFragment
+        }
+      }
+    }
+  }
+  ${PageInfo}
+  ${RecipeFragment}
+`
+
 export const CHARTS_QUERY = gql`
-  query Repo($repositoryId: ID!, $cursor: String) {
+  query RepositoryCharts($repositoryId: ID!, $cursor: String) {
     charts(repositoryId: $repositoryId, first: 12, after: $cursor) {
       pageInfo {
         ...PageInfo
@@ -100,7 +117,7 @@ export const CHARTS_QUERY = gql`
 `
 
 export const TERRAFORM_QUERY = gql`
-  query Repo($repositoryId: ID! $cursor: String) {
+  query RepositoryTerraform($repositoryId: ID! $cursor: String) {
     terraform(repositoryId: $repositoryId, first: 12, after: $cursor) {
       pageInfo {
         ...PageInfo
@@ -116,7 +133,7 @@ export const TERRAFORM_QUERY = gql`
   ${TerraformFragment}
 `
 export const DOCKER_QUERY = gql`
-  query Repo($repositoryId: ID!, $cursor: String) {
+  query RepositoryDocker($repositoryId: ID!, $cursor: String) {
     dockerRepositories(repositoryId: $repositoryId, first: 12, after: $cursor) {
       pageInfo {
         ...PageInfo
@@ -132,7 +149,7 @@ export const DOCKER_QUERY = gql`
   ${DockerRepoFragment}
 `
 export const TESTS_QUERY = gql`
-  query RepoTests($repositoryId: ID, $cursor: String) {
+  query RespositoryTests($repositoryId: ID, $cursor: String) {
     tests(after: $cursor, first: 12, repositoryId: $repositoryId) {
       pageInfo {
         ...PageInfo
@@ -149,7 +166,7 @@ export const TESTS_QUERY = gql`
 `
 
 export const TEST_LOGS_SUBSCRIPTION = gql`
-  subscription Logs($testId: ID!) {
+  subscription RepositoryTestLogs($testId: ID!) {
     testLogs(testId: $testId) {
       step {
         ...StepFragment
@@ -161,7 +178,7 @@ export const TEST_LOGS_SUBSCRIPTION = gql`
 `
 
 export const DEPLOYMENTS_QUERY = gql`
-  query Rollouts($repositoryId: ID!, $cursor: String) {
+  query RepositoryRollouts($repositoryId: ID!, $cursor: String) {
     rollouts(repositoryId: $repositoryId, after: $cursor, first: 12) {
       pageInfo {
         ...PageInfo

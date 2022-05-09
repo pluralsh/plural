@@ -9,8 +9,8 @@ import { RecipeFragment, RecipeSectionFragment } from '../../models/recipe'
 import { PlanFragment, SubscriptionFragment } from '../../models/payments'
 import { PageInfo } from '../../models/misc'
 import { MetricFragment } from '../../models/metrics'
-import { DeferredUpdateFragment } from '../../models/upgrades'
 import { OIDCProvider } from '../../models/oauth'
+import { RolloutFragment, UpgradeFragment, UpgradeQueueFragment } from '../../models/upgrades'
 
 // export const REPO_Q = gql`
 //   query Repo($repositoryId: ID!, $chartCursor: String, $tfCursor: String, $dkrCursor: String, $recipeCursor: String, $intCursor: String) {
@@ -158,4 +158,21 @@ export const TEST_LOGS_SUBSCRIPTION = gql`
     }
   }
   ${StepFragment}
+`
+
+export const DEPLOYMENTS_QUERY = gql`
+  query Rollouts($repositoryId: ID!, $cursor: String) {
+    rollouts(repositoryId: $repositoryId, after: $cursor, first: 12) {
+      pageInfo {
+        ...PageInfo
+      }
+      edges {
+        node {
+          ...RolloutFragment
+        }
+      }
+    }
+  }
+  ${PageInfo}
+  ${RolloutFragment}
 `

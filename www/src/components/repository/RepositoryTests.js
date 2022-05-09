@@ -52,7 +52,7 @@ function TestLogsModal({ test, ...props }) {
       )
     }
 
-    console.log('data', data)
+    // console.log('data', data)
 
     return null
   }

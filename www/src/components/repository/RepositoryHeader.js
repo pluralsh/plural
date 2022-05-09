@@ -38,8 +38,6 @@ function RepositoryHeader(props) {
     data => data.recipes
   )
 
-  console.log('recipes', recipes)
-
   return (
     <Div
       py={2}

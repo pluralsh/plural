@@ -46,6 +46,7 @@ function Code({ language, children, ...props }) {
     >
       <Flex
         py={0.25}
+        pl={1}
         align="center"
         justify="flex-end"
         backgroundColor="background-middle"

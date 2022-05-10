@@ -8,7 +8,7 @@ import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 
 import { capitalize } from '../../utils/string'
 
-import { Code } from '../incidents/Markdown'
+import Code from '../utils/Code'
 
 import { RECIPES_QUERY } from './queries'
 
@@ -38,17 +38,15 @@ const providerToDisplayName = {
 
 const extendedTheme = {
   DropdownButton: {
-    partStyles: {
-      Menu: [
-        {
-          width: 256 + 64 - 16,
-          left: 'unset',
-        },
-      ],
-    },
+    Menu: [
+      {
+        width: 256 + 64 - 16,
+        left: 'unset',
+      },
+    ],
   },
   MenuItem: {
-    defaultStyles: [
+    Root: [
       {
         borderBottom: '1px solid border',
         '&:last-of-type': {
@@ -86,7 +84,7 @@ function InstallDropdownButton({ recipes, ...props }) {
         >
           In your installation repository run:
         </P>
-        <Code className="lang-bash">
+        <Code language="bash">
           {`plural bundle install ${name} ${recipe.name}`}
         </Code>
       </Div>

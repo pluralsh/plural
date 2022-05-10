@@ -1,5 +1,5 @@
 import { Link, useSearchParams } from 'react-router-dom'
-import { Div, P } from 'honorable'
+import { Div, Flex, P } from 'honorable'
 import { RepositoryCard } from 'pluralsh-design-system'
 
 import { useEffect } from 'react'
@@ -42,12 +42,13 @@ function ExploreRepositories({ scrollRef }) {
 
   if (!repositories.length) {
     return (
-      <Div
+      <Flex
         pt={12}
-        xflex="x5"
+        align="center"
+        justify="center"
       >
         <LoopingLogo />
-      </Div>
+      </Flex>
     )
   }
 
@@ -68,10 +69,9 @@ function ExploreRepositories({ scrollRef }) {
         >
           Featured Repositories
         </P>
-        <Div
+        <Flex
           px={3}
           mt={1}
-          xflex="x4s"
         >
           <RepositoryCard
             as={Link}
@@ -104,7 +104,7 @@ function ExploreRepositories({ scrollRef }) {
           >
             {featuredB.description}
           </RepositoryCard>
-        </Div>
+        </Flex>
       </>
     )
   }
@@ -120,10 +120,11 @@ function ExploreRepositories({ scrollRef }) {
       >
         All Repositories
       </P>
-      <Div
+      <Flex
         px={2}
         mt={1}
-        xflex="x11s"
+        align="flex-start"
+        justify="flex-start"
       >
         {sortedRepositories.map(repository => (
           <RepositoryCard
@@ -144,14 +145,15 @@ function ExploreRepositories({ scrollRef }) {
             {repository.description}
           </RepositoryCard>
         ))}
-      </Div>
+      </Flex>
       {loadingRepositories && (
-        <Div
+        <Flex
           mt={2}
-          xflex="x5"
+          align="center"
+          justify="center"
         >
           <LoopingLogo />
-        </Div>
+        </Flex>
       )}
     </Div>
   )

@@ -1,4 +1,4 @@
-import { A, Div } from 'honorable'
+import { A, Flex } from 'honorable'
 import { DiscordIcon, GitHubLogoIcon, TwitterIcon } from 'pluralsh-design-system'
 
 const ICON_SIZE = 22
@@ -11,7 +11,9 @@ function SocialLink({ icon, url }) {
       target="_blank"
       rel="noopener noreferrer"
       ml={0.25}
-      xflex="x5"
+      display="flex"
+      alignItems="center"
+      alignContent="center"
       width={BOX_SIZE}
       height={BOX_SIZE}
       hoverIndicator="background-light"
@@ -24,9 +26,9 @@ function SocialLink({ icon, url }) {
 
 export function SocialLinks() {
   return (
-    <Div
+    <Flex
       ml={1}
-      xflex="x4"
+      align="center"
       flexShrink={0}
     >
       <SocialLink
@@ -56,6 +58,6 @@ export function SocialLinks() {
         )}
         url="https://twitter.com/plural_sh"
       />
-    </Div>
+    </Flex>
   )
 }

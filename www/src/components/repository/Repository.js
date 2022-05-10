@@ -57,12 +57,13 @@ function Repository() {
 
   if (!data) {
     return (
-      <Div
+      <Flex
         pt={12}
-        xflex="x5"
+        align="center"
+        justify="center"
       >
         <LoopingLogo />
-      </Div>
+      </Flex>
     )
   }
 

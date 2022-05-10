@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { Div } from 'honorable'
+import { Div, Flex } from 'honorable'
 
 import useBreadcrumbs from '../../hooks/useBreadcrumbs'
 
@@ -16,9 +16,10 @@ function Explore() {
   ])
 
   return (
-    <Div
+    <Flex
       ref={scrollRef}
-      xflex="x1"
+      align="flex-start"
+      justify="flex-start"
       height="100%"
       maxHeight="100%"
       overflowY="auto"
@@ -42,7 +43,7 @@ function Explore() {
       >
         <ExploreRepositories scrollRef={scrollRef} />
       </Div>
-    </Div>
+    </Flex>
   )
 }
 

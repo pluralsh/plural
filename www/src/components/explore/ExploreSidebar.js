@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client'
 import { useSearchParams } from 'react-router-dom'
-import { A, Checkbox, Div, P } from 'honorable'
+import { A, Checkbox, Div, Flex, P } from 'honorable'
 
 import { useState } from 'react'
 
@@ -20,9 +20,9 @@ const hoverStyle = {
 
 function ExploreSidebarCheckbox({ toggled, onClick, label }) {
   return (
-    <Div
+    <Flex
       mt={0.5}
-      xflex="x4"
+      align="center"
       cursor="pointer"
       userSelect="none"
       color={toggled ? 'text' : 'text-light'}
@@ -36,7 +36,7 @@ function ExploreSidebarCheckbox({ toggled, onClick, label }) {
       >
         {label}
       </P>
-    </Div>
+    </Flex>
   )
 }
 
@@ -101,7 +101,7 @@ function ExploreSidebar() {
       >
         Categories
       </P>
-      {sortedCategories.map(({ category, count }) => (
+      {sortedCategories.map(({ category }) => (
         <ExploreSidebarCheckbox
           key={category}
           toggled={isToggled('category', category)}

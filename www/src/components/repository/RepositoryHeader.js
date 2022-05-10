@@ -184,9 +184,9 @@ function RepositoryHeader(props) {
         >
           {capitalize(repository.name)}
         </H1>
-        <Div
+        <Flex
           mt={0.75}
-          xflex="x4"
+          align="center"
           color="text-xlight"
         >
           <P>
@@ -208,7 +208,7 @@ function RepositoryHeader(props) {
               />
             ))}
           </Div>
-        </Div>
+        </Flex>
         <Flex
           mt={0.5}
           align="center"

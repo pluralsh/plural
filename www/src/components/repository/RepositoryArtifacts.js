@@ -111,7 +111,7 @@ function Artifacts({ artifact }) {
           Readme
         </H2>
         <Code
-          language="markup"
+          language="markdown"
           mt={2}
         >
           {artifact.readme}

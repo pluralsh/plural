@@ -7,7 +7,7 @@ import { SuffixedInput } from '../utils/AffixedInput'
 import { isAlphanumeric } from './validation'
 
 function isSubdomain(val) {
-  if (/[a-z][a-z-]+\.onplural\.sh/.test(val)) return null
+  if (/[a-z][a-z0-9-]+\.onplural\.sh/.test(val)) return null
 
   return 'must be a valid onplural.sh subdomain'
 }

@@ -5,6 +5,7 @@ import { LoopingLogo } from '../../utils/AnimatedLogo'
 import { Box, Text } from 'grommet'
 import { DemoStatus } from './types'
 import { Status } from '../ShellStatus'
+import { GqlError } from '../../utils/Alert'
 
 
 function PollProject({ demo, setDemo, setProvider, workspace, setWorkspace, credentials, setCredentials, next }) {
@@ -36,11 +37,13 @@ function PollProject({ demo, setDemo, setProvider, workspace, setWorkspace, cred
 }
 
 export function DemoProject({ setProvider, workspace, setWorkspace, credentials, setCredentials, next, setDemo } ) {
-    const [mutation, {data}] = useMutation(CREATE_DEMO_PROJECT)
+    const [mutation, {data, error}] = useMutation(CREATE_DEMO_PROJECT)
 
     useEffect(() => {
         mutation()
     }, [])
+
+    if (error) return <GqlError error={error} header='Cannot create demo project' />
 
     if (data) {
         return (

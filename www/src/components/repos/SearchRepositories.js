@@ -56,7 +56,7 @@ export default function SearchRepositories() {
         onSelect={({ suggestion }) => {
           setValue('')
           setSuggestions([])
-          navigate(`/repositories/${suggestion.value.id}`)
+          navigate(`/repository/${suggestion.value.id}`)
         }}
         onChange={({ target: { value } }) => {
           setValue(value)

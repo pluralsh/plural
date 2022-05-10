@@ -70,7 +70,7 @@ function InstallDropdownButton({ recipes, ...props }) {
           align="center"
           as={H2}
         >
-          Install {name} on {providerToDisplayName[recipe.provider]}
+          Install {capitalize(name)} on {providerToDisplayName[recipe.provider]}
           <Img
             ml={0.5}
             alt={recipe.name}

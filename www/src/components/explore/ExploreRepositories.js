@@ -123,8 +123,8 @@ function ExploreRepositories({ scrollRef }) {
       <Flex
         px={2}
         mt={1}
-        align="flex-start"
-        justify="flex-start"
+        align="stretch"
+        wrap="wrap"
       >
         {sortedRepositories.map(repository => (
           <RepositoryCard

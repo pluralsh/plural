@@ -69,6 +69,8 @@ function Repository() {
 
   const { repository } = data
 
+  console.log('repository', repository)
+
   return (
     <RepositoryContext.Provider value={repository}> {/* Provide the repository to children */}
       <Flex
@@ -109,6 +111,13 @@ function Repository() {
               to={`/repository/${id}/deployments`}
               active={pathname.startsWith(`/repository/${id}/deployments`)}
             />
+            {repository?.artifacts?.length > 0 && (
+              <Tab
+                label="Artifacts"
+                to={`/repository/${id}/artifacts`}
+                active={pathname.startsWith(`/repository/${id}/artifacts`)}
+              />
+            )}
           </Div>
           <Div
             flexGrow={1}

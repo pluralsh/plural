@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { Div } from 'honorable'
 
-function InfiniteScroller({ loading, hasMore, loadMore, children, ...props }) {
+function InfiniteScroller({ loading = false, hasMore = false, loadMore, children, ...props }) {
   const scrollRef = useRef()
 
   useEffect(() => {
@@ -10,7 +10,12 @@ function InfiniteScroller({ loading, hasMore, loadMore, children, ...props }) {
     if (!current) return
 
     function handleScroll(event) {
-      if (!loading && hasMore && Math.abs(event.target.scrollTop - (event.target.scrollHeight - event.target.offsetHeight)) < 32) {
+      if (
+        typeof loadMore === 'function'
+        && !loading
+        && hasMore
+        && Math.abs(event.target.scrollTop - (event.target.scrollHeight - event.target.offsetHeight)) < 32
+      ) {
         loadMore()
       }
     }

@@ -70,6 +70,9 @@ export const REPOSITORY_QUERY = gql`
       editable
       publicKey
       secrets
+      artifacts {
+        ...ArtifactFragment
+      }
       installation {
         ...InstallationFragment
       }
@@ -79,6 +82,7 @@ export const REPOSITORY_QUERY = gql`
     }
   }
   ${RepoFragment}
+  ${ArtifactFragment}
   ${InstallationFragment}
 `
 

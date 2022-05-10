@@ -23,6 +23,7 @@ import RepositoryPackagesTerraform from './repository/RepositoryPackagesTerrafor
 import RepositoryPackagesDocker from './repository/RepositoryPackagesDocker'
 import RepositoryTests from './repository/RepositoryTests'
 import RepositoryDeployments from './repository/RepositoryDeployments'
+import RepositoryArtifacts from './repository/RepositoryArtifacts'
 import { Billing } from './users/Billing'
 import BreadcrumbProvider from './Breadcrumbs'
 import { EditAccount } from './accounts/EditAccount'
@@ -241,6 +242,10 @@ export function PluralInner() {
                       <Route
                         path="deployments"
                         element={<RepositoryDeployments />}
+                      />
+                      <Route
+                        path="artifacts"
+                        element={<RepositoryArtifacts />}
                       />
                     </Route>
                     <Route

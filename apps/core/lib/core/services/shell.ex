@@ -37,9 +37,9 @@ defmodule Core.Services.Shell do
     |> add_operation(:git, fn
       %{fetch: nil, create: shell} ->
         %{provider: p, token: t, name: n} = args = attrs[:scm]
-        with {:ok, url, pub, priv} <- Scm.setup_repository(p, user.email, t, args[:org], n) do
+        with {:ok, url, pub, priv, user} <- Scm.setup_repository(p, user.email, t, args[:org], n) do
           shell
-          |> CloudShell.changeset(%{git_url: url, ssh_public_key: pub, ssh_private_key: priv})
+          |> CloudShell.changeset(%{git_url: url, ssh_public_key: pub, ssh_private_key: priv, git_info: user})
           |> Core.Repo.update()
         end
       %{create: shell} -> {:ok, shell}

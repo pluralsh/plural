@@ -29,7 +29,7 @@ defmodule Core.Shell.Scm.Github do
 
   def authorize_url() do
     oauth_client()
-    |> OAuth2.Client.authorize_url!(scope: "repo read:org")
+    |> OAuth2.Client.authorize_url!(scope: "user user:email user:name repo read:org")
   end
 
   def get_token(code) do

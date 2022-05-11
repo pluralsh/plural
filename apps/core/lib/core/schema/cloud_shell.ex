@@ -85,6 +85,19 @@ defmodule Core.Schema.CloudShell do
     end
   end
 
+  defmodule GitInfo do
+    use Piazza.Ecto.Schema
+
+    embedded_schema do
+      field :username, :string
+      field :email,    :string
+    end
+
+    @valid ~w(username email)a
+
+    def changeset(model, attrs \\ %{}), do: cast(model, attrs, @valid)
+  end
+
   schema "cloud_shells" do
     field :provider,        Provider
     field :git_url,         :string
@@ -93,6 +106,7 @@ defmodule Core.Schema.CloudShell do
     field :ssh_public_key,  EncryptedString
     field :ssh_private_key, EncryptedString
 
+    embeds_one :git_info,    GitInfo
     embeds_one :workspace,   Workspace
     embeds_one :credentials, Credentials
 
@@ -109,6 +123,7 @@ defmodule Core.Schema.CloudShell do
     |> cast(attrs, @valid)
     |> cast_embed(:workspace)
     |> cast_embed(:credentials)
+    |> cast_embed(:git_info)
     |> foreign_key_constraint(:demo_id)
     |> foreign_key_constraint(:user_id)
     |> put_new_change(:pod_name, &pod_name/0)

@@ -114,7 +114,6 @@ defmodule Core.Services.Shell.Demo do
   def poll_demo_project(%DemoProject{state: :ready, enabled_op_id: op_id} = proj) do
     svcs_conn()
     |> SvcsOperations.serviceusage_operations_get(op_id)
-    |> IO.inspect()
     |> case do
       {:error, %Tesla.Env{status: 404}} -> enable(proj)
       {:ok, %{done: true}} -> enable(proj)

@@ -43,6 +43,13 @@ defmodule Core.Shell.Scm.Github do
     end
   end
 
+  def client(token), do: token
+
+  def oauth_client(token) do
+    client = oauth_client()
+    %{client | headers: [], params: %{}, token: %OAuth2.AccessToken{access_token: token}}
+  end
+
   defp oauth_client(), do: Github.client(nil, "/shell")
 
   defp headers(token), do: [{"Authorization", "Bearer #{token}"}, {"accept", "application/vnd.github.v3+json"}]
@@ -53,6 +60,4 @@ defmodule Core.Shell.Scm.Github do
   defp url(p), do: "https://api.github.com#{p}"
 
   defp create_repo_body(name), do: %{name: name, private: true, auto_init: true}
-
-  def client(token), do: token
 end

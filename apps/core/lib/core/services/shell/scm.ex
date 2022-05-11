@@ -31,9 +31,8 @@ defmodule Core.Shell.Scm do
     with {:ok, private, public} <- keypair(email),
          {:ok, %{"ssh_url" => url} = repo} <- Github.create_repository(client, name, org),
          :ok <- Github.register_keys(client, public, repo),
-         {:ok, user} <- Core.OAuth.Github.get_user(client),
-      do: {:ok, url, public, private, git_info(user)}
-  end
+         {:ok, user} <- Github.oauth_client(client) |> Core.OAuth.Github.get_user(),
+      do: {:ok, url, public, private, git_info(user)}  end
 
   @doc """
   Fetches an access token for a scm provider

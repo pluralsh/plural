@@ -1,9 +1,17 @@
-<!--- Hello Plural contributor! It's great to have you with us! -->
+<!--- Hello Plural contributor! It's great to have you on board! -->
 
 ## Summary
 <!-- Describe your changes here, include the motivation/context, test coverage, -->
 <!-- the type of change i.e. breaking change, new feature, or bug fix -->
 <!-- and related GitHub issue or screenshots (if applicable). -->
+
+<!-- Adding a meaningful title and description allows us to better communicate -->
+<!-- your work with our users. -->
+
+## Labels
+<!-- For breaking changes, add the `breaking-change` label.️ -->
+<!-- For bug fixes, add the `bug-fix` label. -->
+<!-- For new features and notable changes, add the `enhancement` label. -->
 
 
 ## Test Plan
@@ -11,8 +19,10 @@
 
 
 ## Checklist
-<!--- Go over all the following points, and put an `x` in all the boxes that apply. -->
+<!--- Go over all the following points to make sure you've checked all that apply before merging. -->
 <!--- If you're unsure about any of these, don't hesitate to ask in our Discord. -->
 
-- [ ] My change requires a change to the documentation and I have updated the documentation accordingly.
+- [ ] If required, I have updated the Plural documentation accordingly.
 - [ ] I have added tests to cover my changes.
+- [ ] I have added a meaningful title and summary to convey the impact of this PR to a user.
+- [ ] I have added relevant labels to this PR to help with categorization for release notes.

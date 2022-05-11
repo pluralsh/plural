@@ -7,7 +7,7 @@ const pulse = {
     transform: scale3d(1, 1, 1),
   },
   '50%': {
-    transform: scale3d(0.8, 0.8, 0.8),
+    transform: scale3d(0.75, 0.75, 0.75),
   },
   to: {
     transform: scale3d(1, 1, 1),

@@ -90,7 +90,7 @@ function SecondaryButton({ label, onClick }) {
   )
 }
 
-function Synopsis({ scm, credentials, workspace, provider }) {
+function Synopsis({ scm, credentials, workspace, provider, demo }) {
   return (
     <Box gap="small">
       <Text size="small">You've completed the configuration for your shell, but let's verify everything looks good just to be safe</Text>
@@ -104,9 +104,11 @@ function Synopsis({ scm, credentials, workspace, provider }) {
             items={[{ name: 'Repository', value: scm.org ? `${scm.org}/${scm.name}` : scm.name }]}
           />
         </SynopsisSection>
-        <SynopsisSection header="Cloud Credentials">
-          <SynopsisTable items={synopsis({ provider, credentials, workspace })} />
-        </SynopsisSection>
+        {!demo && (
+          <SynopsisSection header="Cloud Credentials">
+            <SynopsisTable items={synopsis({ provider, credentials, workspace })} />
+          </SynopsisSection>
+        )}
         <SynopsisSection header="Workspace">
           <SynopsisTable
             width="100px"
@@ -138,8 +140,7 @@ export function Header({ text }) {
   )
 }
 
-function CreateShell({ _accessToken, onCreate }) {
-  const accessToken = "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"
+function CreateShell({ accessToken, onCreate }) {
   const [demo, setDemo] = useState(null)
   const [section, setSection] = useState('git')
   const [provider, setProvider] = useState('AWS')
@@ -163,7 +164,7 @@ function CreateShell({ _accessToken, onCreate }) {
     if (!hasNext) mutation()
   }, [section, mutation])
 
-  const validations = (demo && section === 'cloud') ? [] : (section === 'cloud' ? CLOUD_VALIDATIONS[provider] : VALIDATIONS[section])
+  const validations = section === 'cloud' ? CLOUD_VALIDATIONS[provider] : VALIDATIONS[section]
   const { error, exceptions } = getExceptions(validations, { credentials, workspace, scm })
 
   return (
@@ -179,7 +180,7 @@ function CreateShell({ _accessToken, onCreate }) {
         gap="small"
         width={section !== 'finish' ? '50%' : null}
       >
-        {exceptions && <Exceptions exceptions={exceptions} />}
+        {exceptions && (!demo || section !== 'cloud') && <Exceptions exceptions={exceptions} />}
         {gqlError && (
           <GqlError
             error={gqlError}
@@ -224,6 +225,7 @@ function CreateShell({ _accessToken, onCreate }) {
             provider={provider}
             workspace={workspace}
             credentials={credentials}
+            demo={demo}
             scm={scm}
           />
         )}

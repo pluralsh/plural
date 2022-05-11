@@ -24,5 +24,6 @@ Mimic.copy(GoogleApi.IAM.V1.Api.Projects)
 Mimic.copy(GoogleApi.CloudBilling.V1.Api.BillingAccounts)
 Mimic.copy(GoogleApi.ServiceUsage.V1.Api.Services)
 Mimic.copy(GoogleApi.ServiceUsage.V1.Api.Operations)
+Mimic.copy(OAuth2.Client)
 
 {:ok, _} = Application.ensure_all_started(:ex_machina)

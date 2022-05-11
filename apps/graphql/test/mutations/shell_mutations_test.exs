@@ -11,7 +11,7 @@ defmodule GraphQl.ShellMutationsTest do
       expect(Pods, :fetch, fn _ -> {:ok, Pods.pod("plrl-shell-1", e)} end)
       expect(Core.Shell.Scm, :setup_repository, fn
         :github, ^e, "tok", nil, "demo" ->
-          {:ok, "git@github.com:pluralsh/demo.git", "pub-key", "priv-key"}
+          {:ok, "git@github.com:pluralsh/demo.git", "pub-key", "priv-key", nil}
       end)
 
       attrs = %{

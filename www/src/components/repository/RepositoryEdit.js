@@ -45,6 +45,13 @@ function RepositoryEdit() {
     setTagsUpdate(tagsUpdate.filter(t => t !== tag))
   }
 
+  function handleCreateTag() {
+    if (!tag) return
+
+    setTagsUpdate([...tagsUpdate, tag])
+    setTag('')
+  }
+
   if (!editable) {
     return (
       <H2>
@@ -138,18 +145,29 @@ function RepositoryEdit() {
           mt={1}
           label="Tags"
         >
-          <Flex>
+          <Flex
+            wrap="wrap"
+            align="flex-start"
+          >
             {tagsUpdate.map(tag => (
               <Tooltip label="Click to remove">
                 <Tag
                   key={tag}
                   onClick={() => handleDeleteTag(tag)}
-                  pointer="cursor"
+                  cursor="pointer"
                 >
                   {tag}
                 </Tag>
               </Tooltip>
             ))}
+            <HonorableInput
+              mt={-0.2}
+              border="none"
+              value={tag}
+              onChange={event => setTag(event.target.value)}
+              onEnter={handleCreateTag}
+              placeholder="Add tag"
+            />
           </Flex>
         </FormField>
         <Flex

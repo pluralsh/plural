@@ -1,6 +1,8 @@
 import { useQuery } from '@apollo/client'
 import { Link, Outlet, useLocation, useParams } from 'react-router-dom'
-import { Div, Flex } from 'honorable'
+import { Div, Flex, P } from 'honorable'
+
+import { Divider } from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 
@@ -117,6 +119,19 @@ function Repository() {
                 to={`/repository/${id}/artifacts`}
                 active={pathname.startsWith(`/repository/${id}/artifacts`)}
               />
+            )}
+            {!!repository.editable && (
+              <>
+                <Divider
+                  mb={0.5}
+                  text="Admin"
+                />
+                <Tab
+                  label="Edit"
+                  to={`/repository/${id}/edit`}
+                  active={pathname.startsWith(`/repository/${id}/edit`)}
+                />
+              </>
             )}
           </Div>
           <Div

@@ -24,6 +24,7 @@ import RepositoryPackagesDocker from './repository/RepositoryPackagesDocker'
 import RepositoryTests from './repository/RepositoryTests'
 import RepositoryDeployments from './repository/RepositoryDeployments'
 import RepositoryArtifacts from './repository/RepositoryArtifacts'
+import RepositoryEdit from './repository/RepositoryEdit'
 import { Billing } from './users/Billing'
 import BreadcrumbProvider from './Breadcrumbs'
 import { EditAccount } from './accounts/EditAccount'
@@ -247,6 +248,10 @@ export function PluralInner() {
                         path="artifacts"
                         element={<RepositoryArtifacts />}
                       />
+                      <Route
+                        path="edit"
+                        element={<RepositoryEdit />}
+                      />
                     </Route>
                     <Route
                       path="/charts/:chartId"
@@ -333,27 +338,18 @@ export function PluralInner() {
                       path="/upgrades"
                       element={<UpgradeQueues />}
                     />
-                    {/* <Route
-                      path="/explore/:group/:tag"
-                      element={<Explore />}
-                    />
-                    <Route
-                      path="/explore/:group"
-                      element={<Explore />}
-                    /> */}
-                    {/* <Route
-                      exact
-                      path="/"
-                      element={<Navigate to={me.hasInstallations ? '/explore/installed' : '/explore/public'} />}
-                    />
-                    <Route
-                      exact
-                      path="/explore"
-                      element={<Navigate to="/explore/public" />}
-                    /> */}
                     <Route
                       path="/explore"
                       element={<Explore />}
+                    />
+                    <Route
+                      path="/*"
+                      element={(
+                        <Navigate
+                          replace
+                          to={me.hasInstallations ? '/explore' /* TODO */ : '/explore'}
+                        />
+                      )}
                     />
                   </Routes>
                 </Box>

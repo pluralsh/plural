@@ -63,6 +63,15 @@ import { RolloutFragment, UpgradeFragment, UpgradeQueueFragment } from '../../mo
 //   ${OIDCProvider}
 // `
 
+export const CREATE_REPOSITORY_MUTATION = gql`
+  mutation CreateRepository($repositoryId: ID!, $attributes: RepositoryAttributes!) {
+    createRepository(id: $repositoryId, attributes: $attributes) {
+      ...RepoFragment
+    }
+  }
+  ${RepoFragment}
+`
+
 export const REPOSITORY_QUERY = gql`
   query Repository($repositoryId: ID!) {
     repository(id: $repositoryId) {

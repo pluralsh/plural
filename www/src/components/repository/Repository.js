@@ -140,7 +140,7 @@ function Repository() {
             px={2}
             height="100%"
             maxHeight="100%"
-            overflow="hidden"
+            overflowY="auto"
           >
             <Outlet />
           </Div>

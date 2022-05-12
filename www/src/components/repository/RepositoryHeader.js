@@ -23,7 +23,7 @@ const providerToIcon = {
 const providerToIconHeight = {
   AWS: 12,
   AZURE: 14,
-  EQUINIX: 14,
+  EQUINIX: 16,
   GCP: 14,
   KIND: 14,
 }
@@ -72,7 +72,7 @@ function InstallDropdownButton({ recipes, ...props }) {
         >
           Install {capitalize(name)} on {providerToDisplayName[recipe.provider]}
           <Img
-            ml={0.5}
+            ml={0.75}
             alt={recipe.name}
             src={providerToIcon[recipe.provider]}
             height={1.5 * providerToIconHeight[recipe.provider]}
@@ -185,7 +185,7 @@ function RepositoryHeader(props) {
           {capitalize(repository.name)}
         </H1>
         <Flex
-          mt={0.75}
+          mt={0.5}
           align="center"
           color="text-xlight"
         >

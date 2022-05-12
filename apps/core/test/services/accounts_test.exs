@@ -21,6 +21,8 @@ defmodule Core.Services.AccountsTest do
       %{bindings: [binding]} = srv_acct.impersonation_policy
 
       assert binding.group_id == group.id
+
+      assert_receive {:event, %PubSub.UserCreated{item: ^srv_acct}}
     end
 
     test "you can manually specify service account emails", %{user: user} do

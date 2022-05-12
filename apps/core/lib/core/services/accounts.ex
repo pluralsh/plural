@@ -174,6 +174,7 @@ defmodule Core.Services.Accounts do
     |> User.service_account_changeset(attrs)
     |> allow(user, :create)
     |> when_ok(:insert)
+    |> Users.notify(:create)
   end
 
   @doc """

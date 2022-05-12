@@ -231,6 +231,7 @@ defmodule Core.Services.Accounts do
     end)
     |> add_operation(:invite, fn _ -> Core.Repo.delete(invite) end)
     |> execute(extract: :upsert)
+    |> Users.notify(:create)
   end
 
   @doc """

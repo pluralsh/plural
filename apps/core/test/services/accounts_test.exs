@@ -283,6 +283,8 @@ defmodule Core.Services.AccountsTest do
       assert user.email == invite.email
       assert user.account_id == account.id
       assert user.name == "Some User"
+
+      assert_receive {:event, %PubSub.UserCreated{item: ^user}}
     end
   end
 

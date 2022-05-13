@@ -1,7 +1,7 @@
 import { createElement, useCallback, useRef, useState } from 'react'
 import { Down } from 'grommet-icons'
 import { Box, Drop, Text } from 'grommet'
-import { Divider, Button } from 'forge-core'
+import { Button, Divider } from 'forge-core'
 
 import { Provider } from '../../repos/misc'
 
@@ -54,32 +54,60 @@ export const synopsis = ({ provider, ...rest }) => {
   }
 }
 
-function CloudOption({header, description, onClick}) {
+function CloudOption({ header, description, onClick }) {
   return (
-    <Box width='50%' height='250px' pad='medium' round='xsmall' 
-         align='center' justify='center'
-         hoverIndicator='card' border gap='small' onClick={onClick}>
-      <Text size='small' weight={500}>{header}</Text>
-      <Text size='small'>{description}</Text>
+    <Box
+      width="50%"
+      height="250px"
+      pad="medium"
+      round="xsmall"
+      align="center"
+      justify="center"
+      hoverIndicator="card"
+      border
+      gap="small"
+      onClick={onClick}
+    >
+      <Text
+        size="small"
+        weight={500}
+      >{header}
+      </Text>
+      <Text size="small">{description}</Text>
     </Box>
   )
 }
 
-function CloudDecision({setPath}) {
+function CloudDecision({ setPath }) {
   return (
-    <Box fill gap='small'>
-      <Box direction='row' fill='horizontal' justify='center'>
+    <Box
+      fill
+      gap="small"
+    >
+      <Box
+        direction="row"
+        fill="horizontal"
+        justify="center"
+      >
         <Text>Choose Your Own Adventure</Text>
       </Box>
-      <Box fill direction='row' align='center' justify='center' gap='small'>
-        <CloudOption 
-          header='Use a Demo Account'
-          description="We'll create a GCP project on the fly for you to give plural a spin (it will be deleted in 6hrs)"
-          onClick={() => setPath('demo')} />
+      <Box
+        fill
+        direction="row"
+        align="center"
+        justify="center"
+        gap="small"
+      >
         <CloudOption
-          header='Bring Your Own Cloud'
-          description='Use credentials for one of your own cloud accounts to get started'
-          onClick={() => setPath('byoc')} />
+          header="Use a Demo Account"
+          description="We'll create a GCP project on the fly for you to give plural a spin (it will be deleted in 6hrs)"
+          onClick={() => setPath('demo')}
+        />
+        <CloudOption
+          header="Bring Your Own Cloud"
+          description="Use credentials for one of your own cloud accounts to get started"
+          onClick={() => setPath('byoc')}
+        />
       </Box>
     </Box>
   )
@@ -90,7 +118,7 @@ export function ProviderForm({ provider, setProvider, workspace, setWorkspace, c
   const [path, setPath] = useState(null)
   const [open, setOpen] = useState(false)
   const close = useCallback(() => setOpen(false), [setOpen])
-  const doSetPath = useCallback((path) => {
+  const doSetPath = useCallback(path => {
     if (path === 'demo') setDemo(true)
     setPath(path)
   }, [setPath, setDemo])
@@ -103,14 +131,15 @@ export function ProviderForm({ provider, setProvider, workspace, setWorkspace, c
 
   if (demo) {
     return (
-      <DemoProject 
+      <DemoProject
         setDemo={setDemo}
         setProvider={setProvider}
         workspace={workspace}
         setWorkspace={setWorkspace}
         credentials={credentials}
         setCredentials={setCredentials}
-        next={next} />
+        next={next}
+      />
     )
   }
 

@@ -71,8 +71,6 @@ function Repository() {
 
   const { repository } = data
 
-  console.log('repository', repository)
-
   return (
     <RepositoryContext.Provider value={repository}> {/* Provide the repository to children */}
       <Flex

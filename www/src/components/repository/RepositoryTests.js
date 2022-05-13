@@ -33,12 +33,14 @@ function Status({ status }) {
 }
 
 function TestLogsModal({ test, ...props }) {
-  const { data, loading } = useSubscription(TEST_LOGS_SUBSCRIPTION, {
+  const { data, loading, error } = useSubscription(TEST_LOGS_SUBSCRIPTION, {
     variables: {
       testId: test.id,
     },
     skip: !props.open,
   })
+
+  console.log('x', error, data, loading)
 
   function renderContent() {
     if (loading) {
@@ -51,8 +53,6 @@ function TestLogsModal({ test, ...props }) {
         </Flex>
       )
     }
-
-    // console.log('data', data)
 
     return null
   }

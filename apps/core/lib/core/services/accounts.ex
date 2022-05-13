@@ -174,6 +174,7 @@ defmodule Core.Services.Accounts do
     |> User.service_account_changeset(attrs)
     |> allow(user, :create)
     |> when_ok(:insert)
+    |> Users.notify(:create)
   end
 
   @doc """
@@ -231,6 +232,7 @@ defmodule Core.Services.Accounts do
     end)
     |> add_operation(:invite, fn _ -> Core.Repo.delete(invite) end)
     |> execute(extract: :upsert)
+    |> Users.notify(:create)
   end
 
   @doc """

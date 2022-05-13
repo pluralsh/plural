@@ -9,12 +9,13 @@ defmodule Core.Schema.Recipe do
 
     embedded_schema do
       field :uri_format,  :string
+      field :uri_formats, {:array, :string}
       field :auth_method, Core.Schema.OIDCProvider.AuthMethod
       field :domain_key,  :string
       field :subdomain,   :boolean
     end
 
-    @valid ~w(uri_format auth_method domain_key subdomain)a
+    @valid ~w(uri_format auth_method domain_key subdomain uri_formats)a
 
     def changeset(model, attrs \\ %{}) do
       model

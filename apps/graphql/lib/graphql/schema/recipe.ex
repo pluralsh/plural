@@ -22,8 +22,9 @@ defmodule GraphQl.Schema.Recipe do
   end
 
   input_object :oidc_settings_attributes do
-    field :uri_format,  non_null(:string)
+    field :uri_format,  :string
     field :auth_method, non_null(:oidc_auth_method)
+    field :uri_formats, list_of(:string)
     field :domain_key,  :string
     field :subdomain,   :boolean
   end
@@ -124,7 +125,8 @@ defmodule GraphQl.Schema.Recipe do
   end
 
   object :oidc_settings do
-    field :uri_format,  non_null(:string)
+    field :uri_format,  :string
+    field :uri_formats, list_of(:string)
     field :auth_method, non_null(:oidc_auth_method)
     field :domain_key,  :string
     field :subdomain,   :boolean

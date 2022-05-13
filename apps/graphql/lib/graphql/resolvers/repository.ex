@@ -17,6 +17,7 @@ defmodule GraphQl.Resolvers.Repository do
   def query(Tag, _), do: Tag
   def query(Integration, _), do: Integration
   def query(ResourceDefinition, _), do: ResourceDefinition
+  def query(Installation, %{current_user: user}), do: Installation.for_user(user.id)
   def query(Installation, _), do: Installation
   def query(Dashboard, _), do: Dashboard
   def query(Artifact, _), do: Artifact.ordered()

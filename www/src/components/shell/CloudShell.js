@@ -92,7 +92,7 @@ function SecondaryButton({ label, onClick }) {
   )
 }
 
-function Synopsis({ scm, credentials, workspace, provider }) {
+function Synopsis({ scm, credentials, workspace, provider, demo }) {
   return (
     <Box gap="small">
       <Text size="small">You've completed the configuration for your shell, but let's verify everything looks good just to be safe</Text>
@@ -106,9 +106,11 @@ function Synopsis({ scm, credentials, workspace, provider }) {
             items={[{ name: 'Repository', value: scm.org ? `${scm.org}/${scm.name}` : scm.name }]}
           />
         </SynopsisSection>
-        <SynopsisSection header="Cloud Credentials">
-          <SynopsisTable items={synopsis({ provider, credentials, workspace })} />
-        </SynopsisSection>
+        {!demo && (
+          <SynopsisSection header="Cloud Credentials">
+            <SynopsisTable items={synopsis({ provider, credentials, workspace })} />
+          </SynopsisSection>
+        )}
         <SynopsisSection header="Workspace">
           <SynopsisTable
             width="100px"
@@ -140,14 +142,16 @@ export function Header({ text }) {
   )
 }
 
-function CreateShell({ accessToken, onCreate }) {
+function CreateShell({ _accessToken, onCreate }) {
+  const accessToken = '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'
+  const [demo, setDemo] = useState(null)
   const [section, setSection] = useState('git')
   const [provider, setProvider] = useState('AWS')
   const [scm, setScm] = useState({ name: '', provider: 'GITHUB', token: accessToken })
   const [credentials, setCredentials] = useState({})
   const [workspace, setWorkspace] = useState({})
   const [mutation, { loading, error: gqlError }] = useMutation(CREATE_SHELL, {
-    variables: { attributes: { credentials, workspace, scm, provider } },
+    variables: { attributes: { credentials, workspace, scm, provider, demoId: demo && demo.id} },
     onCompleted: onCreate,
   })
 
@@ -179,7 +183,7 @@ function CreateShell({ accessToken, onCreate }) {
         gap="small"
         width={section !== 'finish' ? '50%' : null}
       >
-        {exceptions && <Exceptions exceptions={exceptions} />}
+        {exceptions && (!demo || section !== 'cloud') && <Exceptions exceptions={exceptions} />}
         {gqlError && (
           <GqlError
             error={gqlError}
@@ -204,12 +208,16 @@ function CreateShell({ accessToken, onCreate }) {
             setWorkspace={setWorkspace}
             credentials={credentials}
             setCredentials={setCredentials}
+            demo={demo}
+            setDemo={setDemo}
+            next={next}
           />
         )}
         {section === 'workspace' && (
           <>
             <Header text="Workspace" />
             <WorkspaceForm
+              demo={demo}
               workspace={workspace}
               setWorkspace={setWorkspace}
             />
@@ -220,6 +228,7 @@ function CreateShell({ accessToken, onCreate }) {
             provider={provider}
             workspace={workspace}
             credentials={credentials}
+            demo={demo}
             scm={scm}
           />
         )}

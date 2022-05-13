@@ -2,11 +2,14 @@ defmodule GraphQl.Schema.Shell do
   use GraphQl.Schema.Base
   alias GraphQl.Resolvers.Shell
 
+  ecto_enum :demo_project_state, Core.Schema.DemoProject.State
+
   input_object :cloud_shell_attributes do
     field :provider,    :provider
     field :workspace,   non_null(:workspace_attributes)
     field :credentials, non_null(:shell_credentials_attributes)
     field :scm,         :scm_attributes
+    field :demo_id,     :id
   end
 
   enum :scm_provider do
@@ -71,6 +74,16 @@ defmodule GraphQl.Schema.Shell do
     field :url,      non_null(:string)
   end
 
+  object :demo_project do
+    field :id,          non_null(:id)
+    field :project_id,  non_null(:string)
+    field :credentials, :string
+    field :ready,       :boolean
+    field :state,       :demo_project_state
+
+    timestamps()
+  end
+
   object :shell_queries do
     field :shell, :cloud_shell do
       middleware Authenticated
@@ -89,6 +102,13 @@ defmodule GraphQl.Schema.Shell do
 
       resolve &Shell.get_token/2
     end
+
+    field :demo_project, :demo_project do
+      middleware Authenticated
+      arg :id, non_null(:id)
+
+      safe_resolve &Shell.get_demo_project/2
+    end
   end
 
   object :shell_mutations do
@@ -96,17 +116,23 @@ defmodule GraphQl.Schema.Shell do
       middleware Authenticated
       arg :attributes, non_null(:cloud_shell_attributes)
 
-      resolve &Shell.create_shell/2
+      safe_resolve &Shell.create_shell/2
     end
 
     field :reboot_shell, :cloud_shell do
       middleware Authenticated
-      resolve &Shell.reboot/2
+      safe_resolve &Shell.reboot/2
     end
 
     field :delete_shell, :cloud_shell do
       middleware Authenticated
-      resolve &Shell.delete_shell/2
+      safe_resolve &Shell.delete_shell/2
+    end
+
+    field :create_demo_project, :demo_project do
+      middleware Authenticated
+
+      safe_resolve &Shell.create_demo_project/2
     end
   end
 end

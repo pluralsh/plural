@@ -26,6 +26,9 @@ defmodule GraphQl.Schema.Repository do
     field :private,        :boolean
     field :notes,          :string
     field :default_tag,    :string
+    field :git_url,        :string
+    field :homepage,       :string
+    field :readme,         :string
     field :oauth_settings, :oauth_settings_attributes
     field :integration_resource_definition, :resource_definition_attributes
   end
@@ -133,6 +136,9 @@ defmodule GraphQl.Schema.Repository do
     field :private,        :boolean
     field :notes,          :string
     field :default_tag,    :string
+    field :git_url,        :string
+    field :readme,         :string
+    field :homepage,       :string
     field :publisher,      :publisher, resolve: dataloader(User)
     field :plans,          list_of(:plan), resolve: dataloader(Payments)
     field :tags,           list_of(:tag), resolve: dataloader(Repository)
@@ -143,9 +149,7 @@ defmodule GraphQl.Schema.Repository do
     image :icon
     image :dark_icon
 
-    field :installation, :installation, resolve: fn
-      repo, _, context -> Repository.resolve_installation(repo, context)
-    end
+    field :installation, :installation, resolve: dataloader(Repository)
 
     field :editable, :boolean, resolve: fn
       repo, _, %{context: %{current_user: user}} -> Repository.editable(repo, user)

@@ -11,7 +11,7 @@ defmodule GraphQl.ShellMutationsTest do
       expect(Pods, :fetch, fn _ -> {:ok, Pods.pod("plrl-shell-1", e)} end)
       expect(Core.Shell.Scm, :setup_repository, fn
         :github, ^e, "tok", nil, "demo" ->
-          {:ok, "git@github.com:pluralsh/demo.git", "pub-key", "priv-key"}
+          {:ok, "git@github.com:pluralsh/demo.git", "pub-key", "priv-key", nil}
       end)
 
       attrs = %{
@@ -82,6 +82,27 @@ defmodule GraphQl.ShellMutationsTest do
 
       assert s["id"] == shell.id
       refute refetch(shell)
+    end
+  end
+
+  describe "createDemoProject" do
+    test "it will create a new demo project" do
+      user = insert(:user)
+      expect(Goth.Token, :for_scope, fn _ -> {:ok, %{token: "token"}} end)
+      expect(GoogleApi.CloudResourceManager.V3.Api.Projects, :cloudresourcemanager_projects_create, fn _, [body: _] ->
+        {:ok, %{name: "operations/123"}}
+      end)
+
+      {:ok, %{data: %{"createDemoProject" => demo}}} = run_query("""
+        mutation {
+          createDemoProject { id projectId ready state }
+        }
+      """, %{}, %{current_user: user})
+
+      assert demo["id"]
+      assert demo["projectId"]
+      assert demo["state"] == "CREATED"
+      refute demo["ready"]
     end
   end
 end

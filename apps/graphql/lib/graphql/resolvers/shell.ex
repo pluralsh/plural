@@ -12,6 +12,11 @@ defmodule GraphQl.Resolvers.Shell do
   def delete_shell(_, %{context: %{current_user: user}}),
     do: Shell.delete(user.id)
 
+  def get_demo_project(%{id: id}, _), do: Shell.Demo.poll_demo_project(id)
+
+  def create_demo_project(_, %{context: %{current_user: user}}),
+    do: Shell.Demo.create_demo_project(user)
+
   def reboot(_, %{context: %{current_user: user}}), do: Shell.reboot(user.id)
 
   def liveness(shell), do: {:ok, Shell.alive?(shell)}

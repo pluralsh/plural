@@ -20,6 +20,7 @@ defmodule Core.Services.Shell.Demo do
   @type error :: {:error, term}
 
   @lock "demo-projects"
+  @max_count 3
 
   @spec get_demo_project(binary) :: DemoProject.t | nil
   def get_demo_project(id), do: Core.Repo.get(DemoProject, id)
@@ -58,7 +59,6 @@ defmodule Core.Services.Shell.Demo do
   need to poll the project afterwards.
   """
   @spec create_demo_project(User.t) :: {:ok, DemoProject.t} | error
-  def create_demo_project(%User{demoed: true}), do: {:error, "You're only allowed one demo project"}
   def create_demo_project(%User{id: id} = user) do
     case Core.Repo.get_by(DemoProject, user_id: id) do
       %DemoProject{} = p -> {:ok, p}
@@ -66,7 +66,9 @@ defmodule Core.Services.Shell.Demo do
     end
   end
 
-  def do_create_demo_project(%User{id: user_id} = user) do
+  def do_create_demo_project(%User{demo_count: c}) when c >= @max_count,
+    do: {:error, "You're only allowed to create #{@max_count} demo projects"}
+  def do_create_demo_project(%User{id: user_id, demo_count: count} = user) do
     projs = projects_conn()
     start_transaction()
     |> add_operation(:db, fn _ ->
@@ -85,6 +87,9 @@ defmodule Core.Services.Shell.Demo do
       DemoProject.changeset(demo, %{ready: false, operation_id: op_id})
       |> Core.Repo.update()
     end)
+    |> add_operation(:user, fn _ ->
+      Users.update_user(%{demo_count: (count || 0) + 1}, user)
+    end)
     |> execute(extract: :final)
   end
 
@@ -100,7 +105,6 @@ defmodule Core.Services.Shell.Demo do
       |> Projects.cloudresourcemanager_projects_delete(proj_id)
     end)
     |> add_operation(:db, fn _ -> Core.Repo.delete(proj) end)
-    |> add_operation(:user, fn _ -> Users.update_user(%{demoed: true}, user) end)
     |> execute(extract: :db)
   end
 
@@ -198,7 +202,11 @@ defmodule Core.Services.Shell.Demo do
     |> ServiceUsage.serviceusage_services_batch_enable(
       "projects/#{project_id}",
       body: %BatchEnableServicesRequest{
-        serviceIds: ["serviceusage.googleapis.com", "cloudresourcemanager.googleapis.com"]
+        serviceIds: [
+          "serviceusage.googleapis.com",
+          "cloudresourcemanager.googleapis.com",
+          "container.googleapis.com"
+        ]
       }
     )
   end
@@ -216,7 +224,9 @@ defmodule Core.Services.Shell.Demo do
 
   defp binding(email, role, type), do: %Binding{members: ["#{type}:#{email}"], role: role}
 
-  defp project_id(%User{id: user_id}), do: String.slice("plrl-demo-#{user_id}", 0..29)
+  defp project_id(%User{}) do
+    String.slice("plrl-demo-#{Ecto.UUID.generate()}", 0..29)
+  end
 
   defp projects_conn(), do: ProjectsConnection.new(oauth_token())
 

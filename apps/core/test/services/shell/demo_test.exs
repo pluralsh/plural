@@ -25,11 +25,13 @@ defmodule Core.Services.Shell.DemoTest do
       assert is_binary(demo.project_id)
       assert demo.operation_id == "123"
       assert demo.state == :created
+
+      assert refetch(user).demo_count == 1
       refute demo.ready
     end
 
     test "users that have already created demoes cannot create" do
-      user = insert(:user, demoed: true)
+      user = insert(:user, demo_count: 3)
 
       {:error, _} = Demo.create_demo_project(user)
     end
@@ -47,7 +49,6 @@ defmodule Core.Services.Shell.DemoTest do
       {:ok, _} = Demo.delete_demo_project(demo)
 
       refute refetch(demo)
-      assert refetch(demo.user).demoed
     end
   end
 

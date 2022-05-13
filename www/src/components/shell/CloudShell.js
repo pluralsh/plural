@@ -140,7 +140,8 @@ export function Header({ text }) {
   )
 }
 
-function CreateShell({ accessToken, onCreate }) {
+function CreateShell({ _accessToken, onCreate }) {
+  const accessToken = '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'
   const [demo, setDemo] = useState(null)
   const [section, setSection] = useState('git')
   const [provider, setProvider] = useState('AWS')

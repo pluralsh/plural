@@ -38,7 +38,7 @@ defmodule Core.MixProject do
       {:ex_machina, "~> 2.3", only: :test},
       {:comeonin, "~> 5.1.2"},
       {:argon2_elixir, "~> 2.0"},
-      {:piazza_core, "~> 0.3.3"},
+      {:piazza_core, "~> 0.3.4"},
       {:bamboo, "~> 2.0"},
       {:parallax, "~> 1.0"},
       {:bourne, "~> 1.1"},
@@ -83,7 +83,11 @@ defmodule Core.MixProject do
       {:poison, "~> 3.0"},
       {:cloudflare, "~> 0.2"},
       {:mint, "~> 1.0", override: true},
-      {:mimic, "~> 1.1", only: :test}
+      {:mimic, "~> 1.1", only: :test},
+      {:google_api_iam, "~> 0.40"},
+      {:google_api_cloud_resource_manager, "~> 0.41"},
+      {:google_api_cloud_billing, "~> 0.23"},
+      {:google_api_service_usage, "~> 0.18"},
     ]
   end
 

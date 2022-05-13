@@ -618,6 +618,25 @@ defmodule Core.Services.Repositories do
   end
 
   @doc """
+  Attempts to grab the contents of a repo's github readme and returns the result
+  """
+  @spec fetch_readme(Repository.t) :: binary | nil
+  def fetch_readme(%Repository{git_url: "https://github.com" <> _ = url}) when is_binary(url),
+    do: readme_fetch("#{url}/raw/{branch}/README.md")
+  def fetch_readme(_), do: nil
+
+  defp readme_fetch(url) do
+    Enum.find_value(~w(main master), fn branch ->
+      String.replace(url, "{branch}", branch)
+      |> HTTPoison.get([], follow_redirect: true)
+      |> case do
+        {:ok, %HTTPoison.Response{status_code: 200, body: body}} -> body
+        _ -> nil
+      end
+    end)
+  end
+
+  @doc """
   Returns whether a user can `:access` the repository.
   """
   @spec authorize(binary, User.t) :: {:ok, Repository.t} | {:error, term}

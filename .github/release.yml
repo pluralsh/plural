@@ -1,0 +1,20 @@
+# This is the release notes template that helps automatically generate our releases from labels.
+
+changelog:
+  exclude:
+    labels:
+      - ignore-for-release
+    authors:
+      - plural-bot
+      - renovate
+      - dependabot
+  categories:
+    - title: Breaking Changes ⚠️
+      labels:
+        - breaking-change
+    - title: New Features 🎉
+      labels:
+        - enhancement
+    - title: Bug Fixes 🐛
+      labels:
+        - bug-fix

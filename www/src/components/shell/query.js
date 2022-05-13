@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client'
 
-import { CloudShellFragment } from '../../models/shell'
+import { CloudShellFragment, DemoProjectFragment } from '../../models/shell'
 
 export const AUTH_URLS = gql`
   query {
@@ -33,4 +33,18 @@ export const REBOOT_SHELL = gql`
     rebootShell { ...CloudShellFragment }
   }
   ${CloudShellFragment}
+`
+
+export const CREATE_DEMO_PROJECT = gql`
+  mutation {
+    createDemoProject { ...DemoProjectFragment }
+  }
+  ${DemoProjectFragment}
+`
+
+export const POLL_DEMO_PROJECT = gql`
+  query Demo($id: ID!) {
+    demoProject(id: $id) { ...DemoProjectFragment }
+  }
+  ${DemoProjectFragment}
 `

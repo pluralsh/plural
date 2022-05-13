@@ -41,7 +41,7 @@ function ReadyStatus() {
   )
 }
 
-function Status({ name, state }) {
+export function Status({ name, state }) {
   return (
     <Box
       background="card"

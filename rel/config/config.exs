@@ -73,7 +73,8 @@ config :core,
   acme_secret: get_env("ACME_SECRET"),
   zerossl_access_key: get_env("ZEROSSL_ACCESS_KEY"),
   docker_metrics_table: ~s("permanent"."downsampled_docker_pulls"),
-  workos_webhook: get_env("WORKOS_WEBHOOK_SECRET")
+  workos_webhook: get_env("WORKOS_WEBHOOK_SECRET"),
+  gcp_identity: get_env("GCP_USER_EMAIL") || "mjg@plural.sh"
 
 config :workos,
   client_id: get_env("WORKOS_CLIENT_ID"),
@@ -93,6 +94,18 @@ end
 if provider != :gcp do
   config :goth, disabled: true
   config :arc, storage: Arc.Storage.S3
+end
+
+if org_id = get_env("GCP_ORG_ID") do
+  config :core,
+    gcp_organization: org_id
+end
+
+if get_env("GCP_CREDENTIALS") do
+  config :goth,
+    json: {:system, "GCP_CREDENTIALS"},
+    project_id: get_env("GCP_PROJECT") || "pluralsh",
+    disabled: false
 end
 
 config :core,

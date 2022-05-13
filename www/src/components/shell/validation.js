@@ -6,10 +6,9 @@ export function validator(object, field, name, func) {
   const val = deepFetch(object, field)
   console.log(val)
 
-  if (!val) return { field: name, message: 'is not set' }
+  if (!val) return { field: name, message: 'is not set', empty: true }
 
   const res = func(val)
-
   return res && { field: name, message: res }
 }
 
@@ -36,7 +35,9 @@ export function getExceptions(validations, object) {
   return { error: allExceptions.length > 0, exceptions: allExceptions }
 }
 
-function Exception({ field, message }) {
+function Exception({ field, message, empty }) {
+  if (empty) return null
+
   return (
     <Box
       direction="row"
@@ -65,11 +66,12 @@ export function Exceptions({ exceptions }) {
 
   return (
     <Box gap="xsmall">
-      {exceptions.map(({ field, message }) => (
+      {exceptions.map(({ field, message, empty }) => (
         <Exception
           key={field}
           field={field}
           message={message}
+          empty={empty}
         />
       ))}
     </Box>

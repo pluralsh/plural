@@ -38,6 +38,9 @@ defmodule Core.Schema.Repository do
     field :private,       :boolean, default: false
     field :category,      Category
     field :notes,         :binary
+    field :git_url,       :string
+    field :homepage,      :string
+    field :readme,        :binary
     field :default_tag,   :string, default: "latest"
 
     embeds_one :oauth_settings, OAuthSettings, on_replace: :update do
@@ -50,6 +53,7 @@ defmodule Core.Schema.Repository do
 
     has_one  :database,      Database, on_replace: :update
     has_one  :shell,         Shell, on_replace: :update
+    has_one  :installation,  Installation # for use in sideloads
     has_many :installations, Installation
     has_many :plans,         Plan
     has_many :artifacts,     Artifact
@@ -142,7 +146,7 @@ defmodule Core.Schema.Repository do
   def ordered(query \\ __MODULE__, order \\ [asc: :name]),
     do: from(r in query, order_by: ^order)
 
-  @valid ~w(name publisher_id description documentation secrets private category notes default_tag)a
+  @valid ~w(name publisher_id description documentation secrets private category notes default_tag git_url homepage readme)a
 
   def changeset(model, attrs \\ %{}) do
     model

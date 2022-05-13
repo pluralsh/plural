@@ -63,6 +63,7 @@ export const DnsRecordFragment = gql`
     cluster
     provider
     creator { ...UserFragment }
+    insertedAt
   }
   ${UserFragment}
 `

@@ -14,3 +14,13 @@ export const CloudShellFragment = gql`
     }
   }
 `
+
+export const DemoProjectFragment = gql`
+  fragment DemoProjectFragment on DemoProject {
+    id
+    projectId
+    credentials
+    ready
+    state
+  }
+`

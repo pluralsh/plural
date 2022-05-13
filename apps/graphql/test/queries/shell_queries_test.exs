@@ -3,6 +3,7 @@ defmodule GraphQl.ShellQueriesTest do
   import GraphQl.TestHelpers
   use Mimic
   alias Core.Services.Shell.Pods
+  alias GoogleApi.CloudResourceManager.V3
 
   describe "shell" do
     test "it can fetch a cloud shell instance including its liveness" do
@@ -50,6 +51,25 @@ defmodule GraphQl.ShellQueriesTest do
       """, %{"code" => "code", "prov" => "GITHUB"}, %{current_user: user})
 
       assert tok == "access"
+    end
+  end
+
+  describe "demoProject" do
+    test "it will poll a demo project" do
+      demo = insert(:demo_project)
+
+      expect(Goth.Token, :for_scope, fn _ -> {:ok, %{token: "token"}} end)
+      expect(V3.Api.Operations, :cloudresourcemanager_operations_get, fn _, _ ->
+        {:ok, %V3.Model.Operation{done: false}}
+      end)
+
+      {:ok, %{data: %{"demoProject" => found}}} = run_query("""
+        query Demo($id: ID!) {
+          demoProject(id: $id) { id }
+        }
+      """, %{"id" => demo.id}, %{current_user: demo.user})
+
+      assert found["id"] == demo.id
     end
   end
 end

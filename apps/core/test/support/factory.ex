@@ -545,4 +545,12 @@ defmodule Core.Factory do
       directory_id: sequence(:ad, & "ad_#{&1}")
     }
   end
+
+  def demo_project_factory do
+    %Schema.DemoProject{
+      user: build(:user),
+      state: :created,
+      project_id: sequence(:dp, &"proj-#{&1}")
+    }
+  end
 end

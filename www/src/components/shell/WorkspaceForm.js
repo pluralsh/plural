@@ -1,4 +1,5 @@
 import { Box } from 'grommet'
+import { useEffect } from 'react'
 
 import { LabelledInput } from '../users/MagicLogin'
 import { SuffixedInput } from '../utils/AffixedInput'
@@ -6,7 +7,7 @@ import { SuffixedInput } from '../utils/AffixedInput'
 import { isAlphanumeric } from './validation'
 
 function isSubdomain(val) {
-  if (/[a-z][a-z-]+\.onplural\.sh/.test(val)) return null
+  if (/[a-z][a-z0-9-]+\.onplural\.sh/.test(val)) return null
 
   return 'must be a valid onplural.sh subdomain'
 }
@@ -17,7 +18,14 @@ export const WORKSPACE_VALIDATIONS = [
   { field: 'workspace.subdomain', func: isSubdomain, name: 'subdomain' },
 ]
 
-export function WorkspaceForm({ workspace, setWorkspace }) {
+export function WorkspaceForm({ demo, workspace, setWorkspace }) {
+  useEffect(() => {
+    if (demo) {
+      const rand = Math.random().toString(36).substring(2, 5)
+      setWorkspace({ ...workspace, cluster: 'pluraldemo', bucketPrefix: `plrlt-${rand}` })
+    }
+  }, [demo, setWorkspace, workspace])
+
   return (
     <Box gap="small">
       <LabelledInput

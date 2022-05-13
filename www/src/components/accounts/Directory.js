@@ -50,7 +50,7 @@ export function Users() {
           />
         )}
         onLoadMore={() => pageInfo.hasNextPage && fetchMore({
-          variables: { userCursor: pageInfo.endCursor },
+          variables: { cursor: pageInfo.endCursor },
           updateQuery: (prev, { fetchMoreResult: { users } }) => extendConnection(prev, users, 'users'),
         })}
       />
@@ -100,7 +100,7 @@ export function Groups() {
           />
         )}
         onLoadMore={() => pageInfo.hasNextPage && fetchMore({
-          variables: { userCursor: pageInfo.endCursor },
+          variables: { cursor: pageInfo.endCursor },
           updateQuery: (prev, { fetchMoreResult: { groups } }) => extendConnection(prev, groups, 'groups'),
         })}
       />
@@ -150,7 +150,7 @@ export function Roles() {
           />
         )}
         onLoadMore={() => pageInfo.hasNextPage && fetchMore({
-          variables: { userCursor: pageInfo.endCursor },
+          variables: { cursor: pageInfo.endCursor },
           updateQuery: (prev, { fetchMoreResult: { roles } }) => extendConnection(prev, roles, 'roles'),
         })}
       />

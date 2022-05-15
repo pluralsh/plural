@@ -36,7 +36,7 @@ defmodule Core.Policies.Account do
 
     with false <- Enum.any?(users, & &1.user_id == user.id),
          true <- MapSet.disjoint?(group_set, user_group_set) do
-      {:error, "forbidden"}
+      {:error, "you're not allowed to impersonate this service account, please verify your user is on its access policy"}
     else
       _ -> :pass
     end

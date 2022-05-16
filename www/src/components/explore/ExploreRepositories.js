@@ -117,7 +117,7 @@ function ExploreRepositories({ installed, scrollRef }) {
       {!categories.length && !installed && renderFeatured()}
       <P
         px={3}
-        mt={2}
+        mt={installed ? 0 : 2}
         body0
         fontWeight="bold"
       >

@@ -151,3 +151,10 @@ export const DEPLOYMENTS_QUERY = gql`
   ${PageInfo}
   ${RolloutFragment}
 `
+
+export const DELETE_INSTALLATION_MUTATION = gql`
+  mutation DeleteInstallation($id: ID!) {
+    deleteInstallation(id: $id) { ...InstallationFragment }
+  }
+  ${InstallationFragment}
+`

@@ -1,6 +1,7 @@
 import { useContext, useState } from 'react'
-import { A, Div, DropdownButton, ExtendTheme, Flex, H1, H2, Img, MenuItem, Modal, P, Span } from 'honorable'
-import { GitHubIcon, LinksIcon, Tag } from 'pluralsh-design-system'
+import { useMutation } from '@apollo/client'
+import { A, Button, Div, DropdownButton, ExtendTheme, Flex, H1, H2, H3, Icon, Img, MenuItem, Modal, P, Pre, Span } from 'honorable'
+import { GitHubIcon, InstalledLabel, LinksIcon, Tag, TrashCanIcon } from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 
@@ -10,7 +11,7 @@ import { capitalize } from '../../utils/string'
 
 import Code from '../utils/Code'
 
-import { RECIPES_QUERY } from './queries'
+import { DELETE_INSTALLATION_MUTATION, RECIPES_QUERY } from './queries'
 
 const providerToIcon = {
   AWS: `${process.env.PUBLIC_URL}/aws-icon.png`,
@@ -40,7 +41,7 @@ const extendedTheme = {
   DropdownButton: {
     Menu: [
       {
-        width: 256 + 64 - 16,
+        width: 256 + 64 + 16,
         left: 'unset',
       },
     ],
@@ -55,6 +56,81 @@ const extendedTheme = {
       },
     ],
   },
+}
+
+function InstalledActions({ installation, ...props }) {
+  const [modalOpen, setModalOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [mutation] = useMutation(DELETE_INSTALLATION_MUTATION, {
+    variables: {
+      id: installation.id,
+    },
+    onCompleted: () => window.location.reload(),
+  })
+
+  return (
+    <>
+      <Flex
+        align="center"
+        {...props}
+      >
+        <InstalledLabel />
+        <Icon
+          ml={0.5}
+          p={0.5}
+          borderRadius="50%"
+          cursor="pointer"
+          hoverIndicator="background-light"
+          onClick={() => setModalOpen(true)}
+        >
+          <TrashCanIcon color="error" />
+        </Icon>
+      </Flex>
+      <Modal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+      >
+        <H3>
+          Are you sure you want to uninstall this bundle?
+        </H3>
+        <Div mt={2}>
+          Be sure to run
+          <Pre
+            mx={0.25}
+            mb={0.25}
+          >
+            plural destroy
+          </Pre>
+          in your installation repository before deleting.
+          <br />
+          This will delete all installed packages and prevent future upgrades.
+        </Div>
+        <Flex
+          mt={2}
+          align="center"
+          justify="flex-end"
+        >
+          <Button
+            secondary
+            onClick={() => setModalOpen(false)}
+          >
+            Cancel
+          </Button>
+          <Button
+            primary
+            ml={1}
+            loading={loading}
+            onClick={() => {
+              setLoading(true)
+              mutation()
+            }}
+          >
+            Delete
+          </Button>
+        </Flex>
+      </Modal>
+    </>
+  )
 }
 
 function InstallDropdownButton({ recipes, ...props }) {
@@ -78,13 +154,16 @@ function InstallDropdownButton({ recipes, ...props }) {
             height={1.5 * providerToIconHeight[recipe.provider]}
           />
         </Flex>
-        <P
-          mt={2}
-          mb={1}
-        >
+        <P mt={2}>
+          {capitalize(recipe.description)}.
+        </P>
+        <P mt={1}>
           In your installation repository run:
         </P>
-        <Code language="bash">
+        <Code
+          language="bash"
+          mt={2}
+        >
           {`plural bundle install ${name} ${recipe.name}`}
         </Code>
       </Div>
@@ -105,7 +184,7 @@ function InstallDropdownButton({ recipes, ...props }) {
               key={recipe.id}
               value={recipe}
             >
-              <Flex align="center">
+              <Flex>
                 <Flex
                   align="center"
                   justify="center"
@@ -120,12 +199,21 @@ function InstallDropdownButton({ recipes, ...props }) {
                     height={1.5 * providerToIconHeight[recipe.provider]}
                   />
                 </Flex>
-                <P
+                <Div
                   ml={1}
                   flexShrink={0}
+                  flexBasis="calc(100% - 4 * 16px)"
                 >
-                  Install on {providerToDisplayName[recipe.provider]}
-                </P>
+                  <P fontWeight={500}>
+                    Install on {providerToDisplayName[recipe.provider]}
+                  </P>
+                  <P
+                    mt={0.5}
+                    wordBreak="break-word"
+                  >
+                    {capitalize(recipe.description)}
+                  </P>
+                </Div>
               </Flex>
             </MenuItem>
           ))}
@@ -198,7 +286,9 @@ function RepositoryHeader(props) {
           <Div
             mt={0.25}
           >
-            {recipes.map(recipe => (
+            {recipes
+            .filter((recipe, i, a) => a.findIndex(r => r.provider === recipe.provider) === i)
+            .map(recipe => (
               <Img
                 key={recipe.id}
                 alt={recipe.name}
@@ -249,7 +339,15 @@ function RepositoryHeader(props) {
         </Flex>
       </Div>
       <Div flexGrow={1} />
-      <InstallDropdownButton recipes={recipes} />
+      <Flex align="center">
+        <InstallDropdownButton recipes={recipes} />
+        {!!repository.installation && (
+          <InstalledActions
+            installation={repository.installation}
+            ml={1}
+          />
+        )}
+      </Flex>
     </Flex>
   )
 }

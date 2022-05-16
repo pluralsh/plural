@@ -10,7 +10,6 @@ import { Checkmark, StatusCritical } from 'grommet-icons'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import ResponsiveInput from '../ResponsiveInput'
-import Installations from '../repos/Installations'
 import { CurrentUserContext } from '../login/CurrentUser'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 
@@ -230,12 +229,6 @@ export default function EditUser() {
             </Box>
           </SectionPortal>
         </Box>
-      </EditContent>
-      <EditContent
-        edit="installations"
-        name="Installations"
-      >
-        <Installations edit />
       </EditContent>
       <EditContent
         edit="tokens"

@@ -81,11 +81,6 @@ function Sidebar() {
               Icon: PadlockIcon,
             },
             {
-              name: 'Installations',
-              url: '/me/edit/installations',
-              Icon: InstalledIcon,
-            },
-            {
               name: 'Access Tokens',
               url: '/me/edit/tokens',
               Icon: FingerPrintIcon,

@@ -10,7 +10,7 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 
 import { EXPLORE_QUERY } from './queries'
 
-function ExploreRepositories({ scrollRef }) {
+function ExploreRepositories({ installed, scrollRef }) {
   const [searchParams] = useSearchParams()
   const categories = searchParams.getAll('category')
   const [repositories, loadingRepositories, hasMoreRepositories, fetchMoreRepositories] = usePaginatedQuery(
@@ -40,7 +40,7 @@ function ExploreRepositories({ scrollRef }) {
     }
   }, [scrollRef, fetchMoreRepositories, loadingRepositories, hasMoreRepositories])
 
-  if (!repositories.length) {
+  if (loadingRepositories) {
     return (
       <Flex
         pt={12}
@@ -55,6 +55,7 @@ function ExploreRepositories({ scrollRef }) {
   const sortedRepositories = repositories.slice()
     .sort((a, b) => a.name.localeCompare(b.name))
     .filter(repository => categories.length ? categories.includes(repository.category) : true)
+    .filter(repository => installed ? repository.installation : true)
 
   function renderFeatured() {
     const featuredA = sortedRepositories.shift()
@@ -76,6 +77,7 @@ function ExploreRepositories({ scrollRef }) {
           <RepositoryCard
             as={Link}
             to={`/repository/${featuredA.id}`}
+            installed={!!featuredA.installation}
             color="text"
             textDecoration="none"
             flexGrow={1}
@@ -91,6 +93,7 @@ function ExploreRepositories({ scrollRef }) {
           <RepositoryCard
             as={Link}
             to={`/repository/${featuredB.id}`}
+            installed={!!featuredB.installation}
             color="text"
             textDecoration="none"
             ml={2}
@@ -111,14 +114,14 @@ function ExploreRepositories({ scrollRef }) {
 
   return (
     <Div py={2}>
-      {!categories.length && renderFeatured()}
+      {!categories.length && !installed && renderFeatured()}
       <P
         px={3}
         mt={2}
         body0
         fontWeight="bold"
       >
-        All Repositories
+        {installed ? 'Installed' : 'All'} Repositories
       </P>
       <Flex
         px={2}
@@ -131,6 +134,7 @@ function ExploreRepositories({ scrollRef }) {
             key={repository.id}
             as={Link}
             to={`/repository/${repository.id}`}
+            installed={!!repository.installation}
             color="text"
             textDecoration="none"
             mx={1}

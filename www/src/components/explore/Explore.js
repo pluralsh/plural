@@ -8,7 +8,7 @@ import { TOOLBAR_SIZE } from '../Toolbar'
 import ExploreSidebar from './ExploreSidebar'
 import ExploreRepositories from './ExploreRepositories'
 
-function Explore() {
+function Explore({ installed }) {
   const scrollRef = useRef()
 
   useBreadcrumbs([
@@ -41,7 +41,10 @@ function Explore() {
         flexGrow={1}
         overflowY="auto"
       >
-        <ExploreRepositories scrollRef={scrollRef} />
+        <ExploreRepositories
+          installed={installed}
+          scrollRef={scrollRef}
+        />
       </Div>
     </Flex>
   )

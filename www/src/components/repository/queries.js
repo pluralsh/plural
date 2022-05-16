@@ -1,67 +1,12 @@
 import { gql } from '@apollo/client'
 
-// TODO remove unsued imports once feature is complete
-import { ArtifactFragment, CategoryFragment, InstallationFragment, IntegrationFragment, RepoFragment, StepFragment, TestFragment } from '../../models/repo'
-import { ChartFragment, ChartInstallationFragment, PackageScan, VersionFragment, VersionTagFragment } from '../../models/chart'
-import { TerraformFragment, TerraformInstallationFragment } from '../../models/terraform'
-import { DockerImageFragment, DockerRepoFragment, DockerRepository, VulnerabilityFragment } from '../../models/docker'
-import { RecipeFragment, RecipeSectionFragment } from '../../models/recipe'
-import { PlanFragment, SubscriptionFragment } from '../../models/payments'
+import { ArtifactFragment, InstallationFragment, RepoFragment, StepFragment, TestFragment } from '../../models/repo'
+import { ChartFragment } from '../../models/chart'
+import { TerraformFragment } from '../../models/terraform'
+import { DockerRepoFragment } from '../../models/docker'
+import { RecipeFragment } from '../../models/recipe'
 import { PageInfo } from '../../models/misc'
-import { MetricFragment } from '../../models/metrics'
-import { OIDCProvider } from '../../models/oauth'
-import { RolloutFragment, UpgradeFragment, UpgradeQueueFragment } from '../../models/upgrades'
-
-// export const REPO_Q = gql`
-//   query Repo($repositoryId: ID!, $chartCursor: String, $tfCursor: String, $dkrCursor: String, $recipeCursor: String, $intCursor: String) {
-//     repository(id: $repositoryId) {
-//       ...RepoFragment
-//       editable
-//       publicKey
-//       secrets
-//       installation {
-//         ...InstallationFragment
-//         subscription { ...SubscriptionFragment }
-//         oidcProvider { ...OIDCProvider }
-//       }
-//       plans { ...PlanFragment }
-//       tags { tag }
-//       artifacts { ...ArtifactFragment }
-//     }
-//     charts(repositoryId: $repositoryId, first: 15, after: $chartCursor) {
-//       pageInfo { ...PageInfo }
-//       edges { node { ...ChartFragment } }
-//     }
-//     terraform(repositoryId: $repositoryId, first: 15, after: $tfCursor) {
-//       pageInfo { ...PageInfo }
-//       edges { node { ...TerraformFragment } }
-//     }
-//     dockerRepositories(repositoryId: $repositoryId, first: 15, after: $dkrCursor) {
-//       pageInfo { ...PageInfo }
-//       edges { node { ...DockerRepoFragment } }
-//     }
-//     recipes(repositoryId: $repositoryId, first: 5, after: $recipeCursor) {
-//       pageInfo { ...PageInfo }
-//       edges { node { ...RecipeFragment } }
-//     }
-//     integrations(repositoryId: $repositoryId, first: 5, after: $intCursor) {
-//       pageInfo { ...PageInfo }
-//       edges { node { ...IntegrationFragment } }
-//     }
-//   }
-//   ${PageInfo}
-//   ${PlanFragment}
-//   ${SubscriptionFragment}
-//   ${RepoFragment}
-//   ${ChartFragment}
-//   ${InstallationFragment}
-//   ${TerraformFragment}
-//   ${DockerRepoFragment}
-//   ${RecipeFragment}
-//   ${IntegrationFragment}
-//   ${ArtifactFragment}
-//   ${OIDCProvider}
-// `
+import { RolloutFragment } from '../../models/upgrades'
 
 export const CREATE_REPOSITORY_MUTATION = gql`
   mutation CreateRepository($repositoryId: ID!, $attributes: RepositoryAttributes!) {

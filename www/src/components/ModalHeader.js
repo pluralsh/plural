@@ -1,10 +1,10 @@
-import { Div, P } from 'honorable'
+import { Div, Flex, P } from 'honorable'
 import { CloseIcon } from 'pluralsh-design-system'
 
 export function ModalHeader({ text, setOpen }) {
   return (
-    <Div
-      xflex="x4"
+    <Flex
+      align="center"
       pt={1}
       px={1}
       pad={{ horizontal: 'medium', top: 'medium' }}
@@ -14,10 +14,11 @@ export function ModalHeader({ text, setOpen }) {
       </P>
       <Div flexGrow={1} />
       {typeof setOpen === 'function' && (
-        <Div
+        <Flex
           p={0.5}
           margin={-0.5}
-          xflex="x5"
+          align="center"
+          justify="center"
           width="2rem"
           height="2rem"
           hoverIndicator="background-light"
@@ -26,8 +27,8 @@ export function ModalHeader({ text, setOpen }) {
           cursor="pointer"
         >
           <CloseIcon size={12} />
-        </Div>
+        </Flex>
       )}
-    </Div>
+    </Flex>
   )
 }

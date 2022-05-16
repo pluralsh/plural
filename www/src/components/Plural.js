@@ -6,7 +6,7 @@ import { StripeProvider } from 'react-stripe-elements'
 import { CurrentUserContext, PluralConfigurationContext, PluralProvider } from './login/CurrentUser'
 import MyPublisher from './publisher/MyPublisher'
 import Publisher from './publisher/Publisher'
-import Toolbar from './Toolbar'
+import Toolbar, { TOOLBAR_SIZE } from './Toolbar'
 import Chart from './repos/Chart'
 import Terraform from './repos/Terraform'
 import EditUser from './users/EditUser'
@@ -14,7 +14,17 @@ import { IntegrationPage } from './repos/Integrations'
 import Invoices from './payments/Invoices'
 import Sidebar from './Sidebar'
 import Publishers from './publisher/Publishers'
-import Explore from './Explore'
+import Explore from './explore/Explore'
+import Repository from './repository/Repository'
+import RepositoryDescription from './repository/RepositoryDescription'
+import RepositoryPackages from './repository/RepositoryPackages'
+import RepositoryPackagesHelm from './repository/RepositoryPackagesHelm'
+import RepositoryPackagesTerraform from './repository/RepositoryPackagesTerraform'
+import RepositoryPackagesDocker from './repository/RepositoryPackagesDocker'
+import RepositoryTests from './repository/RepositoryTests'
+import RepositoryDeployments from './repository/RepositoryDeployments'
+import RepositoryArtifacts from './repository/RepositoryArtifacts'
+import RepositoryEdit from './repository/RepositoryEdit'
 import { Billing } from './users/Billing'
 import BreadcrumbProvider from './Breadcrumbs'
 import { EditAccount } from './accounts/EditAccount'
@@ -29,15 +39,12 @@ import { Docker, DockerRepository } from './repos/Docker'
 import { Audits } from './accounts/Audits'
 import { UpgradeQueues } from './upgrades/UpgradeQueues'
 import { UpgradeQueue } from './upgrades/UpgradeQueue'
-import { RepoDirectory } from './repos/RepoDirectory'
 import { IncidentDirectory } from './IncidentDirectory'
 import { VerifyEmailConfirmed } from './users/EmailConfirmation'
 // import { AutoRefresh } from './login/AutoRefresh'
 import { NavigationContext } from './navigation/Submenu'
 import { DeviceLoginNotif } from './users/DeviceLoginNotif'
 import { CloudShell, OAuthCallback } from './shell/CloudShell'
-
-export const TOOLBAR_SIZE = '55px'
 
 function EditIncident(props) {
   return (
@@ -69,15 +76,8 @@ function WrapStripe({ children }) {
   )
 }
 
-function NavigateId({ to }) {
-  const { id } = useParams()
-
-  return (
-    <Navigate to={to.replaceAll(':id', id)} />
-  )
-}
-
 export function PluralInner() {
+  const { id } = useParams()
   const me = useContext(CurrentUserContext)
 
   return (
@@ -90,10 +90,9 @@ export function PluralInner() {
             <DeviceLoginNotif />
             <Toolbar />
             <Box
-              style={{ height: `calc(100vh - ${TOOLBAR_SIZE})` }}
               direction="row"
-              gridArea="viewport"
               background="background"
+              style={{ height: `calc(100vh - ${TOOLBAR_SIZE}px)` }}
             >
               <Sidebar />
               <Box fill>
@@ -108,7 +107,12 @@ export function PluralInner() {
                     <Route
                       exact
                       path="/accounts/edit"
-                      element={<Navigate to="/accounts/edit/users" />}
+                      element={(
+                        <Navigate
+                          replace
+                          to="/accounts/edit/users"
+                        />
+                      )}
                     />
                     <Route
                       path="/accounts/billing/:section"
@@ -150,34 +154,105 @@ export function PluralInner() {
                       path="/repositories/:id/integrations"
                       element={<IntegrationPage />}
                     />
-                    <Route
+                    {/* <Route
                       exact
                       path="/repositories/:id"
-                      element={<NavigateId to="/repositories/:id/bundles" />}
+                      element={(
+                        <Navigate
+                          replace
+                          state={{ id }}
+                          to="/repositories/:id/bundles"
+                        />
+                      )}
                     />
                     <Route
                       exact
                       path="/repositories/:id/packages"
-                      element={<NavigateId to="/repositories/:id/packages/helm" />}
+                      element={(
+                        <Navigate
+                          replace
+                          state={{ id }}
+                          to="/repositories/:id/packages/helm"
+                        />
+                      )}
                     />
                     <Route
                       exact
                       path="/repositories/:id/edit"
-                      element={<NavigateId to="/repositories/:id/edit/details" />}
+                      element={(
+                        <Navigate
+                          replace
+                          state={{ id }}
+                          to="/repositories/:id/edit/details"
+                        />
+                      )}
                     />
                     <Route
                       exact
                       path="/repositories/:id/configure"
-                      element={<NavigateId to="/repositories/:id/configure/upgrades" />}
+                      element={(
+                        <Navigate
+                          replace
+                          state={{ id }}
+                          to="/repositories/:id/configure/upgrades"
+                        />
+                      )}
                     />
                     <Route
                       path="/repositories/:id/:group/:subgroup"
                       element={<RepoDirectory />}
-                    />
+                    /> */}
                     <Route
-                      path="/repositories/:id/:group"
-                      element={<RepoDirectory />}
-                    />
+                      path="/repository/:id"
+                      element={<Repository />}
+                    >
+                      <Route
+                        index
+                        element={<RepositoryDescription />}
+                      />
+                      <Route
+                        path="packages"
+                        element={<RepositoryPackages />}
+                      >
+                        <Route
+                          index
+                          element={(
+                            <Navigate
+                              replace
+                              to="helm"
+                            />
+                          )}
+                        />
+                        <Route
+                          path="helm"
+                          element={<RepositoryPackagesHelm />}
+                        />
+                        <Route
+                          path="terraform"
+                          element={<RepositoryPackagesTerraform />}
+                        />
+                        <Route
+                          path="docker"
+                          element={<RepositoryPackagesDocker />}
+                        />
+                      </Route>
+                      <Route
+                        path="tests"
+                        element={<RepositoryTests />}
+                      />
+                      <Route
+                        path="deployments"
+                        element={<RepositoryDeployments />}
+                      />
+                      <Route
+                        path="artifacts"
+                        element={<RepositoryArtifacts />}
+                      />
+                      <Route
+                        path="edit"
+                        element={<RepositoryEdit />}
+                      />
+                    </Route>
                     <Route
                       path="/charts/:chartId"
                       element={<Chart />}
@@ -210,7 +285,12 @@ export function PluralInner() {
                     <Route
                       exact
                       path="/incidents"
-                      element={<Navigate to="/incidents/all" />}
+                      element={(
+                        <Navigate
+                          replace
+                          to="/incidents/all"
+                        />
+                      )}
                     />
                     <Route
                       path="/incident/:incidentId/edit"
@@ -243,7 +323,12 @@ export function PluralInner() {
                     <Route
                       exact
                       path="/audits"
-                      element={<Navigate to="/audits/table" />}
+                      element={(
+                        <Navigate
+                          replace
+                          to="/audits/table"
+                        />
+                      )}
                     />
                     <Route
                       path="/upgrades/:id"
@@ -254,22 +339,17 @@ export function PluralInner() {
                       element={<UpgradeQueues />}
                     />
                     <Route
-                      path="/explore/:group/:tag"
-                      element={<Explore />}
-                    />
-                    <Route
-                      path="/explore/:group"
-                      element={<Explore />}
-                    />
-                    <Route
-                      exact
-                      path="/"
-                      element={<Navigate to={me.hasInstallations ? '/explore/installed' : '/explore/public'} />}
-                    />
-                    <Route
-                      exact
                       path="/explore"
-                      element={<Navigate to="/explore/public" />}
+                      element={<Explore />}
+                    />
+                    <Route
+                      path="/*"
+                      element={(
+                        <Navigate
+                          replace
+                          to={me.hasInstallations ? '/explore' /* TODO */ : '/explore'}
+                        />
+                      )}
                     />
                   </Routes>
                 </Box>

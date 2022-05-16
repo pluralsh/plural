@@ -4,7 +4,7 @@ import { Divider } from 'pluralsh-design-system'
 import { useApolloClient, useLazyQuery, useMutation, useQuery } from '@apollo/client'
 import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
 import queryString from 'query-string'
-import { Button, Div, Input } from 'honorable'
+import { Button, Flex, Input } from 'honorable'
 
 import { fetchToken, setToken } from '../../helpers/authentication'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
@@ -60,8 +60,9 @@ export function LoginPortal({ children, ...props }) {
       fill="horizontal"
       direction="row"
     >
-      <Div
-        xflex="x5"
+      <Flex
+        align="center"
+        justify="center"
         width="40%"
         height="100%"
         background="darken(background, 2)"
@@ -70,7 +71,7 @@ export function LoginPortal({ children, ...props }) {
           src={PLURAL_ICON}
           width={256}
         />
-      </Div>
+      </Flex>
       <Box
         style={{ overflow: 'auto' }}
         fill

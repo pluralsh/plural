@@ -22,6 +22,7 @@ function Blockquote({ children }) {
   )
 }
 
+// DEPRECATED in favor of utils/Code
 export function Code({ children, header, className, multiline }) {
   const theme = useContext(ThemeContext)
 

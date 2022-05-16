@@ -1,25 +1,25 @@
-import { Div, Input } from 'honorable'
+import { Flex, Input } from 'honorable'
 
 function ResponsiveInput({ label, labelWidth, ...props }) {
   return (
-    <Div xflex="x4s">
-      <Div
+    <Flex>
+      <Flex
         px={1}
-        xflex="x4"
+        align="center"
         width={labelWidth}
         backgroundColor="background-light"
         borderTopLeftRadius={4}
         borderBottomLeftRadius={4}
       >
         {label}
-      </Div>
+      </Flex>
       <Input
         {...props}
         flexGrow={1}
         borderTopLeftRadius={0}
         borderBottomLeftRadius={0}
       />
-    </Div>
+    </Flex>
   )
 }
 

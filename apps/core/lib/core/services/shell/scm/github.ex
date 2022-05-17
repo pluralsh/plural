@@ -9,7 +9,7 @@ defmodule Core.Shell.Scm.Github do
       {:ok, %{status_code: code, body: body}} when code >= 200 and code < 300 -> Jason.decode(body)
       err ->
         Logger.error "Failed to create repository #{inspect(err)}"
-        {:error, "could not create github repository"}
+        {:error, "could not create github repository, is #{name} already taken?"}
     end
   end
 

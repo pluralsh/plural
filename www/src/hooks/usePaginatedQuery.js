@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 function mapNode(edges) {
   return (edges || []).map(({ node }) => node)

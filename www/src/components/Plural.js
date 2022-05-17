@@ -1,6 +1,6 @@
 import { useContext, useMemo } from 'react'
 import { Box } from 'grommet'
-import { Navigate, Route, Routes, useParams } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import { StripeProvider } from 'react-stripe-elements'
 
 import { CurrentUserContext, PluralConfigurationContext, PluralProvider } from './login/CurrentUser'
@@ -77,7 +77,7 @@ function WrapStripe({ children }) {
 }
 
 export function PluralInner() {
-  const { id } = useParams()
+  // const { id } = useParams()
   const me = useContext(CurrentUserContext)
 
   return (

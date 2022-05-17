@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client'
 import { Link, Outlet, useLocation, useParams } from 'react-router-dom'
-import { Div, Flex, P } from 'honorable'
+import { Div, Flex } from 'honorable'
 
 import { Divider } from 'pluralsh-design-system'
 

@@ -6,6 +6,7 @@ defmodule Core.Policies.Test do
   def can?(%User{} = user, %Test{} = test, :create) do
     %{repository: repo} = Core.Repo.preload(test, [repository: [publisher: :account]])
     Repository.can?(user, repo, :edit)
+    |> error("you cannot create tests for this repo, do you have publish permissions?")
   end
 
   def can?(%User{id: user_id}, %Test{creator_id: user_id}, :edit), do: :pass

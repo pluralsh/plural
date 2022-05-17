@@ -13,14 +13,20 @@ import { EXPLORE_QUERY } from './queries'
 function ExploreRepositories({ installed, scrollRef }) {
   const [searchParams] = useSearchParams()
   const categories = searchParams.getAll('category')
+  const tags = searchParams.getAll('tag')
+
   const [repositories, loadingRepositories, hasMoreRepositories, fetchMoreRepositories] = usePaginatedQuery(
     EXPLORE_QUERY,
     {
       variables: {
+        // Does not work:
+        // tag: tags[0] || null,
       },
     },
     data => data.repositories
   )
+
+  const shouldRenderFeatured = !categories.length && !tags.length && !installed
 
   useEffect(() => {
     const { current } = scrollRef
@@ -55,6 +61,13 @@ function ExploreRepositories({ installed, scrollRef }) {
   const sortedRepositories = repositories.slice()
     .sort((a, b) => a.name.localeCompare(b.name))
     .filter(repository => categories.length ? categories.includes(repository.category) : true)
+    .filter(repository => {
+      if (!tags.length) return true
+
+      const repositoryTags = repository.tags.map(({ tag }) => tag)
+
+      return tags.some(tag => repositoryTags.includes(tag))
+    })
     .filter(repository => installed ? repository.installation : true)
 
   function renderFeatured() {
@@ -112,16 +125,24 @@ function ExploreRepositories({ installed, scrollRef }) {
     )
   }
 
+  function renderTitle() {
+    let title = installed ? 'Installed Repositories' : 'All Repositories'
+
+    if (categories.length || tags.length) title += ', filtered'
+
+    return title
+  }
+
   return (
     <Div py={2}>
-      {!categories.length && !installed && renderFeatured()}
+      {shouldRenderFeatured && renderFeatured()}
       <P
         px={3}
-        mt={installed ? 0 : 2}
+        mt={shouldRenderFeatured ? 2 : 0}
         body0
         fontWeight="bold"
       >
-        {installed ? 'Installed' : 'All'} Repositories
+        {renderTitle()}
       </P>
       <Flex
         px={2}

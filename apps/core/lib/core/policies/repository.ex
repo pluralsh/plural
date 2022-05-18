@@ -73,7 +73,7 @@ defmodule Core.Policies.Repository do
 
   def can?(%User{} = user, %Installation{} = inst, :create) do
     %{repository: repo} = Core.Repo.preload(inst, [:repository])
-    check_rbac(user, :install, repository: repo.name)
+    check_rbac(user, :install, repository: repo.name, account: user.account)
     |> error("your user cannot install, perhaps create a role with the appropriate permissions?")
   end
 

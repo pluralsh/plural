@@ -105,6 +105,7 @@ defmodule Core.Schema.CloudShell do
     field :aes_key,         EncryptedString
     field :ssh_public_key,  EncryptedString
     field :ssh_private_key, EncryptedString
+    field :bucket_prefix,   :string
 
     embeds_one :git_info,    GitInfo
     embeds_one :workspace,   Workspace
@@ -126,9 +127,18 @@ defmodule Core.Schema.CloudShell do
     |> cast_embed(:git_info)
     |> foreign_key_constraint(:demo_id)
     |> foreign_key_constraint(:user_id)
+    |> unique_constraint(:bucket_prefix)
     |> put_new_change(:pod_name, &pod_name/0)
     |> put_new_change(:aes_key, &aes_key/0)
     |> validate_required([:provider, :pod_name, :aes_key])
+    |> mv_bucket_prefix()
+  end
+
+  def mv_bucket_prefix(changeset) do
+    case apply_changes(changeset) do
+      %{workspace: %{bucket_prefix: pre}} -> put_change(changeset, :bucket_prefix, pre)
+      _ -> changeset
+    end
   end
 
   defp pod_name(), do: "plrl-shell-#{Core.random_alphanum(6)}-#{Core.random_alphanum(6)}"

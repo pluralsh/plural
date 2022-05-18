@@ -6,7 +6,7 @@ defmodule GraphQl.ShellMutationsTest do
 
   describe "createShell" do
     test "it will create a new shell instance" do
-      %{email: e} = user = insert(:user)
+      %{email: e} = user = insert(:user, roles: %{admin: true})
 
       expect(Pods, :fetch, fn _ -> {:ok, Pods.pod("plrl-shell-1", e)} end)
       expect(Core.Shell.Scm, :setup_repository, fn

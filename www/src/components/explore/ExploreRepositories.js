@@ -10,17 +10,23 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 
 import { EXPLORE_QUERY } from './queries'
 
-function ExploreRepositories({ scrollRef }) {
+function ExploreRepositories({ installed, scrollRef }) {
   const [searchParams] = useSearchParams()
   const categories = searchParams.getAll('category')
+  const tags = searchParams.getAll('tag')
+
   const [repositories, loadingRepositories, hasMoreRepositories, fetchMoreRepositories] = usePaginatedQuery(
     EXPLORE_QUERY,
     {
       variables: {
+        // Does not work:
+        // tag: tags[0] || null,
       },
     },
     data => data.repositories
   )
+
+  const shouldRenderFeatured = !categories.length && !tags.length && !installed
 
   useEffect(() => {
     const { current } = scrollRef
@@ -40,7 +46,7 @@ function ExploreRepositories({ scrollRef }) {
     }
   }, [scrollRef, fetchMoreRepositories, loadingRepositories, hasMoreRepositories])
 
-  if (!repositories.length) {
+  if (loadingRepositories) {
     return (
       <Flex
         pt={12}
@@ -55,6 +61,14 @@ function ExploreRepositories({ scrollRef }) {
   const sortedRepositories = repositories.slice()
     .sort((a, b) => a.name.localeCompare(b.name))
     .filter(repository => categories.length ? categories.includes(repository.category) : true)
+    .filter(repository => {
+      if (!tags.length) return true
+
+      const repositoryTags = repository.tags.map(({ tag }) => tag)
+
+      return tags.some(tag => repositoryTags.includes(tag))
+    })
+    .filter(repository => installed ? repository.installation : true)
 
   function renderFeatured() {
     const featuredA = sortedRepositories.shift()
@@ -76,6 +90,7 @@ function ExploreRepositories({ scrollRef }) {
           <RepositoryCard
             as={Link}
             to={`/repository/${featuredA.id}`}
+            installed={!!featuredA.installation}
             color="text"
             textDecoration="none"
             flexGrow={1}
@@ -91,6 +106,7 @@ function ExploreRepositories({ scrollRef }) {
           <RepositoryCard
             as={Link}
             to={`/repository/${featuredB.id}`}
+            installed={!!featuredB.installation}
             color="text"
             textDecoration="none"
             ml={2}
@@ -109,16 +125,24 @@ function ExploreRepositories({ scrollRef }) {
     )
   }
 
+  function renderTitle() {
+    let title = installed ? 'Installed Repositories' : 'All Repositories'
+
+    if (categories.length || tags.length) title += ', filtered'
+
+    return title
+  }
+
   return (
     <Div py={2}>
-      {!categories.length && renderFeatured()}
+      {shouldRenderFeatured && renderFeatured()}
       <P
         px={3}
-        mt={2}
+        mt={shouldRenderFeatured ? 2 : 0}
         body0
         fontWeight="bold"
       >
-        All Repositories
+        {renderTitle()}
       </P>
       <Flex
         px={2}
@@ -131,6 +155,7 @@ function ExploreRepositories({ scrollRef }) {
             key={repository.id}
             as={Link}
             to={`/repository/${repository.id}`}
+            installed={!!repository.installation}
             color="text"
             textDecoration="none"
             mx={1}

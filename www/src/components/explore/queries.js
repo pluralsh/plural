@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client'
 
-import { RepoFragment } from '../../models/repo'
+import { InstallationFragment, RepoFragment } from '../../models/repo'
 import { PageInfo } from '../../models/misc'
 
 export const EXPLORE_QUERY = gql`
@@ -12,6 +12,9 @@ export const EXPLORE_QUERY = gql`
       edges {
         node {
           ...RepoFragment
+          installation {
+            ...InstallationFragment
+          }
           tags {
             tag
           }
@@ -21,4 +24,5 @@ export const EXPLORE_QUERY = gql`
   }
   ${PageInfo}
   ${RepoFragment}
+  ${InstallationFragment}
 `

@@ -1,6 +1,5 @@
 // DEPRECATED
 // In favor of plural-design-system/theme
-import { normalizeColor } from 'grommet/utils'
 import { css } from 'styled-components'
 
 import { alpha, shadeColor } from './utils/color'

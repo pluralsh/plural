@@ -58,12 +58,12 @@ function Sidebar() {
           name: 'Explore',
           Icon: MagnifyingGlassIcon,
           url: '/explore',
-          matchedUrl: /^(?!.*\/(explore|repositories)(?:\/installed)).*\/(explore|repositories)\/?.*/i,
+          matchedUrl: /^(?!.*\/(explore|repositories|repository)(?:\/installed)).*\/(explore|repositories|repository)\/?.*/i,
         },
         {
           name: 'Installed',
           Icon: InstalledIcon,
-          url: '/explore/installed',
+          url: '/installed',
         },
         {
           name: 'User',
@@ -79,11 +79,6 @@ function Sidebar() {
               name: 'Password',
               url: '/me/edit/pwd',
               Icon: PadlockIcon,
-            },
-            {
-              name: 'Installations',
-              url: '/me/edit/installations',
-              Icon: InstalledIcon,
             },
             {
               name: 'Access Tokens',

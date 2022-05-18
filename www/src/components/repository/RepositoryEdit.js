@@ -1,5 +1,4 @@
 import { useContext, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { useMutation } from '@apollo/client'
 import { Button, Div, Flex, H2, Input as HonorableInput, Img, MenuItem, P, Select, Tooltip, useTheme } from 'honorable'
 import { FormField, Input, Tag } from 'pluralsh-design-system'
@@ -48,7 +47,7 @@ function RepositoryEdit() {
   const [darkIconUpdate, setdarkIconUpdate] = useState({ file: null, previewUrl: darkIcon })
   const [success, setSuccess] = useState(false)
 
-  const [mutation, { loading, error }] = useMutation(CREATE_REPOSITORY_MUTATION, {
+  const [mutation, { loading }] = useMutation(CREATE_REPOSITORY_MUTATION, {
     variables: {
       repositoryId: id,
       attributes: {

@@ -142,7 +142,7 @@ export function Header({ text }) {
   )
 }
 
-function CreateShell({ _accessToken, onCreate }) {
+function CreateShell({ onCreate }) {
   const accessToken = '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'
   const [demo, setDemo] = useState(null)
   const [section, setSection] = useState('git')
@@ -151,7 +151,7 @@ function CreateShell({ _accessToken, onCreate }) {
   const [credentials, setCredentials] = useState({})
   const [workspace, setWorkspace] = useState({})
   const [mutation, { loading, error: gqlError }] = useMutation(CREATE_SHELL, {
-    variables: { attributes: { credentials, workspace, scm, provider, demoId: demo && demo.id} },
+    variables: { attributes: { credentials, workspace, scm, provider, demoId: demo && demo.id } },
     onCompleted: onCreate,
   })
 

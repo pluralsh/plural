@@ -1,6 +1,6 @@
 import { useContext, useMemo } from 'react'
 import { Box } from 'grommet'
-import { Navigate, Route, Routes, useParams } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import { StripeProvider } from 'react-stripe-elements'
 
 import { CurrentUserContext, PluralConfigurationContext, PluralProvider } from './login/CurrentUser'
@@ -77,7 +77,7 @@ function WrapStripe({ children }) {
 }
 
 export function PluralInner() {
-  const { id } = useParams()
+  // const { id } = useParams()
   const me = useContext(CurrentUserContext)
 
   return (
@@ -154,54 +154,6 @@ export function PluralInner() {
                       path="/repositories/:id/integrations"
                       element={<IntegrationPage />}
                     />
-                    {/* <Route
-                      exact
-                      path="/repositories/:id"
-                      element={(
-                        <Navigate
-                          replace
-                          state={{ id }}
-                          to="/repositories/:id/bundles"
-                        />
-                      )}
-                    />
-                    <Route
-                      exact
-                      path="/repositories/:id/packages"
-                      element={(
-                        <Navigate
-                          replace
-                          state={{ id }}
-                          to="/repositories/:id/packages/helm"
-                        />
-                      )}
-                    />
-                    <Route
-                      exact
-                      path="/repositories/:id/edit"
-                      element={(
-                        <Navigate
-                          replace
-                          state={{ id }}
-                          to="/repositories/:id/edit/details"
-                        />
-                      )}
-                    />
-                    <Route
-                      exact
-                      path="/repositories/:id/configure"
-                      element={(
-                        <Navigate
-                          replace
-                          state={{ id }}
-                          to="/repositories/:id/configure/upgrades"
-                        />
-                      )}
-                    />
-                    <Route
-                      path="/repositories/:id/:group/:subgroup"
-                      element={<RepoDirectory />}
-                    /> */}
                     <Route
                       path="/repository/:id"
                       element={<Repository />}
@@ -343,11 +295,15 @@ export function PluralInner() {
                       element={<Explore />}
                     />
                     <Route
+                      path="/installed"
+                      element={<Explore installed />}
+                    />
+                    <Route
                       path="/*"
                       element={(
                         <Navigate
                           replace
-                          to={me.hasInstallations ? '/explore' /* TODO */ : '/explore'}
+                          to={me.hasInstallations ? '/installed' : '/explore'}
                         />
                       )}
                     />

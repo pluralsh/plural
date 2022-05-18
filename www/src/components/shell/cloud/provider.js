@@ -1,7 +1,6 @@
 import { createElement, useCallback, useRef, useState } from 'react'
 import { Down } from 'grommet-icons'
 import { Box, Drop, Text } from 'grommet'
-import { Button, Divider } from 'forge-core'
 
 import { Provider } from '../../repos/misc'
 

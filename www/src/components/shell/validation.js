@@ -9,6 +9,7 @@ export function validator(object, field, name, func) {
   if (!val) return { field: name, message: 'is not set', empty: true }
 
   const res = func(val)
+
   return res && { field: name, message: res }
 }
 

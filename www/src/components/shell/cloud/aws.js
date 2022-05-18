@@ -22,7 +22,7 @@ export const awsSynopsis = ({ workspace, credentials }) => (
   [
     { name: 'Region', value: workspace.region },
     { name: 'Access Key Id', value: credentials.aws.accessKeyId },
-    { name: 'Secret Access Key', value: credentials.aws.secretAccessKey },
+    { name: 'Secret Access Key', value: '*****REDACTED****' },
   ]
 )
 

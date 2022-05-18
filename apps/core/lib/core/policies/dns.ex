@@ -3,10 +3,14 @@ defmodule Core.Policies.Dns do
   alias Core.Services.{Rbac, Dns}
   alias Core.Schema.{User, DnsDomain, DnsRecord, DnsAccessPolicy}
 
+  @policy_msg "you cannot edit this dns domain, are you on its access policy?"
+
   def can?(%User{id: uid}, %DnsDomain{creator_id: uid}, :edit),
     do: :pass
-  def can?(user, %DnsDomain{access_policy: %DnsAccessPolicy{} = policy}, :edit),
-    do: Rbac.evaluate_policy(user, policy)
+  def can?(user, %DnsDomain{access_policy: %DnsAccessPolicy{} = policy}, :edit) do
+    Rbac.evaluate_policy(user, policy)
+    |> error(@policy_msg)
+  end
   def can?(_, %DnsDomain{}, :edit), do: {:error, :forbidden}
 
   def can?(user, %DnsDomain{} = domain, :delete) do
@@ -24,7 +28,7 @@ defmodule Core.Policies.Dns do
     case Core.Repo.preload(record, [domain: [access_policy: :bindings]]) do
       %{domain: %DnsDomain{account_id: ^id, access_policy: nil}} -> :pass
       %{domain: %DnsDomain{account_id: ^id, access_policy: policy}} ->
-        Rbac.evaluate_policy(user, policy)
+        Rbac.evaluate_policy(user, policy) |> error(@policy_msg)
       _ -> {:error, :forbidden}
     end
   end

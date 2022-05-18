@@ -20,7 +20,7 @@ defmodule Core.Schema.Recipe do
     def changeset(model, attrs \\ %{}) do
       model
       |> cast(attrs, @valid)
-      |> validate_required([:uri_format, :auth_method])
+      |> validate_required([:auth_method])
     end
   end
 

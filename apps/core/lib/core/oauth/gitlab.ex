@@ -2,12 +2,12 @@ defmodule Core.OAuth.Gitlab do
   use OAuth2.Strategy
   use Core.OAuth.Base
 
-  def client(redirect \\ nil) do
+  def client(redirect \\ nil, suffix \\ "") do
     OAuth2.Client.new([
       strategy: __MODULE__,
       client_id: get_env("GITLAB_CLIENT_ID"),
       client_secret: get_env("GITLAB_CLIENT_SECRET"),
-      redirect_uri: "#{redirect || host()}/oauth/callback/gitlab",
+      redirect_uri: "#{redirect || host()}/oauth/callback/gitlab#{suffix}",
       site: "https://gitlab.com",
       authorize_url: "/oauth/authorize",
       token_url: "/oauth/token"
@@ -41,7 +41,7 @@ defmodule Core.OAuth.Gitlab do
 
   defp construct_user(client, user) do
     case OAuth2.Client.get(client, url("/user/emails")) do
-      {:ok, %OAuth2.Response{body: [%{"email" => email} | _] = emails}} ->
+      {:ok, %OAuth2.Response{body: [%{"email" => email} | _]}} ->
         build_user(user)
         |> Map.put(:email, email)
         |> ok()

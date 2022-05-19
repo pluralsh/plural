@@ -1,5 +1,6 @@
 defmodule Core do
   @moduledoc nil
+  require Logger
 
   @chars String.codepoints("abcdefghijklmnopqrstuvwxyz")
 
@@ -28,6 +29,18 @@ defmodule Core do
   def sha(str) do
     :crypto.hash(:sha256, str)
     |> Base.encode32()
+  end
+
+  def retry(fun, attempts \\ 0)
+  def retry(fun, 3), do: fun.()
+  def retry(fun, attempts) do
+    case fun.() do
+      {:ok, res} -> {:ok, res}
+      {:error, _} = error ->
+        Logger.info "failed to execute function, error: #{inspect(error)}"
+        :timer.sleep(0.2)
+        retry(fun, attempts + 1)
+    end
   end
 
   def throttle(enum, opts) when is_list(opts), do: throttle(enum, Map.new(opts))

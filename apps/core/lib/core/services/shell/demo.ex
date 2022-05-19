@@ -165,9 +165,11 @@ defmodule Core.Services.Shell.Demo do
         add_binding(bindings, email, "roles/owner", "serviceAccount")
         |> add_binding(email, "roles/storage.admin", "serviceAccount")
         |> add_binding(Core.conf(:gcp_identity), "roles/owner", "user")
-      Projects.cloudresourcemanager_projects_set_iam_policy(projs, proj_id, body: %SetIamPolicyRequest{
-        policy: %{policy | bindings: bindings}
-      })
+      Core.retry(fn ->
+        Projects.cloudresourcemanager_projects_set_iam_policy(projs, proj_id, body: %SetIamPolicyRequest{
+          policy: %{policy | bindings: bindings}
+        })
+      end)
     end)
     |> add_operation(:creds, fn %{service_account: %{uniqueId: id}} ->
       IAMProjects.iam_projects_service_accounts_keys_create(iams, proj_id, id)

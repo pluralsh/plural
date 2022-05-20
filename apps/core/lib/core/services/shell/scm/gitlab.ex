@@ -29,7 +29,7 @@ defmodule Core.Shell.Scm.Gitlab do
 
   def authorize_url() do
     oauth_client()
-    |> OAuth2.Client.authorize_url!(scope: "read_api write_repository email openid profile")
+    |> OAuth2.Client.authorize_url!(scope: "api email openid profile")
   end
 
   def get_token(code) do

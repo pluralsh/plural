@@ -56,6 +56,12 @@ defmodule Core.Shell.Scm.Gitlab do
 
   defp url(p), do: "https://gitlab.com/api/v4#{p}"
 
-  defp create_repo_body(name, nil), do: %{name: name, visibility: "private", initialize_with_readme: true}
-  defp create_repo_body(name, org) when is_binary(org), do: %{path: Path.join([org, name]), visibility: "private", initialize_with_readme: true}
+  defp create_repo_body(name, nil) do
+    %{name: name, visibility: "private", initialize_with_readme: true, description: "my plural installation repo"}
+  end
+
+  defp create_repo_body(name, org) when is_binary(org) do
+    create_repo_body(name, nil)
+    |> Map.put(:namespace_id, String.to_integer(org))
+  end
 end

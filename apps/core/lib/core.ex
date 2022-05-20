@@ -35,6 +35,7 @@ defmodule Core do
   def retry(fun, 3), do: fun.()
   def retry(fun, attempts) do
     case fun.() do
+      :ok -> :ok
       {:ok, res} -> {:ok, res}
       {:error, _} = error ->
         Logger.info "failed to execute function, error: #{inspect(error)}"

@@ -30,7 +30,7 @@ defmodule Core.Shell.Scm do
     client = Github.client(token)
     with {:ok, private, public} <- keypair(email),
          {:ok, %{"ssh_url" => url} = repo} <- Github.create_repository(client, name, org),
-         :ok <- Github.register_keys(client, public, repo),
+         :ok <- Core.retry(fn -> Github.register_keys(client, public, repo) end),
          {:ok, user} <- Github.oauth_client(client) |> Core.OAuth.Github.get_user(),
       do: {:ok, url, public, private, git_info(user)}
   end

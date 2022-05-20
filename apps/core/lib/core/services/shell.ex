@@ -1,5 +1,7 @@
 defmodule Core.Services.Shell do
   use Core.Services.Base
+  import Core.Policies.Shell
+
   alias Core.Schema.{CloudShell, User}
   alias Core.Services.{Shell.Pods, Dns}
   alias Core.Shell.Scm
@@ -28,7 +30,8 @@ defmodule Core.Services.Shell do
       %{fetch: nil} ->
         %CloudShell{user_id: user_id}
         |> CloudShell.changeset(attrs)
-        |> Core.Repo.insert()
+        |> allow(user, :create)
+        |> when_ok(:insert)
       %{fetch: %CloudShell{} = s} -> {:ok, s}
     end)
     |> add_operation(:dns, fn %{create: %CloudShell{workspace: %CloudShell.Workspace{subdomain: sub}}} ->

@@ -6,7 +6,7 @@ defmodule Core.Services.ShellTest do
 
   describe "#create_shell/2" do
     test "a user can create a cloud shell" do
-      user = insert(:user)
+      user = insert(:user, roles: %{admin: true})
 
       expect(Kazan, :run, fn _ ->
         {:ok, Shell.Pods.pod("plrl-shell-1", user.email)}
@@ -56,8 +56,25 @@ defmodule Core.Services.ShellTest do
       assert shell.workspace.region == "us-east-1"
       assert shell.workspace.subdomain == "sub.onplural.sh"
       assert shell.workspace.bucket == "plrl-tf-state"
+      assert shell.bucket_prefix == shell.workspace.bucket_prefix
 
       assert Dns.get_domain("sub.onplural.sh")
+    end
+
+    test "users without permissions cannot create shells" do
+      {:error, _} = Shell.create_shell(%{
+        provider: :aws,
+        credentials: %{
+          aws: %{access_key_id: "access_key", secret_access_key: "secret"}
+        },
+        scm: %{token: "tok", provider: :github, name: "installations"},
+        workspace: %{
+          cluster: "plural",
+          bucket_prefix: "plrl",
+          region: "us-east-1",
+          subdomain: "sub.onplural.sh"
+        }
+      }, insert(:user))
     end
   end
 

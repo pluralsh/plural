@@ -2,7 +2,7 @@ defmodule Core.Services.Shell.Pods do
   alias Kazan.Apis.Core.V1, as: CoreV1
   alias Kazan.Models.Apimachinery.Meta.V1, as: MetaV1
 
-  @image "gcr.io/pluralsh/plural-cli:0.1.1-cloud"
+  @image "gcr.io/pluralsh/plural-cli:0.1.2-cloud"
   @busybox_img "gcr.io/pluralsh/busybox:latest"
   @ns "plrl-shell"
   @conditions ~w(Initialized Ready ContainersReady PodScheduled)

@@ -38,7 +38,7 @@ defmodule Core do
       {:ok, res} -> {:ok, res}
       {:error, _} = error ->
         Logger.info "failed to execute function, error: #{inspect(error)}"
-        :timer.sleep(0.2)
+        :timer.sleep(200)
         retry(fun, attempts + 1)
     end
   end

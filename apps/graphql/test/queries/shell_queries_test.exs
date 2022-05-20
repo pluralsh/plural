@@ -27,14 +27,17 @@ defmodule GraphQl.ShellQueriesTest do
     test "it can list authz urls for scm providers" do
       user = insert(:user)
 
-      {:ok, %{data: %{"scmAuthorization" => [res]}}} = run_query("""
+      {:ok, %{data: %{"scmAuthorization" => [github, gitlab]}}} = run_query("""
         query {
           scmAuthorization { provider url }
         }
       """, %{}, %{current_user: user})
 
-      assert res["provider"] == "GITHUB"
-      assert res["url"]
+      assert github["provider"] == "GITHUB"
+      assert github["url"]
+
+      assert gitlab["provider"] == "GITLAB"
+      assert gitlab["url"]
     end
   end
 

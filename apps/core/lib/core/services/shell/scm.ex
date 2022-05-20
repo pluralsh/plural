@@ -43,7 +43,7 @@ defmodule Core.Shell.Scm do
     client = Gitlab.client(token)
     with {:ok, private, public} <- keypair(email),
          {:ok, %{"ssh_url_to_repo" => url} = repo} <- Gitlab.create_repository(client, name, org),
-         :ok <- Gitlab.register_keys(client, public, repo),
+         :ok <- Core.retry(fn -> Gitlab.register_keys(client, public, repo) end),
          {:ok, user} <- Gitlab.oauth_client(client) |> Core.OAuth.Gitlab.get_user(),
       do: {:ok, url, public, private, git_info(user)}
   end

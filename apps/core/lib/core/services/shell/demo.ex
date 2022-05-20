@@ -155,7 +155,9 @@ defmodule Core.Services.Shell.Demo do
     |> add_operation(:billing, fn _ -> enable_billing(proj_id) end)
     |> add_operation(:svcs, fn _  -> enable_services(proj_id) end)
     |> add_operation(:service_account, fn _ ->
-      IAMProjects.iam_projects_service_accounts_create(iams, proj_id, body: %CreateServiceAccountRequest{accountId: "plural"})
+      email = "plural@#{proj_id}.iam.gserviceaccount.com"
+      with {:error, _} <- IAMProjects.iam_projects_service_accounts_get(iams, proj_id, email),
+        do: IAMProjects.iam_projects_service_accounts_create(iams, proj_id, body: %CreateServiceAccountRequest{accountId: "plural"})
     end)
     |> add_operation(:iam, fn %{service_account: %{email: email}} ->
       Core.retry(fn ->

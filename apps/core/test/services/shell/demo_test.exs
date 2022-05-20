@@ -70,6 +70,7 @@ defmodule Core.Services.Shell.DemoTest do
         {:ok, %Policy{bindings: []}}
       end)
       key = Jason.encode!(%{dummy: "key"}) |> Base.encode64()
+      expect(IAMProjects, :iam_projects_service_accounts_get, fn _, _, "plural@" <> _ -> {:error, :not_found} end)
       expect(IAMProjects, :iam_projects_service_accounts_keys_create, fn _, _, _ ->
         {:ok, %ServiceAccountKey{privateKeyData: key}}
       end)

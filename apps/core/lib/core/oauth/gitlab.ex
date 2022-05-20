@@ -16,7 +16,7 @@ defmodule Core.OAuth.Gitlab do
   end
 
   def authorize_url!(redirect \\ nil) do
-    OAuth2.Client.authorize_url!(client(redirect), scope: "profile email openid")
+    OAuth2.Client.authorize_url!(client(redirect), scope: "api profile email openid")
   end
 
   def get_token!(redirect \\ nil, code) do

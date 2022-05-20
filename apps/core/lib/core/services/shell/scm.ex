@@ -18,6 +18,10 @@ defmodule Core.Shell.Scm do
       do: {:ok, pem_private, ssh_public}
   end
 
+  @doc """
+  Lists supported authorize urls for SCM OAuth
+  """
+  @spec authorize_urls() :: [%{provider: provider, url: binary}]
   def authorize_urls() do
     Enum.map(@providers, & %{provider: &1, url: authorize_url(&1)})
   end

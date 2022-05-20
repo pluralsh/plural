@@ -37,34 +37,23 @@ defmodule Core.OAuth.Github do
   end
 
   defp construct_user(_, %{"email" => email} = user) when is_binary(email) do
-    {:ok, build_user(user) |> add_name(user)}
+    build_user(user)
+    |> add_name(user)
+    |> ok()
   end
 
   defp construct_user(client, user) do
     case OAuth2.Client.get(client, "/user/emails") do
       {:ok, %OAuth2.Response{body: [_ | _] = emails}} ->
         %{"email" => email} = Enum.find(emails, & &1["primary"])
-        user =
-          build_user(user)
-          |> Map.put(:email, email)
-          |> add_name(user)
-        {:ok, user}
+        build_user(user)
+        |> Map.put(:email, email)
+        |> add_name(user)
+        |> ok()
       _ -> {:error, :no_email}
     end
   end
 
   defp add_name(%{name: _} = user, %{"login" => login}), do: %{user | name: login}
   defp add_name(user, _), do: user
-
-  def authorize_url(client, params) do
-    OAuth2.Strategy.AuthCode.authorize_url(client, params)
-  end
-
-  def get_token(client, params, headers) do
-    client
-    |> put_header("accept", "application/json")
-    |> OAuth2.Strategy.AuthCode.get_token(params, headers)
-  end
-
-  defp host(), do: Application.get_env(:core, :host)
 end

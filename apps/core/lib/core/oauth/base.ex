@@ -6,8 +6,23 @@ defmodule Core.OAuth.Base do
       import Core.OAuth.Base
       import System, only: [get_env: 1]
       require Logger
+
+      def authorize_url(client, params) do
+        OAuth2.Strategy.AuthCode.authorize_url(client, params)
+      end
+
+      def get_token(client, params, headers) do
+        client
+        |> put_header("accept", "application/json")
+        |> OAuth2.Strategy.AuthCode.get_token(params, headers)
+      end
+
+      defp host(), do: Application.get_env(:core, :host)
     end
   end
+
+  @compile {:inline, ok: 1}
+  def ok(val), do: {:ok, val}
 
   def build_user(blob) do
     Logger.info "Found oauth user: #{inspect(blob)}"

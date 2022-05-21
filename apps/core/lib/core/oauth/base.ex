@@ -18,6 +18,8 @@ defmodule Core.OAuth.Base do
       end
 
       defp host(), do: Application.get_env(:core, :host)
+
+      defoverridable [get_token: 3]
     end
   end
 

@@ -332,7 +332,7 @@ export function CloudShell() {
             size="small"
             weight={500}
           >
-            Log In With {provider.toLowerCase()} To Start
+            Log in with {provider.toLowerCase()} to start
           </Text>
         </Box>
       ))}

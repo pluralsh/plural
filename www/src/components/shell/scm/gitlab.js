@@ -10,7 +10,7 @@ export const GITLAB_VALIDATIONS = [
   { field: 'scm.name', name: 'repository', func: isAlphanumeric },
 ]
 
-function OrgDisplay({ data: { path, username, avatar_url } }) {
+function OrgDisplay({ org: { data: { path, username, avatar_url } } }) {
   return (
     <Box
       direction="row"
@@ -47,16 +47,17 @@ export function GitlabRepositoryInput({ scm, setScm, accessToken }) {
     const fetch = async () => {
       const groups = await client.Groups.all({min_access_level: 30})
       const me = await client.Users.current()
-      const orgs = [{type: 'user', data: me}, ...groups.map((g) => ({type: 'group', data: g}))]
+      const orgs = [{type: 'user', data: me, id: me.id}, ...groups.map((g) => ({type: 'group', data: g, id: g.id}))]
       setOrgs(orgs)
       doSetOrg(orgs[0])
     }
     if (!orgs) fetch()
   }, [client, setOrgs, orgs, doSetOrg])
 
+  console.log(orgs)
   return (
     <Box>
-      <OrgInput 
+      <OrgInput
         name={scm.name}
         setName={name => setScm({ ...scm, name })}
         org={org} 

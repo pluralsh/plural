@@ -19,17 +19,6 @@ defmodule Core.OAuth.Gitlab do
     OAuth2.Client.authorize_url!(client(redirect), scope: "api profile email openid")
   end
 
-  def get_token(client, params, headers) do
-    client
-    |> put_param(:code, params[:code])
-    |> put_param(:grant_type, "authorization_code")
-    |> put_param(:client_id, client.client_id)
-    |> put_param(:client_secret, client.client_secret)
-    |> put_param(:redirect_uri, client.redirect_uri)
-    |> merge_params(params)
-    |> put_headers(headers)
-  end
-
   def get_token!(redirect \\ nil, code) do
     OAuth2.Client.get_token!(client(redirect), code: code)
   end

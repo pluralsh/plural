@@ -53,6 +53,11 @@ export default function App() {
             component={Plural}
           />
           <Route
+            exact
+            path="/oauth/callback/gitlab/shell"
+            component={Plural}
+          />
+          <Route
             path="/oauth/callback/:service"
             component={OAuthCallback}
           />

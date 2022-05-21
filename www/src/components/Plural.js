@@ -144,7 +144,7 @@ export function PluralInner() {
                         component={CloudShell}
                       />
                       <Route
-                        path="/oauth/callback/github/shell"
+                        path="/oauth/callback/:provider/shell"
                         component={OAuthCallback}
                       />
                       <Route

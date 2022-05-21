@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { Gitlab } from '@gitbeaker/node'
+import { Gitlab } from '@gitbeaker/browser'
 import { Box, Text } from 'grommet'
 
 import { isAlphanumeric } from '../validation'

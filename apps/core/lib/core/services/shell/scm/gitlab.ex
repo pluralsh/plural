@@ -52,7 +52,7 @@ defmodule Core.Shell.Scm.Gitlab do
 
   defp oauth_client(), do: Gitlab.client(nil, "/shell")
 
-  defp headers(token), do: [{"Authorization", "Bearer #{token}"}, {"accept", "application/json"}]
+  defp headers(token), do: [{"Authorization", "Bearer #{token}"}, {"accept", "application/json"}, {"content-type", "application/json"}]
 
   defp url(p), do: "https://gitlab.com/api/v4#{p}"
 

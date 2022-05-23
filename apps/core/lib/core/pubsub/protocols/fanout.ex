@@ -156,6 +156,7 @@ defimpl Core.PubSub.Fanout, for: [Core.PubSub.RoleCreated, Core.PubSub.RoleUpdat
   def fanout(%{item: role}) do
     User.for_role(role)
     |> Core.Repo.all()
+    |> Core.Services.Rbac.preload()
     |> Enum.map(&Core.PubSub.Broadcaster.notify(%CacheUser{item: &1}))
     |> Enum.count()
   end

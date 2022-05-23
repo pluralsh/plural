@@ -298,12 +298,6 @@ export function CloudShell() {
   const [mutation] = useMutation(REBOOT_SHELL)
   const [created, setCreated] = useState(false)
 
-  const onClick = useCallback(() => {
-    if (!data) return
-    const [{ url }] = data.scmAuthorization
-    window.location = url
-  }, [data])
-
   useEffect(() => {
     if (shellData && shellData.shell && !shellData.shell.alive) {
       mutation()

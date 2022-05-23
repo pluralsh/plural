@@ -1,18 +1,16 @@
 import { useContext, useMemo } from 'react'
-import { Box } from 'grommet'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { StripeProvider } from 'react-stripe-elements'
 
+import ApplicationLayout from './layout/ApplicationLayout'
 import { CurrentUserContext, PluralConfigurationContext, PluralProvider } from './login/CurrentUser'
 import MyPublisher from './publisher/MyPublisher'
 import Publisher from './publisher/Publisher'
-import Toolbar, { TOOLBAR_SIZE } from './Toolbar'
 import Chart from './repos/Chart'
 import Terraform from './repos/Terraform'
 import EditUser from './users/EditUser'
 import { IntegrationPage } from './repos/Integrations'
 import Invoices from './payments/Invoices'
-import Sidebar from './Sidebar'
 import Publishers from './publisher/Publishers'
 import Explore from './explore/Explore'
 import Repository from './repository/Repository'
@@ -34,7 +32,6 @@ import { IncidentContext } from './incidents/context'
 import { Integrations } from './integrations/Webhooks'
 import { Webhook } from './integrations/Webhook'
 import { OauthCreator } from './integrations/OauthCreator'
-import { FlyoutContainer } from './utils/Flyout'
 import { Docker, DockerRepository } from './repos/Docker'
 import { Audits } from './accounts/Audits'
 import { UpgradeQueues } from './upgrades/UpgradeQueues'
@@ -77,7 +74,6 @@ function WrapStripe({ children }) {
 }
 
 export function PluralInner() {
-  // const { id } = useParams()
   const me = useContext(CurrentUserContext)
 
   return (
@@ -85,237 +81,223 @@ export function PluralInner() {
       <IncidentContext.Provider value={useMemo(() => ({}), [])}>
         <WrapStripe>
           <BreadcrumbProvider>
-            <VerifyEmailConfirmed />
-            {/* <AutoRefresh /> */}
-            <DeviceLoginNotif />
-            <Toolbar />
-            <Box
-              direction="row"
-              background="background"
-              style={{ height: `calc(100vh - ${TOOLBAR_SIZE}px)` }}
-            >
-              <Sidebar />
-              <Box fill>
-                <Box
-                  fill
+            <ApplicationLayout>
+              <VerifyEmailConfirmed />
+              <DeviceLoginNotif />
+              <Routes>
+                <Route
+                  path="/shell"
+                  component={<CloudShell />}
+                />
+                <Route
+                  path="/accounts/edit/:section/*"
+                  element={<EditAccount />}
+                />
+                <Route
+                  exact
+                  path="/accounts/edit"
+                  element={(
+                    <Navigate
+                      replace
+                      to="/accounts/edit/users"
+                    />
+                  )}
+                />
+                <Route
+                  path="/accounts/billing/:section"
+                  element={<EditBilling />}
+                />
+                <Route
+                  path="/publishers/mine/:editing"
+                  element={<MyPublisher />}
+                />
+                <Route
+                  path="/publishers/:id/:editing"
+                  element={<MyPublisher />}
+                />
+                <Route
+                  path="/publishers/:publisherId"
+                  element={<Publisher />}
+                />
+                <Route
+                  path="/publishers"
+                  element={<Publishers />}
+                />
+                <Route
+                  path="/dkr/repo/:id"
+                  element={<DockerRepository />}
+                />
+                <Route
+                  path="/dkr/img/:id"
+                  element={<Docker />}
+                />
+                <Route
+                  path="/shell"
+                  element={<CloudShell />}
+                />
+                <Route
+                  path="/oauth/callback/github/shell"
+                  element={<OAuthCallback />}
+                />
+                <Route
+                  path="/repositories/:id/integrations"
+                  element={<IntegrationPage />}
+                />
+                <Route
+                  path="/repository/:id"
+                  element={<Repository />}
                 >
-                  <Routes>
+                  <Route
+                    index
+                    element={<RepositoryDescription />}
+                  />
+                  <Route
+                    path="packages"
+                    element={<RepositoryPackages />}
+                  >
                     <Route
-                      path="/shell"
-                      component={<CloudShell />}
-                    />
-                    <Route
-                      path="/accounts/edit/:section/*"
-                      element={<EditAccount />}
-                    />
-                    <Route
-                      exact
-                      path="/accounts/edit"
+                      index
                       element={(
                         <Navigate
                           replace
-                          to="/accounts/edit/users"
+                          to="helm"
                         />
                       )}
                     />
                     <Route
-                      path="/accounts/billing/:section"
-                      element={<EditBilling />}
+                      path="helm"
+                      element={<RepositoryPackagesHelm />}
                     />
                     <Route
-                      path="/publishers/mine/:editing"
-                      element={<MyPublisher />}
+                      path="terraform"
+                      element={<RepositoryPackagesTerraform />}
                     />
                     <Route
-                      path="/publishers/:id/:editing"
-                      element={<MyPublisher />}
+                      path="docker"
+                      element={<RepositoryPackagesDocker />}
                     />
-                    <Route
-                      path="/publishers/:publisherId"
-                      element={<Publisher />}
+                  </Route>
+                  <Route
+                    path="tests"
+                    element={<RepositoryTests />}
+                  />
+                  <Route
+                    path="deployments"
+                    element={<RepositoryDeployments />}
+                  />
+                  <Route
+                    path="artifacts"
+                    element={<RepositoryArtifacts />}
+                  />
+                  <Route
+                    path="edit"
+                    element={<RepositoryEdit />}
+                  />
+                </Route>
+                <Route
+                  path="/charts/:chartId"
+                  element={<Chart />}
+                />
+                <Route
+                  path="/terraform/:tfId"
+                  element={<Terraform />}
+                />
+                <Route
+                  exact
+                  path="/me/edit"
+                  element={<Navigate to="/me/edit/user" />}
+                />
+                <Route
+                  path="/me/edit/:editing"
+                  element={<EditUser />}
+                />
+                <Route
+                  path="/billing/:section"
+                  element={<Billing />}
+                />
+                <Route
+                  path="/me/invoices/:subscriptionId"
+                  element={<Invoices />}
+                />
+                <Route
+                  path="/incidents/:group"
+                  element={<IncidentDirectory />}
+                />
+                <Route
+                  exact
+                  path="/incidents"
+                  element={(
+                    <Navigate
+                      replace
+                      to="/incidents/all"
                     />
-                    <Route
-                      path="/publishers"
-                      element={<Publishers />}
+                  )}
+                />
+                <Route
+                  path="/incident/:incidentId/edit"
+                  element={<EditIncident />}
+                />
+                <Route
+                  path="/incident/:incidentId"
+                  element={<Incident />}
+                />
+                <Route
+                  path="/incidents"
+                  element={<Incidents />}
+                />
+                <Route
+                  path="/webhooks/:id"
+                  element={<Webhook />}
+                />
+                <Route
+                  path="/webhooks"
+                  element={<Integrations />}
+                />
+                <Route
+                  path="/oauth/accept/:service"
+                  element={<OauthCreator />}
+                />
+                <Route
+                  path="/audits/:graph"
+                  element={<Audits />}
+                />
+                <Route
+                  exact
+                  path="/audits"
+                  element={(
+                    <Navigate
+                      replace
+                      to="/audits/table"
                     />
-                    <Route
-                      path="/dkr/repo/:id"
-                      element={<DockerRepository />}
+                  )}
+                />
+                <Route
+                  path="/upgrades/:id"
+                  element={<UpgradeQueue />}
+                />
+                <Route
+                  path="/upgrades"
+                  element={<UpgradeQueues />}
+                />
+                <Route
+                  path="/explore"
+                  element={<Explore />}
+                />
+                <Route
+                  path="/installed"
+                  element={<Explore installed />}
+                />
+                <Route
+                  path="/*"
+                  element={(
+                    <Navigate
+                      replace
+                      to={me.hasInstallations ? '/installed' : '/explore'}
                     />
-                    <Route
-                      path="/dkr/img/:id"
-                      element={<Docker />}
-                    />
-                    <Route
-                      path="/shell"
-                      element={<CloudShell />}
-                    />
-                    <Route
-                      path="/oauth/callback/github/shell"
-                      element={<OAuthCallback />}
-                    />
-                    <Route
-                      path="/repositories/:id/integrations"
-                      element={<IntegrationPage />}
-                    />
-                    <Route
-                      path="/repository/:id"
-                      element={<Repository />}
-                    >
-                      <Route
-                        index
-                        element={<RepositoryDescription />}
-                      />
-                      <Route
-                        path="packages"
-                        element={<RepositoryPackages />}
-                      >
-                        <Route
-                          index
-                          element={(
-                            <Navigate
-                              replace
-                              to="helm"
-                            />
-                          )}
-                        />
-                        <Route
-                          path="helm"
-                          element={<RepositoryPackagesHelm />}
-                        />
-                        <Route
-                          path="terraform"
-                          element={<RepositoryPackagesTerraform />}
-                        />
-                        <Route
-                          path="docker"
-                          element={<RepositoryPackagesDocker />}
-                        />
-                      </Route>
-                      <Route
-                        path="tests"
-                        element={<RepositoryTests />}
-                      />
-                      <Route
-                        path="deployments"
-                        element={<RepositoryDeployments />}
-                      />
-                      <Route
-                        path="artifacts"
-                        element={<RepositoryArtifacts />}
-                      />
-                      <Route
-                        path="edit"
-                        element={<RepositoryEdit />}
-                      />
-                    </Route>
-                    <Route
-                      path="/charts/:chartId"
-                      element={<Chart />}
-                    />
-                    <Route
-                      path="/terraform/:tfId"
-                      element={<Terraform />}
-                    />
-                    <Route
-                      exact
-                      path="/me/edit"
-                      element={<Navigate to="/me/edit/user" />}
-                    />
-                    <Route
-                      path="/me/edit/:editing"
-                      element={<EditUser />}
-                    />
-                    <Route
-                      path="/billing/:section"
-                      element={<Billing />}
-                    />
-                    <Route
-                      path="/me/invoices/:subscriptionId"
-                      element={<Invoices />}
-                    />
-                    <Route
-                      path="/incidents/:group"
-                      element={<IncidentDirectory />}
-                    />
-                    <Route
-                      exact
-                      path="/incidents"
-                      element={(
-                        <Navigate
-                          replace
-                          to="/incidents/all"
-                        />
-                      )}
-                    />
-                    <Route
-                      path="/incident/:incidentId/edit"
-                      element={<EditIncident />}
-                    />
-                    <Route
-                      path="/incident/:incidentId"
-                      element={<Incident />}
-                    />
-                    <Route
-                      path="/incidents"
-                      element={<Incidents />}
-                    />
-                    <Route
-                      path="/webhooks/:id"
-                      element={<Webhook />}
-                    />
-                    <Route
-                      path="/webhooks"
-                      element={<Integrations />}
-                    />
-                    <Route
-                      path="/oauth/accept/:service"
-                      element={<OauthCreator />}
-                    />
-                    <Route
-                      path="/audits/:graph"
-                      element={<Audits />}
-                    />
-                    <Route
-                      exact
-                      path="/audits"
-                      element={(
-                        <Navigate
-                          replace
-                          to="/audits/table"
-                        />
-                      )}
-                    />
-                    <Route
-                      path="/upgrades/:id"
-                      element={<UpgradeQueue />}
-                    />
-                    <Route
-                      path="/upgrades"
-                      element={<UpgradeQueues />}
-                    />
-                    <Route
-                      path="/explore"
-                      element={<Explore />}
-                    />
-                    <Route
-                      path="/installed"
-                      element={<Explore installed />}
-                    />
-                    <Route
-                      path="/*"
-                      element={(
-                        <Navigate
-                          replace
-                          to={me.hasInstallations ? '/installed' : '/explore'}
-                        />
-                      )}
-                    />
-                  </Routes>
-                </Box>
-              </Box>
-              <FlyoutContainer />
-            </Box>
+                  )}
+                />
+              </Routes>
+            </ApplicationLayout>
           </BreadcrumbProvider>
         </WrapStripe>
       </IncidentContext.Provider>

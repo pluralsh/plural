@@ -84,8 +84,8 @@ export const DEFAULT_COLOR_THEME = {
   'input-border': 'border',
   primary: '#0639FF',
   background: {
-    light: 'white',
-    dark: '#111525',
+    light: 'transparent',
+    dark: 'transparent',
   },
   'background-light': {
     light: '#f5f7f9',

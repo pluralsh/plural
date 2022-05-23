@@ -13,6 +13,7 @@ function ApplicationLayout({ children }) {
       <Div
         height="100vh"
         maxHeight="100vh"
+        flexGrow={1}
       >
         <Toolbar />
         {children}

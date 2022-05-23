@@ -61,6 +61,62 @@ defmodule Core.Services.ShellTest do
       assert Dns.get_domain("sub.onplural.sh")
     end
 
+    test "a user can create a cloud shell with gitlab for scm" do
+      user = insert(:user, roles: %{admin: true})
+
+      expect(Kazan, :run, fn _ ->
+        {:ok, Shell.Pods.pod("plrl-shell-1", user.email)}
+      end)
+
+      expect(HTTPoison, :post, 2, fn
+        "https://gitlab.com/api/v4/projects", _, _ ->
+          {:ok, %HTTPoison.Response{status_code: 200, body: Jason.encode!(%{
+            ssh_url_to_repo: "git@github.com:pluralsh/installations.git",
+            id: 123
+          })}}
+        "https://gitlab.com/api/v4/projects/123/deploy_keys", _, _ ->
+          {:ok, %HTTPoison.Response{status_code: 200, body: "OK"}}
+      end)
+
+      expect(OAuth2.Client, :get, 2, fn
+        _, "/api/v4/user" -> {:ok, %OAuth2.Response{body: %{"name" => "name"}}}
+        _, "/api/v4/user/emails" -> {:ok, %OAuth2.Response{body: [%{"primary" => true, "email" => "me@example.com"}]}}
+      end)
+
+      {:ok, shell} = Shell.create_shell(%{
+        provider: :aws,
+        credentials: %{
+          aws: %{access_key_id: "access_key", secret_access_key: "secret"}
+        },
+        scm: %{token: "tok", provider: :gitlab, name: "installations"},
+        workspace: %{
+          cluster: "plural",
+          bucket_prefix: "plrl",
+          region: "us-east-1",
+          subdomain: "sub.onplural.sh"
+        }
+      }, user)
+
+      assert shell.user_id == user.id
+      assert shell.aes_key
+      assert shell.ssh_public_key
+      assert shell.ssh_private_key
+      assert shell.git_url == "git@github.com:pluralsh/installations.git"
+      assert shell.provider == :aws
+      assert shell.git_info.username == "name"
+      assert shell.git_info.email == "me@example.com"
+      assert shell.credentials.aws.access_key_id == "access_key"
+      assert shell.credentials.aws.secret_access_key == "secret"
+      assert shell.workspace.cluster == "plural"
+      assert shell.workspace.bucket_prefix == "plrl"
+      assert shell.workspace.region == "us-east-1"
+      assert shell.workspace.subdomain == "sub.onplural.sh"
+      assert shell.workspace.bucket == "plrl-tf-state"
+      assert shell.bucket_prefix == shell.workspace.bucket_prefix
+
+      assert Dns.get_domain("sub.onplural.sh")
+    end
+
     test "users without permissions cannot create shells" do
       {:error, _} = Shell.create_shell(%{
         provider: :aws,

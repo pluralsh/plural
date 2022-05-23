@@ -59,6 +59,11 @@ function App() {
                   element={<Plural />}
                 />
                 <Route
+                  exact
+                  path="/oauth/callback/gitlab/shell"
+                  element={<Plural />}
+                />
+                <Route
                   path="/oauth/callback/:service"
                   element={<OAuthCallback />}
                 />

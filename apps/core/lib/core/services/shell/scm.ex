@@ -1,9 +1,9 @@
 defmodule Core.Shell.Scm do
-  alias Core.Shell.Scm.Github
+  alias Core.Shell.Scm.{Github, Gitlab}
 
-  @providers ~w(github)a
+  @providers ~w(github gitlab)a
 
-  @type provider :: :github
+  @type provider :: :github | :gitlab
   @type error :: {:error, term}
 
   @doc """
@@ -18,6 +18,10 @@ defmodule Core.Shell.Scm do
       do: {:ok, pem_private, ssh_public}
   end
 
+  @doc """
+  Lists supported authorize urls for SCM OAuth
+  """
+  @spec authorize_urls() :: [%{provider: provider, url: binary}]
   def authorize_urls() do
     Enum.map(@providers, & %{provider: &1, url: authorize_url(&1)})
   end
@@ -35,13 +39,24 @@ defmodule Core.Shell.Scm do
       do: {:ok, url, public, private, git_info(user)}
   end
 
+  def setup_repository(:gitlab, email, token, org, name) do
+    client = Gitlab.client(token)
+    with {:ok, private, public} <- keypair(email),
+         {:ok, %{"ssh_url_to_repo" => url} = repo} <- Gitlab.create_repository(client, name, org),
+         :ok <- Core.retry(fn -> Gitlab.register_keys(client, public, repo) end),
+         {:ok, user} <- Gitlab.oauth_client(client) |> Core.OAuth.Gitlab.get_user(),
+      do: {:ok, url, public, private, git_info(user)}
+  end
+
   @doc """
   Fetches an access token for a scm provider
   """
   @spec get_token(provider, binary) :: {:ok, binary} | error
   def get_token(:github, code), do: Github.get_token(code)
+  def get_token(:gitlab, code), do: Gitlab.get_token(code)
 
   defp authorize_url(:github), do: Github.authorize_url()
+  defp authorize_url(:gitlab), do: Gitlab.authorize_url()
 
   defp git_info(%{email: email} = user), do: %{username: user[:name], email: email}
   defp git_info(_), do: nil

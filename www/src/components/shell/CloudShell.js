@@ -1,7 +1,6 @@
-import { useCallback, useEffect, useState } from 'react'
+import { createElement, useCallback, useEffect, useState } from 'react'
 import { Box, Text } from 'grommet'
-import { Github } from 'grommet-icons'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useMutation, useQuery } from '@apollo/client'
 import { Button } from 'forge-core'
 
@@ -9,12 +8,15 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 
 import { GqlError } from '../utils/Alert'
 
+import { METHOD_ICONS } from '../users/OauthEnabler'
+
 import { AUTH_URLS, CLOUD_SHELL, CREATE_SHELL, REBOOT_SHELL, SCM_TOKEN } from './query'
-import { GITHUB_VALIDATIONS, GithubRepositoryInput } from './scm/github'
+import { GITHUB_VALIDATIONS } from './scm/github'
 import { WORKSPACE_VALIDATIONS, WorkspaceForm } from './WorkspaceForm'
 import { Terminal } from './Terminal'
 import { Exceptions, getExceptions } from './validation'
 import { CLOUD_VALIDATIONS, ProviderForm, synopsis } from './cloud/provider'
+import { SCM_VALIDATIONS, ScmInput } from './scm/ScmInput'
 
 const SECTIONS = {
   git: ['cloud', null],
@@ -142,12 +144,18 @@ export function Header({ text }) {
   )
 }
 
-function CreateShell({ onCreate }) {
-  const accessToken = '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'
+function getValidations(provider, scmProvider, section) {
+  if (section === 'cloud') return CLOUD_VALIDATIONS[provider]
+  if (section === 'git') return SCM_VALIDATIONS[scmProvider]
+
+  return VALIDATIONS[section]
+}
+
+function CreateShell({ accessToken, onCreate, provider: scmProvider }) {
   const [demo, setDemo] = useState(null)
   const [section, setSection] = useState('git')
   const [provider, setProvider] = useState('AWS')
-  const [scm, setScm] = useState({ name: '', provider: 'GITHUB', token: accessToken })
+  const [scm, setScm] = useState({ name: '', provider: scmProvider, token: accessToken })
   const [credentials, setCredentials] = useState({})
   const [workspace, setWorkspace] = useState({})
   const [mutation, { loading, error: gqlError }] = useMutation(CREATE_SHELL, {
@@ -167,7 +175,7 @@ function CreateShell({ onCreate }) {
     if (!hasNext) mutation()
   }, [section, mutation])
 
-  const validations = section === 'cloud' ? CLOUD_VALIDATIONS[provider] : VALIDATIONS[section]
+  const validations = getValidations(provider, scmProvider, section)
   const { error, exceptions } = getExceptions(validations, { credentials, workspace, scm })
 
   return (
@@ -193,7 +201,8 @@ function CreateShell({ onCreate }) {
         {section === 'git' && (
           <>
             <Header text="Git Setup" />
-            <GithubRepositoryInput
+            <ScmInput
+              provider={scmProvider}
               accessToken={accessToken}
               scm={scm}
               setScm={setScm}
@@ -259,8 +268,9 @@ function CreateShell({ onCreate }) {
 export function OAuthCallback() {
   const loc = useLocation()
   const navigate = useNavigate()
+  const { provider } = useParams()
   const params = new URLSearchParams(loc.search)
-  const { data } = useQuery(SCM_TOKEN, { variables: { code: params.get('code'), provider: 'GITHUB' } })
+  const { data } = useQuery(SCM_TOKEN, { variables: { code: params.get('code'), provider: provider.toUpperCase() } })
 
   if (!data) return <LoopingLogo dark />
 
@@ -275,6 +285,7 @@ export function OAuthCallback() {
     >
       <CreateShell
         accessToken={data.scmToken}
+        provider={provider.toUpperCase()}
         onCreate={() => navigate('/shell')}
       />
     </Box>
@@ -286,11 +297,6 @@ export function CloudShell() {
   const { data: shellData } = useQuery(CLOUD_SHELL, { fetchPolicy: 'cache-and-network' })
   const [mutation] = useMutation(REBOOT_SHELL)
   const [created, setCreated] = useState(false)
-  const onClick = useCallback(() => {
-    if (!data) return
-    const [{ url }] = data.scmAuthorization
-    window.location = url
-  }, [data])
 
   useEffect(() => {
     if (shellData && shellData.shell && !shellData.shell.alive) {
@@ -299,9 +305,11 @@ export function CloudShell() {
     }
   }, [shellData, setCreated, mutation])
 
-  if (!shellData) return <LoopingLogo dark />
+  if (!shellData || !data) return <LoopingLogo dark />
 
   if ((shellData && shellData.shell) || created) return <Terminal />
+
+  const urls = data.scmAuthorization
 
   return (
     <Box
@@ -309,25 +317,31 @@ export function CloudShell() {
       fill
       align="center"
       justify="center"
+      gap="xsmall"
     >
-      <Box
-        flex={false}
-        pad="small"
-        round="xsmall"
-        direction="row"
-        gap="small"
-        border
-        align="center"
-        hoverIndicator="card"
-        onClick={onClick}
-      >
-        <Github size="15px" />
-        <Text
-          size="small"
-          weight={500}
-        >Log In With Github To Start
-        </Text>
-      </Box>
+      {urls.map(({ provider, url }) => (
+        <Box
+          flex={false}
+          pad="small"
+          round="xsmall"
+          direction="row"
+          gap="small"
+          border
+          align="center"
+          hoverIndicator="card"
+          onClick={() => {
+            window.location = url
+          }}
+        >
+          {createElement(METHOD_ICONS[provider], { size: '15px' })}
+          <Text
+            size="small"
+            weight={500}
+          >
+            Log in with {provider.toLowerCase()} to start
+          </Text>
+        </Box>
+      ))}
     </Box>
   )
 }

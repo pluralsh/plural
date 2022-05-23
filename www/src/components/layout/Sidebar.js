@@ -32,6 +32,7 @@ import { getPreviousUserData, setPreviousUserData, setToken, wipeToken } from '.
 import { CurrentUserContext } from '../login/CurrentUser'
 
 import WithNotifications from './WithNotifications'
+import WithApplicationUpdate from './WithApplicationUpdate'
 
 export const SIDEBAR_ICON_HEIGHT = '40px'
 export const SIDEBAR_WIDTH = '224px'
@@ -215,12 +216,22 @@ function Sidebar() {
   return (
     <WithNotifications>
       {({ notificationsCount, toggleNotificationsPanel }) => (
-        <PluralSidebar
-          items={items}
-          activeUrl={pathname}
-          notificationsCount={notificationsCount}
-          onNotificationsClick={toggleNotificationsPanel}
-        />
+        <WithApplicationUpdate>
+          {({ reloadApplication, shouldReloadApplication }) => (
+            <PluralSidebar
+              items={items}
+              activeUrl={pathname}
+              notificationsCount={notificationsCount}
+              onNotificationsClick={toggleNotificationsPanel}
+              hasUpdate={shouldReloadApplication}
+              onUpdateClick={reloadApplication}
+              userName={me.name}
+              userImageUrl={me.avatar}
+              userAccount={me.account?.name}
+              supportUrl="https://www.plural.sh/contact"
+            />
+          )}
+        </WithApplicationUpdate>
       )}
     </WithNotifications>
   )

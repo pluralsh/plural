@@ -81,7 +81,20 @@ defmodule Core.Schema.User do
 
   def for_role(query \\ __MODULE__, %Role{} = role) do
     %{role_bindings: bindings} = Core.Repo.preload(role, [:role_bindings])
-    user_ids = Enum.filter(bindings, & &1.user_id) |> Enum.map(& &1.user_id)
+    for_bindings(query, bindings)
+  end
+
+  def for_service_account(query \\ __MODULE__, user)
+  def for_service_account(query, %__MODULE__{service_account: true} = user) do
+    case Core.Repo.preload(user, [impersonation_policy: :bindings]) do
+      %{impersonation_policy: %{bindings: [_ | _] = bindings}} -> for_bindings(query, bindings)
+      _ -> for_bindings(query, [])
+    end
+  end
+  def for_service_account(query, _), do: for_bindings(query, [])
+
+  defp for_bindings(query, bindings) do
+    user_ids  = Enum.filter(bindings, & &1.user_id) |> Enum.map(& &1.user_id)
     group_ids = Enum.filter(bindings, & &1.group_id) |> Enum.map(& &1.group_id)
 
     from(u in query,

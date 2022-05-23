@@ -10,7 +10,8 @@ defmodule Core.Schema.User do
     RoleBinding,
     Incident,
     ImpersonationPolicy,
-    GroupMember
+    GroupMember,
+    Role
   }
 
   @email_re ~r/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-\.]+\.[a-zA-Z]{2,}$/
@@ -77,6 +78,18 @@ defmodule Core.Schema.User do
     |> Enum.uniq_by(& &1.id)
   end
   def roles(_), do: []
+
+  def for_role(query \\ __MODULE__, %Role{} = role) do
+    %{role_bindings: bindings} = Core.Repo.preload(role, [:role_bindings])
+    user_ids = Enum.filter(bindings, & &1.user_id) |> Enum.map(& &1.user_id)
+    group_ids = Enum.filter(bindings, & &1.group_id) |> Enum.map(& &1.group_id)
+
+    from(u in query,
+      left_join: g in assoc(u, :groups),
+      where: u.id in ^user_ids or g.id in ^group_ids,
+      distinct: true
+    )
+  end
 
   def search(query \\ __MODULE__, name) do
     from(u in query, where: like(u.name, ^"#{name}%") or like(u.email, ^"#{name}%"))

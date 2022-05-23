@@ -40,4 +40,40 @@ defmodule Core.PubSub.Fanout.AccountsTest do
       :ignore = PubSub.Fanout.fanout(event)
     end
   end
+
+  describe "RoleCreated" do
+    test "it will cache all associated users" do
+      role = insert(:role)
+      group = insert(:group)
+      %{user: user1} = insert(:role_binding, role: role, user: build(:user))
+      insert(:role_binding, group: group, role: role)
+      %{user: user2} = insert(:group_member, group: group)
+
+      event = %PubSub.RoleCreated{item: role}
+      2 = PubSub.Fanout.fanout(event)
+
+      assert_receive {:event, %PubSub.CacheUser{item: found1}}
+      assert_receive {:event, %PubSub.CacheUser{item: found2}}
+
+      assert ids_equal([user1, user2], [found1, found2])
+    end
+  end
+
+  describe "RoleUpdated" do
+    test "it will cache all associated users" do
+      role = insert(:role)
+      group = insert(:group)
+      %{user: user1} = insert(:role_binding, role: role, user: build(:user))
+      insert(:role_binding, group: group, role: role)
+      %{user: user2} = insert(:group_member, group: group)
+
+      event = %PubSub.RoleUpdated{item: role}
+      2 = PubSub.Fanout.fanout(event)
+
+      assert_receive {:event, %PubSub.CacheUser{item: found1}}
+      assert_receive {:event, %PubSub.CacheUser{item: found2}}
+
+      assert ids_equal([user1, user2], [found1, found2])
+    end
+  end
 end

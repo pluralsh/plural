@@ -1,4 +1,4 @@
 export const Provider = {
-    GITLAB: 'GITLAB',
-    GITHUB: 'GITHUB',
+  GITLAB: 'GITLAB',
+  GITHUB: 'GITHUB',
 }

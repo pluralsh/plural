@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Gitlab } from '@gitbeaker/browser'
 import { Box, Text } from 'grommet'
 
@@ -10,7 +10,7 @@ export const GITLAB_VALIDATIONS = [
   { field: 'scm.name', name: 'repository', func: isAlphanumeric },
 ]
 
-function OrgDisplay({ org: { data: { path, username, avatar_url } } }) {
+function OrgDisplay({ org: { data: { path, username, avatar_url: avatarUrl } } }) {
   return (
     <Box
       direction="row"
@@ -18,9 +18,9 @@ function OrgDisplay({ org: { data: { path, username, avatar_url } } }) {
       align="center"
       pad="small"
     >
-      {avatar_url && (
+      {avatarUrl && (
         <img
-          src={avatar_url}
+          src={avatarUrl}
           width="25px"
           height="25px"
         />
@@ -39,15 +39,17 @@ export function GitlabRepositoryInput({ scm, setScm, accessToken }) {
   const [orgs, setOrgs] = useState(null)
   const [org, setOrg] = useState(null)
   const doSetOrg = useCallback(org => {
-    org.type === 'user' ? setScm({ ...scm, org: null }): setScm({ ...scm, org: `${org.id}` })
+    if (org.type === 'user') setScm({ ...scm, org: null })
+    else setScm({ ...scm, org: `${org.id}` })
+
     setOrg(org)
   }, [setScm, scm, setOrg])
 
   useEffect(() => {
     const fetch = async () => {
-      const groups = await client.Groups.all({min_access_level: 30})
+      const groups = await client.Groups.all({ min_access_level: 30 })
       const me = await client.Users.current()
-      const orgs = [{type: 'user', data: me, id: me.id}, ...groups.map((g) => ({type: 'group', data: g, id: g.id}))]
+      const orgs = [{ type: 'user', data: me, id: me.id }, ...groups.map(g => ({ type: 'group', data: g, id: g.id }))]
       setOrgs(orgs)
       doSetOrg(orgs[0])
     }
@@ -55,13 +57,14 @@ export function GitlabRepositoryInput({ scm, setScm, accessToken }) {
   }, [client, setOrgs, orgs, doSetOrg])
 
   console.log(orgs)
+
   return (
     <Box>
       <OrgInput
         name={scm.name}
         setName={name => setScm({ ...scm, name })}
-        org={org} 
-        orgs={orgs} 
+        org={org}
+        orgs={orgs}
         setOrg={doSetOrg}
         render={org => <OrgDisplay org={org} />}
       />

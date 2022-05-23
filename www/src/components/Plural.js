@@ -101,6 +101,10 @@ export function PluralInner() {
                 >
                   <Routes>
                     <Route
+                      path="/shell"
+                      component={<CloudShell />}
+                    />
+                    <Route
                       path="/accounts/edit/:section/*"
                       element={<EditAccount />}
                     />

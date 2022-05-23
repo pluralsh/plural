@@ -35,16 +35,4 @@ defmodule Core.OAuth.Google do
         {:error, reason}
     end
   end
-
-  def authorize_url(client, params) do
-    OAuth2.Strategy.AuthCode.authorize_url(client, params)
-  end
-
-  def get_token(client, params, headers) do
-    client
-    |> put_header("accept", "application/json")
-    |> OAuth2.Strategy.AuthCode.get_token(params, headers)
-  end
-
-  defp host(), do: Application.get_env(:core, :host)
 end

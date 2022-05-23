@@ -14,6 +14,7 @@ defmodule GraphQl.Schema.Shell do
 
   enum :scm_provider do
     value :github
+    value :gitlab
   end
 
   input_object :scm_attributes do

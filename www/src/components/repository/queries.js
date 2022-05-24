@@ -33,6 +33,8 @@ export const REPOSITORY_QUERY = gql`
       tags {
         tag
       }
+      git_url
+      homepage
     }
   }
   ${RepoFragment}

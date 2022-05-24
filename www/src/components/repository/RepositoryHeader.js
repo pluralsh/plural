@@ -303,24 +303,35 @@ function RepositoryHeader(props) {
           mt={0.5}
           align="center"
         >
-          <A>
-            <LinksIcon
-              color="text"
-              size={12}
-            />
-            <Span ml={0.25}>
-              airbyte.com
-            </Span>
-          </A>
-          <A ml={1}>
-            <GitHubIcon
-              color="text"
-              size={12}
-            />
-            <Span ml={0.25}>
-              github.com/airbytehq/airbyte
-            </Span>
-          </A>
+          {repository.homepage && (
+            <A
+              target="_blank"
+              href={repository.homepage}
+            >
+              <LinksIcon
+                color="text"
+                size={12}
+              />
+              <Span ml={0.25}>
+                {repository.homepage && repository.homepage.replace(/^https?:\/\//, '').replace(/\/+$/, '')}
+              </Span>
+            </A>
+          )}
+          {repository.git_url && (
+            <A
+              ml={1}
+              target="_blank"
+              href={repository.git_url}
+            >
+              <GitHubIcon
+                color="text"
+                size={12}
+              />
+              <Span ml={0.25}>
+                {repository.git_url && repository.git_url.replace(/^https?:\/\//, '').replace(/\/+$/, '')}
+              </Span>
+            </A>
+          )}
         </Flex>
         <Flex
           mt={1}

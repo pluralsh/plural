@@ -33,6 +33,7 @@ export const REPOSITORY_QUERY = gql`
       tags {
         tag
       }
+      readme
       git_url
       homepage
     }

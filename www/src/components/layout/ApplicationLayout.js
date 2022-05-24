@@ -1,6 +1,5 @@
-import { Div, Flex } from 'honorable'
+import { Flex } from 'honorable'
 
-import Toolbar from './Toolbar'
 import Sidebar from './Sidebar'
 
 function ApplicationLayout({ children }) {
@@ -10,14 +9,14 @@ function ApplicationLayout({ children }) {
       maxHeight="100vh"
     >
       <Sidebar />
-      <Div
+      <Flex
+        direction="column"
         height="100vh"
         maxHeight="100vh"
         flexGrow={1}
       >
-        <Toolbar />
         {children}
-      </Div>
+      </Flex>
     </Flex>
   )
 }

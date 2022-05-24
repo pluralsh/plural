@@ -278,7 +278,7 @@ function RepositoryHeader(props) {
           color="text-xlight"
         >
           <P>
-            Publised by {repository.publisher?.name?.toUpperCase()}
+            Published by {repository.publisher?.name?.toUpperCase()}
           </P>
           <P ml={1}>
             Available bundles

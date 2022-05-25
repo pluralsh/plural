@@ -3,7 +3,9 @@ import { Markdown } from 'grommet'
 import {
 } from 'pluralsh-design-system'
 import { A, Blockquote, Box, Code, H1, H2, H3, H4, H5, H6, 
-  Li, Ol, Pre, Ul } from 'honorable'
+  Li, Ol, Ul } from 'honorable'
+
+import MultilineCode from '../utils/Code'
 
 function MdImg({ src, gitUrl, ...props }) {
   // Convert local image paths to full path on github
@@ -26,32 +28,38 @@ function MdP({ ...props }) {
   return <p {...props} />
 }
 
-function MdCode({ ...props }) {
-  return <Code {...props} />
-}
-
-function getDeepestChild(children) {
+function getLastStringChild(children) {
   let lastChild = null
   React.Children.forEach(children, child => {
-    if (child.props && child.props.children) {
-      lastChild = getDeepestChild(child.props.children)
-    }
-    else {
+    if (typeof child === 'string') {
       lastChild = child
     }
+    else if (child.props && child.props.children) {
+      lastChild = getLastStringChild(child.props.children)
+    }
   })
+  if (!lastChild) {
+    console.log('lastChild', lastChild)
+  }
 
   return lastChild
 }
 
 function MdPre({ children, ...props }) {
+  let lang
+  console.log('children', children)
+  if (children.props?.className?.startsWith('lang-')) {
+    console.log('found className', children.props.className)
+    lang = children.props.className.slice(5)
+  }
+
   return (
     <Box mb={1}>
-      <Pre
+      <MultilineCode
+        language={lang}
         {...props}
-      >
-        {getDeepestChild(children)}
-      </Pre>
+      >{getLastStringChild(children) || ''}
+      </MultilineCode>
     </Box>
   )
 }
@@ -96,7 +104,7 @@ export default memo(({ text, gitUrl }) => (
       },
       span: { props: { style: { verticalAlign: 'bottom' } } },
       code: {
-        component: MdCode,
+        component: Code,
         props: {
           ...codeStyle,
           ...{

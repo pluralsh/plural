@@ -63,7 +63,7 @@ function Code({ language, children, ...props }) {
       <Div
         borderTop="1px solid border"
         backgroundColor="background-light"
-        overflowX="scroll"
+        overflowX="auto"
       >
         {renderContent()}
       </Div>

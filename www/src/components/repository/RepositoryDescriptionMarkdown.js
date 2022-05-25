@@ -3,7 +3,7 @@ import { Markdown } from 'grommet'
 import {
 } from 'pluralsh-design-system'
 import { A, Blockquote, Box, Code, H1, H2, H3, H4, H5, H6, 
-  Li, Ol, Ul } from 'honorable'
+  Img, Li, Ol, P, Ul } from 'honorable'
 
 import MultilineCode from '../utils/Code'
 
@@ -15,17 +15,13 @@ function MdImg({ src, gitUrl, ...props }) {
   }
 
   return (
-    <img
+    <Img
       src={src}
       maxWidth="100%"
       display="inline"
       {...props}
     />
   )
-}
-
-function MdP({ ...props }) {
-  return <p {...props} />
 }
 
 function getLastStringChild(children) {
@@ -38,27 +34,23 @@ function getLastStringChild(children) {
       lastChild = getLastStringChild(child.props.children)
     }
   })
-  if (!lastChild) {
-    console.log('lastChild', lastChild)
-  }
 
   return lastChild
 }
 
 function MdPre({ children, ...props }) {
   let lang
-  console.log('children', children)
   if (children.props?.className?.startsWith('lang-')) {
-    console.log('found className', children.props.className)
     lang = children.props.className.slice(5)
   }
+  const stringChild = getLastStringChild(children) || ''
 
   return (
     <Box mb={1}>
       <MultilineCode
         language={lang}
         {...props}
-      >{getLastStringChild(children) || ''}
+      >{stringChild}
       </MultilineCode>
     </Box>
   )
@@ -95,7 +87,7 @@ export default memo(({ text, gitUrl }) => (
           gitUrl, style: { maxWidth: '100%' },
         },
       },
-      p: { component: MdP },
+      p: { component: P, props: { lineHeight: '2em', mb: 1 } },
       a: {
         component: A,
         props: {
@@ -110,7 +102,7 @@ export default memo(({ text, gitUrl }) => (
           ...{
             mx: '0.2em',
             px: '0.3em',
-            py: '0.25em',
+            py: '0.2em',
           },
         } },
       pre: {

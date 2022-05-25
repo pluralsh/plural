@@ -313,7 +313,7 @@ function RepositoryHeader(props) {
                 size={12}
               />
               <Span ml={0.25}>
-                {repository.homepage && repository.homepage.replace(/^https?:\/\//, '').replace(/\/+$/, '')}
+                {repository.homepage && repository.homepage.replaceAll(/(^https?:\/\/)|(\/+$)/g, '')}
               </Span>
             </A>
           )}
@@ -328,7 +328,7 @@ function RepositoryHeader(props) {
                 size={12}
               />
               <Span ml={0.25}>
-                {repository.git_url && repository.git_url.replace(/^https?:\/\//, '').replace(/\/+$/, '')}
+                {repository.git_url && repository.git_url.replaceAll(/(^https?:\/\/)|(\/+$)/g, '')}
               </Span>
             </A>
           )}

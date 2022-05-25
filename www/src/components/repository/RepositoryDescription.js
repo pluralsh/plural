@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { Flex, H2 } from 'honorable'
+import { Flex, H2, P } from 'honorable'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 
@@ -22,12 +22,12 @@ function RepositoryDescription() {
         flexGrow={1}
         maxWidth="700px"
       >
-        {repository.readme && (
+        {repository.readme ? (
           <RepositoryDescriptionMarkdown
             text={repository.readme}
             gitUrl={repository.git_url}
           />
-        )}
+        ) : <P>No description available</P>}
       </Flex>
     </Flex>
   )

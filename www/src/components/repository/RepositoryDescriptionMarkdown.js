@@ -1,9 +1,6 @@
 import { Children, memo } from 'react'
 import { Markdown } from 'grommet'
-import {
-} from 'pluralsh-design-system'
-import { A, Blockquote, Box, Code, H1, H2, H3, H4, H5, H6, 
-  Img, Li, Ol, P, Ul } from 'honorable'
+import { A, Blockquote, Box, Code, H1, H2, H3, H4, H5, H6, Img, Li, Ol, P, Ul } from 'honorable'
 
 import MultilineCode from '../utils/Code'
 
@@ -66,12 +63,7 @@ export default memo(({ text, gitUrl }) => (
     components={{
       blockquote: {
         component: Blockquote,
-        props: {
-          borderLeft: '4px solid',
-          borderColor: 'border',
-          mx: 0,
-          pl: '1em',
-        } },
+        props: { borderLeft: '4px solid', borderColor: 'border', mx: 0, pl: '1em' } },
       ul: { component: Ul, props: { pl: '2em' } },
       ol: { component: Ol, props: { pl: '2em' } },
       li: { component: Li, props: { mt: 0.25 } },
@@ -99,17 +91,11 @@ export default memo(({ text, gitUrl }) => (
         component: Code,
         props: {
           ...codeStyle,
-          ...{
-            mx: '0.2em',
-            px: '0.3em',
-            py: '0.2em',
-          },
+          ...{ mx: '0.2em', px: '0.3em', py: '0.2em' },
         } },
       pre: {
         component: MdPre,
-        props: {
-          ...codeStyle, ...{ px: '1em', py: '0.65em' },
-        },
+        props: { ...codeStyle, ...{ px: '1em', py: '0.65em' } },
       },
     }}
   >

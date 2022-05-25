@@ -1,4 +1,4 @@
-import React, { memo } from 'react'
+import { Children, memo } from 'react'
 import { Markdown } from 'grommet'
 import {
 } from 'pluralsh-design-system'
@@ -26,7 +26,7 @@ function MdImg({ src, gitUrl, ...props }) {
 
 function getLastStringChild(children) {
   let lastChild = null
-  React.Children.forEach(children, child => {
+  Children.forEach(children, child => {
     if (typeof child === 'string') {
       lastChild = child
     }

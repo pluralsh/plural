@@ -2,7 +2,8 @@ import { createElement, useCallback, useEffect, useState } from 'react'
 import { Box, Text } from 'grommet'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useMutation, useQuery } from '@apollo/client'
-import { Button } from 'forge-core'
+import { BrowserIcon, EyeIcon as CloudIcon, GearTrainIcon, GitHubIcon, StatusIpIcon } from 'pluralsh-design-system'
+import { Button, Div, Flex, Style } from 'honorable'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
@@ -292,6 +293,123 @@ export function OAuthCallback() {
   )
 }
 
+function DemoStepperIcon({ isActive = false, isComplete = false, title, renderIcon }) {
+  const completeIcon = (
+    <StatusIpIcon
+      color="#17E86E"
+      size="24"
+    />
+  )
+
+  return (
+    <Div
+      width="92px"
+      flexGrow={0}
+      // justifyContent="center"
+    >
+      <Style>
+        {`@keyframes {
+    
+      }`}
+      </Style>
+      <Flex
+        justifyContent="center"
+        width="48px"
+        height="48px"
+        marginLeft="auto"
+        marginRight="auto"
+        alignItems="center"
+        borderRadius="1000px"
+        backgroundColor="fill-one"
+        border={`1px solid ${isActive ? 'grey.50' : 'grey.800'}`}
+      >{ isComplete ? completeIcon : renderIcon(isActive ? '#E9ECF0' : '#9096A2')} 
+      </Flex>
+      <Div
+        mt="12px"
+        textAlign="center"
+        fontSize="14px"
+        lineHeight="20px"
+        color={isActive ? 'text' : 'text-xlight'}
+      >{title}
+      </Div>
+    </Div>
+  )
+}
+
+function DemoStepperConnector({ isActive = false }) {
+  return (
+    <Div
+      width="10px"
+      flexGrow="1"
+      margin="0 -11px"
+      height="1px"
+      marginTop="24px"
+      backgroundColor="border"
+      position="relative"
+      aria-hidden="true"
+      backgroundColor={isActive ? 'text' : 'border'}
+    />
+  )
+}
+
+function DemoStepper({ activeStep = 0 }) {
+  return (
+    <Flex
+      width="100%"
+      justifyContent="space-between"
+      // alignItems="center"
+    >
+      <DemoStepperIcon
+        isActive={activeStep === 0}
+        isComplete={activeStep > 0}
+        title={<>Create a repository</>}
+        renderIcon={color => (
+          <GitHubIcon
+            size="24px"
+            color={color}
+          />
+        )}
+      />
+      <DemoStepperConnector isActive={activeStep > 0} />
+      <DemoStepperIcon
+        isActive={activeStep === 1}
+        isComplete={activeStep > 1}
+        title={<>Choose a cloud</>}
+        renderIcon={color => (
+          <CloudIcon
+            size="24px"
+            color={color}
+          />
+        )}
+      />
+      <DemoStepperConnector isActive={activeStep > 1} />
+      <DemoStepperIcon
+        isActive={activeStep === 2}
+        isComplete={activeStep > 2}
+        title={<>Configure Workspace</>}
+        renderIcon={color => (
+          <GearTrainIcon
+            size="24px"
+            color={color}
+          />
+        )}
+      />
+      <DemoStepperConnector isActive={activeStep > 2} />
+      <DemoStepperIcon
+        isActive={activeStep === 3}
+        isComplete={activeStep > 3}
+        title={<>Launch the app</>}
+        renderIcon={color => (
+          <BrowserIcon
+            size="24px"
+            color={color}
+          />
+        )}
+      />
+    </Flex>
+  )
+}
+
 export function CloudShell() {
   const { data } = useQuery(AUTH_URLS)
   const { data: shellData } = useQuery(CLOUD_SHELL, { fetchPolicy: 'cache-and-network' })
@@ -312,36 +430,48 @@ export function CloudShell() {
   const urls = data.scmAuthorization
 
   return (
-    <Box
-      background="background"
-      fill
-      align="center"
-      justify="center"
-      gap="xsmall"
+    <Flex
+      width="100%"
+      justifyContent="center"
     >
-      {urls.map(({ provider, url }) => (
+      <Div
+        width="100%"
+        maxWidth="600px"
+      >
+        <DemoStepper activeStep={2} />
         <Box
-          flex={false}
-          pad="small"
-          round="xsmall"
-          direction="row"
-          gap="small"
-          border
+          background="background"
+          fill
           align="center"
-          hoverIndicator="card"
-          onClick={() => {
-            window.location = url
-          }}
+          justify="center"
+          gap="xsmall"
         >
-          {createElement(METHOD_ICONS[provider], { size: '15px' })}
-          <Text
-            size="small"
-            weight={500}
-          >
-            Log in with {provider.toLowerCase()} to start
-          </Text>
+          {urls.map(({ provider, url }) => (
+            <Box
+              flex={false}
+              pad="small"
+              round="xsmall"
+              direction="row"
+              gap="small"
+              border
+              align="center"
+              hoverIndicator="card"
+              onClick={() => {
+                window.location = url
+              }}
+            >
+              {createElement(METHOD_ICONS[provider], { size: '15px' })}
+              <Text
+                size="small"
+                weight={500}
+              >
+                Log in with {provider.toLowerCase()} to start
+              </Text>
+            </Box>
+          ))}
         </Box>
-      ))}
-    </Box>
+      </Div>
+      
+    </Flex>
   )
 }

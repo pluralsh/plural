@@ -1,0 +1,5 @@
+<tr>
+  <td align="left" style="font-size:0px;padding:0;word-break:break-word;">
+    <%= @inner_content %>
+  </td>
+</tr>

@@ -1,0 +1,7 @@
+<% size = if assigns[:bold], do: "30px", else: "18px" %>
+<% height = if assigns[:bold], do: "40px", else: "24px" %>
+<% font = if assigns[:bold], do: ~s("Monument Trial",), else: "" %>
+
+<div style="font-family:<%= font %>Inter,Helvetica,Arial,sans-serif;font-size:<%= size %>;line-height:<%= height %>;text-align:left;color:#ffffff;<%= if IO.inspect(assigns[:bold]), do: "font-weight:500", else: "" %>">
+  <%= @inner_content %>
+</div>

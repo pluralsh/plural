@@ -293,50 +293,80 @@ export function OAuthCallback() {
   )
 }
 
-function DemoStepperIcon({ isActive = false, isComplete = false, title, renderIcon }) {
-  const completeIcon = (
-    <StatusIpIcon
-      color="#17E86E"
-      size="24"
-    />
-  )
+function StepperStep({ isActive = false, isComplete = false, title, renderIcon }) {
+
+  const bounceEase = 'cubic-bezier(.37,1.4,.62,1)'
+  const shownClassName = 'shown'
+  const completeIconStyles = {
+    opacity: '0',
+    transform: 'scale(0)',
+    transition: 'all 0.2s ease',
+    [`&.${shownClassName}`]: {
+      transform: 'scale(1)',
+      opacity: '1',
+      transition: `transform 0.3s ${bounceEase}, opacity 0.1s ease`,
+      transitionDelay: '0.1s',
+    },
+  }
 
   return (
     <Div
       width="92px"
       flexGrow={0}
-      // justifyContent="center"
     >
-      <Style>
-        {`@keyframes {
-    
-      }`}
-      </Style>
-      <Flex
-        justifyContent="center"
+      <Div
+        position="relative"
         width="48px"
         height="48px"
         marginLeft="auto"
         marginRight="auto"
-        alignItems="center"
         borderRadius="1000px"
         backgroundColor="fill-one"
         border={`1px solid ${isActive ? 'grey.50' : 'grey.800'}`}
-      >{ isComplete ? completeIcon : renderIcon(isActive ? '#E9ECF0' : '#9096A2')} 
-      </Flex>
+        transition="all 0.2s ease"
+        transitionDelay="0.1"
+      >
+        <Flex
+          width="100%"
+          height="100%"
+          position="absolute"
+          justifyContent="center"
+          alignItems="center"
+          className={isComplete ? '' : shownClassName}
+          {...completeIconStyles}
+        >
+          {renderIcon(isActive ? '#E9ECF0' : '#9096A2')}
+        </Flex>
+        <Flex
+          width="100%"
+          height="100%"
+          position="absolute"
+          justifyContent="center"
+          alignItems="center"
+          className={isComplete ? shownClassName : ''}
+          {...completeIconStyles}
+        >
+          <StatusIpIcon
+            color="#17E86E"
+            size="24"
+          />
+        </Flex>
+      </Div>
       <Div
         mt="12px"
         textAlign="center"
         fontSize="14px"
         lineHeight="20px"
         color={isActive ? 'text' : 'text-xlight'}
+        transition="all 0.2s ease"
+        transitionDelay="0.1"
       >{title}
       </Div>
     </Div>
   )
 }
 
-function DemoStepperConnector({ isActive = false }) {
+function StepperStepConnection({ isActive = false }) {
   return (
     <Div
       width="10px"
@@ -347,66 +377,65 @@ function DemoStepperConnector({ isActive = false }) {
       backgroundColor="border"
       position="relative"
       aria-hidden="true"
-      backgroundColor={isActive ? 'text' : 'border'}
-    />
+    >
+      <Div
+        position="absolute"
+        left="0"
+        top="0"
+        height="100%"
+        backgroundColor="text"
+        width={isActive ? '100%' : '0'}
+        transition="width 0.1s ease-out"
+      />
+    </Div>
   )
 }
 
-function DemoStepper({ activeStep = 0 }) {
+function Stepper({ stepIndex, steps }) {
   return (
     <Flex
       width="100%"
       justifyContent="space-between"
-      // alignItems="center"
     >
-      <DemoStepperIcon
-        isActive={activeStep === 0}
-        isComplete={activeStep > 0}
-        title={<>Create a repository</>}
-        renderIcon={color => (
-          <GitHubIcon
-            size="24px"
-            color={color}
+      {steps.map((step, index) => (
+        <>
+          <StepperStep
+            isActive={stepIndex === index}
+            isComplete={stepIndex > index}
+            title={step.title}
+            renderIcon={color => (
+              <step.icon
+                size={step.iconSize || '24px'}
+                color={color}
+              />
+            )}
           />
-        )}
-      />
-      <DemoStepperConnector isActive={activeStep > 0} />
-      <DemoStepperIcon
-        isActive={activeStep === 1}
-        isComplete={activeStep > 1}
-        title={<>Choose a cloud</>}
-        renderIcon={color => (
-          <CloudIcon
-            size="24px"
-            color={color}
-          />
-        )}
-      />
-      <DemoStepperConnector isActive={activeStep > 1} />
-      <DemoStepperIcon
-        isActive={activeStep === 2}
-        isComplete={activeStep > 2}
-        title={<>Configure Workspace</>}
-        renderIcon={color => (
-          <GearTrainIcon
-            size="24px"
-            color={color}
-          />
-        )}
-      />
-      <DemoStepperConnector isActive={activeStep > 2} />
-      <DemoStepperIcon
-        isActive={activeStep === 3}
-        isComplete={activeStep > 3}
-        title={<>Launch the app</>}
-        renderIcon={color => (
-          <BrowserIcon
-            size="24px"
-            color={color}
-          />
-        )}
-      />
+          {index < steps.length - 1 && <StepperStepConnection isActive={stepIndex > index} />}
+        </>
+      ))}
     </Flex>
+  )
+}
+
+function DemoStepper({ stepIndex = 0 }) {
+  return (
+    <Stepper
+      stepIndex={stepIndex}
+      steps={[
+        {
+          title: (<>Create a repository</>), icon: GitHubIcon,
+        },
+        {
+          title: (<>Choose a cloud</>), icon: CloudIcon,
+        },
+        {
+          title: (<>Create a repository</>), icon: GearTrainIcon,
+        },
+        {
+          title: (<>Launch the app</>), icon: BrowserIcon,
+        },
+      ]}
+    />
   )
 }
 
@@ -415,6 +444,14 @@ export function CloudShell() {
   const { data: shellData } = useQuery(CLOUD_SHELL, { fetchPolicy: 'cache-and-network' })
   const [mutation] = useMutation(REBOOT_SHELL)
   const [created, setCreated] = useState(false)
+  const [splashTimerDone, setSplashTimerDone] = useState(false)
+  const [stepIndex, setStepIndex] = useState(0)
+
+  useEffect(() => {
+    setTimeout(() => {
+      setSplashTimerDone(true)
+    }, 1)
+  }, [])
 
   useEffect(() => {
     if (shellData && shellData.shell && !shellData.shell.alive) {
@@ -423,7 +460,7 @@ export function CloudShell() {
     }
   }, [shellData, setCreated, mutation])
 
-  if (!shellData || !data) return <LoopingLogo dark />
+  if (!shellData || !data || !splashTimerDone) return <LoopingLogo dark />
 
   if ((shellData && shellData.shell) || created) return <Terminal />
 
@@ -438,7 +475,9 @@ export function CloudShell() {
         width="100%"
         maxWidth="600px"
       >
-        <DemoStepper activeStep={2} />
+        <DemoStepper stepIndex={stepIndex} />
+        <Button onClick={() => setStepIndex(stepIndex + 1)}>Step forward</Button>
+        <Button onClick={() => setStepIndex(stepIndex - 1)}>Step backward</Button>
         <Box
           background="background"
           fill

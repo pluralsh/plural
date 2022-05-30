@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import Highlight from 'react-highlight.js'
-import hljs from 'highlight.js'
-import { Div, Flex, P, Pre } from 'honorable'
+import { Box, Div, Flex, P } from 'honorable'
 import { CopyIcon } from 'pluralsh-design-system'
+
+import Highlight from './Highlight'
 
 function Code({ language, children, ...props }) {
   const [copied, setCopied] = useState(false)
@@ -19,23 +19,15 @@ function Code({ language, children, ...props }) {
   }
 
   function renderContent() {
-    if (hljs.getLanguage(language)) {
-      return (
-        <Div pb={0.001}> {/* HACK to fix weird Highlight padding bug */}
-          <Highlight language={language}>
-            {children}
-          </Highlight>
-        </Div>
-      )
-    }
-
     return (
-      <Pre
-        py={2}
-        px={1}
+      <Box
+        py={1}
+        px={0.5}
       >
-        {children}
-      </Pre>
+        <Highlight language={language}>
+          {children}
+        </Highlight>
+      </Box>
     )
   }
 
@@ -71,6 +63,7 @@ function Code({ language, children, ...props }) {
       <Div
         borderTop="1px solid border"
         backgroundColor="background-light"
+        overflowX="auto"
       >
         {renderContent()}
       </Div>

@@ -1,3 +1,15 @@
-<p>
-  Click <a target="_blank" href='<%= url("/confirm-email/#{@token.external_id}") %>'>here</a> to confirm your email
-</p>
+<%= row do %>
+  <%= text bold: true do %>
+    Confirm Your Email
+  <% end %>
+<% end %>
+<%= row do %>
+  <%= text do %>
+    Click below to confirm your email
+  <% end %>
+<% end %>
+<%= row do %>
+  <%= btn url: url("/confirm-email/#{@token.external_id}") do %>
+    Confirm
+  <% end %>
+<% end %>

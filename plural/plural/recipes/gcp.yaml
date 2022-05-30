@@ -17,13 +17,13 @@ sections:
   configuration:
   - name: chartmuseum_bucket
     documentation: Bucket for helm charts
-    type: STRING
+    type: BUCKET
   - name: assets_bucket
     documentation: bucket for misc assets (docker imgs/terraform modules)
-    type: STRING
+    type: BUCKET
   - name: images_bucket
     documentation: bucket for images and icons
-    type: STRING
+    type: BUCKET
   - name: plural_dns
     documentation: FQDN to use for your plural cluster
     type: DOMAIN

@@ -1,3 +1,5 @@
-<p>
-  <div>This is just a test email for <%= @user.email %></div>
-</p>
+<%= row do %>
+  <%= text do %>
+    This is just a test email for <%= @user.email %>
+  <% end %>
+<% end %>

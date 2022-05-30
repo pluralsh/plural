@@ -1,0 +1,168 @@
+@font-face {
+  font-family: 'Monument Trial';
+  src: url('https://uploads-ssl.webflow.com/627977f6bd85bbace4684726/627978260422d561ec6f3db9_ABCMonumentGrotesk-Light-Trial.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Monument Trial';
+  src: url('https://uploads-ssl.webflow.com/627977f6bd85bbace4684726/62797826e66c69aa58b6075c_ABCMonumentGrotesk-HeavyItalic-Trial.otf') format('opentype'), url('https://uploads-ssl.webflow.com/627977f6bd85bbace4684726/62797825166f25af67a380d9_ABCMonumentGrotesk-BlackItalic-Trial.otf') format('opentype');
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Monument Trial';
+  src: url('https://uploads-ssl.webflow.com/627977f6bd85bbace4684726/62797826c925d18097430806_ABCMonumentGrotesk-LightItalic-Trial.otf') format('opentype');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Monument Trial';
+  src: url('https://uploads-ssl.webflow.com/627977f6bd85bbace4684726/62797826bd85bb9a6c6849aa_ABCMonumentGrotesk-Medium-Trial.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Monument Trial';
+  src: url('https://uploads-ssl.webflow.com/627977f6bd85bbace4684726/6279782518c2dc5d2037c75e_ABCMonumentGrotesk-Black-Trial.otf') format('opentype'), url('https://uploads-ssl.webflow.com/627977f6bd85bbace4684726/627978264c33093735b999cf_ABCMonumentGrotesk-Heavy-Trial.otf') format('opentype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Monument Trial';
+  src: url('https://uploads-ssl.webflow.com/627977f6bd85bbace4684726/62797826d19e277289c9e904_ABCMonumentGrotesk-Bold-Trial.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Monument Trial';
+  src: url('https://uploads-ssl.webflow.com/627977f6bd85bbace4684726/62797827e429dd409618c52b_ABCMonumentGrotesk-MediumItalic-Trial.otf') format('opentype');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Monument Trial';
+  src: url('https://uploads-ssl.webflow.com/627977f6bd85bbace4684726/627978263bc4bfa1581312eb_ABCMonumentGrotesk-RegularItalic-Trial.otf') format('opentype'), url('https://uploads-ssl.webflow.com/627977f6bd85bbace4684726/62797827c8832c2ef7d9c3d6_ABCMonumentGrotesk-UltraItalic-Trial.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Monument Trial';
+  src: url('https://uploads-ssl.webflow.com/627977f6bd85bbace4684726/62797826c8832c2566d9c3d5_ABCMonumentGrotesk-Regular-Trial.otf') format('opentype'), url('https://uploads-ssl.webflow.com/627977f6bd85bbace4684726/6279782788bb081ae841cb7b_ABCMonumentGrotesk-Ultra-Trial.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Monument Trial';
+  src: url('https://uploads-ssl.webflow.com/627977f6bd85bbace4684726/627978264c330966f6b999ce_ABCMonumentGrotesk-BoldItalic-Trial.otf') format('opentype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Monument Trial';
+  src: url('https://uploads-ssl.webflow.com/627977f6bd85bbace4684726/62797826166f250542a380e1_ABCMonumentGrotesk-ThinItalic-Trial.otf') format('opentype');
+  font-weight: 100;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Monument Trial';
+  src: url('https://uploads-ssl.webflow.com/627977f6bd85bbace4684726/6279782688bb0853e141cb7a_ABCMonumentGrotesk-Thin-Trial.otf') format('opentype');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Monument Semi-Mono';
+  src: url('https://uploads-ssl.webflow.com/627977f6bd85bbace4684726/62797893d19e273e1dc9ebdb_ABCMonumentGroteskSemi-Mono-Black-Trial.otf') format('opentype'), url('https://uploads-ssl.webflow.com/627977f6bd85bbace4684726/62797893e65e67c8ee28f0ec_ABCMonumentGroteskSemi-Mono-Heavy-Trial.otf') format('opentype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Monument Semi-Mono';
+  src: url('https://uploads-ssl.webflow.com/627977f6bd85bbace4684726/62797893494abe0de89f227a_ABCMonumentGroteskSemi-Mono-BlackItalic-Trial.otf') format('opentype'), url('https://uploads-ssl.webflow.com/627977f6bd85bbace4684726/62797893166f259ab0a38433_ABCMonumentGroteskSemi-Mono-HeavyItalic-Trial.otf') format('opentype');
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Monument Semi-Mono';
+  src: url('https://uploads-ssl.webflow.com/627977f6bd85bbace4684726/627978938565ca0a08e60c3f_ABCMonumentGroteskSemi-Mono-LightItalic-Trial.otf') format('opentype');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Monument Semi-Mono';
+  src: url('https://uploads-ssl.webflow.com/627977f6bd85bbace4684726/62797893e66c69cf8eb60bb1_ABCMonumentGroteskSemi-Mono-Light-Trial.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Monument Semi-Mono';
+  src: url('https://uploads-ssl.webflow.com/627977f6bd85bbace4684726/62797893c925d13acc430de7_ABCMonumentGroteskSemi-Mono-Medium-Trial.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Monument Semi-Mono';
+  src: url('https://uploads-ssl.webflow.com/627977f6bd85bbace4684726/62797893655acc0d01b2105a_ABCMonumentGroteskSemi-Mono-RegularItalic-Trial.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Monument Semi-Mono';
+  src: url('https://uploads-ssl.webflow.com/627977f6bd85bbace4684726/62797893bd85bb8ca4684c14_ABCMonumentGroteskSemi-Mono-Thin-Trial.otf') format('opentype');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Monument Semi-Mono';
+  src: url('https://uploads-ssl.webflow.com/627977f6bd85bbace4684726/62797893ea814b84fd70711f_ABCMonumentGroteskSemi-Mono-Bold-Trial.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Monument Semi-Mono';
+  src: url('https://uploads-ssl.webflow.com/627977f6bd85bbace4684726/627978936fb12a0a6ad03070_ABCMonumentGroteskSemi-Mono-ThinItalic-Trial.otf') format('opentype');
+  font-weight: 100;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Monument Semi-Mono';
+  src: url('https://uploads-ssl.webflow.com/627977f6bd85bbace4684726/6279789459bcaa23b6357474_ABCMonumentGroteskSemi-Mono-MediumItalic-Trial.otf') format('opentype');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Monument Semi-Mono';
+  src: url('https://uploads-ssl.webflow.com/627977f6bd85bbace4684726/62797894d95c6eb2b30e0f88_ABCMonumentGroteskSemi-Mono-BoldItalic-Trial.otf') format('opentype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Monument Semi-Mono';
+  src: url('https://uploads-ssl.webflow.com/627977f6bd85bbace4684726/62797894d95c6e775b0e0f89_ABCMonumentGroteskSemi-Mono-Regular-Trial.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}

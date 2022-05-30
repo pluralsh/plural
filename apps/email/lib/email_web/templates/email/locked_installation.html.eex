@@ -1,8 +1,18 @@
-<p>
-  Repository <b><%= @repo.name %></b> has unapplied breaking changes, to apply them,
-  check out your repo locally and run the folling commands:
-</p>
+<%= row do %>
+  <%= text bold: true do %>
+    Your Installation Has Been Locked
+  <% end %>
+<% end %>
 
+<%= row do %>
+  <%= text do %>
+    Repository <b><%= @repo.name %></b> has unapplied breaking changes, to apply them,
+    check out your repo locally and run the folling commands:
+  <% end %>
+<% end %>
+
+<%= row do %>
+<div>
 <code>
 <%= if @deps.instructions.script do %>
 <%= @deps.instructions.script %>
@@ -11,13 +21,16 @@ plural build --only <%= @repo.name %>
 plural deploy --commit "applying breaking changes to <%= @repo.name %>"
 plural repos unlock <%= @repo.name %>
 </code>
+</div>
+<% end %>
 
 <%= if @deps.instructions.instructions do %>
-<p>
+<%= row do %>
+<%= text do %>
 The maintainers also have provided these instructions:
-
+<% end %>
 <pre>
 <%= @deps.instructions.instructions %>
 </pre>
-</p>
+<% end %>
 <% end %>

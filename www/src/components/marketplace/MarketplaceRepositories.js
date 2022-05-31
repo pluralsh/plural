@@ -8,15 +8,15 @@ import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
-import { EXPLORE_QUERY } from './queries'
+import { MARKETPLACE_QUERY } from './queries'
 
-function ExploreRepositories({ installed, scrollRef }) {
+function MarketplaceRepositories({ installed, scrollRef }) {
   const [searchParams] = useSearchParams()
   const categories = searchParams.getAll('category')
   const tags = searchParams.getAll('tag')
 
   const [repositories, loadingRepositories, hasMoreRepositories, fetchMoreRepositories] = usePaginatedQuery(
-    EXPLORE_QUERY,
+    MARKETPLACE_QUERY,
     {
       variables: {
         // Does not work:
@@ -184,4 +184,4 @@ function ExploreRepositories({ installed, scrollRef }) {
   )
 }
 
-export default ExploreRepositories
+export default MarketplaceRepositories

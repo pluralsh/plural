@@ -5,14 +5,14 @@ import useBreadcrumbs from '../../hooks/useBreadcrumbs'
 
 import { TOOLBAR_SIZE } from '../Toolbar'
 
-import ExploreSidebar from './ExploreSidebar'
-import ExploreRepositories from './ExploreRepositories'
+import MarketplaceSidebar from './MarketplaceSidebar'
+import MarketplaceRepositories from './MarketplaceRepositories'
 
-function Explore({ installed }) {
+function Marketplace({ installed }) {
   const scrollRef = useRef()
 
   useBreadcrumbs([
-    { url: '/explore', text: 'Explore' },
+    { url: '/marketplace', text: 'Marketplace' },
   ])
 
   return (
@@ -35,13 +35,13 @@ function Explore({ installed }) {
         overflowY="auto"
         borderRight="1px solid border"
       >
-        <ExploreSidebar />
+        <MarketplaceSidebar />
       </Div>
       <Div
         flexGrow={1}
         overflowY="auto"
       >
-        <ExploreRepositories
+        <MarketplaceRepositories
           installed={installed}
           scrollRef={scrollRef}
         />
@@ -50,4 +50,4 @@ function Explore({ installed }) {
   )
 }
 
-export default Explore
+export default Marketplace

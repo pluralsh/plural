@@ -150,6 +150,12 @@ You'll need to send an email to see them, which you can use the iex repl to do f
 
 To actually write an email, you'll want to modify the templates in `apps/email/lib/email_web/templates/email` and the layout is in `apps/email/lib/email_web/templates/layout/email.html.eex`
 
+## Roadmap
+See what we're working on in these GitHub projects. Help us prioritize issues by reacting with an emoji on the issue!
+* Application Onboarding Roadmap: https://github.com/orgs/pluralsh/projects/2/views/2
+* Plural Core Issues: https://github.com/pluralsh/plural/issues
+* Plural CLI Issues: https://github.com/pluralsh/plural-cli/issues
+
 ## Contributing
 
 We love contributions to Plural, big or small! If you're not sure where to start, or if you have any questions, please open a draft PR or visit our [Discord](https://discord.gg/CKc2kfeXxQ) server where the core team can help answer your questions.

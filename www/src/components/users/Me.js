@@ -175,7 +175,7 @@ export default function Me({ me }) {
               icon={<User size="small" />}
               text="Edit user"
               round="xsmall"
-              onClick={() => navigate('/me/edit/user')}
+              onClick={() => navigate('/user/edit/user')}
             />
             <Item
               icon={<Logout size="small" />}

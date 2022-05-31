@@ -10,12 +10,15 @@ import {
   InstalledIcon,
   LightningIcon,
   ListIcon,
+  LogoutIcon,
   MarketIcon,
+  MarketPlusIcon,
   PeopleIcon,
+  PersonIcon,
   UpdatesIcon,
 } from 'pluralsh-design-system'
 
-// import { getPreviousUserData, setPreviousUserData, setToken, wipeToken } from '../../helpers/authentication'
+import { getPreviousUserData, setPreviousUserData, setToken, wipeToken } from '../../helpers/authentication'
 
 import { CurrentUserContext } from '../login/CurrentUser'
 
@@ -29,18 +32,6 @@ export const SMALL_WIDTH = '60px'
 function SidebarWrapper() {
   const me = useContext(CurrentUserContext)
   const { pathname } = useLocation()
-  // const previousUserData = getPreviousUserData()
-
-  // function handleLogout() {
-  //   wipeToken()
-  //   window.location = '/'
-  // }
-
-  // function handlePreviousUserClick() {
-  //   setToken(previousUserData.jwt)
-  //   setPreviousUserData(null)
-  //   window.location.reload()
-  // }
 
   const items = [
     {
@@ -224,6 +215,7 @@ function Sidebar({
   const [collapsed, setCollapsed] = useState(false)
 
   const sidebarWidth = collapsed ? 82 : 256 - 32
+  const previousUserData = getPreviousUserData()
 
   useOutsideClick(menuRef, event => {
     console.log('event.target', event.target)
@@ -232,6 +224,17 @@ function Sidebar({
       setIsMenuOpened(false)
     }
   })
+
+  function handlePreviousUserClick() {
+    setToken(previousUserData.jwt)
+    setPreviousUserData(null)
+    window.location.reload()
+  }
+
+  function handleLogout() {
+    wipeToken()
+    window.location = '/'
+  }
 
   return (
     <>
@@ -452,16 +455,41 @@ function Sidebar({
           left={sidebarWidth + 8}
           border="1px solid border"
         >
-          <MenuItem>
+          <MenuItem
+            as={Link}
+            to="/user"
+            color="inherit"
+            textDecoration="none"
+          >
+            <PersonIcon mr={1} />
             My profile
           </MenuItem>
           <MenuItem>
+            <MarketPlusIcon mr={1} />
             Create new publisher
           </MenuItem>
-          <MenuItem>
+          <MenuItem
+            as="a"
+            color="inherit"
+            textDecoration="none"
+            href="https://discord.com/invite/qsUfBcC3Ru"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <DiscordIcon mr={1} />
             Get support
+            <Div flexGrow={1} />
+            <ArrowTopRightIcon
+              size={24}
+              my={`${(16 - 24) / 2}px`}
+            />
           </MenuItem>
           <MenuItem>
+            <LogoutIcon mr={1} />
+            TODO: log back as...
+          </MenuItem>
+          <MenuItem onClick={handleLogout}>
+            <LogoutIcon mr={1} />
             Logout
           </MenuItem>
         </Menu>

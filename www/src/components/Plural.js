@@ -34,23 +34,6 @@ import { OauthCreator } from './integrations/OauthCreator'
 import { UpgradeQueue } from './upgrades/UpgradeQueue'
 import { UpgradeQueues } from './upgrades/UpgradeQueues'
 import { VerifyEmailConfirmed } from './users/EmailConfirmation'
-// import { Incidents } from './incidents/Incidents'
-// import { Incident } from './incidents/Incident'
-// import { IncidentContext } from './incidents/context'
-// import { Integrations } from './integrations/Webhooks'
-// import { Webhook } from './integrations/Webhook'
-// import { IncidentDirectory } from './IncidentDirectory'
-// import { AutoRefresh } from './login/AutoRefresh'
-// import { NavigationContext } from './navigation/Submenu'
-
-// function EditIncident(props) {
-//   return (
-//     <Incident
-//       {...props}
-//       editing
-//     />
-//   )
-// }
 
 function EditBilling(props) {
   return (
@@ -83,70 +66,30 @@ export function PluralInner() {
           <VerifyEmailConfirmed />
           <DeviceLoginNotif />
           <Routes>
-            <Route
-              path="/shell"
-              component={<CloudShell />}
-            />
-            <Route
-              path="/account/edit/:section/*"
-              element={<EditAccount />}
-            />
-            <Route
-              exact
-              path="/account"
-              element={(
-                <Navigate
-                  replace
-                  to="/account/edit/users"
-                />
-              )}
-            />
-            <Route
-              exact
-              path="/account/edit"
-              element={(
-                <Navigate
-                  replace
-                  to="/account/edit/users"
-                />
-              )}
-            />
-            <Route
-              path="/account/billing/:section"
-              element={<EditBilling />}
-            />
-            <Route
-              path="/publishers/mine/:editing"
-              element={<MyPublisher />}
-            />
-            <Route
-              path="/publishers/:id/:editing"
-              element={<MyPublisher />}
-            />
-            <Route
-              path="/publishers/:publisherId"
-              element={<Publisher />}
-            />
-            <Route
-              path="/publishers"
-              element={<Publishers />}
-            />
-            <Route
-              path="/dkr/repo/:id"
-              element={<DockerRepository />}
-            />
-            <Route
-              path="/dkr/img/:id"
-              element={<Docker />}
-            />
+            {/* --- OAUTH --- */}
             <Route
               path="/oauth/callback/github/shell"
               element={<OAuthCallback />}
             />
             <Route
+              path="/oauth/accept/:service"
+              element={<OauthCreator />}
+            />
+            {/* --- APPLICATIONS --- */}
+            <Route
+              path="/marketplace"
+              element={<Marketplace />}
+            />
+            <Route
+              path="/installed"
+              element={<Marketplace installed />}
+            />
+            {/* --- REPOSITORIES --- */}
+            <Route
               path="/repositories/:id/integrations"
               element={<IntegrationPage />}
             />
+            {/* --- REPOSITORY --- */}
             <Route
               path="/repository/:id"
               element={<Repository />}
@@ -198,6 +141,7 @@ export function PluralInner() {
                 element={<RepositoryEdit />}
               />
             </Route>
+            {/* --- CHARTS --- */}
             <Route
               path="/charts/:chartId"
               element={<Chart />}
@@ -206,13 +150,74 @@ export function PluralInner() {
               path="/terraform/:tfId"
               element={<Terraform />}
             />
+            {/* --- DOCKER --- */}
             <Route
-              exact
-              path="/me/edit"
-              element={<Navigate to="/me/edit/user" />}
+              path="/dkr/repo/:id"
+              element={<DockerRepository />}
             />
             <Route
-              path="/me/edit/:editing"
+              path="/dkr/img/:id"
+              element={<Docker />}
+            />
+            {/* --- SHELL --- */}
+            <Route
+              path="/shell"
+              component={<CloudShell />}
+            />
+            {/* --- ACCOUNT --- */}
+            <Route
+              path="/account/edit/:section/*"
+              element={<EditAccount />}
+            />
+            <Route
+              exact
+              path="/account"
+              element={(
+                <Navigate
+                  replace
+                  to="/account/edit/users"
+                />
+              )}
+            />
+            <Route
+              exact
+              path="/account/edit"
+              element={(
+                <Navigate
+                  replace
+                  to="/account/edit/users"
+                />
+              )}
+            />
+            <Route
+              path="/account/billing/:section"
+              element={<EditBilling />}
+            />
+            {/* --- PUBLISHER --- */}
+            <Route
+              path="/publishers/mine/:editing"
+              element={<MyPublisher />}
+            />
+            <Route
+              path="/publishers/:id/:editing"
+              element={<MyPublisher />}
+            />
+            <Route
+              path="/publishers/:publisherId"
+              element={<Publisher />}
+            />
+            <Route
+              path="/publishers"
+              element={<Publishers />}
+            />
+            {/* --- USER --- */}
+            <Route
+              exact
+              path="/user/edit"
+              element={<Navigate to="/user/edit/user" />}
+            />
+            <Route
+              path="/user/edit/:editing"
               element={<EditUser />}
             />
             <Route
@@ -220,13 +225,10 @@ export function PluralInner() {
               element={<Billing />}
             />
             <Route
-              path="/me/invoices/:subscriptionId"
+              path="/user/invoices/:subscriptionId"
               element={<Invoices />}
             />
-            <Route
-              path="/oauth/accept/:service"
-              element={<OauthCreator />}
-            />
+            {/* --- AUDITS --- */}
             <Route
               path="/audits/:graph"
               element={<Audits />}
@@ -241,6 +243,7 @@ export function PluralInner() {
                 />
               )}
             />
+            {/* --- UPGRADES --- */}
             <Route
               path="/upgrades/:id"
               element={<UpgradeQueue />}
@@ -249,14 +252,7 @@ export function PluralInner() {
               path="/upgrades"
               element={<UpgradeQueues />}
             />
-            <Route
-              path="/marketplace"
-              element={<Marketplace />}
-            />
-            <Route
-              path="/installed"
-              element={<Marketplace installed />}
-            />
+            {/* --- 404 --- */}
             <Route
               path="/*"
               element={(
@@ -266,40 +262,6 @@ export function PluralInner() {
                 />
               )}
             />
-            {/* <Route
-              path="/incidents/:group"
-              element={<IncidentDirectory />}
-            />
-            <Route
-              exact
-              path="/incidents"
-              element={(
-                <Navigate
-                  replace
-                  to="/incidents/all"
-                />
-              )}
-            />
-            <Route
-              path="/incident/:incidentId/edit"
-              element={<EditIncident />}
-            />
-            <Route
-              path="/incident/:incidentId"
-              element={<Incident />}
-            />
-            <Route
-              path="/incidents"
-              element={<Incidents />}
-            />
-            <Route
-              path="/webhooks/:id"
-              element={<Webhook />}
-            />
-            <Route
-              path="/webhooks"
-              element={<Integrations />}
-            /> */}
           </Routes>
         </ApplicationLayout>
       </BreadcrumbProvider>

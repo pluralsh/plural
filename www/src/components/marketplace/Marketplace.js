@@ -1,7 +1,7 @@
-import { useRef, useState } from 'react'
-import { Div, Flex } from 'honorable'
+import { useState } from 'react'
+import { Button, Div, Flex } from 'honorable'
 
-import { TOOLBAR_SIZE } from '../Toolbar'
+import { FiltersIcon } from 'pluralsh-design-system'
 
 import MarketplaceSidebar from './MarketplaceSidebar'
 import MarketplaceRepositories from './MarketplaceRepositories'
@@ -17,9 +17,18 @@ function Marketplace({ installed }) {
       flexGrow={1}
       maxHeight="100%"
     >
-      <Div flexShrink={0}>
+      <Flex flexShrink={0}>
         Top
-      </Div>
+        <Div flexGrow={1} />
+        <Button
+          tertiary
+          small
+          startIcon={<FiltersIcon />}
+          onClick={() => setAreFiltersOpen(x => !x)}
+        >
+          Filters
+        </Button>
+      </Flex>
       <Flex
         id="1"
         mt={1}
@@ -36,14 +45,17 @@ function Marketplace({ installed }) {
         </Flex>
         {areFiltersOpen && (
           <Div
+            ml={2}
             flexShrink={0}
             position="sticky"
             top={0}
             left={0}
             width={256 - 32}
-            height={`calc(100vh - ${TOOLBAR_SIZE}px)`}
+            height={`calc(100% - ${32}px)`}
             overflowY="auto"
-            borderRight="1px solid border"
+            border="1px solid border"
+            backgroundColor="fill-one"
+            borderRadius="large"
           >
             <MarketplaceSidebar />
           </Div>

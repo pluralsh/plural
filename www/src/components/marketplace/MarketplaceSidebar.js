@@ -22,6 +22,7 @@ function MarketplaceSidebarCheckbox({ toggled, onClick, label }) {
   return (
     <Checkbox
       mb={0.25}
+      small
       checked={toggled}
       onChange={onClick}
     >

@@ -2,7 +2,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { Div, Flex, P } from 'honorable'
 import { RepositoryCard } from 'pluralsh-design-system'
 
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 
@@ -10,7 +10,8 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 
 import { MARKETPLACE_QUERY } from './queries'
 
-function MarketplaceRepositories({ installed, scrollRef }) {
+function MarketplaceRepositories({ installed }) {
+  const scrollRef = useRef()
   const [searchParams] = useSearchParams()
   const categories = searchParams.getAll('category')
   const tags = searchParams.getAll('tag')
@@ -46,7 +47,7 @@ function MarketplaceRepositories({ installed, scrollRef }) {
     }
   }, [scrollRef, fetchMoreRepositories, loadingRepositories, hasMoreRepositories])
 
-  if (loadingRepositories) {
+  if (repositories.length === 0 && loadingRepositories) {
     return (
       <Flex
         pt={12}
@@ -77,14 +78,12 @@ function MarketplaceRepositories({ installed, scrollRef }) {
     return (
       <>
         <P
-          px={3}
           body0
           fontWeight="bold"
         >
           Featured Repositories
         </P>
         <Flex
-          px={3}
           mt={1}
         >
           <RepositoryCard
@@ -134,10 +133,12 @@ function MarketplaceRepositories({ installed, scrollRef }) {
   }
 
   return (
-    <Div py={2}>
+    <Div
+      overflowY="auto"
+      ref={scrollRef}
+    >
       {shouldRenderFeatured && renderFeatured()}
       <P
-        px={3}
         mt={shouldRenderFeatured ? 2 : 0}
         body0
         fontWeight="bold"
@@ -145,7 +146,7 @@ function MarketplaceRepositories({ installed, scrollRef }) {
         {renderTitle()}
       </P>
       <Flex
-        px={2}
+        mx={-1}
         mt={1}
         align="stretch"
         wrap="wrap"

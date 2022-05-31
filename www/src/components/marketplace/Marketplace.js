@@ -1,7 +1,5 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { Div, Flex } from 'honorable'
-
-import useBreadcrumbs from '../../hooks/useBreadcrumbs'
 
 import { TOOLBAR_SIZE } from '../Toolbar'
 
@@ -9,43 +7,48 @@ import MarketplaceSidebar from './MarketplaceSidebar'
 import MarketplaceRepositories from './MarketplaceRepositories'
 
 function Marketplace({ installed }) {
-  const scrollRef = useRef()
-
-  useBreadcrumbs([
-    { url: '/marketplace', text: 'Marketplace' },
-  ])
+  const [areFiltersOpen, setAreFiltersOpen] = useState(false)
 
   return (
     <Flex
-      ref={scrollRef}
-      align="flex-start"
-      justify="flex-start"
-      height="100%"
+      p={2}
+      direction="column"
+      overflow="hidden"
+      flexGrow={1}
       maxHeight="100%"
-      overflowY="auto"
-      position="relative"
     >
-      <Div
-        flexShrink={0}
-        position="sticky"
-        top={0}
-        left={0}
-        width={256 - 32}
-        height={`calc(100vh - ${TOOLBAR_SIZE}px)`}
-        overflowY="auto"
-        borderRight="1px solid border"
-      >
-        <MarketplaceSidebar />
+      <Div flexShrink={0}>
+        Top
       </Div>
-      <Div
+      <Flex
+        id="1"
+        mt={1}
         flexGrow={1}
-        overflowY="auto"
+        maxHeight="100%"
       >
-        <MarketplaceRepositories
-          installed={installed}
-          scrollRef={scrollRef}
-        />
-      </Div>
+        <Flex
+          direction="column"
+          flexGrow={1}
+        >
+          <MarketplaceRepositories
+            installed={installed}
+          />
+        </Flex>
+        {areFiltersOpen && (
+          <Div
+            flexShrink={0}
+            position="sticky"
+            top={0}
+            left={0}
+            width={256 - 32}
+            height={`calc(100vh - ${TOOLBAR_SIZE}px)`}
+            overflowY="auto"
+            borderRight="1px solid border"
+          >
+            <MarketplaceSidebar />
+          </Div>
+        )}
+      </Flex>
     </Flex>
   )
 }

@@ -8,7 +8,19 @@
   <a href="#contributing">
     <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square">
   </a>
+  <img alt="GitHub language count" src="https://img.shields.io/github/languages/count/pluralsh/plural">
+  <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/pluralsh/plural">
+  <img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/pluralsh/plural">
+  <img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/pluralsh/plural">
+  <img alt="GitHub issues" src="https://img.shields.io/github/issues/pluralsh/plural">
+  <img alt="GitHub closed issues" src="https://img.shields.io/github/issues-closed/pluralsh/plural">
+  <img alt="GitHub pull requests" src="https://img.shields.io/github/issues-pr/pluralsh/plural">
+  <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/pluralsh/plural">
+  <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/pluralsh/plural">
+  <img alt="GitHub Org's stars" src="https://img.shields.io/github/stars/pluralsh?style=social">
+  <img alt="YouTube Channel Views" src="https://img.shields.io/youtube/channel/views/UCKpIHwAFwvXhM-RaR1h77Jw?style=social">
 </p>
+
 
 ## What is Plural?
 

@@ -7,6 +7,7 @@ function ApplicationLayout({ children }) {
     <Flex
       height="100vh"
       maxHeight="100vh"
+      position="relative"
     >
       <Sidebar />
       <Flex

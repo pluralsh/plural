@@ -25,6 +25,7 @@ function WithNotifications({ children }) {
       {children({
         notificationsCount: notifications.length,
         toggleNotificationsPanel: () => setIsPanelOpen(x => !x),
+        isNotificationsPanelOpen: isPanelOpen,
       })}
       {isPanelOpen && (
         <Flex

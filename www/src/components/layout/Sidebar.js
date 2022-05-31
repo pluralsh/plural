@@ -1,41 +1,21 @@
-import { Fragment, useCallback, useContext, useEffect, useRef, useState } from 'react'
+import { forwardRef, useContext, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import styled from '@emotion/styled'
-import { A, Avatar, Div, Flex, Img, P, useTheme } from 'honorable'
+import { Avatar, Div, Flex, Img, Menu, MenuItem, P, useOutsideClick } from 'honorable'
 import {
   ArrowTopRightIcon,
-  BotIcon,
-  BrowserIcon,
-  CollapseIcon,
-  CreditCardIcon,
-  DashboardIcon,
+  DiscordIcon,
   DownloadIcon,
-  FingerPrintIcon,
+  GitHubLogoIcon,
   HamburgerMenuCollapseIcon,
-  HamburgerMenuIcon,
-  IdIcon,
   InstalledIcon,
-  InvoicesIcon,
-  KeyPairIcon,
-  LifePreserverIcon,
   LightningIcon,
   ListIcon,
-  LogoutIcon,
-  MagnifyingGlassIcon,
   MarketIcon,
-  MessagesIcon,
-  OAuthIcon,
-  PadlockIcon,
   PeopleIcon,
-  PersonIcon,
-  ReloadIcon,
-  ScrollIcon,
-  SirenIcon,
   UpdatesIcon,
-  WebhooksIcon,
 } from 'pluralsh-design-system'
 
-import { getPreviousUserData, setPreviousUserData, setToken, wipeToken } from '../../helpers/authentication'
+// import { getPreviousUserData, setPreviousUserData, setToken, wipeToken } from '../../helpers/authentication'
 
 import { CurrentUserContext } from '../login/CurrentUser'
 
@@ -49,58 +29,40 @@ export const SMALL_WIDTH = '60px'
 function SidebarWrapper() {
   const me = useContext(CurrentUserContext)
   const { pathname } = useLocation()
-  const previousUserData = getPreviousUserData()
+  // const previousUserData = getPreviousUserData()
 
-  function handleLogout() {
-    wipeToken()
-    window.location = '/'
-  }
+  // function handleLogout() {
+  //   wipeToken()
+  //   window.location = '/'
+  // }
 
-  function handlePreviousUserClick() {
-    setToken(previousUserData.jwt)
-    setPreviousUserData(null)
-    window.location.reload()
-  }
+  // function handlePreviousUserClick() {
+  //   setToken(previousUserData.jwt)
+  //   setPreviousUserData(null)
+  //   window.location.reload()
+  // }
 
   const items = [
     {
-      name: 'Applications',
+      name: 'Marketplace',
       Icon: MarketIcon,
-      url: '/applications',
-      matchedUrl: /^\/(applications|installed|repository)/i,
+      url: '/marketplace',
     },
     {
-      name: 'Accounts',
+      name: 'Installed',
+      Icon: InstalledIcon,
+      url: '/installed',
+    },
+    {
+      name: 'Account',
       Icon: PeopleIcon,
-      url: '/accounts',
+      url: '/account',
     },
     {
       name: 'Upgrades',
       Icon: UpdatesIcon,
       url: '/upgrades',
     },
-    // {
-    //   name: 'Incidents',
-    //   Icon: SirenIcon,
-    //   url: '/incidents',
-    //   items: [
-    //     {
-    //       name: 'My incidents',
-    //       url: '/incidents/all',
-    //       Icon: SirenIcon,
-    //     },
-    //     {
-    //       name: 'Responses',
-    //       url: '/incidents/responses',
-    //       Icon: LifePreserverIcon,
-    //     },
-    //   ],
-    // },
-    // {
-    //   name: 'Integrations',
-    //   Icon: WebhooksIcon,
-    //   url: '/webhooks',
-    // },
     {
       name: 'Audits',
       Icon: ListIcon,
@@ -110,12 +72,12 @@ function SidebarWrapper() {
 
   return (
     <WithNotifications>
-      {({ notificationsCount, toggleNotificationsPanel }) => (
+      {({ notificationsCount, toggleNotificationsPanel, isNotificationsPanelOpen }) => (
         <WithApplicationUpdate>
           {({ reloadApplication, shouldReloadApplication }) => (
             <Sidebar
               items={items}
-              activeUrl={pathname}
+              activeId={isNotificationsPanelOpen ? 'notifications' : pathname}
               notificationsCount={notificationsCount}
               onNotificationsClick={toggleNotificationsPanel}
               hasUpdate={shouldReloadApplication}
@@ -143,266 +105,368 @@ function TransitionText({ collapsed, ...props }) {
   )
 }
 
+function SidebarItemRef({
+  active,
+  collapsed,
+  startIcon,
+  endIcon,
+  label,
+  badge = 0,
+  linkTo,
+  ...otherProps
+},
+ref
+) {
+
+  function wrapLink(node) {
+    if (!linkTo) return node
+
+    if (linkTo.startsWith('http')) {
+      return (
+        <a
+          href={linkTo}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ textDecoration: 'none' }}
+        >
+          {node}
+        </a>
+      )
+    }
+
+    return (
+      <Link
+        to={linkTo}
+        style={{ textDecoration: 'none' }}
+      >
+        {node}
+      </Link>
+    )
+  }
+
+  return wrapLink(
+    <Flex
+      ref={ref}
+      py={0.75}
+      px={1}
+      align="center"
+      borderRadius="normal"
+      cursor="pointer"
+      position="relative"
+      color="text-light"
+      backgroundColor={active ? 'fill-zero-selected' : null}
+      _hover={{
+        backgroundColor: active ? 'fill-zero-selected' : 'fill-zero-hover',
+      }}
+      {...otherProps}
+    >
+      <Flex
+        align="center"
+        justify="center"
+        position="relative"
+      >
+        {startIcon}
+        {badge > 0 && (
+          <Flex
+            align="center"
+            justify="center"
+            position="absolute"
+            backgroundColor="icon-error"
+            borderRadius="50%"
+            fontSize={8}
+            width={10}
+            height={10}
+            top={-6}
+            right={-8}
+          >
+            {badge}
+          </Flex>
+        )}
+      </Flex>
+      <Flex
+        ml={1}
+        flexShrink={0}
+        mr={endIcon ? -0.25 : 0}
+        align="center"
+        flexGrow={1}
+        opacity={collapsed ? 0 : 1}
+        visibility={collapsed ? 'hidden' : 'visible'}
+        transition={`opacity ${collapsed ? 200 : 500}ms ease, background-color ${collapsed ? 200 : 500}ms ease ${collapsed ? 0 : 50}ms, visibility 200ms linear, color 150ms linear`}
+      >
+        {label}
+        <Div
+          ml={1}
+          flexGrow={1}
+        />
+        {endIcon}
+      </Flex>
+    </Flex>
+  )
+}
+
+const SidebarItem = forwardRef(SidebarItemRef)
+
 function Sidebar({
-  activeUrl = '',
+  activeId = '',
   hasUpdate = false,
   items = [],
   notificationsCount = 0,
   onNotificationsClick = () => {},
   onUpdateClick = () => {},
-  onUserClick = () => {},
   userImageUrl,
   userName,
   userAccount,
   ...props
 }) {
-  const [collapsed, setCollapsed] = useState(true)
+  const menuItemRef = useRef()
+  const menuRef = useRef()
+  const [isMenuOpen, setIsMenuOpened] = useState(false)
+  const [collapsed, setCollapsed] = useState(false)
+
+  const sidebarWidth = collapsed ? 82 : 256 - 32
+
+  useOutsideClick(menuRef, event => {
+    console.log('event.target', event.target)
+    console.log('menuItemRef.current', menuItemRef.current)
+    if (!menuItemRef.current.contains(event.target)) {
+      setIsMenuOpened(false)
+    }
+  })
 
   return (
-    <Flex
-      direction="column"
-      flexGrow={0}
-      flexShrink={0}
-      width={collapsed ? 74 : 256 - 32}
-      height="100vh"
-      maxHeight="100vh"
-      borderRight="1px solid border"
-      overflow="hidden"
-      userSelect="none"
-      transition="width 300ms ease"
-      {...props}
-    >
-      <Link to="/">
-        <Flex
-          py={1}
-          pl={1.5}
-          flexShrink={0}
-          align="center"
-          borderBottom="1px solid border"
-        >
-          <Img
-            src="/plural-logo-white.svg"
-            width={24}
-          />
-          <TransitionText
-            ml={0.75}
-            mb="-4px"
-            collapsed={collapsed}
+    <>
+      <Flex
+        direction="column"
+        flexGrow={0}
+        flexShrink={0}
+        width={sidebarWidth}
+        height="100vh"
+        maxHeight="100vh"
+        borderRight="1px solid border"
+        overflow="hidden"
+        userSelect="none"
+        transition="width 300ms ease"
+        position="relative"
+        {...props}
+      >
+        {/* ---
+          HEADER
+        --- */}
+        <Link to="/">
+          <Flex
+            py={1}
+            pl={1.5}
+            flexShrink={0}
+            align="center"
+            borderBottom="1px solid border"
           >
             <Img
-              src="/plural-logotype-white.svg"
-              height={20}
-            />
-          </TransitionText>
-        </Flex>
-      </Link>
-      {/* <Div
-        pb={0.5}
-        borderBottom="1px solid border"
-      >
-        <Item
-          theme={theme}
-          align="center"
-          mt={0.5}
-          mx={1}
-          pl="12px"
-          color="warning.200"
-          onClick={onNotificationsClick}
-        >
-          <Div
-            position="relative"
-            flexShrink={0}
-            mb={-0.25}
-          >
-            <LightningIcon
-              width={16}
-              color="warning.200"
-            />
-            {notificationsCount > 0 && (
-              <Div
-                position="absolute"
-                top={-8}
-                right={-8}
-                backgroundColor="error"
-                color="white"
-                width={12}
-                height={12}
-                borderRadius="50%"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                fontSize={10}
-              >
-                {notificationsCount}
-              </Div>
-            )}
-          </Div>
-          <TransitionText
-            ml={1}
-            collapsed={collapsed}
-          >
-            Notifications
-          </TransitionText>
-        </Item>
-        {!!hasUpdate && (
-          <Item
-            theme={theme}
-            align="center"
-            mx={1}
-            pl="12px"
-            color="warning.200"
-            onClick={onUpdateClick}
-          >
-            <DownloadIcon
-              width={16}
-              color="warning.200"
+              src="/plural-logo-white.svg"
+              width={24}
             />
             <TransitionText
               ml={1}
+              mb="-4px"
               collapsed={collapsed}
             >
-              Update
-            </TransitionText>
-          </Item>
-        )}
-      </Div> */}
-      {/* <Div
-        py={0.5}
-        pl={1}
-        flexGrow={1}
-        flexShrink={1}
-        overflowY="auto"
-        {...{
-          '&::-webkit-scrollbar': {
-            backgroundColor: 'background',
-            width: 8,
-          },
-          '&::-webkit-scrollbar-thumb': {
-            backgroundColor: 'text-xlight',
-            borderRadius: 4,
-            display: collapsed ? 'none' : null,
-          },
-        }}
-      >
-        <Div id="sidebar-items">
-          {renderItems(items)}
-        </Div>
-      </Div> */}
-      {/* <Div
-        flexGrow={0}
-        flexShrink={0}
-      >
-        <Hoverer>
-          {hovered => (
-            <A
-              href={supportUrl}
-              target="_blank"
-              borderBottom="1px solid border"
-              display="block"
-              _hover={{ textDecoration: 'none' }}
-            >
-              <Flex
-                py={1}
-                pl={1.75}
-                align="center"
-                overflow="hidden"
-                cursor="pointer"
-              >
-                <LifePreserverIcon
-                  size={16}
-                  flexShrink={0}
-                  color={hovered ? 'text-strong' : 'text-xlight'}
-                />
-                <TransitionText
-                  collapsed={collapsed}
-                  ml={1.75}
-                  body2
-                  flexGrow={1}
-                  color={hovered ? 'text-strong' : 'text-xlight'}
-                >
-                  Support
-                </TransitionText>
-                <TransitionText
-                  collapsed={collapsed}
-                  ml={1}
-                  mr={1}
-                  flexShrink={0}
-                  mb={-0.25}
-                >
-                  <ArrowTopRightIcon
-                    size={22}
-                    color={hovered ? 'text-strong' : 'text-xlight'}
-                  />
-                </TransitionText>
-              </Flex>
-            </A>
-          )}
-        </Hoverer>
-        <Hoverer>
-          {hovered => (
-            <Flex
-              py={1}
-              pl={1.75}
-              align="center"
-              overflow="hidden"
-              cursor="pointer"
-              borderBottom="1px solid border"
-              onClick={() => handleCollapse(!collapsed)}
-            >
-              <MenuIcon
-                size={16}
-                flexShrink={0}
-                color={hovered ? 'text-strong' : 'text-xlight'}
+              <Img
+                src="/plural-logotype-white.svg"
+                height={20}
               />
-              <TransitionText
-                collapsed={collapsed}
-                ml={1.75}
-                body2
-                color={hovered ? 'text-strong' : 'text-xlight'}
-              >
-                Collapse
-              </TransitionText>
-            </Flex>
-          )}
-        </Hoverer> */}
-      <Flex
-        py={1}
-        pl={1}
-        align="center"
-        cursor="pointer"
-        onClick={onUserClick}
-      >
-        <Avatar
-          src={userImageUrl}
-          name={userName}
-          flexShrink={0}
-        />
+            </TransitionText>
+          </Flex>
+        </Link>
+        {/* ---
+          NOTIFICATIONS AND UPDATE
+        --- */}
         <Div
-          ml={1}
+          py={0.5}
+          px={1}
+          flexShrink={0}
+          borderBottom="1px solid border"
+        >
+          <SidebarItem
+            active={!activeId === 'notifications'}
+            color="text-warning"
+            collapsed={collapsed}
+            startIcon={<LightningIcon />}
+            label="Notifications"
+            badge={notificationsCount}
+            onClick={onNotificationsClick}
+          />
+          {hasUpdate && (
+            <SidebarItem
+              mt={0.25}
+              color="text-warning"
+              collapsed={collapsed}
+              startIcon={<DownloadIcon />}
+              label="Update"
+              onClick={onUpdateClick}
+            />
+          )}
+        </Div>
+        {/* ---
+          MENU
+        --- */}
+        <Div
+          py={0.5}
+          px={1}
+          flexGrow={1}
+          flexShrink={1}
+          overflowY="auto"
+          overflowX="hidden"
+          borderBottom="1px solid border"
+          {...{
+            '&::-webkit-scrollbar': {
+              width: 6,
+            },
+            '&::-webkit-scrollbar-thumb': {
+              backgroundColor: 'fill-zero-hover',
+              borderRadius: 3,
+              display: collapsed ? 'none' : null,
+            },
+          }}
+        >
+          {items.map(({ name, Icon, url }) => (
+            <SidebarItem
+              key={name}
+              mb={0.25}
+              active={activeId === url}
+              collapsed={collapsed}
+              startIcon={<Icon />}
+              label={name}
+              linkTo={url}
+            />
+          ))}
+        </Div>
+        {/* ---
+          SOCIAL
+        --- */}
+        <Div
+          py={0.5}
+          px={1}
+          flexShrink={0}
+          borderBottom="1px solid border"
+        >
+          <SidebarItem
+            mb={0.25}
+            collapsed={collapsed}
+            startIcon={<DiscordIcon />}
+            endIcon={(
+              <ArrowTopRightIcon
+                size={24}
+                my={`${(16 - 24) / 2}px`}
+              />
+            )}
+            label="Discord"
+            linkTo="https://discord.com/invite/qsUfBcC3Ru"
+          />
+          <SidebarItem
+            collapsed={collapsed}
+            startIcon={<GitHubLogoIcon />}
+            endIcon={(
+              <ArrowTopRightIcon
+                size={24}
+                my={`${(16 - 24) / 2}px`}
+              />
+            )}
+            label="GitHub"
+            linkTo="https://github.com/pluralsh/plural"
+          />
+        </Div>
+        <Div
+          py={0.5}
+          px={1}
+          flexShrink={0}
+          borderBottom="1px solid border"
+        >
+          <SidebarItem
+            collapsed={collapsed}
+            startIcon={<HamburgerMenuCollapseIcon />}
+            label="Collapse"
+            backgroundColor="fill-one"
+            _hover={{
+              backgroundColor: 'transparency(fill-one-hover, 50)',
+            }}
+            border="1px solid border"
+            onClick={() => setCollapsed(x => !x)}
+          />
+        </Div>
+        {/* ---
+          USER
+        --- */}
+        <Div
+          py={0.5}
+          px={1}
           flexShrink={0}
         >
-          <TransitionText
+          <SidebarItem
+            ref={menuItemRef}
+            py={0.25 / 2}
+            px={0.5}
+            active={isMenuOpen}
             collapsed={collapsed}
-            color="text-strong"
-            fontWeight={500}
-            wordBreak="keep-all"
-          >
-            {userName}
-          </TransitionText>
-          {userAccount && (
-            <TransitionText
-              mt={0.25}
-              body3
-              collapsed={collapsed}
-              color="text-xlight"
-              wordBreak="keep-all"
-            >
-              {userAccount}
-            </TransitionText>
-          )}
+            startIcon={(
+              <Avatar
+                src={userImageUrl}
+                name={userName}
+                flexShrink={0}
+                size={32}
+              />
+            )}
+            label={(
+              <Div>
+                <Div
+                  collapsed={collapsed}
+                  color="text-strong"
+                  fontWeight={500}
+                  wordBreak="keep-all"
+                >
+                  {userName}
+                </Div>
+                {userAccount && (
+                  <Div
+                    body3
+                    collapsed={collapsed}
+                    color="text-xlight"
+                    wordBreak="keep-all"
+                  >
+                    {userAccount}
+                  </Div>
+                )}
+              </Div>
+            )}
+            onClick={() => setIsMenuOpened(x => !x)}
+          />
         </Div>
       </Flex>
-    </Flex>
+      {/* ---
+        MENU
+      --- */}
+      {isMenuOpen && (
+        <Menu
+          ref={menuRef}
+          zIndex={999}
+          position="absolute"
+          bottom={8}
+          left={sidebarWidth + 8}
+          border="1px solid border"
+        >
+          <MenuItem>
+            My profile
+          </MenuItem>
+          <MenuItem>
+            Create new publisher
+          </MenuItem>
+          <MenuItem>
+            Get support
+          </MenuItem>
+          <MenuItem>
+            Logout
+          </MenuItem>
+        </Menu>
+      )}
+    </>
   )
 }
 

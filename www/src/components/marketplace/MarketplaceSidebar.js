@@ -36,7 +36,7 @@ function MarketplaceSidebarCheckbox({ toggled, onClick, label }) {
   )
 }
 
-function MarketplaceSidebar() {
+function MarketplaceSidebar(props) {
   const [nDisplayedTags, setNDisplayedTags] = useState(12)
   const { data: categoriesData } = useQuery(CATEGORIES)
   const [tags,, hasMoreTags, fetchMoreTags] = usePaginatedQuery(
@@ -89,6 +89,7 @@ function MarketplaceSidebar() {
       pl={2}
       maxHeight="100%"
       overflowY="auto"
+      {...props}
     >
       <P
         mb={1}

@@ -618,12 +618,41 @@ defmodule Core.Services.Repositories do
   end
 
   @doc """
+  Adds the readme and license information to a repository where possible
+  """
+  @spec hydrate(Repository.t) :: {:ok, Repository.t} | nil
+  def hydrate(repo) do
+    with readme when is_binary(readme) <- fetch_readme(repo) do
+      repo
+      |> Repository.changeset(%{readme: readme, license: fetch_license(repo)})
+      |> Core.Repo.update()
+    end
+  end
+
+  @doc """
   Attempts to grab the contents of a repo's github readme and returns the result
   """
   @spec fetch_readme(Repository.t) :: binary | nil
   def fetch_readme(%Repository{git_url: "https://github.com" <> _ = url}) when is_binary(url),
     do: readme_fetch("#{url}/raw/{branch}/README.md")
   def fetch_readme(_), do: nil
+
+  @doc """
+  Attempts to extract the license for a repo from github where possible
+  """
+  @spec fetch_license(Repository.t) :: %{name: binary, url: binary} | nil
+  def fetch_license(%Repository{git_url: "https://github.com/" <> rest}) do
+    headers = [{"accept", "application/vnd.github.v3+json"}]
+    with [owner, repo | _] <- String.split(rest, "/"),
+         repo <- String.trim(repo, ".git"),
+         {:ok, %HTTPoison.Response{status_code: 200, body: body}} <- HTTPoison.get("https://api.github.com/repos/#{owner}/#{repo}/license", headers),
+         {:ok, %{"license" => license, "html_url" => url}} <- Jason.decode(body) do
+      %{name: license["name"], url: url}
+    else
+    _ -> nil
+    end
+  end
+  def fetch_license(_), do: nil
 
   defp readme_fetch(url) do
     Enum.find_value(~w(main master), fn branch ->

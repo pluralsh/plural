@@ -1,8 +1,8 @@
+import { useEffect, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { Div, Flex, P } from 'honorable'
-import { RepositoryCard } from 'pluralsh-design-system'
-
-import { useEffect, useRef } from 'react'
+import { Input, MagnifyingGlassIcon, RepositoryCard } from 'pluralsh-design-system'
+import Fuse from 'fuse.js'
 
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 
@@ -10,11 +10,16 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 
 import { MARKETPLACE_QUERY } from './queries'
 
+const searchOptions = {
+  keys: ['name', 'description', 'tags.tag'],
+}
+
 function MarketplaceRepositories({ installed, ...props }) {
   const scrollRef = useRef()
   const [searchParams] = useSearchParams()
   const categories = searchParams.getAll('category')
   const tags = searchParams.getAll('tag')
+  const [search, setSearch] = useState('')
 
   const [repositories, loadingRepositories, hasMoreRepositories, fetchMoreRepositories] = usePaginatedQuery(
     MARKETPLACE_QUERY,
@@ -27,7 +32,7 @@ function MarketplaceRepositories({ installed, ...props }) {
     data => data.repositories
   )
 
-  const shouldRenderFeatured = !categories.length && !tags.length && !installed
+  const shouldRenderFeatured = !categories.length && !tags.length && !installed && !search
 
   useEffect(() => {
     const { current } = scrollRef
@@ -70,6 +75,10 @@ function MarketplaceRepositories({ installed, ...props }) {
       return tags.some(tag => repositoryTags.includes(tag))
     })
     .filter(repository => installed ? repository.installation : true)
+
+  const fuse = new Fuse(sortedRepositories, searchOptions)
+
+  const resultRepositories = search ? fuse.search(search).map(({ item }) => item) : sortedRepositories
 
   function renderFeatured() {
     const featuredA = sortedRepositories.shift()
@@ -131,56 +140,75 @@ function MarketplaceRepositories({ installed, ...props }) {
   }
 
   return (
-    <Div
-      overflowY="auto"
-      overflowX="hidden"
-      ref={scrollRef}
+    <Flex
+      direction="column"
       {...props}
     >
-      {shouldRenderFeatured && renderFeatured()}
-      <P
-        mt={shouldRenderFeatured ? 2 : 0}
-        body0
-        fontWeight="bold"
-      >
-        {renderTitle()}
-      </P>
-      <Flex
-        mx={-1}
+      <Div>
+        <Input
+          small
+          startIcon={(
+            <MagnifyingGlassIcon
+              size={14}
+              mt={0.1}
+            />
+          )}
+          placeholder="Search a repository"
+          value={search}
+          onChange={event => setSearch(event.target.value)}
+        />
+      </Div>
+      <Div
         mt={1}
-        align="stretch"
-        wrap="wrap"
+        overflowY="auto"
+        overflowX="hidden"
+        ref={scrollRef}
       >
-        {sortedRepositories.map(repository => (
-          <RepositoryCard
-            key={repository.id}
-            as={Link}
-            to={`/repository/${repository.id}`}
-            color="text"
-            textDecoration="none"
-            mx={1}
-            mb={2}
-            flexGrow={0}
-            flexShrink={0}
-            width="calc(33.333% - 2 * 16px)"
-            title={repository.name}
-            imageUrl={repository.darkIcon || repository.icon}
-            publisher={repository.publisher?.name?.toUpperCase()}
-            description={repository.description}
-            tags={repository.tags.map(({ tag }) => tag)}
-          />
-        ))}
-      </Flex>
-      {loadingRepositories && (
-        <Flex
-          mt={2}
-          align="center"
-          justify="center"
+        {shouldRenderFeatured && renderFeatured()}
+        <P
+          mt={shouldRenderFeatured ? 2 : 0}
+          body0
+          fontWeight="bold"
         >
-          <LoopingLogo />
+          {renderTitle()}
+        </P>
+        <Flex
+          mx={-1}
+          mt={1}
+          align="stretch"
+          wrap="wrap"
+        >
+          {resultRepositories.map(repository => (
+            <RepositoryCard
+              key={repository.id}
+              as={Link}
+              to={`/repository/${repository.id}`}
+              color="text"
+              textDecoration="none"
+              mx={1}
+              mb={2}
+              flexGrow={0}
+              flexShrink={0}
+              width="calc(33.333% - 2 * 16px)"
+              title={repository.name}
+              imageUrl={repository.darkIcon || repository.icon}
+              publisher={repository.publisher?.name?.toUpperCase()}
+              description={repository.description}
+              tags={repository.tags.map(({ tag }) => tag)}
+            />
+          ))}
         </Flex>
-      )}
-    </Div>
+        {loadingRepositories && (
+          <Flex
+            mt={2}
+            align="center"
+            justify="center"
+          >
+            <LoopingLogo />
+          </Flex>
+        )}
+      </Div>
+    </Flex>
   )
 }
 

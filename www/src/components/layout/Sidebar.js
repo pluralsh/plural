@@ -1,12 +1,13 @@
 import { forwardRef, useContext, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Avatar, Div, Flex, Img, Menu, MenuItem, P, useOutsideClick } from 'honorable'
+import { Avatar, Div, Flex, Img, Menu, MenuItem, P, Tooltip, useOutsideClick } from 'honorable'
 import {
   ArrowTopRightIcon,
   DiscordIcon,
   DownloadIcon,
   GitHubLogoIcon,
   HamburgerMenuCollapseIcon,
+  HamburgerMenuCollapsedIcon,
   InstalledIcon,
   LightningIcon,
   ListIcon,
@@ -102,13 +103,13 @@ function SidebarItemRef({
   startIcon,
   endIcon,
   label,
+  tooltip,
   badge = 0,
   linkTo,
   ...otherProps
 },
 ref
 ) {
-
   function wrapLink(node) {
     if (!linkTo) return node
 
@@ -135,7 +136,21 @@ ref
     )
   }
 
-  return wrapLink(
+  function wrapTooltip(node) {
+    if (!(collapsed && tooltip)) return node
+
+    return (
+      <Tooltip
+        arrow
+        label={tooltip}
+        placement="right"
+      >
+        {node}
+      </Tooltip>
+    )
+  }
+
+  return wrapTooltip(wrapLink(
     <Flex
       ref={ref}
       py={0.75}
@@ -192,7 +207,7 @@ ref
         {endIcon}
       </Flex>
     </Flex>
-  )
+  ))
 }
 
 const SidebarItem = forwardRef(SidebarItemRef)
@@ -212,7 +227,7 @@ function Sidebar({
   const menuItemRef = useRef()
   const menuRef = useRef()
   const [isMenuOpen, setIsMenuOpened] = useState(false)
-  const [collapsed, setCollapsed] = useState(false)
+  const [collapsed, setCollapsed] = useState(true)
 
   const sidebarWidth = collapsed ? 82 : 256 - 32
   const previousUserData = getPreviousUserData()
@@ -246,7 +261,6 @@ function Sidebar({
         height="100vh"
         maxHeight="100vh"
         borderRight="1px solid border"
-        overflow="hidden"
         userSelect="none"
         transition="width 300ms ease"
         position="relative"
@@ -294,6 +308,7 @@ function Sidebar({
             collapsed={collapsed}
             startIcon={<LightningIcon />}
             label="Notifications"
+            tooltip="Notifications"
             badge={notificationsCount}
             onClick={onNotificationsClick}
           />
@@ -304,6 +319,7 @@ function Sidebar({
               collapsed={collapsed}
               startIcon={<DownloadIcon />}
               label="Update"
+              tooltip="Update"
               onClick={onUpdateClick}
             />
           )}
@@ -338,6 +354,7 @@ function Sidebar({
               collapsed={collapsed}
               startIcon={<Icon />}
               label={name}
+              tooltip={name}
               linkTo={url}
             />
           ))}
@@ -362,6 +379,7 @@ function Sidebar({
               />
             )}
             label="Discord"
+            tooltip="Discord"
             linkTo="https://discord.com/invite/qsUfBcC3Ru"
           />
           <SidebarItem
@@ -374,9 +392,13 @@ function Sidebar({
               />
             )}
             label="GitHub"
+            tooltip="GitHub"
             linkTo="https://github.com/pluralsh/plural"
           />
         </Div>
+        {/* ---
+          COLLAPSE
+        --- */}
         <Div
           py={0.5}
           px={1}
@@ -385,8 +407,9 @@ function Sidebar({
         >
           <SidebarItem
             collapsed={collapsed}
-            startIcon={<HamburgerMenuCollapseIcon />}
+            startIcon={collapsed ? <HamburgerMenuCollapsedIcon /> : <HamburgerMenuCollapseIcon />}
             label="Collapse"
+            tooltip="Collapse"
             backgroundColor="fill-one"
             _hover={{
               backgroundColor: 'transparency(fill-one-hover, 50)',

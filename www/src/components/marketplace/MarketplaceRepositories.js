@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { Div, Flex, P } from 'honorable'
-import { Input, MagnifyingGlassIcon, RepositoryCard } from 'pluralsh-design-system'
+import { Input, MagnifyingGlassIcon, RepositoryCard, Token } from 'pluralsh-design-system'
 import Fuse from 'fuse.js'
+
+import { capitalize } from '../../utils/string'
 
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 
@@ -16,7 +18,7 @@ const searchOptions = {
 
 function MarketplaceRepositories({ installed, ...props }) {
   const scrollRef = useRef()
-  const [searchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
   const categories = searchParams.getAll('category')
   const tags = searchParams.getAll('tag')
   const [search, setSearch] = useState('')
@@ -79,6 +81,10 @@ function MarketplaceRepositories({ installed, ...props }) {
   const fuse = new Fuse(sortedRepositories, searchOptions)
 
   const resultRepositories = search ? fuse.search(search).map(({ item }) => item) : sortedRepositories
+
+  function handleClearToken(key, value) {
+    setSearchParams(searchParams.set(key, searchParams.getAll(key).filter(v => v !== value)))
+  }
 
   function renderFeatured() {
     const featuredA = sortedRepositories.shift()
@@ -145,8 +151,9 @@ function MarketplaceRepositories({ installed, ...props }) {
       position="relative"
       {...props}
     >
-      <Div>
+      <Flex align="center">
         <Input
+          mr={1}
           small
           startIcon={(
             <MagnifyingGlassIcon
@@ -158,7 +165,17 @@ function MarketplaceRepositories({ installed, ...props }) {
           value={search}
           onChange={event => setSearch(event.target.value)}
         />
-      </Div>
+        {categories.map(category => (
+          <Token onClose={() => handleClearToken('category', category)}>
+            {capitalize(category)}
+          </Token>
+        ))}
+        {tags.map(tag => (
+          <Token onClose={() => handleClearToken('tag', tag)}>
+            {capitalize(tag)}
+          </Token>
+        ))}
+      </Flex>
       <Div
         flexShrink={0}
         height={16}

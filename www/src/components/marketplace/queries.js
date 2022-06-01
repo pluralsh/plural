@@ -5,7 +5,7 @@ import { PageInfo } from '../../models/misc'
 
 export const MARKETPLACE_QUERY = gql`
   query Repos($publisherId: ID, $tag: String, $cursor: String) {
-    repositories(publisherId: $publisherId, tag: $tag, after: $cursor, first: 1000) {
+    repositories(publisherId: $publisherId, tag: $tag, after: $cursor, first: 200) {
       pageInfo {
         ...PageInfo
       }

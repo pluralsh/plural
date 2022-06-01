@@ -92,8 +92,8 @@ export const DEFAULT_COLOR_THEME = {
     dark: '#22293b',
   },
   text: {
-    light: '#3b454e',
-    dark: 'white',
+    light: 'inherit',
+    dark: 'inherit',
   },
   'text-light': {
     light: 'lighten(text, 15)',

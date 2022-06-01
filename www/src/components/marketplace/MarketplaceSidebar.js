@@ -18,10 +18,11 @@ const hoverStyle = {
   },
 }
 
-function ExploreSidebarCheckbox({ toggled, onClick, label }) {
+function MarketplaceSidebarCheckbox({ toggled, onClick, label }) {
   return (
     <Checkbox
       mb={0.25}
+      small
       checked={toggled}
       onChange={onClick}
     >
@@ -35,7 +36,7 @@ function ExploreSidebarCheckbox({ toggled, onClick, label }) {
   )
 }
 
-function ExploreSidebar() {
+function MarketplaceSidebar(props) {
   const [nDisplayedTags, setNDisplayedTags] = useState(12)
   const { data: categoriesData } = useQuery(CATEGORIES)
   const [tags,, hasMoreTags, fetchMoreTags] = usePaginatedQuery(
@@ -88,6 +89,7 @@ function ExploreSidebar() {
       pl={2}
       maxHeight="100%"
       overflowY="auto"
+      {...props}
     >
       <P
         mb={1}
@@ -97,7 +99,7 @@ function ExploreSidebar() {
         Categories
       </P>
       {sortedCategories.map(({ category }) => (
-        <ExploreSidebarCheckbox
+        <MarketplaceSidebarCheckbox
           key={category}
           toggled={isToggled('category', category)}
           onClick={() => handleToggle('category', category)}
@@ -113,7 +115,7 @@ function ExploreSidebar() {
         Publishers
       </P>
       {sortedPublishers.map(publisher => (
-        <ExploreSidebarCheckbox
+        <MarketplaceSidebarCheckbox
           key={publisher}
           toggled={isToggled('publisher', publisher)}
           onClick={() => handleToggle('publisher', publisher)}
@@ -129,7 +131,7 @@ function ExploreSidebar() {
         Tags
       </P>
       {sortedTags.map(({ tag, count }) => (
-        <ExploreSidebarCheckbox
+        <MarketplaceSidebarCheckbox
           key={tag}
           toggled={isToggled('tag', tag)}
           onClick={() => handleToggle('tag', tag)}
@@ -150,4 +152,4 @@ function ExploreSidebar() {
     </Div>
   )
 }
-export default ExploreSidebar
+export default MarketplaceSidebar

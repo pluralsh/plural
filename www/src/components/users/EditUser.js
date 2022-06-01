@@ -39,7 +39,7 @@ export function EditSelect({ name, edit, icon, base }) {
       name={name}
       label={name}
       icon={icon}
-      onClick={edit === editing ? null : () => navigate(`${base || '/me/edit/'}${edit}`)}
+      onClick={edit === editing ? null : () => navigate(`${base || '/user/edit/'}${edit}`)}
       selected={editing === edit}
     />
   )
@@ -95,7 +95,7 @@ export default function EditUser() {
 
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
   useEffect(() => {
-    setBreadcrumbs([{ url: '/me/edit', text: 'me' }, { url: `/me/edit/${editing}`, text: editing }])
+    setBreadcrumbs([{ url: '/user/edit', text: 'me' }, { url: `/user/edit/${editing}`, text: editing }])
   }, [setBreadcrumbs, editing])
 
   return (

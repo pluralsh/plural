@@ -1,8 +1,8 @@
+import { useState } from 'react'
 import { useQuery } from '@apollo/client'
 import { useSearchParams } from 'react-router-dom'
-import { A, Checkbox, Div, P } from 'honorable'
-
-import { useState } from 'react'
+import { A, Accordion, Div, P } from 'honorable'
+import { Checkbox } from 'pluralsh-design-system'
 
 import { CATEGORIES, REPO_TAGS } from '../repos/queries'
 
@@ -84,71 +84,64 @@ function MarketplaceSidebar(props) {
 
   return (
     <Div
-      pt={2}
-      pb={3}
-      pl={2}
       maxHeight="100%"
       overflowY="auto"
       {...props}
     >
-      <P
-        mb={1}
-        body0
-        fontWeight="bold"
+      <Accordion
+        ghost
+        defaultExpanded
+        title={`Categories (${sortedCategories.length})`}
+        borderBottom="1px solid border !important"
       >
-        Categories
-      </P>
-      {sortedCategories.map(({ category }) => (
-        <MarketplaceSidebarCheckbox
-          key={category}
-          toggled={isToggled('category', category)}
-          onClick={() => handleToggle('category', category)}
-          label={capitalize(category)}
-        />
-      ))}
-      <P
-        mt={2}
-        mb={1}
-        body0
-        fontWeight="bold"
+        {sortedCategories.map(({ category }) => (
+          <MarketplaceSidebarCheckbox
+            key={category}
+            toggled={isToggled('category', category)}
+            onClick={() => handleToggle('category', category)}
+            label={capitalize(category)}
+          />
+        ))}
+      </Accordion>
+      <Accordion
+        ghost
+        title={`Publisher (${sortedPublishers.length})`}
+        borderBottom="1px solid border !important"
       >
-        Publishers
-      </P>
-      {sortedPublishers.map(publisher => (
-        <MarketplaceSidebarCheckbox
-          key={publisher}
-          toggled={isToggled('publisher', publisher)}
-          onClick={() => handleToggle('publisher', publisher)}
-          label={capitalize(publisher)}
-        />
-      ))}
-      <P
-        mt={2}
-        mb={1}
-        body0
-        fontWeight="bold"
+        {sortedPublishers.map(publisher => (
+          <MarketplaceSidebarCheckbox
+            key={publisher}
+            toggled={isToggled('publisher', publisher)}
+            onClick={() => handleToggle('publisher', publisher)}
+            label={capitalize(publisher)}
+          />
+        ))}
+      </Accordion>
+      <Accordion
+        ghost
+        defaultExpanded
+        title={`Tags (${sortedTags.length}${((nDisplayedTags < tags.length) || hasMoreTags) ? '+' : ''})`}
       >
-        Tags
-      </P>
-      {sortedTags.map(({ tag, count }) => (
-        <MarketplaceSidebarCheckbox
-          key={tag}
-          toggled={isToggled('tag', tag)}
-          onClick={() => handleToggle('tag', tag)}
-          label={`${tag} (${count})`}
-        />
-      ))}
-      {((nDisplayedTags < tags.length) || hasMoreTags) && (
-        <A
-          mt={0.5}
-          ml="22px"
-          color="text-light"
-          onClick={handleMoreTagsClick}
-          {...hoverStyle}
-        >
-          See More +
-        </A>
-      )}
+        {sortedTags.map(({ tag, count }) => (
+          <MarketplaceSidebarCheckbox
+            key={tag}
+            toggled={isToggled('tag', tag)}
+            onClick={() => handleToggle('tag', tag)}
+            label={`${tag} (${count})`}
+          />
+        ))}
+        {((nDisplayedTags < tags.length) || hasMoreTags) && (
+          <A
+            mt={0.5}
+            ml="22px"
+            color="text-light"
+            onClick={handleMoreTagsClick}
+            {...hoverStyle}
+          >
+            See More +
+          </A>
+        )}
+      </Accordion>
     </Div>
   )
 }

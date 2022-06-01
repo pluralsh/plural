@@ -10,7 +10,7 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 
 import { MARKETPLACE_QUERY } from './queries'
 
-function MarketplaceRepositories({ installed }) {
+function MarketplaceRepositories({ installed, ...props }) {
   const scrollRef = useRef()
   const [searchParams] = useSearchParams()
   const categories = searchParams.getAll('category')
@@ -133,7 +133,9 @@ function MarketplaceRepositories({ installed }) {
   return (
     <Div
       overflowY="auto"
+      overflowX="hidden"
       ref={scrollRef}
+      {...props}
     >
       {shouldRenderFeatured && renderFeatured()}
       <P

@@ -58,27 +58,26 @@ function Marketplace({ installed }) {
         flexGrow={1}
         maxHeight="100%"
       >
-        <Flex
-          direction="column"
+        <MarketplaceRepositories
+          installed={installed}
           flexGrow={1}
-        >
-          <MarketplaceRepositories
-            installed={installed}
-          />
-        </Flex>
+        />
         <Div
           ml={areFiltersOpen ? 2 : 0}
+          mr={areFiltersOpen ? 0 : `-${256 - 32}px`}
+          transform={areFiltersOpen ? 'translateX(0)' : 'translateX(100%)'}
+          opacity={areFiltersOpen ? 1 : 0}
           flexShrink={0}
           position="sticky"
           top={0}
-          left={0}
-          width={areFiltersOpen ? 256 - 32 : 0}
-          height={`calc(100% - ${32}px)`}
+          right={0}
+          width={256 - 32}
+          height={`calc(100% - ${64 + 8}px)`}
           overflowY="auto"
-          border={areFiltersOpen ? '1px solid border' : 'none'}
+          border="1px solid border"
           backgroundColor="fill-one"
           borderRadius="large"
-          transition="width 250ms ease, border 250ms ease, margin-left 250ms ease"
+          transition="all 250ms ease"
         >
           <MarketplaceSidebar minWidth={256 - 32} />
         </Div>

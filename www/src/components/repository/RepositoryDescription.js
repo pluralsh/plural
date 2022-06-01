@@ -18,6 +18,7 @@ function RepositoryDescription() {
       </H2>
       <Flex
         mt={2}
+        pb={8}
         direction="column"
         flexGrow={1}
         maxWidth="700px"

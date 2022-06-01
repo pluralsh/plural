@@ -8,7 +8,19 @@
   <a href="#contributing">
     <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square">
   </a>
+  <img alt="GitHub language count" src="https://img.shields.io/github/languages/count/pluralsh/plural">
+  <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/pluralsh/plural">
+  <img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/pluralsh/plural">
+  <img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/pluralsh/plural">
+  <img alt="GitHub issues" src="https://img.shields.io/github/issues/pluralsh/plural">
+  <img alt="GitHub closed issues" src="https://img.shields.io/github/issues-closed/pluralsh/plural">
+  <img alt="GitHub pull requests" src="https://img.shields.io/github/issues-pr/pluralsh/plural">
+  <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/pluralsh/plural">
+  <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/pluralsh/plural">
+  <img alt="GitHub Org's stars" src="https://img.shields.io/github/stars/pluralsh?style=social">
+  <img alt="YouTube Channel Views" src="https://img.shields.io/youtube/channel/views/UCKpIHwAFwvXhM-RaR1h77Jw?style=social">
 </p>
+
 
 ## What is Plural?
 
@@ -149,6 +161,12 @@ You should be able to view your emails at http://localhost:4002/sent_emails
 You'll need to send an email to see them, which you can use the iex repl to do for you.
 
 To actually write an email, you'll want to modify the templates in `apps/email/lib/email_web/templates/email` and the layout is in `apps/email/lib/email_web/templates/layout/email.html.eex`
+
+## Roadmap
+See what we're working on in these GitHub projects. Help us prioritize issues by reacting with an emoji on the issue!
+* Application Onboarding Roadmap: https://github.com/orgs/pluralsh/projects/2/views/2
+* Plural Core Issues: https://github.com/pluralsh/plural/issues
+* Plural CLI Issues: https://github.com/pluralsh/plural-cli/issues
 
 ## Contributing
 

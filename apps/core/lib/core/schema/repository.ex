@@ -48,6 +48,11 @@ defmodule Core.Schema.Repository do
       field :auth_method, Core.Schema.OIDCProvider.AuthMethod
     end
 
+    embeds_one :license, License, on_replace: :update do
+      field :name, :string
+      field :url,  :string
+    end
+
     belongs_to :integration_resource_definition, ResourceDefinition, on_replace: :update
     belongs_to :publisher, Publisher
 
@@ -152,6 +157,7 @@ defmodule Core.Schema.Repository do
     model
     |> cast(attrs, @valid)
     |> cast_embed(:oauth_settings, with: &oauth_settings/2)
+    |> cast_embed(:license, with: &license_changeset/2)
     |> cast_assoc(:tags, with: &Tag.tag_changeset(&1, &2, :repository))
     |> cast_assoc(:dashboards)
     |> cast_assoc(:database)
@@ -177,4 +183,6 @@ defmodule Core.Schema.Repository do
     |> cast(attrs, [:auth_method, :uri_format])
     |> validate_required([:auth_method, :uri_format])
   end
+
+  def license_changeset(model, attrs \\ %{}), do: cast(model, attrs, [:url, :name])
 end

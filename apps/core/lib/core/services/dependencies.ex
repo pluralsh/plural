@@ -49,7 +49,7 @@ defmodule Core.Services.Dependencies do
   ) do
     case prov in providers do
       true -> validate(deps || [], user)
-      false -> {:error, "provider #{prov} does not match supported providers [#{Enum.join(providers, ",")}]"}
+      false -> {:error, "Your user's provider #{prov} does not match supported providers [#{Enum.join(providers, ",")}].  You'll need to use a different login to install this resource"}
     end
   end
 

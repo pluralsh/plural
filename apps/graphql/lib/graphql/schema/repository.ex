@@ -127,6 +127,11 @@ defmodule GraphQl.Schema.Repository do
     timestamps()
   end
 
+  object :license do
+    field :name, :string
+    field :url,  :string
+  end
+
   object :repository do
     field :id,             non_null(:id)
     field :name,           non_null(:string)
@@ -138,6 +143,7 @@ defmodule GraphQl.Schema.Repository do
     field :default_tag,    :string
     field :git_url,        :string
     field :readme,         :string
+    field :license,        :license
     field :homepage,       :string
     field :publisher,      :publisher, resolve: dataloader(User)
     field :plans,          list_of(:plan), resolve: dataloader(Payments)

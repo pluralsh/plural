@@ -142,6 +142,7 @@ function MarketplaceRepositories({ installed, ...props }) {
   return (
     <Flex
       direction="column"
+      position="relative"
       {...props}
     >
       <Div>
@@ -159,7 +160,16 @@ function MarketplaceRepositories({ installed, ...props }) {
         />
       </Div>
       <Div
-        mt={1}
+        flexShrink={0}
+        height={16}
+        width="100%"
+        background="linear-gradient(0deg, transparent 0%, fill-zero 50%);"
+        position="absolute"
+        top={32}
+      />
+      <Div
+        pt={1}
+        pb={8}
         overflowY="auto"
         overflowX="hidden"
         ref={scrollRef}

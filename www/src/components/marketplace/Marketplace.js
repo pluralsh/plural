@@ -12,7 +12,8 @@ function Marketplace({ installed }) {
 
   return (
     <Flex
-      p={2}
+      pt={1}
+      px={2}
       direction="column"
       overflow="hidden"
       flexGrow={1}

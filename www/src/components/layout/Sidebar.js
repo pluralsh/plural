@@ -150,7 +150,7 @@ ref
     )
   }
 
-  return wrapTooltip(wrapLink(
+  return wrapLink(
     <Flex
       ref={ref}
       py={0.75}
@@ -207,7 +207,7 @@ ref
         {endIcon}
       </Flex>
     </Flex>
-  ))
+  )
 }
 
 const SidebarItem = forwardRef(SidebarItemRef)

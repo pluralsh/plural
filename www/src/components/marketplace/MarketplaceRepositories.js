@@ -89,7 +89,6 @@ function MarketplaceRepositories({ installed }) {
           <RepositoryCard
             as={Link}
             to={`/repository/${featuredA.id}`}
-            installed={!!featuredA.installation}
             color="text"
             textDecoration="none"
             flexGrow={1}
@@ -98,14 +97,13 @@ function MarketplaceRepositories({ installed }) {
             featured
             title={featuredA.name}
             imageUrl={featuredA.darkIcon || featuredA.icon}
-            subtitle={featuredA.publisher?.name?.toUpperCase()}
-          >
-            {featuredA.description}
-          </RepositoryCard>
+            publisher={featuredA.publisher?.name?.toUpperCase()}
+            description={featuredA.description}
+            tags={featuredA.tags.map(({ tag }) => tag)}
+          />
           <RepositoryCard
             as={Link}
             to={`/repository/${featuredB.id}`}
-            installed={!!featuredB.installation}
             color="text"
             textDecoration="none"
             ml={2}
@@ -115,10 +113,10 @@ function MarketplaceRepositories({ installed }) {
             featured
             title={featuredB.name}
             imageUrl={featuredB.darkIcon || featuredB.icon}
-            subtitle={featuredB.publisher?.name?.toUpperCase()}
-          >
-            {featuredB.description}
-          </RepositoryCard>
+            publisher={featuredB.publisher?.name?.toUpperCase()}
+            description={featuredB.description}
+            tags={featuredB.tags.map(({ tag }) => tag)}
+          />
         </Flex>
       </>
     )
@@ -156,7 +154,6 @@ function MarketplaceRepositories({ installed }) {
             key={repository.id}
             as={Link}
             to={`/repository/${repository.id}`}
-            installed={!!repository.installation}
             color="text"
             textDecoration="none"
             mx={1}
@@ -166,10 +163,10 @@ function MarketplaceRepositories({ installed }) {
             width="calc(33.333% - 2 * 16px)"
             title={repository.name}
             imageUrl={repository.darkIcon || repository.icon}
-            subtitle={repository.publisher?.name?.toUpperCase()}
-          >
-            {repository.description}
-          </RepositoryCard>
+            publisher={repository.publisher?.name?.toUpperCase()}
+            description={repository.description}
+            tags={repository.tags.map(({ tag }) => tag)}
+          />
         ))}
       </Flex>
       {loadingRepositories && (

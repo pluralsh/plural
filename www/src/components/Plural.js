@@ -162,7 +162,7 @@ export function PluralInner() {
             {/* --- SHELL --- */}
             <Route
               path="/shell"
-              component={<CloudShell />}
+              element={<CloudShell />}
             />
             {/* --- ACCOUNT --- */}
             <Route

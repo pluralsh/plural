@@ -272,7 +272,7 @@ function Sidebar({
         <Link to="/">
           <Flex
             py={1}
-            pl={1.5}
+            pl={1.75}
             flexShrink={0}
             align="center"
             borderBottom="1px solid border"

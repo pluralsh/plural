@@ -17,7 +17,7 @@ function Marketplace({ installed }) {
       direction="column"
       overflow="hidden"
       flexGrow={1}
-      maxHeight="100%"
+      maxWidth="100%"
     >
       <Flex flexShrink={0}>
         <Link
@@ -53,10 +53,9 @@ function Marketplace({ installed }) {
         </Flex>
       </Flex>
       <Flex
-        id="1"
         mt={1}
         flexGrow={1}
-        maxHeight="100%"
+        overflow="hidden"
       >
         <MarketplaceRepositories
           installed={installed}

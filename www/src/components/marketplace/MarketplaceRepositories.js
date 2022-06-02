@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { Div, Flex, P } from 'honorable'
+import { Button, Div, Flex, P } from 'honorable'
 import { Input, MagnifyingGlassIcon, RepositoryCard, Token } from 'pluralsh-design-system'
 import Fuse from 'fuse.js'
 
@@ -83,7 +83,16 @@ function MarketplaceRepositories({ installed, ...props }) {
   const resultRepositories = search ? fuse.search(search).map(({ item }) => item) : sortedRepositories
 
   function handleClearToken(key, value) {
-    setSearchParams(searchParams.set(key, searchParams.getAll(key).filter(v => v !== value)))
+    const existing = searchParams.getAll(key)
+
+    setSearchParams({
+      ...searchParams,
+      [key]: existing.filter(v => v !== value),
+    })
+  }
+
+  function handleClearTokens() {
+    setSearchParams({})
   }
 
   function renderFeatured() {
@@ -148,12 +157,14 @@ function MarketplaceRepositories({ installed, ...props }) {
   return (
     <Flex
       direction="column"
-      position="relative"
       {...props}
     >
-      <Flex align="center">
+      <Flex
+        align="flex-start"
+        position="relative"
+      >
         <Input
-          mr={1}
+          mr={1.5}
           small
           startIcon={(
             <MagnifyingGlassIcon
@@ -165,30 +176,54 @@ function MarketplaceRepositories({ installed, ...props }) {
           value={search}
           onChange={event => setSearch(event.target.value)}
         />
-        {categories.map(category => (
-          <Token onClose={() => handleClearToken('category', category)}>
-            {capitalize(category)}
-          </Token>
-        ))}
-        {tags.map(tag => (
-          <Token onClose={() => handleClearToken('tag', tag)}>
-            {capitalize(tag)}
-          </Token>
-        ))}
+        <Flex
+          wrap="wrap"
+          flexShrink={1}
+        >
+          {categories.map(category => (
+            <Token
+              mr={0.25}
+              mb={0.25}
+              onClose={() => handleClearToken('category', category)}
+            >
+              {capitalize(category)}
+            </Token>
+          ))}
+          {tags.map(tag => (
+            <Token
+              mr={0.25}
+              mb={0.25}
+              onClose={() => handleClearToken('tag', tag)}
+            >
+              {capitalize(tag)}
+            </Token>
+          ))}
+          {!!(categories.length || tags.length) && (
+            <Button
+              tertiary
+              small
+              onClick={() => handleClearTokens()}
+            >
+              Clear All
+            </Button>
+          )}
+        </Flex>
+        <Div
+          flexShrink={0}
+          height={16}
+          width="100%"
+          background="linear-gradient(0deg, transparent 0%, fill-zero 50%);"
+          position="absolute"
+          top="100%"
+          zIndex={999}
+        />
       </Flex>
-      <Div
-        flexShrink={0}
-        height={16}
-        width="100%"
-        background="linear-gradient(0deg, transparent 0%, fill-zero 50%);"
-        position="absolute"
-        top={32}
-      />
       <Div
         pt={1}
         pb={8}
         overflowY="auto"
         overflowX="hidden"
+        position="relative"
         ref={scrollRef}
       >
         {shouldRenderFeatured && renderFeatured()}

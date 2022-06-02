@@ -5,15 +5,16 @@ import Sidebar from './Sidebar'
 function ApplicationLayout({ children }) {
   return (
     <Flex
+      position="relative"
+      width="100vw"
+      maxWidth="100vw"
       height="100vh"
       maxHeight="100vh"
-      position="relative"
+      overflow="hidden"
     >
       <Sidebar />
       <Flex
         direction="column"
-        height="100vh"
-        maxHeight="100vh"
         flexGrow={1}
       >
         {children}

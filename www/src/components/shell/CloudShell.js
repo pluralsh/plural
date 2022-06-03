@@ -4,7 +4,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useMutation, useQuery } from '@apollo/client'
 import { BrowserIcon, CloudIcon, GearTrainIcon, GitHubIcon, Stepper } from 'pluralsh-design-system'
 import { Button, Div, Flex, H1, H2, P, Text } from 'honorable'
-import { Transition, TransitionGroup } from 'react-transition-group'
+import { CSSTransition, Transition } from 'react-transition-group'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
@@ -419,7 +419,7 @@ export function CloudShell({ oAuthCallback }) {
   const [created, setCreated] = useState(false)
   const [splashTimerDone, setSplashTimerDone] = useState(false)
   const [stepIndex, setStepIndex] = useState(0)
-  const splashWaitTime = 1750
+  const splashWaitTime = 1200
 
   useEffect(() => {
     setTimeout(() => {
@@ -444,7 +444,6 @@ export function CloudShell({ oAuthCallback }) {
   const logoSizeSmall = 40
   const logoSize = showSplashScreen ? logoSizeBig : logoSizeSmall
   const logoTransition = 'all 0.6s cubic-bezier(0.5, 0, 0.5, 1)'
-
   const splashTranslate = 'calc(50vh - (60px + 48px + 48px))'
 
   const fadeTransitionStyles = {
@@ -454,6 +453,57 @@ export function CloudShell({ oAuthCallback }) {
     exited: { opacity: 0 },
   }
 
+  const splashEnterTransitions = {
+    opacity: 0,
+    transform: 'translateY(30px)',
+    '.appear &, .enter &': {
+      opacity: 0,
+      transform: 'translateY(30px)',
+    },
+    '.appear-active &, .enter-active &': {
+      transition: 'all 0.7s ease',
+    },
+    '.appear-active &, .enter-active &, .appear-done &, .enter-done': {
+      opacity: 1,
+      transform: 'translate(0)',
+    },
+  }
+  const splashLogoTransitions = {
+    ...splashEnterTransitions,
+    '.appear-active &, .enter-active &': {
+      transition: 'all 0.7s ease',
+      transitionDelay: '0.1s',
+    },
+    '.appear &, .enter &': {
+      opacity: 0,
+      transform: 'translateY(30px) scale(0.5)',
+    },
+    '.appear-active &, .enter-active &, .appear-done &, .enter-done': {
+      opacity: 1,
+      transform: 'translate(0) scale(1)',
+    },
+    '.exit &, .exit-active &, .exit-done &': {
+      opacity: 1,
+      transform: 'none',
+    },
+  }
+  const splashTextTransitions = {
+    ...splashEnterTransitions,
+    '.exit &': {
+      opacity: 1,
+      transform: 'translateY(0)',
+    },
+    '.exit-active &': {
+      transition: 'all 0.3s ease',
+    },
+    '.exit-active &, .exit-done &': {
+      opacity: 0,
+    },
+    '.exit-done &': {
+      visibility: 'hidden',
+    },
+  }
+
   return (
     <Flex
       width="100%"
@@ -461,64 +511,90 @@ export function CloudShell({ oAuthCallback }) {
       flexDirection="column"
       mt={3}
     >
-      <Flex
-        width="100%"
-        justify="center"
-        transform={`translateY(${showSplashScreen ? splashTranslate : 0})`}
-        transition={logoTransition}
-        zIndex={10}
+      <CSSTransition
+        in={showSplashScreen}
+        appear
+        timeout={1000}
       >
         <Div
-          width={logoSizeSmall}
-          height={logoSizeSmall}
-          transform={`scale(0.${logoSize})`}
+          transform={`translateY(${showSplashScreen ? splashTranslate : 0})`}
           transition={logoTransition}
         >
-          <LoopingLogo
-            light
-            still={!showSplashScreen}
-            height={logoSize}
-            scale={1}
-          />
+          <Flex
+            width="100%"
+            justify="center"
+            zIndex={10}
+            {...splashLogoTransitions}
+          >
+            <Div
+              width={logoSizeSmall}
+              height={logoSizeSmall}
+              transform={`scale(0.${logoSize})`}
+              transition={logoTransition}
+            >
+              <LoopingLogo
+                light
+                still
+                height={logoSize}
+                scale={1}
+              />
+            </Div>
+          </Flex>
         </Div>
-      </Flex>
-      {showSplashScreen && (
-        <H2
-          mt={`-${logoSizeBig - logoSizeSmall}px`}
-          pt={3}
-          fontSize={60}
-          lineHeight="115%"
-          fontWeight="500"
-          letterSpacing="-1px"
-          width="100%"
-          fontFamily="'Monument Semi-Mono', 'Monument'"
-          textAlign="center"
+          
+      </CSSTransition>
+      <CSSTransition
+        in={showSplashScreen}
+        appear
+        timeout={1000}
+      >
+        <Div
           transform={`translateY(${splashTranslate})`}
+          position="relative"
+          width="100%"
+          height={0}
         >
-          Welcome to Plural
-        </H2>
-      )}
-      <TransitionGroup>
-        {!showSplashScreen && (
-          <Transition key="88">
-            {transitionState => (
-              <Div
-                width="100%"
-                maxWidth={640}
-                mt={2}
-                px={2}
-                transition="all 5s ease"
-                {...fadeTransitionStyles[transitionState]}
-              >
-                <Div mb={3}>
-                  <DemoStepper stepIndex={stepIndex} />
-                </Div>
-                <CreateARepoCard data={data} />
-              </Div>
-            )}
-          </Transition>
+          <H2
+            position="absolute"
+            mt={`-${logoSizeBig - logoSizeSmall}px`}
+            pt={3}
+            fontSize={60}
+            lineHeight="115%"
+            fontWeight="500"
+            letterSpacing="-1px"
+            width="100%"
+            fontFamily="'Monument Semi-Mono', 'Monument'"
+            textAlign="center"
+            {...splashTextTransitions}
+          >
+            Welcome to Plural
+          </H2>
+        </Div>
+      </CSSTransition>
+      <Transition
+        in={!showSplashScreen}
+        mountOnEnter
+        unmountOnExit
+        timeout={1000}
+      >
+        {transitionState => (
+          <Div
+            width="100%"
+            maxWidth={640}
+            mt={2}
+            px={2}
+            transition="all 0.6s ease"
+            opacity={0}
+            className={transitionState}
+            {...fadeTransitionStyles[transitionState]}
+          >
+            <Div mb={3}>
+              <DemoStepper stepIndex={stepIndex} />
+            </Div>
+            <CreateARepoCard data={data} />
+          </Div>
         )}
-      </TransitionGroup>
+      </Transition>
     </Flex>
   )
 }

@@ -1,4 +1,4 @@
-import { createElement, useCallback, useEffect, useState } from 'react'
+import { createElement, useCallback, useEffect, useMemo, useState } from 'react'
 import { Box } from 'grommet'
 import { useInRouterContext, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { useMutation, useQuery } from '@apollo/client'
@@ -446,7 +446,7 @@ function DemoStepper({ stepIndex = 0, ...props }) {
   )
 }
 
-export function CloudShell() {
+export function CloudShell({ oAuthCallback }) {
   const { data } = useQuery(AUTH_URLS)
   const { data: shellData } = useQuery(CLOUD_SHELL, { fetchPolicy: 'cache-and-network' })
   const [mutation] = useMutation(REBOOT_SHELL)
@@ -457,7 +457,7 @@ export function CloudShell() {
   useEffect(() => {
     setTimeout(() => {
       setSplashTimerDone(true)
-    }, 1)
+    }, 4000)
   }, [])
 
   useEffect(() => {
@@ -467,92 +467,105 @@ export function CloudShell() {
     }
   }, [shellData, setCreated, mutation])
 
-  if (!shellData || !data || !splashTimerDone) return <LoopingLogo dark />
-
+  const showSplashScreen = useMemo(
+    () => (!shellData || !data || !splashTimerDone),
+    [shellData, data, splashTimerDone]
+  )
+  const urls = data?.scmAuthorization
   if ((shellData && shellData.shell) || created) return <Terminal />
-
-  const urls = data.scmAuthorization
 
   return (
     <Flex
       width="100%"
-      justifyContent="center"
+      alignItems="center"
+      flexDirection="column"
     >
-      <Div
-        width="100%"
-        maxWidth="600px"
-      >
-        <Div mb={3}>
-          <DemoStepper stepIndex={stepIndex} />
-        </Div>
-        <Div
-          backgroundColor="fill-one"
-          border="1px solid border"
-          borderRadius="normal"
-          p={2}
-          pt={1}
-        >
-          <H1
-            body2
-            lineHeight="24px"
-            fontWeight={400}
-            textTransform="uppercase"
-            letterSpacing="1px"
-            color="text-x-light"
-            mb={0.5}
-          >
-            Create a repository
-          </H1>
-          <P mb={1}>
-            We use GitOps to manage your application’s state. Use one of the following providers to get started.
-          </P>
-          <Flex mx={-1}>
-            {urls.map(({ provider, url }) => (
-              <Button
-                flex="1 1 100%"
-                p={1.5}
-                display="flex"
-                alignContent="center"
-                justifyItems="center"
-                backgroundColor="fill-two"
-                border="1px solid border-fill-two"
-                _hover={{ background: 'fill-two-hover' }}
-                mx={1}
-                onClick={() => {
-                  // START <<Remove this after dev>>
-                  const devTokens = {
-                    // GITLAB: '',
-                    GITHUB: 'b11776d43c92ddeec643',
-                  }
-                  console.log('process.env.NODE_ENV', process.env.NODE_ENV)
-                  console.log('devTokens[provider]', devTokens[provider])
-                  console.log('[provider]', provider)
-                  if (process.env.NODE_ENV !== 'production' && devTokens[provider]) {
-                    console.log('going to ', `/oauth/callback/${provider.toLowerCase()}/shell?code=${devTokens[provider]}`)
-                    window.location = `/oauth/callback/${provider.toLowerCase()}/shell?code=${devTokens[provider]}`
-                  }
-                  else {
-                  // END <<Remove this after dev>>
-                    window.location = url
-                  }
-                }}
-              >
-                {createElement(METHOD_ICONS[provider], { size: '40px' })}
-                <Text
-                  body1
-                >
-                  Create a {
-                    provider.toLowerCase() === 'github' ? 'GitHub' :
-                      provider.toLowerCase() === 'gitlab' ? 'Gitlab' :
-                        provider.toLowerCase()
-                  } repo
-                </Text>
-              </Button>
-            ))}
-          </Flex>
-        </Div>
+      <Div width="30px">
+        <LoopingLogo
+          light
+          still={!showSplashScreen}
+          height="12px"
+          scale="0.2"
+        />
       </Div>
-      
+      {
+        !showSplashScreen && (
+          <Div
+            width="100%"
+            maxWidth="600px"
+          >
+            <Div mb={3}>
+              <DemoStepper stepIndex={stepIndex} />
+            </Div>
+            <Div
+              backgroundColor="fill-one"
+              border="1px solid border"
+              borderRadius="normal"
+              p={2}
+              pt={1}
+            >
+              <H1
+                body2
+                lineHeight="24px"
+                fontWeight={400}
+                textTransform="uppercase"
+                letterSpacing="1px"
+                color="text-x-light"
+                mb={0.5}
+              >
+                Create a repository
+              </H1>
+              <P mb={1}>
+                We use GitOps to manage your application’s state. Use one of the following providers to get started.
+              </P>
+              <Flex mx={-1}>
+                {urls.map(({ provider, url }) => (
+                  <Button
+                    flex="1 1 100%"
+                    p={1.5}
+                    display="flex"
+                    alignContent="center"
+                    justifyItems="center"
+                    backgroundColor="fill-two"
+                    border="1px solid border-fill-two"
+                    _hover={{ background: 'fill-two-hover' }}
+                    mx={1}
+                    onClick={() => {
+                  // START <<Remove this after dev>>
+                      const devTokens = {
+                    // GITLAB: '',
+                        GITHUB: 'b11776d43c92ddeec643',
+                      }
+                      console.log('process.env.NODE_ENV', process.env.NODE_ENV)
+                      console.log('devTokens[provider]', devTokens[provider])
+                      console.log('[provider]', provider)
+                      if (process.env.NODE_ENV !== 'production' && devTokens[provider]) {
+                        console.log('going to ', `/oauth/callback/${provider.toLowerCase()}/shell?code=${devTokens[provider]}`)
+                        window.location = `/oauth/callback/${provider.toLowerCase()}/shell?code=${devTokens[provider]}`
+                      }
+                      else {
+                  // END <<Remove this after dev>>
+                        window.location = url
+                      }
+                    }}
+                  >
+                    {createElement(METHOD_ICONS[provider], { size: '40px' })}
+                    <Text
+                      body1
+                    >
+                      Create a {
+                        provider.toLowerCase() === 'github' ? 'GitHub' :
+                          provider.toLowerCase() === 'gitlab' ? 'Gitlab' :
+                            provider.toLowerCase()
+                      } repo
+                    </Text>
+                  </Button>
+                ))}
+              </Flex>
+            </Div>
+          </Div>
+        )
+      }
     </Flex>
   )
 }

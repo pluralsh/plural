@@ -4,6 +4,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useMutation, useQuery } from '@apollo/client'
 import { BrowserIcon, CloudIcon, GearTrainIcon, GitHubIcon, Stepper } from 'pluralsh-design-system'
 import { Button, Div, Flex, H1, H2, P, Text } from 'honorable'
+import { Transition, TransitionGroup } from 'react-transition-group'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
@@ -333,6 +334,7 @@ function CardButton(props) {
 
 function CreateARepoCard({ data }) {
   const urls = data?.scmAuthorization
+  console.log('data.scma', urls)
 
   return (
     <Div
@@ -357,7 +359,7 @@ function CreateARepoCard({ data }) {
         We use GitOps to manage your application’s state. Use one of the following providers to get started.
       </P>
       <Flex mx={-1}>
-        {urls.map(({ provider, url }) => {
+        {urls?.map(({ provider, url }) => {
           let providerLogo = null
           let providerName = provider.toLowerCase
           switch (provider.toLowerCase()) {
@@ -445,6 +447,13 @@ export function CloudShell({ oAuthCallback }) {
 
   const splashTranslate = 'calc(50vh - (60px + 48px + 48px))'
 
+  const fadeTransitionStyles = {
+    entering: { opacity: 1 },
+    entered: { opacity: 1 },
+    exiting: { opacity: 0 },
+    exited: { opacity: 0 },
+  }
+
   return (
     <Flex
       width="100%"
@@ -489,21 +498,27 @@ export function CloudShell({ oAuthCallback }) {
           Welcome to Plural
         </H2>
       )}
-      {
-        !showSplashScreen && (
-          <Div
-            width="100%"
-            maxWidth={640}
-            mt={2}
-            px={2}
-          >
-            <Div mb={3}>
-              <DemoStepper stepIndex={stepIndex} />
-            </Div>
-            <CreateARepoCard data={data} />
-          </Div>
-        )
-      }
+      <TransitionGroup>
+        {!showSplashScreen && (
+          <Transition key="88">
+            {transitionState => (
+              <Div
+                width="100%"
+                maxWidth={640}
+                mt={2}
+                px={2}
+                transition="all 5s ease"
+                {...fadeTransitionStyles[transitionState]}
+              >
+                <Div mb={3}>
+                  <DemoStepper stepIndex={stepIndex} />
+                </Div>
+                <CreateARepoCard data={data} />
+              </Div>
+            )}
+          </Transition>
+        )}
+      </TransitionGroup>
     </Flex>
   )
 }

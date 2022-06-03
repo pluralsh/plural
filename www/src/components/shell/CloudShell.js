@@ -3,7 +3,7 @@ import { Box } from 'grommet'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useMutation, useQuery } from '@apollo/client'
 import { BrowserIcon, CloudIcon, GearTrainIcon, GitHubIcon, StatusIpIcon, Stepper } from 'pluralsh-design-system'
-import { Button, Div, Flex, H1, P, Text } from 'honorable'
+import { Button, Div, Flex, H1, H2, P, Text } from 'honorable'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
@@ -338,7 +338,7 @@ export function CloudShell({ oAuthCallback }) {
   const [created, setCreated] = useState(false)
   const [splashTimerDone, setSplashTimerDone] = useState(false)
   const [stepIndex, setStepIndex] = useState(0)
-  const splashWaitTime = 100
+  const splashWaitTime = 500
 
   useEffect(() => {
     setTimeout(() => {
@@ -360,20 +360,47 @@ export function CloudShell({ oAuthCallback }) {
   const urls = data?.scmAuthorization
   if ((shellData && shellData.shell) || created) return <Terminal />
 
+  const logoSize = showSplashScreen ? 48 : 40
+  const logoTransition = {
+    transition: 'all 2s ease',
+  }
+
   return (
     <Flex
       width="100%"
       alignItems="center"
       flexDirection="column"
     >
-      <Div width="30px">
-        <LoopingLogo
-          light
-          still={!showSplashScreen}
-          height="12px"
-          scale="0.2"
-        />
+      <Div
+        width={logoSize}
+        height={logoSize}
+        {...logoTransition}
+      >
+        <Div
+          transform={`scale(0.${logoSize})`}
+          {...logoTransition}
+        >
+          <LoopingLogo
+            light
+            still={!showSplashScreen}
+            height={logoSize}
+            scale={1}
+          />
+        </Div>
       </Div>
+      {showSplashScreen && (
+        <H2
+          fontSize={60}
+          lineHeight="115%"
+          fontWeight="500"
+          letterSpacing="-1px"
+          width="100%"
+          fontFamily="'Monument Semi-Mono', 'Monument'"
+          textAlign="center"
+        >
+          Welcome to<br /> Plural
+        </H2>
+      )}
       {
         !showSplashScreen && (
           <Div

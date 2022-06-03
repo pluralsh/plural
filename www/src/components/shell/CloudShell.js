@@ -446,6 +446,23 @@ function DemoStepper({ stepIndex = 0, ...props }) {
   )
 }
 
+function CardButton(props) {
+  return (
+    <Button
+      flex="1 1 100%"
+      p={1.5}
+      display="flex"
+      alignContent="center"
+      justifyItems="center"
+      backgroundColor="fill-two"
+      border="1px solid border-fill-two"
+      _hover={{ background: 'fill-two-hover' }}
+      mx={1}
+      {...props}
+    />
+  )
+}
+
 export function CloudShell({ oAuthCallback }) {
   const { data } = useQuery(AUTH_URLS)
   const { data: shellData } = useQuery(CLOUD_SHELL, { fetchPolicy: 'cache-and-network' })
@@ -520,16 +537,7 @@ export function CloudShell({ oAuthCallback }) {
               </P>
               <Flex mx={-1}>
                 {urls.map(({ provider, url }) => (
-                  <Button
-                    flex="1 1 100%"
-                    p={1.5}
-                    display="flex"
-                    alignContent="center"
-                    justifyItems="center"
-                    backgroundColor="fill-two"
-                    border="1px solid border-fill-two"
-                    _hover={{ background: 'fill-two-hover' }}
-                    mx={1}
+                  <CardButton
                     onClick={() => {
                   // START <<Remove this after dev>>
                       const devTokens = {
@@ -559,7 +567,7 @@ export function CloudShell({ oAuthCallback }) {
                             provider.toLowerCase()
                       } repo
                     </Text>
-                  </Button>
+                  </CardButton>
                 ))}
               </Flex>
             </Div>

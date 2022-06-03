@@ -443,14 +443,38 @@ export function CloudShell({ oAuthCallback }) {
   const logoSizeBig = 48
   const logoSizeSmall = 40
   const logoSize = showSplashScreen ? logoSizeBig : logoSizeSmall
-  const logoTransition = 'all 0.6s cubic-bezier(0.5, 0, 0.5, 1)'
-  const splashTranslate = 'calc(50vh - (60px + 48px + 48px))'
 
   const fadeTransitionStyles = {
     entering: { opacity: 1 },
     entered: { opacity: 1 },
     exiting: { opacity: 0 },
     exited: { opacity: 0 },
+  }
+
+  const splashTranslate = 'calc(50vh - (110px))'
+
+  const logoTranslateTransition = {
+    '&, &.enter, &.enter-active, &.enter-done, &.exit': {
+      transform: `translateY(${splashTranslate})`,
+    },
+    '&.exit-active': {
+      transition: 'all 0.6s cubic-bezier(0.5, 0, 0.5, 1)',
+    },
+    '&.exit-active, &.exit-done': {
+      transform: 'translateY(0)',
+    },
+  }
+
+  const logoScaleTransition = {
+    '&, .enter &, .enter-active &, .enter-done &, .exit &': {
+      transform: `scale(0.${logoSizeBig})`,
+    },
+    '.exit-active &': {
+      transition: 'all 0.6s cubic-bezier(0.5, 0, 0.5, 1)',
+    },
+    '.exit-active &, .exit-done &': {
+      transform: `scale(0.${logoSizeSmall})`,
+    },
   }
 
   const splashEnterTransitions = {
@@ -465,7 +489,7 @@ export function CloudShell({ oAuthCallback }) {
     },
     '.appear-active &, .enter-active &, .appear-done &, .enter-done': {
       opacity: 1,
-      transform: 'translate(0)',
+      transform: 'translateY(0)',
     },
   }
   const splashLogoTransitions = {
@@ -480,7 +504,7 @@ export function CloudShell({ oAuthCallback }) {
     },
     '.appear-active &, .enter-active &, .appear-done &, .enter-done': {
       opacity: 1,
-      transform: 'translate(0) scale(1)',
+      transform: 'translateY(0) scale(1)',
     },
     '.exit &, .exit-active &, .exit-done &': {
       opacity: 1,
@@ -517,20 +541,20 @@ export function CloudShell({ oAuthCallback }) {
         timeout={1000}
       >
         <Div
-          transform={`translateY(${showSplashScreen ? splashTranslate : 0})`}
-          transition={logoTransition}
+          position="relative"
+          zIndex={1}
+          {...logoTranslateTransition}
         >
           <Flex
             width="100%"
             justify="center"
-            zIndex={10}
             {...splashLogoTransitions}
           >
             <Div
               width={logoSizeSmall}
               height={logoSizeSmall}
               transform={`scale(0.${logoSize})`}
-              transition={logoTransition}
+              {...logoScaleTransition}
             >
               <LoopingLogo
                 light
@@ -579,6 +603,8 @@ export function CloudShell({ oAuthCallback }) {
       >
         {transitionState => (
           <Div
+            position="relative"
+            zIndex="0"
             width="100%"
             maxWidth={640}
             mt={2}

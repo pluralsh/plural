@@ -1,15 +1,13 @@
-import { createElement, useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Box } from 'grommet'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useMutation, useQuery } from '@apollo/client'
-import { BrowserIcon, CloudIcon, GearTrainIcon, GitHubIcon, StatusIpIcon, Stepper } from 'pluralsh-design-system'
+import { BrowserIcon, CloudIcon, GearTrainIcon, GitHubIcon, Stepper } from 'pluralsh-design-system'
 import { Button, Div, Flex, H1, H2, P, Text } from 'honorable'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
 import { GqlError } from '../utils/Alert'
-
-import { METHOD_ICONS } from '../users/OauthEnabler'
 
 import { AUTH_URLS, CLOUD_SHELL, CREATE_SHELL, REBOOT_SHELL, SCM_TOKEN } from './query'
 import { GITHUB_VALIDATIONS } from './scm/github'
@@ -18,6 +16,7 @@ import { Terminal } from './Terminal'
 import { Exceptions, getExceptions } from './validation'
 import { CLOUD_VALIDATIONS, ProviderForm, synopsis } from './cloud/provider'
 import { SCM_VALIDATIONS, ScmInput } from './scm/ScmInput'
+import { Github as GithubLogo, Gitlab as GitlabLogo } from './icons'
 
 const SECTIONS = {
   git: ['cloud', null],
@@ -321,13 +320,93 @@ function CardButton(props) {
       p={1.5}
       display="flex"
       alignContent="center"
-      justifyItems="center"
+      justify="center"
       backgroundColor="fill-two"
       border="1px solid border-fill-two"
       _hover={{ background: 'fill-two-hover' }}
+      _active={{ background: 'fill-two-selected' }}
       mx={1}
       {...props}
     />
+  )
+}
+
+function CreateARepoCard({ data }) {
+  const urls = data?.scmAuthorization
+
+  return (
+    <Div
+      backgroundColor="fill-one"
+      border="1px solid border"
+      borderRadius="normal"
+      p={2}
+      pt={1}
+    >
+      <H1
+        body2
+        lineHeight="24px"
+        fontWeight={400}
+        textTransform="uppercase"
+        letterSpacing="1px"
+        color="text-xlight"
+        mb={0.5}
+      >
+        Create a repository
+      </H1>
+      <P mb={1}>
+        We use GitOps to manage your application’s state. Use one of the following providers to get started.
+      </P>
+      <Flex mx={-1}>
+        {urls.map(({ provider, url }) => {
+          let providerLogo = null
+          let providerName = provider.toLowerCase
+          switch (provider.toLowerCase()) {
+            case 'github':
+              providerName = 'GitHub'
+              providerLogo = <GithubLogo />
+              break
+            case 'gitlab':
+              providerName = 'Gitlab'
+              providerLogo = <GitlabLogo />
+              break
+          }
+
+          return (
+            <CardButton
+              onClick={() => {
+                // START <<Remove this after dev>>
+                const devTokens = {
+                  // GITLAB: '',
+                  GITHUB: 'b11776d43c92ddeec643',
+                }
+                if (process.env.NODE_ENV !== 'production' && devTokens[provider]) {
+                  console.log('going to ', `/oauth/callback/${provider.toLowerCase()}/shell?code=${devTokens[provider]}`)
+                  window.location = `/oauth/callback/${provider.toLowerCase()}/shell?code=${devTokens[provider]}`
+                }
+                else {
+                  // END <<Remove this after dev>>
+                  window.location = url
+                }
+              }}
+            >
+              <Div
+                mx="auto"
+                maxWidth={40}
+                maxHeight={40}
+              >
+                { providerLogo }
+              </Div>
+              <Text
+                body1
+                mt={1}
+              >
+                Create a { providerName } repo
+              </Text>
+            </CardButton>
+          )
+        })}
+      </Flex>
+    </Div>
   )
 }
 
@@ -338,7 +417,7 @@ export function CloudShell({ oAuthCallback }) {
   const [created, setCreated] = useState(false)
   const [splashTimerDone, setSplashTimerDone] = useState(false)
   const [stepIndex, setStepIndex] = useState(0)
-  const splashWaitTime = 500
+  const splashWaitTime = 1750
 
   useEffect(() => {
     setTimeout(() => {
@@ -357,28 +436,34 @@ export function CloudShell({ oAuthCallback }) {
     () => (!shellData || !data || !splashTimerDone),
     [shellData, data, splashTimerDone]
   )
-  const urls = data?.scmAuthorization
   if ((shellData && shellData.shell) || created) return <Terminal />
 
-  const logoSize = showSplashScreen ? 48 : 40
-  const logoTransition = {
-    transition: 'all 2s ease',
-  }
+  const logoSizeBig = 48
+  const logoSizeSmall = 40
+  const logoSize = showSplashScreen ? logoSizeBig : logoSizeSmall
+  const logoTransition = 'all 0.6s cubic-bezier(0.5, 0, 0.5, 1)'
+
+  const splashTranslate = 'calc(50vh - (60px + 48px + 48px))'
 
   return (
     <Flex
       width="100%"
       alignItems="center"
       flexDirection="column"
+      mt={3}
     >
-      <Div
-        width={logoSize}
-        height={logoSize}
-        {...logoTransition}
+      <Flex
+        width="100%"
+        justify="center"
+        transform={`translateY(${showSplashScreen ? splashTranslate : 0})`}
+        transition={logoTransition}
+        zIndex={10}
       >
         <Div
+          width={logoSizeSmall}
+          height={logoSizeSmall}
           transform={`scale(0.${logoSize})`}
-          {...logoTransition}
+          transition={logoTransition}
         >
           <LoopingLogo
             light
@@ -387,9 +472,11 @@ export function CloudShell({ oAuthCallback }) {
             scale={1}
           />
         </Div>
-      </Div>
+      </Flex>
       {showSplashScreen && (
         <H2
+          mt={`-${logoSizeBig - logoSizeSmall}px`}
+          pt={3}
           fontSize={60}
           lineHeight="115%"
           fontWeight="500"
@@ -397,76 +484,23 @@ export function CloudShell({ oAuthCallback }) {
           width="100%"
           fontFamily="'Monument Semi-Mono', 'Monument'"
           textAlign="center"
+          transform={`translateY(${splashTranslate})`}
         >
-          Welcome to<br /> Plural
+          Welcome to Plural
         </H2>
       )}
       {
         !showSplashScreen && (
           <Div
             width="100%"
-            maxWidth="600px"
+            maxWidth={640}
+            mt={2}
+            px={2}
           >
             <Div mb={3}>
               <DemoStepper stepIndex={stepIndex} />
             </Div>
-            <Div
-              backgroundColor="fill-one"
-              border="1px solid border"
-              borderRadius="normal"
-              p={2}
-              pt={1}
-            >
-              <H1
-                body2
-                lineHeight="24px"
-                fontWeight={400}
-                textTransform="uppercase"
-                letterSpacing="1px"
-                color="text-x-light"
-                mb={0.5}
-              >
-                Create a repository
-              </H1>
-              <P mb={1}>
-                We use GitOps to manage your application’s state. Use one of the following providers to get started.
-              </P>
-              <Flex mx={-1}>
-                {urls.map(({ provider, url }) => (
-                  <CardButton
-                    onClick={() => {
-                  // START <<Remove this after dev>>
-                      const devTokens = {
-                    // GITLAB: '',
-                        GITHUB: 'b11776d43c92ddeec643',
-                      }
-                      console.log('process.env.NODE_ENV', process.env.NODE_ENV)
-                      console.log('devTokens[provider]', devTokens[provider])
-                      console.log('[provider]', provider)
-                      if (process.env.NODE_ENV !== 'production' && devTokens[provider]) {
-                        console.log('going to ', `/oauth/callback/${provider.toLowerCase()}/shell?code=${devTokens[provider]}`)
-                        window.location = `/oauth/callback/${provider.toLowerCase()}/shell?code=${devTokens[provider]}`
-                      }
-                      else {
-                  // END <<Remove this after dev>>
-                        window.location = url
-                      }
-                    }}
-                  >
-                    {createElement(METHOD_ICONS[provider], { size: '40px' })}
-                    <Text
-                      body1
-                    >
-                      Create a {
-                        provider.toLowerCase() === 'github' ? 'GitHub' :
-                          provider.toLowerCase() === 'gitlab' ? 'Gitlab' :
-                            provider.toLowerCase()
-                      } repo
-                    </Text>
-                  </CardButton>
-                ))}
-              </Flex>
-            </Div>
+            <CreateARepoCard data={data} />
           </Div>
         )
       }

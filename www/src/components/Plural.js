@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes, useMatch } from 'react-router-dom'
 import { StripeProvider } from 'react-stripe-elements'
 
 import ApplicationLayout from './layout/ApplicationLayout'
@@ -56,9 +56,28 @@ function WrapStripe({ children }) {
   )
 }
 
-export function PluralInner() {
+// Weird judo to get around inability to match oauth callback
+// routes as subroutes passed from App.js.
+// If anyone knows a better way around this, I'm all ears.
+// - Klink
+function OAuthOrFallback() {
   const me = useContext(CurrentUserContext)
+  const shellOAuthMatch = useMatch('/oauth/callback/:provider/shell')
+  
+  if (shellOAuthMatch) {
+    return <OAuthCallback provider={shellOAuthMatch.params.provider} />
+  }
+ 
+  return (
+    <Navigate
+      shellOAuthMatch={shellOAuthMatch}
+      replace
+      to={me.hasInstallations ? '/installed' : '/marketplace'}
+    />
+  )
+}
 
+export function PluralInner() {
   return (
     <WrapStripe>
       <BreadcrumbProvider>
@@ -67,10 +86,6 @@ export function PluralInner() {
           <DeviceLoginNotif />
           <Routes>
             {/* --- OAUTH --- */}
-            <Route
-              path="/oauth/callback/github/shell"
-              element={<OAuthCallback />}
-            />
             <Route
               path="/oauth/accept/:service"
               element={<OauthCreator />}
@@ -256,10 +271,7 @@ export function PluralInner() {
             <Route
               path="/*"
               element={(
-                <Navigate
-                  replace
-                  to={me.hasInstallations ? '/installed' : '/marketplace'}
-                />
+                <OAuthOrFallback />
               )}
             />
           </Routes>

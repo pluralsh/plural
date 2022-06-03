@@ -1,9 +1,11 @@
 import { createElement, useCallback, useEffect, useState } from 'react'
-import { Box, Text } from 'grommet'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { Box } from 'grommet'
+import { useInRouterContext, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { useMutation, useQuery } from '@apollo/client'
 import { BrowserIcon, EyeIcon as CloudIcon, GearTrainIcon, GitHubIcon, StatusIpIcon } from 'pluralsh-design-system'
-import { Button, Div, Flex, Style } from 'honorable'
+import { Button, Div, Flex, H1, P, Text } from 'honorable'
+
+import { sleep } from 'react-sage/dist/utils'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
@@ -266,12 +268,16 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider }) {
   )
 }
 
-export function OAuthCallback() {
-  const loc = useLocation()
+export function OAuthCallback({ provider }) {
   const navigate = useNavigate()
-  const { provider } = useParams()
-  const params = new URLSearchParams(loc.search)
-  const { data } = useQuery(SCM_TOKEN, { variables: { code: params.get('code'), provider: provider.toUpperCase() } })
+  const [searchParams] = useSearchParams()
+
+  const { data } = useQuery(SCM_TOKEN, {
+    variables: {
+      code: searchParams.get('code'),
+      provider: provider.toUpperCase(),
+    },
+  })
 
   if (!data) return <LoopingLogo dark />
 
@@ -417,7 +423,7 @@ function Stepper({ stepIndex, steps }) {
   )
 }
 
-function DemoStepper({ stepIndex = 0 }) {
+function DemoStepper({ stepIndex = 0, ...props }) {
   return (
     <Stepper
       stepIndex={stepIndex}
@@ -435,6 +441,7 @@ function DemoStepper({ stepIndex = 0 }) {
           title: (<>Launch the app</>), icon: BrowserIcon,
         },
       ]}
+      {...props}
     />
   )
 }
@@ -475,40 +482,75 @@ export function CloudShell() {
         width="100%"
         maxWidth="600px"
       >
-        <DemoStepper stepIndex={stepIndex} />
-        <Button onClick={() => setStepIndex(stepIndex + 1)}>Step forward</Button>
-        <Button onClick={() => setStepIndex(stepIndex - 1)}>Step backward</Button>
-        <Box
-          background="background"
-          fill
-          align="center"
-          justify="center"
-          gap="xsmall"
+        <Div mb={3}>
+          <DemoStepper stepIndex={stepIndex} />
+        </Div>
+        <Div
+          backgroundColor="fill-one"
+          border="1px solid border"
+          borderRadius="normal"
+          p={2}
+          pt={1}
         >
-          {urls.map(({ provider, url }) => (
-            <Box
-              flex={false}
-              pad="small"
-              round="xsmall"
-              direction="row"
-              gap="small"
-              border
-              align="center"
-              hoverIndicator="card"
-              onClick={() => {
-                window.location = url
-              }}
-            >
-              {createElement(METHOD_ICONS[provider], { size: '15px' })}
-              <Text
-                size="small"
-                weight={500}
+          <H1
+            body2
+            lineHeight="24px"
+            fontWeight={400}
+            textTransform="uppercase"
+            letterSpacing="1px"
+            color="text-x-light"
+            mb={0.5}
+          >
+            Create a repository
+          </H1>
+          <P mb={1}>
+            We use GitOps to manage your application’s state. Use one of the following providers to get started.
+          </P>
+          <Flex mx={-1}>
+            {urls.map(({ provider, url }) => (
+              <Button
+                flex="1 1 100%"
+                p={1.5}
+                display="flex"
+                alignContent="center"
+                justifyItems="center"
+                backgroundColor="fill-two"
+                border="1px solid border-fill-two"
+                _hover={{ background: 'fill-two-hover' }}
+                mx={1}
+                onClick={() => {
+                  // START <<Remove this after dev>>
+                  const devTokens = {
+                    // GITLAB: '',
+                    GITHUB: 'b11776d43c92ddeec643',
+                  }
+                  console.log('process.env.NODE_ENV', process.env.NODE_ENV)
+                  console.log('devTokens[provider]', devTokens[provider])
+                  console.log('[provider]', provider)
+                  if (process.env.NODE_ENV !== 'production' && devTokens[provider]) {
+                    console.log('going to ', `/oauth/callback/${provider.toLowerCase()}/shell?code=${devTokens[provider]}`)
+                    window.location = `/oauth/callback/${provider.toLowerCase()}/shell?code=${devTokens[provider]}`
+                  }
+                  else {
+                  // END <<Remove this after dev>>
+                    window.location = url
+                  }
+                }}
               >
-                Log in with {provider.toLowerCase()} to start
-              </Text>
-            </Box>
-          ))}
-        </Box>
+                {createElement(METHOD_ICONS[provider], { size: '40px' })}
+                <Text
+                  body1
+                >
+                  Create a {
+                    provider.toLowerCase() === 'github' ? 'GitHub' :
+                      provider.toLowerCase() === 'gitlab' ? 'Gitlab' :
+                        provider.toLowerCase()
+                  } repo
+                </Text>
+              </Button>
+            ))}
+          </Flex>
+        </Div>
       </Div>
       
     </Flex>

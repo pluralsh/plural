@@ -1,4 +1,4 @@
-import { createContext, useEffect } from 'react'
+import { createContext, useEffect, useState } from 'react'
 import { useQuery } from '@apollo/client'
 import { Navigate, useLocation } from 'react-router-dom'
 import { Box } from 'grommet'
@@ -14,11 +14,24 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 export const CurrentUserContext = createContext({})
 export const PluralConfigurationContext = createContext({})
 
+function LoadingSpinner() {
+  const [showLogo, setShowLogo] = useState(false)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowLogo(true)
+    }, 500)
+
+    return () => clearTimeout(timer)
+  }, [])
+
+  return showLogo && <LoopingLogo />
+}
+
 export default function CurrentUser({ children }) {
   const { loading, error, data } = useQuery(ME_Q)
   useNotificationSubscription()
 
-  if (loading) return (<Box height="100vh"><LoopingLogo /></Box>)
+  if (loading) return (<Box height="100vh"><LoadingSpinner /></Box>)
 
   if (error || !data || !data.me || !data.me.id) {
     wipeToken()
@@ -49,7 +62,7 @@ export function PluralProvider({ children }) {
     if (data && data.me) update()
   }, [location, data, update])
 
-  if (loading) return (<Box height="100vh"><LoopingLogo /></Box>)
+  if (loading) return (<Box height="100vh"><LoadingSpinner /></Box>)
 
   if (error || !data || !data.me || !data.me.id) {
     wipeToken()

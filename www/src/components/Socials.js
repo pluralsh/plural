@@ -16,7 +16,7 @@ function SocialLink({ icon, url }) {
       alignContent="center"
       width={BOX_SIZE}
       height={BOX_SIZE}
-      hoverIndicator="background-light"
+      hoverIndicator="fill-one"
       borderRadius={4}
     >
       {icon}

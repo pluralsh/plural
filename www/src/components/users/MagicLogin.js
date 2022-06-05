@@ -358,7 +358,7 @@ function OAuthOption({ url: { authorizeUrl, provider } }) {
       gap="small"
       fill="horizontal"
       pad={{ vertical: '7px' }}
-      hoverIndicator="background-light"
+      hoverIndicator="fill-one"
       onClick={() => {
         window.location = authorizeUrl
       }}

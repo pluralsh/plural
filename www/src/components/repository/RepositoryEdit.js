@@ -154,7 +154,7 @@ function RepositoryEdit() {
           align="center"
           justify="center"
           cursor="pointer"
-          backgroundColor={mode === 'dark' ? 'background-light' : 'white'}
+          backgroundColor={mode === 'dark' ? 'fill-one' : 'white'}
         >
           <P
             body0
@@ -173,7 +173,7 @@ function RepositoryEdit() {
         width={64 + 32}
         height={64 + 32}
         objectFit="cover"
-        backgroundColor={mode === 'dark' ? 'background-light' : 'white'}
+        backgroundColor={mode === 'dark' ? 'fill-one' : 'white'}
         cursor="pointer"
         border="1px solid border"
       />

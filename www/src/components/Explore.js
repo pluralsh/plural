@@ -69,7 +69,7 @@ function Repo({ repo, setTag }) {
       align="center"
       pad="small"
       border={{ side: 'bottom' }}
-      hoverIndicator="background-light"
+      hoverIndicator="fill-one"
       focusIndicator={false}
       onClick={() => navigate(`/repositories/${repo.id}`)}
     >
@@ -209,7 +209,7 @@ function CategoryTags({ category, tag, setTag }) {
           pad="xsmall"
           margin={{ horizontal: 'xsmall' }}
           round="xsmall"
-          hoverIndicator="background-light"
+          hoverIndicator="fill-one"
           onClick={loadMore}
         >
           <Text size="small">see more...</Text>
@@ -229,7 +229,7 @@ function Category({ category, tag, setTag, unfurl }) {
         flex={false}
         direction="row"
         align="center"
-        hoverIndicator="background-light"
+        hoverIndicator="fill-one"
         pad={{ horizontal: 'small', vertical: 'xsmall' }}
         border={open ? { side: 'bottom' } : null}
         onClick={() => setOpen(!open)}
@@ -338,7 +338,7 @@ export function SectionContentContainer({ header: h, children, borderLeft }) {
           height="45px"
           border={borderLeft ? [{ side: 'bottom' }, { side: 'left' }] : [{ side: 'bottom' }]}
           align="center"
-          background="background-light"
+          background="fill-one"
         >
           <Box fill="horizontal">
             <Text
@@ -370,12 +370,12 @@ export function SectionItemContainer({ label, icon, selected, location, ...props
       flex={false}
       pad="small"
       round="3px"
-      background={selected ? 'background-light' : null}
+      background={selected ? 'fill-one' : null}
       fill="horizontal"
       align="center"
       gap="small"
       direction="row"
-      hoverIndicator="background-light"
+      hoverIndicator="fill-one"
       onClick={selected ? null : () => navigate(location)}
       {...props}
     >

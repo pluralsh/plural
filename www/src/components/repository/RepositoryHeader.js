@@ -80,7 +80,7 @@ function InstalledActions({ installation, ...props }) {
           p={0.5}
           borderRadius="50%"
           cursor="pointer"
-          hoverIndicator="background-light"
+          hoverIndicator="fill-one"
           onClick={() => setModalOpen(true)}
         >
           <TrashCanIcon color="error" />
@@ -253,7 +253,7 @@ function RepositoryHeader(props) {
         p={1}
         align="center"
         justify="center"
-        backgroundColor="background-light"
+        backgroundColor="fill-one"
         border="2px solid border"
         borderRadius={4}
       >
@@ -338,13 +338,13 @@ function RepositoryHeader(props) {
           align="flex-start"
           wrap="wrap"
         >
-          {repository.tags.map(({ tag }) => (
+          {repository.tags.map(({ name }) => (
             <Tag
-              key={tag}
+              key={name}
               mr={0.5}
               mb={0.5}
             >
-              {tag}
+              {name}
             </Tag>
           ))}
         </Flex>

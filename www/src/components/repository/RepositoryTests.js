@@ -13,7 +13,7 @@ import InfiniteScroller from '../utils/InfiniteScroller'
 import { TESTS_QUERY, TEST_LOGS_SUBSCRIPTION } from './queries'
 
 const statusToColor = {
-  QUEUED: 'background-light',
+  QUEUED: 'fill-one',
   RUNNING: 'warning',
   SUCCEEDED: 'success',
   FAILED: 'error',
@@ -76,7 +76,7 @@ function Test({ test }) {
     <>
       <Flex
         borderBottom="1px solid border"
-        hoverIndicator="background-light"
+        hoverIndicator="fill-one"
         cursor="pointer"
         onClick={() => setIsModalOpen(true)}
       >

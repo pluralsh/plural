@@ -440,7 +440,7 @@ function Vulnerability({ vuln }) {
         align="center"
         pad="xsmall"
         onClick={() => setOpen(!open)}
-        hoverIndicator="background-light"
+        hoverIndicator="fill-one"
         focusIndicator={false}
       >
         <Box

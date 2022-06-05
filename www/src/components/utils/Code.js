@@ -51,7 +51,7 @@ function Code({ language, children, ...props }) {
           p={0.5}
           align="center"
           justify="center"
-          hoverIndicator="background-light"
+          hoverIndicator="fill-one"
           borderRadius={1000}
           cursor="pointer"
         >
@@ -62,7 +62,7 @@ function Code({ language, children, ...props }) {
       </Flex>
       <Div
         borderTop="1px solid border"
-        backgroundColor="background-light"
+        backgroundColor="fill-one"
         overflowX="auto"
       >
         {renderContent()}

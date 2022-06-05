@@ -15,13 +15,6 @@ import RepositoryHeader from './RepositoryHeader'
 import { REPOSITORY_QUERY } from './queries'
 
 function Tab({ to, label, active }) {
-  const hoverStyle = {
-    '&:hover': {
-      color: 'text',
-      backgroundColor: 'background-light',
-    },
-  }
-
   return (
     <Div
       as={Link}
@@ -34,9 +27,12 @@ function Tab({ to, label, active }) {
       fontWeight={600}
       textDecoration="none"
       color={active ? 'text' : 'text-light'}
-      backgroundColor={active ? 'background-light' : 'transparent'}
+      backgroundColor={active ? 'fill-one' : 'transparent'}
       transition="all 150ms ease"
-      {...hoverStyle}
+      _hover={{
+        color: 'text',
+        backgroundColor: 'fill-one',
+      }}
     >
       {label}
     </Div>
@@ -60,7 +56,10 @@ function Repository() {
   if (!data) {
     return (
       <Flex
-        pt={12}
+        // These mp values are to align the looping logo with the previous looping logo.
+        // Reload the page on /repository/foo to see it in action.
+        pt={24.25}
+        ml={-5}
         align="center"
         justify="center"
       >

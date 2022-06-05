@@ -137,7 +137,7 @@ function DockerSidebar({ image: { dockerRepository: docker, ...image }, filter, 
             >
               <Box
                 flex={false}
-                background="background-middle"
+                background="fill-two"
                 pad="xsmall"
               >
                 <pre>docker pull {truncate(imageName, { length: 40 })}</pre>

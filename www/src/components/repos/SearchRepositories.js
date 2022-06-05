@@ -19,7 +19,7 @@ export function searchRepositories(client, query, callback) {
     label: (
       <Box
         style={{ maxWidth: 350 }}
-        hoverIndicator="background-middle"
+        hoverIndicator="fill-two"
       >
         <Repository repo={node} />
       </Box>

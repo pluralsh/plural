@@ -29,7 +29,7 @@ export function DockerImage({ image }) {
     <Box
       direction="row"
       align="center"
-      hoverIndicator="background-middle"
+      hoverIndicator="fill-two"
       border={{ side: 'bottom', color: 'border' }}
       onClick={() => navigate(`/dkr/img/${image.id}`)}
       pad="xsmall"

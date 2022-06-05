@@ -100,7 +100,7 @@ export function InstallationInner({ installation, repository }) {
         )}
         <Highlight
           language="bash"
-          style={{ backgroundColor: theme.utils.resolveColor('background-middle') }}
+          style={{ backgroundColor: theme.utils.resolveColor('fill-two') }}
         >
           {[`plural build --only ${repository.name}`, `plural deploy ${repository.name}`].join('\n')}
         </Highlight>

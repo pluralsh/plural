@@ -39,9 +39,14 @@ const providerToDisplayName = {
 
 const extendedTheme = {
   DropdownButton: {
+    Button: [
+      {
+        borderRadius: 'normal',
+      },
+    ],
     Menu: [
       {
-        width: 256 + 64 + 16,
+        width: 256 + 64 + 16 + 4,
         left: 'unset',
       },
     ],
@@ -188,9 +193,7 @@ function InstallDropdownButton({ recipes, ...props }) {
                 <Flex
                   align="center"
                   justify="center"
-                  width={3 * 16}
-                  height={3 * 16}
-                  background="background-top"
+                  width={2 * 16}
                   flexShrink={0}
                 >
                   <Img
@@ -205,10 +208,9 @@ function InstallDropdownButton({ recipes, ...props }) {
                   flexBasis="calc(100% - 4 * 16px)"
                 >
                   <P fontWeight={500}>
-                    Install on {providerToDisplayName[recipe.provider]}
+                    {providerToDisplayName[recipe.provider]}
                   </P>
                   <P
-                    mt={0.5}
                     wordBreak="break-word"
                   >
                     {capitalize(recipe.description)}

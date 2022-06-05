@@ -147,7 +147,7 @@ export function Icon({ icon, iconAttrs, tooltip, onClick, hover }) {
         onClick={onClick}
         onMouseEnter={() => setOpen(true)}
         onMouseLeave={() => setOpen(false)}
-        hoverIndicator={hover || 'background-middle'}
+        hoverIndicator={hover || 'fill-two'}
         focusIndicator={false}
       >
         {createElement(icon, { size: '14px', ...(iconAttrs || {}) })}

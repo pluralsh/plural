@@ -41,7 +41,7 @@ function Code({ language, children, ...props }) {
         pl={1}
         align="center"
         justify="flex-end"
-        backgroundColor="background-middle"
+        backgroundColor="fill-two"
       >
         <P body3>
           {copied ? 'copied!' : `Language: ${language}`}

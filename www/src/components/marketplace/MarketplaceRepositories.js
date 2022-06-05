@@ -25,12 +25,7 @@ function MarketplaceRepositories({ installed, ...props }) {
 
   const [repositories, loadingRepositories, hasMoreRepositories, fetchMoreRepositories] = usePaginatedQuery(
     MARKETPLACE_QUERY,
-    {
-      variables: {
-        // Does not work:
-        // tag: tags[0] || null,
-      },
-    },
+    {},
     data => data.repositories
   )
 
@@ -57,9 +52,10 @@ function MarketplaceRepositories({ installed, ...props }) {
   if (repositories.length === 0 && loadingRepositories) {
     return (
       <Flex
-        pt={12}
+        pt={2}
         align="center"
         justify="center"
+        {...props}
       >
         <LoopingLogo />
       </Flex>
@@ -68,11 +64,11 @@ function MarketplaceRepositories({ installed, ...props }) {
 
   const sortedRepositories = repositories.slice()
     .sort((a, b) => a.name.localeCompare(b.name))
-    .filter(repository => categories.length ? categories.includes(repository.category) : true)
+    .filter(repository => categories.length ? categories.includes(repository.category.toLowerCase()) : true)
     .filter(repository => {
       if (!tags.length) return true
 
-      const repositoryTags = repository.tags.map(({ tag }) => tag)
+      const repositoryTags = repository.tags.map(({ name }) => name.toLowerCase())
 
       return tags.some(tag => repositoryTags.includes(tag))
     })
@@ -123,7 +119,7 @@ function MarketplaceRepositories({ installed, ...props }) {
             imageUrl={featuredA.darkIcon || featuredA.icon}
             publisher={featuredA.publisher?.name?.toUpperCase()}
             description={featuredA.description}
-            tags={featuredA.tags.map(({ tag }) => tag)}
+            tags={featuredA.tags.map(({ name }) => name)}
           />
           <RepositoryCard
             as={Link}
@@ -139,7 +135,7 @@ function MarketplaceRepositories({ installed, ...props }) {
             imageUrl={featuredB.darkIcon || featuredB.icon}
             publisher={featuredB.publisher?.name?.toUpperCase()}
             description={featuredB.description}
-            tags={featuredB.tags.map(({ tag }) => tag)}
+            tags={featuredB.tags.map(({ name }) => name)}
           />
         </Flex>
       </>
@@ -179,11 +175,13 @@ function MarketplaceRepositories({ installed, ...props }) {
         <Flex
           wrap="wrap"
           flexShrink={1}
+          minHeight={36}
         >
           {categories.map(category => (
             <Token
-              mr={0.25}
-              mb={0.25}
+              mr={0.5}
+              mb={0.5}
+              py={0.1666}
               onClose={() => handleClearToken('category', category)}
             >
               {capitalize(category)}
@@ -191,8 +189,9 @@ function MarketplaceRepositories({ installed, ...props }) {
           ))}
           {tags.map(tag => (
             <Token
-              mr={0.25}
-              mb={0.25}
+              mr={0.5}
+              mb={0.5}
+              py={0.1666}
               onClose={() => handleClearToken('tag', tag)}
             >
               {capitalize(tag)}
@@ -200,6 +199,7 @@ function MarketplaceRepositories({ installed, ...props }) {
           ))}
           {!!(categories.length || tags.length) && (
             <Button
+              ml={0.25}
               tertiary
               small
               onClick={() => handleClearTokens()}
@@ -256,7 +256,7 @@ function MarketplaceRepositories({ installed, ...props }) {
               imageUrl={repository.darkIcon || repository.icon}
               publisher={repository.publisher?.name?.toUpperCase()}
               description={repository.description}
-              tags={repository.tags.map(({ tag }) => tag)}
+              tags={repository.tags.map(({ name }) => name)}
             />
           ))}
         </Flex>

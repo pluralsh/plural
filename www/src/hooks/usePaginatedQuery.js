@@ -12,7 +12,7 @@ function usePaginatedQuery(query, options = {}, getResults = x => x) {
   const results = useQuery(query, {
     ...options,
     variables: {
-      ...options.variables,
+      ...(options.variables || {}),
       cursor,
     },
   })

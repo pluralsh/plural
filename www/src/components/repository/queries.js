@@ -31,7 +31,7 @@ export const REPOSITORY_QUERY = gql`
         ...InstallationFragment
       }
       tags {
-        tag
+        name: tag
       }
       readme
       git_url

@@ -2,21 +2,13 @@ import { useState } from 'react'
 import { useQuery } from '@apollo/client'
 import { useSearchParams } from 'react-router-dom'
 import { A, Accordion, Div, P } from 'honorable'
-import { Checkbox } from 'pluralsh-design-system'
-
-import { CATEGORIES, REPO_TAGS } from '../repos/queries'
+import { Checkbox, CloseIcon, Input } from 'pluralsh-design-system'
+import Fuse from 'fuse.js'
 
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 import { capitalize } from '../../utils/string'
 
-const hoverStyle = {
-  '&:hover': {
-    color: 'text',
-    '& > span': {
-      borderColor: 'primary',
-    },
-  },
-}
+import { CATEGORIES_QUERY, TAGS_QUERY } from './queries'
 
 function MarketplaceSidebarCheckbox({ toggled, onClick, label }) {
   return (
@@ -36,19 +28,20 @@ function MarketplaceSidebarCheckbox({ toggled, onClick, label }) {
   )
 }
 
+const searchOptions = {
+  keys: ['name'],
+}
+
 function MarketplaceSidebar(props) {
   const [nDisplayedTags, setNDisplayedTags] = useState(12)
-  const { data: categoriesData } = useQuery(CATEGORIES)
+  const { data: categoriesData } = useQuery(CATEGORIES_QUERY)
   const [tags,, hasMoreTags, fetchMoreTags] = usePaginatedQuery(
-    REPO_TAGS,
-    {
-      variables: {
-        q: '',
-      },
-    },
+    TAGS_QUERY,
+    {},
     data => data.tags
   )
   const [searchParams, setSearchParams] = useSearchParams()
+  const [search, setSearch] = useState('')
 
   if (!categoriesData) return null
 
@@ -59,35 +52,30 @@ function MarketplaceSidebar(props) {
 
   function handleToggle(key, value) {
     const existing = searchParams.getAll(key)
+    const formatedValue = value.toLowerCase()
 
-    if (existing.includes(value)) {
+    if (existing.includes(formatedValue)) {
       setSearchParams({
-        ...searchParams,
-        [key]: existing.filter(v => v !== value),
+        ...Object.fromEntries(searchParams.entries()),
+        [key]: existing.filter(v => v !== formatedValue),
       })
     }
     else {
       setSearchParams({
-        ...searchParams,
-        [key]: [...existing, value],
+        ...Object.fromEntries(searchParams.entries()),
+        [key]: [...existing, formatedValue],
       })
     }
   }
 
   function isToggled(key, value) {
-    return searchParams.getAll(key).includes(value)
+    return searchParams.getAll(key).includes(value.toLowerCase())
   }
 
-  const sortedCategories = categoriesData.categories.slice().sort((a, b) => a.category.localeCompare(b.category))
-  const sortedPublishers = ['Plural']
-  const sortedTags = tags.slice().sort((a, b) => a.tag.localeCompare(b.tag)).filter((x, i) => i < nDisplayedTags)
+  function renderCategories() {
+    const sortedCategories = categoriesData.categories.slice().sort((a, b) => a.category.localeCompare(b.category))
 
-  return (
-    <Div
-      maxHeight="100%"
-      overflowY="auto"
-      {...props}
-    >
+    return (
       <Accordion
         ghost
         defaultExpanded
@@ -103,6 +91,13 @@ function MarketplaceSidebar(props) {
           />
         ))}
       </Accordion>
+    )
+  }
+
+  function renderPublishers() {
+    const sortedPublishers = ['Plural']
+
+    return (
       <Accordion
         ghost
         title={`Publisher (${sortedPublishers.length})`}
@@ -117,31 +112,67 @@ function MarketplaceSidebar(props) {
           />
         ))}
       </Accordion>
+    )
+  }
+
+  function renderTags() {
+    const sortedTags = tags.slice().sort((a, b) => a.name.localeCompare(b.name))
+    const fuse = new Fuse(sortedTags, searchOptions)
+    const resultTags = search ? fuse.search(search).map(({ item }) => item) : sortedTags.filter((x, i) => i < nDisplayedTags)
+
+    return (
       <Accordion
         ghost
         defaultExpanded
         title={`Tags (${sortedTags.length}${((nDisplayedTags < tags.length) || hasMoreTags) ? '+' : ''})`}
       >
-        {sortedTags.map(({ tag, count }) => (
+        <Input
+          small
+          mb={0.5}
+          width="100%"
+          placeholder="Filter"
+          value={search}
+          onChange={event => setSearch(event.target.value)}
+          endIcon={search ? (
+            <CloseIcon
+              size={8}
+              mt={0.2}
+              cursor="pointer"
+              onClick={() => setSearch('')}
+            />
+          ) : null}
+        />
+        {resultTags.map(({ name, count }) => (
           <MarketplaceSidebarCheckbox
-            key={tag}
-            toggled={isToggled('tag', tag)}
-            onClick={() => handleToggle('tag', tag)}
-            label={`${tag} (${count})`}
+            key={name}
+            toggled={isToggled('tag', name)}
+            onClick={() => handleToggle('tag', name)}
+            label={`${name} (${count})`}
           />
         ))}
-        {((nDisplayedTags < tags.length) || hasMoreTags) && (
+        {((nDisplayedTags < tags.length) || hasMoreTags) && !search && (
           <A
             mt={0.5}
             ml="22px"
             color="text-light"
             onClick={handleMoreTagsClick}
-            {...hoverStyle}
           >
             See More +
           </A>
         )}
       </Accordion>
+    )
+  }
+
+  return (
+    <Div
+      maxHeight="100%"
+      overflowY="auto"
+      {...props}
+    >
+      {renderCategories()}
+      {renderPublishers()}
+      {renderTags()}
     </Div>
   )
 }

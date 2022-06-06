@@ -16,9 +16,8 @@ const extendedTheme = {
     ],
     Menu: [
       {
-        position: 'absolute',
-        top: '100%',
-        width: 'auto',
+        borderRadius: 'normal',
+        width: 360,
         left: 'unset',
       },
     ],
@@ -104,29 +103,45 @@ function InstallDropdownButton({ recipes, ...props }) {
   }
 
   function renderTabs() {
-    return null
+    return (
+      <Div p={0.5}>
+        Foo
+      </Div>
+    )
   }
 
   return (
     <ExtendTheme theme={extendedTheme}>
-      <DropdownButton
-        fade
-        label="Install"
-        open={open}
-        onOpen={x => {
-          console.log('x, recipe', x, recipe)
-          if (!x && recipe) return
-
-          setOpen(x)
-        }}
-        onChange={event => {
-          setRecipe(event.target.value)
-          setTab(0)
-        }}
-        {...props}
-      >
-        {recipe ? renderTabs() : renderList()}
-      </DropdownButton>
+      {!recipe && (
+        <DropdownButton
+          fade
+          label="Install"
+          onChange={event => {
+            setRecipe(event.target.value)
+            setTab(0)
+          }}
+          {...props}
+        >
+          {renderList()}
+        </DropdownButton>
+      )}
+      {!!recipe && (
+        <DropdownButton
+          fade
+          defaultOpen
+          onOpen={x => {
+            if (!x) setRecipe(null)
+          }}
+          label="Install"
+          onChange={() => {
+            setRecipe(null)
+            setTab(0)
+          }}
+          {...props}
+        >
+          {renderTabs()}
+        </DropdownButton>
+      )}
     </ExtendTheme>
   )
 }

@@ -36,42 +36,8 @@ const extendedTheme = {
 
 function InstallDropdownButton({ recipes, ...props }) {
   const { name } = useContext(RepositoryContext)
-  const [open, setOpen] = useState(false)
   const [recipe, setRecipe] = useState(null)
   const [tab, setTab] = useState(0)
-
-  // function renderModalContent() {
-  //   if (!recipe) return null
-
-  //   return (
-  //     <Div minWidth={512}>
-  //       <Flex
-  //         align="center"
-  //         as={H2}
-  //       >
-  //         Install {capitalize(name)} on {providerToDisplayName[recipe.provider]}
-  //         <Img
-  //           ml={0.75}
-  //           alt={recipe.name}
-  //           src={providerToIcon[recipe.provider]}
-  //           height={1.5 * providerToIconHeight[recipe.provider]}
-  //         />
-  //       </Flex>
-  //       <P mt={2}>
-  //         {capitalize(recipe.description)}.
-  //       </P>
-  //       <P mt={1}>
-  //         In your installation repository run:
-  //       </P>
-  //       <Code
-  //         language="bash"
-  //         mt={2}
-  //       >
-  //         {`plural bundle install ${name} ${recipe.name}`}
-  //       </Code>
-  //     </Div>
-  //   )
-  // }
 
   function renderList() {
     return recipes.map(recipe => (

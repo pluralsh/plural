@@ -32,6 +32,11 @@ const VALIDATIONS = {
   workspace: WORKSPACE_VALIDATIONS,
 }
 
+const DEBUG_SCM_TOKENS = {
+  GITLAB: '',
+  GITHUB: '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',
+}
+
 function SynopsisTable({ items, width }) {
   return (
     <Box
@@ -271,7 +276,7 @@ export function OAuthCallback({ provider }) {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const { data } = useQuery(SCM_TOKEN, {
+  let { data } = useQuery(SCM_TOKEN, {
     variables: {
       code: searchParams.get('code'),
       provider: provider.toUpperCase(),
@@ -279,6 +284,13 @@ export function OAuthCallback({ provider }) {
   })
 
   if (!data) return <LoopingLogo dark />
+
+  // START <<Remove this after dev>>
+  if (process.env.NODE_ENV !== 'production' && DEBUG_SCM_TOKENS[provider.toUpperCase()]) {
+    data = { ...data, ...{ scmToken: DEBUG_SCM_TOKENS[provider.toUpperCase()] } }
+  }
+  // END <<Remove this after dev>>
+  console.log('debug scm data', data)
 
   return (
     <Box
@@ -376,18 +388,15 @@ function CreateARepoCard({ data }) {
             <CardButton
               onClick={() => {
                 // START <<Remove this after dev>>
-                const devTokens = {
-                  // GITLAB: '',
-                  GITHUB: 'b11776d43c92ddeec643',
+                if (process.env.NODE_ENV !== 'production' && DEBUG_SCM_TOKENS[provider]) {
+                  console.log('going to ', `/oauth/callback/${provider.toLowerCase()}/shell?code=abcd`)
+                  window.location = `/oauth/callback/${provider.toLowerCase()}/shell?code=abcd`
+
+                  return
                 }
-                if (process.env.NODE_ENV !== 'production' && devTokens[provider]) {
-                  console.log('going to ', `/oauth/callback/${provider.toLowerCase()}/shell?code=${devTokens[provider]}`)
-                  window.location = `/oauth/callback/${provider.toLowerCase()}/shell?code=${devTokens[provider]}`
-                }
-                else {
-                  // END <<Remove this after dev>>
-                  window.location = url
-                }
+                // END <<Remove this after dev>>
+
+                window.location = url
               }}
             >
               <Div

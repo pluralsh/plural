@@ -196,15 +196,11 @@ export function LogoAndSplash({ splashTimeout = 1200, childIsReady = false, chil
           height={0}
         >
           <H2
+            h2
             position="absolute"
             mt={`-${logoSizeBig - logoSizeSmall}px`}
             pt={3}
-            fontSize={60}
-            lineHeight="115%"
-            fontWeight="500"
-            letterSpacing="-1px"
             width="100%"
-            fontFamily="'Monument Semi-Mono', 'Monument'"
             textAlign="center"
             {...splashTextTransitions}
           >

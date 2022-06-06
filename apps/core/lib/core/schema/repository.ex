@@ -83,6 +83,10 @@ defmodule Core.Schema.Repository do
     from(r in query, where: r.category == ^category)
   end
 
+  def for_categories(query \\ __MODULE__, categories) do
+    from(r in query, where: r.category in ^categories)
+  end
+
   def categories(query \\ __MODULE__) do
     from(r in query,
       group_by: r.category,
@@ -145,8 +149,18 @@ defmodule Core.Schema.Repository do
       where: t.tag == ^tag)
   end
 
+  def for_tags(query \\ __MODULE__, tags) do
+    from(r in query,
+      join: t in assoc(r, :tags),
+      where: t.tag in ^tags)
+  end
+
   def for_publisher(query \\ __MODULE__, publisher_id),
     do: from(r in query, where: r.publisher_id == ^publisher_id)
+
+  def for_publishers(query \\ __MODULE__, publisher_ids) do
+    from(r in query, where: r.publisher_id in ^publisher_ids)
+  end
 
   def ordered(query \\ __MODULE__, order \\ [asc: :name]),
     do: from(r in query, order_by: ^order)

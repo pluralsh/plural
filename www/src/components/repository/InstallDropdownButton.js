@@ -5,9 +5,25 @@ import RepositoryContext from '../../contexts/RepositoryContext'
 
 import { capitalize } from '../../utils/string'
 
-import Code from '../utils/Code'
-
 import { providerToDisplayName, providerToIcon, providerToIconHeight } from './constants'
+
+const extendedTheme = {
+  DropdownButton: {
+    Button: [
+      {
+        borderRadius: 'normal',
+      },
+    ],
+    Menu: [
+      {
+        position: 'absolute',
+        top: '100%',
+        width: 'auto',
+        left: 'unset',
+      },
+    ],
+  },
+}
 
 function InstallDropdownButton({ recipes, ...props }) {
   const { name } = useContext(RepositoryContext)
@@ -15,31 +31,6 @@ function InstallDropdownButton({ recipes, ...props }) {
   const [recipe, setRecipe] = useState(null)
   const [tab, setTab] = useState(0)
 
-  const extendedTheme = {
-    DropdownButton: {
-      Button: [
-        {
-          borderRadius: 'normal',
-        },
-      ],
-      Menu: [
-        {
-          width: recipe ? 256 + 128 : 256 + 64 + 16 + 4,
-          left: 'unset',
-        },
-      ],
-    },
-    MenuItem: {
-      Root: [
-        {
-          borderBottom: '1px solid border',
-          '&:last-of-type': {
-            borderBottom: 'none',
-          },
-        },
-      ],
-    },
-  }
   // function renderModalContent() {
   //   if (!recipe) return null
 

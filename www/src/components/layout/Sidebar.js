@@ -297,7 +297,7 @@ function Sidebar({
           NOTIFICATIONS AND UPDATE
         --- */}
         <Div
-          py={0.5}
+          py={0.75}
           px={1}
           flexShrink={0}
           borderBottom="1px solid border"
@@ -328,7 +328,7 @@ function Sidebar({
           MENU
         --- */}
         <Div
-          py={0.5}
+          py={0.75}
           px={1}
           flexGrow={1}
           flexShrink={1}
@@ -363,7 +363,7 @@ function Sidebar({
           SOCIAL
         --- */}
         <Div
-          py={0.5}
+          py={0.75}
           px={1}
           flexShrink={0}
           borderBottom="1px solid border"
@@ -400,10 +400,9 @@ function Sidebar({
           COLLAPSE
         --- */}
         <Div
-          py={0.5}
+          pt={0.75}
           px={1}
           flexShrink={0}
-          borderBottom="1px solid border"
         >
           <SidebarItem
             collapsed={collapsed}

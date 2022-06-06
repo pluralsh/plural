@@ -1,13 +1,23 @@
 import { useContext, useState } from 'react'
-import { Div, DropdownButton, ExtendTheme, Flex, H2, Img, MenuItem, Modal, P } from 'honorable'
+import { A, Button, Div, DropdownButton, ExtendTheme, Flex, Img, MenuItem, P } from 'honorable'
+import { ArrowTopRightIcon, Tab } from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 
 import { capitalize } from '../../utils/string'
 
+import Code from '../utils/Code'
+
 import { providerToDisplayName, providerToIcon, providerToIconHeight } from './constants'
 
 const extendedTheme = {
+  A: {
+    Root: [
+      {
+        color: 'action-link-inline',
+      },
+    ],
+  },
   DropdownButton: {
     Button: [
       {
@@ -17,7 +27,7 @@ const extendedTheme = {
     Menu: [
       {
         borderRadius: 'normal',
-        width: 360,
+        width: 400,
         left: 'unset',
       },
     ],
@@ -104,8 +114,66 @@ function InstallDropdownButton({ recipes, ...props }) {
 
   function renderTabs() {
     return (
-      <Div p={0.5}>
-        Foo
+      <Div>
+        <Div
+          pt={0.5}
+          px={1}
+        >
+          <P
+            overline
+            fontSize={12}
+            color="text-xlight"
+          >
+            Install on {providerToDisplayName[recipe.provider]}
+          </P>
+          <P>
+            Choose either the Plural CLI or cloud shell to install. Learn more about CLI installation in our <A href="#">docs</A>.
+          </P>
+        </Div>
+        <Flex mt={0.5}>
+          <Tab
+            active={tab === 0}
+            onClick={() => setTab(0)}
+            flexGrow={1}
+            {...{ '&>div': { justifyContent: 'center' } }}
+          >
+            Plural CLI
+          </Tab>
+          <Tab
+            active={tab === 1}
+            onClick={() => setTab(1)}
+            flexGrow={1}
+            {...{ '&>div': { justifyContent: 'center' } }}
+          >
+            Cloud Shell
+          </Tab>
+        </Flex>
+        <Div p={1}>
+          {tab === 0 && (
+            <>
+              <P>
+                In your installation repository, run:
+              </P>
+              <Code
+                mt={0.5}
+                language="bash"
+              >
+                {`plural bundle install ${name} ${recipe.name}`}
+              </Code>
+            </>
+          )}
+          {tab === 1 && (
+            <Button width="100%">
+              Open Cloud Shell <ArrowTopRightIcon
+                size={24}
+                mt="-6px"
+                position="relative"
+                top={6}
+              />
+            </Button>
+          )}
+        </Div>
+
       </Div>
     )
   }

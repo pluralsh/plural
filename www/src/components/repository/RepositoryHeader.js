@@ -114,7 +114,7 @@ function RepositoryHeader(props) {
         align="center"
         justify="center"
         backgroundColor="fill-one"
-        border="2px solid border"
+        border="1px solid border"
         borderRadius={4}
       >
         <Img
@@ -138,7 +138,7 @@ function RepositoryHeader(props) {
           color="text-xlight"
         >
           <P>
-            Published by {repository.publisher?.name?.toUpperCase()}
+            Published by {capitalize(repository.publisher?.name)}
           </P>
           <P ml={1}>
             Available bundles

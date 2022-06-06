@@ -205,6 +205,7 @@ function InstallDropdownButton({ recipes, ...props }) {
                 <Div
                   ml={1}
                   flexShrink={0}
+                  flexGrow={1}
                   flexBasis="calc(100% - 4 * 16px)"
                 >
                   <P fontWeight={500}>

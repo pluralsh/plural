@@ -144,13 +144,14 @@ ref
         arrow
         label={tooltip}
         placement="right"
+        zIndex={9999}
       >
         {node}
       </Tooltip>
     )
   }
 
-  return wrapLink(
+  return wrapLink(wrapTooltip(
     <Flex
       ref={ref}
       py="9.5px" // Give it a square look with a weird padding
@@ -158,7 +159,6 @@ ref
       align="center"
       borderRadius="normal"
       cursor="pointer"
-      position="relative"
       color="text-light"
       backgroundColor={active ? 'fill-zero-selected' : null}
       _hover={{
@@ -207,7 +207,7 @@ ref
         {endIcon}
       </Flex>
     </Flex>
-  )
+  ))
 }
 
 const SidebarItem = forwardRef(SidebarItemRef)
@@ -406,7 +406,7 @@ function Sidebar({
             collapsed={collapsed}
             startIcon={collapsed ? <HamburgerMenuCollapsedIcon /> : <HamburgerMenuCollapseIcon />}
             label="Collapse"
-            tooltip="Collapse"
+            tooltip="Expand"
             backgroundColor="fill-one"
             _hover={{
               backgroundColor: 'transparency(fill-one-hover, 50)',

@@ -8,6 +8,7 @@
     Click below to confirm your email
   <% end %>
 <% end %>
+<%= space() %>
 <%= row do %>
   <%= btn url: url("/confirm-email/#{@token.external_id}") do %>
     Confirm

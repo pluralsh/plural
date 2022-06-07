@@ -101,9 +101,9 @@ defmodule GraphQl.Resolvers.Repository do
     |> Repository.supported(user)
   end
   defp apply_filter(query, {:tag, tag}, _) when is_binary(tag), do: Repository.for_tag(query, tag)
-  defp apply_filter(query, {:tags, [_ | _] = tags}), do: Repository.for_tags(query, tags)
-  defp apply_filter(query, {:categories, [_ | _] = categories}), do: Repository.for_categories(query, categories)
-  defp apply_filter(query, {:publishers, [_ | _] = pubs}), do: Repository.for_publishers(query, pubs)
+  defp apply_filter(query, {:tags, [_ | _] = tags}, _), do: Repository.for_tags(query, tags)
+  defp apply_filter(query, {:categories, [_ | _] = categories}, _), do: Repository.for_categories(query, categories)
+  defp apply_filter(query, {:publishers, [_ | _] = pubs}, _), do: Repository.for_publishers(query, pubs)
   defp apply_filter(query, {:publisher_id, id}, _) when is_binary(id), do: Repository.for_publisher(query, id)
   defp apply_filter(query, {:q, q}, _) when is_binary(q), do: Repository.search(query, q)
   defp apply_filter(query, {:category, c}, _) when is_atom(c), do: Repository.for_category(query, c)

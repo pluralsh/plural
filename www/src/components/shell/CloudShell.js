@@ -141,6 +141,16 @@ export function Header({ text }) {
   )
 }
 
+export function NavSection(props) {
+  return (
+    <Flex
+      marginTop="xxlarge"
+      justify="space-between"
+      {...props}
+    />
+  )
+}
+
 function getValidations(provider, scmProvider, section) {
   if (section === 'cloud') return CLOUD_VALIDATIONS[provider]
   if (section === 'git') return SCM_VALIDATIONS[scmProvider]
@@ -171,6 +181,12 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider }) {
     const hasNext = !!SECTIONS[section][0]
     if (hasNext) setSection(SECTIONS[section][0])
     if (!hasNext) mutation()
+  }, [section, mutation])
+
+  const previous = useCallback(() => {
+    const hasPrevious = !!SECTIONS[section][1]
+    if (hasPrevious) setSection(SECTIONS[section][1])
+    if (!hasPrevious) mutation()
   }, [section, mutation])
 
   const validations = getValidations(providerName, scmProvider, section)
@@ -215,10 +231,7 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider }) {
 
           </DemoCard>
           {/* Navigation */}
-          <Flex
-            marginTop="xxlarge"
-            justify="space-between"
-          >
+          <NavSection>
             <Button
               secondary
               onClick={() => {
@@ -232,7 +245,7 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider }) {
               onClick={() => next()}
             >Continue
             </Button>
-          </Flex>
+          </NavSection>
         </>
       )}
       {section === 'cloud' && (
@@ -246,6 +259,7 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider }) {
           demo={demo}
           setDemo={setDemo}
           next={next}
+          previous={previous}
         />
       )}
       {section === 'workspace' && (
@@ -376,7 +390,7 @@ export function DemoCard({ children, title = '' }) {
   )
 }
 
-function CreateARepoCard1({ data }) {
+function CreateARepoCard({ data }) {
   const urls = data?.scmAuthorization
 
   return (
@@ -428,6 +442,7 @@ function CreateARepoCard1({ data }) {
               </Div>
               <Text
                 body1
+                bold
                 marginTop="medium"
               >
                 Create a { providerName } repo
@@ -500,7 +515,7 @@ export function CloudShell() {
       stepIndex={0}
       childIsReady={ready}
     >
-      <CreateARepoCard1 data={data} />
+      <CreateARepoCard data={data} />
     </DemoWrapper>
   )
 }

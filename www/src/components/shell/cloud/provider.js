@@ -1,16 +1,18 @@
 import { createElement, useCallback, useRef, useState } from 'react'
 import { Down } from 'grommet-icons'
-import { Box, Drop, Text } from 'grommet'
-import { P } from 'honorable'
+import { Box, Drop } from 'grommet'
+import { Div, Flex, Img, P, Text } from 'honorable'
+
+import { Button, CloudIcon, StatusIpIcon } from 'pluralsh-design-system'
 
 import { Provider } from '../../repos/misc'
 
 import { CLOUDS } from '../constants'
-import { DemoCard, Header } from '../CloudShell'
+import { CardButton, DemoCard, Header, NavSection } from '../CloudShell'
 
 import { AWS_VALIDATIONS, AwsForm, awsSynopsis } from './aws'
 import { GCP_VALIDATIONS, GcpForm, gcpSynopsis } from './gcp'
-import { CardButton, DemoProject } from './demo'
+import { DemoProject } from './demo'
 
 function CloudItem({ provider, setProvider }) {
   return (
@@ -54,75 +56,120 @@ export const synopsis = ({ provider, ...rest }) => {
   }
 }
 
-function CloudOption({ header, description, onClick }) {
-  return (
-    <Box
-      width="50%"
-      height="250px"
-      pad="medium"
-      round="xsmall"
-      align="center"
-      justify="center"
-      hoverIndicator="card"
-      border
-      gap="small"
-      onClick={onClick}
+function CloudOption({ providerLogo, header, description, checked, ...props }) {
+  const bounceEase = 'cubic-bezier(.37,1.4,.62,1)'
+
+  const checkMark = (
+    <Div
+      position="absolute"
+      top={0}
+      left={0}
+      padding="medium"
     >
-      <Text
-        size="small"
-        weight={500}
-      >{header}
-      </Text>
-      <Text size="small">{description}</Text>
-    </Box>
+      <StatusIpIcon
+        size={24}
+        color="action-link-inline"
+        transform={checked ? 'scale(1)' : 'scale(0)'}
+        opacity={checked ? 1 : 0}
+        transition={`all 0.2s ${bounceEase}`}
+      />
+    </Div>
   )
-}
-
-function CloudDecision({ setPath }) {
+  
   return (
-    <DemoCard>
-      <P
+    <CardButton
+      position="relative"
+      {...props}
+    >
+      <Div
+        marginHorizontal="auto"
+        maxWidth={40}
+        maxHeight={40}
+        overflow="visible"
+      >
+        { providerLogo }
+      </Div>
+      <Text
         body1
+        bold
+        marginTop="medium"
+      >
+        {header}
+      </Text>
+      <Text
+        caption
         color="text-light"
-        marginBottom="medium"
       >
-        Plural makes it easy to plug into your own cloud, but we also provide a free demo cloud to help you get started.
-      </P>
-      <Box
-        fill
-        gap="small"
-      >
-        <Box
-          direction="row"
-          fill="horizontal"
-          justify="center"
-        >
-          <Text>Choose Your Own Adventure</Text>
-        </Box>
-        <Box
-          fill
-          direction="row"
-          align="center"
-          justify="center"
-          gap="small"
-        >
-          <CloudOption
-            header="Use a Demo Account"
-            description="We'll create a GCP project on the fly for you to give plural a spin (it will be deleted in 6hrs)"
-            onClick={() => setPath('demo')}
-          />
-          <CloudOption
-            header="Bring Your Own Cloud"
-            description="Use credentials for one of your own cloud accounts to get started"
-            onClick={() => setPath('byoc')}
-          />
-        </Box>
-      </Box>
-    </DemoCard>
+        {description}
+      </Text>
+      {checkMark}
+    </CardButton>
   )
 }
 
-export function ProviderForm({ provider, setProvider, workspace, setWorkspace, credentials, setCredentials, demo, setDemo, next }) {
+function CloudDecision({ setPath, previous }) {
+  const [nextPath, setNextPath] = useState()
+  console.log('nextPath', nextPath)
+
+  return (
+    <>
+      <DemoCard title="Choose a cloud">
+        <P
+          body1
+          color="text-light"
+          marginBottom="medium"
+        >
+          Plural makes it easy to plug into your own cloud, but we also provide a free demo cloud to help you get started.
+        </P> 
+        <Flex mx={-1}>
+          <CloudOption
+            checked={nextPath === 'demo'}
+            providerLogo={(
+              <Img
+                src="/gcp.png"
+                alt="Google Cloud logo"
+                width="100%"
+              />
+            )}
+            header="GCP Cloud Demo"
+            description="A six-hour instance of a GCP cloud to help get you started."
+            onClick={() => setNextPath('demo')}
+          />
+          <CloudOption
+            checked={nextPath === 'byoc'}
+            providerLogo={(
+              <CloudIcon
+                size={40}
+                color="text-light"
+              />
+            )}
+            header="Use Your Own Cloud"
+            description="Plug in your cloud credentials and start building."
+            onClick={() => setNextPath('byoc')}
+          />
+        </Flex>
+      </DemoCard>
+      {/* Navigation */}
+      <NavSection>
+        <Button
+          secondary
+          onClick={() => {
+            previous()
+          }}
+        >
+          Back
+        </Button>
+        <Button
+          disabled={!nextPath}
+          onClick={() => setPath(nextPath)}
+        >Continue
+        </Button>
+      </NavSection>
+    </>
+  )
+}
+
+export function ProviderForm({ provider, setProvider, workspace, setWorkspace, credentials, setCredentials, demo, setDemo, next, previous }) {
   const ref = useRef()
   const [path, setPath] = useState(null)
   const [open, setOpen] = useState(false)
@@ -135,7 +182,12 @@ export function ProviderForm({ provider, setProvider, workspace, setWorkspace, c
   const form = ProviderForms[provider]
 
   if (!path) {
-    return <CloudDecision setPath={doSetPath} />
+    return (
+      <CloudDecision
+        setPath={doSetPath}
+        previous={previous}
+      />
+    )
   }
 
   if (demo) {
@@ -203,4 +255,5 @@ export function ProviderForm({ provider, setProvider, workspace, setWorkspace, c
       )}
     </>
   )
+
 }

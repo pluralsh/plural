@@ -153,8 +153,8 @@ ref
   return wrapLink(
     <Flex
       ref={ref}
-      py={0.75}
-      px={1}
+      py="9.5px" // Give it a square look with a weird padding
+      px={0.75}
       align="center"
       borderRadius="normal"
       cursor="pointer"
@@ -229,7 +229,7 @@ function Sidebar({
   const [isMenuOpen, setIsMenuOpened] = useState(false)
   const [collapsed, setCollapsed] = useState(true)
 
-  const sidebarWidth = collapsed ? 82 : 256 - 32
+  const sidebarWidth = collapsed ? 65 : 256 - 32 // 64 + 1px border
   const previousUserData = getPreviousUserData()
 
   useOutsideClick(menuRef, event => {
@@ -272,7 +272,7 @@ function Sidebar({
         <Link to="/">
           <Flex
             py={1}
-            pl={1.75}
+            pl={1.25}
             flexShrink={0}
             align="center"
             borderBottom="1px solid border"
@@ -298,7 +298,7 @@ function Sidebar({
         --- */}
         <Div
           py={0.75}
-          px={1}
+          px={0.75}
           flexShrink={0}
           borderBottom="1px solid border"
         >
@@ -329,7 +329,7 @@ function Sidebar({
         --- */}
         <Div
           py={0.75}
-          px={1}
+          px={0.75}
           flexGrow={1}
           flexShrink={1}
           overflowY="auto"
@@ -349,7 +349,7 @@ function Sidebar({
           {items.map(({ name, Icon, url }) => (
             <SidebarItem
               key={name}
-              mb={0.25}
+              mb={0.5}
               active={activeId === url}
               collapsed={collapsed}
               startIcon={<Icon />}
@@ -364,7 +364,7 @@ function Sidebar({
         --- */}
         <Div
           py={0.75}
-          px={1}
+          px={0.75}
           flexShrink={0}
           borderBottom="1px solid border"
         >
@@ -401,7 +401,7 @@ function Sidebar({
         --- */}
         <Div
           pt={0.75}
-          px={1}
+          px={0.75}
           flexShrink={0}
         >
           <SidebarItem
@@ -422,7 +422,7 @@ function Sidebar({
         --- */}
         <Div
           py={0.5}
-          px={1}
+          px={0.5}
           flexShrink={0}
         >
           <SidebarItem
@@ -489,22 +489,6 @@ function Sidebar({
           <MenuItem>
             <MarketPlusIcon mr={1} />
             Create new publisher
-          </MenuItem>
-          <MenuItem
-            as="a"
-            color="inherit"
-            textDecoration="none"
-            href="https://discord.com/invite/qsUfBcC3Ru"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <DiscordIcon mr={1} />
-            Get support
-            <Div flexGrow={1} />
-            <ArrowTopRightIcon
-              size={24}
-              my={`${(16 - 24) / 2}px`}
-            />
           </MenuItem>
           <MenuItem>
             <LogoutIcon mr={1} />

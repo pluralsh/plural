@@ -73,16 +73,21 @@ export function GitlabRepositoryInput({ scm, setScm, accessToken }) {
 }
 
 export function useGitlab({ scm, setScm, accessToken }) {
+  console.log('debug useGitLab')
   const client = useMemo(() => new Gitlab({ oauthToken: accessToken }), [accessToken])
   const [orgs, setOrgs] = useState(null)
   const [org, setOrg] = useState(null)
   const doSetOrg = useCallback(org => {
-    if (org.type === 'user') setScm({ ...scm, org: null })
-    else setScm({ ...scm, org: `${org.id}` })
+    if (org.type === 'user') {
+      setScm({ ...scm, org: null })
+    }
+    else {
+      setScm({ ...scm, org: `${org.id}` })
+    }
 
     setOrg(org)
   }, [setScm, scm, setOrg])
-
+  
   useEffect(() => {
     const fetch = async () => {
       const groups = await client.Groups.all({ min_access_level: 30 })

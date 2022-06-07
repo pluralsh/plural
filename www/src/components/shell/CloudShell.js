@@ -21,8 +21,8 @@ import { Github as GithubLogo, Gitlab as GitlabLogo } from './icons'
 import SplashToLogoTransition from './SplashToLogoTransition'
 
 const DEBUG_SCM_TOKENS = {
-  GITLAB: '3cf3310702ff776e5425a4ab747d52245835e3b857537f94c0e8ef78755d4436',
-  GITHUB: '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',
+  GITLAB: '400d3238476904ca82d1ff498d8a2807efe127214edb13385c48b645c9cbde60',
+  GITHUB: '',
 }
 
 const SECTIONS = {
@@ -171,6 +171,8 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider }) {
   })
   const navigate = useNavigate()
 
+  console.log('debug scm', scm)
+
   const doSetProvider = useCallback(provider => {
     setProvider(provider)
     setCredentials({})
@@ -303,14 +305,14 @@ export function OAuthCallback({ provider }) {
     },
   })
 
-  if (!data) return <LoopingLogo dark />
-
   // START <<Remove this after dev>>
   if (process.env.NODE_ENV !== 'production' && DEBUG_SCM_TOKENS[provider.toUpperCase()]) {
     data = { ...data, ...{ scmToken: DEBUG_SCM_TOKENS[provider.toUpperCase()] } }
   }
   // END <<Remove this after dev>>
   console.log('debug scm data', data)
+
+  if (!data) return <LoopingLogo dark />
 
   if (!data.scmToken) {
     navigate('/shell')

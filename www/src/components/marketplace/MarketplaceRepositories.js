@@ -156,6 +156,7 @@ function MarketplaceRepositories({ installed, ...props }) {
       {...props}
     >
       <Flex
+        paddingHorizontal="large"
         align="flex-start"
         position="relative"
       >
@@ -222,6 +223,7 @@ function MarketplaceRepositories({ installed, ...props }) {
       <Div
         pt={1}
         pb={8}
+        paddingHorizontal="large"
         overflowY="auto"
         overflowX="hidden"
         position="relative"

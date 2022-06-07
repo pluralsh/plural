@@ -144,14 +144,13 @@ ref
         arrow
         label={tooltip}
         placement="right"
-        zIndex={9999}
       >
         {node}
       </Tooltip>
     )
   }
 
-  return wrapLink(wrapTooltip(
+  return wrapLink(
     <Flex
       ref={ref}
       py="9.5px" // Give it a square look with a weird padding
@@ -207,7 +206,7 @@ ref
         {endIcon}
       </Flex>
     </Flex>
-  ))
+  )
 }
 
 const SidebarItem = forwardRef(SidebarItemRef)

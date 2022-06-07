@@ -13,13 +13,15 @@ function Marketplace({ installed }) {
   return (
     <Flex
       pt={1}
-      px={2}
       direction="column"
       overflow="hidden"
       flexGrow={1}
       maxWidth="100%"
     >
-      <Flex flexShrink={0}>
+      <Flex
+        marginHorizontal="large"
+        flexShrink={0}
+      >
         <Link
           to="/marketplace"
           style={{ color: 'inherit', textDecoration: 'none' }}
@@ -62,8 +64,7 @@ function Marketplace({ installed }) {
           flexGrow={1}
         />
         <Div
-          ml={areFiltersOpen ? 2 : 0}
-          mr={areFiltersOpen ? 0 : `-${256 - 32}px`}
+          marginRight={areFiltersOpen ? 'medium' : `-${256 - 32}px`}
           transform={areFiltersOpen ? 'translateX(0)' : 'translateX(100%)'}
           opacity={areFiltersOpen ? 1 : 0}
           flexShrink={0}
@@ -77,6 +78,7 @@ function Marketplace({ installed }) {
           backgroundColor="fill-one"
           borderRadius="large"
           transition="all 250ms ease"
+          zIndex={9999}
         >
           <MarketplaceSidebar minWidth={256 - 32} />
         </Div>

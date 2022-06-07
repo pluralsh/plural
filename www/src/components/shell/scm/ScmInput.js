@@ -15,15 +15,13 @@ function OrgDisplay({ name, avatarUrl }) {
   return (
     <Flex
       direction="row"
-      gap={1}
       align="left"
-      pad={1}
-      mt={avatarUrl ? '-2px' : 0}
+      marginTop={avatarUrl ? '-2px' : 0}
     >
       {avatarUrl && (
         <Img
-          borderRadius="normal"
-          mr={0.5}
+          borderRadius="medium"
+          marginRight="xsmall"
           src={avatarUrl}
           display="block"
           width={24}

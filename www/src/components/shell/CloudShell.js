@@ -207,7 +207,7 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider }) {
             <P
               body1
               color="text-light"
-              mb={1}
+              marginBottom="medium"
             >
               We use GitOps to manage your application’s state. Use one of the following providers to get started.
             </P>
@@ -222,7 +222,7 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider }) {
           </DemoCard>
           {/* Navigation */}
           <Flex
-            mt={3}
+            marginTop="xxlarge"
             justify="space-between"
           >
             <Button
@@ -344,16 +344,16 @@ function DemoStepper({ stepIndex = 0, ...props }) {
 function CardButton(props) {
   return (
     <Button
-      flex="1 1 100%"
-      p={1.5}
       display="flex"
+      flex="1 1 100%"
+      padding="large"
+      marginHorizontal="medium"
       alignContent="center"
       justify="center"
       backgroundColor="fill-two"
       border="1px solid border-fill-two"
       _hover={{ background: 'fill-two-hover' }}
       _active={{ background: 'fill-two-selected' }}
-      mx={1}
       {...props}
     />
   )
@@ -365,14 +365,14 @@ function DemoCard({ children, title = '' }) {
       backgroundColor="fill-one"
       border="1px solid border"
       borderRadius="large"
-      p={2}
-      pt={1}
+      padding="xlarge"
+      paddingTop="medium"
     >
       {title && (
         <H2
           overline
           color="text-xlight"
-          mb={0.5}
+          marginBottom="xsmall"
           width="100%"
         >
           {title}
@@ -392,7 +392,7 @@ function CreateARepoCard1({ data }) {
       <P
         body1
         color="text-light"
-        mb={1}
+        marginBottom="medium"
       >
         We use GitOps to manage your application’s state. Use one of the following providers to get started.
       </P>
@@ -427,7 +427,7 @@ function CreateARepoCard1({ data }) {
               }}
             >
               <Div
-                mx="auto"
+                marginHorizontal="auto"
                 maxWidth={40}
                 maxHeight={40}
               >
@@ -435,7 +435,7 @@ function CreateARepoCard1({ data }) {
               </Div>
               <Text
                 body1
-                mt={1}
+                marginTop="medium"
               >
                 Create a { providerName } repo
               </Text>
@@ -453,7 +453,7 @@ export function DemoWrapper({ showSplashScreen = false, stepIndex = 0, childIsRe
       width="100%"
       alignItems="center"
       flexDirection="column"
-      mt={3}
+      marginTop="xxlarge"
     >
       <SplashToLogoTransition
         showSplashScreen={showSplashScreen}
@@ -466,10 +466,12 @@ export function DemoWrapper({ showSplashScreen = false, stepIndex = 0, childIsRe
             zIndex="0"
             width="100%"
             maxWidth={640}
-            mt={2}
-            px={2}
+            marginTop="xlarge"
+            paddingHorizontal="xlarge"
           >
-            <Div mb={3}>
+            <Div
+              marginBottom="xxlarge"
+            >
               <DemoStepper stepIndex={stepIndex} />
             </Div>
             {children}

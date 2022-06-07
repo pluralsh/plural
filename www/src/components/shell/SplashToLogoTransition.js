@@ -94,18 +94,16 @@ const splashTextTransitions = {
 }
 
 export default function SplashToLogoTransition({ showSplashScreen = false, ...props }) {
-
   if (showSplashScreen) {
     return <LogoAndSplash {...props} />
   }
  
   return <LogoOnly>{props.children}</LogoOnly>
-    
 }
 
 function LogoOnly({ children }) {    
   return (
-    < >
+    <>
       <Div
         position="relative"
         zIndex={1}
@@ -152,7 +150,7 @@ export function LogoAndSplash({ splashTimeout = 1200, childIsReady = false, chil
   const logoSize = showSplashScreen ? logoSizeBig : logoSizeSmall
   
   return (
-    < >
+    <>
       <CSSTransition
         in={showSplashScreen}
         appear
@@ -198,8 +196,8 @@ export function LogoAndSplash({ splashTimeout = 1200, childIsReady = false, chil
           <H2
             h2
             position="absolute"
-            mt={`-${logoSizeBig - logoSizeSmall}px`}
-            pt={3}
+            marginTop={`-${logoSizeBig - logoSizeSmall}px`}
+            paddingTop="xlarge"
             width="100%"
             textAlign="center"
             {...splashTextTransitions}

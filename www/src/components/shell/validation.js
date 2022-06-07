@@ -84,7 +84,7 @@ function Exception({ field, message }) {
       pad="small"
     >
       <Flex
-        mr={0.5}
+        marginRight="xsmall"
         align="center"
         justify="center"
       >
@@ -109,10 +109,10 @@ export function Exceptions({ exceptions, filterEmpty = true }) {
   return (
     <Div
       mt={1}
-      borderRadius="normal"
+      borderRadius="medium"
       border="1px solid border-fill-two"
       backgroundColor="fill-two"
-      p={0.5}
+      padding="xsmall"
     >
       {exceptions.map(({ field, message, empty }) => {
         console.log('exception', field, message, empty)

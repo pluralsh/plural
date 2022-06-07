@@ -281,6 +281,11 @@ defmodule GraphQl.Schema.Repository do
       arg :installed,    :boolean
       arg :category,     :category
 
+      # multiselects
+      arg :categories,   list_of(:category)
+      arg :tags,         list_of(:string)
+      arg :publishers,   list_of(:id)
+
       resolve &Repository.list_repositories/2
     end
 

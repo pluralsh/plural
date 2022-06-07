@@ -21,8 +21,8 @@ import { Github as GithubLogo, Gitlab as GitlabLogo } from './icons'
 import SplashToLogoTransition from './SplashToLogoTransition'
 
 const DEBUG_SCM_TOKENS = {
-  GITLAB: '9e7791d508144a21bb16dabba26f19344a70489d12844945ea4414f4c74895ff',
-  GITHUB: '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',
+  GITLAB: 'ac881b48af4be2ceddbc7622ef140b3d7a2583395d66035d8a5070f6f796f835',
+  GITHUB: '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',
 }
 
 const SECTIONS = {
@@ -334,7 +334,7 @@ function DemoStepper({ stepIndex = 0, ...props }) {
   )
 }
 
-function CardButton(props) {
+export function CardButton(props) {
   return (
     <Button
       display="flex"
@@ -352,7 +352,7 @@ function CardButton(props) {
   )
 }
 
-function DemoCard({ children, title = '' }) {
+export function DemoCard({ children, title = '' }) {
   return (
     <Div
       backgroundColor="fill-one"
@@ -405,6 +405,7 @@ function CreateARepoCard1({ data }) {
 
           return (
             <CardButton
+              key={provider}
               onClick={() => {
                 // START <<Remove this after dev>>
                 if (process.env.NODE_ENV !== 'production' && DEBUG_SCM_TOKENS[provider]) {

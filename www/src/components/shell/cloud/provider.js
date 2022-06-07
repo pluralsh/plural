@@ -1,15 +1,16 @@
 import { createElement, useCallback, useRef, useState } from 'react'
 import { Down } from 'grommet-icons'
 import { Box, Drop, Text } from 'grommet'
+import { P } from 'honorable'
 
 import { Provider } from '../../repos/misc'
 
 import { CLOUDS } from '../constants'
-import { Header } from '../CloudShell'
+import { DemoCard, Header } from '../CloudShell'
 
 import { AWS_VALIDATIONS, AwsForm, awsSynopsis } from './aws'
 import { GCP_VALIDATIONS, GcpForm, gcpSynopsis } from './gcp'
-import { DemoProject } from './demo'
+import { CardButton, DemoProject } from './demo'
 
 function CloudItem({ provider, setProvider }) {
   return (
@@ -79,36 +80,45 @@ function CloudOption({ header, description, onClick }) {
 
 function CloudDecision({ setPath }) {
   return (
-    <Box
-      fill
-      gap="small"
-    >
-      <Box
-        direction="row"
-        fill="horizontal"
-        justify="center"
+    <DemoCard>
+      <P
+        body1
+        color="text-light"
+        marginBottom="medium"
       >
-        <Text>Choose Your Own Adventure</Text>
-      </Box>
+        Plural makes it easy to plug into your own cloud, but we also provide a free demo cloud to help you get started.
+      </P>
       <Box
         fill
-        direction="row"
-        align="center"
-        justify="center"
         gap="small"
       >
-        <CloudOption
-          header="Use a Demo Account"
-          description="We'll create a GCP project on the fly for you to give plural a spin (it will be deleted in 6hrs)"
-          onClick={() => setPath('demo')}
-        />
-        <CloudOption
-          header="Bring Your Own Cloud"
-          description="Use credentials for one of your own cloud accounts to get started"
-          onClick={() => setPath('byoc')}
-        />
+        <Box
+          direction="row"
+          fill="horizontal"
+          justify="center"
+        >
+          <Text>Choose Your Own Adventure</Text>
+        </Box>
+        <Box
+          fill
+          direction="row"
+          align="center"
+          justify="center"
+          gap="small"
+        >
+          <CloudOption
+            header="Use a Demo Account"
+            description="We'll create a GCP project on the fly for you to give plural a spin (it will be deleted in 6hrs)"
+            onClick={() => setPath('demo')}
+          />
+          <CloudOption
+            header="Bring Your Own Cloud"
+            description="Use credentials for one of your own cloud accounts to get started"
+            onClick={() => setPath('byoc')}
+          />
+        </Box>
       </Box>
-    </Box>
+    </DemoCard>
   )
 }
 
@@ -130,6 +140,7 @@ export function ProviderForm({ provider, setProvider, workspace, setWorkspace, c
 
   if (demo) {
     return (
+
       <DemoProject
         setDemo={setDemo}
         setProvider={setProvider}

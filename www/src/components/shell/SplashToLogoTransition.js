@@ -175,7 +175,6 @@ export function LogoAndSplash({ splashTimeout = 1200, childIsReady = false, chil
               <LoopingLogo
                 light
                 still
-                height={logoSize}
                 scale={1}
               />
             </Div>

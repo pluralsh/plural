@@ -161,8 +161,6 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider }) {
   })
   const navigate = useNavigate()
 
-  console.log('debug scm', scm)
-
   const doSetProvider = useCallback(provider => {
     setProvider(provider)
     setCredentials({})
@@ -177,10 +175,6 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider }) {
 
   const validations = getValidations(providerName, scmProvider, section)
   const { error, exceptions } = getExceptions(validations, { credentials, workspace, scm })
-
-  console.log('debug validations:', validations)
-  console.log('debug exceptions', exceptions)
-  console.log('debug errors', error)
 
   let stepIndex = 0
   switch (section) {
@@ -307,7 +301,6 @@ export function OAuthCallback({ provider }) {
     data = { ...data, ...{ scmToken: DEBUG_SCM_TOKENS[provider.toUpperCase()] } }
   }
   // END <<Remove this after dev>>
-  console.log('debug scm data', data)
 
   if (!data) return <LoopingLogo dark />
 
@@ -385,7 +378,6 @@ function DemoCard({ children, title = '' }) {
 
 function CreateARepoCard1({ data }) {
   const urls = data?.scmAuthorization
-  console.log('data.scma', urls)
 
   return (
     <DemoCard title="Create a repository">

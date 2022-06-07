@@ -2,11 +2,12 @@ import { Box, Text } from 'grommet'
 import { Checkmark, StatusCritical } from 'grommet-icons'
 
 export function disableState(password, confirm) {
-  if (password.length === 0) return { disabled: true, reason: 'enter a password' }
-  if (password.length < 10) return { disabled: true, reason: 'password is too short' }
-  if (password !== confirm) return { disabled: true, reason: 'passwords do not match' }
+  if (password.length === 0) return { disabled: true, reason: '' }
+  if (password.length < 10) return { disabled: true, reason: 'Password is too short' }
+  if (!confirm) return { disabled: true, reason: '' }
+  if (confirm && password !== confirm) return { disabled: true, reason: 'Passwords do not match' }
 
-  return { disabled: false, reason: 'passwords match!' }
+  return { disabled: false, reason: '' }
 }
 
 export function PasswordStatus({ disabled, reason }) {
@@ -17,7 +18,7 @@ export function PasswordStatus({ disabled, reason }) {
       align="center"
       gap="xsmall"
     >
-      {disabled ? (
+      {reason ? disabled ? (
         <StatusCritical
           color="error"
           size="12px"
@@ -27,11 +28,12 @@ export function PasswordStatus({ disabled, reason }) {
           color="good"
           size="12px"
         />
-      )}
+      ) : null}
       <Text
         size="small"
         color={disabled ? 'error' : 'good'}
-      >{reason}
+      >
+        {reason}
       </Text>
     </Box>
   )

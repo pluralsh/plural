@@ -95,7 +95,7 @@ function OrgInput({ provider, org, orgs, doSetOrg }) {
   )
 }
 
-function RepositoryInput({ provider, scm, setScm, accessToken, scmState }) {
+function RepositoryInput({ provider, scm, setScm, scmState }) {
   function setName(name) {
     setScm({ ...scm, name })
   }
@@ -148,7 +148,6 @@ function GithubRepositoryInput({ provider, accessToken, scm, setScm }) {
     <RepositoryInput
       provider={provider}
       scmState={scmState}
-      accessToken={accessToken}
       scm={scm}
       setScm={setScm}
     />
@@ -162,7 +161,6 @@ function GitlabRepositoryInput({ provider, accessToken, scm, setScm }) {
     <RepositoryInput
       provider={provider}
       scmState={scmState}
-      accessToken={accessToken}
       scm={scm}
       setScm={setScm}
     />

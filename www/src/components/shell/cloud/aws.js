@@ -3,7 +3,7 @@ import { Box, Text } from 'grommet'
 
 import { LabelledInput } from '../../users/MagicLogin'
 import { DarkSelect } from '../../utils/DarkSelect'
-import { exists } from '../validation'
+import { stringExists } from '../validation'
 
 const REGIONS = [
   'us-east-1',
@@ -13,8 +13,8 @@ const REGIONS = [
 ]
 
 export const AWS_VALIDATIONS = [
-  { field: 'credentials.aws.accessKeyId', func: exists, name: 'access key id' },
-  { field: 'credentials.aws.secretAccessKey', func: exists, name: 'secret access key' },
+  { field: 'credentials.aws.accessKeyId', func: stringExists, name: 'access key id' },
+  { field: 'credentials.aws.secretAccessKey', func: stringExists, name: 'secret access key' },
 ]
 
 export const awsSynopsis = ({ workspace, credentials }) => (

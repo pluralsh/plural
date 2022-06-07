@@ -2,8 +2,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Box } from 'grommet'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useMutation, useQuery } from '@apollo/client'
-import { BrowserIcon, CloudIcon, FormField, GearTrainIcon, GitHubIcon, Select, Stepper } from 'pluralsh-design-system'
-import { A, Button, Div, Flex, H2, P, Text } from 'honorable'
+import { BrowserIcon, CloudIcon, GearTrainIcon, GitHubIcon, Stepper } from 'pluralsh-design-system'
+import { Button, Div, Flex, H2, P, Text } from 'honorable'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
@@ -21,8 +21,8 @@ import { Github as GithubLogo, Gitlab as GitlabLogo } from './icons'
 import SplashToLogoTransition from './SplashToLogoTransition'
 
 const DEBUG_SCM_TOKENS = {
-  GITLAB: '400d3238476904ca82d1ff498d8a2807efe127214edb13385c48b645c9cbde60',
-  GITHUB: '',
+  GITLAB: '9e7791d508144a21bb16dabba26f19344a70489d12844945ea4414f4c74895ff',
+  GITHUB: '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',
 }
 
 const SECTIONS = {
@@ -88,16 +88,6 @@ function SynopsisSection({ header, children }) {
       </Box>
       {children}
     </Box>
-  )
-}
-
-function SecondaryButton({ label, onClick }) {
-  return (
-    <Button
-      background="sidebarHover"
-      label={label}
-      onClick={onClick}
-    />
   )
 }
 
@@ -188,6 +178,10 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider }) {
   const validations = getValidations(providerName, scmProvider, section)
   const { error, exceptions } = getExceptions(validations, { credentials, workspace, scm })
 
+  console.log('debug validations:', validations)
+  console.log('debug exceptions', exceptions)
+  console.log('debug errors', error)
+
   let stepIndex = 0
   switch (section) {
     case 'git':
@@ -207,89 +201,92 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider }) {
   return (
     <DemoWrapper stepIndex={stepIndex}>
 
-      <DemoCard>
-        <P
-          body1
-          color="text-light"
-          mb={1}
-        >
-          We use GitOps to manage your application’s state. Use one of the following providers to get started.
-        </P>
-        {section === 'git' && (
-          <ScmInput
-            provider={scmProvider}
-            accessToken={accessToken}
-            scm={scm}
-            setScm={setScm}
-          />
-        )}
-        {section === 'cloud' && (
-          <ProviderForm
-            provider={providerName}
-            setProvider={doSetProvider}
+      {section === 'git' && (
+        <>
+          <DemoCard>
+            <P
+              body1
+              color="text-light"
+              mb={1}
+            >
+              We use GitOps to manage your application’s state. Use one of the following providers to get started.
+            </P>
+            <ScmInput
+              provider={scmProvider}
+              accessToken={accessToken}
+              scm={scm}
+              setScm={setScm}
+            />
+            {exceptions && (!demo || section !== 'cloud') && <Exceptions exceptions={exceptions} />}
+
+          </DemoCard>
+          {/* Navigation */}
+          <Flex
+            mt={3}
+            justify="space-between"
+          >
+            <Button
+              secondary
+              onClick={() => {
+                navigate('/shell')
+              }}
+            >
+              Back
+            </Button>
+            <Button
+              disabled={error}
+              onClick={() => next()}
+            >Continue
+            </Button>
+          </Flex>
+        </>
+      )}
+      {section === 'cloud' && (
+        <ProviderForm
+          provider={providerName}
+          setProvider={doSetProvider}
+          workspace={workspace}
+          setWorkspace={setWorkspace}
+          credentials={credentials}
+          setCredentials={setCredentials}
+          demo={demo}
+          setDemo={setDemo}
+          next={next}
+        />
+      )}
+      {section === 'workspace' && (
+        <>
+          <Header text="Workspace" />
+          <WorkspaceForm
+            demo={demo}
             workspace={workspace}
             setWorkspace={setWorkspace}
-            credentials={credentials}
-            setCredentials={setCredentials}
-            demo={demo}
-            setDemo={setDemo}
-            next={next}
           />
-        )}
-        {section === 'workspace' && (
-          <>
-            <Header text="Workspace" />
-            <WorkspaceForm
-              demo={demo}
-              workspace={workspace}
-              setWorkspace={setWorkspace}
-            />
-          </>
-        )}
-        {section === 'finish' && (
-          <Synopsis
-            provider={providerName}
-            workspace={workspace}
-            credentials={credentials}
-            demo={demo}
-            scm={scm}
-          />
-        )}
-        {/* Errors */}
-        <Div
-          flex={false}
-          gap="small"
-          width={section !== 'finish' ? '50%' : null}
-        >
-          {exceptions && (!demo || section !== 'cloud') && <Exceptions exceptions={exceptions} />}
-          {gqlError && (
-            <GqlError
-              error={gqlError}
-              header="Failed to create shell"
-            />
-          )}
-        </Div>
-      </DemoCard>
-      {/* Navigation */}
-      <Flex
-        mt={3}
-        justify="space-between"
+        </>
+      )}
+      {section === 'finish' && (
+        <Synopsis
+          provider={providerName}
+          workspace={workspace}
+          credentials={credentials}
+          demo={demo}
+          scm={scm}
+        />
+      )}
+      {/* Errors */}
+      <Div
+        flex={false}
+        gap="small"
+        width={section !== 'finish' ? '50%' : null}
       >
-        <Button
-          secondary
-          onClick={() => {
-            if (SECTIONS[section][1]) {
-              setSection(SECTIONS[section][1])
-            }
-            else {
-              navigate('/shell')
-            }
-          }}
-        >
-          Back
-        </Button>
-        <Button>Continue</Button>
-      </Flex>
+        {gqlError && (
+          <GqlError
+            error={gqlError}
+            header="Failed to create shell"
+          />
+        )}
+      </Div>
+
     </DemoWrapper>
   )
 }

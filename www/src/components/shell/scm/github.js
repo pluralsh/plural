@@ -8,7 +8,7 @@ export const GITHUB_VALIDATIONS = [
   { field: 'scm.name', name: 'repository', func: isAlphanumeric },
 ]
 
-export function useGithub({ scm, setScm, accessToken }) {
+export function useGithubState({ scm, setScm, accessToken }) {
   const client = useMemo(() => new Octokit({ auth: accessToken }), [accessToken])
   const [orgs, setOrgs] = useState(null)
   const [org, setOrg] = useState(null)

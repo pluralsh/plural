@@ -4,7 +4,7 @@ import { File } from 'forge-core'
 
 import { AttachmentContext, AttachmentProvider, Dropzone } from '../../incidents/AttachmentProvider'
 import { DarkSelect } from '../../utils/DarkSelect'
-import { exists, isAlphanumeric } from '../validation'
+import { stringExists, isAlphanumeric } from '../validation'
 
 const ZONES = [
   'asia-east1',
@@ -25,7 +25,7 @@ const ZONES = [
 ]
 
 export const GCP_VALIDATIONS = [
-  { field: 'credentials.gcp.applicationCredentials', func: exists, name: 'application credentials' },
+  { field: 'credentials.gcp.applicationCredentials', func: stringExists, name: 'application credentials' },
   { field: 'workspace.project', func: isAlphanumeric, name: 'project' },
 ]
 

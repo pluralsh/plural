@@ -1,9 +1,9 @@
-import { A, Div, Flex, Img, Input, P, Text } from 'honorable'
+import { A, Div, Flex, Img, Input, MenuItem, P, Select, Text } from 'honorable'
 
-import { FormField, Select } from 'pluralsh-design-system'
+import { FormField } from 'pluralsh-design-system'
 
-import { GITHUB_VALIDATIONS, useGithub } from './github'
-import { GITLAB_VALIDATIONS, useGitlab } from './gitlab'
+import { GITHUB_VALIDATIONS, useGithubState } from './github'
+import { GITLAB_VALIDATIONS, useGitlabState } from './gitlab'
 import { Provider } from './types'
 
 export const SCM_VALIDATIONS = {
@@ -55,14 +55,17 @@ function OrgInput({ provider, org, orgs, doSetOrg }) {
       key = org.id
     }
 
-    return ({
-      key,
-      label: <OrgDisplay
-        name={name}
-        avatarUrl={avatarUrl}
-      />,
-      value: org.id,
-    })
+    return (
+      <MenuItem
+        key={key}
+        value={org}
+      >
+        <OrgDisplay
+          name={name}
+          avatarUrl={avatarUrl}
+        />
+      </MenuItem>
+    )
   }
 
   return (
@@ -83,41 +86,29 @@ function OrgInput({ provider, org, orgs, doSetOrg }) {
     >
       <Select
         width="100%"
-        items={orgs?.map(orgMapFunc) || []}
-        onChange={e => {
-          console.log('debug e', e)
-          console.log('debug target', e.target)
-          console.log('debug value', e.target.value)
-          // setSelectedOrg(e?.target?.value)
-          // doSetOrg(target.value) 
+        onChange={({ target: { value } }) => {
+          console.log('debug value', value)
+          doSetOrg(value) 
         }}
-        value={org?.id || null}
-      />
+        value={org || null}
+      >
+        {orgs?.map(orgMapFunc) || []}
+      </Select>
     </FormField>
   )
 }
 
-function RepositoryInput({ provider, scm, setScm, accessToken, providerProps }) {
-  console.log('debug scm1:', scm,)
-  console.log('debug setScm1:', setScm)
-  console.log('debug accessToken1:', accessToken)
-
-  const { org, orgs, doSetOrg } = providerProps
-  console.log('debug org:', org)
-  console.log('debug orgs:', orgs)
-  console.log('debug doSetOrg:', doSetOrg)
-
+function RepositoryInput({ provider, scm, setScm, accessToken, scmState }) {
   function setName(name) {
     setScm({ ...scm, name })
   }
   
-  const maxLen = 160
-  console.log('debug provider', provider)
+  const maxLen = 5
 
   return (
     <>
       <OrgInput
-        {...providerProps}
+        {...scmState}
         provider={provider}
       />
       <FormField
@@ -144,7 +135,7 @@ function RepositoryInput({ provider, scm, setScm, accessToken, providerProps }) 
       >
         <Input
           width="100%"
-          onChange={({ target: { value } }) => setName(value)}
+          onChange={({ target: { value } }) => setName(value.substring(0, maxLen))}
           placeholder="Choose a repository name"
         />
       </FormField>
@@ -153,12 +144,12 @@ function RepositoryInput({ provider, scm, setScm, accessToken, providerProps }) 
 }
 
 function GithubRepositoryInput({ provider, accessToken, scm, setScm }) {
-  const providerProps = useGithub({ scm, setScm, accessToken })
+  const scmState = useGithubState({ scm, setScm, accessToken })
 
   return (
     <RepositoryInput
       provider={provider}
-      providerProps={providerProps}
+      scmState={scmState}
       accessToken={accessToken}
       scm={scm}
       setScm={setScm}
@@ -167,12 +158,12 @@ function GithubRepositoryInput({ provider, accessToken, scm, setScm }) {
 }
 
 function GitlabRepositoryInput({ provider, accessToken, scm, setScm }) {
-  const providerProps = useGitlab({ scm, setScm, accessToken })
+  const scmState = useGitlabState({ scm, setScm, accessToken })
 
   return (
     <RepositoryInput
       provider={provider}
-      providerProps={providerProps}
+      scmState={scmState}
       accessToken={accessToken}
       scm={scm}
       setScm={setScm}

@@ -319,10 +319,10 @@ export function OAuthCallback({ provider }) {
 
 function DemoStepper({ stepIndex = 0, ...props }) {
   const steps = [
-    { stepTitle: 'Create a repository', IconComponent: GitHubIcon, iconSize: 30 },
-    { stepTitle: <>Choose a&nbsp;cloud</>, IconComponent: CloudIcon },
-    { stepTitle: 'Configure repository', IconComponent: GearTrainIcon },
-    { stepTitle: <>Launch the&nbsp;app</>, IconComponent: BrowserIcon },
+    { key: 'git', stepTitle: 'Create a repository', IconComponent: GitHubIcon, iconSize: 30 },
+    { key: 'cloud', stepTitle: <>Choose a&nbsp;cloud</>, IconComponent: CloudIcon },
+    { key: 'workspace', stepTitle: 'Configure repository', IconComponent: GearTrainIcon },
+    { key: 'finish', stepTitle: <>Launch the&nbsp;app</>, IconComponent: BrowserIcon },
   ]
 
   return (

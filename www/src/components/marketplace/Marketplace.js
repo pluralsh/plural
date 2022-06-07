@@ -71,7 +71,7 @@ function Marketplace({ installed }) {
           top={0}
           right={0}
           width={256 - 32}
-          height={`calc(100% - ${64 + 8}px)`}
+          height="calc(100% - 16px)"
           overflowY="auto"
           border="1px solid border"
           backgroundColor="fill-one"

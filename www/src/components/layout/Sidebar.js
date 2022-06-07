@@ -337,12 +337,10 @@ function Sidebar({
           borderBottom="1px solid border"
           {...{
             '&::-webkit-scrollbar': {
-              width: 6,
+              display: 'none',
             },
             '&::-webkit-scrollbar-thumb': {
-              backgroundColor: 'fill-zero-hover',
-              borderRadius: 3,
-              display: collapsed ? 'none' : null,
+              display: 'none',
             },
           }}
         >

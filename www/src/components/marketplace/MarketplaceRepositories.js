@@ -171,6 +171,7 @@ function MarketplaceRepositories({ installed, ...props }) {
           placeholder="Search a repository"
           value={search}
           onChange={event => setSearch(event.target.value)}
+          width="calc(100% / 2 - 16px)"
         />
         <Flex
           wrap="wrap"

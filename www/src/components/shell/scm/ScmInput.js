@@ -1,4 +1,4 @@
-import { A, Div, Flex, Img, Input, MenuItem, P, Select, Text } from 'honorable'
+import { A, Flex, Img, Input, MenuItem, P, Select, Text } from 'honorable'
 
 import { FormField } from 'pluralsh-design-system'
 
@@ -85,7 +85,6 @@ function OrgInput({ provider, org, orgs, doSetOrg }) {
       <Select
         width="100%"
         onChange={({ target: { value } }) => {
-          console.log('debug value', value)
           doSetOrg(value) 
         }}
         value={org || null}

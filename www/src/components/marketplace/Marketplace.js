@@ -8,7 +8,7 @@ import MarketplaceSidebar from './MarketplaceSidebar'
 import MarketplaceRepositories from './MarketplaceRepositories'
 
 function Marketplace({ installed }) {
-  const [areFiltersOpen, setAreFiltersOpen] = useState(false)
+  const [areFiltersOpen, setAreFiltersOpen] = useState(true)
 
   return (
     <Flex

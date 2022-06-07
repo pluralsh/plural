@@ -103,7 +103,7 @@ function RepositoryInput({ provider, scm, setScm, accessToken, scmState }) {
     setScm({ ...scm, name })
   }
   
-  const maxLen = 5
+  const maxLen = 100
 
   return (
     <>
@@ -136,6 +136,7 @@ function RepositoryInput({ provider, scm, setScm, accessToken, scmState }) {
         <Input
           width="100%"
           onChange={({ target: { value } }) => setName(value.substring(0, maxLen))}
+          value={scm.name}
           placeholder="Choose a repository name"
         />
       </FormField>

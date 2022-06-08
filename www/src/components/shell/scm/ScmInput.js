@@ -36,7 +36,7 @@ function OrgDisplay({ name, avatarUrl }) {
   )
 }
 
-function OrgInput({ provider, org, orgs, doSetOrg }) {
+function OrgInput({ provider, org, orgs, doSetOrg, altProviderUrl }) {
 
   function orgMapFunc(org) {
     let name
@@ -77,7 +77,7 @@ function OrgInput({ provider, org, orgs, doSetOrg }) {
       caption={(
         <A
           inline
-          href=""
+          href={altProviderUrl}
         >{`Switch to ${provider === Provider.GITHUB ? 'Gitlab' : 'Github'}`}
         </A>
       )}
@@ -95,7 +95,7 @@ function OrgInput({ provider, org, orgs, doSetOrg }) {
   )
 }
 
-function RepositoryInput({ provider, scm, setScm, scmState }) {
+function RepositoryInput({ provider, scm, setScm, scmState, altProviderUrl }) {
   function setName(name) {
     setScm({ ...scm, name })
   }
@@ -107,6 +107,7 @@ function RepositoryInput({ provider, scm, setScm, scmState }) {
       <OrgInput
         {...scmState}
         provider={provider}
+        altProviderUrl={altProviderUrl}
       />
       <FormField
         width="100%"
@@ -141,7 +142,7 @@ function RepositoryInput({ provider, scm, setScm, scmState }) {
   )
 }
 
-function GithubRepositoryInput({ provider, accessToken, scm, setScm }) {
+function GithubRepositoryInput({ provider, accessToken, scm, setScm, altProviderUrl }) {
   const scmState = useGithubState({ scm, setScm, accessToken })
 
   return (
@@ -150,11 +151,12 @@ function GithubRepositoryInput({ provider, accessToken, scm, setScm }) {
       scmState={scmState}
       scm={scm}
       setScm={setScm}
+      altProviderUrl={altProviderUrl}
     />
   )
 }
 
-function GitlabRepositoryInput({ provider, accessToken, scm, setScm }) {
+function GitlabRepositoryInput({ provider, accessToken, scm, setScm, altProviderUrl }) {
   const scmState = useGitlabState({ scm, setScm, accessToken })
 
   return (
@@ -163,11 +165,12 @@ function GitlabRepositoryInput({ provider, accessToken, scm, setScm }) {
       scmState={scmState}
       scm={scm}
       setScm={setScm}
+      altProviderUrl={altProviderUrl}
     />
   )
 }
 
-export function ScmInput({ provider, accessToken, scm, setScm }) {
+export function ScmInput({ provider, accessToken, scm, setScm, authUrlData }) {
 
   if (provider === Provider.GITHUB) {
     return (
@@ -176,6 +179,10 @@ export function ScmInput({ provider, accessToken, scm, setScm }) {
         accessToken={accessToken}
         scm={scm}
         setScm={setScm}
+        altProviderUrl={
+          authUrlData?.scmAuthorization.find(
+            ({ provider }) => provider === 'GITLAB')?.url
+        }
       />
     )
   }
@@ -187,6 +194,10 @@ export function ScmInput({ provider, accessToken, scm, setScm }) {
         accessToken={accessToken}
         scm={scm}
         setScm={setScm}
+        altProviderUrl={
+          authUrlData?.scmAuthorization.find(
+            ({ provider }) => provider === 'GITHUB')?.url
+        }
       />
     )
   }

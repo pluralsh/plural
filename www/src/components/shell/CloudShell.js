@@ -158,7 +158,7 @@ function getValidations(provider, scmProvider, section) {
   return VALIDATIONS[section]
 }
 
-function CreateShell({ accessToken, onCreate, provider: scmProvider }) {
+function CreateShell({ accessToken, onCreate, provider: scmProvider, authUrlData }) {
   const [demo, setDemo] = useState(null)
   const [section, setSection] = useState('git')
   const [providerName, setProvider] = useState('AWS')
@@ -226,6 +226,7 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider }) {
               accessToken={accessToken}
               scm={scm}
               setScm={setScm}
+              authUrlData={authUrlData}
             />
             {exceptions && (!demo || section !== 'cloud') && <Exceptions exceptions={exceptions} />}
 
@@ -303,6 +304,8 @@ export function OAuthCallback({ provider }) {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
+  const { data: authUrlData } = useQuery(AUTH_URLS)
+
   let { data } = useQuery(SCM_TOKEN, {
     variables: {
       code: searchParams.get('code'),
@@ -327,6 +330,7 @@ export function OAuthCallback({ provider }) {
       accessToken={data.scmToken}
       provider={provider.toUpperCase()}
       onCreate={() => navigate('/shell')}
+      authUrlData={authUrlData}
     />
   )
 }

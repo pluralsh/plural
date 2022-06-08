@@ -20,10 +20,12 @@ import { Github as GithubLogo, Gitlab as GitlabLogo } from './icons'
 
 import SplashToLogoTransition from './SplashToLogoTransition'
 
+// START <<Remove this after dev>>
 const DEBUG_SCM_TOKENS = {
-  GITLAB: 'ac881b48af4be2ceddbc7622ef140b3d7a2583395d66035d8a5070f6f796f835',
-  GITHUB: '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',
+  GITLAB: '',
+  GITHUB: '',
 }
+// END <<Remove this after dev>>
 
 const SECTIONS = {
   git: ['cloud', null],
@@ -210,7 +212,6 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider, authUrlData
 
   return (
     <DemoWrapper stepIndex={stepIndex}>
-
       {section === 'git' && (
         <>
           <DemoCard>
@@ -295,7 +296,6 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider, authUrlData
           />
         )}
       </Div>
-
     </DemoWrapper>
   )
 }

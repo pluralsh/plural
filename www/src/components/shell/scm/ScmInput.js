@@ -1,6 +1,12 @@
 import { A, Flex, Img, Input, MenuItem, P, Select, Text } from 'honorable'
 
-import { FormField } from 'pluralsh-design-system'
+import { Button, FormField } from 'pluralsh-design-system'
+import { useContext } from 'react'
+import { useNavigate } from 'react-router-dom'
+
+import { CreateShellContext, DemoCard, NavSection } from '../CloudShell'
+
+import { Exceptions } from '../validation'
 
 import { GITHUB_VALIDATIONS, useGithubState } from './github'
 import { GITLAB_VALIDATIONS, useGitlabState } from './gitlab'
@@ -36,7 +42,11 @@ function OrgDisplay({ name, avatarUrl }) {
   )
 }
 
-function OrgInput({ provider, org, orgs, doSetOrg, altProviderUrl }) {
+function OrgInput({ org, orgs, doSetOrg }) {
+  const { scm: { provider }, authUrlData } = useContext(CreateShellContext)
+
+  const altProvider = provider === Provider.GITHUB ? Provider.GITLAB : Provider.GITHUB
+  const altProviderUrl = authUrlData?.scmAuthorization?.find(({ provider: p }) => p === altProvider)?.url
 
   function orgMapFunc(org) {
     let name
@@ -95,7 +105,9 @@ function OrgInput({ provider, org, orgs, doSetOrg, altProviderUrl }) {
   )
 }
 
-function RepositoryInput({ provider, scm, setScm, scmState, altProviderUrl }) {
+function RepositoryInput({ scmState }) {
+  const { scm, setScm } = useContext(CreateShellContext)
+
   function setName(name) {
     setScm({ ...scm, name })
   }
@@ -106,8 +118,6 @@ function RepositoryInput({ provider, scm, setScm, scmState, altProviderUrl }) {
     <>
       <OrgInput
         {...scmState}
-        provider={provider}
-        altProviderUrl={altProviderUrl}
       />
       <FormField
         width="100%"
@@ -142,65 +152,73 @@ function RepositoryInput({ provider, scm, setScm, scmState, altProviderUrl }) {
   )
 }
 
-function GithubRepositoryInput({ provider, accessToken, scm, setScm, altProviderUrl }) {
+function GithubRepositoryInput() {
+  const { scm, setScm, accessToken } = useContext(CreateShellContext)
   const scmState = useGithubState({ scm, setScm, accessToken })
 
   return (
-    <RepositoryInput
-      provider={provider}
-      scmState={scmState}
-      scm={scm}
-      setScm={setScm}
-      altProviderUrl={altProviderUrl}
-    />
+    <RepositoryInput scmState={scmState} />
   )
 }
 
-function GitlabRepositoryInput({ provider, accessToken, scm, setScm, altProviderUrl }) {
+function GitlabRepositoryInput() {
+  const { scm, setScm, accessToken } = useContext(CreateShellContext)
   const scmState = useGitlabState({ scm, setScm, accessToken })
 
   return (
-    <RepositoryInput
-      provider={provider}
-      scmState={scmState}
-      scm={scm}
-      setScm={setScm}
-      altProviderUrl={altProviderUrl}
-    />
+    <RepositoryInput scmState={scmState} />
   )
 }
 
-export function ScmInput({ provider, accessToken, scm, setScm, authUrlData }) {
-
-  if (provider === Provider.GITHUB) {
+export function ScmInput() {
+  const { scm: { provider: scmProvider } } = useContext(CreateShellContext)
+  
+  if (scmProvider === Provider.GITHUB) {
     return (
-      <GithubRepositoryInput
-        provider={provider}
-        accessToken={accessToken}
-        scm={scm}
-        setScm={setScm}
-        altProviderUrl={
-          authUrlData?.scmAuthorization.find(
-            ({ provider }) => provider === 'GITLAB')?.url
-        }
-      />
+      <GithubRepositoryInput />
     )
   }
-
-  if (provider === Provider.GITLAB) {
+  if (scmProvider === Provider.GITLAB) {
     return (
-      <GitlabRepositoryInput
-        provider={provider}
-        accessToken={accessToken}
-        scm={scm}
-        setScm={setScm}
-        altProviderUrl={
-          authUrlData?.scmAuthorization.find(
-            ({ provider }) => provider === 'GITHUB')?.url
-        }
-      />
+      <GitlabRepositoryInput />
     )
   }
 
   return null
+}
+
+export function ScmSection() {
+  const { exceptions, error, next } = useContext(CreateShellContext)
+  const navigate = useNavigate()
+
+  return (
+    <>
+      <DemoCard>
+        <P
+          body1
+          color="text-light"
+          marginBottom="medium"
+        >
+          We use GitOps to manage your application’s state. Use one of the following providers to get started.
+        </P>
+        <ScmInput />
+        {exceptions && <Exceptions exceptions={exceptions} />}
+      </DemoCard>
+      <NavSection>
+        <Button
+          secondary
+          onClick={() => {
+            navigate('/shell')
+          }}
+        >
+          Back
+        </Button>
+        <Button
+          disabled={error}
+          onClick={() => next()}
+        >Continue
+        </Button>
+      </NavSection>
+    </>
+  )
 }

@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { createContext, useCallback, useEffect, useMemo, useState } from 'react'
 import { Box } from 'grommet'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useMutation, useQuery } from '@apollo/client'
-import { BrowserIcon, CloudIcon, GearTrainIcon, GitHubIcon, Stepper } from 'pluralsh-design-system'
+import { BrowserIcon, CloudIcon, GearTrainIcon, GitHubIcon, StatusIpIcon, Stepper } from 'pluralsh-design-system'
 import { Button, Div, Flex, H2, P, Text } from 'honorable'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
@@ -13,31 +13,60 @@ import { AUTH_URLS, CLOUD_SHELL, CREATE_SHELL, REBOOT_SHELL, SCM_TOKEN } from '.
 import { GITHUB_VALIDATIONS } from './scm/github'
 import { WORKSPACE_VALIDATIONS, WorkspaceForm } from './WorkspaceForm'
 import { Terminal } from './Terminal'
-import { Exceptions, getExceptions } from './validation'
+import { getExceptions } from './validation'
 import { CLOUD_VALIDATIONS, ProviderForm, synopsis } from './cloud/provider'
-import { SCM_VALIDATIONS, ScmInput } from './scm/ScmInput'
+import { SCM_VALIDATIONS, ScmSection } from './scm/ScmInput'
 import { Github as GithubLogo, Gitlab as GitlabLogo } from './icons'
 
 import SplashToLogoTransition from './SplashToLogoTransition'
 
 // START <<Remove this after dev>>
 const DEBUG_SCM_TOKENS = {
-  GITLAB: '',
-  GITHUB: '',
+  GITLAB: '6a9dff47bf29eef2d6e5d833169cdfddee6055ef4eea2e31161732316f571566',
+  GITHUB: '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',
 }
 // END <<Remove this after dev>>
 
-const SECTIONS = {
-  git: ['cloud', null],
-  cloud: ['workspace', 'git'],
-  workspace: ['finish', 'cloud'],
-  finish: [null, 'workspace'],
+export const SECTION_GIT = 'git'
+export const SECTION_CLOUD = 'cloud'
+export const SECTION_WORKSPACE = 'workspace'
+export const SECTION_FINISH = 'finish'
+export const SECTION_CLI = 'cli'
+
+export const SECTIONS = {
+  [SECTION_GIT]: {
+    next: SECTION_CLOUD,
+    previous: null,
+    stepIndex: 0,
+  },
+  [SECTION_CLOUD]: {
+    next: SECTION_WORKSPACE,
+    previous: SECTION_GIT,
+    stepIndex: 1,
+  },
+  [SECTION_WORKSPACE]: {
+    next: SECTION_FINISH,
+    previous: SECTION_CLOUD,
+    stepIndex: 2,
+  },
+  [SECTION_FINISH]: {
+    next: null,
+    previous: SECTION_WORKSPACE,
+    stepIndex: 3,
+  },
+  [SECTION_CLI]: {
+    next: null,
+    previous: null,
+    stepIndex: 1,
+  },
 }
 
 const VALIDATIONS = {
-  git: GITHUB_VALIDATIONS,
-  workspace: WORKSPACE_VALIDATIONS,
+  [SECTION_GIT]: GITHUB_VALIDATIONS,
+  [SECTION_WORKSPACE]: WORKSPACE_VALIDATIONS,
 }
+
+export const CreateShellContext = createContext()
 
 function SynopsisTable({ items, width }) {
   return (
@@ -154,15 +183,15 @@ export function NavSection(props) {
 }
 
 function getValidations(provider, scmProvider, section) {
-  if (section === 'cloud') return CLOUD_VALIDATIONS[provider]
-  if (section === 'git') return SCM_VALIDATIONS[scmProvider]
+  if (section === SECTION_CLOUD) return CLOUD_VALIDATIONS[provider]
+  if (section === SECTION_GIT) return SCM_VALIDATIONS[scmProvider]
 
   return VALIDATIONS[section]
 }
 
 function CreateShell({ accessToken, onCreate, provider: scmProvider, authUrlData }) {
   const [demo, setDemo] = useState(null)
-  const [section, setSection] = useState('git')
+  const [section, setSection] = useState(SECTION_GIT)
   const [providerName, setProvider] = useState('AWS')
   const [scm, setScm] = useState({ name: '', provider: scmProvider, token: accessToken })
   const [credentials, setCredentials] = useState({})
@@ -171,7 +200,6 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider, authUrlData
     variables: { attributes: { credentials, workspace, scm, provider: providerName, demoId: demo && demo.id } },
     onCompleted: onCreate,
   })
-  const navigate = useNavigate()
 
   const doSetProvider = useCallback(provider => {
     setProvider(provider)
@@ -180,123 +208,106 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider, authUrlData
   }, [setProvider, setCredentials, setWorkspace, workspace])
 
   const next = useCallback(() => {
-    const hasNext = !!SECTIONS[section][0]
-    if (hasNext) setSection(SECTIONS[section][0])
+    const hasNext = !!SECTIONS[section].next
+    if (hasNext) setSection(SECTIONS[section].next)
     if (!hasNext) mutation()
   }, [section, mutation])
 
   const previous = useCallback(() => {
-    const hasPrevious = !!SECTIONS[section][1]
-    if (hasPrevious) setSection(SECTIONS[section][1])
+    const hasPrevious = !!SECTIONS[section].previous
+    if (hasPrevious) setSection(SECTIONS[section].previous)
     if (!hasPrevious) mutation()
   }, [section, mutation])
 
   const validations = getValidations(providerName, scmProvider, section)
   const { error, exceptions } = getExceptions(validations, { credentials, workspace, scm })
 
-  let stepIndex = 0
-  switch (section) {
-    case 'git':
-      stepIndex = 0
-      break
-    case 'cloud':
-      stepIndex = 1
-      break
-    case 'workspace':
-      stepIndex = 2
-      break
-    case 'finish':
-      stepIndex = 3
-      break
-  }
+  const { stepIndex } = SECTIONS[section]
+
+  const contextData = useMemo(() => ({
+    scmProvider,
+    accessToken,
+    scm,
+    setScm,
+    setProvider: doSetProvider,
+    authUrlData,
+    provider: providerName,
+    workspace,
+    setWorkspace,
+    credentials,
+    setCredentials,
+    demo,
+    setDemo,
+    next,
+    previous,
+    setSection,
+    error,
+    exceptions,
+  }), [scmProvider,
+    accessToken,
+    scm,
+    setScm,
+    doSetProvider,
+    authUrlData,
+    providerName,
+    workspace,
+    setWorkspace,
+    credentials,
+    setCredentials,
+    demo,
+    setDemo,
+    next,
+    previous,
+    setSection,
+    error,
+    exceptions])
 
   return (
-    <DemoWrapper stepIndex={stepIndex}>
-      {section === 'git' && (
-        <>
-          <DemoCard>
-            <P
-              body1
-              color="text-light"
-              marginBottom="medium"
-            >
-              We use GitOps to manage your application’s state. Use one of the following providers to get started.
-            </P>
-            <ScmInput
-              provider={scmProvider}
-              accessToken={accessToken}
-              scm={scm}
-              setScm={setScm}
-              authUrlData={authUrlData}
-            />
-            {exceptions && (!demo || section !== 'cloud') && <Exceptions exceptions={exceptions} />}
-
-          </DemoCard>
-          {/* Navigation */}
-          <NavSection>
-            <Button
-              secondary
-              onClick={() => {
-                navigate('/shell')
-              }}
-            >
-              Back
-            </Button>
-            <Button
-              disabled={error}
-              onClick={() => next()}
-            >Continue
-            </Button>
-          </NavSection>
-        </>
-      )}
-      {section === 'cloud' && (
-        <ProviderForm
-          provider={providerName}
-          setProvider={doSetProvider}
-          workspace={workspace}
-          setWorkspace={setWorkspace}
-          credentials={credentials}
-          setCredentials={setCredentials}
-          demo={demo}
-          setDemo={setDemo}
-          next={next}
-          previous={previous}
-        />
-      )}
-      {section === 'workspace' && (
-        <>
-          <Header text="Workspace" />
-          <WorkspaceForm
-            demo={demo}
-            workspace={workspace}
-            setWorkspace={setWorkspace}
-          />
-        </>
-      )}
-      {section === 'finish' && (
-        <Synopsis
-          provider={providerName}
-          workspace={workspace}
-          credentials={credentials}
-          demo={demo}
-          scm={scm}
-        />
-      )}
-      {/* Errors */}
-      <Div
-        flex={false}
-        gap="small"
-        width={section !== 'finish' ? '50%' : null}
+    <CreateShellContext.Provider value={contextData}>
+      <DemoWrapper
+        stepIndex={stepIndex}
+        cliMode={section === SECTION_CLI}
       >
-        {gqlError && (
-          <GqlError
-            error={gqlError}
-            header="Failed to create shell"
+        {section === SECTION_GIT && (
+          <ScmSection />
+        )}
+        {section === SECTION_CLOUD && (
+          <ProviderForm />
+        )}
+        {section === SECTION_WORKSPACE && (
+          <>
+            <Header text="Workspace" />
+            <WorkspaceForm
+              demo={demo}
+              workspace={workspace}
+              setWorkspace={setWorkspace}
+            />
+          </>
+        )}
+        {section === SECTION_FINISH && (
+          <Synopsis
+            provider={providerName}
+            workspace={workspace}
+            credentials={credentials}
+            demo={demo}
+            scm={scm}
           />
         )}
-      </Div>
-    </DemoWrapper>
+        {/* Errors */}
+        <Div
+          flex={false}
+          gap="small"
+          width={section !== SECTION_FINISH ? '50%' : null}
+        >
+          {gqlError && (
+            <GqlError
+              error={gqlError}
+              header="Failed to create shell"
+            />
+          )}
+        </Div>
+      </DemoWrapper>
+    </CreateShellContext.Provider>
   )
 }
 
@@ -337,10 +348,10 @@ export function OAuthCallback({ provider }) {
 
 function DemoStepper({ stepIndex = 0, ...props }) {
   const steps = [
-    { key: 'git', stepTitle: 'Create a repository', IconComponent: GitHubIcon, iconSize: 30 },
-    { key: 'cloud', stepTitle: <>Choose a&nbsp;cloud</>, IconComponent: CloudIcon },
-    { key: 'workspace', stepTitle: 'Configure repository', IconComponent: GearTrainIcon },
-    { key: 'finish', stepTitle: <>Launch the&nbsp;app</>, IconComponent: BrowserIcon },
+    { key: SECTION_GIT, stepTitle: 'Create a repository', IconComponent: GitHubIcon, iconSize: 30 },
+    { key: SECTION_CLOUD, stepTitle: <>Choose a&nbsp;cloud</>, IconComponent: CloudIcon },
+    { key: SECTION_WORKSPACE, stepTitle: 'Configure repository', IconComponent: GearTrainIcon },
+    { key: SECTION_FINISH, stepTitle: <>Launch the&nbsp;app</>, IconComponent: BrowserIcon },
   ]
 
   return (
@@ -352,10 +363,45 @@ function DemoStepper({ stepIndex = 0, ...props }) {
   )
 }
 
-export function CardButton(props) {
+function CliStepper({ stepIndex = 0, ...props }) {
+  const steps = [
+    { key: SECTION_GIT, stepTitle: 'Create a repository', IconComponent: GitHubIcon, iconSize: 30 },
+    { key: SECTION_CLI, stepTitle: <>Install CLI</>, IconComponent: CloudIcon },
+    { key: SECTION_FINISH, stepTitle: <>Launch the&nbsp;app</>, IconComponent: BrowserIcon },
+  ]
+
+  return (
+    <Stepper
+      stepIndex={stepIndex}
+      steps={steps}
+      {...props}
+    />
+  )
+}
+
+export function CardButton({ selected = false, children, ...props }) {
+  const bounceEase = 'cubic-bezier(.37,1.4,.62,1)'
+  const checkMark = (
+    <Div
+      position="absolute"
+      top={0}
+      left={0}
+      padding="medium"
+    >
+      <StatusIpIcon
+        size={24}
+        color="action-link-inline"
+        transform={selected ? 'scale(1)' : 'scale(0)'}
+        opacity={selected ? 1 : 0}
+        transition={`all 0.2s ${bounceEase}`}
+      />
+    </Div>
+  )
+
   return (
     <Button
       display="flex"
+      position="relative"
       flex="1 1 100%"
       padding="large"
       marginHorizontal="medium"
@@ -363,10 +409,14 @@ export function CardButton(props) {
       justify="center"
       backgroundColor="fill-two"
       border="1px solid border-fill-two"
+      borderColor={selected ? 'action-link-inline' : 'border-fill-two'}
       _hover={{ background: 'fill-two-hover' }}
       _active={{ background: 'fill-two-selected' }}
       {...props}
-    />
+    >
+      {children}
+      {checkMark}
+    </Button>
   )
 }
 
@@ -459,7 +509,7 @@ function CreateARepoCard({ data }) {
   )
 }
 
-export function DemoWrapper({ showSplashScreen = false, stepIndex = 0, childIsReady = true, children }) {
+export function DemoWrapper({ showSplashScreen = false, stepIndex = 0, childIsReady = true, children, cliMode = false }) {
   return (
     <Flex
       width="100%"
@@ -484,7 +534,9 @@ export function DemoWrapper({ showSplashScreen = false, stepIndex = 0, childIsRe
             <Div
               marginBottom="xxlarge"
             >
-              <DemoStepper stepIndex={stepIndex} />
+              {cliMode ?
+                <CliStepper stepIndex={stepIndex} /> :
+                <DemoStepper stepIndex={stepIndex} />}
             </Div>
             {children}
           </Div>

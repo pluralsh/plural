@@ -1,14 +1,14 @@
-import { createElement, useCallback, useRef, useState } from 'react'
+import { createElement, useCallback, useContext, useRef, useState } from 'react'
 import { Down } from 'grommet-icons'
 import { Box, Drop } from 'grommet'
-import { Div, Flex, Img, P, Text } from 'honorable'
+import { Div, Flex, H2, Img, P, RadioGroup, Text } from 'honorable'
 
-import { Button, CloudIcon, StatusIpIcon } from 'pluralsh-design-system'
+import { Button, CloudIcon, Radio } from 'pluralsh-design-system'
 
 import { Provider } from '../../repos/misc'
 
 import { CLOUDS } from '../constants'
-import { CardButton, DemoCard, Header, NavSection } from '../CloudShell'
+import { CardButton, CreateShellContext, DemoCard, Header, NavSection, SECTION_CLI } from '../CloudShell'
 
 import { AWS_VALIDATIONS, AwsForm, awsSynopsis } from './aws'
 import { GCP_VALIDATIONS, GcpForm, gcpSynopsis } from './gcp'
@@ -56,29 +56,11 @@ export const synopsis = ({ provider, ...rest }) => {
   }
 }
 
-function CloudOption({ providerLogo, header, description, checked, ...props }) {
-  const bounceEase = 'cubic-bezier(.37,1.4,.62,1)'
-
-  const checkMark = (
-    <Div
-      position="absolute"
-      top={0}
-      left={0}
-      padding="medium"
-    >
-      <StatusIpIcon
-        size={24}
-        color="action-link-inline"
-        transform={checked ? 'scale(1)' : 'scale(0)'}
-        opacity={checked ? 1 : 0}
-        transition={`all 0.2s ${bounceEase}`}
-      />
-    </Div>
-  )
-  
+function CloudOption({ providerLogo, header, description, selected, ...props }) {  
   return (
     <CardButton
       position="relative"
+      selected={selected}
       {...props}
     >
       <Div
@@ -102,14 +84,54 @@ function CloudOption({ providerLogo, header, description, checked, ...props }) {
       >
         {description}
       </Text>
-      {checkMark}
     </CardButton>
   )
 }
 
-function CloudDecision({ setPath, previous }) {
+function ChooseAShell({ options, selected, setSelected }) {
+
+  return (
+    <Div
+      width="100%"
+      marginTop="large"
+    >
+      <H2
+        overline
+        color="text-xlight"
+        marginBottom="xsmall"
+        width="100%"
+      >
+        Choose a shell
+      </H2>
+      <P
+        body1
+        color="text-light"
+        marginBottom="medium"
+      >
+        Determine which shell you’ll use to get started. The cloud shell comes fully equipped with the Plural CLI and all required dependencies.
+      </P>
+      <RadioGroup>
+        {options.map(({ label, value }) => (
+          <Radio
+            key={value}
+            value={value}
+            defaultChecked={value === 'cloud'}
+            checked={value === selected}
+            onClick={() => setSelected(value)}
+          >
+            {label}
+          </Radio>
+        ))}
+      </RadioGroup>
+    </Div>
+  )
+}
+
+function CloudDecision({ doSetPath }) {
+  const { previous, setSection } = useContext(CreateShellContext)
+
   const [nextPath, setNextPath] = useState()
-  console.log('nextPath', nextPath)
+  const [byocShell, setByocShell] = useState('cloud')
 
   return (
     <>
@@ -123,7 +145,7 @@ function CloudDecision({ setPath, previous }) {
         </P> 
         <Flex mx={-1}>
           <CloudOption
-            checked={nextPath === 'demo'}
+            selected={nextPath === 'demo'}
             providerLogo={(
               <Img
                 src="/gcp.png"
@@ -136,7 +158,7 @@ function CloudDecision({ setPath, previous }) {
             onClick={() => setNextPath('demo')}
           />
           <CloudOption
-            checked={nextPath === 'byoc'}
+            selected={nextPath === 'byoc'}
             providerLogo={(
               <CloudIcon
                 size={40}
@@ -148,6 +170,20 @@ function CloudDecision({ setPath, previous }) {
             onClick={() => setNextPath('byoc')}
           />
         </Flex>
+        {nextPath === 'byoc' && (
+          <ChooseAShell
+            selected={byocShell}
+            setSelected={setByocShell}
+            options={[{
+              value: 'cloud',
+              label: 'Our cloud shell (quickest)',
+            },
+            {
+              value: 'cli', 
+              label: 'Install the Plural CLI on your local machine',
+            }]}
+          />
+        )}
       </DemoCard>
       {/* Navigation */}
       <NavSection>
@@ -161,7 +197,14 @@ function CloudDecision({ setPath, previous }) {
         </Button>
         <Button
           disabled={!nextPath}
-          onClick={() => setPath(nextPath)}
+          onClick={() => {
+            if (nextPath === 'byoc' && byocShell === 'cli') {
+              setSection(SECTION_CLI)
+            }
+            else {
+              doSetPath(nextPath)
+            } 
+          }}
         >Continue
         </Button>
       </NavSection>
@@ -169,7 +212,8 @@ function CloudDecision({ setPath, previous }) {
   )
 }
 
-export function ProviderForm({ provider, setProvider, workspace, setWorkspace, credentials, setCredentials, demo, setDemo, next, previous }) {
+export function ProviderForm() {
+  const { provider, setProvider, workspace, setWorkspace, credentials, setCredentials, demo, setDemo, next } = useContext(CreateShellContext)
   const ref = useRef()
   const [path, setPath] = useState(null)
   const [open, setOpen] = useState(false)
@@ -183,10 +227,7 @@ export function ProviderForm({ provider, setProvider, workspace, setWorkspace, c
 
   if (!path) {
     return (
-      <CloudDecision
-        setPath={doSetPath}
-        previous={previous}
-      />
+      <CloudDecision doSetPath={doSetPath} />
     )
   }
 
@@ -227,7 +268,8 @@ export function ProviderForm({ provider, setProvider, workspace, setWorkspace, c
           <Text
             size="small"
             weight={500}
-          >Provider
+          >
+            Provider
           </Text>
           <Provider
             provider={provider}

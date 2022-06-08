@@ -7,8 +7,8 @@ import { Button, CloudIcon, Radio } from 'pluralsh-design-system'
 
 import { Provider } from '../../repos/misc'
 
-import { CLOUDS } from '../constants'
-import { CardButton, CreateShellContext, DemoCard, Header, NavSection, SECTION_CLI } from '../CloudShell'
+import { CLOUDS, SECTION_INSTALL_CLI } from '../constants'
+import { CardButton, CreateShellContext, DemoCard, Header, NavSection } from '../CloudShell'
 
 import { AWS_VALIDATIONS, AwsForm, awsSynopsis } from './aws'
 import { GCP_VALIDATIONS, GcpForm, gcpSynopsis } from './gcp'
@@ -199,7 +199,7 @@ function CloudDecision({ doSetPath }) {
           disabled={!nextPath}
           onClick={() => {
             if (nextPath === 'byoc' && byocShell === 'cli') {
-              setSection(SECTION_CLI)
+              setSection(SECTION_INSTALL_CLI)
             }
             else {
               doSetPath(nextPath)

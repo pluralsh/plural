@@ -19,48 +19,13 @@ import { SCM_VALIDATIONS, ScmSection } from './scm/ScmInput'
 import { Github as GithubLogo, Gitlab as GitlabLogo } from './icons'
 
 import SplashToLogoTransition from './SplashToLogoTransition'
+import { SECTIONS, SECTION_CLOUD, SECTION_FINISH, SECTION_GIT, SECTION_INSTALL_CLI, SECTION_WORKSPACE } from './constants'
 
 // START <<Remove this after dev>>
 const DEBUG_SCM_TOKENS = {
   GITLAB: '6a9dff47bf29eef2d6e5d833169cdfddee6055ef4eea2e31161732316f571566',
   GITHUB: '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',
 }
-// END <<Remove this after dev>>
-
-export const SECTION_GIT = 'git'
-export const SECTION_CLOUD = 'cloud'
-export const SECTION_WORKSPACE = 'workspace'
-export const SECTION_FINISH = 'finish'
-export const SECTION_CLI = 'cli'
-
-export const SECTIONS = {
-  [SECTION_GIT]: {
-    next: SECTION_CLOUD,
-    previous: null,
-    stepIndex: 0,
-  },
-  [SECTION_CLOUD]: {
-    next: SECTION_WORKSPACE,
-    previous: SECTION_GIT,
-    stepIndex: 1,
-  },
-  [SECTION_WORKSPACE]: {
-    next: SECTION_FINISH,
-    previous: SECTION_CLOUD,
-    stepIndex: 2,
-  },
-  [SECTION_FINISH]: {
-    next: null,
-    previous: SECTION_WORKSPACE,
-    stepIndex: 3,
-  },
-  [SECTION_CLI]: {
-    next: null,
-    previous: null,
-    stepIndex: 1,
-  },
-}
-
 const VALIDATIONS = {
   [SECTION_GIT]: GITHUB_VALIDATIONS,
   [SECTION_WORKSPACE]: WORKSPACE_VALIDATIONS,
@@ -266,13 +231,16 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider, authUrlData
     <CreateShellContext.Provider value={contextData}>
       <DemoWrapper
         stepIndex={stepIndex}
-        cliMode={section === SECTION_CLI}
+        cliMode={section === SECTION_INSTALL_CLI}
       >
         {section === SECTION_GIT && (
           <ScmSection />
         )}
         {section === SECTION_CLOUD && (
           <ProviderForm />
+        )}
+        {section === SECTION_INSTALL_CLI && (
+          <Div>Temp</Div>
         )}
         {section === SECTION_WORKSPACE && (
           <>
@@ -366,7 +334,7 @@ function DemoStepper({ stepIndex = 0, ...props }) {
 function CliStepper({ stepIndex = 0, ...props }) {
   const steps = [
     { key: SECTION_GIT, stepTitle: 'Create a repository', IconComponent: GitHubIcon, iconSize: 30 },
-    { key: SECTION_CLI, stepTitle: <>Install CLI</>, IconComponent: CloudIcon },
+    { key: SECTION_INSTALL_CLI, stepTitle: <>Install CLI</>, IconComponent: CloudIcon },
     { key: SECTION_FINISH, stepTitle: <>Launch the&nbsp;app</>, IconComponent: BrowserIcon },
   ]
 

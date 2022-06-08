@@ -80,9 +80,9 @@ function OrgInput({ org, orgs, doSetOrg }) {
     <FormField
       width="100%"
       label={
-        `${provider === Provider.GITHUB ? 'Github' :
-          provider === Provider.GITLAB ? 'Gitlab' :
-            'Unknown'} account`
+        provider === Provider.GITHUB ? 'Github Organization' :
+          provider === Provider.GITLAB ? 'Gitlab Group' :
+            'Organization or Group'
       }
       caption={(
         <A

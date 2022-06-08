@@ -5,8 +5,7 @@ import { deepFetch } from '../../utils/graphql'
 
 export function validator(object, field, name, func) {
   const val = deepFetch(object, field)
-  console.log(val)
-
+  
   if (!val) {
     if (typeof val === 'string') {
       return { ...stringExists(val), ...{ field: name } }
@@ -74,17 +73,18 @@ export function getExceptions(validations, object) {
   return { error: allExceptions.length > 0, exceptions: allExceptions }
 }
 
+// Should probably pull this into the design system at some point
 function Exception({ field, message }) {
   return (
+
     <Flex
       width="100%"
       direction="row"
-      background="card"
-      align="center"
-      pad="small"
+      marginBottom="xsmall"
+      {...{ ':last-child': { marginBottom: 0 } }}
     >
       <Flex
-        marginRight="xsmall"
+        marginRight="medium"
         align="center"
         justify="center"
       >
@@ -93,7 +93,11 @@ function Exception({ field, message }) {
           color="icon-error"
         />
       </Flex>
-      <Text body1>{`Error: ${field} ${message}`}</Text>
+      <Text
+        body2
+        color="text-light"
+      >{`Error: ${field} ${message}`}
+      </Text>
     </Flex>
   )
 }
@@ -104,28 +108,25 @@ export function Exceptions({ exceptions, filterEmpty = true }) {
   }
   if (exceptions.length === 0) return null
 
-  console.log('exceptions', exceptions)
-
   return (
     <Div
       mt={1}
       borderRadius="medium"
-      border="1px solid border-fill-two"
       backgroundColor="fill-two"
-      padding="xsmall"
+      overflow="hidden"
     >
-      {exceptions.map(({ field, message, empty }) => {
-        console.log('exception', field, message, empty)
-
-        return (
+      <Div
+        padding="medium"
+        borderTop="3px solid icon-error"
+      >
+        {exceptions.map(({ field, message, empty }) => (
           <Exception
             key={`${field}-${message}-${empty}`}
             field={field}
             message={message}
-            empty={empty}
           />
-        )
-      })}
+        ))}
+      </Div>
     </Div>
   )
 }

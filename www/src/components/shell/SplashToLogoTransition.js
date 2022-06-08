@@ -122,9 +122,7 @@ function LogoOnly({ children }) {
           </Div>
         </Flex>
       </Div>
-      <Div>
-        {children}
-      </Div>
+      {children}
     </>
   )
 }
@@ -205,14 +203,16 @@ export function LogoAndSplash({ splashTimeout = 1200, childIsReady = false, chil
         timeout={1000}
       >
         {transitionState => (
-          <Div
+          <Flex
+            width="100%"
+            justify="center"
             transition="all 0.6s ease"
             opacity={0}
             className={transitionState}
             {...fadeTransitionStyles[transitionState]}
           >
             {children}
-          </Div>
+          </Flex>
         )}
       </Transition>
     </>

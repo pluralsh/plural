@@ -394,6 +394,7 @@ export function CardButton({ selected = false, children, ...props }) {
 export function DemoCard({ children, title = '' }) {
   return (
     <Div
+      width="100%"
       backgroundColor="fill-one"
       border="1px solid border"
       borderRadius="large"

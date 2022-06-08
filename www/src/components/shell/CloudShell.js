@@ -2,7 +2,7 @@ import { createContext, useCallback, useEffect, useMemo, useState } from 'react'
 import { Box } from 'grommet'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useMutation, useQuery } from '@apollo/client'
-import { BrowserIcon, CloudIcon, GearTrainIcon, GitHubIcon, StatusIpIcon, Stepper } from 'pluralsh-design-system'
+import { Alert, BrowserIcon, CloudIcon, GearTrainIcon, NetworkInterfaceIcon, StatusIpIcon, Stepper } from 'pluralsh-design-system'
 import { Button, Div, Flex, H2, P, Text } from 'honorable'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
@@ -17,6 +17,7 @@ import { getExceptions } from './validation'
 import { CLOUD_VALIDATIONS, ProviderForm, synopsis } from './cloud/provider'
 import { SCM_VALIDATIONS, ScmSection } from './scm/ScmInput'
 import { Github as GithubLogo, Gitlab as GitlabLogo } from './icons'
+import InstallCli from './cloud/InstallCli'
 
 import SplashToLogoTransition from './SplashToLogoTransition'
 import { SECTIONS, SECTION_CLOUD, SECTION_FINISH, SECTION_GIT, SECTION_INSTALL_CLI, SECTION_WORKSPACE } from './constants'
@@ -240,7 +241,7 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider, authUrlData
           <ProviderForm />
         )}
         {section === SECTION_INSTALL_CLI && (
-          <Div>Temp</Div>
+          <InstallCli />
         )}
         {section === SECTION_WORKSPACE && (
           <>
@@ -261,17 +262,19 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider, authUrlData
             scm={scm}
           />
         )}
-        {/* Errors */}
+        {/* Unhandled Errors */}
         <Div
           flex={false}
-          gap="small"
-          width={section !== SECTION_FINISH ? '50%' : null}
+          marginTop="large"
+          width="100%"
         >
           {gqlError && (
-            <GqlError
-              error={gqlError}
-              header="Failed to create shell"
-            />
+            <Alert
+              severity="error"
+              title="Failed to create shell"
+            >            
+              {gqlError.graphQLErrors[0].message}
+            </Alert>
           )}
         </Div>
       </DemoWrapper>
@@ -316,7 +319,7 @@ export function OAuthCallback({ provider }) {
 
 function DemoStepper({ stepIndex = 0, ...props }) {
   const steps = [
-    { key: SECTION_GIT, stepTitle: 'Create a repository', IconComponent: GitHubIcon, iconSize: 30 },
+    { key: SECTION_GIT, stepTitle: 'Create a repository', IconComponent: NetworkInterfaceIcon },
     { key: SECTION_CLOUD, stepTitle: <>Choose a&nbsp;cloud</>, IconComponent: CloudIcon },
     { key: SECTION_WORKSPACE, stepTitle: 'Configure repository', IconComponent: GearTrainIcon },
     { key: SECTION_FINISH, stepTitle: <>Launch the&nbsp;app</>, IconComponent: BrowserIcon },
@@ -333,7 +336,7 @@ function DemoStepper({ stepIndex = 0, ...props }) {
 
 function CliStepper({ stepIndex = 0, ...props }) {
   const steps = [
-    { key: SECTION_GIT, stepTitle: 'Create a repository', IconComponent: GitHubIcon, iconSize: 30 },
+    { key: SECTION_GIT, stepTitle: 'Create a repository', IconComponent: NetworkInterfaceIcon },
     { key: SECTION_INSTALL_CLI, stepTitle: <>Install CLI</>, IconComponent: CloudIcon },
     { key: SECTION_FINISH, stepTitle: <>Launch the&nbsp;app</>, IconComponent: BrowserIcon },
   ]

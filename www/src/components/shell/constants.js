@@ -29,7 +29,7 @@ export const SECTIONS = {
   },
   [SECTION_INSTALL_CLI]: {
     next: null,
-    previous: null,
+    previous: SECTION_CLOUD,
     stepIndex: 1,
   },
 }

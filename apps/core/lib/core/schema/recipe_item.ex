@@ -59,6 +59,7 @@ defmodule Core.Schema.RecipeItem do
       field :name,           :string
       field :default,        :string
       field :documentation,  :string
+      field :longform,       :string
       field :placeholder,    :string
       field :optional,       :boolean
 
@@ -69,7 +70,7 @@ defmodule Core.Schema.RecipeItem do
       embeds_one :validation, Validation
     end
 
-    @valid ~w(type name default documentation placeholder function_name args optional)a
+    @valid ~w(type name default documentation placeholder function_name args optional longform)a
 
     def changeset(model, attrs \\ %{}) do
       model

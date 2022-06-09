@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'react'
-import { Box, Text } from 'grommet'
+import { MenuItem, Select } from 'honorable'
+import { FormField, Input } from 'pluralsh-design-system'
 
-import { LabelledInput } from '../../users/MagicLogin'
-import { DarkSelect } from '../../utils/DarkSelect'
 import { stringExists } from '../validation'
 
 const REGIONS = [
@@ -39,43 +38,50 @@ export function AwsForm({ credentials, setCredentials, workspace, setWorkspace }
   }, [aws, region, setRegion, workspace])
 
   return (
-    <Box
-      fill
-      gap="small"
-    >
-      <Box
-        flex={false}
-        fill="horizontal"
-        direction="row"
-        gap="xsmall"
-        align="center"
+    <>
+      <FormField
+        width="100%"
+        marginBottom="large"
+        label="Region"
       >
-        <Text
-          weight={500}
-          size="small"
-        >Region:
-        </Text>
-        <Box fill="horizontal">
-          <DarkSelect
-            size="small"
-            value={{ value: region, label: region }}
-            options={REGIONS.map(r => ({ value: r, label: r }))}
-            onChange={({ value }) => setRegion(value)}
-          />
-        </Box>
-      </Box>
-      <LabelledInput
-        label="Access Key Id"
+        <Select
+          width="100%"
+          onChange={({ target: { value } }) => {
+            setRegion(value)
+          }}
+          value={region}
+        >
+          {REGIONS.map(region => (
+            <MenuItem
+              key={region}
+              value={region}
+            >
+              {region}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormField>
+      <FormField
         width="100%"
-        value={aws.accessKeyId || ''}
-        onChange={value => update('accessKeyId', value)}
-      />
-      <LabelledInput
+        marginBottom="large"
+        label="Access Key ID"
+      >
+        <Input
+          width="100%"
+          value={aws.accessKeyId || ''}
+          onChange={({ target: { value } }) => update('accessKeyId', value)}
+        />        
+      </FormField>
+      <FormField
+        width="100%"
         label="Secret Access Key"
-        width="100%"
-        value={aws.secretAccessKey || ''}
-        onChange={value => update('secretAccessKey', value)}
-      />
-    </Box>
+      >
+        <Input
+          width="100%"
+          value={aws.secretAccessKey || ''}
+          onChange={({ target: { value } }) => update('secretAccessKey', value)}
+        />
+      </FormField>
+    </>
   )
 }

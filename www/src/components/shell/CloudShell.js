@@ -7,8 +7,6 @@ import { Button, Div, Flex, H2, P, Text } from 'honorable'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
-import { GqlError } from '../utils/Alert'
-
 import { AUTH_URLS, CLOUD_SHELL, CREATE_SHELL, REBOOT_SHELL, SCM_TOKEN } from './query'
 import { GITHUB_VALIDATIONS } from './scm/github'
 import { WORKSPACE_VALIDATIONS, WorkspaceForm } from './WorkspaceForm'

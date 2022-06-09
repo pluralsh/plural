@@ -5,7 +5,6 @@ import { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { CreateShellContext, DemoCard, NavSection } from '../CloudShell'
-
 import { Exceptions } from '../validation'
 
 import { GITHUB_VALIDATIONS, useGithubState } from './github'

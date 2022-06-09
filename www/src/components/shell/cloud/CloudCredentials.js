@@ -1,16 +1,16 @@
 import { createElement, useCallback, useContext, useRef, useState } from 'react'
-import { Down } from 'grommet-icons'
 import { Box, Drop } from 'grommet'
-import { Text } from 'honorable'
+import { MenuItem, Select } from 'honorable'
+import { Button, FormField } from 'pluralsh-design-system'
 
-import { Provider } from '../../repos/misc'
 import { CLOUDS } from '../constants'
-import { CreateShellContext, Header } from '../CloudShell'
+import { CreateShellContext, DemoCard, NavSection } from '../CloudShell'
+import { Exceptions } from '../validation'
 
-import { CloudItem, ProviderForms } from './provider'
+import { ProviderForms } from './provider'
 
-export function CloudCredentials() {
-  const { provider, setProvider, workspace, setWorkspace, credentials, setCredentials } = useContext(CreateShellContext)
+export function CloudCredentials({ doSetPath }) {
+  const { provider, setProvider, workspace, setWorkspace, credentials, setCredentials, next, error, exceptions } = useContext(CreateShellContext)
 
   const ref = useRef()
   const [open, setOpen] = useState(false)
@@ -19,53 +19,63 @@ export function CloudCredentials() {
 
   return (
     <>
-      <Box
-        fill
-        align="center"
-        justify="center"
-        gap="small"
-      >
-        <Header text="Cloud Credentialss" />
-        <Box
-          ref={ref}
-          direction="row"
-          align="center"
-          gap="small"
-          onClick={() => setOpen(true)}
-          hoverIndicator="card"
-          round="xsmall"
-          pad="small"
+      <DemoCard title="Configure cloud credentials">
+        <FormField
+          width="100%"
+          marginTop="large"
+          marginBottom="large"
+          label="Cloud provider"
         >
-          <Text
-            size="small"
-            weight={500}
+          <Select
+            width="100%"
+            onChange={({ target: { value } }) => {
+              setProvider(value)
+            }}
+            value={provider}
           >
-            Provider
-          </Text>
-          <Provider
-            provider={provider}
-            width={40}
-          />
-          <Down size="small" />
-        </Box>
-        {createElement(form, { workspace, setWorkspace, credentials, setCredentials })}
-      </Box>
-      {open && (
-        <Drop
-          target={ref.current}
-          onClickOutside={close}
-          onEsc={close}
-        >
-          <Box width="250px">
             {CLOUDS.map(cloud => (
-              <CloudItem
-                provider={cloud}
-                setProvider={setProvider}
-              />
+              <MenuItem
+                key={cloud}
+                value={cloud}
+              >
+                {cloud}
+              </MenuItem>
             ))}
-          </Box>
-        </Drop>
-      )}
+          </Select>
+        </FormField>
+        <Box>
+          {createElement(form, { workspace, setWorkspace, credentials, setCredentials })}
+        </Box>
+        {open && (
+          <Drop
+            target={ref.current}
+            onClickOutside={close}
+            onEsc={close}
+          >
+            <Box width="250px" />
+          </Drop>
+        )}
+        {exceptions && <Exceptions exceptions={exceptions} />}
+      </DemoCard>
+      {/* Navigation */}
+      <NavSection>
+        <Button
+          secondary
+          onClick={() => {
+            doSetPath('')
+          }}
+        >
+          Back
+        </Button>
+        <Button
+          disabled={error}
+          onClick={() => {
+            next()
+          }}
+        >Continue
+        </Button>
+      </NavSection>
     </>
   )
+
 }

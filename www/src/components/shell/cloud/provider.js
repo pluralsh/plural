@@ -1,10 +1,7 @@
 import { useCallback, useContext, useState } from 'react'
-import { Box } from 'grommet'
 import { Div, H2, P, RadioGroup, Text } from 'honorable'
 
 import { Radio } from 'pluralsh-design-system'
-
-import { Provider } from '../../repos/misc'
 
 import { CardButton, CreateShellContext } from '../CloudShell'
 
@@ -13,29 +10,6 @@ import { GCP_VALIDATIONS, GcpForm, gcpSynopsis } from './gcp'
 import { DemoProject } from './demo'
 import { CloudDecision } from './CloudDecision'
 import { CloudCredentials } from './CloudCredentials'
-
-export function CloudItem({ provider, setProvider }) {
-  return (
-    <Box
-      direction="row"
-      align="center"
-      gap="small"
-      onClick={() => setProvider(provider)}
-      hoverIndicator="tone-light"
-      pad="small"
-    >
-      <Provider
-        provider={provider}
-        width={30}
-      />
-      <Text
-        size="small"
-        weight={500}
-      >{provider.toLowerCase()}
-      </Text>
-    </Box>
-  )
-}
 
 export const ProviderForms = {
   AWS: AwsForm,
@@ -158,7 +132,6 @@ export function ProviderForm() {
   }
 
   return (
-    <CloudCredentials />
+    <CloudCredentials doSetPath={doSetPath} />
   )
 }
-

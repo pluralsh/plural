@@ -7,6 +7,8 @@ import { FiltersIcon, Tab } from 'pluralsh-design-system'
 import MarketplaceSidebar from './MarketplaceSidebar'
 import MarketplaceRepositories from './MarketplaceRepositories'
 
+const sidebarWidth = 256 - 32
+
 function Marketplace({ installed }) {
   const [areFiltersOpen, setAreFiltersOpen] = useState(true)
 
@@ -64,14 +66,14 @@ function Marketplace({ installed }) {
           flexGrow={1}
         />
         <Div
-          marginRight={areFiltersOpen ? 'medium' : `-${256 - 32}px`}
+          marginRight={areFiltersOpen ? 'medium' : `-${sidebarWidth}px`}
           transform={areFiltersOpen ? 'translateX(0)' : 'translateX(100%)'}
           opacity={areFiltersOpen ? 1 : 0}
           flexShrink={0}
           position="sticky"
           top={0}
           right={0}
-          width={256 - 32}
+          width={sidebarWidth}
           height="calc(100% - 16px)"
           overflowY="auto"
           border="1px solid border"
@@ -80,7 +82,7 @@ function Marketplace({ installed }) {
           transition="all 250ms ease"
           zIndex={9999}
         >
-          <MarketplaceSidebar minWidth={256 - 32} />
+          <MarketplaceSidebar minWidth={sidebarWidth} />
         </Div>
       </Flex>
     </Flex>

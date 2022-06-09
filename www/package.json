@@ -117,5 +117,8 @@
     "eslint": "^8.17.0",
     "eslint-config-pluralsh": "^3.1.0",
     "postcss-import": "^8.2.0"
+  },
+  "peerDependencies": {
+    "react-transition-group": ">=4.4.2"
   }
 }

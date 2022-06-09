@@ -1,10 +1,10 @@
 import { useCallback, useContext, useEffect } from 'react'
-import { Box, Text } from 'grommet'
-import { File } from 'forge-core'
+
+import { Flex, MenuItem, Select, Text } from 'honorable'
+import { FileIcon, FormField } from 'pluralsh-design-system'
 
 import { AttachmentContext, AttachmentProvider, Dropzone } from '../../incidents/AttachmentProvider'
-import { DarkSelect } from '../../utils/DarkSelect'
-import { exists, isAlphanumeric } from '../validation'
+import { isAlphanumeric, stringExists } from '../validation'
 
 const ZONES = [
   'asia-east1',
@@ -15,7 +15,6 @@ const ZONES = [
   'asia-south1',
   'asia-southeast1',
   'australia-southeast1',
-  'asia-northeast1',
   'europe-central2',
   'europe-west2',
   'europe-west3',
@@ -25,7 +24,7 @@ const ZONES = [
 ]
 
 export const GCP_VALIDATIONS = [
-  { field: 'credentials.gcp.applicationCredentials', func: exists, name: 'application credentials' },
+  { field: 'credentials.gcp.applicationCredentials', func: stringExists, name: 'application credentials' },
   { field: 'workspace.project', func: isAlphanumeric, name: 'project' },
 ]
 
@@ -38,6 +37,7 @@ export const gcpSynopsis = ({ workspace }) => (
 )
 
 function FileInput({ updateCreds, gcp, setProject }) {
+  // Seems to be getting stuck in infinite loop when file is uploaded
   const { attachment } = useContext(AttachmentContext)
   useEffect(() => {
     if (!attachment) return
@@ -50,7 +50,8 @@ function FileInput({ updateCreds, gcp, setProject }) {
         updateCreds('applicationCredentials', result)
       }
       catch (error) {
-        //
+         // TODO: show errors to user
+        console.log('file error', error)
       }
     }
     reader.readAsText(attachment)
@@ -59,20 +60,30 @@ function FileInput({ updateCreds, gcp, setProject }) {
   const loaded = !!gcp.applicationCredentials
 
   return (
-    <Box
-      fill="horizontal"
-      height="200px"
-      align="center"
+    <Flex
+      display="flex"
+      direction="column"
+      position="relative"
+      minHeight={200}
+      flex="1 1 100%"
+      padding="xxlarge"
+      alignItems="center"
       justify="center"
-      border={{ side: 'all', color: gcp.applicationCredentials ? 'brand' : 'border' }}
-      round="xsmall"
+      textAlign="center"
     >
-      <File
-        size="25px"
-        color={loaded ? 'brand' : null}
+      <FileIcon
+        size="48"
+        color={loaded ? 'icon-success' : 'text'}
       />
-      <Text size="small">drop your service account credentials here</Text>
-    </Box>
+      <Text
+        body1
+        bold
+        marginTop="medium"
+        maxWidth={230}
+      >
+        Drop your service account credentials here
+      </Text>
+    </Flex>
   )
 }
 
@@ -90,40 +101,45 @@ export function GcpForm({ workspace, setWorkspace, credentials, setCredentials }
   }, [workspace.region, region, setRegion])
 
   return (
-    <Box
-      fill
-      gap="small"
-    >
-      <Box
-        flex={false}
-        fill="horizontal"
-        direction="row"
-        gap="xsmall"
-        align="center"
+    <>
+      <FormField
+        width="100%"
+        marginBottom="large"
+        label="Region"
       >
-        <Text
-          weight={500}
-          size="small"
-        >Zone:
-        </Text>
-        <Box fill="horizontal">
-          <DarkSelect
-            size="small"
-            value={{ value: region, label: region }}
-            options={ZONES.map(r => ({ value: r, label: r }))}
-            onChange={({ value }) => setRegion(value)}
-          />
-        </Box>
-      </Box>
-      <AttachmentProvider>
-        <Dropzone>
-          <FileInput
-            updateCreds={updateCreds}
-            gcp={gcp}
-            setProject={setProject}
-          />
-        </Dropzone>
-      </AttachmentProvider>
-    </Box>
+        <Select
+          width="100%"
+          onChange={({ target: { value } }) => {
+            setRegion(value)
+          }}
+          value={region}
+        >
+          {ZONES.map(zone => (
+            <MenuItem
+              key={zone}
+              value={zone}
+            >
+              {zone}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormField>
+      <FormField
+        width="100%"
+        marginBottom="large"
+        label="Service account credentials"
+      >
+        <AttachmentProvider>
+          <Dropzone>
+            <FileInput
+              updateCreds={updateCreds}
+              gcp={gcp}
+              setProject={setProject}
+            />
+          </Dropzone>
+        </AttachmentProvider>
+      </FormField>
+    </>
   )
+
 }

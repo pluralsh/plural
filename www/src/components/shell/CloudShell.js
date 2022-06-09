@@ -1,34 +1,36 @@
-import { createElement, useCallback, useEffect, useState } from 'react'
-import { Box, Text } from 'grommet'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { createContext, useCallback, useEffect, useMemo, useState } from 'react'
+import { Box } from 'grommet'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useMutation, useQuery } from '@apollo/client'
-import { Button } from 'forge-core'
+import { Alert, BrowserIcon, CloudIcon, GearTrainIcon, NetworkInterfaceIcon, StatusIpIcon, Stepper } from 'pluralsh-design-system'
+import { Button, Div, Flex, H2, P, Text } from 'honorable'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
-
-import { GqlError } from '../utils/Alert'
-
-import { METHOD_ICONS } from '../users/OauthEnabler'
 
 import { AUTH_URLS, CLOUD_SHELL, CREATE_SHELL, REBOOT_SHELL, SCM_TOKEN } from './query'
 import { GITHUB_VALIDATIONS } from './scm/github'
 import { WORKSPACE_VALIDATIONS, WorkspaceForm } from './WorkspaceForm'
 import { Terminal } from './Terminal'
-import { Exceptions, getExceptions } from './validation'
+import { getExceptions } from './validation'
 import { CLOUD_VALIDATIONS, ProviderForm, synopsis } from './cloud/provider'
-import { SCM_VALIDATIONS, ScmInput } from './scm/ScmInput'
+import { SCM_VALIDATIONS, ScmSection } from './scm/ScmInput'
+import { Github as GithubLogo, Gitlab as GitlabLogo } from './icons'
+import InstallCli from './cloud/InstallCli'
 
-const SECTIONS = {
-  git: ['cloud', null],
-  cloud: ['workspace', 'git'],
-  workspace: ['finish', 'cloud'],
-  finish: [null, 'workspace'],
+import SplashToLogoTransition from './SplashToLogoTransition'
+import { SECTIONS, SECTION_CLOUD, SECTION_FINISH, SECTION_GIT, SECTION_INSTALL_CLI, SECTION_WORKSPACE } from './constants'
+
+// START <<Remove this after dev>>
+const DEBUG_SCM_TOKENS = {
+  GITLAB: '',
+  GITHUB: '',
 }
-
 const VALIDATIONS = {
-  git: GITHUB_VALIDATIONS,
-  workspace: WORKSPACE_VALIDATIONS,
+  [SECTION_GIT]: GITHUB_VALIDATIONS,
+  [SECTION_WORKSPACE]: WORKSPACE_VALIDATIONS,
 }
+
+export const CreateShellContext = createContext()
 
 function SynopsisTable({ items, width }) {
   return (
@@ -84,16 +86,6 @@ function SynopsisSection({ header, children }) {
   )
 }
 
-function SecondaryButton({ label, onClick }) {
-  return (
-    <Button
-      background="sidebarHover"
-      label={label}
-      onClick={onClick}
-    />
-  )
-}
-
 function Synopsis({ scm, credentials, workspace, provider, demo }) {
   return (
     <Box gap="small">
@@ -144,22 +136,32 @@ export function Header({ text }) {
   )
 }
 
+export function NavSection(props) {
+  return (
+    <Flex
+      marginTop="xxlarge"
+      justify="space-between"
+      {...props}
+    />
+  )
+}
+
 function getValidations(provider, scmProvider, section) {
-  if (section === 'cloud') return CLOUD_VALIDATIONS[provider]
-  if (section === 'git') return SCM_VALIDATIONS[scmProvider]
+  if (section === SECTION_CLOUD) return CLOUD_VALIDATIONS[provider]
+  if (section === SECTION_GIT) return SCM_VALIDATIONS[scmProvider]
 
   return VALIDATIONS[section]
 }
 
-function CreateShell({ accessToken, onCreate, provider: scmProvider }) {
+function CreateShell({ accessToken, onCreate, provider: scmProvider, authUrlData }) {
   const [demo, setDemo] = useState(null)
-  const [section, setSection] = useState('git')
-  const [provider, setProvider] = useState('AWS')
+  const [section, setSection] = useState(SECTION_GIT)
+  const [providerName, setProvider] = useState('AWS')
   const [scm, setScm] = useState({ name: '', provider: scmProvider, token: accessToken })
   const [credentials, setCredentials] = useState({})
   const [workspace, setWorkspace] = useState({})
   const [mutation, { loading, error: gqlError }] = useMutation(CREATE_SHELL, {
-    variables: { attributes: { credentials, workspace, scm, provider, demoId: demo && demo.id } },
+    variables: { attributes: { credentials, workspace, scm, provider: providerName, demoId: demo && demo.id } },
     onCompleted: onCreate,
   })
 
@@ -170,59 +172,76 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider }) {
   }, [setProvider, setCredentials, setWorkspace, workspace])
 
   const next = useCallback(() => {
-    const hasNext = !!SECTIONS[section][0]
-    if (hasNext) setSection(SECTIONS[section][0])
+    const hasNext = !!SECTIONS[section].next
+    if (hasNext) setSection(SECTIONS[section].next)
     if (!hasNext) mutation()
   }, [section, mutation])
 
-  const validations = getValidations(provider, scmProvider, section)
+  const previous = useCallback(() => {
+    const hasPrevious = !!SECTIONS[section].previous
+    if (hasPrevious) setSection(SECTIONS[section].previous)
+    if (!hasPrevious) mutation()
+  }, [section, mutation])
+
+  const validations = getValidations(providerName, scmProvider, section)
   const { error, exceptions } = getExceptions(validations, { credentials, workspace, scm })
 
+  const { stepIndex } = SECTIONS[section]
+
+  const contextData = useMemo(() => ({
+    scmProvider,
+    accessToken,
+    scm,
+    setScm,
+    setProvider: doSetProvider,
+    authUrlData,
+    provider: providerName,
+    workspace,
+    setWorkspace,
+    credentials,
+    setCredentials,
+    demo,
+    setDemo,
+    next,
+    previous,
+    setSection,
+    error,
+    exceptions,
+  }), [scmProvider,
+    accessToken,
+    scm,
+    setScm,
+    doSetProvider,
+    authUrlData,
+    providerName,
+    workspace,
+    setWorkspace,
+    credentials,
+    setCredentials,
+    demo,
+    setDemo,
+    next,
+    previous,
+    setSection,
+    error,
+    exceptions])
+
   return (
-    <Box
-      style={{ overflow: 'auto', height: '100%', width: '100%' }}
-      background="background"
-      align="center"
-      justify="center"
-      pad="small"
-    >
-      <Box
-        flex={false}
-        gap="small"
-        width={section !== 'finish' ? '50%' : null}
+    <CreateShellContext.Provider value={contextData}>
+      <DemoWrapper
+        stepIndex={stepIndex}
+        cliMode={section === SECTION_INSTALL_CLI}
       >
-        {exceptions && (!demo || section !== 'cloud') && <Exceptions exceptions={exceptions} />}
-        {gqlError && (
-          <GqlError
-            error={gqlError}
-            header="Failed to create shell"
-          />
+        {section === SECTION_GIT && (
+          <ScmSection />
         )}
-        {section === 'git' && (
-          <>
-            <Header text="Git Setup" />
-            <ScmInput
-              provider={scmProvider}
-              accessToken={accessToken}
-              scm={scm}
-              setScm={setScm}
-            />
-          </>
+        {section === SECTION_CLOUD && (
+          <ProviderForm />
         )}
-        {section === 'cloud' && (
-          <ProviderForm
-            provider={provider}
-            setProvider={doSetProvider}
-            workspace={workspace}
-            setWorkspace={setWorkspace}
-            credentials={credentials}
-            setCredentials={setCredentials}
-            demo={demo}
-            setDemo={setDemo}
-            next={next}
-          />
+        {section === SECTION_INSTALL_CLI && (
+          <InstallCli />
         )}
-        {section === 'workspace' && (
+        {section === SECTION_WORKSPACE && (
           <>
             <Header text="Workspace" />
             <WorkspaceForm
@@ -232,63 +251,268 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider }) {
             />
           </>
         )}
-        {section === 'finish' && (
+        {section === SECTION_FINISH && (
           <Synopsis
-            provider={provider}
+            provider={providerName}
             workspace={workspace}
             credentials={credentials}
             demo={demo}
             scm={scm}
           />
         )}
-        <Box
-          direction="row"
-          justify="end"
-          gap="small"
+        {/* Unhandled Errors */}
+        <Div
+          flex={false}
+          marginTop="large"
+          width="100%"
         >
-          {SECTIONS[section][1] && (
-            <SecondaryButton
-              label="Previous"
-              onClick={() => setSection(SECTIONS[section][1])}
-            />
+          {gqlError && (
+            <Alert
+              severity="error"
+              title="Failed to create shell"
+            >            
+              {gqlError.graphQLErrors[0].message}
+            </Alert>
           )}
-          <Button
-            onClick={next}
-            border={!!error}
-            disabled={error}
-            loading={loading}
-            label={section !== 'finish' ? 'Next' : 'Create'}
-          />
-        </Box>
-      </Box>
-    </Box>
+        </Div>
+      </DemoWrapper>
+    </CreateShellContext.Provider>
   )
 }
 
-export function OAuthCallback() {
-  const loc = useLocation()
+export function OAuthCallback({ provider }) {
   const navigate = useNavigate()
-  const { provider } = useParams()
-  const params = new URLSearchParams(loc.search)
-  const { data } = useQuery(SCM_TOKEN, { variables: { code: params.get('code'), provider: provider.toUpperCase() } })
+  const [searchParams] = useSearchParams()
+
+  const { data: authUrlData } = useQuery(AUTH_URLS)
+
+  let { data } = useQuery(SCM_TOKEN, {
+    variables: {
+      code: searchParams.get('code'),
+      provider: provider.toUpperCase(),
+    },
+  })
+
+  // START <<Remove this after dev>>
+  if (process.env.NODE_ENV !== 'production' && DEBUG_SCM_TOKENS[provider.toUpperCase()]) {
+    data = { ...data, ...{ scmToken: DEBUG_SCM_TOKENS[provider.toUpperCase()] } }
+  }
+  // END <<Remove this after dev>>
 
   if (!data) return <LoopingLogo dark />
 
-  console.log(data)
+  if (!data.scmToken) {
+    navigate('/shell')
+  }
 
   return (
-    <Box
-      background="background"
-      fill
-      align="center"
-      justify="center"
+    <CreateShell
+      accessToken={data.scmToken}
+      provider={provider.toUpperCase()}
+      onCreate={() => navigate('/shell')}
+      authUrlData={authUrlData}
+    />
+  )
+}
+
+function DemoStepper({ stepIndex = 0, ...props }) {
+  const steps = [
+    { key: SECTION_GIT, stepTitle: 'Create a repository', IconComponent: NetworkInterfaceIcon },
+    { key: SECTION_CLOUD, stepTitle: <>Choose a&nbsp;cloud</>, IconComponent: CloudIcon },
+    { key: SECTION_WORKSPACE, stepTitle: 'Configure repository', IconComponent: GearTrainIcon },
+    { key: SECTION_FINISH, stepTitle: <>Launch the&nbsp;app</>, IconComponent: BrowserIcon },
+  ]
+
+  return (
+    <Stepper
+      stepIndex={stepIndex}
+      steps={steps}
+      {...props}
+    />
+  )
+}
+
+function CliStepper({ stepIndex = 0, ...props }) {
+  const steps = [
+    { key: SECTION_GIT, stepTitle: 'Create a repository', IconComponent: NetworkInterfaceIcon },
+    { key: SECTION_INSTALL_CLI, stepTitle: <>Install CLI</>, IconComponent: CloudIcon },
+    { key: SECTION_FINISH, stepTitle: <>Launch the&nbsp;app</>, IconComponent: BrowserIcon },
+  ]
+
+  return (
+    <Stepper
+      stepIndex={stepIndex}
+      steps={steps}
+      {...props}
+    />
+  )
+}
+
+export function CardButton({ selected = false, children, ...props }) {
+  const bounceEase = 'cubic-bezier(.37,1.4,.62,1)'
+  const checkMark = (
+    <Div
+      position="absolute"
+      top={0}
+      left={0}
+      padding="medium"
     >
-      <CreateShell
-        accessToken={data.scmToken}
-        provider={provider.toUpperCase()}
-        onCreate={() => navigate('/shell')}
+      <StatusIpIcon
+        size={24}
+        color="action-link-inline"
+        transform={selected ? 'scale(1)' : 'scale(0)'}
+        opacity={selected ? 1 : 0}
+        transition={`all 0.2s ${bounceEase}`}
       />
-    </Box>
+    </Div>
+  )
+
+  return (
+    <Button
+      display="flex"
+      position="relative"
+      flex="1 1 100%"
+      padding="large"
+      marginHorizontal="medium"
+      alignContent="center"
+      justify="center"
+      backgroundColor="fill-two"
+      border="1px solid border-fill-two"
+      borderColor={selected ? 'action-link-inline' : 'border-fill-two'}
+      _hover={{ background: 'fill-two-hover' }}
+      _active={{ background: 'fill-two-selected' }}
+      {...props}
+    >
+      {children}
+      {checkMark}
+    </Button>
+  )
+}
+
+export function DemoCard({ children, title = '' }) {
+  return (
+    <Div
+      width="100%"
+      backgroundColor="fill-one"
+      border="1px solid border"
+      borderRadius="large"
+      padding="xlarge"
+      paddingTop="medium"
+    >
+      {title && (
+        <H2
+          overline
+          color="text-xlight"
+          marginBottom="xsmall"
+          width="100%"
+        >
+          {title}
+        </H2>
+      )}
+      {children}
+    </Div>
+  )
+}
+
+function CreateARepoCard({ data }) {
+  const urls = data?.scmAuthorization
+
+  return (
+    <DemoCard title="Create a repository">
+      <P
+        body1
+        color="text-light"
+        marginBottom="medium"
+      >
+        We use GitOps to manage your application’s state. Use one of the following providers to get started.
+      </P>
+      <Flex mx={-1}>
+        {urls?.map(({ provider, url }) => {
+          let providerLogo = null
+          let providerName = provider.toLowerCase
+          switch (provider.toLowerCase()) {
+            case 'github':
+              providerName = 'GitHub'
+              providerLogo = <GithubLogo />
+              break
+            case 'gitlab':
+              providerName = 'Gitlab'
+              providerLogo = <GitlabLogo />
+              break
+          }
+
+          return (
+            <CardButton
+              key={provider}
+              onClick={() => {
+                // START <<Remove this after dev>>
+                if (process.env.NODE_ENV !== 'production' && DEBUG_SCM_TOKENS[provider]) {
+                  console.log('going to ', `/oauth/callback/${provider.toLowerCase()}/shell?code=abcd`)
+                  window.location = `/oauth/callback/${provider.toLowerCase()}/shell?code=abcd`
+
+                  return
+                }
+                // END <<Remove this after dev>>
+
+                window.location = url
+              }}
+            >
+              <Div
+                marginHorizontal="auto"
+                maxWidth={40}
+                maxHeight={40}
+              >
+                { providerLogo }
+              </Div>
+              <Text
+                body1
+                bold
+                marginTop="medium"
+              >
+                Create a { providerName } repo
+              </Text>
+            </CardButton>
+          )
+        })}
+      </Flex>
+    </DemoCard>
+  )
+}
+
+export function DemoWrapper({ showSplashScreen = false, stepIndex = 0, childIsReady = true, children, cliMode = false }) {
+  return (
+    <Flex
+      width="100%"
+      alignItems="center"
+      flexDirection="column"
+      marginTop="xxlarge"
+    >
+      <SplashToLogoTransition
+        showSplashScreen={showSplashScreen}
+        splashTimeout={1200}
+        childIsReady={childIsReady}
+      >
+        {childIsReady && (
+          <Div
+            position="relative"
+            zIndex="0"
+            width="100%"
+            maxWidth={640}
+            marginTop="xlarge"
+            paddingHorizontal="xlarge"
+          >
+            <Div
+              marginBottom="xxlarge"
+            >
+              {cliMode ?
+                <CliStepper stepIndex={stepIndex} /> :
+                <DemoStepper stepIndex={stepIndex} />}
+            </Div>
+            {children}
+          </Div>
+        )}
+      </SplashToLogoTransition>
+    </Flex>
   )
 }
 
@@ -305,43 +529,19 @@ export function CloudShell() {
     }
   }, [shellData, setCreated, mutation])
 
-  if (!shellData || !data) return <LoopingLogo dark />
-
+  const ready = useMemo(
+    () => (shellData && data),
+    [shellData, data]
+  )
   if ((shellData && shellData.shell) || created) return <Terminal />
 
-  const urls = data.scmAuthorization
-
   return (
-    <Box
-      background="background"
-      fill
-      align="center"
-      justify="center"
-      gap="xsmall"
+    <DemoWrapper
+      showSplashScreen
+      stepIndex={0}
+      childIsReady={ready}
     >
-      {urls.map(({ provider, url }) => (
-        <Box
-          flex={false}
-          pad="small"
-          round="xsmall"
-          direction="row"
-          gap="small"
-          border
-          align="center"
-          hoverIndicator="card"
-          onClick={() => {
-            window.location = url
-          }}
-        >
-          {createElement(METHOD_ICONS[provider], { size: '15px' })}
-          <Text
-            size="small"
-            weight={500}
-          >
-            Log in with {provider.toLowerCase()} to start
-          </Text>
-        </Box>
-      ))}
-    </Box>
+      <CreateARepoCard data={data} />
+    </DemoWrapper>
   )
 }

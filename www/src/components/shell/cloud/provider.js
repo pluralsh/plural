@@ -1,40 +1,17 @@
-import { createElement, useCallback, useRef, useState } from 'react'
-import { Down } from 'grommet-icons'
-import { Box, Drop, Text } from 'grommet'
+import { useCallback, useContext, useState } from 'react'
+import { Div, H2, P, RadioGroup, Text } from 'honorable'
 
-import { Provider } from '../../repos/misc'
+import { Radio } from 'pluralsh-design-system'
 
-import { CLOUDS } from '../constants'
-import { Header } from '../CloudShell'
+import { CardButton, CreateShellContext } from '../CloudShell'
 
 import { AWS_VALIDATIONS, AwsForm, awsSynopsis } from './aws'
 import { GCP_VALIDATIONS, GcpForm, gcpSynopsis } from './gcp'
 import { DemoProject } from './demo'
+import { CloudDecision } from './CloudDecision'
+import { CloudCredentials } from './CloudCredentials'
 
-function CloudItem({ provider, setProvider }) {
-  return (
-    <Box
-      direction="row"
-      align="center"
-      gap="small"
-      onClick={() => setProvider(provider)}
-      hoverIndicator="tone-light"
-      pad="small"
-    >
-      <Provider
-        provider={provider}
-        width={30}
-      />
-      <Text
-        size="small"
-        weight={500}
-      >{provider.toLowerCase()}
-      </Text>
-    </Box>
-  )
-}
-
-const ProviderForms = {
+export const ProviderForms = {
   AWS: AwsForm,
   GCP: GcpForm,
 }
@@ -53,83 +30,95 @@ export const synopsis = ({ provider, ...rest }) => {
   }
 }
 
-function CloudOption({ header, description, onClick }) {
+export function CloudOption({ providerLogo, header, description, selected, ...props }) {  
   return (
-    <Box
-      width="50%"
-      height="250px"
-      pad="medium"
-      round="xsmall"
-      align="center"
-      justify="center"
-      hoverIndicator="card"
-      border
-      gap="small"
-      onClick={onClick}
+    <CardButton
+      position="relative"
+      selected={selected}
+      {...props}
     >
+      <Div
+        marginHorizontal="auto"
+        maxWidth={40}
+        maxHeight={40}
+        overflow="visible"
+      >
+        { providerLogo }
+      </Div>
       <Text
-        size="small"
-        weight={500}
-      >{header}
+        body1
+        bold
+        marginTop="medium"
+      >
+        {header}
       </Text>
-      <Text size="small">{description}</Text>
-    </Box>
+      <Text
+        caption
+        color="text-light"
+      >
+        {description}
+      </Text>
+    </CardButton>
   )
 }
 
-function CloudDecision({ setPath }) {
+export function ChooseAShell({ options, selected, setSelected }) {
+
   return (
-    <Box
-      fill
-      gap="small"
+    <Div
+      width="100%"
+      marginTop="large"
     >
-      <Box
-        direction="row"
-        fill="horizontal"
-        justify="center"
+      <H2
+        overline
+        color="text-xlight"
+        marginBottom="xsmall"
+        width="100%"
       >
-        <Text>Choose Your Own Adventure</Text>
-      </Box>
-      <Box
-        fill
-        direction="row"
-        align="center"
-        justify="center"
-        gap="small"
+        Choose a shell
+      </H2>
+      <P
+        body1
+        color="text-light"
+        marginBottom="medium"
       >
-        <CloudOption
-          header="Use a Demo Account"
-          description="We'll create a GCP project on the fly for you to give plural a spin (it will be deleted in 6hrs)"
-          onClick={() => setPath('demo')}
-        />
-        <CloudOption
-          header="Bring Your Own Cloud"
-          description="Use credentials for one of your own cloud accounts to get started"
-          onClick={() => setPath('byoc')}
-        />
-      </Box>
-    </Box>
+        Determine which shell you’ll use to get started. The cloud shell comes fully equipped with the Plural CLI and all required dependencies.
+      </P>
+      <RadioGroup>
+        {options.map(({ label, value }) => (
+          <Radio
+            key={value}
+            value={value}
+            defaultChecked={value === 'cloud'}
+            checked={value === selected}
+            onClick={() => setSelected(value)}
+          >
+            {label}
+          </Radio>
+        ))}
+      </RadioGroup>
+    </Div>
   )
 }
 
-export function ProviderForm({ provider, setProvider, workspace, setWorkspace, credentials, setCredentials, demo, setDemo, next }) {
-  const ref = useRef()
+export function ProviderForm() {
+  const { setProvider, workspace, setWorkspace, credentials, setCredentials, demo, setDemo, next } = useContext(CreateShellContext)
   const [path, setPath] = useState(null)
-  const [open, setOpen] = useState(false)
-  const close = useCallback(() => setOpen(false), [setOpen])
+
   const doSetPath = useCallback(path => {
     if (path === 'demo') setDemo(true)
     setPath(path)
   }, [setPath, setDemo])
 
-  const form = ProviderForms[provider]
-
   if (!path) {
-    return <CloudDecision setPath={doSetPath} />
+    return (
+      <CloudDecision doSetPath={doSetPath} />
+    )
   }
 
   if (demo) {
     return (
+
       <DemoProject
         setDemo={setDemo}
         setProvider={setProvider}
@@ -143,53 +132,6 @@ export function ProviderForm({ provider, setProvider, workspace, setWorkspace, c
   }
 
   return (
-    <>
-      <Box
-        fill
-        align="center"
-        justify="center"
-        gap="small"
-      >
-        <Header text="Cloud Credentials" />
-        <Box
-          ref={ref}
-          direction="row"
-          align="center"
-          gap="small"
-          onClick={() => setOpen(true)}
-          hoverIndicator="card"
-          round="xsmall"
-          pad="small"
-        >
-          <Text
-            size="small"
-            weight={500}
-          >Provider
-          </Text>
-          <Provider
-            provider={provider}
-            width={40}
-          />
-          <Down size="small" />
-        </Box>
-        {createElement(form, { workspace, setWorkspace, credentials, setCredentials })}
-      </Box>
-      {open && (
-        <Drop
-          target={ref.current}
-          onClickOutside={close}
-          onEsc={close}
-        >
-          <Box width="250px">
-            {CLOUDS.map(cloud => (
-              <CloudItem
-                provider={cloud}
-                setProvider={setProvider}
-              />
-            ))}
-          </Box>
-        </Drop>
-      )}
-    </>
+    <CloudCredentials doSetPath={doSetPath} />
   )
 }

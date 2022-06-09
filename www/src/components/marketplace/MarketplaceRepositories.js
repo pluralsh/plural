@@ -1,8 +1,10 @@
+import { useEffect, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { Div, Flex, P } from 'honorable'
-import { RepositoryCard } from 'pluralsh-design-system'
+import { Button, Div, Flex, P } from 'honorable'
+import { Input, MagnifyingGlassIcon, RepositoryCard, Token } from 'pluralsh-design-system'
+import Fuse from 'fuse.js'
 
-import { useEffect, useRef } from 'react'
+import { capitalize } from '../../utils/string'
 
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 
@@ -10,24 +12,24 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 
 import { MARKETPLACE_QUERY } from './queries'
 
-function MarketplaceRepositories({ installed }) {
+const searchOptions = {
+  keys: ['name', 'description', 'tags.tag'],
+}
+
+function MarketplaceRepositories({ installed, ...props }) {
   const scrollRef = useRef()
-  const [searchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
   const categories = searchParams.getAll('category')
   const tags = searchParams.getAll('tag')
+  const [search, setSearch] = useState('')
 
   const [repositories, loadingRepositories, hasMoreRepositories, fetchMoreRepositories] = usePaginatedQuery(
     MARKETPLACE_QUERY,
-    {
-      variables: {
-        // Does not work:
-        // tag: tags[0] || null,
-      },
-    },
+    {},
     data => data.repositories
   )
 
-  const shouldRenderFeatured = !categories.length && !tags.length && !installed
+  const shouldRenderFeatured = !categories.length && !tags.length && !installed && !search
 
   useEffect(() => {
     const { current } = scrollRef
@@ -50,9 +52,10 @@ function MarketplaceRepositories({ installed }) {
   if (repositories.length === 0 && loadingRepositories) {
     return (
       <Flex
-        pt={12}
+        pt={2}
         align="center"
         justify="center"
+        {...props}
       >
         <LoopingLogo />
       </Flex>
@@ -61,15 +64,32 @@ function MarketplaceRepositories({ installed }) {
 
   const sortedRepositories = repositories.slice()
     .sort((a, b) => a.name.localeCompare(b.name))
-    .filter(repository => categories.length ? categories.includes(repository.category) : true)
+    .filter(repository => categories.length ? categories.includes(repository.category.toLowerCase()) : true)
     .filter(repository => {
       if (!tags.length) return true
 
-      const repositoryTags = repository.tags.map(({ tag }) => tag)
+      const repositoryTags = repository.tags.map(({ name }) => name.toLowerCase())
 
       return tags.some(tag => repositoryTags.includes(tag))
     })
     .filter(repository => installed ? repository.installation : true)
+
+  const fuse = new Fuse(sortedRepositories, searchOptions)
+
+  const resultRepositories = search ? fuse.search(search).map(({ item }) => item) : sortedRepositories
+
+  function handleClearToken(key, value) {
+    const existing = searchParams.getAll(key)
+
+    setSearchParams({
+      ...searchParams,
+      [key]: existing.filter(v => v !== value),
+    })
+  }
+
+  function handleClearTokens() {
+    setSearchParams({})
+  }
 
   function renderFeatured() {
     const featuredA = sortedRepositories.shift()
@@ -89,7 +109,6 @@ function MarketplaceRepositories({ installed }) {
           <RepositoryCard
             as={Link}
             to={`/repository/${featuredA.id}`}
-            installed={!!featuredA.installation}
             color="text"
             textDecoration="none"
             flexGrow={1}
@@ -98,14 +117,13 @@ function MarketplaceRepositories({ installed }) {
             featured
             title={featuredA.name}
             imageUrl={featuredA.darkIcon || featuredA.icon}
-            subtitle={featuredA.publisher?.name?.toUpperCase()}
-          >
-            {featuredA.description}
-          </RepositoryCard>
+            publisher={featuredA.publisher?.name?.toUpperCase()}
+            description={featuredA.description}
+            tags={featuredA.tags.map(({ name }) => name)}
+          />
           <RepositoryCard
             as={Link}
             to={`/repository/${featuredB.id}`}
-            installed={!!featuredB.installation}
             color="text"
             textDecoration="none"
             ml={2}
@@ -115,10 +133,10 @@ function MarketplaceRepositories({ installed }) {
             featured
             title={featuredB.name}
             imageUrl={featuredB.darkIcon || featuredB.icon}
-            subtitle={featuredB.publisher?.name?.toUpperCase()}
-          >
-            {featuredB.description}
-          </RepositoryCard>
+            publisher={featuredB.publisher?.name?.toUpperCase()}
+            description={featuredB.description}
+            tags={featuredB.tags.map(({ name }) => name)}
+          />
         </Flex>
       </>
     )
@@ -133,55 +151,129 @@ function MarketplaceRepositories({ installed }) {
   }
 
   return (
-    <Div
-      overflowY="auto"
-      ref={scrollRef}
+    <Flex
+      direction="column"
+      {...props}
     >
-      {shouldRenderFeatured && renderFeatured()}
-      <P
-        mt={shouldRenderFeatured ? 2 : 0}
-        body0
-        fontWeight="bold"
-      >
-        {renderTitle()}
-      </P>
       <Flex
-        mx={-1}
-        mt={1}
-        align="stretch"
-        wrap="wrap"
+        paddingHorizontal="large"
+        align="flex-start"
+        position="relative"
       >
-        {sortedRepositories.map(repository => (
-          <RepositoryCard
-            key={repository.id}
-            as={Link}
-            to={`/repository/${repository.id}`}
-            installed={!!repository.installation}
-            color="text"
-            textDecoration="none"
-            mx={1}
-            mb={2}
-            flexGrow={0}
-            flexShrink={0}
-            width="calc(33.333% - 2 * 16px)"
-            title={repository.name}
-            imageUrl={repository.darkIcon || repository.icon}
-            subtitle={repository.publisher?.name?.toUpperCase()}
-          >
-            {repository.description}
-          </RepositoryCard>
-        ))}
-      </Flex>
-      {loadingRepositories && (
+        <Input
+          mr={1.5}
+          small
+          startIcon={(
+            <MagnifyingGlassIcon
+              size={14}
+              mt={0.1}
+            />
+          )}
+          placeholder="Search a repository"
+          value={search}
+          onChange={event => setSearch(event.target.value)}
+          width="calc(100% / 2 - 16px)"
+        />
         <Flex
-          mt={2}
-          align="center"
-          justify="center"
+          wrap="wrap"
+          flexShrink={1}
+          minHeight={36}
         >
-          <LoopingLogo />
+          {categories.map(category => (
+            <Token
+              mr={0.5}
+              mb={0.5}
+              py={0.1666}
+              onClose={() => handleClearToken('category', category)}
+            >
+              {capitalize(category)}
+            </Token>
+          ))}
+          {tags.map(tag => (
+            <Token
+              mr={0.5}
+              mb={0.5}
+              py={0.1666}
+              onClose={() => handleClearToken('tag', tag)}
+            >
+              {capitalize(tag)}
+            </Token>
+          ))}
+          {!!(categories.length || tags.length) && (
+            <Button
+              ml={0.25}
+              tertiary
+              small
+              onClick={() => handleClearTokens()}
+            >
+              Clear All
+            </Button>
+          )}
         </Flex>
-      )}
-    </Div>
+        <Div
+          flexShrink={0}
+          height={16}
+          width="100%"
+          background="linear-gradient(0deg, transparent 0%, fill-zero 50%);"
+          position="absolute"
+          top="100%"
+          zIndex={999}
+        />
+      </Flex>
+      <Div
+        pt={1}
+        pb={8}
+        paddingHorizontal="large"
+        overflowY="auto"
+        overflowX="hidden"
+        position="relative"
+        ref={scrollRef}
+      >
+        {shouldRenderFeatured && renderFeatured()}
+        <P
+          mt={shouldRenderFeatured ? 2 : 0}
+          body0
+          fontWeight="bold"
+        >
+          {renderTitle()}
+        </P>
+        <Flex
+          mx={-1}
+          mt={1}
+          align="stretch"
+          wrap="wrap"
+        >
+          {resultRepositories.map(repository => (
+            <RepositoryCard
+              key={repository.id}
+              as={Link}
+              to={`/repository/${repository.id}`}
+              color="text"
+              textDecoration="none"
+              mx={1}
+              mb={2}
+              flexGrow={0}
+              flexShrink={0}
+              width="calc(33.333% - 2 * 16px)"
+              title={repository.name}
+              imageUrl={repository.darkIcon || repository.icon}
+              publisher={repository.publisher?.name?.toUpperCase()}
+              description={repository.description}
+              tags={repository.tags.map(({ name }) => name)}
+            />
+          ))}
+        </Flex>
+        {loadingRepositories && (
+          <Flex
+            mt={2}
+            align="center"
+            justify="center"
+          >
+            <LoopingLogo />
+          </Flex>
+        )}
+      </Div>
+    </Flex>
   )
 }
 

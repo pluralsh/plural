@@ -50,7 +50,7 @@ function WithNotifications({ children }) {
               mr={-0.25}
               align="center"
               justify="center"
-              hoverIndicator="background-light"
+              hoverIndicator="fill-one"
               cursor="pointer"
               borderRadius="50%"
               onClick={() => setIsPanelOpen(false)}
@@ -142,7 +142,7 @@ function Notification({ notification, closePanel }) {
       textDecoration="none"
       p={1}
       align="flex-start"
-      hoverIndicator="background-light"
+      hoverIndicator="fill-one"
       cursor="pointer"
     >
       <Avatar

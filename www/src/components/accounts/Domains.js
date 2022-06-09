@@ -72,7 +72,7 @@ function DomainRow({ domain }) {
     <>
       <TableRow
         onClick={() => navigate(`/accounts/edit/domains/${domain.id}`)}
-        hoverIndicator="background-light"
+        hoverIndicator="fill-one"
       >
         <HeaderItem
           text={domain.name}

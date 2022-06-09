@@ -54,7 +54,7 @@ function MdPre({ children, ...props }) {
 }
 
 const codeStyle = {
-  background: 'background-light',
+  background: 'fill-one',
   borderRadius: '4px',
 }
 

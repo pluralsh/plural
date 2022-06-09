@@ -1,12 +1,13 @@
 import { forwardRef, useContext, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Avatar, Div, Flex, Img, Menu, MenuItem, P, useOutsideClick } from 'honorable'
+import { Avatar, Div, Flex, Img, Menu, MenuItem, P, Tooltip, useOutsideClick } from 'honorable'
 import {
   ArrowTopRightIcon,
   DiscordIcon,
   DownloadIcon,
   GitHubLogoIcon,
   HamburgerMenuCollapseIcon,
+  HamburgerMenuCollapsedIcon,
   InstalledIcon,
   LightningIcon,
   ListIcon,
@@ -102,13 +103,13 @@ function SidebarItemRef({
   startIcon,
   endIcon,
   label,
+  tooltip,
   badge = 0,
   linkTo,
   ...otherProps
 },
 ref
 ) {
-
   function wrapLink(node) {
     if (!linkTo) return node
 
@@ -135,15 +136,28 @@ ref
     )
   }
 
+  function wrapTooltip(node) {
+    if (!(collapsed && tooltip)) return node
+
+    return (
+      <Tooltip
+        arrow
+        label={tooltip}
+        placement="right"
+      >
+        {node}
+      </Tooltip>
+    )
+  }
+
   return wrapLink(
     <Flex
       ref={ref}
-      py={0.75}
-      px={1}
+      py="9.5px" // Give it a square look with a weird padding
+      px={0.75}
       align="center"
       borderRadius="normal"
       cursor="pointer"
-      position="relative"
       color="text-light"
       backgroundColor={active ? 'fill-zero-selected' : null}
       _hover={{
@@ -212,9 +226,9 @@ function Sidebar({
   const menuItemRef = useRef()
   const menuRef = useRef()
   const [isMenuOpen, setIsMenuOpened] = useState(false)
-  const [collapsed, setCollapsed] = useState(false)
+  const [collapsed, setCollapsed] = useState(true)
 
-  const sidebarWidth = collapsed ? 82 : 256 - 32
+  const sidebarWidth = collapsed ? 65 : 256 - 32 // 64 + 1px border
   const previousUserData = getPreviousUserData()
 
   useOutsideClick(menuRef, event => {
@@ -246,7 +260,6 @@ function Sidebar({
         height="100vh"
         maxHeight="100vh"
         borderRight="1px solid border"
-        overflow="hidden"
         userSelect="none"
         transition="width 300ms ease"
         position="relative"
@@ -258,7 +271,7 @@ function Sidebar({
         <Link to="/">
           <Flex
             py={1}
-            pl={1.5}
+            pl={1.25}
             flexShrink={0}
             align="center"
             borderBottom="1px solid border"
@@ -283,8 +296,8 @@ function Sidebar({
           NOTIFICATIONS AND UPDATE
         --- */}
         <Div
-          py={0.5}
-          px={1}
+          py={0.75}
+          px={0.75}
           flexShrink={0}
           borderBottom="1px solid border"
         >
@@ -294,6 +307,7 @@ function Sidebar({
             collapsed={collapsed}
             startIcon={<LightningIcon />}
             label="Notifications"
+            tooltip="Notifications"
             badge={notificationsCount}
             onClick={onNotificationsClick}
           />
@@ -304,6 +318,7 @@ function Sidebar({
               collapsed={collapsed}
               startIcon={<DownloadIcon />}
               label="Update"
+              tooltip="Update"
               onClick={onUpdateClick}
             />
           )}
@@ -312,8 +327,8 @@ function Sidebar({
           MENU
         --- */}
         <Div
-          py={0.5}
-          px={1}
+          py={0.75}
+          px={0.75}
           flexGrow={1}
           flexShrink={1}
           overflowY="auto"
@@ -321,23 +336,22 @@ function Sidebar({
           borderBottom="1px solid border"
           {...{
             '&::-webkit-scrollbar': {
-              width: 6,
+              display: 'none',
             },
             '&::-webkit-scrollbar-thumb': {
-              backgroundColor: 'fill-zero-hover',
-              borderRadius: 3,
-              display: collapsed ? 'none' : null,
+              display: 'none',
             },
           }}
         >
           {items.map(({ name, Icon, url }) => (
             <SidebarItem
               key={name}
-              mb={0.25}
+              mb={0.5}
               active={activeId === url}
               collapsed={collapsed}
               startIcon={<Icon />}
               label={name}
+              tooltip={name}
               linkTo={url}
             />
           ))}
@@ -346,8 +360,8 @@ function Sidebar({
           SOCIAL
         --- */}
         <Div
-          py={0.5}
-          px={1}
+          py={0.75}
+          px={0.75}
           flexShrink={0}
           borderBottom="1px solid border"
         >
@@ -362,6 +376,7 @@ function Sidebar({
               />
             )}
             label="Discord"
+            tooltip="Discord"
             linkTo="https://discord.com/invite/qsUfBcC3Ru"
           />
           <SidebarItem
@@ -374,19 +389,23 @@ function Sidebar({
               />
             )}
             label="GitHub"
+            tooltip="GitHub"
             linkTo="https://github.com/pluralsh/plural"
           />
         </Div>
+        {/* ---
+          COLLAPSE
+        --- */}
         <Div
-          py={0.5}
-          px={1}
+          pt={0.75}
+          px={0.75}
           flexShrink={0}
-          borderBottom="1px solid border"
         >
           <SidebarItem
             collapsed={collapsed}
-            startIcon={<HamburgerMenuCollapseIcon />}
+            startIcon={collapsed ? <HamburgerMenuCollapsedIcon /> : <HamburgerMenuCollapseIcon />}
             label="Collapse"
+            tooltip="Expand"
             backgroundColor="fill-one"
             _hover={{
               backgroundColor: 'transparency(fill-one-hover, 50)',
@@ -400,7 +419,7 @@ function Sidebar({
         --- */}
         <Div
           py={0.5}
-          px={1}
+          px={0.5}
           flexShrink={0}
         >
           <SidebarItem
@@ -467,22 +486,6 @@ function Sidebar({
           <MenuItem>
             <MarketPlusIcon mr={1} />
             Create new publisher
-          </MenuItem>
-          <MenuItem
-            as="a"
-            color="inherit"
-            textDecoration="none"
-            href="https://discord.com/invite/qsUfBcC3Ru"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <DiscordIcon mr={1} />
-            Get support
-            <Div flexGrow={1} />
-            <ArrowTopRightIcon
-              size={24}
-              my={`${(16 - 24) / 2}px`}
-            />
           </MenuItem>
           <MenuItem>
             <LogoutIcon mr={1} />

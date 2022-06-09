@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react'
 import { useMutation } from '@apollo/client'
-import { A, Button, Div, DropdownButton, ExtendTheme, Flex, H1, H2, H3, Icon, Img, MenuItem, Modal, P, Pre, Span } from 'honorable'
+import { A, Button, Div, Flex, H1, H3, Icon, Img, Modal, P, Pre, Span } from 'honorable'
 import { GitHubIcon, InstalledLabel, LinksIcon, Tag, TrashCanIcon } from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
@@ -9,54 +9,10 @@ import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 
 import { capitalize } from '../../utils/string'
 
-import Code from '../utils/Code'
-
 import { DELETE_INSTALLATION_MUTATION, RECIPES_QUERY } from './queries'
+import { providerToIcon, providerToIconHeight } from './constants'
 
-const providerToIcon = {
-  AWS: `${process.env.PUBLIC_URL}/aws-icon.png`,
-  AZURE: `${process.env.PUBLIC_URL}/azure.png`,
-  EQUINIX: `${process.env.PUBLIC_URL}/equinix-metal.png`,
-  GCP: `${process.env.PUBLIC_URL}/gcp.png`,
-  KIND: `${process.env.PUBLIC_URL}/kind.png`,
-}
-
-const providerToIconHeight = {
-  AWS: 12,
-  AZURE: 14,
-  EQUINIX: 16,
-  GCP: 14,
-  KIND: 14,
-}
-
-const providerToDisplayName = {
-  AWS: 'Amazon Web Services',
-  AZURE: 'Azure',
-  EQUINIX: 'Equinix Metal',
-  GCP: 'Google Cloud Platform',
-  KIND: 'Kind',
-}
-
-const extendedTheme = {
-  DropdownButton: {
-    Menu: [
-      {
-        width: 256 + 64 + 16,
-        left: 'unset',
-      },
-    ],
-  },
-  MenuItem: {
-    Root: [
-      {
-        borderBottom: '1px solid border',
-        '&:last-of-type': {
-          borderBottom: 'none',
-        },
-      },
-    ],
-  },
-}
+import InstallDropdownButton from './InstallDropdownButton'
 
 function InstalledActions({ installation, ...props }) {
   const [modalOpen, setModalOpen] = useState(false)
@@ -80,7 +36,7 @@ function InstalledActions({ installation, ...props }) {
           p={0.5}
           borderRadius="50%"
           cursor="pointer"
-          hoverIndicator="background-light"
+          hoverIndicator="fill-one"
           onClick={() => setModalOpen(true)}
         >
           <TrashCanIcon color="error" />
@@ -133,102 +89,6 @@ function InstalledActions({ installation, ...props }) {
   )
 }
 
-function InstallDropdownButton({ recipes, ...props }) {
-  const { name } = useContext(RepositoryContext)
-  const [recipe, setRecipe] = useState(null)
-
-  function renderModalContent() {
-    if (!recipe) return null
-
-    return (
-      <Div minWidth={512}>
-        <Flex
-          align="center"
-          as={H2}
-        >
-          Install {capitalize(name)} on {providerToDisplayName[recipe.provider]}
-          <Img
-            ml={0.75}
-            alt={recipe.name}
-            src={providerToIcon[recipe.provider]}
-            height={1.5 * providerToIconHeight[recipe.provider]}
-          />
-        </Flex>
-        <P mt={2}>
-          {capitalize(recipe.description)}.
-        </P>
-        <P mt={1}>
-          In your installation repository run:
-        </P>
-        <Code
-          language="bash"
-          mt={2}
-        >
-          {`plural bundle install ${name} ${recipe.name}`}
-        </Code>
-      </Div>
-    )
-  }
-
-  return (
-    <>
-      <ExtendTheme theme={extendedTheme}>
-        <DropdownButton
-          fade
-          label="Install"
-          onChange={event => setRecipe(event.target.value)}
-          {...props}
-        >
-          {recipes.map(recipe => (
-            <MenuItem
-              key={recipe.id}
-              value={recipe}
-            >
-              <Flex>
-                <Flex
-                  align="center"
-                  justify="center"
-                  width={3 * 16}
-                  height={3 * 16}
-                  background="background-top"
-                  flexShrink={0}
-                >
-                  <Img
-                    alt={recipe.name}
-                    src={providerToIcon[recipe.provider]}
-                    height={1.5 * providerToIconHeight[recipe.provider]}
-                  />
-                </Flex>
-                <Div
-                  ml={1}
-                  flexShrink={0}
-                  flexBasis="calc(100% - 4 * 16px)"
-                >
-                  <P fontWeight={500}>
-                    Install on {providerToDisplayName[recipe.provider]}
-                  </P>
-                  <P
-                    mt={0.5}
-                    wordBreak="break-word"
-                  >
-                    {capitalize(recipe.description)}
-                  </P>
-                </Div>
-              </Flex>
-            </MenuItem>
-          ))}
-        </DropdownButton>
-      </ExtendTheme>
-      <Modal
-        open={!!recipe}
-        onClose={() => setRecipe(null)}
-      >
-        {renderModalContent()}
-      </Modal>
-    </>
-  )
-}
-
 function RepositoryHeader(props) {
   const repository = useContext(RepositoryContext)
   const [recipes] = usePaginatedQuery(
@@ -253,8 +113,8 @@ function RepositoryHeader(props) {
         p={1}
         align="center"
         justify="center"
-        backgroundColor="background-light"
-        border="2px solid border"
+        backgroundColor="fill-one"
+        border="1px solid border"
         borderRadius={4}
       >
         <Img
@@ -278,7 +138,7 @@ function RepositoryHeader(props) {
           color="text-xlight"
         >
           <P>
-            Published by {repository.publisher?.name?.toUpperCase()}
+            Published by {capitalize(repository.publisher?.name)}
           </P>
           <P ml={1}>
             Available bundles
@@ -338,13 +198,13 @@ function RepositoryHeader(props) {
           align="flex-start"
           wrap="wrap"
         >
-          {repository.tags.map(({ tag }) => (
+          {repository.tags.map(({ name }) => (
             <Tag
-              key={tag}
+              key={name}
               mr={0.5}
               mb={0.5}
             >
-              {tag}
+              {name}
             </Tag>
           ))}
         </Flex>

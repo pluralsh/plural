@@ -44,7 +44,7 @@ export function Code({ children, header, className, multiline }) {
             direction="row"
             justify="end"
             gap="xsmall"
-            background="background-light"
+            background="fill-one"
             pad="xsmall"
             align="center"
           >
@@ -127,7 +127,7 @@ function Mention({ text, user }) {
         ref={ref}
         style={{ display: 'inline-block' }}
         round="xsmall"
-        background="background-light"
+        background="fill-one"
         focusIndicator={false}
         pad={{ horizontal: 'xxsmall' }}
         onClick={() => setOpen(!open)}

@@ -1,11 +1,11 @@
 import { gql } from '@apollo/client'
 
-import { InstallationFragment, RepoFragment } from '../../models/repo'
+import { CategoryFragment, InstallationFragment, RepoFragment } from '../../models/repo'
 import { PageInfo } from '../../models/misc'
 
 export const MARKETPLACE_QUERY = gql`
   query Repos($publisherId: ID, $tag: String, $cursor: String) {
-    repositories(publisherId: $publisherId, tag: $tag, after: $cursor, first: 50) {
+    repositories(publisherId: $publisherId, tag: $tag, after: $cursor, first: 200) {
       pageInfo {
         ...PageInfo
       }
@@ -16,7 +16,7 @@ export const MARKETPLACE_QUERY = gql`
             ...InstallationFragment
           }
           tags {
-            tag
+            name: tag
           }
         }
       }
@@ -25,4 +25,30 @@ export const MARKETPLACE_QUERY = gql`
   ${PageInfo}
   ${RepoFragment}
   ${InstallationFragment}
+`
+
+export const CATEGORIES_QUERY = gql`
+  query {
+    categories {
+      ...CategoryFragment
+    }
+  }
+  ${CategoryFragment}
+`
+
+export const TAGS_QUERY = gql`
+  query Tags($cursor: String) {
+    tags(type: REPOSITORIES, first: 200, after: $cursor) {
+      pageInfo {
+        ...PageInfo
+      }
+      edges {
+        node {
+          name: tag
+          count
+        }
+      }
+    }
+  }
+  ${PageInfo}
 `

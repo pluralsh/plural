@@ -26,7 +26,7 @@ function UrlTab({ url, onClick }) {
       background={theme.dark ? 'card' : 'light-2'}
       round="xsmall"
       pad={{ vertical: '2px', horizontal: 'small' }}
-      hoverIndicator="background-light"
+      hoverIndicator="fill-one"
       onClick={onClick}
     >
       <Text

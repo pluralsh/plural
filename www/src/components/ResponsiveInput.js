@@ -7,7 +7,7 @@ function ResponsiveInput({ label, labelWidth, ...props }) {
         px={1}
         align="center"
         width={labelWidth}
-        backgroundColor="background-light"
+        backgroundColor="fill-one"
         borderTopLeftRadius={4}
         borderBottomLeftRadius={4}
       >

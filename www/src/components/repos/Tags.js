@@ -61,7 +61,7 @@ export function TagContainer({ enabled, children, gap, pad, onClick }) {
       border={border}
     >
       <Box
-        hoverIndicator="background-light"
+        hoverIndicator="fill-one"
         focusIndicator={false}
         direction="row"
         align="center"

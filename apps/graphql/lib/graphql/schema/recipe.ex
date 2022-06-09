@@ -76,6 +76,7 @@ defmodule GraphQl.Schema.Recipe do
     field :name,          non_null(:string)
     field :default,       :string
     field :documentation, :string
+    field :longform,      :string
     field :placeholder,   :string
     field :condition,     :recipe_condition_attributes
     field :validation,    :recipe_validation_attributes
@@ -160,6 +161,7 @@ defmodule GraphQl.Schema.Recipe do
     field :default,       :string
     field :documentation, :string
     field :placeholder,   :string
+    field :longform,      :string
     field :optional,      :boolean
     field :condition,     :recipe_condition
     field :validation,    :recipe_validation

@@ -15,7 +15,7 @@ export default function InstallCli() {
           color="text-light"
           marginBottom="large"
         >
-          Our <b>Quickstart (CLI)</b> documentation will bring you through the flow to get started on your local machine. After you’re done, move on to the next step to experience the rest of what Plural has to offer.
+          Our <strong>Quickstart (CLI)</strong> documentation will bring you through the flow to get started on your local machine. After you’re done, move on to the next step to experience the rest of what Plural has to offer.
         </P>
         <Button
           width="100%"

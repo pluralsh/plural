@@ -20,6 +20,7 @@ defmodule Core.Storage do
   @versions [:original]
   @extension_whitelist ~w(.jpg .jpeg .gif .png)
 
+  def validate({_, %User{trusted_icon: true}}), do: true
   def validate({file, %User{}}) do
     file_extension = file.file_name |> Path.extname |> String.downcase
     Enum.member?(@extension_whitelist, file_extension)

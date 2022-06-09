@@ -40,6 +40,7 @@ defmodule Core.Schema.User do
     field :phone,           :string
     field :external_id,     :string
     field :demo_count,      :integer, default: 0
+    field :trusted_icon,    :boolean, default: false, virtual: true
 
     field :email_confirmed,  :boolean, default: false
     field :email_confirm_by, :utc_datetime_usec
@@ -131,7 +132,7 @@ defmodule Core.Schema.User do
   def ordered(query \\ __MODULE__, order \\ [asc: :name]),
     do: from(p in query, order_by: ^order)
 
-  @valid ~w(name email password phone login_method demoed demo_count)a
+  @valid ~w(name email password phone login_method demoed demo_count trusted_icon)a
 
   def changeset(model, attrs \\ %{}) do
     model

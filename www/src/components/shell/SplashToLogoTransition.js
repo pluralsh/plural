@@ -1,8 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Div, Flex, H2 } from 'honorable'
+import { Div, Flex, H2, Img } from 'honorable'
 import { CSSTransition, Transition } from 'react-transition-group'
-
-import { LoopingLogo } from '../utils/AnimatedLogo'
 
 const logoSizeBig = 48
 const logoSizeSmall = 40
@@ -30,13 +28,13 @@ const logoTranslateTransition = {
   
 const logoScaleTransition = {
   '&, .enter &, .enter-active &, .enter-done &, .exit &': {
-    transform: `scale(0.${logoSizeBig})`,
+    transform: `scale(${logoSizeBig / logoSizeSmall})`,
   },
   '.exit-active &': {
     transition: 'all 0.6s cubic-bezier(0.5, 0, 0.5, 1)',
   },
   '.exit-active &, .exit-done &': {
-    transform: `scale(0.${logoSizeSmall})`,
+    transform: 'scale(1)',
   },
 }
   
@@ -115,13 +113,11 @@ function LogoOnly({ children }) {
           <Div
             width={logoSizeSmall}
             height={logoSizeSmall}
-            transform={`scale(0.${logoSizeSmall})`}
           >
-            <LoopingLogo
-              light
-              still
-              height={logoSizeSmall}
-              scale={1}
+            <Img
+              display="block"
+              width="100%"
+              src="/plural-logo-white.svg"
             />
           </Div>
         </Flex>
@@ -146,9 +142,7 @@ export function LogoAndSplash({ splashTimeout = 1200, childIsReady = false, chil
     () => (!childIsReady || !splashTimerDone),
     [childIsReady, splashTimerDone]
   )
-  
-  const logoSize = showSplashScreen ? logoSizeBig : logoSizeSmall
-  
+
   return (
     <>
       <CSSTransition
@@ -169,13 +163,12 @@ export function LogoAndSplash({ splashTimeout = 1200, childIsReady = false, chil
             <Div
               width={logoSizeSmall}
               height={logoSizeSmall}
-              transform={`scale(0.${logoSize})`}
               {...logoScaleTransition}
             >
-              <LoopingLogo
-                light
-                still
-                scale={1}
+              <Img
+                display="block"
+                width="100%"
+                src="/plural-logo-white.svg"
               />
             </Div>
           </Flex>

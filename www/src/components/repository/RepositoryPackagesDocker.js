@@ -30,7 +30,7 @@ function DockerRepository({ dockerRepository }) {
       color="text"
       textDecoration="none"
       align="center"
-      hoverIndicator="background-light"
+      hoverIndicator="fill-one"
       borderRadius={4}
     >
       <Img

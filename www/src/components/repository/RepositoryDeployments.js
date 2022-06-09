@@ -15,7 +15,7 @@ import { DEPLOYMENTS_QUERY } from './queries'
 const MAX_UUID = 0xffffffffffffffffffffffffffffffff
 
 const statusToColor = {
-  QUEUED: 'background-light',
+  QUEUED: 'fill-one',
   RUNNING: 'warning',
   FINISHED: 'success',
 }

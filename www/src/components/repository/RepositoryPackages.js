@@ -4,7 +4,7 @@ import { Div, Flex, H2 } from 'honorable'
 function RepositoryPackagesTab({ to, label, active }) {
   const hoverStyle = {
     '&:hover': {
-      backgroundColor: 'background-light',
+      backgroundColor: 'fill-one',
     },
   }
 

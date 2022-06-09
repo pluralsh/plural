@@ -24,7 +24,7 @@ function ArtifactIcon({ Icon, tooltip, ...props }) {
         align="center"
         justify="center"
         p={0.5}
-        hoverIndicator="background-light"
+        hoverIndicator="fill-one"
         borderRadius={1000}
         cursor="pointer"
         {...props}

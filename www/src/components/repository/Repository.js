@@ -1,8 +1,7 @@
 import { useQuery } from '@apollo/client'
 import { Link, Outlet, useLocation, useParams } from 'react-router-dom'
 import { Div, Flex } from 'honorable'
-
-import { Divider } from 'pluralsh-design-system'
+import { Divider, Tab } from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 
@@ -13,35 +12,6 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 import RepositoryHeader from './RepositoryHeader'
 
 import { REPOSITORY_QUERY } from './queries'
-
-function Tab({ to, label, active }) {
-  const hoverStyle = {
-    '&:hover': {
-      color: 'text',
-      backgroundColor: 'background-light',
-    },
-  }
-
-  return (
-    <Div
-      as={Link}
-      to={to}
-      px={1}
-      py={0.5}
-      mb={0.5}
-      display="block"
-      borderRadius={4}
-      fontWeight={600}
-      textDecoration="none"
-      color={active ? 'text' : 'text-light'}
-      backgroundColor={active ? 'background-light' : 'transparent'}
-      transition="all 150ms ease"
-      {...hoverStyle}
-    >
-      {label}
-    </Div>
-  )
-}
 
 function Repository() {
   const { id } = useParams()
@@ -60,7 +30,10 @@ function Repository() {
   if (!data) {
     return (
       <Flex
-        pt={12}
+        // These mp values are to align the looping logo with the previous looping logo.
+        // Reload the page on /repository/foo to see it in action.
+        pt={24.25}
+        ml={-5}
         align="center"
         justify="center"
       >
@@ -84,54 +57,101 @@ function Repository() {
           flexGrow={1}
           height={0}
         >
-          <Div
+          <Flex
             px={2}
-            pt={1}
+            py={1}
             width={128 + 64 + 32 - 16}
             flexShrink={0}
-            borderRight="1px  solid border"
+            direction="column"
           >
-            <Tab
-              label="Description"
+            <Div
+              pt={1}
+              borderRight="1px solid border"
+            />
+            <Link
               to={`/repository/${id}`}
-              active={pathname === `/repository/${id}`}
-            />
-            <Tab
-              label="Packages"
-              to={`/repository/${id}/packages`}
-              active={pathname.startsWith(`/repository/${id}/packages`)}
-            />
-            <Tab
-              label="Tests"
-              to={`/repository/${id}/tests`}
-              active={pathname.startsWith(`/repository/${id}/tests`)}
-            />
-            <Tab
-              label="Deployments"
-              to={`/repository/${id}/deployments`}
-              active={pathname.startsWith(`/repository/${id}/deployments`)}
-            />
-            {repository?.artifacts?.length > 0 && (
+              style={{ textDecoration: 'none' }}
+            >
               <Tab
-                label="Artifacts"
+                vertical
+                active={pathname === `/repository/${id}`}
+                textDecoration="none"
+              >
+                Description
+              </Tab>
+            </Link>
+            <Link
+              to={`/repository/${id}/packages`}
+              style={{ textDecoration: 'none' }}
+            >
+
+              <Tab
+                vertical
+                active={pathname.startsWith(`/repository/${id}/packages`)}
+                textDecoration="none"
+              >
+                Packages
+              </Tab>
+            </Link>
+            <Link
+              to={`/repository/${id}/tests`}
+              style={{ textDecoration: 'none' }}
+            >
+
+              <Tab
+                vertical
+                active={pathname.startsWith(`/repository/${id}/tests`)}
+                textDecoration="none"
+              >
+                Tests
+              </Tab>
+            </Link>
+            <Link
+              to={`/repository/${id}/deployments`}
+              style={{ textDecoration: 'none' }}
+            >
+
+              <Tab
+                vertical
+                active={pathname.startsWith(`/repository/${id}/deployments`)}
+                textDecoration="none"
+              >
+                Deployments
+              </Tab>
+            </Link>
+            {repository?.artifacts?.length > 0 && (
+              <Link
                 to={`/repository/${id}/artifacts`}
-                active={pathname.startsWith(`/repository/${id}/artifacts`)}
-              />
+                style={{ textDecoration: 'none' }}
+              >
+                <Tab
+                  vertical
+                  active={pathname.startsWith(`/repository/${id}/artifacts`)}
+                  textDecoration="none"
+                >
+                  Artifacts
+                </Tab>
+              </Link>
             )}
             {!!repository.editable && (
-              <>
-                <Divider
-                  mb={0.5}
-                  text="Admin"
-                />
+              <Link
+                to={`/repository/${id}/edit`}
+                style={{ textDecoration: 'none' }}
+              >
                 <Tab
-                  label="Edit"
-                  to={`/repository/${id}/edit`}
+                  vertical
                   active={pathname.startsWith(`/repository/${id}/edit`)}
-                />
-              </>
+                  textDecoration="none"
+                >
+                  Edit
+                </Tab>
+              </Link>
             )}
-          </Div>
+            <Div
+              flexGrow={1}
+              borderRight="1px solid border"
+            />
+          </Flex>
           <Div
             flexGrow={1}
             pt={1.5}

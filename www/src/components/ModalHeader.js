@@ -21,7 +21,7 @@ export function ModalHeader({ text, setOpen }) {
           justify="center"
           width="2rem"
           height="2rem"
-          hoverIndicator="background-light"
+          hoverIndicator="fill-one"
           onClick={() => setOpen(false)}
           borderRadius="50%"
           cursor="pointer"

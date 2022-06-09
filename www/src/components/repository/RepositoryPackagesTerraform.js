@@ -38,7 +38,7 @@ function Terraform({ terraform }) {
       color="text"
       textDecoration="none"
       align="center"
-      hoverIndicator="background-light"
+      hoverIndicator="fill-one"
       borderRadius={4}
     >
       <Img

@@ -4,7 +4,7 @@ import { Divider } from 'pluralsh-design-system'
 import { useApolloClient, useLazyQuery, useMutation, useQuery } from '@apollo/client'
 import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
 import queryString from 'query-string'
-import { Button, Flex, Input } from 'honorable'
+import { Button, Flex, Icon, Input } from 'honorable'
 
 import { fetchToken, setToken } from '../../helpers/authentication'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
@@ -43,6 +43,7 @@ export function LabelledInput({ label, value, onChange, placeholder, width, type
         </Box>
       </Box>
       <Input
+        width="100%"
         name={label}
         type={type}
         value={value || ''}
@@ -65,7 +66,7 @@ export function LoginPortal({ children, ...props }) {
         justify="center"
         width="40%"
         height="100%"
-        background="darken(background, 2)"
+        background="fill-one"
       >
         <img
           src={PLURAL_ICON}
@@ -343,29 +344,27 @@ const WIDTH = '350px'
 const providerToName = {
   github: 'GitHub',
   google: 'Google',
+  gitlab: 'GitLab',
 }
 
 function OAuthOption({ url: { authorizeUrl, provider } }) {
   const icon = METHOD_ICONS[provider]
 
   return (
-    <Box
-      border
-      round="xsmall"
-      align="center"
-      justify="center"
-      direction="row"
-      gap="small"
-      fill="horizontal"
-      pad={{ vertical: '7px' }}
-      hoverIndicator="fill-one"
+    <Button
+      secondary
+      width="100%"
       onClick={() => {
         window.location = authorizeUrl
       }}
     >
-      {createElement(icon, { size: 'medium', color: provider.toLowerCase() === 'github' ? 'white' : 'plain' })}
-      <Text size="small">Sign up with {providerToName[provider.toLowerCase()]}</Text>
-    </Box>
+      <Flex align="center">
+        <Icon mr={0.5}>
+          {createElement(icon, { size: 'medium', color: provider.toLowerCase() === 'github' ? 'white' : 'plain' })}
+        </Icon>
+        Sign up with {providerToName[provider.toLowerCase()]}
+      </Flex>
+    </Button>
   )
 }
 
@@ -412,6 +411,7 @@ export function Signup() {
           <Text size="medium">Sign up to get started with plural</Text>
         </Box>
         <Box
+          margin={{ vertical: 'small' }}
           gap="xsmall"
           justify="center"
         >
@@ -488,7 +488,7 @@ export function Signup() {
                   reason={reason}
                 />
                 <Button
-                  secondary
+                  primary
                   disabled={disabled}
                   loading={loading}
                   onClick={mutation}
@@ -500,6 +500,7 @@ export function Signup() {
           </Form>
         </Keyboard>
         <Box
+          margin={{ top: 'small' }}
           fill="horizontal"
           align="center"
           justify="center"

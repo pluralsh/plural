@@ -64,7 +64,7 @@ function FileInput({ updateCreds, gcp, setProject }) {
       display="flex"
       direction="column"
       position="relative"
-      minHeight="200px"
+      minHeight={200}
       flex="1 1 100%"
       padding="xxlarge"
       alignItems="center"
@@ -79,7 +79,7 @@ function FileInput({ updateCreds, gcp, setProject }) {
         body1
         bold
         marginTop="medium"
-        maxWidth="230px"
+        maxWidth={230}
       >
         Drop your service account credentials here
       </Text>

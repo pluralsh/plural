@@ -6,11 +6,7 @@ import ApplicationLayout from './layout/ApplicationLayout'
 import BreadcrumbProvider from './Breadcrumbs'
 import Chart from './repos/Chart'
 import EditUser from './users/EditUser'
-import Invoices from './payments/Invoices'
 import Marketplace from './marketplace/Marketplace'
-import MyPublisher from './publisher/MyPublisher'
-import Publisher from './publisher/Publisher'
-import Publishers from './publisher/Publishers'
 import Repository from './repository/Repository'
 import RepositoryArtifacts from './repository/RepositoryArtifacts'
 import RepositoryDeployments from './repository/RepositoryDeployments'
@@ -23,7 +19,6 @@ import RepositoryPackagesTerraform from './repository/RepositoryPackagesTerrafor
 import RepositoryTests from './repository/RepositoryTests'
 import Terraform from './repos/Terraform'
 import { Audits } from './accounts/Audits'
-import { Billing } from './users/Billing'
 import { CloudShell, OAuthCallback } from './shell/CloudShell'
 import { CurrentUserContext, PluralConfigurationContext, PluralProvider } from './login/CurrentUser'
 import { DeviceLoginNotif } from './users/DeviceLoginNotif'
@@ -63,11 +58,11 @@ function WrapStripe({ children }) {
 function OAuthOrFallback() {
   const me = useContext(CurrentUserContext)
   const shellOAuthMatch = useMatch('/oauth/callback/:provider/shell')
-  
+
   if (shellOAuthMatch) {
     return <OAuthCallback provider={shellOAuthMatch.params.provider} />
   }
- 
+
   return (
     <Navigate
       shellOAuthMatch={shellOAuthMatch}
@@ -208,23 +203,6 @@ export function PluralInner() {
               path="/account/billing/:section"
               element={<EditBilling />}
             />
-            {/* --- PUBLISHER --- */}
-            <Route
-              path="/publishers/mine/:editing"
-              element={<MyPublisher />}
-            />
-            <Route
-              path="/publishers/:id/:editing"
-              element={<MyPublisher />}
-            />
-            <Route
-              path="/publishers/:publisherId"
-              element={<Publisher />}
-            />
-            <Route
-              path="/publishers"
-              element={<Publishers />}
-            />
             {/* --- USER --- */}
             <Route
               exact
@@ -234,14 +212,6 @@ export function PluralInner() {
             <Route
               path="/user/edit/:editing"
               element={<EditUser />}
-            />
-            <Route
-              path="/billing/:section"
-              element={<Billing />}
-            />
-            <Route
-              path="/user/invoices/:subscriptionId"
-              element={<Invoices />}
             />
             {/* --- AUDITS --- */}
             <Route

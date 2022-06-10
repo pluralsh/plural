@@ -45,6 +45,11 @@ function SidebarWrapper() {
       Icon: InstalledIcon,
       url: '/installed',
     },
+    // {
+    //   name: 'Cloud Shell',
+    //   Icon: ,
+    //   url: '/installed',
+    // },
     {
       name: 'Account',
       Icon: PeopleIcon,

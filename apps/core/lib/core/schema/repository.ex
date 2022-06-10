@@ -79,6 +79,13 @@ defmodule Core.Schema.Repository do
     end
   end
 
+  defimpl Jason.Encoder, for: __MODULE__.License do
+    def encode(struct, opts) do
+      Piazza.Ecto.Schema.mapify(struct)
+      |> Jason.Encode.map(opts)
+    end
+  end
+
   def for_category(query \\ __MODULE__, category) do
     from(r in query, where: r.category == ^category)
   end

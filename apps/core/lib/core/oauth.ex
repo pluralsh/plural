@@ -12,7 +12,7 @@ defmodule Core.OAuth do
     client = strategy.get_token!(redirect, code)
 
     with {:ok, result} <- strategy.get_user(client),
-      do: Core.Services.Users.bootstrap_user(strat, result)
+      do: Core.Services.Users.bootstrap_user(strat, Map.put(result, :trusted_icon, true))
   end
 
   def strategy(:github), do: Core.OAuth.Github

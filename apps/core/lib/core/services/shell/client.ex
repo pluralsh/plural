@@ -22,9 +22,11 @@ defmodule Core.Shell.Client do
   end
 
   def request(%CloudShell{user: user} = shell) do
+    %{demo: dem} = Core.Repo.preload(shell, [:demo])
     with {:ok, token} <- Core.Services.Users.access_token(user) do
       Piazza.Ecto.Schema.mapify(shell)
       |> Map.put(:user, %{name: user.name, email: user.email, access_token: token.token})
+      |> Map.put(:is_demo, !!dem)
       |> ok()
     end
   end

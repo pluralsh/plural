@@ -16,6 +16,7 @@ import {
   MarketPlusIcon,
   PeopleIcon,
   PersonIcon,
+  TerminalIcon,
   UpdatesIcon,
 } from 'pluralsh-design-system'
 
@@ -45,11 +46,11 @@ function SidebarWrapper() {
       Icon: InstalledIcon,
       url: '/installed',
     },
-    // {
-    //   name: 'Cloud Shell',
-    //   Icon: ,
-    //   url: '/installed',
-    // },
+    {
+      name: 'Cloud Shell',
+      Icon: TerminalIcon,
+      url: '/shell',
+    },
     {
       name: 'Account',
       Icon: PeopleIcon,

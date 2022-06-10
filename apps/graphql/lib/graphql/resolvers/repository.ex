@@ -36,6 +36,13 @@ defmodule GraphQl.Resolvers.Repository do
 
   def accessible(repo, user), do: Core.Policies.Repository.allow(repo, user, :access)
 
+  def editable(repo, user) do
+    case Core.Policies.Repository.can?(user, repo, :edit) do
+      {:error, _} -> {:ok, false}
+      _ -> {:ok, true}
+    end
+  end
+
   def resolve_repository(%{id: repo_id}, %{context: %{current_user: user}}) do
     Repositories.get_repository!(repo_id)
     |> preload()
@@ -136,13 +143,6 @@ defmodule GraphQl.Resolvers.Repository do
   defp maybe_filter_type(query, %{type: type}) when is_binary(type),
     do: Integration.for_type(query, type)
   defp maybe_filter_type(query, _), do: query
-
-  def editable(repo, user) do
-    case Core.Policies.Repository.can?(user, repo, :edit) do
-      {:error, _} -> {:ok, false}
-      _ -> {:ok, true}
-    end
-  end
 
   def protected_field(repo, user, field) do
     case Core.Policies.Repository.can?(user, repo, :edit) do

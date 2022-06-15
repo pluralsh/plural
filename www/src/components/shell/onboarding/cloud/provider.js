@@ -4,7 +4,7 @@ import { Radio } from 'pluralsh-design-system'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'
 
-import { CardButton } from '../../CloudShell'
+import OnboardingCardButton from '../OnboardingCardButton'
 
 import { AWS_VALIDATIONS, AwsForm, awsSynopsis } from './aws'
 import { GCP_VALIDATIONS, GcpForm, gcpSynopsis } from './gcp'
@@ -33,7 +33,7 @@ export const synopsis = ({ provider, ...rest }) => {
 
 export function CloudOption({ providerLogo, header, description, selected, ...props }) {
   return (
-    <CardButton
+    <OnboardingCardButton
       position="relative"
       selected={selected}
       {...props}
@@ -59,7 +59,7 @@ export function CloudOption({ providerLogo, header, description, selected, ...pr
       >
         {description}
       </Text>
-    </CardButton>
+    </OnboardingCardButton>
   )
 }
 

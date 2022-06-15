@@ -6,8 +6,9 @@ import { Button, FormField } from 'pluralsh-design-system'
 import CreateShellContext from '../../../../contexts/CreateShellContext'
 
 import { CLOUDS } from '../../constants'
-import { NavSection, OnboardingCard } from '../../CloudShell'
+import OnboardingNavSection from '../OnboardingNavSection'
 import { Exceptions } from '../../validation'
+import OnboardingCard from '../OnboardingCard'
 
 import { ProviderForms } from './provider'
 
@@ -60,7 +61,7 @@ export function CloudCredentials({ doSetPath }) {
         {exceptions && <Exceptions exceptions={exceptions} />}
       </OnboardingCard>
       {/* Navigation */}
-      <NavSection>
+      <OnboardingNavSection>
         <Button
           secondary
           onClick={() => {
@@ -76,7 +77,7 @@ export function CloudCredentials({ doSetPath }) {
           }}
         >Continue
         </Button>
-      </NavSection>
+      </OnboardingNavSection>
     </>
   )
 

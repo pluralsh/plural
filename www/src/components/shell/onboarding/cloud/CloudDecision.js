@@ -5,7 +5,9 @@ import { Button, CloudIcon } from 'pluralsh-design-system'
 import CreateShellContext from '../../../../contexts/CreateShellContext'
 
 import { SECTION_INSTALL_CLI } from '../../constants'
-import { NavSection, OnboardingCard } from '../../CloudShell'
+import OnboardingNavSection from '../OnboardingNavSection'
+
+import OnboardingCard from '../OnboardingCard'
 
 import { ChooseAShell, CloudOption } from './provider'
 
@@ -68,7 +70,7 @@ export function CloudDecision({ doSetPath }) {
         )}
       </OnboardingCard>
       {/* Navigation */}
-      <NavSection>
+      <OnboardingNavSection>
         <Button
           secondary
           onClick={() => {
@@ -89,7 +91,7 @@ export function CloudDecision({ doSetPath }) {
           }}
         >Continue
         </Button>
-      </NavSection>
+      </OnboardingNavSection>
     </>
   )
 }

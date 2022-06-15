@@ -4,7 +4,9 @@ import { ArrowTopRightIcon, Button } from 'pluralsh-design-system'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'
 
-import { NavSection, OnboardingCard } from '../../CloudShell'
+import OnboardingNavSection from '../OnboardingNavSection'
+
+import OnboardingCard from '../OnboardingCard'
 
 export default function InstallCli() {
   const { previous, next } = useContext(CreateShellContext)
@@ -30,7 +32,7 @@ export default function InstallCli() {
           Read the documentation
         </Button>
       </OnboardingCard>
-      <NavSection>
+      <OnboardingNavSection>
         <Button
           secondary
           onClick={() => previous()}
@@ -42,7 +44,7 @@ export default function InstallCli() {
           onClick={() => next()}
         >Continue
         </Button>
-      </NavSection>
+      </OnboardingNavSection>
     </>
   )
 }

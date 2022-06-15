@@ -1,3 +1,10 @@
+// START <<Remove this after dev>>
+export const DEBUG_SCM_TOKENS = {
+  GITLAB: '',
+  GITHUB: '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',
+}
+// END <<Remove this after dev>>
+
 export const CLOUDS = ['AWS', 'GCP']
 
 export const SECTION_GIT = 'git'

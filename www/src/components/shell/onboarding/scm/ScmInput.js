@@ -5,8 +5,10 @@ import { Button, FormField } from 'pluralsh-design-system'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'
 
-import { NavSection, OnboardingCard } from '../../CloudShell'
+import OnboardingNavSection from '../OnboardingNavSection'
 import { Exceptions } from '../../validation'
+
+import OnboardingCard from '../OnboardingCard'
 
 import { GITHUB_VALIDATIONS, useGithubState } from './github'
 import { GITLAB_VALIDATIONS, useGitlabState } from './gitlab'
@@ -204,7 +206,7 @@ export function ScmSection() {
         <ScmInput />
         {exceptions && <Exceptions exceptions={exceptions} />}
       </OnboardingCard>
-      <NavSection>
+      <OnboardingNavSection>
         <Button
           secondary
           onClick={() => {
@@ -218,7 +220,7 @@ export function ScmSection() {
           onClick={() => next()}
         >Continue
         </Button>
-      </NavSection>
+      </OnboardingNavSection>
     </>
   )
 }

@@ -1,5 +1,6 @@
 import { Div } from 'honorable'
 
+// TODO place then in Design System
 export function Gitlab(props) {
   return (
     <Div
@@ -30,12 +31,12 @@ export function Gitlab(props) {
             d="M132.58,185.84A88.19,88.19,0,0,0,97.44,170l-.26.69a48.54,48.54,0,0,0,16.1,56.1l.09.07.24.17,39.82,29.82s17-12.85,36.57-27.64Z"
           />
         </g>
-  
+
       </svg>
     </Div>
   )
 }
-  
+
 export function Github(props) {
   return (
     <Div
@@ -82,7 +83,7 @@ export function Github(props) {
           d="M14.9033 33.0384C14.9331 33.1997 14.7675 33.3677 14.5291 33.4072C14.2906 33.4467 14.082 33.3512 14.0522 33.1931C14.0224 33.0351 14.1946 32.8638 14.4264 32.821C14.6582 32.7782 14.8735 32.877 14.9033 33.0384Z"
           fill="#E9ECF0"
         />
-  
+
       </svg>
     </Div>
   )

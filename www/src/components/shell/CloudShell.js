@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Box } from 'grommet'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useMutation, useQuery } from '@apollo/client'
-import { Alert, BrowserIcon, CloudIcon, GearTrainIcon, NetworkInterfaceIcon, StatusIpIcon, Stepper } from 'pluralsh-design-system'
+import { Alert, StatusIpIcon } from 'pluralsh-design-system'
 import { Button, Div, Flex, H2, P, Text } from 'honorable'
 
 import CreateShellContext from '../../contexts/CreateShellContext'
@@ -18,8 +18,8 @@ import { CLOUD_VALIDATIONS, ProviderForm, synopsis } from './onboarding/cloud/pr
 import { SCM_VALIDATIONS, ScmSection } from './onboarding/scm/ScmInput'
 import { Github as GithubLogo, Gitlab as GitlabLogo } from './icons'
 import InstallCli from './onboarding/cloud/InstallCli'
-import SplashToLogoTransition from './onboarding/SplashToLogoTransition'
 import { SECTIONS, SECTION_CLOUD, SECTION_FINISH, SECTION_GIT, SECTION_INSTALL_CLI, SECTION_WORKSPACE } from './constants'
+import OnboardingWrapper from './onboarding/OnboardingWrapper'
 
 // START <<Remove this after dev>>
 const DEBUG_SCM_TOKENS = {
@@ -159,7 +159,7 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider, authUrlData
   const [scm, setScm] = useState({ name: '', provider: scmProvider, token: accessToken })
   const [credentials, setCredentials] = useState({})
   const [workspace, setWorkspace] = useState({})
-  const [mutation, { loading, error: gqlError }] = useMutation(CREATE_SHELL, {
+  const [mutation, { error: gqlError }] = useMutation(CREATE_SHELL, {
     variables: { attributes: { credentials, workspace, scm, provider: providerName, demoId: demo && demo.id } },
     onCompleted: onCreate,
   })
@@ -322,39 +322,6 @@ export function OAuthCallback({ provider }) {
   )
 }
 
-function DemoStepper({ stepIndex = 0, ...props }) {
-  const steps = [
-    { key: SECTION_GIT, stepTitle: 'Create a repository', IconComponent: NetworkInterfaceIcon },
-    { key: SECTION_CLOUD, stepTitle: <>Choose a&nbsp;cloud</>, IconComponent: CloudIcon },
-    { key: SECTION_WORKSPACE, stepTitle: 'Configure repository', IconComponent: GearTrainIcon },
-    { key: SECTION_FINISH, stepTitle: <>Launch the&nbsp;app</>, IconComponent: BrowserIcon },
-  ]
-
-  return (
-    <Stepper
-      stepIndex={stepIndex}
-      steps={steps}
-      {...props}
-    />
-  )
-}
-
-function CliStepper({ stepIndex = 0, ...props }) {
-  const steps = [
-    { key: SECTION_GIT, stepTitle: 'Create a repository', IconComponent: NetworkInterfaceIcon },
-    { key: SECTION_INSTALL_CLI, stepTitle: <>Install CLI</>, IconComponent: CloudIcon },
-    { key: SECTION_FINISH, stepTitle: <>Launch the&nbsp;app</>, IconComponent: BrowserIcon },
-  ]
-
-  return (
-    <Stepper
-      stepIndex={stepIndex}
-      steps={steps}
-      {...props}
-    />
-  )
-}
-
 export function CardButton({ selected = false, children, ...props }) {
   const checkMark = (
     <Div
@@ -475,45 +442,6 @@ function CreateRepositoryCard({ data }) {
         ))}
       </Flex>
     </OnboardingCard>
-  )
-}
-
-export function OnboardingWrapper({ showSplashScreen = false, stepIndex = 0, childIsReady = true, children, cliMode = false }) {
-  return (
-    <Flex
-      width="100%"
-      direction="column"
-      alignItems="center"
-      marginTop="xxlarge"
-    >
-      <SplashToLogoTransition
-        showSplashScreen={showSplashScreen}
-        splashTimeout={1200}
-        childIsReady={childIsReady}
-      >
-        {childIsReady && (
-          <Div
-            position="relative"
-            width="100%"
-            maxWidth={640}
-            zIndex={0}
-            marginTop="xlarge"
-            paddingHorizontal="xlarge"
-          >
-            <Div
-              marginBottom="xxlarge"
-            >
-              {(
-                cliMode
-                  ? <CliStepper stepIndex={stepIndex} />
-                  : <DemoStepper stepIndex={stepIndex} />
-              )}
-            </Div>
-            {children}
-          </Div>
-        )}
-      </SplashToLogoTransition>
-    </Flex>
   )
 }
 

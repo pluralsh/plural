@@ -3,9 +3,11 @@ import { Box, Drop } from 'grommet'
 import { MenuItem, Select } from 'honorable'
 import { Button, FormField } from 'pluralsh-design-system'
 
-import { CLOUDS } from '../constants'
-import { CreateShellContext, NavSection, OnboardingCard } from '../CloudShell'
-import { Exceptions } from '../validation'
+import CreateShellContext from '../../../../contexts/CreateShellContext'
+
+import { CLOUDS } from '../../constants'
+import { NavSection, OnboardingCard } from '../../CloudShell'
+import { Exceptions } from '../../validation'
 
 import { ProviderForms } from './provider'
 

@@ -1,11 +1,12 @@
-import { A, Flex, Img, Input, MenuItem, P, Select, Text } from 'honorable'
-
-import { Button, FormField } from 'pluralsh-design-system'
 import { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { A, Flex, Img, Input, MenuItem, P, Select, Text } from 'honorable'
+import { Button, FormField } from 'pluralsh-design-system'
 
-import { CreateShellContext, OnboardingCard, NavSection } from '../CloudShell'
-import { Exceptions } from '../validation'
+import CreateShellContext from '../../../../contexts/CreateShellContext'
+
+import { NavSection, OnboardingCard } from '../../CloudShell'
+import { Exceptions } from '../../validation'
 
 import { GITHUB_VALIDATIONS, useGithubState } from './github'
 import { GITLAB_VALIDATIONS, useGitlabState } from './gitlab'

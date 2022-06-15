@@ -5,7 +5,7 @@ import { deepFetch } from '../../utils/graphql'
 
 export function validator(object, field, name, func) {
   const val = deepFetch(object, field)
-  
+
   if (!val) {
     if (typeof val === 'string') {
       return { ...stringExists(val), ...{ field: name } }
@@ -40,7 +40,6 @@ export function stringExists(val) {
 }
 
 export function isAlphanumeric(val) {
-  console.log(val)
   if (/^[a-zA-Z0-9-]+$/.test(val)) return null
 
   return { message: "may contain only letters, numbers, or '-'", type: 'alpha-numeric' }
@@ -58,7 +57,7 @@ export function isValidGitlabName(val) {
   } if (/[._-]{2}/.test(val)) {
     return { type: 'alpha-numeric', message: 'cannot contain consecutive special characters' }
   }
-  
+
   return null
   // "Path must not start or end with a special character and must not contain consecutive special characters."
 }
@@ -67,8 +66,8 @@ export function getExceptions(validations, object) {
   if (!validations) return { error: false }
 
   const allExceptions = validations
-                          .map(({ field, name, func }) => validator(object, field, name, func))
-                          .filter(v => !!v)
+    .map(({ field, name, func }) => validator(object, field, name, func))
+    .filter(v => !!v)
 
   return { error: allExceptions.length > 0, exceptions: allExceptions }
 }

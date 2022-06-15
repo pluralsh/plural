@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { MenuItem, Select } from 'honorable'
 import { FormField, Input } from 'pluralsh-design-system'
 
-import { stringExists } from '../validation'
+import { stringExists } from '../../validation'
 
 const REGIONS = [
   'us-east-1',
@@ -70,7 +70,7 @@ export function AwsForm({ credentials, setCredentials, workspace, setWorkspace }
           width="100%"
           value={aws.accessKeyId || ''}
           onChange={({ target: { value } }) => update('accessKeyId', value)}
-        />        
+        />
       </FormField>
       <FormField
         width="100%"

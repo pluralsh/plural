@@ -2,8 +2,10 @@ import { useContext, useState } from 'react'
 import { Flex, Img, P } from 'honorable'
 import { Button, CloudIcon } from 'pluralsh-design-system'
 
-import { SECTION_INSTALL_CLI } from '../constants'
-import { CreateShellContext, NavSection, OnboardingCard } from '../CloudShell'
+import CreateShellContext from '../../../../contexts/CreateShellContext'
+
+import { SECTION_INSTALL_CLI } from '../../constants'
+import { NavSection, OnboardingCard } from '../../CloudShell'
 
 import { ChooseAShell, CloudOption } from './provider'
 

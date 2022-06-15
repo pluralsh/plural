@@ -3,11 +3,11 @@ import { useMutation, useQuery } from '@apollo/client'
 
 import { Box, Text } from 'grommet'
 
-import { CREATE_DEMO_PROJECT, POLL_DEMO_PROJECT } from '../query'
-import { LoopingLogo } from '../../utils/AnimatedLogo'
-import { Status } from '../ShellStatus'
+import { CREATE_DEMO_PROJECT, POLL_DEMO_PROJECT } from '../../query'
+import { LoopingLogo } from '../../../utils/AnimatedLogo'
+import { Status } from '../../ShellStatus'
 
-import { GqlError } from '../../utils/Alert'
+import { GqlError } from '../../../utils/Alert'
 
 import { DemoStatus } from './types'
 

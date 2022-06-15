@@ -3,8 +3,8 @@ import { useCallback, useContext, useEffect } from 'react'
 import { Flex, MenuItem, Select, Text } from 'honorable'
 import { FileIcon, FormField } from 'pluralsh-design-system'
 
-import { AttachmentContext, AttachmentProvider, Dropzone } from '../../incidents/AttachmentProvider'
-import { isAlphanumeric, stringExists } from '../validation'
+import { AttachmentContext, AttachmentProvider, Dropzone } from '../../../incidents/AttachmentProvider'
+import { isAlphanumeric, stringExists } from '../../validation'
 
 const ZONES = [
   'asia-east1',

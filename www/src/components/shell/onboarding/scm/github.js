@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Octokit } from '@octokit/core'
 
-import { isAlphanumeric } from '../validation'
+import { isAlphanumeric } from '../../validation'
 
 export const GITHUB_VALIDATIONS = [
   { field: 'scm.name', name: 'repository', func: isAlphanumeric },
@@ -45,4 +45,3 @@ export function useGithubState({ scm, setScm, accessToken }) {
     doSetOrg,
   }
 }
-

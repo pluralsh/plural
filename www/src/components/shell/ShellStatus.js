@@ -65,7 +65,7 @@ export function Status({ name, state }) {
 }
 
 export function ShellStatus({ shell: { status } }) {
-  if (!status) return <LoopingLogo dark />
+  if (!status) return <LoopingLogo />
 
   return (
     <Box

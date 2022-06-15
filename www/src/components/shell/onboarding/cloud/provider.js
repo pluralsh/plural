@@ -1,9 +1,10 @@
 import { useCallback, useContext, useState } from 'react'
 import { Div, H2, P, RadioGroup, Text } from 'honorable'
-
 import { Radio } from 'pluralsh-design-system'
 
-import { CardButton, CreateShellContext } from '../CloudShell'
+import CreateShellContext from '../../../../contexts/CreateShellContext'
+
+import { CardButton } from '../../CloudShell'
 
 import { AWS_VALIDATIONS, AwsForm, awsSynopsis } from './aws'
 import { GCP_VALIDATIONS, GcpForm, gcpSynopsis } from './gcp'
@@ -30,7 +31,7 @@ export const synopsis = ({ provider, ...rest }) => {
   }
 }
 
-export function CloudOption({ providerLogo, header, description, selected, ...props }) {  
+export function CloudOption({ providerLogo, header, description, selected, ...props }) {
   return (
     <CardButton
       position="relative"
@@ -63,7 +64,6 @@ export function CloudOption({ providerLogo, header, description, selected, ...pr
 }
 
 export function ChooseAShell({ options, selected, setSelected }) {
-
   return (
     <Div
       width="100%"

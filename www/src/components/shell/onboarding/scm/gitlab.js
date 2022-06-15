@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Gitlab } from '@gitbeaker/browser'
 
-import { isValidGitlabName } from '../validation'
+import { isValidGitlabName } from '../../validation'
 
 export const GITLAB_VALIDATIONS = [
   { field: 'scm.name', name: 'repository', func: isValidGitlabName },
@@ -21,7 +21,7 @@ export function useGitlabState({ scm, setScm, accessToken }) {
 
     setOrg(org)
   }, [setScm, scm, setOrg])
-  
+
   useEffect(() => {
     const fetch = async () => {
       const groups = await client.Groups.all({ min_access_level: 30 })

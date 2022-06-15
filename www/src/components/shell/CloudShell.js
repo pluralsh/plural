@@ -1,36 +1,35 @@
-import { createContext, useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Box } from 'grommet'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useMutation, useQuery } from '@apollo/client'
 import { Alert, BrowserIcon, CloudIcon, GearTrainIcon, NetworkInterfaceIcon, StatusIpIcon, Stepper } from 'pluralsh-design-system'
 import { Button, Div, Flex, H2, P, Text } from 'honorable'
 
+import CreateShellContext from '../../contexts/CreateShellContext'
+
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
 import { AUTH_URLS, CLOUD_SHELL, CREATE_SHELL, REBOOT_SHELL, SCM_TOKEN } from './query'
-import { GITHUB_VALIDATIONS } from './scm/github'
+import { GITHUB_VALIDATIONS } from './onboarding/scm/github'
 import { WORKSPACE_VALIDATIONS, WorkspaceForm } from './WorkspaceForm'
 import { Terminal } from './Terminal'
 import { getExceptions } from './validation'
-import { CLOUD_VALIDATIONS, ProviderForm, synopsis } from './cloud/provider'
-import { SCM_VALIDATIONS, ScmSection } from './scm/ScmInput'
+import { CLOUD_VALIDATIONS, ProviderForm, synopsis } from './onboarding/cloud/provider'
+import { SCM_VALIDATIONS, ScmSection } from './onboarding/scm/ScmInput'
 import { Github as GithubLogo, Gitlab as GitlabLogo } from './icons'
-import InstallCli from './cloud/InstallCli'
-
-import SplashToLogoTransition from './SplashToLogoTransition'
+import InstallCli from './onboarding/cloud/InstallCli'
+import SplashToLogoTransition from './onboarding/SplashToLogoTransition'
 import { SECTIONS, SECTION_CLOUD, SECTION_FINISH, SECTION_GIT, SECTION_INSTALL_CLI, SECTION_WORKSPACE } from './constants'
 
 // START <<Remove this after dev>>
 const DEBUG_SCM_TOKENS = {
   GITLAB: '',
-  GITHUB: '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',
+  GITHUB: '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',
 }
 const VALIDATIONS = {
   [SECTION_GIT]: GITHUB_VALIDATIONS,
   [SECTION_WORKSPACE]: WORKSPACE_VALIDATIONS,
 }
-
-export const CreateShellContext = createContext()
 
 function SynopsisTable({ items, width }) {
   return (
@@ -303,7 +302,7 @@ export function OAuthCallback({ provider }) {
 
   if (!data) {
     return (
-      <LoopingLogo dark />
+      <LoopingLogo />
     )
   }
 

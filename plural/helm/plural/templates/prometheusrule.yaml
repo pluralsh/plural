@@ -62,3 +62,12 @@ spec:
       annotations:
         summary: plural postgres memory has gotten too high
         description: the memory utilization of your plural deployment's postgres db is higher than recommended
+    - alert: PluralShellHangs
+      expr: sum by (pod) (kube_pod_status_phase{phase="Pending",namespace="plrl-shell"})[5m:30s] > 1
+      for: 5m
+      labels:
+        severity: critical
+        namespace: {{ .Release.Namespace }}
+      annotations:
+        summary: count of hanging shell pods
+        description: if shells aren't starting there's probably something critical failing, ie a misconfigured docker image

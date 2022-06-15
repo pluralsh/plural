@@ -23,7 +23,7 @@ import { SECTIONS, SECTION_CLOUD, SECTION_FINISH, SECTION_GIT, SECTION_INSTALL_C
 // START <<Remove this after dev>>
 const DEBUG_SCM_TOKENS = {
   GITLAB: '',
-  GITHUB: '',
+  GITHUB: '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',
 }
 const VALIDATIONS = {
   [SECTION_GIT]: GITHUB_VALIDATIONS,
@@ -270,7 +270,7 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider, authUrlData
             <Alert
               severity="error"
               title="Failed to create shell"
-            >            
+            >
               {gqlError.graphQLErrors[0].message}
             </Alert>
           )}
@@ -519,20 +519,21 @@ export function DemoWrapper({ showSplashScreen = false, stepIndex = 0, childIsRe
 export function CloudShell() {
   const { data } = useQuery(AUTH_URLS)
   const { data: shellData } = useQuery(CLOUD_SHELL, { fetchPolicy: 'cache-and-network' })
-  const [mutation] = useMutation(REBOOT_SHELL)
+  const [rebootMutation] = useMutation(REBOOT_SHELL)
   const [created, setCreated] = useState(false)
 
   useEffect(() => {
     if (shellData && shellData.shell && !shellData.shell.alive) {
-      mutation()
+      rebootMutation()
       setCreated(true)
     }
-  }, [shellData, setCreated, mutation])
+  }, [shellData, rebootMutation])
 
   const ready = useMemo(
     () => (shellData && data),
     [shellData, data]
   )
+
   if ((shellData && shellData.shell) || created) return <Terminal />
 
   return (

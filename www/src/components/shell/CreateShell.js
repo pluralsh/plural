@@ -5,7 +5,7 @@ import { Div } from 'honorable'
 
 import CreateShellContext from '../../contexts/CreateShellContext'
 
-import { CREATE_SHELL } from './query'
+import { CREATE_SHELL_MUTATION } from './query'
 import { GITHUB_VALIDATIONS } from './onboarding/scm/github'
 import { WORKSPACE_VALIDATIONS, WorkspaceForm } from './WorkspaceForm'
 import { getExceptions } from './validation'
@@ -37,7 +37,7 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider, authUrlData
   const [scm, setScm] = useState({ name: '', provider: scmProvider, token: accessToken })
   const [credentials, setCredentials] = useState({})
   const [workspace, setWorkspace] = useState({})
-  const [mutation, { error: gqlError }] = useMutation(CREATE_SHELL, {
+  const [mutation, { error: gqlError }] = useMutation(CREATE_SHELL_MUTATION, {
     variables: { attributes: { credentials, workspace, scm, provider: providerName, demoId: demo && demo.id } },
     onCompleted: onCreate,
   })

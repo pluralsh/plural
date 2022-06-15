@@ -3,7 +3,7 @@ import { useMutation, useQuery } from '@apollo/client'
 
 import { Box, Text } from 'grommet'
 
-import { CREATE_DEMO_PROJECT, POLL_DEMO_PROJECT } from '../../query'
+import { CREATE_DEMO_PROJECT_MUTATION, POLL_DEMO_PROJECT_QUERY } from '../../query'
 import { LoopingLogo } from '../../../utils/AnimatedLogo'
 import { Status } from '../../ShellStatus'
 
@@ -12,7 +12,7 @@ import { GqlError } from '../../../utils/Alert'
 import { DemoStatus } from './types'
 
 function PollProject({ demo, setDemo, setProvider, workspace, setWorkspace, credentials, setCredentials, next }) {
-  const { data } = useQuery(POLL_DEMO_PROJECT, { variables: { id: demo.id }, pollInterval: 10000 })
+  const { data } = useQuery(POLL_DEMO_PROJECT_QUERY, { variables: { id: demo.id }, pollInterval: 10000 })
 
   useEffect(() => {
     if (!data) return
@@ -49,7 +49,7 @@ function PollProject({ demo, setDemo, setProvider, workspace, setWorkspace, cred
 }
 
 export function DemoProject({ setProvider, workspace, setWorkspace, credentials, setCredentials, next, setDemo }) {
-  const [mutation, { data, error }] = useMutation(CREATE_DEMO_PROJECT)
+  const [mutation, { data, error }] = useMutation(CREATE_DEMO_PROJECT_MUTATION)
 
   useEffect(() => {
     mutation()

@@ -14,7 +14,7 @@ import { ModalHeader } from '../ModalHeader'
 
 import { ShellStatus } from './ShellStatus'
 
-import { CLOUD_SHELL } from './query'
+import { CLOUD_SHELL_QUERY } from './query'
 import { ThemeSelector } from './ThemeSelector'
 import { normalizedThemes, savedTheme } from './themes'
 
@@ -223,7 +223,7 @@ function Information() {
 }
 
 export function Terminal() {
-  const { data } = useQuery(CLOUD_SHELL, { pollInterval: 5000, fetchPolicy: 'cache-and-network' })
+  const { data } = useQuery(CLOUD_SHELL_QUERY, { pollInterval: 5000, fetchPolicy: 'cache-and-network' })
 
   if (!data || !data.shell) return <LoopingLogo dark />
 

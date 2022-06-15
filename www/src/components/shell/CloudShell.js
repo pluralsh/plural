@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
 import { Div, Flex, P, Text } from 'honorable'
 
-import { AUTH_URLS, CLOUD_SHELL, REBOOT_SHELL } from './query'
+import { AUTHENTICATION_URLS_QUERY, CLOUD_SHELL_QUERY, REBOOT_SHELL_MUTATION } from './query'
 import { Terminal } from './Terminal'
 import { Github as GithubLogo, Gitlab as GitlabLogo } from './icons'
 import { DEBUG_SCM_TOKENS } from './constants'
@@ -70,9 +70,9 @@ function CreateRepositoryCard({ data }) {
 }
 
 function CloudShell() {
-  const { data } = useQuery(AUTH_URLS)
-  const { data: shellData } = useQuery(CLOUD_SHELL, { fetchPolicy: 'cache-and-network' })
-  const [rebootMutation] = useMutation(REBOOT_SHELL)
+  const { data } = useQuery(AUTHENTICATION_URLS_QUERY)
+  const { data: shellData } = useQuery(CLOUD_SHELL_QUERY, { fetchPolicy: 'cache-and-network' })
+  const [rebootMutation] = useMutation(REBOOT_SHELL_MUTATION)
   const [created, setCreated] = useState(false)
 
   useEffect(() => {

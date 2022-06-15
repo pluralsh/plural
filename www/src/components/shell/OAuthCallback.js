@@ -3,7 +3,7 @@ import { useQuery } from '@apollo/client'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
-import { AUTH_URLS, SCM_TOKEN } from './query'
+import { AUTHENTICATION_URLS_QUERY, SCM_TOKEN_QUERY } from './query'
 import { DEBUG_SCM_TOKENS } from './constants'
 
 import CreateShell from './CreateShell'
@@ -12,9 +12,9 @@ function OAuthCallback({ provider }) {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const { data: authUrlData } = useQuery(AUTH_URLS)
+  const { data: authUrlData } = useQuery(AUTHENTICATION_URLS_QUERY)
 
-  let { data } = useQuery(SCM_TOKEN, {
+  let { data } = useQuery(SCM_TOKEN_QUERY, {
     variables: {
       code: searchParams.get('code'),
       provider: provider.toUpperCase(),

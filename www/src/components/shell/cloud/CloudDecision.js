@@ -3,7 +3,7 @@ import { Flex, Img, P } from 'honorable'
 import { Button, CloudIcon } from 'pluralsh-design-system'
 
 import { SECTION_INSTALL_CLI } from '../constants'
-import { CreateShellContext, DemoCard, NavSection } from '../CloudShell'
+import { CreateShellContext, NavSection, OnboardingCard } from '../CloudShell'
 
 import { ChooseAShell, CloudOption } from './provider'
 
@@ -15,7 +15,7 @@ export function CloudDecision({ doSetPath }) {
 
   return (
     <>
-      <DemoCard title="Choose a cloud">
+      <OnboardingCard title="Choose a cloud">
         <P
           body1
           color="text-light"
@@ -64,7 +64,7 @@ export function CloudDecision({ doSetPath }) {
             }]}
           />
         )}
-      </DemoCard>
+      </OnboardingCard>
       {/* Navigation */}
       <NavSection>
         <Button

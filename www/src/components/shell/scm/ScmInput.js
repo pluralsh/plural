@@ -4,7 +4,7 @@ import { Button, FormField } from 'pluralsh-design-system'
 import { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { CreateShellContext, DemoCard, NavSection } from '../CloudShell'
+import { CreateShellContext, OnboardingCard, NavSection } from '../CloudShell'
 import { Exceptions } from '../validation'
 
 import { GITHUB_VALIDATIONS, useGithubState } from './github'
@@ -36,7 +36,7 @@ function OrgDisplay({ name, avatarUrl }) {
       <Text
         body1
       >{name}
-      </Text>        
+      </Text>
     </Flex>
   )
 }
@@ -94,7 +94,7 @@ function OrgInput({ org, orgs, doSetOrg }) {
       <Select
         width="100%"
         onChange={({ target: { value } }) => {
-          doSetOrg(value) 
+          doSetOrg(value)
         }}
         value={org || null}
       >
@@ -110,7 +110,7 @@ function RepositoryInput({ scmState }) {
   function setName(name) {
     setScm({ ...scm, name })
   }
-  
+
   const maxLen = 100
 
   return (
@@ -171,7 +171,7 @@ function GitlabRepositoryInput() {
 
 export function ScmInput() {
   const { scm: { provider: scmProvider } } = useContext(CreateShellContext)
-  
+
   if (scmProvider === Provider.GITHUB) {
     return (
       <GithubRepositoryInput />
@@ -192,7 +192,7 @@ export function ScmSection() {
 
   return (
     <>
-      <DemoCard>
+      <OnboardingCard>
         <P
           body1
           color="text-light"
@@ -202,7 +202,7 @@ export function ScmSection() {
         </P>
         <ScmInput />
         {exceptions && <Exceptions exceptions={exceptions} />}
-      </DemoCard>
+      </OnboardingCard>
       <NavSection>
         <Button
           secondary

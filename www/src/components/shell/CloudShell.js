@@ -207,7 +207,8 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider, authUrlData
     setSection,
     error,
     exceptions,
-  }), [scmProvider,
+  }), [
+    scmProvider,
     accessToken,
     scm,
     setScm,
@@ -224,11 +225,12 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider, authUrlData
     previous,
     setSection,
     error,
-    exceptions])
+    exceptions,
+  ])
 
   return (
     <CreateShellContext.Provider value={contextData}>
-      <DemoWrapper
+      <OnboardingWrapper
         stepIndex={stepIndex}
         cliMode={section === SECTION_INSTALL_CLI}
       >
@@ -275,7 +277,7 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider, authUrlData
             </Alert>
           )}
         </Div>
-      </DemoWrapper>
+      </OnboardingWrapper>
     </CreateShellContext.Provider>
   )
 }
@@ -299,10 +301,16 @@ export function OAuthCallback({ provider }) {
   }
   // END <<Remove this after dev>>
 
-  if (!data) return <LoopingLogo dark />
+  if (!data) {
+    return (
+      <LoopingLogo dark />
+    )
+  }
 
   if (!data.scmToken) {
     navigate('/shell')
+
+    return null
   }
 
   return (
@@ -349,7 +357,6 @@ function CliStepper({ stepIndex = 0, ...props }) {
 }
 
 export function CardButton({ selected = false, children, ...props }) {
-  const bounceEase = 'cubic-bezier(.37,1.4,.62,1)'
   const checkMark = (
     <Div
       position="absolute"
@@ -362,7 +369,7 @@ export function CardButton({ selected = false, children, ...props }) {
         color="action-link-inline"
         transform={selected ? 'scale(1)' : 'scale(0)'}
         opacity={selected ? 1 : 0}
-        transition={`all 0.2s ${bounceEase}`}
+        transition="all 0.2s cubic-bezier(.37,1.4,.62,1)"
       />
     </Div>
   )
@@ -379,8 +386,8 @@ export function CardButton({ selected = false, children, ...props }) {
       backgroundColor="fill-two"
       border="1px solid border-fill-two"
       borderColor={selected ? 'action-link-inline' : 'border-fill-two'}
-      _hover={{ background: 'fill-two-hover' }}
-      _active={{ background: 'fill-two-selected' }}
+      _hover={{ backgroundColor: 'fill-two-hover' }}
+      _active={{ backgroundColor: 'fill-two-selected' }}
       {...props}
     >
       {children}
@@ -389,7 +396,7 @@ export function CardButton({ selected = false, children, ...props }) {
   )
 }
 
-export function DemoCard({ children, title = '' }) {
+export function OnboardingCard({ children, title = '' }) {
   return (
     <Div
       width="100%"
@@ -399,7 +406,7 @@ export function DemoCard({ children, title = '' }) {
       padding="xlarge"
       paddingTop="medium"
     >
-      {title && (
+      {!!title && (
         <H2
           overline
           color="text-xlight"
@@ -414,77 +421,70 @@ export function DemoCard({ children, title = '' }) {
   )
 }
 
-function CreateARepoCard({ data }) {
-  const urls = data?.scmAuthorization
+const providerToLogo = {
+  github: <GithubLogo />,
+  gitlab: <GitlabLogo />,
+}
 
+const providerToDisplayName = {
+  github: 'GitHub',
+  gitlab: 'GitLab',
+}
+
+function CreateRepositoryCard({ data }) {
   return (
-    <DemoCard title="Create a repository">
+    <OnboardingCard title="Create a repository">
       <P
         body1
         color="text-light"
         marginBottom="medium"
       >
-        We use GitOps to manage your application’s state. Use one of the following providers to get started.
+        We use GitOps to manage your application's state. Use one of the following providers to get started.
       </P>
       <Flex mx={-1}>
-        {urls?.map(({ provider, url }) => {
-          let providerLogo = null
-          let providerName = provider.toLowerCase
-          switch (provider.toLowerCase()) {
-            case 'github':
-              providerName = 'GitHub'
-              providerLogo = <GithubLogo />
-              break
-            case 'gitlab':
-              providerName = 'Gitlab'
-              providerLogo = <GitlabLogo />
-              break
-          }
+        {data?.scmAuthorization?.map(({ provider, url }) => (
+          <CardButton
+            key={provider}
+            onClick={() => {
+              // START <<Remove this after dev>>
+              if (process.env.NODE_ENV !== 'production' && DEBUG_SCM_TOKENS[provider]) {
+                console.log('going to ', `/oauth/callback/${provider.toLowerCase()}/shell?code=abcd`)
+                window.location = `/oauth/callback/${provider.toLowerCase()}/shell?code=abcd`
 
-          return (
-            <CardButton
-              key={provider}
-              onClick={() => {
-                // START <<Remove this after dev>>
-                if (process.env.NODE_ENV !== 'production' && DEBUG_SCM_TOKENS[provider]) {
-                  console.log('going to ', `/oauth/callback/${provider.toLowerCase()}/shell?code=abcd`)
-                  window.location = `/oauth/callback/${provider.toLowerCase()}/shell?code=abcd`
+                return
+              }
+              // END <<Remove this after dev>>
 
-                  return
-                }
-                // END <<Remove this after dev>>
-
-                window.location = url
-              }}
+              window.location = url
+            }}
+          >
+            <Div
+              marginHorizontal="auto"
+              maxWidth={40}
+              maxHeight={40}
             >
-              <Div
-                marginHorizontal="auto"
-                maxWidth={40}
-                maxHeight={40}
-              >
-                { providerLogo }
-              </Div>
-              <Text
-                body1
-                bold
-                marginTop="medium"
-              >
-                Create a { providerName } repo
-              </Text>
-            </CardButton>
-          )
-        })}
+              {providerToLogo[provider.toLowerCase()] || null}
+            </Div>
+            <Text
+              body1
+              bold
+              marginTop="medium"
+            >
+              Create a {providerToDisplayName[provider.toLowerCase()] || null} repo
+            </Text>
+          </CardButton>
+        ))}
       </Flex>
-    </DemoCard>
+    </OnboardingCard>
   )
 }
 
-export function DemoWrapper({ showSplashScreen = false, stepIndex = 0, childIsReady = true, children, cliMode = false }) {
+export function OnboardingWrapper({ showSplashScreen = false, stepIndex = 0, childIsReady = true, children, cliMode = false }) {
   return (
     <Flex
       width="100%"
+      direction="column"
       alignItems="center"
-      flexDirection="column"
       marginTop="xxlarge"
     >
       <SplashToLogoTransition
@@ -495,18 +495,20 @@ export function DemoWrapper({ showSplashScreen = false, stepIndex = 0, childIsRe
         {childIsReady && (
           <Div
             position="relative"
-            zIndex="0"
             width="100%"
             maxWidth={640}
+            zIndex={0}
             marginTop="xlarge"
             paddingHorizontal="xlarge"
           >
             <Div
               marginBottom="xxlarge"
             >
-              {cliMode ?
-                <CliStepper stepIndex={stepIndex} /> :
-                <DemoStepper stepIndex={stepIndex} />}
+              {(
+                cliMode
+                  ? <CliStepper stepIndex={stepIndex} />
+                  : <DemoStepper stepIndex={stepIndex} />
+              )}
             </Div>
             {children}
           </Div>
@@ -534,15 +536,19 @@ export function CloudShell() {
     [shellData, data]
   )
 
-  if ((shellData && shellData.shell) || created) return <Terminal />
+  if ((shellData && shellData.shell) || created) {
+    return (
+      <Terminal />
+    )
+  }
 
   return (
-    <DemoWrapper
+    <OnboardingWrapper
       showSplashScreen
       stepIndex={0}
       childIsReady={ready}
     >
-      <CreateARepoCard data={data} />
-    </DemoWrapper>
+      <CreateRepositoryCard data={data} />
+    </OnboardingWrapper>
   )
 }

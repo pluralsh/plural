@@ -2,14 +2,14 @@ import { useContext } from 'react'
 import { P } from 'honorable'
 import { ArrowTopRightIcon, Button } from 'pluralsh-design-system'
 
-import { CreateShellContext, DemoCard, NavSection } from '../CloudShell'
+import { CreateShellContext, OnboardingCard, NavSection } from '../CloudShell'
 
 export default function InstallCli() {
   const { previous, next } = useContext(CreateShellContext)
 
   return (
     <>
-      <DemoCard title="Install Plural CLI">
+      <OnboardingCard title="Install Plural CLI">
         <P
           body1
           color="text-light"
@@ -26,7 +26,7 @@ export default function InstallCli() {
         >
           Read the documentation
         </Button>
-      </DemoCard>
+      </OnboardingCard>
       <NavSection>
         <Button
           secondary

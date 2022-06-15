@@ -4,7 +4,7 @@ import { MenuItem, Select } from 'honorable'
 import { Button, FormField } from 'pluralsh-design-system'
 
 import { CLOUDS } from '../constants'
-import { CreateShellContext, DemoCard, NavSection } from '../CloudShell'
+import { CreateShellContext, NavSection, OnboardingCard } from '../CloudShell'
 import { Exceptions } from '../validation'
 
 import { ProviderForms } from './provider'
@@ -19,7 +19,7 @@ export function CloudCredentials({ doSetPath }) {
 
   return (
     <>
-      <DemoCard title="Configure cloud credentials">
+      <OnboardingCard title="Configure cloud credentials">
         <FormField
           width="100%"
           marginTop="large"
@@ -56,7 +56,7 @@ export function CloudCredentials({ doSetPath }) {
           </Drop>
         )}
         {exceptions && <Exceptions exceptions={exceptions} />}
-      </DemoCard>
+      </OnboardingCard>
       {/* Navigation */}
       <NavSection>
         <Button

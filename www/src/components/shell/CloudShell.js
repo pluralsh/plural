@@ -60,7 +60,7 @@ function CreateRepositoryCard({ data }) {
               bold
               marginTop="medium"
             >
-              Create a {providerToDisplayName[provider.toLowerCase()] || null} repo
+              Create a {providerToDisplayName[provider.toLowerCase()] || null} repository
             </Text>
           </OnboardingCardButton>
         ))}

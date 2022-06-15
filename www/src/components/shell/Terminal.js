@@ -203,7 +203,7 @@ function Information() {
                 >
                   plural login && plural shell sync
                 </Code>
-                <Text size="small"><i>this will clone your repo locally, and sync all encryption keys needed to access it</i></Text>
+                <Text size="small"><i>this will clone your repository locally, and sync all encryption keys needed to access it</i></Text>
               </Box>
               <Box gap="small">
                 <Code
@@ -246,7 +246,7 @@ export function Terminal() {
       >
         <Text size="small">Here's a few commands to help you get going:</Text>
         <CommandDetails
-          command="plural repos list --query <repo-name>"
+          command="plural repos list --query <repository-name>"
           description="Searches for repositories to install (omit --query flag to list all)"
         />
         <CommandDetails

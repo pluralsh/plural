@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react'
-import { Div, Flex, P } from 'honorable'
-import { ArrowTopRightIcon, Button, Tab } from 'pluralsh-design-system'
+import { A, Div, Flex, P } from 'honorable'
+import { Button, Tab } from 'pluralsh-design-system'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'
 
@@ -10,7 +10,7 @@ import OnboardingNavSection from '../OnboardingNavSection'
 
 import OnboardingCard from '../OnboardingCard'
 
-export default function InstallCli() {
+function InstallCli() {
   const { previous, next } = useContext(CreateShellContext)
   const [tab, setTab] = useState(0)
 
@@ -68,7 +68,24 @@ export default function InstallCli() {
           </Tab>
         </Flex>
         <P marginTop="small">
-          Start by running this command in your local terminal:
+          {tab === 0 && 'Start by running this command in your local terminal:'}
+          {tab === 1 && (
+            <>
+              You can download the binaries attached to our&nbsp;
+              <A
+                // TODO - modify design-system to handle color
+                color="action-link-inline"
+                _visited={{ color: 'action-link-inline' }}
+                _hover={{ color: 'action-link-inline' }}
+                _active={{ color: 'action-link-inline' }}
+                href="https://github.com/pluralsh/plural-cli/releases"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                GitHub releases
+              </A>.
+            </>
+          )}
         </P>
         <CodeLine marginTop="small">
           {tab === 0 && 'brew install pluralsh/plural/plural'}
@@ -80,8 +97,10 @@ export default function InstallCli() {
           {tab === 0 && (
             <>
               The brew tap will install plural, alongside terraform, helm and kubectl for you.
-              If you've already installed any of those dependencies,
-              you can add <br /><strong>--without-helm, --without-terraform, or --without-kubectl</strong>.
+              <br />
+              If you've already installed any of those dependencies, you can add
+              <br />
+              <strong>--without-helm, --without-terraform, or --without-kubectl</strong>.
             </>
           )}
         </P>
@@ -94,7 +113,7 @@ export default function InstallCli() {
           Back
         </Button>
         <Button
-          secondary
+          primary
           onClick={() => next()}
         >
           Continue
@@ -103,3 +122,5 @@ export default function InstallCli() {
     </>
   )
 }
+
+export default InstallCli

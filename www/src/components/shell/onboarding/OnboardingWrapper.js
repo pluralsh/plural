@@ -45,6 +45,7 @@ function OnboardingWrapper({ showSplashScreen = false, stepIndex = 0, childIsRea
       direction="column"
       alignItems="center"
       marginTop="xxlarge"
+      overflowY="auto"
     >
       <SplashToLogoTransition
         showSplashScreen={showSplashScreen}

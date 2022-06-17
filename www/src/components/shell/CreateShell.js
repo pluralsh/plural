@@ -12,7 +12,8 @@ import { getExceptions } from './validation'
 import { CLOUD_VALIDATIONS, ProviderForm } from './onboarding/cloud/provider'
 import { SCM_VALIDATIONS, ScmSection } from './onboarding/scm/ScmInput'
 import InstallCli from './onboarding/cloud/InstallCli'
-import { SECTIONS, SECTION_CLOUD, SECTION_FINISH, SECTION_GIT, SECTION_INSTALL_CLI, SECTION_WORKSPACE } from './constants'
+import FinishCli from './onboarding/cloud/FinishCli'
+import { SECTIONS, SECTION_CLOUD, SECTION_FINISH, SECTION_FINISH_CLI, SECTION_GIT, SECTION_INSTALL_CLI, SECTION_WORKSPACE } from './constants'
 
 import OnboardingWrapper from './onboarding/OnboardingWrapper'
 import Header from './onboarding/OnboardingHeader'
@@ -109,7 +110,7 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider, authUrlData
     <CreateShellContext.Provider value={contextData}>
       <OnboardingWrapper
         stepIndex={stepIndex}
-        cliMode={section === SECTION_INSTALL_CLI}
+        cliMode={section === SECTION_INSTALL_CLI || section === SECTION_FINISH_CLI}
       >
         {section === SECTION_GIT && (
           <ScmSection />
@@ -119,6 +120,9 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider, authUrlData
         )}
         {section === SECTION_INSTALL_CLI && (
           <InstallCli />
+        )}
+        {section === SECTION_FINISH_CLI && (
+          <FinishCli />
         )}
         {section === SECTION_WORKSPACE && (
           <>

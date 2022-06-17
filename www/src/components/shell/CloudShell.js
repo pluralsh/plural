@@ -5,7 +5,7 @@ import { Div, Flex, P, Text } from 'honorable'
 import { AUTHENTICATION_URLS_QUERY, CLOUD_SHELL_QUERY, REBOOT_SHELL_MUTATION } from './query'
 import { Terminal } from './Terminal'
 import { Github as GithubLogo, Gitlab as GitlabLogo } from './icons'
-import { DEBUG_SCM_TOKENS } from './constants'
+import { DEBUG_SCM_TOKENS } from './debug-tokens'
 
 import OnboardingWrapper from './onboarding/OnboardingWrapper'
 import OnboardingCard from './onboarding/OnboardingCard'

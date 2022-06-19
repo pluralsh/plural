@@ -115,6 +115,11 @@ function InstallCli() {
               <strong>--without-helm, --without-terraform, or --without-kubectl</strong>.
             </>
           )}
+          {tab === 1 && (
+            <>
+              You will still need to ensure helm, terraform and kubectl are properly installed. // TODO with A
+            </>
+          )}
         </P>
       </OnboardingCard>
       <OnboardingNavSection>

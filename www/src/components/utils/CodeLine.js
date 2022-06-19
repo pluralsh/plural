@@ -36,7 +36,8 @@ function CodeLine({ children, ...props }) {
       >
         <Div
           flexGrow={1}
-          whiteSpace="nowrap"
+          whiteSpace="pre"
+          tabSize={4}
         >
           {children}
         </Div>

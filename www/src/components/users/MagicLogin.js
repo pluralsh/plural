@@ -4,7 +4,7 @@ import { Divider } from 'pluralsh-design-system'
 import { useApolloClient, useLazyQuery, useMutation, useQuery } from '@apollo/client'
 import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
 import queryString from 'query-string'
-import { Button, Flex, Icon, Input } from 'honorable'
+import { Article, Button, Div, Flex, H2, Icon, Img, Input, P, Svg } from 'honorable'
 
 import { fetchToken, setToken } from '../../helpers/authentication'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
@@ -54,39 +54,111 @@ export function LabelledInput({ label, value, onChange, placeholder, width, type
   )
 }
 
-export function LoginPortal({ children, ...props }) {
+export function LoginPortal({ children }) {
   return (
-    <Box
-      height="100vh"
-      fill="horizontal"
-      direction="row"
-    >
+    <Flex height="100vh">
+      {/* LEFT SIDE */}
       <Flex
+        direction="column"
         align="center"
         justify="center"
-        width="40%"
-        height="100%"
+        width={`${100 * 504 / (504 + 756)}%`}
         background="fill-one"
+        display-tablet="none"
       >
-        <img
-          src={PLURAL_ICON}
-          width={256}
-        />
+        <Div width={408}>
+          {/* LOGOTYPE */}
+          <Flex
+            align="center"
+            marginBottom="xxlarge"
+          >
+            <Img
+              src="/plural-white-cropped.png"
+              width={48}
+            />
+            <Img
+              src="/plural-white-word-cropped.png"
+              marginLeft="medium"
+              width={216}
+            />
+          </Flex>
+          {/* HIGHLIGHTS */}
+          <LoginHighlight
+            title="Built for the cloud."
+            marginBottom="xlarge"
+          >
+            Plural is optimized for you to bring your own cloud and run on top of Kubernetes with the ideal cluster distribution.
+          </LoginHighlight>
+          <LoginHighlight
+            title="Developer friendly."
+            marginBottom="xlarge"
+          >
+            Use our simple GitOps driven workflow for deploying and managing applications, and a centralized configuration in a single repo.
+          </LoginHighlight>
+          <LoginHighlight title="Batteries included.">
+            Baked-in observability, logging, auditing, and user auth.
+          </LoginHighlight>
+        </Div>
       </Flex>
-      <Box
-        style={{ overflow: 'auto' }}
-        fill
+      {/* RIGHT SIDE */}
+      <Flex
+        overflowY="auto"
         align="center"
         justify="center"
+        flexGrow={1}
       >
-        <Box
-          flex={false}
-          {...props}
-        >
+        <Div>
           {children}
-        </Box>
-      </Box>
-    </Box>
+        </Div>
+      </Flex>
+    </Flex>
+  )
+}
+
+function LoginHighlight({ title, children, ...props }) {
+  return (
+    <Flex
+      align="flex-start"
+      {...props}
+    >
+      <Svg
+        width={32}
+        viewBox="0 0 32 32"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        flexShrink={0}
+        marginTop={2} // Not in the specs but needed somehow
+      >
+        <path
+          d="M16 0C7.2 0 0 7.2 0 16C0 24.8 7.2 32 16 32C24.8 32 32 24.8 32 16C32 7.2 24.8 0 16 0ZM13.8 24L7.4 17.6L9.2 15.8L13.6 20.2L22.6 8.8L24.6 10.4L13.8 24Z"
+          fill="url(#paint0_linear_40_560)"
+        />
+        <defs>
+          <linearGradient
+            id="paint0_linear_40_560"
+            x1="2.98023e-08"
+            y1="0.5"
+            x2="32"
+            y2="32.5"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop stopColor="#293EFF" />
+            <stop
+              offset="1"
+              stopColor="#29A9FF"
+            />
+          </linearGradient>
+        </defs>
+      </Svg>
+      <Article marginLeft="medium">
+        <H2 title1>
+          {title}
+        </H2>
+        <P>
+          {children}
+        </P>
+      </Article>
+    </Flex>
   )
 }
 

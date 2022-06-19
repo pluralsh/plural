@@ -20,12 +20,13 @@ defmodule Core.Shell.ClientTest do
 
   describe "#request/1" do
     test "it will construct a complete setup request" do
-      shell = insert(:cloud_shell)
+      shell = insert(:cloud_shell, demo: build(:demo_project))
 
       {:ok, req} = Client.request(shell)
-
       {:ok, token} = Core.Services.Users.access_token(shell.user)
+
       assert req.user.access_token == token.token
+      assert req.is_demo
     end
   end
 end

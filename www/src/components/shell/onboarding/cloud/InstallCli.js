@@ -84,12 +84,24 @@ function InstallCli() {
               >
                 GitHub releases
               </A>.
+              <br />
+              For example, you can download v0.2.57 for Darwin arm64 via:
             </>
           )}
         </P>
         <CodeLine marginTop="small">
           {tab === 0 && 'brew install pluralsh/plural/plural'}
-          {tab === 1 && 'brew install pluralsh/plural/plural'}
+          {tab === 1 && (
+            <>
+              curl -L -o plural.tgz 'https://github.com/pluralsh/plural-cli/releases/download/v0.2.57/plural-cli_0.2.57_Darwin_arm64.tar.gz'
+              <br />
+              tar -xvf plural.tgz
+              <br />
+              chmod +x plural
+              <br />
+              mv plural /usr/local/bin/plural
+            </>
+          )}
           {tab === 2 && 'brew install pluralsh/plural/plural'}
           {tab === 3 && 'brew install pluralsh/plural/plural'}
         </CodeLine>

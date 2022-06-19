@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Flex } from 'honorable'
+import { Div, Flex } from 'honorable'
 import { CopyIcon } from 'pluralsh-design-system'
 
 function CodeLine({ children, ...props }) {
@@ -24,16 +24,36 @@ function CodeLine({ children, ...props }) {
     >
       <Flex
         align="center"
-        paddingLeft="medium"
         paddingVertical="small"
+        paddingHorizontal="medium"
         overflowX="auto"
         flexGrow={1}
         fontFamily="Monument Semi-Mono, monospace"
         fontSize={14}
         lineHeight="24px"
         color="text-light"
+        position="relative"
       >
-        {copied ? 'Copied!' : children}
+        <Div
+          flexGrow={1}
+          whiteSpace="nowrap"
+        >
+          {children}
+        </Div>
+        {copied && (
+          <Div
+            position="absolute"
+            top={0}
+            left={0}
+            right={0}
+            bottom={0}
+            backgroundColor="fill-one"
+            paddingVertical="small"
+            paddingHorizontal="medium"
+          >
+            Copied!
+          </Div>
+        )}
       </Flex>
       <Flex
         align="center"

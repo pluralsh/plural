@@ -71,13 +71,10 @@ function InstallCli() {
           {tab === 0 && 'Start by running this command in your local terminal:'}
           {tab === 1 && (
             <>
-              You can download the binaries attached to our&nbsp;
+              You can download the binaries attached to our
+              &nbsp;
               <A
-                // TODO - modify design-system to handle color
-                color="action-link-inline"
-                _visited={{ color: 'action-link-inline' }}
-                _hover={{ color: 'action-link-inline' }}
-                _active={{ color: 'action-link-inline' }}
+                inline
                 href="https://github.com/pluralsh/plural-cli/releases"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -117,7 +114,33 @@ function InstallCli() {
           )}
           {tab === 1 && (
             <>
-              You will still need to ensure helm, terraform and kubectl are properly installed. // TODO with A
+              You will still need to ensure &nbsp;
+              <A
+                inline
+                href="https://helm.sh/docs/intro/install"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Helm
+              </A>, &nbsp;
+              <A
+                inline
+                href="https://learn.hashicorp.com/tutorials/terraform/install-cli"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Terraform
+              </A>
+              &nbsp;and&nbsp;
+              <A
+                inline
+                href="https://kubernetes.io/docs/tasks/tools/#kubectl"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Kubectl
+              </A>&nbsp;
+              are properly installed.
             </>
           )}
         </P>

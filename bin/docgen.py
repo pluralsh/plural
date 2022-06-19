@@ -60,15 +60,16 @@ def docgen(repo):
     recipes = [r['node'] for r in recipes['data']['recipes']['edges']]
     recipe = client.execute(query=recipe_q, variables={'id': recipes[0]['id']})['data']['recipe']
     tabs = " ".join(tab_content(repo, r) for r in recipes)
+    repo_name = repo.capitalize()
     setup = "\n\n".join(setup_vals(section) for section in recipe['recipeSections'])
     click.echo(f"""
-# {repo}
+# {repo_name}
 
 ## Description
-{recipe['description']}
+Plural will install {repo_name} in a dependency-aware manner onto a Plural-managed Kubernetes cluster with one CLI command.
 
 ## Installation
-We currently support {repo} for the following providers
+We currently support {repo_name} for the following providers:
 
 {'{% tabs %}'}
 {tabs}

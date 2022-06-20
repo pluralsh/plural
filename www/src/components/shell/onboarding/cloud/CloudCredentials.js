@@ -12,7 +12,7 @@ import OnboardingCard from '../OnboardingCard'
 
 import { ProviderForms } from './provider'
 
-export function CloudCredentials({ doSetPath }) {
+function CloudCredentials({ doSetPath }) {
   const { provider, setProvider, workspace, setWorkspace, credentials, setCredentials, next, error, exceptions } = useContext(CreateShellContext)
 
   const ref = useRef()
@@ -75,10 +75,12 @@ export function CloudCredentials({ doSetPath }) {
           onClick={() => {
             next()
           }}
-        >Continue
+        >
+          Continue
         </Button>
       </OnboardingNavSection>
     </>
   )
-
 }
+
+export default CloudCredentials

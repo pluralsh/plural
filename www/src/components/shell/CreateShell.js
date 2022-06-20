@@ -7,17 +7,17 @@ import CreateShellContext from '../../contexts/CreateShellContext'
 
 import { CREATE_SHELL_MUTATION } from './query'
 import { GITHUB_VALIDATIONS } from './onboarding/scm/github'
-import { WORKSPACE_VALIDATIONS, WorkspaceForm } from './WorkspaceForm'
+import { WORKSPACE_VALIDATIONS } from './WorkspaceForm'
 import { getExceptions } from './validation'
 import { CLOUD_VALIDATIONS, ProviderForm } from './onboarding/cloud/provider'
 import { SCM_VALIDATIONS, ScmSection } from './onboarding/scm/ScmInput'
-import InstallCli from './onboarding/cloud/InstallCli'
-import FinishCli from './onboarding/cloud/FinishCli'
 import { SECTIONS, SECTION_CLOUD, SECTION_FINISH, SECTION_FINISH_CLI, SECTION_GIT, SECTION_INSTALL_CLI, SECTION_WORKSPACE } from './constants'
 
 import OnboardingWrapper from './onboarding/OnboardingWrapper'
-import Header from './onboarding/OnboardingHeader'
 import Synopsis from './onboarding/synopsis/Synopsis'
+import InstallCli from './onboarding/cloud/InstallCli'
+import FinishCli from './onboarding/cloud/FinishCli'
+import CloudWorkspace from './onboarding/cloud/CloudWorkspace'
 
 const VALIDATIONS = {
   [SECTION_GIT]: GITHUB_VALIDATIONS,
@@ -125,14 +125,7 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider, authUrlData
           <FinishCli />
         )}
         {section === SECTION_WORKSPACE && (
-          <>
-            <Header text="Workspace" />
-            <WorkspaceForm
-              demo={demo}
-              workspace={workspace}
-              setWorkspace={setWorkspace}
-            />
-          </>
+          <CloudWorkspace />
         )}
         {section === SECTION_FINISH && (
           <Synopsis

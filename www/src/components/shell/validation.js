@@ -75,7 +75,6 @@ export function getExceptions(validations, object) {
 // Should probably pull this into the design system at some point
 function Exception({ field, message }) {
   return (
-
     <Flex
       width="100%"
       direction="row"

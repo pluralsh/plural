@@ -10,7 +10,7 @@ import { AWS_VALIDATIONS, AwsForm, awsSynopsis } from './aws'
 import { GCP_VALIDATIONS, GcpForm, gcpSynopsis } from './gcp'
 import { DemoProject } from './demo'
 import { CloudDecision } from './CloudDecision'
-import { CloudCredentials } from './CloudCredentials'
+import CloudCredentials from './CloudCredentials'
 
 export const ProviderForms = {
   AWS: AwsForm,

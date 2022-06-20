@@ -1,6 +1,6 @@
 defmodule Core.Schema.Group do
   use Piazza.Ecto.Schema
-  alias Core.Schema.{Account, RoleBinding}
+  alias Core.Schema.{Account, RoleBinding, GroupMember}
 
   schema "groups" do
     field :name, :string
@@ -11,6 +11,7 @@ defmodule Core.Schema.Group do
 
     belongs_to :account, Account
     has_many :role_bindings, RoleBinding
+    has_many :group_members, GroupMember
 
     timestamps()
   end

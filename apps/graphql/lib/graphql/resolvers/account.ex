@@ -31,9 +31,13 @@ defmodule GraphQl.Resolvers.Account do
   def list_roles(args, %{context: %{current_user: %{account_id: aid}}}) do
     Role.ordered()
     |> Role.for_account(aid)
+    |> maybe_add_user(args)
     |> maybe_search(Role, args)
     |> paginate(args)
   end
+
+  defp maybe_add_user(q, %{user_id: uid}), do: Role.for_user(q, uid)
+  defp maybe_add_user(q, _), do: q
 
   def list_webhooks(args, %{context: %{current_user: %{account_id: aid}}}) do
     IntegrationWebhook.for_account(aid)

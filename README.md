@@ -11,7 +11,6 @@
   <img alt="GitHub language count" src="https://img.shields.io/github/languages/count/pluralsh/plural">
   <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/pluralsh/plural">
   <img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/pluralsh/plural">
-  <img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/pluralsh/plural">
   <img alt="GitHub issues" src="https://img.shields.io/github/issues/pluralsh/plural">
   <img alt="GitHub closed issues" src="https://img.shields.io/github/issues-closed/pluralsh/plural">
   <img alt="GitHub pull requests" src="https://img.shields.io/github/issues-pr/pluralsh/plural">

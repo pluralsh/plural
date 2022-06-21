@@ -1,6 +1,6 @@
 import { useContext } from 'react'
-import { Article, Div, ExtendTheme, Flex, Input, P } from 'honorable'
-import { Button, CloudIcon, FormField, GearTrainIcon, GitHubIcon } from 'pluralsh-design-system'
+import { Div, Flex, P } from 'honorable'
+import { Button, CloudIcon, GearTrainIcon, GitHubIcon } from 'pluralsh-design-system'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'
 
@@ -8,9 +8,7 @@ import OnboardingNavSection from '../OnboardingNavSection'
 import OnboardingCard from '../OnboardingCard'
 
 function Synopsis() {
-  const { workspace, setWorkspace, previous, next, error, exceptions } = useContext(CreateShellContext)
-
-  console.log('error', error)
+  const { workspace, previous, next } = useContext(CreateShellContext)
 
   return (
     <>
@@ -25,6 +23,7 @@ function Synopsis() {
           marginTop="medium"
           borderTop="1px solid border"
           paddingVertical="xlarge"
+          paddingHorizontal="xlarge"
           marginHorizontal={-32}
         >
           <Flex
@@ -70,6 +69,7 @@ function Synopsis() {
           align="center"
           borderTop="1px solid border"
           paddingVertical="xlarge"
+          paddingHorizontal="xlarge"
           marginHorizontal={-32}
         >
           <Flex
@@ -131,6 +131,7 @@ function Synopsis() {
           align="center"
           borderTop="1px solid border"
           paddingTop="xlarge"
+          paddingHorizontal="xlarge"
           marginHorizontal={-32}
         >
           <Flex
@@ -150,7 +151,7 @@ function Synopsis() {
                 Cluster
               </P>
               <P body1>
-                xxx
+                {workspace.cluster}
               </P>
             </Div>
           </Flex>
@@ -166,7 +167,7 @@ function Synopsis() {
                 Bucket prefix
               </P>
               <P body1>
-                xxx
+                {workspace.bucketPrefix}
               </P>
             </Div>
           </Flex>
@@ -183,7 +184,7 @@ function Synopsis() {
               Subdomain
             </P>
             <P body1>
-              xxx.onplural.sh
+              {workspace.subdomain}.onplural.sh
             </P>
           </Div>
         </Flex>
@@ -200,7 +201,6 @@ function Synopsis() {
         </Button>
         <Button
           primary
-          disabled={error}
           onClick={() => {
             next()
           }}

@@ -14,7 +14,7 @@ import { SECTIONS, SECTION_CLOUD_SELECT, SECTION_CLOUD_WORKSPACE, SECTION_COMPLE
 
 import OnboardingWrapper from './onboarding/OnboardingWrapper'
 import InstallCli from './onboarding/cloud/InstallCli'
-import FinishCli from './onboarding/cloud/FinishCli'
+import CompleteCLi from './onboarding/cloud/CompleteCli'
 import CloudWorkspace, { CLOUD_WORKSPACE_VALIDATIONS } from './onboarding/cloud/CloudWorkspace'
 import Synopsis from './onboarding/synopsis/Synopsis'
 
@@ -121,7 +121,7 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider, authUrlData
           <InstallCli />
         )}
         {section === SECTION_COMPLETE_CLI && (
-          <FinishCli />
+          <CompleteCLi />
         )}
         {section === SECTION_CLOUD_WORKSPACE && (
           <CloudWorkspace />

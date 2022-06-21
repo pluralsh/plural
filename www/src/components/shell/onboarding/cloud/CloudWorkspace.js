@@ -18,8 +18,6 @@ export const CLOUD_WORKSPACE_VALIDATIONS = [
 function CloudWorkspace() {
   const { workspace, setWorkspace, previous, next, error, exceptions } = useContext(CreateShellContext)
 
-  console.log('error', error)
-
   return (
     <>
       <OnboardingCard title="Configure cloud credentials">

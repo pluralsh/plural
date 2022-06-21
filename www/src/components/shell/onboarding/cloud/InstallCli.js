@@ -10,6 +10,11 @@ import OnboardingNavSection from '../OnboardingNavSection'
 
 import OnboardingCard from '../OnboardingCard'
 
+const TAB_MAC = 0
+const TAB_CURL = 1
+const TAB_DOCKER = 2
+const TAB_EC2 = 3
+
 function InstallCli() {
   const { previous, next } = useContext(CreateShellContext)
   const [tab, setTab] = useState(0)
@@ -19,8 +24,8 @@ function InstallCli() {
       <OnboardingCard title="Install CLI">
         <Flex>
           <Tab
-            active={tab === 0}
-            onClick={() => setTab(0)}
+            active={tab === TAB_MAC}
+            onClick={() => setTab(TAB_MAC)}
             flexGrow={1}
           >
             <Div
@@ -31,8 +36,8 @@ function InstallCli() {
             </Div>
           </Tab>
           <Tab
-            active={tab === 1}
-            onClick={() => setTab(1)}
+            active={tab === TAB_CURL}
+            onClick={() => setTab(TAB_CURL)}
             flexGrow={1}
           >
             <Div
@@ -43,8 +48,8 @@ function InstallCli() {
             </Div>
           </Tab>
           <Tab
-            active={tab === 2}
-            onClick={() => setTab(2)}
+            active={tab === TAB_DOCKER}
+            onClick={() => setTab(TAB_DOCKER)}
             flexGrow={1}
           >
             <Div
@@ -55,8 +60,8 @@ function InstallCli() {
             </Div>
           </Tab>
           <Tab
-            active={tab === 3}
-            onClick={() => setTab(3)}
+            active={tab === TAB_EC2}
+            onClick={() => setTab(TAB_EC2)}
             flexGrow={1}
           >
             <Div
@@ -68,8 +73,8 @@ function InstallCli() {
           </Tab>
         </Flex>
         <P marginTop="small">
-          {tab === 0 && 'Start by running this command in your local terminal:'}
-          {tab === 1 && (
+          {tab === TAB_MAC && 'Start by running this command in your local terminal:'}
+          {tab === TAB_CURL && (
             <>
               You can download the binaries attached to our
               &nbsp;
@@ -85,14 +90,14 @@ function InstallCli() {
               For example, you can download v0.2.57 for Darwin arm64 via:
             </>
           )}
-          {tab === 2 && (
+          {tab === TAB_DOCKER && (
             <>
               We offer a docker image with the plural cli installed along with all cli dependencies: Terraform, Helm, Kubectl, and all the major cloud CLIs: gcr.io/pluralsh/plural-cli:0.1.1-cloud.
               We also provide a decent configuration of zsh in it, so you can drive the entire plural workflow in an interactive session.
               The best strategy is probably to mount the config dir of the cloud provider you're using, like (~/.aws), in the docker run command:
             </>
           )}
-          {tab === 3 && (
+          {tab === TAB_EC2 && (
             <>
               We have EC2 AMI's with plural cli installed, along with all cloud provider clis, terraform, helm and kubectl for those interested in creating a remote environment. A registry of the AMIs can be viewed&nbsp;
               <A
@@ -120,11 +125,11 @@ function InstallCli() {
             </>
           )}
         </P>
-        {tab < 3 && (
+        {tab !== TAB_EC2 && (
           <>
             <CodeLine marginTop="small">
-              {tab === 0 && 'brew install pluralsh/plural/plural'}
-              {tab === 1 && (
+              {tab === TAB_MAC && 'brew install pluralsh/plural/plural'}
+              {tab === TAB_CURL && (
                 <>
                   curl -L -o plural.tgz 'https://github.com/pluralsh/plural-cli/releases/download/v0.2.57/plural-cli_0.2.57_Darwin_arm64.tar.gz'
                   <br />
@@ -135,7 +140,7 @@ function InstallCli() {
                   mv plural /usr/local/bin/plural
                 </>
               )}
-              {tab === 2 && (
+              {tab === TAB_DOCKER && (
                 <>
                   docker run -it --volume $HOME/.aws:/home/plural/aws \
                   <br />
@@ -150,7 +155,7 @@ function InstallCli() {
               )}
             </CodeLine>
             <P marginTop="small">
-              {tab === 0 && (
+              {tab === TAB_MAC && (
                 <>
                   The brew tap will install plural, alongside terraform, helm and kubectl for you.
                   <br />
@@ -159,7 +164,7 @@ function InstallCli() {
                   <strong>--without-helm, --without-terraform, or --without-kubectl</strong>.
                 </>
               )}
-              {tab === 1 && (
+              {tab === TAB_CURL && (
                 <>
                   You will still need to ensure &nbsp;
                   <A
@@ -190,7 +195,7 @@ function InstallCli() {
                   are properly installed.
                 </>
               )}
-              {tab === 2 && (
+              {tab === TAB_DOCKER && (
                 <>
                   Once you're in the container's zsh, you'll want to clone the repository you'll use for your installations state there,
                   or alternatively you can clone it outside your container and mount another volume pointing to it.

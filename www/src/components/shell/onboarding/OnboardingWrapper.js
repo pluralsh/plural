@@ -1,7 +1,7 @@
 import { Div, Flex } from 'honorable'
 import { BrowserIcon, CloudIcon, GearTrainIcon, NetworkInterfaceIcon, Stepper } from 'pluralsh-design-system'
 
-import { SECTION_CLOUD_SELECT, SECTION_SYNOPSIS, SECTION_GIT_PROVIDER, SECTION_INSTALL_CLI, SECTION_CLOUD_WORKSPACE } from '../constants'
+import { SECTION_CLOUD_SELECT, SECTION_CLOUD_WORKSPACE, SECTION_GIT_PROVIDER, SECTION_INSTALL_CLI, SECTION_SYNOPSIS } from '../constants'
 
 import SplashToLogoTransition from './SplashToLogoTransition'
 

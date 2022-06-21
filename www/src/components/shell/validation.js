@@ -63,9 +63,9 @@ export function isValidGitlabName(val) {
 }
 
 export function isSubdomain(val) {
-  if (/[a-z][a-z0-9-]/.test(val)) return null
+  if (/^[a-z][a-z0-9-]*$/.test(val)) return null
 
-  return 'must be a valid onplural.sh subdomain'
+  return { type: 'subdomain', message: 'must be a valid subdomain' }
 }
 
 export function getExceptions(validations, object) {

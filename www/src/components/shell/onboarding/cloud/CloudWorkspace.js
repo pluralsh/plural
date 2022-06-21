@@ -4,12 +4,18 @@ import { Button, FormField } from 'pluralsh-design-system'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'
 
-import { Exceptions } from '../../validation'
+import { Exceptions, isAlphanumeric, isSubdomain } from '../../validation'
 
 import OnboardingNavSection from '../OnboardingNavSection'
 import OnboardingCard from '../OnboardingCard'
 
-function CloudWorkspace({ doSetPath }) {
+export const CLOUD_WORKSPACE_VALIDATIONS = [
+  { field: 'workspace.cluster', func: isAlphanumeric, name: 'cluster' },
+  { field: 'workspace.bucketPrefix', func: isAlphanumeric, name: 'bucket prefix' },
+  { field: 'workspace.subdomain', func: isSubdomain, name: 'subdomain' },
+]
+
+function CloudWorkspace() {
   const { workspace, setWorkspace, previous, next, error, exceptions } = useContext(CreateShellContext)
 
   console.log('error', error)

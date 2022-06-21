@@ -62,6 +62,12 @@ export function isValidGitlabName(val) {
   // "Path must not start or end with a special character and must not contain consecutive special characters."
 }
 
+export function isSubdomain(val) {
+  if (/[a-z][a-z0-9-]/.test(val)) return null
+
+  return 'must be a valid onplural.sh subdomain'
+}
+
 export function getExceptions(validations, object) {
   if (!validations) return { error: false }
 
@@ -94,7 +100,8 @@ function Exception({ field, message }) {
       <Text
         body2
         color="text-light"
-      >{`Error: ${field} ${message}`}
+      >
+        {`Error: ${field} ${message}`}
       </Text>
     </Flex>
   )
@@ -104,6 +111,7 @@ export function Exceptions({ exceptions, filterEmpty = true }) {
   if (filterEmpty) {
     exceptions = exceptions.filter(({ empty }) => !empty)
   }
+
   if (exceptions.length === 0) return null
 
   return (

@@ -1,16 +1,16 @@
 import { Div, Flex } from 'honorable'
 import { BrowserIcon, CloudIcon, GearTrainIcon, NetworkInterfaceIcon, Stepper } from 'pluralsh-design-system'
 
-import { SECTION_CLOUD, SECTION_FINISH, SECTION_GIT, SECTION_INSTALL_CLI, SECTION_WORKSPACE } from '../constants'
+import { SECTION_CLOUD_SELECT, SECTION_SYNOPSIS, SECTION_GIT_PROVIDER, SECTION_INSTALL_CLI, SECTION_CLOUD_WORKSPACE } from '../constants'
 
 import SplashToLogoTransition from './SplashToLogoTransition'
 
 function DemoStepper({ stepIndex = 0, ...props }) {
   const steps = [
-    { key: SECTION_GIT, stepTitle: 'Create a repository', IconComponent: NetworkInterfaceIcon },
-    { key: SECTION_CLOUD, stepTitle: <>Choose a&nbsp;cloud</>, IconComponent: CloudIcon },
-    { key: SECTION_WORKSPACE, stepTitle: 'Configure repository', IconComponent: GearTrainIcon },
-    { key: SECTION_FINISH, stepTitle: <>Launch the&nbsp;app</>, IconComponent: BrowserIcon },
+    { key: SECTION_GIT_PROVIDER, stepTitle: 'Create a repository', IconComponent: NetworkInterfaceIcon },
+    { key: SECTION_CLOUD_SELECT, stepTitle: <>Choose a&nbsp;cloud</>, IconComponent: CloudIcon },
+    { key: SECTION_CLOUD_WORKSPACE, stepTitle: 'Configure repository', IconComponent: GearTrainIcon },
+    { key: SECTION_SYNOPSIS, stepTitle: <>Launch the&nbsp;app</>, IconComponent: BrowserIcon },
   ]
 
   return (
@@ -24,9 +24,9 @@ function DemoStepper({ stepIndex = 0, ...props }) {
 
 function CliStepper({ stepIndex = 0, ...props }) {
   const steps = [
-    { key: SECTION_GIT, stepTitle: 'Create a repository', IconComponent: NetworkInterfaceIcon },
+    { key: SECTION_GIT_PROVIDER, stepTitle: 'Create a repository', IconComponent: NetworkInterfaceIcon },
     { key: SECTION_INSTALL_CLI, stepTitle: <>Install CLI</>, IconComponent: CloudIcon },
-    { key: SECTION_FINISH, stepTitle: <>Launch the&nbsp;app</>, IconComponent: BrowserIcon },
+    { key: SECTION_SYNOPSIS, stepTitle: <>Launch the&nbsp;app</>, IconComponent: BrowserIcon },
   ]
 
   return (

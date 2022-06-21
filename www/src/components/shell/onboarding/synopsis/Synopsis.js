@@ -16,7 +16,6 @@ function Synopsis() {
     <>
       <OnboardingCard
         title="Review details"
-        paddingHorizontal={0}
       >
         <P color="text-light">
           After you make sure you entered everything correctly, it's time to launch the cloud shell and install your first application!
@@ -26,6 +25,7 @@ function Synopsis() {
           marginTop="medium"
           borderTop="1px solid border"
           paddingVertical="xlarge"
+          marginHorizontal={-32}
         >
           <Flex
             flexGrow={1}
@@ -70,6 +70,7 @@ function Synopsis() {
           align="center"
           borderTop="1px solid border"
           paddingVertical="xlarge"
+          marginHorizontal={-32}
         >
           <Flex
             flexGrow={1}
@@ -130,6 +131,7 @@ function Synopsis() {
           align="center"
           borderTop="1px solid border"
           paddingTop="xlarge"
+          marginHorizontal={-32}
         >
           <Flex
             flexGrow={1}

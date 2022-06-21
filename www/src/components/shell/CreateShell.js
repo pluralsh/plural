@@ -13,10 +13,10 @@ import { SCM_VALIDATIONS, ScmSection } from './onboarding/scm/ScmInput'
 import { SECTIONS, SECTION_CLOUD_SELECT, SECTION_CLOUD_WORKSPACE, SECTION_COMPLETE_CLI, SECTION_GIT_PROVIDER, SECTION_INSTALL_CLI, SECTION_SYNOPSIS } from './constants'
 
 import OnboardingWrapper from './onboarding/OnboardingWrapper'
-import Synopsis from './onboarding/synopsis/Synopsis'
 import InstallCli from './onboarding/cloud/InstallCli'
 import FinishCli from './onboarding/cloud/FinishCli'
 import CloudWorkspace, { CLOUD_WORKSPACE_VALIDATIONS } from './onboarding/cloud/CloudWorkspace'
+import Synopsis from './onboarding/synopsis/Synopsis'
 
 const VALIDATIONS = {
   [SECTION_GIT_PROVIDER]: GITHUB_VALIDATIONS,

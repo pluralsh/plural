@@ -1,6 +1,6 @@
 import { Div, H2 } from 'honorable'
 
-function OnboardingCard({ children, title = '' }) {
+function OnboardingCard({ children, title = '', ...props }) {
   return (
     <Div
       width="100%"
@@ -9,6 +9,7 @@ function OnboardingCard({ children, title = '' }) {
       borderRadius="large"
       padding="xlarge"
       paddingTop="medium"
+      {...props}
     >
       {!!title && (
         <H2

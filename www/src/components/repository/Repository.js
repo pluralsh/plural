@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client'
 import { Link, Outlet, useLocation, useParams } from 'react-router-dom'
 import { Div, Flex } from 'honorable'
-import { Divider, Tab } from 'pluralsh-design-system'
+import { Tab } from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 

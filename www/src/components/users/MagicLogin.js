@@ -9,7 +9,7 @@ import { Article, Button, Div, Flex, H2, Icon, Img, Input, P, Svg } from 'honora
 import { fetchToken, setToken } from '../../helpers/authentication'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 import { PasswordStatus, disableState } from '../Login'
-import { PLURAL_ICON, PLURAL_MARK_WHITE } from '../constants'
+import { PLURAL_MARK_WHITE } from '../constants'
 import { ACCEPT_LOGIN } from '../oidc/queries'
 
 import { host } from '../../helpers/hostname'

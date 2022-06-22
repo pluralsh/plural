@@ -1,6 +1,6 @@
 import { forwardRef, useContext, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Avatar, Div, Flex, Img, Menu, MenuItem, P, Tooltip, useOutsideClick } from 'honorable'
+import { Avatar, Div, Flex, Img, Menu, MenuItem, P, useOutsideClick } from 'honorable'
 import {
   ArrowTopRightIcon,
   DiscordIcon,
@@ -13,7 +13,6 @@ import {
   ListIcon,
   LogoutIcon,
   MarketIcon,
-  MarketPlusIcon,
   PeopleIcon,
   PersonIcon,
   UpdatesIcon,
@@ -136,19 +135,19 @@ ref
     )
   }
 
-  function wrapTooltip(node) {
-    if (!(collapsed && tooltip)) return node
+  // function wrapTooltip(node) {
+  //   if (!(collapsed && tooltip)) return node
 
-    return (
-      <Tooltip
-        arrow
-        label={tooltip}
-        placement="right"
-      >
-        {node}
-      </Tooltip>
-    )
-  }
+  //   return (
+  //     <Tooltip
+  //       arrow
+  //       label={tooltip}
+  //       placement="right"
+  //     >
+  //       {node}
+  //     </Tooltip>
+  //   )
+  // }
 
   return wrapLink(
     <Flex

@@ -160,7 +160,7 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider, authUrlData
   const [scm, setScm] = useState({ name: '', provider: scmProvider, token: accessToken })
   const [credentials, setCredentials] = useState({})
   const [workspace, setWorkspace] = useState({})
-  const [mutation, { loading, error: gqlError }] = useMutation(CREATE_SHELL, {
+  const [mutation, { error: gqlError }] = useMutation(CREATE_SHELL, {
     variables: { attributes: { credentials, workspace, scm, provider: providerName, demoId: demo && demo.id } },
     onCompleted: onCreate,
   })
@@ -270,7 +270,7 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider, authUrlData
             <Alert
               severity="error"
               title="Failed to create shell"
-            >            
+            >
               {gqlError.graphQLErrors[0].message}
             </Alert>
           )}

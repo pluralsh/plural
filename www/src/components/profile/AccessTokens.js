@@ -13,7 +13,7 @@ import { Placeholder } from '../accounts/Audits'
 import { CREATE_TOKEN, DELETE_TOKEN, TOKENS_Q, TOKEN_AUDITS, TOKEN_METRICS } from '../users/queries'
 import { obscure } from '../users/utils'
 import { LoopingLogo } from '../utils/AnimatedLogo'
-import { FixedScroller, StandardScroller } from '../utils/SmoothScroller'
+import { StandardScroller } from '../utils/SmoothScroller'
 
 import { Table, TableData, TableRow } from '../utils/Table'
 
@@ -82,13 +82,13 @@ function TokenMetrics({ token }) {
     variables: { id: token.id },
     fetchPolicy: 'cache-and-network',
   })
-    
+
   if (!data) return null
-    
+
   const metrics = data.token.metrics.map(({ country, count }) => ({
     id: lookup.byIso(country).iso3, value: count,
   }))
-    
+
   return (
     <Box
       width="70vw"

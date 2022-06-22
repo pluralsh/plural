@@ -1,7 +1,6 @@
 // DEPRECATED
 // In favor of plural-design-system/theme
 import { css } from 'styled-components'
-import { theme } from 'pluralsh-design-system'
 
 import { alpha, shadeColor } from './utils/color'
 

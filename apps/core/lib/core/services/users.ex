@@ -270,7 +270,7 @@ defmodule Core.Services.Users do
         |> Map.put(:password, Ecto.UUID.generate())
         |> create_user()
       %User{} = user ->
-        update_user(login_args(:sso), user)
+        update_user(login_args(service), user)
     end
   end
 

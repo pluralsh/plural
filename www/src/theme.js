@@ -1,6 +1,7 @@
 // DEPRECATED
 // In favor of plural-design-system/theme
 import { css } from 'styled-components'
+import { theme } from 'pluralsh-design-system'
 
 import { alpha, shadeColor } from './utils/color'
 
@@ -52,6 +53,34 @@ export const PLURAL_THEME = {
   'purple-dark-2': '#650077',
   'purple-light': '#df00ff',
   'purple-light-2': '#f7ccff',
+  'fill-zero': 'grey.900',
+  'fill-zero-hover': 'grey.875',
+  'fill-zero-selected': 'grey.825',
+  'fill-one': 'grey.850',
+  'fill-one-hover': 'grey.825',
+  'fill-one-selected': 'grey.775',
+  'fill-two': 'grey.800',
+  'fill-two-hover': 'grey.775',
+  'fill-two-selected': 'grey.725',
+  'fill-three': 'grey.750',
+  'grey.950': '#0E1015',
+  'grey.900': '#171A21',
+  'grey.875': '#1C2026',
+  'grey.850': '#1E2229',
+  'grey.825': '#23272E',
+  'grey.800': '#2A2E37',
+  'grey.775': '#303540',
+  'grey.750': '#363B45',
+  'grey.725': '#3C414D',
+  'grey.700': '#434956',
+  'grey.600': '#555C68',
+  'grey.500': '#757D8A',
+  'grey.400': '#9096A2',
+  'grey.300': '#A9B0BC',
+  'grey.200': '#C4CAD4',
+  'grey.100': '#DEE2E8',
+  'grey.50': '#E9ECF0',
+  // ...theme.colors,
 }
 
 export const DEFAULT_COLOR_THEME = {

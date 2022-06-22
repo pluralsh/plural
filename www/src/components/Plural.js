@@ -34,6 +34,12 @@ import { OauthCreator } from './integrations/OauthCreator'
 import { UpgradeQueue } from './upgrades/UpgradeQueue'
 import { UpgradeQueues } from './upgrades/UpgradeQueues'
 import { VerifyEmailConfirmed } from './users/EmailConfirmation'
+import { MyProfile } from './profile/MyProfile'
+import { Me } from './profile/Me'
+import { Security } from './profile/Security'
+import { AccessTokens } from './profile/AccessTokens'
+import { PublicKeys } from './profile/PublicKeys'
+import { EabCredentials } from './profile/EabCredentials'
 
 function EditBilling(props) {
   return (
@@ -104,6 +110,41 @@ export function PluralInner() {
               path="/repositories/:id/integrations"
               element={<IntegrationPage />}
             />
+            {/* --- PROFILE --- */}
+            <Route
+              path="/profile"
+              element={<MyProfile />}
+            >
+              <Route
+                index
+                element={(
+                  <Navigate
+                    replace
+                    to="me"
+                  />
+                )}
+              />
+              <Route
+                path="me"
+                element={<Me />}
+              />
+              <Route
+                path="security"
+                element={<Security />}
+              />
+              <Route
+                path="tokens"
+                element={<AccessTokens />}
+              />
+              <Route
+                path="keys"
+                element={<PublicKeys />}
+              />
+              <Route
+                path="eab"
+                element={<EabCredentials />}
+              />
+            </Route>
             {/* --- REPOSITORY --- */}
             <Route
               path="/repository/:id"

@@ -93,7 +93,7 @@ function Synopsis() {
                 Region
               </P>
               <P body1>
-                xxx
+                {workspace.region}
               </P>
             </Div>
           </Flex>

@@ -19,6 +19,16 @@ defmodule Core.Schema.Role do
     timestamps()
   end
 
+  def for_user(query \\ __MODULE__, user_id) do
+    from(r in query,
+      join: rb in assoc(r, :role_bindings),
+      left_join: g in assoc(rb, :group),
+      left_join: gm in assoc(g, :group_members),
+      where: gm.user_id == ^user_id or rb.user_id == ^user_id,
+      distinct: true
+    )
+  end
+
   def for_account(query \\ __MODULE__, account_id) do
     from(r in query, where: r.account_id == ^account_id)
   end

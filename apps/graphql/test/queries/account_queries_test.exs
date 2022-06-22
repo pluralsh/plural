@@ -102,6 +102,32 @@ defmodule GraphQl.AccountQueriesTest do
              |> ids_equal(roles)
     end
 
+    test "it can list roles for a user", %{user: user, account: account} do
+      role = insert(:role, account: account)
+      role2 = insert(:role, account: account)
+      role3 = insert(:role, account: account)
+      insert(:role, account: account)
+
+      group = insert(:group, account: account)
+      insert(:group_member, user: user, group: group)
+      insert(:group_member, group: group)
+
+      insert(:role_binding, role: role, user: user)
+      insert(:role_binding, role: role, user_id: nil, group: group)
+      insert(:role_binding, role: role2, group: group)
+      insert(:role_binding, role: role3, user: user)
+
+      {:ok, %{data: %{"roles" => found}}} = run_query("""
+        query Roles($userId: ID!) {
+          roles(first: 5, userId: $userId) { edges { node { id } } }
+        }
+      """, %{"userId" => user.id}, %{current_user: user})
+
+      assert length(found["edges"]) == 3
+      assert from_connection(found)
+             |> ids_equal([role, role2, role3])
+    end
+
     test "it can search roles by name", %{user: user, account: account} do
       roles = for i <- 1..3, do: insert(:role, account: account, name: "search #{i}")
       insert(:role, account: account)

@@ -237,7 +237,8 @@ defmodule GraphQl.Schema.Account do
 
     connection field :roles, node_type: :role do
       middleware Authenticated
-      arg :q, :string
+      arg :q,       :string
+      arg :user_id, :id
 
       resolve &Account.list_roles/2
     end

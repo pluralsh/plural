@@ -17,8 +17,10 @@ import { LoginMethod as Method } from './types'
 function Section({ header, description, children, noHeader }) {
   return (
     <Box gap="small">
-      {!noHeader && <Span fontWeight="bold">{header}</Span>}
-      {description && <Span textColor="text-medium">{description}</Span> }
+      <Box gap="2px">
+        {!noHeader && <Span fontWeight="bold">{header}</Span>}
+        {description && <Span color="text-light">{description}</Span>}
+      </Box>
       {children}
     </Box>
   )
@@ -78,7 +80,7 @@ function LoginMethod({ icon, name, onClick, active }) {
   return (
     <Box
       border
-      width="50%"
+      width="70%"
       round="xsmall"
       onClick={active ? null : onClick}
       hoverIndicator="background-middle"

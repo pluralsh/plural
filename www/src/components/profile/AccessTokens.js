@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
-import { Button, Span } from 'honorable'
+import { Button, Div, Span } from 'honorable'
 import moment from 'moment'
 import { useState } from 'react'
 import lookup from 'country-code-lookup'
@@ -187,6 +187,7 @@ function AccessToken({ token, first, last }) {
             onClick={mutation}
             loading={loading}
             marginLeft="medium"
+            background="icon-error"
           >Remove
           </Button>
         </ModalActions>
@@ -221,12 +222,15 @@ export function AccessTokens() {
         <Box
           flex={false}
           width="30%"
+          align="end"
         >
-          <Button
-            onClick={mutation}
-            loading={loading}
-          >Create new access token
-          </Button>
+          <Div>
+            <Button
+              onClick={mutation}
+              loading={loading}
+            >Create new access token
+            </Button>
+          </Div>
         </Box>
       </Header>
       <Box

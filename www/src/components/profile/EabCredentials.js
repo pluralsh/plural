@@ -52,6 +52,7 @@ function EabCredential({ credential, last }) {
             onClick={mutation}
             loading={loading}
             marginLeft="medium"
+            background="icon-error"
           >Remove
           </Button>
         </ModalActions>
@@ -81,6 +82,7 @@ export function EabCredentials() {
           headers={['Key Id', 'HMAC Key', 'Cluster', 'Created On']}
           sizes={['25%', '25%', '25%', '25%']}
           background="fill-one"
+          border="1px solid border"
         >
           {data.eabCredentials.map((cred, i) => (
             <EabCredential

@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/client'
 import { Box, Stack } from 'grommet'
-import { Avatar, Button, Flex, P } from 'honorable'
+import { Avatar, Button, Div, Flex, P } from 'honorable'
 import { DownloadIcon, ValidatedInput } from 'pluralsh-design-system'
 import { useContext, useEffect, useState } from 'react'
 import { useFilePicker } from 'react-sage'
@@ -36,85 +36,83 @@ export function Me() {
   }, [files])
 
   return (
-    <Flex
-      align="center"
-      direction="column"
+
+    <Box
+      gap="medium"
+      fill
     >
+      <Header
+        header="Profile"
+        description="Edit how your profile appears to other users"
+      />
       <Box
-        gap="medium"
-        fill
+        gap="large"
+        direction="row"
       >
-        <Header
-          header="Profile"
-          description="Edit how your profile appears to other users"
-        />
-        <Box
-          gap="large"
-          direction="row"
-        >
-          <Attribute header="Profile Picture">
-            <Stack
-              anchor="bottom-right"
-              style={{ width: '100px' }}
-            >
-              <Avatar
-                name={me.name}
-                src={me.avatar}
-                size={100}
+        <Attribute header="Profile Picture">
+          <Stack
+            anchor="bottom-right"
+            style={{ width: '100px' }}
+          >
+            <Avatar
+              name={me.name}
+              src={me.avatar}
+              size={100}
+            />
+            <>
+              <Box
+                flex={false}
+                round="full"
+                align="center"
+                justify="center"
+                background="#222534"
+                pad="small"
+                onClick={onClick}
+              >
+                <DownloadIcon size={15} />
+              </Box>
+              <HiddenFileInput
+                accept=".jpg, .jpeg, .png"
+                multiple={false}
               />
-              <>
-                <Box
-                  flex={false}
-                  round="full"
-                  align="center"
-                  justify="center"
-                  background="#222534"
-                  pad="small"
-                  onClick={onClick}
-                >
-                  <DownloadIcon size={15} />
-                </Box>
-                <HiddenFileInput
-                  accept=".jpg, .jpeg, .png"
-                  multiple={false}
-                />
-              </>
-            </Stack>
+            </>
+          </Stack>
+        </Attribute>
+        {me.provider && (
+          <Attribute header="Provider">
+            <Provider
+              provider={me.provider}
+              width={75}
+            />
           </Attribute>
-          {me.provider && (
-            <Attribute header="Provider">
-              <Provider
-                provider={me.provider}
-                width={75}
-              />
-            </Attribute>
-          )}
-        </Box>
-        <Box gap="small">
-          <ValidatedInput
-            label="Name"
-            width="70%"
-            value={name}
-            onChange={({ target: { value } }) => setName(value)}
-            validation={() => null}
-          />
-          <ValidatedInput 
-            label="Email"
-            width={500}
-            value={email} 
-            hint="Changing emails will require email verification"
-            onChange={({ target: { value } }) => setEmail(value)} 
-            validation={() => null}
-          />
-        </Box>
+        )}
+      </Box>
+      <Box gap="small">
+        <ValidatedInput
+          label="Name"
+          width="70%"
+          value={name}
+          onChange={({ target: { value } }) => setName(value)}
+          validation={() => null}
+        />
+        <ValidatedInput 
+          label="Email"
+          width={500}
+          value={email} 
+          hint="Changing emails will require email verification"
+          onChange={({ target: { value } }) => setEmail(value)} 
+          validation={() => null}
+        />
+      </Box>
+      <Div>
         <Button
-          width="40%"
+          width="90px"
           onClick={mutation}
           loading={loading}
         >
           Save
         </Button>
-      </Box>
-    </Flex>
+      </Div>
+    </Box>
   )
 }

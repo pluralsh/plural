@@ -82,15 +82,18 @@ function OrgInput({ org, orgs, doSetOrg }) {
     <FormField
       width="100%"
       label={
-        provider === Provider.GITHUB ? 'Github Organization' :
-          provider === Provider.GITLAB ? 'Gitlab Group' :
-            'Organization or Group'
+        provider === Provider.GITHUB
+          ? 'Github Organization'
+          : provider === Provider.GITLAB
+            ? 'Gitlab Group'
+            : 'Organization or Group'
       }
       caption={(
         <A
           inline
           href={altProviderUrl}
-        >{`Switch to ${provider === Provider.GITHUB ? 'Gitlab' : 'Github'}`}
+        >
+          {`Switch to ${provider === Provider.GITHUB ? 'Gitlab' : 'Github'}`}
         </A>
       )}
     >

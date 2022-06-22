@@ -8,7 +8,7 @@ import OnboardingNavSection from '../OnboardingNavSection'
 import OnboardingCard from '../OnboardingCard'
 
 function Synopsis() {
-  const { workspace, previous, next } = useContext(CreateShellContext)
+  const { scm, workspace, previous, next } = useContext(CreateShellContext)
 
   return (
     <>
@@ -27,8 +27,9 @@ function Synopsis() {
           marginHorizontal={-32}
         >
           <Flex
-            flexGrow={1}
+            flexShrink={0}
             align="center"
+            width="50%"
           >
             <GitHubIcon
               size={24}
@@ -43,13 +44,15 @@ function Synopsis() {
                 Repository name
               </P>
               <P body1>
-                xxx
+                {scm.name}
               </P>
             </Div>
           </Flex>
           <Flex
             flexGrow={1}
+            flexShrink={0}
             align="center"
+            marginLeft="xlarge"
           >
             <Div>
               <P
@@ -59,7 +62,7 @@ function Synopsis() {
                 Git account
               </P>
               <P body1>
-                xxx
+                {scm.org || 'User'}
               </P>
             </Div>
           </Flex>
@@ -73,8 +76,9 @@ function Synopsis() {
           marginHorizontal={-32}
         >
           <Flex
-            flexGrow={1}
+            flexShrink={0}
             align="center"
+            width="50%"
           >
             <CloudIcon
               size={24}
@@ -95,7 +99,9 @@ function Synopsis() {
           </Flex>
           <Flex
             flexGrow={1}
+            flexShrink={0}
             align="center"
+            marginLeft="xlarge"
           >
             <Div>
               <P
@@ -135,8 +141,9 @@ function Synopsis() {
           marginHorizontal={-32}
         >
           <Flex
-            flexGrow={1}
+            flexShrink={0}
             align="center"
+            width="50%"
           >
             <GearTrainIcon
               size={24}
@@ -157,7 +164,9 @@ function Synopsis() {
           </Flex>
           <Flex
             flexGrow={1}
+            flexShrink={0}
             align="center"
+            marginLeft="xlarge"
           >
             <Div>
               <P

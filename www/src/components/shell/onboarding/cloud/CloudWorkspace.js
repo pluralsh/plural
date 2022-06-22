@@ -57,15 +57,15 @@ function CloudWorkspace() {
             theme={{
               // Theme extension to give the Input a custom end icon
               Input: {
-                Root: [
-                  {
-                    height: 34,
-                    paddingTop: 0,
-                    paddingBottom: 0,
-                    paddingLeft: 8,
-                    paddingRight: 0,
-                  },
-                ],
+                // Root: [
+                //   {
+                //     // height: 34,
+                //     // paddingTop: 0,
+                //     // paddingBottom: 0,
+                //     // paddingLeft: 8,
+                //     // paddingRight: 0,
+                //   },
+                // ],
                 EndIcon: [
                   {
                     height: '100%',

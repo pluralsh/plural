@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/client'
 import { Box, Stack } from 'grommet'
-import { Avatar, Button, Div, Flex, P } from 'honorable'
+import { Avatar, Button, Div, P } from 'honorable'
 import { DownloadIcon, ValidatedInput } from 'pluralsh-design-system'
 import { useContext, useEffect, useState } from 'react'
 import { useFilePicker } from 'react-sage'
@@ -33,7 +33,7 @@ export function Me() {
     if (files.length > 0) {
       mutation({ variables: { attributes: { avatar: files[0] } } })
     }
-  }, [files])
+  }, [files, mutation])
 
   return (
 
@@ -95,12 +95,12 @@ export function Me() {
           onChange={({ target: { value } }) => setName(value)}
           validation={() => null}
         />
-        <ValidatedInput 
+        <ValidatedInput
           label="Email"
           width={500}
-          value={email} 
+          value={email}
           hint="Changing emails will require email verification"
-          onChange={({ target: { value } }) => setEmail(value)} 
+          onChange={({ target: { value } }) => setEmail(value)}
           validation={() => null}
         />
       </Box>

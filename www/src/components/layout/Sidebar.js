@@ -482,17 +482,17 @@ function Sidebar({
         >
           <MenuItem
             as={Link}
-            to="/user"
+            to="/profile"
             color="inherit"
             textDecoration="none"
           >
             <PersonIcon mr={1} />
             My profile
           </MenuItem>
-          <MenuItem>
+          {/* <MenuItem>
             <MarketPlusIcon mr={1} />
             Create new publisher
-          </MenuItem>
+          </MenuItem> */}
           <MenuItem>
             <LogoutIcon mr={1} />
             TODO: log back as...

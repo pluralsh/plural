@@ -2,7 +2,7 @@ import 'react-toggle/style.css'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { ApolloProvider } from '@apollo/client'
 import { IntercomProvider } from 'react-use-intercom'
-import { Grommet } from 'grommet'
+import { Box, Grommet } from 'grommet'
 import { theme } from 'pluralsh-design-system'
 import { CssBaseline, ThemeProvider } from 'honorable'
 
@@ -30,68 +30,74 @@ function App() {
             theme={DEFAULT_THEME}
             themeMode="dark"
           >
-            <BrowserRouter>
-              <Routes>
-                <Route
-                  path="/reset-password/:id"
-                  element={<ResetPassword />}
-                />
-                <Route
-                  exact
-                  path="/password-reset"
-                  element={<PasswordReset />}
-                />
-                <Route
-                  path="/confirm-email/:id"
-                  element={<EmailConfirmed />}
-                />
-                <Route
-                  path="/invite/:inviteId"
-                  element={<Invite />}
-                />
-                <Route
-                  path="/passwordless-login/:token"
-                  element={<PasswordlessLogin />}
-                />
-                <Route
-                  exact
-                  path="/oauth/callback/github/shell"
-                  element={<Plural />}
-                />
-                <Route
-                  exact
-                  path="/oauth/callback/gitlab/shell"
-                  element={<Plural />}
-                />
-                <Route
-                  path="/oauth/callback/:service"
-                  element={<OAuthCallback />}
-                />
-                <Route
-                  path="/sso/callback"
-                  element={<SSOCallback />}
-                />
-                <Route
-                  exact
-                  path="/login"
-                  element={<Login />}
-                />
-                <Route
-                  exact
-                  path="/signup"
-                  element={<Signup />}
-                />
-                <Route
-                  exact
-                  path="/oauth/consent"
-                  element={<OAuthConsent />}
-                />
-                <Route
-                  path="*"
-                  element={<Plural />}
-                />
-              </Routes>
-            </BrowserRouter>
+            <Box
+              width="100vw"
+              height="100vh"
+              background="#171A21"
+            >
+              <BrowserRouter>
+                <Routes>
+                  <Route
+                    path="/reset-password/:id"
+                    element={<ResetPassword />}
+                  />
+                  <Route
+                    exact
+                    path="/password-reset"
+                    element={<PasswordReset />}
+                  />
+                  <Route
+                    path="/confirm-email/:id"
+                    element={<EmailConfirmed />}
+                  />
+                  <Route
+                    path="/invite/:inviteId"
+                    element={<Invite />}
+                  />
+                  <Route
+                    path="/passwordless-login/:token"
+                    element={<PasswordlessLogin />}
+                  />
+                  <Route
+                    exact
+                    path="/oauth/callback/github/shell"
+                    element={<Plural />}
+                  />
+                  <Route
+                    exact
+                    path="/oauth/callback/gitlab/shell"
+                    element={<Plural />}
+                  />
+                  <Route
+                    path="/oauth/callback/:service"
+                    element={<OAuthCallback />}
+                  />
+                  <Route
+                    path="/sso/callback"
+                    element={<SSOCallback />}
+                  />
+                  <Route
+                    exact
+                    path="/login"
+                    element={<Login />}
+                  />
+                  <Route
+                    exact
+                    path="/signup"
+                    element={<Signup />}
+                  />
+                  <Route
+                    exact
+                    path="/oauth/consent"
+                    element={<OAuthConsent />}
+                  />
+                  <Route
+                    path="*"
+                    element={<Plural />}
+                  />
+                </Routes>
+              </BrowserRouter>
+            </Box>
           </Grommet>
         </ThemeProvider>
       </IntercomProvider>

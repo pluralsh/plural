@@ -69,8 +69,8 @@ All Plural applications are fully customizable and able to be ejected at any tim
 ## 📽 Check out a video Demo
 
 https://user-images.githubusercontent.com/28541758/164427949-3f14cfbb-cf5e-40dc-8996-385691ec2f01.mp4
-<br /><br /><br />
 
+<br /><br />
 
 
 ## 🏁 Getting Started
@@ -93,14 +93,14 @@ plural deploy
 ```
 
 Our tooling will take care of the rest.
-<br /><br /><br />
+<br /><br />
 
 
 
 ## 📚 Documentation
 
 * The full documentation is available on our [Documentation site](https://docs.plural.sh/)
-<br /><br /><br />
+<br /><br />
 
 
 
@@ -117,7 +117,7 @@ Plural is dedicated to providing a welcoming, diverse, and harrassment-free expe
 ### Get Free Swag!
 
 Get free Plural swag [here](https://pluralsh.typeform.com/to/jMj5GaM4) :-)
-<br /><br /><br />
+<br /><br />
 
 
 
@@ -126,14 +126,14 @@ See what we're working on in these GitHub projects. Help us prioritize issues by
 * Application Onboarding Roadmap: https://github.com/orgs/pluralsh/projects/2/views/2
 * Plural Core Issues: https://github.com/pluralsh/plural/issues
 * Plural CLI Issues: https://github.com/pluralsh/plural-cli/issues
-<br /><br /><br />
+<br /><br />
 
 
 
 ## 🙌 Contributing to Plural
 
 We love contributions to Plural, big or small! To learn more about the repo and the architecture, see [CONTRIBUTING.md](CONTRIBUTING.md). If you're not sure where to start, or if you have any questions, please open a draft PR or visit our [Discord](https://discord.gg/CKc2kfeXxQ) server where the core team can help answer your questions.
-<br /><br /><br />
+<br /><br />
 
 
 

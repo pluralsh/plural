@@ -7,6 +7,7 @@ export function Confirm({ open, close, title, error, text, submit, label, loadin
     <Modal
       open={open}
       onClose={close}
+      maxWidth="512px"
     >
       <ModalHeader onClose={close}>
         {title || 'Are you sure?'}

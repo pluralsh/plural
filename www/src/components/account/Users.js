@@ -29,6 +29,7 @@ function Header({ q, setQ, setView }) {
       <Input
         width="80%"
         value={q}
+        placeholder="search for users by name/email"
         startIcon={<SearchIcon size={15} />}
         onChange={({ target: { value } }) => setQ(value)}
       />

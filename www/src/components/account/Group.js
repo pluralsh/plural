@@ -176,6 +176,7 @@ export function UpdateGroup({ group, cancel }) {
             label="Name"
           />
           <ValidatedInput
+            label="Description"
             value={description}
             onChange={({ target: { value } }) => setDescription(value)}
           />
@@ -205,6 +206,7 @@ export function UpdateGroup({ group, cancel }) {
               icon={<PersonIcon size={14} />}
               width="100%"
               value={value}
+              placeholder="Search for users by name"
               suggestions={suggestions}
               onChange={({ target: { value } }) => {
                 setValue(value)

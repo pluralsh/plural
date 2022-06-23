@@ -27,6 +27,7 @@ export function InviteUser() {
       <Modal
         open={open}
         onClose={() => setOpen(false)}
+        width="40vw"
       >
         <ModalHeader onClose={() => setOpen(false)}>
           INVITE USERS

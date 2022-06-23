@@ -5,6 +5,7 @@ import { forwardRef } from 'react'
 export const Icon = forwardRef(({ icon, onClick, hover }, ref) => (
   <Box
     ref={ref}
+    flex={false}
     pad="6px"
     round="xsmall"
     onClick={onClick}
@@ -21,7 +22,7 @@ export function DeleteIcon({ onClick }) {
       onClick={onClick}
       icon={(
         <TrashCanIcon
-          size={15}
+          size={16}
           color="icon-error"
         />
       )}

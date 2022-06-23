@@ -9,21 +9,18 @@ import { UPDATE_ACCOUNT } from '../accounts/queries'
 import { CurrentUserContext } from '../login/CurrentUser'
 import { Header } from '../profile/Header'
 import { DeleteIcon } from '../profile/Icon'
+import { ListItem } from '../profile/ListItem'
 import { GqlError } from '../utils/Alert'
 
 import { Chip } from './User'
 
 const sanitize = ({ __typename, ...rest }) => rest
 
-function DomainMapping({ mapping, remove }) {
+function DomainMapping({ mapping, remove, first, last }) {
   return (
-    <Box
-      pad="small"
-      direction="row"
-      align="center"
-      round="xsmall"
-      background="fill-one"
-      border
+    <ListItem
+      first={first}
+      last={last}
     >
       <Box fill="horizontal">
         <Span fontWeight="bold">{mapping.domain}</Span>
@@ -41,7 +38,7 @@ function DomainMapping({ mapping, remove }) {
         )}
         <DeleteIcon onClick={remove} />
       </Box>
-    </Box>
+    </ListItem>
   )
 }
 
@@ -52,6 +49,8 @@ export function AccountAttributes() {
   const [mutation, { loading, error }] = useMutation(UPDATE_ACCOUNT, { variables: { attributes: { name } } })
   const addDomain = domain => ([{ domain }, ...account.domainMappings.map(sanitize)])
   const rmDomain = d => account.domainMappings.filter(({ domain }) => domain !== d).map(sanitize)
+
+  const len = account.domainMappings
 
   return (
     <Box
@@ -92,6 +91,7 @@ export function AccountAttributes() {
           >
             <Input
               value={domain}
+              placeholder="enter an email domain"
               onChange={({ target: { value } }) => setDomain(value)}
             />
             <Button
@@ -102,10 +102,12 @@ export function AccountAttributes() {
             </Button>
           </Box>
         </Box>
-        <Box gap="xsmall">
-          {account.domainMappings.map(mapping => (
+        <Box>
+          {account.domainMappings.map((mapping, i) => (
             <DomainMapping
               mapping={mapping}
+              first={i === 0}
+              last={i === len - 1}
               remove={() => mutation({ variables: { attributes: { domainMappings: rmDomain(mapping.domain) } } })}
             />
           ))}

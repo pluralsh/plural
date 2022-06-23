@@ -267,7 +267,6 @@ export function Domains() {
   return (
     <Box
       fill
-      pad={{ vertical: 'small' }}
     >
       <Table
         headers={['Name', 'Creator', 'Created On']}

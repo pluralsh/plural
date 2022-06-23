@@ -238,32 +238,32 @@ export function PluralInner() {
                 element={(
                   <Navigate
                     replace
-                    to="/account/users"
+                    to="users"
                   />
                 )}
               />
               <Route
-                path="/account/edit"
+                path="edit"
                 element={<AccountAttributes />}
               />
               <Route
-                path="/account/users"
+                path="users"
                 element={<Users />}
               />
               <Route
-                path="/account/groups"
+                path="groups"
                 element={<Groups />}
               />
               <Route
-                path="/account/service-accounts"
+                path="service-accounts"
                 element={<ServiceAccounts />}
               />
               <Route
-                path="/account/roles"
+                path="roles"
                 element={<Roles />}
               />
               <Route
-                path="/account/domains"
+                path="domains"
                 element={<Domains />}
               />
             </Route>

@@ -111,6 +111,7 @@ export const DEFAULT_COLOR_THEME = {
   label: 'light-2',
   'input-border': 'border',
   primary: '#0639FF',
+  'action-primary': '#293EFF',
   background: {
     light: 'transparent',
     dark: 'transparent',
@@ -238,6 +239,7 @@ export const DEFAULT_THEME = {
     drop: {
       background: 'background-top',
       border: { radius: '4px' },
+      zIndex: 2000,
       extend: css`
         box-shadow: 0px 0px 4px 4px rgba(0, 0, 0, 0.2);
       `,

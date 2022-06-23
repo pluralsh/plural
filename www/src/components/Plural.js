@@ -36,6 +36,13 @@ import { Security } from './profile/Security'
 import { AccessTokens } from './profile/AccessTokens'
 import { PublicKeys } from './profile/PublicKeys'
 import { EabCredentials } from './profile/EabCredentials'
+import { Account } from './account/Account'
+import { Users } from './account/Users'
+import { ServiceAccounts } from './account/ServiceAccounts'
+import { Groups } from './account/Groups'
+import { Roles } from './account/Roles'
+import { Domains } from './account/Domains'
+import { AccountAttributes } from './account/AccountAttributes'
 
 function EditBilling(props) {
   return (
@@ -224,23 +231,42 @@ export function PluralInner() {
             <Route
               exact
               path="/account"
-              element={(
-                <Navigate
-                  replace
-                  to="/account/edit/users"
-                />
-              )}
-            />
-            <Route
-              exact
-              path="/account/edit"
-              element={(
-                <Navigate
-                  replace
-                  to="/account/edit/users"
-                />
-              )}
-            />
+              element={<Account />}
+            >
+              <Route
+                index
+                element={(
+                  <Navigate
+                    replace
+                    to="users"
+                  />
+                )}
+              />
+              <Route
+                path="edit"
+                element={<AccountAttributes />}
+              />
+              <Route
+                path="users"
+                element={<Users />}
+              />
+              <Route
+                path="groups"
+                element={<Groups />}
+              />
+              <Route
+                path="service-accounts"
+                element={<ServiceAccounts />}
+              />
+              <Route
+                path="roles"
+                element={<Roles />}
+              />
+              <Route
+                path="domains"
+                element={<Domains />}
+              />
+            </Route>
             <Route
               path="/account/billing/:section"
               element={<EditBilling />}

@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
-import { Button, Div, Flex, Span } from 'honorable'
+import { Button, Div, Span } from 'honorable'
 import { StatusOkIcon, ValidatedInput } from 'pluralsh-design-system'
 import { createElement, useContext, useState } from 'react'
 import { Password } from 'forge-core'
@@ -143,42 +143,36 @@ export function Security() {
   const [pass, setPass] = useState(false)
 
   return (
-    <Flex
-      width="75%"
-      align="center"
-      direction="column"
+    <Box
+      gap="medium"
+      fill
     >
-      <Box
-        gap="medium"
-        fill
+      <Header
+        header="Security & Privacy"
+        description="Manage how you log in to your account"
+      />
+      <Section
+        header="Password"
+        noHeader={pass}
       >
-        <Header
-          header="Security & Privacy"
-          description="Manage how you log in to your account"
-        />
-        <Section
-          header="Password"
-          noHeader={pass}
-        >
-          {!pass && (
-            <Div>
-              <Button
-                secondary
-                onClick={() => setPass(true)}
-              >
-                Change Password
-              </Button>
-            </Div>
-          )}
-          {pass && <UpdatePassword cancel={() => setPass(false)} />}
-        </Section>
-        <Section
-          header="Login methods"
-          description="Change the method you use to log in"
-        >
-          <LoginMethods />
-        </Section>
-      </Box>      
-    </Flex>
+        {!pass && (
+          <Div>
+            <Button
+              secondary
+              onClick={() => setPass(true)}
+            >
+              Change Password
+            </Button>
+          </Div>
+        )}
+        {pass && <UpdatePassword cancel={() => setPass(false)} />}
+      </Section>
+      <Section
+        header="Login methods"
+        description="Change the method you use to log in"
+      >
+        <LoginMethods />
+      </Section>
+    </Box> 
   )
 }

@@ -26,7 +26,7 @@ defmodule Core.Schema.DomainMapping do
 
   @restricted ~w(gmail.com outlook.com hotmail.com yahoo.com)
 
-  @valid ~w(domain account_id enable_sso)a
+  @valid ~w(domain account_id enable_sso workos_connection_id)a
 
   def changeset(model, attrs \\ %{}) do
     model

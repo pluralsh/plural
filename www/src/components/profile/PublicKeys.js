@@ -2,7 +2,7 @@ import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
 import { Button, Span } from 'honorable'
 import moment from 'moment'
-import { Modal, ModalActions } from 'pluralsh-design-system'
+import { Modal, ModalActions, ModalHeader } from 'pluralsh-design-system'
 import { useState } from 'react'
 
 import { extendConnection } from '../../utils/graphql'
@@ -50,13 +50,15 @@ function PublicKey({ pubkey: key, first, last }) {
           direction="row"
         >
           <DeleteIcon onClick={() => setConfirm(true)} />
-        </Box>   
+        </Box>
       </ListItem>
       <Modal
         open={confirm}
-        title="Delete Public Key"
         onClose={() => setConfirm(false)}
       >
+        <ModalHeader onClose={() => setConfirm(false)}>
+          Delete Public Key
+        </ModalHeader>
         Are you sure you want to delete this public key?
         <ModalActions>
           <Button
@@ -79,7 +81,7 @@ function PublicKey({ pubkey: key, first, last }) {
 export function PublicKeys() {
   const [listRef, setListRef] = useState(null)
   const { data, loading, fetchMore } = useQuery(LIST_KEYS)
-    
+
   if (!data) return <LoopingLogo />
 
   const { edges, pageInfo } = data.publicKeys

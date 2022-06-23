@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/client'
 import { Box } from 'grommet'
 import { Button, Div, Flex, Span, Switch } from 'honorable'
-import { Modal, Tab, ValidatedInput } from 'pluralsh-design-system'
+import { Modal, ModalHeader, Tab, ValidatedInput } from 'pluralsh-design-system'
 import { useCallback, useState } from 'react'
 
 import { appendConnection, updateCache } from '../../utils/graphql'
@@ -73,7 +73,7 @@ function PermissionToggle({ permission, description, attributes, setAttributes, 
       setAttributes({ ...attributes, permissions: attributes.permissions.filter(perm => perm !== permission) })
     }
   }, [permission, attributes, setAttributes])
-  
+
   return (
     <ListItem
       first={first}
@@ -158,7 +158,7 @@ function RoleForm({ error, attributes, setAttributes, bindings, setBindings, ...
         </Box>
       )}
     </Box>
-  )   
+  )
 }
 
 export function UpdateRole({ role }) {
@@ -181,13 +181,16 @@ export function UpdateRole({ role }) {
         secondary
         small
         onClick={() => setOpen(true)}
-      >Edit
+      >
+        Edit
       </Button>
       <Modal
         open={open}
         onClose={() => setOpen(false)}
-        title="CREATE ROLE"
       >
+        <ModalHeader onClose={() => setOpen(false)}>
+          CREATE ROLE
+        </ModalHeader>
         <RoleForm
           attributes={attributes}
           setAttributes={setAttributes}
@@ -223,15 +226,17 @@ export function CreateRole({ q }) {
     }),
     onCompleted: () => setOpen(null),
   })
-  
+
   return (
     <>
       <Button onClick={() => setOpen(true)}>Create Role</Button>
       <Modal
         open={open}
         onClose={() => setOpen(false)}
-        title="CREATE ROLE"
       >
+        <ModalHeader onClose={() => setOpen(false)}>
+          CREATE ROLE
+        </ModalHeader>
         <RoleForm
           attributes={attributes}
           setAttributes={setAttributes}

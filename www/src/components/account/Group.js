@@ -1,7 +1,7 @@
 import { useApolloClient, useMutation, useQuery } from '@apollo/client'
 import { Box, TextInput } from 'grommet'
 import { Div, Flex } from 'honorable'
-import { Button, FormField, Modal, ModalActions, PersonIcon, Switch, Tab, ValidatedInput } from 'pluralsh-design-system'
+import { Button, FormField, Modal, ModalActions, ModalHeader, PersonIcon, Switch, Tab, ValidatedInput } from 'pluralsh-design-system'
 import { useState } from 'react'
 
 import { appendConnection, extendConnection, removeConnection, updateCache } from '../../utils/graphql'
@@ -62,7 +62,7 @@ function GroupMembers({ group, edit }) {
     variables: { id: group.id },
     fetchPolicy: 'cache-and-network',
   })
-  
+
   if (!data) return null
   const { groupMembers: { pageInfo, edges } } = data
   console.log(data)
@@ -131,7 +131,7 @@ export function UpdateGroup({ group, cancel }) {
   const [addMut] = useMutation(CREATE_GROUP_MEMBERS, {
     variables: { groupId: group.id },
     update: (cache, { data: { createGroupMember } }) => updateCache(cache, {
-      query: GROUP_MEMBERS, 
+      query: GROUP_MEMBERS,
       variables: { id: group.id },
       update: prev => appendConnection(prev, createGroupMember, 'groupMembers'),
     }),
@@ -224,7 +224,7 @@ export function UpdateGroup({ group, cancel }) {
       )}
     </Box>
   )
-} 
+}
 
 export function CreateGroup({ q }) {
   const [open, setOpen] = useState(false)
@@ -234,8 +234,8 @@ export function CreateGroup({ q }) {
     variables: { attributes: { name, description } },
     onCompleted: () => setOpen(false),
     update: (cache, { data: { createGroup } }) => updateCache(cache, {
-      query: GROUPS_Q, 
-      variables: { q }, 
+      query: GROUPS_Q,
+      variables: { q },
       update: prev => appendConnection(prev, createGroup, 'groups'),
     }),
   })
@@ -245,9 +245,11 @@ export function CreateGroup({ q }) {
       <Button onClick={() => setOpen(true)}>Create Group</Button>
       <Modal
         open={open}
-        title="CREATE GROUP"
         onClose={() => setOpen(false)}
       >
+        <ModalHeader onClose={() => setOpen(false)}>
+          CREATE GROUP
+        </ModalHeader>
         <Box
           width="50vw"
           gap="small"

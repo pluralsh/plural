@@ -1,6 +1,6 @@
 import { Box } from 'grommet'
 import { Button, Div } from 'honorable'
-import { MailIcon, Modal, ModalActions, ValidatedInput } from 'pluralsh-design-system'
+import { MailIcon, Modal, ModalActions, ModalHeader, ValidatedInput } from 'pluralsh-design-system'
 import { useState } from 'react'
 
 import { Copyable } from 'forge-core'
@@ -25,10 +25,12 @@ export function InviteUser() {
         <Button onClick={() => setOpen(true)}>Invite</Button>
       </Div>
       <Modal
-        title="INVITE USERS"
         open={open}
         onClose={() => setOpen(false)}
       >
+        <ModalHeader onClose={() => setOpen(false)}>
+          INVITE USERS
+        </ModalHeader>
         {invite && (
           <Box
             pad="small"

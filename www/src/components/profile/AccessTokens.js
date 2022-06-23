@@ -6,7 +6,7 @@ import { useState } from 'react'
 import lookup from 'country-code-lookup'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 
-import { CopyIcon, GraphIcon, ListIcon, Modal, ModalActions } from 'pluralsh-design-system'
+import { CopyIcon, GraphIcon, ListIcon, Modal, ModalActions, ModalHeader } from 'pluralsh-design-system'
 
 import { appendConnection, deepUpdate, extendConnection, removeConnection, updateCache } from '../../utils/graphql'
 import { Placeholder } from '../accounts/Audits'
@@ -150,8 +150,10 @@ function AccessToken({ token, first, last }) {
             <Modal
               open={audits}
               onClose={() => setAudits(false)}
-              title="AUDIT LOGS"
             >
+              <ModalHeader onClose={() => setAudits(false)}>
+                AUDIT LOGS
+              </ModalHeader>
               <TokenAudits token={token} />
             </Modal>
           </>
@@ -163,8 +165,10 @@ function AccessToken({ token, first, last }) {
             <Modal
               open={graph}
               onClose={() => setGraph(false)}
-              title="USAGE METRICS"
             >
+              <ModalHeader onClose={() => setGraph(false)}>
+                USAGE METRICS
+              </ModalHeader>
               <TokenMetrics token={token} />
             </Modal>
           </>

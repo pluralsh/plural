@@ -2,7 +2,7 @@ import { useMutation } from '@apollo/client'
 import { Box } from 'grommet'
 import { Edit } from 'grommet-icons'
 import { Button, Div, MenuItem, Span } from 'honorable'
-import { Modal, ModalActions, ValidatedInput } from 'pluralsh-design-system'
+import { Modal, ModalActions, ModalHeader, ValidatedInput } from 'pluralsh-design-system'
 import { useState } from 'react'
 
 import { appendConnection, updateCache } from '../../utils/graphql'
@@ -55,7 +55,7 @@ function ServiceAccountForm({ error, attributes, setAttributes, bindings, setBin
         remove={name => setBindings(bindings.filter(({ group }) => !group || group.name !== name))}
       />
     </Box>
-          
+
   )
 }
 
@@ -73,7 +73,7 @@ export function EditServiceAccount({ user, update }) {
     update,
     onCompleted: () => setConfirm(false),
   })
-  
+
   return (
     <>
       <MoreMenu>
@@ -95,10 +95,12 @@ export function EditServiceAccount({ user, update }) {
         loading={loading}
       />
       <Modal
-        title="UPDATE SERVICE ACCOUNT"
         open={edit}
         onClose={() => setEdit(false)}
       >
+        <ModalHeader onClose={() => setEdit(false)}>
+          UPDATE SERVICE ACCOUNT
+        </ModalHeader>
         <Box
           flex={false}
           gap="small"
@@ -149,10 +151,12 @@ export function CreateServiceAccount() {
         <Button onClick={() => setOpen(true)}>Create</Button>
       </Div>
       <Modal
-        title="CREATE SERVICE ACCOUNT"
         open={open}
         onClose={() => setOpen(false)}
       >
+        <ModalHeader onClose={() => setOpen(false)}>
+          CREATE SERVICE ACCOUNT
+        </ModalHeader>
         <Box
           flex={false}
           gap="small"

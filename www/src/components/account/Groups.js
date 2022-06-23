@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
 import { Button, Input } from 'honorable'
-import { GlobeIcon, Modal, SearchIcon } from 'pluralsh-design-system'
+import { GlobeIcon, Modal, ModalHeader, SearchIcon } from 'pluralsh-design-system'
 import { useContext, useState } from 'react'
 
 import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
@@ -55,10 +55,10 @@ function Group({ group, q }) {
   const [mutation, { loading, error }] = useMutation(DELETE_GROUP, {
     variables: { id: group.id },
     onCompleted: () => setConfirm(false),
-    update: (cache, { data: { deleteGroup } }) => updateCache(cache, { 
-      query: GROUPS_Q, 
-      variables: { q }, 
-      update: prev => removeConnection(prev, deleteGroup, 'groups'), 
+    update: (cache, { data: { deleteGroup } }) => updateCache(cache, {
+      query: GROUPS_Q,
+      variables: { q },
+      update: prev => removeConnection(prev, deleteGroup, 'groups'),
     }),
   })
 
@@ -100,25 +100,29 @@ function Group({ group, q }) {
         </Box>
         <Modal
           open={view}
-          title="VIEW GROUP"
           width="60vw"
           height="80vh"
           onClose={() => setView(false)}
         >
+          <ModalHeader onClose={() => setView(false)}>
+            VIEW GROUP
+          </ModalHeader>
           <ViewGroup group={group} />
         </Modal>
         <Modal
           open={edit}
-          title="EDIT GROUP"
           width="60vw"
           height="80vh"
           onClose={() => setEdit(false)}
         >
+          <ModalHeader onClose={() => setEdit(false)}>
+            EDIT GROUP
+          </ModalHeader>
           <UpdateGroup
             group={group}
             cancel={() => setEdit(false)}
           />
-        </Modal> 
+        </Modal>
         <Confirm
           open={confirm}
           text="Deleting groups cannot be undone and permissions attached to this group will be removed."

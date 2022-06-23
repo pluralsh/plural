@@ -1,4 +1,4 @@
-import { Button, Modal, ModalActions } from 'pluralsh-design-system'
+import { Button, Modal, ModalActions, ModalHeader } from 'pluralsh-design-system'
 
 import { GqlError } from '../utils/Alert'
 
@@ -7,8 +7,10 @@ export function Confirm({ open, close, title, error, text, submit, label, loadin
     <Modal
       open={open}
       onClose={close}
-      title={title || 'Are you sure?'}
     >
+      <ModalHeader onClose={close}>
+        {title || 'Are you sure?'}
+      </ModalHeader>
       {error ? (
         <GqlError
           error={error}

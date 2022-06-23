@@ -29,6 +29,7 @@ defmodule Core.Schema.Recipe do
     field :description, :string
     field :provider,    Provider
     field :private,     :boolean, default: false
+    field :restricted,  :boolean, default: false
     field :recipe_dependencies, :map, virtual: true
 
     embeds_one :oidc_settings, OIDCSettings, on_replace: :update
@@ -50,10 +51,13 @@ defmodule Core.Schema.Recipe do
   def public(query \\ __MODULE__),
     do: from(r in query, where: not r.private)
 
+  def unrestricted(query \\ __MODULE__),
+    do: from(r in query, where: not r.restricted)
+
   def ordered(query \\ __MODULE__, order \\ [asc: :name]),
     do: from(r in query, order_by: ^order)
 
-  @valid ~w(name description repository_id provider private)a
+  @valid ~w(name description repository_id provider private restricted)a
 
   def changeset(model, attrs \\ %{}) do
     model

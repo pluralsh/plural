@@ -8,14 +8,29 @@ import CreateShellContext from '../../contexts/CreateShellContext'
 import { CREATE_SHELL_MUTATION } from './query'
 import { GITHUB_VALIDATIONS } from './onboarding/scm/github'
 import { getExceptions } from './validation'
-import { CLOUD_VALIDATIONS, ProviderForm } from './onboarding/cloud/provider'
+import { CLOUD_VALIDATIONS } from './onboarding/cloud/provider'
 import { SCM_VALIDATIONS, ScmSection } from './onboarding/scm/ScmInput'
-import { SECTIONS, SECTION_CLOUD_SELECT, SECTION_CLOUD_WORKSPACE, SECTION_COMPLETE_CLI, SECTION_GIT_PROVIDER, SECTION_INSTALL_CLI, SECTION_SYNOPSIS } from './constants'
+import {
+  SECTIONS,
+  SECTION_CLI_COMPLETION,
+  SECTION_CLI_INSTALLATION,
+  SECTION_CLOUD_CREDENTIALS,
+  SECTION_CLOUD_SELECT,
+  SECTION_CLOUD_WORKSPACE,
+  SECTION_GIT_PROVIDER,
+  SECTION_SYNOPSIS,
+} from './constants'
 
+// Common
 import OnboardingWrapper from './onboarding/OnboardingWrapper'
-import InstallCli from './onboarding/cloud/InstallCli'
-import CompleteCLi from './onboarding/cloud/CompleteCli'
+// Cloud
+import CloudSelect from './onboarding/cloud/CloudSelect'
+import CloudCredentials from './onboarding/cloud/CloudCredentials'
 import CloudWorkspace, { CLOUD_WORKSPACE_VALIDATIONS } from './onboarding/cloud/CloudWorkspace'
+// CLI
+import CliInstallation from './onboarding/cli/CliInstallation'
+import CliCompletion from './onboarding/cli/CliCompletion'
+// Synopsis
 import Synopsis from './onboarding/synopsis/Synopsis'
 
 const VALIDATIONS = {
@@ -109,22 +124,25 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider, authUrlData
     <CreateShellContext.Provider value={contextData}>
       <OnboardingWrapper
         stepIndex={stepIndex}
-        cliMode={section === SECTION_INSTALL_CLI || section === SECTION_COMPLETE_CLI}
+        cliMode={section === SECTION_CLI_INSTALLATION || section === SECTION_CLI_COMPLETION}
       >
         {section === SECTION_GIT_PROVIDER && (
           <ScmSection />
         )}
         {section === SECTION_CLOUD_SELECT && (
-          <ProviderForm />
+          <CloudSelect />
         )}
-        {section === SECTION_INSTALL_CLI && (
-          <InstallCli />
-        )}
-        {section === SECTION_COMPLETE_CLI && (
-          <CompleteCLi />
+        {section === SECTION_CLOUD_CREDENTIALS && (
+          <CloudCredentials />
         )}
         {section === SECTION_CLOUD_WORKSPACE && (
           <CloudWorkspace />
+        )}
+        {section === SECTION_CLI_INSTALLATION && (
+          <CliInstallation />
+        )}
+        {section === SECTION_CLI_COMPLETION && (
+          <CliCompletion />
         )}
         {section === SECTION_SYNOPSIS && (
           <Synopsis

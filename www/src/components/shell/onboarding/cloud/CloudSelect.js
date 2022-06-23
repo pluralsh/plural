@@ -4,7 +4,7 @@ import { Button, CloudIcon } from 'pluralsh-design-system'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'
 
-import { SECTION_CLI_INSTALLATION, SECTION_CLOUD_CREDENTIALS } from '../../constants'
+import { SECTION_CLI_INSTALLATION, SECTION_CLOUD_BUILD, SECTION_CLOUD_CREDENTIALS } from '../../constants'
 import OnboardingNavSection from '../OnboardingNavSection'
 
 import OnboardingCard from '../OnboardingCard'
@@ -90,7 +90,7 @@ function CloudSelect() {
               }
             }
             else {
-              setSection(SECTION_CLOUD_CREDENTIALS)
+              setSection(SECTION_CLOUD_BUILD)
             }
           }}
         >

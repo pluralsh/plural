@@ -4,7 +4,7 @@ export const SECTION_GIT_PROVIDER = 'git-provider'
 export const SECTION_CLOUD_SELECT = 'cloud-select'
 export const SECTION_CLOUD_CREDENTIALS = 'cloud-credentials'
 export const SECTION_CLOUD_WORKSPACE = 'cloud-workspace'
-export const SECTION_DEMO_BUILD = 'demo-build'
+export const SECTION_CLOUD_BUILD = 'cloud-build'
 export const SECTION_CLI_INSTALLATION = 'cli-installation'
 export const SECTION_CLI_COMPLETION = 'cli-completion'
 export const SECTION_SYNOPSIS = 'synopsis'
@@ -20,7 +20,7 @@ export const SECTIONS = {
     previous: SECTION_GIT_PROVIDER,
     next: null, // Next will be decided by the user, using setSection directly
   },
-  [SECTION_DEMO_BUILD]: {
+  [SECTION_CLOUD_BUILD]: {
     stepIndex: 1,
     previous: SECTION_CLOUD_SELECT,
     next: SECTION_CLOUD_WORKSPACE,

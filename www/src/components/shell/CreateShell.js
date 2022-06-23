@@ -14,6 +14,7 @@ import {
   SECTIONS,
   SECTION_CLI_COMPLETION,
   SECTION_CLI_INSTALLATION,
+  SECTION_CLOUD_BUILD,
   SECTION_CLOUD_CREDENTIALS,
   SECTION_CLOUD_SELECT,
   SECTION_CLOUD_WORKSPACE,
@@ -25,6 +26,7 @@ import {
 import OnboardingWrapper from './onboarding/OnboardingWrapper'
 // Cloud
 import CloudSelect from './onboarding/cloud/CloudSelect'
+import CloudBuild from './onboarding/cloud/CloudBuild'
 import CloudCredentials from './onboarding/cloud/CloudCredentials'
 import CloudWorkspace, { CLOUD_WORKSPACE_VALIDATIONS } from './onboarding/cloud/CloudWorkspace'
 // CLI
@@ -132,6 +134,9 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider, authUrlData
         {section === SECTION_CLOUD_SELECT && (
           <CloudSelect />
         )}
+        {section === SECTION_CLOUD_BUILD && (
+          <CloudBuild />
+        )}
         {section === SECTION_CLOUD_CREDENTIALS && (
           <CloudCredentials />
         )}
@@ -145,13 +150,7 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider, authUrlData
           <CliCompletion />
         )}
         {section === SECTION_SYNOPSIS && (
-          <Synopsis
-            provider={providerName}
-            workspace={workspace}
-            credentials={credentials}
-            demo={demo}
-            scm={scm}
-          />
+          <Synopsis />
         )}
         {/* Unhandled Errors */}
         <Div

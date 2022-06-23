@@ -111,7 +111,7 @@ defmodule Core.Services.Accounts do
     start_transaction()
     |> add_operation(:domain, fn _ ->
       get_domain_mapping(domain)
-      |> DomainMapping.changeset(%{enable_sso: true})
+      |> DomainMapping.changeset(%{enable_sso: true, workos_connection_id: connection_id})
       |> Core.Repo.update()
     end)
     |> add_operation(:account, fn _ ->
@@ -131,7 +131,7 @@ defmodule Core.Services.Accounts do
     end)
     |> add_operation(:mappings, fn _ ->
       DomainMapping.for_account(aid)
-      |> Core.Repo.update_all(set: [enable_sso: false])
+      |> Core.Repo.update_all(set: [enable_sso: false, workos_connection_id: nil])
       |> ok()
     end)
     |> execute(extract: :account)

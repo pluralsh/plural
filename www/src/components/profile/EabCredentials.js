@@ -52,7 +52,6 @@ function EabCredential({ credential, last }) {
             onClick={mutation}
             loading={loading}
             marginLeft="medium"
-            background="icon-error"
           >Remove
           </Button>
         </ModalActions>

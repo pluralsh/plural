@@ -187,7 +187,6 @@ function AccessToken({ token, first, last }) {
             onClick={mutation}
             loading={loading}
             marginLeft="medium"
-            background="icon-error"
           >Remove
           </Button>
         </ModalActions>

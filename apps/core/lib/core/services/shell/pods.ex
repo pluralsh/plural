@@ -103,7 +103,10 @@ defmodule Core.Services.Shell.Pods do
         limits: %{cpu: "500m", memory: "1Gi"},
         requests: %{cpu: "50m", memory: "150Mi"}
       },
-      env: [%CoreV1.EnvVar{name: "IGNORE_IN_CLUSTER", value: "true"}],
+      env: [
+        %CoreV1.EnvVar{name: "IGNORE_IN_CLUSTER", value: "true"},
+        %CoreV1.EnvVar{name: "CLOUD_SHELL", value: "1"},
+      ],
       liveness_probe: healthcheck(),
       readiness_probe: healthcheck(),
     }

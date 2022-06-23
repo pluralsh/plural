@@ -1,5 +1,5 @@
-import { createElement, useContext, useEffect, useRef, useState } from 'react'
-import { useMutation } from '@apollo/client'
+import { useContext, useEffect, useState } from 'react'
+import { useMutation, useQuery } from '@apollo/client'
 import { Div, Flex, P } from 'honorable'
 import { Button, ProgressBar } from 'pluralsh-design-system'
 
@@ -9,17 +9,34 @@ import { CREATE_DEMO_PROJECT_MUTATION, POLL_DEMO_PROJECT_QUERY } from '../../que
 
 import OnboardingNavSection from '../OnboardingNavSection'
 import OnboardingCard from '../OnboardingCard'
+import { GqlError } from '../../../utils/Alert'
 
 function CloudBuild() {
   const { provider, setProvider, workspace, setWorkspace, credentials, setCredentials, previous, next, exceptions } = useContext(CreateShellContext)
-  const [createDemoProjectMutation, { data, error }] = useMutation(CREATE_DEMO_PROJECT_MUTATION)
-  const [completed, setCompleted] = useState(false)
+  const [createDemoProjectMutation, createDemoProjectMutationResults] = useMutation(CREATE_DEMO_PROJECT_MUTATION)
+  const pollDemoProjectQueryResults = useQuery(
+    POLL_DEMO_PROJECT_QUERY,
+    {
+      variables: {
+        id: createDemoProjectMutationResults.data?.id,
+      },
+      pollInterval: 2000,
+      skip: !!createDemoProjectMutationResults.error || !createDemoProjectMutationResults.data,
+    }
+  )
 
-  useEffect(createDemoProjectMutation, [createDemoProjectMutation])
+  console.log('data', pollDemoProjectQueryResults.data)
+
+  const [completed, setCompleted] = useState(false)
+  const error = createDemoProjectMutationResults.error || pollDemoProjectQueryResults.error
+
+  useEffect(() => {
+    createDemoProjectMutation()
+  }, [createDemoProjectMutation])
 
   return (
     <>
-      <OnboardingCard title="Configure cloud credentials">
+      <OnboardingCard>
         <Flex
           align="center"
           justify="space-between"
@@ -38,8 +55,10 @@ function CloudBuild() {
           Chip here
         </Flex>
         <ProgressBar
-          mode="indeterminate"
+          mode={error ? 'determinate' : 'indeterminate'}
           marginTop="medium"
+          progress={error ? 0 : null}
+          backgroundColor={error ? 'icon-error' : null}
         />
         <Flex
           marginTop="xlarge"
@@ -64,6 +83,14 @@ function CloudBuild() {
           Chip here
         </Flex>
       </OnboardingCard>
+      {!!error && (
+        <Div marginTop="medium">
+          <GqlError
+            header="Error while creating demo project"
+            error={error}
+          />
+        </Div>
+      )}
       {/* Navigation */}
       <OnboardingNavSection>
         <Button
@@ -84,6 +111,7 @@ function CloudBuild() {
           </Button>
         )}
       </OnboardingNavSection>
+
     </>
   )
 }

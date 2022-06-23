@@ -177,9 +177,11 @@ function AccessToken({ token, first, last }) {
       </ListItem>
       <Modal
         open={confirm}
-        title="Delete Access Token"
         onClose={() => setConfirm(false)}
       >
+        <ModalHeader onClose={() => setConfirm(false)}>
+          Delete Access Token
+        </ModalHeader>
         Are you sure you want to delete this public key?
         <ModalActions>
           <Button

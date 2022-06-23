@@ -12,7 +12,7 @@ import OnboardingCard from '../OnboardingCard'
 import { GqlError } from '../../../utils/Alert'
 
 function CloudBuild() {
-  const { provider, setProvider, workspace, setWorkspace, credentials, setCredentials, previous, next, exceptions } = useContext(CreateShellContext)
+  const { previous, next } = useContext(CreateShellContext)
   const [createDemoProjectMutation, createDemoProjectMutationResults] = useMutation(CREATE_DEMO_PROJECT_MUTATION)
   const pollDemoProjectQueryResults = useQuery(
     POLL_DEMO_PROJECT_QUERY,
@@ -27,7 +27,7 @@ function CloudBuild() {
 
   console.log('data', pollDemoProjectQueryResults.data)
 
-  const [completed, setCompleted] = useState(false)
+  const [completed, setCompleted] = useState(false) // Maybe use a compound bool
   const error = createDemoProjectMutationResults.error || pollDemoProjectQueryResults.error
 
   useEffect(() => {

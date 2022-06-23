@@ -19,7 +19,6 @@ import RepositoryPackagesHelm from './repository/RepositoryPackagesHelm'
 import RepositoryPackagesTerraform from './repository/RepositoryPackagesTerraform'
 import RepositoryTests from './repository/RepositoryTests'
 import Terraform from './repos/Terraform'
-import { Audits } from './accounts/Audits'
 import CloudShell from './shell/CloudShell'
 import { CurrentUserContext, PluralConfigurationContext, PluralProvider } from './login/CurrentUser'
 import { DeviceLoginNotif } from './users/DeviceLoginNotif'
@@ -44,6 +43,7 @@ import { Roles } from './account/Roles'
 import { Domains } from './account/Domains'
 import { AccountAttributes } from './account/AccountAttributes'
 import { Clusters } from './upgrades/Clusters'
+import { AuditChloro, AuditDirectory, Audits, LoginAudits } from './account/Audits'
 
 function EditBilling(props) {
   return (
@@ -282,11 +282,32 @@ export function PluralInner() {
               path="/user/edit/:editing"
               element={<EditUser />}
             />
-            {/* --- AUDITS --- */}
             <Route
-              path="/audits/:graph"
-              element={<Audits />}
-            />
+              path="/audits"
+              element={<AuditDirectory />}
+            >
+              <Route
+                index
+                element={(
+                  <Navigate
+                    replace
+                    to="logs"
+                  />
+                )}
+              />
+              <Route
+                path="logs"
+                element={<Audits />}
+              />
+              <Route
+                path="logins"
+                element={<LoginAudits />}
+              />
+              <Route
+                path="geo"
+                element={<AuditChloro />}
+              />
+            </Route>
             <Route
               exact
               path="/audits"

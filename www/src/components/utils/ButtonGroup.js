@@ -9,7 +9,7 @@ function ButtonItem({ val, onChange, active, first, last }) {
     <Box
       flex={false}
       pad={{ horizontal: '12px', vertical: '8px' }}
-      border={last ? null : { side: 'right' }}
+      border={last ? true : [{ side: 'left' }, { side: 'horizontal' }]}
       background={val === active ? 'action-primary' : null}
       round={first ? { corner: 'left', size: ROUND } : (last ? { corner: 'right', size: ROUND } : null)}
       onClick={() => onChange(val)}
@@ -31,23 +31,18 @@ export function ButtonGroup({ tabs, onChange, default: def }) {
   return (
     <Box
       flex={false}
-      border
-      round="6px"
+      direction="row"
     >
-      <Box
-        direction="row"
-      >
-        {tabs.map((t, i) => (
-          <ButtonItem
-            key={t}
-            val={t}
-            first={i === 0}
-            last={i === len - 1}
-            onChange={doChange}
-            active={active}
-          />
-        ))}
-      </Box>
+      {tabs.map((t, i) => (
+        <ButtonItem
+          key={t}
+          val={t}
+          first={i === 0}
+          last={i === len - 1}
+          onChange={doChange}
+          active={active}
+        />
+      ))}
     </Box>
   )
 }

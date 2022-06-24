@@ -21,8 +21,8 @@ function RangeOption({ duration, current, setDuration, first, last }) {
       align="center"
       justify="center"
       focusIndicator={false}
-      background={selected ? 'light-3' : null}
-      hoverIndicator="light-2"
+      background={selected ? 'fill-two' : null}
+      hoverIndicator="fill-one"
       onClick={() => setDuration(duration)}
     >
       <Text

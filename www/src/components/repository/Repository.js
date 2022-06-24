@@ -60,7 +60,7 @@ function Repository() {
           <Flex
             px={2}
             py={1}
-            width={128 + 64 + 32 - 16}
+            width={128 + 64 + 32}
             flexShrink={0}
             direction="column"
           >
@@ -93,6 +93,21 @@ function Repository() {
                 Packages
               </Tab>
             </Link>
+            {repository.installation && (
+              <Link
+                to={`/repository/${id}/oidc`}
+                style={{ textDecoration: 'none' }}
+              >
+
+                <Tab
+                  vertical
+                  active={pathname.startsWith(`/repository/${id}/oidc`)}
+                  textDecoration="none"
+                >
+                  OpenID Connect
+                </Tab>
+              </Link>
+            )}
             <Link
               to={`/repository/${id}/tests`}
               style={{ textDecoration: 'none' }}

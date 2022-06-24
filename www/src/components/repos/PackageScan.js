@@ -60,9 +60,9 @@ function ScanViolation({ violation }) {
         gap="xsmall"
         align="center"
         pad="small"
-        border={{ side: 'bottom', color: 'tone-light' }}
+        border={{ side: 'bottom' }}
         height={ROW_HEIGHT_PX}
-        hoverIndicator="tone-light"
+        hoverIndicator="fill-one"
         onClick={() => setOpen(!open)}
       >
         <HeaderItem
@@ -123,10 +123,13 @@ function ScanViolation({ violation }) {
 
 export function ScanResults({ scan: { errors, violations } }) {
   return (
-    <Box fill>
+    <Box
+      fill
+      flex={false}
+      gap="small"
+    >
       {errors && (
         <Box
-          fill
           gap="small"
           pad={{ vertical: 'small' }}
         >
@@ -142,12 +145,14 @@ export function ScanResults({ scan: { errors, violations } }) {
         </Box>
       )}
       <ScanHeader />
-      {violations.map((vio, ind) => (
-        <ScanViolation
-          key={`${ind}`}
-          violation={vio}
-        />
-      ))}
+      <Box flex={false}>
+        {violations.map((vio, ind) => (
+          <ScanViolation
+            key={`${ind}`}
+            violation={vio}
+          />
+        ))}
+      </Box>
     </Box>
   )
 }

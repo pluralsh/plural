@@ -76,7 +76,6 @@ export function DockerImages({ dockerRepository }) {
   return (
     <Box fill>
       <Box
-        flex={false}
         direction="row"
         align="center"
         border={{ side: 'bottom', color: 'border' }}

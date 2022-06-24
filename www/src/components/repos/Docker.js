@@ -5,9 +5,10 @@ import { useNavigate, useParams } from 'react-router-dom'
 import moment from 'moment'
 import { Anchor, Box, Collapsible, Stack, Text } from 'grommet'
 import { Language } from 'grommet-icons'
-import CopyToClipboard from 'react-copy-to-clipboard'
 import truncate from 'lodash.truncate'
 import Toggle from 'react-toggle'
+
+import { Codeline } from 'pluralsh-design-system'
 
 import { BreadcrumbsContext } from '../Breadcrumbs'
 
@@ -116,6 +117,7 @@ function DockerSidebar({ image: { dockerRepository: docker, ...image }, filter, 
   return (
     <>
       <Box
+        flex={false}
         style={{ overflow: 'auto' }}
         gap="small"
       >
@@ -131,18 +133,9 @@ function DockerSidebar({ image: { dockerRepository: docker, ...image }, filter, 
             Pull Command
           </Text>
           <Stack anchor="right">
-            <CopyToClipboard
-              text={`docker pull ${imageName}`}
-              onCopy={() => setCopied(true)}
-            >
-              <Box
-                flex={false}
-                background="fill-two"
-                pad="xsmall"
-              >
-                <pre>docker pull {truncate(imageName, { length: 40 })}</pre>
-              </Box>
-            </CopyToClipboard>
+            <Codeline>
+              docker pull {truncate(imageName, { length: 40 })}
+            </Codeline>
             <Box
               flex={false}
               margin={{ right: 'small' }}
@@ -248,7 +241,7 @@ function VectorSection({ text, background }) {
     <Box
       pad={{ vertical: 'xsmall' }}
       width="150px"
-      background="light-1"
+      background="fill-one"
       align="center"
       justify="center"
       border={background && { side: 'bottom', size: '3px', color: background }}
@@ -620,7 +613,6 @@ export function Docker() {
     >
       <Box
         fill
-        width="70%"
         gap="small"
       >
         <DockerHeader image={image} />
@@ -654,7 +646,7 @@ export function Docker() {
       <Box
         flex={false}
         fill="vertical"
-        width="40%"
+        width="500px"
       >
         <DockerSidebar
           image={image}

@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { Avatar, Div, Flex, Img, Menu, MenuItem, P, useOutsideClick } from 'honorable'
 import {
   ArrowTopRightIcon,
+  ClusterIcon,
   DiscordIcon,
   DownloadIcon,
   GitHubLogoIcon,
@@ -16,7 +17,6 @@ import {
   PeopleIcon,
   PersonIcon,
   TerminalIcon,
-  UpdatesIcon,
 } from 'pluralsh-design-system'
 
 import { getPreviousUserData, setPreviousUserData, setToken, wipeToken } from '../../helpers/authentication'
@@ -56,9 +56,9 @@ function SidebarWrapper() {
       url: '/account',
     },
     {
-      name: 'Upgrades',
-      Icon: UpdatesIcon,
-      url: '/upgrades',
+      name: 'Clusters',
+      Icon: ClusterIcon,
+      url: '/clusters',
     },
     {
       name: 'Audits',

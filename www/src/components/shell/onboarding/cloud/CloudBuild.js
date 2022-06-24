@@ -18,14 +18,14 @@ function CloudBuild() {
     POLL_DEMO_PROJECT_QUERY,
     {
       variables: {
-        id: createDemoProjectMutationResults.data?.id,
+        id: createDemoProjectMutationResults.data?.createDemoProject?.id,
       },
       pollInterval: 2000,
       skip: !!createDemoProjectMutationResults.error || !createDemoProjectMutationResults.data,
     }
   )
 
-  console.log('data', pollDemoProjectQueryResults.data)
+  console.log('data', createDemoProjectMutationResults.data, pollDemoProjectQueryResults.data)
 
   const [completed, setCompleted] = useState(false) // Maybe use a compound bool
   const error = createDemoProjectMutationResults.error || pollDemoProjectQueryResults.error
@@ -93,14 +93,16 @@ function CloudBuild() {
       )}
       {/* Navigation */}
       <OnboardingNavSection>
-        <Button
-          secondary
-          onClick={() => {
-            previous()
-          }}
-        >
-          Back
-        </Button>
+        {!!error && (
+          <Button
+            secondary
+            onClick={() => {
+              previous()
+            }}
+          >
+            Back
+          </Button>
+        )}
         {completed && (
           <Button
             onClick={() => {

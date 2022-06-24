@@ -43,6 +43,7 @@ import { Groups } from './account/Groups'
 import { Roles } from './account/Roles'
 import { Domains } from './account/Domains'
 import { AccountAttributes } from './account/AccountAttributes'
+import { Clusters } from './upgrades/Clusters'
 
 function EditBilling(props) {
   return (
@@ -304,6 +305,10 @@ export function PluralInner() {
             <Route
               path="/upgrades"
               element={<UpgradeQueues />}
+            />
+            <Route
+              path="/clusters"
+              element={<Clusters />}
             />
             {/* --- 404 --- */}
             <Route

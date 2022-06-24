@@ -16,7 +16,7 @@ function HeaderItem({ label, index }) {
   )
 }
 
-export function TableRow({ children, suffix, last }) {
+export function TableRow({ children, suffix, last, ...flex }) {
   const { sizes } = useContext(TableContext)
 
   const len = children.length
@@ -29,6 +29,7 @@ export function TableRow({ children, suffix, last }) {
       width="100%"
       align="center"
       borderBottom={last ? null : '1px solid border'}
+      {...flex}
     >
       {children.map((child, i) => (
         <Flex
@@ -58,6 +59,8 @@ export function Table({ sizes, headers, children, background, ...flex }) {
   return (
     <Flex
       direction="column"
+      border="1px solid border"
+      borderRadius="small"
       background={background}
       {...flex}
     >

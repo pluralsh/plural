@@ -1,6 +1,8 @@
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import moment from 'moment'
-import { Flex, H2, P, Span } from 'honorable'
+import { Flex, P } from 'honorable'
+
+import { Chip, StatusIpIcon, StatusOkIcon } from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 
@@ -9,16 +11,15 @@ import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import InfiniteScroller from '../utils/InfiniteScroller'
 
+import { ROLLOUT_SUB } from '../upgrades/queries'
+import { appendConnection } from '../../utils/graphql'
+
+import { Table, TableData, TableRow } from '../utils/Table'
+
 import { DEPLOYMENTS_QUERY } from './queries'
 
 // eslint-disable-next-line
 const MAX_UUID = 0xffffffffffffffffffffffffffffffff
-
-const statusToColor = {
-  QUEUED: 'fill-one',
-  RUNNING: 'warning',
-  FINISHED: 'success',
-}
 
 function progress(cursor) {
   const prog = cursor ? parseInt(cursor.replaceAll('-', ''), 16) : 0
@@ -26,70 +27,45 @@ function progress(cursor) {
   return Math.floor((prog / MAX_UUID) * 10000) / 100
 }
 
-function statusDescription({ status, cursor }) {
+function statusAttributes({ status, cursor }) {
   switch (status) {
     case 'QUEUED':
-      return 'queued'
+      return { icon: <StatusIpIcon />, text: 'queued', severity: 'neutral' }
     case 'FINISHED':
-      return 'finished'
+      return { icon: <StatusOkIcon />, text: 'finished', severity: 'success' }
     case 'RUNNING':
-      return `${progress(cursor)}% completed`
+      return { loading: true, text: `${progress(cursor)}% completed`, severity: 'info' }
     default:
-      return null
+      return {}
   }
 }
 
 function Status({ rollout }) {
+  const { text, ...rest } = statusAttributes(rollout)
+
   return (
-    <Span
-      backgroundColor={statusToColor[rollout.status]}
-      borderRadius={4}
-      px={0.5}
-      py={0.25}
-    >
-      {statusDescription(rollout)}
-    </Span>
+    <Chip
+      {...rest}
+      backgroundColor="fill-two"
+    >{text}
+    </Chip>
   )
 }
 
-function Rollout({ rollout }) {
+function Rollout({ rollout, last }) {
   return (
-    <Flex borderBottom="1px solid border">
-      <P
-        py={1}
-        px={1}
-        width="calc(100% / 4)"
-      >
-        {rollout.event}
-      </P>
-      <P
-        py={1}
-        px={1}
-        width="calc(100% / 4)"
-      >
-        {`${rollout.count} clusters`}
-      </P>
-      <P
-        py={1}
-        px={1}
-        width="calc(100% / 4)"
-      >
-        {rollout.heartbeat ? moment(rollout.heartbeat).fromNow() : 'pending'}
-      </P>
-      <P
-        py={1}
-        px={1}
-        width="calc(100% / 4)"
-      >
-        <Status rollout={rollout} />
-      </P>
-    </Flex>
+    <TableRow last={last}>
+      <TableData>{rollout.event}</TableData>
+      <TableData>{rollout.count} clusters</TableData>
+      <TableData>{rollout.heartbeat ? moment(rollout.heartbeat).fromNow() : 'pending'}</TableData>
+      <TableData><Status rollout={rollout} /></TableData>
+    </TableRow>
   )
 }
 
 function RepositoryDeployments() {
   const { id } = useContext(RepositoryContext)
-  const [rollouts, loadingRollouts, hasMoreRollouts, fetchMoreRollouts] = usePaginatedQuery(
+  const [rollouts, loadingRollouts, hasMoreRollouts, fetchMoreRollouts, subscribeToMore] = usePaginatedQuery(
     DEPLOYMENTS_QUERY,
     {
       variables: {
@@ -99,7 +75,15 @@ function RepositoryDeployments() {
     data => data.rollouts
   )
 
-  if (rollouts.length === 0 && loadingRollouts) {
+  useEffect(() => subscribeToMore({
+    document: ROLLOUT_SUB,
+    variables: { repositoryId: id },
+    updateQuery: (prev, { subscriptionData: { data: { rolloutDelta: { delta, payload } } } }) => delta === 'CREATE' ? appendConnection(prev, payload, 'rollouts') : prev,
+  }), [id])
+
+  const len = rollouts.length
+
+  if (len === 0 && loadingRollouts) {
     return (
       <Flex
         pt={2}
@@ -116,47 +100,13 @@ function RepositoryDeployments() {
       maxHeight="100%"
       direction="column"
     >
-      <H2 flexShrink={0}>
-        Deployments
-      </H2>
-      <Flex
-        mt={1.5}
-        flexGrow={1}
-        direction="column"
+      <Table
+        headers={['Event', 'Clusters Updated', 'Last Ping', 'Status']}
+        sizes={['25%', '25%', '25%', '25%']}
+        background="fill-one"
+        width="100%"
+        height="100%"
       >
-        <Flex
-          borderBottom="1px solid border"
-          fontWeight={500}
-        >
-          <P
-            py={0.5}
-            px={1}
-            width="calc(100% / 4)"
-          >
-            Event
-          </P>
-          <P
-            py={0.5}
-            px={1}
-            width="calc(100% / 4)"
-          >
-            Clusters Updated
-          </P>
-          <P
-            py={0.5}
-            px={1}
-            width="calc(100% / 4)"
-          >
-            Last Ping
-          </P>
-          <P
-            py={0.5}
-            px={1}
-            width="calc(100% / 4)"
-          >
-            Progress
-          </P>
-        </Flex>
         <InfiniteScroller
           pb={4}
           loading={loadingRollouts}
@@ -166,14 +116,15 @@ function RepositoryDeployments() {
           flexGrow={1}
           height={0}
         >
-          {rollouts.map(rollout => (
+          {rollouts.map((rollout, i) => (
             <Rollout
+              last={i === len - 1}
               key={rollout.id}
               rollout={rollout}
             />
           ))}
         </InfiniteScroller>
-      </Flex>
+      </Table>
     </Flex>
   )
 }

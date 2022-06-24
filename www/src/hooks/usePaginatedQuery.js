@@ -29,6 +29,7 @@ function usePaginatedQuery(query, options = {}, getResults = x => x) {
     results.loading,
     workingResults?.pageInfo?.hasNextPage || false,
     handleFetchMore,
+    results.subscribeToMore,
   ]
 }
 

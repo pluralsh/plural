@@ -7,6 +7,7 @@ import { DockerRepoFragment } from '../../models/docker'
 import { RecipeFragment } from '../../models/recipe'
 import { PageInfo } from '../../models/misc'
 import { RolloutFragment } from '../../models/upgrades'
+import { OIDCProvider } from '../../models/oauth'
 
 export const CREATE_REPOSITORY_MUTATION = gql`
   mutation CreateRepository($repositoryId: ID!, $attributes: RepositoryAttributes!) {
@@ -29,6 +30,8 @@ export const REPOSITORY_QUERY = gql`
       }
       installation {
         ...InstallationFragment
+        oidcProvider { ...OIDCProvider }
+
       }
       tags {
         name: tag
@@ -41,6 +44,7 @@ export const REPOSITORY_QUERY = gql`
   ${RepoFragment}
   ${ArtifactFragment}
   ${InstallationFragment}
+  ${OIDCProvider}
 `
 
 export const RECIPES_QUERY = gql`

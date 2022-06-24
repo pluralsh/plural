@@ -16,7 +16,7 @@ import { BreadcrumbsContext } from '../Breadcrumbs'
 import { CHART_Q, INSTALL_CHART, UPDATE_CHART_INST } from './queries'
 import { DEFAULT_CHART_ICON } from './constants'
 
-import Installation, { DetailContainer } from './Installation'
+import { DetailContainer } from './Installation'
 import Dependencies, { FullDependencies, ShowFull } from './Dependencies'
 import { dockerPull } from './misc'
 import { DeferredUpdates } from './DeferredUpdates'
@@ -393,25 +393,17 @@ export default function Chart() {
           pad="small"
           width={`${100 - width}%`}
         >
-          {tab === 'configuration' ? (
-            <Installation
-              repository={repository}
-              onUpdate={updateInstallation(chartId)}
-              open
+          <Box gap="small">
+            <Versions
+              edges={edges}
+              pageInfo={pageInfo}
+              fetchMore={fetchMore}
+              refetch={refetch}
+              setVersion={setVersion}
             />
-          ) : (
-            <Box gap="small">
-              <Versions
-                edges={edges}
-                pageInfo={pageInfo}
-                fetchMore={fetchMore}
-                refetch={refetch}
-                setVersion={setVersion}
-              />
-              <ChartInfo version={currentVersion} />
-              <ImageDependencies version={currentVersion} />
-            </Box>
-          )}
+            <ChartInfo version={currentVersion} />
+            <ImageDependencies version={currentVersion} />
+          </Box>
         </Box>
       </Box>
     </ScrollableContainer>

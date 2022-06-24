@@ -1,10 +1,12 @@
 import { useContext, useEffect, useState } from 'react'
 import { Box, Markdown, Text } from 'grommet'
-import { Button, InputCollection, ScrollableContainer, SecondaryButton, TabContent, TabHeader, TabHeaderItem, Tabs } from 'forge-core'
+import { InputCollection, ScrollableContainer, TabContent, TabHeader, TabHeaderItem, Tabs } from 'forge-core'
 import { useMutation, useQuery } from '@apollo/client'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import Highlight from 'react-highlight.js'
+
+import { Button, Modal } from 'honorable'
 
 import { Versions } from '../versions/Versions'
 
@@ -13,9 +15,10 @@ import { BreadcrumbsContext } from '../Breadcrumbs'
 
 import { deepUpdate, updateCache } from '../../utils/graphql'
 
+import { GqlError } from '../utils/Alert'
+
 import { DELETE_TF, INSTALL_TF, TF_Q, UNINSTALL_TF, UPDATE_TF } from './queries'
 import { DEFAULT_TF_ICON } from './constants'
-import Installation from './Installation'
 import Dependencies, { FullDependencies, ShowFull } from './Dependencies'
 
 import { DeferredUpdates } from './DeferredUpdates'
@@ -69,20 +72,32 @@ function TerraformInstaller({ installation, terraformId, terraformInstallation, 
     },
   })
 
-  return installed ? (
-    <SecondaryButton
-      round="xsmall"
-      label="Uninstall"
-      error={error}
-      onClick={mutation}
-    />
-  ) : (
-    <Button
-      round="xsmall"
-      label="Install"
-      error={error}
-      onClick={mutation}
-    />
+  return (
+    <>
+      {error && (
+        <Modal><GqlError
+          error={error}
+          header="Could not install module"
+        />
+        </Modal>
+      )}
+      {installed ? (
+        <Button
+          secondary
+          onClick={mutation}
+        >
+          Uninstall
+        </Button>
+      )
+        : (
+          <Button
+            round="xsmall"
+            onClick={mutation}
+          >
+            Install
+          </Button>
+        )}
+    </>
   )
 }
 
@@ -274,6 +289,7 @@ export default function Terraform() {
       >
         <Box
           width={`${width}%`}
+          fill="vertical"
           pad="small"
         >
           <TerraformHeader
@@ -324,16 +340,6 @@ export default function Terraform() {
                   </Text>
                 </TabHeaderItem>
               )}
-              {terraformModule.editable && (
-                <TabHeaderItem name="edit">
-                  <Text
-                    size="small"
-                    weight={500}
-                  >
-                    Edit
-                  </Text>
-                </TabHeaderItem>
-              )}
               {tfInst && (
                 <TabHeaderItem name="updates">
                   <Text
@@ -363,9 +369,6 @@ export default function Terraform() {
                 />
               )}
             </TabContent>
-            <TabContent name="edit">
-              <UpdateTerraform {...terraformModule} />
-            </TabContent>
             {tfInst && (
               <TabContent name="updates">
                 <DeferredUpdates tfInst={tfInst.id} />
@@ -378,22 +381,13 @@ export default function Terraform() {
           width={`${100 - width}%`}
           gap="small"
         >
-          {tab === 'configuration' ? (
-            <Installation
-              noHelm
-              open
-              repository={terraformModule.repository}
-              onUpdate={updateInstallation(tfId)}
-            />
-          ) : (
-            <Versions
-              edges={edges}
-              pageInfo={pageInfo}
-              refetch={refetch}
-              fetchMore={fetchMore}
-              setVersion={setVersion}
-            />
-          )}
+          <Versions
+            edges={edges}
+            pageInfo={pageInfo}
+            refetch={refetch}
+            fetchMore={fetchMore}
+            setVersion={setVersion}
+          />
         </Box>
       </Box>
     </ScrollableContainer>

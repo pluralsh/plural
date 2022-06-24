@@ -1,15 +1,13 @@
-import { useState } from 'react'
-import { Anchor, Box, Layer, Text } from 'grommet'
+import { Anchor, Box, Text } from 'grommet'
 import moment from 'moment'
 import { Scroller } from 'forge-core'
 
 import { DetailContainer } from '../repos/Installation'
 import { extendConnection } from '../../utils/graphql'
 
-import { EditTags, VersionTag } from './VersionTags'
+import { VersionTag } from './VersionTags'
 
-export function Version({ version, onSelect, refetch }) {
-  const [open, setOpen] = useState(false)
+export function Version({ version, onSelect }) {
 
   return (
     <Box
@@ -17,8 +15,8 @@ export function Version({ version, onSelect, refetch }) {
       align="center"
       className="chart-version"
       height="30px"
-      hoverIndicator="background"
-      onClick={() => null}
+      hoverIndicator="fill-one"
+      onClick={() => onSelect(version)}
       pad={{ horizontal: 'small' }}
     >
       <Box
@@ -52,25 +50,6 @@ export function Version({ version, onSelect, refetch }) {
           />
         ))}
       </Box>
-      <Box
-        flex={false}
-        className="edit"
-      >
-        <Anchor
-          size="small"
-          onClick={() => setOpen(true)}
-        >edit tags
-        </Anchor>
-      </Box>
-      {open && (
-        <Layer modal>
-          <EditTags
-            version={version}
-            setOpen={setOpen}
-            refetch={refetch}
-          />
-        </Layer>
-      )}
     </Box>
   )
 }

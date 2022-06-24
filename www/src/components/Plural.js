@@ -44,6 +44,7 @@ import { Domains } from './account/Domains'
 import { AccountAttributes } from './account/AccountAttributes'
 import { Clusters } from './upgrades/Clusters'
 import { AuditChloro, AuditDirectory, Audits, LoginAudits } from './account/Audits'
+import { OIDCProvider } from './repository/OIDCProvider'
 
 function EditBilling(props) {
   return (
@@ -184,6 +185,10 @@ export function PluralInner() {
                   element={<RepositoryPackagesDocker />}
                 />
               </Route>
+              <Route
+                path="oidc"
+                element={<OIDCProvider />}
+              />
               <Route
                 path="tests"
                 element={<RepositoryTests />}

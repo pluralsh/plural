@@ -35,7 +35,7 @@ function Header({ q, setQ }) {
         direction="row"
         align="center"
       >
-        <CreateServiceAccount />
+        <CreateServiceAccount q={q} />
       </Box>
     </Box>
   )

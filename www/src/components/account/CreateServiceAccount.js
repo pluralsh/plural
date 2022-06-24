@@ -131,7 +131,7 @@ export function EditServiceAccount({ user, update }) {
   )
 }
 
-export function CreateServiceAccount() {
+export function CreateServiceAccount({ q }) {
   const [open, setOpen] = useState(false)
   const [attributes, setAttributes] = useState({ name: '', email: '' })
   const [bindings, setBindings] = useState([])
@@ -139,7 +139,7 @@ export function CreateServiceAccount() {
     variables: { attributes: { ...attributes, impersonationPolicy: { bindings: bindings.map(sanitize) } } },
     update: (cache, { data: { createServiceAccount } }) => updateCache(cache, {
       query: USERS_Q,
-      variables: { q: null, serviceAccount: true },
+      variables: { q, serviceAccount: true },
       update: prev => appendConnection(prev, createServiceAccount, 'users'),
     }),
     onCompleted: () => setOpen(false),

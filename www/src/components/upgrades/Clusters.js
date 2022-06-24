@@ -1,8 +1,8 @@
 import { useQuery } from '@apollo/client'
 import { Box } from 'grommet'
-import { Button, Span } from 'honorable'
+import { Button, MenuItem, Select, Span } from 'honorable'
 import moment from 'moment'
-import { Chip, ReloadIcon, Select, StatusIpIcon, StatusOkIcon } from 'pluralsh-design-system'
+import { Chip, ReloadIcon, StatusIpIcon, StatusOkIcon } from 'pluralsh-design-system'
 import { useEffect, useMemo, useState } from 'react'
 
 import { appendConnection, extendConnection } from '../../utils/graphql'
@@ -279,10 +279,16 @@ export function Clusters() {
             <Box fill="horizontal">
               <Select
                 value={cluster}
-                items={data.upgradeQueues.map(q => ({ value: q, label: <QueueItem q={q} /> }))}
-                onChange={({ value }) => setCluster(value)}
+                onChange={({ target: { value } }) => setCluster(value)}
               >
-                <QueueItem q={cluster} />
+                {data.upgradeQueues.map(q => (
+                  <MenuItem
+                    value={q}
+                    key={q.id}
+                  >
+                    <QueueItem q={q} />
+                  </MenuItem>
+                ))}
               </Select>
             </Box> 
             <QueueHealth

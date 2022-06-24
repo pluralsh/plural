@@ -161,12 +161,9 @@ function MarketplaceRepositories({ installed, ...props }) {
         position="relative"
       >
         <Input
-          mr={1.5}
-          small
           startIcon={(
             <MagnifyingGlassIcon
               size={14}
-              mt={0.1}
             />
           )}
           placeholder="Search a repository"

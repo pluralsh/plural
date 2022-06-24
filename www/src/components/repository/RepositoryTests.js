@@ -1,7 +1,16 @@
-import { useContext, useState } from 'react'
-import { useSubscription } from '@apollo/client'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { useApolloClient, useSubscription } from '@apollo/client'
 import moment from 'moment'
-import { Flex, H2, H3, Modal, P, Span } from 'honorable'
+import { Flex, Span } from 'honorable'
+import { XTerm } from 'xterm-for-react'
+import { FitAddon } from 'xterm-addon-fit'
+import { Chalk } from 'xterm-theme'
+
+import { Box } from 'grommet'
+
+import { Chip, ErrorIcon, ListIcon, StatusIpIcon, StatusOkIcon } from 'pluralsh-design-system'
+
+import { Return } from 'grommet-icons'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 
@@ -10,123 +19,195 @@ import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import InfiniteScroller from '../utils/InfiniteScroller'
 
-import { TESTS_QUERY, TEST_LOGS_SUBSCRIPTION } from './queries'
+import { LOGS_SUB, TEST_LOGS } from '../repos/queries'
 
-const statusToColor = {
-  QUEUED: 'fill-one',
-  RUNNING: 'warning',
-  SUCCEEDED: 'success',
-  FAILED: 'error',
+import { Table, TableData, TableRow } from '../utils/Table'
+
+import { Icon } from '../profile/Icon'
+
+import { TESTS_QUERY } from './queries'
+
+const statusAttrs = {
+  QUEUED: { severity: 'neutral', icon: <StatusIpIcon /> },
+  RUNNING: { severity: 'info', loading: true },
+  SUCCEEDED: { severity: 'success', icon: <StatusOkIcon /> },
+  FAILED: { severity: 'error', icon: <ErrorIcon /> },
 }
 
 function Status({ status }) {
   return (
-    <Span
-      backgroundColor={statusToColor[status]}
-      borderRadius={4}
-      px={0.5}
-      py={0.25}
+    <Chip
+      {...statusAttrs[status]}
+      backgroundColor="fill-two"
     >
-      {status}
-    </Span>
+      {status.toLowerCase()}
+    </Chip>
   )
 }
 
-function TestLogsModal({ test, ...props }) {
-  const { data, loading, error } = useSubscription(TEST_LOGS_SUBSCRIPTION, {
-    variables: {
-      testId: test.id,
-    },
-    skip: !props.open,
+async function fetchLogs(client, id, step, term) {
+  const { data } = await client.query({ query: TEST_LOGS, variables: { id, step } })
+  if (data && data.testLogs) {
+    const lines = data.testLogs.split(/\r?\n/)
+    for (const l of lines) {
+      term.writeln(l)
+    }
+  }
+}
+
+function TestLogs({ step: { id, hasLogs }, testId }) {
+  const client = useApolloClient()
+  const xterm = useRef(null)
+  const fitAddon = useMemo(() => new FitAddon(), [])
+  const { data } = useSubscription(LOGS_SUB, {
+    variables: { testId },
   })
 
-  console.log('x', error, data, loading)
-
-  function renderContent() {
-    if (loading) {
-      return (
-        <Flex
-          direction="row"
-          justify="center"
-        >
-          <LoopingLogo />
-        </Flex>
-      )
+  useEffect(() => {
+    console.log(xterm)
+    if (!xterm || !xterm.current || !xterm.current.terminal) return
+    xterm.current.terminal.setOption('disableStdin', true)
+    fitAddon.fit()
+    console.log('joining test channel')
+    
+    if (data && data.testLogs && data.testLogs.step.id === id) {
+      for (const l of data.testLogs.logs) {
+        xterm.current.terminal.writeln(l)
+      }
     }
+  }, [id, data, xterm, fitAddon])
 
-    return null
-  }
+  useEffect(() => {
+    if (!hasLogs || !xterm || !xterm.current || !xterm.current.terminal) return
+    const term = xterm.current.terminal
+    term.clear()
+    fetchLogs(client, testId, id, term)
+  }, [hasLogs, client, testId, id, xterm])
 
   return (
-    <Modal
-      {...props}
+    <Box
+      fill="horizontal"
+      height="520px"
+      pad="small"
+      border={{ side: 'bottom' }}
     >
-      <H3 mb={1}>
-        {test.name}
-      </H3>
-      {renderContent()}
-    </Modal>
+      <Box
+        style={{ overflow: 'auto' }}
+        fill
+        background={Chalk.background}
+        pad="small"
+      >
+        <XTerm
+          ref={xterm}
+          addons={[fitAddon]}
+          options={{ theme: Chalk }}
+          onResize={console.log}
+          onData={console.log}
+        />
+      </Box>
+    </Box>
   )
 }
 
-function Test({ test }) {
-  const [isModalOpen, setIsModalOpen] = useState(false)
+function Test({ test, last, setTest }) {
+
+  return (
+    <TableRow
+      last={last}
+      hoverIndicator="fill-one-hover"
+      onClick={() => setTest(test)}
+      cursor="pointer"
+      suffix={<ListIcon size={16} />}
+    >
+      <TableData>
+        {test.promoteTag}
+      </TableData>
+      <TableData>
+        {test.name}
+      </TableData>
+      <TableData>
+        {moment(test.insertedAt).format('MMMM Do YYYY, h:mm:ss a')}
+      </TableData>
+      <TableData>
+        {moment(test.updatedAt).format('MMMM Do YYYY, h:mm:ss a')}
+      </TableData>
+      <TableData>
+        <Status status={test.status} />
+      </TableData>
+    </TableRow>
+  )
+}
+
+function TestStep({ step, test, last }) {
+  const [open, setOpen] = useState(false)
 
   return (
     <>
-      <Flex
-        borderBottom="1px solid border"
-        hoverIndicator="fill-one"
+      <TableRow
+        last={open || last}
+        onClick={() => setOpen(!open)}
+        hoverIndicator="fill-one-hover"
         cursor="pointer"
-        onClick={() => setIsModalOpen(true)}
+        suffix={<ListIcon size={16} />}
       >
-        <P
-          py={1}
-          px={1}
-          width="calc(100% / 5)"
-        >
-          {test.promoteTag}
-        </P>
-        <P
-          py={1}
-          px={1}
-          width="calc(100% / 5)"
-        >
-          {test.name}
-        </P>
-        <P
-          py={1}
-          px={1}
-          width="calc(100% / 5)"
-        >
-          {moment(test.insertedAt).format('MMMM Do YYYY, h:mm:ss a')}
-        </P>
-        <P
-          py={1}
-          px={1}
-          width="calc(100% / 5)"
-        >
-          {moment(test.updatedAt).format('MMMM Do YYYY, h:mm:ss a')}
-        </P>
-        <P
-          py={1}
-          px={1}
-          width="calc(100% / 5)"
-        >
-          <Status status={test.status} />
-        </P>
-      </Flex>
-      <TestLogsModal
-        test={test}
-        open={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      />
+        <TableData>{step.name}</TableData>
+        <TableData>{step.description}</TableData>
+        <TableData>{moment(step.updatedAt || step.insertedAt).format('lll')}</TableData>
+        <TableData><Status status={step.status} /></TableData>
+      </TableRow>
+      {open && (
+        <TestLogs
+          step={step}
+          testId={test.id}
+          close={() => setOpen(false)}
+        />
+      )}
     </>
+  )
+}
+
+function TestDetail({ test, setTest }) {
+  const len = test.steps.length
+
+  return (
+    <Box fill>
+      <Box
+        flex={false}
+        direction="row"
+        gap="small"
+        align="center"
+        pad="small"
+        background="fill-one"
+        border
+      >
+        <Icon
+          icon={<Return size="15px" />}
+          onClick={() => setTest(null)}
+        />
+        <Span fontWeight="bold">{test.name}</Span>
+      </Box>
+      <Table
+        headers={['Name', 'Description', 'Last Updated', 'Status']}
+        sizes={['25%', '25%', '25%', '25%']}
+        background="fill-one"
+        width="100%"
+        height="100%"
+      >
+        {test.steps.map((step, i) => (
+          <TestStep
+            step={step}
+            last={i === len - 1}
+            test={test}
+          />
+        ))}
+      </Table>
+    </Box>
   )
 }
 
 function RepositoryTests() {
   const { id } = useContext(RepositoryContext)
+  const [test, setTest] = useState(null)
   const [tests, loadingTests, hasMoreTests, fetchMoreTests] = usePaginatedQuery(
     TESTS_QUERY,
     {
@@ -148,60 +229,28 @@ function RepositoryTests() {
     )
   }
 
+  if (test) {
+    return (
+      <TestDetail
+        test={test}
+        setTest={setTest}
+      />
+    )
+  }
+
   return (
     <Flex
       height="100%"
       maxHeight="100%"
       direction="column"
     >
-      <H2 flexShrink={0}>
-        Tests
-      </H2>
-      <Flex
-        mt={1.5}
-        flexGrow={1}
-        direction="column"
+      <Table
+        headers={['Promote To', 'Name', 'Created On', 'Last Updated On', 'Progress']}
+        sizes={['20%', '20%', '20%', '20%', '20%']}
+        background="fill-one"
+        width="100%"
+        height="100%"
       >
-        <Flex
-          borderBottom="1px solid border"
-          fontWeight={500}
-        >
-          <P
-            py={0.5}
-            px={1}
-            width="calc(100% / 5)"
-          >
-            Promote to
-          </P>
-          <P
-            py={0.5}
-            px={1}
-            width="calc(100% / 5)"
-          >
-            Name
-          </P>
-          <P
-            py={0.5}
-            px={1}
-            width="calc(100% / 5)"
-          >
-            Created on
-          </P>
-          <P
-            py={0.5}
-            px={1}
-            width="calc(100% / 5)"
-          >
-            Last updated on
-          </P>
-          <P
-            py={0.5}
-            px={1}
-            width="calc(100% / 5)"
-          >
-            Progress
-          </P>
-        </Flex>
         <InfiniteScroller
           pb={4}
           loading={loadingTests}
@@ -215,10 +264,11 @@ function RepositoryTests() {
             <Test
               key={test.id}
               test={test}
+              setTest={setTest}
             />
           ))}
         </InfiniteScroller>
-      </Flex>
+      </Table>
     </Flex>
   )
 }

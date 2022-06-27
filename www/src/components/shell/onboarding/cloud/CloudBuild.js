@@ -93,10 +93,10 @@ function CloudBuild() {
             Enabling GCP services
           </P>
           <Chip
-            loading={status === 'READY'}
-            severity={status === 'READY' ? 'info' : status === 'ENABLED' ? 'success' : 'neutral'}
+            loading={status === 'CREATED'}
+            severity={status === 'CREATED' ? 'info' : status === 'ENABLED' | status === 'READY' ? 'success' : 'neutral'}
           >
-            {status === 'READY' ? 'Running' : status === 'ENABLED' ? 'Success' : 'Pending'}
+            {status === 'CREATED' ? 'Running' : status === 'ENABLED' | status === 'READY' ? 'Success' : 'Pending'}
           </Chip>
         </Flex>
       </OnboardingCard>

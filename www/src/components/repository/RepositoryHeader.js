@@ -1,13 +1,15 @@
 import { useContext, useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { A, Button, Div, Flex, H1, H3, Icon, Img, Modal, P, Pre, Span } from 'honorable'
-import { GitHubIcon, InstalledLabel, LinksIcon, Tag, TrashCanIcon } from 'pluralsh-design-system'
+import { GitHubIcon, LinksIcon, Tag, TrashCanIcon } from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 
 import { capitalize } from '../../utils/string'
+
+import { InferredConsoleButton } from '../upgrades/ConsoleButton'
 
 import { DELETE_INSTALLATION_MUTATION, RECIPES_QUERY } from './queries'
 import { providerToIcon, providerToIconHeight } from './constants'
@@ -30,9 +32,8 @@ function InstalledActions({ installation, ...props }) {
         align="center"
         {...props}
       >
-        <InstalledLabel />
         <Icon
-          ml={0.5}
+          mr={0.5}
           p={0.5}
           borderRadius="50%"
           cursor="pointer"
@@ -41,6 +42,7 @@ function InstalledActions({ installation, ...props }) {
         >
           <TrashCanIcon color="error" />
         </Icon>
+        <InferredConsoleButton />
       </Flex>
       <Modal
         open={modalOpen}
@@ -211,7 +213,7 @@ function RepositoryHeader(props) {
       </Div>
       <Div flexGrow={1} />
       <Flex align="center">
-        <InstallDropdownButton recipes={recipes} />
+        {!repository.installation && <InstallDropdownButton recipes={recipes} />}
         {!!repository.installation && (
           <InstalledActions
             installation={repository.installation}

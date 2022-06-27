@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
 import moment from 'moment'
-import { Button, Modal, ModalActions } from 'pluralsh-design-system'
+import { Button, Modal, ModalActions, ModalHeader } from 'pluralsh-design-system'
 import { useState } from 'react'
 
 import { updateCache } from '../../utils/graphql'
@@ -38,9 +38,11 @@ function EabCredential({ credential, last }) {
       </TableRow>
       <Modal
         open={confirm}
-        title="Delete this EAB Credentials"
         onClose={() => setConfirm(false)}
       >
+        <ModalHeader onClose={() => setConfirm(false)}>
+          Delete this EAB Credentials
+        </ModalHeader>
         Are you sure you want to remove this EAB credential?  This action is permanent.
         <ModalActions>
           <Button
@@ -52,7 +54,6 @@ function EabCredential({ credential, last }) {
             onClick={mutation}
             loading={loading}
             marginLeft="medium"
-            background="icon-error"
           >Remove
           </Button>
         </ModalActions>

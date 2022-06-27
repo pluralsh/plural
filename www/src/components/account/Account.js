@@ -5,14 +5,15 @@ import { Link, Outlet, useLocation } from 'react-router-dom'
 import { SidebarTabs } from '../utils/SidebarTabs'
 
 const DIRECTORY = [
-  { path: '/profile/me', label: 'Profile' },
-  { path: '/profile/security', label: 'Security & Privacy' },
-  { path: '/profile/tokens', label: 'Access Tokens' },
-  { path: '/profile/keys', label: 'Public Keys' },
-  { path: '/profile/eab', label: 'EAB Credentials' },
+  { path: '/account/edit', label: 'Account Settings' },
+  { path: '/account/users', label: 'Users' },
+  { path: '/account/service-accounts', label: 'Service Accounts' },
+  { path: '/account/groups', label: 'Groups' },
+  { path: '/account/roles', label: 'Roles' },
+  { path: '/account/domains', label: 'Domains' },
 ]
 
-export function MyProfile() {
+export function Account() {
   const { pathname } = useLocation()
 
   return (

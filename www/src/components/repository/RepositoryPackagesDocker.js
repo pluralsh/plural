@@ -26,7 +26,7 @@ function DockerRepository({ dockerRepository }) {
       py={0.5}
       mb={0.5}
       as={Link}
-      to={`/dkr/img/${dockerRepository.id}`}
+      to={`/dkr/repo/${dockerRepository.id}`}
       color="text"
       textDecoration="none"
       align="center"

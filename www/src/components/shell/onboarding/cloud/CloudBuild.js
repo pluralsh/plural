@@ -1,7 +1,7 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
 import { Div, Flex, P } from 'honorable'
-import { Button, ProgressBar } from 'pluralsh-design-system'
+import { Button, Chip, ProgressBar } from 'pluralsh-design-system'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'
 
@@ -27,8 +27,10 @@ function CloudBuild() {
 
   console.log('data', createDemoProjectMutationResults.data, pollDemoProjectQueryResults.data)
 
-  const [completed, setCompleted] = useState(false) // Maybe use a compound bool
+  const status = pollDemoProjectQueryResults.data?.demoProject?.state
   const error = createDemoProjectMutationResults.error || pollDemoProjectQueryResults.error
+
+  console.log('status', status)
 
   useEffect(() => {
     createDemoProjectMutation()
@@ -52,12 +54,17 @@ function CloudBuild() {
               This may take a few minutes.
             </P>
           </Div>
-          Chip here
+          <Chip
+            size="large"
+            severity={status === 'ENABLED' ? 'success' : 'info'}
+          >
+            {status === 'ENABLED' ? 'Success' : 'In progress'}
+          </Chip>
         </Flex>
         <ProgressBar
-          mode={error ? 'determinate' : 'indeterminate'}
+          mode={error || status === 'ENABLED' ? 'determinate' : 'indeterminate'}
           marginTop="medium"
-          progress={error ? 0 : null}
+          progress={error ? 0 : status === 'ENABLED' ? 100 : null}
           backgroundColor={error ? 'icon-error' : null}
         />
         <Flex
@@ -70,7 +77,12 @@ function CloudBuild() {
           <P body2>
             Creating GCP project
           </P>
-          Chip here
+          <Chip
+            loading={!status}
+            severity={['CREATED', 'READY', 'ENABLED'].includes(status) ? 'success' : 'info'}
+          >
+            {['CREATED', 'READY', 'ENABLED'].includes(status) ? 'Success' : 'Running'}
+          </Chip>
         </Flex>
         <Flex
           paddingVertical="medium"
@@ -80,7 +92,12 @@ function CloudBuild() {
           <P body2>
             Enabling GCP services
           </P>
-          Chip here
+          <Chip
+            loading={status === 'READY'}
+            severity={status === 'READY' ? 'info' : status === 'ENABLED' ? 'success' : 'neutral'}
+          >
+            {status === 'READY' ? 'Running' : status === 'ENABLED' ? 'Success' : 'Pending'}
+          </Chip>
         </Flex>
       </OnboardingCard>
       {!!error && (
@@ -93,7 +110,7 @@ function CloudBuild() {
       )}
       {/* Navigation */}
       <OnboardingNavSection>
-        {!!error && (
+        {(!!error || status === 'ENABLED') && (
           <Button
             secondary
             onClick={() => {
@@ -103,7 +120,7 @@ function CloudBuild() {
             Back
           </Button>
         )}
-        {completed && (
+        {status === 'ENABLED' && (
           <Button
             onClick={() => {
               next()

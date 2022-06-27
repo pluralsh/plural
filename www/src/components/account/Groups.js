@@ -30,6 +30,7 @@ function Header({ q, setQ }) {
         <Input
           width="50%"
           value={q}
+          placeholder="Search for groups by name"
           startIcon={<SearchIcon size={15} />}
           onChange={({ target: { value } }) => setQ(value)}
         />

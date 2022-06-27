@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
-import { Button, Input } from 'honorable'
+import { Input } from 'honorable'
 import { SearchIcon } from 'pluralsh-design-system'
 import { useContext, useState } from 'react'
 

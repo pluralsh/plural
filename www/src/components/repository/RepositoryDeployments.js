@@ -1,6 +1,6 @@
 import { useContext, useEffect } from 'react'
 import moment from 'moment'
-import { Flex, P } from 'honorable'
+import { Flex } from 'honorable'
 
 import { Chip, StatusIpIcon, StatusOkIcon } from 'pluralsh-design-system'
 

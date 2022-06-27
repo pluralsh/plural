@@ -216,17 +216,6 @@ function ChartReadme({ version: { readme } }) {
   )
 }
 
-function updateInstallation(chartId) {
-  return (cache, repoId, installation) => {
-    const prev = cache.readQuery({ query: CHART_Q, variables: { chartId } })
-    cache.writeQuery({
-      query: CHART_Q,
-      variables: { chartId },
-      data: { ...prev, chart: { ...prev.chart, repository: { ...prev.chart.repository, installation } } },
-    })
-  }
-}
-
 function ImageDependencies({ version: { imageDependencies } }) {
   const { registry } = useContext(PluralConfigurationContext)
   const navigate = useNavigate()

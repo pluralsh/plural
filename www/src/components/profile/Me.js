@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/client'
 import { Box, Stack } from 'grommet'
 import { Avatar, Button, Div, P } from 'honorable'
-import { CameraIcon, DownloadIcon, ValidatedInput } from 'pluralsh-design-system'
+import { CameraIcon, ValidatedInput } from 'pluralsh-design-system'
 import { useContext, useEffect, useState } from 'react'
 import { useFilePicker } from 'react-sage'
 

@@ -114,8 +114,9 @@ For general help, please refer to the Plural documentation. For additional help 
 * [Twitter](https://twitter.com/plural_sh) (For our latest news).
 
 Plural is dedicated to providing a welcoming, diverse, and harrassment-free experience for everyone. We expect everyone in the community to abide by our [Code of Conduct](CODE_OF_CONDUCT.md). *Please read it.*
+<br /><br />
 
-### 🎁 Get Free Swag!
+## 🎁 Get Free Swag!
 
 Get free Plural swag [here](https://pluralsh.typeform.com/to/jMj5GaM4) ! :-)
 <br /><br />
@@ -133,7 +134,8 @@ See what we're working on in these GitHub projects. Help us prioritize issues by
 
 ## 🙌 Contributing to Plural
 
-We love contributions to Plural, big or small! To learn more about the repo and the architecture, see [CONTRIBUTING.md](CONTRIBUTING.md). <br />
+We love contributions to Plural, big or small! To learn more about the repo and the architecture, see our [Contribution Guide](CONTRIBUTING.md). <br />
+
 If you're not sure where to start, or if you have any questions, please open a draft PR or visit our [Discord](https://discord.gg/CKc2kfeXxQ) server where the core team can help answer your questions.
 <br /><br />
 

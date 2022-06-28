@@ -39,6 +39,7 @@ function SidebarWrapper() {
       name: 'Marketplace',
       Icon: MarketIcon,
       url: '/marketplace',
+      urlRegexp: /\/repository\//,
     },
     {
       name: 'Installed',
@@ -348,11 +349,11 @@ function Sidebar({
             },
           }}
         >
-          {items.map(({ name, Icon, url }) => (
+          {items.map(({ name, Icon, url, urlRegexp }) => (
             <SidebarItem
               key={name}
               mb={0.5}
-              active={activeId === url}
+              active={activeId === url || urlRegexp?.test(activeId)}
               collapsed={collapsed}
               startIcon={<Icon />}
               label={name}
@@ -492,10 +493,12 @@ function Sidebar({
             <MarketPlusIcon mr={1} />
             Create new publisher
           </MenuItem> */}
-          <MenuItem>
-            <LogoutIcon mr={1} />
-            TODO: log back as...
-          </MenuItem>
+          {!!previousUserData && (
+            <MenuItem onClick={handlePreviousUserClick}>
+              <LogoutIcon mr={1} />
+              Log back as {previousUserData.me.email}
+            </MenuItem>
+          )}
           <MenuItem onClick={handleLogout}>
             <LogoutIcon mr={1} />
             Logout

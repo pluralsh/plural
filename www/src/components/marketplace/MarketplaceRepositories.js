@@ -172,15 +172,15 @@ function MarketplaceRepositories({ installed, ...props }) {
           width="calc(100% / 2 - 16px)"
         />
         <Flex
-          wrap="wrap"
+          wrap
+          align="center"
           flexShrink={1}
           minHeight={36}
+          marginLeft="xsmall"
         >
           {categories.map(category => (
             <Token
               mr={0.5}
-              mb={0.5}
-              py={0.1666}
               onClose={() => handleClearToken('category', category)}
             >
               {capitalize(category)}
@@ -189,8 +189,6 @@ function MarketplaceRepositories({ installed, ...props }) {
           {tags.map(tag => (
             <Token
               mr={0.5}
-              mb={0.5}
-              py={0.1666}
               onClose={() => handleClearToken('tag', tag)}
             >
               {capitalize(tag)}
@@ -203,7 +201,7 @@ function MarketplaceRepositories({ installed, ...props }) {
               small
               onClick={() => handleClearTokens()}
             >
-              Clear All
+              Clear all
             </Button>
           )}
         </Flex>

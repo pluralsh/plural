@@ -79,7 +79,7 @@ function RepositoryDeployments() {
     document: ROLLOUT_SUB,
     variables: { repositoryId: id },
     updateQuery: (prev, { subscriptionData: { data: { rolloutDelta: { delta, payload } } } }) => delta === 'CREATE' ? appendConnection(prev, payload, 'rollouts') : prev,
-  }), [id])
+  }), [id, subscribeToMore])
 
   const len = rollouts.length
 
@@ -105,7 +105,7 @@ function RepositoryDeployments() {
         sizes={['25%', '25%', '25%', '25%']}
         background="fill-one"
         width="100%"
-        height="100%"
+        height="calc(100% - 16px)"
       >
         <InfiniteScroller
           pb={4}

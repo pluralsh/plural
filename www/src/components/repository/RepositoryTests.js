@@ -64,12 +64,12 @@ function TestLogs({ step: { id, hasLogs }, testId }) {
   })
 
   useEffect(() => {
-    console.log(xterm)
+    // console.log(xterm)
     if (!xterm || !xterm.current || !xterm.current.terminal) return
     xterm.current.terminal.setOption('disableStdin', true)
     fitAddon.fit()
-    console.log('joining test channel')
-    
+    // console.log('joining test channel')
+
     if (data && data.testLogs && data.testLogs.step.id === id) {
       for (const l of data.testLogs.logs) {
         xterm.current.terminal.writeln(l)
@@ -110,7 +110,6 @@ function TestLogs({ step: { id, hasLogs }, testId }) {
 }
 
 function Test({ test, last, setTest }) {
-
   return (
     <TableRow
       last={last}
@@ -170,28 +169,35 @@ function TestDetail({ test, setTest }) {
   const len = test.steps.length
 
   return (
-    <Box fill>
-      <Box
-        flex={false}
-        direction="row"
-        gap="small"
+    <>
+      <Flex
         align="center"
-        pad="small"
-        background="fill-one"
-        border
+        border="1px solid border"
+        backgroundColor="fill-one"
+        paddingVertical="small"
+        paddingHorizontal="medium"
+        marginBottom="medium"
+        borderRadius="large"
       >
         <Icon
-          icon={<Return size="15px" />}
+          icon={(
+            <Return size="15px" />
+          )}
           onClick={() => setTest(null)}
         />
-        <Span fontWeight="bold">{test.name}</Span>
-      </Box>
+        <Span
+          bold
+          marginLeft="medium"
+        >
+          {test.name}
+        </Span>
+      </Flex>
       <Table
         headers={['Name', 'Description', 'Last Updated', 'Status']}
         sizes={['25%', '25%', '25%', '25%']}
         background="fill-one"
         width="100%"
-        height="100%"
+        height="calc(100% - 16px - 16px - 53px)" // The previous node is 53px tall with a 16px marginBottom
       >
         {test.steps.map((step, i) => (
           <TestStep
@@ -201,7 +207,7 @@ function TestDetail({ test, setTest }) {
           />
         ))}
       </Table>
-    </Box>
+    </>
   )
 }
 
@@ -239,37 +245,31 @@ function RepositoryTests() {
   }
 
   return (
-    <Flex
-      height="100%"
-      maxHeight="100%"
-      direction="column"
+    <Table
+      headers={['Promote To', 'Name', 'Created On', 'Last Updated On', 'Progress']}
+      sizes={['20%', '20%', '20%', '20%', '20%']}
+      background="fill-one"
+      width="100%"
+      height="calc(100% - 16px)"
     >
-      <Table
-        headers={['Promote To', 'Name', 'Created On', 'Last Updated On', 'Progress']}
-        sizes={['20%', '20%', '20%', '20%', '20%']}
-        background="fill-one"
-        width="100%"
-        height="100%"
-      >
-        <InfiniteScroller
-          pb={4}
-          loading={loadingTests}
-          hasMore={hasMoreTests}
-          loadMore={fetchMoreTests}
+      <InfiniteScroller
+        pb={4}
+        loading={loadingTests}
+        hasMore={hasMoreTests}
+        loadMore={fetchMoreTests}
           // Allow for scrolling in a flexbox layout
-          flexGrow={1}
-          height={0}
-        >
-          {tests.map(test => (
-            <Test
-              key={test.id}
-              test={test}
-              setTest={setTest}
-            />
-          ))}
-        </InfiniteScroller>
-      </Table>
-    </Flex>
+        flexGrow={1}
+        height={0}
+      >
+        {tests.map(test => (
+          <Test
+            key={test.id}
+            test={test}
+            setTest={setTest}
+          />
+        ))}
+      </InfiniteScroller>
+    </Table>
   )
 }
 

@@ -33,6 +33,7 @@ export function TableRow({ children, suffix, last, ...flex }) {
     >
       {children.map((child, i) => (
         <Flex
+          key={i}
           width={sizes[i]}
           align="center"
           direction="row"
@@ -60,7 +61,7 @@ export function Table({ sizes, headers, children, background, ...flex }) {
     <Flex
       direction="column"
       border="1px solid border"
-      borderRadius="small"
+      borderRadius="large"
       background={background}
       {...flex}
     >

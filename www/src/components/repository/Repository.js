@@ -58,8 +58,9 @@ function Repository() {
           height={0}
         >
           <Flex
-            px={2}
-            py={1}
+            paddingVertical="medium"
+            paddingLeft="xlarge"
+            paddingRight="large"
             width={128 + 64 + 32}
             flexShrink={0}
             direction="column"

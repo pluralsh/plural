@@ -94,6 +94,7 @@ export function EditServiceAccount({ user, update }) {
         loading={loading}
       />
       <Modal
+        portal
         open={edit}
         onClose={() => setEdit(false)}
       >

@@ -8,6 +8,7 @@ export function Confirm({ open, close, title, error, text, submit, label, loadin
       open={open}
       onClose={close}
       maxWidth="512px"
+      portal
     >
       <ModalHeader onClose={close}>
         {title || 'Are you sure?'}

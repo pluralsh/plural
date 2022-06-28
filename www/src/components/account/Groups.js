@@ -111,6 +111,7 @@ function Group({ group, q }) {
           <ViewGroup group={group} />
         </Modal>
         <Modal
+          portal
           open={edit}
           width="60vw"
           height="80vh"

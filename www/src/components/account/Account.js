@@ -23,8 +23,9 @@ export function Account() {
       overflowY="hidden"
     >
       <SidebarTabs>
-        {DIRECTORY.map(({ label, path }) => (
+        {DIRECTORY.map(({ label, path }, i) => (
           <Link
+            key={i}
             to={path}
             style={{ textDecoration: 'none' }}
           >

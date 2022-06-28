@@ -45,6 +45,7 @@ function DomainOptions({ domain, setDomain }) {
         <MenuItem onClick={() => setConfirm(true)}><Span color="text-error">Delete</Span></MenuItem>
       </MoreMenu>
       <Modal
+        portal
         open={edit}
         title="UPDATE ACCESS POLICY"
         onClose={() => setEdit(false)}
@@ -61,7 +62,7 @@ function DomainOptions({ domain, setDomain }) {
         submit={mutation}
         loading={loading}
         error={error}
-      /> 
+      />
     </>
   )
 }
@@ -171,7 +172,7 @@ function DnsRecords({ domain, setDomain }) {
           onClick={() => setDomain(null)}
         />
         <Span fontWeight="bold">{domain.name}</Span>
-      </Box> 
+      </Box>
       <Table
         headers={['Name', 'Type', 'Cluster', 'Creator', 'Created On']}
         sizes={['20%', '20%', '20%', '20%', '20%']}
@@ -250,7 +251,7 @@ export function Domains() {
   const [listRef, setListRef] = useState(null)
   const [domain, setDomain] = useState(null)
   const { data, loading, fetchMore } = useQuery(DNS_DOMAINS, { fetchPolicy: 'cache-and-network' })
-  
+
   if (!data) return null
 
   if (domain) {
@@ -261,64 +262,60 @@ export function Domains() {
       />
     )
   }
-  
+
   const { dnsDomains: { pageInfo, edges } } = data
-  
+
   return (
-    <Box
-      fill
+    <Table
+      headers={['Name', 'Creator', 'Created On']}
+      sizes={['33%', '33%', '33%']}
+      background="fill-one"
+      border="1px solid border"
+      width="100%"
+      height="calc(100% - 16px)"
     >
-      <Table
-        headers={['Name', 'Creator', 'Created On']}
-        sizes={['33%', '33%', '33%']}
-        background="fill-one"
-        border="1px solid border"
-        width="100%"
-        height="100%"
-      >
-        <Box fill>
-          <StandardScroller
-            listRef={listRef}
-            setListRef={setListRef}
-            hasNextPage={pageInfo.hasNextPage}
-            items={edges}
-            loading={loading}
-            placeholder={Placeholder}
-            mapper={({ node }, { next }) => (
-              <TableRow
-                last={!next.node}
-                suffix={(
-                  <DomainOptions
-                    domain={node}
-                    setDomain={setDomain}
+      <Box fill>
+        <StandardScroller
+          listRef={listRef}
+          setListRef={setListRef}
+          hasNextPage={pageInfo.hasNextPage}
+          items={edges}
+          loading={loading}
+          placeholder={Placeholder}
+          mapper={({ node }, { next }) => (
+            <TableRow
+              last={!next.node}
+              suffix={(
+                <DomainOptions
+                  domain={node}
+                  setDomain={setDomain}
+                />
+              )}
+            >
+              <TableData>{node.name}</TableData>
+              <TableData>
+                <Box
+                  direction="row"
+                  gap="xsmall"
+                  align="center"
+                >
+                  <Avatar
+                    src={node.creator.avatar}
+                    name={node.creator.name}
+                    size={30}
                   />
-                )}
-              >
-                <TableData>{node.name}</TableData>
-                <TableData>
-                  <Box
-                    direction="row"
-                    gap="xsmall"
-                    align="center"
-                  >
-                    <Avatar
-                      src={node.creator.avatar}
-                      name={node.creator.name}
-                      size={30}
-                    />
-                    <Span color="text-light">{node.creator.name}</Span>
-                  </Box>
-                </TableData>
-                <TableData>{moment(node.insertedAt).format('lll')}</TableData>
-              </TableRow>
-            )}
-            loadNextPage={() => pageInfo.hasNextPage && fetchMore({
-              variables: { cursor: pageInfo.endCursor },
-              updateQuery: (prev, { fetchMoreResult: { invites } }) => extendConnection(prev, invites, 'invites'),
-            })}
-          />
-        </Box>
-      </Table>
-    </Box>
+                  <Span color="text-light">{node.creator.name}</Span>
+                </Box>
+              </TableData>
+              <TableData>{moment(node.insertedAt).format('lll')}</TableData>
+            </TableRow>
+          )}
+          loadNextPage={() => pageInfo.hasNextPage && fetchMore({
+            variables: { cursor: pageInfo.endCursor },
+            updateQuery: (prev, { fetchMoreResult: { invites } }) => extendConnection(prev, invites, 'invites'),
+          })}
+        />
+      </Box>
+    </Table>
   )
 }

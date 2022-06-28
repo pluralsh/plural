@@ -101,7 +101,6 @@ function RoleForm({ error, attributes, setAttributes, bindings, setBindings, ...
 
   return (
     <Box
-      fill
       flex={false}
       gap="small"
       {...box}
@@ -185,30 +184,29 @@ export function UpdateRole({ role }) {
         Edit
       </Button>
       <Modal
+        portal
         open={open}
         onClose={() => setOpen(false)}
         width="70vw"
         height="90vh"
       >
-        <Box>
-          <ModalHeader
-            onClose={() => setOpen(false)}
-          >
-            CREATE ROLE
-          </ModalHeader>
-          <RoleForm
-            attributes={attributes}
-            setAttributes={setAttributes}
-            bindings={roleBindings}
-            setBindings={setRoleBindings}
-            error={error}
-          />
-          <Actions
-            cancel={() => setOpen(false)}
-            submit={mutation}
-            loading={loading}
-          />
-        </Box>
+        <ModalHeader
+          onClose={() => setOpen(false)}
+        >
+          CREATE ROLE
+        </ModalHeader>
+        <RoleForm
+          attributes={attributes}
+          setAttributes={setAttributes}
+          bindings={roleBindings}
+          setBindings={setRoleBindings}
+          error={error}
+        />
+        <Actions
+          cancel={() => setOpen(false)}
+          submit={mutation}
+          loading={loading}
+        />
       </Modal>
     </>
   )

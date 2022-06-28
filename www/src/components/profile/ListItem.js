@@ -8,7 +8,7 @@ export function ListItem({ first, last, children, background }) {
       direction="row"
       align="center"
       pad={{ vertical: 'small', horizontal: 'medium' }}
-      border={!last ? { side: 'all' } : [{ side: 'vertical' }, { side: 'bottom' }]}
+      border={first ? { side: 'all' } : [{ side: 'vertical' }, { side: 'bottom' }]}
       round={first ? { corner: 'top', size: '3px' } : (last ? { corner: 'bottom', size: '3px' } : null)}
     >{children}
     </Box>

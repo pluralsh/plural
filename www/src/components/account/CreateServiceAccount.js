@@ -1,12 +1,11 @@
 import { useMutation } from '@apollo/client'
 import { Box } from 'grommet'
-import { Edit } from 'grommet-icons'
 import { Button, Div, MenuItem, Span } from 'honorable'
 import { Modal, ModalActions, ModalHeader, ValidatedInput } from 'pluralsh-design-system'
 import { useState } from 'react'
 
 import { appendConnection, updateCache } from '../../utils/graphql'
-import { CREATE_SERVICE_ACCOUNT, EDIT_USER, UPDATE_SERVICE_ACCOUNT, USERS_Q } from '../accounts/queries'
+import { CREATE_SERVICE_ACCOUNT, UPDATE_SERVICE_ACCOUNT, USERS_Q } from '../accounts/queries'
 import { DELETE_USER } from '../users/queries'
 import { GqlError } from '../utils/Alert'
 

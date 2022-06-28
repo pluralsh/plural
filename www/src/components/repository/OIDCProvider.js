@@ -215,7 +215,14 @@ export function UpdateProvider({ installation }) {
       <Header
         header="OpenID Connect"
         description="Modify the attributes of this installations OIDC provider"
-      />
+      >
+        <Button
+          loading={loading}
+          onClick={mutation}
+        >
+          Update
+        </Button>
+      </Header>
       {error && (
         <GqlError
           error={error}
@@ -229,14 +236,6 @@ export function UpdateProvider({ installation }) {
         bindings={bindings}
         setBindings={setBindings}
       />
-      <Div>
-        <Button
-          loading={loading}
-          onClick={mutation}
-        >
-          Update
-        </Button>
-      </Div>
     </Box>
   )
 }

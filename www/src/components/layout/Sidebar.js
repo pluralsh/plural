@@ -499,7 +499,10 @@ function Sidebar({
               Log back as {previousUserData.me.email}
             </MenuItem>
           )}
-          <MenuItem onClick={handleLogout}>
+          <MenuItem
+            onClick={handleLogout}
+            color="icon-error"
+          >
             <LogoutIcon mr={1} />
             Logout
           </MenuItem>

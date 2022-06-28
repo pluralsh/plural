@@ -15,7 +15,7 @@ const TAB_CURL = 1
 const TAB_DOCKER = 2
 const TAB_EC2 = 3
 
-function InstallCli() {
+function CliInstallation() {
   const { previous, next } = useContext(CreateShellContext)
   const [tab, setTab] = useState(0)
 
@@ -223,4 +223,4 @@ function InstallCli() {
   )
 }
 
-export default InstallCli
+export default CliInstallation

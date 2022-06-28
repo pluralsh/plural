@@ -12,8 +12,8 @@ import OnboardingCard from '../OnboardingCard'
 
 import { ProviderForms } from './provider'
 
-function CloudCredentials({ doSetPath }) {
-  const { provider, setProvider, workspace, setWorkspace, credentials, setCredentials, next, error, exceptions } = useContext(CreateShellContext)
+function CloudCredentials() {
+  const { provider, setProvider, workspace, setWorkspace, credentials, setCredentials, previous, next, error, exceptions } = useContext(CreateShellContext)
 
   const ref = useRef()
   const [open, setOpen] = useState(false)
@@ -65,7 +65,7 @@ function CloudCredentials({ doSetPath }) {
         <Button
           secondary
           onClick={() => {
-            doSetPath('')
+            previous()
           }}
         >
           Back

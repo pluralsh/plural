@@ -4,11 +4,13 @@ import { Button, CloudIcon, GearTrainIcon, GitHubIcon } from 'pluralsh-design-sy
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'
 
+import { SECTION_CLOUD_LAUNCH } from '../../constants'
+
 import OnboardingNavSection from '../OnboardingNavSection'
 import OnboardingCard from '../OnboardingCard'
 
 function Synopsis() {
-  const { scm, workspace, previous, next } = useContext(CreateShellContext)
+  const { scm, workspace, previous, next, demoId, setSection } = useContext(CreateShellContext)
 
   return (
     <>
@@ -67,71 +69,73 @@ function Synopsis() {
             </Div>
           </Flex>
         </Flex>
-        <Flex
-          wrap
-          align="center"
-          borderTop="1px solid border"
-          paddingVertical="xlarge"
-          paddingHorizontal="xlarge"
-          marginHorizontal={-32}
-        >
+        {!!workspace.region && (
           <Flex
-            flexShrink={0}
+            wrap
             align="center"
-            width="50%"
+            borderTop="1px solid border"
+            paddingVertical="xlarge"
+            paddingHorizontal="xlarge"
+            marginHorizontal={-32}
           >
-            <CloudIcon
-              size={24}
-              color="text-light"
-              paddingHorizontal="small"
-            />
-            <Div marginLeft="large">
-              <P
-                caption
-                color="text-xlight"
-              >
-                Region
-              </P>
-              <P body1>
-                {workspace.region}
-              </P>
-            </Div>
-          </Flex>
-          <Flex
-            flexGrow={1}
-            flexShrink={0}
-            align="center"
-            marginLeft="xlarge"
-          >
-            <Div>
-              <P
-                caption
-                color="text-xlight"
-              >
-                Credentials
-              </P>
-              <P body1>
-                ••••••••
-              </P>
-            </Div>
-          </Flex>
-          <Div
-            marginTop="medium"
-            width="100%"
-            marginLeft="large"
-            paddingLeft="xxlarge"
-          >
-            <P
-              caption
-              color="text-xlight"
+            <Flex
+              flexShrink={0}
+              align="center"
+              width="50%"
             >
-              Project
-            </P>
-            <P body1>
-              xxx
-            </P>
-          </Div>
-        </Flex>
+              <CloudIcon
+                size={24}
+                color="text-light"
+                paddingHorizontal="small"
+              />
+              <Div marginLeft="large">
+                <P
+                  caption
+                  color="text-xlight"
+                >
+                  Region
+                </P>
+                <P body1>
+                  {workspace.region}
+                </P>
+              </Div>
+            </Flex>
+            <Flex
+              flexGrow={1}
+              flexShrink={0}
+              align="center"
+              marginLeft="xlarge"
+            >
+              <Div>
+                <P
+                  caption
+                  color="text-xlight"
+                >
+                  Credentials
+                </P>
+                <P body1>
+                  ••••••••
+                </P>
+              </Div>
+            </Flex>
+            <Div
+              marginTop="medium"
+              width="100%"
+              marginLeft="large"
+              paddingLeft="xxlarge"
+            >
+              <P
+                caption
+                color="text-xlight"
+              >
+                Project
+              </P>
+              <P body1>
+                xxx
+              </P>
+            </Div>
+          </Flex>
+        )}
         <Flex
           wrap
           align="center"
@@ -211,7 +215,8 @@ function Synopsis() {
         <Button
           primary
           onClick={() => {
-            next()
+            if (demoId) setSection(SECTION_CLOUD_LAUNCH)
+            else next()
           }}
         >
           Continue

@@ -4,7 +4,8 @@ import { ApolloProvider } from '@apollo/client'
 import { IntercomProvider } from 'react-use-intercom'
 import { Box, Grommet } from 'grommet'
 import { theme } from 'pluralsh-design-system'
-import { CssBaseline, ThemeProvider } from 'honorable'
+import { CssBaseline, ThemeProvider, mergeTheme } from 'honorable'
+import mpRecipe from 'honorable-recipe-mp'
 
 import { client } from './helpers/client'
 import { INTERCOM_APP_ID } from './constants'
@@ -19,11 +20,19 @@ import { EmailConfirmed } from './components/users/EmailConfirmation'
 import { OAuthCallback } from './components/users/OAuthCallback'
 import { SSOCallback } from './components/users/SSOCallback'
 
+const honorableTheme = mergeTheme(theme, {
+  global: [
+    // This provides the mp spacing props to honorable
+    // DEPRECATED in favor of the semantic spacing system
+    mpRecipe(),
+  ],
+})
+
 function App() {
   return (
     <ApolloProvider client={client}>
       <IntercomProvider appId={INTERCOM_APP_ID}>
-        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={honorableTheme}>
           <CssBaseline />
           <Grommet
             full

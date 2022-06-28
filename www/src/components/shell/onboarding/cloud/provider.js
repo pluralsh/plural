@@ -9,7 +9,7 @@ import OnboardingCardButton from '../OnboardingCardButton'
 import { AWS_VALIDATIONS, AwsForm, awsSynopsis } from './aws'
 import { GCP_VALIDATIONS, GcpForm, gcpSynopsis } from './gcp'
 import { DemoProject } from './demo'
-import { CloudDecision } from './CloudDecision'
+import CloudSelect from './CloudSelect'
 import CloudCredentials from './CloudCredentials'
 
 export const ProviderForms = {
@@ -82,7 +82,7 @@ export function ChooseAShell({ options, selected, setSelected }) {
         color="text-light"
         marginBottom="medium"
       >
-        Determine which shell you’ll use to get started. The cloud shell comes fully equipped with the Plural CLI and all required dependencies.
+        Determine which shell you'll use to get started. The cloud shell comes fully equipped with the Plural CLI and all required dependencies.
       </P>
       <RadioGroup>
         {options.map(({ label, value }) => (
@@ -112,13 +112,12 @@ export function ProviderForm() {
 
   if (!path) {
     return (
-      <CloudDecision doSetPath={doSetPath} />
+      <CloudSelect doSetPath={doSetPath} />
     )
   }
 
   if (demo) {
     return (
-
       <DemoProject
         setDemo={setDemo}
         setProvider={setProvider}

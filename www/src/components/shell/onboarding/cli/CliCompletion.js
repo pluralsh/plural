@@ -8,7 +8,7 @@ import OnboardingNavSection from '../OnboardingNavSection'
 
 import OnboardingCard from '../OnboardingCard'
 
-function CompleteCli() {
+function CliCompletion() {
   const { previous, next } = useContext(CreateShellContext)
 
   return (
@@ -56,4 +56,4 @@ function CompleteCli() {
   )
 }
 
-export default CompleteCli
+export default CliCompletion

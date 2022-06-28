@@ -4,17 +4,16 @@ import { Button, CloudIcon } from 'pluralsh-design-system'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'
 
-import { SECTION_INSTALL_CLI } from '../../constants'
+import { SECTION_CLI_INSTALLATION, SECTION_CLOUD_BUILD, SECTION_CLOUD_CREDENTIALS } from '../../constants'
 import OnboardingNavSection from '../OnboardingNavSection'
 
 import OnboardingCard from '../OnboardingCard'
 
 import { ChooseAShell, CloudOption } from './provider'
 
-export function CloudDecision({ doSetPath }) {
-  const { previous, setSection } = useContext(CreateShellContext)
-
-  const [nextPath, setNextPath] = useState()
+function CloudSelect() {
+  const { previous, setSection, setDemoId } = useContext(CreateShellContext)
+  const [nextPath, setNextPath] = useState('')
   const [byocShell, setByocShell] = useState('cloud')
 
   return (
@@ -82,16 +81,25 @@ export function CloudDecision({ doSetPath }) {
         <Button
           disabled={!nextPath}
           onClick={() => {
-            if (nextPath === 'byoc' && byocShell === 'cli') {
-              setSection(SECTION_INSTALL_CLI)
+            if (nextPath === 'byoc') {
+              if (byocShell === 'cli') {
+                setSection(SECTION_CLI_INSTALLATION)
+              }
+              else {
+                setSection(SECTION_CLOUD_CREDENTIALS)
+              }
             }
             else {
-              doSetPath(nextPath)
+              setDemoId(true)
+              setSection(SECTION_CLOUD_BUILD)
             }
           }}
-        >Continue
+        >
+          Continue
         </Button>
       </OnboardingNavSection>
     </>
   )
 }
+
+export default CloudSelect

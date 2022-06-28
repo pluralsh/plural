@@ -21,7 +21,7 @@ function Marketplace({ installed }) {
       maxWidth="100%"
     >
       <Flex
-        marginHorizontal="large"
+        marginLeft="large"
         flexShrink={0}
       >
         <Link
@@ -57,7 +57,8 @@ function Marketplace({ installed }) {
         </Flex>
       </Flex>
       <Flex
-        mt={1}
+        marginTop="medium"
+        marginLeft="large"
         flexGrow={1}
         overflow="hidden"
       >

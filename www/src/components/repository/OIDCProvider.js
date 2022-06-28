@@ -40,7 +40,7 @@ function InputModifier({ position, text }) {
   )
 }
 
-function UrlsInput({ uriFormat, urls, setUrls }) {
+function UrlsInput({ uriFormat = '', urls, setUrls }) {
   const [value, setValue] = useState('')
   const addUrl = useCallback(() => {
     const url = uriFormat ? uriFormat.replace('{domain}', value) : value

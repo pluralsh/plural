@@ -53,7 +53,7 @@
     "grommet": "^2.24.0",
     "grommet-icons": "^4.7.0",
     "highlight.js": "^11.5.1",
-    "honorable": "^0.119.0",
+    "honorable": "^0.120.0",
     "honorable-recipe-mp": "^0.1.0",
     "honorable-theme-default": "^0.60.0",
     "js-yaml": "^4.1.0",
@@ -93,7 +93,7 @@
     "react-router-dom": "^6.3.0",
     "react-sage": "^0.3.16",
     "react-scripts": "5.0.1",
-    "react-spinners": "^0.13.1",
+    "react-spinners": "^0.13.2",
     "react-stripe-elements": "^6.1.2",
     "react-sweet-progress": "^1.1.2",
     "react-toggle": "^4.1.2",
@@ -111,10 +111,10 @@
     "xterm-theme": "^1.1.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.18.5",
+    "@babel/core": "^7.18.6",
     "@babel/eslint-parser": "^7.18.2",
-    "@babel/preset-env": "^7.18.2",
-    "@babel/preset-react": "^7.17.12",
+    "@babel/preset-env": "^7.18.6",
+    "@babel/preset-react": "^7.18.6",
     "eslint": "^8.18.0",
     "eslint-config-pluralsh": "^3.1.0",
     "postcss-import": "^8.2.0"

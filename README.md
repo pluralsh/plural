@@ -41,13 +41,13 @@ Plural will deploy open source applications on Kubernetes in your cloud using co
 
 The Plural platform provides the following:
 
-* Dependency management between Terraform/Helm modules, with dependency aware deployment and upgrades.
+* Dependency management between Terraform/Helm modules, with dependency-aware deployment and upgrades.
 * Authenticated docker registry and chartmuseum proxy per repository.
 * Secret encryption using AES-256 (so you can keep the entire workflow in git).
 
 In addition, Plural also handles:
 * Issuing the certificates.
-* Configuring a DNS service to register fully-qualified domains under onplural.sh to eliminate the hassle of dns registration for users.
+* Configuring a DNS service to register fully-qualified domains under onplural.sh to eliminate the hassle of DNS registration for users.
 * Being an OIDC provider to enable zero touch login security for all Plural applications.
 
 We think it's pretty cool! 😎 Some other nice things:
@@ -118,7 +118,7 @@ Plural is dedicated to providing a welcoming, diverse, and harrassment-free expe
 
 ## 🎁 Get Free Swag!
 
-Get free Plural swag [here](https://pluralsh.typeform.com/to/jMj5GaM4) ! :-)
+Get free Plural swag [here](https://pluralsh.typeform.com/to/jMj5GaM4)! :-)
 <br /><br />
 
 

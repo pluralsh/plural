@@ -9,7 +9,7 @@ import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 
 import { capitalize } from '../../utils/string'
 
-import { InferredConsoleButton } from '../upgrades/ConsoleButton'
+import { InferredConsoleButton } from '../clusters/ConsoleButton'
 
 import { DELETE_INSTALLATION_MUTATION, RECIPES_QUERY } from './queries'
 import { providerToIcon, providerToIconHeight } from './constants'

@@ -11,7 +11,7 @@ import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import InfiniteScroller from '../utils/InfiniteScroller'
 
-import { ROLLOUT_SUB } from '../upgrades/queries'
+import { ROLLOUT_SUB } from '../clusters/queries'
 import { appendConnection } from '../../utils/graphql'
 
 import { Table, TableData, TableRow } from '../utils/Table'

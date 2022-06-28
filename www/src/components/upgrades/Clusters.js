@@ -13,6 +13,8 @@ import { RepoIcon } from '../repos/Repositories'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { StandardScroller } from '../utils/SmoothScroller'
 
+import { ConsoleButton } from './ConsoleButton'
+
 import { QUEUE, QUEUES, UPGRADE_QUEUE_SUB, UPGRADE_SUB } from './queries'
 
 function QueueItem({ q }) {
@@ -275,6 +277,7 @@ export function Clusters() {
           <Box
             fill="horizontal"
             direction="row"
+            gap="small"
           >
             <Box fill="horizontal">
               <Select
@@ -290,7 +293,12 @@ export function Clusters() {
                   </MenuItem>
                 ))}
               </Select>
-            </Box> 
+            </Box>
+            <ConsoleButton
+              small
+              text="View Console"
+              q={cluster}
+            />
             <QueueHealth
               q={cluster}
               background="fill-one"

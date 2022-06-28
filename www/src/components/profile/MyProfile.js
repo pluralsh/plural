@@ -21,7 +21,7 @@ export function MyProfile() {
       width="100%"
       overflowY="hidden"
     >
-      <SidebarTabs width={300}>
+      <SidebarTabs>
         {DIRECTORY.map(({ label, path }) => (
           <Link
             to={path}

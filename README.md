@@ -37,7 +37,7 @@
 
 ## ✨ Features
 
-Plural will deploy open source applications on Kubernetes in your cloud using common standards like helm and terraform.
+Plural will deploy open source applications on Kubernetes in your cloud using common standards like Helm and Terraform.
 
 The Plural platform provides the following:
 
@@ -56,10 +56,10 @@ We think it's pretty cool! 😎 Some other nice things:
 The plural platform ingests all deployment artifacts needed to deploy cloud-native applications and tracks their dependencies, allowing for seamless installations and no-touch upgrades post-install. All applications are managed via GitOps, allowing you to reconfigure them at will, or even eject them from Plural entirely. It's your application, we just want to help you use it as easily as possible.
 
 ### 🤖 Day-2 Operational Toolkit
-Scale to meet demand with one-click operational run-books for key cluster operations. Every dependency automatically upgraded in the correct order, in a rolling manner. Plural provides a timestamped audit trail for all cluster applications along with searchable, downloadable logs. In addition, there are also pre-packaged insights and dashboards for the highest importance metrics—from day one.
+Scale to meet demand with one-click operational run-books for key cluster operations. Every dependency is automatically upgraded in the correct order, in a rolling manner. Plural provides a timestamped audit trail for all cluster applications along with searchable, downloadable logs. In addition, there are also pre-packaged insights and dashboards for the highest importance metrics—from day one.
 
 ### 🔓 Secure by default
-Plural performs regular security scans for application images, helm charts, and terraform modules and comes equiped with OpenID connect for seamless user auth to applications deployed by Plural.
+Plural performs regular security scans for application images, helm charts, and terraform modules and comes equipped with OpenID connect for seamless user auth to applications deployed by Plural.
 
 ### 🥳 Open source and extensible
 All Plural applications are fully customizable and able to be ejected at any time. New applications can be wrapped and packaged onto Plural easily, giving you total freedom about how, when and where to use Plural.
@@ -113,7 +113,7 @@ For general help, please refer to the Plural documentation. For additional help 
 * [GitHub](https://github.com/pluralsh/plural/) (Bug reports, feature requests, contributions).
 * [Twitter](https://twitter.com/plural_sh) (For our latest news).
 
-Plural is dedicated to providing a welcoming, diverse, and harrassment-free experience for everyone. We expect everyone in the community to abide by our [Code of Conduct](CODE_OF_CONDUCT.md). *Please read it.*
+Plural is dedicated to providing a welcoming, diverse, and harassment-free experience for everyone. We expect everyone in the community to abide by our [Code of Conduct](CODE_OF_CONDUCT.md). *Please read it.*
 <br /><br />
 
 ## 🎁 Get Free Swag!

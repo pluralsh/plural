@@ -12,7 +12,7 @@ import OnboardingCard from '../OnboardingCard'
 import { GqlError } from '../../../utils/Alert'
 
 function CloudBuild() {
-  const { previous, next } = useContext(CreateShellContext)
+  const { previous, next, setWorkspace, setDemoId } = useContext(CreateShellContext)
   const [createDemoProjectMutation, createDemoProjectMutationResults] = useMutation(CREATE_DEMO_PROJECT_MUTATION)
   const pollDemoProjectQueryResults = useQuery(
     POLL_DEMO_PROJECT_QUERY,
@@ -25,16 +25,25 @@ function CloudBuild() {
     }
   )
 
-  console.log('data', createDemoProjectMutationResults.data, pollDemoProjectQueryResults.data)
-
   const status = pollDemoProjectQueryResults.data?.demoProject?.state
   const error = createDemoProjectMutationResults.error || pollDemoProjectQueryResults.error
-
-  console.log('status', status)
 
   useEffect(() => {
     createDemoProjectMutation()
   }, [createDemoProjectMutation])
+
+  useEffect(() => {
+    setWorkspace(x => ({
+      ...x,
+      region: 'us-east1',
+      cluster: 'plural-demo-cluster',
+      bucketPrefix: `plural-${Math.random().toString().substring(2, 8)}`,
+    }))
+  }, [setWorkspace])
+
+  useEffect(() => {
+    setDemoId(createDemoProjectMutationResults.data?.createDemoProject?.id)
+  }, [setDemoId, createDemoProjectMutationResults.data?.createDemoProject?.id])
 
   return (
     <>
@@ -44,7 +53,10 @@ function CloudBuild() {
           justify="space-between"
         >
           <Div>
-            <P body1>
+            <P
+              body1
+              bold
+            >
               Creating your demo project
             </P>
             <P

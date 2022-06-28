@@ -12,7 +12,7 @@ import OnboardingCard from '../OnboardingCard'
 import { ChooseAShell, CloudOption } from './provider'
 
 function CloudSelect() {
-  const { previous, setSection } = useContext(CreateShellContext)
+  const { previous, setSection, setDemoId } = useContext(CreateShellContext)
   const [nextPath, setNextPath] = useState('')
   const [byocShell, setByocShell] = useState('cloud')
 
@@ -90,6 +90,7 @@ function CloudSelect() {
               }
             }
             else {
+              setDemoId(true)
               setSection(SECTION_CLOUD_BUILD)
             }
           }}

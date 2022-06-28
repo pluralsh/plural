@@ -3,7 +3,7 @@ import { Flex } from 'honorable'
 export default function OnboardingNavSection(props) {
   return (
     <Flex
-      marginTop="xxlarge"
+      marginTop="xlarge"
       justify="space-between"
       {...props}
     />

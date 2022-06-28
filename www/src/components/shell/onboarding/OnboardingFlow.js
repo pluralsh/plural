@@ -1,39 +1,39 @@
 import { useCallback, useMemo, useState } from 'react'
-import { useMutation } from '@apollo/client'
-import { Alert } from 'pluralsh-design-system'
-import { Div } from 'honorable'
 
-import CreateShellContext from '../../contexts/CreateShellContext'
+import CreateShellContext from '../../../contexts/CreateShellContext'
 
-import { CREATE_SHELL_MUTATION } from './query'
-import { GITHUB_VALIDATIONS } from './onboarding/scm/github'
-import { getExceptions } from './validation'
-import { CLOUD_VALIDATIONS } from './onboarding/cloud/provider'
-import { SCM_VALIDATIONS, ScmSection } from './onboarding/scm/ScmInput'
+import { getExceptions } from '../validation'
+
 import {
   SECTIONS,
   SECTION_CLI_COMPLETION,
   SECTION_CLI_INSTALLATION,
   SECTION_CLOUD_BUILD,
   SECTION_CLOUD_CREDENTIALS,
+  SECTION_CLOUD_LAUNCH,
   SECTION_CLOUD_SELECT,
   SECTION_CLOUD_WORKSPACE,
   SECTION_GIT_PROVIDER,
   SECTION_SYNOPSIS,
-} from './constants'
+} from '../constants'
+
+import { GITHUB_VALIDATIONS } from './scm/github'
+import { CLOUD_VALIDATIONS } from './cloud/provider'
+import { SCM_VALIDATIONS, ScmSection } from './scm/ScmInput'
 
 // Common
-import OnboardingWrapper from './onboarding/OnboardingWrapper'
+import OnboardingWrapper from './OnboardingWrapper'
 // Cloud
-import CloudSelect from './onboarding/cloud/CloudSelect'
-import CloudBuild from './onboarding/cloud/CloudBuild'
-import CloudCredentials from './onboarding/cloud/CloudCredentials'
-import CloudWorkspace, { CLOUD_WORKSPACE_VALIDATIONS } from './onboarding/cloud/CloudWorkspace'
+import CloudSelect from './cloud/CloudSelect'
+import CloudBuild from './cloud/CloudBuild'
+import CloudCredentials from './cloud/CloudCredentials'
+import CloudWorkspace, { CLOUD_WORKSPACE_VALIDATIONS } from './cloud/CloudWorkspace'
+import CloudLaunch from './cloud/CloudLaunch'
 // CLI
-import CliInstallation from './onboarding/cli/CliInstallation'
-import CliCompletion from './onboarding/cli/CliCompletion'
+import CliInstallation from './cli/CliInstallation'
+import CliCompletion from './cli/CliCompletion'
 // Synopsis
-import Synopsis from './onboarding/synopsis/Synopsis'
+import Synopsis from './synopsis/Synopsis'
 
 const VALIDATIONS = {
   [SECTION_GIT_PROVIDER]: GITHUB_VALIDATIONS,
@@ -47,17 +47,13 @@ function getValidations(provider, scmProvider, section) {
   return VALIDATIONS[section]
 }
 
-function CreateShell({ accessToken, onCreate, provider: scmProvider, authUrlData }) {
-  const [demo, setDemo] = useState(null)
+function OnboardingFlow({ accessToken, provider: scmProvider, authUrlData }) {
+  const [demoId, setDemoId] = useState(null)
   const [section, setSection] = useState(SECTION_GIT_PROVIDER)
   const [providerName, setProvider] = useState('AWS')
   const [scm, setScm] = useState({ name: '', provider: scmProvider, token: accessToken })
   const [credentials, setCredentials] = useState({})
   const [workspace, setWorkspace] = useState({})
-  const [mutation, { error: gqlError }] = useMutation(CREATE_SHELL_MUTATION, {
-    variables: { attributes: { credentials, workspace, scm, provider: providerName, demoId: demo && demo.id } },
-    onCompleted: onCreate,
-  })
 
   const doSetProvider = useCallback(provider => {
     setProvider(provider)
@@ -68,14 +64,12 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider, authUrlData
   const next = useCallback(() => {
     const hasNext = !!SECTIONS[section].next
     if (hasNext) setSection(SECTIONS[section].next)
-    if (!hasNext) mutation()
-  }, [section, mutation])
+  }, [section])
 
   const previous = useCallback(() => {
     const hasPrevious = !!SECTIONS[section].previous
     if (hasPrevious) setSection(SECTIONS[section].previous)
-    if (!hasPrevious) mutation()
-  }, [section, mutation])
+  }, [section])
 
   const validations = getValidations(providerName, scmProvider, section)
   const { error, exceptions } = getExceptions(validations, { credentials, workspace, scm })
@@ -94,8 +88,8 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider, authUrlData
     setWorkspace,
     credentials,
     setCredentials,
-    demo,
-    setDemo,
+    demoId,
+    setDemoId,
     next,
     previous,
     setSection,
@@ -113,8 +107,8 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider, authUrlData
     setWorkspace,
     credentials,
     setCredentials,
-    demo,
-    setDemo,
+    demoId,
+    setDemoId,
     next,
     previous,
     setSection,
@@ -152,24 +146,12 @@ function CreateShell({ accessToken, onCreate, provider: scmProvider, authUrlData
         {section === SECTION_SYNOPSIS && (
           <Synopsis />
         )}
-        {/* Unhandled Errors */}
-        <Div
-          flex={false}
-          marginTop="large"
-          width="100%"
-        >
-          {gqlError && (
-            <Alert
-              severity="error"
-              title="Failed to create shell"
-            >
-              {gqlError.graphQLErrors[0].message}
-            </Alert>
-          )}
-        </Div>
+        {section === SECTION_CLOUD_LAUNCH && (
+          <CloudLaunch />
+        )}
       </OnboardingWrapper>
     </CreateShellContext.Provider>
   )
 }
 
-export default CreateShell
+export default OnboardingFlow

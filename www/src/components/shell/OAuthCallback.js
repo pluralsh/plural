@@ -6,7 +6,7 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 import { AUTHENTICATION_URLS_QUERY, SCM_TOKEN_QUERY } from './query'
 import { DEBUG_SCM_TOKENS } from './debug-tokens'
 
-import CreateShell from './CreateShell'
+import OnboardingFlow from './onboarding/OnboardingFlow'
 
 function OAuthCallback({ provider }) {
   const navigate = useNavigate()
@@ -40,10 +40,9 @@ function OAuthCallback({ provider }) {
   }
 
   return (
-    <CreateShell
+    <OnboardingFlow
       accessToken={data.scmToken}
       provider={provider.toUpperCase()}
-      onCreate={() => navigate('/shell')}
       authUrlData={authUrlData}
     />
   )

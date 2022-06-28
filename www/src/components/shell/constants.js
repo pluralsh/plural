@@ -5,6 +5,7 @@ export const SECTION_CLOUD_SELECT = 'cloud-select'
 export const SECTION_CLOUD_CREDENTIALS = 'cloud-credentials'
 export const SECTION_CLOUD_WORKSPACE = 'cloud-workspace'
 export const SECTION_CLOUD_BUILD = 'cloud-build'
+export const SECTION_CLOUD_LAUNCH = 'cloud-launch'
 export const SECTION_CLI_INSTALLATION = 'cli-installation'
 export const SECTION_CLI_COMPLETION = 'cli-completion'
 export const SECTION_SYNOPSIS = 'synopsis'
@@ -38,6 +39,11 @@ export const SECTIONS = {
   [SECTION_SYNOPSIS]: {
     stepIndex: 3,
     previous: SECTION_CLOUD_WORKSPACE,
+    next: null,
+  },
+  [SECTION_CLOUD_LAUNCH]: {
+    stepIndex: 3,
+    previous: SECTION_SYNOPSIS,
     next: null,
   },
   [SECTION_CLI_INSTALLATION]: {

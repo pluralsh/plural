@@ -1,8 +1,8 @@
 import { useQuery } from '@apollo/client'
 import { Box } from 'grommet'
-import { Button, MenuItem, Select, Span } from 'honorable'
+import { Button, Div, Flex, MenuItem, P, Select, Span } from 'honorable'
 import moment from 'moment'
-import { Chip, ReloadIcon, StatusIpIcon, StatusOkIcon } from 'pluralsh-design-system'
+import { Chip, ClusterIcon, ReloadIcon, StatusIpIcon, StatusOkIcon } from 'pluralsh-design-system'
 import { useEffect, useMemo, useState } from 'react'
 
 import { appendConnection, extendConnection } from '../../utils/graphql'
@@ -10,7 +10,6 @@ import { appendConnection, extendConnection } from '../../utils/graphql'
 import { Header } from '../profile/Header'
 import { Provider } from '../repos/misc'
 import { RepoIcon } from '../repos/Repositories'
-import { LoopingLogo } from '../utils/AnimatedLogo'
 import { StandardScroller } from '../utils/SmoothScroller'
 
 import { ConsoleButton } from './ConsoleButton'
@@ -252,7 +251,25 @@ export function Clusters() {
     if (data) setCluster(data.upgradeQueues[0])
   }, [data])
 
-  if (!data || !cluster) return <LoopingLogo />
+  if (!data || !cluster) {
+    return (
+      <Flex
+        marginHorizontal="auto"
+        paddingTop="xxlarge"
+        direction="column"
+        align="center"
+      >
+        <ClusterIcon size={64} />
+        <P
+          body1
+          bold
+          marginTop="xlarge"
+        >
+          You have no clusters registered so far.
+        </P>
+      </Flex>
+    )
+  }
 
   return (
     <Box
@@ -303,7 +320,7 @@ export function Clusters() {
               q={cluster}
               background="fill-one"
             />
-          </Box>  
+          </Box>
           <ClusterDescription q={cluster} />
         </Box>
         <Upgrades q={cluster} />

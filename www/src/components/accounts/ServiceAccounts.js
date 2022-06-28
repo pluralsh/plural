@@ -100,7 +100,7 @@ function ServiceAccount({ user, next, update }) {
             text={`Update ${user.name}`}
             setOpen={setOpen}
           />
-          <Box width="40vw">
+          <Box width="50vw">
             <UpdateServiceAccount
               user={user}
               setOpen={setOpen}

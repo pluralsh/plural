@@ -119,6 +119,7 @@ export function UpdateServiceAccount({ user, setOpen }) {
   return (
     <Box
       fill
+      width="50vw"
       gap="xsmall"
     >
       {error && (
@@ -165,7 +166,7 @@ export function CreateServiceAccount() {
             text="Create a new service account"
             setOpen={setOpen}
           />
-          <Box width="40vw">
+          <Box width="50vw">
             <CreateInner setOpen={setOpen} />
           </Box>
         </Layer>

@@ -71,7 +71,7 @@ function CreateRepositoryCard({ data }) {
 
 function CloudShell() {
   const { data } = useQuery(AUTHENTICATION_URLS_QUERY)
-  const { data: shellData } = useQuery(CLOUD_SHELL_QUERY, { fetchPolicy: 'cache-and-network' })
+  const { data: shellData } = useQuery(CLOUD_SHELL_QUERY, { fetchPolicy: 'network-only' })
   const [rebootMutation] = useMutation(REBOOT_SHELL_MUTATION)
   const [created, setCreated] = useState(false)
 

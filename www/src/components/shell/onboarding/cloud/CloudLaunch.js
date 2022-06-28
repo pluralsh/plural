@@ -1,7 +1,9 @@
 import { useContext, useEffect } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
 import { Div, Flex, P } from 'honorable'
-import { Button, Chip, DiscordIcon, ProgressBar } from 'pluralsh-design-system'
+import { Button, DiscordIcon } from 'pluralsh-design-system'
+
+import { useNavigate } from 'react-router-dom'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'
 
@@ -10,8 +12,12 @@ import { CLOUD_SHELL_QUERY, CREATE_SHELL_MUTATION } from '../../query'
 import OnboardingNavSection from '../OnboardingNavSection'
 import OnboardingCard from '../OnboardingCard'
 import { GqlError } from '../../../utils/Alert'
+import { ShellStatus } from '../ShellStatus'
+
+const EMPTY_SHELL = ({ alive: false, status: {} })
 
 function CloudLaunch() {
+  const navigate = useNavigate()
   const {
     scm,
     provider,
@@ -51,117 +57,22 @@ function CloudLaunch() {
     createShellMutation()
   }, [createShellMutation])
 
-  const { alive } = data?.shell || {}
-  const {
-    initialized,
-    podScheduled,
-    containersReady,
-    ready,
-  } = data?.shell?.status || {}
+  useEffect(() => {
+    if (data?.shell?.alive) {
+      navigate('/shell')
+    }
+  }, [data, navigate])
 
   return (
     <>
-      <OnboardingCard>
-        <Flex
-          align="center"
-          justify="space-between"
-        >
-          <Div>
-            <P
-              body1
-              bold
-            >
-              Creating cloud shell environment
-            </P>
-            <P
-              body1
-              color="text-light"
-            >
-              This may take a few minutes.
-            </P>
-          </Div>
-          <Chip
-            size="large"
-            severity={alive ? 'success' : 'info'}
-          >
-            {alive ? 'Success' : 'In progress'}
-          </Chip>
-        </Flex>
-        <ProgressBar
-          mode={error || alive ? 'determinate' : 'indeterminate'}
-          marginTop="medium"
-          progress={error ? 0 : alive ? 100 : null}
-          backgroundColor={error ? 'icon-error' : null}
-        />
-        <Flex
-          marginTop="xlarge"
-          paddingVertical="medium"
-          align="center"
-          justify="space-between"
-          borderBottom="1px solid border-fill-two"
-        >
-          <P body2>
-            Initialized
-          </P>
-          <Chip
-            loading={!initialized}
-            severity={initialized ? 'success' : 'info'}
-          >
-            {initialized ? 'Success' : 'Running'}
-          </Chip>
-        </Flex>
-        <Flex
-          paddingVertical="medium"
-          align="center"
-          justify="space-between"
-          borderBottom="1px solid border-fill-two"
-        >
-          <P body2>
-            Pod scheduled
-          </P>
-          <Chip
-            loading={!podScheduled}
-            severity={podScheduled ? 'success' : 'info'}
-          >
-            {podScheduled ? 'Success' : 'Running'}
-          </Chip>
-        </Flex>
-        <Flex
-          paddingVertical="medium"
-          align="center"
-          justify="space-between"
-          borderBottom="1px solid border-fill-two"
-        >
-          <P body2>
-            Containers ready
-          </P>
-          <Chip
-            loading={!containersReady}
-            severity={containersReady ? 'success' : 'info'}
-          >
-            {containersReady ? 'Success' : 'Running'}
-          </Chip>
-        </Flex>
-        <Flex
-          paddingVertical="medium"
-          align="center"
-          justify="space-between"
-        >
-          <P body2>
-            Ready
-          </P>
-          <Chip
-            loading={!ready}
-            severity={ready ? 'success' : 'info'}
-          >
-            {ready ? 'Success' : 'Running'}
-          </Chip>
-        </Flex>
-      </OnboardingCard>
+      <ShellStatus
+        shell={data?.shell || EMPTY_SHELL}
+        error={error}
+      />
       {!!error && (
         <Div marginTop="medium">
           <GqlError
-            header="Error while creating demo project"
+            header="Error while creating shell instance"
             error={error}
           />
         </Div>
@@ -202,26 +113,6 @@ function CloudLaunch() {
           </Button>
         </Flex>
       </OnboardingCard>
-      {/* Navigation */}
-      <OnboardingNavSection>
-        <Button
-          secondary
-          onClick={() => {
-            previous()
-          }}
-        >
-          Back
-        </Button>
-        <Button
-          disabled={!alive}
-          onClick={() => {
-            next()
-          }}
-        >
-          Launch cloud shell
-        </Button>
-      </OnboardingNavSection>
-
     </>
   )
 }

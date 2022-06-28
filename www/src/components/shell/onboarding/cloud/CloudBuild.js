@@ -68,6 +68,7 @@ function CloudBuild() {
           </Div>
           <Chip
             size="large"
+            backgroundColor="fill-two"
             severity={status === 'ENABLED' ? 'success' : 'info'}
           >
             {status === 'ENABLED' ? 'Success' : 'In progress'}
@@ -91,6 +92,7 @@ function CloudBuild() {
           </P>
           <Chip
             loading={!status}
+            backgroundColor="fill-two"
             severity={['CREATED', 'READY', 'ENABLED'].includes(status) ? 'success' : 'info'}
           >
             {['CREATED', 'READY', 'ENABLED'].includes(status) ? 'Success' : 'Running'}
@@ -106,6 +108,7 @@ function CloudBuild() {
           </P>
           <Chip
             loading={status === 'CREATED'}
+            backgroundColor="fill-two"
             severity={status === 'CREATED' ? 'info' : status === 'ENABLED' | status === 'READY' ? 'success' : 'neutral'}
           >
             {status === 'CREATED' ? 'Running' : status === 'ENABLED' | status === 'READY' ? 'Success' : 'Pending'}

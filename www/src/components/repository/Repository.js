@@ -93,7 +93,7 @@ function Repository() {
                 Packages
               </Tab>
             </Link>
-            {repository.installation && (
+            {repository.installation && repository.oauthSettings && (
               <Link
                 to={`/repository/${id}/oidc`}
                 style={{ textDecoration: 'none' }}

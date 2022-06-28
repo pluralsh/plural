@@ -18,7 +18,7 @@ export const PLURAL_THEME = {
   'tone-light': '#edf1f2',
   'plrl-white': '#fff',
   'key-dark': '#001b8c',
-  'key-light': '#0022b2',
+  'key-light': '#5C77FF',
   blue: '#0022b2',
   'blue-light': '#3351f2',
   'blue-light-2': '#e1ebff',

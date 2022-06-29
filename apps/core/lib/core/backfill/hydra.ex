@@ -7,7 +7,7 @@ defmodule Core.Backfill.Hydra do
     Core.Repo.all(OIDCProvider)
     |> Enum.each(fn oidc ->
       %{installation: inst} = Core.Repo.preload(oidc, [installation: :user])
-      {:ok, _} = Repositories.update_oidc_provider(%{}, inst.id, inst.user)
+      {:ok, _} = Repositories.update_oidc_provider(%{redirect_uris: oidc.redirect_uris}, inst.id, inst.user)
     end)
   end
 end

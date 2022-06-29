@@ -123,6 +123,8 @@ export function Shell({ room, header, title }) {
           borderRadius="large"
           border="1px solid border"
           flexGrow={1}
+          padding="medium"
+          backgroundColor={normalizedThemes[terminalTheme].background}
         >
           <XTerm
             className="terminal"

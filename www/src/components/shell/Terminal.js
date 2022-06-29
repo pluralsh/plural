@@ -12,13 +12,14 @@ import { socket } from '../../helpers/client'
 import { Code } from '../incidents/Markdown'
 import { ModalHeader } from '../ModalHeader'
 
-import { ShellStatus } from './ShellStatus'
-
 import { CLOUD_SHELL_QUERY } from './query'
 import { ThemeSelector } from './ThemeSelector'
 import { normalizedThemes, savedTheme } from './themes'
+import { ShellStatus } from './onboarding/ShellStatus'
 
-const decodeBase64 = str => Buffer.from(str, 'base64').toString('utf-8')
+const { Buffer } = require('buffer/')
+
+const decodeBase64 = str => (new Buffer(str, 'base64')).toString('utf-8')
 
 export function Shell({ room, header, title, children }) {
   const xterm = useRef(null)
@@ -28,8 +29,10 @@ export function Shell({ room, header, title, children }) {
   const theme = savedTheme() || 'chalk'
   const themeStruct = normalizedThemes[theme]
 
+  console.log(dims)
+
   useEffect(() => {
-    if (!xterm || !xterm.current || !xterm.current.terminal) return
+    if (!xterm?.current?.terminal) return
     const term = xterm.current.terminal
 
     fitAddon.fit()
@@ -93,18 +96,29 @@ export function Shell({ room, header, title, children }) {
         <Box
           fill
           pad="small"
-          background={themeStruct.background}
+          align="center"
+          justify="center"
+          
         >
-          <XTerm
-            className="terminal"
-            ref={xterm}
-            addons={[fitAddon]}
-            options={{ theme: themeStruct }}
-            onResize={({ cols, rows }) => {
-              if (channel) channel.push('resize', { width: cols, height: rows })
-            }}
-            onData={text => channel.push('command', { cmd: text })}
-          />
+          <Box
+            width="900px"
+            height="750px"
+            round="xsmall"
+            border
+            pad="small"
+            background={themeStruct.background}
+          >
+            <XTerm
+              className="terminal"
+              ref={xterm}
+              addons={[fitAddon]}
+              options={{ theme: themeStruct }}
+              onResize={({ cols, rows }) => {
+                if (channel) channel.push('resize', { width: cols, height: rows })
+              }}
+              onData={text => channel.push('command', { cmd: text })}
+            />
+          </Box>
         </Box>
       </Box>
     </Box>

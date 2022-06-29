@@ -104,6 +104,7 @@ export function EditServiceAccount({ user, update }) {
         <Box
           flex={false}
           gap="small"
+          width="50vw"
         >
           <ServiceAccountForm
             error={eerror}
@@ -122,7 +123,7 @@ export function EditServiceAccount({ user, update }) {
               onClick={mutation}
               loading={eloading}
               marginLeft="medium"
-            >Create
+            >Update
             </Button>
           </ModalActions>
         </Box>
@@ -160,6 +161,7 @@ export function CreateServiceAccount({ q }) {
         <Box
           flex={false}
           gap="small"
+          width="50vw"
         >
           <ServiceAccountForm
             error={error}

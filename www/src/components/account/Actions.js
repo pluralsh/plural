@@ -1,6 +1,6 @@
 import { Button, ModalActions } from 'pluralsh-design-system'
 
-export function Actions({ cancel, submit, loading }) {
+export function Actions({ cancel, submit, loading, action }) {
   return (
     <ModalActions>
       <Button
@@ -12,7 +12,7 @@ export function Actions({ cancel, submit, loading }) {
         onClick={submit}
         loading={loading}
         marginLeft="medium"
-      >Create
+      >{action || 'Create'}
       </Button>
     </ModalActions>
   )

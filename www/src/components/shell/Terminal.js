@@ -1,5 +1,5 @@
 import './shell.css'
-import { useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { XTerm } from 'xterm-for-react'
 import { FitAddon } from 'xterm-addon-fit'
 import { useQuery } from '@apollo/client'
@@ -25,6 +25,7 @@ const { Buffer } = require('buffer/')
 const decodeBase64 = str => Buffer.from(str, 'base64').toString('utf-8')
 
 export function Shell({ room, header, title }) {
+  const terminalRef = useRef()
   const xterm = useRef(null)
   const [channel, setChannel] = useState(null)
   const [dimensions, setDimensions] = useState({})
@@ -45,7 +46,7 @@ export function Shell({ room, header, title }) {
     chan.on('stdo', ({ message }) => term.write(decodeBase64(message)))
     chan.join()
 
-    const { cols, rows } = fitAddon.proposeDimensions()
+    const { cols, rows } = fitAddon.proposeDimensions() || { cols: 80, rows: 24 }
     // chan.push('resize', { width: cols, height: rows })
     setDimensions({ cols, rows })
     setChannel(chan)
@@ -58,14 +59,18 @@ export function Shell({ room, header, title }) {
     }
   }, [room, xterm, fitAddon, header])
 
-  function handleResetSize() {
+  const handleResetSize = useCallback(() => {
+    if (!channel) return
     channel.push('resize', { width: dimensions.cols, height: dimensions.rows })
-  }
+  }, [channel, dimensions])
+
+  useEffect(() => {
+    handleResetSize()
+  }, [handleResetSize])
 
   function handleResize({ cols, rows }) {
-    if (channel) {
-      channel.push('resize', { width: cols, height: rows })
-    }
+    if (!channel) return
+    channel.push('resize', { width: cols, height: rows })
   }
 
   function handleData(text) {
@@ -73,12 +78,16 @@ export function Shell({ room, header, title }) {
   }
 
   return (
-    <>
+    <Flex
+      direction="column"
+      height="100%"
+    >
       <Flex
         align="center"
         paddingVertical="xsmall"
         paddingHorizontal="medium"
         gap="medium"
+        borderBottom="1px solid border"
       >
         <P
           body1
@@ -98,18 +107,38 @@ export function Shell({ room, header, title }) {
         </Button>
         <TerminalThemeSelector />
       </Flex>
-      <Flex gap="xlarge">
+      <Flex
+        marginTop="medium"
+        flexGrow={1}
+        gap="xlarge"
+        paddingBottom="medium"
+        paddingHorizontal="medium"
+      >
         <TerminalSidebar />
-        <XTerm
-          className="terminal"
-          ref={xterm}
-          addons={[fitAddon]}
-          options={{ theme: normalizedThemes[terminalTheme] }}
-          onResize={handleResize}
-          onData={handleData}
-        />
+        <Flex
+          ref={terminalRef}
+          align="center"
+          justify="center"
+          overflow="hidden"
+          borderRadius="large"
+          border="1px solid border"
+          flexGrow={1}
+        >
+          <XTerm
+            className="terminal"
+            ref={xterm}
+            addons={[fitAddon]}
+            options={{ theme: normalizedThemes[terminalTheme] }}
+            onResize={handleResize}
+            onData={handleData}
+            style={{
+              width: '100%',
+              height: '100%',
+            }}
+          />
+        </Flex>
       </Flex>
-    </>
+    </Flex>
   )
 }
 

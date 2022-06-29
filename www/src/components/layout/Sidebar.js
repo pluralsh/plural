@@ -1,6 +1,6 @@
 import { forwardRef, useContext, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Avatar, Div, Flex, Img, Menu, MenuItem, P, Tooltip, useOutsideClick } from 'honorable'
+import { Avatar, Div, Flex, Img, Menu, MenuItem, P, useOutsideClick } from 'honorable'
 import {
   ArrowTopRightIcon,
   ClusterIcon,
@@ -16,6 +16,7 @@ import {
   PeopleIcon,
   PersonIcon,
   TerminalIcon,
+  Tooltip,
 } from 'pluralsh-design-system'
 
 import { getPreviousUserData, setPreviousUserData, setToken, wipeToken } from '../../helpers/authentication'
@@ -138,14 +139,16 @@ ref
   }
 
   function wrapTooltip(node) {
-    if (!(collapsed && tooltip)) return node
+    if (!(tooltip)) return node
 
     return (
       <Tooltip
         arrow
         placement="right"
         label={tooltip}
-        zIndex={1}
+        zIndex={1000}
+        display={collapsed ? 'block' : 'none'}
+        whiteSpace="nowrap"
       >
         {node}
       </Tooltip>

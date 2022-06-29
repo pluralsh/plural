@@ -152,7 +152,7 @@ ref
     )
   }
 
-  return wrapTooltip(wrapLink(
+  return wrapLink(wrapTooltip(
     <Flex
       ref={ref}
       py="9.5px" // Give it a square look with a weird padding

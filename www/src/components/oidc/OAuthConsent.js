@@ -20,12 +20,6 @@ import { GET_CONSENT, OAUTH_CONSENT } from './queries'
 export function OAuthConsent() {
   const location = useLocation()
   const { consent_challenge: challenge } = queryString.parse(location.search)
-  const [mutation, { loading, error }] = useMutation(OAUTH_CONSENT, {
-    variables: { challenge, scopes: ['profile', 'openid'] },
-    onCompleted: ({ oauthConsent: { redirectTo } }) => {
-      window.location = redirectTo
-    },
-  })
   const { data } = useQuery(GET_CONSENT, { variables: { challenge } })
 
   if (!data) {
@@ -39,6 +33,13 @@ export function OAuthConsent() {
   }
 
   const { oauthConsent } = data
+
+  const [mutation, { loading, error }] = useMutation(OAUTH_CONSENT, {
+    variables: { challenge, scopes: oauthConsent.requested_scope },
+    onCompleted: ({ oauthConsent: { redirectTo } }) => {
+      window.location = redirectTo
+    },
+  })
 
   return (
     <LoginPortal>
@@ -60,11 +61,11 @@ export function OAuthConsent() {
           />
           <Transaction size="15px" />
           <RepoIcon
-            repo={oauthConsent}
+            repo={oauthConsent.repository}
             size="60px"
           />
         </Box>
-        <Text size="medium">{oauthConsent.name} would like access to your profile</Text>
+        <Text size="medium">{oauthConsent.repository.name} would like access to your profile</Text>
         <Box
           width="300px"
           pad={{ vertical: 'small' }}

@@ -23,8 +23,8 @@ defmodule Core.Services.OAuth do
   """
   @spec get_consent(binary) :: {:ok, OIDCProvider.t} | error
   def get_consent(challenge) do
-    with {:ok, %{client: client}} <- Hydra.get_consent(challenge) do
-      {:ok, Repositories.get_oidc_provider_by_client!(client.client_id)}
+    with {:ok, %{client: client, requested_scope: requested_scope, skip: skip}} <- Hydra.get_consent(challenge) do
+      {:ok, Repositories.get_oidc_provider_by_client!(client.client_id), requested_scope, skip}
     end
   end
 

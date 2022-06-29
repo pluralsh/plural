@@ -40,6 +40,12 @@ defmodule GraphQl.Schema.OAuth do
     timestamps()
   end
 
+  object :oauth_consent do
+    field :repository,      :repository
+    field :requested_scope, list_of(:string)
+    field :skip,            :boolean
+  end
+
   connection node_type: :oidc_login
 
   object :oauth_queries do
@@ -49,7 +55,7 @@ defmodule GraphQl.Schema.OAuth do
       resolve &OAuth.resolve_login/2
     end
 
-    field :oauth_consent, :repository do
+    field :oauth_consent, :oauth_consent do
       arg :challenge, non_null(:string)
 
       resolve &OAuth.resolve_consent/2

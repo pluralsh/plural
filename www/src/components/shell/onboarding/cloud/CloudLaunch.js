@@ -105,7 +105,7 @@ function CloudLaunch() {
               <DiscordIcon />
             )}
             as="a"
-            href="https://discord.gg/qQqQqQq"
+            href="https://discord.gg/pluralsh"
             target="_blank"
             rel="noopener noreferrer"
           >

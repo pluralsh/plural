@@ -9,7 +9,6 @@ import {
   GitHubLogoIcon,
   HamburgerMenuCollapseIcon,
   HamburgerMenuCollapsedIcon,
-  InstalledIcon,
   LightningIcon,
   ListIcon,
   LogoutIcon,
@@ -39,17 +38,13 @@ function SidebarWrapper() {
       name: 'Marketplace',
       Icon: MarketIcon,
       url: '/marketplace',
-      urlRegexp: /\/repository\//,
-    },
-    {
-      name: 'Installed',
-      Icon: InstalledIcon,
-      url: '/installed',
+      urlRegexp: /^\/(marketplace|installed|repository)/,
     },
     {
       name: 'Cloud Shell',
       Icon: TerminalIcon,
       url: '/shell',
+      urlRegexp: /^\/(shell|oauth\/callback\/.+\/shell)/,
     },
     {
       name: 'Account',
@@ -353,7 +348,7 @@ function Sidebar({
             <SidebarItem
               key={name}
               mb={0.5}
-              active={activeId === url || urlRegexp?.test(activeId)}
+              active={url.startsWith(activeId) || urlRegexp?.test(activeId)}
               collapsed={collapsed}
               startIcon={<Icon />}
               label={name}

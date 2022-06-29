@@ -1,6 +1,6 @@
 import { forwardRef, useContext, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Avatar, Div, Flex, Img, Menu, MenuItem, P, useOutsideClick } from 'honorable'
+import { Avatar, Div, Flex, Img, Menu, MenuItem, P, Tooltip, useOutsideClick } from 'honorable'
 import {
   ArrowTopRightIcon,
   ClusterIcon,
@@ -137,21 +137,22 @@ ref
     )
   }
 
-  // function wrapTooltip(node) {
-  //   if (!(collapsed && tooltip)) return node
+  function wrapTooltip(node) {
+    if (!(collapsed && tooltip)) return node
 
-  //   return (
-  //     <Tooltip
-  //       arrow
-  //       label={tooltip}
-  //       placement="right"
-  //     >
-  //       {node}
-  //     </Tooltip>
-  //   )
-  // }
+    return (
+      <Tooltip
+        arrow
+        placement="right"
+        label={tooltip}
+        zIndex={1}
+      >
+        {node}
+      </Tooltip>
+    )
+  }
 
-  return wrapLink(
+  return wrapTooltip(wrapLink(
     <Flex
       ref={ref}
       py="9.5px" // Give it a square look with a weird padding
@@ -207,7 +208,7 @@ ref
         {endIcon}
       </Flex>
     </Flex>
-  )
+  ))
 }
 
 const SidebarItem = forwardRef(SidebarItemRef)

@@ -1,51 +1,57 @@
 import './shell.css'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { Box, Drop, Layer, Text } from 'grommet'
 import { XTerm } from 'xterm-for-react'
 import { FitAddon } from 'xterm-addon-fit'
 import { useQuery } from '@apollo/client'
 import { CircleInformation } from 'grommet-icons'
-import { Update } from 'forge-core'
+import { Button, Div, Flex, P } from 'honorable'
+
+import { ReloadIcon } from 'pluralsh-design-system'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { socket } from '../../helpers/client'
 import { Code } from '../incidents/Markdown'
 import { ModalHeader } from '../ModalHeader'
 
+import TerminalThemeContext from '../../contexts/TerminalThemeContext'
+
 import { CLOUD_SHELL_QUERY } from './query'
-import { ThemeSelector } from './ThemeSelector'
-import { normalizedThemes, savedTheme } from './themes'
+import TerminalThemeSelector from './TerminalThemeSelector'
+import { normalizedThemes } from './themes'
 import { ShellStatus } from './onboarding/ShellStatus'
+import TerminalThemeProvider from './TerminalThemeProvider'
 
 const { Buffer } = require('buffer/')
 
-const decodeBase64 = str => (new Buffer(str, 'base64')).toString('utf-8')
+const decodeBase64 = str => Buffer.from(str, 'base64').toString('utf-8')
 
-export function Shell({ room, header, title, children }) {
+export function Shell({ room, header, title }) {
   const xterm = useRef(null)
   const [channel, setChannel] = useState(null)
-  const [dims, setDims] = useState({})
+  const [dimensions, setDimensions] = useState({})
   const fitAddon = useMemo(() => new FitAddon(), [])
-  const theme = savedTheme() || 'chalk'
-  const themeStruct = normalizedThemes[theme]
-
-  console.log(dims)
+  const [terminalTheme] = useContext(TerminalThemeContext)
 
   useEffect(() => {
     if (!xterm?.current?.terminal) return
+
     const term = xterm.current.terminal
 
     fitAddon.fit()
     term.write(`${header}\r\n\r\n`)
+
     const chan = socket.channel(room, {})
+
     chan.onError(console.log)
     chan.on('stdo', ({ message }) => term.write(decodeBase64(message)))
     chan.join()
 
     const { cols, rows } = fitAddon.proposeDimensions()
-    chan.push('resize', { width: cols, height: rows })
-    setDims({ cols, rows })
+    // chan.push('resize', { width: cols, height: rows })
+    setDimensions({ cols, rows })
     setChannel(chan)
+
     const ref = socket.onOpen(() => setTimeout(() => chan.push('resize', { width: cols, height: rows }), 1000))
 
     return () => {
@@ -54,74 +60,55 @@ export function Shell({ room, header, title, children }) {
     }
   }, [room, xterm, fitAddon, header])
 
-  const resetSize = useCallback(() => channel.push('resize', { width: dims.cols, height: dims.rows }), [channel, dims])
+  function handleResetSize() {
+    channel.push('resize', { width: dimensions.cols, height: dimensions.rows })
+  }
+
+  function handleResize({ cols, rows }) {
+    if (channel) {
+      channel.push('resize', { width: cols, height: rows })
+    }
+  }
+
+  function handleData(text) {
+    channel.push('command', { cmd: text })
+  }
 
   return (
-    <Box
-      fill
-      background="background"
-    >
-      <Box
-        flex={false}
-        pad="small"
-        direction="row"
+    <>
+      <Flex
         align="center"
+        paddingVertical="xsmall"
+        paddingHorizontal="medium"
+        gap="medium"
       >
-        <Box
-          fill="horizontal"
-          direction="row"
-          align="center"
-          gap="small"
+        <P
+          body1
+          bold
         >
-          <Text
-            size="small"
-            weight={500}
-          >{title}
-          </Text>
-          <Information />
-          <Icon
-            icon={<Update size="20px" />}
-            onClick={resetSize}
-            tooltip="repair viewport"
-          />
-        </Box>
-        <ThemeSelector theme={theme} />
-      </Box>
-      <Box
-        fill
-        border
-        direction="row"
-      >
-        {children}
-        <Box
-          fill
-          pad="small"
-          align="center"
-          justify="center"
-          
+          {title}
+        </P>
+        <Div flexGrow={1} />
+        <Information />
+        <Button
+          small
+          tertiary
+          startIcon={(<ReloadIcon />)}
+          onClick={handleResetSize}
         >
-          <Box
-            width="900px"
-            height="750px"
-            round="xsmall"
-            border
-            pad="small"
-            background={themeStruct.background}
-          >
-            <XTerm
-              className="terminal"
-              ref={xterm}
-              addons={[fitAddon]}
-              options={{ theme: themeStruct }}
-              onResize={({ cols, rows }) => {
-                if (channel) channel.push('resize', { width: cols, height: rows })
-              }}
-              onData={text => channel.push('command', { cmd: text })}
-            />
-          </Box>
-        </Box>
-      </Box>
-    </Box>
+          Repair viewport
+        </Button>
+        <TerminalThemeSelector />
+      </Flex>
+      <XTerm
+        className="terminal"
+        ref={xterm}
+        addons={[fitAddon]}
+        options={{ theme: normalizedThemes[terminalTheme] }}
+        onResize={handleResize}
+        onData={handleData}
+      />
+    </>
   )
 }
 
@@ -239,51 +226,27 @@ function Information() {
 export function Terminal() {
   const { data } = useQuery(CLOUD_SHELL_QUERY, { pollInterval: 5000, fetchPolicy: 'cache-and-network' })
 
-  if (!data || !data.shell) return <LoopingLogo dark />
+  if (!data || !data.shell) {
+    return (
+      <LoopingLogo />
+    )
+  }
 
-  if (!data.shell.alive) return <ShellStatus shell={data.shell} />
+  if (!data.shell.alive) {
+    return (
+      <ShellStatus shell={data.shell} />
+    )
+  }
 
   const { shell } = data
 
   return (
-    <Shell
-      title={`Cloud Shell [Provider=${shell.provider}, Git=${shell.gitUrl}]`}
-      room="shells:me"
-      header={`Booting into your ${shell.provider} shell...`}
-    >
-      <Box
-        border={{ side: 'right' }}
-        fill="vertical"
-        width="300px"
-        gap="small"
-        pad="small"
-      >
-        <Text size="small">Here's a few commands to help you get going:</Text>
-        <CommandDetails
-          command="plural repos list --query <repository-name>"
-          description="Searches for repositories to install (omit --query flag to list all)"
-        />
-        <CommandDetails
-          command="plural bundle list APP"
-          description="Lists the bundles for an app, eg: plural bundle list airbyte"
-        />
-        <CommandDetails
-          command="plural bundle install APP BUNDLE"
-          description="Configures the installation bundle specified"
-        />
-        <CommandDetails
-          command="plural build"
-          description="Builds your entire workspace (run after plural bundle install)"
-        />
-        <CommandDetails
-          command='plural deploy --commit "commit message"'
-          description="Deploys your current workspace and commits it back to your repository"
-        />
-        <CommandDetails
-          command="plural watch APP"
-          description="See the progress of a deployment for a specific app"
-        />
-      </Box>
-    </Shell>
+    <TerminalThemeProvider>
+      <Shell
+        title={`Cloud Shell [Provider=${shell.provider}, Git=${shell.gitUrl}]`}
+        room="shells:me"
+        header={`Booting into your ${shell.provider} shell...`}
+      />
+    </TerminalThemeProvider>
   )
 }

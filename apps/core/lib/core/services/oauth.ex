@@ -49,7 +49,7 @@ defmodule Core.Services.OAuth do
   Consents to the scopes granted in the login exchanges and hydrates an id token
   """
   @spec consent(binary, [binary], User.t) :: oauth_resp
-  def consent(challenge, scopes \\ ["profile", "offline_access"], %User{} = user) do
+  def consent(challenge, scopes \\ ["profile", "offline_access", "offline"], %User{} = user) do
     user = Core.Repo.preload(user, [:groups])
     with {:ok, provider} <- get_consent(challenge),
          {:ok, _} = res <- Hydra.accept_consent(user, challenge, scopes),

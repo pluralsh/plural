@@ -389,7 +389,7 @@ defmodule Core.Services.Repositories do
     end)
   end
 
-  @oidc_scopes "profile code openid offline_access"
+  @oidc_scopes "profile code openid offline_access offline"
 
   @doc """
   Creates a new oidc provider for a given installation, enabling a log-in with plural experience

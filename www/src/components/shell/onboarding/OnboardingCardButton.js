@@ -1,4 +1,4 @@
-import { StatusIpIcon } from 'pluralsh-design-system'
+import { StatusOkIcon } from 'pluralsh-design-system'
 import { Button, Div } from 'honorable'
 
 function OnboardingCardButton({ selected = false, children, ...props }) {
@@ -9,7 +9,7 @@ function OnboardingCardButton({ selected = false, children, ...props }) {
       left={0}
       padding="medium"
     >
-      <StatusIpIcon
+      <StatusOkIcon
         size={24}
         color="action-link-inline"
         transform={selected ? 'scale(1)' : 'scale(0)'}

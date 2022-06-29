@@ -12,38 +12,44 @@ import OnboardingCard from '../OnboardingCard'
 import { GqlError } from '../../../utils/Alert'
 
 function CloudBuild() {
-  const { previous, next, setWorkspace, setDemoId } = useContext(CreateShellContext)
-  const [createDemoProjectMutation, createDemoProjectMutationResults] = useMutation(CREATE_DEMO_PROJECT_MUTATION)
+  const { previous, next, setWorkspace, setProvider, setCredentials, setDemoId } = useContext(CreateShellContext)
+  const [mutation, mutationResults] = useMutation(CREATE_DEMO_PROJECT_MUTATION)
   const pollDemoProjectQueryResults = useQuery(
     POLL_DEMO_PROJECT_QUERY,
     {
       variables: {
-        id: createDemoProjectMutationResults.data?.createDemoProject?.id,
+        id: mutationResults.data?.createDemoProject?.id,
       },
       pollInterval: 2000,
-      skip: !!createDemoProjectMutationResults.error || !createDemoProjectMutationResults.data,
+      skip: !!mutationResults.error || !mutationResults.data,
     }
   )
 
   const status = pollDemoProjectQueryResults.data?.demoProject?.state
-  const error = createDemoProjectMutationResults.error || pollDemoProjectQueryResults.error
+  const error = mutationResults.error || pollDemoProjectQueryResults.error
 
   useEffect(() => {
-    createDemoProjectMutation()
-  }, [createDemoProjectMutation])
+    mutation()
+  }, [mutation])
 
   useEffect(() => {
+    setProvider('GCP')
     setWorkspace(x => ({
       ...x,
       region: 'us-east1',
       cluster: 'plural-demo-cluster',
       bucketPrefix: `plural-${Math.random().toString().substring(2, 8)}`,
     }))
-  }, [setWorkspace])
+  }, [setWorkspace, setProvider])
 
   useEffect(() => {
-    setDemoId(createDemoProjectMutationResults.data?.createDemoProject?.id)
-  }, [setDemoId, createDemoProjectMutationResults.data?.createDemoProject?.id])
+    if (mutationResults.data) {
+      const { createDemoProject: demo } = mutationResults.data 
+      setDemoId(demo.id)
+      setCredentials({ gcp: { applicationCredentials: demo.credentials } })
+      setWorkspace(wk => ({ ...wk, project: demo.project }))
+    }
+  }, [setDemoId, mutationResults.data, setCredentials, setWorkspace])
 
   return (
     <>

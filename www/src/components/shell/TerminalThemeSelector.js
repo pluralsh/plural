@@ -5,7 +5,6 @@ import TerminalThemeContext from '../../contexts/TerminalThemeContext'
 
 import { normalizedThemes } from './themes'
 
-console.log('normalizedThemes', normalizedThemes)
 const extendedHonorableTheme = {
   DropdownButton: {
     Root: [

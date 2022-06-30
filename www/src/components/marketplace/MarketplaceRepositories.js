@@ -162,61 +162,62 @@ function MarketplaceRepositories({ installed, ...props }) {
       direction="column"
       {...props}
     >
-      <Flex
-        paddingHorizontal="large"
-        align="stretch"
-        position="relative"
-        wrap
-        marginBottom="-8px"
-      >
-        <Div
-          minWidth="210px"
-          maxWidth="calc(50% - 16px)"
-          flex="1 1 210px"
-          marginRight="large"
-          marginBottom="xsmall"
-          _last={{
-            marginRight: 'large',
-          }}
+      <Div position="relative">
+        <Flex
+          paddingHorizontal="large"
+          align="stretch"
+          wrap
+          marginBottom="-8px"
         >
-          <Input
-            startIcon={(
-              <MagnifyingGlassIcon
-                size={14}
-              />
-            )}
-            placeholder="Search a repository"
-            value={search}
-            onChange={event => setSearch(event.target.value)}
-          />
-        </Div>
-        {categories.map(category => (
-          <Token
-            {...filterTokenStyles}
-            onClose={() => handleClearToken('category', category)}
-          >
-            {capitalize(category)}
-          </Token>
-        ))}
-        {tags.map(tag => (
-          <Token
-            {...filterTokenStyles}
-            onClose={() => handleClearToken('tag', tag)}
-          >
-            {capitalize(tag)}
-          </Token>
-        ))}
-        {!!(categories.length || tags.length) && (
-          <Button
+          <Div
+            minWidth="210px"
+            maxWidth="calc(50% - 16px)"
+            flex="1 1 210px"
+            marginRight="large"
             marginBottom="xsmall"
-            flexShrink={0}
-            tertiary
-            small
-            onClick={() => handleClearTokens()}
+            _last={{
+              marginRight: 'large',
+            }}
           >
-            Clear all
-          </Button>
-        )}
+            <Input
+              startIcon={(
+                <MagnifyingGlassIcon
+                  size={14}
+                />
+              )}
+              placeholder="Search a repository"
+              value={search}
+              onChange={event => setSearch(event.target.value)}
+            />
+          </Div>
+          {categories.map(category => (
+            <Token
+              {...filterTokenStyles}
+              onClose={() => handleClearToken('category', category)}
+            >
+              {capitalize(category)}
+            </Token>
+          ))}
+          {tags.map(tag => (
+            <Token
+              {...filterTokenStyles}
+              onClose={() => handleClearToken('tag', tag)}
+            >
+              {capitalize(tag)}
+            </Token>
+          ))}
+          {!!(categories.length || tags.length) && (
+            <Button
+              marginBottom="xsmall"
+              flexShrink={0}
+              tertiary
+              small
+              onClick={() => handleClearTokens()}
+            >
+              Clear all
+            </Button>
+          )}
+        </Flex>
         <Div
           flexShrink={0}
           height={16}
@@ -226,7 +227,7 @@ function MarketplaceRepositories({ installed, ...props }) {
           top="100%"
           zIndex={999}
         />
-      </Flex>
+      </Div>
       <Div
         pt={1}
         pb={8}

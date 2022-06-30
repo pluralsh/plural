@@ -16,6 +16,13 @@ const searchOptions = {
   keys: ['name', 'description', 'tags.tag'],
 }
 
+const filterTokenStyles = {
+  marginRight: 'xsmall',
+  marginBottom: 'xsmall',
+  flexShrink: 0,
+  minHeight: '42px',
+}
+
 function MarketplaceRepositories({ installed, ...props }) {
   const scrollRef = useRef()
   const [searchParams, setSearchParams] = useSearchParams()
@@ -157,54 +164,59 @@ function MarketplaceRepositories({ installed, ...props }) {
     >
       <Flex
         paddingHorizontal="large"
-        align="flex-start"
+        align="stretch"
         position="relative"
+        wrap
+        marginBottom="-8px"
       >
-        <Input
-          startIcon={(
-            <MagnifyingGlassIcon
-              size={14}
-            />
-          )}
-          placeholder="Search a repository"
-          value={search}
-          onChange={event => setSearch(event.target.value)}
-          width="calc(100% / 2 - 16px)"
-        />
-        <Flex
-          wrap
-          align="center"
-          flexShrink={1}
-          minHeight={36}
-          marginLeft="xsmall"
+        <Div
+          minWidth="210px"
+          maxWidth="calc(50% - 16px)"
+          flex="1 1 210px"
+          marginRight="large"
+          marginBottom="xsmall"
+          _last={{
+            marginRight: 'large',
+          }}
         >
-          {categories.map(category => (
-            <Token
-              mr={0.5}
-              onClose={() => handleClearToken('category', category)}
-            >
-              {capitalize(category)}
-            </Token>
-          ))}
-          {tags.map(tag => (
-            <Token
-              mr={0.5}
-              onClose={() => handleClearToken('tag', tag)}
-            >
-              {capitalize(tag)}
-            </Token>
-          ))}
-          {!!(categories.length || tags.length) && (
-            <Button
-              ml={0.25}
-              tertiary
-              small
-              onClick={() => handleClearTokens()}
-            >
-              Clear all
-            </Button>
-          )}
-        </Flex>
+          <Input
+            startIcon={(
+              <MagnifyingGlassIcon
+                size={14}
+              />
+            )}
+            placeholder="Search a repository"
+            value={search}
+            onChange={event => setSearch(event.target.value)}
+          />
+        </Div>
+        {categories.map(category => (
+          <Token
+            {...filterTokenStyles}
+            onClose={() => handleClearToken('category', category)}
+          >
+            {capitalize(category)}
+          </Token>
+        ))}
+        {tags.map(tag => (
+          <Token
+            {...filterTokenStyles}
+            onClose={() => handleClearToken('tag', tag)}
+          >
+            {capitalize(tag)}
+          </Token>
+        ))}
+        {!!(categories.length || tags.length) && (
+          <Button
+            marginBottom="xsmall"
+            flexShrink={0}
+            tertiary
+            small
+            onClick={() => handleClearTokens()}
+          >
+            Clear all
+          </Button>
+        )}
         <Div
           flexShrink={0}
           height={16}

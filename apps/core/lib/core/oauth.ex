@@ -1,6 +1,8 @@
 defmodule Core.OAuth do
   @providers ~w(github google gitlab)a
 
+  @type method :: :github | :gitlab | :google | :sso
+
   def urls(redirect \\ nil) do
     Enum.map(@providers, & %{provider: &1, authorize_url: authorize_url(&1, redirect)})
   end

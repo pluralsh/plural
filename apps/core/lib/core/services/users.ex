@@ -262,6 +262,11 @@ defmodule Core.Services.Users do
     |> notify(:create)
   end
 
+  @doc """
+  Bootstraps a user in response to an oauth/sso callback.  Will update the user if already exists, otherwise creates
+  the user given the oauth response
+  """
+  @spec bootstrap_user(Core.OAuth.method, map) :: user_resp
   def bootstrap_user(service, %{email: email} = attrs) do
     case get_user_by_email(email) do
       nil ->
@@ -270,7 +275,7 @@ defmodule Core.Services.Users do
         |> Map.put(:password, Ecto.UUID.generate())
         |> create_user()
       %User{} = user ->
-        update_user(login_args(:sso), user)
+        update_user(login_args(service), user)
     end
   end
 

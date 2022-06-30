@@ -433,6 +433,25 @@ defmodule Core.Services.UsersTest do
     end
   end
 
+  describe "#bootstrap_users/2" do
+    test "it will create new users and set login method" do
+      {:ok, user} = Users.bootstrap_user(:google, %{email: "someone@gmail.com", name: "New User"})
+
+      assert user.email == "someone@gmail.com"
+      assert user.name == "New User"
+      assert user.login_method == :google
+    end
+
+    test "it will update login method for existing users" do
+      user = insert(:user)
+
+      {:ok, upd} = Users.bootstrap_user(:google, %{email: user.email})
+
+      assert upd.id == user.id
+      assert upd.login_method == :google
+    end
+  end
+
   describe "#backfill_providers/0" do
     test "it will set providers based on terraform installations" do
       user = insert(:user)

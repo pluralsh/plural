@@ -47,7 +47,7 @@ export function SocialLinks() {
             color="white"
           />
         )}
-        url="https://discord.gg/bEBAMXV64s"
+        url="https://discord.gg/pluralsh"
       />
       <SocialLink
         icon={(

@@ -139,7 +139,7 @@ ref
   }
 
   function wrapTooltip(node) {
-    if (!(tooltip)) return node
+    if (!tooltip) return node
 
     return (
       <Tooltip

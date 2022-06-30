@@ -1,4 +1,4 @@
-import { Accordion, Button, Div, ExtendTheme, Flex, P } from 'honorable'
+import { Accordion, Button, Div, ExtendTheme, Flex, Li, P, Ul } from 'honorable'
 import { useState } from 'react'
 
 import CodeLine from '../utils/CodeLine'
@@ -86,7 +86,7 @@ function TerminalSidebar(props) {
           primary
           onClick={handleNext}
         >
-          Next
+          {stepIndex === steps.length - 1 ? 'Complete demo' : 'Next'}
         </Button>
       </Flex>
     </Flex>
@@ -225,17 +225,88 @@ function Step1() {
 
 function Step2() {
   return (
-    <>
-      foo
-    </>
+    <Div
+      paddingVertical="medium"
+      paddingHorizontal="large"
+    >
+      <P
+        overline
+        color="text-xlight"
+      >
+        installation
+      </P>
+      <P
+        body1
+        marginTop="medium"
+      >
+        Now that you've installed the Plural Console, it may be a good idea to install another app.
+        For the sake of this demo we recommend installing an instance of Airbyte.
+      </P>
+      <P
+        body1
+        marginTop="medium"
+      >
+        To install Airbyte, simply run:
+      </P>
+      <CodeLine marginTop="medium">
+        plural bundle install airbyte gcp-airbyte
+      </CodeLine>
+    </Div>
   )
 }
 
 function Step3() {
   return (
-    <>
-      foo
-    </>
+    <Div
+      paddingVertical="medium"
+      paddingHorizontal="large"
+    >
+      <P
+        overline
+        color="text-xlight"
+      >
+        plural build & deploy
+      </P>
+      <P
+        body1
+        marginTop="medium"
+      >
+        Now it's time for Plural to write all the Helm and Terraform required to bring up your Kubernetes cluster based on the config that you've entered.
+      </P>
+      <P
+        body1
+        marginTop="medium"
+      >
+        Start by running:
+      </P>
+      <CodeLine marginTop="medium">
+        plural build
+      </CodeLine>
+      <P
+        body1
+        marginTop="medium"
+      >
+        You can do a quick <strong>ls</strong> to check the files we've created for you, or you can go diretly to deploying them by running:
+      </P>
+      <CodeLine marginTop="medium">
+        plural deploy --commit "your message"
+      </CodeLine>
+      <P
+        body1
+        marginTop="medium"
+      >
+        This will do two things:
+        <Ul marginVertical="medium">
+          <Li>
+            Push your configuration files created in the Cloud Shell to your newly created repository
+          </Li>
+          <Li>
+            Deploy your Kubernetes cluster and the applications you've configured
+          </Li>
+        </Ul>
+        Now grab a coffee or your favorite hot beverage while we wait for your cloud provider to provision your infrastructure.
+      </P>
+    </Div>
   )
 }
 

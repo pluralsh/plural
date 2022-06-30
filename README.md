@@ -77,10 +77,10 @@ https://user-images.githubusercontent.com/28541758/164427949-3f14cfbb-cf5e-40dc-
 
 1. Go to https://app.plural.sh to create an account.<br /> 
 *Note: This is simply to track your installations and allow for the delivery of automated upgrades, you will not be asked to provide any infrastructure credentials or sensitive information.*
-3. Install the Plural CLI by following steps 1, 2, and 3 of the [Getting Started guide](https://docs.plural.sh/getting-started).
-4. [Create and initialize a new git repo](https://docs.plural.sh/getting-started#4.-create-and-initialize-plural-repo) to store your Plural installation.
-5. Install, build and deploy applications from the Plural catalogue by following steps 5 and 6 of the [Getting Started guide](https://docs.plural.sh/getting-started#5.-install-plural-applications).
-6. [Install the Plural Management Console](https://docs.plural.sh/getting-started#7.-install-plural-admin-console).
+2. [Install the Plural CLI](https://docs.plural.sh/getting-started/getting-started#install-plural-cli)
+3. [Create and initialize a new git repo](https://docs.plural.sh/getting-started/getting-started#create-your-plural-repo) to store your Plural installation.
+4. [Install, build and deploy applications](https://docs.plural.sh/getting-started/getting-started#install-plural-applications) from the Plural marketplace
+5. [Install the Plural Management Console](https://docs.plural.sh/basic-setup-and-deployment/admin-console).
 
 You should now have a fully functioning Plural environment with apps and the management console running. For more details or further information check out the rest of the docs below.
 

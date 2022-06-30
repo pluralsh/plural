@@ -113,6 +113,9 @@ export function Shell({ room, header, title }) {
         gap="xlarge"
         paddingBottom="medium"
         paddingHorizontal="medium"
+        height="100%"
+        maxHeight="100%"
+        overflow="hidden"
       >
         <TerminalSidebar />
         <Flex

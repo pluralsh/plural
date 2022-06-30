@@ -33,23 +33,21 @@ function CloudBuild() {
   }, [mutation])
 
   useEffect(() => {
-    setProvider('GCP')
-    setWorkspace(x => ({
-      ...x,
-      region: 'us-east1',
-      cluster: 'plural-demo-cluster',
-      bucketPrefix: `plural-${Math.random().toString().substring(2, 8)}`,
-    }))
-  }, [setWorkspace, setProvider])
-
-  useEffect(() => {
     if (mutationResults.data) {
       const { createDemoProject: demo } = mutationResults.data 
+      console.log(demo)
       setDemoId(demo.id)
+      setProvider('GCP')
       setCredentials({ gcp: { applicationCredentials: demo.credentials } })
-      setWorkspace(wk => ({ ...wk, project: demo.project }))
+      setWorkspace(wk => ({ 
+        ...wk, 
+        project: demo.projectId,
+        region: 'us-east1',
+        cluster: 'plural-demo-cluster',
+        bucketPrefix: `plural-${Math.random().toString().substring(2, 8)}`,
+      }))
     }
-  }, [setDemoId, mutationResults.data, setCredentials, setWorkspace])
+  }, [mutationResults?.data])
 
   return (
     <>

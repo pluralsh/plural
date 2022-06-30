@@ -23,7 +23,6 @@ import Terraform from './repos/Terraform'
 import { AccessTokens } from './profile/AccessTokens'
 import { Account } from './account/Account'
 import { AccountAttributes } from './account/AccountAttributes'
-import { AuditChloro, AuditDirectory, Audits, LoginAudits } from './account/Audits'
 import { Clusters } from './clusters/Clusters'
 import { CurrentUserContext, PluralConfigurationContext, PluralProvider } from './login/CurrentUser'
 import { DeviceLoginNotif } from './users/DeviceLoginNotif'
@@ -45,6 +44,10 @@ import { UpgradeQueue } from './clusters/UpgradeQueue'
 import { UpgradeQueues } from './clusters/UpgradeQueues'
 import { Users } from './account/Users'
 import { VerifyEmailConfirmed } from './users/EmailConfirmation'
+import { AuditDirectory } from './audits/AuditDirectory'
+import { Audits } from './audits/Audits'
+import { LoginAudits } from './audits/LoginAudits'
+import { AuditChloropleth } from './audits/AuditChloropleth'
 
 function EditBilling(props) {
   return (
@@ -310,7 +313,7 @@ export function PluralInner() {
               />
               <Route
                 path="geo"
-                element={<AuditChloro />}
+                element={<AuditChloropleth />}
               />
             </Route>
             <Route

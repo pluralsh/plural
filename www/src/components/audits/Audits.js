@@ -1,13 +1,11 @@
 import { useCallback, useState } from 'react'
 import moment from 'moment'
-import { Box, Text } from 'grommet'
-import { Link, Outlet, useLocation } from 'react-router-dom'
+import { Box } from 'grommet'
+import { Link } from 'react-router-dom'
 import { useQuery } from '@apollo/client'
 import lookup from 'country-code-lookup'
 
-import { Div, Flex, Span } from 'honorable'
-
-import { Tab } from 'pluralsh-design-system'
+import { Div, Span } from 'honorable'
 
 import { extendConnection } from '../../utils/graphql'
 import { StandardScroller } from '../utils/SmoothScroller'
@@ -15,74 +13,14 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 import { formatLocation } from '../../utils/geo'
 import { Chloropleth } from '../utils/Chloropleth'
 
-import { RepoIcon } from '../repos/Repositories'
-
-import Avatar from '../users/Avatar'
 import { ReturnToBeginning } from '../utils/ReturnToBeginning'
-
-import { SidebarTabs } from '../utils/SidebarTabs'
 
 import { Table, TableData, TableRow } from '../utils/Table'
 
-import { AUDITS_Q, AUDIT_METRICS, LOGINS_Q, LOGIN_METRICS } from '../accounts/queries'
+import { AUDITS_Q, AUDIT_METRICS, LOGIN_METRICS } from '../accounts/queries'
 import { ButtonGroup } from '../utils/ButtonGroup'
 
-function AuditUser({ user }) {
-  return (
-    <Box
-      flex={false}
-      direction="row"
-      gap="xsmall"
-      align="center"
-    >
-      <Avatar
-        user={user}
-        size="24px"
-      />
-      <Text size="small">{user.name}</Text>
-    </Box>
-  )
-}
-
-function LoginRow({ login, last }) {
-  return (
-    <TableRow last={last}>
-      <TableData>
-        <AuditUser
-          user={login.user}
-          width="20%"
-        />
-      </TableData>
-      <TableData>
-        {moment(login.insertedAt).format('lll')}
-      </TableData>
-      <TableData>
-        <AuditUser user={login.owner} />
-      </TableData>
-      <TableData>
-        <Box
-          flex={false}
-          direction="row"
-          gap="xsmall"
-          align="center"
-        >
-          <RepoIcon
-            repo={login.repository}
-            size="24px"
-          />
-          <Text size="small">{login.repository.name}</Text>
-        </Box>
-      </TableData>
-      <TableData>
-        <Location
-          ip={login.ip}
-          country={login.country}
-          city={login.city}
-        />
-      </TableData>
-    </TableRow>
-  )
-}
+import { AuditUser } from './AuditUser'
 
 const versionLink = ({ chart, terraform }) => chart ? `/charts/${chart.id}` : `/terraform/${terraform.id}`
 
@@ -202,62 +140,6 @@ export function AuditChloro() {
   )
 }
 
-export function LoginAudits() {
-  const [listRef, setListRef] = useState(null)
-  const [scrolled, setScrolled] = useState(false)
-  const { data, loading, fetchMore } = useQuery(LOGINS_Q, { fetchPolicy: 'cache-and-network' })
-  const returnToBeginning = useCallback(() => {
-    listRef.scrollToItem(0)
-  }, [listRef])
-
-  console.log(data)
-
-  if (!data) {
-    return (
-      <LoopingLogo />
-    )
-  }
-
-  const { edges, pageInfo } = data.oidcLogins
-
-  return (
-    <Box fill>
-      <Table
-        headers={['User', 'Event Time', 'Owner', 'Repository', 'Location']}
-        sizes={['20%', '20%', '20%', '20%', '20%']}
-        background="fill-one"
-        border="1px solid border"
-        width="100%"
-        height="100%"
-      >
-        <Box fill>
-          {scrolled && <ReturnToBeginning beginning={returnToBeginning} />}
-          <StandardScroller
-            listRef={listRef}
-            setListRef={setListRef}
-            hasNextPage={pageInfo.hasNextPage}
-            items={edges}
-            loading={loading}
-            handleScroll={setScrolled}
-            placeholder={Placeholder}
-            mapper={({ node }, { next }) => (
-              <LoginRow
-                key={node.id}
-                login={node}
-                last={!next.node}
-              />
-            )}
-            loadNextPage={() => pageInfo.hasNextPage && fetchMore({
-              variables: { cursor: pageInfo.endCursor },
-              updateQuery: (prev, { fetchMoreResult: { oidcLogins } }) => extendConnection(prev, oidcLogins, 'oidcLogins'),
-            })}
-          />
-        </Box>
-      </Table>
-    </Box>
-  )
-}
-
 export function Audits() {
   const [listRef, setListRef] = useState(null)
   const [scrolled, setScrolled] = useState(false)
@@ -312,49 +194,5 @@ export function Audits() {
         </Box>
       </Table>        
     </Box>
-  )
-}
-
-const DIRECTORY = [
-  { path: '/audits/logs', label: 'Audit Logs' },
-  { path: '/audits/logins', label: 'Logins' },
-  { path: '/audits/geo', label: 'Geodistribution' },
-]
-
-export function AuditDirectory() {
-  const { pathname } = useLocation()
-
-  return (
-    <Flex
-      height="100%"
-      width="100%"
-      overflowY="hidden"
-    >
-      <SidebarTabs>
-        {DIRECTORY.map(({ label, path }) => (
-          <Link
-            to={path}
-            style={{ textDecoration: 'none' }}
-          >
-            <Tab
-              active={pathname === path}
-              vertical
-              textDecoration="none"
-            >{label}
-            </Tab>
-          </Link>
-        ))}
-      </SidebarTabs>
-      <Div
-        flexGrow={1}
-        py={1.5}
-        pr={1.5}
-        height="100%"
-        maxHeight="100%"
-        overflowY="auto"
-      >
-        <Outlet />
-      </Div>
-    </Flex>
   )
 }

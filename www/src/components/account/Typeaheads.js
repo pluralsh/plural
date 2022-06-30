@@ -105,10 +105,13 @@ function TagInput({ placeholder, label, hint, suggestions, items, icon, onRemove
       </FormField>
       <Flex
         align="stretch"
+        gap="4px"
         wrap="wrap"
       >
         {items.map(t => (
-          <Token onClick={() => onRemove(t)}>{t}
+          <Token
+            onClick={() => onRemove(t)}
+          >{t}
           </Token>
         ))}
       </Flex>

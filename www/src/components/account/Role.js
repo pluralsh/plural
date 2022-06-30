@@ -160,6 +160,8 @@ function RoleForm({ error, attributes, setAttributes, bindings, setBindings, ...
   )
 }
 
+const MODAL_DIMS = { width: '1000px', height: '1000px' }
+
 export function UpdateRole({ role }) {
   const [open, setOpen] = useState(false)
   const [attributes, setAttributes] = useState({
@@ -186,14 +188,14 @@ export function UpdateRole({ role }) {
       <Modal
         portal
         open={open}
+        maxHeight={null}
         onClose={() => setOpen(false)}
-        width="70vw"
-        height="90vh"
+        {...MODAL_DIMS}
       >
         <ModalHeader
           onClose={() => setOpen(false)}
         >
-          CREATE ROLE
+          UPDATE ROLE
         </ModalHeader>
         <RoleForm
           attributes={attributes}
@@ -206,6 +208,7 @@ export function UpdateRole({ role }) {
           cancel={() => setOpen(false)}
           submit={mutation}
           loading={loading}
+          action="Update"
         />
       </Modal>
     </>
@@ -237,8 +240,7 @@ export function CreateRole({ q }) {
       <Modal
         open={open}
         onClose={() => setOpen(false)}
-        width="70vw"
-        height="90vh"
+        {...MODAL_DIMS}
       >
         <ModalHeader onClose={() => setOpen(false)}>
           CREATE ROLE

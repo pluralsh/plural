@@ -9,7 +9,6 @@ import CreateShellContext from '../../../../contexts/CreateShellContext'
 
 import { CLOUD_SHELL_QUERY, CREATE_SHELL_MUTATION } from '../../query'
 
-import OnboardingNavSection from '../OnboardingNavSection'
 import OnboardingCard from '../OnboardingCard'
 import { GqlError } from '../../../utils/Alert'
 import { ShellStatus } from '../ShellStatus'
@@ -24,8 +23,6 @@ function CloudLaunch() {
     workspace,
     credentials,
     demoId,
-    next,
-    previous,
   } = useContext(CreateShellContext)
 
   const [createShellMutation, createShellMutationResults] = useMutation(

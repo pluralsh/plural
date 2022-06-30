@@ -1,4 +1,5 @@
-import { Accordion, Button, Div, ExtendTheme, Flex, Li, P, Ul } from 'honorable'
+import { A, Accordion, Button, Div, ExtendTheme, Flex, Li, Modal, P, Ul } from 'honorable'
+import { ModalHeader } from 'pluralsh-design-system'
 import { useState } from 'react'
 
 import CodeLine from '../utils/CodeLine'
@@ -18,6 +19,8 @@ const steps = [
   },
 ]
 function TerminalSidebar(props) {
+  const [visible, setVisible] = useState(true)
+  const [complete, setComplete] = useState(false)
   const [stepIndex, setStepIndex] = useState(0)
 
   const { title, Component } = steps[stepIndex]
@@ -28,68 +31,130 @@ function TerminalSidebar(props) {
 
   function handleNext() {
     setStepIndex(x => Math.min(steps.length - 1, x + 1))
+
+    if (stepIndex === steps.length - 1) {
+      setComplete(true)
+      setVisible(false)
+    }
+  }
+
+  function handleSkip() {
+    setVisible(false)
   }
 
   return (
-    <Flex
-      width={512}
-      backgroundColor="fill-one"
-      border="1px solid border"
-      borderRadius="large"
-      direction="column"
-      maxHeight="100%"
-      {...props}
-    >
-      <Flex
-        align="center"
-        justify="space-between"
-        paddingVertical="medium"
-        paddingHorizontal="large"
-        borderBottom="1px solid border"
-      >
-        <P subtitle1>
-          {title}
-        </P>
-        <P
-          body2
-          color="text-xlight"
-        >
-          Step {stepIndex + 1} of {steps.length}
-        </P>
-      </Flex>
+    <>
       <Div
-        flexGrow={1}
-        overflowY="auto"
+        width={visible ? 512 : 0}
+        opacity={visible ? 1 : 0}
+        marginRight={visible ? 0 : -32}
+        transition="width 666ms ease, opacity 666ms linear, margin-right 666ms linear"
+        maxHeight="100%"
+        overflowX="auto"
+        {...props}
       >
-        <Component />
-      </Div>
-      <Flex
-        align="center"
-        paddingVertical="medium"
-        paddingHorizontal="large"
-        gap="medium"
-        borderTop="1px solid border"
-      >
-        <Button tertiary>
-          Skip Demo
-        </Button>
-        <Div flexGrow={1} />
-        {stepIndex > 0 && (
-          <Button
-            secondary
-            onClick={handlePrevious}
+        <Flex
+          width={512}
+          height="100%"
+          backgroundColor="fill-one"
+          border="1px solid border"
+          borderRadius="large"
+          direction="column"
+        >
+          <Flex
+            align="center"
+            justify="space-between"
+            paddingVertical="medium"
+            paddingHorizontal="large"
+            borderBottom="1px solid border"
           >
-            Previous
-          </Button>
-        )}
+            <P subtitle1>
+              {title}
+            </P>
+            <P
+              body2
+              color="text-xlight"
+            >
+              Step {stepIndex + 1} of {steps.length}
+            </P>
+          </Flex>
+          <Div
+            flexGrow={1}
+            overflowY="auto"
+          >
+            <Component />
+          </Div>
+          <Flex
+            align="center"
+            paddingVertical="medium"
+            paddingHorizontal="large"
+            gap="medium"
+            borderTop="1px solid border"
+          >
+            <Button
+              tertiary
+              onClick={handleSkip}
+            >
+              Skip Demo
+            </Button>
+            <Div flexGrow={1} />
+            {stepIndex > 0 && (
+              <Button
+                secondary
+                onClick={handlePrevious}
+              >
+                Previous
+              </Button>
+            )}
+            <Button
+              primary
+              onClick={handleNext}
+            >
+              {stepIndex === steps.length - 1 ? 'Complete demo' : 'Next'}
+            </Button>
+          </Flex>
+        </Flex>
+      </Div>
+      <Modal
+        maxWidth={512}
+        open={complete}
+        onClose={() => setComplete(false)}
+      >
+        <ModalHeader>
+          Next steps
+        </ModalHeader>
+        <P body1>
+          Congratulations, you've installed your first Plural application!
+          Next, you can view your deployed application in the Plural Console.
+        </P>
         <Button
           primary
-          onClick={handleNext}
+          width="100%"
+          marginTop="medium"
+          as="a"
+          href="https://console.plural.sh"
+          target="_blank"
+          rel="noopener noreferrer"
         >
-          {stepIndex === steps.length - 1 ? 'Complete demo' : 'Next'}
+          Go to Plural Console
         </Button>
-      </Flex>
-    </Flex>
+        <P
+          body2
+          marginTop="medium"
+          textAlign="center"
+        >
+          Need support?&nbsp;
+          <A
+            inline
+            href="https://discord.gg/pluralsh"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Ping us on Discord
+          </A>
+        </P>
+      </Modal>
+    </>
   )
 }
 

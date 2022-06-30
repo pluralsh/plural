@@ -82,7 +82,7 @@ function Marketplace({ installed }) {
           transition="all 250ms ease"
           zIndex={9999}
         >
-          <MarketplaceSidebar minWidth={sidebarWidth} />
+          <MarketplaceSidebar width="100%" />
         </Div>
       </Flex>
     </Flex>

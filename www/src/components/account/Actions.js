@@ -10,6 +10,7 @@ export function Actions({ cancel, submit, loading, action }) {
       </Button>
       <Button
         onClick={submit}
+        disabled={!submit}
         loading={loading}
         marginLeft="medium"
       >{action || 'Create'}

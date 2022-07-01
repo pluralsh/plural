@@ -25,6 +25,8 @@ function CloudLaunch() {
     demoId,
   } = useContext(CreateShellContext)
 
+  console.log(credentials)
+
   const [createShellMutation, createShellMutationResults] = useMutation(
     CREATE_SHELL_MUTATION,
     {

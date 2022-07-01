@@ -33,9 +33,8 @@ function CloudBuild() {
   }, [mutation])
 
   useEffect(() => {
-    if (mutationResults.data) {
+    if (mutationResults.data?.state === 'ENABLED') {
       const { createDemoProject: demo } = mutationResults.data 
-      console.log(demo)
       setDemoId(demo.id)
       setProvider('GCP')
       setCredentials({ gcp: { applicationCredentials: demo.credentials } })

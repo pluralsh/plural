@@ -90,7 +90,7 @@ export const DEFAULT_COLOR_THEME = {
   card: '#222732',
   sidebarHover: shadeColor('#222732', 2),
   cardHover: shadeColor('#222732', -5),
-  hover: { dark: 'cardHover', light: 'tone-light' },
+  hover: { dark: 'fill-two-hover', light: 'tone-light' },
   sidebarActive: 'tone-dark-3',
   focus: 'key-light',
   progress: '#007bff',
@@ -237,7 +237,7 @@ export const DEFAULT_THEME = {
     focus: { shadow: null, border: { color: 'brand' } },
     control: { border: { radius: '2px' } },
     drop: {
-      background: 'background-top',
+      background: 'fill-two',
       border: { radius: '4px' },
       zIndex: 2000,
       extend: css`

@@ -2,6 +2,8 @@ import { useContext, useState } from 'react'
 import { A, Button, Div, DropdownButton, ExtendTheme, Flex, Img, MenuItem, P } from 'honorable'
 import { ArrowTopRightIcon, Tab } from 'pluralsh-design-system'
 
+import { useNavigate } from 'react-router-dom'
+
 import RepositoryContext from '../../contexts/RepositoryContext'
 
 import { capitalize } from '../../utils/string'
@@ -38,6 +40,7 @@ function InstallDropdownButton({ recipes, ...props }) {
   const { name } = useContext(RepositoryContext)
   const [recipe, setRecipe] = useState(null)
   const [tab, setTab] = useState(0)
+  const navigate = useNavigate()
 
   function renderList() {
     return recipes.map(recipe => (
@@ -129,7 +132,11 @@ function InstallDropdownButton({ recipes, ...props }) {
             </>
           )}
           {tab === 1 && (
-            <Button width="100%">
+
+            <Button
+              width="100%"
+              onClick={() => navigate('/shell')}
+            >
               Open Cloud Shell <ArrowTopRightIcon
                 size={24}
                 mt="-6px"

@@ -11,9 +11,9 @@ const fadeTransitionStyles = {
   exiting: { opacity: 0 },
   exited: { opacity: 0 },
 }
-  
+
 const splashTranslate = 'calc(50vh - (110px))'
-  
+
 const logoTranslateTransition = {
   '&, &.enter, &.enter-active, &.enter-done, &.exit': {
     transform: `translateY(${splashTranslate})`,
@@ -25,7 +25,7 @@ const logoTranslateTransition = {
     transform: 'translateY(0)',
   },
 }
-  
+
 const logoScaleTransition = {
   '&, .enter &, .enter-active &, .enter-done &, .exit &': {
     transform: `scale(${logoSizeBig / logoSizeSmall})`,
@@ -37,7 +37,7 @@ const logoScaleTransition = {
     transform: 'scale(1)',
   },
 }
-  
+
 const splashEnterTransitions = {
   opacity: 0,
   transform: 'translateY(30px)',
@@ -93,13 +93,19 @@ const splashTextTransitions = {
 
 export default function SplashToLogoTransition({ showSplashScreen = false, ...props }) {
   if (showSplashScreen) {
-    return <LogoAndSplash {...props} />
+    return (
+      <LogoAndSplash {...props} />
+    )
   }
- 
-  return <LogoOnly>{props.children}</LogoOnly>
+
+  return (
+    <LogoOnly>
+      {props.children}
+    </LogoOnly>
+  )
 }
 
-function LogoOnly({ children }) {    
+function LogoOnly({ children }) {
   return (
     <>
       <Div
@@ -129,13 +135,15 @@ function LogoOnly({ children }) {
 
 export function LogoAndSplash({ splashTimeout = 1200, childIsReady = false, children }) {
   const [splashTimerDone, setSplashTimerDone] = useState(false)
-  
+
   useEffect(() => {
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       setSplashTimerDone(true)
     }, splashTimeout)
+
+    return () => clearTimeout(timeoutId)
   }, [splashTimeout])
-  
+
   const showSplashScreen = useMemo(
     () => (!childIsReady || !splashTimerDone),
     [childIsReady, splashTimerDone]
@@ -218,4 +226,3 @@ export function LogoAndSplash({ splashTimeout = 1200, childIsReady = false, chil
     </>
   )
 }
-  

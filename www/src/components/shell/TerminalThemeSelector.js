@@ -42,7 +42,6 @@ function TerminalThemeSelector() {
   const results = fuse.search(search).map(x => x.item)
   const displayedThemes = results.length ? results : themeNames
 
-  console.log('search', search)
   function handleThemeChange(event) {
     setTerminalTheme(event.target.value)
   }

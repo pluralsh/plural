@@ -1,69 +1,87 @@
 import { useContext, useState } from 'react'
-import { A, Button, Div, DropdownButton, ExtendTheme, Flex, Img, MenuItem, P } from 'honorable'
-import { ArrowTopRightIcon, Tab } from 'pluralsh-design-system'
-
-import { useNavigate } from 'react-router-dom'
+import { A, Button, Div, DropdownButton, ExtendTheme, Flex, H2, Img, MenuItem, P } from 'honorable'
+import { ArrowTopRightIcon, Codeline, Tab } from 'pluralsh-design-system'
+import { Link } from 'react-router-dom'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 
 import { capitalize } from '../../utils/string'
 
-import Code from '../utils/Code'
-
 import { providerToDisplayName, providerToIcon, providerToIconHeight } from './constants'
 
-const extendedTheme = {
-  A: {
-    Root: [
-      {
-        color: 'action-link-inline',
-      },
-    ],
-  },
-  DropdownButton: {
-    Button: [
-      {
-        borderRadius: 'normal',
-      },
-    ],
-    Menu: [
-      {
-        borderRadius: 'normal',
-        width: 400,
-        left: 'unset',
-      },
-    ],
-  },
+const visuallyHideMaintainWidth = {
+  opacity: '0',
+  height: 0,
+  'aria-hidden': true,
+  pointerEvents: 'none',
+}
+
+function extendedTheme({ minMenuWidth = 400 }) {
+  return {
+    A: {
+      Root: [
+        {
+          color: 'action-link-inline',
+        },
+      ],
+    },
+    DropdownButton: {
+      Button: [
+        {
+          borderRadius: 'normal',
+        },
+      ],
+      Menu: [
+        {
+          backgroundColor: 'fill-one',
+          border: '1px solid border-fill-one',
+          borderRadius: 'large',
+          width: 'max-content',
+          minWidth: minMenuWidth,
+          maxWidth: 1000,
+          left: 'unset',
+          marginTop: 'xsmall',
+          boxShadow: 'moderate',
+        },
+      ],
+    },
+  }
 }
 
 function RecipeMenuItem({ recipe }) {
   return (
     <MenuItem
       value={recipe}
+      _hover={{ backgroundColor: 'fill-one-hover' }}
     >
       <Flex>
         <Flex
           align="center"
           justify="center"
-          width={2 * 16}
+          width={40}
+          height={40}
           flexShrink={0}
+          marginRight="medium"
         >
           <Img
             alt={recipe.name}
             src={providerToIcon[recipe.provider]}
-            height={1.5 * providerToIconHeight[recipe.provider]}
+            height={2.0 * providerToIconHeight[recipe.provider]}
           />
         </Flex>
         <Div
-          ml={1}
-          flexShrink={0}
+          flexShrink={1}
           flexGrow={1}
           flexBasis="calc(100% - 4 * 16px)"
         >
-          <P fontWeight={500}>
+          <P
+            body0
+            fontWeight="bold"
+          >
             {providerToDisplayName[recipe.provider]}
           </P>
           <P
+            caption
             wordBreak="break-word"
           >
             {capitalize(recipe.description)}
@@ -78,27 +96,51 @@ function InstallDropdownButton({ recipes, ...props }) {
   const { name } = useContext(RepositoryContext)
   const [recipe, setRecipe] = useState(null)
   const [tab, setTab] = useState(0)
-  const navigate = useNavigate()
 
   function renderTabs() {
     return (
       <Div>
         <Div
-          pt={0.5}
-          px={1}
+          padding="large"
+          paddingBottom="medium"
         >
-          <P
-            overline
-            fontSize={12}
-            color="text-xlight"
+          <Flex
+            align="center"
+            marginBottom="xxsmall"
           >
-            Install on {providerToDisplayName[recipe.provider]}
-          </P>
-          <P>
-            Choose either the Plural CLI or cloud shell to install. Learn more about CLI installation in our <A href="#">docs</A>.
-          </P>
+            <Img
+              alt={recipe.name}
+              src={providerToIcon[recipe.provider]}
+              height={1.15 * providerToIconHeight[recipe.provider]}
+              marginRight="small"
+            />
+            <H2
+              overline
+              color="text-xlight"
+            >
+              Install on {providerToDisplayName[recipe.provider]}
+            </H2>
+          </Flex>
+          <Flex>
+            <P
+              body1
+              color="text-light"
+              width="min-content"
+              maxWidth="100%"
+              flexGrow={1}
+            >
+              Choose either the Plural CLI or cloud shell to install. Learn more about CLI installation in our{' '}
+              <A
+                inline
+                href="https://docs.plural.sh/getting-started/getting-started#install-plural-cli"
+                target="_blank"
+              >
+                docs
+              </A>.
+            </P>
+          </Flex>
         </Div>
-        <Flex mt={0.5}>
+        <Flex marginTop="xsmall">
           <Tab
             active={tab === 0}
             onClick={() => setTab(0)}
@@ -116,34 +158,38 @@ function InstallDropdownButton({ recipes, ...props }) {
             Cloud Shell
           </Tab>
         </Flex>
-        <Div p={1}>
-          {tab === 0 && (
-            <>
-              <P>
-                In your installation repository, run:
-              </P>
-              <Code
-                mt={0.5}
-                language="bash"
-              >
-                {`plural bundle install ${name} ${recipe.name}`}
-              </Code>
-            </>
-          )}
-          {tab === 1 && (
-
-            <Button
-              width="100%"
-              onClick={() => navigate('/shell')}
+        <Div padding="large">
+          <Div {...(tab !== 0 ? visuallyHideMaintainWidth : {})}>
+            <P
+              body2
+              color="text"
             >
-              Open Cloud Shell <ArrowTopRightIcon
-                size={24}
-                mt="-6px"
-                position="relative"
-                top={6}
-              />
-            </Button>
-          )}
+              In your installation repository, run:
+            </P>
+            <Codeline
+              marginTop="small"
+              language="bash"
+            >
+              {`plural bundle install ${name} ${recipe.name}`}
+            </Codeline>
+          </Div>
+
+          <Div {...(tab !== 1 ? visuallyHideMaintainWidth : {})}>
+            <Link
+              to="/shell"
+              style={{ textDecoration: 'none' }}
+            >
+              <Button width="100%">
+                Open Cloud Shell <ArrowTopRightIcon
+                  size={24}
+                  mt="-6px"
+                  position="relative"
+                  top={6}
+                />
+              </Button>
+            </Link>
+          </Div>
+
         </Div>
 
       </Div>
@@ -151,7 +197,7 @@ function InstallDropdownButton({ recipes, ...props }) {
   }
 
   return (
-    <ExtendTheme theme={extendedTheme}>
+    <ExtendTheme theme={extendedTheme({ minMenuWidth: !recipe ? 300 : 470 })}>
       {!recipe && (
         <DropdownButton
           fade

@@ -53,13 +53,13 @@ In addition, Plural also handles:
 We think it's pretty cool! 😎 Some other nice things:
 
 ### ☁️ Build and manage open cloud-native architectures
-The plural platform ingests all deployment artifacts needed to deploy cloud-native applications and tracks their dependencies, allowing for seamless installations and no-touch upgrades post-install. All applications are managed via GitOps, allowing you to reconfigure them at will, or even eject them from Plural entirely. It's your application, we just want to help you use it as easily as possible.
+The plural platform ingests all deployment artifacts needed to deploy cloud-native applications and tracks their dependencies, allowing for easy installs and no-touch upgrades post-install. 
 
 ### 🤖 Day-2 Operational Toolkit
-Scale to meet demand with one-click operational run-books for key cluster operations. Every dependency is automatically upgraded in the correct order, in a rolling manner. Plural provides a timestamped audit trail for all cluster applications along with searchable, downloadable logs. In addition, there are also pre-packaged insights and dashboards for the highest importance metrics—from day one.
+Scale deploys with operational run-books for key cluster operations. Every dependency is automatically upgraded in the correct order, in a rolling manner. Plural provides a timestamped audit trail for all cluster applications along with searchable, downloadable logs. In addition, there are also pre-packaged dashboards for the highest importance metrics.
 
 ### 🔓 Secure by default
-Plural performs regular security scans for application images, helm charts, and terraform modules and comes equipped with OpenID connect for seamless user auth to applications deployed by Plural.
+Plural performs regular security scans for application images, helm charts, and terraform modules and comes equipped with OpenID connect for user auth to applications deployed by Plural.
 
 ### 🥳 Open source and extensible
 All Plural applications are fully customizable and able to be ejected at any time. New applications can be wrapped and packaged onto Plural easily, giving you total freedom about how, when and where to use Plural.

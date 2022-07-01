@@ -7,7 +7,7 @@ export const providerToIcon = {
 }
 
 export const providerToIconHeight = {
-  AWS: 12,
+  AWS: 11,
   AZURE: 14,
   EQUINIX: 16,
   GCP: 14,

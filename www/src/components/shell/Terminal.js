@@ -5,7 +5,7 @@ import { FitAddon } from 'xterm-addon-fit'
 import { useQuery } from '@apollo/client'
 import { Button, Div, Flex, P } from 'honorable'
 
-import { ReloadIcon } from 'pluralsh-design-system'
+import { ReloadIcon, ScrollIcon } from 'pluralsh-design-system'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { socket } from '../../helpers/client'
@@ -24,11 +24,12 @@ const { Buffer } = require('buffer/')
 
 const decodeBase64 = str => Buffer.from(str, 'base64').toString('utf-8')
 
-export function Shell({ room, header, title }) {
+export function Shell({ room, header }) {
   const terminalRef = useRef()
   const xterm = useRef(null)
   const [channel, setChannel] = useState(null)
   const [dimensions, setDimensions] = useState({})
+  const [isCheatsheet, setIsCheatsheet] = useState(false)
   const fitAddon = useMemo(() => new FitAddon(), [])
   const [terminalTheme] = useContext(TerminalThemeContext)
 
@@ -84,17 +85,21 @@ export function Shell({ room, header, title }) {
     >
       <Flex
         align="center"
-        paddingVertical="xsmall"
-        paddingHorizontal="medium"
+        paddingVertical="small"
+        marginHorizontal="medium"
         gap="medium"
         borderBottom="1px solid border"
       >
-        <P
-          body1
-          bold
+        <Button
+          small
+          tertiary
+          startIcon={(
+            <ScrollIcon />
+          )}
+          onClick={() => setIsCheatsheet(x => !x)}
         >
-          {title}
-        </P>
+          CLI Cheatsheet
+        </Button>
         <Div flexGrow={1} />
         <TerminalInformation />
         <Button
@@ -168,7 +173,6 @@ export function Terminal() {
   return (
     <TerminalThemeProvider>
       <Shell
-        title={`Cloud Shell [Provider=${shell.provider}, Git=${shell.gitUrl}]`}
         room="shells:me"
         header={`Booting into your ${shell.provider} shell...`}
       />

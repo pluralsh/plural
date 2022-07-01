@@ -9,7 +9,7 @@ const extendedHonorableTheme = {
   DropdownButton: {
     Root: [
       {
-        width: 176,
+        width: 'auto',
       },
     ],
     Button: [

@@ -13,6 +13,7 @@ import { PermissionTypes } from '../accounts/types'
 import { ListItem } from '../profile/ListItem'
 
 import { GqlError } from '../utils/Alert'
+import { Tabs } from '../utils/SidebarTabs'
 
 import { Actions } from './Actions'
 
@@ -111,23 +112,12 @@ function RoleForm({ error, attributes, setAttributes, bindings, setBindings, ...
           error={error}
         />
       )}
-      <Flex>
-        <Tab
-          active={view === 'gen'}
-          onClick={() => setView('gen')}
-        >General
-        </Tab>
-        <Tab
-          active={view === 'perms'}
-          onClick={() => setView('perms')}
-        >Permission
-        </Tab>
-        <Div
-          flexGrow={1}
-          borderBottom="1px solid border"
-        />
-      </Flex>
-      {view === 'gen' && (
+      <Tabs
+        tabs={['General', 'Permissions']}
+        tab={view}
+        setTab={setView}
+      />
+      {view === 'General' && (
         <GeneralAttributes
           attributes={attributes}
           setAttributes={setAttributes}
@@ -135,7 +125,7 @@ function RoleForm({ error, attributes, setAttributes, bindings, setBindings, ...
           setBindings={bindings}
         />
       )}
-      {view === 'perms' && (
+      {view === 'Permissions' && (
         <Box gap="small">
           <Box>
             <Span fontWeight="bold">Permissions</Span>

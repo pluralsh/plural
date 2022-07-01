@@ -165,3 +165,12 @@ export const DELETE_INSTALLATION_MUTATION = gql`
   }
   ${InstallationFragment}
 `
+
+export const UPDATE_INSTALLATION = gql`
+  mutation UpdateInstallation($id: ID!, $attributes: InstallationAttributes!) {
+    updateInstallation(id: $id, attributes: $attributes) {
+      ...InstallationFragment
+    }
+  }
+  ${InstallationFragment}
+`

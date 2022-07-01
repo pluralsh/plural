@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { A, Button, Div, Flex, H1, H3, Icon, Img, Modal, P, Pre, Span } from 'honorable'
-import { GitHubIcon, LinksIcon, Tag, TrashCanIcon } from 'pluralsh-design-system'
+import { GearTrainIcon, GitHubIcon, LinksIcon, Tag, TrashCanIcon } from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 
@@ -15,78 +15,32 @@ import { DELETE_INSTALLATION_MUTATION, RECIPES_QUERY } from './queries'
 import { providerToIcon, providerToIconHeight } from './constants'
 
 import InstallDropdownButton from './InstallDropdownButton'
+import { InstallationConfiguration } from './InstallationConfiguration'
 
 function InstalledActions({ installation, ...props }) {
-  const [modalOpen, setModalOpen] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [mutation] = useMutation(DELETE_INSTALLATION_MUTATION, {
-    variables: {
-      id: installation.id,
-    },
-    onCompleted: () => window.location.reload(),
-  })
+  const [open, setOpen] = useState(false)
 
   return (
     <>
       <Flex
         align="center"
+        gap="small"
         {...props}
       >
-        <Icon
-          mr={0.5}
-          p={0.5}
-          borderRadius="50%"
-          cursor="pointer"
-          hoverIndicator="fill-one"
-          onClick={() => setModalOpen(true)}
+        <Button
+          secondary
+          endIcon={<GearTrainIcon size={16} />}
+          onClick={() => setOpen(true)}
         >
-          <TrashCanIcon color="error" />
-        </Icon>
+          Configuration
+        </Button>
         <InferredConsoleButton />
       </Flex>
-      <Modal
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-      >
-        <H3>
-          Are you sure you want to uninstall this bundle?
-        </H3>
-        <Div mt={2}>
-          Be sure to run
-          <Pre
-            mx={0.25}
-            mb={0.25}
-          >
-            plural destroy
-          </Pre>
-          in your installation repository before deleting.
-          <br />
-          This will delete all installed packages and prevent future upgrades.
-        </Div>
-        <Flex
-          mt={2}
-          align="center"
-          justify="flex-end"
-        >
-          <Button
-            secondary
-            onClick={() => setModalOpen(false)}
-          >
-            Cancel
-          </Button>
-          <Button
-            primary
-            ml={1}
-            loading={loading}
-            onClick={() => {
-              setLoading(true)
-              mutation()
-            }}
-          >
-            Delete
-          </Button>
-        </Flex>
-      </Modal>
+      <InstallationConfiguration
+        open={open}
+        setOpen={setOpen}
+        installation={installation}
+      />
     </>
   )
 }

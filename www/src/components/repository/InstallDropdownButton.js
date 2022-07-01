@@ -36,50 +36,49 @@ const extendedTheme = {
   },
 }
 
+function RecipeMenuItem({ recipe }) {
+  return (
+    <MenuItem
+      value={recipe}
+    >
+      <Flex>
+        <Flex
+          align="center"
+          justify="center"
+          width={2 * 16}
+          flexShrink={0}
+        >
+          <Img
+            alt={recipe.name}
+            src={providerToIcon[recipe.provider]}
+            height={1.5 * providerToIconHeight[recipe.provider]}
+          />
+        </Flex>
+        <Div
+          ml={1}
+          flexShrink={0}
+          flexGrow={1}
+          flexBasis="calc(100% - 4 * 16px)"
+        >
+          <P fontWeight={500}>
+            {providerToDisplayName[recipe.provider]}
+          </P>
+          <P
+            wordBreak="break-word"
+          >
+            {capitalize(recipe.description)}
+          </P>
+        </Div>
+      </Flex>
+    </MenuItem>
+  )
+}
+
 function InstallDropdownButton({ recipes, ...props }) {
   const { name } = useContext(RepositoryContext)
   const [recipe, setRecipe] = useState(null)
   const [tab, setTab] = useState(0)
   const navigate = useNavigate()
-
-  function renderList() {
-    return recipes.map(recipe => (
-      <MenuItem
-        key={recipe.id}
-        value={recipe}
-      >
-        <Flex>
-          <Flex
-            align="center"
-            justify="center"
-            width={2 * 16}
-            flexShrink={0}
-          >
-            <Img
-              alt={recipe.name}
-              src={providerToIcon[recipe.provider]}
-              height={1.5 * providerToIconHeight[recipe.provider]}
-            />
-          </Flex>
-          <Div
-            ml={1}
-            flexShrink={0}
-            flexGrow={1}
-            flexBasis="calc(100% - 4 * 16px)"
-          >
-            <P fontWeight={500}>
-              {providerToDisplayName[recipe.provider]}
-            </P>
-            <P
-              wordBreak="break-word"
-            >
-              {capitalize(recipe.description)}
-            </P>
-          </Div>
-        </Flex>
-      </MenuItem>
-    ))
-  }
 
   function renderTabs() {
     return (
@@ -163,7 +162,12 @@ function InstallDropdownButton({ recipes, ...props }) {
           }}
           {...props}
         >
-          {renderList()}
+          {recipes.map(recipe => (
+            <RecipeMenuItem
+              key={recipe.id}
+              recipe={recipe}
+            />
+          ))}
         </DropdownButton>
       )}
       {!!recipe && (

@@ -311,7 +311,7 @@ function Sidebar({
           borderBottom="1px solid border"
         >
           <SidebarItem
-            active={!activeId === 'notifications'}
+            active={activeId === 'notifications'}
             highlight={notificationsCount > 0}
             color="text-warning"
             collapsed={collapsed}

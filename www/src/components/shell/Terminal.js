@@ -126,6 +126,7 @@ export function Shell({ room, header, title }) {
           borderRadius="large"
           border="1px solid border"
           flexGrow={1}
+          paddingTop="medium"
           paddingHorizontal="medium"
           backgroundColor={normalizedThemes[terminalTheme].background}
         >

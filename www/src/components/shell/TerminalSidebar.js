@@ -1,7 +1,7 @@
 import { A, Accordion, Button, Div, ExtendTheme, Flex, Li, Modal, P, Ul } from 'honorable'
 import { ModalHeader } from 'pluralsh-design-system'
 import { useEffect, useRef, useState } from 'react'
-import { Fireworks } from 'fireworks-js'
+import { Fireworks } from 'fireworks-js/dist/react'
 
 import CodeLine from '../utils/CodeLine'
 
@@ -21,17 +21,11 @@ const steps = [
 ]
 
 function TerminalSidebar(props) {
-  const fireworksRef = useRef()
-  const [fireworks, setFireworks] = useState(null)
   const [visible, setVisible] = useState(true)
   const [complete, setComplete] = useState(false)
   const [stepIndex, setStepIndex] = useState(0)
 
   const { title, Component } = steps[stepIndex]
-
-  useEffect(() => {
-    setFireworks(new Fireworks(fireworksRef.current, { /* options */ }))
-  }, [])
 
   function handlePrevious() {
     setStepIndex(x => Math.max(0, x - 1))
@@ -43,7 +37,6 @@ function TerminalSidebar(props) {
     if (stepIndex === steps.length - 1) {
       setComplete(true)
       setVisible(false)
-      fireworks.start()
     }
   }
 
@@ -53,7 +46,6 @@ function TerminalSidebar(props) {
 
   function handleModalClose() {
     setComplete(false)
-    fireworks.stop()
   }
 
   return (
@@ -129,16 +121,20 @@ function TerminalSidebar(props) {
           </Flex>
         </Flex>
       </Div>
-      <Div
-        ref={fireworksRef}
-        display={complete ? 'block' : 'none'}
-        position="fixed"
-        top={0}
-        bottom={0}
-        left={0}
-        right={0}
-        zIndex={999}
-      />
+      {complete && (
+        <Fireworks
+          options={{}}
+          style={{
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            position: 'fixed',
+            background: 'transparent',
+            zIndex: 999,
+          }}
+        />
+      )}
       <Modal
         maxWidth={512}
         open={complete}

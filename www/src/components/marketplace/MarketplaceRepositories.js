@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { Button, Div, Flex, H1, P } from 'honorable'
+import { Button, Div, Flex, H1 } from 'honorable'
 import { Input, MagnifyingGlassIcon, RepositoryCard, Token } from 'pluralsh-design-system'
 import Fuse from 'fuse.js'
 
@@ -108,7 +108,7 @@ function MarketplaceRepositories({ installed, ...props }) {
           Featured Repositories
         </H1>
         <Flex
-          mt={1}
+          marginTop="medium"
         >
           <RepositoryCard
             as={Link}
@@ -269,7 +269,7 @@ function MarketplaceRepositories({ installed, ...props }) {
         </Flex>
         {loadingRepositories && (
           <Flex
-            mt={2}
+            marginTop="xlarge"
             align="center"
             justify="center"
           >

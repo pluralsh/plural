@@ -12,38 +12,42 @@ import OnboardingCard from '../OnboardingCard'
 import { GqlError } from '../../../utils/Alert'
 
 function CloudBuild() {
-  const { previous, next, setWorkspace, setDemoId } = useContext(CreateShellContext)
-  const [createDemoProjectMutation, createDemoProjectMutationResults] = useMutation(CREATE_DEMO_PROJECT_MUTATION)
+  const { previous, next, setWorkspace, setProvider, setCredentials, setDemoId } = useContext(CreateShellContext)
+  const [mutation, mutationResults] = useMutation(CREATE_DEMO_PROJECT_MUTATION)
   const pollDemoProjectQueryResults = useQuery(
     POLL_DEMO_PROJECT_QUERY,
     {
       variables: {
-        id: createDemoProjectMutationResults.data?.createDemoProject?.id,
+        id: mutationResults.data?.createDemoProject?.id,
       },
       pollInterval: 2000,
-      skip: !!createDemoProjectMutationResults.error || !createDemoProjectMutationResults.data,
+      skip: !!mutationResults.error || !mutationResults.data,
     }
   )
 
   const status = pollDemoProjectQueryResults.data?.demoProject?.state
-  const error = createDemoProjectMutationResults.error || pollDemoProjectQueryResults.error
+  const error = mutationResults.error || pollDemoProjectQueryResults.error
 
   useEffect(() => {
-    createDemoProjectMutation()
-  }, [createDemoProjectMutation])
+    mutation()
+  }, [mutation])
 
   useEffect(() => {
-    setWorkspace(x => ({
-      ...x,
-      region: 'us-east1',
-      cluster: 'plural-demo-cluster',
-      bucketPrefix: `plural-${Math.random().toString().substring(2, 8)}`,
-    }))
-  }, [setWorkspace])
-
-  useEffect(() => {
-    setDemoId(createDemoProjectMutationResults.data?.createDemoProject?.id)
-  }, [setDemoId, createDemoProjectMutationResults.data?.createDemoProject?.id])
+    if (mutationResults.data) {
+      const { createDemoProject: demo } = mutationResults.data 
+      console.log(demo)
+      setDemoId(demo.id)
+      setProvider('GCP')
+      setCredentials({ gcp: { applicationCredentials: demo.credentials } })
+      setWorkspace(wk => ({ 
+        ...wk, 
+        project: demo.projectId,
+        region: 'us-east1',
+        cluster: 'plural-demo-cluster',
+        bucketPrefix: `plural-${Math.random().toString().substring(2, 8)}`,
+      }))
+    }
+  }, [mutationResults?.data])
 
   return (
     <>

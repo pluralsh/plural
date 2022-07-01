@@ -20,7 +20,7 @@ function CloudWorkspace() {
 
   return (
     <>
-      <OnboardingCard title="Configure cloud credentials">
+      <OnboardingCard title="Configure Plural Workspace">
         <FormField
           width="100%"
           marginTop="large"

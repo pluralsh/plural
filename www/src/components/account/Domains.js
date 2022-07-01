@@ -3,7 +3,7 @@ import { Box } from 'grommet'
 import { Return } from 'grommet-icons'
 import { Avatar, MenuItem, Span } from 'honorable'
 import moment from 'moment'
-import { Modal } from 'pluralsh-design-system'
+import { Modal, ModalHeader } from 'pluralsh-design-system'
 import { useState } from 'react'
 
 import { deepUpdate, extendConnection, removeConnection, updateCache } from '../../utils/graphql'
@@ -50,6 +50,9 @@ function DomainOptions({ domain, setDomain }) {
         title="UPDATE ACCESS POLICY"
         onClose={() => setEdit(false)}
       >
+        <ModalHeader onClose={() => setEdit(false)}>
+          EDIT ACCESS POLICY
+        </ModalHeader>
         <AccessPolicy
           domain={domain}
           cancel={() => setEdit(false)}
@@ -81,6 +84,8 @@ function AccessPolicy({ domain: { id, accessPolicy }, cancel }) {
     <Box
       pad="medium"
       gap="small"
+      width="500px"
+      height="300px"
     >
       {error && (
         <GqlError

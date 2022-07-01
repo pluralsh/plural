@@ -9,7 +9,6 @@ import {
   GitHubLogoIcon,
   HamburgerMenuCollapseIcon,
   HamburgerMenuCollapsedIcon,
-  InstalledIcon,
   LightningIcon,
   ListIcon,
   LogoutIcon,
@@ -17,6 +16,7 @@ import {
   PeopleIcon,
   PersonIcon,
   TerminalIcon,
+  Tooltip,
 } from 'pluralsh-design-system'
 
 import { getPreviousUserData, setPreviousUserData, setToken, wipeToken } from '../../helpers/authentication'
@@ -39,17 +39,13 @@ function SidebarWrapper() {
       name: 'Marketplace',
       Icon: MarketIcon,
       url: '/marketplace',
-      urlRegexp: /\/repository\//,
-    },
-    {
-      name: 'Installed',
-      Icon: InstalledIcon,
-      url: '/installed',
+      urlRegexp: /^\/(marketplace|installed|repository)/,
     },
     {
       name: 'Cloud Shell',
       Icon: TerminalIcon,
       url: '/shell',
+      urlRegexp: /^\/(shell|oauth\/callback\/.+\/shell)/,
     },
     {
       name: 'Account',
@@ -142,21 +138,24 @@ ref
     )
   }
 
-  // function wrapTooltip(node) {
-  //   if (!(collapsed && tooltip)) return node
+  function wrapTooltip(node) {
+    if (!tooltip) return node
 
-  //   return (
-  //     <Tooltip
-  //       arrow
-  //       label={tooltip}
-  //       placement="right"
-  //     >
-  //       {node}
-  //     </Tooltip>
-  //   )
-  // }
+    return (
+      <Tooltip
+        arrow
+        placement="right"
+        label={tooltip}
+        zIndex={1000}
+        display={collapsed ? 'block' : 'none'}
+        whiteSpace="nowrap"
+      >
+        {node}
+      </Tooltip>
+    )
+  }
 
-  return wrapLink(
+  return wrapLink(wrapTooltip(
     <Flex
       ref={ref}
       py="9.5px" // Give it a square look with a weird padding
@@ -212,7 +211,7 @@ ref
         {endIcon}
       </Flex>
     </Flex>
-  )
+  ))
 }
 
 const SidebarItem = forwardRef(SidebarItemRef)
@@ -353,7 +352,7 @@ function Sidebar({
             <SidebarItem
               key={name}
               mb={0.5}
-              active={activeId === url || urlRegexp?.test(activeId)}
+              active={activeId.startsWith(url) || urlRegexp?.test(activeId)}
               collapsed={collapsed}
               startIcon={<Icon />}
               label={name}

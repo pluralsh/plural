@@ -10,7 +10,10 @@ import OnboardingNavSection from '../OnboardingNavSection'
 import OnboardingCard from '../OnboardingCard'
 
 function Synopsis() {
-  const { scm, workspace, previous, next, demoId, setSection } = useContext(CreateShellContext)
+  const { scm, workspace, previous, next, demoId, setSection, ...rest } = useContext(CreateShellContext)
+
+  console.log(workspace)
+  console.log(rest)
 
   return (
     <>

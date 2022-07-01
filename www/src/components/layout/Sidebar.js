@@ -167,7 +167,7 @@ ref
       {... { '& *': { color: highlight ? 'text-warning-light' : active ? 'text' : 'text-light' } }}
       backgroundColor={active ? 'fill-zero-selected' : null}
       _hover={{
-        color: highlight ? 'text-warning-light' : 'text',
+        '& *': { color: highlight ? 'text-warning-light' : 'text' },
         backgroundColor: active ? 'fill-zero-selected' : 'fill-zero-hover',
       }}
       {...otherProps}

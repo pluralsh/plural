@@ -1,9 +1,12 @@
-import { Div, DropdownButton, ExtendTheme, Flex, MenuItem } from 'honorable'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
+import { Div, DropdownButton, ExtendTheme, Flex, Input, MenuItem } from 'honorable'
+import Fuse from 'fuse.js'
+
+import { MagnifyingGlassIcon } from 'pluralsh-design-system'
 
 import TerminalThemeContext from '../../contexts/TerminalThemeContext'
 
-import { normalizedThemes } from './themes'
+import { normalizedThemes, themeNames } from './themes'
 
 const extendedHonorableTheme = {
   DropdownButton: {
@@ -31,9 +34,15 @@ const extendedHonorableTheme = {
   },
 }
 
-function TerminalThemeSelector() {
-  const [terminalTheme, setTerminalTheme] = useContext(TerminalThemeContext)
+const fuse = new Fuse(themeNames)
 
+function TerminalThemeSelector() {
+  const [, setTerminalTheme] = useContext(TerminalThemeContext)
+  const [search, setSearch] = useState('')
+  const results = fuse.search(search).map(x => x.item)
+  const displayedThemes = results.length ? results : themeNames
+
+  console.log('search', search)
   function handleThemeChange(event) {
     setTerminalTheme(event.target.value)
   }
@@ -44,19 +53,32 @@ function TerminalThemeSelector() {
         label="Change theme"
         onChange={handleThemeChange}
       >
-        <Div>
-          input here
+        <Div
+          paddingHorizontal="small"
+          paddingVertical="xxsmall"
+          marginTop={-8}
+          marginBottom={2}
+        >
+          <Input
+            small
+            startIcon={(
+              <MagnifyingGlassIcon />
+            )}
+            placeholder="Search themes"
+            value={search}
+            onChange={event => setSearch(event.target.value)}
+          />
         </Div>
-        {Object.entries(normalizedThemes).map(([key, theme]) => (
+        {displayedThemes.map(themeName => (
           <MenuItem
-            key={key}
-            value={key}
+            key={themeName}
+            value={themeName}
           >
             <TerminalThemePreview
-              theme={theme}
+              theme={normalizedThemes[themeName]}
               marginRight="small"
             />
-            {key}
+            {themeName}
           </MenuItem>
         ))}
       </DropdownButton>

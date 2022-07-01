@@ -77,10 +77,7 @@ export function Shell({ shell }) {
   }
 
   return (
-    <Flex
-      direction="column"
-      height="100%"
-    >
+    <>
       <Flex
         align="center"
         paddingVertical="small"
@@ -120,7 +117,10 @@ export function Shell({ shell }) {
         maxHeight="100%"
         overflow="hidden"
       >
-        <TerminalSidebar isCheatsheet={isCheatsheet} />
+        <TerminalSidebar
+          shell={shell}
+          isCheatsheet={isCheatsheet}
+        />
         <Flex
           ref={terminalRef}
           align="center"
@@ -147,7 +147,7 @@ export function Shell({ shell }) {
           />
         </Flex>
       </Flex>
-    </Flex>
+    </>
   )
 }
 
@@ -167,8 +167,6 @@ export function Terminal() {
   }
 
   const { shell } = data
-
-  console.log('shell', shell)
 
   return (
     <TerminalThemeProvider>

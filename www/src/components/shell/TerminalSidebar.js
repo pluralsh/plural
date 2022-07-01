@@ -28,7 +28,7 @@ const steps = [
   SIDEBAR
 --- */
 
-function TerminalSidebar({ isCheatsheet, ...props }) {
+function TerminalSidebar({ isCheatsheet, shell, ...props }) {
   const [visible, setVisible] = useState(!getDemoCompletionState())
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [stepIndex, setStepIndex] = useState(0)
@@ -171,6 +171,7 @@ function TerminalSidebar({ isCheatsheet, ...props }) {
         maxWidth={512}
         open={isModalOpen}
         onClose={handleModalClose}
+        borderTop="4px solid border-success"
       >
         <ModalHeader>
           Next steps
@@ -182,9 +183,9 @@ function TerminalSidebar({ isCheatsheet, ...props }) {
         <Button
           primary
           width="100%"
-          marginTop="medium"
+          marginTop="large"
           as="a"
-          href="https://console.plural.sh"
+          href="https://plural.sh"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -192,7 +193,7 @@ function TerminalSidebar({ isCheatsheet, ...props }) {
         </Button>
         <P
           body2
-          marginTop="medium"
+          marginTop="large"
           textAlign="center"
         >
           Need support?&nbsp;

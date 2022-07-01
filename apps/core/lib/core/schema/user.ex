@@ -23,10 +23,17 @@ defmodule Core.Schema.User do
     github: 3,
     sso: 4
 
+  defenum OnboardingStatus,
+    new: 0,
+    onboarded: 1,
+    installed: 2,
+    active: 3
+
   schema "users" do
     field :name,            :string
     field :email,           :string
     field :login_method,    LoginMethod, default: :password
+    field :onboarding,      OnboardingStatus, default: :new
     field :password_hash,   :string
     field :password,        :string, virtual: true
     field :jwt,             :string, virtual: true
@@ -132,7 +139,7 @@ defmodule Core.Schema.User do
   def ordered(query \\ __MODULE__, order \\ [asc: :name]),
     do: from(p in query, order_by: ^order)
 
-  @valid ~w(name email password phone login_method demoed demo_count trusted_icon)a
+  @valid ~w(name email password phone login_method demoed demo_count trusted_icon onboarding)a
 
   def changeset(model, attrs \\ %{}) do
     model

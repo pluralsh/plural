@@ -357,7 +357,7 @@ function Sidebar({
             <SidebarItem
               key={name}
               marginBottom="xsmall"
-              active={url.startsWith(activeId) || urlRegexp?.test(activeId)}
+              active={activeId.startsWith(url) || urlRegexp?.test(activeId)}
               collapsed={collapsed}
               startIcon={<Icon />}
               label={name}

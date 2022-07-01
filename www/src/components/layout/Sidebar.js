@@ -101,6 +101,7 @@ function TransitionText({ collapsed, ...props }) {
 
 function SidebarItemRef({
   active,
+  highlight,
   collapsed,
   startIcon,
   endIcon,
@@ -163,9 +164,10 @@ ref
       align="center"
       borderRadius="normal"
       cursor="pointer"
-      color="text-light"
+      {... { '& *': { color: highlight ? 'text-warning-light' : active ? 'text' : 'text-light' } }}
       backgroundColor={active ? 'fill-zero-selected' : null}
       _hover={{
+        '& *': { color: highlight ? 'text-warning-light' : 'text' },
         backgroundColor: active ? 'fill-zero-selected' : 'fill-zero-hover',
       }}
       {...otherProps}
@@ -175,7 +177,9 @@ ref
         justify="center"
         position="relative"
       >
-        {startIcon}
+        <Div {...{ '& *': { transition: 'color 150ms linear' } }}>
+          {startIcon}
+        </Div>
         {badge > 0 && (
           <Flex
             align="center"
@@ -307,7 +311,8 @@ function Sidebar({
           borderBottom="1px solid border"
         >
           <SidebarItem
-            active={!activeId === 'notifications'}
+            active={activeId === 'notifications'}
+            highlight={notificationsCount > 0}
             color="text-warning"
             collapsed={collapsed}
             startIcon={<LightningIcon />}
@@ -319,7 +324,7 @@ function Sidebar({
           {hasUpdate && (
             <SidebarItem
               mt={0.25}
-              color="text-warning"
+              highlight
               collapsed={collapsed}
               startIcon={<DownloadIcon />}
               label="Update"
@@ -351,7 +356,7 @@ function Sidebar({
           {items.map(({ name, Icon, url, urlRegexp }) => (
             <SidebarItem
               key={name}
-              mb={0.5}
+              marginBottom="xsmall"
               active={activeId.startsWith(url) || urlRegexp?.test(activeId)}
               collapsed={collapsed}
               startIcon={<Icon />}

@@ -1,10 +1,13 @@
-import { A, Accordion, Button, Div, ExtendTheme, Flex, Li, Modal, P, Ul } from 'honorable'
-import { ModalHeader } from 'pluralsh-design-system'
 import { useEffect, useState } from 'react'
+import { CollapseIcon, ModalHeader } from 'pluralsh-design-system'
+import { A, Accordion, Button, Div, ExtendTheme, Flex, Li, Modal, P, Ul } from 'honorable'
 import { Fireworks } from 'fireworks-js/dist/react'
+
+import usePrevious from '../../hooks/usePrevious'
 
 import CodeLine from '../utils/CodeLine'
 
+const sidebarWidth = 512
 const demoLocalStorageKey = 'pluralsh-cloud-shell-demo'
 const steps = [
   {
@@ -61,9 +64,7 @@ function TerminalSidebar({ isCheatsheet, ...props }) {
 
   function renderCheatsheet() {
     return (
-      <>
-        foo
-      </>
+      <Cheatsheet />
     )
   }
 
@@ -129,7 +130,7 @@ function TerminalSidebar({ isCheatsheet, ...props }) {
   return (
     <>
       <Div
-        width={visible ? 512 : 0}
+        width={visible ? sidebarWidth : 0}
         opacity={visible ? 1 : 0}
         marginRight={visible ? 0 : -32}
         transition="width 666ms ease, opacity 666ms linear, margin-right 666ms linear"
@@ -138,7 +139,7 @@ function TerminalSidebar({ isCheatsheet, ...props }) {
         {...props}
       >
         <Flex
-          width={512}
+          width={sidebarWidth}
           height="100%"
           backgroundColor="fill-one"
           border="1px solid border"
@@ -419,6 +420,119 @@ function Step3() {
         Now grab a coffee or your favorite hot beverage while we wait for your cloud provider to provision your infrastructure.
       </P>
     </Div>
+  )
+}
+
+const SECTION_COMMANDS = 'SECTION_COMMANDS'
+const SECTION_DEBUGGING = 'SECTION_DEBUGGING'
+const SECTION_WORKSPACE = 'SECTION_WORKSPACE'
+
+function Cheatsheet() {
+  const [activeSection, setActiveSection] = useState(null)
+  const previousActiveSection = usePrevious(activeSection) || null
+  const displayedSection = activeSection || previousActiveSection
+
+  return (
+    <Div
+      overflow="hidden"
+      maxWidth="100%"
+    >
+      <Flex
+        position="relative"
+        align="flex-start"
+        left={activeSection === null ? 0 : -sidebarWidth}
+        transition="left 333ms ease"
+      >
+        <Div
+          width={sidebarWidth}
+          flexShrink={0}
+        >
+          <CheatsheetItem
+            title="Commands"
+            onClick={() => setActiveSection(SECTION_COMMANDS)}
+          />
+          <CheatsheetItem
+            title="Debugging"
+            onClick={() => setActiveSection(SECTION_DEBUGGING)}
+          />
+          <CheatsheetItem
+            title="Workspace"
+            onClick={() => setActiveSection(SECTION_WORKSPACE)}
+          />
+        </Div>
+        <Div
+          width={sidebarWidth}
+          flexShrink={0}
+          paddingVertical="medium"
+        >
+          <Button
+            small
+            tertiary
+            onClick={() => setActiveSection(null)}
+            marginLeft="medium"
+          >
+            Back to cheatsheet
+          </Button>
+          {displayedSection === SECTION_COMMANDS && (
+            <CheatsheetCommands />
+          )}
+          {displayedSection === SECTION_DEBUGGING && (
+            <CheatsheetDebugging />
+          )}
+          {displayedSection === SECTION_WORKSPACE && (
+            <CheatsheetWorkspace />
+          )}
+        </Div>
+      </Flex>
+    </Div>
+  )
+}
+
+function CheatsheetItem({ children, title, ...props }) {
+  return (
+    <Flex
+      align="center"
+      justify="space-between"
+      paddingHorizontal="large"
+      paddingVertical="medium"
+      borderBottom="1px solid border"
+      cursor="pointer"
+      _hover={{ backgroundColor: 'fill-one-hover' }}
+      {...props}
+    >
+      <P body1>
+        {title}
+      </P>
+      <CollapseIcon
+        transform="rotate(180deg)"
+        color="text-xlight"
+        size={8}
+      />
+    </Flex>
+  )
+}
+
+function CheatsheetCommands() {
+  return (
+    <>
+      CheatsheetCommands
+    </>
+  )
+}
+
+function CheatsheetDebugging() {
+  return (
+    <>
+      CheatsheetDebugging
+    </>
+  )
+}
+
+function CheatsheetWorkspace() {
+  return (
+    <>
+      CheatsheetWorkspace
+    </>
   )
 }
 

@@ -2,3 +2,7 @@
   height: 100%;
   width: 100%;
 }
+
+.xterm-screen {
+  width: auto !important;
+}

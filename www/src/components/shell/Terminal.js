@@ -3,7 +3,7 @@ import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'r
 import { XTerm } from 'xterm-for-react'
 import { FitAddon } from 'xterm-addon-fit'
 import { useQuery } from '@apollo/client'
-import { Button, Div, Flex, P } from 'honorable'
+import { Button, Div, Flex } from 'honorable'
 
 import { ReloadIcon, ScrollIcon } from 'pluralsh-design-system'
 
@@ -24,7 +24,7 @@ const { Buffer } = require('buffer/')
 
 const decodeBase64 = str => Buffer.from(str, 'base64').toString('utf-8')
 
-export function Shell({ room, header }) {
+export function Shell({ shell }) {
   const terminalRef = useRef()
   const xterm = useRef(null)
   const [channel, setChannel] = useState(null)
@@ -37,18 +37,16 @@ export function Shell({ room, header }) {
     if (!xterm?.current?.terminal) return
 
     const term = xterm.current.terminal
+    const chan = socket.channel('shell:me', {})
 
     fitAddon.fit()
-    term.write(`${header}\r\n\r\n`)
-
-    const chan = socket.channel(room, {})
-
+    term.write(`Booting into your ${shell.provider} shell...\r\n\r\n`)
     chan.onError(console.log)
     chan.on('stdo', ({ message }) => term.write(decodeBase64(message)))
     chan.join()
 
     const { cols, rows } = fitAddon.proposeDimensions() || { cols: 80, rows: 24 }
-    // chan.push('resize', { width: cols, height: rows })
+
     setDimensions({ cols, rows })
     setChannel(chan)
 
@@ -58,7 +56,7 @@ export function Shell({ room, header }) {
       socket.off([ref])
       chan.leave()
     }
-  }, [room, xterm, fitAddon, header])
+  }, [shell, xterm, fitAddon])
 
   const handleResetSize = useCallback(() => {
     if (!channel) return
@@ -101,7 +99,7 @@ export function Shell({ room, header }) {
           CLI Cheatsheet
         </Button>
         <Div flexGrow={1} />
-        <TerminalInformation />
+        <TerminalInformation shell={shell} />
         <Button
           small
           tertiary
@@ -122,7 +120,7 @@ export function Shell({ room, header }) {
         maxHeight="100%"
         overflow="hidden"
       >
-        <TerminalSidebar />
+        <TerminalSidebar isCheatsheet={isCheatsheet} />
         <Flex
           ref={terminalRef}
           align="center"
@@ -170,12 +168,11 @@ export function Terminal() {
 
   const { shell } = data
 
+  console.log('shell', shell)
+
   return (
     <TerminalThemeProvider>
-      <Shell
-        room="shells:me"
-        header={`Booting into your ${shell.provider} shell...`}
-      />
+      <Shell shell={shell} />
     </TerminalThemeProvider>
   )
 }

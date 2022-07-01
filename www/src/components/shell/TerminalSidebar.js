@@ -1,6 +1,6 @@
 import { A, Accordion, Button, Div, ExtendTheme, Flex, Li, Modal, P, Ul } from 'honorable'
 import { ModalHeader } from 'pluralsh-design-system'
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { Fireworks } from 'fireworks-js/dist/react'
 
 import CodeLine from '../utils/CodeLine'
@@ -20,7 +20,7 @@ const steps = [
   },
 ]
 
-function TerminalSidebar(props) {
+function TerminalSidebar({ isCheatsheet, ...props }) {
   const [visible, setVisible] = useState(true)
   const [complete, setComplete] = useState(false)
   const [stepIndex, setStepIndex] = useState(0)

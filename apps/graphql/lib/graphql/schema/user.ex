@@ -12,12 +12,14 @@ defmodule GraphQl.Schema.User do
   ecto_enum :reset_token_type, Schema.ResetToken.Type
   ecto_enum :login_method, Schema.User.LoginMethod
   ecto_enum :user_event_status, Schema.UserEvent.Status
+  ecto_enum :onboarding_state, Schema.User.OnboardingStatus
 
   input_object :user_attributes do
     field :name,         :string
     field :email,        :string
     field :password,     :string
     field :avatar,       :upload_or_url
+    field :onboarding,   :onboarding_state
     field :login_method, :login_method
     field :roles,        :roles_attributes
   end
@@ -74,6 +76,7 @@ defmodule GraphQl.Schema.User do
     field :phone,            :string
     field :address,          :address
     field :login_method,     :login_method
+    field :onboarding,       :onboarding_state
     field :default_queue_id, :id
     field :service_account,  :boolean
     field :email_confirmed,  :boolean

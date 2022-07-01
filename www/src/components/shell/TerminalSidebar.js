@@ -1,10 +1,11 @@
 import { A, Accordion, Button, Div, ExtendTheme, Flex, Li, Modal, P, Ul } from 'honorable'
 import { ModalHeader } from 'pluralsh-design-system'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Fireworks } from 'fireworks-js/dist/react'
 
 import CodeLine from '../utils/CodeLine'
 
+const demoLocalStorageKey = 'pluralsh-cloud-shell-demo'
 const steps = [
   {
     title: 'Install Plural Console',
@@ -21,11 +22,25 @@ const steps = [
 ]
 
 function TerminalSidebar({ isCheatsheet, ...props }) {
-  const [visible, setVisible] = useState(true)
-  const [complete, setComplete] = useState(false)
+  const [visible, setVisible] = useState(!getDemoCompletionState())
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const [stepIndex, setStepIndex] = useState(0)
 
+  const shouldDislayCheatsheet = !getDemoCompletionState() || isCheatsheet
   const { title, Component } = steps[stepIndex]
+
+  useEffect(() => {
+    setVisible(shouldDislayCheatsheet)
+  }, [shouldDislayCheatsheet])
+
+  function getDemoCompletionState() {
+    return window.localStorage.getItem(demoLocalStorageKey) === 'true' || false
+  }
+
+  function markDemoAsComplete() {
+    setVisible(false)
+    window.localStorage.setItem(demoLocalStorageKey, true)
+  }
 
   function handlePrevious() {
     setStepIndex(x => Math.max(0, x - 1))
@@ -35,17 +50,80 @@ function TerminalSidebar({ isCheatsheet, ...props }) {
     setStepIndex(x => Math.min(steps.length - 1, x + 1))
 
     if (stepIndex === steps.length - 1) {
-      setComplete(true)
-      setVisible(false)
+      setIsModalOpen(true)
+      markDemoAsComplete()
     }
   }
 
-  function handleSkip() {
-    setVisible(false)
+  function handleModalClose() {
+    setIsModalOpen(false)
   }
 
-  function handleModalClose() {
-    setComplete(false)
+  function renderCheatsheet() {
+    return (
+      <>
+        foo
+      </>
+    )
+  }
+
+  function renderDemo() {
+    return (
+      <>
+        <Flex
+          align="center"
+          justify="space-between"
+          paddingVertical="medium"
+          paddingHorizontal="large"
+          borderBottom="1px solid border"
+        >
+          <P subtitle1>
+            {title}
+          </P>
+          <P
+            body2
+            color="text-xlight"
+          >
+            Step {stepIndex + 1} of {steps.length}
+          </P>
+        </Flex>
+        <Div
+          flexGrow={1}
+          overflowY="auto"
+        >
+          <Component />
+        </Div>
+        <Flex
+          align="center"
+          paddingVertical="medium"
+          paddingHorizontal="large"
+          gap="medium"
+          borderTop="1px solid border"
+        >
+          <Button
+            tertiary
+            onClick={markDemoAsComplete}
+          >
+            Skip Demo
+          </Button>
+          <Div flexGrow={1} />
+          {stepIndex > 0 && (
+            <Button
+              secondary
+              onClick={handlePrevious}
+            >
+              Previous
+            </Button>
+          )}
+          <Button
+            primary
+            onClick={handleNext}
+          >
+            {stepIndex === steps.length - 1 ? 'Complete demo' : 'Next'}
+          </Button>
+        </Flex>
+      </>
+    )
   }
 
   return (
@@ -67,61 +145,10 @@ function TerminalSidebar({ isCheatsheet, ...props }) {
           borderRadius="large"
           direction="column"
         >
-          <Flex
-            align="center"
-            justify="space-between"
-            paddingVertical="medium"
-            paddingHorizontal="large"
-            borderBottom="1px solid border"
-          >
-            <P subtitle1>
-              {title}
-            </P>
-            <P
-              body2
-              color="text-xlight"
-            >
-              Step {stepIndex + 1} of {steps.length}
-            </P>
-          </Flex>
-          <Div
-            flexGrow={1}
-            overflowY="auto"
-          >
-            <Component />
-          </Div>
-          <Flex
-            align="center"
-            paddingVertical="medium"
-            paddingHorizontal="large"
-            gap="medium"
-            borderTop="1px solid border"
-          >
-            <Button
-              tertiary
-              onClick={handleSkip}
-            >
-              Skip Demo
-            </Button>
-            <Div flexGrow={1} />
-            {stepIndex > 0 && (
-              <Button
-                secondary
-                onClick={handlePrevious}
-              >
-                Previous
-              </Button>
-            )}
-            <Button
-              primary
-              onClick={handleNext}
-            >
-              {stepIndex === steps.length - 1 ? 'Complete demo' : 'Next'}
-            </Button>
-          </Flex>
+          {getDemoCompletionState() ? renderCheatsheet() : renderDemo()}
         </Flex>
       </Div>
-      {complete && (
+      {isModalOpen && (
         <Fireworks
           options={{}}
           style={{
@@ -137,7 +164,7 @@ function TerminalSidebar({ isCheatsheet, ...props }) {
       )}
       <Modal
         maxWidth={512}
-        open={complete}
+        open={isModalOpen}
         onClose={handleModalClose}
       >
         <ModalHeader>

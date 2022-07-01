@@ -141,9 +141,7 @@ export function LogoAndSplash({ splashTimeout = 1200, childIsReady = false, chil
       setSplashTimerDone(true)
     }, splashTimeout)
 
-    return () => {
-      clearTimeout(timeoutId)
-    }
+    return () => clearTimeout(timeoutId)
   }, [splashTimeout])
 
   const showSplashScreen = useMemo(

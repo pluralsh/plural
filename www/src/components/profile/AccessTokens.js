@@ -21,6 +21,8 @@ import { formatLocation } from '../../utils/geo'
 
 import { Chloropleth } from '../utils/Chloropleth'
 
+import { Container } from '../utils/Container'
+
 import { Header } from './Header'
 import { DeleteIcon, Icon } from './Icon'
 import { ListItem } from './ListItem'
@@ -216,51 +218,53 @@ export function AccessTokens() {
   const { edges, pageInfo } = data.tokens
 
   return (
-    <Box
-      gap="medium"
-      fill
-    >
-      <Header
-        header="Access Tokens"
-        description="API access tokens to use in automation and active plural clusters"
-      >
-        <Box
-          flex={false}
-          width="30%"
-          align="end"
-        >
-          <Div>
-            <Button
-              onClick={mutation}
-              loading={loading}
-            >Create new access token
-            </Button>
-          </Div>
-        </Box>
-      </Header>
+    <Container type="table">
       <Box
+        gap="medium"
         fill
       >
-        <StandardScroller
-          listRef={listRef}
-          setListRef={setListRef}
-          items={edges}
-          mapper={({ node }, { next, prev }) => (
-            <AccessToken
-              token={node}
-              first={!prev.node}
-              last={!next.node}
-            />
-          )}
-          loading={loadingTokens}
-          placeholder={Placeholder}
-          hasNextPage={pageInfo.hasNextPage}
-          loadNextPage={pageInfo.hasNextPage && fetchMore({
-            variables: { cursor: pageInfo.endCursor },
-            updateQuery: (prev, { fetchMoreResult: { tokens } }) => extendConnection(prev, tokens, 'tokens'),
-          })}
-        />
+        <Header
+          header="Access Tokens"
+          description="API access tokens to use in automation and active plural clusters"
+        >
+          <Box
+            flex={false}
+            width="30%"
+            align="end"
+          >
+            <Div>
+              <Button
+                onClick={mutation}
+                loading={loading}
+              >Create new access token
+              </Button>
+            </Div>
+          </Box>
+        </Header>
+        <Box
+          fill
+        >
+          <StandardScroller
+            listRef={listRef}
+            setListRef={setListRef}
+            items={edges}
+            mapper={({ node }, { next, prev }) => (
+              <AccessToken
+                token={node}
+                first={!prev.node}
+                last={!next.node}
+              />
+            )}
+            loading={loadingTokens}
+            placeholder={Placeholder}
+            hasNextPage={pageInfo.hasNextPage}
+            loadNextPage={pageInfo.hasNextPage && fetchMore({
+              variables: { cursor: pageInfo.endCursor },
+              updateQuery: (prev, { fetchMoreResult: { tokens } }) => extendConnection(prev, tokens, 'tokens'),
+            })}
+          />
+        </Box>
       </Box>
-    </Box>
+    </Container>
   )
 }

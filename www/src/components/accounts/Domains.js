@@ -34,6 +34,7 @@ export function TableRow({ children, border, ...props }) {
       direction="row"
       align="center"
       gap="small"
+      fill="horizontal"
       {...props}
     >
       {children}

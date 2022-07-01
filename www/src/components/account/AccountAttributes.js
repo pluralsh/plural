@@ -11,6 +11,7 @@ import { Header } from '../profile/Header'
 import { DeleteIcon } from '../profile/Icon'
 import { ListItem } from '../profile/ListItem'
 import { GqlError } from '../utils/Alert'
+import { Container } from '../utils/Container'
 
 import { Chip } from './User'
 
@@ -53,66 +54,68 @@ export function AccountAttributes() {
   const len = account.domainMappings
 
   return (
-    <Box
-      fill
-      gap="medium"
-    >
-      <Header
-        header="Account Settings"
-        description="Update basic account information here"
+    <Container type="form">
+      <Box
+        fill
+        gap="medium"
       >
-        <Button
-          onClick={mutation}
-          loading={loading}
-        >Save
-        </Button> 
-      </Header>
-      <Box gap="medium">
-        {error && (
-          <GqlError
-            error={error}
-            header="Something went wrong"
+        <Header
+          header="Account Settings"
+          description="Update basic account information here"
+        >
+          <Button
+            onClick={mutation}
+            loading={loading}
+          >Save
+          </Button> 
+        </Header>
+        <Box gap="medium">
+          {error && (
+            <GqlError
+              error={error}
+              header="Something went wrong"
+            />
+          )}
+          <ValidatedInput
+            label="Account name"
+            value={name}
+            onChange={({ target: { value } }) => setName(value)}
           />
-        )}
-        <ValidatedInput
-          label="Account name"
-          value={name}
-          onChange={({ target: { value } }) => setName(value)}
-        />
-        <Box gap="small">
-          <Box gap="2px">
-            <Span fontWeight="bold">Domain Mappings</Span>
-            <Span color="text-light">Register email domains to automatically add users to your account</Span>
+          <Box gap="small">
+            <Box gap="2px">
+              <Span fontWeight="bold">Domain Mappings</Span>
+              <Span color="text-light">Register email domains to automatically add users to your account</Span>
+            </Box>
+            <Box
+              direction="row"
+              align="center"
+              gap="small"
+            >
+              <Input
+                value={domain}
+                placeholder="enter an email domain"
+                onChange={({ target: { value } }) => setDomain(value)}
+              />
+              <Button
+                small
+                secondary
+                onClick={() => mutation({ variables: { attributes: { domainMappings: addDomain(domain) } } })}
+              >Add Domain
+              </Button>
+            </Box>
           </Box>
-          <Box
-            direction="row"
-            align="center"
-            gap="small"
-          >
-            <Input
-              value={domain}
-              placeholder="enter an email domain"
-              onChange={({ target: { value } }) => setDomain(value)}
-            />
-            <Button
-              small
-              secondary
-              onClick={() => mutation({ variables: { attributes: { domainMappings: addDomain(domain) } } })}
-            >Add Domain
-            </Button>
+          <Box>
+            {account.domainMappings.map((mapping, i) => (
+              <DomainMapping
+                mapping={mapping}
+                first={i === 0}
+                last={i === len - 1}
+                remove={() => mutation({ variables: { attributes: { domainMappings: rmDomain(mapping.domain) } } })}
+              />
+            ))}
           </Box>
-        </Box>
-        <Box>
-          {account.domainMappings.map((mapping, i) => (
-            <DomainMapping
-              mapping={mapping}
-              first={i === 0}
-              last={i === len - 1}
-              remove={() => mutation({ variables: { attributes: { domainMappings: rmDomain(mapping.domain) } } })}
-            />
-          ))}
         </Box>
       </Box>
-    </Box>
+    </Container>
   )
 }

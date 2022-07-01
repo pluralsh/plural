@@ -2,6 +2,8 @@ import { Div, Flex } from 'honorable'
 import { Tab } from 'pluralsh-design-system'
 import { Link, Outlet, useLocation } from 'react-router-dom'
 
+import { Container } from '../utils/Container'
+
 import { SidebarTabs } from '../utils/SidebarTabs'
 
 const DIRECTORY = [
@@ -43,7 +45,9 @@ export function AuditDirectory() {
         maxHeight="100%"
         overflowY="auto"
       >
-        <Outlet />
+        <Container type="table">
+          <Outlet />
+        </Container>
       </Div>
     </Flex>
   )

@@ -11,6 +11,8 @@ import { CurrentUserContext } from '../login/CurrentUser'
 import { METHOD_ICONS } from '../users/OauthEnabler'
 import { OAUTH_URLS, UPDATE_USER } from '../users/queries'
 
+import { Container } from '../utils/Container'
+
 import { Header } from './Header'
 import { LoginMethod as Method } from './types'
 
@@ -36,16 +38,18 @@ function UpdatePassword({ cancel }) {
   return (
     <Box gap="small">
       <ValidatedInput
-        width="80%"
+        width="100%"
         label="Password"
+        placeholder="enter a new password"
         type="password"
         value={password}
         onChange={({ target: { value } }) => setPassword(value)}
         validation={pass => !pass ? null : validPassword(pass)}
       />
       <ValidatedInput
-        width="80%"
+        width="100%"
         label="Confirm Password"
+        placeholder="reenter your password to confirm"
         type="password"
         value={confirm}
         onChange={({ target: { value } }) => setConfirm(value)}
@@ -80,7 +84,7 @@ function LoginMethod({ icon, name, onClick, active }) {
   return (
     <Box
       border
-      width="70%"
+      width="100%"
       round="xsmall"
       onClick={active ? null : onClick}
       hoverIndicator="background-middle"
@@ -143,36 +147,38 @@ export function Security() {
   const [pass, setPass] = useState(false)
 
   return (
-    <Box
-      gap="medium"
-      fill
-    >
-      <Header
-        header="Security & Privacy"
-        description="Manage how you log in to your account"
-      />
-      <Section
-        header="Password"
-        noHeader={pass}
+    <Container type="form">
+      <Box
+        gap="medium"
+        fill
       >
-        {!pass && (
-          <Div>
-            <Button
-              secondary
-              onClick={() => setPass(true)}
-            >
-              Change Password
-            </Button>
-          </Div>
-        )}
-        {pass && <UpdatePassword cancel={() => setPass(false)} />}
-      </Section>
-      <Section
-        header="Login methods"
-        description="Change the method you use to log in"
-      >
-        <LoginMethods />
-      </Section>
-    </Box> 
+        <Header
+          header="Security & Privacy"
+          description="Manage how you log in to your account"
+        />
+        <Section
+          header="Password"
+          noHeader={pass}
+        >
+          {!pass && (
+            <Div>
+              <Button
+                secondary
+                onClick={() => setPass(true)}
+              >
+                Change Password
+              </Button>
+            </Div>
+          )}
+          {pass && <UpdatePassword cancel={() => setPass(false)} />}
+        </Section>
+        <Section
+          header="Login methods"
+          description="Change the method you use to log in"
+        >
+          <LoginMethods />
+        </Section>
+      </Box> 
+    </Container>
   )
 }

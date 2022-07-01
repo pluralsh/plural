@@ -9,6 +9,7 @@ import { Placeholder } from '../accounts/Audits'
 import { USERS_Q } from '../accounts/queries'
 import { ListItem } from '../profile/ListItem'
 import { LoopingLogo } from '../utils/AnimatedLogo'
+import { Container } from '../utils/Container'
 import { StandardScroller } from '../utils/SmoothScroller'
 
 import { CreateServiceAccount } from './CreateServiceAccount'
@@ -90,15 +91,17 @@ export function ServiceAccounts() {
   const [q, setQ] = useState('')
 
   return (
-    <Box
-      fill
-      gap="medium"
-    >
-      <Header
-        q={q}
-        setQ={setQ}
-      />
-      <ServiceAccountsInner q={q} />
-    </Box>
+    <Container type="table">
+      <Box
+        fill
+        gap="medium"
+      >
+        <Header
+          q={q}
+          setQ={setQ}
+        />
+        <ServiceAccountsInner q={q} />
+      </Box>
+    </Container>
   )
 }

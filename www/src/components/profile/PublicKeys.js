@@ -10,6 +10,7 @@ import { Placeholder } from '../accounts/Audits'
 
 import { DELETE_KEY, LIST_KEYS } from '../users/queries'
 import { LoopingLogo } from '../utils/AnimatedLogo'
+import { Container } from '../utils/Container'
 import { StandardScroller } from '../utils/SmoothScroller'
 
 import { Header } from './Header'
@@ -87,35 +88,37 @@ export function PublicKeys() {
   const { edges, pageInfo } = data.publicKeys
 
   return (
-    <Box
-      fill
-      gap="medium"
-    >
-      <Header
-        header="Public Keys"
-        description="Age public keys to use when sharing repository encryption"
-      />
-      <Box fill>
-        <StandardScroller
-          listRef={listRef}
-          setListRef={setListRef}
-          items={edges}
-          placeholder={Placeholder}
-          mapper={({ node }, { prev, next }) => (
-            <PublicKey
-              pubkey={node}
-              first={!prev.node}
-              last={!next.node}
-            />
-          )}
-          loading={loading}
-          hasNextPage={pageInfo.hasNextPage}
-          loadNextPage={pageInfo.hasNextPage && fetchMore({
-            variables: { cursor: pageInfo.endCursor },
-            updateQuery: (prev, { fetchMoreResult: { publicKeys } }) => extendConnection(prev, publicKeys, 'publicKeys'),
-          })}
+    <Container type="table">
+      <Box
+        fill
+        gap="medium"
+      >
+        <Header
+          header="Public Keys"
+          description="Age public keys to use when sharing repository encryption"
         />
+        <Box fill>
+          <StandardScroller
+            listRef={listRef}
+            setListRef={setListRef}
+            items={edges}
+            placeholder={Placeholder}
+            mapper={({ node }, { prev, next }) => (
+              <PublicKey
+                pubkey={node}
+                first={!prev.node}
+                last={!next.node}
+              />
+            )}
+            loading={loading}
+            hasNextPage={pageInfo.hasNextPage}
+            loadNextPage={pageInfo.hasNextPage && fetchMore({
+              variables: { cursor: pageInfo.endCursor },
+              updateQuery: (prev, { fetchMoreResult: { publicKeys } }) => extendConnection(prev, publicKeys, 'publicKeys'),
+            })}
+          />
+        </Box>
       </Box>
-    </Box>
+    </Container>
   )
 }

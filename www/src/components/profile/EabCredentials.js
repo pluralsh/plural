@@ -9,6 +9,7 @@ import { updateCache } from '../../utils/graphql'
 import { DELETE_EAB_CREDENTIALS, EAB_CREDENTIALS } from '../users/queries'
 import { obscure } from '../users/utils'
 import { LoopingLogo } from '../utils/AnimatedLogo'
+import { Container } from '../utils/Container'
 import { Table, TableData, TableRow } from '../utils/Table'
 
 import { Header } from './Header'
@@ -70,30 +71,32 @@ export function EabCredentials() {
   const len = data.eabCredentials.length
 
   return (
-    <Box
-      gap="medium"
-      fill
-    >
-      <Header
-        header="EAB Credentials"
-        description="Credentials used to generate an ACME account for certificate issuance in plural clusters"
-      />
-      <Box fill>
-        <Table
-          headers={['Key Id', 'HMAC Key', 'Cluster', 'Created On']}
-          sizes={['25%', '25%', '25%', '25%']}
-          background="fill-one"
-          border="1px solid border"
-        >
-          {data.eabCredentials.map((cred, i) => (
-            <EabCredential
-              key={cred.id}
-              credential={cred}
-              last={i === len - 1}
-            />
-          ))}
-        </Table>
+    <Container type="table">
+      <Box
+        gap="medium"
+        fill
+      >
+        <Header
+          header="EAB Credentials"
+          description="Credentials used to generate an ACME account for certificate issuance in plural clusters"
+        />
+        <Box fill>
+          <Table
+            headers={['Key Id', 'HMAC Key', 'Cluster', 'Created On']}
+            sizes={['25%', '25%', '25%', '25%']}
+            background="fill-one"
+            border="1px solid border"
+          >
+            {data.eabCredentials.map((cred, i) => (
+              <EabCredential
+                key={cred.id}
+                credential={cred}
+                last={i === len - 1}
+              />
+            ))}
+          </Table>
+        </Box>
       </Box>
-    </Box>
+    </Container>
   )
 }

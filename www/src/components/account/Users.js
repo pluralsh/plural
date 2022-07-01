@@ -10,6 +10,7 @@ import { USERS_Q } from '../accounts/queries'
 import { ListItem } from '../profile/ListItem'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { ButtonGroup } from '../utils/ButtonGroup'
+import { Container } from '../utils/Container'
 import { StandardScroller } from '../utils/SmoothScroller'
 
 import { Invites } from './Invites'
@@ -100,17 +101,19 @@ export function Users() {
   const [view, setView] = useState('Users')
 
   return (
-    <Box
-      fill
-      gap="medium"
-    >
-      <Header
-        q={q}
-        setQ={setQ}
-        setView={setView}
-      />
-      {view === 'Users' && <UsersInner q={q} />}
-      {view === 'Invites' && <Invites />}
-    </Box>
+    <Container type="table">
+      <Box
+        fill
+        gap="medium"
+      >
+        <Header
+          q={q}
+          setQ={setQ}
+          setView={setView}
+        />
+        {view === 'Users' && <UsersInner q={q} />}
+        {view === 'Invites' && <Invites />}
+      </Box>
+    </Container>
   )
 }

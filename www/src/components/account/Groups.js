@@ -12,6 +12,7 @@ import { CurrentUserContext } from '../login/CurrentUser'
 import { DeleteIcon } from '../profile/Icon'
 import { ListItem } from '../profile/ListItem'
 import { LoopingLogo } from '../utils/AnimatedLogo'
+import { Container } from '../utils/Container'
 import { StandardScroller } from '../utils/SmoothScroller'
 
 import { Confirm } from './Confirm'
@@ -182,15 +183,17 @@ export function Groups() {
   const [q, setQ] = useState('')
 
   return (
-    <Box
-      fill
-      gap="medium"
-    >
-      <Header
-        q={q}
-        setQ={setQ}
-      />
-      <GroupsInner q={q} />
-    </Box>
+    <Container type="table">
+      <Box
+        fill
+        gap="medium"
+      >
+        <Header
+          q={q}
+          setQ={setQ}
+        />
+        <GroupsInner q={q} />
+      </Box>
+    </Container>
   )
 }

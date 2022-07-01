@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { Button, Div, Flex, P } from 'honorable'
+import { Button, Div, Flex, H1, P } from 'honorable'
 import { Input, MagnifyingGlassIcon, RepositoryCard, Token } from 'pluralsh-design-system'
 import Fuse from 'fuse.js'
 
@@ -104,12 +104,9 @@ function MarketplaceRepositories({ installed, ...props }) {
 
     return (
       <>
-        <P
-          body0
-          fontWeight="bold"
-        >
+        <H1 subtitle1>
           Featured Repositories
-        </P>
+        </H1>
         <Flex
           mt={1}
         >
@@ -238,13 +235,12 @@ function MarketplaceRepositories({ installed, ...props }) {
         ref={scrollRef}
       >
         {shouldRenderFeatured && renderFeatured()}
-        <P
-          mt={shouldRenderFeatured ? 2 : 0}
-          body0
-          fontWeight="bold"
+        <H1
+          subtitle1
+          marginTop={shouldRenderFeatured ? 'xlarge' : 0}
         >
           {renderTitle()}
-        </P>
+        </H1>
         <Flex
           mx={-1}
           mt={1}

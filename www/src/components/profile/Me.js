@@ -8,6 +8,7 @@ import { useFilePicker } from 'react-sage'
 import { CurrentUserContext } from '../login/CurrentUser'
 import { Provider } from '../repos/misc'
 import { UPDATE_USER } from '../users/queries'
+import { Container } from '../utils/Container'
 
 import { Header } from './Header'
 
@@ -36,86 +37,87 @@ export function Me() {
   }, [files, mutation])
 
   return (
-
-    <Box
-      gap="medium"
-      fill
-    >
-      <Header
-        header="Profile"
-        description="Edit how your profile appears to other users"
-      />
+    <Container type="form">
       <Box
-        gap="large"
-        direction="row"
+        gap="medium"
+        fill
       >
-        <Attribute header="Profile Picture">
-          <Stack
-            anchor="bottom-right"
-            style={{ width: '100px' }}
-          >
-            <Avatar
-              name={me.name}
-              src={me.avatar}
-              size={100}
-            />
-            <>
-              <Box
-                flex={false}
-                round="full"
-                align="center"
-                justify="center"
-                background="#222534"
-                pad="small"
-                onClick={onClick}
-              >
-                <CameraIcon
-                  size={15}
-                  color="action-link-inline"
-                />
-              </Box>
-              <HiddenFileInput
-                accept=".jpg, .jpeg, .png"
-                multiple={false}
-              />
-            </>
-          </Stack>
-        </Attribute>
-        {me.provider && (
-          <Attribute header="Provider">
-            <Provider
-              provider={me.provider}
-              width={75}
-            />
-          </Attribute>
-        )}
-      </Box>
-      <Box gap="small">
-        <ValidatedInput
-          label="Name"
-          width="70%"
-          value={name}
-          onChange={({ target: { value } }) => setName(value)}
-          validation={() => null}
+        <Header
+          header="Profile"
+          description="Edit how your profile appears to other users"
         />
-        <ValidatedInput
-          label="Email"
-          width={500}
-          value={email}
-          hint="Changing emails will require email verification"
-          onChange={({ target: { value } }) => setEmail(value)}
-          validation={() => null}
-        />
-      </Box>
-      <Div>
-        <Button
-          width="90px"
-          onClick={mutation}
-          loading={loading}
+        <Box
+          gap="large"
+          direction="row"
         >
-          Save
-        </Button>
-      </Div>
-    </Box>
+          <Attribute header="Profile Picture">
+            <Stack
+              anchor="bottom-right"
+              style={{ width: '100px' }}
+            >
+              <Avatar
+                name={me.name}
+                src={me.avatar}
+                size={100}
+              />
+              <>
+                <Box
+                  flex={false}
+                  round="full"
+                  align="center"
+                  justify="center"
+                  background="#222534"
+                  pad="small"
+                  onClick={onClick}
+                >
+                  <CameraIcon
+                    size={15}
+                    color="action-link-inline"
+                  />
+                </Box>
+                <HiddenFileInput
+                  accept=".jpg, .jpeg, .png"
+                  multiple={false}
+                />
+              </>
+            </Stack>
+          </Attribute>
+          {me.provider && (
+            <Attribute header="Provider">
+              <Provider
+                provider={me.provider}
+                width={75}
+              />
+            </Attribute>
+          )}
+        </Box>
+        <Box gap="small">
+          <ValidatedInput
+            label="Name"
+            width="100%"
+            value={name}
+            onChange={({ target: { value } }) => setName(value)}
+            validation={() => null}
+          />
+          <ValidatedInput
+            label="Email"
+            width="100%"
+            value={email}
+            hint="Changing emails will require email verification"
+            onChange={({ target: { value } }) => setEmail(value)}
+            validation={() => null}
+          />
+        </Box>
+        <Div>
+          <Button
+            width="90px"
+            onClick={mutation}
+            loading={loading}
+          >
+            Save
+          </Button>
+        </Div>
+      </Box>
+    </Container>
   )
 }

@@ -5,13 +5,12 @@ import { useCallback, useState } from 'react'
 
 import { Placeholder } from '../accounts/Audits'
 
-import { TableRow } from '../accounts/Domains'
 import { RepoIcon } from '../repos/Repositories'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { ReturnToBeginning } from '../utils/ReturnToBeginning'
 import { StandardScroller } from '../utils/SmoothScroller'
-import { Table, TableData } from '../utils/Table'
+import { Table, TableData, TableRow } from '../utils/Table'
 
 import { AuditUser } from './AuditUser'
 import { Location } from './Location'

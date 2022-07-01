@@ -24,6 +24,10 @@ const steps = [
   },
 ]
 
+/* ---
+  SIDEBAR
+--- */
+
 function TerminalSidebar({ isCheatsheet, ...props }) {
   const [visible, setVisible] = useState(!getDemoCompletionState())
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -206,6 +210,10 @@ function TerminalSidebar({ isCheatsheet, ...props }) {
   )
 }
 
+/* ---
+  DEMO STEP 1
+--- */
+
 const extendedTheme = {
   Accordion: {
     Root: [
@@ -332,9 +340,12 @@ function Step1() {
         </Accordion>
       </ExtendTheme>
     </>
-
   )
 }
+
+/* ---
+  DEMO STEP 2
+--- */
 
 function Step2() {
   return (
@@ -367,6 +378,10 @@ function Step2() {
     </Div>
   )
 }
+
+/* ---
+  DEMO STEP 3
+--- */
 
 function Step3() {
   return (
@@ -422,6 +437,10 @@ function Step3() {
     </Div>
   )
 }
+
+/* ---
+  CHEATSHEET
+--- */
 
 const SECTION_COMMANDS = 'SECTION_COMMANDS'
 const SECTION_DEBUGGING = 'SECTION_DEBUGGING'

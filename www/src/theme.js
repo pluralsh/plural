@@ -246,6 +246,7 @@ export const DEFAULT_THEME = {
     },
     box: { extend: boxStyle },
     checkBox: { toggle: { color: 'brand' } },
+    active: { background: { color: '#1E2229' } },
     elevation: {
       light: {
         medium: '0px 3px 8px rgba(100, 100, 100, 0.50)',

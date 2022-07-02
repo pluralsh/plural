@@ -96,7 +96,7 @@ function PermissionToggle({ permission, description, attributes, setAttributes, 
 }
 
 function RoleForm({ error, attributes, setAttributes, bindings, setBindings, ...box }) {
-  const [view, setView] = useState('gen')
+  const [view, setView] = useState('General')
   const permissions = Object.entries(PermissionTypes)
   const len = permissions.length
 

@@ -52,6 +52,10 @@ defmodule GraphQl.Schema.Shell do
     field :git_url,     non_null(:string)
     field :aes_key,     non_null(:string)
 
+    field :cluster,     non_null(:string), resolve: fn
+      %{workspace: %{cluster: cluster}}, _, _ -> {:ok, cluster}
+    end
+
     field :alive,       non_null(:boolean), resolve: fn
       shell, _, _ -> Shell.liveness(shell)
     end

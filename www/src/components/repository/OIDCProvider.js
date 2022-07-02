@@ -2,9 +2,9 @@ import { useCallback, useContext, useState } from 'react'
 import { Box } from 'grommet'
 import { useMutation } from '@apollo/client'
 
-import { Button, Div, Flex, Input, Span } from 'honorable'
+import { Button, Div, Flex } from 'honorable'
 
-import { FormField, Token } from 'pluralsh-design-system'
+import { FormField, Input, Token } from 'pluralsh-design-system'
 
 import { fetchGroups, fetchUsers } from '../accounts/Typeaheads'
 
@@ -22,23 +22,6 @@ import { CREATE_PROVIDER, UPDATE_PROVIDER } from '../oidc/queries'
 
 import { AuthMethod } from '../oidc/types'
 import RepositoryContext from '../../contexts/RepositoryContext'
-
-function InputModifier({ position, text }) {
-  return (
-    <Box
-      flex={false}
-      height="38px"
-      background="fill-one"
-      round={{ corner: position, size: '4px' }}
-      border={[{ side: 'horizontal' }, { side: position }]}
-      pad="small"
-      justify="center"
-      align="center"
-    >
-      <Span color="text-light">{text}</Span>
-    </Box>
-  )
-}
 
 function UrlsInput({ uriFormat = '', urls, setUrls }) {
   const [value, setValue] = useState('')
@@ -61,25 +44,18 @@ function UrlsInput({ uriFormat = '', urls, setUrls }) {
         direction="row"
         align="center"
       >
-        <InputModifier
-          position="left"
-          text={scheme}
-        />
         <Input
           value={value}
-          width="250px"
+          prefix={scheme}
+          suffix={path}
+          width="500px"
           borderRadius="0px"
           placeholder={uriFormat ? 'enter the domain for this url' : 'enter a redirect url'}
           onChange={({ target: { value } }) => setValue(value)}
         />
-        <InputModifier
-          position="right"
-          text={path}
-        />
         <Button
           onClick={addUrl}
           secondary
-          small
           marginLeft="small"
         >Add
         </Button>

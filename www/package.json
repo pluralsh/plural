@@ -73,7 +73,7 @@
     "moment": "^2.29.3",
     "phoenix": "^1.6.10",
     "pluralsh-absinthe-socket-apollo-link": "^0.2.0",
-    "pluralsh-design-system": "^1.102.0",
+    "pluralsh-design-system": "^1.103.0",
     "prop-types": "^15.8.1",
     "query-string": "^7.1.1",
     "react": "^16.14.0",
@@ -117,7 +117,7 @@
     "@babel/eslint-parser": "^7.18.2",
     "@babel/preset-env": "^7.18.6",
     "@babel/preset-react": "^7.18.6",
-    "eslint": "^8.18.0",
+    "eslint": "^8.19.0",
     "eslint-config-pluralsh": "^3.1.0",
     "postcss-import": "^8.2.0"
   },

@@ -37,7 +37,7 @@ function RepositoryPackages() {
       direction="column"
       height="100%"
     >
-      <H2>
+      <H2 subtitle1>
         Packages
       </H2>
       <Flex

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { Button, Div, Flex, P } from 'honorable'
+import { Button, Div, Flex, H1 } from 'honorable'
 import { Input, MagnifyingGlassIcon, RepositoryCard, Token } from 'pluralsh-design-system'
 import Fuse from 'fuse.js'
 
@@ -14,6 +14,13 @@ import { MARKETPLACE_QUERY } from './queries'
 
 const searchOptions = {
   keys: ['name', 'description', 'tags.tag'],
+}
+
+const filterTokenStyles = {
+  marginRight: 'xsmall',
+  marginBottom: 'xsmall',
+  flexShrink: 0,
+  minHeight: '42px',
 }
 
 function MarketplaceRepositories({ installed, ...props }) {
@@ -97,14 +104,11 @@ function MarketplaceRepositories({ installed, ...props }) {
 
     return (
       <>
-        <P
-          body0
-          fontWeight="bold"
-        >
+        <H1 subtitle1>
           Featured Repositories
-        </P>
+        </H1>
         <Flex
-          mt={1}
+          marginTop="medium"
         >
           <RepositoryCard
             as={Link}
@@ -155,32 +159,37 @@ function MarketplaceRepositories({ installed, ...props }) {
       direction="column"
       {...props}
     >
-      <Flex
-        paddingHorizontal="large"
-        align="flex-start"
-        position="relative"
-      >
-        <Input
-          startIcon={(
-            <MagnifyingGlassIcon
-              size={14}
-            />
-          )}
-          placeholder="Search a repository"
-          value={search}
-          onChange={event => setSearch(event.target.value)}
-          width="calc(100% / 2 - 16px)"
-        />
+      <Div position="relative">
         <Flex
+          paddingHorizontal="large"
+          align="stretch"
           wrap
-          align="center"
-          flexShrink={1}
-          minHeight={36}
-          marginLeft="xsmall"
+          marginBottom="-8px"
         >
+          <Div
+            minWidth="210px"
+            maxWidth="calc(50% - 16px)"
+            flex="1 1 210px"
+            marginRight="large"
+            marginBottom="xsmall"
+            _last={{
+              marginRight: 'large',
+            }}
+          >
+            <Input
+              startIcon={(
+                <MagnifyingGlassIcon
+                  size={14}
+                />
+              )}
+              placeholder="Search a repository"
+              value={search}
+              onChange={event => setSearch(event.target.value)}
+            />
+          </Div>
           {categories.map(category => (
             <Token
-              mr={0.5}
+              {...filterTokenStyles}
               onClose={() => handleClearToken('category', category)}
             >
               {capitalize(category)}
@@ -188,7 +197,7 @@ function MarketplaceRepositories({ installed, ...props }) {
           ))}
           {tags.map(tag => (
             <Token
-              mr={0.5}
+              {...filterTokenStyles}
               onClose={() => handleClearToken('tag', tag)}
             >
               {capitalize(tag)}
@@ -196,7 +205,8 @@ function MarketplaceRepositories({ installed, ...props }) {
           ))}
           {!!(categories.length || tags.length) && (
             <Button
-              ml={0.25}
+              marginBottom="xsmall"
+              flexShrink={0}
               tertiary
               small
               onClick={() => handleClearTokens()}
@@ -214,7 +224,7 @@ function MarketplaceRepositories({ installed, ...props }) {
           top="100%"
           zIndex={999}
         />
-      </Flex>
+      </Div>
       <Div
         pt={1}
         pb={8}
@@ -225,13 +235,12 @@ function MarketplaceRepositories({ installed, ...props }) {
         ref={scrollRef}
       >
         {shouldRenderFeatured && renderFeatured()}
-        <P
-          mt={shouldRenderFeatured ? 2 : 0}
-          body0
-          fontWeight="bold"
+        <H1
+          subtitle1
+          marginTop={shouldRenderFeatured ? 'xlarge' : 0}
         >
           {renderTitle()}
-        </P>
+        </H1>
         <Flex
           mx={-1}
           mt={1}
@@ -260,7 +269,7 @@ function MarketplaceRepositories({ installed, ...props }) {
         </Flex>
         {loadingRepositories && (
           <Flex
-            mt={2}
+            marginTop="xlarge"
             align="center"
             justify="center"
           >

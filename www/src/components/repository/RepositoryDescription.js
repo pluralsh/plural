@@ -9,27 +9,28 @@ function RepositoryDescription() {
   const repository = useContext(RepositoryContext)
 
   return (
+
     <Flex
       direction="column"
-      height="100%"
+      backgroundColor="fill-one"
+      border="1px solid border"
+      padding="medium"
+      paddingBottom="xlarge"
+      borderRadius="large"
+      maxWidth="768px"
     >
-      <H2>
+      <H2
+        overline
+        marginBottom="xxsmall"
+      >
         Description
       </H2>
-      <Flex
-        mt={2}
-        pb={8}
-        direction="column"
-        flexGrow={1}
-        maxWidth="700px"
-      >
-        {repository.readme ? (
-          <RepositoryDescriptionMarkdown
-            text={repository.readme}
-            gitUrl={repository.git_url}
-          />
-        ) : <P>No description available</P>}
-      </Flex>
+      {repository.readme ? (
+        <RepositoryDescriptionMarkdown
+          text={repository.readme}
+          gitUrl={repository.git_url}
+        />
+      ) : <P>No description available</P>}
     </Flex>
   )
 }

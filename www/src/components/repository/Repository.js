@@ -170,9 +170,9 @@ function Repository() {
           </Flex>
           <Div
             flexGrow={1}
-            pt={1.5}
-            pl={0.5}
-            pr={1.5}
+            paddingTop="large"
+            paddingRight="large"
+            paddingBottom="xlarge"
             height="100%"
             maxHeight="100%"
             overflowY="auto"

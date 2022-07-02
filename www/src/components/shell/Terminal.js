@@ -3,7 +3,7 @@ import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'r
 import { XTerm } from 'xterm-for-react'
 import { FitAddon } from 'xterm-addon-fit'
 import { useQuery } from '@apollo/client'
-import { Button, Div, Flex } from 'honorable'
+import { Button, Div, Flex, Span } from 'honorable'
 
 import { ReloadIcon, ScrollIcon } from 'pluralsh-design-system'
 
@@ -37,7 +37,7 @@ export function Shell({ shell }) {
     if (!xterm?.current?.terminal) return
 
     const term = xterm.current.terminal
-    const chan = socket.channel('shell:me', {})
+    const chan = socket.channel('shells:me', {})
 
     fitAddon.fit()
     term.write(`Booting into your ${shell.provider} shell...\r\n\r\n`)
@@ -76,6 +76,8 @@ export function Shell({ shell }) {
     channel.push('command', { cmd: text })
   }
 
+  console.log(shell)
+
   return (
     <>
       <Flex
@@ -85,7 +87,7 @@ export function Shell({ shell }) {
         gap="medium"
         borderBottom="1px solid border"
       >
-        <Button
+        {/* <Button
           small
           tertiary
           startIcon={(
@@ -94,7 +96,8 @@ export function Shell({ shell }) {
           onClick={() => setIsCheatsheet(x => !x)}
         >
           CLI Cheatsheet
-        </Button>
+        </Button> */}
+        <Div><Span fontWeight="bold">{shell.cluster}</Span></Div>
         <Div flexGrow={1} />
         <TerminalInformation shell={shell} />
         <Button

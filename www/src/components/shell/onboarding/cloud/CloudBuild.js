@@ -14,27 +14,28 @@ import { GqlError } from '../../../utils/Alert'
 function CloudBuild() {
   const { previous, next, setWorkspace, setProvider, setCredentials, setDemoId } = useContext(CreateShellContext)
   const [mutation, mutationResults] = useMutation(CREATE_DEMO_PROJECT_MUTATION)
-  const pollDemoProjectQueryResults = useQuery(
+  const results = useQuery(
     POLL_DEMO_PROJECT_QUERY,
     {
       variables: {
-        id: mutationResults.data?.createDemoProject?.id,
+        id: mutationResults?.data?.createDemoProject?.id,
       },
       pollInterval: 2000,
       skip: !!mutationResults.error || !mutationResults.data,
     }
   )
 
-  const status = pollDemoProjectQueryResults.data?.demoProject?.state
-  const error = mutationResults.error || pollDemoProjectQueryResults.error
+  const status = results?.data?.demoProject?.state
+  const error = mutationResults.error || results?.error
 
   useEffect(() => {
     mutation()
   }, [mutation])
 
   useEffect(() => {
-    if (mutationResults.data?.state === 'ENABLED') {
-      const { createDemoProject: demo } = mutationResults.data 
+    console.log(results)
+    if (results?.data?.demoProject?.ready && results?.data?.demoProject?.state === 'ENABLED') {
+      const demo = results.data.demoProject
       setDemoId(demo.id)
       setProvider('GCP')
       setCredentials({ gcp: { applicationCredentials: demo.credentials } })
@@ -46,7 +47,7 @@ function CloudBuild() {
         bucketPrefix: `plural-${Math.random().toString().substring(2, 8)}`,
       }))
     }
-  }, [mutationResults?.data])
+  }, [results])
 
   return (
     <>

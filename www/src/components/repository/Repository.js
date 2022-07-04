@@ -12,6 +12,7 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 import RepositoryHeader from './RepositoryHeader'
 
 import { REPOSITORY_QUERY } from './queries'
+import {Breadcrumbs} from "../Breadcrumbs";
 
 function Repository() {
   const { id } = useParams()
@@ -23,7 +24,7 @@ function Repository() {
   })
 
   useBreadcrumbs(data && [
-    { url: '/explore', text: 'Explore' },
+    { url: '/marketplace', text: 'Marketplace' },
     { url: `/repository/${data.repository.id}`, text: data.repository.name },
   ])
 
@@ -52,6 +53,13 @@ function Repository() {
         direction="column"
         overflowY="hidden"
       >
+        <Flex
+            paddingVertical={18}
+            paddingLeft="xlarge"
+            paddingRight="large"
+            borderBottom="1px solid border">
+          <Breadcrumbs></Breadcrumbs>
+        </Flex>
         <RepositoryHeader flexShrink={0} />
         <Flex
           flexGrow={1}

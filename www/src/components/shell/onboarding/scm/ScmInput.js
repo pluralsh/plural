@@ -204,7 +204,7 @@ export function ScmSection() {
           color="text-light"
           marginBottom="medium"
         >
-          We use GitOps to manage your application’s state. Use one of the following providers to get started.
+          We use GitOps to manage your application's state.  Enter your repository details below:
         </P>
         <ScmInput />
         {exceptions && <Exceptions exceptions={exceptions} />}

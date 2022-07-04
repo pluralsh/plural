@@ -1,4 +1,4 @@
-import { isString } from 'lodash'
+import isString from 'lodash.isstring'
 
 export function updateFragment(cache, { fragment, id, update, fragmentName }) {
   const current = cache.readFragment({ id, fragment, fragmentName })
@@ -44,7 +44,7 @@ export function removeConnection(prev, val, key) {
   return { ...prev, [key]: { ...prev[key], edges: prev[key].edges.filter(({ node }) => node.id !== val.id) } }
 }
 
-export function updateCache(cache, { query, variables, update, onFailure }) {
+export function updateCache(cache, { query, variables, update }) {
   const prev = cache.readQuery({ query, variables })
   cache.writeQuery({ query, variables, data: update(prev) })
 }

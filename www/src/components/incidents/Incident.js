@@ -1,32 +1,21 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
-import { Button, Close, Edit, File, Messages as MessagesI, ModalHeader, Scroller } from 'forge-core'
-
-import { useMutation, useQuery, useSubscription } from 'react-apollo'
-
-import { useHistory, useParams } from 'react-router'
-
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { Button, Close, Edit, File, Messages as MessagesI, Scroller } from 'forge-core'
+import { Editable, Slate } from 'slate-react'
+import { useMutation, useQuery, useSubscription } from '@apollo/client'
+import { useNavigate, useParams } from 'react-router-dom'
 import { Box, Layer, Text, TextInput } from 'grommet'
-
 import moment from 'moment'
 
-import { Editable, Slate } from 'slate-react'
-
-import { CurrentUserContext } from '../login/CurrentUser'
-
+import { ModalHeader } from '../ModalHeader'
 import { dateFormat } from '../../utils/date'
-
 import SmoothScroller from '../utils/SmoothScroller'
-
 import { extendConnection } from '../../utils/graphql'
-
-import { BreadcrumbsContext } from '../Breadcrumbs'
-
 import { plainDeserialize, plainSerialize } from '../../utils/slate'
-
 import { useEditor } from '../utils/hooks'
 
 import { TagInput } from '../repos/Tags'
-
+import { CurrentUserContext } from '../login/CurrentUser'
+import { BreadcrumbsContext } from '../Breadcrumbs'
 import Avatar from '../users/Avatar'
 
 import Markdown from './Markdown'
@@ -122,8 +111,8 @@ function IncidentHeader({ incident, editable, editing, setEditing, mutation, att
         direction="row"
         align="center"
         background="light-1"
-        pad={{ vertical: 'xsmall', horizontal: 'small' }} 
-        border={{ side: 'bottom', color: 'light-3' }}
+        pad={{ vertical: 'xsmall', horizontal: 'small' }}
+        border={{ side: 'bottom', color: 'border' }}
         gap="xsmall"
         round={{ corner: 'top', size: 'xsmall' }}
       >
@@ -165,7 +154,7 @@ function IncidentHeader({ incident, editable, editing, setEditing, mutation, att
         <Box
           flex={false}
           gap="xsmall"
-          border={{ side: 'between', color: 'light-5' }}
+          border={{ side: 'between', color: 'border' }}
         >
           <Box pad="small">
             <Markdown text={incident.description || ''} />
@@ -196,7 +185,7 @@ function IncidentHeader({ incident, editable, editing, setEditing, mutation, att
         <Box
           flex={false}
           gap="xsmall"
-          border={{ side: 'between', color: 'light-5' }}
+          border={{ side: 'between', color: 'border' }}
         >
           <Box pad="small">
             <Slate
@@ -233,8 +222,8 @@ export function Messages({ incident, loading, fetchMore, subscribeToMore }) {
     document: MESSAGE_SUB,
     variables: { id: incident.id },
     updateQuery: (prev, { subscriptionData: { data } }) => applyMessages(prev, data),
-  }), [incident.id])
-  
+  }), [incident.id, subscribeToMore])
+
   if (edges.length === 0) return <Empty />
 
   return (
@@ -339,7 +328,7 @@ function IncidentInner({ incident, fetchMore, subscribeToMore, loading, editing,
   const currentUser = useContext(CurrentUserContext)
   const editable = canEdit(incident, currentUser)
   const [attributes, setAttributes] = useState({
-    description: incident.description, 
+    description: incident.description,
     title: incident.title,
     tags: incident.tags.map(({ tag }) => tag),
   })
@@ -349,15 +338,17 @@ function IncidentInner({ incident, fetchMore, subscribeToMore, loading, editing,
   })
 
   const refreshList = useCallback(() => {
-    listRef && listRef.resetAfterIndex(0, true)
+    if (listRef) listRef.resetAfterIndex(0, true)
   }, [listRef])
 
   const returnToBeginning = useCallback(() => {
     listRef.scrollToItem(0)
   }, [listRef])
 
+  const value = useMemo(() => ({ listRef, setListRef, refreshList, returnToBeginning }), [listRef, setListRef, refreshList, returnToBeginning])
+
   return (
-    <MessageScrollContext.Provider value={{ listRef, setListRef, refreshList, returnToBeginning }}>
+    <MessageScrollContext.Provider value={value}>
       <Box fill>
         <AttachmentProvider>
           <Box
@@ -366,7 +357,7 @@ function IncidentInner({ incident, fetchMore, subscribeToMore, loading, editing,
             direction="row"
             align="center"
             gap="small"
-            border={{ side: 'bottom', color: 'light-5' }}
+            border={{ side: 'bottom', color: 'border' }}
           >
             <Severity
               incident={incident}
@@ -413,14 +404,14 @@ function IncidentInner({ incident, fetchMore, subscribeToMore, loading, editing,
                 pad={{ horizontal: 'small' }}
                 margin={{ top: 'small' }}
               >
-                <IncidentHeader 
+                <IncidentHeader
                   attributes={attributes}
                   setAttributes={setAttributes}
-                  incident={incident} 
-                  editable={editable} 
-                  editing={editing} 
+                  incident={incident}
+                  editable={editable}
+                  editing={editing}
                   setEditing={setEditing}
-                  updating={updating} 
+                  updating={updating}
                   mutation={mutation}
                 />
               </Box>
@@ -443,12 +434,12 @@ function IncidentInner({ incident, fetchMore, subscribeToMore, loading, editing,
                   )}
                   {view === IncidentView.MSGS && (
                     <Dropzone>
-                      <Messages 
+                      <Messages
                         updating={updating}
                         editing={editing}
                         mutation={mutation}
-                        incident={incident} 
-                        fetchMore={fetchMore} 
+                        incident={incident}
+                        fetchMore={fetchMore}
                         subscribeToMore={subscribeToMore}
                         loading={loading}
                       />
@@ -470,15 +461,15 @@ function IncidentInner({ incident, fetchMore, subscribeToMore, loading, editing,
 }
 
 export function Incident({ editing }) {
-  const history = useHistory()
+  const navigate = useNavigate()
   const [deleted, setDeleted] = useState(false)
   const { incidentId } = useParams()
   const [edit, setEdit] = useState(editing)
   const { data, loading, fetchMore, subscribeToMore } = useQuery(INCIDENT_Q, {
-    variables: { id: incidentId }, 
+    variables: { id: incidentId },
     fetchPolicy: 'cache-and-network',
   })
-  
+
   useSubscription(INCIDENT_SUB, {
     variables: { id: incidentId },
     onSubscriptionData: ({ subscriptionData: { data: { incidentDelta: { delta } } } }) => (
@@ -510,7 +501,7 @@ export function Incident({ editing }) {
               >
                 <Button
                   label="Return"
-                  onClick={() => history.push('/incidents')}
+                  onClick={() => navigate('/incidents')}
                 />
               </Box>
             </Box>

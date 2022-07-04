@@ -1,7 +1,7 @@
+import { cloneElement, createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { Box, Text } from 'grommet'
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
 
-const StepContext = React.createContext({})
+const StepContext = createContext({})
 const ICON_SIZE = '25px'
 
 function BetweenStep({ step, width }) {
@@ -25,8 +25,10 @@ function StepProvider({ step, children }) {
     if (steps.current[step] !== undefined) setCurrent(steps.current[step])
   }, [step, steps])
 
+  const value = useMemo(() => ({ current, setCurrent, register }), [current, setCurrent, register])
+
   return (
-    <StepContext.Provider value={{ current, setCurrent, register }}>
+    <StepContext.Provider value={value}>
       {children}
     </StepContext.Provider>
   )
@@ -34,13 +36,15 @@ function StepProvider({ step, children }) {
 
 export function Step({ step, name, onStep }) {
   const { current, setCurrent, register } = useContext(StepContext)
+
   const onSelect = useCallback(() => {
     onStep()
     setCurrent(step)
-  }, [setCurrent, onStep, current])
+  }, [setCurrent, onStep, step])
+
   useEffect(() => {
     register(name, step)
-  }, [register])
+  }, [register, name, step])
 
   return (
     <Box
@@ -56,19 +60,19 @@ export function Step({ step, name, onStep }) {
         width={ICON_SIZE}
         height={ICON_SIZE}
         align="center"
-        justify="center" 
+        justify="center"
         background={current >= step ? 'brand' : 'light-1'}
         round="full"
       >
         <Text
           size="small"
-          color={current >= step ? null : 'light-5'}
+          color={current >= step ? null : 'border'}
         >{step + 1}
         </Text>
       </Box>
       <Text
         size="small"
-        color={current >= step ? null : 'light-5'}
+        color={current >= step ? null : 'border'}
       >{name}
       </Text>
     </Box>
@@ -77,14 +81,19 @@ export function Step({ step, name, onStep }) {
 
 function* intersperse(steps) {
   const len = steps.length
-  yield React.cloneElement(steps[0], { step: 0 })
+
+  yield cloneElement(steps[0], { step: 0 })
+
   for (let i = 1; i < len; i++) {
-    yield <BetweenStep
-      key={`btw-${i}`}
-      step={i - 1}
-      width={`${100 / (len - 1)}%`}
-    />
-    yield React.cloneElement(steps[i], { key: `stp-${i}`, step: i })
+    yield (
+      <BetweenStep
+        key={`btw-${i}`}
+        step={i - 1}
+        width={`${100 / (len - 1)}%`}
+      />
+    )
+
+    yield cloneElement(steps[i], { key: `stp-${i}`, step: i })
   }
 }
 

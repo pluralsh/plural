@@ -1,12 +1,9 @@
-import React, { useState } from 'react'
-import styled from 'styled-components'
-import { useApolloClient } from 'react-apollo'
-import { useHistory } from 'react-router-dom'
-import { Box, TextInput, ThemeContext } from 'grommet'
+import { useState } from 'react'
+import { useApolloClient } from '@apollo/client'
+import { useNavigate } from 'react-router-dom'
+import { Box, TextInput } from 'grommet'
 
 import { SearchIcon } from '../utils/SearchIcon'
-
-import { PLURAL_THEME } from '../../theme'
 
 import { SEARCH_REPOS } from './queries'
 import { Repository } from './Repositories'
@@ -17,56 +14,64 @@ export function searchRepositories(client, query, callback) {
   client.query({
     query: SEARCH_REPOS,
     variables: { query },
-  }).then(({ data: { searchRepositories } }) => searchRepositories.edges.map(({ node }) => ({ value: node, label: <Repository repo={node} /> }))).then(callback)
+  }).then(({ data: { searchRepositories } }) => searchRepositories.edges.map(({ node }) => ({
+    value: node,
+    label: (
+      <Box
+        style={{ maxWidth: 350 }}
+        hoverIndicator="fill-two"
+      >
+        <Repository repo={node} />
+      </Box>
+    ),
+  }))).then(callback)
 }
-
-const hoverable = styled.div`
-  &:focus-within {
-    background-color: ${PLURAL_THEME['tone-dark-2']};
-  }
-`
 
 export default function SearchRepositories() {
   const client = useApolloClient()
   const [value, setValue] = useState('')
   const [suggestions, setSuggestions] = useState([])
-  const history = useHistory()
+  const navigate = useNavigate()
 
   return (
     <Box
-      as={hoverable}
       width="350px"
       direction="row"
       align="center"
-      background="sidebarHover"
-      round="xsmall"
-      pad={{ horizontal: 'xsmall', vertical: '2px' }}
+      style={{ borderRadius: 2 }}
+      pad={{ vertical: '4px' }}
       focusIndicator={false}
     >
-      <ThemeContext.Extend value={{ global: { input: { padding: '7px' } } }}>
-        <TextInput
-          plain="full"
-          type="search"
-          value={value}
-          name="search"
-          suggestions={suggestions}
-          placeholder="search for a repo"
-          onSelect={({ suggestion }) => {
-            setValue('')
-            setSuggestions([])
-            history.push(`/repositories/${suggestion.value.id}`)
-          }}
-          onChange={({ target: { value } }) => {
-            setValue(value)
+      <TextInput
+        type="text"
+        value={value}
+        name="search"
+        icon={(
+          <SearchIcon
+            color="text-weak"
+          />
+        )}
+        suggestions={suggestions}
+        placeholder="search for a repository"
+        onSelect={({ suggestion }) => {
+          setValue('')
+          setSuggestions([])
+          navigate(`/repository/${suggestion.value.id}`)
+        }}
+        onChange={({ target: { value } }) => {
+          setValue(value)
+          if (value) {
             searchRepositories(client, value, setSuggestions)
-          }}
-        />
-      </ThemeContext.Extend>
-      <SearchIcon
-        border="dark-3"
-        color="white"
-        size={15}
-        pad={8}
+          }
+          else {
+            setSuggestions([])
+          }
+        }}
+        style={{
+          borderRadius: 2,
+          height: 32,
+          paddingLeft: '1.5rem',
+        }}
       />
     </Box>
   )

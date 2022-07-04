@@ -1,6 +1,5 @@
-import React from 'react'
-import { Box, Text } from 'grommet'
 import './installation.css'
+import { Box, Text } from 'grommet'
 
 const BORDER_ATTRS = { side: 'top', size: '2px' }
 
@@ -31,7 +30,7 @@ function TabFiller() {
   return (
     <Box
       fill="horizontal"
-      border={{ side: 'bottom', color: 'light-5' }}
+      border={{ side: 'bottom', color: 'border' }}
     />
   )
 }

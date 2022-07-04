@@ -1,6 +1,10 @@
-import React, { useCallback, useState } from 'react'
+import './container.css'
+
+import { useCallback, useState } from 'react'
 import { Box, Text } from 'grommet'
 import Highlight from 'react-highlight.js'
+
+import { useTheme } from 'honorable'
 
 import Plan from '../payments/Plan'
 import CreatePlan, { CreateAnchor } from '../payments/CreatePlan'
@@ -11,13 +15,13 @@ import UpdatePlan from '../payments/UpdatePlan'
 import { Tab, TabContent, Tabs } from '../utils/Tabs'
 
 import { EditInstallation } from './EditInstallation'
-import './container.css'
 
 export function Plans({ repository, nocreate }) {
   const [open, setOpen] = useState(false)
   const [modal, setModal] = useState(null)
   const { plans, editable, installation } = repository
   const { subscription, id } = installation || {}
+
   const approvePlan = useCallback(plan => {
     if (!subscription) {
       setModal(
@@ -36,7 +40,7 @@ export function Plans({ repository, nocreate }) {
       repository={repository}
       setOpen={setModal}
     />)
-  }, [setModal, id, repository])
+  }, [setModal, id, repository, subscription])
 
   return (
     <>
@@ -80,6 +84,8 @@ export function DetailContainer({ children, ...rest }) {
 }
 
 export function InstallationInner({ installation, repository }) {
+  const theme = useTheme()
+
   if (installation) {
     return (
       <Box
@@ -92,7 +98,10 @@ export function InstallationInner({ installation, repository }) {
             subscription={installation.subscription}
           />
         )}
-        <Highlight language="bash">
+        <Highlight
+          language="bash"
+          style={{ backgroundColor: theme.utils.resolveColor('fill-two') }}
+        >
           {[`plural build --only ${repository.name}`, `plural deploy ${repository.name}`].join('\n')}
         </Highlight>
       </Box>

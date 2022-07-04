@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Box, Stack, Text } from 'grommet'
 import { FileIcon, defaultStyles } from 'react-file-icon'
 import { Download, HoveredBackground, Tooltip } from 'forge-core'
@@ -27,7 +27,7 @@ function DownloadAffordance({ blob }) {
             e.preventDefault()
             download(blob)
           }}
-          border={{ color: 'light-3' }}
+          border={{ color: 'border' }}
         >
           <Download size="15px" />
         </Box>
@@ -194,10 +194,10 @@ export function StandardFile({ file: { filename, blob, insertedAt, ...file } }) 
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
         onClick={() => download(blob)}
-        border={hover ? { color: 'focus' } : { color: 'light-5' }}
+        border={hover ? { color: 'focus' } : { color: 'border' }}
         background="#fff"
         round="xsmall"
-        align="center" 
+        align="center"
         direction="row"
         pad="small"
         gap="small"

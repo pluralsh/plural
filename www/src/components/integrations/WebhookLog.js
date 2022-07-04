@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Box, Collapsible, Text } from 'grommet'
 import { TabContent, TabHeader, TabHeaderItem, Tabs } from 'forge-core'
 
@@ -14,7 +14,7 @@ function WebhookLogStatus({ state }) {
     <Box
       flex={false}
       pad={{ horizontal: 'small', vertical: 'xsmall' }}
-      background={StateToColor[state]} 
+      background={StateToColor[state]}
       width="80px"
       align="center"
       justify="center"
@@ -80,11 +80,11 @@ export function WebhookLog({ log, next }) {
         pad="small"
         fill="horizontal"
         direction="row"
-        align="center" 
+        align="center"
         onClick={() => setOpen(!open)}
         hoverIndicator="light-3"
         focusIndicator={false}
-        border={next ? { side: 'bottom', color: 'light-5' } : null}
+        border={next ? { side: 'bottom', color: 'border' } : null}
       >
         <Box
           fill="horizontal"

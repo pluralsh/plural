@@ -1,4 +1,4 @@
-import {AUTH_TOKEN, AUTH_PREVIOUS_USER_DATA} from '../constants'
+import { AUTH_PREVIOUS_USER_DATA, AUTH_TOKEN } from '../constants'
 
 export function wipeToken() {
   localStorage.removeItem(AUTH_TOKEN)
@@ -20,7 +20,7 @@ export function getPreviousUserData() {
   try {
     return JSON.parse(localStorage.getItem(AUTH_PREVIOUS_USER_DATA)) || null
   }
-  catch {
+  catch (error) {
     return null
   }
 }

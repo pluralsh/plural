@@ -1,8 +1,9 @@
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Box, Select, Text } from 'grommet'
-import { Button, ModalHeader, SecondaryButton } from 'forge-core'
+import { Button, SecondaryButton } from 'forge-core'
+import { useMutation } from '@apollo/client'
 
-import { useMutation } from 'react-apollo'
+import { ModalHeader } from '../ModalHeader'
 
 import { UPDATE_VERSION } from './queries'
 
@@ -12,7 +13,7 @@ export function VersionTag({ tag: { tag }, onClick }) {
       round="xsmall"
       align="center"
       justify="center"
-      background="sidebar"
+      background="fill-one"
       onClick={onClick}
       pad={{ horizontal: 'small', vertical: 'xxsmall' }}
     >
@@ -38,7 +39,7 @@ export function EditTags({ version, setOpen, refetch }) {
   const [mutation, { loading }] = useMutation(UPDATE_VERSION, {
     variables: { id: version.id, attributes: { tags: current } },
     onCompleted: () => {
-      setOpen(false); refetch() 
+      setOpen(false); refetch()
     },
   })
 
@@ -50,7 +51,7 @@ export function EditTags({ version, setOpen, refetch }) {
       />
       <Box
         gap="small"
-        pad="small"
+        pad="medium"
       >
         <Box
           direction="row"

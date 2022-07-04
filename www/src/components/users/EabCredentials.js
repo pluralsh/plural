@@ -1,8 +1,8 @@
 import { Box, Text } from 'grommet'
 import { Trash } from 'forge-core'
 import moment from 'moment'
-import React, { useState } from 'react'
-import { useMutation, useQuery } from 'react-apollo'
+import { useState } from 'react'
+import { useMutation, useQuery } from '@apollo/client'
 
 import { updateCache } from '../../utils/graphql'
 import { TableRow } from '../accounts/Domains'
@@ -51,7 +51,7 @@ function DeleteCredential({ eab }) {
     <>
       <Icon
         icon={Trash}
-        onClick={() => setConfirm(true)} 
+        onClick={() => setConfirm(true)}
         iconAttrs={{ color: 'error' }}
       />
       {confirm && (

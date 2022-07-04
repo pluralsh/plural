@@ -1,277 +1,179 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Box, Drop, Layer, Text } from 'grommet'
-
+import './shell.css'
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { XTerm } from 'xterm-for-react'
 import { FitAddon } from 'xterm-addon-fit'
+import { useQuery } from '@apollo/client'
+import { Button, Div, Flex, Span } from 'honorable'
 
-import './shell.css'
-import { useQuery } from 'react-apollo'
-
-import { CircleInformation } from 'grommet-icons'
-import { ModalHeader, Update } from 'forge-core'
+import { ReloadIcon, ScrollIcon } from 'pluralsh-design-system'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { socket } from '../../helpers/client'
-import { Code } from '../incidents/Markdown'
 
-import { ShellStatus } from './ShellStatus'
+import TerminalThemeContext from '../../contexts/TerminalThemeContext'
 
-import { CLOUD_SHELL } from './query'
-import { ThemeSelector } from './ThemeSelector'
-import { normalizedThemes, savedTheme } from './themes'
+import { CLOUD_SHELL_QUERY } from './query'
+import TerminalThemeSelector from './TerminalThemeSelector'
+import { normalizedThemes } from './themes'
+import { ShellStatus } from './onboarding/ShellStatus'
+import TerminalThemeProvider from './TerminalThemeProvider'
+import TerminalSidebar from './TerminalSidebar'
+import TerminalInformation from './TerminalInformation'
 
-const decodeBase64 = str => (new Buffer(str, 'base64')).toString('utf-8')
+const { Buffer } = require('buffer/')
 
-export function Shell({ room, header, title, children }) {
+const decodeBase64 = str => Buffer.from(str, 'base64').toString('utf-8')
+
+export function Shell({ shell }) {
+  const terminalRef = useRef()
   const xterm = useRef(null)
   const [channel, setChannel] = useState(null)
-  const [dims, setDims] = useState({})
+  const [dimensions, setDimensions] = useState({})
+  const [isCheatsheet, setIsCheatsheet] = useState(false)
   const fitAddon = useMemo(() => new FitAddon(), [])
-  const theme = savedTheme() || 'chalk'
-  const themeStruct = normalizedThemes[theme]
+  const [terminalTheme] = useContext(TerminalThemeContext)
 
   useEffect(() => {
-    if (!xterm || !xterm.current || !xterm.current.terminal) return
+    if (!xterm?.current?.terminal) return
+
     const term = xterm.current.terminal
-  
+    const chan = socket.channel('shells:me', {})
+
     fitAddon.fit()
-    term.write(`${header}\r\n\r\n`)
-    const chan = socket.channel(room, {})
+    term.write(`Booting into your ${shell.provider} shell...\r\n\r\n`)
     chan.onError(console.log)
     chan.on('stdo', ({ message }) => term.write(decodeBase64(message)))
     chan.join()
 
-    const { cols, rows } = fitAddon.proposeDimensions()
-    chan.push('resize', { width: cols, height: rows })
-    setDims({ cols, rows })
+    const { cols, rows } = fitAddon.proposeDimensions() || { cols: 80, rows: 24 }
+
+    setDimensions({ cols, rows })
     setChannel(chan)
+
     const ref = socket.onOpen(() => setTimeout(() => chan.push('resize', { width: cols, height: rows }), 1000))
 
     return () => {
       socket.off([ref])
       chan.leave()
     }
-  }, [room, xterm, fitAddon])
+  }, [shell, xterm, fitAddon])
 
-  const resetSize = useCallback(() => channel.push('resize', { width: dims.cols, height: dims.rows }), [channel, dims])
+  const handleResetSize = useCallback(() => {
+    if (!channel) return
+    channel.push('resize', { width: dimensions.cols, height: dimensions.rows })
+  }, [channel, dimensions])
+
+  useEffect(() => {
+    handleResetSize()
+  }, [handleResetSize])
+
+  function handleResize({ cols, rows }) {
+    if (!channel) return
+    channel.push('resize', { width: cols, height: rows })
+  }
+
+  function handleData(text) {
+    channel.push('command', { cmd: text })
+  }
+
+  console.log(shell)
 
   return (
-    <Box
-      fill
-      background="backgroundColor"
-    >
-      <Box
-        flex={false}
-        pad="small"
-        direction="row"
+    <>
+      <Flex
         align="center"
+        paddingVertical="small"
+        marginHorizontal="medium"
+        gap="medium"
+        borderBottom="1px solid border"
       >
-        <Box
-          fill="horizontal"
-          direction="row"
+        {/* <Button
+          small
+          tertiary
+          startIcon={(
+            <ScrollIcon />
+          )}
+          onClick={() => setIsCheatsheet(x => !x)}
+        >
+          CLI Cheatsheet
+        </Button> */}
+        <Div><Span fontWeight="bold">{shell.cluster}</Span></Div>
+        <Div flexGrow={1} />
+        <TerminalInformation shell={shell} />
+        <Button
+          small
+          tertiary
+          startIcon={(<ReloadIcon />)}
+          onClick={handleResetSize}
+        >
+          Repair viewport
+        </Button>
+        <TerminalThemeSelector />
+      </Flex>
+      <Flex
+        marginTop="medium"
+        flexGrow={1}
+        gap="xlarge"
+        paddingBottom="medium"
+        paddingHorizontal="medium"
+        height="100%"
+        maxHeight="100%"
+        overflow="hidden"
+      >
+        <TerminalSidebar
+          shell={shell}
+          isCheatsheet={isCheatsheet}
+        />
+        <Flex
+          ref={terminalRef}
           align="center"
-          gap="small"
+          justify="center"
+          overflow="hidden"
+          borderRadius="large"
+          border="1px solid border"
+          flexGrow={1}
+          paddingTop="medium"
+          paddingHorizontal="medium"
+          backgroundColor={normalizedThemes[terminalTheme].background}
         >
-          <Text
-            size="small"
-            weight={500}
-          >{title}
-          </Text>
-          <Information />
-          <Icon 
-            icon={<Update size="20px" />}
-            onClick={resetSize}
-            tooltip="repair viewport"
-          />
-        </Box>
-        <ThemeSelector theme={theme} />
-      </Box>
-      <Box
-        fill
-        border
-        direction="row"
-      >
-        {children}
-        <Box
-          fill
-          pad="small"
-          background={themeStruct.background}
-        >
-          <XTerm 
+          <XTerm
             className="terminal"
             ref={xterm}
             addons={[fitAddon]}
-            options={{ theme: themeStruct }}
-            onResize={({ cols, rows }) => {
-              channel && channel.push('resize', { width: cols, height: rows })
+            options={{ theme: normalizedThemes[terminalTheme] }}
+            onResize={handleResize}
+            onData={handleData}
+            style={{
+              width: '100%',
+              height: '100%',
             }}
-            onData={text => channel.push('command', { cmd: text })}
           />
-        </Box>
-      </Box>
-    </Box>
-  )
-}
-
-function CommandDetails({ command, description }) {
-  return (
-    <Box>
-      <Text
-        size="small"
-        weight={500}
-      >{command}
-      </Text>
-      <Text size="small"><i>{description}</i></Text>
-    </Box>
-  )
-}
-
-function Icon({ icon, onClick, tooltip }) {
-  const ref = useRef()
-  const [hover, setHover] = useState(false)
-
-  return (
-    <>
-      <Box
-        ref={ref}
-        pad="xsmall"
-        align="center"
-        justify="center"
-        onClick={onClick}
-        hoverIndicator="card"
-        round="xsmall"
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
-      >
-        {icon}
-      </Box>
-      {tooltip && hover && ref.current && (
-        <Drop
-          plain
-          target={ref.current}
-          align={{ left: 'right' }}
-          margin={{ left: 'xsmall' }}
-        >
-          <Box
-            round="3px"
-            background="sidebarHover"
-            pad="xsmall"
-            elevation="small" 
-            align="center"
-            justify="center"
-          >
-            <Text
-              size="small"
-              weight={500}
-            >{tooltip}
-            </Text>
-          </Box>
-        </Drop>
-      )}
-    </>
-  )
-}
-
-function Information() {
-  const [open, setOpen] = useState(false)
-  const close = useCallback(() => setOpen(false), [setOpen])
-
-  return (
-    <>
-      <Icon
-        icon={<CircleInformation size="20px" />}
-        onClick={() => setOpen(true)}
-      />
-      {open && (
-        <Layer
-          modal
-          onEsc={close}
-          onClickOutside={close}
-        >
-          <Box width="50vw">
-            <ModalHeader
-              text="Cloud Shell Info"
-              setOpen={setOpen}
-            />
-            <Box
-              pad="small"
-              gap="medium"
-              border="between"
-            >
-              <Box gap="xsmall">
-                <Code
-                  className="lang-bash"
-                  header="To sync your cloud shell with your local machine, simply run:"
-                >
-                  plural login && plural shell sync
-                </Code>
-                <Text size="small"><i>this will clone your repo locally, and sync all encryption keys needed to access it</i></Text>
-              </Box>
-              <Box gap="small">
-                <Code
-                  className="lang-bash"
-                  header="To delete your shell entirely, run:"
-                >
-                  plural shell purge
-                </Code>
-                <Text size="small"><i>If there's anything important you deployed, <b>be sure to sync your shell locally before purging</b></i></Text>
-              </Box>
-            </Box>
-          </Box>
-        </Layer>
-      )}
+        </Flex>
+      </Flex>
     </>
   )
 }
 
 export function Terminal() {
-  const { data } = useQuery(CLOUD_SHELL, { pollInterval: 5000, fetchPolicy: 'cache-and-network' })
+  const { data } = useQuery(CLOUD_SHELL_QUERY, { pollInterval: 5000, fetchPolicy: 'cache-and-network' })
 
-  if (!data || !data.shell) return <LoopingLogo dark /> 
+  if (!data || !data.shell) {
+    return (
+      <LoopingLogo />
+    )
+  }
 
-  if (!data.shell.alive) return <ShellStatus shell={data.shell} />
+  if (!data.shell.alive) {
+    return (
+      <ShellStatus shell={data.shell} />
+    )
+  }
 
   const { shell } = data
 
   return (
-    <Shell
-      title={`Cloud Shell [Provider=${shell.provider}, Git=${shell.gitUrl}]`}
-      room="shells:me"
-      header={`Booting into your ${shell.provider} shell...`}
-    >
-      <Box
-        border={{ side: 'right' }}
-        fill="vertical"
-        width="300px"
-        gap="small"
-        pad="small"
-      >
-        <Text size="small">Here's a few commands to help you get going:</Text>
-        <CommandDetails
-          command="plural repos list --query <repo-name>"
-          description="Searches for repositories to install (omit --query flag to list all)"
-        />
-        <CommandDetails
-          command="plural bundle list APP"
-          description="Lists the bundles for an app, eg: plural bundle list airbyte"
-        />
-        <CommandDetails
-          command="plural bundle install APP BUNDLE"
-          description="Configures the installation bundle specified"
-        />
-        <CommandDetails
-          command="plural build"
-          description="Builds your entire workspace (run after plural bundle install)"
-        />
-        <CommandDetails
-          command='plural deploy --commit "commit message"'
-          description="Deploys your current workspace and commits it back to your repository"
-        />
-        <CommandDetails
-          command="plural watch APP"
-          description="See the progress of a deployment for a specific app"
-        />
-      </Box>
-    </Shell>
+    <TerminalThemeProvider>
+      <Shell shell={shell} />
+    </TerminalThemeProvider>
   )
 }

@@ -38,7 +38,7 @@ export function groupBy(list, key = i => i.id) {
 }
 
 export function* chunk(array, chunkSize) {
-  let i; let 
+  let i; let
     j
   for (i = 0, j = array.length; i < j; i += chunkSize) {
     yield array.slice(i, i + chunkSize)

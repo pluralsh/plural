@@ -1,5 +1,4 @@
-import React from 'react'
-import { Divider } from 'forge-core'
+import { Divider } from 'pluralsh-design-system'
 
 import { formatDate } from './MessageDivider'
 

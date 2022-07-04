@@ -1,7 +1,6 @@
-import React from 'react'
 import { Box, Text } from 'grommet'
 
-import { SIDEBAR_ICON_HEIGHT } from '../Sidebar'
+import { SIDEBAR_ICON_HEIGHT } from '../layout/Sidebar'
 
 export function SectionChoice({ label, selected, icon, onClick }) {
   return (
@@ -25,7 +24,8 @@ export function SectionChoice({ label, selected, icon, onClick }) {
         <Text
           size="small"
           truncate
-        >{label}
+        >
+          {label}
         </Text>
       </Box>
     </Box>

@@ -1,7 +1,7 @@
 import { Box } from 'grommet'
-import React, { useContext, useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import { FaCreditCard, FaReceipt } from 'react-icons/fa'
-import { useHistory, useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import { BreadcrumbsContext } from '../Breadcrumbs'
 import { SIDEBAR_WIDTH } from '../constants'
@@ -24,7 +24,7 @@ const VIEWS = [
 
 export function Billing() {
   const { section } = useParams()
-  const history = useHistory()
+  const navigate = useNavigate()
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
   useEffect(() => setBreadcrumbs([
     { text: 'billing', url: '/billing/methods' },
@@ -41,7 +41,7 @@ export function Billing() {
         flex={false}
         width={SIDEBAR_WIDTH}
         height="100%"
-        border={{ side: 'right', color: 'light-3' }}
+        border={{ side: 'right', color: 'border' }}
         pad="small"
       >
         {VIEWS.map(({ text, view, icon }) => (
@@ -49,7 +49,7 @@ export function Billing() {
             selected={section === view}
             label={text}
             icon={icon}
-            onClick={() => history.push(`/billing/${view}`)}
+            onClick={() => navigate(`/billing/${view}`)}
           />
         ))}
       </Box>

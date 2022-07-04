@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { useMutation } from 'react-apollo'
+import { useState } from 'react'
+import { useMutation } from '@apollo/client'
 import { Button, SecondaryButton } from 'forge-core'
 import { Box, FormField, Text, TextInput } from 'grommet'
 
@@ -10,7 +10,7 @@ import { CREATE_WEBHOOK, WEBHOOKS_Q } from './queries'
 
 const TAB_COLORS = {
   bg: 'light-3',
-  hover: 'light-5',
+  hover: 'border',
 }
 
 export function ActionTab({ action, onClick, colors }) {
@@ -66,9 +66,9 @@ export function ActionInput({ actions, setActions, colors }) {
         wrap
       >
         {actions.map(action => (
-          <ActionTab 
-            key={action} 
-            action={action} 
+          <ActionTab
+            key={action}
+            action={action}
             colors={colors}
             onClick={() => setActions(actions.filter(a => a !== action))}
           />
@@ -81,7 +81,7 @@ export function ActionInput({ actions, setActions, colors }) {
 export function CreateWebhook({ cancel }) {
   const [attributes, setAttributes] = useState({ name: '', url: '', actions: ['incident.create'] })
   const [mutation, { loading }] = useMutation(CREATE_WEBHOOK, {
-    variables: { attributes }, 
+    variables: { attributes },
     update: (cache, { data: { createIntegrationWebhook } }) => updateCache(cache, {
       query: WEBHOOKS_Q,
       update: prev => appendConnection(prev, createIntegrationWebhook, 'integrationWebhooks'),
@@ -92,16 +92,16 @@ export function CreateWebhook({ cancel }) {
   return (
     <Box pad="small">
       <FormField label="name">
-        <TextInput 
-          placeholder="name for the webhook" 
-          value={attributes.name} 
+        <TextInput
+          placeholder="name for the webhook"
+          value={attributes.name}
           onChange={({ target: { value } }) => setAttributes({ ...attributes, name: value })}
         />
       </FormField>
       <FormField label="url">
-        <TextInput 
-          placeholder="url to deliver to" 
-          value={attributes.url} 
+        <TextInput
+          placeholder="url to deliver to"
+          value={attributes.url}
           onChange={({ target: { value } }) => setAttributes({ ...attributes, url: value })}
         />
       </FormField>

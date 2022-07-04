@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { Divider } from 'forge-core'
+import { useEffect, useState } from 'react'
+import { Divider } from 'pluralsh-design-system'
 import moment from 'moment'
 
 export function sameDay(message, next) {
@@ -31,7 +31,7 @@ export function DateDivider({ message, next, setSize }) {
       setSize()
     }
     setPainted(!same)
-  }, [painted, setPainted, same])
+  }, [painted, setPainted, same, setSize])
 
   // if (unread) return <Waterline />
   if (!same) return <Divider text={formatDate(message.insertedAt)} />

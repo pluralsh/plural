@@ -1,4 +1,3 @@
-import React from 'react'
 import { Box, Text } from 'grommet'
 import { Next } from 'grommet-icons'
 import { Portal } from 'react-portal'
@@ -19,7 +18,7 @@ export function Flyout({ width, title, setOpen, children, ...rest }) {
           flex={false}
           pad="small"
           direction="row"
-          align="center" 
+          align="center"
           height="45px"
           border={{ side: 'bottom' }}
         >
@@ -35,7 +34,7 @@ export function Flyout({ width, title, setOpen, children, ...rest }) {
             pad="xsmall"
             round="xsmall"
             onClick={() => setOpen(false)}
-            hoverIndicator="hover"
+            hoverIndicator="fill-one"
           >
             <Next size="small" />
           </Box>
@@ -46,7 +45,7 @@ export function Flyout({ width, title, setOpen, children, ...rest }) {
       </Box>
     </Portal>
   )
-} 
+}
 
 export function FlyoutContainer() {
   return (

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Box, Stack, Text } from 'grommet'
 import { Cluster, Eye as Hide, History, Notification, Package, User } from 'forge-core'
 
@@ -44,16 +44,16 @@ function SmallSidebar({ incident, setOpen, setView }) {
       align="center"
       pad={{ top: 'small' }}
     >
-      <ViewOption 
+      <ViewOption
         icon={History}
         view={SidebarView.HISTORY}
         setView={doOpen}
         side={{ right: 'left' }}
         text="history"
       />
-      <ViewOption 
+      <ViewOption
         icon={WrappedNotification}
-        view={SidebarView.NOTIF} 
+        view={SidebarView.NOTIF}
         setView={doOpen}
         side={{ right: 'left' }}
         text="notifications"
@@ -93,9 +93,9 @@ function SidebarContent({ view, setView, incident, fetchMore, setOpen }) {
         direction="row"
         justify="end"
         align="center"
-        pad="xsmall" 
+        pad="xsmall"
         gap="xsmall"
-        border={{ side: 'bottom', color: 'light-5' }}
+        border={{ side: 'bottom', color: 'border' }}
       >
         <Box
           direction="row"
@@ -122,55 +122,55 @@ function SidebarContent({ view, setView, incident, fetchMore, setOpen }) {
           >{view}
           </Text>
         </Box>
-        <ViewOption 
-          icon={Notification} 
-          size="15px" 
+        <ViewOption
+          icon={Notification}
+          size="15px"
           width="25px"
-          view={SidebarView.NOTIF} 
-          selected={view} 
-          setView={setView} 
-          side={{ top: 'bottom' }} 
+          view={SidebarView.NOTIF}
+          selected={view}
+          setView={setView}
+          side={{ top: 'bottom' }}
           text="notifications"
         />
-        <ViewOption 
-          icon={History} 
-          size="15px" 
+        <ViewOption
+          icon={History}
+          size="15px"
           width="25px"
-          view={SidebarView.HISTORY} 
-          selected={view} 
-          setView={setView} 
-          side={{ top: 'bottom' }} 
+          view={SidebarView.HISTORY}
+          selected={view}
+          setView={setView}
+          side={{ top: 'bottom' }}
           text="history"
         />
-        <ViewOption 
-          icon={User} 
-          size="15px" 
+        <ViewOption
+          icon={User}
+          size="15px"
           width="25px"
-          view={SidebarView.FOLLOW} 
-          selected={view} 
-          setView={setView} 
-          side={{ top: 'bottom' }} 
+          view={SidebarView.FOLLOW}
+          selected={view}
+          setView={setView}
+          side={{ top: 'bottom' }}
           text="followers"
         />
-        <ViewOption 
-          icon={Cluster} 
-          size="15px" 
+        <ViewOption
+          icon={Cluster}
+          size="15px"
           width="25px"
-          view={SidebarView.CLUSTER} 
-          selected={view} 
-          setView={setView} 
-          side={{ top: 'bottom' }} 
+          view={SidebarView.CLUSTER}
+          selected={view}
+          setView={setView}
+          side={{ top: 'bottom' }}
           text="cluster"
         />
         {incident.subscription && (
-          <ViewOption 
-            icon={Package} 
-            size="15px" 
+          <ViewOption
+            icon={Package}
+            size="15px"
             width="25px"
-            view={SidebarView.SUBSCRIPTION} 
-            selected={view} 
-            setView={setView} 
-            side={{ top: 'bottom' }} 
+            view={SidebarView.SUBSCRIPTION}
+            selected={view}
+            setView={setView}
+            side={{ top: 'bottom' }}
             text="subscription"
           />
         )}
@@ -205,7 +205,7 @@ export function Sidebar({ incident, fetchMore }) {
       flex={false}
       style={animation}
       width={open ? '25%' : '50px'}
-      border={{ side: 'left', color: 'light-5' }}
+      border={{ side: 'left', color: 'border' }}
     >
       {!open && (
         <SmallSidebar

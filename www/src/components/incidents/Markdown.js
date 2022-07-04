@@ -1,11 +1,10 @@
-import React, { useContext, useRef, useState } from 'react'
+import { cloneElement, memo, useContext, useRef, useState } from 'react'
 import { Anchor, Box, Drop, Markdown, Text, ThemeContext } from 'grommet'
 import { Copy, TooltipContent, WithCopy } from 'forge-core'
 import Highlight from 'react-highlight.js'
 import hljs from 'highlight.js'
-
 import { normalizeColor } from 'grommet/utils'
-import { sortBy } from 'lodash'
+import sortBy from 'lodash.sortby'
 import { Emoji as Emojii } from 'emoji-mart'
 
 import Avatar from '../users/Avatar'
@@ -15,7 +14,7 @@ import { EntityType } from './types'
 function Blockquote({ children }) {
   return (
     <Box
-      border={{ side: 'left', size: '2px', color: 'light-6' }}
+      border={{ side: 'left', size: '2px', color: 'border' }}
       pad={{ horizontal: 'small' }}
     >
       {children}
@@ -23,24 +22,29 @@ function Blockquote({ children }) {
   )
 }
 
+// DEPRECATED in favor of utils/Code
 export function Code({ children, header, className, multiline }) {
   const theme = useContext(ThemeContext)
+
   if (className && className.startsWith('lang-')) {
+
     const lang = className && className.slice(5)
+
     if (hljs.getLanguage(lang)) {
       return (
         <Box
           fill="horizontal"
           round="xxsmall"
-          border={{ color: 'light-5' }}
+          background="#2e3440"
+          border={{ color: 'border' }}
         >
           <Box
             fill="horizontal"
-            border={{ side: 'bottom', color: 'light-5' }}
+            border={{ side: 'bottom', color: 'border' }}
             direction="row"
             justify="end"
             gap="xsmall"
-            background="light-3"
+            background="fill-one"
             pad="xsmall"
             align="center"
           >
@@ -49,20 +53,23 @@ export function Code({ children, header, className, multiline }) {
                 <Text
                   size="small"
                   weight={500}
-                >{header}
+                >
+                  {header}
                 </Text>
               </Box>
             )}
             <Text
               size="small"
               weight={500}
-              color="dark-3"
-            >language:
+              color="text-weak"
+            >
+              language:
             </Text>
             <Text
               size="small"
-              color="dark-3"
-            >{lang}
+              color="text-weak"
+            >
+              {lang}
             </Text>
             <WithCopy
               text={children}
@@ -71,6 +78,7 @@ export function Code({ children, header, className, multiline }) {
               <Copy
                 style={{ cursor: 'pointer' }}
                 size="small"
+                color="text-weak"
               />
             </WithCopy>
           </Box>
@@ -87,7 +95,7 @@ export function Code({ children, header, className, multiline }) {
         style={{ display: 'inline-block', color: multiline ? null : normalizeColor('notif', theme) }}
         pad={multiline ? 'xsmall' : { horizontal: 'xxsmall' }}
         round="xxsmall"
-        border={{ color: 'light-6' }}
+        border={{ color: 'border' }}
         background="light-2"
       >
         <pre>
@@ -104,7 +112,7 @@ function Preformat({ children }) {
       flex={false}
       pad={{ vertical: 'xsmall' }}
     >
-      {React.cloneElement(children, { multiline: true })}
+      {cloneElement(children, { multiline: true })}
     </Box>
   )
 }
@@ -115,15 +123,15 @@ function Mention({ text, user }) {
 
   return (
     <>
-      <Box 
+      <Box
         ref={ref}
         style={{ display: 'inline-block' }}
         round="xsmall"
-        background="light-3"
+        background="fill-one"
         focusIndicator={false}
         pad={{ horizontal: 'xxsmall' }}
         onClick={() => setOpen(!open)}
-        hoverIndicator="light-5"
+        hoverIndicator="border"
       >
         <Text
           size="small"
@@ -234,7 +242,7 @@ function* splitText(text, entities) {
   }
 }
 
-export default React.memo(({ text, entities }) => {
+export default memo(({ text, entities }) => {
   const parsed = [...splitText(text, entities || [])].join('')
   const entityMap = (entities || []).reduce((map, entity) => ({ ...map, [entity.id]: entity }), {})
   function Entity({ id }) {

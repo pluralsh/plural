@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { useMutation } from 'react-apollo'
+import { useState } from 'react'
+import { useMutation } from '@apollo/client'
 import { Box, Text, TextInput } from 'grommet'
 import { Button } from 'forge-core'
 
@@ -16,8 +16,8 @@ function Input({ label, header, placeholder, value, setValue }) {
         weight="bold"
       >{header}
       </Text>
-      <TextInput 
-        label={label} 
+      <TextInput
+        label={label}
         placeholder={placeholder}
         value={value}
         onChange={({ target: { value } }) => setValue(value)}
@@ -42,11 +42,11 @@ export default function CreatePublisher({ onCreate }) {
       gap="small"
       pad="small"
     >
-      <Input 
-        label="name" 
-        header="1. Add a name" 
+      <Input
+        label="name"
+        header="1. Add a name"
         placeholder="a name"
-        value={attributes.name} 
+        value={attributes.name}
         setValue={name => setAttributes({ ...attributes, name })}
       />
       <Input

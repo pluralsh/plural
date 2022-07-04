@@ -1,17 +1,14 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 import { Copy, Links, TabContent, TabHeader, TabHeaderItem, Tabs } from 'forge-core'
-import { useMutation, useQuery } from 'react-apollo'
-import { useHistory, useParams } from 'react-router'
-
+import { useMutation, useQuery } from '@apollo/client'
+import { useNavigate, useParams } from 'react-router-dom'
 import moment from 'moment'
 import { Anchor, Box, Collapsible, Stack, Text } from 'grommet'
 import { Language } from 'grommet-icons'
-
-import CopyToClipboard from 'react-copy-to-clipboard'
-
-import { truncate } from 'lodash'
-
+import truncate from 'lodash.truncate'
 import Toggle from 'react-toggle'
+
+import { Codeline } from 'pluralsh-design-system'
 
 import { BreadcrumbsContext } from '../Breadcrumbs'
 
@@ -44,7 +41,7 @@ function RepositoryPublic({ dockerRepo }) {
       gap="xsmall"
       align="center"
     >
-      <Toggle 
+      <Toggle
         checked={pub}
         onChange={({ target: { checked } }) => mutation({
           variables: { attributes: { public: checked } },
@@ -108,18 +105,19 @@ function DockerSidebar({ image: { dockerRepository: docker, ...image }, filter, 
   const [copied, setCopied] = useState(false)
   const data = useMemo(() => docker.metrics.map(({ tags, values }) => {
     const tag = tags.find(({ name }) => name === 'tag')
-    
+
     return {
-      id: tag ? tag.value : docker.name, 
+      id: tag ? tag.value : docker.name,
       data: values.map(({ time, value }) => ({ x: moment(time).toDate(), y: value })),
     }
   }), [docker.metrics, docker.name])
-  
+
   const imageName = dockerPull(registry, { ...image, dockerRepository: docker })
 
   return (
     <>
       <Box
+        flex={false}
         style={{ overflow: 'auto' }}
         gap="small"
       >
@@ -131,28 +129,20 @@ function DockerSidebar({ image: { dockerRepository: docker, ...image }, filter, 
           <Text
             weight="bold"
             size="small"
-          >Pull Command
+          >
+            Pull Command
           </Text>
           <Stack anchor="right">
-            <CopyToClipboard
-              text={`docker pull ${imageName}`}
-              onCopy={() => setCopied(true)}
-            >
-              <Box
-                flex={false}
-                background="sidebar"
-                pad="xsmall"
-              >
-                <pre>docker pull {truncate(imageName, { length: 40 })}</pre>
-              </Box>
-            </CopyToClipboard>
+            <Codeline>
+              docker pull {truncate(imageName, { length: 40 })}
+            </Codeline>
             <Box
               flex={false}
               margin={{ right: 'small' }}
             >
               <Copy
                 size="small"
-                color="light-6"
+                color="border"
               />
             </Box>
           </Stack>
@@ -194,23 +184,23 @@ function DockerSidebar({ image: { dockerRepository: docker, ...image }, filter, 
               >Pull Metrics
               </Text>
             </Box>
-            <RangePicker 
-              duration={{ offset: filter.offset, step: filter.precision }} 
+            <RangePicker
+              duration={{ offset: filter.offset, step: filter.precision }}
               setDuration={({ offset, step }) => setFilter({ ...filter, offset, precision: step })}
             />
           </Box>
           <Box fill>
             <Graph
               data={data}
-              precision={filter.precision} 
+              precision={filter.precision}
               offset={filter.offset}
             />
           </Box>
         </DetailContainer>
       </Box>
       {copied && (
-        <CopyNotice 
-          text="copied docker pull command" 
+        <CopyNotice
+          text="copied docker pull command"
           onClose={() => setCopied(false)}
         />
       )}
@@ -251,7 +241,7 @@ function VectorSection({ text, background }) {
     <Box
       pad={{ vertical: 'xsmall' }}
       width="150px"
-      background="light-1" 
+      background="fill-one"
       align="center"
       justify="center"
       border={background && { side: 'bottom', size: '3px', color: background }}
@@ -270,11 +260,13 @@ function CVSSRow({ text, value, options, colorMap }) {
       <Box
         width="150px"
         flex={false}
-      ><Text
+      >
+        <Text
           size="small"
-        weight={500}
-        >{text}
-       </Text>
+          weight={500}
+        >
+          {text}
+        </Text>
       </Box>
       <Box
         direction="row"
@@ -433,15 +425,15 @@ function Vulnerability({ vuln }) {
   return (
     <Box
       flex={false}
-      border={{ side: 'bottom', color: 'light-3' }}
+      border={{ side: 'bottom', color: 'border' }}
     >
       <Box
         direction="row"
         gap="small"
         align="center"
         pad="xsmall"
-        onClick={() => setOpen(!open)} 
-        hoverIndicator="light-3"
+        onClick={() => setOpen(!open)}
+        hoverIndicator="fill-one"
         focusIndicator={false}
       >
         <Box
@@ -503,12 +495,14 @@ function Vulnerability({ vuln }) {
 
 export function HeaderItem({ text, width, nobold, truncate }) {
   return (
-    <Box width={width}><Text
-      size="small"
-      weight={nobold ? null : 500}
-      truncate={truncate}
-    >{text}
-                       </Text>
+    <Box width={width}>
+      <Text
+        size="small"
+        weight={nobold ? null : 500}
+        truncate={truncate}
+      >
+        {text}
+      </Text>
     </Box>
   )
 }
@@ -519,7 +513,7 @@ function VulnerabilityHeader() {
       flex={false}
       direction="row"
       pad="xsmall"
-      border={{ side: 'bottom', color: 'light-5' }}
+      border={{ side: 'bottom', color: 'border' }}
       align="center"
     >
       <HeaderItem
@@ -546,7 +540,7 @@ function VulnerabilityHeader() {
   )
 }
 
-function Vulnerabilities({ image: { vulnerabilities, ...image } }) {
+function Vulnerabilities({ image: { vulnerabilities } }) {
   if (!vulnerabilities || vulnerabilities.length === 0) return <NoVulnerabilities />
 
   return (
@@ -566,16 +560,17 @@ function Vulnerabilities({ image: { vulnerabilities, ...image } }) {
 }
 
 export function DockerRepository() {
-  const history = useHistory()
+  const navigate = useNavigate()
   const { id } = useParams()
   const { data } = useQuery(DOCKER_IMG_Q, { variables: { dockerRepositoryId: id } })
+
   useEffect(() => {
     if (!data) return
     const { dockerImages: { edges } } = data
     if (edges.length === 0) return
 
-    history.replace(`/dkr/img/${edges[0].node.id}`)
-  }, [data])
+    navigate(`/dkr/img/${edges[0].node.id}`, { replace: true })
+  }, [data, navigate])
 
   return <LoopingLogo />
 }
@@ -586,7 +581,7 @@ export function Docker() {
   const { id } = useParams()
   const [filter, setFilter] = useState(DEFAULT_FILTER)
   const { data } = useQuery(DOCKER_Q, {
-    variables: { id, ...filter }, 
+    variables: { id, ...filter },
     fetchPolicy: 'cache-and-network',
   })
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
@@ -598,7 +593,7 @@ export function Docker() {
     if (!data) return
     const { dockerImage } = data
     const { repository } = dockerImage.dockerRepository
-    
+
     setBreadcrumbs([
       { url: `/repositories/${repository.id}`, text: repository.name },
       { url: `/dkr/img/${dockerImage.id}`, text: `${dockerImage.dockerRepository.name}` },
@@ -618,7 +613,6 @@ export function Docker() {
     >
       <Box
         fill
-        width="70%"
         gap="small"
       >
         <DockerHeader image={image} />
@@ -652,7 +646,7 @@ export function Docker() {
       <Box
         flex={false}
         fill="vertical"
-        width="40%"
+        width="500px"
       >
         <DockerSidebar
           image={image}

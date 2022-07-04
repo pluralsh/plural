@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { Box, Text } from 'grommet'
 
 import { Graph as SimpleGraph } from '../utils/Graph'
@@ -21,8 +21,8 @@ function RangeOption({ duration, current, setDuration, first, last }) {
       align="center"
       justify="center"
       focusIndicator={false}
-      background={selected ? 'light-3' : null}
-      hoverIndicator="light-2"
+      background={selected ? 'fill-two' : null}
+      hoverIndicator="fill-one"
       onClick={() => setDuration(duration)}
     >
       <Text
@@ -40,14 +40,14 @@ export function RangePicker({ duration, setDuration }) {
   return (
     <Box
       round="3px"
-      border={{ color: 'light-5' }}
+      border={{ color: 'border' }}
       flex={false}
     >
       <Box
         direction="row"
         round="3px"
-        gap="0px"
-        border={{ side: 'between', color: 'light-5' }}
+        gap="none"
+        border={{ side: 'between', color: 'border' }}
       >
         {DURATIONS.map((dur, ind) => (
           <RangeOption
@@ -70,7 +70,7 @@ export function Graph({ data, offset, precision }) {
 
     return dur || 'every 10 minutes'
   }, [offset, precision])
-  
+
   return (
     <SimpleGraph
       data={data}

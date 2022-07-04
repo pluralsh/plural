@@ -1,25 +1,23 @@
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Box, Text, TextInput } from 'grommet'
 import { Add } from 'grommet-icons'
-import { useMutation } from 'react-apollo'
+import { useMutation } from '@apollo/client'
 import { Button, SecondaryButton, Select } from 'forge-core'
 import { FilePicker } from 'react-file-picker'
-
-import { useHistory } from 'react-router'
+import { useNavigate } from 'react-router-dom'
 
 import Toggle from 'react-toggle'
 
 import { generatePreview } from '../../utils/file'
-
 import { appendConnection, updateCache } from '../../utils/graphql'
+import { GqlError } from '../utils/Alert'
 
 import { SectionPortal } from '../Explore'
 import { AuthMethod } from '../oidc/types'
-import { GqlError } from '../utils/Alert'
 
 import { Categories } from './constants'
-import { TagInput } from './Tags'
 import { CREATE_REPO, REPOS_Q } from './queries'
+import { TagInput } from './Tags'
 
 const LABEL_WIDTH = '90px'
 
@@ -112,7 +110,7 @@ export function RepoForm({ image, setImage, darkImage, setDarkImage, state, setS
             <ImagePicker
               image={darkImage}
               setImage={setDarkImage}
-              background="backgroundColor"
+              background="background"
               label="Darkmode icon (optional)"
             />
           </Box>
@@ -196,7 +194,7 @@ export function RepoForm({ image, setImage, darkImage, setDarkImage, state, setS
 }
 
 export default function CreateRepository({ publisher }) {
-  const history = useHistory()
+  const navigate = useNavigate()
   const [state, setState] = useState({
     name: '',
     description: '',
@@ -221,7 +219,7 @@ export default function CreateRepository({ publisher }) {
       variables: { publisherId: publisher.id },
       update: prev => appendConnection(prev, createRepository, 'repositories'),
     }),
-    onCompleted: () => history.push(`/publishers/${publisher.id}/repos`),
+    onCompleted: () => navigate(`/publishers/${publisher.id}/repos`),
   })
 
   return (

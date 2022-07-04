@@ -1,9 +1,8 @@
-import React from 'react'
 import { Box, Text } from 'grommet'
 import { DockerTag } from 'forge-core'
-import { useQuery } from 'react-apollo'
- 
-import { useHistory } from 'react-router'
+import { useQuery } from '@apollo/client'
+
+import { useNavigate } from 'react-router-dom'
 
 import moment from 'moment'
 
@@ -12,25 +11,27 @@ import { GradeNub } from './Docker'
 
 export function HeaderItem({ text, width }) {
   return (
-    <Box width={width}><Text
-      size="small"
-      weight={500}
-    >{text}
-    </Text>
+    <Box width={width}>
+      <Text
+        size="small"
+        weight={500}
+      >
+        {text}
+      </Text>
     </Box>
   )
 }
 
 export function DockerImage({ image }) {
-  const history = useHistory()
+  const navigate = useNavigate()
 
   return (
     <Box
       direction="row"
       align="center"
-      hoverIndicator="light-2"
-      border={{ side: 'bottom', color: 'light-3' }}
-      onClick={() => history.push(`/dkr/img/${image.id}`)}
+      hoverIndicator="fill-two"
+      border={{ side: 'bottom', color: 'border' }}
+      onClick={() => navigate(`/dkr/img/${image.id}`)}
       pad="xsmall"
       gap="xsmall"
     >
@@ -40,15 +41,17 @@ export function DockerImage({ image }) {
         align="center"
         gap="xsmall"
       >
-        <DockerTag size="12px" /> 
+        <DockerTag size="12px" />
         <Text size="small">{image.tag}</Text>
       </Box>
       <Box width="15%">{moment(image.insertedAt).fromNow()}</Box>
-      <Box width="60%"><Text
-        size="small"
-        truncate
-      >{image.digest}
-      </Text>
+      <Box width="60%">
+        <Text
+          size="small"
+          truncate
+        >
+          {image.digest}
+        </Text>
       </Box>
       {image.scannedAt && (
         <Box width="10%">
@@ -73,10 +76,9 @@ export function DockerImages({ dockerRepository }) {
   return (
     <Box fill>
       <Box
-        flex={false}
         direction="row"
         align="center"
-        border={{ side: 'bottom', color: 'light-5' }} 
+        border={{ side: 'bottom', color: 'border' }}
         gap="xsmall"
         pad="xsmall"
       >

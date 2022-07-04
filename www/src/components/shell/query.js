@@ -1,50 +1,63 @@
-import gql from 'graphql-tag'
+import { gql } from '@apollo/client'
 
 import { CloudShellFragment, DemoProjectFragment } from '../../models/shell'
 
-export const AUTH_URLS = gql`
+export const AUTHENTICATION_URLS_QUERY = gql`
   query {
-    scmAuthorization { provider url }
+    scmAuthorization {
+      provider
+      url
+    }
   }
 `
 
-export const SCM_TOKEN = gql`
+export const SCM_TOKEN_QUERY = gql`
   query Token($provider: ScmProvider!, $code: String!) {
     scmToken(provider: $provider, code: $code)
   }
 `
 
-export const CLOUD_SHELL = gql`
+export const CLOUD_SHELL_QUERY = gql`
   query {
-    shell { ...CloudShellFragment }
+    shell {
+      ...CloudShellFragment
+    }
   }
   ${CloudShellFragment}
 `
 
-export const CREATE_SHELL = gql`
+export const CREATE_SHELL_MUTATION = gql`
   mutation Create($attributes: CloudShellAttributes!) {
-    createShell(attributes: $attributes) { ...CloudShellFragment }
+    createShell(attributes: $attributes) {
+      ...CloudShellFragment
+    }
   }
   ${CloudShellFragment}
 `
 
-export const REBOOT_SHELL = gql`
+export const REBOOT_SHELL_MUTATION = gql`
   mutation {
-    rebootShell { ...CloudShellFragment }
+    rebootShell {
+      ...CloudShellFragment
+    }
   }
   ${CloudShellFragment}
 `
 
-export const CREATE_DEMO_PROJECT = gql`
+export const CREATE_DEMO_PROJECT_MUTATION = gql`
   mutation {
-    createDemoProject { ...DemoProjectFragment }
+    createDemoProject {
+      ...DemoProjectFragment
+    }
   }
   ${DemoProjectFragment}
 `
 
-export const POLL_DEMO_PROJECT = gql`
+export const POLL_DEMO_PROJECT_QUERY = gql`
   query Demo($id: ID!) {
-    demoProject(id: $id) { ...DemoProjectFragment }
+    demoProject(id: $id) {
+      ...DemoProjectFragment
+    }
   }
   ${DemoProjectFragment}
 `

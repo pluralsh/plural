@@ -1,13 +1,10 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import moment from 'moment'
 import { Box, Text } from 'grommet'
-import { useParams } from 'react-router'
+import { Link, useParams } from 'react-router-dom'
+import { useQuery } from '@apollo/client'
 import { GraphView, ListView, Oauth } from 'forge-core'
-import { useQuery } from 'react-apollo'
 import Toggle from 'react-toggle'
-
-import { Link } from 'react-router-dom'
-
 import lookup from 'country-code-lookup'
 
 import { extendConnection } from '../../utils/graphql'
@@ -17,21 +14,24 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 import { formatLocation } from '../../utils/geo'
 import { Chloropleth } from '../utils/Chloropleth'
 
+import { RepoIcon } from '../repos/Repositories'
+
 import Avatar from '../users/Avatar'
 import { SectionContentContainer, SectionPortal } from '../Explore'
 import { SubmenuItem, SubmenuPortal } from '../navigation/Submenu'
 import { ReturnToBeginning } from '../utils/ReturnToBeginning'
 
 import { AUDITS_Q, AUDIT_METRICS, LOGINS_Q, LOGIN_METRICS } from './queries'
-import { RepoIcon } from '../repos/Repositories'
 
 function HeaderItem({ text, width, nobold }) {
   return (
-    <Box width={width}><Text
-      size="small"
-      weight={nobold ? null : 500}
-    >{text}
-                       </Text>
+    <Box width={width}>
+      <Text
+        size="small"
+        weight={nobold ? null : 500}
+      >
+        {text}
+      </Text>
     </Box>
   )
 }
@@ -112,7 +112,7 @@ function LoginHeader() {
   )
 }
 
-function AuditUser({user, width='25%'}) {
+function AuditUser({ user, width = '25%' }) {
   return (
     <Box
       flex={false}
@@ -130,29 +130,41 @@ function AuditUser({user, width='25%'}) {
   )
 }
 
-function LoginRow({login}) {
+function LoginRow({ login }) {
   return (
     <Box
       flex={false}
       direction="row"
-      pad={{horizontal: "small"}}
+      pad={{ horizontal: 'small' }}
       gap="xsmall"
-      border={{ side: 'bottom' }} 
+      border={{ side: 'bottom' }}
       align="center"
       onClick={() => null}
-      hoverIndicator="hover"
+      hoverIndicator="fill-one"
       focusIndicator={false}
     >
-      <AuditUser user={login.user} width='20%' />
+      <AuditUser
+        user={login.user}
+        width="20%"
+      />
       <HeaderItem
         text={moment(login.insertedAt).format('lll')}
         nobold
         width="20%"
       />
-      <AuditUser user={login.owner} width='20%' />
-      <Box flex={false} width='20%' direction='row' gap='xsmall' align='center'>
+      <AuditUser
+        user={login.owner}
+        width="20%"
+      />
+      <Box
+        flex={false}
+        width="20%"
+        direction="row"
+        gap="xsmall"
+        align="center"
+      >
         <RepoIcon repo={login.repository} />
-        <Text size='small'>{login.repository.name}</Text>
+        <Text size="small">{login.repository.name}</Text>
       </Box>
       <HeaderItem
         text={login.ip}
@@ -217,10 +229,10 @@ function Audit({ audit }) {
       direction="row"
       pad="small"
       gap="xsmall"
-      border={{ side: 'bottom' }} 
+      border={{ side: 'bottom' }}
       align="center"
       onClick={() => null}
-      hoverIndicator="hover"
+      hoverIndicator="fill-one"
       focusIndicator={false}
     >
       <HeaderItem
@@ -229,7 +241,12 @@ function Audit({ audit }) {
         width="25%"
       />
       {audit.actor && <AuditUser user={audit.actor} />}
-      {!audit.actor && <Box flex={false} width='25%' />}
+      {!audit.actor && (
+        <Box
+          flex={false}
+          width="25%"
+        />
+      )}
       <Box width="15%">
         <Resource audit={audit} />
       </Box>
@@ -269,7 +286,11 @@ function AuditChloro() {
         <Chloropleth data={metrics} />
       </Box>
       <SectionPortal>
-        <Box direction='row' align='center' gap='small'>
+        <Box
+          direction="row"
+          align="center"
+          gap="small"
+        >
           <Toggle
             checked={login}
             onChange={({ target: { checked } }) => setLogin(checked)}
@@ -291,10 +312,7 @@ function LoginAudits() {
 
   if (!data) {
     return (
-      <LoopingLogo
-        dark
-        darkbg
-      />
+      <LoopingLogo />
     )
   }
 
@@ -310,7 +328,7 @@ function LoginAudits() {
           setListRef={setListRef}
           hasNextPage={pageInfo.hasNextPage}
           items={edges}
-          loading={loading} 
+          loading={loading}
           handleScroll={setScrolled}
           placeholder={Placeholder}
           mapper={({ node }) => (
@@ -318,7 +336,7 @@ function LoginAudits() {
               key={node.id}
               login={node}
             />
-          )} 
+          )}
           loadNextPage={() => pageInfo.hasNextPage && fetchMore({
             variables: { cursor: pageInfo.endCursor },
             updateQuery: (prev, { fetchMoreResult: { oidcLogins } }) => extendConnection(prev, oidcLogins, 'oidcLogins'),
@@ -326,7 +344,7 @@ function LoginAudits() {
         />
       </Box>
     </Box>
-  )  
+  )
 }
 
 export function Audits() {
@@ -345,10 +363,7 @@ export function Audits() {
 
   if (!data) {
     return (
-      <LoopingLogo
-        dark
-        darkbg
-      />
+      <LoopingLogo />
     )
   }
 
@@ -358,7 +373,7 @@ export function Audits() {
     <Box
       fill
       direction="row"
-      background="backgroundColor"
+      background="background"
     >
       <SubmenuPortal name="audits">
         <SubmenuItem
@@ -392,7 +407,7 @@ export function Audits() {
               setListRef={setListRef}
               hasNextPage={pageInfo.hasNextPage}
               items={edges}
-              loading={loading} 
+              loading={loading}
               handleScroll={setScrolled}
               placeholder={Placeholder}
               mapper={({ node }) => (
@@ -400,7 +415,7 @@ export function Audits() {
                   key={node.id}
                   audit={node}
                 />
-              )} 
+              )}
               loadNextPage={() => pageInfo.hasNextPage && fetchMore({
                 variables: { cursor: pageInfo.endCursor },
                 updateQuery: (prev, { fetchMoreResult: { audits } }) => extendConnection(prev, audits, 'audits'),

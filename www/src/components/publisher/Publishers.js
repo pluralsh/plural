@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { Anchor, Box, Drop, Text } from 'grommet'
-import { useQuery } from 'react-apollo'
-import { useHistory } from 'react-router-dom'
+import { useQuery } from '@apollo/client'
+import { useNavigate } from 'react-router-dom'
 import { Scroller } from 'forge-core'
 
 import Avatar from '../users/Avatar'
@@ -15,7 +15,7 @@ const STUB_ICON_SIZE = '20px'
 function RepoStub({ id, icon, name }) {
   const dropRef = useRef()
   const [hover, setHover] = useState(false)
-  const history = useHistory()
+  const navigate = useNavigate()
 
   return (
     <Box
@@ -23,7 +23,7 @@ function RepoStub({ id, icon, name }) {
       focusIndicator={false}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      onClick={() => history.push(`/publishers/${id}`)}
+      onClick={() => navigate(`/publishers/${id}`)}
       align="center"
       justify="center"
     >
@@ -53,13 +53,13 @@ function RepoStub({ id, icon, name }) {
 }
 
 function Publisher({ publisher: { id, name, description, repositories, ...publisher } }) {
-  const history = useHistory()
+  const navigate = useNavigate()
 
   return (
     <Container
       direction="row"
       gap="small"
-      onClick={() => history.push(`/publishers/${id}`)}
+      onClick={() => navigate(`/publishers/${id}`)}
     >
       <Avatar
         size="65px"
@@ -67,7 +67,7 @@ function Publisher({ publisher: { id, name, description, repositories, ...publis
       />
       <Box>
         <Anchor
-          onClick={() => history.push(`/publishers/${id}`)}
+          onClick={() => navigate(`/publishers/${id}`)}
           size="small"
           weight="bold"
         >

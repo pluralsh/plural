@@ -1,13 +1,10 @@
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import { useQuery } from 'react-apollo'
-
-import { Box, Collapsible, Text, ThemeContext } from 'grommet'
-
-import { useHistory, useParams } from 'react-router'
-import { sortBy } from 'lodash'
-
+import './explore.css'
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { useQuery } from '@apollo/client'
+import { Box, Collapsible, Text } from 'grommet'
+import { useNavigate, useParams } from 'react-router-dom'
+import sortBy from 'lodash.sortby'
 import { Down, Next } from 'grommet-icons'
-import { Installed, Public, Publisher } from 'forge-core'
 import { Portal } from 'react-portal'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -19,9 +16,7 @@ import { BreadcrumbsContext } from './Breadcrumbs'
 import { RepoIcon, RepoName } from './repos/Repositories'
 import { Tag } from './repos/Tags'
 import { CATEGORIES, CATEGORY, EXPLORE_REPOS } from './repos/queries'
-import './explore.css'
 import { StandardScroller } from './utils/SmoothScroller'
-import { SubmenuItem, SubmenuPortal } from './navigation/Submenu'
 import { LoopingLogo } from './utils/AnimatedLogo'
 import { ignore } from './utils/ModalHeader'
 
@@ -33,7 +28,8 @@ function EmptyState() {
       <Text
         weight={500}
         size="small"
-      >It looks like you haven't installed any repos yet, use the search bar or browse by tag
+      >
+        It looks like you haven't installed any repos yet, use the search bar or browse by tag
         to find what you're looking for
       </Text>
     </Box>
@@ -41,31 +37,30 @@ function EmptyState() {
 }
 
 function RepoTag({ tag, setTag }) {
-  const { dark } = useContext(ThemeContext)
-
   return (
-    <Box 
+    <Box
       round="xsmall"
-      background={dark ? 'card' : 'light-2'}
-      pad={{ horizontal: 'xsmall', vertical: '1px' }} 
-      hoverIndicator={dark ? 'hover' : 'light-4'}
-      focusIndicator={false} 
+      background="card"
+      pad={{ horizontal: 'xsmall', vertical: '1px' }}
+      hoverIndicator="hover"
+      focusIndicator={false}
       onClick={e => {
-        ignore(e); setTag(tag)
+        ignore(e)
+        setTag(tag)
       }}
     >
       <Text
         size="small"
-        color={dark ? 'light-6' : null}
-      >{tag}
+        color="text"
+      >
+        {tag}
       </Text>
     </Box>
   )
 }
 
 function Repo({ repo, setTag }) {
-  const { dark } = useContext(ThemeContext)
-  const hist = useHistory()
+  const navigate = useNavigate()
 
   return (
     <Box
@@ -74,13 +69,12 @@ function Repo({ repo, setTag }) {
       align="center"
       pad="small"
       border={{ side: 'bottom' }}
-      hoverIndicator="hover"
+      hoverIndicator="fill-one"
       focusIndicator={false}
-      onClick={() => hist.push(`/repositories/${repo.id}`)}
+      onClick={() => navigate(`/repositories/${repo.id}`)}
     >
       <RepoIcon
         repo={repo}
-        dark
       />
       <Box
         fill="horizontal"
@@ -107,7 +101,7 @@ function Repo({ repo, setTag }) {
         >
           <Text
             size="small"
-            color={dark ? 'light-6' : 'dark-3'}
+            color="text-light"
           >publisher:
           </Text>
           <SafeLink to={`/publishers/${repo.publisher.id}`}>{repo.publisher.name}</SafeLink>
@@ -213,9 +207,9 @@ function CategoryTags({ category, tag, setTag }) {
         <Box
           flex={false}
           pad="xsmall"
-          margin={{ horizontal: 'xsmall' }} 
+          margin={{ horizontal: 'xsmall' }}
           round="xsmall"
-          hoverIndicator="hover"
+          hoverIndicator="fill-one"
           onClick={loadMore}
         >
           <Text size="small">see more...</Text>
@@ -235,7 +229,7 @@ function Category({ category, tag, setTag, unfurl }) {
         flex={false}
         direction="row"
         align="center"
-        hoverIndicator="hover" 
+        hoverIndicator="fill-one"
         pad={{ horizontal: 'small', vertical: 'xsmall' }}
         border={open ? { side: 'bottom' } : null}
         onClick={() => setOpen(!open)}
@@ -249,13 +243,15 @@ function Category({ category, tag, setTag, unfurl }) {
           <Text
             size="small"
             weight={500}
-          >{category.category.toLowerCase()}
+          >
+            {category.category.toLowerCase()}
           </Text>
           <Box className="hoverable">
             <Text
               size="small"
               color="dark-3"
-            >({category.count})
+            >
+              ({category.count})
             </Text>
           </Box>
         </Box>
@@ -293,10 +289,10 @@ function TagSidebar({ tag, setTag }) {
       style={{ overflow: 'auto' }}
     >
       <Box flex={false}>
-        {categories.map((category, ind) => (
-          <Category 
+        {categories.map(category => (
+          <Category
             key={category.category}
-            unfurl={ind === 0}
+            unfurl={false}
             category={category}
             tag={tag}
             setTag={setTag}
@@ -314,7 +310,7 @@ function filters(tab, me) {
   return {}
 }
 
-export const SectionContext = React.createContext({})
+export const SectionContext = createContext({})
 
 export function SectionPortal({ children }) {
   const { ref } = useContext(SectionContext)
@@ -326,29 +322,30 @@ export function SectionPortal({ children }) {
   )
 }
 
-export function SectionContentContainer({ header: h, children }) {
-  const theme = useContext(ThemeContext)
+export function SectionContentContainer({ header: h, children, borderLeft }) {
   const [header, setHeader] = useState(h)
   const [ref, setRef] = useState(null)
   const id = useMemo(() => uuidv4(), [])
+  const value = useMemo(() => ({ id, ref, setHeader }), [id, ref, setHeader])
 
   return (
-    <SectionContext.Provider value={{ id, ref, setHeader }}>
+    <SectionContext.Provider value={value}>
       <Box fill>
         <Box
           flex={false}
           direction="row"
           pad="small"
-          height="45px" 
-          border={{ side: 'bottom' }}
+          height="45px"
+          border={borderLeft ? [{ side: 'bottom' }, { side: 'left' }] : [{ side: 'bottom' }]}
           align="center"
-          background={theme.dark ? 'card' : null}
+          background="fill-one"
         >
           <Box fill="horizontal">
             <Text
               size="small"
               weight={500}
-            >{header}
+            >
+              {header}
             </Text>
           </Box>
           <Box
@@ -366,20 +363,20 @@ export function SectionContentContainer({ header: h, children }) {
 }
 
 export function SectionItemContainer({ label, icon, selected, location, ...props }) {
-  const hist = useHistory()
+  const navigate = useNavigate()
 
   return (
     <Box
       flex={false}
       pad="small"
       round="3px"
-      background={selected ? 'sidebarHover' : null}
-      fill="horizontal" 
+      background={selected ? 'fill-one' : null}
+      fill="horizontal"
       align="center"
       gap="small"
       direction="row"
-      hoverIndicator="sidebarHover"
-      onClick={selected ? null : () => hist.push(location)}
+      hoverIndicator="fill-one"
+      onClick={selected ? null : () => navigate(location)}
       {...props}
     >
       <Box flex={false}>
@@ -418,9 +415,9 @@ export function SectionContent({ name, header, children }) {
 
 export default function Explore() {
   const { group, tag } = useParams()
-  const history = useHistory()
+  const navigate = useNavigate()
   const me = useContext(CurrentUserContext)
-  const args = filters(group, me) 
+  const args = filters(group, me)
   const { data, loading, fetchMore } = useQuery(EXPLORE_REPOS, {
     variables: { tag, ...args },
     fetchPolicy: 'cache-and-network',
@@ -433,20 +430,17 @@ export default function Explore() {
     ]
     if (tag) crumbs.push({ url: `/explore/${group}/${tag}`, text: tag })
     setBreadcrumbs(crumbs)
-  }, [group, tag])
+  }, [group, tag, setBreadcrumbs])
   const doSetTag = useCallback(t => (
-    t === tag ? history.push('/explore/public') : 
-      history.push(`/explore/public/${t}`)
-  ), [tag])
+    t === tag ? navigate('/explore/public') :
+      navigate(`/explore/public/${t}`)
+  ), [tag, navigate])
 
   const refreshBy = `${group}:${tag}`
 
   if (!data) {
     return (
-      <LoopingLogo
-        dark
-        darkbg
-      />
+      <LoopingLogo />
     )
   }
 
@@ -457,28 +451,6 @@ export default function Explore() {
       direction="row"
       fill
     >
-      <SubmenuPortal name="explore">
-        <SubmenuItem 
-          url="/explore/public" 
-          label="Public" 
-          selected={group === 'public'}
-          icon={<Public size="14px" />}
-        />
-        <SubmenuItem 
-          url="/explore/installed" 
-          label="Installed" 
-          selected={group === 'installed'}
-          icon={<Installed size="14px" />}
-        />
-        {me.publisher && (
-          <SubmenuItem 
-            url="/explore/published" 
-            label="Published"
-            selected={group === 'published'}
-            icon={<Publisher size="14px" />}
-          />
-        )}
-      </SubmenuPortal>
       <Box fill>
         <SectionContent
           name="public"
@@ -487,19 +459,18 @@ export default function Explore() {
           <Box
             fill
             direction="row"
-            gap="0px"
             border={{ side: 'between' }}
           >
             <TagSidebar
               setTag={doSetTag}
               tag={tag}
             />
-            <Repositories 
-              refreshBy={refreshBy} 
-              edges={edges} 
-              loading={loading} 
-              pageInfo={pageInfo} 
-              fetchMore={fetchMore} 
+            <Repositories
+              refreshBy={refreshBy}
+              edges={edges}
+              loading={loading}
+              pageInfo={pageInfo}
+              fetchMore={fetchMore}
               setTag={doSetTag}
             />
           </Box>
@@ -509,12 +480,12 @@ export default function Explore() {
           header="Installed Repositories"
         >
           {edges.length > 0 ? (
-            <Repositories 
-              refreshBy={refreshBy} 
-              edges={edges} 
-              loading={loading} 
-              pageInfo={pageInfo} 
-              fetchMore={fetchMore} 
+            <Repositories
+              refreshBy={refreshBy}
+              edges={edges}
+              loading={loading}
+              pageInfo={pageInfo}
+              fetchMore={fetchMore}
               setTag={doSetTag}
             />
           ) :
@@ -526,10 +497,10 @@ export default function Explore() {
         >
           <Repositories
             refreshBy={refreshBy}
-            edges={edges} 
-            loading={loading} 
-            pageInfo={pageInfo} 
-            fetchMore={fetchMore} 
+            edges={edges}
+            loading={loading}
+            pageInfo={pageInfo}
+            fetchMore={fetchMore}
             setTag={doSetTag}
           /> :
         </SectionContent>

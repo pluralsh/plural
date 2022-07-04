@@ -1,4 +1,3 @@
-import React from 'react'
 import { Select } from 'forge-core'
 
 export function DarkSelect({ options, value, onChange }) {
@@ -8,7 +7,7 @@ export function DarkSelect({ options, value, onChange }) {
       value={value}
       colors={{
         neutral0: 'card',
-        neutral80: '#fff', 
+        neutral80: '#fff',
         neutral60: '#fff',
         primary: 'blue-light',
         primary25: 'blue-light',

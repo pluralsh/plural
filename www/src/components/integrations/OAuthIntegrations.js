@@ -1,5 +1,4 @@
-import React from 'react'
-import { useQuery } from 'react-apollo'
+import { useQuery } from '@apollo/client'
 import { Box, Text } from 'grommet'
 import { Check as Checkmark } from 'forge-core'
 
@@ -21,7 +20,7 @@ function Integration({ icon, installUrl, integrations, service, children }) {
     <Box
       flex={false}
       pad="small"
-      border={{ color: 'light-5' }}
+      border={{ color: 'border' }}
       hoverIndicator="light-2"
       onClick={onClick}
       direction="row"
@@ -71,7 +70,7 @@ export function OAuthIntegrations() {
       pad="small"
       gap="xsmall"
     >
-      <Integration 
+      <Integration
         icon={ZOOM_ICON}
         installUrl={ZOOM_INSTALL_URL}
         integrations={integrations}

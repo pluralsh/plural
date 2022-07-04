@@ -1,4 +1,3 @@
-import React from 'react'
 import { Box, Text, TextInput } from 'grommet'
 
 import { trimSuffix } from '../../utils/array'
@@ -18,7 +17,7 @@ export function SuffixedInput({ suffix, value, onChange, placeholder, background
       <Box
         flex={false}
         style={{ borderLeftStyle: 'none' }}
-        border={{ color: 'border' }} 
+        border={{ color: 'border' }}
         pad={{ horizontal: 'small' }}
         background={background || 'tone-light'}
         height="41px"

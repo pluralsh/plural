@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Trash } from 'forge-core'
-import { useMutation } from 'react-apollo'
+import { useMutation } from '@apollo/client'
 
 import { Icon } from '../accounts/Group'
 import { Confirm } from '../utils/Confirm'
@@ -21,7 +21,7 @@ export function DeleteUser({ id, update }) {
     <>
       <Icon
         icon={Trash}
-        onClick={() => setConfirm(true)} 
+        onClick={() => setConfirm(true)}
         iconAttrs={{ color: 'error' }}
       />
       {confirm && (

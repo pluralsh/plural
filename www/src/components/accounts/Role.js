@@ -1,11 +1,15 @@
-import React, { useCallback, useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { Box, Layer, Text } from 'grommet'
-import { Button, GqlError, Group, InputCollection, ModalHeader, ResponsiveInput, TagInput, Trash, User } from 'forge-core'
+import { GqlError, Group, InputCollection, TagInput, Trash, User } from 'forge-core'
 import { Edit } from 'grommet-icons'
+import { Button, Div } from 'honorable'
 
-import { useApolloClient, useMutation } from 'react-apollo'
+import { useApolloClient, useMutation } from '@apollo/client'
 
 import Toggle from 'react-toggle'
+
+import ResponsiveInput from '../ResponsiveInput'
+import { ModalHeader } from '../ModalHeader'
 
 import { appendConnection, removeConnection, updateCache } from '../../utils/graphql'
 
@@ -133,23 +137,30 @@ function RoleForm({ attributes, setAttributes, roleBindings, setRoleBindings }) 
           label="name"
           value={attributes.name}
           placeholder="name of the role"
+          labelWidth={128}
           onChange={({ target: { value } }) => setAttributes({ ...attributes, name: value })}
         />
-        <ResponsiveInput
-          label="description"
-          value={attributes.description}
-          placeholder="description for the role"
-          onChange={({ target: { value } }) => setAttributes({ ...attributes, description: value })}
-        />
-        <ResponsiveInput
-          label="repositories"
-          value={repositories}
-          placeholder="repositories for the role to apply to (comma separated, use * for any)"
-          onChange={({ target: { value } }) => {
-            setRepositories(value)
-            setAttributes({ ...attributes, repositories: value.split(',') })
-          }}
-        />
+        <Div mt={0.5}>
+          <ResponsiveInput
+            label="description"
+            value={attributes.description}
+            placeholder="description for the role"
+            labelWidth={128}
+            onChange={({ target: { value } }) => setAttributes({ ...attributes, description: value })}
+          />
+        </Div>
+        <Div mt={0.5}>
+          <ResponsiveInput
+            label="repositories"
+            value={repositories}
+            placeholder="repositories for the role to apply to (comma separated, use * for any)"
+            labelWidth={128}
+            onChange={({ target: { value } }) => {
+              setRepositories(value)
+              setAttributes({ ...attributes, repositories: value.split(',') })
+            }}
+          />
+        </Div>
       </InputCollection>
       <Box
         pad="small"
@@ -174,7 +185,6 @@ function RoleForm({ attributes, setAttributes, roleBindings, setRoleBindings }) 
       <Box
         pad="small"
         round="xsmall"
-        background="light-1"
         gap="xsmall"
       >
         <Text size="small">Permissions</Text>
@@ -230,10 +240,11 @@ function EditRole({ role, setOpen }) {
         justify="end"
       >
         <Button
-          label="Update"
           loading={loading}
           onClick={mutation}
-        />
+        >
+          Update
+        </Button>
       </Box>
     </Box>
   )
@@ -277,10 +288,11 @@ export function CreateRole({ setOpen }) {
         justify="end"
       >
         <Button
-          label="Create"
           loading={loading}
           onClick={mutation}
-        />
+        >
+          Create
+        </Button>
       </Box>
     </Box>
   )
@@ -293,9 +305,10 @@ export function RoleCreator() {
     <>
       <Box flex={false}>
         <Button
-          label="Create"
           onClick={() => setOpen(true)}
-        />
+        >
+          Create
+        </Button>
       </Box>
       {open && (
         <Layer modal>
@@ -327,7 +340,7 @@ export default function RoleRow({ role }) {
   return (
     <Box
       ref={ref}
-      border={{ side: 'bottom', color: 'light-6' }}
+      border={{ side: 'bottom', color: 'border' }}
     >
       <Box
         direction="row"

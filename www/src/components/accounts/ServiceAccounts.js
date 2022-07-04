@@ -1,9 +1,11 @@
-import React, { useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { Box, Layer, TextInput } from 'grommet'
-import { useMutation, useQuery } from 'react-apollo'
+import { useMutation, useQuery } from '@apollo/client'
 import { Edit } from 'grommet-icons'
-import { ModalHeader, Scroller, SecondaryButton } from 'forge-core'
+import { Scroller } from 'forge-core'
+import { Button } from 'honorable'
 
+import { ModalHeader } from '../ModalHeader'
 import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
 import { GqlError } from '../utils/Alert'
 import { fetchToken, setPreviousUserData, setToken } from '../../helpers/authentication'
@@ -49,7 +51,7 @@ function ServiceAccount({ user, next, update }) {
         gap="small"
         direction="row"
         align="center"
-        border={{ side: 'bottom', color: 'light-6' }}
+        border={{ side: 'bottom', color: 'border' }}
         pad={{ right: 'small' }}
       >
         <UserRow
@@ -58,11 +60,13 @@ function ServiceAccount({ user, next, update }) {
           noborder
           notoggle
         />
-        <SecondaryButton
-          label="impersonate"
+        <Button
+          secondary
           onClick={handleImpersonateClick}
           loading={loading}
-        />
+        >
+          Impersonate
+        </Button>
         <Icon
           icon={Edit}
           tooltip="edit"
@@ -96,7 +100,7 @@ function ServiceAccount({ user, next, update }) {
             text={`Update ${user.name}`}
             setOpen={setOpen}
           />
-          <Box width="40vw">
+          <Box width="50vw">
             <UpdateServiceAccount
               user={user}
               setOpen={setOpen}
@@ -118,7 +122,7 @@ export function ServiceAccounts() {
     query: USERS_Q,
     variables: { q, serviceAccount: true },
     update: prev => removeConnection(prev, deleteUser, 'users'),
-  }))
+  }), [q])
 
   if (!data) return <LoopingLogo />
 

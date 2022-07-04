@@ -1,4 +1,3 @@
-import React from 'react'
 import { Box, Text } from 'grommet'
 import { Checkmark, Cube, Group } from 'grommet-icons'
 
@@ -136,7 +135,7 @@ export function Subscription({ incident: { repository, subscription } }) {
           flex={false}
           pad="small"
           align="center"
-        > 
+        >
           <RepoIcon repo={repository} />
         </Box>
         <Box>

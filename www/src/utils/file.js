@@ -1,10 +1,10 @@
 export function generatePreview(file, callback) {
   const reader = new FileReader()
+
   reader.onloadend = () => callback({
     file,
     previewUrl: reader.result,
   })
-
   reader.readAsDataURL(file)
 }
 

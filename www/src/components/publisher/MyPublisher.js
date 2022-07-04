@@ -1,12 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { useMutation, useQuery } from 'react-apollo'
-import { Button, Edit, InputCollection, ListView as List, ResponsiveInput } from 'forge-core'
+import { useContext, useEffect, useState } from 'react'
+import { useMutation, useQuery } from '@apollo/client'
+import { Button, Edit, InputCollection, ListView as List } from 'forge-core'
 import { Anchor, Box, Text } from 'grommet'
-
 import { Add, Stripe } from 'grommet-icons'
-
-import { useParams } from 'react-router'
-
+import { useParams } from 'react-router-dom'
 import { useFilePicker } from 'react-sage'
 
 import { STRIPE_BLUE } from '../payments/constants'
@@ -14,6 +11,7 @@ import { EditContent, EditSelect } from '../users/EditUser'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 import { SIDEBAR_WIDTH } from '../constants'
 
+import ResponsiveInput from '../ResponsiveInput'
 import { ME_Q } from '../users/queries'
 import { CurrentUserContext, PluralConfigurationContext } from '../login/CurrentUser'
 import CreateRepository from '../repos/CreateRepository'
@@ -125,7 +123,7 @@ function EditAvatar({ publisher }) {
     if (files.length > 0) {
       mutation({ variables: { attributes: { avatar: files[0] } } })
     }
-  }, [files])
+  }, [files, mutation])
 
   return (
     <Box
@@ -192,7 +190,7 @@ export default function MyPublisher() {
         flex={false}
         pad="small"
         gap="xsmall"
-        background="backgroundColor"
+        background="background"
       >
         <EditAvatar publisher={publisher} />
         <EditSelect

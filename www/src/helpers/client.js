@@ -1,15 +1,16 @@
-import { ApolloClient } from 'apollo-client'
+import {
+  ApolloClient,
+  InMemoryCache,
+  split,
+} from '@apollo/client'
+import { getMainDefinition } from '@apollo/client/utilities'
+import { setContext } from '@apollo/client/link/context'
+import { onError } from '@apollo/client/link/error'
+import { RetryLink } from '@apollo/client/link/retry'
 import { createLink } from 'apollo-absinthe-upload-link'
-// import { createPersistedQueryLink } from 'apollo-link-persisted-queries'
-import { setContext } from 'apollo-link-context'
-import { onError } from 'apollo-link-error'
-import { RetryLink } from 'apollo-link-retry'
-import { split } from 'apollo-link'
-import { hasSubscription } from '@jumpn/utils-graphql'
-import { createAbsintheSocketLink } from '@absinthe/socket-apollo-link'
-import * as AbsintheSocket from '@absinthe/socket'
 import { Socket as PhoenixSocket } from 'phoenix'
-import { InMemoryCache } from 'apollo-cache-inmemory'
+import * as AbsintheSocket from '@absinthe/socket'
+import { createAbsintheSocketLink } from 'pluralsh-absinthe-socket-apollo-link'
 
 import { apiHost } from './hostname'
 import customFetch from './uploadLink'
@@ -32,16 +33,15 @@ const retryLink = new RetryLink({
   },
 })
 
-const authLink = setContext((_, { headers }) => {
+const authLink = setContext(({ headers }) => {
   const token = fetchToken()
-  const authHeaders = token ? { authorization: `Bearer ${token}` } : {}
 
   return {
-    headers: Object.assign(headers || {}, authHeaders),
+    headers: token ? { ...headers, authorization: `Bearer ${token}` } : headers,
   }
 })
 
-const resetToken = onError(({ response, networkError }) => {
+const resetToken = onError(({ networkError }) => {
   if (networkError && networkError.statusCode === 401) {
     // remove cached token on 401 from the server
     wipeToken()
@@ -60,10 +60,16 @@ export const socket = new PhoenixSocket(WS_URI, {
 const absintheSocket = AbsintheSocket.create(socket)
 
 const socketLink = createAbsintheSocketLink(absintheSocket)
-// const persistedQueryLink = createPersistedQueryLink()
 
 const splitLink = split(
-  operation => hasSubscription(operation.query),
+  ({ query }) => {
+    const definition = getMainDefinition(query)
+
+    return (
+      definition.kind === 'OperationDefinition' &&
+      definition.operation === 'subscription'
+    )
+  },
   socketLink,
   retryLink.concat(resetToken).concat(httpLink),
 )

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import { createElement, useRef, useState } from 'react'
 import { Box, Text } from 'grommet'
 
 import { Check as Checkmark, File, Messages } from 'forge-core'
@@ -28,13 +28,13 @@ export function ViewOption({ icon, selected, view, setView, text, side, size, wi
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
       >
-        {React.createElement(icon, selected === view ? { ...props, color: 'brand' } : props)}
+        {createElement(icon, selected === view ? { ...props, color: 'brand' } : props)}
       </Box>
       {hover && (
         <Tooltip
           pad={{ horizontal: 'small', vertical: 'xsmall' }}
           round="xsmall"
-          justify="center" 
+          justify="center"
           target={ref}
           side="right"
           align={side || { left: 'right' }}
@@ -57,18 +57,18 @@ export function ViewSwitcher({ incident, view, setView }) {
       gap="small"
       align="center"
       pad={{ vertical: 'small' }}
-      border={{ side: 'right', color: 'light-5' }}
+      border={{ side: 'right', color: 'border' }}
     >
-      <ViewOption 
-        icon={Messages} 
-        selected={view} 
+      <ViewOption
+        icon={Messages}
+        selected={view}
         view={IncidentView.MSGS}
         setView={setView}
         text="Messages"
       />
-      <ViewOption 
-        icon={File} 
-        selected={view} 
+      <ViewOption
+        icon={File}
+        selected={view}
         view={IncidentView.FILES}
         setView={setView}
         text="Files"

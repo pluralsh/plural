@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 
 import { Download } from 'forge-core'
 
@@ -31,7 +31,7 @@ export function AutoRefresh() {
       setCommit(config.gitCommit)
       setOpen(false)
     }
-  })
+  }, [config])
 
   const stale = getCommit() !== config.gitCommit
 
@@ -56,7 +56,7 @@ export function AutoRefresh() {
           />
         )}
         onClick={reload}
-        text="Update Ready!"
+        text="Update ready!"
         align={{ top: 'bottom' }}
       />
     </Box>

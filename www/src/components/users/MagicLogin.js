@@ -1,17 +1,15 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { Anchor, Box, Collapsible, Form, Keyboard, Text, TextInput } from 'grommet'
-import { Button, Divider } from 'forge-core'
-
-import { useApolloClient, useLazyQuery, useMutation, useQuery } from 'react-apollo'
-
-import { Redirect, useHistory, useLocation, useParams } from 'react-router'
-
+import { createElement, useCallback, useEffect, useState } from 'react'
+import { Anchor, Box, Collapsible, Form, Keyboard, Text } from 'grommet'
+import { Divider } from 'pluralsh-design-system'
+import { useApolloClient, useLazyQuery, useMutation, useQuery } from '@apollo/client'
+import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
 import queryString from 'query-string'
+import { Article, Button, Div, Flex, H2, Icon, Img, Input, P, Svg } from 'honorable'
 
 import { fetchToken, setToken } from '../../helpers/authentication'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 import { PasswordStatus, disableState } from '../Login'
-import { PLURAL_ICON, PLURAL_MARK } from '../constants'
+import { PLURAL_MARK_WHITE } from '../constants'
 import { ACCEPT_LOGIN } from '../oidc/queries'
 
 import { host } from '../../helpers/hostname'
@@ -44,7 +42,8 @@ export function LabelledInput({ label, value, onChange, placeholder, width, type
           {modifier}
         </Box>
       </Box>
-      <TextInput
+      <Input
+        width="100%"
         name={label}
         type={type}
         value={value || ''}
@@ -55,39 +54,111 @@ export function LabelledInput({ label, value, onChange, placeholder, width, type
   )
 }
 
-export function LoginPortal({ children, ...props }) {
+export function LoginPortal({ children }) {
   return (
-    <Box
-      height="100vh"
-      fill="horizontal"
-      direction="row"
-    >
-      <Box
-        width="40%"
-        fill="vertical"
-        justify="center"
-        align="center"
-        background="plural-blk"
-      >
-        <img
-          src={PLURAL_ICON}
-          width="200px"
-        />
-      </Box>
-      <Box
-        style={{ overflow: 'auto' }}
-        fill
+    <Flex height="100vh">
+      {/* LEFT SIDE */}
+      <Flex
+        direction="column"
         align="center"
         justify="center"
+        width={`${100 * 504 / (504 + 756)}%`}
+        background="fill-one"
+        display-tablet="none"
       >
-        <Box
-          flex={false}
-          {...props}
-        >
+        <Div width={408}>
+          {/* LOGOTYPE */}
+          <Flex
+            align="center"
+            marginBottom="xxlarge"
+          >
+            <Img
+              src="/plural-white-cropped.png"
+              width={48}
+            />
+            <Img
+              src="/plural-white-word-cropped.png"
+              marginLeft="medium"
+              width={216}
+            />
+          </Flex>
+          {/* HIGHLIGHTS */}
+          <LoginHighlight
+            title="Built for the cloud."
+            marginBottom="xlarge"
+          >
+            Plural is optimized for you to bring your own cloud and run on top of Kubernetes with the ideal cluster distribution.
+          </LoginHighlight>
+          <LoginHighlight
+            title="Developer friendly."
+            marginBottom="xlarge"
+          >
+            Use our simple GitOps driven workflow for deploying and managing applications, and a centralized configuration in a single repo.
+          </LoginHighlight>
+          <LoginHighlight title="Batteries included.">
+            Baked-in observability, logging, auditing, and user auth.
+          </LoginHighlight>
+        </Div>
+      </Flex>
+      {/* RIGHT SIDE */}
+      <Flex
+        overflowY="auto"
+        align="center"
+        justify="center"
+        flexGrow={1}
+      >
+        <Div>
           {children}
-        </Box>
-      </Box>
-    </Box>
+        </Div>
+      </Flex>
+    </Flex>
+  )
+}
+
+function LoginHighlight({ title, children, ...props }) {
+  return (
+    <Flex
+      align="flex-start"
+      {...props}
+    >
+      <Svg
+        width={32}
+        viewBox="0 0 32 32"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        flexShrink={0}
+        marginTop={2} // Not in the specs but needed somehow
+      >
+        <path
+          d="M16 0C7.2 0 0 7.2 0 16C0 24.8 7.2 32 16 32C24.8 32 32 24.8 32 16C32 7.2 24.8 0 16 0ZM13.8 24L7.4 17.6L9.2 15.8L13.6 20.2L22.6 8.8L24.6 10.4L13.8 24Z"
+          fill="url(#paint0_linear_40_560)"
+        />
+        <defs>
+          <linearGradient
+            id="paint0_linear_40_560"
+            x1="2.98023e-08"
+            y1="0.5"
+            x2="32"
+            y2="32.5"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop stopColor="#293EFF" />
+            <stop
+              offset="1"
+              stopColor="#29A9FF"
+            />
+          </linearGradient>
+        </defs>
+      </Svg>
+      <Article marginLeft="medium">
+        <H2 title1>
+          {title}
+        </H2>
+        <P>
+          {children}
+        </P>
+      </Article>
+    </Flex>
   )
 }
 
@@ -99,7 +170,7 @@ export function PasswordlessLogin() {
 
   useEffect(() => {
     mutation()
-  }, [])
+  }, [mutation])
 
   return (
     <LoginPortal>
@@ -109,16 +180,19 @@ export function PasswordlessLogin() {
           align="center"
         >
           <img
-            src={PLURAL_MARK}
+            src={PLURAL_MARK_WHITE}
             width="45px"
           />
-          <Text size="large">Passwordless Login</Text>
+          <Text size="large">
+            Passwordless Login
+          </Text>
         </Box>
         {loading && (
           <Text
             size="small"
             color="dark-3"
-          >Validating your login token...
+          >
+            Validating your login token...
           </Text>
         )}
         {error && (
@@ -149,7 +223,7 @@ export function handleOauthChallenge(client, challenge) {
 }
 
 function LoginPoller({ challenge, token, deviceToken }) {
-  const history = useHistory()
+  const navigate = useNavigate()
   const client = useApolloClient()
   const [success, setSuccess] = useState(false)
 
@@ -161,18 +235,20 @@ function LoginPoller({ challenge, token, deviceToken }) {
       }).then(({ data: { loginToken: { jwt } } }) => {
         setToken(jwt)
         setSuccess(true)
-        deviceToken && finishedDeviceLogin()
+
+        if (deviceToken) finishedDeviceLogin()
+
         if (challenge) {
           handleOauthChallenge(client, challenge)
         }
         else {
-          history.push('/')
+          navigate('/')
         }
       })
     }, 2000)
 
     return () => clearInterval(interval)
-  }, [token, challenge])
+  }, [token, challenge, deviceToken, navigate, client])
 
   if (success) {
     return (
@@ -194,7 +270,7 @@ function LoginPoller({ challenge, token, deviceToken }) {
 }
 
 export function Login() {
-  const history = useHistory()
+  const navigate = useNavigate()
   const client = useApolloClient()
   const location = useLocation()
   const { login_challenge: challenge, deviceToken } = queryString.parse(location.search)
@@ -212,12 +288,12 @@ export function Login() {
     variables: { email, password, deviceToken },
     onCompleted: ({ login: { jwt } }) => {
       setToken(jwt)
-      deviceToken && finishedDeviceLogin()
+      if (deviceToken) finishedDeviceLogin()
       if (challenge) {
         handleOauthChallenge(client, challenge)
       }
       else {
-        history.push('/')
+        navigate('/')
       }
     },
   })
@@ -225,12 +301,13 @@ export function Login() {
   useEffect(() => {
     wipeChallenge()
     wipeDeviceToken()
-    if (data && data.loginMethod.authorizeUrl) {
+
+    if (data && data.loginMethod && data.loginMethod.authorizeUrl) {
       if (challenge) saveChallenge(challenge)
       if (deviceToken) saveDeviceToken(deviceToken)
       window.location = data.loginMethod.authorizeUrl
     }
-  }, [data])
+  }, [data, challenge, deviceToken])
 
   useEffect(() => {
     const jwt = fetchToken()
@@ -238,9 +315,9 @@ export function Login() {
       handleOauthChallenge(client, challenge)
     }
     else if (!deviceToken && jwt) {
-      history.push('/')
+      navigate('/')
     }
-  }, [challenge])
+  }, [challenge, deviceToken, navigate, client])
 
   const submit = useCallback(() => open ? mutation() : getLoginMethod(), [mutation, getLoginMethod, open])
 
@@ -248,7 +325,8 @@ export function Login() {
 
   if (qError) {
     if (deviceToken) saveDeviceToken(deviceToken)
-    return <Redirect to="/signup" />
+
+    return <Navigate to="/signup" />
   }
 
   return (
@@ -259,14 +337,17 @@ export function Login() {
           align="center"
         >
           <img
-            src={PLURAL_MARK}
+            src={PLURAL_MARK_WHITE}
             width="45px"
           />
-          <Text size="large">Welcome</Text>
+          <Text size="large">
+            Welcome
+          </Text>
           <Text
             size="small"
             color="dark-3"
-          >{open ? 'good to see you again' : 'Tell us your email to get started'}
+          >
+            {open ? 'good to see you again' : 'Tell us your email to get started'}
           </Text>
         </Box>
         {passwordless && (
@@ -303,7 +384,7 @@ export function Login() {
                     type="password"
                     modifier={(
                       <Anchor
-                        onClick={() => history.push('/password-reset')}
+                        onClick={() => navigate('/password-reset')}
                         color="dark-6"
                       >forgot your password?
                       </Anchor>
@@ -314,13 +395,13 @@ export function Login() {
                   />
                 </Collapsible>
                 <Button
-                  fill="horizontal"
-                  pad={{ vertical: '8px' }}
-                  margin={{ top: 'small' }}
-                  label="Continue"
+                  width="100%"
+                  mt={0.5}
                   loading={loading}
                   onClick={submit}
-                />
+                >
+                  Continue
+                </Button>
               </Box>
             </Form>
           </Keyboard>
@@ -332,32 +413,35 @@ export function Login() {
 
 const WIDTH = '350px'
 
+const providerToName = {
+  github: 'GitHub',
+  google: 'Google',
+  gitlab: 'GitLab',
+}
+
 function OAuthOption({ url: { authorizeUrl, provider } }) {
   const icon = METHOD_ICONS[provider]
 
   return (
-    <Box
-      border
-      round="xsmall"
-      align="center"
-      justify="center"
-      direction="row"
-      gap="small"
-      fill="horizontal"
-      pad={{ vertical: '7px' }}
-      hoverIndicator="tone-light"
+    <Button
+      secondary
+      width="100%"
       onClick={() => {
-        window.location = authorizeUrl 
+        window.location = authorizeUrl
       }}
     >
-      {React.createElement(icon, { size: 'medium', color: 'plain' })}
-      <Text size="small">Sign up with {provider.toLowerCase()}</Text>
-    </Box>
+      <Flex align="center">
+        <Icon mr={0.5}>
+          {createElement(icon, { size: 'medium', color: provider.toLowerCase() === 'github' ? 'white' : 'plain' })}
+        </Icon>
+        Sign up with {providerToName[provider.toLowerCase()]}
+      </Flex>
+    </Button>
   )
 }
 
 export function Signup() {
-  const history = useHistory()
+  const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
@@ -367,7 +451,7 @@ export function Signup() {
   const [mutation, { loading, error }] = useMutation(SIGNUP_MUTATION, {
     variables: { attributes: { email, password, name }, account: { name: account }, deviceToken },
     onCompleted: ({ signup: { jwt } }) => {
-      deviceToken && finishedDeviceLogin()
+      if (deviceToken) finishedDeviceLogin()
       setToken(jwt)
       window.location = '/'
     },
@@ -376,26 +460,30 @@ export function Signup() {
 
   useEffect(() => {
     if (fetchToken()) {
-      history.push('/')
+      navigate('/')
     }
-  }, [])
+  }, [navigate])
 
   const { disabled, reason } = disableState(password, confirm)
 
   return (
     <LoginPortal>
-      <Box flex={false} gap="small">
+      <Box
+        flex={false}
+        gap="small"
+      >
         <Box
           gap="xsmall"
           align="center"
         >
           <img
-            src={PLURAL_MARK}
+            src={PLURAL_MARK_WHITE}
             width="45px"
           />
           <Text size="medium">Sign up to get started with plural</Text>
         </Box>
         <Box
+          margin={{ vertical: 'small' }}
           gap="xsmall"
           justify="center"
         >
@@ -472,16 +560,19 @@ export function Signup() {
                   reason={reason}
                 />
                 <Button
-                  label="Sign Up"
+                  primary
                   disabled={disabled}
                   loading={loading}
                   onClick={mutation}
-                />
+                >
+                  Sign Up
+                </Button>
               </Box>
             </Box>
           </Form>
         </Keyboard>
         <Box
+          margin={{ top: 'small' }}
           fill="horizontal"
           align="center"
           justify="center"
@@ -493,7 +584,7 @@ export function Signup() {
             color="dark-6"
           >Already have an account?
           </Text>
-          <Anchor onClick={() => history.push('/login')}>Login</Anchor>
+          <Anchor onClick={() => navigate('/login')}>Login</Anchor>
         </Box>
       </Box>
     </LoginPortal>

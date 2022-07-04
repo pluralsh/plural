@@ -1,7 +1,7 @@
 import { Box } from 'grommet'
-import React, { useEffect } from 'react'
-import { useApolloClient, useMutation } from 'react-apollo'
-import { useLocation } from 'react-router'
+import { useEffect } from 'react'
+import { useApolloClient, useMutation } from '@apollo/client'
+import { useLocation } from 'react-router-dom'
 
 import qs from 'query-string'
 
@@ -24,7 +24,7 @@ export function SSOCallback() {
     variables: { code, deviceToken },
     onCompleted: result => {
       setToken(result.ssoCallback.jwt)
-      deviceToken && finishedDeviceLogin()
+      if (deviceToken) finishedDeviceLogin()
       const challenge = getChallenge()
       if (challenge) {
         handleOauthChallenge(client, challenge)
@@ -37,7 +37,7 @@ export function SSOCallback() {
 
   useEffect(() => {
     mutation()
-  }, [code])
+  }, [mutation])
 
   return (
     <Box

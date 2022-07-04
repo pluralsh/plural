@@ -1,9 +1,9 @@
 import { Box, Text } from 'grommet'
 import moment from 'moment'
-import React, { useState } from 'react'
-import { useMutation, useQuery } from 'react-apollo'
+import { useState } from 'react'
+import { useMutation, useQuery } from '@apollo/client'
 import { SecondaryButton, Trash } from 'forge-core'
-import { useHistory, useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import { Refresh, Return } from 'grommet-icons'
 
@@ -112,8 +112,8 @@ function DeleteRecord({ record, domain }) {
       query: DNS_RECORDS,
       variables: { id: domain.id },
       update: prev => deepUpdate(
-        prev, 
-        'dnsDomain', 
+        prev,
+        'dnsDomain',
         domain => removeConnection(domain, deleteDnsRecord, 'dnsRecords')
       ),
     }),
@@ -122,9 +122,9 @@ function DeleteRecord({ record, domain }) {
   return (
     <>
       <Icon
-        icon={Trash} 
-        tooltip="delete" 
-        onClick={() => setConfirm(true)} 
+        icon={Trash}
+        tooltip="delete"
+        onClick={() => setConfirm(true)}
         iconAttrs={{ color: 'error' }}
       />
       {confirm && (
@@ -143,7 +143,7 @@ function DeleteRecord({ record, domain }) {
 }
 
 function RecordsControls({ refetch }) {
-  const history = useHistory()
+  const navigate = useNavigate()
 
   return (
     <SectionPortal>
@@ -157,10 +157,10 @@ function RecordsControls({ refetch }) {
           onClick={refetch}
           tooltip="refresh list"
         />
-        <SecondaryButton 
+        <SecondaryButton
           icon={<Return size="small" />}
-          label="Return" 
-          onClick={() => history.push('/accounts/edit/domains')}
+          label="Return"
+          onClick={() => navigate('/accounts/edit/domains')}
         />
       </Box>
     </SectionPortal>
@@ -189,7 +189,7 @@ export function DnsRecords() {
             setListRef={setListRef}
             hasNextPage={pageInfo.hasNextPage}
             items={edges}
-            loading={loading} 
+            loading={loading}
             placeholder={Placeholder}
             mapper={({ node }) => (
               <DnsRecord
@@ -197,12 +197,12 @@ export function DnsRecords() {
                 record={node}
                 domain={domain}
               />
-            )} 
+            )}
             loadNextPage={() => pageInfo.hasNextPage && fetchMore({
               variables: { cursor: pageInfo.endCursor },
               updateQuery: (prev, { fetchMoreResult: { dnsDomain } }) => deepUpdate(
-                prev, 
-                'dnsDomain', 
+                prev,
+                'dnsDomain',
                 prev => extendConnection(prev, dnsDomain.dnsRecords, 'dnsRecords')
               ),
             })}

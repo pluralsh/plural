@@ -1,16 +1,15 @@
 import { Box, Text } from 'grommet'
 import { Close } from 'grommet-icons'
-import React from 'react'
 
 export const ignore = e => {
-  e.preventDefault(); e.stopPropagation() 
+  e.preventDefault(); e.stopPropagation()
 }
 
 export function ModalHeader({ text, setOpen }) {
   return (
     <Box
       direction="row"
-      border={{ side: 'bottom', color: 'light-3' }}
+      border={{ side: 'bottom', color: 'border' }}
       pad="small"
     >
       <Box fill="horizontal">

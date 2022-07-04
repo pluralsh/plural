@@ -1,8 +1,7 @@
 import { Box } from 'grommet'
-import React, { useEffect } from 'react'
-import { useApolloClient, useMutation } from 'react-apollo'
-import { useLocation, useParams } from 'react-router'
-
+import { useEffect } from 'react'
+import { useApolloClient, useMutation } from '@apollo/client'
+import { useLocation, useParams } from 'react-router-dom'
 import qs from 'query-string'
 
 import { setToken } from '../../helpers/authentication'
@@ -26,7 +25,7 @@ export function OAuthCallback() {
     variables: { code, host: host(), provider: service.toUpperCase(), deviceToken },
     onCompleted: result => {
       setToken(result.oauthCallback.jwt)
-      deviceToken && finishedDeviceLogin()
+      if (deviceToken) finishedDeviceLogin()
       const challenge = getChallenge()
       if (challenge) {
         handleOauthChallenge(client, challenge)
@@ -39,7 +38,7 @@ export function OAuthCallback() {
 
   useEffect(() => {
     mutation()
-  }, [code])
+  }, [mutation])
 
   return (
     <Box

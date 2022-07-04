@@ -13,6 +13,7 @@ defmodule GraphQl.Schema.Account do
   end
 
   input_object :domain_mapping_input do
+    field :id,         :id
     field :domain,     :string
     field :enable_sso, :boolean
   end

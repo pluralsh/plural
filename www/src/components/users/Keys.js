@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Button, Key as KeyIcon, Scroller } from 'forge-core'
 
 import { Box, Markdown, Text } from 'grommet'
 import moment from 'moment'
 
-import { useMutation, useQuery } from 'react-apollo'
+import { useMutation, useQuery } from '@apollo/client'
 
 import { extendConnection } from '../../utils/graphql'
 import { Confirm } from '../utils/Confirm'
@@ -36,7 +36,7 @@ function Key({ publicKey }) {
       <Box
         border={{ side: 'bottom' }}
         pad="small"
-        direction="row" 
+        direction="row"
         align="center"
         gap="small"
       >
@@ -65,7 +65,7 @@ function Key({ publicKey }) {
             label="delete"
             background="red-dark"
             onClick={() => setConfirm(true)}
-          /> 
+          />
         </Box>
       </Box>
       {confirm && (
@@ -79,7 +79,7 @@ function Key({ publicKey }) {
       )}
     </>
   )
-} 
+}
 
 export function Keys() {
   const { data, fetchMore } = useQuery(LIST_KEYS)

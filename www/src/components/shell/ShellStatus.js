@@ -1,4 +1,3 @@
-import React from 'react'
 import { Checkmark } from 'grommet-icons'
 
 import { Box, Text } from 'grommet'
@@ -14,7 +13,7 @@ function StatusContainer({ children, background, base, size }) {
       flex={false}
       width={size || SIZE}
       height={size || SIZE}
-      background={background} 
+      background={background}
       round="full"
       align="center"
       justify="center"
@@ -63,14 +62,14 @@ export function Status({ name, state }) {
       {!state && <UnreadyStatus />}
     </Box>
   )
-} 
+}
 
 export function ShellStatus({ shell: { status } }) {
-  if (!status) return <LoopingLogo dark />
+  if (!status) return <LoopingLogo />
 
   return (
     <Box
-      background="backgroundColor"
+      background="background"
       fill
       align="center"
       justify="center"
@@ -103,4 +102,4 @@ export function ShellStatus({ shell: { status } }) {
       </Box>
     </Box>
   )
-} 
+}

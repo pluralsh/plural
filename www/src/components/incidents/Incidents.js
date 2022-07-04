@@ -1,12 +1,12 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { Box, Drop, Text, TextInput, ThemeContext } from 'grommet'
 import { SortAsc as Ascend, Button, Check as Checkmark, Close, SortDesc as Descend, Filters as FiltersI, Notification, Explore as Search, Tag as TagIcon, User } from 'forge-core'
 import { Next } from 'grommet-icons'
-import { useQuery } from 'react-apollo'
+import { useQuery } from '@apollo/client'
 
 import moment from 'moment'
 
-import { useHistory, useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import styled, { keyframes } from 'styled-components'
 import { pulse } from 'react-animations'
@@ -29,7 +29,7 @@ import { IncidentFilter, IncidentSort, IncidentSortNames, Order } from './types'
 import { SlaTimer } from './SlaTimer'
 import { INCIDENTS_Q } from './queries'
 
-export const IncidentViewContext = React.createContext({})
+export const IncidentViewContext = createContext({})
 
 const pulseAnimation = keyframes`${pulse}`
 
@@ -85,7 +85,7 @@ function SubscriptionBadge({ incident: { subscription } }) {
     <Box
       pad={{ horizontal: 'small', vertical: 'xsmall' }}
       round="xsmall"
-      border={{ color: 'light-5' }}
+      border={{ color: 'border' }}
       align="center"
       justify="center"
     >
@@ -95,19 +95,19 @@ function SubscriptionBadge({ incident: { subscription } }) {
 }
 
 export function IncidentRow({ incident: { id, repository, title, insertedAt, owner, ...incident }, selected }) {
-  const history = useHistory()
+  const navigate = useNavigate()
 
   return (
     <Box
       flex={false}
       fill="horizontal"
       pad="small"
-      border={{ side: 'bottom', color: 'light-3' }}
+      border={{ side: 'bottom', color: 'border' }}
       direction="row"
       align="center"
       gap="small"
       hoverIndicator="light-2"
-      onClick={() => history.push(`/incident/${id}`)}
+      onClick={() => navigate(`/incident/${id}`)}
       height="75px"
     >
       <RepoIcon repo={repository} />
@@ -139,7 +139,7 @@ export function IncidentRow({ incident: { id, repository, title, insertedAt, own
           </Box>
           <Text
             size="small"
-            color="light-5"
+            color="border"
           >created: {moment(insertedAt).fromNow()}, {owner ? `responder: ${owner.email}` : 'unassigned'}
           </Text>
         </Box>
@@ -189,7 +189,7 @@ function TagInput({ setAlternate }) {
   const accept = useCallback(() => {
     setFilters([{ type: IncidentFilter.TAG, value: tag }, ...filters])
     setAlternate(null)
-  }, [tag, setFilters, setAlternate])
+  }, [tag, setFilters, setAlternate, filters])
 
   return (
     <Box
@@ -206,7 +206,7 @@ function TagInput({ setAlternate }) {
       </Text>
       <Box
         fill="horizontal"
-        border={{ side: 'bottom', color: 'light-5' }}
+        border={{ side: 'bottom', color: 'border' }}
       >
         <TextInput
           plain
@@ -250,7 +250,7 @@ export function FilterSelect() {
         gap="xsmall"
         align="center"
         background="light-3"
-        hoverIndicator="light-5"
+        hoverIndicator="border"
         round="xsmall"
         onClick={() => setOpen(true)}
         focusIndicator={false}
@@ -436,7 +436,7 @@ export function IncidentToolbar({ children }) {
   return (
     <Box
       flex={false}
-      border={{ side: 'bottom', color: 'light-5' }}
+      border={{ side: 'bottom', color: 'border' }}
       align="center"
       direction="row"
       pad={{ vertical: 'xsmall', horizontal: 'small' }}
@@ -496,12 +496,14 @@ export function Incidents() {
     setBreadcrumbs([{ url: '/incidents', text: 'incidents' }])
   }, [setBreadcrumbs])
 
+  const value = useMemo(() => ({ filters, setFilters, order, setOrder, sort, setSort }), [filters, order, sort])
+
   if (!data) return <LoopingLogo />
 
   const { incidents: { edges, pageInfo } } = data
 
   return (
-    <IncidentViewContext.Provider value={{ filters, setFilters, order, setOrder, sort, setSort }}>
+    <IncidentViewContext.Provider value={value}>
       <Box fill>
         {!open && (
           <Box

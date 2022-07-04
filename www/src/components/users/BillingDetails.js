@@ -1,16 +1,15 @@
-import React, { useCallback, useContext, useState } from 'react'
-import { CardElement, Elements, injectStripe } from 'react-stripe-elements'
-import { Box, Layer, Text } from 'grommet'
-import { useMutation, useQuery } from 'react-apollo'
-
-import { Button, ModalHeader, PaymentMethods, Trash } from 'forge-core'
-
-import { Amex, Mastercard, Visa } from 'grommet-icons'
-
-import { TagContainer } from '../repos/Tags'
 import 'react-credit-cards/es/styles-compiled.css'
 import './stripe.css'
 import './billing.css'
+import { useCallback, useContext, useState } from 'react'
+import { CardElement, Elements, injectStripe } from 'react-stripe-elements'
+import { Box, Layer, Text } from 'grommet'
+import { useMutation, useQuery } from '@apollo/client'
+import { Button, PaymentMethods, Trash } from 'forge-core'
+import { Amex, Mastercard, Visa } from 'grommet-icons'
+
+import { ModalHeader } from '../ModalHeader'
+import { TagContainer } from '../repos/Tags'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 import { SectionPortal } from '../Explore'
 import { HeaderItem } from '../repos/Docker'
@@ -20,7 +19,7 @@ import { CurrentUserContext } from '../login/CurrentUser'
 import { CARDS, DELETE_CARD, REGISTER_CARD } from './queries'
 
 function _CardForm({ stripe, onCompleted }) {
-  const [stripeError, setStripeError] = useState(null) 
+  const [stripeError, setStripeError] = useState(null)
   const [mutation, { loading, error }] = useMutation(REGISTER_CARD, {
     refetchQueries: [{ query: CARDS }],
     onCompleted,
@@ -121,7 +120,7 @@ function CardHeader() {
       direction="row"
       pad="small"
       gap="xsmall"
-      border={{ side: 'bottom', color: 'light-5' }} 
+      border={{ side: 'bottom', color: 'border' }}
       align="center"
     >
       <HeaderItem
@@ -156,7 +155,7 @@ function CardRow({ card, noDelete }) {
       pad={{ horizontal: 'small', vertical: 'xsmall' }}
       gap="xsmall"
       align="center"
-      border={{ side: 'bottom', color: 'light-5' }}
+      border={{ side: 'bottom', color: 'border' }}
     >
       <Box
         width="20%"

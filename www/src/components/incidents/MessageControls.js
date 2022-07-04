@@ -1,10 +1,8 @@
-import React, { useCallback, useContext, useRef, useState } from 'react'
+import { useCallback, useContext, useRef, useState } from 'react'
 import { Box, Drop, Text } from 'grommet'
 import { Edit, Emoji, TooltipContent, Trash } from 'forge-core'
-
-import { useMutation } from 'react-apollo'
-
-import { useParams } from 'react-router'
+import { useMutation } from '@apollo/client'
+import { useParams } from 'react-router-dom'
 
 import { CurrentUserContext } from '../login/CurrentUser'
 
@@ -57,7 +55,7 @@ export function Reaction({ message, setHover, align, width, label, ...props }) {
   const ref = useRef()
   const [open, setOpen] = useState(false)
   const toggleOpen = useCallback(value => {
-    setHover && setHover(value)
+    if (setHover) setHover(value)
     setOpen(value)
   }, [setOpen, setHover])
   const [mutation] = useMutation(CREATE_REACTION, { variables: { id: message.id } })
@@ -95,7 +93,7 @@ export function Reaction({ message, setHover, align, width, label, ...props }) {
   )
 }
 
-function EditMsg({ message }) {
+function EditMsg() {
   return (
     <Control tooltip="edit">
       <Box
@@ -143,7 +141,7 @@ export function MessageControls({ message, setHover }) {
   return (
     <Box
       className="message-controls"
-      border={{ color: 'light-5' }}
+      border={{ color: 'border' }}
       elevation="xsmall"
       background="white"
       direction="row"

@@ -1,6 +1,6 @@
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Box, TextInput } from 'grommet'
-import { useQuery } from 'react-apollo'
+import { useQuery } from '@apollo/client'
 
 import { Scroller } from 'forge-core'
 
@@ -87,7 +87,7 @@ export function Groups() {
   const { groups: { pageInfo, edges } } = data
 
   return (
-    <SectionContentContainer header="Groups">    
+    <SectionContentContainer header="Groups">
       <Scroller
         id="groups"
         style={{ height: '100%', overflow: 'auto' }}

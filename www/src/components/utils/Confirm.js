@@ -1,6 +1,5 @@
-import React from 'react'
 import { Box, Layer } from 'grommet'
-import { Button, SecondaryButton } from 'forge-core'
+import { Button } from 'honorable'
 
 import { Alert, AlertStatus, GqlError } from './Alert'
 
@@ -21,9 +20,9 @@ export function Confirm({ submit, error, loading, label, header, cancel, descrip
             error={error}
           />
         )}
-        <Alert 
-          status={AlertStatus.INFO} 
-          header={header || 'Are you sure?'} 
+        <Alert
+          status={AlertStatus.INFO}
+          header={header || 'Are you sure?'}
           description={description}
         />
         <Box
@@ -32,15 +31,18 @@ export function Confirm({ submit, error, loading, label, header, cancel, descrip
           justify="end"
           gap="xsmall"
         >
-          <SecondaryButton
-            label="Cancel"
+          <Button
+            secondary
             onClick={cancel}
-          />
-          <Button 
-            label={label || 'Continue'} 
-            onClick={submit} 
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={submit}
             loading={loading}
-          />
+          >
+            {label || 'Continue'}
+          </Button>
         </Box>
       </Box>
     </Layer>

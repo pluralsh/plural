@@ -1,15 +1,13 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { useHistory, useParams } from 'react-router'
-import { Button, Close, Copyable, Edit, ModalHeader, Reload, SecondaryButton, Trash } from 'forge-core'
-
+import { useContext, useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { Button, Close, Copyable, Edit, Reload, SecondaryButton, Trash } from 'forge-core'
 import { Box, Layer, Text, TextInput } from 'grommet'
 
-import { useMutation, useQuery } from 'react-apollo'
+import { useMutation, useQuery } from '@apollo/client'
 
+import { ModalHeader } from '../ModalHeader'
 import { extendConnection } from '../../utils/graphql'
-
 import { BreadcrumbsContext } from '../Breadcrumbs'
-
 import { StandardScroller } from '../utils/SmoothScroller'
 
 import { WebhookLog } from './WebhookLog'
@@ -53,7 +51,7 @@ function WebhookLogs({ webhook: { logs: { pageInfo, edges } }, loading, fetchMor
 
   return (
     <Container
-      title="webhook logs" 
+      title="webhook logs"
       modifier={(
         <Control
           icon={<Reload size="small" />}
@@ -73,7 +71,7 @@ function WebhookLogs({ webhook: { logs: { pageInfo, edges } }, loading, fetchMor
             log={node}
             next={next.node}
           />
-        )} 
+        )}
         loadNextPage={() => pageInfo.hasNextPage && fetchMore({
           variables: { cursor: pageInfo.endCursor },
           updateQuery: (prev, { fetchMoreResult: { integrationWebhook: { logs } } }) => ({
@@ -93,7 +91,7 @@ export function Attribute({ name, width, children }) {
       fill="horizontal"
       pad="small"
     >
-      <Box width={width || '80px'}>
+      <Box width={width || '128px'}>
         <Text
           size="small"
           weight="bold"
@@ -115,7 +113,7 @@ export function Attributes({ children, ...props }) {
       {...props}
     >
       <Box
-        gap="0px"
+        gap="none"
         border={{ side: 'between' }}
       >
         {children}
@@ -187,8 +185,8 @@ function Control({ icon, onClick }) {
       flex={false}
       width="25px"
       height="25px"
-      onClick={onClick} 
-      hoverIndicator="hover"
+      onClick={onClick}
+      hoverIndicator="fill-one"
       focusIndicator={false}
       align="center"
       justify="center"
@@ -200,11 +198,11 @@ function Control({ icon, onClick }) {
 }
 
 function WebhookControls({ webhook, setEdit }) {
-  const hist = useHistory()
+  const navigate = useNavigate()
   const [open, setOpen] = useState(false)
   const [mutation, { loading }] = useMutation(DELETE_WEBHOOK, {
     variables: { id: webhook.id },
-    onCompleted: () => hist.push('/webhooks'),
+    onCompleted: () => navigate('/webhooks'),
   })
 
   return (
@@ -293,7 +291,7 @@ function EditWebhook({ webhook, setEdit }) {
             border={{ color: 'sidebar' }}
           >
             <TextInput
-              value={attributes.name} 
+              value={attributes.name}
               onChange={({ target: { value } }) => setAttributes({ ...attributes, name: value })}
             />
           </Box>
@@ -320,13 +318,13 @@ function EditWebhook({ webhook, setEdit }) {
         pad="small"
         gap="xsmall"
       >
-        <TextInput 
-          placeholder="url to deliver to" 
-          value={attributes.url} 
+        <TextInput
+          placeholder="url to deliver to"
+          value={attributes.url}
           onChange={({ target: { value } }) => setAttributes({ ...attributes, url: value })}
         />
-        <ActionInput 
-          actions={attributes.actions} 
+        <ActionInput
+          actions={attributes.actions}
           colors={{ bg: 'card', hover: 'cardHover' }}
           setActions={actions => setAttributes({ ...attributes, actions })}
         />
@@ -353,7 +351,7 @@ export function Webhook() {
       fill
       pad="small"
       gap="small"
-      background="backgroundColor"
+      background="background"
     >
       {!edit && (
         <WebhookHeader

@@ -1,13 +1,11 @@
-import React, { useState } from 'react'
-import { useMutation } from 'react-apollo'
+import { useState } from 'react'
+import { useMutation } from '@apollo/client'
 import { Button, Pill, Select } from 'forge-core'
 import { Box, CheckBox, Text } from 'grommet'
 import { Close } from 'grommet-icons'
-
 import Toggle from 'react-toggle'
 
 import { TAGS } from '../versions/VersionTags'
-
 import { deepUpdate, updateCache } from '../../utils/graphql'
 import { SectionPortal } from '../Explore'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
@@ -15,16 +13,16 @@ import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 import { REPO_Q, UPDATE_INSTALLATION } from './queries'
 
 function update(cache, repositoryId, installation) {
-  updateCache(cache, { 
-    query: REPO_Q, 
-    variables: { repositoryId }, 
+  updateCache(cache, {
+    query: REPO_Q,
+    variables: { repositoryId },
     update: prev => deepUpdate(prev, 'repository.installation', () => installation),
   })
 }
 
-export function UpdateInstallation({ installation }) {
-  const [autoUpgrade, setAutoUpgrade] = useState(installation.autoUpgrade)
-  const [trackTag, setTrackTag] = useState(installation.trackTag)
+export function UpdateInstallation({ installation = {} }) {
+  const [autoUpgrade, setAutoUpgrade] = useState(installation.autoUpgrade || false)
+  const [trackTag, setTrackTag] = useState(installation.trackTag || '')
 
   const [mutation, { loading, data, error }] = useMutation(UPDATE_INSTALLATION, {
     variables: { id: installation.id, attributes: { autoUpgrade, trackTag } },
@@ -37,8 +35,8 @@ export function UpdateInstallation({ installation }) {
     >
       {data && (
         <Alert
-          status={AlertStatus.SUCCESS} 
-          header="Installation updated!" 
+          status={AlertStatus.SUCCESS}
+          header="Installation updated!"
           description="the changes will take effect immediately"
         />
       )}
@@ -53,7 +51,7 @@ export function UpdateInstallation({ installation }) {
         gap="small"
         align="center"
       >
-        <Toggle 
+        <Toggle
           checked={autoUpgrade}
           onChange={({ target: { checked } }) => setAutoUpgrade(checked)}
         />
@@ -126,14 +124,12 @@ export function EditInstallation({ installation, repository, onUpdate }) {
           align="center"
           fill="horizontal"
         >
-          <Box flex={false}>
-            <CheckBox
-              toggle
-              label="Auto Upgrade"
-              checked={autoUpgrade}
-              onChange={e => setAutoUpgrade(e.target.checked)}
-            />
-          </Box>
+          <CheckBox
+            toggle
+            label="Auto upgrade"
+            checked={autoUpgrade}
+            onChange={e => setAutoUpgrade(e.target.checked)}
+          />
           {autoUpgrade && (
             <Box fill="horizontal">
               <Select

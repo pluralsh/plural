@@ -1,10 +1,8 @@
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Box, Layer, Text } from 'grommet'
-import { useMutation, useQuery } from 'react-apollo'
-
-import { BORDER_COLOR, Button, Copyable, GraphView, ListView, ModalHeader, Scroller, Trash } from 'forge-core'
+import { useMutation, useQuery } from '@apollo/client'
+import { BORDER_COLOR, Button, Copyable, GraphView, ListView, Scroller, Trash } from 'forge-core'
 import moment from 'moment'
-
 import lookup from 'country-code-lookup'
 
 import { deepUpdate, extendConnection, removeConnection, updateCache } from '../../utils/graphql'
@@ -16,6 +14,7 @@ import { Icon } from '../accounts/Group'
 import { Confirm } from '../utils/Confirm'
 import { formatLocation } from '../../utils/geo'
 import { Chloropleth } from '../utils/Chloropleth'
+import { ModalHeader } from '../ModalHeader'
 
 import { CREATE_TOKEN, DELETE_TOKEN, TOKENS_Q, TOKEN_AUDITS, TOKEN_METRICS } from './queries'
 import { obscure } from './utils'
@@ -27,7 +26,7 @@ function AuditHeader() {
       direction="row"
       pad="small"
       gap="xsmall"
-      border={{ side: 'bottom', color: 'light-5' }}
+      border={{ side: 'bottom', color: 'border' }}
       align="center"
     >
       <HeaderItem
@@ -56,7 +55,7 @@ function TokenAudit({ audit }) {
       flex={false}
       direction="row"
       pad="small"
-      border={{ side: 'bottom', color: 'light-5' }}
+      border={{ side: 'bottom', color: 'border' }}
       align="center"
       height="50px"
     >
@@ -123,7 +122,7 @@ function TokenAudits({ id }) {
               key={node.id}
               audit={node}
             />
-          )} 
+          )}
           loadNextPage={() => pageInfo.hasNextPage && fetchMore({
             variables: { cursor: pageInfo.endCursor },
             updateQuery: (prev, { fetchMoreResult: { token } }) => deepUpdate(prev, 'token', prevToken => (
@@ -218,26 +217,26 @@ function Token({ token: { token, insertedAt, id } }) {
               content: <TokenMetrics id={id} />,
             })}
           />
-          <Icon 
-            icon={ListView} 
-            tooltip="Audits" 
-            hover="hover" 
+          <Icon
+            icon={ListView}
+            tooltip="Audits"
+            hover="hover"
             onClick={() => setModal({
               header: 'Audit Logs',
               content: <TokenAudits id={id} />,
             })}
           />
-          <Icon 
-            icon={Trash} 
-            tooltip="Delete" 
-            hover="hover" 
+          <Icon
+            icon={Trash}
+            tooltip="Delete"
+            hover="hover"
             onClick={doConfirm}
             iconAttrs={{ color: 'red-dark' }}
           />
         </Box>
       </Box>
       {confirm && (
-        <Confirm 
+        <Confirm
           description="Double check to ensure no automation is still using it"
           cancel={() => setConfirm(false)}
           submit={mutation}
@@ -307,10 +306,12 @@ export function Tokens() {
             />
           )}
           onLoadMore={() => {
-            pageInfo.hasNextPage && fetchMore({
-              variables: { cursor: pageInfo.endCursor },
-              updateQuery: (prev, { fetchMoreResult: { tokens } }) => extendConnection(prev, tokens, 'tokens'),
-            })
+            if (pageInfo.hasNextPage) {
+              fetchMore({
+                variables: { cursor: pageInfo.endCursor },
+                updateQuery: (prev, { fetchMoreResult: { tokens } }) => extendConnection(prev, tokens, 'tokens'),
+              })
+            }
           }}
         />
       </Box>

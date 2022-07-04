@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react'
-import { useQuery } from 'react-apollo'
-import { useLocation } from 'react-router'
-import { Redirect } from 'react-router-dom'
+import { createContext, useEffect, useState } from 'react'
+import { useQuery } from '@apollo/client'
+import { Navigate, useLocation } from 'react-router-dom'
 import { Box } from 'grommet'
 
 import { useIntercom } from 'react-use-intercom'
@@ -12,19 +11,32 @@ import { useNotificationSubscription } from '../incidents/Notifications'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
 // const POLL_INTERVAL=30000
-export const CurrentUserContext = React.createContext({})
-export const PluralConfigurationContext = React.createContext({})
+export const CurrentUserContext = createContext({})
+export const PluralConfigurationContext = createContext({})
+
+function LoadingSpinner() {
+  const [showLogo, setShowLogo] = useState(false)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowLogo(true)
+    }, 500)
+
+    return () => clearTimeout(timer)
+  }, [])
+
+  return showLogo && <LoopingLogo />
+}
 
 export default function CurrentUser({ children }) {
   const { loading, error, data } = useQuery(ME_Q)
   useNotificationSubscription()
 
-  if (loading) return (<Box height="100vh"><LoopingLogo /></Box>)
+  if (loading) return (<Box height="100vh"><LoadingSpinner /></Box>)
 
   if (error || !data || !data.me || !data.me.id) {
     wipeToken()
 
-    return (<Redirect to="/login" />)
+    return (<Navigate to="/login" />)
   }
   const { me } = data
 
@@ -44,18 +56,18 @@ export function PluralProvider({ children }) {
   useEffect(() => {
     if (!data || !data.me) return
     boot({ name: data.me.name, email: data.me.email, user_id: data.me.id })
-  }, [data])
+  }, [data, boot])
 
   useEffect(() => {
     if (data && data.me) update()
-  }, [location, data])
+  }, [location, data, update])
 
-  if (loading) return (<Box height="100vh"><LoopingLogo dark /></Box>)
+  if (loading) return (<Box height="100vh"><LoadingSpinner /></Box>)
 
   if (error || !data || !data.me || !data.me.id) {
     wipeToken()
 
-    return (<Redirect to="/login" />)
+    return (<Navigate to="/login" />)
   }
 
   const { me, configuration } = data

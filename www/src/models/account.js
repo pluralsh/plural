@@ -1,4 +1,4 @@
-import gql from 'graphql-tag'
+import { gql } from '@apollo/client'
 
 import { VersionFragment } from './chart'
 import { IntegrationWebhookFragment } from './integrations'
@@ -44,7 +44,7 @@ export const DnsDomainFragment = gql`
     id
     name
     creator { ...UserFragment }
-    accessPolicy { 
+    accessPolicy {
       id
       bindings { ...PolicyBindingFragment }
     }

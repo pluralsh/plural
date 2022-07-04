@@ -1,9 +1,8 @@
-import React, { useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Box, Collapsible, Text } from 'grommet'
-
 import moment from 'moment'
 import { Down, Next } from 'grommet-icons'
-import { sortBy } from 'lodash'
+import sortBy from 'lodash.sortby'
 import yaml from 'js-yaml'
 import ReactDiffViewer from 'react-diff-viewer'
 
@@ -44,7 +43,7 @@ function HistoryChanges({ changes }) {
       previous: `...\n${prev}\n...`,
       next: `...\n${next}\n...`,
     }
-  })
+  }, [changes])
 
   return (
     <Box

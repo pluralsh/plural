@@ -1,6 +1,4 @@
-import React from 'react'
-
-import { useApolloClient } from 'react-apollo'
+import { useApolloClient } from '@apollo/client'
 
 import TypeaheadEditor from '../utils/TypeaheadEditor'
 

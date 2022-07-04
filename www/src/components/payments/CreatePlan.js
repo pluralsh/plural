@@ -1,14 +1,14 @@
-import React, { useCallback, useState } from 'react'
-
+import { useCallback, useState } from 'react'
+import { useMutation } from '@apollo/client'
 import { Box, Layer, RangeSelector, Stack, Text, TextInput } from 'grommet'
+import { Button, HoveredBackground, SecondaryButton, Select, Trash } from 'forge-core'
 import { FaDollarSign } from 'react-icons/fa'
-import { Button, HoveredBackground, ModalHeader, SecondaryButton, Select, Trash } from 'forge-core'
 import { Add, Cube } from 'grommet-icons'
-import { useMutation } from 'react-apollo'
 
 import { LabeledInput } from '../repos/CreateRepository'
 
 import { REPO_Q } from '../repos/queries'
+import { ModalHeader } from '../ModalHeader'
 
 import { deepUpdate, updateCache } from '../../utils/graphql'
 import { SeverityNub } from '../incidents/Severity'
@@ -92,7 +92,7 @@ function NumericInput({ value, onChange, placeholder, ...props }) {
       value={value ? `${value}` : ''}
       onChange={({ target: { value } }) => {
         const parsed = parseInt(value)
-        if (!isNaN(parsed)) {
+        if (parsed === parsed) {
           onChange(parsed)
         }
         else {
@@ -105,10 +105,10 @@ function NumericInput({ value, onChange, placeholder, ...props }) {
 
 function DollarInput({ value, onChange, ...props }) {
   return (
-    <NumericInput 
+    <NumericInput
       {...props}
       icon={<FaDollarSign size="12px" />}
-      value={value && (value / 100)} 
+      value={value && (value / 100)}
       onChange={v => onChange(v * 100)}
     />
   )
@@ -149,11 +149,13 @@ function FeatureCreator({ state, setState, setDisplay, loading }) {
                 removeFeature={removeFeature}
               />
             )) : (
-              <Box><Text
-                size="small"
-                weight={500}
-              >No features created yet
-              </Text>
+              <Box>
+                <Text
+                  size="small"
+                  weight={500}
+                >
+                  No features created yet
+                </Text>
               </Box>
             )}
         </Box>
@@ -247,11 +249,13 @@ function ItemCreator({ state, setState, setDisplay, loading }) {
                 setState={setState}
               />
             )) : (
-              <Box><Text
-                size="small"
-                weight={500}
-              >No line items created yet
-              </Text>
+              <Box>
+                <Text
+                  size="small"
+                  weight={500}
+                >
+                  No line items created yet
+                </Text>
               </Box>
             )}
         </Box>
@@ -320,8 +324,8 @@ function ItemCreator({ state, setState, setDisplay, loading }) {
 
 function PlanForm({ state, setState, setDisplay, loading }) {
   const updatePeriod = period => deepUpdate(
-    { ...state, period }, 
-    'lineItems.items', 
+    { ...state, period },
+    'lineItems.items',
     items => items.map(item => ({ ...item, period }))
   )
 
@@ -401,7 +405,7 @@ export function ServiceLevel({ level: { minSeverity, maxSeverity, responseTime }
 }
 
 export function SlaForm({ attributes, setAttributes, serviceLevel: { minSeverity, maxSeverity, responseTime }, setServiceLevel }) {
-  const deleteSla = useCallback(({ minSeverity, maxSeverity }) => { 
+  const deleteSla = useCallback(({ minSeverity, maxSeverity }) => {
     const serviceLevels = attributes.serviceLevels.filter(l => (
       l.minSeverity !== minSeverity || l.maxSeverity !== maxSeverity
     ))
@@ -421,9 +425,9 @@ export function SlaForm({ attributes, setAttributes, serviceLevel: { minSeverity
         width="50%"
       >
         {attributes.serviceLevels.map(({ minSeverity, maxSeverity, responseTime }) => (
-          <ServiceLevel 
-            key={`${minSeverity}:${maxSeverity}`} 
-            level={{ minSeverity, maxSeverity, responseTime }} 
+          <ServiceLevel
+            key={`${minSeverity}:${maxSeverity}`}
+            level={{ minSeverity, maxSeverity, responseTime }}
             deleteLevel={deleteSla}
           />
         ))}
@@ -454,8 +458,8 @@ export function SlaForm({ attributes, setAttributes, serviceLevel: { minSeverity
               max={5}
               size="full"
               round="small"
-              color="light-5"
-              values={[minSeverity, maxSeverity]} 
+              color="border"
+              values={[minSeverity, maxSeverity]}
               onChange={([minSeverity, maxSeverity]) => setServiceLevel({ responseTime, minSeverity, maxSeverity })}
             />
           </Stack>
@@ -476,17 +480,17 @@ export function SlaForm({ attributes, setAttributes, serviceLevel: { minSeverity
 
 function NavigableSlaForm({ state, setState, mutation, loading }) {
   const [serviceLevel, setServiceLevel] = useState({ minSeverity: 0, maxSeverity: 3, responseTime: 30 })
-  
+
   return (
     <Box
       fill
       pad="small"
       animation="fadeIn"
     >
-      <SlaForm 
-        attributes={state} 
-        setAttributes={setState} 
-        serviceLevel={serviceLevel} 
+      <SlaForm
+        attributes={state}
+        setAttributes={setState}
+        serviceLevel={serviceLevel}
         setServiceLevel={setServiceLevel}
       />
       <Box
@@ -528,7 +532,7 @@ export function CreateAnchor({ onClick }) {
   return (
     <Box
       as={hover}
-      border={{ color: 'light-5' }}
+      border={{ color: 'border' }}
       focusIndicator={false}
       pad="small"
       direction="row"

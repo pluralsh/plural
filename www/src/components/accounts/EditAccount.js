@@ -1,16 +1,17 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { Box, Text, TextInput, ThemeContext } from 'grommet'
 
-import { useHistory, useParams } from 'react-router'
-import { Button, Browser as Domain, EditField, Group, InputCollection, 
-  Invoices as InvoicesI, Messages, Oauth, PaymentMethods, ResponsiveInput, Roles as RolesI, ServiceAccounts as ServiceAccountsI, Trash, User } from 'forge-core'
-import { useMutation } from 'react-apollo'
+import { useParams } from 'react-router-dom'
+import {
+  Button,
+  InputCollection,
+  Trash,
+} from 'forge-core'
+import { useMutation } from '@apollo/client'
 
-import { SectionChoice } from '../utils/SectionChoice'
-import { SIDEBAR_WIDTH } from '../constants'
 import { CurrentUserContext } from '../login/CurrentUser'
 
-import Avatar from '../users/Avatar'
+import ResponsiveInput from '../ResponsiveInput'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 import { CardList } from '../users/BillingDetails'
 import Invoices from '../payments/Invoices'
@@ -27,8 +28,6 @@ import { ServiceAccounts } from './ServiceAccounts'
 import { Groups, Roles, Users } from './Directory'
 import { Invites } from './Invites'
 
-const ICON_SIZE = '12px'
-
 const ViewOptions = {
   EDIT: 'attributes',
   USERS: 'users',
@@ -42,19 +41,6 @@ const ViewOptions = {
   INVITES: 'invites',
 }
 
-const VIEWS = [
-  { text: 'Edit Attributes', view: ViewOptions.EDIT, icon: <EditField size={ICON_SIZE} />, optional: true },
-  { text: 'Users', view: ViewOptions.USERS, icon: <User size={ICON_SIZE} /> },
-  { text: 'Invites', view: ViewOptions.INVITES, icon: <Messages size={ICON_SIZE} /> },
-  { text: 'Service Accounts', view: ViewOptions.SRV_ACCTS, icon: <ServiceAccountsI size={ICON_SIZE} /> },
-  { text: 'Groups', view: ViewOptions.GROUPS, icon: <Group size={ICON_SIZE} /> },
-  { text: 'Roles', view: ViewOptions.ROLES, icon: <RolesI size={ICON_SIZE} /> },
-  { text: 'Domains', view: ViewOptions.DOMAINS, icon: <Domain size={ICON_SIZE} /> },
-  { text: 'Payment Methods', view: ViewOptions.METHODS, icon: <PaymentMethods size={ICON_SIZE} /> },
-  { text: 'Invoices', view: ViewOptions.INVOICES, icon: <InvoicesI size={ICON_SIZE} /> },
-  { text: 'OAuth Integrations', view: ViewOptions.INTEGRATIONS, icon: <Oauth size={ICON_SIZE} /> },
-]
-
 function DomainRow({ domain: { domain, enableSso }, removeDomain }) {
   return (
     <Box
@@ -63,20 +49,31 @@ function DomainRow({ domain: { domain, enableSso }, removeDomain }) {
       align="center"
       gap="small"
     >
-      <Box fill="horizontal" direction='row' gap='small' align='center'>
+      <Box
+        fill="horizontal"
+        direction="row"
+        gap="small"
+        align="center"
+      >
         <Text
           size="small"
           weight="bold"
         >{domain}
         </Text>
         {enableSso && (
-          <Box background='tone-light' pad='xsmall' round='xsmall'>SSO</Box>
+          <Box
+            background="tone-light"
+            pad="xsmall"
+            round="xsmall"
+          >
+            SSO
+          </Box>
         )}
       </Box>
-      <Icon 
+      <Icon
         icon={Trash}
-        tooltip="delete" 
-        onClick={() => removeDomain(domain)} 
+        tooltip="delete"
+        onClick={() => removeDomain(domain)}
         iconAttrs={{ color: 'error' }}
       />
     </Box>
@@ -130,7 +127,8 @@ function EditAttributes() {
           <Text
             size="small"
             weight={500}
-          >Domain Mappings
+          >
+            Domain Mappings
           </Text>
           <Text size="small"><i>register email domains to automatically add users to your account</i></Text>
           {attributes.domainMappings.map(domain => (
@@ -169,11 +167,9 @@ function EditAttributes() {
 }
 
 export function EditAccount({ billing }) {
-  const { account, ...me } = useContext(CurrentUserContext)
-  const history = useHistory()
   const { section } = useParams()
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
-  useEffect(() => {    
+  useEffect(() => {
     const prefix = billing ? '/accounts/billing' : '/accounts/edit'
     setBreadcrumbs([
       { text: 'account', url: '/accounts/edit/attributes' },
@@ -183,69 +179,29 @@ export function EditAccount({ billing }) {
 
   return (
     <ThemeContext.Extend value={{ global: { input: { padding: '9px' } } }}>
-      <Box
-        fill
-        direction="row"
-      >
-        <Box
-          gap="xsmall"
-          flex={false}
-          width={SIDEBAR_WIDTH}
-          height="100%" 
-          background="backgroundColor"
-          pad="small"
-        >
-          <Box
-            direction="row"
-            align="center"
-            gap="small"
-          >
-            <Avatar
-              user={account}
-              size="40px"
-            />
-            <Text
-              size="small"
-              truncate
-            >{account.name}
-            </Text>
-          </Box>
-          {VIEWS.map(({ text, view, icon, optional }) => (
-            (!optional || canEdit(me, account)) && (
-              <SectionChoice
-                key={view}
-                selected={section === view}
-                label={text}
-                icon={icon}
-                onClick={() => history.push(`/accounts/edit/${view}`)}
-              />
-            )
-          ))}
-        </Box>
-        <Box fill>
-          {section === ViewOptions.EDIT && <EditAttributes />}
-          {section === ViewOptions.USERS && <Users />}
-          {section === ViewOptions.INVITES && <Invites />}
-          {section === ViewOptions.SRV_ACCTS && <ServiceAccounts />}
-          {section === ViewOptions.GROUPS && <Groups />}
-          {section === ViewOptions.ROLES && <Roles />}
-          {section === ViewOptions.DOMAINS && <DnsDirectory />}
-          {section === ViewOptions.METHODS && (
-            <SectionContentContainer header="Payment Methods">
-              <CardList />
-            </SectionContentContainer>
-          )}
-          {section === ViewOptions.INVOICES && (
-            <SectionContentContainer header="Invoices">
-              <Invoices />
-            </SectionContentContainer>
-          )}
-          {section === ViewOptions.INTEGRATIONS && (
-            <SectionContentContainer header="OAuth Integrations">
-              <OAuthIntegrations />
-            </SectionContentContainer>
-          )}
-        </Box>
+      <Box fill>
+        {section === ViewOptions.EDIT && <EditAttributes />}
+        {section === ViewOptions.USERS && <Users />}
+        {section === ViewOptions.INVITES && <Invites />}
+        {section === ViewOptions.SRV_ACCTS && <ServiceAccounts />}
+        {section === ViewOptions.GROUPS && <Groups />}
+        {section === ViewOptions.ROLES && <Roles />}
+        {section === ViewOptions.DOMAINS && <DnsDirectory />}
+        {section === ViewOptions.METHODS && (
+          <SectionContentContainer header="Payment Methods">
+            <CardList />
+          </SectionContentContainer>
+        )}
+        {section === ViewOptions.INVOICES && (
+          <SectionContentContainer header="Invoices">
+            <Invoices />
+          </SectionContentContainer>
+        )}
+        {section === ViewOptions.INTEGRATIONS && (
+          <SectionContentContainer header="OAuth Integrations">
+            <OAuthIntegrations />
+          </SectionContentContainer>
+        )}
       </Box>
     </ThemeContext.Extend>
   )

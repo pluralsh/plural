@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Box, Keyboard, Text, TextInput } from 'grommet'
 import { Scroller, Tag as TagInner } from 'forge-core'
 
@@ -52,7 +52,7 @@ export function TagInput({ addTag, removeTag, tags, round, ...rest }) {
   )
 }
 
-export function TagContainer({ enabled, hoverIndicator, children, gap, pad, onClick }) {
+export function TagContainer({ enabled, children, gap, pad, onClick }) {
   const border = enabled ? { side: 'right', color: 'focus', size: '2px' } : null
 
   return (
@@ -61,7 +61,7 @@ export function TagContainer({ enabled, hoverIndicator, children, gap, pad, onCl
       border={border}
     >
       <Box
-        hoverIndicator="hover"
+        hoverIndicator="fill-one"
         focusIndicator={false}
         direction="row"
         align="center"
@@ -82,7 +82,9 @@ export function Tag({ tag: { tag, count }, setTag, enabled }) {
       enabled={enabled}
       onClick={() => setTag && setTag(tag)}
     >
-      <Text size="small"># {tag} ({count})</Text>
+      <Text size="small">
+        # {tag} ({count})
+      </Text>
     </TagContainer>
   )
 }

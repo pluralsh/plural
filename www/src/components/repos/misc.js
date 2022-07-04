@@ -1,9 +1,9 @@
 import { ThemeContext } from 'grommet'
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 
 import { DEFAULT_CHART_ICON, DarkProviderIcons, ProviderIcons } from './constants'
 
-export function Provider({ provider, width }) {
+export function Provider({ provider, width, size }) {
   const { dark } = useContext(ThemeContext)
   let url = ProviderIcons[provider] || DEFAULT_CHART_ICON
   if (dark && DarkProviderIcons[provider]) {
@@ -13,7 +13,7 @@ export function Provider({ provider, width }) {
   return (
     <img
       alt={provider}
-      width={`${width}px`}
+      width={`${size || width}px`}
       src={url}
     />
   )

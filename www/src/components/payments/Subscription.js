@@ -1,13 +1,12 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Anchor, Box, Layer, Text } from 'grommet'
-
-import { Button, ModalHeader, Reload as Refresh } from 'forge-core'
-import { useMutation } from 'react-apollo'
+import { Button, Reload as Refresh } from 'forge-core'
+import { useMutation } from '@apollo/client'
 
 import { NumericInput } from '../utils/NumericInput'
-
 import { deepUpdate, updateCache } from '../../utils/graphql'
 import { REPO_Q } from '../repos/queries'
+import { ModalHeader } from '../ModalHeader'
 
 import { PlanType } from './types'
 import { UPDATE_LINE_ITEM } from './queries'
@@ -96,7 +95,7 @@ export function LineItemNub({ dimension, quantity, subscription, repository, lin
         </Anchor>
       )}
       {open && (
-        <LineItemUpdate 
+        <LineItemUpdate
           setOpen={setOpen}
           repository={repository}
           subscription={subscription}
@@ -117,7 +116,7 @@ export function SubscriptionBadge({ repository, subscription }) {
   return (
     <Box
       direction="row"
-      border={{ color: 'light-6' }}
+      border={{ color: 'border' }}
       round="xsmall"
       pad="small"
     >

@@ -1,4 +1,3 @@
-import React from 'react'
 import { Box, Layer, Text } from 'grommet'
 import { Up } from 'grommet-icons'
 
@@ -13,7 +12,7 @@ export function ReturnToBeginning({ beginning }) {
         direction="row"
         align="center"
         round="xsmall"
-        gap="small" 
+        gap="small"
         hoverIndicator="cardHover"
         background="card"
         margin={{ bottom: 'medium', right: 'small' }}

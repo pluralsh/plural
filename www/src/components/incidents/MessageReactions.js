@@ -1,5 +1,6 @@
-import React, { useContext } from 'react'
-import { useMutation } from 'react-apollo'
+/* eslint-disable camelcase */
+import { useContext } from 'react'
+import { useMutation } from '@apollo/client'
 import { Box, Text } from 'grommet'
 import { Tooltip } from 'forge-core'
 import 'emoji-mart/css/emoji-mart.css'
@@ -102,12 +103,12 @@ export default function MessageReactions({ message, setHover }) {
         <MessageReaction
           message={message}
           setHover={setHover}
-          align={{ bottom: 'top' }} 
+          align={{ bottom: 'top' }}
           label="+"
           direction="row"
           gap="2px"
           background="white"
-          border={{ color: 'light-6' }}
+          border={{ color: 'border' }}
           round="xsmall"
           {...BOX_ATTRS}
         />

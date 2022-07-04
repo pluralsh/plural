@@ -1,9 +1,11 @@
-import React from 'react'
+import { memo } from 'react'
 import { Box, Text } from 'grommet'
-import { useQuery } from 'react-apollo'
-import { SecondaryButton } from 'forge-core'
-
-import { cloneDeep, groupBy, remove, uniqueId } from 'lodash'
+import { useQuery } from '@apollo/client'
+import cloneDeep from 'lodash.clonedeep'
+import groupBy from 'lodash.groupby'
+import remove from 'lodash.remove'
+import uniqueId from 'lodash.uniqueid'
+import { Button } from 'honorable'
 
 import TreeGraph from '../utils/TreeGraph'
 
@@ -67,37 +69,36 @@ function compileGraph(res, closure) {
 
 export function ShowFull({ onClick, label }) {
   return (
-    <Box width="100px">
-      <SecondaryButton
-        label={label}
-        round="xsmall"
-        onClick={onClick}
-      />
-    </Box>
+    <Button
+      primary
+      size="small"
+      label={label}
+      onClick={onClick}
+    />
   )
 }
 
-export const FullDependencies = React.memo(({ resource }) => {
+export const FullDependencies = memo(({ resource }) => {
   const type = depType(resource)
   const { data, loading } = useQuery(CLOSURE_Q, {
     variables: { id: resource.id, type },
   })
 
   if (loading || !data) return null
-  const closure = groupBy(data.closure, ({ helm, terraform }) => helm ? 'helm' : 'terraform')
+  const closure = groupBy(data.closure, ({ helm }) => helm ? 'helm' : 'terraform')
   const graph = compileGraph({ [type.toLowerCase()]: resource, dep: {} }, cloneDeep(closure))
 
   return (
     <TreeGraph
-      id={`${uniqueId('full_')}-full-tree`} 
+      id={`${uniqueId('full_')}-full-tree`}
       tree={graph}
-      width="100%" 
+      width="100%"
       height={GRAPH_HEIGHT}
     />
   )
 })
 
-export default React.memo(({ name, dependencies, resource }) => {
+export default memo(({ name, dependencies, resource }) => {
   if (!dependencies || !dependencies.dependencies) {
     return (
       <Box pad="small">

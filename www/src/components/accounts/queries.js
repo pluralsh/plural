@@ -1,4 +1,4 @@
-import { gql } from 'apollo-boost'
+import { gql } from '@apollo/client'
 
 import { AuditFragment, DnsDomainFragment, DnsRecordFragment, InviteFragment, OidcLoginFragment } from '../../models/account'
 import { PageInfo } from '../../models/misc'
@@ -18,7 +18,7 @@ export const USERS_Q = gql`
     users(q: $q, first: 20, after: $cursor, serviceAccount: $serviceAccount, all: $all) {
       pageInfo { ...PageInfo }
       edges {
-        node { ...UserFragment 
+        node { ...UserFragment
           impersonationPolicy { ...ImpersonationPolicy }
         }
       }

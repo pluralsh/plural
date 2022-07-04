@@ -1,15 +1,16 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Box, Stack, Text } from 'grommet'
 import { Notification as NotificationI, Scroller } from 'forge-core'
-import { useQuery } from 'react-apollo'
+import { useQuery } from '@apollo/client'
 
-import { useHistory } from 'react-router'
+import { useNavigate } from 'react-router-dom'
 
 import { NOTIFICATIONS_Q } from '../incidents/queries'
 import { Flyout } from '../utils/Flyout'
 import { Notification as Notif } from '../incidents/Notifications'
 import { extendConnection } from '../../utils/graphql'
 import { RepoIcon } from '../repos/Repositories'
+
 import { NotificationType } from './types'
 
 const countDetails = ({ edges, pageInfo }) => {
@@ -33,18 +34,20 @@ function Badge({ notifications }) {
   )
 }
 
-function notifUrl({type, repository, incident}) {
+function notifUrl({ type, repository, incident }) {
   if (type === NotificationType.LOCKED) return `/repositories/${repository.id}`
+
   return `/incidents/${incident.id}`
 }
 
-function notifMessage({type, incident}) {
+function notifMessage({ type, incident }) {
   if (type === NotificationType.LOCKED) return null
+
   return incident.title
 }
 
 function NotificationRow({ notification, next }) {
-  const history = useHistory()
+  const navigate = useNavigate()
   const { incident, repository } = notification
 
   return (
@@ -54,8 +57,8 @@ function NotificationRow({ notification, next }) {
       pad="xsmall"
       gap="small"
       align="center"
-      hoverIndicator="hover" 
-      onClick={() => history.push(notifUrl(notification))}
+      hoverIndicator="fill-one"
+      onClick={() => navigate(notifUrl(notification))}
     >
       <Box fill="horizontal">
         <Notif
@@ -72,7 +75,8 @@ function NotificationRow({ notification, next }) {
         <Text
           size="small"
           weight={500}
-        >{notifMessage(notification)}
+        >
+          {notifMessage(notification)}
         </Text>
         <RepoIcon
           repo={repository || incident.repository}
@@ -80,7 +84,7 @@ function NotificationRow({ notification, next }) {
           size="25px"
         />
       </Box>
-    </Box> 
+    </Box>
   )
 }
 
@@ -90,7 +94,7 @@ function FlyoutBody({ edges, pageInfo, fetchMore, setOpen }) {
       width="30vw"
       setOpen={setOpen}
       title="Notifications"
-      background="backgroundColor"
+      background="background"
     >
       <Scroller
         id="all-notifications"
@@ -126,8 +130,6 @@ export function Notifications() {
         <Box
           flex={false}
           pad="xsmall"
-          hoverIndicator="sidebarHover"
-          background="backgroundColor"
           round
           onClick={() => setOpen(!open)}
         >
@@ -138,8 +140,8 @@ export function Notifications() {
       {open && (
         <FlyoutBody
           setOpen={setOpen}
-          edges={notifications.edges} 
-          pageInfo={notifications.pageInfo} 
+          edges={notifications.edges}
+          pageInfo={notifications.pageInfo}
           fetchMore={fetchMore}
         />
       )}

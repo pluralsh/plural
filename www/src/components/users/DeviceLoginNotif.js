@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Box, Layer, Text } from 'grommet'
-import { Fingerprint, ModalHeader } from 'forge-core'
+import { Fingerprint } from 'forge-core'
+
+import { ModalHeader } from '../ModalHeader'
 
 const LOGIN_KEY = 'dli-key'
 
@@ -14,8 +16,8 @@ export function DeviceLoginNotif() {
   const [open, setOpen] = useState(!!deviceLoginCompleted())
 
   useEffect(() => {
-    open && wipeDeviceLogin()
-  }, [])
+    if (open) wipeDeviceLogin()
+  }, [open])
 
   if (!open) return null
 
@@ -41,7 +43,7 @@ export function DeviceLoginNotif() {
           <Fingerprint size="15px" />
           <Text size="small">The device you requested on should now have access</Text>
         </Box>
-      </Box> 
+      </Box>
     </Layer>
   )
 }

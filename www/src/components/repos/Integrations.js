@@ -1,18 +1,15 @@
-import React, { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
+import { useQuery } from '@apollo/client'
 import styled from 'styled-components'
-import { useHistory, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { Carousel, HoveredBackground, ScrollableContainer, Scroller } from 'forge-core'
 import { Anchor, Box, Stack, Text, ThemeContext } from 'grommet'
-
-import { useQuery } from 'react-apollo'
-
 import { FormNextLink, FormPrevious } from 'grommet-icons'
 import { normalizeColor } from 'grommet/utils'
 
 import { chunk } from '../../utils/array'
-
-import { BreadcrumbsContext } from '../Breadcrumbs'
 import { extendConnection } from '../../utils/graphql'
+import { BreadcrumbsContext } from '../Breadcrumbs'
 
 import { DetailContainer } from './Installation'
 import { DetailHeader } from './Artifacts'
@@ -22,7 +19,7 @@ import { INTEGRATIONS_Q } from './queries'
 const ICON_SIZE = 50
 
 function Integration({ name, description, icon, tags, sourceUrl, publisher, width }) {
-  const hist = useHistory()
+  const navigate = useNavigate()
   const [hover, setHover] = useState(false)
 
   return (
@@ -65,7 +62,7 @@ function Integration({ name, description, icon, tags, sourceUrl, publisher, widt
                 <Text size="small">by: </Text>
                 <Anchor
                   size="small"
-                  onClick={() => hist.push(`/publishers/${publisher.id}`)}
+                  onClick={() => navigate(`/publishers/${publisher.id}`)}
                 >
                   {publisher.name}
                 </Anchor>
@@ -124,7 +121,6 @@ export function Container({ pad, width, hover, setHover, children, modifier, noH
       as={containerStyling}
       width={width}
       noHover={noHover}
-      elevation={theme.dark ? theme.global.elevation.dark.medium : theme.global.elevation.light.medium}
       brandColor={normalizeColor('brand', theme)}
       borderColor={normalizeColor('border', theme)}
       round="xsmall"
@@ -264,7 +260,7 @@ export function IntegrationPage() {
         <Box
           width={`${WIDTH}%`}
           height="100%"
-          border={{ side: 'right', color: 'light-6' }}
+          border={{ side: 'right', color: 'border' }}
         >
           <Tags
             tags={tags}
@@ -298,13 +294,13 @@ export function IntegrationPage() {
 }
 
 function ViewAll({ repositoryId }) {
-  const hist = useHistory()
+  const navigate = useNavigate()
 
   return (
     <Box flex={false}>
       <Anchor
         color="focus"
-        onClick={() => hist.push(`/repositories/${repositoryId}/integrations`)}
+        onClick={() => navigate(`/repositories/${repositoryId}/integrations`)}
       >
         <Box
           direction="row"

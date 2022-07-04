@@ -1,21 +1,19 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
+import { Button, Div } from 'honorable'
 import { Box, Text } from 'grommet'
-import { useFilePicker } from 'react-sage'
-import { Button, Credentials, Fingerprint, InputCollection, Installed, Logout,
-  Password, PublicKeys, ResponsiveInput, Select, User } from 'forge-core'
-import { useMutation, useQuery } from 'react-apollo'
-import { Checkmark, StatusCritical, Transaction } from 'grommet-icons'
+import {
+  InputCollection,
+  Select,
+} from 'forge-core'
+import { useMutation, useQuery } from '@apollo/client'
+import { Checkmark, StatusCritical } from 'grommet-icons'
+import { useNavigate, useParams } from 'react-router-dom'
 
-import { useHistory, useParams } from 'react-router'
-
-import Installations from '../repos/Installations'
+import ResponsiveInput from '../ResponsiveInput'
 import { CurrentUserContext } from '../login/CurrentUser'
 import { BreadcrumbsContext } from '../Breadcrumbs'
-import { SIDEBAR_WIDTH } from '../constants'
 
 import { SectionContentContainer, SectionPortal } from '../Explore'
-
-import { getPreviousUserData, setPreviousUserData, setToken, wipeToken } from '../../helpers/authentication'
 
 import { SectionChoice } from '../utils/SectionChoice'
 import { Provider } from '../repos/misc'
@@ -27,46 +25,21 @@ import { OauthEnabler } from './OauthEnabler'
 import { EabCredentials } from './EabCredentials'
 import { Tokens } from './Tokens'
 import { LoginMethod } from './types'
-import Avatar from './Avatar'
 import { OAUTH_URLS, UPDATE_USER } from './queries'
 import { Keys } from './Keys'
 
-export const EditContext = React.createContext({})
-
-function EditAvatar({ me, noClick = false }) {
-  const { files, onClick, HiddenFileInput } = useFilePicker({})
-  const [mutation] = useMutation(UPDATE_USER)
-  useEffect(() => {
-    if (files.length > 0) {
-      mutation({ variables: { attributes: { avatar: files[0] } } })
-    }
-  }, [files])
-
-  return (
-    <>
-      <Avatar
-        user={me}
-        size="50px"
-        onClick={noClick ? null : onClick}
-      />
-      <HiddenFileInput
-        accept=".jpg, .jpeg, .png"
-        multiple={false}
-      />
-    </>
-  )
-}
+export const EditContext = createContext({})
 
 export function EditSelect({ name, edit, icon, base }) {
   const { editing } = useParams()
-  const hist = useHistory()
+  const navigate = useNavigate()
 
   return (
     <SectionChoice
       name={name}
       label={name}
       icon={icon}
-      onClick={edit === editing ? null : () => hist.push(`${base || '/me/edit/'}${edit}`)}
+      onClick={edit === editing ? null : () => navigate(`${base || '/user/edit/'}${edit}`)}
       selected={editing === edit}
     />
   )
@@ -101,9 +74,9 @@ export function EditContent({ edit, name, children }) {
 }
 
 function passwordValid(password, confirm) {
-  if (password === '') return { disabled: true, reason: 'please enter a password' }
-  if (password !== confirm) return { disabled: true, reason: 'passwords must match' }
-  if (password.length < 12) return { disabled: true, reason: 'passwords must be more than 12 characters' }
+  if (password === '') return { disabled: true, reason: 'Please enter a password' }
+  if (password !== confirm) return { disabled: true, reason: 'Passwords must match' }
+  if (password.length < 12) return { disabled: true, reason: 'Passwords must be more than 12 characters' }
 
   return { disabled: false, reason: 'passwords match!' }
 }
@@ -122,246 +95,159 @@ export default function EditUser() {
 
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
   useEffect(() => {
-    setBreadcrumbs([{ url: '/me/edit', text: 'me' }, { url: `/me/edit/${editing}`, text: editing }])
+    setBreadcrumbs([{ url: '/user/edit', text: 'me' }, { url: `/user/edit/${editing}`, text: editing }])
   }, [setBreadcrumbs, editing])
-
-  const logout = useCallback(() => {
-    wipeToken()
-    window.location = '/'
-  }, [])
-
-  const previousUserData = getPreviousUserData()
-
-  function handlePreviousUserClick() {
-    setToken(previousUserData.jwt)
-    setPreviousUserData(null)
-    window.location.reload()
-  }
 
   return (
     <Box fill>
-      <Box
-        fill
-        direction="row"
+      <EditContent
+        edit="user"
+        name="User Attributes"
       >
         <Box
-          flex={false}
-          background="backgroundColor"
-          gap="xsmall"
-          width={SIDEBAR_WIDTH}
           pad="small"
+          gap="small"
         >
-          <Box
-            flex={false}
-            direction="row"
-            gap="small"
-            align="center"
-            margin={{ bottom: 'xsmall' }}
-          >
-            <EditAvatar me={me} />
-            <Box fill="horizontal">
-              <Text
-                size="small"
-                weight="bold"
-                truncate
-              >{attributes.name}
-              </Text>
-              <Text
-                size="small"
-                truncate
-              >{attributes.email}
-              </Text>
-            </Box>
-          </Box>
-          <EditSelect
-            edit="user"
-            name="User Attributes"
-            icon={<User size="14px" />}
-          />
-          <EditSelect
-            edit="pwd"
-            name="Password"
-            icon={<Password size="14px" />}
-          />
-          <EditSelect
-            edit="installations"
-            name="Installations"
-            icon={<Installed size="14px" />}
-          />
-          <EditSelect
-            edit="tokens"
-            name="Access Tokens"
-            icon={<Fingerprint size="14px" />}
-          />
-          <EditSelect
-            edit="keys"
-            name="Public Keys"
-            icon={<PublicKeys size="14px" />}
-          />
-          <EditSelect
-            edit="credentials"
-            name="Eab Credentials"
-            icon={<Credentials size="14px" />}
-          />
-          <SectionChoice
-            label="Logout"
-            icon={<Logout size="14px" />}
-            onClick={logout}
-          />
-          {previousUserData && previousUserData.me.id !== me.id && (
-            <SectionChoice
-              label={`Log back as ${previousUserData.me.name}`}
-              icon={<Transaction size="14px" />}
-              onClick={handlePreviousUserClick}
+          <InputCollection>
+            <ResponsiveInput
+              label="name"
+              labelWidth={64 + 4}
+              value={attributes.name}
+              onChange={({ target: { value } }) => setAttributes({ ...attributes, name: value })}
             />
-          )}
-        </Box>
-        <Box fill>
-          <EditContent
-            edit="user"
-            name="User Attributes"
-          >
-            <Box
-              pad="small"
-              gap="small"
-            >
-              <InputCollection>
-                <ResponsiveInput
-                  value={attributes.name}
-                  label="name"
-                  onChange={({ target: { value } }) => setAttributes({ ...attributes, name: value })}
+            <Div mt={0.5}>
+              <ResponsiveInput
+                label="email"
+                labelWidth={64 + 4}
+                value={attributes.email}
+                onChange={({ target: { value } }) => setAttributes({ ...attributes, email: value })}
+              />
+            </Div>
+          </InputCollection>
+          <Attributes width="50%">
+            {me.provider && (
+              <Attribute name="Provider">
+                <Provider
+                  provider={me.provider}
+                  width={40}
                 />
-                <ResponsiveInput
-                  value={attributes.email}
-                  label="email"
-                  onChange={({ target: { value } }) => setAttributes({ ...attributes, email: value })}
-                />
-              </InputCollection>
-              <Attributes width="50%">
-                {me.provider && (
-                  <Attribute name="Provider">
-                    <Provider
-                      provider={me.provider}
-                      width={40}
-                    />
-                  </Attribute>
-                )}
+              </Attribute>
+            )}
 
-                <Attribute name="Login Method">
-                  <Select
-                    name="login-method"
-                    value={{ value: attributes.loginMethod, label: attributes.loginMethod.toLocaleLowerCase() }}
-                    onChange={({ value }) => setAttributes({ ...attributes, loginMethod: value })}
-                    options={Object.values(LoginMethod).map(m => ({
-                      label: m.toLocaleLowerCase(),
-                      value: m,
-                    }))}
-                  />
-                </Attribute>
-                {data && data.oauthUrls.map((url, i) => (
-                  <OauthEnabler
-                    url={url}
-                    me={me}
-                    key={url + i}
-                  />
-                ))}
-              </Attributes>
-              <SectionPortal>
-                <Button
-                  loading={loading}
-                  onClick={mutation}
-                  flex={false}
-                  label="Update"
-                />
-              </SectionPortal>
-            </Box>
-          </EditContent>
-          <EditContent
-            edit="pwd"
-            name="Password"
-          >
-            <Box pad="small">
-              <form
-                autoComplete="off"
-                onSubmit={disabled ? null : mutation}
-              >
-                <InputCollection>
-                  <ResponsiveInput
-                    value={password}
-                    label="password"
-                    placeholder="a long password"
-                    type="password"
-                    onChange={({ target: { value } }) => setPassword(value)}
-                  />
-                  <ResponsiveInput
-                    value={confirm}
-                    label="confirm"
-                    placeholder="confirm your password"
-                    type="password"
-                    onChange={({ target: { value } }) => setConfirm(value)}
-                  />
-                </InputCollection>
-              </form>
-              <SectionPortal>
-                <Box
-                  flex={false}
-                  gap="small"
-                  direction="row"
-                  align="center"
-                >
-                  {disabled ? (
-                    <StatusCritical
-                      size="15px"
-                      color={color}
-                    />
-                  ) : (
-                    <Checkmark
-                      size="15px"
-                      color={color}
-                    />
-                  )}
-                  <Text
-                    size="small"
-                    color={color}
-                  >
-                    {reason}
-                  </Text>
-                  <Button
-                    disabled={disabled}
-                    loading={loading}
-                    onClick={mutation}
-                    label="Update"
-                  />
-                </Box>
-              </SectionPortal>
-            </Box>
-          </EditContent>
-          <EditContent
-            edit="installations"
-            name="Installations"
-          >
-            <Installations edit />
-          </EditContent>
-          <EditContent
-            edit="tokens"
-            name="Tokens"
-          >
-            <Tokens />
-          </EditContent>
-          <EditContent
-            edit="keys"
-            name="Public Keys"
-          >
-            <Keys />
-          </EditContent>
-          <EditContent
-            edit="credentials"
-            name="Eab Credentials"
-          >
-            <EabCredentials />
-          </EditContent>
+            <Attribute name="Login Method">
+              <Select
+                name="login-method"
+                value={{ value: attributes.loginMethod, label: attributes.loginMethod.toLocaleLowerCase() }}
+                onChange={({ value }) => setAttributes({ ...attributes, loginMethod: value })}
+                options={Object.values(LoginMethod).map(m => ({
+                  label: m.toLocaleLowerCase(),
+                  value: m,
+                }))}
+              />
+            </Attribute>
+            {data && data.oauthUrls.map((url, i) => (
+              <OauthEnabler
+                url={url}
+                me={me}
+                key={url + i}
+              />
+            ))}
+          </Attributes>
+          <SectionPortal>
+            <Button
+              loading={loading}
+              onClick={mutation}
+              flexShrink={0}
+            >
+              Update
+            </Button>
+          </SectionPortal>
         </Box>
-      </Box>
+      </EditContent>
+      <EditContent
+        edit="pwd"
+        name="Password"
+      >
+        <Box pad="small">
+          <form
+            autoComplete="off"
+            onSubmit={disabled ? null : mutation}
+          >
+            <InputCollection>
+              <ResponsiveInput
+                labelWidth={64 + 32 - 8}
+                value={password}
+                label="password"
+                placeholder="a long password"
+                type="password"
+                onChange={({ target: { value } }) => setPassword(value)}
+              />
+              <Div mt={0.5}>
+                <ResponsiveInput
+                  labelWidth={64 + 32 - 8}
+                  value={confirm}
+                  label="confirm"
+                  placeholder="confirm your password"
+                  type="password"
+                  onChange={({ target: { value } }) => setConfirm(value)}
+                />
+              </Div>
+            </InputCollection>
+          </form>
+          <SectionPortal>
+            <Box
+              flex={false}
+              gap="small"
+              direction="row"
+              align="center"
+            >
+              {disabled ? (
+                <StatusCritical
+                  size="15px"
+                  color={color}
+                />
+              ) : (
+                <Checkmark
+                  size="15px"
+                  color={color}
+                />
+              )}
+              <Text
+                size="small"
+                color={color}
+              >
+                {reason}
+              </Text>
+              <Button
+                ml={0.5}
+                disabled={disabled}
+                loading={loading}
+                onClick={mutation}
+              >
+                Update
+              </Button>
+            </Box>
+          </SectionPortal>
+        </Box>
+      </EditContent>
+      <EditContent
+        edit="tokens"
+        name="Tokens"
+      >
+        <Tokens />
+      </EditContent>
+      <EditContent
+        edit="keys"
+        name="Public Keys"
+      >
+        <Keys />
+      </EditContent>
+      <EditContent
+        edit="credentials"
+        name="Eab Credentials"
+      >
+        <EabCredentials />
+      </EditContent>
     </Box>
   )
 }

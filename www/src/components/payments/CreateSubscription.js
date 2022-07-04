@@ -1,12 +1,14 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Box, Layer, Text } from 'grommet'
-import { Button, ModalHeader, NumericInput } from 'forge-core'
+import { Button, NumericInput } from 'forge-core'
 import { Add } from 'grommet-icons'
-import { useMutation } from 'react-apollo'
+import { useMutation } from '@apollo/client'
 
 import { deepUpdate } from '../../utils/graphql'
 
 import { REPO_Q } from '../repos/queries'
+
+import { ModalHeader } from '../ModalHeader'
 
 import { CREATE_SUBSCRIPTION } from './queries'
 import { pivotByDimension, subscriptionCost } from './utils'
@@ -45,8 +47,8 @@ function PlanForm({ plan: { name, cost, period, lineItems: { items, included } }
 
   function updateItem(dimension, quantity) {
     setAttributes(deepUpdate(
-      attributes, 
-      'lineItems.items', 
+      attributes,
+      'lineItems.items',
       items => items.map(item => (item.dimension === dimension ? { dimension, quantity } : item))
     ))
   }

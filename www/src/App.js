@@ -1,91 +1,117 @@
-import React from 'react'
-import { Route, Switch } from 'react-router-dom'
-import { Grommet } from 'grommet'
-
-import hljs from 'highlight.js'
-
+import 'react-toggle/style.css'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { ApolloProvider } from '@apollo/client'
 import { IntercomProvider } from 'react-use-intercom'
+import { Box, Grommet } from 'grommet'
+import { theme } from 'pluralsh-design-system'
+import { CssBaseline, ThemeProvider, mergeTheme } from 'honorable'
+import mpRecipe from 'honorable-recipe-mp'
+
+import { client } from './helpers/client'
+import { INTERCOM_APP_ID } from './constants'
+import { DEFAULT_THEME } from './theme'
 
 import Plural from './components/Plural'
-import { DEFAULT_THEME } from './theme'
-import hljsDefineTerraform from './highlight/terraform'
 import Invite from './components/Invite'
-import { PasswordReset, ResetPassword } from './components/users/PasswordReset'
 import { Login, PasswordlessLogin, Signup } from './components/users/MagicLogin'
+import { PasswordReset, ResetPassword } from './components/users/PasswordReset'
 import { OAuthConsent } from './components/oidc/OAuthConsent'
 import { EmailConfirmed } from './components/users/EmailConfirmation'
-import 'react-toggle/style.css'
 import { OAuthCallback } from './components/users/OAuthCallback'
 import { SSOCallback } from './components/users/SSOCallback'
 
-const INTERCOM_APP_ID = 'p127zb9y'
-hljs.registerLanguage('terraform', hljsDefineTerraform)
+const honorableTheme = mergeTheme(theme, {
+  global: [
+    // This provides the mp spacing props to honorable
+    // DEPRECATED in favor of the semantic spacing system
+    mpRecipe(),
+  ],
+})
 
-export default function App() {
+function App() {
   return (
-    <IntercomProvider appId={INTERCOM_APP_ID}>
-      <Grommet theme={DEFAULT_THEME}>
-        <Switch>
-          <Route
-            path="/reset-password/:id"
-            component={ResetPassword}
-          />
-          <Route
-            exact
-            path="/password-reset"
-            component={PasswordReset}
-          />
-          <Route
-            path="/confirm-email/:id"
-            component={EmailConfirmed}
-          />
-          <Route
-            path="/invite/:inviteId"
-            component={Invite}
-          />
-          <Route
-            path="/passwordless-login/:token"
-            component={PasswordlessLogin}
-          />
-          <Route
-            exact
-            path="/oauth/callback/github/shell"
-            component={Plural}
-          />
-          <Route
-            exact
-            path="/oauth/callback/gitlab/shell"
-            component={Plural}
-          />
-          <Route
-            path="/oauth/callback/:service"
-            component={OAuthCallback}
-          />
-          <Route
-            path='/sso/callback'
-            component={SSOCallback}
-          />
-          <Route
-            exact
-            path="/login"
-            component={Login}
-          />
-          <Route
-            exact
-            path="/signup"
-            component={Signup}
-          />
-          <Route
-            exact
-            path="/oauth/consent"
-            component={OAuthConsent}
-          />
-          <Route
-            path="/"
-            component={Plural}
-          />
-        </Switch>
-      </Grommet>
-    </IntercomProvider>
+    <ApolloProvider client={client}>
+      <IntercomProvider appId={INTERCOM_APP_ID}>
+        <ThemeProvider theme={honorableTheme}>
+          <CssBaseline />
+          <Grommet
+            full
+            theme={DEFAULT_THEME}
+            themeMode="dark"
+          >
+            <Box
+              width="100vw"
+              height="100vh"
+              background="#171A21"
+            >
+              <BrowserRouter>
+                <Routes>
+                  <Route
+                    path="/reset-password/:id"
+                    element={<ResetPassword />}
+                  />
+                  <Route
+                    exact
+                    path="/password-reset"
+                    element={<PasswordReset />}
+                  />
+                  <Route
+                    path="/confirm-email/:id"
+                    element={<EmailConfirmed />}
+                  />
+                  <Route
+                    path="/invite/:inviteId"
+                    element={<Invite />}
+                  />
+                  <Route
+                    path="/passwordless-login/:token"
+                    element={<PasswordlessLogin />}
+                  />
+                  <Route
+                    exact
+                    path="/oauth/callback/github/shell"
+                    element={<Plural />}
+                  />
+                  <Route
+                    exact
+                    path="/oauth/callback/gitlab/shell"
+                    element={<Plural />}
+                  />
+                  <Route
+                    path="/oauth/callback/:service"
+                    element={<OAuthCallback />}
+                  />
+                  <Route
+                    path="/sso/callback"
+                    element={<SSOCallback />}
+                  />
+                  <Route
+                    exact
+                    path="/login"
+                    element={<Login />}
+                  />
+                  <Route
+                    exact
+                    path="/signup"
+                    element={<Signup />}
+                  />
+                  <Route
+                    exact
+                    path="/oauth/consent"
+                    element={<OAuthConsent />}
+                  />
+                  <Route
+                    path="*"
+                    element={<Plural />}
+                  />
+                </Routes>
+              </BrowserRouter>
+            </Box>
+          </Grommet>
+        </ThemeProvider>
+      </IntercomProvider>
+    </ApolloProvider>
   )
 }
+
+export default App

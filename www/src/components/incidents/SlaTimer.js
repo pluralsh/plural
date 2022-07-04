@@ -1,4 +1,3 @@
-import React from 'react'
 import moment from 'moment'
 import { BeatLoader } from 'react-spinners'
 import { Box, Text } from 'grommet'

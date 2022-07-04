@@ -1,7 +1,7 @@
-import React, { useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { Button, Select } from 'forge-core'
 import { Box, Keyboard, Text, TextInput, ThemeContext } from 'grommet'
-import { useMutation } from 'react-apollo'
+import { useMutation } from '@apollo/client'
 
 import { BindingInput, sanitize } from '../accounts/Role'
 import { fetchGroups, fetchUsers } from '../accounts/Typeaheads'
@@ -25,8 +25,8 @@ function UrlTab({ url, onClick }) {
     <Box
       background={theme.dark ? 'card' : 'light-2'}
       round="xsmall"
-      pad={{ vertical: '2px', horizontal: 'small' }} 
-      hoverIndicator="hover"
+      pad={{ vertical: '2px', horizontal: 'small' }}
+      hoverIndicator="fill-one"
       onClick={onClick}
     >
       <Text
@@ -44,7 +44,7 @@ function UrlsInput({ uriFormat, urls, setUrls }) {
     const url = uriFormat ? uriFormat.replace('{domain}', value) : value
     setUrls([...urls, url])
     setValue('')
-  }, [urls, value, setValue])
+  }, [urls, value, setValue, setUrls, uriFormat])
 
   return (
     <Keyboard onEnter={addUrl}>
@@ -63,8 +63,8 @@ function UrlsInput({ uriFormat, urls, setUrls }) {
           <TextInput
             plain
             value={value}
-            placeholder={uriFormat ? 
-              `enter a domain, and the uri will be formatted with ${uriFormat}` : 
+            placeholder={uriFormat ?
+              `enter a domain, and the uri will be formatted with ${uriFormat}` :
               'add another redirect url'}
             onChange={({ target: { value } }) => setValue(value)}
           />
@@ -82,9 +82,9 @@ function UrlsInput({ uriFormat, urls, setUrls }) {
           wrap
         >
           {urls.map(url => (
-            <UrlTab 
-              key={url} 
-              url={url} 
+            <UrlTab
+              key={url}
+              url={url}
               onClick={() => setUrls(urls.filter(u => u !== url))}
             />
           ))}
@@ -108,9 +108,9 @@ export function ProviderForm({ attributes, setAttributes, bindings, setBindings,
           weight="bold"
         >1. Provide redirect urls
         </Text>
-        <UrlsInput 
+        <UrlsInput
           uriFormat={settings.uriFormat}
-          urls={attributes.redirectUris} 
+          urls={attributes.redirectUris}
           setUrls={redirectUris => setAttributes({ ...attributes, redirectUris })}
         />
       </Box>
@@ -162,7 +162,7 @@ export function ProviderForm({ attributes, setAttributes, bindings, setBindings,
               value={{ value: attributes.authMethod, label: attributes.authMethod.toLocaleLowerCase() }}
               onChange={({ value }) => setAttributes({ ...attributes, authMethod: value })}
               options={Object.values(AuthMethod).map(m => ({
-                label: m.toLocaleLowerCase(), 
+                label: m.toLocaleLowerCase(),
                 value: m,
               }))}
             />
@@ -179,7 +179,7 @@ export function CreateProvider({ installation }) {
   const [bindings, setBindings] = useState([])
   const [mutation, { loading, error }] = useMutation(CREATE_PROVIDER, {
     variables: {
-      id: installation.id, 
+      id: installation.id,
       attributes: { ...attributes, bindings: bindings.map(sanitize) },
     },
     update: (cache, { data: { createOidcProvider } }) => updateCache(cache, {
@@ -201,9 +201,9 @@ export function CreateProvider({ installation }) {
           header="Could not create provider"
         />
       )}
-      <ProviderForm 
+      <ProviderForm
         repository={installation.repository}
-        attributes={attributes} 
+        attributes={attributes}
         setAttributes={setAttributes}
         bindings={bindings}
         setBindings={setBindings}
@@ -222,13 +222,13 @@ export function CreateProvider({ installation }) {
 export function UpdateProvider({ installation }) {
   const provider = installation.oidcProvider
   const [attributes, setAttributes] = useState({
-    redirectUris: provider.redirectUris, 
+    redirectUris: provider.redirectUris,
     authMethod: provider.authMethod,
   })
   const [bindings, setBindings] = useState(provider.bindings)
   const [mutation, { loading, error }] = useMutation(UPDATE_PROVIDER, {
     variables: {
-      id: installation.id, 
+      id: installation.id,
       attributes: { ...attributes, bindings: bindings.map(sanitize) },
     },
   })
@@ -278,7 +278,7 @@ export function UpdateProvider({ installation }) {
       </Box>
       <ProviderForm
         repository={installation.repository}
-        attributes={attributes} 
+        attributes={attributes}
         setAttributes={setAttributes}
         bindings={bindings}
         setBindings={setBindings}

@@ -1,7 +1,6 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Box, Collapsible, Text } from 'grommet'
-
-import { Alert, AlertStatus } from '../utils/Alert'
+import { Alert } from 'pluralsh-design-system'
 
 import { GradeNub, HeaderItem } from './Docker'
 
@@ -27,7 +26,7 @@ function ScanHeader() {
       gap="xsmall"
       align="center"
       pad="small"
-      border={{ side: 'bottom', color: 'light-3' }}
+      border={{ side: 'bottom', color: 'border' }}
       height={ROW_HEIGHT_PX}
     >
       <HeaderItem
@@ -59,11 +58,11 @@ function ScanViolation({ violation }) {
         direction="row"
         fill="horizontal"
         gap="xsmall"
-        align="center" 
+        align="center"
         pad="small"
-        border={{ side: 'bottom', color: 'tone-light' }}
+        border={{ side: 'bottom' }}
         height={ROW_HEIGHT_PX}
-        hoverIndicator="tone-light"
+        hoverIndicator="fill-one"
         onClick={() => setOpen(!open)}
       >
         <HeaderItem
@@ -76,19 +75,19 @@ function ScanViolation({ violation }) {
           width="25%"
         >
           <GradeNub
-            text={violation.severity.toLowerCase()} 
+            text={violation.severity.toLowerCase()}
             severity={violation.severity}
           />
         </Box>
-        <HeaderItem 
-          text={`${violation.file}:${violation.line}`} 
-          width="30%" 
+        <HeaderItem
+          text={`${violation.file}:${violation.line}`}
+          width="30%"
           truncate
           nobold
         />
-        <HeaderItem 
-          text={`${violation.resourceType}.${violation.resourceName}`} 
-          width="30%" 
+        <HeaderItem
+          text={`${violation.resourceType}.${violation.resourceName}`}
+          width="30%"
           nobold
         />
       </Box>
@@ -124,30 +123,36 @@ function ScanViolation({ violation }) {
 
 export function ScanResults({ scan: { errors, violations } }) {
   return (
-    <Box fill>
+    <Box
+      fill
+      flex={false}
+      gap="small"
+    >
       {errors && (
         <Box
-          fill
-          pad="small"
-          gap="xsmall"
+          gap="small"
+          pad={{ vertical: 'small' }}
         >
           {errors.map((error, ind) => (
             <Alert
-              key={`${ind}`} 
-              status={AlertStatus.ERROR} 
-              header="Scan failure" 
-              description={error.message}
-            />
+              key={ind}
+              title="Scan failure"
+              severity="error"
+            >
+              {error.message}
+            </Alert>
           ))}
         </Box>
       )}
       <ScanHeader />
-      {violations.map((vio, ind) => (
-        <ScanViolation
-          key={`${ind}`}
-          violation={vio}
-        />
-      ))}
+      <Box flex={false}>
+        {violations.map((vio, ind) => (
+          <ScanViolation
+            key={`${ind}`}
+            violation={vio}
+          />
+        ))}
+      </Box>
     </Box>
   )
 }

@@ -1,14 +1,11 @@
-import React, { useCallback, useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { Box, Drop, Markdown, Table, TableBody, TableCell, TableRow, Text } from 'grommet'
 import { Apple, DocumentText, Previous, Ubuntu, Windows } from 'grommet-icons'
 import { Copyable, Download, ListView as List } from 'forge-core'
 import { normalizeColor } from 'grommet/utils'
-
 import fs from 'filesize'
-
 import Collapsible from 'react-collapsible'
-
 import moment from 'moment'
 
 import { download } from '../../utils/file'
@@ -227,7 +224,7 @@ export function DetailHeader({ text, modifier }) {
   return (
     <Box
       direction="row"
-      border={{ color: 'light-6', side: 'bottom' }}
+      border={{ color: 'border', side: 'bottom' }}
       pad="small"
       background="light-1"
       justify="end"
@@ -257,9 +254,9 @@ function ArtifactRow({ artifact }) {
         height={ROW_HEIGHT}
         direction="row"
         gap="small"
-        align="center" 
+        align="center"
         pad={{ horizontal: 'small' }}
-        border={{ side: 'bottom', color: 'light-5' }}
+        border={{ side: 'bottom', color: 'border' }}
       >
         <Box
           width="20%"
@@ -342,9 +339,9 @@ function ArtifactHeader() {
       height={ROW_HEIGHT}
       direction="row"
       gap="small"
-      align="center" 
+      align="center"
       pad={{ horizontal: 'small' }}
-      border={{ side: 'bottom', color: 'light-5' }}
+      border={{ side: 'bottom', color: 'border' }}
     >
       <HeaderItem
         text="Name"
@@ -393,8 +390,8 @@ export default function Artifacts({ artifacts }) {
     <DetailContainer>
       <DetailHeader text="Artifacts" />
       <Box
-        gap="0px"
-        border={{ side: 'between', color: 'light-5' }}
+        gap="none"
+        border={{ side: 'between', color: 'border' }}
       >
         {artifacts.map(artifact => (
           <Artifact

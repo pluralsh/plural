@@ -63,6 +63,9 @@ setup: ## sets up your environment for testing
 web: ## starts a local webserver
 	cd www && npm start
 
+check-updates: ## checks for new minor versions in npm
+	cd www && ncu -it minor && npm install
+
 migration:
 	cd apps/core && MIX_ENV=test mix ecto.gen.migration $(name)
 

@@ -1,4 +1,4 @@
-import gql from 'graphql-tag'
+import { gql } from '@apollo/client'
 
 import { AccountFragment, AddressFragment, EabCredentialFragment, PublicKeyFragment, PublisherFragment, TokenAuditFragment, TokenFragment, UserFragment, WebhookFragment } from '../../models/user'
 import { CardFragment } from '../../models/payments'
@@ -10,13 +10,13 @@ export const ME_Q = gql`
       ...UserFragment
       loginMethod
       hasInstallations
-      account { 
-        ...AccountFragment 
+      account {
+        ...AccountFragment
         rootUser { id }
         domainMappings { id domain enableSso }
       }
-      publisher { 
-        ...PublisherFragment 
+      publisher {
+        ...PublisherFragment
         billingAccountId
       }
     }

@@ -1,11 +1,13 @@
-import React, { useState } from 'react'
-import { useMutation } from 'react-apollo'
-import { Button, InputCollection, ModalHeader, ResponsiveInput } from 'forge-core'
-
+import { useState } from 'react'
+import { useMutation } from '@apollo/client'
+import { Button, InputCollection } from 'forge-core'
+import { Div } from 'honorable'
 import { Box, Layer } from 'grommet'
 
 import { appendConnection, updateCache } from '../../utils/graphql'
 
+import ResponsiveInput from '../ResponsiveInput'
+import { ModalHeader } from '../ModalHeader'
 import { GqlError } from '../utils/Alert'
 
 import { BindingInput, sanitize } from './Role'
@@ -26,12 +28,14 @@ export function ServiceAccountForm({ attributes, setAttributes, bindings, setBin
           placeholder="name of the service account"
           onChange={({ target: { value } }) => setAttributes({ ...attributes, name: value })}
         />
-        <ResponsiveInput
-          label="email"
-          value={attributes.email}
-          placeholder="email for the service account"
-          onChange={({ target: { value } }) => setAttributes({ ...attributes, email: value })}
-        />
+        <Div mt={0.5}>
+          <ResponsiveInput
+            label="email"
+            value={attributes.email}
+            placeholder="email for the service account"
+            onChange={({ target: { value } }) => setAttributes({ ...attributes, email: value })}
+          />
+        </Div>
       </InputCollection>
       <Box
         pad="small"
@@ -78,8 +82,8 @@ function CreateInner({ setOpen }) {
           header="Error creating service account"
         />
       )}
-      <ServiceAccountForm 
-        attributes={attributes} 
+      <ServiceAccountForm
+        attributes={attributes}
         setAttributes={setAttributes}
         bindings={bindings}
         setBindings={setBindings}
@@ -106,7 +110,7 @@ export function UpdateServiceAccount({ user, setOpen }) {
   const [bindings, setBindings] = useState(user.impersonationPolicy.bindings)
   const [mutation, { loading, error }] = useMutation(UPDATE_SERVICE_ACCOUNT, {
     variables: {
-      id: user.id, 
+      id: user.id,
       attributes: { ...attributes, impersonationPolicy: { bindings: bindings.map(sanitize) } },
     },
     onCompleted: () => setOpen(false),
@@ -115,6 +119,7 @@ export function UpdateServiceAccount({ user, setOpen }) {
   return (
     <Box
       fill
+      width="50vw"
       gap="xsmall"
     >
       {error && (
@@ -161,7 +166,7 @@ export function CreateServiceAccount() {
             text="Create a new service account"
             setOpen={setOpen}
           />
-          <Box width="40vw">
+          <Box width="50vw">
             <CreateInner setOpen={setOpen} />
           </Box>
         </Layer>

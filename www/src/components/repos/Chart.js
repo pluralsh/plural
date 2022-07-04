@@ -1,31 +1,24 @@
-import React, { useContext, useEffect, useState } from 'react'
+import './chart.css'
+
+import { useContext, useEffect, useState } from 'react'
 import { Anchor, Box, Markdown, Text } from 'grommet'
-import { useMutation, useQuery } from 'react-apollo'
-import { useHistory, useParams } from 'react-router-dom'
+import { useMutation, useQuery } from '@apollo/client'
+import { useNavigate, useParams } from 'react-router-dom'
 import { Button, ScrollableContainer, TabContent, TabHeader, TabHeaderItem, Tabs } from 'forge-core'
-
 import moment from 'moment'
-
 import Highlight from 'react-highlight.js'
-
 import { Docker } from 'grommet-icons'
 
 import { Versions } from '../versions/Versions'
-
+import { PluralConfigurationContext } from '../login/CurrentUser'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 
 import { CHART_Q, INSTALL_CHART, UPDATE_CHART_INST } from './queries'
 import { DEFAULT_CHART_ICON } from './constants'
 
-import Installation, { DetailContainer } from './Installation'
+import { DetailContainer } from './Installation'
 import Dependencies, { FullDependencies, ShowFull } from './Dependencies'
-
-import './chart.css'
-
 import { dockerPull } from './misc'
-
-import { PluralConfigurationContext } from '../login/CurrentUser'
-
 import { DeferredUpdates } from './DeferredUpdates'
 import { PackageGrade, ScanResults } from './PackageScan'
 
@@ -136,6 +129,7 @@ function ChartHeader({ version: { helm, chart, version, scan, id }, chartInstall
       direction="row"
       align="center"
       gap="medium"
+      width="100%"
       margin={{ bottom: 'small' }}
       style={{ minHeight: '50px' }}
     >
@@ -161,37 +155,47 @@ function ChartHeader({ version: { helm, chart, version, scan, id }, chartInstall
             <Text
               size="small"
               color="dark-3"
-            >(installed: {chartInstallation.version.version})
+            >
+              (installed: {chartInstallation.version.version})
             </Text>
           )}
         </Box>
-        <Text size="small"><i>{helm.description}</i></Text>
+        <Text size="small">
+          <i>{helm.description}</i>
+        </Text>
       </Box>
       {scan && <PackageGrade scan={scan} />}
-      <Box
-        width="100px"
-        direction="row"
-        justify="end"
-      >
-        {chartInstallation && chartInstallation.version.id === id ? (
+      {chartInstallation && chartInstallation.version.id === id ? (
+        <Box
+          width="100px"
+          direction="row"
+          justify="end"
+        >
           <Box
             round="xsmall"
             pad={{ horizontal: 'small', vertical: 'xsmall' }}
             align="center"
             justify="center"
-            border={{ color: 'light-5' }}
-          >Installed
+            border={{ color: 'border' }}
+          >
+            Installed
           </Box>
-        ) :
-          installation && (
+        </Box>
+      ) :
+        installation && (
+          <Box
+            width="100px"
+            direction="row"
+            justify="end"
+          >
             <ChartInstaller
               chartInstallation={chartInstallation}
               installation={installation}
               versionId={id}
               chartId={chart.id}
             />
-          )}
-      </Box>
+          </Box>
+        )}
     </Box>
   )
 }
@@ -212,20 +216,9 @@ function ChartReadme({ version: { readme } }) {
   )
 }
 
-function updateInstallation(chartId) {
-  return (cache, repoId, installation) => {
-    const prev = cache.readQuery({ query: CHART_Q, variables: { chartId } })
-    cache.writeQuery({
-      query: CHART_Q,
-      variables: { chartId },
-      data: { ...prev, chart: { ...prev.chart, repository: { ...prev.chart.repository, installation } } },
-    })
-  }
-}
-
 function ImageDependencies({ version: { imageDependencies } }) {
   const { registry } = useContext(PluralConfigurationContext)
-  const history = useHistory()
+  const navigate = useNavigate()
   if (!imageDependencies || imageDependencies.length === 0) return null
 
   return (
@@ -247,7 +240,7 @@ function ImageDependencies({ version: { imageDependencies } }) {
           hoverIndicator="light-2"
           round="xsmall"
           focusIndicator={false}
-          onClick={() => history.push(`/dkr/img/${image.id}`)}
+          onClick={() => navigate(`/dkr/img/${image.id}`)}
         >
           <Docker
             color="plain"
@@ -266,7 +259,7 @@ export default function Chart() {
   const [tab, setTab] = useState(false)
   const [full, setFull] = useState(false)
   const { data, fetchMore, refetch } = useQuery(CHART_Q, {
-    variables: { chartId }, 
+    variables: { chartId },
     fetchPolicy: 'cache-and-network',
   })
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
@@ -319,21 +312,24 @@ export default function Chart() {
                 <Text
                   weight={500}
                   size="small"
-                >Readme
+                >
+                  Readme
                 </Text>
               </TabHeaderItem>
               <TabHeaderItem name="configuration">
                 <Text
                   weight={500}
                   size="small"
-                >Configuration
+                >
+                  Configuration
                 </Text>
               </TabHeaderItem>
               <TabHeaderItem name="dependencies">
                 <Text
                   size="small"
                   weight={500}
-                >Dependencies
+                >
+                  Dependencies
                 </Text>
               </TabHeaderItem>
               {currentVersion.scan && (
@@ -341,7 +337,8 @@ export default function Chart() {
                   <Text
                     size="small"
                     weight={500}
-                  >Security
+                  >
+                    Security
                   </Text>
                 </TabHeaderItem>
               )}
@@ -350,7 +347,8 @@ export default function Chart() {
                   <Text
                     size="small"
                     weight={500}
-                  >Update Queue
+                  >
+                    Update Queue
                   </Text>
                 </TabHeaderItem>
               )}
@@ -366,8 +364,8 @@ export default function Chart() {
             </TabContent>
             <TabContent name="dependencies">
               {full ? <FullDependencies resource={chart} /> : (
-                <Dependencies 
-                  name={chart.name} 
+                <Dependencies
+                  name={chart.name}
                   resource={chart}
                   dependencies={(version || chart).dependencies}
                 />
@@ -384,25 +382,17 @@ export default function Chart() {
           pad="small"
           width={`${100 - width}%`}
         >
-          {tab === 'configuration' ? (
-            <Installation
-              repository={repository}
-              onUpdate={updateInstallation(chartId)}
-              open
+          <Box gap="small">
+            <Versions
+              edges={edges}
+              pageInfo={pageInfo}
+              fetchMore={fetchMore}
+              refetch={refetch}
+              setVersion={setVersion}
             />
-          ) : (
-            <Box gap="small">
-              <Versions
-                edges={edges}
-                pageInfo={pageInfo}
-                fetchMore={fetchMore}
-                refetch={refetch}
-                setVersion={setVersion}
-              />
-              <ChartInfo version={currentVersion} />
-              <ImageDependencies version={currentVersion} />
-            </Box>
-          )}
+            <ChartInfo version={currentVersion} />
+            <ImageDependencies version={currentVersion} />
+          </Box>
         </Box>
       </Box>
     </ScrollableContainer>

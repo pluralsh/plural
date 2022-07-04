@@ -1,8 +1,8 @@
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import { Box, Text, ThemeContext } from 'grommet'
 import { HoveredBackground, Password, Scroller, Trash } from 'forge-core'
-import { useMutation, useQuery } from 'react-apollo'
-import { useHistory } from 'react-router-dom'
+import { useMutation, useQuery } from '@apollo/client'
+import { useNavigate } from 'react-router-dom'
 
 import { chunk } from '../../utils/array'
 
@@ -109,7 +109,7 @@ export function RepositoryInner({ repo }) {
 }
 
 function RepositoryCell({ repo, deletable, publisherId, width }) {
-  const history = useHistory()
+  const navigate = useNavigate()
 
   return (
     <Container
@@ -121,7 +121,7 @@ function RepositoryCell({ repo, deletable, publisherId, width }) {
           publisherId={publisherId}
         />
       )}
-      onClick={() => history.push(`/repositories/${repo.id}`)}
+      onClick={() => navigate(`/repositories/${repo.id}`)}
     >
       <RepositoryInner repo={repo} />
     </Container>
@@ -138,7 +138,7 @@ export function Repository({ repo, hasNext, deletable, publisherId }) {
     >
       <Box
         width="50px"
-        heigh="50px"
+        margin={{ right: 'small' }}
       >
         <img
           alt=""

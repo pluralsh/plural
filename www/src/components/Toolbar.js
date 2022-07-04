@@ -1,17 +1,19 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useContext, useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Box } from 'grommet'
 
 import Me from './users/Me'
 import SearchRepositories from './repos/SearchRepositories'
 import { CurrentUserContext } from './login/CurrentUser'
-import { SIDEBAR_WIDTH, SMALL_WIDTH } from './Sidebar'
+import { SIDEBAR_WIDTH, SMALL_WIDTH } from './layout/Sidebar'
 import { Breadcrumbs } from './Breadcrumbs'
 import { Notifications } from './users/Notifications'
 import { LoopingLogo } from './utils/AnimatedLogo'
 import './toolbar.css'
 import { AutoRefresh } from './login/AutoRefresh'
 import { SocialLinks } from './Socials'
+
+export const TOOLBAR_SIZE = 55
 
 // const PLRL_ICON = `${process.env.PUBLIC_URL}/plural-white.png`
 const PLRL_WORD = `${process.env.PUBLIC_URL}/plural-white-word.png`
@@ -32,13 +34,12 @@ function ToolbarIcon() {
     const timeout = setTimeout(() => setAnimated(false), 1500)
 
     return () => clearTimeout(timeout)
-  }, [location])
+  }, [location, loaded])
 
   return (
     <LoopingLogo
       nofill
       scale="0.25"
-      dark
       still={!animated}
     />
   )
@@ -46,10 +47,11 @@ function ToolbarIcon() {
 
 export default function Toolbar() {
   const me = useContext(CurrentUserContext)
-  const history = useHistory()
+  const navigate = useNavigate()
 
   return (
     <Box
+      height="55px"
       direction="row"
       fill="horizontal"
       align="center"
@@ -61,12 +63,13 @@ export default function Toolbar() {
         height="100%"
         direction="row"
         align="center"
-        onClick={() => history.push('/')}
+        onClick={() => navigate('/')}
         flex={false}
         className="plrl-main-icon"
         gap="small"
       >
         <Box
+          margin={{ left: '8px', right: '-8px' }}
           flex={false}
           width={SMALL_WIDTH}
         >

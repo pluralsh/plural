@@ -1,7 +1,10 @@
-import React, { useState } from 'react'
-import { Button, GqlError, InputCollection, ModalHeader, ResponsiveInput } from 'forge-core'
+import { useState } from 'react'
+import { Button, GqlError, InputCollection } from 'forge-core'
 import { Box, Layer } from 'grommet'
-import { useMutation } from 'react-apollo'
+import { useMutation } from '@apollo/client'
+
+import ResponsiveInput from '../ResponsiveInput'
+import { ModalHeader } from '../ModalHeader'
 
 import { CREATE_GROUP, GROUPS_Q } from './queries'
 

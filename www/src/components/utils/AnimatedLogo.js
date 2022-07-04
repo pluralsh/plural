@@ -1,6 +1,5 @@
-import React from 'react'
-import { Box } from 'grommet' 
 import './logo-animation.css'
+import { Box } from 'grommet'
 
 const BOTTOM_LEFT = `${process.env.PUBLIC_URL}/plural-logomark-mechanical-for-animation-{color}_bottom-left_100px.svg`
 const BOTTOM_RIGHT = `${process.env.PUBLIC_URL}/plural-logomark-mechanical-for-animation-{color}_bottom-right_100px.svg`
@@ -14,13 +13,13 @@ function scaling(scale) {
   return { transform: `scale(${scale})` }
 }
 
-const image = (img, dark) => img.replace('{color}', dark ? 'wht' : 'blk') 
+const image = (img, dark) => img.replace('{color}', dark ? 'wht' : 'blk')
 
 export function LoopingLogo({ nofill, darkbg, height, scale, dark, still }) {
   return (
     <Box
       fill={!nofill}
-      background={darkbg ? 'backgroundColor' : null}
+      background={darkbg ? 'background' : null}
       height={height}
       align="center"
       justify="center"
@@ -35,7 +34,7 @@ export function LoopingLogo({ nofill, darkbg, height, scale, dark, still }) {
               <div className="plrl-logo-layer-mask">
                 <div className="plrl-logo-layer-mask-inner">
                   <img
-                    src={image(BOTTOM_LEFT, dark)}
+                    src={image(BOTTOM_LEFT, !dark)}
                     alt=""
                   />
                 </div>
@@ -45,7 +44,7 @@ export function LoopingLogo({ nofill, darkbg, height, scale, dark, still }) {
               <div className="plrl-logo-layer-mask">
                 <div className="plrl-logo-layer-mask-inner">
                   <img
-                    src={image(BOTTOM_RIGHT, dark)}
+                    src={image(BOTTOM_RIGHT, !dark)}
                     alt=""
                   />
                 </div>
@@ -55,7 +54,7 @@ export function LoopingLogo({ nofill, darkbg, height, scale, dark, still }) {
               <div className="plrl-logo-layer-mask">
                 <div className="plrl-logo-layer-mask-inner">
                   <img
-                    src={image(TOP_LEFT, dark)}
+                    src={image(TOP_LEFT, !dark)}
                     alt=""
                   />
                 </div>
@@ -65,7 +64,7 @@ export function LoopingLogo({ nofill, darkbg, height, scale, dark, still }) {
               <div className="plrl-logo-layer-mask">
                 <div className="plrl-logo-layer-mask-inner">
                   <img
-                    src={image(TOP_RIGHT, dark)}
+                    src={image(TOP_RIGHT, !dark)}
                     alt=""
                   />
                 </div>
@@ -75,7 +74,7 @@ export function LoopingLogo({ nofill, darkbg, height, scale, dark, still }) {
               <div className="plrl-logo-layer-mask">
                 <div className="plrl-logo-layer-mask-inner">
                   <img
-                    src={image(DOT, dark)}
+                    src={image(DOT, !dark)}
                     alt=""
                   />
                 </div>

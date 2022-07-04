@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { Box } from 'grommet'
 import { hierarchy, tree as treeLayout } from 'd3-hierarchy'
 import { select } from 'd3-selection'
@@ -40,6 +40,7 @@ function renderTree(id, tree, height, width) {
       .attr('transform', d => `translate(${d.x}, ${d.y})`)
 
   nodes.append('text')
+      .style('fill', 'white')
       .attr('dy', '.35em')
       .attr('y', d => d.children ? -32 : 32)
       .style('text-anchor', 'middle')
@@ -56,20 +57,22 @@ function renderTree(id, tree, height, width) {
 
 export default function TreeGraph({ id, tree, width, height }) {
   const boxRef = useRef()
+
   useEffect(() => {
     if (!boxRef.current) return
     const { width, height } = boxRef.current.getBoundingClientRect()
     renderTree(id, tree, height, width)
+    const { current } = boxRef
 
-    return () => boxRef.current.removeChild(boxRef.current.children[0])
-  }, [id, boxRef])
+    return () => current.removeChild(current.children[0])
+  }, [id, boxRef, tree])
 
   return (
-    <Box 
-      style={{ overflow: 'auto' }} 
-      ref={boxRef} 
-      id={id} 
-      width={width} 
+    <Box
+      style={{ overflow: 'auto' }}
+      ref={boxRef}
+      id={id}
+      width={width}
       height={height}
     />
   )

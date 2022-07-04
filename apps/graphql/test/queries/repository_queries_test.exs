@@ -19,7 +19,7 @@ defmodule GraphQl.RepositoryQueriesTest do
              |> ids_equal(repos)
     end
 
-    test "it can sideload your installed repositories" do
+    test "it can sideload your installation state" do
       user = insert(:user)
       [first, second | _] = repos = insert_list(3, :repository)
       inst = insert(:installation, repository: first, user: user)
@@ -45,6 +45,31 @@ defmodule GraphQl.RepositoryQueriesTest do
       {[repo], rest} = Enum.split_with(list, & &1["id"] == first.id)
       assert repo["installation"]["id"] == inst.id
       refute Enum.any?(rest, & &1["installation"])
+    end
+
+    test "It can sideload recipes for repositories" do
+      publisher = insert(:publisher)
+      repos = insert_list(3, :repository, publisher: publisher)
+      recipes = Enum.into(repos, %{}, & {&1.id, insert_list(2, :recipe, repository: &1)})
+
+      {:ok, %{data: %{"repositories" => found}}} = run_query("""
+        query Repositories($publisherId: ID) {
+          repositories(publisherId: $publisherId, first: 5) {
+            edges {
+              node {
+                id
+                recipes { id }
+              }
+            }
+          }
+        }
+      """, %{"publisherId" => publisher.id}, %{current_user: insert(:user)})
+
+      assert from_connection(found)
+             |> ids_equal(repos)
+
+      assert from_connection(found)
+             |> Enum.all?(&ids_equal(&1["recipes"], recipes[&1["id"]]))
     end
 
     test "It can respect private repositories" do

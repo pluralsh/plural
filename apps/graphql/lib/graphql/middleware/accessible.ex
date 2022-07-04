@@ -9,11 +9,11 @@ defmodule GraphQl.Middleware.Accessible do
          {:ok, _} <- Core.Policies.Repository.allow(repo, user, :access) do
       %{res | context: Map.put(context, :repo, repo)}
     else
-      _ -> put_result(res, {:error, "forbidden"})
+      {:error, msg} -> put_result(res, {:error, msg})
     end
   end
 
-  defp get_repo(%{repository_id: repo_id}), do: {:ok, Repositories.get_repository!(repo_id)}
-  defp get_repo(%{repository_name: name}), do: {:ok, Repositories.get_repository_by_name!(name)}
-  defp get_repo(_), do: {:error, :invalid_argument}
+  defp get_repo(%{repository_id: repo_id}) when is_binary(repo_id), do: {:ok, Repositories.get_repository!(repo_id)}
+  defp get_repo(%{repository_name: name}) when is_binary(name), do: {:ok, Repositories.get_repository_by_name!(name)}
+  defp get_repo(_), do: {:error, "one of repositoryId or repositoryName are required"}
 end

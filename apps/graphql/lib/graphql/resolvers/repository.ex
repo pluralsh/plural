@@ -11,7 +11,8 @@ defmodule GraphQl.Resolvers.Repository do
     Shell,
     Database,
     OIDCProvider,
-    OIDCProviderBinding
+    OIDCProviderBinding,
+    Recipe
   }
 
   def query(Tag, _), do: Tag
@@ -25,6 +26,7 @@ defmodule GraphQl.Resolvers.Repository do
   def query(Shell, _), do: Shell
   def query(OIDCProvider, _), do: OIDCProvider
   def query(OIDCProviderBinding, _), do: OIDCProviderBinding
+  def query(Recipe, _), do: Recipe.public()
   def query(_, _), do: Repository
 
   def resolve_public_key(repo, user) do

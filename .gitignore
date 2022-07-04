@@ -27,6 +27,8 @@ erl_crash.dump
 
 /secrets/
 
+# IDE
+.idea
 /.vscode/**/*
 !/.vscode/settings.json
 

@@ -1,8 +1,8 @@
-import {createContext, useContext, useMemo, useState} from 'react'
-import {useNavigate} from 'react-router-dom'
-import {Anchor, Box, Text} from 'grommet'
+import { createContext, useContext, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Anchor, Box, Text } from 'grommet'
 
-import {lookahead} from '../utils/array'
+import { lookahead } from '../utils/array'
 
 export const BreadcrumbsContext = createContext({
   breadcrumbs: [],

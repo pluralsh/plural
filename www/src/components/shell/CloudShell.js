@@ -87,7 +87,7 @@ function CloudShell() {
     [shellData, data]
   )
 
-  if ((shellData && shellData.shell) || created) {
+  if (shellData?.shell?.alive || created) {
     return (
       <Terminal />
     )

@@ -25,9 +25,7 @@ function CloudLaunch() {
     demoId,
   } = useContext(CreateShellContext)
 
-  console.log(credentials)
-
-  const [createShellMutation, createShellMutationResults] = useMutation(
+  const [createShellMutation, { data: mutationData, error }] = useMutation(
     CREATE_SHELL_MUTATION,
     {
       variables: {
@@ -44,11 +42,11 @@ function CloudLaunch() {
       },
     }
   )
-  const { data, error } = useQuery(
+  const { data } = useQuery(
     CLOUD_SHELL_QUERY,
     {
       pollInterval: 2000,
-      skip: !createShellMutationResults?.data,
+      skip: !mutationData,
     }
   )
 

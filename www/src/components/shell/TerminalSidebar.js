@@ -374,7 +374,7 @@ function Step2() {
         To install Airbyte, simply run:
       </P>
       <CodeLine marginTop="medium">
-        plural bundle install airbyte gcp-airbyte
+        plural bundle install airbyte airbyte-gcp
       </CodeLine>
     </Div>
   )

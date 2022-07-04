@@ -54,6 +54,21 @@ defmodule GraphQl.RecipeQueriesTest do
       assert from_connection(found)
              |> ids_equal(recipes)
     end
+
+    test "it will have a descriptive error if no name or id is given" do
+      repo    = insert(:repository)
+      insert_list(3, :recipe, repository: repo, provider: :aws)
+
+      {:ok, %{errors: [%{message: message}]}} = run_query("""
+        query {
+          recipes(first: 5) {
+            edges { node { id } }
+          }
+        }
+      """, %{"name" => repo.name}, %{current_user: insert(:user)})
+
+      assert message == "one of repositoryId or repositoryName are required"
+    end
   end
 
   describe "recipe" do

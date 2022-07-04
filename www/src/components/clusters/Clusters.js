@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client'
 import { Box } from 'grommet'
-import { Button, Div, Flex, MenuItem, P, Select, Span } from 'honorable'
+import { Button, Flex, MenuItem, P, Select, Span } from 'honorable'
 import moment from 'moment'
 import { Chip, ClusterIcon, ReloadIcon, StatusIpIcon, StatusOkIcon } from 'pluralsh-design-system'
 import { useEffect, useMemo, useState } from 'react'

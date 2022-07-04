@@ -1,7 +1,6 @@
 import { useContext, useState } from 'react'
-import { useMutation } from '@apollo/client'
-import { A, Button, Div, Flex, H1, H3, Icon, Img, Modal, P, Pre, Span } from 'honorable'
-import { GearTrainIcon, GitHubIcon, LinksIcon, Tag, TrashCanIcon } from 'pluralsh-design-system'
+import { A, Button, Div, Flex, H1, Img, P, Span } from 'honorable'
+import { GearTrainIcon, GitHubIcon, LinksIcon, Tag } from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 
@@ -11,7 +10,7 @@ import { capitalize } from '../../utils/string'
 
 import { InferredConsoleButton } from '../clusters/ConsoleButton'
 
-import { DELETE_INSTALLATION_MUTATION, RECIPES_QUERY } from './queries'
+import { RECIPES_QUERY } from './queries'
 import { providerToIcon, providerToIconHeight } from './constants'
 
 import InstallDropdownButton from './InstallDropdownButton'

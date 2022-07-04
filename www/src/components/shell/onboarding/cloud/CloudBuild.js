@@ -47,7 +47,7 @@ function CloudBuild() {
         bucketPrefix: `plural-${Math.random().toString().substring(2, 8)}`,
       }))
     }
-  }, [results])
+  }, [results, setCredentials, setDemoId, setProvider, setWorkspace])
 
   return (
     <>

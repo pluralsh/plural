@@ -5,7 +5,7 @@ import { FitAddon } from 'xterm-addon-fit'
 import { useQuery } from '@apollo/client'
 import { Button, Div, Flex, Span } from 'honorable'
 
-import { ReloadIcon, ScrollIcon } from 'pluralsh-design-system'
+import { ReloadIcon } from 'pluralsh-design-system'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { socket } from '../../helpers/client'
@@ -29,7 +29,7 @@ export function Shell({ shell }) {
   const xterm = useRef(null)
   const [channel, setChannel] = useState(null)
   const [dimensions, setDimensions] = useState({})
-  const [isCheatsheet, setIsCheatsheet] = useState(false)
+  const [isCheatsheet] = useState(false)
   const fitAddon = useMemo(() => new FitAddon(), [])
   const [terminalTheme] = useContext(TerminalThemeContext)
 

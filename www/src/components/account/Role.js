@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/client'
 import { Box } from 'grommet'
-import { Button, Div, Flex, Span, Switch } from 'honorable'
-import { Modal, ModalHeader, Tab, ValidatedInput } from 'pluralsh-design-system'
+import { Button, Span, Switch } from 'honorable'
+import { Modal, ModalHeader, ValidatedInput } from 'pluralsh-design-system'
 import { useCallback, useState } from 'react'
 
 import { appendConnection, updateCache } from '../../utils/graphql'

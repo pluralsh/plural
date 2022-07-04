@@ -63,6 +63,11 @@ config :worker, demo_projects_pipeline: [
   {Worker.DemoProjects.Pipeline, Worker.DemoProjects.Producer}
 ]
 
+config :worker, rollout_pipeline: [
+  Worker.Rollouts.Producer,
+  {Worker.Rollouts.Pipeline, Worker.Rollouts.Producer}
+]
+
 config :goth,
   disabled: true
 

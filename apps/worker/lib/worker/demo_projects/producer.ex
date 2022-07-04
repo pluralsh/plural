@@ -1,5 +1,6 @@
 defmodule Worker.DemoProjects.Producer do
   use GenStage
+  require Logger
   alias Core.Services.Shell.Demo
 
   @max 20
@@ -17,8 +18,10 @@ defmodule Worker.DemoProjects.Producer do
     {:producer, %State{demand: 0}}
   end
 
-  def handle_info(:poll, %State{demand: demand} = state),
-    do: deliver(demand, state)
+  def handle_info(:poll, %State{demand: demand} = state) do
+    Logger.info "checking for stale demo projects"
+    deliver(demand, state)
+  end
 
   def handle_demand(demand, %State{demand: remaining} = state) when demand > 0 do
     deliver(demand + remaining, state)

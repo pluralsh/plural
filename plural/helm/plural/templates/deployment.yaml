@@ -74,7 +74,9 @@ metadata:
   labels:
 {{ include "plural.labels" . | indent 4 }}
 spec:
-  # replicas: {{ .Values.worker.replicaCount }}
+  {{ if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.worker.replicaCount }}
+  {{ end }}
   selector:
     matchLabels:
       app.kubernetes.io/name: plural-worker

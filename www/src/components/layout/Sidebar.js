@@ -486,6 +486,7 @@ function Sidebar({
           zIndex={999}
           position="absolute"
           bottom={8}
+          minWidth="175px"
           left={sidebarWidth + 8}
           border="1px solid border"
         >

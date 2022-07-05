@@ -95,6 +95,7 @@ function Role({ role, q }) {
           close={() => setConfirm(false)}
           submit={mutation}
           loading={loading}
+          destructive
           error={error}
         />
       </>

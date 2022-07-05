@@ -86,6 +86,7 @@ function UserEdit({ user, update }) {
         title="Confirm deletion"
         text="Be sure this user has no active installations before deleting"
         label="Delete"
+        destructive
         submit={deleteMut}
         loading={loading}
       />

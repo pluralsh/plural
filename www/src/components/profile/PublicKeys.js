@@ -6,6 +6,7 @@ import { Modal, ModalActions, ModalHeader } from 'pluralsh-design-system'
 import { useState } from 'react'
 
 import { extendConnection } from '../../utils/graphql'
+import { Confirm } from '../account/Confirm'
 import { Placeholder } from '../accounts/Audits'
 
 import { DELETE_KEY, LIST_KEYS } from '../users/queries'
@@ -19,7 +20,7 @@ import { ListItem } from './ListItem'
 
 function PublicKey({ pubkey: key, first, last }) {
   const [confirm, setConfirm] = useState(false)
-  const [mutation, { loading }] = useMutation(DELETE_KEY, {
+  const [mutation, { loading, error }] = useMutation(DELETE_KEY, {
     variables: { id: key.id },
     refetchQueries: [{ query: LIST_KEYS }],
     onCompleted: () => setConfirm(false),
@@ -53,28 +54,16 @@ function PublicKey({ pubkey: key, first, last }) {
           <DeleteIcon onClick={() => setConfirm(true)} />
         </Box>
       </ListItem>
-      <Modal
+      <Confirm
         open={confirm}
-        onClose={() => setConfirm(false)}
-      >
-        <ModalHeader onClose={() => setConfirm(false)}>
-          Delete Public Key
-        </ModalHeader>
-        Are you sure you want to delete this public key?
-        <ModalActions>
-          <Button
-            secondary
-            onClick={() => setConfirm(false)}
-          >Cancel
-          </Button>
-          <Button
-            onClick={mutation}
-            loading={loading}
-            marginLeft="medium"
-          >Remove
-          </Button>
-        </ModalActions>
-      </Modal>
+        title="Delete Public Key"
+        text="Are you sure you want to delete this public key?"
+        close={() => setConfirm(false)}
+        submit={mutation}
+        loading={loading}
+        destructive
+        error={error}
+      />
     </>
   )
 }

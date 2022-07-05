@@ -23,6 +23,8 @@ import { Chloropleth } from '../utils/Chloropleth'
 
 import { Container } from '../utils/Container'
 
+import { Confirm } from '../account/Confirm'
+
 import { Header } from './Header'
 import { DeleteIcon, Icon } from './Icon'
 import { ListItem } from './ListItem'
@@ -106,7 +108,7 @@ function AccessToken({ token, first, last }) {
   const [confirm, setConfirm] = useState(false)
   const [audits, setAudits] = useState(false)
   const [graph, setGraph] = useState(false)
-  const [mutation, { loading }] = useMutation(DELETE_TOKEN, {
+  const [mutation, { loading, error }] = useMutation(DELETE_TOKEN, {
     variables: { id: token.id },
     update: (cache, { data: { deleteToken } }) => updateCache(cache, {
       query: TOKENS_Q,
@@ -151,6 +153,7 @@ function AccessToken({ token, first, last }) {
             />
             <Modal
               open={audits}
+              portal
               onClose={() => setAudits(false)}
             >
               <ModalHeader onClose={() => setAudits(false)}>
@@ -166,6 +169,7 @@ function AccessToken({ token, first, last }) {
             />
             <Modal
               open={graph}
+              portal
               onClose={() => setGraph(false)}
             >
               <ModalHeader onClose={() => setGraph(false)}>
@@ -177,28 +181,16 @@ function AccessToken({ token, first, last }) {
           <DeleteIcon onClick={() => setConfirm(true)} />
         </Box>
       </ListItem>
-      <Modal
+      <Confirm
         open={confirm}
-        onClose={() => setConfirm(false)}
-      >
-        <ModalHeader onClose={() => setConfirm(false)}>
-          Delete Access Token
-        </ModalHeader>
-        Are you sure you want to delete this public key?
-        <ModalActions>
-          <Button
-            secondary
-            onClick={() => setConfirm(false)}
-          >Cancel
-          </Button>
-          <Button
-            onClick={mutation}
-            loading={loading}
-            marginLeft="medium"
-          >Remove
-          </Button>
-        </ModalActions>
-      </Modal>
+        title="Delete Access Token"
+        text="Are you sure you want to delete this api access token?"
+        close={() => setConfirm(false)}
+        submit={mutation}
+        loading={loading}
+        destructive
+        error={error}
+      />
     </>
   )
 }

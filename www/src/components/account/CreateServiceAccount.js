@@ -85,6 +85,7 @@ export function EditServiceAccount({ user, update }) {
       </MoreMenu>
       <Confirm
         open={confirm}
+        destructive
         close={() => setConfirm(false)}
         error={error}
         title="Confirm deletion"

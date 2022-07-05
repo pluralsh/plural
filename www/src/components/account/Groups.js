@@ -132,6 +132,7 @@ function Group({ group, q }) {
           close={() => setConfirm(false)}
           submit={mutation}
           loading={loading}
+          destructive
           error={error}
         />
       </>

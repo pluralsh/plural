@@ -87,8 +87,8 @@ function LoginMethod({ icon, name, onClick, active }) {
       width="100%"
       round="xsmall"
       onClick={active ? null : onClick}
-      hoverIndicator="background-middle"
-      background={active ? 'background-middle' : null}
+      hoverIndicator="fill-one-hover"
+      background={active ? 'fill-one-hover' : null}
       direction="row"
       align="center"
       gap="small"
@@ -119,7 +119,7 @@ function LoginMethods() {
     <Box gap="small">
       {data.oauthUrls.map(({ provider, authorizeUrl }) => (
         <LoginMethod 
-          icon={createElement(METHOD_ICONS[provider], { size: '20px', color: 'plain' })}
+          icon={createElement(METHOD_ICONS[provider], { size: '20px', color: provider === Method.GITHUB ? 'white' : 'plain' })}
           active={me.loginMethod === provider}
           name={`Login with ${provider.toLowerCase()}`}
           onClick={() => {

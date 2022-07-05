@@ -6,6 +6,9 @@ export const ResetTokenType = {
 export const LoginMethod = {
   PASSWORD: 'PASSWORD',
   PASSWORDLESS: 'PASSWORDLESS',
+  GITHUB: 'GITHUB',
+  GITLAB: 'GITLAB',
+  GOOGLE: 'GOOGLE',
 }
   
 export const NotificationType = {

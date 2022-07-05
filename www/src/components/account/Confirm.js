@@ -2,12 +2,12 @@ import { Button, Modal, ModalActions, ModalHeader } from 'pluralsh-design-system
 
 import { GqlError } from '../utils/Alert'
 
-export function Confirm({ open, close, title, error, text, submit, label, loading }) {
+export function Confirm({ open, close, title, error, text, submit, label, loading, destructive }) {
   return (
     <Modal
       open={open}
       onClose={close}
-      maxWidth="512px"
+      width="512px"
       portal
     >
       <ModalHeader onClose={close}>
@@ -26,6 +26,7 @@ export function Confirm({ open, close, title, error, text, submit, label, loadin
         >Cancel
         </Button>
         <Button
+          destructive={destructive}
           onClick={submit}
           loading={loading}
           marginLeft="medium"

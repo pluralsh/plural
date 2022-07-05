@@ -5,6 +5,7 @@ import { Button, Modal, ModalActions, ModalHeader } from 'pluralsh-design-system
 import { useState } from 'react'
 
 import { updateCache } from '../../utils/graphql'
+import { Confirm } from '../account/Confirm'
 
 import { DELETE_EAB_CREDENTIALS, EAB_CREDENTIALS } from '../users/queries'
 import { obscure } from '../users/utils'
@@ -17,7 +18,7 @@ import { DeleteIcon } from './Icon'
 
 function EabCredential({ credential, last }) {
   const [confirm, setConfirm] = useState(false)
-  const [mutation, { loading }] = useMutation(DELETE_EAB_CREDENTIALS, {
+  const [mutation, { loading, error }] = useMutation(DELETE_EAB_CREDENTIALS, {
     variables: { id: credential.id },
     update: (cache, { data: { deleteEabKey } }) => updateCache(cache, {
       query: EAB_CREDENTIALS,
@@ -37,28 +38,16 @@ function EabCredential({ credential, last }) {
         <TableData>{credential.provider}/{credential.cluster}</TableData>
         <TableData>{moment(credential.insertedAt).format('lll')}</TableData>
       </TableRow>
-      <Modal
+      <Confirm
         open={confirm}
-        onClose={() => setConfirm(false)}
-      >
-        <ModalHeader onClose={() => setConfirm(false)}>
-          Delete this EAB Credentials
-        </ModalHeader>
-        Are you sure you want to remove this EAB credential?  This action is permanent.
-        <ModalActions>
-          <Button
-            secondary
-            onClick={() => setConfirm(false)}
-          >Cancel
-          </Button>
-          <Button
-            onClick={mutation}
-            loading={loading}
-            marginLeft="medium"
-          >Remove
-          </Button>
-        </ModalActions>
-      </Modal>
+        title="Delete these EAB Credentials"
+        text="Are you sure you want to remove this EAB credential?  This action is permanent."
+        close={() => setConfirm(false)}
+        submit={mutation}
+        loading={loading}
+        destructive
+        error={error}
+      />
     </>
   )
 }

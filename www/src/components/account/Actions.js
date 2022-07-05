@@ -1,6 +1,6 @@
 import { Button, ModalActions } from 'pluralsh-design-system'
 
-export function Actions({ cancel, submit, loading, action }) {
+export function Actions({ cancel, submit, loading, action, destructive }) {
   return (
     <ModalActions>
       <Button
@@ -9,6 +9,7 @@ export function Actions({ cancel, submit, loading, action }) {
       >Cancel
       </Button>
       <Button
+        destructive={destructive}
         onClick={submit}
         disabled={!submit}
         loading={loading}

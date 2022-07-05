@@ -65,6 +65,7 @@ function DomainOptions({ domain, setDomain }) {
         close={() => setConfirm(false)}
         submit={mutation}
         loading={loading}
+        destructive
         error={error}
       />
     </>

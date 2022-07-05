@@ -3,7 +3,9 @@ import { Div, H2 } from 'honorable'
 function OnboardingCard({ children, title = '', ...props }) {
   return (
     <Div
+      body2
       width="100%"
+      color="text-light"
       backgroundColor="fill-one"
       border="1px solid border"
       borderRadius="large"

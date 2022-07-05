@@ -20,8 +20,11 @@ function Synopsis() {
       <OnboardingCard
         title="Review details"
       >
-        <P color="text-light">
-          After you make sure you entered everything correctly, it's time to launch the cloud shell and install your first application!
+        <P
+          body2
+          color="text-light"
+        >
+          After ensuring you entered everything correctly, it's time to launch the cloud shell and install your first application!
         </P>
         <Flex
           align="center"

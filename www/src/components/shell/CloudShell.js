@@ -24,11 +24,7 @@ const providerToDisplayName = {
 function CreateRepositoryCard({ data }) {
   return (
     <OnboardingCard title="Create a repository">
-      <P
-        body1
-        color="text-light"
-        marginBottom="medium"
-      >
+      <P marginBottom="medium">
         We use GitOps to manage your application's state. Use one of the following providers to get started.
       </P>
       <Flex mx={-1}>

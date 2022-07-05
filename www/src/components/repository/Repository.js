@@ -9,10 +9,11 @@ import useBreadcrumbs from '../../hooks/useBreadcrumbs'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
+import { Breadcrumbs } from '../Breadcrumbs'
+
 import RepositoryHeader from './RepositoryHeader'
 
 import { REPOSITORY_QUERY } from './queries'
-import {Breadcrumbs} from "../Breadcrumbs";
 
 function Repository() {
   const { id } = useParams()
@@ -54,11 +55,14 @@ function Repository() {
         overflowY="hidden"
       >
         <Flex
-            paddingVertical={18}
-            paddingLeft="xlarge"
-            paddingRight="large"
-            borderBottom="1px solid border">
-          <Breadcrumbs></Breadcrumbs>
+          paddingVertical={18}
+          marginLeft="xlarge"
+          marginRight="xlarge"
+          paddingLeft="xsmall"
+          paddingRight="xsmall"
+          borderBottom="1px solid border"
+        >
+          <Breadcrumbs />
         </Flex>
         <RepositoryHeader flexShrink={0} />
         <Flex

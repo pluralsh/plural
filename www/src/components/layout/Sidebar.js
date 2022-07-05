@@ -113,6 +113,8 @@ function SidebarItemRef({
 },
 ref
 ) {
+  const [hovered, setHovered] = useState(false)
+
   function wrapLink(node) {
     if (!linkTo) return node
 
@@ -148,7 +150,8 @@ ref
         placement="right"
         label={tooltip}
         zIndex={1000}
-        display={collapsed ? 'block' : 'none'}
+        visibility={collapsed ? 'visible' : 'hidden'}
+        display={hovered ? 'block' : 'none'}
         whiteSpace="nowrap"
       >
         {node}
@@ -158,6 +161,8 @@ ref
 
   return wrapLink(wrapTooltip(
     <Flex
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       ref={ref}
       py="9.5px" // Give it a square look with a weird padding
       px={0.75}

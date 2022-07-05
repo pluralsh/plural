@@ -1,15 +1,11 @@
 import { A, Flex } from 'honorable'
 import { useNavigate } from 'react-router-dom'
-import { useMutation } from '@apollo/client'
 
-import { UPDATE_USER } from '../../users/queries'
-import { OnboardingStatus } from '../../profile/types'
+import { useOnboarded } from './useOnboarded'
 
 function OnboardingFooter() {
   const navigate = useNavigate()
-  const [mutation] = useMutation(UPDATE_USER, {
-    variables: { attributes: { onboarding: OnboardingStatus.ONBOARDED } },
-  })
+  const { mutation } = useOnboarded()
 
   function addExternalLink(to, label) {
     return (

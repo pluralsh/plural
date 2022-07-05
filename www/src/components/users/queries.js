@@ -202,13 +202,18 @@ export const LOGIN_METHOD = gql`
 
 export const SIGNUP_MUTATION = gql`
   mutation Signup($attributes: UserAttributes!, $account: AccountAttributes, $deviceToken: String) {
-    signup(attributes: $attributes, account: $account, deviceToken: $deviceToken) { jwt }
+    signup(attributes: $attributes, account: $account, deviceToken: $deviceToken) { 
+      jwt 
+      onboarding
+    }
   }
 `
 
 export const LOGIN_MUTATION = gql`
   mutation Login($email: String!, $password: String!, $deviceToken: String) {
-    login(email: $email, password: $password, deviceToken: $deviceToken) { jwt }
+    login(email: $email, password: $password, deviceToken: $deviceToken) { 
+      jwt 
+    }
   }
 `
 
@@ -254,7 +259,10 @@ export const OAUTH_URLS = gql`
 
 export const OAUTH_CALLBACK = gql`
   mutation OAuthCallback($host: String, $code: String!, $provider: OauthProvider!, $deviceToken: String) {
-    oauthCallback(code: $code, host: $host, provider: $provider, deviceToken: $deviceToken) { jwt }
+    oauthCallback(code: $code, host: $host, provider: $provider, deviceToken: $deviceToken) { 
+      jwt 
+      onboarding
+    }
   }
 `
 

@@ -218,6 +218,8 @@ defmodule GraphQl.Schema.Repository do
     field :auth_method,   non_null(:oidc_auth_method)
     field :configuration, :ouath_configuration, resolve: &GraphQl.Resolvers.OAuth.resolve_configuration/2
 
+    field :consent,  :consent_request
+
     field :bindings, list_of(:oidc_provider_binding), resolve: dataloader(Repository)
 
     timestamps()

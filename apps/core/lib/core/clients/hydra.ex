@@ -28,7 +28,8 @@ defmodule Core.Clients.Hydra do
       :client,
       :oidc_context,
       :requested_scope,
-      :subject
+      :subject,
+      :skip
     ]
   end
 

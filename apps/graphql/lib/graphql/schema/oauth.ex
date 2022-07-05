@@ -25,6 +25,11 @@ defmodule GraphQl.Schema.OAuth do
     field :userinfo_endpoint,      :string
   end
 
+  object :consent_request do
+    field :requested_scope, list_of(:string)
+    field :skip,            :boolean
+  end
+
   object :oidc_login do
     field :id,        non_null(:id)
     field :ip,        :string

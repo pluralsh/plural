@@ -1,13 +1,18 @@
-import { Box } from 'grommet'
 import { useEffect } from 'react'
 import { useApolloClient, useMutation } from '@apollo/client'
 import { useLocation, useParams } from 'react-router-dom'
 import qs from 'query-string'
 
+import { Box } from 'grommet'
+
 import { setToken } from '../../helpers/authentication'
 import { host } from '../../helpers/hostname'
-import { GqlError } from '../utils/Alert'
+
+import { OnboardingStatus } from '../profile/types'
+
 import { LoopingLogo } from '../utils/AnimatedLogo'
+
+import { GqlError } from '../utils/Alert'
 
 import { handleOauthChallenge } from './MagicLogin'
 import { OAUTH_CALLBACK } from './queries'
@@ -23,15 +28,15 @@ export function OAuthCallback() {
 
   const [mutation, { error, loading }] = useMutation(OAUTH_CALLBACK, {
     variables: { code, host: host(), provider: service.toUpperCase(), deviceToken },
-    onCompleted: result => {
-      setToken(result.oauthCallback.jwt)
+    onCompleted: ({ oauthCallback }) => {
+      setToken(oauthCallback.jwt)
       if (deviceToken) finishedDeviceLogin()
       const challenge = getChallenge()
       if (challenge) {
         handleOauthChallenge(client, challenge)
       }
       else {
-        window.location.href = '/'
+        window.location.href = (oauthCallback.onboarding === OnboardingStatus.NEW) ? '/shell' : '/'
       }
     },
   })

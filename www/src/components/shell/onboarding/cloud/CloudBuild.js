@@ -47,7 +47,8 @@ function CloudBuild() {
         bucketPrefix: `plural-${Math.random().toString().substring(2, 8)}`,
       }))
     }
-  }, [results, setCredentials, setDemoId, setProvider, setWorkspace])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [results])
 
   return (
     <>

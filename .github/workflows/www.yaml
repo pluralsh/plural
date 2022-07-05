@@ -2,9 +2,17 @@ name: www-ci
 
 on:
   push:
-    branches: [ "master" ]
+    branches:
+      - "master"
+    paths:
+      - ".github/workflows/www.yaml"
+      - "www/**"
   pull_request:
-    branches: [ "**" ]
+    branches:
+      - "**"
+    paths:
+      - ".github/workflows/www.yaml"
+      - "www/**"
 jobs:
   lint:
     runs-on: ubuntu-latest

@@ -164,7 +164,8 @@ ref
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       ref={ref}
-      py="9.5px" // Give it a square look with a weird padding
+      pt="12px" // Give it a square look with a weird padding
+      pb="6px"
       px={0.75}
       align="center"
       borderRadius="normal"
@@ -204,8 +205,9 @@ ref
       </Flex>
       <Flex
         ml={1}
-        flexShrink={0}
         mr={endIcon ? -0.25 : 0}
+        marginTop="-4px"
+        flexShrink={0}
         align="center"
         flexGrow={1}
         opacity={collapsed ? 0 : 1}

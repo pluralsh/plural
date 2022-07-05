@@ -56,8 +56,10 @@ function Repository() {
       >
         <Flex
           paddingVertical={18}
-          paddingLeft="xlarge"
-          paddingRight="large"
+          marginLeft="xlarge"
+          marginRight="xlarge"
+          paddingLeft="xsmall"
+          paddingRight="xsmall"
           borderBottom="1px solid border"
         >
           <Breadcrumbs />

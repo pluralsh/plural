@@ -60,7 +60,8 @@ function RepositoryHeader(props) {
   return (
     <Flex
       py={2}
-      px={2}
+      marginLeft="xlarge"
+      marginRight="xlarge"
       align="flex-start"
       borderBottom="1px solid border"
       {...props}

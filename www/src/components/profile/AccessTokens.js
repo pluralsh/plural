@@ -153,6 +153,7 @@ function AccessToken({ token, first, last }) {
             />
             <Modal
               open={audits}
+              portal
               onClose={() => setAudits(false)}
             >
               <ModalHeader onClose={() => setAudits(false)}>
@@ -168,6 +169,7 @@ function AccessToken({ token, first, last }) {
             />
             <Modal
               open={graph}
+              portal
               onClose={() => setGraph(false)}
             >
               <ModalHeader onClose={() => setGraph(false)}>

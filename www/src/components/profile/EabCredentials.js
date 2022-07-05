@@ -41,7 +41,7 @@ function EabCredential({ credential, last }) {
       <Confirm
         open={confirm}
         title="Delete these EAB Credentials"
-        text="Are you sure you want to remove this EAB credential?  This action is permanent."
+        text="Are you sure you want to remove this EAB credential set?  This action is permanent."
         close={() => setConfirm(false)}
         submit={mutation}
         loading={loading}

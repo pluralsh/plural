@@ -14,6 +14,7 @@ import { MARKETPLACE_QUERY } from './queries'
 
 const searchOptions = {
   keys: ['name', 'description', 'tags.tag'],
+  threshold: 0.25,
 }
 
 const filterTokenStyles = {

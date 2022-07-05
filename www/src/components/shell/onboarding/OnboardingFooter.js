@@ -1,6 +1,16 @@
 import { A, Flex } from 'honorable'
+import { useNavigate } from 'react-router-dom'
+import { useMutation } from '@apollo/client'
+
+import { UPDATE_USER } from '../../users/queries'
+import { OnboardingStatus } from '../../profile/types'
 
 function OnboardingFooter() {
+  const navigate = useNavigate()
+  const [mutation] = useMutation(UPDATE_USER, {
+    variables: { attributes: { onboarding: OnboardingStatus.ONBOARDED } },
+  })
+
   function addExternalLink(to, label) {
     return (
       <A
@@ -13,7 +23,9 @@ function OnboardingFooter() {
     )
   }
 
-  function skipDemo() {}
+  function skipDemo() {
+    mutation().then(navigate('/'))
+  }
 
   return (
     <Flex

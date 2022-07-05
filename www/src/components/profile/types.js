@@ -7,6 +7,13 @@ export const LoginMethod = {
   PASSWORD: 'PASSWORD',
   PASSWORDLESS: 'PASSWORDLESS',
 }
+
+export const OnboardingStatus = {
+  NEW: 'NEW',
+  ONBOARDED: 'ONBOARDED',
+  INSTALLED: 'INSTALLED',
+  ACTIVE: 'ACTIVE',
+}
   
 export const NotificationType = {
   LOCKED: 'LOCKED',

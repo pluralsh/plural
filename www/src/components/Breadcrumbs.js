@@ -9,7 +9,7 @@ export const BreadcrumbsContext = createContext({
   setBreadcrumbs: () => null,
 })
 
-function CrumbLink({crumb: {url, text, disable}}) {
+function CrumbLink({ crumb: { url, text, disable } }) {
   const navigate = useNavigate()
   // TODO: new design does not cover the "disabled" state. Should it be removed?
   if (disable) {
@@ -34,33 +34,33 @@ function CrumbLink({crumb: {url, text, disable}}) {
 }
 
 export function Breadcrumbs() {
-  const {breadcrumbs} = useContext(BreadcrumbsContext)
+  const { breadcrumbs } = useContext(BreadcrumbsContext)
   if (breadcrumbs.length === 0) return null
 
   const children = Array.from(lookahead(breadcrumbs, (crumb, next) => {
-      if (next.url) {
-        return [
-          <CrumbLink
-            key={crumb.url + crumb.text}
-            crumb={crumb}
-          />,
-          <Text
-            key={`${crumb.url + crumb.text}next`}
-            size="small"
-          >/
-          </Text>,
-        ]
-      }
-
-      return (
-        <Text
+    if (next.url) {
+      return [
+        <CrumbLink
           key={crumb.url + crumb.text}
+          crumb={crumb}
+        />,
+        <Text
+          key={`${crumb.url + crumb.text}next`}
           size="small"
-          weight={700}
-        >{crumb.text}
-        </Text>
-      )
-    })
+        >/
+        </Text>,
+      ]
+    }
+
+    return (
+      <Text
+        key={crumb.url + crumb.text}
+        size="small"
+        weight={700}
+      >{crumb.text}
+      </Text>
+    )
+  })
   ).flat()
 
   return (
@@ -69,16 +69,16 @@ export function Breadcrumbs() {
       direction="row"
       gap="xsmall"
       align="center"
-      pad={{right: 'small', left: '1px'}}
+      pad={{ right: 'small', left: '1px' }}
     >
       {children}
     </Box>
   )
 }
 
-export default function BreadcrumbProvider({children}) {
+export default function BreadcrumbProvider({ children }) {
   const [breadcrumbs, setBreadcrumbs] = useState([])
-  const value = useMemo(() => ({breadcrumbs, setBreadcrumbs}), [breadcrumbs])
+  const value = useMemo(() => ({ breadcrumbs, setBreadcrumbs }), [breadcrumbs])
 
   return (
     <BreadcrumbsContext.Provider value={value}>

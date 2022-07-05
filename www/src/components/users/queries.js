@@ -9,6 +9,7 @@ export const ME_Q = gql`
     me {
       ...UserFragment
       loginMethod
+      onboarding
       hasInstallations
       account {
         ...AccountFragment

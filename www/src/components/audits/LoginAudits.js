@@ -12,6 +12,8 @@ import { ReturnToBeginning } from '../utils/ReturnToBeginning'
 import { StandardScroller } from '../utils/SmoothScroller'
 import { Table, TableData, TableRow } from '../utils/Table'
 
+import { extendConnection } from '../../utils/graphql'
+
 import { AuditUser } from './AuditUser'
 import { Location } from './Location'
 

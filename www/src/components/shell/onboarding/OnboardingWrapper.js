@@ -1,7 +1,7 @@
 import { Div, Flex } from 'honorable'
 import { BrowserIcon, CloudIcon, GearTrainIcon, NetworkInterfaceIcon, Stepper } from 'pluralsh-design-system'
 
-import { SECTION_CLOUD_SELECT, SECTION_CLOUD_WORKSPACE, SECTION_GIT_PROVIDER, SECTION_CLI_INSTALLATION, SECTION_SYNOPSIS } from '../constants'
+import { SECTION_CLI_INSTALLATION, SECTION_CLOUD_SELECT, SECTION_CLOUD_WORKSPACE, SECTION_GIT_PROVIDER, SECTION_SYNOPSIS } from '../constants'
 
 import SplashToLogoTransition from './SplashToLogoTransition'
 
@@ -42,6 +42,7 @@ function OnboardingWrapper({ showSplashScreen = false, stepIndex = 0, childIsRea
   return (
     <Flex
       width="100%"
+      height="100%"
       direction="column"
       alignItems="center"
       marginTop="xxlarge"
@@ -53,8 +54,10 @@ function OnboardingWrapper({ showSplashScreen = false, stepIndex = 0, childIsRea
         childIsReady={childIsReady}
       >
         {childIsReady && (
-          <Div
+          <Flex
+            direction="column"
             position="relative"
+            height="100%"
             width="100%"
             maxWidth={640}
             zIndex={0}
@@ -71,7 +74,7 @@ function OnboardingWrapper({ showSplashScreen = false, stepIndex = 0, childIsRea
               )}
             </Div>
             {children}
-          </Div>
+          </Flex>
         )}
       </SplashToLogoTransition>
     </Flex>

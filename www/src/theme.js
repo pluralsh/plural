@@ -184,7 +184,7 @@ export const DEFAULT_THEME = {
     color: '#9095A2',
     hover: {
       textDecoration: 'underline',
-      extend: 'color: #EBEFF0'
+      extend: 'color: #EBEFF0',
     },
     fontWeight: 400,
   },

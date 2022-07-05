@@ -3,27 +3,20 @@ import { useMutation } from '@apollo/client'
 import { Box, Layer, Text } from 'grommet'
 import { Reload as Refresh } from 'forge-core'
 import { CircleAlert, Close } from 'grommet-icons'
-
 import moment from 'moment'
-
 import { useParams } from 'react-router-dom'
-
 import { CurrentUserContext } from '../login/CurrentUser'
 import { Icon } from '../accounts/Group'
-
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
-
 import { LoopingLogo } from '../utils/AnimatedLogo'
-
 import { CREATE_RESET_TOKEN, REALIZE_TOKEN } from './queries'
 import { ResetTokenType } from './types'
-
 import { LoginPortal } from './MagicLogin'
 
 export function EmailConfirmed() {
-  const { id } = useParams()
-  const [mutation, { data, error }] = useMutation(REALIZE_TOKEN, {
-    variables: { id, attributes: {} },
+  const {id} = useParams()
+  const [mutation, {data, error}] = useMutation(REALIZE_TOKEN, {
+    variables: {id, attributes: {}},
     onCompleted: () => {
       setTimeout(() => {
         window.location = '/'
@@ -41,7 +34,7 @@ export function EmailConfirmed() {
         gap="small"
         width="400px"
       >
-        {!data && !error && <LoopingLogo scale="0.75" />}
+        {!data && !error && <LoopingLogo scale="0.75"/>}
         {data && (
           <Alert
             status={AlertStatus.SUCCESS}
@@ -64,7 +57,7 @@ export function VerifyEmailConfirmed() {
   const [open, setOpen] = useState(true)
   const me = useContext(CurrentUserContext)
   const [mutation] = useMutation(CREATE_RESET_TOKEN, {
-    variables: { attributes: { email: me.email, type: ResetTokenType.EMAIL } },
+    variables: {attributes: {email: me.email, type: ResetTokenType.EMAIL}},
     onCompleted: () => setOpen(false),
   })
 
@@ -77,7 +70,7 @@ export function VerifyEmailConfirmed() {
       plain
       modal={false}
       position="top"
-      margin={{ top: 'medium' }}
+      margin={{top: 'medium'}}
       onEsc={close}
       onClickOutside={close}
     >
@@ -85,10 +78,10 @@ export function VerifyEmailConfirmed() {
         round="xsmall"
         direction="row"
         gap="small"
-        background="plrl-white"
+        background="fill-two"
         pad="small"
         align="center"
-        border={{ color: 'border' }}
+        border={{color: 'border'}}
       >
         <Box
           flex={false}

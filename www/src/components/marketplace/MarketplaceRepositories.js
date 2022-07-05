@@ -24,6 +24,48 @@ const filterTokenStyles = {
   minHeight: '42px',
 }
 
+function RepoCardList({ repositories, repoProps, ...props }) {
+  return (
+    <Flex
+      mx={-1}
+      align="stretch"
+      wrap="wrap"
+      {...props}
+    >
+      {
+        repositories.map(repository => (
+          <Flex
+            px={1}
+            marginBottom="xlarge"
+            width="auto"
+            flexBasis="340px"
+            flexGrow={1}
+            flexShrink={1}
+            minWidth="250px"
+            maxWidth="800px"
+            align="stretch"
+          >
+            <RepositoryCard
+              key={repository.id}
+              as={Link}
+              to={`/repository/${repository.id}`}
+              color="text"
+              textDecoration="none"
+              width="100%"
+              title={repository.name}
+              imageUrl={repository.darkIcon || repository.icon}
+              publisher={repository.publisher?.name?.toUpperCase()}
+              description={repository.description}
+              tags={repository.tags.map(({ name }) => name)}
+              {...repoProps}
+            />
+          </Flex>
+        ))
+      }
+    </Flex>
+  )
+}
+
 function MarketplaceRepositories({ installed, ...props }) {
   const scrollRef = useRef()
   const [searchParams, setSearchParams] = useSearchParams()
@@ -108,41 +150,11 @@ function MarketplaceRepositories({ installed, ...props }) {
         <H1 subtitle1>
           Featured Repositories
         </H1>
-        <Flex
+        <RepoCardList
+          repositories={[featuredA, featuredB]}
+          repoProps={{ featured: true }}
           marginTop="medium"
-        >
-          <RepositoryCard
-            as={Link}
-            to={`/repository/${featuredA.id}`}
-            color="text"
-            textDecoration="none"
-            flexGrow={1}
-            flexShrink={0}
-            flexBasis="calc(50% - 1 * 16px)"
-            featured
-            title={featuredA.name}
-            imageUrl={featuredA.darkIcon || featuredA.icon}
-            publisher={featuredA.publisher?.name?.toUpperCase()}
-            description={featuredA.description}
-            tags={featuredA.tags.map(({ name }) => name)}
-          />
-          <RepositoryCard
-            as={Link}
-            to={`/repository/${featuredB.id}`}
-            color="text"
-            textDecoration="none"
-            ml={2}
-            flexGrow={1}
-            flexShrink={0}
-            flexBasis="calc(50% - 1 * 16px)"
-            featured
-            title={featuredB.name}
-            imageUrl={featuredB.darkIcon || featuredB.icon}
-            publisher={featuredB.publisher?.name?.toUpperCase()}
-            description={featuredB.description}
-            tags={featuredB.tags.map(({ name }) => name)}
-          />
-        </Flex>
+        />
       </>
     )
   }
@@ -227,8 +239,8 @@ function MarketplaceRepositories({ installed, ...props }) {
         />
       </Div>
       <Div
-        pt={1}
-        pb={8}
+        paddingTop="medium"
+        paddingBottom="xxxlarge"
         paddingHorizontal="large"
         overflowY="auto"
         overflowX="hidden"
@@ -242,32 +254,10 @@ function MarketplaceRepositories({ installed, ...props }) {
         >
           {renderTitle()}
         </H1>
-        <Flex
-          mx={-1}
-          mt={1}
-          align="stretch"
-          wrap="wrap"
-        >
-          {resultRepositories.map(repository => (
-            <RepositoryCard
-              key={repository.id}
-              as={Link}
-              to={`/repository/${repository.id}`}
-              color="text"
-              textDecoration="none"
-              mx={1}
-              mb={2}
-              flexGrow={0}
-              flexShrink={0}
-              width="calc(33.333% - 2 * 16px)"
-              title={repository.name}
-              imageUrl={repository.darkIcon || repository.icon}
-              publisher={repository.publisher?.name?.toUpperCase()}
-              description={repository.description}
-              tags={repository.tags.map(({ name }) => name)}
-            />
-          ))}
-        </Flex>
+        <RepoCardList
+          repositories={resultRepositories}
+          marginTop="medium"
+        />
         {loadingRepositories && (
           <Flex
             marginTop="xlarge"

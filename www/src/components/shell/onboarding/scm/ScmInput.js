@@ -83,9 +83,9 @@ function OrgInput({ org, orgs, doSetOrg }) {
       width="100%"
       label={
         provider === Provider.GITHUB
-          ? 'Github Organization'
+          ? 'GitHub Organization'
           : provider === Provider.GITLAB
-            ? 'Gitlab Group'
+            ? 'GitLab Group'
             : 'Organization or Group'
       }
       caption={(
@@ -93,7 +93,7 @@ function OrgInput({ org, orgs, doSetOrg }) {
           inline
           href={altProviderUrl}
         >
-          {`Switch to ${provider === Provider.GITHUB ? 'Gitlab' : 'Github'}`}
+          {`Switch to ${provider === Provider.GITHUB ? 'GitLab' : 'GitHub'}`}
         </A>
       )}
     >

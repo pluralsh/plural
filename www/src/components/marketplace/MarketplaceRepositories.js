@@ -36,8 +36,8 @@ function RepoCardList({ repositories, repoProps, ...props }) {
         repositories.map(repository => (
           <Flex
             key={`${repository.id}flex`}
-            px={1}
-            marginBottom="xlarge"
+            px={0.75}
+            marginBottom="large"
             width="auto"
             flexBasis="400px"
             flexGrow={1}
@@ -184,7 +184,6 @@ function MarketplaceRepositories({ installed, ...props }) {
         >
           <Div
             minWidth="210px"
-            maxWidth="calc(50% - 16px)"
             flex="1 1 210px"
             marginRight="large"
             marginBottom="xsmall"

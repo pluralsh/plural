@@ -89,11 +89,13 @@ function TerminalThemePreview({ theme, ...props }) {
   return (
     <Flex {...props}>
       {Object.entries(theme).map(([key, hex]) => (
-        <Div
+        <div
           key={key}
-          width={10}
-          height={10}
-          backgroundColor={hex}
+          style={{
+            width: 10,
+            height: 10,
+            backgroundColor: hex,
+          }}
         />
       ))}
     </Flex>

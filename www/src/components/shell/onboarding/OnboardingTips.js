@@ -30,7 +30,7 @@ function OnboardingTips({ autoAdvanceTime = 10000, ...props }) {
               inline
               target="_blank"
               rel="noopener noreferrer"
-              href="https://docs.plural.sh/identity-and-access-management/identity-and-installations/service-accounts"
+              href="https://docs.plural.sh/advanced-topics/identity-and-access-management/identity-and-installations/service-accounts"
             >
               here
             </A>.
@@ -55,7 +55,7 @@ function OnboardingTips({ autoAdvanceTime = 10000, ...props }) {
               inline
               target="_blank"
               rel="noopener noreferrer"
-              href="https://docs.plural.sh/identity-and-access-management/identity-and-installations/sharing-existing-plural-installation-repos"
+              href="https://docs.plural.sh/advanced-topics/identity-and-access-management/identity-and-installations/sharing-existing-repos"
             >
               here
             </A>.

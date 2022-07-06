@@ -122,7 +122,6 @@ function ExistingInvite({ invite: { account }, id }) {
       <Box
         fill
         pad="medium"
-        background="white"
       >
         <Box
           flex={false}
@@ -197,7 +196,6 @@ export default function Invite() {
       <Box
         fill
         pad="medium"
-        background="white"
       >
         <Keyboard onEnter={editPassword && filled ? mutation : null}>
           <Box

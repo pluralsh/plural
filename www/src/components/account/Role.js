@@ -152,7 +152,7 @@ function RoleForm({ error, attributes, setAttributes, bindings, setBindings, ...
   )
 }
 
-const MODAL_DIMS = { width: '1000px', height: '800px' }
+const MODAL_DIMS = { width: '1000px' }
 
 export function UpdateRole({ role }) {
   const [open, setOpen] = useState(false)

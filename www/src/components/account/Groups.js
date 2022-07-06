@@ -102,7 +102,6 @@ function Group({ group, q }) {
         <Modal
           open={view}
           width="60vw"
-          height="750px"
           onClose={() => setView(false)}
         >
           <ModalHeader onClose={() => setView(false)}>
@@ -114,8 +113,6 @@ function Group({ group, q }) {
           portal
           open={edit}
           width="60vw"
-          height="80vh"
-          maxHeight="500px"
           onClose={() => setEdit(false)}
         >
           <ModalHeader onClose={() => setEdit(false)}>

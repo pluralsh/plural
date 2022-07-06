@@ -2,6 +2,8 @@ defmodule Core.Schema.Invite do
   use Piazza.Ecto.Schema
   alias Core.Schema.{Account, User}
 
+  @email_re ~r/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-\.]+\.[a-zA-Z]{2,}$/
+
   schema "invites" do
     field :email,     :string
     field :secure_id, :string
@@ -25,6 +27,7 @@ defmodule Core.Schema.Invite do
     |> foreign_key_constraint(:account_id)
     |> unique_constraint(:secure_id)
     |> unique_constraint(:email)
+    |> validate_format(:email, @email_re)
     |> validate_required([:email, :account_id,  :secure_id])
   end
 

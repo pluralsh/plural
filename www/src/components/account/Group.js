@@ -70,6 +70,8 @@ function GroupMembers({ group, edit }) {
   return (
     <Box
       flex={false}
+      style={{ minHeight: '300px' }}
+      pad={{ bottom: 'small' }}
       fill
     >
       <StandardScroller
@@ -102,6 +104,7 @@ export function ViewGroup({ group }) {
   return (
     <Box
       fill
+      pad={{ bottom: 'small' }}
       gap="small"
     >
       <Switch
@@ -197,6 +200,7 @@ export function UpdateGroup({ group, cancel }) {
       {view === 'users' && (
         <Box
           gap="small"
+          pad={{ bottom: 'small' }}
           fill
         >
           <FormField

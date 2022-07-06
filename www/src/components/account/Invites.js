@@ -37,6 +37,7 @@ function DeleteInvite({ invite }) {
         close={() => setConfirm(false)}
         title="Delete Invite?"
         text="You can always recreate it if you want"
+        destructive
         submit={mutation}
         loading={loading}
         error={error}

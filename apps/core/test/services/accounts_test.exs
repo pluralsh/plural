@@ -247,6 +247,10 @@ defmodule Core.Services.AccountsTest do
       assert invite.account_id == account.id
     end
 
+    test "it will not accept invalid emails", %{user: user, account: account} do
+      {:error, _} = Accounts.create_invite(%{email: "invalidemail"}, user)
+    end
+
     test "you can create invites for existing users", %{user: admin} do
       user = insert(:user)
       {:ok, invite} = Accounts.create_invite(%{email: user.email}, admin)

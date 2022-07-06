@@ -38,7 +38,7 @@ function RepoCardList({ repositories, repoProps, ...props }) {
             px={1}
             marginBottom="xlarge"
             width="auto"
-            flexBasis="340px"
+            flexBasis="400px"
             flexGrow={1}
             flexShrink={1}
             minWidth="250px"

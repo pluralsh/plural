@@ -58,27 +58,38 @@ function WithNotifications({ children }) {
               <CloseIcon size={12} />
             </Flex>
           </Flex>
-          <Flex
-            direction="column"
-            flexGrow={1}
-          >
-            <InfiniteScroller
-              loading={loadingNotifications}
-              hasMore={hasMoreNotifications}
-              loadMore={fetchMoreNotifications}
-              // Allow for scrolling in a flexbox layout
+          {!!(notifications?.length) && (
+            <Flex
+              direction="column"
               flexGrow={1}
-              height={0}
             >
-              {notifications.map(notification => (
-                <Notification
-                  key={notification.id}
-                  notification={notification}
-                  closePanel={() => setIsPanelOpen(false)}
-                />
-              ))}
-            </InfiniteScroller>
-          </Flex>
+              <InfiniteScroller
+                loading={loadingNotifications}
+                hasMore={hasMoreNotifications}
+                loadMore={fetchMoreNotifications}
+                // Allow for scrolling in a flexbox layout
+                flexGrow={1}
+                height={0}
+              >
+                {notifications.map(notification => (
+                  <Notification
+                    key={notification.id}
+                    notification={notification}
+                    closePanel={() => setIsPanelOpen(false)}
+                  />
+                ))}
+              </InfiniteScroller>
+            </Flex>
+          )}
+          {!(notifications?.length) && (
+            <Flex
+              body1
+              flexGrow={1}
+              justifyContent="center"
+              padding="medium"
+            >You do not have any notifications.
+            </Flex>
+          )}
         </Flex>
       )}
     </Flex>

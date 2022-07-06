@@ -59,6 +59,7 @@ function RepoCardList({ repositories, repoProps, ...props }) {
               description={repository.description}
               tags={repository.tags.map(({ name }) => name)}
               priv={repository.private}
+              installed={!!repository.installation}
               {...repoProps}
             />
           </Flex>

@@ -14,7 +14,6 @@ function Marketplace({ installed }) {
 
   return (
     <Flex
-      pt={1}
       direction="column"
       overflow="hidden"
       flexGrow={1}
@@ -22,7 +21,10 @@ function Marketplace({ installed }) {
     >
       <Flex
         marginHorizontal="large"
-        flexShrink={0}
+        flexShrink={0}  
+        direction="row"
+        height={57}
+        alignItems="flex-end"
       >
         <Link
           to="/marketplace"
@@ -41,7 +43,9 @@ function Marketplace({ installed }) {
           </Tab>
         </Link>
         <Flex
-          pb={0.25}
+          alignSelf="stretch"
+          paddingBottom="xxsmall"
+          paddingTop="xxsmall"
           justify="flex-end"
           flexGrow={1}
           borderBottom="1px solid border"

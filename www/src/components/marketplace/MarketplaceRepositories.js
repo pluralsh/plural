@@ -57,6 +57,7 @@ function RepoCardList({ repositories, repoProps, ...props }) {
               publisher={repository.publisher?.name?.toUpperCase()}
               description={repository.description}
               tags={repository.tags.map(({ name }) => name)}
+              priv={repository.private}
               {...repoProps}
             />
           </Flex>

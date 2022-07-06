@@ -164,7 +164,7 @@ ref
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       ref={ref}
-      pt="12px" // Give it a square look with a weird padding
+      pt="13px" // Give it a square look with a weird padding
       pb="6px"
       px={0.75}
       align="center"

@@ -39,7 +39,7 @@ export const SECTIONS = {
   [SECTION_SYNOPSIS]: {
     stepIndex: 3,
     previous: SECTION_CLOUD_WORKSPACE,
-    next: null,
+    next: SECTION_CLOUD_LAUNCH,
   },
   [SECTION_CLOUD_LAUNCH]: {
     stepIndex: 3,

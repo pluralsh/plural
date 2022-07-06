@@ -3,6 +3,20 @@ import { Chip, ProgressBar } from 'pluralsh-design-system'
 
 import OnboardingCard from './OnboardingCard'
 
+function StatusChip({ loading, error, progressMessage, ...chip }) {
+  return (
+    <Chip
+      loading={loading && !error}
+      backgroundColor="fill-two"
+      borderColor="border-fill-two"
+      severity={error ? 'error' : (loading ? 'info' : 'success')}
+      {...chip}
+    >
+      {error ? 'Error' : (loading ? (progressMessage || 'Running') : 'Success')}
+    </Chip>
+  )
+}
+
 export function ShellStatus({ shell: { alive, status: { initialized, podScheduled, containersReady, ready } }, error }) {
   return (
     <OnboardingCard>
@@ -24,14 +38,12 @@ export function ShellStatus({ shell: { alive, status: { initialized, podSchedule
             This may take a few minutes.
           </P>
         </Div>
-        <Chip
+        <StatusChip
+          loading={!alive}
+          error={error}
+          progressMessage="In progress"
           size="large"
-          backgroundColor="fill-two"
-          borderColor="border-fill-two"
-          severity={alive ? 'success' : 'info'}
-        >
-          {alive ? 'Success' : 'In progress'}
-        </Chip>
+        />
       </Flex>
       <ProgressBar
         mode={error || alive ? 'determinate' : 'indeterminate'}
@@ -49,14 +61,10 @@ export function ShellStatus({ shell: { alive, status: { initialized, podSchedule
         <P body2>
           Initialized
         </P>
-        <Chip
+        <StatusChip
           loading={!initialized}
-          backgroundColor="fill-two"
-          borderColor="border-fill-two"
-          severity={initialized ? 'success' : 'info'}
-        >
-          {initialized ? 'Success' : 'Running'}
-        </Chip>
+          error={error}
+        />
       </Flex>
       <Flex
         paddingVertical="medium"
@@ -67,14 +75,10 @@ export function ShellStatus({ shell: { alive, status: { initialized, podSchedule
         <P body2>
           Pod scheduled
         </P>
-        <Chip
+        <StatusChip
           loading={!podScheduled}
-          backgroundColor="fill-two"
-          borderColor="border-fill-two"
-          severity={podScheduled ? 'success' : 'info'}
-        >
-          {podScheduled ? 'Success' : 'Running'}
-        </Chip>
+          error={error}
+        />
       </Flex>
       <Flex
         paddingVertical="medium"
@@ -85,14 +89,10 @@ export function ShellStatus({ shell: { alive, status: { initialized, podSchedule
         <P body2>
           Containers ready
         </P>
-        <Chip
+        <StatusChip
           loading={!containersReady}
-          backgroundColor="fill-two"
-          borderColor="border-fill-two"
-          severity={containersReady ? 'success' : 'info'}
-        >
-          {containersReady ? 'Success' : 'Running'}
-        </Chip>
+          error={error}
+        />
       </Flex>
       <Flex
         paddingVertical="medium"
@@ -102,14 +102,10 @@ export function ShellStatus({ shell: { alive, status: { initialized, podSchedule
         <P body2>
           Ready
         </P>
-        <Chip
+        <StatusChip
           loading={!ready}
-          backgroundColor="fill-two"
-          borderColor="border-fill-two"
-          severity={ready ? 'success' : 'info'}
-        >
-          {ready ? 'Success' : 'Running'}
-        </Chip>
+          error={error}
+        />
       </Flex>
     </OnboardingCard>
   )

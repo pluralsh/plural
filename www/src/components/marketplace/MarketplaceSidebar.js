@@ -127,8 +127,7 @@ function MarketplaceSidebar(props) {
         title={`Tags (${sortedTags.length}${((nDisplayedTags < tags.length) || hasMoreTags) ? '+' : ''})`}
       >
         <Input
-          small
-          mb={0.5}
+          medium
           width="100%"
           placeholder="Filter"
           value={search}

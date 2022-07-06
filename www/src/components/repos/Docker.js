@@ -1,5 +1,5 @@
 import { useContext, useEffect, useMemo, useState } from 'react'
-import { Copy, Links, ScrollableContainer, TabContent, TabHeader, TabHeaderItem, Tabs } from 'forge-core'
+import { Copy, Links, TabContent, TabHeader, TabHeaderItem, Tabs } from 'forge-core'
 import { useMutation, useQuery } from '@apollo/client'
 import { useNavigate, useParams } from 'react-router-dom'
 import moment from 'moment'

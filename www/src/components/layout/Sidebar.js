@@ -13,7 +13,6 @@ import {
   ListIcon,
   LogoutIcon,
   MarketIcon,
-  MarketPlusIcon,
   PeopleIcon,
   PersonIcon,
   ScrollIcon, TerminalIcon, Tooltip,

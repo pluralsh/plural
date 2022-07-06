@@ -1,7 +1,5 @@
 import { useCallback, useMemo, useState } from 'react'
 
-import { Flex } from 'honorable'
-
 import CreateShellContext from '../../../contexts/CreateShellContext'
 
 import { getExceptions } from '../validation'
@@ -36,7 +34,6 @@ import CliInstallation from './cli/CliInstallation'
 import CliCompletion from './cli/CliCompletion'
 // Synopsis
 import Synopsis from './synopsis/Synopsis'
-import OnboardingFooter from './OnboardingFooter'
 
 const VALIDATIONS = {
   [SECTION_GIT_PROVIDER]: GITHUB_VALIDATIONS,

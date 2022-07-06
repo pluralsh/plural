@@ -188,9 +188,7 @@ function InstallDropdownButton({ recipes, ...props }) {
               </Button>
             </Link>
           </Div>
-
         </Div>
-
       </Div>
     )
   }

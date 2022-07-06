@@ -5,6 +5,8 @@ import { Button, Chip, ProgressBar } from 'pluralsh-design-system'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'
 
+import OnboardingTips from '../OnboardingTips'
+
 import { CREATE_DEMO_PROJECT_MUTATION, POLL_DEMO_PROJECT_QUERY } from '../../query'
 
 import OnboardingNavSection from '../OnboardingNavSection'
@@ -74,6 +76,7 @@ function CloudBuild() {
           <Chip
             size="large"
             backgroundColor="fill-two"
+            borderColor="border-fill-two"
             severity={status === 'ENABLED' ? 'success' : 'info'}
           >
             {status === 'ENABLED' ? 'Success' : 'In progress'}
@@ -83,7 +86,7 @@ function CloudBuild() {
           mode={error || status === 'ENABLED' ? 'determinate' : 'indeterminate'}
           marginTop="medium"
           progress={error ? 0 : status === 'ENABLED' ? 100 : null}
-          backgroundColor={error ? 'icon-error' : null}
+          backgroundColor={error ? 'icon-error' : 'fill-two'}
         />
         <Flex
           marginTop="xlarge"
@@ -98,13 +101,14 @@ function CloudBuild() {
           <Chip
             loading={!status}
             backgroundColor="fill-two"
+            borderColor="border-fill-two"
             severity={['CREATED', 'READY', 'ENABLED'].includes(status) ? 'success' : 'info'}
           >
             {['CREATED', 'READY', 'ENABLED'].includes(status) ? 'Success' : 'Running'}
           </Chip>
         </Flex>
         <Flex
-          paddingVertical="medium"
+          paddingTop="medium"
           align="center"
           justify="space-between"
         >
@@ -114,6 +118,7 @@ function CloudBuild() {
           <Chip
             loading={status === 'CREATED'}
             backgroundColor="fill-two"
+            borderColor="border-fill-two"
             severity={status === 'CREATED' ? 'info' : status === 'ENABLED' | status === 'READY' ? 'success' : 'neutral'}
           >
             {status === 'CREATED' ? 'Running' : status === 'ENABLED' | status === 'READY' ? 'Success' : 'Pending'}
@@ -129,6 +134,7 @@ function CloudBuild() {
         </Div>
       )}
       {/* Navigation */}
+      <OnboardingTips marginTop="large" />
       <OnboardingNavSection>
         {(!!error || status === 'ENABLED') && (
           <Button

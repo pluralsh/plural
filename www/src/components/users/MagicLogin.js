@@ -1,15 +1,15 @@
 import { createElement, useCallback, useEffect, useState } from 'react'
-import { Anchor, Box, Collapsible, Form, Keyboard, Text } from 'grommet'
-import { Divider } from 'pluralsh-design-system'
+import { Box, Collapsible, Form, Keyboard, Text } from 'grommet'
+import { Divider, FormField } from 'pluralsh-design-system'
 import { useApolloClient, useLazyQuery, useMutation, useQuery } from '@apollo/client'
 import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
 import queryString from 'query-string'
-import { Article, Button, Div, Flex, H2, Icon, Img, Input, P, Svg } from 'honorable'
+import { A, Article, Button, Div, Flex, H1, H2, Icon, Img, Input, P, Svg } from 'honorable'
 
 import { fetchToken, setToken } from '../../helpers/authentication'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
-import { PasswordStatus, disableState } from '../Login'
-import { PLURAL_MARK_WHITE } from '../constants'
+import { disableState } from '../Login'
+import { PLURAL_FULL_LOGO_WHITE, PLURAL_MARK_WHITE } from '../constants'
 import { ACCEPT_LOGIN } from '../oidc/queries'
 
 import { host } from '../../helpers/hostname'
@@ -21,27 +21,14 @@ import { LOGIN_METHOD, LOGIN_MUTATION, OAUTH_URLS, PASSWORDLESS_LOGIN, POLL_LOGI
 import { METHOD_ICONS } from './OauthEnabler'
 import { finishedDeviceLogin } from './DeviceLoginNotif'
 
-export function LabelledInput({ label, value, onChange, placeholder, width, type, modifier }) {
+export function LabelledInput({ label, value, onChange, placeholder, type, caption, hint }) {
   return (
-    <Box
-      gap="2px"
-      width={width || '300px'}
+    <FormField
+      label={label}
+      caption={caption}
+      hint={hint}
+      marginBottom="medium"
     >
-      <Box
-        direction="row"
-        align="center"
-      >
-        <Box fill="horizontal">
-          <Text
-            size="small"
-            color="dark-4"
-          >{label}
-          </Text>
-        </Box>
-        <Box flex={false}>
-          {modifier}
-        </Box>
-      </Box>
       <Input
         width="100%"
         name={label}
@@ -50,7 +37,7 @@ export function LabelledInput({ label, value, onChange, placeholder, width, type
         onChange={onChange && (({ target: { value } }) => onChange(value))}
         placeholder={placeholder}
       />
-    </Box>
+    </FormField>
   )
 }
 
@@ -62,24 +49,20 @@ export function LoginPortal({ children }) {
         direction="column"
         align="center"
         justify="center"
-        width={`${100 * 504 / (504 + 756)}%`}
         background="fill-one"
         display-tablet="none"
+        paddingHorizontal="xxlarge"
       >
         <Div width={408}>
           {/* LOGOTYPE */}
           <Flex
             align="center"
             marginBottom="xxlarge"
+            paddingLeft="xxlarge"
           >
             <Img
-              src="/plural-white-cropped.png"
-              width={48}
-            />
-            <Img
-              src="/plural-white-word-cropped.png"
-              marginLeft="medium"
-              width={216}
+              src={PLURAL_FULL_LOGO_WHITE}
+              width={280}
             />
           </Flex>
           {/* HIGHLIGHTS */}
@@ -106,8 +89,12 @@ export function LoginPortal({ children }) {
         align="center"
         justify="center"
         flexGrow={1}
+        paddingHorizontal="xxlarge"
       >
-        <Div>
+        <Div
+          width="480px"
+          flexShrink={1}
+        >
           {children}
         </Div>
       </Flex>
@@ -154,7 +141,10 @@ function LoginHighlight({ title, children, ...props }) {
         <H2 title1>
           {title}
         </H2>
-        <P>
+        <P
+          body2
+          color="text-light"
+        >
           {children}
         </P>
       </Article>
@@ -284,6 +274,8 @@ export function Login() {
   const open = loginMethod === LoginMethod.PASSWORD
   const passwordless = loginMethod === LoginMethod.PASSWORDLESS
 
+  const { data: oAuthData } = useQuery(OAUTH_URLS, { variables: { host: host() } })
+
   const [mutation, { loading: mLoading, error }] = useMutation(LOGIN_MUTATION, {
     variables: { email, password, deviceToken },
     onCompleted: ({ login: { jwt } }) => {
@@ -326,51 +318,46 @@ export function Login() {
   if (qError) {
     if (deviceToken) saveDeviceToken(deviceToken)
 
-    return <Navigate to="/signup" />
+    return (
+      <Navigate
+        to="/signup"
+        state={{ email }}
+      />
+    )
   }
 
   return (
     <LoginPortal>
-      <Box gap="medium">
-        <Box
-          gap="xsmall"
-          align="center"
-        >
-          <img
-            src={PLURAL_MARK_WHITE}
-            width="45px"
-          />
-          <Text size="large">
-            Welcome
-          </Text>
-          <Text
-            size="small"
-            color="dark-3"
-          >
-            {open ? 'good to see you again' : 'Tell us your email to get started'}
-          </Text>
-        </Box>
+      <Div marginBottom="xxlarge">
+        <H1 title1>
+          Welcome to Plural
+        </H1>
+        <P body1>Revolutionize your DevOps workflow</P>
+      </Div>
+      <Div>
         {passwordless && (
-          <Box>
+          <Div>
             <LoginPoller
               token={data.loginMethod.token}
               challenge={challenge}
               deviceToken={deviceToken}
             />
-          </Box>
+          </Div>
         )}
         {!passwordless && (
-          <Keyboard onEnter={submit}>
-            <Form onSubmit={submit}>
-              <Box gap="xsmall">
+          <>
+            <Keyboard onEnter={submit}>
+              <Form onSubmit={submit}>
                 {error && (
-                  <GqlError
-                    error={error}
-                    header="Login Failed"
-                  />
+                  <Div marginBottom="medium">
+                    <GqlError
+                      error={error}
+                      header="Login Failed"
+                    />
+                  </Div>
                 )}
                 <LabelledInput
-                  label="Email"
+                  label="Email address"
                   value={email}
                   onChange={open ? null : setEmail}
                   placeholder="you@example.com"
@@ -382,12 +369,12 @@ export function Login() {
                   <LabelledInput
                     label="Password"
                     type="password"
-                    modifier={(
-                      <Anchor
+                    caption={(
+                      <A
+                        inline
                         onClick={() => navigate('/password-reset')}
-                        color="dark-6"
                       >forgot your password?
-                      </Anchor>
+                      </A>
                     )}
                     value={password}
                     onChange={setPassword}
@@ -396,22 +383,34 @@ export function Login() {
                 </Collapsible>
                 <Button
                   width="100%"
-                  mt={0.5}
                   loading={loading}
                   onClick={submit}
                 >
                   Continue
                 </Button>
-              </Box>
-            </Form>
-          </Keyboard>
+              </Form>
+            </Keyboard>
+            <Divider
+              text="OR"
+              marginVertical="large"
+              marginHorizontal={0}
+              fontWeight={400}
+            />
+            <Div>
+              {oAuthData && oAuthData.oauthUrls.map(url => (
+                <OAuthOption
+                  key={url.provider}
+                  url={url}
+                  marginBottom="medium"
+                />
+              ))}
+            </Div>
+          </>
         )}
-      </Box>
+      </Div>
     </LoginPortal>
   )
 }
-
-const WIDTH = '350px'
 
 const providerToName = {
   github: 'GitHub',
@@ -419,7 +418,7 @@ const providerToName = {
   gitlab: 'GitLab',
 }
 
-function OAuthOption({ url: { authorizeUrl, provider } }) {
+function OAuthOption({ url: { authorizeUrl, provider }, ...props }) {
   const icon = METHOD_ICONS[provider]
 
   return (
@@ -429,20 +428,22 @@ function OAuthOption({ url: { authorizeUrl, provider } }) {
       onClick={() => {
         window.location = authorizeUrl
       }}
-    >
-      <Flex align="center">
+      startIcon={(
         <Icon mr={0.5}>
           {createElement(icon, { size: 'medium', color: provider.toLowerCase() === 'github' ? 'white' : 'plain' })}
         </Icon>
-        Sign up with {providerToName[provider.toLowerCase()]}
-      </Flex>
+      )}
+      {...props}
+    >
+      Continue with {providerToName[provider.toLowerCase()]}
     </Button>
   )
 }
 
 export function Signup() {
   const navigate = useNavigate()
-  const [email, setEmail] = useState('')
+  const location = useLocation()
+  const [email, setEmail] = useState(location?.state?.email || '')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
   const [account, setAccount] = useState('')
@@ -464,129 +465,116 @@ export function Signup() {
     }
   }, [navigate])
 
-  const { disabled, reason } = disableState(password, confirm)
+  const { disabled, reason } = disableState(password, confirm, email)
 
   return (
     <LoginPortal>
-      <Box
-        flex={false}
-        gap="small"
-      >
-        <Box
-          gap="xsmall"
-          align="center"
-        >
-          <img
-            src={PLURAL_MARK_WHITE}
-            width="45px"
-          />
-          <Text size="medium">Sign up to get started with plural</Text>
-        </Box>
-        <Box
-          margin={{ vertical: 'small' }}
-          gap="xsmall"
-          justify="center"
-        >
+      <Div marginBottom="xxlarge">
+        <H1 title1>
+          Welcome to Plural
+        </H1>
+        <P body1>Revolutionize your DevOps workflow</P>
+      </Div>
+      <Div>
+        <Keyboard onEnter={mutation}>
+          <Form onSubmit={mutation}>
+            {error && (
+              <Div marginBottom="medium">
+                <GqlError
+                  error={error}
+                  header="Signup failed"
+                />
+              </Div>
+            )}
+            <LabelledInput
+              label="Email"
+              value={email}
+              onChange={setEmail}
+              placeholder="you@example.com"
+            />
+            <LabelledInput
+              label="Account"
+              value={account}
+              onChange={setAccount}
+              placeholder="The name of your account (must be unique)"
+            />
+            <LabelledInput
+              label="Name"
+              value={name}
+              onChange={setName}
+              placeholder="Your name"
+            />
+            <LabelledInput
+              label="Password"
+              value={password}
+              type="password"
+              onChange={setPassword}
+              placeholder="a strong password"
+              caption="10 character minimum"
+              hint={reason === 'Password is too short' && (
+                <P
+                  caption
+                  color="text-error"
+                >
+                  Password is too short
+                </P>
+              )}
+            />
+            <LabelledInput
+              label="Confirm Password"
+              value={confirm}
+              type="password"
+              onChange={setConfirm}
+              placeholder="confirm your password"
+              hint={reason === 'Passwords do not match' && (
+                <P
+                  caption
+                  color="text-error"
+                >
+                  Password doesn't match
+                </P>
+              )}
+            />
+            <Button
+              primary
+              width="100%"
+              disabled={disabled}
+              loading={loading}
+              onClick={mutation}
+            >
+              Sign Up
+            </Button>
+          </Form>
+        </Keyboard>
+        <Divider
+          text="OR"
+          marginVertical="large"
+          marginHorizontal={0}
+          fontWeight={400}
+        />
+        <Div>
           {data && data.oauthUrls.map(url => (
             <OAuthOption
               key={url.provider}
               url={url}
+              marginBottom="medium"
             />
           ))}
-        </Box>
-        <Divider
-          text="Or"
-          margin="0px"
-          fontWeight={400}
-        />
-        <Keyboard onEnter={mutation}>
-          <Form onSubmit={mutation}>
-            <Box
-              gap="xsmall"
-              width={WIDTH}
-            >
-              {error && (
-                <GqlError
-                  error={error}
-                  header="Login Failed"
-                />
-              )}
-              <LabelledInput
-                label="Account"
-                value={account}
-                width={WIDTH}
-                onChange={setAccount}
-                placeholder="The name of your account (must be unique)"
-              />
-              <LabelledInput
-                label="Name"
-                value={name}
-                width={WIDTH}
-                onChange={setName}
-                placeholder="Your name"
-              />
-              <LabelledInput
-                label="Email"
-                value={email}
-                width={WIDTH}
-                onChange={setEmail}
-                placeholder="you@example.com"
-              />
-              <LabelledInput
-                label="Password"
-                value={password}
-                width={WIDTH}
-                type="password"
-                onChange={setPassword}
-                placeholder="a strong password"
-              />
-              <LabelledInput
-                label="Confirm Password"
-                value={confirm}
-                width={WIDTH}
-                type="password"
-                onChange={setConfirm}
-                placeholder="confirm your password"
-              />
-              <Box
-                direction="row"
-                align="center"
-                justify="end"
-                gap="small"
-                margin={{ top: 'small' }}
-              >
-                <PasswordStatus
-                  disabled={disabled}
-                  reason={reason}
-                />
-                <Button
-                  primary
-                  disabled={disabled}
-                  loading={loading}
-                  onClick={mutation}
-                >
-                  Sign Up
-                </Button>
-              </Box>
-            </Box>
-          </Form>
-        </Keyboard>
-        <Box
-          margin={{ top: 'small' }}
-          fill="horizontal"
-          align="center"
-          justify="center"
-          direction="row"
-          gap="xsmall"
+        </Div>
+        <P
+          body2
+          textAlign="center"
+          marginTop="medium"
         >
-          <Text
-            size="small"
-            color="dark-6"
-          >Already have an account?
-          </Text>
-          <Anchor onClick={() => navigate('/login')}>Login</Anchor>
-        </Box>
-      </Box>
+          Already have an account?{' '}
+          <A
+            inline
+            onClick={() => navigate('/login')}
+          >
+            Login
+          </A>
+        </P>
+      </Div>
     </LoginPortal>
   )
 }

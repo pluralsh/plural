@@ -24,14 +24,20 @@ function OnboardingCardButton({ selected = false, children, ...props }) {
       display="flex"
       position="relative"
       flex="1 1 100%"
-      padding="large"
+      paddingLeft="large"
+      paddingRight="large"
+      paddingTop="large"
+      paddingBottom="large"
       marginHorizontal="medium"
       alignContent="center"
       justify="center"
       backgroundColor="fill-two"
       border="1px solid border-fill-two"
       borderColor={selected ? 'action-link-inline' : 'border-fill-two'}
-      _hover={{ backgroundColor: 'fill-two-hover' }}
+      _hover={{
+        backgroundColor: 'fill-two-hover',
+        borderColor: selected ? 'action-link-inline' : 'border-fill-two',
+      }}
       _active={{ backgroundColor: 'fill-two-selected' }}
       {...props}
     >

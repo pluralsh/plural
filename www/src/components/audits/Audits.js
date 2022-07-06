@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import { useQuery } from '@apollo/client'
 import lookup from 'country-code-lookup'
 
-import { Div, Span } from 'honorable'
+import { A, Div, Span } from 'honorable'
 
 import { extendConnection } from '../../utils/graphql'
 import { StandardScroller } from '../utils/SmoothScroller'
@@ -51,7 +51,15 @@ function Resource({ audit }) {
   const { link, text } = resourceInfo(audit)
   if (!link) return null
 
-  return <Link to={link}>{text}</Link>
+  return (
+    <A
+      inline
+      as={Link}
+      to={link}
+    >
+      {text}
+    </A>
+  )
 }
 
 export function Placeholder() {
@@ -87,7 +95,6 @@ function Audit({ audit, last }) {
       <TableData>{audit.action}</TableData>
       <TableData>
         {audit.actor && <AuditUser user={audit.actor} />}
-            
       </TableData>
       <TableData>
         <Resource audit={audit} />
@@ -136,7 +143,6 @@ export function AuditChloro() {
         <Chloropleth data={metrics} />
       </Box>
     </Box>
-   
   )
 }
 
@@ -192,7 +198,7 @@ export function Audits() {
             })}
           />
         </Box>
-      </Table>        
+      </Table>
     </Box>
   )
 }

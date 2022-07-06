@@ -29,6 +29,7 @@ function OnboardingTips({ autoAdvanceTime = 10000, ...props }) {
             <A
               inline
               target="_blank"
+              rel="noopener noreferrer"
               href="https://docs.plural.sh/identity-and-access-management/identity-and-installations/service-accounts"
             >
               here
@@ -39,6 +40,7 @@ function OnboardingTips({ autoAdvanceTime = 10000, ...props }) {
             <A
               inline
               target="_blank"
+              rel="noopener noreferrer"
               href="https://docs.plural.sh/basic-setup-and-deployment/openid-connect"
             >
               here
@@ -52,6 +54,7 @@ function OnboardingTips({ autoAdvanceTime = 10000, ...props }) {
             <A
               inline
               target="_blank"
+              rel="noopener noreferrer"
               href="https://docs.plural.sh/identity-and-access-management/identity-and-installations/sharing-existing-plural-installation-repos"
             >
               here

@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useMutation, useQuery } from '@apollo/client'
-import { Box, Form, Keyboard, Text } from 'grommet'
-import { Button } from 'forge-core'
+import { Box, Form, Keyboard } from 'grommet'
+import { Button, Div, H1, P } from 'honorable'
 
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 import { PasswordStatus, disableState } from '../Login'
@@ -31,16 +31,15 @@ export function ResetPassword() {
 
   return (
     <LoginPortal>
-      <Box
+      <Div
         gap="small"
         width="400px"
       >
-        <Box
-          pad={{ vertical: 'xsmall' }}
-          align="center"
-        >
-          <Text size="large">Reset your password</Text>
-        </Box>
+        <Div marginBottom="xxlarge">
+          <H1 title1>
+            Reset your password
+          </H1>
+        </Div>
         {realized && realized.realizeResetToken && (
           <Alert
             status={AlertStatus.SUCCESS}
@@ -67,41 +66,53 @@ export function ResetPassword() {
                 value={data.resetToken.user.email}
               />
               <LabelledInput
-                width="100%"
                 label="Password"
                 type="password"
-                placeholder="a strong password"
                 value={attributes.password}
                 onChange={password => setAttributes({ ...attributes, password })}
+                placeholder="a strong password"
+                caption="10 character minimum"
+                hint={reason === 'Password is too short' && (
+                  <P
+                    caption
+                    color="text-error"
+                  >
+                    Password is too short
+                  </P>
+                )}
               />
               <LabelledInput
-                width="100%"
-                label="Confim Password"
+                label="Confirm Password"
                 type="password"
-                placeholder="confirm your password"
                 value={confirm}
                 onChange={setConfirm}
+                placeholder="confirm your password"
+                hint={reason === 'Passwords do not match' && (
+                  <P
+                    caption
+                    color="text-error"
+                  >
+                    Password doesn't match
+                  </P>
+                )}
               />
             </Box>
-            <Box
-              direction="row"
-              align="center"
-              justify="end"
-              gap="small"
+
+            <PasswordStatus
+              disabled={disabled}
+              reason={reason}
+            />
+            <Button
+              width="100%"
+              onClick={mutation}
+              loading={loading}
+              disabled={disabled}
             >
-              <PasswordStatus
-                disabled={disabled}
-                reason={reason}
-              />
-              <Button
-                onClick={mutation}
-                loading={loading}
-                label="Reset Password"
-              />
-            </Box>
+              Reset password
+            </Button>
           </Form>
         </Keyboard>
-      </Box>
+      </Div>
     </LoginPortal>
   )
 }
@@ -114,57 +125,48 @@ export function PasswordReset() {
 
   return (
     <LoginPortal>
-      <Box
-        pad="medium"
-        gap="small"
-        width="400px"
-      >
-        <Box
-          pad={{ vertical: 'xsmall' }}
-          align="center"
-        >
-          <Text size="large">Reset your password</Text>
-        </Box>
-        {reset && (
+      <Div marginBottom="xxlarge">
+        <H1 title1>
+          Reset your password
+        </H1>
+      </Div>
+      {reset && (
+        <Div marginBottom="medium">
           <Alert
             status={AlertStatus.SUCCESS}
             header="Password reset email sent"
             description="Check your inbox for the reset link to complete your password reset"
           />
-        )}
-        {error && (
+        </Div>
+      )}
+      {error && (
+        <Div marginBottom="medium">
           <GqlError
             header="Failed!"
             error={error}
           />
-        )}
-        <Keyboard onEnter={mutation}>
-          <Form onSubmit={mutation}>
-            <Box
-              gap="small"
-              fill="horizontal"
-            >
-              <LabelledInput
-                width="100%"
-                value={attributes.email}
-                label="Email"
-                name="email"
-                placeholder="your email"
-                onChange={email => setAttributes({ ...attributes, email })}
-              />
-              <Button
-                onClick={mutation}
-                loading={loading}
-                fill="horizontal"
-                size="small"
-                round="xsmall"
-                pad={{ vertical: 'xsmall', horizontal: 'medium' }}
-                label="Reset Password"
-              />
-            </Box>
-          </Form>
-        </Keyboard>
-      </Box>
+        </Div>
+      )}
+      <Keyboard onEnter={mutation}>
+        <Form onSubmit={mutation}>
+
+          <LabelledInput
+            width="100%"
+            value={attributes.email}
+            label="Email"
+            name="email"
+            placeholder="your email"
+            onChange={email => setAttributes({ ...attributes, email })}
+          />
+          <Button
+            width="100%"
+            onClick={mutation}
+            loading={loading}
+          >
+            Reset Password
+          </Button>
+        </Form>
+      </Keyboard>
     </LoginPortal>
   )
 }

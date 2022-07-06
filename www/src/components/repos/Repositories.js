@@ -185,7 +185,7 @@ export function RepositoryList({ repositores: { edges, pageInfo }, fetchMore, pu
     <Scroller
       id="repositories"
       edges={Array.from(chunk(edges, columns))}
-      style={{ overflow: 'auto', height: '100%', width: '100%'}}
+      style={{ overflow: 'auto', height: '100%', width: '100%' }}
       emptyState={emptyState}
       mapper={chunk => (
         <Box
@@ -193,7 +193,7 @@ export function RepositoryList({ repositores: { edges, pageInfo }, fetchMore, pu
           direction="row"
           gap="small"
           fill="horizontal"
-          margin={{ bottom: 'small'}}
+          margin={{ bottom: 'small' }}
         >
           {chunk.map(({ node }) => (
             <RepositoryCell

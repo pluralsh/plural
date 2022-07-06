@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
 import { Div, Flex, P, Text } from 'honorable'
+import { useLocation } from 'react-router-dom'
 
 import { AUTHENTICATION_URLS_QUERY, CLOUD_SHELL_QUERY, REBOOT_SHELL_MUTATION } from './query'
 import { Terminal } from './Terminal'
@@ -70,6 +71,7 @@ function CloudShell() {
   const { data: shellData } = useQuery(CLOUD_SHELL_QUERY, { fetchPolicy: 'network-only' })
   const [rebootMutation] = useMutation(REBOOT_SHELL_MUTATION)
   const [created, setCreated] = useState(false)
+  const location = useLocation()
 
   useEffect(() => {
     if (shellData && shellData.shell && !shellData.shell.alive) {
@@ -91,7 +93,7 @@ function CloudShell() {
 
   return (
     <OnboardingWrapper
-      showSplashScreen
+      showSplashScreen={!location?.state?.hideSplashScreen}
       stepIndex={0}
       childIsReady={ready}
     >

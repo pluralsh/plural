@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 
 import * as serviceWorker from '../../serviceWorker'
 
@@ -15,7 +15,7 @@ function WithApplicationUpdate({ children }) {
   const config = useContext(PluralConfigurationContext)
   const commit = getCommit()
 
-  function reloadApplication() {
+  const reloadApplication = useCallback(() => {
     console.log('reloading')
     if (process.env.NODE_ENV === 'production') {
       const promise = serviceWorker.unregister() || Promise.resolve('done')
@@ -28,7 +28,7 @@ function WithApplicationUpdate({ children }) {
       setCommit(config.gitCommit)
       setOpen(false)
     }
-  }
+  }, [config, setOpen])
 
   const stale = commit !== config.gitCommit
 

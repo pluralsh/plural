@@ -72,10 +72,7 @@ function DockerHeader({ image }) {
           src={DEFAULT_DKR_ICON}
         />
       </Box>
-      <Box
-        fill="horizontal"
-        gap="xxsmall"
-      >
+      <Box flex>
         <Box
           direction="row"
           gap="small"

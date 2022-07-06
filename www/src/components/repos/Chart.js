@@ -144,7 +144,7 @@ function ChartHeader({ version: { helm, chart, version, scan, id }, chartInstall
           src={chart.icon || DEFAULT_CHART_ICON}
         />
       </Box>
-      <Box width="100%">
+      <Box flex>
         <Box
           direction="row"
           align="center"

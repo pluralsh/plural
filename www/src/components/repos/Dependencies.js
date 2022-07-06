@@ -71,10 +71,13 @@ export function ShowFull({ onClick, label }) {
   return (
     <Button
       primary
+      width="90px"
+      height="25px"
       size="small"
-      label={label}
       onClick={onClick}
-    />
+    >
+      {label}
+    </Button>
   )
 }
 

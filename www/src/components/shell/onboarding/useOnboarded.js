@@ -10,6 +10,7 @@ const FORCE_ONBOARDING = 'plrl-force-onboarding'
 
 export function useOnboarded() {
   const me = useContext(CurrentUserContext)
+
   const [mutation] = useMutation(UPDATE_USER, {
     variables: { attributes: { onboarding: OnboardingStatus.ONBOARDED } },
   })

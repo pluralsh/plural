@@ -32,16 +32,11 @@ const steps = [
 
 function TerminalSidebar({ isCheatsheet, shell, ...props }) {
   const { mutation, fresh } = useOnboarded()
-  const [visible, setVisible] = useState(!fresh)
+  const [visible, setVisible] = useState(fresh || isCheatsheet) 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [stepIndex, setStepIndex] = useState(0)
 
-  const shouldDislayCheatsheet = !fresh || isCheatsheet
   const { title, Component } = steps[stepIndex]
-
-  useEffect(() => {
-    setVisible(shouldDislayCheatsheet)
-  }, [shouldDislayCheatsheet])
 
   function markDemoAsComplete() {
     setVisible(false)

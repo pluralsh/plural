@@ -10,7 +10,6 @@ import { DEBUG_SCM_TOKENS } from './debug-tokens'
 import OnboardingWrapper from './onboarding/OnboardingWrapper'
 import OnboardingCard from './onboarding/OnboardingCard'
 import OnboardingCardButton from './onboarding/OnboardingCardButton'
-import OnboardingFooter from './onboarding/OnboardingFooter'
 
 const providerToLogo = {
   github: <GithubLogo />,
@@ -101,7 +100,6 @@ function CloudShell() {
       childIsReady={ready}
     >
       <CreateRepositoryCard data={data} />
-      <OnboardingFooter />
     </OnboardingWrapper>
   )
 }

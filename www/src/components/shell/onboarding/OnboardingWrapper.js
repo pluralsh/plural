@@ -3,6 +3,8 @@ import { BrowserIcon, CloudIcon, GearTrainIcon, NetworkInterfaceIcon, Stepper } 
 
 import { SECTION_CLI_INSTALLATION, SECTION_CLOUD_SELECT, SECTION_CLOUD_WORKSPACE, SECTION_GIT_PROVIDER, SECTION_SYNOPSIS } from '../constants'
 
+import OnboardingFooter from './OnboardingFooter'
+
 import SplashToLogoTransition from './SplashToLogoTransition'
 
 function DemoStepper({ stepIndex = 0, ...props }) {
@@ -74,6 +76,11 @@ function OnboardingWrapper({ showSplashScreen = false, stepIndex = 0, childIsRea
               )}
             </Div>
             {children}
+            <Flex
+              direction="column"
+              height="100%"
+            />
+            <OnboardingFooter />
           </Flex>
         )}
       </SplashToLogoTransition>

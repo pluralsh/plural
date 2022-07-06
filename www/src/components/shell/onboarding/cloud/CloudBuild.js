@@ -5,6 +5,8 @@ import { Button, Chip, ProgressBar } from 'pluralsh-design-system'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'
 
+import OnboardingTips from '../OnboardingTips'
+
 import { CREATE_DEMO_PROJECT_MUTATION, POLL_DEMO_PROJECT_QUERY } from '../../query'
 
 import OnboardingNavSection from '../OnboardingNavSection'
@@ -132,6 +134,7 @@ function CloudBuild() {
         </Div>
       )}
       {/* Navigation */}
+      <OnboardingTips marginTop="large" />
       <OnboardingNavSection>
         {(!!error || status === 'ENABLED') && (
           <Button

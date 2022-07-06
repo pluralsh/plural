@@ -18,21 +18,22 @@ import { QUEUE, QUEUES, UPGRADE_QUEUE_SUB, UPGRADE_SUB } from './queries'
 
 function QueueItem({ q }) {
   return (
-    <Box
-      direction="row"
+    <Flex
       align="center"
       gap="small"
+      maxWidth="85%"
     >
       <Provider
         size="24px"
         provider={q.provider}
       />
-      <Span color="text-light">{q.name}</Span>
-      <QueueHealth
-        q={q}
-        background="fill-two"
-      />
-    </Box>
+      <Span
+        truncate
+        color="text-light"
+      >
+        {q.name}
+      </Span>
+    </Flex>
   )
 }
 

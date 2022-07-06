@@ -35,6 +35,7 @@ function RepoCardList({ repositories, repoProps, ...props }) {
       {
         repositories.map(repository => (
           <Flex
+            key={`${repository.id}flex`}
             px={1}
             marginBottom="xlarge"
             width="auto"

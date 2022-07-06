@@ -56,6 +56,10 @@ defmodule GraphQl.Schema.Shell do
       %{workspace: %{cluster: cluster}}, _, _ -> {:ok, cluster}
     end
 
+    field :subdomain,     non_null(:string), resolve: fn
+      %{workspace: %{subdomain: subdomain}}, _, _ -> {:ok, subdomain}
+    end
+
     field :alive,       non_null(:boolean), resolve: fn
       shell, _, _ -> Shell.liveness(shell)
     end

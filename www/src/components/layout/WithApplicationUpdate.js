@@ -5,14 +5,15 @@ import * as serviceWorker from '../../serviceWorker'
 import { PluralConfigurationContext } from '../login/CurrentUser'
 
 const COMMIT_KEY = 'git-commit'
-const DEFAULT_COMMIT = 'plural-default-commit'
+export const DEFAULT_COMMIT = 'plural-default-commit'
 
-const getCommit = () => localStorage.getItem(COMMIT_KEY) || DEFAULT_COMMIT
-const setCommit = sha => localStorage.setItem(COMMIT_KEY, sha)
+export const getCommit = () => localStorage.getItem(COMMIT_KEY) || DEFAULT_COMMIT
+export const setCommit = sha => localStorage.setItem(COMMIT_KEY, sha)
 
 function WithApplicationUpdate({ children }) {
   const [open, setOpen] = useState(true)
   const config = useContext(PluralConfigurationContext)
+  const commit = getCommit()
 
   function reloadApplication() {
     console.log('reloading')
@@ -29,11 +30,11 @@ function WithApplicationUpdate({ children }) {
     }
   }
 
-  const stale = getCommit() !== config.gitCommit
+  const stale = commit !== config.gitCommit
 
-  if (!(stale && open)) return children({ reloadApplication, shouldReloadApplication: false })
+  if (!stale || !open) return children({ reloadApplication, shouldReloadApplication: false })
 
-  if (getCommit() === DEFAULT_COMMIT) {
+  if (commit === DEFAULT_COMMIT) {
     setCommit(config.gitCommit)
 
     return children({ reloadApplication, shouldReloadApplication: false })

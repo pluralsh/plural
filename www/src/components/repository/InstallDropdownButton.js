@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react'
 import { A, Button, Div, DropdownButton, ExtendTheme, Flex, H2, Img, MenuItem, P } from 'honorable'
-import { ArrowTopRightIcon, Codeline, Tab } from 'pluralsh-design-system'
+import { ArrowTopRightIcon, Codeline, DropdownArrowIcon, GearTrainIcon, Tab } from 'pluralsh-design-system'
 import { Link } from 'react-router-dom'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
@@ -75,8 +75,8 @@ function RecipeMenuItem({ recipe }) {
           flexBasis="calc(100% - 4 * 16px)"
         >
           <P
-            body0
-            fontWeight="bold"
+            fontSize="14"
+            fontWeight="600"
           >
             {providerToDisplayName[recipe.provider]}
           </P>

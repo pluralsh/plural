@@ -1,5 +1,5 @@
 import { useContext, useEffect, useMemo, useState } from 'react'
-import { Copy, Links, TabContent, TabHeader, TabHeaderItem, Tabs } from 'forge-core'
+import { Copy, Links, ScrollableContainer, TabContent, TabHeader, TabHeaderItem, Tabs } from 'forge-core'
 import { useMutation, useQuery } from '@apollo/client'
 import { useNavigate, useParams } from 'react-router-dom'
 import moment from 'moment'
@@ -10,7 +10,9 @@ import Toggle from 'react-toggle'
 
 import { Codeline } from 'pluralsh-design-system'
 
-import { BreadcrumbsContext } from '../Breadcrumbs'
+import { Flex } from 'honorable'
+
+import { Breadcrumbs, BreadcrumbsContext } from '../Breadcrumbs'
 
 import { Graph, RangePicker } from '../metrics/Graph'
 import { PluralConfigurationContext } from '../login/CurrentUser'
@@ -592,7 +594,8 @@ export function Docker() {
     const { repository } = dockerImage.dockerRepository
 
     setBreadcrumbs([
-      { url: `/repositories/${repository.id}`, text: repository.name },
+      { url: '/marketplace', text: 'Marketplace' },
+      { url: `/repository/${repository.id}/packages/docker`, text: repository.name },
       { url: `/dkr/img/${dockerImage.id}`, text: `${dockerImage.dockerRepository.name}` },
     ])
   }, [data, setBreadcrumbs])
@@ -602,54 +605,67 @@ export function Docker() {
   const { dockerImage: image } = data
 
   return (
-    <Box
-      fill
-      direction="row"
-      pad="medium"
-      gap="medium"
-    >
+    <Box direction="column">
+      <Flex
+        paddingVertical={18}
+        marginLeft="xlarge"
+        marginRight="xlarge"
+        paddingLeft="xsmall"
+        paddingRight="xsmall"
+        borderBottom="1px solid border"
+      >
+        <Breadcrumbs />
+      </Flex>
       <Box
         fill
+        direction="row"
+        pad="medium"
         gap="small"
       >
-        <DockerHeader image={image} />
-        <Box fill>
-          <Tabs defaultTab="imgs">
-            <TabHeader>
-              <TabHeaderItem name="imgs">
-                <Text
-                  weight={500}
-                  size="small"
-                >Images
-                </Text>
-              </TabHeaderItem>
-              <TabHeaderItem name="vulns">
-                <Text
-                  weight={500}
-                  size="small"
-                >Vulnerabilities
-                </Text>
-              </TabHeaderItem>
-            </TabHeader>
-            <TabContent name="imgs">
-              <DockerImages dockerRepository={image.dockerRepository} />
-            </TabContent>
-            <TabContent name="vulns">
-              <Vulnerabilities image={image} />
-            </TabContent>
-          </Tabs>
+        <Box
+          fill
+          pad="small"
+          gap="small"
+        >
+          <DockerHeader image={image} />
+          <Box fill>
+            <Tabs defaultTab="imgs">
+              <TabHeader>
+                <TabHeaderItem name="imgs">
+                  <Text
+                    weight={500}
+                    size="small"
+                  >Images
+                  </Text>
+                </TabHeaderItem>
+                <TabHeaderItem name="vulns">
+                  <Text
+                    weight={500}
+                    size="small"
+                  >Vulnerabilities
+                  </Text>
+                </TabHeaderItem>
+              </TabHeader>
+              <TabContent name="imgs">
+                <DockerImages dockerRepository={image.dockerRepository} />
+              </TabContent>
+              <TabContent name="vulns">
+                <Vulnerabilities image={image} />
+              </TabContent>
+            </Tabs>
+          </Box>
         </Box>
-      </Box>
-      <Box
-        flex={false}
-        fill="vertical"
-        width="500px"
-      >
-        <DockerSidebar
-          image={image}
-          setFilter={setFilter}
-          filter={filter}
-        />
+        <Box
+          flex={false}
+          fill="vertical"
+          width="500px"
+        >
+          <DockerSidebar
+            image={image}
+            setFilter={setFilter}
+            filter={filter}
+          />
+        </Box>
       </Box>
     </Box>
   )

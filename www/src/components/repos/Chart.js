@@ -9,9 +9,11 @@ import moment from 'moment'
 import Highlight from 'react-highlight.js'
 import { Docker } from 'grommet-icons'
 
+import { Flex } from 'honorable'
+
 import { Versions } from '../versions/Versions'
 import { PluralConfigurationContext } from '../login/CurrentUser'
-import { BreadcrumbsContext } from '../Breadcrumbs'
+import { Breadcrumbs, BreadcrumbsContext } from '../Breadcrumbs'
 
 import { CHART_Q, INSTALL_CHART, UPDATE_CHART_INST } from './queries'
 import { DEFAULT_CHART_ICON } from './constants'
@@ -74,8 +76,20 @@ function Code({ value, children, language }) {
 
 export const MARKDOWN_STYLING = {
   p: { props: { size: 'small', style: { maxWidth: '100%' }, margin: { top: 'xsmall', bottom: 'xsmall' } } },
-  h1: { props: { style: { borderBottom: '1px solid #eaecef', paddingBottom: '.3em', maxWidth: '100%' }, size: 'small', margin: { top: 'small', bottom: 'small' } } },
-  h2: { props: { style: { borderBottom: '1px solid #eaecef', paddingBottom: '.3em', maxWidth: '100%' }, size: 'xsmall', margin: { top: 'small', bottom: 'small' } } },
+  h1: {
+    props: {
+      style: { borderBottom: '1px solid #eaecef', paddingBottom: '.3em', maxWidth: '100%' },
+      size: 'small',
+      margin: { top: 'small', bottom: 'small' },
+    },
+  },
+  h2: {
+    props: {
+      style: { borderBottom: '1px solid #eaecef', paddingBottom: '.3em', maxWidth: '100%' },
+      size: 'xsmall',
+      margin: { top: 'small', bottom: 'small' },
+    },
+  },
   pre: { component: Code, props: {} },
 }
 
@@ -101,7 +115,8 @@ function ChartInstaller({ chartInstallation, versionId, chartId, installation })
     update: (cache, { data }) => {
       const ci = data.installChart || data.updateChartInstallation
       const prev = cache.readQuery({ query: CHART_Q, variables: { chartId } })
-      cache.writeQuery({ query: CHART_Q,
+      cache.writeQuery({
+        query: CHART_Q,
         variables: { chartId },
         data: {
           ...prev,
@@ -109,7 +124,8 @@ function ChartInstaller({ chartInstallation, versionId, chartId, installation })
             ...prev.chart,
             installation: ci,
           },
-        } })
+        },
+      })
     },
   })
 
@@ -267,8 +283,8 @@ export default function Chart() {
     if (!data) return
     const { chart } = data
     setBreadcrumbs([
-      { url: `/publishers/${chart.repository.publisher.id}`, text: chart.repository.publisher.name },
-      { url: `/repositories/${chart.repository.id}`, text: chart.repository.name },
+      { url: '/marketplace', text: 'Marketplace' },
+      { url: `/repository/${chart.repository.id}/packages/helm`, text: chart.repository.name },
       { url: `/charts/${chart.id}`, text: chart.name },
     ])
   }, [data, setBreadcrumbs])
@@ -283,118 +299,130 @@ export default function Chart() {
   const chartInst = data.chart.installation
 
   return (
-    <ScrollableContainer>
-      <Box
-        pad="small"
-        direction="row"
+    <Box direction="column">
+      <Flex
+        paddingVertical={18}
+        marginLeft="xlarge"
+        marginRight="xlarge"
+        paddingLeft="xsmall"
+        paddingRight="xsmall"
+        borderBottom="1px solid border"
       >
+        <Breadcrumbs />
+      </Flex>
+      <ScrollableContainer>
         <Box
-          width={`${width}%`}
-          pad="small"
+          pad="medium"
+          direction="row"
         >
-          <ChartHeader
-            version={currentVersion}
-            chartInstallation={chartInst}
-            installation={repository.installation}
-          />
-          <Tabs
-            defaultTab="readme"
-            onTabChange={setTab}
-            headerEnd={tab === 'dependencies' ? (
-              <ShowFull
-                label={full ? 'Immediate' : 'Full'}
-                onClick={() => setFull(!full)}
-              />
-            ) : null}
+          <Box
+            width={`${width}%`}
+            pad="small"
           >
-            <TabHeader>
-              <TabHeaderItem name="readme">
-                <Text
-                  weight={500}
-                  size="small"
-                >
-                  Readme
-                </Text>
-              </TabHeaderItem>
-              <TabHeaderItem name="configuration">
-                <Text
-                  weight={500}
-                  size="small"
-                >
-                  Configuration
-                </Text>
-              </TabHeaderItem>
-              <TabHeaderItem name="dependencies">
-                <Text
-                  size="small"
-                  weight={500}
-                >
-                  Dependencies
-                </Text>
-              </TabHeaderItem>
-              {currentVersion.scan && (
-                <TabHeaderItem name="scan">
-                  <Text
-                    size="small"
-                    weight={500}
-                  >
-                    Security
-                  </Text>
-                </TabHeaderItem>
-              )}
-              {chartInst && (
-                <TabHeaderItem name="updates">
-                  <Text
-                    size="small"
-                    weight={500}
-                  >
-                    Update Queue
-                  </Text>
-                </TabHeaderItem>
-              )}
-            </TabHeader>
-            <TabContent name="readme">
-              <ChartReadme version={currentVersion} />
-            </TabContent>
-            <TabContent name="scan">
-              <ScanResults scan={currentVersion.scan} />
-            </TabContent>
-            <TabContent name="configuration">
-              <TemplateView version={currentVersion} />
-            </TabContent>
-            <TabContent name="dependencies">
-              {full ? <FullDependencies resource={chart} /> : (
-                <Dependencies
-                  name={chart.name}
-                  resource={chart}
-                  dependencies={(version || chart).dependencies}
-                />
-              )}
-            </TabContent>
-            {chartInst && (
-              <TabContent name="updates">
-                <DeferredUpdates chartInst={chartInst.id} />
-              </TabContent>
-            )}
-          </Tabs>
-        </Box>
-        <Box
-          pad="small"
-          width={`${100 - width}%`}
-        >
-          <Box gap="small">
-            <Versions
-              edges={edges}
-              pageInfo={pageInfo}
-              fetchMore={fetchMore}
-              refetch={refetch}
-              setVersion={setVersion}
+            <ChartHeader
+              version={currentVersion}
+              chartInstallation={chartInst}
+              installation={repository.installation}
             />
-            <ChartInfo version={currentVersion} />
-            <ImageDependencies version={currentVersion} />
+            <Tabs
+              defaultTab="readme"
+              onTabChange={setTab}
+              headerEnd={tab === 'dependencies' ? (
+                <ShowFull
+                  label={full ? 'Immediate' : 'Full'}
+                  onClick={() => setFull(!full)}
+                />
+              ) : null}
+            >
+              <TabHeader>
+                <TabHeaderItem name="readme">
+                  <Text
+                    weight={500}
+                    size="small"
+                  >
+                    Readme
+                  </Text>
+                </TabHeaderItem>
+                <TabHeaderItem name="configuration">
+                  <Text
+                    weight={500}
+                    size="small"
+                  >
+                    Configuration
+                  </Text>
+                </TabHeaderItem>
+                <TabHeaderItem name="dependencies">
+                  <Text
+                    size="small"
+                    weight={500}
+                  >
+                    Dependencies
+                  </Text>
+                </TabHeaderItem>
+                {currentVersion.scan && (
+                  <TabHeaderItem name="scan">
+                    <Text
+                      size="small"
+                      weight={500}
+                    >
+                      Security
+                    </Text>
+                  </TabHeaderItem>
+                )}
+                {chartInst && (
+                  <TabHeaderItem name="updates">
+                    <Text
+                      size="small"
+                      weight={500}
+                    >
+                      Update Queue
+                    </Text>
+                  </TabHeaderItem>
+                )}
+              </TabHeader>
+              <TabContent name="readme">
+                <ChartReadme version={currentVersion} />
+              </TabContent>
+              <TabContent name="scan">
+                <ScanResults scan={currentVersion.scan} />
+              </TabContent>
+              <TabContent name="configuration">
+                <TemplateView version={currentVersion} />
+              </TabContent>
+              <TabContent name="dependencies">
+                {full ? <FullDependencies resource={chart} /> : (
+                  <Dependencies
+                    name={chart.name}
+                    resource={chart}
+                    dependencies={(version || chart).dependencies}
+                  />
+                )}
+              </TabContent>
+              {chartInst && (
+                <TabContent name="updates">
+                  <DeferredUpdates chartInst={chartInst.id} />
+                </TabContent>
+              )}
+            </Tabs>
+          </Box>
+          <Box
+            pad="small"
+            width={`${100 - width}%`}
+          >
+            <Box gap="small">
+              <Versions
+                edges={edges}
+                pageInfo={pageInfo}
+                fetchMore={fetchMore}
+                refetch={refetch}
+                setVersion={setVersion}
+              />
+              <ChartInfo version={currentVersion} />
+              <ImageDependencies version={currentVersion} />
+            </Box>
           </Box>
         </Box>
-      </Box>
-    </ScrollableContainer>
+      </ScrollableContainer>
+    </Box>
   )
 }

@@ -122,7 +122,7 @@ function TerraformHeader({ terraform: { id, name, description, installation, rep
           src={DEFAULT_TF_ICON}
         />
       </Box>
-      <Box flex={1}>
+      <Box flex>
         <Box
           direction="row"
           gap="small"

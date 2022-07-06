@@ -242,6 +242,7 @@ function MarketplaceRepositories({ installed, ...props }) {
         paddingTop="medium"
         paddingBottom="xxxlarge"
         paddingHorizontal="large"
+        margin="xxsmall"
         overflowY="auto"
         overflowX="hidden"
         position="relative"

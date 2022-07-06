@@ -24,7 +24,7 @@ const filterTokenStyles = {
   minHeight: '42px',
 }
 
-function RepoCardList({ repositories, repoProps, ...props }) {
+function RepoCardList({ repositories, repoProps, maxWidth, ...props }) {
   return (
     <Flex
       mx={-1}
@@ -43,7 +43,7 @@ function RepoCardList({ repositories, repoProps, ...props }) {
             flexGrow={1}
             flexShrink={1}
             minWidth="250px"
-            maxWidth="50%"
+            maxWidth={maxWidth || '800px'}
             align="stretch"
           >
             <RepositoryCard
@@ -157,6 +157,7 @@ function MarketplaceRepositories({ installed, ...props }) {
           repositories={[featuredA, featuredB]}
           repoProps={{ featured: true }}
           marginTop="medium"
+          maxWidth="50%"
         />
       </>
     )

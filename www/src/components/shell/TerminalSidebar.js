@@ -149,7 +149,7 @@ function TerminalSidebar({ isCheatsheet, shell, ...props }) {
           borderRadius="large"
           direction="column"
         >
-          {fresh ? renderCheatsheet() : renderDemo()}
+          {fresh ? renderDemo() : renderCheatsheet()}
         </Flex>
       </Div>
       {isModalOpen && (

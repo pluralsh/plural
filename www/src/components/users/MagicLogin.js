@@ -138,11 +138,11 @@ function LoginHighlight({ title, children, ...props }) {
         </defs>
       </Svg>
       <Article marginLeft="medium">
-        <H2 title1>
+        <H2 title2>
           {title}
         </H2>
         <P
-          body2
+          body1
           color="text-light"
         >
           {children}

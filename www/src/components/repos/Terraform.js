@@ -283,7 +283,7 @@ export default function Terraform() {
     const { terraformModule } = data
     setBreadcrumbs([
       { url: '/marketplace', text: 'Marketplace' },
-      { url: `/repository/${terraformModule.repository.id}`, text: terraformModule.repository.name },
+      { url: `/repository/${terraformModule.repository.id}/packages/terraform`, text: terraformModule.repository.name },
       { url: `/terraform/${terraformModule.id}`, text: terraformModule.name },
     ])
   }, [data, setBreadcrumbs])

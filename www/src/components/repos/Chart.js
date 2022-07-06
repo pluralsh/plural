@@ -284,7 +284,7 @@ export default function Chart() {
     const { chart } = data
     setBreadcrumbs([
       { url: '/marketplace', text: 'Marketplace' },
-      { url: `/repository/${chart.repository.id}`, text: chart.repository.name },
+      { url: `/repository/${chart.repository.id}/packages/helm`, text: chart.repository.name },
       { url: `/charts/${chart.id}`, text: chart.name },
     ])
   }, [data, setBreadcrumbs])

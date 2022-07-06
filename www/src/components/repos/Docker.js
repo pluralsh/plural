@@ -595,7 +595,7 @@ export function Docker() {
 
     setBreadcrumbs([
       { url: '/marketplace', text: 'Marketplace' },
-      { url: `/repository/${repository.id}`, text: repository.name },
+      { url: `/repository/${repository.id}/packages/docker`, text: repository.name },
       { url: `/dkr/img/${dockerImage.id}`, text: `${dockerImage.dockerRepository.name}` },
     ])
   }, [data, setBreadcrumbs])

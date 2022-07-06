@@ -9,6 +9,8 @@ import moment from 'moment'
 import Highlight from 'react-highlight.js'
 import { Docker } from 'grommet-icons'
 
+import { Flex } from 'honorable'
+
 import { Versions } from '../versions/Versions'
 import { PluralConfigurationContext } from '../login/CurrentUser'
 import { Breadcrumbs, BreadcrumbsContext } from '../Breadcrumbs'
@@ -21,7 +23,6 @@ import Dependencies, { FullDependencies, ShowFull } from './Dependencies'
 import { dockerPull } from './misc'
 import { DeferredUpdates } from './DeferredUpdates'
 import { PackageGrade, ScanResults } from './PackageScan'
-import { Flex } from "honorable";
 
 function ChartInfo({ version: { helm, insertedAt } }) {
   return (
@@ -79,15 +80,15 @@ export const MARKDOWN_STYLING = {
     props: {
       style: { borderBottom: '1px solid #eaecef', paddingBottom: '.3em', maxWidth: '100%' },
       size: 'small',
-      margin: { top: 'small', bottom: 'small' }
-    }
+      margin: { top: 'small', bottom: 'small' },
+    },
   },
   h2: {
     props: {
       style: { borderBottom: '1px solid #eaecef', paddingBottom: '.3em', maxWidth: '100%' },
       size: 'xsmall',
-      margin: { top: 'small', bottom: 'small' }
-    }
+      margin: { top: 'small', bottom: 'small' },
+    },
   },
   pre: { component: Code, props: {} },
 }
@@ -123,7 +124,7 @@ function ChartInstaller({ chartInstallation, versionId, chartId, installation })
             ...prev.chart,
             installation: ci,
           },
-        }
+        },
       })
     },
   })
@@ -179,24 +180,24 @@ function ChartHeader({ version: { helm, chart, version, scan, id }, chartInstall
           <i>{helm.description}</i>
         </Text>
       </Box>
-      {scan && <PackageGrade scan={scan}/>}
+      {scan && <PackageGrade scan={scan} />}
       {chartInstallation && chartInstallation.version.id === id ? (
+        <Box
+          width="100px"
+          direction="row"
+          justify="end"
+        >
           <Box
-            width="100px"
-            direction="row"
-            justify="end"
+            round="xsmall"
+            pad={{ horizontal: 'small', vertical: 'xsmall' }}
+            align="center"
+            justify="center"
+            border={{ color: 'border' }}
           >
-            <Box
-              round="xsmall"
-              pad={{ horizontal: 'small', vertical: 'xsmall' }}
-              align="center"
-              justify="center"
-              border={{ color: 'border' }}
-            >
-              Installed
-            </Box>
+            Installed
           </Box>
-        ) :
+        </Box>
+      ) :
         installation && (
           <Box
             width="100px"
@@ -299,13 +300,15 @@ export default function Chart() {
 
   return (
     <Box direction="column">
-      <Flex paddingVertical={18}
-            marginLeft="xlarge"
-            marginRight="xlarge"
-            paddingLeft="xsmall"
-            paddingRight="xsmall"
-            borderBottom="1px solid border">
-        <Breadcrumbs/>
+      <Flex
+        paddingVertical={18}
+        marginLeft="xlarge"
+        marginRight="xlarge"
+        paddingLeft="xsmall"
+        paddingRight="xsmall"
+        borderBottom="1px solid border"
+      >
+        <Breadcrumbs />
       </Flex>
       <ScrollableContainer>
         <Box
@@ -378,16 +381,16 @@ export default function Chart() {
                 )}
               </TabHeader>
               <TabContent name="readme">
-                <ChartReadme version={currentVersion}/>
+                <ChartReadme version={currentVersion} />
               </TabContent>
               <TabContent name="scan">
-                <ScanResults scan={currentVersion.scan}/>
+                <ScanResults scan={currentVersion.scan} />
               </TabContent>
               <TabContent name="configuration">
-                <TemplateView version={currentVersion}/>
+                <TemplateView version={currentVersion} />
               </TabContent>
               <TabContent name="dependencies">
-                {full ? <FullDependencies resource={chart}/> : (
+                {full ? <FullDependencies resource={chart} /> : (
                   <Dependencies
                     name={chart.name}
                     resource={chart}
@@ -397,7 +400,7 @@ export default function Chart() {
               </TabContent>
               {chartInst && (
                 <TabContent name="updates">
-                  <DeferredUpdates chartInst={chartInst.id}/>
+                  <DeferredUpdates chartInst={chartInst.id} />
                 </TabContent>
               )}
             </Tabs>
@@ -414,8 +417,8 @@ export default function Chart() {
                 refetch={refetch}
                 setVersion={setVersion}
               />
-              <ChartInfo version={currentVersion}/>
-              <ImageDependencies version={currentVersion}/>
+              <ChartInfo version={currentVersion} />
+              <ImageDependencies version={currentVersion} />
             </Box>
           </Box>
         </Box>

@@ -38,15 +38,15 @@ const MARKDOWN_STYLING = {
     props: {
       style: { borderBottom: '1px solid #eaecef', paddingBottom: '.3em', maxWidth: '100%' },
       size: 'small',
-      margin: { top: 'small', bottom: 'small' }
-    }
+      margin: { top: 'small', bottom: 'small' },
+    },
   },
   h2: {
     props: {
       style: { borderBottom: '1px solid #eaecef', paddingBottom: '.3em', maxWidth: '100%' },
       size: 'xsmall',
-      margin: { top: 'small', bottom: 'small' }
-    }
+      margin: { top: 'small', bottom: 'small' },
+    },
   },
   pre: {
     component: Code,
@@ -94,13 +94,13 @@ function TerraformInstaller({ installation, terraformId, terraformInstallation, 
         </Modal>
       )}
       {installed ? (
-          <Button
-            secondary
-            onClick={mutation}
-          >
-            Uninstall
-          </Button>
-        )
+        <Button
+          secondary
+          onClick={mutation}
+        >
+          Uninstall
+        </Button>
+      )
         : (
           <Button
             round="xsmall"
@@ -153,7 +153,7 @@ function TerraformHeader({ terraform: { id, name, description, installation, rep
         <Text size="small"><i>{description}</i></Text>
       </Box>
       {version.scan && (
-        <PackageGrade scan={version.scan}/>
+        <PackageGrade scan={version.scan} />
       )}
       {repository.installation && (
         <Box
@@ -199,7 +199,7 @@ function updateInstallation(tfId) {
         ...prev,
         terraformModule: {
           ...prev.terraformModule,
-          repository: { ...prev.terraformModule.repository, installation }
+          repository: { ...prev.terraformModule.repository, installation },
         },
       },
     })
@@ -254,7 +254,7 @@ function UpdateTerraform({ id, name, description }) {
         justify="end"
         gap="small"
       >
-        <DeleteTerraform id={id}/>
+        <DeleteTerraform id={id} />
         <Button
           loading={loading}
           round="xsmall"
@@ -296,13 +296,15 @@ export default function Terraform() {
 
   return (
     <Box direction="column">
-      <Flex paddingVertical={18}
-            marginLeft="xlarge"
-            marginRight="xlarge"
-            paddingLeft="xsmall"
-            paddingRight="xsmall"
-            borderBottom="1px solid border">
-        <Breadcrumbs/>
+      <Flex
+        paddingVertical={18}
+        marginLeft="xlarge"
+        marginRight="xlarge"
+        paddingLeft="xsmall"
+        paddingRight="xsmall"
+        borderBottom="1px solid border"
+      >
+        <Breadcrumbs />
       </Flex>
       <ScrollableContainer>
         <Box
@@ -374,16 +376,16 @@ export default function Terraform() {
                 )}
               </TabHeader>
               <TabContent name="readme">
-                <Readme readme={currentVersion.readme}/>
+                <Readme readme={currentVersion.readme} />
               </TabContent>
               <TabContent name="scan">
-                <ScanResults scan={currentVersion.scan}/>
+                <ScanResults scan={currentVersion.scan} />
               </TabContent>
               <TabContent name="configuration">
-                <TemplateView valuesTemplate={currentVersion.valuesTemplate}/>
+                <TemplateView valuesTemplate={currentVersion.valuesTemplate} />
               </TabContent>
               <TabContent name="dependencies">
-                {full ? <FullDependencies resource={terraformModule}/> : (
+                {full ? <FullDependencies resource={terraformModule} /> : (
                   <Dependencies
                     name={terraformModule.name}
                     dependencies={(version || terraformModule).dependencies}
@@ -393,7 +395,7 @@ export default function Terraform() {
               </TabContent>
               {tfInst && (
                 <TabContent name="updates">
-                  <DeferredUpdates tfInst={tfInst.id}/>
+                  <DeferredUpdates tfInst={tfInst.id} />
                 </TabContent>
               )}
             </Tabs>

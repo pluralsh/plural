@@ -10,6 +10,8 @@ import Toggle from 'react-toggle'
 
 import { Codeline } from 'pluralsh-design-system'
 
+import { Flex } from 'honorable'
+
 import { Breadcrumbs, BreadcrumbsContext } from '../Breadcrumbs'
 
 import { Graph, RangePicker } from '../metrics/Graph'
@@ -25,7 +27,6 @@ import { DockerImages } from './DockerImages'
 import { DetailContainer } from './Installation'
 import { AttackVector, ColorMap, DEFAULT_DKR_ICON } from './constants'
 import { DOCKER_IMG_Q, DOCKER_Q, UPDATE_DOCKER } from './queries'
-import { Flex } from "honorable";
 
 function RepositoryPublic({ dockerRepo }) {
   const pub = dockerRepo.public
@@ -33,7 +34,7 @@ function RepositoryPublic({ dockerRepo }) {
     variables: { id: dockerRepo.id },
   })
 
-  if (!dockerRepo.repository.editable && dockerRepo.public) return <Language size="12px"/>
+  if (!dockerRepo.repository.editable && dockerRepo.public) return <Language size="12px" />
   if (!dockerRepo.repository.editable) return null
 
   return (
@@ -80,7 +81,7 @@ function DockerHeader({ image }) {
           align="center"
         >
           <Text size="medium">{image.dockerRepository.name}:{image.tag}</Text>
-          <RepositoryPublic dockerRepo={image.dockerRepository}/>
+          <RepositoryPublic dockerRepo={image.dockerRepository} />
         </Box>
         <Text
           size="small"
@@ -449,7 +450,7 @@ function Vulnerability({ vuln }) {
               size="small"
               href={vuln.url}
               target="_blank"
-            ><Links size="small"/>
+            ><Links size="small" />
             </Anchor>
           )}
         </Box>
@@ -485,7 +486,7 @@ function Vulnerability({ vuln }) {
         />
       </Box>
       <Collapsible open={open}>
-        <VulnerabilityDetail vuln={vuln}/>
+        <VulnerabilityDetail vuln={vuln} />
       </Collapsible>
     </Box>
   )
@@ -539,14 +540,14 @@ function VulnerabilityHeader() {
 }
 
 function Vulnerabilities({ image: { vulnerabilities } }) {
-  if (!vulnerabilities || vulnerabilities.length === 0) return <NoVulnerabilities/>
+  if (!vulnerabilities || vulnerabilities.length === 0) return <NoVulnerabilities />
 
   return (
     <Box
       style={{ overflow: 'auto' }}
       fill
     >
-      <VulnerabilityHeader/>
+      <VulnerabilityHeader />
       {vulnerabilities.map(vuln => (
         <Vulnerability
           key={vuln.id}
@@ -570,7 +571,7 @@ export function DockerRepository() {
     navigate(`/dkr/img/${edges[0].node.id}`, { replace: true })
   }, [data, navigate])
 
-  return <LoopingLogo/>
+  return <LoopingLogo />
 }
 
 const DEFAULT_FILTER = { tag: null, precision: '1h', offset: '1d' }
@@ -599,19 +600,21 @@ export function Docker() {
     ])
   }, [data, setBreadcrumbs])
 
-  if (!data) return <LoopingLogo/>
+  if (!data) return <LoopingLogo />
 
   const { dockerImage: image } = data
 
   return (
     <Box direction="column">
-      <Flex paddingVertical={18}
-            marginLeft="xlarge"
-            marginRight="xlarge"
-            paddingLeft="xsmall"
-            paddingRight="xsmall"
-            borderBottom="1px solid border">
-        <Breadcrumbs/>
+      <Flex
+        paddingVertical={18}
+        marginLeft="xlarge"
+        marginRight="xlarge"
+        paddingLeft="xsmall"
+        paddingRight="xsmall"
+        borderBottom="1px solid border"
+      >
+        <Breadcrumbs />
       </Flex>
       <Box
         fill
@@ -624,7 +627,7 @@ export function Docker() {
           pad="small"
           gap="small"
         >
-          <DockerHeader image={image}/>
+          <DockerHeader image={image} />
           <Box fill>
             <Tabs defaultTab="imgs">
               <TabHeader>
@@ -644,10 +647,10 @@ export function Docker() {
                 </TabHeaderItem>
               </TabHeader>
               <TabContent name="imgs">
-                <DockerImages dockerRepository={image.dockerRepository}/>
+                <DockerImages dockerRepository={image.dockerRepository} />
               </TabContent>
               <TabContent name="vulns">
-                <Vulnerabilities image={image}/>
+                <Vulnerabilities image={image} />
               </TabContent>
             </Tabs>
           </Box>

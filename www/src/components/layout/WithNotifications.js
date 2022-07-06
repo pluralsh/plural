@@ -31,8 +31,8 @@ function WithNotifications({ children }) {
         <Flex
           direction="column"
           borderRight="1px solid border"
-          width={512}
-          maxWidth={512}
+          width={350}
+          maxWidth={350}
         >
           <Flex
             align="center"

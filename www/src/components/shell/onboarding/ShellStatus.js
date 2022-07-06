@@ -27,6 +27,7 @@ export function ShellStatus({ shell: { alive, status: { initialized, podSchedule
         <Chip
           size="large"
           backgroundColor="fill-two"
+          borderColor="border-fill-two"
           severity={alive ? 'success' : 'info'}
         >
           {alive ? 'Success' : 'In progress'}
@@ -36,7 +37,7 @@ export function ShellStatus({ shell: { alive, status: { initialized, podSchedule
         mode={error || alive ? 'determinate' : 'indeterminate'}
         marginTop="medium"
         progress={error ? 0 : alive ? 100 : null}
-        backgroundColor={error ? 'icon-error' : null}
+        backgroundColor={error ? 'icon-error' : 'fill-two'}
       />
       <Flex
         marginTop="xlarge"
@@ -51,6 +52,7 @@ export function ShellStatus({ shell: { alive, status: { initialized, podSchedule
         <Chip
           loading={!initialized}
           backgroundColor="fill-two"
+          borderColor="border-fill-two"
           severity={initialized ? 'success' : 'info'}
         >
           {initialized ? 'Success' : 'Running'}
@@ -68,6 +70,7 @@ export function ShellStatus({ shell: { alive, status: { initialized, podSchedule
         <Chip
           loading={!podScheduled}
           backgroundColor="fill-two"
+          borderColor="border-fill-two"
           severity={podScheduled ? 'success' : 'info'}
         >
           {podScheduled ? 'Success' : 'Running'}
@@ -85,6 +88,7 @@ export function ShellStatus({ shell: { alive, status: { initialized, podSchedule
         <Chip
           loading={!containersReady}
           backgroundColor="fill-two"
+          borderColor="border-fill-two"
           severity={containersReady ? 'success' : 'info'}
         >
           {containersReady ? 'Success' : 'Running'}
@@ -101,6 +105,7 @@ export function ShellStatus({ shell: { alive, status: { initialized, podSchedule
         <Chip
           loading={!ready}
           backgroundColor="fill-two"
+          borderColor="border-fill-two"
           severity={ready ? 'success' : 'info'}
         >
           {ready ? 'Success' : 'Running'}

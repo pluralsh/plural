@@ -1,6 +1,5 @@
 import { useContext } from 'react'
-import { ExtendTheme, Flex, Input } from 'honorable'
-import { Button, FormField } from 'pluralsh-design-system'
+import { Button, FormField, Input } from 'pluralsh-design-system'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'
 
@@ -53,38 +52,13 @@ function CloudWorkspace() {
           caption="The domain you'll use for all your applications."
           label="Subdomain"
         >
-          <ExtendTheme
-            theme={{
-              // Theme extension to give the Input a custom end icon
-              Input: {
-                EndIcon: [
-                  {
-                    height: 42,
-                    marginLeft: 0,
-                    marginRight: -16,
-                  },
-                ],
-              },
-            }}
-          >
-            <Input
-              width="100%"
-              value={workspace.subdomain}
-              onChange={({ target: { value } }) => setWorkspace(x => ({ ...x, subdomain: value }))}
-              placeholder="my-company"
-              endIcon={(
-                <Flex
-                  height="100%"
-                  align="center"
-                  justify="center"
-                  paddingHorizontal="small"
-                  backgroundColor="fill-two"
-                >
-                  .onplural.sh
-                </Flex>
-              )}
-            />
-          </ExtendTheme>
+          <Input
+            width="100%"
+            value={workspace.subdomain}
+            onChange={({ target: { value } }) => setWorkspace(x => ({ ...x, subdomain: value }))}
+            placeholder="my-company"
+            suffix={<>.onplural.sh</>}
+          />
         </FormField>
         {exceptions && <Exceptions exceptions={exceptions} />}
       </OnboardingCard>

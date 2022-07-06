@@ -20,8 +20,6 @@ function CloudSelect() {
     <>
       <OnboardingCard title="Choose a cloud">
         <P
-          body1
-          color="text-light"
           marginBottom="medium"
         >
           Plural makes it easy to plug into your own cloud, but we also provide a free demo cloud to help you get started.

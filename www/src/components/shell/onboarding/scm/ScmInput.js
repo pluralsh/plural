@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { A, Flex, Img, Input, MenuItem, P, Select, Text } from 'honorable'
+import { A, Flex, Img, Input, MenuItem, Select, Text } from 'honorable'
 import { Button, FormField } from 'pluralsh-design-system'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'
@@ -83,10 +83,10 @@ function OrgInput({ org, orgs, doSetOrg }) {
       width="100%"
       label={
         provider === Provider.GITHUB
-          ? 'GitHub Organization'
+          ? 'GitHub organization'
           : provider === Provider.GITLAB
-            ? 'GitLab Group'
-            : 'Organization or Group'
+            ? 'GitLab group'
+            : 'Organization or group'
       }
       caption={(
         <A
@@ -126,25 +126,11 @@ function RepositoryInput({ scmState }) {
       />
       <FormField
         width="100%"
-        mt={1}
+        marginTop="medium"
         label="Repository name"
-        hint={(
-          <Flex
-            caption
-            align="center"
-            color="text-light"
-          >
-            <P
-              flexGrow={1}
-              color={false ? 'icon-error' : null}
-            >
-              This must be unique. Avoid generic names such as “plural-demo”.
-            </P>
-            <P ml={0.5}>
-              {scm?.name?.length || 0} / {maxLen}
-            </P>
-          </Flex>
-        )}
+        hint="This must be unique. Avoid generic names such as “plural-demo”."
+        length={scm?.name?.length || 0}
+        maxLength={maxLen}
       >
         <Input
           width="100%"
@@ -199,13 +185,6 @@ export function ScmSection() {
   return (
     <>
       <OnboardingCard>
-        <P
-          body1
-          color="text-light"
-          marginBottom="medium"
-        >
-          We use GitOps to manage your application's state.  Enter your repository details below:
-        </P>
         <ScmInput />
         {exceptions && <Exceptions exceptions={exceptions} />}
       </OnboardingCard>

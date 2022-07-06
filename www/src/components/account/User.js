@@ -12,6 +12,7 @@ import { CurrentUserContext } from '../login/CurrentUser'
 
 import { Provider } from '../repos/misc'
 import { DELETE_USER } from '../users/queries'
+import { GraphQlToast } from '../utils/Toasts'
 
 import { Confirm } from './Confirm'
 import { EditServiceAccount } from './CreateServiceAccount'
@@ -136,59 +137,63 @@ export function User({ user, update }) {
 export function ServiceAccount({ user, update }) {
   const { account, ...me } = useContext(CurrentUserContext)
   const editable = canEdit(me, account)
-  const [mutation] = useMutation(IMPERSONATE_SERVICE_ACCOUNT, {
+  const [mutation, { error }] = useMutation(IMPERSONATE_SERVICE_ACCOUNT, {
     variables: { id: user.id },
     update: (_cache, { data: { impersonateServiceAccount: { jwt } } }) => {
+      setPreviousUserData({
+        me,
+        jwt: fetchToken(),
+      })
       setToken(jwt)
       window.location = '/'
     },
   })
 
-  function handleImpersonateClick() {
-    setPreviousUserData({
-      me,
-      jwt: fetchToken(),
-    })
-    mutation()
-  }
-
   return (
-    <Box
-      fill="horizontal"
-      direction="row"
-      align="center"
-    >
-      <UserInfo
-        user={user}
-        fill="horizontal"
-      />
+    <>
       <Box
-        flex={false}
+        fill="horizontal"
         direction="row"
-        gap="24px"
         align="center"
       >
-        {user.provider && (
-          <Provider
-            provider={user.provider}
-            width={25}
-          />
-        )}
-        <Button
-          small
-          secondary
-          startIcon={<BotIcon size={15} />}
-          onClick={handleImpersonateClick}
+        <UserInfo
+          user={user}
+          fill="horizontal"
+        />
+        <Box
+          flex={false}
+          direction="row"
+          gap="24px"
+          align="center"
         >
-          Impersonate
-        </Button>
-        {editable && (
-          <EditServiceAccount
-            user={user}
-            update={update}
-          />
-        )}
+          {user.provider && (
+            <Provider
+              provider={user.provider}
+              width={25}
+            />
+          )}
+          <Button
+            small
+            secondary
+            startIcon={<BotIcon size={15} />}
+            onClick={mutation}
+          >
+            Impersonate
+          </Button>
+          {editable && (
+            <EditServiceAccount
+              user={user}
+              update={update}
+            />
+          )}
+        </Box>
       </Box>
-    </Box>
+      {error && (
+        <GraphQlToast
+          error={error}
+          header="Failed to impersonate"
+        />
+      )}
+    </>
   )
 }

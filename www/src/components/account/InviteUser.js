@@ -1,6 +1,6 @@
 import { Box } from 'grommet'
 import { Button, Div } from 'honorable'
-import { MailIcon, Modal, ModalActions, ModalHeader, ValidatedInput } from 'pluralsh-design-system'
+import { Codeline, MailIcon, Modal, ModalActions, ModalHeader, ValidatedInput } from 'pluralsh-design-system'
 import { useState } from 'react'
 
 import { Copyable } from 'forge-core'
@@ -32,22 +32,13 @@ export function InviteUser() {
         <ModalHeader onClose={() => setOpen(false)}>
           INVITE USERS
         </ModalHeader>
-        {invite && (
-          <Box
-            pad="small"
-          >
-            <Copyable
-              text={inviteLink(invite)}
-              pillText="Invite link copied!"
-            />
-          </Box>
-        )}
         <ValidatedInput
           value={email}
           startIcon={<MailIcon size={15} />}
           onChange={({ target: { value } }) => setEmail(value)}
           label="Email address"
         />
+        {invite && <Codeline marginTop="small">{inviteLink(invite)}</Codeline>}
         <ModalActions>
           <Button
             secondary

@@ -1,7 +1,6 @@
 import { useQuery } from '@apollo/client'
 import { Box } from 'grommet'
-import { Input } from 'honorable'
-import { SearchIcon } from 'pluralsh-design-system'
+import { Input, SearchIcon } from 'pluralsh-design-system'
 import { useCallback, useState } from 'react'
 
 import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'

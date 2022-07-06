@@ -1,7 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
-import { Button, Input } from 'honorable'
-import { GlobeIcon, Modal, ModalHeader, SearchIcon } from 'pluralsh-design-system'
+import { Button, GlobeIcon, Input, Modal, ModalHeader, SearchIcon } from 'pluralsh-design-system'
 import { useContext, useState } from 'react'
 
 import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
@@ -103,7 +102,7 @@ function Group({ group, q }) {
         <Modal
           open={view}
           width="60vw"
-          height="80vh"
+          height="750px"
           onClose={() => setView(false)}
         >
           <ModalHeader onClose={() => setView(false)}>
@@ -116,6 +115,7 @@ function Group({ group, q }) {
           open={edit}
           width="60vw"
           height="80vh"
+          maxHeight="500px"
           onClose={() => setEdit(false)}
         >
           <ModalHeader onClose={() => setEdit(false)}>

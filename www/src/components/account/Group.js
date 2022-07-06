@@ -190,6 +190,7 @@ export function UpdateGroup({ group, cancel }) {
             cancel={cancel}
             submit={mutation}
             loading={loading}
+            action="Update"
           />
         </Box>
       )}
@@ -199,7 +200,7 @@ export function UpdateGroup({ group, cancel }) {
           fill
         >
           <FormField
-            label="Add Users"
+            label="Add users"
             width="100%"
           >
             <TextInput
@@ -248,6 +249,7 @@ export function CreateGroup({ q }) {
       <Modal
         open={open}
         onClose={() => setOpen(false)}
+        maxHeight="400px"
       >
         <ModalHeader onClose={() => setOpen(false)}>
           CREATE GROUP

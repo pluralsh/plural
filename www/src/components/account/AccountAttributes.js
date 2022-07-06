@@ -91,17 +91,24 @@ export function AccountAttributes() {
               align="center"
               gap="small"
             >
-              <Input
-                value={domain}
-                placeholder="enter an email domain"
-                onChange={({ target: { value } }) => setDomain(value)}
-              />
-              <Button
-                small
-                secondary
-                onClick={() => mutation({ variables: { attributes: { domainMappings: addDomain(domain) } } })}
-              >Add Domain
-              </Button>
+              <Box fill="horizontal">
+                <Input
+                  value={domain}
+                  width="100%"
+                  placeholder="enter an email domain"
+                  onChange={({ target: { value } }) => setDomain(value)}
+                />
+              </Box>
+              <Box
+                flex={false}
+                width="120px"
+              >
+                <Button
+                  secondary
+                  onClick={() => mutation({ variables: { attributes: { domainMappings: addDomain(domain) } } })}
+                >Add Domain
+                </Button>
+              </Box>
             </Box>
           </Box>
           <Box>

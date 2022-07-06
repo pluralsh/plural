@@ -10,7 +10,7 @@ import { Box, Text } from 'grommet'
 import { LoginPortal } from '../users/MagicLogin'
 import { GqlError } from '../utils/Alert'
 
-import { PLURAL_MARK } from '../constants'
+import { PLURAL_MARK_WHITE } from '../constants'
 import { RepoIcon } from '../repos/Repositories'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
@@ -54,7 +54,7 @@ export function OAuthConsent() {
           fill="horizontal"
         >
           <img
-            src={PLURAL_MARK}
+            src={PLURAL_MARK_WHITE}
             width="60px"
           />
           <Transaction size="15px" />

@@ -453,7 +453,7 @@ export function Signup() {
     onCompleted: ({ signup: { jwt } }) => {
       if (deviceToken) finishedDeviceLogin()
       setToken(jwt)
-      window.location = '/'
+      window.location = '/shell'
     },
   })
   const { data } = useQuery(OAUTH_URLS, { variables: { host: host() } })

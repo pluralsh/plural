@@ -10,6 +10,9 @@ defmodule Core.Schema.OIDCProvider do
     field :redirect_uris,     {:array, :string}
     field :auth_method,       AuthMethod
 
+    field :consent,           :map, virtual: true
+    field :login,             :map, virtual: true
+
     belongs_to :installation, Installation
 
     has_many :bindings, OIDCProviderBinding,

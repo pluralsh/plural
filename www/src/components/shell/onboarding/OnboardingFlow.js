@@ -152,11 +152,6 @@ function OnboardingFlow({ accessToken, provider: scmProvider, authUrlData }) {
         {section === SECTION_CLOUD_LAUNCH && (
           <CloudLaunch />
         )}
-        <Flex
-          direction="column"
-          height="100%"
-        />
-        <OnboardingFooter />
       </OnboardingWrapper>
     </CreateShellContext.Provider>
   )

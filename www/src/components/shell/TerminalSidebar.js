@@ -7,8 +7,10 @@ import usePrevious from '../../hooks/usePrevious'
 
 import CodeLine from '../utils/CodeLine'
 
+import { useOnboarded } from './onboarding/useOnboarded'
+
 const sidebarWidth = 512
-const demoLocalStorageKey = 'pluralsh-cloud-shell-demo'
+
 const steps = [
   {
     title: 'Install Plural Console',
@@ -29,24 +31,21 @@ const steps = [
 --- */
 
 function TerminalSidebar({ isCheatsheet, shell, ...props }) {
-  const [visible, setVisible] = useState(!getDemoCompletionState())
+  const { mutation, fresh } = useOnboarded()
+  const [visible, setVisible] = useState(!fresh)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [stepIndex, setStepIndex] = useState(0)
 
-  const shouldDislayCheatsheet = !getDemoCompletionState() || isCheatsheet
+  const shouldDislayCheatsheet = !fresh || isCheatsheet
   const { title, Component } = steps[stepIndex]
 
   useEffect(() => {
     setVisible(shouldDislayCheatsheet)
   }, [shouldDislayCheatsheet])
 
-  function getDemoCompletionState() {
-    return window.localStorage.getItem(demoLocalStorageKey) === 'true' || false
-  }
-
   function markDemoAsComplete() {
     setVisible(false)
-    window.localStorage.setItem(demoLocalStorageKey, true)
+    mutation()
   }
 
   function handlePrevious() {
@@ -150,7 +149,7 @@ function TerminalSidebar({ isCheatsheet, shell, ...props }) {
           borderRadius="large"
           direction="column"
         >
-          {getDemoCompletionState() ? renderCheatsheet() : renderDemo()}
+          {fresh ? renderCheatsheet() : renderDemo()}
         </Flex>
       </Div>
       {isModalOpen && (

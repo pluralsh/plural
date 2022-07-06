@@ -73,7 +73,7 @@ function groupSuggestion(group) {
   )
 }
 
-function TagInput({ placeholder, label, hint, suggestions, items, icon, onRemove, onAdd, width, onChange }) {
+function TagInput({ placeholder, label, hint, suggestions, items, icon, onRemove, onAdd, width, onChange, background }) {
   const [value, setValue] = useState('')
 
   const add = useCallback(tag => {
@@ -111,6 +111,7 @@ function TagInput({ placeholder, label, hint, suggestions, items, icon, onRemove
         {items.map(t => (
           <Token
             onClick={() => onRemove(t)}
+            backgroundColor={background || 'fill-one'}
           >{t}
           </Token>
         ))}
@@ -134,7 +135,7 @@ const FETCHER = {
   group: fetchGroups,
 }
 
-export function BindingInput({ type, fetcher, bindings, remove, add, hint }) {
+export function BindingInput({ type, fetcher, bindings, remove, add, hint, background }) {
   const client = useApolloClient()
   const [suggestions, setSuggestions] = useState([])
   const { placeholder, label } = TEXT[type]
@@ -152,13 +153,14 @@ export function BindingInput({ type, fetcher, bindings, remove, add, hint }) {
       suggestions={suggestions}
       items={bindings}
       onRemove={remove}
+      background={background}
       onAdd={({ value }) => add(value)}
       onChange={({ target: { value } }) => fetch(client, value, setSuggestions)}
     />
   )
 }
 
-export function UserTypeahead({ users, setUsers, label, hint, children }) {
+export function UserTypeahead({ users, setUsers, label, hint, children, background }) {
   const client = useApolloClient()
   const [suggestions, setSuggestions] = useState([])
 
@@ -172,6 +174,7 @@ export function UserTypeahead({ users, setUsers, label, hint, children }) {
       noborder
       suggestions={suggestions}
       items={users.map(u => u.email)}
+      background={background}
       onRemove={email => setUsers(users.filter(u => u.email !== email))}
       onAdd={({ value }) => setUsers([value, ...users])}
       onChange={({ target: { value } }) => fetchUsers(client, value, setSuggestions)}
@@ -180,7 +183,7 @@ export function UserTypeahead({ users, setUsers, label, hint, children }) {
   )
 }
 
-export function GroupTypeahead({ groups, setGroups, label, hint, children }) {
+export function GroupTypeahead({ groups, setGroups, label, hint, children, background }) {
   const client = useApolloClient()
   const [suggestions, setSuggestions] = useState([])
 
@@ -193,6 +196,7 @@ export function GroupTypeahead({ groups, setGroups, label, hint, children }) {
       suggestions={suggestions}
       items={groups.map(u => u.name)}
       onRemove={name => setGroups(groups.filter(u => u.name !== name))}
+      background={background}
       onAdd={({ value }) => setGroups([value, ...groups])}
       onChange={({ target: { value } }) => fetchGroups(client, value, setSuggestions)}
       button={children}

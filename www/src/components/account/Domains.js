@@ -87,7 +87,7 @@ function AccessPolicy({ domain: { id, accessPolicy }, cancel }) {
       pad="medium"
       gap="small"
       width="500px"
-      height="300px"
+      minHeight="250px"
     >
       {error && (
         <GqlError
@@ -97,12 +97,14 @@ function AccessPolicy({ domain: { id, accessPolicy }, cancel }) {
       )}
       <BindingInput
         type="user"
+        background="fill-two"
         bindings={bindings.filter(({ user }) => !!user).map(({ user: { email } }) => email)}
         add={user => setBindings([...bindings, { user }])}
         remove={email => setBindings(bindings.filter(({ user }) => !user || user.email !== email))}
       />
       <BindingInput
         type="group"
+        background="fill-two"
         bindings={bindings.filter(({ group }) => !!group).map(({ group: { name } }) => name)}
         add={group => setBindings([...bindings, { group }])}
         remove={name => setBindings(bindings.filter(({ group }) => !group || group.name !== name))}
@@ -111,6 +113,7 @@ function AccessPolicy({ domain: { id, accessPolicy }, cancel }) {
         cancel={cancel}
         submit={mutation}
         loading={loading}
+        action="Update"
       />
     </Box>
   )

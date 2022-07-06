@@ -49,6 +49,7 @@ function GeneralAttributes({ attributes, setAttributes, bindings, setBindings })
       />
       <BindingInput
         type="user"
+        background="fill-two"
         hint="users that will receive this role"
         bindings={bindings.filter(({ user }) => !!user).map(({ user: { email } }) => email)}
         add={user => setBindings([...bindings, { user }])}
@@ -56,6 +57,7 @@ function GeneralAttributes({ attributes, setAttributes, bindings, setBindings })
       />
       <BindingInput
         type="group"
+        background="fill-two"
         hint="groups that will recieve this role"
         bindings={bindings.filter(({ group }) => !!group).map(({ group: { name } }) => name)}
         add={group => setBindings([...bindings, { group }])}
@@ -150,7 +152,7 @@ function RoleForm({ error, attributes, setAttributes, bindings, setBindings, ...
   )
 }
 
-const MODAL_DIMS = { width: '1000px', height: '1000px' }
+const MODAL_DIMS = { width: '1000px', height: '800px' }
 
 export function UpdateRole({ role }) {
   const [open, setOpen] = useState(false)
@@ -178,7 +180,6 @@ export function UpdateRole({ role }) {
       <Modal
         portal
         open={open}
-        maxHeight={null}
         onClose={() => setOpen(false)}
         {...MODAL_DIMS}
       >

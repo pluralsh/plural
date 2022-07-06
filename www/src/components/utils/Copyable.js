@@ -7,6 +7,8 @@ import truncate from 'lodash.truncate'
 
 import { Icon } from '../accounts/Group'
 
+import { SuccessToast } from './Toasts'
+
 export function CopyNotice({ text, onClose }) {
   return (
     <Layer
@@ -69,12 +71,7 @@ export function Copyable({ text, pillText, displayText, onCopy }) {
           )}
         </Box>
       </CopyToClipboard>
-      {display && (
-        <CopyNotice
-          text={pillText}
-          onClose={() => setDisplay(false)}
-        />
-      )}
+      {display && <SuccessToast>{pillText}</SuccessToast>}
     </>
   )
 }

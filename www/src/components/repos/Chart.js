@@ -11,7 +11,7 @@ import { Docker } from 'grommet-icons'
 
 import { Versions } from '../versions/Versions'
 import { PluralConfigurationContext } from '../login/CurrentUser'
-import { BreadcrumbsContext } from '../Breadcrumbs'
+import { Breadcrumbs, BreadcrumbsContext } from '../Breadcrumbs'
 
 import { CHART_Q, INSTALL_CHART, UPDATE_CHART_INST } from './queries'
 import { DEFAULT_CHART_ICON } from './constants'
@@ -21,6 +21,7 @@ import Dependencies, { FullDependencies, ShowFull } from './Dependencies'
 import { dockerPull } from './misc'
 import { DeferredUpdates } from './DeferredUpdates'
 import { PackageGrade, ScanResults } from './PackageScan'
+import { Flex } from "honorable";
 
 function ChartInfo({ version: { helm, insertedAt } }) {
   return (
@@ -267,8 +268,8 @@ export default function Chart() {
     if (!data) return
     const { chart } = data
     setBreadcrumbs([
-      { url: `/publishers/${chart.repository.publisher.id}`, text: chart.repository.publisher.name },
-      { url: `/repositories/${chart.repository.id}`, text: chart.repository.name },
+      { url: '/marketplace', text: 'Marketplace' },
+      { url: `/repository/${chart.repository.id}`, text: chart.repository.name },
       { url: `/charts/${chart.id}`, text: chart.name },
     ])
   }, [data, setBreadcrumbs])
@@ -284,8 +285,18 @@ export default function Chart() {
 
   return (
     <ScrollableContainer>
+      <Flex
+        paddingVertical={18}
+        marginLeft="xlarge"
+        marginRight="xlarge"
+        paddingLeft="xsmall"
+        paddingRight="xsmall"
+        borderBottom="1px solid border"
+      >
+        <Breadcrumbs />
+      </Flex>
       <Box
-        pad="small"
+        pad="medium"
         direction="row"
       >
         <Box

@@ -13,10 +13,10 @@ import {
   ListIcon,
   LogoutIcon,
   MarketIcon,
+  MarketPlusIcon,
   PeopleIcon,
   PersonIcon,
-  TerminalIcon,
-  Tooltip,
+  ScrollIcon, TerminalIcon, Tooltip,
 } from 'pluralsh-design-system'
 
 import { getPreviousUserData, setPreviousUserData, setToken, wipeToken } from '../../helpers/authentication'
@@ -500,6 +500,19 @@ function Sidebar({
           >
             <PersonIcon mr={1} />
             My profile
+          </MenuItem>
+          <MenuItem
+            as="a"
+            href="https://docs.plural.sh"
+            target="_blank"
+            rel="noopener noreferrer"
+            color="inherit"
+            textDecoration="none"
+          >
+            <ScrollIcon mr={1} />
+            Docs
+            <Flex flexGrow={1} />
+            <ArrowTopRightIcon size={20} />
           </MenuItem>
           {/* <MenuItem>
             <MarketPlusIcon mr={1} />

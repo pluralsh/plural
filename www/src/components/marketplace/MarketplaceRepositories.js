@@ -35,10 +35,11 @@ function RepoCardList({ repositories, repoProps, ...props }) {
       {
         repositories.map(repository => (
           <Flex
+            key={`${repository.id}flex`}
             px={1}
             marginBottom="xlarge"
             width="auto"
-            flexBasis="340px"
+            flexBasis="400px"
             flexGrow={1}
             flexShrink={1}
             minWidth="250px"
@@ -57,6 +58,8 @@ function RepoCardList({ repositories, repoProps, ...props }) {
               publisher={repository.publisher?.name?.toUpperCase()}
               description={repository.description}
               tags={repository.tags.map(({ name }) => name)}
+              priv={repository.private}
+              installed={!!repository.installation}
               {...repoProps}
             />
           </Flex>

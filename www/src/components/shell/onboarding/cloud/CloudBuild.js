@@ -45,7 +45,7 @@ function CloudBuild() {
         ...wk, 
         project: demo.projectId,
         region: 'us-east1',
-        cluster: 'plural-demo-cluster',
+        cluster: 'demo',
         bucketPrefix: `plural-${Math.random().toString().substring(2, 8)}`,
       }))
     }

@@ -6,6 +6,8 @@ export const CloudShellFragment = gql`
     gitUrl
     alive
     provider
+    subdomain
+    cluster
     status {
       ready
       initialized

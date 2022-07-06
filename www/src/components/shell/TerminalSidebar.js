@@ -179,7 +179,7 @@ function TerminalSidebar({ isCheatsheet, shell, ...props }) {
           width="100%"
           marginTop="large"
           as="a"
-          href="https://plural.sh"
+          href={`https://console.${shell.subdomain}`}
           target="_blank"
           rel="noopener noreferrer"
         >

@@ -184,7 +184,6 @@ function MarketplaceRepositories({ installed, ...props }) {
         >
           <Div
             minWidth="210px"
-            maxWidth="calc(50% - 16px)"
             flex="1 1 210px"
             marginRight="large"
             marginBottom="xsmall"

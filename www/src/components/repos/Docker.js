@@ -1,5 +1,5 @@
 import { useContext, useEffect, useMemo, useState } from 'react'
-import { Copy, Links, TabContent, TabHeader, TabHeaderItem, Tabs } from 'forge-core'
+import { Copy, Links, ScrollableContainer, TabContent, TabHeader, TabHeaderItem, Tabs } from 'forge-core'
 import { useMutation, useQuery } from '@apollo/client'
 import { useNavigate, useParams } from 'react-router-dom'
 import moment from 'moment'
@@ -10,7 +10,7 @@ import Toggle from 'react-toggle'
 
 import { Codeline } from 'pluralsh-design-system'
 
-import { BreadcrumbsContext } from '../Breadcrumbs'
+import { Breadcrumbs, BreadcrumbsContext } from '../Breadcrumbs'
 
 import { Graph, RangePicker } from '../metrics/Graph'
 import { PluralConfigurationContext } from '../login/CurrentUser'
@@ -25,6 +25,7 @@ import { DockerImages } from './DockerImages'
 import { DetailContainer } from './Installation'
 import { AttackVector, ColorMap, DEFAULT_DKR_ICON } from './constants'
 import { DOCKER_IMG_Q, DOCKER_Q, UPDATE_DOCKER } from './queries'
+import { Flex } from "honorable";
 
 function RepositoryPublic({ dockerRepo }) {
   const pub = dockerRepo.public
@@ -32,7 +33,7 @@ function RepositoryPublic({ dockerRepo }) {
     variables: { id: dockerRepo.id },
   })
 
-  if (!dockerRepo.repository.editable && dockerRepo.public) return <Language size="12px" />
+  if (!dockerRepo.repository.editable && dockerRepo.public) return <Language size="12px"/>
   if (!dockerRepo.repository.editable) return null
 
   return (
@@ -79,7 +80,7 @@ function DockerHeader({ image }) {
           align="center"
         >
           <Text size="medium">{image.dockerRepository.name}:{image.tag}</Text>
-          <RepositoryPublic dockerRepo={image.dockerRepository} />
+          <RepositoryPublic dockerRepo={image.dockerRepository}/>
         </Box>
         <Text
           size="small"
@@ -448,7 +449,7 @@ function Vulnerability({ vuln }) {
               size="small"
               href={vuln.url}
               target="_blank"
-            ><Links size="small" />
+            ><Links size="small"/>
             </Anchor>
           )}
         </Box>
@@ -484,7 +485,7 @@ function Vulnerability({ vuln }) {
         />
       </Box>
       <Collapsible open={open}>
-        <VulnerabilityDetail vuln={vuln} />
+        <VulnerabilityDetail vuln={vuln}/>
       </Collapsible>
     </Box>
   )
@@ -538,14 +539,14 @@ function VulnerabilityHeader() {
 }
 
 function Vulnerabilities({ image: { vulnerabilities } }) {
-  if (!vulnerabilities || vulnerabilities.length === 0) return <NoVulnerabilities />
+  if (!vulnerabilities || vulnerabilities.length === 0) return <NoVulnerabilities/>
 
   return (
     <Box
       style={{ overflow: 'auto' }}
       fill
     >
-      <VulnerabilityHeader />
+      <VulnerabilityHeader/>
       {vulnerabilities.map(vuln => (
         <Vulnerability
           key={vuln.id}
@@ -569,7 +570,7 @@ export function DockerRepository() {
     navigate(`/dkr/img/${edges[0].node.id}`, { replace: true })
   }, [data, navigate])
 
-  return <LoopingLogo />
+  return <LoopingLogo/>
 }
 
 const DEFAULT_FILTER = { tag: null, precision: '1h', offset: '1d' }
@@ -592,64 +593,76 @@ export function Docker() {
     const { repository } = dockerImage.dockerRepository
 
     setBreadcrumbs([
-      { url: `/repositories/${repository.id}`, text: repository.name },
+      { url: '/marketplace', text: 'Marketplace' },
+      { url: `/repository/${repository.id}`, text: repository.name },
       { url: `/dkr/img/${dockerImage.id}`, text: `${dockerImage.dockerRepository.name}` },
     ])
   }, [data, setBreadcrumbs])
 
-  if (!data) return <LoopingLogo />
+  if (!data) return <LoopingLogo/>
 
   const { dockerImage: image } = data
 
   return (
-    <Box
-      fill
-      direction="row"
-      pad="medium"
-      gap="medium"
-    >
+    <Box direction="column">
+      <Flex paddingVertical={18}
+            marginLeft="xlarge"
+            marginRight="xlarge"
+            paddingLeft="xsmall"
+            paddingRight="xsmall"
+            borderBottom="1px solid border">
+        <Breadcrumbs/>
+      </Flex>
       <Box
         fill
+        direction="row"
+        pad="medium"
         gap="small"
       >
-        <DockerHeader image={image} />
-        <Box fill>
-          <Tabs defaultTab="imgs">
-            <TabHeader>
-              <TabHeaderItem name="imgs">
-                <Text
-                  weight={500}
-                  size="small"
-                >Images
-                </Text>
-              </TabHeaderItem>
-              <TabHeaderItem name="vulns">
-                <Text
-                  weight={500}
-                  size="small"
-                >Vulnerabilities
-                </Text>
-              </TabHeaderItem>
-            </TabHeader>
-            <TabContent name="imgs">
-              <DockerImages dockerRepository={image.dockerRepository} />
-            </TabContent>
-            <TabContent name="vulns">
-              <Vulnerabilities image={image} />
-            </TabContent>
-          </Tabs>
+        <Box
+          fill
+          pad="small"
+          gap="small"
+        >
+          <DockerHeader image={image}/>
+          <Box fill>
+            <Tabs defaultTab="imgs">
+              <TabHeader>
+                <TabHeaderItem name="imgs">
+                  <Text
+                    weight={500}
+                    size="small"
+                  >Images
+                  </Text>
+                </TabHeaderItem>
+                <TabHeaderItem name="vulns">
+                  <Text
+                    weight={500}
+                    size="small"
+                  >Vulnerabilities
+                  </Text>
+                </TabHeaderItem>
+              </TabHeader>
+              <TabContent name="imgs">
+                <DockerImages dockerRepository={image.dockerRepository}/>
+              </TabContent>
+              <TabContent name="vulns">
+                <Vulnerabilities image={image}/>
+              </TabContent>
+            </Tabs>
+          </Box>
         </Box>
-      </Box>
-      <Box
-        flex={false}
-        fill="vertical"
-        width="500px"
-      >
-        <DockerSidebar
-          image={image}
-          setFilter={setFilter}
-          filter={filter}
-        />
+        <Box
+          flex={false}
+          fill="vertical"
+          width="500px"
+        >
+          <DockerSidebar
+            image={image}
+            setFilter={setFilter}
+            filter={filter}
+          />
+        </Box>
       </Box>
     </Box>
   )

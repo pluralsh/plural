@@ -6,12 +6,12 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import Highlight from 'react-highlight.js'
 
-import { Button, Modal } from 'honorable'
+import { Button, Flex, Modal } from 'honorable'
 
 import { Versions } from '../versions/Versions'
 
 import ResponsiveInput from '../ResponsiveInput'
-import { BreadcrumbsContext } from '../Breadcrumbs'
+import { Breadcrumbs, BreadcrumbsContext } from '../Breadcrumbs'
 
 import { deepUpdate, updateCache } from '../../utils/graphql'
 
@@ -34,8 +34,20 @@ function Code({ value, children, language }) {
 
 const MARKDOWN_STYLING = {
   p: { props: { size: 'small', margin: { top: 'xsmall', bottom: 'xsmall' } } },
-  h1: { props: { style: { borderBottom: '1px solid #eaecef', paddingBottom: '.3em', maxWidth: '100%' }, size: 'small', margin: { top: 'small', bottom: 'small' } } },
-  h2: { props: { style: { borderBottom: '1px solid #eaecef', paddingBottom: '.3em', maxWidth: '100%' }, size: 'xsmall', margin: { top: 'small', bottom: 'small' } } },
+  h1: {
+    props: {
+      style: { borderBottom: '1px solid #eaecef', paddingBottom: '.3em', maxWidth: '100%' },
+      size: 'small',
+      margin: { top: 'small', bottom: 'small' }
+    }
+  },
+  h2: {
+    props: {
+      style: { borderBottom: '1px solid #eaecef', paddingBottom: '.3em', maxWidth: '100%' },
+      size: 'xsmall',
+      margin: { top: 'small', bottom: 'small' }
+    }
+  },
   pre: {
     component: Code,
     props: {},
@@ -82,13 +94,13 @@ function TerraformInstaller({ installation, terraformId, terraformInstallation, 
         </Modal>
       )}
       {installed ? (
-        <Button
-          secondary
-          onClick={mutation}
-        >
-          Uninstall
-        </Button>
-      )
+          <Button
+            secondary
+            onClick={mutation}
+          >
+            Uninstall
+          </Button>
+        )
         : (
           <Button
             round="xsmall"
@@ -141,7 +153,7 @@ function TerraformHeader({ terraform: { id, name, description, installation, rep
         <Text size="small"><i>{description}</i></Text>
       </Box>
       {version.scan && (
-        <PackageGrade scan={version.scan} />
+        <PackageGrade scan={version.scan}/>
       )}
       {repository.installation && (
         <Box
@@ -187,7 +199,8 @@ function updateInstallation(tfId) {
         ...prev,
         terraformModule: {
           ...prev.terraformModule,
-          repository: { ...prev.terraformModule.repository, installation } },
+          repository: { ...prev.terraformModule.repository, installation }
+        },
       },
     })
   }
@@ -241,7 +254,7 @@ function UpdateTerraform({ id, name, description }) {
         justify="end"
         gap="small"
       >
-        <DeleteTerraform id={id} />
+        <DeleteTerraform id={id}/>
         <Button
           loading={loading}
           round="xsmall"
@@ -269,8 +282,8 @@ export default function Terraform() {
     if (!data) return
     const { terraformModule } = data
     setBreadcrumbs([
-      { url: `/publishers/${terraformModule.repository.publisher.id}`, text: terraformModule.repository.publisher.name },
-      { url: `/repositories/${terraformModule.repository.id}`, text: terraformModule.repository.name },
+      { url: '/marketplace', text: 'Marketplace' },
+      { url: `/repository/${terraformModule.repository.id}`, text: terraformModule.repository.name },
       { url: `/terraform/${terraformModule.id}`, text: terraformModule.name },
     ])
   }, [data, setBreadcrumbs])
@@ -282,114 +295,124 @@ export default function Terraform() {
   const tfInst = terraformModule.installation
 
   return (
-    <ScrollableContainer>
-      <Box
-        pad="small"
-        direction="row"
-      >
+    <Box direction="column">
+      <Flex paddingVertical={18}
+            marginLeft="xlarge"
+            marginRight="xlarge"
+            paddingLeft="xsmall"
+            paddingRight="xsmall"
+            borderBottom="1px solid border">
+        <Breadcrumbs/>
+      </Flex>
+      <ScrollableContainer>
         <Box
-          width={`${width}%`}
-          fill="vertical"
-          pad="small"
+          pad="medium"
+          direction="row"
         >
-          <TerraformHeader
-            terraform={terraformModule}
-            version={currentVersion}
-          />
-          <Tabs
-            defaultTab="readme"
-            onTabChange={setTab}
-            headerEnd={tab === 'dependencies' ? (
-              <ShowFull
-                label={full ? 'Immediate' : 'Full'}
-                onClick={() => setFull(!full)}
-              />
-            ) : null}
+          <Box
+            width={`${width}%`}
+            fill="vertical"
+            pad="small"
           >
-            <TabHeader>
-              <TabHeaderItem name="readme">
-                <Text
-                  size="small"
-                  weight={500}
-                >Readme
-                </Text>
-              </TabHeaderItem>
-              <TabHeaderItem name="configuration">
-                <Text
-                  size="small"
-                  weight={500}
-                >
-                  Configuration
-                </Text>
-              </TabHeaderItem>
-              <TabHeaderItem name="dependencies">
-                <Text
-                  size="small"
-                  weight={500}
-                >
-                  Dependencies
-                </Text>
-              </TabHeaderItem>
-              {currentVersion.scan && (
-                <TabHeaderItem name="scan">
-                  <Text
-                    size="small"
-                    weight={500}
-                  >
-                    Security
-                  </Text>
-                </TabHeaderItem>
-              )}
-              {tfInst && (
-                <TabHeaderItem name="updates">
-                  <Text
-                    size="small"
-                    weight={500}
-                  >
-                    Update Queue
-                  </Text>
-                </TabHeaderItem>
-              )}
-            </TabHeader>
-            <TabContent name="readme">
-              <Readme readme={currentVersion.readme} />
-            </TabContent>
-            <TabContent name="scan">
-              <ScanResults scan={currentVersion.scan} />
-            </TabContent>
-            <TabContent name="configuration">
-              <TemplateView valuesTemplate={currentVersion.valuesTemplate} />
-            </TabContent>
-            <TabContent name="dependencies">
-              {full ? <FullDependencies resource={terraformModule} /> : (
-                <Dependencies
-                  name={terraformModule.name}
-                  dependencies={(version || terraformModule).dependencies}
-                  resource={terraformModule}
+            <TerraformHeader
+              terraform={terraformModule}
+              version={currentVersion}
+            />
+            <Tabs
+              defaultTab="readme"
+              onTabChange={setTab}
+              headerEnd={tab === 'dependencies' ? (
+                <ShowFull
+                  label={full ? 'Immediate' : 'Full'}
+                  onClick={() => setFull(!full)}
                 />
-              )}
-            </TabContent>
-            {tfInst && (
-              <TabContent name="updates">
-                <DeferredUpdates tfInst={tfInst.id} />
+              ) : null}
+            >
+              <TabHeader>
+                <TabHeaderItem name="readme">
+                  <Text
+                    size="small"
+                    weight={500}
+                  >Readme
+                  </Text>
+                </TabHeaderItem>
+                <TabHeaderItem name="configuration">
+                  <Text
+                    size="small"
+                    weight={500}
+                  >
+                    Configuration
+                  </Text>
+                </TabHeaderItem>
+                <TabHeaderItem name="dependencies">
+                  <Text
+                    size="small"
+                    weight={500}
+                  >
+                    Dependencies
+                  </Text>
+                </TabHeaderItem>
+                {currentVersion.scan && (
+                  <TabHeaderItem name="scan">
+                    <Text
+                      size="small"
+                      weight={500}
+                    >
+                      Security
+                    </Text>
+                  </TabHeaderItem>
+                )}
+                {tfInst && (
+                  <TabHeaderItem name="updates">
+                    <Text
+                      size="small"
+                      weight={500}
+                    >
+                      Update Queue
+                    </Text>
+                  </TabHeaderItem>
+                )}
+              </TabHeader>
+              <TabContent name="readme">
+                <Readme readme={currentVersion.readme}/>
               </TabContent>
-            )}
-          </Tabs>
+              <TabContent name="scan">
+                <ScanResults scan={currentVersion.scan}/>
+              </TabContent>
+              <TabContent name="configuration">
+                <TemplateView valuesTemplate={currentVersion.valuesTemplate}/>
+              </TabContent>
+              <TabContent name="dependencies">
+                {full ? <FullDependencies resource={terraformModule}/> : (
+                  <Dependencies
+                    name={terraformModule.name}
+                    dependencies={(version || terraformModule).dependencies}
+                    resource={terraformModule}
+                  />
+                )}
+              </TabContent>
+              {tfInst && (
+                <TabContent name="updates">
+                  <DeferredUpdates tfInst={tfInst.id}/>
+                </TabContent>
+              )}
+            </Tabs>
+          </Box>
+          <Box
+            pad="small"
+            width={`${100 - width}%`}
+            gap="small"
+          >
+            <Versions
+              edges={edges}
+              pageInfo={pageInfo}
+              refetch={refetch}
+              fetchMore={fetchMore}
+              setVersion={setVersion}
+            />
+          </Box>
         </Box>
-        <Box
-          pad="small"
-          width={`${100 - width}%`}
-          gap="small"
-        >
-          <Versions
-            edges={edges}
-            pageInfo={pageInfo}
-            refetch={refetch}
-            fetchMore={fetchMore}
-            setVersion={setVersion}
-          />
-        </Box>
-      </Box>
-    </ScrollableContainer>
+      </ScrollableContainer>
+    </Box>
   )
 }

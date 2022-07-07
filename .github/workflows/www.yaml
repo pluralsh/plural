@@ -34,4 +34,4 @@ jobs:
         run: |
           [ ! -d "node_modules" ] && yarn install --immutable
       - shell: bash
-        run: npm run lint
+        run: yarn lint

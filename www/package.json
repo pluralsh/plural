@@ -3,32 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start:watch": "npm run start",
     "start": "PORT=3001 HTTPS=true react-scripts start",
     "build": "react-scripts build",
     "lint": "eslint ./src",
     "fix": "eslint ./src --fix",
     "unimported": "npx unimported"
   },
-  "eslintConfig": {
-    "parser": "@babel/eslint-parser",
-    "extends": "pluralsh",
-    "rules": {
-      "import/prefer-default-export": "off",
-      "react/no-unstable-nested-components": "off"
-    }
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "engines": {
+    "node": ">=16.15.0",
+    "yarn": ">=1.22.0"
   },
   "dependencies": {
     "@absinthe/socket": "0.2.1",

@@ -29,9 +29,9 @@ jobs:
           cache-name: cache-node-modules
         with:
           path: node_modules
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
       - shell: bash
         run: |
-          [ ! -d "node_modules" ] && npm ci
+          [ ! -d "node_modules" ] && yarn install --immutable
       - shell: bash
         run: npm run lint

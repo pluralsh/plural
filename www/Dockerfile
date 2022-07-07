@@ -2,14 +2,15 @@ FROM node:16-slim as build
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY package.json ./package.json
+COPY yarn.lock ./yarn.lock
 
 RUN npm config set unsafe-perm true
-RUN npm install
+RUN yarn
 
 COPY . ./
 
-RUN npm run build
+RUN yarn run build
 
 # production environment
 FROM gcr.io/pluralsh/nginx:1.19.8-alpine

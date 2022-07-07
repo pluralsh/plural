@@ -47,6 +47,7 @@ function Status({ rollout }) {
     <Chip
       {...rest}
       backgroundColor="fill-two"
+      borderColor="border-fill-two"
     >{text}
     </Chip>
   )
@@ -102,7 +103,7 @@ function RepositoryDeployments() {
     >
       <Table
         headers={['Event', 'Clusters Updated', 'Last Ping', 'Status']}
-        sizes={['25%', '25%', '25%', '25%']}
+        sizes={['30%', '30%', '30%', '10%']}
         background="fill-one"
         width="100%"
         height="calc(100% - 16px)"

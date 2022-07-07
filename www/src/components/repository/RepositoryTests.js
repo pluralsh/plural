@@ -8,7 +8,14 @@ import { Chalk } from 'xterm-theme'
 
 import { Box } from 'grommet'
 
-import { Chip, ErrorIcon, ListIcon, StatusIpIcon, StatusOkIcon } from 'pluralsh-design-system'
+import {
+  Chip,
+  CollapseIcon,
+  ErrorIcon,
+  ListIcon,
+  StatusIpIcon,
+  StatusOkIcon,
+} from 'pluralsh-design-system'
 
 import { Return } from 'grommet-icons'
 
@@ -39,6 +46,7 @@ function Status({ status }) {
     <Chip
       {...statusAttrs[status]}
       backgroundColor="fill-two"
+      borderColor="border-fill-two"
     >
       {status.toLowerCase()}
     </Chip>
@@ -149,6 +157,20 @@ function TestStep({ step, test, last }) {
         cursor="pointer"
         suffix={<ListIcon size={16} />}
       >
+        <TableData>
+          <CollapseIcon
+            size={8}
+            style={open ? {
+              transform: 'rotate(270deg)',
+              transitionDuration: '.2s',
+              transitionProperty: 'transform',
+            } : {
+              transform: 'rotate(180deg)',
+              transitionDuration: '.2s',
+              transitionProperty: 'transform',
+            }}
+          />
+        </TableData>
         <TableData>{step.name}</TableData>
         <TableData>{step.description}</TableData>
         <TableData>{moment(step.updatedAt || step.insertedAt).format('lll')}</TableData>
@@ -193,14 +215,15 @@ function TestDetail({ test, setTest }) {
         </Span>
       </Flex>
       <Table
-        headers={['Name', 'Description', 'Last Updated', 'Status']}
-        sizes={['25%', '25%', '25%', '25%']}
+        headers={['', 'Name', 'Description', 'Last Updated', 'Status']}
+        sizes={['2%', '25%', '25%', '25%', '23%']}
         background="fill-one"
         width="100%"
         height="calc(100% - 16px - 16px - 53px)" // The previous node is 53px tall with a 16px marginBottom
       >
         {test.steps.map((step, i) => (
           <TestStep
+            key={`${step}-${i}`}
             step={step}
             last={i === len - 1}
             test={test}

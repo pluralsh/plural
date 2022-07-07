@@ -24,7 +24,26 @@ const filterTokenStyles = {
   minHeight: '42px',
 }
 
-function RepoCardList({ repositories, repoProps, maxWidth, ...props }) {
+function RepoCardList({ repositories, repoProps, maxWidth, stretchLastRow = false, ...props }) {
+  const flexBasis = '400px'
+
+  // Workaround that will render empty columns to align the last row.
+  // It is better to use bigger columns number to prevent issues on all kinds of viewports.
+  function fillEmptyColumns(columns) {
+    return (
+      <>
+        {[...Array(columns)].map((x, i) => (
+          <Flex
+            key={i}
+            flexGrow={1}
+            flexBasis={flexBasis}
+          />
+        )
+        )}
+      </>
+    )
+  }
+
   return (
     <Flex
       mx={-1}
@@ -39,12 +58,11 @@ function RepoCardList({ repositories, repoProps, maxWidth, ...props }) {
             px={0.75}
             marginBottom="large"
             width="auto"
-            flexBasis="400px"
+            flexBasis={flexBasis}
             flexGrow={1}
             flexShrink={1}
             minWidth="250px"
             maxWidth={maxWidth || '800px'}
-            align="stretch"
           >
             <RepositoryCard
               key={repository.id}
@@ -65,6 +83,7 @@ function RepoCardList({ repositories, repoProps, maxWidth, ...props }) {
           </Flex>
         ))
       }
+      {!stretchLastRow && fillEmptyColumns(10)}
     </Flex>
   )
 }
@@ -157,7 +176,8 @@ function MarketplaceRepositories({ installed, ...props }) {
           repositories={[featuredA, featuredB]}
           repoProps={{ featured: true }}
           marginTop="medium"
-          maxWidth="50%"
+          maxWidth="100%"
+          stretchLastRow
         />
       </>
     )

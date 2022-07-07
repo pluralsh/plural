@@ -179,13 +179,14 @@ function Upgrades({ q }) {
         border={{ side: 'bottom' }}
       >
         <Box fill="horizontal">
-          <Span color="text-light">UPGRADES</Span>
+          <Span color="text-xlight">UPGRADES</Span>
         </Box>
         <Box flex={false}>
           <Button
             small
             icon={<ReloadIcon size={16} />}
             secondary
+            color="text-xlight"
             onClick={refetch}
           >Refresh
           </Button>

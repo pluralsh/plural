@@ -390,21 +390,26 @@ export function Login() {
                 </Button>
               </Form>
             </Keyboard>
-            <Divider
-              text="OR"
-              marginVertical="large"
-              marginHorizontal={0}
-              fontWeight={400}
-            />
-            <Div>
-              {oAuthData && oAuthData.oauthUrls.map(url => (
-                <OAuthOption
-                  key={url.provider}
-                  url={url}
-                  marginBottom="medium"
+            {!deviceToken && (
+              <>
+                <Divider
+                  text="OR"
+                  marginVertical="large"
+                  color="text-xlight"
+                  marginHorizontal={0}
+                  fontWeight={400}
                 />
-              ))}
-            </Div>
+                <Div>
+                  {oAuthData && oAuthData.oauthUrls.map(url => (
+                    <OAuthOption
+                      key={url.provider}
+                      url={url}
+                      marginBottom="medium"
+                    />
+                  ))}
+                </Div>
+              </>
+            )}
           </>
         )}
       </Div>

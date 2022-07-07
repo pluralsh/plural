@@ -2,7 +2,7 @@ defmodule Core.Services.Shell.Pods do
   alias Kazan.Apis.Core.V1, as: CoreV1
   alias Kazan.Models.Apimachinery.Meta.V1, as: MetaV1
 
-  @image "gcr.io/pluralsh/plural-cli-cloud:0.4.2"
+  @image "gcr.io/pluralsh/plural-cli-cloud:0.4.3"
   @busybox_img "gcr.io/pluralsh/busybox:latest"
   @ns "plrl-shell"
   @conditions ~w(Initialized Ready ContainersReady PodScheduled)
@@ -61,7 +61,7 @@ defmodule Core.Services.Shell.Pods do
       metadata: %MetaV1.ObjectMeta{
         name: name,
         namespace: @ns,
-        annotations: %{"platform.plural.sh/expire-after" => "24h", "platform.plural.sh/shell-email" => email},
+        annotations: %{"platform.plural.sh/expire-after" => "6h", "platform.plural.sh/shell-email" => email},
         labels: %{"app.plural.sh/type" => "shell"}
       },
       spec: %CoreV1.PodSpec{

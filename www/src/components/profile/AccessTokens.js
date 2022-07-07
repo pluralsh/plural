@@ -6,7 +6,7 @@ import { useState } from 'react'
 import lookup from 'country-code-lookup'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 
-import { CopyIcon, GraphIcon, ListIcon, Modal, ModalActions, ModalHeader } from 'pluralsh-design-system'
+import { CopyIcon, GraphIcon, ListIcon, Modal, ModalHeader } from 'pluralsh-design-system'
 
 import { appendConnection, deepUpdate, extendConnection, removeConnection, updateCache } from '../../utils/graphql'
 import { Placeholder } from '../accounts/Audits'

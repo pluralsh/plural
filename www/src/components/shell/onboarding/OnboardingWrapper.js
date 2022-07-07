@@ -1,6 +1,5 @@
 import { Div, Flex } from 'honorable'
 import { BrowserIcon, CloudIcon, GearTrainIcon, NetworkInterfaceIcon, Stepper } from 'pluralsh-design-system'
-import { useLocation } from 'react-router-dom'
 
 import { SECTION_CLI_INSTALLATION, SECTION_CLOUD_SELECT, SECTION_CLOUD_WORKSPACE, SECTION_GIT_PROVIDER, SECTION_SYNOPSIS } from '../constants'
 

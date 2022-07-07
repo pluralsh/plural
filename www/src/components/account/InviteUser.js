@@ -1,9 +1,6 @@
-import { Box } from 'grommet'
 import { Button, Div } from 'honorable'
 import { Codeline, MailIcon, Modal, ModalActions, ModalHeader, ValidatedInput } from 'pluralsh-design-system'
 import { useState } from 'react'
-
-import { Copyable } from 'forge-core'
 
 import { useMutation } from '@apollo/client'
 

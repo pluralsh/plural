@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react'
 import { A, Button, Div, DropdownButton, ExtendTheme, Flex, H2, Img, MenuItem, P } from 'honorable'
-import { ArrowTopRightIcon, Codeline, DropdownArrowIcon, GearTrainIcon, Tab } from 'pluralsh-design-system'
+import { ArrowTopRightIcon, CaretDownIcon, Codeline, Tab } from 'pluralsh-design-system'
 import { Link } from 'react-router-dom'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
@@ -173,7 +173,6 @@ function InstallDropdownButton({ recipes, ...props }) {
               {`plural bundle install ${name} ${recipe.name}`}
             </Codeline>
           </Div>
-
           <Div {...(tab !== 1 ? visuallyHideMaintainWidth : {})}>
             <Link
               to="/shell"
@@ -189,9 +188,7 @@ function InstallDropdownButton({ recipes, ...props }) {
               </Button>
             </Link>
           </Div>
-
         </Div>
-
       </Div>
     )
   }
@@ -206,6 +203,9 @@ function InstallDropdownButton({ recipes, ...props }) {
             setRecipe(event.target.value)
             setTab(0)
           }}
+          endIcon={(
+            <CaretDownIcon size={8} />
+          )}
           {...props}
         >
           {recipes.map(recipe => (

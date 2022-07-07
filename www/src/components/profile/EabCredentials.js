@@ -1,7 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
 import moment from 'moment'
-import { Button, Modal, ModalActions, ModalHeader } from 'pluralsh-design-system'
 import { useState } from 'react'
 
 import { updateCache } from '../../utils/graphql'

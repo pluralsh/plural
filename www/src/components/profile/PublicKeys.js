@@ -1,8 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
-import { Button, Span } from 'honorable'
+import { Span } from 'honorable'
 import moment from 'moment'
-import { Modal, ModalActions, ModalHeader } from 'pluralsh-design-system'
 import { useState } from 'react'
 
 import { extendConnection } from '../../utils/graphql'

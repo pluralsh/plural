@@ -1,7 +1,5 @@
 import { useCallback, useMemo, useState } from 'react'
 
-import { Flex } from 'honorable'
-
 import CreateShellContext from '../../../contexts/CreateShellContext'
 
 import { getExceptions } from '../validation'

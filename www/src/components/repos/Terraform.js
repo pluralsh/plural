@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from 'react'
 import { Box, Markdown, Text } from 'grommet'
-import { InputCollection, ScrollableContainer, TabContent, TabHeader, TabHeaderItem, Tabs } from 'forge-core'
+import { ScrollableContainer, TabContent, TabHeader, TabHeaderItem, Tabs } from 'forge-core'
 import { useMutation, useQuery } from '@apollo/client'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
 import Highlight from 'react-highlight.js'
 
@@ -10,14 +10,13 @@ import { Button, Flex, Modal } from 'honorable'
 
 import { Versions } from '../versions/Versions'
 
-import ResponsiveInput from '../ResponsiveInput'
 import { Breadcrumbs, BreadcrumbsContext } from '../Breadcrumbs'
 
 import { deepUpdate, updateCache } from '../../utils/graphql'
 
 import { GqlError } from '../utils/Alert'
 
-import { DELETE_TF, INSTALL_TF, TF_Q, UNINSTALL_TF, UPDATE_TF } from './queries'
+import { INSTALL_TF, TF_Q, UNINSTALL_TF } from './queries'
 import { DEFAULT_TF_ICON } from './constants'
 import Dependencies, { FullDependencies, ShowFull } from './Dependencies'
 
@@ -184,83 +183,6 @@ function Readme({ readme }) {
         <Markdown components={MARKDOWN_STYLING}>
           {readme || 'no readme'}
         </Markdown>
-      </Box>
-    </Box>
-  )
-}
-
-function updateInstallation(tfId) {
-  return (cache, repoId, installation) => {
-    const prev = cache.readQuery({ query: TF_Q, variables: { tfId } })
-    cache.writeQuery({
-      query: TF_Q,
-      variables: { tfId },
-      data: {
-        ...prev,
-        terraformModule: {
-          ...prev.terraformModule,
-          repository: { ...prev.terraformModule.repository, installation },
-        },
-      },
-    })
-  }
-}
-
-function DeleteTerraform({ id }) {
-  const navigate = useNavigate()
-  const [mutation, { loading }] = useMutation(DELETE_TF, {
-    variables: { id },
-    onCompleted: () => navigate(-1),
-  })
-
-  return (
-    <Button
-      background="red-light"
-      loading={loading}
-      round="xsmall"
-      label="Delete"
-      onClick={mutation}
-    />
-  )
-}
-
-function UpdateTerraform({ id, name, description }) {
-  const [attributes, setAttributes] = useState({ name, description })
-  const [mutation, { loading }] = useMutation(UPDATE_TF, {
-    variables: { id, attributes },
-  })
-
-  return (
-    <Box
-      pad="medium"
-      gap="small"
-    >
-      <InputCollection>
-        <ResponsiveInput
-          label="name"
-          placeholder="give it a  name"
-          value={attributes.name}
-          onChange={e => setAttributes({ ...attributes, name: e.target.value })}
-        />
-        <ResponsiveInput
-          label="description"
-          placeholder="a helpful description"
-          value={attributes.description}
-          onChange={e => setAttributes({ ...attributes, description: e.target.value })}
-        />
-      </InputCollection>
-      <Box
-        direction="row"
-        justify="end"
-        gap="small"
-      >
-        <DeleteTerraform id={id} />
-        <Button
-          loading={loading}
-          round="xsmall"
-          label="Update"
-          onClick={mutation}
-        />
       </Box>
     </Box>
   )

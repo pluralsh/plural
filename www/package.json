@@ -82,6 +82,7 @@
     "react-stripe-elements": "6.1.2",
     "react-sweet-progress": "1.1.2",
     "react-toggle": "4.1.2",
+    "react-transition-group": "4.4.2",
     "react-use-intercom": "1.5.2",
     "react-virtualized-auto-sizer": "1.0.6",
     "react-window": "1.8.7",
@@ -103,8 +104,5 @@
     "eslint": "8.19.0",
     "eslint-config-pluralsh": "3.1.0",
     "postcss-import": "8.2.0"
-  },
-  "peerDependencies": {
-    "react-transition-group": ">=4.4.2"
   }
 }

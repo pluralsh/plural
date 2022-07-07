@@ -14406,7 +14406,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-transition-group@npm:^4.3.0, react-transition-group@npm:^4.4.2":
+"react-transition-group@npm:4.4.2, react-transition-group@npm:^4.3.0, react-transition-group@npm:^4.4.2":
   version: 4.4.2
   resolution: "react-transition-group@npm:4.4.2"
   dependencies:
@@ -17761,6 +17761,7 @@ __metadata:
     react-stripe-elements: 6.1.2
     react-sweet-progress: 1.1.2
     react-toggle: 4.1.2
+    react-transition-group: 4.4.2
     react-use-intercom: 1.5.2
     react-virtualized-auto-sizer: 1.0.6
     react-window: 1.8.7
@@ -17773,8 +17774,6 @@ __metadata:
     xterm-addon-fit: 0.5.0
     xterm-for-react: 1.0.4
     xterm-theme: 1.1.0
-  peerDependencies:
-    react-transition-group: ">=4.4.2"
   languageName: unknown
   linkType: soft
 

@@ -16,10 +16,18 @@
       "enabled": true
     },
     {
-      "description": "Disable major update k8s client-go",
-      "matchPackagePatterns": ["^k8s.io/client-go"],
-      "matchUpdateTypes": ["major"],
-      "enabled": false
+      "matchManagers": ["npm"],
+      "labels": [
+        "dependencies",
+        "frontend"
+      ]
+    },
+    {
+      "matchManagers": ["mix"],
+      "addLabels": [
+        "dependencies",
+        "backend"
+      ]
     }
   ],
   "lockFileMaintenance": {

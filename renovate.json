@@ -25,9 +25,6 @@
   "lockFileMaintenance": {
     "enabled": true
   },
-  "postUpdateOptions": [
-    "yarnDedupeHighest"
-  ],
   "separateMinorPatch": true,
   "dependencyDashboardApproval": true
 }

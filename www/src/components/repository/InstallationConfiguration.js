@@ -3,6 +3,8 @@ import { Flex, Input, Modal, RadioGroup, Span } from 'honorable'
 import { Radio } from 'pluralsh-design-system'
 import { useCallback, useState } from 'react'
 
+import { Keyboard } from 'grommet'
+
 import { Actions } from '../account/Actions'
 import { GqlError } from '../utils/Alert'
 import { Tabs } from '../utils/SidebarTabs'
@@ -89,33 +91,36 @@ function DeleteInstallation({ installation, setOpen }) {
   })
 
   return (
-    <Flex
-      direction="column"
-      gap="medium"
-    >
-      {error && (
-        <GqlError
-          error={error}
-          header="Failed to delete"
+    <Keyboard onEnter={confirm !== name ? null : mutation}>
+      <Flex
+        direction="column"
+        gap="medium"
+      >
+
+        {error && (
+          <GqlError
+            error={error}
+            header="Failed to delete"
+          />
+        )}
+        <MiniHeader
+          header="Delete this installation"
+          description="Type the application name to confirm.  This will only deregister the installation from plural and disable future upgrades, your application will continue running in your cluster."
         />
-      )}
-      <MiniHeader
-        header="Delete this installation"
-        description="Type the application name to confirm.  This will only deregister the installation from plural and disable future upgrades, your application will continue running in your cluster."
-      />
-      <Input
-        value={confirm}
-        onChange={({ target: { value } }) => setConfirm(value)}
-        placeholder={`type ${name} to confirm`}
-        width="75%"
-      />
-      <Actions
-        cancel={() => setOpen(false)}
-        submit={confirm !== name ? null : mutation}
-        loading={loading}
-        action="Delete"
-      />
-    </Flex>
+        <Input
+          value={confirm}
+          onChange={({ target: { value } }) => setConfirm(value)}
+          placeholder={`type ${name} to confirm`}
+          width="75%"
+        />
+        <Actions
+          cancel={() => setOpen(false)}
+          submit={confirm !== name ? null : mutation}
+          loading={loading}
+          action="Delete"
+        />
+      </Flex>
+    </Keyboard>
   )
 }
   

@@ -13,8 +13,9 @@ defmodule Core.Services.OAuth do
   """
   @spec get_login(binary) :: {:ok, OIDCProvider.t} | error
   def get_login(challenge) do
-    with {:ok, %{client: client}} <- Hydra.get_login(challenge) do
-      {:ok, Repositories.get_oidc_provider_by_client!(client.client_id)}
+    with {:ok, %{client: client} = login} <- Hydra.get_login(challenge),
+         provider <- Repositories.get_oidc_provider_by_client!(client.client_id) do
+      {:ok, %{provider | login: login}}
     end
   end
 

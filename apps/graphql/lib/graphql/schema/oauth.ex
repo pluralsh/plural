@@ -30,6 +30,11 @@ defmodule GraphQl.Schema.OAuth do
     field :skip,            :boolean
   end
 
+  object :login_request do
+    field :requested_scope, list_of(:string)
+    field :subject,         :string
+  end
+
   object :oidc_login do
     field :id,        non_null(:id)
     field :ip,        :string
@@ -45,6 +50,12 @@ defmodule GraphQl.Schema.OAuth do
     timestamps()
   end
 
+  object :oidc_step_response do
+    field :repository, :repository
+    field :login,      :login_request
+    field :consent,    :consent_request
+  end
+
   connection node_type: :oidc_login
 
   object :oauth_queries do
@@ -58,6 +69,18 @@ defmodule GraphQl.Schema.OAuth do
       arg :challenge, non_null(:string)
 
       resolve &OAuth.resolve_consent/2
+    end
+
+    field :oidc_login, :oidc_step_response do
+      arg :challenge, non_null(:string)
+
+      resolve &OAuth.resolve_oidc_login/2
+    end
+
+    field :oidc_consent, :oidc_step_response do
+      arg :challenge, non_null(:string)
+
+      resolve &OAuth.resolve_oidc_consent/2
     end
 
     field :oauth_urls, list_of(:oauth_info) do

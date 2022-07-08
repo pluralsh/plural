@@ -1,0 +1,5 @@
+parser: "@babel/eslint-parser"
+extends: pluralsh
+rules:
+  import/prefer-default-export: 'off'
+  react/no-unstable-nested-components: 'off'

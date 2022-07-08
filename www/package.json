@@ -3,32 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start:watch": "npm run start",
     "start": "PORT=3001 HTTPS=true react-scripts start",
     "build": "react-scripts build",
     "lint": "eslint ./src",
     "fix": "eslint ./src --fix",
     "unimported": "npx unimported"
   },
-  "eslintConfig": {
-    "parser": "@babel/eslint-parser",
-    "extends": "pluralsh",
-    "rules": {
-      "import/prefer-default-export": "off",
-      "react/no-unstable-nested-components": "off"
-    }
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "engines": {
+    "node": ">=16.15.0"
   },
   "dependencies": {
     "@absinthe/socket": "0.2.1",
@@ -74,7 +56,7 @@
     "moment": "2.29.3",
     "phoenix": "1.6.10",
     "pluralsh-absinthe-socket-apollo-link": "0.2.0",
-    "pluralsh-design-system": "^1.115.0",
+    "pluralsh-design-system": "1.115.0",
     "prop-types": "15.8.1",
     "query-string": "7.1.1",
     "react": "16.14.0",
@@ -100,6 +82,7 @@
     "react-stripe-elements": "6.1.2",
     "react-sweet-progress": "1.1.2",
     "react-toggle": "4.1.2",
+    "react-transition-group": "4.4.2",
     "react-use-intercom": "1.5.2",
     "react-virtualized-auto-sizer": "1.0.6",
     "react-window": "1.8.7",
@@ -121,8 +104,5 @@
     "eslint": "8.19.0",
     "eslint-config-pluralsh": "3.1.0",
     "postcss-import": "8.2.0"
-  },
-  "peerDependencies": {
-    "react-transition-group": ">=4.4.2"
   }
 }

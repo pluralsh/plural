@@ -22,6 +22,8 @@ const filterTokenStyles = {
   marginBottom: 'xsmall',
   flexShrink: 0,
   minHeight: '42px',
+  border: '1px solid border-fill-one',
+  backgroundColor: 'fill-one-selected',
 }
 
 function RepoCardList({ repositories, repoProps, maxWidth, stretchLastRow = false, ...props }) {

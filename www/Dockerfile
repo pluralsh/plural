@@ -1,15 +1,20 @@
-FROM node:16-slim as build
+FROM node:16.15-slim as build
+
+RUN yarn set version stable
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY package.json ./package.json
+COPY yarn.lock ./yarn.lock
+COPY .yarn ./.yarn
+COPY .yarnrc.yml ./.yarnrc.yml
 
 RUN npm config set unsafe-perm true
-RUN npm install
+RUN yarn install --frozen-lockfile
 
 COPY . ./
 
-RUN npm run build
+RUN yarn run build
 
 # production environment
 FROM gcr.io/pluralsh/nginx:1.19.8-alpine

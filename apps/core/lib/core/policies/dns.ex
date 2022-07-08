@@ -29,7 +29,7 @@ defmodule Core.Policies.Dns do
       %{domain: %DnsDomain{account_id: ^id, access_policy: nil}} -> :pass
       %{domain: %DnsDomain{account_id: ^id, access_policy: policy}} ->
         Rbac.evaluate_policy(user, policy) |> error(@policy_msg)
-      _ -> {:error, :forbidden}
+      _ -> {:error, "your account does not own this dns domain, please try another"}
     end
   end
 

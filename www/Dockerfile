@@ -1,12 +1,16 @@
-FROM node:16-slim as build
+FROM node:16.15-slim as build
+
+RUN yarn set version stable
 
 WORKDIR /app
 
 COPY package.json ./package.json
 COPY yarn.lock ./yarn.lock
+COPY .yarn ./.yarn
+COPY .yarnrc.yml ./.yarnrc.yml
 
 RUN npm config set unsafe-perm true
-RUN yarn
+RUN yarn install --frozen-lockfile
 
 COPY . ./
 

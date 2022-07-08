@@ -21,8 +21,13 @@ defmodule GraphQl.Resolvers.OAuth do
   end
 
   def resolve_login(%{challenge: challenge}, _) do
-    with {:ok, %{installation: inst}} <- OAuth.get_login(challenge),
-      do: {:ok, inst.repository}
+    OAuth.get_login(challenge)
+    |> oidc_response()
+  end
+
+  def resolve_consent(%{challenge: challenge}, _) do
+    OAuth.get_consent(challenge)
+    |> oidc_response()
   end
 
   def list_urls(args, _) do
@@ -43,14 +48,13 @@ defmodule GraphQl.Resolvers.OAuth do
 
   def resolve_configuration(_, _), do: Core.Clients.Hydra.get_configuration()
 
-  def resolve_consent(%{challenge: challenge}, _) do
-    with {:ok, %{installation: inst}} <- OAuth.get_consent(challenge),
-      do: {:ok, inst.repository}
-  end
-
   def accept_login(%{challenge: challenge}, %{context: %{current_user: user}}),
     do: OAuth.handle_login(challenge, user)
 
   def accept_consent(%{challenge: challenge, scopes: scopes}, %{context: %{current_user: user}}),
     do: OAuth.consent(challenge, scopes, user)
+
+  defp oidc_response({:ok, %{installation: inst} = oidc_provider}),
+    do: {:ok, %{inst.repository | installation: %{inst | oidc_provider: oidc_provider}}}
+  defp oidc_response(error), do: error
 end

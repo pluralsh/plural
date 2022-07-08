@@ -17,7 +17,7 @@
     },
     {
       "matchManagers": ["npm"],
-      "labels": [
+      "addLabels": [
         "dependencies",
         "frontend"
       ]

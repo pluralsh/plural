@@ -3,13 +3,11 @@ import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'r
 import { XTerm } from 'xterm-for-react'
 import { FitAddon } from 'xterm-addon-fit'
 import { useQuery } from '@apollo/client'
-import { Button, Div, Flex, Span } from 'honorable'
-
-import { ReloadIcon } from 'pluralsh-design-system'
+import { Button, Div, Flex } from 'honorable'
+import { ReloadIcon, ScrollIcon } from 'pluralsh-design-system'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { socket } from '../../helpers/client'
-
 import TerminalThemeContext from '../../contexts/TerminalThemeContext'
 
 import { CLOUD_SHELL_QUERY } from './query'
@@ -19,6 +17,7 @@ import { ShellStatus } from './onboarding/ShellStatus'
 import TerminalThemeProvider from './TerminalThemeProvider'
 import TerminalSidebar from './TerminalSidebar'
 import TerminalInformation from './TerminalInformation'
+import { useOnboarded } from './onboarding/useOnboarded'
 
 const { Buffer } = require('buffer/')
 
@@ -29,9 +28,10 @@ export function Shell({ shell }) {
   const xterm = useRef(null)
   const [channel, setChannel] = useState(null)
   const [dimensions, setDimensions] = useState({})
-  const [isCheatsheet] = useState(false)
+  const [showCheatsheet, setShowCheatsheet] = useState(true)
   const fitAddon = useMemo(() => new FitAddon(), [])
   const [terminalTheme] = useContext(TerminalThemeContext)
+  const { fresh } = useOnboarded()
 
   useEffect(() => {
     if (!xterm?.current?.terminal) return
@@ -76,8 +76,6 @@ export function Shell({ shell }) {
     channel.push('command', { cmd: text })
   }
 
-  console.log(shell)
-
   return (
     <>
       <Flex
@@ -87,17 +85,19 @@ export function Shell({ shell }) {
         gap="medium"
         borderBottom="1px solid border"
       >
-        {/* <Button
-          small
-          tertiary
-          startIcon={(
-            <ScrollIcon />
-          )}
-          onClick={() => setIsCheatsheet(x => !x)}
-        >
-          CLI Cheatsheet
-        </Button> */}
-        <Div><Span fontWeight="bold">{shell.cluster}</Span></Div>
+        {!fresh && (
+          <Button
+            small
+            tertiary
+            startIcon={(
+              <ScrollIcon />
+            )}
+            onClick={() => setShowCheatsheet(!showCheatsheet)}
+          >
+            CLI Cheatsheet
+          </Button>
+        )}
+        {/* <Div><Span fontWeight="bold">{shell.cluster}</Span></Div> */}
         <Div flexGrow={1} />
         <TerminalInformation shell={shell} />
         <Button
@@ -113,7 +113,6 @@ export function Shell({ shell }) {
       <Flex
         marginTop="medium"
         flexGrow={1}
-        gap="xlarge"
         paddingBottom="medium"
         paddingHorizontal="medium"
         height="100%"
@@ -122,7 +121,7 @@ export function Shell({ shell }) {
       >
         <TerminalSidebar
           shell={shell}
-          isCheatsheet={isCheatsheet}
+          showCheatsheet={showCheatsheet}
         />
         <Flex
           ref={terminalRef}

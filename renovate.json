@@ -22,6 +22,12 @@
       "enabled": false
     }
   ],
+  "lockFileMaintenance": {
+    "enabled": true
+  },
+  "postUpdateOptions": [
+    "yarnDedupeHighest"
+  ],
   "separateMinorPatch": true,
   "dependencyDashboardApproval": true
 }

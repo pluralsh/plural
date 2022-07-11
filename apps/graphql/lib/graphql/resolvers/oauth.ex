@@ -30,6 +30,16 @@ defmodule GraphQl.Resolvers.OAuth do
     |> oidc_response()
   end
 
+  def resolve_oidc_login(%{challenge: challenge}, _) do
+    OAuth.get_login(challenge)
+    |> oidc_response(:v2)
+  end
+
+  def resolve_oidc_consent(%{challenge: challenge}, _) do
+    OAuth.get_consent(challenge)
+    |> oidc_response(:v2)
+  end
+
   def list_urls(args, _) do
     {:ok, OAuthHandler.urls(args[:host])}
   end
@@ -54,7 +64,13 @@ defmodule GraphQl.Resolvers.OAuth do
   def accept_consent(%{challenge: challenge, scopes: scopes}, %{context: %{current_user: user}}),
     do: OAuth.consent(challenge, scopes, user)
 
-  defp oidc_response({:ok, %{installation: inst} = oidc_provider}),
-    do: {:ok, %{inst.repository | installation: %{inst | oidc_provider: oidc_provider}}}
-  defp oidc_response(error), do: error
+  defp oidc_response(result, vsn \\ :v1)
+  defp oidc_response({:ok, %{installation: %{repository: repo}} = provider}, :v2) do
+    Map.take(provider, [:login, :consent])
+    |> Map.put(:repository, repo)
+    |> ok()
+  end
+  defp oidc_response({:ok, %{installation: inst} = oidc_provider}, _),
+    do: {:ok, inst.repository}
+  defp oidc_response(error, _), do: error
 end

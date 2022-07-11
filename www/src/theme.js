@@ -1,4 +1,3 @@
-import { ThemeType } from 'grommet'
 // DEPRECATED
 // In favor of plural-design-system/theme
 import { css } from 'styled-components'

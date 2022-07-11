@@ -12,6 +12,11 @@
   display: none;
 }
 
+#loading-placeholder,
+#loading-placeholder * {
+  box-sizing: border-box;
+}
+
 #root:empty + #loading-placeholder.show {
   display: block;
   position: fixed;
@@ -40,7 +45,6 @@
     (100vh - (var(--clampMin) * 1px)) / (var(--clampMax) - var(--clampMin))
   );
   --clampedShiftRatio: calc(max(0px, min(1px, var(--shiftRatio))));
-  top: 50%;
   transform: translateY(
     calc(
       var(--initialShift) + (var(--shiftMultiplier) * var(--clampedShiftRatio)) -
@@ -52,6 +56,7 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  padding: 0 12px;
 }
 
 #loading-placeholder .spinner-graphic {
@@ -64,6 +69,14 @@
     no-repeat;
   background: url(/logos/plural-logomark-only-white.svg);
   background-size: contain;
+}
+@supports (aspect-ratio: 1 / 1) {
+  #loading-placeholder .spinner-graphic {
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    max-width: var(--loadingLogoHeight);
+    height: auto;
+  }
 }
 #loading-placeholder .spinner-graphic .bg {
   position: absolute;
@@ -98,6 +111,7 @@
   line-height: 24px;
   letter-spacing: 0.25px;
   margin-top: 24px;
+  text-align: center;
 }
 
 #loading-placeholder .dot {

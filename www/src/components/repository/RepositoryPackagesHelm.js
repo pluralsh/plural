@@ -11,22 +11,16 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 import InfiniteScroller from '../utils/InfiniteScroller'
 
 import { CHARTS_QUERY } from './queries'
+import { packageCardStyle } from './RepositoryPackages'
 
 const defaultChartIcon = `${process.env.PUBLIC_URL}/chart.png`
 
-function Chart({ chart }) {
+function Chart({ chart, first, last }) {
   return (
     <Flex
-      px={1}
-      py={0.5}
-      mb={0.5}
       as={Link}
       to={`/charts/${chart.id}`}
-      color="text"
-      textDecoration="none"
-      align="center"
-      hoverIndicator="fill-one"
-      borderRadius={4}
+      {...packageCardStyle(first, last)}
     >
       <Img
         alt={chart.name}
@@ -88,10 +82,12 @@ function RepositoryPackagesHelm() {
       flexGrow={1}
       height={0}
     >
-      {charts.map(chart => (
+      {charts.map((chart, i) => (
         <Chart
           key={chart.id}
           chart={chart}
+          first={i === 0}
+          last={i === charts.length - 1}
         />
       ))}
     </InfiniteScroller>

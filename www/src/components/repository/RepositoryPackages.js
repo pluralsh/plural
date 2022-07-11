@@ -3,6 +3,24 @@ import { Flex } from 'honorable'
 
 import { ButtonGroup } from '../utils/ButtonGroup'
 
+export function packageCardStyle(first, last) {
+  return {
+    backgroundColor: 'fill-one',
+    hoverIndicator: 'fill-two',
+    color: 'text',
+    textDecoration: 'none',
+    border: '1px solid border-fill-two',
+    borderTop: first ? '1px solid border-fill-two' : 'none',
+    borderTopLeftRadius: first ? '4px' : 0,
+    borderTopRightRadius: first ? '4px' : 0,
+    borderBottomLeftRadius: last ? '4px' : 0,
+    borderBottomRightRadius: last ? '4px' : 0,
+    align: 'center',
+    px: 1,
+    py: 0.5,
+  }
+}
+
 function RepositoryPackages() {
   const { pathname } = useLocation()
   const navigate = useNavigate()

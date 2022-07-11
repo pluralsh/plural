@@ -13,25 +13,19 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 import InfiniteScroller from '../utils/InfiniteScroller'
 
 import { DOCKER_QUERY } from './queries'
+import { packageCardStyle } from './RepositoryPackages'
 
 const defaultDockerIcon = `${process.env.PUBLIC_URL}/docker.png`
 
-function DockerRepository({ dockerRepository }) {
+function DockerRepository({ dockerRepository, first, last }) {
   const { registry } = useContext(PluralConfigurationContext)
   const { name } = useContext(RepositoryContext)
 
   return (
     <Flex
-      px={1}
-      py={0.5}
-      mb={0.5}
       as={Link}
       to={`/dkr/repo/${dockerRepository.id}`}
-      color="text"
-      textDecoration="none"
-      align="center"
-      hoverIndicator="fill-one"
-      borderRadius={4}
+      {...packageCardStyle(first, last)}
     >
       <Img
         alt={dockerRepository.name}
@@ -86,10 +80,12 @@ function RepositoryPackagesDocker() {
       flexGrow={1}
       height={0}
     >
-      {dockerRepositories.map(dockerRepository => (
+      {dockerRepositories.map((dockerRepository, i) => (
         <DockerRepository
           key={dockerRepository.id}
           dockerRepository={dockerRepository}
+          first={i === 0}
+          last={i === dockerRepositories.length - 1}
         />
       ))}
     </InfiniteScroller>

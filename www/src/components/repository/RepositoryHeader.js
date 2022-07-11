@@ -118,6 +118,7 @@ function RepositoryHeader(props) {
         <Flex
           mt={0.5}
           align="center"
+          gap="16px"
         >
           {repository.homepage && (
             <A
@@ -135,7 +136,6 @@ function RepositoryHeader(props) {
           )}
           {repository.git_url && (
             <A
-              ml={1}
               target="_blank"
               href={repository.git_url}
             >
@@ -150,7 +150,6 @@ function RepositoryHeader(props) {
           )}
           {repository.license && (
             <A
-              ml={1}
               target="_blank"
               href={repository.license.url}
             >

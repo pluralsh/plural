@@ -41,8 +41,6 @@
   );
   --clampedShiftRatio: calc(max(0px, min(1px, var(--shiftRatio))));
   top: 50%;
-  left: var(--clampedShiftRatio);
-  right: calc(10 * var(--clampedShiftRatio));
   transform: translateY(
     calc(
       var(--initialShift) + (var(--shiftMultiplier) * var(--clampedShiftRatio)) -
@@ -60,10 +58,12 @@
   position: relative;
   width: var(--loadingLogoHeight);
   height: var(--loadingLogoHeight);
+  background-color: #ffffff;
   mask: url(/logos/plural-logomark-only-white.svg) 0 0 / contain no-repeat;
   -webkit-mask: url(/logos/plural-logomark-only-white.svg) 0 0 / contain
     no-repeat;
-  background-color: #ffffff;
+  background: url(/logos/plural-logomark-only-white.svg);
+  background-size: contain;
 }
 #loading-placeholder .spinner-graphic .bg {
   position: absolute;

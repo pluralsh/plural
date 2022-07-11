@@ -9,7 +9,7 @@ import mpRecipe from 'honorable-recipe-mp'
 
 import { client } from './helpers/client'
 import { INTERCOM_APP_ID } from './constants'
-import { DEFAULT_THEME } from './theme.tsx'
+import { DEFAULT_THEME } from './theme'
 
 import Plural from './components/Plural'
 import Invite from './components/Invite'

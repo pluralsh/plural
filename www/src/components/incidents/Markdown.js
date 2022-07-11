@@ -4,7 +4,7 @@ import { Copy, TooltipContent, WithCopy } from 'forge-core'
 import Highlight from 'react-highlight.js'
 import hljs from 'highlight.js'
 import { normalizeColor } from 'grommet/utils'
-import sortBy from 'lodash.sortby'
+import sortBy from 'lodash/sortBy'
 import { Emoji as Emojii } from 'emoji-mart'
 
 import Avatar from '../users/Avatar'

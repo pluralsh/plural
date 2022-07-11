@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { ResponsiveLine } from '@nivo/line'
 import moment from 'moment'
-import last from 'lodash.last'
+import last from 'lodash/last'
 import { Box, Text } from 'grommet'
 import { normalizeColor } from 'grommet/utils'
 

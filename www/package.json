@@ -23,6 +23,7 @@
     "@emotion/react": "11.9.3",
     "@emotion/styled": "11.9.3",
     "@gitbeaker/browser": "35.6.0",
+    "@jest/types": "28.1.1",
     "@nivo/core": "0.79.0",
     "@nivo/geo": "0.79.1",
     "@nivo/line": "0.79.1",
@@ -50,15 +51,6 @@
     "honorable-theme-default": "0.60.0",
     "js-yaml": "4.1.0",
     "lodash": "4.17.21",
-    "lodash.clonedeep": "4.5.0",
-    "lodash.groupby": "4.6.0",
-    "lodash.isstring": "4.0.1",
-    "lodash.last": "3.0.0",
-    "lodash.max": "4.0.1",
-    "lodash.remove": "4.7.0",
-    "lodash.sortby": "4.7.0",
-    "lodash.truncate": "4.4.2",
-    "lodash.uniqueid": "4.0.1",
     "memoize-one": "6.0.0",
     "moment": "2.29.3",
     "phoenix": "1.6.10",
@@ -110,14 +102,15 @@
     "@babel/preset-react": "7.18.6",
     "eslint": "8.19.0",
     "eslint-config-pluralsh": "3.1.0",
-    "postcss-import": "8.2.0"
+    "postcss-import": "8.2.0",
+    "typescript": "^4.7.4"
   },
   "jest": {
     "moduleNameMapper": {
-      "\\.(css)$": "<rootDir>/jest/styleMock.js"
+      "\\.(css)$": "identity-obj-proxy"
     },
     "transformIgnorePatterns": [
-      "/node_modules/(?!(pluralsh-design-system|honorable|forge-core|d3-hierarchy|d3-selection|xterm-for-react))"
+      "/node_modules/(?!(pluralsh-design-system|honorable|forge-core|d3-hierarchy|d3-selection|xterm-for-react|react-dnd|dnd-core|@react-dnd))"
     ]
   }
 }

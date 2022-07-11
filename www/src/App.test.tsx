@@ -2,6 +2,9 @@ import { render } from '@testing-library/react'
 
 import App from './App'
 
-test('renders app', () => {
-  render(<App />)
+describe('App', () => {
+  it('should render', () => {
+    const container = render(<App />)
+    expect(container).not.toBeNull()
+  })
 })

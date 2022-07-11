@@ -1,4 +1,4 @@
-import {ThemeType} from 'grommet';
+import { ThemeType } from 'grommet'
 // DEPRECATED
 // In favor of plural-design-system/theme
 import { css } from 'styled-components'
@@ -180,7 +180,7 @@ export const DEFAULT_COLOR_THEME = {
   ...PLURAL_THEME,
 }
 
-export const DEFAULT_THEME: ThemeType = {
+export const DEFAULT_THEME = {
   anchor: {
     color: '#9095A2',
     hover: {

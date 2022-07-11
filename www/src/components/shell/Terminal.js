@@ -3,8 +3,8 @@ import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'r
 import { XTerm } from 'xterm-for-react'
 import { FitAddon } from 'xterm-addon-fit'
 import { useQuery } from '@apollo/client'
-import { Button, Div, Flex } from 'honorable'
-import { ReloadIcon, ScrollIcon } from 'pluralsh-design-system'
+import { Div, Flex } from 'honorable'
+import { Button, ReloadIcon, ScrollIcon } from 'pluralsh-design-system'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { socket } from '../../helpers/client'

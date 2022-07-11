@@ -448,7 +448,8 @@ const SECTION_DEBUGGING = 'SECTION_DEBUGGING'
 const SECTION_WORKSPACE = 'SECTION_WORKSPACE'
 
 function Cheatsheet() {
-  const [activeSection, setActiveSection] = useState(null)
+  // TODO: Reset active section to null once more are added
+  const [activeSection, setActiveSection] = useState(SECTION_COMMANDS)
   const previousActiveSection = usePrevious(activeSection) || null
   const displayedSection = activeSection || previousActiveSection
 
@@ -489,20 +490,17 @@ function Cheatsheet() {
           <Flex
             direction="row"
             align="center"
-            marginLeft="large"
+            marginLeft="medium"
             fontSize="small"
           >
-            <Icon
-              icon={(
-                <ArrowLeftIcon size={16} />
-              )}
+            <Button
+              tertiary
+              small
+              startIcon={<ArrowLeftIcon />}
               onClick={() => setActiveSection(null)}
-            />
-            <P
-              marginLeft="xsmall"
             >
               Back to cheatsheet
-            </P>
+            </Button>
           </Flex>
           {displayedSection === SECTION_COMMANDS && (
             <CheatsheetCommands />
@@ -554,7 +552,7 @@ function CheatsheetCommands() {
   },
   {
     command: 'deploy, d',
-    description: 'Deploys the current workspace. This command will sniff out git diffs in workspaces, topsort then, then apply all changes.',
+    description: 'Deploys the current workspace. This command will sniff out git diffs in workspaces, topsort them, then apply all changes.',
   },
   {
     command: 'diff, df',

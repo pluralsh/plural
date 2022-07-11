@@ -19,8 +19,8 @@ import {
 } from 'pluralsh-design-system'
 
 import { getPreviousUserData, setPreviousUserData, setToken, wipeToken } from '../../helpers/authentication'
-
 import { CurrentUserContext } from '../login/CurrentUser'
+import { useOnboarded } from '../shell/onboarding/useOnboarded'
 
 import WithNotifications from './WithNotifications'
 import WithApplicationUpdate from './WithApplicationUpdate'
@@ -29,8 +29,13 @@ export const SIDEBAR_ICON_HEIGHT = '40px'
 export const SIDEBAR_WIDTH = '224px'
 export const SMALL_WIDTH = '60px'
 
+function isOnboarding(fresh, currentPath) {
+  return fresh && currentPath.endsWith('/shell')
+}
+
 function SidebarWrapper() {
   const me = useContext(CurrentUserContext)
+  const { fresh } = useOnboarded()
   const { pathname } = useLocation()
 
   const items = [
@@ -69,6 +74,11 @@ function SidebarWrapper() {
         <WithApplicationUpdate>
           {({ reloadApplication, shouldReloadApplication }) => (
             <Sidebar
+              transition="width 300ms ease, opacity 200ms ease"
+              style={isOnboarding(fresh, pathname) ? {
+                width: '0',
+                opacity: '0',
+              } : null}
               items={items}
               activeId={isNotificationsPanelOpen ? 'notifications' : pathname}
               notificationsCount={notificationsCount}
@@ -169,7 +179,7 @@ ref
       align="center"
       borderRadius="normal"
       cursor="pointer"
-      {... { '& *': { color: highlight ? 'text-warning-light' : active ? 'text' : 'text-light' } }}
+      {...{ '& *': { color: highlight ? 'text-warning-light' : active ? 'text' : 'text-light' } }}
       backgroundColor={active ? 'fill-zero-selected' : null}
       _hover={{
         '& *': { color: highlight ? 'text-warning-light' : 'text' },

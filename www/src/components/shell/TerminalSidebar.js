@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react'
-import { CollapseIcon, ModalHeader } from 'pluralsh-design-system'
+import { useState } from 'react'
+import { ArrowLeftIcon, CollapseIcon, ModalHeader } from 'pluralsh-design-system'
 import { A, Accordion, Button, Div, ExtendTheme, Flex, Li, Modal, P, Ul } from 'honorable'
 import { Fireworks } from 'fireworks-js/dist/react'
 
 import usePrevious from '../../hooks/usePrevious'
-
 import CodeLine from '../utils/CodeLine'
+import { Icon } from '../profile/Icon'
 
 import { useOnboarded } from './onboarding/useOnboarded'
 
@@ -30,16 +30,13 @@ const steps = [
   SIDEBAR
 --- */
 
-function TerminalSidebar({ isCheatsheet, shell, ...props }) {
+function TerminalSidebar({ shell, showCheatsheet, ...props }) {
   const { mutation, fresh } = useOnboarded()
-  const [visible, setVisible] = useState(fresh || isCheatsheet) 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [stepIndex, setStepIndex] = useState(0)
-
   const { title, Component } = steps[stepIndex]
 
   function markDemoAsComplete() {
-    setVisible(false)
     mutation()
   }
 
@@ -128,9 +125,9 @@ function TerminalSidebar({ isCheatsheet, shell, ...props }) {
   return (
     <>
       <Div
-        width={visible ? sidebarWidth : 0}
-        opacity={visible ? 1 : 0}
-        marginRight={visible ? 0 : -32}
+        width={fresh || showCheatsheet ? sidebarWidth : '0'}
+        opacity={fresh || showCheatsheet ? '1' : '0'}
+        marginRight={fresh || showCheatsheet ? 'xlarge' : '0'}
         transition="width 666ms ease, opacity 666ms linear, margin-right 666ms linear"
         maxHeight="100%"
         overflowX="auto"
@@ -144,7 +141,7 @@ function TerminalSidebar({ isCheatsheet, shell, ...props }) {
           borderRadius="large"
           direction="column"
         >
-          {fresh ? renderDemo() : renderCheatsheet()}
+          {fresh ? renderDemo() : showCheatsheet ? renderCheatsheet() : null}
         </Flex>
       </Div>
       {isModalOpen && (
@@ -276,7 +273,8 @@ function Step1() {
             body1
             marginTop="small"
           >
-            <strong>wal_bucket:</strong> Our postgres operator automatically ships write ahead logs to s3 for point-in-time backup and restore.
+            <strong>wal_bucket:</strong> Our postgres operator automatically ships write ahead logs to s3 for
+            point-in-time backup and restore.
           </P>
           <P
             body1
@@ -289,14 +287,16 @@ function Step1() {
             body1
             marginTop="small"
           >
-            <strong>Plural OIDC:</strong> You can opt in to using Plural as an OpenID Connect provider, dramatically simplifying enabling secure login for your plural apps.
+            <strong>Plural OIDC:</strong> You can opt in to using Plural as an OpenID Connect provider, dramatically
+            simplifying enabling secure login for your plural apps.
             This is highly recommended.
           </P>
           <P
             body1
             marginTop="small"
           >
-            <strong>git_user:</strong> Plural will perform Git operations on your behalf to manage your config repository.
+            <strong>git_user:</strong> Plural will perform Git operations on your behalf to manage your config
+            repository.
             Just use your GitHub username here, unless you have a dedicated user for Ops.
           </P>
           <P
@@ -316,21 +316,24 @@ function Step1() {
             body1
             marginTop="small"
           >
-            <strong>private_key:</strong> This makes sure that your admin account has Read/Write access to the config repo.
+            <strong>private_key:</strong> This makes sure that your admin account has Read/Write access to the config
+            repo.
             We recommend you stick with the default, unless you have compliance reasons for this file not existing here.
           </P>
           <P
             body1
             marginTop="small"
           >
-            <strong>public_key:</strong> Similar to private_key, this makes sure that your admin account has Read/Write access to the DAG repo.
+            <strong>public_key:</strong> Similar to private_key, this makes sure that your admin account has Read/Write
+            access to the DAG repo.
             We recommend you stick with the default, unless you have compliance reasons for this file not existing here.
           </P>
           <P
             body1
             marginTop="small"
           >
-            <strong>passphrase:</strong> If you have encrypted your SSH key with a passphrase for extra security, you'll need to enter it here in order for Plural to use it for Git operations.
+            <strong>passphrase:</strong> If you have encrypted your SSH key with a passphrase for extra security, you'll
+            need to enter it here in order for Plural to use it for Git operations.
           </P>
         </Accordion>
       </ExtendTheme>
@@ -394,7 +397,8 @@ function Step3() {
         body1
         marginTop="medium"
       >
-        Now it's time for Plural to write all the Helm and Terraform required to bring up your Kubernetes cluster based on the config that you've entered.
+        Now it's time for Plural to write all the Helm and Terraform required to bring up your Kubernetes cluster based
+        on the config that you've entered.
       </P>
       <P
         body1
@@ -409,7 +413,8 @@ function Step3() {
         body1
         marginTop="medium"
       >
-        You can do a quick <strong>ls</strong> to check the files we've created for you, or you can go diretly to deploying them by running:
+        You can do a quick <strong>ls</strong> to check the files we've created for you, or you can go directly to
+        deploying them by running:
       </P>
       <CodeLine marginTop="medium">
         plural deploy --commit "your message"
@@ -427,7 +432,8 @@ function Step3() {
             Deploy your Kubernetes cluster and the applications you've configured
           </Li>
         </Ul>
-        Now grab a coffee or your favorite hot beverage while we wait for your cloud provider to provision your infrastructure.
+        Now grab a coffee or your favorite hot beverage while we wait for your cloud provider to provision your
+        infrastructure.
       </P>
     </Div>
   )
@@ -442,7 +448,8 @@ const SECTION_DEBUGGING = 'SECTION_DEBUGGING'
 const SECTION_WORKSPACE = 'SECTION_WORKSPACE'
 
 function Cheatsheet() {
-  const [activeSection, setActiveSection] = useState(null)
+  // TODO: Reset active section to null once more are added
+  const [activeSection, setActiveSection] = useState(SECTION_COMMANDS)
   const previousActiveSection = usePrevious(activeSection) || null
   const displayedSection = activeSection || previousActiveSection
 
@@ -465,28 +472,36 @@ function Cheatsheet() {
             title="Commands"
             onClick={() => setActiveSection(SECTION_COMMANDS)}
           />
-          <CheatsheetItem
-            title="Debugging"
-            onClick={() => setActiveSection(SECTION_DEBUGGING)}
-          />
-          <CheatsheetItem
-            title="Workspace"
-            onClick={() => setActiveSection(SECTION_WORKSPACE)}
-          />
+          {/* TODO: enable when other sections design will be finished */}
+          {/* <CheatsheetItem */}
+          {/*  title="Debugging" */}
+          {/*  onClick={() => setActiveSection(SECTION_DEBUGGING)} */}
+          {/* /> */}
+          {/* <CheatsheetItem */}
+          {/*  title="Workspace" */}
+          {/*  onClick={() => setActiveSection(SECTION_WORKSPACE)} */}
+          {/* /> */}
         </Div>
         <Div
           width={sidebarWidth}
           flexShrink={0}
           paddingVertical="medium"
         >
-          <Button
-            small
-            tertiary
-            onClick={() => setActiveSection(null)}
+          <Flex
+            direction="row"
+            align="center"
             marginLeft="medium"
+            fontSize="small"
           >
-            Back to cheatsheet
-          </Button>
+            <Button
+              tertiary
+              small
+              startIcon={<ArrowLeftIcon />}
+              onClick={() => setActiveSection(null)}
+            >
+              Back to cheatsheet
+            </Button>
+          </Flex>
           {displayedSection === SECTION_COMMANDS && (
             <CheatsheetCommands />
           )}
@@ -527,10 +542,110 @@ function CheatsheetItem({ children, title, ...props }) {
 }
 
 function CheatsheetCommands() {
+  const commands = [{
+    command: 'version, v, vsn',
+    description: 'Gets cli version info.',
+  },
+  {
+    command: 'build, b',
+    description: 'Builds your workspace.',
+  },
+  {
+    command: 'deploy, d',
+    description: 'Deploys the current workspace. This command will sniff out git diffs in workspaces, topsort them, then apply all changes.',
+  },
+  {
+    command: 'diff, df',
+    description: 'Diffs the state of the current workspace with the current version and dumps results to diffs.',
+  },
+  {
+    command: 'bounce, b',
+    description: 'Redeploys the charts in a workspace.',
+  },
+  {
+    command: 'destroy, b',
+    description: 'Iterates through all installations in reverse topological order, deleting helm installations and terraform.',
+  },
+  {
+    command: 'init',
+    description: 'Initializes Plural within a Git repo.',
+  },
+  {
+    command: 'preflights',
+    description: 'Runs provider preflight checks.',
+  },
+  {
+    command: 'bundle',
+    description: 'Commands for installing and discovering installation repo.',
+  },
+  {
+    command: 'link',
+    description: 'Links a local package into an installation repo.',
+  },
+  {
+    command: 'unlink',
+    description: 'Unlinks a linked package.',
+  },
+  {
+    command: 'help, h',
+    description: 'Shows a list of commands or help for one command.',
+  },
+  ]
+
   return (
     <>
-      CheatsheetCommands
+      <Flex
+        align="center"
+        justify="space-between"
+        paddingTop="medium"
+        paddingBottom="xsmall"
+        paddingHorizontal="medium"
+      >
+        <P
+          body2
+          color="text-xlight"
+        >
+          COMMANDS
+        </P>
+      </Flex>
+      <Flex
+        direction="column"
+        overflow="auto"
+        height="100vh"
+        paddingBottom="small"
+      >
+        {commands.map(c => (
+          <CheatsheetCommand
+            key={c.command}
+            command={c.command}
+            description={c.description}
+          />
+        ))}
+      </Flex>
     </>
+  )
+}
+
+function CheatsheetCommand({ command, description }) {
+  return (
+    <Flex
+      borderBottom="1px solid border"
+      padding="small"
+      paddingLeft="medium"
+    >
+      <P
+        flex="30%"
+        body2
+      >
+        <strong>{command}</strong>
+      </P>
+      <P
+        flex="50%"
+        body2
+      >
+        {description}
+      </P>
+    </Flex>
   )
 }
 

@@ -14,6 +14,28 @@ on:
       - ".github/workflows/www.yaml"
       - "www/**"
 jobs:
+  unit:
+    name: "Unit Tests"
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: www
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.15.0
+      - uses: actions/cache@v3
+          env:
+            cache-name: cache-node-modules
+          with:
+            path: node_modules
+            key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
+      - shell: bash
+          run: |
+            [ ! -d "node_modules" ] && yarn install --immutable
+            - shell: bash
+              run: yarn test
   lint:
     runs-on: ubuntu-latest
     defaults:

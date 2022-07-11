@@ -24,6 +24,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="%PUBLIC_URL%/favicon-16x16.png">
     <!-- Added by plural team -->
     <link rel='stylesheet' href='https://necolas.github.io/normalize.css/latest/normalize.css' />
+    <link rel="stylesheet" href="/page-load-spinner/page-load-spinner.css" />
     <link rel='stylesheet' href='https://highlightjs.org/static/demo/styles/nord.css'/>
     <link rel="preload" href="https://unpkg.com/emoji-datasource-google@5.0.1/img/google/sheets-256/16.png" as="image" />
     <!--
@@ -114,6 +115,12 @@
         background: unset;
       }
     </style>
+    <style>
+      html,
+      body {
+        background-color: #171a21;
+      }
+    </style>
     <script type="text/javascript">
     window.heap=window.heap||[],heap.load=function(e,t){window.heap.appid=e,window.heap.config=t=t||{};var r=document.createElement("script");r.type="text/javascript",r.async=!0,r.src="https://cdn.heapanalytics.com/js/heap-"+e+".js";var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(r,a);for(var n=function(e){return function(){heap.push([e].concat(Array.prototype.slice.call(arguments,0)))}},p=["addEventProperties","addUserProperties","clearEventProperties","identify","resetIdentity","removeEventProperty","setEventProperties","track","unsetEventProperty"],o=0;o<p.length;o++)heap[p[o]]=n(p[o])};
     heap.load("3306441968");
@@ -131,6 +138,21 @@
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+    <div id="loading-placeholder">
+      <div class="spinner">
+        <div class="spinner-graphic">
+          <div class="bg">
+            <div class="bg-image"></div>
+            <div class="bg-image"></div>
+            <div class="bg-image"></div>
+          </div>
+        </div>
+        <h1>
+          Loading Plural<span data-dot-num="1" class="dot">.</span><span data-dot-num="2" class="dot">.</span><span data-dot-num="3" class="dot">.</span>
+        </h1>
+      </div>
+      <script src="/page-load-spinner/page-load-spinner.js"></script>
+    </div>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.

@@ -10,7 +10,6 @@
   ];
 
   function imageLoaded(event) {
-    console.log("image loaded");
     loadCount++;
     if (loadCount >= numImages) {
       document.querySelector("#loading-placeholder").classList.add("show");
@@ -42,11 +41,8 @@
   var rootNode = document.getElementById("root");
   var rootObserver = new MutationObserver(function (mutationList, observer) {
     if (rootNode.hasChildNodes) {
-      console.log("Cleanup loader");
-      console.log("interval id", tickInterval);
       window.clearInterval(tickInterval);
       listenerRemovers.forEach(function (remover) {
-        console.log("remover", remover);
         remover();
       });
     }

@@ -103,7 +103,7 @@
     "eslint": "8.19.0",
     "eslint-config-pluralsh": "3.1.0",
     "postcss-import": "8.2.0",
-    "typescript": "^4.7.4"
+    "typescript": "4.7.4"
   },
   "jest": {
     "moduleNameMapper": {

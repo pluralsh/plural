@@ -37,6 +37,7 @@ jobs:
             - shell: bash
               run: yarn test
   lint:
+    name: "Code Lint"
     runs-on: ubuntu-latest
     defaults:
       run:

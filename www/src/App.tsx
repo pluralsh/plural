@@ -9,7 +9,7 @@ import mpRecipe from 'honorable-recipe-mp'
 
 import { client } from './helpers/client'
 import { INTERCOM_APP_ID } from './constants'
-import { DEFAULT_THEME } from './theme'
+import { DEFAULT_THEME } from './theme.tsx'
 
 import Plural from './components/Plural'
 import Invite from './components/Invite'
@@ -51,7 +51,6 @@ function App() {
                     element={<ResetPassword />}
                   />
                   <Route
-                    exact
                     path="/password-reset"
                     element={<PasswordReset />}
                   />
@@ -68,12 +67,10 @@ function App() {
                     element={<PasswordlessLogin />}
                   />
                   <Route
-                    exact
                     path="/oauth/callback/github/shell"
                     element={<Plural />}
                   />
                   <Route
-                    exact
                     path="/oauth/callback/gitlab/shell"
                     element={<Plural />}
                   />
@@ -86,17 +83,14 @@ function App() {
                     element={<SSOCallback />}
                   />
                   <Route
-                    exact
                     path="/login"
                     element={<Login />}
                   />
                   <Route
-                    exact
                     path="/signup"
                     element={<Signup />}
                   />
                   <Route
-                    exact
                     path="/oauth/consent"
                     element={<OAuthConsent />}
                   />

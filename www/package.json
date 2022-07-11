@@ -7,10 +7,15 @@
     "build": "react-scripts build",
     "lint": "eslint ./src",
     "fix": "eslint ./src --fix",
+    "test": "react-scripts test --watchAll=false",
     "unimported": "npx unimported"
   },
   "engines": {
     "node": ">=16.15.0"
+  },
+  "resolutions": {
+    "**/react": "18.2.0",
+    "**/react-dom": "18.2.0"
   },
   "dependencies": {
     "@absinthe/socket": "0.2.1",
@@ -22,6 +27,8 @@
     "@nivo/geo": "0.79.1",
     "@nivo/line": "0.79.1",
     "@octokit/core": "3.6.0",
+    "@testing-library/jest-dom": "5.16.4",
+    "@testing-library/react": "13.3.0",
     "apollo-absinthe-upload-link": "1.7.0",
     "buffer": "6.0.3",
     "country-code-lookup": "0.0.20",
@@ -59,16 +66,16 @@
     "pluralsh-design-system": "1.115.0",
     "prop-types": "15.8.1",
     "query-string": "7.1.1",
-    "react": "16.14.0",
+    "react": "18.2.0",
     "react-animations": "1.0.0",
     "react-collapsible": "2.10.0",
     "react-copy-to-clipboard": "5.1.0",
     "react-countdown": "2.3.2",
     "react-credit-cards": "0.8.3",
     "react-diff-viewer": "3.1.1",
-    "react-dnd": "15.1.2",
-    "react-dnd-html5-backend": "15.1.3",
-    "react-dom": "16.14.0",
+    "react-dnd": "16.0.1",
+    "react-dnd-html5-backend": "16.0.1",
+    "react-dom": "18.2.0",
     "react-file-icon": "1.1.0",
     "react-file-picker": "0.0.6",
     "react-highlight.js": "1.0.7",
@@ -104,5 +111,13 @@
     "eslint": "8.19.0",
     "eslint-config-pluralsh": "3.1.0",
     "postcss-import": "8.2.0"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "\\.(css)$": "<rootDir>/jest/styleMock.js"
+    },
+    "transformIgnorePatterns": [
+      "/node_modules/(?!(pluralsh-design-system|honorable|forge-core|d3-hierarchy|d3-selection|xterm-for-react))"
+    ]
   }
 }

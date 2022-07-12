@@ -1,7 +1,5 @@
 FROM node:16.15-slim as build
 
-RUN yarn set version stable
-
 WORKDIR /app
 
 COPY package.json ./package.json

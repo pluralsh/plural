@@ -17,10 +17,7 @@
   "engines": {
     "node": ">=16.15.0"
   },
-  "resolutions": {
-    "**/react": "18.2.0",
-    "**/react-dom": "18.2.0"
-  },
+  "packageManager": "yarn@3.2.1",
   "dependencies": {
     "@absinthe/socket": "0.2.1",
     "@apollo/client": "3.6.9",

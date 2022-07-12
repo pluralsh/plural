@@ -24,3 +24,7 @@ rules:
     - severity: warning
   selector-pseudo-element-no-unknown:
   string-quotes: single
+ignoreFiles:
+  - "**/logo-animation.css"
+  - "**/message.css"
+  - "**/stripe.css"

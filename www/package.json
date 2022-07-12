@@ -5,8 +5,12 @@
   "scripts": {
     "start": "PORT=3001 HTTPS=true react-scripts start",
     "build": "react-scripts build",
-    "lint": "eslint ./src",
-    "fix": "eslint ./src --fix",
+    "lint": "yarn lint:js && yarn lint:css",
+    "lint:js": "eslint ./src",
+    "lint:css": "stylelint src/**/*.css",
+    "fix": "yarn fix:js && yarn fix:css",
+    "fix:js": "eslint ./src --fix",
+    "fix:css": "stylelint src/**/*.css --fix",
     "unimported": "npx unimported"
   },
   "engines": {
@@ -103,6 +107,10 @@
     "@babel/preset-react": "7.18.6",
     "eslint": "8.19.0",
     "eslint-config-pluralsh": "3.1.0",
-    "postcss-import": "8.2.0"
+    "postcss-import": "8.2.0",
+    "stylelint": "^14.9.1",
+    "stylelint-config-standard": "^26.0.0",
+    "stylelint-no-unsupported-browser-features": "^5.0.3",
+    "stylelint-order": "^5.0.0"
   }
 }

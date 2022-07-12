@@ -9,6 +9,7 @@ export const ChartFragment = gql`
     description
     latestVersion
     dependencies { ...DependenciesFragment }
+    insertedAt
   }
   ${DependenciesFragment}
 `

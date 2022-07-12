@@ -1,6 +1,10 @@
 import { useContext } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useOutletContext } from 'react-router-dom'
 import { Div, Flex, Img, P } from 'honorable'
+
+import moment from 'moment'
+
+import Fuse from 'fuse.js'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 
@@ -10,6 +14,7 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 import InfiniteScroller from '../utils/InfiniteScroller'
 
 import { TERRAFORM_QUERY } from './queries'
+import { packageCardStyle } from './RepositoryPackages'
 
 const defaultTerraformIcon = `${process.env.PUBLIC_URL}/terraform.png`
 const defaultChartIcon = `${process.env.PUBLIC_URL}/chart.png`
@@ -27,19 +32,17 @@ const providerToIcon = {
   KIND: defaultKindIcon,
 }
 
-function Terraform({ terraform }) {
+const searchOptions = {
+  keys: ['name', 'description', 'latestVersion'],
+  threshold: 0.25,
+}
+
+function Terraform({ terraform, first, last }) {
   return (
     <Flex
-      px={1}
-      py={0.5}
-      mb={0.5}
       as={Link}
       to={`/terraform/${terraform.id}`}
-      color="text"
-      textDecoration="none"
-      align="center"
-      hoverIndicator="fill-one"
-      borderRadius={4}
+      {...packageCardStyle(first, last)}
     >
       <Img
         alt={terraform.name}
@@ -72,12 +75,21 @@ function Terraform({ terraform }) {
           {terraform.latestVersion} {terraform.description ? `- ${terraform.description}` : null}
         </P>
       </Div>
+      <Flex
+        flexGrow={1}
+        justifyContent="flex-end"
+        color="text-xlight"
+        caption
+      >
+        Created {moment(terraform.insertedAt).fromNow()}
+      </Flex>
     </Flex>
   )
 }
 
 function RepositoryPackagesTerraform() {
   const { id } = useContext(RepositoryContext)
+  const [q] = useOutletContext()
   const [terraforms, loadingTerraforms, hasMoreTerraforms, fetchMoreTerraforms] = usePaginatedQuery(
     TERRAFORM_QUERY,
     {
@@ -87,6 +99,9 @@ function RepositoryPackagesTerraform() {
     },
     data => data.terraform
   )
+
+  const fuse = new Fuse(terraforms, searchOptions)
+  const filteredTerraforms = q ? fuse.search(q).map(({ item }) => item) : terraforms
 
   if (terraforms.length === 0 && loadingTerraforms) {
     return (
@@ -108,10 +123,12 @@ function RepositoryPackagesTerraform() {
       flexGrow={1}
       height={0}
     >
-      {terraforms.map(terraform => (
+      {filteredTerraforms.sort((a, b) => a.name.localeCompare(b.name)).map((terraform, i) => (
         <Terraform
           key={terraform.id}
           terraform={terraform}
+          first={i === 0}
+          last={i === filteredTerraforms.length - 1}
         />
       ))}
     </InfiniteScroller>

@@ -1,7 +1,11 @@
 import { useContext } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useOutletContext } from 'react-router-dom'
 import { Div, Flex, Img, P } from 'honorable'
 import { Tag } from 'pluralsh-design-system'
+
+import moment from 'moment'
+
+import Fuse from 'fuse.js'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 
@@ -11,22 +15,21 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 import InfiniteScroller from '../utils/InfiniteScroller'
 
 import { CHARTS_QUERY } from './queries'
+import { packageCardStyle } from './RepositoryPackages'
 
 const defaultChartIcon = `${process.env.PUBLIC_URL}/chart.png`
 
-function Chart({ chart }) {
+const searchOptions = {
+  keys: ['name', 'description', 'latestVersion'],
+  threshold: 0.25,
+}
+
+function Chart({ chart, first, last }) {
   return (
     <Flex
-      px={1}
-      py={0.5}
-      mb={0.5}
       as={Link}
       to={`/charts/${chart.id}`}
-      color="text"
-      textDecoration="none"
-      align="center"
-      hoverIndicator="fill-one"
-      borderRadius={4}
+      {...packageCardStyle(first, last)}
     >
       <Img
         alt={chart.name}
@@ -52,12 +55,21 @@ function Chart({ chart }) {
           {chart.latestVersion} {chart.description ? `- ${chart.description}` : null}
         </P>
       </Div>
+      <Flex
+        flexGrow={1}
+        justifyContent="flex-end"
+        color="text-xlight"
+        caption
+      >
+        Created {moment(chart.insertedAt).fromNow()}
+      </Flex>
     </Flex>
   )
 }
 
 function RepositoryPackagesHelm() {
   const { id } = useContext(RepositoryContext)
+  const [q] = useOutletContext()
   const [charts, loadingCharts, hasMoreCharts, fetchMoreCharts] = usePaginatedQuery(
     CHARTS_QUERY,
     {
@@ -67,6 +79,9 @@ function RepositoryPackagesHelm() {
     },
     data => data.charts
   )
+
+  const fuse = new Fuse(charts, searchOptions)
+  const filteredCharts = q ? fuse.search(q).map(({ item }) => item) : charts
 
   if (charts.length === 0 && loadingCharts) {
     return (
@@ -88,10 +103,12 @@ function RepositoryPackagesHelm() {
       flexGrow={1}
       height={0}
     >
-      {charts.map(chart => (
+      {filteredCharts.sort((a, b) => a.name.localeCompare(b.name)).map((chart, i) => (
         <Chart
           key={chart.id}
           chart={chart}
+          first={i === 0}
+          last={i === filteredCharts.length - 1}
         />
       ))}
     </InfiniteScroller>

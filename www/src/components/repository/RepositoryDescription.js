@@ -9,7 +9,6 @@ function RepositoryDescription() {
   const repository = useContext(RepositoryContext)
 
   return (
-
     <Flex
       direction="column"
       backgroundColor="fill-one"

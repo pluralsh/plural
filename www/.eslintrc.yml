@@ -5,6 +5,7 @@ rules:
   react/no-unstable-nested-components: 'off'
   react-hooks/rules-of-hooks: "error"
   react-hooks/exhaustive-deps: "warn"
+  no-unused-vars: "error"
 overrides:
   - files:
     - "*.test.ts"

@@ -12,7 +12,7 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 import InfiniteScroller from '../utils/InfiniteScroller'
 
 import { TERRAFORM_QUERY } from './queries'
-import { packageCardStyle } from './RepositoryPackages.tsx'
+import { packageCardStyle } from './RepositoryPackages'
 
 const defaultTerraformIcon = `${process.env.PUBLIC_URL}/terraform.png`
 const defaultChartIcon = `${process.env.PUBLIC_URL}/chart.png`

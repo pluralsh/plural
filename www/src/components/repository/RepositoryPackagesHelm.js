@@ -13,7 +13,7 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 import InfiniteScroller from '../utils/InfiniteScroller'
 
 import { CHARTS_QUERY } from './queries'
-import { packageCardStyle } from './RepositoryPackages.tsx'
+import { packageCardStyle } from './RepositoryPackages'
 
 const defaultChartIcon = `${process.env.PUBLIC_URL}/chart.png`
 

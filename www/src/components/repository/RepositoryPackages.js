@@ -21,14 +21,15 @@ export function packageCardStyle(first, last) {
   }
 }
 
+const tabToUrl = {
+  'Helm Charts': 'helm',
+  'Terraform Modules': 'terraform',
+  'Docker Repositories': 'docker',
+}
+
 function RepositoryPackages() {
   const { pathname } = useLocation()
   const navigate = useNavigate()
-  const tabToUrl = {
-    'Helm Charts': 'helm',
-    'Terraform Modules': 'terraform',
-    'Docker Repositories': 'docker',
-  }
   const currentPath = pathname.substring(pathname.lastIndexOf('/') + 1)
   const defaultTab = Object.keys(tabToUrl).find(key => tabToUrl[key] === currentPath)
   const changeTab = tab => navigate(tabToUrl[tab])

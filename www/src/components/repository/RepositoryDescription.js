@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { Flex, H2, P } from 'honorable'
+import { Flex, P } from 'honorable'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 
@@ -9,7 +9,6 @@ function RepositoryDescription() {
   const repository = useContext(RepositoryContext)
 
   return (
-
     <Flex
       direction="column"
       backgroundColor="fill-one"

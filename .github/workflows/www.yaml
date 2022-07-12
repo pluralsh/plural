@@ -14,8 +14,7 @@ on:
       - ".github/workflows/www.yaml"
       - "www/**"
 jobs:
-  unit:
-    name: "Unit Tests"
+  test:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -37,7 +36,6 @@ jobs:
       - shell: bash
         run: yarn test
   lint:
-    name: "Lint"
     runs-on: ubuntu-latest
     defaults:
       run:

@@ -53,7 +53,7 @@
     "js-yaml": "4.1.0",
     "lodash": "4.17.21",
     "memoize-one": "6.0.0",
-    "moment": "2.29.3",
+    "moment": "2.29.4",
     "phoenix": "1.6.10",
     "pluralsh-absinthe-socket-apollo-link": "0.2.0",
     "pluralsh-design-system": "1.115.0",

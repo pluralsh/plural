@@ -1,51 +1,53 @@
 // Don't show spinner until all images loaded
-(function () {
-  var loadCount = 0;
-  var numImages = 2;
-  var tickCount = 0;
-  var tickInterval;
-  var images = [
-    "/logos/plural-logomark-only-white.svg",
-    "/page-load-spinner/page-load-spinner-bg.png",
-  ];
+(function pageLoadSpinner() {
+  let loadCount = 0
+  const numImages = 2
+  let tickCount = 0
+  let tickInterval
+  const images = [
+    '/logos/plural-logomark-only-white.svg',
+    '/page-load-spinner/page-load-spinner-bg.png',
+  ]
 
-  function imageLoaded(event) {
-    loadCount++;
+  function imageLoaded() {
+    loadCount++
     if (loadCount >= numImages) {
-      document.querySelector("#loading-placeholder").classList.add("show");
+      document.querySelector('#loading-placeholder').classList.add('show')
       tickInterval = setInterval(() => {
-        tickCount = tickCount >= 4 ? 0 : tickCount + 1;
+        tickCount = tickCount >= 4 ? 0 : tickCount + 1
         document
-          .querySelectorAll("#loading-placeholder .dot")
-          .forEach(function (dot) {
-            if (tickCount >= Number(dot.getAttribute("data-dot-num"))) {
-              dot.classList.add("show");
-            } else {
-              dot.classList.remove("show");
+          .querySelectorAll('#loading-placeholder .dot')
+          .forEach(dot => {
+            if (tickCount >= Number(dot.getAttribute('data-dot-num'))) {
+              dot.classList.add('show')
             }
-          });
-      }, 200);
+            else {
+              dot.classList.remove('show')
+            }
+          })
+      }, 200)
     }
   }
 
-  var listenerRemovers = images.map(function (imageUrl) {
-    var logoImg = document.createElement("img");
-    logoImg.src = imageUrl;
-    logoImg.addEventListener("load", imageLoaded);
-    return function () {
-      logoImg.removeEventListener("load", imageLoaded);
-    };
-  });
+  const listenerRemovers = images.map(imageUrl => {
+    const logoImg = document.createElement('img')
+    logoImg.src = imageUrl
+    logoImg.addEventListener('load', imageLoaded)
+
+    return function cleanUp() {
+      logoImg.removeEventListener('load', imageLoaded)
+    }
+  })
 
   // Cleanup callbacks once app has loaded
-  var rootNode = document.getElementById("root");
-  var rootObserver = new MutationObserver(function (mutationList, observer) {
+  const rootNode = document.getElementById('root')
+  const rootObserver = new MutationObserver(() => {
     if (rootNode.hasChildNodes) {
-      window.clearInterval(tickInterval);
-      listenerRemovers.forEach(function (remover) {
-        remover();
-      });
+      window.clearInterval(tickInterval)
+      listenerRemovers.forEach(remover => {
+        remover()
+      })
     }
-  });
-  rootObserver.observe(document.getElementById("root"), { childList: true });
-})();
+  })
+  rootObserver.observe(document.getElementById('root'), { childList: true })
+}())

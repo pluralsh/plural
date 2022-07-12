@@ -18,14 +18,8 @@ function RepositoryDescription() {
       padding="medium"
       paddingBottom="xlarge"
       borderRadius="large"
-      maxWidth="768px"
+      maxWidth="640px"
     >
-      <H2
-        overline
-        marginBottom="xxsmall"
-      >
-        Description
-      </H2>
       {repository.readme ? (
         <RepositoryDescriptionMarkdown
           text={repository.readme}

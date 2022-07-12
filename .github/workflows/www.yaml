@@ -26,18 +26,18 @@ jobs:
         with:
           node-version: 16.15.0
       - uses: actions/cache@v3
-          env:
-            cache-name: cache-node-modules
-          with:
-            path: node_modules
-            key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
       - shell: bash
-          run: |
-            [ ! -d "node_modules" ] && yarn install --immutable
-            - shell: bash
-              run: yarn test
+        run: |
+          [ ! -d "node_modules" ] && yarn install --immutable
+      - shell: bash
+        run: yarn test
   lint:
-    name: "Code Lint"
+    name: "Lint"
     runs-on: ubuntu-latest
     defaults:
       run:

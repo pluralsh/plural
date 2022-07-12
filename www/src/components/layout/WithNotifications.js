@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Avatar, Div, Flex, Img, P } from 'honorable'
 import { CloseIcon } from 'pluralsh-design-system'
-import truncate from 'lodash.truncate'
+import truncate from 'lodash/truncate'
 import moment from 'moment'
 
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'

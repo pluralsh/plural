@@ -1,9 +1,10 @@
 import { Outlet } from 'react-router-dom'
-import { Flex } from 'honorable'
+import {Flex} from 'honorable'
 
 import { ButtonGroup } from '../utils/ButtonGroup'
 import React from "react";
 import {withRouter} from "../utils/hooks";
+import {Input, MagnifyingGlassIcon} from "pluralsh-design-system";
 
 export function packageCardStyle(first: boolean, last: boolean) {
   return {
@@ -29,6 +30,13 @@ const tabToUrl = new Map<string, string>([
 ])
 
 class RepositoryPackages extends React.Component<any, any> {
+  constructor(props: any) {
+    super(props)
+    this.state = {
+      query: ''
+    }
+  }
+
   defaultTab(pathname: string) {
     const tabUrl = pathname.substring(pathname.lastIndexOf('/') + 1)
     return [...tabToUrl.keys()].find(key => tabToUrl.get(key) === tabUrl) || 'Helm Charts'
@@ -40,7 +48,19 @@ class RepositoryPackages extends React.Component<any, any> {
         direction="column"
         height="100%"
       >
-        <Flex justifyContent="flex-end">
+        <Flex justifyContent="space-between">
+          <Input
+              flexBasis="350px"
+              marginRight="medium"
+              startIcon={(
+                  <MagnifyingGlassIcon
+                      size={14}
+                  />
+              )}
+              placeholder="Search a package"
+              value={this.state.query}
+              onChange={event => this.setState({query: event.target.value})}
+          />
           <ButtonGroup
             tabs={[...tabToUrl.keys()]}
             default={this.defaultTab(this.props.location.pathname)}

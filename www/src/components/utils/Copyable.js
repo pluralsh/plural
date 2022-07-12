@@ -3,7 +3,7 @@ import { Box, Layer, Text } from 'grommet'
 import { CircleInformation } from 'grommet-icons'
 import { Close, Copy } from 'forge-core'
 import CopyToClipboard from 'react-copy-to-clipboard'
-import truncate from 'lodash.truncate'
+import truncate from 'lodash/truncate'
 
 import { Icon } from '../accounts/Group'
 

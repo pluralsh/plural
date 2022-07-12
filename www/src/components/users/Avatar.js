@@ -1,5 +1,5 @@
 import { Box, Text } from 'grommet'
-import last from 'lodash.last'
+import last from 'lodash/last'
 
 export function initials(name) {
   const initials = name

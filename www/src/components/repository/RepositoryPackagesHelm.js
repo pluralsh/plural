@@ -1,9 +1,11 @@
 import { useContext } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useOutletContext } from 'react-router-dom'
 import { Div, Flex, Img, P } from 'honorable'
 import { Tag } from 'pluralsh-design-system'
 
 import moment from 'moment'
+
+import Fuse from 'fuse.js'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 
@@ -16,6 +18,11 @@ import { CHARTS_QUERY } from './queries'
 import { packageCardStyle } from './RepositoryPackages'
 
 const defaultChartIcon = `${process.env.PUBLIC_URL}/chart.png`
+
+const searchOptions = {
+  keys: ['name', 'description', 'latestVersion'],
+  threshold: 0.25,
+}
 
 function Chart({ chart, first, last }) {
   return (
@@ -62,6 +69,7 @@ function Chart({ chart, first, last }) {
 
 function RepositoryPackagesHelm() {
   const { id } = useContext(RepositoryContext)
+  const [q] = useOutletContext()
   const [charts, loadingCharts, hasMoreCharts, fetchMoreCharts] = usePaginatedQuery(
     CHARTS_QUERY,
     {
@@ -71,6 +79,9 @@ function RepositoryPackagesHelm() {
     },
     data => data.charts
   )
+
+  const fuse = new Fuse(charts, searchOptions)
+  const filteredCharts = q ? fuse.search(q).map(({ item }) => item) : charts
 
   if (charts.length === 0 && loadingCharts) {
     return (
@@ -92,12 +103,12 @@ function RepositoryPackagesHelm() {
       flexGrow={1}
       height={0}
     >
-      {charts.map((chart, i) => (
+      {filteredCharts.sort((a, b) => a.name.localeCompare(b.name)).map((chart, i) => (
         <Chart
           key={chart.id}
           chart={chart}
           first={i === 0}
-          last={i === charts.length - 1}
+          last={i === filteredCharts.length - 1}
         />
       ))}
     </InfiniteScroller>

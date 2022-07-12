@@ -1,8 +1,10 @@
 import { useContext } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useOutletContext } from 'react-router-dom'
 import { Div, Flex, Img, P } from 'honorable'
 
 import moment from 'moment'
+
+import Fuse from 'fuse.js'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 
@@ -28,6 +30,11 @@ const providerToIcon = {
   AZURE: defualtAzureIcon,
   EQUINIX: defaultEquinixIcon,
   KIND: defaultKindIcon,
+}
+
+const searchOptions = {
+  keys: ['name', 'description', 'latestVersion'],
+  threshold: 0.25,
 }
 
 function Terraform({ terraform, first, last }) {
@@ -82,6 +89,7 @@ function Terraform({ terraform, first, last }) {
 
 function RepositoryPackagesTerraform() {
   const { id } = useContext(RepositoryContext)
+  const [q] = useOutletContext()
   const [terraforms, loadingTerraforms, hasMoreTerraforms, fetchMoreTerraforms] = usePaginatedQuery(
     TERRAFORM_QUERY,
     {
@@ -91,6 +99,9 @@ function RepositoryPackagesTerraform() {
     },
     data => data.terraform
   )
+
+  const fuse = new Fuse(terraforms, searchOptions)
+  const filteredTerraforms = q ? fuse.search(q).map(({ item }) => item) : terraforms
 
   if (terraforms.length === 0 && loadingTerraforms) {
     return (
@@ -112,12 +123,12 @@ function RepositoryPackagesTerraform() {
       flexGrow={1}
       height={0}
     >
-      {terraforms.map((terraform, i) => (
+      {filteredTerraforms.sort((a, b) => a.name.localeCompare(b.name)).map((terraform, i) => (
         <Terraform
           key={terraform.id}
           terraform={terraform}
           first={i === 0}
-          last={i === terraforms.length - 1}
+          last={i === filteredTerraforms.length - 1}
         />
       ))}
     </InfiniteScroller>

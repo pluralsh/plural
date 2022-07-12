@@ -3,8 +3,6 @@ import { withReact } from 'slate-react'
 import { withHistory } from 'slate-history'
 import { createEditor } from 'slate'
 
-import { useLocation, useNavigate } from 'react-router-dom'
-
 import { withMentions } from './TypeaheadEditor'
 
 export function useEditor() {

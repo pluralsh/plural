@@ -1,7 +1,9 @@
 import { useContext } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useOutletContext } from 'react-router-dom'
 import { Div, Flex, Img, P } from 'honorable'
 import moment from 'moment'
+
+import Fuse from 'fuse.js'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 
@@ -16,6 +18,11 @@ import { DOCKER_QUERY } from './queries'
 import { packageCardStyle } from './RepositoryPackages'
 
 const defaultDockerIcon = `${process.env.PUBLIC_URL}/docker.png`
+
+const searchOptions = {
+  keys: ['name'],
+  threshold: 0.25,
+}
 
 function DockerRepository({ dockerRepository, first, last }) {
   const { registry } = useContext(PluralConfigurationContext)
@@ -58,6 +65,7 @@ function DockerRepository({ dockerRepository, first, last }) {
 
 function RepositoryPackagesDocker() {
   const { id } = useContext(RepositoryContext)
+  const [q] = useOutletContext()
   const [dockerRepositories, loadingCharts, hasMoreCharts, fetchMoreCharts] = usePaginatedQuery(
     DOCKER_QUERY,
     {
@@ -67,6 +75,9 @@ function RepositoryPackagesDocker() {
     },
     data => data.dockerRepositories
   )
+
+  const fuse = new Fuse(dockerRepositories, searchOptions)
+  const filteredDockerRepositories = q ? fuse.search(q).map(({ item }) => item) : dockerRepositories
 
   if (dockerRepositories.length === 0 && loadingCharts) {
     return (
@@ -88,12 +99,12 @@ function RepositoryPackagesDocker() {
       flexGrow={1}
       height={0}
     >
-      {dockerRepositories.map((dockerRepository, i) => (
+      {filteredDockerRepositories.sort((a, b) => a.name.localeCompare(b.name)).map((dockerRepository, i) => (
         <DockerRepository
           key={dockerRepository.id}
           dockerRepository={dockerRepository}
           first={i === 0}
-          last={i === dockerRepositories.length - 1}
+          last={i === filteredDockerRepositories.length - 1}
         />
       ))}
     </InfiniteScroller>

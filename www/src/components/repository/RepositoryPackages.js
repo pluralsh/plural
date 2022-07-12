@@ -23,6 +23,7 @@ export function packageCardStyle(first, last) {
     py: 0.5,
   }
 }
+
 const tabToUrl = {
   'Helm Charts': 'helm',
   'Terraform Modules': 'terraform',
@@ -30,7 +31,7 @@ const tabToUrl = {
 }
 
 export default function RepositoryPackages() {
-  const [query, setQuery] = useState('')
+  const [q, setQ] = useState('')
   const { pathname } = useLocation()
   const navigate = useNavigate()
   const tabUrl = pathname.substring(pathname.lastIndexOf('/') + 1)
@@ -50,8 +51,8 @@ export default function RepositoryPackages() {
             />
           )}
           placeholder="Search a package"
-          value={query}
-          onChange={event => setQuery(event.target.value)}
+          value={q}
+          onChange={event => setQ(event.target.value)}
         />
         <ButtonGroup
           tabs={Object.keys(tabToUrl)}
@@ -64,7 +65,7 @@ export default function RepositoryPackages() {
         direction="column"
         flexGrow={1}
       >
-        <Outlet context={[query, setQuery]} />
+        <Outlet context={[q, setQ]} />
       </Flex>
     </Flex>
   )

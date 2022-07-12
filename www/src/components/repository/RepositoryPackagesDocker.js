@@ -41,9 +41,17 @@ function DockerRepository({ dockerRepository, first, last }) {
           {dockerRepository.name}
         </P>
         <P mt={0.5}>
-          docker pull {registry}/{name}/{dockerRepository.name} - created {moment(dockerRepository.insertedAt).fromNow()}
+          docker pull {registry}/{name}/{dockerRepository.name}
         </P>
       </Div>
+      <Flex
+        flexGrow={1}
+        justifyContent="flex-end"
+        color="text-xlight"
+        caption
+      >
+        Created {moment(dockerRepository.insertedAt).fromNow()}
+      </Flex>
     </Flex>
   )
 }

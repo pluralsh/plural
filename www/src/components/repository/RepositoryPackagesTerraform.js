@@ -2,6 +2,8 @@ import { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { Div, Flex, Img, P } from 'honorable'
 
+import moment from 'moment'
+
 import RepositoryContext from '../../contexts/RepositoryContext'
 
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
@@ -66,6 +68,14 @@ function Terraform({ terraform, first, last }) {
           {terraform.latestVersion} {terraform.description ? `- ${terraform.description}` : null}
         </P>
       </Div>
+      <Flex
+        flexGrow={1}
+        justifyContent="flex-end"
+        color="text-xlight"
+        caption
+      >
+        Created {moment(terraform.insertedAt).fromNow()}
+      </Flex>
     </Flex>
   )
 }

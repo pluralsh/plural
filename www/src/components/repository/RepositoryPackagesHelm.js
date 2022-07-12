@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import { Div, Flex, Img, P } from 'honorable'
 import { Tag } from 'pluralsh-design-system'
 
+import moment from 'moment'
+
 import RepositoryContext from '../../contexts/RepositoryContext'
 
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
@@ -46,6 +48,14 @@ function Chart({ chart, first, last }) {
           {chart.latestVersion} {chart.description ? `- ${chart.description}` : null}
         </P>
       </Div>
+      <Flex
+        flexGrow={1}
+        justifyContent="flex-end"
+        color="text-xlight"
+        caption
+      >
+        Created {moment(chart.insertedAt).fromNow()}
+      </Flex>
     </Flex>
   )
 }

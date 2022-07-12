@@ -12,6 +12,7 @@ export const TerraformFragment = gql`
     latestVersion
     dependencies { ...DependenciesFragment }
     valuesTemplate
+    insertedAt
   }
   ${DependenciesFragment}
 `

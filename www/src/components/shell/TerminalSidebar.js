@@ -5,7 +5,6 @@ import { Fireworks } from 'fireworks-js/dist/react'
 
 import usePrevious from '../../hooks/usePrevious'
 import CodeLine from '../utils/CodeLine'
-import { Icon } from '../profile/Icon'
 
 import { useOnboarded } from './onboarding/useOnboarded'
 

@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { Box, Collapsible, Text } from 'grommet'
 import moment from 'moment'
 import { Down, Next } from 'grommet-icons'
-import sortBy from 'lodash.sortby'
+import sortBy from 'lodash/sortBy'
 import yaml from 'js-yaml'
 import ReactDiffViewer from 'react-diff-viewer'
 

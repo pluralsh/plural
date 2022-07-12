@@ -84,10 +84,17 @@ export function Me() {
           </Attribute>
           {me.provider && (
             <Attribute header="Provider">
-              <Provider
-                provider={me.provider}
-                width={75}
-              />
+              <Box
+                width="100px"
+                height="100px"
+                align="center"
+                justify="center"
+              >
+                <Provider
+                  provider={me.provider}
+                  width={75}
+                />
+              </Box>
             </Attribute>
           )}
         </Box>

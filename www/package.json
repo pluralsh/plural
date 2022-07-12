@@ -5,23 +5,32 @@
   "scripts": {
     "start": "PORT=3001 HTTPS=true react-scripts start",
     "build": "react-scripts build",
-    "lint": "eslint ./src",
-    "fix": "eslint ./src --fix",
+    "test": "react-scripts test --watchAll=false",
+    "lint": "yarn lint:js && yarn lint:css",
+    "lint:js": "eslint ./src",
+    "lint:css": "stylelint src/**/*.css",
+    "fix": "yarn fix:js && yarn fix:css",
+    "fix:js": "eslint ./src --fix",
+    "fix:css": "stylelint src/**/*.css --fix",
     "unimported": "npx unimported"
   },
   "engines": {
     "node": ">=16.15.0"
   },
+  "packageManager": "yarn@3.2.1",
   "dependencies": {
     "@absinthe/socket": "0.2.1",
     "@apollo/client": "3.6.9",
     "@emotion/react": "11.9.3",
     "@emotion/styled": "11.9.3",
     "@gitbeaker/browser": "35.6.0",
+    "@jest/types": "28.1.1",
     "@nivo/core": "0.79.0",
     "@nivo/geo": "0.79.1",
     "@nivo/line": "0.79.1",
     "@octokit/core": "3.6.0",
+    "@testing-library/jest-dom": "5.16.4",
+    "@testing-library/react": "13.3.0",
     "apollo-absinthe-upload-link": "1.7.0",
     "buffer": "6.0.3",
     "country-code-lookup": "0.0.20",
@@ -43,15 +52,6 @@
     "honorable-theme-default": "0.61.0",
     "js-yaml": "4.1.0",
     "lodash": "4.17.21",
-    "lodash.clonedeep": "4.5.0",
-    "lodash.groupby": "4.6.0",
-    "lodash.isstring": "4.0.1",
-    "lodash.last": "3.0.0",
-    "lodash.max": "4.0.1",
-    "lodash.remove": "4.7.0",
-    "lodash.sortby": "4.7.0",
-    "lodash.truncate": "4.4.2",
-    "lodash.uniqueid": "4.0.1",
     "memoize-one": "6.0.0",
     "moment": "2.29.4",
     "phoenix": "1.6.10",
@@ -59,16 +59,16 @@
     "pluralsh-design-system": "1.116.0",
     "prop-types": "15.8.1",
     "query-string": "7.1.1",
-    "react": "16.14.0",
+    "react": "18.2.0",
     "react-animations": "1.0.0",
     "react-collapsible": "2.10.0",
     "react-copy-to-clipboard": "5.1.0",
     "react-countdown": "2.3.2",
     "react-credit-cards": "0.8.3",
     "react-diff-viewer": "3.1.1",
-    "react-dnd": "15.1.2",
-    "react-dnd-html5-backend": "15.1.3",
-    "react-dom": "16.14.0",
+    "react-dnd": "16.0.1",
+    "react-dnd-html5-backend": "16.0.1",
+    "react-dom": "18.2.0",
     "react-file-icon": "1.1.0",
     "react-file-picker": "0.0.6",
     "react-highlight.js": "1.0.7",
@@ -103,6 +103,19 @@
     "@babel/preset-react": "7.18.6",
     "eslint": "8.19.0",
     "eslint-config-pluralsh": "3.1.0",
-    "postcss-import": "8.2.0"
+    "postcss-import": "8.2.0",
+    "stylelint": "14.9.1",
+    "stylelint-config-standard": "26.0.0",
+    "stylelint-no-unsupported-browser-features": "5.0.3",
+    "stylelint-order": "5.0.0",
+    "typescript": "4.7.4"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "\\.(css)$": "identity-obj-proxy"
+    },
+    "transformIgnorePatterns": [
+      "/node_modules/(?!(pluralsh-design-system|honorable|forge-core|d3-hierarchy|d3-selection|xterm-for-react|react-dnd|dnd-core|@react-dnd))"
+    ]
   }
 }

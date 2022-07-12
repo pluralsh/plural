@@ -30,10 +30,16 @@ export const OAUTH_LOGIN = gql`
   ${RepoFragment}
 `
 
-export const GET_CONSENT = gql`
-  query Consent($challenge: String!) {
-    oauthConsent(challenge: $challenge) {
-      ...RepoFragment
+export const GET_OIDC_CONSENT = gql`
+  query OIDCConsent($challenge: String!) {
+    oidcConsent(challenge: $challenge) {
+      repository {
+        ...RepoFragment
+      }
+      consent {
+        requestedScope
+        skip
+      }
     }
   }
   ${RepoFragment}

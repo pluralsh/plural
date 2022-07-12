@@ -39,6 +39,50 @@ defmodule GraphQl.OAuthQueriesTest do
     end
   end
 
+  describe "oidcLogin" do
+    test "it can fetch an oauth login's details" do
+      provider = insert(:oidc_provider)
+      expect(HTTPoison, :get, fn _, _ ->
+        body = Jason.encode!(%{client: %{client_id: provider.client_id}, requested_scope: ["openid"]})
+        {:ok, %{status_code: 200, body: body}}
+      end)
+
+      {:ok, %{data: %{"oidcLogin" => result}}} = run_query("""
+        query Login($challenge: String!) {
+          oidcLogin(challenge: $challenge) {
+            repository { id }
+            login { requestedScope }
+          }
+        }
+      """, %{"challenge" => "challenge"})
+
+      assert result["repository"]["id"] == provider.installation.repository_id
+      assert result["login"]["requestedScope"] == ["openid"]
+    end
+  end
+
+  describe "oidcConsent" do
+    test "it can fetch an oauth login's details" do
+      provider = insert(:oidc_provider)
+      expect(HTTPoison, :get, fn _, _ ->
+        body = Jason.encode!(%{client: %{client_id: provider.client_id}, requested_scope: ["openid"]})
+        {:ok, %{status_code: 200, body: body}}
+      end)
+
+      {:ok, %{data: %{"oidcConsent" => result}}} = run_query("""
+        query Login($challenge: String!) {
+          oidcConsent(challenge: $challenge) {
+            repository { id }
+            consent { requestedScope }
+          }
+        }
+      """, %{"challenge" => "challenge"})
+
+      assert result["repository"]["id"] == provider.installation.repository_id
+      assert result["consent"]["requestedScope"] == ["openid"]
+    end
+  end
+
   describe "oidcLogins" do
     test "it can list logins for an account" do
       user   = insert(:user)

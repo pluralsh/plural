@@ -47,7 +47,7 @@ function OnboardingWrapper({ showSplashScreen = false, stepIndex = 0, childIsRea
       height="100%"
       direction="column"
       alignItems="center"
-      marginTop="xxlarge"
+      paddingTop="xxlarge"
       overflowY="auto"
     >
       <SplashToLogoTransition

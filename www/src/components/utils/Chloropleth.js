@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import { Box, Text, ThemeContext } from 'grommet'
 import { ResponsiveChoropleth } from '@nivo/geo'
-import max from 'lodash.max'
+import max from 'lodash/max'
 import { normalizeColor } from 'grommet/utils'
 
 import countries from './world_countries.json'

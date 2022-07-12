@@ -1,4 +1,4 @@
-import isString from 'lodash.isstring'
+import isString from 'lodash/isString'
 
 export function updateFragment(cache, { fragment, id, update, fragmentName }) {
   const current = cache.readFragment({ id, fragment, fragmentName })

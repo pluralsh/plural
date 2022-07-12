@@ -1,16 +1,16 @@
 .installation-container {
-  border-bottom: 1px solid #DADADA;
-  border-left: 1px solid #DADADA;
-  border-right: 1px solid #DADADA;
+  border-bottom: 1px solid #dadada;
+  border-left: 1px solid #dadada;
+  border-right: 1px solid #dadada;
 }
 
 .installation-tabs {
-  border-left: 1px solid #DADADA;
+  border-left: 1px solid #dadada;
 }
 
 .installation-tab {
-  border-right: 1px solid #DADADA;
-  border-top: 1px solid #DADADA;
+  border-right: 1px solid #dadada;
+  border-top: 1px solid #dadada;
 }
 
 .installation-tab.selected {
@@ -18,6 +18,6 @@
 }
 
 .installation-tab.unselected {
+  border-bottom: 1px solid #dadada;
   z-index: 10;
-  border-bottom: 1px solid #DADADA;
 }

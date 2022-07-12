@@ -63,23 +63,24 @@ export default memo(({ text, gitUrl }) => (
     components={{
       blockquote: {
         component: Blockquote,
-        props: { borderLeft: '4px solid', borderColor: 'border', mx: 0, pl: '1em' } },
+        props: { borderLeft: '4px solid', borderColor: 'border', mx: 0, pl: '1em' },
+      }, 
       ul: { component: Ul, props: { paddingLeft: 'xlarge', marginBottom: 'small' } },
       ol: { component: Ol, props: { paddingLeft: 'xlarge', marginBottom: 'small' } },
-      li: { component: Li, props: { body1: true, marginTop: 'xxsmall' } },
-      h1: { component: H1, props: { title1: true, marginTop: 'large', marginBottom: 'small' } },
-      h2: { component: H2, props: { title2: true, marginTop: 'large', marginBottom: 'small' } },
-      h3: { component: H3, props: { subtitle1: true, marginTop: 'large', marginBottom: 'small' } },
-      h4: { component: H4, props: { subtitle2: true, marginTop: 'large', marginBottom: 'small' } },
-      h5: { component: H5, props: { body2: true, bold: true, marginTop: 'large', marginBottom: 'small' } },
-      h6: { component: H6, props: { body1: true, bold: true, marginTop: 'large', marginBottom: 'small' } },
+      li: { component: Li, props: { body2: true, marginTop: 'xxsmall' } },
+      h1: { component: H1, props: { subtitle1: true, marginTop: 'large', marginBottom: 'small', ':first-child': { marginTop: '0px' } } },
+      h2: { component: H2, props: { subtitle2: true, marginTop: 'large', marginBottom: 'small', ':first-child': { marginTop: '0px' } } },
+      h3: { component: H3, props: { body1: true, bold: true, marginTop: 'large', marginBottom: 'small', ':first-child': { marginTop: '0px' } } },
+      h4: { component: H4, props: { body2: true, bold: true, marginTop: 'large', marginBottom: 'small', ':first-child': { marginTop: '0px' } } },
+      h5: { component: H5, props: { body2: true, bold: true, marginTop: 'large', marginBottom: 'small', ':first-child': { marginTop: '0px' } } },
+      h6: { component: H6, props: { body2: true, bold: true, marginTop: 'large', marginBottom: 'small', ':first-child': { marginTop: '0px' } } },
       img: {
         component: MdImg,
         props: {
           gitUrl, style: { maxWidth: '100%' },
         },
       },
-      p: { component: P, props: { body1: true, marginBottom: 'small' } },
+      p: { component: P, props: { body2: true, marginBottom: 'medium' } },
       a: {
         component: A,
         props: {
@@ -95,7 +96,8 @@ export default memo(({ text, gitUrl }) => (
         props: {
           ...codeStyle,
           ...{ mx: '0.2em', px: '0.3em', py: '0.2em' },
-        } },
+        },
+      },
       pre: {
         component: MdPre,
         props: { ...codeStyle, ...{ px: '1em', py: '0.65em' } },

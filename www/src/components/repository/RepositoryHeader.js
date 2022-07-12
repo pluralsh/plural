@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react'
 import { A, Button, Div, Flex, H1, Img, P, Span } from 'honorable'
-import { GearTrainIcon, GitHubIcon, LinksIcon, Tag } from 'pluralsh-design-system'
+import { GearTrainIcon, GitHubIcon, InvoicesIcon, LinksIcon, Tag } from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 
@@ -118,6 +118,7 @@ function RepositoryHeader(props) {
         <Flex
           mt={0.5}
           align="center"
+          gap="16px"
         >
           {repository.homepage && (
             <A
@@ -135,7 +136,6 @@ function RepositoryHeader(props) {
           )}
           {repository.git_url && (
             <A
-              ml={1}
               target="_blank"
               href={repository.git_url}
             >
@@ -145,6 +145,20 @@ function RepositoryHeader(props) {
               />
               <Span ml={0.25}>
                 {repository.git_url && repository.git_url.replaceAll(/(^https?:\/\/)|(\/+$)/g, '')}
+              </Span>
+            </A>
+          )}
+          {repository.license && (
+            <A
+              target="_blank"
+              href={repository.license.url}
+            >
+              <InvoicesIcon
+                color="text"
+                size={12}
+              />
+              <Span ml={0.25}>
+                {repository.license.name}
               </Span>
             </A>
           )}

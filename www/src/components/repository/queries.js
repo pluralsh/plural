@@ -39,6 +39,10 @@ export const REPOSITORY_QUERY = gql`
       readme
       git_url
       homepage
+      license {
+        name
+        url
+      }
     }
   }
   ${RepoFragment}

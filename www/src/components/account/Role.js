@@ -181,6 +181,7 @@ export function UpdateRole({ role }) {
         portal
         open={open}
         onClose={() => setOpen(false)}
+        marginVertical={16}
         {...MODAL_DIMS}
       >
         <ModalHeader
@@ -231,6 +232,7 @@ export function CreateRole({ q }) {
       <Modal
         open={open}
         onClose={() => setOpen(false)}
+        marginVertical={16}
         {...MODAL_DIMS}
       >
         <ModalHeader onClose={() => setOpen(false)}>

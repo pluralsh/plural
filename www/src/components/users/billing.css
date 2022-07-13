@@ -1,9 +1,9 @@
-.card:hover .delete {
-  display: flex !important;
-}
-
 .card .delete {
   display: none !important;
+}
+
+.card:hover .delete {
+  display: flex !important;
 }
 
 .card.no-delete .delete {

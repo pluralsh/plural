@@ -2739,6 +2739,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@pluralsh/stylelint-config@npm:1.0.0":
+  version: 1.0.0
+  resolution: "@pluralsh/stylelint-config@npm:1.0.0"
+  dependencies:
+    stylelint: 14.9.1
+    stylelint-config-standard: 26.0.0
+    stylelint-no-unsupported-browser-features: 5.0.3
+    stylelint-order: 5.0.0
+  peerDependencies:
+    stylelint: ">= 14.9.1"
+  checksum: 3cd4a3d22f7b9e58afcbac08e670227c21b350820e5021ad55e1daa6393f0bb26263636cc55b3598d3697a92d5b3a0c22875ed5c1de21a7f4b6be5297c3389bf
+  languageName: node
+  linkType: hard
+
 "@pmmmwh/react-refresh-webpack-plugin@npm:^0.5.3":
   version: 0.5.7
   resolution: "@pmmmwh/react-refresh-webpack-plugin@npm:0.5.7"
@@ -18617,6 +18631,7 @@ __metadata:
     "@nivo/geo": 0.79.1
     "@nivo/line": 0.79.1
     "@octokit/core": 3.6.0
+    "@pluralsh/stylelint-config": 1.0.0
     "@testing-library/jest-dom": 5.16.4
     "@testing-library/react": 13.3.0
     apollo-absinthe-upload-link: 1.7.0
@@ -18683,9 +18698,6 @@ __metadata:
     slate-react: 0.81.0
     styled-components: 5.3.5
     stylelint: 14.9.1
-    stylelint-config-standard: 26.0.0
-    stylelint-no-unsupported-browser-features: 5.0.3
-    stylelint-order: 5.0.0
     typescript: 4.7.4
     uuid: 8.3.2
     xterm-addon-fit: 0.5.0

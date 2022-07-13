@@ -1,6 +1,5 @@
 import { useQuery } from '@apollo/client'
 import { Box, Text } from 'grommet'
-import moment from 'moment'
 import { useCallback, useState } from 'react'
 
 import { Placeholder } from '../accounts/Audits'

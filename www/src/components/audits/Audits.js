@@ -1,5 +1,4 @@
 import { useCallback, useState } from 'react'
-import moment from 'moment'
 import { Box } from 'grommet'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@apollo/client'

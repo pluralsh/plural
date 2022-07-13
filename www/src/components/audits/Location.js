@@ -8,7 +8,7 @@ export function Location({ ip, city, country }) {
   
   return (
     <Box>
-      {country && (<Span fontWeight="bold">{formatLocation(country, city)}</Span>)}
+      {country && (<Span>{formatLocation(country, city)}</Span>)}
       <Span color="text-xlight">{ip}</Span>
     </Box>
   )

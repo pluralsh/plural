@@ -1,6 +1,5 @@
 import { useQuery } from '@apollo/client'
 import { Box, Text } from 'grommet'
-import moment from 'moment'
 import { useCallback, useState } from 'react'
 
 import { Placeholder } from '../accounts/Audits'
@@ -18,6 +17,7 @@ import { AuditUser } from './AuditUser'
 import { Location } from './Location'
 
 import { LOGINS_Q } from './queries'
+import { Date } from './Date'
 
 function LoginRow({ login, last }) {
   return (
@@ -28,9 +28,7 @@ function LoginRow({ login, last }) {
           width="20%"
         />
       </TableData>
-      <TableData>
-        {moment(login.insertedAt).format('lll')}
-      </TableData>
+      <TableData><Date date={login.insertedAt} /></TableData>
       <TableData>
         <AuditUser user={login.owner} />
       </TableData>

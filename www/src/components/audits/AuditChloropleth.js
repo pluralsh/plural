@@ -29,12 +29,13 @@ export function AuditChloropleth() {
       <Div width="150px">
         <ButtonGroup
           tabs={['Audits', 'Logins']}
-          default="Audits"
+          default={tab}
           onChange={setTab}
         />
       </Div>
       <Box
         fill
+        round="xsmall"
         background="fill-one"
       >
         <Chloropleth data={metrics} />

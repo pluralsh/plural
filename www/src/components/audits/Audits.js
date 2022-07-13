@@ -1,16 +1,14 @@
 import { useCallback, useState } from 'react'
-import moment from 'moment'
 import { Box } from 'grommet'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@apollo/client'
 import lookup from 'country-code-lookup'
 
-import { A, Div, Span } from 'honorable'
+import { A, Div } from 'honorable'
 
 import { extendConnection } from '../../utils/graphql'
 import { StandardScroller } from '../utils/SmoothScroller'
 import { LoopingLogo } from '../utils/AnimatedLogo'
-import { formatLocation } from '../../utils/geo'
 import { Chloropleth } from '../utils/Chloropleth'
 
 import { ReturnToBeginning } from '../utils/ReturnToBeginning'
@@ -21,6 +19,8 @@ import { AUDITS_Q, AUDIT_METRICS, LOGIN_METRICS } from '../accounts/queries'
 import { ButtonGroup } from '../utils/ButtonGroup'
 
 import { AuditUser } from './AuditUser'
+import { Location } from './Location'
+import { Date } from './Date'
 
 const versionLink = ({ chart, terraform }) => chart ? `/charts/${chart.id}` : `/terraform/${terraform.id}`
 
@@ -72,36 +72,13 @@ export function Placeholder() {
   )
 }
 
-function Location({ ip, city, country }) {
-  if (!ip) return null
-
-  return (
-    <Box>
-      {country && (
-        <Span
-          fontWeight="bold"
-          color="white"
-        >{formatLocation(country, city)}
-        </Span>
-      )}
-      <Span color="text-light">{ip}</Span>
-    </Box>
-  )
-}
-
 function Audit({ audit, last }) {
   return (
     <TableRow last={last}>
       <TableData>{audit.action}</TableData>
-      <TableData>
-        {audit.actor && <AuditUser user={audit.actor} />}
-      </TableData>
-      <TableData>
-        <Resource audit={audit} />
-      </TableData>
-      <TableData>
-        {moment(audit.insertedAt).format('lll')}
-      </TableData>
+      <TableData>{audit.actor && <AuditUser user={audit.actor} />}</TableData>
+      <TableData><Resource audit={audit} /></TableData>
+      <TableData><Date date={audit.insertedAt} /></TableData>
       <TableData>
         <Location
           ip={audit.ip}

@@ -1,5 +1,6 @@
-import { Box, Layer, Text } from 'grommet'
+import { Layer } from 'grommet'
 import { Up } from 'grommet-icons'
+import { Button } from 'pluralsh-design-system'
 
 export function ReturnToBeginning({ beginning }) {
   return (
@@ -8,27 +9,14 @@ export function ReturnToBeginning({ beginning }) {
       modal={false}
       plain
     >
-      <Box
-        direction="row"
-        align="center"
-        round="xsmall"
-        gap="small"
-        hoverIndicator="cardHover"
-        background="card"
-        margin={{ bottom: 'medium', right: 'small' }}
-        pad="small"
-        focusIndicator={false}
+      <Button
         onClick={beginning}
+        endIcon={<Up size="small" />}
+        marginRight="100px"
+        marginBottom="30px"
       >
-        <Box
-          direction="row"
-          fill="horizontal"
-          justify="center"
-        >
-          <Text size="small">go to most recent</Text>
-        </Box>
-        <Up size="15px" />
-      </Box>
+        Go to most recent
+      </Button>
     </Layer>
   )
 }

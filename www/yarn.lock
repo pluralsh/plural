@@ -2002,19 +2002,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@gitbeaker/browser@npm:35.6.0":
-  version: 35.6.0
-  resolution: "@gitbeaker/browser@npm:35.6.0"
+"@gitbeaker/browser@npm:35.7.0":
+  version: 35.7.0
+  resolution: "@gitbeaker/browser@npm:35.7.0"
   dependencies:
-    "@gitbeaker/core": ^35.6.0
-    "@gitbeaker/requester-utils": ^35.6.0
+    "@gitbeaker/core": ^35.7.0
+    "@gitbeaker/requester-utils": ^35.7.0
     delay: ^5.0.0
     ky: 0.28.7
-  checksum: cd460b6d96af4542bcb00c3b898dfe64a26b3410b4c1d7612086a6d7b0654742be34338a2b99fa83df6bd0ce33ee9a89c413b5eabf08fb7720785c9c0092a06c
+  checksum: 35b1afbd047ba172a21e548259fb38764c50e4794d64e33e6be7ae16552dc41882dc2107df70da35a3431ccb5014604efd4b189d16db2251349d0d0b01d65618
   languageName: node
   linkType: hard
 
-"@gitbeaker/core@npm:^35.6.0":
+"@gitbeaker/core@npm:^35.7.0":
   version: 35.7.0
   resolution: "@gitbeaker/core@npm:35.7.0"
   dependencies:
@@ -2028,7 +2028,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@gitbeaker/requester-utils@npm:^35.6.0, @gitbeaker/requester-utils@npm:^35.7.0":
+"@gitbeaker/requester-utils@npm:^35.7.0":
   version: 35.7.0
   resolution: "@gitbeaker/requester-utils@npm:35.7.0"
   dependencies:
@@ -2239,6 +2239,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@jest/schemas@npm:^28.1.3":
+  version: 28.1.3
+  resolution: "@jest/schemas@npm:28.1.3"
+  dependencies:
+    "@sinclair/typebox": ^0.24.1
+  checksum: 3cf1d4b66c9c4ffda58b246de1ddcba8e6ad085af63dccdf07922511f13b68c0cc480a7bc620cb4f3099a6f134801c747e1df7bfc7a4ef4dceefbdea3e31e1de
+  languageName: node
+  linkType: hard
+
 "@jest/source-map@npm:^27.5.1":
   version: 27.5.1
   resolution: "@jest/source-map@npm:27.5.1"
@@ -2309,17 +2318,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jest/types@npm:28.1.1, @jest/types@npm:^28.1.1":
-  version: 28.1.1
-  resolution: "@jest/types@npm:28.1.1"
+"@jest/types@npm:28.1.3":
+  version: 28.1.3
+  resolution: "@jest/types@npm:28.1.3"
   dependencies:
-    "@jest/schemas": ^28.0.2
+    "@jest/schemas": ^28.1.3
     "@types/istanbul-lib-coverage": ^2.0.0
     "@types/istanbul-reports": ^3.0.0
     "@types/node": "*"
     "@types/yargs": ^17.0.8
     chalk: ^4.0.0
-  checksum: 3c35d3674e08da1e4bb27b8303a59c71fd19a852ff7c7827305462f48ef224b5334aa50e0d547470e1cca1f2dd15a0cff51b46618b8e61e7196908504b29f08f
+  checksum: 1e258d9c063fcf59ebc91e46d5ea5984674ac7ae6cae3e50aa780d22b4405bf2c925f40350bf30013839eb5d4b5e521d956ddf8f3b7c78debef0e75a07f57350
   languageName: node
   linkType: hard
 
@@ -2333,6 +2342,20 @@ __metadata:
     "@types/yargs": ^16.0.0
     chalk: ^4.0.0
   checksum: d1f43cc946d87543ddd79d49547aab2399481d34025d5c5f2025d3d99c573e1d9832fa83cef25e9d9b07a8583500229d15bbb07b8e233d127d911d133e2f14b1
+  languageName: node
+  linkType: hard
+
+"@jest/types@npm:^28.1.1":
+  version: 28.1.1
+  resolution: "@jest/types@npm:28.1.1"
+  dependencies:
+    "@jest/schemas": ^28.0.2
+    "@types/istanbul-lib-coverage": ^2.0.0
+    "@types/istanbul-reports": ^3.0.0
+    "@types/node": "*"
+    "@types/yargs": ^17.0.8
+    chalk: ^4.0.0
+  checksum: 3c35d3674e08da1e4bb27b8303a59c71fd19a852ff7c7827305462f48ef224b5334aa50e0d547470e1cca1f2dd15a0cff51b46618b8e61e7196908504b29f08f
   languageName: node
   linkType: hard
 
@@ -2948,6 +2971,13 @@ __metadata:
   version: 0.23.5
   resolution: "@sinclair/typebox@npm:0.23.5"
   checksum: c96056d35d9cb862aeb635ff8873e2e7633e668dd544e162aee2690a82c970d0b3f90aa2b3501fe374dfa8e792388559a3e3a86712b23ebaef10061add534f47
+  languageName: node
+  linkType: hard
+
+"@sinclair/typebox@npm:^0.24.1":
+  version: 0.24.19
+  resolution: "@sinclair/typebox@npm:0.24.19"
+  checksum: dff2a3ebe9accc83e95fe3152f94de6ba5e4aba6833fba5436c334ba7e377b992f86228fd6f285cd6890d6419245dc89e06e17b74228289308c46224ab7ebd68
   languageName: node
   linkType: hard
 
@@ -9421,10 +9451,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"highlight.js@npm:11.5.1":
-  version: 11.5.1
-  resolution: "highlight.js@npm:11.5.1"
-  checksum: bff556101d7691c6275ad19318e368fc971cd0621ef3d86222f5373df7d8191a2fc1ffd47f118138cbcf85e5fe91cfeefaecd6184f49a3ec18090955efc9edef
+"highlight.js@npm:11.6.0":
+  version: 11.6.0
+  resolution: "highlight.js@npm:11.6.0"
+  checksum: 3908eb34a4b442ca1e20c1ae6415ea935fbbcdb2b532a89948d82b0fa4ad41fc5de3802a0de4e88a0bcb7d97d4445579048cd2aab1d105ac47f59dd58a9a98ae
   languageName: node
   linkType: hard
 
@@ -9488,9 +9518,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"honorable@npm:0.125.0":
-  version: 0.125.0
-  resolution: "honorable@npm:0.125.0"
+"honorable@npm:0.126.0":
+  version: 0.126.0
+  resolution: "honorable@npm:0.126.0"
   dependencies:
     "@emotion/is-prop-valid": ^1.1.3
     "@floating-ui/react-dom": ^0.7.2
@@ -9504,7 +9534,7 @@ __metadata:
     "@emotion/styled": ">=10.0.0"
     react: ">=16.0.0"
     react-dom: ">=16.0.0"
-  checksum: 3a0d2efc2f0c9f687f1bee9ec9fc41a6490baf7290bc8f4fe1a58ec24efb9439b1e20598298d9b0ef488a1caa6ed52f741eb29280e788f8aad15c7a8f9e4702f
+  checksum: 9aba1851d28ce4ad6cfe47627ab5eea3afaba4e378ee6c501ccfa7b6ca6ab60875fa27c20bdf3f167f1e1f4e9e5ce5ff451f1a481a613fabe5357503843f61fd
   languageName: node
   linkType: hard
 
@@ -13151,10 +13181,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"phoenix@npm:1.6.10":
-  version: 1.6.10
-  resolution: "phoenix@npm:1.6.10"
-  checksum: 651b032f60bd45f803c00284d6cd7f2c5f34469ee6d28037b9d1f3e7a939ba40e1c5d2fb67eebbcc9851535ed575d05e74ff4533694abdabe360bda2bba3aa9a
+"phoenix@npm:1.6.11":
+  version: 1.6.11
+  resolution: "phoenix@npm:1.6.11"
+  checksum: 3e0811fab9eb9bf676765837363fa4b750525de0b722a0673574666d4e9db31f007f750632180bf4257f5ca838ecac5a187133d0235cd2d85e05a55ab34dfc59
   languageName: node
   linkType: hard
 
@@ -18625,8 +18655,8 @@ __metadata:
     "@babel/preset-react": 7.18.6
     "@emotion/react": 11.9.3
     "@emotion/styled": 11.9.3
-    "@gitbeaker/browser": 35.6.0
-    "@jest/types": 28.1.1
+    "@gitbeaker/browser": 35.7.0
+    "@jest/types": 28.1.3
     "@nivo/core": 0.79.0
     "@nivo/geo": 0.79.1
     "@nivo/line": 0.79.1
@@ -18651,15 +18681,15 @@ __metadata:
     graphql-ws: 5.9.1
     grommet: 2.25.0
     grommet-icons: 4.7.0
-    highlight.js: 11.5.1
-    honorable: 0.125.0
+    highlight.js: 11.6.0
+    honorable: 0.126.0
     honorable-recipe-mp: 0.3.0
     honorable-theme-default: 0.61.0
     js-yaml: 4.1.0
     lodash: 4.17.21
     memoize-one: 6.0.0
     moment: 2.29.4
-    phoenix: 1.6.10
+    phoenix: 1.6.11
     pluralsh-absinthe-socket-apollo-link: 0.2.0
     pluralsh-design-system: 1.116.0
     postcss-import: 8.2.0

@@ -4,7 +4,7 @@ import { Span } from 'honorable'
 import { formatLocation } from '../../utils/geo'
 
 export function Location({ ip, city, country }) {
-  if (!ip) return null
+  if (!ip) return (<Span color="text-light">n/a</Span>)
   
   return (
     <Box>

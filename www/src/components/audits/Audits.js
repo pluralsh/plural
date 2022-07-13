@@ -5,12 +5,11 @@ import { Link } from 'react-router-dom'
 import { useQuery } from '@apollo/client'
 import lookup from 'country-code-lookup'
 
-import { A, Div, Span } from 'honorable'
+import { A, Div } from 'honorable'
 
 import { extendConnection } from '../../utils/graphql'
 import { StandardScroller } from '../utils/SmoothScroller'
 import { LoopingLogo } from '../utils/AnimatedLogo'
-import { formatLocation } from '../../utils/geo'
 import { Chloropleth } from '../utils/Chloropleth'
 
 import { ReturnToBeginning } from '../utils/ReturnToBeginning'
@@ -21,6 +20,7 @@ import { AUDITS_Q, AUDIT_METRICS, LOGIN_METRICS } from '../accounts/queries'
 import { ButtonGroup } from '../utils/ButtonGroup'
 
 import { AuditUser } from './AuditUser'
+import { Location } from './Location'
 
 const versionLink = ({ chart, terraform }) => chart ? `/charts/${chart.id}` : `/terraform/${terraform.id}`
 
@@ -69,23 +69,6 @@ export function Placeholder() {
       height="50px"
       pad="small"
     />
-  )
-}
-
-function Location({ ip, city, country }) {
-  if (!ip) return null
-
-  return (
-    <Box>
-      {country && (
-        <Span
-          fontWeight="bold"
-          color="white"
-        >{formatLocation(country, city)}
-        </Span>
-      )}
-      <Span color="text-light">{ip}</Span>
-    </Box>
   )
 }
 

@@ -21,6 +21,7 @@ import { ButtonGroup } from '../utils/ButtonGroup'
 
 import { AuditUser } from './AuditUser'
 import { Location } from './Location'
+import { Date } from './Date'
 
 const versionLink = ({ chart, terraform }) => chart ? `/charts/${chart.id}` : `/terraform/${terraform.id}`
 
@@ -76,15 +77,9 @@ function Audit({ audit, last }) {
   return (
     <TableRow last={last}>
       <TableData>{audit.action}</TableData>
-      <TableData>
-        {audit.actor && <AuditUser user={audit.actor} />}
-      </TableData>
-      <TableData>
-        <Resource audit={audit} />
-      </TableData>
-      <TableData>
-        {moment(audit.insertedAt).format('lll')}
-      </TableData>
+      <TableData>{audit.actor && <AuditUser user={audit.actor} />}</TableData>
+      <TableData><Resource audit={audit} /></TableData>
+      <TableData><Date date={audit.insertedAt} /></TableData>
       <TableData>
         <Location
           ip={audit.ip}

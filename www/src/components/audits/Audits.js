@@ -115,7 +115,6 @@ export function Audits() {
         height="100%"
         background="fill-one"
         border="1px solid border"
-        body2
       >
         <Box fill>
           {scrolled && <ReturnToBeginning beginning={returnToBeginning} />}

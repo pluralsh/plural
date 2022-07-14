@@ -30,6 +30,7 @@ function QueueItem({ q }) {
       <Span
         truncate
         color="text-light"
+        flexGrow={1}
       >
         {q.name}
       </Span>

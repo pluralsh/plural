@@ -14,7 +14,7 @@ function ButtonItem({ val, onChange, active, first, last }) {
       round={first ? { corner: 'left', size: ROUND } : (last ? { corner: 'right', size: ROUND } : null)}
       onClick={() => onChange(val)}
     >
-      <Span fontWeight="bold">{val}</Span>
+      <Span fontWeight="500">{val}</Span>
     </Box>
   )
 } 

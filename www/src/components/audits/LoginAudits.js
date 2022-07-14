@@ -84,6 +84,7 @@ export function LoginAudits() {
         border="1px solid border"
         width="100%"
         height="100%"
+        body2
       >
         <Box fill>
           {scrolled && <ReturnToBeginning beginning={returnToBeginning} />}

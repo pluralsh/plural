@@ -26,7 +26,10 @@ export function AuditChloropleth() {
       fill
       gap="medium"
     >
-      <Div width="150px">
+      <Div
+        width="150px"
+        fontFamily="Monument Semi-Mono, monospace"
+      >
         <ButtonGroup
           tabs={['Audits', 'Logins']}
           default={tab}

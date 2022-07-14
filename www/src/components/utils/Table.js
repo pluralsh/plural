@@ -11,7 +11,7 @@ function HeaderItem({ label, index }) {
       width={sizes[index]}
       align="center"
     >
-      <Span fontWeight="bold">{label}</Span>
+      <Span fontWeight="600">{label}</Span>
     </Flex>
   )
 }

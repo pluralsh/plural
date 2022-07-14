@@ -12,7 +12,7 @@ export function Header({ header, description, children }) {
           gap="8px"
           pad={{ vertical: 'small' }}
         >
-          <H1>{header}</H1>
+          <H1 title1>{header}</H1>
           <Span
             color="text-light"
             body1

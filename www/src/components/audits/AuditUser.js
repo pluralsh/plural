@@ -1,4 +1,5 @@
-import { Box, Text } from 'grommet'
+import { Box } from 'grommet'
+import { Span } from 'honorable'
 
 import Avatar from '../users/Avatar'
 
@@ -14,7 +15,7 @@ export function AuditUser({ user }) {
         user={user}
         size="24px"
       />
-      <Text size="small">{user.name}</Text>
+      <Span>{user.name}</Span>
     </Box>
   )
 }

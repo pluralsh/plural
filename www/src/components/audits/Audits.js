@@ -2,21 +2,18 @@ import { useCallback, useState } from 'react'
 import { Box } from 'grommet'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@apollo/client'
-import lookup from 'country-code-lookup'
 
-import { A, Div } from 'honorable'
+import { A } from 'honorable'
 
 import { extendConnection } from '../../utils/graphql'
 import { StandardScroller } from '../utils/SmoothScroller'
 import { LoopingLogo } from '../utils/AnimatedLogo'
-import { Chloropleth } from '../utils/Chloropleth'
 
 import { ReturnToBeginning } from '../utils/ReturnToBeginning'
 
 import { Table, TableData, TableRow } from '../utils/Table'
 
-import { AUDITS_Q, AUDIT_METRICS, LOGIN_METRICS } from '../accounts/queries'
-import { ButtonGroup } from '../utils/ButtonGroup'
+import { AUDITS_Q } from '../accounts/queries'
 
 import { AuditUser } from './AuditUser'
 import { Location } from './Location'
@@ -87,39 +84,6 @@ function Audit({ audit, last }) {
         />
       </TableData>
     </TableRow>
-  )
-}
-
-export function AuditChloro() {
-  const [tab, setTab] = useState('Audits')
-  const { data } = useQuery(tab === 'Logins' ? LOGIN_METRICS : AUDIT_METRICS, { fetchPolicy: 'cache-and-network' })
-
-  if (!data) return null
-
-  const results = data.auditMetrics || data.loginMetrics
-  const metrics = results.map(({ country, count }) => ({
-    id: lookup.byIso(country).iso3, value: count,
-  }))
-
-  return (
-    <Box
-      fill
-      gap="medium"
-    >
-      <Div width="150px">
-        <ButtonGroup
-          tabs={['Audits', 'Logins']}
-          default="Audits"
-          onChange={setTab}
-        />
-      </Div>
-      <Box
-        fill
-        background="fill-one"
-      >
-        <Chloropleth data={metrics} />
-      </Box>
-    </Box>
   )
 }
 

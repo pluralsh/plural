@@ -9479,18 +9479,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"honorable-theme-default@npm:0.61.0":
-  version: 0.61.0
-  resolution: "honorable-theme-default@npm:0.61.0"
+"honorable-theme-default@npm:0.63.0":
+  version: 0.63.0
+  resolution: "honorable-theme-default@npm:0.63.0"
   peerDependencies:
     "@emotion/react": ">=10.0.0"
-  checksum: 66c550b2f2c11fd41eb8a5d390db815b3172c601889c6d0b8e7ee46eaada0d753abd8d00e84b6e4a5708a71a479d4355dcb97f0d93b4f0deca911d6985bc3387
+  checksum: 2e50ae3b074f4e8b0530f67428beb224d25348061fa3b67f5ebf9fb787a6c694c936138fa1dc0a9b4b89ebd62a455bbc1966a14802729011f509b58ace86aa30
   languageName: node
   linkType: hard
 
-"honorable@npm:0.126.0":
-  version: 0.126.0
-  resolution: "honorable@npm:0.126.0"
+"honorable@npm:0.129.0":
+  version: 0.129.0
+  resolution: "honorable@npm:0.129.0"
   dependencies:
     "@emotion/is-prop-valid": ^1.1.3
     "@floating-ui/react-dom": ^0.7.2
@@ -9504,7 +9504,7 @@ __metadata:
     "@emotion/styled": ">=10.0.0"
     react: ">=16.0.0"
     react-dom: ">=16.0.0"
-  checksum: 9aba1851d28ce4ad6cfe47627ab5eea3afaba4e378ee6c501ccfa7b6ca6ab60875fa27c20bdf3f167f1e1f4e9e5ce5ff451f1a481a613fabe5357503843f61fd
+  checksum: 8d5c2850087092157f11397970eb8ee840b9ede2b4ab9796c80195c3f9fe1b9b13a12c7f8553788db17e627b63f1f5683ab2069e632c7b903432aa9fd6ab5149
   languageName: node
   linkType: hard
 
@@ -13236,9 +13236,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pluralsh-design-system@npm:1.116.0":
-  version: 1.116.0
-  resolution: "pluralsh-design-system@npm:1.116.0"
+"pluralsh-design-system@npm:1.118.0":
+  version: 1.118.0
+  resolution: "pluralsh-design-system@npm:1.118.0"
   dependencies:
     prop-types: ^15.8.1
   peerDependencies:
@@ -13249,7 +13249,7 @@ __metadata:
     react: ">=16.0.0"
     react-dom: ">=16.0.0"
     react-transition-group: ">=4.4.2"
-  checksum: d08c055c98d3980f4bdaaf217ed28dbe44779264baeb89c8f73f063b678f6195c202b838ce72dc6c73e31c4cdab0e5fb5d65f722972a6fa9b154f3110aef051c
+  checksum: 33d6261ef08459ce32dd1659aad36d84944a5b495b27eacc45a86f0fd3c1870565a3eba1c370445cff9f6cc0a247dd28b7858849c7bf9b2dbab2729e80bcfadd
   languageName: node
   linkType: hard
 
@@ -18652,16 +18652,16 @@ __metadata:
     grommet: 2.25.0
     grommet-icons: 4.7.0
     highlight.js: 11.6.0
-    honorable: 0.126.0
+    honorable: 0.129.0
     honorable-recipe-mp: 0.3.0
-    honorable-theme-default: 0.61.0
+    honorable-theme-default: 0.63.0
     js-yaml: 4.1.0
     lodash: 4.17.21
     memoize-one: 6.0.0
     moment: 2.29.4
     phoenix: 1.6.11
     pluralsh-absinthe-socket-apollo-link: 0.2.0
-    pluralsh-design-system: 1.116.0
+    pluralsh-design-system: 1.118.0
     postcss-import: 8.2.0
     prop-types: 15.8.1
     query-string: 7.1.1

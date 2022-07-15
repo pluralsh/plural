@@ -1,4 +1,5 @@
-import { useContext, useState } from 'react'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { SetStateAction, useContext, useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { Button, Div, Flex, H2, Input as HonorableInput, Img, MenuItem, P, Select, Tooltip, useTheme } from 'honorable'
 import { FormField, Input, Tag } from 'pluralsh-design-system'
@@ -34,7 +35,7 @@ function RepositoryEdit() {
     tags,
     icon,
     darkIcon,
-  } = useContext(RepositoryContext)
+  } = useContext(RepositoryContext) as any
   const theme = useTheme()
   const [nameUpdate, setNameUpdate] = useState(name)
   const [descriptionUpdate, setDescriptionUpdate] = useState(description)
@@ -42,7 +43,7 @@ function RepositoryEdit() {
   const [oauthUrlUpdate, setOauthUrlUpdate] = useState(oauthSettings?.uriFormat || '')
   const [oauthMethodUpdate, setOauthMethodUpdate] = useState(oauthSettings?.authMethod || authMethods.BASIC)
   const [tag, setTag] = useState('')
-  const [tagsUpdate, setTagsUpdate] = useState(tags.map(t => t.tag))
+  const [tagsUpdate, setTagsUpdate] = useState(tags.map((t: { tag: any }) => t.tag))
   const [iconUpdate, setIconUpdate] = useState({ file: null, previewUrl: icon })
   const [darkIconUpdate, setdarkIconUpdate] = useState({ file: null, previewUrl: darkIcon })
   const [success, setSuccess] = useState(false)
@@ -58,14 +59,14 @@ function RepositoryEdit() {
           uriFormat: oauthUrlUpdate,
           authMethod: oauthMethodUpdate,
         },
-        tags: tagsUpdate.map(tag => ({ tag })),
+        tags: tagsUpdate.map((tag: any) => ({ tag })),
         icon: iconUpdate.file,
         darkIcon: darkIconUpdate.file,
       },
     },
     update: (cache, { data: { updateRepository } }) => {
       console.log('updateRepository', updateRepository)
-      const prev = cache.readQuery({ query: REPOSITORY_QUERY, variables: { repositoryId: id } })
+      const prev:any = cache.readQuery({ query: REPOSITORY_QUERY, variables: { repositoryId: id } })
 
       cache.writeQuery({
         query: REPOSITORY_QUERY,
@@ -86,7 +87,7 @@ function RepositoryEdit() {
 
   console.log('success', success)
 
-  function handleSubmit(event) {
+  function handleSubmit(event: React.SyntheticEvent<HTMLElement>) {
     event.preventDefault()
     mutation()
   }
@@ -97,19 +98,19 @@ function RepositoryEdit() {
     setCategoryUpdate(category)
     setOauthUrlUpdate(oauthSettings?.uriFormat || '')
     setOauthMethodUpdate(oauthSettings?.authMethod || authMethods.BASIC)
-    setTagsUpdate(tags.map(t => t.tag))
+    setTagsUpdate(tags.map((t: { tag: any }) => t.tag))
     setIconUpdate({ file: null, previewUrl: icon })
     setdarkIconUpdate({ file: null, previewUrl: darkIcon })
   }
 
-  function handleDeleteTag(tag) {
-    setTagsUpdate(tagsUpdate.filter(t => t !== tag))
+  function handleDeleteTag(tag: any) {
+    setTagsUpdate(tagsUpdate.filter((t: any) => t !== tag))
   }
 
   function handleCreateTag() {
     if (!tag) return
 
-    setTagsUpdate(x => [...x.filter(t => t !== tag), tag])
+    setTagsUpdate((x: any[]) => [...x.filter((t: string) => t !== tag), tag])
     setTag('')
   }
 
@@ -131,14 +132,14 @@ function RepositoryEdit() {
     </P>
   )
 
-  function renderIcon(src, setSrc, mode) {
+  function renderIcon(src: string | undefined, setSrc: { (value: SetStateAction<{ file: null; previewUrl: any }>): void; (value: SetStateAction<{ file: null; previewUrl: any }>): void }, mode: string | undefined) {
 
-    function wrap(node) {
+    function wrap(node: JSX.Element) {
       return (
         <FilePicker
           extensions={['jpg', 'jpeg', 'png']}
           dims={{ minWidth: 64, maxWidth: 512, minHeight: 64, maxHeight: 512 }}
-          onChange={file => generatePreview(file, setSrc)}
+          onChange={(file: any) => generatePreview(file, setSrc)}
         >
           {node}
         </FilePicker>
@@ -278,7 +279,7 @@ function RepositoryEdit() {
           wrap="wrap"
           align="flex-start"
         >
-          {tagsUpdate.map(tag => (
+          {tagsUpdate.map((tag: any) => (
             <Tooltip label="Click to remove">
               <Tag
                 key={tag}

@@ -1,14 +1,25 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { SetStateAction, useContext, useState } from 'react'
 import { useMutation } from '@apollo/client'
-import { Button, Div, Flex, H2, Input as HonorableInput, Img, MenuItem, P, Select, Tooltip, useTheme } from 'honorable'
+import {
+  Button,
+  Div,
+  Flex,
+  H2,
+  Input as HonorableInput,
+  Img,
+  MenuItem,
+  P,
+  Select,
+  Tooltip,
+  useTheme,
+} from 'honorable'
 import { FormField, Input, Tag } from 'pluralsh-design-system'
 import { FilePicker } from 'react-file-picker'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 import { capitalize } from '../../utils/string'
 import { generatePreview } from '../../utils/file'
-
 import { AuthMethod as authMethods } from '../oidc/types'
 
 import { CREATE_REPOSITORY_MUTATION, REPOSITORY_QUERY } from './queries'
@@ -40,12 +51,24 @@ function RepositoryEdit() {
   const [nameUpdate, setNameUpdate] = useState(name)
   const [descriptionUpdate, setDescriptionUpdate] = useState(description)
   const [categoryUpdate, setCategoryUpdate] = useState(category)
-  const [oauthUrlUpdate, setOauthUrlUpdate] = useState(oauthSettings?.uriFormat || '')
-  const [oauthMethodUpdate, setOauthMethodUpdate] = useState(oauthSettings?.authMethod || authMethods.BASIC)
+  const [oauthUrlUpdate, setOauthUrlUpdate] = useState(
+    oauthSettings?.uriFormat || ''
+  )
+  const [oauthMethodUpdate, setOauthMethodUpdate] = useState(
+    oauthSettings?.authMethod || authMethods.BASIC
+  )
   const [tag, setTag] = useState('')
-  const [tagsUpdate, setTagsUpdate] = useState(tags.map((t: { tag: any }) => t.tag))
-  const [iconUpdate, setIconUpdate] = useState({ file: null, previewUrl: icon })
-  const [darkIconUpdate, setdarkIconUpdate] = useState({ file: null, previewUrl: darkIcon })
+  const [tagsUpdate, setTagsUpdate] = useState(
+    tags.map((t: { tag: any }) => t.tag)
+  )
+  const [iconUpdate, setIconUpdate] = useState({
+    file: null,
+    previewUrl: icon,
+  })
+  const [darkIconUpdate, setdarkIconUpdate] = useState({
+    file: null,
+    previewUrl: darkIcon,
+  })
   const [success, setSuccess] = useState(false)
 
   const [mutation, { loading }] = useMutation(CREATE_REPOSITORY_MUTATION, {
@@ -66,7 +89,10 @@ function RepositoryEdit() {
     },
     update: (cache, { data: { updateRepository } }) => {
       console.log('updateRepository', updateRepository)
-      const prev:any = cache.readQuery({ query: REPOSITORY_QUERY, variables: { repositoryId: id } })
+      const prev: any = cache.readQuery({
+        query: REPOSITORY_QUERY,
+        variables: { repositoryId: id },
+      })
 
       cache.writeQuery({
         query: REPOSITORY_QUERY,
@@ -115,11 +141,7 @@ function RepositoryEdit() {
   }
 
   if (!editable) {
-    return (
-      <H2>
-        You cannot edit this repository
-      </H2>
-    )
+    return <H2>You cannot edit this repository</H2>
   }
 
   const textStartIcon = (
@@ -132,8 +154,14 @@ function RepositoryEdit() {
     </P>
   )
 
-  function renderIcon(src: string | undefined, setSrc: { (value: SetStateAction<{ file: null; previewUrl: any }>): void; (value: SetStateAction<{ file: null; previewUrl: any }>): void }, mode: string | undefined) {
-
+  function renderIcon(
+    src: string | undefined,
+    setSrc: {
+      (value: SetStateAction<{ file: null; previewUrl: any }>): void;
+      (value: SetStateAction<{ file: null; previewUrl: any }>): void;
+    },
+    mode: string | undefined
+  ) {
     function wrap(node: JSX.Element) {
       return (
         <FilePicker
@@ -159,7 +187,9 @@ function RepositoryEdit() {
         >
           <P
             body0
-            color={mode === theme.mode ? 'text' : mode === 'dark' ? 'text' : 'black'}
+            color={
+              mode === theme.mode ? 'text' : mode === 'dark' ? 'text' : 'black'
+            }
           >
             +
           </P>
@@ -183,9 +213,7 @@ function RepositoryEdit() {
 
   return (
     <>
-      <H2>
-        Edit {capitalize(name)}
-      </H2>
+      <H2>Edit {capitalize(name)}</H2>
       <FormField
         mt={2}
         label="Icons"
@@ -254,7 +282,9 @@ function RepositoryEdit() {
           )}
           value={oauthUrlUpdate}
           onChange={event => setOauthUrlUpdate(event.target.value)}
-          placeholder={oauthSettings?.uriFormat || 'https://{domain}/oauth/callback'}
+          placeholder={
+            oauthSettings?.uriFormat || 'https://{domain}/oauth/callback'
+          }
         />
         <Select
           mt={0.5}

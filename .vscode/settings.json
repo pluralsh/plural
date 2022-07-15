@@ -2,8 +2,10 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
-  "eslint.validate": ["javascript"],
+  "eslint.validate": ["javascript", "typescript"],
   "eslint.workingDirectories": [
-    {"mode": "auto"}
+    {
+      "mode": "auto"
+    }
   ]
 }

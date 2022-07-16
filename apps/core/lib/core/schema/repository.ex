@@ -36,6 +36,7 @@ defmodule Core.Schema.Repository do
     field :private_key,   Piazza.Ecto.EncryptedString
     field :secrets,       :map
     field :private,       :boolean, default: false
+    field :verified,      :boolean, default: false
     field :category,      Category
     field :notes,         :binary
     field :git_url,       :string
@@ -172,7 +173,7 @@ defmodule Core.Schema.Repository do
   def ordered(query \\ __MODULE__, order \\ [asc: :name]),
     do: from(r in query, order_by: ^order)
 
-  @valid ~w(name publisher_id description documentation secrets private category notes default_tag git_url homepage readme)a
+  @valid ~w(name publisher_id description documentation secrets private category verified notes default_tag git_url homepage readme)a
 
   def changeset(model, attrs \\ %{}) do
     model

@@ -24,6 +24,7 @@ defmodule GraphQl.Schema.Repository do
     field :dark_icon,      :upload_or_url
     field :tags,           list_of(:tag_attributes)
     field :private,        :boolean
+    field :verified,       :boolean
     field :notes,          :string
     field :default_tag,    :string
     field :git_url,        :string
@@ -139,6 +140,7 @@ defmodule GraphQl.Schema.Repository do
     field :documentation,  :string
     field :category,       :category
     field :private,        :boolean
+    field :verified,       :boolean
     field :notes,          :string
     field :default_tag,    :string
     field :git_url,        :string

@@ -24,10 +24,15 @@ function InstalledActions({ installation, ...props }: any) {
     <>
       <Flex
         align="center"
-        gap="small"
+        gap="medium"
         {...props}
       >
-        <InferredConsoleButton primary secondary={false} text="Console" />
+        <InferredConsoleButton
+          primary
+          secondary={false}
+          text="Console"
+          flexGrow={1}
+        />
         <Button
           secondary
           onClick={() => setOpen(true)}
@@ -66,6 +71,19 @@ function RepositorySideCar({ ...props }) {
     >
       {!repository.installation && <InstallDropdownButton recipes={recipes} />}
       {!!repository.installation && <InstalledActions installation={repository.installation} />}
+      <Div
+        marginTop={2}
+        border="1px solid border"
+        borderRadius="large"
+        padding="medium"
+      >
+        <Button
+          small
+          tertiary
+        >
+          Website
+        </Button>
+      </Div>
     </Div>
   )
 }

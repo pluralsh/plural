@@ -85,7 +85,10 @@ function Repository() {
           >
             <Outlet />
           </Div>
-          <RepositorySideCar marginLeft="xlarge" />
+          <RepositorySideCar
+            marginLeft="xlarge"
+            marginRight="large"
+          />
         </Flex>
       </Flex>
     </RepositoryContext.Provider>

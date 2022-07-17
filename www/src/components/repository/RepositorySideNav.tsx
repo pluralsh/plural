@@ -6,7 +6,7 @@ import { Tab } from 'pluralsh-design-system'
 import RepositoryContext from '../../contexts/RepositoryContext'
 import { capitalize } from '../../utils/string'
 
-function RepositorySideNav() {
+function RepositorySideNav({ ...props }) {
   const repository = useContext(RepositoryContext)
   const { pathname } = useLocation()
 
@@ -14,10 +14,10 @@ function RepositorySideNav() {
     <Flex
       paddingVertical="medium"
       paddingLeft="xlarge"
-      paddingRight="large"
       width={240}
       flexShrink={0}
       direction="column"
+      {...props}
     >
       <Flex
         align="center"

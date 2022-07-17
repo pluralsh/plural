@@ -10,6 +10,7 @@ import useBreadcrumbs from '../../hooks/useBreadcrumbs'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
 import RepositorySideNav from './RepositorySideNav.tsx'
+import RepositorySideCar from './RepositorySideCar.tsx'
 
 import { REPOSITORY_QUERY } from './queries'
 
@@ -31,8 +32,8 @@ function Repository() {
       <Flex
         // These mp values are to align the looping logo with the previous looping logo.
         // Reload the page on /repository/foo to see it in action.
-        pt={24.25}
-        ml={-5}
+        paddingTop={24.25 * 16}
+        marginLeft={-5 * 16}
         align="center"
         justify="center"
       >
@@ -52,7 +53,7 @@ function Repository() {
         overflowY="hidden"
       >
         <Flex
-          paddingVertical={18}
+          paddingVertical="xsmall"
           marginLeft="xlarge"
           marginRight="xlarge"
           borderBottom="1px solid border"
@@ -72,7 +73,7 @@ function Repository() {
           flexGrow={1}
           height={0}
         >
-          <RepositorySideNav />
+          <RepositorySideNav marginRight="xlarge" />
           <Div
             flexGrow={1}
             paddingTop="large"
@@ -84,6 +85,7 @@ function Repository() {
           >
             <Outlet />
           </Div>
+          <RepositorySideCar marginLeft="xlarge" />
         </Flex>
       </Flex>
     </RepositoryContext.Provider>

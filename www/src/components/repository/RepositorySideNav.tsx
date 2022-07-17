@@ -46,13 +46,7 @@ function RepositorySideNav() {
         color="text-xlight"
         marginTop="medium"
       >
-        Published by <A
-          inline
-          as={Link}
-          to={`/publisher/${repository.publisher.id}`}
-        >
-          {capitalize(repository.publisher.name)}
-        </A>
+        Published by {capitalize(repository.publisher.name)}
       </P>
       <Div
         marginTop="medium"

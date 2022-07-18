@@ -23,7 +23,7 @@ ENV SKIP_PHOENIX=${SKIP_PHOENIX} \
 WORKDIR /opt/app
 
 # This step installs all the build tools we'll need
-RUN apk update && \
+RUN apk update --allow-untrusted && \
   apk upgrade --no-cache && \
   apk add --no-cache \
     nodejs \

@@ -187,7 +187,7 @@ defmodule Core.Schema.Repository do
     |> foreign_key_constraint(:publisher_id)
     |> cast_assoc(:integration_resource_definition)
     |> unique_constraint(:name)
-    |> validate_required([:name])
+    |> validate_required([:name, :category])
     |> generate_uuid(:icon_id)
     |> cast_attachments(attrs, [:icon, :dark_icon], allow_urls: true)
   end

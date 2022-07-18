@@ -72,17 +72,53 @@ function RepositorySideCar({ ...props }) {
       {!repository.installation && <InstallDropdownButton recipes={recipes} />}
       {!!repository.installation && <InstalledActions installation={repository.installation} />}
       <Div
-        marginTop={2}
+        marginTop="large"
         border="1px solid border"
         borderRadius="large"
         padding="medium"
       >
-        <Button
-          small
-          tertiary
+        <P
+          overline
+          color="text-xlight"
         >
-          Website
-        </Button>
+          {repository.name} resources
+        </P>
+        <Flex
+          marginTop="medium"
+          width="100%"
+          direction="column"
+          align="flex-start"
+        >
+          <Button
+            small
+            tertiary
+            as="a"
+            target="_blank"
+            href={repository.homepage}
+          >
+            Website
+          </Button>
+          {repository.license?.url && (
+            <Button
+              small
+              tertiary
+              as="a"
+              target="_blank"
+              href={repository.license.url}
+            >
+              License
+            </Button>
+          )}
+          <Button
+            small
+            tertiary
+            as="a"
+            target="_blank"
+            href={repository.git_url}
+          >
+            GitHub
+          </Button>
+        </Flex>
       </Div>
     </Div>
   )

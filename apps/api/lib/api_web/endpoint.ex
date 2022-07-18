@@ -52,5 +52,7 @@ defmodule ApiWeb.Endpoint do
     key: "_api_key",
     signing_salt: "T9YbiJWj"
 
+  plug FT.K8S.TrafficDrainPlug
+
   plug ApiWeb.Router
 end

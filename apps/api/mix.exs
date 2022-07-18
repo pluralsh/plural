@@ -49,6 +49,7 @@ defmodule Api.MixProject do
       {:prometheus_ex, "~> 3.0"},
       {:prometheus_plugs, "~> 1.1.1"},
       {:remote_ip, "~> 0.2.0"},
+      {:k8s_traffic_plug, github: "Financial-Times/k8s_traffic_plug"},
 
       {:core, in_umbrella: true},
       {:graphql, in_umbrella: true},

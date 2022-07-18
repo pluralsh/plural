@@ -76,6 +76,7 @@
   "joken": {:hex, :joken, "2.1.0", "bf21a73105d82649f617c5e59a7f8919aa47013d2519ebcc39d998d8d12adda9", [:mix], [{:jose, "~> 1.9", [hex: :jose, repo: "hexpm", optional: false]}], "hexpm", "eb02df7d5526df13063397e051b926b7006d5986d66f399eefc474f560cdad6a"},
   "jose": {:hex, :jose, "1.9.0", "4167c5f6d06ffaebffd15cdb8da61a108445ef5e85ab8f5a7ad926fdf3ada154", [:mix, :rebar3], [{:base64url, "~> 0.0.1", [hex: :base64url, repo: "hexpm", optional: false]}], "hexpm", "6429c4fee52b2dda7861ee19a4f09c8c1ffa213bee3a1ec187828fde95d447ed"},
   "jsx": {:hex, :jsx, "2.11.0", "08154624050333919b4ac1b789667d5f4db166dc50e190c4d778d1587f102ee0", [:rebar3], [], "hexpm", "eed26a0d04d217f9eecefffb89714452556cf90eb38f290a27a4d45b9988f8c0"},
+  "k8s_traffic_plug": {:git, "https://github.com/Financial-Times/k8s_traffic_plug.git", "568f0cbf2481233eefb1aaaab62ead0df9acbdbd", []},
   "kazan": {:git, "https://github.com/michaeljguarino/kazan.git", "c87c8884b6bbc8848860b2387dc2650ae08dfbfd", []},
   "lager": {:hex, :lager, "3.8.0", "3402b9a7e473680ca179fc2f1d827cab88dd37dd1e6113090c6f45ef05228a1c", [:rebar3], [{:goldrush, "0.1.9", [hex: :goldrush, repo: "hexpm", optional: false]}], "hexpm", "f6cb541b688eab60730d8d286eb77256a5a9ad06eac10d43beaf55d07e68bbb6"},
   "libcluster": {:hex, :libcluster, "3.1.1", "cbab97b96141f47f2fe5563183c444bbce9282b3991ef054d69b8805546f0122", [:mix], [{:jason, "~> 1.1.2", [hex: :jason, repo: "hexpm", optional: false]}], "hexpm", "8eaf6b0ca713f70ff588596743becba3e0ddda9ec14873adf7634ea705afc6f3"},

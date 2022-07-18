@@ -48,5 +48,6 @@ defmodule RtcWeb.Endpoint do
   plug RtcWeb.Plugs.MetricsExporter
 
   plug Plug.Session, @session_options
+  plug FT.K8S.TrafficDrainPlug
   plug RtcWeb.Router
 end

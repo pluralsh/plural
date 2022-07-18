@@ -56,6 +56,9 @@ config :core, Core.Services.Payments,
 config :botanist,
   ecto_repo: Core.Repo
 
+config :core, :connection_draining,
+  shutdown_delay_ms: 1
+
 config :arc,
   storage: Arc.Storage.GCS,
   bucket: "forge-assets"

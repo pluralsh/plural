@@ -1,10 +1,12 @@
-import { useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { Box } from 'grommet'
 import { useMutation } from '@apollo/client'
 
 import { Button, Div, Flex } from 'honorable'
 
 import { FormField, Input, Token } from 'pluralsh-design-system'
+
+import { useNavigate, useParams } from 'react-router-dom'
 
 import { fetchGroups, fetchUsers } from '../accounts/Typeaheads'
 
@@ -217,8 +219,13 @@ export function UpdateProvider({ installation }) {
 }
 
 export function OIDCProvider() {
+  const navigate = useNavigate()
   const { installation } = useContext(RepositoryContext)
+  const { id } = useParams()
 
+  useEffect(() => installation ? null : navigate(-1), [id, installation, navigate])
+
+  if (!installation) return null
   if (installation.oidcProvider) return <UpdateProvider installation={installation} />
 
   return <CreateProvider installation={installation} />

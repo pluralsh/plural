@@ -13236,20 +13236,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pluralsh-design-system@npm:1.118.0":
-  version: 1.118.0
-  resolution: "pluralsh-design-system@npm:1.118.0"
+"pluralsh-design-system@npm:1.123.0":
+  version: 1.123.0
+  resolution: "pluralsh-design-system@npm:1.123.0"
   dependencies:
     prop-types: ^15.8.1
+    resize-observer-polyfill: ^1.5.1
   peerDependencies:
     "@emotion/react": "*"
     "@emotion/styled": "*"
-    honorable: ">=0.120.0"
-    honorable-theme-default: ">=0.60.0"
+    honorable: ">=0.127.0"
+    honorable-theme-default: ">=0.61.0"
     react: ">=16.0.0"
     react-dom: ">=16.0.0"
     react-transition-group: ">=4.4.2"
-  checksum: 33d6261ef08459ce32dd1659aad36d84944a5b495b27eacc45a86f0fd3c1870565a3eba1c370445cff9f6cc0a247dd28b7858849c7bf9b2dbab2729e80bcfadd
+  checksum: b8d166f8320b9ee43ac82068dbaa6a6e426dcb660710402c72608ea0b3b8093e6c01c215851df63207335ef4ff2ef28f8213eadc69fe13ba5490b575846dac23
   languageName: node
   linkType: hard
 
@@ -15426,6 +15427,13 @@ __metadata:
   version: 4.1.6
   resolution: "reselect@npm:4.1.6"
   checksum: 3ea1058422904063ec93c8f4693fe33dcb2178bbf417ace8db5b2c797a5875cf357d9308d11ed3942ee22507dd34ecfbf1f3a21340a4f31c206cab1d36ceef31
+  languageName: node
+  linkType: hard
+
+"resize-observer-polyfill@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "resize-observer-polyfill@npm:1.5.1"
+  checksum: 57e7f79489867b00ba43c9c051524a5c8f162a61d5547e99333549afc23e15c44fd43f2f318ea0261ea98c0eb3158cca261e6f48d66e1ed1cd1f340a43977094
   languageName: node
   linkType: hard
 
@@ -18661,7 +18669,7 @@ __metadata:
     moment: 2.29.4
     phoenix: 1.6.11
     pluralsh-absinthe-socket-apollo-link: 0.2.0
-    pluralsh-design-system: 1.118.0
+    pluralsh-design-system: 1.123.0
     postcss-import: 8.2.0
     prop-types: 15.8.1
     query-string: 7.1.1

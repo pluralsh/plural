@@ -7,13 +7,17 @@ on:
     branches: [ master ]
 jobs:
   build:
-    name: Build images
+    name: Build image
     runs-on: ubuntu-latest
     strategy:
       matrix:
         app: [ plural, cron, worker, rtc ]
     steps:
       - uses: actions/checkout@v3
+      - id: version
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: ./VERSION
       - uses: docker/setup-qemu-action@v2
       - uses: docker/setup-buildx-action@v2
       - name: Build ${{ matrix.app }} image
@@ -22,9 +26,9 @@ jobs:
           context: .
           file: ./Dockerfile
           push: false
-          build-args: | # TODO Get current APP_VSN
+          build-args: |
             APP_NAME=${{ matrix.app }}
-            APP_VSN=0.2.0
+            APP_VSN=${{ steps.version.outputs.content }}
             GIT_COMMIT=$GITHUB_SHA
   test:
     name: Test

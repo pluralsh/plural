@@ -1,5 +1,4 @@
-name: www-ci
-
+name: Plural UI
 on:
   push:
     branches:
@@ -14,10 +13,24 @@ on:
       - ".github/workflows/www.yaml"
       - "www/**"
 jobs:
+  build:
+    name: Build image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: docker/setup-qemu-action@v2
+      - uses: docker/setup-buildx-action@v2
+      - uses: docker/build-push-action@v2
+        with:
+          context: ./www
+          file: ./www/Dockerfile
+          push: false
   test:
+    name: Unit test
     runs-on: ubuntu-latest
     defaults:
       run:
+        shell: bash
         working-directory: www
     steps:
       - uses: actions/checkout@v3
@@ -30,15 +43,15 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
-      - shell: bash
-        run: |
+      - run: |
           [ ! -d "node_modules" ] && yarn install --immutable
-      - shell: bash
-        run: yarn test
+      - run: yarn test
   lint:
+    name: Lint
     runs-on: ubuntu-latest
     defaults:
       run:
+        shell: bash
         working-directory: www
     steps:
       - uses: actions/checkout@v3
@@ -51,8 +64,6 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
-      - shell: bash
-        run: |
+      - run: |
           [ ! -d "node_modules" ] && yarn install --immutable
-      - shell: bash
-        run: yarn lint
+      - run: yarn lint

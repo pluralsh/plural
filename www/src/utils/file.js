@@ -6,6 +6,8 @@ export function generatePreview(file, callback) {
     previewUrl: reader.result,
   })
   reader.readAsDataURL(file)
+
+  return reader
 }
 
 export function download(url) {

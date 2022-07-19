@@ -1,3 +1,8 @@
+FROM ubuntu:22.10 AS user
+
+# Create a nonroot user for final image
+RUN useradd -u 10001 nonroot
+
 FROM bitwalker/alpine-elixir:1.11.4 AS builder
 
 # The following are build arguments used to change variable parts of the image.
@@ -101,5 +106,13 @@ COPY --from=helm /usr/local/bin/helm /usr/local/bin/helm
 COPY --from=cmd /go/bin/plural /usr/local/bin/plural
 COPY --from=helm /usr/local/bin/goon /usr/local/bin/goon
 COPY --from=builder /opt/built .
+
+# Copy nonroot user and switch to it
+COPY --from=user /etc/passwd /etc/passwd
+
+RUN chown -R nonroot /opt/app
+RUN chown -R nonroot /usr/local/bin
+
+USER nonroot
 
 CMD trap 'exit' INT; /opt/app/bin/${APP_NAME} foreground

@@ -3630,7 +3630,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/eslint-plugin@npm:^5.5.0":
+"@typescript-eslint/eslint-plugin@npm:5.30.6, @typescript-eslint/eslint-plugin@npm:^5.5.0":
   version: 5.30.6
   resolution: "@typescript-eslint/eslint-plugin@npm:5.30.6"
   dependencies:
@@ -3664,7 +3664,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:^5.5.0":
+"@typescript-eslint/parser@npm:5.30.6, @typescript-eslint/parser@npm:^5.5.0":
   version: 5.30.6
   resolution: "@typescript-eslint/parser@npm:5.30.6"
   dependencies:
@@ -18642,6 +18642,8 @@ __metadata:
     "@pluralsh/stylelint-config": 1.0.0
     "@testing-library/jest-dom": 5.16.4
     "@testing-library/react": 13.3.0
+    "@typescript-eslint/eslint-plugin": 5.30.6
+    "@typescript-eslint/parser": 5.30.6
     apollo-absinthe-upload-link: 1.7.0
     buffer: 6.0.3
     country-code-lookup: 0.0.20

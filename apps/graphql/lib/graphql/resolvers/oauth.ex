@@ -70,7 +70,6 @@ defmodule GraphQl.Resolvers.OAuth do
     |> Map.put(:repository, repo)
     |> ok()
   end
-  defp oidc_response({:ok, %{installation: inst} = oidc_provider}, _),
-    do: {:ok, inst.repository}
+  defp oidc_response({:ok, %{installation: %{repository: repo}}}, _), do: {:ok, repo}
   defp oidc_response(error, _), do: error
 end

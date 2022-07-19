@@ -145,7 +145,7 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
       </Div>
       {isModalOpen && (
         <Fireworks
-          options={{}}
+          options={{ opacity: 1, brightness: { min: 60, max: 90 } }}
           style={{
             top: 0,
             left: 0,

@@ -1,5 +1,5 @@
 import React, {
-  EventHandler,
+  MouseEventHandler,
   useCallback,
   useContext,
   useEffect,
@@ -98,7 +98,7 @@ function RepoIcon({
   onClick,
 }: {
   src: string | null;
-  onClick: EventHandler<any>;
+  onClick: MouseEventHandler;
 }) {
   if (!src) {
     return (

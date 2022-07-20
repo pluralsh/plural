@@ -76,5 +76,17 @@ const splitLink = split(
 
 export const client = new ApolloClient({
   link: authLink.concat(splitLink),
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    typePolicies: {
+      Repository: {
+        fields: {
+          tags: {
+            merge(_existing, incoming) {
+              return incoming
+            },
+          },
+        },
+      },
+    },
+  }),
 })

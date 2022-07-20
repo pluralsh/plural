@@ -44,6 +44,7 @@ function MarketplaceSidebar(props) {
   const [search, setSearch] = useState('')
 
   if (!categoriesData) return null
+  const filteredCategories = categoriesData.categories?.filter(c => !!c.category)
 
   function handleMoreTagsClick() {
     if (tags.length > nDisplayedTags) setNDisplayedTags(x => x + 12)
@@ -73,7 +74,7 @@ function MarketplaceSidebar(props) {
   }
 
   function renderCategories() {
-    const sortedCategories = categoriesData.categories.slice().sort((a, b) => a.category.localeCompare(b.category))
+    const sortedCategories = filteredCategories.slice().sort((a, b) => a.category.localeCompare(b.category))
 
     return (
       <Accordion

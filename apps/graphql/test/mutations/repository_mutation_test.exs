@@ -17,6 +17,7 @@ defmodule GraphQl.RepositoryMutationsTest do
         }
       """, %{"attrs" => %{
         "name" => "my repo",
+        "category" => "DATA",
         "integration_resource_definition" => %{
           "name" => "definition",
           "spec" => [
@@ -51,6 +52,7 @@ defmodule GraphQl.RepositoryMutationsTest do
         }
       """, %{"id" => pub.id, "attrs" => %{
         "name" => "my repo",
+        "category" => "DATA",
         "integration_resource_definition" => %{
           "name" => "definition",
           "spec" => [
@@ -117,7 +119,7 @@ defmodule GraphQl.RepositoryMutationsTest do
           }
         }
       """, %{
-        "attrs" => %{"description" => "desc"},
+        "attrs" => %{"description" => "desc", "category" => "DATA"},
         "name" => "my-repo",
         "publisher" => pub,
       }, %{current_user: user})

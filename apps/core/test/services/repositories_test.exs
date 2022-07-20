@@ -10,9 +10,10 @@ defmodule Core.Services.RepositoriesTest do
     test "It will create a repository for the user's publisher" do
       %{owner: user} = insert(:publisher)
 
-      {:ok, repo} = Repositories.create_repository(%{name: "piazza"}, user)
+      {:ok, repo} = Repositories.create_repository(%{name: "piazza", category: :data}, user)
 
       assert repo.name == "piazza"
+      assert repo.category == :data
       assert is_binary(repo.public_key)
       assert is_binary(repo.private_key)
 
@@ -24,6 +25,7 @@ defmodule Core.Services.RepositoriesTest do
 
       {:ok, repo} = Repositories.create_repository(%{
         name: "piazza",
+        category: :data,
         integration_resource_definition: %{
           name: "piazza",
           spec: [%{type: :int, name: "int"}, %{type: :string, name: "str"}]
@@ -39,9 +41,10 @@ defmodule Core.Services.RepositoriesTest do
     test "It will create a repository for the user's publisher" do
       %{owner: user} = pub = insert(:publisher)
 
-      {:ok, repo} = Repositories.upsert_repository(%{}, "piazza", pub.id,  user)
+      {:ok, repo} = Repositories.upsert_repository(%{category: :data}, "piazza", pub.id,  user)
 
       assert repo.name == "piazza"
+      assert repo.category == :data
       assert is_binary(repo.public_key)
       assert is_binary(repo.private_key)
 
@@ -318,6 +321,7 @@ defmodule Core.Services.RepositoriesTest do
       publisher = insert(:publisher)
       {:ok, repo} = Repositories.create_repository(%{
         name: "my repo",
+        category: :data,
         secrets: %{"token" => "a"}
       }, publisher.owner)
 
@@ -337,7 +341,7 @@ defmodule Core.Services.RepositoriesTest do
 
     test "It can generate licenses for payed plans" do
       publisher = insert(:publisher)
-      {:ok, repo} = Repositories.create_repository(%{name: "my repo"}, publisher.owner)
+      {:ok, repo} = Repositories.create_repository(%{name: "my repo", category: :data}, publisher.owner)
       installation = insert(:installation, repository: repo)
       plan = insert(:plan,
         repository: repo,
@@ -369,7 +373,7 @@ defmodule Core.Services.RepositoriesTest do
 
     test "It will not generate licenses if there is no subscription for a non-free repo" do
       publisher = insert(:publisher)
-      {:ok, repo} = Repositories.create_repository(%{name: "my repo"}, publisher.owner)
+      {:ok, repo} = Repositories.create_repository(%{name: "my repo", category: :data}, publisher.owner)
       installation = insert(:installation, repository: repo)
       insert(:plan, repository: repo)
 

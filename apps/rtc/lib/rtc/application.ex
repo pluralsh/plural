@@ -13,6 +13,7 @@ defmodule Rtc.Application do
       {Phoenix.PubSub, name: Rtc.PubSub},
       Rtc.Presence,
       RtcWeb.Endpoint,
+      {FT.K8S.TrafficDrainHandler, Core.drain_config()},
       {Cluster.Supervisor, [topologies, [name: Rtc.ClusterSupervisor]]},
       {Absinthe.Subscription, RtcWeb.Endpoint},
     ] ++ broker()

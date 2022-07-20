@@ -9,6 +9,9 @@ defmodule Worker.Application do
   def start(_type, _args) do
     Logger.info "Starting worker"
     children =
+      [
+        {FT.K8S.TrafficDrainHandler, Core.drain_config()}
+      ] ++
       Worker.conf(:rollout_pipeline) ++
       Worker.conf(:upgrade_pipeline) ++
       Worker.conf(:demo_projects_pipeline) ++

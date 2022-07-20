@@ -197,7 +197,7 @@ defmodule GraphQl.RepositoryQueriesTest do
 
     test "it will filter by category" do
       repos = insert_list(3, :repository, category: :data)
-      insert(:repository)
+      insert(:repository, category: :security)
 
       {:ok, %{data: %{"repositories" => found}}} = run_query("""
         query Search($cat: Category!) {
@@ -294,7 +294,7 @@ defmodule GraphQl.RepositoryQueriesTest do
 
     test "publishers can see their public keys" do
       %{owner: user} = insert(:publisher)
-      {:ok, repo} = Core.Services.Repositories.create_repository(%{name: "my repo"}, user)
+      {:ok, repo} = Core.Services.Repositories.create_repository(%{name: "my repo", category: :data}, user)
 
       {:ok, %{data: %{"repository" => found}}} = run_query("""
         query Repo($id: ID!) {
@@ -311,7 +311,7 @@ defmodule GraphQl.RepositoryQueriesTest do
 
     test "nonpublishers cannot see public keys" do
       %{owner: user} = insert(:publisher)
-      {:ok, repo} = Core.Services.Repositories.create_repository(%{name: "my repo"}, user)
+      {:ok, repo} = Core.Services.Repositories.create_repository(%{name: "my repo", category: :data}, user)
 
       {:ok, %{data: %{"repository" => found}}} = run_query("""
         query Repo($id: ID!) {

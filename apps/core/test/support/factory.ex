@@ -61,7 +61,8 @@ defmodule Core.Factory do
   def repository_factory do
     %Schema.Repository{
       name: sequence(:repository, &"repo-#{&1}"),
-      publisher: build(:publisher)
+      publisher: build(:publisher),
+      category: :data,
     }
   end
 

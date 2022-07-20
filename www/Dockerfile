@@ -2,13 +2,15 @@ FROM node:16.15-slim as build
 
 WORKDIR /app
 
+# # Create a nonroot user for final image
+# RUN useradd -u 10001 nonroot
+
 COPY package.json ./package.json
 COPY yarn.lock ./yarn.lock
 COPY .yarn ./.yarn
 COPY .yarnrc.yml ./.yarnrc.yml
 
-RUN npm config set unsafe-perm true
-RUN yarn install --frozen-lockfile
+RUN yarn install --immutable
 
 COPY . ./
 
@@ -19,6 +21,10 @@ FROM gcr.io/pluralsh/nginx:1.19.8-alpine
 
 COPY --from=build /app/build /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# # Copy nonroot user and switch to it
+# COPY --from=build /etc/passwd /etc/passwd
+# USER nonroot
 
 EXPOSE 80
 

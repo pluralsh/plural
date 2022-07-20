@@ -40,11 +40,7 @@ import { capitalize } from '../../utils/string'
 import { generatePreview } from '../../utils/file'
 import { AuthMethod as authMethods } from '../oidc/types'
 
-import {
-  REPOSITORY_QUERY,
-  TAGS_SEARCH_QUERY,
-  UPDATE_REPOSITORY_MUTATION,
-} from './queries'
+import { TAGS_SEARCH_QUERY, UPDATE_REPOSITORY_MUTATION } from './queries'
 
 export const categories = [
   'DEVOPS',
@@ -212,61 +208,39 @@ function RepositoryEdit() {
     previewUrl: string | null;
   }>({ file: null, previewUrl: icon || null })
 
-  const [, setSuccess] = useState(false)
-  const [, setError] = useState<ApolloError>()
-
   const tagSearchRef = useRef<any>(null)
 
-  const [mutation, { loading, error }] = useMutation(UPDATE_REPOSITORY_MUTATION, {
-    variables: {
-      repositoryId: id,
-      attributes: {
-        name: formState.name,
-        description: formState.description,
-        category: formState.category,
-        oauthSettings:
-          formState.oauthUrl && formState.oauthMethod
-            ? {
-              uriFormat: formState.oauthUrl,
-              authMethod: formState.oauthMethod,
-            }
-            : null,
-        ...(iconUpdate.file ? { icon: iconUpdate.file } : {}),
-        tags: formState.tags,
-        private: formState.private,
+  const [mutation, { loading, error }] = useMutation(
+    UPDATE_REPOSITORY_MUTATION,
+    {
+      variables: {
+        repositoryId: id,
+        attributes: {
+          name: formState.name,
+          description: formState.description,
+          category: formState.category,
+          oauthSettings:
+            formState.oauthUrl && formState.oauthMethod
+              ? {
+                uriFormat: formState.oauthUrl,
+                authMethod: formState.oauthMethod,
+              }
+              : null,
+          ...(iconUpdate.file ? { icon: iconUpdate.file } : {}),
+          tags: formState.tags,
+          private: formState.private,
+        },
       },
-    },
-    update: (cache, { data: { updateRepository } }) => {
-      const prev: any = cache.readQuery({
-        query: REPOSITORY_QUERY,
-        variables: { repositoryId: id },
-      })
+      update: (_cache, { data: { updateRepository } }) => {
+        setIconUpdate({
+          previewUrl: updateRepository.icon || null,
+          file: null,
+        })
+      },
+    }
+  )
 
-      setIconUpdate({ previewUrl: updateRepository.icon || null, file: null })
-
-      cache.writeQuery({
-        query: REPOSITORY_QUERY,
-        variables: {
-          repositoryId: id,
-        },
-        data: {
-          ...prev,
-          repository: {
-            ...prev.repository,
-            ...updateRepository,
-          },
-        },
-      })
-    },
-    onError: e => {
-      setError(e)
-      setSuccess(false)
-    },
-    onCompleted: () => {
-      setSuccess(true)
-      setError(undefined)
-    },
-  })
+  console.log('Error: ', error)
 
   const iconPicker = useFilePicker({
     minImageWidth: 64,

@@ -8,6 +8,7 @@ defmodule Api.Application do
     ApiWeb.Plugs.MetricsExporter.setup()
     children = [
       ApiWeb.Endpoint,
+      {FT.K8S.TrafficDrainHandler, Core.drain_config()},
       {Cluster.Supervisor, [topologies, [name: Api.ClusterSupervisor]]},
     ]
 

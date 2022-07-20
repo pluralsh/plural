@@ -50,7 +50,7 @@ spec:
             port: http
         readinessProbe:
           httpGet:
-            path: /health
+            path: /__traffic
             port: http
         resources:
           {{- toYaml .Values.api.resources | nindent 12 }}
@@ -170,7 +170,7 @@ spec:
             port: http
         readinessProbe:
           httpGet:
-            path: /health
+            path: /__traffic
             port: http
         resources:
           {{- toYaml .Values.rtc.resources | nindent 12 }}

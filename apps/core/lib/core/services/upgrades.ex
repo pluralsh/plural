@@ -24,16 +24,20 @@ defmodule Core.Services.Upgrades do
   end
 
   def poll_deferred_updates(type, limit) do
+    lock = lock_name(type)
+
     start_transaction()
-    |> add_operation(:lock, fn _ -> Locks.acquire("deferred_updates", Ecto.UUID.generate()) end)
+    |> add_operation(:lock, fn _ -> Locks.acquire(lock, Ecto.UUID.generate()) end)
     |> add_operation(:updates, fn _ ->
       DeferredUpdate.dequeue(:"#{type}_installation_id", limit)
       |> Core.Repo.all()
       |> ok()
     end)
-    |> add_operation(:release, fn _ -> Locks.release("deferred_updates") end)
+    |> add_operation(:release, fn _ -> Locks.release(lock) end)
     |> execute(extract: :updates)
   end
+
+  defp lock_name(type), do: "#{type}_deferred_updates"
 
   def create_deferred_update(version_id, %ChartInstallation{id: id}, %User{id: user_id}) do
     %DeferredUpdate{user_id: user_id}

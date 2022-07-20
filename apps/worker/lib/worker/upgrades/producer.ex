@@ -1,12 +1,13 @@
 defmodule Worker.Upgrades.Producer do
   use GenStage
+  use Worker.Base
   require Logger
   alias Core.Services.Upgrades
 
   @max 20
   @poll :timer.seconds(5)
 
-  defmodule State, do: defstruct [:demand, :type]
+  defmodule State, do: defstruct [:demand, :type, :draining]
 
   def start_link(opts \\ []) do
     GenStage.start_link(__MODULE__, opts[:type], name: opts[:name])
@@ -17,16 +18,18 @@ defmodule Worker.Upgrades.Producer do
     {:producer, %State{demand: 0, type: type}}
   end
 
+  def handle_info(:poll, %State{draining: true} = state), do: empty(state)
   def handle_info(:poll, %State{demand: demand} = state) do
     Logger.info "checking for new upgrades"
-    deliver(demand, state)
+    deliver(demand, %{state | draining: FT.K8S.TrafficDrainHandler.draining?()})
   end
 
+  def handle_demand(_, %State{draining: true} = state), do: empty(state)
   def handle_demand(demand, %State{demand: remaining} = state) when demand > 0 do
     deliver(demand + remaining, state)
   end
 
-  def handle_demand(_, state), do: {:noreply, [], state}
+  def handle_demand(_, state), do: empty(state)
 
   def child_spec(arg) do
     default = %{
@@ -41,7 +44,7 @@ defmodule Worker.Upgrades.Producer do
     case Upgrades.poll_deferred_updates(type, min(demand, @max)) do
       {:ok, updates} when is_list(updates) ->
         {:noreply, updates, %{state | demand: demand - length(updates)}}
-      _ -> {:noreply, [], %{state | demand: demand}}
+      _ -> empty(%{state | demand: demand})
     end
   end
 end

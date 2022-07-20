@@ -80,12 +80,7 @@ function useUpdateState<T extends { [key: string]: unknown }>(initialState: T) {
 
   const hasUpdates = useMemo(() => {
     for (const [prop, value] of Object.entries(state)) {
-      const curVal = !value && typeof value === 'string' ? null : value
-      const initialVal =
-        !initialState[prop] && typeof value === 'string'
-          ? null
-          : initialState[prop]
-      if (!isEqual(curVal, initialVal)) {
+      if (!isEqual(value, initialState[prop])) {
         return true
       }
     }
@@ -181,17 +176,11 @@ function RepositoryEdit() {
   } = useUpdateState<FormState>(
     useMemo(
       () => ({
-        name,
-        description,
-        category,
-        oauthUrl:
-          typeof oauthSettings?.uriFormat === 'string'
-            ? oauthSettings?.uriFormat
-            : '',
-        oauthMethod:
-          typeof oauthSettings?.authMethod === 'string'
-            ? oauthSettings?.authMethod
-            : authMethods.BASIC,
+        name: `${name || ''}`,
+        description: `${description || ''}`,
+        category: `${category || ''}`,
+        oauthUrl: `${oauthSettings?.uriFormat || ''}`,
+        oauthMethod: `${oauthSettings?.authMethod || authMethods.BASIC}`,
         tags: isArray(tags) ? tags.map(tag => ({ name: tag.name })) : [],
         private: !!privateRepo,
       }),

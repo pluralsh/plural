@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { A, Div, Flex, Img, P, Button, Icon } from 'honorable'
-import { GearTrainIcon, GitHubIcon, InvoicesIcon, LinksIcon, Tag } from 'pluralsh-design-system'
+import { BrowserIcon, CertificateIcon, GearTrainIcon, GitHubIcon, InvoicesIcon, LinksIcon, Tag } from 'pluralsh-design-system'
 
 
 import RepositoryContext from '../../contexts/RepositoryContext'
@@ -95,6 +95,9 @@ function RepositorySideCar({ ...props }) {
             as="a"
             target="_blank"
             href={repository.homepage}
+            startIcon={(
+              <BrowserIcon />
+            )}
           >
             Website
           </Button>
@@ -105,6 +108,9 @@ function RepositorySideCar({ ...props }) {
               as="a"
               target="_blank"
               href={repository.license.url}
+              startIcon={(
+                <CertificateIcon />
+              )}
             >
               License
             </Button>

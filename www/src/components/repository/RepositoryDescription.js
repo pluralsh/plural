@@ -11,13 +11,10 @@ function RepositoryDescription() {
   return (
     <Flex
       direction="column"
-      backgroundColor="fill-one"
       color="text-light"
-      border="1px solid border"
       padding="medium"
       paddingBottom="xlarge"
       borderRadius="large"
-      maxWidth="640px"
     >
       {repository.readme ? (
         <RepositoryDescriptionMarkdown

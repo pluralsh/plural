@@ -9488,9 +9488,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"honorable@npm:0.129.0":
-  version: 0.129.0
-  resolution: "honorable@npm:0.129.0"
+"honorable@npm:0.130.0":
+  version: 0.130.0
+  resolution: "honorable@npm:0.130.0"
   dependencies:
     "@emotion/is-prop-valid": ^1.1.3
     "@floating-ui/react-dom": ^0.7.2
@@ -9504,7 +9504,7 @@ __metadata:
     "@emotion/styled": ">=10.0.0"
     react: ">=16.0.0"
     react-dom: ">=16.0.0"
-  checksum: 8d5c2850087092157f11397970eb8ee840b9ede2b4ab9796c80195c3f9fe1b9b13a12c7f8553788db17e627b63f1f5683ab2069e632c7b903432aa9fd6ab5149
+  checksum: 919c96c6ac439cfa33ec3c263cf9ff87a7cdeb9b0bec3d86b1428281108174d7155fde686495023c515af0957125f9be3208866b5b9156a09e3f746fd6c6ad69
   languageName: node
   linkType: hard
 
@@ -13236,21 +13236,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pluralsh-design-system@npm:1.122.0":
-  version: 1.122.0
-  resolution: "pluralsh-design-system@npm:1.122.0"
+"pluralsh-design-system@npm:1.124.0":
+  version: 1.124.0
+  resolution: "pluralsh-design-system@npm:1.124.0"
   dependencies:
-    prop-types: ^15.8.1
-    resize-observer-polyfill: ^1.5.1
+    prop-types: 15.8.1
+    resize-observer-polyfill: 1.5.1
   peerDependencies:
-    "@emotion/react": "*"
-    "@emotion/styled": "*"
-    honorable: ">=0.127.0"
-    honorable-theme-default: ">=0.61.0"
+    "@emotion/react": ">=11.9.3"
+    "@emotion/styled": ">=11.9.3"
+    honorable: ">=0.128.0"
+    honorable-theme-default: ">=0.63.0"
     react: ">=16.0.0"
     react-dom: ">=16.0.0"
     react-transition-group: ">=4.4.2"
-  checksum: c67b1d2b5cdc4ffed8fd5bf034d57bf86b2a74b88bd83678bbfc7ab37221c17705923548eec2734e98d090e2e019038537523d547f5859ff5b01299cb2a13ae1
+  checksum: 766ddddff1d96755a04909e5c04f65f79472905ed6bcfb7ec5368d07173a6e8432ff950377b4cbc4617ab0dc5b0fb5cdc1227fd203cd0ecbe637fffc7f785d91
   languageName: node
   linkType: hard
 
@@ -15430,7 +15430,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resize-observer-polyfill@npm:^1.5.1":
+"resize-observer-polyfill@npm:1.5.1":
   version: 1.5.1
   resolution: "resize-observer-polyfill@npm:1.5.1"
   checksum: 57e7f79489867b00ba43c9c051524a5c8f162a61d5547e99333549afc23e15c44fd43f2f318ea0261ea98c0eb3158cca261e6f48d66e1ed1cd1f340a43977094
@@ -18660,7 +18660,7 @@ __metadata:
     grommet: 2.25.0
     grommet-icons: 4.7.0
     highlight.js: 11.6.0
-    honorable: 0.129.0
+    honorable: 0.130.0
     honorable-recipe-mp: 0.3.0
     honorable-theme-default: 0.63.0
     js-yaml: 4.1.0
@@ -18669,7 +18669,7 @@ __metadata:
     moment: 2.29.4
     phoenix: 1.6.11
     pluralsh-absinthe-socket-apollo-link: 0.2.0
-    pluralsh-design-system: 1.122.0
+    pluralsh-design-system: 1.124.0
     postcss-import: 8.2.0
     prop-types: 15.8.1
     query-string: 7.1.1

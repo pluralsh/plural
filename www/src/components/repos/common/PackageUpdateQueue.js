@@ -1,17 +1,19 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { useQuery } from '@apollo/client'
 
 import { Box } from 'grommet'
 
 import moment from 'moment'
 
-import { extendConnection } from '../../utils/graphql'
-import { StandardScroller } from '../utils/SmoothScroller'
-import { LoopingLogo } from '../utils/AnimatedLogo'
+import { extendConnection } from '../../../utils/graphql'
+import { StandardScroller } from '../../utils/SmoothScroller'
 
-import { HeaderItem } from './Docker'
+import { HeaderItem } from '../Docker'
 
-import { DEFERRED_UPDATES } from './queries'
+import { DEFERRED_UPDATES } from '../queries'
+
+import { LoopingLogo } from '../../utils/AnimatedLogo'
+import ChartContext from '../../../contexts/ChartContext'
 
 const ROW_HEIGHT = '50px'
 const format = dt => moment(dt).format('lll')
@@ -81,7 +83,12 @@ function DeferredUpdate({ deferred }) {
   )
 }
 
-export function DeferredUpdates({ chartInst, tfInst }) {
+export function PackageUpdateQueue() {
+  const { chart } = useContext(ChartContext)
+
+  const chartInst = chart?.installation?.id
+  const tfInst = undefined // TODO { chartInst, tfInst }
+
   const [listRef, setListRef] = useState(null)
   const { data, loading, fetchMore } = useQuery(DEFERRED_UPDATES, {
     variables: { chartInst, tfInst },

@@ -1,27 +1,27 @@
 import './chart.css'
 
 import { useContext, useEffect, useState } from 'react'
-import { Box, Markdown, Text } from 'grommet'
+import { Box } from 'grommet'
 import { useMutation, useQuery } from '@apollo/client'
-import { Link, useParams } from 'react-router-dom'
-import { Button, ScrollableContainer, TabContent, TabHeader, TabHeaderItem, Tabs } from 'forge-core'
+import { Link, Outlet, useLocation, useNavigate, useParams } from 'react-router-dom'
+import { Tab } from 'pluralsh-design-system'
+import { Button, ScrollableContainer } from 'forge-core'
 import moment from 'moment'
 import Highlight from 'react-highlight.js'
 
-import { A, Flex } from 'honorable'
+import { A, Flex, H2, Img } from 'honorable'
 
 import { Versions } from '../versions/Versions'
 import { PluralConfigurationContext } from '../login/CurrentUser'
 import { Breadcrumbs, BreadcrumbsContext } from '../Breadcrumbs'
 
+import ChartContext from '../../contexts/ChartContext'
+
 import { CHART_Q, INSTALL_CHART, UPDATE_CHART_INST } from './queries'
 import { DEFAULT_CHART_ICON } from './constants'
 
 import { DetailContainer, DetailProperty } from './Installation'
-import Dependencies, { FullDependencies, ShowFull } from './Dependencies'
-import { dockerPull } from './misc'
-import { DeferredUpdates } from './DeferredUpdates'
-import { PackageGrade, ScanResults } from './PackageScan'
+import { PackageGrade, dockerPull } from './misc'
 
 function ChartInfo({ version: { helm, insertedAt } }) {
   return (
@@ -85,19 +85,6 @@ export const MARKDOWN_STYLING = {
   pre: { component: Code, props: {} },
 }
 
-function TemplateView({ version: { valuesTemplate } }) {
-  return (
-    <Box
-      style={{ overflow: 'auto', maxHeight: '100%' }}
-      pad="small"
-    >
-      <Highlight language="yaml">
-        {valuesTemplate || 'no values template'}
-      </Highlight>
-    </Box>
-  )
-}
-
 function ChartInstaller({ chartInstallation, versionId, chartId, installation }) {
   const [mutation, { error }] = useMutation(chartInstallation ? UPDATE_CHART_INST : INSTALL_CHART, {
     variables: {
@@ -131,95 +118,36 @@ function ChartInstaller({ chartInstallation, versionId, chartId, installation })
   )
 }
 
-function ChartHeader({ version: { helm, chart, version, scan, id }, chartInstallation, installation }) {
+function ChartHeader({ version: { chart } }) {
   return (
     <Box
       direction="row"
       align="center"
-      gap="medium"
-      width="100%"
+      gap="small"
       margin={{ bottom: 'small' }}
-      style={{ minHeight: '50px' }}
     >
-      <Box
-        width="50px"
-        heigh="50px"
+      <Flex
+        width="64px"
+        height="64px"
+        padding="8px"
+        align="center"
+        justify="center"
+        backgroundColor="fill-one"
+        border="1px solid border"
+        borderRadius={4}
       >
-        <img
-          alt=""
-          width="50px"
-          height="50px"
+        <Img
+          width="48px"
+          height="48px"
           src={chart.icon || DEFAULT_CHART_ICON}
         />
-      </Box>
-      <Box flex>
-        <Box
-          direction="row"
-          align="center"
-          gap="small"
-        >
-          <Text size="medium">{chart.name} - {version}</Text>
-          {chartInstallation && (
-            <Text
-              size="small"
-              color="dark-3"
-            >
-              (installed: {chartInstallation.version.version})
-            </Text>
-          )}
-        </Box>
-        <Text size="small">
-          <i>{helm.description}</i>
-        </Text>
-      </Box>
-      {scan && <PackageGrade scan={scan} />}
-      {chartInstallation && chartInstallation.version.id === id ? (
-        <Box
-          width="100px"
-          direction="row"
-          justify="end"
-        >
-          <Box
-            round="xsmall"
-            pad={{ horizontal: 'small', vertical: 'xsmall' }}
-            align="center"
-            justify="center"
-            border={{ color: 'border' }}
-          >
-            Installed
-          </Box>
-        </Box>
-      ) :
-        installation && (
-          <Box
-            width="100px"
-            direction="row"
-            justify="end"
-          >
-            <ChartInstaller
-              chartInstallation={chartInstallation}
-              installation={installation}
-              versionId={id}
-              chartId={chart.id}
-            />
-          </Box>
-        )}
-    </Box>
-  )
-}
-
-function ChartReadme({ version: { readme } }) {
-  return (
-    <Box
-      gap="small"
-      pad="small"
-      style={{ maxHeight: '100%', overflow: 'auto' }}
-    >
-      <Box>
-        <Markdown components={MARKDOWN_STYLING}>
-          {readme || 'no readme'}
-        </Markdown>
-      </Box>
+      </Flex>
+      <H2
+        fontSize="20px"
+        fontWeight="500px"
+      >
+        {chart.name}
+      </H2>
     </Box>
   )
 }
@@ -252,9 +180,9 @@ function ImageDependencies({ version: { imageDependencies } }) {
 
 export default function Chart() {
   const { chartId } = useParams()
+  const { pathname } = useLocation()
+  const navigate = useNavigate()
   const [version, setVersion] = useState(null)
-  const [tab, setTab] = useState(false)
-  const [full, setFull] = useState(false)
   const { data, fetchMore, refetch } = useQuery(CHART_Q, {
     variables: { chartId },
     fetchPolicy: 'cache-and-network',
@@ -276,121 +204,36 @@ export default function Chart() {
   const { repository } = chart
   const { edges, pageInfo } = versions
   const currentVersion = version || edges[0].node
-  const width = tab === 'configuration' ? 65 : 70
   const chartInst = data.chart.installation
 
   return (
-    <Box direction="column">
-      <Flex
-        paddingVertical={18}
-        marginLeft="xlarge"
-        marginRight="xlarge"
-        paddingLeft="xsmall"
-        paddingRight="xsmall"
-        borderBottom="1px solid border"
-      >
-        <Breadcrumbs />
-      </Flex>
-      <ScrollableContainer>
-        <Box
-          pad="medium"
-          direction="row"
+    <ChartContext.Provider value={{ chart, current: currentVersion }}>
+      <Box direction="column">
+        <Flex
+          paddingVertical={18}
+          marginLeft="xlarge"
+          marginRight="xlarge"
+          paddingLeft="xsmall"
+          paddingRight="xsmall"
+          borderBottom="1px solid border"
         >
+          <Breadcrumbs />
+        </Flex>
+        <ScrollableContainer>
           <Box
-            width={`${width}%`}
-            pad="small"
+            pad="medium"
+            direction="row"
           >
-            <ChartHeader
-              version={currentVersion}
-              chartInstallation={chartInst}
-              installation={repository.installation}
-            />
-            <Tabs
-              defaultTab="readme"
-              onTabChange={setTab}
-              headerEnd={tab === 'dependencies' ? (
-                <ShowFull
-                  label={full ? 'Immediate' : 'Full'}
-                  onClick={() => setFull(!full)}
-                />
-              ) : null}
+            <Flex
+              direction="column"
+              flexBasis="200px"
+              minWidth="200px"
             >
-              <TabHeader>
-                <TabHeaderItem name="readme">
-                  <Text
-                    weight={500}
-                    size="small"
-                  >
-                    Readme
-                  </Text>
-                </TabHeaderItem>
-                <TabHeaderItem name="configuration">
-                  <Text
-                    weight={500}
-                    size="small"
-                  >
-                    Configuration
-                  </Text>
-                </TabHeaderItem>
-                <TabHeaderItem name="dependencies">
-                  <Text
-                    size="small"
-                    weight={500}
-                  >
-                    Dependencies
-                  </Text>
-                </TabHeaderItem>
-                {currentVersion.scan && (
-                  <TabHeaderItem name="scan">
-                    <Text
-                      size="small"
-                      weight={500}
-                    >
-                      Security
-                    </Text>
-                  </TabHeaderItem>
-                )}
-                {chartInst && (
-                  <TabHeaderItem name="updates">
-                    <Text
-                      size="small"
-                      weight={500}
-                    >
-                      Update Queue
-                    </Text>
-                  </TabHeaderItem>
-                )}
-              </TabHeader>
-              <TabContent name="readme">
-                <ChartReadme version={currentVersion} />
-              </TabContent>
-              <TabContent name="scan">
-                <ScanResults scan={currentVersion.scan} />
-              </TabContent>
-              <TabContent name="configuration">
-                <TemplateView version={currentVersion} />
-              </TabContent>
-              <TabContent name="dependencies">
-                {full ? <FullDependencies resource={chart} /> : (
-                  <Dependencies
-                    name={chart.name}
-                    resource={chart}
-                    dependencies={(version || chart).dependencies}
-                  />
-                )}
-              </TabContent>
-              {chartInst && (
-                <TabContent name="updates">
-                  <DeferredUpdates chartInst={chartInst.id} />
-                </TabContent>
-              )}
-            </Tabs>
-          </Box>
-          <Box
-            pad="small"
-            width={`${100 - width}%`}
-          >
-            <Box gap="small">
+              <ChartHeader
+                version={currentVersion}
+                chartInstallation={chartInst}
+                installation={repository.installation}
+              />
               <Versions
                 edges={edges}
                 pageInfo={pageInfo}
@@ -398,12 +241,78 @@ export default function Chart() {
                 refetch={refetch}
                 setVersion={setVersion}
               />
+              <Tab
+                vertical
+                onClick={() => navigate(`/charts/${chart.id}`)}
+                active={pathname.endsWith(`/charts/${chart.id}`)}
+                textDecoration="none"
+              >
+                Readme
+              </Tab>
+              <Tab
+                vertical
+                onClick={() => navigate(`/charts/${chart.id}/configuration`)}
+                active={pathname.startsWith(`/charts/${chart.id}/configuration`)}
+                textDecoration="none"
+              >
+                Configuration
+              </Tab>
+              <Tab
+                vertical
+                onClick={() => navigate(`/charts/${chart.id}/dependencies`)}
+                active={pathname.startsWith(`/charts/${chart.id}/dependencies`)}
+                textDecoration="none"
+              >
+                Dependencies
+              </Tab>
+              <Tab
+                vertical
+                onClick={() => navigate(`/charts/${chart.id}/security`)}
+                active={pathname.startsWith(`/charts/${chart.id}/security`)}
+                textDecoration="none"
+              >
+                <Flex
+                  flexGrow={1}
+                  justifyContent="space-between"
+                >
+                  Security
+                  {currentVersion?.scan && <PackageGrade scan={currentVersion.scan} />}
+                </Flex>
+              </Tab>
+              {(chartInst && (
+                <Tab
+                  vertical
+                  onClick={() => navigate(`/charts/${chart.id}/updatequeue`)}
+                  active={pathname.startsWith(`/charts/${chart.id}/updatequeue`)}
+                  textDecoration="none"
+                >
+                  Update queue
+                </Tab>
+              ))}
+
+            </Flex>
+            <Flex flexGrow={1}><Outlet /></Flex>
+            <Flex
+              direction="column"
+              flexBasis="250px"
+              minWidth="250px"
+              pad="small"
+              gap="small"
+            >
+              {chartInst?.version?.id !== currentVersion.id && repository.installation && (
+                <ChartInstaller
+                  chartInstallation={chartInst}
+                  installation={repository.installation}
+                  versionId={chartInst?.version?.id}
+                  chartId={chart.id}
+                />
+              )}
               <ChartInfo version={currentVersion} />
               <ImageDependencies version={currentVersion} />
-            </Box>
+            </Flex>
           </Box>
-        </Box>
-      </ScrollableContainer>
-    </Box>
+        </ScrollableContainer>
+      </Box>
+    </ChartContext.Provider>
   )
 }

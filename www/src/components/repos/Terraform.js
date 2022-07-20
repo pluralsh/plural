@@ -18,10 +18,8 @@ import { GqlError } from '../utils/Alert'
 
 import { INSTALL_TF, TF_Q, UNINSTALL_TF } from './queries'
 import { DEFAULT_TF_ICON } from './constants'
-import Dependencies, { FullDependencies, ShowFull } from './Dependencies'
 
-import { DeferredUpdates } from './DeferredUpdates'
-import { PackageGrade, ScanResults } from './PackageScan'
+import { PackageGrade } from './misc'
 
 function Code({ value, children, language }) {
   return (
@@ -189,8 +187,7 @@ function Readme({ readme }) {
 }
 
 export default function Terraform() {
-  const [tab, setTab] = useState(null)
-  const [full, setFull] = useState(false)
+  const [, setTab] = useState(null)
   const [version, setVersion] = useState(null)
   const { tfId } = useParams()
   const { data, refetch, fetchMore } = useQuery(TF_Q, {
@@ -245,12 +242,6 @@ export default function Terraform() {
             <Tabs
               defaultTab="readme"
               onTabChange={setTab}
-              headerEnd={tab === 'dependencies' ? (
-                <ShowFull
-                  label={full ? 'Immediate' : 'Full'}
-                  onClick={() => setFull(!full)}
-                />
-              ) : null}
             >
               <TabHeader>
                 <TabHeaderItem name="readme">
@@ -301,23 +292,23 @@ export default function Terraform() {
                 <Readme readme={currentVersion.readme} />
               </TabContent>
               <TabContent name="scan">
-                <ScanResults scan={currentVersion.scan} />
+                {/* <ScanResults scan={currentVersion.scan} /> */}
               </TabContent>
               <TabContent name="configuration">
                 <TemplateView valuesTemplate={currentVersion.valuesTemplate} />
               </TabContent>
               <TabContent name="dependencies">
-                {full ? <FullDependencies resource={terraformModule} /> : (
-                  <Dependencies
-                    name={terraformModule.name}
-                    dependencies={(version || terraformModule).dependencies}
-                    resource={terraformModule}
-                  />
-                )}
+                {/* {full ? <FullDependencies resource={terraformModule} /> : ( */}
+                {/*  <Dependencies */}
+                {/*    name={terraformModule.name} */}
+                {/*    dependencies={(version || terraformModule).dependencies} */}
+                {/*    resource={terraformModule} */}
+                {/*  /> */}
+                {/* )} */}
               </TabContent>
               {tfInst && (
                 <TabContent name="updates">
-                  <DeferredUpdates tfInst={tfInst.id} />
+                  {/* <DeferredUpdates tfInst={tfInst.id} /> */}
                 </TabContent>
               )}
             </Tabs>

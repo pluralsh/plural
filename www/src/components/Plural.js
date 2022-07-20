@@ -48,6 +48,11 @@ import { AuditDirectory } from './audits/AuditDirectory'
 import { Audits } from './audits/Audits'
 import { LoginAudits } from './audits/LoginAudits'
 import { AuditChloropleth } from './audits/AuditChloropleth'
+import PackageReadme from './repos/common/PackageReadme'
+import PackageConfiguration from './repos/common/PackageConfiguration'
+import PackageSecurity from './repos/common/PackageSecurity'
+import { PackageUpdateQueue } from './repos/common/PackageUpdateQueue'
+import PackageDependencies from './repos/common/PackageDependencies'
 
 function EditBilling(props) {
   return (
@@ -213,7 +218,28 @@ export function PluralInner() {
             <Route
               path="/charts/:chartId"
               element={<Chart />}
-            />
+            >
+              <Route
+                index
+                element={<PackageReadme />}
+              />
+              <Route
+                path="configuration"
+                element={<PackageConfiguration />}
+              />
+              <Route
+                path="dependencies"
+                element={<PackageDependencies />}
+              />
+              <Route
+                path="security"
+                element={<PackageSecurity />}
+              />
+              <Route
+                path="updatequeue"
+                element={<PackageUpdateQueue />}
+              />
+            </Route>
             <Route
               path="/terraform/:tfId"
               element={<Terraform />}

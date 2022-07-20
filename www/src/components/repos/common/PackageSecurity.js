@@ -1,22 +1,13 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { Box, Collapsible, Text } from 'grommet'
 import { Alert } from 'pluralsh-design-system'
 
-import { GradeNub, HeaderItem } from './Docker'
+import ChartContext from '../../../contexts/ChartContext'
+
+import { GradeNub, HeaderItem } from '../Docker'
 
 const ROW_HEIGHT = 40
 const ROW_HEIGHT_PX = `${ROW_HEIGHT}px`
-
-export function PackageGrade({ scan }) {
-  if (!scan) return null
-
-  return (
-    <GradeNub
-      text={scan.grade}
-      severity={scan.grade}
-    />
-  )
-}
 
 function ScanHeader() {
   return (
@@ -121,19 +112,21 @@ function ScanViolation({ violation }) {
   )
 }
 
-export function ScanResults({ scan: { errors, violations } }) {
+export default function PackageSecurity() {
+  const { current } = useContext(ChartContext)
+
   return (
     <Box
       fill
       flex={false}
       gap="small"
     >
-      {errors && (
+      {current.scan.errors && (
         <Box
           gap="small"
           pad={{ vertical: 'small' }}
         >
-          {errors.map((error, ind) => (
+          {current.scan.errors.map((error, ind) => (
             <Alert
               key={ind}
               title="Scan failure"
@@ -146,7 +139,7 @@ export function ScanResults({ scan: { errors, violations } }) {
       )}
       <ScanHeader />
       <Box flex={false}>
-        {violations.map((vio, ind) => (
+        {current.scan.violations.map((vio, ind) => (
           <ScanViolation
             key={`${ind}`}
             violation={vio}

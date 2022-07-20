@@ -1,16 +1,17 @@
-import { memo } from 'react'
+import { memo, useContext, useState } from 'react'
 import { Box, Text } from 'grommet'
 import { useQuery } from '@apollo/client'
 import cloneDeep from 'lodash/cloneDeep'
 import groupBy from 'lodash/groupBy'
 import remove from 'lodash/remove'
 import uniqueId from 'lodash/uniqueId'
-import { Button } from 'honorable'
+import { Button } from 'pluralsh-design-system'
 
-import TreeGraph from '../utils/TreeGraph'
+import TreeGraph from '../../utils/TreeGraph'
 
-import { DEFAULT_CHART_ICON, DEFAULT_TF_ICON, Tools } from './constants'
-import { CLOSURE_Q } from './queries'
+import { DEFAULT_CHART_ICON, DEFAULT_TF_ICON, Tools } from '../constants'
+import { CLOSURE_Q } from '../queries'
+import ChartContext from '../../../contexts/ChartContext'
 
 const GRAPH_HEIGHT = '500px'
 const OPTIONAL_COLOR = '#fdc500'
@@ -67,21 +68,7 @@ function compileGraph(res, closure) {
   return closureDep(res, children)
 }
 
-export function ShowFull({ onClick, label }) {
-  return (
-    <Button
-      primary
-      width="90px"
-      height="25px"
-      size="small"
-      onClick={onClick}
-    >
-      {label}
-    </Button>
-  )
-}
-
-export const FullDependencies = memo(({ resource }) => {
+const FullDependencies = memo(({ resource }) => {
   const type = depType(resource)
   const { data, loading } = useQuery(CLOSURE_Q, {
     variables: { id: resource.id, type },
@@ -101,7 +88,7 @@ export const FullDependencies = memo(({ resource }) => {
   )
 })
 
-export default memo(({ name, dependencies, resource }) => {
+const Dependencies = memo(({ name, dependencies, resource }) => {
   if (!dependencies || !dependencies.dependencies) {
     return (
       <Box pad="small">
@@ -127,3 +114,32 @@ export default memo(({ name, dependencies, resource }) => {
     />
   )
 })
+
+export default function PackageDependencies() {
+  const { chart, current } = useContext(ChartContext)
+  const [full, setFull] = useState(false)
+
+  return (
+    <Box
+      direction="column"
+      width="100%"
+    >
+      <Button
+        primary
+        size="small"
+        onClick={() => setFull(!full)}
+      >
+        {full ? 'Immediate' : 'Full'}
+      </Button>
+      {full && <FullDependencies resource={chart} />}
+      {!full && (
+        <Dependencies
+          name={chart.name}
+          resource={chart}
+          dependencies={(current || chart).dependencies}
+        />
+      )}
+    </Box>
+
+  )
+}

@@ -59,15 +59,8 @@ export function Versions({ setVersion, edges, refetch, pageInfo, fetchMore }) {
     <DetailContainer
       gap="xsmall"
       pad={{ vertical: 'small' }}
-      style={{ maxHeight: '50%' }}
+      style={{ maxHeight: '80px' }}
     >
-      <Text
-        size="small"
-        weight="bold"
-        margin={{ left: 'small' }}
-      >
-        Versions
-      </Text>
       <Scroller
         id="chart"
         edges={edges}

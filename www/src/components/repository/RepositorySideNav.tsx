@@ -13,7 +13,7 @@ function RepositorySideNav({ ...props }) {
   return (
     <Flex
       paddingVertical="medium"
-      paddingLeft="xlarge"
+      paddingHorizontal="medium"
       width={240}
       flexShrink={0}
       direction="column"

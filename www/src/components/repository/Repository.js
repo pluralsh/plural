@@ -72,6 +72,9 @@ function Repository() {
         <Flex
           flexGrow={1}
           height={0}
+          overflowX="hidden"
+          paddingLeft="medium"
+          paddingRight="large"
         >
           <RepositorySideNav
             marginRight="xlarge"
@@ -82,7 +85,11 @@ function Repository() {
           />
           <Div
             flexGrow={1}
-            maxWidth={896}
+            flexShrink={1}
+            maxWidth-desktop-up={896}
+            minWidth-desktopLarge={832}
+            minWidth-desktopLarge-up={832}
+            minWidth-desktopLarge-down={672}
             height="100%"
             maxHeight="100%"
             paddingTop="large"
@@ -94,6 +101,7 @@ function Repository() {
           <RepositorySideCar
             marginLeft="xlarge"
             marginRight="large"
+            display-desktop-down="none"
           />
           <Div
             flexGrow={1}

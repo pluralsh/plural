@@ -23,7 +23,7 @@ export const UPDATE_REPOSITORY_MUTATION = gql`
     updateRepository(repositoryId: $repositoryId, attributes: $attributes) {
       ...RepoFragment
       tags {
-        name: tag
+        tag
       }
     }
   }
@@ -46,7 +46,7 @@ export const REPOSITORY_QUERY = gql`
 
       }
       tags {
-        name: tag
+        tag
       }
       readme
       git_url

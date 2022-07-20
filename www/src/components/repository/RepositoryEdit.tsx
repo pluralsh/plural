@@ -151,7 +151,7 @@ type FormState = {
   category: string;
   oauthUrl: string;
   oauthMethod: string;
-  tags: { name: string }[];
+  tags: { tag: string }[];
   private: boolean;
 };
 
@@ -181,7 +181,7 @@ function RepositoryEdit() {
         category: `${category || ''}`,
         oauthUrl: `${oauthSettings?.uriFormat || ''}`,
         oauthMethod: `${oauthSettings?.authMethod || authMethods.BASIC}`,
-        tags: isArray(tags) ? tags.map(tag => ({ name: tag.name })) : [],
+        tags: isArray(tags) ? tags.map(tag => ({ tag: tag.tag })) : [],
         private: !!privateRepo,
       }),
       [
@@ -217,7 +217,7 @@ function RepositoryEdit() {
 
   const tagSearchRef = useRef<any>(null)
 
-  const [mutation, { loading }] = useMutation(UPDATE_REPOSITORY_MUTATION, {
+  const [mutation, { loading, error }] = useMutation(UPDATE_REPOSITORY_MUTATION, {
     variables: {
       repositoryId: id,
       attributes: {
@@ -232,7 +232,7 @@ function RepositoryEdit() {
             }
             : null,
         ...(iconUpdate.file ? { icon: iconUpdate.file } : {}),
-        tags: formState.tags.map(t => ({ tag: t.name })),
+        tags: formState.tags,
         private: formState.private,
       },
     },
@@ -313,13 +313,13 @@ function RepositoryEdit() {
 
   function handleDeleteTag(delTag: FormState['tags'][number]) {
     updateFormState({
-      tags: filter(formState.tags, tag0 => delTag.name !== tag0.name),
+      tags: filter(formState.tags, tag0 => delTag.tag !== tag0.tag),
     })
   }
 
   function handleCreateTag(tagName: string) {
     if (!tagName) return
-    const newTags = uniqWith([...formState.tags, { name: tagName }], isEqual)
+    const newTags = uniqWith([...formState.tags, { tag: tagName }], isEqual)
 
     updateFormState({
       tags: newTags,
@@ -536,9 +536,9 @@ function RepositoryEdit() {
                 gap="xsmall"
                 marginTop="small"
               >
-                {formState.tags.map((tag: any) => (
+                {formState.tags.map(tag => (
                   <Tag
-                    key={tag.name}
+                    key={tag.tag}
                     onClick={() => handleDeleteTag(tag)}
                     backgroundColor="fill-two"
                     _hover={{
@@ -549,7 +549,7 @@ function RepositoryEdit() {
                     }}
                     cursor="pointer"
                   >
-                    {tag.name}
+                    {tag.tag}
                     <CloseIcon
                       size={8}
                       marginLeft="xsmall"

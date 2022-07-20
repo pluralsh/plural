@@ -168,13 +168,13 @@ function RepositoryHeader(props) {
           align="flex-start"
           wrap="wrap"
         >
-          {repository.tags.map(({ name }) => (
+          {repository.tags.map(({ tag }) => (
             <Tag
-              key={name}
+              key={tag}
               mr={0.5}
               mb={0.5}
             >
-              {name}
+              {tag}
             </Tag>
           ))}
         </Flex>

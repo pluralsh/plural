@@ -7,7 +7,7 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import { ApolloError, useMutation, useQuery } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client'
 import {
   Div,
   Flex,

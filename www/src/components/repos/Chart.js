@@ -1,15 +1,14 @@
 import './chart.css'
 
 import { useContext, useEffect, useState } from 'react'
-import { Anchor, Box, Markdown, Text } from 'grommet'
+import { Box, Markdown, Text } from 'grommet'
 import { useMutation, useQuery } from '@apollo/client'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { Button, ScrollableContainer, TabContent, TabHeader, TabHeaderItem, Tabs } from 'forge-core'
 import moment from 'moment'
 import Highlight from 'react-highlight.js'
-import { Docker } from 'grommet-icons'
 
-import { Flex } from 'honorable'
+import { A, Flex } from 'honorable'
 
 import { Versions } from '../versions/Versions'
 import { PluralConfigurationContext } from '../login/CurrentUser'
@@ -18,7 +17,7 @@ import { Breadcrumbs, BreadcrumbsContext } from '../Breadcrumbs'
 import { CHART_Q, INSTALL_CHART, UPDATE_CHART_INST } from './queries'
 import { DEFAULT_CHART_ICON } from './constants'
 
-import { DetailContainer } from './Installation'
+import { DetailContainer, DetailProperty } from './Installation'
 import Dependencies, { FullDependencies, ShowFull } from './Dependencies'
 import { dockerPull } from './misc'
 import { DeferredUpdates } from './DeferredUpdates'
@@ -27,41 +26,34 @@ import { PackageGrade, ScanResults } from './PackageScan'
 function ChartInfo({ version: { helm, insertedAt } }) {
   return (
     <DetailContainer
+      title="chart.yaml"
       pad="small"
       gap="small"
       style={{ overflow: 'hidden' }}
     >
-      <Text
-        weight="bold"
-        size="small"
-      >App Version
-      </Text>
-      <Text size="small">{helm.appVersion}</Text>
-      <Text
-        weight="bold"
-        size="small"
-      >Created
-      </Text>
-      <Text size="small">{moment(insertedAt).fromNow()}</Text>
-      <Text
-        weight="bold"
-        size="small"
-      >Source
-      </Text>
-      <Text size="small">{(helm.sources || []).map(l => (
-        <Anchor
-          key={l}
-          href={l}
-        >{l}
-        </Anchor>
+      <DetailProperty header="App Version">{helm.appVersion}</DetailProperty>
+      <DetailProperty header="Created">{moment(insertedAt).fromNow()}</DetailProperty>
+      {(!!helm?.sources?.length && (
+        <DetailProperty header="Sources">
+          {(helm.sources).map(l => (
+            <Box>
+              <A
+                inline
+                as={Link}
+                key={l}
+                to={l}
+              >
+                {l}
+              </A>
+            </Box>
+          ))}
+        </DetailProperty>
       ))}
-      </Text>
-      <Text
-        weight="bold"
-        size="small"
-      >Maintainers
-      </Text>
-      <Text size="small">{(helm.maintainers || []).map(m => <Box key={m.email}>{m.email}</Box>)}</Text>
+      {(!!helm?.maintainers?.length && (
+        <DetailProperty header="Maintainers">
+          {(helm.maintainers).map(m => <Box key={m.email}>{m.email}</Box>)}
+        </DetailProperty>
+      ))}
     </DetailContainer>
   )
 }
@@ -234,35 +226,24 @@ function ChartReadme({ version: { readme } }) {
 
 function ImageDependencies({ version: { imageDependencies } }) {
   const { registry } = useContext(PluralConfigurationContext)
-  const navigate = useNavigate()
   if (!imageDependencies || imageDependencies.length === 0) return null
 
   return (
-    <DetailContainer style={{ overflow: 'auto' }}>
-      <Box pad="small">
-        <Text
-          size="small"
-          weight="bold"
-        >Docker Images
-        </Text>
-      </Box>
+    <DetailContainer
+      title="Docker Images"
+      pad="small"
+      gap="small"
+      style={{ overflow: 'auto' }}
+    >
       {imageDependencies.map(({ id, image }) => (
-        <Box
-          key={id}
-          direction="row"
-          gap="xsmall"
-          align="center"
-          pad={{ horizontal: 'small', vertical: 'xsmall' }}
-          hoverIndicator="light-2"
-          round="xsmall"
-          focusIndicator={false}
-          onClick={() => navigate(`/dkr/img/${image.id}`)}
-        >
-          <Docker
-            color="plain"
-            size="18px"
-          />
-          <Text size="small">{dockerPull(registry, image)}</Text>
+        <Box key={id}>
+          <A
+            inline
+            as={Link}
+            to={`/dkr/img/${image.id}`}
+          >
+            {dockerPull(registry, image)}
+          </A>
         </Box>
       ))}
     </DetailContainer>

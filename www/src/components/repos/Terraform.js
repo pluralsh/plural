@@ -221,8 +221,8 @@ export default function Terraform() {
               {(tfInst && (
                 <Tab
                   vertical
-                  onClick={() => navigate(`/charts/${terraformModule.id}/updatequeue`)}
-                  active={pathname.startsWith(`/charts/${terraformModule.id}/updatequeue`)}
+                  onClick={() => navigate(`/terraform/${terraformModule.id}/updatequeue`)}
+                  active={pathname.startsWith(`/terraform/${terraformModule.id}/updatequeue`)}
                   textDecoration="none"
                 >
                   Update queue

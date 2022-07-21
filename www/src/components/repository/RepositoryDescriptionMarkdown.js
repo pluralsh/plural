@@ -35,7 +35,7 @@ function getLastStringChild(children) {
   return lastChild
 }
 
-function MdPre({ children, ...props }) {
+export function MdPre({ children, ...props }) {
   let lang
   if (children.props?.className?.startsWith('lang-')) {
     lang = children.props.className.slice(5)

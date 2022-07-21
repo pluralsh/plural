@@ -1,18 +1,13 @@
 import { useContext, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
-import { A, Div, Flex, Img, P, Button, Icon } from 'honorable'
-import { BrowserIcon, CertificateIcon, GearTrainIcon, GitHubIcon, InvoicesIcon, LinksIcon, Tag } from 'pluralsh-design-system'
-
+import { Button, Div, Flex, P } from 'honorable'
+import { BrowserIcon, CertificateIcon, GearTrainIcon } from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 
-import { capitalize } from '../../utils/string'
-
 import { InferredConsoleButton } from '../clusters/ConsoleButton'
 
 import { RECIPES_QUERY } from './queries'
-import { providerToIcon, providerToIconHeight } from './constants'
 
 import InstallDropdownButton from './InstallDropdownButton'
 import { InstallationConfiguration } from './InstallationConfiguration'
@@ -37,7 +32,10 @@ function InstalledActions({ installation, ...props }: any) {
           secondary
           onClick={() => setOpen(true)}
         >
-          <GearTrainIcon position="relative" top={4} />
+          <GearTrainIcon
+            position="relative"
+            top={4}
+          />
         </Button>
       </Flex>
       <InstallationConfiguration
@@ -49,8 +47,7 @@ function InstalledActions({ installation, ...props }: any) {
   )
 }
 
-function RepositorySideCar({ ...props }) {
-  const [open, setOpen] = useState(false)
+function RepositorySideCar(props: any) {
   const repository = useContext(RepositoryContext)
   const [recipes] = usePaginatedQuery(
     RECIPES_QUERY,

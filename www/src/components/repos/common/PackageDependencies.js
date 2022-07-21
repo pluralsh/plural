@@ -133,14 +133,15 @@ export default function PackageDependencies() {
       pad="medium"
       gap="small"
     >
-      <PackageViewHeader title="Dependencies" />
-      <Button
-        primary
-        size="small"
-        onClick={() => setFull(!full)}
-      >
-        {full ? 'Immediate' : 'Full'}
-      </Button>
+      <PackageViewHeader title="Dependencies">
+        <Button
+          primary
+          size="small"
+          onClick={() => setFull(!full)}
+        >
+          {full ? 'Immediate' : 'Full'}
+        </Button>
+      </PackageViewHeader>
       {full && <FullDependencies resource={chart} />}
       {!full && (
         <Dependencies

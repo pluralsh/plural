@@ -126,7 +126,15 @@ export default function PackageSecurity() {
       pad="medium"
       gap="small"
     >
-      <PackageViewHeader title="Security">{current?.scan && <PackageGrade scan={current.scan} /> }</PackageViewHeader>
+      <PackageViewHeader title="Security">{
+        current?.scan && (
+          <PackageGrade
+            scan={current.scan}
+            large
+          />
+        )
+      }
+      </PackageViewHeader>
       {current.scan.errors && (
         <Box
           gap="small"

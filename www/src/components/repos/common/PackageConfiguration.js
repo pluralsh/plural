@@ -18,7 +18,7 @@ export default function PackageConfiguration() {
       pad="medium"
       gap="small"
     >
-      <PackageViewHeader>Configuration</PackageViewHeader>
+      <PackageViewHeader title="Configuration" />
       <Highlight language="yaml">{current?.valuesTemplate || 'n/a'}</Highlight>
     </Box>
   )

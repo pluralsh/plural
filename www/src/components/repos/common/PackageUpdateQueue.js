@@ -108,7 +108,7 @@ export default function PackageUpdateQueue() {
       pad="medium"
       gap="small"
     >
-      <PackageViewHeader>Update queue</PackageViewHeader>
+      <PackageViewHeader title="Update queue" />
       <DeferredUpdateHeader />
       <StandardScroller
         listRef={listRef}

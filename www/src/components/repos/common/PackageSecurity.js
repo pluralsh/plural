@@ -2,13 +2,13 @@ import { useContext, useState } from 'react'
 import { Box, Collapsible, Text } from 'grommet'
 import { Alert } from 'pluralsh-design-system'
 
-import { Div, H2, H3 } from 'honorable'
+import { H2 } from 'honorable'
 
 import ChartContext from '../../../contexts/ChartContext'
 
 import { GradeNub, HeaderItem } from '../Docker'
 
-import { PackageViewHeader } from './misc'
+import { PackageGrade, PackageViewHeader } from './misc'
 
 const ROW_HEIGHT = 40
 const ROW_HEIGHT_PX = `${ROW_HEIGHT}px`
@@ -126,7 +126,7 @@ export default function PackageSecurity() {
       pad="medium"
       gap="small"
     >
-      <PackageViewHeader>Security</PackageViewHeader>
+      <PackageViewHeader title="Security">{current?.scan && <PackageGrade scan={current.scan} /> }</PackageViewHeader>
       {current.scan.errors && (
         <Box
           gap="small"

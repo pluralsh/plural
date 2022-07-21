@@ -133,7 +133,7 @@ export default function PackageDependencies() {
       pad="medium"
       gap="small"
     >
-      <PackageViewHeader>Configuration</PackageViewHeader>
+      <PackageViewHeader title="Dependencies" />
       <Button
         primary
         size="small"

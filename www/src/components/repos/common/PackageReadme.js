@@ -18,7 +18,7 @@ export default function PackageReadme() {
       pad="medium"
       gap="small"
     >
-      <PackageViewHeader>Readme</PackageViewHeader>
+      <PackageViewHeader title="Readme" />
       <RepositoryDescriptionMarkdown text={current?.readme || 'n/a'} />
     </Box>
   )

@@ -21,7 +21,8 @@ import { CHART_Q, INSTALL_CHART, UPDATE_CHART_INST } from './queries'
 import { DEFAULT_CHART_ICON } from './constants'
 
 import { DetailContainer, DetailProperty } from './Installation'
-import { PackageGrade, dockerPull } from './misc'
+import { dockerPull } from './misc'
+import { PackageGrade } from './common/misc'
 
 function ChartInfo({ version: { helm, insertedAt } }) {
   return (

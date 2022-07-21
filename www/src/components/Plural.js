@@ -214,7 +214,7 @@ export function PluralInner() {
                 element={<RepositoryEdit />}
               />
             </Route>
-            {/* --- CHARTS --- */}
+            {/* --- HELM CHARTS --- */}
             <Route
               path="/charts/:chartId"
               element={<Chart />}
@@ -240,10 +240,32 @@ export function PluralInner() {
                 element={<PackageUpdateQueue />}
               />
             </Route>
+            {/* --- TERRAFORM CHARTS --- */}
             <Route
               path="/terraform/:tfId"
               element={<Terraform />}
-            />
+            >
+              <Route
+                index
+                element={<PackageReadme />}
+              />
+              <Route
+                path="configuration"
+                element={<PackageConfiguration />}
+              />
+              <Route
+                path="dependencies"
+                element={<PackageDependencies />}
+              />
+              <Route
+                path="security"
+                element={<PackageSecurity />}
+              />
+              <Route
+                path="updatequeue"
+                element={<PackageUpdateQueue />}
+              />
+            </Route>
             {/* --- DOCKER --- */}
             <Route
               path="/dkr/repo/:id"

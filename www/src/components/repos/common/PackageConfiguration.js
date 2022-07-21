@@ -9,7 +9,8 @@ import ChartContext from '../../../contexts/ChartContext'
 import { PackageViewHeader } from './misc'
 
 export default function PackageConfiguration() {
-  const { current } = useContext(ChartContext)
+  const { currentHelmChart, currentTerraformChart } = useContext(ChartContext)
+  const valuesTemplate = (currentHelmChart || currentTerraformChart)?.valuesTemplate || 'n/a'
 
   return (
     <Box
@@ -19,7 +20,7 @@ export default function PackageConfiguration() {
       gap="small"
     >
       <PackageViewHeader title="Configuration" />
-      <Highlight language="yaml">{current?.valuesTemplate || 'n/a'}</Highlight>
+      <Highlight language="yaml">{valuesTemplate}</Highlight>
     </Box>
   )
 }

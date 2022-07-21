@@ -124,12 +124,14 @@ const Dependencies = memo(({ name, dependencies, resource }) => {
 })
 
 export default function PackageDependencies() {
-  const { chart, current } = useContext(ChartContext)
+  const { helmChart, terraformChart, currentHelmChart, currentTerraformChart } = useContext(ChartContext)
+  const chart = helmChart || terraformChart
+  const current = currentHelmChart || currentTerraformChart
   const [full, setFull] = useState(false)
 
   return (
     <Box
-      flex
+      fill
       pad="medium"
       gap="small"
     >

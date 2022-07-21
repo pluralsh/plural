@@ -2,6 +2,10 @@ import { Flex, H1, Text } from 'honorable'
 import { Box } from 'grommet'
 import { Chip } from 'pluralsh-design-system'
 
+export function dockerPull(registry, { tag, dockerRepository: { name, repository } }) {
+  return `${registry}/${repository.name}/${name}:${tag}`
+}
+
 const gradeColors = {
   A: '#A5F8C8',
   B: '#A5F8C8',

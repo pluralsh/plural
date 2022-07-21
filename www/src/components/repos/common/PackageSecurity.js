@@ -117,7 +117,8 @@ function ScanViolation({ violation }) {
 }
 
 export default function PackageSecurity() {
-  const { current } = useContext(ChartContext)
+  const { currentHelmChart, currentTerraformChart } = useContext(ChartContext)
+  const current = currentHelmChart || currentTerraformChart
 
   return (
     <Box

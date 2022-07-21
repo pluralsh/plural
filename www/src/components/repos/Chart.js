@@ -21,8 +21,7 @@ import { CHART_Q, INSTALL_CHART, UPDATE_CHART_INST } from './queries'
 import { DEFAULT_CHART_ICON } from './constants'
 
 import { DetailContainer, DetailProperty } from './Installation'
-import { dockerPull } from './misc'
-import { PackageGrade } from './common/misc'
+import { PackageGrade, dockerPull } from './common/misc'
 
 function ChartInfo({ version: { helm, insertedAt } }) {
   return (
@@ -208,7 +207,7 @@ export default function Chart() {
   const chartInst = data.chart.installation
 
   return (
-    <ChartContext.Provider value={{ chart, current: currentVersion }}>
+    <ChartContext.Provider value={{ helmChart: chart, currentHelmChart: currentVersion }}>
       <Box direction="column">
         <Flex
           paddingVertical={18}

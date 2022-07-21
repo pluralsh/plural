@@ -86,10 +86,9 @@ function DeferredUpdate({ deferred }) {
 }
 
 export default function PackageUpdateQueue() {
-  const { chart } = useContext(ChartContext)
-
-  const chartInst = chart?.installation?.id
-  const tfInst = undefined // TODO { chartInst, tfInst }
+  const { helmChart, terraformChart } = useContext(ChartContext)
+  const chartInst = helmChart?.installation?.id
+  const tfInst = terraformChart?.installation?.id
 
   const [listRef, setListRef] = useState(null)
   const { data, loading, fetchMore } = useQuery(DEFERRED_UPDATES, {

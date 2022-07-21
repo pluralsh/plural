@@ -9,7 +9,8 @@ import RepositoryDescriptionMarkdown from '../../repository/RepositoryDescriptio
 import { PackageViewHeader } from './misc'
 
 export default function PackageReadme() {
-  const { current } = useContext(ChartContext)
+  const { currentHelmChart, currentTerraformChart } = useContext(ChartContext)
+  const readme = (currentHelmChart || currentTerraformChart)?.readme || 'n/a'
 
   return (
     <Box
@@ -19,7 +20,7 @@ export default function PackageReadme() {
       gap="small"
     >
       <PackageViewHeader title="Readme" />
-      <RepositoryDescriptionMarkdown text={current?.readme || 'n/a'} />
+      <RepositoryDescriptionMarkdown text={readme} />
     </Box>
   )
 }

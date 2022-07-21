@@ -31,6 +31,7 @@ function renderTree(id, tree, height, width) {
     .attr('d', diagonal)
     .style('fill', 'none')
     .attr('stroke', d => d.data.strokeColor || '#ccc')
+    .attr('stroke-dasharray', d => d.data.strokeDasharray || '0')
 
   const nodes = svg.selectAll('g')
     .data(root.descendants())

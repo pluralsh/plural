@@ -15,6 +15,8 @@ import { DEFERRED_UPDATES } from '../queries'
 import { LoopingLogo } from '../../utils/AnimatedLogo'
 import ChartContext from '../../../contexts/ChartContext'
 
+import { PackageViewHeader } from './misc'
+
 const ROW_HEIGHT = '50px'
 const format = dt => moment(dt).format('lll')
 
@@ -83,7 +85,7 @@ function DeferredUpdate({ deferred }) {
   )
 }
 
-export function PackageUpdateQueue() {
+export default function PackageUpdateQueue() {
   const { chart } = useContext(ChartContext)
 
   const chartInst = chart?.installation?.id
@@ -100,7 +102,13 @@ export function PackageUpdateQueue() {
   const { edges, pageInfo } = data.deferredUpdates
 
   return (
-    <Box fill>
+    <Box
+      fill
+      flex={false}
+      pad="medium"
+      gap="small"
+    >
+      <PackageViewHeader>Update queue</PackageViewHeader>
       <DeferredUpdateHeader />
       <StandardScroller
         listRef={listRef}

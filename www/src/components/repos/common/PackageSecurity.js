@@ -2,9 +2,13 @@ import { useContext, useState } from 'react'
 import { Box, Collapsible, Text } from 'grommet'
 import { Alert } from 'pluralsh-design-system'
 
+import { Div, H2, H3 } from 'honorable'
+
 import ChartContext from '../../../contexts/ChartContext'
 
 import { GradeNub, HeaderItem } from '../Docker'
+
+import { PackageViewHeader } from './misc'
 
 const ROW_HEIGHT = 40
 const ROW_HEIGHT_PX = `${ROW_HEIGHT}px`
@@ -119,24 +123,34 @@ export default function PackageSecurity() {
     <Box
       fill
       flex={false}
+      pad="medium"
       gap="small"
     >
+      <PackageViewHeader>Security</PackageViewHeader>
       {current.scan.errors && (
         <Box
           gap="small"
           pad={{ vertical: 'small' }}
         >
-          {current.scan.errors.map((error, ind) => (
-            <Alert
-              key={ind}
-              title="Scan failure"
-              severity="error"
-            >
-              {error.message}
-            </Alert>
-          ))}
+          <H2>Scan failures</H2>
+          <Box
+            background="fill-one"
+            border
+            round="xsmall"
+          >
+            {current.scan.errors.map((error, ind) => (
+              <Alert
+                key={ind}
+                severity="error"
+              >
+                {error.message}
+              </Alert>
+            ))}
+          </Box>
+
         </Box>
       )}
+      <H2>Vunerabilities</H2>
       <ScanHeader />
       <Box flex={false}>
         {current.scan.violations.map((vio, ind) => (

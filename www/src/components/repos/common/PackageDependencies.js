@@ -13,7 +13,9 @@ import { DEFAULT_CHART_ICON, DEFAULT_TF_ICON, Tools } from '../constants'
 import { CLOSURE_Q } from '../queries'
 import ChartContext from '../../../contexts/ChartContext'
 
-const GRAPH_HEIGHT = '700px'
+import { PackageViewHeader } from './misc'
+
+const GRAPH_HEIGHT = '600px'
 const OPTIONAL_COLOR = '#9095A2'
 const OPTIONAL_DASHARRAY = '2'
 
@@ -85,7 +87,6 @@ const FullDependencies = memo(({ resource }) => {
     <TreeGraph
       id={`${uniqueId('full_')}-full-tree`}
       tree={graph}
-      width="100%"
       height={GRAPH_HEIGHT}
     />
   )
@@ -117,7 +118,6 @@ const Dependencies = memo(({ name, dependencies, resource }) => {
     <TreeGraph
       id={`${uniqueId(name)}-tree`}
       tree={asDep({ ...resource, children: deps })}
-      width="100%"
       height={GRAPH_HEIGHT}
     />
   )
@@ -129,9 +129,11 @@ export default function PackageDependencies() {
 
   return (
     <Box
-      direction="column"
-      width="100%"
+      flex
+      pad="medium"
+      gap="small"
     >
+      <PackageViewHeader>Configuration</PackageViewHeader>
       <Button
         primary
         size="small"

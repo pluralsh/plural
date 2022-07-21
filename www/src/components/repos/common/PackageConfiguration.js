@@ -6,10 +6,20 @@ import Highlight from 'react-highlight.js'
 
 import ChartContext from '../../../contexts/ChartContext'
 
+import { PackageViewHeader } from './misc'
+
 export default function PackageConfiguration() {
   const { current } = useContext(ChartContext)
 
   return (
-    <Box pad="large"><Highlight language="yaml">{current?.valuesTemplate || 'n/a'}</Highlight></Box>
+    <Box
+      fill
+      flex={false}
+      pad="medium"
+      gap="small"
+    >
+      <PackageViewHeader>Configuration</PackageViewHeader>
+      <Highlight language="yaml">{current?.valuesTemplate || 'n/a'}</Highlight>
+    </Box>
   )
 }

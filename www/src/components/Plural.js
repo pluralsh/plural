@@ -51,7 +51,7 @@ import { AuditChloropleth } from './audits/AuditChloropleth'
 import PackageReadme from './repos/common/PackageReadme'
 import PackageConfiguration from './repos/common/PackageConfiguration'
 import PackageSecurity from './repos/common/PackageSecurity'
-import { PackageUpdateQueue } from './repos/common/PackageUpdateQueue'
+import PackageUpdateQueue from './repos/common/PackageUpdateQueue'
 import PackageDependencies from './repos/common/PackageDependencies'
 
 function EditBilling(props) {

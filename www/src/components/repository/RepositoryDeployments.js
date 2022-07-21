@@ -18,6 +18,8 @@ import { Table, TableData, TableRow } from '../utils/Table'
 
 import { DEPLOYMENTS_QUERY } from './queries'
 
+import RepositoryHeader from './RepositoryHeader.tsx'
+
 // eslint-disable-next-line
 const MAX_UUID = 0xffffffffffffffffffffffffffffffff
 
@@ -101,9 +103,10 @@ function RepositoryDeployments() {
       maxHeight="100%"
       direction="column"
     >
+      <RepositoryHeader>Deployments</RepositoryHeader>
       <Table
         headers={['Event', 'Clusters Updated', 'Last Ping', 'Status']}
-        sizes={['30%', '30%', '30%', '10%']}
+        sizes={['27.5%', '27.5%', '27.5%', '17.5%']}
         background="fill-one"
         width="100%"
         height="calc(100% - 16px)"

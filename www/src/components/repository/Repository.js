@@ -83,7 +83,8 @@ function Repository() {
             flexGrow={1}
             display-desktopLarge-down="none"
           />
-          <Div
+          <Flex
+            direction="column"
             flexGrow={1}
             flexShrink={1}
             maxWidth-desktop-up={896}
@@ -92,12 +93,11 @@ function Repository() {
             minWidth-desktopLarge-down={672}
             height="100%"
             maxHeight="100%"
-            paddingTop="large"
             paddingBottom="xlarge"
             overflowY="auto"
           >
             <Outlet />
-          </Div>
+          </Flex>
           <RepositorySideCar
             marginLeft="xlarge"
             marginRight="large"

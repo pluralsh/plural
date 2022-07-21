@@ -122,21 +122,6 @@ export default function Terraform() {
                 name={terraformModule.name}
                 icon={DEFAULT_TF_ICON}
               />
-              {terraformModule.installation && (
-                <Box
-                  width="100px"
-                  direction="row"
-                  justify="end"
-                  margin={{ vertical: 'small' }}
-                >
-                  <TerraformInstaller
-                    installation={terraformModule.repository.installation}
-                    terraformInstallation={terraformModule.installation}
-                    version={currentVersion}
-                    terraformId={terraformModule.id}
-                  />
-                </Box>
-              )}
               <Versions
                 edges={edges}
                 pageInfo={pageInfo}
@@ -194,6 +179,28 @@ export default function Terraform() {
               ))}
             </Box>
             <Box fill><Outlet /></Box>
+            <Box
+              basis="medium"
+              direction="column"
+              pad="small"
+              gap="small"
+            >
+              {terraformModule.installation && (
+                <Box
+                  width="100px"
+                  direction="row"
+                  justify="end"
+                  margin={{ vertical: 'small' }}
+                >
+                  <TerraformInstaller
+                    installation={terraformModule.repository.installation}
+                    terraformInstallation={terraformModule.installation}
+                    version={currentVersion}
+                    terraformId={terraformModule.id}
+                  />
+                </Box>
+              )}
+            </Box>
           </Box>
         </ScrollableContainer>
       </Box>

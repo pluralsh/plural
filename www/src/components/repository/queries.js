@@ -18,6 +18,18 @@ export const CREATE_REPOSITORY_MUTATION = gql`
   ${RepoFragment}
 `
 
+export const UPDATE_REPOSITORY_MUTATION = gql`
+  mutation UpdateRepository($repositoryId: ID!, $attributes: RepositoryAttributes!) {
+    updateRepository(repositoryId: $repositoryId, attributes: $attributes) {
+      ...RepoFragment
+      tags {
+        tag
+      }
+    }
+  }
+  ${RepoFragment}
+`
+
 export const REPOSITORY_QUERY = gql`
   query Repository($repositoryId: ID!) {
     repository(id: $repositoryId) {
@@ -34,7 +46,7 @@ export const REPOSITORY_QUERY = gql`
 
       }
       tags {
-        name: tag
+        tag
       }
       readme
       git_url
@@ -177,4 +189,14 @@ export const UPDATE_INSTALLATION = gql`
     }
   }
   ${InstallationFragment}
+`
+
+export const TAGS_SEARCH_QUERY = gql`
+  query Tags($q: String, $cursor: String, $first: Int) {
+    tags(type: REPOSITORIES, first: $first, after: $cursor, q: $q) {
+      pageInfo { ...PageInfo }
+      edges { node { tag count } }
+    }
+  }
+  ${PageInfo}
 `

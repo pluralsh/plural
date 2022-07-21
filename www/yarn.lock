@@ -13236,9 +13236,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pluralsh-design-system@npm:1.125.0":
-  version: 1.125.0
-  resolution: "pluralsh-design-system@npm:1.125.0"
+"pluralsh-design-system@npm:1.124.0":
+  version: 1.124.0
+  resolution: "pluralsh-design-system@npm:1.124.0"
   dependencies:
     prop-types: 15.8.1
     resize-observer-polyfill: 1.5.1
@@ -13250,7 +13250,7 @@ __metadata:
     react: ">=16.0.0"
     react-dom: ">=16.0.0"
     react-transition-group: ">=4.4.2"
-  checksum: 13d884e356a4c2a7b4785c5ebc3901bd7c384abafb8286900469da89bcce66ca9aa83753222801da7eff6b105c40487b67bad6a55f834c4cf5e62a8b92117262
+  checksum: 766ddddff1d96755a04909e5c04f65f79472905ed6bcfb7ec5368d07173a6e8432ff950377b4cbc4617ab0dc5b0fb5cdc1227fd203cd0ecbe637fffc7f785d91
   languageName: node
   linkType: hard
 
@@ -18671,7 +18671,7 @@ __metadata:
     moment: 2.29.4
     phoenix: 1.6.11
     pluralsh-absinthe-socket-apollo-link: 0.2.0
-    pluralsh-design-system: 1.125.0
+    pluralsh-design-system: 1.124.0
     postcss-import: 8.2.0
     prop-types: 15.8.1
     query-string: 7.1.1

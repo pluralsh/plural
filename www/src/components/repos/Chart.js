@@ -9,7 +9,7 @@ import { Button, ScrollableContainer } from 'forge-core'
 import moment from 'moment'
 import Highlight from 'react-highlight.js'
 
-import { A, Flex, H2, Img } from 'honorable'
+import { A, Flex } from 'honorable'
 
 import { Versions } from '../versions/Versions'
 import { PluralConfigurationContext } from '../login/CurrentUser'
@@ -21,7 +21,7 @@ import { CHART_Q, INSTALL_CHART, UPDATE_CHART_INST } from './queries'
 import { DEFAULT_CHART_ICON } from './constants'
 
 import { DetailContainer, DetailProperty } from './Installation'
-import { PackageGrade, dockerPull } from './common/misc'
+import { PackageGrade, PackageHeader, dockerPull } from './common/misc'
 
 function ChartInfo({ version: { helm, insertedAt } }) {
   return (
@@ -118,40 +118,6 @@ function ChartInstaller({ chartInstallation, versionId, chartId, installation })
   )
 }
 
-function ChartHeader({ version: { chart } }) {
-  return (
-    <Box
-      direction="row"
-      align="center"
-      gap="small"
-      margin={{ bottom: 'small' }}
-    >
-      <Flex
-        width="64px"
-        height="64px"
-        padding="8px"
-        align="center"
-        justify="center"
-        backgroundColor="fill-one"
-        border="1px solid border"
-        borderRadius={4}
-      >
-        <Img
-          width="48px"
-          height="48px"
-          src={chart.icon || DEFAULT_CHART_ICON}
-        />
-      </Flex>
-      <H2
-        fontSize="20px"
-        fontWeight="500px"
-      >
-        {chart.name}
-      </H2>
-    </Box>
-  )
-}
-
 function ImageDependencies({ version: { imageDependencies } }) {
   const { registry } = useContext(PluralConfigurationContext)
   if (!imageDependencies || imageDependencies.length === 0) return null
@@ -229,10 +195,9 @@ export default function Chart() {
               flexBasis="200px"
               minWidth="200px"
             >
-              <ChartHeader
-                version={currentVersion}
-                chartInstallation={chartInst}
-                installation={repository.installation}
+              <PackageHeader
+                name={currentVersion.chart.name}
+                icon={currentVersion.chart.icon || DEFAULT_CHART_ICON}
               />
               <Versions
                 edges={edges}

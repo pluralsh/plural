@@ -1,4 +1,4 @@
-import { Flex, H1, Text } from 'honorable'
+import { Flex, H1, H2, Img, Text } from 'honorable'
 import { Box } from 'grommet'
 import { Chip } from 'pluralsh-design-system'
 
@@ -31,6 +31,40 @@ export function PackageGrade({ scan, large }) {
         {scan.grade}
       </Text>
     </Chip>
+  )
+}
+
+export function PackageHeader({ name, icon }) {
+  return (
+    <Box
+      direction="row"
+      align="center"
+      gap="small"
+      margin={{ bottom: 'small' }}
+    >
+      <Flex
+        width="64px"
+        height="64px"
+        padding="8px"
+        align="center"
+        justify="center"
+        backgroundColor="fill-one"
+        border="1px solid border"
+        borderRadius={4}
+      >
+        <Img
+          width="48px"
+          height="48px"
+          src={icon}
+        />
+      </Flex>
+      <H2
+        fontSize="20px"
+        fontWeight="500px"
+      >
+        {name}
+      </H2>
+    </Box>
   )
 }
 

@@ -4,7 +4,7 @@ import { ScrollableContainer } from 'forge-core'
 import { useMutation, useQuery } from '@apollo/client'
 import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom'
 
-import { Button, Flex, H2, Img, Modal } from 'honorable'
+import { Button, Flex, Modal } from 'honorable'
 
 import { Tab } from 'pluralsh-design-system'
 
@@ -21,7 +21,7 @@ import { GqlError } from '../utils/Alert'
 import { INSTALL_TF, TF_Q, UNINSTALL_TF } from './queries'
 import { DEFAULT_TF_ICON } from './constants'
 
-import { PackageGrade } from './common/misc'
+import { PackageGrade, PackageHeader } from './common/misc'
 
 function TerraformInstaller({ installation, terraformId, terraformInstallation, version }) {
   const installed = terraformInstallation && terraformInstallation.version.id === version.id
@@ -66,56 +66,6 @@ function TerraformInstaller({ installation, terraformId, terraformInstallation, 
           </Button>
         )}
     </>
-  )
-}
-
-function TerraformHeader({ terraform: { id, name, installation, repository }, version }) {
-  return (
-    <Box
-      fill
-      direction="row"
-      align="center"
-      gap="medium"
-      margin={{ bottom: 'small' }}
-      style={{ minHeight: '50px' }}
-    >
-      <Flex
-        width="64px"
-        height="64px"
-        padding="8px"
-        align="center"
-        justify="center"
-        backgroundColor="fill-one"
-        border="1px solid border"
-        borderRadius={4}
-      >
-        <Img
-          width="48px"
-          height="48px"
-          src={DEFAULT_TF_ICON}
-        />
-      </Flex>
-      <H2
-        fontSize="20px"
-        fontWeight="500px"
-      >
-        {name}
-      </H2>
-      {repository.installation && (
-        <Box
-          width="100px"
-          direction="row"
-          justify="end"
-        >
-          <TerraformInstaller
-            installation={repository.installation}
-            terraformInstallation={installation}
-            version={version}
-            terraformId={id}
-          />
-        </Box>
-      )}
-    </Box>
   )
 }
 
@@ -169,10 +119,25 @@ export default function Terraform() {
               flexBasis="300px"
               minWidth="300px"
             >
-              <TerraformHeader
-                terraform={terraformModule}
-                version={currentVersion}
+              <PackageHeader
+                name={terraformModule.name}
+                icon={DEFAULT_TF_ICON}
               />
+              {terraformModule.installation && (
+                <Box
+                  width="100px"
+                  direction="row"
+                  justify="end"
+                  margin={{ vertical: 'small' }}
+                >
+                  <TerraformInstaller
+                    installation={terraformModule.repository.installation}
+                    terraformInstallation={terraformModule.installation}
+                    version={currentVersion}
+                    terraformId={terraformModule.id}
+                  />
+                </Box>
+              )}
               <Versions
                 edges={edges}
                 pageInfo={pageInfo}

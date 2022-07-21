@@ -6,6 +6,7 @@ export function PackageViewHeader({ children }) {
     <Box
       border="bottom"
       pad={{ bottom: 'medium' }}
+      margin={{ bottom: 'small' }}
     >
       <H1>{children}</H1>
     </Box>

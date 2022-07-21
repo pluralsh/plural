@@ -7,7 +7,7 @@ import MultilineCode from '../utils/Code'
 function MdImg({ src, gitUrl, ...props }) {
   // Convert local image paths to full path on github
   // Only works if primary git branch is named "master"
-  if (src && !src.match(/^https*/)) {
+  if (gitUrl && src && !src.match(/^https*/)) {
     src = `${gitUrl}/raw/master/${src}`
   }
 
@@ -64,7 +64,7 @@ export default memo(({ text, gitUrl }) => (
       blockquote: {
         component: Blockquote,
         props: { borderLeft: '4px solid', borderColor: 'border', mx: 0, pl: '1em' },
-      }, 
+      },
       ul: { component: Ul, props: { paddingLeft: 'xlarge', marginBottom: 'small' } },
       ol: { component: Ol, props: { paddingLeft: 'xlarge', marginBottom: 'small' } },
       li: { component: Li, props: { body2: true, marginTop: 'xxsmall' } },

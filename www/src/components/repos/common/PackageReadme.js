@@ -1,10 +1,10 @@
 import { useContext } from 'react'
 
-import { Box, Markdown } from 'grommet'
+import { Box } from 'grommet'
 
 import ChartContext from '../../../contexts/ChartContext'
 
-import { MARKDOWN_STYLING } from '../Chart'
+import RepositoryDescriptionMarkdown from '../../repository/RepositoryDescriptionMarkdown'
 
 import { PackageViewHeader } from './misc'
 
@@ -19,7 +19,7 @@ export default function PackageReadme() {
       gap="small"
     >
       <PackageViewHeader>Readme</PackageViewHeader>
-      <Markdown components={MARKDOWN_STYLING}>{current?.readme || 'n/a'}</Markdown>
+      <RepositoryDescriptionMarkdown text={current?.readme || 'n/a'} />
     </Box>
   )
 }

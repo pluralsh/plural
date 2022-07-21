@@ -114,10 +114,9 @@ export default function Terraform() {
             pad="medium"
             direction="row"
           >
-            <Flex
+            <Box
               direction="column"
-              flexBasis="300px"
-              minWidth="300px"
+              basis="medium"
             >
               <PackageHeader
                 name={terraformModule.name}
@@ -193,8 +192,8 @@ export default function Terraform() {
                   Update queue
                 </Tab>
               ))}
-            </Flex>
-            <Flex flexGrow={1}><Outlet /></Flex>
+            </Box>
+            <Box fill><Outlet /></Box>
           </Box>
         </ScrollableContainer>
       </Box>

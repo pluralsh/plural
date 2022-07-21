@@ -190,10 +190,9 @@ export default function Chart() {
             pad="medium"
             direction="row"
           >
-            <Flex
+            <Box
               direction="column"
-              flexBasis="200px"
-              minWidth="200px"
+              basis="medium"
             >
               <PackageHeader
                 name={currentVersion.chart.name}
@@ -255,12 +254,11 @@ export default function Chart() {
                 </Tab>
               ))}
 
-            </Flex>
-            <Flex flexGrow={1}><Outlet /></Flex>
-            <Flex
+            </Box>
+            <Box fill><Outlet /></Box>
+            <Box
+              basis="medium"
               direction="column"
-              flexBasis="250px"
-              minWidth="250px"
               pad="small"
               gap="small"
             >
@@ -274,7 +272,7 @@ export default function Chart() {
               )}
               <ChartInfo version={currentVersion} />
               <ImageDependencies version={currentVersion} />
-            </Flex>
+            </Box>
           </Box>
         </ScrollableContainer>
       </Box>

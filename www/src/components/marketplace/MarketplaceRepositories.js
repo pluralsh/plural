@@ -77,7 +77,7 @@ function RepoCardList({ repositories, repoProps, maxWidth, stretchLastRow = fals
               imageUrl={repository.darkIcon || repository.icon}
               publisher={repository.publisher?.name?.toUpperCase()}
               description={repository.description}
-              tags={repository.tags.map(({ name }) => name)}
+              tags={repository.tags.map(({ tag }) => tag)}
               priv={repository.private}
               installed={!!repository.installation}
               {...repoProps}
@@ -142,7 +142,7 @@ function MarketplaceRepositories({ installed, ...props }) {
     .filter(repository => {
       if (!tags.length) return true
 
-      const repositoryTags = repository.tags.map(({ name }) => name.toLowerCase())
+      const repositoryTags = repository.tags.map(({ tag }) => tag.toLowerCase())
 
       return tags.some(tag => repositoryTags.includes(tag))
     })

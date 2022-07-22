@@ -173,7 +173,10 @@ export default function Chart() {
   const chartInst = data.chart.installation
 
   return (
-    <Box direction="column">
+    <Box
+      direction="column"
+      fill
+    >
       <Flex
         paddingVertical={18}
         marginLeft="xlarge"

@@ -84,7 +84,10 @@ export default function Terraform() {
   const tfInst = terraformModule.installation
 
   return (
-    <Box direction="column">
+    <Box
+      direction="column"
+      fill
+    >
       <Flex
         paddingVertical={18}
         marginLeft="xlarge"

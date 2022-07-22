@@ -1,9 +1,11 @@
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 import { useQuery } from '@apollo/client'
 
 import { Box } from 'grommet'
 
 import moment from 'moment'
+
+import { useOutletContext } from 'react-router-dom'
 
 import { extendConnection } from '../../../utils/graphql'
 import { StandardScroller } from '../../utils/SmoothScroller'
@@ -13,7 +15,6 @@ import { HeaderItem } from '../Docker'
 import { DEFERRED_UPDATES } from '../queries'
 
 import { LoopingLogo } from '../../utils/AnimatedLogo'
-import ChartContext from '../../../contexts/ChartContext'
 
 import { PackageViewHeader } from './misc'
 
@@ -86,7 +87,7 @@ function DeferredUpdate({ deferred }) {
 }
 
 export default function PackageUpdateQueue() {
-  const { helmChart, terraformChart } = useContext(ChartContext)
+  const { helmChart, terraformChart } = useOutletContext()
   const chartInst = helmChart?.installation?.id
   const tfInst = terraformChart?.installation?.id
 

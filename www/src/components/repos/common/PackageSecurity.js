@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 import { Box, Collapsible, Text } from 'grommet'
 import { ErrorIcon } from 'pluralsh-design-system'
 
@@ -6,7 +6,7 @@ import { Button, Div, H2 } from 'honorable'
 
 import Clamp from 'react-multiline-clamp'
 
-import ChartContext from '../../../contexts/ChartContext'
+import { useOutletContext } from 'react-router-dom'
 
 import { GradeNub, HeaderItem } from '../Docker'
 
@@ -119,7 +119,7 @@ function ScanViolation({ violation }) {
 }
 
 export default function PackageSecurity() {
-  const { currentHelmChart, currentTerraformChart } = useContext(ChartContext)
+  const { currentHelmChart, currentTerraformChart } = useOutletContext()
   const current = currentHelmChart || currentTerraformChart
 
   return (

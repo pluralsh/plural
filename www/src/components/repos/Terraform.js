@@ -8,8 +8,6 @@ import { Button, Flex, Modal } from 'honorable'
 
 import { Tab } from 'pluralsh-design-system'
 
-import ChartContext from '../../contexts/ChartContext'
-
 import { Versions } from '../versions/Versions'
 
 import { Breadcrumbs, BreadcrumbsContext } from '../Breadcrumbs'
@@ -87,108 +85,106 @@ export default function Terraform() {
   const tfInst = terraformModule.installation
 
   return (
-    <ChartContext.Provider value={{ terraformChart: terraformModule, currentTerraformChart: currentVersion }}>
-      <Box direction="column">
-        <Flex
-          paddingVertical={18}
-          marginLeft="xlarge"
-          marginRight="xlarge"
-          paddingLeft="xsmall"
-          paddingRight="xsmall"
-          borderBottom="1px solid border"
+    <Box direction="column">
+      <Flex
+        paddingVertical={18}
+        marginLeft="xlarge"
+        marginRight="xlarge"
+        paddingLeft="xsmall"
+        paddingRight="xsmall"
+        borderBottom="1px solid border"
+      >
+        <Breadcrumbs />
+      </Flex>
+      <ScrollableContainer>
+        <Box
+          pad="medium"
+          direction="row"
         >
-          <Breadcrumbs />
-        </Flex>
-        <ScrollableContainer>
           <Box
-            pad="medium"
-            direction="row"
+            direction="column"
+            basis="medium"
           >
-            <Box
-              direction="column"
-              basis="medium"
+            <PackageHeader
+              name={terraformModule.name}
+              icon={DEFAULT_TF_ICON}
+            />
+            <Versions
+              edges={edges}
+              pageInfo={pageInfo}
+              refetch={refetch}
+              fetchMore={fetchMore}
+              setVersion={setVersion}
+            />
+            <Tab
+              vertical
+              onClick={() => navigate(`/terraform/${terraformModule.id}`)}
+              active={pathname.endsWith(`/terraform/${terraformModule.id}`)}
+              textDecoration="none"
             >
-              <PackageHeader
-                name={terraformModule.name}
-                icon={DEFAULT_TF_ICON}
-              />
-              <Versions
-                edges={edges}
-                pageInfo={pageInfo}
-                refetch={refetch}
-                fetchMore={fetchMore}
-                setVersion={setVersion}
-              />
-              <Tab
-                vertical
-                onClick={() => navigate(`/terraform/${terraformModule.id}`)}
-                active={pathname.endsWith(`/terraform/${terraformModule.id}`)}
-                textDecoration="none"
-              >
-                Readme
-              </Tab>
-              <Tab
-                vertical
-                onClick={() => navigate(`/terraform/${terraformModule.id}/configuration`)}
-                active={pathname.startsWith(`/terraform/${terraformModule.id}/configuration`)}
-                textDecoration="none"
-              >
-                Configuration
-              </Tab>
-              <Tab
-                vertical
-                onClick={() => navigate(`/terraform/${terraformModule.id}/dependencies`)}
-                active={pathname.startsWith(`/terraform/${terraformModule.id}/dependencies`)}
-                textDecoration="none"
-              >
-                Dependencies
-              </Tab>
-              <Tab
-                vertical
-                onClick={() => navigate(`/terraform/${terraformModule.id}/security`)}
-                active={pathname.startsWith(`/terraform/${terraformModule.id}/security`)}
-                textDecoration="none"
-              >
-                <Flex
-                  flexGrow={1}
-                  justifyContent="space-between"
-                >
-                  Security
-                  {currentVersion?.scan && <PackageGrade scan={currentVersion.scan} />}
-                </Flex>
-              </Tab>
-              {(tfInst && (
-                <Tab
-                  vertical
-                  onClick={() => navigate(`/terraform/${terraformModule.id}/updatequeue`)}
-                  active={pathname.startsWith(`/terraform/${terraformModule.id}/updatequeue`)}
-                  textDecoration="none"
-                >
-                  Update queue
-                </Tab>
-              ))}
-            </Box>
-            <Box fill><Outlet /></Box>
-            <Box
-              basis="medium"
-              direction="column"
-              pad="small"
-              gap="small"
+              Readme
+            </Tab>
+            <Tab
+              vertical
+              onClick={() => navigate(`/terraform/${terraformModule.id}/configuration`)}
+              active={pathname.startsWith(`/terraform/${terraformModule.id}/configuration`)}
+              textDecoration="none"
             >
-              <Box height="44px">
-                {terraformModule.installation && (
-                  <TerraformInstaller
-                    installation={terraformModule.repository.installation}
-                    terraformInstallation={terraformModule.installation}
-                    version={currentVersion}
-                    terraformId={terraformModule.id}
-                  />
-                )}
-              </Box>
+              Configuration
+            </Tab>
+            <Tab
+              vertical
+              onClick={() => navigate(`/terraform/${terraformModule.id}/dependencies`)}
+              active={pathname.startsWith(`/terraform/${terraformModule.id}/dependencies`)}
+              textDecoration="none"
+            >
+              Dependencies
+            </Tab>
+            <Tab
+              vertical
+              onClick={() => navigate(`/terraform/${terraformModule.id}/security`)}
+              active={pathname.startsWith(`/terraform/${terraformModule.id}/security`)}
+              textDecoration="none"
+            >
+              <Flex
+                flexGrow={1}
+                justifyContent="space-between"
+              >
+                Security
+                {currentVersion?.scan && <PackageGrade scan={currentVersion.scan} />}
+              </Flex>
+            </Tab>
+            {(tfInst && (
+              <Tab
+                vertical
+                onClick={() => navigate(`/terraform/${terraformModule.id}/updatequeue`)}
+                active={pathname.startsWith(`/terraform/${terraformModule.id}/updatequeue`)}
+                textDecoration="none"
+              >
+                Update queue
+              </Tab>
+            ))}
+          </Box>
+          <Box fill><Outlet context={{ terraformChart: terraformModule, currentTerraformChart: currentVersion }} /></Box>
+          <Box
+            basis="medium"
+            direction="column"
+            pad="small"
+            gap="small"
+          >
+            <Box height="44px">
+              {terraformModule.installation && (
+                <TerraformInstaller
+                  installation={terraformModule.repository.installation}
+                  terraformInstallation={terraformModule.installation}
+                  version={currentVersion}
+                  terraformId={terraformModule.id}
+                />
+              )}
             </Box>
           </Box>
-        </ScrollableContainer>
-      </Box>
-    </ChartContext.Provider>
+        </Box>
+      </ScrollableContainer>
+    </Box>
   )
 }

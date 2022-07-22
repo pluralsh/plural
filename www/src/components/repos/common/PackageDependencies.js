@@ -1,4 +1,4 @@
-import { memo, useContext, useState } from 'react'
+import { memo, useState } from 'react'
 import { Box, Text } from 'grommet'
 import { useQuery } from '@apollo/client'
 import cloneDeep from 'lodash/cloneDeep'
@@ -7,11 +7,12 @@ import remove from 'lodash/remove'
 import uniqueId from 'lodash/uniqueId'
 import { Button } from 'pluralsh-design-system'
 
+import { useOutletContext } from 'react-router-dom'
+
 import TreeGraph from '../../utils/TreeGraph'
 
 import { DEFAULT_CHART_ICON, DEFAULT_TF_ICON, Tools } from '../constants'
 import { CLOSURE_Q } from '../queries'
-import ChartContext from '../../../contexts/ChartContext'
 
 import { PackageViewHeader } from './misc'
 
@@ -124,7 +125,7 @@ const Dependencies = memo(({ name, dependencies, resource }) => {
 })
 
 export default function PackageDependencies() {
-  const { helmChart, terraformChart, currentHelmChart, currentTerraformChart } = useContext(ChartContext)
+  const { helmChart, terraformChart, currentHelmChart, currentTerraformChart } = useOutletContext()
   const chart = helmChart || terraformChart
   const current = currentHelmChart || currentTerraformChart
   const [full, setFull] = useState(false)

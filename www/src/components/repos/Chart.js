@@ -15,8 +15,6 @@ import { Versions } from '../versions/Versions'
 import { PluralConfigurationContext } from '../login/CurrentUser'
 import { Breadcrumbs, BreadcrumbsContext } from '../Breadcrumbs'
 
-import ChartContext from '../../contexts/ChartContext'
-
 import { CHART_Q, INSTALL_CHART, UPDATE_CHART_INST } from './queries'
 import { DEFAULT_CHART_ICON } from './constants'
 
@@ -174,111 +172,109 @@ export default function Chart() {
   const chartInst = data.chart.installation
 
   return (
-    <ChartContext.Provider value={{ helmChart: chart, currentHelmChart: currentVersion }}>
-      <Box direction="column">
-        <Flex
-          paddingVertical={18}
-          marginLeft="xlarge"
-          marginRight="xlarge"
-          paddingLeft="xsmall"
-          paddingRight="xsmall"
-          borderBottom="1px solid border"
+    <Box direction="column">
+      <Flex
+        paddingVertical={18}
+        marginLeft="xlarge"
+        marginRight="xlarge"
+        paddingLeft="xsmall"
+        paddingRight="xsmall"
+        borderBottom="1px solid border"
+      >
+        <Breadcrumbs />
+      </Flex>
+      <ScrollableContainer>
+        <Box
+          pad="medium"
+          direction="row"
         >
-          <Breadcrumbs />
-        </Flex>
-        <ScrollableContainer>
           <Box
-            pad="medium"
-            direction="row"
+            direction="column"
+            basis="medium"
           >
-            <Box
-              direction="column"
-              basis="medium"
+            <PackageHeader
+              name={currentVersion.chart.name}
+              icon={currentVersion.chart.icon || DEFAULT_CHART_ICON}
+            />
+            <Versions
+              edges={edges}
+              pageInfo={pageInfo}
+              fetchMore={fetchMore}
+              refetch={refetch}
+              setVersion={setVersion}
+            />
+            <Tab
+              vertical
+              onClick={() => navigate(`/charts/${chart.id}`)}
+              active={pathname.endsWith(`/charts/${chart.id}`)}
+              textDecoration="none"
             >
-              <PackageHeader
-                name={currentVersion.chart.name}
-                icon={currentVersion.chart.icon || DEFAULT_CHART_ICON}
-              />
-              <Versions
-                edges={edges}
-                pageInfo={pageInfo}
-                fetchMore={fetchMore}
-                refetch={refetch}
-                setVersion={setVersion}
-              />
+              Readme
+            </Tab>
+            <Tab
+              vertical
+              onClick={() => navigate(`/charts/${chart.id}/configuration`)}
+              active={pathname.startsWith(`/charts/${chart.id}/configuration`)}
+              textDecoration="none"
+            >
+              Configuration
+            </Tab>
+            <Tab
+              vertical
+              onClick={() => navigate(`/charts/${chart.id}/dependencies`)}
+              active={pathname.startsWith(`/charts/${chart.id}/dependencies`)}
+              textDecoration="none"
+            >
+              Dependencies
+            </Tab>
+            <Tab
+              vertical
+              onClick={() => navigate(`/charts/${chart.id}/security`)}
+              active={pathname.startsWith(`/charts/${chart.id}/security`)}
+              textDecoration="none"
+            >
+              <Flex
+                flexGrow={1}
+                justifyContent="space-between"
+              >
+                Security
+                {currentVersion?.scan && <PackageGrade scan={currentVersion.scan} />}
+              </Flex>
+            </Tab>
+            {(chartInst && (
               <Tab
                 vertical
-                onClick={() => navigate(`/charts/${chart.id}`)}
-                active={pathname.endsWith(`/charts/${chart.id}`)}
+                onClick={() => navigate(`/charts/${chart.id}/updatequeue`)}
+                active={pathname.startsWith(`/charts/${chart.id}/updatequeue`)}
                 textDecoration="none"
               >
-                Readme
+                Update queue
               </Tab>
-              <Tab
-                vertical
-                onClick={() => navigate(`/charts/${chart.id}/configuration`)}
-                active={pathname.startsWith(`/charts/${chart.id}/configuration`)}
-                textDecoration="none"
-              >
-                Configuration
-              </Tab>
-              <Tab
-                vertical
-                onClick={() => navigate(`/charts/${chart.id}/dependencies`)}
-                active={pathname.startsWith(`/charts/${chart.id}/dependencies`)}
-                textDecoration="none"
-              >
-                Dependencies
-              </Tab>
-              <Tab
-                vertical
-                onClick={() => navigate(`/charts/${chart.id}/security`)}
-                active={pathname.startsWith(`/charts/${chart.id}/security`)}
-                textDecoration="none"
-              >
-                <Flex
-                  flexGrow={1}
-                  justifyContent="space-between"
-                >
-                  Security
-                  {currentVersion?.scan && <PackageGrade scan={currentVersion.scan} />}
-                </Flex>
-              </Tab>
-              {(chartInst && (
-                <Tab
-                  vertical
-                  onClick={() => navigate(`/charts/${chart.id}/updatequeue`)}
-                  active={pathname.startsWith(`/charts/${chart.id}/updatequeue`)}
-                  textDecoration="none"
-                >
-                  Update queue
-                </Tab>
-              ))}
+            ))}
 
-            </Box>
-            <Box fill><Outlet /></Box>
-            <Box
-              basis="medium"
-              direction="column"
-              pad="small"
-              gap="small"
-            >
-              <Box height="44px">
-                {chartInst?.version?.id !== currentVersion.id && repository.installation && (
-                  <ChartInstaller
-                    chartInstallation={chartInst}
-                    installation={repository.installation}
-                    versionId={chartInst?.version?.id}
-                    chartId={chart.id}
-                  />
-                )}
-              </Box>
-              <ChartInfo version={currentVersion} />
-              <ImageDependencies version={currentVersion} />
-            </Box>
           </Box>
-        </ScrollableContainer>
-      </Box>
-    </ChartContext.Provider>
+          <Box fill><Outlet context={{ helmChart: chart, currentHelmChart: currentVersion }} /></Box>
+          <Box
+            basis="medium"
+            direction="column"
+            pad="small"
+            gap="small"
+          >
+            <Box height="44px">
+              {chartInst?.version?.id !== currentVersion.id && repository.installation && (
+                <ChartInstaller
+                  chartInstallation={chartInst}
+                  installation={repository.installation}
+                  versionId={chartInst?.version?.id}
+                  chartId={chart.id}
+                />
+              )}
+            </Box>
+            <ChartInfo version={currentVersion} />
+            <ImageDependencies version={currentVersion} />
+          </Box>
+        </Box>
+      </ScrollableContainer>
+    </Box>
   )
 }

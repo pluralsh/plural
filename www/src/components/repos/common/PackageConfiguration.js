@@ -16,7 +16,6 @@ export default function PackageConfiguration() {
     <Box
       fill
       flex={false}
-      pad="medium"
       gap="small"
     >
       <PackageViewHeader title="Configuration" />

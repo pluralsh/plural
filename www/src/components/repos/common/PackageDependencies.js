@@ -5,7 +5,6 @@ import cloneDeep from 'lodash/cloneDeep'
 import groupBy from 'lodash/groupBy'
 import remove from 'lodash/remove'
 import uniqueId from 'lodash/uniqueId'
-import { Button } from 'pluralsh-design-system'
 
 import { useOutletContext } from 'react-router-dom'
 
@@ -13,6 +12,8 @@ import TreeGraph from '../../utils/TreeGraph'
 
 import { DEFAULT_CHART_ICON, DEFAULT_TF_ICON, Tools } from '../constants'
 import { CLOSURE_Q } from '../queries'
+
+import { ButtonGroup } from '../../utils/ButtonGroup'
 
 import { PackageViewHeader } from './misc'
 
@@ -133,17 +134,14 @@ export default function PackageDependencies() {
   return (
     <Box
       fill
-      pad="medium"
       gap="small"
     >
       <PackageViewHeader title="Dependencies">
-        <Button
-          secondary
-          size="small"
-          onClick={() => setFull(!full)}
-        >
-          {full ? 'Immediate' : 'Full'}
-        </Button>
+        <ButtonGroup
+          tabs={['Immediate', 'Full']}
+          default="Immediate"
+          onChange={() => setFull(!full)}
+        />
       </PackageViewHeader>
       {full && <FullDependencies resource={chart} />}
       {!full && (

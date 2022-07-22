@@ -126,7 +126,6 @@ export default function PackageSecurity() {
     <Box
       fill
       flex={false}
-      pad="medium"
       gap="medium"
     >
       <PackageViewHeader title="Security">{

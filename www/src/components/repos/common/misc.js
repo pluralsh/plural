@@ -1,4 +1,4 @@
-import { Flex, H1, H2, Img, Span } from 'honorable'
+import { Flex, H1, H2, Img, Span, Text } from 'honorable'
 import { Box } from 'grommet'
 import { Chip } from 'pluralsh-design-system'
 
@@ -21,7 +21,7 @@ export function PackageGrade({ scan, large }) {
   return (
     <Chip
       paddingHorizontal={large ? 'large' : 'small'}
-      paddingVertical={large ? 'xxsmall' : 'xxxsmall'}
+      height={large ? '32px' : '24px'}
       backgroundColor="fill-two"
       borderColor="border-fill-two"
     >
@@ -61,7 +61,7 @@ export function PackageHeader({ name, icon }) {
       </Flex>
       <H2
         fontSize="20px"
-        fontWeight="500px"
+        fontWeight="500"
       >
         {name}
       </H2>
@@ -76,14 +76,15 @@ export function PackageViewHeader({ title, children }) {
       border="bottom"
       pad={{ bottom: 'medium' }}
       margin={{ bottom: 'small' }}
-      height="55px"
+      height="65px"
     >
-      <H1
+      <Text
         fontSize="30px"
         fontWeight="500"
+        lineHeight="40px"
       >
         {title}
-      </H1>
+      </Text>
       <Flex
         flexGrow={1}
         justifyContent="flex-end"

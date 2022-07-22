@@ -14,7 +14,6 @@ export default function PackageReadme() {
     <Box
       fill
       flex={false}
-      pad="medium"
       gap="small"
     >
       <PackageViewHeader title="Readme" />

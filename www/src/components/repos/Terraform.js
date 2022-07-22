@@ -165,7 +165,7 @@ export default function Terraform() {
           </Box>
           <Box
             fill
-            pad={{ horizontal: 'small' }}
+            pad={{ horizontal: 'large' }}
           >
             <Outlet context={{ terraformChart: terraformModule, currentTerraformChart: currentVersion }} />
           </Box>

@@ -24,7 +24,6 @@ const format = dt => moment(dt).format('lll')
 function DeferredUpdateHeader() {
   return (
     <Box
-      pad="small"
       flex={false}
       direction="row"
       gap="xsmall"

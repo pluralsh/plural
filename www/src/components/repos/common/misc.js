@@ -76,6 +76,7 @@ export function PackageViewHeader({ title, children }) {
       border="bottom"
       pad={{ bottom: 'medium' }}
       margin={{ bottom: 'small' }}
+      height="55px"
     >
       <H1
         fontSize="30px"

@@ -163,14 +163,19 @@ export default function Terraform() {
               </Tab>
             ))}
           </Box>
-          <Box fill><Outlet context={{ terraformChart: terraformModule, currentTerraformChart: currentVersion }} /></Box>
+          <Box
+            fill
+            pad={{ horizontal: 'small' }}
+          >
+            <Outlet context={{ terraformChart: terraformModule, currentTerraformChart: currentVersion }} />
+          </Box>
           <Box
             basis="medium"
             direction="column"
             pad="small"
             gap="small"
           >
-            <Box height="44px">
+            <Box height="54px">
               {terraformModule.installation && (
                 <TerraformInstaller
                   installation={terraformModule.repository.installation}

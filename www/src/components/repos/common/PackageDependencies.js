@@ -138,7 +138,7 @@ export default function PackageDependencies() {
     >
       <PackageViewHeader title="Dependencies">
         <Button
-          primary
+          secondary
           size="small"
           onClick={() => setFull(!full)}
         >

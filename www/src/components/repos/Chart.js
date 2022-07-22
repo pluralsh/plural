@@ -253,14 +253,19 @@ export default function Chart() {
             ))}
 
           </Box>
-          <Box fill><Outlet context={{ helmChart: chart, currentHelmChart: currentVersion }} /></Box>
+          <Box
+            fill
+            pad={{ horizontal: 'small' }}
+          >
+            <Outlet context={{ helmChart: chart, currentHelmChart: currentVersion }} />
+          </Box>
           <Box
             basis="medium"
             direction="column"
             pad="small"
             gap="small"
           >
-            <Box height="44px">
+            <Box height="54px">
               {chartInst?.version?.id !== currentVersion.id && repository.installation && (
                 <ChartInstaller
                   chartInstallation={chartInst}

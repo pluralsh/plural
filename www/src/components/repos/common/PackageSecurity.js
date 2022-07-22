@@ -138,59 +138,58 @@ export default function PackageSecurity() {
         )
       }
       </PackageViewHeader>
-      {current.scan.errors && (
-        <Box gap="small">
-          <H2>Scan failures</H2>
-          <Box
-            background="fill-one"
-            border
-            round="xsmall"
-          >
-            {current.scan.errors.map((error, i, arr) => (
-              <Box
-                key={i}
-                direction="row"
-                align="center"
-                gap="medium"
-                pad={{ horizontal: 'medium', vertical: 'small' }}
-                border={i === arr.length - 1 ? null : 'bottom'}
+      <H2>Scan failures</H2>
+      {current.scan.errors?.length ? (
+        <Box
+          background="fill-one"
+          border
+          round="xsmall"
+        >
+          {current.scan.errors.map((error, i, arr) => (
+            <Box
+              key={i}
+              direction="row"
+              align="center"
+              gap="medium"
+              pad={{ horizontal: 'medium', vertical: 'small' }}
+              border={i === arr.length - 1 ? null : 'bottom'}
+            >
+              <ErrorIcon
+                size={24}
+                color="icon-error"
+              />
+              <Clamp
+                withToggle
+                lines={2}
+                showMoreElement={({ toggle }) => (
+                  <Button
+                    secondary
+                    height="40px"
+                    marginLeft="medium"
+                    onClick={toggle}
+                  >
+                    Read more
+                  </Button>
+                )}
+                showLessElement={({ toggle }) => (
+                  <Button
+                    secondary
+                    height="40px"
+                    onClick={toggle}
+                  >
+                    Hide
+                  </Button>
+                )}
               >
-                <ErrorIcon
-                  size={24}
-                  color="icon-error"
-                />
-                <Clamp
-                  withToggle
-                  lines={2}
-                  showMoreElement={({ toggle }) => (
-                    <Button
-                      secondary
-                      height="40px"
-                      marginLeft="medium"
-                      onClick={toggle}
-                    >
-                      Read more
-                    </Button>
-                  )}
-                  showLessElement={({ toggle }) => (
-                    <Button
-                      secondary
-                      height="40px"
-                      onClick={toggle}
-                    >
-                      Hide
-                    </Button>
-                  )}
-                >
-                  <p>{error.message}</p>
-                </Clamp>
-              </Box>
-            ))}
-          </Box>
-
+                <p>{error.message}</p>
+              </Clamp>
+            </Box>
+          ))}
         </Box>
+      ) : (
+        <Div body1>No scan failures found.</Div>
       )}
-      <H2>Vunerabilities</H2>
+      <H2>Vulnerability</H2>
       {current.scan.violations?.length ? (
         <Box>
           <ScanHeader />
@@ -204,7 +203,7 @@ export default function PackageSecurity() {
           </Box>
         </Box>
       ) : (
-        <Div body1>No vunerabilities found.</Div>
+        <Div body1>No vulnerabilities found.</Div>
       )}
     </Box>
   )

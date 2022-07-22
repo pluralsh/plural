@@ -1,4 +1,4 @@
-import { Flex, H1, H2, Img, Text } from 'honorable'
+import { Flex, H1, H2, Img, Span } from 'honorable'
 import { Box } from 'grommet'
 import { Chip } from 'pluralsh-design-system'
 
@@ -25,12 +25,12 @@ export function PackageGrade({ scan, large }) {
       backgroundColor="fill-two"
       borderColor="border-fill-two"
     >
-      <Text
+      <Span
         color={gradeToColor[scan.grade]}
         fontWeight="600"
       >
         {scan.grade}
-      </Text>
+      </Span>
     </Chip>
   )
 }

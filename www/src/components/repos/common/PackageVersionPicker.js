@@ -1,6 +1,6 @@
 import { Box } from 'grommet'
 
-import { MenuItem, Select, Text } from 'honorable'
+import { MenuItem, Select, Span } from 'honorable'
 
 import { Chip } from 'pluralsh-design-system'
 
@@ -33,7 +33,7 @@ export function PackageVersionPicker({ edges, installed, version, setVersion }) 
                   severity="success"
                   style={{ height: '20px' }}
                 >
-                  <Text fontSize="12px">Installed</Text>
+                  <Span fontSize="12px">Installed</Span>
                 </Chip>
               )}
             </Box>

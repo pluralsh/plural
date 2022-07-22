@@ -11,9 +11,10 @@ import Highlight from 'react-highlight.js'
 
 import { A, Flex } from 'honorable'
 
-import { Versions } from '../versions/Versions'
 import { PluralConfigurationContext } from '../login/CurrentUser'
 import { Breadcrumbs, BreadcrumbsContext } from '../Breadcrumbs'
+
+import { PackageVersionPicker } from './common/PackageVersionPicker'
 
 import { CHART_Q, INSTALL_CHART, UPDATE_CHART_INST } from './queries'
 import { DEFAULT_CHART_ICON } from './constants'
@@ -196,11 +197,9 @@ export default function Chart() {
               name={currentVersion.chart.name}
               icon={currentVersion.chart.icon || DEFAULT_CHART_ICON}
             />
-            <Versions
+            <PackageVersionPicker
               edges={edges}
-              pageInfo={pageInfo}
-              fetchMore={fetchMore}
-              refetch={refetch}
+              version={version || currentVersion}
               setVersion={setVersion}
             />
             <Tab

@@ -8,8 +8,6 @@ import { Button, Flex, Modal } from 'honorable'
 
 import { Tab } from 'pluralsh-design-system'
 
-import { Versions } from '../versions/Versions'
-
 import { Breadcrumbs, BreadcrumbsContext } from '../Breadcrumbs'
 
 import { deepUpdate, updateCache } from '../../utils/graphql'
@@ -20,6 +18,7 @@ import { INSTALL_TF, TF_Q, UNINSTALL_TF } from './queries'
 import { DEFAULT_TF_ICON } from './constants'
 
 import { PackageGrade, PackageHeader } from './common/misc'
+import { PackageVersionPicker } from './common/PackageVersionPicker'
 
 function TerraformInstaller({ installation, terraformId, terraformInstallation, version }) {
   const installed = terraformInstallation && terraformInstallation.version.id === version.id
@@ -109,11 +108,9 @@ export default function Terraform() {
               name={terraformModule.name}
               icon={DEFAULT_TF_ICON}
             />
-            <Versions
+            <PackageVersionPicker
               edges={edges}
-              pageInfo={pageInfo}
-              refetch={refetch}
-              fetchMore={fetchMore}
+              version={version || currentVersion}
               setVersion={setVersion}
             />
             <Tab

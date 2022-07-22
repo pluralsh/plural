@@ -149,14 +149,14 @@ export default function PackageSecurity() {
             border
             round="xsmall"
           >
-            {current.scan.errors.map((error, i) => (
+            {current.scan.errors.map((error, i, arr) => (
               <Box
                 key={i}
                 direction="row"
                 align="center"
                 gap="medium"
                 pad={{ horizontal: 'medium', vertical: 'small' }}
-                border="bottom"
+                border={i === arr.length - 1 ? null : 'bottom'}
               >
                 <ErrorIcon
                   size={24}

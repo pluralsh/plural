@@ -1,4 +1,4 @@
-import { Flex, H1, H2, Img, Span, Text } from 'honorable'
+import { Flex, H2, Img, Span, Text } from 'honorable'
 import { Box } from 'grommet'
 import { Chip } from 'pluralsh-design-system'
 

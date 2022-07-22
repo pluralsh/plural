@@ -4,8 +4,8 @@ import { useContext, useEffect, useState } from 'react'
 import { Box } from 'grommet'
 import { useMutation, useQuery } from '@apollo/client'
 import { Link, Outlet, useLocation, useNavigate, useParams } from 'react-router-dom'
-import { Tab } from 'pluralsh-design-system'
-import { Button, ScrollableContainer } from 'forge-core'
+import { Button, Tab } from 'pluralsh-design-system'
+import { ScrollableContainer } from 'forge-core'
 import moment from 'moment'
 import Highlight from 'react-highlight.js'
 
@@ -110,11 +110,12 @@ function ChartInstaller({ chartInstallation, versionId, chartId, installation })
 
   return (
     <Button
-      round="xsmall"
-      label="Install"
+      secondary
       error={error}
       onClick={mutation}
-    />
+    >
+      Install
+    </Button>
   )
 }
 
@@ -262,14 +263,16 @@ export default function Chart() {
               pad="small"
               gap="small"
             >
-              {chartInst?.version?.id !== currentVersion.id && repository.installation && (
-                <ChartInstaller
-                  chartInstallation={chartInst}
-                  installation={repository.installation}
-                  versionId={chartInst?.version?.id}
-                  chartId={chart.id}
-                />
-              )}
+              <Box height="44px">
+                {chartInst?.version?.id !== currentVersion.id && repository.installation && (
+                  <ChartInstaller
+                    chartInstallation={chartInst}
+                    installation={repository.installation}
+                    versionId={chartInst?.version?.id}
+                    chartId={chart.id}
+                  />
+                )}
+              </Box>
               <ChartInfo version={currentVersion} />
               <ImageDependencies version={currentVersion} />
             </Box>

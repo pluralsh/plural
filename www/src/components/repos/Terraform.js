@@ -49,22 +49,12 @@ function TerraformInstaller({ installation, terraformId, terraformInstallation, 
         />
         </Modal>
       )}
-      {installed ? (
-        <Button
-          secondary
-          onClick={mutation}
-        >
-          Uninstall
-        </Button>
-      )
-        : (
-          <Button
-            round="xsmall"
-            onClick={mutation}
-          >
-            Install
-          </Button>
-        )}
+      <Button
+        secondary
+        onClick={mutation}
+      >
+        {installed ? 'Uninstall' : 'Install'}
+      </Button>
     </>
   )
 }
@@ -185,21 +175,16 @@ export default function Terraform() {
               pad="small"
               gap="small"
             >
-              {terraformModule.installation && (
-                <Box
-                  width="100px"
-                  direction="row"
-                  justify="end"
-                  margin={{ vertical: 'small' }}
-                >
+              <Box height="44px">
+                {terraformModule.installation && (
                   <TerraformInstaller
                     installation={terraformModule.repository.installation}
                     terraformInstallation={terraformModule.installation}
                     version={currentVersion}
                     terraformId={terraformModule.id}
                   />
-                </Box>
-              )}
+                )}
+              </Box>
             </Box>
           </Box>
         </ScrollableContainer>

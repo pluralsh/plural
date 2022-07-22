@@ -10,7 +10,7 @@ import { PackageViewHeader } from './misc'
 
 export default function PackageReadme() {
   const { currentHelmChart, currentTerraformChart } = useContext(ChartContext)
-  const readme = (currentHelmChart || currentTerraformChart)?.readme || 'n/a'
+  const readme = (currentHelmChart || currentTerraformChart)?.readme || 'No readme found.'
 
   return (
     <Box

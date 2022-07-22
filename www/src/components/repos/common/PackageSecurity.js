@@ -187,7 +187,7 @@ export default function PackageSecurity() {
           ))}
         </Box>
       ) : (
-        <Div body1>No scan failures found.</Div>
+        <Div body2>No scan failures found.</Div>
       )}
       <H2>Vulnerability</H2>
       {current.scan.violations?.length ? (
@@ -203,7 +203,7 @@ export default function PackageSecurity() {
           </Box>
         </Box>
       ) : (
-        <Div body1>No vulnerabilities found.</Div>
+        <Div body2>No vulnerabilities found.</Div>
       )}
     </Box>
   )

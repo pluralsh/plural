@@ -1,19 +1,25 @@
-import { memo } from 'react'
+import { memo, useState } from 'react'
 import { Box, Text } from 'grommet'
 import { useQuery } from '@apollo/client'
 import cloneDeep from 'lodash/cloneDeep'
 import groupBy from 'lodash/groupBy'
 import remove from 'lodash/remove'
 import uniqueId from 'lodash/uniqueId'
-import { Button } from 'honorable'
 
-import TreeGraph from '../utils/TreeGraph'
+import { useOutletContext } from 'react-router-dom'
 
-import { DEFAULT_CHART_ICON, DEFAULT_TF_ICON, Tools } from './constants'
-import { CLOSURE_Q } from './queries'
+import TreeGraph from '../../utils/TreeGraph'
 
-const GRAPH_HEIGHT = '500px'
-const OPTIONAL_COLOR = '#fdc500'
+import { DEFAULT_CHART_ICON, DEFAULT_TF_ICON, Tools } from '../constants'
+import { CLOSURE_Q } from '../queries'
+
+import { ButtonGroup } from '../../utils/ButtonGroup'
+
+import { PackageViewHeader } from './misc'
+
+const GRAPH_HEIGHT = '600px'
+const OPTIONAL_COLOR = '#9095A2'
+const OPTIONAL_DASHARRAY = '2'
 
 function asDep({ __typename, name: depname, version, children }) {
   const name = `${depname} ${version || ''}`
@@ -48,8 +54,10 @@ function mapify(deps) {
 function closureDep({ helm, terraform, dep }, children) {
   const name = `${(helm || terraform).name} ${dep.version || ''}`
   const image = helm ? DEFAULT_CHART_ICON : DEFAULT_TF_ICON
+  const strokeColor = dep.optional ? OPTIONAL_COLOR : null
+  const strokeDasharray = dep.optional ? OPTIONAL_DASHARRAY : null
 
-  return { name, image, children, strokeColor: dep.optional ? OPTIONAL_COLOR : null }
+  return { name, image, children, strokeColor, strokeDasharray }
 }
 
 function compileGraph(res, closure) {
@@ -67,21 +75,7 @@ function compileGraph(res, closure) {
   return closureDep(res, children)
 }
 
-export function ShowFull({ onClick, label }) {
-  return (
-    <Button
-      primary
-      width="90px"
-      height="25px"
-      size="small"
-      onClick={onClick}
-    >
-      {label}
-    </Button>
-  )
-}
-
-export const FullDependencies = memo(({ resource }) => {
+const FullDependencies = memo(({ resource }) => {
   const type = depType(resource)
   const { data, loading } = useQuery(CLOSURE_Q, {
     variables: { id: resource.id, type },
@@ -95,13 +89,12 @@ export const FullDependencies = memo(({ resource }) => {
     <TreeGraph
       id={`${uniqueId('full_')}-full-tree`}
       tree={graph}
-      width="100%"
       height={GRAPH_HEIGHT}
     />
   )
 })
 
-export default memo(({ name, dependencies, resource }) => {
+const Dependencies = memo(({ name, dependencies, resource }) => {
   if (!dependencies || !dependencies.dependencies) {
     return (
       <Box pad="small">
@@ -112,8 +105,13 @@ export default memo(({ name, dependencies, resource }) => {
 
   const deps = dependencies.dependencies.map(({ name, version, ...dep }) => {
     const strokeColor = dep.optional ? OPTIONAL_COLOR : null
-    if (dep.type === Tools.TERRAFORM) return { ...dep, strokeColor, name: `${name} ${version || ''}`, image: DEFAULT_TF_ICON }
-    if (dep.type === Tools.HELM) return { ...dep, strokeColor, name: `${name} ${version || ''}`, image: DEFAULT_CHART_ICON }
+    const strokeDasharray = dep.optional ? OPTIONAL_DASHARRAY : null
+    if (dep.type === Tools.TERRAFORM) {
+      return { ...dep, strokeColor, strokeDasharray, name: `${name} ${version || ''}`, image: DEFAULT_TF_ICON }
+    }
+    if (dep.type === Tools.HELM) {
+      return { ...dep, strokeColor, strokeDasharray, name: `${name} ${version || ''}`, image: DEFAULT_CHART_ICON }
+    }
 
     return dep
   })
@@ -122,8 +120,38 @@ export default memo(({ name, dependencies, resource }) => {
     <TreeGraph
       id={`${uniqueId(name)}-tree`}
       tree={asDep({ ...resource, children: deps })}
-      width="100%"
       height={GRAPH_HEIGHT}
     />
   )
 })
+
+export default function PackageDependencies() {
+  const { helmChart, terraformChart, currentHelmChart, currentTerraformChart } = useOutletContext()
+  const chart = helmChart || terraformChart
+  const current = currentHelmChart || currentTerraformChart
+  const [full, setFull] = useState(false)
+
+  return (
+    <Box
+      fill
+      gap="small"
+    >
+      <PackageViewHeader title="Dependencies">
+        <ButtonGroup
+          tabs={['Immediate', 'Full']}
+          default="Immediate"
+          onChange={() => setFull(!full)}
+        />
+      </PackageViewHeader>
+      {full && <FullDependencies resource={chart} />}
+      {!full && (
+        <Dependencies
+          name={chart.name}
+          resource={chart}
+          dependencies={(current || chart).dependencies}
+        />
+      )}
+    </Box>
+
+  )
+}

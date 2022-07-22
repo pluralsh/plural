@@ -14783,6 +14783,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-multiline-clamp@npm:2.0.0":
+  version: 2.0.0
+  resolution: "react-multiline-clamp@npm:2.0.0"
+  peerDependencies:
+    react: ">=16.8.0"
+    react-dom: ">=16.8.0"
+  checksum: b44ca7d8d8e4bcf1987385ea21a12c614ee21a41f506bdb22cc13cab13c5d65ac4b3fb0c4eb5135cc6a46531e06a77401bad406f30df44f3839e4c51853073a6
+  languageName: node
+  linkType: hard
+
 "react-portal@npm:4.2.2":
   version: 4.2.2
   resolution: "react-portal@npm:4.2.2"
@@ -18690,6 +18700,7 @@ __metadata:
     react-highlight.js: 1.0.7
     react-icons: 4.4.0
     react-json-view: 1.21.3
+    react-multiline-clamp: 2.0.0
     react-portal: 4.2.2
     react-router-dom: 6.3.0
     react-sage: 0.3.16

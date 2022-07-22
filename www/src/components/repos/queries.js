@@ -195,7 +195,7 @@ export const CHART_Q = gql`
       }
       installation { ...ChartInstallationFragment }
     }
-    versions(chartId: $chartId, first: 10, after: $cursor) {
+    versions(chartId: $chartId, first: 15, after: $cursor) {
       pageInfo { ...PageInfo }
       edges {
         node {

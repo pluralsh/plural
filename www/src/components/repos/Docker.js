@@ -21,7 +21,7 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 
 import { CopyNotice } from '../utils/Copyable'
 
-import { dockerPull } from './misc'
+import { dockerPull } from './common/misc'
 import { DockerImages } from './DockerImages'
 
 import { DetailContainer } from './Installation'

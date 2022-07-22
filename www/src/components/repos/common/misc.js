@@ -6,7 +6,7 @@ export function dockerPull(registry, { tag, dockerRepository: { name, repository
   return `${registry}/${repository.name}/${name}:${tag}`
 }
 
-const gradeColors = {
+const gradeToColor = {
   A: '#A5F8C8',
   B: '#A5F8C8',
   C: '#FFE78F',
@@ -20,12 +20,13 @@ export function PackageGrade({ scan, large }) {
 
   return (
     <Chip
-      paddingHorizontal={large ? 'medium' : 'small'}
+      paddingHorizontal={large ? 'large' : 'small'}
+      paddingVertical={large ? 'xxsmall' : 'xxxsmall'}
       backgroundColor="fill-two"
       borderColor="border-fill-two"
     >
       <Text
-        color={gradeColors[scan.grade]}
+        color={gradeToColor[scan.grade]}
         fontWeight="600"
       >
         {scan.grade}
@@ -76,7 +77,12 @@ export function PackageViewHeader({ title, children }) {
       pad={{ bottom: 'medium' }}
       margin={{ bottom: 'small' }}
     >
-      <H1>{title}</H1>
+      <H1
+        fontSize="30px"
+        fontWeight="500"
+      >
+        {title}
+      </H1>
       <Flex
         flexGrow={1}
         justifyContent="flex-end"

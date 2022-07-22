@@ -59,6 +59,7 @@ export function Versions({ setVersion, edges, refetch, pageInfo, fetchMore }) {
     <DetailContainer
       gap="xsmall"
       pad={{ vertical: 'small' }}
+      margin={{ vertical: 'medium' }}
       style={{ minHeight: '80px', maxHeight: '80px' }}
     >
       <Scroller

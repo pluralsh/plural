@@ -1,8 +1,10 @@
 import { useContext, useState } from 'react'
 import { Box, Collapsible, Text } from 'grommet'
-import { Alert } from 'pluralsh-design-system'
+import { ErrorIcon } from 'pluralsh-design-system'
 
-import { H2 } from 'honorable'
+import { Button, H2 } from 'honorable'
+
+import Clamp from 'react-multiline-clamp'
 
 import ChartContext from '../../../contexts/ChartContext'
 
@@ -147,13 +149,45 @@ export default function PackageSecurity() {
             border
             round="xsmall"
           >
-            {current.scan.errors.map((error, ind) => (
-              <Alert
-                key={ind}
-                severity="error"
+            {current.scan.errors.map((error, i) => (
+              <Box
+                key={i}
+                direction="row"
+                align="center"
+                gap="medium"
+                pad={{ horizontal: 'medium', vertical: 'small' }}
+                border="bottom"
               >
-                {error.message}
-              </Alert>
+                <ErrorIcon
+                  size={24}
+                  color="icon-error"
+                />
+                <Clamp
+                  withToggle
+                  lines={2}
+                  showMoreElement={({ toggle }) => (
+                    <Button
+                      secondary
+                      height="40px"
+                      marginLeft="medium"
+                      onClick={toggle}
+                    >
+                      Read more
+                    </Button>
+                  )}
+                  showLessElement={({ toggle }) => (
+                    <Button
+                      secondary
+                      height="40px"
+                      onClick={toggle}
+                    >
+                      Hide
+                    </Button>
+                  )}
+                >
+                  <p>{error.message}</p>
+                </Clamp>
+              </Box>
             ))}
           </Box>
 

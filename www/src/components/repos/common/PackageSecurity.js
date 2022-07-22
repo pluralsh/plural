@@ -2,7 +2,7 @@ import { useContext, useState } from 'react'
 import { Box, Collapsible, Text } from 'grommet'
 import { ErrorIcon } from 'pluralsh-design-system'
 
-import { Button, H2 } from 'honorable'
+import { Button, Div, H2 } from 'honorable'
 
 import Clamp from 'react-multiline-clamp'
 
@@ -127,7 +127,7 @@ export default function PackageSecurity() {
       fill
       flex={false}
       pad="medium"
-      gap="small"
+      gap="medium"
     >
       <PackageViewHeader title="Security">{
         current?.scan && (
@@ -139,10 +139,7 @@ export default function PackageSecurity() {
       }
       </PackageViewHeader>
       {current.scan.errors && (
-        <Box
-          gap="small"
-          pad={{ vertical: 'small' }}
-        >
+        <Box gap="small">
           <H2>Scan failures</H2>
           <Box
             background="fill-one"
@@ -194,15 +191,21 @@ export default function PackageSecurity() {
         </Box>
       )}
       <H2>Vunerabilities</H2>
-      <ScanHeader />
-      <Box flex={false}>
-        {current.scan.violations.map((vio, ind) => (
-          <ScanViolation
-            key={`${ind}`}
-            violation={vio}
-          />
-        ))}
-      </Box>
+      {current.scan.violations?.length ? (
+        <Box>
+          <ScanHeader />
+          <Box flex={false}>
+            {current.scan.violations.map((vio, ind) => (
+              <ScanViolation
+                key={`${ind}`}
+                violation={vio}
+              />
+            ))}
+          </Box>
+        </Box>
+      ) : (
+        <Div body1>No vunerabilities found.</Div>
+      )}
     </Box>
   )
 }

@@ -1,11 +1,11 @@
 import { Box } from 'grommet'
 
-import { MenuItem, Select } from 'honorable'
+import { MenuItem, Select, Text } from 'honorable'
 
 import { Chip } from 'pluralsh-design-system'
 
 // TODO: Implement view more functionality as at the moment it loads only the first page.
-export function PackageVersionPicker({ version, setVersion, edges }) {
+export function PackageVersionPicker({ edges, installed, version, setVersion }) {
 
   return (
     <Box
@@ -21,7 +21,21 @@ export function PackageVersionPicker({ version, setVersion, edges }) {
             key={node.id}
             value={node}
           >
-            <Box direction="row"><Box fill>{node.version}</Box></Box>
+            <Box
+              fill
+              direction="row"
+              justify="center"
+            >
+              <Box fill>{node.version}</Box>
+              {node.id === installed?.version?.id && (
+                <Chip
+                  severity="success"
+                  style={{ height: '20px' }}
+                >
+                  <Text fontSize="12px">Installed</Text>
+                </Chip>
+              )}
+            </Box>
           </MenuItem>
         ))}
       </Select>

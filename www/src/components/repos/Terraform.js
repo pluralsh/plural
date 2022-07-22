@@ -61,7 +61,7 @@ export default function Terraform() {
   const navigate = useNavigate()
   const [version, setVersion] = useState(null)
   const { tfId } = useParams()
-  const { data, refetch, fetchMore } = useQuery(TF_Q, {
+  const { data } = useQuery(TF_Q, {
     variables: { tfId },
     fetchPolicy: 'cache-and-network',
   })
@@ -79,7 +79,7 @@ export default function Terraform() {
 
   if (!data) return null
   const { terraformModule, versions } = data
-  const { edges, pageInfo } = versions
+  const { edges } = versions
   const currentVersion = version || edges[0].node
   const tfInst = terraformModule.installation
 
@@ -110,6 +110,7 @@ export default function Terraform() {
             />
             <PackageVersionPicker
               edges={edges}
+              installed={tfInst}
               version={version || currentVersion}
               setVersion={setVersion}
             />

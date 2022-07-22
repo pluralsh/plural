@@ -149,7 +149,7 @@ export default function Chart() {
   const { pathname } = useLocation()
   const navigate = useNavigate()
   const [version, setVersion] = useState(null)
-  const { data, fetchMore, refetch } = useQuery(CHART_Q, {
+  const { data } = useQuery(CHART_Q, {
     variables: { chartId },
     fetchPolicy: 'cache-and-network',
   })
@@ -168,7 +168,7 @@ export default function Chart() {
 
   const { versions, chart } = data
   const { repository } = chart
-  const { edges, pageInfo } = versions
+  const { edges } = versions
   const currentVersion = version || edges[0].node
   const chartInst = data.chart.installation
 
@@ -199,6 +199,7 @@ export default function Chart() {
             />
             <PackageVersionPicker
               edges={edges}
+              installed={chartInst}
               version={version || currentVersion}
               setVersion={setVersion}
             />

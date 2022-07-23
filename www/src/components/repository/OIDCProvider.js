@@ -223,7 +223,9 @@ export function OIDCProvider() {
   const { installation } = useContext(RepositoryContext)
   const { id } = useParams()
 
-  useEffect(() => installation ? null : navigate(-1), [id, installation, navigate])
+  useEffect(() => {
+    if (!installation) navigate(-1)
+  }, [id, installation, navigate])
 
   if (!installation) return null
   if (installation.oidcProvider) return <UpdateProvider installation={installation} />

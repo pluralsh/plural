@@ -47,7 +47,7 @@ function InstalledActions({ installation, ...props }: any) {
   )
 }
 
-function RepositorySideCar({ collapsed = false, ...props }: any) {
+export function RepositorySideCar(props: any) {
   const repository = useContext(RepositoryContext)
   const [recipes] = usePaginatedQuery(
     RECIPES_QUERY,
@@ -126,5 +126,3 @@ function RepositorySideCar({ collapsed = false, ...props }: any) {
     </Div>
   )
 }
-
-export default RepositorySideCar

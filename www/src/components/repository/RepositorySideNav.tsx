@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { A, Div, Flex, Img, P } from 'honorable'
+import { Div, Flex, Img, P } from 'honorable'
 import { Tab } from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
@@ -13,7 +13,7 @@ function RepositorySideNav({ ...props }) {
   return (
     <Flex
       paddingVertical="medium"
-      paddingHorizontal="medium"
+      paddingLeft="medium"
       width={240}
       flexShrink={0}
       direction="column"

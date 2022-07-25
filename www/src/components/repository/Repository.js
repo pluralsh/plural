@@ -17,7 +17,7 @@ import {
 } from '../layout/ResponsiveLayout.tsx'
 
 import RepositorySideNav from './RepositorySideNav.tsx'
-import RepositorySideCar from './RepositorySideCar.tsx'
+import { RepositorySideCar } from './RepositorySideCar.tsx'
 
 import { REPOSITORY_QUERY } from './queries'
 
@@ -61,8 +61,8 @@ function Repository() {
       >
         <Flex
           paddingVertical="xsmall"
-          marginLeft="xlarge"
-          marginRight="xlarge"
+          marginLeft="medium"
+          marginRight="large"
           borderBottom="1px solid border"
         >
           <Button

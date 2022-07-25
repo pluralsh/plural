@@ -14,7 +14,6 @@ function RepositoryDescription() {
     <Flex
       direction="column"
       color="text-light"
-      paddingHorizontal="medium"
       paddingBottom="xlarge"
       borderRadius="large"
       position="relative"

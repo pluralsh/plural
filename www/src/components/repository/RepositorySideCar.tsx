@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react'
 import { Button, Div, Flex, P } from 'honorable'
-import { BrowserIcon, CertificateIcon, GearTrainIcon } from 'pluralsh-design-system'
+import { BrowserIcon, CertificateIcon, GearTrainIcon, GitHubLogoIcon } from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
@@ -77,6 +77,7 @@ export function RepositorySideCar(props: any) {
         <P
           overline
           color="text-xlight"
+          wordBreak="break-word"
         >
           {repository.name} resources
         </P>
@@ -118,6 +119,9 @@ export function RepositorySideCar(props: any) {
             as="a"
             target="_blank"
             href={repository.git_url}
+            startIcon={(
+              <GitHubLogoIcon />
+            )}
           >
             GitHub
           </Button>

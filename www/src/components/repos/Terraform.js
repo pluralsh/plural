@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Box } from 'grommet'
 import { ScrollableContainer } from 'forge-core'
 import { useMutation, useQuery } from '@apollo/client'
@@ -8,8 +8,6 @@ import { Button, Flex, Modal } from 'honorable'
 
 import { Tab } from 'pluralsh-design-system'
 
-import { Breadcrumbs, BreadcrumbsContext } from '../Breadcrumbs'
-
 import { deepUpdate, updateCache } from '../../utils/graphql'
 
 import { GqlError } from '../utils/Alert'
@@ -17,7 +15,7 @@ import { GqlError } from '../utils/Alert'
 import { INSTALL_TF, TF_Q, UNINSTALL_TF } from './queries'
 import { DEFAULT_TF_ICON } from './constants'
 
-import { PackageGrade, PackageHeader } from './common/misc'
+import { PackageBackButton, PackageGrade, PackageHeader } from './common/misc'
 import { PackageVersionPicker } from './common/PackageVersionPicker'
 
 function TerraformInstaller({ installation, terraformId, terraformInstallation, version }) {
@@ -61,23 +59,10 @@ export default function Terraform() {
   const navigate = useNavigate()
   const [version, setVersion] = useState(null)
   const { tfId } = useParams()
-  const { data } = useQuery(TF_Q, {
-    variables: { tfId },
-    fetchPolicy: 'cache-and-network',
-  })
-  const { setBreadcrumbs } = useContext(BreadcrumbsContext)
-
-  useEffect(() => {
-    if (!data) return
-    const { terraformModule } = data
-    setBreadcrumbs([
-      { url: '/marketplace', text: 'Marketplace' },
-      { url: `/repository/${terraformModule.repository.id}/packages/terraform`, text: terraformModule.repository.name },
-      { url: `/terraform/${terraformModule.id}`, text: terraformModule.name },
-    ])
-  }, [data, setBreadcrumbs])
+  const { data } = useQuery(TF_Q, { variables: { tfId }, fetchPolicy: 'cache-and-network' })
 
   if (!data) return null
+  
   const { terraformModule, versions } = data
   const { edges } = versions
   const currentVersion = version || edges[0].node
@@ -88,17 +73,8 @@ export default function Terraform() {
       direction="column"
       fill
     >
-      <Flex
-        paddingVertical={18}
-        marginLeft="xlarge"
-        marginRight="xlarge"
-        paddingLeft="xsmall"
-        paddingRight="xsmall"
-        borderBottom="1px solid border"
-      >
-        <Breadcrumbs />
-      </Flex>
       <ScrollableContainer>
+        <PackageBackButton link={`/repository/${terraformModule.repository.id}/packages/terraform`} />
         <Box
           pad="medium"
           direction="row"

@@ -1,6 +1,7 @@
-import { Flex, H2, Img, Span, Text } from 'honorable'
+import { A, Div, Flex, H2, Img, Span, Text } from 'honorable'
 import { Box } from 'grommet'
-import { Chip } from 'pluralsh-design-system'
+import { ArrowLeftIcon, Chip } from 'pluralsh-design-system'
+import { Link } from 'react-router-dom'
 
 export function dockerPull(registry, { tag, dockerRepository: { name, repository } }) {
   return `${registry}/${repository.name}/${name}:${tag}`
@@ -32,6 +33,30 @@ export function PackageGrade({ scan, large }) {
         {scan.grade}
       </Span>
     </Chip>
+  )
+}
+
+export function PackageBackButton({ link }) {
+  return (
+    <Box
+      direction="row"
+      pad={{ horizontal: 'medium', top: 'medium', bottom: 'small' }}
+    >
+      <A
+        as={Link}
+        to={link}
+        fontFamily="Monument Semi-Mono, monospace"
+        fontWeight={500}
+        display="flex"
+        alignContent="center"
+      >
+        <ArrowLeftIcon
+          size={14}
+          marginRight="13px"
+        />
+        <Span>Back to packages</Span>
+      </A>
+    </Box>
   )
 }
 
@@ -92,5 +117,20 @@ export function PackageViewHeader({ title, children }) {
         {children}
       </Flex>
     </Box>
+  )
+}
+
+export function PackageProperty({ children, header }) {
+  return (
+    <>
+      <Div
+        caption
+        color="text-xlight"
+        marginBottom="xxxsmall"
+      >
+        {header}
+      </Div>
+      <Div>{children}</Div>
+    </>
   )
 }

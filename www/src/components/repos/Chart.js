@@ -1,6 +1,6 @@
 import './chart.css'
 
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useState } from 'react'
 import { Box } from 'grommet'
 import { useMutation, useQuery } from '@apollo/client'
 import { Link, Outlet, useLocation, useNavigate, useParams } from 'react-router-dom'
@@ -12,15 +12,14 @@ import Highlight from 'react-highlight.js'
 import { A, Flex } from 'honorable'
 
 import { PluralConfigurationContext } from '../login/CurrentUser'
-import { Breadcrumbs, BreadcrumbsContext } from '../Breadcrumbs'
 
 import { PackageVersionPicker } from './common/PackageVersionPicker'
 
 import { CHART_Q, INSTALL_CHART, UPDATE_CHART_INST } from './queries'
 import { DEFAULT_CHART_ICON } from './constants'
 
-import { DetailContainer, DetailProperty } from './Installation'
-import { PackageGrade, PackageHeader, dockerPull } from './common/misc'
+import { DetailContainer } from './Installation'
+import { PackageBackButton, PackageGrade, PackageHeader, PackageProperty, dockerPull } from './common/misc'
 
 function ChartInfo({ version: { helm, insertedAt } }) {
   return (
@@ -30,10 +29,10 @@ function ChartInfo({ version: { helm, insertedAt } }) {
       gap="small"
       style={{ overflow: 'hidden' }}
     >
-      <DetailProperty header="App Version">{helm.appVersion}</DetailProperty>
-      <DetailProperty header="Created">{moment(insertedAt).fromNow()}</DetailProperty>
+      <PackageProperty header="App Version">{helm.appVersion}</PackageProperty>
+      <PackageProperty header="Created">{moment(insertedAt).fromNow()}</PackageProperty>
       {(!!helm?.sources?.length && (
-        <DetailProperty header="Sources">
+        <PackageProperty header="Sources">
           {(helm.sources).map(l => (
             <Box>
               <A
@@ -46,12 +45,12 @@ function ChartInfo({ version: { helm, insertedAt } }) {
               </A>
             </Box>
           ))}
-        </DetailProperty>
+        </PackageProperty>
       ))}
       {(!!helm?.maintainers?.length && (
-        <DetailProperty header="Maintainers">
+        <PackageProperty header="Maintainers">
           {(helm.maintainers).map(m => <Box key={m.email}>{m.email}</Box>)}
-        </DetailProperty>
+        </PackageProperty>
       ))}
     </DetailContainer>
   )
@@ -149,20 +148,7 @@ export default function Chart() {
   const { pathname } = useLocation()
   const navigate = useNavigate()
   const [version, setVersion] = useState(null)
-  const { data } = useQuery(CHART_Q, {
-    variables: { chartId },
-    fetchPolicy: 'cache-and-network',
-  })
-  const { setBreadcrumbs } = useContext(BreadcrumbsContext)
-  useEffect(() => {
-    if (!data) return
-    const { chart } = data
-    setBreadcrumbs([
-      { url: '/marketplace', text: 'Marketplace' },
-      { url: `/repository/${chart.repository.id}/packages/helm`, text: chart.repository.name },
-      { url: `/charts/${chart.id}`, text: chart.name },
-    ])
-  }, [data, setBreadcrumbs])
+  const { data } = useQuery(CHART_Q, { variables: { chartId }, fetchPolicy: 'cache-and-network' })
 
   if (!data) return null
 
@@ -177,17 +163,8 @@ export default function Chart() {
       direction="column"
       fill
     >
-      <Flex
-        paddingVertical={18}
-        marginLeft="xlarge"
-        marginRight="xlarge"
-        paddingLeft="xsmall"
-        paddingRight="xsmall"
-        borderBottom="1px solid border"
-      >
-        <Breadcrumbs />
-      </Flex>
       <ScrollableContainer>
+        <PackageBackButton link={`/repository/${chart.repository.id}/packages/helm`} />
         <Box
           pad="medium"
           direction="row"

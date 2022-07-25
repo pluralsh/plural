@@ -141,7 +141,7 @@ export default function PackageSecurity() {
       {current.scan.violations?.length ? (
         <Table
           headers={['', 'Rule', 'Severity']}
-          sizes={['5%', '80%', '15%']}
+          sizes={['40px', '80%', '15%']}
           background="fill-one"
           width="100%"
           height="calc(100% - 16px)"

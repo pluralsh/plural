@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client'
 import { Link, Outlet, useParams } from 'react-router-dom'
-import { Button, Div, Flex } from 'honorable'
+import { Button, Flex } from 'honorable'
 import { ArrowLeftIcon } from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext.ts'
@@ -8,6 +8,13 @@ import RepositoryContext from '../../contexts/RepositoryContext.ts'
 import useBreadcrumbs from '../../hooks/useBreadcrumbs'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
+
+import {
+  ResponsiveLayoutContentContainer,
+  ResponsiveLayoutSidecarContainer,
+  ResponsiveLayoutSidenavContainer,
+  ResponsiveLayoutSpacer,
+} from '../layout/ResponsiveLayout.tsx'
 
 import RepositorySideNav from './RepositorySideNav.tsx'
 import RepositorySideCar from './RepositorySideCar.tsx'
@@ -76,37 +83,17 @@ function Repository() {
           paddingLeft="medium"
           paddingRight="large"
         >
-          <RepositorySideNav
-            marginRight="xlarge"
-          />
-          <Div
-            flexGrow={1}
-            display-desktopLarge-down="none"
-          />
-          <Flex
-            direction="column"
-            flexGrow={1}
-            flexShrink={1}
-            maxWidth-desktop-up={896}
-            minWidth-desktopLarge={832}
-            minWidth-desktopLarge-up={832}
-            minWidth-desktopLarge-down={672}
-            height="100%"
-            maxHeight="100%"
-            paddingBottom="xlarge"
-            overflowY="auto"
-          >
+          <ResponsiveLayoutSidenavContainer>
+            <RepositorySideNav />
+          </ResponsiveLayoutSidenavContainer>
+          <ResponsiveLayoutSpacer />
+          <ResponsiveLayoutContentContainer>
             <Outlet />
-          </Flex>
-          <RepositorySideCar
-            marginLeft="xlarge"
-            marginRight="large"
-            display-desktop-down="none"
-          />
-          <Div
-            flexGrow={1}
-            display-desktopLarge-down="none"
-          />
+          </ResponsiveLayoutContentContainer>
+          <ResponsiveLayoutSidecarContainer>
+            <RepositorySideCar />
+          </ResponsiveLayoutSidecarContainer>
+          <ResponsiveLayoutSpacer />
         </Flex>
       </Flex>
     </RepositoryContext.Provider>

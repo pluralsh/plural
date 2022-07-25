@@ -208,11 +208,7 @@ function MarketplaceRepositories({ installed, ...props }) {
           <Div
             minWidth="210px"
             flex="1 1 210px"
-            marginRight="large"
             marginBottom="xsmall"
-            _last={{
-              marginRight: 'large',
-            }}
           >
             <Input
               startIcon={(

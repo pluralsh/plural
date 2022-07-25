@@ -28,6 +28,7 @@ function ScanViolation({ violation, last }) {
       <TableRow
         last={last}
         hoverIndicator="fill-one-hover"
+        cursor="pointer"
         onClick={() => setOpen(!open)}
       >
         <TableData />

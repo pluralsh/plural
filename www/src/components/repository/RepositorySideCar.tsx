@@ -47,7 +47,54 @@ function InstalledActions({ installation, ...props }: any) {
   )
 }
 
-export function RepositorySideCar(props: any) {
+function RepositorySideCarButtons() {
+  const repository = useContext(RepositoryContext)
+
+  return (
+    <>
+      <Button
+        small
+        tertiary
+        as="a"
+        target="_blank"
+        href={repository.homepage}
+        startIcon={(
+          <BrowserIcon />
+        )}
+      >
+        Website
+      </Button>
+      {repository.license?.url && (
+        <Button
+          small
+          tertiary
+          as="a"
+          target="_blank"
+          href={repository.license.url}
+          startIcon={(
+            <CertificateIcon />
+          )}
+        >
+          License
+        </Button>
+      )}
+      <Button
+        small
+        tertiary
+        as="a"
+        target="_blank"
+        href={repository.git_url}
+        startIcon={(
+          <GitHubLogoIcon />
+        )}
+      >
+        GitHub
+      </Button>
+    </>
+  )
+}
+
+function RepositorySideCarActions() {
   const repository = useContext(RepositoryContext)
   const [recipes] = usePaginatedQuery(
     RECIPES_QUERY,
@@ -60,14 +107,24 @@ export function RepositorySideCar(props: any) {
   )
 
   return (
+    <>
+      {!repository.installation && <InstallDropdownButton recipes={recipes} />}
+      {!!repository.installation && <InstalledActions installation={repository.installation} />}
+    </>
+  )
+}
+
+export function RepositorySideCar(props: any) {
+  const repository = useContext(RepositoryContext)
+
+  return (
     <Div
       position="relative"
       width={200}
       paddingTop="medium"
       {...props}
     >
-      {!repository.installation && <InstallDropdownButton recipes={recipes} />}
-      {!!repository.installation && <InstalledActions installation={repository.installation} />}
+      <RepositorySideCarActions />
       <Div
         marginTop="large"
         border="1px solid border"
@@ -87,46 +144,26 @@ export function RepositorySideCar(props: any) {
           direction="column"
           align="flex-start"
         >
-          <Button
-            small
-            tertiary
-            as="a"
-            target="_blank"
-            href={repository.homepage}
-            startIcon={(
-              <BrowserIcon />
-            )}
-          >
-            Website
-          </Button>
-          {repository.license?.url && (
-            <Button
-              small
-              tertiary
-              as="a"
-              target="_blank"
-              href={repository.license.url}
-              startIcon={(
-                <CertificateIcon />
-              )}
-            >
-              License
-            </Button>
-          )}
-          <Button
-            small
-            tertiary
-            as="a"
-            target="_blank"
-            href={repository.git_url}
-            startIcon={(
-              <GitHubLogoIcon />
-            )}
-          >
-            GitHub
-          </Button>
+          <RepositorySideCarButtons />
         </Flex>
       </Div>
     </Div>
+  )
+}
+
+export function RepositorySideCarCollapsed(props: any) {
+  return (
+    <Flex
+      align="center"
+      {...props}
+    >
+      <RepositorySideCarActions />
+      <Flex
+        align="center"
+        marginLeft="medium"
+      >
+        <RepositorySideCarButtons />
+      </Flex>
+    </Flex>
   )
 }

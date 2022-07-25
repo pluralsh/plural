@@ -1,5 +1,6 @@
-import { Div, Hr, P } from 'honorable'
-import { Divider } from 'pluralsh-design-system'
+import { Div, Flex, Hr, P } from 'honorable'
+
+import { RepositorySideCarCollapsed } from './RepositorySideCar'
 
 function RepositoryHeader({ children, ...props }: any) {
 
@@ -16,9 +17,15 @@ function RepositoryHeader({ children, ...props }: any) {
         backgroundColor="fill-zero"
         paddingTop="large"
       >
-        <P title1>
-          {children}
-        </P>
+        <Flex
+          align="center"
+          justifyContent="space-between"
+        >
+          <P title1>
+            {children}
+          </P>
+          <RepositorySideCarCollapsed display-desktop-up="none" />
+        </Flex>
         <Hr
           marginTop={18}
           marginBottom={0}

@@ -49,6 +49,7 @@ function ScanViolation({ violation, last }) {
         <Box
           direction="row"
           pad={{ horizontal: 'large', vertical: 'small' }}
+          gap="small"
           border="bottom"
           background="fill-two"
         >

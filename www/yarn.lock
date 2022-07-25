@@ -1966,32 +1966,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@floating-ui/core@npm:^0.7.3":
-  version: 0.7.3
-  resolution: "@floating-ui/core@npm:0.7.3"
-  checksum: f48f9fb0d19dcbe7a68c38e8de7fabb11f0c0e6e0ef215ae60b5004900bacb1386e7b89cb377d91a90ff7d147ea1f06c2905136ecf34dea162d9696d8f448d5f
+"@floating-ui/core@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@floating-ui/core@npm:1.0.0"
+  checksum: 093eaa226c1317c1770218bfa9e689c57b3aaef9eab15521269b24f50aeb16143471347bf8025c70ea67a80a165242b6f3a3335a47cbda565d3e055fbfa29501
   languageName: node
   linkType: hard
 
-"@floating-ui/dom@npm:^0.5.3":
-  version: 0.5.4
-  resolution: "@floating-ui/dom@npm:0.5.4"
+"@floating-ui/dom@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@floating-ui/dom@npm:1.0.0"
   dependencies:
-    "@floating-ui/core": ^0.7.3
-  checksum: 9f9d8a51a828c6be5f187204aa6d293c6c9ef70d51dcc5891a4d85683745fceebf79ff8826d0f75ae41b45c3b138367d339756f27f41be87a8770742ebc0de42
+    "@floating-ui/core": ^1.0.0
+  checksum: dd2f2fab4498b194cabc564b1fa9c7f79885271054a5d64f0bf546a374b12a11732f774d97798397f4bae8e87cfb817d110b8a950ae2422c8ffc571647c263d5
   languageName: node
   linkType: hard
 
-"@floating-ui/react-dom@npm:^0.7.2":
-  version: 0.7.2
-  resolution: "@floating-ui/react-dom@npm:0.7.2"
+"@floating-ui/react-dom@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@floating-ui/react-dom@npm:1.0.0"
   dependencies:
-    "@floating-ui/dom": ^0.5.3
-    use-isomorphic-layout-effect: ^1.1.1
+    "@floating-ui/dom": ^1.0.0
   peerDependencies:
     react: ">=16.8.0"
     react-dom: ">=16.8.0"
-  checksum: bc3f2b5557f87f6f4bbccfe3e8d097abafad61a41083d3b79f3499f27590e273bcb3dc7136c2444841ee7a8c0d2a70cc1385458c16103fa8b70eade80c24af52
+  checksum: d79e3c8570b0eaef5e968cd9c69de2c6bb372a5316e4e69a1cd12dae81771863ef430e81b74a0c21cefba663a2f971d8540c7294d7fb3b9807e32ba2a00c1e76
   languageName: node
   linkType: hard
 
@@ -9488,12 +9487,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"honorable@npm:0.131.0":
-  version: 0.131.0
-  resolution: "honorable@npm:0.131.0"
+"honorable@npm:0.132.0":
+  version: 0.132.0
+  resolution: "honorable@npm:0.132.0"
   dependencies:
     "@emotion/is-prop-valid": ^1.1.3
-    "@floating-ui/react-dom": ^0.7.2
+    "@floating-ui/react-dom": ^1.0.0
     lodash.merge: ^4.6.2
     lodash.mergewith: ^4.6.2
     prop-types: ^15.8.1
@@ -9504,7 +9503,7 @@ __metadata:
     "@emotion/styled": ">=10.0.0"
     react: ">=16.0.0"
     react-dom: ">=16.0.0"
-  checksum: 46810a6aa20d7df8c2fa1cf6f7bf7eff3df09cf33b19f456ef6d45115b41cba3be7d1a872f2ff66678252680fe63c007add9cb5bf97ca70767c38989ebd5f37a
+  checksum: 89f9ba776c28a6fced995a7a71cc2cd46216514f6e91b7fcf101fa2dde01494dcc18f5508eb063ec6d8e0be6f538c527902a2de807babfa7fc028460bd413fae
   languageName: node
   linkType: hard
 
@@ -16132,14 +16131,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"slate-history@npm:0.66.0":
-  version: 0.66.0
-  resolution: "slate-history@npm:0.66.0"
+"slate-history@npm:0.81.3":
+  version: 0.81.3
+  resolution: "slate-history@npm:0.81.3"
   dependencies:
     is-plain-object: ^5.0.0
   peerDependencies:
     slate: ">=0.65.3"
-  checksum: e83d4fbf5d4097a5b434df4846420e593598a9a3f90d3e0638f16915b1014bc8a7dc5cd87e3bc0a31a8ad5eae582a18f96bdc04f4b0b0a5a82cf05bd0377601e
+  checksum: e19782bdab0cd2d7f6297279238a8a751da4285da81eab8e55906e2e2458e04229908a5f96abe28bf8af44f7c0fe91cc06ff8f809d3fc5f77ab7835c88c92883
   languageName: node
   linkType: hard
 
@@ -16163,14 +16162,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"slate@npm:0.81.1":
-  version: 0.81.1
-  resolution: "slate@npm:0.81.1"
+"slate@npm:0.81.3":
+  version: 0.81.3
+  resolution: "slate@npm:0.81.3"
   dependencies:
     immer: ^9.0.6
     is-plain-object: ^5.0.0
     tiny-warning: ^1.0.3
-  checksum: 550541fa6e95a81a3dfa81d863a67141659f8ac150808b6fd2c71ee5f758390a1d32e227ee6eb67f945cd79b9e6fffbcdc8db6e42b5737ea6427ee379e0afb62
+  checksum: 481dba45d11aee581621166dcbfa6aa6a0ddaf487faa9e1d5044bf526e2fb85af43ab9a86ab7ba2f00a8003602e64dce603b01f8e287e599cfe8f2378f059999
   languageName: node
   linkType: hard
 
@@ -18684,7 +18683,7 @@ __metadata:
     grommet: 2.25.0
     grommet-icons: 4.7.0
     highlight.js: 11.6.0
-    honorable: 0.131.0
+    honorable: 0.132.0
     honorable-recipe-mp: 0.3.0
     honorable-theme-default: 0.63.0
     js-yaml: 4.1.0
@@ -18727,8 +18726,8 @@ __metadata:
     react-virtualized-auto-sizer: 1.0.6
     react-window: 1.8.7
     react-window-reversed: 1.4.1
-    slate: 0.81.1
-    slate-history: 0.66.0
+    slate: 0.81.3
+    slate-history: 0.81.3
     slate-react: 0.81.0
     styled-components: 5.3.5
     stylelint: 14.9.1

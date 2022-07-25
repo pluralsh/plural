@@ -1,4 +1,6 @@
-import { useContext, useEffect, useMemo, useRef, useState } from 'react'
+import {
+  useContext, useEffect, useMemo, useRef, useState,
+} from 'react'
 import { useApolloClient, useSubscription } from '@apollo/client'
 import moment from 'moment'
 import { Flex, Span } from 'honorable'
@@ -53,10 +55,14 @@ function Status({ status }) {
   )
 }
 
-async function fetchLogs(client, id, step, term) {
+async function fetchLogs(
+  client, id, step, term
+) {
   const { data } = await client.query({ query: TEST_LOGS, variables: { id, step } })
+
   if (data && data.testLogs) {
     const lines = data.testLogs.split(/\r?\n/)
+
     for (const l of lines) {
       term.writeln(l)
     }
@@ -88,8 +94,11 @@ function TestLogs({ step: { id, hasLogs }, testId }) {
   useEffect(() => {
     if (!hasLogs || !xterm || !xterm.current || !xterm.current.terminal) return
     const term = xterm.current.terminal
+
     term.clear()
-    fetchLogs(client, testId, id, term)
+    fetchLogs(
+      client, testId, id, term
+    )
   }, [hasLogs, client, testId, id, xterm])
 
   return (
@@ -237,15 +246,13 @@ function TestDetail({ test, setTest }) {
 function RepositoryTests() {
   const { id } = useContext(RepositoryContext)
   const [test, setTest] = useState(null)
-  const [tests, loadingTests, hasMoreTests, fetchMoreTests] = usePaginatedQuery(
-    TESTS_QUERY,
+  const [tests, loadingTests, hasMoreTests, fetchMoreTests] = usePaginatedQuery(TESTS_QUERY,
     {
       variables: {
         repositoryId: id,
       },
     },
-    data => data.tests
-  )
+    data => data.tests)
 
   if (tests.length === 0 && loadingTests) {
     return (

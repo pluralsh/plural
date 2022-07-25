@@ -37,7 +37,9 @@ import TypeaheadEditor from '../utils/TypeaheadEditor'
 //   {trigger: /^@(\w+)$/, suggestions: fetchUsers}
 // ]
 
-export default function Editor({ incidentId, editorState, editor, handlers, disableSubmit, setEditorState }) {
+export default function Editor({
+  incidentId, editorState, editor, handlers, disableSubmit, setEditorState,
+}) {
   const client = useApolloClient()
 
   return (

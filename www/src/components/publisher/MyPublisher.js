@@ -1,6 +1,8 @@
 import { useContext, useEffect, useState } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
-import { Button, Edit, InputCollection, ListView as List } from 'forge-core'
+import {
+  Button, Edit, InputCollection, ListView as List,
+} from 'forge-core'
 import { Anchor, Box, Text } from 'grommet'
 import { Add, Stripe } from 'grommet-icons'
 import { useParams } from 'react-router-dom'
@@ -119,6 +121,7 @@ function EditPublisher({ publisher: { description, phone } }) {
 function EditAvatar({ publisher }) {
   const { files, onClick, HiddenFileInput } = useFilePicker({})
   const [mutation] = useMutation(EDIT_PUBLISHER)
+
   useEffect(() => {
     if (files.length > 0) {
       mutation({ variables: { attributes: { avatar: files[0] } } })
@@ -161,6 +164,7 @@ export default function MyPublisher() {
   const { editing, id } = useParams()
   const me = useContext(CurrentUserContext)
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
+
   useEffect(() => {
     if (!me.publisher) return
     setBreadcrumbs([

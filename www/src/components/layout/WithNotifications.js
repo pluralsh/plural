@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Avatar, Div, Flex, Img, P } from 'honorable'
+import {
+  Avatar, Div, Flex, Img, P,
+} from 'honorable'
 import { CloseIcon } from 'pluralsh-design-system'
 import truncate from 'lodash/truncate'
 import moment from 'moment'
@@ -13,11 +15,9 @@ import Markdown from '../incidents/Markdown'
 import { NOTIFICATIONS_QUERY } from './queries'
 
 function WithNotifications({ children }) {
-  const [notifications, loadingNotifications, hasMoreNotifications, fetchMoreNotifications] = usePaginatedQuery(
-    NOTIFICATIONS_QUERY,
+  const [notifications, loadingNotifications, hasMoreNotifications, fetchMoreNotifications] = usePaginatedQuery(NOTIFICATIONS_QUERY,
     { variables: {} },
-    data => data.notifications
-  )
+    data => data.notifications)
   const [isPanelOpen, setIsPanelOpen] = useState(false)
 
   return (
@@ -98,7 +98,9 @@ function WithNotifications({ children }) {
 
 function Notification({ notification, closePanel }) {
   console.log('notification', notification)
-  const { actor, type, repository, incident, insertedAt } = notification
+  const {
+    actor, type, repository, incident, insertedAt,
+  } = notification
 
   function getUrl() {
     if (type === 'LOCKED') return `/repository/${repository.id}`
@@ -108,16 +110,16 @@ function Notification({ notification, closePanel }) {
 
   function renderType() {
     switch (type) {
-      case 'MESSAGE':
-        return null
-      case 'INCIDENT_UPDATE':
-        return 'Updated the incident'
-      case 'MENTION':
-        return 'Mentioned you'
-      case 'LOCKED':
-        return 'Locked your installation'
-      default:
-        return null
+    case 'MESSAGE':
+      return null
+    case 'INCIDENT_UPDATE':
+      return 'Updated the incident'
+    case 'MENTION':
+      return 'Mentioned you'
+    case 'LOCKED':
+      return 'Locked your installation'
+    default:
+      return null
     }
   }
 

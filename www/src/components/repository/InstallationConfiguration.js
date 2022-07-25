@@ -1,5 +1,7 @@
 import { useMutation } from '@apollo/client'
-import { Flex, Input, Modal, RadioGroup, Span } from 'honorable'
+import {
+  Flex, Input, Modal, RadioGroup, Span,
+} from 'honorable'
 import { Radio } from 'pluralsh-design-system'
 import { useCallback, useState } from 'react'
 
@@ -23,15 +25,17 @@ function MiniHeader({ header, description }) {
 function UpdateUpgrades({ installation, setOpen }) {
   const [autoUpgrade, setAutoUpgrade] = useState(installation.autoUpgrade || false)
   const [trackTag, setTrackTag] = useState(installation.trackTag || '')
-  const [mutation, { loading }] = useMutation(UPDATE_INSTALLATION, { variables: { 
-    id: installation.id,
-    attributes: { trackTag, autoUpgrade },
-  } })
-  
+  const [mutation, { loading }] = useMutation(UPDATE_INSTALLATION, {
+    variables: {
+      id: installation.id,
+      attributes: { trackTag, autoUpgrade },
+    },
+  })
+
   const doSetTrackTag = useCallback(tag => {
     if (tag === 'none') {
       setAutoUpgrade(false)
-  
+
       return
     }
     setAutoUpgrade(true)
@@ -77,7 +81,6 @@ function UpdateUpgrades({ installation, setOpen }) {
       />
     </Flex>
   )
-  
 }
 
 function DeleteInstallation({ installation, setOpen }) {
@@ -123,7 +126,7 @@ function DeleteInstallation({ installation, setOpen }) {
     </Keyboard>
   )
 }
-  
+
 export function InstallationConfiguration({ installation, open, setOpen }) {
   const [tab, setTab] = useState('Upgrades')
 
@@ -155,7 +158,7 @@ export function InstallationConfiguration({ installation, open, setOpen }) {
           />
         )}
       </Flex>
-    </Modal> 
+    </Modal>
   )
 }
-  
+

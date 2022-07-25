@@ -61,18 +61,16 @@ const absintheSocket = AbsintheSocket.create(socket)
 
 const socketLink = createAbsintheSocketLink(absintheSocket)
 
-const splitLink = split(
-  ({ query }) => {
-    const definition = getMainDefinition(query)
+const splitLink = split(({ query }) => {
+  const definition = getMainDefinition(query)
 
-    return (
-      definition.kind === 'OperationDefinition' &&
-      definition.operation === 'subscription'
-    )
-  },
-  socketLink,
-  retryLink.concat(resetToken).concat(httpLink),
-)
+  return (
+    definition.kind === 'OperationDefinition'
+      && definition.operation === 'subscription'
+  )
+},
+socketLink,
+retryLink.concat(resetToken).concat(httpLink),)
 
 export const client = new ApolloClient({
   link: authLink.concat(splitLink),

@@ -13,14 +13,14 @@ import { AUDIT_METRICS, LOGIN_METRICS } from './queries'
 export function AuditChloropleth() {
   const [tab, setTab] = useState('Audits')
   const { data } = useQuery(tab === 'Logins' ? LOGIN_METRICS : AUDIT_METRICS, { fetchPolicy: 'cache-and-network' })
-  
+
   if (!data) return null
-  
+
   const results = data.auditMetrics || data.loginMetrics
   const metrics = results.map(({ country, count }) => ({
     id: lookup.byIso(country).iso3, value: count,
   }))
-  
+
   return (
     <Box
       fill
@@ -44,6 +44,6 @@ export function AuditChloropleth() {
         <Chloropleth data={metrics} />
       </Box>
     </Box>
-     
+
   )
 }

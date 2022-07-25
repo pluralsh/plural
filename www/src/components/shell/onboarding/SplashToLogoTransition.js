@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Div, Flex, H2, Img } from 'honorable'
+import {
+  Div, Flex, H2, Img,
+} from 'honorable'
 import { CSSTransition, Transition } from 'react-transition-group'
 
 const logoSizeBig = 48
@@ -144,10 +146,8 @@ export function LogoAndSplash({ splashTimeout = 1200, childIsReady = false, chil
     return () => clearTimeout(timeoutId)
   }, [splashTimeout])
 
-  const showSplashScreen = useMemo(
-    () => (!childIsReady || !splashTimerDone),
-    [childIsReady, splashTimerDone]
-  )
+  const showSplashScreen = useMemo(() => (!childIsReady || !splashTimerDone),
+    [childIsReady, splashTimerDone])
 
   return (
     <>

@@ -5,7 +5,7 @@ import moment from 'moment'
 
 export function Date({ date }) {
   if (!date) return (<Span>n/a</Span>)
-  
+
   return (
     <Box>
       <Span>{moment(date).format('ll')}</Span>

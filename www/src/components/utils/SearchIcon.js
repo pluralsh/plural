@@ -1,6 +1,8 @@
 import { Box, Text } from 'grommet'
 
-export function SearchIcon({ border, color, size, pad }) {
+export function SearchIcon({
+  border, color, size, pad,
+}) {
   const padding = pad || 10
 
   return (

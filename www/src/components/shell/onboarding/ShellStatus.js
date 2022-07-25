@@ -3,7 +3,9 @@ import { Chip, ProgressBar } from 'pluralsh-design-system'
 
 import OnboardingCard from './OnboardingCard'
 
-function StatusChip({ loading, error, progressMessage, ...chip }) {
+function StatusChip({
+  loading, error, progressMessage, ...chip
+}) {
   return (
     <Chip
       loading={loading && !error}
@@ -17,7 +19,13 @@ function StatusChip({ loading, error, progressMessage, ...chip }) {
   )
 }
 
-export function ShellStatus({ shell: { alive, status: { initialized, podScheduled, containersReady, ready } }, error }) {
+export function ShellStatus({
+  shell: {
+    alive, status: {
+      initialized, podScheduled, containersReady, ready,
+    },
+  }, error,
+}) {
   return (
     <OnboardingCard>
       <Flex

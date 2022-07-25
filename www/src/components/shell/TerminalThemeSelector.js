@@ -1,5 +1,7 @@
 import { useContext, useState } from 'react'
-import { Div, DropdownButton, ExtendTheme, Flex, Input, MenuItem } from 'honorable'
+import {
+  Div, DropdownButton, ExtendTheme, Flex, Input, MenuItem,
+} from 'honorable'
 import Fuse from 'fuse.js'
 
 import { MagnifyingGlassIcon } from 'pluralsh-design-system'

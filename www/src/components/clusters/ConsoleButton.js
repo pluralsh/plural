@@ -22,6 +22,7 @@ export function ConsoleButton({ q = {}, text, ...props }) {
 
 export function InferredConsoleButton(props) {
   const { data } = useQuery(QUEUES, { fetchPolicy: 'cache-and-network' })
+
   if (!data?.upgradeQueues) return null
 
   if (data.upgradeQueues.length === 0) return null

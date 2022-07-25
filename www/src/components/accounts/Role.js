@@ -1,6 +1,8 @@
 import { useCallback, useRef, useState } from 'react'
 import { Box, Layer, Text } from 'grommet'
-import { GqlError, Group, InputCollection, TagInput, Trash, User } from 'forge-core'
+import {
+  GqlError, Group, InputCollection, TagInput, Trash, User,
+} from 'forge-core'
 import { Edit } from 'grommet-icons'
 import { Button, Div } from 'honorable'
 
@@ -14,7 +16,9 @@ import { ModalHeader } from '../ModalHeader'
 import { appendConnection, removeConnection, updateCache } from '../../utils/graphql'
 
 import { Icon } from './Group'
-import { CREATE_ROLE, DELETE_ROLE, ROLES_Q, UPDATE_ROLE } from './queries'
+import {
+  CREATE_ROLE, DELETE_ROLE, ROLES_Q, UPDATE_ROLE,
+} from './queries'
 import { PermissionTypes } from './types'
 import { fetchGroups, fetchUsers } from './Typeaheads'
 
@@ -37,7 +41,9 @@ function RoleName({ role: { name, description } }) {
   )
 }
 
-function PermissionToggle({ permission, description, attributes, setAttributes }) {
+function PermissionToggle({
+  permission, description, attributes, setAttributes,
+}) {
   const toggle = useCallback(enable => {
     if (enable) {
       setAttributes({ ...attributes, permissions: [permission, ...attributes.permissions] })
@@ -85,7 +91,9 @@ const TEXT = {
   group: { label: 'group bindings', placeholder: 'search for groups to add' },
 }
 
-export function BindingInput({ type, fetcher, bindings, remove, add }) {
+export function BindingInput({
+  type, fetcher, bindings, remove, add,
+}) {
   const client = useApolloClient()
   const [suggestions, setSuggestions] = useState([])
   const { placeholder, label } = TEXT[type]
@@ -124,7 +132,9 @@ export function BindingInput({ type, fetcher, bindings, remove, add }) {
   )
 }
 
-function RoleForm({ attributes, setAttributes, roleBindings, setRoleBindings }) {
+function RoleForm({
+  attributes, setAttributes, roleBindings, setRoleBindings,
+}) {
   const [repositories, setRepositories] = useState(attributes.repositories.join(', '))
 
   return (
@@ -251,7 +261,9 @@ function EditRole({ role, setOpen }) {
 }
 
 export function CreateRole({ setOpen }) {
-  const [attributes, setAttributes] = useState({ name: '', description: '', repositories: [], permissions: [] })
+  const [attributes, setAttributes] = useState({
+    name: '', description: '', repositories: [], permissions: [],
+  })
   const [roleBindings, setRoleBindings] = useState([])
   const [mutation, { loading, error }] = useMutation(CREATE_ROLE, {
     variables: {

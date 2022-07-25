@@ -3,7 +3,9 @@ import './chart.css'
 import { useContext, useState } from 'react'
 import { Box } from 'grommet'
 import { useMutation, useQuery } from '@apollo/client'
-import { Link, Outlet, useLocation, useNavigate, useParams } from 'react-router-dom'
+import {
+  Link, Outlet, useLocation, useNavigate, useParams,
+} from 'react-router-dom'
 import { Button, Tab } from 'pluralsh-design-system'
 import { ScrollableContainer } from 'forge-core'
 import moment from 'moment'
@@ -19,7 +21,9 @@ import { CHART_Q, INSTALL_CHART, UPDATE_CHART_INST } from './queries'
 import { DEFAULT_CHART_ICON } from './constants'
 
 import { DetailContainer } from './Installation'
-import { PackageBackButton, PackageGrade, PackageHeader, PackageProperty, dockerPull } from './common/misc'
+import {
+  PackageBackButton, PackageGrade, PackageHeader, PackageProperty, dockerPull,
+} from './common/misc'
 
 function ChartInfo({ version: { helm, insertedAt } }) {
   return (
@@ -83,7 +87,9 @@ export const MARKDOWN_STYLING = {
   pre: { component: Code, props: {} },
 }
 
-function ChartInstaller({ chartInstallation, versionId, chartId, installation }) {
+function ChartInstaller({
+  chartInstallation, versionId, chartId, installation,
+}) {
   const [mutation, { error }] = useMutation(chartInstallation ? UPDATE_CHART_INST : INSTALL_CHART, {
     variables: {
       id: chartInstallation ? chartInstallation.id : installation.id,
@@ -92,6 +98,7 @@ function ChartInstaller({ chartInstallation, versionId, chartId, installation })
     update: (cache, { data }) => {
       const ci = data.installChart || data.updateChartInstallation
       const prev = cache.readQuery({ query: CHART_Q, variables: { chartId } })
+
       cache.writeQuery({
         query: CHART_Q,
         variables: { chartId },
@@ -119,6 +126,7 @@ function ChartInstaller({ chartInstallation, versionId, chartId, installation })
 
 function ImageDependencies({ version: { imageDependencies } }) {
   const { registry } = useContext(PluralConfigurationContext)
+
   if (!imageDependencies || imageDependencies.length === 0) return null
 
   return (

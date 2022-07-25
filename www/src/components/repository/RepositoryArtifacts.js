@@ -1,8 +1,12 @@
 import { useContext, useState } from 'react'
 import moment from 'moment'
-import { Flex, H2, Modal, P, Span, Tooltip } from 'honorable'
+import {
+  Flex, H2, Modal, P, Span, Tooltip,
+} from 'honorable'
 import { Download, ListView } from 'forge-core'
-import { Apple, DocumentText, Ubuntu, Windows } from 'grommet-icons'
+import {
+  Apple, DocumentText, Ubuntu, Windows,
+} from 'grommet-icons'
 import fs from 'filesize'
 
 import RepositoryContext from '../../contexts/RepositoryContext'

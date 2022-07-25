@@ -1,7 +1,9 @@
 import { useEffect, useRef } from 'react'
 import { Div } from 'honorable'
 
-function InfiniteScroller({ loading = false, hasMore = false, loadMore, children, ...props }) {
+function InfiniteScroller({
+  loading = false, hasMore = false, loadMore, children, ...props
+}) {
   const scrollRef = useRef()
 
   useEffect(() => {

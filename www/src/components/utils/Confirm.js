@@ -3,7 +3,9 @@ import { Button } from 'honorable'
 
 import { Alert, AlertStatus, GqlError } from './Alert'
 
-export function Confirm({ submit, error, loading, label, header, cancel, description }) {
+export function Confirm({
+  submit, error, loading, label, header, cancel, description,
+}) {
   return (
     <Layer
       onClickOutside={cancel}

@@ -15,6 +15,7 @@ import { NotificationType } from './types'
 
 const countDetails = ({ edges, pageInfo }) => {
   const len = edges.length
+
   if (len > 50) return { count: len, more: true }
 
   return { count: len, more: pageInfo.hasNextPage }
@@ -88,7 +89,9 @@ function NotificationRow({ notification, next }) {
   )
 }
 
-function FlyoutBody({ edges, pageInfo, fetchMore, setOpen }) {
+function FlyoutBody({
+  edges, pageInfo, fetchMore, setOpen,
+}) {
   return (
     <Flyout
       width="30vw"

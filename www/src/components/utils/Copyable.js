@@ -41,7 +41,9 @@ export function CopyNotice({ text, onClose }) {
   )
 }
 
-export function Copyable({ text, pillText, displayText, onCopy }) {
+export function Copyable({
+  text, pillText, displayText, onCopy,
+}) {
   const [display, setDisplay] = useState(false)
   const [hover, setHover] = useState(false)
 
@@ -49,7 +51,7 @@ export function Copyable({ text, pillText, displayText, onCopy }) {
     <>
       <CopyToClipboard
         text={text}
-        onCopy={() => onCopy ? onCopy() : setDisplay(true)}
+        onCopy={() => (onCopy ? onCopy() : setDisplay(true))}
       >
         <Box
           onMouseEnter={() => setHover(true)}

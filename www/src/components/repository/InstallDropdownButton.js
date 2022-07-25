@@ -1,6 +1,10 @@
 import { useContext, useState } from 'react'
-import { A, Button, Div, DropdownButton, ExtendTheme, Flex, H2, Img, MenuItem, P } from 'honorable'
-import { ArrowTopRightIcon, CaretDownIcon, Codeline, Tab } from 'pluralsh-design-system'
+import {
+  A, Button, Div, DropdownButton, ExtendTheme, Flex, H2, Img, MenuItem, P,
+} from 'honorable'
+import {
+  ArrowTopRightIcon, CaretDownIcon, Codeline, Tab,
+} from 'pluralsh-design-system'
 import { Link } from 'react-router-dom'
 
 import RepositoryContext from '../../contexts/RepositoryContext'

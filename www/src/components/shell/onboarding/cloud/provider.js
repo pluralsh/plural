@@ -1,5 +1,7 @@
 import { useCallback, useContext, useState } from 'react'
-import { Div, H2, P, RadioGroup, Text } from 'honorable'
+import {
+  Div, H2, P, RadioGroup, Text,
+} from 'honorable'
 import { Radio } from 'pluralsh-design-system'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'
@@ -24,14 +26,16 @@ export const CLOUD_VALIDATIONS = {
 
 export const synopsis = ({ provider, ...rest }) => {
   switch (provider) {
-    case 'AWS':
-      return awsSynopsis(rest)
-    case 'GCP':
-      return gcpSynopsis(rest)
+  case 'AWS':
+    return awsSynopsis(rest)
+  case 'GCP':
+    return gcpSynopsis(rest)
   }
 }
 
-export function CloudOption({ providerLogo, header, description, selected, ...props }) {
+export function CloudOption({
+  providerLogo, header, description, selected, ...props
+}) {
   return (
     <OnboardingCardButton
       position="relative"
@@ -102,7 +106,9 @@ export function ChooseAShell({ options, selected, setSelected }) {
 }
 
 export function ProviderForm() {
-  const { setProvider, workspace, setWorkspace, credentials, setCredentials, demo, setDemo, next } = useContext(CreateShellContext)
+  const {
+    setProvider, workspace, setWorkspace, credentials, setCredentials, demo, setDemo, next,
+  } = useContext(CreateShellContext)
   const [path, setPath] = useState(null)
 
   const doSetPath = useCallback(path => {

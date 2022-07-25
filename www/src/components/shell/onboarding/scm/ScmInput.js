@@ -1,6 +1,8 @@
 import { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { A, Flex, Img, Input, MenuItem, Select, Text } from 'honorable'
+import {
+  A, Flex, Img, Input, MenuItem, Select, Text,
+} from 'honorable'
 import { Button, FormField } from 'pluralsh-design-system'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'
@@ -54,6 +56,7 @@ function OrgInput({ org, orgs, doSetOrg }) {
     let name
     let avatarUrl
     let key
+
     if (provider === Provider.GITHUB) {
       name = org.login
       avatarUrl = org.avatar_url

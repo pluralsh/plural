@@ -1,6 +1,8 @@
 import { useCallback, useState } from 'react'
 import { Box, Stack, Text } from 'grommet'
-import { Cluster, Eye as Hide, History, Notification, Package, User } from 'forge-core'
+import {
+  Cluster, Eye as Hide, History, Notification, Package, User,
+} from 'forge-core'
 
 import { IncidentHistory } from './IncidentHistory'
 import { SidebarView } from './types'
@@ -85,7 +87,9 @@ function SmallSidebar({ incident, setOpen, setView }) {
   )
 }
 
-function SidebarContent({ view, setView, incident, fetchMore, setOpen }) {
+function SidebarContent({
+  view, setView, incident, fetchMore, setOpen,
+}) {
   return (
     <Box fill>
       <Box

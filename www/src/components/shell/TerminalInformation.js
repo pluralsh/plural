@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { CircleInformation } from 'grommet-icons'
 
-import { Button, Flex, Modal, Span } from 'honorable'
+import {
+  Button, Flex, Modal, Span,
+} from 'honorable'
 import { Codeline, ModalHeader } from 'pluralsh-design-system'
 
 const CLOUDS = {
@@ -22,7 +24,9 @@ function Attribute({ name, value }) {
   )
 }
 
-function ShellHint({ name, hint, code, ...flex }) {
+function ShellHint({
+  name, hint, code, ...flex
+}) {
   return (
     <Flex
       direction="column"

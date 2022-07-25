@@ -6,10 +6,14 @@ import moment from 'moment'
 import { Modal, ModalHeader } from 'pluralsh-design-system'
 import { useState } from 'react'
 
-import { deepUpdate, extendConnection, removeConnection, updateCache } from '../../utils/graphql'
+import {
+  deepUpdate, extendConnection, removeConnection, updateCache,
+} from '../../utils/graphql'
 
 import { Placeholder } from '../accounts/Audits'
-import { DELETE_DNS_RECORD, DELETE_DOMAIN, DNS_DOMAINS, DNS_RECORDS, UPDATE_DOMAIN } from '../accounts/queries'
+import {
+  DELETE_DNS_RECORD, DELETE_DOMAIN, DNS_DOMAINS, DNS_RECORDS, UPDATE_DOMAIN,
+} from '../accounts/queries'
 import { DeleteIcon, Icon } from '../profile/Icon'
 import { Provider } from '../repos/misc'
 import { GqlError } from '../utils/Alert'
@@ -75,11 +79,15 @@ function DomainOptions({ domain, setDomain }) {
 function AccessPolicy({ domain: { id, accessPolicy }, cancel }) {
   const [bindings, setBindings] = useState(accessPolicy ? accessPolicy.bindings : [])
   const [mutation, { loading, error }] = useMutation(UPDATE_DOMAIN, {
-    variables: { id,
-      attributes: { accessPolicy: {
-        id: accessPolicy ? accessPolicy.id : null,
-        bindings: bindings.map(sanitize),
-      } } },
+    variables: {
+      id,
+      attributes: {
+        accessPolicy: {
+          id: accessPolicy ? accessPolicy.id : null,
+          bindings: bindings.map(sanitize),
+        },
+      },
+    },
   })
 
   return (
@@ -126,11 +134,9 @@ function DeleteRecord({ record, domain }) {
     update: (cache, { data: { deleteDnsRecord } }) => updateCache(cache, {
       query: DNS_RECORDS,
       variables: { id: domain.id },
-      update: prev => deepUpdate(
-        prev,
+      update: prev => deepUpdate(prev,
         'dnsDomain',
-        domain => removeConnection(domain, deleteDnsRecord, 'dnsRecords')
-      ),
+        domain => removeConnection(domain, deleteDnsRecord, 'dnsRecords')),
     }),
   })
 
@@ -244,11 +250,9 @@ function DnsRecords({ domain, setDomain }) {
             )}
             loadNextPage={() => pageInfo.hasNextPage && fetchMore({
               variables: { cursor: pageInfo.endCursor },
-              updateQuery: (prev, { fetchMoreResult: { dnsDomain } }) => deepUpdate(
-                prev,
+              updateQuery: (prev, { fetchMoreResult: { dnsDomain } }) => deepUpdate(prev,
                 'dnsDomain',
-                prev => extendConnection(prev, dnsDomain.dnsRecords, 'dnsRecords')
-              ),
+                prev => extendConnection(prev, dnsDomain.dnsRecords, 'dnsRecords')),
             })}
           />
         </Box>

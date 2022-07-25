@@ -12,7 +12,9 @@ function redirectUrl(format, service) {
   return format.replace('{redirect_uri}', encodeURIComponent(location))
 }
 
-function Integration({ icon, installUrl, integrations, service, children }) {
+function Integration({
+  icon, installUrl, integrations, service, children,
+}) {
   const connected = !!integrations[service]
   const onClick = connected ? null : () => window.location = redirectUrl(installUrl, service)
 

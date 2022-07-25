@@ -5,6 +5,7 @@ import * as serviceWorker from '../../serviceWorker'
 import { PluralConfigurationContext } from '../login/CurrentUser'
 
 const COMMIT_KEY = 'git-commit'
+
 export const DEFAULT_COMMIT = 'plural-default-commit'
 
 export const getCommit = () => localStorage.getItem(COMMIT_KEY) || DEFAULT_COMMIT
@@ -19,6 +20,7 @@ function WithApplicationUpdate({ children }) {
     console.log('reloading')
     if (process.env.NODE_ENV === 'production') {
       const promise = serviceWorker.unregister() || Promise.resolve('done')
+
       promise.then(() => {
         setCommit(config.gitCommit)
         window.location.reload()

@@ -25,22 +25,25 @@ const LEGEND = {
   Optional: { color: OPTIONAL_COLOR, dasharray: OPTIONAL_DASHARRAY },
 }
 
-function asDep({ __typename, name: depname, version, children }) {
+function asDep({
+  __typename, name: depname, version, children,
+}) {
   const name = `${depname} ${version || ''}`
+
   switch (__typename) {
-    case 'Terraform':
-      return { name, image: DEFAULT_TF_ICON, children }
-    default:
-      return { name, image: DEFAULT_CHART_ICON, children }
+  case 'Terraform':
+    return { name, image: DEFAULT_TF_ICON, children }
+  default:
+    return { name, image: DEFAULT_CHART_ICON, children }
   }
 }
 
 function depType({ __typename }) {
   switch (__typename) {
-    case 'Terraform':
-      return Tools.TERRAFORM
-    default:
-      return Tools.HELM
+  case 'Terraform':
+    return Tools.TERRAFORM
+  default:
+    return Tools.HELM
   }
 }
 
@@ -48,6 +51,7 @@ const key = ({ repo, name }) => `${repo}:${name}`
 
 function mapify(deps) {
   const map = {}
+
   for (const dep of deps) {
     map[key(dep)] = true
   }
@@ -61,11 +65,14 @@ function closureDep({ helm, terraform, dep }, children) {
   const strokeColor = dep.optional ? OPTIONAL_COLOR : null
   const strokeDasharray = dep.optional ? OPTIONAL_DASHARRAY : null
 
-  return { name, image, children, strokeColor, strokeDasharray }
+  return {
+    name, image, children, strokeColor, strokeDasharray,
+  }
 }
 
 function compileGraph(res, closure) {
   const resource = res.helm || res.terraform
+
   if (!resource.dependencies || !resource.dependencies.dependencies) return closureDep(res, [])
 
   const { dependencies: { dependencies } } = resource
@@ -86,7 +93,7 @@ const FullDependencies = memo(({ resource }) => {
   })
 
   if (loading || !data) return null
-  const closure = groupBy(data.closure, ({ helm }) => helm ? 'helm' : 'terraform')
+  const closure = groupBy(data.closure, ({ helm }) => (helm ? 'helm' : 'terraform'))
   const graph = compileGraph({ [type.toLowerCase()]: resource, dep: {} }, cloneDeep(closure))
 
   return (
@@ -111,11 +118,16 @@ const Dependencies = memo(({ name, dependencies, resource }) => {
   const deps = dependencies.dependencies.map(({ name, version, ...dep }) => {
     const strokeColor = dep.optional ? OPTIONAL_COLOR : null
     const strokeDasharray = dep.optional ? OPTIONAL_DASHARRAY : null
+
     if (dep.type === Tools.TERRAFORM) {
-      return { ...dep, strokeColor, strokeDasharray, name: `${name} ${version || ''}`, image: DEFAULT_TF_ICON }
+      return {
+        ...dep, strokeColor, strokeDasharray, name: `${name} ${version || ''}`, image: DEFAULT_TF_ICON,
+      }
     }
     if (dep.type === Tools.HELM) {
-      return { ...dep, strokeColor, strokeDasharray, name: `${name} ${version || ''}`, image: DEFAULT_CHART_ICON }
+      return {
+        ...dep, strokeColor, strokeDasharray, name: `${name} ${version || ''}`, image: DEFAULT_CHART_ICON,
+      }
     }
 
     return dep
@@ -132,7 +144,9 @@ const Dependencies = memo(({ name, dependencies, resource }) => {
 })
 
 export default function PackageDependencies() {
-  const { helmChart, terraformChart, currentHelmChart, currentTerraformChart } = useOutletContext()
+  const {
+    helmChart, terraformChart, currentHelmChart, currentTerraformChart,
+  } = useOutletContext()
   const chart = helmChart || terraformChart
   const current = currentHelmChart || currentTerraformChart
   const [full, setFull] = useState(false)

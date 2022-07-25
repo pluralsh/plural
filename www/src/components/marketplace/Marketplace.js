@@ -21,7 +21,7 @@ function Marketplace({ installed }) {
     >
       <Flex
         marginHorizontal="large"
-        flexShrink={0}  
+        flexShrink={0}
         direction="row"
         height={57}
         alignItems="flex-end"

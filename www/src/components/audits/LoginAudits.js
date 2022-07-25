@@ -64,17 +64,17 @@ export function LoginAudits() {
   const returnToBeginning = useCallback(() => {
     listRef.scrollToItem(0)
   }, [listRef])
-  
+
   console.log(data)
-  
+
   if (!data) {
     return (
       <LoopingLogo />
     )
   }
-  
+
   const { edges, pageInfo } = data.oidcLogins
-  
+
   return (
     <Box fill>
       <Table

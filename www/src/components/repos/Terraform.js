@@ -2,7 +2,9 @@ import { useState } from 'react'
 import { Box } from 'grommet'
 import { ScrollableContainer } from 'forge-core'
 import { useMutation, useQuery } from '@apollo/client'
-import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom'
+import {
+  Outlet, useLocation, useNavigate, useParams,
+} from 'react-router-dom'
 
 import { Button, Flex, Modal } from 'honorable'
 
@@ -18,7 +20,9 @@ import { DEFAULT_TF_ICON } from './constants'
 import { PackageBackButton, PackageGrade, PackageHeader } from './common/misc'
 import { PackageVersionPicker } from './common/PackageVersionPicker'
 
-function TerraformInstaller({ installation, terraformId, terraformInstallation, version }) {
+function TerraformInstaller({
+  installation, terraformId, terraformInstallation, version,
+}) {
   const installed = terraformInstallation && terraformInstallation.version.id === version.id
   const [mutation, { error }] = useMutation(installed ? UNINSTALL_TF : INSTALL_TF, {
     variables: {
@@ -27,6 +31,7 @@ function TerraformInstaller({ installation, terraformId, terraformInstallation, 
     },
     update: (cache, { data }) => {
       const ti = data.installTerraform ? data.installTerraform : null
+
       updateCache(cache, {
         query: TF_Q,
         variables: { tfId: terraformId },
@@ -62,7 +67,7 @@ export default function Terraform() {
   const { data } = useQuery(TF_Q, { variables: { tfId }, fetchPolicy: 'cache-and-network' })
 
   if (!data) return null
-  
+
   const { terraformModule, versions } = data
   const { edges } = versions
   const currentVersion = version || edges[0].node

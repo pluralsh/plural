@@ -8,13 +8,13 @@ export function SidebarTabs({ width = 250, children }) {
       py={1}
       width={width}
       flexShrink={0}
-      direction="column" 
+      direction="column"
     >
       <Div
         pt={1}
         borderRight="1px solid border"
-      /> 
-      { children } 
+      />
+      { children }
       <Div
         flexGrow={1}
         borderRight="1px solid border"

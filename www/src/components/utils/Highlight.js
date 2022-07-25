@@ -1,17 +1,17 @@
 import hljs from 'highlight.js'
 import { useEffect, useRef } from 'react'
 import { Pre } from 'honorable'
- 
+
 function Highlight({ language, children }) {
   const codeRef = useRef()
-  
+
   useEffect(() => {
-    if (hljs.getLanguage(language) && codeRef.current) {  
+    if (hljs.getLanguage(language) && codeRef.current) {
       hljs.initHighlighting.called = false
       hljs.highlightBlock(codeRef.current)
     }
   }, [language, children])
-  
+
   return (
     <Pre
       margin="0"
@@ -24,5 +24,5 @@ function Highlight({ language, children }) {
     </Pre>
   )
 }
-  
+
 export default Highlight

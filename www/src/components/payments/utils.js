@@ -12,14 +12,13 @@ export function pivotByDimension(items) {
 export function subscriptionCost({ lineItems: { items } }, { cost, lineItems }) {
   const planLineItems = pivotByDimension(lineItems.items)
 
-  return items.reduce(
-    (total, { dimension, quantity }) => total + planLineItems[dimension].cost * quantity,
-    cost
-  )
+  return items.reduce((total, { dimension, quantity }) => total + planLineItems[dimension].cost * quantity,
+    cost)
 }
 
 export function updateSubscription(cache, repositoryId, subscription) {
   const prev = cache.readQuery({ query: REPO_Q, variables: { repositoryId } })
+
   cache.writeQuery({
     query: REPO_Q,
     variables: { repositoryId },

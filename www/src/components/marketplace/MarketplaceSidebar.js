@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { useQuery } from '@apollo/client'
 import { useSearchParams } from 'react-router-dom'
-import { A, Accordion, Div, P } from 'honorable'
+import {
+  A, Accordion, Div, P,
+} from 'honorable'
 import { Checkbox, CloseIcon, Input } from 'pluralsh-design-system'
 import Fuse from 'fuse.js'
 
@@ -35,11 +37,9 @@ const searchOptions = {
 function MarketplaceSidebar(props) {
   const [nDisplayedTags, setNDisplayedTags] = useState(12)
   const { data: categoriesData } = useQuery(CATEGORIES_QUERY)
-  const [tags,, hasMoreTags, fetchMoreTags] = usePaginatedQuery(
-    TAGS_QUERY,
+  const [tags,, hasMoreTags, fetchMoreTags] = usePaginatedQuery(TAGS_QUERY,
     {},
-    data => data.tags
-  )
+    data => data.tags)
   const [searchParams, setSearchParams] = useSearchParams()
   const [search, setSearch] = useState('')
 

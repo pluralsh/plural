@@ -64,12 +64,10 @@ const StyledTextInput = styled(TextInput)`
 function useUpdateState<T extends { [key: string]: unknown }>(initialState: T) {
   const [state, setState] = useState({ ...initialState })
 
-  const update = useCallback(
-    (update: Partial<T>) => {
-      setState({ ...state, ...update })
-    },
-    [state]
-  )
+  const update = useCallback((update: Partial<T>) => {
+    setState({ ...state, ...update })
+  },
+  [state])
   const reset = useCallback(() => {
     setState({ ...initialState })
   }, [initialState])
@@ -169,28 +167,24 @@ function RepositoryEdit() {
     hasUpdates: formStateHasUpdates,
     update: updateFormState,
     // reset: resetFormState,
-  } = useUpdateState<FormState>(
-    useMemo(
-      () => ({
-        name: `${name || ''}`,
-        description: `${description || ''}`,
-        category: `${category || ''}`,
-        oauthUrl: `${oauthSettings?.uriFormat || ''}`,
-        oauthMethod: `${oauthSettings?.authMethod || authMethods.BASIC}`,
-        tags: isArray(tags) ? tags.map(tag => ({ tag: tag.tag })) : [],
-        private: !!privateRepo,
-      }),
-      [
-        name,
-        description,
-        oauthSettings?.authMethod,
-        oauthSettings?.uriFormat,
-        tags,
-        privateRepo,
-        category,
-      ]
-    )
-  )
+  } = useUpdateState<FormState>(useMemo(() => ({
+    name: `${name || ''}`,
+    description: `${description || ''}`,
+    category: `${category || ''}`,
+    oauthUrl: `${oauthSettings?.uriFormat || ''}`,
+    oauthMethod: `${oauthSettings?.authMethod || authMethods.BASIC}`,
+    tags: isArray(tags) ? tags.map(tag => ({ tag: tag.tag })) : [],
+    private: !!privateRepo,
+  }),
+  [
+    name,
+    description,
+    oauthSettings?.authMethod,
+    oauthSettings?.uriFormat,
+    tags,
+    privateRepo,
+    category,
+  ]))
 
   const [tagSearchString, setTagSearchString] = useState('')
   const newTag = tagSearchString
@@ -200,8 +194,8 @@ function RepositoryEdit() {
   const tagSearch = useQuery(TAGS_SEARCH_QUERY, {
     variables: { q: tagSearchString, first: 200 },
   })
-  const tagSearchResults: { tag: string; count: number }[] =
-    tagSearch?.data?.tags?.edges?.map((edge: any) => edge?.node) || []
+  const tagSearchResults: { tag: string; count: number }[]
+    = tagSearch?.data?.tags?.edges?.map((edge: any) => edge?.node) || []
 
   const [iconUpdate, setIconUpdate] = useState<{
     file: File | null;
@@ -210,8 +204,7 @@ function RepositoryEdit() {
 
   const tagSearchRef = useRef<any>(null)
 
-  const [mutation, { loading, error }] = useMutation(
-    UPDATE_REPOSITORY_MUTATION,
+  const [mutation, { loading, error }] = useMutation(UPDATE_REPOSITORY_MUTATION,
     {
       variables: {
         repositoryId: id,
@@ -237,8 +230,7 @@ function RepositoryEdit() {
           file: null,
         })
       },
-    }
-  )
+    })
 
   console.log('Error: ', error)
 
@@ -256,15 +248,14 @@ function RepositoryEdit() {
   useEffect(() => {
     const preventUpdate = false
     const file = isArray(iconPicker?.files) && iconPicker?.files[0]
+
     if (file) {
-      const reader = generatePreview(
-        file,
+      const reader = generatePreview(file,
         (file: { file: File; previewUrl: string }) => {
           if (!preventUpdate) {
             setIconUpdate(file)
           }
-        }
-      )
+        })
 
       return () => {
         reader.abort()
@@ -436,8 +427,7 @@ function RepositoryEdit() {
               <Input
                 placeholder={formInitialState.name}
                 value={formState.name}
-                onChange={event =>
-                  updateFormState({ name: event.target.value })}
+                onChange={event => updateFormState({ name: event.target.value })}
               />
             </FormField>
             <Flex
@@ -456,8 +446,7 @@ function RepositoryEdit() {
                   minHeight={40}
                   placeholder={formInitialState.description}
                   value={formState.description}
-                  onChange={event =>
-                    updateFormState({ description: event.target.value })}
+                  onChange={event => updateFormState({ description: event.target.value })}
                 />
               </FormField>
               <FormField
@@ -469,8 +458,7 @@ function RepositoryEdit() {
               >
                 <Select
                   value={formState.category}
-                  onChange={event =>
-                    updateFormState({ category: event.target.value })}
+                  onChange={event => updateFormState({ category: event.target.value })}
                   width="100%"
                   minHeight={40}
                   minWidth="auto"
@@ -553,11 +541,10 @@ function RepositoryEdit() {
               >
                 <Input
                   value={formState.oauthUrl}
-                  onChange={event =>
-                    updateFormState({ oauthUrl: event.target.value })}
+                  onChange={event => updateFormState({ oauthUrl: event.target.value })}
                   placeholder={
-                    formInitialState.oauthUrl ||
-                    'https://{domain}/oauth/callback'
+                    formInitialState.oauthUrl
+                    || 'https://{domain}/oauth/callback'
                   }
                 />
               </FormField>
@@ -573,8 +560,7 @@ function RepositoryEdit() {
                   minWidth="auto"
                   minHeight={40}
                   value={formState.oauthMethod}
-                  onChange={event =>
-                    updateFormState({ oauthMethod: event.target.value })}
+                  onChange={event => updateFormState({ oauthMethod: event.target.value })}
                 >
                   {Object.keys(authMethods).map(method => (
                     <MenuItem

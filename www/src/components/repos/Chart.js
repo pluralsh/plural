@@ -1,6 +1,6 @@
 import './chart.css'
 
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useState } from 'react'
 import { Box } from 'grommet'
 import { useMutation, useQuery } from '@apollo/client'
 import { Link, Outlet, useLocation, useNavigate, useParams } from 'react-router-dom'
@@ -12,7 +12,6 @@ import Highlight from 'react-highlight.js'
 import { A, Flex } from 'honorable'
 
 import { PluralConfigurationContext } from '../login/CurrentUser'
-import { Breadcrumbs, BreadcrumbsContext } from '../Breadcrumbs'
 
 import { PackageVersionPicker } from './common/PackageVersionPicker'
 
@@ -20,7 +19,7 @@ import { CHART_Q, INSTALL_CHART, UPDATE_CHART_INST } from './queries'
 import { DEFAULT_CHART_ICON } from './constants'
 
 import { DetailContainer, DetailProperty } from './Installation'
-import { PackageGrade, PackageHeader, dockerPull } from './common/misc'
+import { PackageBackButton, PackageGrade, PackageHeader, dockerPull } from './common/misc'
 
 function ChartInfo({ version: { helm, insertedAt } }) {
   return (
@@ -149,20 +148,7 @@ export default function Chart() {
   const { pathname } = useLocation()
   const navigate = useNavigate()
   const [version, setVersion] = useState(null)
-  const { data } = useQuery(CHART_Q, {
-    variables: { chartId },
-    fetchPolicy: 'cache-and-network',
-  })
-  const { setBreadcrumbs } = useContext(BreadcrumbsContext)
-  useEffect(() => {
-    if (!data) return
-    const { chart } = data
-    setBreadcrumbs([
-      { url: '/marketplace', text: 'Marketplace' },
-      { url: `/repository/${chart.repository.id}/packages/helm`, text: chart.repository.name },
-      { url: `/charts/${chart.id}`, text: chart.name },
-    ])
-  }, [data, setBreadcrumbs])
+  const { data } = useQuery(CHART_Q, { variables: { chartId }, fetchPolicy: 'cache-and-network' })
 
   if (!data) return null
 
@@ -177,16 +163,7 @@ export default function Chart() {
       direction="column"
       fill
     >
-      <Flex
-        paddingVertical={18}
-        marginLeft="xlarge"
-        marginRight="xlarge"
-        paddingLeft="xsmall"
-        paddingRight="xsmall"
-        borderBottom="1px solid border"
-      >
-        <Breadcrumbs />
-      </Flex>
+      <PackageBackButton link={`/repository/${chart.repository.id}/packages/helm`} />
       <ScrollableContainer>
         <Box
           pad="medium"

@@ -20,6 +20,10 @@ import { PackageViewHeader } from './misc'
 const GRAPH_HEIGHT = '600px'
 const OPTIONAL_COLOR = '#9095A2'
 const OPTIONAL_DASHARRAY = '2'
+const LEGEND = {
+  Required: { color: '#fff', dasharray: '0' },
+  Optional: { color: OPTIONAL_COLOR, dasharray: OPTIONAL_DASHARRAY },
+}
 
 function asDep({ __typename, name: depname, version, children }) {
   const name = `${depname} ${version || ''}`
@@ -90,6 +94,7 @@ const FullDependencies = memo(({ resource }) => {
       id={`${uniqueId('full_')}-full-tree`}
       tree={graph}
       height={GRAPH_HEIGHT}
+      legend={LEGEND}
     />
   )
 })
@@ -121,6 +126,7 @@ const Dependencies = memo(({ name, dependencies, resource }) => {
       id={`${uniqueId(name)}-tree`}
       tree={asDep({ ...resource, children: deps })}
       height={GRAPH_HEIGHT}
+      legend={LEGEND}
     />
   )
 })

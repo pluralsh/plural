@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Box, Collapsible } from 'grommet'
-import { Chip, ErrorIcon } from 'pluralsh-design-system'
+import { Chip, CollapseIcon, ErrorIcon } from 'pluralsh-design-system'
 
 import { Button, Div, H2, Span } from 'honorable'
 
@@ -31,7 +31,21 @@ function ScanViolation({ violation, last }) {
         cursor="pointer"
         onClick={() => setOpen(!open)}
       >
-        <TableData />
+        <TableData>
+          <CollapseIcon
+            marginLeft="8px" 
+            size={8}
+            style={open ? {
+              transform: 'rotate(270deg)',
+              transitionDuration: '.2s',
+              transitionProperty: 'transform',
+            } : {
+              transform: 'rotate(180deg)',
+              transitionDuration: '.2s',
+              transitionProperty: 'transform',
+            }}
+          />
+        </TableData>
         <TableData>{violation.ruleId} {violation.ruleName}</TableData>
         <TableData>
           <Chip

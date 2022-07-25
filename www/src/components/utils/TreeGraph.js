@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { Box } from 'grommet'
 import { hierarchy, tree as treeLayout } from 'd3-hierarchy'
 import { select } from 'd3-selection'
+import { Div, Span } from 'honorable'
 
 function diagonal(d) {
   return `M${d.x},${d.y}C${d.x},${(d.y + d.parent.y) / 2} ${d.parent.x},${(d.y + d.parent.y) / 2} ${d.parent.x},${d.parent.y}`
@@ -56,17 +57,17 @@ function renderTree(id, tree, height, width) {
       .attr('xlink:href', d => d.data.image)
 }
 
-export default function TreeGraph({ id, tree, width, height }) {
+export default function TreeGraph({ id, tree, width, height, legend }) {
   const boxRef = useRef()
 
   useEffect(() => {
     if (!boxRef.current) return
     const { width, height } = boxRef.current.getBoundingClientRect()
-    renderTree(id, tree, height, width)
+    renderTree(id, tree, height, width, legend)
     const { current } = boxRef
 
     return () => current.removeChild(current.children[0])
-  }, [id, boxRef, tree])
+  }, [id, boxRef, tree, legend])
 
   return (
     <Box
@@ -75,6 +76,45 @@ export default function TreeGraph({ id, tree, width, height }) {
       id={id}
       width={width}
       height={height}
-    />
+    >
+      {legend && (
+        <Div position="absolute">
+          {Object.entries(legend).map(([k, v], index) => (
+            <Box
+              key={index}
+              direction="row"
+              align="center"
+              gap="small"
+              margin={{ bottom: 'xsmall' }}
+            >
+              <Div
+                backgroundColor="fill-one"
+                border="1px solid border"
+                borderRadius={4}
+                width="32px"
+                height="32px"
+              >
+                <svg
+                  viewBox="0 0 32 32"
+                  version="1.1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  preserveAspectRatio="xMidYMid"
+                >
+                  <line
+                    x1="4"
+                    y1="16"
+                    x2="28"
+                    y2="16"
+                    stroke={v.color}
+                    strokeDasharray={v.dasharray}
+                  />
+                </svg>
+              </Div>
+              <Span>{k}</Span>
+            </Box>
+          ))}
+        </Div>
+      )}
+    </Box>
   )
 }

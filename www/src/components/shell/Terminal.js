@@ -5,6 +5,9 @@ import { FitAddon } from 'xterm-addon-fit'
 import { useQuery } from '@apollo/client'
 import { Div, Flex } from 'honorable'
 import { Button, ReloadIcon, ScrollIcon } from 'pluralsh-design-system'
+import { useResizeDetector } from 'react-resize-detector'
+
+import { debounce } from 'lodash'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { socket } from '../../helpers/client'
@@ -24,7 +27,6 @@ const { Buffer } = require('buffer/')
 const decodeBase64 = str => Buffer.from(str, 'base64').toString('utf-8')
 
 export function Shell({ shell }) {
-  const terminalRef = useRef()
   const xterm = useRef(null)
   const [channel, setChannel] = useState(null)
   const [dimensions, setDimensions] = useState({})
@@ -67,14 +69,18 @@ export function Shell({ shell }) {
     handleResetSize()
   }, [handleResetSize])
 
-  function handleResize({ cols, rows }) {
+  const handleResize = useCallback(({ cols, rows }) => {
     if (!channel) return
     channel.push('resize', { width: cols, height: rows })
-  }
+  }, [channel])
 
-  function handleData(text) {
-    channel.push('command', { cmd: text })
-  }
+  const { ref } = useResizeDetector({ onResize: debounce(() => {
+    if (!channel) return
+    fitAddon.fit()
+    handleResize(fitAddon.proposeDimensions())
+  }, 500, { leading: true }) })
+
+  const handleData = useCallback(text => channel.push('command', { cmd: text }), [channel])
 
   return (
     <>
@@ -124,7 +130,7 @@ export function Shell({ shell }) {
           showCheatsheet={showCheatsheet}
         />
         <Flex
-          ref={terminalRef}
+          ref={ref}
           align="center"
           justify="center"
           overflow="hidden"

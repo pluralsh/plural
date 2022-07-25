@@ -163,8 +163,8 @@ export default function Chart() {
       direction="column"
       fill
     >
-      <PackageBackButton link={`/repository/${chart.repository.id}/packages/helm`} />
       <ScrollableContainer>
+        <PackageBackButton link={`/repository/${chart.repository.id}/packages/helm`} />
         <Box
           pad="medium"
           direction="row"

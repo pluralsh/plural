@@ -73,8 +73,8 @@ export default function Terraform() {
       direction="column"
       fill
     >
-      <PackageBackButton link={`/repository/${terraformModule.repository.id}/packages/terraform`} />
       <ScrollableContainer>
+        <PackageBackButton link={`/repository/${terraformModule.repository.id}/packages/terraform`} />
         <Box
           pad="medium"
           direction="row"

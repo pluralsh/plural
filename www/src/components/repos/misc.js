@@ -18,7 +18,3 @@ export function Provider({ provider, width, size }) {
     />
   )
 }
-
-export function dockerPull(registry, { tag, dockerRepository: { name, repository } }) {
-  return `${registry}/${repository.name}/${name}:${tag}`
-}

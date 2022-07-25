@@ -5,13 +5,18 @@ import { Box } from 'grommet'
 
 import moment from 'moment'
 
-import { extendConnection } from '../../utils/graphql'
-import { StandardScroller } from '../utils/SmoothScroller'
-import { LoopingLogo } from '../utils/AnimatedLogo'
+import { useOutletContext } from 'react-router-dom'
 
-import { HeaderItem } from './Docker'
+import { extendConnection } from '../../../utils/graphql'
+import { StandardScroller } from '../../utils/SmoothScroller'
 
-import { DEFERRED_UPDATES } from './queries'
+import { HeaderItem } from '../Docker'
+
+import { DEFERRED_UPDATES } from '../queries'
+
+import { LoopingLogo } from '../../utils/AnimatedLogo'
+
+import { PackageViewHeader } from './misc'
 
 const ROW_HEIGHT = '50px'
 const format = dt => moment(dt).format('lll')
@@ -19,7 +24,6 @@ const format = dt => moment(dt).format('lll')
 function DeferredUpdateHeader() {
   return (
     <Box
-      pad="small"
       flex={false}
       direction="row"
       gap="xsmall"
@@ -81,7 +85,11 @@ function DeferredUpdate({ deferred }) {
   )
 }
 
-export function DeferredUpdates({ chartInst, tfInst }) {
+export default function PackageUpdateQueue() {
+  const { helmChart, terraformChart } = useOutletContext()
+  const chartInst = helmChart?.installation?.id
+  const tfInst = terraformChart?.installation?.id
+
   const [listRef, setListRef] = useState(null)
   const { data, loading, fetchMore } = useQuery(DEFERRED_UPDATES, {
     variables: { chartInst, tfInst },
@@ -93,7 +101,13 @@ export function DeferredUpdates({ chartInst, tfInst }) {
   const { edges, pageInfo } = data.deferredUpdates
 
   return (
-    <Box fill>
+    <Box
+      fill
+      flex={false}
+      pad="medium"
+      gap="small"
+    >
+      <PackageViewHeader title="Update queue" />
       <DeferredUpdateHeader />
       <StandardScroller
         listRef={listRef}

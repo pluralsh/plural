@@ -4,7 +4,7 @@ import { useCallback, useState } from 'react'
 import { Box, Text } from 'grommet'
 import Highlight from 'react-highlight.js'
 
-import { useTheme } from 'honorable'
+import { Div, useTheme } from 'honorable'
 
 import Plan from '../payments/Plan'
 import CreatePlan, { CreateAnchor } from '../payments/CreatePlan'
@@ -72,12 +72,22 @@ export function Plans({ repository, nocreate }) {
   )
 }
 
-export function DetailContainer({ children, ...rest }) {
+export function DetailContainer({ children, title, ...rest }) {
   return (
     <Box
-      {...rest}
       border
+      round="xsmall"
+      {...rest}
     >
+      {(!!title && (
+        <Div
+          color="text-xlight"
+          fontSize={12}
+          overline
+        >
+          {title}
+        </Div>
+      ))}
       {children}
     </Box>
   )

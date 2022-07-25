@@ -11,4 +11,8 @@ defmodule Api do
     :crypto.hmac(:sha256, secret, payload)
     |> Base.encode16(case: :lower)
   end
+
+  def gql_endpoint(), do: Core.url("/gql")
+
+  def socket_endpoint(), do: "wss://#{Core.conf(:hostname)}/socket"
 end

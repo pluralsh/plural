@@ -37,14 +37,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16.15.0
-      - uses: actions/cache@v3
-        env:
-          cache-name: cache-node-modules
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
-      - run: |
-          [ ! -d "node_modules" ] && yarn install --immutable
+      - run: yarn --immutable
       - run: yarn test
   lint:
     name: Lint
@@ -58,12 +51,5 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16.15.0
-      - uses: actions/cache@v3
-        env:
-          cache-name: cache-node-modules
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
-      - run: |
-          [ ! -d "node_modules" ] && yarn install --immutable
+      - run: yarn --immutable
       - run: yarn lint

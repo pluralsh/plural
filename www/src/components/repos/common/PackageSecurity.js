@@ -1,117 +1,65 @@
 import { useState } from 'react'
-import { Box, Collapsible, Text } from 'grommet'
-import { ErrorIcon } from 'pluralsh-design-system'
+import { Box, Collapsible } from 'grommet'
+import { Chip, ErrorIcon } from 'pluralsh-design-system'
 
-import { Button, Div, H2 } from 'honorable'
+import { Button, Div, H2, Span } from 'honorable'
 
 import Clamp from 'react-multiline-clamp'
 
 import { useOutletContext } from 'react-router-dom'
 
-import { GradeNub, HeaderItem } from '../Docker'
+import { capitalize } from 'lodash/string'
 
-import { PackageGrade, PackageViewHeader } from './misc'
+import { Table, TableData, TableRow } from '../../utils/Table'
 
-const ROW_HEIGHT = 40
-const ROW_HEIGHT_PX = `${ROW_HEIGHT}px`
+import { PackageGrade, PackageProperty, PackageViewHeader } from './misc'
 
-function ScanHeader() {
-  return (
-    <Box
-      direction="row"
-      fill="horizontal"
-      gap="xsmall"
-      align="center"
-      pad="small"
-      border={{ side: 'bottom', color: 'border' }}
-      height={ROW_HEIGHT_PX}
-    >
-      <HeaderItem
-        text="Rule"
-        width="15%"
-      />
-      <HeaderItem
-        text="Severity"
-        width="25%"
-      />
-      <HeaderItem
-        text="Location"
-        width="30%"
-      />
-      <HeaderItem
-        text="Resource"
-        width="30%"
-      />
-    </Box>
-  )
+const chipSeverity = {
+  low: 'success',
+  medium: 'warning',
+  high: 'error',
 }
 
-function ScanViolation({ violation }) {
+function ScanViolation({ violation, last }) {
   const [open, setOpen] = useState(false)
 
   return (
-    <Box flex={false}>
-      <Box
-        direction="row"
-        fill="horizontal"
-        gap="xsmall"
-        align="center"
-        pad="small"
-        border={{ side: 'bottom' }}
-        height={ROW_HEIGHT_PX}
-        hoverIndicator="fill-one"
+    <Box>
+      <TableRow
+        last={last}
+        hoverIndicator="fill-one-hover"
         onClick={() => setOpen(!open)}
       >
-        <HeaderItem
-          text={violation.ruleId}
-          width="15%"
-          nobold
-        />
-        <Box
-          flex={false}
-          width="25%"
-        >
-          <GradeNub
-            text={violation.severity.toLowerCase()}
-            severity={violation.severity}
-          />
-        </Box>
-        <HeaderItem
-          text={`${violation.file}:${violation.line}`}
-          width="30%"
-          truncate
-          nobold
-        />
-        <HeaderItem
-          text={`${violation.resourceType}.${violation.resourceName}`}
-          width="30%"
-          nobold
-        />
-      </Box>
+        <TableData />
+        <TableData>{violation.ruleId} {violation.ruleName}</TableData>
+        <TableData>
+          <Chip
+            severity={chipSeverity[violation.severity?.toLowerCase()]}
+            backgroundColor="fill-two"
+            borderColor="border-fill-two"
+          >
+            <Span fontWeight="600">{capitalize(violation.severity)}</Span>
+          </Chip>
+        </TableData>
+      </TableRow>
       <Collapsible
         open={open}
         direction="vertical"
       >
         <Box
-          flex={false}
-          fill="horizontal"
-          pad="small"
-          gap="small"
+          direction="row"
+          pad={{ horizontal: 'large', vertical: 'small' }}
+          border="bottom"
+          background="fill-two"
         >
+          <Box basis="1/2"><PackageProperty header="Error message">{violation.description}</PackageProperty></Box>
           <Box
-            direction="row"
-            gap="xsmall"
-            align="center"
+            basis="1/2"
+            gap="small"
           >
-            <Text
-              size="small"
-              weight={500}
-            >{violation.ruleId}
-            </Text>
-            <Text size="small">{violation.ruleName}</Text>
+            <PackageProperty header="Resource">{`${violation.resourceType}.${violation.resourceName}`}</PackageProperty>
+            <PackageProperty header="Location">{`${violation.file}:${violation.line}`}</PackageProperty>
           </Box>
-          <Text size="small">{violation.description}</Text>
-          <Text size="small">occurred on {violation.file}:{violation.line}</Text>
         </Box>
       </Collapsible>
     </Box>
@@ -188,19 +136,23 @@ export default function PackageSecurity() {
       ) : (
         <Div body2>No scan failures found.</Div>
       )}
-      <H2>Vulnerability</H2>
+      <H2>Vulnerabilities</H2>
       {current.scan.violations?.length ? (
-        <Box>
-          <ScanHeader />
-          <Box flex={false}>
-            {current.scan.violations.map((vio, ind) => (
-              <ScanViolation
-                key={`${ind}`}
-                violation={vio}
-              />
-            ))}
-          </Box>
-        </Box>
+        <Table
+          headers={['', 'Rule', 'Severity']}
+          sizes={['5%', '80%', '15%']}
+          background="fill-one"
+          width="100%"
+          height="calc(100% - 16px)"
+        >
+          {current.scan.violations.map((vio, ind, arr) => (
+            <ScanViolation
+              key={`${ind}`}
+              violation={vio}
+              last={ind === arr.length - 1}
+            />
+          ))}
+        </Table>
       ) : (
         <Div body2>No vulnerabilities found.</Div>
       )}

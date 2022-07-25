@@ -18,8 +18,8 @@ import { PackageVersionPicker } from './common/PackageVersionPicker'
 import { CHART_Q, INSTALL_CHART, UPDATE_CHART_INST } from './queries'
 import { DEFAULT_CHART_ICON } from './constants'
 
-import { DetailContainer, DetailProperty } from './Installation'
-import { PackageBackButton, PackageGrade, PackageHeader, dockerPull } from './common/misc'
+import { DetailContainer } from './Installation'
+import { PackageBackButton, PackageGrade, PackageHeader, PackageProperty, dockerPull } from './common/misc'
 
 function ChartInfo({ version: { helm, insertedAt } }) {
   return (
@@ -29,10 +29,10 @@ function ChartInfo({ version: { helm, insertedAt } }) {
       gap="small"
       style={{ overflow: 'hidden' }}
     >
-      <DetailProperty header="App Version">{helm.appVersion}</DetailProperty>
-      <DetailProperty header="Created">{moment(insertedAt).fromNow()}</DetailProperty>
+      <PackageProperty header="App Version">{helm.appVersion}</PackageProperty>
+      <PackageProperty header="Created">{moment(insertedAt).fromNow()}</PackageProperty>
       {(!!helm?.sources?.length && (
-        <DetailProperty header="Sources">
+        <PackageProperty header="Sources">
           {(helm.sources).map(l => (
             <Box>
               <A
@@ -45,12 +45,12 @@ function ChartInfo({ version: { helm, insertedAt } }) {
               </A>
             </Box>
           ))}
-        </DetailProperty>
+        </PackageProperty>
       ))}
       {(!!helm?.maintainers?.length && (
-        <DetailProperty header="Maintainers">
+        <PackageProperty header="Maintainers">
           {(helm.maintainers).map(m => <Box key={m.email}>{m.email}</Box>)}
-        </DetailProperty>
+        </PackageProperty>
       ))}
     </DetailContainer>
   )

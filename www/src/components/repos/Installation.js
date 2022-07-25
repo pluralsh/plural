@@ -93,21 +93,6 @@ export function DetailContainer({ children, title, ...rest }) {
   )
 }
 
-export function DetailProperty({ children, header }) {
-  return (
-    <>
-      <Div
-        caption
-        color="text-xlight"
-        marginBottom="xxxsmall"
-      >
-        {header}
-      </Div>
-      <Div>{children}</Div>
-    </>
-  )
-}
-
 export function InstallationInner({ installation, repository }) {
   const theme = useTheme()
 

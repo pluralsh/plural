@@ -1,4 +1,4 @@
-import { A, Flex, H2, Img, Span, Text } from 'honorable'
+import { A, Div, Flex, H2, Img, Span, Text } from 'honorable'
 import { Box } from 'grommet'
 import { ArrowLeftIcon, Chip } from 'pluralsh-design-system'
 import { Link } from 'react-router-dom'
@@ -117,5 +117,20 @@ export function PackageViewHeader({ title, children }) {
         {children}
       </Flex>
     </Box>
+  )
+}
+
+export function PackageProperty({ children, header }) {
+  return (
+    <>
+      <Div
+        caption
+        color="text-xlight"
+        marginBottom="xxxsmall"
+      >
+        {header}
+      </Div>
+      <Div>{children}</Div>
+    </>
   )
 }

@@ -51,7 +51,11 @@ export function TableRow({
 }
 
 export function TableData({ children }) {
-  return <Span color="text-light">{children}</Span>
+  return (
+    <Span color="text-light">
+      {children}
+    </Span>
+  )
 }
 
 export function Table({

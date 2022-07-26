@@ -12,7 +12,10 @@ function Marketplace({ installed }) {
       flexGrow={1}
       maxWidth="100%"
     >
-      <Flex flexGrow={1}>
+      <Flex
+        flexGrow={1}
+        overflow="hidden"
+      >
         <ResponsiveLayoutSpacer />
         <MarketplaceRepositories
           installed={installed}

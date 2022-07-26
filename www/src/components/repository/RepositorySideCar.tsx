@@ -1,6 +1,10 @@
 import { useContext, useState } from 'react'
-import { Button, Div, Flex, P } from 'honorable'
-import { BrowserIcon, CertificateIcon, GearTrainIcon, GitHubLogoIcon } from 'pluralsh-design-system'
+import {
+  Button, Div, Flex, P,
+} from 'honorable'
+import {
+  BrowserIcon, CertificateIcon, GearTrainIcon, GitHubLogoIcon,
+} from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
@@ -96,15 +100,13 @@ function RepositorySideCarButtons() {
 
 function RepositorySideCarActions() {
   const repository = useContext(RepositoryContext)
-  const [recipes] = usePaginatedQuery(
-    RECIPES_QUERY,
+  const [recipes] = usePaginatedQuery(RECIPES_QUERY,
     {
       variables: {
         repositoryId: repository.id,
       },
     },
-    data => data.recipes
-  )
+    data => data.recipes)
 
   return (
     <>

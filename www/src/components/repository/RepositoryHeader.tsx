@@ -1,13 +1,13 @@
-import { Div, Flex, Hr, P } from 'honorable'
+import {
+  Div, Flex, Hr, P,
+} from 'honorable'
 
 import { RepositorySideCarCollapsed } from './RepositorySideCar'
 
 function RepositoryHeader({ children, ...props }: any) {
-
   return (
     <Div
       width="100%"
-      marginBottom="medium"
       position="sticky"
       top={0}
       {...props}

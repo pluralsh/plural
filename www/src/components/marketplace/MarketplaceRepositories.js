@@ -258,6 +258,7 @@ function MarketplaceRepositories({ installed }) {
       <Flex
         flexGrow={1}
         marginTop="medium"
+        overflow="hidden"
       >
         <Flex
           direction="column"

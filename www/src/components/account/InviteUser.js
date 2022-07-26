@@ -1,5 +1,7 @@
 import { Button, Div } from 'honorable'
-import { Codeline, MailIcon, Modal, ModalActions, ModalHeader, ValidatedInput } from 'pluralsh-design-system'
+import {
+  Codeline, MailIcon, Modal, ModalActions, ModalHeader, ValidatedInput,
+} from 'pluralsh-design-system'
 import { useState } from 'react'
 
 import { useMutation } from '@apollo/client'

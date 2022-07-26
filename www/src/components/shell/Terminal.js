@@ -1,5 +1,7 @@
 import './shell.css'
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import {
+  useCallback, useContext, useEffect, useMemo, useRef, useState,
+} from 'react'
 import { XTerm } from 'xterm-for-react'
 import { FitAddon } from 'xterm-addon-fit'
 import { useQuery } from '@apollo/client'
@@ -22,6 +24,7 @@ import TerminalSidebar from './TerminalSidebar'
 import TerminalInformation from './TerminalInformation'
 import { useOnboarded } from './onboarding/useOnboarded'
 
+// eslint-disable-next-line
 const { Buffer } = require('buffer/')
 
 const decodeBase64 = str => Buffer.from(str, 'base64').toString('utf-8')
@@ -74,11 +77,13 @@ export function Shell({ shell }) {
     channel.push('resize', { width: cols, height: rows })
   }, [channel])
 
-  const { ref } = useResizeDetector({ onResize: debounce(() => {
-    if (!channel) return
-    fitAddon.fit()
-    handleResize(fitAddon.proposeDimensions())
-  }, 500, { leading: true }) })
+  const { ref } = useResizeDetector({
+    onResize: debounce(() => {
+      if (!channel) return
+      fitAddon.fit()
+      handleResize(fitAddon.proposeDimensions())
+    }, 500, { leading: true }),
+  })
 
   const handleData = useCallback(text => channel.push('command', { cmd: text }), [channel])
 

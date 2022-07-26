@@ -1,7 +1,11 @@
 import { useCallback, useState } from 'react'
 import { useMutation } from '@apollo/client'
-import { Box, Layer, RangeSelector, Stack, Text, TextInput } from 'grommet'
-import { Button, HoveredBackground, SecondaryButton, Select, Trash } from 'forge-core'
+import {
+  Box, Layer, RangeSelector, Stack, Text, TextInput,
+} from 'grommet'
+import {
+  Button, HoveredBackground, SecondaryButton, Select, Trash,
+} from 'forge-core'
 import { FaDollarSign } from 'react-icons/fa'
 import { Add, Cube } from 'grommet-icons'
 
@@ -19,14 +23,19 @@ import { PlanType } from './types'
 import { CREATE_PLAN } from './queries'
 import { hover } from './Plan'
 
-function LineItem({ item: { cost, name, dimension }, included, state, setState }) {
+function LineItem({
+  item: { cost, name, dimension }, included, state, setState,
+}) {
   const { quantity } = included.find(inc => inc.dimension === dimension)
+
   function removeItem() {
-    return { ...state,
+    return {
+      ...state,
       lineItems: {
         items: state.lineItems.items.filter(li => li.dimension !== dimension),
         included: state.lineItems.included.filter(inc => inc.dimension !== dimension),
-      } }
+      },
+    }
   }
 
   return (
@@ -84,7 +93,9 @@ function Feature({ name, description, removeFeature }) {
   )
 }
 
-function NumericInput({ value, onChange, placeholder, ...props }) {
+function NumericInput({
+  value, onChange, placeholder, ...props
+}) {
   return (
     <TextInput
       {...props}
@@ -92,6 +103,7 @@ function NumericInput({ value, onChange, placeholder, ...props }) {
       value={value ? `${value}` : ''}
       onChange={({ target: { value } }) => {
         const parsed = parseInt(value)
+
         if (parsed === parsed) {
           onChange(parsed)
         }
@@ -114,9 +126,12 @@ function DollarInput({ value, onChange, ...props }) {
   )
 }
 
-function FeatureCreator({ state, setState, setDisplay, loading }) {
+function FeatureCreator({
+  state, setState, setDisplay, loading,
+}) {
   const [feature, setFeature] = useState({ name: '', description: '' })
   const { metadata: { features } } = state
+
   function addFeature() {
     return { ...state, metadata: { ...state.metadata, features: [...features, feature] } }
   }
@@ -141,8 +156,8 @@ function FeatureCreator({ state, setState, setDisplay, loading }) {
           fill="vertical"
           pad="medium"
         >
-          {features.length > 0 ?
-            features.map(feature => (
+          {features.length > 0
+            ? features.map(feature => (
               <Feature
                 key={feature.name}
                 {...feature}
@@ -201,7 +216,9 @@ function FeatureCreator({ state, setState, setDisplay, loading }) {
   )
 }
 
-function ItemCreator({ state, setState, setDisplay, loading }) {
+function ItemCreator({
+  state, setState, setDisplay, loading,
+}) {
   const [lineItem, setLineItem] = useState({
     name: '',
     dimension: '',
@@ -212,12 +229,16 @@ function ItemCreator({ state, setState, setDisplay, loading }) {
   const { period, lineItems: { items, included } } = state
 
   function addLineItem() {
-    const { name, dimension, cost, type } = lineItem
+    const {
+      name, dimension, cost, type,
+    } = lineItem
 
     return {
       ...state,
       lineItems: {
-        items: [...items, { name, dimension, period, cost, type }],
+        items: [...items, {
+          name, dimension, period, cost, type,
+        }],
         included: [...included, { dimension, quantity: lineItem.included }],
       },
     }
@@ -239,8 +260,8 @@ function ItemCreator({ state, setState, setDisplay, loading }) {
           fill="vertical"
           pad="medium"
         >
-          {items.length > 0 ?
-            items.map(item => (
+          {items.length > 0
+            ? items.map(item => (
               <LineItem
                 key={item.dimension}
                 item={item}
@@ -322,12 +343,12 @@ function ItemCreator({ state, setState, setDisplay, loading }) {
   )
 }
 
-function PlanForm({ state, setState, setDisplay, loading }) {
-  const updatePeriod = period => deepUpdate(
-    { ...state, period },
+function PlanForm({
+  state, setState, setDisplay, loading,
+}) {
+  const updatePeriod = period => deepUpdate({ ...state, period },
     'lineItems.items',
-    items => items.map(item => ({ ...item, period }))
-  )
+    items => items.map(item => ({ ...item, period })))
 
   return (
     <Box
@@ -404,7 +425,9 @@ export function ServiceLevel({ level: { minSeverity, maxSeverity, responseTime }
   )
 }
 
-export function SlaForm({ attributes, setAttributes, serviceLevel: { minSeverity, maxSeverity, responseTime }, setServiceLevel }) {
+export function SlaForm({
+  attributes, setAttributes, serviceLevel: { minSeverity, maxSeverity, responseTime }, setServiceLevel,
+}) {
   const deleteSla = useCallback(({ minSeverity, maxSeverity }) => {
     const serviceLevels = attributes.serviceLevels.filter(l => (
       l.minSeverity !== minSeverity || l.maxSeverity !== maxSeverity
@@ -478,7 +501,9 @@ export function SlaForm({ attributes, setAttributes, serviceLevel: { minSeverity
   )
 }
 
-function NavigableSlaForm({ state, setState, mutation, loading }) {
+function NavigableSlaForm({
+  state, setState, mutation, loading,
+}) {
   const [serviceLevel, setServiceLevel] = useState({ minSeverity: 0, maxSeverity: 3, responseTime: 30 })
 
   return (
@@ -517,14 +542,14 @@ function NavigableSlaForm({ state, setState, mutation, loading }) {
 
 function FormSwitch({ display, ...rest }) {
   switch (display) {
-    case 'items':
-      return <ItemCreator {...rest} />
-    case 'features':
-      return <FeatureCreator {...rest} />
-    case 'slas':
-      return <NavigableSlaForm {...rest} />
-    default:
-      return <PlanForm {...rest} />
+  case 'items':
+    return <ItemCreator {...rest} />
+  case 'features':
+    return <FeatureCreator {...rest} />
+  case 'slas':
+    return <NavigableSlaForm {...rest} />
+  default:
+    return <PlanForm {...rest} />
   }
 }
 

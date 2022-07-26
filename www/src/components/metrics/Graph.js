@@ -4,14 +4,26 @@ import { Box, Text } from 'grommet'
 import { Graph as SimpleGraph } from '../utils/Graph'
 
 export const DURATIONS = [
-  { offset: '1d', step: '1h', label: '1d', tick: 'every 1 hour' },
-  { offset: '7d', step: '2h', label: '7d', tick: 'every 2 hours' },
-  { offset: '30d', step: '1d', label: '30d', tick: 'every 1 day' },
-  { offset: '60d', step: '1d', label: '60d', tick: 'every 1 day' },
-  { offset: '120d', step: '1d', label: '120d', tick: 'every 1 day' },
+  {
+    offset: '1d', step: '1h', label: '1d', tick: 'every 1 hour',
+  },
+  {
+    offset: '7d', step: '2h', label: '7d', tick: 'every 2 hours',
+  },
+  {
+    offset: '30d', step: '1d', label: '30d', tick: 'every 1 day',
+  },
+  {
+    offset: '60d', step: '1d', label: '60d', tick: 'every 1 day',
+  },
+  {
+    offset: '120d', step: '1d', label: '120d', tick: 'every 1 day',
+  },
 ]
 
-function RangeOption({ duration, current, setDuration, first, last }) {
+function RangeOption({
+  duration, current, setDuration, first, last,
+}) {
   const selected = duration.offset === current.offset && duration.step === current.step
 
   return (

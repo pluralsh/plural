@@ -14,7 +14,9 @@ import { BindingInput, sanitize } from './Role'
 import { fetchGroups, fetchUsers } from './Typeaheads'
 import { CREATE_SERVICE_ACCOUNT, UPDATE_SERVICE_ACCOUNT, USERS_Q } from './queries'
 
-export function ServiceAccountForm({ attributes, setAttributes, bindings, setBindings }) {
+export function ServiceAccountForm({
+  attributes, setAttributes, bindings, setBindings,
+}) {
   return (
     <Box
       fill

@@ -2,7 +2,9 @@ import { Box, Text, TextInput } from 'grommet'
 
 import { trimSuffix } from '../../utils/array'
 
-export function SuffixedInput({ suffix, value, onChange, placeholder, background }) {
+export function SuffixedInput({
+  suffix, value, onChange, placeholder, background,
+}) {
   return (
     <Box
       direction="row"

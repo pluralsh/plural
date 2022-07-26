@@ -1,4 +1,6 @@
-import { createContext, useEffect, useMemo, useState } from 'react'
+import {
+  createContext, useEffect, useMemo, useState,
+} from 'react'
 import { Presence } from 'phoenix'
 import { Box } from 'grommet'
 
@@ -31,13 +33,16 @@ export function PresenceProvider({ incidentId, children }) {
 
   useEffect(() => {
     const channel = socket.channel(`incidents:${incidentId}`)
+
     setChannel(channel)
     channel.join()
     channel.on('typing', msg => cache.add(msg.name))
 
     const presence = new Presence(channel)
+
     presence.onSync(() => {
       const ids = presence.list(id => id).reduce((prev, id) => ({ ...prev, [id]: true }), {})
+
       setPresent({ ...present, ...ids })
     })
     presence.onJoin(id => setPresent({ ...present, [id]: true }))

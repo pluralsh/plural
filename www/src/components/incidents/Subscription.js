@@ -57,20 +57,20 @@ export function ServiceLevel({ level: { minSeverity, maxSeverity, responseTime }
 
 function LineItemIcon({ dimension, size }) {
   switch (dimension) {
-    case 'user':
-      return (
-        <Group
-          size={size || '15px'}
-          color="focus"
-        />
-      )
-    default:
-      return (
-        <Cube
-          size={size || '15px'}
-          color="focus"
-        />
-      )
+  case 'user':
+    return (
+      <Group
+        size={size || '15px'}
+        color="focus"
+      />
+    )
+  default:
+    return (
+      <Cube
+        size={size || '15px'}
+        color="focus"
+      />
+    )
   }
 }
 
@@ -114,7 +114,11 @@ export function Subscription({ incident: { repository, subscription } }) {
   if (!subscription) return <NoPlan />
 
   const { lineItems: { items } } = subscription
-  const { plan: { name, lineItems: { included, ...lineItems }, metadata, serviceLevels } } = subscription
+  const {
+    plan: {
+      name, lineItems: { included, ...lineItems }, metadata, serviceLevels,
+    },
+  } = subscription
   const includedByDimension = included.reduce((byDim, val) => ({ ...byDim, [val.dimension]: val }), {})
   const consumedByDimension = items.reduce((byDim, { quantity, dimension }) => ({ ...byDim, [dimension]: quantity }), {})
   const features = (metadata && metadata && metadata.features) || []

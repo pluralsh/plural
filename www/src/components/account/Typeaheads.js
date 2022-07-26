@@ -3,7 +3,9 @@ import { useApolloClient } from '@apollo/client'
 
 import { Box, Text, TextInput } from 'grommet'
 
-import { FormField, PeopleIcon, PersonIcon, Token } from 'pluralsh-design-system'
+import {
+  FormField, PeopleIcon, PersonIcon, Token,
+} from 'pluralsh-design-system'
 
 import { Flex } from 'honorable'
 
@@ -73,7 +75,9 @@ function groupSuggestion(group) {
   )
 }
 
-function TagInput({ placeholder, label, hint, suggestions, items, icon, onRemove, onAdd, width, onChange, background }) {
+function TagInput({
+  placeholder, label, hint, suggestions, items, icon, onRemove, onAdd, width, onChange, background,
+}) {
   const [value, setValue] = useState('')
 
   const add = useCallback(tag => {
@@ -124,7 +128,7 @@ const ICONS = {
   user: <PersonIcon size={14} />,
   group: <PeopleIcon size={14} />,
 }
-  
+
 const TEXT = {
   user: { label: 'User Bindings', placeholder: 'search for users to add' },
   group: { label: 'Group Bindings', placeholder: 'search for groups to add' },
@@ -135,12 +139,14 @@ const FETCHER = {
   group: fetchGroups,
 }
 
-export function BindingInput({ type, fetcher, bindings, remove, add, hint, background }) {
+export function BindingInput({
+  type, fetcher, bindings, remove, add, hint, background,
+}) {
   const client = useApolloClient()
   const [suggestions, setSuggestions] = useState([])
   const { placeholder, label } = TEXT[type]
   const fetch = fetcher || FETCHER[type]
-    
+
   return (
     <TagInput
       noborder
@@ -160,7 +166,9 @@ export function BindingInput({ type, fetcher, bindings, remove, add, hint, backg
   )
 }
 
-export function UserTypeahead({ users, setUsers, label, hint, children, background }) {
+export function UserTypeahead({
+  users, setUsers, label, hint, children, background,
+}) {
   const client = useApolloClient()
   const [suggestions, setSuggestions] = useState([])
 
@@ -183,7 +191,9 @@ export function UserTypeahead({ users, setUsers, label, hint, children, backgrou
   )
 }
 
-export function GroupTypeahead({ groups, setGroups, label, hint, children, background }) {
+export function GroupTypeahead({
+  groups, setGroups, label, hint, children, background,
+}) {
   const client = useApolloClient()
   const [suggestions, setSuggestions] = useState([])
 

@@ -7,7 +7,9 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import { Refresh, Return } from 'grommet-icons'
 
-import { deepUpdate, extendConnection, removeConnection, updateCache } from '../../utils/graphql'
+import {
+  deepUpdate, extendConnection, removeConnection, updateCache,
+} from '../../utils/graphql'
 import { SectionContentContainer, SectionPortal } from '../Explore'
 import { HeaderItem } from '../repos/Docker'
 import { Provider } from '../repos/misc'
@@ -111,11 +113,9 @@ function DeleteRecord({ record, domain }) {
     update: (cache, { data: { deleteDnsRecord } }) => updateCache(cache, {
       query: DNS_RECORDS,
       variables: { id: domain.id },
-      update: prev => deepUpdate(
-        prev,
+      update: prev => deepUpdate(prev,
         'dnsDomain',
-        domain => removeConnection(domain, deleteDnsRecord, 'dnsRecords')
-      ),
+        domain => removeConnection(domain, deleteDnsRecord, 'dnsRecords')),
     }),
   })
 
@@ -170,7 +170,9 @@ function RecordsControls({ refetch }) {
 export function DnsRecords() {
   const [listRef, setListRef] = useState(null)
   const { id } = useParams()
-  const { data, loading, fetchMore, refetch } = useQuery(DNS_RECORDS, {
+  const {
+    data, loading, fetchMore, refetch,
+  } = useQuery(DNS_RECORDS, {
     variables: { id },
     fetchPolicy: 'cache-and-network',
   })
@@ -200,11 +202,9 @@ export function DnsRecords() {
             )}
             loadNextPage={() => pageInfo.hasNextPage && fetchMore({
               variables: { cursor: pageInfo.endCursor },
-              updateQuery: (prev, { fetchMoreResult: { dnsDomain } }) => deepUpdate(
-                prev,
+              updateQuery: (prev, { fetchMoreResult: { dnsDomain } }) => deepUpdate(prev,
                 'dnsDomain',
-                prev => extendConnection(prev, dnsDomain.dnsRecords, 'dnsRecords')
-              ),
+                prev => extendConnection(prev, dnsDomain.dnsRecords, 'dnsRecords')),
             })}
           />
         </Box>

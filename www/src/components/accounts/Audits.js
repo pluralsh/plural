@@ -1,4 +1,6 @@
-import { useCallback, useContext, useEffect, useState } from 'react'
+import {
+  useCallback, useContext, useEffect, useState,
+} from 'react'
 import moment from 'moment'
 import { Box, Text } from 'grommet'
 import { Link, useParams } from 'react-router-dom'
@@ -21,7 +23,9 @@ import { SectionContentContainer, SectionPortal } from '../Explore'
 import { SubmenuItem, SubmenuPortal } from '../navigation/Submenu'
 import { ReturnToBeginning } from '../utils/ReturnToBeginning'
 
-import { AUDITS_Q, AUDIT_METRICS, LOGINS_Q, LOGIN_METRICS } from './queries'
+import {
+  AUDITS_Q, AUDIT_METRICS, LOGINS_Q, LOGIN_METRICS,
+} from './queries'
 
 function HeaderItem({ text, width, nobold }) {
   return (
@@ -180,9 +184,11 @@ function LoginRow({ login }) {
   )
 }
 
-const versionLink = ({ chart, terraform }) => chart ? `/charts/${chart.id}` : `/terraform/${terraform.id}`
+const versionLink = ({ chart, terraform }) => (chart ? `/charts/${chart.id}` : `/terraform/${terraform.id}`)
 
-function resourceInfo({ version, group, role, integrationWebhook, repository, image }) {
+function resourceInfo({
+  version, group, role, integrationWebhook, repository, image,
+}) {
   if (version) {
     return ({
       link: versionLink(version),
@@ -207,6 +213,7 @@ function resourceInfo({ version, group, role, integrationWebhook, repository, im
 
 function Resource({ audit }) {
   const { link, text } = resourceInfo(audit)
+
   if (!link) return null
 
   return <Link to={link}>{text}</Link>
@@ -353,6 +360,7 @@ export function Audits() {
   const [scrolled, setScrolled] = useState(false)
   const { data, loading, fetchMore } = useQuery(AUDITS_Q, { fetchPolicy: 'cache-and-network' })
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
+
   useEffect(() => {
     setBreadcrumbs([{ text: 'audits', url: '/audits' }])
   }, [setBreadcrumbs])

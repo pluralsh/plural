@@ -63,11 +63,13 @@ function OnboardingFlow({ accessToken, provider: scmProvider, authUrlData }) {
 
   const next = useCallback(() => {
     const hasNext = !!SECTIONS[section].next
+
     if (hasNext) setSection(SECTIONS[section].next)
   }, [section])
 
   const previous = useCallback(() => {
     const hasPrevious = !!SECTIONS[section].previous
+
     if (hasPrevious) setSection(SECTIONS[section].previous)
   }, [section])
 

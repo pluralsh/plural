@@ -18,6 +18,8 @@ import { Table, TableData, TableRow } from '../utils/Table'
 
 import { DEPLOYMENTS_QUERY } from './queries'
 
+import RepositoryHeader from './RepositoryHeader.tsx'
+
 // eslint-disable-next-line
 const MAX_UUID = 0xffffffffffffffffffffffffffffffff
 
@@ -29,14 +31,14 @@ function progress(cursor) {
 
 function statusAttributes({ status, cursor }) {
   switch (status) {
-    case 'QUEUED':
-      return { icon: <StatusIpIcon />, text: 'queued', severity: 'neutral' }
-    case 'FINISHED':
-      return { icon: <StatusOkIcon />, text: 'finished', severity: 'success' }
-    case 'RUNNING':
-      return { loading: true, text: `${progress(cursor)}% completed`, severity: 'info' }
-    default:
-      return {}
+  case 'QUEUED':
+    return { icon: <StatusIpIcon />, text: 'queued', severity: 'neutral' }
+  case 'FINISHED':
+    return { icon: <StatusOkIcon />, text: 'finished', severity: 'success' }
+  case 'RUNNING':
+    return { loading: true, text: `${progress(cursor)}% completed`, severity: 'info' }
+  default:
+    return {}
   }
 }
 
@@ -66,20 +68,18 @@ function Rollout({ rollout, last }) {
 
 function RepositoryDeployments() {
   const { id } = useContext(RepositoryContext)
-  const [rollouts, loadingRollouts, hasMoreRollouts, fetchMoreRollouts, subscribeToMore] = usePaginatedQuery(
-    DEPLOYMENTS_QUERY,
+  const [rollouts, loadingRollouts, hasMoreRollouts, fetchMoreRollouts, subscribeToMore] = usePaginatedQuery(DEPLOYMENTS_QUERY,
     {
       variables: {
         repositoryId: id,
       },
     },
-    data => data.rollouts
-  )
+    data => data.rollouts)
 
   useEffect(() => subscribeToMore({
     document: ROLLOUT_SUB,
     variables: { repositoryId: id },
-    updateQuery: (prev, { subscriptionData: { data: { rolloutDelta: { delta, payload } } } }) => delta === 'CREATE' ? appendConnection(prev, payload, 'rollouts') : prev,
+    updateQuery: (prev, { subscriptionData: { data: { rolloutDelta: { delta, payload } } } }) => (delta === 'CREATE' ? appendConnection(prev, payload, 'rollouts') : prev),
   }), [id, subscribeToMore])
 
   const len = rollouts.length
@@ -101,9 +101,10 @@ function RepositoryDeployments() {
       maxHeight="100%"
       direction="column"
     >
+      <RepositoryHeader>Deployments</RepositoryHeader>
       <Table
         headers={['Event', 'Clusters Updated', 'Last Ping', 'Status']}
-        sizes={['30%', '30%', '30%', '10%']}
+        sizes={['27.5%', '27.5%', '27.5%', '17.5%']}
         background="fill-one"
         width="100%"
         height="calc(100% - 16px)"

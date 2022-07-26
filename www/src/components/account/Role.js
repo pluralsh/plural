@@ -20,7 +20,9 @@ import { Actions } from './Actions'
 import { BindingInput } from './Typeaheads'
 import { sanitize } from './utils'
 
-function GeneralAttributes({ attributes, setAttributes, bindings, setBindings }) {
+function GeneralAttributes({
+  attributes, setAttributes, bindings, setBindings,
+}) {
   const [repositories, setRepositories] = useState(attributes.repositories.join(', '))
 
   return (
@@ -67,7 +69,9 @@ function GeneralAttributes({ attributes, setAttributes, bindings, setBindings })
   )
 }
 
-function PermissionToggle({ permission, description, attributes, setAttributes, first, last }) {
+function PermissionToggle({
+  permission, description, attributes, setAttributes, first, last,
+}) {
   const toggle = useCallback(enable => {
     if (enable) {
       setAttributes({ ...attributes, permissions: [permission, ...attributes.permissions] })
@@ -97,7 +101,10 @@ function PermissionToggle({ permission, description, attributes, setAttributes, 
   )
 }
 
-function RoleForm({ error, attributes, setAttributes, bindings, setBindings, ...box }) {
+function RoleForm({
+  // eslint-disable-next-line
+  error, attributes, setAttributes, bindings, setBindings, ...box
+}) {
   const [view, setView] = useState('General')
   const permissions = Object.entries(PermissionTypes)
   const len = permissions.length

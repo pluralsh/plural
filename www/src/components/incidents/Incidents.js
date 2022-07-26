@@ -1,6 +1,12 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
-import { Box, Drop, Text, TextInput, ThemeContext } from 'grommet'
-import { SortAsc as Ascend, Button, Check as Checkmark, Close, SortDesc as Descend, Filters as FiltersI, Notification, Explore as Search, Tag as TagIcon, User } from 'forge-core'
+import {
+  createContext, useCallback, useContext, useEffect, useMemo, useRef, useState,
+} from 'react'
+import {
+  Box, Drop, Text, TextInput, ThemeContext,
+} from 'grommet'
+import {
+  SortAsc as Ascend, Button, Check as Checkmark, Close, SortDesc as Descend, Filters as FiltersI, Notification, Explore as Search, Tag as TagIcon, User,
+} from 'forge-core'
 import { Next } from 'grommet-icons'
 import { useQuery } from '@apollo/client'
 
@@ -25,7 +31,9 @@ import { CreateIncident } from './CreateIncident'
 
 import { Status } from './IncidentStatus'
 import { Severity } from './Severity'
-import { IncidentFilter, IncidentSort, IncidentSortNames, Order } from './types'
+import {
+  IncidentFilter, IncidentSort, IncidentSortNames, Order,
+} from './types'
 import { SlaTimer } from './SlaTimer'
 import { INCIDENTS_Q } from './queries'
 
@@ -94,7 +102,11 @@ function SubscriptionBadge({ incident: { subscription } }) {
   )
 }
 
-export function IncidentRow({ incident: { id, repository, title, insertedAt, owner, ...incident }, selected }) {
+export function IncidentRow({
+  incident: {
+    id, repository, title, insertedAt, owner, ...incident
+  }, selected,
+}) {
   const navigate = useNavigate()
 
   return (
@@ -157,7 +169,9 @@ export function IncidentRow({ incident: { id, repository, title, insertedAt, own
   )
 }
 
-function FilterOption({ icon, filter, onClick, next }) {
+function FilterOption({
+  icon, filter, onClick, next,
+}) {
   return (
     <Box
       direction="row"
@@ -286,13 +300,11 @@ export function FilterSelect() {
                     next
                     icon={<TagIcon size="small" />}
                     filter={IncidentFilter.TAG}
-                    onClick={() => setAlternate(
-                      <TagInput
-                        setFilters={setFilters}
-                        filters={filters}
-                        setAlternate={setAlternate}
-                      />
-                    )}
+                    onClick={() => setAlternate(<TagInput
+                      setFilters={setFilters}
+                      filters={filters}
+                      setAlternate={setAlternate}
+                    />)}
                   />
                 </Box>
               )}
@@ -371,7 +383,9 @@ function DropdownItem({ icon, text, onClick }) {
 function SortOptions() {
   const ref = useRef()
   const [open, setOpen] = useState(false)
-  const { sort, order, setSort, setOrder } = useContext(IncidentViewContext)
+  const {
+    sort, order, setSort, setOrder,
+  } = useContext(IncidentViewContext)
   const selectedSort = sort || IncidentSort.INSERTED_AT
   const selectedOrder = order || Order.DESC
 
@@ -487,16 +501,21 @@ export function Incidents() {
   const [sort, setSort] = useState(IncidentSort.INSERTED_AT)
   const [order, setOrder] = useState(Order.DESC)
   const { data, loading, fetchMore } = useQuery(INCIDENTS_Q, {
-    variables: { q, order, sort, filters },
+    variables: {
+      q, order, sort, filters,
+    },
     fetchPolicy: 'cache-and-network',
   })
 
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
+
   useEffect(() => {
     setBreadcrumbs([{ url: '/incidents', text: 'incidents' }])
   }, [setBreadcrumbs])
 
-  const value = useMemo(() => ({ filters, setFilters, order, setOrder, sort, setSort }), [filters, order, sort])
+  const value = useMemo(() => ({
+    filters, setFilters, order, setOrder, sort, setSort,
+  }), [filters, order, sort])
 
   if (!data) return <LoopingLogo />
 

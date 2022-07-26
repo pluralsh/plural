@@ -2,10 +2,14 @@ import { useCallback, useState } from 'react'
 import moment from 'moment'
 import { Button, Roles, Trash } from 'forge-core'
 import { useMutation, useQuery } from '@apollo/client'
-import { Box, Layer, Text, TextInput } from 'grommet'
+import {
+  Box, Layer, Text, TextInput,
+} from 'grommet'
 import { Route, Routes, useNavigate } from 'react-router-dom'
 
-import { appendConnection, extendConnection, removeConnection, updateCache } from '../../utils/graphql'
+import {
+  appendConnection, extendConnection, removeConnection, updateCache,
+} from '../../utils/graphql'
 import { SectionContentContainer, SectionPortal } from '../Explore'
 import { HeaderItem } from '../repos/Docker'
 import { StandardScroller } from '../utils/SmoothScroller'
@@ -18,7 +22,9 @@ import { ignore } from '../utils/ModalHeader'
 import { GqlError } from '../utils/Alert'
 
 import { Placeholder } from './Audits'
-import { CREATE_DOMAIN, DELETE_DOMAIN, DNS_DOMAINS, UPDATE_DOMAIN } from './queries'
+import {
+  CREATE_DOMAIN, DELETE_DOMAIN, DNS_DOMAINS, UPDATE_DOMAIN,
+} from './queries'
 
 import { DnsRecords } from './DnsRecords'
 import { BindingInput, sanitize } from './Role'
@@ -188,11 +194,15 @@ const rightRadius = rad => ({ borderTopRightRadius: rad, borderBottomLeftRadius:
 function UpdateDomainPolicy({ domain: { id, accessPolicy } }) {
   const [bindings, setBindings] = useState(accessPolicy ? accessPolicy.bindings : [])
   const [mutation, { loading }] = useMutation(UPDATE_DOMAIN, {
-    variables: { id,
-      attributes: { accessPolicy: {
-        id: accessPolicy ? accessPolicy.id : null,
-        bindings: bindings.map(sanitize),
-      } } },
+    variables: {
+      id,
+      attributes: {
+        accessPolicy: {
+          id: accessPolicy ? accessPolicy.id : null,
+          bindings: bindings.map(sanitize),
+        },
+      },
+    },
   })
 
   return (

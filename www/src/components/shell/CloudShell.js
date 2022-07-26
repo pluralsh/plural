@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
-import { Div, Flex, P, Text } from 'honorable'
+import {
+  Div, Flex, P, Text,
+} from 'honorable'
 import { useLocation } from 'react-router-dom'
 
 import { AUTHENTICATION_URLS_QUERY, CLOUD_SHELL_QUERY, REBOOT_SHELL_MUTATION } from './query'
@@ -80,10 +82,8 @@ function CloudShell() {
     }
   }, [shellData, rebootMutation])
 
-  const ready = useMemo(
-    () => (shellData && data),
-    [shellData, data]
-  )
+  const ready = useMemo(() => (shellData && data),
+    [shellData, data])
 
   if (shellData?.shell?.alive || created) {
     return (

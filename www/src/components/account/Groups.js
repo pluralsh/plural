@@ -1,6 +1,8 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
-import { Button, GlobeIcon, Input, Modal, ModalHeader, SearchIcon } from 'pluralsh-design-system'
+import {
+  Button, GlobeIcon, Input, Modal, ModalHeader, SearchIcon,
+} from 'pluralsh-design-system'
 import { useContext, useState } from 'react'
 
 import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'

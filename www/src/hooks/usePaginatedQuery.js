@@ -17,7 +17,7 @@ function usePaginatedQuery(query, options = {}, getResults = x => x) {
     },
   })
 
-  const workingResults = useMemo(() => results.data ? getResults(results.data) : {}, [results.data, getResults])
+  const workingResults = useMemo(() => (results.data ? getResults(results.data) : {}), [results.data, getResults])
 
   const handleFetchMore = useCallback(() => {
     setPreviousEdges(x => [...x, ...mapNode(workingResults.edges)])

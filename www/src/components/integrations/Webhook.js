@@ -1,7 +1,11 @@
 import { useContext, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Button, Close, Copyable, Edit, Reload, SecondaryButton, Trash } from 'forge-core'
-import { Box, Layer, Text, TextInput } from 'grommet'
+import {
+  Button, Close, Copyable, Edit, Reload, SecondaryButton, Trash,
+} from 'forge-core'
+import {
+  Box, Layer, Text, TextInput,
+} from 'grommet'
 
 import { useMutation, useQuery } from '@apollo/client'
 
@@ -15,7 +19,9 @@ import { WebhookLog } from './WebhookLog'
 import { DELETE_WEBHOOK, UPDATE_WEBHOOK, WEBHOOK_Q } from './queries'
 import { ActionInput, ActionTab } from './CreateWebhook'
 
-export function Container({ title, children, modifier, ...props }) {
+export function Container({
+  title, children, modifier, ...props
+}) {
   return (
     <Box
       {...props}
@@ -46,7 +52,9 @@ export function Container({ title, children, modifier, ...props }) {
   )
 }
 
-function WebhookLogs({ webhook: { logs: { pageInfo, edges } }, loading, fetchMore, refetch }) {
+function WebhookLogs({
+  webhook: { logs: { pageInfo, edges } }, loading, fetchMore, refetch,
+}) {
   const [listRef, setListRef] = useState(null)
 
   return (
@@ -336,8 +344,11 @@ function EditWebhook({ webhook, setEdit }) {
 export function Webhook() {
   const [edit, setEdit] = useState(false)
   const { id } = useParams()
-  const { data, fetchMore, loading, refetch } = useQuery(WEBHOOK_Q, { variables: { id }, fetchPolicy: 'cache-and-network' })
+  const {
+    data, fetchMore, loading, refetch,
+  } = useQuery(WEBHOOK_Q, { variables: { id }, fetchPolicy: 'cache-and-network' })
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
+
   useEffect(() => {
     setBreadcrumbs([{ url: '/webhooks', text: 'webhooks' }, { url: `/webhooks/${id}`, text: id }])
   }, [setBreadcrumbs, id])

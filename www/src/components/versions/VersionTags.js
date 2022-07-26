@@ -63,15 +63,15 @@ export function EditTags({ version, setOpen, refetch }) {
             gap="xsmall"
             align="center"
           >
-            {current.length > 0 ?
-              (current.map(tag => (
+            {current.length > 0
+              ? (current.map(tag => (
                 <VersionTag
                   key={tag}
                   tag={tag}
                   onClick={() => removeTag(tag.tag)}
                 />
-              ))) :
-              <Text size="small">Add a tag...</Text>}
+              )))
+              : <Text size="small">Add a tag...</Text>}
           </Box>
           <Select
             options={TAGS.filter(name => !current.find(({ tag }) => tag === name))}

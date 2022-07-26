@@ -1,6 +1,8 @@
 import { Box } from 'grommet'
 
-export function ListItem({ first, last, children, background }) {
+export function ListItem({
+  first, last, children, background,
+}) {
   return (
     <Box
       flex={false}

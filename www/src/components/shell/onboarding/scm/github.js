@@ -1,5 +1,7 @@
 /* eslint-disable camelcase */
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import {
+  useCallback, useEffect, useMemo, useState,
+} from 'react'
 import { Octokit } from '@octokit/core'
 
 import { isAlphanumeric } from '../../validation'
@@ -36,6 +38,7 @@ export function useGithubState({ scm, setScm, accessToken }) {
         doSetOrg(me)
       }
     }
+
     if (!orgs) fetch()
   }, [client, setOrgs, orgs, doSetOrg])
 

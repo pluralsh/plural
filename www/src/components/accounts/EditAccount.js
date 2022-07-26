@@ -1,5 +1,9 @@
-import { useCallback, useContext, useEffect, useState } from 'react'
-import { Box, Text, TextInput, ThemeContext } from 'grommet'
+import {
+  useCallback, useContext, useEffect, useState,
+} from 'react'
+import {
+  Box, Text, TextInput, ThemeContext,
+} from 'grommet'
 
 import { useParams } from 'react-router-dom'
 import {
@@ -80,6 +84,7 @@ function DomainRow({ domain: { domain, enableSso }, removeDomain }) {
   )
 }
 
+// eslint-disable-next-line
 export const sanitize = ({ __typename, ...rest }) => rest
 
 export const canEdit = ({ roles, id }, { rootUser }) => (
@@ -169,8 +174,10 @@ function EditAttributes() {
 export function EditAccount({ billing }) {
   const { section } = useParams()
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
+
   useEffect(() => {
     const prefix = billing ? '/accounts/billing' : '/accounts/edit'
+
     setBreadcrumbs([
       { text: 'account', url: '/accounts/edit/attributes' },
       { text: section, url: `${prefix}/${section}` },

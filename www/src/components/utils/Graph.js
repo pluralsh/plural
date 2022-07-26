@@ -106,6 +106,7 @@ export function Graph({ data, yFormat, tick }) {
 
     return data
   }, [data, selected])
+
   if (graph.length === 0) return <Text size="small">no data</Text>
 
   const hasData = !!graph[0].data[0]
@@ -113,7 +114,9 @@ export function Graph({ data, yFormat, tick }) {
   return (
     <ResponsiveLine
       data={graph}
-      margin={{ top: 50, right: 110, bottom: 75, left: 70 }}
+      margin={{
+        top: 50, right: 110, bottom: 75, left: 70,
+      }}
       areaOpacity={0.5}
       useMesh
       lineWidth={2}
@@ -122,7 +125,9 @@ export function Graph({ data, yFormat, tick }) {
         // enableSlices='x'
       animate={false}
       xScale={{ type: 'time', format: 'native' }}
-      yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: false, reverse: false }}
+      yScale={{
+        type: 'linear', min: 'auto', max: 'auto', stacked: false, reverse: false,
+      }}
       colors={{ scheme: 'set2' }}
       yFormat={yFormat}
       xFormat={dateFormat}
@@ -149,7 +154,7 @@ export function Graph({ data, yFormat, tick }) {
       legends={[
         {
           anchor: 'bottom-right',
-          onClick: ({ id }) => selected ? setSelected(null) : setSelected(id),
+          onClick: ({ id }) => (selected ? setSelected(null) : setSelected(id)),
           direction: 'column',
           justify: false,
           translateX: 100,

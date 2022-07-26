@@ -27,11 +27,14 @@ export function OAuthCallback() {
   const deviceToken = getDeviceToken()
 
   const [mutation, { error, loading }] = useMutation(OAUTH_CALLBACK, {
-    variables: { code, host: host(), provider: service.toUpperCase(), deviceToken },
+    variables: {
+      code, host: host(), provider: service.toUpperCase(), deviceToken,
+    },
     onCompleted: ({ oauthCallback }) => {
       setToken(oauthCallback.jwt)
       if (deviceToken) finishedDeviceLogin()
       const challenge = getChallenge()
+
       if (challenge) {
         handleOauthChallenge(client, challenge)
       }

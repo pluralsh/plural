@@ -69,15 +69,13 @@ function Chart({ chart, first, last }) {
 function RepositoryPackagesHelm() {
   const { id } = useContext(RepositoryContext)
   const [q] = useOutletContext()
-  const [charts, loadingCharts, hasMoreCharts, fetchMoreCharts] = usePaginatedQuery(
-    CHARTS_QUERY,
+  const [charts, loadingCharts, hasMoreCharts, fetchMoreCharts] = usePaginatedQuery(CHARTS_QUERY,
     {
       variables: {
         repositoryId: id,
       },
     },
-    data => data.charts
-  )
+    data => data.charts)
 
   const fuse = new Fuse(charts, searchOptions)
   const filteredCharts = q ? fuse.search(q).map(({ item }) => item) : charts

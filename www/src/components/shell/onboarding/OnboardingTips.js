@@ -1,4 +1,6 @@
-import { A, Code, Div, P } from 'honorable'
+import {
+  A, Code, Div, P,
+} from 'honorable'
 import { TipCarousel } from 'pluralsh-design-system'
 
 function TipCode(props) {
@@ -7,7 +9,7 @@ function TipCode(props) {
       backgroundColor="fill-two"
       font-style="normal"
       paddingTop="0.1em"
-      paddingBottom="0.2em"    
+      paddingBottom="0.2em"
       paddingHorizontal="0.5em"
       marginHorizontal="0.1em"
       borderRadius="normal"

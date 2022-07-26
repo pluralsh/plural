@@ -1,9 +1,15 @@
 import { gql } from '@apollo/client'
 
-import { ArtifactFragment, CategoryFragment, InstallationFragment, IntegrationFragment, RepoFragment, StepFragment, TestFragment } from '../../models/repo'
-import { ChartFragment, ChartInstallationFragment, PackageScan, VersionFragment, VersionTagFragment } from '../../models/chart'
+import {
+  ArtifactFragment, CategoryFragment, InstallationFragment, IntegrationFragment, RepoFragment, StepFragment, TestFragment,
+} from '../../models/repo'
+import {
+  ChartFragment, ChartInstallationFragment, PackageScan, VersionFragment, VersionTagFragment,
+} from '../../models/chart'
 import { TerraformFragment, TerraformInstallationFragment } from '../../models/terraform'
-import { DockerImageFragment, DockerRepoFragment, DockerRepository, VulnerabilityFragment } from '../../models/docker'
+import {
+  DockerImageFragment, DockerRepoFragment, DockerRepository, VulnerabilityFragment,
+} from '../../models/docker'
 import { RecipeFragment, RecipeSectionFragment } from '../../models/recipe'
 import { PlanFragment, SubscriptionFragment } from '../../models/payments'
 import { PageInfo } from '../../models/misc'

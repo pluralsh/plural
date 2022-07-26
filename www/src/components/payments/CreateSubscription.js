@@ -42,15 +42,17 @@ function LineItemInput({ item: { dimension, name, cost }, included, updateItem }
   )
 }
 
-function PlanForm({ plan: { name, cost, period, lineItems: { items, included } }, attributes, setAttributes }) {
+function PlanForm({
+  plan: {
+    name, cost, period, lineItems: { items, included },
+  }, attributes, setAttributes,
+}) {
   const includedByDimension = pivotByDimension(included)
 
   function updateItem(dimension, quantity) {
-    setAttributes(deepUpdate(
-      attributes,
+    setAttributes(deepUpdate(attributes,
       'lineItems.items',
-      items => items.map(item => (item.dimension === dimension ? { dimension, quantity } : item))
-    ))
+      items => items.map(item => (item.dimension === dimension ? { dimension, quantity } : item))))
   }
 
   return (
@@ -72,20 +74,22 @@ function PlanForm({ plan: { name, cost, period, lineItems: { items, included } }
           <Text size="small">${cost / 100} {period}</Text>
         </Box>
         {items.filter(({ type }) => type === PlanType.LICENSED)
-              .map(item => (
-                <LineItemInput
-                  key={item.dimension}
-                  item={item}
-                  included={includedByDimension[item.dimension]}
-                  updateItem={updateItem}
-                />
-              ))}
+          .map(item => (
+            <LineItemInput
+              key={item.dimension}
+              item={item}
+              included={includedByDimension[item.dimension]}
+              updateItem={updateItem}
+            />
+          ))}
       </Box>
     </Box>
   )
 }
 
-export function Subscriber({ plan, installationId, repositoryId, setOpen }) {
+export function Subscriber({
+  plan, installationId, repositoryId, setOpen,
+}) {
   const [attributes, setAttributes] = useState({
     lineItems: { items: plan.lineItems.items.map(({ dimension }) => ({ dimension, quantity: 0 })) },
   })
@@ -126,7 +130,9 @@ export function Subscriber({ plan, installationId, repositoryId, setOpen }) {
   )
 }
 
-export default function SubscribeModal({ plan, installationId, repositoryId, setOpen }) {
+export default function SubscribeModal({
+  plan, installationId, repositoryId, setOpen,
+}) {
   return (
     <Layer
       modal

@@ -1,4 +1,6 @@
-import { createContext, useContext, useMemo, useState } from 'react'
+import {
+  createContext, useContext, useMemo, useState,
+} from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Anchor, Box, Text } from 'grommet'
 
@@ -11,6 +13,7 @@ export const BreadcrumbsContext = createContext({
 
 function CrumbLink({ crumb: { url, text, disable } }) {
   const navigate = useNavigate()
+
   // TODO: new design does not cover the "disabled" state. Should it be removed?
   if (disable) {
     return (
@@ -35,6 +38,7 @@ function CrumbLink({ crumb: { url, text, disable } }) {
 
 export function Breadcrumbs() {
   const { breadcrumbs } = useContext(BreadcrumbsContext)
+
   if (breadcrumbs.length === 0) return null
 
   const children = Array.from(lookahead(breadcrumbs, (crumb, next) => {
@@ -60,8 +64,7 @@ export function Breadcrumbs() {
       >{crumb.text}
       </Text>
     )
-  })
-  ).flat()
+  })).flat()
 
   return (
     <Box

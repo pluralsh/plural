@@ -1,6 +1,8 @@
 import { useContext } from 'react'
 import { Box, Text, ThemeContext } from 'grommet'
-import { HoveredBackground, Password, Scroller, Trash } from 'forge-core'
+import {
+  HoveredBackground, Password, Scroller, Trash,
+} from 'forge-core'
 import { useMutation, useQuery } from '@apollo/client'
 import { useNavigate } from 'react-router-dom'
 
@@ -16,14 +18,17 @@ function DeleteRepository({ repo, publisherId }) {
     variables: { id: repo.id },
     update: (cache, { data: { deleteRepository } }) => {
       const { repositories, ...prev } = cache.readQuery({ query: REPOS_Q, variables: { publisherId } })
-      cache.writeQuery({ query: REPOS_Q,
+
+      cache.writeQuery({
+        query: REPOS_Q,
         variables: { publisherId },
         data: {
           ...prev,
           repositories: {
             ...repositories, edges: repositories.edges.filter(({ node }) => node.id !== deleteRepository.id),
           },
-        } })
+        },
+      })
     },
   })
 
@@ -108,7 +113,9 @@ export function RepositoryInner({ repo }) {
   )
 }
 
-function RepositoryCell({ repo, deletable, publisherId, width }) {
+function RepositoryCell({
+  repo, deletable, publisherId, width,
+}) {
   const navigate = useNavigate()
 
   return (
@@ -128,7 +135,9 @@ function RepositoryCell({ repo, deletable, publisherId, width }) {
   )
 }
 
-export function Repository({ repo, hasNext, deletable, publisherId }) {
+export function Repository({
+  repo, hasNext, deletable, publisherId,
+}) {
   return (
     <Box
       pad="small"
@@ -178,7 +187,9 @@ export function Repository({ repo, hasNext, deletable, publisherId }) {
   )
 }
 
-export function RepositoryList({ repositores: { edges, pageInfo }, fetchMore, publisher, deletable, columns, emptyState }) {
+export function RepositoryList({
+  repositores: { edges, pageInfo }, fetchMore, publisher, deletable, columns, emptyState,
+}) {
   const width = Math.floor((100 - 10) / columns)
 
   return (
@@ -216,6 +227,7 @@ export function RepositoryList({ repositores: { edges, pageInfo }, fetchMore, pu
 
 export default function Repositories({ publisher, deletable, columns }) {
   const { loading, data, fetchMore } = useQuery(REPOS_Q, { variables: { publisherId: publisher.id } })
+
   if (loading || !data) return null
 
   return (

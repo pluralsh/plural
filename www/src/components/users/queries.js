@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client'
 
-import { AccountFragment, AddressFragment, EabCredentialFragment, PublicKeyFragment, PublisherFragment, TokenAuditFragment, TokenFragment, UserFragment, WebhookFragment } from '../../models/user'
+import { AccountFragment, AddressFragment, EabCredentialFragment, PublicKeyFragment, PublisherFragment, RoleFragment, TokenAuditFragment, TokenFragment, UserFragment, WebhookFragment } from '../../models/user'
 import { CardFragment } from '../../models/payments'
 import { PageInfo } from '../../models/misc'
 
@@ -32,6 +32,7 @@ export const ME_Q = gql`
   ${AddressFragment}
   ${AccountFragment}
   ${PublisherFragment}
+  ${RoleFragment}
 `
 
 export const CARDS = gql`

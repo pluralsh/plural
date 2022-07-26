@@ -1,10 +1,13 @@
-import { useEffect, useRef, useState } from 'react'
+import {
+  useEffect, useRef, useState,
+} from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import {
   Button, Div, Flex, H1,
 } from 'honorable'
 import {
-  Input, MagnifyingGlassIcon, RepositoryCard, Token,
+  FiltersIcon, Input, MagnifyingGlassIcon, RepositoryCard,
+  Tab, Token,
 } from 'pluralsh-design-system'
 import Fuse from 'fuse.js'
 
@@ -15,6 +18,8 @@ import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
 import { MARKETPLACE_QUERY } from './queries'
+
+import MarketplaceSidebar from './MarketplaceSidebar'
 
 const searchOptions = {
   keys: ['name', 'description', 'tags.tag'],
@@ -29,6 +34,8 @@ const filterTokenStyles = {
   border: '1px solid border-fill-one',
   backgroundColor: 'fill-one-selected',
 }
+
+const sidebarWidth = 256 - 32
 
 function RepoCardList({
   repositories, repoProps, maxWidth, stretchLastRow = false, ...props
@@ -95,12 +102,13 @@ function RepoCardList({
   )
 }
 
-function MarketplaceRepositories({ installed, ...props }) {
+function MarketplaceRepositories({ installed }) {
   const scrollRef = useRef()
   const [searchParams, setSearchParams] = useSearchParams()
   const categories = searchParams.getAll('category')
   const tags = searchParams.getAll('tag')
   const [search, setSearch] = useState('')
+  const [areFiltersOpen, setAreFiltersOpen] = useState(true)
 
   const [repositories, loadingRepositories, hasMoreRepositories, fetchMoreRepositories] = usePaginatedQuery(MARKETPLACE_QUERY,
     {},
@@ -132,7 +140,7 @@ function MarketplaceRepositories({ installed, ...props }) {
         pt={2}
         align="center"
         justify="center"
-        {...props}
+        flexGrow={1}
       >
         <LoopingLogo />
       </Flex>
@@ -199,100 +207,175 @@ function MarketplaceRepositories({ installed, ...props }) {
   return (
     <Flex
       direction="column"
-      {...props}
+      overflow="hidden"
+      maxWidth-desktopLarge-up={1640}
     >
-      <Div position="relative">
+      <Flex
+        direction="column"
+      >
         <Flex
-          paddingHorizontal="large"
-          align="stretch"
-          wrap
-          marginBottom="-8px"
+          marginHorizontal="large"
+          flexShrink={0}
+          direction="row"
+          height={57}
+          alignItems="flex-end"
         >
-          <Div
-            minWidth="210px"
-            flex="1 1 210px"
-            marginBottom="xsmall"
+          <Link
+            to="/marketplace"
+            style={{ color: 'inherit', textDecoration: 'none' }}
           >
-            <Input
-              startIcon={(
-                <MagnifyingGlassIcon
-                  size={14}
-                />
-              )}
-              placeholder="Search a repository"
-              value={search}
-              onChange={event => setSearch(event.target.value)}
-            />
-          </Div>
-          {categories.map(category => (
-            <Token
-              {...filterTokenStyles}
-              onClose={() => handleClearToken('category', category)}
-            >
-              {capitalize(category)}
-            </Token>
-          ))}
-          {tags.map(tag => (
-            <Token
-              {...filterTokenStyles}
-              onClose={() => handleClearToken('tag', tag)}
-            >
-              {capitalize(tag)}
-            </Token>
-          ))}
-          {!!(categories.length || tags.length) && (
+            <Tab active={!installed}>
+              Marketplace
+            </Tab>
+          </Link>
+          <Link
+            to="/installed"
+            style={{ color: 'inherit', textDecoration: 'none' }}
+          >
+            <Tab active={installed}>
+              Installed
+            </Tab>
+          </Link>
+          <Flex
+            alignSelf="stretch"
+            paddingBottom="xxsmall"
+            paddingTop="xxsmall"
+            justify="flex-end"
+            flexGrow={1}
+            borderBottom="1px solid border"
+          >
             <Button
-              marginBottom="xsmall"
-              flexShrink={0}
               tertiary
               small
-              onClick={() => handleClearTokens()}
+              startIcon={<FiltersIcon />}
+              onClick={() => setAreFiltersOpen(x => !x)}
             >
-              Clear all
+              Filters
             </Button>
-          )}
+          </Flex>
+        </Flex>
+      </Flex>
+      <Flex
+        flexGrow={1}
+        marginTop="medium"
+      >
+        <Flex
+          direction="column"
+          flexGrow={1}
+        >
+          <Div position="relative">
+            <Flex
+              paddingHorizontal="large"
+              align="stretch"
+              wrap
+              marginBottom="-8px"
+            >
+              <Div
+                minWidth="210px"
+                flex="1 1 210px"
+                marginBottom="xsmall"
+              >
+                <Input
+                  startIcon={(
+                    <MagnifyingGlassIcon
+                      size={14}
+                    />
+                  )}
+                  placeholder="Search a repository"
+                  value={search}
+                  onChange={event => setSearch(event.target.value)}
+                />
+              </Div>
+              {categories.map(category => (
+                <Token
+                  {...filterTokenStyles}
+                  onClose={() => handleClearToken('category', category)}
+                >
+                  {capitalize(category)}
+                </Token>
+              ))}
+              {tags.map(tag => (
+                <Token
+                  {...filterTokenStyles}
+                  onClose={() => handleClearToken('tag', tag)}
+                >
+                  {capitalize(tag)}
+                </Token>
+              ))}
+              {!!(categories.length || tags.length) && (
+                <Button
+                  marginBottom="xsmall"
+                  flexShrink={0}
+                  tertiary
+                  small
+                  onClick={() => handleClearTokens()}
+                >
+                  Clear all
+                </Button>
+              )}
+            </Flex>
+            <Div
+              flexShrink={0}
+              height={16}
+              width="100%"
+              background="linear-gradient(0deg, transparent 0%, fill-zero 50%);"
+              position="absolute"
+              top="100%"
+              zIndex={999}
+            />
+          </Div>
+          <Div
+            paddingTop="medium"
+            paddingBottom="xxxlarge"
+            paddingHorizontal="large"
+            margin="xxsmall"
+            overflowY="auto"
+            overflowX="hidden"
+            position="relative"
+            ref={scrollRef}
+          >
+            {shouldRenderFeatured && renderFeatured()}
+            <H1
+              subtitle1
+              marginTop={shouldRenderFeatured ? 'xlarge' : 0}
+            >
+              {renderTitle()}
+            </H1>
+            <RepoCardList
+              repositories={resultRepositories}
+              marginTop="medium"
+            />
+            {loadingRepositories && (
+              <Flex
+                marginTop="xlarge"
+                align="center"
+                justify="center"
+              >
+                <LoopingLogo />
+              </Flex>
+            )}
+          </Div>
         </Flex>
         <Div
+          marginRight={areFiltersOpen ? 'large' : `-${sidebarWidth}px`}
+          transform={areFiltersOpen ? 'translateX(0)' : 'translateX(100%)'}
+          opacity={areFiltersOpen ? 1 : 0}
           flexShrink={0}
-          height={16}
-          width="100%"
-          background="linear-gradient(0deg, transparent 0%, fill-zero 50%);"
-          position="absolute"
-          top="100%"
-          zIndex={999}
-        />
-      </Div>
-      <Div
-        paddingTop="medium"
-        paddingBottom="xxxlarge"
-        paddingHorizontal="large"
-        margin="xxsmall"
-        overflowY="auto"
-        overflowX="hidden"
-        position="relative"
-        ref={scrollRef}
-      >
-        {shouldRenderFeatured && renderFeatured()}
-        <H1
-          subtitle1
-          marginTop={shouldRenderFeatured ? 'xlarge' : 0}
+          position="sticky"
+          top={0}
+          right={0}
+          width={sidebarWidth}
+          height="calc(100% - 16px)"
+          overflowY="auto"
+          border="1px solid border"
+          backgroundColor="fill-one"
+          borderRadius="large"
+          transition="all 250ms ease"
+          zIndex={9999}
         >
-          {renderTitle()}
-        </H1>
-        <RepoCardList
-          repositories={resultRepositories}
-          marginTop="medium"
-        />
-        {loadingRepositories && (
-          <Flex
-            marginTop="xlarge"
-            align="center"
-            justify="center"
-          >
-            <LoopingLogo />
-          </Flex>
-        )}
-      </Div>
+          <MarketplaceSidebar width="100%" />
+        </Div>
+      </Flex>
     </Flex>
   )
 }

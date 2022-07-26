@@ -80,7 +80,7 @@ export default function Terraform() {
         >
           <Box
             direction="column"
-            basis="medium"
+            style={{ minWidth: '240px', maxWidth: '240px' }}
           >
             <PackageHeader
               name={terraformModule.name}
@@ -148,9 +148,8 @@ export default function Terraform() {
             <Outlet context={{ terraformChart: terraformModule, currentTerraformChart: currentVersion }} />
           </Box>
           <Box
-            basis="medium"
+            style={{ minWidth: '200px', maxWidth: '200px' }}
             direction="column"
-            pad="small"
             gap="small"
           >
             <Box height="54px">

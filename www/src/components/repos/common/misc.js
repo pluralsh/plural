@@ -106,6 +106,7 @@ export function PackageVersionPicker({ edges, installed, version, setVersion }) 
       <Select
         value={version}
         onChange={({ target: { value } }) => setVersion(value)}
+        style={{ maxWidth: '240px' }}
       >
         {edges.map(({ node }) => (
           <MenuItem

@@ -133,6 +133,7 @@ function ImageDependencies({ version: { imageDependencies } }) {
             inline
             as={Link}
             to={`/dkr/img/${image.id}`}
+            style={{ wordWrap: 'break-word' }}
           >
             {dockerPull(registry, image)}
           </A>
@@ -170,7 +171,7 @@ export default function Chart() {
         >
           <Box
             direction="column"
-            basis="medium"
+            style={{ minWidth: '240px', maxWidth: '240px' }}
           >
             <PackageHeader
               name={currentVersion.chart.name}
@@ -239,9 +240,8 @@ export default function Chart() {
             <Outlet context={{ helmChart: chart, currentHelmChart: currentVersion }} />
           </Box>
           <Box
-            basis="medium"
+            style={{ minWidth: '200px', maxWidth: '200px' }}
             direction="column"
-            pad="small"
             gap="small"
           >
             <Box height="54px">

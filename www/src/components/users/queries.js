@@ -34,6 +34,7 @@ export const ME_Q = gql`
   ${AddressFragment}
   ${AccountFragment}
   ${PublisherFragment}
+  ${RoleFragment}
 `
 
 export const CARDS = gql`

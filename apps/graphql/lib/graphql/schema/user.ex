@@ -84,6 +84,11 @@ defmodule GraphQl.Schema.User do
     field :provider,         :provider
     field :roles,            :roles
 
+    field :bound_roles,      list_of(:role), resolve: fn
+      %{id: id}, _, %{context: %{current_user: %{id: id} = current_user}} -> {:ok, Core.Schema.User.roles(current_user)}
+      _, _, _ -> {:error, "can only query roles on yourself"}
+    end
+
     field :publisher,            :publisher, resolve: dataloader(User)
     field :account,              :account, resolve: dataloader(Account)
     field :impersonation_policy, :impersonation_policy, resolve: dataloader(User)

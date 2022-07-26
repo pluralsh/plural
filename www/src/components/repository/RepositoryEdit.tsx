@@ -17,16 +17,17 @@ import {
   MenuItem,
   P,
   Select,
+  Span,
   Switch,
 } from 'honorable'
 import { TextInput } from 'grommet'
 import {
   Button,
+  Chip,
   CloseIcon,
   FormField,
   Input,
   SearchIcon,
-  Tag,
 } from 'pluralsh-design-system'
 import isEqual from 'lodash/isEqual'
 import isArray from 'lodash/isArray'
@@ -499,7 +500,7 @@ function RepositoryEdit() {
                 marginTop="small"
               >
                 {formState.tags.map(tag => (
-                  <Tag
+                  <Chip
                     key={tag.tag}
                     onClick={() => handleDeleteTag(tag)}
                     backgroundColor="fill-two"
@@ -511,7 +512,7 @@ function RepositoryEdit() {
                     }}
                     cursor="pointer"
                   >
-                    {tag.tag}
+                    <Span fontWeight="400">{tag.tag}</Span>
                     <CloseIcon
                       size={8}
                       marginLeft="xsmall"
@@ -521,7 +522,7 @@ function RepositoryEdit() {
                         },
                       }}
                     />
-                  </Tag>
+                  </Chip>
                 ))}
               </Flex>
             </FormField>

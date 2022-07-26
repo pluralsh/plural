@@ -1,5 +1,5 @@
 import {
-  A, Div, Flex, H2, Img, Span, Text,
+  A, Div, Flex, H2, Img, MenuItem, Select, Span,
 } from 'honorable'
 import { Box } from 'grommet'
 import { ArrowLeftIcon, Chip } from 'pluralsh-design-system'
@@ -96,28 +96,55 @@ export function PackageHeader({ name, icon }) {
   )
 }
 
-export function PackageViewHeader({ title, children }) {
+// TODO: Implement view more functionality as at the moment it loads only the first page.
+// TODO: Show only 6 elements inside select component and add scroll (to be done globally).
+export function PackageVersionPicker({
+  edges, installed, version, setVersion,
+}) {
   return (
     <Box
-      direction="row"
-      border="bottom"
-      pad={{ bottom: 'medium' }}
-      margin={{ bottom: 'small' }}
-      height="65px"
+      gap="small"
+      margin={{ bottom: 'medium' }}
     >
-      <Text
-        fontSize="30px"
-        fontWeight="500"
-        lineHeight="40px"
+      <Select
+        value={version}
+        onChange={({ target: { value } }) => setVersion(value)}
+        style={{ maxWidth: '240px' }}
       >
-        {title}
-      </Text>
-      <Flex
-        flexGrow={1}
-        justifyContent="flex-end"
+        {edges.map(({ node }) => (
+          <MenuItem
+            key={node.id}
+            value={node}
+          >
+            <Box
+              fill
+              direction="row"
+              justify="center"
+            >
+              <Box fill>{node.version}</Box>
+              {node.id === installed?.version?.id && (
+                <Chip
+                  severity="success"
+                  style={{ height: '20px' }}
+                >
+                  <Span
+                    fontSize="12px"
+                    fontWeight="400"
+                  >
+                    Installed
+                  </Span>
+                </Chip>
+              )}
+            </Box>
+          </MenuItem>
+        ))}
+      </Select>
+      <Box
+        direction="row"
+        gap="xxsmall"
       >
-        {children}
-      </Flex>
+        {version?.tags.map(({ tag }, i) => <Chip key={i}><Span fontWeight="400">{tag}</Span></Chip>)}
+      </Box>
     </Box>
   )
 }

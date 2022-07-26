@@ -8,14 +8,14 @@ import uniqueId from 'lodash/uniqueId'
 
 import { useOutletContext } from 'react-router-dom'
 
+import { PageTitle } from 'pluralsh-design-system'
+
+import { Button, ButtonGroup } from 'honorable'
+
 import TreeGraph from '../../utils/TreeGraph'
 
 import { DEFAULT_CHART_ICON, DEFAULT_TF_ICON, Tools } from '../constants'
 import { CLOSURE_Q } from '../queries'
-
-import { ButtonGroup } from '../../utils/ButtonGroup'
-
-import { PackageViewHeader } from './misc'
 
 const GRAPH_HEIGHT = '600px'
 const OPTIONAL_COLOR = '#9095A2'
@@ -156,13 +156,26 @@ export default function PackageDependencies() {
       fill
       gap="small"
     >
-      <PackageViewHeader title="Dependencies">
-        <ButtonGroup
-          tabs={['Immediate', 'Full']}
-          default="Immediate"
-          onChange={() => setFull(!full)}
-        />
-      </PackageViewHeader>
+      <PageTitle heading="Dependencies">
+        <ButtonGroup style={{ border: '0px' }}>
+          <Button
+            tertiary
+            background={!full ? 'fill-one' : ''}
+            onClick={() => setFull(false)}
+          >
+            Immediate
+          </Button>
+          <Button
+            tertiary
+            background={full ? 'fill-one' : ''}
+            onClick={() => setFull(true)}
+            style={{ border: '0px' }}
+          >
+            Full
+          </Button>
+        </ButtonGroup>
+
+      </PageTitle>
       {full && <FullDependencies resource={chart} />}
       {!full && (
         <Dependencies

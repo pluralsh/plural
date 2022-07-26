@@ -17,7 +17,9 @@ import { GqlError } from '../utils/Alert'
 import { INSTALL_TF, TF_Q, UNINSTALL_TF } from './queries'
 import { DEFAULT_TF_ICON } from './constants'
 
-import { PackageBackButton, PackageGrade, PackageHeader, PackageVersionPicker } from './common/misc'
+import {
+  PackageBackButton, PackageGrade, PackageHeader, PackageVersionPicker,
+} from './common/misc'
 
 function TerraformInstaller({
   installation, terraformId, terraformInstallation, version,

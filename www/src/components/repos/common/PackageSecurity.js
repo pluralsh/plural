@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Box, Collapsible } from 'grommet'
-import { Chip, CollapseIcon, ErrorIcon, PageTitle } from 'pluralsh-design-system'
+import {
+  Chip, CollapseIcon, ErrorIcon, PageTitle,
+} from 'pluralsh-design-system'
 
 import {
   Button, Div, H2, Span,

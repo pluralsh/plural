@@ -1,4 +1,6 @@
-import { A, Div, Flex, H2, Img, MenuItem, Select, Span } from 'honorable'
+import {
+  A, Div, Flex, H2, Img, MenuItem, Select, Span,
+} from 'honorable'
 import { Box } from 'grommet'
 import { ArrowLeftIcon, Chip } from 'pluralsh-design-system'
 import { Link } from 'react-router-dom'
@@ -96,8 +98,9 @@ export function PackageHeader({ name, icon }) {
 
 // TODO: Implement view more functionality as at the moment it loads only the first page.
 // TODO: Show only 6 elements inside select component and add scroll (to be done globally).
-export function PackageVersionPicker({ edges, installed, version, setVersion }) {
-
+export function PackageVersionPicker({
+  edges, installed, version, setVersion,
+}) {
   return (
     <Box
       gap="small"

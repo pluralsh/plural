@@ -1,6 +1,10 @@
 import { useContext, useState } from 'react'
-import { A, Button, Div, Flex, H1, Img, P, Span } from 'honorable'
-import { Chip, GearTrainIcon, GitHubIcon, InvoicesIcon, LinksIcon } from 'pluralsh-design-system'
+import {
+  A, Button, Div, Flex, H1, Img, P, Span,
+} from 'honorable'
+import {
+  Chip, GearTrainIcon, GitHubIcon, InvoicesIcon, LinksIcon,
+} from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 

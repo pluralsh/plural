@@ -1,6 +1,8 @@
 import { useContext } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Div, Flex, Img, P } from 'honorable'
+import {
+  Div, Flex, Img, P,
+} from 'honorable'
 import { Tab } from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'

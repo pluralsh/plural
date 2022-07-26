@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react'
 import { A, Button, Div, Flex, H1, Img, P, Span } from 'honorable'
-import { GearTrainIcon, GitHubIcon, InvoicesIcon, LinksIcon, Tag } from 'pluralsh-design-system'
+import { Chip, GearTrainIcon, GitHubIcon, InvoicesIcon, LinksIcon } from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 
@@ -169,13 +169,13 @@ function RepositoryHeader(props) {
           wrap="wrap"
         >
           {repository.tags.map(({ name }) => (
-            <Tag
+            <Chip
               key={name}
               mr={0.5}
               mb={0.5}
             >
               {name}
-            </Tag>
+            </Chip>
           ))}
         </Flex>
       </Div>

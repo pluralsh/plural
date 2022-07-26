@@ -241,93 +241,93 @@ function QueueHealth({ q, background }) {
   )
 }
 
-export function Clusters() {
-  const [cluster, setCluster] = useState(null)
-  const { data, subscribeToMore } = useQuery(QUEUES, { fetchPolicy: 'cache-and-network' })
-
-  useEffect(() => subscribeToMore({
-    document: UPGRADE_QUEUE_SUB,
-    updateQuery: ({ upgradeQueues, ...prev }, { subscriptionData: { data: { upgradeQueueDelta: { delta, payload } } } }) => delta === 'CREATE' ? { ...prev, upgradeQueues: [payload, ...upgradeQueues] } : prev,
-  }), [subscribeToMore])
-
-  useEffect(() => {
-    if (data) setCluster(data.upgradeQueues[0])
-  }, [data])
-
-  if (!data || !cluster) {
-    return (
-      <Flex
-        marginHorizontal="auto"
-        paddingTop="xxlarge"
-        direction="column"
-        align="center"
-      >
-        <ClusterIcon size={64} />
-        <P
-          body1
-          bold
-          marginTop="xlarge"
-        >
-          You have no clusters registered so far.
-        </P>
-      </Flex>
-    )
-  }
-
-  return (
-    <Box
-      fill
-      pad="32px"
-      gap="medium"
-    >
-      <Header
-        header="Clusters"
-        description="View your clusters and their upgrades"
-      />
-      <Box
-        direction="row"
-        fill
-        gap="medium"
-      >
-        <Box
-          gap="medium"
-          width="40%"
-          flex={false}
-        >
-          <Box
-            fill="horizontal"
-            direction="row"
-            gap="small"
-          >
-            <Box fill="horizontal">
-              <Select
-                value={cluster}
-                onChange={({ target: { value } }) => setCluster(value)}
-              >
-                {data.upgradeQueues.map(q => (
-                  <MenuItem
-                    value={q}
-                    key={q.id}
-                  >
-                    <QueueItem q={q} />
-                  </MenuItem>
-                ))}
-              </Select>
-            </Box>
-            <ConsoleButton
-              small
-              text="View Console"
-              q={cluster}
-            />
-            <QueueHealth
-              q={cluster}
-              background="fill-one"
-            />
-          </Box>
-          <ClusterDescription q={cluster} />
-        </Box>
-        <Upgrades q={cluster} />
-      </Box>
-    </Box>
-  )
-}
+// export function Clusters() {
+//   const [cluster, setCluster] = useState(null)
+//   const { data, subscribeToMore } = useQuery(QUEUES, { fetchPolicy: 'cache-and-network' })
+//
+//   useEffect(() => subscribeToMore({
+//     document: UPGRADE_QUEUE_SUB,
+//     updateQuery: ({ upgradeQueues, ...prev }, { subscriptionData: { data: { upgradeQueueDelta: { delta, payload } } } }) => delta === 'CREATE' ? { ...prev, upgradeQueues: [payload, ...upgradeQueues] } : prev,
+//   }), [subscribeToMore])
+//
+//   useEffect(() => {
+//     if (data) setCluster(data.upgradeQueues[0])
+//   }, [data])
+//
+//   if (!data || !cluster) {
+//     return (
+//       <Flex
+//         marginHorizontal="auto"
+//         paddingTop="xxlarge"
+//         direction="column"
+//         align="center"
+//       >
+//         <ClusterIcon size={64} />
+//         <P
+//           body1
+//           bold
+//           marginTop="xlarge"
+//         >
+//           You have no clusters registered so far.
+//         </P>
+//       </Flex>
+//     )
+//   }
+//
+//   return (
+//     <Box
+//       fill
+//       pad="32px"
+//       gap="medium"
+//     >
+//       <Header
+//         header="Clusters"
+//         description="View your clusters and their upgrades"
+//       />
+//       <Box
+//         direction="row"
+//         fill
+//         gap="medium"
+//       >
+//         <Box
+//           gap="medium"
+//           width="40%"
+//           flex={false}
+//         >
+//           <Box
+//             fill="horizontal"
+//             direction="row"
+//             gap="small"
+//           >
+//             <Box fill="horizontal">
+//               <Select
+//                 value={cluster}
+//                 onChange={({ target: { value } }) => setCluster(value)}
+//               >
+//                 {data.upgradeQueues.map(q => (
+//                   <MenuItem
+//                     value={q}
+//                     key={q.id}
+//                   >
+//                     <QueueItem q={q} />
+//                   </MenuItem>
+//                 ))}
+//               </Select>
+//             </Box>
+//             <ConsoleButton
+//               small
+//               text="View Console"
+//               q={cluster}
+//             />
+//             <QueueHealth
+//               q={cluster}
+//               background="fill-one"
+//             />
+//           </Box>
+//           <ClusterDescription q={cluster} />
+//         </Box>
+//         <Upgrades q={cluster} />
+//       </Box>
+//     </Box>
+//   )
+// }

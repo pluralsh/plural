@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { Button, Div, Flex, H2, Input as HonorableInput, Img, MenuItem, P, Select, Tooltip, useTheme } from 'honorable'
-import { FormField, Input, Tag } from 'pluralsh-design-system'
+import { Chip, FormField, Input } from 'pluralsh-design-system'
 import { FilePicker } from 'react-file-picker'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
@@ -280,7 +280,7 @@ function RepositoryEdit() {
         >
           {tagsUpdate.map(tag => (
             <Tooltip label="Click to remove">
-              <Tag
+              <Chip
                 key={tag}
                 mr={0.5}
                 mb={0.5}
@@ -288,7 +288,7 @@ function RepositoryEdit() {
                 cursor="pointer"
               >
                 {tag}
-              </Tag>
+              </Chip>
             </Tooltip>
           ))}
           <HonorableInput

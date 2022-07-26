@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import { Link, useOutletContext } from 'react-router-dom'
 import { Div, Flex, Img, P } from 'honorable'
-import { Tag } from 'pluralsh-design-system'
+import { Chip } from 'pluralsh-design-system'
 
 import moment from 'moment'
 
@@ -46,9 +46,9 @@ function Chart({ chart, first, last }) {
             {chart.name}
           </P>
           {chart.dependencies && chart.dependencies.application && (
-            <Tag ml={1}>
+            <Chip ml={1}>
               APP
-            </Tag>
+            </Chip>
           )}
         </Flex>
         <P mt={0.5}>

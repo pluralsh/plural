@@ -124,7 +124,12 @@ export function PackageVersionPicker({ edges, installed, version, setVersion }) 
                   severity="success"
                   style={{ height: '20px' }}
                 >
-                  <Span fontSize="12px">Installed</Span>
+                  <Span
+                    fontSize="12px"
+                    fontWeight="400"
+                  >
+                    Installed
+                  </Span>
                 </Chip>
               )}
             </Box>
@@ -135,7 +140,7 @@ export function PackageVersionPicker({ edges, installed, version, setVersion }) 
         direction="row"
         gap="xxsmall"
       >
-        {version?.tags.map(({ tag }, i) => <Chip key={i}>{tag}</Chip>)}
+        {version?.tags.map(({ tag }, i) => <Chip key={i}><Span fontWeight="400">{tag}</Span></Chip>)}
       </Box>
     </Box>
   )

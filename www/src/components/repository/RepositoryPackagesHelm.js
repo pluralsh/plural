@@ -1,11 +1,12 @@
 import { useContext } from 'react'
 import { Link, useOutletContext } from 'react-router-dom'
-import { Div, Flex, Img, P } from 'honorable'
-import { Tag } from 'pluralsh-design-system'
+import { Div, Flex, Img, P, Span } from 'honorable'
 
 import moment from 'moment'
 
 import Fuse from 'fuse.js'
+
+import { Chip } from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 
@@ -46,9 +47,7 @@ function Chart({ chart, first, last }) {
             {chart.name}
           </P>
           {chart.dependencies && chart.dependencies.application && (
-            <Tag ml={1}>
-              APP
-            </Tag>
+            <Chip ml={1}><Span fontWeight="400">APP</Span></Chip>
           )}
         </Flex>
         <P mt={0.5}>

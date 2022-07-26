@@ -13,13 +13,12 @@ import { A, Flex } from 'honorable'
 
 import { PluralConfigurationContext } from '../login/CurrentUser'
 
-import { PackageVersionPicker } from './common/PackageVersionPicker'
+import { PackageBackButton, PackageGrade, PackageHeader, PackageProperty, PackageVersionPicker, dockerPull } from './common/misc'
 
 import { CHART_Q, INSTALL_CHART, UPDATE_CHART_INST } from './queries'
 import { DEFAULT_CHART_ICON } from './constants'
 
 import { DetailContainer } from './Installation'
-import { PackageBackButton, PackageGrade, PackageHeader, PackageProperty, dockerPull } from './common/misc'
 
 function ChartInfo({ version: { helm, insertedAt } }) {
   return (

@@ -4,9 +4,9 @@ import { Div } from 'honorable'
 
 import { useOutletContext } from 'react-router-dom'
 
-import MultilineCode from '../../utils/Code'
+import { PageTitle } from 'pluralsh-design-system'
 
-import { PackageViewHeader } from './misc'
+import MultilineCode from '../../utils/Code'
 
 export default function PackageConfiguration() {
   const { currentHelmChart, currentTerraformChart } = useOutletContext()
@@ -18,7 +18,7 @@ export default function PackageConfiguration() {
       flex={false}
       gap="small"
     >
-      <PackageViewHeader title="Configuration" />
+      <PageTitle heading="Configuration" />
       {valuesTemplate ? (
         <MultilineCode
           language="yaml"

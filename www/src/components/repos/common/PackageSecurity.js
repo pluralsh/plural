@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Box, Collapsible } from 'grommet'
-import { Chip, CollapseIcon, ErrorIcon } from 'pluralsh-design-system'
+import { Chip, CollapseIcon, ErrorIcon, PageTitle } from 'pluralsh-design-system'
 
 import { Button, Div, H2, Span } from 'honorable'
 
@@ -12,7 +12,7 @@ import { capitalize } from 'lodash/string'
 
 import { Table, TableData, TableRow } from '../../utils/Table'
 
-import { PackageGrade, PackageProperty, PackageViewHeader } from './misc'
+import { PackageGrade, PackageProperty } from './misc'
 
 const chipSeverity = {
   low: 'success',
@@ -93,7 +93,7 @@ export default function PackageSecurity() {
       flex={false}
       gap="medium"
     >
-      <PackageViewHeader title="Security">{
+      <PageTitle heading="Security">{
         current?.scan && (
           <PackageGrade
             scan={current.scan}
@@ -101,7 +101,7 @@ export default function PackageSecurity() {
           />
         )
       }
-      </PackageViewHeader>
+      </PageTitle>
       <H2>Scan failures</H2>
       {current.scan.errors?.length ? (
         <Box

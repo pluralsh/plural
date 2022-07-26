@@ -2,9 +2,9 @@ import { Box } from 'grommet'
 
 import { useOutletContext } from 'react-router-dom'
 
-import RepositoryDescriptionMarkdown from '../../repository/RepositoryDescriptionMarkdown'
+import { PageTitle } from 'pluralsh-design-system'
 
-import { PackageViewHeader } from './misc'
+import RepositoryDescriptionMarkdown from '../../repository/RepositoryDescriptionMarkdown'
 
 export default function PackageReadme() {
   const { currentHelmChart, currentTerraformChart } = useOutletContext()
@@ -16,7 +16,7 @@ export default function PackageReadme() {
       flex={false}
       gap="small"
     >
-      <PackageViewHeader title="Readme" />
+      <PageTitle heading="Readme" />
       <RepositoryDescriptionMarkdown text={readme} />
     </Box>
   )

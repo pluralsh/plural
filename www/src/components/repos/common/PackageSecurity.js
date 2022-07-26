@@ -65,8 +65,9 @@ function ScanViolation({ violation, last }) {
           direction="row"
           pad={{ horizontal: 'large', vertical: 'small' }}
           gap="small"
-          border="bottom"
+          borderBottom={last ? null : '1px solid border'}
           background="fill-two"
+          round={{ corner: 'bottom', size: '4px' }}
         >
           <Box basis="1/2"><PackageProperty header="Error message">{violation.description}</PackageProperty></Box>
           <Box

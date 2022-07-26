@@ -20,6 +20,7 @@ export const ME_Q = gql`
         ...PublisherFragment
         billingAccountId
       }
+      boundRoles { ...RoleFragment }
     }
     configuration {
       stripeConnectId

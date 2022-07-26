@@ -86,6 +86,8 @@ export const canEdit = ({ roles, id }, { rootUser }) => (
   (roles && roles.admin) || id === rootUser.id
 )
 
+export const hasRbac = ({ boundRoles }, role) => (boundRoles || []).some(({ permissions }) => !!permissions[role])
+
 function EditAttributes() {
   const { account } = useContext(CurrentUserContext)
   const [attributes, setAttributes] = useState({ name: account.name, domainMappings: account.domainMappings.map(sanitize) })

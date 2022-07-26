@@ -21,10 +21,8 @@ export default function PackageConfiguration() {
       <PackageViewHeader title="Configuration" />
       {valuesTemplate ? (
         <MultilineCode
-          borderRadius="medium"
           language="yaml"
-          px="1em"
-          py="0.65em"
+          borderRadius="medium"
           background="fill-one"
         >
           {valuesTemplate}

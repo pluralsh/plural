@@ -1,6 +1,8 @@
 import { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Anchor, Box, Table, TableBody, TableCell, TableHeader, TableRow, Text } from 'grommet'
+import {
+  Anchor, Box, Table, TableBody, TableCell, TableHeader, TableRow, Text,
+} from 'grommet'
 import { useQuery } from '@apollo/client'
 
 import moment from 'moment'
@@ -56,7 +58,11 @@ function Subscription({ current, subscription, setCurrent }) {
   )
 }
 
-function Invoice({ invoice: { number, hostedInvoiceUrl, amountPaid, createdAt, currency } }) {
+function Invoice({
+  invoice: {
+    number, hostedInvoiceUrl, amountPaid, createdAt, currency,
+  },
+}) {
   return (
     <TableRow>
       <TableCell>{moment(createdAt).format('LLL')}</TableCell>
@@ -88,6 +94,7 @@ function SubscriptionBar({ edges, current, setCurrent }) {
 function InvoicesInner({ current: { id } }) {
   const navigate = useNavigate()
   const { loading, data } = useQuery(SUBSCRIPTION_Q, { variables: { id } })
+
   if (!data) return null
   if (loading) return <LoopingLogo />
 
@@ -168,6 +175,7 @@ export default function Invoices() {
   const [current, setCurrent] = useState(null)
   const { loading, data } = useQuery(SUBSCRIPTIONS_Q)
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
+
   useEffect(() => {
     setBreadcrumbs([])
   }, [setBreadcrumbs])

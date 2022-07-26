@@ -11,10 +11,10 @@ const DIRECTORY = [
   { path: '/audits/logins', label: 'Logins' },
   { path: '/audits/geo', label: 'Geodistribution' },
 ]
-  
+
 export function AuditDirectory() {
   const { pathname } = useLocation()
-  
+
   return (
     <Flex
       height="100%"

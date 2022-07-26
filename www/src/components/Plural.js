@@ -1,5 +1,7 @@
 import { useContext } from 'react'
-import { Navigate, Route, Routes, useMatch } from 'react-router-dom'
+import {
+  Navigate, Route, Routes, useMatch,
+} from 'react-router-dom'
 import { StripeProvider } from 'react-stripe-elements'
 
 import ApplicationLayout from './layout/ApplicationLayout'

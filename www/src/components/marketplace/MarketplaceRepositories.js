@@ -1,7 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { Button, Div, Flex, H1 } from 'honorable'
-import { Input, MagnifyingGlassIcon, RepositoryCard, Token } from 'pluralsh-design-system'
+import {
+  Button, Div, Flex, H1,
+} from 'honorable'
+import {
+  Input, MagnifyingGlassIcon, RepositoryCard, Token,
+} from 'pluralsh-design-system'
 import Fuse from 'fuse.js'
 
 import { capitalize } from '../../utils/string'
@@ -26,7 +30,9 @@ const filterTokenStyles = {
   backgroundColor: 'fill-one-selected',
 }
 
-function RepoCardList({ repositories, repoProps, maxWidth, stretchLastRow = false, ...props }) {
+function RepoCardList({
+  repositories, repoProps, maxWidth, stretchLastRow = false, ...props
+}) {
   const flexBasis = '400px'
 
   // Workaround that will render empty columns to align the last row.
@@ -40,8 +46,7 @@ function RepoCardList({ repositories, repoProps, maxWidth, stretchLastRow = fals
             flexGrow={1}
             flexBasis={flexBasis}
           />
-        )
-        )}
+        ))}
       </>
     )
   }
@@ -97,11 +102,9 @@ function MarketplaceRepositories({ installed, ...props }) {
   const tags = searchParams.getAll('tag')
   const [search, setSearch] = useState('')
 
-  const [repositories, loadingRepositories, hasMoreRepositories, fetchMoreRepositories] = usePaginatedQuery(
-    MARKETPLACE_QUERY,
+  const [repositories, loadingRepositories, hasMoreRepositories, fetchMoreRepositories] = usePaginatedQuery(MARKETPLACE_QUERY,
     {},
-    data => data.repositories
-  )
+    data => data.repositories)
 
   const shouldRenderFeatured = !categories.length && !tags.length && !installed && !search
 
@@ -138,7 +141,7 @@ function MarketplaceRepositories({ installed, ...props }) {
 
   const sortedRepositories = repositories.slice()
     .sort((a, b) => a.name.localeCompare(b.name))
-    .filter(repository => categories.length ? categories.includes(repository.category.toLowerCase()) : true)
+    .filter(repository => (categories.length ? categories.includes(repository.category.toLowerCase()) : true))
     .filter(repository => {
       if (!tags.length) return true
 
@@ -146,7 +149,7 @@ function MarketplaceRepositories({ installed, ...props }) {
 
       return tags.some(tag => repositoryTags.includes(tag))
     })
-    .filter(repository => installed ? repository.installation : true)
+    .filter(repository => (installed ? repository.installation : true))
 
   const fuse = new Fuse(sortedRepositories, searchOptions)
 

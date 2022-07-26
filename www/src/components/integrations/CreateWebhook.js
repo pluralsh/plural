@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { Button, SecondaryButton } from 'forge-core'
-import { Box, FormField, Text, TextInput } from 'grommet'
+import {
+  Box, FormField, Text, TextInput,
+} from 'grommet'
 
 import { appendConnection, updateCache } from '../../utils/graphql'
 

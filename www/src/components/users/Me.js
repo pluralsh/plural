@@ -1,7 +1,11 @@
 import { createElement, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Box, Drop, Layer, Text } from 'grommet'
-import { CreatePublisher as CreatePublisherIcon, EditField, Logout, MenuItem, User } from 'forge-core'
+import {
+  Box, Drop, Layer, Text,
+} from 'grommet'
+import {
+  CreatePublisher as CreatePublisherIcon, EditField, Logout, MenuItem, User,
+} from 'forge-core'
 import { Avatar } from 'honorable'
 import { useQuery } from '@apollo/client'
 
@@ -31,7 +35,9 @@ export function DropdownItem({ onClick, ...rest }) {
   )
 }
 
-export function Item({ onClick, icon, text, round }) {
+export function Item({
+  onClick, icon, text, round,
+}) {
   return (
     <Box
       pad={{ horizontal: 'small', vertical: 'xsmall' }}

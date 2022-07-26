@@ -1,4 +1,6 @@
-import { A, Div, Flex, H2, Img, Span, Text } from 'honorable'
+import {
+  A, Div, Flex, H2, Img, Span, Text,
+} from 'honorable'
 import { Box } from 'grommet'
 import { ArrowLeftIcon, Chip } from 'pluralsh-design-system'
 import { Link } from 'react-router-dom'

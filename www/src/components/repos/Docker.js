@@ -1,9 +1,15 @@
-import { useContext, useEffect, useMemo, useState } from 'react'
-import { Copy, Links, TabContent, TabHeader, TabHeaderItem, Tabs } from 'forge-core'
+import {
+  useContext, useEffect, useMemo, useState,
+} from 'react'
+import {
+  Copy, Links, TabContent, TabHeader, TabHeaderItem, Tabs,
+} from 'forge-core'
 import { useMutation, useQuery } from '@apollo/client'
 import { useNavigate, useParams } from 'react-router-dom'
 import moment from 'moment'
-import { Anchor, Box, Collapsible, Stack, Text } from 'grommet'
+import {
+  Anchor, Box, Collapsible, Stack, Text,
+} from 'grommet'
 import { Language } from 'grommet-icons'
 import truncate from 'lodash/truncate'
 import Toggle from 'react-toggle'
@@ -250,7 +256,9 @@ function VectorSection({ text, background }) {
   )
 }
 
-function CVSSRow({ text, value, options, colorMap }) {
+function CVSSRow({
+  text, value, options, colorMap,
+}) {
   return (
     <Box
       direction="row"
@@ -492,7 +500,9 @@ function Vulnerability({ vuln }) {
   )
 }
 
-export function HeaderItem({ text, width, nobold, truncate }) {
+export function HeaderItem({
+  text, width, nobold, truncate,
+}) {
   return (
     <Box width={width}>
       <Text
@@ -566,6 +576,7 @@ export function DockerRepository() {
   useEffect(() => {
     if (!data) return
     const { dockerImages: { edges } } = data
+
     if (edges.length === 0) return
 
     navigate(`/dkr/img/${edges[0].node.id}`, { replace: true })
@@ -584,6 +595,7 @@ export function Docker() {
     fetchPolicy: 'cache-and-network',
   })
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
+
   useEffect(() => {
     setFilter(DEFAULT_FILTER)
   }, [id])

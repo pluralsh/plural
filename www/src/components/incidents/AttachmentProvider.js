@@ -1,11 +1,13 @@
-import { createContext, useContext, useMemo, useState } from 'react'
+import {
+  createContext, useContext, useMemo, useState,
+} from 'react'
 import { DndProvider, useDrop } from 'react-dnd'
 import { HTML5Backend, NativeTypes } from 'react-dnd-html5-backend'
 import { Div } from 'honorable'
 
 const FILE_DROP_PROPS = {
   borderColor: 'action-link-inline',
-  background: 'fill-two-hover', 
+  background: 'fill-two-hover',
 }
 
 export const AttachmentContext = createContext({})

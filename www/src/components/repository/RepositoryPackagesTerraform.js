@@ -1,6 +1,8 @@
 import { useContext } from 'react'
 import { Link, useOutletContext } from 'react-router-dom'
-import { Div, Flex, Img, P } from 'honorable'
+import {
+  Div, Flex, Img, P,
+} from 'honorable'
 
 import moment from 'moment'
 
@@ -90,15 +92,13 @@ function Terraform({ terraform, first, last }) {
 function RepositoryPackagesTerraform() {
   const { id } = useContext(RepositoryContext)
   const [q] = useOutletContext()
-  const [terraforms, loadingTerraforms, hasMoreTerraforms, fetchMoreTerraforms] = usePaginatedQuery(
-    TERRAFORM_QUERY,
+  const [terraforms, loadingTerraforms, hasMoreTerraforms, fetchMoreTerraforms] = usePaginatedQuery(TERRAFORM_QUERY,
     {
       variables: {
         repositoryId: id,
       },
     },
-    data => data.terraform
-  )
+    data => data.terraform)
 
   const fuse = new Fuse(terraforms, searchOptions)
   const filteredTerraforms = q ? fuse.search(q).map(({ item }) => item) : terraforms

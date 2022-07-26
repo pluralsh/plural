@@ -14,7 +14,9 @@ import { CurrentUserContext } from '../login/CurrentUser'
 import { EDIT_USER } from './queries'
 import { canEdit } from './EditAccount'
 
-export function UserRow({ user, next, noborder, notoggle, deletable, update }) {
+export function UserRow({
+  user, next, noborder, notoggle, deletable, update,
+}) {
   const admin = user.roles && user.roles.admin
   const { account, ...me } = useContext(CurrentUserContext)
   const [mutation] = useMutation(EDIT_USER, {

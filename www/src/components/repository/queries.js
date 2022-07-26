@@ -1,6 +1,8 @@
 import { gql } from '@apollo/client'
 
-import { ArtifactFragment, InstallationFragment, RepoFragment, StepFragment, TestFragment } from '../../models/repo'
+import {
+  ArtifactFragment, InstallationFragment, RepoFragment, StepFragment, TestFragment,
+} from '../../models/repo'
 import { ChartFragment } from '../../models/chart'
 import { TerraformFragment } from '../../models/terraform'
 import { DockerRepoFragment } from '../../models/docker'

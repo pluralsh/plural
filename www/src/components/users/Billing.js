@@ -26,6 +26,7 @@ export function Billing() {
   const { section } = useParams()
   const navigate = useNavigate()
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
+
   useEffect(() => setBreadcrumbs([
     { text: 'billing', url: '/billing/methods' },
     { text: section, url: `/billing/${section}` },

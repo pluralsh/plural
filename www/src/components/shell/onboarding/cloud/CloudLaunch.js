@@ -25,8 +25,7 @@ function CloudLaunch() {
     demoId,
   } = useContext(CreateShellContext)
 
-  const [createShellMutation, { data: mutationData, error }] = useMutation(
-    CREATE_SHELL_MUTATION,
+  const [createShellMutation, { data: mutationData, error }] = useMutation(CREATE_SHELL_MUTATION,
     {
       variables: {
         attributes: {
@@ -40,15 +39,12 @@ function CloudLaunch() {
           demoId,
         },
       },
-    }
-  )
-  const { data } = useQuery(
-    CLOUD_SHELL_QUERY,
+    })
+  const { data } = useQuery(CLOUD_SHELL_QUERY,
     {
       pollInterval: 2000,
       skip: !mutationData,
-    }
-  )
+    })
 
   useEffect(() => {
     createShellMutation()

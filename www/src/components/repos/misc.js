@@ -6,6 +6,7 @@ import { DEFAULT_CHART_ICON, DarkProviderIcons, ProviderIcons } from './constant
 export function Provider({ provider, width, size }) {
   const { dark } = useContext(ThemeContext)
   let url = ProviderIcons[provider] || DEFAULT_CHART_ICON
+
   if (dark && DarkProviderIcons[provider]) {
     url = DarkProviderIcons[provider]
   }

@@ -34,7 +34,9 @@ export function LabeledInput({ label, children }) {
   )
 }
 
-function ImagePicker({ image, setImage, background, label }) {
+function ImagePicker({
+  image, setImage, background, label,
+}) {
   return (
     <Box
       direction="row"
@@ -57,14 +59,16 @@ function ImagePicker({ image, setImage, background, label }) {
             height="50px"
             src={image.previewUrl}
           />
-        ) :
-          <Add size="20px" />}
+        )
+          : <Add size="20px" />}
       </Box>
       <Box gap="xsmall">
         <Text size="small">{image ? image.file.name : 'Select an image'}</Text>
         <FilePicker
           extensions={['jpg', 'jpeg', 'png']}
-          dims={{ minWidth: 100, maxWidth: 500, minHeight: 100, maxHeight: 500 }}
+          dims={{
+            minWidth: 100, maxWidth: 500, minHeight: 100, maxHeight: 500,
+          }}
           onChange={file => generatePreview(file, setImage)}
         >
           <SecondaryButton
@@ -77,7 +81,9 @@ function ImagePicker({ image, setImage, background, label }) {
   )
 }
 
-export function RepoForm({ image, setImage, darkImage, setDarkImage, state, setState, mutation, loading, update, error }) {
+export function RepoForm({
+  image, setImage, darkImage, setDarkImage, state, setState, mutation, loading, update, error,
+}) {
   const setOauthSettings = useCallback((key, value) => (
     setState({ ...state, oauthSettings: { ...state.oauthSettings, [key]: value } })
   ), [setState, state])

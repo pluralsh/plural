@@ -24,13 +24,12 @@ export function Plans({ repository, nocreate }) {
 
   const approvePlan = useCallback(plan => {
     if (!subscription) {
-      setModal(
-        <SubscribeModal
-          plan={plan}
-          installationId={id}
-          repositoryId={repository.id}
-          setOpen={setModal}
-        />)
+      setModal(<SubscribeModal
+        plan={plan}
+        installationId={id}
+        repositoryId={repository.id}
+        setOpen={setModal}
+      />)
 
       return
     }
@@ -49,8 +48,8 @@ export function Plans({ repository, nocreate }) {
         pad="small"
         gap="small"
       >
-        {plans.length > 0 ?
-          plans.map(plan => (
+        {plans.length > 0
+          ? plans.map(plan => (
             <Plan
               key={plan.id}
               subscription={subscription}
@@ -58,8 +57,8 @@ export function Plans({ repository, nocreate }) {
               repository={repository}
               plan={plan}
             />
-          )) :
-          <Text size="small">This repo is currently free to use</Text>}
+          ))
+          : <Text size="small">This repo is currently free to use</Text>}
         {editable && (<CreateAnchor onClick={() => setOpen(true)} />)}
       </Box>
       {open && !nocreate && (
@@ -121,7 +120,9 @@ export function InstallationInner({ installation, repository }) {
   return null
 }
 
-export default function Installation({ repository, onUpdate, noHelm, open }) {
+export default function Installation({
+  repository, onUpdate, noHelm, open,
+}) {
   const { installation } = repository
   const hasPlans = repository.plans && repository.plans.length > 0
   const [tab, setTab] = useState((noHelm && !installation) ? 'Configuration' : 'Installation')

@@ -24,7 +24,9 @@ export const awsSynopsis = ({ workspace, credentials }) => (
   ]
 )
 
-export function AwsForm({ credentials, setCredentials, workspace, setWorkspace }) {
+export function AwsForm({
+  credentials, setCredentials, workspace, setWorkspace,
+}) {
   const aws = useMemo(() => credentials.aws || {}, [credentials])
 
   const update = useCallback((field, val) => (

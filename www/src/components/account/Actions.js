@@ -1,6 +1,8 @@
 import { Button, ModalActions } from 'pluralsh-design-system'
 
-export function Actions({ cancel, submit, loading, action, destructive }) {
+export function Actions({
+  cancel, submit, loading, action, destructive,
+}) {
   return (
     <ModalActions>
       <Button

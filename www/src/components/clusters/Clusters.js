@@ -1,8 +1,12 @@
 import { useQuery } from '@apollo/client'
 import { Box } from 'grommet'
-import { Button, Flex, MenuItem, P, Select, Span } from 'honorable'
+import {
+  Button, Flex, MenuItem, P, Select, Span,
+} from 'honorable'
 import moment from 'moment'
-import { Chip, ClusterIcon, ReloadIcon, StatusIpIcon, StatusOkIcon } from 'pluralsh-design-system'
+import {
+  Chip, ClusterIcon, ReloadIcon, StatusIpIcon, StatusOkIcon,
+} from 'pluralsh-design-system'
 import { useEffect, useMemo, useState } from 'react'
 
 import { appendConnection, extendConnection } from '../../utils/graphql'
@@ -14,7 +18,9 @@ import { StandardScroller } from '../utils/SmoothScroller'
 
 import { ConsoleButton } from './ConsoleButton'
 
-import { QUEUE, QUEUES, UPGRADE_QUEUE_SUB, UPGRADE_SUB } from './queries'
+import {
+  QUEUE, QUEUES, UPGRADE_QUEUE_SUB, UPGRADE_SUB,
+} from './queries'
 
 function QueueItem({ q }) {
   return (
@@ -148,7 +154,9 @@ function Upgrade({ upgrade, acked, last }) {
 
 function Upgrades({ q }) {
   const [listRef, setListRef] = useState(null)
-  const { data, loading, fetchMore, subscribeToMore, refetch } = useQuery(QUEUE, {
+  const {
+    data, loading, fetchMore, subscribeToMore, refetch,
+  } = useQuery(QUEUE, {
     variables: { id: q.id },
     fetchPolicy: 'cache-and-network',
   })
@@ -223,6 +231,7 @@ function Upgrades({ q }) {
 function QueueHealth({ q, background }) {
   const [now, setNow] = useState(moment())
   const pinged = useMemo(() => moment(q.pingedAt), [q.pingedAt])
+
   useEffect(() => {
     const int = setInterval(() => setNow(moment()), 1000)
 
@@ -247,7 +256,7 @@ export function Clusters() {
 
   useEffect(() => subscribeToMore({
     document: UPGRADE_QUEUE_SUB,
-    updateQuery: ({ upgradeQueues, ...prev }, { subscriptionData: { data: { upgradeQueueDelta: { delta, payload } } } }) => delta === 'CREATE' ? { ...prev, upgradeQueues: [payload, ...upgradeQueues] } : prev,
+    updateQuery: ({ upgradeQueues, ...prev }, { subscriptionData: { data: { upgradeQueueDelta: { delta, payload } } } }) => (delta === 'CREATE' ? { ...prev, upgradeQueues: [payload, ...upgradeQueues] } : prev),
   }), [subscribeToMore])
 
   useEffect(() => {

@@ -5,7 +5,7 @@ import { formatLocation } from '../../utils/geo'
 
 export function Location({ ip, city, country }) {
   if (!ip) return (<Span>n/a</Span>)
-  
+
   return (
     <Box>
       {country && (<Span>{formatLocation(country, city)}</Span>)}

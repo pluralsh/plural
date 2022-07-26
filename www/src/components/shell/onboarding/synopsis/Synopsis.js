@@ -1,6 +1,8 @@
 import { useContext } from 'react'
 import { Div, Flex, P } from 'honorable'
-import { Button, CloudIcon, GearTrainIcon, GitHubIcon } from 'pluralsh-design-system'
+import {
+  Button, CloudIcon, GearTrainIcon, GitHubIcon,
+} from 'pluralsh-design-system'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'
 
@@ -10,7 +12,9 @@ import OnboardingNavSection from '../OnboardingNavSection'
 import OnboardingCard from '../OnboardingCard'
 
 function Synopsis() {
-  const { scm, workspace, previous, next, demoId, setSection, ...rest } = useContext(CreateShellContext)
+  const {
+    scm, workspace, previous, next, demoId, setSection, ...rest
+  } = useContext(CreateShellContext)
 
   console.log(workspace)
   console.log(rest)

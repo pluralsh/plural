@@ -4,7 +4,9 @@ import { Portal } from 'react-portal'
 
 const FLYOUT_ID = 'flyout-container'
 
-export function Flyout({ width, title, setOpen, children, ...rest }) {
+export function Flyout({
+  width, title, setOpen, children, ...rest
+}) {
   return (
     <Portal node={document.getElementById(FLYOUT_ID)}>
       <Box

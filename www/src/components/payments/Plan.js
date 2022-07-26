@@ -2,8 +2,12 @@ import './plan.css'
 
 import { useCallback, useContext, useState } from 'react'
 import styled from 'styled-components'
-import { Check as Checkmark, Edit, Group, HoveredBackground, Reload as Refresh } from 'forge-core'
-import { Anchor, Box, Collapsible, Layer, Stack, Text } from 'grommet'
+import {
+  Check as Checkmark, Edit, Group, HoveredBackground, Reload as Refresh,
+} from 'forge-core'
+import {
+  Anchor, Box, Collapsible, Layer, Stack, Text,
+} from 'grommet'
 import { Cube } from 'grommet-icons'
 import { normalizeColor } from 'grommet/utils'
 
@@ -17,24 +21,28 @@ import { UpdatePlanForm } from './UpdatePlanForm'
 
 export function LineItemIcon({ dimension, size }) {
   switch (dimension) {
-    case 'user':
-      return (
-        <Group
-          size={size || '15px'}
-          color="focus"
-        />
-      )
-    default:
-      return (
-        <Cube
-          size={size || '15px'}
-          color="focus"
-        />
-      )
+  case 'user':
+    return (
+      <Group
+        size={size || '15px'}
+        color="focus"
+      />
+    )
+  default:
+    return (
+      <Cube
+        size={size || '15px'}
+        color="focus"
+      />
+    )
   }
 }
 
-export function LineItem({ item: { cost, name, dimension, type }, included: { quantity } }) {
+export function LineItem({
+  item: {
+    cost, name, dimension, type,
+  }, included: { quantity },
+}) {
   const metered = type === PlanType.METERED
 
   return (
@@ -196,9 +204,13 @@ function EditPlan({ plan }) {
   )
 }
 
-export default function Plan({ approvePlan, subscription, repository, plan }) {
+export default function Plan({
+  approvePlan, subscription, repository, plan,
+}) {
   const me = useContext(CurrentUserContext)
-  const { name, cost, period, lineItems: { items, included }, metadata } = plan
+  const {
+    name, cost, period, lineItems: { items, included }, metadata,
+  } = plan
   const [open, setOpen] = useState(false)
   const hasFeatures = metadata && metadata.features && metadata.features.length > 0
   const hasLevels = plan.serviceLevels && plan.serviceLevels.length > 0

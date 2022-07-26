@@ -6,11 +6,17 @@ import { useState } from 'react'
 import lookup from 'country-code-lookup'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 
-import { CopyIcon, GraphIcon, ListIcon, Modal, ModalHeader } from 'pluralsh-design-system'
+import {
+  CopyIcon, GraphIcon, ListIcon, Modal, ModalHeader,
+} from 'pluralsh-design-system'
 
-import { appendConnection, deepUpdate, extendConnection, removeConnection, updateCache } from '../../utils/graphql'
+import {
+  appendConnection, deepUpdate, extendConnection, removeConnection, updateCache,
+} from '../../utils/graphql'
 import { Placeholder } from '../accounts/Audits'
-import { CREATE_TOKEN, DELETE_TOKEN, TOKENS_Q, TOKEN_AUDITS, TOKEN_METRICS } from '../users/queries'
+import {
+  CREATE_TOKEN, DELETE_TOKEN, TOKENS_Q, TOKEN_AUDITS, TOKEN_METRICS,
+} from '../users/queries'
 import { obscure } from '../users/utils'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { StandardScroller } from '../utils/SmoothScroller'

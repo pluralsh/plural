@@ -16,7 +16,9 @@ import { Container } from '../utils/Container'
 import { Header } from './Header'
 import { LoginMethod as Method } from './types'
 
-function Section({ header, description, children, noHeader }) {
+function Section({
+  header, description, children, noHeader,
+}) {
   return (
     <Box gap="small">
       <Box gap="2px">
@@ -28,13 +30,13 @@ function Section({ header, description, children, noHeader }) {
   )
 }
 
-const validPassword = pass => pass.length < 8 ? { error: true, message: 'password is too short' } : { error: false, message: 'valid password!' }
+const validPassword = pass => (pass.length < 8 ? { error: true, message: 'password is too short' } : { error: false, message: 'valid password!' })
 
 function UpdatePassword({ cancel }) {
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
   const [mutation, { loading }] = useMutation(UPDATE_USER, { variables: { attributes: { password } } })
-    
+
   return (
     <Box gap="small">
       <ValidatedInput
@@ -44,7 +46,7 @@ function UpdatePassword({ cancel }) {
         type="password"
         value={password}
         onChange={({ target: { value } }) => setPassword(value)}
-        validation={pass => !pass ? null : validPassword(pass)}
+        validation={pass => (!pass ? null : validPassword(pass))}
       />
       <ValidatedInput
         width="100%"
@@ -53,7 +55,7 @@ function UpdatePassword({ cancel }) {
         type="password"
         value={confirm}
         onChange={({ target: { value } }) => setConfirm(value)}
-        validation={pass => !pass ? null : (pass !== password ? { error: true, message: 'passwords do not match' } : { error: false, message: 'passwords match!' })}
+        validation={pass => (!pass ? null : (pass !== password ? { error: true, message: 'passwords do not match' } : { error: false, message: 'passwords match!' }))}
       />
       <Box
         direction="row"
@@ -80,7 +82,9 @@ function UpdatePassword({ cancel }) {
   )
 }
 
-function LoginMethod({ icon, name, onClick, active }) {
+function LoginMethod({
+  icon, name, onClick, active,
+}) {
   return (
     <Box
       border
@@ -118,12 +122,12 @@ function LoginMethods() {
   return (
     <Box gap="small">
       {data.oauthUrls.map(({ provider, authorizeUrl }) => (
-        <LoginMethod 
+        <LoginMethod
           icon={createElement(METHOD_ICONS[provider], { size: '20px', color: provider === Method.GITHUB ? 'white' : 'plain' })}
           active={me.loginMethod === provider}
           name={`Login with ${provider.toLowerCase()}`}
           onClick={() => {
-            window.location = authorizeUrl 
+            window.location = authorizeUrl
           }}
         />
       ))}
@@ -178,7 +182,7 @@ export function Security() {
         >
           <LoginMethods />
         </Section>
-      </Box> 
+      </Box>
     </Container>
   )
 }

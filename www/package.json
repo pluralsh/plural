@@ -29,6 +29,7 @@
     "@nivo/geo": "0.79.1",
     "@nivo/line": "0.79.1",
     "@octokit/core": "3.6.0",
+    "@pluralsh/eslint-config-typescript": "2.2.0",
     "@testing-library/jest-dom": "5.16.4",
     "@testing-library/react": "13.3.0",
     "apollo-absinthe-upload-link": "1.7.0",

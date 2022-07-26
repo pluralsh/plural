@@ -1,5 +1,9 @@
-import { useContext, useEffect, useRef, useState } from 'react'
-import { Anchor, Box, Drop, Text } from 'grommet'
+import {
+  useContext, useEffect, useRef, useState,
+} from 'react'
+import {
+  Anchor, Box, Drop, Text,
+} from 'grommet'
 import { useQuery } from '@apollo/client'
 import { useNavigate } from 'react-router-dom'
 import { Scroller } from 'forge-core'
@@ -52,7 +56,11 @@ function RepoStub({ id, icon, name }) {
   )
 }
 
-function Publisher({ publisher: { id, name, description, repositories, ...publisher } }) {
+function Publisher({
+  publisher: {
+    id, name, description, repositories, ...publisher
+  },
+}) {
   const navigate = useNavigate()
 
   return (
@@ -96,6 +104,7 @@ function Publisher({ publisher: { id, name, description, repositories, ...publis
 export default function Publishers() {
   const { loading, data, fetchMore } = useQuery(PUBLISHERS_Q)
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
+
   useEffect(() => {
     setBreadcrumbs([])
   }, [setBreadcrumbs])
@@ -116,7 +125,8 @@ export default function Publishers() {
         mapper={({ node }) => <Publisher publisher={node} />}
         onLoadMore={() => pageInfo && fetchMore({
           variables: { cursor: pageInfo.endCursor },
-          updateQuery: (prev, { fetchMoreResult: { publishers: { edges, pageInfo } } }) => ({ ...prev,
+          updateQuery: (prev, { fetchMoreResult: { publishers: { edges, pageInfo } } }) => ({
+            ...prev,
             publishers: {
               ...prev.publishers,
               pageInfo,

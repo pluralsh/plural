@@ -1,10 +1,20 @@
-import { createElement, useCallback, useEffect, useState } from 'react'
-import { Box, Collapsible, Form, Keyboard, Text } from 'grommet'
+import {
+  createElement, useCallback, useEffect, useState,
+} from 'react'
+import {
+  Box, Collapsible, Form, Keyboard, Text,
+} from 'grommet'
 import { Divider, FormField } from 'pluralsh-design-system'
-import { useApolloClient, useLazyQuery, useMutation, useQuery } from '@apollo/client'
-import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
+import {
+  useApolloClient, useLazyQuery, useMutation, useQuery,
+} from '@apollo/client'
+import {
+  Navigate, useLocation, useNavigate, useParams,
+} from 'react-router-dom'
 import queryString from 'query-string'
-import { A, Article, Button, Div, Flex, H1, H2, Icon, Img, Input, P, Svg } from 'honorable'
+import {
+  A, Article, Button, Div, Flex, H1, H2, Icon, Img, Input, P, Svg,
+} from 'honorable'
 
 import { fetchToken, setToken } from '../../helpers/authentication'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
@@ -14,14 +24,20 @@ import { ACCEPT_LOGIN } from '../oidc/queries'
 
 import { host } from '../../helpers/hostname'
 
-import { getDeviceToken, saveChallenge, saveDeviceToken, wipeChallenge, wipeDeviceToken } from './utils'
+import {
+  getDeviceToken, saveChallenge, saveDeviceToken, wipeChallenge, wipeDeviceToken,
+} from './utils'
 
 import { LoginMethod } from './types'
-import { LOGIN_METHOD, LOGIN_MUTATION, OAUTH_URLS, PASSWORDLESS_LOGIN, POLL_LOGIN_TOKEN, SIGNUP_MUTATION } from './queries'
+import {
+  LOGIN_METHOD, LOGIN_MUTATION, OAUTH_URLS, PASSWORDLESS_LOGIN, POLL_LOGIN_TOKEN, SIGNUP_MUTATION,
+} from './queries'
 import { METHOD_ICONS } from './OauthEnabler'
 import { finishedDeviceLogin } from './DeviceLoginNotif'
 
-export function LabelledInput({ label, value, onChange, placeholder, type, caption, hint }) {
+export function LabelledInput({
+  label, value, onChange, placeholder, type, caption, hint,
+}) {
   return (
     <FormField
       label={label}
@@ -303,6 +319,7 @@ export function Login() {
 
   useEffect(() => {
     const jwt = fetchToken()
+
     if (jwt && challenge) {
       handleOauthChallenge(client, challenge)
     }
@@ -311,7 +328,7 @@ export function Login() {
     }
   }, [challenge, deviceToken, navigate, client])
 
-  const submit = useCallback(() => open ? mutation() : getLoginMethod(), [mutation, getLoginMethod, open])
+  const submit = useCallback(() => (open ? mutation() : getLoginMethod()), [mutation, getLoginMethod, open])
 
   const loading = qLoading || mLoading
 

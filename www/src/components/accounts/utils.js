@@ -17,19 +17,23 @@ export function addGroupMember(cache, group, member) {
     query: GROUP_MEMBERS,
     variables: { id: group.id },
   })
+
   cache.writeQuery({
     query: GROUP_MEMBERS,
     variables: { id: group.id },
-    data: { ...data,
+    data: {
+      ...data,
       members: {
         ...members,
         edges: [{ __typename: 'GroupMemberEdge', node: member }, ...members.edges],
-      } },
+      },
+    },
   })
 }
 
 export function deleteGroup(cache, group) {
   const { groups, ...data } = cache.readQuery({ query: GROUPS_Q, variables: { q: null } })
+
   cache.writeQuery({
     query: GROUPS_Q,
     variables: { q: null },
@@ -42,6 +46,7 @@ export function deleteGroup(cache, group) {
 
 export function deleteRole(cache, role) {
   const { roles, ...data } = cache.readQuery({ query: ROLES_Q, variables: { q: null } })
+
   cache.writeQuery({
     query: ROLES_Q,
     variables: { q: null },
@@ -51,6 +56,7 @@ export function deleteRole(cache, role) {
 
 export function addRole(cache, role) {
   const { roles, ...data } = cache.readQuery({ query: ROLES_Q, variables: { q: null } })
+
   cache.writeQuery({
     query: ROLES_Q,
     variables: { q: null },

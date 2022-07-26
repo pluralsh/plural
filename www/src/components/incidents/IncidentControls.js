@@ -1,6 +1,10 @@
 import { useCallback, useState } from 'react'
-import { Anchor, Box, Layer, Text } from 'grommet'
-import { Button, Check as Checkmark, Notification, Owner, SecondaryButton } from 'forge-core'
+import {
+  Anchor, Box, Layer, Text,
+} from 'grommet'
+import {
+  Button, Check as Checkmark, Notification, Owner, SecondaryButton,
+} from 'forge-core'
 import { Zoom } from 'grommet-icons'
 import { useMutation } from '@apollo/client'
 
@@ -13,7 +17,9 @@ import { updateCache } from '../../utils/graphql'
 
 import { useEditor } from '../utils/hooks'
 
-import { ACCEPT_INCIDENT, COMPLETE_INCIDENT, FOLLOW, INCIDENT_Q, UNFOLLOW, ZOOM_MEETING } from './queries'
+import {
+  ACCEPT_INCIDENT, COMPLETE_INCIDENT, FOLLOW, INCIDENT_Q, UNFOLLOW, ZOOM_MEETING,
+} from './queries'
 
 import { IncidentStatus } from './types'
 

@@ -15,9 +15,11 @@ function SlaBreached() {
   )
 }
 
-const pad = v => v < 10 ? `0${v}` : v
+const pad = v => (v < 10 ? `0${v}` : v)
 
-function RenderCountdown({ hours, minutes, seconds, completed }) {
+function RenderCountdown({
+  hours, minutes, seconds, completed,
+}) {
   if (completed) return <SlaBreached />
 
   return (

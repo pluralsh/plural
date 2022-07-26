@@ -12,6 +12,7 @@ export function generatePreview(file, callback) {
 
 export function download(url) {
   const tempLink = document.createElement('a')
+
   tempLink.style.display = 'none'
   tempLink.href = url
   tempLink.setAttribute('download', 'true')

@@ -1,6 +1,8 @@
 import { useCallback, useContext, useEffect } from 'react'
 
-import { Flex, MenuItem, Select, Text } from 'honorable'
+import {
+  Flex, MenuItem, Select, Text,
+} from 'honorable'
 import { FileIcon, FormField } from 'pluralsh-design-system'
 
 import { AttachmentContext, AttachmentProvider, Dropzone } from '../../../incidents/AttachmentProvider'
@@ -39,13 +41,16 @@ export const gcpSynopsis = ({ workspace }) => (
 function FileInput({ updateCreds, gcp, setProject }) {
   // Seems to be getting stuck in infinite loop when file is uploaded
   const { attachment } = useContext(AttachmentContext)
+
   useEffect(() => {
     if (!attachment) return
 
     const reader = new FileReader()
+
     reader.onload = ({ target: { result } }) => {
       try {
         const creds = JSON.parse(result)
+
         setProject(creds.project_id)
         updateCreds('applicationCredentials', result)
       }
@@ -87,7 +92,9 @@ function FileInput({ updateCreds, gcp, setProject }) {
   )
 }
 
-export function GcpForm({ workspace, setWorkspace, credentials, setCredentials }) {
+export function GcpForm({
+  workspace, setWorkspace, credentials, setCredentials,
+}) {
   const gcp = credentials.gcp || {}
   const updateCreds = useCallback((field, val) => (
     setCredentials({ ...credentials, gcp: { ...credentials.gcp, [field]: val } })
@@ -141,5 +148,4 @@ export function GcpForm({ workspace, setWorkspace, credentials, setCredentials }
       </FormField>
     </>
   )
-
 }

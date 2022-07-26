@@ -1,6 +1,10 @@
-import { useCallback, useContext, useMemo, useRef, useState } from 'react'
+import {
+  useCallback, useContext, useMemo, useRef, useState,
+} from 'react'
 import { useQuery } from '@apollo/client'
-import { Box, Drop, Text, TextInput } from 'grommet'
+import {
+  Box, Drop, Text, TextInput,
+} from 'grommet'
 import { Bundle, Incidents as IncidentsI, Explore as Search } from 'forge-core'
 import { Checkmark } from 'grommet-icons'
 
@@ -14,8 +18,12 @@ import { ReturnToBeginning } from '../utils/ReturnToBeginning'
 
 import { INCIDENTS_Q, REPOS_Q } from './queries'
 import { RepoOption } from './CreateIncident'
-import { FilterSelect, IncidentRow, IncidentToolbar, IncidentViewContext } from './Incidents'
-import { IncidentFilter, IncidentSort, IncidentStatus, Order } from './types'
+import {
+  FilterSelect, IncidentRow, IncidentToolbar, IncidentViewContext,
+} from './Incidents'
+import {
+  IncidentFilter, IncidentSort, IncidentStatus, Order,
+} from './types'
 
 function Placeholder() {
   return (
@@ -169,11 +177,15 @@ function StatusSelector({ statuses, setStatuses }) {
 function Incidents({ repository, setSelect, select }) {
   const [listRef, setListRef] = useState(null)
   const [scrolled, setScrolled] = useState(false)
-  const { q, setQ, sort, order, filters } = useContext(IncidentViewContext)
+  const {
+    q, setQ, sort, order, filters,
+  } = useContext(IncidentViewContext)
   const [statuses, setStatuses] = useState([IncidentStatus.OPEN, IncidentStatus.IN_PROGRESS, IncidentStatus.RESOLVED])
   const allFilters = useMemo(() => [...filters, { type: IncidentFilter.STATUS, statuses }], [filters, statuses])
   const { data, fetchMore } = useQuery(INCIDENTS_Q, {
-    variables: { repositoryId: repository && repository.id, q, sort, order, filters: allFilters, supports: true },
+    variables: {
+      repositoryId: repository && repository.id, q, sort, order, filters: allFilters, supports: true,
+    },
     fetchPolicy: 'cache-and-network',
   })
 
@@ -267,7 +279,9 @@ export function Responses() {
     setRepository(repo.id === (repository && repository.id) ? null : repo)
     setSelect(false)
   }, [setRepository, setSelect, repository])
-  const value = useMemo(() => ({ q, setQ, sort, setSort, order, setOrder, filters, setFilters }), [q, sort, order, filters])
+  const value = useMemo(() => ({
+    q, setQ, sort, setSort, order, setOrder, filters, setFilters,
+  }), [q, sort, order, filters])
 
   return (
     <IncidentViewContext.Provider value={value}>

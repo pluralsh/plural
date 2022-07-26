@@ -8,7 +8,9 @@ import { deepUpdate, updateCache } from '../../utils/graphql'
 
 import { CREATE_PUBLISHER } from './queries'
 
-function Input({ label, header, placeholder, value, setValue }) {
+function Input({
+  label, header, placeholder, value, setValue,
+}) {
   return (
     <Box>
       <Text

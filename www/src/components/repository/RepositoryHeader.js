@@ -3,7 +3,7 @@ import {
   A, Button, Div, Flex, H1, Img, P, Span,
 } from 'honorable'
 import {
-  GearTrainIcon, GitHubIcon, InvoicesIcon, LinksIcon, Tag,
+  Chip, GearTrainIcon, GitHubIcon, InvoicesIcon, LinksIcon,
 } from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
@@ -171,13 +171,13 @@ function RepositoryHeader(props) {
           wrap="wrap"
         >
           {repository.tags.map(({ tag }) => (
-            <Tag
+            <Chip
               key={tag}
               mr={0.5}
               mb={0.5}
             >
-              {tag}
-            </Tag>
+              <Span fontWeight="400">{tag}</Span>
+            </Chip>
           ))}
         </Flex>
       </Div>

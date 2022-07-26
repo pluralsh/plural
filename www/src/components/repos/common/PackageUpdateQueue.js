@@ -7,6 +7,8 @@ import moment from 'moment'
 
 import { useOutletContext } from 'react-router-dom'
 
+import { PageTitle } from 'pluralsh-design-system'
+
 import { extendConnection } from '../../../utils/graphql'
 import { StandardScroller } from '../../utils/SmoothScroller'
 
@@ -15,8 +17,6 @@ import { HeaderItem } from '../Docker'
 import { DEFERRED_UPDATES } from '../queries'
 
 import { LoopingLogo } from '../../utils/AnimatedLogo'
-
-import { PackageViewHeader } from './misc'
 
 const ROW_HEIGHT = '50px'
 const format = dt => moment(dt).format('lll')
@@ -107,7 +107,7 @@ export default function PackageUpdateQueue() {
       pad="medium"
       gap="small"
     >
-      <PackageViewHeader title="Update queue" />
+      <PageTitle heading="Update queue" />
       <DeferredUpdateHeader />
       <StandardScroller
         listRef={listRef}

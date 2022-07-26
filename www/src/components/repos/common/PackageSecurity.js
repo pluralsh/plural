@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Box, Collapsible } from 'grommet'
-import { Chip, CollapseIcon, ErrorIcon } from 'pluralsh-design-system'
+import {
+  Chip, CollapseIcon, ErrorIcon, PageTitle,
+} from 'pluralsh-design-system'
 
 import {
   Button, Div, H2, Span,
@@ -14,7 +16,7 @@ import { capitalize } from 'lodash/string'
 
 import { Table, TableData, TableRow } from '../../utils/Table'
 
-import { PackageGrade, PackageProperty, PackageViewHeader } from './misc'
+import { PackageGrade, PackageProperty } from './misc'
 
 const chipSeverity = {
   low: 'success',
@@ -67,8 +69,9 @@ function ScanViolation({ violation, last }) {
           direction="row"
           pad={{ horizontal: 'large', vertical: 'small' }}
           gap="small"
-          border="bottom"
+          borderBottom={last ? null : '1px solid border'}
           background="fill-two"
+          round={{ corner: 'bottom', size: '4px' }}
         >
           <Box basis="1/2"><PackageProperty header="Error message">{violation.description}</PackageProperty></Box>
           <Box
@@ -94,7 +97,7 @@ export default function PackageSecurity() {
       flex={false}
       gap="medium"
     >
-      <PackageViewHeader title="Security">{
+      <PageTitle heading="Security">{
         current?.scan && (
           <PackageGrade
             scan={current.scan}
@@ -102,7 +105,7 @@ export default function PackageSecurity() {
           />
         )
       }
-      </PackageViewHeader>
+      </PageTitle>
       <H2>Scan failures</H2>
       {current.scan.errors?.length ? (
         <Box

@@ -5,20 +5,20 @@ import RepositoryContext from '../../contexts/RepositoryContext'
 
 import RepositoryDescriptionMarkdown from './RepositoryDescriptionMarkdown'
 
+import RepositoryHeader from './RepositoryHeader.tsx'
+
 function RepositoryDescription() {
   const repository = useContext(RepositoryContext)
 
   return (
     <Flex
       direction="column"
-      backgroundColor="fill-one"
       color="text-light"
-      border="1px solid border"
-      padding="medium"
       paddingBottom="xlarge"
       borderRadius="large"
-      maxWidth="640px"
+      position="relative"
     >
+      <RepositoryHeader>Readme</RepositoryHeader>
       {repository.readme ? (
         <RepositoryDescriptionMarkdown
           text={repository.readme}

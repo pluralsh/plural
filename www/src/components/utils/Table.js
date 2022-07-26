@@ -49,7 +49,11 @@ export function TableRow({ children, suffix, last, ...flex }) {
 }
 
 export function TableData({ children }) {
-  return <Span color="text-light">{children}</Span>
+  return (
+    <Span color="text-light">
+      {children}
+    </Span>
+  )
 }
 
 export function Table({ sizes, headers, children, background, ...flex }) {

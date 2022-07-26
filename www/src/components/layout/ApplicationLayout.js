@@ -16,6 +16,7 @@ function ApplicationLayout({ children }) {
       <Flex
         direction="column"
         flexGrow={1}
+        overflowX="hidden"
       >
         {children}
       </Flex>

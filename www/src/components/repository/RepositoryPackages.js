@@ -6,6 +6,8 @@ import { Input, MagnifyingGlassIcon } from 'pluralsh-design-system'
 
 import { ButtonGroup } from '../utils/ButtonGroup'
 
+import RepositoryHeader from './RepositoryHeader.tsx'
+
 export function packageCardStyle(first, last) {
   return {
     backgroundColor: 'fill-one',
@@ -41,6 +43,7 @@ export default function RepositoryPackages() {
       direction="column"
       height="100%"
     >
+      <RepositoryHeader>Packages</RepositoryHeader>
       <Flex justifyContent="space-between">
         <Input
           flexBasis="350px"

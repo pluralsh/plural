@@ -228,6 +228,9 @@ function InstallDropdownButton({ recipes, ...props }) {
             setRecipe(null)
             setTab(0)
           }}
+          endIcon={(
+            <CaretDownIcon size={8} />
+          )}
           {...props}
         >
           {renderTabs()}

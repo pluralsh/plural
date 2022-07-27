@@ -220,7 +220,7 @@ function MarketplaceRepositories({ installed, ...props }) {
                   size={14}
                 />
               )}
-              placeholder="Search a repository"
+              placeholder="Search for a repository"
               value={search}
               onChange={event => setSearch(event.target.value)}
             />

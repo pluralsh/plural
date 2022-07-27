@@ -2,3 +2,4 @@ boto3
 click
 python-graphql-client
 pyyaml
+webflowpy

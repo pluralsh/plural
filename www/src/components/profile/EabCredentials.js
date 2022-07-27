@@ -3,6 +3,8 @@ import { Box } from 'grommet'
 import moment from 'moment'
 import { useState } from 'react'
 
+import { PageTitle } from 'pluralsh-design-system'
+
 import { updateCache } from '../../utils/graphql'
 import { Confirm } from '../account/Confirm'
 
@@ -12,7 +14,6 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 import { Container } from '../utils/Container'
 import { Table, TableData, TableRow } from '../utils/Table'
 
-import { Header } from './Header'
 import { DeleteIcon } from './Icon'
 
 function EabCredential({ credential, last }) {
@@ -64,10 +65,7 @@ export function EabCredentials() {
         gap="medium"
         fill
       >
-        <Header
-          header="EAB Credentials"
-          description="Credentials used to generate an ACME account for certificate issuance in plural clusters"
-        />
+        <PageTitle heading="EAB credentials" />
         <Box fill>
           <Table
             headers={['Key Id', 'HMAC Key', 'Cluster', 'Created On']}

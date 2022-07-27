@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
 import { Button, Div, Span } from 'honorable'
-import { StatusOkIcon, ValidatedInput } from 'pluralsh-design-system'
+import { PageTitle, StatusOkIcon, ValidatedInput } from 'pluralsh-design-system'
 import { createElement, useContext, useState } from 'react'
 import { Password } from 'forge-core'
 
@@ -13,7 +13,6 @@ import { OAUTH_URLS, UPDATE_USER } from '../users/queries'
 
 import { Container } from '../utils/Container'
 
-import { Header } from './Header'
 import { LoginMethod as Method } from './types'
 
 function Section({
@@ -156,10 +155,7 @@ export function Security() {
         gap="medium"
         fill
       >
-        <Header
-          header="Security & Privacy"
-          description="Manage how you log in to your account"
-        />
+        <PageTitle heading="Security" />
         <Section
           header="Password"
           noHeader={pass}

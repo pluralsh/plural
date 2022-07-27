@@ -6,10 +6,10 @@ import { SidebarTabs } from '../utils/SidebarTabs'
 
 const DIRECTORY = [
   { path: '/profile/me', label: 'Profile' },
-  { path: '/profile/security', label: 'Security & Privacy' },
-  { path: '/profile/tokens', label: 'Access Tokens' },
-  { path: '/profile/keys', label: 'Public Keys' },
-  { path: '/profile/eab', label: 'EAB Credentials' },
+  { path: '/profile/security', label: 'Security' },
+  { path: '/profile/tokens', label: 'Access tokens' },
+  { path: '/profile/keys', label: 'Public keys' },
+  { path: '/profile/eab', label: 'EAB credentials' },
 ]
 
 export function MyProfile() {

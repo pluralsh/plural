@@ -3,7 +3,7 @@ import { Box, Stack } from 'grommet'
 import {
   Avatar, Button, Div, P,
 } from 'honorable'
-import { CameraIcon, ValidatedInput } from 'pluralsh-design-system'
+import { CameraIcon, PageTitle, ValidatedInput } from 'pluralsh-design-system'
 import { useContext, useEffect, useState } from 'react'
 import { useFilePicker } from 'react-sage'
 
@@ -11,8 +11,6 @@ import { CurrentUserContext } from '../login/CurrentUser'
 import { Provider } from '../repos/misc'
 import { UPDATE_USER } from '../users/queries'
 import { Container } from '../utils/Container'
-
-import { Header } from './Header'
 
 function Attribute({ header, children }) {
   return (
@@ -44,10 +42,7 @@ export function Me() {
         gap="medium"
         fill
       >
-        <Header
-          header="Profile"
-          description="Edit how your profile appears to other users"
-        />
+        <PageTitle heading="Profile" />
         <Box
           gap="large"
           direction="row"

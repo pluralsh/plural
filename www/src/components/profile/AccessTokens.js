@@ -7,7 +7,7 @@ import lookup from 'country-code-lookup'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 
 import {
-  CopyIcon, GraphIcon, ListIcon, Modal, ModalHeader,
+  CopyIcon, GraphIcon, ListIcon, Modal, ModalHeader, PageTitle,
 } from 'pluralsh-design-system'
 
 import {
@@ -31,7 +31,6 @@ import { Container } from '../utils/Container'
 
 import { Confirm } from '../account/Confirm'
 
-import { Header } from './Header'
 import { DeleteIcon, Icon } from './Icon'
 import { ListItem } from './ListItem'
 
@@ -221,10 +220,7 @@ export function AccessTokens() {
         gap="medium"
         fill
       >
-        <Header
-          header="Access Tokens"
-          description="API access tokens to use in automation and active plural clusters"
-        >
+        <PageTitle heading="Access tokens">
           <Box
             flex={false}
             width="30%"
@@ -232,13 +228,15 @@ export function AccessTokens() {
           >
             <Div>
               <Button
+                secondary
                 onClick={mutation}
                 loading={loading}
-              >Create new access token
+              >
+                Create access token
               </Button>
             </Div>
           </Box>
-        </Header>
+        </PageTitle>
         <Box
           fill
         >

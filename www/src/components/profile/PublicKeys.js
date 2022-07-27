@@ -4,6 +4,8 @@ import { Span } from 'honorable'
 import moment from 'moment'
 import { useState } from 'react'
 
+import { PageTitle } from 'pluralsh-design-system'
+
 import { extendConnection } from '../../utils/graphql'
 import { Confirm } from '../account/Confirm'
 import { Placeholder } from '../accounts/Audits'
@@ -13,7 +15,6 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 import { Container } from '../utils/Container'
 import { StandardScroller } from '../utils/SmoothScroller'
 
-import { Header } from './Header'
 import { DeleteIcon } from './Icon'
 import { ListItem } from './ListItem'
 
@@ -81,10 +82,7 @@ export function PublicKeys() {
         fill
         gap="medium"
       >
-        <Header
-          header="Public Keys"
-          description="Age public keys to use when sharing repository encryption"
-        />
+        <PageTitle heading="Public keys" />
         <Box fill>
           <StandardScroller
             listRef={listRef}

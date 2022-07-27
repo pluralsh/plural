@@ -149,6 +149,7 @@ export default function PackageSecurity() {
                     <Button
                       secondary
                       height="40px"
+                      marginLeft="medium"
                       onClick={toggle}
                     >
                       Hide

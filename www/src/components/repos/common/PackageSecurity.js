@@ -113,7 +113,7 @@ export default function PackageSecurity() {
           background="fill-one"
           border
           round="xsmall"
-          height="460px"
+          height={{ max: '460px' }}
           overflow="auto"
         >
           <InfiniteScroll items={current.scan.errors}>

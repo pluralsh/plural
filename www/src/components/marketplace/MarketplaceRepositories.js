@@ -209,6 +209,8 @@ function MarketplaceRepositories({ installed }) {
       direction="column"
       overflow="hidden"
       maxWidth-desktopLarge-up={1640}
+      width-desktopLarge-up={1640}
+      width-desktopLarge-down="100%"
     >
       <Flex
         direction="column"

@@ -1,13 +1,15 @@
 import { Children, memo } from 'react'
 import { Markdown } from 'grommet'
-import { A, Blockquote, Box, Code, H1, H2, H3, H4, H5, H6, Img, Li, Ol, P, Ul } from 'honorable'
+import {
+  A, Blockquote, Box, Code, H1, H2, H3, H4, H5, H6, Img, Li, Ol, P, Ul,
+} from 'honorable'
 
 import MultilineCode from '../utils/Code'
 
 function MdImg({ src, gitUrl, ...props }) {
   // Convert local image paths to full path on github
   // Only works if primary git branch is named "master"
-  if (src && !src.match(/^https*/)) {
+  if (gitUrl && src && !src.match(/^https*/)) {
     src = `${gitUrl}/raw/master/${src}`
   }
 
@@ -23,6 +25,7 @@ function MdImg({ src, gitUrl, ...props }) {
 
 function getLastStringChild(children) {
   let lastChild = null
+
   Children.forEach(children, child => {
     if (typeof child === 'string') {
       lastChild = child
@@ -37,6 +40,7 @@ function getLastStringChild(children) {
 
 function MdPre({ children, ...props }) {
   let lang
+
   if (children.props?.className?.startsWith('lang-')) {
     lang = children.props.className.slice(5)
   }
@@ -63,17 +67,49 @@ export default memo(({ text, gitUrl }) => (
     components={{
       blockquote: {
         component: Blockquote,
-        props: { borderLeft: '4px solid', borderColor: 'border', mx: 0, pl: '1em' },
-      }, 
+        props: {
+          borderLeft: '4px solid', borderColor: 'border', mx: 0, pl: '1em',
+        },
+      },
       ul: { component: Ul, props: { paddingLeft: 'xlarge', marginBottom: 'small' } },
       ol: { component: Ol, props: { paddingLeft: 'xlarge', marginBottom: 'small' } },
       li: { component: Li, props: { body2: true, marginTop: 'xxsmall' } },
-      h1: { component: H1, props: { subtitle1: true, marginTop: 'large', marginBottom: 'small', ':first-child': { marginTop: '0px' } } },
-      h2: { component: H2, props: { subtitle2: true, marginTop: 'large', marginBottom: 'small', ':first-child': { marginTop: '0px' } } },
-      h3: { component: H3, props: { body1: true, bold: true, marginTop: 'large', marginBottom: 'small', ':first-child': { marginTop: '0px' } } },
-      h4: { component: H4, props: { body2: true, bold: true, marginTop: 'large', marginBottom: 'small', ':first-child': { marginTop: '0px' } } },
-      h5: { component: H5, props: { body2: true, bold: true, marginTop: 'large', marginBottom: 'small', ':first-child': { marginTop: '0px' } } },
-      h6: { component: H6, props: { body2: true, bold: true, marginTop: 'large', marginBottom: 'small', ':first-child': { marginTop: '0px' } } },
+      h1: {
+        component: H1,
+        props: {
+          subtitle1: true, marginTop: 'large', marginBottom: 'small', ':first-child': { marginTop: '0px' },
+        },
+      },
+      h2: {
+        component: H2,
+        props: {
+          subtitle2: true, marginTop: 'large', marginBottom: 'small', ':first-child': { marginTop: '0px' },
+        },
+      },
+      h3: {
+        component: H3,
+        props: {
+          body1: true, bold: true, marginTop: 'large', marginBottom: 'small', ':first-child': { marginTop: '0px' },
+        },
+      },
+      h4: {
+        component: H4,
+        props: {
+          body2: true, bold: true, marginTop: 'large', marginBottom: 'small', ':first-child': { marginTop: '0px' },
+        },
+      },
+      h5: {
+        component: H5,
+        props: {
+          body2: true, bold: true, marginTop: 'large', marginBottom: 'small', ':first-child': { marginTop: '0px' },
+        },
+      },
+      h6: {
+        component: H6,
+        props: {
+          body2: true, bold: true, marginTop: 'large', marginBottom: 'small', ':first-child': { marginTop: '0px' },
+        },
+      },
       img: {
         component: MdImg,
         props: {

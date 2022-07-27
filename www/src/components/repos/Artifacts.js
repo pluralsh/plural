@@ -1,7 +1,11 @@
 import { useCallback, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { Box, Drop, Markdown, Table, TableBody, TableCell, TableRow, Text } from 'grommet'
-import { Apple, DocumentText, Previous, Ubuntu, Windows } from 'grommet-icons'
+import {
+  Box, Drop, Markdown, Table, TableBody, TableCell, TableRow, Text,
+} from 'grommet'
+import {
+  Apple, DocumentText, Previous, Ubuntu, Windows,
+} from 'grommet-icons'
 import { Copyable, Download, ListView as List } from 'forge-core'
 import { normalizeColor } from 'grommet/utils'
 import fs from 'filesize'
@@ -20,14 +24,14 @@ const SMALL_ICON_SIZE = '13px'
 
 function ArtifactPlatform({ platform }) {
   switch (platform) {
-    case 'MAC':
-      return <Apple size={SMALL_ICON_SIZE} />
-    case 'WINDOWS':
-      return <Windows size={SMALL_ICON_SIZE} />
-    case 'LINUX':
-      return <Ubuntu size={SMALL_ICON_SIZE} />
-    default:
-      return null
+  case 'MAC':
+    return <Apple size={SMALL_ICON_SIZE} />
+  case 'WINDOWS':
+    return <Windows size={SMALL_ICON_SIZE} />
+  case 'LINUX':
+    return <Ubuntu size={SMALL_ICON_SIZE} />
+  default:
+    return null
   }
 }
 
@@ -61,7 +65,9 @@ const optionHover = styled.div`
   }
 `
 
-function ArtifactOption({ onClick, text, border, round }) {
+function ArtifactOption({
+  onClick, text, border, round,
+}) {
   return (
     <Box
       as={optionHover}
@@ -98,7 +104,9 @@ function WithBack({ children, setAlternate }) {
   )
 }
 
-function ArtifactDetails({ sha, filesize, arch, platform }) {
+function ArtifactDetails({
+  sha, filesize, arch, platform,
+}) {
   return (
     <Table>
       <TableBody>
@@ -128,7 +136,9 @@ function ArtifactDetails({ sha, filesize, arch, platform }) {
   )
 }
 
-function ArtifactDetail({ dropRef, setOpen, blob, readme, sha, filesize }) {
+function ArtifactDetail({
+  dropRef, setOpen, blob, readme, sha, filesize,
+}) {
   const [alternate, setAlternate] = useState(null)
 
   return (
@@ -170,7 +180,10 @@ function ArtifactDetail({ dropRef, setOpen, blob, readme, sha, filesize }) {
   )
 }
 
-export function Artifact({ name, type, platform, filesize, ...artifact }) {
+export function Artifact({
+  // eslint-disable-next-line
+  name, type, platform, filesize, ...artifact
+}) {
   const [open, setOpen] = useState(false)
   const dropRef = useRef()
 
@@ -245,7 +258,7 @@ const ROW_HEIGHT = '50px'
 
 function ArtifactRow({ artifact }) {
   const [open, setOpen] = useState(null)
-  const doSetOpen = useCallback(tab => open === tab ? setOpen(null) : setOpen(tab), [setOpen, open])
+  const doSetOpen = useCallback(tab => (open === tab ? setOpen(null) : setOpen(tab)), [setOpen, open])
 
   return (
     <>

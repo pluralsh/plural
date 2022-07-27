@@ -1,4 +1,6 @@
-import { useCallback, useContext, useEffect, useState } from 'react'
+import {
+  useCallback, useContext, useEffect, useState,
+} from 'react'
 import { Box } from 'grommet'
 import { useMutation } from '@apollo/client'
 
@@ -29,6 +31,7 @@ function UrlsInput({ uriFormat = '', urls, setUrls }) {
   const [value, setValue] = useState('')
   const addUrl = useCallback(() => {
     const url = uriFormat ? uriFormat.replace('{domain}', value) : value
+
     setUrls([...urls, url])
     setValue('')
   }, [urls, value, setValue, setUrls, uriFormat])
@@ -80,7 +83,9 @@ function UrlsInput({ uriFormat = '', urls, setUrls }) {
   )
 }
 
-export function ProviderForm({ attributes, setAttributes, bindings, setBindings, repository }) {
+export function ProviderForm({
+  attributes, setAttributes, bindings, setBindings, repository,
+}) {
   const settings = repository.oauthSettings || {}
 
   return (

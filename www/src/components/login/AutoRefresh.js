@@ -22,6 +22,7 @@ export function AutoRefresh() {
     console.log('reloading')
     if (process.env.NODE_ENV === 'production') {
       const promise = serviceWorker.unregister() || Promise.resolve('done')
+
       promise.then(() => {
         setCommit(config.gitCommit)
         window.location.reload()

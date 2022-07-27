@@ -19,9 +19,11 @@ import { AuditUser } from './AuditUser'
 import { Location } from './Location'
 import { Date } from './Date'
 
-const versionLink = ({ chart, terraform }) => chart ? `/charts/${chart.id}` : `/terraform/${terraform.id}`
+const versionLink = ({ chart, terraform }) => (chart ? `/charts/${chart.id}` : `/terraform/${terraform.id}`)
 
-function resourceInfo({ version, group, role, integrationWebhook, repository, image }) {
+function resourceInfo({
+  version, group, role, integrationWebhook, repository, image,
+}) {
   if (version) {
     return ({
       link: versionLink(version),
@@ -46,6 +48,7 @@ function resourceInfo({ version, group, role, integrationWebhook, repository, im
 
 function Resource({ audit }) {
   const { link, text } = resourceInfo(audit)
+
   if (!link) return null
 
   return (

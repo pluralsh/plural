@@ -26,6 +26,7 @@ export function SSOCallback() {
       setToken(result.ssoCallback.jwt)
       if (deviceToken) finishedDeviceLogin()
       const challenge = getChallenge()
+
       if (challenge) {
         handleOauthChallenge(client, challenge)
       }

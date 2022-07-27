@@ -7,7 +7,9 @@ import { Tooltip } from '../utils/Tooltip'
 
 import { IncidentStatus, IncidentView } from './types'
 
-export function ViewOption({ icon, selected, view, setView, text, side, size, width }) {
+export function ViewOption({
+  icon, selected, view, setView, text, side, size, width,
+}) {
   const ref = useRef()
   const [hover, setHover] = useState(false)
   const props = { size: size || '20px' }

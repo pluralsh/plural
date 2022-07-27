@@ -1,6 +1,10 @@
-import { forwardRef, useContext, useRef, useState } from 'react'
+import {
+  forwardRef, useContext, useRef, useState,
+} from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Avatar, Div, Flex, Img, Menu, MenuItem, P, useOutsideClick } from 'honorable'
+import {
+  Avatar, Div, Flex, Img, Menu, MenuItem, P, useOutsideClick,
+} from 'honorable'
 import {
   ArrowTopRightIcon,
   ClusterIcon,
@@ -18,7 +22,9 @@ import {
   ScrollIcon, TerminalIcon, Tooltip,
 } from 'pluralsh-design-system'
 
-import { getPreviousUserData, setPreviousUserData, setToken, wipeToken } from '../../helpers/authentication'
+import {
+  getPreviousUserData, setPreviousUserData, setToken, wipeToken,
+} from '../../helpers/authentication'
 import { CurrentUserContext } from '../login/CurrentUser'
 import { useOnboarded } from '../shell/onboarding/useOnboarded'
 
@@ -120,8 +126,7 @@ function SidebarItemRef({
   linkTo,
   ...otherProps
 },
-ref
-) {
+ref) {
   const [hovered, setHovered] = useState(false)
 
   function wrapLink(node) {
@@ -168,70 +173,74 @@ ref
     )
   }
 
-  return wrapLink(wrapTooltip(
-    <Flex
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      ref={ref}
-      pt="13px" // Give it a square look with a weird padding
-      pb="6px"
-      px={0.75}
-      align="center"
-      borderRadius="normal"
-      cursor="pointer"
-      {...{ '& *': { color: highlight ? 'text-warning-light' : active ? 'text' : 'text-light' } }}
-      backgroundColor={active ? 'fill-zero-selected' : null}
-      _hover={{
-        '& *': { color: highlight ? 'text-warning-light' : 'text' },
-        backgroundColor: active ? 'fill-zero-selected' : 'fill-zero-hover',
-      }}
-      {...otherProps}
-    >
+  function renderItem() {
+    return (
       <Flex
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        ref={ref}
+        pt="13px" // Give it a square look with a weird padding
+        pb="6px"
+        px={0.75}
         align="center"
-        justify="center"
-        position="relative"
+        borderRadius="normal"
+        cursor="pointer"
+        {...{ '& *': { color: highlight ? 'text-warning-light' : active ? 'text' : 'text-light' } }}
+        backgroundColor={active ? 'fill-zero-selected' : null}
+        _hover={{
+          '& *': { color: highlight ? 'text-warning-light' : 'text' },
+          backgroundColor: active ? 'fill-zero-selected' : 'fill-zero-hover',
+        }}
+        {...otherProps}
       >
-        <Div {...{ '& *': { transition: 'color 150ms linear' } }}>
-          {startIcon}
-        </Div>
-        {badge > 0 && (
-          <Flex
-            align="center"
-            justify="center"
-            position="absolute"
-            backgroundColor="icon-error"
-            borderRadius="50%"
-            fontSize={8}
-            width={10}
-            height={10}
-            top={-6}
-            right={-8}
-          >
-            {badge}
-          </Flex>
-        )}
-      </Flex>
-      <Flex
-        ml={1}
-        mr={endIcon ? -0.25 : 0}
-        marginTop="-4px"
-        flexShrink={0}
-        align="center"
-        flexGrow={1}
-        opacity={collapsed ? 0 : 1}
-        visibility={collapsed ? 'hidden' : 'visible'}
-        transition={`opacity ${collapsed ? 200 : 500}ms ease, background-color ${collapsed ? 200 : 500}ms ease ${collapsed ? 0 : 50}ms, visibility 200ms linear, color 150ms linear`}
-      >
-        {label}
-        <Div
+        <Flex
+          align="center"
+          justify="center"
+          position="relative"
+        >
+          <Div {...{ '& *': { transition: 'color 150ms linear' } }}>
+            {startIcon}
+          </Div>
+          {badge > 0 && (
+            <Flex
+              align="center"
+              justify="center"
+              position="absolute"
+              backgroundColor="icon-error"
+              borderRadius="50%"
+              fontSize={8}
+              width={10}
+              height={10}
+              top={-6}
+              right={-8}
+            >
+              {badge}
+            </Flex>
+          )}
+        </Flex>
+        <Flex
           ml={1}
+          mr={endIcon ? -0.25 : 0}
+          marginTop="-4px"
+          flexShrink={0}
+          align="center"
           flexGrow={1}
-        />
-        {endIcon}
+          opacity={collapsed ? 0 : 1}
+          visibility={collapsed ? 'hidden' : 'visible'}
+          transition={`opacity ${collapsed ? 200 : 500}ms ease, background-color ${collapsed ? 200 : 500}ms ease ${collapsed ? 0 : 50}ms, visibility 200ms linear, color 150ms linear`}
+        >
+          {label}
+          <Div
+            ml={1}
+            flexGrow={1}
+          />
+          {endIcon}
+        </Flex>
       </Flex>
-    </Flex>
-  ))
+    )
+  }
+
+  return wrapLink(wrapTooltip(renderItem()))
 }
 
 const SidebarItem = forwardRef(SidebarItemRef)
@@ -369,7 +378,9 @@ function Sidebar({
             },
           }}
         >
-          {items.map(({ name, Icon, url, urlRegexp }) => (
+          {items.map(({
+            name, Icon, url, urlRegexp,
+          }) => (
             <SidebarItem
               key={name}
               marginBottom="xsmall"

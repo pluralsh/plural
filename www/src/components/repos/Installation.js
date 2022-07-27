@@ -4,7 +4,7 @@ import { useCallback, useState } from 'react'
 import { Box, Text } from 'grommet'
 import Highlight from 'react-highlight.js'
 
-import { useTheme } from 'honorable'
+import { Div, useTheme } from 'honorable'
 
 import Plan from '../payments/Plan'
 import CreatePlan, { CreateAnchor } from '../payments/CreatePlan'
@@ -24,13 +24,12 @@ export function Plans({ repository, nocreate }) {
 
   const approvePlan = useCallback(plan => {
     if (!subscription) {
-      setModal(
-        <SubscribeModal
-          plan={plan}
-          installationId={id}
-          repositoryId={repository.id}
-          setOpen={setModal}
-        />)
+      setModal(<SubscribeModal
+        plan={plan}
+        installationId={id}
+        repositoryId={repository.id}
+        setOpen={setModal}
+      />)
 
       return
     }
@@ -49,8 +48,8 @@ export function Plans({ repository, nocreate }) {
         pad="small"
         gap="small"
       >
-        {plans.length > 0 ?
-          plans.map(plan => (
+        {plans.length > 0
+          ? plans.map(plan => (
             <Plan
               key={plan.id}
               subscription={subscription}
@@ -58,8 +57,8 @@ export function Plans({ repository, nocreate }) {
               repository={repository}
               plan={plan}
             />
-          )) :
-          <Text size="small">This repo is currently free to use</Text>}
+          ))
+          : <Text size="small">This repo is currently free to use</Text>}
         {editable && (<CreateAnchor onClick={() => setOpen(true)} />)}
       </Box>
       {open && !nocreate && (
@@ -72,12 +71,22 @@ export function Plans({ repository, nocreate }) {
   )
 }
 
-export function DetailContainer({ children, ...rest }) {
+export function DetailContainer({ children, title, ...rest }) {
   return (
     <Box
-      {...rest}
       border
+      round="xsmall"
+      {...rest}
     >
+      {(!!title && (
+        <Div
+          color="text-xlight"
+          fontSize={12}
+          overline
+        >
+          {title}
+        </Div>
+      ))}
       {children}
     </Box>
   )
@@ -111,7 +120,9 @@ export function InstallationInner({ installation, repository }) {
   return null
 }
 
-export default function Installation({ repository, onUpdate, noHelm, open }) {
+export default function Installation({
+  repository, onUpdate, noHelm, open,
+}) {
   const { installation } = repository
   const hasPlans = repository.plans && repository.plans.length > 0
   const [tab, setTab] = useState((noHelm && !installation) ? 'Configuration' : 'Installation')

@@ -1,5 +1,7 @@
 import { useState } from 'react'
-import { Box, Div, Flex, P } from 'honorable'
+import {
+  Box, Div, Flex, P,
+} from 'honorable'
 import { CopyIcon } from 'pluralsh-design-system'
 
 import Highlight from './Highlight'

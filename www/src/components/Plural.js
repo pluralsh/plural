@@ -1,5 +1,7 @@
 import { useContext } from 'react'
-import { Navigate, Route, Routes, useMatch } from 'react-router-dom'
+import {
+  Navigate, Route, Routes, useMatch,
+} from 'react-router-dom'
 import { StripeProvider } from 'react-stripe-elements'
 
 import ApplicationLayout from './layout/ApplicationLayout'
@@ -13,7 +15,7 @@ import Repository from './repository/Repository'
 import RepositoryArtifacts from './repository/RepositoryArtifacts'
 import RepositoryDeployments from './repository/RepositoryDeployments'
 import RepositoryDescription from './repository/RepositoryDescription'
-import RepositoryEdit from './repository/RepositoryEdit'
+import RepositoryEdit from './repository/RepositoryEdit.tsx'
 import RepositoryPackages from './repository/RepositoryPackages'
 import RepositoryPackagesDocker from './repository/RepositoryPackagesDocker'
 import RepositoryPackagesHelm from './repository/RepositoryPackagesHelm'
@@ -48,6 +50,11 @@ import { AuditDirectory } from './audits/AuditDirectory'
 import { Audits } from './audits/Audits'
 import { LoginAudits } from './audits/LoginAudits'
 import { AuditChloropleth } from './audits/AuditChloropleth'
+import PackageReadme from './repos/common/PackageReadme'
+import PackageConfiguration from './repos/common/PackageConfiguration'
+import PackageSecurity from './repos/common/PackageSecurity'
+import PackageUpdateQueue from './repos/common/PackageUpdateQueue'
+import PackageDependencies from './repos/common/PackageDependencies'
 
 function EditBilling(props) {
   return (
@@ -209,15 +216,58 @@ export function PluralInner() {
                 element={<RepositoryEdit />}
               />
             </Route>
-            {/* --- CHARTS --- */}
+            {/* --- HELM CHARTS --- */}
             <Route
               path="/charts/:chartId"
               element={<Chart />}
-            />
+            >
+              <Route
+                index
+                element={<PackageReadme />}
+              />
+              <Route
+                path="configuration"
+                element={<PackageConfiguration />}
+              />
+              <Route
+                path="dependencies"
+                element={<PackageDependencies />}
+              />
+              <Route
+                path="security"
+                element={<PackageSecurity />}
+              />
+              <Route
+                path="updatequeue"
+                element={<PackageUpdateQueue />}
+              />
+            </Route>
+            {/* --- TERRAFORM CHARTS --- */}
             <Route
               path="/terraform/:tfId"
               element={<Terraform />}
-            />
+            >
+              <Route
+                index
+                element={<PackageReadme />}
+              />
+              <Route
+                path="configuration"
+                element={<PackageConfiguration />}
+              />
+              <Route
+                path="dependencies"
+                element={<PackageDependencies />}
+              />
+              <Route
+                path="security"
+                element={<PackageSecurity />}
+              />
+              <Route
+                path="updatequeue"
+                element={<PackageUpdateQueue />}
+              />
+            </Route>
             {/* --- DOCKER --- */}
             <Route
               path="/dkr/repo/:id"

@@ -77,10 +77,11 @@ export function UpgradeQueues() {
 
   useEffect(() => subscribeToMore({
     document: UPGRADE_QUEUE_SUB,
-    updateQuery: ({ upgradeQueues, ...prev }, { subscriptionData: { data: { upgradeQueueDelta: { delta, payload } } } }) => delta === 'CREATE' ? { ...prev, upgradeQueues: [payload, ...upgradeQueues] } : prev,
+    updateQuery: ({ upgradeQueues, ...prev }, { subscriptionData: { data: { upgradeQueueDelta: { delta, payload } } } }) => (delta === 'CREATE' ? { ...prev, upgradeQueues: [payload, ...upgradeQueues] } : prev),
   }), [subscribeToMore])
 
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
+
   useEffect(() => {
     setBreadcrumbs([{ url: '/upgrades', text: 'upgrades' }])
   }, [setBreadcrumbs])
@@ -121,5 +122,4 @@ export function UpgradeQueues() {
       </Box>
     </Box>
   )
-
 }

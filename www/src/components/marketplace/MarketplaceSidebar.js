@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { useQuery } from '@apollo/client'
 import { useSearchParams } from 'react-router-dom'
-import { A, Accordion, Div, P } from 'honorable'
+import {
+  A, Accordion, Div, P,
+} from 'honorable'
 import { Checkbox, CloseIcon, Input } from 'pluralsh-design-system'
 import Fuse from 'fuse.js'
 
@@ -29,17 +31,15 @@ function MarketplaceSidebarCheckbox({ toggled, onClick, label }) {
 }
 
 const searchOptions = {
-  keys: ['name'],
+  keys: ['tag'],
 }
 
 function MarketplaceSidebar(props) {
   const [nDisplayedTags, setNDisplayedTags] = useState(12)
   const { data: categoriesData } = useQuery(CATEGORIES_QUERY)
-  const [tags,, hasMoreTags, fetchMoreTags] = usePaginatedQuery(
-    TAGS_QUERY,
+  const [tags,, hasMoreTags, fetchMoreTags] = usePaginatedQuery(TAGS_QUERY,
     {},
-    data => data.tags
-  )
+    data => data.tags)
   const [searchParams, setSearchParams] = useSearchParams()
   const [search, setSearch] = useState('')
 
@@ -117,7 +117,7 @@ function MarketplaceSidebar(props) {
   }
 
   function renderTags() {
-    const sortedTags = tags.slice().sort((a, b) => a.name.localeCompare(b.name))
+    const sortedTags = tags.slice().sort((a, b) => a.tag.localeCompare(b.tag))
     const fuse = new Fuse(sortedTags, searchOptions)
     const resultTags = search ? fuse.search(search).map(({ item }) => item) : sortedTags.filter((x, i) => i < nDisplayedTags)
 
@@ -142,12 +142,12 @@ function MarketplaceSidebar(props) {
             />
           ) : null}
         />
-        {resultTags.map(({ name, count }) => (
+        {resultTags.map(({ tag, count }) => (
           <MarketplaceSidebarCheckbox
-            key={name}
-            toggled={isToggled('tag', name)}
-            onClick={() => handleToggle('tag', name)}
-            label={`${name} (${count})`}
+            key={tag}
+            toggled={isToggled('tag', tag)}
+            onClick={() => handleToggle('tag', tag)}
+            label={`${tag} (${count})`}
           />
         ))}
         {((nDisplayedTags < tags.length) || hasMoreTags) && !search && (

@@ -16,7 +16,9 @@ function HeaderItem({ label, index }) {
   )
 }
 
-export function TableRow({ children, suffix, last, ...flex }) {
+export function TableRow({
+  children, suffix, last, ...flex
+}) {
   const { sizes } = useContext(TableContext)
 
   const len = children.length
@@ -49,10 +51,16 @@ export function TableRow({ children, suffix, last, ...flex }) {
 }
 
 export function TableData({ children }) {
-  return <Span color="text-light">{children}</Span>
+  return (
+    <Span color="text-light">
+      {children}
+    </Span>
+  )
 }
 
-export function Table({ sizes, headers, children, background, ...flex }) {
+export function Table({
+  sizes, headers, children, background, ...flex
+}) {
   const value = useMemo(() => ({
     sizes, background,
   }), [sizes, background])

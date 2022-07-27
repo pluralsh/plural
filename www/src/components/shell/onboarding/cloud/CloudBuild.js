@@ -14,18 +14,18 @@ import OnboardingCard from '../OnboardingCard'
 import { GqlError } from '../../../utils/Alert'
 
 function CloudBuild() {
-  const { previous, next, setWorkspace, setProvider, setCredentials, setDemoId } = useContext(CreateShellContext)
+  const {
+    previous, next, setWorkspace, setProvider, setCredentials, setDemoId,
+  } = useContext(CreateShellContext)
   const [mutation, mutationResults] = useMutation(CREATE_DEMO_PROJECT_MUTATION)
-  const results = useQuery(
-    POLL_DEMO_PROJECT_QUERY,
+  const results = useQuery(POLL_DEMO_PROJECT_QUERY,
     {
       variables: {
         id: mutationResults?.data?.createDemoProject?.id,
       },
       pollInterval: 2000,
       skip: !!mutationResults.error || !mutationResults.data,
-    }
-  )
+    })
 
   const status = results?.data?.demoProject?.state
   const error = mutationResults.error || results?.error
@@ -38,11 +38,12 @@ function CloudBuild() {
     console.log(results)
     if (results?.data?.demoProject?.ready && results?.data?.demoProject?.state === 'ENABLED') {
       const demo = results.data.demoProject
+
       setDemoId(demo.id)
       setProvider('GCP')
       setCredentials({ gcp: { applicationCredentials: demo.credentials } })
-      setWorkspace(wk => ({ 
-        ...wk, 
+      setWorkspace(wk => ({
+        ...wk,
         project: demo.projectId,
         region: 'us-east1',
         cluster: 'demo',

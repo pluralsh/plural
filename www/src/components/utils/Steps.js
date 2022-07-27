@@ -1,4 +1,6 @@
-import { cloneElement, createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import {
+  cloneElement, createContext, useCallback, useContext, useEffect, useMemo, useRef, useState,
+} from 'react'
 import { Box, Text } from 'grommet'
 
 const StepContext = createContext({})
@@ -21,6 +23,7 @@ function StepProvider({ step, children }) {
   const register = useCallback((name, ind) => {
     steps.current = { ...steps.current, [name]: ind }
   }, [steps])
+
   useEffect(() => {
     if (steps.current[step] !== undefined) setCurrent(steps.current[step])
   }, [step, steps])

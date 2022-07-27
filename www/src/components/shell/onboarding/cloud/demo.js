@@ -11,12 +11,15 @@ import { GqlError } from '../../../utils/Alert'
 
 import { DemoStatus } from './types'
 
-function PollProject({ demo, setDemo, setProvider, workspace, setWorkspace, credentials, setCredentials, next }) {
+function PollProject({
+  demo, setDemo, setProvider, workspace, setWorkspace, credentials, setCredentials, next,
+}) {
   const { data } = useQuery(POLL_DEMO_PROJECT_QUERY, { variables: { id: demo.id }, pollInterval: 10000 })
 
   useEffect(() => {
     if (!data) return
     const polled = data.demoProject
+
     if (polled.state === DemoStatus.ENABLED) {
       setDemo(polled)
       setProvider('GCP')
@@ -48,7 +51,9 @@ function PollProject({ demo, setDemo, setProvider, workspace, setWorkspace, cred
   )
 }
 
-export function DemoProject({ setProvider, workspace, setWorkspace, credentials, setCredentials, next, setDemo }) {
+export function DemoProject({
+  setProvider, workspace, setWorkspace, credentials, setCredentials, next, setDemo,
+}) {
   const [mutation, { data, error }] = useMutation(CREATE_DEMO_PROJECT_MUTATION)
 
   useEffect(() => {

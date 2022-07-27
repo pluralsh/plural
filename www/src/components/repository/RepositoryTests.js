@@ -1,4 +1,6 @@
-import { useContext, useEffect, useMemo, useRef, useState } from 'react'
+import {
+  useContext, useEffect, useMemo, useRef, useState,
+} from 'react'
 import { useApolloClient, useSubscription } from '@apollo/client'
 import moment from 'moment'
 import { Flex, Span } from 'honorable'
@@ -34,6 +36,8 @@ import { Icon } from '../profile/Icon'
 
 import { TESTS_QUERY } from './queries'
 
+import RepositoryHeader from './RepositoryHeader.tsx'
+
 const statusAttrs = {
   QUEUED: { severity: 'neutral', icon: <StatusIpIcon /> },
   RUNNING: { severity: 'info', loading: true },
@@ -53,10 +57,14 @@ function Status({ status }) {
   )
 }
 
-async function fetchLogs(client, id, step, term) {
+async function fetchLogs(
+  client, id, step, term
+) {
   const { data } = await client.query({ query: TEST_LOGS, variables: { id, step } })
+
   if (data && data.testLogs) {
     const lines = data.testLogs.split(/\r?\n/)
+
     for (const l of lines) {
       term.writeln(l)
     }
@@ -88,8 +96,11 @@ function TestLogs({ step: { id, hasLogs }, testId }) {
   useEffect(() => {
     if (!hasLogs || !xterm || !xterm.current || !xterm.current.terminal) return
     const term = xterm.current.terminal
+
     term.clear()
-    fetchLogs(client, testId, id, term)
+    fetchLogs(
+      client, testId, id, term
+    )
   }, [hasLogs, client, testId, id, xterm])
 
   return (
@@ -237,15 +248,13 @@ function TestDetail({ test, setTest }) {
 function RepositoryTests() {
   const { id } = useContext(RepositoryContext)
   const [test, setTest] = useState(null)
-  const [tests, loadingTests, hasMoreTests, fetchMoreTests] = usePaginatedQuery(
-    TESTS_QUERY,
+  const [tests, loadingTests, hasMoreTests, fetchMoreTests] = usePaginatedQuery(TESTS_QUERY,
     {
       variables: {
         repositoryId: id,
       },
     },
-    data => data.tests
-  )
+    data => data.tests)
 
   if (tests.length === 0 && loadingTests) {
     return (
@@ -268,31 +277,42 @@ function RepositoryTests() {
   }
 
   return (
-    <Table
-      headers={['Promote To', 'Name', 'Created On', 'Last Updated On', 'Progress']}
-      sizes={['20%', '20%', '20%', '20%', '20%']}
-      background="fill-one"
-      width="100%"
-      height="calc(100% - 16px)"
+    <Flex
+      direction="column"
+      flexGrow={1}
     >
-      <InfiniteScroller
-        pb={4}
-        loading={loadingTests}
-        hasMore={hasMoreTests}
-        loadMore={fetchMoreTests}
-          // Allow for scrolling in a flexbox layout
+      <RepositoryHeader>Tests</RepositoryHeader>
+      <Flex
+        direction="column"
         flexGrow={1}
-        height={0}
       >
-        {tests.map(test => (
-          <Test
-            key={test.id}
-            test={test}
-            setTest={setTest}
-          />
-        ))}
-      </InfiniteScroller>
-    </Table>
+        <Table
+          headers={['Promote To', 'Name', 'Created On', 'Last Updated On', 'Progress']}
+          sizes={['20%', '20%', '20%', '20%', '20%']}
+          background="fill-one"
+          width="100%"
+          height="100%"
+        >
+          <InfiniteScroller
+            pb={4}
+            loading={loadingTests}
+            hasMore={hasMoreTests}
+            loadMore={fetchMoreTests}
+          // Allow for scrolling in a flexbox layout
+            flexGrow={1}
+            height={0}
+          >
+            {tests.map(test => (
+              <Test
+                key={test.id}
+                test={test}
+                setTest={setTest}
+              />
+            ))}
+          </InfiniteScroller>
+        </Table>
+      </Flex>
+    </Flex>
   )
 }
 

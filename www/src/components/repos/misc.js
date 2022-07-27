@@ -17,10 +17,6 @@ export function Provider({ provider, width }) {
   )
 }
 
-export function dockerPull(registry, { tag, dockerRepository: { name, repository } }) {
-  return `${registry}/${repository.name}/${name}:${tag}`
-}
-
 export function providerToURL(provider, dark) {
   let url = ProviderIcons[provider] || DEFAULT_CHART_ICON
   if (dark && DarkProviderIcons[provider]) {

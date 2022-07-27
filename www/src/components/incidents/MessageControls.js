@@ -1,6 +1,10 @@
-import { useCallback, useContext, useRef, useState } from 'react'
+import {
+  useCallback, useContext, useRef, useState,
+} from 'react'
 import { Box, Drop, Text } from 'grommet'
-import { Edit, Emoji, TooltipContent, Trash } from 'forge-core'
+import {
+  Edit, Emoji, TooltipContent, Trash,
+} from 'forge-core'
 import { useMutation } from '@apollo/client'
 import { useParams } from 'react-router-dom'
 
@@ -21,9 +25,13 @@ const CONTROL_ATTRS = {
   justify: 'center',
 }
 const PAD = '2px'
-const OUTER = { height: SIZE, width: SIZE, align: 'center', justify: 'center' }
+const OUTER = {
+  height: SIZE, width: SIZE, align: 'center', justify: 'center',
+}
 
-export function Control({ children, tooltip, pad, closed, ...rest }) {
+export function Control({
+  children, tooltip, pad, closed, ...rest
+}) {
   const ref = useRef()
   const [hover, setHover] = useState(false)
 
@@ -51,7 +59,9 @@ export function Control({ children, tooltip, pad, closed, ...rest }) {
   )
 }
 
-export function Reaction({ message, setHover, align, width, label, ...props }) {
+export function Reaction({
+  message, setHover, align, width, label, ...props
+}) {
   const ref = useRef()
   const [open, setOpen] = useState(false)
   const toggleOpen = useCallback(value => {
@@ -114,11 +124,15 @@ function Delete({ message }) {
       query: INCIDENT_Q,
       variables: { id: incidentId },
       update: ({ incident: { messages, ...incident }, ...prev }) => (
-        { ...prev,
-          incident: { ...incident,
+        {
+          ...prev,
+          incident: {
+            ...incident,
             messages: {
               ...messages, edges: messages.edges.filter(({ node }) => node.id !== message.id),
-            } } }
+            },
+          },
+        }
       ),
     }),
   })

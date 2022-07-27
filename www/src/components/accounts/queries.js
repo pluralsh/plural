@@ -1,8 +1,12 @@
 import { gql } from '@apollo/client'
 
-import { AuditFragment, DnsDomainFragment, DnsRecordFragment, InviteFragment, OidcLoginFragment } from '../../models/account'
+import {
+  AuditFragment, DnsDomainFragment, DnsRecordFragment, InviteFragment, OidcLoginFragment,
+} from '../../models/account'
 import { PageInfo } from '../../models/misc'
-import { AccountFragment, GroupFragment, GroupMemberFragment, ImpersonationPolicy, RoleFragment, UserFragment } from '../../models/user'
+import {
+  AccountFragment, GroupFragment, GroupMemberFragment, ImpersonationPolicy, RoleFragment, UserFragment,
+} from '../../models/user'
 
 export const UPDATE_ACCOUNT = gql`
   mutation UpdateAccount($attributes: AccountAttributes!) {

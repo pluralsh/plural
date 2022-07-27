@@ -15,7 +15,9 @@ export const CLOUD_WORKSPACE_VALIDATIONS = [
 ]
 
 function CloudWorkspace() {
-  const { workspace, setWorkspace, previous, next, error, exceptions } = useContext(CreateShellContext)
+  const {
+    workspace, setWorkspace, previous, next, error, exceptions,
+  } = useContext(CreateShellContext)
 
   return (
     <>

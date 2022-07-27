@@ -1,7 +1,13 @@
-import { createElement, memo, useRef, useState } from 'react'
-import { Box, Layer, Text, TextInput } from 'grommet'
+import {
+  createElement, memo, useRef, useState,
+} from 'react'
+import {
+  Box, Layer, Text, TextInput,
+} from 'grommet'
 import { useApolloClient, useMutation, useQuery } from '@apollo/client'
-import { AddUser, Button, EditField as Edit, GqlError, Group, Public, TooltipContent, Trash } from 'forge-core'
+import {
+  AddUser, Button, EditField as Edit, GqlError, Group, Public, TooltipContent, Trash,
+} from 'forge-core'
 import Toggle from 'react-toggle'
 
 import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
@@ -10,7 +16,9 @@ import { FixedScroller } from '../utils/SmoothScroller'
 import Avatar from '../users/Avatar'
 import { ModalHeader } from '../ModalHeader'
 
-import { CREATE_GROUP_MEMBERS, DELETE_GROUP, DELETE_GROUP_MEMBER, GROUP_MEMBERS, UPDATE_GROUP } from './queries'
+import {
+  CREATE_GROUP_MEMBERS, DELETE_GROUP, DELETE_GROUP_MEMBER, GROUP_MEMBERS, UPDATE_GROUP,
+} from './queries'
 import { fetchUsers } from './Typeaheads'
 import { SearchIcon, addGroupMember, deleteGroup } from './utils'
 
@@ -134,7 +142,9 @@ function GroupMembers({ group }) {
   )
 }
 
-export function Icon({ icon, iconAttrs, tooltip, onClick, hover }) {
+export function Icon({
+  icon, iconAttrs, tooltip, onClick, hover,
+}) {
   const dropRef = useRef()
   const [open, setOpen] = useState(false)
 

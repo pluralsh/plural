@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client'
-import { A, Button } from 'honorable'
+import { Button } from 'honorable'
 import { ArrowTopRightIcon } from 'pluralsh-design-system'
 
 import { QUEUES } from './queries'
@@ -8,7 +8,7 @@ export function ConsoleButton({ q = {}, text, ...props }) {
   return (
     <Button
       secondary
-      as={A}
+      as="a"
       target="_blank"
       href={`https://${q.domain}`}
       textDecoration="none"
@@ -22,6 +22,7 @@ export function ConsoleButton({ q = {}, text, ...props }) {
 
 export function InferredConsoleButton(props) {
   const { data } = useQuery(QUEUES, { fetchPolicy: 'cache-and-network' })
+
   if (!data?.upgradeQueues) return null
 
   if (data.upgradeQueues.length === 0) return null

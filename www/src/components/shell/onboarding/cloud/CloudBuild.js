@@ -46,7 +46,7 @@ function CloudBuild() {
         project: demo.projectId,
         region: 'us-east1',
         cluster: 'demo',
-        bucketPrefix: `plural-${Math.random().toString().substring(2, 8)}`,
+        bucketPrefix: `plrlb-${Math.random().toString().substring(2, 10)}`,
       }))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

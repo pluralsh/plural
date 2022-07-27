@@ -106,8 +106,6 @@ def diffed_update(wf, collection_id, items, key_fn, data_fn, persist=None):
         click.echo(f"adding {d['name']}")
         time.sleep(1)
         res = wf.createItem(collection_id, d)
-        if res.get('code') == 400:
-            print(d)
         if persist:
             persist(res)
     
@@ -138,6 +136,7 @@ def repo_data(repo):
     result['supported-clouds'] = [CLOUD_IDS[r['provider']] for r in repo['recipes'] if r['provider'] in CLOUD_IDS]
     result['publisher'] = DATA['publishers'].get(repo['publisher']['name'])
     result['icon'] = repo['darkIcon'] or repo['icon']
+    result['app-icon'] = result['icon'] 
     result['category'] = DATA['categories'][repo['category'].lower()]
     return result
 

@@ -21,14 +21,14 @@ function MdImg({ src, gitUrl, ...props }) {
   )
 }
 
-function getLastStringChild(children) {
+function getLastStringChild(children, depth = 0) {
   let lastChild = null
   Children.forEach(children, child => {
     if (typeof child === 'string') {
       lastChild = child
     }
-    else if (child.props && child.props.children) {
-      lastChild = getLastStringChild(child.props.children)
+    else if (child.props && child.props.children && depth < 3) {
+      lastChild = getLastStringChild(child.props.children, depth + 1)
     }
   })
 
@@ -81,6 +81,7 @@ export default memo(({ text, gitUrl }) => (
         },
       },
       p: { component: P, props: { body2: true, marginBottom: 'medium' } },
+      div: { component: Box, props: { body2: true, marginBottom: 'medium' } },
       a: {
         component: A,
         props: {

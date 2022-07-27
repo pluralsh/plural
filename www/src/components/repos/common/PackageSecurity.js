@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Box, Collapsible } from 'grommet'
+import { Box, Collapsible, InfiniteScroll } from 'grommet'
 import {
   Chip, CollapseIcon, ErrorIcon, PageTitle,
 } from 'pluralsh-design-system'
@@ -14,11 +14,7 @@ import { useOutletContext } from 'react-router-dom'
 
 import { capitalize } from 'lodash/string'
 
-import { isEmpty } from 'lodash/lang'
-
 import { Table, TableData, TableRow } from '../../utils/Table'
-
-import { StandardScroller } from '../../utils/SmoothScroller'
 
 import { PackageGrade, PackageProperty } from './misc'
 
@@ -94,7 +90,6 @@ function ScanViolation({ violation, last }) {
 export default function PackageSecurity() {
   const { currentHelmChart, currentTerraformChart } = useOutletContext()
   const current = currentHelmChart || currentTerraformChart
-  const [listRef, setListRef] = useState(null)
 
   return (
     <Box
@@ -114,22 +109,24 @@ export default function PackageSecurity() {
       <H2>Scan failures</H2>
       {current.scan.errors?.length ? (
         <Box
+          direction="column"
           background="fill-one"
           border
           round="xsmall"
           height="460px"
+          overflow="auto"
         >
-          <StandardScroller
-            listRef={listRef}
-            setListRef={setListRef}
-            items={current.scan.errors}
-            mapper={(error, { next }) => (
+          <InfiniteScroll items={current.scan.errors}>
+            {(item, i) => (
               <Box
+                key={i}
                 direction="row"
                 align="center"
                 gap="medium"
                 pad={{ horizontal: 'medium', vertical: 'small' }}
-                border={!isEmpty(next) ? 'bottom' : null}
+                height={{ min: '60px' }}
+                flex="grow"
+                border={i === current.scan.errors - 1 ? null : 'bottom'}
               >
                 <ErrorIcon
                   size={24}
@@ -158,11 +155,11 @@ export default function PackageSecurity() {
                     </Button>
                   )}
                 >
-                  <p>{error.message}</p>
+                  <p>{item.message}</p>
                 </Clamp>
               </Box>
             )}
-          />
+          </InfiniteScroll>
         </Box>
       ) : (
         <Div body2>No scan failures found.</Div>

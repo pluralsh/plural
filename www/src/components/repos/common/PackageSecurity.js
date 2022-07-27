@@ -14,7 +14,11 @@ import { useOutletContext } from 'react-router-dom'
 
 import { capitalize } from 'lodash/string'
 
+import { isEmpty } from 'lodash/lang'
+
 import { Table, TableData, TableRow } from '../../utils/Table'
+
+import { StandardScroller } from '../../utils/SmoothScroller'
 
 import { PackageGrade, PackageProperty } from './misc'
 
@@ -90,6 +94,7 @@ function ScanViolation({ violation, last }) {
 export default function PackageSecurity() {
   const { currentHelmChart, currentTerraformChart } = useOutletContext()
   const current = currentHelmChart || currentTerraformChart
+  const [listRef, setListRef] = useState(null)
 
   return (
     <Box
@@ -112,47 +117,52 @@ export default function PackageSecurity() {
           background="fill-one"
           border
           round="xsmall"
+          height="460px"
         >
-          {current.scan.errors.map((error, i, arr) => (
-            <Box
-              key={i}
-              direction="row"
-              align="center"
-              gap="medium"
-              pad={{ horizontal: 'medium', vertical: 'small' }}
-              border={i === arr.length - 1 ? null : 'bottom'}
-            >
-              <ErrorIcon
-                size={24}
-                color="icon-error"
-              />
-              <Clamp
-                withToggle
-                lines={2}
-                showMoreElement={({ toggle }) => (
-                  <Button
-                    secondary
-                    height="40px"
-                    marginLeft="medium"
-                    onClick={toggle}
-                  >
-                    Read more
-                  </Button>
-                )}
-                showLessElement={({ toggle }) => (
-                  <Button
-                    secondary
-                    height="40px"
-                    onClick={toggle}
-                  >
-                    Hide
-                  </Button>
-                )}
+          <StandardScroller
+            listRef={listRef}
+            setListRef={setListRef}
+            items={current.scan.errors}
+            mapper={(error, { next }) => (
+              <Box
+                direction="row"
+                align="center"
+                gap="medium"
+                pad={{ horizontal: 'medium', vertical: 'small' }}
+                border={!isEmpty(next) ? 'bottom' : null}
               >
-                <p>{error.message}</p>
-              </Clamp>
-            </Box>
-          ))}
+                <ErrorIcon
+                  size={24}
+                  color="icon-error"
+                />
+                <Clamp
+                  withToggle
+                  lines={2}
+                  showMoreElement={({ toggle }) => (
+                    <Button
+                      secondary
+                      height="40px"
+                      marginLeft="medium"
+                      onClick={toggle}
+                    >
+                      Read more
+                    </Button>
+                  )}
+                  showLessElement={({ toggle }) => (
+                    <Button
+                      secondary
+                      height="40px"
+                      onClick={toggle}
+                    >
+                      Hide
+                    </Button>
+                  )}
+                >
+                  <p>{error.message}</p>
+                </Clamp>
+              </Box>
+            )}
+          />
         </Box>
       ) : (
         <Div body2>No scan failures found.</Div>

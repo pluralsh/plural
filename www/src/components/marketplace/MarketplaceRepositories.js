@@ -30,7 +30,6 @@ const filterTokenStyles = {
   marginRight: 'xsmall',
   marginBottom: 'xsmall',
   flexShrink: 0,
-  minHeight: '42px',
   border: '1px solid border-fill-one',
   backgroundColor: 'fill-one-selected',
 }
@@ -285,6 +284,7 @@ function MarketplaceRepositories({ installed }) {
                     />
                   )}
                   placeholder="Search a repository"
+                  marginRight={[...categories, ...tags].length ? 'xsmall' : 'none'}
                   value={search}
                   onChange={event => setSearch(event.target.value)}
                 />

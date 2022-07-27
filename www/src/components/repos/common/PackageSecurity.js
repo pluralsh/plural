@@ -126,7 +126,7 @@ export default function PackageSecurity() {
                 pad={{ horizontal: 'medium', vertical: 'small' }}
                 height={{ min: '60px' }}
                 flex="grow"
-                border={i === current.scan.errors - 1 ? null : 'bottom'}
+                border={i === current.scan.errors.length - 1 ? null : 'bottom'}
               >
                 <ErrorIcon
                   size={24}

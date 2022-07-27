@@ -105,13 +105,11 @@ def diffed_update(wf, collection_id, items, key_fn, data_fn, persist=None):
     for d in new_data:
         click.echo(f"adding {d['name']}")
         time.sleep(1)
-        click.echo(f"attempting to sync repo {d['name']} with icon {d['app-icon']}")
         res = wf.createItem(collection_id, d)
+        if res.get('code') == 400:
+            print(d)
         if persist:
             persist(res)
-
-    if collection_id == '62dff22f0b55da4ddc21ef80':
-        return
     
     for (prev, new) in needs_update:
         click.echo(f"updating {prev['_id']}")
@@ -139,7 +137,7 @@ def repo_data(repo):
     result['tags'] = [DATA['tags'][t['tag']] for t in repo['tags'] if t['tag'] in DATA['tags']]
     result['supported-clouds'] = [CLOUD_IDS[r['provider']] for r in repo['recipes'] if r['provider'] in CLOUD_IDS]
     result['publisher'] = DATA['publishers'].get(repo['publisher']['name'])
-    result['app-icon'] = repo['darkIcon'] or repo['icon']
+    result['icon'] = repo['darkIcon'] or repo['icon']
     result['category'] = DATA['categories'][repo['category'].lower()]
     return result
 
@@ -162,7 +160,6 @@ def pub_data(pub):
 
 def pick(d, keys):
     return {k: d[k] for k in keys}
-
 
 def save_tag(tag):
     DATA['tags'][tag['name']] = tag['_id']

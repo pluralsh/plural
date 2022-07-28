@@ -633,8 +633,10 @@ defmodule Core.Services.Repositories do
   Attempts to grab the contents of a repo's github readme and returns the result
   """
   @spec fetch_readme(Repository.t) :: binary | nil
-  def fetch_readme(%Repository{git_url: "https://github.com" <> _ = url}) when is_binary(url),
+  def fetch_readme(%Repository{git_url: "https://github.com" <> _ = url}),
     do: readme_fetch("#{url}/raw/{branch}/README.md")
+  def fetch_readme(%Repository{git_url: "https://gitlab.com" <> _ = url}),
+    do: readme_fetch("#{url}/-/raw/{branch}/README.md")
   def fetch_readme(_), do: nil
 
   @doc """

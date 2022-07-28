@@ -3,8 +3,6 @@ import { useQuery } from '@apollo/client'
 
 import { Box } from 'grommet'
 
-import moment from 'moment'
-
 import { useOutletContext } from 'react-router-dom'
 
 import { PageTitle } from 'pluralsh-design-system'
@@ -19,8 +17,7 @@ import { StandardScroller } from '../../utils/SmoothScroller'
 import { DEFERRED_UPDATES } from '../queries'
 
 import { LoopingLogo } from '../../utils/AnimatedLogo'
-
-const format = dt => moment(dt).format('lll')
+import { Date } from '../../utils/Date'
 
 export default function PackageUpdateQueue() {
   const { helmChart, terraformChart } = useOutletContext()
@@ -64,8 +61,8 @@ export default function PackageUpdateQueue() {
               mapper={({ node }, { next }) => (
                 <TableRow last={!next.node}>
                   <TableData>{node.deferred.version.version}</TableData>
-                  <TableData>{format(node.deferred.dequeueAt)}</TableData>
-                  <TableData>{format(node.deferred.insertedAt)}</TableData>
+                  <TableData><Date date={node.deferred.dequeueAt} /></TableData>
+                  <TableData><Date date={node.deferred.insertedAt} /></TableData>
                   <TableData>{node.deferred.attempts}</TableData>
                 </TableRow>
               )}

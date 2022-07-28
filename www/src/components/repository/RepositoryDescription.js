@@ -19,7 +19,7 @@ function RepositoryDescription() {
       borderRadius="large"
       maxWidth="640px"
     >
-      {repository.readme && repository.name !== 'nocodb' ? (
+      {repository.readme ? (
         <RepositoryDescriptionMarkdown
           text={repository.readme}
           gitUrl={repository.git_url}

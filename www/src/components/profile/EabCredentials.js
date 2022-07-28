@@ -64,47 +64,45 @@ export function EabCredentials() {
   if (!data) return <LoopingLogo />
 
   return (
-    <Container type="table">
-      <Box fill>
-        <PageTitle
-          heading="EAB credentials"
-          justifyContent="flex-start"
+    <Box fill>
+      <PageTitle
+        heading="EAB credentials"
+        justifyContent="flex-start"
+      >
+        <Tooltip
+          width="315px"
+          label={TOOLTIP}
         >
-          <Tooltip
-            width="315px"
-            label={TOOLTIP}
+          <Box
+            flex={false}
+            pad="6px"
+            round="xxsmall"
+            hoverIndicator="fill-two"
+            onClick
           >
-            <Box
-              flex={false}
-              pad="6px"
-              round="xxsmall"
-              hoverIndicator="fill-two"
-              onClick
+            <ErrorIcon size="16px" /> {/* TODO: Change to info icon. */}
+          </Box>
+        </Tooltip>
+      </PageTitle>
+      <Box fill>
+        {data.eabCredentials?.length
+          ? (
+            <Table
+              headers={['Key ID', 'HMAC key', 'Cluster', 'Created']}
+              sizes={['27%', '27%', '26%', '20%']}
+              background="fill-one"
+              border="1px solid border"
             >
-              <ErrorIcon size="16px" /> {/* TODO: Change to info icon. */}
-            </Box>
-          </Tooltip>
-        </PageTitle>
-        <Box fill>
-          {data.eabCredentials?.length
-            ? (
-              <Table
-                headers={['Key ID', 'HMAC key', 'Cluster', 'Created']}
-                sizes={['27%', '27%', '26%', '20%']}
-                background="fill-one"
-                border="1px solid border"
-              >
-                {data.eabCredentials.map((c, i, a) => (
-                  <EabCredential
-                    key={c.id}
-                    credential={c}
-                    last={i === a.length - 1}
-                  />
-                ))}
-              </Table>
-            ) : (<Div body2>No EAB credentials found.</Div>)}
-        </Box>
+              {data.eabCredentials.map((c, i, a) => (
+                <EabCredential
+                  key={c.id}
+                  credential={c}
+                  last={i === a.length - 1}
+                />
+              ))}
+            </Table>
+          ) : (<Div body2>No EAB credentials found.</Div>)}
       </Box>
-    </Container>
+    </Box>
   )
 }

@@ -13,7 +13,7 @@ export function ListItem({
       background={{ color: background || 'fill-one' }}
       direction="row"
       align="center"
-      pad={{ vertical: 'small', horizontal: 'medium' }}
+      pad="16px"
       border={first ? { side: 'all' } : [{ side: 'vertical' }, { side: 'bottom' }]}
       round={(first && last) ? BORDER_RADIUS : (first ? r('top') : ((last ? r('bottom') : null)))}
     >{children}

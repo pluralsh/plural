@@ -280,6 +280,7 @@ function RepositoryTests() {
     <Flex
       direction="column"
       flexGrow={1}
+      paddingBottom="xlarge"
     >
       <RepositoryHeader>Tests</RepositoryHeader>
       <Flex

@@ -60,10 +60,9 @@ function Repository() {
         overflowY="hidden"
       >
         <Flex
-          paddingVertical="xsmall"
+          paddingTop="xsmall"
           marginLeft="medium"
           marginRight="large"
-          borderBottom="1px solid border"
         >
           <Button
             tertiary

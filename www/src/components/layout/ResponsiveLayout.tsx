@@ -37,7 +37,7 @@ export function ResponsiveLayoutContentContainer(props: any) {
       height="100%"
       maxHeight="100%"
       maxWidth-desktopLarge-up={896}
-      paddingBottom="xlarge"
+      width-desktopLarge-up={896}
       overflowY="auto"
       overflowX="hidden"
       {...props}

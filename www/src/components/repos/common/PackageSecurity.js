@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Box, Collapsible } from 'grommet'
+import { Box, Collapsible, InfiniteScroll } from 'grommet'
 import {
   Chip, CollapseIcon, ErrorIcon, PageTitle,
 } from 'pluralsh-design-system'
@@ -109,50 +109,58 @@ export default function PackageSecurity() {
       <H2>Scan failures</H2>
       {current.scan.errors?.length ? (
         <Box
+          direction="column"
           background="fill-one"
           border
           round="xsmall"
+          height={{ max: '460px' }}
+          overflow="auto"
         >
-          {current.scan.errors.map((error, i, arr) => (
-            <Box
-              key={i}
-              direction="row"
-              align="center"
-              gap="medium"
-              pad={{ horizontal: 'medium', vertical: 'small' }}
-              border={i === arr.length - 1 ? null : 'bottom'}
-            >
-              <ErrorIcon
-                size={24}
-                color="icon-error"
-              />
-              <Clamp
-                withToggle
-                lines={2}
-                showMoreElement={({ toggle }) => (
-                  <Button
-                    secondary
-                    height="40px"
-                    marginLeft="medium"
-                    onClick={toggle}
-                  >
-                    Read more
-                  </Button>
-                )}
-                showLessElement={({ toggle }) => (
-                  <Button
-                    secondary
-                    height="40px"
-                    onClick={toggle}
-                  >
-                    Hide
-                  </Button>
-                )}
+          <InfiniteScroll items={current.scan.errors}>
+            {(item, i) => (
+              <Box
+                key={i}
+                direction="row"
+                align="center"
+                gap="medium"
+                pad={{ horizontal: 'medium', vertical: 'small' }}
+                height={{ min: '60px' }}
+                flex="grow"
+                border={i === current.scan.errors.length - 1 ? null : 'bottom'}
               >
-                <p>{error.message}</p>
-              </Clamp>
-            </Box>
-          ))}
+                <ErrorIcon
+                  size={24}
+                  color="icon-error"
+                />
+                <Clamp
+                  withToggle
+                  lines={2}
+                  showMoreElement={({ toggle }) => (
+                    <Button
+                      secondary
+                      height="40px"
+                      marginLeft="medium"
+                      onClick={toggle}
+                    >
+                      Read more
+                    </Button>
+                  )}
+                  showLessElement={({ toggle }) => (
+                    <Button
+                      secondary
+                      height="40px"
+                      marginLeft="medium"
+                      onClick={toggle}
+                    >
+                      Hide
+                    </Button>
+                  )}
+                >
+                  <p>{item.message}</p>
+                </Clamp>
+              </Box>
+            )}
+          </InfiniteScroll>
         </Box>
       ) : (
         <Div body2>No scan failures found.</Div>

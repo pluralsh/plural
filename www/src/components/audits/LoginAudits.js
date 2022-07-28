@@ -13,11 +13,12 @@ import { Table, TableData, TableRow } from '../utils/Table'
 
 import { extendConnection } from '../../utils/graphql'
 
+import { Date } from '../utils/Date'
+
 import { AuditUser } from './AuditUser'
 import { Location } from './Location'
 
 import { LOGINS_Q } from './queries'
-import { Date } from './Date'
 
 function LoginRow({ login, last }) {
   return (
@@ -65,8 +66,6 @@ export function LoginAudits() {
     listRef.scrollToItem(0)
   }, [listRef])
 
-  console.log(data)
-
   if (!data) {
     return (
       <LoopingLogo />
@@ -74,6 +73,8 @@ export function LoginAudits() {
   }
 
   const { edges, pageInfo } = data.oidcLogins
+
+  console.log(edges)
 
   return (
     <Box fill>

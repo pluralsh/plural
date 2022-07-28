@@ -15,9 +15,10 @@ import { Table, TableData, TableRow } from '../utils/Table'
 
 import { AUDITS_Q } from '../accounts/queries'
 
+import { Date } from '../utils/Date'
+
 import { AuditUser } from './AuditUser'
 import { Location } from './Location'
-import { Date } from './Date'
 
 const versionLink = ({ chart, terraform }) => (chart ? `/charts/${chart.id}` : `/terraform/${terraform.id}`)
 

@@ -243,7 +243,7 @@ export default function Chart() {
           </Box>
           <Box
             fill
-            pad={{ horizontal: 'large' }}
+            pad={{ horizontal: '32px' }}
           >
             <Outlet context={{ helmChart: chart, currentHelmChart: currentVersion }} />
           </Box>

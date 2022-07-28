@@ -23,15 +23,12 @@ export function PackageGrade({ scan, large }) {
 
   return (
     <Chip
+      size={large ? 'large' : 'medium'}
       paddingHorizontal={large ? 'large' : 'small'}
-      height={large ? '32px' : '24px'}
       backgroundColor="fill-two"
       borderColor="border-fill-two"
     >
-      <Span
-        color={gradeToColor[scan.grade]}
-        fontWeight="600"
-      >
+      <Span color={gradeToColor[scan.grade]}>
         {scan.grade}
       </Span>
     </Chip>
@@ -125,14 +122,9 @@ export function PackageVersionPicker({
               {node.id === installed?.version?.id && (
                 <Chip
                   severity="success"
-                  style={{ height: '20px' }}
+                  size="small"
                 >
-                  <Span
-                    fontSize="12px"
-                    fontWeight="400"
-                  >
-                    Installed
-                  </Span>
+                  Installed
                 </Chip>
               )}
             </Box>

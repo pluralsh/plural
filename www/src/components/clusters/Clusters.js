@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client'
 import { Box } from 'grommet'
-import { Button, Flex, MenuItem, P, Select, Span } from 'honorable'
+import { A, Button, Flex, MenuItem, P, Select, Span } from 'honorable'
 import moment from 'moment'
 import { Chip, ClusterIcon, ReloadIcon, StatusIpIcon, StatusOkIcon } from 'pluralsh-design-system'
 import { useEffect, useMemo, useState } from 'react'
@@ -53,14 +53,14 @@ function ClusterDescription({ q }) {
     if (q.domain == null || q.domain === '') return (<i>Empty</i>)
 
     return (
-      <a
+      <A
+        inline
         href={`https://${q.domain}/`}
-        style={{ textDecoration: 'none' }}
         target="_blank"
-        rel="noreferrer"
+        rel="noopener noreferrer"
       >
         https://{q.domain}
-      </a>
+      </A>
     )
   }
 

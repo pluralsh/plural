@@ -1,8 +1,12 @@
 import { Box } from 'grommet'
 
+const BORDER_RADIUS = '6px'
+
 export function ListItem({
   first, last, children, background,
 }) {
+  const r = corner => ({ corner, size: BORDER_RADIUS })
+
   return (
     <Box
       flex={false}
@@ -11,7 +15,7 @@ export function ListItem({
       align="center"
       pad={{ vertical: 'small', horizontal: 'medium' }}
       border={first ? { side: 'all' } : [{ side: 'vertical' }, { side: 'bottom' }]}
-      round={first ? { corner: 'top', size: '3px' } : (last ? { corner: 'bottom', size: '3px' } : null)}
+      round={(first && last) ? BORDER_RADIUS : (first ? r('top') : ((last ? r('bottom') : null)))}
     >{children}
     </Box>
   )

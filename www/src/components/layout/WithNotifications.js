@@ -27,12 +27,20 @@ export function NotificationsPanel({ closePanel }) {
     { variables: {} },
     data => data.notifications)
 
+  if (!notifications.length) {
+    return (
+      <P>
+        You do not have any notifications yet.
+      </P>
+    )
+  }
+
   return (
     <InfiniteScroller
       loading={loadingNotifications}
       hasMore={hasMoreNotifications}
       loadMore={fetchMoreNotifications}
-                // Allow for scrolling in a flexbox layout
+      // Allow for scrolling in a flexbox layout
       flexGrow={1}
       height={0}
     >

@@ -49,6 +49,21 @@ function DataEntry({ name, value, children }) {
 }
 
 function ClusterDescription({ q }) {
+  function DomainLink() {
+    if (q.domain == null || q.domain === '') return (<i>Empty</i>)
+
+    return (
+      <a
+        href={`https://${q.domain}/`}
+        style={{ textDecoration: 'none' }}
+        target="_blank"
+        rel="noreferrer"
+      >
+        https://{q.domain}
+      </a>
+    )
+  }
+
   return (
     <Box
       flex={false}
@@ -69,7 +84,7 @@ function ClusterDescription({ q }) {
         />
         <DataEntry
           name="domain"
-          value={q.domain}
+          value={<DomainLink />}
         />
         <DataEntry
           name="acked"

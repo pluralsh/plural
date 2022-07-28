@@ -3,6 +3,7 @@ import { Tab } from 'pluralsh-design-system'
 import { Link, Outlet, useLocation } from 'react-router-dom'
 
 import { SidebarTabs } from '../utils/SidebarTabs'
+import { ResponsiveLayoutContentContainer, ResponsiveLayoutSpacer } from '../layout/ResponsiveLayout'
 
 const DIRECTORY = [
   { path: '/profile/me', label: 'Profile' },
@@ -20,10 +21,12 @@ export function MyProfile() {
       height="100%"
       width="100%"
       overflowY="hidden"
+      paddingTop="50px"
     >
       <SidebarTabs>
-        {DIRECTORY.map(({ label, path }) => (
+        {DIRECTORY.map(({ label, path }, i) => (
           <Link
+            key={i}
             to={path}
             style={{ textDecoration: 'none' }}
           >
@@ -36,7 +39,7 @@ export function MyProfile() {
           </Link>
         ))}
       </SidebarTabs>
-      <Div
+      <Flex
         flexGrow={1}
         pt={1.5}
         pr={1.5}
@@ -44,8 +47,10 @@ export function MyProfile() {
         maxHeight="100%"
         overflowY="auto"
       >
-        <Outlet />
-      </Div>
+        <ResponsiveLayoutSpacer />
+        <ResponsiveLayoutContentContainer><Outlet /></ResponsiveLayoutContentContainer>
+        <ResponsiveLayoutSpacer />
+      </Flex>
     </Flex>
   )
 }

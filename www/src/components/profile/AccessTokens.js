@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
-import { Button, Span } from 'honorable'
+import { Button, Div, Span } from 'honorable'
 import moment from 'moment'
 import { useState } from 'react'
 import lookup from 'country-code-lookup'
@@ -228,77 +228,74 @@ export function AccessTokens() {
   const { edges, pageInfo } = data.tokens
 
   return (
-    <Container type="table">
-      {displayNewBanner && <SuccessToast>New access token created.</SuccessToast>}
-      <Box
-        gap="medium"
-        fill
+    <Box fill>
+      <PageTitle
+        heading="Access tokens"
+        justifyContent="flex-start"
       >
-        <PageTitle
-          heading="Access tokens"
-          justifyContent="flex-start"
+        <Box
+          flex
+          direction="row"
+          align="center"
         >
+          <Tooltip
+            width="315px"
+            label={TOOLTIP}
+          >
+            <Box
+              flex={false}
+              pad="6px"
+              round="xxsmall"
+              hoverIndicator="fill-two"
+              onClick
+            >
+              <ErrorIcon size="16px" /> {/* TODO: Change to info icon. */}
+            </Box>
+          </Tooltip>
           <Box
             flex
-            direction="row"
-            align="center"
+            align="end"
           >
-            <Tooltip
-              width="315px"
-              label={TOOLTIP}
+            <Button
+              secondary
+              onClick={() => {
+                mutation()
+                setDisplayNewBanner(true)
+                setTimeout(() => setDisplayNewBanner(false), 1000)
+              }}
+              loading={loading}
             >
-              <Box
-                flex={false}
-                pad="6px"
-                round="xxsmall"
-                hoverIndicator="fill-two"
-                onClick
-              >
-                <ErrorIcon size="16px" /> {/* TODO: Change to info icon. */}
-              </Box>
-            </Tooltip>
-            <Box
-              flex
-              align="end"
-            >
-              <Button
-                secondary
-                onClick={() => {
-                  mutation()
-                  setDisplayNewBanner(true)
-                  setTimeout(() => setDisplayNewBanner(false), 1000)
-                }}
-                loading={loading}
-              >
-                Create access token
-              </Button>
-            </Box>
+              Create access token
+            </Button>
           </Box>
-        </PageTitle>
-        <Box
-          fill
-        >
-          <StandardScroller
-            listRef={listRef}
-            setListRef={setListRef}
-            items={edges}
-            mapper={({ node }, { next, prev }) => (
-              <AccessToken
-                token={node}
-                first={!prev.node}
-                last={!next.node}
-              />
-            )}
-            loading={loadingTokens}
-            placeholder={Placeholder}
-            hasNextPage={pageInfo.hasNextPage}
-            loadNextPage={pageInfo.hasNextPage && fetchMore({
-              variables: { cursor: pageInfo.endCursor },
-              updateQuery: (prev, { fetchMoreResult: { tokens } }) => extendConnection(prev, tokens, 'tokens'),
-            })}
-          />
         </Box>
+      </PageTitle>
+      <Box
+        fill
+      >
+        {edges?.length
+          ? (
+            <StandardScroller
+              listRef={listRef}
+              setListRef={setListRef}
+              items={edges}
+              mapper={({ node }, { next, prev }) => (
+                <AccessToken
+                  token={node}
+                  first={!prev.node}
+                  last={!next.node}
+                />
+              )}
+              loading={loadingTokens}
+              placeholder={Placeholder}
+              hasNextPage={pageInfo.hasNextPage}
+              loadNextPage={pageInfo.hasNextPage && fetchMore({
+                variables: { cursor: pageInfo.endCursor },
+                updateQuery: (prev, { fetchMoreResult: { tokens } }) => extendConnection(prev, tokens, 'tokens'),
+              })}
+            />
+          ) : (<Div body2>No access tokens found.</Div>)}
       </Box>
-    </Container>
+    </Box>
   )
 }

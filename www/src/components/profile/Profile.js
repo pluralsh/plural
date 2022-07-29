@@ -1,17 +1,17 @@
 import { useMutation } from '@apollo/client'
-import { Box, Stack } from 'grommet'
+import { Box, Stack, ThemeContext } from 'grommet'
 import {
   Avatar, Button, Flex, P,
 } from 'honorable'
 import {
-  CameraIcon, ContentCard, PageTitle, ValidatedInput,
+  CameraIcon, ContentCard, IconFrame, PageTitle, ValidatedInput,
 } from 'pluralsh-design-system'
 import { useContext, useEffect, useState } from 'react'
 import { useFilePicker } from 'react-sage'
 
 import { CurrentUserContext } from '../login/CurrentUser'
-import { Provider } from '../repos/misc'
 import { UPDATE_USER } from '../users/queries'
+import { DEFAULT_CHART_ICON, DarkProviderIcons, ProviderIcons } from '../repos/constants'
 
 function Attribute({ header, children }) {
   return (
@@ -20,7 +20,13 @@ function Attribute({ header, children }) {
       basis="1/2"
     >
       <P fontWeight="bold">{header}</P>
-      {children}
+      <Box
+        direction="row"
+        gap="medium"
+        align="end"
+      >
+        {children}
+      </Box>
     </Box>
   )
 }
@@ -28,11 +34,18 @@ function Attribute({ header, children }) {
 export function Profile() {
   const { files, onClick, HiddenFileInput } = useFilePicker({})
   const me = useContext(CurrentUserContext)
+  const { dark } = useContext(ThemeContext)
   const [name, setName] = useState(me.name)
   const [email, setEmail] = useState(me.email)
   const [mutation, { loading }] = useMutation(UPDATE_USER, {
     variables: { attributes: { name, email } },
   })
+
+  let url = ProviderIcons[me.provider] || DEFAULT_CHART_ICON
+
+  if (dark && DarkProviderIcons[me.provider]) {
+    url = DarkProviderIcons[me.provider]
+  }
 
   useEffect(() => {
     if (files.length > 0) {
@@ -52,48 +65,33 @@ export function Profile() {
           <Attribute header="Profile picture">
             <Stack
               anchor="bottom-right"
-              style={{ width: '100px' }}
+              style={{ width: '96px' }}
             >
               <Avatar
                 name={me.name}
                 src={me.avatar}
-                size={100}
+                size={96}
+                fontSize="24px"
+                fontWeight="500"
               />
-              <>
-                <Box
-                  flex={false}
-                  round="full"
-                  align="center"
-                  justify="center"
-                  background="#222534"
-                  pad="small"
-                  onClick={onClick}
-                >
-                  <CameraIcon
-                    size={15}
-                    color="action-link-inline"
-                  />
-                </Box>
-                <HiddenFileInput
-                  accept=".jpg, .jpeg, .png"
-                  multiple={false}
-                />
-              </>
             </Stack>
+            <Button
+              secondary
+              onClick={onClick}
+            >
+              Upload
+            </Button>
+            <HiddenFileInput
+              accept=".jpg, .jpeg, .png"
+              multiple={false}
+            />
           </Attribute>
           {me.provider && (
             <Attribute header="Provider">
-              <Box
-                width="100px"
-                height="100px"
-                align="center"
-                justify="center"
-              >
-                <Provider
-                  provider={me.provider}
-                  width={75}
-                />
-              </Box>
+              <IconFrame
+                url={url}
+                alt={me.provider}
+              />
             </Attribute>
           )}
         </Box>
@@ -111,7 +109,10 @@ export function Profile() {
             onChange={({ target: { value } }) => setEmail(value)}
           />
         </Box>
-        <Flex justifyContent="flex-end">
+        <Flex
+          justifyContent="flex-end"
+          marginTop="small"
+        >
           <Button
             onClick={mutation}
             loading={loading}

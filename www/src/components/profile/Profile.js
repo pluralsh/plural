@@ -1,27 +1,31 @@
 import { useMutation } from '@apollo/client'
 import { Box, Stack } from 'grommet'
 import {
-  Avatar, Button, Div, P,
+  Avatar, Button, Flex, P,
 } from 'honorable'
-import { CameraIcon, PageTitle, ValidatedInput } from 'pluralsh-design-system'
+import {
+  CameraIcon, ContentCard, PageTitle, ValidatedInput,
+} from 'pluralsh-design-system'
 import { useContext, useEffect, useState } from 'react'
 import { useFilePicker } from 'react-sage'
 
 import { CurrentUserContext } from '../login/CurrentUser'
 import { Provider } from '../repos/misc'
 import { UPDATE_USER } from '../users/queries'
-import { Container } from '../utils/Container'
 
 function Attribute({ header, children }) {
   return (
-    <Box gap="small">
+    <Box
+      gap="small"
+      basis="1/2"
+    >
       <P fontWeight="bold">{header}</P>
       {children}
     </Box>
   )
 }
 
-export function Me() {
+export function Profile() {
   const { files, onClick, HiddenFileInput } = useFilePicker({})
   const me = useContext(CurrentUserContext)
   const [name, setName] = useState(me.name)
@@ -37,17 +41,15 @@ export function Me() {
   }, [files, mutation])
 
   return (
-    <Container type="form">
-      <Box
-        gap="medium"
-        fill
-      >
-        <PageTitle heading="Profile" />
+    <Box fill>
+      <PageTitle heading="Profile" />
+      <ContentCard>
         <Box
           gap="large"
+          margin={{ bottom: 'medium' }}
           direction="row"
         >
-          <Attribute header="Profile Picture">
+          <Attribute header="Profile picture">
             <Stack
               anchor="bottom-right"
               style={{ width: '100px' }}
@@ -97,31 +99,27 @@ export function Me() {
         </Box>
         <Box gap="small">
           <ValidatedInput
-            label="Name"
+            label="Full name"
             width="100%"
             value={name}
             onChange={({ target: { value } }) => setName(value)}
-            validation={() => null}
           />
           <ValidatedInput
             label="Email"
             width="100%"
             value={email}
-            hint="Changing emails will require email verification"
             onChange={({ target: { value } }) => setEmail(value)}
-            validation={() => null}
           />
         </Box>
-        <Div>
+        <Flex justifyContent="flex-end">
           <Button
-            width="90px"
             onClick={mutation}
             loading={loading}
           >
             Save
           </Button>
-        </Div>
-      </Box>
-    </Container>
+        </Flex>
+      </ContentCard>
+    </Box>
   )
 }

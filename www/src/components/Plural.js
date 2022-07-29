@@ -34,7 +34,7 @@ import { EabCredentials } from './profile/EabCredentials'
 import { EditAccount } from './accounts/EditAccount'
 import { Groups } from './account/Groups'
 import { IntegrationPage } from './repos/Integrations'
-import { Me } from './profile/Me'
+import { Profile } from './profile/Profile'
 import { MyProfile } from './profile/MyProfile'
 import { OIDCProvider } from './repository/OIDCProvider'
 import { OauthCreator } from './integrations/OauthCreator'
@@ -141,7 +141,7 @@ export function PluralInner() {
               />
               <Route
                 path="me"
-                element={<Me />}
+                element={<Profile />}
               />
               <Route
                 path="security"

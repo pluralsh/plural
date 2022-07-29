@@ -7,7 +7,9 @@ import { ReactElement, useContext } from 'react'
 
 import QueueContext from '../../contexts/QueueContext'
 
-import { Queue } from './Clusters'
+// TODO: This should not be needed once Clusters.js file gets removed
+// @ts-ignore
+import { Queue } from './Clusters.tsx'
 
 export function ClustersSidecar(): ReactElement {
   const queue: Queue = useContext(QueueContext)

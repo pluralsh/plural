@@ -19,6 +19,7 @@ export function Provider({ provider, width }) {
 
 export function providerToURL(provider, dark) {
   let url = ProviderIcons[provider] || DEFAULT_CHART_ICON
+
   if (dark && DarkProviderIcons[provider]) {
     url = DarkProviderIcons[provider]
   }

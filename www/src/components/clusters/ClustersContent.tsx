@@ -88,6 +88,7 @@ function UpgradesList({
       color="text-light"
       border="1px solid border"
       borderRadius="large"
+      paddingRight="xxxsmall"
     >
       <StandardScroller
         listRef={listRef}
@@ -95,11 +96,12 @@ function UpgradesList({
         hasNextPage={pageInfo.hasNextPage}
         items={edges}
         loading={loading}
-        mapper={({ node }) => (
+        mapper={({ node }, { next }) => (
           <UpgradeItem
             key={node.id}
             upgrade={node as Upgrade}
             acked={acked}
+            last={!next.node}
           />
         )}
         loadNextPage={() => pageInfo.hasNextPage && fetchMore({
@@ -117,18 +119,14 @@ function UpgradesList({
   )
 }
 
-function UpgradeItem({ upgrade, acked }: { upgrade: Upgrade, acked: string }): ReactElement | null {
+function UpgradeItem({ upgrade, acked, last }: { upgrade: Upgrade, acked: string, last: boolean }): ReactElement | null {
   const delivered = acked && upgrade.id <= acked
   const severity = delivered ? 'success' : 'neutral'
 
   return (
     <Flex
-      grow={1}
-      borderBottom="1px solid border"
-      padding={16}
-      {...{
-        ':last-of-type': { borderBottom: 'none' },
-      }}
+      borderBottom={last ? null : '1px solid border'}
+      padding="medium"
     >
       <RepoIcon
         repo={upgrade.repository}

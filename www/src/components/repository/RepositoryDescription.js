@@ -14,17 +14,26 @@ function RepositoryDescription() {
     <Flex
       direction="column"
       color="text-light"
-      paddingBottom="xlarge"
+      paddingRight="small"
       borderRadius="large"
       position="relative"
+      overflowY="hidden"
     >
       <RepositoryHeader>Readme</RepositoryHeader>
-      {repository.readme ? (
-        <RepositoryDescriptionMarkdown
-          text={repository.readme}
-          gitUrl={repository.git_url}
-        />
-      ) : <P>No description available</P>}
+      <Flex
+        direction="column"
+        flexGrow={1}
+        overflowY="auto"
+        paddingTop="medium"
+        paddingBottom="xlarge"
+      >
+        {repository.readme ? (
+          <RepositoryDescriptionMarkdown
+            text={repository.readme}
+            gitUrl={repository.git_url}
+          />
+        ) : <P>No description available</P>}
+      </Flex>
     </Flex>
   )
 }

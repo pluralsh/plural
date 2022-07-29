@@ -19,7 +19,7 @@ import {
 } from 'pluralsh-design-system'
 
 import { getPreviousUserData, setPreviousUserData, setToken, wipeToken } from '../../helpers/authentication'
-import { CurrentUserContext } from '../login/CurrentUser'
+import { CurrentUserContext, handlePreviousUserClick } from '../login/CurrentUser'
 import { useOnboarded } from '../shell/onboarding/useOnboarded'
 
 import WithNotifications from './WithNotifications'
@@ -264,11 +264,7 @@ function Sidebar({
     }
   })
 
-  function handlePreviousUserClick() {
-    setToken(previousUserData.jwt)
-    setPreviousUserData(null)
-    window.location.reload()
-  }
+  const switchPrevious = () => handlePreviousUserClick(previousUserData)
 
   function handleLogout() {
     wipeToken()
@@ -528,7 +524,7 @@ function Sidebar({
             Create new publisher
           </MenuItem> */}
           {!!previousUserData && (
-            <MenuItem onClick={handlePreviousUserClick}>
+            <MenuItem onClick={switchPrevious}>
               <LogoutIcon mr={1} />
               Log back as {previousUserData.me.email}
             </MenuItem>

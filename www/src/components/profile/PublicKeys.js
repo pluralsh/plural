@@ -109,7 +109,7 @@ export function PublicKeys() {
             hoverIndicator="fill-two"
             onClick
           >
-            <ErrorIcon size="16px" /> {/* TODO: Change to info icon. */}
+            <ErrorIcon /> {/* TODO: Change to info icon. */}
           </Box>
         </Tooltip>
       </PageTitle>

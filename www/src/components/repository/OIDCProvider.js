@@ -3,32 +3,25 @@ import {
 } from 'react'
 import { Box } from 'grommet'
 import { useMutation } from '@apollo/client'
-
 import { Button, Div, Flex } from 'honorable'
-
 import { FormField, Input, Token } from 'pluralsh-design-system'
-
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { fetchGroups, fetchUsers } from '../accounts/Typeaheads'
-
 import { GqlError } from '../utils/Alert'
 import { deepUpdate, updateCache } from '../../utils/graphql'
 import { REPO_Q } from '../repos/queries'
-
 import { Header } from '../profile/Header'
-
 import { BindingInput } from '../account/Typeaheads'
-
 import { sanitize } from '../account/utils'
-
 import { CREATE_PROVIDER, UPDATE_PROVIDER } from '../oidc/queries'
-
 import { AuthMethod } from '../oidc/types'
 import RepositoryContext from '../../contexts/RepositoryContext'
 
 function UrlsInput({ uriFormat = '', urls, setUrls }) {
   const [value, setValue] = useState('')
+  const [scheme = 'https://', path = '/oauth/callback'] = uriFormat.split('{domain}').filter(v => !!v)
+
   const addUrl = useCallback(() => {
     const url = uriFormat ? uriFormat.replace('{domain}', value) : value
 
@@ -36,11 +29,9 @@ function UrlsInput({ uriFormat = '', urls, setUrls }) {
     setValue('')
   }, [urls, value, setValue, setUrls, uriFormat])
 
-  const [scheme, path] = uriFormat.split('{domain}')
-
   return (
     <Box
-      gap="xsmall"
+      gap="small"
       fill="horizontal"
     >
       <Box
@@ -55,7 +46,7 @@ function UrlsInput({ uriFormat = '', urls, setUrls }) {
           suffix={path}
           width="500px"
           borderRadius="0px"
-          placeholder={uriFormat ? 'enter the domain for this url' : 'enter a redirect url'}
+          placeholder={uriFormat ? 'Enter a domain' : 'Enter a redirect url'}
           onChange={({ target: { value } }) => setValue(value)}
         />
         <Button
@@ -73,7 +64,7 @@ function UrlsInput({ uriFormat = '', urls, setUrls }) {
           <Token
             key={url}
             marginLeft={i === 0 ? null : 'xsmall'}
-            onClick={() => setUrls(urls.filter(u => u !== url))}
+            onClose={() => setUrls(urls.filter(u => u !== url))}
           >
             {url}
           </Token>
@@ -89,15 +80,17 @@ export function ProviderForm({
   const settings = repository.oauthSettings || {}
 
   return (
-    <Box
-      flex={false}
-      fill="horizontal"
-      gap="small"
+    <Flex
+      direction="column"
+      gap="large"
+      backgroundColor="fill-one"
+      paddingHorizontal={112}
+      paddingVertical="xlarge"
+      borderRadius="large"
+      border="1px solid border"
     >
       <BindingInput
         type="user"
-        label="user bindings"
-        placeholder="search for users to add"
         bindings={bindings.filter(({ user }) => !!user).map(({ user: { email } }) => email)}
         fetcher={fetchUsers}
         add={user => setBindings([...bindings, { user }])}
@@ -105,16 +98,13 @@ export function ProviderForm({
       />
       <BindingInput
         type="group"
-        label="group bindings"
-        placeholder="search for groups to add"
         bindings={bindings.filter(({ group }) => !!group).map(({ group: { name } }) => name)}
         fetcher={fetchGroups}
         add={group => setBindings([...bindings, { group }])}
         remove={name => setBindings(bindings.filter(({ group }) => !group || group.name !== name))}
       />
       <FormField
-        label="Redirect Urls"
-        width="100%"
+        label="Redirect urls"
       >
         <UrlsInput
           uriFormat={settings.uriFormat}
@@ -122,7 +112,13 @@ export function ProviderForm({
           setUrls={redirectUris => setAttributes({ ...attributes, redirectUris })}
         />
       </FormField>
-    </Box>
+      <Flex>
+        <Button
+          primary
+        >Save
+        </Button>
+      </Flex>
+    </Flex>
   )
 }
 
@@ -197,14 +193,13 @@ export function UpdateProvider({ installation }) {
     >
       <Header
         header="OpenID Connect"
-        description="Modify the attributes of this installations OIDC provider"
       >
-        <Button
-          loading={loading}
-          onClick={mutation}
-        >
-          Update
-        </Button>
+        {/* <Button */}
+        {/*  loading={loading} */}
+        {/*  onClick={mutation} */}
+        {/* > */}
+        {/*  Update */}
+        {/* </Button> */}
       </Header>
       {error && (
         <GqlError

@@ -77,37 +77,37 @@ export default memo(({ text, gitUrl }) => (
       h1: {
         component: H1,
         props: {
-          subtitle1: true, marginTop: 'large', marginBottom: 'small', ':first-child': { marginTop: '0px' },
+          subtitle1: true, marginTop: 'large', marginBottom: 'small', ':first-of-type': { marginTop: '0px' },
         },
       },
       h2: {
         component: H2,
         props: {
-          subtitle2: true, marginTop: 'large', marginBottom: 'small', ':first-child': { marginTop: '0px' },
+          subtitle2: true, marginTop: 'large', marginBottom: 'small', ':first-of-type': { marginTop: '0px' },
         },
       },
       h3: {
         component: H3,
         props: {
-          body1: true, bold: true, marginTop: 'large', marginBottom: 'small', ':first-child': { marginTop: '0px' },
+          body1: true, bold: true, marginTop: 'large', marginBottom: 'small', ':first-of-type': { marginTop: '0px' },
         },
       },
       h4: {
         component: H4,
         props: {
-          body2: true, bold: true, marginTop: 'large', marginBottom: 'small', ':first-child': { marginTop: '0px' },
+          body2: true, bold: true, marginTop: 'large', marginBottom: 'small', ':first-of-type': { marginTop: '0px' },
         },
       },
       h5: {
         component: H5,
         props: {
-          body2: true, bold: true, marginTop: 'large', marginBottom: 'small', ':first-child': { marginTop: '0px' },
+          body2: true, bold: true, marginTop: 'large', marginBottom: 'small', ':first-of-type': { marginTop: '0px' },
         },
       },
       h6: {
         component: H6,
         props: {
-          body2: true, bold: true, marginTop: 'large', marginBottom: 'small', ':first-child': { marginTop: '0px' },
+          body2: true, bold: true, marginTop: 'large', marginBottom: 'small', ':first-of-type': { marginTop: '0px' },
         },
       },
       img: {

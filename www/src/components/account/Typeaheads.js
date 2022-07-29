@@ -4,7 +4,7 @@ import { useApolloClient } from '@apollo/client'
 import { Box, Text, TextInput } from 'grommet'
 
 import {
-  FormField, PeopleIcon, PersonIcon, Token,
+  Chip, FormField, PeopleIcon, PersonIcon,
 } from 'pluralsh-design-system'
 
 import { Flex } from 'honorable'
@@ -76,7 +76,7 @@ function groupSuggestion(group) {
 }
 
 function TagInput({
-  placeholder, label, hint, suggestions, items, icon, onRemove, onAdd, width, onChange, background,
+  placeholder, label, hint, suggestions, items, icon, onRemove, onAdd, width, onChange,
 }) {
   const [value, setValue] = useState('')
 
@@ -113,11 +113,11 @@ function TagInput({
         wrap="wrap"
       >
         {items.map(t => (
-          <Token
+          <Chip
             onClick={() => onRemove(t)}
-            backgroundColor={background || 'fill-one'}
+            hue="lighter"
           >{t}
-          </Token>
+          </Chip>
         ))}
       </Flex>
     </Box>
@@ -130,8 +130,8 @@ const ICONS = {
 }
 
 const TEXT = {
-  user: { label: 'User Bindings', placeholder: 'search for users to add' },
-  group: { label: 'Group Bindings', placeholder: 'search for groups to add' },
+  user: { label: 'User bindings', placeholder: 'Search for user' },
+  group: { label: 'Group bindings', placeholder: 'Search for group' },
 }
 
 const FETCHER = {
@@ -140,11 +140,10 @@ const FETCHER = {
 }
 
 export function BindingInput({
-  type, fetcher, bindings, remove, add, hint, background,
+  type, fetcher, bindings, remove, add, hint, background, placeholder = TEXT[type].placeholder, label = TEXT[type].label,
 }) {
   const client = useApolloClient()
   const [suggestions, setSuggestions] = useState([])
-  const { placeholder, label } = TEXT[type]
   const fetch = fetcher || FETCHER[type]
 
   return (
@@ -159,7 +158,6 @@ export function BindingInput({
       suggestions={suggestions}
       items={bindings}
       onRemove={remove}
-      background={background}
       onAdd={({ value }) => add(value)}
       onChange={({ target: { value } }) => fetch(client, value, setSuggestions)}
     />
@@ -182,7 +180,6 @@ export function UserTypeahead({
       noborder
       suggestions={suggestions}
       items={users.map(u => u.email)}
-      background={background}
       onRemove={email => setUsers(users.filter(u => u.email !== email))}
       onAdd={({ value }) => setUsers([value, ...users])}
       onChange={({ target: { value } }) => fetchUsers(client, value, setSuggestions)}
@@ -206,7 +203,6 @@ export function GroupTypeahead({
       suggestions={suggestions}
       items={groups.map(u => u.name)}
       onRemove={name => setGroups(groups.filter(u => u.name !== name))}
-      background={background}
       onAdd={({ value }) => setGroups([value, ...groups])}
       onChange={({ target: { value } }) => fetchGroups(client, value, setSuggestions)}
       button={children}

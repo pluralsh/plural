@@ -116,7 +116,7 @@
       "\\.(css)$": "identity-obj-proxy"
     },
     "transformIgnorePatterns": [
-      "/node_modules/(?!(pluralsh-design-system|honorable|forge-core|d3-hierarchy|d3-selection|xterm-for-react|react-dnd|dnd-core|@react-dnd))"
+      "/node_modules/(?!(.*))"
     ]
   }
 }

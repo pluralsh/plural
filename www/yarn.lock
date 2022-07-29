@@ -13673,9 +13673,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pluralsh-design-system@npm:1.136.0":
-  version: 1.136.0
-  resolution: "pluralsh-design-system@npm:1.136.0"
+"pluralsh-design-system@npm:1.140.0":
+  version: 1.140.0
+  resolution: "pluralsh-design-system@npm:1.140.0"
   dependencies:
     "@react-aria/tabs": 3.2.1
     "@react-stately/collections": 3.4.1
@@ -13691,7 +13691,7 @@ __metadata:
     react: ">=16.0.0"
     react-dom: ">=16.0.0"
     react-transition-group: ">=4.4.2"
-  checksum: 780f07ba36c6085a1f666f7697aa320baba8491c3d9e3c319fc98258b73b53c61a13a49ec5ae642a97da121228f9436c333c5215ed3cf53f8d4593a9bda2c97f
+  checksum: 403241b828cb0a7b26cdabfc1e8919233b57bf727bdc976feaaba71bafb4427bf25aaa5d40530915c4fe9ece4e8a65b4f0269266e1424e54a624fc088e0024e1
   languageName: node
   linkType: hard
 
@@ -19135,7 +19135,7 @@ __metadata:
     moment: 2.29.4
     phoenix: 1.6.11
     pluralsh-absinthe-socket-apollo-link: 0.2.0
-    pluralsh-design-system: 1.136.0
+    pluralsh-design-system: 1.140.0
     postcss-import: 8.2.0
     prop-types: 15.8.1
     query-string: 7.1.1

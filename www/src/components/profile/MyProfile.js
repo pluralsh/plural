@@ -1,9 +1,13 @@
-import { Div, Flex } from 'honorable'
+import { Avatar, Flex, Text } from 'honorable'
 import { Tab } from 'pluralsh-design-system'
 import { Link, Outlet, useLocation } from 'react-router-dom'
 
-import { SidebarTabs } from '../utils/SidebarTabs'
+import { Box } from 'grommet'
+
+import { useContext } from 'react'
+
 import { ResponsiveLayoutContentContainer, ResponsiveLayoutSpacer } from '../layout/ResponsiveLayout'
+import { CurrentUserContext } from '../login/CurrentUser'
 
 const DIRECTORY = [
   { path: '/profile/me', label: 'Profile' },
@@ -14,7 +18,10 @@ const DIRECTORY = [
 ]
 
 export function MyProfile() {
+  const me = useContext(CurrentUserContext)
   const { pathname } = useLocation()
+
+  console.log(me)
 
   return (
     <Flex
@@ -23,7 +30,36 @@ export function MyProfile() {
       overflowY="hidden"
       paddingTop="50px"
     >
-      <SidebarTabs>
+      <Flex
+        px={1}
+        py={1}
+        width={240}
+        flexShrink={0}
+        direction="column"
+      >
+        <Box
+          direction="row"
+          gap="small"
+          margin={{ bottom: '32px' }}
+        >
+          <Avatar
+            name={me.name}
+            src={me.avatar}
+            size={64}
+            fontSize="12px"
+          />
+          <Box>
+            <Text subtitle2>{me.name}</Text>
+            {me?.roles?.admin && (
+              <Text
+                caption
+                color="text-xlight"
+              >
+                Admin at Plural
+              </Text>
+            )}
+          </Box>
+        </Box>
         {DIRECTORY.map(({ label, path }, i) => (
           <Link
             key={i}
@@ -38,7 +74,7 @@ export function MyProfile() {
             </Tab>
           </Link>
         ))}
-      </SidebarTabs>
+      </Flex>
       <Flex
         flexGrow={1}
         pt={1.5}

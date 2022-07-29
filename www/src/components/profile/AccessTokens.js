@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
-import { Button, Div, Span } from 'honorable'
+import { Button, Span } from 'honorable'
 import moment from 'moment'
 import { useState } from 'react'
 import lookup from 'country-code-lookup'
@@ -30,6 +30,8 @@ import { Chloropleth } from '../utils/Chloropleth'
 import { Container } from '../utils/Container'
 
 import { Confirm } from '../account/Confirm'
+
+import { SuccessToast } from '../utils/Toasts'
 
 import { DeleteIcon, Icon } from './Icon'
 import { ListItem } from './ListItem'
@@ -112,6 +114,7 @@ function TokenMetrics({ token }) {
 }
 
 function AccessToken({ token, first, last }) {
+  const [displayCopyBanner, setDisplayCopyBanner] = useState(false)
   const [confirm, setConfirm] = useState(false)
   const [audits, setAudits] = useState(false)
   const [graph, setGraph] = useState(false)
@@ -145,7 +148,14 @@ function AccessToken({ token, first, last }) {
           justify="end"
           gap="small"
         >
-          <CopyToClipboard text={token.token}>
+          {displayCopyBanner && <SuccessToast>Access token copied successfully.</SuccessToast>}
+          <CopyToClipboard
+            text={token.token}
+            onCopy={() => {
+              setDisplayCopyBanner(true)
+              setTimeout(() => setDisplayCopyBanner(false), 1000)
+            }}
+          >
             <Button
               secondary
               startIcon={<CopyIcon size={15} />}
@@ -203,6 +213,7 @@ function AccessToken({ token, first, last }) {
 }
 
 export function AccessTokens() {
+  const [displayNewBanner, setDisplayNewBanner] = useState(false)
   const [listRef, setListRef] = useState(null)
   const { data, loading: loadingTokens, fetchMore } = useQuery(TOKENS_Q)
   const [mutation, { loading }] = useMutation(CREATE_TOKEN, {
@@ -218,6 +229,7 @@ export function AccessTokens() {
 
   return (
     <Container type="table">
+      {displayNewBanner && <SuccessToast>New access token created.</SuccessToast>}
       <Box
         gap="medium"
         fill
@@ -251,7 +263,11 @@ export function AccessTokens() {
             >
               <Button
                 secondary
-                onClick={mutation}
+                onClick={() => {
+                  mutation()
+                  setDisplayNewBanner(true)
+                  setTimeout(() => setDisplayNewBanner(false), 1000)
+                }}
                 loading={loading}
               >
                 Create access token

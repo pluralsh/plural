@@ -18,7 +18,7 @@ import {
   ScrollIcon, TerminalIcon, Tooltip,
 } from 'pluralsh-design-system'
 
-import { getPreviousUserData, setPreviousUserData, setToken, wipeToken } from '../../helpers/authentication'
+import { getPreviousUserData, wipeToken } from '../../helpers/authentication'
 import { CurrentUserContext, handlePreviousUserClick } from '../login/CurrentUser'
 import { useOnboarded } from '../shell/onboarding/useOnboarded'
 

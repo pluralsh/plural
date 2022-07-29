@@ -8,7 +8,6 @@ function RepositoryHeader({ children, ...props }: any) {
   return (
     <Div
       width="100%"
-      marginBottom="medium"
       position="sticky"
       top={0}
       {...props}

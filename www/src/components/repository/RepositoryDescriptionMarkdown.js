@@ -71,7 +71,7 @@ const toReactMarkdownComponent = ({ component: Component, props }) =>
       />
     )
   }
-export default memo(({ text, gitUrl, debug }) => (
+export default memo(({ text, gitUrl }) => (
   <Div>
     <ReactMarkdown
       rehypePlugins={[rehypeRaw]}

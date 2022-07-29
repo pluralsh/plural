@@ -12,10 +12,9 @@ import { Confirm } from '../account/Confirm'
 import { DELETE_EAB_CREDENTIALS, EAB_CREDENTIALS } from '../users/queries'
 import { obscure } from '../users/utils'
 import { LoopingLogo } from '../utils/AnimatedLogo'
-import { Container } from '../utils/Container'
 import { Table, TableData, TableRow } from '../utils/Table'
 
-import { Date } from '../audits/Date'
+import { Date } from '../utils/Date'
 
 import { DeleteIcon } from './Icon'
 

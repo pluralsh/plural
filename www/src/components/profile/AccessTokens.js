@@ -7,7 +7,7 @@ import lookup from 'country-code-lookup'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 
 import {
-  CopyIcon, GraphIcon, ListIcon, Modal, ModalHeader, PageTitle,
+  CopyIcon, ErrorIcon, GraphIcon, ListIcon, Modal, ModalHeader, PageTitle, Tooltip,
 } from 'pluralsh-design-system'
 
 import {
@@ -33,6 +33,8 @@ import { Confirm } from '../account/Confirm'
 
 import { DeleteIcon, Icon } from './Icon'
 import { ListItem } from './ListItem'
+
+const TOOLTIP = 'Access tokens allow you to access the Plural API for automation and active Plural clusters.'
 
 function TokenAudits({ token }) {
   const [listRef, setListRef] = useState(null)
@@ -148,25 +150,9 @@ function AccessToken({ token, first, last }) {
               secondary
               startIcon={<CopyIcon size={15} />}
             >
-              Copy Key
+              Copy key
             </Button>
           </CopyToClipboard>
-          <>
-            <Icon
-              icon={<ListIcon size={15} />}
-              onClick={() => setAudits(true)}
-            />
-            <Modal
-              open={audits}
-              portal
-              onClose={() => setAudits(false)}
-            >
-              <ModalHeader onClose={() => setAudits(false)}>
-                AUDIT LOGS
-              </ModalHeader>
-              <TokenAudits token={token} />
-            </Modal>
-          </>
           <>
             <Icon
               icon={<GraphIcon size={15} />}
@@ -181,6 +167,22 @@ function AccessToken({ token, first, last }) {
                 USAGE METRICS
               </ModalHeader>
               <TokenMetrics token={token} />
+            </Modal>
+          </>
+          <>
+            <Icon
+              icon={<ListIcon size={15} />}
+              onClick={() => setAudits(true)}
+            />
+            <Modal
+              open={audits}
+              portal
+              onClose={() => setAudits(false)}
+            >
+              <ModalHeader onClose={() => setAudits(false)}>
+                AUDIT LOGS
+              </ModalHeader>
+              <TokenAudits token={token} />
             </Modal>
           </>
           <DeleteIcon onClick={() => setConfirm(true)} />
@@ -220,13 +222,33 @@ export function AccessTokens() {
         gap="medium"
         fill
       >
-        <PageTitle heading="Access tokens">
+        <PageTitle
+          heading="Access tokens"
+          justifyContent="flex-start"
+        >
           <Box
-            flex={false}
-            width="30%"
-            align="end"
+            flex
+            direction="row"
+            align="center"
           >
-            <Div>
+            <Tooltip
+              width="315px"
+              label={TOOLTIP}
+            >
+              <Box
+                flex={false}
+                pad="6px"
+                round="xxsmall"
+                hoverIndicator="fill-two"
+                onClick
+              >
+                <ErrorIcon size="16px" /> {/* TODO: Change to info icon. */}
+              </Box>
+            </Tooltip>
+            <Box
+              flex
+              align="end"
+            >
               <Button
                 secondary
                 onClick={mutation}
@@ -234,7 +256,7 @@ export function AccessTokens() {
               >
                 Create access token
               </Button>
-            </Div>
+            </Box>
           </Box>
         </PageTitle>
         <Box

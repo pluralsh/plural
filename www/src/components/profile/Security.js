@@ -124,8 +124,9 @@ function LoginMethods() {
 
   return (
     <Box gap="small">
-      {data.oauthUrls.map(({ provider, authorizeUrl }) => (
+      {data.oauthUrls.map(({ provider, authorizeUrl }, i) => (
         <LoginMethod
+          key={i}
           icon={createElement(METHOD_ICONS[provider], { size: '20px', color: provider === Method.GITHUB ? 'white' : 'plain' })}
           active={me.loginMethod === provider}
           name={`Login with ${provider.toLowerCase()}`}

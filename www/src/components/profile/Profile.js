@@ -1,10 +1,10 @@
 import { useMutation } from '@apollo/client'
 import { Box, Stack, ThemeContext } from 'grommet'
 import {
-  Avatar, Button, Flex, P,
+  Avatar, Flex, P,
 } from 'honorable'
 import {
-  ContentCard, IconFrame, PageTitle, ValidatedInput,
+  Button, ContentCard, IconFrame, PageTitle, ValidatedInput,
 } from 'pluralsh-design-system'
 import { useContext, useEffect, useState } from 'react'
 import { useFilePicker } from 'react-sage'
@@ -22,7 +22,7 @@ function Attribute({ header, children }) {
       <P fontWeight="bold">{header}</P>
       <Box
         direction="row"
-        gap="medium"
+        gap="small"
         align="end"
       >
         {children}
@@ -75,12 +75,25 @@ export function Profile() {
                 fontWeight="500"
               />
             </Stack>
-            <Button
-              secondary
-              onClick={onClick}
-            >
-              Upload
-            </Button>
+            <Box gap="xsmall">
+              <Button
+                small
+                secondary
+                onClick={onClick}
+              >
+                {me.avatar ? 'Switch' : 'Upload'}
+              </Button>
+              {!!me.avatar && (
+                <Button
+                  small
+                  destructive
+                  onClick={() => mutation({ variables: { attributes: { avatar: null } } })}
+                >
+                  Delete
+                </Button>
+              )}
+            </Box>
+
             <HiddenFileInput
               accept=".jpg, .jpeg, .png"
               multiple={false}
@@ -103,7 +116,7 @@ export function Profile() {
             onChange={({ target: { value } }) => setName(value)}
           />
           <ValidatedInput
-            label="Email"
+            label="Email address"
             width="100%"
             value={email}
             onChange={({ target: { value } }) => setEmail(value)}

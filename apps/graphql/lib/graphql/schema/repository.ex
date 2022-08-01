@@ -32,6 +32,7 @@ defmodule GraphQl.Schema.Repository do
     field :readme,         :string
     field :oauth_settings, :oauth_settings_attributes
     field :integration_resource_definition, :resource_definition_attributes
+    field :community,      :community:attributes
   end
 
   input_object :oauth_settings_attributes do
@@ -89,7 +90,7 @@ defmodule GraphQl.Schema.Repository do
     field :lock, non_null(:string)
   end
 
-  input_object :community do
+  input_object :community_attributes do
     field :discord, :string
     field :slack,   :string
     field :twitter, :string

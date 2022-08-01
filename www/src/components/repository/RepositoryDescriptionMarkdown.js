@@ -60,6 +60,7 @@ function MdPre({ children, ...props }) {
 const codeStyle = {
   background: 'fill-one',
   borderRadius: '4px',
+  marginRight: 'medium',
 }
 
 export default memo(({ text, gitUrl }) => (
@@ -73,41 +74,41 @@ export default memo(({ text, gitUrl }) => (
       },
       ul: { component: Ul, props: { paddingLeft: 'xlarge', marginBottom: 'small' } },
       ol: { component: Ol, props: { paddingLeft: 'xlarge', marginBottom: 'small' } },
-      li: { component: Li, props: { body2: true, marginTop: 'xxsmall' } },
+      li: { component: Li, props: { body1: true, marginTop: 'xxsmall' } },
       h1: {
         component: H1,
         props: {
-          subtitle1: true, marginTop: 'large', marginBottom: 'small', ':first-of-type': { marginTop: '0px' },
+          title2: true, color: 'text', marginTop: 'large', marginBottom: 'small', ':first-of-type': { marginTop: '0px' },
         },
       },
       h2: {
         component: H2,
         props: {
-          subtitle2: true, marginTop: 'large', marginBottom: 'small', ':first-of-type': { marginTop: '0px' },
+          subtitle1: true, color: 'text', marginTop: 'large', marginBottom: 'small', ':first-of-type': { marginTop: '0px' },
         },
       },
       h3: {
         component: H3,
         props: {
-          body1: true, bold: true, marginTop: 'large', marginBottom: 'small', ':first-of-type': { marginTop: '0px' },
+          subtitle2: true, bold: true, color: 'text', marginTop: 'large', marginBottom: 'small', ':first-of-type': { marginTop: '0px' },
         },
       },
       h4: {
         component: H4,
         props: {
-          body2: true, bold: true, marginTop: 'large', marginBottom: 'small', ':first-of-type': { marginTop: '0px' },
+          body1: true, bold: true, color: 'text', marginTop: 'large', marginBottom: 'small', ':first-of-type': { marginTop: '0px' },
         },
       },
       h5: {
         component: H5,
         props: {
-          body2: true, bold: true, marginTop: 'large', marginBottom: 'small', ':first-of-type': { marginTop: '0px' },
+          body1: true, bold: true, color: 'text', marginTop: 'large', marginBottom: 'small', ':first-of-type': { marginTop: '0px' },
         },
       },
       h6: {
         component: H6,
         props: {
-          body2: true, bold: true, marginTop: 'large', marginBottom: 'small', ':first-of-type': { marginTop: '0px' },
+          body1: true, bold: true, color: 'text', marginTop: 'large', marginBottom: 'small', ':first-of-type': { marginTop: '0px' },
         },
       },
       img: {
@@ -116,7 +117,7 @@ export default memo(({ text, gitUrl }) => (
           gitUrl, style: { maxWidth: '100%' },
         },
       },
-      p: { component: P, props: { body2: true, marginBottom: 'medium' } },
+      p: { component: P, props: { body1: true, marginBottom: 'medium' } },
       a: {
         component: A,
         props: {

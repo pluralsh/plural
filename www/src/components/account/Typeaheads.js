@@ -140,7 +140,7 @@ const FETCHER = {
 }
 
 export function BindingInput({
-  type, fetcher, bindings, remove, add, hint, background, placeholder = TEXT[type].placeholder, label = TEXT[type].label,
+  type, fetcher, bindings, remove, add, hint, placeholder = TEXT[type]?.placeholder, label = TEXT[type]?.label,
 }) {
   const client = useApolloClient()
   const [suggestions, setSuggestions] = useState([])
@@ -151,7 +151,7 @@ export function BindingInput({
       noborder
       placeholder={placeholder}
       hint={hint}
-      icon={ICONS[type]}
+      icon={type ? ICONS[type] : null}
       label={label}
       round="xsmall"
       width="100%"

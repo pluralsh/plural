@@ -58,7 +58,7 @@ defmodule Core.Schema.Repository do
       field :discord, :string
       field :slack,   :string
       field :twitter, :string
-      field :videos,  :map
+      field :videos,  {:array, :string}
     end
 
     belongs_to :integration_resource_definition, ResourceDefinition, on_replace: :update

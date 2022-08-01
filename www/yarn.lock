@@ -1980,6 +1980,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@floating-ui/react-dom-interactions@npm:0.8.1":
+  version: 0.8.1
+  resolution: "@floating-ui/react-dom-interactions@npm:0.8.1"
+  dependencies:
+    "@floating-ui/react-dom": ^1.0.0
+    aria-hidden: ^1.1.3
+  peerDependencies:
+    react: ">=16.8.0"
+    react-dom: ">=16.8.0"
+  checksum: 62a168c00b23ee4cec61ae9b291c316591e5eb32aad58d594f9b39a8582a4d052a4a571b08a8526fb028a5ca3a952cb666851949deffd1f2b92a9f0030c45710
+  languageName: node
+  linkType: hard
+
 "@floating-ui/react-dom@npm:^1.0.0":
   version: 1.0.0
   resolution: "@floating-ui/react-dom@npm:1.0.0"
@@ -4622,6 +4635,15 @@ __metadata:
   version: 2.0.1
   resolution: "argparse@npm:2.0.1"
   checksum: 83644b56493e89a254bae05702abf3a1101b4fa4d0ca31df1c9985275a5a5bd47b3c27b7fa0b71098d41114d8ca000e6ed90cad764b306f8a503665e4d517ced
+  languageName: node
+  linkType: hard
+
+"aria-hidden@npm:^1.1.3":
+  version: 1.1.3
+  resolution: "aria-hidden@npm:1.1.3"
+  dependencies:
+    tslib: ^1.0.0
+  checksum: 2d40a328246baac7ae0b243ebe0cbef53c836c5f78c9212e9c1ff93f3aee185bd9aa51773e161e0025722d691c9d5f125070f6175a7074c4a57778ddc30d9e74
   languageName: node
   linkType: hard
 
@@ -13556,16 +13578,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pluralsh-design-system@npm:1.138.0":
-  version: 1.138.0
-  resolution: "pluralsh-design-system@npm:1.138.0"
+"pluralsh-design-system@npm:1.143.0":
+  version: 1.143.0
+  resolution: "pluralsh-design-system@npm:1.143.0"
   dependencies:
+    "@floating-ui/react-dom-interactions": 0.8.1
     "@react-aria/tabs": 3.2.1
     "@react-stately/collections": 3.4.1
     "@react-stately/tabs": 3.1.1
     "@react-types/shared": 3.13.1
     prop-types: 15.8.1
+    react-merge-refs: 2.0.1
     resize-observer-polyfill: 1.5.1
+    styled-components: 5.3.5
   peerDependencies:
     "@emotion/react": ">=11.9.3"
     "@emotion/styled": ">=11.9.3"
@@ -13574,7 +13599,7 @@ __metadata:
     react: ">=16.0.0"
     react-dom: ">=16.0.0"
     react-transition-group: ">=4.4.2"
-  checksum: 788d374a0f859ba70f141f3754a68568c147a1537a80dd5a01f46987101a6565335923d16c180c3d7c5c9d420163af0e9b1e54c26e3455f2e57d37652d709d11
+  checksum: 9008065ea6c9423fd16288cd8522316787fe2af381e8089a08d01bfdb771733e730a754fc4cf7fc3a75d52eca1774b18b2cffe2c2cc7539d6e1bd282f8dae1a8
   languageName: node
   linkType: hard
 
@@ -15104,6 +15129,13 @@ __metadata:
   version: 3.0.4
   resolution: "react-lifecycles-compat@npm:3.0.4"
   checksum: a904b0fc0a8eeb15a148c9feb7bc17cec7ef96e71188280061fc340043fd6d8ee3ff233381f0e8f95c1cf926210b2c4a31f38182c8f35ac55057e453d6df204f
+  languageName: node
+  linkType: hard
+
+"react-merge-refs@npm:2.0.1":
+  version: 2.0.1
+  resolution: "react-merge-refs@npm:2.0.1"
+  checksum: c0b6fdb384a92e9b2bb7d56128244a2db97b9343c0dcae70f172352c3732312266c078495902707e45f523625afcba78996a22edea3a8e7b2b17fe97347059fe
   languageName: node
   linkType: hard
 
@@ -17830,7 +17862,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^1.8.1, tslib@npm:^1.9.0":
+"tslib@npm:^1.0.0, tslib@npm:^1.8.1, tslib@npm:^1.9.0":
   version: 1.14.1
   resolution: "tslib@npm:1.14.1"
   checksum: dbe628ef87f66691d5d2959b3e41b9ca0045c3ee3c7c7b906cc1e328b39f199bb1ad9e671c39025bd56122ac57dfbf7385a94843b1cc07c60a4db74795829acd
@@ -19018,7 +19050,7 @@ __metadata:
     moment: 2.29.4
     phoenix: 1.6.11
     pluralsh-absinthe-socket-apollo-link: 0.2.0
-    pluralsh-design-system: 1.138.0
+    pluralsh-design-system: 1.143.0
     postcss-import: 8.2.0
     prop-types: 15.8.1
     query-string: 7.1.1

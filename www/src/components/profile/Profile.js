@@ -4,7 +4,7 @@ import {
   Avatar, Button, Flex, P,
 } from 'honorable'
 import {
-  CameraIcon, ContentCard, IconFrame, PageTitle, ValidatedInput,
+  ContentCard, IconFrame, PageTitle, ValidatedInput,
 } from 'pluralsh-design-system'
 import { useContext, useEffect, useState } from 'react'
 import { useFilePicker } from 'react-sage'
@@ -65,7 +65,7 @@ export function Profile() {
           <Attribute header="Profile picture">
             <Stack
               anchor="bottom-right"
-              style={{ width: '96px' }}
+              style={{ height: '96px', width: '96px' }}
             >
               <Avatar
                 name={me.name}

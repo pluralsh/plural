@@ -10,10 +10,23 @@ defmodule Core.Services.RepositoriesTest do
     test "It will create a repository for the user's publisher" do
       %{owner: user} = insert(:publisher)
 
-      {:ok, repo} = Repositories.create_repository(%{name: "piazza", category: :data}, user)
+      {:ok, repo} = Repositories.create_repository(%{
+        name: "piazza",
+        category: :data,
+        community: %{
+          discord: "discord.com/piazza",
+          twitter: "twitter.com/piazza",
+          videos: ["https://www.youtube.com/watch?v=dQw4w9WgXcQ"]
+        }
+      }, user)
 
       assert repo.name == "piazza"
       assert repo.category == :data
+      assert repo.community.discord == "discord.com/piazza"
+      assert repo.community.slack == nil
+      assert repo.community.twitter == "twitter.com/piazza"
+      assert length(repo.community.videos) == 1
+      assert Enum.at(repo.community.videos, 0) == "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
       assert is_binary(repo.public_key)
       assert is_binary(repo.private_key)
 
@@ -57,9 +70,18 @@ defmodule Core.Services.RepositoriesTest do
       %{owner: user} = publisher = insert(:publisher)
       repo = insert(:repository, publisher: publisher)
 
-      {:ok, updated} = Repositories.update_repository(%{name: "piazza"}, repo.id, user)
+      {:ok, updated} = Repositories.update_repository(%{
+        name: "piazza",
+        community: %{
+          twitter: "twitter.com/piazza",
+          videos: ["https://www.youtube.com/watch?v=dQw4w9WgXcQ"]
+        }
+      }, repo.id, user)
 
       assert updated.name == "piazza"
+      assert updated.community.twitter == "twitter.com/piazza"
+      assert length(updated.community.videos) == 1
+      assert Enum.at(updated.community.videos, 0) == "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
 
       assert_receive {:event, %PubSub.RepositoryUpdated{item: ^updated, actor: ^user}}
     end

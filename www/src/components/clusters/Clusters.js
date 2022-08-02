@@ -11,7 +11,7 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { appendConnection, extendConnection } from '../../utils/graphql'
 
-import { Header } from '../profile/Header'
+import { Header } from '../utils/Header'
 import { Provider } from '../repos/misc'
 import { RepoIcon } from '../repos/Repositories'
 import { StandardScroller } from '../utils/SmoothScroller'

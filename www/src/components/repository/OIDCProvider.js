@@ -16,7 +16,7 @@ import { GqlError } from '../utils/Alert'
 import { deepUpdate, updateCache } from '../../utils/graphql'
 import { REPO_Q } from '../repos/queries'
 
-import { Header } from '../profile/Header'
+import { Header } from '../utils/Header'
 
 import { BindingInput } from '../account/Typeaheads'
 

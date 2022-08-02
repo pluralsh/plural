@@ -21,8 +21,6 @@ export function MyProfile() {
   const me = useContext(CurrentUserContext)
   const { pathname } = useLocation()
 
-  console.log(me)
-
   return (
     <Flex
       height="100%"

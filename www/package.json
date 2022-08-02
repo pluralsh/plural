@@ -57,7 +57,7 @@
     "moment": "2.29.4",
     "phoenix": "1.6.11",
     "pluralsh-absinthe-socket-apollo-link": "0.2.0",
-    "pluralsh-design-system": "1.138.0",
+    "pluralsh-design-system": "1.143.0",
     "prop-types": "15.8.1",
     "query-string": "7.1.1",
     "react": "18.2.0",
@@ -118,7 +118,7 @@
       "\\.(css)$": "identity-obj-proxy"
     },
     "transformIgnorePatterns": [
-      "/node_modules/(?!(pluralsh-design-system|honorable|forge-core|d3-hierarchy|d3-selection|xterm-for-react|react-dnd|dnd-core|@react-dnd))"
+      "/node_modules/(?!(pluralsh-design-system|honorable|forge-core|d3-hierarchy|d3-selection|xterm-for-react|react-dnd|dnd-core|@react-dnd|react-merge-refs))"
     ]
   }
 }

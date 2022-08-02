@@ -4,7 +4,7 @@ import { useApolloClient } from '@apollo/client'
 import { Box, Text, TextInput } from 'grommet'
 
 import {
-  Chip, FormField, PeopleIcon, PersonIcon,
+  FormField, PeopleIcon, PersonIcon, Token,
 } from 'pluralsh-design-system'
 
 import { Flex } from 'honorable'
@@ -113,11 +113,11 @@ function TagInput({
         wrap="wrap"
       >
         {items.map(t => (
-          <Chip
+          <Token
             onClick={() => onRemove(t)}
             hue="lighter"
           >{t}
-          </Chip>
+          </Token>
         ))}
       </Flex>
     </Box>

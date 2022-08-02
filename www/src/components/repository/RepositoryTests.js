@@ -3,12 +3,11 @@ import {
 } from 'react'
 import { useApolloClient, useSubscription } from '@apollo/client'
 import moment from 'moment'
-import { Flex, P, Span } from 'honorable'
+import {
+  Div, Flex, P, Span,
+} from 'honorable'
 import { XTerm } from 'xterm-for-react'
 import { FitAddon } from 'xterm-addon-fit'
-import { Chalk } from 'xterm-theme'
-
-import { Box } from 'grommet'
 
 import {
   ArrowLeftIcon,
@@ -33,6 +32,8 @@ import { LOGS_SUB, TEST_LOGS } from '../repos/queries'
 import { Table, TableData, TableRow } from '../utils/Table'
 
 import { Icon } from '../profile/Icon'
+
+import { XTermTheme } from '../../theme'
 
 import { TESTS_QUERY } from './queries'
 
@@ -102,27 +103,28 @@ function TestLogs({ step: { id, hasLogs }, testId }) {
   }, [hasLogs, client, testId, id, xterm])
 
   return (
-    <Box
-      fill="horizontal"
-      height="520px"
-      pad="small"
-      border={{ side: 'bottom' }}
+    <Div
+      maxHeight="520px"
+      borderColor="border-fill-two"
+      margin="medium"
     >
-      <Box
-        style={{ overflow: 'auto' }}
-        fill
-        background={Chalk.background}
-        pad="small"
+      <Div
+        backgroundColor="fill-two"
+        padding="medium"
+        borderRadius="large"
+        border="1px solid border"
+        borderColor="border-fill-two"
       >
         <XTerm
+          className="test"
           ref={xterm}
           addons={[fitAddon]}
-          options={{ theme: Chalk }}
+          options={{ theme: XTermTheme }}
           onResize={console.log}
           onData={console.log}
         />
-      </Box>
-    </Box>
+      </Div>
+    </Div>
   )
 }
 
@@ -248,15 +250,18 @@ function TestDetail({ test, setTest }) {
         background="fill-one"
         width="100%"
         heading={test.name}
+        overflow="overlay"
       >
-        {test.steps.concat(test.steps).map((step, i) => (
-          <TestStep
-            key={`${step}-${i}`}
-            step={step}
-            last={i === len - 1}
-            test={test}
-          />
-        ))}
+        <Div overflow="overlay">
+          {test.steps.map((step, i) => (
+            <TestStep
+              key={`${step}-${i}`}
+              step={step}
+              last={i === len - 1}
+              test={test}
+            />
+          ))}
+        </Div>
       </Table>
     </>
   )
@@ -323,9 +328,9 @@ function RepositoryTests() {
             flexGrow={1}
             height={0}
           >
-            {tests.map(test => (
+            {Array.from(new Set(tests)).map((test, id) => (
               <Test
-                key={test.id}
+                key={`${test.id}${id}`}
                 test={test}
                 setTest={setTest}
               />

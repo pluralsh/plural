@@ -82,6 +82,36 @@ export const PLURAL_THEME = {
   // ...theme.colors,
 }
 
+export const XTermTheme = {
+  foreground: PLURAL_THEME['grey.200'],
+  background: PLURAL_THEME['grey.800'],
+  cursor: '#708284',
+
+  black: '#7d8b8f',
+  brightBlack: '#888888',
+
+  red: '#b23a52',
+  brightRed: '#f24840',
+
+  green: '#789b6a',
+  brightGreen: '#80c470',
+
+  yellow: '#b9ac4a',
+  brightYellow: '#ffeb62',
+
+  blue: '#2a7fac',
+  brightBlue: '#4196ff',
+
+  magenta: '#bd4f5a',
+  brightMagenta: '#fc5275',
+
+  cyan: '#44a799',
+  brightCyan: '#53cdbd',
+
+  white: '#d2d8d9',
+  brightWhite: '#d2d8d9',
+}
+
 export const DEFAULT_COLOR_THEME = {
   brand: 'key-light',
   // action: '#007a5a',

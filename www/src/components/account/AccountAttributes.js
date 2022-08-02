@@ -7,7 +7,7 @@ import { useContext, useState } from 'react'
 import { UPDATE_ACCOUNT } from '../accounts/queries'
 
 import { CurrentUserContext } from '../login/CurrentUser'
-import { Header } from '../profile/Header'
+import { Header } from '../utils/Header'
 import { DeleteIcon } from '../profile/Icon'
 import { ListItem } from '../profile/ListItem'
 import { GqlError } from '../utils/Alert'

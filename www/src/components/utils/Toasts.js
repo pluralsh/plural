@@ -10,14 +10,15 @@ function Toast({ children, ...banner }) {
 
   return (
     <Layer
-      position="top"
+      position="bottom-right"
       plain
       onEsc={close}
       onClickOutside={close}
     >
       <Banner
         {...banner}
-        marginTop="small"
+        marginBottom="20px"
+        marginRight="100px"
         onClose={close}
       >
         {children}

@@ -1,18 +1,24 @@
-import { Div, Flex } from 'honorable'
+import { Avatar, Flex, Text } from 'honorable'
 import { Tab } from 'pluralsh-design-system'
 import { Link, Outlet, useLocation } from 'react-router-dom'
 
-import { SidebarTabs } from '../utils/SidebarTabs'
+import { Box } from 'grommet'
+
+import { useContext } from 'react'
+
+import { ResponsiveLayoutContentContainer, ResponsiveLayoutSpacer } from '../layout/ResponsiveLayout'
+import { CurrentUserContext } from '../login/CurrentUser'
 
 const DIRECTORY = [
   { path: '/profile/me', label: 'Profile' },
-  { path: '/profile/security', label: 'Security & Privacy' },
-  { path: '/profile/tokens', label: 'Access Tokens' },
-  { path: '/profile/keys', label: 'Public Keys' },
-  { path: '/profile/eab', label: 'EAB Credentials' },
+  { path: '/profile/security', label: 'Security' },
+  { path: '/profile/tokens', label: 'Access tokens' },
+  { path: '/profile/keys', label: 'Public keys' },
+  { path: '/profile/eab', label: 'EAB credentials' },
 ]
 
 export function MyProfile() {
+  const me = useContext(CurrentUserContext)
   const { pathname } = useLocation()
 
   return (
@@ -20,10 +26,41 @@ export function MyProfile() {
       height="100%"
       width="100%"
       overflowY="hidden"
+      paddingTop="50px"
     >
-      <SidebarTabs>
-        {DIRECTORY.map(({ label, path }) => (
+      <Flex
+        px={1}
+        py={1}
+        width={240}
+        flexShrink={0}
+        direction="column"
+      >
+        <Box
+          direction="row"
+          gap="small"
+          margin={{ bottom: '32px' }}
+        >
+          <Avatar
+            name={me.name}
+            src={me.avatar}
+            size={64}
+            fontSize="12px"
+          />
+          <Box>
+            <Text subtitle2>{me.name}</Text>
+            {me?.roles?.admin && (
+              <Text
+                caption
+                color="text-xlight"
+              >
+                Admin at Plural
+              </Text>
+            )}
+          </Box>
+        </Box>
+        {DIRECTORY.map(({ label, path }, i) => (
           <Link
+            key={i}
             to={path}
             style={{ textDecoration: 'none' }}
           >
@@ -35,8 +72,8 @@ export function MyProfile() {
             </Tab>
           </Link>
         ))}
-      </SidebarTabs>
-      <Div
+      </Flex>
+      <Flex
         flexGrow={1}
         pt={1.5}
         pr={1.5}
@@ -44,8 +81,10 @@ export function MyProfile() {
         maxHeight="100%"
         overflowY="auto"
       >
-        <Outlet />
-      </Div>
+        <ResponsiveLayoutSpacer />
+        <ResponsiveLayoutContentContainer><Outlet /></ResponsiveLayoutContentContainer>
+        <ResponsiveLayoutSpacer />
+      </Flex>
     </Flex>
   )
 }

@@ -5,7 +5,7 @@ import { Box } from 'grommet'
 import { useMutation } from '@apollo/client'
 import { Button, Flex, P } from 'honorable'
 import {
-  CheckIcon, FormField, Input, Token,
+  CheckIcon, ContentCard, FormField, Input, Token,
 } from 'pluralsh-design-system'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -124,15 +124,7 @@ export function ProviderForm({
   }, [loading, prevLoading])
 
   return (
-    <Flex
-      direction="column"
-      gap="large"
-      backgroundColor="fill-one"
-      paddingHorizontal={112}
-      paddingVertical="xlarge"
-      borderRadius="large"
-      border="1px solid border"
-    >
+    <ContentCard innerProps={{ gap: 'large', display: 'flex', flexDirection: 'column' }}>
       <Flex gap={24}>
         <Flex
           gap={12}
@@ -238,7 +230,7 @@ export function ProviderForm({
       {toast && (
         <SuccessToast onClose={() => setToast(null)}>{toast}</SuccessToast>
       )}
-    </Flex>
+    </ContentCard>
   )
 }
 

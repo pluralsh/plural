@@ -3,7 +3,7 @@ import {
 } from 'react'
 import { useApolloClient, useSubscription } from '@apollo/client'
 import moment from 'moment'
-import { Flex, Span } from 'honorable'
+import { Flex, P, Span } from 'honorable'
 import { XTerm } from 'xterm-for-react'
 import { FitAddon } from 'xterm-addon-fit'
 import { Chalk } from 'xterm-theme'
@@ -11,10 +11,15 @@ import { Chalk } from 'xterm-theme'
 import { Box } from 'grommet'
 
 import {
-  Chip, CollapseIcon, ErrorIcon, ListIcon, PageTitle, StatusIpIcon, StatusOkIcon,
+  ArrowLeftIcon,
+  Chip,
+  CollapseIcon,
+  ErrorIcon,
+  ListIcon,
+  PageTitle,
+  StatusIpIcon,
+  StatusOkIcon,
 } from 'pluralsh-design-system'
-
-import { Return } from 'grommet-icons'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 
@@ -137,10 +142,20 @@ function Test({ test, last, setTest }) {
         {test.name}
       </TableData>
       <TableData>
-        {moment(test.insertedAt).format('MMMM Do YYYY, h:mm:ss a')}
+        <P body2>{moment(test.insertedAt).format('MMM DD, YYYY')}</P>
+        <P
+          caption
+          color="text-xlight"
+        >{moment(test.insertedAt).format('hh:mm a')}
+        </P>
       </TableData>
       <TableData>
-        {moment(test.updatedAt).format('MMMM Do YYYY, h:mm:ss a')}
+        <P body2>{moment(test.updatedAt).format('MMM DD, YYYY')}</P>
+        <P
+          caption
+          color="text-xlight"
+        >{moment(test.updatedAt).format('hh:mm a')}
+        </P>
       </TableData>
       <TableData>
         <Status status={test.status} />
@@ -159,7 +174,6 @@ function TestStep({ step, test, last }) {
         onClick={() => setOpen(!open)}
         hoverIndicator="fill-one-hover"
         cursor="pointer"
-        suffix={<ListIcon size={16} />}
       >
         <TableData>
           <CollapseIcon
@@ -177,7 +191,14 @@ function TestStep({ step, test, last }) {
         </TableData>
         <TableData>{step.name}</TableData>
         <TableData>{step.description}</TableData>
-        <TableData>{moment(step.updatedAt || step.insertedAt).format('lll')}</TableData>
+        <TableData>
+          <P body2>{moment(step.updatedAt || step.insertedAt).format('MMM DD, YYYY')}</P>
+          <P
+            caption
+            color="text-xlight"
+          >{moment(step.updatedAt || step.insertedAt).format('hh:mm a')}
+          </P>
+        </TableData>
         <TableData><Status status={step.status} /></TableData>
       </TableRow>
       {open && (
@@ -196,18 +217,21 @@ function TestDetail({ test, setTest }) {
 
   return (
     <>
+      <PageTitle
+        heading="Tests"
+        paddingTop="medium"
+      />
       <Flex
         align="center"
         border="1px solid border"
-        backgroundColor="fill-one"
-        paddingVertical="small"
+        paddingVertical="xxsmall"
         paddingHorizontal="medium"
         marginBottom="medium"
         borderRadius="large"
       >
         <Icon
           icon={(
-            <Return size="15px" />
+            <ArrowLeftIcon size={16} />
           )}
           onClick={() => setTest(null)}
         />
@@ -215,17 +239,17 @@ function TestDetail({ test, setTest }) {
           bold
           marginLeft="medium"
         >
-          {test.name}
+          Back
         </Span>
       </Flex>
       <Table
-        headers={['', 'Name', 'Description', 'Last Updated', 'Status']}
-        sizes={['2%', '25%', '25%', '25%', '23%']}
+        headers={['', 'Name', 'Description', 'Last updated', 'Status']}
+        sizes={['5%', '10%', '50%', '15%', '20%']}
         background="fill-one"
         width="100%"
-        height="calc(100% - 16px - 16px - 53px)" // The previous node is 53px tall with a 16px marginBottom
+        heading={test.name}
       >
-        {test.steps.map((step, i) => (
+        {test.steps.concat(test.steps).map((step, i) => (
           <TestStep
             key={`${step}-${i}`}
             step={step}
@@ -286,7 +310,7 @@ function RepositoryTests() {
         <Table
           headers={['Promote to', 'Name', 'Created on', 'Last updated', 'Status']}
           sizes={['15%', '35%', '15%', '15%', '20%']}
-          backgroundColor="fill-one"
+          background="fill-one"
           width="100%"
           height="100%"
         >

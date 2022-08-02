@@ -2,7 +2,9 @@ import { useContext, useEffect } from 'react'
 import moment from 'moment'
 import { Flex } from 'honorable'
 
-import { Chip, StatusIpIcon, StatusOkIcon } from 'pluralsh-design-system'
+import {
+  Chip, PageTitle, StatusIpIcon, StatusOkIcon,
+} from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 
@@ -101,7 +103,10 @@ function RepositoryDeployments() {
       maxHeight="100%"
       direction="column"
     >
-      <RepositoryHeader>Deployments</RepositoryHeader>
+      <PageTitle
+        heading="Deployments"
+        paddingTop="medium"
+      />
       <Table
         headers={['Event', 'Clusters Updated', 'Last Ping', 'Status']}
         sizes={['27.5%', '27.5%', '27.5%', '17.5%']}

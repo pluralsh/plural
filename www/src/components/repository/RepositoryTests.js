@@ -11,12 +11,7 @@ import { Chalk } from 'xterm-theme'
 import { Box } from 'grommet'
 
 import {
-  Chip,
-  CollapseIcon,
-  ErrorIcon,
-  ListIcon,
-  StatusIpIcon,
-  StatusOkIcon,
+  Chip, CollapseIcon, ErrorIcon, ListIcon, PageTitle, StatusIpIcon, StatusOkIcon,
 } from 'pluralsh-design-system'
 
 import { Return } from 'grommet-icons'
@@ -35,8 +30,6 @@ import { Table, TableData, TableRow } from '../utils/Table'
 import { Icon } from '../profile/Icon'
 
 import { TESTS_QUERY } from './queries'
-
-import RepositoryHeader from './RepositoryHeader.tsx'
 
 const statusAttrs = {
   QUEUED: { severity: 'neutral', icon: <StatusIpIcon /> },
@@ -282,15 +275,18 @@ function RepositoryTests() {
       flexGrow={1}
       paddingBottom="xlarge"
     >
-      <RepositoryHeader>Tests</RepositoryHeader>
+      <PageTitle
+        heading="Tests"
+        paddingTop="medium"
+      />
       <Flex
         direction="column"
         flexGrow={1}
       >
         <Table
-          headers={['Promote To', 'Name', 'Created On', 'Last Updated On', 'Progress']}
-          sizes={['20%', '20%', '20%', '20%', '20%']}
-          background="fill-one"
+          headers={['Promote to', 'Name', 'Created on', 'Last updated', 'Status']}
+          sizes={['15%', '35%', '15%', '15%', '20%']}
+          backgroundColor="fill-one"
           width="100%"
           height="100%"
         >

@@ -5,7 +5,7 @@ import { Box } from 'grommet'
 import { useMutation } from '@apollo/client'
 import { Button, Flex, P } from 'honorable'
 import {
-  CheckIcon, ContentCard, FormField, Input, Token,
+  CheckIcon, ContentCard, FormField, Input, PageTitle, Token,
 } from 'pluralsh-design-system'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -17,7 +17,6 @@ import { fetchGroups, fetchUsers } from '../accounts/Typeaheads'
 import { GqlError } from '../utils/Alert'
 import { deepUpdate, updateCache } from '../../utils/graphql'
 import { REPO_Q } from '../repos/queries'
-import { Header } from '../profile/Header'
 import { BindingInput } from '../account/Typeaheads'
 import { sanitize } from '../account/utils'
 import { CREATE_PROVIDER, UPDATE_PROVIDER } from '../oidc/queries'
@@ -74,6 +73,7 @@ function UrlsInput({ uriFormat = '', urls, setUrls }) {
         wrap="wrap"
       >
         {urls.map((url, i) => (
+          // TODO: Update hue once design system change is merged
           <Token
             key={url}
             marginLeft={i === 0 ? null : 'xsmall'}
@@ -256,13 +256,10 @@ export function CreateProvider({
   })
 
   return (
-    <Box
-      fill
-      gap="medium"
-    >
-      <Header
-        header="OpenID Connect"
-        description="create an openid connect provider for this repository"
+    <Box fill>
+      <PageTitle
+        heading="OpenID Connect"
+        paddingTop="medium"
       />
       {error && (
         <GqlError
@@ -302,12 +299,10 @@ export function UpdateProvider({
   })
 
   return (
-    <Box
-      fill
-      gap="medium"
-    >
-      <Header
-        header="OpenID Connect"
+    <Box fill>
+      <PageTitle
+        heading="OpenID Connect"
+        paddingTop="medium"
       />
       {error && (
         <GqlError

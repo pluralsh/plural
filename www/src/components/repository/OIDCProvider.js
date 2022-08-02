@@ -56,7 +56,7 @@ function UrlsInput({ uriFormat = '', urls, setUrls }) {
           value={value}
           prefix={scheme}
           suffix={path}
-          width="500px"
+          width="100%"
           borderRadius="normal"
           placeholder={uriFormat ? 'Enter a domain' : 'Enter a redirect url'}
           onChange={({ target: { value } }) => setValue(value)}

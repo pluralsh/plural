@@ -6,7 +6,7 @@ import { Box } from 'grommet'
 import { useIntercom } from 'react-use-intercom'
 
 import { ME_Q } from '../users/queries'
-import { wipeToken } from '../../helpers/authentication'
+import { setPreviousUserData, setToken, wipeToken } from '../../helpers/authentication'
 import { useNotificationSubscription } from '../incidents/Notifications'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
@@ -47,6 +47,12 @@ export default function CurrentUser({ children }) {
       {children}
     </CurrentUserContext.Provider>
   )
+}
+
+export function handlePreviousUserClick({ jwt }) {
+  setToken(jwt)
+  setPreviousUserData(null)
+  window.location.reload()
 }
 
 export function PluralProvider({ children }) {

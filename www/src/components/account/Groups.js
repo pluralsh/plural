@@ -9,6 +9,7 @@ import { extendConnection, removeConnection, updateCache } from '../../utils/gra
 import { Placeholder } from '../accounts/Audits'
 import { canEdit } from '../accounts/EditAccount'
 import { DELETE_GROUP, GROUPS_Q } from '../accounts/queries'
+import { Permissions } from '../accounts/types'
 import { CurrentUserContext } from '../login/CurrentUser'
 import { DeleteIcon } from '../profile/Icon'
 import { ListItem } from '../profile/ListItem'
@@ -20,6 +21,7 @@ import { Confirm } from './Confirm'
 import { CreateGroup, UpdateGroup, ViewGroup } from './Group'
 
 import { Info } from './Info'
+import { hasRbac } from './utils'
 
 function Header({ q, setQ }) {
   return (
@@ -51,7 +53,7 @@ function Header({ q, setQ }) {
 
 function Group({ group, q }) {
   const { account, ...me } = useContext(CurrentUserContext)
-  const editable = canEdit(me, account)
+  const editable = canEdit(me, account) || hasRbac(me, Permissions.USERS)
   const [edit, setEdit] = useState(false)
   const [view, setView] = useState(false)
   const [confirm, setConfirm] = useState(false)

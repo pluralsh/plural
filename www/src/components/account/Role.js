@@ -131,7 +131,7 @@ function RoleForm({
           attributes={attributes}
           setAttributes={setAttributes}
           bindings={bindings}
-          setBindings={bindings}
+          setBindings={setBindings}
         />
       )}
       {view === 'Permissions' && (
@@ -169,7 +169,7 @@ export function UpdateRole({ role }) {
     repositories: role.repositories,
     permissions: role.permissions,
   })
-  const [roleBindings, setRoleBindings] = useState(role.roleBindings)
+  const [roleBindings, setRoleBindings] = useState(role.roleBindings || [])
   const [mutation, { loading, error }] = useMutation(UPDATE_ROLE, {
     variables: { id: role.id, attributes: { ...attributes, roleBindings: roleBindings.map(sanitize) } },
     onCompleted: () => setOpen(null),

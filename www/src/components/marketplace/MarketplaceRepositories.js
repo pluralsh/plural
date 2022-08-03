@@ -283,7 +283,7 @@ function MarketplaceRepositories({ installed }) {
                       size={14}
                     />
                   )}
-                  placeholder="Search a repository"
+                  placeholder="Search for a repository"
                   marginRight={[...categories, ...tags].length ? 'xsmall' : 'none'}
                   value={search}
                   onChange={event => setSearch(event.target.value)}

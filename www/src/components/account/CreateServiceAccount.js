@@ -68,7 +68,7 @@ export function EditServiceAccount({ user, update }) {
   const [confirm, setConfirm] = useState(false)
   const [edit, setEdit] = useState(false)
   const [attributes, setAttributes] = useState({ name: user.name, email: user.email })
-  const [bindings, setBindings] = useState(user.impersonationPolicy.bindings)
+  const [bindings, setBindings] = useState(user.impersonationPolicy?.bindings || [])
   const [mutation, { loading: eloading, error: eerror }] = useMutation(UPDATE_SERVICE_ACCOUNT, {
     variables: { id: user.id, attributes: { ...attributes, impersonationPolicy: { bindings: bindings.map(sanitize) } } },
     onCompleted: () => setEdit(false),

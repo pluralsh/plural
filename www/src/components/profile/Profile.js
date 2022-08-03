@@ -38,7 +38,7 @@ export function Profile() {
   const [name, setName] = useState(me.name)
   const [email, setEmail] = useState(me.email)
   const [avatar, setAvatar] = useState(me.avatar)
-  const [avatarFile, setAvatarFile] = useState(null)
+  const [avatarFile, setAvatarFile] = useState()
   const [mutation, { loading }] = useMutation(UPDATE_USER, {
     variables: { attributes: { name, email, avatar: avatarFile } },
   })

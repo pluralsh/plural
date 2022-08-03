@@ -25,8 +25,7 @@ defmodule Core.Services.RepositoriesTest do
       assert repo.community.discord == "discord.com/piazza"
       assert repo.community.slack == nil
       assert repo.community.twitter == "twitter.com/piazza"
-      assert length(repo.community.videos) == 1
-      assert Enum.at(repo.community.videos, 0) == "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+      assert repo.community.videos == ["https://www.youtube.com/watch?v=dQw4w9WgXcQ"]
       assert is_binary(repo.public_key)
       assert is_binary(repo.private_key)
 
@@ -80,8 +79,7 @@ defmodule Core.Services.RepositoriesTest do
 
       assert updated.name == "piazza"
       assert updated.community.twitter == "twitter.com/piazza"
-      assert length(updated.community.videos) == 1
-      assert Enum.at(updated.community.videos, 0) == "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+      assert updated.community.videos == ["https://www.youtube.com/watch?v=dQw4w9WgXcQ"]
 
       assert_receive {:event, %PubSub.RepositoryUpdated{item: ^updated, actor: ^user}}
     end

@@ -48,6 +48,7 @@ function ChartInfo({ version: { helm, insertedAt } }) {
                 href={l}
                 target="_blank"
                 rel="noopener noreferrer"
+                style={{ wordWrap: 'break-word' }}
               >
                 {l}
               </A>

@@ -32,7 +32,6 @@ function ServiceAccountBanner({ previousUser }) {
       </A>
     </Box>
   )
-
 }
 
 function ApplicationLayout({ children }) {

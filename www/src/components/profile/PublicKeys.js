@@ -14,7 +14,6 @@ import { Placeholder } from '../accounts/Audits'
 
 import { DELETE_KEY, LIST_KEYS } from '../users/queries'
 import { LoopingLogo } from '../utils/AnimatedLogo'
-import { Container } from '../utils/Container'
 import { StandardScroller } from '../utils/SmoothScroller'
 
 import { DeleteIcon } from './Icon'

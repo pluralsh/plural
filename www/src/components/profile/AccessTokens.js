@@ -27,8 +27,6 @@ import { formatLocation } from '../../utils/geo'
 
 import { Chloropleth } from '../utils/Chloropleth'
 
-import { Container } from '../utils/Container'
-
 import { Confirm } from '../account/Confirm'
 
 import { SuccessToast } from '../utils/Toasts'

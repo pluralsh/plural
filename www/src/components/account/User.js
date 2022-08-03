@@ -101,6 +101,7 @@ function UserEdit({ user, update }) {
 
 export function User({ user, update }) {
   const { account, ...me } = useContext(CurrentUserContext)
+
   console.log(me)
   const editable = canEdit(me, account) || hasRbac(me, Permissions.USERS)
 

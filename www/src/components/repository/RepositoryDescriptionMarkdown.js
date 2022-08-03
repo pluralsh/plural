@@ -1,5 +1,7 @@
 import { Children, memo } from 'react'
-import { A, Blockquote, Code, Div, H1, H2, H3, H4, H5, H6, Img, Li, Ol, P, Ul } from 'honorable'
+import {
+  A, Blockquote, Code, Div, H1, H2, H3, H4, H5, H6, Img, Li, Ol, P, Ul,
+} from 'honorable'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 
@@ -62,17 +64,17 @@ const codeStyle = {
   borderRadius: '4px',
 }
 
-const toReactMarkdownComponent = ({ component: Component, props }) =>
-  function renderComponent(p) {
-    return (
-      <Component
-        {...{
-          ...p,
-          ...props,
-        }}
-      />
-    )
-  }
+const toReactMarkdownComponent = ({ component: Component, props }) => function renderComponent(p) {
+  return (
+    <Component
+      {...{
+        ...p,
+        ...props,
+      }}
+    />
+  )
+}
+
 export default memo(({ text, gitUrl }) => (
   <Div>
     <ReactMarkdown

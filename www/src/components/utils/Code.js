@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Box, Div } from 'honorable'
 import {
-  Button, Card, CopyIcon, Tooltip,
+  Button, Card, CheckIcon, CopyIcon,
 } from 'pluralsh-design-system'
 
 import Highlight from './Highlight'
@@ -39,31 +39,18 @@ function Code({ language, children, ...props }) {
         padding={null}
       >
         {hover && (
-          <Tooltip
-            offset={8}
-            label="Copied!"
-            color="text-success-light"
-            placement="top"
-            displayOn="manual"
-            dismissable
-            onOpenChange={open => {
-              if (!open && copied) setCopied(false)
-            }}
-            manualOpen={copied}
+          <Button
+            position="absolute"
+            right="24px"
+            top="24px"
+            tertiary
+            backgroundColor="fill-three"
+            _hover={{ backgroundColor: 'fill-one-hover' }}
+            startIcon={copied ? <CheckIcon /> : <CopyIcon />}
+            onClick={handleCopy}
           >
-            <Button
-              position="absolute"
-              right="24px"
-              top="24px"
-              tertiary
-              backgroundColor="fill-three"
-              _hover={{ backgroundColor: '#3C414D' }}
-              startIcon={<CopyIcon />}
-              onClick={handleCopy}
-            >
-              Copy
-            </Button>
-          </Tooltip>
+            {copied ? 'Copied' : 'Copy'}
+          </Button>
         )}
         <Div
           overflowX="auto"

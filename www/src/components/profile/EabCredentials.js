@@ -2,7 +2,7 @@ import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
 import { useState } from 'react'
 
-import { ErrorIcon, PageTitle, Tooltip } from 'pluralsh-design-system'
+import { InfoIcon, PageTitle, Tooltip } from 'pluralsh-design-system'
 
 import { Div } from 'honorable'
 
@@ -79,7 +79,7 @@ export function EabCredentials() {
             hoverIndicator="fill-two"
             onClick
           >
-            <ErrorIcon /> {/* TODO: Change to info icon. */}
+            <InfoIcon />
           </Box>
         </Tooltip>
       </PageTitle>

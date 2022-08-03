@@ -39,7 +39,7 @@ export function PackageBackButton({ link }) {
   return (
     <Box
       direction="row"
-      pad={{ horizontal: 'medium', top: 'medium', bottom: 'small' }}
+      pad={{ horizontal: '32px', top: 'medium', bottom: 'small' }}
     >
       <A
         as={Link}

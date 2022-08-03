@@ -37,8 +37,10 @@ export function Profile() {
   const { dark } = useContext(ThemeContext)
   const [name, setName] = useState(me.name)
   const [email, setEmail] = useState(me.email)
+  const [avatar, setAvatar] = useState(me.avatar)
+  const [avatarFile, setAvatarFile] = useState()
   const [mutation, { loading }] = useMutation(UPDATE_USER, {
-    variables: { attributes: { name, email } },
+    variables: { attributes: { name, email, avatar: avatarFile } },
   })
 
   let url = ProviderIcons[me.provider] || DEFAULT_CHART_ICON
@@ -49,9 +51,10 @@ export function Profile() {
 
   useEffect(() => {
     if (files.length > 0) {
-      mutation({ variables: { attributes: { avatar: files[0] } } })
+      setAvatar(URL.createObjectURL(files[0]))
+      setAvatarFile(files[0])
     }
-  }, [files, mutation])
+  }, [files])
 
   return (
     <Box fill>
@@ -68,8 +71,8 @@ export function Profile() {
               style={{ height: '96px', width: '96px' }}
             >
               <Avatar
-                name={me.name}
-                src={me.avatar}
+                name={name}
+                src={avatar}
                 size={96}
                 fontSize="24px"
                 fontWeight="500"
@@ -81,19 +84,21 @@ export function Profile() {
                 secondary
                 onClick={onClick}
               >
-                {me.avatar ? 'Switch' : 'Upload'}
+                {avatar ? 'Switch' : 'Upload'}
               </Button>
-              {!!me.avatar && (
+              {!!avatar && (
                 <Button
                   small
                   destructive
-                  onClick={() => mutation({ variables: { attributes: { avatar: null } } })}
+                  onClick={() => {
+                    setAvatar(null)
+                    setAvatarFile(null)
+                  }}
                 >
                   Delete
                 </Button>
               )}
             </Box>
-
             <HiddenFileInput
               accept=".jpg, .jpeg, .png"
               multiple={false}

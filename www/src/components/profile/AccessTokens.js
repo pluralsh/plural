@@ -7,7 +7,7 @@ import lookup from 'country-code-lookup'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 
 import {
-  CopyIcon, ErrorIcon, GraphIcon, ListIcon, Modal, ModalHeader, PageTitle, Tooltip,
+  CopyIcon, GraphIcon, InfoIcon, ListIcon, Modal, ModalHeader, PageTitle, Tooltip,
 } from 'pluralsh-design-system'
 
 import {
@@ -247,7 +247,7 @@ export function AccessTokens() {
               hoverIndicator="fill-two"
               onClick
             >
-              <ErrorIcon /> {/* TODO: Change to info icon. */}
+              <InfoIcon />
             </Box>
           </Tooltip>
           <Box

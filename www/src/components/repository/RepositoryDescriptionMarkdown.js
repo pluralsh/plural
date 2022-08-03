@@ -59,11 +59,6 @@ function MdPre({ children, ...props }) {
   )
 }
 
-const codeStyle = {
-  background: 'fill-one',
-  borderRadius: '4px',
-}
-
 const toReactMarkdownComponent = ({ component: Component, props }) => function renderComponent(p) {
   return (
     <Component
@@ -181,17 +176,8 @@ export default memo(({ text, gitUrl }) => (
         span: toReactMarkdownComponent({
           props: { style: { verticalAlign: 'bottom' } },
         }),
-        code: toReactMarkdownComponent({
-          component: Code,
-          props: {
-            ...codeStyle,
-            ...{ mx: '0.2em', px: '0.3em', py: '0.2em' },
-          },
-        }),
-        pre: toReactMarkdownComponent({
-          component: MdPre,
-          props: { ...codeStyle, ...{ px: '1em', py: '0.65em' } },
-        }),
+        code: toReactMarkdownComponent({ component: Code }),
+        pre: toReactMarkdownComponent({ component: MdPre }),
       }}
     >
       {text}

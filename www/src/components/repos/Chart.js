@@ -44,9 +44,10 @@ function ChartInfo({ version: { helm, insertedAt } }) {
             <Box>
               <A
                 inline
-                as={Link}
                 key={l}
-                to={l}
+                href={l}
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 {l}
               </A>

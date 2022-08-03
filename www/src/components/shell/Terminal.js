@@ -39,7 +39,7 @@ export function Shell({ shell }) {
     if (!xterm?.current?.terminal) return
 
     const term = xterm.current.terminal
-    const chan = socket.channel('shells:me', {})
+    const chan = socket.channel('shells:me')
 
     fitAddon.fit()
     term.write(`Booting into your ${shell.provider} shell...\r\n\r\n`)
@@ -161,20 +161,21 @@ export function Shell({ shell }) {
 
 export function Terminal() {
   const { data } = useQuery(CLOUD_SHELL_QUERY, { pollInterval: 5000, fetchPolicy: 'cache-and-network' })
+  const { shell } = data
+  const { alive } = data?.shell || false
+  const { status } = data?.shell || undefined
 
-  if (!data || !data.shell) {
+  if (!status) {
     return (
       <LoopingLogo />
     )
   }
 
-  if (!data.shell.alive) {
+  if (!alive) {
     return (
-      <ShellStatus shell={data.shell} />
+      <ShellStatus shell={shell} />
     )
   }
-
-  const { shell } = data
 
   return (
     <TerminalThemeProvider>

@@ -10,6 +10,10 @@ import { Button, Flex, Modal } from 'honorable'
 
 import { Tab } from 'pluralsh-design-system'
 
+import {
+  ResponsiveLayoutContentContainer, ResponsiveLayoutSidecarContainer, ResponsiveLayoutSidenavContainer, ResponsiveLayoutSpacer,
+} from 'components/layout/ResponsiveLayout'
+
 import { deepUpdate, updateCache } from '../../utils/graphql'
 
 import { GqlError } from '../utils/Alert'
@@ -82,23 +86,22 @@ export default function Terraform() {
       <ScrollableContainer>
         <PackageBackButton link={`/repository/${terraformModule.repository.id}/packages/terraform`} />
         <Box
-          pad="medium"
+          pad="16px"
           direction="row"
         >
-          <Box
-            direction="column"
-            style={{ minWidth: '240px', maxWidth: '240px' }}
-          >
-            <PackageHeader
-              name={terraformModule.name}
-              icon={DEFAULT_TF_ICON}
-            />
-            <PackageVersionPicker
-              edges={edges}
-              installed={tfInst}
-              version={version || currentVersion}
-              setVersion={setVersion}
-            />
+          <ResponsiveLayoutSidenavContainer>
+            <Box pad={{ left: '16px' }}>
+              <PackageHeader
+                name={terraformModule.name}
+                icon={DEFAULT_TF_ICON}
+              />
+              <PackageVersionPicker
+                edges={edges}
+                installed={tfInst}
+                version={version || currentVersion}
+                setVersion={setVersion}
+              />
+            </Box>
             <Tab
               vertical
               onClick={() => navigate(`/terraform/${terraformModule.id}`)}
@@ -147,29 +150,30 @@ export default function Terraform() {
                 Update queue
               </Tab>
             ))}
-          </Box>
-          <Box
-            fill
-            pad={{ horizontal: '32px' }}
-          >
+          </ResponsiveLayoutSidenavContainer>
+          <ResponsiveLayoutSpacer />
+          <ResponsiveLayoutContentContainer>
             <Outlet context={{ terraformChart: terraformModule, currentTerraformChart: currentVersion }} />
-          </Box>
-          <Box
-            style={{ minWidth: '200px', maxWidth: '200px' }}
-            direction="column"
-            gap="small"
-          >
-            <Box height="54px">
-              {terraformModule.installation && (
-                <TerraformInstaller
-                  installation={terraformModule.repository.installation}
-                  terraformInstallation={terraformModule.installation}
-                  version={currentVersion}
-                  terraformId={terraformModule.id}
-                />
-              )}
+          </ResponsiveLayoutContentContainer>
+          <ResponsiveLayoutSidecarContainer>
+            <Box
+              style={{ minWidth: '200px', maxWidth: '200px' }}
+              direction="column"
+              gap="small"
+            >
+              <Box height="54px">
+                {terraformModule.installation && (
+                  <TerraformInstaller
+                    installation={terraformModule.repository.installation}
+                    terraformInstallation={terraformModule.installation}
+                    version={currentVersion}
+                    terraformId={terraformModule.id}
+                  />
+                )}
+              </Box>
             </Box>
-          </Box>
+          </ResponsiveLayoutSidecarContainer>
+          <ResponsiveLayoutSpacer />
         </Box>
       </ScrollableContainer>
     </Box>

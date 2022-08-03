@@ -4,7 +4,7 @@ import { Div, Span, Text } from 'honorable'
 import moment from 'moment'
 import { useState } from 'react'
 
-import { ErrorIcon, PageTitle, Tooltip } from 'pluralsh-design-system'
+import { InfoIcon, PageTitle, Tooltip } from 'pluralsh-design-system'
 
 import { isEmpty } from 'lodash/lang'
 
@@ -108,7 +108,7 @@ export function PublicKeys() {
             hoverIndicator="fill-two"
             onClick
           >
-            <ErrorIcon /> {/* TODO: Change to info icon. */}
+            <InfoIcon />
           </Box>
         </Tooltip>
       </PageTitle>

@@ -75,7 +75,7 @@ export function Clusters(): ReactElement | null {
         >
           <Button
             as={Link}
-            to="/marketplace"
+            to="/repository/a051a0bf-61b5-4ab5-813d-2c541c83a979"
           >
             Install Plural Console
           </Button>

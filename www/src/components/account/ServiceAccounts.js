@@ -1,6 +1,8 @@
 import { useQuery } from '@apollo/client'
+import { EmptyState } from 'components/utils/EmptyState'
 import { Box } from 'grommet'
 import { Input } from 'honorable'
+import { isEmpty } from 'lodash'
 import { SearchIcon } from 'pluralsh-design-system'
 import { useCallback, useState } from 'react'
 
@@ -60,29 +62,35 @@ function ServiceAccountsInner({ q }) {
       fill
       pad={{ bottom: 'small' }}
     >
-      <StandardScroller
-        listRef={listRef}
-        setListRef={setListRef}
-        items={edges}
-        mapper={({ node: user }, { prev, next }) => (
-          <ListItem
-            first={!prev.node}
-            last={!next.node}
-          >
-            <ServiceAccount
-              user={user}
-              update={update}
-            />
-          </ListItem>
-        )}
-        loadNextPage={() => pageInfo.hasNextPage && fetchMore({
-          variables: { cursor: pageInfo.endCursor },
-          updateQuery: (prev, { fetchMoreResult: { users } }) => extendConnection(prev, users, 'users'),
-        })}
-        hasNextPage={pageInfo.hasNextPage}
-        loading={loading}
-        placeholder={Placeholder}
-      />
+      {edges?.length ? (
+        <StandardScroller
+          listRef={listRef}
+          setListRef={setListRef}
+          items={edges}
+          mapper={({ node: user }, { prev, next }) => (
+            <ListItem
+              first={!prev.node}
+              last={!next.node}
+            >
+              <ServiceAccount
+                user={user}
+                update={update}
+              />
+            </ListItem>
+          )}
+          loadNextPage={() => pageInfo.hasNextPage && fetchMore({
+            variables: { cursor: pageInfo.endCursor },
+            updateQuery: (prev, { fetchMoreResult: { users } }) => extendConnection(prev, users, 'users'),
+          })}
+          hasNextPage={pageInfo.hasNextPage}
+          loading={loading}
+          placeholder={Placeholder}
+        />
+      ) : (
+        <EmptyState message={isEmpty(q) ? "Looks like you don't have any service accounts yet." : "Looks like you don't have any service accounts matching search criteria."}>
+          <CreateServiceAccount q={q} />
+        </EmptyState>
+      )}
     </Box>
   )
 }

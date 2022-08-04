@@ -1,5 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client'
+import { EmptyState } from 'components/utils/EmptyState'
 import { Box } from 'grommet'
+import { isEmpty } from 'lodash'
 import {
   Button, GlobeIcon, Input, Modal, ModalHeader, SearchIcon,
 } from 'pluralsh-design-system'
@@ -154,29 +156,35 @@ function GroupsInner({ q }) {
       fill
       pad={{ bottom: 'small' }}
     >
-      <StandardScroller
-        listRef={listRef}
-        setListRef={setListRef}
-        items={edges}
-        mapper={({ node: group }, { prev, next }) => (
-          <ListItem
-            first={!prev.node}
-            last={!next.node}
-          >
-            <Group
-              group={group}
-              q={q}
-            />
-          </ListItem>
-        )}
-        loadNextPage={() => pageInfo.hasNextPage && fetchMore({
-          variables: { cursor: pageInfo.endCursor },
-          updateQuery: (prev, { fetchMoreResult: { groups } }) => extendConnection(prev, groups, 'groups'),
-        })}
-        hasNextPage={pageInfo.hasNextPage}
-        loading={loading}
-        placeholder={Placeholder}
-      />
+      {edges?.length ? (
+        <StandardScroller
+          listRef={listRef}
+          setListRef={setListRef}
+          items={edges}
+          mapper={({ node: group }, { prev, next }) => (
+            <ListItem
+              first={!prev.node}
+              last={!next.node}
+            >
+              <Group
+                group={group}
+                q={q}
+              />
+            </ListItem>
+          )}
+          loadNextPage={() => pageInfo.hasNextPage && fetchMore({
+            variables: { cursor: pageInfo.endCursor },
+            updateQuery: (prev, { fetchMoreResult: { groups } }) => extendConnection(prev, groups, 'groups'),
+          })}
+          hasNextPage={pageInfo.hasNextPage}
+          loading={loading}
+          placeholder={Placeholder}
+        />
+      ) : (
+        <EmptyState message={isEmpty(q) ? "Looks like you don't have any groups yet." : "Looks like you don't have any groups matching search criteria."}>
+          <CreateGroup q={q} />
+        </EmptyState>
+      )}
     </Box>
   )
 }

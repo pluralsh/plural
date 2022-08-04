@@ -24,10 +24,7 @@ export function AuditChloropleth() {
 
   return (
     <Box fill>
-      <PageTitle
-        heading="Audit logs"
-        fontFamily="Monument Semi-Mono, monospace"
-      >
+      <PageTitle heading="Geodistribution">
         <ButtonGroup style={{ border: '0px' }}>
           <Button
             tertiary
@@ -50,6 +47,7 @@ export function AuditChloropleth() {
         fill
         round="xsmall"
         background="fill-one"
+        overflow="hidden"
       >
         <Chloropleth data={metrics} />
       </Box>

@@ -78,7 +78,7 @@ export function LoginAudits() {
       {edges.length
         ? (
           <Table
-            headers={['User', 'Event Time', 'Owner', 'Repository', 'Location']}
+            headers={['User', 'Event time', 'Owner', 'Repository', 'Location / IP']}
             sizes={['20%', '20%', '20%', '20%', '20%']}
             background="fill-one"
             border="1px solid border"

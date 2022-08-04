@@ -3,7 +3,7 @@ import { Box } from 'grommet'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@apollo/client'
 
-import { A, Span } from 'honorable'
+import { A, Div, Span } from 'honorable'
 
 import { PageTitle } from 'pluralsh-design-system'
 
@@ -78,9 +78,16 @@ export function Placeholder() {
 function Audit({ audit, last }) {
   return (
     <TableRow last={last}>
-      <TableData>{audit.action}</TableData>
+      <TableData>
+        <Resource audit={audit} />
+        <Div
+          caption
+          color="text-xlight"
+        >
+          {audit.action}
+        </Div>
+      </TableData>
       <TableData>{audit.actor && <AuditUser user={audit.actor} />}</TableData>
-      <TableData><Resource audit={audit} /></TableData>
       <TableData><Date date={audit.insertedAt} /></TableData>
       <TableData>
         <Location
@@ -115,11 +122,11 @@ export function Audits() {
       fill
     >
       <PageTitle heading="Audit logs" />
-      {!edges.length
+      {edges.length
         ? (
           <Table
-            headers={['Action', 'Actor', 'Resource', 'Event Time', 'Location']}
-            sizes={['20%', '20%', '20%', '20%', '20%']}
+            headers={['Package / Action', 'Actor', 'Event time', 'Location / IP']}
+            sizes={['30%', '25%', '25%', '20%']}
             width="100%"
             height="100%"
             background="fill-one"

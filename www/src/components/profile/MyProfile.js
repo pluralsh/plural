@@ -6,7 +6,7 @@ import { Box } from 'grommet'
 
 import { useContext } from 'react'
 
-import { ResponsiveLayoutContentContainer, ResponsiveLayoutSpacer } from '../layout/ResponsiveLayout'
+import { ResponsiveLayoutContentContainer, ResponsiveLayoutSidenavContainer, ResponsiveLayoutSpacer } from '../layout/ResponsiveLayout'
 import { CurrentUserContext } from '../login/CurrentUser'
 
 const DIRECTORY = [
@@ -26,15 +26,10 @@ export function MyProfile() {
       height="100%"
       width="100%"
       overflowY="hidden"
-      paddingTop="50px"
+      padding={32}
+      paddingTop={88}
     >
-      <Flex
-        px={1}
-        py={1}
-        width={240}
-        flexShrink={0}
-        direction="column"
-      >
+      <ResponsiveLayoutSidenavContainer width={240}>
         <Box
           direction="row"
           gap="small"
@@ -72,19 +67,10 @@ export function MyProfile() {
             </Tab>
           </Link>
         ))}
-      </Flex>
-      <Flex
-        flexGrow={1}
-        pt={1.5}
-        pr={1.5}
-        height="100%"
-        maxHeight="100%"
-        overflowY="auto"
-      >
-        <ResponsiveLayoutSpacer />
-        <ResponsiveLayoutContentContainer><Outlet /></ResponsiveLayoutContentContainer>
-        <ResponsiveLayoutSpacer />
-      </Flex>
+      </ResponsiveLayoutSidenavContainer>
+      <ResponsiveLayoutSpacer />
+      <ResponsiveLayoutContentContainer><Outlet /></ResponsiveLayoutContentContainer>
+      <ResponsiveLayoutSpacer />
     </Flex>
   )
 }

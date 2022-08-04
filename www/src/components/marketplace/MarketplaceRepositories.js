@@ -5,7 +5,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import {
   A,
   Br,
-  Button, Div, Flex, H1, P,
+  Button, Div, Flex, H1, Span,
 } from 'honorable'
 import {
   FiltersIcon, Input, MagnifyingGlassIcon, RepositoryCard,
@@ -367,7 +367,7 @@ function MarketplaceRepositories({ installed }) {
               <EmptyState
                 message="Looks like you haven't installed your first app yet."
                 description={(
-                  <P textAlign="center">
+                  <Span>
                     Head back to the marketplace to select your first application! If you need
                     <Br />support installing your first app, read our&nbsp;
                     <A
@@ -378,7 +378,7 @@ function MarketplaceRepositories({ installed }) {
                     >
                       quickstart guide
                     </A>.
-                  </P>
+                  </Span>
                 )}
               >
                 <Button

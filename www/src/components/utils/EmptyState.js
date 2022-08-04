@@ -8,11 +8,17 @@ export function EmptyState({ message, description, children }) {
       gap="24px"
       align="center"
     >
-      <Text subtitle1>{message}</Text>
+      <Text
+        subtitle1
+        textAlign="center"
+      >
+        {message}
+      </Text>
       {description && (
         <Text
           body1
           color="text-light"
+          textAlign="center"
         >{description}
         </Text>
       )}

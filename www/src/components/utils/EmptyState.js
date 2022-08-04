@@ -1,7 +1,7 @@
 import { Box } from 'grommet'
 import { Text } from 'honorable'
 
-export function EmptyState({ message, children }) {
+export function EmptyState({ message, description, children }) {
   return (
     <Box
       pad="64px"
@@ -9,6 +9,13 @@ export function EmptyState({ message, children }) {
       align="center"
     >
       <Text subtitle1>{message}</Text>
+      {description && (
+        <Text
+          body1
+          color="text-light"
+        >{description}
+        </Text>
+      )}
       <Box>{children}</Box>
     </Box>
   )

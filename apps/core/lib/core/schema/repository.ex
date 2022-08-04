@@ -40,6 +40,7 @@ defmodule Core.Schema.Repository do
     field :category,      Category
     field :notes,         :binary
     field :git_url,       :string
+    field :main_branch,   :string
     field :homepage,      :string
     field :readme,        :binary
     field :default_tag,   :string, default: "latest"
@@ -180,7 +181,7 @@ defmodule Core.Schema.Repository do
   def ordered(query \\ __MODULE__, order \\ [asc: :name]),
     do: from(r in query, order_by: ^order)
 
-  @valid ~w(name publisher_id description documentation secrets private category verified notes default_tag git_url homepage readme)a
+  @valid ~w(name publisher_id description documentation secrets private category verified notes default_tag git_url homepage readme main_branch)a
 
   def changeset(model, attrs \\ %{}) do
     model

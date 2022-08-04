@@ -159,6 +159,7 @@ defmodule GraphQl.Schema.Repository do
     field :notes,          :string
     field :default_tag,    :string
     field :git_url,        :string
+    field :main_branch,    :string
     field :readme,         :string
     field :license,        :license
     field :community,      :community

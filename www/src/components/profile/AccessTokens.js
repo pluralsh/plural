@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
-import { Button, Div, Span } from 'honorable'
+import { Button, Span } from 'honorable'
 import moment from 'moment'
 import { useState } from 'react'
 import lookup from 'country-code-lookup'

@@ -177,4 +177,41 @@ defmodule Core.Services.ShellTest do
       refute refetch(shell)
     end
   end
+
+  describe "#reboot/1" do
+    test "it will create the pod for a user's shell if it does not exist" do
+      podName = "plrl-shell-1"
+      user = insert(:user)
+      shell = insert(:cloud_shell, user: user, pod_name: podName)
+
+      # Should not find the initial pod
+      expect(Kazan, :run, fn _ -> {:error, :not_found} end)
+      # Should create the shell pod
+      expect(Kazan, :run, fn _ -> {:ok, true} end)
+      {:ok, s} = Shell.reboot(user.id)
+
+      assert s.id == shell.id
+      assert refetch(shell)
+    end
+  end
+
+  describe "#restart/1" do
+    test "it will delete the pod for a user's shell and recreate it" do
+      podName = "plrl-shell-1"
+      user = insert(:user)
+      shell = insert(:cloud_shell, user: user, pod_name: podName)
+
+      # Should find the shell pod
+      expect(Kazan, :run, fn _ -> {:ok, Shell.Pods.pod(podName, user.email)} end)
+      # Should delete the shell pod
+      expect(Kazan, :run, fn _ -> {:ok, true} end)
+      # Should not find the shell pod
+      expect(Kazan, :run, fn _ -> {:error, :not_found} end)
+      # Should create the shell pod
+      expect(Kazan, :run, fn _ -> {:ok, true} end)
+      {:ok, true} = Shell.restart(user)
+
+      assert refetch(shell)
+    end
+  end
 end

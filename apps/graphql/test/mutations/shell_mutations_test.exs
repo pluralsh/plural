@@ -105,4 +105,43 @@ defmodule GraphQl.ShellMutationsTest do
       refute demo["ready"]
     end
   end
+
+  describe "stopShell" do
+    test "it will stop a shell for a user" do
+      user = insert(:user)
+      insert(:cloud_shell, user: user, pod_name: "plrl-shell-1")
+
+      expect(Pods, :fetch, fn podName -> {:ok, Pods.pod(podName, user.email)} end)
+      expect(Pods, :delete, fn podName -> {:ok, Pods.pod(podName, user.email)} end)
+
+      {:ok, %{data: %{"stopShell" => stopped}}} = run_query("""
+        mutation {
+          stopShell
+        }
+      """, %{}, %{current_user: user})
+
+      assert stopped
+    end
+  end
+
+  describe "restartShell" do
+    test "it will delete and recreate a shell for a user" do
+      user = insert(:user)
+      shell = insert(:cloud_shell, user: user, pod_name: "plrl-shell-1")
+
+      expect(Pods, :fetch, fn podName -> {:ok, Pods.pod(podName, user.email)} end)
+      expect(Pods, :delete, fn podName -> {:ok, Pods.pod(podName, user.email)} end)
+      expect(Pods, :fetch, fn _ -> {:err, :not_found} end)
+      expect(Pods, :create, fn podName, email -> {:ok, Pods.pod(podName, email)} end)
+
+      {:ok, %{data: %{"restartShell" => restarted}}} = run_query("""
+        mutation {
+          restartShell
+        }
+      """, %{}, %{current_user: user})
+
+      assert restarted
+      assert refetch(shell)
+    end
+  end
 end

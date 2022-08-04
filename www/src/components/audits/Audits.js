@@ -3,7 +3,9 @@ import { Box } from 'grommet'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@apollo/client'
 
-import { A } from 'honorable'
+import { A, Span } from 'honorable'
+
+import { PageTitle } from 'pluralsh-design-system'
 
 import { extendConnection } from '../../utils/graphql'
 import { StandardScroller } from '../utils/SmoothScroller'
@@ -112,38 +114,42 @@ export function Audits() {
     <Box
       fill
     >
-      <Table
-        headers={['Action', 'Actor', 'Resource', 'Event Time', 'Location']}
-        sizes={['20%', '20%', '20%', '20%', '20%']}
-        width="100%"
-        height="100%"
-        background="fill-one"
-        border="1px solid border"
-      >
-        <Box fill>
-          {scrolled && <ReturnToBeginning beginning={returnToBeginning} />}
-          <StandardScroller
-            listRef={listRef}
-            setListRef={setListRef}
-            hasNextPage={pageInfo.hasNextPage}
-            items={edges}
-            loading={loading}
-            handleScroll={setScrolled}
-            placeholder={Placeholder}
-            mapper={({ node: audit }, { next }) => (
-              <Audit
-                last={!next.node}
-                key={audit.id}
-                audit={audit}
+      <PageTitle heading="Audit logs" />
+      {!edges.length
+        ? (
+          <Table
+            headers={['Action', 'Actor', 'Resource', 'Event Time', 'Location']}
+            sizes={['20%', '20%', '20%', '20%', '20%']}
+            width="100%"
+            height="100%"
+            background="fill-one"
+            border="1px solid border"
+          >
+            <Box fill>
+              {scrolled && <ReturnToBeginning beginning={returnToBeginning} />}
+              <StandardScroller
+                listRef={listRef}
+                setListRef={setListRef}
+                hasNextPage={pageInfo.hasNextPage}
+                items={edges}
+                loading={loading}
+                handleScroll={setScrolled}
+                placeholder={Placeholder}
+                mapper={({ node: audit }, { next }) => (
+                  <Audit
+                    last={!next.node}
+                    key={audit.id}
+                    audit={audit}
+                  />
+                )}
+                loadNextPage={() => pageInfo.hasNextPage && fetchMore({
+                  variables: { cursor: pageInfo.endCursor },
+                  updateQuery: (prev, { fetchMoreResult: { audits } }) => extendConnection(prev, audits, 'audits'),
+                })}
               />
-            )}
-            loadNextPage={() => pageInfo.hasNextPage && fetchMore({
-              variables: { cursor: pageInfo.endCursor },
-              updateQuery: (prev, { fetchMoreResult: { audits } }) => extendConnection(prev, audits, 'audits'),
-            })}
-          />
-        </Box>
-      </Table>
+            </Box>
+          </Table>
+        ) : <Span>You do not have any audit logs yet.</Span>}
     </Box>
   )
 }

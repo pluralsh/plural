@@ -7,7 +7,7 @@ import { Container } from '../utils/Container'
 import { SidebarTabs } from '../utils/SidebarTabs'
 
 const DIRECTORY = [
-  { path: '/audits/logs', label: 'Audit Logs' },
+  { path: '/audits/logs', label: 'Audit logs' },
   { path: '/audits/logins', label: 'Logins' },
   { path: '/audits/geo', label: 'Geodistribution' },
 ]

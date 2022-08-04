@@ -1,7 +1,13 @@
 import { useQuery } from '@apollo/client'
-import { Flex } from 'honorable'
+import { EmptyState } from 'components/utils/EmptyState'
+import { Box } from 'grommet'
+import {
+  A, Br, Flex, Span,
+} from 'honorable'
+import { Button } from 'pluralsh-design-system'
 import LoadingSpinner from 'pluralsh-design-system/dist/components/LoadingSpinner'
 import { ReactElement, useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 
 import QueueContext from '../../contexts/QueueContext'
 import {
@@ -27,7 +33,7 @@ export interface Queue {
 
 export function Clusters(): ReactElement | null {
   const [queue, setQueue] = useState({} as Queue)
-  const { data, subscribeToMore } = useQuery(QUEUES, { fetchPolicy: 'cache-and-network' })
+  const { data, loading, subscribeToMore } = useQuery(QUEUES, { fetchPolicy: 'cache-and-network' })
 
   useEffect(() => subscribeToMore({
     document: UPGRADE_QUEUE_SUB,
@@ -45,8 +51,37 @@ export function Clusters(): ReactElement | null {
 
   useEffect(() => (data ? setQueue(data?.upgradeQueues[0]) : data), [data])
 
+  if (loading) return <LoadingSpinner />
+
   if (!data || !queue) {
-    return <LoadingSpinner />
+    return (
+      <Box margin={{ top: '152px' }}>
+        <EmptyState
+          message="Looks like you don't have any clusters registered yet."
+          description={(
+            <Span>
+              Clusters are registered here once you've installed and deployer Plural
+              <Br />Console. If you need support installing it, read our&nbsp;
+              <A
+                inline
+                href="https://docs.plural.sh/getting-started/getting-started"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                quickstart guide
+              </A>.
+            </Span>
+          )}
+        >
+          <Button
+            as={Link}
+            to="/marketplace"
+          >
+            Install Plural Console
+          </Button>
+        </EmptyState>
+      </Box>
+    )
   }
 
   return (

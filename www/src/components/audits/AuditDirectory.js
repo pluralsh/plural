@@ -1,5 +1,5 @@
 import { ResponsiveLayoutContentContainer, ResponsiveLayoutSidenavContainer, ResponsiveLayoutSpacer } from 'components/layout/ResponsiveLayout'
-import { Div, Flex } from 'honorable'
+import { Flex } from 'honorable'
 import { Tab } from 'pluralsh-design-system'
 import { Link, Outlet, useLocation } from 'react-router-dom'
 

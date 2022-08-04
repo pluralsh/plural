@@ -54,6 +54,13 @@ defmodule Core.Schema.Repository do
       field :url,  :string
     end
 
+    embeds_one :community, Community, on_replace: :update do
+      field :discord, :string
+      field :slack,   :string
+      field :twitter, :string
+      field :videos,  {:array, :string}
+    end
+
     belongs_to :integration_resource_definition, ResourceDefinition, on_replace: :update
     belongs_to :publisher, Publisher
 
@@ -180,6 +187,7 @@ defmodule Core.Schema.Repository do
     |> cast(attrs, @valid)
     |> cast_embed(:oauth_settings, with: &oauth_settings/2)
     |> cast_embed(:license, with: &license_changeset/2)
+    |> cast_embed(:community, with: &community_changeset/2)
     |> cast_assoc(:tags, with: &Tag.tag_changeset(&1, &2, :repository))
     |> cast_assoc(:dashboards)
     |> cast_assoc(:database)
@@ -207,4 +215,6 @@ defmodule Core.Schema.Repository do
   end
 
   def license_changeset(model, attrs \\ %{}), do: cast(model, attrs, [:url, :name])
+
+  def community_changeset(model, attrs \\ %{}), do: cast(model, attrs, [:discord, :slack, :twitter, :videos])
 end

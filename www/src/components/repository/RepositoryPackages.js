@@ -44,7 +44,10 @@ export default function RepositoryPackages() {
       height="100%"
     >
       <RepositoryHeader>Packages</RepositoryHeader>
-      <Flex justifyContent="space-between">
+      <Flex
+        justifyContent="space-between"
+        paddingTop="medium"
+      >
         <Input
           flexBasis="350px"
           marginRight="medium"

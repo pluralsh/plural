@@ -286,32 +286,35 @@ function RepositoryTests() {
       <Flex
         direction="column"
         flexGrow={1}
+        paddingTop="medium"
       >
-        <Table
-          headers={['Promote To', 'Name', 'Created On', 'Last Updated On', 'Progress']}
-          sizes={['20%', '20%', '20%', '20%', '20%']}
-          background="fill-one"
-          width="100%"
-          height="100%"
-        >
-          <InfiniteScroller
-            pb={4}
-            loading={loadingTests}
-            hasMore={hasMoreTests}
-            loadMore={fetchMoreTests}
-          // Allow for scrolling in a flexbox layout
-            flexGrow={1}
-            height={0}
+        {tests?.length ? (
+          <Table
+            headers={['Promote To', 'Name', 'Created On', 'Last Updated On', 'Progress']}
+            sizes={['20%', '20%', '20%', '20%', '20%']}
+            background="fill-one"
+            width="100%"
+            height="100%"
           >
-            {tests.map(test => (
-              <Test
-                key={test.id}
-                test={test}
-                setTest={setTest}
-              />
-            ))}
-          </InfiniteScroller>
-        </Table>
+            <InfiniteScroller
+              pb={4}
+              loading={loadingTests}
+              hasMore={hasMoreTests}
+              loadMore={fetchMoreTests}
+          // Allow for scrolling in a flexbox layout
+              flexGrow={1}
+              height={0}
+            >
+              {tests.map(test => (
+                <Test
+                  key={test.id}
+                  test={test}
+                  setTest={setTest}
+                />
+              ))}
+            </InfiniteScroller>
+          </Table>
+        ) : <Span>This repository does not have any tests yet.</Span>}
       </Flex>
     </Flex>
   )

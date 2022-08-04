@@ -32,7 +32,7 @@ function RepositoryDescription() {
             text={repository.readme}
             gitUrl={repository.git_url}
           />
-        ) : <P>No description available</P>}
+        ) : <P>This repository does not have a Readme yet.</P>}
       </Flex>
     </Flex>
   )

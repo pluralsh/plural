@@ -133,7 +133,7 @@ export function PackageVersionPicker({
       </Select>
       <Box
         direction="row"
-        gap="xxsmall"
+        gap="8px"
       >
         {version?.tags.map(({ tag }, i) => <Chip key={i}><Span fontWeight="400">{tag}</Span></Chip>)}
       </Box>

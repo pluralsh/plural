@@ -11,7 +11,7 @@ import {
   Anchor, Box, Collapsible, Stack, Text,
 } from 'grommet'
 import { Language } from 'grommet-icons'
-import truncate from 'lodash/truncate'
+
 import Toggle from 'react-toggle'
 
 import { Codeline } from 'pluralsh-design-system'

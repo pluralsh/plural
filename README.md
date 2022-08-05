@@ -129,12 +129,6 @@ For general help, please refer to the Plural documentation. For additional help 
 Plural is dedicated to providing a welcoming, diverse, and harassment-free experience for everyone. We expect everyone in the community to abide by our [Code of Conduct](CODE_OF_CONDUCT.md). *Please read it.*
 <br /><br />
 
-## 🎁 Get Free Swag!
-
-Get free Plural swag [here](https://pluralsh.typeform.com/to/jMj5GaM4)! :-)
-<br /><br />
-
-
 
 ## 🚗 Roadmap
 See what we're working on in these GitHub projects. Help us prioritize issues by reacting with an emoji on the issue!

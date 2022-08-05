@@ -136,4 +136,20 @@ defmodule Core.Services.Shell do
   end
 
   def stop(_), do: {:error, :not_found}
+
+  @doc """
+  Restarts the cloud shell pod for a given user
+  """
+  @spec restart(User.t) :: {:ok, true} | error
+  def restart(%User{id: user_id}) do
+    get_shell(user_id)
+    |> do_restart()
+  end
+
+  defp do_restart(%CloudShell{} = shell) do
+    with {:ok, _} <- stop(shell),
+         {:ok, _} <- reboot(shell) do
+      {:ok, true}
+    end
+  end
 end

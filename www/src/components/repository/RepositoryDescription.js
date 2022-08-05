@@ -7,14 +7,13 @@ import RepositoryDescriptionMarkdown from './RepositoryDescriptionMarkdown'
 
 import RepositoryHeader from './RepositoryHeader.tsx'
 
-function RepositoryDescription() {
+export default function RepositoryDescription() {
   const repository = useContext(RepositoryContext)
 
   return (
     <Flex
       direction="column"
       color="text-light"
-      borderRadius="large"
       position="relative"
       overflowY="hidden"
     >
@@ -26,7 +25,6 @@ function RepositoryDescription() {
         marginTop="medium"
         marginBottom="medium"
         paddingRight="small"
-
       >
         {repository.readme ? (
           <RepositoryDescriptionMarkdown
@@ -38,5 +36,3 @@ function RepositoryDescription() {
     </Flex>
   )
 }
-
-export default RepositoryDescription

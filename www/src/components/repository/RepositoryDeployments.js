@@ -104,7 +104,8 @@ function RepositoryDeployments() {
       <RepositoryHeader>Deployments</RepositoryHeader>
       <Div
         fill
-        paddingTop="medium"
+        marginTop="medium"
+        marginBottom="medium"
       >
         {rollouts?.length ? (
           <Table
@@ -112,8 +113,7 @@ function RepositoryDeployments() {
             sizes={['27.5%', '27.5%', '27.5%', '17.5%']}
             background="fill-one"
             width="100%"
-            height="calc(100% - 16px)"
-
+            height="100%"
           >
             <InfiniteScroller
               pb={4}

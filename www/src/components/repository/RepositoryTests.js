@@ -280,13 +280,13 @@ function RepositoryTests() {
     <Flex
       direction="column"
       flexGrow={1}
-      paddingBottom="xlarge"
     >
       <RepositoryHeader>Tests</RepositoryHeader>
       <Flex
         direction="column"
         flexGrow={1}
-        paddingTop="medium"
+        marginTop="medium"
+        marginBottom="medium"
       >
         {tests?.length ? (
           <Table

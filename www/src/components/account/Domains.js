@@ -182,6 +182,7 @@ function DnsRecords({ domain, setDomain }) {
         pad="small"
         background="fill-one"
         border
+        round="xsmall"
       >
         <Icon
           icon={<Return size="15px" />}
@@ -194,6 +195,7 @@ function DnsRecords({ domain, setDomain }) {
         sizes={['20%', '20%', '20%', '20%', '20%']}
         background="fill-one"
         border="1px solid border"
+        marginTop="medium"
         width="100%"
         height="100%"
       >
@@ -261,6 +263,37 @@ function DnsRecords({ domain, setDomain }) {
   )
 }
 
+function Domain({ node, last, setDomain }) {
+  return (
+    <TableRow
+      last={last}
+      suffix={(
+        <DomainOptions
+          domain={node}
+          setDomain={setDomain}
+        />
+      )}
+    >
+      <TableData>{node.name}</TableData>
+      <TableData>
+        <Box
+          direction="row"
+          gap="xsmall"
+          align="center"
+        >
+          <Avatar
+            src={node.creator.avatar}
+            name={node.creator.name}
+            size={30}
+          />
+          <Span color="text-light">{node.creator.name}</Span>
+        </Box>
+      </TableData>
+      <TableData>{moment(node.insertedAt).format('lll')}</TableData>
+    </TableRow>
+  )
+}
+
 export function Domains() {
   const [listRef, setListRef] = useState(null)
   const [domain, setDomain] = useState(null)
@@ -291,7 +324,6 @@ export function Domains() {
           height="calc(100% - 16px)"
         >
           <Box fill>
-
             <StandardScroller
               listRef={listRef}
               setListRef={setListRef}
@@ -300,32 +332,11 @@ export function Domains() {
               loading={loading}
               placeholder={Placeholder}
               mapper={({ node }, { next }) => (
-                <TableRow
+                <Domain
+                  node={node}
                   last={!next.node}
-                  suffix={(
-                    <DomainOptions
-                      domain={node}
-                      setDomain={setDomain}
-                    />
-                  )}
-                >
-                  <TableData>{node.name}</TableData>
-                  <TableData>
-                    <Box
-                      direction="row"
-                      gap="xsmall"
-                      align="center"
-                    >
-                      <Avatar
-                        src={node.creator.avatar}
-                        name={node.creator.name}
-                        size={30}
-                      />
-                      <Span color="text-light">{node.creator.name}</Span>
-                    </Box>
-                  </TableData>
-                  <TableData>{moment(node.insertedAt).format('lll')}</TableData>
-                </TableRow>
+                  setDomain={setDomain}
+                />
               )}
               loadNextPage={() => pageInfo.hasNextPage && fetchMore({
                 variables: { cursor: pageInfo.endCursor },

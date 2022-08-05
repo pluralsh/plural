@@ -144,7 +144,7 @@ function RolesInner({ q }) {
           placeholder={Placeholder}
         />
       ) : (
-        <EmptyState message={isEmpty(q) ? "Looks like you don't have any roles yet." : "Looks like you don't have any roles matching search criteria."}>
+        <EmptyState message={isEmpty(q) ? "Looks like you don't have any roles yet." : `No roles found for ${q}`}>
           <CreateRole q={q} />
         </EmptyState>
       )}

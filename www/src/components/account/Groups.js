@@ -181,7 +181,7 @@ function GroupsInner({ q }) {
           placeholder={Placeholder}
         />
       ) : (
-        <EmptyState message={isEmpty(q) ? "Looks like you don't have any groups yet." : "Looks like you don't have any groups matching search criteria."}>
+        <EmptyState message={isEmpty(q) ? "Looks like you don't have any groups yet." : `No roles found for ${q}`}>
           <CreateGroup q={q} />
         </EmptyState>
       )}

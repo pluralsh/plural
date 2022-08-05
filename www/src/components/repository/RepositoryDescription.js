@@ -14,7 +14,6 @@ function RepositoryDescription() {
     <Flex
       direction="column"
       color="text-light"
-      paddingRight="small"
       borderRadius="large"
       position="relative"
       overflowY="hidden"
@@ -24,8 +23,10 @@ function RepositoryDescription() {
         direction="column"
         flexGrow={1}
         overflowY="auto"
-        paddingTop="medium"
-        paddingBottom="xlarge"
+        marginTop="medium"
+        marginBottom="medium"
+        paddingRight="small"
+
       >
         {repository.readme ? (
           <RepositoryDescriptionMarkdown

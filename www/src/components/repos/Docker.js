@@ -138,9 +138,7 @@ function DockerSidebar({ image: { dockerRepository: docker, ...image }, filter, 
             Pull Command
           </Text>
           <Stack anchor="right">
-            <Codeline>
-              docker pull {truncate(imageName, { length: 40 })}
-            </Codeline>
+            <Codeline>{`docker pull ${imageName}`}</Codeline>
             <Box
               flex={false}
               margin={{ right: 'small' }}

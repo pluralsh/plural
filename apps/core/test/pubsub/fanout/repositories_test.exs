@@ -24,6 +24,7 @@ defmodule Core.PubSub.Fanout.InstallationsTest do
 
       assert updated.id == repo.id
       assert is_binary(updated.readme)
+      assert updated.main_branch == "master"
       assert updated.license
     end
   end

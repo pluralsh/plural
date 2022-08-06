@@ -622,9 +622,9 @@ defmodule Core.Services.Repositories do
   """
   @spec hydrate(Repository.t) :: {:ok, Repository.t} | nil
   def hydrate(repo) do
-    with readme when is_binary(readme) <- fetch_readme(repo) do
+    with {branch, readme} <- fetch_readme(repo) do
       repo
-      |> Repository.changeset(%{readme: readme, license: fetch_license(repo)})
+      |> Repository.changeset(%{readme: readme, main_branch: branch, license: fetch_license(repo)})
       |> Core.Repo.update()
     end
   end
@@ -632,7 +632,7 @@ defmodule Core.Services.Repositories do
   @doc """
   Attempts to grab the contents of a repo's github readme and returns the result
   """
-  @spec fetch_readme(Repository.t) :: binary | nil
+  @spec fetch_readme(Repository.t) :: {binary, binary} | nil
   def fetch_readme(%Repository{git_url: "https://github.com" <> _ = url}),
     do: readme_fetch("#{url}/raw/{branch}/README.md")
   def fetch_readme(%Repository{git_url: "https://gitlab.com" <> _ = url}),
@@ -661,7 +661,7 @@ defmodule Core.Services.Repositories do
       String.replace(url, "{branch}", branch)
       |> HTTPoison.get([], follow_redirect: true)
       |> case do
-        {:ok, %HTTPoison.Response{status_code: 200, body: body}} -> body
+        {:ok, %HTTPoison.Response{status_code: 200, body: body}} -> {branch, body}
         _ -> nil
       end
     end)

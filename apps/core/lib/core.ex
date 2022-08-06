@@ -46,6 +46,7 @@ defmodule Core do
     end
   end
 
+  def throttle(enum, opts \\ %{count: 30, pause: 1})
   def throttle(enum, opts) when is_list(opts), do: throttle(enum, Map.new(opts))
   def throttle(enum, %{count: count, pause: pause}) do
     Stream.with_index(enum)

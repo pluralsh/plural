@@ -1,6 +1,6 @@
 import { useContext, useEffect } from 'react'
 import moment from 'moment'
-import { Flex } from 'honorable'
+import { Div, Flex, Span } from 'honorable'
 
 import { Chip, StatusIpIcon, StatusOkIcon } from 'pluralsh-design-system'
 
@@ -102,31 +102,39 @@ function RepositoryDeployments() {
       direction="column"
     >
       <RepositoryHeader>Deployments</RepositoryHeader>
-      <Table
-        headers={['Event', 'Clusters Updated', 'Last Ping', 'Status']}
-        sizes={['27.5%', '27.5%', '27.5%', '17.5%']}
-        background="fill-one"
-        width="100%"
-        height="calc(100% - 16px)"
+      <Div
+        fill
+        marginTop="medium"
+        marginBottom="medium"
       >
-        <InfiniteScroller
-          pb={4}
-          loading={loadingRollouts}
-          hasMore={hasMoreRollouts}
-          loadMore={fetchMoreRollouts}
+        {rollouts?.length ? (
+          <Table
+            headers={['Event', 'Clusters Updated', 'Last Ping', 'Status']}
+            sizes={['27.5%', '27.5%', '27.5%', '17.5%']}
+            background="fill-one"
+            width="100%"
+            height="100%"
+          >
+            <InfiniteScroller
+              pb={4}
+              loading={loadingRollouts}
+              hasMore={hasMoreRollouts}
+              loadMore={fetchMoreRollouts}
           // Allow for scrolling in a flexbox layout
-          flexGrow={1}
-          height={0}
-        >
-          {rollouts.map((rollout, i) => (
-            <Rollout
-              last={i === len - 1}
-              key={rollout.id}
-              rollout={rollout}
-            />
-          ))}
-        </InfiniteScroller>
-      </Table>
+              flexGrow={1}
+              height={0}
+            >
+              {rollouts.map((rollout, i) => (
+                <Rollout
+                  last={i === len - 1}
+                  key={rollout.id}
+                  rollout={rollout}
+                />
+              ))}
+            </InfiniteScroller>
+          </Table>
+        ) : <Span>This repository does not have any deployments yet.</Span>}
+      </Div>
     </Flex>
   )
 }

@@ -3,13 +3,19 @@ import {
 } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import {
-  Button, Div, Flex, H1,
+  A,
+  Br,
+  Button, Div, Flex, H1, Span,
 } from 'honorable'
 import {
   FiltersIcon, Input, MagnifyingGlassIcon, RepositoryCard,
   Tab, Token,
 } from 'pluralsh-design-system'
 import Fuse from 'fuse.js'
+
+import { EmptyState } from 'components/utils/EmptyState'
+
+import { isEmpty } from 'lodash'
 
 import { capitalize } from '../../utils/string'
 
@@ -356,6 +362,32 @@ function MarketplaceRepositories({ installed }) {
               >
                 <LoopingLogo />
               </Flex>
+            )}
+            {!resultRepositories?.length && installed && ![...searchParams]?.length && isEmpty(search) && (
+              <EmptyState
+                message="Looks like you haven't installed your first app yet."
+                description={(
+                  <Span>
+                    Head back to the marketplace to select your first application! If you need
+                    <Br />support installing your first app, read our&nbsp;
+                    <A
+                      inline
+                      href="https://docs.plural.sh/getting-started/getting-started"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      quickstart guide
+                    </A>.
+                  </Span>
+                )}
+              >
+                <Button
+                  as={Link}
+                  to="/marketplace"
+                >
+                  Go to marketplace
+                </Button>
+              </EmptyState>
             )}
           </Div>
         </Flex>

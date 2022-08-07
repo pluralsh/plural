@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
-import { Button, Div, Span } from 'honorable'
+import { Button, Span } from 'honorable'
 import moment from 'moment'
 import { useState } from 'react'
 import lookup from 'country-code-lookup'
@@ -9,6 +9,8 @@ import { CopyToClipboard } from 'react-copy-to-clipboard'
 import {
   CopyIcon, GraphIcon, InfoIcon, ListIcon, Modal, ModalHeader, PageTitle, Tooltip,
 } from 'pluralsh-design-system'
+
+import { EmptyState } from 'components/utils/EmptyState'
 
 import {
   appendConnection, deepUpdate, extendConnection, removeConnection, updateCache,
@@ -293,7 +295,20 @@ export function AccessTokens() {
                 updateQuery: (prev, { fetchMoreResult: { tokens } }) => extendConnection(prev, tokens, 'tokens'),
               })}
             />
-          ) : (<Div body2>No access tokens found.</Div>)}
+          ) : (
+            <EmptyState message="Looks like you don't have any access tokens yet.">
+              <Button
+                onClick={() => {
+                  setDisplayNewBanner(true)
+                  setTimeout(() => setDisplayNewBanner(false), 1000)
+                  mutation()
+                }}
+                loading={loading}
+              >
+                Create access token
+              </Button>
+            </EmptyState>
+          )}
       </Box>
     </Box>
   )

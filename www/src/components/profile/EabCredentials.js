@@ -4,7 +4,7 @@ import { useState } from 'react'
 
 import { InfoIcon, PageTitle, Tooltip } from 'pluralsh-design-system'
 
-import { Div } from 'honorable'
+import { Span } from 'honorable'
 
 import { updateCache } from '../../utils/graphql'
 import { Confirm } from '../account/Confirm'
@@ -100,7 +100,7 @@ export function EabCredentials() {
                 />
               ))}
             </Table>
-          ) : (<Div body2>No EAB credentials found.</Div>)}
+          ) : (<Span>You do not have any EAB credentials keys yet.</Span>)}
       </Box>
     </Box>
   )

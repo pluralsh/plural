@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
-import { Div, Span, Text } from 'honorable'
+import { Span, Text } from 'honorable'
 import moment from 'moment'
 import { useState } from 'react'
 
@@ -134,7 +134,7 @@ export function PublicKeys() {
                 updateQuery: (prev, { fetchMoreResult: { publicKeys } }) => extendConnection(prev, publicKeys, 'publicKeys'),
               })}
             />
-          ) : (<Div body2>No public keys found.</Div>)}
+          ) : (<Span>You do not have any public keys yet.</Span>)}
       </Box>
     </Box>
   )

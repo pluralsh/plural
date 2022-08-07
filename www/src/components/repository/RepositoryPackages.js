@@ -44,7 +44,10 @@ export default function RepositoryPackages() {
       height="100%"
     >
       <RepositoryHeader>Packages</RepositoryHeader>
-      <Flex justifyContent="space-between">
+      <Flex
+        justifyContent="space-between"
+        marginTop="medium"
+      >
         <Input
           flexBasis="350px"
           marginRight="medium"
@@ -66,6 +69,7 @@ export default function RepositoryPackages() {
       <Flex
         mt={1}
         direction="column"
+        marginBottom="medium"
         flexGrow={1}
       >
         <Outlet context={[q, setQ]} />

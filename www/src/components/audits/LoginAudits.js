@@ -2,6 +2,10 @@ import { useQuery } from '@apollo/client'
 import { Box, Text } from 'grommet'
 import { useCallback, useState } from 'react'
 
+import { PageTitle } from 'pluralsh-design-system'
+
+import { Span } from 'honorable'
+
 import { Placeholder } from '../accounts/Audits'
 
 import { RepoIcon } from '../repos/Repositories'
@@ -62,54 +66,50 @@ export function LoginAudits() {
   const [listRef, setListRef] = useState(null)
   const [scrolled, setScrolled] = useState(false)
   const { data, loading, fetchMore } = useQuery(LOGINS_Q, { fetchPolicy: 'cache-and-network' })
-  const returnToBeginning = useCallback(() => {
-    listRef.scrollToItem(0)
-  }, [listRef])
+  const returnToBeginning = useCallback(() => listRef.scrollToItem(0), [listRef])
 
-  if (!data) {
-    return (
-      <LoopingLogo />
-    )
-  }
+  if (!data) return <LoopingLogo />
 
   const { edges, pageInfo } = data.oidcLogins
 
-  console.log(edges)
-
   return (
     <Box fill>
-      <Table
-        headers={['User', 'Event Time', 'Owner', 'Repository', 'Location']}
-        sizes={['20%', '20%', '20%', '20%', '20%']}
-        background="fill-one"
-        border="1px solid border"
-        width="100%"
-        height="100%"
-      >
-        <Box fill>
-          {scrolled && <ReturnToBeginning beginning={returnToBeginning} />}
-          <StandardScroller
-            listRef={listRef}
-            setListRef={setListRef}
-            hasNextPage={pageInfo.hasNextPage}
-            items={edges}
-            loading={loading}
-            handleScroll={setScrolled}
-            placeholder={Placeholder}
-            mapper={({ node }, { next }) => (
-              <LoginRow
-                key={node.id}
-                login={node}
-                last={!next.node}
+      <PageTitle heading="Logins" />
+      {edges.length
+        ? (
+          <Table
+            headers={['User', 'Event time', 'Owner', 'Repository', 'Location / IP']}
+            sizes={['20%', '20%', '20%', '20%', '20%']}
+            background="fill-one"
+            border="1px solid border"
+            width="100%"
+            height="100%"
+          >
+            <Box fill>
+              {scrolled && <ReturnToBeginning beginning={returnToBeginning} />}
+              <StandardScroller
+                listRef={listRef}
+                setListRef={setListRef}
+                hasNextPage={pageInfo.hasNextPage}
+                items={edges}
+                loading={loading}
+                handleScroll={setScrolled}
+                placeholder={Placeholder}
+                mapper={({ node }, { next }) => (
+                  <LoginRow
+                    key={node.id}
+                    login={node}
+                    last={!next.node}
+                  />
+                )}
+                loadNextPage={() => pageInfo.hasNextPage && fetchMore({
+                  variables: { cursor: pageInfo.endCursor },
+                  updateQuery: (prev, { fetchMoreResult: { oidcLogins } }) => extendConnection(prev, oidcLogins, 'oidcLogins'),
+                })}
               />
-            )}
-            loadNextPage={() => pageInfo.hasNextPage && fetchMore({
-              variables: { cursor: pageInfo.endCursor },
-              updateQuery: (prev, { fetchMoreResult: { oidcLogins } }) => extendConnection(prev, oidcLogins, 'oidcLogins'),
-            })}
-          />
-        </Box>
-      </Table>
+            </Box>
+          </Table>
+        ) : <Span>You do not have any user logins yet.</Span>}
     </Box>
   )
 }

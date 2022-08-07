@@ -7,15 +7,13 @@ import RepositoryDescriptionMarkdown from './RepositoryDescriptionMarkdown'
 
 import RepositoryHeader from './RepositoryHeader.tsx'
 
-function RepositoryDescription() {
+export default function RepositoryDescription() {
   const repository = useContext(RepositoryContext)
 
   return (
     <Flex
       direction="column"
       color="text-light"
-      paddingRight="small"
-      borderRadius="large"
       position="relative"
       overflowY="hidden"
     >
@@ -24,18 +22,17 @@ function RepositoryDescription() {
         direction="column"
         flexGrow={1}
         overflowY="auto"
-        paddingTop="medium"
-        paddingBottom="xlarge"
+        marginTop="medium"
+        marginBottom="medium"
+        paddingRight="small"
       >
         {repository.readme ? (
           <RepositoryDescriptionMarkdown
             text={repository.readme}
             gitUrl={repository.git_url}
           />
-        ) : <P>No description available</P>}
+        ) : <P>This repository does not have a Readme yet.</P>}
       </Flex>
     </Flex>
   )
 }
-
-export default RepositoryDescription

@@ -1,24 +1,19 @@
 import { useContext, useEffect } from 'react'
 import moment from 'moment'
 import { Div, Flex, Span } from 'honorable'
-
-import { Chip, StatusIpIcon, StatusOkIcon } from 'pluralsh-design-system'
+import {
+  Chip, PageTitle, StatusIpIcon, StatusOkIcon,
+} from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
-
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
-
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import InfiniteScroller from '../utils/InfiniteScroller'
-
 import { ROLLOUT_SUB } from '../clusters/queries'
 import { appendConnection } from '../../utils/graphql'
-
 import { Table, TableData, TableRow } from '../utils/Table'
 
 import { DEPLOYMENTS_QUERY } from './queries'
-
-import RepositoryHeader from './RepositoryHeader.tsx'
 
 // eslint-disable-next-line
 const MAX_UUID = 0xffffffffffffffffffffffffffffffff
@@ -79,7 +74,16 @@ function RepositoryDeployments() {
   useEffect(() => subscribeToMore({
     document: ROLLOUT_SUB,
     variables: { repositoryId: id },
-    updateQuery: (prev, { subscriptionData: { data: { rolloutDelta: { delta, payload } } } }) => (delta === 'CREATE' ? appendConnection(prev, payload, 'rollouts') : prev),
+    updateQuery: (prev, {
+      subscriptionData: {
+        data: {
+          rolloutDelta: {
+            delta,
+            payload,
+          },
+        },
+      },
+    }) => (delta === 'CREATE' ? appendConnection(prev, payload, 'rollouts') : prev),
   }), [id, subscribeToMore])
 
   const len = rollouts.length
@@ -101,10 +105,12 @@ function RepositoryDeployments() {
       maxHeight="100%"
       direction="column"
     >
-      <RepositoryHeader>Deployments</RepositoryHeader>
+      <PageTitle
+        heading="Deployments"
+        paddingTop="medium"
+      />
       <Div
         fill
-        marginTop="medium"
         marginBottom="medium"
       >
         {rollouts?.length ? (
@@ -113,14 +119,14 @@ function RepositoryDeployments() {
             sizes={['27.5%', '27.5%', '27.5%', '17.5%']}
             background="fill-one"
             width="100%"
-            height="100%"
+            height="calc(100% - 16px)"
           >
             <InfiniteScroller
               pb={4}
               loading={loadingRollouts}
               hasMore={hasMoreRollouts}
               loadMore={fetchMoreRollouts}
-          // Allow for scrolling in a flexbox layout
+              // Allow for scrolling in a flexbox layout
               flexGrow={1}
               height={0}
             >

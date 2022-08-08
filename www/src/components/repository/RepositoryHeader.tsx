@@ -15,7 +15,7 @@ function RepositoryHeader({ children, ...props }: any) {
       <Div
         width="100%"
         backgroundColor="fill-zero"
-        paddingTop="large"
+        paddingTop="medium"
       >
         <Flex
           align="center"

@@ -43,7 +43,7 @@ const filterTokenStyles = {
 const sidebarWidth = 256 - 32
 
 function RepoCardList({
-  repositories, repoProps, maxWidth, stretchLastRow = false, ...props
+  repositories, repoProps, maxWidth, size = 'small', stretchLastRow = false, ...props
 }) {
   const flexBasis = '400px'
 
@@ -92,11 +92,13 @@ function RepoCardList({
               width="100%"
               title={repository.name}
               imageUrl={repository.darkIcon || repository.icon}
-              publisher={repository.publisher?.name?.toUpperCase()}
+              publisher={repository.publisher?.name}
               description={repository.description}
               tags={repository.tags.map(({ tag }) => tag)}
               priv={repository.private}
               installed={!!repository.installation}
+              verified={repository.verified}
+              size={size}
               {...repoProps}
             />
           </Flex>
@@ -195,6 +197,7 @@ function MarketplaceRepositories({ installed }) {
           repoProps={{ featured: true }}
           marginTop="medium"
           maxWidth="100%"
+          size="large"
           stretchLastRow
         />
       </>

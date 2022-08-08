@@ -5,11 +5,16 @@ function InfiniteScroller({
   loading = false, hasMore = false, loadMore, children, ...props
 }) {
   const scrollRef = useRef()
+  const isScrollbarVisible = el => el.scrollHeight > el.clientHeight
 
   useEffect(() => {
     const { current } = scrollRef
 
     if (!current) return
+
+    if (!isScrollbarVisible(current) && hasMore && !loading) {
+      loadMore()
+    }
 
     function handleScroll(event) {
       if (

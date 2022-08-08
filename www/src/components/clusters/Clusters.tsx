@@ -60,7 +60,7 @@ export function Clusters(): ReactElement | null {
           message="Looks like you don't have any clusters registered yet."
           description={(
             <Span>
-              Clusters are registered here once you've installed and deployer Plural
+              Clusters are registered here once you've installed and deployed Plural
               <Br />Console. If you need support installing it, read our&nbsp;
               <A
                 inline

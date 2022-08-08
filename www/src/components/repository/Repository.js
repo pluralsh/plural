@@ -60,7 +60,7 @@ function Repository() {
         overflowY="hidden"
       >
         <Flex
-          paddingTop="xsmall"
+          paddingTop="medium"
           marginLeft="medium"
           marginRight="large"
         >
@@ -81,6 +81,7 @@ function Repository() {
           overflowX="hidden"
           paddingLeft="medium"
           paddingRight="large"
+          paddingTop="medium"
         >
           <ResponsiveLayoutSidenavContainer>
             <RepositorySideNav />

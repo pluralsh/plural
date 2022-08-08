@@ -94,57 +94,72 @@ export default memo(({ text, gitUrl }) => (
         }),
         li: toReactMarkdownComponent({
           component: Li,
-          props: { body2: true, marginTop: 'xxsmall' },
+          props: { body1: true, marginTop: 'xxsmall' },
         }),
         h1: toReactMarkdownComponent({
           component: H1,
           props: {
-            subtitle1: true,
+            title2: true,
+            color: 'text',
             marginTop: 'large',
             marginBottom: 'small',
-            ':first-child': { marginTop: '0px' },
+            ':first-of-type': { marginTop: '0px' },
           },
         }),
         h2: toReactMarkdownComponent({
           component: H2,
           props: {
-            subtitle2: true,
+            subtitle1: true,
+            color: 'text',
             marginTop: 'large',
             marginBottom: 'small',
-            ':first-child': { marginTop: '0px' },
+            ':first-of-type': { marginTop: '0px' },
           },
         }),
         h3: toReactMarkdownComponent({
           component: H3,
           props: {
-            body1: true,
+            subtitle2: true,
+            color: 'text',
             bold: true,
             marginTop: 'large',
             marginBottom: 'small',
-            ':first-child': { marginTop: '0px' },
+            ':first-of-type': { marginTop: '0px' },
           },
         }),
         h4: toReactMarkdownComponent({
           component: H4,
           props: {
-            body2: true,
+            body1: true,
+            color: 'text',
             bold: true,
             marginTop: 'large',
             marginBottom: 'small',
-            ':first-child': { marginTop: '0px' },
+            ':first-of-type': { marginTop: '0px' },
           },
         }),
         h5: toReactMarkdownComponent({
           component: H5,
           props: {
-            body2: true,
+            body1: true,
+            color: 'text',
             bold: true,
             marginTop: 'large',
             marginBottom: 'small',
-            ':first-child': { marginTop: '0px' },
+            ':first-of-type': { marginTop: '0px' },
           },
         }),
-        h6: toReactMarkdownComponent({ component: H6, props: {} }),
+        h6: toReactMarkdownComponent({
+          component: H6,
+          props: {
+            body1: true,
+            bold: true,
+            color: 'text',
+            marginTop: 'large',
+            marginBottom: 'small',
+            ':first-of-type': { marginTop: '0px' },
+          },
+        }),
         img: props => (
           <MdImg
             {...{

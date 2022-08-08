@@ -2,11 +2,9 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { Flex } from 'honorable'
 
 import { useState } from 'react'
-import { Input, MagnifyingGlassIcon } from 'pluralsh-design-system'
+import { Input, MagnifyingGlassIcon, PageTitle } from 'pluralsh-design-system'
 
 import { ButtonGroup } from '../utils/ButtonGroup'
-
-import RepositoryHeader from './RepositoryHeader.tsx'
 
 export function packageCardStyle(first, last) {
   return {
@@ -43,11 +41,11 @@ export default function RepositoryPackages() {
       direction="column"
       height="100%"
     >
-      <RepositoryHeader>Packages</RepositoryHeader>
-      <Flex
-        justifyContent="space-between"
-        marginTop="medium"
-      >
+      <PageTitle
+        heading="Packages"
+        paddingTop="medium"
+      />
+      <Flex justifyContent="space-between">
         <Input
           flexBasis="350px"
           marginRight="medium"

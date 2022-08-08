@@ -117,4 +117,54 @@ defmodule GraphQl.RecipeMutationsTest do
       assert installation["repository"]["id"] == repo.id
     end
   end
+
+  describe "createStack" do
+    test "it can create a new stack instance" do
+      recipe = insert(:recipe)
+      {:ok, %{data: %{"createStack" => create}}} = run_query("""
+        mutation Create($attributes: StackAttributes!) {
+          createStack(attributes: $attributes) {
+            id
+            name
+            featured
+            description
+            collections {
+              provider
+              bundles { recipe { id } }
+            }
+          }
+        }
+      """, %{"attributes" => %{
+        "name" => "stack",
+        "description" => "a description",
+        "featured" => true,
+        "collections" => [
+          %{"provider" => "AWS", "bundles" => [%{"name" => recipe.name, "repo" => recipe.repository.name}]}
+        ]
+      }}, %{current_user: insert(:user)})
+
+      assert create["name"] == "stack"
+      assert create["description"] == "a description"
+      assert create["featured"]
+
+      [%{"provider" => "AWS", "bundles" => [bundle]}] = create["collections"]
+      assert bundle["recipe"]["id"] == recipe.id
+    end
+  end
+
+  describe "deleteStack" do
+    test "a creator can delete their stack" do
+      user = insert(:user)
+      stack = insert(:stack, creator: user)
+
+      {:ok, %{data: %{"deleteStack" => del}}} = run_query("""
+        mutation Delete($name: String!) {
+          deleteStack(name: $name) { id }
+        }
+      """, %{"name" => stack.name}, %{current_user: user})
+
+      assert del["id"] == stack.id
+      refute refetch(stack)
+    end
+  end
 end

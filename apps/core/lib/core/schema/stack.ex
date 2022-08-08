@@ -15,8 +15,14 @@ defmodule Core.Schema.Stack do
     timestamps()
   end
 
+  def featured(query \\ __MODULE__), do: from(s in query, where: s.featured)
+
   def for_account(query \\ __MODULE__, account_id) do
     from(s in query, where: s.account_id == ^account_id)
+  end
+
+  def ordered(query \\ __MODULE__, order \\ [asc: :name]) do
+    from(s in query, order_by: ^order)
   end
 
   @valid ~w(name description featured)a

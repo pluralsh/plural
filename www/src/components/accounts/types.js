@@ -5,3 +5,11 @@ export const PermissionTypes = {
   USERS: 'can manage users and groups',
   SUPPORT: 'can offer incident response for these repositories',
 }
+
+export const Permissions = {
+  INSTALL: 'INSTALL',
+  PUBLISH: 'PUBLISH',
+  BILLING: 'BILLING',
+  USERS: 'USERS',
+  SUPPORT: 'SUPPORT',
+}

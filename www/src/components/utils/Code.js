@@ -1,75 +1,68 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { Box, Div } from 'honorable'
 import {
-  Box, Div, Flex, P,
-} from 'honorable'
-import { CopyIcon } from 'pluralsh-design-system'
+  Button, Card, CheckIcon, CopyIcon,
+} from 'pluralsh-design-system'
 
 import Highlight from './Highlight'
 
 function Code({ language, children, ...props }) {
   const [copied, setCopied] = useState(false)
+  const [hover, setHover] = useState(false)
 
   if (typeof children !== 'string') throw new Error('Code component expects a string as its children')
+
+  useEffect(() => {
+    if (copied) {
+      const timeout = setTimeout(() => {
+        setCopied(false)
+      }, 1000)
+
+      return () => clearTimeout(timeout)
+    }
+  }, [copied])
 
   function handleCopy() {
     window.navigator.clipboard.writeText(children).then(() => {
       setCopied(true)
-      setTimeout(() => {
-        setCopied(false)
-      }, 1500)
     })
   }
 
-  function renderContent() {
-    return (
-      <Box
-        py={1}
-        px={0.5}
-      >
-        <Highlight language={language}>
-          {children}
-        </Highlight>
-      </Box>
-    )
-  }
-
   return (
-    <Div
-      {...props}
-      border="1px solid border"
+    <Card
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
     >
-      <Flex
-        py={0.25}
-        pl={1}
-        align="center"
-        justify="flex-end"
-        backgroundColor="fill-two"
+      <Box
+        {...props}
+        position="relative"
+        padding={null}
       >
-        <P body3>
-          {copied ? 'copied!' : `Language: ${language}`}
-        </P>
-        <Flex
-          mx={0.5}
-          p={0.5}
-          align="center"
-          justify="center"
-          hoverIndicator="fill-one"
-          borderRadius={1000}
-          cursor="pointer"
-        >
-          <CopyIcon
+        {hover && (
+          <Button
+            position="absolute"
+            right="24px"
+            top="24px"
+            tertiary
+            backgroundColor="fill-three"
+            _hover={{ backgroundColor: 'fill-one-hover' }}
+            startIcon={copied ? <CheckIcon /> : <CopyIcon />}
             onClick={handleCopy}
-          />
-        </Flex>
-      </Flex>
-      <Div
-        borderTop="1px solid border"
-        backgroundColor="fill-one"
-        overflowX="auto"
-      >
-        {renderContent()}
-      </Div>
-    </Div>
+          >
+            {copied ? 'Copied' : 'Copy'}
+          </Button>
+        )}
+        <Div
+          overflowX="auto"
+          padding="large"
+        >
+          <Highlight language={language}>
+            {children}
+          </Highlight>
+        </Div>
+      </Box>
+    </Card>
+
   )
 }
 

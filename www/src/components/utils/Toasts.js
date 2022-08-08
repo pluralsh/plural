@@ -29,8 +29,8 @@ function Toast({ children, onClose = () => {}, ...banner }) {
     >
       <Banner
         {...banner}
-        marginRight="102px"
         marginBottom="20px"
+        marginRight="100px"
         onClose={close}
       >
         {children}

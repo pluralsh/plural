@@ -1,6 +1,6 @@
 import { useContext, useEffect } from 'react'
 import moment from 'moment'
-import { Flex } from 'honorable'
+import { Div, Flex, Span } from 'honorable'
 
 import {
   Chip, PageTitle, StatusIpIcon, StatusOkIcon,
@@ -33,14 +33,14 @@ function progress(cursor) {
 
 function statusAttributes({ status, cursor }) {
   switch (status) {
-  case 'QUEUED':
-    return { icon: <StatusIpIcon />, text: 'queued', severity: 'neutral' }
-  case 'FINISHED':
-    return { icon: <StatusOkIcon />, text: 'finished', severity: 'success' }
-  case 'RUNNING':
-    return { loading: true, text: `${progress(cursor)}% completed`, severity: 'info' }
-  default:
-    return {}
+    case 'QUEUED':
+      return { icon: <StatusIpIcon/>, text: 'queued', severity: 'neutral' }
+    case 'FINISHED':
+      return { icon: <StatusOkIcon/>, text: 'finished', severity: 'success' }
+    case 'RUNNING':
+      return { loading: true, text: `${progress(cursor)}% completed`, severity: 'info' }
+    default:
+      return {}
   }
 }
 
@@ -63,7 +63,7 @@ function Rollout({ rollout, last }) {
       <TableData>{rollout.event}</TableData>
       <TableData>{rollout.count} clusters</TableData>
       <TableData>{rollout.heartbeat ? moment(rollout.heartbeat).fromNow() : 'pending'}</TableData>
-      <TableData><Status rollout={rollout} /></TableData>
+      <TableData><Status rollout={rollout}/></TableData>
     </TableRow>
   )
 }
@@ -81,7 +81,16 @@ function RepositoryDeployments() {
   useEffect(() => subscribeToMore({
     document: ROLLOUT_SUB,
     variables: { repositoryId: id },
-    updateQuery: (prev, { subscriptionData: { data: { rolloutDelta: { delta, payload } } } }) => (delta === 'CREATE' ? appendConnection(prev, payload, 'rollouts') : prev),
+    updateQuery: (prev, {
+      subscriptionData: {
+        data: {
+          rolloutDelta: {
+            delta,
+            payload
+          }
+        }
+      }
+    }) => (delta === 'CREATE' ? appendConnection(prev, payload, 'rollouts') : prev),
   }), [id, subscribeToMore])
 
   const len = rollouts.length
@@ -92,7 +101,7 @@ function RepositoryDeployments() {
         pt={2}
         justify="center"
       >
-        <LoopingLogo />
+        <LoopingLogo/>
       </Flex>
     )
   }
@@ -107,31 +116,39 @@ function RepositoryDeployments() {
         heading="Deployments"
         paddingTop="medium"
       />
-      <Table
-        headers={['Event', 'Clusters Updated', 'Last Ping', 'Status']}
-        sizes={['27.5%', '27.5%', '27.5%', '17.5%']}
-        background="fill-one"
-        width="100%"
-        height="calc(100% - 16px)"
+      <Div
+        fill
+        marginTop="medium"
+        marginBottom="medium"
       >
-        <InfiniteScroller
-          pb={4}
-          loading={loadingRollouts}
-          hasMore={hasMoreRollouts}
-          loadMore={fetchMoreRollouts}
-          // Allow for scrolling in a flexbox layout
-          flexGrow={1}
-          height={0}
-        >
-          {rollouts.map((rollout, i) => (
-            <Rollout
-              last={i === len - 1}
-              key={rollout.id}
-              rollout={rollout}
-            />
-          ))}
-        </InfiniteScroller>
-      </Table>
+        {rollouts?.length ? (
+          <Table
+            headers={['Event', 'Clusters Updated', 'Last Ping', 'Status']}
+            sizes={['27.5%', '27.5%', '27.5%', '17.5%']}
+            background="fill-one"
+            width="100%"
+            height="calc(100% - 16px)"
+          >
+            <InfiniteScroller
+              pb={4}
+              loading={loadingRollouts}
+              hasMore={hasMoreRollouts}
+              loadMore={fetchMoreRollouts}
+              // Allow for scrolling in a flexbox layout
+              flexGrow={1}
+              height={0}
+            >
+              {rollouts.map((rollout, i) => (
+                <Rollout
+                  last={i === len - 1}
+                  key={rollout.id}
+                  rollout={rollout}
+                />
+              ))}
+            </InfiniteScroller>
+          </Table>
+        ) : <Span>This repository does not have any deployments yet.</Span>}
+      </Div>
     </Flex>
   )
 }

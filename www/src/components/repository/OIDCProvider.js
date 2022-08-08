@@ -1,18 +1,11 @@
-import {
-  useCallback, useContext, useEffect, useRef, useState,
-} from 'react'
+import { useCallback, useContext, useEffect, useRef, useState, } from 'react'
 import { Box } from 'grommet'
 import { useMutation } from '@apollo/client'
 import { Button, Flex, P } from 'honorable'
-import {
-  CheckIcon, ContentCard, FormField, Input, PageTitle, Token,
-} from 'pluralsh-design-system'
+import { CheckIcon, ContentCard, FormField, Input, PageTitle, Token, } from 'pluralsh-design-system'
 import { useNavigate, useParams } from 'react-router-dom'
-
 import { CopyToClipboard } from 'react-copy-to-clipboard/src'
-
 import isEqual from 'lodash/isEqual'
-
 import { fetchGroups, fetchUsers } from '../accounts/Typeaheads'
 import { GqlError } from '../utils/Alert'
 import { deepUpdate, updateCache } from '../../utils/graphql'
@@ -88,14 +81,14 @@ function UrlsInput({ uriFormat = '', urls, setUrls }) {
 }
 
 export function ProviderForm({
-  attributes,
-  setAttributes,
-  bindings,
-  setBindings,
-  repository,
-  onSave,
-  loading,
-}) {
+                               attributes,
+                               setAttributes,
+                               bindings,
+                               setBindings,
+                               repository,
+                               onSave,
+                               loading,
+                             }) {
   const settings = repository.oauthSettings || {}
   const [toast, setToast] = useState(null)
   const [dirty, setDirty] = useState(false)
@@ -223,7 +216,7 @@ export function ProviderForm({
             color="text-xlight"
           >
             <P body2>Saved</P>
-            <CheckIcon size={12} />
+            <CheckIcon size={12}/>
           </Flex>
         )}
       </Flex>
@@ -235,8 +228,8 @@ export function ProviderForm({
 }
 
 export function CreateProvider({
-  installation,
-}) {
+                                 installation,
+                               }) {
   const settings = installation.repository.oauthSettings || {}
   const [attributes, setAttributes] = useState({
     redirectUris: [],
@@ -281,8 +274,8 @@ export function CreateProvider({
 }
 
 export function UpdateProvider({
-  installation,
-}) {
+                                 installation,
+                               }) {
   const provider = installation.oidcProvider
   const [attributes, setAttributes] = useState({
     redirectUris: provider.redirectUris,
@@ -294,7 +287,10 @@ export function UpdateProvider({
   const [mutation, { loading, error }] = useMutation(UPDATE_PROVIDER, {
     variables: {
       id: installation.id,
-      attributes: { ...{ redirectUris: attributes.redirectUris, authMethod: attributes.authMethod }, bindings: bindings.map(sanitize) },
+      attributes: {
+        ...{ redirectUris: attributes.redirectUris, authMethod: attributes.authMethod },
+        bindings: bindings.map(sanitize)
+      },
     },
   })
 
@@ -333,7 +329,7 @@ export function OIDCProvider() {
   }, [id, installation, navigate])
 
   if (!installation) return null
-  if (installation.oidcProvider) return <UpdateProvider installation={installation} />
+  if (installation.oidcProvider) return <UpdateProvider installation={installation}/>
 
-  return <CreateProvider installation={installation} />
+  return <CreateProvider installation={installation}/>
 }

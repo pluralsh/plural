@@ -1,5 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client'
+import { EmptyState } from 'components/utils/EmptyState'
 import { Box } from 'grommet'
+import { isEmpty } from 'lodash'
 import { Input, SearchIcon } from 'pluralsh-design-system'
 import { useContext, useState } from 'react'
 
@@ -7,6 +9,7 @@ import { extendConnection, removeConnection, updateCache } from '../../utils/gra
 import { Placeholder } from '../accounts/Audits'
 import { canEdit } from '../accounts/EditAccount'
 import { DELETE_ROLE, ROLES_Q } from '../accounts/queries'
+import { Permissions } from '../accounts/types'
 import { CurrentUserContext } from '../login/CurrentUser'
 import { DeleteIcon } from '../profile/Icon'
 import { ListItem } from '../profile/ListItem'
@@ -18,6 +21,7 @@ import { Confirm } from './Confirm'
 
 import { Info } from './Info'
 import { CreateRole, UpdateRole } from './Role'
+import { hasRbac } from './utils'
 
 function Header({ q, setQ }) {
   return (
@@ -53,7 +57,7 @@ function Header({ q, setQ }) {
 function Role({ role, q }) {
   const [confirm, setConfirm] = useState(false)
   const { account, ...me } = useContext(CurrentUserContext)
-  const editable = canEdit(me, account)
+  const editable = canEdit(me, account) || hasRbac(me, Permissions.USERS)
   const [mutation, { loading, error }] = useMutation(DELETE_ROLE, {
     variables: { id: role.id },
     update: (cache, { data }) => updateCache(cache, {
@@ -115,29 +119,35 @@ function RolesInner({ q }) {
       fill
       pad={{ bottom: 'small' }}
     >
-      <StandardScroller
-        listRef={listRef}
-        setListRef={setListRef}
-        items={edges}
-        mapper={({ node: role }, { prev, next }) => (
-          <ListItem
-            first={!prev.node}
-            last={!next.node}
-          >
-            <Role
-              role={role}
-              q={q}
-            />
-          </ListItem>
-        )}
-        loadNextPage={() => pageInfo.hasNextPage && fetchMore({
-          variables: { cursor: pageInfo.endCursor },
-          updateQuery: (prev, { fetchMoreResult: { roles } }) => extendConnection(prev, roles, 'roles'),
-        })}
-        hasNextPage={pageInfo.hasNextPage}
-        loading={loading}
-        placeholder={Placeholder}
-      />
+      {edges?.length ? (
+        <StandardScroller
+          listRef={listRef}
+          setListRef={setListRef}
+          items={edges}
+          mapper={({ node: role }, { prev, next }) => (
+            <ListItem
+              first={!prev.node}
+              last={!next.node}
+            >
+              <Role
+                role={role}
+                q={q}
+              />
+            </ListItem>
+          )}
+          loadNextPage={() => pageInfo.hasNextPage && fetchMore({
+            variables: { cursor: pageInfo.endCursor },
+            updateQuery: (prev, { fetchMoreResult: { roles } }) => extendConnection(prev, roles, 'roles'),
+          })}
+          hasNextPage={pageInfo.hasNextPage}
+          loading={loading}
+          placeholder={Placeholder}
+        />
+      ) : (
+        <EmptyState message={isEmpty(q) ? "Looks like you don't have any roles yet." : `No roles found for ${q}`}>
+          <CreateRole q={q} />
+        </EmptyState>
+      )}
     </Box>
   )
 }

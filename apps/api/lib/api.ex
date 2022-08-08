@@ -12,7 +12,7 @@ defmodule Api do
     |> Base.encode16(case: :lower)
   end
 
-  def gql_endpoint(), do: Core.url("/gql")
+  def graphql_endpoint(), do: Core.url("/gql")
 
   def socket_endpoint(), do: "wss://#{Core.conf(:hostname)}/socket"
 end

@@ -39,7 +39,7 @@ export function PackageBackButton({ link }) {
   return (
     <Box
       direction="row"
-      pad={{ horizontal: 'medium', top: 'medium', bottom: 'small' }}
+      pad={{ horizontal: '32px', top: 'medium', bottom: 'small' }}
     >
       <A
         as={Link}
@@ -133,7 +133,7 @@ export function PackageVersionPicker({
       </Select>
       <Box
         direction="row"
-        gap="xxsmall"
+        gap="8px"
       >
         {version?.tags.map(({ tag }, i) => <Chip key={i}><Span fontWeight="400">{tag}</Span></Chip>)}
       </Box>

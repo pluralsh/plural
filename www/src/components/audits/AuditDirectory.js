@@ -1,13 +1,10 @@
-import { Div, Flex } from 'honorable'
+import { ResponsiveLayoutContentContainer, ResponsiveLayoutSidenavContainer, ResponsiveLayoutSpacer } from 'components/layout/ResponsiveLayout'
+import { Flex } from 'honorable'
 import { Tab } from 'pluralsh-design-system'
 import { Link, Outlet, useLocation } from 'react-router-dom'
 
-import { Container } from '../utils/Container'
-
-import { SidebarTabs } from '../utils/SidebarTabs'
-
 const DIRECTORY = [
-  { path: '/audits/logs', label: 'Audit Logs' },
+  { path: '/audits/logs', label: 'Audit logs' },
   { path: '/audits/logins', label: 'Logins' },
   { path: '/audits/geo', label: 'Geodistribution' },
 ]
@@ -19,9 +16,13 @@ export function AuditDirectory() {
     <Flex
       height="100%"
       width="100%"
+      padding="16px"
       overflowY="hidden"
     >
-      <SidebarTabs>
+      <ResponsiveLayoutSidenavContainer
+        marginTop={90}
+        width={240}
+      >
         {DIRECTORY.map(({ label, path }) => (
           <Link
             key={label}
@@ -36,19 +37,10 @@ export function AuditDirectory() {
             </Tab>
           </Link>
         ))}
-      </SidebarTabs>
-      <Div
-        flexGrow={1}
-        py={1.5}
-        pr={1.5}
-        height="100%"
-        maxHeight="100%"
-        overflowY="auto"
-      >
-        <Container type="table">
-          <Outlet />
-        </Container>
-      </Div>
+      </ResponsiveLayoutSidenavContainer>
+      <ResponsiveLayoutSpacer />
+      <ResponsiveLayoutContentContainer paddingTop="large"><Outlet /></ResponsiveLayoutContentContainer>
+      <ResponsiveLayoutSpacer />
     </Flex>
   )
 }

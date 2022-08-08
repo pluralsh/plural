@@ -3,10 +3,9 @@ import { Flex, P } from 'honorable'
 import { PageTitle } from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
-
 import RepositoryDescriptionMarkdown from './RepositoryDescriptionMarkdown'
 
-function RepositoryDescription() {
+export default function RepositoryDescription() {
   const repository = useContext(RepositoryContext)
 
   return (
@@ -14,6 +13,7 @@ function RepositoryDescription() {
       direction="column"
       paddingRight="small"
       borderRadius="large"
+      color="text-light"
       position="relative"
       overflowY="hidden"
     >
@@ -26,16 +26,17 @@ function RepositoryDescription() {
         flexGrow={1}
         overflowY="auto"
         paddingBottom="xlarge"
+        marginTop="medium"
+        marginBottom="medium"
+        paddingRight="small"
       >
         {repository.readme ? (
           <RepositoryDescriptionMarkdown
             text={repository.readme}
             gitUrl={repository.git_url}
           />
-        ) : <P>No description available</P>}
+        ) : <P>This repository does not have a Readme yet.</P>}
       </Flex>
     </Flex>
   )
 }
-
-export default RepositoryDescription

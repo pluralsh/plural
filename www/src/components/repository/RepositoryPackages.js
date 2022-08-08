@@ -67,6 +67,7 @@ export default function RepositoryPackages() {
       <Flex
         mt={1}
         direction="column"
+        marginBottom="medium"
         flexGrow={1}
       >
         <Outlet context={[q, setQ]} />

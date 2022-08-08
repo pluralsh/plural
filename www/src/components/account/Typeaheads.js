@@ -1,16 +1,12 @@
 import { useCallback, useState } from 'react'
 import { useApolloClient } from '@apollo/client'
-
 import { Box, Text, TextInput } from 'grommet'
-
 import {
   FormField, PeopleIcon, PersonIcon, Token,
 } from 'pluralsh-design-system'
-
 import { Flex } from 'honorable'
 
 import Avatar from '../users/Avatar'
-
 import { SEARCH_GROUPS, SEARCH_USERS } from '../accounts/queries'
 
 export function fetchUsers(client, query, setSuggestions) {
@@ -165,7 +161,7 @@ export function BindingInput({
 }
 
 export function UserTypeahead({
-  users, setUsers, label, hint, children, background,
+  users, setUsers, label, hint, children,
 }) {
   const client = useApolloClient()
   const [suggestions, setSuggestions] = useState([])
@@ -189,7 +185,7 @@ export function UserTypeahead({
 }
 
 export function GroupTypeahead({
-  groups, setGroups, label, hint, children, background,
+  groups, setGroups, label, hint, children,
 }) {
   const client = useApolloClient()
   const [suggestions, setSuggestions] = useState([])

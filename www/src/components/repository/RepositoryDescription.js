@@ -3,6 +3,7 @@ import { Flex, P } from 'honorable'
 import { PageTitle } from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
+
 import RepositoryDescriptionMarkdown from './RepositoryDescriptionMarkdown'
 
 export default function RepositoryDescription() {

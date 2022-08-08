@@ -1,26 +1,19 @@
 import { useContext, useEffect } from 'react'
 import moment from 'moment'
 import { Div, Flex, Span } from 'honorable'
-
 import {
   Chip, PageTitle, StatusIpIcon, StatusOkIcon,
 } from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
-
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
-
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import InfiniteScroller from '../utils/InfiniteScroller'
-
 import { ROLLOUT_SUB } from '../clusters/queries'
 import { appendConnection } from '../../utils/graphql'
-
 import { Table, TableData, TableRow } from '../utils/Table'
 
 import { DEPLOYMENTS_QUERY } from './queries'
-
-import RepositoryHeader from './RepositoryHeader.tsx'
 
 // eslint-disable-next-line
 const MAX_UUID = 0xffffffffffffffffffffffffffffffff
@@ -33,14 +26,14 @@ function progress(cursor) {
 
 function statusAttributes({ status, cursor }) {
   switch (status) {
-    case 'QUEUED':
-      return { icon: <StatusIpIcon/>, text: 'queued', severity: 'neutral' }
-    case 'FINISHED':
-      return { icon: <StatusOkIcon/>, text: 'finished', severity: 'success' }
-    case 'RUNNING':
-      return { loading: true, text: `${progress(cursor)}% completed`, severity: 'info' }
-    default:
-      return {}
+  case 'QUEUED':
+    return { icon: <StatusIpIcon />, text: 'queued', severity: 'neutral' }
+  case 'FINISHED':
+    return { icon: <StatusOkIcon />, text: 'finished', severity: 'success' }
+  case 'RUNNING':
+    return { loading: true, text: `${progress(cursor)}% completed`, severity: 'info' }
+  default:
+    return {}
   }
 }
 
@@ -63,7 +56,7 @@ function Rollout({ rollout, last }) {
       <TableData>{rollout.event}</TableData>
       <TableData>{rollout.count} clusters</TableData>
       <TableData>{rollout.heartbeat ? moment(rollout.heartbeat).fromNow() : 'pending'}</TableData>
-      <TableData><Status rollout={rollout}/></TableData>
+      <TableData><Status rollout={rollout} /></TableData>
     </TableRow>
   )
 }
@@ -86,10 +79,10 @@ function RepositoryDeployments() {
         data: {
           rolloutDelta: {
             delta,
-            payload
-          }
-        }
-      }
+            payload,
+          },
+        },
+      },
     }) => (delta === 'CREATE' ? appendConnection(prev, payload, 'rollouts') : prev),
   }), [id, subscribeToMore])
 
@@ -101,7 +94,7 @@ function RepositoryDeployments() {
         pt={2}
         justify="center"
       >
-        <LoopingLogo/>
+        <LoopingLogo />
       </Flex>
     )
   }

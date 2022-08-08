@@ -38,10 +38,10 @@ import { XTermTheme } from '../../theme'
 import { TESTS_QUERY } from './queries'
 
 const statusAttrs = {
-  QUEUED: { severity: 'neutral', icon: <StatusIpIcon/> },
+  QUEUED: { severity: 'neutral', icon: <StatusIpIcon /> },
   RUNNING: { severity: 'info', loading: true },
-  SUCCEEDED: { severity: 'success', icon: <StatusOkIcon/> },
-  FAILED: { severity: 'error', icon: <ErrorIcon/> },
+  SUCCEEDED: { severity: 'success', icon: <StatusOkIcon /> },
+  FAILED: { severity: 'error', icon: <ErrorIcon /> },
 }
 
 function Status({ status }) {
@@ -135,7 +135,7 @@ function Test({ test, last, setTest }) {
       hoverIndicator="fill-one-hover"
       onClick={() => setTest(test)}
       cursor="pointer"
-      suffix={<ListIcon size={16}/>}
+      suffix={<ListIcon size={16} />}
     >
       <TableData>
         {test.promoteTag}
@@ -160,7 +160,7 @@ function Test({ test, last, setTest }) {
         </P>
       </TableData>
       <TableData>
-        <Status status={test.status}/>
+        <Status status={test.status} />
       </TableData>
     </TableRow>
   )
@@ -201,7 +201,7 @@ function TestStep({ step, test, last }) {
           >{moment(step.updatedAt || step.insertedAt).format('hh:mm a')}
           </P>
         </TableData>
-        <TableData><Status status={step.status}/></TableData>
+        <TableData><Status status={step.status} /></TableData>
       </TableRow>
       {open && (
         <TestLogs
@@ -233,7 +233,7 @@ function TestDetail({ test, setTest }) {
       >
         <Icon
           icon={(
-            <ArrowLeftIcon size={16}/>
+            <ArrowLeftIcon size={16} />
           )}
           onClick={() => setTest(null)}
         />
@@ -284,7 +284,7 @@ function RepositoryTests() {
         pt={2}
         justify="center"
       >
-        <LoopingLogo/>
+        <LoopingLogo />
       </Flex>
     )
   }

@@ -1,12 +1,22 @@
 defmodule Core.Services.Recipes do
   use Core.Services.Base
   import Core.Policies.Recipe
-  alias Core.Schema.{Recipe, RecipeSection, RecipeItem, Installation, Terraform, Chart, User}
+  alias Core.Schema.{Recipe, RecipeSection, RecipeItem, Installation, Terraform, Chart, User, Stack}
   alias Core.Services.{Repositories, Charts, Versions}
   alias Core.Services.Terraform, as: TfSvc
 
+  @type error :: {:error, term}
+  @type recipe_resp :: {:ok, Recipe.t} | error
+  @type stack_resp :: {:ok, Stack.t} | error
+
   @spec get!(binary) :: Recipe.t
   def get!(recipe_id), do: Core.Repo.get!(Recipe, recipe_id)
+
+  @spec get_stack!(binary) :: Stack.t
+  def get_stack!(name), do: Core.Repo.get_by!(Stack, name: name)
+
+  @spec get_stack(binary) :: Stack.t
+  def get_stack(name), do: Core.Repo.get_by(Stack, name: name)
 
   @spec get_by_name(binary, binary) :: Recipe.t | nil
   def get_by_name(name, repo_id),
@@ -21,7 +31,7 @@ defmodule Core.Services.Recipes do
 
   Fails if the user is not the publisher
   """
-  @spec create(map, binary, User.t) :: {:ok, Recipe.t} | {:error, term}
+  @spec create(map, binary, User.t) :: recipe_resp
   def create(%{sections: sections} = attrs, repository_id, user) do
     start_transaction()
     |> add_operation(:recipe, fn _ ->
@@ -36,9 +46,52 @@ defmodule Core.Services.Recipes do
   end
 
   @doc """
+  Creates a new stack in the given user's account.  Will appropriately dereference the associated recipes
+  """
+  @spec create_stack(map, User.t) :: stack_resp
+  def create_stack(%{collections: collections} = attrs, %User{id: id, account_id: aid}) do
+    collections = Enum.map(collections, fn %{bundles: bundles} = coll ->
+      %{coll | bundles: indexed_recipes(bundles, :recipe_id)}
+    end)
+
+    %Stack{account_id: aid, id: attrs[:id], creator_id: id}
+    |> Stack.changeset(Map.put(attrs, :collections, collections))
+    |> Core.Repo.insert()
+  end
+
+  @doc """
+  Upserts a stack by name
+  """
+  @spec upsert_stack(map, binary, User.t) :: stack_resp
+  def upsert_stack(attrs, name, user) do
+    start_transaction()
+    |> add_operation(:wipe, fn _ ->
+      case get_stack(name) do
+        %Stack{} = stack -> Core.Repo.delete(stack)
+        _ -> {:ok, %{id: nil}}
+      end
+    end)
+    |> add_operation(:create, fn %{wipe: %{id: id}} ->
+      Map.merge(attrs, %{id: id, name: name})
+      |> create_stack(user)
+    end)
+    |> execute(extract: :create)
+  end
+
+  @doc """
+  Deletes the given stack if the user was the creator
+  """
+  @spec delete_stack(binary, User.t) :: stack_resp
+  def delete_stack(name, %User{} = user) do
+    get_stack!(name)
+    |> allow(user, :delete)
+    |> when_ok(:delete)
+  end
+
+  @doc """
   Deletes the recipe.  Fails if the user is not the publisher
   """
-  @spec delete(binary, User.t) :: {:ok, Recipe.t} | {:error, term}
+  @spec delete(binary, User.t) :: recipe_resp
   def delete(id, user) do
     get!(id)
     |> allow(user, :edit)
@@ -96,7 +149,7 @@ defmodule Core.Services.Recipes do
   Either creates a new recipe, or deletes the entire old recipe and
   recreates it.
   """
-  @spec upsert(map, binary, User.t) :: {:ok, Recipe.t} | {:error, term}
+  @spec upsert(map, binary, User.t) :: recipe_resp
   def upsert(%{name: name} = attrs, repo_id, user) do
     start_transaction()
     |> add_operation(:wipe, fn _ ->
@@ -114,6 +167,20 @@ defmodule Core.Services.Recipes do
 
   @recipe_preloads [recipe_sections: [:repository, [recipe_items: [:terraform, :chart]]]]
   @preloads [dependencies: [dependent_recipe: @recipe_preloads]] ++ @recipe_preloads
+
+  @doc """
+  Preloads a stack and all recipes for the given provider
+  """
+  @spec hydrate(Stack.t, atom) :: stack_resp
+  def hydrate(%Stack{} = stack, provider) do
+    stack = Core.Repo.preload(stack, [collections: [bundles: [recipe: @preloads]]])
+
+    Enum.find(stack.collections, & &1.provider == provider)
+    |> case do
+      %{bundles: bundles} -> {:ok, %{stack | bundles: Enum.map(bundles, &hydrate(&1.recipe))}}
+      _ -> {:error, "invalid provider"}
+    end
+  end
 
   @doc """
   Preloads a recipe, and properly topsorts the sections according to their
@@ -275,16 +342,17 @@ defmodule Core.Services.Recipes do
     end)
   end
 
-  defp build_dependencies(%{dependencies: [_ | _] = deps} = attrs) do
-    dependencies =
-      Enum.with_index(deps)
-      |> Enum.map(fn {%{repo: repo, name: recipe}, ind} ->
-        repo = Repositories.get_repository_by_name!(repo)
-        recipe = get_by_name!(recipe, repo.id)
-        %{dependent_recipe_id: recipe.id, index: ind}
-      end)
-    %{attrs | dependencies: dependencies}
+  defp indexed_recipes(list, key \\ :dependent_recipe_id) do
+    Enum.with_index(list)
+    |> Enum.map(fn {%{repo: repo, name: recipe}, ind} ->
+      repo = Repositories.get_repository_by_name!(repo)
+      recipe = get_by_name!(recipe, repo.id)
+      %{key => recipe.id, index: ind}
+    end)
   end
+
+  defp build_dependencies(%{dependencies: [_ | _] = deps} = attrs),
+    do: %{attrs | dependencies: indexed_recipes(deps)}
   defp build_dependencies(attrs), do: attrs
 
   defp build_items(transaction, section_key, repo, items) when is_list(items) do

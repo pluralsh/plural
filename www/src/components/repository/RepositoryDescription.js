@@ -27,7 +27,6 @@ export default function RepositoryDescription() {
         flexGrow={1}
         overflowY="auto"
         paddingBottom="xlarge"
-        marginTop="medium"
         marginBottom="medium"
         paddingRight="small"
       >

@@ -111,7 +111,6 @@ function RepositoryDeployments() {
       />
       <Div
         fill
-        marginTop="medium"
         marginBottom="medium"
       >
         {rollouts?.length ? (

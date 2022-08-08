@@ -110,6 +110,7 @@ function TagInput({
       >
         {items.map(t => (
           <Token
+            key={t}
             onClick={() => onRemove(t)}
             hue="lighter"
           >{t}

@@ -12,9 +12,9 @@ function Toast({ children, onClose = () => {}, ...banner }) {
 
   useEffect(() => {
     if (open) {
-      setTimeout(() => setOpen(false), closeTimeout)
+      setTimeout(() => close(), closeTimeout)
     }
-  }, [open])
+  }, [open, close, closeTimeout])
 
   if (!open) return null
 
@@ -24,8 +24,7 @@ function Toast({ children, onClose = () => {}, ...banner }) {
       marginRight="large"
       marginBottom="large"
       plain
-      onEsc={close}
-      onClickOutside={close}
+      modal={false}
     >
       <Banner
         {...banner}

@@ -69,13 +69,13 @@ function UrlsInput({ uriFormat = '', urls, setUrls }) {
       <Flex
         align="stretch"
         wrap="wrap"
+        gap="xxsmall"
       >
-        {urls.map((url, i) => (
-          // TODO: Update hue once design system change is merged
+        {urls.map(url => (
           <Token
             key={url}
-            marginLeft={i === 0 ? null : 'xsmall'}
             onClose={() => setUrls(urls.filter(u => u !== url))}
+            hue="lighter"
           >
             {url}
           </Token>

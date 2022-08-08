@@ -8,7 +8,6 @@ import {
 } from 'honorable'
 import { XTerm } from 'xterm-for-react'
 import { FitAddon } from 'xterm-addon-fit'
-
 import {
   ArrowLeftIcon,
   Chip,
@@ -21,18 +20,12 @@ import {
 } from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
-
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
-
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import InfiniteScroller from '../utils/InfiniteScroller'
-
 import { LOGS_SUB, TEST_LOGS } from '../repos/queries'
-
 import { Table, TableData, TableRow } from '../utils/Table'
-
 import { Icon } from '../profile/Icon'
-
 import { XTermTheme } from '../../theme'
 
 import { TESTS_QUERY } from './queries'
@@ -310,7 +303,6 @@ function RepositoryTests() {
       <Flex
         direction="column"
         flexGrow={1}
-        marginTop="medium"
         marginBottom="medium"
       >
         {tests?.length ? (

@@ -1,7 +1,9 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
 import { Button, Div, Span } from 'honorable'
-import { StatusOkIcon, ValidatedInput } from 'pluralsh-design-system'
+import {
+  ContentCard, PageTitle, StatusOkIcon, ValidatedInput,
+} from 'pluralsh-design-system'
 import { createElement, useContext, useState } from 'react'
 import { Password } from 'forge-core'
 
@@ -11,18 +13,18 @@ import { CurrentUserContext } from '../login/CurrentUser'
 import { METHOD_ICONS } from '../users/OauthEnabler'
 import { OAUTH_URLS, UPDATE_USER } from '../users/queries'
 
-import { Container } from '../utils/Container'
-
-import { Header } from './Header'
 import { LoginMethod as Method } from './types'
 
-function Section({
-  header, description, children, noHeader,
-}) {
+function Section({ header, description, children }) {
   return (
     <Box gap="small">
       <Box gap="2px">
-        {!noHeader && <Span fontWeight="bold">{header}</Span>}
+        <Span
+          body1
+          fontWeight="600"
+        >
+          {header}
+        </Span>
         {description && <Span color="text-light">{description}</Span>}
       </Box>
       {children}
@@ -41,8 +43,8 @@ function UpdatePassword({ cancel }) {
     <Box gap="small">
       <ValidatedInput
         width="100%"
-        label="Password"
-        placeholder="enter a new password"
+        label="New password"
+        placeholder="Enter new password"
         type="password"
         value={password}
         onChange={({ target: { value } }) => setPassword(value)}
@@ -50,8 +52,8 @@ function UpdatePassword({ cancel }) {
       />
       <ValidatedInput
         width="100%"
-        label="Confirm Password"
-        placeholder="reenter your password to confirm"
+        label="Confirm new password"
+        placeholder="Enter new password again"
         type="password"
         value={confirm}
         onChange={({ target: { value } }) => setConfirm(value)}
@@ -60,6 +62,7 @@ function UpdatePassword({ cancel }) {
       <Box
         direction="row"
         align="center"
+        justify="end"
         gap="small"
       >
         <Button
@@ -75,7 +78,7 @@ function UpdatePassword({ cancel }) {
           disabled={password.length < 8 || password !== confirm}
           onClick={mutation}
         >
-          Update Password
+          Update password
         </Button>
       </Box>
     </Box>
@@ -121,8 +124,9 @@ function LoginMethods() {
 
   return (
     <Box gap="small">
-      {data.oauthUrls.map(({ provider, authorizeUrl }) => (
+      {data.oauthUrls.map(({ provider, authorizeUrl }, i) => (
         <LoginMethod
+          key={i}
           icon={createElement(METHOD_ICONS[provider], { size: '20px', color: provider === Method.GITHUB ? 'white' : 'plain' })}
           active={me.loginMethod === provider}
           name={`Login with ${provider.toLowerCase()}`}
@@ -151,38 +155,34 @@ export function Security() {
   const [pass, setPass] = useState(false)
 
   return (
-    <Container type="form">
-      <Box
-        gap="medium"
-        fill
-      >
-        <Header
-          header="Security & Privacy"
-          description="Manage how you log in to your account"
-        />
-        <Section
-          header="Password"
-          noHeader={pass}
+    <Box fill>
+      <PageTitle heading="Security" />
+      <ContentCard>
+        <Box
+          gap="medium"
+          fill
         >
-          {!pass && (
-            <Div>
-              <Button
-                secondary
-                onClick={() => setPass(true)}
-              >
-                Change Password
-              </Button>
-            </Div>
-          )}
-          {pass && <UpdatePassword cancel={() => setPass(false)} />}
-        </Section>
-        <Section
-          header="Login methods"
-          description="Change the method you use to log in"
-        >
-          <LoginMethods />
-        </Section>
-      </Box>
-    </Container>
+          <Section header="Password">
+            {!pass && (
+              <Div>
+                <Button
+                  secondary
+                  onClick={() => setPass(true)}
+                >
+                  Change password
+                </Button>
+              </Div>
+            )}
+            {pass && <UpdatePassword cancel={() => setPass(false)} />}
+          </Section>
+          <Section
+            header="Login methods"
+            description="Choose one method to login with."
+          >
+            <LoginMethods />
+          </Section>
+        </Box>
+      </ContentCard>
+    </Box>
   )
 }

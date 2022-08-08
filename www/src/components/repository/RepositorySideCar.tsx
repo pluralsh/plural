@@ -27,8 +27,7 @@ function InstalledActions({ installation, ...props }: any) {
         {...props}
       >
         <InferredConsoleButton
-          primary
-          secondary={false}
+          secondary
           text="Console"
           flexGrow={1}
         />

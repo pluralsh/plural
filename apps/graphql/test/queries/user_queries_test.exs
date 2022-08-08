@@ -5,18 +5,21 @@ defmodule GraphQl.UserQueriesTest do
   describe "me" do
     test "It will return the current user" do
       user = insert(:user)
+      insert(:role_binding, user: user, group_id: nil)
 
       {:ok, %{data: %{"me" => me}}} = run_query("""
         query {
           me {
             id
             name
+            boundRoles { id }
           }
         }
-      """, %{}, %{current_user: user})
+      """, %{}, %{current_user: Core.Services.Rbac.preload(user)})
 
       assert me["id"] == user.id
       assert me["name"] == user.name
+      assert length(me["boundRoles"]) == 1
     end
   end
 

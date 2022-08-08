@@ -13,6 +13,10 @@ import Highlight from 'react-highlight.js'
 
 import { A, Flex } from 'honorable'
 
+import {
+  ResponsiveLayoutContentContainer, ResponsiveLayoutSidecarContainer, ResponsiveLayoutSidenavContainer, ResponsiveLayoutSpacer,
+} from 'components/layout/ResponsiveLayout'
+
 import { PluralConfigurationContext } from '../login/CurrentUser'
 
 import {
@@ -40,9 +44,11 @@ function ChartInfo({ version: { helm, insertedAt } }) {
             <Box>
               <A
                 inline
-                as={Link}
                 key={l}
-                to={l}
+                href={l}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ wordWrap: 'break-word' }}
               >
                 {l}
               </A>
@@ -174,23 +180,22 @@ export default function Chart() {
       <ScrollableContainer>
         <PackageBackButton link={`/repository/${chart.repository.id}/packages/helm`} />
         <Box
-          pad="medium"
+          pad="16px"
           direction="row"
         >
-          <Box
-            direction="column"
-            style={{ minWidth: '240px', maxWidth: '240px' }}
-          >
-            <PackageHeader
-              name={currentVersion.chart.name}
-              icon={currentVersion.chart.icon || DEFAULT_CHART_ICON}
-            />
-            <PackageVersionPicker
-              edges={edges}
-              installed={chartInst}
-              version={version || currentVersion}
-              setVersion={setVersion}
-            />
+          <ResponsiveLayoutSidenavContainer>
+            <Box pad={{ left: '16px' }}>
+              <PackageHeader
+                name={currentVersion.chart.name}
+                icon={currentVersion.chart.icon || DEFAULT_CHART_ICON}
+              />
+              <PackageVersionPicker
+                edges={edges}
+                installed={chartInst}
+                version={version || currentVersion}
+                setVersion={setVersion}
+              />
+            </Box>
             <Tab
               vertical
               onClick={() => navigate(`/charts/${chart.id}`)}
@@ -239,32 +244,32 @@ export default function Chart() {
                 Update queue
               </Tab>
             ))}
-
-          </Box>
-          <Box
-            fill
-            pad={{ horizontal: '32px' }}
-          >
+          </ResponsiveLayoutSidenavContainer>
+          <ResponsiveLayoutSpacer />
+          <ResponsiveLayoutContentContainer>
             <Outlet context={{ helmChart: chart, currentHelmChart: currentVersion }} />
-          </Box>
-          <Box
-            style={{ minWidth: '200px', maxWidth: '200px' }}
-            direction="column"
-            gap="small"
-          >
-            <Box height="54px">
-              {chartInst?.version?.id !== currentVersion.id && repository.installation && (
-                <ChartInstaller
-                  chartInstallation={chartInst}
-                  installation={repository.installation}
-                  versionId={chartInst?.version?.id}
-                  chartId={chart.id}
-                />
-              )}
+          </ResponsiveLayoutContentContainer>
+          <ResponsiveLayoutSidecarContainer>
+            <Box
+              style={{ minWidth: '200px', maxWidth: '200px' }}
+              direction="column"
+              gap="small"
+            >
+              <Box height="54px">
+                {chartInst?.version?.id !== currentVersion.id && repository.installation && (
+                  <ChartInstaller
+                    chartInstallation={chartInst}
+                    installation={repository.installation}
+                    versionId={chartInst?.version?.id}
+                    chartId={chart.id}
+                  />
+                )}
+              </Box>
+              <ChartInfo version={currentVersion} />
+              <ImageDependencies version={currentVersion} />
             </Box>
-            <ChartInfo version={currentVersion} />
-            <ImageDependencies version={currentVersion} />
-          </Box>
+          </ResponsiveLayoutSidecarContainer>
+          <ResponsiveLayoutSpacer />
         </Box>
       </ScrollableContainer>
     </Box>

@@ -17,6 +17,7 @@ function Highlight({ language, children }) {
       margin="0"
       padding="0"
       background="none"
+      fontFamily="Monument Mono, monospace"
       className={(language && `language-${language}`) || 'nohighlight'}
       ref={codeRef}
     >

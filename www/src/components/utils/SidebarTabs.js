@@ -11,7 +11,6 @@ export function SidebarTabs({ width = 250, children }) {
       direction="column"
     >
       <Div
-        pt={1}
         borderRight="1px solid border"
       />
       { children }

@@ -1,24 +1,19 @@
 import { useContext, useEffect } from 'react'
 import moment from 'moment'
-import { Flex } from 'honorable'
-
-import { Chip, StatusIpIcon, StatusOkIcon } from 'pluralsh-design-system'
+import { Div, Flex, Span } from 'honorable'
+import {
+  Chip, PageTitle, StatusIpIcon, StatusOkIcon,
+} from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
-
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
-
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import InfiniteScroller from '../utils/InfiniteScroller'
-
 import { ROLLOUT_SUB } from '../clusters/queries'
 import { appendConnection } from '../../utils/graphql'
-
 import { Table, TableData, TableRow } from '../utils/Table'
 
 import { DEPLOYMENTS_QUERY } from './queries'
-
-import RepositoryHeader from './RepositoryHeader.tsx'
 
 // eslint-disable-next-line
 const MAX_UUID = 0xffffffffffffffffffffffffffffffff
@@ -79,7 +74,16 @@ function RepositoryDeployments() {
   useEffect(() => subscribeToMore({
     document: ROLLOUT_SUB,
     variables: { repositoryId: id },
-    updateQuery: (prev, { subscriptionData: { data: { rolloutDelta: { delta, payload } } } }) => (delta === 'CREATE' ? appendConnection(prev, payload, 'rollouts') : prev),
+    updateQuery: (prev, {
+      subscriptionData: {
+        data: {
+          rolloutDelta: {
+            delta,
+            payload,
+          },
+        },
+      },
+    }) => (delta === 'CREATE' ? appendConnection(prev, payload, 'rollouts') : prev),
   }), [id, subscribeToMore])
 
   const len = rollouts.length
@@ -101,32 +105,42 @@ function RepositoryDeployments() {
       maxHeight="100%"
       direction="column"
     >
-      <RepositoryHeader>Deployments</RepositoryHeader>
-      <Table
-        headers={['Event', 'Clusters Updated', 'Last Ping', 'Status']}
-        sizes={['27.5%', '27.5%', '27.5%', '17.5%']}
-        background="fill-one"
-        width="100%"
-        height="calc(100% - 16px)"
+      <PageTitle
+        heading="Deployments"
+        paddingTop="medium"
+      />
+      <Div
+        fill
+        marginBottom="medium"
       >
-        <InfiniteScroller
-          pb={4}
-          loading={loadingRollouts}
-          hasMore={hasMoreRollouts}
-          loadMore={fetchMoreRollouts}
-          // Allow for scrolling in a flexbox layout
-          flexGrow={1}
-          height={0}
-        >
-          {rollouts.map((rollout, i) => (
-            <Rollout
-              last={i === len - 1}
-              key={rollout.id}
-              rollout={rollout}
-            />
-          ))}
-        </InfiniteScroller>
-      </Table>
+        {rollouts?.length ? (
+          <Table
+            headers={['Event', 'Clusters Updated', 'Last Ping', 'Status']}
+            sizes={['27.5%', '27.5%', '27.5%', '17.5%']}
+            background="fill-one"
+            width="100%"
+            height="calc(100% - 16px)"
+          >
+            <InfiniteScroller
+              pb={4}
+              loading={loadingRollouts}
+              hasMore={hasMoreRollouts}
+              loadMore={fetchMoreRollouts}
+              // Allow for scrolling in a flexbox layout
+              flexGrow={1}
+              height={0}
+            >
+              {rollouts.map((rollout, i) => (
+                <Rollout
+                  last={i === len - 1}
+                  key={rollout.id}
+                  rollout={rollout}
+                />
+              ))}
+            </InfiniteScroller>
+          </Table>
+        ) : <Span>This repository does not have any deployments yet.</Span>}
+      </Div>
     </Flex>
   )
 }

@@ -36,6 +36,7 @@ export function ResponsiveLayoutContentContainer(props: any) {
       flexShrink={1}
       height="100%"
       maxHeight="100%"
+      width={896}
       maxWidth-desktopLarge-up={896}
       width-desktopLarge-up={896}
       overflowY="auto"

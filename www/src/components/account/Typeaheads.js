@@ -1,16 +1,12 @@
 import { useCallback, useState } from 'react'
 import { useApolloClient } from '@apollo/client'
-
 import { Box, Text, TextInput } from 'grommet'
-
 import {
   FormField, PeopleIcon, PersonIcon, Token,
 } from 'pluralsh-design-system'
-
 import { Flex } from 'honorable'
 
 import Avatar from '../users/Avatar'
-
 import { SEARCH_GROUPS, SEARCH_USERS } from '../accounts/queries'
 
 export function fetchUsers(client, query, setSuggestions) {
@@ -76,7 +72,7 @@ function groupSuggestion(group) {
 }
 
 function TagInput({
-  placeholder, label, hint, suggestions, items, icon, onRemove, onAdd, width, onChange, background,
+  placeholder, label, hint, suggestions, items, icon, onRemove, onAdd, width, onChange,
 }) {
   const [value, setValue] = useState('')
 
@@ -114,8 +110,9 @@ function TagInput({
       >
         {items.map(t => (
           <Token
+            key={t}
             onClick={() => onRemove(t)}
-            backgroundColor={background || 'fill-one'}
+            hue="lighter"
           >{t}
           </Token>
         ))}
@@ -130,8 +127,8 @@ const ICONS = {
 }
 
 const TEXT = {
-  user: { label: 'User Bindings', placeholder: 'search for users to add' },
-  group: { label: 'Group Bindings', placeholder: 'search for groups to add' },
+  user: { label: 'User bindings', placeholder: 'Search for user' },
+  group: { label: 'Group bindings', placeholder: 'Search for group' },
 }
 
 const FETCHER = {
@@ -140,11 +137,10 @@ const FETCHER = {
 }
 
 export function BindingInput({
-  type, fetcher, bindings, remove, add, hint, background,
+  type, fetcher, bindings, remove, add, hint, placeholder = TEXT[type]?.placeholder, label = TEXT[type]?.label,
 }) {
   const client = useApolloClient()
   const [suggestions, setSuggestions] = useState([])
-  const { placeholder, label } = TEXT[type]
   const fetch = fetcher || FETCHER[type]
 
   return (
@@ -152,14 +148,13 @@ export function BindingInput({
       noborder
       placeholder={placeholder}
       hint={hint}
-      icon={ICONS[type]}
+      icon={type ? ICONS[type] : null}
       label={label}
       round="xsmall"
       width="100%"
       suggestions={suggestions}
       items={bindings}
       onRemove={remove}
-      background={background}
       onAdd={({ value }) => add(value)}
       onChange={({ target: { value } }) => fetch(client, value, setSuggestions)}
     />
@@ -167,7 +162,7 @@ export function BindingInput({
 }
 
 export function UserTypeahead({
-  users, setUsers, label, hint, children, background,
+  users, setUsers, label, hint, children,
 }) {
   const client = useApolloClient()
   const [suggestions, setSuggestions] = useState([])
@@ -182,7 +177,6 @@ export function UserTypeahead({
       noborder
       suggestions={suggestions}
       items={users.map(u => u.email)}
-      background={background}
       onRemove={email => setUsers(users.filter(u => u.email !== email))}
       onAdd={({ value }) => setUsers([value, ...users])}
       onChange={({ target: { value } }) => fetchUsers(client, value, setSuggestions)}
@@ -192,7 +186,7 @@ export function UserTypeahead({
 }
 
 export function GroupTypeahead({
-  groups, setGroups, label, hint, children, background,
+  groups, setGroups, label, hint, children,
 }) {
   const client = useApolloClient()
   const [suggestions, setSuggestions] = useState([])
@@ -206,7 +200,6 @@ export function GroupTypeahead({
       suggestions={suggestions}
       items={groups.map(u => u.name)}
       onRemove={name => setGroups(groups.filter(u => u.name !== name))}
-      background={background}
       onAdd={({ value }) => setGroups([value, ...groups])}
       onChange={({ target: { value } }) => fetchGroups(client, value, setSuggestions)}
       button={children}

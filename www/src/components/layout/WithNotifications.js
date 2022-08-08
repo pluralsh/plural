@@ -29,7 +29,7 @@ export function NotificationsPanel({ closePanel }) {
 
   if (!notifications.length) {
     return (
-      <P>
+      <P paddingHorizontal="medium">
         You do not have any notifications yet.
       </P>
     )

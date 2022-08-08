@@ -10,6 +10,7 @@ import { fetchToken, setPreviousUserData, setToken } from '../../helpers/authent
 
 import { canEdit } from '../accounts/EditAccount'
 import { EDIT_USER, IMPERSONATE_SERVICE_ACCOUNT } from '../accounts/queries'
+import { Permissions } from '../accounts/types'
 import { CurrentUserContext } from '../login/CurrentUser'
 
 import { Provider } from '../repos/misc'
@@ -20,6 +21,7 @@ import { Confirm } from './Confirm'
 import { EditServiceAccount } from './CreateServiceAccount'
 
 import { MoreMenu } from './MoreMenu'
+import { hasRbac } from './utils'
 
 export function UserInfo({ user: { email, name, avatar }, ...box }) {
   return (
@@ -99,7 +101,9 @@ function UserEdit({ user, update }) {
 
 export function User({ user, update }) {
   const { account, ...me } = useContext(CurrentUserContext)
-  const editable = canEdit(me, account)
+
+  console.log(me)
+  const editable = canEdit(me, account) || hasRbac(me, Permissions.USERS)
 
   return (
     <Box
@@ -138,7 +142,7 @@ export function User({ user, update }) {
 
 export function ServiceAccount({ user, update }) {
   const { account, ...me } = useContext(CurrentUserContext)
-  const editable = canEdit(me, account)
+  const editable = canEdit(me, account) || hasRbac(me, Permissions.USERS)
   const [mutation, { error }] = useMutation(IMPERSONATE_SERVICE_ACCOUNT, {
     variables: { id: user.id },
     update: (_cache, { data: { impersonateServiceAccount: { jwt } } }) => {

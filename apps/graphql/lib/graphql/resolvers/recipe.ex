@@ -1,10 +1,13 @@
 defmodule GraphQl.Resolvers.Recipe do
   use GraphQl.Resolvers.Base, model: Core.Schema.Recipe
-  alias Core.Schema.{RecipeSection, RecipeItem}
+  alias Core.Schema.{RecipeSection, RecipeItem, Stack, StackCollection, StackRecipe}
   alias Core.Services.{Recipes, Repositories}
 
   def query(RecipeItem, _), do: RecipeItem
   def query(RecipeSection, _), do: RecipeSection
+  def query(StackCollection, _), do: StackCollection
+  def query(StackRecipe, _), do: StackRecipe
+  def query(Stack, _), do: Stack
   def query(_, _), do: Recipe
 
   def list_recipes(args, %{context: %{repo: %{id: repo_id}}}) do
@@ -15,9 +18,23 @@ defmodule GraphQl.Resolvers.Recipe do
     |> paginate(args)
   end
 
+  def list_stacks(args, %{context: %{current_user: user}}) do
+    Stack.ordered()
+    |> stack_filters(args, user)
+    |> paginate(args)
+  end
+
   defp maybe_filter_provider(q, %{provider: p}) when not is_nil(p),
     do: Recipe.for_provider(q, p)
   defp maybe_filter_provider(q, _), do: q
+
+  defp stack_filters(q, %{featured: true}, _), do: Stack.featured(q)
+  defp stack_filters(q, _, %{account_id: aid}), do: Stack.for_account(q, aid)
+
+  def resolve_stack(%{name: name, provider: provider}, _) do
+    Recipes.get_stack!(name)
+    |> Recipes.hydrate(provider)
+  end
 
   def resolve_recipe(%{id: id}, %{context: %{current_user: user}}) when is_binary(id) do
     Recipes.get!(id)
@@ -50,4 +67,10 @@ defmodule GraphQl.Resolvers.Recipe do
 
   def install_recipe(%{recipe_id: recipe_id, context: context}, %{context: %{current_user: user}}),
     do: Recipes.install(recipe_id, context, user)
+
+  def upsert_stack(%{attributes: %{name: name} = attrs}, %{context: %{current_user: user}}),
+    do: Recipes.upsert_stack(attrs, name, user)
+
+  def delete_stack(%{name: name}, %{context: %{current_user: user}}),
+    do: Recipes.delete_stack(name, user)
 end

@@ -22,6 +22,7 @@ query {
                 darkIcon
                 category
                 icon
+                mainBranch
                 description
                 homepage
                 verified
@@ -123,11 +124,16 @@ def diffed_update(wf, collection_id, items, key_fn, data_fn, persist=None):
 
 
 def repo_data(repo):
-    result = pick(repo, ['name', 'readme', 'verified'])
-    result['slug'] = result['name']
-    result['github-link'] = repo['gitUrl']
-    result['app-description'] = repo['description']
-    result['website-link'] = repo['homepage']
+    result = pick(repo, ['name', 'verified'])
+    move(repo, result, {
+        'name': 'slug',
+        'gitUrl': 'github-link',
+        'description': 'app-description',
+        'homepage': 'website-link',
+        'icon': 'app-icon',
+        'mainBranch': 'main-branch',
+        'readme': 'readme-2'
+    })
 
     if repo.get('community'):
         result = {**result, **pick(repo['community'], ['slackUrl', 'twitterUrl', 'discordUrl'])}
@@ -136,7 +142,6 @@ def repo_data(repo):
     result['supported-clouds'] = [CLOUD_IDS[r['provider']] for r in repo['recipes'] if r['provider'] in CLOUD_IDS]
     result['publisher'] = DATA['publishers'].get(repo['publisher']['name'])
     result['icon'] = repo['darkIcon'] or repo['icon']
-    result['app-icon'] = result['icon'] 
     result['category'] = DATA['categories'][repo['category'].lower()]
     return result
 
@@ -159,6 +164,10 @@ def pub_data(pub):
 
 def pick(d, keys):
     return {k: d[k] for k in keys}
+
+def move(fr, to, keys):
+    for k, v in keys.items():
+        to[v] = fr[k]
 
 def save_tag(tag):
     DATA['tags'][tag['name']] = tag['_id']

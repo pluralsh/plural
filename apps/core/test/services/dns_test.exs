@@ -27,6 +27,12 @@ defmodule Core.Services.DnsTest do
 
       {:error, _} = Dns.create_domain(%{name: "some.wrong.domain"}, user)
     end
+
+    test "it cannot create a nested onplural domain" do
+      user = insert(:user)
+
+      {:error, _} = Dns.create_domain(%{name: "some.wrong.onplural.sh"}, user)
+    end
   end
 
   describe "#update_domain/3" do

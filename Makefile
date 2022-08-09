@@ -58,13 +58,13 @@ connectdb: ## proxies the db in kubernetes via kubectl
 
 setup: ## sets up your environment for testing
 	mix do local.hex, local.rebar, deps.get
-	cd www && npm install
+	cd www && yarn
 
 web: ## starts a local webserver
-	cd www && npm start
+	cd www && yarn start
 
-check-updates: ## checks for new minor versions in npm
-	cd www && ncu -it minor && npm install
+check-updates: ## checks for new minor versions of node modules
+	cd www && ncu -it minor && yarn
 
 migration:
 	cd apps/core && MIX_ENV=test mix ecto.gen.migration $(name)

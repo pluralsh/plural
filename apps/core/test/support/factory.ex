@@ -554,4 +554,25 @@ defmodule Core.Factory do
       project_id: sequence(:dp, &"proj-#{&1}")
     }
   end
+
+  def stack_factory do
+    %Schema.Stack{
+      account: build(:account),
+      creator: build(:user),
+      name: sequence(:stack, &"name-#{&1}")
+    }
+  end
+
+  def stack_collection_factory do
+    %Schema.StackCollection{
+      provider: :aws
+    }
+  end
+
+  def stack_recipe_factory do
+    %Schema.StackRecipe{
+      collection: build(:stack_collection),
+      recipe: build(:recipe),
+    }
+  end
 end

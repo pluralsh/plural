@@ -4,7 +4,8 @@ defmodule GraphQl.Schema.Recipe do
     Recipe,
     Repository,
     Chart,
-    Terraform
+    Terraform,
+    User
   }
   alias GraphQl.Middleware.{Accessible, Authenticated}
 
@@ -16,10 +17,22 @@ defmodule GraphQl.Schema.Recipe do
     field :provider,      :provider
     field :tests,         list_of(:recipe_test_attributes)
     field :sections,      list_of(:recipe_section_attributes)
-    field :dependencies,  list_of(:recipe_dependency_attributes)
+    field :dependencies,  list_of(:recipe_reference)
     field :oidc_settings, :oidc_settings_attributes
     field :private,       :boolean
     field :restricted,    :boolean
+  end
+
+  input_object :stack_attributes do
+    field :name,        non_null(:string)
+    field :description, :string
+    field :featured,    :boolean
+    field :collections, list_of(:stack_collection_attributes)
+  end
+
+  input_object :stack_collection_attributes do
+    field :provider, non_null(:provider)
+    field :bundles,  list_of(:recipe_reference)
   end
 
   input_object :oidc_settings_attributes do
@@ -30,7 +43,7 @@ defmodule GraphQl.Schema.Recipe do
     field :subdomain,   :boolean
   end
 
-  input_object :recipe_dependency_attributes do
+  input_object :recipe_reference do
     field :repo, non_null(:string)
     field :name, non_null(:string)
   end
@@ -184,6 +197,34 @@ defmodule GraphQl.Schema.Recipe do
     field :message,  non_null(:string)
   end
 
+  object :stack do
+    field :id,          non_null(:id)
+    field :name,        non_null(:string)
+    field :description, :string
+    field :featured,    :boolean
+    field :collections, list_of(:stack_collection), resolve: dataloader(Recipe)
+    field :creator,     :user, resolve: dataloader(User)
+    field :bundles,     list_of(:recipe)
+
+    timestamps()
+  end
+
+  object :stack_collection do
+    field :id,       non_null(:id)
+    field :provider, non_null(:provider)
+    field :bundles,  list_of(:stack_recipe), resolve: dataloader(Recipe)
+
+    timestamps()
+  end
+
+  object :stack_recipe do
+    field :id,       non_null(:id)
+    field :recipe,   non_null(:recipe), resolve: dataloader(Recipe)
+
+    timestamps()
+  end
+
+  connection node_type: :stack
   connection node_type: :recipe
 
   object :recipe_queries do
@@ -196,6 +237,14 @@ defmodule GraphQl.Schema.Recipe do
       resolve &Recipe.resolve_recipe/2
     end
 
+    field :stack, :stack do
+      middleware Authenticated
+      arg :name,     non_null(:string)
+      arg :provider, non_null(:provider)
+
+      resolve &Recipe.resolve_stack/2
+    end
+
     connection field :recipes, node_type: :recipe do
       middleware Authenticated
       middleware Accessible
@@ -204,6 +253,13 @@ defmodule GraphQl.Schema.Recipe do
       arg :provider,        :provider
 
       resolve &Recipe.list_recipes/2
+    end
+
+    connection field :stacks, node_type: :stack do
+      middleware Authenticated
+      arg :featured, :boolean
+
+      resolve &Recipe.list_stacks/2
     end
   end
 
@@ -222,6 +278,20 @@ defmodule GraphQl.Schema.Recipe do
       arg :id, non_null(:id)
 
       resolve safe_resolver(&Recipe.delete_recipe/2)
+    end
+
+    field :create_stack, :stack do
+      middleware Authenticated
+      arg :attributes, non_null(:stack_attributes)
+
+      safe_resolve &Recipe.upsert_stack/2
+    end
+
+    field :delete_stack, :stack do
+      middleware Authenticated
+      arg :name, non_null(:string)
+
+      safe_resolve &Recipe.delete_stack/2
     end
 
     field :install_recipe, list_of(:installation) do

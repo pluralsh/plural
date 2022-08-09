@@ -1,5 +1,5 @@
 name: plural
-description: the plural platform, available on plural
+description: Empowers devs to build & maintain cloud-native & production-ready OSS infrastructure on Kubernetes.
 category: DEVOPS
 icon: plural/icons/plural-logo.png
 darkIcon: plural/icons/plural-white.png

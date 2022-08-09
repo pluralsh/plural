@@ -40,6 +40,7 @@ defmodule Core.Schema.Repository do
     field :category,      Category
     field :notes,         :binary
     field :git_url,       :string
+    field :main_branch,   :string
     field :homepage,      :string
     field :readme,        :binary
     field :default_tag,   :string, default: "latest"
@@ -52,6 +53,13 @@ defmodule Core.Schema.Repository do
     embeds_one :license, License, on_replace: :update do
       field :name, :string
       field :url,  :string
+    end
+
+    embeds_one :community, Community, on_replace: :update do
+      field :discord, :string
+      field :slack,   :string
+      field :twitter, :string
+      field :videos,  {:array, :string}
     end
 
     belongs_to :integration_resource_definition, ResourceDefinition, on_replace: :update
@@ -173,13 +181,14 @@ defmodule Core.Schema.Repository do
   def ordered(query \\ __MODULE__, order \\ [asc: :name]),
     do: from(r in query, order_by: ^order)
 
-  @valid ~w(name publisher_id description documentation secrets private category verified notes default_tag git_url homepage readme)a
+  @valid ~w(name publisher_id description documentation secrets private category verified notes default_tag git_url homepage readme main_branch)a
 
   def changeset(model, attrs \\ %{}) do
     model
     |> cast(attrs, @valid)
     |> cast_embed(:oauth_settings, with: &oauth_settings/2)
     |> cast_embed(:license, with: &license_changeset/2)
+    |> cast_embed(:community, with: &community_changeset/2)
     |> cast_assoc(:tags, with: &Tag.tag_changeset(&1, &2, :repository))
     |> cast_assoc(:dashboards)
     |> cast_assoc(:database)
@@ -207,4 +216,6 @@ defmodule Core.Schema.Repository do
   end
 
   def license_changeset(model, attrs \\ %{}), do: cast(model, attrs, [:url, :name])
+
+  def community_changeset(model, attrs \\ %{}), do: cast(model, attrs, [:discord, :slack, :twitter, :videos])
 end

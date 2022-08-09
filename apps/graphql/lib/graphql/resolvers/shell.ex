@@ -19,6 +19,10 @@ defmodule GraphQl.Resolvers.Shell do
 
   def reboot(_, %{context: %{current_user: user}}), do: Shell.reboot(user.id)
 
+  def stop(_, %{context: %{current_user: user}}), do: Shell.stop(user)
+
+  def restart(_, %{context: %{current_user: user}}), do: Shell.restart(user)
+
   def liveness(shell), do: {:ok, Shell.alive?(shell)}
 
   def status(shell), do: {:ok, Shell.status(shell)}

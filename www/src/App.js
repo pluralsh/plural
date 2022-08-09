@@ -3,9 +3,10 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { ApolloProvider } from '@apollo/client'
 import { IntercomProvider } from 'react-use-intercom'
 import { Box, Grommet } from 'grommet'
-import { theme } from 'pluralsh-design-system'
+import { styledTheme, theme } from 'pluralsh-design-system'
 import { CssBaseline, ThemeProvider, mergeTheme } from 'honorable'
 import mpRecipe from 'honorable-recipe-mp'
+import { ThemeProvider as StyledThemeProvider } from 'styled-components'
 
 import { client } from './helpers/client'
 import { INTERCOM_APP_ID } from './constants'
@@ -33,75 +34,77 @@ function App() {
     <ApolloProvider client={client}>
       <IntercomProvider appId={INTERCOM_APP_ID}>
         <ThemeProvider theme={honorableTheme}>
-          <CssBaseline />
-          <Grommet
-            full
-            theme={DEFAULT_THEME}
-            themeMode="dark"
-          >
-            <Box
-              width="100vw"
-              height="100vh"
-              background="#171A21"
+          <StyledThemeProvider theme={styledTheme}>
+            <CssBaseline />
+            <Grommet
+              full
+              theme={DEFAULT_THEME}
+              themeMode="dark"
             >
-              <BrowserRouter>
-                <Routes>
-                  <Route
-                    path="/reset-password/:id"
-                    element={<ResetPassword />}
-                  />
-                  <Route
-                    path="/password-reset"
-                    element={<PasswordReset />}
-                  />
-                  <Route
-                    path="/confirm-email/:id"
-                    element={<EmailConfirmed />}
-                  />
-                  <Route
-                    path="/invite/:inviteId"
-                    element={<Invite />}
-                  />
-                  <Route
-                    path="/passwordless-login/:token"
-                    element={<PasswordlessLogin />}
-                  />
-                  <Route
-                    path="/oauth/callback/github/shell"
-                    element={<Plural />}
-                  />
-                  <Route
-                    path="/oauth/callback/gitlab/shell"
-                    element={<Plural />}
-                  />
-                  <Route
-                    path="/oauth/callback/:service"
-                    element={<OAuthCallback />}
-                  />
-                  <Route
-                    path="/sso/callback"
-                    element={<SSOCallback />}
-                  />
-                  <Route
-                    path="/login"
-                    element={<Login />}
-                  />
-                  <Route
-                    path="/signup"
-                    element={<Signup />}
-                  />
-                  <Route
-                    path="/oauth/consent"
-                    element={<OAuthConsent />}
-                  />
-                  <Route
-                    path="*"
-                    element={<Plural />}
-                  />
-                </Routes>
-              </BrowserRouter>
-            </Box>
-          </Grommet>
+              <Box
+                width="100vw"
+                height="100vh"
+                background="#171A21"
+              >
+                <BrowserRouter>
+                  <Routes>
+                    <Route
+                      path="/reset-password/:id"
+                      element={<ResetPassword />}
+                    />
+                    <Route
+                      path="/password-reset"
+                      element={<PasswordReset />}
+                    />
+                    <Route
+                      path="/confirm-email/:id"
+                      element={<EmailConfirmed />}
+                    />
+                    <Route
+                      path="/invite/:inviteId"
+                      element={<Invite />}
+                    />
+                    <Route
+                      path="/passwordless-login/:token"
+                      element={<PasswordlessLogin />}
+                    />
+                    <Route
+                      path="/oauth/callback/github/shell"
+                      element={<Plural />}
+                    />
+                    <Route
+                      path="/oauth/callback/gitlab/shell"
+                      element={<Plural />}
+                    />
+                    <Route
+                      path="/oauth/callback/:service"
+                      element={<OAuthCallback />}
+                    />
+                    <Route
+                      path="/sso/callback"
+                      element={<SSOCallback />}
+                    />
+                    <Route
+                      path="/login"
+                      element={<Login />}
+                    />
+                    <Route
+                      path="/signup"
+                      element={<Signup />}
+                    />
+                    <Route
+                      path="/oauth/consent"
+                      element={<OAuthConsent />}
+                    />
+                    <Route
+                      path="*"
+                      element={<Plural />}
+                    />
+                  </Routes>
+                </BrowserRouter>
+              </Box>
+            </Grommet>
+          </StyledThemeProvider>
         </ThemeProvider>
       </IntercomProvider>
     </ApolloProvider>

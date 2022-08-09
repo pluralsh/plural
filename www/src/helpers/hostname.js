@@ -18,12 +18,12 @@ export function host() {
 }
 
 export function apiHost() {
-  switch (window.location.hostname) {
-    case 'localhost':
-      return 'app.plural.sh'
-    default:
-      return window.location.hostname
+  const { location: { hostname } } = window
+  if (hostname === 'localhost' || hostname.endsWith('web.app')) {
+    return 'app.plural.sh'
   }
+
+  return hostname
 }
 
 export function secure() {

@@ -1,9 +1,12 @@
 import {
-  A, Div, Flex, H2, Img, MenuItem, Select, Span,
+  A, Div, Flex, H2, Img, Span,
 } from 'honorable'
 import { Box } from 'grommet'
-import { ArrowLeftIcon, Chip } from 'pluralsh-design-system'
+import {
+  ArrowLeftIcon, Chip, ListBoxFooterPlus, ListBoxItem, ListBoxItemChipList, Select,
+} from 'pluralsh-design-system'
 import { Link } from 'react-router-dom'
+import { extendConnection } from 'utils/graphql'
 
 export function dockerPull(registry, { tag, dockerRepository: { name, repository } }) {
   return `${registry}/${repository.name}/${name}:${tag}`
@@ -94,48 +97,78 @@ export function PackageHeader({ name, icon }) {
 }
 
 // TODO: Implement view more functionality as at the moment it loads only the first page.
-// TODO: Show only 6 elements inside select component and add scroll (to be done globally).
 export function PackageVersionPicker({
-  edges, installed, version, setVersion,
+  edges, installed, version, setVersion, pageInfo, fetchMore,
 }) {
+  const versions = edges.map(({ node }) => node)
+
+  console.log(version.id)
+  console.log(installed.version.id)
+  console.log(pageInfo)
+
   return (
     <Box
+      width="240px"
       gap="small"
       margin={{ bottom: 'medium' }}
     >
       <Select
-        value={version}
-        onChange={({ target: { value } }) => setVersion(value)}
-        style={{ maxWidth: '240px' }}
+        label="version"
+        width="240px"
+        selectedKey={version.id}
+        onSelectionChange={selected => setVersion(versions.find(v => v.id === selected))}
+        dropdownFooter={pageInfo.hasNextPage && <ListBoxFooterPlus>View more</ListBoxFooterPlus>}
+        onFooterClick={() => fetchMore({
+          variables: { cursor: pageInfo.endCursor },
+          updateQuery: (prev, { fetchMoreResult: { versions } }) => extendConnection(prev, versions, 'versions'),
+        })}
+        rightContent={
+          version.id === installed?.version?.id && (
+            <ListBoxItemChipList chips={[
+              <Chip
+                severity="success"
+                size="small"
+              >
+                Installed
+              </Chip>,
+            ]}
+            />
+          )
+        }
       >
-        {edges.map(({ node }) => (
-          <MenuItem
-            key={node.id}
-            value={node}
-          >
-            <Box
-              fill
-              direction="row"
-              justify="center"
-            >
-              <Box fill>{node.version}</Box>
-              {node.id === installed?.version?.id && (
-                <Chip
-                  severity="success"
-                  size="small"
-                >
-                  Installed
-                </Chip>
-              )}
-            </Box>
-          </MenuItem>
+        {versions.map(v => (
+          <ListBoxItem
+            key={v.id}
+            label={v.version}
+            rightContent={(
+              <ListBoxItemChipList
+                maxVisible={2}
+                showExtra
+                chips={v.tags.map(({ tag }, i) => (
+                  <Chip
+                    key={i}
+                    size="small"
+                  >
+                    {tag}
+                  </Chip>
+                ))}
+              />
+            )}
+          />
         ))}
       </Select>
       <Box
         direction="row"
         gap="8px"
       >
-        {version?.tags.map(({ tag }, i) => <Chip key={i}><Span fontWeight="400">{tag}</Span></Chip>)}
+        {version?.tags.map(({ tag }, i) => (
+          <Chip
+            key={i}
+            size="small"
+          >
+            {tag}
+          </Chip>
+        ))}
       </Box>
     </Box>
   )

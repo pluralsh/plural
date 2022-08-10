@@ -69,12 +69,12 @@ export default function Terraform() {
   const navigate = useNavigate()
   const [version, setVersion] = useState(null)
   const { tfId } = useParams()
-  const { data } = useQuery(TF_Q, { variables: { tfId }, fetchPolicy: 'cache-and-network' })
+  const { data, fetchMore } = useQuery(TF_Q, { variables: { tfId }, fetchPolicy: 'cache-and-network' })
 
   if (!data) return null
 
   const { terraformModule, versions } = data
-  const { edges } = versions
+  const { edges, pageInfo } = versions
   const currentVersion = version || edges[0].node
   const tfInst = terraformModule.installation
 
@@ -100,6 +100,8 @@ export default function Terraform() {
                 installed={tfInst}
                 version={version || currentVersion}
                 setVersion={setVersion}
+                pageInfo={pageInfo}
+                fetchMore={fetchMore}
               />
             </Box>
             <Tab

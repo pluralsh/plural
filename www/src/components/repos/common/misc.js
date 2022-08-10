@@ -96,15 +96,10 @@ export function PackageHeader({ name, icon }) {
   )
 }
 
-// TODO: Implement view more functionality as at the moment it loads only the first page.
 export function PackageVersionPicker({
   edges, installed, version, setVersion, pageInfo, fetchMore,
 }) {
   const versions = edges.map(({ node }) => node)
-
-  console.log(version.id)
-  console.log(installed.version.id)
-  console.log(pageInfo)
 
   return (
     <Box

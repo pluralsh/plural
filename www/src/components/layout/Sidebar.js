@@ -258,7 +258,7 @@ function Sidebar({
   const menuRef = useRef()
   const notificationsPanelRef = useRef()
   const [isMenuOpen, setIsMenuOpened] = useState(false)
-  const [collapsed, setCollapsed] = useState(true)
+  const [collapsed, _setCollapsed] = useState(true)
   const [isNotificationsPanelOpen, setIsNotificationsPanelOpen] = useState(false)
   const sidebarWidth = collapsed ? 65 : 256 - 32 // 64 + 1px border
   const previousUserData = getPreviousUserData()

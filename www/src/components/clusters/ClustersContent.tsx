@@ -10,6 +10,7 @@ import {
 import QueueContext from '../../contexts/QueueContext'
 import { appendConnection, extendConnection } from '../../utils/graphql'
 import { RepoIcon } from '../repos/Repositories'
+import { LoopingLogo } from '../utils/AnimatedLogo'
 import { StandardScroller } from '../utils/SmoothScroller'
 
 import { QUEUE, UPGRADE_SUB } from './queries'
@@ -32,6 +33,7 @@ interface Repository {
 
 export function ClustersContent(): ReactElement | null {
   const queue = useContext(QueueContext)
+
   const {
     data, loading, fetchMore, subscribeToMore, refetch,
   } = useQuery(QUEUE, {
@@ -48,7 +50,18 @@ export function ClustersContent(): ReactElement | null {
     }),
   }), [queue.id, subscribeToMore])
 
-  if (!data) return <LoadingSpinner />
+  if (!data) {
+    return (
+      <LoopingLogo
+        nofill={undefined}
+        darkbg={undefined}
+        height={undefined}
+        scale={undefined}
+        dark={undefined}
+        still={undefined}
+      />
+    )
+  }
 
   return (
     <Flex

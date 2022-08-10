@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client'
+import { QueryResult, useQuery } from '@apollo/client'
 import { EmptyState } from 'components/utils/EmptyState'
 import { Box } from 'grommet'
 import {
@@ -20,6 +20,17 @@ import { ClustersSidenav } from './ClustersSidenav'
 
 import { QUEUES, UPGRADE_QUEUE_SUB } from './queries'
 
+export interface QueueList {
+  upgradeQueues: Array<Queue>;
+}
+
+export interface QueueSubscription {
+  upgradeQueueDelta: {
+    delta: 'CREATE',
+    payload: Queue;
+  }
+}
+
 export interface Queue {
   acked: string;
   domain: string;
@@ -33,11 +44,11 @@ export interface Queue {
 
 export function Clusters(): ReactElement | null {
   const [queue, setQueue] = useState({} as Queue)
-  const { data, loading, subscribeToMore } = useQuery(QUEUES, { fetchPolicy: 'cache-and-network' })
+  const { data, loading, subscribeToMore } = useQuery<QueueList>(QUEUES, { fetchPolicy: 'cache-and-network' })
 
-  useEffect(() => subscribeToMore({
+  useEffect(() => subscribeToMore<QueueSubscription>({
     document: UPGRADE_QUEUE_SUB,
-    updateQuery: ({ upgradeQueues, ...prev }, {
+    updateQuery: (prev, {
       subscriptionData: {
         data: {
           upgradeQueueDelta: {
@@ -46,7 +57,7 @@ export function Clusters(): ReactElement | null {
           },
         },
       },
-    }) => (delta === 'CREATE' ? { ...prev, upgradeQueues: [payload, ...upgradeQueues] } : prev),
+    }) => (delta === 'CREATE' ? { ...prev, upgradeQueues: [payload, ...prev.upgradeQueues] } : prev),
   }), [subscribeToMore])
 
   useEffect(() => (data ? setQueue(data?.upgradeQueues[0]) : data), [data])
@@ -96,7 +107,10 @@ export function Clusters(): ReactElement | null {
         paddingBottom="medium"
       >
         <ResponsiveLayoutSidenavContainer>
-          <ClustersSidenav />
+          <ClustersSidenav
+            onQueueChange={setQueue}
+            queues={data.upgradeQueues}
+          />
         </ResponsiveLayoutSidenavContainer>
         <ResponsiveLayoutSpacer />
         <ResponsiveLayoutContentContainer>

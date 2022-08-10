@@ -4068,8 +4068,8 @@ __metadata:
   linkType: hard
 
 "@testing-library/dom@npm:^8.5.0":
-  version: 8.16.1
-  resolution: "@testing-library/dom@npm:8.16.1"
+  version: 8.17.1
+  resolution: "@testing-library/dom@npm:8.17.1"
   dependencies:
     "@babel/code-frame": ^7.10.4
     "@babel/runtime": ^7.12.5
@@ -4079,7 +4079,7 @@ __metadata:
     dom-accessibility-api: ^0.5.9
     lz-string: ^1.4.4
     pretty-format: ^27.0.2
-  checksum: eca86b69f28cdab7226209075b3ca54f87fc0fc92a41440bbfa41e14ed0815aac4a63b1d9a08230e0dbd0de3a54c61cd90a3a423695e6840124e2473c8149e99
+  checksum: e4df091fcf84c9eac4a6ee4c76674c1d562bf98732f0ac8820972d7718ab10397b672b9f082aace3cacd1f610fc77de6e1b6094e67afe1df0443bf22eb9deab2
   languageName: node
   linkType: hard
 
@@ -6727,9 +6727,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001179, caniuse-lite@npm:^1.0.30001370, caniuse-lite@npm:^1.0.30001373":
-  version: 1.0.30001374
-  resolution: "caniuse-lite@npm:1.0.30001374"
-  checksum: a75656e971d7ef2af4d2f3529a4620ae1a45d09460601fbc34b26f6867f31bbca006f71d8840291c471a2f01fc1994044f319a5660241ffaf35a2d84535af442
+  version: 1.0.30001375
+  resolution: "caniuse-lite@npm:1.0.30001375"
+  checksum: 6ed9cf7a3f80f5880cb021105864b869dddfdda8490559aa623e77feeca5ce8958a3b7c1cf37322e519176dcb488c99e6358b8c2de2aa4a0e08846ac122c4e75
   languageName: node
   linkType: hard
 
@@ -8475,9 +8475,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.4.202":
-  version: 1.4.212
-  resolution: "electron-to-chromium@npm:1.4.212"
-  checksum: 972eb1b46bce2fa7fa19eb70779d27b84b7113daad01718a67cfbd92e2972c09eaf15bbe5e901467399e5e66c74a17a74891c7aeda8118b1ef655d8c1913ee2a
+  version: 1.4.213
+  resolution: "electron-to-chromium@npm:1.4.213"
+  checksum: 63953b2db5f87ef11caad8c57bba69300cc5ab1bf363d5758c48187fe9e414e971e470bfc961540c954a2f966fadccce29bdbfa60f5bd6c4b5499f16404d0846
   languageName: node
   linkType: hard
 
@@ -14952,9 +14952,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pluralsh-design-system@npm:1.148.0":
-  version: 1.148.0
-  resolution: "pluralsh-design-system@npm:1.148.0"
+"pluralsh-design-system@npm:1.150.0":
+  version: 1.150.0
+  resolution: "pluralsh-design-system@npm:1.150.0"
   dependencies:
     "@floating-ui/react-dom-interactions": 0.8.1
     "@react-aria/button": 3.6.0
@@ -14973,7 +14973,6 @@ __metadata:
     react-merge-refs: 2.0.1
     react-spring: 9.5.2
     resize-observer-polyfill: 1.5.1
-    styled-components: 5.3.5
   peerDependencies:
     "@emotion/react": ">=11.9.3"
     "@emotion/styled": ">=11.9.3"
@@ -14982,7 +14981,8 @@ __metadata:
     react: ">=16.0.0"
     react-dom: ">=16.0.0"
     react-transition-group: ">=4.4.2"
-  checksum: 03a7330ba12ccfe654706fa4955e18c9449e17b7ae638ffe02e5afb0cf2d31b86723439db79a4af86bba32c8d7ea6a95f4093cbeb50186bde670107ec1d16749
+    styled-components: ">=5.3.5"
+  checksum: 2d13cf4a7c496d8cf7b1669512994c3ccecc8e4bc0e989078bfbb55e4146f042582c8de23fa407e48793cfbcd56f6eb5394a815779190cae2ff7556b4e3c5831
   languageName: node
   linkType: hard
 
@@ -20698,7 +20698,7 @@ __metadata:
     moment: 2.29.4
     phoenix: 1.6.11
     pluralsh-absinthe-socket-apollo-link: 0.2.0
-    pluralsh-design-system: 1.148.0
+    pluralsh-design-system: 1.150.0
     postcss-import: 8.2.0
     prop-types: 15.8.1
     query-string: 7.1.1

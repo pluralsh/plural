@@ -141,4 +141,43 @@ defmodule GraphQl.RecipeQueriesTest do
       assert found_item["chart"]["id"] == item.chart.id
     end
   end
+
+  describe "stack" do
+    test "it can fetch and hydrate a stack" do
+      stack = insert(:stack, featured: true)
+      collection = insert(:stack_collection, stack: stack, provider: :aws)
+      recipes = insert_list(3, :stack_recipe, collection: collection)
+                |> Enum.map(& &1.recipe)
+
+      {:ok, %{data: %{"stack" => found}}} = run_query("""
+        query Stack($name: String!) {
+          stack(name: $name, provider: AWS) {
+            id
+            bundles { id }
+          }
+        }
+      """, %{"name" => stack.name}, %{current_user: insert(:user)})
+
+      assert found["id"] == stack.id
+      assert ids_equal(found["bundles"], recipes)
+    end
+  end
+
+  describe "stacks" do
+    test "it can list featured stacks" do
+      stacks = insert_list(3, :stack, featured: true)
+      insert_list(2, :stack, featured: false)
+
+      {:ok, %{data: %{"stacks" => found}}} = run_query("""
+        query {
+          stacks(featured: true, first: 10) {
+            edges { node { id } }
+          }
+        }
+      """, %{}, %{current_user: insert(:user)})
+
+      assert from_connection(found)
+             |> ids_equal(stacks)
+    end
+  end
 end

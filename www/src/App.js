@@ -3,10 +3,12 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { ApolloProvider } from '@apollo/client'
 import { IntercomProvider } from 'react-use-intercom'
 import { Box, Grommet } from 'grommet'
-import { styledTheme, theme } from 'pluralsh-design-system'
+import { GlobalStyle, styledTheme, theme } from 'pluralsh-design-system'
 import { CssBaseline, ThemeProvider, mergeTheme } from 'honorable'
-import mpRecipe from 'honorable-recipe-mp'
 import { ThemeProvider as StyledThemeProvider } from 'styled-components'
+import { mergeDeep } from '@apollo/client/utilities'
+
+import mpRecipe from 'honorable-recipe-mp'
 
 import { client } from './helpers/client'
 import { INTERCOM_APP_ID } from './constants'
@@ -30,15 +32,18 @@ const honorableTheme = mergeTheme(theme, {
 })
 
 function App() {
+  const mergedStyledTheme = mergeDeep(DEFAULT_THEME, styledTheme)
+
   return (
     <ApolloProvider client={client}>
       <IntercomProvider appId={INTERCOM_APP_ID}>
         <ThemeProvider theme={honorableTheme}>
-          <StyledThemeProvider theme={styledTheme}>
+          <StyledThemeProvider theme={mergedStyledTheme}>
             <CssBaseline />
+            <GlobalStyle />
             <Grommet
               full
-              theme={DEFAULT_THEME}
+              theme={mergedStyledTheme}
               themeMode="dark"
             >
               <Box

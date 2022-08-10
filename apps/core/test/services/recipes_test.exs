@@ -234,29 +234,89 @@ defmodule Core.Services.RecipesTest do
   describe "#hydrate/1" do
     test "it can hydrate a depth > 2 tree of recipe dependencies" do
       recipe = insert(:recipe)
-      %{repository: repo0} = section0 = insert(:recipe_section, recipe: recipe)
-      insert(:recipe_item, recipe_section: section0, chart: build(:chart))
-
-      [%{dependent_recipe: level_1_1}, %{dependent_recipe: level_1_2}] = for i <- 1..2,
-        do: insert(:recipe_dependency, recipe: recipe, index: i)
-      %{repository: repo} = section = insert(:recipe_section, recipe: level_1_1)
-      %{repository: repo2} = section2 = insert(:recipe_section, recipe: level_1_2)
-      insert(:recipe_item, recipe_section: section, chart: insert(:chart, dependencies: %{dependencies: [
-        %{type: :terraform, repo: repo.name, name: "name"},
-        %{type: :helm, repo: repo0.name, name: "zero"},
-      ]}))
-      insert(:recipe_item, recipe_section: section2, terraform: insert(:terraform, dependencies: %{dependencies: [
-        %{type: :helm, repo: repo.name, name: "another-name"},
-      ]}))
-      %{dependent_recipe: level_2_1} = insert(:recipe_dependency, recipe: level_1_1, index: 1)
-      section3 = insert(:recipe_section, recipe: level_2_1)
-      insert(:recipe_item, recipe_section: section3, chart: insert(:chart, dependencies: %{dependencies: [
-        %{type: :helm, repo: repo2.name, name: "name"},
-      ]}))
+      secs = provision_recipe(recipe)
 
       %{recipe_sections: sections} = Recipes.hydrate(recipe)
 
-      assert Enum.map(sections, & &1.id) == Enum.map([section0, section, section2, section3], & &1.id)
+      assert Enum.map(sections, & &1.id) == Enum.map(secs, & &1.id)
     end
+  end
+
+  describe "#create_stack/2" do
+    test "users can create stacks" do
+      user = insert(:user, account: build(:account))
+      recipe1 = insert(:recipe)
+      recipe2 = insert(:recipe)
+
+      {:ok, %{collections: [collection]} = stack} = Recipes.create_stack(%{
+        name: "stack",
+        description: "a stack",
+        collections: [%{provider: :aws, bundles: Enum.map([recipe1, recipe2], & %{name: &1.name, repo: &1.repository.name})}]
+      }, user)
+
+      assert stack.creator_id == user.id
+      assert stack.account_id == user.account_id
+      assert stack.name == "stack"
+      assert stack.description == "a stack"
+
+      assert collection.provider == :aws
+      assert Enum.map(collection.bundles, & &1.recipe_id)
+             |> ids_equal([recipe1, recipe2])
+    end
+  end
+
+  describe "#delete_stack/2" do
+    test "a stack creator can delete their stack" do
+      user = insert(:user)
+      stack = insert(:stack, creator: user)
+
+      {:ok, del} = Recipes.delete_stack(stack.name, user)
+
+      assert del.id == stack.id
+      refute refetch(stack)
+    end
+
+    test "non creators cannot delete" do
+      stack = insert(:stack)
+      {:error, _} = Recipes.delete_stack(stack.name, insert(:user))
+    end
+  end
+
+  describe "#hydrate/2" do
+    test "it can hydrate all recipes for the given provider" do
+      stack = insert(:stack)
+      collection = insert(:stack_collection, provider: :aws, stack: stack)
+      recipe = insert(:recipe)
+      insert(:stack_recipe, collection: collection, recipe: recipe)
+      secs = provision_recipe(recipe)
+
+      {:ok, %{bundles: [%{recipe_sections: sections}]}} = Recipes.hydrate(stack, :aws)
+
+      assert Enum.map(sections, & &1.id) == Enum.map(secs, & &1.id)
+    end
+  end
+
+  defp provision_recipe(recipe) do
+    %{repository: repo0} = section0 = insert(:recipe_section, recipe: recipe)
+    insert(:recipe_item, recipe_section: section0, chart: build(:chart))
+
+    [%{dependent_recipe: level_1_1}, %{dependent_recipe: level_1_2}] = for i <- 1..2,
+      do: insert(:recipe_dependency, recipe: recipe, index: i)
+    %{repository: repo} = section = insert(:recipe_section, recipe: level_1_1)
+    %{repository: repo2} = section2 = insert(:recipe_section, recipe: level_1_2)
+    insert(:recipe_item, recipe_section: section, chart: insert(:chart, dependencies: %{dependencies: [
+      %{type: :terraform, repo: repo.name, name: "name"},
+      %{type: :helm, repo: repo0.name, name: "zero"},
+    ]}))
+    insert(:recipe_item, recipe_section: section2, terraform: insert(:terraform, dependencies: %{dependencies: [
+      %{type: :helm, repo: repo.name, name: "another-name"},
+    ]}))
+    %{dependent_recipe: level_2_1} = insert(:recipe_dependency, recipe: level_1_1, index: 1)
+    section3 = insert(:recipe_section, recipe: level_2_1)
+    insert(:recipe_item, recipe_section: section3, chart: insert(:chart, dependencies: %{dependencies: [
+      %{type: :helm, repo: repo2.name, name: "name"},
+    ]}))
+
+    [section0, section, section2, section3]
   end
 end

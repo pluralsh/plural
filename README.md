@@ -53,9 +53,22 @@ In addition, Plural also handles:
 We think it's pretty cool! 😎 Some other nice things:
 
 ### ☁️ Build and manage open cloud-native architectures
+
+<p align="center">
+  <br/>
+  <img src="www/public/console.png" width=60%/>
+  <br/><br/>
+</p>
+
 The plural platform ingests all deployment artifacts needed to deploy cloud-native applications and tracks their dependencies, allowing for easy installs and no-touch upgrades post-install. 
 
 ### 🤖 Day-2 Operational Toolkit
+
+<p align="center">
+  <img src="www/public/graph.png" width=60%/>
+  <br/>
+</p>
+
 Scale deploys with operational run-books for key cluster operations. Every dependency is automatically upgraded in the correct order, in a rolling manner. Plural provides a timestamped audit trail for all cluster applications along with searchable, downloadable logs. In addition, there are also pre-packaged dashboards for the highest importance metrics.
 
 ### 🔓 Secure by default
@@ -115,12 +128,6 @@ For general help, please refer to the Plural documentation. For additional help 
 
 Plural is dedicated to providing a welcoming, diverse, and harassment-free experience for everyone. We expect everyone in the community to abide by our [Code of Conduct](CODE_OF_CONDUCT.md). *Please read it.*
 <br /><br />
-
-## 🎁 Get Free Swag!
-
-Get free Plural swag [here](https://pluralsh.typeform.com/to/jMj5GaM4)! :-)
-<br /><br />
-
 
 
 ## 🚗 Roadmap

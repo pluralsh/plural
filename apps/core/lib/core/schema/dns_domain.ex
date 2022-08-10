@@ -34,7 +34,7 @@ defmodule Core.Schema.DnsDomain do
     |> cast_assoc(:access_policy)
     |> foreign_key_constraint(:creator_id)
     |> foreign_key_constraint(:account_id)
-    |> validate_format(:name, regex(domain), message: "must be a dns complaint domain ending with #{domain}")
+    |> validate_format(:name, regex(domain), message: "must be a dns complaint domain one level below #{domain}")
     |> validate_required(@required)
   end
 
@@ -45,6 +45,6 @@ defmodule Core.Schema.DnsDomain do
   end
 
   def regex(base_domain) do
-    ~r/([a-z0-9-]+\.)#{base_domain}/
+    ~r/^[a-z0-9-]+\.#{base_domain}$/
   end
 end

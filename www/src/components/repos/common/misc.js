@@ -137,16 +137,26 @@ export function PackageVersionPicker({
             label={v.version}
             rightContent={(
               <ListBoxItemChipList
-                maxVisible={2}
+                maxVisible={1}
                 showExtra
-                chips={v.tags.map(({ tag }, i) => (
-                  <Chip
-                    key={i}
-                    size="small"
-                  >
-                    {tag}
-                  </Chip>
-                ))}
+                chips={[
+                  ...v.tags.map(({ tag }, i) => (
+                    <Chip
+                      key={i}
+                      size="small"
+                    >
+                      {tag}
+                    </Chip>
+                  )),
+                  v.id === installed?.version?.id && (
+                    <Chip
+                      severity="success"
+                      size="small"
+                    >
+                      Installed
+                    </Chip>
+                  ),
+                ]}
               />
             )}
           />

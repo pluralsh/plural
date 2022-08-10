@@ -22,8 +22,8 @@ function RepositoryDescription() {
       {repository.readme ? (
         <RepositoryDescriptionMarkdown
           text={repository.readme}
-          gitUrl={repository.git_url}
-          mainBranch={repository.main_branch}
+          gitUrl={repository.gitUrl}
+          mainBranch={repository.mainBranch}
         />
       ) : <P>No description available</P>}
     </Flex>

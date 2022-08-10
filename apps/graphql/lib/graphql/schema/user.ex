@@ -6,7 +6,7 @@ defmodule GraphQl.Schema.User do
     Payments,
     Account
   }
-  alias GraphQl.Middleware.Authenticated
+  alias GraphQl.Middleware.{Authenticated, AllowJwt, RateLimit}
 
   ecto_enum :notification_type, Schema.Notification.Type
   ecto_enum :reset_token_type, Schema.ResetToken.Type
@@ -356,7 +356,8 @@ defmodule GraphQl.Schema.User do
 
   object :user_mutations do
     field :login, :user do
-      middleware GraphQl.Middleware.AllowJwt
+      middleware AllowJwt
+      middleware RateLimit, limit: 10, time: 60_000
       arg :email,        non_null(:string)
       arg :password,     non_null(:string)
       arg :device_token, :string
@@ -365,18 +366,21 @@ defmodule GraphQl.Schema.User do
     end
 
     field :device_login, :device_login do
+      middleware RateLimit, limit: 5, time: 60_000
       resolve &User.device_login/2
     end
 
     field :passwordless_login, :user do
-      middleware GraphQl.Middleware.AllowJwt
+      middleware AllowJwt
+      middleware RateLimit, limit: 30, time: 60_000
       arg :token, non_null(:string)
 
       resolve &User.passwordless_login/2
     end
 
     field :login_token, :user do
-      middleware GraphQl.Middleware.AllowJwt
+      middleware AllowJwt
+      middleware RateLimit, limit: 30, time: 60_000
       arg :token, non_null(:string)
       arg :device_token, :string
 
@@ -392,12 +396,14 @@ defmodule GraphQl.Schema.User do
     end
 
     field :create_reset_token, :boolean do
+      middleware RateLimit, limit: 5, time: 60_000
       arg :attributes, non_null(:reset_token_attributes)
 
       safe_resolve &User.create_reset_token/2
     end
 
     field :realize_reset_token, :boolean do
+      middleware RateLimit, limit: 5, time: 60_000
       arg :id, non_null(:id)
       arg :attributes, non_null(:reset_token_realization)
 
@@ -406,6 +412,7 @@ defmodule GraphQl.Schema.User do
 
     field :create_token, :persisted_token do
       middleware Authenticated
+      middleware RateLimit, limit: 5, time: 60_000
       safe_resolve &User.create_token/2
     end
 
@@ -418,6 +425,7 @@ defmodule GraphQl.Schema.User do
 
     field :signup, :user do
       middleware GraphQl.Middleware.AllowJwt
+      middleware RateLimit, limit: 5, time: 60_000
       arg :invite_id,    :string
       arg :attributes,   non_null(:user_attributes)
       arg :account,      :account_attributes

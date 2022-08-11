@@ -27,94 +27,106 @@ export function ShellStatus({
   }, error,
 }) {
   return (
-    <OnboardingCard>
-      <Flex
-        align="center"
-        justify="space-between"
-      >
-        <Div>
-          <P
-            body1
-            bold
-          >
-            Creating cloud shell environment
+    <Flex
+      width="100%"
+      maxWidth={640}
+      height="100%"
+      direction="column"
+      alignSelf="center"
+      justify="center"
+      paddingTop="xxlarge"
+      paddingHorizontal="xlarge"
+      overflowY="auto"
+    >
+      <OnboardingCard>
+        <Flex
+          align="center"
+          justify="space-between"
+        >
+          <Div>
+            <P
+              body1
+              bold
+            >
+              Creating cloud shell environment
+            </P>
+            <P
+              body1
+              color="text-light"
+            >
+              This may take a few minutes.
+            </P>
+          </Div>
+          <StatusChip
+            loading={!alive}
+            error={error}
+            progressMessage="In progress"
+            size="large"
+          />
+        </Flex>
+        <ProgressBar
+          mode={error || alive ? 'determinate' : 'indeterminate'}
+          marginTop="medium"
+          progress={error ? 0 : alive ? 100 : null}
+          backgroundColor={error ? 'icon-error' : 'fill-two'}
+        />
+        <Flex
+          marginTop="xlarge"
+          paddingVertical="medium"
+          align="center"
+          justify="space-between"
+          borderBottom="1px solid border-fill-two"
+        >
+          <P body2>
+            Initialized
           </P>
-          <P
-            body1
-            color="text-light"
-          >
-            This may take a few minutes.
+          <StatusChip
+            loading={!initialized}
+            error={error}
+          />
+        </Flex>
+        <Flex
+          paddingVertical="medium"
+          align="center"
+          justify="space-between"
+          borderBottom="1px solid border-fill-two"
+        >
+          <P body2>
+            Pod scheduled
           </P>
-        </Div>
-        <StatusChip
-          loading={!alive}
-          error={error}
-          progressMessage="In progress"
-          size="large"
-        />
-      </Flex>
-      <ProgressBar
-        mode={error || alive ? 'determinate' : 'indeterminate'}
-        marginTop="medium"
-        progress={error ? 0 : alive ? 100 : null}
-        backgroundColor={error ? 'icon-error' : 'fill-two'}
-      />
-      <Flex
-        marginTop="xlarge"
-        paddingVertical="medium"
-        align="center"
-        justify="space-between"
-        borderBottom="1px solid border-fill-two"
-      >
-        <P body2>
-          Initialized
-        </P>
-        <StatusChip
-          loading={!initialized}
-          error={error}
-        />
-      </Flex>
-      <Flex
-        paddingVertical="medium"
-        align="center"
-        justify="space-between"
-        borderBottom="1px solid border-fill-two"
-      >
-        <P body2>
-          Pod scheduled
-        </P>
-        <StatusChip
-          loading={!podScheduled}
-          error={error}
-        />
-      </Flex>
-      <Flex
-        paddingVertical="medium"
-        align="center"
-        justify="space-between"
-        borderBottom="1px solid border-fill-two"
-      >
-        <P body2>
-          Containers ready
-        </P>
-        <StatusChip
-          loading={!containersReady}
-          error={error}
-        />
-      </Flex>
-      <Flex
-        paddingVertical="medium"
-        align="center"
-        justify="space-between"
-      >
-        <P body2>
-          Ready
-        </P>
-        <StatusChip
-          loading={!ready}
-          error={error}
-        />
-      </Flex>
-    </OnboardingCard>
+          <StatusChip
+            loading={!podScheduled}
+            error={error}
+          />
+        </Flex>
+        <Flex
+          paddingVertical="medium"
+          align="center"
+          justify="space-between"
+          borderBottom="1px solid border-fill-two"
+        >
+          <P body2>
+            Containers ready
+          </P>
+          <StatusChip
+            loading={!containersReady}
+            error={error}
+          />
+        </Flex>
+        <Flex
+          paddingVertical="medium"
+          align="center"
+          justify="space-between"
+        >
+          <P body2>
+            Ready
+          </P>
+          <StatusChip
+            loading={!ready}
+            error={error}
+          />
+        </Flex>
+      </OnboardingCard>
+    </Flex>
   )
 }

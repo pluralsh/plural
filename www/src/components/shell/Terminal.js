@@ -166,8 +166,8 @@ export function Shell({ shell }) {
 
 export function Terminal() {
   const { data } = useQuery(CLOUD_SHELL_QUERY, { pollInterval: 5000, fetchPolicy: 'cache-and-network' })
-  const { shell } = data
-  const { alive, status } = shell
+  const { shell } = data || {}
+  const { alive, status } = shell || {}
 
   if (!status) {
     return (

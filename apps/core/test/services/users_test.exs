@@ -66,10 +66,21 @@ defmodule Core.Services.UsersTest do
       assert_receive {:event, %PubSub.UserUpdated{item: ^updated}}
     end
 
-    test "you cannot make yourself an admin" do
-      user = insert(:user)
+    test "password updates require confirmation" do
+      {:ok, user} = Users.create_user(%{
+        name: "some user",
+        password: "superstrongpassword",
+        email: "something@example.com"
+      })
 
-      {:ok, _} = Users.update_user(%{password: "superstrongpassword"}, user)
+      {:error, _} = Users.update_user(%{password: "anewstrongpassword", confirm: "whoops"}, user)
+      {:ok, _} = Users.update_user(%{password: "anewstrongpassword", confirm: "superstrongpassword"}, user)
+    end
+
+    test "you cannot make yourself an admin" do
+      user = build(:user)
+             |> with_password("superstrongpassword")
+             |> insert()
 
       {:error, _} = Users.update_user(%{name: "real user", roles: %{admin: true}}, user)
     end

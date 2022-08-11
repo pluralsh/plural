@@ -2,7 +2,6 @@ import { useQuery } from '@apollo/client'
 import { Flex, P } from 'honorable'
 import moment from 'moment'
 import { Button, Chip, PageTitle } from 'pluralsh-design-system'
-import LoadingSpinner from 'pluralsh-design-system/dist/components/LoadingSpinner'
 import {
   ReactElement, useContext, useEffect, useState,
 } from 'react'
@@ -53,12 +52,12 @@ export function ClustersContent(): ReactElement | null {
   if (!data) {
     return (
       <LoopingLogo
-        nofill={undefined}
-        darkbg={undefined}
+        nofill={false}
+        darkbg={false}
         height={undefined}
         scale={undefined}
-        dark={undefined}
-        still={undefined}
+        dark={false}
+        still={false}
       />
     )
   }

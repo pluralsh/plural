@@ -1,11 +1,10 @@
-import { QueryResult, useQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client'
 import { EmptyState } from 'components/utils/EmptyState'
 import { Box } from 'grommet'
 import {
   A, Br, Flex, Span,
 } from 'honorable'
-import { Button } from 'pluralsh-design-system'
-import LoadingSpinner from 'pluralsh-design-system/dist/components/LoadingSpinner'
+import { Button, LoadingSpinner } from 'pluralsh-design-system'
 import { ReactElement, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
@@ -13,11 +12,11 @@ import QueueContext from '../../contexts/QueueContext'
 import {
   ResponsiveLayoutContentContainer, ResponsiveLayoutSidecarContainer, ResponsiveLayoutSidenavContainer, ResponsiveLayoutSpacer,
 } from '../layout/ResponsiveLayout'
+import { LoopingLogo } from '../utils/AnimatedLogo'
 
 import { ClustersContent, Upgrade } from './ClustersContent'
 import { ClustersSidecar } from './ClustersSidecar'
 import { ClustersSidenav } from './ClustersSidenav'
-
 import { QUEUES, UPGRADE_QUEUE_SUB } from './queries'
 
 export interface QueueList {
@@ -44,7 +43,11 @@ export interface Queue {
 
 export function Clusters(): ReactElement | null {
   const [queue, setQueue] = useState({} as Queue)
-  const { data, loading, subscribeToMore } = useQuery<QueueList>(QUEUES, { fetchPolicy: 'cache-and-network' })
+  const {
+    data,
+    loading,
+    subscribeToMore,
+  } = useQuery<QueueList>(QUEUES, { fetchPolicy: 'cache-and-network' })
 
   useEffect(() => subscribeToMore<QueueSubscription>({
     document: UPGRADE_QUEUE_SUB,
@@ -62,7 +65,24 @@ export function Clusters(): ReactElement | null {
 
   useEffect(() => (data ? setQueue(data?.upgradeQueues[0]) : data), [data])
 
-  if (loading) return <LoadingSpinner />
+  if (loading) {
+    return (
+      <Flex
+        align="center"
+        justify="center"
+        flexGrow={1}
+      >
+        <LoopingLogo
+          nofill={false}
+          darkbg={false}
+          height={undefined}
+          scale={undefined}
+          dark={false}
+          still={false}
+        />
+      </Flex>
+    )
+  }
 
   if (!data || !queue) {
     return (

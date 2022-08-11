@@ -4319,9 +4319,9 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:*, @types/node@npm:^18.0.6":
-  version: 18.6.5
-  resolution: "@types/node@npm:18.6.5"
-  checksum: e3e66c9a84b94010a57c1b9dac882c08484278d74f9d120dbe6a3e45d00740d178bd1d34a5deee28197c94b9f4359153b637bab9b305328e865027e9987a0f3d
+  version: 18.7.1
+  resolution: "@types/node@npm:18.7.1"
+  checksum: f1e2b701b107f97be01da4c46845cd23bcdcb2865f9abbb2847546d09587e726ea207daca6f0d1e72196875ef8c62feeeff5f1c1f2070445acd6d1a61d815c7c
   languageName: node
   linkType: hard
 
@@ -6781,9 +6781,9 @@ __metadata:
   linkType: hard
 
 "colord@npm:^2.9.1, colord@npm:^2.9.2":
-  version: 2.9.2
-  resolution: "colord@npm:2.9.2"
-  checksum: 2aa6a9b3abbce74ba3c563886cfeb433ea0d7df5ad6f4a560005eddab1ddf7c0fc98f39b09b599767a19c86dd3837b77f66f036e479515d4b17347006dbd6d9f
+  version: 2.9.3
+  resolution: "colord@npm:2.9.3"
+  checksum: 95d909bfbcfd8d5605cbb5af56f2d1ce2b323990258fd7c0d2eb0e6d3bb177254d7fb8213758db56bb4ede708964f78c6b992b326615f81a18a6aaf11d64c650
   languageName: node
   linkType: hard
 
@@ -8216,9 +8216,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.4.202":
-  version: 1.4.213
-  resolution: "electron-to-chromium@npm:1.4.213"
-  checksum: 63953b2db5f87ef11caad8c57bba69300cc5ab1bf363d5758c48187fe9e414e971e470bfc961540c954a2f966fadccce29bdbfa60f5bd6c4b5499f16404d0846
+  version: 1.4.215
+  resolution: "electron-to-chromium@npm:1.4.215"
+  checksum: 9cee61cc47615f75bc8433eddc6f058cc2a503561bb28d3776acc47d2cb37a0d654c4d63adf715c81ebe9d638b5bdc1dba80eae4a187df3e35244d4b3dba0640
   languageName: node
   linkType: hard
 
@@ -14693,9 +14693,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pluralsh-design-system@npm:1.150.0":
-  version: 1.150.0
-  resolution: "pluralsh-design-system@npm:1.150.0"
+"pluralsh-design-system@npm:1.152.0":
+  version: 1.152.0
+  resolution: "pluralsh-design-system@npm:1.152.0"
   dependencies:
     "@floating-ui/react-dom-interactions": 0.8.1
     "@react-aria/button": 3.6.0
@@ -14723,7 +14723,7 @@ __metadata:
     react-dom: ">=16.0.0"
     react-transition-group: ">=4.4.2"
     styled-components: ">=5.3.5"
-  checksum: 2d13cf4a7c496d8cf7b1669512994c3ccecc8e4bc0e989078bfbb55e4146f042582c8de23fa407e48793cfbcd56f6eb5394a815779190cae2ff7556b4e3c5831
+  checksum: c7960db66e4979478af2853d58680d468ed74d7ab2f15534bd109ccf8d48553943ef05872fbb199df686cfa5b8e2e580776774796f1943b2f3a7bf44c3296680
   languageName: node
   linkType: hard
 
@@ -17248,8 +17248,8 @@ __metadata:
   linkType: hard
 
 "rollup@npm:^2.43.1":
-  version: 2.77.2
-  resolution: "rollup@npm:2.77.2"
+  version: 2.77.3
+  resolution: "rollup@npm:2.77.3"
   dependencies:
     fsevents: ~2.3.2
   dependenciesMeta:
@@ -17257,7 +17257,7 @@ __metadata:
       optional: true
   bin:
     rollup: dist/bin/rollup
-  checksum: 5a84fb98a6f858906bceba091430442f6c1f362b07c5fa9123b708f87e39f52640e34a189cd9a1776ceae61300055c78ba648205fa03188451539ebeb19797df
+  checksum: b179c68249584565ddb5664a241e8e48c293b2207718d885b08ee25797d98857a383f06b544bb89819407da5a71557f4713309a278f61c4778bb32b1d3321a1c
   languageName: node
   linkType: hard
 
@@ -19849,8 +19849,8 @@ __metadata:
   linkType: hard
 
 "webpack-dev-server@npm:^4.6.0":
-  version: 4.9.3
-  resolution: "webpack-dev-server@npm:4.9.3"
+  version: 4.10.0
+  resolution: "webpack-dev-server@npm:4.10.0"
   dependencies:
     "@types/bonjour": ^3.5.9
     "@types/connect-history-api-fallback": ^1.3.5
@@ -19888,7 +19888,7 @@ __metadata:
       optional: true
   bin:
     webpack-dev-server: bin/webpack-dev-server.js
-  checksum: 845f2cc8e79a348ee7b17080eef9b332c675540888e0bc97ec6b62174882aca7995eaa7a3f49cfdd9af186da22f2f335fd03cb3c55cd49e387c8a3dc59700d66
+  checksum: ef9efac45e97cd3f258ab453039ff75423451e2cf5ee98e8cecbac24c33e5c9e1024ef1a3bca0ba12533a1d5fc0601015addef489cdb68fa8f5f2570d2220983
   languageName: node
   linkType: hard
 
@@ -20439,7 +20439,7 @@ __metadata:
     moment: 2.29.4
     phoenix: 1.6.11
     pluralsh-absinthe-socket-apollo-link: 0.2.0
-    pluralsh-design-system: 1.150.0
+    pluralsh-design-system: 1.152.0
     postcss-import: 8.2.0
     prop-types: 15.8.1
     query-string: 7.1.1

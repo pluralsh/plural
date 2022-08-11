@@ -4,7 +4,7 @@ import { Box } from 'grommet'
 import {
   A, Br, Flex, Span,
 } from 'honorable'
-import { Button, LoadingSpinner } from 'pluralsh-design-system'
+import { Button } from 'pluralsh-design-system'
 import { ReactElement, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 

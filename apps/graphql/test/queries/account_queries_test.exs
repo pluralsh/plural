@@ -54,6 +54,19 @@ defmodule GraphQl.AccountQueriesTest do
       assert from_connection(found)
              |> ids_equal(members)
     end
+
+    test "users outside the roles account cannot view", %{user: user} do
+      group = insert(:group)
+      insert_list(3, :group_member, group: group)
+
+      {:ok, %{errors: [_ | _]}} = run_query("""
+        query members($id: ID!) {
+          groupMembers(first: 5, groupId: $id) {
+            edges { node { id } }
+          }
+        }
+      """, %{"id" => group.id}, %{current_user: user})
+    end
   end
 
   describe "invite" do
@@ -82,6 +95,16 @@ defmodule GraphQl.AccountQueriesTest do
       """, %{"id" => role.id}, %{current_user: user})
 
       assert found["id"] == role.id
+    end
+
+    test "users outside the roles account cannot view", %{user: user} do
+      role = insert(:role)
+
+      {:ok, %{errors: [_ | _]}} = run_query("""
+        query Role($id: ID!) {
+          role(id: $id) { id }
+        }
+      """, %{"id" => role.id}, %{current_user: user})
     end
   end
 

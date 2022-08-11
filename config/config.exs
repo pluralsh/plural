@@ -143,4 +143,8 @@ config :core, Core.Clients.Hydra,
 
 config :rtc, :flushable, false
 
+config :hammer,
+  backend: {Hammer.Backend.ETS, [expiry_ms: 60_000 * 60,
+                                 cleanup_interval_ms: 60_000 * 10]}
+
 import_config "#{Mix.env()}.exs"

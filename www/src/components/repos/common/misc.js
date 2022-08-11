@@ -140,14 +140,14 @@ export function PackageVersionPicker({
                 maxVisible={1}
                 showExtra
                 chips={[
-                  v.id === installed?.version?.id && (
+                  ...(v.id === installed?.version?.id ? (
                     <Chip
                       severity="success"
                       size="small"
                     >
                       Installed
                     </Chip>
-                  ),
+                  ) : []),
                   ...v.tags.map(({ tag }, i) => (
                     <Chip
                       key={i}

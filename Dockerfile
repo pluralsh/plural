@@ -5,15 +5,8 @@ FROM bitwalker/alpine-elixir:1.11.4 AS builder
 ARG APP_NAME
 # The environment to build with
 ARG MIX_ENV=prod
-# Set this to true if this release is not a Phoenix app
-ARG SKIP_PHOENIX=true
-# If you are using an umbrella project, you can change this
-# argument to the directory the Phoenix app is in so that the assets
-# can be built
-ARG PHOENIX_SUBDIR=.
 
-ENV SKIP_PHOENIX=${SKIP_PHOENIX} \
-    APP_NAME=${APP_NAME} \
+ENV APP_NAME=${APP_NAME} \
     MIX_ENV=${MIX_ENV}
 
 # By convention, /opt is typically used for applications
@@ -23,8 +16,6 @@ WORKDIR /opt/app
 RUN apk update --allow-untrusted && \
   apk upgrade --no-cache && \
   apk add --no-cache \
-    nodejs \
-    yarn \
     git \
     build-base && \
   mix local.rebar --force && \
@@ -37,17 +28,6 @@ COPY . .
 RUN git config --global --add safe.directory '/opt/app'
 
 RUN mix do deps.get, compile
-
-# This step builds assets for the Phoenix app (if there is one)
-# If you aren't building a Phoenix app, pass `--build-arg SKIP_PHOENIX=true`
-# This is mostly here for demonstration purposes
-RUN if [ ! "$SKIP_PHOENIX" = "true" ]; then \
-  cd ${PHOENIX_SUBDIR}/assets && \
-  yarn install && \
-  yarn deploy && \
-  cd - && \
-  mix phx.digest; \
-fi
 
 RUN \
   mkdir -p /opt/built && \

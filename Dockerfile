@@ -33,6 +33,9 @@ RUN apk update --allow-untrusted && \
 # This copies our app source code into the build container
 COPY . .
 
+# needed so that we can get the app version from the git tag
+RUN git config --global --add safe.directory '/opt/app'
+
 RUN mix do deps.get, compile
 
 # This step builds assets for the Phoenix app (if there is one)

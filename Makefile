@@ -2,7 +2,7 @@
 
 GCP_PROJECT ?= pluralsh
 APP_NAME ?= plural
-APP_VSN ?= `cat VERSION`
+APP_VSN ?= `git describe`
 BUILD ?= `git rev-parse --short HEAD`
 DKR_HOST ?= dkr.plural.sh
 dep ?= forge-core

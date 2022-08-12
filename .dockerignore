@@ -3,7 +3,6 @@ deps/
 charts/
 .vscode/
 log/
-.git/
 .gitignore
 .dockerignore
 Dockerfile*

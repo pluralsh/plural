@@ -3,8 +3,6 @@ FROM bitwalker/alpine-elixir:1.11.4 AS builder
 # The following are build arguments used to change variable parts of the image.
 # The name of your application/release (required)
 ARG APP_NAME
-# The version of the application we are building (required)
-ARG APP_VSN
 # The environment to build with
 ARG MIX_ENV=prod
 # Set this to true if this release is not a Phoenix app
@@ -16,7 +14,6 @@ ARG PHOENIX_SUBDIR=.
 
 ENV SKIP_PHOENIX=${SKIP_PHOENIX} \
     APP_NAME=${APP_NAME} \
-    APP_VSN=${APP_VSN} \
     MIX_ENV=${MIX_ENV}
 
 # By convention, /opt is typically used for applications
@@ -52,7 +49,7 @@ fi
 RUN \
   mkdir -p /opt/built && \
   mix distillery.release --name ${APP_NAME} && \
-  cp _build/${MIX_ENV}/rel/${APP_NAME}/releases/${APP_VSN}/${APP_NAME}.tar.gz /opt/built && \
+  cp _build/${MIX_ENV}/rel/${APP_NAME}/releases/*/${APP_NAME}.tar.gz /opt/built && \
   cd /opt/built && \
   tar -xzf ${APP_NAME}.tar.gz && \
   rm ${APP_NAME}.tar.gz

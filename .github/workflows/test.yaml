@@ -13,22 +13,39 @@ jobs:
       matrix:
         app: [ plural, cron, worker, rtc ]
     steps:
-      - uses: actions/checkout@v3
-      - id: version
-        uses: juliangruber/read-file-action@v1
+      - name: Checkout
+        uses: actions/checkout@v3
         with:
-          path: ./VERSION
-      - uses: docker/setup-qemu-action@v2
-      - uses: docker/setup-buildx-action@v2
-      - name: Build ${{ matrix.app }} image
-        uses: docker/build-push-action@v2
+          fetch-depth: 0
+      - name: Docker meta ${{ matrix.app }}
+        id: meta
+        uses: docker/metadata-action@v4
         with:
-          context: .
-          file: ./Dockerfile
+          # list of Docker images to use as base name for tags
+          images: |
+            dkr.plural.sh/plural/${{ matrix.app }}
+            gcr.io/pluralsh/${{ matrix.app }}
+            ghcr.io/pluralsh/${{ matrix.app }}
+          # generate Docker tags based on the following events/attributes
+          tags: |
+            type=semver,pattern={{version}}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Test Build ${{ matrix.app }} image
+        uses: docker/build-push-action@v3
+        with:
+          context: "."
+          file: "./Dockerfile"
           push: false
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          platforms: linux/amd64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           build-args: |
             APP_NAME=${{ matrix.app }}
-            APP_VSN=${{ steps.version.outputs.content }}
             GIT_COMMIT=$GITHUB_SHA
   test:
     name: Test
@@ -69,64 +86,64 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }} # required
         if: always()
-  publish:
-    name: Publish
-    runs-on: ubuntu-latest
-    needs: test
-    if: github.ref == 'refs/heads/master'
-    strategy:
-      matrix:
-        app: [plural, cron, worker, rtc, www]
-    permissions:
-      contents: 'read'
-      id-token: 'write'
-    steps:
-    - uses: actions/checkout@v2
-    - uses: google-github-actions/auth@v0
-      with:
-        workload_identity_provider: 'projects/${{ secrets.GOOGLE_PROJECT_ID }}/locations/global/workloadIdentityPools/github/providers/github'
-        service_account: 'terraform@pluralsh.iam.gserviceaccount.com'
-        token_format: 'access_token'
-        create_credentials_file: true
-    - uses: google-github-actions/setup-gcloud@v0.6.0
-    - name: Login to gcr
-      run: gcloud auth configure-docker -q
-    - name: Login to plural registry
-      uses: docker/login-action@v1
-      with:
-        registry: dkr.plural.sh
-        username: mjg@plural.sh
-        password: ${{ secrets.PLURAL_ACCESS_TOKEN }}
-    - name: publish ${{ matrix.app }}
-      run: |
-        make build APP_NAME=${{ matrix.app }} GIT_COMMIT=$GITHUB_SHA
-        make push APP_NAME=${{ matrix.app }}
-    - uses: 8398a7/action-slack@v3
-      with:
-        status: ${{ job.status }}
-        fields: workflow,job,repo,message,commit,author
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }} # required
-      if: always()
-  deploy:
-    name: Deploy
-    runs-on: ubuntu-latest
-    needs: publish
-    steps:
-    - uses: actions/checkout@v2
-    - uses: hashicorp/setup-terraform@v1
-    - uses: azure/setup-helm@v1
-      with:
-        version: latest
-    - name: installing plural
-      uses: pluralsh/setup-plural@v0.1.2
-      with: 
-        config: ${{ secrets.PLURAL_CONF }}
-    - run: make deploy
-    - uses: 8398a7/action-slack@v3
-      with:
-        status: ${{ job.status }}
-        fields: workflow,job,repo,message,commit,author
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }} # required
-      if: always()
+  # publish:
+  #   name: Publish
+  #   runs-on: ubuntu-latest
+  #   needs: test
+  #   if: github.ref == 'refs/heads/master'
+  #   strategy:
+  #     matrix:
+  #       app: [plural, cron, worker, rtc, www]
+  #   permissions:
+  #     contents: 'read'
+  #     id-token: 'write'
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #   - uses: google-github-actions/auth@v0
+  #     with:
+  #       workload_identity_provider: 'projects/${{ secrets.GOOGLE_PROJECT_ID }}/locations/global/workloadIdentityPools/github/providers/github'
+  #       service_account: 'terraform@pluralsh.iam.gserviceaccount.com'
+  #       token_format: 'access_token'
+  #       create_credentials_file: true
+  #   - uses: google-github-actions/setup-gcloud@v0.6.0
+  #   - name: Login to gcr
+  #     run: gcloud auth configure-docker -q
+  #   - name: Login to plural registry
+  #     uses: docker/login-action@v1
+  #     with:
+  #       registry: dkr.plural.sh
+  #       username: mjg@plural.sh
+  #       password: ${{ secrets.PLURAL_ACCESS_TOKEN }}
+  #   - name: publish ${{ matrix.app }}
+  #     run: |
+  #       make build APP_NAME=${{ matrix.app }} GIT_COMMIT=$GITHUB_SHA
+  #       make push APP_NAME=${{ matrix.app }}
+  #   - uses: 8398a7/action-slack@v3
+  #     with:
+  #       status: ${{ job.status }}
+  #       fields: workflow,job,repo,message,commit,author
+  #     env:
+  #       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }} # required
+  #     if: always()
+  # deploy:
+  #   name: Deploy
+  #   runs-on: ubuntu-latest
+  #   needs: publish
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #   - uses: hashicorp/setup-terraform@v1
+  #   - uses: azure/setup-helm@v1
+  #     with:
+  #       version: latest
+  #   - name: installing plural
+  #     uses: pluralsh/setup-plural@v0.1.2
+  #     with: 
+  #       config: ${{ secrets.PLURAL_CONF }}
+  #   - run: make deploy
+  #   - uses: 8398a7/action-slack@v3
+  #     with:
+  #       status: ${{ job.status }}
+  #       fields: workflow,job,repo,message,commit,author
+  #     env:
+  #       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }} # required
+  #     if: always()

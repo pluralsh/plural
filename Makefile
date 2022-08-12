@@ -18,8 +18,8 @@ ifeq ($(APP_NAME), www)
 							-t gcr.io/$(GCP_PROJECT)/plural-www:`cat ../VERSION` \
 							-t $(DKR_HOST)/plural/plural-www:`cat ../VERSION` .
 else
-	docker build --build-arg APP_NAME=$(APP_NAME) --build-arg GIT_COMMIT=$(GIT_COMMIT) \
-		--build-arg APP_VSN=$(APP_VSN) \
+	docker build --build-arg APP_NAME=$(APP_NAME) \
+		--build-arg GIT_COMMIT=$(GIT_COMMIT) \
 		-t $(APP_NAME):$(APP_VSN) \
 		-t $(APP_NAME):latest \
 		-t gcr.io/$(GCP_PROJECT)/$(APP_NAME):$(APP_VSN) \

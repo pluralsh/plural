@@ -1,10 +1,45 @@
 defmodule Api.MixProject do
   use Mix.Project
 
+  defp version do
+    case :file.consult('hex_metadata.config') do
+      {:ok, data} ->
+        {"version", version} = List.keyfind(data, "version", 0)
+        version
+      _ ->
+        version =
+          case System.cmd("git", ~w[describe --dirty=+dirty]) do
+            {version, 0} ->
+              String.trim_leading(String.trim(version), "v")
+
+            {_, code} ->
+              Mix.shell().error("Git exited with code #{code}, falling back to 0.0.0")
+
+              "0.0.0"
+          end
+
+        case Version.parse(version) do
+          {:ok, %Version{pre: ["pre" <> _ | _]} = version} ->
+            to_string(version)
+
+          {:ok, %Version{pre: []} = version} ->
+            to_string(version)
+
+          {:ok, %Version{patch: patch, pre: pre} = version} ->
+            to_string(%{version | patch: patch + 1, pre: ["dev" | pre]})
+
+          :error ->
+            Mix.shell().error("Failed to parse #{version}, falling back to 0.0.0")
+
+            "0.0.0"
+        end
+    end
+  end
+
   def project do
     [
       app: :api,
-      version: "0.1.0",
+      version: version(),
       build_path: "../../_build",
       config_path: "../../config/config.exs",
       deps_path: "../../deps",

@@ -31,7 +31,7 @@ environment :prod do
 end
 
 release :plural do
-  set version: current_version(:plural)
+  set version: current_version(:api)
   set applications: [
     :runtime_tools,
     api: :permanent,

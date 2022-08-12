@@ -23,9 +23,11 @@ defmodule GraphQl.Resolvers.Account do
     |> paginate(args)
   end
 
-  def list_group_members(%{group_id: group_id} = args, _) do
-    GroupMember.for_group(group_id)
-    |> paginate(args)
+  def list_group_members(%{group_id: group_id} = args, %{context: %{current_user: user}}) do
+    with {:ok, _} <- Accessible.accessible(group_id, user, :group) do
+      GroupMember.for_group(group_id)
+      |> paginate(args)
+    end
   end
 
   def list_roles(args, %{context: %{current_user: %{account_id: aid}}}) do
@@ -67,8 +69,8 @@ defmodule GraphQl.Resolvers.Account do
     |> Core.Policies.Account.allow(user, :access)
   end
 
-  def resolve_role(%{id: id}, _),
-    do: {:ok, Accounts.get_role(id)}
+  def resolve_role(%{id: id}, %{context: %{current_user: user}}),
+    do: Accessible.accessible(id, user, :role)
 
   def resolve_invite(%{id: secure_id}, _),
     do: {:ok, Accounts.get_invite(secure_id)}

@@ -15,13 +15,14 @@ defmodule Core.Services.Accounts do
     DomainMapping
   }
 
-  @type account_resp :: {:ok, Account.t} | {:error, term}
-  @type group_resp :: {:ok, Group.t} | {:error, term}
-  @type group_member_resp :: {:ok, GroupMember.t} | {:error, term}
-  @type invite_resp :: {:ok, Invite.t} | {:error, term}
-  @type role_resp :: {:ok, Role.t} | {:error, term}
-  @type user_resp :: {:ok, User.t} | {:error, term}
-  @type webhook_resp :: {:ok, IntegrationWebhook.t} | {:error, term}
+  @type error :: {:error, term}
+  @type account_resp :: {:ok, Account.t} | error
+  @type group_resp :: {:ok, Group.t} | error
+  @type group_member_resp :: {:ok, GroupMember.t} | error
+  @type invite_resp :: {:ok, Invite.t} | error
+  @type role_resp :: {:ok, Role.t} | error
+  @type user_resp :: {:ok, User.t} | error
+  @type webhook_resp :: {:ok, IntegrationWebhook.t} | error
 
   def get_account!(id), do: Core.Repo.get!(Account, id)
 

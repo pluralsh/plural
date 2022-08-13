@@ -5,11 +5,13 @@ import rehypeRaw from 'rehype-raw'
 
 import MultilineCode from '../utils/Code'
 
-function MdImg({ src, gitUrl, ...props }) {
+function MdImg({
+  src, gitUrl, mainBranch = 'master', ...props
+}) {
   // Convert local image paths to full path on github
   // Only works if primary git branch is named "master"
-  if (src && !src.match(/^https*/)) {
-    src = `${gitUrl}/raw/master/${src}`
+  if (gitUrl && src && !src.match(/^https*/)) {
+    src = `${gitUrl}/raw/${mainBranch}/${src}`
   }
 
   return (
@@ -71,7 +73,7 @@ const toReactMarkdownComponent = ({ component: Component, props }) =>
       />
     )
   }
-export default memo(({ text, gitUrl }) => (
+export default memo(({ text, gitUrl, mainBranch }) => (
   <Div>
     <ReactMarkdown
       rehypePlugins={[rehypeRaw]}
@@ -152,6 +154,7 @@ export default memo(({ text, gitUrl }) => (
               ...props,
               ...{
                 gitUrl,
+                mainBranch,
                 style: { maxWidth: '100%' },
               },
             }}

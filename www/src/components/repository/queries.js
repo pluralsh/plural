@@ -37,7 +37,8 @@ export const REPOSITORY_QUERY = gql`
         name: tag
       }
       readme
-      git_url
+      mainBranch
+      gitUrl
       homepage
       license {
         name

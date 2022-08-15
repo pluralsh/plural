@@ -37,8 +37,8 @@ defmodule Core.Services.Dns do
   def update_domain(attrs, id, %User{} = user) do
     Core.Repo.get(DnsDomain, id)
     |> Core.Repo.preload(access_policy: :bindings)
-    |> DnsDomain.update_changeset(attrs)
     |> allow(user, :edit)
+    |> when_ok(&DnsDomain.update_changeset(&1, attrs))
     |> when_ok(:update)
   end
 

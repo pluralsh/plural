@@ -4,8 +4,7 @@ import { Box } from 'grommet'
 import {
   A, Br, Flex, Span,
 } from 'honorable'
-import { Button } from 'pluralsh-design-system'
-import LoadingSpinner from 'pluralsh-design-system/dist/components/LoadingSpinner'
+import { Button, LoopingLogo } from 'pluralsh-design-system'
 import { ReactElement, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
@@ -17,8 +16,18 @@ import {
 import { ClustersContent, Upgrade } from './ClustersContent'
 import { ClustersSidecar } from './ClustersSidecar'
 import { ClustersSidenav } from './ClustersSidenav'
-
 import { QUEUES, UPGRADE_QUEUE_SUB } from './queries'
+
+export interface QueueList {
+  upgradeQueues: Array<Queue>;
+}
+
+export interface QueueSubscription {
+  upgradeQueueDelta: {
+    delta: 'CREATE',
+    payload: Queue;
+  }
+}
 
 export interface Queue {
   acked: string;
@@ -33,11 +42,15 @@ export interface Queue {
 
 export function Clusters(): ReactElement | null {
   const [queue, setQueue] = useState({} as Queue)
-  const { data, loading, subscribeToMore } = useQuery(QUEUES, { fetchPolicy: 'cache-and-network' })
+  const {
+    data,
+    loading,
+    subscribeToMore,
+  } = useQuery<QueueList>(QUEUES, { fetchPolicy: 'cache-and-network' })
 
-  useEffect(() => subscribeToMore({
+  useEffect(() => subscribeToMore<QueueSubscription>({
     document: UPGRADE_QUEUE_SUB,
-    updateQuery: ({ upgradeQueues, ...prev }, {
+    updateQuery: (prev, {
       subscriptionData: {
         data: {
           upgradeQueueDelta: {
@@ -46,12 +59,22 @@ export function Clusters(): ReactElement | null {
           },
         },
       },
-    }) => (delta === 'CREATE' ? { ...prev, upgradeQueues: [payload, ...upgradeQueues] } : prev),
+    }) => (delta === 'CREATE' ? { ...prev, upgradeQueues: [payload, ...prev.upgradeQueues] } : prev),
   }), [subscribeToMore])
 
   useEffect(() => (data ? setQueue(data?.upgradeQueues[0]) : data), [data])
 
-  if (loading) return <LoadingSpinner />
+  if (loading) {
+    return (
+      <Flex
+        align="center"
+        justify="center"
+        flexGrow={1}
+      >
+        <LoopingLogo />
+      </Flex>
+    )
+  }
 
   if (!data || !queue) {
     return (
@@ -96,7 +119,10 @@ export function Clusters(): ReactElement | null {
         paddingBottom="medium"
       >
         <ResponsiveLayoutSidenavContainer>
-          <ClustersSidenav />
+          <ClustersSidenav
+            onQueueChange={setQueue}
+            queues={data.upgradeQueues}
+          />
         </ResponsiveLayoutSidenavContainer>
         <ResponsiveLayoutSpacer />
         <ResponsiveLayoutContentContainer>

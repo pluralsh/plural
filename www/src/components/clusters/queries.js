@@ -4,7 +4,7 @@ import { PageInfo } from '../../models/misc'
 import { RolloutFragment, UpgradeFragment, UpgradeQueueFragment } from '../../models/upgrades'
 
 export const QUEUES = gql`
-  query {
+  query Queues {
     upgradeQueues {
       ...UpgradeQueueFragment
     }

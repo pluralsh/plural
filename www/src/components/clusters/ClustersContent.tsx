@@ -1,8 +1,9 @@
 import { useQuery } from '@apollo/client'
 import { Flex, P } from 'honorable'
 import moment from 'moment'
-import { Button, Chip, PageTitle } from 'pluralsh-design-system'
-import LoadingSpinner from 'pluralsh-design-system/dist/components/LoadingSpinner'
+import {
+  Button, Chip, LoopingLogo, PageTitle,
+} from 'pluralsh-design-system'
 import {
   ReactElement, useContext, useEffect, useState,
 } from 'react'
@@ -32,6 +33,7 @@ interface Repository {
 
 export function ClustersContent(): ReactElement | null {
   const queue = useContext(QueueContext)
+
   const {
     data, loading, fetchMore, subscribeToMore, refetch,
   } = useQuery(QUEUE, {
@@ -48,7 +50,17 @@ export function ClustersContent(): ReactElement | null {
     }),
   }), [queue.id, subscribeToMore])
 
-  if (!data) return <LoadingSpinner />
+  if (!data) {
+    return (
+      <Flex
+        grow={1}
+        justify="center"
+        align="center"
+      >
+        <LoopingLogo />
+      </Flex>
+    )
+  }
 
   return (
     <Flex

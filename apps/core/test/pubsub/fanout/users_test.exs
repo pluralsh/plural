@@ -47,7 +47,7 @@ defmodule Core.PubSub.Fanout.UsersTest do
       {:ok, updated} = Users.update_user(%{name: "changed", email: user.email}, user)
 
       event = %PubSub.UserUpdated{item: updated}
-      :ignore = Core.PubSub.Fanout.fanout(event)
+      :ok = Core.PubSub.Fanout.fanout(event)
     end
   end
 end

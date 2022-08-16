@@ -51,7 +51,7 @@ defimpl Core.PubSub.Fanout, for: Core.PubSub.UserUpdated do
   def fanout(%{item: %{email_changed: true} = user}) do
     Users.create_reset_token(%{type: :email, email: user.email})
   end
-  def fanout(_), do: :ignore
+  def fanout(_), do: :ok
 end
 
 defimpl Core.PubSub.Fanout, for: Core.PubSub.ZoomMeetingCreated do

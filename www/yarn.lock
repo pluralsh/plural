@@ -14952,9 +14952,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pluralsh-design-system@npm:1.150.0":
-  version: 1.150.0
-  resolution: "pluralsh-design-system@npm:1.150.0"
+"pluralsh-design-system@npm:1.155.0":
+  version: 1.155.0
+  resolution: "pluralsh-design-system@npm:1.155.0"
   dependencies:
     "@floating-ui/react-dom-interactions": 0.8.1
     "@react-aria/button": 3.6.0
@@ -14969,9 +14969,12 @@ __metadata:
     "@react-types/shared": 3.13.1
     "@types/chroma-js": 2.1.4
     chroma-js: 2.4.2
+    highlight.js: 11.6.0
     prop-types: 15.8.1
+    react-markdown: 8.0.3
     react-merge-refs: 2.0.1
     react-spring: 9.5.2
+    rehype-raw: 6.1.1
     resize-observer-polyfill: 1.5.1
   peerDependencies:
     "@emotion/react": ">=11.9.3"
@@ -14982,7 +14985,7 @@ __metadata:
     react-dom: ">=16.0.0"
     react-transition-group: ">=4.4.2"
     styled-components: ">=5.3.5"
-  checksum: 2d13cf4a7c496d8cf7b1669512994c3ccecc8e4bc0e989078bfbb55e4146f042582c8de23fa407e48793cfbcd56f6eb5394a815779190cae2ff7556b4e3c5831
+  checksum: 8d798b007df5ec9218b4d5d3f0a2efb1489764c61432e4644ddbd984054ef04bd4cef570bab17e82fd7ae9e82d0e946c55e4b78102bcd102a47b557122dc6945
   languageName: node
   linkType: hard
 
@@ -20698,7 +20701,7 @@ __metadata:
     moment: 2.29.4
     phoenix: 1.6.11
     pluralsh-absinthe-socket-apollo-link: 0.2.0
-    pluralsh-design-system: 1.150.0
+    pluralsh-design-system: 1.155.0
     postcss-import: 8.2.0
     prop-types: 15.8.1
     query-string: 7.1.1

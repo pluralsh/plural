@@ -66,6 +66,16 @@ defmodule Core.Services.UsersTest do
       assert_receive {:event, %PubSub.UserUpdated{item: ^updated}}
     end
 
+    test "email change is properly detected" do
+      user = insert(:user)
+
+      {:ok, updated} = Users.update_user(%{name: "real user"}, user)
+      assert updated.email_changed == false
+
+      {:ok, updated} = Users.update_user(%{email: "changed@example.com"}, user)
+      assert updated.email_changed == true
+    end
+
     test "you cannot make yourself an admin" do
       user = insert(:user)
 
@@ -89,6 +99,7 @@ defmodule Core.Services.UsersTest do
       {:ok, updated} = Users.update_user(%{name: "real user", roles: %{admin: true}}, user.id, admin)
 
       assert updated.name == "real user"
+      assert updated.email_changed == false
       assert updated.roles.admin
 
       assert_receive {:event, %PubSub.UserUpdated{item: ^updated, actor: actor}}

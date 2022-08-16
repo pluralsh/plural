@@ -32,6 +32,7 @@ defmodule Core.Schema.User do
   schema "users" do
     field :name,            :string
     field :email,           :string
+    field :email_changed,   :boolean, virtual: true
     field :login_method,    LoginMethod, default: :password
     field :onboarding,      OnboardingStatus, default: :new
     field :password_hash,   :string
@@ -156,6 +157,14 @@ defmodule Core.Schema.User do
     |> hash_password()
     |> generate_uuid(:avatar_id)
     |> cast_attachments(attrs, [:avatar], allow_urls: true)
+    |> set_email_changed(model)
+  end
+
+  def set_email_changed(cs, model) do
+    case get_change(cs, :email) do
+      email when not is_nil(email) and email != model.email -> put_change(cs, :email_changed, true)
+      _ -> cs
+    end
   end
 
   def roles_changeset(model, attrs \\ %{}) do

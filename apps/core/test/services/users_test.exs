@@ -327,23 +327,27 @@ defmodule Core.Services.UsersTest do
     test "it can realize a reset token" do
       token = insert(:reset_token)
 
-      {:ok, user} = Users.realize_reset_token(token, %{password: "a long password"})
+      {:ok, user} = Users.realize_reset_token(token.external_id, %{password: "a long password"})
 
       assert user.id == token.user.id
 
       {:ok, _} = Users.login_user(user.email, "a long password")
+
+      refute refetch(token)
     end
 
     test "it will confirm an email for email tokens" do
       user = insert(:user)
       token = insert(:reset_token, type: :email, user: user)
 
-      {:ok, reset} = Users.realize_reset_token(token, %{})
+      {:ok, reset} = Users.realize_reset_token(token.external_id, %{})
 
       assert reset.id == token.user.id
       assert reset.email_confirmed
 
       assert_receive {:event, %PubSub.EmailConfirmed{item: ^reset}}
+
+      refute refetch(token)
     end
   end
 

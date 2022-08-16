@@ -58,6 +58,15 @@ defmodule Core.Services.DnsTest do
         access_policy: %{bindings: [%{user_id: other_user.id}]}
       }, domain.id, insert(:user, account: domain.creator.account))
     end
+
+    test "you can't simply add yourself to the policy" do
+      domain = insert(:dns_domain)
+      other_user = insert(:user)
+
+      {:error, _} = Dns.update_domain(%{
+        access_policy: %{bindings: [%{user_id: other_user.id}]}
+      }, domain.id, other_user)
+    end
   end
 
   describe "#delete_domain/3" do

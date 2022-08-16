@@ -15,7 +15,9 @@ defmodule GraphQl.Resolvers.Base do
   defmacro __using__(model: model) do
     quote do
       import GraphQl.Resolvers.Base
+      alias GraphQl.Accessible
       alias unquote(model)
+
       def data(args \\ %{}),
         do: Dataloader.Ecto.new(Core.Repo, query: &query/2, default_params: filter_context(args))
 

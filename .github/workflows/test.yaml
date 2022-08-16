@@ -52,14 +52,14 @@ jobs:
         uses: actions/cache@v2
         with:
           path: deps
-          key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
-          restore-keys: ${{ runner.os }}-mix-
+          key: ${{ runner.os }}-mix-2-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-mix-2
       - name: Restore _build
         uses: actions/cache@v2
         with:
           path: _build
-          key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
-          restore-keys: ${{ runner.os }}-mix-
+          key: ${{ runner.os }}-mix-2-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-mix-2
       - run: mix deps.get
       - run: mix test
       - uses: 8398a7/action-slack@v3

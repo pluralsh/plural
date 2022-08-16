@@ -69,7 +69,10 @@ defmodule Core.Services.UsersTest do
     test "email change is properly detected" do
       user = insert(:user)
 
-      {:ok, updated} = Users.update_user(%{name: "real user"}, user)
+      {:ok, updated} = Users.update_user(%{name: "changed"}, user)
+      assert updated.email_changed == false
+
+      {:ok, updated} = Users.update_user(%{email: user.email}, user)
       assert updated.email_changed == false
 
       {:ok, updated} = Users.update_user(%{email: "changed@example.com"}, user)

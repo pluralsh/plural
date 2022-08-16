@@ -9,10 +9,11 @@ import {
 } from 'grommet-icons'
 import fs from 'filesize'
 
+import { Code } from 'pluralsh-design-system'
+
 import RepositoryContext from '../../contexts/RepositoryContext'
 
 import InfiniteScroller from '../utils/InfiniteScroller'
-import Code from '../utils/Code'
 import { download } from '../../utils/file'
 
 const platformToIcon = {

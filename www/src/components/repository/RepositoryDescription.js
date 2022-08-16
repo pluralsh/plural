@@ -1,10 +1,8 @@
 import { useContext } from 'react'
 import { Flex, P } from 'honorable'
-import { PageTitle } from 'pluralsh-design-system'
+import { Markdown, PageTitle } from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
-
-import RepositoryDescriptionMarkdown from './RepositoryDescriptionMarkdown'
 
 export default function RepositoryDescription() {
   const repository = useContext(RepositoryContext)
@@ -31,7 +29,7 @@ export default function RepositoryDescription() {
         paddingRight="small"
       >
         {repository.readme ? (
-          <RepositoryDescriptionMarkdown
+          <Markdown
             text={repository.readme}
             gitUrl={repository.git_url}
           />

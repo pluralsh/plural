@@ -4,7 +4,7 @@ import {
 import {
   Box, Collapsible, Form, Keyboard, Text,
 } from 'grommet'
-import { Divider, FormField } from 'pluralsh-design-system'
+import { Divider, FormField, StatusOkIcon } from 'pluralsh-design-system'
 import {
   useApolloClient, useLazyQuery, useMutation, useQuery,
 } from '@apollo/client'
@@ -13,7 +13,7 @@ import {
 } from 'react-router-dom'
 import queryString from 'query-string'
 import {
-  A, Article, Button, Div, Flex, H1, H2, Icon, Img, Input, P, Svg,
+  A, Article, Button, Div, Flex, H1, H2, Icon, Img, Input, P,
 } from 'honorable'
 
 import { fetchToken, setToken } from '../../helpers/authentication'
@@ -21,16 +21,19 @@ import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 import { disableState } from '../Login'
 import { PLURAL_FULL_LOGO_WHITE, PLURAL_MARK_WHITE } from '../constants'
 import { ACCEPT_LOGIN } from '../oidc/queries'
-
 import { host } from '../../helpers/hostname'
 
 import {
   getDeviceToken, saveChallenge, saveDeviceToken, wipeChallenge, wipeDeviceToken,
 } from './utils'
-
 import { LoginMethod } from './types'
 import {
-  LOGIN_METHOD, LOGIN_MUTATION, OAUTH_URLS, PASSWORDLESS_LOGIN, POLL_LOGIN_TOKEN, SIGNUP_MUTATION,
+  LOGIN_METHOD,
+  LOGIN_MUTATION,
+  OAUTH_URLS,
+  PASSWORDLESS_LOGIN,
+  POLL_LOGIN_TOKEN,
+  SIGNUP_MUTATION,
 } from './queries'
 import { METHOD_ICONS } from './OauthEnabler'
 import { finishedDeviceLogin } from './DeviceLoginNotif'
@@ -124,35 +127,15 @@ function LoginHighlight({ title, children, ...props }) {
       align="flex-start"
       {...props}
     >
-      <Svg
-        width={32}
-        viewBox="0 0 32 32"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        flexShrink={0}
-        marginTop={2} // Not in the specs but needed somehow
-      >
-        <path
-          d="M16 0C7.2 0 0 7.2 0 16C0 24.8 7.2 32 16 32C24.8 32 32 24.8 32 16C32 7.2 24.8 0 16 0ZM13.8 24L7.4 17.6L9.2 15.8L13.6 20.2L22.6 8.8L24.6 10.4L13.8 24Z"
-          fill="url(#paint0_linear_40_560)"
-        />
-        <defs>
-          <linearGradient
-            id="paint0_linear_40_560"
-            x1="2.98023e-08"
-            y1="0.5"
-            x2="32"
-            y2="32.5"
-            gradientUnits="userSpaceOnUse"
-          >
-            <stop stopColor="#293EFF" />
-            <stop
-              offset="1"
-              stopColor="#29A9FF"
-            />
-          </linearGradient>
-        </defs>
-      </Svg>
+      <StatusOkIcon
+        size={18} // account for the 2px outline
+        marginTop="xxsmall"
+        backgroundColor="white"
+        borderRadius="100%"
+        outline="2px solid fill-one" // cover the white background with outline that can be seen on the outside of the icon
+        outlineOffset={-1}
+        color="border-primary"
+      />
       <Article marginLeft="medium">
         <H2 title2>
           {title}
@@ -345,12 +328,7 @@ export function Login() {
 
   return (
     <LoginPortal>
-      <Div marginBottom="xxlarge">
-        <H1 title1>
-          Welcome to Plural
-        </H1>
-        <P body1>Revolutionize your DevOps workflow</P>
-      </Div>
+      <WelcomeHeader />
       <Div>
         {passwordless && (
           <Div>
@@ -377,7 +355,7 @@ export function Login() {
                   label="Email address"
                   value={email}
                   onChange={open ? null : setEmail}
-                  placeholder="you@example.com"
+                  placeholder="Enter email address"
                 />
                 <Collapsible
                   open={open}
@@ -411,10 +389,10 @@ export function Login() {
               <>
                 <Divider
                   text="OR"
-                  marginVertical="large"
                   color="text-xlight"
-                  marginHorizontal={0}
-                  fontWeight={400}
+                  backgroundColor="border"
+                  marginVertical="large"
+                  overline
                 />
                 <Div>
                   {oAuthData && oAuthData.oauthUrls.map(url => (
@@ -491,12 +469,7 @@ export function Signup() {
 
   return (
     <LoginPortal>
-      <Div marginBottom="xxlarge">
-        <H1 title1>
-          Welcome to Plural
-        </H1>
-        <P body1>Revolutionize your DevOps workflow</P>
-      </Div>
+      <WelcomeHeader />
       <Div>
         <Keyboard onEnter={mutation}>
           <Form onSubmit={mutation}>
@@ -509,29 +482,29 @@ export function Signup() {
               </Div>
             )}
             <LabelledInput
-              label="Email"
+              label="Email address"
               value={email}
               onChange={setEmail}
-              placeholder="you@example.com"
+              placeholder="Enter email address"
             />
             <LabelledInput
-              label="Account"
-              value={account}
-              onChange={setAccount}
-              placeholder="The name of your account (must be unique)"
-            />
-            <LabelledInput
-              label="Name"
+              label="Full name"
               value={name}
               onChange={setName}
-              placeholder="Your name"
+              placeholder="Enter first and last name"
+            />
+            <LabelledInput
+              label="Account name"
+              value={account}
+              onChange={setAccount}
+              placeholder="Enter account name (must be unique)"
             />
             <LabelledInput
               label="Password"
               value={password}
               type="password"
               onChange={setPassword}
-              placeholder="a strong password"
+              placeholder="Enter password"
               caption="10 character minimum"
               hint={reason === 'Password is too short' && (
                 <P
@@ -547,7 +520,7 @@ export function Signup() {
               value={confirm}
               type="password"
               onChange={setConfirm}
-              placeholder="confirm your password"
+              placeholder="Enter password again"
               hint={reason === 'Passwords do not match' && (
                 <P
                   caption
@@ -564,15 +537,16 @@ export function Signup() {
               loading={loading}
               onClick={mutation}
             >
-              Sign Up
+              Create account
             </Button>
           </Form>
         </Keyboard>
         <Divider
           text="OR"
+          color="text-xlight"
+          backgroundColor="border"
           marginVertical="large"
-          marginHorizontal={0}
-          fontWeight={400}
+          overline
         />
         <Div>
           {data && data.oauthUrls.map(url => (
@@ -598,5 +572,16 @@ export function Signup() {
         </P>
       </Div>
     </LoginPortal>
+  )
+}
+
+function WelcomeHeader({ heading = 'Welcome to Plural', subheading = 'We\'re glad to see you here.' }) {
+  return (
+    <Div marginBottom="xxlarge">
+      <H1 title1>
+        {heading}
+      </H1>
+      <P body1>{subheading}</P>
+    </Div>
   )
 }

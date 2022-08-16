@@ -4,7 +4,7 @@ import { Box } from 'grommet'
 import {
   A, Br, Flex, Span,
 } from 'honorable'
-import { Button } from 'pluralsh-design-system'
+import { Button, LoopingLogo } from 'pluralsh-design-system'
 import { ReactElement, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
@@ -12,7 +12,6 @@ import QueueContext from '../../contexts/QueueContext'
 import {
   ResponsiveLayoutContentContainer, ResponsiveLayoutSidecarContainer, ResponsiveLayoutSidenavContainer, ResponsiveLayoutSpacer,
 } from '../layout/ResponsiveLayout'
-import { LoopingLogo } from '../utils/AnimatedLogo'
 
 import { ClustersContent, Upgrade } from './ClustersContent'
 import { ClustersSidecar } from './ClustersSidecar'
@@ -72,14 +71,7 @@ export function Clusters(): ReactElement | null {
         justify="center"
         flexGrow={1}
       >
-        <LoopingLogo
-          nofill={false}
-          darkbg={false}
-          height={undefined}
-          scale={undefined}
-          dark={false}
-          still={false}
-        />
+        <LoopingLogo />
       </Flex>
     )
   }

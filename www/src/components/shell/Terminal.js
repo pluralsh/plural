@@ -6,12 +6,12 @@ import { XTerm } from 'xterm-for-react'
 import { FitAddon } from 'xterm-addon-fit'
 import { useQuery } from '@apollo/client'
 import { Div, Flex } from 'honorable'
-import { Button, ReloadIcon, ScrollIcon } from 'pluralsh-design-system'
+import {
+  Button, LoopingLogo, ReloadIcon, ScrollIcon,
+} from 'pluralsh-design-system'
 import { useResizeDetector } from 'react-resize-detector'
-
 import { debounce } from 'lodash'
 
-import { LoopingLogo } from '../utils/AnimatedLogo'
 import { socket } from '../../helpers/client'
 import TerminalThemeContext from '../../contexts/TerminalThemeContext'
 
@@ -171,7 +171,13 @@ export function Terminal() {
 
   if (!status) {
     return (
-      <LoopingLogo />
+      <Flex
+        grow={1}
+        align="center"
+        justify="center"
+      >
+        <LoopingLogo />
+      </Flex>
     )
   }
 

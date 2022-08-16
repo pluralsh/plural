@@ -1,7 +1,9 @@
 import { useQuery } from '@apollo/client'
 import { Flex, P } from 'honorable'
 import moment from 'moment'
-import { Button, Chip, PageTitle } from 'pluralsh-design-system'
+import {
+  Button, Chip, LoopingLogo, PageTitle,
+} from 'pluralsh-design-system'
 import {
   ReactElement, useContext, useEffect, useState,
 } from 'react'
@@ -9,7 +11,6 @@ import {
 import QueueContext from '../../contexts/QueueContext'
 import { appendConnection, extendConnection } from '../../utils/graphql'
 import { RepoIcon } from '../repos/Repositories'
-import { LoopingLogo } from '../utils/AnimatedLogo'
 import { StandardScroller } from '../utils/SmoothScroller'
 
 import { QUEUE, UPGRADE_SUB } from './queries'
@@ -51,14 +52,13 @@ export function ClustersContent(): ReactElement | null {
 
   if (!data) {
     return (
-      <LoopingLogo
-        nofill={false}
-        darkbg={false}
-        height={undefined}
-        scale={undefined}
-        dark={false}
-        still={false}
-      />
+      <Flex
+        grow={1}
+        justify="center"
+        align="center"
+      >
+        <LoopingLogo />
+      </Flex>
     )
   }
 

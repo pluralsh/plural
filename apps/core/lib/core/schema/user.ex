@@ -162,8 +162,8 @@ defmodule Core.Schema.User do
 
   def set_email_changed(cs, model) do
     case get_change(cs, :email) do
-      email when not is_nil(email) and email != model.email -> put_change(cs, :email_changed, true)
-      _ -> cs
+      email when (not is_nil(email)) and (email != model.email) -> put_change(cs, :email_changed, true)
+      _ -> put_change(cs, :email_changed, false)
     end
   end
 

@@ -403,9 +403,14 @@ defmodule Core.Services.Users do
   end
 
   def realize_reset_token(id, args) when is_binary(id) do
-    get_reset_token!(id)
-    |> Core.Repo.preload([:user])
-    |> realize_reset_token(args)
+    start_transaction()
+    |> add_operation(:token, fn _ -> {:ok, get_reset_token!(id)} end)
+    |> add_operation(:realize, fn %{token: token} ->
+      Core.Repo.preload(token, [:user])
+      |> realize_reset_token(args)
+    end)
+    |> add_operation(:del, fn %{token: token} -> Core.Repo.delete(token) end)
+    |> execute(extract: :realize)
   end
 
   @doc """

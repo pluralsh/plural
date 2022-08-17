@@ -303,7 +303,7 @@ function RepositoryTests() {
       <Flex
         direction="column"
         flexGrow={1}
-        marginBottom="medium"
+        marginBottom="xlarge"
       >
         {tests?.length ? (
           <Table

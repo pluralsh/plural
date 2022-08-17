@@ -19,7 +19,7 @@ import {
 import { fetchToken, setToken } from '../../helpers/authentication'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 import { disableState } from '../Login'
-import { PLURAL_FULL_LOGO_WHITE, PLURAL_MARK_WHITE } from '../constants'
+import { PLURAL_FULL_LOGO_WHITE, PLURAL_MARK_WHITE, PLURAL_WORD } from '../constants'
 import { ACCEPT_LOGIN } from '../oidc/queries'
 import { host } from '../../helpers/hostname'
 
@@ -67,52 +67,65 @@ export function LoginPortal({ children }) {
       <Flex
         direction="column"
         align="center"
-        justify="center"
         background="fill-one"
         display-tablet="none"
-        paddingHorizontal="xxlarge"
+        padding="xxlarge"
+        overflowY="auto"
+        overflowX="hidden"
+        height="100%"
       >
-        <Div width={408}>
+        <Flex
+          grow={1}
+          width={408}
+          direction="column"
+        >
           {/* LOGOTYPE */}
           <Flex
+            paddingBottom="xxxlarge"
             align="center"
-            marginBottom="xxlarge"
-            paddingLeft="xxlarge"
+            gap="xxsmall"
           >
             <Img
               src={PLURAL_FULL_LOGO_WHITE}
-              width={280}
+              height={48}
             />
           </Flex>
           {/* HIGHLIGHTS */}
-          <LoginHighlight
-            title="Built for the cloud."
-            marginBottom="xlarge"
+          <Flex
+            grow={1}
+            direction="column"
+            justify="center"
           >
-            Plural is optimized for you to bring your own cloud and run on top of Kubernetes with the ideal cluster distribution.
-          </LoginHighlight>
-          <LoginHighlight
-            title="Developer friendly."
-            marginBottom="xlarge"
-          >
-            Use our simple GitOps driven workflow for deploying and managing applications, and a centralized configuration in a single repo.
-          </LoginHighlight>
-          <LoginHighlight title="Batteries included.">
-            Baked-in observability, logging, auditing, and user auth.
-          </LoginHighlight>
-        </Div>
+            <LoginHighlight
+              title="Built for the cloud."
+              marginBottom="xlarge"
+            >
+              Plural is optimized for you to bring your own cloud and run on top of Kubernetes with the ideal cluster
+              distribution.
+            </LoginHighlight>
+            <LoginHighlight
+              title="Developer friendly."
+              marginBottom="xlarge"
+            >
+              Use our simple GitOps driven workflow for deploying and managing applications, and a centralized
+              configuration in a single repo.
+            </LoginHighlight>
+            <LoginHighlight title="Batteries included.">
+              Baked-in observability, logging, auditing, and user auth.
+            </LoginHighlight>
+          </Flex>
+        </Flex>
       </Flex>
       {/* RIGHT SIDE */}
       <Flex
-        overflowY="auto"
-        align="center"
-        justify="center"
-        flexGrow={1}
-        paddingHorizontal="xxlarge"
+        overflow="auto"
+        grow={1}
+        padding="xxlarge"
       >
         <Div
           width="480px"
-          flexShrink={1}
+          marginVertical="auto"
+          marginHorizontal="auto"
         >
           {children}
         </Div>
@@ -329,85 +342,87 @@ export function Login() {
   return (
     <LoginPortal>
       <WelcomeHeader />
-      <Div>
-        {passwordless && (
-          <Div>
-            <LoginPoller
-              token={data.loginMethod.token}
-              challenge={challenge}
-              deviceToken={deviceToken}
-            />
-          </Div>
-        )}
-        {!passwordless && (
-          <>
-            <Keyboard onEnter={submit}>
-              <Form onSubmit={submit}>
-                {error && (
-                  <Div marginBottom="medium">
-                    <GqlError
-                      error={error}
-                      header="Login Failed"
-                    />
-                  </Div>
-                )}
-                <LabelledInput
-                  label="Email address"
-                  value={email}
-                  onChange={open ? null : setEmail}
-                  placeholder="Enter email address"
-                />
-                <Collapsible
-                  open={open}
-                  direction="vertical"
-                >
-                  <LabelledInput
-                    label="Password"
-                    type="password"
-                    caption={(
-                      <A
-                        inline
-                        onClick={() => navigate('/password-reset')}
-                      >forgot your password?
-                      </A>
-                    )}
-                    value={password}
-                    onChange={setPassword}
-                    placeholder="a strong password"
+      {passwordless && (
+        <Div>
+          <LoginPoller
+            token={data.loginMethod.token}
+            challenge={challenge}
+            deviceToken={deviceToken}
+          />
+        </Div>
+      )}
+      {!passwordless && (
+        <>
+          <Keyboard onEnter={submit}>
+            <Form onSubmit={submit}>
+              {error && (
+                <Div marginBottom="medium">
+                  <GqlError
+                    error={error}
+                    header="Login Failed"
                   />
-                </Collapsible>
-                <Button
-                  width="100%"
-                  loading={loading}
-                  onClick={submit}
-                >
-                  Continue
-                </Button>
-              </Form>
-            </Keyboard>
-            {!deviceToken && (
-              <>
-                <Divider
-                  text="OR"
-                  color="text-xlight"
-                  backgroundColor="border"
-                  marginVertical="large"
-                  overline
-                />
-                <Div>
-                  {oAuthData && oAuthData.oauthUrls.map(url => (
-                    <OAuthOption
-                      key={url.provider}
-                      url={url}
-                      marginBottom="medium"
-                    />
-                  ))}
                 </Div>
-              </>
-            )}
-          </>
-        )}
-      </Div>
+              )}
+              <LabelledInput
+                label="Email address"
+                value={email}
+                onChange={open ? null : setEmail}
+                placeholder="Enter email address"
+              />
+              <Collapsible
+                open={open}
+                direction="vertical"
+              >
+                <LabelledInput
+                  label="Password"
+                  type="password"
+                  caption={(
+                    <A
+                      inline
+                      onClick={() => navigate('/password-reset')}
+                    >forgot your password?
+                    </A>
+                  )}
+                  value={password}
+                  onChange={setPassword}
+                  placeholder="a strong password"
+                />
+              </Collapsible>
+              <Button
+                width="100%"
+                loading={loading}
+                onClick={submit}
+              >
+                Continue
+              </Button>
+            </Form>
+          </Keyboard>
+          {!deviceToken && (
+            <>
+              <Divider
+                text="OR CONTINUE WITH"
+                color="text-xlight"
+                backgroundColor="border"
+                marginVertical="large"
+                overline
+              />
+              <Flex
+                direction="row"
+                gap="large"
+                justify="space-between"
+              >
+                {oAuthData && oAuthData.oauthUrls.map(url => (
+                  <OAuthOption
+                    key={url.provider}
+                    url={url}
+                    marginBottom="medium"
+                  />
+                ))}
+              </Flex>
+            </>
+          )}
+        </>
+      )}
     </LoginPortal>
   )
 }
@@ -423,19 +438,20 @@ function OAuthOption({ url: { authorizeUrl, provider }, ...props }) {
 
   return (
     <Button
+      width={143}
+      height={48}
       secondary
-      width="100%"
       onClick={() => {
         window.location = authorizeUrl
       }}
       startIcon={(
-        <Icon mr={0.5}>
-          {createElement(icon, { size: 'medium', color: provider.toLowerCase() === 'github' ? 'white' : 'plain' })}
+        <Icon>
+          {createElement(icon, { size: '20px', color: provider.toLowerCase() === 'github' ? 'white' : 'plain' })}
         </Icon>
       )}
       {...props}
     >
-      Continue with {providerToName[provider.toLowerCase()]}
+      {providerToName[provider.toLowerCase()]}
     </Button>
   )
 }
@@ -470,107 +486,109 @@ export function Signup() {
   return (
     <LoginPortal>
       <WelcomeHeader />
-      <Div>
-        <Keyboard onEnter={mutation}>
-          <Form onSubmit={mutation}>
-            {error && (
-              <Div marginBottom="medium">
-                <GqlError
-                  error={error}
-                  header="Signup failed"
-                />
-              </Div>
+      <Keyboard onEnter={mutation}>
+        <Form onSubmit={mutation}>
+          {error && (
+            <Div marginBottom="medium">
+              <GqlError
+                error={error}
+                header="Signup failed"
+              />
+            </Div>
+          )}
+          <LabelledInput
+            label="Email address"
+            value={email}
+            onChange={setEmail}
+            placeholder="Enter email address"
+          />
+          <LabelledInput
+            label="Full name"
+            value={name}
+            onChange={setName}
+            placeholder="Enter first and last name"
+          />
+          <LabelledInput
+            label="Account name"
+            value={account}
+            onChange={setAccount}
+            placeholder="Enter account name (must be unique)"
+          />
+          <LabelledInput
+            label="Password"
+            value={password}
+            type="password"
+            onChange={setPassword}
+            placeholder="Enter password"
+            caption="10 character minimum"
+            hint={reason === 'Password is too short' && (
+              <P
+                caption
+                color="text-error"
+              >
+                Password is too short
+              </P>
             )}
-            <LabelledInput
-              label="Email address"
-              value={email}
-              onChange={setEmail}
-              placeholder="Enter email address"
-            />
-            <LabelledInput
-              label="Full name"
-              value={name}
-              onChange={setName}
-              placeholder="Enter first and last name"
-            />
-            <LabelledInput
-              label="Account name"
-              value={account}
-              onChange={setAccount}
-              placeholder="Enter account name (must be unique)"
-            />
-            <LabelledInput
-              label="Password"
-              value={password}
-              type="password"
-              onChange={setPassword}
-              placeholder="Enter password"
-              caption="10 character minimum"
-              hint={reason === 'Password is too short' && (
-                <P
-                  caption
-                  color="text-error"
-                >
-                  Password is too short
-                </P>
-              )}
-            />
-            <LabelledInput
-              label="Confirm Password"
-              value={confirm}
-              type="password"
-              onChange={setConfirm}
-              placeholder="Enter password again"
-              hint={reason === 'Passwords do not match' && (
-                <P
-                  caption
-                  color="text-error"
-                >
-                  Password doesn't match
-                </P>
-              )}
-            />
-            <Button
-              primary
-              width="100%"
-              disabled={disabled}
-              loading={loading}
-              onClick={mutation}
-            >
-              Create account
-            </Button>
-          </Form>
-        </Keyboard>
-        <Divider
-          text="OR"
-          color="text-xlight"
-          backgroundColor="border"
-          marginVertical="large"
-          overline
-        />
-        <Div>
-          {data && data.oauthUrls.map(url => (
-            <OAuthOption
-              key={url.provider}
-              url={url}
-              marginBottom="medium"
-            />
-          ))}
-        </Div>
-        <P
-          body2
-          textAlign="center"
-          marginTop="medium"
-        >
-          Already have an account?{' '}
-          <A
-            inline
-            onClick={() => navigate('/login')}
+          />
+          <LabelledInput
+            label="Confirm password"
+            value={confirm}
+            type="password"
+            onChange={setConfirm}
+            placeholder="Enter password again"
+            hint={reason === 'Passwords do not match' && (
+              <P
+                caption
+                color="text-error"
+              >
+                Password doesn't match
+              </P>
+            )}
+          />
+          <Button
+            primary
+            width="100%"
+            disabled={disabled}
+            loading={loading}
+            onClick={mutation}
           >
-            Login
-          </A>
-        </P>
-      </Div>
+            Create account
+          </Button>
+        </Form>
+      </Keyboard>
+      <Divider
+        text="OR CONTINUE WITH"
+        color="text-xlight"
+        backgroundColor="border"
+        marginVertical="large"
+        overline
+      />
+      <Flex
+        direction="row"
+        gap="large"
+        justify="space-between"
+      >
+        {data && data.oauthUrls.map(url => (
+          <OAuthOption
+            key={url.provider}
+            url={url}
+            marginBottom="medium"
+          />
+        ))}
+      </Flex>
+      <P
+        body2
+        textAlign="center"
+        marginTop="medium"
+      >
+        Already have an account?{' '}
+        <A
+          inline
+          onClick={() => navigate('/login')}
+        >
+          Login
+        </A>
+      </P>
     </LoginPortal>
   )
 }

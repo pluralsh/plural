@@ -213,6 +213,7 @@ export function LogoAndSplash({ splashTimeout = 1200, childIsReady = false, chil
         {transitionState => (
           <Flex
             width="100%"
+            height="calc(100% - 78px)" // account for the banner + padding
             justify="center"
             transition="all 0.6s ease"
             opacity={0}

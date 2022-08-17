@@ -17,7 +17,7 @@ import TreeGraph from '../../utils/TreeGraph'
 import { DEFAULT_CHART_ICON, DEFAULT_TF_ICON, Tools } from '../constants'
 import { CLOSURE_Q } from '../queries'
 
-const GRAPH_HEIGHT = '600px'
+const GRAPH_HEIGHT = '400px'
 const OPTIONAL_COLOR = '#9095A2'
 const OPTIONAL_DASHARRAY = '2'
 const LEGEND = {

@@ -17,18 +17,18 @@ import { LoginMethod as Method } from './types'
 
 function Section({ header, description, children }) {
   return (
-    <Box gap="small">
-      <Box gap="2px">
-        <Span
+    <Div>
+      <Div marginBottom="small">
+        <Div
           body1
           fontWeight="600"
         >
           {header}
-        </Span>
-        {description && <Span color="text-light">{description}</Span>}
-      </Box>
+        </Div>
+        {description && <Div color="text-light">{description}</Div>}
+      </Div>
       {children}
-    </Box>
+    </Div>
   )
 }
 
@@ -92,6 +92,7 @@ function LoginMethod({
     <Box
       border
       width="100%"
+      height={{ min: '44px' }}
       round="xsmall"
       onClick={active ? null : onClick}
       hoverIndicator="fill-one-hover"
@@ -123,7 +124,10 @@ function LoginMethods() {
   if (!data) return null
 
   return (
-    <Box gap="small">
+    <Box
+      gap="small"
+      margin={{ bottom: '24px' }}
+    >
       {data.oauthUrls.map(({ provider, authorizeUrl }, i) => (
         <LoginMethod
           key={i}
@@ -157,21 +161,20 @@ export function Security() {
   return (
     <Box fill>
       <PageTitle heading="Security" />
-      <ContentCard>
+      <ContentCard overflowY="auto">
         <Box
           gap="medium"
           fill
         >
           <Section header="Password">
             {!pass && (
-              <Div>
-                <Button
-                  secondary
-                  onClick={() => setPass(true)}
-                >
-                  Change password
-                </Button>
-              </Div>
+              <Button
+                alignSelf="start"
+                secondary
+                onClick={() => setPass(true)}
+              >
+                Change password
+              </Button>
             )}
             {pass && <UpdatePassword cancel={() => setPass(false)} />}
           </Section>

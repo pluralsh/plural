@@ -50,9 +50,9 @@ function ApplicationLayout({ children }) {
       maxHeight="100vh"
       overflow="hidden"
     >
-      <WithApplicationUpdate>
-        {({ reloadApplication }) => (
-          isProduction && (
+      {isProduction && (
+        <WithApplicationUpdate>
+          {({ reloadApplication }) => (
             <InfoToast>
               <Span marginRight="small">Time for a new update!</Span>
               <A
@@ -62,9 +62,9 @@ function ApplicationLayout({ children }) {
               >Update now
               </A>
             </InfoToast>
-          )
-        )}
-      </WithApplicationUpdate>
+          )}
+        </WithApplicationUpdate>
+      )}
       <Sidebar />
       <Flex
         direction="column"

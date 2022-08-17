@@ -1,10 +1,10 @@
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
-import { Flex } from 'honorable'
+import { Button, ButtonGroup, Flex } from 'honorable'
 
 import { useState } from 'react'
-import { Input, MagnifyingGlassIcon, PageTitle } from 'pluralsh-design-system'
-
-import { ButtonGroup } from '../utils/ButtonGroup'
+import {
+  Input, MagnifyingGlassIcon, PageTitle,
+} from 'pluralsh-design-system'
 
 export function packageCardStyle(first, last) {
   return {
@@ -44,26 +44,27 @@ export default function RepositoryPackages() {
       <PageTitle
         heading="Packages"
         paddingTop="medium"
+      >
+        <ButtonGroup style={{ border: '0px' }}>
+          {Object.keys(tabToUrl).map(tab => (
+            <Button
+              tertiary
+              background={tabToUrl[tab] === tabUrl ? 'fill-one' : ''}
+              onClick={() => navigate(tabToUrl[tab])}
+              style={{ border: '0px' }}
+            >
+              {tab}
+            </Button>
+          ))}
+        </ButtonGroup>
+      </PageTitle>
+      <Input
+        width="100%"
+        startIcon={(<MagnifyingGlassIcon size={14} />)}
+        placeholder="Search a package"
+        value={q}
+        onChange={event => setQ(event.target.value)}
       />
-      <Flex justifyContent="space-between">
-        <Input
-          flexBasis="350px"
-          marginRight="medium"
-          startIcon={(
-            <MagnifyingGlassIcon
-              size={14}
-            />
-          )}
-          placeholder="Search a package"
-          value={q}
-          onChange={event => setQ(event.target.value)}
-        />
-        <ButtonGroup
-          tabs={Object.keys(tabToUrl)}
-          default={Object.keys(tabToUrl).find(tab => tabToUrl[tab] === tabUrl) || 'Helm Charts'}
-          onChange={tab => navigate(tabToUrl[tab])}
-        />
-      </Flex>
       <Flex
         mt={1}
         direction="column"

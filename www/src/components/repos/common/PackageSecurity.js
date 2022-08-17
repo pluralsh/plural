@@ -139,16 +139,18 @@ export default function PackageSecurity() {
                     <Button
                       secondary
                       height="40px"
+                      width="70px"
                       marginLeft="medium"
                       onClick={toggle}
                     >
-                      Read more
+                      More
                     </Button>
                   )}
                   showLessElement={({ toggle }) => (
                     <Button
                       secondary
                       height="40px"
+                      width="70px"
                       marginLeft="medium"
                       onClick={toggle}
                     >

@@ -59,7 +59,7 @@ export function Profile() {
   return (
     <Box fill>
       <PageTitle heading="Profile" />
-      <ContentCard>
+      <ContentCard overflowY="auto">
         <Box
           gap="large"
           margin={{ bottom: 'medium' }}

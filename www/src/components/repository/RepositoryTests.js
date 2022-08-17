@@ -10,6 +10,7 @@ import { XTerm } from 'xterm-for-react'
 import { FitAddon } from 'xterm-addon-fit'
 import {
   ArrowLeftIcon,
+  Button,
   Chip,
   CollapseIcon,
   ErrorIcon,
@@ -25,7 +26,6 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 import InfiniteScroller from '../utils/InfiniteScroller'
 import { LOGS_SUB, TEST_LOGS } from '../repos/queries'
 import { Table, TableData, TableRow } from '../utils/Table'
-import { Icon } from '../profile/Icon'
 import { XTermTheme } from '../../theme'
 
 import { TESTS_QUERY } from './queries'
@@ -216,27 +216,17 @@ function TestDetail({ test, setTest }) {
         heading="Tests"
         paddingTop="medium"
       />
-      <Flex
-        align="center"
-        border="1px solid border"
-        paddingVertical="xxsmall"
-        paddingHorizontal="medium"
+      <Button
+        secondary
+        startIcon={(
+          <ArrowLeftIcon size={16} />
+        )}
+        onClick={() => setTest(null)}
+        justifyContent="start"
         marginBottom="medium"
-        borderRadius="large"
       >
-        <Icon
-          icon={(
-            <ArrowLeftIcon size={16} />
-          )}
-          onClick={() => setTest(null)}
-        />
-        <Span
-          bold
-          marginLeft="medium"
-        >
-          Back
-        </Span>
-      </Flex>
+        Back
+      </Button>
       <Table
         headers={['', 'Name', 'Description', 'Last updated', 'Status']}
         sizes={['5%', '10%', '50%', '15%', '20%']}
@@ -303,7 +293,7 @@ function RepositoryTests() {
       <Flex
         direction="column"
         flexGrow={1}
-        marginBottom="medium"
+        marginBottom="xlarge"
       >
         {tests?.length ? (
           <Table

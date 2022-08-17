@@ -26,7 +26,6 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 import InfiniteScroller from '../utils/InfiniteScroller'
 import { LOGS_SUB, TEST_LOGS } from '../repos/queries'
 import { Table, TableData, TableRow } from '../utils/Table'
-import { Icon } from '../profile/Icon'
 import { XTermTheme } from '../../theme'
 
 import { TESTS_QUERY } from './queries'

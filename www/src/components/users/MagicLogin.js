@@ -19,7 +19,7 @@ import {
 import { fetchToken, setToken } from '../../helpers/authentication'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 import { disableState } from '../Login'
-import { PLURAL_FULL_LOGO_WHITE, PLURAL_MARK_WHITE, PLURAL_WORD } from '../constants'
+import { PLURAL_FULL_LOGO_WHITE, PLURAL_MARK_WHITE } from '../constants'
 import { ACCEPT_LOGIN } from '../oidc/queries'
 import { host } from '../../helpers/hostname'
 

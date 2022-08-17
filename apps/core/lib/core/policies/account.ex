@@ -52,8 +52,15 @@ defmodule Core.Policies.Account do
     check_rbac(user, :users, account: account)
   end
 
-  def can?(%User{} = user, %GroupMember{} = group, action) do
-    %{group: group} = Core.Repo.preload(group, [group: :account])
+  def can?(%User{account_id: aid} = user, %GroupMember{} = group, :create) do
+    case Core.Repo.preload(group, [:user, group: [:account]]) do
+      %{group: group, user: %{account_id: ^aid}} -> can?(user, group, :create)
+      _ -> {:error, "user not in the current account"}
+    end
+  end
+
+  def can?(%User{} = user, %GroupMember{} = gm, action) do
+    %{group: group} = Core.Repo.preload(gm, [:user, group: [:account]])
     can?(user, group, action)
   end
 

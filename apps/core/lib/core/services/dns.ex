@@ -3,6 +3,7 @@ defmodule Core.Services.Dns do
   import Core.Policies.Dns
 
   alias Core.Schema.{DnsDomain, DnsRecord, User}
+  alias Core.Services.Accounts
   alias Cloudflare.DnsRecord, as: Record
   require Logger
 
@@ -27,19 +28,39 @@ defmodule Core.Services.Dns do
 
   @spec create_domain(map, User.t) :: domain_resp
   def create_domain(attrs, %User{id: id, account_id: aid} = user) do
-    %DnsDomain{creator_id: id, account_id: aid}
-    |> DnsDomain.changeset(attrs)
-    |> allow(user, :create)
-    |> when_ok(:insert)
+    start_transaction()
+    |> add_operation(:dns, fn _ ->
+      %DnsDomain{creator_id: id, account_id: aid}
+      |> DnsDomain.changeset(attrs)
+      |> allow(user, :create)
+      |> when_ok(:insert)
+    end)
+    |> add_operation(:validate, fn %{dns: %{account_id: aid} = dns} ->
+      case Core.Repo.preload(dns, [access_policy: :bindings]) do
+        %{access_policy: %{bindings: bindings}} -> Accounts.validate_bindings(aid, bindings)
+        _ -> {:ok, dns}
+      end
+    end)
+    |> execute(extract: :dns)
   end
 
   @spec update_domain(map, binary, User.t) :: domain_resp
   def update_domain(attrs, id, %User{} = user) do
-    Core.Repo.get(DnsDomain, id)
-    |> Core.Repo.preload(access_policy: :bindings)
-    |> allow(user, :edit)
-    |> when_ok(&DnsDomain.update_changeset(&1, attrs))
-    |> when_ok(:update)
+    start_transaction()
+    |> add_operation(:dns, fn _ ->
+      Core.Repo.get(DnsDomain, id)
+      |> Core.Repo.preload(access_policy: :bindings)
+      |> allow(user, :edit)
+      |> when_ok(&DnsDomain.update_changeset(&1, attrs))
+      |> when_ok(:update)
+    end)
+    |> add_operation(:validate, fn %{dns: %{account_id: aid} = dns} ->
+      case Core.Repo.preload(dns, [access_policy: :bindings]) do
+        %{access_policy: %{bindings: bindings}} -> Accounts.validate_bindings(aid, bindings)
+        _ -> {:ok, dns}
+      end
+    end)
+    |> execute(extract: :dns)
   end
 
   def delete_domain(id, %User{} = user) do

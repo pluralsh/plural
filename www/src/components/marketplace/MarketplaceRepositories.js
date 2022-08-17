@@ -409,7 +409,6 @@ function MarketplaceRepositories({ installed }) {
           backgroundColor="fill-one"
           borderRadius="large"
           transition="all 250ms ease"
-          zIndex={9999}
         >
           <MarketplaceSidebar width="100%" />
         </Div>

@@ -6,7 +6,10 @@ import { useContext } from 'react'
 import { getPreviousUserData } from '../../helpers/authentication'
 import { CurrentUserContext, handlePreviousUserClick } from '../login/CurrentUser'
 
+import { InfoToast } from '../utils/Toasts'
+
 import Sidebar from './Sidebar'
+import WithApplicationUpdate from './WithApplicationUpdate'
 
 function ServiceAccountBanner({ previousUser }) {
   const me = useContext(CurrentUserContext)
@@ -36,6 +39,7 @@ function ServiceAccountBanner({ previousUser }) {
 
 function ApplicationLayout({ children }) {
   const previousUser = getPreviousUserData()
+  const isProduction = process.env.NODE_ENV === 'production'
 
   return (
     <Flex
@@ -46,6 +50,21 @@ function ApplicationLayout({ children }) {
       maxHeight="100vh"
       overflow="hidden"
     >
+      <WithApplicationUpdate>
+        {({ reloadApplication }) => (
+          isProduction && (
+            <InfoToast>
+              <Span marginRight="small">Time for a new update!</Span>
+              <A
+                onClick={() => reloadApplication()}
+                style={{ textDecoration: 'none' }}
+                color="action-link-inline"
+              >Update now
+              </A>
+            </InfoToast>
+          )
+        )}
+      </WithApplicationUpdate>
       <Sidebar />
       <Flex
         direction="column"

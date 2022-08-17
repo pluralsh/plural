@@ -34,7 +34,7 @@ export const register = (config: Config): void => {
 
 const onLoad = config => async () => {
   if (!isLocalhost) {
-    registerServiceWorker(config)
+    await registerServiceWorker(config)
 
     return
   }
@@ -47,7 +47,7 @@ const onLoad = config => async () => {
     return
   }
 
-  registerServiceWorker(config)
+  await registerServiceWorker(config)
 
   // Add some additional logging to localhost, pointing developers to the
   // service worker/PWA documentation.
@@ -63,10 +63,10 @@ const checkServiceWorker = (): Promise<boolean | void> => fetch(serviceWorkerURL
   return !(response.status === 404 || contentType?.indexOf('javascript') === -1)
 }).catch(() => console.log('No internet connection found. App is running in offline mode.'))
 
-const registerServiceWorker = config => {
-  navigator.serviceWorker.register(serviceWorkerURL).then((registration: ServiceWorkerRegistration) => {
-    registration.onupdatefound = onServiceWorkerUpdateFound(registration, config)
-  })
+const registerServiceWorker = async config => {
+  const registration = await navigator.serviceWorker.register(serviceWorkerURL)
+
+  registration.onupdatefound = onServiceWorkerUpdateFound(registration, config)
 }
 
 const onServiceWorkerUpdateFound = (registration: ServiceWorkerRegistration, config) => () => {
@@ -105,8 +105,14 @@ const onServiceWorkerStateChange = (registration: ServiceWorkerRegistration, con
   }
 }
 
-export const unregister = () => {
+export const unregister = async () => {
   if (!isServiceWorkerAvailable) return
 
-  navigator.serviceWorker.ready.then((registration: ServiceWorkerRegistration) => registration.unregister()).catch(error => console.error(error.message))
+  const registrations = await navigator.serviceWorker.getRegistrations()
+  const unregisterPromises = registrations.map(r => r.unregister())
+
+  const allCaches = await caches.keys()
+  const cacheDeletionPromises = allCaches.map(c => caches.delete(c))
+
+  await Promise.all([...unregisterPromises, ...cacheDeletionPromises])
 }

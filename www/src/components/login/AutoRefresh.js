@@ -4,7 +4,7 @@ import { Download } from 'forge-core'
 
 import { Box } from 'grommet'
 
-import * as serviceWorker from '../../serviceWorker'
+import * as serviceWorker from '../../serviceWorkerRegistration'
 
 import { Icon } from '../utils/Icon'
 

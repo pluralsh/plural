@@ -2,7 +2,7 @@ import { createRoot } from 'react-dom/client'
 
 import App from './App'
 
-import * as serviceWorker from './serviceWorkerRegistration.ts'
+import * as serviceWorker from './serviceWorkerRegistration'
 
 const container = document.getElementById('root')
 const root = createRoot(container)

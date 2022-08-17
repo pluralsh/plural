@@ -219,7 +219,7 @@ defmodule GraphQl.AccountMutationTest do
 
     test "creates a group member", %{user: user, account: account} do
       group = insert(:group, account: account)
-      other = insert(:user)
+      other = insert(:user, account: account)
       {:ok, %{data: %{"createGroupMember" => create}}} = run_query("""
         mutation Update($groupId: ID!, $userId: ID!) {
           createGroupMember(groupId: $groupId, userId: $userId) {

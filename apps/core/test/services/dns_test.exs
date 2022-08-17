@@ -38,7 +38,7 @@ defmodule Core.Services.DnsTest do
   describe "#update_domain/3" do
     test "A domain creator can update his domains' access policies" do
       domain = insert(:dns_domain)
-      other_user = insert(:user)
+      other_user = insert(:user, account: domain.account)
 
       {:ok, updated} = Dns.update_domain(%{
         access_policy: %{bindings: [%{user_id: other_user.id}]}
@@ -48,6 +48,15 @@ defmodule Core.Services.DnsTest do
       [binding] = updated.access_policy.bindings
 
       assert binding.user_id == other_user.id
+    end
+
+    test "you cannot bind to users in other accounts" do
+      domain = insert(:dns_domain)
+      other_user = insert(:user)
+
+      {:error, _} = Dns.update_domain(%{
+        access_policy: %{bindings: [%{user_id: other_user.id}]}
+      }, domain.id, domain.creator)
     end
 
     test "Non-creators cannot update" do

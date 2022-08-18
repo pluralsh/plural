@@ -8247,9 +8247,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.4.202":
-  version: 1.4.222
-  resolution: "electron-to-chromium@npm:1.4.222"
-  checksum: acae758e1cfb647cfaa7ac662200e3d2c15a66c50da999cac2c08e98908e61c276c4ef336e0f9d0f42d75b68f08cdc4efe6cb7b8031cfe5aed47645ebd07632c
+  version: 1.4.224
+  resolution: "electron-to-chromium@npm:1.4.224"
+  checksum: c28eeab10e073af51aa1de2199cc4d40a42c1052f870b926fb97449c690dc29f167f6ffdf44d501ce3ab283aac8a70f2e1e5714e55d9454ae447904b82ae8b26
   languageName: node
   linkType: hard
 
@@ -13700,8 +13700,8 @@ __metadata:
   linkType: hard
 
 "minipass-fetch@npm:^2.0.3":
-  version: 2.1.0
-  resolution: "minipass-fetch@npm:2.1.0"
+  version: 2.1.1
+  resolution: "minipass-fetch@npm:2.1.1"
   dependencies:
     encoding: ^0.1.13
     minipass: ^3.1.6
@@ -13710,7 +13710,7 @@ __metadata:
   dependenciesMeta:
     encoding:
       optional: true
-  checksum: 1334732859a3f7959ed22589bafd9c40384b885aebb5932328071c33f86b3eb181d54c86919675d1825ab5f1c8e4f328878c863873258d113c29d79a4b0c9c9f
+  checksum: 1aae0c2240b2f65309e046615e5a38cfd56a16ed2d334932aa195d183a0a2e1673a242a3b257bbb64892dee2e75d0233e8d2c3ad160928b6a2e5609efe6daad8
   languageName: node
   linkType: hard
 
@@ -14695,9 +14695,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pluralsh-design-system@npm:1.156.0":
-  version: 1.156.0
-  resolution: "pluralsh-design-system@npm:1.156.0"
+"pluralsh-design-system@npm:1.157.0":
+  version: 1.157.0
+  resolution: "pluralsh-design-system@npm:1.157.0"
   dependencies:
     "@floating-ui/react-dom-interactions": 0.8.1
     "@react-aria/button": 3.6.0
@@ -14728,7 +14728,7 @@ __metadata:
     react-dom: ">=16.0.0"
     react-transition-group: ">=4.4.2"
     styled-components: ">=5.3.5"
-  checksum: d9e8c0ac2138c3f41cca0f9bc5ce3f130080cbd210c9cc9af4abf54a1d83e72e2b0c9bcaa3eb9b89eb2825d5bc0ae521ccac200b78d714189a230687d14d0da5
+  checksum: d58ab051828baeb7f3c98588c71855a1a4ae822d67dbaaa75e5b8049ad113b9017fcd3d6bb474739bf7ee0f0783dcef33f17d7953a46bc0e4eef77b733b8820c
   languageName: node
   linkType: hard
 
@@ -20494,7 +20494,7 @@ __metadata:
     moment: 2.29.4
     phoenix: 1.6.11
     pluralsh-absinthe-socket-apollo-link: 0.2.0
-    pluralsh-design-system: 1.156.0
+    pluralsh-design-system: 1.157.0
     postcss-import: 8.2.0
     prop-types: 15.8.1
     query-string: 7.1.1

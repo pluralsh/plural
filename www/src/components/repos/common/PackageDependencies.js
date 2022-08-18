@@ -8,9 +8,9 @@ import uniqueId from 'lodash/uniqueId'
 
 import { useOutletContext } from 'react-router-dom'
 
-import { PageTitle } from 'pluralsh-design-system'
+import { PageTitle, SubTab } from 'pluralsh-design-system'
 
-import { Button, ButtonGroup } from 'honorable'
+import { Flex } from 'honorable'
 
 import TreeGraph from '../../utils/TreeGraph'
 
@@ -157,24 +157,18 @@ export default function PackageDependencies() {
       gap="small"
     >
       <PageTitle heading="Dependencies">
-        <ButtonGroup style={{ border: '0px' }}>
-          <Button
-            tertiary
-            background={!full ? 'fill-one' : ''}
+        <Flex>
+          <SubTab
+            active={!full}
             onClick={() => setFull(false)}
-          >
-            Immediate
-          </Button>
-          <Button
-            tertiary
-            background={full ? 'fill-one' : ''}
+          >Immediate
+          </SubTab>
+          <SubTab
+            active={full}
             onClick={() => setFull(true)}
-            style={{ border: '0px' }}
-          >
-            Full
-          </Button>
-        </ButtonGroup>
-
+          >Full
+          </SubTab>
+        </Flex>
       </PageTitle>
       {full && <FullDependencies resource={chart} />}
       {!full && (

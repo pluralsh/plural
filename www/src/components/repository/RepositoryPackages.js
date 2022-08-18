@@ -1,10 +1,10 @@
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
-import { Button, ButtonGroup, Flex } from 'honorable'
-
-import { useState } from 'react'
+import { Flex } from 'honorable'
 import {
-  Input, MagnifyingGlassIcon, PageTitle,
+  Input,
+  MagnifyingGlassIcon, PageTitle, SubTab,
 } from 'pluralsh-design-system'
+import { useState } from 'react'
 
 export function packageCardStyle(first, last) {
   return {
@@ -45,18 +45,16 @@ export default function RepositoryPackages() {
         heading="Packages"
         paddingTop="medium"
       >
-        <ButtonGroup style={{ border: '0px' }}>
+        <Flex>
           {Object.keys(tabToUrl).map(tab => (
-            <Button
-              tertiary
-              background={tabToUrl[tab] === tabUrl ? 'fill-one' : ''}
+            <SubTab
+              active={tabToUrl[tab] === tabUrl}
               onClick={() => navigate(tabToUrl[tab])}
-              style={{ border: '0px' }}
             >
               {tab}
-            </Button>
+            </SubTab>
           ))}
-        </ButtonGroup>
+        </Flex>
       </PageTitle>
       <Input
         width="100%"

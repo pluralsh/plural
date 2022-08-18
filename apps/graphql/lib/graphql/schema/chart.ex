@@ -95,7 +95,7 @@ defmodule GraphQl.Schema.Chart do
       arg :id,         non_null(:id)
       arg :attributes, non_null(:chart_attributes)
 
-      resolve safe_resolver(&Chart.update_chart/2)
+      safe_resolve &Chart.update_chart/2
     end
 
     field :create_crd, :crd do
@@ -104,7 +104,7 @@ defmodule GraphQl.Schema.Chart do
       arg :chart_name, :chart_name
       arg :attributes, non_null(:crd_attributes)
 
-      resolve safe_resolver(&Chart.create_crd/2)
+      safe_resolve &Chart.create_crd/2
     end
 
     field :install_chart, :chart_installation do
@@ -112,7 +112,7 @@ defmodule GraphQl.Schema.Chart do
       arg :installation_id, non_null(:id)
       arg :attributes, non_null(:chart_installation_attributes)
 
-      resolve safe_resolver(&Chart.install_chart/2)
+      safe_resolve &Chart.install_chart/2
     end
 
     field :update_chart_installation, :chart_installation do
@@ -120,7 +120,14 @@ defmodule GraphQl.Schema.Chart do
       arg :chart_installation_id, non_null(:id)
       arg :attributes, non_null(:chart_installation_attributes)
 
-      resolve safe_resolver(&Chart.update_chart_installation/2)
+      safe_resolve &Chart.update_chart_installation/2
+    end
+
+    field :delete_chart_installation, :chart_installation do
+      middleware Authenticated
+      arg :id, non_null(:id)
+
+      safe_resolve &Chart.delete_chart_installation/2
     end
   end
 end

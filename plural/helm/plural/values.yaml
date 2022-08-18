@@ -359,6 +359,10 @@ crons:
   cronModule: Prune.Queues
   crontab: "0 15 * * *"
   envVars: []
+- cronName: plrl-stale-tests
+  cronModule: Task.StaleTests
+  crontab: "0 30 * * *"
+  envVars: []
 
 hydraSecrets:
   dsn: memory

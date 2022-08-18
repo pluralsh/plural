@@ -13,9 +13,7 @@ export function packageCardStyle(first, last) {
     color: 'text',
     textDecoration: 'none',
     border: '1px solid border-fill-two',
-    borderTop: first ? '1px solid border-fill-two' : 'none',
-    borderTopLeftRadius: first ? '4px' : 0,
-    borderTopRightRadius: first ? '4px' : 0,
+    borderTop: 'none',
     borderBottomLeftRadius: last ? '4px' : 0,
     borderBottomRightRadius: last ? '4px' : 0,
     align: 'center',
@@ -25,9 +23,9 @@ export function packageCardStyle(first, last) {
 }
 
 const tabToUrl = {
-  'Helm Charts': 'helm',
-  'Terraform Modules': 'terraform',
-  'Docker Repositories': 'docker',
+  'Helm charts': 'helm',
+  'Terraform modules': 'terraform',
+  'Docker repositories': 'docker',
 }
 
 export default function RepositoryPackages() {
@@ -57,14 +55,16 @@ export default function RepositoryPackages() {
         </Flex>
       </PageTitle>
       <Input
-        width="100%"
-        startIcon={(<MagnifyingGlassIcon size={14} />)}
-        placeholder="Search a package"
         value={q}
         onChange={event => setQ(event.target.value)}
+        placeholder={`Filter ${Object.keys(tabToUrl).find(key => tabToUrl[key] === tabUrl)}`}
+        startIcon={(<MagnifyingGlassIcon size={14} />)}
+        width="100%"
+        backgroundColor="fill-one"
+        borderBottomLeftRadius="0"
+        borderBottomRightRadius="0"
       />
       <Flex
-        mt={1}
         direction="column"
         marginBottom="medium"
         flexGrow={1}

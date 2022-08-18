@@ -1,7 +1,6 @@
 import { useQuery } from '@apollo/client'
-import { Link, Outlet, useParams } from 'react-router-dom'
-import { Button, Flex } from 'honorable'
-import { ArrowLeftIcon } from 'pluralsh-design-system'
+import { Outlet, useParams } from 'react-router-dom'
+import { Flex } from 'honorable'
 
 import { GoBack } from 'components/utils/GoBack'
 

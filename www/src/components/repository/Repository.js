@@ -3,6 +3,8 @@ import { Link, Outlet, useParams } from 'react-router-dom'
 import { Button, Flex } from 'honorable'
 import { ArrowLeftIcon } from 'pluralsh-design-system'
 
+import { GoBack } from 'components/utils/GoBack'
+
 import RepositoryContext from '../../contexts/RepositoryContext.ts'
 
 import useBreadcrumbs from '../../hooks/useBreadcrumbs'
@@ -59,22 +61,10 @@ function Repository() {
         direction="column"
         overflowY="hidden"
       >
-        <Flex
-          paddingTop="medium"
-          marginLeft="medium"
-          marginRight="large"
-        >
-          <Button
-            tertiary
-            as={Link}
-            to="/marketplace"
-            startIcon={(
-              <ArrowLeftIcon />
-            )}
-          >
-            Back to Marketplace
-          </Button>
-        </Flex>
+        <GoBack
+          text="Back to marketplace"
+          link="/marketplace"
+        />
         <Flex
           flexGrow={1}
           height={0}

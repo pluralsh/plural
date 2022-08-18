@@ -14,6 +14,8 @@ import {
   ResponsiveLayoutContentContainer, ResponsiveLayoutSidecarContainer, ResponsiveLayoutSidenavContainer, ResponsiveLayoutSpacer,
 } from 'components/layout/ResponsiveLayout'
 
+import { GoBack } from 'components/utils/GoBack'
+
 import { deepUpdate, updateCache } from '../../utils/graphql'
 
 import { GqlError } from '../utils/Alert'
@@ -21,9 +23,7 @@ import { GqlError } from '../utils/Alert'
 import { INSTALL_TF, TF_Q, UNINSTALL_TF } from './queries'
 import { DEFAULT_TF_ICON } from './constants'
 
-import {
-  PackageBackButton, PackageGrade, PackageHeader, PackageVersionPicker,
-} from './common/misc'
+import { PackageGrade, PackageHeader, PackageVersionPicker } from './common/misc'
 
 function TerraformInstaller({
   installation, terraformId, terraformInstallation, version,
@@ -84,7 +84,10 @@ export default function Terraform() {
       fill
     >
       <ScrollableContainer>
-        <PackageBackButton link={`/repository/${terraformModule.repository.id}/packages/terraform`} />
+        <GoBack
+          text="Back to packages"
+          link={`/repository/${terraformModule.repository.id}/packages/terraform`}
+        />
         <Box
           pad="16px"
           direction="row"

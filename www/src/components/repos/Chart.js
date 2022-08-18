@@ -17,10 +17,12 @@ import {
   ResponsiveLayoutContentContainer, ResponsiveLayoutSidecarContainer, ResponsiveLayoutSidenavContainer, ResponsiveLayoutSpacer,
 } from 'components/layout/ResponsiveLayout'
 
+import { GoBack } from 'components/utils/GoBack'
+
 import { PluralConfigurationContext } from '../login/CurrentUser'
 
 import {
-  PackageBackButton, PackageGrade, PackageHeader, PackageProperty, PackageVersionPicker, dockerPull,
+  PackageGrade, PackageHeader, PackageProperty, PackageVersionPicker, dockerPull,
 } from './common/misc'
 
 import { CHART_Q, INSTALL_CHART, UPDATE_CHART_INST } from './queries'
@@ -178,7 +180,10 @@ export default function Chart() {
       fill
     >
       <ScrollableContainer>
-        <PackageBackButton link={`/repository/${chart.repository.id}/packages/helm`} />
+        <GoBack
+          text="Back to packages"
+          link={`/repository/${chart.repository.id}/packages/helm`}
+        />
         <Box
           pad="16px"
           direction="row"

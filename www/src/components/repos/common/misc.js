@@ -1,11 +1,10 @@
 import {
-  A, Div, Flex, H2, Img, Span,
+  Div, Flex, H2, Img, Span,
 } from 'honorable'
 import { Box } from 'grommet'
 import {
-  ArrowLeftIcon, Chip, ListBoxFooterPlus, ListBoxItem, ListBoxItemChipList, Select,
+  Chip, ListBoxFooterPlus, ListBoxItem, ListBoxItemChipList, Select,
 } from 'pluralsh-design-system'
-import { Link } from 'react-router-dom'
 import { extendConnection } from 'utils/graphql'
 
 export function dockerPull(registry, { tag, dockerRepository: { name, repository } }) {
@@ -35,30 +34,6 @@ export function PackageGrade({ scan, large }) {
         {scan.grade}
       </Span>
     </Chip>
-  )
-}
-
-export function PackageBackButton({ link }) {
-  return (
-    <Box
-      direction="row"
-      pad={{ horizontal: '32px', top: 'medium', bottom: 'small' }}
-    >
-      <A
-        as={Link}
-        to={link}
-        fontFamily="Monument Semi-Mono, monospace"
-        fontWeight={500}
-        display="flex"
-        alignContent="center"
-      >
-        <ArrowLeftIcon
-          size={14}
-          marginRight="13px"
-        />
-        <Span>Back to packages</Span>
-      </A>
-    </Box>
   )
 }
 

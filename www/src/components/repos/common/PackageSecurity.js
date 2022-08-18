@@ -100,7 +100,7 @@ export default function PackageSecurity() {
       <PageTitle heading="Security">{
         current?.scan && (
           <PackageGrade
-            scan={current.scan}
+            grade={current.scan.grade}
             large
           />
         )

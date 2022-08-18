@@ -7,8 +7,6 @@ import moment from 'moment'
 
 import { Box, Text } from 'grommet'
 
-import { HeaderItem } from '../repos/DockerImages'
-
 import { Confirm } from '../utils/Confirm'
 
 import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
@@ -24,6 +22,19 @@ import { inviteLink } from './CreateInvite'
 import { Icon } from './Group'
 
 import { Placeholder } from './Audits'
+
+function HeaderItem({ text, width }) {
+  return (
+    <Box width={width}>
+      <Text
+        size="small"
+        weight={500}
+      >
+        {text}
+      </Text>
+    </Box>
+  )
+}
 
 function InviteHeader() {
   return (

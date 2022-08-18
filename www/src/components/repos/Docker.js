@@ -1,34 +1,34 @@
-import {
-  useContext, useEffect, useMemo, useState,
-} from 'react'
-import {
-  Copy, Links, TabContent, TabHeader, TabHeaderItem, Tabs,
-} from 'forge-core'
+import { useContext, useEffect, useState } from 'react'
+import { Links } from 'forge-core'
 import { useMutation, useQuery } from '@apollo/client'
-import { useNavigate, useParams } from 'react-router-dom'
+import {
+  Outlet, useLocation, useNavigate, useParams,
+} from 'react-router-dom'
 import moment from 'moment'
 import {
-  Anchor, Box, Collapsible, Stack, Text,
+  Anchor, Box, Collapsible, Text,
 } from 'grommet'
 import { Language } from 'grommet-icons'
 
 import Toggle from 'react-toggle'
 
-import { Codeline } from 'pluralsh-design-system'
+import {
+  Codeline, ListBoxItem, ListBoxItemChipList, Select, Tab,
+} from 'pluralsh-design-system'
 
-import { Flex } from 'honorable'
+import { GoBack } from 'components/utils/GoBack'
 
-import { Breadcrumbs, BreadcrumbsContext } from '../Breadcrumbs'
+import {
+  ResponsiveLayoutContentContainer, ResponsiveLayoutSidecarContainer, ResponsiveLayoutSidenavContainer, ResponsiveLayoutSpacer,
+} from 'components/layout/ResponsiveLayout'
 
-import { Graph, RangePicker } from '../metrics/Graph'
 import { PluralConfigurationContext } from '../login/CurrentUser'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
-import { CopyNotice } from '../utils/Copyable'
-
-import { dockerPull } from './common/misc'
-import { DockerImages } from './DockerImages'
+import {
+  PackageGrade, PackageHeader, PackageProperty, dockerPull,
+} from './common/misc'
 
 import { DetailContainer } from './Installation'
 import { AttackVector, ColorMap, DEFAULT_DKR_ICON } from './constants'
@@ -55,159 +55,7 @@ function RepositoryPublic({ dockerRepo }) {
           variables: { attributes: { public: checked } },
         })}
       />
-      <Text size="small">{pub ? 'public' : 'private'}</Text>
     </Box>
-  )
-}
-
-function DockerHeader({ image }) {
-  return (
-    <Box
-      flex={false}
-      direction="row"
-      align="center"
-      gap="medium"
-    >
-      <Box
-        flex={false}
-        width="50px"
-        heigh="50px"
-      >
-        <img
-          alt=""
-          width="50px"
-          height="50px"
-          src={DEFAULT_DKR_ICON}
-        />
-      </Box>
-      <Box flex>
-        <Box
-          direction="row"
-          gap="small"
-          align="center"
-        >
-          <Text size="medium">{image.dockerRepository.name}:{image.tag}</Text>
-          <RepositoryPublic dockerRepo={image.dockerRepository} />
-        </Box>
-        <Text
-          size="small"
-          color="dark-3"
-        >{image.digest}
-        </Text>
-      </Box>
-      <Box flex={false}>
-        <GradeNub
-          text={image.grade}
-          severity={image.grade}
-        />
-      </Box>
-    </Box>
-  )
-}
-
-function DockerSidebar({ image: { dockerRepository: docker, ...image }, filter, setFilter }) {
-  const { registry } = useContext(PluralConfigurationContext)
-  const [copied, setCopied] = useState(false)
-  const data = useMemo(() => docker.metrics.map(({ tags, values }) => {
-    const tag = tags.find(({ name }) => name === 'tag')
-
-    return {
-      id: tag ? tag.value : docker.name,
-      data: values.map(({ time, value }) => ({ x: moment(time).toDate(), y: value })),
-    }
-  }), [docker.metrics, docker.name])
-
-  const imageName = dockerPull(registry, { ...image, dockerRepository: docker })
-
-  return (
-    <>
-      <Box
-        flex={false}
-        style={{ overflow: 'auto' }}
-        gap="small"
-      >
-        <DetailContainer
-          flex={false}
-          pad="small"
-          gap="small"
-        >
-          <Text
-            weight="bold"
-            size="small"
-          >
-            Pull Command
-          </Text>
-          <Stack anchor="right">
-            <Codeline>{`docker pull ${imageName}`}</Codeline>
-            <Box
-              flex={false}
-              margin={{ right: 'small' }}
-            >
-              <Copy
-                size="small"
-                color="border"
-              />
-            </Box>
-          </Stack>
-
-          <Text
-            weight="bold"
-            size="small"
-          >Created At
-          </Text>
-          <Text size="small">{moment(image.insertedAt).format('lll')}</Text>
-
-          <Text
-            weight="bold"
-            size="small"
-          >Scanned At
-          </Text>
-          {image.scannedAt && <Text size="small">{moment(image.scannedAt).format('lll')}</Text>}
-          {!image.scannedAt && <Text size="small">unscanned</Text>}
-        </DetailContainer>
-
-        <DetailContainer
-          height="400px"
-          pad="small"
-          gap="small"
-        >
-          <Box
-            flex={false}
-            direction="row"
-            gap="xsmall"
-            align="center"
-          >
-            <Box
-              direction="row"
-              fill="horizontal"
-            >
-              <Text
-                size="small"
-                weight={500}
-              >Pull Metrics
-              </Text>
-            </Box>
-            <RangePicker
-              duration={{ offset: filter.offset, step: filter.precision }}
-              setDuration={({ offset, step }) => setFilter({ ...filter, offset, precision: step })}
-            />
-          </Box>
-          <Box fill>
-            <Graph
-              data={data}
-              precision={filter.precision}
-              offset={filter.offset}
-            />
-          </Box>
-        </DetailContainer>
-      </Box>
-      {copied && (
-        <CopyNotice
-          text="copied docker pull command"
-          onClose={() => setCopied(false)}
-        />
-      )}
-    </>
   )
 }
 
@@ -219,22 +67,6 @@ function NoVulnerabilities() {
       align="center"
     >
       <Text weight="bold">This image is vulnerability free</Text>
-    </Box>
-  )
-}
-
-export function GradeNub({ text, severity }) {
-  return (
-    <Box
-      flex={false}
-      pad={{ horizontal: 'xsmall', vertical: 'xxsmall' }}
-      background={ColorMap[severity]}
-      align="center"
-      justify="center"
-      round="xsmall"
-      width="75px"
-    >
-      <Text size="small">{text}</Text>
     </Box>
   )
 }
@@ -585,100 +417,149 @@ export function DockerRepository() {
 
 const DEFAULT_FILTER = { tag: null, precision: '1h', offset: '1d' }
 
+function ImageVersionPicker({ image }) {
+  const navigate = useNavigate()
+  const { dockerRepository } = image
+  const { data, loading } = useQuery(DOCKER_IMG_Q, {
+    variables: { dockerRepositoryId: dockerRepository.id },
+  })
+
+  if (!data || loading) return null
+
+  const { edges } = data.dockerImages
+  const images = edges.map(({ node }) => node)
+
+  return (
+    <Box
+      width="240px"
+      gap="small"
+      margin={{ bottom: 'medium' }}
+    >
+      <Select
+        label="image"
+        width="240px"
+        selectedKey={image.id}
+        onSelectionChange={selected => navigate(`/dkr/img/${selected}`)}
+        rightContent={
+          image.scannedAt && (
+            <ListBoxItemChipList chips={[
+              <PackageGrade
+                grade={image.grade}
+                size="small"
+              />,
+            ]}
+            />
+          )
+        }
+      >
+        {images.map(v => (
+          <ListBoxItem
+            key={v.id}
+            label={v.tag}
+            rightContent={(
+              <ListBoxItemChipList
+                chips={[...(v.scannedAt ? [
+                  <PackageGrade
+                    grade={v.grade}
+                    size="small"
+                  />,
+                ] : [])]}
+              />
+            )}
+          />
+        ))}
+      </Select>
+    </Box>
+  )
+}
+
 export function Docker() {
+  const { pathname } = useLocation()
+  const navigate = useNavigate()
   const { id } = useParams()
   const [filter, setFilter] = useState(DEFAULT_FILTER)
+  const { registry } = useContext(PluralConfigurationContext)
+
   const { data } = useQuery(DOCKER_Q, {
     variables: { id, ...filter },
     fetchPolicy: 'cache-and-network',
   })
-  const { setBreadcrumbs } = useContext(BreadcrumbsContext)
 
-  useEffect(() => {
-    setFilter(DEFAULT_FILTER)
-  }, [id])
-
-  useEffect(() => {
-    if (!data) return
-    const { dockerImage } = data
-    const { repository } = dockerImage.dockerRepository
-
-    setBreadcrumbs([
-      { url: '/marketplace', text: 'Marketplace' },
-      { url: `/repository/${repository.id}/packages/docker`, text: repository.name },
-      { url: `/dkr/img/${dockerImage.id}`, text: `${dockerImage.dockerRepository.name}` },
-    ])
-  }, [data, setBreadcrumbs])
+  useEffect(() => setFilter(DEFAULT_FILTER), [id])
 
   if (!data) return <LoopingLogo />
 
   const { dockerImage: image } = data
+  const imageName = dockerPull(registry, { ...image, dockerRepository: image.dockerRepository })
 
   return (
     <Box
       direction="column"
       fill
     >
-      <Flex
-        paddingVertical={18}
-        marginLeft="xlarge"
-        marginRight="xlarge"
-        paddingLeft="xsmall"
-        paddingRight="xsmall"
-        borderBottom="1px solid border"
-      >
-        <Breadcrumbs />
-      </Flex>
+      <GoBack
+        text="Back to packages"
+        link={`/repository/${image.dockerRepository.id}/packages/docker`}
+      />
       <Box
-        fill
+        pad="16px"
         direction="row"
-        pad="medium"
-        gap="small"
       >
-        <Box
-          fill
-          pad="small"
-          gap="small"
-        >
-          <DockerHeader image={image} />
-          <Box fill>
-            <Tabs defaultTab="imgs">
-              <TabHeader>
-                <TabHeaderItem name="imgs">
-                  <Text
-                    weight={500}
-                    size="small"
-                  >Images
-                  </Text>
-                </TabHeaderItem>
-                <TabHeaderItem name="vulns">
-                  <Text
-                    weight={500}
-                    size="small"
-                  >Vulnerabilities
-                  </Text>
-                </TabHeaderItem>
-              </TabHeader>
-              <TabContent name="imgs">
-                <DockerImages dockerRepository={image.dockerRepository} />
-              </TabContent>
-              <TabContent name="vulns">
-                <Vulnerabilities image={image} />
-              </TabContent>
-            </Tabs>
+        <ResponsiveLayoutSidenavContainer>
+          <Box pad={{ left: '16px' }}>
+            <PackageHeader
+              name={image.dockerRepository.name}
+              icon={DEFAULT_DKR_ICON}
+            />
+            <ImageVersionPicker image={image} />
           </Box>
-        </Box>
-        <Box
-          flex={false}
-          fill="vertical"
-          width="500px"
-        >
-          <DockerSidebar
-            image={image}
-            setFilter={setFilter}
-            filter={filter}
-          />
-        </Box>
+          <Tab
+            vertical
+            onClick={() => navigate(`/dkr/img/${image.id}`)}
+            active={pathname.endsWith(`/dkr/img/${image.id}`)}
+            textDecoration="none"
+          >
+            Pull Metrics
+          </Tab>
+          <Tab
+            vertical
+            onClick={() => navigate(`/dkr/img/${image.id}/vulnerabilities`)}
+            active={pathname.startsWith(`/dkr/img/${image.id}/vulnerabilities`)}
+            textDecoration="none"
+          >
+            Vulnerabilities
+          </Tab>
+        </ResponsiveLayoutSidenavContainer>
+        <ResponsiveLayoutSpacer />
+        <ResponsiveLayoutContentContainer>
+          <Outlet context={{ dockerRepository: image.dockerRepository, filter, setFilter }} />
+        </ResponsiveLayoutContentContainer>
+        <ResponsiveLayoutSidecarContainer width="200px">
+          <Codeline marginBottom="xlarge">{`docker pull ${imageName}`}</Codeline>
+          <DetailContainer
+            title="Metadata"
+            pad="small"
+            gap="small"
+            style={{ overflow: 'hidden' }}
+          >
+            <PackageProperty header="Created">
+              {moment(image.insertedAt).format('lll')}
+            </PackageProperty>
+            <PackageProperty header="Scanned">
+              {image.scannedAt ? moment(image.scannedAt).format('lll') : 'unscanned' }
+            </PackageProperty>
+            <PackageProperty
+              header="Sha"
+              style={{ wordWrap: 'break-word' }}
+            >
+              {image.digest}
+            </PackageProperty>
+            <PackageProperty header="Public">
+              <RepositoryPublic dockerRepo={image.dockerRepository} />
+            </PackageProperty>
+          </DetailContainer>
+        </ResponsiveLayoutSidecarContainer>
+        <ResponsiveLayoutSpacer />
       </Box>
     </Box>
   )

@@ -140,7 +140,7 @@ export default function Terraform() {
               justifyContent="space-between"
             >
               Security
-              {currentVersion?.scan && <PackageGrade scan={currentVersion.scan} />}
+              {currentVersion?.scan && <PackageGrade grade={currentVersion.scan.grade} />}
             </Flex>
           </Tab>
           {(tfInst && (
@@ -158,9 +158,8 @@ export default function Terraform() {
         <ResponsiveLayoutContentContainer>
           <Outlet context={{ terraformChart: terraformModule, currentTerraformChart: currentVersion }} />
         </ResponsiveLayoutContentContainer>
-        <ResponsiveLayoutSidecarContainer>
+        <ResponsiveLayoutSidecarContainer width="200px">
           <Box
-            style={{ minWidth: '200px', maxWidth: '200px' }}
             direction="column"
             gap="small"
           >

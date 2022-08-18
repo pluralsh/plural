@@ -20,9 +20,7 @@ const gradeToColor = {
   F: '#FDB1A5',
 }
 
-export function PackageGrade({ scan, large }) {
-  if (!scan) return null
-
+export function PackageGrade({ grade, large }) {
   return (
     <Chip
       size={large ? 'large' : 'medium'}
@@ -30,9 +28,7 @@ export function PackageGrade({ scan, large }) {
       backgroundColor="fill-two"
       borderColor="border-fill-two"
     >
-      <Span color={gradeToColor[scan.grade]}>
-        {scan.grade}
-      </Span>
+      <Span color={gradeToColor[grade]}>{grade}</Span>
     </Chip>
   )
 }
@@ -154,7 +150,7 @@ export function PackageVersionPicker({
   )
 }
 
-export function PackageProperty({ children, header }) {
+export function PackageProperty({ children, header, ...props }) {
   return (
     <>
       <Div
@@ -164,7 +160,7 @@ export function PackageProperty({ children, header }) {
       >
         {header}
       </Div>
-      <Div>{children}</Div>
+      <Div {...props}>{children}</Div>
     </>
   )
 }

@@ -40,6 +40,7 @@ import RepositoryContext from '../../contexts/RepositoryContext'
 import { capitalize } from '../../utils/string'
 import { generatePreview } from '../../utils/file'
 import { AuthMethod as authMethods } from '../oidc/types'
+import { useUpdateState } from '../../hooks/useUpdateState'
 
 import { TAGS_SEARCH_QUERY, UPDATE_REPOSITORY_MUTATION } from './queries'
 
@@ -61,36 +62,6 @@ const StyledTextInput = styled(TextInput)`
     border-color: #5c77ff;
   }
 `
-
-function useUpdateState<T extends { [key: string]: unknown }>(initialState: T) {
-  const [state, setState] = useState({ ...initialState })
-
-  const update = useCallback((update: Partial<T>) => {
-    setState({ ...state, ...update })
-  },
-  [state])
-  const reset = useCallback(() => {
-    setState({ ...initialState })
-  }, [initialState])
-
-  const hasUpdates = useMemo(() => {
-    for (const [prop, value] of Object.entries(state)) {
-      if (!isEqual(value, initialState[prop])) {
-        return true
-      }
-    }
-
-    return false
-  }, [initialState, state])
-
-  return {
-    state: { ...state },
-    hasUpdates,
-    update,
-    reset,
-    initialState: { ...initialState },
-  }
-}
 
 function RepoIcon({
   src = null,

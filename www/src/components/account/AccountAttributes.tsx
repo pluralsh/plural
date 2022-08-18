@@ -5,9 +5,8 @@ import { Button, Input, ValidatedInput } from 'pluralsh-design-system'
 import { useContext, useState } from 'react'
 
 import { UPDATE_ACCOUNT } from '../accounts/queries'
-
 import { CurrentUserContext } from '../login/CurrentUser'
-import { Header } from '../utils/Header'
+import { Header } from '../profile/Header'
 import { DeleteIcon } from '../profile/Icon'
 import { ListItem } from '../profile/ListItem'
 import { GqlError } from '../utils/Alert'
@@ -15,12 +14,9 @@ import { Container } from '../utils/Container'
 
 import { Chip } from './User'
 
-// eslint-disable-next-line
 const sanitize = ({ __typename, ...rest }) => rest
 
-function DomainMapping({
-  mapping, remove, first, last,
-}) {
+function DomainMapping({ mapping, remove, first, last }) {
   return (
     <ListItem
       first={first}
@@ -50,9 +46,15 @@ export function AccountAttributes() {
   const { account } = useContext(CurrentUserContext)
   const [name, setName] = useState(account.name)
   const [domain, setDomain] = useState('')
-  const [mutation, { loading, error }] = useMutation(UPDATE_ACCOUNT, { variables: { attributes: { name } } })
-  const addDomain = domain => ([{ domain }, ...account.domainMappings.map(sanitize)])
-  const rmDomain = d => account.domainMappings.filter(({ domain }) => domain !== d).map(sanitize)
+  const [mutation, { loading, error }] = useMutation(UPDATE_ACCOUNT, {
+    variables: { attributes: { name } },
+  })
+  const addDomain = domain => [
+    { domain },
+    ...account.domainMappings.map(sanitize),
+  ]
+  const rmDomain = d =>
+    account.domainMappings.filter(({ domain }) => domain !== d).map(sanitize)
 
   const len = account.domainMappings
 
@@ -69,7 +71,8 @@ export function AccountAttributes() {
           <Button
             onClick={mutation}
             loading={loading}
-          >Save
+          >
+            Save
           </Button>
         </Header>
         <Box gap="medium">
@@ -87,7 +90,10 @@ export function AccountAttributes() {
           <Box gap="small">
             <Box gap="2px">
               <Span fontWeight="bold">Domain Mappings</Span>
-              <Span color="text-light">Register email domains to automatically add users to your account</Span>
+              <Span color="text-light">
+                Register email domains to automatically add users to your
+                account
+              </Span>
             </Box>
             <Box
               direction="row"
@@ -108,8 +114,14 @@ export function AccountAttributes() {
               >
                 <Button
                   secondary
-                  onClick={() => mutation({ variables: { attributes: { domainMappings: addDomain(domain) } } })}
-                >Add Domain
+                  onClick={() =>
+                    mutation({
+                      variables: {
+                        attributes: { domainMappings: addDomain(domain) },
+                      },
+                    })}
+                >
+                  Add Domain
                 </Button>
               </Box>
             </Box>
@@ -120,7 +132,12 @@ export function AccountAttributes() {
                 mapping={mapping}
                 first={i === 0}
                 last={i === len - 1}
-                remove={() => mutation({ variables: { attributes: { domainMappings: rmDomain(mapping.domain) } } })}
+                remove={() =>
+                  mutation({
+                    variables: {
+                      attributes: { domainMappings: rmDomain(mapping.domain) },
+                    },
+                  })}
               />
             ))}
           </Box>

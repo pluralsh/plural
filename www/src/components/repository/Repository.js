@@ -76,7 +76,7 @@ function Repository() {
             <RepositorySideNav />
           </ResponsiveLayoutSidenavContainer>
           <ResponsiveLayoutSpacer />
-          <ResponsiveLayoutContentContainer>
+          <ResponsiveLayoutContentContainer paddingHorizontal="xxxsmall">
             <Outlet />
           </ResponsiveLayoutContentContainer>
           <ResponsiveLayoutSidecarContainer>

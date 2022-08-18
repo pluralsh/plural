@@ -98,14 +98,14 @@ export function LoginPortal({ children }) {
           >
             <LoginHighlight
               title="Built for the cloud."
-              marginBottom="xlarge"
+              marginBottom="xxlarge"
             >
               Plural is optimized for you to bring your own cloud and run on top of Kubernetes with the ideal cluster
               distribution.
             </LoginHighlight>
             <LoginHighlight
               title="Developer friendly."
-              marginBottom="xlarge"
+              marginBottom="xxlarge"
             >
               Use our simple GitOps driven workflow for deploying and managing applications, and a centralized
               configuration in a single repo.
@@ -141,7 +141,7 @@ function LoginHighlight({ title, children, ...props }) {
       {...props}
     >
       <StatusOkIcon
-        size={18} // account for the 2px outline
+        size={16}
         marginTop="xxsmall"
         backgroundColor="white"
         borderRadius="100%"
@@ -150,11 +150,14 @@ function LoginHighlight({ title, children, ...props }) {
         color="border-primary"
       />
       <Article marginLeft="medium">
-        <H2 title2>
+        <H2
+          subtitle1
+          marginBottom="xxsmall"
+        >
           {title}
         </H2>
         <P
-          body1
+          body2
           color="text-light"
         >
           {children}

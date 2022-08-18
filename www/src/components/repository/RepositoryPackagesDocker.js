@@ -107,6 +107,19 @@ function RepositoryPackagesDocker() {
           last={i === filteredDockerRepositories.length - 1}
         />
       ))}
+      {!filteredDockerRepositories?.length && (
+        <Flex
+          width="100%"
+          padding="medium"
+          backgroundColor="fill-one"
+          border="1px solid border-fill-two"
+          borderTop="none"
+          borderBottomLeftRadius="4px"
+          borderBottomRightRadius="4px"
+        >
+          No repositories found.
+        </Flex>
+      )}
     </InfiniteScroller>
   )
 }

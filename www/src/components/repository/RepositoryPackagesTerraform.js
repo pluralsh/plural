@@ -131,6 +131,19 @@ function RepositoryPackagesTerraform() {
           last={i === filteredTerraforms.length - 1}
         />
       ))}
+      {!filteredTerraforms?.length && (
+        <Flex
+          width="100%"
+          padding="medium"
+          backgroundColor="fill-one"
+          border="1px solid border-fill-two"
+          borderTop="none"
+          borderBottomLeftRadius="4px"
+          borderBottomRightRadius="4px"
+        >
+          No charts found.
+        </Flex>
+      )}
     </InfiniteScroller>
   )
 }

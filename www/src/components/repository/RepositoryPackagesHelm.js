@@ -110,6 +110,19 @@ function RepositoryPackagesHelm() {
           last={i === filteredCharts.length - 1}
         />
       ))}
+      {!filteredCharts?.length && (
+        <Flex
+          width="100%"
+          padding="medium"
+          backgroundColor="fill-one"
+          border="1px solid border-fill-two"
+          borderTop="none"
+          borderBottomLeftRadius="4px"
+          borderBottomRightRadius="4px"
+        >
+          No charts found.
+        </Flex>
+      )}
     </InfiniteScroller>
   )
 }

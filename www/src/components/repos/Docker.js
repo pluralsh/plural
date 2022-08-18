@@ -615,7 +615,10 @@ export function Docker() {
   const { dockerImage: image } = data
 
   return (
-    <Box direction="column">
+    <Box
+      direction="column"
+      fill
+    >
       <Flex
         paddingVertical={18}
         marginLeft="xlarge"

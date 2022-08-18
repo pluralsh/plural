@@ -1,11 +1,11 @@
 import { useState } from 'react'
-import { Box, Collapsible, InfiniteScroll } from 'grommet'
+import { Box, Collapsible } from 'grommet'
 import {
   Chip, CollapseIcon, ErrorIcon, PageTitle,
 } from 'pluralsh-design-system'
 
 import {
-  Button, Div, H2, Span,
+  Button, Div, Flex, H2, Span,
 } from 'honorable'
 
 import Clamp from 'react-multiline-clamp'
@@ -28,7 +28,7 @@ function ScanViolation({ violation, last }) {
   const [open, setOpen] = useState(false)
 
   return (
-    <Box>
+    <Flex direction="column">
       <TableRow
         last={last}
         hoverIndicator="fill-one-hover"
@@ -83,7 +83,7 @@ function ScanViolation({ violation, last }) {
           </Box>
         </Box>
       </Collapsible>
-    </Box>
+    </Flex>
   )
 }
 
@@ -106,18 +106,23 @@ export default function PackageSecurity() {
         )
       }
       </PageTitle>
-      <H2>Scan failures</H2>
-      {current.scan.errors?.length ? (
-        <Box
-          direction="column"
-          background="fill-one"
-          border
-          round="xsmall"
-          height={{ max: '460px' }}
-          overflow="auto"
-        >
-          <InfiniteScroll items={current.scan.errors}>
-            {(item, i) => (
+      <Box
+        pad={{ right: 'small' }}
+        gap="medium"
+        overflow={{ vertical: 'auto' }}
+      >
+        <H2>Scan failures</H2>
+        {current.scan.errors?.length ? (
+          <Box
+            direction="column"
+            background="fill-one"
+            border
+            round="xsmall"
+            height={{ max: '460px' }}
+            flex="grow"
+            overflow="auto"
+          >
+            {current.scan.errors.map((item, i) => (
               <Box
                 key={i}
                 direction="row"
@@ -161,32 +166,31 @@ export default function PackageSecurity() {
                   <p>{item.message}</p>
                 </Clamp>
               </Box>
-            )}
-          </InfiniteScroll>
-        </Box>
-      ) : (
-        <Div body2>No scan failures found.</Div>
-      )}
-      <H2>Vulnerabilities</H2>
-      {current.scan.violations?.length ? (
-        <Table
-          headers={['', 'Rule', 'Severity']}
-          sizes={['40px', '80%', '15%']}
-          background="fill-one"
-          width="100%"
-          height="calc(100% - 16px)"
-        >
-          {current.scan.violations.map((vio, ind, arr) => (
-            <ScanViolation
-              key={`${ind}`}
-              violation={vio}
-              last={ind === arr.length - 1}
-            />
-          ))}
-        </Table>
-      ) : (
-        <Div body2>No vulnerabilities found.</Div>
-      )}
+            ))}
+          </Box>
+        ) : (
+          <Div body2>No scan failures found.</Div>
+        )}
+        <H2>Vulnerabilities</H2>
+        {current.scan.violations?.length ? (
+          <Table
+            headers={['', 'Rule', 'Severity']}
+            sizes={['40px', '80%', '15%']}
+            background="fill-one"
+            width="100%"
+          >
+            {current.scan.violations.map((vio, ind, arr) => (
+              <ScanViolation
+                key={`${ind}`}
+                violation={vio}
+                last={ind === arr.length - 1}
+              />
+            ))}
+          </Table>
+        ) : (
+          <Div body2>No vulnerabilities found.</Div>
+        )}
+      </Box>
     </Box>
   )
 }

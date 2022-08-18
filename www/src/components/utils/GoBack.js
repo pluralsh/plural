@@ -1,13 +1,13 @@
-import { Box } from 'grommet'
-import { A } from 'honorable'
+import { A, Flex } from 'honorable'
 import { ArrowLeftIcon } from 'pluralsh-design-system'
 import { Link } from 'react-router-dom'
 
 export function GoBack({ text, link }) {
   return (
-    <Box
+    <Flex
       direction="row"
-      pad={{ horizontal: '32px', top: 'medium', bottom: 'small' }}
+      paddingHorizontal="xxlarge"
+      paddingVertical="large"
     >
       <A
         as={Link}
@@ -23,6 +23,6 @@ export function GoBack({ text, link }) {
         />
         {text}
       </A>
-    </Box>
+    </Flex>
   )
 }

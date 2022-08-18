@@ -17,7 +17,12 @@ export default function PackageConfiguration() {
       gap="small"
     >
       <PageTitle heading="Configuration" />
-      {valuesTemplate ? <Code language="yaml">{valuesTemplate}</Code> : <Div body2>No configuration found.</Div>}
+      <Box
+        pad={{ right: 'small' }}
+        overflow={{ vertical: 'auto' }}
+      >
+        {valuesTemplate ? <Code language="yaml">{valuesTemplate}</Code> : <Div body2>No configuration found.</Div>}
+      </Box>
     </Box>
   )
 }

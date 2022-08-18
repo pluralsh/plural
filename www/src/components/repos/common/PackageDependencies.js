@@ -172,14 +172,19 @@ export default function PackageDependencies() {
           </SubTab>
         </Flex>
       </PageTitle>
-      {full && <FullDependencies resource={chart} />}
-      {!full && (
-        <Dependencies
-          name={chart.name}
-          resource={chart}
-          dependencies={(current || chart).dependencies}
-        />
-      )}
+      <Box
+        pad={{ right: 'small' }}
+        overflow={{ vertical: 'auto' }}
+      >
+        {full && <FullDependencies resource={chart} />}
+        {!full && (
+          <Dependencies
+            name={chart.name}
+            resource={chart}
+            dependencies={(current || chart).dependencies}
+          />
+        )}
+      </Box>
     </Box>
 
   )

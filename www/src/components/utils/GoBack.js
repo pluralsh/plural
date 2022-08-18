@@ -1,5 +1,5 @@
 import { Box } from 'grommet'
-import { A, Span } from 'honorable'
+import { A } from 'honorable'
 import { ArrowLeftIcon } from 'pluralsh-design-system'
 import { Link } from 'react-router-dom'
 
@@ -19,9 +19,9 @@ export function GoBack({ text, link }) {
       >
         <ArrowLeftIcon
           size={14}
-          marginRight="13px"
+          marginRight={14}
         />
-        <Span>{text}</Span>
+        {text}
       </A>
     </Box>
   )

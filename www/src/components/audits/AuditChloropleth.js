@@ -3,9 +3,9 @@ import { useState } from 'react'
 
 import lookup from 'country-code-lookup'
 import { Box } from 'grommet'
-import { Button, ButtonGroup } from 'honorable'
+import { Flex } from 'honorable'
 
-import { PageTitle } from 'pluralsh-design-system'
+import { PageTitle, SubTab } from 'pluralsh-design-system'
 
 import { Chloropleth } from '../utils/Chloropleth'
 
@@ -25,23 +25,20 @@ export function AuditChloropleth() {
   return (
     <Box fill>
       <PageTitle heading="Geodistribution">
-        <ButtonGroup style={{ border: '0px' }}>
-          <Button
-            tertiary
-            background={tab === 'Audit logs' ? 'fill-one' : ''}
+        <Flex>
+          <SubTab
+            active={tab === 'Audit logs'}
             onClick={() => setTab('Audit logs')}
           >
             Audit logs
-          </Button>
-          <Button
-            tertiary
-            background={tab === 'Logins' ? 'fill-one' : ''}
+          </SubTab>
+          <SubTab
+            active={tab === 'Logins'}
             onClick={() => setTab('Logins')}
-            style={{ border: '0px' }}
           >
             Logins
-          </Button>
-        </ButtonGroup>
+          </SubTab>
+        </Flex>
       </PageTitle>
       <Box
         fill

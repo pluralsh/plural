@@ -161,12 +161,14 @@ export default function PackageDependencies() {
           <SubTab
             active={!full}
             onClick={() => setFull(false)}
-          >Immediate
+          >
+            Immediate
           </SubTab>
           <SubTab
             active={full}
             onClick={() => setFull(true)}
-          >Full
+          >
+            Full
           </SubTab>
         </Flex>
       </PageTitle>

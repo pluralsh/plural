@@ -1,6 +1,8 @@
-import { useContext } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Navigate, Route, Routes, useMatch } from 'react-router-dom'
 import { StripeProvider } from 'react-stripe-elements'
+
+import { growthbook } from '../helpers/growthbook'
 
 import ApplicationLayout from './layout/ApplicationLayout'
 import BreadcrumbProvider from './Breadcrumbs'
@@ -48,6 +50,7 @@ import { AuditDirectory } from './audits/AuditDirectory'
 import { Audits } from './audits/Audits'
 import { LoginAudits } from './audits/LoginAudits'
 import { AuditChloropleth } from './audits/AuditChloropleth'
+import { SuccessToast } from './utils/Toasts'
 
 function EditBilling(props) {
   return (
@@ -91,6 +94,22 @@ function OAuthOrFallback() {
   )
 }
 
+function TestBanner() {
+  const [enable, setEnable] = useState(true)
+
+  useEffect(() => {
+    const timeout = setTimeout(() => setEnable(false), 5000)
+
+    return () => clearTimeout(timeout)
+  }, [])
+
+  if (growthbook.isOn('growthbook-test') && enable) {
+    return <SuccessToast>Growthbook Test!</SuccessToast>
+  }
+
+  return null
+}
+
 export function PluralInner() {
   return (
     <WrapStripe>
@@ -98,6 +117,7 @@ export function PluralInner() {
         <ApplicationLayout>
           <VerifyEmailConfirmed />
           <DeviceLoginNotif />
+          <TestBanner />
           <Routes>
             {/* --- OAUTH --- */}
             <Route

@@ -30,7 +30,7 @@ const StyledTabPanel = styled(TabPanel)(() => ({
   flexDirection: 'column',
   flexGrow: 1,
   height: '100%',
-  maxHeight: '100%'
+  maxHeight: '100%',
 }))
 
 function Repository() {

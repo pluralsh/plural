@@ -70,13 +70,13 @@ defmodule Core.Services.UsersTest do
       user = insert(:user)
 
       {:ok, updated} = Users.update_user(%{name: "changed"}, user)
-      assert updated.email_changed == false
+      refute updated.email_changed
 
       {:ok, updated} = Users.update_user(%{email: user.email}, user)
-      assert updated.email_changed == false
+      refute updated.email_changed
 
       {:ok, updated} = Users.update_user(%{email: "changed@example.com"}, user)
-      assert updated.email_changed == true
+      assert updated.email_changed
     end
 
     test "you cannot make yourself an admin" do

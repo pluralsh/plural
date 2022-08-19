@@ -2,11 +2,26 @@ import { Box } from 'grommet'
 
 import { useOutletContext } from 'react-router-dom'
 
-import { RangePicker } from 'components/metrics/Graph'
 import { Graph } from 'components/utils/Graph'
 import { useMemo } from 'react'
 import moment from 'moment'
-import { PageTitle } from 'pluralsh-design-system'
+import { PageTitle, SubTab } from 'pluralsh-design-system'
+import { DURATIONS } from 'components/metrics/Graph'
+
+function RangePicker({ duration, setDuration }) {
+  return (
+    <Box direction="row">
+      {DURATIONS.map(d => (
+        <SubTab
+          active={duration.step === d.step && duration.offset === d.offset}
+          onClick={() => setDuration(d)}
+        >
+          {d.label}
+        </SubTab>
+      ))}
+    </Box>
+  )
+}
 
 export default function ImagePullMetrics() {
   const { dockerRepository, filter, setFilter } = useOutletContext()

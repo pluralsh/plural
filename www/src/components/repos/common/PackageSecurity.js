@@ -61,7 +61,7 @@ function ScanViolation({ violation, last }) {
       >
         <Box
           direction="row"
-          pad={{ horizontal: 'large', vertical: 'small' }}
+          pad={{ horizontal: 'large', vertical: 'medium' }}
           gap="small"
           borderBottom={last ? null : '1px solid border'}
           background="fill-two"

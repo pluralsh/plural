@@ -1,4 +1,4 @@
-import { Box, Collapsible, Text } from 'grommet'
+import { Box, Collapsible } from 'grommet'
 
 import { useOutletContext } from 'react-router-dom'
 
@@ -11,194 +11,188 @@ import {
 import { Table, TableData, TableRow } from 'components/utils/Table'
 
 import {
-  A, Div, Flex, Span,
+  A, Div, Flex, P, Span,
 } from 'honorable'
 
 import { capitalize } from 'lodash'
 
-import { AttackVector, ColorMap } from '../constants'
+import { AttackVector } from '../constants'
 
 import { PackageGrade, chipSeverity } from './misc'
-
-function VectorSection({ text, background }) {
-  return (
-    <Box
-      pad={{ vertical: 'xsmall' }}
-      width="150px"
-      background="fill-one"
-      align="center"
-      justify="center"
-      border={background && { side: 'bottom', size: '3px', color: background }}
-    >
-      <Text size="small">{text}</Text>
-    </Box>
-  )
-}
 
 function CVSSRow({
   text, value, options, colorMap,
 }) {
   return (
     <Box
-      direction="row"
-      align="center"
+      direction="column"
+      margin={{ top: 'small' }}
+      gap="xsmall"
     >
-      <Box
-        width="150px"
-        flex={false}
+      <P
+        body2
+        fontWeight={600}
       >
-        <Text
-          size="small"
-          weight={500}
-        >
-          {text}
-        </Text>
-      </Box>
+        {text}
+      </P>
       <Box
         direction="row"
         fill="horizontal"
         gap="xsmall"
       >
         {options.map(({ name, value: val }) => (
-          <VectorSection
+          <Chip
             key={name}
-            background={value === val ? colorMap[val] : null}
-            text={name}
-          />
+            severity={value === val ? colorMap[val] : null}
+            size="small"
+            backgroundColor="fill-three"
+            borderColor="border-input"
+            opacity={value === val ? 1 : 0.4}
+          >
+            {name}
+          </Chip>
         ))}
       </Box>
     </Box>
   )
 }
 
-function VulnerabilityDetail({ vuln }) {
+function VulnerabilityDetail({ v, last }) {
   return (
     <Box
-      flex={false}
-      pad="small"
-      gap="medium"
+      direction="column"
+      pad={{ horizontal: 'large', vertical: 'medium' }}
+      gap="small"
+      borderBottom={last ? null : '1px solid border'}
+      background="fill-two"
+      round={{ corner: 'bottom', size: '4px' }}
     >
       <Box
         flex={false}
         gap="small"
       >
-        <Text
-          size="small"
-          weight={500}
-        >{vuln.title}
-        </Text>
-        <Text size="small">{vuln.description}</Text>
+        <P
+          body2
+          fontWeight={600}
+        >
+          {v.title}
+        </P>
+        <P
+          body2
+          color="text-light"
+        >
+          {v.description}
+        </P>
       </Box>
       <Box
         flex={false}
         gap="small"
       >
-        <Box
-          direction="row"
-          gap="xsmall"
+        <P
+          body2
+          fontWeight={600}
+          marginTop="large"
         >
-          <Text
-            size="small"
-            weight={500}
-          >CVSS V3 Vector
-          </Text>
-          <Text size="small">(source {vuln.source}, score: <b>{vuln.score}</b>)</Text>
-        </Box>
-        {vuln.cvss && (
-          <Box
-            flex={false}
-            gap="small"
-          >
-            <Text
-              size="small"
-              weight={500}
-            >EXPLOITABILITY METRICS
-            </Text>
-            <Box
-              flex={false}
-              gap="xsmall"
+          CVSS V3 Vector (source {v.source}, score: {v.score})
+        </P>
+        {v.cvss && (
+          <Flex direction="column">
+            <P
+              body2
+              color="text-light"
             >
-              <CVSSRow
-                text="Attack Vector"
-                value={vuln.cvss.attackVector}
-                options={[
-                  { name: 'Physical', value: AttackVector.PHYSICAL },
-                  { name: 'Local', value: AttackVector.LOCAL },
-                  { name: 'Adjacent Network', value: AttackVector.ADJACENT },
-                  { name: 'Network', value: AttackVector.NETWORK },
-                ]}
-                colorMap={ColorMap}
-              />
-              <CVSSRow
-                text="Attack Complexity"
-                value={vuln.cvss.attackComplexity}
-                options={[
-                  { name: 'High', value: 'HIGH' },
-                  { name: 'Low', value: 'LOW' },
-                ]}
-                colorMap={{ HIGH: 'low', LOW: 'high' }}
-              />
-              <CVSSRow
-                text="Privileges Required"
-                value={vuln.cvss.privilegesRequired}
-                options={[
-                  { name: 'High', value: 'HIGH' },
-                  { name: 'Low', value: 'LOW' },
-                  { name: 'None', value: 'NONE' },
-                ]}
-                colorMap={{ HIGH: 'low', LOW: 'high', NONE: 'critical' }}
-              />
-              <CVSSRow
-                text="User Interaction"
-                value={vuln.cvss.userInteraction}
-                options={[
-                  { name: 'Required', value: 'REQUIRED' },
-                  { name: 'None', value: 'NONE' },
-                ]}
-                colorMap={{ REQUIRED: 'low', NONE: 'high' }}
-              />
-            </Box>
-            <Text
-              size="small"
-              weight={500}
-            >IMPACT METRICS
-            </Text>
-            <Box
-              flex={false}
-              gap="xsmall"
-            >
-              <CVSSRow
-                text="Confidentiality"
-                value={vuln.cvss.confidentiality}
-                options={[
-                  { name: 'None', value: 'NONE' },
-                  { name: 'Low', value: 'LOW' },
-                  { name: 'High', value: 'HIGH' },
-                ]}
-                colorMap={{ NONE: 'low', LOW: 'medium', HIGH: 'high' }}
-              />
-              <CVSSRow
-                text="Integrity"
-                value={vuln.cvss.integrity}
-                options={[
-                  { name: 'None', value: 'NONE' },
-                  { name: 'Low', value: 'LOW' },
-                  { name: 'High', value: 'HIGH' },
-                ]}
-                colorMap={{ NONE: 'low', LOW: 'medium', HIGH: 'high' }}
-              />
-              <CVSSRow
-                text="Availability"
-                value={vuln.cvss.availability}
-                options={[
-                  { name: 'None', value: 'NONE' },
-                  { name: 'Low', value: 'LOW' },
-                  { name: 'High', value: 'HIGH' },
-                ]}
-                colorMap={{ NONE: 'low', LOW: 'medium', HIGH: 'high' }}
-              />
-            </Box>
-          </Box>
+              Each metric is ordered from low to high severity.
+            </P>
+            <Flex marginTop="large">
+              <Box basis="1/2">
+                <P
+                  overline
+                  color="text-xlight"
+                >
+                  EXPLOITABILITY METRICS
+                </P>
+                <CVSSRow
+                  text="Attack vector"
+                  value={v.cvss.attackVector}
+                  options={[
+                    { name: 'Physical', value: AttackVector.PHYSICAL },
+                    { name: 'Local', value: AttackVector.LOCAL },
+                    { name: 'Adjacent Network', value: AttackVector.ADJACENT },
+                    { name: 'Network', value: AttackVector.NETWORK },
+                  ]}
+                  colorMap={{
+                    PHYSICAL: 'success', LOCAL: 'warning', ADJACENT: 'error', NETWORK: 'critical',
+                  }}
+                />
+                <CVSSRow
+                  text="Attack complexity"
+                  value={v.cvss.attackComplexity}
+                  options={[
+                    { name: 'High', value: 'HIGH' },
+                    { name: 'Low', value: 'LOW' },
+                  ]}
+                  colorMap={{ HIGH: 'warning', LOW: 'critical' }}
+                />
+                <CVSSRow
+                  text="Privileges required"
+                  value={v.cvss.privilegesRequired}
+                  options={[
+                    { name: 'High', value: 'HIGH' },
+                    { name: 'Low', value: 'LOW' },
+                    { name: 'None', value: 'NONE' },
+                  ]}
+                  colorMap={{ HIGH: 'warning', LOW: 'error', NONE: 'critical' }}
+                />
+                <CVSSRow
+                  text="User interaction"
+                  value={v.cvss.userInteraction}
+                  options={[
+                    { name: 'Required', value: 'REQUIRED' },
+                    { name: 'None', value: 'NONE' },
+                  ]}
+                  colorMap={{ REQUIRED: 'warning', NONE: 'error' }}
+                />
+              </Box>
+              <Box basis="1/2">
+                <P
+                  overline
+                  color="text-xlight"
+                >
+                  IMPACT METRICS
+                </P>
+                <CVSSRow
+                  text="Confidentiality"
+                  value={v.cvss.confidentiality}
+                  options={[
+                    { name: 'None', value: 'NONE' },
+                    { name: 'Low', value: 'LOW' },
+                    { name: 'High', value: 'HIGH' },
+                  ]}
+                  colorMap={{ NONE: 'warning', LOW: 'error', HIGH: 'critical' }}
+                />
+                <CVSSRow
+                  text="Integrity"
+                  value={v.cvss.integrity}
+                  options={[
+                    { name: 'None', value: 'NONE' },
+                    { name: 'Low', value: 'LOW' },
+                    { name: 'High', value: 'HIGH' },
+                  ]}
+                  colorMap={{ NONE: 'warning', LOW: 'error', HIGH: 'critical' }}
+                />
+                <CVSSRow
+                  text="Availability"
+                  value={v.cvss.availability}
+                  options={[
+                    { name: 'None', value: 'NONE' },
+                    { name: 'Low', value: 'LOW' },
+                    { name: 'High', value: 'HIGH' },
+                  ]}
+                  colorMap={{ NONE: 'warning', LOW: 'error', HIGH: 'critical' }}
+                />
+              </Box>
+            </Flex>
+          </Flex>
         )}
       </Box>
     </Box>
@@ -264,7 +258,10 @@ function Vulnerability({ v, last }) {
         open={open}
         direction="vertical"
       >
-        <VulnerabilityDetail vuln={v} />
+        <VulnerabilityDetail
+          v={v}
+          last={last}
+        />
       </Collapsible>
     </Flex>
   )

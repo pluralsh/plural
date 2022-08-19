@@ -1,23 +1,35 @@
 import { Layer } from 'grommet'
 import { Banner } from 'pluralsh-design-system'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
-function Toast({ children, ...banner }) {
+function Toast({ children, onClose = () => {}, ...banner }) {
+  const closeTimeout = 5000
   const [open, setOpen] = useState(true)
-  const close = useCallback(() => setOpen(false), [setOpen])
+  const close = useCallback(() => {
+    setOpen(false)
+    onClose()
+  }, [setOpen, onClose])
+
+  useEffect(() => {
+    if (open) {
+      setTimeout(() => close(), closeTimeout)
+    }
+  }, [open, close, closeTimeout])
 
   if (!open) return null
 
   return (
     <Layer
-      position="top"
+      position="bottom-right"
+      marginRight="large"
+      marginBottom="large"
       plain
-      onEsc={close}
-      onClickOutside={close}
+      modal={false}
     >
       <Banner
         {...banner}
-        marginTop="small"
+        marginBottom="20px"
+        marginRight="100px"
         onClose={close}
       >
         {children}
@@ -40,10 +52,11 @@ export function ErrorToast({ children, ...banner }) {
   )
 }
 
-export function SuccessToast({ children, ...banner }) {
+export function SuccessToast({ children, onClose = () => {}, ...banner }) {
   return (
     <Toast
       severity="success"
+      onClose={onClose}
       {...banner}
     >{children}
     </Toast>

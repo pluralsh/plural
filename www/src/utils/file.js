@@ -6,10 +6,13 @@ export function generatePreview(file, callback) {
     previewUrl: reader.result,
   })
   reader.readAsDataURL(file)
+
+  return reader
 }
 
 export function download(url) {
   const tempLink = document.createElement('a')
+
   tempLink.style.display = 'none'
   tempLink.href = url
   tempLink.setAttribute('download', 'true')

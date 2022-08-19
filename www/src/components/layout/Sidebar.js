@@ -1,28 +1,33 @@
-import { forwardRef, useContext, useRef, useState } from 'react'
+import {
+  forwardRef, useContext, useRef, useState,
+} from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Avatar, Div, Flex, Img, Menu, MenuItem, P, useOutsideClick } from 'honorable'
+import {
+  Avatar, Div, Flex, Img, Menu, MenuItem, P, useOutsideClick,
+} from 'honorable'
 import {
   ArrowTopRightIcon,
+  BellIcon,
+  CloseIcon,
   ClusterIcon,
   DiscordIcon,
   DownloadIcon,
   GitHubLogoIcon,
-  HamburgerMenuCollapseIcon,
-  HamburgerMenuCollapsedIcon,
-  LightningIcon,
   ListIcon,
   LogoutIcon,
   MarketIcon,
   PeopleIcon,
   PersonIcon,
-  ScrollIcon, TerminalIcon, Tooltip,
+  ScrollIcon,
+  TerminalIcon,
+  Tooltip,
 } from 'pluralsh-design-system'
 
 import { getPreviousUserData, wipeToken } from '../../helpers/authentication'
 import { CurrentUserContext, handlePreviousUserClick } from '../login/CurrentUser'
 import { useOnboarded } from '../shell/onboarding/useOnboarded'
 
-import WithNotifications from './WithNotifications'
+import { NotificationsPanel, WithNotifications } from './WithNotifications'
 import WithApplicationUpdate from './WithApplicationUpdate'
 
 export const SIDEBAR_ICON_HEIGHT = '40px'
@@ -70,7 +75,7 @@ function SidebarWrapper() {
 
   return (
     <WithNotifications>
-      {({ notificationsCount, toggleNotificationsPanel, isNotificationsPanelOpen }) => (
+      {({ notificationsCount }) => (
         <WithApplicationUpdate>
           {({ reloadApplication, shouldReloadApplication }) => (
             <Sidebar
@@ -80,9 +85,8 @@ function SidebarWrapper() {
                 opacity: '0',
               } : null}
               items={items}
-              activeId={isNotificationsPanelOpen ? 'notifications' : pathname}
+              activeId={pathname}
               notificationsCount={notificationsCount}
-              onNotificationsClick={toggleNotificationsPanel}
               hasUpdate={shouldReloadApplication}
               onUpdateClick={reloadApplication}
               userName={me.name}
@@ -120,8 +124,7 @@ function SidebarItemRef({
   linkTo,
   ...otherProps
 },
-ref
-) {
+ref) {
   const [hovered, setHovered] = useState(false)
 
   function wrapLink(node) {
@@ -158,7 +161,7 @@ ref
         arrow
         placement="right"
         label={tooltip}
-        zIndex={1000}
+        zIndex={9999999}
         visibility={collapsed ? 'visible' : 'hidden'}
         display={hovered ? 'block' : 'none'}
         whiteSpace="nowrap"
@@ -168,70 +171,74 @@ ref
     )
   }
 
-  return wrapLink(wrapTooltip(
-    <Flex
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      ref={ref}
-      pt="13px" // Give it a square look with a weird padding
-      pb="6px"
-      px={0.75}
-      align="center"
-      borderRadius="normal"
-      cursor="pointer"
-      {...{ '& *': { color: highlight ? 'text-warning-light' : active ? 'text' : 'text-light' } }}
-      backgroundColor={active ? 'fill-zero-selected' : null}
-      _hover={{
-        '& *': { color: highlight ? 'text-warning-light' : 'text' },
-        backgroundColor: active ? 'fill-zero-selected' : 'fill-zero-hover',
-      }}
-      {...otherProps}
-    >
+  function renderItem() {
+    return (
       <Flex
+        ref={ref}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        pt="13px" // Give it a square look with a weird padding
+        pb="6px"
+        px={0.75}
         align="center"
-        justify="center"
-        position="relative"
+        borderRadius="normal"
+        cursor="pointer"
+        {...{ '& *': { color: highlight ? 'text-warning-light' : active ? 'text' : 'text-light' } }}
+        backgroundColor={active ? 'fill-zero-selected' : null}
+        _hover={{
+          '& *': { color: highlight ? 'text-warning-light' : 'text' },
+          backgroundColor: active ? 'fill-zero-selected' : 'fill-zero-hover',
+        }}
+        {...otherProps}
       >
-        <Div {...{ '& *': { transition: 'color 150ms linear' } }}>
-          {startIcon}
-        </Div>
-        {badge > 0 && (
-          <Flex
-            align="center"
-            justify="center"
-            position="absolute"
-            backgroundColor="icon-error"
-            borderRadius="50%"
-            fontSize={8}
-            width={10}
-            height={10}
-            top={-6}
-            right={-8}
-          >
-            {badge}
-          </Flex>
-        )}
-      </Flex>
-      <Flex
-        ml={1}
-        mr={endIcon ? -0.25 : 0}
-        marginTop="-4px"
-        flexShrink={0}
-        align="center"
-        flexGrow={1}
-        opacity={collapsed ? 0 : 1}
-        visibility={collapsed ? 'hidden' : 'visible'}
-        transition={`opacity ${collapsed ? 200 : 500}ms ease, background-color ${collapsed ? 200 : 500}ms ease ${collapsed ? 0 : 50}ms, visibility 200ms linear, color 150ms linear`}
-      >
-        {label}
-        <Div
+        <Flex
+          align="center"
+          justify="center"
+          position="relative"
+        >
+          <Div {...{ '& *': { transition: 'color 150ms linear' } }}>
+            {startIcon}
+          </Div>
+          {badge > 0 && (
+            <Flex
+              align="center"
+              justify="center"
+              position="absolute"
+              backgroundColor="icon-error"
+              borderRadius="50%"
+              fontSize={8}
+              width={10}
+              height={10}
+              top={-6}
+              right={-8}
+            >
+              {badge}
+            </Flex>
+          )}
+        </Flex>
+        <Flex
           ml={1}
+          mr={endIcon ? -0.25 : 0}
+          marginTop="-4px"
+          flexShrink={0}
+          align="center"
           flexGrow={1}
-        />
-        {endIcon}
+          opacity={collapsed ? 0 : 1}
+          visibility={collapsed ? 'hidden' : 'visible'}
+          transition={`opacity ${collapsed ? 200 : 500}ms ease, background-color ${collapsed ? 200 : 500}ms ease ${collapsed ? 0 : 50}ms, visibility 200ms linear, color 150ms linear`}
+        >
+          {label}
+          <Div
+            ml={1}
+            flexGrow={1}
+          />
+          {endIcon}
+        </Flex>
       </Flex>
-    </Flex>
-  ))
+    )
+  }
+
+  return wrapLink(wrapTooltip(renderItem()))
 }
 
 const SidebarItem = forwardRef(SidebarItemRef)
@@ -241,7 +248,6 @@ function Sidebar({
   hasUpdate = false,
   items = [],
   notificationsCount = 0,
-  onNotificationsClick = () => {},
   onUpdateClick = () => {},
   userImageUrl,
   userName,
@@ -250,18 +256,21 @@ function Sidebar({
 }) {
   const menuItemRef = useRef()
   const menuRef = useRef()
+  const notificationsPanelRef = useRef()
   const [isMenuOpen, setIsMenuOpened] = useState(false)
-  const [collapsed, setCollapsed] = useState(true)
-
+  const [collapsed, _setCollapsed] = useState(true)
+  const [isNotificationsPanelOpen, setIsNotificationsPanelOpen] = useState(false)
   const sidebarWidth = collapsed ? 65 : 256 - 32 // 64 + 1px border
   const previousUserData = getPreviousUserData()
 
   useOutsideClick(menuRef, event => {
-    console.log('event.target', event.target)
-    console.log('menuItemRef.current', menuItemRef.current)
     if (!menuItemRef.current.contains(event.target)) {
       setIsMenuOpened(false)
     }
+  })
+
+  useOutsideClick(notificationsPanelRef, () => {
+    setIsNotificationsPanelOpen(false)
   })
 
   const switchPrevious = () => handlePreviousUserClick(previousUserData)
@@ -316,26 +325,14 @@ function Sidebar({
         {/* ---
           NOTIFICATIONS AND UPDATE
         --- */}
-        <Div
-          py={0.75}
-          px={0.75}
-          flexShrink={0}
-          borderBottom="1px solid border"
-        >
-          <SidebarItem
-            active={activeId === 'notifications'}
-            highlight={notificationsCount > 0}
-            color="text-warning"
-            collapsed={collapsed}
-            startIcon={<LightningIcon />}
-            label="Notifications"
-            tooltip="Notifications"
-            badge={notificationsCount}
-            onClick={onNotificationsClick}
-          />
-          {hasUpdate && (
+        {hasUpdate && (
+          <Div
+            py={0.75}
+            px={0.75}
+            flexShrink={0}
+            borderBottom="1px solid border"
+          >
             <SidebarItem
-              mt={0.25}
               highlight
               collapsed={collapsed}
               startIcon={<DownloadIcon />}
@@ -343,8 +340,8 @@ function Sidebar({
               tooltip="Update"
               onClick={onUpdateClick}
             />
-          )}
-        </Div>
+          </Div>
+        )}
         {/* ---
           MENU
         --- */}
@@ -365,7 +362,9 @@ function Sidebar({
             },
           }}
         >
-          {items.map(({ name, Icon, url, urlRegexp }) => (
+          {items.map(({
+            name, Icon, url, urlRegexp,
+          }) => (
             <SidebarItem
               key={name}
               marginBottom="xsmall"
@@ -424,16 +423,16 @@ function Sidebar({
           flexShrink={0}
         >
           <SidebarItem
+            active={isNotificationsPanelOpen}
             collapsed={collapsed}
-            startIcon={collapsed ? <HamburgerMenuCollapsedIcon /> : <HamburgerMenuCollapseIcon />}
-            label="Collapse"
-            tooltip="Expand"
-            backgroundColor="fill-one"
-            _hover={{
-              backgroundColor: 'transparency(fill-one-hover, 50)',
+            startIcon={<BellIcon />}
+            label="Notifications"
+            tooltip="Notifications"
+            onClick={event => {
+              event.stopPropagation()
+              setIsNotificationsPanelOpen(x => !x)
             }}
-            border="1px solid border"
-            onClick={() => setCollapsed(x => !x)}
+            badge={notificationsCount}
           />
         </Div>
         {/* ---
@@ -537,6 +536,63 @@ function Sidebar({
             Logout
           </MenuItem>
         </Menu>
+      )}
+      {/* ---
+        NOTIFICATIONS PANEL
+      --- */}
+      {isNotificationsPanelOpen && (
+        <Flex
+          position="fixed"
+          top={0}
+          bottom={0}
+          left={sidebarWidth}
+          right={0}
+          align="flex-end"
+          backgroundColor="rgba(0, 0, 0, 0.5)"
+          zIndex={99999}
+        >
+          <Flex
+            ref={notificationsPanelRef}
+            direction="column"
+            backgroundColor="fill-one"
+            width={480}
+            height={464}
+            borderTop="1px solid border"
+            borderRight="1px solid border"
+            borderTopRightRadius={6}
+          >
+            <Flex
+              align="center"
+              justify="space-between"
+              padding="medium"
+              borderBottom="1px solid border"
+            >
+              <P subtitle2>
+                Notifications
+              </P>
+              <Flex
+                align="center"
+                justify="center"
+                padding="xsmall"
+                cursor="pointer"
+                _hover={{
+                  backgroundColor: 'fill-one-hover',
+                }}
+                borderRadius="medium"
+                onClick={() => setIsNotificationsPanelOpen(false)}
+              >
+                <CloseIcon />
+              </Flex>
+            </Flex>
+            <Flex
+              flexGrow={1}
+              direction="column"
+              overflowY="auto"
+            >
+              <NotificationsPanel closePanel={() => setIsNotificationsPanelOpen(false)} />
+            </Flex>
+          </Flex>
+        </Flex>
       )}
     </>
   )

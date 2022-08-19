@@ -2,7 +2,9 @@ import { Box, Drop, TextInput } from 'grommet'
 import { Checkmark, Down } from 'grommet-icons'
 import { useCallback, useRef, useState } from 'react'
 
-function OrgOption({ org, current, setOrg, render }) {
+function OrgOption({
+  org, current, setOrg, render,
+}) {
   const isCurrent = org.id === current.id
 
   return (
@@ -24,7 +26,9 @@ function OrgOption({ org, current, setOrg, render }) {
   )
 }
 
-export function OrgInput({ name, setName, org, orgs, setOrg, render }) {
+export function OrgInput({
+  name, setName, org, orgs, setOrg, render,
+}) {
   const ref = useRef()
   const [open, setOpen] = useState(false)
   const close = useCallback(() => setOpen(false), [setOpen])

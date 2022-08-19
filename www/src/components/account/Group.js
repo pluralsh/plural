@@ -1,12 +1,18 @@
 import { useApolloClient, useMutation, useQuery } from '@apollo/client'
 import { Box, TextInput } from 'grommet'
 import { Div, Flex } from 'honorable'
-import { Button, FormField, Modal, ModalActions, ModalHeader, PersonIcon, Switch, Tab, ValidatedInput } from 'pluralsh-design-system'
+import {
+  Button, FormField, Modal, ModalActions, ModalHeader, PersonIcon, Switch, Tab, ValidatedInput,
+} from 'pluralsh-design-system'
 import { useState } from 'react'
 
-import { appendConnection, extendConnection, removeConnection, updateCache } from '../../utils/graphql'
+import {
+  appendConnection, extendConnection, removeConnection, updateCache,
+} from '../../utils/graphql'
 import { Placeholder } from '../accounts/Audits'
-import { CREATE_GROUP, CREATE_GROUP_MEMBERS, DELETE_GROUP_MEMBER, GROUPS_Q, GROUP_MEMBERS, UPDATE_GROUP } from '../accounts/queries'
+import {
+  CREATE_GROUP, CREATE_GROUP_MEMBERS, DELETE_GROUP_MEMBER, GROUPS_Q, GROUP_MEMBERS, UPDATE_GROUP,
+} from '../accounts/queries'
 import { DeleteIcon } from '../profile/Icon'
 import { ListItem } from '../profile/ListItem'
 import { GqlError } from '../utils/Alert'
@@ -18,7 +24,9 @@ import { fetchUsers } from './Typeaheads'
 
 import { UserInfo } from './User'
 
-function GroupMember({ user, group, first, last, edit }) {
+function GroupMember({
+  user, group, first, last, edit,
+}) {
   const [mutation] = useMutation(DELETE_GROUP_MEMBER, {
     variables: { groupId: group.id, userId: user.id },
     update: (cache, { data: { deleteGroupMember } }) => updateCache(cache, {
@@ -65,6 +73,7 @@ function GroupMembers({ group, edit }) {
 
   if (!data) return null
   const { groupMembers: { pageInfo, edges } } = data
+
   console.log(data)
 
   return (

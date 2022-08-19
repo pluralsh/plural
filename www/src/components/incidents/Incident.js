@@ -1,9 +1,15 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import { Button, Close, Edit, File, Messages as MessagesI, Scroller } from 'forge-core'
+import {
+  useCallback, useContext, useEffect, useMemo, useState,
+} from 'react'
+import {
+  Button, Close, Edit, File, Messages as MessagesI, Scroller,
+} from 'forge-core'
 import { Editable, Slate } from 'slate-react'
 import { useMutation, useQuery, useSubscription } from '@apollo/client'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Box, Layer, Text, TextInput } from 'grommet'
+import {
+  Box, Layer, Text, TextInput,
+} from 'grommet'
 import moment from 'moment'
 
 import { ModalHeader } from '../ModalHeader'
@@ -19,7 +25,9 @@ import { BreadcrumbsContext } from '../Breadcrumbs'
 import Avatar from '../users/Avatar'
 
 import Markdown from './Markdown'
-import { DELETE_INCIDENT, INCIDENT_Q, INCIDENT_SUB, MESSAGE_SUB, UPDATE_INCIDENT } from './queries'
+import {
+  DELETE_INCIDENT, INCIDENT_Q, INCIDENT_SUB, MESSAGE_SUB, UPDATE_INCIDENT,
+} from './queries'
 import { Severity } from './Severity'
 import { Status } from './IncidentStatus'
 import { MessageInput, MessageScrollContext } from './MessageInput'
@@ -94,7 +102,9 @@ function DeleteIncident({ incident }) {
   )
 }
 
-function IncidentHeader({ incident, editable, editing, setEditing, mutation, attributes, setAttributes, updating }) {
+function IncidentHeader({
+  incident, editable, editing, setEditing, mutation, attributes, setAttributes, updating,
+}) {
   const [editorState, setEditorState] = useState(plainDeserialize(incident.description || ''))
   const editor = useEditor()
   const setDescription = useCallback(editorState => {
@@ -214,7 +224,9 @@ function IncidentHeader({ incident, editable, editing, setEditing, mutation, att
   )
 }
 
-export function Messages({ incident, loading, fetchMore, subscribeToMore }) {
+export function Messages({
+  incident, loading, fetchMore, subscribeToMore,
+}) {
   const { setListRef, listRef } = useContext(MessageScrollContext)
   const { messages: { pageInfo: { hasNextPage, endCursor }, edges } } = incident
 
@@ -322,7 +334,9 @@ const canDelete = (incident, me) => (
   me.id === incident.creator.id || (incident.owner && incident.owner.id === me.id)
 )
 
-function IncidentInner({ incident, fetchMore, subscribeToMore, loading, editing, setEditing }) {
+function IncidentInner({
+  incident, fetchMore, subscribeToMore, loading, editing, setEditing,
+}) {
   const [view, setView] = useState(IncidentView.MSGS)
   const [listRef, setListRef] = useState(null)
   const currentUser = useContext(CurrentUserContext)
@@ -345,7 +359,9 @@ function IncidentInner({ incident, fetchMore, subscribeToMore, loading, editing,
     listRef.scrollToItem(0)
   }, [listRef])
 
-  const value = useMemo(() => ({ listRef, setListRef, refreshList, returnToBeginning }), [listRef, setListRef, refreshList, returnToBeginning])
+  const value = useMemo(() => ({
+    listRef, setListRef, refreshList, returnToBeginning,
+  }), [listRef, setListRef, refreshList, returnToBeginning])
 
   return (
     <MessageScrollContext.Provider value={value}>
@@ -465,7 +481,9 @@ export function Incident({ editing }) {
   const [deleted, setDeleted] = useState(false)
   const { incidentId } = useParams()
   const [edit, setEdit] = useState(editing)
-  const { data, loading, fetchMore, subscribeToMore } = useQuery(INCIDENT_Q, {
+  const {
+    data, loading, fetchMore, subscribeToMore,
+  } = useQuery(INCIDENT_Q, {
     variables: { id: incidentId },
     fetchPolicy: 'cache-and-network',
   })
@@ -478,6 +496,7 @@ export function Incident({ editing }) {
   })
 
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
+
   useEffect(() => {
     setBreadcrumbs([{ url: '/incidents', text: 'incidents' }, { url: `/incidents/${incidentId}`, text: incidentId }])
   }, [setBreadcrumbs, incidentId])

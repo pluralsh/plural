@@ -1,6 +1,8 @@
 import { useContext } from 'react'
 import { Link, useOutletContext } from 'react-router-dom'
-import { Div, Flex, Img, P } from 'honorable'
+import {
+  Div, Flex, Img, P,
+} from 'honorable'
 
 import moment from 'moment'
 
@@ -90,15 +92,13 @@ function Terraform({ terraform, first, last }) {
 function RepositoryPackagesTerraform() {
   const { id } = useContext(RepositoryContext)
   const [q] = useOutletContext()
-  const [terraforms, loadingTerraforms, hasMoreTerraforms, fetchMoreTerraforms] = usePaginatedQuery(
-    TERRAFORM_QUERY,
+  const [terraforms, loadingTerraforms, hasMoreTerraforms, fetchMoreTerraforms] = usePaginatedQuery(TERRAFORM_QUERY,
     {
       variables: {
         repositoryId: id,
       },
     },
-    data => data.terraform
-  )
+    data => data.terraform)
 
   const fuse = new Fuse(terraforms, searchOptions)
   const filteredTerraforms = q ? fuse.search(q).map(({ item }) => item) : terraforms
@@ -131,6 +131,19 @@ function RepositoryPackagesTerraform() {
           last={i === filteredTerraforms.length - 1}
         />
       ))}
+      {!filteredTerraforms?.length && (
+        <Flex
+          width="100%"
+          padding="medium"
+          backgroundColor="fill-one"
+          border="1px solid border-fill-two"
+          borderTop="none"
+          borderBottomLeftRadius="4px"
+          borderBottomRightRadius="4px"
+        >
+          No charts found.
+        </Flex>
+      )}
     </InfiniteScroller>
   )
 }

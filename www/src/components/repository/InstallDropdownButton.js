@@ -1,6 +1,10 @@
 import { useContext, useState } from 'react'
-import { A, Button, Div, DropdownButton, ExtendTheme, Flex, H2, Img, MenuItem, P } from 'honorable'
-import { ArrowTopRightIcon, CaretDownIcon, Codeline, Tab } from 'pluralsh-design-system'
+import {
+  A, Button, Div, DropdownButton, ExtendTheme, Flex, H2, Img, MenuItem, P,
+} from 'honorable'
+import {
+  ArrowTopRightIcon, CaretDownIcon, Codeline, Tab,
+} from 'pluralsh-design-system'
 import { Link } from 'react-router-dom'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
@@ -228,6 +232,9 @@ function InstallDropdownButton({ recipes, ...props }) {
             setRecipe(null)
             setTab(0)
           }}
+          endIcon={(
+            <CaretDownIcon size={8} />
+          )}
           {...props}
         >
           {renderTabs()}

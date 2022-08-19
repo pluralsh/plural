@@ -1,6 +1,10 @@
 import { useContext, useState } from 'react'
-import { A, Button, Div, Flex, H1, Img, P, Span } from 'honorable'
-import { GearTrainIcon, GitHubIcon, InvoicesIcon, LinksIcon, Tag } from 'pluralsh-design-system'
+import {
+  A, Button, Div, Flex, H1, Img, P, Span,
+} from 'honorable'
+import {
+  Chip, GearTrainIcon, GitHubIcon, InvoicesIcon, LinksIcon,
+} from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 
@@ -46,15 +50,13 @@ function InstalledActions({ installation, ...props }) {
 
 function RepositoryHeader(props) {
   const repository = useContext(RepositoryContext)
-  const [recipes] = usePaginatedQuery(
-    RECIPES_QUERY,
+  const [recipes] = usePaginatedQuery(RECIPES_QUERY,
     {
       variables: {
         repositoryId: repository.id,
       },
     },
-    data => data.recipes
-  )
+    data => data.recipes)
 
   return (
     <Flex
@@ -103,16 +105,16 @@ function RepositoryHeader(props) {
             mt={0.25}
           >
             {recipes
-            .filter((recipe, i, a) => a.findIndex(r => r.provider === recipe.provider) === i)
-            .map(recipe => (
-              <Img
-                key={recipe.id}
-                alt={recipe.name}
-                src={providerToIcon[recipe.provider]}
-                height={providerToIconHeight[recipe.provider]}
-                ml={0.5}
-              />
-            ))}
+              .filter((recipe, i, a) => a.findIndex(r => r.provider === recipe.provider) === i)
+              .map(recipe => (
+                <Img
+                  key={recipe.id}
+                  alt={recipe.name}
+                  src={providerToIcon[recipe.provider]}
+                  height={providerToIconHeight[recipe.provider]}
+                  ml={0.5}
+                />
+              ))}
           </Div>
         </Flex>
         <Flex
@@ -168,14 +170,14 @@ function RepositoryHeader(props) {
           align="flex-start"
           wrap="wrap"
         >
-          {repository.tags.map(({ name }) => (
-            <Tag
-              key={name}
+          {repository.tags.map(({ tag }) => (
+            <Chip
+              key={tag}
               mr={0.5}
               mb={0.5}
             >
-              {name}
-            </Tag>
+              <Span fontWeight="400">{tag}</Span>
+            </Chip>
           ))}
         </Flex>
       </Div>

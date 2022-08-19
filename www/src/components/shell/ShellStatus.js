@@ -7,7 +7,9 @@ import { PulsyDiv } from '../utils/animations'
 
 const SIZE = '25px'
 
-function StatusContainer({ children, background, base, size }) {
+function StatusContainer({
+  children, background, base, size,
+}) {
   return (
     <Box
       flex={false}

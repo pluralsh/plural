@@ -14,20 +14,20 @@ import { Action } from './types'
 
 function historyModifier(action) {
   switch (action) {
-    case Action.CREATE:
-      return 'created'
-    case Action.EDIT:
-      return 'updated'
-    case Action.ACCEPT:
-      return 'accepted'
-    case Action.COMPLETE:
-      return 'closed'
-    case Action.SEVERITY:
-      return 'updated severity'
-    case Action.STATUS:
-      return 'updated status'
-    default:
-      return ''
+  case Action.CREATE:
+    return 'created'
+  case Action.EDIT:
+    return 'updated'
+  case Action.ACCEPT:
+    return 'accepted'
+  case Action.COMPLETE:
+    return 'closed'
+  case Action.SEVERITY:
+    return 'updated severity'
+  case Action.STATUS:
+    return 'updated status'
+  default:
+    return ''
   }
 }
 
@@ -62,7 +62,11 @@ function HistoryChanges({ changes }) {
   )
 }
 
-function HistoryItem({ history: { action, actor, insertedAt, changes } }) {
+function HistoryItem({
+  history: {
+    action, actor, insertedAt, changes,
+  },
+}) {
   const [open, setOpen] = useState(false)
   const openable = action !== Action.CREATE
 

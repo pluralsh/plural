@@ -1,8 +1,12 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
-import { Span } from 'honorable'
+import { Span, Text } from 'honorable'
 import moment from 'moment'
 import { useState } from 'react'
+
+import { InfoIcon, PageTitle, Tooltip } from 'pluralsh-design-system'
+
+import { isEmpty } from 'lodash/lang'
 
 import { extendConnection } from '../../utils/graphql'
 import { Confirm } from '../account/Confirm'
@@ -10,12 +14,12 @@ import { Placeholder } from '../accounts/Audits'
 
 import { DELETE_KEY, LIST_KEYS } from '../users/queries'
 import { LoopingLogo } from '../utils/AnimatedLogo'
-import { Container } from '../utils/Container'
 import { StandardScroller } from '../utils/SmoothScroller'
 
-import { Header } from './Header'
 import { DeleteIcon } from './Icon'
 import { ListItem } from './ListItem'
+
+const TOOLTIP = 'Public keys are used to share access to an encrypted repository.'
 
 function PublicKey({ pubkey: key, first, last }) {
   const [confirm, setConfirm] = useState(false)
@@ -32,7 +36,7 @@ function PublicKey({ pubkey: key, first, last }) {
         last={last}
       >
         <Box
-          fill="horizontal"
+          flex="grow"
           gap="xsmall"
         >
           <Box
@@ -40,16 +44,28 @@ function PublicKey({ pubkey: key, first, last }) {
             align="center"
             gap="small"
           >
-            <Span fontWeight="bold">{key.name}</Span>
-            <Span color="text-xlight">added on {moment(key.insertedAt).format('lll')}</Span>
+            <Span
+              body1
+              fontWeight="600"
+            >
+              {key.name}
+            </Span>
           </Box>
           <Span color="text-light">{key.digest.toLowerCase()}</Span>
         </Box>
         <Box
           flex={false}
-          align="center"
           direction="row"
+          align="center"
+          gap="small"
         >
+          <Text
+            color="text-xlight"
+            caption
+            style={{ whiteSpace: 'nowrap' }}
+          >
+            added on {moment(key.insertedAt).format('lll')}
+          </Text>
           <DeleteIcon onClick={() => setConfirm(true)} />
         </Box>
       </ListItem>
@@ -76,37 +92,50 @@ export function PublicKeys() {
   const { edges, pageInfo } = data.publicKeys
 
   return (
-    <Container type="table">
-      <Box
-        fill
-        gap="medium"
+    <Box fill>
+      <PageTitle
+        heading="Public keys"
+        justifyContent="flex-start"
       >
-        <Header
-          header="Public Keys"
-          description="Age public keys to use when sharing repository encryption"
-        />
-        <Box fill>
-          <StandardScroller
-            listRef={listRef}
-            setListRef={setListRef}
-            items={edges}
-            placeholder={Placeholder}
-            mapper={({ node }, { prev, next }) => (
-              <PublicKey
-                pubkey={node}
-                first={!prev.node}
-                last={!next.node}
-              />
-            )}
-            loading={loading}
-            hasNextPage={pageInfo.hasNextPage}
-            loadNextPage={pageInfo.hasNextPage && fetchMore({
-              variables: { cursor: pageInfo.endCursor },
-              updateQuery: (prev, { fetchMoreResult: { publicKeys } }) => extendConnection(prev, publicKeys, 'publicKeys'),
-            })}
-          />
-        </Box>
+        <Tooltip
+          width="315px"
+          label={TOOLTIP}
+        >
+          <Box
+            flex={false}
+            pad="6px"
+            round="xxsmall"
+            hoverIndicator="fill-two"
+            onClick
+          >
+            <InfoIcon />
+          </Box>
+        </Tooltip>
+      </PageTitle>
+      <Box fill>
+        {edges?.length
+          ? (
+            <StandardScroller
+              listRef={listRef}
+              setListRef={setListRef}
+              items={edges}
+              placeholder={Placeholder}
+              mapper={({ node }, { prev, next }) => (
+                <PublicKey
+                  pubkey={node}
+                  first={isEmpty(prev.node)}
+                  last={isEmpty(next.node)}
+                />
+              )}
+              loading={loading}
+              hasNextPage={pageInfo.hasNextPage}
+              loadNextPage={pageInfo.hasNextPage && fetchMore({
+                variables: { cursor: pageInfo.endCursor },
+                updateQuery: (prev, { fetchMoreResult: { publicKeys } }) => extendConnection(prev, publicKeys, 'publicKeys'),
+              })}
+            />
+          ) : (<Span>You do not have any public keys yet.</Span>)}
       </Box>
-    </Container>
+    </Box>
   )
 }

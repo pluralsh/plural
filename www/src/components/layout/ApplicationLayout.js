@@ -32,7 +32,6 @@ function ServiceAccountBanner({ previousUser }) {
       </A>
     </Box>
   )
-
 }
 
 function ApplicationLayout({ children }) {
@@ -51,6 +50,7 @@ function ApplicationLayout({ children }) {
       <Flex
         direction="column"
         flexGrow={1}
+        overflowX="hidden"
       >
         {previousUser && <ServiceAccountBanner previousUser={previousUser} />}
         {children}

@@ -1,7 +1,7 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Avatar, Div, Flex, Img, P } from 'honorable'
-import { CloseIcon } from 'pluralsh-design-system'
+import {
+  Avatar, Div, Flex, Img, P,
+} from 'honorable'
 import truncate from 'lodash/truncate'
 import moment from 'moment'
 
@@ -12,93 +12,53 @@ import Markdown from '../incidents/Markdown'
 
 import { NOTIFICATIONS_QUERY } from './queries'
 
-function WithNotifications({ children }) {
-  const [notifications, loadingNotifications, hasMoreNotifications, fetchMoreNotifications] = usePaginatedQuery(
-    NOTIFICATIONS_QUERY,
+export function WithNotifications({ children }) {
+  const [notifications] = usePaginatedQuery(NOTIFICATIONS_QUERY,
     { variables: {} },
-    data => data.notifications
-  )
-  const [isPanelOpen, setIsPanelOpen] = useState(false)
+    data => data.notifications)
+
+  return children({
+    notificationsCount: notifications.length,
+  })
+}
+
+export function NotificationsPanel({ closePanel }) {
+  const [notifications, loadingNotifications, hasMoreNotifications, fetchMoreNotifications] = usePaginatedQuery(NOTIFICATIONS_QUERY,
+    { variables: {} },
+    data => data.notifications)
+
+  if (!notifications.length) {
+    return (
+      <P paddingHorizontal="medium">
+        You do not have any notifications yet.
+      </P>
+    )
+  }
 
   return (
-    <Flex>
-      {children({
-        notificationsCount: notifications.length,
-        toggleNotificationsPanel: () => setIsPanelOpen(x => !x),
-        isNotificationsPanelOpen: isPanelOpen,
-      })}
-      {isPanelOpen && (
-        <Flex
-          direction="column"
-          borderRight="1px solid border"
-          width={320}
-          maxWidth={320}
-        >
-          <Flex
-            align="center"
-            px={1}
-            height={57}
-            flexShrink={0}
-            borderBottom="1px solid border"
-          >
-            <P ml={1}>
-              Notifications
-            </P>
-            <Div flexGrow={1} />
-            <Flex
-              p={0.5}
-              mr={-0.25}
-              align="center"
-              justify="center"
-              hoverIndicator="fill-one"
-              cursor="pointer"
-              borderRadius="50%"
-              onClick={() => setIsPanelOpen(false)}
-            >
-              <CloseIcon size={12} />
-            </Flex>
-          </Flex>
-          {!!(notifications?.length) && (
-            <Flex
-              direction="column"
-              flexGrow={1}
-            >
-              <InfiniteScroller
-                loading={loadingNotifications}
-                hasMore={hasMoreNotifications}
-                loadMore={fetchMoreNotifications}
-                // Allow for scrolling in a flexbox layout
-                flexGrow={1}
-                height={0}
-              >
-                {notifications.map(notification => (
-                  <Notification
-                    key={notification.id}
-                    notification={notification}
-                    closePanel={() => setIsPanelOpen(false)}
-                  />
-                ))}
-              </InfiniteScroller>
-            </Flex>
-          )}
-          {!(notifications?.length) && (
-            <Flex
-              body1
-              flexGrow={1}
-              justifyContent="center"
-              padding="medium"
-            >You do not have any notifications.
-            </Flex>
-          )}
-        </Flex>
-      )}
-    </Flex>
+    <InfiniteScroller
+      loading={loadingNotifications}
+      hasMore={hasMoreNotifications}
+      loadMore={fetchMoreNotifications}
+      // Allow for scrolling in a flexbox layout
+      flexGrow={1}
+      height={0}
+    >
+      {notifications.map(notification => (
+        <Notification
+          key={notification.id}
+          notification={notification}
+          closePanel={closePanel}
+        />
+      ))}
+    </InfiniteScroller>
   )
 }
 
 function Notification({ notification, closePanel }) {
-  console.log('notification', notification)
-  const { actor, type, repository, incident, insertedAt } = notification
+  const {
+    actor, type, repository, incident, insertedAt,
+  } = notification
 
   function getUrl() {
     if (type === 'LOCKED') return `/repository/${repository.id}`
@@ -108,16 +68,16 @@ function Notification({ notification, closePanel }) {
 
   function renderType() {
     switch (type) {
-      case 'MESSAGE':
-        return null
-      case 'INCIDENT_UPDATE':
-        return 'Updated the incident'
-      case 'MENTION':
-        return 'Mentioned you'
-      case 'LOCKED':
-        return 'Locked your installation'
-      default:
-        return null
+    case 'MESSAGE':
+      return null
+    case 'INCIDENT_UPDATE':
+      return 'Updated the incident'
+    case 'MENTION':
+      return 'Mentioned you'
+    case 'LOCKED':
+      return 'Locked your installation'
+    default:
+      return null
     }
   }
 
@@ -199,5 +159,3 @@ function Notification({ notification, closePanel }) {
     </Flex>
   )
 }
-
-export default WithNotifications

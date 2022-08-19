@@ -13,8 +13,7 @@ export const Icon = forwardRef(({ icon, onClick, hover }, ref) => (
   >
     {icon}
   </Box>
-)
-)
+))
 
 export function DeleteIcon({ onClick }) {
   return (

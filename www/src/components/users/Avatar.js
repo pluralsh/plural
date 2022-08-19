@@ -3,14 +3,17 @@ import last from 'lodash/last'
 
 export function initials(name) {
   const initials = name
-          .split(' ')
-          .map(n => n.charAt(0).toUpperCase())
+    .split(' ')
+    .map(n => n.charAt(0).toUpperCase())
+
   if (initials.length <= 1) return initials[0]
 
   return `${initials[0]}${last(initials)}`
 }
 
-export default function Avatar({ size, user, round, ...rest }) {
+export default function Avatar({
+  size, user, round, ...rest
+}) {
   return (
     <Box
       flex={false}

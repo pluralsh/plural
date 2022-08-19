@@ -1,13 +1,17 @@
 import { useEffect } from 'react'
 import { Box, Text } from 'grommet'
 import { Scroller } from 'forge-core'
-import { useApolloClient, useMutation, useQuery, useSubscription } from '@apollo/client'
+import {
+  useApolloClient, useMutation, useQuery, useSubscription,
+} from '@apollo/client'
 import moment from 'moment'
 import truncate from 'lodash/truncate'
 
 import Avatar from '../users/Avatar'
 
-import { appendConnection, extendConnection, updateCache, updateFragment } from '../../utils/graphql'
+import {
+  appendConnection, extendConnection, updateCache, updateFragment,
+} from '../../utils/graphql'
 
 import { IncidentFragment } from '../../models/incidents'
 
@@ -18,16 +22,16 @@ import Markdown from './Markdown'
 
 function notificationModifier(type) {
   switch (type) {
-    case NotificationTypes.MESSAGE:
-      return 'messaged'
-    case NotificationTypes.INCIDENT_UPDATE:
-      return 'updated the incident'
-    case NotificationTypes.MENTION:
-      return 'mentioned you'
-    case NotificationTypes.LOCKED:
-      return 'locked your installation'
-    default:
-      return null
+  case NotificationTypes.MESSAGE:
+    return 'messaged'
+  case NotificationTypes.INCIDENT_UPDATE:
+    return 'updated the incident'
+  case NotificationTypes.MENTION:
+    return 'mentioned you'
+  case NotificationTypes.LOCKED:
+    return 'locked your installation'
+  default:
+    return null
   }
 }
 
@@ -54,7 +58,11 @@ function NotificationContent({ type, notification }) {
   return null
 }
 
-export function Notification({ notification: { actor, type, insertedAt, ...notif } }) {
+export function Notification({
+  notification: {
+    actor, type, insertedAt, ...notif
+  },
+}) {
   return (
     <Box
       flex={false}
@@ -101,9 +109,11 @@ export function Notification({ notification: { actor, type, insertedAt, ...notif
 
 export function useNotificationSubscription() {
   const client = useApolloClient()
+
   useSubscription(NOTIF_SUB, {
     onSubscriptionData: ({ subscriptionData: { data: { notification } } }) => {
       const { incident: { id } } = notification
+
       try {
         updateCache(client, {
           query: NOTIFICATIONS_Q,

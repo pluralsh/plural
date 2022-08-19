@@ -1,5 +1,6 @@
-import { Flex, Span } from 'honorable'
+import { Flex, P, Span } from 'honorable'
 import { createContext, useContext, useMemo } from 'react'
+import { toUpper } from 'lodash/string'
 
 const TableContext = createContext({})
 
@@ -16,7 +17,9 @@ function HeaderItem({ label, index }) {
   )
 }
 
-export function TableRow({ children, suffix, last, ...flex }) {
+export function TableRow({
+  children, suffix, last, ...flex
+}) {
   const { sizes } = useContext(TableContext)
 
   const len = children.length
@@ -49,10 +52,16 @@ export function TableRow({ children, suffix, last, ...flex }) {
 }
 
 export function TableData({ children }) {
-  return <Span color="text-light">{children}</Span>
+  return (
+    <Span color="text-light">
+      {children}
+    </Span>
+  )
 }
 
-export function Table({ sizes, headers, children, background, ...flex }) {
+export function Table({
+  sizes, headers, children, background, heading, ...flex
+}) {
   const value = useMemo(() => ({
     sizes, background,
   }), [sizes, background])
@@ -66,6 +75,14 @@ export function Table({ sizes, headers, children, background, ...flex }) {
       {...flex}
     >
       <TableContext.Provider value={value}>
+        {heading && (
+          <P
+            overline
+            color="text-xlight"
+            padding={16}
+          >{toUpper(heading)}
+          </P>
+        )}
         <Flex
           borderBottom="1px solid border"
           px={0.75}

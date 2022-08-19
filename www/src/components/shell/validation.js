@@ -3,7 +3,9 @@ import { ErrorIcon } from 'pluralsh-design-system'
 
 import { deepFetch } from '../../utils/graphql'
 
-export function validator(object, field, name, func) {
+export function validator(
+  object, field, name, func
+) {
   const val = deepFetch(object, field)
 
   if (!val) {
@@ -72,7 +74,9 @@ export function getExceptions(validations, object) {
   if (!validations) return { error: false }
 
   const allExceptions = validations
-    .map(({ field, name, func }) => validator(object, field, name, func))
+    .map(({ field, name, func }) => validator(
+      object, field, name, func
+    ))
     .filter(v => !!v)
 
   return { error: allExceptions.length > 0, exceptions: allExceptions }

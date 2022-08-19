@@ -1,13 +1,18 @@
 import { useCallback, useState } from 'react'
 import { Box, Layer, Text } from 'grommet'
 import { useMutation, useQuery } from '@apollo/client'
-import { BORDER_COLOR, Button, Copyable, GraphView, ListView, Scroller, Trash } from 'forge-core'
+import {
+  BORDER_COLOR, Button, Copyable, GraphView, ListView, Scroller, Trash,
+} from 'forge-core'
 import moment from 'moment'
 import lookup from 'country-code-lookup'
 
-import { deepUpdate, extendConnection, removeConnection, updateCache } from '../../utils/graphql'
+import { HeaderItem } from 'components/utils/Header'
+
+import {
+  deepUpdate, extendConnection, removeConnection, updateCache,
+} from '../../utils/graphql'
 import { FixedScroller } from '../utils/SmoothScroller'
-import { HeaderItem } from '../repos/Docker'
 import { SectionPortal } from '../Explore'
 import { Placeholder } from '../accounts/Audits'
 import { Icon } from '../accounts/Group'
@@ -16,7 +21,9 @@ import { formatLocation } from '../../utils/geo'
 import { Chloropleth } from '../utils/Chloropleth'
 import { ModalHeader } from '../ModalHeader'
 
-import { CREATE_TOKEN, DELETE_TOKEN, TOKENS_Q, TOKEN_AUDITS, TOKEN_METRICS } from './queries'
+import {
+  CREATE_TOKEN, DELETE_TOKEN, TOKENS_Q, TOKEN_AUDITS, TOKEN_METRICS,
+} from './queries'
 import { obscure } from './utils'
 
 function AuditHeader() {
@@ -278,11 +285,14 @@ export function Tokens() {
   const [mutation, { loading }] = useMutation(CREATE_TOKEN, {
     update: (cache, { data: { createToken } }) => {
       const prev = cache.readQuery({ query: TOKENS_Q })
-      cache.writeQuery({ query: TOKENS_Q,
+
+      cache.writeQuery({
+        query: TOKENS_Q,
         data: {
           ...prev,
           tokens: { ...prev.tokens, edges: [{ __typename: 'PersistedTokenEdge', node: createToken }, ...prev.tokens.edges] },
-        } })
+        },
+      })
     },
   })
 

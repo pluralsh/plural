@@ -11,7 +11,9 @@ import { BreadcrumbsContext } from '../Breadcrumbs'
 
 import { PUBLISHER_Q } from './queries'
 
-function formatAddress({ line1, line2, city, state, country, zip }) {
+function formatAddress({
+  line1, line2, city, state, country, zip,
+}) {
   return `${line1}, ${line2} ${city}, ${state}, ${country} ${zip}`
 }
 
@@ -41,7 +43,11 @@ export function PublisherHeader({ publisher: { name, description, ...publisher }
   )
 }
 
-function PublisherView({ publisher: { name, description, phone, owner, address, ...publisher } }) {
+function PublisherView({
+  publisher: {
+    name, description, address, ...publisher
+  },
+}) {
   const showDetails = !!address
 
   return (
@@ -71,6 +77,7 @@ export default function Publisher() {
   const { publisherId } = useParams()
   const { loading, data } = useQuery(PUBLISHER_Q, { variables: { publisherId } })
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
+
   useEffect(() => {
     if (!data) return
     setBreadcrumbs([

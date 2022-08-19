@@ -8,8 +8,6 @@ export const DEFAULT_EQUINIX_ICON = `${process.env.PUBLIC_URL}/equinix-metal.png
 export const DEFAULT_KIND_ICON = `${process.env.PUBLIC_URL}/kind.png`
 export const DARK_AWS_ICON = `${process.env.PUBLIC_URL}/aws-icon.png`
 
-export const DKR_DNS = 'dkr.plural.sh'
-
 export const ProviderIcons = {
   GCP: DEFAULT_GCP_ICON,
   AWS: DEFAULT_AWS_ICON,
@@ -51,28 +49,4 @@ export const AttackVector = {
   LOCAL: 'LOCAL',
   ADJACENT: 'ADJACENT',
   NETWORK: 'NETWORK',
-}
-
-export const ColorMap = {
-  LOW: 'low',
-  MEDIUM: 'medium',
-  HIGH: 'high',
-  CRITICAL: 'critical',
-  NONE: 'good',
-  A: 'good',
-  B: 'low',
-  C: 'medium',
-  D: 'high',
-  F: 'critical',
-  PHYSICAL: 'low',
-  LOCAL: 'medium',
-  ADJACENT: 'high',
-  NETWORK: 'critical',
-}
-
-export const TestStatus = {
-  QUEUED: 'QUEUED',
-  RUNNING: 'RUNNING',
-  FAILED: 'FAILED',
-  SUCEEDED: 'SUCCEEDED',
 }

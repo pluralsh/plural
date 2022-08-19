@@ -1,33 +1,41 @@
 import { useContext } from 'react'
 import { Flex, P } from 'honorable'
+import { Markdown, PageTitle } from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 
-import RepositoryDescriptionMarkdown from './RepositoryDescriptionMarkdown'
-
-function RepositoryDescription() {
+export default function RepositoryDescription() {
   const repository = useContext(RepositoryContext)
 
   return (
     <Flex
       direction="column"
-      backgroundColor="fill-one"
-      color="text-light"
-      border="1px solid border"
-      padding="medium"
-      paddingBottom="xlarge"
+      paddingRight="small"
       borderRadius="large"
-      maxWidth="640px"
+      color="text-light"
+      position="relative"
+      overflowY="hidden"
     >
-      {repository.readme ? (
-        <RepositoryDescriptionMarkdown
-          text={repository.readme}
-          gitUrl={repository.gitUrl}
-          mainBranch={repository.mainBranch}
-        />
-      ) : <P>No description available</P>}
+      <PageTitle
+        heading="Readme"
+        paddingTop="medium"
+      />
+      <Flex
+        direction="column"
+        flexGrow={1}
+        overflowY="auto"
+        paddingBottom="xlarge"
+        marginBottom="medium"
+        paddingRight="small"
+      >
+        {repository.readme ? (
+          <Markdown
+            text={repository.readme}
+            gitUrl={repository.git_url}
+            mainBranch={repository.mainBranch}
+          />
+        ) : <P>This repository does not have a Readme yet.</P>}
+      </Flex>
     </Flex>
   )
 }
-
-export default RepositoryDescription

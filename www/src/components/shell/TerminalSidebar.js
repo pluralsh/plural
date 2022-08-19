@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { ArrowLeftIcon, CollapseIcon, ModalHeader } from 'pluralsh-design-system'
-import { A, Accordion, Button, Div, ExtendTheme, Flex, Li, Modal, P, Ul } from 'honorable'
+import {
+  A, Accordion, Button, Div, ExtendTheme, Flex, Li, Modal, P, Ul,
+} from 'honorable'
 import { Fireworks } from 'fireworks-js/dist/react'
 
 import usePrevious from '../../hooks/usePrevious'
@@ -516,6 +518,7 @@ function Cheatsheet() {
   )
 }
 
+// eslint-disable-next-line
 function CheatsheetItem({ children, title, ...props }) {
   return (
     <Flex

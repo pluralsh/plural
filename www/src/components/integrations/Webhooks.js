@@ -82,9 +82,7 @@ export function Webhooks() {
         )}
         onLoadMore={() => pageInfo.hasNextPage && fetchMore({
           variables: { cursor: pageInfo.endCursor },
-          updateQuery: (prev, { fetchMoreResult: { integrationWebhooks } }) => extendConnection(
-            prev, integrationWebhooks, 'integrationWebhooks'
-          ),
+          updateQuery: (prev, { fetchMoreResult: { integrationWebhooks } }) => extendConnection(prev, integrationWebhooks, 'integrationWebhooks'),
         })}
       />
     </Box>
@@ -94,6 +92,7 @@ export function Webhooks() {
 export function Integrations() {
   const [open, setOpen] = useState(false)
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
+
   useEffect(() => {
     setBreadcrumbs([{ url: '/webhooks', text: 'webhooks' }])
   }, [setBreadcrumbs])

@@ -6,6 +6,7 @@ export function* reverse(array, mapper = i => i) {
 
 export function* rollup(array, mapper = i => i) {
   let prev = {}
+
   for (const item of array) {
     yield mapper(item, prev)
     prev = item
@@ -14,6 +15,7 @@ export function* rollup(array, mapper = i => i) {
 
 export function* lookahead(array, mapper = i => i) {
   const len = array.length
+
   for (let i = 0; i < len; i++) {
     yield mapper(array[i], array[i + 1] || {})
   }
@@ -27,9 +29,11 @@ export function mergeAppend(list, previous, key = i => i.id) {
 
 export function groupBy(list, key = i => i.id) {
   const grouped = {}
+
   for (const item of list) {
     const k = key(item)
     const group = grouped[k] || []
+
     group.push(item)
     grouped[k] = group
   }
@@ -40,6 +44,7 @@ export function groupBy(list, key = i => i.id) {
 export function* chunk(array, chunkSize) {
   let i; let
     j
+
   for (i = 0, j = array.length; i < j; i += chunkSize) {
     yield array.slice(i, i + chunkSize)
   }

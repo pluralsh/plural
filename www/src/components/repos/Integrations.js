@@ -2,8 +2,12 @@ import { useContext, useEffect, useState } from 'react'
 import { useQuery } from '@apollo/client'
 import styled from 'styled-components'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Carousel, HoveredBackground, ScrollableContainer, Scroller } from 'forge-core'
-import { Anchor, Box, Stack, Text, ThemeContext } from 'grommet'
+import {
+  Carousel, HoveredBackground, ScrollableContainer, Scroller,
+} from 'forge-core'
+import {
+  Anchor, Box, Stack, Text, ThemeContext,
+} from 'grommet'
 import { FormNextLink, FormPrevious } from 'grommet-icons'
 import { normalizeColor } from 'grommet/utils'
 
@@ -18,7 +22,9 @@ import { INTEGRATIONS_Q } from './queries'
 
 const ICON_SIZE = 50
 
-function Integration({ name, description, icon, tags, sourceUrl, publisher, width }) {
+function Integration({
+  name, description, icon, tags, sourceUrl, publisher, width,
+}) {
   const navigate = useNavigate()
   const [hover, setHover] = useState(false)
 
@@ -113,7 +119,9 @@ const containerStyling = styled.div`
   }
 `
 
-export function Container({ pad, width, hover, setHover, children, modifier, noHover, ...rest }) {
+export function Container({
+  pad, width, setHover, children, modifier, noHover, ...rest
+}) {
   const theme = useContext(ThemeContext)
 
   return (
@@ -236,6 +244,7 @@ export function IntegrationPage() {
     fetchPolicy: 'cache-and-network',
   })
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
+
   useEffect(() => {
     if (!data) return
     const { repository } = data
@@ -280,8 +289,8 @@ export function IntegrationPage() {
                 tag={tag}
                 setTag={setTag}
               />
-            ) :
-              <Text weight={500}>{repository.name}</Text>}
+            )
+              : <Text weight={500}>{repository.name}</Text>}
           </Box>
           <IntegrationGrid
             integrations={integrations}

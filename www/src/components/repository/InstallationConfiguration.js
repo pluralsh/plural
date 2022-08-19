@@ -1,21 +1,37 @@
 import { useMutation } from '@apollo/client'
-import { Flex, Input, Modal, RadioGroup, Span } from 'honorable'
-import { Radio } from 'pluralsh-design-system'
+import {
+  Flex, Input, RadioGroup, Span,
+} from 'honorable'
+import {
+  Modal, Radio, TabList, TabListItem, TabPanel,
+} from 'pluralsh-design-system'
 import { useCallback, useState } from 'react'
-
 import { Keyboard } from 'grommet'
+import { useTabListState } from '@react-stately/tabs'
 
 import { Actions } from '../account/Actions'
 import { GqlError } from '../utils/Alert'
-import { Tabs } from '../utils/SidebarTabs'
+
+import { capitalize } from '../../utils/string'
 
 import { DELETE_INSTALLATION_MUTATION, UPDATE_INSTALLATION } from './queries'
 
 function MiniHeader({ header, description }) {
   return (
-    <Flex direction="column">
-      <Span fontWeight="bold">{header}</Span>
-      <Span color="text-xlight">{description}</Span>
+    <Flex
+      direction="column"
+      gap="xxsmall"
+    >
+      <Span
+        body1
+        bold
+      >{header}
+      </Span>
+      <Span
+        body2
+        color="text-light"
+      >{description}
+      </Span>
     </Flex>
   )
 }
@@ -23,15 +39,17 @@ function MiniHeader({ header, description }) {
 function UpdateUpgrades({ installation, setOpen }) {
   const [autoUpgrade, setAutoUpgrade] = useState(installation.autoUpgrade || false)
   const [trackTag, setTrackTag] = useState(installation.trackTag || '')
-  const [mutation, { loading }] = useMutation(UPDATE_INSTALLATION, { variables: { 
-    id: installation.id,
-    attributes: { trackTag, autoUpgrade },
-  } })
-  
+  const [mutation, { loading }] = useMutation(UPDATE_INSTALLATION, {
+    variables: {
+      id: installation.id,
+      attributes: { trackTag, autoUpgrade },
+    },
+  })
+
   const doSetTrackTag = useCallback(tag => {
     if (tag === 'none') {
       setAutoUpgrade(false)
-  
+
       return
     }
     setAutoUpgrade(true)
@@ -42,10 +60,11 @@ function UpdateUpgrades({ installation, setOpen }) {
     <Flex
       gap="medium"
       direction="column"
+      paddingTop="medium"
     >
       <MiniHeader
         header="Automatic upgrades"
-        description="Chose the upgrade channel for new versions"
+        description="Determine how this application is updated on a regular basis."
       />
       <RadioGroup
         direction="row"
@@ -58,7 +77,7 @@ function UpdateUpgrades({ installation, setOpen }) {
             checked={trackTag === t && autoUpgrade}
             onChange={({ target: { checked } }) => checked && doSetTrackTag(t)}
           >
-            {t}
+            {capitalize(t)}
           </Radio>
         ))}
         <Radio
@@ -77,7 +96,6 @@ function UpdateUpgrades({ installation, setOpen }) {
       />
     </Flex>
   )
-  
 }
 
 function DeleteInstallation({ installation, setOpen }) {
@@ -105,57 +123,91 @@ function DeleteInstallation({ installation, setOpen }) {
         )}
         <MiniHeader
           header="Delete this installation"
-          description="Type the application name to confirm.  This will only deregister the installation from plural and disable future upgrades, your application will continue running in your cluster."
+          description={`Type the application name, "${name}", to confirm deletion.`}
         />
         <Input
           value={confirm}
           onChange={({ target: { value } }) => setConfirm(value)}
-          placeholder={`type ${name} to confirm`}
+          placeholder="Confirm application name"
           width="75%"
         />
         <Actions
           cancel={() => setOpen(false)}
           submit={confirm !== name ? null : mutation}
           loading={loading}
-          action="Delete"
+          destructive
+          action="Delete installation"
         />
       </Flex>
     </Keyboard>
   )
 }
-  
+
 export function InstallationConfiguration({ installation, open, setOpen }) {
-  const [tab, setTab] = useState('Upgrades')
+  const tabs = {
+    upgrades: {
+      key: '1',
+      label: 'Upgrades',
+      content: <UpdateUpgrades
+        installation={installation}
+        setOpen={setOpen}
+      />,
+    },
+    uninstall: {
+      key: '2',
+      label: 'Delete',
+      content: <DeleteInstallation
+        installation={installation}
+        setOpen={setOpen}
+      />,
+    },
+  }
+
+  const tabListStateProps = {
+    keyboardActivation: 'manual',
+    orientation: 'horizontal',
+    children: Object.entries(tabs).map(([key, tab]) => (
+      <TabListItem
+        key={key}
+        width="100%"
+        justifyContent="center"
+      >
+        {tab.label}
+      </TabListItem>
+    )),
+  }
+
+  const tabState = useTabListState(tabListStateProps)
 
   return (
     <Modal
+      form
       open={open}
       onClose={() => setOpen(false)}
+      paddingRight={0}
+      paddingLeft={0}
+      paddingTop={0}
     >
-      <Flex
-        width="50vw"
-        direction="column"
-        gap="medium"
+      <TabList
+        state={tabState}
+        stateProps={tabListStateProps}
+        flexShrink={0}
+        {...{
+          ' div > div': {
+            justifyContent: 'center',
+            padding: '7px 0',
+          },
+        }}
+      />
+      <TabPanel
+        state={tabState}
+        stateProps={tabListStateProps}
+        paddingTop="large"
+        paddingHorizontal="large"
       >
-        <Tabs
-          tabs={['Upgrades', 'Uninstall']}
-          tab={tab}
-          setTab={setTab}
-        />
-        {tab === 'Upgrades' && (
-          <UpdateUpgrades
-            installation={installation}
-            setOpen={setOpen}
-          />
-        )}
-        {tab === 'Uninstall' && (
-          <DeleteInstallation
-            installation={installation}
-            setOpen={setOpen}
-          />
-        )}
-      </Flex>
-    </Modal> 
+        {tabs[tabState.selectedKey]?.content}
+      </TabPanel>
+    </Modal>
   )
 }
-  
+

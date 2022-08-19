@@ -7,7 +7,6 @@ import {
   Link, Outlet, useLocation, useNavigate, useParams,
 } from 'react-router-dom'
 import { Button, Tab } from 'pluralsh-design-system'
-import { ScrollableContainer } from 'forge-core'
 import moment from 'moment'
 import Highlight from 'react-highlight.js'
 
@@ -17,10 +16,12 @@ import {
   ResponsiveLayoutContentContainer, ResponsiveLayoutSidecarContainer, ResponsiveLayoutSidenavContainer, ResponsiveLayoutSpacer,
 } from 'components/layout/ResponsiveLayout'
 
+import { GoBack } from 'components/utils/GoBack'
+
 import { PluralConfigurationContext } from '../login/CurrentUser'
 
 import {
-  PackageBackButton, PackageGrade, PackageHeader, PackageProperty, PackageVersionPicker, dockerPull,
+  PackageGrade, PackageHeader, PackageProperty, PackageVersionPicker, dockerPull,
 } from './common/misc'
 
 import { CHART_Q, INSTALL_CHART, UPDATE_CHART_INST } from './queries'
@@ -177,103 +178,103 @@ export default function Chart() {
       direction="column"
       fill
     >
-      <ScrollableContainer>
-        <PackageBackButton link={`/repository/${chart.repository.id}/packages/helm`} />
-        <Box
-          pad="16px"
-          direction="row"
-        >
-          <ResponsiveLayoutSidenavContainer>
-            <Box pad={{ left: '16px' }}>
-              <PackageHeader
-                name={currentVersion.chart.name}
-                icon={currentVersion.chart.icon || DEFAULT_CHART_ICON}
-              />
-              <PackageVersionPicker
-                edges={edges}
-                installed={chartInst}
-                version={version || currentVersion}
-                setVersion={setVersion}
-                pageInfo={pageInfo}
-                fetchMore={fetchMore}
-              />
+      <GoBack
+        text="Back to packages"
+        link={`/repository/${chart.repository.id}/packages/helm`}
+      />
+      <Box
+        pad="16px"
+        direction="row"
+      >
+        <ResponsiveLayoutSidenavContainer>
+          <Box pad={{ left: '16px' }}>
+            <PackageHeader
+              name={currentVersion.chart.name}
+              icon={currentVersion.chart.icon || DEFAULT_CHART_ICON}
+            />
+            <PackageVersionPicker
+              edges={edges}
+              installed={chartInst}
+              version={version || currentVersion}
+              setVersion={setVersion}
+              pageInfo={pageInfo}
+              fetchMore={fetchMore}
+            />
+          </Box>
+          <Tab
+            vertical
+            onClick={() => navigate(`/charts/${chart.id}`)}
+            active={pathname.endsWith(`/charts/${chart.id}`)}
+            textDecoration="none"
+          >
+            Readme
+          </Tab>
+          <Tab
+            vertical
+            onClick={() => navigate(`/charts/${chart.id}/configuration`)}
+            active={pathname.startsWith(`/charts/${chart.id}/configuration`)}
+            textDecoration="none"
+          >
+            Configuration
+          </Tab>
+          <Tab
+            vertical
+            onClick={() => navigate(`/charts/${chart.id}/dependencies`)}
+            active={pathname.startsWith(`/charts/${chart.id}/dependencies`)}
+            textDecoration="none"
+          >
+            Dependencies
+          </Tab>
+          <Tab
+            vertical
+            onClick={() => navigate(`/charts/${chart.id}/security`)}
+            active={pathname.startsWith(`/charts/${chart.id}/security`)}
+            textDecoration="none"
+          >
+            <Flex
+              flexGrow={1}
+              justifyContent="space-between"
+            >
+              Security
+              {currentVersion?.scan && <PackageGrade grade={currentVersion.scan.grade} />}
+            </Flex>
+          </Tab>
+          {(chartInst && (
+            <Tab
+              vertical
+              onClick={() => navigate(`/charts/${chart.id}/updatequeue`)}
+              active={pathname.startsWith(`/charts/${chart.id}/updatequeue`)}
+              textDecoration="none"
+            >
+              Update queue
+            </Tab>
+          ))}
+        </ResponsiveLayoutSidenavContainer>
+        <ResponsiveLayoutSpacer />
+        <ResponsiveLayoutContentContainer>
+          <Outlet context={{ helmChart: chart, currentHelmChart: currentVersion }} />
+        </ResponsiveLayoutContentContainer>
+        <ResponsiveLayoutSidecarContainer width="200px">
+          <Box
+            direction="column"
+            gap="small"
+          >
+            <Box height="54px">
+              {chartInst?.version?.id !== currentVersion.id && repository.installation && (
+                <ChartInstaller
+                  chartInstallation={chartInst}
+                  installation={repository.installation}
+                  versionId={chartInst?.version?.id}
+                  chartId={chart.id}
+                />
+              )}
             </Box>
-            <Tab
-              vertical
-              onClick={() => navigate(`/charts/${chart.id}`)}
-              active={pathname.endsWith(`/charts/${chart.id}`)}
-              textDecoration="none"
-            >
-              Readme
-            </Tab>
-            <Tab
-              vertical
-              onClick={() => navigate(`/charts/${chart.id}/configuration`)}
-              active={pathname.startsWith(`/charts/${chart.id}/configuration`)}
-              textDecoration="none"
-            >
-              Configuration
-            </Tab>
-            <Tab
-              vertical
-              onClick={() => navigate(`/charts/${chart.id}/dependencies`)}
-              active={pathname.startsWith(`/charts/${chart.id}/dependencies`)}
-              textDecoration="none"
-            >
-              Dependencies
-            </Tab>
-            <Tab
-              vertical
-              onClick={() => navigate(`/charts/${chart.id}/security`)}
-              active={pathname.startsWith(`/charts/${chart.id}/security`)}
-              textDecoration="none"
-            >
-              <Flex
-                flexGrow={1}
-                justifyContent="space-between"
-              >
-                Security
-                {currentVersion?.scan && <PackageGrade scan={currentVersion.scan} />}
-              </Flex>
-            </Tab>
-            {(chartInst && (
-              <Tab
-                vertical
-                onClick={() => navigate(`/charts/${chart.id}/updatequeue`)}
-                active={pathname.startsWith(`/charts/${chart.id}/updatequeue`)}
-                textDecoration="none"
-              >
-                Update queue
-              </Tab>
-            ))}
-          </ResponsiveLayoutSidenavContainer>
-          <ResponsiveLayoutSpacer />
-          <ResponsiveLayoutContentContainer>
-            <Outlet context={{ helmChart: chart, currentHelmChart: currentVersion }} />
-          </ResponsiveLayoutContentContainer>
-          <ResponsiveLayoutSidecarContainer>
-            <Box
-              style={{ minWidth: '200px', maxWidth: '200px' }}
-              direction="column"
-              gap="small"
-            >
-              <Box height="54px">
-                {chartInst?.version?.id !== currentVersion.id && repository.installation && (
-                  <ChartInstaller
-                    chartInstallation={chartInst}
-                    installation={repository.installation}
-                    versionId={chartInst?.version?.id}
-                    chartId={chart.id}
-                  />
-                )}
-              </Box>
-              <ChartInfo version={currentVersion} />
-              <ImageDependencies version={currentVersion} />
-            </Box>
-          </ResponsiveLayoutSidecarContainer>
-          <ResponsiveLayoutSpacer />
-        </Box>
-      </ScrollableContainer>
+            <ChartInfo version={currentVersion} />
+            <ImageDependencies version={currentVersion} />
+          </Box>
+        </ResponsiveLayoutSidecarContainer>
+        <ResponsiveLayoutSpacer />
+      </Box>
     </Box>
   )
 }

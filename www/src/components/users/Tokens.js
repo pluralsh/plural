@@ -7,11 +7,12 @@ import {
 import moment from 'moment'
 import lookup from 'country-code-lookup'
 
+import { HeaderItem } from 'components/utils/Header'
+
 import {
   deepUpdate, extendConnection, removeConnection, updateCache,
 } from '../../utils/graphql'
 import { FixedScroller } from '../utils/SmoothScroller'
-import { HeaderItem } from '../repos/Docker'
 import { SectionPortal } from '../Explore'
 import { Placeholder } from '../accounts/Audits'
 import { Icon } from '../accounts/Group'

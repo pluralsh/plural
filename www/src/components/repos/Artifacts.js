@@ -12,13 +12,14 @@ import fs from 'filesize'
 import Collapsible from 'react-collapsible'
 import moment from 'moment'
 
+import { HeaderItem } from 'components/utils/Header'
+
 import { download } from '../../utils/file'
 
 import { Icon } from '../accounts/Group'
 
 import { MARKDOWN_STYLING } from './Chart'
 import { DetailContainer } from './Installation'
-import { HeaderItem } from './Docker'
 
 const SMALL_ICON_SIZE = '13px'
 

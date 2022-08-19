@@ -1,7 +1,8 @@
 import { useQuery } from '@apollo/client'
-import { Link, Outlet, useParams } from 'react-router-dom'
-import { Button, Flex } from 'honorable'
-import { ArrowLeftIcon } from 'pluralsh-design-system'
+import { Outlet, useParams } from 'react-router-dom'
+import { Flex } from 'honorable'
+
+import { GoBack } from 'components/utils/GoBack'
 
 import RepositoryContext from '../../contexts/RepositoryContext.ts'
 
@@ -59,22 +60,10 @@ function Repository() {
         direction="column"
         overflowY="hidden"
       >
-        <Flex
-          paddingTop="medium"
-          marginLeft="medium"
-          marginRight="large"
-        >
-          <Button
-            tertiary
-            as={Link}
-            to="/marketplace"
-            startIcon={(
-              <ArrowLeftIcon />
-            )}
-          >
-            Back to Marketplace
-          </Button>
-        </Flex>
+        <GoBack
+          text="Back to marketplace"
+          link="/marketplace"
+        />
         <Flex
           flexGrow={1}
           height={0}
@@ -87,7 +76,7 @@ function Repository() {
             <RepositorySideNav />
           </ResponsiveLayoutSidenavContainer>
           <ResponsiveLayoutSpacer />
-          <ResponsiveLayoutContentContainer>
+          <ResponsiveLayoutContentContainer paddingHorizontal="xxxsmall">
             <Outlet />
           </ResponsiveLayoutContentContainer>
           <ResponsiveLayoutSidecarContainer>

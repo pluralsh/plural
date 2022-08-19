@@ -55,6 +55,8 @@ import PackageConfiguration from './repos/common/PackageConfiguration'
 import PackageSecurity from './repos/common/PackageSecurity'
 import PackageUpdateQueue from './repos/common/PackageUpdateQueue'
 import PackageDependencies from './repos/common/PackageDependencies'
+import ImagePullMetrics from './repos/common/ImagePullMetrics'
+import ImageVulnerabilities from './repos/common/ImageVulnerabilities'
 
 function EditBilling(props) {
   return (
@@ -276,7 +278,16 @@ export function PluralInner() {
             <Route
               path="/dkr/img/:id"
               element={<Docker />}
-            />
+            >
+              <Route
+                index
+                element={<ImagePullMetrics />}
+              />
+              <Route
+                path="vulnerabilities"
+                element={<ImageVulnerabilities />}
+              />
+            </Route>
             {/* --- SHELL --- */}
             <Route
               path="/shell"

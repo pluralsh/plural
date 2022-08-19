@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Box } from 'grommet'
-import { ScrollableContainer } from 'forge-core'
 import { useMutation, useQuery } from '@apollo/client'
 import {
   Outlet, useLocation, useNavigate, useParams,
@@ -14,6 +13,8 @@ import {
   ResponsiveLayoutContentContainer, ResponsiveLayoutSidecarContainer, ResponsiveLayoutSidenavContainer, ResponsiveLayoutSpacer,
 } from 'components/layout/ResponsiveLayout'
 
+import { GoBack } from 'components/utils/GoBack'
+
 import { deepUpdate, updateCache } from '../../utils/graphql'
 
 import { GqlError } from '../utils/Alert'
@@ -21,9 +22,7 @@ import { GqlError } from '../utils/Alert'
 import { INSTALL_TF, TF_Q, UNINSTALL_TF } from './queries'
 import { DEFAULT_TF_ICON } from './constants'
 
-import {
-  PackageBackButton, PackageGrade, PackageHeader, PackageVersionPicker,
-} from './common/misc'
+import { PackageGrade, PackageHeader, PackageVersionPicker } from './common/misc'
 
 function TerraformInstaller({
   installation, terraformId, terraformInstallation, version,
@@ -83,101 +82,101 @@ export default function Terraform() {
       direction="column"
       fill
     >
-      <ScrollableContainer>
-        <PackageBackButton link={`/repository/${terraformModule.repository.id}/packages/terraform`} />
-        <Box
-          pad="16px"
-          direction="row"
-        >
-          <ResponsiveLayoutSidenavContainer>
-            <Box pad={{ left: '16px' }}>
-              <PackageHeader
-                name={terraformModule.name}
-                icon={DEFAULT_TF_ICON}
-              />
-              <PackageVersionPicker
-                edges={edges}
-                installed={tfInst}
-                version={version || currentVersion}
-                setVersion={setVersion}
-                pageInfo={pageInfo}
-                fetchMore={fetchMore}
-              />
+      <GoBack
+        text="Back to packages"
+        link={`/repository/${terraformModule.repository.id}/packages/terraform`}
+      />
+      <Box
+        pad="16px"
+        direction="row"
+      >
+        <ResponsiveLayoutSidenavContainer>
+          <Box pad={{ left: '16px' }}>
+            <PackageHeader
+              name={terraformModule.name}
+              icon={DEFAULT_TF_ICON}
+            />
+            <PackageVersionPicker
+              edges={edges}
+              installed={tfInst}
+              version={version || currentVersion}
+              setVersion={setVersion}
+              pageInfo={pageInfo}
+              fetchMore={fetchMore}
+            />
+          </Box>
+          <Tab
+            vertical
+            onClick={() => navigate(`/terraform/${terraformModule.id}`)}
+            active={pathname.endsWith(`/terraform/${terraformModule.id}`)}
+            textDecoration="none"
+          >
+            Readme
+          </Tab>
+          <Tab
+            vertical
+            onClick={() => navigate(`/terraform/${terraformModule.id}/configuration`)}
+            active={pathname.startsWith(`/terraform/${terraformModule.id}/configuration`)}
+            textDecoration="none"
+          >
+            Configuration
+          </Tab>
+          <Tab
+            vertical
+            onClick={() => navigate(`/terraform/${terraformModule.id}/dependencies`)}
+            active={pathname.startsWith(`/terraform/${terraformModule.id}/dependencies`)}
+            textDecoration="none"
+          >
+            Dependencies
+          </Tab>
+          <Tab
+            vertical
+            onClick={() => navigate(`/terraform/${terraformModule.id}/security`)}
+            active={pathname.startsWith(`/terraform/${terraformModule.id}/security`)}
+            textDecoration="none"
+          >
+            <Flex
+              flexGrow={1}
+              justifyContent="space-between"
+            >
+              Security
+              {currentVersion?.scan && <PackageGrade grade={currentVersion.scan.grade} />}
+            </Flex>
+          </Tab>
+          {(tfInst && (
+            <Tab
+              vertical
+              onClick={() => navigate(`/terraform/${terraformModule.id}/updatequeue`)}
+              active={pathname.startsWith(`/terraform/${terraformModule.id}/updatequeue`)}
+              textDecoration="none"
+            >
+              Update queue
+            </Tab>
+          ))}
+        </ResponsiveLayoutSidenavContainer>
+        <ResponsiveLayoutSpacer />
+        <ResponsiveLayoutContentContainer>
+          <Outlet context={{ terraformChart: terraformModule, currentTerraformChart: currentVersion }} />
+        </ResponsiveLayoutContentContainer>
+        <ResponsiveLayoutSidecarContainer width="200px">
+          <Box
+            direction="column"
+            gap="small"
+          >
+            <Box height="54px">
+              {terraformModule.installation && (
+                <TerraformInstaller
+                  installation={terraformModule.repository.installation}
+                  terraformInstallation={terraformModule.installation}
+                  version={currentVersion}
+                  terraformId={terraformModule.id}
+                />
+              )}
             </Box>
-            <Tab
-              vertical
-              onClick={() => navigate(`/terraform/${terraformModule.id}`)}
-              active={pathname.endsWith(`/terraform/${terraformModule.id}`)}
-              textDecoration="none"
-            >
-              Readme
-            </Tab>
-            <Tab
-              vertical
-              onClick={() => navigate(`/terraform/${terraformModule.id}/configuration`)}
-              active={pathname.startsWith(`/terraform/${terraformModule.id}/configuration`)}
-              textDecoration="none"
-            >
-              Configuration
-            </Tab>
-            <Tab
-              vertical
-              onClick={() => navigate(`/terraform/${terraformModule.id}/dependencies`)}
-              active={pathname.startsWith(`/terraform/${terraformModule.id}/dependencies`)}
-              textDecoration="none"
-            >
-              Dependencies
-            </Tab>
-            <Tab
-              vertical
-              onClick={() => navigate(`/terraform/${terraformModule.id}/security`)}
-              active={pathname.startsWith(`/terraform/${terraformModule.id}/security`)}
-              textDecoration="none"
-            >
-              <Flex
-                flexGrow={1}
-                justifyContent="space-between"
-              >
-                Security
-                {currentVersion?.scan && <PackageGrade scan={currentVersion.scan} />}
-              </Flex>
-            </Tab>
-            {(tfInst && (
-              <Tab
-                vertical
-                onClick={() => navigate(`/terraform/${terraformModule.id}/updatequeue`)}
-                active={pathname.startsWith(`/terraform/${terraformModule.id}/updatequeue`)}
-                textDecoration="none"
-              >
-                Update queue
-              </Tab>
-            ))}
-          </ResponsiveLayoutSidenavContainer>
-          <ResponsiveLayoutSpacer />
-          <ResponsiveLayoutContentContainer>
-            <Outlet context={{ terraformChart: terraformModule, currentTerraformChart: currentVersion }} />
-          </ResponsiveLayoutContentContainer>
-          <ResponsiveLayoutSidecarContainer>
-            <Box
-              style={{ minWidth: '200px', maxWidth: '200px' }}
-              direction="column"
-              gap="small"
-            >
-              <Box height="54px">
-                {terraformModule.installation && (
-                  <TerraformInstaller
-                    installation={terraformModule.repository.installation}
-                    terraformInstallation={terraformModule.installation}
-                    version={currentVersion}
-                    terraformId={terraformModule.id}
-                  />
-                )}
-              </Box>
-            </Box>
-          </ResponsiveLayoutSidecarContainer>
-          <ResponsiveLayoutSpacer />
-        </Box>
-      </ScrollableContainer>
+          </Box>
+        </ResponsiveLayoutSidecarContainer>
+        <ResponsiveLayoutSpacer />
+      </Box>
     </Box>
   )
 }

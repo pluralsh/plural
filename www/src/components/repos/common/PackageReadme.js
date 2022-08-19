@@ -6,7 +6,7 @@ import { Markdown, PageTitle } from 'pluralsh-design-system'
 
 export default function PackageReadme() {
   const { currentHelmChart, currentTerraformChart } = useOutletContext()
-  const readme = (currentHelmChart || currentTerraformChart)?.readme || 'No readme found.'
+  const readme = (currentHelmChart || currentTerraformChart)?.readme || 'This package does not have a Readme yet.'
 
   return (
     <Box
@@ -15,7 +15,12 @@ export default function PackageReadme() {
       gap="small"
     >
       <PageTitle heading="Readme" />
-      <Markdown text={readme} />
+      <Box
+        pad={{ right: 'xsmall' }}
+        overflow={{ vertical: 'auto' }}
+      >
+        <Markdown text={readme} />
+      </Box>
     </Box>
   )
 }

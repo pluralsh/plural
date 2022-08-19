@@ -72,11 +72,9 @@ function TestLogs({ step: { id, hasLogs }, testId }) {
   })
 
   useEffect(() => {
-    // console.log(xterm)
     if (!xterm || !xterm.current || !xterm.current.terminal) return
     xterm.current.terminal.setOption('disableStdin', true)
     fitAddon.fit()
-    // console.log('joining test channel')
 
     if (data && data.testLogs && data.testLogs.step.id === id) {
       for (const l of data.testLogs.logs) {

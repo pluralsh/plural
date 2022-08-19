@@ -1,15 +1,21 @@
 import {
-  A, Div, Flex, H2, Img, Span,
+  Div, Flex, H2, Img, Span,
 } from 'honorable'
 import { Box } from 'grommet'
 import {
-  ArrowLeftIcon, Chip, ListBoxFooterPlus, ListBoxItem, ListBoxItemChipList, Select,
+  Chip, ListBoxFooterPlus, ListBoxItem, ListBoxItemChipList, Select,
 } from 'pluralsh-design-system'
-import { Link } from 'react-router-dom'
 import { extendConnection } from 'utils/graphql'
 
 export function dockerPull(registry, { tag, dockerRepository: { name, repository } }) {
   return `${registry}/${repository.name}/${name}:${tag}`
+}
+
+export const chipSeverity = {
+  low: 'success',
+  medium: 'warning',
+  high: 'error',
+  critical: 'critical',
 }
 
 const gradeToColor = {
@@ -21,9 +27,7 @@ const gradeToColor = {
   F: '#FDB1A5',
 }
 
-export function PackageGrade({ scan, large }) {
-  if (!scan) return null
-
+export function PackageGrade({ grade, large }) {
   return (
     <Chip
       size={large ? 'large' : 'medium'}
@@ -31,34 +35,8 @@ export function PackageGrade({ scan, large }) {
       backgroundColor="fill-two"
       borderColor="border-fill-two"
     >
-      <Span color={gradeToColor[scan.grade]}>
-        {scan.grade}
-      </Span>
+      <Span color={gradeToColor[grade]}>{grade}</Span>
     </Chip>
-  )
-}
-
-export function PackageBackButton({ link }) {
-  return (
-    <Box
-      direction="row"
-      pad={{ horizontal: '32px', top: 'medium', bottom: 'small' }}
-    >
-      <A
-        as={Link}
-        to={link}
-        fontFamily="Monument Semi-Mono, monospace"
-        fontWeight={500}
-        display="flex"
-        alignContent="center"
-      >
-        <ArrowLeftIcon
-          size={14}
-          marginRight="13px"
-        />
-        <Span>Back to packages</Span>
-      </A>
-    </Box>
   )
 }
 
@@ -179,7 +157,7 @@ export function PackageVersionPicker({
   )
 }
 
-export function PackageProperty({ children, header }) {
+export function PackageProperty({ children, header, ...props }) {
   return (
     <>
       <Div
@@ -189,7 +167,7 @@ export function PackageProperty({ children, header }) {
       >
         {header}
       </Div>
-      <Div>{children}</Div>
+      <Div {...props}>{children}</Div>
     </>
   )
 }

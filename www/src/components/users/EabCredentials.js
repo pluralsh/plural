@@ -4,10 +4,11 @@ import moment from 'moment'
 import { useState } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
 
+import { HeaderItem } from 'components/utils/Header'
+
 import { updateCache } from '../../utils/graphql'
 import { TableRow } from '../accounts/Domains'
 import { Icon } from '../accounts/Group'
-import { HeaderItem } from '../repos/Docker'
 import { Provider } from '../repos/misc'
 import { Confirm } from '../utils/Confirm'
 

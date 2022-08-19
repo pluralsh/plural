@@ -49,9 +49,6 @@ defimpl Core.PubSub.Fanout, for: Core.PubSub.UserUpdated do
   alias Core.Services.Users
 
   def fanout(%{item: %{email_changed: true} = user}) do
-    confirm_by = Timex.now() |> Timex.shift(days: 7)
-    Users.update_user(%{email_confirmed: false, email_confirm_by: confirm_by}, user)
-
     Users.create_reset_token(%{type: :email, email: user.email})
   end
   def fanout(_), do: :ok

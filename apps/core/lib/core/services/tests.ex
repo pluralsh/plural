@@ -95,6 +95,34 @@ defmodule Core.Services.Tests do
   end
 
   @doc """
+  Expires an old unfinished test
+  """
+  @spec expire(Test.t) :: test_resp
+  def expire(%Test{} = test) do
+    test = Core.Repo.preload(test, [:steps])
+
+    start_transaction()
+    |> add_operation(:test, fn _ ->
+      Test.changeset(test, %{status: :failed})
+      |> Core.Repo.update()
+    end)
+    |> expire_steps(test.steps)
+    |> execute(extract: :test)
+  end
+
+  defp expire_steps(xact, [_ | _] = steps) do
+    Enum.reduce(steps, xact, fn
+      %{status: s} = step, xact when s not in [:succeeded, :failed] ->
+        add_operation(xact, {:step, step.id}, fn _ ->
+          TestStep.changeset(step, %{status: :failed})
+          |> Core.Repo.update()
+        end)
+      _, xact -> xact
+    end)
+  end
+  defp expire_steps(xact, _), do: xact
+
+  @doc """
   Sends a StepLogs event for the given logs, provided the user has edit permissions for the test
   """
   @spec publish_logs(binary, binary, User.t) :: step_resp

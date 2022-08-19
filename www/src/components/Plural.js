@@ -4,6 +4,8 @@ import {
 } from 'react-router-dom'
 import { StripeProvider } from 'react-stripe-elements'
 
+import { growthbook } from '../helpers/growthbook'
+
 import ApplicationLayout from './layout/ApplicationLayout'
 import BreadcrumbProvider from './Breadcrumbs'
 import Chart from './repos/Chart'
@@ -57,6 +59,7 @@ import PackageUpdateQueue from './repos/common/PackageUpdateQueue'
 import PackageDependencies from './repos/common/PackageDependencies'
 import ImagePullMetrics from './repos/common/ImagePullMetrics'
 import ImageVulnerabilities from './repos/common/ImageVulnerabilities'
+import { SuccessToast } from './utils/Toasts'
 
 function EditBilling(props) {
   return (
@@ -100,6 +103,22 @@ function OAuthOrFallback() {
   )
 }
 
+function TestBanner() {
+  const [enable, setEnable] = useState(true)
+
+  useEffect(() => {
+    const timeout = setTimeout(() => setEnable(false), 5000)
+
+    return () => clearTimeout(timeout)
+  }, [])
+
+  if (growthbook.isOn('growthbook-test') && enable) {
+    return <SuccessToast>Growthbook Test!</SuccessToast>
+  }
+
+  return null
+}
+
 export function PluralInner() {
   return (
     <WrapStripe>
@@ -107,6 +126,7 @@ export function PluralInner() {
         <ApplicationLayout>
           <VerifyEmailConfirmed />
           <DeviceLoginNotif />
+          <TestBanner />
           <Routes>
             {/* --- OAUTH --- */}
             <Route

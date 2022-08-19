@@ -25,6 +25,15 @@ defmodule Core.Services.AccountsTest do
       assert_receive {:event, %PubSub.UserCreated{item: ^srv_acct}}
     end
 
+    test "cannot bind to groups in other accounts", %{user: user} do
+      group = insert(:group)
+
+      {:error, _} = Accounts.create_service_account(%{
+        name: "service account",
+        impersonation_policy: %{bindings: [%{group_id: group.id}]}
+      }, user)
+    end
+
     test "you can manually specify service account emails", %{user: user} do
       group = insert(:group, account: user.account)
 
@@ -200,7 +209,7 @@ defmodule Core.Services.AccountsTest do
 
     test "root users can create group members", %{user: user, account: account} do
       group = insert(:group, account: account)
-      other = insert(:user)
+      other = insert(:user, account: account)
       {:ok, gm} = Accounts.create_group_member(%{user_id: other.id}, group.id, user)
 
       assert gm.group_id == group.id
@@ -209,9 +218,15 @@ defmodule Core.Services.AccountsTest do
       assert_receive {:event, %PubSub.GroupMemberCreated{item: ^gm, actor: ^user}}
     end
 
-    test "nonroot users cannot create group members", %{account: account} do
+    test "users must be same account", %{user: user, account: account} do
       group = insert(:group, account: account)
       other = insert(:user)
+      {:error, _} = Accounts.create_group_member(%{user_id: other.id}, group.id, user)
+    end
+
+    test "nonroot users cannot create group members", %{account: account} do
+      group = insert(:group, account: account)
+      other = insert(:user, account: account)
       {:error, _} = Accounts.create_group_member(%{user_id: other.id}, group.id, insert(:user, account: account))
     end
   end
@@ -298,7 +313,7 @@ defmodule Core.Services.AccountsTest do
     setup [:setup_root_user]
 
     test "Root users can create roles", %{user: user, account: account} do
-      group = insert(:group)
+      group = insert(:group, account: account)
       {:ok, role} = Accounts.create_role(%{
         name: "role",
         role_bindings: [%{user_id: user.id}, %{group_id: group.id}],
@@ -314,6 +329,15 @@ defmodule Core.Services.AccountsTest do
       assert second.group_id == group.id
 
       assert_receive {:event, %PubSub.RoleCreated{item: ^role, actor: ^user}}
+    end
+
+    test "you can't bind to groups in other accounts", %{user: user} do
+      group = insert(:group)
+      {:error, _} = Accounts.create_role(%{
+        name: "role",
+        role_bindings: [%{user_id: user.id}, %{group_id: group.id}],
+        permissions: %{billing: true}
+      }, user)
     end
 
     test "random users cannot create roles", %{account: account} do

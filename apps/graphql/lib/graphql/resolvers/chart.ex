@@ -38,6 +38,9 @@ defmodule GraphQl.Resolvers.Chart do
   def update_chart_installation(%{chart_installation_id: id, attributes: attrs}, %{context: %{current_user: user}}),
     do: Charts.update_chart_installation(attrs, id, user)
 
+  def delete_chart_installation(%{id: id}, %{context: %{current_user: user}}),
+    do: Charts.delete_chart_installation(id, user)
+
   def create_crd(%{attributes: attrs, chart_name: %{chart: chart, repo: repo}}, %{context: %{current_user: user}}) do
     case get_by_chart_name(repo, chart) do
       %{id: id} -> do_create_crd(attrs, id, user)

@@ -2166,6 +2166,11 @@ __metadata:
     debug: ^4.1.1
     minimatch: ^3.0.4
   checksum: d480e5d57e6d787565b6cff78e27c3d1b380692d4ffb0ada7d7f5957a56c9032f034da05a3e443065dbd0671ebf4d859036ced34e96b325bbc1badbae3c05300
+
+"@growthbook/growthbook@npm:^0.18.1":
+  version: 0.18.1
+  resolution: "@growthbook/growthbook@npm:0.18.1"
+  checksum: 202347550562487b47044f406415f26976ec1fabd0504658f84c6520d834ec8addf57be1ba5e73e4715d02da4c11f41649edbb6ad49b5d2b24ec46a497c5617f
   languageName: node
   linkType: hard
 
@@ -20456,6 +20461,7 @@ __metadata:
     "@emotion/react": 11.10.0
     "@emotion/styled": 11.10.0
     "@gitbeaker/browser": 35.7.0
+    "@growthbook/growthbook": ^0.18.1
     "@jest/types": 28.1.3
     "@nivo/core": 0.79.0
     "@nivo/geo": 0.79.1

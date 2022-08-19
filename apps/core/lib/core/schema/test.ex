@@ -2,6 +2,8 @@ defmodule Core.Schema.Test do
   use Piazza.Ecto.Schema
   alias Core.Schema.{Repository, User, TestBinding, TestStep}
 
+  @expiry 1 # hour
+
   defenum Status, queued: 0, running: 1, succeeded: 2, failed: 3
 
   schema "tests" do
@@ -17,6 +19,11 @@ defmodule Core.Schema.Test do
     has_many :steps,    TestStep
 
     timestamps()
+  end
+
+  def stale(query \\ __MODULE__) do
+    expiry = Timex.now() |> Timex.shift(hours: -@expiry)
+    from(t in query, where: t.status not in ^[:succeeded, :failed] and t.inserted_at < ^expiry)
   end
 
   def for_repository(query \\ __MODULE__, repo_id) do

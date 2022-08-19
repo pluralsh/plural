@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import styled from 'styled-components'
 
 export function SafeLink({ children, ...props }) {
   return (
@@ -7,3 +8,12 @@ export function SafeLink({ children, ...props }) {
     </span>
   )
 }
+
+const unstyledStyles = ({ extendStyle }) => ({
+  textDecoration: 'none',
+  ...extendStyle,
+})
+
+export const UnstyledLink = styled(Link)(unstyledStyles)
+
+export const UnstyledSafeLink = styled(SafeLink)(unstyledStyles)

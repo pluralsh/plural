@@ -1,6 +1,42 @@
 import './installation.css'
 import { Box, Text } from 'grommet'
+import styled from 'styled-components'
+import { forwardRef } from 'react'
+import { Tab as PluralTab } from 'pluralsh-design-system'
 
+import { UnstyledLink } from './Link'
+
+export const LinkTab = styled(forwardRef(({
+  className,
+  active,
+  vertical,
+  linkProps,
+  tabProps = {},
+  children,
+  ...props
+},
+ref) => (
+  <UnstyledLink
+    ref={ref}
+    className={className}
+    vertical={vertical}
+    // extendStyle={{ display: 'block' }}
+    {...linkProps}
+    {...props}
+  >
+    <PluralTab
+      active={active}
+      vertical={vertical}
+      {...tabProps}
+    >
+      {children}
+    </PluralTab>
+  </UnstyledLink>
+)))(({ vertical }) => ({
+  ...(vertical ? {} : { width: '100%' }),
+}))
+
+/* DEPRECATED */
 const BORDER_ATTRS = { side: 'top', size: '2px' }
 
 export function Tab({ name, setTab, selected }) {

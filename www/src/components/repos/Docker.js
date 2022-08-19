@@ -138,6 +138,8 @@ export function Docker() {
   const { dockerImage: image } = data
   const imageName = dockerPull(registry, { ...image, dockerRepository: image.dockerRepository })
 
+  console.log(image)
+
   return (
     <Box
       direction="column"
@@ -145,7 +147,7 @@ export function Docker() {
     >
       <GoBack
         text="Back to packages"
-        link={`/repository/${image.dockerRepository.id}/packages/docker`}
+        link={`/repository/${image.dockerRepository.repository.id}/packages/docker`}
       />
       <Box
         pad="16px"

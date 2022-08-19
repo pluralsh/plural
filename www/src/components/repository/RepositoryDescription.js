@@ -31,7 +31,7 @@ export default function RepositoryDescription() {
         {repository.readme ? (
           <Markdown
             text={repository.readme}
-            gitUrl={repository.git_url}
+            gitUrl={repository.gitUrl}
             mainBranch={repository.mainBranch}
           />
         ) : <P>This repository does not have a Readme yet.</P>}

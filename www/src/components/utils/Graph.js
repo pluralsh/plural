@@ -4,6 +4,7 @@ import moment from 'moment'
 import last from 'lodash/last'
 import { Box, Text } from 'grommet'
 import { normalizeColor } from 'grommet/utils'
+import { Flex, P } from 'honorable'
 
 export function dateFormat(date) {
   return moment(date).format('MM/DD h:mm:ss a')
@@ -27,37 +28,23 @@ export function GraphHeader({ text }) {
 
 function SliceTooltip({ point: { serieColor, serieId, data } }) {
   return (
-    <Box
-      flex={false}
-      background="white"
-      pad={{ vertical: 'xsmall', horizontal: 'small' }}
+    <Flex
+      background="fill-one"
+      border="1px solid border"
+      borderRadius="4px"
+      paddingVertical="xsmall"
+      paddingHorizontal="small"
       direction="row"
       gap="xsmall"
       align="center"
     >
-      <Box
+      <Flex
         width="10px"
         height="10px"
-        background={serieColor}
+        backgroundColor={serieColor}
       />
-      <Text
-        size="small"
-        weight={500}
-      >{serieId}
-      </Text>
-      <Text size="small">~{'>'} x:</Text>
-      <Text
-        size="small"
-        weight="bold"
-      >{data.xFormatted}
-      </Text>
-      <Text size="small">y:</Text>
-      <Text
-        size="small"
-        weight="bold"
-      >{data.yFormatted}
-      </Text>
-    </Box>
+      <P body2>{serieId} [x: {data.xFormatted}, y: {data.yFormatted}]</P>
+    </Flex>
   )
 }
 

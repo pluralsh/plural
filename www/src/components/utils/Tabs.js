@@ -1,39 +1,31 @@
 import './installation.css'
+import { Children, cloneElement, forwardRef } from 'react'
 import { Box, Text } from 'grommet'
 import styled from 'styled-components'
-import { forwardRef } from 'react'
-import { Tab as PluralTab } from 'pluralsh-design-system'
 
 import { UnstyledLink } from './Link'
 
-export const LinkTab = styled(forwardRef(({
-  className,
-  active,
-  vertical,
-  linkProps,
-  tabProps = {},
-  children,
-  ...props
-},
-ref) => (
+export const LinkTabWrap = styled(forwardRef(({
+  className, active, vertical, children, subTab: _, ...props
+}, ref) => (
   <UnstyledLink
     ref={ref}
     className={className}
     vertical={vertical}
-    // extendStyle={{ display: 'block' }}
-    {...linkProps}
+    $extendStyle={{ display: 'block' }}
     {...props}
   >
-    <PluralTab
-      active={active}
-      vertical={vertical}
-      {...tabProps}
-    >
-      {children}
-    </PluralTab>
+    {cloneElement(Children.only(children), {
+      active,
+      vertical,
+    })}
   </UnstyledLink>
-)))(({ vertical }) => ({
-  ...(vertical ? {} : { width: '100%' }),
+)))(({
+  theme, vertical, subTab, $extendStyle,
+}) => ({
+  ...(vertical ? { width: '100%' } : {}),
+  ...(subTab ? { borderRadius: theme.borderRadiuses.medium } : {}),
+  ...$extendStyle,
 }))
 
 /* DEPRECATED */

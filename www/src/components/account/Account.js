@@ -1,12 +1,11 @@
 import { Flex } from 'honorable'
-import { TabList, TabPanel } from 'pluralsh-design-system'
+import { Tab, TabList, TabPanel } from 'pluralsh-design-system'
 import { Outlet, useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import { useRef } from 'react'
 
-import { LinkTab } from 'components/utils/Tabs'
-
 import { SidebarTabs } from '../utils/SidebarTabs'
+import { LinkTabWrap } from '../utils/Tabs'
 
 const DIRECTORY = [
   { path: '/account/edit', label: 'Account Settings' },
@@ -29,9 +28,8 @@ const StyledTabPanel = styled(TabPanel)(({ theme }) => ({
 }))
 
 export function Account() {
-  const tabStateRef = useRef()
   const { pathname } = useLocation()
-
+  const tabStateRef = useRef()
   const currentTab = DIRECTORY.find(tab => pathname?.startsWith(tab.path))
 
   return (
@@ -49,14 +47,13 @@ export function Account() {
           }}
         >
           {DIRECTORY.map(({ label, path }) => (
-            <LinkTab
+            <LinkTabWrap
               key={path}
               textValue={label}
-              linkProps={{ to: path }}
-              tabProps={{ vertical: true }}
+              to={path}
             >
-              {label}
-            </LinkTab>
+              <Tab>{label}</Tab>
+            </LinkTabWrap>
           ))}
         </TabList>
       </SidebarTabs>

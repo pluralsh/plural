@@ -11,6 +11,13 @@ export function dockerPull(registry, { tag, dockerRepository: { name, repository
   return `${registry}/${repository.name}/${name}:${tag}`
 }
 
+export const chipSeverity = {
+  low: 'success',
+  medium: 'warning',
+  high: 'error',
+  critical: 'critical',
+}
+
 const gradeToColor = {
   A: '#A5F8C8',
   B: '#A5F8C8',

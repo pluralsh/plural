@@ -1,23 +1,24 @@
-import {
-  Anchor, Box, Collapsible, Text,
-} from 'grommet'
+import { Box, Collapsible, Text } from 'grommet'
 
 import { useOutletContext } from 'react-router-dom'
 
 import { useState } from 'react'
-import { Links } from 'forge-core'
 
-import { HeaderItem } from 'components/utils/Header'
+import {
+  ArrowTopRightIcon, Chip, CollapseIcon, PageTitle,
+} from 'pluralsh-design-system'
 
-import { PageTitle } from 'pluralsh-design-system'
+import { Table, TableData, TableRow } from 'components/utils/Table'
 
-import { Table } from 'components/utils/Table'
+import {
+  A, Div, Flex, Span,
+} from 'honorable'
 
-import { Div } from 'honorable'
+import { capitalize } from 'lodash'
 
 import { AttackVector, ColorMap } from '../constants'
 
-import { PackageGrade } from './misc'
+import { PackageGrade, chipSeverity } from './misc'
 
 function VectorSection({ text, background }) {
   return (
@@ -204,77 +205,68 @@ function VulnerabilityDetail({ vuln }) {
   )
 }
 
-function Vulnerability({ vuln }) {
+function Vulnerability({ v, last }) {
   const [open, setOpen] = useState(false)
 
   return (
-    <Box
-      flex={false}
-      border={{ side: 'bottom', color: 'border' }}
-    >
-      <Box
-        direction="row"
-        gap="small"
-        align="center"
-        pad="xsmall"
+    <Flex direction="column">
+      <TableRow
+        last={last}
+        hoverIndicator="fill-one-hover"
+        cursor="pointer"
         onClick={() => setOpen(!open)}
-        hoverIndicator="fill-one"
-        focusIndicator={false}
       >
-        <Box
-          width="30%"
-          direction="row"
-          gap="small"
-        >
-          <Text
-            size="small"
-            weight={500}
-          >{vuln.vulnerabilityId}
-          </Text>
-          {vuln.url && (
-            <Anchor
-              size="small"
-              href={vuln.url}
-              target="_blank"
-            ><Links size="small" />
-            </Anchor>
-          )}
-        </Box>
-        <Box
-          flex={false}
-          width="15%"
-          direction="row"
-          gap="xsmall"
-          align="center"
-        >
-          <Box
-            width="15px"
-            height="15px"
-            round="xsmall"
-            background={ColorMap[vuln.severity]}
+        <TableData>
+          <CollapseIcon
+            marginLeft="8px"
+            size={8}
+            style={open ? {
+              transform: 'rotate(270deg)',
+              transitionDuration: '.2s',
+              transitionProperty: 'transform',
+            } : {
+              transform: 'rotate(180deg)',
+              transitionDuration: '.2s',
+              transitionProperty: 'transform',
+            }}
           />
-          <Text size="small">{vuln.severity}</Text>
-        </Box>
-        <HeaderItem
-          text={vuln.package}
-          width="25%"
-          nobold
-        />
-        <HeaderItem
-          text={vuln.installedVersion}
-          width="15%"
-          nobold
-        />
-        <HeaderItem
-          text={vuln.fixedVersion}
-          width="15%"
-          nobold
-        />
-      </Box>
-      <Collapsible open={open}>
-        <VulnerabilityDetail vuln={vuln} />
+        </TableData>
+        <TableData>
+          {v.url ? (
+            <Box direction="row">
+              <A
+                inline
+                href={v.url}
+                onClick={e => e.stopPropagation()}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Span>{v.vulnerabilityId}</Span>
+                <ArrowTopRightIcon marginLeft="xxsmall" />
+              </A>
+            </Box>
+          ) : <Span>{v.vulnerabilityId}</Span>}
+        </TableData>
+        <TableData>{v.package}</TableData>
+        <TableData>{v.installedVersion}</TableData>
+        <TableData>{v.fixedVersion}</TableData>
+        <TableData>
+          <Chip
+            severity={chipSeverity[v.severity?.toLowerCase()]}
+            backgroundColor="fill-two"
+            borderColor="border-fill-two"
+          >
+            <Span fontWeight="600">{capitalize(v.severity)}</Span>
+          </Chip>
+        </TableData>
+      </TableRow>
+      <Collapsible
+        open={open}
+        direction="vertical"
+      >
+        <VulnerabilityDetail vuln={v} />
       </Collapsible>
-    </Box>
+    </Flex>
   )
 }
 
@@ -299,16 +291,18 @@ export default function ImageVulnerabilities() {
           sizes={['5%', '20%', '20%', '20%', '20%', '15%']}
           background="fill-one"
           width="100%"
-        />
+        >
+          {vulnerabilities.map((v, ind, arr) => (
+            <Vulnerability
+              key={v.id}
+              v={v}
+              last={ind === arr.length - 1}
+            />
+          ))}
+        </Table>
       ) : (
         <Div body2>No vulnerabilities found.</Div>
       )}
-      {vulnerabilities.map(vuln => (
-        <Vulnerability
-          key={vuln.id}
-          vuln={vuln}
-        />
-      ))}
     </Box>
   )
 }

@@ -16,13 +16,7 @@ import { capitalize } from 'lodash/string'
 
 import { Table, TableData, TableRow } from '../../utils/Table'
 
-import { PackageGrade, PackageProperty } from './misc'
-
-const chipSeverity = {
-  low: 'success',
-  medium: 'warning',
-  high: 'error',
-}
+import { PackageGrade, PackageProperty, chipSeverity } from './misc'
 
 function ScanViolation({ violation, last }) {
   const [open, setOpen] = useState(false)

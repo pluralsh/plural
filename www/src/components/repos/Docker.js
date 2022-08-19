@@ -67,6 +67,7 @@ const DEFAULT_FILTER = {
 
 function ImageVersionPicker({ image }) {
   const navigate = useNavigate()
+  const { pathname } = useLocation()
   const { dockerRepository } = image
   const { data, loading } = useQuery(DOCKER_IMG_Q, {
     variables: { dockerRepositoryId: dockerRepository.id },
@@ -76,6 +77,7 @@ function ImageVersionPicker({ image }) {
 
   const { edges } = data.dockerImages
   const images = edges.map(({ node }) => node)
+  const url = pathname.endsWith('vulnerabilities') ? '/vulnerabilities' : ''
 
   return (
     <Box
@@ -87,7 +89,7 @@ function ImageVersionPicker({ image }) {
         label="image"
         width="240px"
         selectedKey={image.id}
-        onSelectionChange={selected => navigate(`/dkr/img/${selected}`)}
+        onSelectionChange={selected => navigate(`/dkr/img/${selected}${url}`)}
         rightContent={
           image.scannedAt && (
             <ListBoxItemChipList chips={[

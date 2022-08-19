@@ -61,7 +61,9 @@ export function DockerRepository() {
   return <LoopingLogo />
 }
 
-const DEFAULT_FILTER = { tag: null, precision: '1h', offset: '1d' }
+const DEFAULT_FILTER = {
+  tag: null, precision: '1h', offset: '1d', tick: 'every 2 hours',
+}
 
 function ImageVersionPicker({ image }) {
   const navigate = useNavigate()

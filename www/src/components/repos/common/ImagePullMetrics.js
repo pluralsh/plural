@@ -44,7 +44,9 @@ export default function ImagePullMetrics() {
       <PageTitle heading="Pull metrics">
         <RangePicker
           duration={{ offset: filter.offset, step: filter.precision }}
-          setDuration={({ offset, step }) => setFilter({ ...filter, offset, precision: step })}
+          setDuration={({ offset, step, tick }) => setFilter({
+            ...filter, offset, precision: step, tick,
+          })}
         />
       </PageTitle>
       <Box
@@ -55,7 +57,7 @@ export default function ImagePullMetrics() {
           data={data}
           precision={filter.precision}
           offset={filter.offset}
-          tick="every hour"
+          tick={filter.tick}
         />
       </Box>
     </Box>

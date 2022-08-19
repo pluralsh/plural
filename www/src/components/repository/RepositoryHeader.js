@@ -136,17 +136,17 @@ function RepositoryHeader(props) {
               </Span>
             </A>
           )}
-          {repository.git_url && (
+          {repository.gitUrl && (
             <A
               target="_blank"
-              href={repository.git_url}
+              href={repository.gitUrl}
             >
               <GitHubIcon
                 color="text"
                 size={12}
               />
               <Span ml={0.25}>
-                {repository.git_url && repository.git_url.replaceAll(/(^https?:\/\/)|(\/+$)/g, '')}
+                {repository.gitUrl && repository.gitUrl.replaceAll(/(^https?:\/\/)|(\/+$)/g, '')}
               </Span>
             </A>
           )}

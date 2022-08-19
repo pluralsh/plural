@@ -13,7 +13,7 @@ import { Language } from 'grommet-icons'
 import Toggle from 'react-toggle'
 
 import {
-  Codeline, ListBoxItem, ListBoxItemChipList, Select, Tab,
+  Codeline, ListBoxItem, ListBoxItemChipList, Select, Switch, Tab,
 } from 'pluralsh-design-system'
 
 import { GoBack } from 'components/utils/GoBack'
@@ -34,28 +34,19 @@ import { DetailContainer } from './Installation'
 import { AttackVector, ColorMap, DEFAULT_DKR_ICON } from './constants'
 import { DOCKER_IMG_Q, DOCKER_Q, UPDATE_DOCKER } from './queries'
 
-function RepositoryPublic({ dockerRepo }) {
-  const pub = dockerRepo.public
-  const [mutation] = useMutation(UPDATE_DOCKER, {
-    variables: { id: dockerRepo.id },
-  })
-
-  if (!dockerRepo.repository.editable && dockerRepo.public) return <Language size="12px" />
-  if (!dockerRepo.repository.editable) return null
+function PublicSwitch({ dockerRepo }) {
+  const [mutation] = useMutation(UPDATE_DOCKER, { variables: { id: dockerRepo.id } })
 
   return (
-    <Box
-      direction="row"
-      gap="xsmall"
-      align="center"
+    <Switch
+      checked={dockerRepo.public}
+      disabled={!dockerRepo.repository.editable}
+      onChange={({ target: { checked } }) => mutation({
+        variables: { attributes: { public: checked } },
+      })}
     >
-      <Toggle
-        checked={pub}
-        onChange={({ target: { checked } }) => mutation({
-          variables: { attributes: { public: checked } },
-        })}
-      />
-    </Box>
+      {dockerRepo.public ? 'Public' : 'Private'}
+    </Switch>
   )
 }
 
@@ -542,6 +533,7 @@ export function Docker() {
             gap="small"
             style={{ overflow: 'hidden' }}
           >
+            <PublicSwitch dockerRepo={image.dockerRepository} />
             <PackageProperty header="Created">
               {moment(image.insertedAt).format('lll')}
             </PackageProperty>
@@ -553,9 +545,6 @@ export function Docker() {
               style={{ wordWrap: 'break-word' }}
             >
               {image.digest}
-            </PackageProperty>
-            <PackageProperty header="Public">
-              <RepositoryPublic dockerRepo={image.dockerRepository} />
             </PackageProperty>
           </DetailContainer>
         </ResponsiveLayoutSidecarContainer>

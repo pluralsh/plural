@@ -107,6 +107,24 @@ defmodule Core.Services.TestsTest do
     end
   end
 
+  describe "#expire/1" do
+    test "it can expire a test and all unfailed steps" do
+      test = insert(:test, status: :running)
+      step = insert(:test_step, test: test, status: :running)
+      step2 = insert(:test_step, test: test, status: :queued)
+      ignore1 = insert(:test_step, test: test, status: :succeeded)
+
+      {:ok, res} = Tests.expire(test)
+
+      assert res.id == test.id
+      assert res.status == :failed
+
+      assert refetch(step).status == :failed
+      assert refetch(step2).status == :failed
+      assert refetch(ignore1).status == :succeeded
+    end
+  end
+
   describe "#publish_logs/3" do
     test "test creators can publish logs" do
       user = insert(:user)

@@ -9,19 +9,15 @@ import { Links } from 'forge-core'
 
 import { HeaderItem } from 'components/utils/Header'
 
+import { PageTitle } from 'pluralsh-design-system'
+
+import { Table } from 'components/utils/Table'
+
+import { Div } from 'honorable'
+
 import { AttackVector, ColorMap } from '../constants'
 
-function NoVulnerabilities() {
-  return (
-    <Box
-      fill
-      justify="center"
-      align="center"
-    >
-      <Text weight="bold">This image is vulnerability free</Text>
-    </Box>
-  )
-}
+import { PackageGrade } from './misc'
 
 function VectorSection({ text, background }) {
   return (
@@ -282,50 +278,31 @@ function Vulnerability({ vuln }) {
   )
 }
 
-function VulnerabilityHeader() {
-  return (
-    <Box
-      flex={false}
-      direction="row"
-      pad="xsmall"
-      border={{ side: 'bottom', color: 'border' }}
-      align="center"
-    >
-      <HeaderItem
-        text="ID"
-        width="30%"
-      />
-      <HeaderItem
-        text="Severity"
-        width="15%"
-      />
-      <HeaderItem
-        text="Package"
-        width="25%"
-      />
-      <HeaderItem
-        text="Version"
-        width="15%"
-      />
-      <HeaderItem
-        text="Fixed Version"
-        width="15%"
-      />
-    </Box>
-  )
-}
-
 export default function ImageVulnerabilities() {
-  const { image: { vulnerabilities } } = useOutletContext()
-
-  if (!vulnerabilities || vulnerabilities.length === 0) return <NoVulnerabilities />
+  const { image } = useOutletContext()
+  const { vulnerabilities } = image
 
   return (
     <Box
       style={{ overflow: 'auto' }}
       fill
     >
-      <VulnerabilityHeader />
+      <PageTitle heading="Vulnerabilities">
+        <PackageGrade
+          grade={image.grade}
+          large
+        />
+      </PageTitle>
+      {vulnerabilities?.length ? (
+        <Table
+          headers={['', 'ID', 'Package', 'Version', 'Fixed version', 'Severity']}
+          sizes={['5%', '20%', '20%', '20%', '20%', '15%']}
+          background="fill-one"
+          width="100%"
+        />
+      ) : (
+        <Div body2>No vulnerabilities found.</Div>
+      )}
       {vulnerabilities.map(vuln => (
         <Vulnerability
           key={vuln.id}

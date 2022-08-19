@@ -282,24 +282,30 @@ export default function ImageVulnerabilities() {
           large
         />
       </PageTitle>
-      {vulnerabilities?.length ? (
-        <Table
-          headers={['', 'ID', 'Package', 'Version', 'Fixed version', 'Severity']}
-          sizes={['5%', '20%', '20%', '20%', '20%', '15%']}
-          background="fill-one"
-          width="100%"
-        >
-          {vulnerabilities.map((v, ind, arr) => (
-            <Vulnerability
-              key={v.id}
-              v={v}
-              last={ind === arr.length - 1}
-            />
-          ))}
-        </Table>
-      ) : (
-        <Div body2>No vulnerabilities found.</Div>
-      )}
+      <Box
+        overflow={{ vertical: 'auto' }}
+        pad={{ right: 'xsmall' }}
+      >
+        {vulnerabilities?.length ? (
+          <Table
+            headers={['', 'ID', 'Package', 'Version', 'Fixed version', 'Severity']}
+            sizes={['5%', '20%', '20%', '20%', '20%', '15%']}
+            background="fill-one"
+            width="100%"
+          >
+            {vulnerabilities.map((v, ind, arr) => (
+              <Vulnerability
+                key={v.id}
+                v={v}
+                last={ind === arr.length - 1}
+              />
+            ))}
+          </Table>
+        ) : (
+          <Div body2>No vulnerabilities found.</Div>
+        )}
+      </Box>
+
     </Box>
   )
 }

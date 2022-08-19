@@ -16,7 +16,7 @@ export default function PackageReadme() {
     >
       <PageTitle heading="Readme" />
       <Box
-        pad={{ right: 'small' }}
+        pad={{ right: 'xsmall' }}
         overflow={{ vertical: 'auto' }}
       >
         <Markdown text={readme} />

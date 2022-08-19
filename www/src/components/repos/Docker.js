@@ -138,8 +138,6 @@ export function Docker() {
   const { dockerImage: image } = data
   const imageName = dockerPull(registry, { ...image, dockerRepository: image.dockerRepository })
 
-  console.log(image)
-
   return (
     <Box
       direction="column"

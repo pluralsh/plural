@@ -109,7 +109,6 @@ export function Graph({ data, yFormat, tick }) {
       lineWidth={2}
       enablePoints={false}
       enableGridX={false}
-        // enableSlices='x'
       animate={false}
       xScale={{ type: 'time', format: 'native' }}
       yScale={{
@@ -150,7 +149,7 @@ export function Graph({ data, yFormat, tick }) {
           itemDirection: 'left-to-right',
           itemWidth: 80,
           itemHeight: 20,
-          itemOpacity: 0.75,
+          itemOpacity: 0.65,
           symbolSize: 12,
           symbolShape: 'circle',
           symbolBorderColor: 'rgba(0, 0, 0, .5)',

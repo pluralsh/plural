@@ -11,8 +11,9 @@ import { DURATIONS } from 'components/metrics/Graph'
 function RangePicker({ duration, setDuration }) {
   return (
     <Box direction="row">
-      {DURATIONS.map(d => (
+      {DURATIONS.map((d, i) => (
         <SubTab
+          key={i}
           active={duration.step === d.step && duration.offset === d.offset}
           onClick={() => setDuration(d)}
         >
@@ -54,6 +55,7 @@ export default function ImagePullMetrics() {
           data={data}
           precision={filter.precision}
           offset={filter.offset}
+          tick="every hour"
         />
       </Box>
     </Box>

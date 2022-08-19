@@ -24,7 +24,7 @@ function RangePicker({ duration, setDuration }) {
 }
 
 export default function ImagePullMetrics() {
-  const { dockerRepository, filter, setFilter } = useOutletContext()
+  const { image: { dockerRepository }, filter, setFilter } = useOutletContext()
   const data = useMemo(() => dockerRepository.metrics.map(({ tags, values }) => {
     const tag = tags.find(({ name }) => name === 'tag')
 

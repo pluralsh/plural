@@ -7,11 +7,12 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import { Refresh, Return } from 'grommet-icons'
 
+import { HeaderItem } from 'components/utils/Header'
+
 import {
   deepUpdate, extendConnection, removeConnection, updateCache,
 } from '../../utils/graphql'
 import { SectionContentContainer, SectionPortal } from '../Explore'
-import { HeaderItem } from '../repos/Docker'
 import { Provider } from '../repos/misc'
 import Avatar from '../users/Avatar'
 import { StandardScroller } from '../utils/SmoothScroller'

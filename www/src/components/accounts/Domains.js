@@ -7,11 +7,12 @@ import {
 } from 'grommet'
 import { Route, Routes, useNavigate } from 'react-router-dom'
 
+import { HeaderItem } from 'components/utils/Header'
+
 import {
   appendConnection, extendConnection, removeConnection, updateCache,
 } from '../../utils/graphql'
 import { SectionContentContainer, SectionPortal } from '../Explore'
-import { HeaderItem } from '../repos/Docker'
 import { StandardScroller } from '../utils/SmoothScroller'
 
 import Avatar from '../users/Avatar'

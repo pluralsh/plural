@@ -8,11 +8,12 @@ import { useMutation, useQuery } from '@apollo/client'
 import { Button, PaymentMethods, Trash } from 'forge-core'
 import { Amex, Mastercard, Visa } from 'grommet-icons'
 
+import { HeaderItem } from 'components/utils/Header'
+
 import { ModalHeader } from '../ModalHeader'
 import { TagContainer } from '../repos/Tags'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 import { SectionPortal } from '../Explore'
-import { HeaderItem } from '../repos/Docker'
 import { Icon } from '../accounts/Group'
 import { CurrentUserContext } from '../login/CurrentUser'
 

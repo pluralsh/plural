@@ -56,6 +56,7 @@ import PackageSecurity from './repos/common/PackageSecurity'
 import PackageUpdateQueue from './repos/common/PackageUpdateQueue'
 import PackageDependencies from './repos/common/PackageDependencies'
 import ImagePullMetrics from './repos/common/ImagePullMetrics'
+import ImageVulnerabilities from './repos/common/ImageVulnerabilities'
 
 function EditBilling(props) {
   return (
@@ -281,6 +282,10 @@ export function PluralInner() {
               <Route
                 index
                 element={<ImagePullMetrics />}
+              />
+              <Route
+                path="vulnerabilities"
+                element={<ImageVulnerabilities />}
               />
             </Route>
             {/* --- SHELL --- */}

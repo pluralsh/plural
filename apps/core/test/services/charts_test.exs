@@ -163,7 +163,7 @@ defmodule Core.Services.ChartsTest do
       installation = insert(:installation, repository: chart.repository, user: user)
       chart_inst = insert(:chart_installation, installation: installation, chart: chart, version: v)
 
-      {:ok, ci} = Charts.delete_chart_installation( chart_inst.id, user)
+      {:ok, _} = Charts.delete_chart_installation( chart_inst.id, user)
 
       refute refetch(chart_inst)
     end

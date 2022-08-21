@@ -50,6 +50,37 @@ defmodule Core.Services.Shell.DemoTest do
 
       refute refetch(demo)
     end
+
+    test "if a user has at most 1 upgrade queue (eg for their demo cluster) we will reset their demo installations" do
+      demo = insert(:demo_project)
+      inst = insert(:installation, user: demo.user)
+      insert(:upgrade_queue, user: demo.user)
+
+      expect(Goth.Token, :for_scope, fn _ -> {:ok, %{token: "token"}} end)
+      expect(Projects, :cloudresourcemanager_projects_delete, fn _, _ ->
+        {:ok, %{name: "operations/123"}}
+      end)
+
+      {:ok, _} = Demo.delete_demo_project(demo)
+
+      refute refetch(inst)
+    end
+
+    test "if a user has 2 or more upgrade queues, we will not reset installations" do
+      demo = insert(:demo_project)
+      inst = insert(:installation, user: demo.user)
+      insert(:upgrade_queue, user: demo.user)
+      insert(:upgrade_queue, user: demo.user)
+
+      expect(Goth.Token, :for_scope, fn _ -> {:ok, %{token: "token"}} end)
+      expect(Projects, :cloudresourcemanager_projects_delete, fn _, _ ->
+        {:ok, %{name: "operations/123"}}
+      end)
+
+      {:ok, _} = Demo.delete_demo_project(demo)
+
+      assert refetch(inst)
+    end
   end
 
   describe "#poll_demo_project/1" do

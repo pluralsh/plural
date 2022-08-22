@@ -1,16 +1,58 @@
-import { useContext } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import {
+  MutableRefObject, useContext, useImperativeHandle, useRef,
+} from 'react'
+import { useLocation } from 'react-router-dom'
 import {
   Div, Flex, Img, P,
 } from 'honorable'
-import { Tab } from 'pluralsh-design-system'
+import { Tab, TabList } from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 import { capitalize } from '../../utils/string'
+import { LinkTabWrap } from '../utils/Tabs'
 
-function RepositorySideNav({ ...props }) {
+const DIRECTORY = [
+  { label: 'Readme', path: '' },
+  { label: 'Packages', path: '/packages' },
+  { label: 'OpenID Connect', path: '/oidc' },
+  { label: 'Tests', path: '/tests' },
+  { label: 'Deployments', path: '/deployments' },
+  { label: 'Artifacts', path: '/artifacts' },
+  { label: 'Edit', path: '/edit' },
+]
+
+function RepositorySideNav({
+  tabStateRef: outerTabStateRef,
+  ...props
+}: {
+  tabStateRef: MutableRefObject<any>
+}) {
   const repository = useContext(RepositoryContext)
+
   const { pathname } = useLocation()
+  const tabStateRef = useRef<any>()
+
+  useImperativeHandle(outerTabStateRef, () => ({ ...(tabStateRef.current || {}) }))
+  const pathPrefix = `/repository/${repository.id}`
+  const filteredDirectory = DIRECTORY.filter(({ path }) => {
+    switch (path) {
+    case '/oidc':
+      return repository.installation && repository.oauthSettings
+      break
+    case '/artifacts':
+      return repository.artifacts.length > 0
+      break
+    case '/edit':
+      return !!repository.editable
+      break
+    default:
+      return true
+    }
+  })
+
+  const currentTab = [...filteredDirectory]
+    .sort((a, b) => b.path.length - a.path.length)
+    .find(tab => pathname?.startsWith(`${pathPrefix}${tab.path}`))
 
   return (
     <Flex
@@ -54,100 +96,23 @@ function RepositorySideNav({ ...props }) {
         marginTop="medium"
         marginLeft="minus-medium"
       >
-        <Link
-          to={`/repository/${repository.id}`}
-          style={{ textDecoration: 'none' }}
+        <TabList
+          stateRef={tabStateRef}
+          stateProps={{
+            orientation: 'vertical',
+            selectedKey: currentTab?.path,
+          }}
         >
-          <Tab
-            vertical
-            active={pathname === `/repository/${repository.id}`}
-            textDecoration="none"
-          >
-            Readme
-          </Tab>
-        </Link>
-        <Link
-          to={`/repository/${repository.id}/packages`}
-          style={{ textDecoration: 'none' }}
-        >
-
-          <Tab
-            vertical
-            active={pathname.startsWith(`/repository/${repository.id}/packages`)}
-            textDecoration="none"
-          >
-            Packages
-          </Tab>
-        </Link>
-        {repository.installation && repository.oauthSettings && (
-          <Link
-            to={`/repository/${repository.id}/oidc`}
-            style={{ textDecoration: 'none' }}
-          >
-
-            <Tab
-              vertical
-              active={pathname.startsWith(`/repository/${repository.id}/oidc`)}
-              textDecoration="none"
+          {filteredDirectory.map(({ label, path }) => (
+            <LinkTabWrap
+              key={path}
+              textValue={label}
+              to={`${pathPrefix}${path}`}
             >
-              OpenID Connect
-            </Tab>
-          </Link>
-        )}
-        <Link
-          to={`/repository/${repository.id}/tests`}
-          style={{ textDecoration: 'none' }}
-        >
-
-          <Tab
-            vertical
-            active={pathname.startsWith(`/repository/${repository.id}/tests`)}
-            textDecoration="none"
-          >
-            Tests
-          </Tab>
-        </Link>
-        <Link
-          to={`/repository/${repository.id}/deployments`}
-          style={{ textDecoration: 'none' }}
-        >
-
-          <Tab
-            vertical
-            active={pathname.startsWith(`/repository/${repository.id}/deployments`)}
-            textDecoration="none"
-          >
-            Deployments
-          </Tab>
-        </Link>
-        {repository?.artifacts?.length > 0 && (
-          <Link
-            to={`/repository/${repository.id}/artifacts`}
-            style={{ textDecoration: 'none' }}
-          >
-            <Tab
-              vertical
-              active={pathname.startsWith(`/repository/${repository.id}/artifacts`)}
-              textDecoration="none"
-            >
-              Artifacts
-            </Tab>
-          </Link>
-        )}
-        {!!repository.editable && (
-          <Link
-            to={`/repository/${repository.id}/edit`}
-            style={{ textDecoration: 'none' }}
-          >
-            <Tab
-              vertical
-              active={pathname.startsWith(`/repository/${repository.id}/edit`)}
-              textDecoration="none"
-            >
-              Edit
-            </Tab>
-          </Link>
-        )}
+              <Tab>{label}</Tab>
+            </LinkTabWrap>
+          ))}
+        </TabList>
       </Div>
     </Flex>
   )

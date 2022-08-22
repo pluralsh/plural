@@ -1,7 +1,14 @@
-import { ResponsiveLayoutContentContainer, ResponsiveLayoutSidenavContainer, ResponsiveLayoutSpacer } from 'components/layout/ResponsiveLayout'
+import {
+  ResponsiveLayoutContentContainer,
+  ResponsiveLayoutSidenavContainer,
+  ResponsiveLayoutSpacer,
+} from 'components/layout/ResponsiveLayout'
 import { Flex } from 'honorable'
-import { Tab } from 'pluralsh-design-system'
-import { Link, Outlet, useLocation } from 'react-router-dom'
+import { Tab, TabList } from 'pluralsh-design-system'
+import { Outlet, useLocation } from 'react-router-dom'
+import { useRef } from 'react'
+
+import { LinkTabWrap } from '../utils/Tabs'
 
 const DIRECTORY = [
   { path: '/audits/logs', label: 'Audit logs' },
@@ -11,6 +18,8 @@ const DIRECTORY = [
 
 export function AuditDirectory() {
   const { pathname } = useLocation()
+  const tabStateRef = useRef()
+  const currentTab = DIRECTORY.find(tab => pathname?.startsWith(tab.path))
 
   return (
     <Flex
@@ -23,23 +32,28 @@ export function AuditDirectory() {
         marginTop={90}
         width={240}
       >
-        {DIRECTORY.map(({ label, path }) => (
-          <Link
-            key={label}
-            to={path}
-            style={{ textDecoration: 'none' }}
-          >
-            <Tab
-              active={pathname === path}
-              vertical
-              textDecoration="none"
-            >{label}
-            </Tab>
-          </Link>
-        ))}
+        <TabList
+          stateRef={tabStateRef}
+          stateProps={{
+            orientation: 'vertical',
+            selectedKey: currentTab?.path,
+          }}
+        >
+          {DIRECTORY.map(({ label, path }) => (
+            <LinkTabWrap
+              key={path}
+              textValue={label}
+              to={path}
+            >
+              <Tab>{label}</Tab>
+            </LinkTabWrap>
+          ))}
+        </TabList>
       </ResponsiveLayoutSidenavContainer>
       <ResponsiveLayoutSpacer />
-      <ResponsiveLayoutContentContainer paddingTop="large"><Outlet /></ResponsiveLayoutContentContainer>
+      <ResponsiveLayoutContentContainer paddingTop="large">
+        <Outlet />
+      </ResponsiveLayoutContentContainer>
       <ResponsiveLayoutSpacer />
     </Flex>
   )

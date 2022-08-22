@@ -102,7 +102,7 @@ export function Shell({ shell }) {
             tertiary
             startIcon={<ScrollIcon />}
             onClick={() => setShowCheatsheet(!showCheatsheet)}
-            backgroundColor={showCheatsheet ? 'fill-zero-selected' : null}
+            backgroundColor={showCheatsheet ? 'selected' : null}
           >
             CLI Cheatsheet
           </Button>

@@ -4,11 +4,10 @@ import { useMutation, useQuery } from '@apollo/client'
 import {
   Outlet, useLocation, useNavigate, useParams,
 } from 'react-router-dom'
-import { useRef } from 'react'
 
 import { Button, Flex, Modal } from 'honorable'
 
-import { Tab, TabList, TabPanel } from 'pluralsh-design-system'
+import { Tab } from 'pluralsh-design-system'
 
 import {
   ResponsiveLayoutContentContainer, ResponsiveLayoutSidecarContainer, ResponsiveLayoutSidenavContainer, ResponsiveLayoutSpacer,
@@ -24,7 +23,6 @@ import { INSTALL_TF, TF_Q, UNINSTALL_TF } from './queries'
 import { DEFAULT_TF_ICON } from './constants'
 
 import { PackageGrade, PackageHeader, PackageVersionPicker } from './common/misc'
-import { LinkTabWrap } from 'components/utils/Tabs'
 
 function TerraformInstaller({
   installation, terraformId, terraformInstallation, version,
@@ -71,7 +69,6 @@ export default function Terraform() {
   const [version, setVersion] = useState(null)
   const { tfId } = useParams()
   const { data, fetchMore } = useQuery(TF_Q, { variables: { tfId }, fetchPolicy: 'cache-and-network' })
-  const tabStateRef = useRef()
 
   if (!data) return null
 
@@ -79,40 +76,6 @@ export default function Terraform() {
   const { edges, pageInfo } = versions
   const currentVersion = version || edges[0].node
   const tfInst = terraformModule.installation
-
-  const DIRECTORY = [
-    { label: 'Readme', path: '' },
-    { label: 'Configuration', path: '/configuration' },
-    { label: 'Dependencies', path: '/dependencies' },
-    {
-      label: (
-        <Flex flexGrow={1} justifyContent="space-between">
-          Security
-          {currentVersion?.scan && (
-            <PackageGrade grade={currentVersion.scan.grade} />
-          )}
-        </Flex>
-      ),
-      textValue: 'Security',
-      path: '/security',
-    },
-    { label: 'Update queue', path: '/updatequeue' },
-  ]
-  const pathPrefix = `/terraform/${terraformModule.id}`
-
-  const filteredDirectory = DIRECTORY.filter(({ path }) => {
-    switch (path) {
-      case '/updatequeue':
-        return !!tfInst
-        break
-      default:
-        return true
-    }
-  })
-  const currentTab = [...filteredDirectory]
-    .sort((a, b) => b.path.length - a.path.length)
-    .find(tab => pathname?.startsWith(`${pathPrefix}${tab.path}`))
-
 
   return (
     <Box
@@ -142,34 +105,58 @@ export default function Terraform() {
               fetchMore={fetchMore}
             />
           </Box>
-          <TabList
-            stateRef={tabStateRef}
-            stateProps={{
-              orientation: 'vertical',
-              selectedKey: currentTab?.path,
-            }}
+          <Tab
+            vertical
+            onClick={() => navigate(`/terraform/${terraformModule.id}`)}
+            active={pathname.endsWith(`/terraform/${terraformModule.id}`)}
+            textDecoration="none"
           >
-            {filteredDirectory.map(({ label, textValue, path }) => (
-              <LinkTabWrap
-                key={path}
-                textValue={typeof label === 'string' ? label : textValue || ''}
-                to={`${pathPrefix}${path}`}
-              >
-                <Tab>{label}</Tab>
-              </LinkTabWrap>
-            ))}
-          </TabList>
+            Readme
+          </Tab>
+          <Tab
+            vertical
+            onClick={() => navigate(`/terraform/${terraformModule.id}/configuration`)}
+            active={pathname.startsWith(`/terraform/${terraformModule.id}/configuration`)}
+            textDecoration="none"
+          >
+            Configuration
+          </Tab>
+          <Tab
+            vertical
+            onClick={() => navigate(`/terraform/${terraformModule.id}/dependencies`)}
+            active={pathname.startsWith(`/terraform/${terraformModule.id}/dependencies`)}
+            textDecoration="none"
+          >
+            Dependencies
+          </Tab>
+          <Tab
+            vertical
+            onClick={() => navigate(`/terraform/${terraformModule.id}/security`)}
+            active={pathname.startsWith(`/terraform/${terraformModule.id}/security`)}
+            textDecoration="none"
+          >
+            <Flex
+              flexGrow={1}
+              justifyContent="space-between"
+            >
+              Security
+              {currentVersion?.scan && <PackageGrade grade={currentVersion.scan.grade} />}
+            </Flex>
+          </Tab>
+          {(tfInst && (
+            <Tab
+              vertical
+              onClick={() => navigate(`/terraform/${terraformModule.id}/updatequeue`)}
+              active={pathname.startsWith(`/terraform/${terraformModule.id}/updatequeue`)}
+              textDecoration="none"
+            >
+              Update queue
+            </Tab>
+          ))}
         </ResponsiveLayoutSidenavContainer>
         <ResponsiveLayoutSpacer />
         <ResponsiveLayoutContentContainer>
-          <TabPanel stateRef={tabStateRef}>
-            <Outlet
-              context={{
-                terraformChart: terraformModule,
-                currentTerraformChart: currentVersion,
-              }}
-            />
-          </TabPanel>
+          <Outlet context={{ terraformChart: terraformModule, currentTerraformChart: currentVersion }} />
         </ResponsiveLayoutContentContainer>
         <ResponsiveLayoutSidecarContainer width="200px">
           <Box

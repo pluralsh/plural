@@ -9,7 +9,6 @@ import {
   TabPanel,
 } from 'pluralsh-design-system'
 import { useContext, useRef, useState } from 'react'
-import styled from 'styled-components'
 
 import { LinkTabWrap } from '../utils/Tabs'
 import RepositoryContext from '../../contexts/RepositoryContext'
@@ -29,13 +28,6 @@ export function packageCardStyle(first, last) {
     py: 0.5,
   }
 }
-
-const StyledTabPanel = styled(TabPanel)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  flexGrow: 1,
-  height: '100%',
-}))
 
 const DIRECTORY = [
   { label: 'Helm charts', path: '/helm' },
@@ -82,7 +74,7 @@ export default function RepositoryPackages() {
           </TabList>
         </Flex>
       </PageTitle>
-      <StyledTabPanel stateRef={tabStateRef}>
+      <TabPanel stateRef={tabStateRef}>
         <Input
           value={q}
           onChange={event => setQ(event.target.value)}
@@ -100,7 +92,7 @@ export default function RepositoryPackages() {
         >
           <Outlet context={[q, setQ]} />
         </Flex>
-      </StyledTabPanel>
+      </TabPanel>
     </Flex>
   )
 }

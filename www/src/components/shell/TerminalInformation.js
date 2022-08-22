@@ -92,7 +92,7 @@ function TerminalInformation({ shell }) {
             />
             <ShellHint
               name="Sync with your local machine"
-              code="plural login && plural shell sync"
+              code="plural shell sync"
               hint="This will clone your repo locally and sync all encryption keys needed to access it."
               marginTop="medium"
             />

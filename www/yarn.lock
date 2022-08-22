@@ -1781,8 +1781,8 @@ __metadata:
   linkType: hard
 
 "@emotion/babel-plugin@npm:^11.10.0":
-  version: 11.10.0
-  resolution: "@emotion/babel-plugin@npm:11.10.0"
+  version: 11.10.2
+  resolution: "@emotion/babel-plugin@npm:11.10.2"
   dependencies:
     "@babel/helper-module-imports": ^7.16.7
     "@babel/plugin-syntax-jsx": ^7.17.12
@@ -1798,7 +1798,7 @@ __metadata:
     stylis: 4.0.13
   peerDependencies:
     "@babel/core": ^7.0.0
-  checksum: 7f1c615e5e559fd037eab8d08b842cd6c089543f9c8829d22d097f69c5436298ff4fa9e1a2117892ce26a60abc1f57641dd9ccb011096b2e34c5588bf994addc
+  checksum: 7f9e84b3c00b4db5a829c6880549c6a816b3defcaf828cb37808737f3c17b22a45a06e48334f38f5729b218812252857ced27d3a12dd8ca1e260e4b1d0045dfd
   languageName: node
   linkType: hard
 
@@ -1815,15 +1815,15 @@ __metadata:
   linkType: hard
 
 "@emotion/cache@npm:^11.10.0, @emotion/cache@npm:^11.4.0":
-  version: 11.10.1
-  resolution: "@emotion/cache@npm:11.10.1"
+  version: 11.10.2
+  resolution: "@emotion/cache@npm:11.10.2"
   dependencies:
     "@emotion/memoize": ^0.8.0
     "@emotion/sheet": ^1.2.0
     "@emotion/utils": ^1.2.0
     "@emotion/weak-memoize": ^0.3.0
     stylis: 4.0.13
-  checksum: 950203c5a447c107a189042178fdf43b2e699f579e2d7cd9f39cb99ee2b1f20d84bb1ed653d2737a1adb79756c1f747783875ee76ccb547357f5aa9cd5ce63ee
+  checksum: fbe3a7ec2c1240b8fd1e1d4ca30366817086fe3421eb1854cda90efe4385a4527e22c4b5c1c783a1db1fe86add52493b7c50d0cddee129746d463268797080bb
   languageName: node
   linkType: hard
 

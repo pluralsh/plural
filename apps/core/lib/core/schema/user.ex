@@ -164,7 +164,7 @@ defmodule Core.Schema.User do
     confirm_by = Timex.now() |> Timex.shift(days: 7)
 
     case get_change(cs, :email) do
-      email when (not is_nil(email)) and (email != model.email) ->
+      email when is_binary(email) and email != model.email ->
         put_change(cs, :email_changed, true)
         |> put_change(:email_confirmed, false)
         |> put_change(:email_confirm_by, confirm_by)

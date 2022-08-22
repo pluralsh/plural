@@ -5,9 +5,17 @@ import {
 } from 'react-router-dom'
 import moment from 'moment'
 import { Box } from 'grommet'
+import { useRef } from 'react'
 
 import {
-  Codeline, ListBoxItem, ListBoxItemChipList, Select, Switch, Tab,
+  Codeline,
+  ListBoxItem,
+  ListBoxItemChipList,
+  Select,
+  Switch,
+  Tab,
+  TabList,
+  TabPanel,
 } from 'pluralsh-design-system'
 
 import { GoBack } from 'components/utils/GoBack'
@@ -27,6 +35,7 @@ import {
 import { DetailContainer } from './Installation'
 import { DEFAULT_DKR_ICON } from './constants'
 import { DOCKER_IMG_Q, DOCKER_Q, UPDATE_DOCKER } from './queries'
+import { LinkTabWrap } from 'components/utils/Tabs'
 
 function PublicSwitch({ dockerRepo }) {
   const [mutation] = useMutation(UPDATE_DOCKER, { variables: { id: dockerRepo.id } })
@@ -106,6 +115,7 @@ function ImageVersionPicker({ image }) {
           <ListBoxItem
             key={v.id}
             label={v.tag}
+            textValue={v.tag}
             rightContent={(
               <ListBoxItemChipList
                 chips={[...(v.scannedAt ? [
@@ -123,12 +133,18 @@ function ImageVersionPicker({ image }) {
   )
 }
 
+const DIRECTORY = [
+  { label: 'Pull metrics', path: '' },
+  { label: 'Vulnerabilities', path: '/vulnerabilities' },
+]
+
 export function Docker() {
   const { pathname } = useLocation()
   const navigate = useNavigate()
   const { id } = useParams()
   const [filter, setFilter] = useState(DEFAULT_FILTER)
   const { registry } = useContext(PluralConfigurationContext)
+  const tabStateRef = useRef()
 
   const { data } = useQuery(DOCKER_Q, {
     variables: { id, ...filter },
@@ -141,6 +157,11 @@ export function Docker() {
 
   const { dockerImage: image } = data
   const imageName = dockerPull(registry, { ...image, dockerRepository: image.dockerRepository })
+
+  const pathPrefix = `/dkr/img/${image.id}`
+  const currentTab = [...DIRECTORY].sort(
+    (a, b) => b.path.length - a.path.length
+  ).find(tab => pathname?.startsWith(`${pathPrefix}${tab.path}`))
 
   return (
     <Box
@@ -163,6 +184,23 @@ export function Docker() {
             />
             <ImageVersionPicker image={image} />
           </Box>
+          <TabList
+            stateRef={tabStateRef}
+            stateProps={{
+              orientation: 'vertical',
+              selectedKey: currentTab?.path,
+            }}
+          >
+            {DIRECTORY.map(({ label, textValue, path }) => (
+              <LinkTabWrap
+                key={path}
+                textValue={typeof label === 'string' ? label : textValue || ''}
+                to={`${pathPrefix}${path}`}
+              >
+                <Tab>{label}</Tab>
+              </LinkTabWrap>
+            ))}
+          </TabList>
           <Tab
             vertical
             onClick={() => navigate(`/dkr/img/${image.id}`)}

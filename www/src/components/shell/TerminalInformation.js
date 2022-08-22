@@ -4,7 +4,7 @@ import { CircleInformation } from 'grommet-icons'
 import {
   Button, Flex, Modal, Span,
 } from 'honorable'
-import { Codeline, ModalHeader } from 'pluralsh-design-system'
+import { Codeline, Divider, ModalHeader } from 'pluralsh-design-system'
 
 const CLOUDS = {
   GCP: 'Google Cloud Platform (GCP)',
@@ -31,15 +31,23 @@ function ShellHint({
     <Flex
       direction="column"
       gap="2px"
+      marginBottom="xxsmall"
       {...flex}
     >
       <Span
         fontWeight="bold"
-        color="text-xlight"
+        color="text-light"
+        marginBottom="xxsmall"
       >{name}
       </Span>
       <Codeline>{code}</Codeline>
-      <Span color="text-xlight">{hint}</Span>
+      <Span
+        caption
+        color="text-xlight"
+        marginTop="xxsmall"
+      >
+        {hint}
+      </Span>
     </Flex>
   )
 }
@@ -63,10 +71,7 @@ function TerminalInformation({ shell }) {
         open={open}
         onClose={() => setOpen(false)}
       >
-        <Flex
-          width="480px"
-          direction="column"
-        >
+        <Flex direction="column">
           <ModalHeader onClose={() => setOpen(false)}>
             Cloud shell info
           </ModalHeader>
@@ -84,14 +89,14 @@ function TerminalInformation({ shell }) {
             />
             <ShellHint
               name="Sync with your local machine"
-              code="plural shell sync"
-              hint="this will clone your repo locally, and sync all decryption keys"
+              code="plural login && plural shell sync"
+              hint="This will clone your repo locally and sync all encryption keys needed to access it."
               marginTop="medium"
             />
             <ShellHint
               name="Delete your cloud shell"
               code="plural shell purge"
-              hint="this will delete your shell instance and all credentials and keys attached"
+              hint="If there's anything important you deployed, be sure to sync your shell locally before purging."
             />
           </Flex>
         </Flex>

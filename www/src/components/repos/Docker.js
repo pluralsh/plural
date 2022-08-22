@@ -1,4 +1,6 @@
-import { useContext, useEffect, useState } from 'react'
+import {
+  useContext, useEffect, useRef, useState,
+} from 'react'
 import { useMutation, useQuery } from '@apollo/client'
 import {
   Outlet, useLocation, useNavigate, useParams,
@@ -7,7 +9,14 @@ import moment from 'moment'
 import { Box } from 'grommet'
 
 import {
-  Codeline, ListBoxItem, ListBoxItemChipList, Select, Switch, Tab,
+  Codeline,
+  ListBoxItem,
+  ListBoxItemChipList,
+  Select,
+  Switch,
+  Tab,
+  TabList,
+  TabPanel,
 } from 'pluralsh-design-system'
 
 import { GoBack } from 'components/utils/GoBack'
@@ -15,6 +24,8 @@ import { GoBack } from 'components/utils/GoBack'
 import {
   ResponsiveLayoutContentContainer, ResponsiveLayoutSidecarContainer, ResponsiveLayoutSidenavContainer, ResponsiveLayoutSpacer,
 } from 'components/layout/ResponsiveLayout'
+
+import { LinkTabWrap } from 'components/utils/Tabs'
 
 import { PluralConfigurationContext } from '../login/CurrentUser'
 
@@ -106,6 +117,7 @@ function ImageVersionPicker({ image }) {
           <ListBoxItem
             key={v.id}
             label={v.tag}
+            textValue={v.tag}
             rightContent={(
               <ListBoxItemChipList
                 chips={[...(v.scannedAt ? [
@@ -123,12 +135,17 @@ function ImageVersionPicker({ image }) {
   )
 }
 
+const DIRECTORY = [
+  { label: 'Pull metrics', path: '' },
+  { label: 'Vulnerabilities', path: '/vulnerabilities' },
+]
+
 export function Docker() {
   const { pathname } = useLocation()
-  const navigate = useNavigate()
   const { id } = useParams()
   const [filter, setFilter] = useState(DEFAULT_FILTER)
   const { registry } = useContext(PluralConfigurationContext)
+  const tabStateRef = useRef()
 
   const { data } = useQuery(DOCKER_Q, {
     variables: { id, ...filter },
@@ -141,6 +158,9 @@ export function Docker() {
 
   const { dockerImage: image } = data
   const imageName = dockerPull(registry, { ...image, dockerRepository: image.dockerRepository })
+
+  const pathPrefix = `/dkr/img/${image.id}`
+  const currentTab = [...DIRECTORY].sort((a, b) => b.path.length - a.path.length).find(tab => pathname?.startsWith(`${pathPrefix}${tab.path}`))
 
   return (
     <Box
@@ -163,26 +183,29 @@ export function Docker() {
             />
             <ImageVersionPicker image={image} />
           </Box>
-          <Tab
-            vertical
-            onClick={() => navigate(`/dkr/img/${image.id}`)}
-            active={pathname.endsWith(`/dkr/img/${image.id}`)}
-            textDecoration="none"
+          <TabList
+            stateRef={tabStateRef}
+            stateProps={{
+              orientation: 'vertical',
+              selectedKey: currentTab?.path,
+            }}
           >
-            Pull Metrics
-          </Tab>
-          <Tab
-            vertical
-            onClick={() => navigate(`/dkr/img/${image.id}/vulnerabilities`)}
-            active={pathname.startsWith(`/dkr/img/${image.id}/vulnerabilities`)}
-            textDecoration="none"
-          >
-            Vulnerabilities
-          </Tab>
+            {DIRECTORY.map(({ label, textValue, path }) => (
+              <LinkTabWrap
+                key={path}
+                textValue={typeof label === 'string' ? label : textValue || ''}
+                to={`${pathPrefix}${path}`}
+              >
+                <Tab>{label}</Tab>
+              </LinkTabWrap>
+            ))}
+          </TabList>
         </ResponsiveLayoutSidenavContainer>
         <ResponsiveLayoutSpacer />
         <ResponsiveLayoutContentContainer>
-          <Outlet context={{ image, filter, setFilter }} />
+          <TabPanel stateRef={tabStateRef}>
+            <Outlet context={{ image, filter, setFilter }} />
+          </TabPanel>
         </ResponsiveLayoutContentContainer>
         <ResponsiveLayoutSidecarContainer width="200px">
           <Codeline marginBottom="xlarge">{`docker pull ${imageName}`}</Codeline>
@@ -197,7 +220,9 @@ export function Docker() {
               {moment(image.insertedAt).format('lll')}
             </PackageProperty>
             <PackageProperty header="Scanned">
-              {image.scannedAt ? moment(image.scannedAt).format('lll') : 'unscanned' }
+              {image.scannedAt
+                ? moment(image.scannedAt).format('lll')
+                : 'unscanned'}
             </PackageProperty>
             <PackageProperty
               header="Sha"

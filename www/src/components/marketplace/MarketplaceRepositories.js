@@ -3,9 +3,7 @@ import {
 } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import {
-  A,
-  Br,
-  Button, Div, Flex, H1, Span,
+  A, Br, Button, Div, Flex, H1, Span, useMediaQuery,
 } from 'honorable'
 import {
   FiltersIcon, Input, MagnifyingGlassIcon, RepositoryCard,
@@ -43,8 +41,11 @@ const filterTokenStyles = {
 const sidebarWidth = 256 - 32
 
 function RepoCardList({
-  repositories, repoProps, maxWidth, size = 'small', stretchLastRow = false, ...props
+  repositories, repoProps, maxWidth, stretchLastRow = false, ...props
 }) {
+  const isDesktop = useMediaQuery('only', 'desktop')
+  const isDesktopLarge = useMediaQuery('up', 'desktopLarge')
+
   const flexBasis = '400px'
 
   // Workaround that will render empty columns to align the last row.
@@ -98,7 +99,7 @@ function RepoCardList({
               priv={repository.private}
               installed={!!repository.installation}
               verified={repository.verified}
-              size={size}
+              size={isDesktopLarge ? 'large' : isDesktop ? 'medium' : 'small'}
               {...repoProps}
             />
           </Flex>
@@ -197,7 +198,6 @@ function MarketplaceRepositories({ installed }) {
           repoProps={{ featured: true }}
           marginTop="medium"
           maxWidth="100%"
-          size="large"
           stretchLastRow
         />
       </>

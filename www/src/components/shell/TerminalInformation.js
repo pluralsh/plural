@@ -4,7 +4,7 @@ import { CircleInformation } from 'grommet-icons'
 import {
   Button, Flex, Modal, Span,
 } from 'honorable'
-import { Codeline, ModalHeader } from 'pluralsh-design-system'
+import { Codeline, Divider, ModalHeader } from 'pluralsh-design-system'
 
 const CLOUDS = {
   GCP: 'Google Cloud Platform (GCP)',
@@ -17,9 +17,10 @@ function Attribute({ name, value }) {
     <Flex
       gap="2px"
       direction="column"
+      body1
     >
       <Span color="text-xlight">{name}</Span>
-      <Span fontWeight="bold">{value}</Span>
+      <Span fontWeight="600">{value}</Span>
     </Flex>
   )
 }
@@ -84,6 +85,10 @@ function TerminalInformation({ shell }) {
             <Attribute
               name="Git"
               value={shell.gitUrl}
+            />
+            <Divider
+              backgroundColor="border"
+              marginTop="small"
             />
             <ShellHint
               name="Sync with your local machine"

@@ -22,7 +22,7 @@ function OnboardingFooter() {
   }
 
   function skipDemo() {
-    mutation().then(navigate('/'))
+    mutation().then(() => navigate('/marketplace'))
   }
 
   return (

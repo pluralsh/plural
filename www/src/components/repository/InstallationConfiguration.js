@@ -3,11 +3,10 @@ import {
   Flex, Input, RadioGroup, Span,
 } from 'honorable'
 import {
-  Modal, Radio, TabList, TabListItem, TabPanel,
+  Modal, Radio, Tab, TabList, TabPanel,
 } from 'pluralsh-design-system'
-import { useCallback, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { Keyboard } from 'grommet'
-import { useTabListState } from '@react-stately/tabs'
 
 import { Actions } from '../account/Actions'
 import { GqlError } from '../utils/Alert'
@@ -144,9 +143,10 @@ function DeleteInstallation({ installation, setOpen }) {
 }
 
 export function InstallationConfiguration({ installation, open, setOpen }) {
+  const tabStateRef = useRef()
+  const [selectedTabKey, setSelectedKey] = useState()
   const tabs = {
     upgrades: {
-      key: '1',
       label: 'Upgrades',
       content: <UpdateUpgrades
         installation={installation}
@@ -154,7 +154,6 @@ export function InstallationConfiguration({ installation, open, setOpen }) {
       />,
     },
     uninstall: {
-      key: '2',
       label: 'Delete',
       content: <DeleteInstallation
         installation={installation}
@@ -162,22 +161,6 @@ export function InstallationConfiguration({ installation, open, setOpen }) {
       />,
     },
   }
-
-  const tabListStateProps = {
-    keyboardActivation: 'manual',
-    orientation: 'horizontal',
-    children: Object.entries(tabs).map(([key, tab]) => (
-      <TabListItem
-        key={key}
-        width="100%"
-        justifyContent="center"
-      >
-        {tab.label}
-      </TabListItem>
-    )),
-  }
-
-  const tabState = useTabListState(tabListStateProps)
 
   return (
     <Modal
@@ -189,8 +172,13 @@ export function InstallationConfiguration({ installation, open, setOpen }) {
       paddingTop={0}
     >
       <TabList
-        state={tabState}
-        stateProps={tabListStateProps}
+        stateRef={tabStateRef}
+        stateProps={{
+          keyboardActivation: 'manual',
+          orientation: 'horizontal',
+          onSelectionChange: setSelectedKey,
+          selectedKey: selectedTabKey,
+        }}
         flexShrink={0}
         {...{
           ' div > div': {
@@ -198,16 +186,25 @@ export function InstallationConfiguration({ installation, open, setOpen }) {
             padding: '7px 0',
           },
         }}
-      />
+      >
+        {Object.entries(tabs).map(([key, tab]) => (
+          <Tab
+            key={key}
+            width="100%"
+            justifyContent="center"
+            textValue={tab.label}
+          >
+            {tab.label}
+          </Tab>
+        ))}
+      </TabList>
       <TabPanel
-        state={tabState}
-        stateProps={tabListStateProps}
+        stateRef={tabStateRef}
         paddingTop="large"
         paddingHorizontal="large"
       >
-        {tabs[tabState.selectedKey]?.content}
+        {tabs[selectedTabKey]?.content}
       </TabPanel>
     </Modal>
   )
 }
-

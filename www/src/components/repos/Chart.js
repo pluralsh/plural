@@ -204,7 +204,6 @@ export default function Chart() {
     switch (path) {
     case '/updatequeue':
       return !!chartInst
-      break
     default:
       return true
     }

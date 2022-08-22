@@ -1,12 +1,12 @@
 import './chart.css'
 
-import { useContext, useState } from 'react'
+import { useContext, useState, useRef } from 'react'
 import { Box } from 'grommet'
 import { useMutation, useQuery } from '@apollo/client'
 import {
   Link, Outlet, useLocation, useNavigate, useParams,
 } from 'react-router-dom'
-import { Button, Tab } from 'pluralsh-design-system'
+import { Button, Tab, TabList, TabPanel } from 'pluralsh-design-system'
 import moment from 'moment'
 import Highlight from 'react-highlight.js'
 
@@ -28,6 +28,7 @@ import { CHART_Q, INSTALL_CHART, UPDATE_CHART_INST } from './queries'
 import { DEFAULT_CHART_ICON } from './constants'
 
 import { DetailContainer } from './Installation'
+import { LinkTabWrap } from 'components/utils/Tabs'
 
 function ChartInfo({ version: { helm, insertedAt } }) {
   return (
@@ -164,6 +165,7 @@ export default function Chart() {
   const navigate = useNavigate()
   const [version, setVersion] = useState(null)
   const { data, fetchMore } = useQuery(CHART_Q, { variables: { chartId }, fetchPolicy: 'cache-and-network' })
+  const tabStateRef = useRef()
 
   if (!data) return null
 
@@ -172,6 +174,39 @@ export default function Chart() {
   const { edges, pageInfo } = versions
   const currentVersion = version || edges[0].node
   const chartInst = data.chart.installation
+
+  const DIRECTORY = [
+    { label: 'Readme', path: '' },
+    { label: 'Configuration', path: '/configuration' },
+    { label: 'Dependencies', path: '/dependencies' },
+    {
+      label: (
+        <Flex flexGrow={1} justifyContent="space-between">
+          Security
+          {currentVersion?.scan && (
+            <PackageGrade grade={currentVersion.scan.grade} />
+          )}
+        </Flex>
+      ),
+      textValue: 'Security',
+      path: '/security',
+    },
+    { label: 'Update queue', path: '/updatequeue' },
+  ]
+  const pathPrefix = `/charts/${chart.id}`
+
+  const filteredDirectory = DIRECTORY.filter(({ path }) => {
+    switch (path) {
+      case '/updatequeue':
+        return !!chartInst
+        break
+      default:
+        return true
+    }
+  })
+  const currentTab = [...filteredDirectory]
+    .sort((a, b) => b.path.length - a.path.length)
+    .find(tab => pathname?.startsWith(`${pathPrefix}${tab.path}`))
 
   return (
     <Box
@@ -201,58 +236,31 @@ export default function Chart() {
               fetchMore={fetchMore}
             />
           </Box>
-          <Tab
-            vertical
-            onClick={() => navigate(`/charts/${chart.id}`)}
-            active={pathname.endsWith(`/charts/${chart.id}`)}
-            textDecoration="none"
+          <TabList
+            stateRef={tabStateRef}
+            stateProps={{
+              orientation: 'vertical',
+              selectedKey: currentTab?.path,
+            }}
           >
-            Readme
-          </Tab>
-          <Tab
-            vertical
-            onClick={() => navigate(`/charts/${chart.id}/configuration`)}
-            active={pathname.startsWith(`/charts/${chart.id}/configuration`)}
-            textDecoration="none"
-          >
-            Configuration
-          </Tab>
-          <Tab
-            vertical
-            onClick={() => navigate(`/charts/${chart.id}/dependencies`)}
-            active={pathname.startsWith(`/charts/${chart.id}/dependencies`)}
-            textDecoration="none"
-          >
-            Dependencies
-          </Tab>
-          <Tab
-            vertical
-            onClick={() => navigate(`/charts/${chart.id}/security`)}
-            active={pathname.startsWith(`/charts/${chart.id}/security`)}
-            textDecoration="none"
-          >
-            <Flex
-              flexGrow={1}
-              justifyContent="space-between"
-            >
-              Security
-              {currentVersion?.scan && <PackageGrade grade={currentVersion.scan.grade} />}
-            </Flex>
-          </Tab>
-          {(chartInst && (
-            <Tab
-              vertical
-              onClick={() => navigate(`/charts/${chart.id}/updatequeue`)}
-              active={pathname.startsWith(`/charts/${chart.id}/updatequeue`)}
-              textDecoration="none"
-            >
-              Update queue
-            </Tab>
-          ))}
+            {filteredDirectory.map(({ label, textValue, path }) => (
+              <LinkTabWrap
+                key={path}
+                textValue={typeof label === 'string' ? label : textValue || ''}
+                to={`${pathPrefix}${path}`}
+              >
+                <Tab>{label}</Tab>
+              </LinkTabWrap>
+            ))}
+          </TabList>
         </ResponsiveLayoutSidenavContainer>
         <ResponsiveLayoutSpacer />
         <ResponsiveLayoutContentContainer>
-          <Outlet context={{ helmChart: chart, currentHelmChart: currentVersion }} />
+          <TabPanel stateRef={tabStateRef}>
+            <Outlet
+              context={{ helmChart: chart, currentHelmChart: currentVersion }}
+            />
+          </TabPanel>
         </ResponsiveLayoutContentContainer>
         <ResponsiveLayoutSidecarContainer width="200px">
           <Box

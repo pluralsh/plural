@@ -11,7 +11,6 @@ export const LinkTabWrap = styled(forwardRef(({
   <UnstyledLink
     ref={ref}
     className={className}
-    vertical={vertical}
     $extendStyle={{ display: 'block' }}
     {...props}
   >

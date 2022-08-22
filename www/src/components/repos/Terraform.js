@@ -1,10 +1,9 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Box } from 'grommet'
 import { useMutation, useQuery } from '@apollo/client'
 import {
-  Outlet, useLocation, useNavigate, useParams,
+  Outlet, useLocation, useParams,
 } from 'react-router-dom'
-import { useRef } from 'react'
 
 import { Button, Flex, Modal } from 'honorable'
 
@@ -16,6 +15,8 @@ import {
 
 import { GoBack } from 'components/utils/GoBack'
 
+import { LinkTabWrap } from 'components/utils/Tabs'
+
 import { deepUpdate, updateCache } from '../../utils/graphql'
 
 import { GqlError } from '../utils/Alert'
@@ -24,7 +25,6 @@ import { INSTALL_TF, TF_Q, UNINSTALL_TF } from './queries'
 import { DEFAULT_TF_ICON } from './constants'
 
 import { PackageGrade, PackageHeader, PackageVersionPicker } from './common/misc'
-import { LinkTabWrap } from 'components/utils/Tabs'
 
 function TerraformInstaller({
   installation, terraformId, terraformInstallation, version,
@@ -67,7 +67,6 @@ function TerraformInstaller({
 
 export default function Terraform() {
   const { pathname } = useLocation()
-  const navigate = useNavigate()
   const [version, setVersion] = useState(null)
   const { tfId } = useParams()
   const { data, fetchMore } = useQuery(TF_Q, { variables: { tfId }, fetchPolicy: 'cache-and-network' })
@@ -86,7 +85,10 @@ export default function Terraform() {
     { label: 'Dependencies', path: '/dependencies' },
     {
       label: (
-        <Flex flexGrow={1} justifyContent="space-between">
+        <Flex
+          flexGrow={1}
+          justifyContent="space-between"
+        >
           Security
           {currentVersion?.scan && (
             <PackageGrade grade={currentVersion.scan.grade} />
@@ -102,17 +104,15 @@ export default function Terraform() {
 
   const filteredDirectory = DIRECTORY.filter(({ path }) => {
     switch (path) {
-      case '/updatequeue':
-        return !!tfInst
-        break
-      default:
-        return true
+    case '/updatequeue':
+      return !!tfInst
+    default:
+      return true
     }
   })
   const currentTab = [...filteredDirectory]
     .sort((a, b) => b.path.length - a.path.length)
     .find(tab => pathname?.startsWith(`${pathPrefix}${tab.path}`))
-
 
   return (
     <Box

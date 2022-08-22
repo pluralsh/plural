@@ -30,7 +30,7 @@ export function packageCardStyle(first, last) {
   }
 }
 
-const StyledTabPanel = styled(TabPanel)(({ theme }) => ({
+const StyledTabPanel = styled(TabPanel)(_ => ({
   display: 'flex',
   flexDirection: 'column',
   flexGrow: 1,

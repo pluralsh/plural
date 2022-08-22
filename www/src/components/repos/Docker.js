@@ -1,11 +1,12 @@
-import { useContext, useEffect, useState } from 'react'
+import {
+  useContext, useEffect, useRef, useState,
+} from 'react'
 import { useMutation, useQuery } from '@apollo/client'
 import {
   Outlet, useLocation, useNavigate, useParams,
 } from 'react-router-dom'
 import moment from 'moment'
 import { Box } from 'grommet'
-import { useRef } from 'react'
 
 import {
   Codeline,
@@ -24,6 +25,8 @@ import {
   ResponsiveLayoutContentContainer, ResponsiveLayoutSidecarContainer, ResponsiveLayoutSidenavContainer, ResponsiveLayoutSpacer,
 } from 'components/layout/ResponsiveLayout'
 
+import { LinkTabWrap } from 'components/utils/Tabs'
+
 import { PluralConfigurationContext } from '../login/CurrentUser'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
@@ -35,7 +38,6 @@ import {
 import { DetailContainer } from './Installation'
 import { DEFAULT_DKR_ICON } from './constants'
 import { DOCKER_IMG_Q, DOCKER_Q, UPDATE_DOCKER } from './queries'
-import { LinkTabWrap } from 'components/utils/Tabs'
 
 function PublicSwitch({ dockerRepo }) {
   const [mutation] = useMutation(UPDATE_DOCKER, { variables: { id: dockerRepo.id } })
@@ -140,7 +142,6 @@ const DIRECTORY = [
 
 export function Docker() {
   const { pathname } = useLocation()
-  const navigate = useNavigate()
   const { id } = useParams()
   const [filter, setFilter] = useState(DEFAULT_FILTER)
   const { registry } = useContext(PluralConfigurationContext)
@@ -159,9 +160,7 @@ export function Docker() {
   const imageName = dockerPull(registry, { ...image, dockerRepository: image.dockerRepository })
 
   const pathPrefix = `/dkr/img/${image.id}`
-  const currentTab = [...DIRECTORY].sort(
-    (a, b) => b.path.length - a.path.length
-  ).find(tab => pathname?.startsWith(`${pathPrefix}${tab.path}`))
+  const currentTab = [...DIRECTORY].sort((a, b) => b.path.length - a.path.length).find(tab => pathname?.startsWith(`${pathPrefix}${tab.path}`))
 
   return (
     <Box
@@ -204,7 +203,9 @@ export function Docker() {
         </ResponsiveLayoutSidenavContainer>
         <ResponsiveLayoutSpacer />
         <ResponsiveLayoutContentContainer>
-          <Outlet context={{ image, filter, setFilter }} />
+          <TabPanel stateRef={tabStateRef}>
+            <Outlet context={{ image, filter, setFilter }} />
+          </TabPanel>
         </ResponsiveLayoutContentContainer>
         <ResponsiveLayoutSidecarContainer width="200px">
           <Codeline marginBottom="xlarge">{`docker pull ${imageName}`}</Codeline>
@@ -219,7 +220,9 @@ export function Docker() {
               {moment(image.insertedAt).format('lll')}
             </PackageProperty>
             <PackageProperty header="Scanned">
-              {image.scannedAt ? moment(image.scannedAt).format('lll') : 'unscanned' }
+              {image.scannedAt
+                ? moment(image.scannedAt).format('lll')
+                : 'unscanned'}
             </PackageProperty>
             <PackageProperty
               header="Sha"

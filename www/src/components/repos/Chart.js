@@ -1,12 +1,14 @@
 import './chart.css'
 
-import { useContext, useState, useRef } from 'react'
+import { useContext, useRef, useState } from 'react'
 import { Box } from 'grommet'
 import { useMutation, useQuery } from '@apollo/client'
 import {
-  Link, Outlet, useLocation, useNavigate, useParams,
+  Link, Outlet, useLocation, useParams,
 } from 'react-router-dom'
-import { Button, Tab, TabList, TabPanel } from 'pluralsh-design-system'
+import {
+  Button, Tab, TabList, TabPanel,
+} from 'pluralsh-design-system'
 import moment from 'moment'
 import Highlight from 'react-highlight.js'
 
@@ -18,6 +20,8 @@ import {
 
 import { GoBack } from 'components/utils/GoBack'
 
+import { LinkTabWrap } from 'components/utils/Tabs'
+
 import { PluralConfigurationContext } from '../login/CurrentUser'
 
 import {
@@ -28,7 +32,6 @@ import { CHART_Q, INSTALL_CHART, UPDATE_CHART_INST } from './queries'
 import { DEFAULT_CHART_ICON } from './constants'
 
 import { DetailContainer } from './Installation'
-import { LinkTabWrap } from 'components/utils/Tabs'
 
 function ChartInfo({ version: { helm, insertedAt } }) {
   return (
@@ -162,7 +165,6 @@ function ImageDependencies({ version: { imageDependencies } }) {
 export default function Chart() {
   const { chartId } = useParams()
   const { pathname } = useLocation()
-  const navigate = useNavigate()
   const [version, setVersion] = useState(null)
   const { data, fetchMore } = useQuery(CHART_Q, { variables: { chartId }, fetchPolicy: 'cache-and-network' })
   const tabStateRef = useRef()
@@ -181,7 +183,10 @@ export default function Chart() {
     { label: 'Dependencies', path: '/dependencies' },
     {
       label: (
-        <Flex flexGrow={1} justifyContent="space-between">
+        <Flex
+          flexGrow={1}
+          justifyContent="space-between"
+        >
           Security
           {currentVersion?.scan && (
             <PackageGrade grade={currentVersion.scan.grade} />
@@ -197,11 +202,11 @@ export default function Chart() {
 
   const filteredDirectory = DIRECTORY.filter(({ path }) => {
     switch (path) {
-      case '/updatequeue':
-        return !!chartInst
-        break
-      default:
-        return true
+    case '/updatequeue':
+      return !!chartInst
+      break
+    default:
+      return true
     }
   })
   const currentTab = [...filteredDirectory]

@@ -100,10 +100,9 @@ export function Shell({ shell }) {
           <Button
             small
             tertiary
-            startIcon={(
-              <ScrollIcon />
-            )}
+            startIcon={<ScrollIcon />}
             onClick={() => setShowCheatsheet(!showCheatsheet)}
+            backgroundColor={showCheatsheet ? 'fill-zero-selected' : null}
           >
             CLI Cheatsheet
           </Button>

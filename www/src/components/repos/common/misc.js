@@ -113,6 +113,7 @@ export function PackageVersionPicker({
           <ListBoxItem
             key={v.id}
             label={v.version}
+            textValue={v.version}
             rightContent={(
               <ListBoxItemChipList
                 maxVisible={1}

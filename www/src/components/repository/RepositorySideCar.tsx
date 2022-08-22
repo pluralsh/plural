@@ -86,7 +86,7 @@ function RepositorySideCarButtons() {
         tertiary
         as="a"
         target="_blank"
-        href={repository.git_url}
+        href={repository.gitUrl}
         startIcon={(
           <GitHubLogoIcon />
         )}

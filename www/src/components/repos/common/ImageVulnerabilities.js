@@ -39,6 +39,7 @@ function CVSSRow({
         direction="row"
         fill="horizontal"
         gap="xsmall"
+        wrap
       >
         {options.map(({ name, value: val }) => (
           <Chip
@@ -48,6 +49,7 @@ function CVSSRow({
             backgroundColor="fill-three"
             borderColor="border-input"
             opacity={value === val ? 1 : 0.4}
+            marginBottom="xxsmall"
           >
             {name}
           </Chip>
@@ -104,7 +106,10 @@ function VulnerabilityDetail({ v, last }) {
               Each metric is ordered from low to high severity.
             </P>
             <Flex marginTop="large">
-              <Box basis="1/2">
+              <Box
+                basis="1/2"
+                margin={{ right: 'xsmall' }}
+              >
                 <P
                   overline
                   color="text-xlight"

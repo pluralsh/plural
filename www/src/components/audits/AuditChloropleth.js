@@ -1,19 +1,25 @@
 import { useQuery } from '@apollo/client'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import lookup from 'country-code-lookup'
 import { Box } from 'grommet'
-import { Flex } from 'honorable'
 
-import { PageTitle, SubTab } from 'pluralsh-design-system'
+import { PageTitle, SubTab, TabList } from 'pluralsh-design-system'
 
 import { Chloropleth } from '../utils/Chloropleth'
 
 import { AUDIT_METRICS, LOGIN_METRICS } from './queries'
 
+const DIRECTORY = [
+  { key: 'audit-logs', label: 'Audit logs' },
+  { key: 'logins', label: 'Logins' },
+]
+
 export function AuditChloropleth() {
-  const [tab, setTab] = useState('Audit logs')
-  const { data } = useQuery(tab === 'Logins' ? LOGIN_METRICS : AUDIT_METRICS, { fetchPolicy: 'cache-and-network' })
+  const [selectedKey, setSelectedKey] = useState('audit-logs')
+  const tabStateRef = useRef()
+
+  const { data } = useQuery(selectedKey === 'logins' ? LOGIN_METRICS : AUDIT_METRICS, { fetchPolicy: 'cache-and-network' })
 
   if (!data) return null
 
@@ -25,20 +31,23 @@ export function AuditChloropleth() {
   return (
     <Box fill>
       <PageTitle heading="Geodistribution">
-        <Flex>
-          <SubTab
-            active={tab === 'Audit logs'}
-            onClick={() => setTab('Audit logs')}
-          >
-            Audit logs
-          </SubTab>
-          <SubTab
-            active={tab === 'Logins'}
-            onClick={() => setTab('Logins')}
-          >
-            Logins
-          </SubTab>
-        </Flex>
+        <TabList
+          stateRef={tabStateRef}
+          stateProps={{
+            orientation: 'horizontal',
+            selectedKey,
+            onSelectionChange: setSelectedKey,
+          }}
+        >
+          {DIRECTORY.map(({ label, key }) => (
+            <SubTab
+              key={key}
+              textValue={label}
+            >
+              {label}
+            </SubTab>
+          ))}
+        </TabList>
       </PageTitle>
       <Box
         fill

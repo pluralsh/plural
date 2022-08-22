@@ -4,9 +4,6 @@ import { Graph as SimpleGraph } from '../utils/Graph'
 
 export const DURATIONS = [
   {
-    offset: '1d', step: '1h', label: '1d', tick: 'every 2 hours',
-  },
-  {
     offset: '7d', step: '2h', label: '7d', tick: 'every 12 hours',
   },
   {

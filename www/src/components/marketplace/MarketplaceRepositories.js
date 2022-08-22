@@ -1,15 +1,20 @@
-import {
-  useEffect, useRef, useState,
-} from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import {
   A, Br, Button, Div, Flex, H1, Span, useMediaQuery,
 } from 'honorable'
 import {
-  FiltersIcon, Input, MagnifyingGlassIcon, RepositoryCard,
-  Tab, Token,
+  FiltersIcon,
+  Input,
+  MagnifyingGlassIcon,
+  RepositoryCard,
+  Tab,
+  TabList,
+  TabPanel,
+  Token,
 } from 'pluralsh-design-system'
 import Fuse from 'fuse.js'
+import styled from 'styled-components'
 
 import { EmptyState } from 'components/utils/EmptyState'
 
@@ -20,6 +25,8 @@ import { capitalize } from '../../utils/string'
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
+
+import { LinkTabWrap } from '../utils/Tabs'
 
 import { MARKETPLACE_QUERY } from './queries'
 
@@ -110,6 +117,12 @@ function RepoCardList({
   )
 }
 
+const StyledTabPanel = styled(TabPanel)(() => ({
+  display: 'flex',
+  flexDirection: 'column',
+  flexGrow: 1,
+}))
+
 function MarketplaceRepositories({ installed }) {
   const scrollRef = useRef()
   const [searchParams, setSearchParams] = useSearchParams()
@@ -117,6 +130,7 @@ function MarketplaceRepositories({ installed }) {
   const tags = searchParams.getAll('tag')
   const [search, setSearch] = useState('')
   const [areFiltersOpen, setAreFiltersOpen] = useState(true)
+  const tabStateRef = useRef()
 
   const [repositories, loadingRepositories, hasMoreRepositories, fetchMoreRepositories] = usePaginatedQuery(MARKETPLACE_QUERY,
     {},
@@ -230,22 +244,26 @@ function MarketplaceRepositories({ installed }) {
           height={57}
           alignItems="flex-end"
         >
-          <Link
-            to="/marketplace"
-            style={{ color: 'inherit', textDecoration: 'none' }}
+          <TabList
+            stateRef={tabStateRef}
+            stateProps={{
+              orientation: 'horizontal',
+              selectedKey: installed ? 'installed' : 'marketplace',
+            }}
           >
-            <Tab active={!installed}>
-              Marketplace
-            </Tab>
-          </Link>
-          <Link
-            to="/installed"
-            style={{ color: 'inherit', textDecoration: 'none' }}
-          >
-            <Tab active={installed}>
-              Installed
-            </Tab>
-          </Link>
+            <LinkTabWrap
+              key="marketplace"
+              to="/marketplace"
+            >
+              <Tab>Marketplace</Tab>
+            </LinkTabWrap>
+            <LinkTabWrap
+              key="installed"
+              to="/installed"
+            >
+              <Tab>Installed</Tab>
+            </LinkTabWrap>
+          </TabList>
           <Flex
             alignSelf="stretch"
             paddingBottom="xxsmall"
@@ -270,10 +288,7 @@ function MarketplaceRepositories({ installed }) {
         marginTop="medium"
         overflow="hidden"
       >
-        <Flex
-          direction="column"
-          flexGrow={1}
-        >
+        <StyledTabPanel stateRef={tabStateRef}>
           <Div position="relative">
             <Flex
               paddingHorizontal="large"
@@ -393,7 +408,7 @@ function MarketplaceRepositories({ installed }) {
               </EmptyState>
             )}
           </Div>
-        </Flex>
+        </StyledTabPanel>
         <Div
           marginRight={areFiltersOpen ? 'large' : `-${sidebarWidth}px`}
           transform={areFiltersOpen ? 'translateX(0)' : 'translateX(100%)'}

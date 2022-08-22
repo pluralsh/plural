@@ -1,10 +1,17 @@
-import { Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 import { Flex } from 'honorable'
 import {
   Input,
-  MagnifyingGlassIcon, PageTitle, SubTab,
+  MagnifyingGlassIcon,
+  PageTitle,
+  SubTab,
+  TabList,
+  TabPanel,
 } from 'pluralsh-design-system'
-import { useState } from 'react'
+import { useContext, useRef, useState } from 'react'
+
+import { LinkTabWrap } from '../utils/Tabs'
+import RepositoryContext from '../../contexts/RepositoryContext'
 
 export function packageCardStyle(first, last) {
   return {
@@ -22,17 +29,20 @@ export function packageCardStyle(first, last) {
   }
 }
 
-const tabToUrl = {
-  'Helm charts': 'helm',
-  'Terraform modules': 'terraform',
-  'Docker repositories': 'docker',
-}
+const DIRECTORY = [
+  { label: 'Helm charts', path: '/helm' },
+  { label: 'Terraform modules', path: '/terraform' },
+  { label: 'Docker repositories', path: '/docker' },
+]
 
 export default function RepositoryPackages() {
+  const repository = useContext(RepositoryContext)
   const [q, setQ] = useState('')
   const { pathname } = useLocation()
-  const navigate = useNavigate()
-  const tabUrl = pathname.substring(pathname.lastIndexOf('/') + 1)
+  const tabStateRef = useRef()
+  const pathPrefix = `/repository/${repository.id}/packages`
+
+  const currentTab = DIRECTORY.find(tab => pathname?.startsWith(`${pathPrefix}${tab.path}`))
 
   return (
     <Flex
@@ -44,33 +54,45 @@ export default function RepositoryPackages() {
         paddingTop="medium"
       >
         <Flex>
-          {Object.keys(tabToUrl).map(tab => (
-            <SubTab
-              active={tabToUrl[tab] === tabUrl}
-              onClick={() => navigate(tabToUrl[tab])}
-            >
-              {tab}
-            </SubTab>
-          ))}
+          <TabList
+            stateRef={tabStateRef}
+            stateProps={{
+              orientation: 'horizontal',
+              selectedKey: currentTab?.path,
+            }}
+          >
+            {DIRECTORY.map(({ path, label }) => (
+              <LinkTabWrap
+                to={`${pathPrefix}${path}`}
+                key={path}
+                textValue={label}
+                subTab
+              >
+                <SubTab flexGrow={1}>{label}</SubTab>
+              </LinkTabWrap>
+            ))}
+          </TabList>
         </Flex>
       </PageTitle>
-      <Input
-        value={q}
-        onChange={event => setQ(event.target.value)}
-        placeholder={`Filter ${Object.keys(tabToUrl).find(key => tabToUrl[key] === tabUrl)}`}
-        startIcon={(<MagnifyingGlassIcon size={14} />)}
-        width="100%"
-        backgroundColor="fill-one"
-        borderBottomLeftRadius="0"
-        borderBottomRightRadius="0"
-      />
-      <Flex
-        direction="column"
-        marginBottom="medium"
-        flexGrow={1}
-      >
-        <Outlet context={[q, setQ]} />
-      </Flex>
+      <TabPanel stateRef={tabStateRef}>
+        <Input
+          value={q}
+          onChange={event => setQ(event.target.value)}
+          placeholder={`Filter ${currentTab?.label || ''}`}
+          startIcon={<MagnifyingGlassIcon size={14} />}
+          width="100%"
+          backgroundColor="fill-one"
+          borderBottomLeftRadius="0"
+          borderBottomRightRadius="0"
+        />
+        <Flex
+          direction="column"
+          marginBottom="medium"
+          flexGrow={1}
+        >
+          <Outlet context={[q, setQ]} />
+        </Flex>
+      </TabPanel>
     </Flex>
   )
 }

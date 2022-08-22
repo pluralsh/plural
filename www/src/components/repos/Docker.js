@@ -62,7 +62,7 @@ export function DockerRepository() {
 }
 
 const DEFAULT_FILTER = {
-  tag: null, precision: '1h', offset: '1d', tick: 'every 2 hours',
+  tag: null, precision: '2h', offset: '7d', tick: 'every 12 hours',
 }
 
 function ImageVersionPicker({ image }) {

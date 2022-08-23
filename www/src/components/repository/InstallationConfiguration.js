@@ -208,4 +208,3 @@ export function InstallationConfiguration({ installation, open, setOpen }) {
     </Modal>
   )
 }
-

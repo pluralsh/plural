@@ -575,4 +575,9 @@ defmodule Core.Factory do
       recipe: build(:recipe),
     }
   end
+
+  def with_password(%Schema.User{} = user, password) do
+    Schema.User.changeset(user, %{password: password})
+    |> Ecto.Changeset.apply_changes()
+  end
 end

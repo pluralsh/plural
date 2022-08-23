@@ -48,6 +48,7 @@ export function ClustersSidenav({
             <ListBoxItem
               key={queue.id}
               label={queue.name}
+              textValue={queue.name}
               rightContent={<QueueHealth queue={queue} />}
             />
           ))}

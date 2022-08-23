@@ -37,10 +37,19 @@ const validPassword = pass => (pass.length < 8 ? { error: true, message: 'passwo
 function UpdatePassword({ cancel }) {
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
-  const [mutation, { loading }] = useMutation(UPDATE_USER, { variables: { attributes: { password } } })
+  const [second, setSecond] = useState('')
+  const [mutation, { loading }] = useMutation(UPDATE_USER, { variables: { attributes: { password, confirm } } })
 
   return (
     <Box gap="small">
+      <ValidatedInput
+        width="100%"
+        label="Current password"
+        placeholder="Enter your current password"
+        type="password"
+        value={confirm}
+        onChange={({ target: { value } }) => setConfirm(value)}
+      />
       <ValidatedInput
         width="100%"
         label="New password"
@@ -55,8 +64,8 @@ function UpdatePassword({ cancel }) {
         label="Confirm new password"
         placeholder="Enter new password again"
         type="password"
-        value={confirm}
-        onChange={({ target: { value } }) => setConfirm(value)}
+        value={second}
+        onChange={({ target: { value } }) => setSecond(value)}
         validation={pass => (!pass ? null : (pass !== password ? { error: true, message: 'passwords do not match' } : { error: false, message: 'passwords match!' }))}
       />
       <Box
@@ -75,7 +84,7 @@ function UpdatePassword({ cancel }) {
         <Button
           small
           loading={loading}
-          disabled={password.length < 8 || password !== confirm}
+          disabled={password.length < 8 || password !== second}
           onClick={mutation}
         >
           Update password

@@ -264,7 +264,6 @@ function MarketplaceRepositories({ installed }) {
             </LinkTabWrap>
           </TabList>
           <Flex
-            alignSelf="stretch"
             paddingBottom="xxsmall"
             paddingTop="xxsmall"
             justify="flex-end"

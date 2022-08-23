@@ -25,14 +25,6 @@ import { RepositorySideCar } from './RepositorySideCar.tsx'
 
 import { REPOSITORY_QUERY } from './queries'
 
-const StyledTabPanel = styled(TabPanel)(() => ({
-  display: 'flex',
-  flexDirection: 'column',
-  flexGrow: 1,
-  height: '100%',
-  maxHeight: '100%',
-}))
-
 function Repository() {
   const { id } = useParams()
   const { data } = useQuery(REPOSITORY_QUERY, {
@@ -88,11 +80,14 @@ function Repository() {
             <RepositorySideNav tabStateRef={tabStateRef} />
           </ResponsiveLayoutSidenavContainer>
           <ResponsiveLayoutSpacer />
-          <ResponsiveLayoutContentContainer paddingHorizontal="xxxsmall">
-            <StyledTabPanel stateRef={tabStateRef}>
-              <Outlet />
-            </StyledTabPanel>
-          </ResponsiveLayoutContentContainer>
+          <TabPanel
+            as={
+              <ResponsiveLayoutContentContainer paddingHorizontal="xxxsmall" />
+            }
+            stateRef={tabStateRef}
+          >
+            <Outlet />
+          </TabPanel>
           <ResponsiveLayoutSidecarContainer>
             <RepositorySideCar />
           </ResponsiveLayoutSidecarContainer>

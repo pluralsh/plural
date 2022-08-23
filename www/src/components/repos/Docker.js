@@ -202,11 +202,12 @@ export function Docker() {
           </TabList>
         </ResponsiveLayoutSidenavContainer>
         <ResponsiveLayoutSpacer />
-        <ResponsiveLayoutContentContainer>
-          <TabPanel stateRef={tabStateRef}>
-            <Outlet context={{ image, filter, setFilter }} />
-          </TabPanel>
-        </ResponsiveLayoutContentContainer>
+        <TabPanel
+          as={<ResponsiveLayoutContentContainer />}
+          stateRef={tabStateRef}
+        >
+          <Outlet context={{ image, filter, setFilter }} />
+        </TabPanel>
         <ResponsiveLayoutSidecarContainer width="200px">
           <Codeline marginBottom="xlarge">{`docker pull ${imageName}`}</Codeline>
           <DetailContainer

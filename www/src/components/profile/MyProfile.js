@@ -79,11 +79,12 @@ export function MyProfile() {
         </TabList>
       </ResponsiveLayoutSidenavContainer>
       <ResponsiveLayoutSpacer />
-      <ResponsiveLayoutContentContainer>
-        <TabPanel stateRef={tabStateRef}>
-          <Outlet />
-        </TabPanel>
-      </ResponsiveLayoutContentContainer>
+      <TabPanel
+        as={<ResponsiveLayoutContentContainer />}
+        stateRef={tabStateRef}
+      >
+        <Outlet />
+      </TabPanel>
       <ResponsiveLayoutSpacer />
     </Flex>
   )

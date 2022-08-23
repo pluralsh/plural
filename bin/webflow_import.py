@@ -70,6 +70,8 @@ CLOUD_IDS = {
     'GCP': '62dff3a57aec0027c7251317',
 }
 
+BLACKLIST = {'bootstrap', 'monitoring', 'kubricks', 'gcp-config-connector', 'nvidia-operator', 'kyverno', 'test-harness'}
+
 def get_token():
     if os.environ.get('PLURAL_ACCESS_TOKEN'):
         return os.environ['PLURAL_ACCESS_TOKEN']
@@ -143,6 +145,7 @@ def repo_data(repo):
     result['publisher'] = DATA['publishers'].get(repo['publisher']['name'])
     result['icon'] = repo['darkIcon'] or repo['icon']
     result['category'] = DATA['categories'][repo['category'].lower()]
+    result['hide'] = repo['name'] in BLACKLIST
     return result
 
 def cat_data(cat):

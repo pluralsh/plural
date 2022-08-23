@@ -278,8 +278,9 @@ export default function ImageVulnerabilities() {
 
   return (
     <Box
-      style={{ overflow: 'auto' }}
       fill
+      flex={false}
+      gap="small"
     >
       <PageTitle heading="Vulnerabilities">
         <PackageGrade
@@ -310,7 +311,6 @@ export default function ImageVulnerabilities() {
           <Div body2>No vulnerabilities found.</Div>
         )}
       </Box>
-
     </Box>
   )
 }

@@ -4,7 +4,7 @@ import {
 } from 'honorable'
 import Fuse from 'fuse.js'
 
-import { MagnifyingGlassIcon } from 'pluralsh-design-system'
+import { MagnifyingGlassIcon, SprayIcon } from 'pluralsh-design-system'
 
 import TerminalThemeContext from '../../contexts/TerminalThemeContext'
 
@@ -52,6 +52,7 @@ function TerminalThemeSelector() {
     <ExtendTheme theme={extendedHonorableTheme}>
       <DropdownButton
         label="Change theme"
+        startIcon={<SprayIcon />}
         onChange={handleThemeChange}
       >
         <Div

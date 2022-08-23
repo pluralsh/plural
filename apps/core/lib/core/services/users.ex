@@ -288,9 +288,34 @@ defmodule Core.Services.Users do
     user
     |> User.changeset(attrs)
     |> allow(user, :edit)
+    |> when_ok(&validate_pwd(&1, attrs, user))
     |> when_ok(:update)
     |> notify(:update, user)
   end
+
+  @spec update_user(map, binary, User.t) :: user_resp
+  def update_user(attrs, id, %User{} = user) do
+    prev = get_user(id)
+    prev
+    |> User.changeset(attrs, :secondary)
+    |> allow(user, :edit)
+    |> when_ok(:update)
+    |> notify(:update, user)
+  end
+
+  defp validate_pwd(%Ecto.Changeset{} = changes, attrs, prev) do
+    with {:ok, _} <- Ecto.Changeset.apply_changes(changes)
+                     |> validate_pwd(attrs, prev),
+      do: {:ok, changes}
+  end
+  defp validate_pwd(%User{password_change: true} = user, %{confirm: confirm}, prev) when is_binary(confirm) do
+    case Argon2.check_pass(prev, confirm) do
+      {:ok, _} -> {:ok, user}
+      _ -> {:error, "invalid confirmation password"}
+    end
+  end
+  defp validate_pwd(%User{password_change: true}, _, _), do: {:error, "must confirm password to change"}
+  defp validate_pwd(user, _, _), do: {:ok, user}
 
   @doc "self explanatory"
   @spec update_provider(atom, User.t) :: user_resp
@@ -298,15 +323,6 @@ defmodule Core.Services.Users do
     user
     |> Ecto.Changeset.change(%{provider: provider})
     |> Core.Repo.update()
-    |> notify(:update, user)
-  end
-
-  @spec update_user(map, binary, User.t) :: user_resp
-  def update_user(attrs, id, %User{} = user) do
-    get_user(id)
-    |> User.changeset(attrs)
-    |> allow(user, :edit)
-    |> when_ok(:update)
     |> notify(:update, user)
   end
 

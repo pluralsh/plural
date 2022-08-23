@@ -16,6 +16,11 @@ defmodule Core.Services.Upgrades do
 
   def get_queue(user_id, name), do: Core.Repo.get_by(UpgradeQueue, user_id: user_id, name: name)
 
+  def queue_count(user_id) do
+    UpgradeQueue.for_user(user_id)
+    |> Core.Repo.aggregate(:count, :id)
+  end
+
   def authorize(id, %User{id: user_id}) do
     case get_queue(id) do
       %UpgradeQueue{user_id: ^user_id} = q -> {:ok, q}

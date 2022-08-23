@@ -4526,6 +4526,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/randomcolor@npm:^0":
+  version: 0.5.6
+  resolution: "@types/randomcolor@npm:0.5.6"
+  checksum: b82fec1fc4d74fa9d777ea694cbe9f2b9d275135a6e97905d18d7b8624c92b41e45aec1b17ede43e37db103a1d63c8b0cb24d8762e768c776c3aefbf4ed6cf8d
+  languageName: node
+  linkType: hard
+
 "@types/range-parser@npm:*":
   version: 1.2.4
   resolution: "@types/range-parser@npm:1.2.4"
@@ -16080,6 +16087,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"randomcolor@npm:0.6.2":
+  version: 0.6.2
+  resolution: "randomcolor@npm:0.6.2"
+  checksum: 539345c0289f7c52ffd8486e61231e19ccc40b1c4ab9c15594f20a2773b71a9317e0cc8b756160fc8a678ace9ed1e96a8ac90346b2c34c64dfd5acad91f9a73d
+  languageName: node
+  linkType: hard
+
 "range-parser@npm:^1.2.1, range-parser@npm:~1.2.1":
   version: 1.2.1
   resolution: "range-parser@npm:1.2.1"
@@ -20562,6 +20576,7 @@ __metadata:
     "@pluralsh/stylelint-config": 1.0.0
     "@testing-library/jest-dom": 5.16.5
     "@testing-library/react": 13.3.0
+    "@types/randomcolor": ^0
     "@typescript-eslint/eslint-plugin": 5.33.1
     "@typescript-eslint/parser": 5.33.1
     apollo-absinthe-upload-link: 1.7.0
@@ -20595,6 +20610,7 @@ __metadata:
     postcss-import: 8.2.0
     prop-types: 15.8.1
     query-string: 7.1.1
+    randomcolor: 0.6.2
     react: 18.2.0
     react-animations: 1.0.0
     react-collapsible: 2.10.0

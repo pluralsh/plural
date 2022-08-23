@@ -48,11 +48,8 @@ const filterTokenStyles = {
 const sidebarWidth = 256 - 32
 
 function RepoCardList({
-  repositories, repoProps, maxWidth, stretchLastRow = false, ...props
+  repositories, repoProps, maxWidth, stretchLastRow = false, size = 'small', ...props
 }) {
-  const isDesktop = useMediaQuery('only', 'desktop')
-  const isDesktopLarge = useMediaQuery('up', 'desktopLarge')
-
   const flexBasis = '400px'
 
   // Workaround that will render empty columns to align the last row.
@@ -106,7 +103,7 @@ function RepoCardList({
               priv={repository.private}
               installed={!!repository.installation}
               verified={repository.verified}
-              size={isDesktopLarge ? 'large' : isDesktop ? 'medium' : 'small'}
+              size={size}
               {...repoProps}
             />
           </Flex>
@@ -131,6 +128,7 @@ function MarketplaceRepositories({ installed }) {
   const [search, setSearch] = useState('')
   const [areFiltersOpen, setAreFiltersOpen] = useState(true)
   const tabStateRef = useRef()
+  const isDesktopLarge = useMediaQuery('up', 'desktopLarge')
 
   const [repositories, loadingRepositories, hasMoreRepositories, fetchMoreRepositories] = usePaginatedQuery(MARKETPLACE_QUERY,
     {},
@@ -213,6 +211,7 @@ function MarketplaceRepositories({ installed }) {
           marginTop="medium"
           maxWidth="100%"
           stretchLastRow
+          size={isDesktopLarge ? 'large' : 'medium'}
         />
       </>
     )
@@ -277,6 +276,7 @@ function MarketplaceRepositories({ installed }) {
               small
               startIcon={<FiltersIcon />}
               onClick={() => setAreFiltersOpen(x => !x)}
+              backgroundColor={areFiltersOpen ? 'fill-zero-selected' : 'fill-zero'}
             >
               Filters
             </Button>

@@ -3,7 +3,6 @@ import { useRef } from 'react'
 import { Outlet, useParams } from 'react-router-dom'
 import { Flex } from 'honorable'
 import { TabPanel } from 'pluralsh-design-system'
-import styled from 'styled-components'
 
 import { GoBack } from 'components/utils/GoBack'
 

@@ -252,12 +252,14 @@ function MarketplaceRepositories({ installed }) {
           >
             <LinkTabWrap
               key="marketplace"
+              textValue="Marketplace"
               to="/marketplace"
             >
               <Tab>Marketplace</Tab>
             </LinkTabWrap>
             <LinkTabWrap
               key="installed"
+              textValue="Installed"
               to="/installed"
             >
               <Tab>Installed</Tab>

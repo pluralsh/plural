@@ -71,6 +71,7 @@ export function MyProfile() {
           {DIRECTORY.map(({ label, path }) => (
             <LinkTabWrap
               key={path}
+              textValue={label}
               to={path}
             >
               <Tab>{label}</Tab>

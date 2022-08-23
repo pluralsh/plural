@@ -1,10 +1,10 @@
 import { useContext, useState } from 'react'
-import { ExtendTheme, Flex } from 'honorable'
+import {
+  Div, DropdownButton, ExtendTheme, Flex, Input, MenuItem,
+} from 'honorable'
 import Fuse from 'fuse.js'
 
-import {
-  Button, DropdownArrowIcon, Input, ListBoxItem, MagnifyingGlassIcon, Select, SprayIcon,
-} from 'pluralsh-design-system'
+import { MagnifyingGlassIcon, SprayIcon } from 'pluralsh-design-system'
 
 import TerminalThemeContext from '../../contexts/TerminalThemeContext'
 
@@ -22,6 +22,7 @@ const extendedHonorableTheme = {
         small: true,
         tertiary: true,
         borderRadius: 'medium',
+        // backgroundColor: 'transparent',
       },
     ],
     Menu: [
@@ -35,70 +36,54 @@ const extendedHonorableTheme = {
   },
 }
 
-const fuse = new Fuse(themeNames, { threshold: 0.25 })
+const fuse = new Fuse(themeNames)
 
 function TerminalThemeSelector() {
   const [, setTerminalTheme] = useContext(TerminalThemeContext)
   const [search, setSearch] = useState('')
-  const [open, setOpen] = useState(false)
   const results = fuse.search(search).map(x => x.item)
   const displayedThemes = results.length ? results : themeNames
 
+  function handleThemeChange(event) {
+    setTerminalTheme(event.target.value)
+  }
+
   return (
     <ExtendTheme theme={extendedHonorableTheme}>
-      <Select
-        placement="right"
-        width="460px"
-        onSelectionChange={t => setTerminalTheme(t)}
-        onOpenChange={o => setOpen(o)}
-        triggerButton={(
-          <Button
-            tertiary
-            small
-            startIcon={<SprayIcon />}
-            endIcon={(
-              <DropdownArrowIcon
-                marginLeft="8px"
-                size={12}
-                style={open ? {
-                  transform: 'rotate(180deg)',
-                  transitionDuration: '.2s',
-                  transitionProperty: 'transform',
-                } : {
-                  transform: 'rotate(0)',
-                  transitionDuration: '.2s',
-                  transitionProperty: 'transform',
-                }}
-              />
-            )}
-          >
-            Change theme
-          </Button>
-        )}
-        dropdownFooterFixed={(
+      <DropdownButton
+        label="Change theme"
+        startIcon={<SprayIcon />}
+        onChange={handleThemeChange}
+      >
+        <Div
+          paddingHorizontal="small"
+          paddingVertical="xxsmall"
+          marginTop={-8}
+          marginBottom={2}
+        >
           <Input
             small
-            startIcon={<MagnifyingGlassIcon />}
-            placeholder="Filter themes"
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-          />
-        )}
-      >
-        {displayedThemes.map(t => (
-          <ListBoxItem
-            key={t}
-            label={t}
-            textValue={t}
-            leftContent={(
-              <TerminalThemePreview
-                theme={normalizedThemes[t]}
-                marginRight="small"
-              />
+            startIcon={(
+              <MagnifyingGlassIcon />
             )}
+            placeholder="Search themes"
+            value={search}
+            onChange={event => setSearch(event.target.value)}
           />
+        </Div>
+        {displayedThemes.map(themeName => (
+          <MenuItem
+            key={themeName}
+            value={themeName}
+          >
+            <TerminalThemePreview
+              theme={normalizedThemes[themeName]}
+              marginRight="small"
+            />
+            {themeName}
+          </MenuItem>
         ))}
-      </Select>
+      </DropdownButton>
     </ExtendTheme>
   )
 }

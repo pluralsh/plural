@@ -14,6 +14,11 @@ defmodule Core.Services.Dns do
 
   def get_domain(name), do: Core.Repo.get_by(DnsDomain, name: name)
 
+  def records(%DnsDomain{id: id}) do
+    DnsRecord.for_domain(id)
+    |> Core.Repo.all()
+  end
+
   @spec nonempty?(DnsDomain.t) :: boolean
   def nonempty?(%DnsDomain{id: id}) do
     DnsRecord.for_domain(id)

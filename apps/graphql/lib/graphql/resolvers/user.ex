@@ -272,6 +272,11 @@ defmodule GraphQl.Resolvers.User do
     {:ok, keys}
   end
 
+  def destroy_cluster(attributes, %{context: %{current_user: user}}) do
+    with :ok <- Users.destroy_cluster(attributes, user),
+      do: {:ok, true}
+  end
+
   @colors ~w(#6b5b95 #feb236 #d64161 #ff7b25 #103A50 #CDCCC2 #FDC401 #8E5B3C #020001 #2F415B)
 
   def background_color(%{id: id}) do

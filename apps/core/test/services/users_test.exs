@@ -479,4 +479,21 @@ defmodule Core.Services.UsersTest do
       refute refetch(user3).provider
     end
   end
+
+  describe "#destroy_cluster/2" do
+    test "it can destroy all records created by the cluster" do
+      me = self()
+      user = insert(:user)
+      domain = insert(:dns_domain)
+      records = insert_list(3, :dns_record, provider: :aws, cluster: "cluster", creator: user, domain: domain)
+      insert(:dns_record, provider: :gcp, domain: domain, creator: user)
+
+      expect(Core.Conduit.Broker, :publish, 3, fn %{body: r}, :cluster -> send(me, {:record, r}) end)
+
+      :ok = Users.destroy_cluster(%{name: "cluster", domain: domain.name, provider: :aws}, user)
+
+      for %{id: id} <- records,
+        do: assert_receive {:record, %{id: ^id}}
+    end
+  end
 end

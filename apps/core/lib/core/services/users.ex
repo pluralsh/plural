@@ -2,7 +2,7 @@ defmodule Core.Services.Users do
   use Core.Services.Base
   use Nebulex.Caching
   import Core.Policies.User
-  alias Core.Services.{Accounts}
+  alias Core.Services.{Accounts, Dns}
   alias Core.Clients.ZeroSSL
   alias Core.PubSub
   alias Core.Schema.{
@@ -131,7 +131,7 @@ defmodule Core.Services.Users do
   @doc """
   Determines the login method for a user and triggers any necessary background processing
   """
-  @spec login_method(binary) :: {:ok, %{login_method: atom}} | {:error, term}
+  @spec login_method(binary) :: {:ok, %{login_method: atom}} | error
   def login_method(email, host \\ nil) do
     with nil <- determine_sso(email, host),
          %User{login_method: method} = user <- get_user_by_email(email),
@@ -194,7 +194,7 @@ defmodule Core.Services.Users do
   @doc """
   Returns the first persisted token for a user, or creates one
   """
-  @spec access_token(User.t) :: {:ok, PersistedToken.t} | {:error, term}
+  @spec access_token(User.t) :: {:ok, PersistedToken.t} | error
   def access_token(%User{} = user) do
     # TODO: add a limit to this query
     PersistedToken.for_user(user.id)
@@ -209,7 +209,7 @@ defmodule Core.Services.Users do
   Creates a new persisted token for the user which can substitute for jwt bearer
   tokens for use in the forge cli.
   """
-  @spec create_persisted_token(User.t) :: {:ok, PersistedToken.t} | {:error, term}
+  @spec create_persisted_token(User.t) :: {:ok, PersistedToken.t} | error
   def create_persisted_token(%User{} = user) do
     %PersistedToken{}
     |> PersistedToken.changeset(%{user_id: user.id})
@@ -217,7 +217,7 @@ defmodule Core.Services.Users do
   end
 
   @doc "self explanatory"
-  @spec delete_persisted_token(binary, User.t) :: {:ok, PersistedToken.t} | {:error, term}
+  @spec delete_persisted_token(binary, User.t) :: {:ok, PersistedToken.t} | error
   def delete_persisted_token(token_id, %User{} = user) do
     Core.Repo.get!(PersistedToken, token_id)
     |> allow(user, :edit)
@@ -225,7 +225,7 @@ defmodule Core.Services.Users do
   end
 
   @doc "self explanatory"
-  @spec create_public_key(map, User.t) :: {:ok, PublicKey.t} | {:error, term}
+  @spec create_public_key(map, User.t) :: {:ok, PublicKey.t} | error
   def create_public_key(attrs, %User{} = user) do
     %PublicKey{user_id: user.id}
     |> PublicKey.changeset(attrs)
@@ -235,7 +235,7 @@ defmodule Core.Services.Users do
   @doc """
   Deletes a public key, and fails if it's owned by a different user
   """
-  @spec delete_public_key(binary, User.t) :: {:ok, PublicKey.t} | {:error, term}
+  @spec delete_public_key(binary, User.t) :: {:ok, PublicKey.t} | error
   def delete_public_key(id, %User{} = user) do
     get_public_key!(id)
     |> allow(user, :delete)
@@ -322,7 +322,7 @@ defmodule Core.Services.Users do
   @doc """
   Creates a new publisher for the acting user.
   """
-  @spec create_publisher(map, User.t) :: {:ok, Publisher.t} | {:error, term}
+  @spec create_publisher(map, User.t) :: {:ok, Publisher.t} | error
   def create_publisher(attrs, %User{} = user) do
     %Publisher{owner_id: user.id, account_id: user.account_id}
     |> Publisher.changeset(attrs)
@@ -332,7 +332,7 @@ defmodule Core.Services.Users do
   @doc """
   Updates the acting user's publisher
   """
-  @spec update_publisher(map, User.t) :: {:ok, Publisher.t} | {:error, term}
+  @spec update_publisher(map, User.t) :: {:ok, Publisher.t} | error
   def update_publisher(attrs, %User{} = user) do
     get_publisher_by_owner!(user.id)
     |> Publisher.changeset(attrs)
@@ -356,7 +356,7 @@ defmodule Core.Services.Users do
   @doc """
   Creates or updates a new webhook for `url` and the given user
   """
-  @spec upsert_webhook(binary, User.t) :: {:ok, Webhook.t} | {:error, term}
+  @spec upsert_webhook(binary, User.t) :: {:ok, Webhook.t} | error
   def upsert_webhook(url, %User{id: user_id}) do
     case Core.Repo.get_by(Webhook, url: url, user_id: user_id) do
       %Webhook{} = webhook -> {:ok, webhook}
@@ -367,7 +367,7 @@ defmodule Core.Services.Users do
   @doc """
   Creates a reset token for a user which can be used for things like password resets
   """
-  @spec create_reset_token(map) :: {:ok, ResetToken.t} | {:error, term}
+  @spec create_reset_token(map) :: {:ok, ResetToken.t} | error
   def create_reset_token(attrs) do
     start_transaction()
     |> add_operation(:token, fn _ ->
@@ -420,7 +420,7 @@ defmodule Core.Services.Users do
   {"repo": `repo`}
   ```
   """
-  @spec post_webhook(map, Webhook.t) :: {:ok, %Mojito.Response{}} | {:error, term}
+  @spec post_webhook(map, Webhook.t) :: {:ok, %Mojito.Response{}} | error
   def post_webhook(message, %Webhook{url: url, secret: secret}) do
     payload   = Jason.encode!(message)
     signature = hmac(secret, payload)
@@ -435,7 +435,7 @@ defmodule Core.Services.Users do
   @doc """
   Initiates a device login by creating a login token and formatting a login url for the device client
   """
-  @spec device_login() :: {:ok, %DeviceLogin{}} | {:error, term}
+  @spec device_login() :: {:ok, %DeviceLogin{}} | error
   def device_login() do
     %LoginToken{}
     |> LoginToken.changeset()
@@ -451,7 +451,7 @@ defmodule Core.Services.Users do
   @doc """
   Takes a given login token, marks it as active, and sets its user to the current user
   """
-  @spec activate_login_token(binary, User.t) :: {:ok, %LoginToken{}} | {:error, term}
+  @spec activate_login_token(binary, User.t) :: {:ok, %LoginToken{}} | error
   def activate_login_token(token, %User{id: user_id}) do
     with %LoginToken{} = token <- get_login_token(token) do
       LoginToken.changeset(token, %{user_id: user_id, active: true})
@@ -474,7 +474,7 @@ defmodule Core.Services.Users do
   @doc """
   Fetches or creates an eab key for the user mapped to that (cluster, provider)
   """
-  @spec get_eab_key(binary, binary, User.t) :: {:ok, EabCredential.t} | {:error, term}
+  @spec get_eab_key(binary, binary, User.t) :: {:ok, EabCredential.t} | error
   @decorate cacheable(cache: Core.Cache, key: {:eab, cluster, provider, user_id}, opts: [ttl: @ttl], match: &cacheit/1)
   def get_eab_key(cluster, provider, %User{id: user_id} = user) do
     Core.Repo.get_by(EabCredential,
@@ -491,11 +491,28 @@ defmodule Core.Services.Users do
   @doc """
   Will create an event for a user
   """
-  @spec create_event(map, User.t) :: {:ok, UserEvent.t} | {:error, term}
+  @spec create_event(map, User.t) :: {:ok, UserEvent.t} | error
   def create_event(attrs, %User{id: user_id}) do
     %UserEvent{user_id: user_id}
     |> UserEvent.changeset(attrs)
     |> Core.Repo.insert()
+  end
+
+  @doc """
+  destroys all resources associated w/ a cluster
+  """
+  @spec destroy_cluster(%{domain: binary, name: binary, provider: atom}, User.t) :: :ok | error
+  def destroy_cluster(%{domain: d, name: name, provider: p}, %User{id: user_id}) do
+    Dns.get_domain(d)
+    |> Dns.records()
+    |> Enum.filter(fn
+      %Core.Schema.DnsRecord{cluster: ^name, provider: ^p, creator_id: ^user_id} -> true
+      _ -> false
+    end)
+    |> Enum.each(fn r ->
+      %Conduit.Message{body: r}
+      |> Core.Conduit.Broker.publish(:cluster)
+    end)
   end
 
   @doc """

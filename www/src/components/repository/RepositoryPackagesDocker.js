@@ -1,6 +1,8 @@
 import { useContext } from 'react'
 import { Link, useOutletContext } from 'react-router-dom'
-import { Div, Flex, Img, P } from 'honorable'
+import {
+  Div, Flex, Img, P,
+} from 'honorable'
 import moment from 'moment'
 
 import Fuse from 'fuse.js'
@@ -66,15 +68,13 @@ function DockerRepository({ dockerRepository, first, last }) {
 function RepositoryPackagesDocker() {
   const { id } = useContext(RepositoryContext)
   const [q] = useOutletContext()
-  const [dockerRepositories, loadingCharts, hasMoreCharts, fetchMoreCharts] = usePaginatedQuery(
-    DOCKER_QUERY,
+  const [dockerRepositories, loadingCharts, hasMoreCharts, fetchMoreCharts] = usePaginatedQuery(DOCKER_QUERY,
     {
       variables: {
         repositoryId: id,
       },
     },
-    data => data.dockerRepositories
-  )
+    data => data.dockerRepositories)
 
   const fuse = new Fuse(dockerRepositories, searchOptions)
   const filteredDockerRepositories = q ? fuse.search(q).map(({ item }) => item) : dockerRepositories
@@ -107,6 +107,19 @@ function RepositoryPackagesDocker() {
           last={i === filteredDockerRepositories.length - 1}
         />
       ))}
+      {!filteredDockerRepositories?.length && (
+        <Flex
+          width="100%"
+          padding="medium"
+          backgroundColor="fill-one"
+          border="1px solid border-fill-two"
+          borderTop="none"
+          borderBottomLeftRadius="4px"
+          borderBottomRightRadius="4px"
+        >
+          No repositories found.
+        </Flex>
+      )}
     </InfiniteScroller>
   )
 }

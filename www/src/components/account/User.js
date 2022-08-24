@@ -1,6 +1,8 @@
 import { useMutation } from '@apollo/client'
 import { Box } from 'grommet'
-import { Avatar, Button, MenuItem, Span } from 'honorable'
+import {
+  Avatar, Button, MenuItem, Span,
+} from 'honorable'
 import { BotIcon } from 'pluralsh-design-system'
 import { useContext, useState } from 'react'
 
@@ -99,6 +101,7 @@ function UserEdit({ user, update }) {
 
 export function User({ user, update }) {
   const { account, ...me } = useContext(CurrentUserContext)
+
   console.log(me)
   const editable = canEdit(me, account) || hasRbac(me, Permissions.USERS)
 
@@ -123,7 +126,7 @@ export function User({ user, update }) {
             provider={user.provider}
             width={25}
           />
-        )} 
+        )}
         {user.roles?.admin && <Chip text="Admin" />}
         {account.rootUser.id === user.id && <Chip text="Root" />}
         {editable && (

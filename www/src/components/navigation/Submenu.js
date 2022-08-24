@@ -1,4 +1,6 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import {
+  createContext, useContext, useEffect, useMemo, useState,
+} from 'react'
 import { Box, Text } from 'grommet'
 import { useNavigate } from 'react-router-dom'
 import { Portal } from 'react-portal'
@@ -7,6 +9,7 @@ export const SubmenuContext = createContext({})
 
 export function SubmenuPortal({ children, name }) {
   const { ref, setName } = useContext(SubmenuContext)
+
   useEffect(() => setName(name), [name, setName])
 
   return (
@@ -33,7 +36,9 @@ const ignore = e => {
   e.preventDefault(); e.stopPropagation()
 }
 
-export function SubmenuItem({ icon, label, selected, url }) {
+export function SubmenuItem({
+  icon, label, selected, url,
+}) {
   const navigate = useNavigate()
 
   return (
@@ -60,7 +65,9 @@ export function SubmenuItem({ icon, label, selected, url }) {
 export function NavigationContext({ children }) {
   const [ref, setRef] = useState(null)
   const [name, setName] = useState('')
-  const value = useMemo(() => ({ ref, setRef, name, setName }), [ref, setRef, name, setName])
+  const value = useMemo(() => ({
+    ref, setRef, name, setName,
+  }), [ref, setRef, name, setName])
 
   return (
     <SubmenuContext.Provider value={value}>

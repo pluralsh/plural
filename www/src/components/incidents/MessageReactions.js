@@ -23,12 +23,14 @@ const BOX_ATTRS = {
   justify: 'center',
 }
 
-function Reaction({ name, reactions, me, messageId }) {
+function Reaction({
+  name, reactions, me, messageId,
+}) {
   const prolog = reactions.slice(0, 3).map(({ creator: { email } }) => email)
-  const text = prolog.length > 2 ? `${prolog.join(', ')} and ${reactions.length - prolog.length} more` :
-    prolog.length === 2 ? `${prolog[0]} and ${prolog[1]}` : prolog[0]
-  const mutationQuery = reactions.find(r => r.creator.id === me.id) ?
-    DELETE_REACTION : CREATE_REACTION
+  const text = prolog.length > 2 ? `${prolog.join(', ')} and ${reactions.length - prolog.length} more`
+    : prolog.length === 2 ? `${prolog[0]} and ${prolog[1]}` : prolog[0]
+  const mutationQuery = reactions.find(r => r.creator.id === me.id)
+    ? DELETE_REACTION : CREATE_REACTION
   const [mutation] = useMutation(mutationQuery, { variables: { id: messageId } })
 
   return (

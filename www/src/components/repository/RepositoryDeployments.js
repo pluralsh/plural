@@ -1,19 +1,16 @@
 import { useContext, useEffect } from 'react'
 import moment from 'moment'
-import { Flex } from 'honorable'
-
-import { Chip, StatusIpIcon, StatusOkIcon } from 'pluralsh-design-system'
+import { Div, Flex, Span } from 'honorable'
+import {
+  Chip, PageTitle, StatusIpIcon, StatusOkIcon,
+} from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
-
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
-
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import InfiniteScroller from '../utils/InfiniteScroller'
-
 import { ROLLOUT_SUB } from '../clusters/queries'
 import { appendConnection } from '../../utils/graphql'
-
 import { Table, TableData, TableRow } from '../utils/Table'
 
 import { DEPLOYMENTS_QUERY } from './queries'
@@ -29,14 +26,14 @@ function progress(cursor) {
 
 function statusAttributes({ status, cursor }) {
   switch (status) {
-    case 'QUEUED':
-      return { icon: <StatusIpIcon />, text: 'queued', severity: 'neutral' }
-    case 'FINISHED':
-      return { icon: <StatusOkIcon />, text: 'finished', severity: 'success' }
-    case 'RUNNING':
-      return { loading: true, text: `${progress(cursor)}% completed`, severity: 'info' }
-    default:
-      return {}
+  case 'QUEUED':
+    return { icon: <StatusIpIcon />, text: 'queued', severity: 'neutral' }
+  case 'FINISHED':
+    return { icon: <StatusOkIcon />, text: 'finished', severity: 'success' }
+  case 'RUNNING':
+    return { loading: true, text: `${progress(cursor)}% completed`, severity: 'info' }
+  default:
+    return {}
   }
 }
 
@@ -66,20 +63,27 @@ function Rollout({ rollout, last }) {
 
 function RepositoryDeployments() {
   const { id } = useContext(RepositoryContext)
-  const [rollouts, loadingRollouts, hasMoreRollouts, fetchMoreRollouts, subscribeToMore] = usePaginatedQuery(
-    DEPLOYMENTS_QUERY,
+  const [rollouts, loadingRollouts, hasMoreRollouts, fetchMoreRollouts, subscribeToMore] = usePaginatedQuery(DEPLOYMENTS_QUERY,
     {
       variables: {
         repositoryId: id,
       },
     },
-    data => data.rollouts
-  )
+    data => data.rollouts)
 
   useEffect(() => subscribeToMore({
     document: ROLLOUT_SUB,
     variables: { repositoryId: id },
-    updateQuery: (prev, { subscriptionData: { data: { rolloutDelta: { delta, payload } } } }) => delta === 'CREATE' ? appendConnection(prev, payload, 'rollouts') : prev,
+    updateQuery: (prev, {
+      subscriptionData: {
+        data: {
+          rolloutDelta: {
+            delta,
+            payload,
+          },
+        },
+      },
+    }) => (delta === 'CREATE' ? appendConnection(prev, payload, 'rollouts') : prev),
   }), [id, subscribeToMore])
 
   const len = rollouts.length
@@ -101,31 +105,42 @@ function RepositoryDeployments() {
       maxHeight="100%"
       direction="column"
     >
-      <Table
-        headers={['Event', 'Clusters Updated', 'Last Ping', 'Status']}
-        sizes={['30%', '30%', '30%', '10%']}
-        background="fill-one"
-        width="100%"
-        height="calc(100% - 16px)"
+      <PageTitle
+        heading="Deployments"
+        paddingTop="medium"
+      />
+      <Div
+        fill
+        marginBottom="medium"
       >
-        <InfiniteScroller
-          pb={4}
-          loading={loadingRollouts}
-          hasMore={hasMoreRollouts}
-          loadMore={fetchMoreRollouts}
-          // Allow for scrolling in a flexbox layout
-          flexGrow={1}
-          height={0}
-        >
-          {rollouts.map((rollout, i) => (
-            <Rollout
-              last={i === len - 1}
-              key={rollout.id}
-              rollout={rollout}
-            />
-          ))}
-        </InfiniteScroller>
-      </Table>
+        {rollouts?.length ? (
+          <Table
+            headers={['Event', 'Clusters Updated', 'Last Ping', 'Status']}
+            sizes={['27.5%', '27.5%', '27.5%', '17.5%']}
+            background="fill-one"
+            width="100%"
+            height="calc(100% - 16px)"
+          >
+            <InfiniteScroller
+              pb={4}
+              loading={loadingRollouts}
+              hasMore={hasMoreRollouts}
+              loadMore={fetchMoreRollouts}
+              // Allow for scrolling in a flexbox layout
+              flexGrow={1}
+              height={0}
+            >
+              {rollouts.map((rollout, i) => (
+                <Rollout
+                  last={i === len - 1}
+                  key={rollout.id}
+                  rollout={rollout}
+                />
+              ))}
+            </InfiniteScroller>
+          </Table>
+        ) : <Span>This repository does not have any deployments yet.</Span>}
+      </Div>
     </Flex>
   )
 }

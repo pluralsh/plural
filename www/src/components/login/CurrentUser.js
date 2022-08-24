@@ -16,6 +16,7 @@ export const PluralConfigurationContext = createContext({})
 
 function LoadingSpinner() {
   const [showLogo, setShowLogo] = useState(false)
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowLogo(true)
@@ -29,6 +30,7 @@ function LoadingSpinner() {
 
 export default function CurrentUser({ children }) {
   const { loading, error, data } = useQuery(ME_Q)
+
   useNotificationSubscription()
 
   if (loading) return (<Box height="100vh"><LoadingSpinner /></Box>)
@@ -57,6 +59,7 @@ export function PluralProvider({ children }) {
   const location = useLocation()
   const { loading, error, data } = useQuery(ME_Q, { pollInterval: 60000 })
   const { boot, update } = useIntercom()
+
   useNotificationSubscription()
 
   useEffect(() => {

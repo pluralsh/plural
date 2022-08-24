@@ -7,7 +7,7 @@ import { useContext, useState } from 'react'
 import { UPDATE_ACCOUNT } from '../accounts/queries'
 
 import { CurrentUserContext } from '../login/CurrentUser'
-import { Header } from '../profile/Header'
+import { Header } from '../utils/Header'
 import { DeleteIcon } from '../profile/Icon'
 import { ListItem } from '../profile/ListItem'
 import { GqlError } from '../utils/Alert'
@@ -15,9 +15,12 @@ import { Container } from '../utils/Container'
 
 import { Chip } from './User'
 
+// eslint-disable-next-line
 const sanitize = ({ __typename, ...rest }) => rest
 
-function DomainMapping({ mapping, remove, first, last }) {
+function DomainMapping({
+  mapping, remove, first, last,
+}) {
   return (
     <ListItem
       first={first}
@@ -45,7 +48,7 @@ function DomainMapping({ mapping, remove, first, last }) {
 
 export function AccountAttributes() {
   const { account } = useContext(CurrentUserContext)
-  const [name, setName] = useState(account.name) 
+  const [name, setName] = useState(account.name)
   const [domain, setDomain] = useState('')
   const [mutation, { loading, error }] = useMutation(UPDATE_ACCOUNT, { variables: { attributes: { name } } })
   const addDomain = domain => ([{ domain }, ...account.domainMappings.map(sanitize)])
@@ -67,7 +70,7 @@ export function AccountAttributes() {
             onClick={mutation}
             loading={loading}
           >Save
-          </Button> 
+          </Button>
         </Header>
         <Box gap="medium">
           {error && (

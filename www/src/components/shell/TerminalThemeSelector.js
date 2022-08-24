@@ -1,8 +1,10 @@
 import { useContext, useState } from 'react'
-import { Div, DropdownButton, ExtendTheme, Flex, Input, MenuItem } from 'honorable'
+import {
+  Div, DropdownButton, ExtendTheme, Flex, Input, MenuItem,
+} from 'honorable'
 import Fuse from 'fuse.js'
 
-import { MagnifyingGlassIcon } from 'pluralsh-design-system'
+import { MagnifyingGlassIcon, SprayIcon } from 'pluralsh-design-system'
 
 import TerminalThemeContext from '../../contexts/TerminalThemeContext'
 
@@ -50,6 +52,7 @@ function TerminalThemeSelector() {
     <ExtendTheme theme={extendedHonorableTheme}>
       <DropdownButton
         label="Change theme"
+        startIcon={<SprayIcon />}
         onChange={handleThemeChange}
       >
         <Div

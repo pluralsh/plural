@@ -66,6 +66,17 @@ defmodule Core.Services.UsersTest do
       assert_receive {:event, %PubSub.UserUpdated{item: ^updated}}
     end
 
+    test "password updates require confirmation" do
+      {:ok, user} = Users.create_user(%{
+        name: "some user",
+        password: "superstrongpassword",
+        email: "something@example.com"
+      })
+
+      {:error, _} = Users.update_user(%{password: "anewstrongpassword", confirm: "whoops"}, user)
+      {:ok, _} = Users.update_user(%{password: "anewstrongpassword", confirm: "superstrongpassword"}, user)
+    end
+
     test "email change is properly detected" do
       user = insert(:user)
 
@@ -81,9 +92,9 @@ defmodule Core.Services.UsersTest do
     end
 
     test "you cannot make yourself an admin" do
-      user = insert(:user)
-
-      {:ok, _} = Users.update_user(%{password: "superstrongpassword"}, user)
+      user = build(:user)
+             |> with_password("superstrongpassword")
+             |> insert()
 
       {:error, _} = Users.update_user(%{name: "real user", roles: %{admin: true}}, user)
     end
@@ -342,23 +353,27 @@ defmodule Core.Services.UsersTest do
     test "it can realize a reset token" do
       token = insert(:reset_token)
 
-      {:ok, user} = Users.realize_reset_token(token, %{password: "a long password"})
+      {:ok, user} = Users.realize_reset_token(token.external_id, %{password: "a long password"})
 
       assert user.id == token.user.id
 
       {:ok, _} = Users.login_user(user.email, "a long password")
+
+      refute refetch(token)
     end
 
     test "it will confirm an email for email tokens" do
       user = insert(:user)
       token = insert(:reset_token, type: :email, user: user)
 
-      {:ok, reset} = Users.realize_reset_token(token, %{})
+      {:ok, reset} = Users.realize_reset_token(token.external_id, %{})
 
       assert reset.id == token.user.id
       assert reset.email_confirmed
 
       assert_receive {:event, %PubSub.EmailConfirmed{item: ^reset}}
+
+      refute refetch(token)
     end
   end
 

@@ -1,10 +1,14 @@
 import { useState } from 'react'
-import { Box, Keyboard, Text, TextInput } from 'grommet'
+import {
+  Box, Keyboard, Text, TextInput,
+} from 'grommet'
 import { Scroller, Tag as TagInner } from 'forge-core'
 
 import { extendConnection } from '../../utils/graphql'
 
-export function TagInput({ addTag, removeTag, tags, round, ...rest }) {
+export function TagInput({
+  addTag, removeTag, tags, round, ...rest
+}) {
   const [current, setCurrent] = useState('')
 
   return (
@@ -52,7 +56,9 @@ export function TagInput({ addTag, removeTag, tags, round, ...rest }) {
   )
 }
 
-export function TagContainer({ enabled, children, gap, pad, onClick }) {
+export function TagContainer({
+  enabled, children, gap, pad, onClick,
+}) {
   const border = enabled ? { side: 'right', color: 'focus', size: '2px' } : null
 
   return (
@@ -89,7 +95,9 @@ export function Tag({ tag: { tag, count }, setTag, enabled }) {
   )
 }
 
-export default function Tags({ tags: { pageInfo, edges }, fetchMore, tag, setTag, pad }) {
+export default function Tags({
+  tags: { pageInfo, edges }, fetchMore, tag, setTag, pad,
+}) {
   return (
     <Box
       pad={pad || { vertical: 'medium' }}

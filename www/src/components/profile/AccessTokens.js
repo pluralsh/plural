@@ -1,16 +1,24 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
-import { Button, Div, Span } from 'honorable'
+import { Button, Span } from 'honorable'
 import moment from 'moment'
 import { useState } from 'react'
 import lookup from 'country-code-lookup'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 
-import { CopyIcon, GraphIcon, ListIcon, Modal, ModalHeader } from 'pluralsh-design-system'
+import {
+  CopyIcon, GraphIcon, InfoIcon, ListIcon, Modal, ModalHeader, PageTitle, Tooltip,
+} from 'pluralsh-design-system'
 
-import { appendConnection, deepUpdate, extendConnection, removeConnection, updateCache } from '../../utils/graphql'
+import { EmptyState } from 'components/utils/EmptyState'
+
+import {
+  appendConnection, deepUpdate, extendConnection, removeConnection, updateCache,
+} from '../../utils/graphql'
 import { Placeholder } from '../accounts/Audits'
-import { CREATE_TOKEN, DELETE_TOKEN, TOKENS_Q, TOKEN_AUDITS, TOKEN_METRICS } from '../users/queries'
+import {
+  CREATE_TOKEN, DELETE_TOKEN, TOKENS_Q, TOKEN_AUDITS, TOKEN_METRICS,
+} from '../users/queries'
 import { obscure } from '../users/utils'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { StandardScroller } from '../utils/SmoothScroller'
@@ -21,13 +29,14 @@ import { formatLocation } from '../../utils/geo'
 
 import { Chloropleth } from '../utils/Chloropleth'
 
-import { Container } from '../utils/Container'
-
 import { Confirm } from '../account/Confirm'
 
-import { Header } from './Header'
+import { SuccessToast } from '../utils/Toasts'
+
 import { DeleteIcon, Icon } from './Icon'
 import { ListItem } from './ListItem'
+
+const TOOLTIP = 'Access tokens allow you to access the Plural API for automation and active Plural clusters.'
 
 function TokenAudits({ token }) {
   const [listRef, setListRef] = useState(null)
@@ -105,6 +114,7 @@ function TokenMetrics({ token }) {
 }
 
 function AccessToken({ token, first, last }) {
+  const [displayCopyBanner, setDisplayCopyBanner] = useState(false)
   const [confirm, setConfirm] = useState(false)
   const [audits, setAudits] = useState(false)
   const [graph, setGraph] = useState(false)
@@ -138,30 +148,21 @@ function AccessToken({ token, first, last }) {
           justify="end"
           gap="small"
         >
-          <CopyToClipboard text={token.token}>
+          {displayCopyBanner && <SuccessToast>Access token copied successfully.</SuccessToast>}
+          <CopyToClipboard
+            text={token.token}
+            onCopy={() => {
+              setDisplayCopyBanner(true)
+              setTimeout(() => setDisplayCopyBanner(false), 1000)
+            }}
+          >
             <Button
               secondary
               startIcon={<CopyIcon size={15} />}
             >
-              Copy Key
+              Copy key
             </Button>
           </CopyToClipboard>
-          <>
-            <Icon
-              icon={<ListIcon size={15} />}
-              onClick={() => setAudits(true)}
-            />
-            <Modal
-              open={audits}
-              portal
-              onClose={() => setAudits(false)}
-            >
-              <ModalHeader onClose={() => setAudits(false)}>
-                AUDIT LOGS
-              </ModalHeader>
-              <TokenAudits token={token} />
-            </Modal>
-          </>
           <>
             <Icon
               icon={<GraphIcon size={15} />}
@@ -176,6 +177,22 @@ function AccessToken({ token, first, last }) {
                 USAGE METRICS
               </ModalHeader>
               <TokenMetrics token={token} />
+            </Modal>
+          </>
+          <>
+            <Icon
+              icon={<ListIcon size={15} />}
+              onClick={() => setAudits(true)}
+            />
+            <Modal
+              open={audits}
+              portal
+              onClose={() => setAudits(false)}
+            >
+              <ModalHeader onClose={() => setAudits(false)}>
+                AUDIT LOGS
+              </ModalHeader>
+              <TokenAudits token={token} />
             </Modal>
           </>
           <DeleteIcon onClick={() => setConfirm(true)} />
@@ -196,6 +213,7 @@ function AccessToken({ token, first, last }) {
 }
 
 export function AccessTokens() {
+  const [displayNewBanner, setDisplayNewBanner] = useState(false)
   const [listRef, setListRef] = useState(null)
   const { data, loading: loadingTokens, fetchMore } = useQuery(TOKENS_Q)
   const [mutation, { loading }] = useMutation(CREATE_TOKEN, {
@@ -210,53 +228,88 @@ export function AccessTokens() {
   const { edges, pageInfo } = data.tokens
 
   return (
-    <Container type="table">
-      <Box
-        gap="medium"
-        fill
+    <Box fill>
+      <PageTitle
+        heading="Access tokens"
+        justifyContent="flex-start"
       >
-        <Header
-          header="Access Tokens"
-          description="API access tokens to use in automation and active plural clusters"
+        <Box
+          flex
+          direction="row"
+          align="center"
         >
+          <Tooltip
+            width="315px"
+            label={TOOLTIP}
+          >
+            <Box
+              flex={false}
+              pad="6px"
+              round="xxsmall"
+              hoverIndicator="fill-two"
+              onClick
+            >
+              <InfoIcon />
+            </Box>
+          </Tooltip>
           <Box
-            flex={false}
-            width="30%"
+            flex
             align="end"
           >
-            <Div>
-              <Button
-                onClick={mutation}
-                loading={loading}
-              >Create new access token
-              </Button>
-            </Div>
+            {displayNewBanner && <SuccessToast>New access token created.</SuccessToast>}
+            <Button
+              secondary
+              onClick={() => {
+                setDisplayNewBanner(true)
+                setTimeout(() => setDisplayNewBanner(false), 1000)
+                mutation()
+              }}
+              loading={loading}
+            >
+              Create access token
+            </Button>
           </Box>
-        </Header>
-        <Box
-          fill
-        >
-          <StandardScroller
-            listRef={listRef}
-            setListRef={setListRef}
-            items={edges}
-            mapper={({ node }, { next, prev }) => (
-              <AccessToken
-                token={node}
-                first={!prev.node}
-                last={!next.node}
-              />
-            )}
-            loading={loadingTokens}
-            placeholder={Placeholder}
-            hasNextPage={pageInfo.hasNextPage}
-            loadNextPage={pageInfo.hasNextPage && fetchMore({
-              variables: { cursor: pageInfo.endCursor },
-              updateQuery: (prev, { fetchMoreResult: { tokens } }) => extendConnection(prev, tokens, 'tokens'),
-            })}
-          />
         </Box>
+      </PageTitle>
+      <Box
+        fill
+      >
+        {edges?.length
+          ? (
+            <StandardScroller
+              listRef={listRef}
+              setListRef={setListRef}
+              items={edges}
+              mapper={({ node }, { next, prev }) => (
+                <AccessToken
+                  token={node}
+                  first={!prev.node}
+                  last={!next.node}
+                />
+              )}
+              loading={loadingTokens}
+              placeholder={Placeholder}
+              hasNextPage={pageInfo.hasNextPage}
+              loadNextPage={pageInfo.hasNextPage && fetchMore({
+                variables: { cursor: pageInfo.endCursor },
+                updateQuery: (prev, { fetchMoreResult: { tokens } }) => extendConnection(prev, tokens, 'tokens'),
+              })}
+            />
+          ) : (
+            <EmptyState message="Looks like you don't have any access tokens yet.">
+              <Button
+                onClick={() => {
+                  setDisplayNewBanner(true)
+                  setTimeout(() => setDisplayNewBanner(false), 1000)
+                  mutation()
+                }}
+                loading={loading}
+              >
+                Create access token
+              </Button>
+            </EmptyState>
+          )}
       </Box>
-    </Container>
+    </Box>
   )
 }

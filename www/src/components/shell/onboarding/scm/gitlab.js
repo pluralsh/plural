@@ -1,4 +1,6 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import {
+  useCallback, useEffect, useMemo, useState,
+} from 'react'
 import { Gitlab } from '@gitbeaker/browser'
 
 import { isValidGitlabName } from '../../validation'
@@ -36,9 +38,11 @@ export function useGitlabState({ scm, setScm, accessToken }) {
           id: g.id,
         })),
       ]
+
       setOrgs(orgs)
       doSetOrg(orgs[0])
     }
+
     if (!orgs) fetch()
   }, [client, setOrgs, orgs, doSetOrg])
 

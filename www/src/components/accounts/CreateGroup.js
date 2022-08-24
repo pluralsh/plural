@@ -14,13 +14,15 @@ export function GroupForm() {
     variables: { attributes: { name } },
     update: (cache, { data: { createGroup } }) => {
       const { groups, ...data } = cache.readQuery({ query: GROUPS_Q, variables: { q: null } })
+
       cache.writeQuery({
         query: GROUPS_Q,
         variables: { q: null },
         data: {
           ...data,
           groups: { ...groups, edges: [{ __typename: 'GroupEdge', node: createGroup }, ...groups.edges] },
-        } })
+        },
+      })
     },
   })
 

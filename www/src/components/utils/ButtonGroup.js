@@ -4,7 +4,9 @@ import { useCallback, useState } from 'react'
 
 const ROUND = '3px'
 
-function ButtonItem({ val, onChange, active, first, last }) {
+function ButtonItem({
+  val, onChange, active, first, last,
+}) {
   return (
     <Box
       flex={false}
@@ -17,7 +19,7 @@ function ButtonItem({ val, onChange, active, first, last }) {
       <Span fontWeight="500">{val}</Span>
     </Box>
   )
-} 
+}
 
 export function ButtonGroup({ tabs, onChange, default: def }) {
   const [active, setActive] = useState(def)

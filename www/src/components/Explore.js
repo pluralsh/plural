@@ -1,5 +1,7 @@
 import './explore.css'
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import {
+  createContext, useCallback, useContext, useEffect, useMemo, useState,
+} from 'react'
 import { useQuery } from '@apollo/client'
 import { Box, Collapsible, Text } from 'grommet'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -147,7 +149,9 @@ function Placeholder() {
   )
 }
 
-function Repositories({ edges, pageInfo, loading, fetchMore, setTag }) {
+function Repositories({
+  edges, pageInfo, loading, fetchMore, setTag,
+}) {
   const [listRef, setListRef] = useState(null)
 
   return (
@@ -219,7 +223,9 @@ function CategoryTags({ category, tag, setTag }) {
   )
 }
 
-function Category({ category, tag, setTag, unfurl }) {
+function Category({
+  category, tag, setTag, unfurl,
+}) {
   const [open, setOpen] = useState(unfurl)
 
   return (
@@ -362,7 +368,9 @@ export function SectionContentContainer({ header: h, children, borderLeft }) {
   )
 }
 
-export function SectionItemContainer({ label, icon, selected, location, ...props }) {
+export function SectionItemContainer({
+  label, icon, selected, location, ...props
+}) {
   const navigate = useNavigate()
 
   return (
@@ -404,6 +412,7 @@ export function SectionItem({ name, label, icon }) {
 
 export function SectionContent({ name, header, children }) {
   const { group } = useParams()
+
   if (group !== name) return null
 
   return (
@@ -423,17 +432,19 @@ export default function Explore() {
     fetchPolicy: 'cache-and-network',
   })
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
+
   useEffect(() => {
     const crumbs = [
       { url: '/explore', text: 'explore' },
       { url: `/explore/${group}`, text: group },
     ]
+
     if (tag) crumbs.push({ url: `/explore/${group}/${tag}`, text: tag })
     setBreadcrumbs(crumbs)
   }, [group, tag, setBreadcrumbs])
   const doSetTag = useCallback(t => (
-    t === tag ? navigate('/explore/public') :
-      navigate(`/explore/public/${t}`)
+    t === tag ? navigate('/explore/public')
+      : navigate(`/explore/public/${t}`)
   ), [tag, navigate])
 
   const refreshBy = `${group}:${tag}`
@@ -488,8 +499,8 @@ export default function Explore() {
               fetchMore={fetchMore}
               setTag={doSetTag}
             />
-          ) :
-            <EmptyState />}
+          )
+            : <EmptyState />}
         </SectionContent>
         <SectionContent
           name="published"

@@ -1,4 +1,6 @@
-import { Box, Table, TableBody, TableCell, TableHeader, TableRow, Text } from 'grommet'
+import {
+  Box, Table, TableBody, TableCell, TableHeader, TableRow, Text,
+} from 'grommet'
 
 function NoInformation() {
   return (
@@ -33,7 +35,7 @@ function Header() {
   )
 }
 
-const truncate = str => str && str.length > 20 ? `${str.substring(0, 17)}...` : str
+const truncate = str => (str && str.length > 20 ? `${str.substring(0, 17)}...` : str)
 
 function Row({ name, value }) {
   return (
@@ -49,6 +51,7 @@ function Row({ name, value }) {
 export function ClusterInformation({ incident: { clusterInformation } }) {
   if (!clusterInformation) return <NoInformation />
 
+  // eslint-disable-next-line
   const { __typename, ...info } = clusterInformation
 
   return (

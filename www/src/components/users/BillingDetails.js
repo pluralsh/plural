@@ -8,11 +8,12 @@ import { useMutation, useQuery } from '@apollo/client'
 import { Button, PaymentMethods, Trash } from 'forge-core'
 import { Amex, Mastercard, Visa } from 'grommet-icons'
 
+import { HeaderItem } from 'components/utils/Header'
+
 import { ModalHeader } from '../ModalHeader'
 import { TagContainer } from '../repos/Tags'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 import { SectionPortal } from '../Explore'
-import { HeaderItem } from '../repos/Docker'
 import { Icon } from '../accounts/Group'
 import { CurrentUserContext } from '../login/CurrentUser'
 
@@ -88,29 +89,29 @@ const expiry = (expMonth, expYear) => `${expMonth > 10 ? expMonth : `0${expMonth
 
 export function CardIcon({ brand }) {
   switch (brand.toLowerCase()) {
-    case 'visa':
-      return (
-        <Visa
-          color="plain"
-          size="medium"
-        />
-      )
-    case 'mastercard':
-      return (
-        <Mastercard
-          color="plain"
-          size="medium"
-        />
-      )
-    case 'amex':
-      return (
-        <Amex
-          color="plain"
-          size="medium"
-        />
-      )
-    default:
-      return <PaymentMethods size="medium" />
+  case 'visa':
+    return (
+      <Visa
+        color="plain"
+        size="medium"
+      />
+    )
+  case 'mastercard':
+    return (
+      <Mastercard
+        color="plain"
+        size="medium"
+      />
+    )
+  case 'amex':
+    return (
+      <Amex
+        color="plain"
+        size="medium"
+      />
+    )
+  default:
+    return <PaymentMethods size="medium" />
   }
 }
 
@@ -226,6 +227,7 @@ export function CardList() {
     setOpen(false)
     refetch()
   }, [refetch, setOpen])
+
   if (!data || loading) return null
 
   const { edges } = data.me.cards

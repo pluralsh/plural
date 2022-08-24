@@ -156,6 +156,28 @@ defmodule Core.Services.ChartsTest do
     end
   end
 
+  describe "#delete_chart_installation" do
+    test "A user can delete his chart installation" do
+      %{chart: chart} = v = insert(:version, version: "1.0.0")
+      user = insert(:user)
+      installation = insert(:installation, repository: chart.repository, user: user)
+      chart_inst = insert(:chart_installation, installation: installation, chart: chart, version: v)
+
+      {:ok, _} = Charts.delete_chart_installation( chart_inst.id, user)
+
+      refute refetch(chart_inst)
+    end
+
+    test "A user cannot delete other chart installations" do
+      %{chart: chart} = v = insert(:version, version: "1.0.0")
+      user = insert(:user)
+      installation = insert(:installation, repository: chart.repository)
+      chart_inst = insert(:chart_installation, installation: installation, chart: chart, version: v)
+
+      {:error, _} = Charts.delete_chart_installation( chart_inst.id, user)
+    end
+  end
+
   describe "#sync_version" do
     test "It will add helm info onto a chart version" do
       version = insert(:version)

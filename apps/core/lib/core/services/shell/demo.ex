@@ -1,7 +1,7 @@
 defmodule Core.Services.Shell.Demo do
   use Core.Services.Base
   alias Core.Schema.{User, DemoProject}
-  alias Core.Services.{Locks, Users}
+  alias Core.Services.{Locks, Users, Upgrades, Repositories}
   alias GoogleApi.CloudResourceManager.V3.Api.{Projects, Operations}
   alias GoogleApi.CloudResourceManager.V3.Model.{Project, Operation, SetIamPolicyRequest}
   alias GoogleApi.CloudResourceManager.V3.Connection, as: ProjectsConnection
@@ -105,6 +105,12 @@ defmodule Core.Services.Shell.Demo do
       |> Projects.cloudresourcemanager_projects_delete(proj_id)
     end)
     |> add_operation(:db, fn _ -> Core.Repo.delete(proj) end)
+    |> add_operation(:maybe_reset, fn _ ->
+      case Upgrades.queue_count(proj.user_id) do
+        n when n <= 1 -> Repositories.reset_installations(proj.user)
+        _ -> {:ok, nil}
+      end
+    end)
     |> execute(extract: :db)
   end
 

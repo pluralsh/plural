@@ -1,7 +1,11 @@
 import { useMutation } from '@apollo/client'
 import { Box } from 'grommet'
-import { Button, Div, MenuItem, Span } from 'honorable'
-import { Modal, ModalActions, ModalHeader, ValidatedInput } from 'pluralsh-design-system'
+import {
+  Button, Div, MenuItem, Span,
+} from 'honorable'
+import {
+  Modal, ModalActions, ModalHeader, ValidatedInput,
+} from 'pluralsh-design-system'
 import { useState } from 'react'
 
 import { appendConnection, updateCache } from '../../utils/graphql'
@@ -15,7 +19,9 @@ import { MoreMenu } from './MoreMenu'
 import { BindingInput } from './Typeaheads'
 import { sanitize } from './utils'
 
-function ServiceAccountForm({ error, attributes, setAttributes, bindings, setBindings, ...box }) {
+function ServiceAccountForm({
+  error, attributes, setAttributes, bindings, setBindings, ...box
+}) {
   return (
     <Box
       fill

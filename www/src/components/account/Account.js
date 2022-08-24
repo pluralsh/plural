@@ -1,8 +1,11 @@
-import { Div, Flex } from 'honorable'
-import { Tab } from 'pluralsh-design-system'
-import { Link, Outlet, useLocation } from 'react-router-dom'
+import { Flex } from 'honorable'
+import { Tab, TabList, TabPanel } from 'pluralsh-design-system'
+import { Outlet, useLocation } from 'react-router-dom'
+import styled from 'styled-components'
+import { useRef } from 'react'
 
 import { SidebarTabs } from '../utils/SidebarTabs'
+import { LinkTabWrap } from '../utils/Tabs'
 
 const DIRECTORY = [
   { path: '/account/edit', label: 'Account Settings' },
@@ -13,8 +16,21 @@ const DIRECTORY = [
   { path: '/account/domains', label: 'Domains' },
 ]
 
+const StyledTabPanel = styled(TabPanel)(({ theme }) => ({
+  flexGrow: 1,
+  paddingTop: theme.spacing.large,
+  paddingRight: theme.spacing.large,
+  height: '100%',
+  maxHeight: '100%',
+  overflowY: 'auto',
+  textDecoration: 'none',
+  width: '100%',
+}))
+
 export function Account() {
   const { pathname } = useLocation()
+  const tabStateRef = useRef()
+  const currentTab = DIRECTORY.find(tab => pathname?.startsWith(tab.path))
 
   return (
     <Flex
@@ -23,31 +39,27 @@ export function Account() {
       overflowY="hidden"
     >
       <SidebarTabs>
-        {DIRECTORY.map(({ label, path }, i) => (
-          <Link
-            key={i}
-            to={path}
-            style={{ textDecoration: 'none' }}
-          >
-            <Tab
-              active={pathname === path}
-              vertical
-              textDecoration="none"
-            >{label}
-            </Tab>
-          </Link>
-        ))}
+        <TabList
+          stateRef={tabStateRef}
+          stateProps={{
+            orientation: 'vertical',
+            selectedKey: currentTab?.path,
+          }}
+        >
+          {DIRECTORY.map(({ label, path }) => (
+            <LinkTabWrap
+              key={path}
+              textValue={label}
+              to={path}
+            >
+              <Tab>{label}</Tab>
+            </LinkTabWrap>
+          ))}
+        </TabList>
       </SidebarTabs>
-      <Div
-        flexGrow={1}
-        pt={1.5}
-        pr={1.5}
-        height="100%"
-        maxHeight="100%"
-        overflowY="auto"
-      >
+      <StyledTabPanel stateRef={tabStateRef}>
         <Outlet />
-      </Div>
+      </StyledTabPanel>
     </Flex>
   )
 }

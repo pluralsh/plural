@@ -1,7 +1,11 @@
 import { Div, Flex } from 'honorable'
-import { BrowserIcon, CloudIcon, GearTrainIcon, NetworkInterfaceIcon, Stepper } from 'pluralsh-design-system'
+import {
+  BrowserIcon, CloudIcon, GearTrainIcon, NetworkInterfaceIcon, Stepper,
+} from 'pluralsh-design-system'
 
-import { SECTION_CLI_INSTALLATION, SECTION_CLOUD_SELECT, SECTION_CLOUD_WORKSPACE, SECTION_GIT_PROVIDER, SECTION_SYNOPSIS } from '../constants'
+import {
+  SECTION_CLI_INSTALLATION, SECTION_CLOUD_SELECT, SECTION_CLOUD_WORKSPACE, SECTION_GIT_PROVIDER, SECTION_SYNOPSIS,
+} from '../constants'
 
 import OnboardingFooter from './OnboardingFooter'
 
@@ -40,7 +44,9 @@ function CliStepper({ stepIndex = 0, ...props }) {
   )
 }
 
-function OnboardingWrapper({ showSplashScreen = false, stepIndex = 0, childIsReady = true, children, cliMode = false }) {
+function OnboardingWrapper({
+  showSplashScreen = false, stepIndex = 0, childIsReady = true, children, cliMode = false,
+}) {
   return (
     <Flex
       width="100%"

@@ -12,7 +12,10 @@ defmodule Core.Services.Accounts do
     Role,
     IntegrationWebhook,
     OAuthIntegration,
-    DomainMapping
+    DomainMapping,
+    RoleBinding,
+    ImpersonationPolicyBinding,
+    DnsAccessPolicyBinding,
   }
 
   @type error :: {:error, term}
@@ -23,6 +26,7 @@ defmodule Core.Services.Accounts do
   @type role_resp :: {:ok, Role.t} | error
   @type user_resp :: {:ok, User.t} | error
   @type webhook_resp :: {:ok, IntegrationWebhook.t} | error
+  @type binding :: RoleBinding.t | ImpersonationPolicyBinding.t | DnsAccessPolicyBinding.t
 
   def get_account!(id), do: Core.Repo.get!(Account, id)
 
@@ -171,10 +175,20 @@ defmodule Core.Services.Accounts do
   """
   @spec create_service_account(map, User.t) :: user_resp
   def create_service_account(attrs, %User{account_id: id} = user) do
-    %User{account_id: id, service_account: true}
-    |> User.service_account_changeset(attrs)
-    |> allow(user, :create)
-    |> when_ok(:insert)
+    start_transaction()
+    |> add_operation(:sa, fn _ ->
+      %User{account_id: id, service_account: true}
+      |> User.service_account_changeset(attrs)
+      |> allow(user, :create)
+      |> when_ok(:insert)
+    end)
+    |> add_operation(:validate, fn %{sa: %{account_id: aid} = sa} ->
+      case Core.Repo.preload(sa, impersonation_policy: :bindings) do
+        %{impersonation_policy: %{bindings: bindings}} -> validate_bindings(aid, bindings)
+        _ -> {:ok, sa}
+      end
+    end)
+    |> execute(extract: :sa)
     |> Users.notify(:create)
   end
 
@@ -185,11 +199,21 @@ defmodule Core.Services.Accounts do
   def update_service_account(attrs, id, %User{} = user) do
     case Users.get_user(id) do
       %User{service_account: true} = srv ->
-        srv
-        |> Core.Repo.preload([impersonation_policy: [:bindings]])
-        |> User.service_account_changeset(attrs)
-        |> allow(user, :create)
-        |> when_ok(:update)
+        start_transaction()
+        |> add_operation(:sa, fn _ ->
+          srv
+          |> Core.Repo.preload([impersonation_policy: [:bindings]])
+          |> User.service_account_changeset(attrs)
+          |> allow(user, :create)
+          |> when_ok(:update)
+        end)
+        |> add_operation(:validate, fn %{sa: %{account_id: aid} = sa} ->
+          case Core.Repo.preload(sa, impersonation_policy: :bindings) do
+            %{impersonation_policy: %{bindings: bindings}} -> validate_bindings(aid, bindings)
+            _ -> {:ok, sa}
+          end
+        end)
+        |> execute(extract: :sa)
       _ -> {:error, "not a service account"}
     end
   end
@@ -330,10 +354,18 @@ defmodule Core.Services.Accounts do
   """
   @spec create_role(map, User.t) :: role_resp
   def create_role(attrs, %User{account_id: id} = user) do
-    %Role{account_id: id}
-    |> Role.changeset(attrs)
-    |> allow(user, :create)
-    |> when_ok(:insert)
+    start_transaction()
+    |> add_operation(:role, fn _ ->
+      %Role{account_id: id}
+      |> Role.changeset(attrs)
+      |> allow(user, :create)
+      |> when_ok(:insert)
+    end)
+    |> add_operation(:validate, fn
+      %{role: %{account_id: aid, role_bindings: role_bindings}} ->
+        validate_bindings(aid, role_bindings)
+    end)
+    |> execute(extract: :role)
     |> notify(:create, user)
   end
 
@@ -342,13 +374,40 @@ defmodule Core.Services.Accounts do
   """
   @spec update_role(map, binary, User.t) :: role_resp
   def update_role(attrs, id, %User{} = user) do
-    get_role!(id)
-    |> Core.Repo.preload([:role_bindings])
-    |> Role.changeset(attrs)
-    |> allow(user, :edit)
-    |> when_ok(:update)
+    start_transaction()
+    |> add_operation(:role, fn _ ->
+      get_role!(id)
+      |> Core.Repo.preload([:role_bindings])
+      |> Role.changeset(attrs)
+      |> allow(user, :edit)
+      |> when_ok(:update)
+    end)
+    |> add_operation(:validate, fn
+      %{role: %{account_id: aid, role_bindings: role_bindings}} ->
+        validate_bindings(aid, role_bindings)
+    end)
+    |> execute(extract: :role)
     |> notify(:update, user)
   end
+
+  @doc """
+  Determines if all bindings are for the relevant account
+  """
+  @spec validate_bindings(binary, [binding]) :: {:ok, [binding]} | error
+  def validate_bindings(account_id, [_ | _] = bindings) do
+    bindings
+    |> Core.Repo.preload([:user, :group])
+    |> Enum.all?(fn
+      %{group: %{account_id: ^account_id}} -> true
+      %{user: %{account_id: ^account_id}} -> true
+      _ -> false
+    end)
+    |> case do
+      true -> {:ok, bindings}
+      _ -> {:error, "attempted to bind a user or group not in this account"}
+    end
+  end
+  def validate_bindings(_, bindings), do: {:ok, bindings}
 
   @doc """
   Deletes a role by id

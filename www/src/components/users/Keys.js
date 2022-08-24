@@ -83,6 +83,7 @@ function Key({ publicKey }) {
 
 export function Keys() {
   const { data, fetchMore } = useQuery(LIST_KEYS)
+
   if (!data) return null
 
   const { edges, pageInfo } = data.publicKeys

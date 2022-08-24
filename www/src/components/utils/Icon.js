@@ -6,7 +6,9 @@ import { Tooltip } from './Tooltip'
 
 const SIDEBAR_ICON_HEIGHT = '35px'
 
-export function Icon({ icon, text, selected, path, onClick, size, align }) {
+export function Icon({
+  icon, text, selected, path, onClick, size, align,
+}) {
   const dropRef = useRef()
   const navigate = useNavigate()
   const [hover, setHover] = useState(false)
@@ -26,7 +28,7 @@ export function Icon({ icon, text, selected, path, onClick, size, align }) {
         hoverIndicator="sidebarHover"
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
-        onClick={() => onClick ? onClick() : navigate(path)}
+        onClick={() => (onClick ? onClick() : navigate(path))}
         background={selected ? 'sidebarHover' : null}
         direction="row"
       >

@@ -1,67 +1,71 @@
 import './chart.css'
 
-import { useContext, useEffect, useState } from 'react'
-import { Anchor, Box, Markdown, Text } from 'grommet'
+import { useContext, useRef, useState } from 'react'
+import { Box } from 'grommet'
 import { useMutation, useQuery } from '@apollo/client'
-import { useNavigate, useParams } from 'react-router-dom'
-import { Button, ScrollableContainer, TabContent, TabHeader, TabHeaderItem, Tabs } from 'forge-core'
+import {
+  Link, Outlet, useLocation, useParams,
+} from 'react-router-dom'
+import {
+  Button, Tab, TabList, TabPanel,
+} from 'pluralsh-design-system'
 import moment from 'moment'
 import Highlight from 'react-highlight.js'
-import { Docker } from 'grommet-icons'
 
-import { Flex } from 'honorable'
+import { A, Flex } from 'honorable'
 
-import { Versions } from '../versions/Versions'
+import {
+  ResponsiveLayoutContentContainer, ResponsiveLayoutSidecarContainer, ResponsiveLayoutSidenavContainer, ResponsiveLayoutSpacer,
+} from 'components/layout/ResponsiveLayout'
+
+import { GoBack } from 'components/utils/GoBack'
+
+import { LinkTabWrap } from 'components/utils/Tabs'
+
 import { PluralConfigurationContext } from '../login/CurrentUser'
-import { Breadcrumbs, BreadcrumbsContext } from '../Breadcrumbs'
+
+import {
+  PackageGrade, PackageHeader, PackageProperty, PackageVersionPicker, dockerPull,
+} from './common/misc'
 
 import { CHART_Q, INSTALL_CHART, UPDATE_CHART_INST } from './queries'
 import { DEFAULT_CHART_ICON } from './constants'
 
 import { DetailContainer } from './Installation'
-import Dependencies, { FullDependencies, ShowFull } from './Dependencies'
-import { dockerPull } from './misc'
-import { DeferredUpdates } from './DeferredUpdates'
-import { PackageGrade, ScanResults } from './PackageScan'
 
 function ChartInfo({ version: { helm, insertedAt } }) {
   return (
     <DetailContainer
+      title="chart.yaml"
       pad="small"
       gap="small"
       style={{ overflow: 'hidden' }}
     >
-      <Text
-        weight="bold"
-        size="small"
-      >App Version
-      </Text>
-      <Text size="small">{helm.appVersion}</Text>
-      <Text
-        weight="bold"
-        size="small"
-      >Created
-      </Text>
-      <Text size="small">{moment(insertedAt).fromNow()}</Text>
-      <Text
-        weight="bold"
-        size="small"
-      >Source
-      </Text>
-      <Text size="small">{(helm.sources || []).map(l => (
-        <Anchor
-          key={l}
-          href={l}
-        >{l}
-        </Anchor>
+      <PackageProperty header="App Version">{helm.appVersion}</PackageProperty>
+      <PackageProperty header="Created">{moment(insertedAt).fromNow()}</PackageProperty>
+      {(!!helm?.sources?.length && (
+        <PackageProperty header="Sources">
+          {(helm.sources).map(l => (
+            <Box>
+              <A
+                inline
+                key={l}
+                href={l}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ wordWrap: 'break-word' }}
+              >
+                {l}
+              </A>
+            </Box>
+          ))}
+        </PackageProperty>
       ))}
-      </Text>
-      <Text
-        weight="bold"
-        size="small"
-      >Maintainers
-      </Text>
-      <Text size="small">{(helm.maintainers || []).map(m => <Box key={m.email}>{m.email}</Box>)}</Text>
+      {(!!helm?.maintainers?.length && (
+        <PackageProperty header="Maintainers">
+          {(helm.maintainers).map(m => <Box key={m.email}>{m.email}</Box>)}
+        </PackageProperty>
+      ))}
     </DetailContainer>
   )
 }
@@ -93,20 +97,9 @@ export const MARKDOWN_STYLING = {
   pre: { component: Code, props: {} },
 }
 
-function TemplateView({ version: { valuesTemplate } }) {
-  return (
-    <Box
-      style={{ overflow: 'auto', maxHeight: '100%' }}
-      pad="small"
-    >
-      <Highlight language="yaml">
-        {valuesTemplate || 'no values template'}
-      </Highlight>
-    </Box>
-  )
-}
-
-function ChartInstaller({ chartInstallation, versionId, chartId, installation }) {
+function ChartInstaller({
+  chartInstallation, versionId, chartId, installation,
+}) {
   const [mutation, { error }] = useMutation(chartInstallation ? UPDATE_CHART_INST : INSTALL_CHART, {
     variables: {
       id: chartInstallation ? chartInstallation.id : installation.id,
@@ -115,6 +108,7 @@ function ChartInstaller({ chartInstallation, versionId, chartId, installation })
     update: (cache, { data }) => {
       const ci = data.installChart || data.updateChartInstallation
       const prev = cache.readQuery({ query: CHART_Q, variables: { chartId } })
+
       cache.writeQuery({
         query: CHART_Q,
         variables: { chartId },
@@ -131,138 +125,37 @@ function ChartInstaller({ chartInstallation, versionId, chartId, installation })
 
   return (
     <Button
-      round="xsmall"
-      label="Install"
+      secondary
       error={error}
       onClick={mutation}
-    />
-  )
-}
-
-function ChartHeader({ version: { helm, chart, version, scan, id }, chartInstallation, installation }) {
-  return (
-    <Box
-      direction="row"
-      align="center"
-      gap="medium"
-      width="100%"
-      margin={{ bottom: 'small' }}
-      style={{ minHeight: '50px' }}
     >
-      <Box
-        width="50px"
-        heigh="50px"
-      >
-        <img
-          alt=""
-          width="50px"
-          height="50px"
-          src={chart.icon || DEFAULT_CHART_ICON}
-        />
-      </Box>
-      <Box flex>
-        <Box
-          direction="row"
-          align="center"
-          gap="small"
-        >
-          <Text size="medium">{chart.name} - {version}</Text>
-          {chartInstallation && (
-            <Text
-              size="small"
-              color="dark-3"
-            >
-              (installed: {chartInstallation.version.version})
-            </Text>
-          )}
-        </Box>
-        <Text size="small">
-          <i>{helm.description}</i>
-        </Text>
-      </Box>
-      {scan && <PackageGrade scan={scan} />}
-      {chartInstallation && chartInstallation.version.id === id ? (
-        <Box
-          width="100px"
-          direction="row"
-          justify="end"
-        >
-          <Box
-            round="xsmall"
-            pad={{ horizontal: 'small', vertical: 'xsmall' }}
-            align="center"
-            justify="center"
-            border={{ color: 'border' }}
-          >
-            Installed
-          </Box>
-        </Box>
-      ) :
-        installation && (
-          <Box
-            width="100px"
-            direction="row"
-            justify="end"
-          >
-            <ChartInstaller
-              chartInstallation={chartInstallation}
-              installation={installation}
-              versionId={id}
-              chartId={chart.id}
-            />
-          </Box>
-        )}
-    </Box>
-  )
-}
-
-function ChartReadme({ version: { readme } }) {
-  return (
-    <Box
-      gap="small"
-      pad="small"
-      style={{ maxHeight: '100%', overflow: 'auto' }}
-    >
-      <Box>
-        <Markdown components={MARKDOWN_STYLING}>
-          {readme || 'no readme'}
-        </Markdown>
-      </Box>
-    </Box>
+      Install
+    </Button>
   )
 }
 
 function ImageDependencies({ version: { imageDependencies } }) {
   const { registry } = useContext(PluralConfigurationContext)
-  const navigate = useNavigate()
+
   if (!imageDependencies || imageDependencies.length === 0) return null
 
   return (
-    <DetailContainer style={{ overflow: 'auto' }}>
-      <Box pad="small">
-        <Text
-          size="small"
-          weight="bold"
-        >Docker Images
-        </Text>
-      </Box>
+    <DetailContainer
+      title="Docker Images"
+      pad="small"
+      gap="small"
+      style={{ overflow: 'auto' }}
+    >
       {imageDependencies.map(({ id, image }) => (
-        <Box
-          key={id}
-          direction="row"
-          gap="xsmall"
-          align="center"
-          pad={{ horizontal: 'small', vertical: 'xsmall' }}
-          hoverIndicator="light-2"
-          round="xsmall"
-          focusIndicator={false}
-          onClick={() => navigate(`/dkr/img/${image.id}`)}
-        >
-          <Docker
-            color="plain"
-            size="18px"
-          />
-          <Text size="small">{dockerPull(registry, image)}</Text>
+        <Box key={id}>
+          <A
+            inline
+            as={Link}
+            to={`/dkr/img/${image.id}`}
+            style={{ wordWrap: 'break-word' }}
+          >
+            {dockerPull(registry, image)}
+          </A>
         </Box>
       ))}
     </DetailContainer>
@@ -271,23 +164,10 @@ function ImageDependencies({ version: { imageDependencies } }) {
 
 export default function Chart() {
   const { chartId } = useParams()
+  const { pathname } = useLocation()
   const [version, setVersion] = useState(null)
-  const [tab, setTab] = useState(false)
-  const [full, setFull] = useState(false)
-  const { data, fetchMore, refetch } = useQuery(CHART_Q, {
-    variables: { chartId },
-    fetchPolicy: 'cache-and-network',
-  })
-  const { setBreadcrumbs } = useContext(BreadcrumbsContext)
-  useEffect(() => {
-    if (!data) return
-    const { chart } = data
-    setBreadcrumbs([
-      { url: '/marketplace', text: 'Marketplace' },
-      { url: `/repository/${chart.repository.id}/packages/helm`, text: chart.repository.name },
-      { url: `/charts/${chart.id}`, text: chart.name },
-    ])
-  }, [data, setBreadcrumbs])
+  const { data, fetchMore } = useQuery(CHART_Q, { variables: { chartId }, fetchPolicy: 'cache-and-network' })
+  const tabStateRef = useRef()
 
   if (!data) return null
 
@@ -295,134 +175,118 @@ export default function Chart() {
   const { repository } = chart
   const { edges, pageInfo } = versions
   const currentVersion = version || edges[0].node
-  const width = tab === 'configuration' ? 65 : 70
   const chartInst = data.chart.installation
 
-  return (
-    <Box direction="column">
-      <Flex
-        paddingVertical={18}
-        marginLeft="xlarge"
-        marginRight="xlarge"
-        paddingLeft="xsmall"
-        paddingRight="xsmall"
-        borderBottom="1px solid border"
-      >
-        <Breadcrumbs />
-      </Flex>
-      <ScrollableContainer>
-        <Box
-          pad="medium"
-          direction="row"
+  const DIRECTORY = [
+    { label: 'Readme', path: '' },
+    { label: 'Configuration', path: '/configuration' },
+    { label: 'Dependencies', path: '/dependencies' },
+    {
+      label: (
+        <Flex
+          flexGrow={1}
+          justifyContent="space-between"
         >
-          <Box
-            width={`${width}%`}
-            pad="small"
-          >
-            <ChartHeader
-              version={currentVersion}
-              chartInstallation={chartInst}
-              installation={repository.installation}
+          Security
+          {currentVersion?.scan && (
+            <PackageGrade grade={currentVersion.scan.grade} />
+          )}
+        </Flex>
+      ),
+      textValue: 'Security',
+      path: '/security',
+    },
+    { label: 'Update queue', path: '/updatequeue' },
+  ]
+  const pathPrefix = `/charts/${chart.id}`
+
+  const filteredDirectory = DIRECTORY.filter(({ path }) => {
+    switch (path) {
+    case '/updatequeue':
+      return !!chartInst
+    default:
+      return true
+    }
+  })
+  const currentTab = [...filteredDirectory]
+    .sort((a, b) => b.path.length - a.path.length)
+    .find(tab => pathname?.startsWith(`${pathPrefix}${tab.path}`))
+
+  return (
+    <Box
+      direction="column"
+      fill
+    >
+      <GoBack
+        text="Back to packages"
+        link={`/repository/${chart.repository.id}/packages/helm`}
+      />
+      <Box
+        pad="16px"
+        direction="row"
+      >
+        <ResponsiveLayoutSidenavContainer>
+          <Box pad={{ left: '16px' }}>
+            <PackageHeader
+              name={currentVersion.chart.name}
+              icon={currentVersion.chart.icon || DEFAULT_CHART_ICON}
             />
-            <Tabs
-              defaultTab="readme"
-              onTabChange={setTab}
-              headerEnd={tab === 'dependencies' ? (
-                <ShowFull
-                  label={full ? 'Immediate' : 'Full'}
-                  onClick={() => setFull(!full)}
-                />
-              ) : null}
-            >
-              <TabHeader>
-                <TabHeaderItem name="readme">
-                  <Text
-                    weight={500}
-                    size="small"
-                  >
-                    Readme
-                  </Text>
-                </TabHeaderItem>
-                <TabHeaderItem name="configuration">
-                  <Text
-                    weight={500}
-                    size="small"
-                  >
-                    Configuration
-                  </Text>
-                </TabHeaderItem>
-                <TabHeaderItem name="dependencies">
-                  <Text
-                    size="small"
-                    weight={500}
-                  >
-                    Dependencies
-                  </Text>
-                </TabHeaderItem>
-                {currentVersion.scan && (
-                  <TabHeaderItem name="scan">
-                    <Text
-                      size="small"
-                      weight={500}
-                    >
-                      Security
-                    </Text>
-                  </TabHeaderItem>
-                )}
-                {chartInst && (
-                  <TabHeaderItem name="updates">
-                    <Text
-                      size="small"
-                      weight={500}
-                    >
-                      Update Queue
-                    </Text>
-                  </TabHeaderItem>
-                )}
-              </TabHeader>
-              <TabContent name="readme">
-                <ChartReadme version={currentVersion} />
-              </TabContent>
-              <TabContent name="scan">
-                <ScanResults scan={currentVersion.scan} />
-              </TabContent>
-              <TabContent name="configuration">
-                <TemplateView version={currentVersion} />
-              </TabContent>
-              <TabContent name="dependencies">
-                {full ? <FullDependencies resource={chart} /> : (
-                  <Dependencies
-                    name={chart.name}
-                    resource={chart}
-                    dependencies={(version || chart).dependencies}
-                  />
-                )}
-              </TabContent>
-              {chartInst && (
-                <TabContent name="updates">
-                  <DeferredUpdates chartInst={chartInst.id} />
-                </TabContent>
-              )}
-            </Tabs>
+            <PackageVersionPicker
+              edges={edges}
+              installed={chartInst}
+              version={version || currentVersion}
+              setVersion={setVersion}
+              pageInfo={pageInfo}
+              fetchMore={fetchMore}
+            />
           </Box>
-          <Box
-            pad="small"
-            width={`${100 - width}%`}
+          <TabList
+            stateRef={tabStateRef}
+            stateProps={{
+              orientation: 'vertical',
+              selectedKey: currentTab?.path,
+            }}
           >
-            <Box gap="small">
-              <Versions
-                edges={edges}
-                pageInfo={pageInfo}
-                fetchMore={fetchMore}
-                refetch={refetch}
-                setVersion={setVersion}
-              />
-              <ChartInfo version={currentVersion} />
-              <ImageDependencies version={currentVersion} />
+            {filteredDirectory.map(({ label, textValue, path }) => (
+              <LinkTabWrap
+                key={path}
+                textValue={typeof label === 'string' ? label : textValue || ''}
+                to={`${pathPrefix}${path}`}
+              >
+                <Tab>{label}</Tab>
+              </LinkTabWrap>
+            ))}
+          </TabList>
+        </ResponsiveLayoutSidenavContainer>
+        <ResponsiveLayoutSpacer />
+        <ResponsiveLayoutContentContainer>
+          <TabPanel stateRef={tabStateRef}>
+            <Outlet
+              context={{ helmChart: chart, currentHelmChart: currentVersion }}
+            />
+          </TabPanel>
+        </ResponsiveLayoutContentContainer>
+        <ResponsiveLayoutSidecarContainer width="200px">
+          <Box
+            direction="column"
+            gap="small"
+          >
+            <Box height="54px">
+              {chartInst?.version?.id !== currentVersion.id && repository.installation && (
+                <ChartInstaller
+                  chartInstallation={chartInst}
+                  installation={repository.installation}
+                  versionId={chartInst?.version?.id}
+                  chartId={chart.id}
+                />
+              )}
             </Box>
+            <ChartInfo version={currentVersion} />
+            <ImageDependencies version={currentVersion} />
           </Box>
-        </Box>
-      </ScrollableContainer>
+        </ResponsiveLayoutSidecarContainer>
+        <ResponsiveLayoutSpacer />
+      </Box>
     </Box>
   )
 }

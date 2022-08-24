@@ -22,6 +22,7 @@ defmodule GraphQl.Schema.User do
     field :onboarding,   :onboarding_state
     field :login_method, :login_method
     field :roles,        :roles_attributes
+    field :confirm,      :string
   end
 
   input_object :roles_attributes do

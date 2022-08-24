@@ -1,4 +1,6 @@
-import { useContext, useEffect, useMemo, useState } from 'react'
+import {
+  useContext, useEffect, useMemo, useState,
+} from 'react'
 import { Box, ThemeContext } from 'grommet'
 import { normalizeColor } from 'grommet/utils'
 import moment from 'moment'
@@ -9,6 +11,7 @@ export function QueueHealth({ queue, size }) {
   const theme = useContext(ThemeContext)
   const [now, setNow] = useState(moment())
   const pinged = useMemo(() => moment(queue.pingedAt), [queue.pingedAt])
+
   useEffect(() => {
     const int = setInterval(() => setNow(moment()), 1000)
 

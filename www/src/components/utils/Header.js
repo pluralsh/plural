@@ -1,4 +1,4 @@
-import { Box } from 'grommet'
+import { Box, Text } from 'grommet'
 import { Flex, H1, Span } from 'honorable'
 
 export function Header({ header, description, children }) {
@@ -22,5 +22,21 @@ export function Header({ header, description, children }) {
       </Box>
       {children}
     </Flex>
+  )
+}
+
+export function HeaderItem({
+  text, width, nobold, truncate,
+}) {
+  return (
+    <Box width={width}>
+      <Text
+        size="small"
+        weight={nobold ? null : 500}
+        truncate={truncate}
+      >
+        {text}
+      </Text>
+    </Box>
   )
 }

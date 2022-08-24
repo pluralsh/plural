@@ -1,6 +1,8 @@
 import { gql } from '@apollo/client'
 
-import { ArtifactFragment, InstallationFragment, RepoFragment, StepFragment, TestFragment } from '../../models/repo'
+import {
+  ArtifactFragment, InstallationFragment, RepoFragment, StepFragment, TestFragment,
+} from '../../models/repo'
 import { ChartFragment } from '../../models/chart'
 import { TerraformFragment } from '../../models/terraform'
 import { DockerRepoFragment } from '../../models/docker'
@@ -13,6 +15,18 @@ export const CREATE_REPOSITORY_MUTATION = gql`
   mutation CreateRepository($repositoryId: ID!, $attributes: RepositoryAttributes!) {
     createRepository(id: $repositoryId, attributes: $attributes) {
       ...RepoFragment
+    }
+  }
+  ${RepoFragment}
+`
+
+export const UPDATE_REPOSITORY_MUTATION = gql`
+  mutation UpdateRepository($repositoryId: ID!, $attributes: RepositoryAttributes!) {
+    updateRepository(repositoryId: $repositoryId, attributes: $attributes) {
+      ...RepoFragment
+      tags {
+        tag
+      }
     }
   }
   ${RepoFragment}
@@ -34,7 +48,7 @@ export const REPOSITORY_QUERY = gql`
 
       }
       tags {
-        name: tag
+        tag
       }
       readme
       mainBranch
@@ -178,4 +192,14 @@ export const UPDATE_INSTALLATION = gql`
     }
   }
   ${InstallationFragment}
+`
+
+export const TAGS_SEARCH_QUERY = gql`
+  query Tags($q: String, $cursor: String, $first: Int) {
+    tags(type: REPOSITORIES, first: $first, after: $cursor, q: $q) {
+      pageInfo { ...PageInfo }
+      edges { node { tag count } }
+    }
+  }
+  ${PageInfo}
 `

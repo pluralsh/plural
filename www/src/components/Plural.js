@@ -1,6 +1,10 @@
-import { useContext } from 'react'
-import { Navigate, Route, Routes, useMatch } from 'react-router-dom'
+import { useContext, useEffect, useState } from 'react'
+import {
+  Navigate, Route, Routes, useMatch,
+} from 'react-router-dom'
 import { StripeProvider } from 'react-stripe-elements'
+
+import { growthbook } from '../helpers/growthbook'
 
 import ApplicationLayout from './layout/ApplicationLayout'
 import BreadcrumbProvider from './Breadcrumbs'
@@ -13,7 +17,7 @@ import Repository from './repository/Repository'
 import RepositoryArtifacts from './repository/RepositoryArtifacts'
 import RepositoryDeployments from './repository/RepositoryDeployments'
 import RepositoryDescription from './repository/RepositoryDescription'
-import RepositoryEdit from './repository/RepositoryEdit'
+import RepositoryEdit from './repository/RepositoryEdit.tsx'
 import RepositoryPackages from './repository/RepositoryPackages'
 import RepositoryPackagesDocker from './repository/RepositoryPackagesDocker'
 import RepositoryPackagesHelm from './repository/RepositoryPackagesHelm'
@@ -23,7 +27,7 @@ import Terraform from './repos/Terraform'
 import { AccessTokens } from './profile/AccessTokens'
 import { Account } from './account/Account'
 import { AccountAttributes } from './account/AccountAttributes'
-import { Clusters } from './clusters/Clusters'
+import { Clusters } from './clusters/Clusters.tsx'
 import { CurrentUserContext, PluralConfigurationContext, PluralProvider } from './login/CurrentUser'
 import { DeviceLoginNotif } from './users/DeviceLoginNotif'
 import { Docker, DockerRepository } from './repos/Docker'
@@ -32,7 +36,7 @@ import { EabCredentials } from './profile/EabCredentials'
 import { EditAccount } from './accounts/EditAccount'
 import { Groups } from './account/Groups'
 import { IntegrationPage } from './repos/Integrations'
-import { Me } from './profile/Me'
+import { Profile } from './profile/Profile'
 import { MyProfile } from './profile/MyProfile'
 import { OIDCProvider } from './repository/OIDCProvider'
 import { OauthCreator } from './integrations/OauthCreator'
@@ -48,6 +52,14 @@ import { AuditDirectory } from './audits/AuditDirectory'
 import { Audits } from './audits/Audits'
 import { LoginAudits } from './audits/LoginAudits'
 import { AuditChloropleth } from './audits/AuditChloropleth'
+import PackageReadme from './repos/common/PackageReadme'
+import PackageConfiguration from './repos/common/PackageConfiguration'
+import PackageSecurity from './repos/common/PackageSecurity'
+import PackageUpdateQueue from './repos/common/PackageUpdateQueue'
+import PackageDependencies from './repos/common/PackageDependencies'
+import ImagePullMetrics from './repos/common/ImagePullMetrics'
+import ImageVulnerabilities from './repos/common/ImageVulnerabilities'
+import { SuccessToast } from './utils/Toasts'
 
 function EditBilling(props) {
   return (
@@ -91,6 +103,22 @@ function OAuthOrFallback() {
   )
 }
 
+function TestBanner() {
+  const [enable, setEnable] = useState(true)
+
+  useEffect(() => {
+    const timeout = setTimeout(() => setEnable(false), 5000)
+
+    return () => clearTimeout(timeout)
+  }, [])
+
+  if (growthbook.isOn('growthbook-test') && enable) {
+    return <SuccessToast>Growthbook Test!</SuccessToast>
+  }
+
+  return null
+}
+
 export function PluralInner() {
   return (
     <WrapStripe>
@@ -98,6 +126,7 @@ export function PluralInner() {
         <ApplicationLayout>
           <VerifyEmailConfirmed />
           <DeviceLoginNotif />
+          <TestBanner />
           <Routes>
             {/* --- OAUTH --- */}
             <Route
@@ -134,7 +163,7 @@ export function PluralInner() {
               />
               <Route
                 path="me"
-                element={<Me />}
+                element={<Profile />}
               />
               <Route
                 path="security"
@@ -209,15 +238,58 @@ export function PluralInner() {
                 element={<RepositoryEdit />}
               />
             </Route>
-            {/* --- CHARTS --- */}
+            {/* --- HELM CHARTS --- */}
             <Route
               path="/charts/:chartId"
               element={<Chart />}
-            />
+            >
+              <Route
+                index
+                element={<PackageReadme />}
+              />
+              <Route
+                path="configuration"
+                element={<PackageConfiguration />}
+              />
+              <Route
+                path="dependencies"
+                element={<PackageDependencies />}
+              />
+              <Route
+                path="security"
+                element={<PackageSecurity />}
+              />
+              <Route
+                path="updatequeue"
+                element={<PackageUpdateQueue />}
+              />
+            </Route>
+            {/* --- TERRAFORM CHARTS --- */}
             <Route
               path="/terraform/:tfId"
               element={<Terraform />}
-            />
+            >
+              <Route
+                index
+                element={<PackageReadme />}
+              />
+              <Route
+                path="configuration"
+                element={<PackageConfiguration />}
+              />
+              <Route
+                path="dependencies"
+                element={<PackageDependencies />}
+              />
+              <Route
+                path="security"
+                element={<PackageSecurity />}
+              />
+              <Route
+                path="updatequeue"
+                element={<PackageUpdateQueue />}
+              />
+            </Route>
             {/* --- DOCKER --- */}
             <Route
               path="/dkr/repo/:id"
@@ -226,7 +298,16 @@ export function PluralInner() {
             <Route
               path="/dkr/img/:id"
               element={<Docker />}
-            />
+            >
+              <Route
+                index
+                element={<ImagePullMetrics />}
+              />
+              <Route
+                path="vulnerabilities"
+                element={<ImageVulnerabilities />}
+              />
+            </Route>
             {/* --- SHELL --- */}
             <Route
               path="/shell"

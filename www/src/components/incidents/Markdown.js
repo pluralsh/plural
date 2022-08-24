@@ -1,5 +1,9 @@
-import { cloneElement, memo, useContext, useRef, useState } from 'react'
-import { Anchor, Box, Drop, Markdown, Text, ThemeContext } from 'grommet'
+import {
+  cloneElement, memo, useContext, useRef, useState,
+} from 'react'
+import {
+  Anchor, Box, Drop, Markdown, Text, ThemeContext,
+} from 'grommet'
 import { Copy, TooltipContent, WithCopy } from 'forge-core'
 import Highlight from 'react-highlight.js'
 import hljs from 'highlight.js'
@@ -23,11 +27,12 @@ function Blockquote({ children }) {
 }
 
 // DEPRECATED in favor of utils/Code
-export function Code({ children, header, className, multiline }) {
+export function Code({
+  children, header, className, multiline,
+}) {
   const theme = useContext(ThemeContext)
 
   if (className && className.startsWith('lang-')) {
-
     const lang = className && className.slice(5)
 
     if (hljs.getLanguage(lang)) {
@@ -188,7 +193,8 @@ function Emoji({ name }) {
           width: '16px',
           lineHeight: '0px',
           marginRight: RIGHT_MARGIN,
-          marginLeft: RIGHT_MARGIN }}
+          marginLeft: RIGHT_MARGIN,
+        }}
         ref={ref}
         onMouseEnter={() => setOpen(true)}
         onMouseLeave={() => setOpen(false)}
@@ -211,25 +217,27 @@ function Emoji({ name }) {
 
 function MessageEntity({ entity }) {
   switch (entity.type) {
-    case EntityType.MENTION:
-      return (
-        <Mention
-          text={entity.text}
-          user={entity.user}
-        />
-      )
-    case EntityType.EMOJI:
-      return <Emoji name={entity.text} />
-    default:
-      return null
+  case EntityType.MENTION:
+    return (
+      <Mention
+        text={entity.text}
+        user={entity.user}
+      />
+    )
+  case EntityType.EMOJI:
+    return <Emoji name={entity.text} />
+  default:
+    return null
   }
 }
 
 function* splitText(text, entities) {
   let lastIndex = 0
   const sorted = sortBy(entities, ({ startIndex }) => startIndex)
+
   for (const entity of sorted) {
     const upTo = text.substring(lastIndex, entity.startIndex)
+
     if (upTo !== '') {
       yield upTo
     }
@@ -245,6 +253,7 @@ function* splitText(text, entities) {
 export default memo(({ text, entities }) => {
   const parsed = [...splitText(text, entities || [])].join('')
   const entityMap = (entities || []).reduce((map, entity) => ({ ...map, [entity.id]: entity }), {})
+
   function Entity({ id }) {
     return <MessageEntity entity={entityMap[id]} />
   }

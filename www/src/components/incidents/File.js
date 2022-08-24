@@ -94,9 +94,9 @@ function MediaFile({ file }) {
         direction="row"
         align="start"
       >
-        {mediaType === FileTypes.IMAGE ?
-          <Image {...file} /> :
-          <Video {...file} />}
+        {mediaType === FileTypes.IMAGE
+          ? <Image {...file} />
+          : <Video {...file} />}
       </Box>
     </Box>
   )
@@ -150,8 +150,8 @@ export function FileEntry({ file }) {
                 style={MEDIA_STYLES}
                 alt={file.filename}
               />
-            ) :
-              file.mediaType === FileTypes.IMAGE ? (
+            )
+              : file.mediaType === FileTypes.IMAGE ? (
                 <img
                   src={file.blob}
                   style={MEDIA_STYLES}
@@ -185,7 +185,11 @@ export function FileEntry({ file }) {
   )
 }
 
-export function StandardFile({ file: { filename, blob, insertedAt, ...file } }) {
+export function StandardFile({
+  file: {
+    filename, blob, insertedAt, ...file
+  },
+}) {
   const [hover, setHover] = useState(false)
 
   return (
@@ -230,10 +234,10 @@ export function StandardFile({ file: { filename, blob, insertedAt, ...file } }) 
 
 export default function File({ file }) {
   switch (file.mediaType) {
-    case FileTypes.IMAGE:
-    case FileTypes.VIDEO:
-      return <MediaFile file={file} />
-    default:
-      return <StandardFile file={file} />
+  case FileTypes.IMAGE:
+  case FileTypes.VIDEO:
+    return <MediaFile file={file} />
+  default:
+    return <StandardFile file={file} />
   }
 }

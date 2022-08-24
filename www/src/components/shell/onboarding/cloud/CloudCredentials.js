@@ -1,4 +1,6 @@
-import { createElement, useCallback, useContext, useRef, useState } from 'react'
+import {
+  createElement, useCallback, useContext, useRef, useState,
+} from 'react'
 import { Box, Drop } from 'grommet'
 import { MenuItem, Select } from 'honorable'
 import { Button, FormField } from 'pluralsh-design-system'
@@ -13,7 +15,9 @@ import OnboardingCard from '../OnboardingCard'
 import { ProviderForms } from './provider'
 
 function CloudCredentials() {
-  const { provider, setProvider, workspace, setWorkspace, credentials, setCredentials, previous, next, error, exceptions } = useContext(CreateShellContext)
+  const {
+    provider, setProvider, workspace, setWorkspace, credentials, setCredentials, previous, next, error, exceptions,
+  } = useContext(CreateShellContext)
 
   const ref = useRef()
   const [open, setOpen] = useState(false)
@@ -47,7 +51,9 @@ function CloudCredentials() {
           </Select>
         </FormField>
         <Box>
-          {createElement(form, { workspace, setWorkspace, credentials, setCredentials })}
+          {createElement(form, {
+            workspace, setWorkspace, credentials, setCredentials,
+          })}
         </Box>
         {open && (
           <Drop

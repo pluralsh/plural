@@ -1,5 +1,7 @@
 import { useState } from 'react'
-import { Anchor, Box, Layer, Text } from 'grommet'
+import {
+  Anchor, Box, Layer, Text,
+} from 'grommet'
 import { Button, Reload as Refresh } from 'forge-core'
 import { useMutation } from '@apollo/client'
 
@@ -13,7 +15,9 @@ import { UPDATE_LINE_ITEM } from './queries'
 import { pivotByDimension, subscriptionCost } from './utils'
 import { LineItemIcon } from './Plan'
 
-function LineItemUpdate({ lineItem: { cost }, dimension, quantity, subscription, repository, setOpen }) {
+function LineItemUpdate({
+  lineItem: { cost }, dimension, quantity, subscription, repository, setOpen,
+}) {
   const [value, setValue] = useState(quantity)
   const [mutation, { loading }] = useMutation(UPDATE_LINE_ITEM, {
     variables: { subscriptionId: subscription.id, attributes: { dimension, quantity: value } },
@@ -70,7 +74,9 @@ function LineItemUpdate({ lineItem: { cost }, dimension, quantity, subscription,
   )
 }
 
-export function LineItemNub({ dimension, quantity, subscription, repository, lineItem }) {
+export function LineItemNub({
+  dimension, quantity, subscription, repository, lineItem,
+}) {
   const [open, setOpen] = useState(false)
   const [hover, setHover] = useState(false)
   const metered = lineItem.type === PlanType.METERED
@@ -138,8 +144,7 @@ export function SubscriptionBadge({ repository, subscription }) {
             dimension={dimension}
             quantity={quantity}
           />
-        )
-        )}
+        ))}
       </Box>
       <Box
         width="30%"

@@ -14,6 +14,10 @@ defmodule Core.Services.Charts do
     ImageDependency
   }
 
+  @type error :: {:error, term}
+  @type chart_resp :: {:ok, Chart.t} | error
+  @type chart_inst_resp :: {:ok, ChartInstallation.t} | error
+
   @spec get_chart(binary) :: Chart.t | nil
   def get_chart(chart_id), do: Core.Repo.get(Chart, chart_id)
 
@@ -60,7 +64,7 @@ defmodule Core.Services.Charts do
   @doc """
   Creates a new chart. Fails if the user is not the publisher of the repository
   """
-  @spec create_chart(map, binary, User.t) :: {:ok, Chart.t} | {:error, term}
+  @spec create_chart(map, binary, User.t) :: chart_resp
   def create_chart(attrs, repository_id, %User{} = user) do
     name = stringish_fetch(attrs, :name)
 
@@ -79,7 +83,7 @@ defmodule Core.Services.Charts do
     |> execute(extract: :chart)
   end
 
-  @spec update_chart(map, binary, User.t) :: {:ok, Chart.t} | {:error, term}
+  @spec update_chart(map, binary, User.t) :: chart_resp
   def update_chart(attrs, chart_id, %User{} = user) do
     get_chart!(chart_id)
     |> Core.Repo.preload([:tags])
@@ -95,7 +99,7 @@ defmodule Core.Services.Charts do
 
   Fails if the user is not the rzpublisher of the repository.
   """
-  @spec upload_chart(map, Repository.t, User.t, map) :: {:ok, Chart.t} | {:error, term}
+  @spec upload_chart(map, Repository.t, User.t, map) :: chart_resp
   def upload_chart(%{"chart" => chart} = uploads, %Repository{id: repo_id, name: repo}, user, context) do
     {chart_name, version} = chart_info(chart)
     uploads = Enum.map(uploads, fn {key, %{path: path, filename: file}} ->
@@ -239,7 +243,7 @@ defmodule Core.Services.Charts do
 
   Fails if the user is not the installer
   """
-  @spec create_chart_installation(map, binary, User.t) :: {:ok, ChartInstallation.t} | {:error, term}
+  @spec create_chart_installation(map, binary, User.t) :: chart_inst_resp
   def create_chart_installation(attrs, installation_id, %User{} = user) do
     installation = Repositories.get_installation!(installation_id)
 
@@ -252,13 +256,24 @@ defmodule Core.Services.Charts do
   @doc """
   Updates the chart installation. Fails if the user is not the original installer
   """
-  @spec update_chart_installation(map, binary, User.t) :: {:ok, ChartInstallation.t} | {:error, term}
+  @spec update_chart_installation(map, binary, User.t) :: chart_inst_resp
   def update_chart_installation(attrs, chart_inst_id, %User{} = user) do
     Core.Repo.get!(ChartInstallation, chart_inst_id)
     |> Core.Repo.preload([:installation])
     |> ChartInstallation.changeset(attrs)
     |> allow(user, :create)
     |> when_ok(:update)
+  end
+
+  @doc """
+  Deletes a chart installation for a user
+  """
+  @spec delete_chart_installation(binary, User.t) :: chart_inst_resp
+  def delete_chart_installation(chart_inst_id, %User{} = user) do
+    Core.Repo.get!(ChartInstallation, chart_inst_id)
+    |> Core.Repo.preload([:installation])
+    |> allow(user, :create)
+    |> when_ok(:delete)
   end
 
   def update_latest_version(%Chart{} = chart, v) do

@@ -1,4 +1,6 @@
-import { useCallback, useContext, useEffect, useState } from 'react'
+import {
+  useCallback, useContext, useEffect, useState,
+} from 'react'
 import { Box, Text, TextInput } from 'grommet'
 import { Button, Check as Checkmark, SecondaryButton } from 'forge-core'
 import { Editable, Slate } from 'slate-react'
@@ -24,7 +26,9 @@ import { SeveritySelect } from './Severity'
 import { IncidentContext } from './context'
 import { IncidentViewContext } from './Incidents'
 
-export function IncidentForm({ attributes, setAttributes, statusEdit, children }) {
+export function IncidentForm({
+  attributes, setAttributes, statusEdit, children,
+}) {
   const [editorState, setEditorState] = useState(plainDeserialize(attributes.description || ''))
   const editor = useEditor()
   const setDescription = useCallback(editorState => {
@@ -137,6 +141,7 @@ export function RepositorySelect({ repository, setRepository }) {
   useEffect(() => {
     if (data && data.installations && !repository) {
       const installation = data.installations.edges[0]
+
       setRepository(installation && installation.node.repository)
     }
   }, [data, repository, setRepository])
@@ -163,7 +168,9 @@ export function CreateIncident({ onCompleted }) {
   const { clusterInformation } = useContext(IncidentContext)
   const { sort, order, filters } = useContext(IncidentViewContext)
   const [repository, setRepository] = useState(null)
-  const [attributes, setAttributes] = useState({ title: '', description: '', severity: 4, tags: [] })
+  const [attributes, setAttributes] = useState({
+    title: '', description: '', severity: 4, tags: [],
+  })
   const [mutation, { loading }] = useMutation(CREATE_INCIDENT, {
     variables: {
       repositoryId: repository && repository.id,
@@ -171,7 +178,9 @@ export function CreateIncident({ onCompleted }) {
     },
     update: (cache, { data: { createIncident } }) => updateCache(cache, {
       query: INCIDENTS_Q,
-      variables: { q: null, filters, order, sort },
+      variables: {
+        q: null, filters, order, sort,
+      },
       update: prev => appendConnection(prev, createIncident, 'incidents'),
     }),
     onCompleted,

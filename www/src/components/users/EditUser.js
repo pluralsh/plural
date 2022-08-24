@@ -1,4 +1,6 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import {
+  createContext, useContext, useEffect, useState,
+} from 'react'
 import { Button, Div } from 'honorable'
 import { Box, Text } from 'grommet'
 import {
@@ -30,7 +32,9 @@ import { Keys } from './Keys'
 
 export const EditContext = createContext({})
 
-export function EditSelect({ name, edit, icon, base }) {
+export function EditSelect({
+  name, edit, icon, base,
+}) {
   const { editing } = useParams()
   const navigate = useNavigate()
 
@@ -64,6 +68,7 @@ export function EditHeader({ text }) {
 
 export function EditContent({ edit, name, children }) {
   const { editing } = useParams()
+
   if (editing !== edit) return null
 
   return (
@@ -94,6 +99,7 @@ export default function EditUser() {
   const color = disabled ? 'status-error' : 'status-ok'
 
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
+
   useEffect(() => {
     setBreadcrumbs([{ url: '/user/edit', text: 'me' }, { url: `/user/edit/${editing}`, text: editing }])
   }, [setBreadcrumbs, editing])

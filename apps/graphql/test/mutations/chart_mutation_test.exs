@@ -154,4 +154,24 @@ defmodule GraphQl.ChartMutationsTest do
       assert updated["version"]["id"] == v2.id
     end
   end
+
+  describe "deleteChartInstallation" do
+    test "A user can delete their installations" do
+      %{user: user, repository: repo} = inst = insert(:installation)
+      chart = insert(:chart, repository: repo)
+      version = insert(:version, chart: chart)
+      ci = insert(:chart_installation, chart: chart, version: version, installation: inst)
+
+      {:ok, %{data: %{"deleteChartInstallation" => deleted}}} = run_query("""
+        mutation UpdateChartInstallation($id: ID!) {
+          deleteChartInstallation(id: $id) {
+            id
+          }
+        }
+      """, %{"id" => ci.id}, %{current_user: user})
+
+      assert deleted["id"] == ci.id
+      refute refetch(ci)
+    end
+  end
 end

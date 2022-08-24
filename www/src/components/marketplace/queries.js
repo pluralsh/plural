@@ -16,7 +16,7 @@ export const MARKETPLACE_QUERY = gql`
             ...InstallationFragment
           }
           tags {
-            name: tag
+            tag
           }
         }
       }
@@ -44,7 +44,7 @@ export const TAGS_QUERY = gql`
       }
       edges {
         node {
-          name: tag
+          tag
           count
         }
       }

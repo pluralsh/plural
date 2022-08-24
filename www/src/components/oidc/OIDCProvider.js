@@ -1,6 +1,8 @@
 import { useCallback, useContext, useState } from 'react'
 import { Button, Select } from 'forge-core'
-import { Box, Keyboard, Text, TextInput, ThemeContext } from 'grommet'
+import {
+  Box, Keyboard, Text, TextInput, ThemeContext,
+} from 'grommet'
 import { useMutation } from '@apollo/client'
 
 import { BindingInput, sanitize } from '../accounts/Role'
@@ -42,6 +44,7 @@ function UrlsInput({ uriFormat, urls, setUrls }) {
   const [value, setValue] = useState('')
   const addUrl = useCallback(() => {
     const url = uriFormat ? uriFormat.replace('{domain}', value) : value
+
     setUrls([...urls, url])
     setValue('')
   }, [urls, value, setValue, setUrls, uriFormat])
@@ -63,9 +66,9 @@ function UrlsInput({ uriFormat, urls, setUrls }) {
           <TextInput
             plain
             value={value}
-            placeholder={uriFormat ?
-              `enter a domain, and the uri will be formatted with ${uriFormat}` :
-              'add another redirect url'}
+            placeholder={uriFormat
+              ? `enter a domain, and the uri will be formatted with ${uriFormat}`
+              : 'add another redirect url'}
             onChange={({ target: { value } }) => setValue(value)}
           />
           <Button
@@ -94,7 +97,9 @@ function UrlsInput({ uriFormat, urls, setUrls }) {
   )
 }
 
-export function ProviderForm({ attributes, setAttributes, bindings, setBindings, repository }) {
+export function ProviderForm({
+  attributes, setAttributes, bindings, setBindings, repository,
+}) {
   const settings = repository.oauthSettings || {}
 
   return (

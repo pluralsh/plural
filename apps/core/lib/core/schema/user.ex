@@ -49,6 +49,7 @@ defmodule Core.Schema.User do
     field :external_id,     :string
     field :demo_count,      :integer, default: 0
     field :trusted_icon,    :boolean, default: false, virtual: true
+    field :password_change, :boolean, default: false, virtual: true
 
     field :email_confirmed,  :boolean, default: false
     field :email_confirm_by, :utc_datetime_usec
@@ -141,10 +142,11 @@ defmodule Core.Schema.User do
     do: from(p in query, order_by: ^order)
 
   @valid ~w(name email password phone login_method demoed demo_count trusted_icon onboarding)a
+  @secondary Enum.filter(@valid, & &1 not in [:password, :email])
 
-  def changeset(model, attrs \\ %{}) do
+  def changeset(model, attrs \\ %{}, mode \\ :primary) do
     model
-    |> cast(attrs, @valid)
+    |> cast(attrs, fields(mode))
     |> cast_embed(:address)
     |> cast_embed(:roles, with: &roles_changeset/2)
     |> unique_constraint(:email)
@@ -156,6 +158,7 @@ defmodule Core.Schema.User do
     |> validate_format(:email, @email_re)
     |> hash_password()
     |> generate_uuid(:avatar_id)
+    |> change_markers(password_hash: :password_change)
     |> cast_attachments(attrs, [:avatar], allow_urls: true)
     |> set_email_changed(model)
   end
@@ -171,6 +174,9 @@ defmodule Core.Schema.User do
       _ -> put_change(cs, :email_changed, false)
     end
   end
+
+  defp fields(:secondary), do: @secondary
+  defp fields(_), do: @valid
 
   def roles_changeset(model, attrs \\ %{}) do
     model

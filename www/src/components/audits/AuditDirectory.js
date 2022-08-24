@@ -1,54 +1,60 @@
-import { Div, Flex } from 'honorable'
-import { Tab } from 'pluralsh-design-system'
-import { Link, Outlet, useLocation } from 'react-router-dom'
+import {
+  ResponsiveLayoutContentContainer,
+  ResponsiveLayoutSidenavContainer,
+  ResponsiveLayoutSpacer,
+} from 'components/layout/ResponsiveLayout'
+import { Flex } from 'honorable'
+import { Tab, TabList } from 'pluralsh-design-system'
+import { Outlet, useLocation } from 'react-router-dom'
+import { useRef } from 'react'
 
-import { Container } from '../utils/Container'
-
-import { SidebarTabs } from '../utils/SidebarTabs'
+import { LinkTabWrap } from '../utils/Tabs'
 
 const DIRECTORY = [
-  { path: '/audits/logs', label: 'Audit Logs' },
+  { path: '/audits/logs', label: 'Audit logs' },
   { path: '/audits/logins', label: 'Logins' },
   { path: '/audits/geo', label: 'Geodistribution' },
 ]
-  
+
 export function AuditDirectory() {
   const { pathname } = useLocation()
-  
+  const tabStateRef = useRef()
+  const currentTab = DIRECTORY.find(tab => pathname?.startsWith(tab.path))
+
   return (
     <Flex
       height="100%"
       width="100%"
+      padding="16px"
       overflowY="hidden"
     >
-      <SidebarTabs>
-        {DIRECTORY.map(({ label, path }) => (
-          <Link
-            key={label}
-            to={path}
-            style={{ textDecoration: 'none' }}
-          >
-            <Tab
-              active={pathname === path}
-              vertical
-              textDecoration="none"
-            >{label}
-            </Tab>
-          </Link>
-        ))}
-      </SidebarTabs>
-      <Div
-        flexGrow={1}
-        py={1.5}
-        pr={1.5}
-        height="100%"
-        maxHeight="100%"
-        overflowY="auto"
+      <ResponsiveLayoutSidenavContainer
+        marginTop={90}
+        width={240}
       >
-        <Container type="table">
-          <Outlet />
-        </Container>
-      </Div>
+        <TabList
+          stateRef={tabStateRef}
+          stateProps={{
+            orientation: 'vertical',
+            selectedKey: currentTab?.path,
+          }}
+        >
+          {DIRECTORY.map(({ label, path }) => (
+            <LinkTabWrap
+              key={path}
+              textValue={label}
+              to={path}
+            >
+              <Tab>{label}</Tab>
+            </LinkTabWrap>
+          ))}
+        </TabList>
+      </ResponsiveLayoutSidenavContainer>
+      <ResponsiveLayoutSpacer />
+      <ResponsiveLayoutContentContainer paddingTop="large">
+        <Outlet />
+      </ResponsiveLayoutContentContainer>
+      <ResponsiveLayoutSpacer />
     </Flex>
   )
 }

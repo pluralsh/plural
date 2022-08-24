@@ -86,7 +86,9 @@ function Upgrade({ upgrade, acked }) {
 export function UpgradeQueue() {
   const [listRef, setListRef] = useState(null)
   const { id } = useParams()
-  const { data, loading, fetchMore, subscribeToMore, refetch } = useQuery(QUEUE, {
+  const {
+    data, loading, fetchMore, subscribeToMore, refetch,
+  } = useQuery(QUEUE, {
     variables: { id },
     fetchPolicy: 'cache-and-network',
   })
@@ -100,6 +102,7 @@ export function UpgradeQueue() {
   }), [id, subscribeToMore])
 
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
+
   useEffect(() => {
     setBreadcrumbs([
       { url: '/upgrades', text: 'upgrades' },

@@ -50,10 +50,17 @@ function TerminalThemeSelector() {
         </Button>
       )}
       dropdownFooterFixed={(
-        <Flex borderTop="1px solid border-fill-two">
+        <Flex
+          width="458px"
+          height="30px"
+        >
           <Input
             small
-            border={null}
+            position="absolute"
+            width="460px"
+            margin="-1px"
+            borderTopLeftRadius={0}
+            borderTopRightRadius={0}
             startIcon={<MagnifyingGlassIcon />}
             placeholder="Filter themes"
             value={search}

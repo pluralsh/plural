@@ -26,7 +26,7 @@ const hueToBorderColor: Record<Hue, string> = {
 }
 
 const ListItem = styled(LiBare)(({ theme, hue = 'default' }) => ({
-  padding: `${theme.spacing.medium}px ${theme.spacing.large}px`,
+  padding: `${theme.spacing.xsmall}px ${theme.spacing.medium}px`,
   '&:not(:last-child)': {
     borderBottom: `1px solid ${theme.colors[hueToBorderColor[hue]]}`,
   },

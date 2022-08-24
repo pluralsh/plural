@@ -27,7 +27,7 @@ export const Icon = forwardRef<HTMLDivElement, IconProps>(({
     <Flex
       ref={ref}
       flex={false}
-      padding={theme.spacing.xxsmall}
+      padding={theme.spacing.xsmall}
       borderRadius="medium"
       cursor="pointer"
       {...{ '&:focus,&:focus-visible': { outline: 'none' } }}

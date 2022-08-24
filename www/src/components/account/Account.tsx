@@ -5,27 +5,36 @@ import {
   ResponsiveLayoutSpacer,
 } from 'components/layout/ResponsiveLayout'
 import { Flex } from 'honorable'
-import { Tab, TabList, TabPanel } from 'pluralsh-design-system'
+import { TabPanel } from 'pluralsh-design-system'
 import { useRef } from 'react'
 
-import { Outlet, useLocation } from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
 
-import { LinkTabWrap } from '../utils/Tabs'
+import AccountSideNav from './AccountSidenav'
 
-const DIRECTORY = [
-  { path: '/account/edit', label: 'Account Settings' },
-  { path: '/account/users', label: 'Users' },
-  { path: '/account/service-accounts', label: 'Service Accounts' },
-  { path: '/account/groups', label: 'Groups' },
-  { path: '/account/roles', label: 'Roles' },
-  { path: '/account/domains', label: 'Domains' },
-]
+export type DomainMappingProps = {
+  __typename?: 'DomainMapping'
+  id?: string
+  domain?: string
+  enableSso?: boolean
+}
+export type RootUser = {
+  __typename?: 'User'
+  id?: 'string'
+}
+export type Account = {
+  __typename: 'Account'
+  id?: string
+  rootUser?: RootUser
+  name?: string
+  domainMappings?: DomainMappingProps[]
+  backgroundColor?: string
+  billingCustomerId?: string
+}
+
 
 export function Account() {
-  const { pathname } = useLocation()
   const tabStateRef = useRef<any>()
-  const currentTab = DIRECTORY.find(tab => pathname?.startsWith(tab.path))
-
   return (
     <Flex
       height="100%"
@@ -35,23 +44,7 @@ export function Account() {
       paddingTop={88}
     >
       <ResponsiveLayoutSidenavContainer width={240}>
-        <TabList
-          stateRef={tabStateRef}
-          stateProps={{
-            orientation: 'vertical',
-            selectedKey: currentTab?.path,
-          }}
-        >
-          {DIRECTORY.map(({ label, path }) => (
-            <LinkTabWrap
-              key={path}
-              textValue={label}
-              to={path}
-            >
-              <Tab>{label}</Tab>
-            </LinkTabWrap>
-          ))}
-        </TabList>
+        {<AccountSideNav tabStateRef={tabStateRef } />}
       </ResponsiveLayoutSidenavContainer>
       <ResponsiveLayoutSpacer />
       <TabPanel

@@ -4,11 +4,21 @@ import { Box } from 'grommet'
 import { Flex } from 'honorable'
 import { isEmpty } from 'lodash'
 import {
-  Button, GlobeIcon, Input, Modal, ModalHeader, PageTitle, SearchIcon,
+  Button,
+  GlobeIcon,
+  Input,
+  Modal,
+  ModalHeader,
+  PageTitle,
+  SearchIcon,
 } from 'pluralsh-design-system'
 import { useContext, useState } from 'react'
 
-import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
+import {
+  extendConnection,
+  removeConnection,
+  updateCache,
+} from '../../utils/graphql'
 import { Placeholder } from '../accounts/Audits'
 import { canEdit } from '../accounts/EditAccount'
 import { DELETE_GROUP, GROUPS_Q } from '../accounts/queries'
@@ -34,20 +44,12 @@ function Header({ q, setQ }) {
     >
       <Box fill="horizontal">
         <Input
-          width="50%"
+          width="100%"
           value={q}
           placeholder="Search for groups by name"
           startIcon={<SearchIcon size={15} />}
           onChange={({ target: { value } }) => setQ(value)}
         />
-      </Box>
-      <Box
-        flex={false}
-        align="center"
-        direction="row"
-        gap="medium"
-      >
-        <CreateGroup q={q} />
       </Box>
     </Box>
   )
@@ -92,7 +94,8 @@ function Group({ group, q }) {
               secondary
               small
               onClick={() => setView(true)}
-            >View
+            >
+              View
             </Button>
           )}
           {editable && (
@@ -100,7 +103,8 @@ function Group({ group, q }) {
               secondary
               small
               onClick={() => setEdit(true)}
-            >Edit
+            >
+              Edit
             </Button>
           )}
           {editable && <DeleteIcon onClick={() => setConfirm(true)} />}
@@ -110,9 +114,7 @@ function Group({ group, q }) {
           width="60vw"
           onClose={() => setView(false)}
         >
-          <ModalHeader onClose={() => setView(false)}>
-            VIEW GROUP
-          </ModalHeader>
+          <ModalHeader onClose={() => setView(false)}>VIEW GROUP</ModalHeader>
           <ViewGroup group={group} />
         </Modal>
         <Modal
@@ -121,9 +123,7 @@ function Group({ group, q }) {
           width="60vw"
           onClose={() => setEdit(false)}
         >
-          <ModalHeader onClose={() => setEdit(false)}>
-            EDIT GROUP
-          </ModalHeader>
+          <ModalHeader onClose={() => setEdit(false)}>EDIT GROUP</ModalHeader>
           <UpdateGroup
             group={group}
             cancel={() => setEdit(false)}
@@ -172,16 +172,23 @@ function GroupsInner({ q }) {
               />
             </ListItem>
           )}
-          loadNextPage={() => pageInfo.hasNextPage && fetchMore({
-            variables: { cursor: pageInfo.endCursor },
-            updateQuery: (prev, { fetchMoreResult: { groups } }) => extendConnection(prev, groups, 'groups'),
-          })}
+          loadNextPage={() => pageInfo.hasNextPage
+            && fetchMore({
+              variables: { cursor: pageInfo.endCursor },
+              updateQuery: (prev, { fetchMoreResult: { groups } }) => extendConnection(prev, groups, 'groups'),
+            })}
           hasNextPage={pageInfo.hasNextPage}
           loading={loading}
           placeholder={Placeholder}
         />
       ) : (
-        <EmptyState message={isEmpty(q) ? "Looks like you don't have any groups yet." : `No groups found for ${q}`}>
+        <EmptyState
+          message={
+            isEmpty(q)
+              ? "Looks like you don't have any groups yet."
+              : `No groups found for ${q}`
+          }
+        >
           <CreateGroup q={q} />
         </EmptyState>
       )}
@@ -198,7 +205,9 @@ export function Groups() {
       flexDirection="column"
       maxHeight="100%"
     >
-      <PageTitle heading="Groups" />
+      <PageTitle heading="Groups">
+        <CreateGroup q={q} />
+      </PageTitle>
       <Box
         fill
         gap="medium"

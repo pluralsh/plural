@@ -40,19 +40,12 @@ function Header({ q, setQ }) {
         align="center"
       >
         <Input
-          width="50%"
+          width="100%"
           value={q}
           placeholder="Search for roles by name"
           startIcon={<SearchIcon size={15} />}
           onChange={({ target: { value } }) => setQ(value)}
         />
-      </Box>
-      <Box
-        flex={false}
-        direction="row"
-        align="center"
-      >
-        <CreateRole q={q} />
       </Box>
     </Box>
   )
@@ -175,7 +168,10 @@ export function Roles() {
       flexDirection="column"
       maxHeight="100%"
     >
-      <PageTitle heading="Roles" />
+      <PageTitle heading="Roles">
+        {' '}
+        <CreateRole q={q} />
+      </PageTitle>
       <Box
         fill
         gap="medium"

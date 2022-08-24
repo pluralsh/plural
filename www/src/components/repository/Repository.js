@@ -3,7 +3,6 @@ import { useRef } from 'react'
 import { Outlet, useParams } from 'react-router-dom'
 import { Flex } from 'honorable'
 import { TabPanel } from 'pluralsh-design-system'
-import styled from 'styled-components'
 
 import { GoBack } from 'components/utils/GoBack'
 
@@ -24,14 +23,6 @@ import RepositorySideNav from './RepositorySideNav.tsx'
 import { RepositorySideCar } from './RepositorySideCar.tsx'
 
 import { REPOSITORY_QUERY } from './queries'
-
-const StyledTabPanel = styled(TabPanel)(() => ({
-  display: 'flex',
-  flexDirection: 'column',
-  flexGrow: 1,
-  height: '100%',
-  maxHeight: '100%',
-}))
 
 function Repository() {
   const { id } = useParams()
@@ -88,11 +79,14 @@ function Repository() {
             <RepositorySideNav tabStateRef={tabStateRef} />
           </ResponsiveLayoutSidenavContainer>
           <ResponsiveLayoutSpacer />
-          <ResponsiveLayoutContentContainer paddingHorizontal="xxxsmall">
-            <StyledTabPanel stateRef={tabStateRef}>
-              <Outlet />
-            </StyledTabPanel>
-          </ResponsiveLayoutContentContainer>
+          <TabPanel
+            as={
+              <ResponsiveLayoutContentContainer paddingHorizontal="xxxsmall" />
+            }
+            stateRef={tabStateRef}
+          >
+            <Outlet />
+          </TabPanel>
           <ResponsiveLayoutSidecarContainer>
             <RepositorySideCar />
           </ResponsiveLayoutSidecarContainer>

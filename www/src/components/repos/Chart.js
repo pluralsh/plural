@@ -259,13 +259,14 @@ export default function Chart() {
           </TabList>
         </ResponsiveLayoutSidenavContainer>
         <ResponsiveLayoutSpacer />
-        <ResponsiveLayoutContentContainer>
-          <TabPanel stateRef={tabStateRef}>
-            <Outlet
-              context={{ helmChart: chart, currentHelmChart: currentVersion }}
-            />
-          </TabPanel>
-        </ResponsiveLayoutContentContainer>
+        <TabPanel
+          as={<ResponsiveLayoutContentContainer />}
+          stateRef={tabStateRef}
+        >
+          <Outlet
+            context={{ helmChart: chart, currentHelmChart: currentVersion }}
+          />
+        </TabPanel>
         <ResponsiveLayoutSidecarContainer width="200px">
           <Box
             direction="column"

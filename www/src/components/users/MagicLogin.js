@@ -5,7 +5,7 @@ import {
   Box, Collapsible, Form, Keyboard, Text,
 } from 'grommet'
 import {
-  Divider, FormField, LoadingSpinner, LoopingLogo, StatusOkIcon,
+  Divider, FormField, LoadingSpinner, StatusOkIcon,
 } from 'pluralsh-design-system'
 import {
   useApolloClient, useLazyQuery, useMutation, useQuery,

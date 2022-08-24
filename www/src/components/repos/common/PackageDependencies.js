@@ -1,4 +1,4 @@
-import { memo, useState } from 'react'
+import { memo, useRef, useState } from 'react'
 import { Box, Text } from 'grommet'
 import { useQuery } from '@apollo/client'
 import cloneDeep from 'lodash/cloneDeep'
@@ -8,9 +8,9 @@ import uniqueId from 'lodash/uniqueId'
 
 import { useOutletContext } from 'react-router-dom'
 
-import { PageTitle, SubTab } from 'pluralsh-design-system'
-
-import { Flex } from 'honorable'
+import {
+  PageTitle, SubTab, TabList, TabPanel,
+} from 'pluralsh-design-system'
 
 import TreeGraph from '../../utils/TreeGraph'
 
@@ -143,13 +143,22 @@ const Dependencies = memo(({ name, dependencies, resource }) => {
   )
 })
 
+const DIRECTORY = [
+  { key: 'immediate', label: 'Immediate' },
+  { key: 'full', label: 'Full' },
+]
+
 export default function PackageDependencies() {
   const {
     helmChart, terraformChart, currentHelmChart, currentTerraformChart,
-  } = useOutletContext()
+  }
+    = useOutletContext()
   const chart = helmChart || terraformChart
   const current = currentHelmChart || currentTerraformChart
   const [full, setFull] = useState(false)
+
+  const tabStateRef = useRef()
+  const selectedTabKey = full ? 'full' : 'immediate'
 
   return (
     <Box
@@ -157,24 +166,32 @@ export default function PackageDependencies() {
       gap="small"
     >
       <PageTitle heading="Dependencies">
-        <Flex>
-          <SubTab
-            active={!full}
-            onClick={() => setFull(false)}
-          >
-            Immediate
-          </SubTab>
-          <SubTab
-            active={full}
-            onClick={() => setFull(true)}
-          >
-            Full
-          </SubTab>
-        </Flex>
+        <TabList
+          stateRef={tabStateRef}
+          stateProps={{
+            orientation: 'horizontal',
+            selectedKey: selectedTabKey,
+            onSelectionChange: key => setFull(key === 'full'),
+          }}
+        >
+          {DIRECTORY.map(({ label, key }) => (
+            <SubTab
+              key={key}
+              textValue={label}
+            >
+              {label}
+            </SubTab>
+          ))}
+        </TabList>
       </PageTitle>
-      <Box
-        pad={{ right: 'small' }}
-        overflow={{ vertical: 'auto' }}
+      <TabPanel
+        stateRef={tabStateRef}
+        as={(
+          <Box
+            pad={{ right: 'small' }}
+            overflow={{ vertical: 'auto' }}
+          />
+        )}
       >
         {full && <FullDependencies resource={chart} />}
         {!full && (
@@ -184,8 +201,7 @@ export default function PackageDependencies() {
             dependencies={(current || chart).dependencies}
           />
         )}
-      </Box>
+      </TabPanel>
     </Box>
-
   )
 }

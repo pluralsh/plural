@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import { UnstyledLink } from './Link'
 
 export const LinkTabWrap = styled(forwardRef(({
-  className, active, vertical, children, subTab: _, ...props
+  className, active, vertical, children, textValue: _textValue, subTab: _, ...props
 }, ref) => (
   <UnstyledLink
     ref={ref}

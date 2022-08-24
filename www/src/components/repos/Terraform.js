@@ -161,16 +161,17 @@ export default function Terraform() {
           </TabList>
         </ResponsiveLayoutSidenavContainer>
         <ResponsiveLayoutSpacer />
-        <ResponsiveLayoutContentContainer>
-          <TabPanel stateRef={tabStateRef}>
-            <Outlet
-              context={{
-                terraformChart: terraformModule,
-                currentTerraformChart: currentVersion,
-              }}
-            />
-          </TabPanel>
-        </ResponsiveLayoutContentContainer>
+        <TabPanel
+          as={<ResponsiveLayoutContentContainer />}
+          stateRef={tabStateRef}
+        >
+          <Outlet
+            context={{
+              terraformChart: terraformModule,
+              currentTerraformChart: currentVersion,
+            }}
+          />
+        </TabPanel>
         <ResponsiveLayoutSidecarContainer width="200px">
           <Box
             direction="column"

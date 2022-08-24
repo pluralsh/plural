@@ -10,8 +10,10 @@ import { Box } from 'grommet'
 
 import {
   Codeline,
+  GlobeIcon,
   ListBoxItem,
   ListBoxItemChipList,
+  PadlockLockedIcon,
   Select,
   Switch,
   Tab,
@@ -27,6 +29,8 @@ import {
 
 import { LinkTabWrap } from 'components/utils/Tabs'
 
+import { Flex } from 'honorable'
+
 import { PluralConfigurationContext } from '../login/CurrentUser'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
@@ -39,18 +43,27 @@ import { DetailContainer } from './Installation'
 import { DEFAULT_DKR_ICON } from './constants'
 import { DOCKER_IMG_Q, DOCKER_Q, UPDATE_DOCKER } from './queries'
 
-function PublicSwitch({ dockerRepo }) {
+function PrivateControl({ dockerRepo }) {
   const [mutation] = useMutation(UPDATE_DOCKER, { variables: { id: dockerRepo.id } })
+
+  if (!dockerRepo?.repository?.editable) {
+    return (
+      <Flex
+        direction="row"
+        gap="xsmall"
+        fontWeight="600"
+      >
+        {dockerRepo.public ? (<><GlobeIcon /> Public</>) : (<><PadlockLockedIcon /> Private</>)}
+      </Flex>
+    )
+  }
 
   return (
     <Switch
-      checked={dockerRepo.public}
-      disabled={!dockerRepo.repository.editable}
-      onChange={({ target: { checked } }) => mutation({
-        variables: { attributes: { public: checked } },
-      })}
+      checked={!dockerRepo.public}
+      onChange={() => mutation({ variables: { attributes: { public: !dockerRepo.public } } })}
     >
-      {dockerRepo.public ? 'Public' : 'Private'}
+      Private
     </Switch>
   )
 }
@@ -216,7 +229,7 @@ export function Docker() {
             gap="small"
             style={{ overflow: 'hidden' }}
           >
-            <PublicSwitch dockerRepo={image.dockerRepository} />
+            <PrivateControl dockerRepo={image.dockerRepository} />
             <PackageProperty header="Created">
               {moment(image.insertedAt).format('lll')}
             </PackageProperty>

@@ -162,7 +162,6 @@ export function Shell({ shell }) {
             }}
           />
         </Flex>
-        {/* <Flex flexGrow={1} /> */}
       </Flex>
     </Flex>
   )

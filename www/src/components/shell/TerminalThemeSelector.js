@@ -76,13 +76,16 @@ function TerminalThemeSelector() {
           </Button>
         )}
         dropdownFooterFixed={(
-          <Input
-            small
-            startIcon={<MagnifyingGlassIcon />}
-            placeholder="Filter themes"
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-          />
+          <Flex borderTop="1px solid border-fill-two">
+            <Input
+              small
+              border={null}
+              startIcon={<MagnifyingGlassIcon />}
+              placeholder="Filter themes"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+            />
+          </Flex>
         )}
       >
         {displayedThemes.map(t => (

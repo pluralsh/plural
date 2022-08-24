@@ -3,7 +3,7 @@ import { Banner } from 'pluralsh-design-system'
 import { useCallback, useEffect, useState } from 'react'
 
 function Toast({ children, onClose = () => {}, ...banner }) {
-  const closeTimeout = 5000
+  const closeTimeout = 10000
   const [open, setOpen] = useState(true)
   const close = useCallback(() => {
     setOpen(false)
@@ -63,3 +63,13 @@ export function SuccessToast({ children, onClose = () => {}, ...banner }) {
   )
 }
 
+export function InfoToast({ children, onClose = () => {}, ...banner }) {
+  return (
+    <Toast
+      severity="info"
+      onClose={onClose}
+      {...banner}
+    >{children}
+    </Toast>
+  )
+}

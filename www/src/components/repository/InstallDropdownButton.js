@@ -224,8 +224,8 @@ function InstallDropdownButton({ recipes, ...props }) {
         <DropdownButton
           fade
           defaultOpen
-          onOpen={x => {
-            if (!x) setRecipe(null)
+          onOpen={open => {
+            if (!open) setRecipe(null)
           }}
           label="Install"
           onChange={() => {

@@ -10890,9 +10890,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"honorable@npm:0.137.0":
-  version: 0.137.0
-  resolution: "honorable@npm:0.137.0"
+"honorable@npm:0.139.0":
+  version: 0.139.0
+  resolution: "honorable@npm:0.139.0"
   dependencies:
     "@emotion/is-prop-valid": ^1.1.3
     "@floating-ui/react-dom": ^1.0.0
@@ -10906,7 +10906,7 @@ __metadata:
     "@emotion/styled": ">=10.0.0"
     react: ">=16.0.0"
     react-dom: ">=16.0.0"
-  checksum: 7ad2e4de6ad5c49db1104ae2afcf78ef6fd6692dafebb750514e9a5995f25c0940245cf5744b8417e71b8d554d5ea4e407952521ca64383fec60e41de1c79094
+  checksum: 520c8d16dabd70f11310ceec7fa4bc6bde944419ee1983e0813a62506efddb3c9081cc8027364a237d05b561de887bb48cc9b2dc0d5b5f75adfd674af5683e40
   languageName: node
   linkType: hard
 
@@ -14958,9 +14958,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pluralsh-design-system@npm:1.167.0":
-  version: 1.167.0
-  resolution: "pluralsh-design-system@npm:1.167.0"
+"pluralsh-design-system@npm:1.174.0":
+  version: 1.174.0
+  resolution: "pluralsh-design-system@npm:1.174.0"
   dependencies:
     "@floating-ui/react-dom-interactions": 0.8.1
     "@react-aria/button": 3.6.0
@@ -14996,7 +14996,7 @@ __metadata:
     react-dom: ">=16.0.0"
     react-transition-group: ">=4.4.2"
     styled-components: ">=5.3.5"
-  checksum: a47ab9a725637f58ba46d9fd2f50c75ee7c26ecf1291e79b6cdd98a8ffbfd1dfb531b588b719e7aa4512ae623b3e332804a6f6e7d542cbce205b3fbc4945a163
+  checksum: 9bd38952ccd0fa2f8aeb71f2f105d1ba2364c67c1c5588e9395a9559efbb40dfb8d43b996b98da0ce4dac9c50f6512e5a9956a9444b599d5cb45efca885b0b55
   languageName: node
   linkType: hard
 
@@ -20755,7 +20755,7 @@ __metadata:
     grommet: 2.25.1
     grommet-icons: 4.7.0
     highlight.js: 11.6.0
-    honorable: 0.137.0
+    honorable: 0.139.0
     honorable-recipe-mp: 0.3.0
     honorable-theme-default: 0.65.0
     js-yaml: 4.1.0
@@ -20764,7 +20764,7 @@ __metadata:
     moment: 2.29.4
     phoenix: 1.6.11
     pluralsh-absinthe-socket-apollo-link: 0.2.0
-    pluralsh-design-system: 1.167.0
+    pluralsh-design-system: 1.174.0
     postcss-import: 8.2.0
     prop-types: 15.8.1
     query-string: 7.1.1

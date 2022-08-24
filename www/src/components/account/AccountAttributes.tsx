@@ -179,75 +179,70 @@ export function AccountAttributes() {
       <ContentCard
         maxHeight="100%"
         overflowY="auto"
-        paddingHorizontal="xlarge"
-        paddingVertical={0}
-        innerProps={{ padding: 0 }}
       >
-        <Div paddingVertical="xlarge">
-          <Flex
-            flexDirection="column"
-            gap="large"
-          >
-            {error && (
-              <GqlError
-                error={error}
-                header="Something went wrong"
-              />
-            )}
-            <ValidatedInput
-              label="Account name"
-              value={formState.name}
-              onChange={({ target: { value } }) => updateFormState({ name: value })}
+        <Flex
+          flexDirection="column"
+          gap="large"
+        >
+          {error && (
+            <GqlError
+              error={error}
+              header="Something went wrong"
             />
-            <FormField
-              label="Domain mappings"
-              hint="Register email domains to automatically add users to your
+          )}
+          <ValidatedInput
+            label="Account name"
+            value={formState.name}
+            onChange={({ target: { value } }) => updateFormState({ name: value })}
+          />
+          <FormField
+            label="Domain mappings"
+            hint="Register email domains to automatically add users to your
                       account"
-            >
-              <Flex gap="medium">
-                <Div flexGrow={1}>
-                  <Input
-                    value={domain}
-                    width="100%"
-                    placeholder="enter an email domain"
-                    onKeyDown={event => {
-                      if (event.key === 'Enter') {
-                        event.preventDefault()
-                        handleAddDomain()
-                      }
-                    }}
-                    onChange={({ target: { value } }) => setDomain(value)}
-                  />
-                </Div>
-                <Div>
-                  <Button
-                    secondary
-                    type="button"
-                    disabled={!domain}
-                    onClick={() => {
+          >
+            <Flex gap="medium">
+              <Div flexGrow={1}>
+                <Input
+                  value={domain}
+                  width="100%"
+                  placeholder="enter an email domain"
+                  onKeyDown={event => {
+                    if (event.key === 'Enter') {
+                      event.preventDefault()
                       handleAddDomain()
-                    }}
-                  >
-                    Add
-                  </Button>
-                </Div>
-              </Flex>
-            </FormField>
-            {sortedDomainMappings.length > 0 && (
-              <Card hue="lighter">
-                <List>
-                  {sortedDomainMappings.map(mapping => (
-                    <DomainMapping
-                      key={mapping.domain}
-                      mapping={mapping}
-                      remove={() => rmDomain(mapping.domain)}
-                    />
-                  ))}
-                </List>
-              </Card>
-            )}
-          </Flex>
-        </Div>
+                    }
+                  }}
+                  onChange={({ target: { value } }) => setDomain(value)}
+                />
+              </Div>
+              <Div>
+                <Button
+                  secondary
+                  type="button"
+                  disabled={!domain}
+                  onClick={() => {
+                    handleAddDomain()
+                  }}
+                >
+                  Add
+                </Button>
+              </Div>
+            </Flex>
+          </FormField>
+          {sortedDomainMappings.length > 0 && (
+            <Card hue="lighter">
+              <List>
+                {sortedDomainMappings.map(mapping => (
+                  <DomainMapping
+                    key={mapping.domain}
+                    mapping={mapping}
+                    remove={() => rmDomain(mapping.domain)}
+                  />
+                ))}
+              </List>
+            </Card>
+          )}
+        </Flex>
       </ContentCard>
     </Form>
   )

@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react'
-import { ExtendTheme, Flex } from 'honorable'
+import { Flex } from 'honorable'
 import Fuse from 'fuse.js'
 
 import {
@@ -9,31 +9,6 @@ import {
 import TerminalThemeContext from '../../contexts/TerminalThemeContext'
 
 import { normalizedThemes, themeNames } from './themes'
-
-const extendedHonorableTheme = {
-  DropdownButton: {
-    Root: [
-      {
-        width: 'auto',
-      },
-    ],
-    Button: [
-      {
-        small: true,
-        tertiary: true,
-        borderRadius: 'medium',
-      },
-    ],
-    Menu: [
-      {
-        top: 'calc(100% + 8px)',
-        left: -(128 + 64 + 32),
-        maxHeight: 256,
-        overflowY: 'auto',
-      },
-    ],
-  },
-}
 
 const fuse = new Fuse(themeNames, { threshold: 0.25 })
 
@@ -45,64 +20,62 @@ function TerminalThemeSelector() {
   const displayedThemes = results.length ? results : themeNames
 
   return (
-    <ExtendTheme theme={extendedHonorableTheme}>
-      <Select
-        placement="right"
-        width="460px"
-        onSelectionChange={t => setTerminalTheme(t)}
-        onOpenChange={o => setOpen(o)}
-        triggerButton={(
-          <Button
-            tertiary
-            small
-            startIcon={<SprayIcon />}
-            endIcon={(
-              <DropdownArrowIcon
-                marginLeft="8px"
-                size={12}
-                style={open ? {
-                  transform: 'rotate(180deg)',
-                  transitionDuration: '.2s',
-                  transitionProperty: 'transform',
-                } : {
-                  transform: 'rotate(0)',
-                  transitionDuration: '.2s',
-                  transitionProperty: 'transform',
-                }}
-              />
-            )}
-          >
-            Change theme
-          </Button>
-        )}
-        dropdownFooterFixed={(
-          <Flex borderTop="1px solid border-fill-two">
-            <Input
-              small
-              border={null}
-              startIcon={<MagnifyingGlassIcon />}
-              placeholder="Filter themes"
-              value={search}
-              onChange={e => setSearch(e.target.value)}
+    <Select
+      placement="right"
+      width="460px"
+      onSelectionChange={t => setTerminalTheme(t)}
+      onOpenChange={o => setOpen(o)}
+      triggerButton={(
+        <Button
+          tertiary
+          small
+          startIcon={<SprayIcon />}
+          endIcon={(
+            <DropdownArrowIcon
+              marginLeft="8px"
+              size={12}
+              style={open ? {
+                transform: 'rotate(180deg)',
+                transitionDuration: '.2s',
+                transitionProperty: 'transform',
+              } : {
+                transform: 'rotate(0)',
+                transitionDuration: '.2s',
+                transitionProperty: 'transform',
+              }}
             />
-          </Flex>
-        )}
-      >
-        {displayedThemes.map(t => (
-          <ListBoxItem
-            key={t}
-            label={t}
-            textValue={t}
-            leftContent={(
-              <TerminalThemePreview
-                theme={normalizedThemes[t]}
-                marginRight="small"
-              />
-            )}
+          )}
+        >
+          Change theme
+        </Button>
+      )}
+      dropdownFooterFixed={(
+        <Flex borderTop="1px solid border-fill-two">
+          <Input
+            small
+            border={null}
+            startIcon={<MagnifyingGlassIcon />}
+            placeholder="Filter themes"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
           />
-        ))}
-      </Select>
-    </ExtendTheme>
+        </Flex>
+      )}
+    >
+      {displayedThemes.map(t => (
+        <ListBoxItem
+          key={t}
+          label={t}
+          textValue={t}
+          leftContent={(
+            <TerminalThemePreview
+              theme={normalizedThemes[t]}
+              marginRight="small"
+            />
+          )}
+        />
+      ))}
+    </Select>
   )
 }
 

@@ -4,7 +4,9 @@ import {
 import {
   Box, Collapsible, Form, Keyboard, Text,
 } from 'grommet'
-import { Divider, FormField, StatusOkIcon } from 'pluralsh-design-system'
+import {
+  Divider, FormField, LoadingSpinner, LoopingLogo, StatusOkIcon,
+} from 'pluralsh-design-system'
 import {
   useApolloClient, useLazyQuery, useMutation, useQuery,
 } from '@apollo/client'
@@ -224,6 +226,10 @@ export function handleOauthChallenge(client, challenge) {
     variables: { challenge },
   }).then(({ data: { acceptLogin: { redirectTo } } }) => {
     window.location = redirectTo
+  }).catch(err => {
+    console.error(err)
+    wipeChallenge()
+    window.location = window.location.pathname
   })
 }
 
@@ -278,6 +284,7 @@ export function Login() {
   const navigate = useNavigate()
   const client = useApolloClient()
   const location = useLocation()
+  const jwt = fetchToken()
   const { login_challenge: challenge, deviceToken } = queryString.parse(location.search)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -285,7 +292,7 @@ export function Login() {
     variables: { email, host: host() },
   })
 
-  const loginMethod = data && data.loginMethod && data.loginMethod.loginMethod
+  const loginMethod = data?.loginMethod?.loginMethod
   const open = loginMethod === LoginMethod.PASSWORD
   const passwordless = loginMethod === LoginMethod.PASSWORDLESS
 
@@ -317,15 +324,13 @@ export function Login() {
   }, [data, challenge, deviceToken])
 
   useEffect(() => {
-    const jwt = fetchToken()
-
     if (jwt && challenge) {
       handleOauthChallenge(client, challenge)
     }
     else if (!deviceToken && jwt) {
       navigate('/')
     }
-  }, [challenge, deviceToken, navigate, client])
+  }, [challenge, deviceToken, navigate, client, jwt])
 
   const submit = useCallback(() => (open ? mutation() : getLoginMethod()), [mutation, getLoginMethod, open])
 
@@ -339,6 +344,21 @@ export function Login() {
         to="/signup"
         state={{ email }}
       />
+    )
+  }
+
+  // This is to ensure that if both login token and login challenge are
+  // available, user will not see the login view while oauth challenge
+  // and redirect to the oauth consent happen.
+  if (jwt && challenge) {
+    return (
+      <Flex
+        grow={1}
+        justify="center"
+        align="center"
+      >
+        <LoadingSpinner />
+      </Flex>
     )
   }
 

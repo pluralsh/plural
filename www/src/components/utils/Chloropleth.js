@@ -39,6 +39,7 @@ function Tooltip({ feature }) {
       <Text
         size="12px"
         weight={500}
+        color="black"
       >
         {id} {value}
       </Text>
@@ -54,7 +55,9 @@ export function Chloropleth({ data }) {
   return (
     <ResponsiveChoropleth
       data={data}
-      theme={{ textColor: normalizeColor('dark-5', theme) }}
+      theme={{
+        textColor: normalizeColor('dark-5', theme),
+      }}
       features={countries.features}
       label="properties.name"
       valueFormat=".2s"

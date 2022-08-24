@@ -4,12 +4,19 @@ import {
   Button, Div, MenuItem, Span,
 } from 'honorable'
 import {
-  Modal, ModalActions, ModalHeader, ValidatedInput,
+  Modal,
+  ModalActions,
+  ModalHeader,
+  ValidatedInput,
 } from 'pluralsh-design-system'
 import { useState } from 'react'
 
 import { appendConnection, updateCache } from '../../utils/graphql'
-import { CREATE_SERVICE_ACCOUNT, UPDATE_SERVICE_ACCOUNT, USERS_Q } from '../accounts/queries'
+import {
+  CREATE_SERVICE_ACCOUNT,
+  UPDATE_SERVICE_ACCOUNT,
+  USERS_Q,
+} from '../accounts/queries'
 import { DELETE_USER } from '../users/queries'
 import { GqlError } from '../utils/Alert'
 
@@ -20,7 +27,12 @@ import { BindingInput } from './Typeaheads'
 import { sanitize } from './utils'
 
 function ServiceAccountForm({
-  error, attributes, setAttributes, bindings, setBindings, ...box
+  error,
+  attributes,
+  setAttributes,
+  bindings,
+  setBindings,
+  ...box
 }) {
   return (
     <Box
@@ -48,31 +60,44 @@ function ServiceAccountForm({
       <BindingInput
         type="user"
         hint="users that can impersonate this service account"
-        bindings={bindings.filter(({ user }) => !!user).map(({ user: { email } }) => email)}
+        bindings={bindings
+          .filter(({ user }) => !!user)
+          .map(({ user: { email } }) => email)}
         add={user => setBindings([...bindings, { user }])}
         remove={email => setBindings(bindings.filter(({ user }) => !user || user.email !== email))}
       />
       <BindingInput
         type="group"
         hint="user groups that can impersonate this service account"
-        bindings={bindings.filter(({ group }) => !!group).map(({ group: { name } }) => name)}
+        bindings={bindings
+          .filter(({ group }) => !!group)
+          .map(({ group: { name } }) => name)}
         add={group => setBindings([...bindings, { group }])}
         remove={name => setBindings(bindings.filter(({ group }) => !group || group.name !== name))}
       />
     </Box>
-
   )
 }
 
 export function EditServiceAccount({ user, update }) {
   const [confirm, setConfirm] = useState(false)
   const [edit, setEdit] = useState(false)
-  const [attributes, setAttributes] = useState({ name: user.name, email: user.email })
-  const [bindings, setBindings] = useState(user.impersonationPolicy?.bindings || [])
-  const [mutation, { loading: eloading, error: eerror }] = useMutation(UPDATE_SERVICE_ACCOUNT, {
-    variables: { id: user.id, attributes: { ...attributes, impersonationPolicy: { bindings: bindings.map(sanitize) } } },
-    onCompleted: () => setEdit(false),
+  const [attributes, setAttributes] = useState({
+    name: user.name,
+    email: user.email,
   })
+  const [bindings, setBindings] = useState(user.impersonationPolicy?.bindings || [])
+  const [mutation, { loading: eloading, error: eerror }] = useMutation(UPDATE_SERVICE_ACCOUNT,
+    {
+      variables: {
+        id: user.id,
+        attributes: {
+          ...attributes,
+          impersonationPolicy: { bindings: bindings.map(sanitize) },
+        },
+      },
+      onCompleted: () => setEdit(false),
+    })
   const [deleteMut, { loading, error }] = useMutation(DELETE_USER, {
     variables: { id: user.id },
     update,
@@ -124,13 +149,15 @@ export function EditServiceAccount({ user, update }) {
             <Button
               secondary
               onClick={() => setEdit(false)}
-            >Cancel
+            >
+              Cancel
             </Button>
             <Button
               onClick={mutation}
               loading={eloading}
               marginLeft="medium"
-            >Update
+            >
+              Update
             </Button>
           </ModalActions>
         </Box>
@@ -144,7 +171,12 @@ export function CreateServiceAccount({ q }) {
   const [attributes, setAttributes] = useState({ name: '', email: '' })
   const [bindings, setBindings] = useState([])
   const [mutation, { loading, error }] = useMutation(CREATE_SERVICE_ACCOUNT, {
-    variables: { attributes: { ...attributes, impersonationPolicy: { bindings: bindings.map(sanitize) } } },
+    variables: {
+      attributes: {
+        ...attributes,
+        impersonationPolicy: { bindings: bindings.map(sanitize) },
+      },
+    },
     update: (cache, { data: { createServiceAccount } }) => updateCache(cache, {
       query: USERS_Q,
       variables: { q, serviceAccount: true },
@@ -156,7 +188,12 @@ export function CreateServiceAccount({ q }) {
   return (
     <>
       <Div>
-        <Button onClick={() => setOpen(true)}>Create</Button>
+        <Button
+          secondary
+          onClick={() => setOpen(true)}
+        >
+          Create service account
+        </Button>
       </Div>
       <Modal
         open={open}
@@ -181,13 +218,15 @@ export function CreateServiceAccount({ q }) {
             <Button
               secondary
               onClick={() => setOpen(false)}
-            >Cancel
+            >
+              Cancel
             </Button>
             <Button
               onClick={mutation}
               loading={loading}
               marginLeft="medium"
-            >Create
+            >
+              Create
             </Button>
           </ModalActions>
         </Box>

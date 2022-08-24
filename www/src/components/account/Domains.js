@@ -1,9 +1,11 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
 import { Return } from 'grommet-icons'
-import { Avatar, MenuItem, Span } from 'honorable'
+import {
+  Avatar, Flex, MenuItem, Span,
+} from 'honorable'
 import moment from 'moment'
-import { Modal, ModalHeader } from 'pluralsh-design-system'
+import { Modal, ModalHeader, PageTitle } from 'pluralsh-design-system'
 import { useState } from 'react'
 
 import {
@@ -17,7 +19,6 @@ import {
 import { DeleteIcon, Icon } from '../profile/Icon'
 import { Provider } from '../repos/misc'
 import { GqlError } from '../utils/Alert'
-import { Container } from '../utils/Container'
 import { StandardScroller } from '../utils/SmoothScroller'
 import { Table, TableData, TableRow } from '../utils/Table'
 
@@ -313,7 +314,12 @@ export function Domains() {
   const { dnsDomains: { pageInfo, edges } } = data
 
   return (
-    <Container type="table">
+    <Flex
+      flexGrow={1}
+      flexDirection="column"
+      maxHeight="100%"
+    >
+      <PageTitle heading="Domains" />
       {edges?.length ? (
         <Table
           headers={['Name', 'Creator', 'Created On']}
@@ -346,6 +352,6 @@ export function Domains() {
           </Box>
         </Table>
       ) : (<Span>You do not have any domains set yet.</Span>)}
-    </Container>
+    </Flex>
   )
 }

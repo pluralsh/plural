@@ -1,11 +1,16 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { EmptyState } from 'components/utils/EmptyState'
 import { Box } from 'grommet'
+import { Flex } from 'honorable'
 import { isEmpty } from 'lodash'
-import { Input, SearchIcon } from 'pluralsh-design-system'
+import { Input, PageTitle, SearchIcon } from 'pluralsh-design-system'
 import { useContext, useState } from 'react'
 
-import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
+import {
+  extendConnection,
+  removeConnection,
+  updateCache,
+} from '../../utils/graphql'
 import { Placeholder } from '../accounts/Audits'
 import { canEdit } from '../accounts/EditAccount'
 import { DELETE_ROLE, ROLES_Q } from '../accounts/queries'
@@ -14,7 +19,6 @@ import { CurrentUserContext } from '../login/CurrentUser'
 import { DeleteIcon } from '../profile/Icon'
 import { ListItem } from '../profile/ListItem'
 import { LoopingLogo } from '../utils/AnimatedLogo'
-import { Container } from '../utils/Container'
 import { StandardScroller } from '../utils/SmoothScroller'
 
 import { Confirm } from './Confirm'
@@ -108,7 +112,10 @@ function Role({ role, q }) {
 
 function RolesInner({ q }) {
   const [listRef, setListRef] = useState(null)
-  const { data, loading, fetchMore } = useQuery(ROLES_Q, { variables: { q }, fetchPolicy: 'cache-and-network' })
+  const { data, loading, fetchMore } = useQuery(ROLES_Q, {
+    variables: { q },
+    fetchPolicy: 'cache-and-network',
+  })
 
   if (!data) return <LoopingLogo />
 
@@ -135,16 +142,23 @@ function RolesInner({ q }) {
               />
             </ListItem>
           )}
-          loadNextPage={() => pageInfo.hasNextPage && fetchMore({
-            variables: { cursor: pageInfo.endCursor },
-            updateQuery: (prev, { fetchMoreResult: { roles } }) => extendConnection(prev, roles, 'roles'),
-          })}
+          loadNextPage={() => pageInfo.hasNextPage
+            && fetchMore({
+              variables: { cursor: pageInfo.endCursor },
+              updateQuery: (prev, { fetchMoreResult: { roles } }) => extendConnection(prev, roles, 'roles'),
+            })}
           hasNextPage={pageInfo.hasNextPage}
           loading={loading}
           placeholder={Placeholder}
         />
       ) : (
-        <EmptyState message={isEmpty(q) ? "Looks like you don't have any roles yet." : `No roles found for ${q}`}>
+        <EmptyState
+          message={
+            isEmpty(q)
+              ? "Looks like you don't have any roles yet."
+              : `No roles found for ${q}`
+          }
+        >
           <CreateRole q={q} />
         </EmptyState>
       )}
@@ -156,7 +170,12 @@ export function Roles() {
   const [q, setQ] = useState('')
 
   return (
-    <Container type="table">
+    <Flex
+      flexGrow={1}
+      flexDirection="column"
+      maxHeight="100%"
+    >
+      <PageTitle heading="Roles" />
       <Box
         fill
         gap="medium"
@@ -167,6 +186,6 @@ export function Roles() {
         />
         <RolesInner q={q} />
       </Box>
-    </Container>
+    </Flex>
   )
 }

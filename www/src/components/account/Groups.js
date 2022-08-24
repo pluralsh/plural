@@ -1,9 +1,10 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { EmptyState } from 'components/utils/EmptyState'
 import { Box } from 'grommet'
+import { Flex } from 'honorable'
 import { isEmpty } from 'lodash'
 import {
-  Button, GlobeIcon, Input, Modal, ModalHeader, SearchIcon,
+  Button, GlobeIcon, Input, Modal, ModalHeader, PageTitle, SearchIcon,
 } from 'pluralsh-design-system'
 import { useContext, useState } from 'react'
 
@@ -16,7 +17,6 @@ import { CurrentUserContext } from '../login/CurrentUser'
 import { DeleteIcon } from '../profile/Icon'
 import { ListItem } from '../profile/ListItem'
 import { LoopingLogo } from '../utils/AnimatedLogo'
-import { Container } from '../utils/Container'
 import { StandardScroller } from '../utils/SmoothScroller'
 
 import { Confirm } from './Confirm'
@@ -193,7 +193,12 @@ export function Groups() {
   const [q, setQ] = useState('')
 
   return (
-    <Container type="table">
+    <Flex
+      flexGrow={1}
+      flexDirection="column"
+      maxHeight="100%"
+    >
+      <PageTitle heading="Groups" />
       <Box
         fill
         gap="medium"
@@ -204,6 +209,6 @@ export function Groups() {
         />
         <GroupsInner q={q} />
       </Box>
-    </Container>
+    </Flex>
   )
 }

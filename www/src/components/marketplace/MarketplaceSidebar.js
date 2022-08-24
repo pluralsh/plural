@@ -12,13 +12,30 @@ import { capitalize } from '../../utils/string'
 
 import { CATEGORIES_QUERY, TAGS_QUERY } from './queries'
 
-function MarketplaceSidebarCheckbox({ toggled, onClick, label }) {
+function AccordionWithExpanded({ children, ...props }) {
+  const [expanded, setExpanded] = useState(false)
+
+  return (
+    <Accordion
+      expanded={expanded}
+      onExpand={() => setExpanded(!expanded)}
+      {...props}
+    >
+      {children(expanded)}
+    </Accordion>
+  )
+}
+
+function MarketplaceSidebarCheckbox({
+  toggled, onClick, label, trapFocus = false,
+}) {
   return (
     <Checkbox
       mb={0.25}
       small
       checked={toggled}
       onChange={onClick}
+      tabIndex={trapFocus ? 0 : -1}
     >
       <P
         body2
@@ -77,21 +94,22 @@ function MarketplaceSidebar(props) {
     const sortedCategories = filteredCategories.slice().sort((a, b) => a.category.localeCompare(b.category))
 
     return (
-      <Accordion
+      <AccordionWithExpanded
         ghost
         defaultExpanded
         title={`Categories (${sortedCategories.length})`}
         borderBottom="1px solid border !important"
       >
-        {sortedCategories.map(({ category }) => (
+        {expanded => sortedCategories.map(({ category }) => (
           <MarketplaceSidebarCheckbox
             key={category}
             toggled={isToggled('category', category)}
             onClick={() => handleToggle('category', category)}
             label={capitalize(category)}
+            trapFocus={expanded}
           />
         ))}
-      </Accordion>
+      </AccordionWithExpanded>
     )
   }
 
@@ -99,20 +117,21 @@ function MarketplaceSidebar(props) {
     const sortedPublishers = ['Plural']
 
     return (
-      <Accordion
+      <AccordionWithExpanded
         ghost
         title={`Publisher (${sortedPublishers.length})`}
         borderBottom="1px solid border !important"
       >
-        {sortedPublishers.map(publisher => (
+        {expanded => sortedPublishers.map(publisher => (
           <MarketplaceSidebarCheckbox
             key={publisher}
             toggled={isToggled('publisher', publisher)}
             onClick={() => handleToggle('publisher', publisher)}
             label={capitalize(publisher)}
+            trapFocus={expanded}
           />
         ))}
-      </Accordion>
+      </AccordionWithExpanded>
     )
   }
 
@@ -122,45 +141,54 @@ function MarketplaceSidebar(props) {
     const resultTags = search ? fuse.search(search).map(({ item }) => item) : sortedTags.filter((x, i) => i < nDisplayedTags)
 
     return (
-      <Accordion
+      <AccordionWithExpanded
         ghost
         defaultExpanded
         title={`Tags (${sortedTags.length}${((nDisplayedTags < tags.length) || hasMoreTags) ? '+' : ''})`}
       >
-        <Input
-          medium
-          width="100%"
-          placeholder="Filter"
-          value={search}
-          onChange={event => setSearch(event.target.value)}
-          endIcon={search ? (
-            <CloseIcon
-              size={8}
-              mt={0.2}
-              cursor="pointer"
-              onClick={() => setSearch('')}
+        {expanded => (
+          <>
+            <Input
+              medium
+              width="100%"
+              placeholder="Filter"
+              value={search}
+              onChange={event => setSearch(event.target.value)}
+              inputProps={{
+                tabIndex: expanded ? 0 : -1,
+              }}
+              endIcon={search ? (
+                <CloseIcon
+                  size={8}
+                  mt={0.2}
+                  cursor="pointer"
+                  onClick={() => setSearch('')}
+                />
+              ) : null}
             />
-          ) : null}
-        />
-        {resultTags.map(({ tag, count }) => (
-          <MarketplaceSidebarCheckbox
-            key={tag}
-            toggled={isToggled('tag', tag)}
-            onClick={() => handleToggle('tag', tag)}
-            label={`${tag} (${count})`}
-          />
-        ))}
-        {((nDisplayedTags < tags.length) || hasMoreTags) && !search && (
-          <A
-            mt={0.5}
-            ml="22px"
-            color="text-light"
-            onClick={handleMoreTagsClick}
-          >
-            See More +
-          </A>
+            {resultTags.map(({ tag, count }) => (
+              <MarketplaceSidebarCheckbox
+                key={tag}
+                toggled={isToggled('tag', tag)}
+                onClick={() => handleToggle('tag', tag)}
+                label={`${tag} (${count})`}
+                trapFocus={expanded}
+              />
+            ))}
+            {((nDisplayedTags < tags.length) || hasMoreTags) && !search && (
+              <A
+                mt={0.5}
+                ml="22px"
+                color="text-light"
+                onClick={handleMoreTagsClick}
+                tabIndex={expanded ? 0 : -1}
+              >
+                See More +
+              </A>
+            )}
+          </>
         )}
-      </Accordion>
+      </AccordionWithExpanded>
     )
   }
 

@@ -195,7 +195,7 @@ function MarketplaceSidebar(props) {
   return (
     <Div
       maxHeight="100%"
-      overflowY="auto"
+      overflowY="scroll"
       overflowX="hidden"
       {...props}
     >

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import {
-  A, Br, Button, Div, Flex, H1, Span,
+  A, Br, Button, Div, Flex, H1, Span, useMediaQuery,
 } from 'honorable'
 import {
   FiltersIcon,
@@ -48,7 +48,7 @@ const filterTokenStyles = {
 const sidebarWidth = 256 - 32
 
 function RepoCardList({
-  repositories, repoProps, maxWidth, size = 'small', stretchLastRow = false, ...props
+  repositories, repoProps, maxWidth, stretchLastRow = false, size = 'small', ...props
 }) {
   const flexBasis = '400px'
 
@@ -128,6 +128,7 @@ function MarketplaceRepositories({ installed }) {
   const [search, setSearch] = useState('')
   const [areFiltersOpen, setAreFiltersOpen] = useState(true)
   const tabStateRef = useRef()
+  const isDesktopLarge = useMediaQuery('up', 'desktopLarge')
 
   const [repositories, loadingRepositories, hasMoreRepositories, fetchMoreRepositories] = usePaginatedQuery(MARKETPLACE_QUERY,
     {},
@@ -209,8 +210,8 @@ function MarketplaceRepositories({ installed }) {
           repoProps={{ featured: true }}
           marginTop="medium"
           maxWidth="100%"
-          size="large"
           stretchLastRow
+          size={isDesktopLarge ? 'large' : 'medium'}
         />
       </>
     )
@@ -263,7 +264,6 @@ function MarketplaceRepositories({ installed }) {
             </LinkTabWrap>
           </TabList>
           <Flex
-            alignSelf="stretch"
             paddingBottom="xxsmall"
             paddingTop="xxsmall"
             justify="flex-end"
@@ -275,6 +275,7 @@ function MarketplaceRepositories({ installed }) {
               small
               startIcon={<FiltersIcon />}
               onClick={() => setAreFiltersOpen(x => !x)}
+              backgroundColor={areFiltersOpen ? 'fill-zero-selected' : 'fill-zero'}
             >
               Filters
             </Button>

@@ -1,6 +1,6 @@
 import { Flex } from 'honorable'
 
-const FORM_WIDTH = '480px'
+const FORM_WIDTH = '608px'
 const SCREEN_WIDTH = '1440px'
 
 export function Container({ type, children, ...props }) {

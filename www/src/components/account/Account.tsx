@@ -1,10 +1,15 @@
+import {
+  ResponsiveLayoutContentContainer,
+  ResponsiveLayoutSidecarContainer,
+  ResponsiveLayoutSidenavContainer,
+  ResponsiveLayoutSpacer,
+} from 'components/layout/ResponsiveLayout'
 import { Flex } from 'honorable'
 import { Tab, TabList, TabPanel } from 'pluralsh-design-system'
-import { Outlet, useLocation } from 'react-router-dom'
-import styled from 'styled-components'
 import { useRef } from 'react'
 
-import { SidebarTabs } from '../utils/SidebarTabs'
+import { Outlet, useLocation } from 'react-router-dom'
+
 import { LinkTabWrap } from '../utils/Tabs'
 
 const DIRECTORY = [
@@ -16,20 +21,9 @@ const DIRECTORY = [
   { path: '/account/domains', label: 'Domains' },
 ]
 
-const StyledTabPanel = styled(TabPanel)(({ theme }) => ({
-  flexGrow: 1,
-  paddingTop: theme.spacing.large,
-  paddingRight: theme.spacing.large,
-  height: '100%',
-  maxHeight: '100%',
-  overflowY: 'auto',
-  textDecoration: 'none',
-  width: '100%',
-}))
-
 export function Account() {
   const { pathname } = useLocation()
-  const tabStateRef = useRef()
+  const tabStateRef = useRef<any>()
   const currentTab = DIRECTORY.find(tab => pathname?.startsWith(tab.path))
 
   return (
@@ -37,8 +31,10 @@ export function Account() {
       height="100%"
       width="100%"
       overflowY="hidden"
+      padding={32}
+      paddingTop={88}
     >
-      <SidebarTabs>
+      <ResponsiveLayoutSidenavContainer width={240}>
         <TabList
           stateRef={tabStateRef}
           stateProps={{
@@ -56,10 +52,16 @@ export function Account() {
             </LinkTabWrap>
           ))}
         </TabList>
-      </SidebarTabs>
-      <StyledTabPanel stateRef={tabStateRef}>
+      </ResponsiveLayoutSidenavContainer>
+      <ResponsiveLayoutSpacer />
+      <TabPanel
+        as={<ResponsiveLayoutContentContainer />}
+        stateRef={tabStateRef}
+      >
         <Outlet />
-      </StyledTabPanel>
+      </TabPanel>
+      <ResponsiveLayoutSpacer />
+      <ResponsiveLayoutSidecarContainer width="200px" />
     </Flex>
   )
 }

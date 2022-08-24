@@ -12,6 +12,11 @@ export const UPDATE_ACCOUNT = gql`
   mutation UpdateAccount($attributes: AccountAttributes!) {
     updateAccount(attributes: $attributes) {
       ...AccountFragment
+      domainMappings {
+        id
+        domain
+        enableSso
+      }
     }
   }
   ${AccountFragment}

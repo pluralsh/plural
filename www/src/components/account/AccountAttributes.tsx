@@ -1,29 +1,30 @@
 import { useMutation } from '@apollo/client'
-import { ButtonProps, Div, Flex, Form, Span } from 'honorable'
+import {
+  Div, Flex, Form, Span,
+} from 'honorable'
 import {
   Button,
   Card,
-  ContentCard,
   Chip,
+  ContentCard,
   FormField,
   Input,
-  ValidatedInput,
   PageTitle,
+  ValidatedInput,
 } from 'pluralsh-design-system'
-import { ReactNode, useContext, useMemo, useState } from 'react'
+import { useContext, useMemo, useState } from 'react'
 import { useTheme } from 'styled-components'
 
 import { UPDATE_ACCOUNT } from '../accounts/queries'
 import { CurrentUserContext } from '../login/CurrentUser'
-import { PageHeader } from '../utils/PageHeader'
 import { DeleteIcon } from '../profile/Icon'
 import { GqlError } from '../utils/Alert'
-import { Container } from '../utils/Container'
 import { useUpdateState } from '../../hooks/useUpdateState'
+
+import SaveButton from '../utils/SaveButton'
 
 import { List, ListItem } from './List'
 import { Confirm } from './Confirm'
-import SaveButton from '../utils/SaveButton'
 
 import { Account } from './Account'
 
@@ -46,10 +47,17 @@ function DomainMapping({ mapping, remove }: any) {
         gap={theme.spacing.medium}
         alignItems="center"
       >
-        <Div fill="horizontal" flexGrow={1}>
+        <Div
+          fill="horizontal"
+          flexGrow={1}
+        >
           <Span fontWeight="bold">{mapping.domain}</Span>
         </Div>
-        <Flex flexDirection="row" alignItems="center" gap="small">
+        <Flex
+          flexDirection="row"
+          alignItems="center"
+          gap="small"
+        >
           {mapping.enableSso && (
             <Chip
               severity="neutral"
@@ -68,11 +76,9 @@ function DomainMapping({ mapping, remove }: any) {
         </Flex>
       </ListItem>
       <Confirm
-        title={'Confirm deletion'}
-        text={
-          'Are you sure you want to delete this domain? This action is irreversible.'
-        }
-        label={'Delete'}
+        title="Confirm deletion"
+        text="Are you sure you want to delete this domain? This action is irreversible."
+        label="Delete"
         open={confirm}
         close={() => {
           setConfirm(false)
@@ -81,7 +87,7 @@ function DomainMapping({ mapping, remove }: any) {
           setConfirm(false)
           remove()
         }}
-        destructive={true}
+        destructive
       />
     </>
   )
@@ -101,20 +107,14 @@ export function AccountAttributes() {
     state: formState,
     hasUpdates,
     update: updateFormState,
-    initialState: initialFormState,
   } = useUpdateState(toFormState(account))
 
   const [domain, setDomain] = useState('')
 
-  const sortedDomainMappings = useMemo(
-    () =>
-      [...(formState.domainMappings || [])].sort((m1, m2) =>
-        `${m1.domain} || ''`
-          .toLowerCase()
-          .localeCompare(`${m2.domain} || ''`.toLowerCase())
-      ),
-    [formState.domainMappings]
-  )
+  const sortedDomainMappings = useMemo(() => [...(formState.domainMappings || [])].sort((m1, m2) => `${m1.domain} || ''`
+    .toLowerCase()
+    .localeCompare(`${m2.domain} || ''`.toLowerCase())),
+  [formState.domainMappings])
 
   const [mutation, { loading, error }] = useMutation<
     { updateAccount: Partial<Account> },
@@ -168,26 +168,36 @@ export function AccountAttributes() {
       display="flex"
       flexDirection="column"
     >
-      <PageTitle heading={'Account attributes'}>
-        <SaveButton dirty={hasUpdates} loading={loading} error={!!error} />
+      <PageTitle heading="Account attributes">
+        <SaveButton
+          dirty={hasUpdates}
+          loading={loading}
+          error={!!error}
+        />
       </PageTitle>
 
       <ContentCard
         maxHeight="100%"
         overflowY="auto"
-        paddingHorizontal={'xlarge'}
+        paddingHorizontal="xlarge"
         paddingVertical={0}
         innerProps={{ padding: 0 }}
       >
-        <Div paddingVertical={'xlarge'}>
-          <Flex flexDirection="column" gap="large">
-            {error && <GqlError error={error} header="Something went wrong" />}
+        <Div paddingVertical="xlarge">
+          <Flex
+            flexDirection="column"
+            gap="large"
+          >
+            {error && (
+              <GqlError
+                error={error}
+                header="Something went wrong"
+              />
+            )}
             <ValidatedInput
               label="Account name"
               value={formState.name}
-              onChange={({ target: { value } }) =>
-                updateFormState({ name: value })
-              }
+              onChange={({ target: { value } }) => updateFormState({ name: value })}
             />
             <FormField
               label="Domain mappings"
@@ -223,10 +233,10 @@ export function AccountAttributes() {
                 </Div>
               </Flex>
             </FormField>
-            {formState.domainMappings.length > 0 && (
+            {sortedDomainMappings.length > 0 && (
               <Card hue="lighter">
                 <List>
-                  {formState.domainMappings.map(mapping => (
+                  {sortedDomainMappings.map(mapping => (
                     <DomainMapping
                       key={mapping.domain}
                       mapping={mapping}

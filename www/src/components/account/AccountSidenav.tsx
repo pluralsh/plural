@@ -60,7 +60,7 @@ export default function AccountSideNav({ tabStateRef = {} }) {
           </Div>
         )}
         subheading={me?.publisher ? 'Publisher' : undefined}
-        icon={{ name: 'stuff' }}
+        icon={{ name: me?.account?.name || '?' }}
       />
       <AccountTabList tabStateRef={tabStateRef} />
     </>

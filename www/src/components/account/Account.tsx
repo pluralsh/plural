@@ -32,9 +32,9 @@ export type Account = {
   billingCustomerId?: string
 }
 
-
 export function Account() {
   const tabStateRef = useRef<any>()
+
   return (
     <Flex
       height="100%"
@@ -44,7 +44,7 @@ export function Account() {
       paddingTop={88}
     >
       <ResponsiveLayoutSidenavContainer width={240}>
-        {<AccountSideNav tabStateRef={tabStateRef } />}
+        <AccountSideNav tabStateRef={tabStateRef} />
       </ResponsiveLayoutSidenavContainer>
       <ResponsiveLayoutSpacer />
       <TabPanel

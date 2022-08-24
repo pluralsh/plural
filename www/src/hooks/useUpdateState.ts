@@ -1,17 +1,13 @@
 import { isEqual } from 'lodash'
 import { useCallback, useMemo, useState } from 'react'
 
-export function useUpdateState<T extends { [key: string]: unknown }>(
-  initialState: T
-) {
+export function useUpdateState<T extends { [key: string]: unknown }>(initialState: T) {
   const [state, setState] = useState({ ...initialState })
 
-  const update = useCallback(
-    (update: Partial<T>) => {
-      setState({ ...state, ...update })
-    },
-    [state]
-  )
+  const update = useCallback((update: Partial<T>) => {
+    setState({ ...state, ...update })
+  },
+  [state])
   const reset = useCallback(() => {
     setState({ ...initialState })
   }, [initialState])

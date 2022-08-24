@@ -1,4 +1,6 @@
-import { Div, DivProps, Flex, H1, P } from 'honorable'
+import {
+  Div, DivProps, Flex, H1, P,
+} from 'honorable'
 import { ReactNode } from 'react'
 
 type PageHeaderProps = {

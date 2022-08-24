@@ -50,6 +50,21 @@ function SliceTooltip({ point: { serieColor, serieId, data } }) {
   )
 }
 
+export const DURATIONS = [
+  {
+    offset: '7d', step: '2h', label: '7d', tick: 'every 12 hours',
+  },
+  {
+    offset: '30d', step: '1d', label: '30d', tick: 'every 2 days',
+  },
+  {
+    offset: '60d', step: '1d', label: '60d', tick: 'every 5 days',
+  },
+  {
+    offset: '120d', step: '1d', label: '120d', tick: 'every 10 day',
+  },
+]
+
 const COLOR_MAP = [
   'blue',
   'orange',
@@ -116,7 +131,7 @@ export function Graph({ data, yFormat, tick }) {
       yScale={{
         type: 'linear', min: 'auto', max: 'auto', stacked: false, reverse: false,
       }}
-      colors={{ scheme: 'set2' }}
+      colors={data => data.color}
       yFormat={yFormat}
       xFormat={dateFormat}
       tooltip={SliceTooltip}

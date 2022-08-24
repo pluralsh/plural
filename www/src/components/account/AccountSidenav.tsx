@@ -9,12 +9,12 @@ import { useLocation } from 'react-router-dom'
 import { Div } from 'honorable'
 
 const DIRECTORY = [
-  { path: '/account/edit', label: 'Account attributes' },
   { path: '/account/users', label: 'Users' },
   { path: '/account/service-accounts', label: 'Service accounts' },
   { path: '/account/groups', label: 'Groups' },
   { path: '/account/roles', label: 'Roles' },
   { path: '/account/domains', label: 'Domains' },
+  { path: '/account/edit', label: 'Account attributes' },
 ]
 
 function AccountTabList({ tabStateRef }) {

@@ -50,6 +50,7 @@ export function AuditDirectory() {
           ))}
         </TabList>
       </ResponsiveLayoutSidenavContainer>
+      <ResponsiveLayoutSpacer />
       <ResponsiveLayoutContentContainer paddingTop="large">
         <Outlet />
       </ResponsiveLayoutContentContainer>

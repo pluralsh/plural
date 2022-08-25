@@ -62,6 +62,18 @@ function CVSSRow({
 }
 
 function VulnerabilityDetail({ v, last }) {
+  if (!v.title && !v.description && !v.source && !v.score && !v.cvss) {
+    return (
+      <Box
+        borderBottom={last ? null : '1px solid border'}
+        background="fill-two"
+        pad={{ horizontal: 'large', vertical: 'medium' }}
+      >
+        No details available.
+      </Box>
+    )
+  }
+
   return (
     <Box
       direction="column"
@@ -92,13 +104,15 @@ function VulnerabilityDetail({ v, last }) {
         flex={false}
         gap="small"
       >
-        <P
-          body2
-          fontWeight={600}
-          marginTop="large"
-        >
-          CVSS V3 Vector (source {v.source}, score: {v.score})
-        </P>
+        {v.source && v.score && (
+          <P
+            body2
+            fontWeight={600}
+            marginTop="large"
+          >
+            CVSS V3 Vector (source {v.source}, score: {v.score})
+          </P>
+        )}
         {v.cvss && (
           <Flex direction="column">
             <P

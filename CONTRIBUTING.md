@@ -46,6 +46,12 @@ All server dependencies are managed via [docker-compose](https://www.docker.com/
 docker compose up
 ```
 
+Initializing the db can be done with:
+
+```sh
+mix ecto.setup
+```
+
 Tests can be run via `mix`, like so:
 
 ```sh

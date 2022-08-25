@@ -37,7 +37,6 @@ function CVSSRow({
       </P>
       <Box
         direction="row"
-        fill="horizontal"
         gap="xsmall"
         wrap
       >

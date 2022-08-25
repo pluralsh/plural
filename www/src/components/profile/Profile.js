@@ -4,7 +4,7 @@ import {
   Avatar, Flex, P,
 } from 'honorable'
 import {
-  Button, Chip, ContentCard, IconFrame, PageTitle, ValidatedInput,
+  AppIcon, Button, Chip, ContentCard, PageTitle, ValidatedInput,
 } from 'pluralsh-design-system'
 import { useContext, useEffect, useState } from 'react'
 import { useFilePicker } from 'react-sage'
@@ -56,6 +56,8 @@ export function Profile() {
     }
   }, [files])
 
+  console.log('avatar', avatar)
+
   return (
     <Box fill>
       <PageTitle heading="Profile" />
@@ -70,12 +72,11 @@ export function Profile() {
               anchor="bottom-right"
               style={{ height: '96px', width: '96px' }}
             >
-              <Avatar
+              <AppIcon
                 name={name}
-                src={avatar}
-                size={96}
-                fontSize="24px"
-                fontWeight="500"
+                url={avatar}
+                spacing="none"
+                size="medium"
               />
             </Stack>
             <Box gap="xsmall">
@@ -106,7 +107,7 @@ export function Profile() {
           </Attribute>
           {me.provider && (
             <Attribute header="Provider">
-              <IconFrame
+              <AppIcon
                 url={url}
                 alt={me.provider}
               />

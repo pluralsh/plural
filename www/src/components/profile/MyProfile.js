@@ -1,5 +1,7 @@
 import { Avatar, Flex, Text } from 'honorable'
-import { Tab, TabList, TabPanel } from 'pluralsh-design-system'
+import {
+  PageCard, Tab, TabList, TabPanel,
+} from 'pluralsh-design-system'
 import { Outlet, useLocation } from 'react-router-dom'
 
 import { Box } from 'grommet'
@@ -38,29 +40,14 @@ export function MyProfile() {
       paddingTop={88}
     >
       <ResponsiveLayoutSidenavContainer width={240}>
-        <Box
-          direction="row"
-          gap="small"
-          margin={{ bottom: '32px' }}
-        >
-          <Avatar
-            name={me.name}
-            src={me.avatar}
-            size={64}
-            fontSize="12px"
-          />
-          <Box>
-            <Text subtitle2>{me.name}</Text>
-            {me?.roles?.admin && (
-              <Text
-                caption
-                color="text-xlight"
-              >
-                Admin at Plural
-              </Text>
-            )}
-          </Box>
-        </Box>
+        <PageCard
+          heading={me.name}
+          icon={{ name: me.avatar, url: me.avatar, spacing: 'none' }}
+          subheading={me?.roles?.admin && (
+            `Admin${me?.account?.name && ` at ${me?.account?.name}`}`
+          )}
+          marginBottom="xlarge"
+        />
         <TabList
           stateRef={tabStateRef}
           stateProps={{

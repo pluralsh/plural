@@ -3,7 +3,7 @@ import {
   A, Button, Div, DropdownButton, ExtendTheme, Flex, H2, Img, MenuItem, P,
 } from 'honorable'
 import {
-  ArrowTopRightIcon, CaretDownIcon, Codeline, Tab,
+  ArrowTopRightIcon, Codeline, DropdownArrowIcon, Tab,
 } from 'pluralsh-design-system'
 import { Link } from 'react-router-dom'
 
@@ -208,7 +208,7 @@ function InstallDropdownButton({ recipes, ...props }) {
             setTab(0)
           }}
           endIcon={(
-            <CaretDownIcon size={8} />
+            <DropdownArrowIcon size={10} />
           )}
           {...props}
         >
@@ -233,7 +233,7 @@ function InstallDropdownButton({ recipes, ...props }) {
             setTab(0)
           }}
           endIcon={(
-            <CaretDownIcon size={8} />
+            <DropdownArrowIcon size={10} />
           )}
           {...props}
         >

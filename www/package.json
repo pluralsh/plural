@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "start": "PORT=3001 HTTPS=true react-scripts start",
+    "start:prod": "yarn build && serve -s -p 3001 build",
     "build": "react-scripts build",
     "test": "react-scripts test --watchAll=false",
     "lint": "yarn lint:js && yarn lint:css",
@@ -98,6 +99,11 @@
     "slate-react": "0.82.0",
     "styled-components": "5.3.5",
     "uuid": "8.3.2",
+    "workbox-core": "6.5.4",
+    "workbox-expiration": "6.5.4",
+    "workbox-precaching": "6.5.4",
+    "workbox-routing": "6.5.4",
+    "workbox-strategies": "6.5.4",
     "xterm-addon-fit": "0.5.0",
     "xterm-for-react": "1.0.4",
     "xterm-theme": "1.1.0"
@@ -115,6 +121,7 @@
     "eslint": "8.22.0",
     "eslint-config-pluralsh": "3.1.0",
     "postcss-import": "8.2.0",
+    "serve": "14.0.1",
     "stylelint": "14.11.0",
     "typescript": "4.7.4"
   },

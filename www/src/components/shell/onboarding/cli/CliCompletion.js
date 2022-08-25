@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { Flex, P } from 'honorable'
+import { P } from 'honorable'
 import { ArrowTopRightIcon, Button } from 'pluralsh-design-system'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'

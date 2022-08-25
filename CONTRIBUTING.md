@@ -65,6 +65,15 @@ Working on the emails can be done with:
 cd apps/email && iex -S mix phx.server
 ```
 
+Then sending a text email can be done with:
+
+```sh
+Email.Helper.confirm_email("foo@plural.sh")
+```
+
+Your email will show up at http://localhost:4002/sent_emails
+
+
 ### Server Architecture
 
 <img src="www/public/architecture.png"></img>

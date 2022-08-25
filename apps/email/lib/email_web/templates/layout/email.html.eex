@@ -1,5 +1,5 @@
 <!doctype html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<html>
   <head>
     <title>
     </title>
@@ -8,287 +8,125 @@
     <!--<![endif]-->
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style type="text/css">
-      #outlook a { padding:0; }
-      body { margin:0;padding:0;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%; }
-      table, td { border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt; }
-      img { border:0;height:auto;line-height:100%; outline:none;text-decoration:none;-ms-interpolation-mode:bicubic; }
-      p { display:block;margin:13px 0; }
-    </style>
-    <!--[if mso]>
-    <noscript>
-      <xml>
-        <o:OfficeDocumentSettings>
-          <o:AllowPNG/>
-          <o:PixelsPerInch>96</o:PixelsPerInch>
-        </o:OfficeDocumentSettings>
-      </xml>
-    </noscript>
-    <![endif]-->
-    <!--[if lte mso 11]>
-    <style type="text/css">
-      .mj-outlook-group-fix { width:100% !important; }
-    </style>
-    <![endif]-->
-    <!--[if !mso]><!-->
-    <link href="https://fonts.googleapis.com/css?family=Inter" rel="stylesheet" type="text/css">
-    <link href="fonts.css" rel="stylesheet" type="text/css">
-    <style type="text/css">
-      @import url(https://fonts.googleapis.com/css?family=Inter);
-      @import url(https://app.plural.sh/fonts.css);
-    </style>
-    <!--<![endif]-->
-    <style type="text/css">
-      @media only screen and (min-width:480px) {
-      .mj-column-per-100 { width:100% !important; max-width: 100%; }
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+      /* Globals */
+      body {
+        margin: 0;
+        padding-top: 48px;
+        padding-bottom: 48px;
+        color: white;
+        background-color: #171A21;
+        font-family: 'Inter', sans-serif;
       }
-    </style>
-    <style media="screen and (min-width:480px)">
-      .moz-text-html .mj-column-per-100 { width:100% !important; max-width: 100%; }
-    </style>
-    <style type="text/css">
-      @media only screen and (max-width:480px) {
-      table.mj-full-width-mobile { width: 100% !important; }
-      td.mj-full-width-mobile { width: auto !important; }
+      a {
+        text-decoration: none;
+        color: inherit;
       }
-    </style>
-    <style type="text/css">
-      @media only screen and (max-width:480px) { .x-pad { padding: 0 20px
-      !important; }}
+      p {
+        margin: 0;
+      }
+      /* Helpers */
+      .margin-horizontal-auto {
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .flex {
+        display: flex; /* https://www.caniemail.com/features/css-display-flex/ */
+      }
+      .fit-content {
+        width: fit-content;
+      }
+      .text-align-center {
+        text-align: center;
+      }
+      .margin-left-medium {
+        margin-left: 16px;
+      }
+      /* Content */
+      .email-container {
+        max-width: 504px;
+        padding-left: 24px;
+        padding-right: 24px;
+      }
+      .logo-1 {
+        width: 34px;
+        height: 34px;
+        margin-top: 4px;
+      }
+      .logo-2 {
+        width: 122px;
+        height: 43px;
+        margin-top: 3px;
+      }
+      .logo-title {
+        font-size: 43px;
+        line-height: 43px;
+      }
+      .company-info {
+        font-family: monospace;
+        font-size: 12px;
+        line-height: 16px;
+        color: #9095A2;
+      }
+      .social-icon {
+        width: 48px;
+        height: 48px;
+      }
+      .content-container {
+        margin-top: 48px;
+        margin-bottom: 24px;
+        border-radius: 6px;
+        overflow: hidden;
+        background-color: #21242C;
+      }
+      .top-gradient {
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(to right, #373EF1 0%, #969AF8 100%);
+      }
+      .content-wrapper {
+        padding: 32px;
+      }
     </style>
   </head>
-  <body style="word-spacing:normal;background-color:#1E2229;color:#ffffff">
-    <div style="background-color:#1E2229;color:#ffffff">
-      <!--[if mso | IE]>
-      <table align="center" border="0" cellpadding="0" cellspacing="0" class="x-pad-outlook" role="presentation" style="width:600px;" width="600" >
-        <tr>
-          <td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;">
-            <![endif]-->
-            <div class="x-pad" style="padding-left: 72px; padding-right: 72px; box-sizing: border-box; margin: 0px auto; max-width: 600px;">
-              <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;">
-                <tbody>
-                  <tr>
-                    <td style="direction:ltr;font-size:0px;padding:0;text-align:center;">
-                      <!--[if mso | IE]>
-                      <table role="presentation" border="0" cellpadding="0" cellspacing="0">
-                        <tr>
-                          <td class="" width="600px" >
-                            <table align="center" border="0" cellpadding="0" cellspacing="0" class="" role="presentation" style="width:600px;" width="600" >
-                              <tr>
-                                <td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;">
-                                  <![endif]-->
-                                  <div style="margin:0px auto;max-width:600px;">
-                                    <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;">
-                                      <tbody>
-                                        <tr>
-                                          <td style="direction:ltr;font-size:0px;padding:0;text-align:center;">
-                                            <!--[if mso | IE]>
-                                            <table role="presentation" border="0" cellpadding="0" cellspacing="0">
-                                              <tr>
-                                                <td class="" style="vertical-align:top;width:600px;" >
-                                                  <![endif]-->
-                                                  <div class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
-                                                    <table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%">
-                                                      <tbody>
-                                                        <tr>
-                                                          <td style="background-color:#1E2229;vertical-align:top;padding:80px 0 96px 0;padding-left:;color:#ffffff">
-                                                            <table border="0" cellpadding="0" cellspacing="0" role="presentation" style width="100%">
-                                                              <tbody>
-                                                                <tr>
-                                                                  <td align="left" style="font-size:0px;padding:0;word-break:break-word;">
-                                                                    <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;border-spacing:0px;">
-                                                                      <tbody>
-                                                                        <tr>
-                                                                          <td style="width:169px;">
-                                                                            <a href="https://plural.sh" target="_blank">
-                                                                            <img height="auto" src="https://app.plural.sh/plural_lockup_reverse@2x.png" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="169">
-                                                                            </a>
-                                                                          </td>
-                                                                        </tr>
-                                                                      </tbody>
-                                                                    </table>
-                                                                  </td>
-                                                                </tr>
-                                                                <tr>
-                                                                  <td style="font-size:0px;padding:0;word-break:break-word;">
-                                                                    <div style="height:56px;line-height:56px;">&#8202;</div>
-                                                                  </td>
-                                                                </tr>
-                                                                <%= @inner_content %>
-                                                              </tbody>
-                                                            </table>
-                                                          </td>
-                                                        </tr>
-                                                      </tbody>
-                                                    </table>
-                                                  </div>
-                                                  <!--[if mso | IE]>
-                                                </td>
-                                              </tr>
-                                            </table>
-                                            <![endif]-->
-                                          </td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
-                                  </div>
-                                  <!--[if mso | IE]>
-                                </td>
-                              </tr>
-                            </table>
-                          </td>
-                        </tr>
-                      </table>
-                      <![endif]-->
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <!--[if mso | IE]>
-          </td>
-        </tr>
-      </table>
-      <table align="center" border="0" cellpadding="0" cellspacing="0" class="" role="presentation" style="width:600px;" width="600" bgcolor="#171A21" >
-        <tr>
-          <td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;">
-            <![endif]-->
-            <div style="background:#171A21;background-color:#171A21;margin:0px auto;max-width:600px;">
-              <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#171A21;background-color:#171A21;width:100%;">
-                <tbody>
-                  <tr>
-                    <td style="direction:ltr;font-size:0px;padding:48px 0 24px 0;text-align:center;">
-                      <!--[if mso | IE]>
-                      <table role="presentation" border="0" cellpadding="0" cellspacing="0">
-                        <tr>
-                          <td class="x-pad-outlook" style="" >
-                            <table align="center" border="0" cellpadding="0" cellspacing="0" class="x-pad-outlook" role="presentation" style="width:600px;" width="600" >
-                              <tr>
-                                <td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;">
-                                  <![endif]-->
-                                  <div class="x-pad" style="padding-left: 72px; padding-right: 72px; box-sizing: border-box; margin: 0px auto; max-width: 600px;">
-                                    <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;">
-                                      <tbody>
-                                        <tr>
-                                          <td style="direction:ltr;font-size:0px;padding:0;text-align:center;">
-                                            <!--[if mso | IE]>
-                                            <table role="presentation" border="0" cellpadding="0" cellspacing="0">
-                                              <tr>
-                                                <td align="center" class="" style="" >
-                                                  <![endif]-->
-                                                  <div style="font-family:Inter,Helvetica,Arial,sans-serif;font-size:12px;line-height:16px;text-align:center;color:white;">
-                                                    © Plural 2022
-                                                    <br>19 W 24TH ST FL 3
-                                                    <br>NEW YORK, NY 10010
-                                                  </div>
-                                                  <!--[if mso | IE]>
-                                                </td>
-                                                <td class="" style="" >
-                                                  <![endif]-->
-                                                  <div style="height:16px;line-height:16px;">&#8202;</div>
-                                                  <!--[if mso | IE]>
-                                                </td>
-                                                <td align="center" class="" style="" >
-                                                  <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" >
-                                                    <tr>
-                                                      <td>
-                                                        <![endif]-->
-                                                        <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
-                                                          <tbody>
-                                                            <tr>
-                                                              <td style="padding:0 4px;vertical-align:middle;">
-                                                                <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-radius:3px;width:44px;">
-                                                                  <tbody>
-                                                                    <tr>
-                                                                      <td style="font-size:0;height:44px;vertical-align:middle;width:44px;">
-                                                                        <a href="https://twitter.com/plural_sh" target="_blank">
-                                                                        <img height="44" src="https://app.plural.sh/twitter_logo@2x.png" style="border-radius:3px;display:block;" width="44">
-                                                                        </a>
-                                                                      </td>
-                                                                    </tr>
-                                                                  </tbody>
-                                                                </table>
-                                                              </td>
-                                                            </tr>
-                                                          </tbody>
-                                                        </table>
-                                                        <!--[if mso | IE]>
-                                                      </td>
-                                                      <td>
-                                                        <![endif]-->
-                                                        <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
-                                                          <tbody>
-                                                            <tr>
-                                                              <td style="padding:0 4px;vertical-align:middle;">
-                                                                <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-radius:3px;width:44px;">
-                                                                  <tbody>
-                                                                    <tr>
-                                                                      <td style="font-size:0;height:44px;vertical-align:middle;width:44px;">
-                                                                        <a href="https://discord.gg/qsUfBcC3Ru" target="_blank">
-                                                                        <img height="44" src="https://app.plural.sh/discord_logo@2x.png" style="border-radius:3px;display:block;" width="44">
-                                                                        </a>
-                                                                      </td>
-                                                                    </tr>
-                                                                  </tbody>
-                                                                </table>
-                                                              </td>
-                                                            </tr>
-                                                          </tbody>
-                                                        </table>
-                                                        <!--[if mso | IE]>
-                                                      </td>
-                                                      <td>
-                                                        <![endif]-->
-                                                        <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
-                                                          <tbody>
-                                                            <tr>
-                                                              <td style="padding:0 4px;vertical-align:middle;">
-                                                                <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-radius:3px;width:44px;">
-                                                                  <tbody>
-                                                                    <tr>
-                                                                      <td style="font-size:0;height:44px;vertical-align:middle;width:44px;">
-                                                                        <a href="http://github.com/pluralsh/plural" target="_blank">
-                                                                        <img height="44" src="https://app.plural.sh/github_logo@2x.png" style="border-radius:3px;display:block;" width="44">
-                                                                        </a>
-                                                                      </td>
-                                                                    </tr>
-                                                                  </tbody>
-                                                                </table>
-                                                              </td>
-                                                            </tr>
-                                                          </tbody>
-                                                        </table>
-                                                        <!--[if mso | IE]>
-                                                      </td>
-                                                    </tr>
-                                                  </table>
-                                                </td>
-                                              </tr>
-                                            </table>
-                                            <![endif]-->
-                                          </td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
-                                  </div>
-                                  <!--[if mso | IE]>
-                                </td>
-                              </tr>
-                            </table>
-                          </td>
-                        </tr>
-                      </table>
-                      <![endif]-->
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <!--[if mso | IE]>
-          </td>
-        </tr>
-      </table>
-      <![endif]-->
+  <body>
+    <div class="email-container margin-horizontal-auto">
+      <div class="margin-horizontal-auto">
+        <div class="flex margin-horizontal-auto fit-content">
+          <img src="https://app.plural.sh/plural-white-cropped.png" class="logo-1" />
+          <img src="https://app.plural.sh/plural-white-word-cropped.png" class="logo-2 margin-left-medium" />
+          <p class="logo-title margin-left-medium">app</p>
+        </div>
+      </div>
+      <div class="content-container margin-horizontal-auto">
+        <div class="top-gradient"></div>
+        <div class="content-wrapper">
+          <%= @inner_content %>
+        </div>
+      </div>
+      <div class="margin-horizontal-auto fit-content">
+        <div class="company-info margin-horizontal-auto text-align-center fit-content">
+          © Plural 2022
+          <br />
+          19 W 24th St FL 3
+          <br />
+          New York, NY 10010
+        </div>
+        <div class="margin-horizontal-auto flex fit-content">
+          <a href="https://github.com/pluralsh/plural" target="_blank">
+            <img src="https://app.plural.sh/github_logo@2x.png" class="social-icon" />
+          </a>
+          <a href="https://discord.gg/pluralsh" target="_blank">
+            <img src="https://app.plural.sh/discord_logo@2x.png" class="social-icon" />
+          </a>
+          <a href="https://twitter.com/plural_sh" target="_blank">
+            <img src="https://app.plural.sh/twitter_logo@2x.png" class="social-icon" />
+          </a>
+        </div>
+      </div>
     </div>
   </body>
 </html>

@@ -28,14 +28,9 @@ function CliCompletion() {
           href="https://docs.plural.sh"
           target="_blank"
           rel="noopener noreferrer"
+          endIcon={<ArrowTopRightIcon />}
         >
-          <Flex align="center">
-            Read the documentation
-            <ArrowTopRightIcon
-              size={24}
-              marginLeft="small"
-            />
-          </Flex>
+          Read the documentation
         </Button>
       </OnboardingCard>
       <OnboardingNavSection>

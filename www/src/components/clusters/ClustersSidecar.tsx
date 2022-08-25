@@ -22,7 +22,7 @@ export function ClustersSidecar(): ReactElement {
     >
       <Button
         secondary
-        endIcon={<ArrowTopRightIcon size={24} />}
+        endIcon={<ArrowTopRightIcon />}
         as={A}
         target="_blank"
         href={`https://${queue.domain}`}

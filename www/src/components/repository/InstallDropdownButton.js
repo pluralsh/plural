@@ -182,13 +182,11 @@ function InstallDropdownButton({ recipes, ...props }) {
               to="/shell"
               style={{ textDecoration: 'none' }}
             >
-              <Button width="100%">
-                Open Cloud Shell <ArrowTopRightIcon
-                  size={24}
-                  mt="-6px"
-                  position="relative"
-                  top={6}
-                />
+              <Button
+                width="100%"
+                endIcon={<ArrowTopRightIcon />}
+              >
+                Open Cloud Shell
               </Button>
             </Link>
           </Div>

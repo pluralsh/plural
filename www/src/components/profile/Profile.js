@@ -1,17 +1,24 @@
 import { useMutation } from '@apollo/client'
 import { Box, Stack, ThemeContext } from 'grommet'
+import { Flex, P } from 'honorable'
 import {
-  Avatar, Flex, P,
-} from 'honorable'
-import {
-  AppIcon, Button, Chip, ContentCard, PageTitle, ValidatedInput,
+  AppIcon,
+  Button,
+  Chip,
+  ContentCard,
+  PageTitle,
+  ValidatedInput,
 } from 'pluralsh-design-system'
 import { useContext, useEffect, useState } from 'react'
 import { useFilePicker } from 'react-sage'
 
 import { CurrentUserContext } from '../login/CurrentUser'
 import { UPDATE_USER } from '../users/queries'
-import { DEFAULT_CHART_ICON, DarkProviderIcons, ProviderIcons } from '../repos/constants'
+import {
+  DEFAULT_CHART_ICON,
+  DarkProviderIcons,
+  ProviderIcons,
+} from '../repos/constants'
 
 function Attribute({ header, children }) {
   return (
@@ -126,14 +133,16 @@ export function Profile() {
             width="100%"
             value={email}
             onChange={({ target: { value } }) => setEmail(value)}
-            endIcon={me.emailConfirmed ? null : (
-              <Chip
-                size="small"
-                hue="lighter"
-              >
-                Pending verification
-              </Chip>
-            )}
+            endIcon={
+              me.emailConfirmed ? null : (
+                <Chip
+                  size="small"
+                  hue="lighter"
+                >
+                  Pending verification
+                </Chip>
+              )
+            }
           />
         </Box>
         <Flex

@@ -1,10 +1,8 @@
-import { Avatar, Flex, Text } from 'honorable'
+import { Flex } from 'honorable'
 import {
   PageCard, Tab, TabList, TabPanel,
 } from 'pluralsh-design-system'
 import { Outlet, useLocation } from 'react-router-dom'
-
-import { Box } from 'grommet'
 
 import { useContext, useRef } from 'react'
 

@@ -59,6 +59,12 @@ make testup
 mix test
 ```
 
+Working on the emails can be done with:
+
+```sh
+cd apps/email && iex -S mix phx.server
+```
+
 ### Server Architecture
 
 <img src="www/public/architecture.png"></img>

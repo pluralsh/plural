@@ -5,16 +5,18 @@ import { useOutletContext } from 'react-router-dom'
 import { useState } from 'react'
 
 import {
-  ArrowTopRightIcon, Chip, CollapseIcon, PageTitle,
+  ArrowTopRightIcon, Chip, CollapseIcon, DockerTagIcon, PageTitle,
 } from 'pluralsh-design-system'
 
 import { Table, TableData, TableRow } from 'components/utils/Table'
 
 import {
-  A, Div, Flex, P, Span,
+  A, Flex, P, Span,
 } from 'honorable'
 
 import { capitalize } from 'lodash'
+
+import { EmptyState } from 'components/utils/EmptyState'
 
 import { AttackVector } from '../constants'
 
@@ -308,7 +310,16 @@ export default function ImageVulnerabilities() {
             ))}
           </Table>
         ) : (
-          <Div body2>No vulnerabilities found.</Div>
+          <EmptyState
+            message="This package has no vulnerabilities."
+            description="...and feels pretty damn good about it."
+            icon={(
+              <DockerTagIcon
+                size="64px"
+                color="text-primary-accent"
+              />
+            )}
+          />
         )}
       </Box>
     </Box>

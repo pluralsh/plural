@@ -1,13 +1,16 @@
 import { Box } from 'grommet'
 import { Text } from 'honorable'
 
-export function EmptyState({ message, description, children }) {
+export function EmptyState({
+  message, description, icon = undefined, children,
+}) {
   return (
     <Box
       pad="64px"
-      gap="24px"
+      gap="16px"
       align="center"
     >
+      {icon && (<Box margin={{ bottom: '20px' }}>{icon}</Box>)}
       <Text
         subtitle1
         textAlign="center"

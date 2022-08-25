@@ -454,4 +454,21 @@ defmodule GraphQl.UserMutationTest do
       """, %{"attrs" => %{"event" => "an.event"}}, %{current_user: user})
     end
   end
+
+  describe "destroyCluster" do
+    test "it can trigger a cluster cleanup" do
+      user = insert(:user)
+      domain = insert(:dns_domain)
+      insert_list(3, :dns_record, provider: :aws, cluster: "cluster", creator: user, domain: domain)
+      insert(:dns_record, provider: :gcp, domain: domain, creator: user)
+
+      expect(Core.Conduit.Broker, :publish, 3, fn _, _ -> :ok end)
+
+      {:ok, %{data: %{"destroyCluster" => true}}} = run_query("""
+        mutation Destroy($name: String!, $domain: String!, $provider: Provider!) {
+          destroyCluster(name: $name, domain: $domain, provider: $provider)
+        }
+      """, %{"name" => "cluster", "domain" => domain.name, "provider" => "AWS"}, %{current_user: user})
+    end
+  end
 end

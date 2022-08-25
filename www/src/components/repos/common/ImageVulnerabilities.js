@@ -5,16 +5,18 @@ import { useOutletContext } from 'react-router-dom'
 import { useState } from 'react'
 
 import {
-  ArrowTopRightIcon, Chip, CollapseIcon, PageTitle,
+  ArrowTopRightIcon, Chip, CollapseIcon, DockerTagIcon, PageTitle,
 } from 'pluralsh-design-system'
 
 import { Table, TableData, TableRow } from 'components/utils/Table'
 
 import {
-  A, Div, Flex, P, Span,
+  A, Flex, P, Span,
 } from 'honorable'
 
 import { capitalize } from 'lodash'
+
+import { EmptyState } from 'components/utils/EmptyState'
 
 import { AttackVector } from '../constants'
 
@@ -37,7 +39,6 @@ function CVSSRow({
       </P>
       <Box
         direction="row"
-        fill="horizontal"
         gap="xsmall"
         wrap
       >
@@ -60,6 +61,18 @@ function CVSSRow({
 }
 
 function VulnerabilityDetail({ v, last }) {
+  if (!v.title && !v.description && !v.source && !v.score && !v.cvss) {
+    return (
+      <Box
+        borderBottom={last ? null : '1px solid border'}
+        background="fill-two"
+        pad={{ horizontal: 'large', vertical: 'medium' }}
+      >
+        No details available.
+      </Box>
+    )
+  }
+
   return (
     <Box
       direction="column"
@@ -90,13 +103,15 @@ function VulnerabilityDetail({ v, last }) {
         flex={false}
         gap="small"
       >
-        <P
-          body2
-          fontWeight={600}
-          marginTop="large"
-        >
-          CVSS V3 Vector (source {v.source}, score: {v.score})
-        </P>
+        {v.source && v.score && (
+          <P
+            body2
+            fontWeight={600}
+            marginTop="large"
+          >
+            CVSS V3 Vector (source {v.source}, score: {v.score})
+          </P>
+        )}
         {v.cvss && (
           <Flex direction="column">
             <P
@@ -308,7 +323,16 @@ export default function ImageVulnerabilities() {
             ))}
           </Table>
         ) : (
-          <Div body2>No vulnerabilities found.</Div>
+          <EmptyState
+            message="This package has no vulnerabilities."
+            description="...and feels pretty damn good about it."
+            icon={(
+              <DockerTagIcon
+                size="64px"
+                color="text-primary-accent"
+              />
+            )}
+          />
         )}
       </Box>
     </Box>

@@ -77,6 +77,20 @@ defmodule Core.Services.UsersTest do
       {:ok, _} = Users.update_user(%{password: "anewstrongpassword", confirm: "superstrongpassword"}, user)
     end
 
+    test "email change is properly detected" do
+      user = insert(:user)
+
+      {:ok, updated} = Users.update_user(%{name: "changed"}, user)
+      refute updated.email_changed
+
+      {:ok, updated} = Users.update_user(%{email: user.email}, user)
+      refute updated.email_changed
+
+      {:ok, updated} = Users.update_user(%{email: "changed@example.com"}, user)
+      assert updated.email_changed
+      refute updated.email_confirmed
+    end
+
     test "you cannot make yourself an admin" do
       user = build(:user)
              |> with_password("superstrongpassword")
@@ -100,6 +114,7 @@ defmodule Core.Services.UsersTest do
       {:ok, updated} = Users.update_user(%{name: "real user", roles: %{admin: true}}, user.id, admin)
 
       assert updated.name == "real user"
+      refute updated.email_changed
       assert updated.roles.admin
 
       assert_receive {:event, %PubSub.UserUpdated{item: ^updated, actor: actor}}
@@ -488,6 +503,23 @@ defmodule Core.Services.UsersTest do
       assert refetch(user).provider == :gcp
       assert refetch(user2).provider == :aws
       refute refetch(user3).provider
+    end
+  end
+
+  describe "#destroy_cluster/2" do
+    test "it can destroy all records created by the cluster" do
+      me = self()
+      user = insert(:user)
+      domain = insert(:dns_domain)
+      records = insert_list(3, :dns_record, provider: :aws, cluster: "cluster", creator: user, domain: domain)
+      insert(:dns_record, provider: :gcp, domain: domain, creator: user)
+
+      expect(Core.Conduit.Broker, :publish, 3, fn %{body: r}, :cluster -> send(me, {:record, r}) end)
+
+      :ok = Users.destroy_cluster(%{name: "cluster", domain: domain.name, provider: :aws}, user)
+
+      for %{id: id} <- records,
+        do: assert_receive {:record, %{id: ^id}}
     end
   end
 end

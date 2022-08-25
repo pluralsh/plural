@@ -44,7 +44,6 @@ export function Clusters(): ReactElement | null {
   const [queue, setQueue] = useState({} as Queue)
   const {
     data,
-    loading,
     subscribeToMore,
   } = useQuery<QueueList>(QUEUES, { fetchPolicy: 'cache-and-network' })
 
@@ -64,7 +63,7 @@ export function Clusters(): ReactElement | null {
 
   useEffect(() => (data ? setQueue(data?.upgradeQueues[0]) : data), [data])
 
-  if (loading) {
+  if (!data) {
     return (
       <Flex
         align="center"

@@ -1,6 +1,7 @@
 defmodule Core.PubSub.Fanout.UsersTest do
   use Core.SchemaCase, async: true
   alias Core.Services.Accounts
+  alias Core.Services.Users
   alias Core.PubSub
 
   describe "UserCreated" do
@@ -26,6 +27,27 @@ defmodule Core.PubSub.Fanout.UsersTest do
         do: assert Accounts.get_group_member(g.id, user.id)
 
       refute Accounts.get_group_member(ignore.id, user.id)
+    end
+  end
+
+  describe "UserUpdated" do
+    test "it will send an email confirmation link" do
+      user = insert(:user)
+      {:ok, updated} = Users.update_user(%{email: "changed@example.com"}, user)
+
+      event = %PubSub.UserUpdated{item: updated}
+      {:ok, reset} = Core.PubSub.Fanout.fanout(event)
+
+      assert reset.type == :email
+      assert reset.email == updated.email
+    end
+
+    test "it will not send an email confirmation link" do
+      user = insert(:user)
+      {:ok, updated} = Users.update_user(%{name: "changed", email: user.email}, user)
+
+      event = %PubSub.UserUpdated{item: updated}
+      :ok = Core.PubSub.Fanout.fanout(event)
     end
   end
 end

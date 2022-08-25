@@ -4,7 +4,7 @@ import {
   Avatar, Flex, P,
 } from 'honorable'
 import {
-  Button, ContentCard, IconFrame, PageTitle, ValidatedInput,
+  Button, Chip, ContentCard, IconFrame, PageTitle, ValidatedInput,
 } from 'pluralsh-design-system'
 import { useContext, useEffect, useState } from 'react'
 import { useFilePicker } from 'react-sage'
@@ -125,6 +125,14 @@ export function Profile() {
             width="100%"
             value={email}
             onChange={({ target: { value } }) => setEmail(value)}
+            endIcon={me.emailConfirmed ? null : (
+              <Chip
+                size="small"
+                hue="lighter"
+              >
+                Pending verification
+              </Chip>
+            )}
           />
         </Box>
         <Flex

@@ -4,7 +4,7 @@ import { Download } from 'forge-core'
 
 import { Box } from 'grommet'
 
-import * as serviceWorker from '../../serviceWorker'
+import * as serviceWorker from '../../serviceWorkerRegistration'
 
 import { Icon } from '../utils/Icon'
 
@@ -19,7 +19,6 @@ export function AutoRefresh() {
   const [open, setOpen] = useState(true)
   const config = useContext(PluralConfigurationContext)
   const reload = useCallback(() => {
-    console.log('reloading')
     if (process.env.NODE_ENV === 'production') {
       const promise = serviceWorker.unregister() || Promise.resolve('done')
 

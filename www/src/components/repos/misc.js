@@ -11,7 +11,6 @@ export function Provider({ provider, width }) {
     <img
       alt={provider}
       width={`${width}px`}
-      height={`${width}px`}
       src={url}
     />
   )

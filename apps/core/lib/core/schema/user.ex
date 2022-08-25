@@ -160,14 +160,14 @@ defmodule Core.Schema.User do
     |> generate_uuid(:avatar_id)
     |> change_markers(password_hash: :password_change)
     |> cast_attachments(attrs, [:avatar], allow_urls: true)
-    |> set_email_changed(model)
+    |> set_email_changed()
   end
 
-  def set_email_changed(cs, model) do
+  def set_email_changed(cs) do
     confirm_by = Timex.now() |> Timex.shift(days: 7)
 
     case get_change(cs, :email) do
-      email when is_binary(email) and email != model.email ->
+      email when is_binary(email) ->
         put_change(cs, :email_changed, true)
         |> put_change(:email_confirmed, false)
         |> put_change(:email_confirm_by, confirm_by)

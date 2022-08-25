@@ -136,7 +136,7 @@ export function ProviderForm({
         </FormField>
         <FormField
           label="Client secret"
-          width="calc(33.333%)"
+          width="33.333%"
         >
           <Codeline displayText="••••••••••">
             {attributes.clientSecret}

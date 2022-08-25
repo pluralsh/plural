@@ -88,13 +88,19 @@ export function Shell({ shell }) {
   const handleData = useCallback(text => channel.push('command', { cmd: text }), [channel])
 
   return (
-    <>
+    <Flex
+      direction="column"
+      flexGrow={1}
+      align="center"
+      paddingHorizontal="large"
+      paddingVertical="medium"
+    >
       <Flex
         align="center"
-        paddingVertical="small"
-        marginHorizontal="medium"
+        paddingBottom="small"
         gap="medium"
         borderBottom="1px solid border"
+        width="100%"
       >
         {!fresh && (
           <Button
@@ -107,7 +113,6 @@ export function Shell({ shell }) {
             CLI Cheatsheet
           </Button>
         )}
-        {/* <Div><Span fontWeight="bold">{shell.cluster}</Span></Div> */}
         <Div flexGrow={1} />
         <TerminalInformation shell={shell} />
         <Button
@@ -122,11 +127,10 @@ export function Shell({ shell }) {
       </Flex>
       <Flex
         marginTop="medium"
-        flexGrow={1}
-        paddingBottom="medium"
-        paddingHorizontal="medium"
         height="100%"
         maxHeight="100%"
+        width="100%"
+        maxWidth={1640}
         overflow="hidden"
       >
         <TerminalSidebar
@@ -159,7 +163,7 @@ export function Shell({ shell }) {
           />
         </Flex>
       </Flex>
-    </>
+    </Flex>
   )
 }
 

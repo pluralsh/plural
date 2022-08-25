@@ -328,7 +328,7 @@ export function PluralInner() {
                 element={(
                   <Navigate
                     replace
-                    to="users"
+                    to="edit"
                   />
                 )}
               />

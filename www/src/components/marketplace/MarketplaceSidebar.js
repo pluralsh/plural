@@ -13,7 +13,7 @@ import { capitalize } from '../../utils/string'
 import { CATEGORIES_QUERY, TAGS_QUERY } from './queries'
 
 function AccordionWithExpanded({ children, ...props }) {
-  const [expanded, setExpanded] = useState(false)
+  const [expanded, setExpanded] = useState(true)
 
   return (
     <Accordion
@@ -66,6 +66,10 @@ function MarketplaceSidebar(props) {
   function handleMoreTagsClick() {
     if (tags.length > nDisplayedTags) setNDisplayedTags(x => x + 12)
     else fetchMoreTags()
+  }
+
+  function handleMoreTagsKeyDown(event) {
+    if (event.key === 'Enter' || event.key === ' ') handleMoreTagsClick()
   }
 
   function handleToggle(key, value) {
@@ -181,6 +185,7 @@ function MarketplaceSidebar(props) {
                 ml="22px"
                 color="text-light"
                 onClick={handleMoreTagsClick}
+                onKeyDown={handleMoreTagsKeyDown}
                 tabIndex={expanded ? 0 : -1}
               >
                 See More +

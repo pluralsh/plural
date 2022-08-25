@@ -37,12 +37,13 @@ const searchOptions = {
   threshold: 0.25,
 }
 
-const filterTokenStyles = {
+const filterTokenProps = {
   marginRight: 'xsmall',
   marginBottom: 'xsmall',
   flexShrink: 0,
-  border: '1px solid border-fill-one',
-  backgroundColor: 'fill-one-selected',
+  border: '1px solid border',
+  backgroundColor: 'fill-one',
+  tabIndex: 0,
 }
 
 const sidebarWidth = 256 - 32
@@ -296,6 +297,7 @@ function MarketplaceRepositories({ installed }) {
               align="stretch"
               wrap
               marginBottom="-8px"
+              paddingVertical={2}
             >
               <Div
                 minWidth="210px"
@@ -316,16 +318,18 @@ function MarketplaceRepositories({ installed }) {
               </Div>
               {categories.map(category => (
                 <Token
-                  {...filterTokenStyles}
+                  {...filterTokenProps}
                   onClose={() => handleClearToken('category', category)}
+                  onKeyDown={event => (event.key === 'Enter' || event.key === ' ') && handleClearToken('category', category)}
                 >
                   {capitalize(category)}
                 </Token>
               ))}
               {tags.map(tag => (
                 <Token
-                  {...filterTokenStyles}
+                  {...filterTokenProps}
                   onClose={() => handleClearToken('tag', tag)}
+                  onKeyDown={event => (event.key === 'Enter' || event.key === ' ') && handleClearToken('tag', tag)}
                 >
                   {capitalize(tag)}
                 </Token>

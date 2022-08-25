@@ -368,7 +368,7 @@ function Sidebar({
             )}
             label="Discord"
             tooltip="Discord"
-            linkTo="https://discord.com/invite/qsUfBcC3Ru"
+            linkTo="https://discord.gg/pluralsh"
           />
           <SidebarItem
             collapsed={collapsed}

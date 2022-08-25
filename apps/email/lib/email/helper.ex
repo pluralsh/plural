@@ -5,7 +5,7 @@ defmodule Email.Helper do
   def confirm_email(email) do
     case Users.get_user_by_email(email) do
       %User{} -> Users.create_reset_token(%{type: :email, email: email})
-      _ -> Users.create_user(%{email: email, password: Ecto.UUID.generate()})
+      _ -> Users.create_user(%{email: email, password: Ecto.UUID.generate(), name: email})
     end
   end
 

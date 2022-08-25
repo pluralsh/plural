@@ -320,6 +320,7 @@ function MarketplaceRepositories({ installed }) {
                 <Token
                   {...filterTokenProps}
                   onClose={() => handleClearToken('category', category)}
+                  onKeyDown={event => (event.key === 'Enter' || event.key === ' ') && handleClearToken('category', category)}
                 >
                   {capitalize(category)}
                 </Token>
@@ -328,6 +329,7 @@ function MarketplaceRepositories({ installed }) {
                 <Token
                   {...filterTokenProps}
                   onClose={() => handleClearToken('tag', tag)}
+                  onKeyDown={event => (event.key === 'Enter' || event.key === ' ') && handleClearToken('tag', tag)}
                 >
                   {capitalize(tag)}
                 </Token>

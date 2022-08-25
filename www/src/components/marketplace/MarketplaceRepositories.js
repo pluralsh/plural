@@ -41,8 +41,8 @@ const filterTokenStyles = {
   marginRight: 'xsmall',
   marginBottom: 'xsmall',
   flexShrink: 0,
-  border: '1px solid border-fill-one',
-  backgroundColor: 'fill-one-selected',
+  border: '1px solid border',
+  backgroundColor: 'fill-one',
 }
 
 const sidebarWidth = 256 - 32

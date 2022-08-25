@@ -1,9 +1,13 @@
+/* To be implemented as IconFrame in the design system once the transition from
+the old IconFrame to AppIcon is complete */
+
 import { TrashCanIcon } from 'pluralsh-design-system'
-import { ReactNode, forwardRef } from 'react'
+import { ReactElement, cloneElement, forwardRef } from 'react'
 import { DivProps, Flex } from 'honorable'
 import { useTheme } from 'styled-components'
 
 type Hue = 'none' | 'default' | 'lighter' | 'lightest'
+type Size = 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge'
 
 const hueToHoverBG: Record<Hue, string> = {
   none: 'fill-zero-hover',
@@ -12,30 +16,58 @@ const hueToHoverBG: Record<Hue, string> = {
   lightest: 'fill-three-hover',
 }
 
+const sizeToIconSize: Record<Size, number> = {
+  xsmall: 8,
+  small: 16,
+  medium: 16,
+  large: 24,
+  xlarge: 24,
+}
+
+const sizeToFrameSize: Record<Size, number> = {
+  xsmall: 16,
+  small: 24,
+  medium: 32,
+  large: 40,
+  xlarge: 48,
+}
+
 type IconProps = DivProps & {
-  icon: ReactNode
+  icon: ReactElement
   hue?: Hue
-  hover?: string
+  clickable?: boolean
 }
 
 export const Icon = forwardRef<HTMLDivElement, IconProps>(({
-  icon, hover, hue, ...props
-}, ref) => {
+  icon, size = 'medium', hue = 'default', clickable = false, ...props
+},
+ref) => {
   const theme = useTheme()
+
+  icon = cloneElement(icon, { size: sizeToIconSize[size] })
 
   return (
     <Flex
       ref={ref}
       flex={false}
-      padding={theme.spacing.xsmall}
-      borderRadius="medium"
-      cursor="pointer"
+      alignItems="center"
+      justifyContent="center"
+      width={sizeToFrameSize[size]}
+      height={sizeToFrameSize[size]}
+      borderRadius={theme.borderRadiuses.medium}
       {...{ '&:focus,&:focus-visible': { outline: 'none' } }}
       _focusVisible={{ ...theme.partials.focus.default }}
-      _hover={{
-        backgroundColor:
-            hover || (hue ? theme.colors[hueToHoverBG[hue]] : 'fill-two'),
-      }}
+      {...(clickable && {
+        tabIndex: 0,
+        role: 'button',
+        cursor: 'pointer',
+        _hover: {
+          backgroundColor:
+              clickable
+              && (theme.colors[hueToHoverBG[hue]]
+                || theme.colors[hueToHoverBG.default]),
+        },
+      })}
       {...props}
     >
       {icon}
@@ -43,15 +75,12 @@ export const Icon = forwardRef<HTMLDivElement, IconProps>(({
   )
 })
 
-export const DeleteIcon = forwardRef<HTMLDivElement, Omit<IconProps, 'icon'>>(({ ...props }, ref) => (
+export const DeleteIcon = forwardRef<HTMLDivElement, Omit<IconProps, 'icon'>>(({ size, clickable, ...props }, ref) => (
   <Icon
     ref={ref}
-    icon={(
-      <TrashCanIcon
-        size={16}
-        color="icon-error"
-      />
-    )}
+    size={size || 'medium'}
+    clickable={clickable === undefined ? true : clickable}
+    icon={<TrashCanIcon color="icon-error" />}
     {...props}
   />
 ))

@@ -12,7 +12,9 @@ export function MoreMenu({ children }) {
     <>
       <Icon
         ref={ref}
-        icon={<MoreIcon size={25} />}
+        clickable
+        size="medium"
+        icon={<MoreIcon />}
         onClick={() => setOpen(true)}
       />
       {open && (

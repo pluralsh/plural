@@ -186,7 +186,9 @@ function DnsRecords({ domain, setDomain }) {
         round="xsmall"
       >
         <Icon
-          icon={<Return size="15px" />}
+          clickable
+          size="medium"
+          icon={<Return />}
           onClick={() => setDomain(null)}
         />
         <Span fontWeight="bold">{domain.name}</Span>

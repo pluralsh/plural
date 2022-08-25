@@ -5,10 +5,9 @@ import { Box } from 'grommet'
 import { useMutation } from '@apollo/client'
 import { Button, Flex, P } from 'honorable'
 import {
-  CheckIcon, ContentCard, FormField, Input, PageTitle, Token,
+  CheckIcon, Codeline, ContentCard, FormField, Input, PageTitle, Token,
 } from 'pluralsh-design-system'
 import { useNavigate, useParams } from 'react-router-dom'
-import { CopyToClipboard } from 'react-copy-to-clipboard/src'
 import isEqual from 'lodash/isEqual'
 
 import { fetchGroups, fetchUsers } from '../accounts/Typeaheads'
@@ -123,50 +122,26 @@ export function ProviderForm({
 
   return (
     <ContentCard innerProps={{ gap: 'large', display: 'flex', flexDirection: 'column' }}>
-      <Flex gap={24}>
-        <Flex
-          gap={12}
-          align="end"
+      <Flex
+        gap="medium"
+        width="100%"
+      >
+        <FormField
+          label="Client ID"
+          width="calc(66.666% - 16px)"
         >
-          <FormField label="Client ID">
-            <Input
-              disabled
-              value={attributes.clientId}
-              placeholder="Client ID"
-              onChange={({ target: { value } }) => setAttributes({ ...attributes, ...{ clientId: value } })}
-            />
-          </FormField>
-          <CopyToClipboard text={attributes.clientId}>
-            <Button
-              secondary
-              marginBottom="xsmall"
-              onClick={() => setToast('Client ID successfully copied.')}
-            >Copy
-            </Button>
-          </CopyToClipboard>
-        </Flex>
-        <Flex
-          gap={12}
-          align="end"
+          <Codeline>
+            {attributes.clientId}
+          </Codeline>
+        </FormField>
+        <FormField
+          label="Client secret"
+          width="calc(33.333%)"
         >
-          <FormField label="Client secret">
-            <Input
-              disabled
-              type="password"
-              value={attributes.clientSecret}
-              placeholder="Client secret"
-              onChange={({ target: { value } }) => setAttributes({ ...attributes, ...{ clientSecret: value } })}
-            />
-          </FormField>
-          <CopyToClipboard text={attributes.clientSecret}>
-            <Button
-              secondary
-              marginBottom="xsmall"
-              onClick={() => setToast('Client secret successfully copied.')}
-            >Copy
-            </Button>
-          </CopyToClipboard>
-        </Flex>
+          <Codeline displayText="••••••••••">
+            {attributes.clientSecret}
+          </Codeline>
+        </FormField>
       </Flex>
       <BindingInput
         label="User bindings"
@@ -195,6 +170,7 @@ export function ProviderForm({
       </FormField>
       <Flex
         align="center"
+        justify="flex-end"
         gap="medium"
       >
         <Button
@@ -206,13 +182,15 @@ export function ProviderForm({
             setSaved(true)
           }}
           loading={loading}
-        >Save
+        >
+          Save
         </Button>
         {dirty && (
           <P
             body2
             color="text-xlight"
-          >Unsaved changes
+          >
+            Unsaved changes
           </P>
         )}
         {!dirty && !loading && saved && (

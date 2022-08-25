@@ -71,6 +71,7 @@ export function MyProfile() {
           {DIRECTORY.map(({ label, path }) => (
             <LinkTabWrap
               key={path}
+              textValue={label}
               to={path}
             >
               <Tab>{label}</Tab>
@@ -79,11 +80,12 @@ export function MyProfile() {
         </TabList>
       </ResponsiveLayoutSidenavContainer>
       <ResponsiveLayoutSpacer />
-      <ResponsiveLayoutContentContainer>
-        <TabPanel stateRef={tabStateRef}>
-          <Outlet />
-        </TabPanel>
-      </ResponsiveLayoutContentContainer>
+      <TabPanel
+        as={<ResponsiveLayoutContentContainer />}
+        stateRef={tabStateRef}
+      >
+        <Outlet />
+      </TabPanel>
       <ResponsiveLayoutSpacer />
     </Flex>
   )

@@ -509,5 +509,14 @@ defmodule GraphQl.Schema.User do
 
       safe_resolve &User.create_event/2
     end
+
+    field :destroy_cluster, :boolean do
+      middleware Authenticated
+      arg :name, non_null(:string)
+      arg :provider, non_null(:provider)
+      arg :domain, non_null(:string)
+
+      safe_resolve &User.destroy_cluster/2
+    end
   end
 end

@@ -259,7 +259,8 @@ export function UpdateProvider({ installation }) {
         <Text
           size="small"
           weight={500}
-        >OIDC Client Attributes
+        >
+          OIDC Client Attributes
         </Text>
         <Attributes>
           <Attribute

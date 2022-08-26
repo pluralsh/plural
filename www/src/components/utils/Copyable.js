@@ -5,9 +5,9 @@ import { Close, Copy } from 'forge-core'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import truncate from 'lodash/truncate'
 
-import { Icon } from '../accounts/Group'
+import { Toast } from 'pluralsh-design-system'
 
-import { SuccessToast } from './Toasts'
+import { Icon } from '../accounts/Group'
 
 export function CopyNotice({ text, onClose }) {
   return (
@@ -73,7 +73,14 @@ export function Copyable({
           )}
         </Box>
       </CopyToClipboard>
-      {display && <SuccessToast>{pillText}</SuccessToast>}
+      {display && (
+        <Toast
+          severity="success"
+          marginBottom="medium"
+          marginRight="xxxxlarge"
+        >{pillText}
+        </Toast>
+      )}
     </>
   )
 }

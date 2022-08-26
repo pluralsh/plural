@@ -361,10 +361,7 @@ function Sidebar({
             collapsed={collapsed}
             startIcon={<DiscordIcon />}
             endIcon={(
-              <ArrowTopRightIcon
-                size={24}
-                my={`${(16 - 24) / 2}px`}
-              />
+              <ArrowTopRightIcon />
             )}
             label="Discord"
             tooltip="Discord"
@@ -374,10 +371,7 @@ function Sidebar({
             collapsed={collapsed}
             startIcon={<GitHubLogoIcon />}
             endIcon={(
-              <ArrowTopRightIcon
-                size={24}
-                my={`${(16 - 24) / 2}px`}
-              />
+              <ArrowTopRightIcon />
             )}
             label="GitHub"
             tooltip="GitHub"
@@ -486,7 +480,7 @@ function Sidebar({
             <ScrollIcon mr={1} />
             Docs
             <Flex flexGrow={1} />
-            <ArrowTopRightIcon size={20} />
+            <ArrowTopRightIcon />
           </MenuItem>
           {/* <MenuItem>
             <MarketPlusIcon mr={1} />

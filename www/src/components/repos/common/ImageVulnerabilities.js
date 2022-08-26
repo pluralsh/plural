@@ -254,9 +254,14 @@ function Vulnerability({ v, last }) {
                 onClick={e => e.stopPropagation()}
                 target="_blank"
                 rel="noopener noreferrer"
+                display="flex"
+                alignItems="center"
               >
                 <Span>{v.vulnerabilityId}</Span>
-                <ArrowTopRightIcon marginLeft="xxsmall" />
+                <ArrowTopRightIcon
+                  marginLeft="xsmall"
+                  size={12}
+                />
               </A>
             </Box>
           ) : <Span>{v.vulnerabilityId}</Span>}

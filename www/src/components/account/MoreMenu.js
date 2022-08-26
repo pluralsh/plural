@@ -12,6 +12,7 @@ export function MoreMenu({ children }) {
     <>
       <Icon
         ref={ref}
+        textValue="More"
         clickable
         size="medium"
         icon={<MoreIcon />}

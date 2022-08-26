@@ -7,7 +7,15 @@ import lookup from 'country-code-lookup'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 
 import {
-  CopyIcon, GraphIcon, InfoIcon, ListIcon, Modal, ModalHeader, PageTitle, Tooltip,
+  CopyIcon,
+  GraphIcon,
+  InfoIcon,
+  ListIcon,
+  Modal,
+  ModalHeader,
+  PageTitle,
+  Toast,
+  Tooltip,
 } from 'pluralsh-design-system'
 
 import { EmptyState } from 'components/utils/EmptyState'
@@ -30,8 +38,6 @@ import { formatLocation } from '../../utils/geo'
 import { Chloropleth } from '../utils/Chloropleth'
 
 import { Confirm } from '../account/Confirm'
-
-import { SuccessToast } from '../utils/Toasts'
 
 import { DeleteIcon, Icon } from './Icon'
 import { ListItem } from './ListItem'
@@ -148,7 +154,14 @@ function AccessToken({ token, first, last }) {
           justify="end"
           gap="small"
         >
-          {displayCopyBanner && <SuccessToast>Access token copied successfully.</SuccessToast>}
+          {displayCopyBanner && (
+            <Toast
+              severity="success"
+              marginBottom="medium"
+              marginRight="xxxxlarge"
+            >Access token copied successfully.
+            </Toast>
+          )}
           <CopyToClipboard
             text={token.token}
             onCopy={() => {
@@ -256,7 +269,14 @@ export function AccessTokens() {
             flex
             align="end"
           >
-            {displayNewBanner && <SuccessToast>New access token created.</SuccessToast>}
+            {displayNewBanner && (
+              <Toast
+                severity="success"
+                marginBottom="medium"
+                marginRight="xxxxlarge"
+              >New access token created.
+              </Toast>
+            )}
             <Button
               secondary
               onClick={() => {

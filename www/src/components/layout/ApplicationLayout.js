@@ -1,12 +1,10 @@
 import { Box } from 'grommet'
 import { A, Flex, Span } from 'honorable'
-import { ErrorIcon } from 'pluralsh-design-system'
+import { ErrorIcon, Toast } from 'pluralsh-design-system'
 import { useContext } from 'react'
 
 import { getPreviousUserData } from '../../helpers/authentication'
 import { CurrentUserContext, handlePreviousUserClick } from '../login/CurrentUser'
-
-import { InfoToast } from '../utils/Toasts'
 
 import Sidebar from './Sidebar'
 import WithApplicationUpdate from './WithApplicationUpdate'
@@ -53,7 +51,11 @@ function ApplicationLayout({ children }) {
       {isProduction && (
         <WithApplicationUpdate>
           {({ reloadApplication }) => (
-            <InfoToast>
+            <Toast
+              severity="info"
+              marginBottom="medium"
+              marginRight="xxxxlarge"
+            >
               <Span marginRight="small">Time for a new update!</Span>
               <A
                 onClick={() => reloadApplication()}
@@ -61,7 +63,7 @@ function ApplicationLayout({ children }) {
                 color="action-link-inline"
               >Update now
               </A>
-            </InfoToast>
+            </Toast>
           )}
         </WithApplicationUpdate>
       )}

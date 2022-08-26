@@ -3,7 +3,7 @@ import { Box } from 'grommet'
 import {
   Avatar, Button, MenuItem, Span,
 } from 'honorable'
-import { BotIcon } from 'pluralsh-design-system'
+import { BotIcon, GraphQLToast } from 'pluralsh-design-system'
 import { useContext, useState } from 'react'
 
 import { fetchToken, setPreviousUserData, setToken } from '../../helpers/authentication'
@@ -15,7 +15,6 @@ import { CurrentUserContext } from '../login/CurrentUser'
 
 import { Provider } from '../repos/misc'
 import { DELETE_USER } from '../users/queries'
-import { GraphQlToast } from '../utils/Toasts'
 
 import { Confirm } from './Confirm'
 import { EditServiceAccount } from './CreateServiceAccount'
@@ -194,7 +193,9 @@ export function ServiceAccount({ user, update }) {
         </Box>
       </Box>
       {error && (
-        <GraphQlToast
+        <GraphQLToast
+          marginBottom="medium"
+          marginRight="xxxxlarge"
           error={error}
           header="Failed to impersonate"
         />

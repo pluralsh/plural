@@ -3,8 +3,9 @@ the old IconFrame to AppIcon is complete */
 
 import { TrashCanIcon } from 'pluralsh-design-system'
 import { ReactElement, cloneElement, forwardRef } from 'react'
-import { DivProps, Flex } from 'honorable'
+import { ButtonBase, DivProps, Flex } from 'honorable'
 import { useTheme } from 'styled-components'
+import { Link } from 'react-router-dom'
 
 type Hue = 'none' | 'default' | 'lighter' | 'lightest'
 type Size = 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge'
@@ -57,11 +58,22 @@ ref) => {
       borderRadius={theme.borderRadiuses.medium}
       {...{ '&:focus,&:focus-visible': { outline: 'none' } }}
       _focusVisible={{ ...theme.partials.focus.default }}
+      {...{
+        '&,&:any-link':
+        {
+          textDecoration: 'none',
+          border: 'unset',
+          background: 'unset',
+          color: 'unset',
+          appearance: 'unset',
+        },
+      }}
       {...(clickable && {
+        as: ButtonBase,
         tabIndex: 0,
         role: 'button',
         cursor: 'pointer',
-        _hover: {
+        '&:hover, &:active': {
           backgroundColor:
               clickable
               && (theme.colors[hueToHoverBG[hue]]

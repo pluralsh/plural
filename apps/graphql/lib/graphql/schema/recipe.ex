@@ -121,7 +121,7 @@ defmodule GraphQl.Schema.Recipe do
     field :restricted,          :boolean
     field :tests,               list_of(:recipe_test)
     field :repository,          :repository, resolve: dataloader(Repository)
-    field :recipe_sections,     list_of(:recipe_section)
+    field :recipe_sections,     list_of(:recipe_section), resolve: lazy_dataloader(:recipe_sections, Recipe)
     field :recipe_dependencies, list_of(:recipe)
 
     timestamps()

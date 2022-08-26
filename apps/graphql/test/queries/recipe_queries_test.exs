@@ -69,16 +69,33 @@ defmodule GraphQl.RecipeQueriesTest do
 
       assert message == "one of repositoryId or repositoryName are required"
     end
+
+    test "it won't blow up when sideloading sections" do
+      recipe = insert(:recipe)
+      section = insert(:recipe_section, recipe: recipe)
+      insert(:recipe_item, recipe_section: section, chart: build(:chart, repository: section.repository))
+
+      {:ok, %{data: %{"recipes" => %{"edges" => [%{"node" => r}]}}}} = run_query("""
+        query Recipes($id: ID!) {
+          recipes(repositoryId: $id, first: 5) {
+            edges {
+              node {
+                recipeSections { id }
+              }
+            }
+          }
+        }
+      """, %{"id" => recipe.repository.id}, %{current_user: insert(:user)})
+
+      assert hd(r["recipeSections"])["id"] == section.id
+    end
   end
 
   describe "recipe" do
     test "It will fetch a recipe" do
       recipe = insert(:recipe)
-      section = insert(:recipe_section, recipe: recipe)
+      %{sections: [section | _] = sections, dependencies: deps} = provision_recipe(recipe)
       item = insert(:recipe_item, recipe_section: section, chart: build(:chart, repository: section.repository))
-      dep  = insert(:recipe_dependency, recipe: recipe, index: 1)
-      dep2 = insert(:recipe_dependency, recipe: dep.dependent_recipe, index: 1)
-      dep3 = insert(:recipe_dependency, recipe: recipe, index: 2)
 
       {:ok, %{data: %{"recipe" => found}}} = run_query("""
         query Recipe($id: ID!) {
@@ -100,14 +117,13 @@ defmodule GraphQl.RecipeQueriesTest do
 
       assert found["id"] == recipe.id
 
-      found_section = hd(found["recipeSections"])
-      assert found_section["id"] == section.id
+      assert Enum.map(found["recipeSections"], & &1["id"]) == Enum.map(sections, & &1.id)
 
-      found_item = hd(found_section["recipeItems"])
-      assert found_item["id"] == item.id
+      found_section = Enum.find(found["recipeSections"], & &1["id"] == section.id)
+      found_item = Enum.find(found_section["recipeItems"], & &1["id"] == item.id)
       assert found_item["chart"]["id"] == item.chart.id
 
-      assert Enum.map([dep, dep2, dep3], & &1.dependent_recipe)
+      assert Enum.map(deps, & &1.dependent_recipe)
              |> ids_equal(found["recipeDependencies"])
     end
 
@@ -179,5 +195,29 @@ defmodule GraphQl.RecipeQueriesTest do
       assert from_connection(found)
              |> ids_equal(stacks)
     end
+  end
+
+  defp provision_recipe(recipe) do
+    %{repository: repo0} = section0 = insert(:recipe_section, recipe: recipe)
+    insert(:recipe_item, recipe_section: section0, chart: build(:chart))
+
+    [%{dependent_recipe: level_1_1}, %{dependent_recipe: level_1_2}] = dependencies = for i <- 1..2,
+      do: insert(:recipe_dependency, recipe: recipe, index: i)
+    %{repository: repo} = section = insert(:recipe_section, recipe: level_1_1)
+    %{repository: repo2} = section2 = insert(:recipe_section, recipe: level_1_2)
+    insert(:recipe_item, recipe_section: section, chart: insert(:chart, dependencies: %{dependencies: [
+      %{type: :terraform, repo: repo.name, name: "name"},
+      %{type: :helm, repo: repo0.name, name: "zero"},
+    ]}))
+    insert(:recipe_item, recipe_section: section2, terraform: insert(:terraform, dependencies: %{dependencies: [
+      %{type: :helm, repo: repo.name, name: "another-name"},
+    ]}))
+    %{dependent_recipe: level_2_1} = dep = insert(:recipe_dependency, recipe: level_1_1, index: 1)
+    section3 = insert(:recipe_section, recipe: level_2_1)
+    insert(:recipe_item, recipe_section: section3, chart: insert(:chart, dependencies: %{dependencies: [
+      %{type: :helm, repo: repo2.name, name: "name"},
+    ]}))
+
+    %{sections: [section0, section, section2, section3], dependencies: [dep | dependencies]}
   end
 end

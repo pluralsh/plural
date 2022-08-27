@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
     <style>
       /* Globals */
       body {
@@ -32,6 +32,9 @@
       .margin-horizontal-auto {
         margin-left: auto;
         margin-right: auto;
+      }
+      .margin-top-large {
+        margin-top: 24px;
       }
       .flex {
         display: flex; /* https://www.caniemail.com/features/css-display-flex/ */
@@ -89,6 +92,29 @@
       }
       .content-wrapper {
         padding: 32px;
+      }
+      .text-lead {
+        font-size: 24px;
+        line-height: 32px;
+        letter-spacing: -0.25px;
+      }
+      .text-content {
+        color: #C5C9D3;
+        font-size: 16px;
+        line-height: 24px;
+        letter-spacing: 0.5px;
+      }
+      .button {
+        display: block;
+        padding: 12px 24px;
+        text-align: center;
+        color: #EBEFF0;
+        background-color: #4A51F2;
+        border-radius: 3px;
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 24px;
+        letter-spacing: 0.5px;
       }
     </style>
   </head>

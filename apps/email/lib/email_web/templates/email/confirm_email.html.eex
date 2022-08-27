@@ -1,16 +1,9 @@
-<%= row do %>
-  <%= text bold: true do %>
-    Confirm Your Email
-  <% end %>
-<% end %>
-<%= row do %>
-  <%= text do %>
-    Click below to confirm your email
-  <% end %>
-<% end %>
-<%= space() %>
-<%= row do %>
-  <%= btn url: url("/confirm-email/#{@token.external_id}") do %>
-    Confirm
-  <% end %>
-<% end %>
+<div class="fit-content margin-horizontal-auto text-lead">
+  Confirm new email.
+</div>
+<div class="fit-content margin-horizontal-auto text-content text-align-center margin-top-large">
+  If you did not request this change, we recommend changing your password immediately. Otherwise, click on the link below to proceed.
+</div>
+<a class="button margin-top-large" href="<%= url("/confirm-email/#{@token.external_id}") %>">
+  Confirm new email address
+</a>

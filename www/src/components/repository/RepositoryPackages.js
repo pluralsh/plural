@@ -60,29 +60,27 @@ export default function RepositoryPackages() {
       <PageTitle
         heading="Packages"
         paddingTop="medium"
-      >
-        <Flex>
-          <TabList
-            stateRef={tabStateRef}
-            stateProps={{
-              orientation: 'horizontal',
-              selectedKey: currentTab?.path,
-            }}
-          >
-            {DIRECTORY.map(({ path, label }) => (
-              <LinkTabWrap
-                to={`${pathPrefix}${path}`}
-                key={path}
-                textValue={label}
-                subTab
-              >
-                <SubTab flexGrow={1}>{label}</SubTab>
-              </LinkTabWrap>
-            ))}
-          </TabList>
-        </Flex>
-      </PageTitle>
+      />
       <StyledTabPanel stateRef={tabStateRef}>
+        <TabList
+          stateRef={tabStateRef}
+          stateProps={{
+            orientation: 'horizontal',
+            selectedKey: currentTab?.path,
+          }}
+          marginBottom="small"
+        >
+          {DIRECTORY.map(({ path, label }) => (
+            <LinkTabWrap
+              to={`${pathPrefix}${path}`}
+              key={path}
+              textValue={label}
+              subTab
+            >
+              <SubTab flexGrow={1}>{label}</SubTab>
+            </LinkTabWrap>
+          ))}
+        </TabList>
         <Input
           value={q}
           onChange={event => setQ(event.target.value)}

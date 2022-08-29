@@ -55,7 +55,7 @@ defmodule Core.MixProject do
       {:sweet_xml, "~> 0.6"},
       {:arc_ecto, "~> 0.11.1"},
       {:mojito, "~> 0.3.0"},
-      {:nebulex, "2.0.0-rc.1"},
+      {:nebulex, "== 2.0.0"},
       {:kazan, "~> 0.11", github: "michaeljguarino/kazan"},
       {:workos, "~> 0.1.2"},
       {:decorator, "~> 1.3"},   #=> For using Caching Annotations

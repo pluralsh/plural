@@ -1,9 +1,8 @@
 import { useQuery } from '@apollo/client'
-import { EmptyState } from 'components/utils/EmptyState'
 import { Box } from 'grommet'
 import { Input } from 'honorable'
 import { isEmpty } from 'lodash'
-import { SearchIcon } from 'pluralsh-design-system'
+import { EmptyState, SearchIcon } from 'pluralsh-design-system'
 import { useCallback, useState } from 'react'
 
 import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'

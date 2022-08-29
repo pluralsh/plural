@@ -2,8 +2,8 @@ import { Outlet, useLocation } from 'react-router-dom'
 import { Flex } from 'honorable'
 import {
   Input,
-  MagnifyingGlassIcon,
   PageTitle,
+  SearchIcon,
   SubTab,
   TabList,
   TabPanel,
@@ -85,7 +85,7 @@ export default function RepositoryPackages() {
           value={q}
           onChange={event => setQ(event.target.value)}
           placeholder={`Filter ${currentTab?.label || ''}`}
-          startIcon={<MagnifyingGlassIcon size={14} />}
+          startIcon={<SearchIcon />}
           width="100%"
           backgroundColor="fill-one"
           borderBottomLeftRadius="0"

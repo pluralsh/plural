@@ -94,7 +94,10 @@ export default function PackageSecurity() {
       gap="medium"
     >
       <PageTitle heading="Security">
-        <Flex gap="large">
+        <Flex
+          alignItems="center"
+          gap="large"
+        >
           {current?.scan && (
             <PackageGrade
               grade={current.scan.grade}

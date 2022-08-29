@@ -6,6 +6,7 @@ import { DURATIONS, Graph } from 'components/utils/Graph'
 import { useMemo, useRef } from 'react'
 import moment from 'moment'
 import {
+  Codeline,
   PageTitle, SubTab, TabList, TabPanel,
 } from 'pluralsh-design-system'
 import { generateColor } from 'components/utils/colors'
@@ -40,7 +41,9 @@ function RangePicker({ duration, setDuration }) {
 }
 
 export default function ImagePullMetrics() {
-  const { image: { dockerRepository }, filter, setFilter } = useOutletContext()
+  const {
+    image: { dockerRepository }, imageName, filter, setFilter,
+  } = useOutletContext()
   const data = useMemo(() => dockerRepository.metrics.map(({ tags, values }, i) => {
     const tag = tags.find(({ name }) => name === 'tag')
 
@@ -59,7 +62,14 @@ export default function ImagePullMetrics() {
       flex={false}
       gap="small"
     >
-      <PageTitle heading="Pull metrics" />
+      <PageTitle heading="Pull metrics">
+        <Codeline
+          maxWidth="200px"
+          display-desktop-up="none"
+        >
+          {`docker pull ${imageName}`}
+        </Codeline>
+      </PageTitle>
       <TabPanel
         stateRef={tabStateRef}
         as={(

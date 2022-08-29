@@ -229,7 +229,6 @@ export function handleOauthChallenge(client, challenge) {
   }).catch(err => {
     console.error(err)
     wipeChallenge()
-    window.location = window.location.pathname
   })
 }
 
@@ -316,8 +315,9 @@ export function Login() {
     wipeChallenge()
     wipeDeviceToken()
 
-    if (data && data.loginMethod && data.loginMethod.authorizeUrl) {
-      if (challenge) saveChallenge(challenge)
+    if (challenge) saveChallenge(challenge)
+
+    if (data?.loginMethod?.authorizeUrl) {
       if (deviceToken) saveDeviceToken(deviceToken)
       window.location = data.loginMethod.authorizeUrl
     }

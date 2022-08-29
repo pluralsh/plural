@@ -231,7 +231,7 @@ export function Docker() {
           >
             <PrivateControl dockerRepo={image.dockerRepository} />
             <PackageProperty header="Created">
-              {moment(image.insertedAt).format('lll')}
+              {moment(image.updatedAt || image.insertedAt).format('lll')}
             </PackageProperty>
             <PackageProperty header="Scanned">
               {image.scannedAt

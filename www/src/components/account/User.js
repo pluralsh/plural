@@ -6,7 +6,11 @@ import {
 import { BotIcon, GraphQLToast } from 'pluralsh-design-system'
 import { useContext, useState } from 'react'
 
-import { fetchToken, setPreviousUserData, setToken } from '../../helpers/authentication'
+import {
+  fetchToken,
+  setPreviousUserData,
+  setToken,
+} from '../../helpers/authentication'
 
 import { canEdit } from '../accounts/EditAccount'
 import { EDIT_USER, IMPERSONATE_SERVICE_ACCOUNT } from '../accounts/queries'
@@ -55,7 +59,8 @@ export function Chip({ text, color }) {
       <Span
         color={color || 'action-link-inline'}
         fontWeight="bold"
-      >{text}
+      >
+        {text}
       </Span>
     </Box>
   )
@@ -76,8 +81,14 @@ function UserEdit({ user, update }) {
   return (
     <>
       <MoreMenu>
-        <MenuItem onClick={() => mutation({ variables: { attributes: { roles: { admin: !isAdmin } } } })}>
-          <Span color="text-light">{isAdmin ? 'Remove admin role' : 'Add admin role'}</Span>
+        <MenuItem
+          onClick={() => mutation({
+            variables: { attributes: { roles: { admin: !isAdmin } } },
+          })}
+        >
+          <Span color="text-light">
+            {isAdmin ? 'Remove admin role' : 'Add admin role'}
+          </Span>
         </MenuItem>
         <MenuItem onClick={() => setConfirm(true)}>
           <Span color="text-error">Delete user</Span>
@@ -143,7 +154,12 @@ export function ServiceAccount({ user, update }) {
   const editable = canEdit(me, account) || hasRbac(me, Permissions.USERS)
   const [mutation, { error }] = useMutation(IMPERSONATE_SERVICE_ACCOUNT, {
     variables: { id: user.id },
-    update: (_cache, { data: { impersonateServiceAccount: { jwt } } }) => {
+    update: (_cache,
+      {
+        data: {
+          impersonateServiceAccount: { jwt },
+        },
+      }) => {
       setPreviousUserData({
         me,
         jwt: fetchToken(),

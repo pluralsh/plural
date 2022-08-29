@@ -177,7 +177,9 @@ function AccessToken({ token, first, last }) {
           </CopyToClipboard>
           <>
             <Icon
-              icon={<GraphIcon size={15} />}
+              clickable
+              size="medium"
+              icon={<GraphIcon />}
               onClick={() => setGraph(true)}
             />
             <Modal
@@ -193,7 +195,9 @@ function AccessToken({ token, first, last }) {
           </>
           <>
             <Icon
-              icon={<ListIcon size={15} />}
+              clickable
+              size="medium"
+              icon={<ListIcon />}
               onClick={() => setAudits(true)}
             />
             <Modal

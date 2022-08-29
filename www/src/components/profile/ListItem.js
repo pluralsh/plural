@@ -1,10 +1,12 @@
+import { useTheme } from 'styled-components'
 import { Box } from 'grommet'
-
-const BORDER_RADIUS = '6px'
 
 export function ListItem({
   first, last, children, background,
 }) {
+  const theme = useTheme()
+
+  const BORDER_RADIUS = `${theme.borderRadiuses.large}px`
   const r = corner => ({ corner, size: BORDER_RADIUS })
 
   return (

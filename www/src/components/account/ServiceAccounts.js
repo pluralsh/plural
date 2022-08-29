@@ -1,16 +1,19 @@
 import { useQuery } from '@apollo/client'
 import { Box } from 'grommet'
-import { Input } from 'honorable'
+import { Flex, Input } from 'honorable'
 import { isEmpty } from 'lodash'
-import { EmptyState, SearchIcon } from 'pluralsh-design-system'
+import { EmptyState, PageTitle, SearchIcon } from 'pluralsh-design-system'
 import { useCallback, useState } from 'react'
 
-import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
+import {
+  extendConnection,
+  removeConnection,
+  updateCache,
+} from '../../utils/graphql'
 import { Placeholder } from '../accounts/Audits'
 import { USERS_Q } from '../accounts/queries'
 import { ListItem } from '../profile/ListItem'
 import { LoopingLogo } from '../utils/AnimatedLogo'
-import { Container } from '../utils/Container'
 import { StandardScroller } from '../utils/SmoothScroller'
 
 import { CreateServiceAccount } from './CreateServiceAccount'
@@ -25,32 +28,28 @@ function Header({ q, setQ }) {
       gap="medium"
     >
       <Input
-        width="50%"
+        width="100%"
         value={q}
-        placeholder="Search for service accounts by name/email"
+        placeholder="Search a service account"
         startIcon={<SearchIcon size={15} />}
         onChange={({ target: { value } }) => setQ(value)}
       />
-      <Box
-        fill="horizontal"
-        justify="end"
-        direction="row"
-        align="center"
-      >
-        <CreateServiceAccount q={q} />
-      </Box>
     </Box>
   )
 }
 
 function ServiceAccountsInner({ q }) {
   const [listRef, setListRef] = useState(null)
-  const { data, loading, fetchMore } = useQuery(USERS_Q, { variables: { q, serviceAccount: true }, fetchPolicy: 'cache-and-network' })
+  const { data, loading, fetchMore } = useQuery(USERS_Q, {
+    variables: { q, serviceAccount: true },
+    fetchPolicy: 'cache-and-network',
+  })
   const update = useCallback((cache, { data: { deleteUser } }) => updateCache(cache, {
     query: USERS_Q,
     variables: { q, serviceAccount: true },
     update: prev => removeConnection(prev, deleteUser, 'users'),
-  }), [q])
+  }),
+  [q])
 
   if (!data) return <LoopingLogo />
 
@@ -77,16 +76,23 @@ function ServiceAccountsInner({ q }) {
               />
             </ListItem>
           )}
-          loadNextPage={() => pageInfo.hasNextPage && fetchMore({
-            variables: { cursor: pageInfo.endCursor },
-            updateQuery: (prev, { fetchMoreResult: { users } }) => extendConnection(prev, users, 'users'),
-          })}
+          loadNextPage={() => pageInfo.hasNextPage
+            && fetchMore({
+              variables: { cursor: pageInfo.endCursor },
+              updateQuery: (prev, { fetchMoreResult: { users } }) => extendConnection(prev, users, 'users'),
+            })}
           hasNextPage={pageInfo.hasNextPage}
           loading={loading}
           placeholder={Placeholder}
         />
       ) : (
-        <EmptyState message={isEmpty(q) ? "Looks like you don't have any service accounts yet." : "Looks like you don't have any service accounts matching search criteria."}>
+        <EmptyState
+          message={
+            isEmpty(q)
+              ? "Looks like you don't have any service accounts yet."
+              : "Looks like you don't have any service accounts matching search criteria."
+          }
+        >
           <CreateServiceAccount q={q} />
         </EmptyState>
       )}
@@ -98,7 +104,14 @@ export function ServiceAccounts() {
   const [q, setQ] = useState('')
 
   return (
-    <Container type="table">
+    <Flex
+      flexGrow={1}
+      flexDirection="column"
+      maxHeight="100%"
+    >
+      <PageTitle heading="Service accounts">
+        <CreateServiceAccount q={q} />
+      </PageTitle>
       <Box
         fill
         gap="medium"
@@ -109,6 +122,6 @@ export function ServiceAccounts() {
         />
         <ServiceAccountsInner q={q} />
       </Box>
-    </Container>
+    </Flex>
   )
 }

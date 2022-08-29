@@ -27,6 +27,7 @@ import {
   CloseIcon,
   FormField,
   Input,
+  PageTitle,
   SearchIcon,
 } from 'pluralsh-design-system'
 import isEqual from 'lodash/isEqual'
@@ -350,21 +351,22 @@ function RepositoryEdit() {
   }
 
   return (
-    <>
-      <H2
-        title1
-        paddingBottom="large"
-        borderBottom="1px solid border"
-        marginBottom="large"
-      >
-        Edit
-      </H2>
+    <Flex
+      direction="column"
+      height="100%"
+    >
+      <PageTitle
+        heading="Edit"
+        paddingTop="medium"
+      />
       <Flex
         justifyContent="center"
         border="1px solid border"
         backgroundColor="fill-one"
         borderRadius="large"
         padding="xlarge"
+        marginBottom="xlarge"
+        overflow="auto"
       >
         <Div
           maxWidth={608}
@@ -620,7 +622,7 @@ function RepositoryEdit() {
           </Form>
         </Div>
       </Flex>
-    </>
+    </Flex>
   )
 }
 

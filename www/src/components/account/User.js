@@ -207,7 +207,6 @@ export function ServiceAccount({ user, update }) {
           <Button
             small
             secondary
-            startIcon={<BotIcon size={15} />}
             onClick={mutation}
           >
             Impersonate

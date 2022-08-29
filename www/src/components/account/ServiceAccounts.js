@@ -1,9 +1,11 @@
 import { useQuery } from '@apollo/client'
+import { List, ListItem } from 'components/utils/List'
+import ListInput from 'components/utils/ListInput'
 import { Box } from 'grommet'
-import { Flex, Input } from 'honorable'
+import { Div, Flex, Input } from 'honorable'
 import { isEmpty } from 'lodash'
 import { EmptyState, PageTitle, SearchIcon } from 'pluralsh-design-system'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import {
   extendConnection,
@@ -12,7 +14,6 @@ import {
 } from '../../utils/graphql'
 import { Placeholder } from '../accounts/Audits'
 import { USERS_Q } from '../accounts/queries'
-import { ListItem } from '../profile/ListItem'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { StandardScroller } from '../utils/SmoothScroller'
 
@@ -22,19 +23,14 @@ import { ServiceAccount } from './User'
 
 function Header({ q, setQ }) {
   return (
-    <Box
-      direction="row"
-      align="center"
-      gap="medium"
-    >
-      <Input
-        width="100%"
-        value={q}
-        placeholder="Search a service account"
-        startIcon={<SearchIcon size={15} />}
-        onChange={({ target: { value } }) => setQ(value)}
-      />
-    </Box>
+    <ListInput
+      width="100%"
+      value={q}
+      placeholder="Search a user"
+      startIcon={<SearchIcon color="text-light" />}
+      onChange={({ target: { value } }) => setQ(value)}
+      flexGrow={0}
+    />
   )
 }
 
@@ -51,14 +47,22 @@ function ServiceAccountsInner({ q }) {
   }),
   [q])
 
-  if (!data) return <LoopingLogo />
+  const [dataCache, setDataCache] = useState(data)
 
-  const { edges, pageInfo } = data.users
+  useEffect(() => {
+    if (data) {
+      setDataCache(data)
+    }
+  }, [data])
+
+  if (!data && !dataCache) return <LoopingLogo />
+
+  const { edges, pageInfo } = data?.users || dataCache?.users || {}
 
   return (
-    <Box
-      fill
-      pad={{ bottom: 'small' }}
+    <Div
+      flexGrow={1}
+      width="100%"
     >
       {edges?.length ? (
         <StandardScroller
@@ -96,7 +100,7 @@ function ServiceAccountsInner({ q }) {
           <CreateServiceAccount q={q} />
         </EmptyState>
       )}
-    </Box>
+    </Div>
   )
 }
 
@@ -112,16 +116,13 @@ export function ServiceAccounts() {
       <PageTitle heading="Service accounts">
         <CreateServiceAccount q={q} />
       </PageTitle>
-      <Box
-        fill
-        gap="medium"
-      >
+      <List>
         <Header
           q={q}
           setQ={setQ}
         />
         <ServiceAccountsInner q={q} />
-      </Box>
+      </List>
     </Flex>
   )
 }

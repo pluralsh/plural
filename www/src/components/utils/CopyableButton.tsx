@@ -28,7 +28,6 @@ function CopyableButtonRef({ copyText, onClick, ...props }: CopyableButtonProps,
     <Tooltip
       label="Copied!"
       strategy="fixed"
-    //   color="text-success-light"
       placement="top"
       displayOn="manual"
       dismissable

@@ -12,10 +12,14 @@ import {
   PageTitle, SubTab, TabList, TabPanel,
 } from 'pluralsh-design-system'
 
+import { Flex } from 'honorable'
+
 import TreeGraph from '../../utils/TreeGraph'
 
 import { DEFAULT_CHART_ICON, DEFAULT_TF_ICON, Tools } from '../constants'
 import { CLOSURE_Q } from '../queries'
+
+import { PackageActions } from './misc'
 
 const GRAPH_HEIGHT = '400px'
 const OPTIONAL_COLOR = '#9095A2'
@@ -165,7 +169,9 @@ export default function PackageDependencies() {
       fill
       gap="small"
     >
-      <PageTitle heading="Dependencies" />
+      <PageTitle heading="Dependencies">
+        <Flex display-desktop-up="none"><PackageActions /></Flex>
+      </PageTitle>
       <TabPanel
         stateRef={tabStateRef}
         as={(

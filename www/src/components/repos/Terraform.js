@@ -65,6 +65,21 @@ function TerraformInstaller({
   )
 }
 
+export function TerraformActions({ terraformModule, currentVersion, ...props }) {
+  return (
+    <Box {...props}>
+      {terraformModule.installation && (
+        <TerraformInstaller
+          installation={terraformModule.repository.installation}
+          terraformInstallation={terraformModule.installation}
+          version={currentVersion}
+          terraformId={terraformModule.id}
+        />
+      )}
+    </Box>
+  )
+}
+
 export default function Terraform() {
   const { pathname } = useLocation()
   const [version, setVersion] = useState(null)
@@ -173,21 +188,11 @@ export default function Terraform() {
           />
         </TabPanel>
         <ResponsiveLayoutSidecarContainer width="200px">
-          <Box
-            direction="column"
-            gap="small"
-          >
-            <Box height="54px">
-              {terraformModule.installation && (
-                <TerraformInstaller
-                  installation={terraformModule.repository.installation}
-                  terraformInstallation={terraformModule.installation}
-                  version={currentVersion}
-                  terraformId={terraformModule.id}
-                />
-              )}
-            </Box>
-          </Box>
+          <TerraformActions
+            terraformModule={terraformModule}
+            currentVersion={currentVersion}
+            height="54px"
+          />
         </ResponsiveLayoutSidecarContainer>
         <ResponsiveLayoutSpacer />
       </Box>

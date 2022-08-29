@@ -7,6 +7,11 @@ import {
 } from 'pluralsh-design-system'
 import { extendConnection } from 'utils/graphql'
 
+import { useOutletContext } from 'react-router-dom'
+
+import { ChartActions } from '../Chart'
+import { TerraformActions } from '../Terraform'
+
 export function dockerPull(registry, { tag, dockerRepository: { name, repository } }) {
   return `${registry}/${repository.name}/${name}:${tag}`
 }
@@ -171,4 +176,30 @@ export function PackageProperty({ children, header, ...props }) {
       <Div {...props}>{children}</Div>
     </>
   )
+}
+
+export function PackageActions() {
+  const {
+    helmChart, currentHelmChart, terraformChart, currentTerraformChart,
+  } = useOutletContext()
+
+  if (helmChart && currentHelmChart) {
+    return (
+      <ChartActions
+        chart={helmChart}
+        currentVersion={currentHelmChart}
+      />
+    )
+  }
+
+  if (terraformChart && currentTerraformChart) {
+    return (
+      <TerraformActions
+        terraformModule={terraformChart}
+        currentVersion={currentTerraformChart}
+      />
+    )
+  }
+
+  return null
 }

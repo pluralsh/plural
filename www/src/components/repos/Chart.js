@@ -134,6 +134,21 @@ function ChartInstaller({
   )
 }
 
+export function ChartActions({ chart, currentVersion, ...props }) {
+  return (
+    <Box {...props}>
+      {chart.installation?.version?.id !== currentVersion.id && chart.repository.installation && (
+        <ChartInstaller
+          chartInstallation={chart.installation}
+          installation={chart.repository.installation}
+          versionId={chart.installation?.version?.id}
+          chartId={chart.id}
+        />
+      )}
+    </Box>
+  )
+}
+
 function ImageDependencies({ version: { imageDependencies } }) {
   const { registry } = useContext(PluralConfigurationContext)
 
@@ -172,7 +187,6 @@ export default function Chart() {
   if (!data) return null
 
   const { versions, chart } = data
-  const { repository } = chart
   const { edges, pageInfo } = versions
   const currentVersion = version || edges[0].node
   const chartInst = data.chart.installation
@@ -272,16 +286,11 @@ export default function Chart() {
             direction="column"
             gap="small"
           >
-            <Box height="54px">
-              {chartInst?.version?.id !== currentVersion.id && repository.installation && (
-                <ChartInstaller
-                  chartInstallation={chartInst}
-                  installation={repository.installation}
-                  versionId={chartInst?.version?.id}
-                  chartId={chart.id}
-                />
-              )}
-            </Box>
+            <ChartActions
+              chart={chart}
+              currentVersion={currentVersion}
+              height="54px"
+            />
             <ChartInfo version={currentVersion} />
             <ImageDependencies version={currentVersion} />
           </Box>

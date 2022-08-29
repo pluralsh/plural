@@ -107,7 +107,15 @@ defmodule GraphQl.Schema.Account do
 
   object :invite do
     field :id,        non_null(:id)
-    field :secure_id, non_null(:string)
+    field :secure_id, :string, resolve: fn
+      %{user_id: id}, _, _ when is_binary(id) -> {:ok, nil} # obfuscate for existing users
+      %{secure_id: id}, _, _ -> {:ok, id}
+    end
+
+    field :existing,  non_null(:boolean), resolve: fn
+      %{user_id: id}, _, _ when is_binary(id) -> {:ok, true}
+      _, _, _ -> {:ok, false}
+    end
     field :email,     :string
 
     field :account, :account, resolve: dataloader(Account)

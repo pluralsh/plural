@@ -30,9 +30,5 @@
       ]
     }
   ],
-  "lockFileMaintenance": {
-    "enabled": true
-  },
   "separateMinorPatch": true,
-  "dependencyDashboardApproval": true
 }

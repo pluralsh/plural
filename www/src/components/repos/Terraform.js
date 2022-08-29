@@ -26,9 +26,7 @@ import { DEFAULT_TF_ICON } from './constants'
 
 import { PackageGrade, PackageHeader, PackageVersionPicker } from './common/misc'
 
-function TerraformInstaller({
-  terraformModule, version,
-}) {
+function TerraformInstaller({ terraformModule, version }) {
   const installed = terraformModule?.installation?.version.id === version.id
   const [mutation, { error }] = useMutation(installed ? UNINSTALL_TF : INSTALL_TF, {
     variables: {

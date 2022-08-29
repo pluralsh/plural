@@ -1,9 +1,8 @@
 import { useMutation, useQuery } from '@apollo/client'
-import { EmptyState } from 'components/utils/EmptyState'
 import { Box } from 'grommet'
 import { isEmpty } from 'lodash'
 import {
-  Button, GlobeIcon, Input, Modal, ModalHeader, SearchIcon,
+  Button, EmptyState, GlobeIcon, Input, Modal, ModalHeader, SearchIcon,
 } from 'pluralsh-design-system'
 import { useContext, useState } from 'react'
 

@@ -1,16 +1,19 @@
-import { Box } from 'grommet'
-import { Text } from 'honorable'
+import { Div, Flex, Text } from 'honorable'
 
 export function EmptyState({
-  message, description, icon = undefined, children,
+  message,
+  description,
+  icon = null,
+  children,
 }) {
   return (
-    <Box
-      pad="64px"
-      gap="16px"
+    <Flex
+      padding="xxlarge"
+      gap="medium"
+      direction="column"
       align="center"
     >
-      {icon && (<Box margin={{ bottom: '20px' }}>{icon}</Box>)}
+      {icon && (<Div marginBottom="large">{icon}</Div>)}
       <Text
         subtitle1
         textAlign="center"
@@ -22,10 +25,11 @@ export function EmptyState({
           body1
           color="text-light"
           textAlign="center"
-        >{description}
+        >
+          {description}
         </Text>
       )}
-      <Box>{children}</Box>
-    </Box>
+      {children}
+    </Flex>
   )
 }

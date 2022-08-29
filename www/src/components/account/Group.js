@@ -74,8 +74,6 @@ function GroupMembers({ group, edit }) {
   if (!data) return null
   const { groupMembers: { pageInfo, edges } } = data
 
-  console.log(data)
-
   return (
     <Box
       flex={false}

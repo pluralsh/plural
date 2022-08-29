@@ -1,17 +1,26 @@
 import { useMutation, useQuery } from '@apollo/client'
-import { Box } from 'grommet'
 import moment from 'moment'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { Div, Flex, Text } from 'honorable'
+import { useTheme } from 'styled-components'
+import { LoopingLogo, SearchIcon } from 'pluralsh-design-system'
 
-import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
+import ListInput from 'components/utils/ListInput'
+
+import CopyableButton from '../utils/CopyableButton'
+import { List, ListItem } from '../utils/List'
+
+import {
+  extendConnection,
+  removeConnection,
+  updateCache,
+} from '../../utils/graphql'
 
 import { Placeholder } from '../accounts/Audits'
 import { inviteLink } from '../accounts/CreateInvite'
 import { DELETE_INVITE, INVITES_Q } from '../accounts/queries'
 import { DeleteIconButton } from '../utils/IconButtons'
-import { Copyable } from '../utils/Copyable'
 import { StandardScroller } from '../utils/SmoothScroller'
-import { Table, TableData, TableRow } from '../utils/Table'
 
 import { Confirm } from './Confirm'
 
@@ -28,10 +37,7 @@ function DeleteInvite({ invite }) {
 
   return (
     <>
-      <DeleteIconButton
-        onClick={() => setConfirm(true)}
-        size={25}
-      />
+      <DeleteIconButton onClick={() => setConfirm(true)} />
       <Confirm
         open={confirm}
         close={() => setConfirm(false)}
@@ -46,53 +52,100 @@ function DeleteInvite({ invite }) {
   )
 }
 
-export function Invites() {
-  const [listRef, setListRef] = useState(null)
-  const { data, loading, fetchMore } = useQuery(INVITES_Q)
-
-  if (!data) return null
-
-  const { invites: { pageInfo, edges } } = data
+function Invite(invite) {
+  const theme = useTheme()
+  const { email, insertedAt } = invite
 
   return (
-    <Box fill>
-      <Table
-        headers={['Email', 'Link', 'Created On']}
-        sizes={['33%', '33%', '33%']}
-        background="fill-one"
-        border="1px solid border"
-        width="100%"
-        height="100%"
+    <Flex
+      width="100%"
+      flexDirection="row"
+      gap="large"
+      alignItems="center"
+    >
+      <Text
+        {...theme.partials.text.body1Bold}
+        flexGrow={1}
       >
-        <Box fill>
+        {email}
+      </Text>
+      <Text
+        caption
+        color="text-xlight"
+      >
+        {`Created ${moment(insertedAt).format('lll')}`}
+      </Text>
+      <CopyableButton
+        secondary
+        small
+        copyText={inviteLink(invite)}
+      >
+        Copy invite link
+      </CopyableButton>
+      <DeleteInvite invite={invite} />
+    </Flex>
+  )
+}
+
+export function Invites() {
+  const [q, setQ] = useState('')
+  const [listRef, setListRef] = useState(null)
+  const { data, loading, fetchMore } = useQuery(INVITES_Q, {
+    variables: { q },
+    fetchPolicy: 'cache-and-network',
+  })
+  const [dataCache, setDataCache] = useState(data)
+
+  useEffect(() => {
+    if (data) {
+      setDataCache(data)
+    }
+  }, [data])
+
+  const {
+    invites: { pageInfo, edges },
+  } = data || dataCache || { invites: {} }
+
+  return (
+    <List>
+      <ListInput
+        width="100%"
+        value={q}
+        placeholder="Search an invite"
+        startIcon={<SearchIcon color="text-light" />}
+        onChange={({ target: { value } }) => setQ(value)}
+        flexGrow={0}
+      />
+      <Div
+        flexGrow={1}
+        width="100%"
+      >
+        {!data && !dataCache ? (
+          <LoopingLogo />
+        ) : (
           <StandardScroller
             listRef={listRef}
             setListRef={setListRef}
             hasNextPage={pageInfo.hasNextPage}
             items={edges}
+            mapper={({ node }, { prev, next }) => (
+              <ListItem
+                first={!prev.node}
+                last={!next.node}
+              >
+                <Invite {...node} />
+              </ListItem>
+            )}
             loading={loading}
             placeholder={Placeholder}
-            mapper={({ node }, { next }) => (
-              <TableRow
-                last={!next.node}
-                suffix={<DeleteInvite invite={node} />}
-              >
-                <TableData>{node.email}</TableData>
-                <TableData><Copyable
-                  text={inviteLink(node)}
-                  pillText="Copied invite link"
-                />
-                </TableData>
-                <TableData>{moment(node.timestamp).format('lll')}</TableData>
-              </TableRow>
-            )}
-            loadNextPage={() => pageInfo.hasNextPage && fetchMore({
-              variables: { cursor: pageInfo.endCursor },
-              updateQuery: (prev, { fetchMoreResult: { invites } }) => extendConnection(prev, invites, 'invites'),
-            })}
+            loadNextPage={() => pageInfo.hasNextPage
+              && fetchMore({
+                variables: { cursor: pageInfo.endCursor },
+                updateQuery: (prev, { fetchMoreResult: { invites } }) => extendConnection(prev, invites, 'invites'),
+              })}
           />
-        </Box>
-      </Table>
-    </Box>
+        )}
+      </Div>
+    </List>
   )
 }

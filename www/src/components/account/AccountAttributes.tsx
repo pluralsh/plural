@@ -127,8 +127,6 @@ export function AccountAttributes() {
       },
     },
     update: (_cache, { data }) => {
-      console.log('data')
-      console.log('updateAccount', data?.updateAccount)
       if (data?.updateAccount) updateFormState(toFormState(data.updateAccount))
     },
   })

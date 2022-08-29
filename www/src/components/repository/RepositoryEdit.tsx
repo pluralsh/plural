@@ -23,7 +23,6 @@ import {
 import { TextInput } from 'grommet'
 import {
   Button,
-  Card,
   Chip,
   CloseIcon,
   ContentCard,

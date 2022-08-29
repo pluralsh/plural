@@ -1,12 +1,14 @@
+import { Application } from '@ctypes/application'
 import { LoginPage } from '@pages/login'
-import { RootPage } from '@pages/root'
+import { MarketplacePage } from '@pages/marketplace'
 
 context('Bounce story', () => {
   describe('bounce the first installed app', () => {
     beforeEach(() => LoginPage.login())
 
-    it('should visit the marketplace', () => {
-      RootPage.visit()
+    it('should find and open airbyte app', () => {
+      MarketplacePage.visit()
+      MarketplacePage.openRepository(Application.Airbyte)
     })
   })
 })

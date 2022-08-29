@@ -19,7 +19,7 @@ export class LoginPage extends BasePage {
       this._passwordInput.type(password)
       this._continueButton.should(Condition.BeVisible).and(Condition.BeEnabled).click()
 
-      GQLInterceptor.wait([Mutations.Login, Queries.Repos])
+      GQLInterceptor.wait([Mutations.Login])
     })
   }
 

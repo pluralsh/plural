@@ -18,17 +18,16 @@
     {
       "matchManagers": ["npm"],
       "addLabels": [
-        "dependencies",
         "frontend"
       ]
     },
     {
       "matchManagers": ["mix"],
       "addLabels": [
-        "dependencies",
         "backend"
       ]
     }
   ],
-  "separateMinorPatch": true,
+  "labels": ["dependencies"],
+  "separateMinorPatch": true
 }

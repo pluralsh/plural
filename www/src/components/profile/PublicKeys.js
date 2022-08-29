@@ -16,7 +16,8 @@ import { DELETE_KEY, LIST_KEYS } from '../users/queries'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { StandardScroller } from '../utils/SmoothScroller'
 
-import { DeleteIcon } from './Icon'
+import { DeleteIconButton } from '../utils/IconButtons'
+
 import { ListItem } from './ListItem'
 
 const TOOLTIP = 'Public keys are used to share access to an encrypted repository.'
@@ -66,7 +67,7 @@ function PublicKey({ pubkey: key, first, last }) {
           >
             added on {moment(key.insertedAt).format('lll')}
           </Text>
-          <DeleteIcon onClick={() => setConfirm(true)} />
+          <DeleteIconButton onClick={() => setConfirm(true)} />
         </Box>
       </ListItem>
       <Confirm

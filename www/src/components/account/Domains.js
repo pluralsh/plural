@@ -16,7 +16,8 @@ import { Placeholder } from '../accounts/Audits'
 import {
   DELETE_DNS_RECORD, DELETE_DOMAIN, DNS_DOMAINS, DNS_RECORDS, UPDATE_DOMAIN,
 } from '../accounts/queries'
-import { DeleteIcon, Icon } from '../profile/Icon'
+import { IconFrame } from '../utils/IconFrame'
+import { DeleteIconButton } from '../utils/IconButtons'
 import { Provider } from '../repos/misc'
 import { GqlError } from '../utils/Alert'
 import { StandardScroller } from '../utils/SmoothScroller'
@@ -143,7 +144,7 @@ function DeleteRecord({ record, domain }) {
 
   return (
     <>
-      <DeleteIcon
+      <DeleteIconButton
         onClick={() => setConfirm(true)}
       />
       <Confirm
@@ -185,7 +186,7 @@ function DnsRecords({ domain, setDomain }) {
         border
         round="xsmall"
       >
-        <Icon
+        <IconFrame
           clickable
           size="medium"
           icon={<Return />}

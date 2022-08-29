@@ -8,7 +8,7 @@ import { extendConnection, removeConnection, updateCache } from '../../utils/gra
 import { Placeholder } from '../accounts/Audits'
 import { inviteLink } from '../accounts/CreateInvite'
 import { DELETE_INVITE, INVITES_Q } from '../accounts/queries'
-import { DeleteIcon } from '../profile/Icon'
+import { DeleteIconButton } from '../utils/IconButtons'
 import { Copyable } from '../utils/Copyable'
 import { StandardScroller } from '../utils/SmoothScroller'
 import { Table, TableData, TableRow } from '../utils/Table'
@@ -28,7 +28,7 @@ function DeleteInvite({ invite }) {
 
   return (
     <>
-      <DeleteIcon
+      <DeleteIconButton
         onClick={() => setConfirm(true)}
         size={25}
       />

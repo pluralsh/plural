@@ -24,7 +24,7 @@ import { canEdit } from '../accounts/EditAccount'
 import { DELETE_GROUP, GROUPS_Q } from '../accounts/queries'
 import { Permissions } from '../accounts/types'
 import { CurrentUserContext } from '../login/CurrentUser'
-import { DeleteIcon } from '../profile/Icon'
+import { DeleteIconButton } from '../utils/IconButtons'
 import { ListItem } from '../profile/ListItem'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { StandardScroller } from '../utils/SmoothScroller'
@@ -107,7 +107,7 @@ function Group({ group, q }) {
               Edit
             </Button>
           )}
-          {editable && <DeleteIcon onClick={() => setConfirm(true)} />}
+          {editable && <DeleteIconButton onClick={() => setConfirm(true)} />}
         </Box>
         <Modal
           open={view}

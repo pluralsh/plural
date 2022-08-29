@@ -20,7 +20,7 @@ import { canEdit } from '../accounts/EditAccount'
 import { DELETE_ROLE, ROLES_Q } from '../accounts/queries'
 import { Permissions } from '../accounts/types'
 import { CurrentUserContext } from '../login/CurrentUser'
-import { DeleteIcon } from '../profile/Icon'
+import { DeleteIconButton } from '../utils/IconButtons'
 import { ListItem } from '../profile/ListItem'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { StandardScroller } from '../utils/SmoothScroller'
@@ -91,7 +91,7 @@ function Role({ role, q }) {
               q={q}
             />
           )}
-          <DeleteIcon onClick={() => setConfirm(true)} />
+          <DeleteIconButton onClick={() => setConfirm(true)} />
         </Box>
         <Confirm
           open={confirm}

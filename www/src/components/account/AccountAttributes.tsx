@@ -17,7 +17,7 @@ import { useTheme } from 'styled-components'
 
 import { UPDATE_ACCOUNT } from '../accounts/queries'
 import { CurrentUserContext } from '../login/CurrentUser'
-import { DeleteIcon } from '../profile/Icon'
+import { DeleteIconButton } from '../utils/IconButtons'
 import { GqlError } from '../utils/Alert'
 import { useUpdateState } from '../../hooks/useUpdateState'
 
@@ -67,7 +67,7 @@ function DomainMapping({ mapping, remove }: any) {
               SSO
             </Chip>
           )}
-          <DeleteIcon
+          <DeleteIconButton
             onClick={() => {
               setConfirm(true)
             }}

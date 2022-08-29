@@ -13,7 +13,7 @@ import { Placeholder } from '../accounts/Audits'
 import {
   CREATE_GROUP, CREATE_GROUP_MEMBERS, DELETE_GROUP_MEMBER, GROUPS_Q, GROUP_MEMBERS, UPDATE_GROUP,
 } from '../accounts/queries'
-import { DeleteIcon } from '../profile/Icon'
+import { DeleteIconButton } from '../utils/IconButtons'
 import { ListItem } from '../profile/ListItem'
 import { GqlError } from '../utils/Alert'
 import { StandardScroller } from '../utils/SmoothScroller'
@@ -54,7 +54,7 @@ function GroupMember({
           fill="horizontal"
         />
         {edit && (
-          <DeleteIcon
+          <DeleteIconButton
             onClick={mutation}
             size={25}
           />

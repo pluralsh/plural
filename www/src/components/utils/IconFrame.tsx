@@ -1,7 +1,7 @@
 /* To be implemented as IconFrame in the design system once the transition from
 the old IconFrame to AppIcon is complete */
 
-import { Tooltip, TrashCanIcon } from 'pluralsh-design-system'
+import { Tooltip } from 'pluralsh-design-system'
 import {
   ReactElement, ReactNode, cloneElement, forwardRef,
 } from 'react'
@@ -34,7 +34,7 @@ const sizeToFrameSize: Record<Size, number> = {
   xlarge: 48,
 }
 
-type IconProps = DivProps & {
+export type IconProps = DivProps & {
   hue?: Hue
   clickable?: boolean
   textValue: string
@@ -42,7 +42,7 @@ type IconProps = DivProps & {
   icon: ReactElement
 }
 
-export const Icon = forwardRef<HTMLDivElement, IconProps>(({
+export const IconFrame = forwardRef<HTMLDivElement, IconProps>(({
   icon,
   size = 'medium',
   hue = 'default',
@@ -117,15 +117,3 @@ ref) => {
   return content
 })
 
-export const DeleteIcon = forwardRef<HTMLDivElement, Partial<IconProps>>(({
-  size, clickable, textValue, ...props
-}, ref) => (
-  <Icon
-    ref={ref}
-    size={size || 'medium'}
-    clickable={clickable === undefined ? true : clickable}
-    icon={<TrashCanIcon color="icon-error" />}
-    textValue={textValue || 'Delete'}
-    {...props}
-  />
-))

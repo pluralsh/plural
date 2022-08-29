@@ -38,7 +38,9 @@ import { Chloropleth } from '../utils/Chloropleth'
 
 import { Confirm } from '../account/Confirm'
 
-import { DeleteIcon, Icon } from './Icon'
+import { IconFrame } from '../utils/IconFrame'
+import { DeleteIconButton } from '../utils/IconButtons'
+
 import { ListItem } from './ListItem'
 
 const TOOLTIP = 'Access tokens allow you to access the Plural API for automation and active Plural clusters.'
@@ -176,7 +178,7 @@ function AccessToken({ token, first, last }) {
             </Button>
           </CopyToClipboard>
           <>
-            <Icon
+            <IconFrame
               clickable
               size="medium"
               icon={<GraphIcon />}
@@ -194,7 +196,7 @@ function AccessToken({ token, first, last }) {
             </Modal>
           </>
           <>
-            <Icon
+            <IconFrame
               clickable
               size="medium"
               icon={<ListIcon />}
@@ -211,7 +213,7 @@ function AccessToken({ token, first, last }) {
               <TokenAudits token={token} />
             </Modal>
           </>
-          <DeleteIcon onClick={() => setConfirm(true)} />
+          <DeleteIconButton onClick={() => setConfirm(true)} />
         </Box>
       </ListItem>
       <Confirm

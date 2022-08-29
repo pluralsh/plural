@@ -4,6 +4,8 @@ import { Markdown, PageTitle } from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 
+import { RepositoryActions } from './misc'
+
 export default function RepositoryDescription() {
   const repository = useContext(RepositoryContext)
 
@@ -19,7 +21,9 @@ export default function RepositoryDescription() {
       <PageTitle
         heading="Readme"
         paddingTop="medium"
-      />
+      >
+        <Flex display-desktop-up="none"><RepositoryActions /></Flex>
+      </PageTitle>
       <Flex
         direction="column"
         flexGrow={1}

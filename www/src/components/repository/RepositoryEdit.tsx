@@ -43,6 +43,7 @@ import { generatePreview } from '../../utils/file'
 import { AuthMethod as authMethods } from '../oidc/types'
 
 import { TAGS_SEARCH_QUERY, UPDATE_REPOSITORY_MUTATION } from './queries'
+import { RepositoryActions } from './misc'
 
 export const categories = [
   'DEVOPS',
@@ -358,7 +359,9 @@ function RepositoryEdit() {
       <PageTitle
         heading="Edit"
         paddingTop="medium"
-      />
+      >
+        <Flex display-desktop-up="none"><RepositoryActions /></Flex>
+      </PageTitle>
       <Flex
         justifyContent="center"
         border="1px solid border"

@@ -14,6 +14,8 @@ import styled from 'styled-components'
 import { LinkTabWrap } from '../utils/Tabs'
 import RepositoryContext from '../../contexts/RepositoryContext'
 
+import { RepositoryActions } from './misc'
+
 export function packageCardStyle(first, last) {
   return {
     backgroundColor: 'fill-one',
@@ -60,7 +62,9 @@ export default function RepositoryPackages() {
       <PageTitle
         heading="Packages"
         paddingTop="medium"
-      />
+      >
+        <Flex display-desktop-up="none"><RepositoryActions /></Flex>
+      </PageTitle>
       <StyledTabPanel stateRef={tabStateRef}>
         <TabList
           stateRef={tabStateRef}

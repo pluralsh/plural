@@ -23,8 +23,10 @@ import {
 import { TextInput } from 'grommet'
 import {
   Button,
+  Card,
   Chip,
   CloseIcon,
+  ContentCard,
   FormField,
   Input,
   PageTitle,
@@ -362,12 +364,7 @@ function RepositoryEdit() {
       >
         <Flex display-desktop-up="none"><RepositoryActions /></Flex>
       </PageTitle>
-      <Flex
-        justifyContent="center"
-        border="1px solid border"
-        backgroundColor="fill-one"
-        borderRadius="large"
-        padding="xlarge"
+      <ContentCard
         marginBottom="xlarge"
         overflow="auto"
       >
@@ -377,9 +374,7 @@ function RepositoryEdit() {
         >
           <Form
             onSubmit={handleSubmit}
-            onReset={e => {
-              e.preventDefault()
-            }}
+            onReset={e => e.preventDefault()}
           >
             {iconPicker.HiddenFileInput(iconPickerInputOpts)}
 
@@ -624,7 +619,7 @@ function RepositoryEdit() {
             </Flex>
           </Form>
         </Div>
-      </Flex>
+      </ContentCard>
     </Flex>
   )
 }

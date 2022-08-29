@@ -87,9 +87,14 @@ export default function TreeGraph({
       id={id}
       width={width}
       height={height}
+      position="relative"
     >
       {legend && (
-        <Div position="absolute">
+        <Div
+          position="absolute"
+          top="8px"
+          right="8px"
+        >
           {Object.entries(legend).map(([k, v], index) => (
             <Box
               key={index}

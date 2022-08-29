@@ -1,11 +1,10 @@
 import { useState } from 'react'
-import { ArrowLeftIcon, CollapseIcon, ModalHeader } from 'pluralsh-design-system'
+import { ModalHeader } from 'pluralsh-design-system'
 import {
   A, Accordion, Button, Div, ExtendTheme, Flex, Li, Modal, P, Ul,
 } from 'honorable'
 import { Fireworks } from 'fireworks-js/dist/react'
 
-import usePrevious from '../../hooks/usePrevious'
 import CodeLine from '../utils/CodeLine'
 
 import { useOnboarded } from './onboarding/useOnboarded'
@@ -444,16 +443,7 @@ function Step3() {
   CHEATSHEET
 --- */
 
-const SECTION_COMMANDS = 'SECTION_COMMANDS'
-const SECTION_DEBUGGING = 'SECTION_DEBUGGING'
-const SECTION_WORKSPACE = 'SECTION_WORKSPACE'
-
 function Cheatsheet() {
-  // TODO: Reset active section to null once more are added
-  const [activeSection, setActiveSection] = useState(SECTION_COMMANDS)
-  const previousActiveSection = usePrevious(activeSection) || null
-  const displayedSection = activeSection || previousActiveSection
-
   return (
     <Div
       overflow="hidden"
@@ -462,158 +452,57 @@ function Cheatsheet() {
       <Flex
         position="relative"
         align="flex-start"
-        left={activeSection === null ? 0 : -sidebarWidth}
-        transition="left 333ms ease"
       >
-        <Div
-          width={sidebarWidth}
-          flexShrink={0}
-        >
-          <CheatsheetItem
-            title="Commands"
-            onClick={() => setActiveSection(SECTION_COMMANDS)}
-          />
-          {/* TODO: enable when other sections design will be finished */}
-          {/* <CheatsheetItem */}
-          {/*  title="Debugging" */}
-          {/*  onClick={() => setActiveSection(SECTION_DEBUGGING)} */}
-          {/* /> */}
-          {/* <CheatsheetItem */}
-          {/*  title="Workspace" */}
-          {/*  onClick={() => setActiveSection(SECTION_WORKSPACE)} */}
-          {/* /> */}
-        </Div>
         <Div
           width={sidebarWidth}
           flexShrink={0}
           paddingVertical="medium"
         >
-          <Flex
-            direction="row"
-            align="center"
-            marginLeft="medium"
-            fontSize="small"
-          >
-            <Button
-              tertiary
-              small
-              startIcon={<ArrowLeftIcon />}
-              onClick={() => setActiveSection(null)}
-            >
-              Back to cheatsheet
-            </Button>
-          </Flex>
-          {displayedSection === SECTION_COMMANDS && (
-            <CheatsheetCommands />
-          )}
-          {displayedSection === SECTION_DEBUGGING && (
-            <CheatsheetDebugging />
-          )}
-          {displayedSection === SECTION_WORKSPACE && (
-            <CheatsheetWorkspace />
-          )}
+          <CheatsheetCommands />
         </Div>
       </Flex>
     </Div>
   )
 }
 
-// eslint-disable-next-line
-function CheatsheetItem({ children, title, ...props }) {
-  return (
-    <Flex
-      align="center"
-      justify="space-between"
-      paddingHorizontal="large"
-      paddingVertical="medium"
-      borderBottom="1px solid border"
-      cursor="pointer"
-      _hover={{ backgroundColor: 'fill-one-hover' }}
-      {...props}
-    >
-      <P body1>
-        {title}
-      </P>
-      <CollapseIcon
-        transform="rotate(180deg)"
-        color="text-xlight"
-        size={8}
-      />
-    </Flex>
-  )
-}
-
 function CheatsheetCommands() {
   const commands = [{
-    command: 'version, v, vsn',
-    description: 'Gets cli version info.',
+    command: 'repos list',
+    description: 'Lists available repositories to install.',
   },
   {
-    command: 'build, b',
+    command: 'bundle list <app>',
+    description: 'Lists bundles for a repository.',
+  },
+  {
+    command: 'bundle install <app> <bundle>',
+    description: 'Installs a bundle and writes the configuration to this installation\'s context.',
+  },
+  {
+    command: 'build',
     description: 'Builds your workspace.',
   },
   {
-    command: 'deploy, d',
+    command: 'deploy',
     description: 'Deploys the current workspace. This command will sniff out git diffs in workspaces, topsort them, then apply all changes.',
   },
   {
-    command: 'diff, df',
-    description: 'Diffs the state of the current workspace with the current version and dumps results to diffs.',
-  },
-  {
-    command: 'bounce, b',
-    description: 'Redeploys the charts in a workspace.',
-  },
-  {
-    command: 'destroy, b',
-    description: 'Iterates through all installations in reverse topological order, deleting helm installations and terraform.',
-  },
-  {
-    command: 'init',
-    description: 'Initializes Plural within a Git repo.',
-  },
-  {
-    command: 'preflights',
-    description: 'Runs provider preflight checks.',
-  },
-  {
-    command: 'bundle',
-    description: 'Commands for installing and discovering installation repo.',
-  },
-  {
-    command: 'link',
-    description: 'Links a local package into an installation repo.',
-  },
-  {
-    command: 'unlink',
-    description: 'Unlinks a linked package.',
-  },
-  {
-    command: 'help, h',
-    description: 'Shows a list of commands or help for one command.',
-  },
-  ]
+    command: 'watch <app>',
+    description: 'Watches applications until they become ready.',
+  }]
 
   return (
     <>
-      <Flex
-        align="center"
-        justify="space-between"
-        paddingTop="medium"
-        paddingBottom="xsmall"
+      <P
         paddingHorizontal="medium"
+        overline
+        color="text-xlight"
       >
-        <P
-          body2
-          color="text-xlight"
-        >
-          COMMANDS
-        </P>
-      </Flex>
+        COMMANDS
+      </P>
       <Flex
         direction="column"
         overflow="auto"
-        height="100vh"
         paddingBottom="small"
       >
         {commands.map(c => (
@@ -636,7 +525,7 @@ function CheatsheetCommand({ command, description }) {
       paddingLeft="medium"
     >
       <P
-        flex="30%"
+        flex="50%"
         body2
       >
         <strong>{command}</strong>
@@ -648,22 +537,6 @@ function CheatsheetCommand({ command, description }) {
         {description}
       </P>
     </Flex>
-  )
-}
-
-function CheatsheetDebugging() {
-  return (
-    <>
-      CheatsheetDebugging
-    </>
-  )
-}
-
-function CheatsheetWorkspace() {
-  return (
-    <>
-      CheatsheetWorkspace
-    </>
   )
 }
 

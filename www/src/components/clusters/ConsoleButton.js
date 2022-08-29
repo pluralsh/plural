@@ -12,7 +12,7 @@ export function ConsoleButton({ q = {}, text, ...props }) {
       target="_blank"
       href={`https://${q.domain}`}
       textDecoration="none"
-      endIcon={<ArrowTopRightIcon size={16} />}
+      endIcon={<ArrowTopRightIcon />}
       {...props}
     >
       {text || 'View in Console'}

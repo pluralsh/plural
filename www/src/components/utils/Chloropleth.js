@@ -39,6 +39,7 @@ function Tooltip({ feature }) {
       <Text
         size="12px"
         weight={500}
+        color="black"
       >
         {id} {value}
       </Text>

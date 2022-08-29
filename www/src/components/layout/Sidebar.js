@@ -11,7 +11,6 @@ import {
   CloseIcon,
   ClusterIcon,
   DiscordIcon,
-  DownloadIcon,
   GitHubLogoIcon,
   ListIcon,
   LogoutIcon,
@@ -28,7 +27,6 @@ import { CurrentUserContext, handlePreviousUserClick } from '../login/CurrentUse
 import { useOnboarded } from '../shell/onboarding/useOnboarded'
 
 import { NotificationsPanel, WithNotifications } from './WithNotifications'
-import WithApplicationUpdate from './WithApplicationUpdate'
 
 export const SIDEBAR_ICON_HEIGHT = '40px'
 export const SIDEBAR_WIDTH = '224px'
@@ -76,25 +74,19 @@ function SidebarWrapper() {
   return (
     <WithNotifications>
       {({ notificationsCount }) => (
-        <WithApplicationUpdate>
-          {({ reloadApplication, shouldReloadApplication }) => (
-            <Sidebar
-              transition="width 300ms ease, opacity 200ms ease"
-              style={isOnboarding(fresh, pathname) ? {
-                width: '0',
-                opacity: '0',
-              } : null}
-              items={items}
-              activeId={pathname}
-              notificationsCount={notificationsCount}
-              hasUpdate={shouldReloadApplication}
-              onUpdateClick={reloadApplication}
-              userName={me.name}
-              userImageUrl={me.avatar}
-              userAccount={me.account?.name}
-            />
-          )}
-        </WithApplicationUpdate>
+        <Sidebar
+          transition="width 300ms ease, opacity 200ms ease"
+          style={isOnboarding(fresh, pathname) ? {
+            width: '0',
+            opacity: '0',
+          } : null}
+          items={items}
+          activeId={pathname}
+          notificationsCount={notificationsCount}
+          userName={me.name}
+          userImageUrl={me.avatar}
+          userAccount={me.account?.name}
+        />
       )}
     </WithNotifications>
   )
@@ -245,10 +237,8 @@ const SidebarItem = forwardRef(SidebarItemRef)
 
 function Sidebar({
   activeId = '',
-  hasUpdate = false,
   items = [],
   notificationsCount = 0,
-  onUpdateClick = () => {},
   userImageUrl,
   userName,
   userAccount,
@@ -323,26 +313,6 @@ function Sidebar({
           </Flex>
         </Link>
         {/* ---
-          NOTIFICATIONS AND UPDATE
-        --- */}
-        {hasUpdate && (
-          <Div
-            py={0.75}
-            px={0.75}
-            flexShrink={0}
-            borderBottom="1px solid border"
-          >
-            <SidebarItem
-              highlight
-              collapsed={collapsed}
-              startIcon={<DownloadIcon />}
-              label="Update"
-              tooltip="Update"
-              onClick={onUpdateClick}
-            />
-          </Div>
-        )}
-        {/* ---
           MENU
         --- */}
         <Div
@@ -391,23 +361,17 @@ function Sidebar({
             collapsed={collapsed}
             startIcon={<DiscordIcon />}
             endIcon={(
-              <ArrowTopRightIcon
-                size={24}
-                my={`${(16 - 24) / 2}px`}
-              />
+              <ArrowTopRightIcon />
             )}
             label="Discord"
             tooltip="Discord"
-            linkTo="https://discord.com/invite/qsUfBcC3Ru"
+            linkTo="https://discord.gg/pluralsh"
           />
           <SidebarItem
             collapsed={collapsed}
             startIcon={<GitHubLogoIcon />}
             endIcon={(
-              <ArrowTopRightIcon
-                size={24}
-                my={`${(16 - 24) / 2}px`}
-              />
+              <ArrowTopRightIcon />
             )}
             label="GitHub"
             tooltip="GitHub"
@@ -516,7 +480,7 @@ function Sidebar({
             <ScrollIcon mr={1} />
             Docs
             <Flex flexGrow={1} />
-            <ArrowTopRightIcon size={20} />
+            <ArrowTopRightIcon />
           </MenuItem>
           {/* <MenuItem>
             <MarketPlusIcon mr={1} />

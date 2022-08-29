@@ -77,6 +77,20 @@ defmodule Core.Services.UsersTest do
       {:ok, _} = Users.update_user(%{password: "anewstrongpassword", confirm: "superstrongpassword"}, user)
     end
 
+    test "email change is properly detected" do
+      user = insert(:user)
+
+      {:ok, updated} = Users.update_user(%{name: "changed"}, user)
+      refute updated.email_changed
+
+      {:ok, updated} = Users.update_user(%{email: user.email}, user)
+      refute updated.email_changed
+
+      {:ok, updated} = Users.update_user(%{email: "changed@example.com"}, user)
+      assert updated.email_changed
+      refute updated.email_confirmed
+    end
+
     test "you cannot make yourself an admin" do
       user = build(:user)
              |> with_password("superstrongpassword")
@@ -100,6 +114,7 @@ defmodule Core.Services.UsersTest do
       {:ok, updated} = Users.update_user(%{name: "real user", roles: %{admin: true}}, user.id, admin)
 
       assert updated.name == "real user"
+      refute updated.email_changed
       assert updated.roles.admin
 
       assert_receive {:event, %PubSub.UserUpdated{item: ^updated, actor: actor}}

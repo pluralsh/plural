@@ -1,0 +1,24 @@
+{
+  "name": "console-cypress-e2e",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "e2e:start": "npx cypress run --browser=chrome",
+    "e2e:open": "npx cypress open",
+    "lint": "npx eslint .",
+    "lint:fix": "npx eslint . --fix"
+  },
+  "engines": {
+    "node": ">=16.14.0"
+  },
+  "packageManager": "yarn@3.2.1",
+  "devDependencies": {
+    "@cypress/webpack-preprocessor": "5.12.0",
+    "@pluralsh/eslint-config-typescript": "2.3.0",
+    "@typescript-eslint/eslint-plugin": "5.33.0",
+    "cypress": "10.4.0",
+    "ts-loader": "8.4.0",
+    "typescript": "4.7.4",
+    "webpack": "5.74.0"
+  }
+}

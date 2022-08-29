@@ -1,0 +1,4 @@
+root: true
+extends: '@pluralsh/eslint-config-typescript'
+rules:
+  max-classes-per-file: 0

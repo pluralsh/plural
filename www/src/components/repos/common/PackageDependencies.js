@@ -165,7 +165,16 @@ export default function PackageDependencies() {
       fill
       gap="small"
     >
-      <PageTitle heading="Dependencies">
+      <PageTitle heading="Dependencies" />
+      <TabPanel
+        stateRef={tabStateRef}
+        as={(
+          <Box
+            pad={{ right: 'small' }}
+            overflow={{ vertical: 'auto' }}
+          />
+        )}
+      >
         <TabList
           stateRef={tabStateRef}
           stateProps={{
@@ -173,6 +182,7 @@ export default function PackageDependencies() {
             selectedKey: selectedTabKey,
             onSelectionChange: key => setFull(key === 'full'),
           }}
+          marginBottom="small"
         >
           {DIRECTORY.map(({ label, key }) => (
             <SubTab
@@ -183,16 +193,6 @@ export default function PackageDependencies() {
             </SubTab>
           ))}
         </TabList>
-      </PageTitle>
-      <TabPanel
-        stateRef={tabStateRef}
-        as={(
-          <Box
-            pad={{ right: 'small' }}
-            overflow={{ vertical: 'auto' }}
-          />
-        )}
-      >
         {full && <FullDependencies resource={chart} />}
         {!full && (
           <Dependencies

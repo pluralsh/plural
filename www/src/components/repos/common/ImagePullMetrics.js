@@ -59,7 +59,16 @@ export default function ImagePullMetrics() {
       flex={false}
       gap="small"
     >
-      <PageTitle heading="Pull metrics">
+      <PageTitle heading="Pull metrics" />
+      <TabPanel
+        stateRef={tabStateRef}
+        as={(
+          <Box
+            overflow={{ vertical: 'hidden' }}
+            height="350px"
+          />
+        )}
+      >
         <RangePicker
           tabStateRef={tabStateRef}
           duration={{ offset: filter.offset, step: filter.precision }}
@@ -70,16 +79,6 @@ export default function ImagePullMetrics() {
             tick,
           })}
         />
-      </PageTitle>
-      <TabPanel
-        stateRef={tabStateRef}
-        as={(
-          <Box
-            overflow={{ vertical: 'hidden' }}
-            height="350px"
-          />
-        )}
-      >
         <Graph
           data={data}
           precision={filter.precision}

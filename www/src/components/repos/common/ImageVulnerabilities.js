@@ -5,7 +5,7 @@ import { useOutletContext } from 'react-router-dom'
 import { useState } from 'react'
 
 import {
-  ArrowTopRightIcon, Chip, Codeline, CollapseIcon, DockerTagIcon, PageTitle,
+  ArrowTopRightIcon, Chip, Codeline, CollapseIcon, DockerTagIcon, EmptyState, PageTitle,
 } from 'pluralsh-design-system'
 
 import { Table, TableData, TableRow } from 'components/utils/Table'
@@ -15,8 +15,6 @@ import {
 } from 'honorable'
 
 import { capitalize } from 'lodash'
-
-import { EmptyState } from 'components/utils/EmptyState'
 
 import { AttackVector } from '../constants'
 

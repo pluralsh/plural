@@ -8,6 +8,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard'
 
 import {
   CopyIcon,
+  EmptyState,
   GraphIcon,
   InfoIcon,
   ListIcon,
@@ -17,8 +18,6 @@ import {
   Toast,
   Tooltip,
 } from 'pluralsh-design-system'
-
-import { EmptyState } from 'components/utils/EmptyState'
 
 import {
   appendConnection, deepUpdate, extendConnection, removeConnection, updateCache,

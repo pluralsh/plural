@@ -31,4 +31,13 @@ defmodule GraphQl.Schema.Helpers do
       end
     end
   end
+
+  def lazy_dataloader(key, resolver) do
+    fn
+      %{^key => %Ecto.Association.NotLoaded{}} = s, args, ctx ->
+        func = dataloader(resolver)
+        func.(s, args, ctx)
+      %{^key => v}, _, _ -> {:ok, v}
+    end
+  end
 end

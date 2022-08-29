@@ -5,7 +5,7 @@ import { Box } from 'grommet'
 import { useMutation } from '@apollo/client'
 import { Button, Flex, P } from 'honorable'
 import {
-  CheckIcon, Codeline, ContentCard, FormField, Input, PageTitle, Token,
+  CheckIcon, Codeline, ContentCard, FormField, Input, PageTitle, Toast, Token,
 } from 'pluralsh-design-system'
 import { useNavigate, useParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
@@ -19,7 +19,6 @@ import { sanitize } from '../account/utils'
 import { CREATE_PROVIDER, UPDATE_PROVIDER } from '../oidc/queries'
 import { AuthMethod } from '../oidc/types'
 import RepositoryContext from '../../contexts/RepositoryContext'
-import { SuccessToast } from '../utils/Toasts'
 import usePrevious from '../../hooks/usePrevious'
 
 function UrlsInput({ uriFormat = '', urls, setUrls }) {
@@ -204,7 +203,13 @@ export function ProviderForm({
         )}
       </Flex>
       {toast && (
-        <SuccessToast onClose={() => setToast(null)}>{toast}</SuccessToast>
+        <Toast
+          severity="success"
+          marginBottom="medium"
+          marginRight="xxxxlarge"
+          onClose={() => setToast(null)}
+        >{toast}
+        </Toast>
       )}
     </ContentCard>
   )

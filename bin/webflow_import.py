@@ -226,7 +226,7 @@ def webflow_dump():
     diffed_update(
         wf, 
         '62dff22f0b55da4ddc21ef80', 
-        [r['node'] for r in repos['data']['repositories']['edges']], 
+        [r['node'] for r in repos['data']['repositories']['edges'] if r['node']['name'] not in BLACKLIST], 
         lambda x: x['name'],
         repo_data
     )

@@ -1,9 +1,13 @@
 import { useMutation, useQuery } from '@apollo/client'
-import { EmptyState } from 'components/utils/EmptyState'
 import { Box } from 'grommet'
-import { Flex } from 'honorable'
 import { isEmpty } from 'lodash'
-import { Input, PageTitle, SearchIcon } from 'pluralsh-design-system'
+import { Flex } from 'honorable'
+import {
+  EmptyState,
+  Input,
+  PageTitle,
+  SearchIcon,
+} from 'pluralsh-design-system'
 import { useContext, useState } from 'react'
 
 import {

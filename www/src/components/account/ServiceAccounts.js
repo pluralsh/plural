@@ -1,9 +1,8 @@
 import { useQuery } from '@apollo/client'
-import { EmptyState } from 'components/utils/EmptyState'
 import { Box } from 'grommet'
 import { Flex, Input } from 'honorable'
 import { isEmpty } from 'lodash'
-import { PageTitle, SearchIcon } from 'pluralsh-design-system'
+import { EmptyState, PageTitle, SearchIcon } from 'pluralsh-design-system'
 import { useCallback, useState } from 'react'
 
 import {

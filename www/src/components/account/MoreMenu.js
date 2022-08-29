@@ -24,9 +24,7 @@ export function MoreMenu({ children }) {
           align={{ top: 'bottom' }}
           onClickOutside={() => setOpen(false)}
         >
-          <Menu>
-            {children}
-          </Menu>
+          <Menu>{children}</Menu>
         </Drop>
       )}
     </>

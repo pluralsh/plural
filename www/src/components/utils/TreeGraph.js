@@ -92,7 +92,6 @@ export default function TreeGraph({
       {legend && (
         <Div
           position="absolute"
-          top="8px"
           right="8px"
         >
           {Object.entries(legend).map(([k, v], index) => (

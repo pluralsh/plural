@@ -30,6 +30,14 @@ function CreatePublisherModal({ open, onClose }: CreatePublisherModalProps) {
   const [discord, setDiscord] = useState('')
   const [slack, setSlack] = useState('')
   const [twitter, setTwitter] = useState('')
+  const [errors, setErrors] = useState({
+    website: false,
+    documentation: false,
+    github: false,
+    discord: false,
+    slack: false,
+    twitter: false,
+  })
 
   const iconPicker = useFilePicker({
     minImageWidth: 64,
@@ -55,6 +63,41 @@ function CreatePublisherModal({ open, onClose }: CreatePublisherModalProps) {
       reader.abort()
     }
   }, [iconPicker.files])
+
+  function isValidUrl(url: string) {
+    return !/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/.test(url)
+  }
+
+  function renderUrlField(
+    label: string,
+    placeholder: string,
+    getter: string,
+    setter: (value: string) => void,
+    error: boolean,
+  ) {
+    return (
+      <FormField
+        label={label}
+        flexGrow={1}
+        error={error}
+        hint={error ? 'Must be a valid URL' : ''}
+        marginBottom="large"
+      >
+        <Input
+          value={getter}
+          error={error}
+          onChange={event => {
+            setter(event.target.value)
+            setErrors(e => ({
+              ...e,
+              website: isValidUrl(event.target.value),
+            }))
+          }}
+          placeholder={placeholder}
+        />
+      </FormField>
+    )
+  }
 
   return (
     <Modal
@@ -133,80 +176,29 @@ function CreatePublisherModal({ open, onClose }: CreatePublisherModalProps) {
           placeholder="Enter a description"
         />
       </FormField>
-      <Flex
-        marginBottom="large"
-        gap="medium"
-      >
-        <FormField
-          label="Website"
-          flexGrow={1}
-        >
-          <Input
-            value={website}
-            onChange={event => setWebsite(event.target.value)}
-            placeholder="Website URL"
-          />
-        </FormField>
-        <FormField
-          label="Docs link"
-          flexGrow={1}
-        >
-          <Input
-            value={documentation}
-            onChange={event => setDocumentation(event.target.value)}
-            placeholder="Docs URL"
-          />
-        </FormField>
+      <Flex gap="medium">
+        {renderUrlField(
+          'Website link', 'Website URL', website, setWebsite, errors.website
+        )}
+        {renderUrlField(
+          'Docs link', 'Docs URL', documentation, setDocumentation, errors.documentation
+        )}
       </Flex>
-      <Flex
-        marginBottom="large"
-        gap="medium"
-      >
-        <FormField
-          label="GitHub link"
-          flexGrow={1}
-        >
-          <Input
-            value={github}
-            onChange={event => setGithub(event.target.value)}
-            placeholder="GitHub URL"
-          />
-        </FormField>
-        <FormField
-          label="Discord link"
-          flexGrow={1}
-        >
-          <Input
-            value={discord}
-            onChange={event => setDiscord(event.target.value)}
-            placeholder="Discord invite URL"
-          />
-        </FormField>
+      <Flex gap="medium">
+        {renderUrlField(
+          'GitHub link', 'GitHub URL', github, setGithub, errors.github
+        )}
+        {renderUrlField(
+          'Docs link', 'Discord invite URL', discord, setDiscord, errors.discord
+        )}
       </Flex>
-      <Flex
-        marginBottom="large"
-        gap="medium"
-      >
-        <FormField
-          label="Slack Link"
-          flexGrow={1}
-        >
-          <Input
-            value={slack}
-            onChange={event => setSlack(event.target.value)}
-            placeholder="Slack invite URL"
-          />
-        </FormField>
-        <FormField
-          label="Twitter link"
-          flexGrow={1}
-        >
-          <Input
-            value={twitter}
-            onChange={event => setTwitter(event.target.value)}
-            placeholder="Twitter URL"
-          />
-        </FormField>
+      <Flex gap="medium">
+        {renderUrlField(
+          'Slack link', 'Slack invite URL', slack, setSlack, errors.slack
+        )}
+        {renderUrlField(
+          'Twitter link', 'Twitter URL', twitter, setTwitter, errors.twitter
+        )}
       </Flex>
       <ModalActions gap="medium">
         <Button

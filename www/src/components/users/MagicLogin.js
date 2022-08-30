@@ -43,7 +43,7 @@ import { METHOD_ICONS } from './OauthEnabler'
 import { finishedDeviceLogin } from './DeviceLoginNotif'
 
 export function LabelledInput({
-  label, value, onChange, placeholder, type, caption, hint, error = undefined, required = false,
+  label, value, onChange, placeholder, type, caption, hint, error = undefined, required = false, disabled = false,
 }) {
   return (
     <FormField
@@ -62,6 +62,7 @@ export function LabelledInput({
         onChange={onChange && (({ target: { value } }) => onChange(value))}
         placeholder={placeholder}
         error={error}
+        disabled={disabled}
       />
     </FormField>
   )

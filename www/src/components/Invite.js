@@ -188,6 +188,7 @@ export default function Invite() {
               <LabelledInput
                 label="Email"
                 value={data.invite.email}
+                disabled
               />
               <LabelledInput
                 label="Name"

@@ -1,9 +1,7 @@
-import { TrashCanIcon } from 'pluralsh-design-system'
+import { IconFrame, IconFrameProps, TrashCanIcon } from 'pluralsh-design-system'
 import { forwardRef } from 'react'
 
-import { IconFrame, IconProps } from './IconFrame'
-
-export const DeleteIconButton = forwardRef<HTMLDivElement, Partial<IconProps>>(({
+export const DeleteIconButton = forwardRef<HTMLDivElement, Partial<IconFrameProps>>(({
   size, clickable, textValue, ...props
 }, ref) => (
   <IconFrame

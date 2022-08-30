@@ -1,7 +1,5 @@
-import { MoreIcon, Select } from 'pluralsh-design-system'
+import { IconFrame, MoreIcon, Select } from 'pluralsh-design-system'
 import { useState } from 'react'
-
-import { IconFrame } from '../utils/IconFrame'
 
 export function MoreMenu({ children, onSelectionChange, ...props }) {
   const [isOpen, setIsOpen] = useState(false)

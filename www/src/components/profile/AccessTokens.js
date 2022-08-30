@@ -10,6 +10,7 @@ import {
   CopyIcon,
   EmptyState,
   GraphIcon,
+  IconFrame,
   InfoIcon,
   ListIcon,
   Modal,
@@ -38,7 +39,6 @@ import { Chloropleth } from '../utils/Chloropleth'
 
 import { Confirm } from '../account/Confirm'
 
-import { IconFrame } from '../utils/IconFrame'
 import { DeleteIconButton } from '../utils/IconButtons'
 
 import { ListItem } from './ListItem'

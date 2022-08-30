@@ -5,7 +5,9 @@ import {
   Avatar, Flex, MenuItem, Span,
 } from 'honorable'
 import moment from 'moment'
-import { Modal, ModalHeader, PageTitle } from 'pluralsh-design-system'
+import {
+  IconFrame, Modal, ModalHeader, PageTitle,
+} from 'pluralsh-design-system'
 import { useState } from 'react'
 
 import {
@@ -16,7 +18,6 @@ import { Placeholder } from '../accounts/Audits'
 import {
   DELETE_DNS_RECORD, DELETE_DOMAIN, DNS_DOMAINS, DNS_RECORDS, UPDATE_DOMAIN,
 } from '../accounts/queries'
-import { IconFrame } from '../utils/IconFrame'
 import { DeleteIconButton } from '../utils/IconButtons'
 import { Provider } from '../repos/misc'
 import { GqlError } from '../utils/Alert'

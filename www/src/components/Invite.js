@@ -2,8 +2,9 @@ import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { gql, useMutation, useQuery } from '@apollo/client'
 import { Box, Keyboard, Text } from 'grommet'
-import { Button, GqlError, SecondaryButton } from 'forge-core'
+import { GqlError } from 'forge-core'
 import { Checkmark, StatusCritical } from 'grommet-icons'
+import { Button } from 'pluralsh-design-system'
 
 import { setToken } from '../helpers/authentication'
 
@@ -56,7 +57,6 @@ function InvalidInvite() {
 }
 
 export function disableState(password, confirm) {
-  if (password.length === 0) return { disabled: true, reason: 'enter a password' }
   if (password.length < 10) return { disabled: true, reason: 'password is too short' }
   if (password !== confirm) return { disabled: true, reason: 'passwords do not match' }
 
@@ -164,7 +164,6 @@ export default function Invite() {
   const { inviteId } = useParams()
   const [attributes, setAttributes] = useState({ name: '', password: '' })
   const [confirm, setConfirm] = useState('')
-  const [editPassword, setEditPassword] = useState(false)
   const [mutation, { loading, error }] = useMutation(SIGNUP, {
     variables: { inviteId, attributes },
     onCompleted: ({ signup: { jwt } }) => {
@@ -179,7 +178,7 @@ export default function Invite() {
   if (!data) return null
 
   const { disabled, reason } = disableState(attributes.password, confirm)
-  const { email } = data.invite
+  const valid = attributes.name.length > 0 && attributes.password.length > 0 && attributes.password === confirm
 
   if (data.invite.user) {
     return (
@@ -190,15 +189,13 @@ export default function Invite() {
     )
   }
 
-  const filled = attributes.name.length > 0
-
   return (
     <LoginPortal style={{ minWidth: '50%' }}>
       <Box
         fill
         pad="medium"
       >
-        <Keyboard onEnter={editPassword && filled ? mutation : null}>
+        <Keyboard onEnter={valid && mutation}>
           <Box
             flex={false}
             gap="small"
@@ -214,6 +211,7 @@ export default function Invite() {
               direction="row"
               gap="small"
               align="center"
+              margin={{ vertical: '32px' }}
             >
               <DummyAvatar name={attributes.name} />
               <Box>
@@ -225,84 +223,61 @@ export default function Invite() {
                 <Text
                   size="small"
                   color="dark-3"
-                >{email}
+                >{data.invite.email}
                 </Text>
               </Box>
             </Box>
-            {editPassword ? (
-              <Box animation={{ type: 'fadeIn', duration: 500 }}>
-                <Box
-                  gap="small"
-                  fill="horizontal"
-                >
-                  <LabelledInput
-                    width="100%"
-                    type="password"
-                    label="password"
-                    value={attributes.password}
-                    placeholder="battery horse fire stapler"
-                    onChange={password => setAttributes({ ...attributes, password })}
-                  />
-                  <LabelledInput
-                    width="100%"
-                    type="password"
-                    label="confirm"
-                    value={confirm}
-                    placeholder="type it again"
-                    onChange={setConfirm}
-                  />
-                </Box>
-              </Box>
-            ) : (
-              <Box animation={{ type: 'fadeIn', duration: 500 }}>
-                <Box
-                  gap="small"
-                  fill="horizontal"
-                >
-                  <LabelledInput
-                    width="100%"
-                    label="Email"
-                    value={email}
-                  />
-                  <LabelledInput
-                    width="100%"
-                    label="Name"
-                    value={attributes.name}
-                    placeholder="John Doe"
-                    onChange={name => setAttributes({ ...attributes, name })}
-                  />
-                </Box>
-              </Box>
-            )}
             <Box
-              direction="row"
-              justify="end"
+              gap="small"
+              fill="horizontal"
+            >
+              <LabelledInput
+                label="Email"
+                value={data.invite.email}
+              />
+              <LabelledInput
+                label="Name"
+                value={attributes.name}
+                placeholder="John Doe"
+                onChange={name => setAttributes({ ...attributes, name })}
+              />
+              <LabelledInput
+                type="password"
+                label="Password"
+                value={attributes.password}
+                placeholder="Enter password"
+                onChange={password => setAttributes({ ...attributes, password })}
+              />
+              <LabelledInput
+                type="password"
+                label="Confirm password"
+                value={confirm}
+                placeholder="Enter password again"
+                onChange={setConfirm}
+              />
+            </Box>
+            <Box
               align="center"
               gap="small"
             >
-              {editPassword && (
-                <PasswordStatus
-                  disabled={disabled}
-                  reason={reason}
-                />
-              )}
+              <PasswordStatus
+                disabled={disabled}
+                reason={reason}
+              />
               <Box
-                flex={false}
+                fill="horizontal"
                 direction="row"
                 gap="small"
               >
-                {editPassword && (
-                  <SecondaryButton
-                    label="Go Back"
-                    onClick={() => setEditPassword(false)}
-                  />
-                )}
                 <Button
+                  primary
+                  width="100%"
                   loading={loading}
-                  disabled={editPassword ? disabled : !filled}
-                  label={editPassword ? 'Sign up' : 'Continue'}
-                  onClick={editPassword ? mutation : () => setEditPassword(true)}
-                />
+                  disabled={!valid}
+                  onClick={mutation}
+                >
+                  Sign up
+                </Button>
               </Box>
             </Box>
           </Box>

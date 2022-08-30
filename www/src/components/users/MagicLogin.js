@@ -366,7 +366,7 @@ export function Login() {
 
   return (
     <LoginPortal>
-      <WelcomeHeader />
+      <WelcomeHeader marginBottom="xxlarge" />
       {passwordless && (
         <Div>
           <LoginPoller
@@ -510,7 +510,7 @@ export function Signup() {
 
   return (
     <LoginPortal>
-      <WelcomeHeader />
+      <WelcomeHeader marginBottom="xxlarge" />
       <Keyboard onEnter={mutation}>
         <Form onSubmit={mutation}>
           {error && (

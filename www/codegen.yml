@@ -6,3 +6,6 @@ generates:
       - "typescript"
       - "typescript-operations"
       - "typescript-react-apollo"
+hooks:
+  afterAllFileWrite:
+    - eslint --fix

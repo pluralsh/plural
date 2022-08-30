@@ -114,14 +114,13 @@
     "@babel/eslint-parser": "7.18.9",
     "@babel/preset-env": "7.18.10",
     "@babel/preset-react": "7.18.6",
-    "@graphql-codegen/cli": "2.7.0",
-    "@graphql-codegen/introspection": "2.1.1",
-    "@graphql-codegen/typescript": "2.6.0",
-    "@graphql-codegen/typescript-operations": "2.4.3",
-    "@graphql-codegen/typescript-react-apollo": "3.2.17",
+    "@graphql-codegen/cli": "2.11.8",
+    "@graphql-codegen/introspection": "2.2.1",
+    "@graphql-codegen/typescript": "2.7.3",
+    "@graphql-codegen/typescript-operations": "2.5.3",
+    "@graphql-codegen/typescript-react-apollo": "3.3.3",
     "@pluralsh/eslint-config-typescript": "2.3.0",
     "@pluralsh/stylelint-config": "1.0.0",
-    "@types/graphql": "^14.5.0",
     "@types/randomcolor": "0.5.6",
     "@typescript-eslint/eslint-plugin": "5.33.1",
     "@typescript-eslint/parser": "5.33.1",
@@ -130,7 +129,7 @@
     "postcss-import": "8.2.0",
     "serve": "14.0.1",
     "stylelint": "14.11.0",
-    "typescript": "4.7.4"
+    "typescript": "4.8.2"
   },
   "jest": {
     "moduleNameMapper": {

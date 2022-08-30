@@ -4,6 +4,8 @@ import {
 } from 'react-router-dom'
 import { StripeProvider } from 'react-stripe-elements'
 
+import { Toast } from 'pluralsh-design-system'
+
 import { growthbook } from '../helpers/growthbook'
 
 import ApplicationLayout from './layout/ApplicationLayout'
@@ -59,7 +61,6 @@ import PackageUpdateQueue from './repos/common/PackageUpdateQueue'
 import PackageDependencies from './repos/common/PackageDependencies'
 import ImagePullMetrics from './repos/common/ImagePullMetrics'
 import ImageVulnerabilities from './repos/common/ImageVulnerabilities'
-import { SuccessToast } from './utils/Toasts'
 
 function EditBilling(props) {
   return (
@@ -113,7 +114,14 @@ function TestBanner() {
   }, [])
 
   if (growthbook.isOn('growthbook-test') && enable) {
-    return <SuccessToast>Growthbook Test!</SuccessToast>
+    return (
+      <Toast
+        severity="success"
+        marginBottom="medium"
+        marginRight="xxxxlarge"
+      >Growthbook Test!
+      </Toast>
+    )
   }
 
   return null
@@ -328,7 +336,7 @@ export function PluralInner() {
                 element={(
                   <Navigate
                     replace
-                    to="users"
+                    to="edit"
                   />
                 )}
               />

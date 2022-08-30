@@ -1,10 +1,9 @@
 import { useQuery } from '@apollo/client'
-import { EmptyState } from 'components/utils/EmptyState'
 import { Box } from 'grommet'
 import {
   A, Br, Flex, Span,
 } from 'honorable'
-import { Button, LoopingLogo } from 'pluralsh-design-system'
+import { Button, EmptyState, LoopingLogo } from 'pluralsh-design-system'
 import { ReactElement, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
@@ -44,7 +43,6 @@ export function Clusters(): ReactElement | null {
   const [queue, setQueue] = useState({} as Queue)
   const {
     data,
-    loading,
     subscribeToMore,
   } = useQuery<QueueList>(QUEUES, { fetchPolicy: 'cache-and-network' })
 
@@ -64,7 +62,7 @@ export function Clusters(): ReactElement | null {
 
   useEffect(() => (data ? setQueue(data?.upgradeQueues[0]) : data), [data])
 
-  if (loading) {
+  if (!data) {
     return (
       <Flex
         align="center"
@@ -81,24 +79,23 @@ export function Clusters(): ReactElement | null {
       <Box margin={{ top: '152px' }}>
         <EmptyState
           message="Looks like you don't have any clusters registered yet."
-          description={(
-            <Span>
-              Clusters are registered here once you've installed and deployed Plural
-              <Br />Console. If you need support installing it, read our&nbsp;
-              <A
-                inline
-                href="https://docs.plural.sh/getting-started/getting-started"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                quickstart guide
-              </A>.
-            </Span>
-          )}
         >
+          <Span>
+            Clusters are registered here once you've installed and deployed Plural
+            <Br />Console. If you need support installing it, read our&nbsp;
+            <A
+              inline
+              href="https://docs.plural.sh/getting-started/getting-started"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              quickstart guide
+            </A>.
+          </Span>
           <Button
             as={Link}
             to="/repository/a051a0bf-61b5-4ab5-813d-2c541c83a979"
+            marginTop="medium"
           >
             Install Plural Console
           </Button>
@@ -136,4 +133,3 @@ export function Clusters(): ReactElement | null {
     </QueueContext.Provider>
   )
 }
-

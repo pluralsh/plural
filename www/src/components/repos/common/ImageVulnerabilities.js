@@ -5,7 +5,7 @@ import { useOutletContext } from 'react-router-dom'
 import { useState } from 'react'
 
 import {
-  ArrowTopRightIcon, Chip, CollapseIcon, DockerTagIcon, PageTitle,
+  ArrowTopRightIcon, Chip, CollapseIcon, DockerTagIcon, EmptyState, PageTitle,
 } from 'pluralsh-design-system'
 
 import { Table, TableData, TableRow } from 'components/utils/Table'
@@ -15,8 +15,6 @@ import {
 } from 'honorable'
 
 import { capitalize } from 'lodash'
-
-import { EmptyState } from 'components/utils/EmptyState'
 
 import { AttackVector } from '../constants'
 
@@ -254,9 +252,14 @@ function Vulnerability({ v, last }) {
                 onClick={e => e.stopPropagation()}
                 target="_blank"
                 rel="noopener noreferrer"
+                display="flex"
+                alignItems="center"
               >
                 <Span>{v.vulnerabilityId}</Span>
-                <ArrowTopRightIcon marginLeft="xxsmall" />
+                <ArrowTopRightIcon
+                  marginLeft="xsmall"
+                  size={12}
+                />
               </A>
             </Box>
           ) : <Span>{v.vulnerabilityId}</Span>}

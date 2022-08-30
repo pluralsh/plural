@@ -1,12 +1,13 @@
 import { Box } from 'grommet'
 import { A, Flex, Span } from 'honorable'
-import { ErrorIcon } from 'pluralsh-design-system'
+import { ErrorIcon, Toast } from 'pluralsh-design-system'
 import { useContext } from 'react'
 
 import { getPreviousUserData } from '../../helpers/authentication'
 import { CurrentUserContext, handlePreviousUserClick } from '../login/CurrentUser'
 
 import Sidebar from './Sidebar'
+import WithApplicationUpdate from './WithApplicationUpdate'
 
 function ServiceAccountBanner({ previousUser }) {
   const me = useContext(CurrentUserContext)
@@ -36,6 +37,7 @@ function ServiceAccountBanner({ previousUser }) {
 
 function ApplicationLayout({ children }) {
   const previousUser = getPreviousUserData()
+  const isProduction = process.env.NODE_ENV === 'production'
 
   return (
     <Flex
@@ -46,6 +48,25 @@ function ApplicationLayout({ children }) {
       maxHeight="100vh"
       overflow="hidden"
     >
+      {isProduction && (
+        <WithApplicationUpdate>
+          {({ reloadApplication }) => (
+            <Toast
+              severity="info"
+              marginBottom="medium"
+              marginRight="xxxxlarge"
+            >
+              <Span marginRight="small">Time for a new update!</Span>
+              <A
+                onClick={() => reloadApplication()}
+                style={{ textDecoration: 'none' }}
+                color="action-link-inline"
+              >Update now
+              </A>
+            </Toast>
+          )}
+        </WithApplicationUpdate>
+      )}
       <Sidebar />
       <Flex
         direction="column"

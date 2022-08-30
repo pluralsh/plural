@@ -1,6 +1,8 @@
-import { useCallback, useContext, useState } from 'react'
+import {
+  useCallback, useContext, useEffect, useState,
+} from 'react'
 
-import * as serviceWorker from '../../serviceWorker'
+import * as serviceWorker from '../../serviceWorkerRegistration'
 
 import { PluralConfigurationContext } from '../login/CurrentUser'
 
@@ -8,41 +10,47 @@ const COMMIT_KEY = 'git-commit'
 
 export const DEFAULT_COMMIT = 'plural-default-commit'
 
-export const getCommit = () => localStorage.getItem(COMMIT_KEY) || DEFAULT_COMMIT
-export const setCommit = sha => localStorage.setItem(COMMIT_KEY, sha)
+export const getCommit = () => sessionStorage.getItem(COMMIT_KEY) || DEFAULT_COMMIT
+export const setCommit = sha => sessionStorage.setItem(COMMIT_KEY, sha)
 
 function WithApplicationUpdate({ children }) {
-  const [open, setOpen] = useState(true)
+  const [time, setTime] = useState(Date.now())
   const config = useContext(PluralConfigurationContext)
   const commit = getCommit()
-
+  const [stale, setStale] = useState(commit !== config.gitCommit)
   const reloadApplication = useCallback(() => {
-    console.log('reloading')
-    if (process.env.NODE_ENV === 'production') {
-      const promise = serviceWorker.unregister() || Promise.resolve('done')
+    const promise = serviceWorker.unregister() || Promise.resolve('done')
 
-      promise.then(() => {
-        setCommit(config.gitCommit)
-        window.location.reload()
-      })
-    }
-    else {
+    setStale(false)
+
+    promise.then(() => {
       setCommit(config.gitCommit)
-      setOpen(false)
-    }
-  }, [config, setOpen])
+      window.location.reload()
+    })
+  }, [config])
+  const reloadOnStale = () => (stale ? reloadApplication() : null)
 
-  const stale = commit !== config.gitCommit
+  // force rerender every 60s to check if version hasn't changed
+  useEffect(() => {
+    const interval = setInterval(() => setTime(Date.now()), 60000)
 
-  if (!stale || !open) return children({ reloadApplication, shouldReloadApplication: false })
+    setStale(commit !== config.gitCommit)
 
-  if (commit === DEFAULT_COMMIT) {
-    setCommit(config.gitCommit)
+    return () => clearInterval(interval)
+  }, [time, setStale, commit, config])
 
-    return children({ reloadApplication, shouldReloadApplication: false })
-  }
+  // Run only once on first app load
+  // It enforces full app reload if app has been updated
+  // Empty deps array is intentional here as it allows to run this effect only once.
+  useEffect(() => {
+    reloadOnStale()
+  }, [])
 
-  return children({ reloadApplication, shouldReloadApplication: true })
+  if (commit === DEFAULT_COMMIT) setCommit(config.gitCommit)
+
+  if (stale) return children({ reloadApplication })
+
+  return undefined
 }
 
 export default WithApplicationUpdate

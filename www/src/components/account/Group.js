@@ -258,7 +258,11 @@ export function CreateGroup({ q }) {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)}>Create Group</Button>
+      <Button
+        secondary
+        onClick={() => setOpen(true)}
+      >Create Group
+      </Button>
       <Modal
         open={open}
         onClose={() => setOpen(false)}

@@ -4,6 +4,8 @@ import {
   A, Br, Button, Div, Flex, H1, Span, useMediaQuery,
 } from 'honorable'
 import {
+  ArrowTopRightIcon,
+  EmptyState,
   FiltersIcon,
   Input,
   MagnifyingGlassIcon,
@@ -15,8 +17,6 @@ import {
 } from 'pluralsh-design-system'
 import Fuse from 'fuse.js'
 import styled from 'styled-components'
-
-import { EmptyState } from 'components/utils/EmptyState'
 
 import { isEmpty } from 'lodash'
 
@@ -37,12 +37,13 @@ const searchOptions = {
   threshold: 0.25,
 }
 
-const filterTokenStyles = {
+const filterTokenProps = {
   marginRight: 'xsmall',
   marginBottom: 'xsmall',
   flexShrink: 0,
-  border: '1px solid border-fill-one',
-  backgroundColor: 'fill-one-selected',
+  border: '1px solid border',
+  backgroundColor: 'fill-one',
+  tabIndex: 0,
 }
 
 const sidebarWidth = 256 - 32
@@ -196,6 +197,11 @@ function MarketplaceRepositories({ installed }) {
     setSearchParams({})
   }
 
+  function handleClearFilters() {
+    setSearch('')
+    setSearchParams({})
+  }
+
   function renderFeatured() {
     const featuredA = sortedRepositories.shift()
     const featuredB = sortedRepositories.shift()
@@ -296,6 +302,7 @@ function MarketplaceRepositories({ installed }) {
               align="stretch"
               wrap
               marginBottom="-8px"
+              paddingVertical={2}
             >
               <Div
                 minWidth="210px"
@@ -316,16 +323,18 @@ function MarketplaceRepositories({ installed }) {
               </Div>
               {categories.map(category => (
                 <Token
-                  {...filterTokenStyles}
+                  {...filterTokenProps}
                   onClose={() => handleClearToken('category', category)}
+                  onKeyDown={event => (event.key === 'Enter' || event.key === ' ') && handleClearToken('category', category)}
                 >
                   {capitalize(category)}
                 </Token>
               ))}
               {tags.map(tag => (
                 <Token
-                  {...filterTokenStyles}
+                  {...filterTokenProps}
                   onClose={() => handleClearToken('tag', tag)}
+                  onKeyDown={event => (event.key === 'Enter' || event.key === ' ') && handleClearToken('tag', tag)}
                 >
                   {capitalize(tag)}
                 </Token>
@@ -363,12 +372,14 @@ function MarketplaceRepositories({ installed }) {
             ref={scrollRef}
           >
             {shouldRenderFeatured && renderFeatured()}
-            <H1
-              subtitle1
-              marginTop={shouldRenderFeatured ? 'xlarge' : 0}
-            >
-              {renderTitle()}
-            </H1>
+            {resultRepositories?.length > 0 && (
+              <H1
+                subtitle1
+                marginTop={shouldRenderFeatured ? 'xlarge' : 0}
+              >
+                {renderTitle()}
+              </H1>
+            )}
             <RepoCardList
               repositories={resultRepositories}
               marginTop="medium"
@@ -385,27 +396,54 @@ function MarketplaceRepositories({ installed }) {
             {!resultRepositories?.length && installed && ![...searchParams]?.length && isEmpty(search) && (
               <EmptyState
                 message="Looks like you haven't installed your first app yet."
-                description={(
-                  <Span>
-                    Head back to the marketplace to select your first application! If you need
-                    <Br />support installing your first app, read our&nbsp;
-                    <A
-                      inline
-                      href="https://docs.plural.sh/getting-started/getting-started"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      quickstart guide
-                    </A>.
-                  </Span>
-                )}
               >
+                <Span>
+                  Head back to the marketplace to select your first application! If you need
+                  <Br />support installing your first app, read our&nbsp;
+                  <A
+                    inline
+                    href="https://docs.plural.sh/getting-started/getting-started"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    quickstart guide
+                  </A>.
+                </Span>
                 <Button
                   as={Link}
                   to="/marketplace"
+                  marginTop="medium"
                 >
                   Go to marketplace
                 </Button>
+              </EmptyState>
+            )}
+            {!resultRepositories?.length && !installed && (
+              <EmptyState
+                message="Oops! We couln't find any apps."
+                description="If you can't find what you're looking for, you can onboard the application."
+              >
+                <Flex
+                  direction="column"
+                  marginTop="large"
+                  gap="medium"
+                >
+                  <Button
+                    as="a"
+                    href="https://docs.plural.sh/applications/adding-new-application"
+                    target="_blank"
+                    primary
+                    endIcon={(<ArrowTopRightIcon />)}
+                  >
+                    Add an application
+                  </Button>
+                  <Button
+                    secondary
+                    onClick={handleClearFilters}
+                  >
+                    Clear filters
+                  </Button>
+                </Flex>
               </EmptyState>
             )}
           </Div>
@@ -425,7 +463,6 @@ function MarketplaceRepositories({ installed }) {
           backgroundColor="fill-one"
           borderRadius="large"
           transition="all 250ms ease"
-          zIndex={9999}
         >
           <MarketplaceSidebar width="100%" />
         </Div>

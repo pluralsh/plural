@@ -12,7 +12,10 @@ export function MoreMenu({ children }) {
     <>
       <Icon
         ref={ref}
-        icon={<MoreIcon size={25} />}
+        textValue="More"
+        clickable
+        size="medium"
+        icon={<MoreIcon />}
         onClick={() => setOpen(true)}
       />
       {open && (
@@ -21,9 +24,7 @@ export function MoreMenu({ children }) {
           align={{ top: 'bottom' }}
           onClickOutside={() => setOpen(false)}
         >
-          <Menu>
-            {children}
-          </Menu>
+          <Menu>{children}</Menu>
         </Drop>
       )}
     </>

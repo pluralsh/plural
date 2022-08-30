@@ -30,6 +30,7 @@ export const DockerImageFragment = gql`
     scannedAt
     grade
     insertedAt
+    updatedAt
   }
 `
 

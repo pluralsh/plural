@@ -18,21 +18,16 @@
     {
       "matchManagers": ["npm"],
       "addLabels": [
-        "dependencies",
         "frontend"
       ]
     },
     {
       "matchManagers": ["mix"],
       "addLabels": [
-        "dependencies",
         "backend"
       ]
     }
   ],
-  "lockFileMaintenance": {
-    "enabled": true
-  },
-  "separateMinorPatch": true,
-  "dependencyDashboardApproval": true
+  "labels": ["dependencies"],
+  "separateMinorPatch": true
 }

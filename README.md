@@ -20,7 +20,7 @@
 </p>
 
 <p align="center">
-  <a href="https://discord.gg/CKc2kfeXxQ" target="_blank">
+  <a href="https://discord.gg/pluralsh" target="_blank">
     <img alt="Discord" src="https://img.shields.io/discord/880830238723047424?style=flat-square">
   </a>
   <a href="#contributing">
@@ -60,7 +60,7 @@ We think it's pretty cool! 😎 Some other nice things:
   <br/><br/>
 </p>
 
-The plural platform ingests all deployment artifacts needed to deploy cloud-native applications and tracks their dependencies, allowing for easy installs and no-touch upgrades post-install. 
+The plural platform ingests all deployment artifacts needed to deploy cloud-native applications and tracks their dependencies, allowing for easy installs and no-touch upgrades post-install.
 
 ### 🤖 Day-2 Operational Toolkit
 
@@ -88,7 +88,7 @@ https://user-images.githubusercontent.com/28541758/164427949-3f14cfbb-cf5e-40dc-
 
 ## 🏁 Getting Started
 
-1. Go to https://app.plural.sh to create an account.<br /> 
+1. Go to https://app.plural.sh to create an account.<br />
 *Note: This is simply to track your installations and allow for the delivery of automated upgrades, you will not be asked to provide any infrastructure credentials or sensitive information.*
 2. [Install the Plural CLI](https://docs.plural.sh/getting-started/getting-started#install-plural-cli)
 3. [Create and initialize a new git repo](https://docs.plural.sh/getting-started/getting-started#create-your-plural-repo) to store your Plural installation.
@@ -122,7 +122,7 @@ Our tooling will take care of the rest.
 
 For general help, please refer to the Plural documentation. For additional help you can use the following channels:
 
-* [Discord](https://discord.gg/CKc2kfeXxQ) (For live discussions with the Plural team).
+* [Discord](https://discord.gg/pluralsh) (For live discussions with the Plural team).
 * [GitHub](https://github.com/pluralsh/plural/) (Bug reports, feature requests, contributions).
 * [Twitter](https://twitter.com/plural_sh) (For our latest news).
 
@@ -143,11 +143,11 @@ See what we're working on in these GitHub projects. Help us prioritize issues by
 
 We love contributions to Plural, big or small! To learn more about the repo and the architecture, see our [Contribution Guide](CONTRIBUTING.md). <br />
 
-If you're not sure where to start, or if you have any questions, please open a draft PR or visit our [Discord](https://discord.gg/CKc2kfeXxQ) server where the core team can help answer your questions.
+If you're not sure where to start, or if you have any questions, please open a draft PR or visit our [Discord](https://discord.gg/pluralsh) server where the core team can help answer your questions.
 <br /><br />
 
 
 
 ## 📝 License
 
-See [LICENSE](LICENSE) for licensing information. If there are any questions on the license please visit our [Discord](https://discord.gg/CKc2kfeXxQ). 
+See [LICENSE](LICENSE) for licensing information. If there are any questions on the license please visit our [Discord](https://discord.gg/pluralsh).

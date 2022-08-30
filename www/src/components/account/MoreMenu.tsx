@@ -9,7 +9,7 @@ export function MoreMenu({ children, onSelectionChange, ...props }) {
       isOpen={isOpen}
       label="Pick something"
       placement="right"
-      width={200}
+      width="max-content"
       onOpenChange={isOpen => setIsOpen(isOpen)}
       onSelectionChange={selectedKey => {
         setIsOpen(false)

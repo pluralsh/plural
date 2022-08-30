@@ -115,7 +115,7 @@ export function EditServiceAccount({ user, update }) {
       label: 'Delete user',
       onSelect: () => setConfirm(true),
       props: {
-        color: theme.colors['text-error'],
+        destructive: true,
       },
     },
   }
@@ -131,7 +131,6 @@ export function EditServiceAccount({ user, update }) {
           <ListBoxItem
             key={key}
             textValue={label}
-            width="auto"
             label={label}
             {...props}
             color="blue"

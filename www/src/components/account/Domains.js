@@ -1,22 +1,33 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
-import { Return } from 'grommet-icons'
-import {
-  Avatar, Flex, MenuItem, Span,
-} from 'honorable'
+import { Avatar, Flex, Span } from 'honorable'
 import moment from 'moment'
 import {
-  IconFrame, Modal, ModalHeader, PageTitle,
+  ArrowLeftIcon,
+  IconFrame,
+  ListBoxItem,
+  Modal,
+  ModalHeader,
+  PageTitle,
 } from 'pluralsh-design-system'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
+
+import { isEqual, uniqWith } from 'lodash'
 
 import {
-  deepUpdate, extendConnection, removeConnection, updateCache,
+  deepUpdate,
+  extendConnection,
+  removeConnection,
+  updateCache,
 } from '../../utils/graphql'
 
 import { Placeholder } from '../accounts/Audits'
 import {
-  DELETE_DNS_RECORD, DELETE_DOMAIN, DNS_DOMAINS, DNS_RECORDS, UPDATE_DOMAIN,
+  DELETE_DNS_RECORD,
+  DELETE_DOMAIN,
+  DNS_DOMAINS,
+  DNS_RECORDS,
+  UPDATE_DOMAIN,
 } from '../accounts/queries'
 import { DeleteIconButton } from '../utils/IconButtons'
 import { Provider } from '../repos/misc'
@@ -45,12 +56,41 @@ function DomainOptions({ domain, setDomain }) {
     },
   })
 
+  const menuItems = {
+    viewDNSRecords: {
+      label: 'View DNS Records',
+      onSelect: () => setDomain(domain),
+      props: {},
+    },
+    editAccessPolicy: {
+      label: 'Edit Access Policy',
+      onSelect: () => setEdit(true),
+    },
+    delete: {
+      label: 'Delete',
+      onSelect: () => setConfirm(true),
+      props: {
+        destructive: true,
+      },
+    },
+  }
+
   return (
     <>
-      <MoreMenu>
-        <MenuItem onClick={() => setDomain(domain)}><Span color="text-light">View DNS Records</Span></MenuItem>
-        <MenuItem onClick={() => setEdit(true)}><Span color="text-light">Edit Access Policy</Span></MenuItem>
-        <MenuItem onClick={() => setConfirm(true)}><Span color="text-error">Delete</Span></MenuItem>
+      <MoreMenu
+        onSelectionChange={selectedKey => {
+          menuItems[selectedKey]?.onSelect()
+        }}
+      >
+        {Object.entries(menuItems).map(([key, { label, props = {} }]) => (
+          <ListBoxItem
+            key={key}
+            textValue={label}
+            label={label}
+            {...props}
+            color="blue"
+          />
+        ))}
       </MoreMenu>
       <Modal
         portal
@@ -81,13 +121,14 @@ function DomainOptions({ domain, setDomain }) {
 
 function AccessPolicy({ domain: { id, accessPolicy }, cancel }) {
   const [bindings, setBindings] = useState(accessPolicy ? accessPolicy.bindings : [])
+  const uniqueBindings = useMemo(() => uniqWith(bindings, isEqual), [bindings])
   const [mutation, { loading, error }] = useMutation(UPDATE_DOMAIN, {
     variables: {
       id,
       attributes: {
         accessPolicy: {
           id: accessPolicy ? accessPolicy.id : null,
-          bindings: bindings.map(sanitize),
+          bindings: uniqueBindings.map(sanitize),
         },
       },
     },
@@ -109,16 +150,20 @@ function AccessPolicy({ domain: { id, accessPolicy }, cancel }) {
       <BindingInput
         type="user"
         background="fill-two"
-        bindings={bindings.filter(({ user }) => !!user).map(({ user: { email } }) => email)}
-        add={user => setBindings([...bindings, { user }])}
-        remove={email => setBindings(bindings.filter(({ user }) => !user || user.email !== email))}
+        bindings={uniqueBindings
+          .filter(({ user }) => !!user)
+          .map(({ user: { email } }) => email)}
+        add={user => setBindings([...uniqueBindings, { user }])}
+        remove={email => setBindings(uniqueBindings.filter(({ user }) => !user || user.email !== email))}
       />
       <BindingInput
         type="group"
         background="fill-two"
-        bindings={bindings.filter(({ group }) => !!group).map(({ group: { name } }) => name)}
-        add={group => setBindings([...bindings, { group }])}
-        remove={name => setBindings(bindings.filter(({ group }) => !group || group.name !== name))}
+        bindings={uniqueBindings
+          .filter(({ group }) => !!group)
+          .map(({ group: { name } }) => name)}
+        add={group => setBindings([...uniqueBindings, { group }])}
+        remove={name => setBindings(uniqueBindings.filter(({ group }) => !group || group.name !== name))}
       />
       <Actions
         cancel={cancel}
@@ -137,17 +182,13 @@ function DeleteRecord({ record, domain }) {
     update: (cache, { data: { deleteDnsRecord } }) => updateCache(cache, {
       query: DNS_RECORDS,
       variables: { id: domain.id },
-      update: prev => deepUpdate(prev,
-        'dnsDomain',
-        domain => removeConnection(domain, deleteDnsRecord, 'dnsRecords')),
+      update: prev => deepUpdate(prev, 'dnsDomain', domain => removeConnection(domain, deleteDnsRecord, 'dnsRecords')),
     }),
   })
 
   return (
     <>
-      <DeleteIconButton
-        onClick={() => setConfirm(true)}
-      />
+      <DeleteIconButton onClick={() => setConfirm(true)} />
       <Confirm
         open={confirm}
         error={error}
@@ -171,7 +212,9 @@ function DnsRecords({ domain, setDomain }) {
 
   if (!data) return null
 
-  const { dnsRecords: { pageInfo, edges } } = data.dnsDomain
+  const {
+    dnsRecords: { pageInfo, edges },
+  } = data.dnsDomain
 
   return (
     <Box
@@ -190,7 +233,7 @@ function DnsRecords({ domain, setDomain }) {
         <IconFrame
           clickable
           size="medium"
-          icon={<Return />}
+          icon={<ArrowLeftIcon />}
           onClick={() => setDomain(null)}
         />
         <Span fontWeight="bold">{domain.name}</Span>
@@ -255,12 +298,11 @@ function DnsRecords({ domain, setDomain }) {
                 <TableData>{moment(node.insertedAt).format('lll')}</TableData>
               </TableRow>
             )}
-            loadNextPage={() => pageInfo.hasNextPage && fetchMore({
-              variables: { cursor: pageInfo.endCursor },
-              updateQuery: (prev, { fetchMoreResult: { dnsDomain } }) => deepUpdate(prev,
-                'dnsDomain',
-                prev => extendConnection(prev, dnsDomain.dnsRecords, 'dnsRecords')),
-            })}
+            loadNextPage={() => pageInfo.hasNextPage
+              && fetchMore({
+                variables: { cursor: pageInfo.endCursor },
+                updateQuery: (prev, { fetchMoreResult: { dnsDomain } }) => deepUpdate(prev, 'dnsDomain', prev => extendConnection(prev, dnsDomain.dnsRecords, 'dnsRecords')),
+              })}
           />
         </Box>
       </Table>
@@ -302,7 +344,9 @@ function Domain({ node, last, setDomain }) {
 export function Domains() {
   const [listRef, setListRef] = useState(null)
   const [domain, setDomain] = useState(null)
-  const { data, loading, fetchMore } = useQuery(DNS_DOMAINS, { fetchPolicy: 'cache-and-network' })
+  const { data, loading, fetchMore } = useQuery(DNS_DOMAINS, {
+    fetchPolicy: 'cache-and-network',
+  })
 
   if (!data) return null
 
@@ -315,7 +359,9 @@ export function Domains() {
     )
   }
 
-  const { dnsDomains: { pageInfo, edges } } = data
+  const {
+    dnsDomains: { pageInfo, edges },
+  } = data
 
   return (
     <Flex
@@ -348,14 +394,17 @@ export function Domains() {
                   setDomain={setDomain}
                 />
               )}
-              loadNextPage={() => pageInfo.hasNextPage && fetchMore({
-                variables: { cursor: pageInfo.endCursor },
-                updateQuery: (prev, { fetchMoreResult: { invites } }) => extendConnection(prev, invites, 'invites'),
-              })}
+              loadNextPage={() => pageInfo.hasNextPage
+                && fetchMore({
+                  variables: { cursor: pageInfo.endCursor },
+                  updateQuery: (prev, { fetchMoreResult: { invites } }) => extendConnection(prev, invites, 'invites'),
+                })}
             />
           </Box>
         </Table>
-      ) : (<Span>You do not have any domains set yet.</Span>)}
+      ) : (
+        <Span>You do not have any domains set yet.</Span>
+      )}
     </Flex>
   )
 }

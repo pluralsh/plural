@@ -76,7 +76,7 @@ function UserEdit({ user, update }) {
       label: 'Delete user',
       onSelect: () => setConfirm(true),
       props: {
-        color: theme.colors['text-error'],
+        destructive: true,
       },
     },
   }
@@ -92,7 +92,6 @@ function UserEdit({ user, update }) {
           <ListBoxItem
             key={key}
             textValue={label}
-            width="auto"
             label={label}
             {...props}
             color="blue"

@@ -8,7 +8,7 @@ generates:
       - "typescript-react-apollo"
 config:
   scalars:
-    Map: Map<string, string>
+    Map: Map<string, any>
     UploadOrUrl: string
     DateTime: Date
 hooks:

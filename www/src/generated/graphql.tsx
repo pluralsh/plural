@@ -13,7 +13,7 @@ export type Scalars = {
   Int: number;
   Float: number;
   DateTime: Date;
-  Map: Map<string, string>;
+  Map: Map<string, any>;
   UploadOrUrl: string;
   Yaml: any;
 }

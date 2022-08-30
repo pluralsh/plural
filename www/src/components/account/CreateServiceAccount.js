@@ -58,7 +58,7 @@ function ServiceAccountForm({
       />
       <BindingInput
         type="user"
-        hint="users that can impersonate this service account"
+        hint="Users that can impersonate this service account"
         bindings={bindings
           .filter(({ user }) => !!user)
           .map(({ user: { email } }) => email)}
@@ -67,7 +67,7 @@ function ServiceAccountForm({
       />
       <BindingInput
         type="group"
-        hint="user groups that can impersonate this service account"
+        hint="User groups that can impersonate this service account"
         bindings={bindings
           .filter(({ group }) => !!group)
           .map(({ group: { name } }) => name)}

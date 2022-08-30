@@ -38,7 +38,7 @@ export function GeneralAttributes({
       />
       <BindingInput
         type="user"
-        hint="users that will receive this role"
+        hint="Users that will receive this role"
         bindings={bindings
           .filter(({ user }) => !!user)
           .map(({ user: { email } }) => email)}
@@ -47,7 +47,7 @@ export function GeneralAttributes({
       />
       <BindingInput
         type="group"
-        hint="groups that will recieve this role"
+        hint="Groups that will recieve this role"
         bindings={bindings
           .filter(({ group }) => !!group)
           .map(({ group: { name } }) => name)}

@@ -42,8 +42,8 @@ const filterTokenProps = {
   marginBottom: 'xsmall',
   flexShrink: 0,
   border: '1px solid border',
-  backgroundColor: 'fill-one',
   tabIndex: 0,
+  hue: 'default',
 }
 
 const sidebarWidth = 256 - 32
@@ -324,7 +324,7 @@ function MarketplaceRepositories({ installed }) {
               {categories.map(category => (
                 <Token
                   {...filterTokenProps}
-                  onClose={() => handleClearToken('category', category)}
+                  onClick={() => handleClearToken('category', category)}
                   onKeyDown={event => (event.key === 'Enter' || event.key === ' ') && handleClearToken('category', category)}
                 >
                   {capitalize(category)}
@@ -333,7 +333,7 @@ function MarketplaceRepositories({ installed }) {
               {tags.map(tag => (
                 <Token
                   {...filterTokenProps}
-                  onClose={() => handleClearToken('tag', tag)}
+                  onClick={() => handleClearToken('tag', tag)}
                   onKeyDown={event => (event.key === 'Enter' || event.key === ' ') && handleClearToken('tag', tag)}
                 >
                   {capitalize(tag)}

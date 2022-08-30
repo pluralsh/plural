@@ -2,7 +2,9 @@ import { useMutation } from '@apollo/client'
 import { Box } from 'grommet'
 import { Button, Span, Switch } from 'honorable'
 import { Modal, ModalHeader, ValidatedInput } from 'pluralsh-design-system'
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
+import uniqWith from 'lodash/uniqWith'
+import isEqual from 'lodash/isEqual'
 
 import { appendConnection, updateCache } from '../../utils/graphql'
 
@@ -21,7 +23,10 @@ import { BindingInput } from './Typeaheads'
 import { sanitize } from './utils'
 
 function GeneralAttributes({
-  attributes, setAttributes, bindings, setBindings,
+  attributes,
+  setAttributes,
+  bindings,
+  setBindings,
 }) {
   const [repositories, setRepositories] = useState(attributes.repositories.join(', '))
 
@@ -51,17 +56,19 @@ function GeneralAttributes({
       />
       <BindingInput
         type="user"
-        background="fill-two"
         hint="users that will receive this role"
-        bindings={bindings.filter(({ user }) => !!user).map(({ user: { email } }) => email)}
+        bindings={bindings
+          .filter(({ user }) => !!user)
+          .map(({ user: { email } }) => email)}
         add={user => setBindings([...bindings, { user }])}
         remove={email => setBindings(bindings.filter(({ user }) => !user || user.email !== email))}
       />
       <BindingInput
         type="group"
-        background="fill-two"
         hint="groups that will recieve this role"
-        bindings={bindings.filter(({ group }) => !!group).map(({ group: { name } }) => name)}
+        bindings={bindings
+          .filter(({ group }) => !!group)
+          .map(({ group: { name } }) => name)}
         add={group => setBindings([...bindings, { group }])}
         remove={name => setBindings(bindings.filter(({ group }) => !group || group.name !== name))}
       />
@@ -70,16 +77,28 @@ function GeneralAttributes({
 }
 
 function PermissionToggle({
-  permission, description, attributes, setAttributes, first, last,
+  permission,
+  description,
+  attributes,
+  setAttributes,
+  first,
+  last,
 }) {
   const toggle = useCallback(enable => {
     if (enable) {
-      setAttributes({ ...attributes, permissions: [permission, ...attributes.permissions] })
+      setAttributes({
+        ...attributes,
+        permissions: [permission, ...attributes.permissions],
+      })
     }
     else {
-      setAttributes({ ...attributes, permissions: attributes.permissions.filter(perm => perm !== permission) })
+      setAttributes({
+        ...attributes,
+        permissions: attributes.permissions.filter(perm => perm !== permission),
+      })
     }
-  }, [permission, attributes, setAttributes])
+  },
+  [permission, attributes, setAttributes])
 
   return (
     <ListItem
@@ -87,9 +106,7 @@ function PermissionToggle({
       last={last}
       background="fill-two"
     >
-      <Box
-        fill="horizontal"
-      >
+      <Box fill="horizontal">
         <Span fontWeight={500}>{permission.toLowerCase()}</Span>
         <Span color="text-light">{description}</Span>
       </Box>
@@ -103,7 +120,12 @@ function PermissionToggle({
 
 function RoleForm({
   // eslint-disable-next-line
-  error, attributes, setAttributes, bindings, setBindings, ...box
+  error,
+  attributes,
+  setAttributes,
+  bindings,
+  setBindings,
+  ...box
 }) {
   const [view, setView] = useState('General')
   const permissions = Object.entries(PermissionTypes)
@@ -138,7 +160,9 @@ function RoleForm({
         <Box gap="small">
           <Box>
             <Span fontWeight="bold">Permissions</Span>
-            <Span>Grant permissions to all users and groups bound to this role</Span>
+            <Span>
+              Grant permissions to all users and groups bound to this role
+            </Span>
           </Box>
           <Box>
             {permissions.map(([perm, description], i) => (
@@ -170,8 +194,14 @@ export function UpdateRole({ role }) {
     permissions: role.permissions,
   })
   const [roleBindings, setRoleBindings] = useState(role.roleBindings || [])
+  const uniqueRoleBindings = useMemo(() => uniqWith(roleBindings, isEqual),
+    [roleBindings])
+
   const [mutation, { loading, error }] = useMutation(UPDATE_ROLE, {
-    variables: { id: role.id, attributes: { ...attributes, roleBindings: roleBindings.map(sanitize) } },
+    variables: {
+      id: role.id,
+      attributes: { ...attributes, roleBindings: roleBindings.map(sanitize) },
+    },
     onCompleted: () => setOpen(null),
   })
 
@@ -191,15 +221,11 @@ export function UpdateRole({ role }) {
         marginVertical={16}
         {...MODAL_DIMS}
       >
-        <ModalHeader
-          onClose={() => setOpen(false)}
-        >
-          UPDATE ROLE
-        </ModalHeader>
+        <ModalHeader onClose={() => setOpen(false)}>UPDATE ROLE</ModalHeader>
         <RoleForm
           attributes={attributes}
           setAttributes={setAttributes}
-          bindings={roleBindings}
+          bindings={uniqueRoleBindings}
           setBindings={setRoleBindings}
           error={error}
         />
@@ -214,6 +240,12 @@ export function UpdateRole({ role }) {
   )
 }
 
+// function setUniqueBinding(bindings, setBinding) {
+//   return (binding) {
+//     if (bindings.find(()=>)
+//   }
+// }
+
 export function CreateRole({ q }) {
   const [open, setOpen] = useState(false)
   const [attributes, setAttributes] = useState({
@@ -223,8 +255,13 @@ export function CreateRole({ q }) {
     permissions: [],
   })
   const [roleBindings, setRoleBindings] = useState([])
+  const uniqueRoleBindings = useMemo(() => uniqWith(roleBindings, isEqual),
+    [roleBindings])
+
   const [mutation, { loading, error }] = useMutation(CREATE_ROLE, {
-    variables: { attributes: { ...attributes, roleBindings: roleBindings.map(sanitize) } },
+    variables: {
+      attributes: { ...attributes, roleBindings: roleBindings.map(sanitize) },
+    },
     update: (cache, { data: { createRole } }) => updateCache(cache, {
       query: ROLES_Q,
       variables: { q },
@@ -238,7 +275,8 @@ export function CreateRole({ q }) {
       <Button
         secondary
         onClick={() => setOpen(true)}
-      >Create Role
+      >
+        Create Role
       </Button>
       <Modal
         open={open}
@@ -246,13 +284,11 @@ export function CreateRole({ q }) {
         marginVertical={16}
         {...MODAL_DIMS}
       >
-        <ModalHeader onClose={() => setOpen(false)}>
-          CREATE ROLE
-        </ModalHeader>
+        <ModalHeader onClose={() => setOpen(false)}>CREATE ROLE</ModalHeader>
         <RoleForm
           attributes={attributes}
           setAttributes={setAttributes}
-          bindings={roleBindings}
+          bindings={uniqueRoleBindings}
           setBindings={setRoleBindings}
           error={error}
         />

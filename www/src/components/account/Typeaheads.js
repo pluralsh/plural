@@ -1,123 +1,161 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useApolloClient } from '@apollo/client'
 import { Box, Text, TextInput } from 'grommet'
 import {
-  FormField, PeopleIcon, PersonIcon, Token,
+  AppIcon,
+  Chip,
+  ComboBox,
+  FormField,
+  ListBoxItem,
+  ListBoxItemChipList,
+  PeopleIcon,
+  PersonIcon,
 } from 'pluralsh-design-system'
 import { Flex } from 'honorable'
 
-import Avatar from '../users/Avatar'
+import styled, { useTheme } from 'styled-components'
+
 import { SEARCH_GROUPS, SEARCH_USERS } from '../accounts/queries'
 
 export function fetchUsers(client, query, setSuggestions) {
   if (!query) return
 
-  client.query({
-    query: SEARCH_USERS,
-    variables: { q: query, all: true },
-  }).then(({ data: { users: { edges } } }) => edges.map(({ node }) => ({ value: node, label: userSuggestion(node) })))
+  client
+    .query({
+      query: SEARCH_USERS,
+      variables: { q: query, all: true },
+    })
+    .then(({
+      data: {
+        users: { edges },
+      },
+    }) => edges.map(({ node }) => ({ value: node, label: userSuggestion(node) })))
     .then(setSuggestions)
 }
 
 export function fetchGroups(client, query, setSuggestions) {
   if (!query) return
-
-  client.query({
-    query: SEARCH_GROUPS,
-    variables: { q: query },
-  }).then(({ data: { groups: { edges } } }) => edges.map(({ node }) => ({ value: node, label: groupSuggestion(node) })))
+  console.log('fetch groups')
+  client
+    .query({
+      query: SEARCH_GROUPS,
+      variables: { q: query },
+    })
+    .then(({
+      data: {
+        groups: { edges },
+      },
+    }) => edges.map(({ node }) => ({ value: node, label: groupSuggestion(node) })))
     .then(setSuggestions)
 }
 
-function userSuggestion(user) {
+const ChipList = styled(ListBoxItemChipList)(({ theme }) => ({
+  marginTop: theme.spacing.small,
+  justifyContent: 'start',
+}))
+
+function userSuggestion({
+  name, email, avatar, id, ...props
+}) {
+  console.log('user remainder', props)
+
   return (
-    <Box
-      direction="row"
-      align="center"
-      gap="small"
-      pad="xsmall"
-    >
-      <Avatar
-        size="30px"
-        user={user}
-      />
-      <Box>
-        <Text
-          size="small"
-          weight={500}
-        >{user.name}
-        </Text>
-        <Text size="small">{user.email}</Text>
-      </Box>
-    </Box>
+    <ListBoxItem
+      key={id}
+      label={name}
+      textValue={`${name} - ${email}`}
+      description={email}
+      leftContent={(
+        <AppIcon
+          spacing="none"
+          size="xsmall"
+          name={name}
+          url={avatar}
+        />
+      )}
+    />
   )
 }
 
-function groupSuggestion(group) {
+function groupSuggestion({
+  name, description, id, ...props
+}) {
+  console.log('group remainder', props)
+
   return (
-    <Box
-      direction="row"
-      gap="small"
-      align="center"
-      pad="small"
-    >
-      <Text
-        size="small"
-        weight={500}
-      >{group.name}
-      </Text>
-      <Text size="small">-- {group.description}</Text>
-    </Box>
+    <ListBoxItem
+      key={id}
+      label={name}
+      textValue={`${name} - ${description}`}
+      description={description}
+      leftContent={<PeopleIcon />}
+    />
   )
 }
 
 function TagInput({
-  placeholder, label, hint, suggestions, items, icon, onRemove, onAdd, width, onChange,
+  placeholder,
+  label,
+  hint,
+  suggestions,
+  items,
+  icon,
+  onRemove,
+  onAdd,
+  width,
+  onChange,
 }) {
-  const [value, setValue] = useState('')
+  console.log('suggestions', suggestions)
+  const [inputValue, setInputValue] = useState('')
 
-  const add = useCallback(tag => {
-    onAdd(tag)
-    setValue('')
-  }, [setValue, onAdd])
+  console.log('inputValue', inputValue)
 
   return (
-    <Box gap="4px">
+    <TagPicker>
       <FormField
         label={label}
         hint={hint}
         width={width}
       >
-        <TextInput
-          icon={icon}
-          width="100%"
-          value={value}
-          placeholder={placeholder}
-          suggestions={suggestions}
-          onChange={e => {
-            setValue(e.target.value)
-            onChange(e)
+        <ComboBox
+          inputValue={inputValue}
+          onSelectionChange={key => {
+            console.log('klink selection key', key)
+            const selection = suggestions.find(s => s?.value?.id === key)
+
+            console.log('klink selection', selection)
+            if (selection) onAdd(selection)
           }}
-          onSelect={e => {
-            e.stopPropagation(); add(e.suggestion)
+          onInputChange={value => {
+            setInputValue(value)
+            onChange({ target: { value } })
           }}
-        />
+          startIcon={icon}
+          inputProps={{
+            placeholder,
+          }}
+        >
+          {suggestions.map(({ label }) => label)}
+        </ComboBox>
+        {items?.length > 0 && (
+          <ChipList
+            maxVisible={Infinity}
+            chips={items.map(key => (
+              <Chip
+                size="small"
+                clickable
+                onClick={() => {
+                  onRemove(key)
+                }}
+                closeButton
+              >
+                {key}
+              </Chip>
+            ))}
+          />
+        )}
       </FormField>
-      <Flex
-        align="stretch"
-        gap="4px"
-        wrap="wrap"
-      >
-        {items.map(t => (
-          <Token
-            key={t}
-            onClick={() => onRemove(t)}
-            hue="lighter"
-          >{t}
-          </Token>
-        ))}
-      </Flex>
-    </Box>
+    </TagPicker>
   )
 }
 
@@ -136,9 +174,20 @@ const FETCHER = {
   group: fetchGroups,
 }
 
+const TagPicker = styled.div(({ theme: _theme }) => ({}))
+
 export function BindingInput({
-  type, fetcher, bindings, remove, add, hint, placeholder = TEXT[type]?.placeholder, label = TEXT[type]?.label,
+  type,
+  fetcher,
+  bindings,
+  remove,
+  add,
+  hint,
+  placeholder = TEXT[type]?.placeholder,
+  label = TEXT[type]?.label,
 }) {
+  console.log('klink BindingInput')
+
   const client = useApolloClient()
   const [suggestions, setSuggestions] = useState([])
   const fetch = fetcher || FETCHER[type]
@@ -157,52 +206,6 @@ export function BindingInput({
       onRemove={remove}
       onAdd={({ value }) => add(value)}
       onChange={({ target: { value } }) => fetch(client, value, setSuggestions)}
-    />
-  )
-}
-
-export function UserTypeahead({
-  users, setUsers, label, hint, children,
-}) {
-  const client = useApolloClient()
-  const [suggestions, setSuggestions] = useState([])
-
-  return (
-    <TagInput
-      icon={<PersonIcon size={14} />}
-      label={label || 'User Bindings'}
-      placeholder="Search for users by name or email..."
-      hint={hint}
-      round="xsmall"
-      noborder
-      suggestions={suggestions}
-      items={users.map(u => u.email)}
-      onRemove={email => setUsers(users.filter(u => u.email !== email))}
-      onAdd={({ value }) => setUsers([value, ...users])}
-      onChange={({ target: { value } }) => fetchUsers(client, value, setSuggestions)}
-      button={children}
-    />
-  )
-}
-
-export function GroupTypeahead({
-  groups, setGroups, label, hint, children,
-}) {
-  const client = useApolloClient()
-  const [suggestions, setSuggestions] = useState([])
-
-  return (
-    <TagInput
-      placeholder="Search for groups by name..."
-      label={label || 'Group Bindings'}
-      hint={hint}
-      icon={<PeopleIcon size={15} />}
-      suggestions={suggestions}
-      items={groups.map(u => u.name)}
-      onRemove={name => setGroups(groups.filter(u => u.name !== name))}
-      onAdd={({ value }) => setGroups([value, ...groups])}
-      onChange={({ target: { value } }) => fetchGroups(client, value, setSuggestions)}
-      button={children}
     />
   )
 }

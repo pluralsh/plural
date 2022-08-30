@@ -1,6 +1,5 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useApolloClient } from '@apollo/client'
-import { Box, Text, TextInput } from 'grommet'
 import {
   AppIcon,
   Chip,
@@ -11,9 +10,8 @@ import {
   PeopleIcon,
   PersonIcon,
 } from 'pluralsh-design-system'
-import { Flex } from 'honorable'
 
-import styled, { useTheme } from 'styled-components'
+import styled from 'styled-components'
 
 import { SEARCH_GROUPS, SEARCH_USERS } from '../accounts/queries'
 
@@ -54,7 +52,7 @@ const ChipList = styled(ListBoxItemChipList)(({ theme }) => ({
 }))
 
 function userSuggestion({
-  name, email, avatar, id, ...props
+  name, email, avatar, id,
 }) {
   return (
     <ListBoxItem
@@ -74,9 +72,7 @@ function userSuggestion({
   )
 }
 
-function groupSuggestion({
-  name, description, id, ...props
-}) {
+function groupSuggestion({ name, description, id }) {
   return (
     <ListBoxItem
       key={id}

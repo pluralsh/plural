@@ -1,4 +1,3 @@
-import { Box } from 'grommet'
 import {
   A, Flex, Span, Text,
 } from 'honorable'

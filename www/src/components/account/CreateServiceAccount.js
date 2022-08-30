@@ -9,7 +9,6 @@ import {
   ValidatedInput,
 } from 'pluralsh-design-system'
 import { useState } from 'react'
-import { useTheme } from 'styled-components'
 
 import { appendConnection, updateCache } from '../../utils/graphql'
 import {
@@ -103,7 +102,6 @@ export function EditServiceAccount({ user, update }) {
     update,
     onCompleted: () => setConfirm(false),
   })
-  const theme = useTheme()
 
   const menuItems = {
     editUser: {

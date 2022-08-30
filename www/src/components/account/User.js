@@ -3,13 +3,11 @@ import { Box } from 'grommet'
 import { Button, Span } from 'honorable'
 import {
   AppIcon,
-  BotIcon,
   Chip,
   GraphQLToast,
   ListBoxItem,
 } from 'pluralsh-design-system'
 import { useContext, useState } from 'react'
-import { useTheme } from 'styled-components'
 
 import {
   fetchToken,
@@ -64,7 +62,6 @@ function UserEdit({ user, update }) {
     onCompleted: () => setConfirm(false),
   })
   const isAdmin = !!user.roles?.admin
-  const theme = useTheme()
 
   const menuItems = {
     addAdmin: {

@@ -12,9 +12,9 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  DateTime: any;
-  Map: any;
-  UploadOrUrl: any;
+  DateTime: Date;
+  Map: Map<string, string>;
+  UploadOrUrl: string;
   Yaml: any;
 }
 ;export type Account = {

@@ -6,6 +6,11 @@ generates:
       - "typescript"
       - "typescript-operations"
       - "typescript-react-apollo"
+config:
+  scalars:
+    Map: Map<string, string>
+    UploadOrUrl: string
+    DateTime: Date
 hooks:
   afterAllFileWrite:
     - eslint --fix

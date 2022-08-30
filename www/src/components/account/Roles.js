@@ -55,6 +55,7 @@ function Role({ role, q }) {
       query: ROLES_Q,
       variables: { q },
       update: prev => removeConnection(prev, data.deleteRole, 'roles'),
+      onCompleted: () => setConfirm(false),
     }),
   })
 

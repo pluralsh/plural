@@ -14,7 +14,7 @@
     "fix:js": "eslint ./src --fix",
     "fix:css": "stylelint src/**/*.css --fix",
     "unimported": "npx unimported",
-    "graphql-codegen": "graphql-codegen --config codegen.yml"
+    "graphql:codegen": "graphql-codegen --config codegen.yml"
   },
   "engines": {
     "node": ">=16.15.0"

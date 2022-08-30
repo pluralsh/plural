@@ -35,7 +35,6 @@ export function fetchUsers(client, query, setSuggestions) {
 
 export function fetchGroups(client, query, setSuggestions) {
   if (!query) return
-  console.log('fetch groups')
   client
     .query({
       query: SEARCH_GROUPS,
@@ -57,8 +56,6 @@ const ChipList = styled(ListBoxItemChipList)(({ theme }) => ({
 function userSuggestion({
   name, email, avatar, id, ...props
 }) {
-  console.log('user remainder', props)
-
   return (
     <ListBoxItem
       key={id}
@@ -80,8 +77,6 @@ function userSuggestion({
 function groupSuggestion({
   name, description, id, ...props
 }) {
-  console.log('group remainder', props)
-
   return (
     <ListBoxItem
       key={id}
@@ -105,10 +100,14 @@ function TagInput({
   width,
   onChange,
 }) {
-  console.log('suggestions', suggestions)
   const [inputValue, setInputValue] = useState('')
 
-  console.log('inputValue', inputValue)
+  // only run on first render
+  // make sure there will be data in Combo Box to start with
+  useEffect(() => {
+    onChange({ target: { value: inputValue } })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <TagPicker>
@@ -120,10 +119,8 @@ function TagInput({
         <ComboBox
           inputValue={inputValue}
           onSelectionChange={key => {
-            console.log('klink selection key', key)
             const selection = suggestions.find(s => s?.value?.id === key)
 
-            console.log('klink selection', selection)
             if (selection) onAdd(selection)
           }}
           onInputChange={value => {
@@ -186,8 +183,6 @@ export function BindingInput({
   placeholder = TEXT[type]?.placeholder,
   label = TEXT[type]?.label,
 }) {
-  console.log('klink BindingInput')
-
   const client = useApolloClient()
   const [suggestions, setSuggestions] = useState([])
   const fetch = fetcher || FETCHER[type]

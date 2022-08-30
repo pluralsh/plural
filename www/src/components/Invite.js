@@ -193,6 +193,7 @@ export default function Invite() {
                 value={attributes.name}
                 placeholder="John Doe"
                 onChange={name => setAttributes({ ...attributes, name })}
+                required
               />
               <LabelledInput
                 type="password"
@@ -202,6 +203,7 @@ export default function Invite() {
                 onChange={password => setAttributes({ ...attributes, password })}
                 error={passwordTooShort}
                 hint={passwordTooShort ? 'Password too short, use min 10 characters.' : ''}
+                required
               />
               <LabelledInput
                 type="password"
@@ -211,6 +213,7 @@ export default function Invite() {
                 onChange={setPasswordConfirmation}
                 error={passwordConfirmation && !passwordMatch}
                 hint={passwordConfirmation && !passwordMatch ? 'Passwords do not match.' : ''}
+                required
               />
             </Box>
             <Button

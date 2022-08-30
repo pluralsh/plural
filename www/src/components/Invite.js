@@ -202,7 +202,7 @@ export default function Invite() {
                 placeholder="Enter password"
                 onChange={password => setAttributes({ ...attributes, password })}
                 error={passwordTooShort}
-                hint={passwordTooShort ? 'Password too short, use min 10 characters.' : ''}
+                hint={passwordTooShort ? 'Password is too short. Use at least 10 characters.' : ''}
                 required
               />
               <LabelledInput

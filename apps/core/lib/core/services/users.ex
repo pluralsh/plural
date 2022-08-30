@@ -74,15 +74,18 @@ defmodule Core.Services.Users do
   @doc """
   Validates the given password using Argon2
   """
-  @spec login_user(binary, binary) :: {:ok, User.t} | {:error, :invalid_password}
-  def login_user(email, password) do
+  @spec login_user(binary | User.t, binary) :: user_resp
+  def login_user(email, password) when is_binary(email) do
     get_user_by_email!(email)
-    |> Argon2.check_pass(password)
-    |> case do
+    |> login_user(password)
+  end
+  def login_user(%User{login_method: :password} = user, password) do
+    case Argon2.check_pass(user, password) do
       {:ok, user} -> {:ok, user}
-      _ -> {:error, :invalid_password}
+      _ -> {:error, "invalid password"}
     end
   end
+  def login_user(_, _), do: {:error, "user has disabled password login"}
 
   @doc """
   Realizes a passwordless login

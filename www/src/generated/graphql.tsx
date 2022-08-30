@@ -335,6 +335,21 @@ export type ClusterInformationAttributes = {
   version?: InputMaybe<Scalars['String']>;
 };
 
+export type Community = {
+  __typename?: 'Community';
+  discord?: Maybe<Scalars['String']>;
+  slack?: Maybe<Scalars['String']>;
+  twitter?: Maybe<Scalars['String']>;
+  videos?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+export type CommunityAttributes = {
+  discord?: InputMaybe<Scalars['String']>;
+  slack?: InputMaybe<Scalars['String']>;
+  twitter?: InputMaybe<Scalars['String']>;
+  videos?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
 export type ConsentRequest = {
   __typename?: 'ConsentRequest';
   requestedScope?: Maybe<Array<Maybe<Scalars['String']>>>;
@@ -1794,7 +1809,7 @@ export type Recipe = {
 };
 
 export type RecipeAttributes = {
-  dependencies?: InputMaybe<Array<InputMaybe<RecipeDependencyAttributes>>>;
+  dependencies?: InputMaybe<Array<InputMaybe<RecipeReference>>>;
   description?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
   oidcSettings?: InputMaybe<OidcSettingsAttributes>;
@@ -1852,11 +1867,6 @@ export type RecipeConnection = {
   pageInfo: PageInfo;
 };
 
-export type RecipeDependencyAttributes = {
-  name: Scalars['String'];
-  repo: Scalars['String'];
-};
-
 export type RecipeEdge = {
   __typename?: 'RecipeEdge';
   cursor?: Maybe<Scalars['String']>;
@@ -1884,6 +1894,11 @@ export enum RecipeItemType {
   Helm = 'HELM',
   Terraform = 'TERRAFORM'
 }
+
+export type RecipeReference = {
+  name: Scalars['String'];
+  repo: Scalars['String'];
+};
 
 export type RecipeSection = {
   __typename?: 'RecipeSection';
@@ -1935,6 +1950,7 @@ export type Repository = {
   __typename?: 'Repository';
   artifacts?: Maybe<Array<Maybe<Artifact>>>;
   category?: Maybe<Category>;
+  community?: Maybe<Community>;
   darkIcon?: Maybe<Scalars['String']>;
   defaultTag?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
@@ -1947,6 +1963,7 @@ export type Repository = {
   insertedAt?: Maybe<Scalars['DateTime']>;
   installation?: Maybe<Installation>;
   license?: Maybe<License>;
+  mainBranch?: Maybe<Scalars['String']>;
   name: Scalars['String'];
   notes?: Maybe<Scalars['String']>;
   oauthSettings?: Maybe<OauthSettings>;
@@ -1959,10 +1976,12 @@ export type Repository = {
   secrets?: Maybe<Scalars['Map']>;
   tags?: Maybe<Array<Maybe<Tag>>>;
   updatedAt?: Maybe<Scalars['DateTime']>;
+  verified?: Maybe<Scalars['Boolean']>;
 };
 
 export type RepositoryAttributes = {
   category?: InputMaybe<Category>;
+  community?: InputMaybe<CommunityAttributes>;
   darkIcon?: InputMaybe<Scalars['UploadOrUrl']>;
   defaultTag?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
@@ -1978,6 +1997,7 @@ export type RepositoryAttributes = {
   readme?: InputMaybe<Scalars['String']>;
   secrets?: InputMaybe<Scalars['Yaml']>;
   tags?: InputMaybe<Array<InputMaybe<TagAttributes>>>;
+  verified?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type RepositoryConnection = {
@@ -2174,6 +2194,7 @@ export type RootMutationType = {
   createRole?: Maybe<Role>;
   createServiceAccount?: Maybe<User>;
   createShell?: Maybe<CloudShell>;
+  createStack?: Maybe<Stack>;
   createSubscription?: Maybe<RepositorySubscription>;
   createTerraform?: Maybe<Terraform>;
   createTest?: Maybe<Test>;
@@ -2182,6 +2203,7 @@ export type RootMutationType = {
   createWebhook?: Maybe<Webhook>;
   createZoom?: Maybe<ZoomMeeting>;
   deleteCard?: Maybe<Account>;
+  deleteChartInstallation?: Maybe<ChartInstallation>;
   deleteDnsRecord?: Maybe<DnsRecord>;
   deleteDomain?: Maybe<DnsDomain>;
   deleteEabKey?: Maybe<EabCredential>;
@@ -2198,9 +2220,11 @@ export type RootMutationType = {
   deleteRepository?: Maybe<Repository>;
   deleteRole?: Maybe<Role>;
   deleteShell?: Maybe<CloudShell>;
+  deleteStack?: Maybe<Stack>;
   deleteTerraform?: Maybe<Terraform>;
   deleteToken?: Maybe<PersistedToken>;
   deleteUser?: Maybe<User>;
+  destroyCluster?: Maybe<Scalars['Boolean']>;
   deviceLogin?: Maybe<DeviceLogin>;
   externalToken?: Maybe<Scalars['String']>;
   followIncident?: Maybe<Follower>;
@@ -2223,8 +2247,10 @@ export type RootMutationType = {
   rebootShell?: Maybe<CloudShell>;
   releaseLock?: Maybe<ApplyLock>;
   resetInstallations?: Maybe<Scalars['Int']>;
+  restartShell?: Maybe<Scalars['Boolean']>;
   signup?: Maybe<User>;
   ssoCallback?: Maybe<User>;
+  stopShell?: Maybe<Scalars['Boolean']>;
   unfollowIncident?: Maybe<Follower>;
   uninstallTerraform?: Maybe<TerraformInstallation>;
   unlockRepository?: Maybe<Scalars['Int']>;
@@ -2425,6 +2451,11 @@ export type RootMutationTypeCreateShellArgs = {
 };
 
 
+export type RootMutationTypeCreateStackArgs = {
+  attributes: StackAttributes;
+};
+
+
 export type RootMutationTypeCreateSubscriptionArgs = {
   attributes?: InputMaybe<SubscriptionAttributes>;
   installationId: Scalars['ID'];
@@ -2461,6 +2492,11 @@ export type RootMutationTypeCreateZoomArgs = {
 
 
 export type RootMutationTypeDeleteCardArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type RootMutationTypeDeleteChartInstallationArgs = {
   id: Scalars['ID'];
 };
 
@@ -2545,6 +2581,11 @@ export type RootMutationTypeDeleteRoleArgs = {
 };
 
 
+export type RootMutationTypeDeleteStackArgs = {
+  name: Scalars['String'];
+};
+
+
 export type RootMutationTypeDeleteTerraformArgs = {
   id: Scalars['ID'];
 };
@@ -2557,6 +2598,13 @@ export type RootMutationTypeDeleteTokenArgs = {
 
 export type RootMutationTypeDeleteUserArgs = {
   id: Scalars['ID'];
+};
+
+
+export type RootMutationTypeDestroyClusterArgs = {
+  domain: Scalars['String'];
+  name: Scalars['String'];
+  provider: Provider;
 };
 
 
@@ -2915,6 +2963,8 @@ export type RootQueryType = {
   searchRepositories?: Maybe<RepositoryConnection>;
   searchUsers?: Maybe<UserConnection>;
   shell?: Maybe<CloudShell>;
+  stack?: Maybe<Stack>;
+  stacks?: Maybe<StackConnection>;
   subscriptions?: Maybe<RepositorySubscriptionConnection>;
   tags?: Maybe<GroupedTagConnection>;
   terraform?: Maybe<TerraformConnection>;
@@ -3316,6 +3366,21 @@ export type RootQueryTypeSearchUsersArgs = {
 };
 
 
+export type RootQueryTypeStackArgs = {
+  name: Scalars['String'];
+  provider: Provider;
+};
+
+
+export type RootQueryTypeStacksArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  featured?: InputMaybe<Scalars['Boolean']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+};
+
+
 export type RootQueryTypeSubscriptionsArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
@@ -3566,6 +3631,60 @@ export type SpecificationAttributes = {
   required?: InputMaybe<Scalars['Boolean']>;
   spec?: InputMaybe<Array<InputMaybe<SpecificationAttributes>>>;
   type: SpecDatatype;
+};
+
+export type Stack = {
+  __typename?: 'Stack';
+  bundles?: Maybe<Array<Maybe<Recipe>>>;
+  collections?: Maybe<Array<Maybe<StackCollection>>>;
+  creator?: Maybe<User>;
+  description?: Maybe<Scalars['String']>;
+  featured?: Maybe<Scalars['Boolean']>;
+  id: Scalars['ID'];
+  insertedAt?: Maybe<Scalars['DateTime']>;
+  name: Scalars['String'];
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+export type StackAttributes = {
+  collections?: InputMaybe<Array<InputMaybe<StackCollectionAttributes>>>;
+  description?: InputMaybe<Scalars['String']>;
+  featured?: InputMaybe<Scalars['Boolean']>;
+  name: Scalars['String'];
+};
+
+export type StackCollection = {
+  __typename?: 'StackCollection';
+  bundles?: Maybe<Array<Maybe<StackRecipe>>>;
+  id: Scalars['ID'];
+  insertedAt?: Maybe<Scalars['DateTime']>;
+  provider: Provider;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+export type StackCollectionAttributes = {
+  bundles?: InputMaybe<Array<InputMaybe<RecipeReference>>>;
+  provider: Provider;
+};
+
+export type StackConnection = {
+  __typename?: 'StackConnection';
+  edges?: Maybe<Array<Maybe<StackEdge>>>;
+  pageInfo: PageInfo;
+};
+
+export type StackEdge = {
+  __typename?: 'StackEdge';
+  cursor?: Maybe<Scalars['String']>;
+  node?: Maybe<Stack>;
+};
+
+export type StackRecipe = {
+  __typename?: 'StackRecipe';
+  id: Scalars['ID'];
+  insertedAt?: Maybe<Scalars['DateTime']>;
+  recipe: Recipe;
+  updatedAt?: Maybe<Scalars['DateTime']>;
 };
 
 export type StepLogs = {
@@ -3829,6 +3948,7 @@ export type User = {
   address?: Maybe<Address>;
   avatar?: Maybe<Scalars['String']>;
   backgroundColor?: Maybe<Scalars['String']>;
+  boundRoles?: Maybe<Array<Maybe<Role>>>;
   cards?: Maybe<CardConnection>;
   defaultQueueId?: Maybe<Scalars['ID']>;
   email: Scalars['String'];
@@ -3860,6 +3980,7 @@ export type UserCardsArgs = {
 
 export type UserAttributes = {
   avatar?: InputMaybe<Scalars['UploadOrUrl']>;
+  confirm?: InputMaybe<Scalars['String']>;
   email?: InputMaybe<Scalars['String']>;
   loginMethod?: InputMaybe<LoginMethod>;
   name?: InputMaybe<Scalars['String']>;

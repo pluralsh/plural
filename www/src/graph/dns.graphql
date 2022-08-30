@@ -1,0 +1,23 @@
+query GetDnsRecords($cluster: String!, $provider: Provider!) {
+    dnsRecords(cluster: $cluster, provider: $provider, first: 500) {
+        edges { node { ...DnsRecordFragment } }
+    }
+}
+
+mutation CreateDnsRecord($cluster: String!, $provider: Provider!, $attributes: DnsRecordAttributes!) {
+    createDnsRecord(cluster: $cluster, provider: $provider, attributes: $attributes) {
+        ...DnsRecordFragment
+    }
+}
+
+mutation DeleteDnsRecord($name: String!, $type: DnsRecordType!) {
+    deleteDnsRecord(name: $name, type: $type) {
+        ...DnsRecordFragment
+    }
+}
+
+fragment DnsRecordFragment on DnsRecord {
+    type
+    name
+    records
+}

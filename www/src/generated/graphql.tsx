@@ -1,10 +1,12 @@
 /* eslint-disable */
 import { gql } from '@apollo/client';
+import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -4195,3 +4197,2965 @@ export type ZoomMeeting = {
   joinUrl: Scalars['String'];
   password?: Maybe<Scalars['String']>;
 };
+
+export type ListArtifactsQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type ListArtifactsQuery = { __typename?: 'RootQueryType', repository?: { __typename?: 'Repository', artifacts?: Array<{ __typename?: 'Artifact', id?: string | null, name?: string | null, readme?: string | null, platform?: ArtifactPlatform | null, arch?: string | null, blob?: string | null, sha?: string | null, filesize?: number | null } | null> | null } | null };
+
+export type CreateArtifactMutationVariables = Exact<{
+  repoName: Scalars['String'];
+  name: Scalars['String'];
+  readme: Scalars['String'];
+  artifactType: Scalars['String'];
+  platform: Scalars['String'];
+  blob: Scalars['UploadOrUrl'];
+  arch?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type CreateArtifactMutation = { __typename?: 'RootMutationType', createArtifact?: { __typename?: 'Artifact', id?: string | null, name?: string | null, readme?: string | null, platform?: ArtifactPlatform | null, arch?: string | null, blob?: string | null, sha?: string | null, filesize?: number | null } | null };
+
+export type GetChartsQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type GetChartsQuery = { __typename?: 'RootQueryType', charts?: { __typename?: 'ChartConnection', edges?: Array<{ __typename?: 'ChartEdge', node?: { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null } | null } | null> | null } | null };
+
+export type GetVersionsQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type GetVersionsQuery = { __typename?: 'RootQueryType', versions?: { __typename?: 'VersionConnection', edges?: Array<{ __typename?: 'VersionEdge', node?: { __typename?: 'Version', id: string, readme?: string | null, version: string, valuesTemplate?: string | null, package?: string | null, crds?: Array<{ __typename?: 'Crd', id: string, name: string, blob?: string | null } | null> | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', type?: DependencyType | null, name?: string | null, repo?: string | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null } | null> | null } | null };
+
+export type GetChartInstallationsQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type GetChartInstallationsQuery = { __typename?: 'RootQueryType', chartInstallations?: { __typename?: 'ChartInstallationConnection', edges?: Array<{ __typename?: 'ChartInstallationEdge', node?: { __typename?: 'ChartInstallation', id?: string | null, chart?: { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', type?: DependencyType | null, name?: string | null, repo?: string | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, version?: { __typename?: 'Version', id: string, readme?: string | null, version: string, valuesTemplate?: string | null, package?: string | null, crds?: Array<{ __typename?: 'Crd', id: string, name: string, blob?: string | null } | null> | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', type?: DependencyType | null, name?: string | null, repo?: string | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null } | null } | null> | null } | null };
+
+export type GetPackageInstallationsQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type GetPackageInstallationsQuery = { __typename?: 'RootQueryType', chartInstallations?: { __typename?: 'ChartInstallationConnection', edges?: Array<{ __typename?: 'ChartInstallationEdge', node?: { __typename?: 'ChartInstallation', id?: string | null, chart?: { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', type?: DependencyType | null, name?: string | null, repo?: string | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, version?: { __typename?: 'Version', id: string, readme?: string | null, version: string, valuesTemplate?: string | null, package?: string | null, crds?: Array<{ __typename?: 'Crd', id: string, name: string, blob?: string | null } | null> | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', type?: DependencyType | null, name?: string | null, repo?: string | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null } | null } | null> | null } | null, terraformInstallations?: { __typename?: 'TerraformInstallationConnection', edges?: Array<{ __typename?: 'TerraformInstallationEdge', node?: { __typename?: 'TerraformInstallation', id?: string | null, terraform?: { __typename?: 'Terraform', id?: string | null, name?: string | null, package?: string | null, description?: string | null, valuesTemplate?: string | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', type?: DependencyType | null, name?: string | null, repo?: string | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, version?: { __typename?: 'Version', id: string, readme?: string | null, version: string, valuesTemplate?: string | null, package?: string | null, crds?: Array<{ __typename?: 'Crd', id: string, name: string, blob?: string | null } | null> | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', type?: DependencyType | null, name?: string | null, repo?: string | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null } | null } | null> | null } | null };
+
+export type CreateCrdMutationVariables = Exact<{
+  chartName: ChartName;
+  name: Scalars['String'];
+  blob: Scalars['UploadOrUrl'];
+}>;
+
+
+export type CreateCrdMutation = { __typename?: 'RootMutationType', createCrd?: { __typename?: 'Crd', id: string } | null };
+
+export type UninstallChartMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type UninstallChartMutation = { __typename?: 'RootMutationType', deleteChartInstallation?: { __typename?: 'ChartInstallation', id?: string | null } | null };
+
+export type GetDnsRecordsQueryVariables = Exact<{
+  cluster: Scalars['String'];
+  provider: Provider;
+}>;
+
+
+export type GetDnsRecordsQuery = { __typename?: 'RootQueryType', dnsRecords?: { __typename?: 'DnsRecordConnection', edges?: Array<{ __typename?: 'DnsRecordEdge', node?: { __typename?: 'DnsRecord', type: DnsRecordType, name: string, records?: Array<string | null> | null } | null } | null> | null } | null };
+
+export type CreateDnsRecordMutationVariables = Exact<{
+  cluster: Scalars['String'];
+  provider: Provider;
+  attributes: DnsRecordAttributes;
+}>;
+
+
+export type CreateDnsRecordMutation = { __typename?: 'RootMutationType', createDnsRecord?: { __typename?: 'DnsRecord', type: DnsRecordType, name: string, records?: Array<string | null> | null } | null };
+
+export type DeleteDnsRecordMutationVariables = Exact<{
+  name: Scalars['String'];
+  type: DnsRecordType;
+}>;
+
+
+export type DeleteDnsRecordMutation = { __typename?: 'RootMutationType', deleteDnsRecord?: { __typename?: 'DnsRecord', type: DnsRecordType, name: string, records?: Array<string | null> | null } | null };
+
+export type DnsRecordFragmentFragment = { __typename?: 'DnsRecord', type: DnsRecordType, name: string, records?: Array<string | null> | null };
+
+export type CreateDomainMutationVariables = Exact<{
+  name: Scalars['String'];
+}>;
+
+
+export type CreateDomainMutation = { __typename?: 'RootMutationType', provisionDomain?: { __typename?: 'DnsDomain', id: string, name: string } | null };
+
+export type GetInstallationQueryVariables = Exact<{
+  name?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type GetInstallationQuery = { __typename?: 'RootQueryType', installation?: { __typename?: 'Installation', id: string, context?: Map<string, unknown> | null, licenseKey?: string | null, acmeKeyId?: string | null, acmeSecret?: string | null, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, icon?: string | null, darkIcon?: string | null, description?: string | null, publisher?: { __typename?: 'Publisher', name: string } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null } | null, oidcProvider?: { __typename?: 'OidcProvider', id: string, clientId: string, clientSecret: string, redirectUris?: Array<string | null> | null, bindings?: Array<{ __typename?: 'OidcProviderBinding', user?: { __typename?: 'User', id: string, email: string } | null, group?: { __typename?: 'Group', id: string, name: string } | null } | null> | null, configuration?: { __typename?: 'OuathConfiguration', issuer?: string | null, authorizationEndpoint?: string | null, tokenEndpoint?: string | null, jwksUri?: string | null, userinfoEndpoint?: string | null } | null } | null } | null };
+
+export type GetInstallationByIdQueryVariables = Exact<{
+  id?: InputMaybe<Scalars['ID']>;
+}>;
+
+
+export type GetInstallationByIdQuery = { __typename?: 'RootQueryType', installation?: { __typename?: 'Installation', id: string, context?: Map<string, unknown> | null, licenseKey?: string | null, acmeKeyId?: string | null, acmeSecret?: string | null, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, icon?: string | null, darkIcon?: string | null, description?: string | null, publisher?: { __typename?: 'Publisher', name: string } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null } | null, oidcProvider?: { __typename?: 'OidcProvider', id: string, clientId: string, clientSecret: string, redirectUris?: Array<string | null> | null, bindings?: Array<{ __typename?: 'OidcProviderBinding', user?: { __typename?: 'User', id: string, email: string } | null, group?: { __typename?: 'Group', id: string, name: string } | null } | null> | null, configuration?: { __typename?: 'OuathConfiguration', issuer?: string | null, authorizationEndpoint?: string | null, tokenEndpoint?: string | null, jwksUri?: string | null, userinfoEndpoint?: string | null } | null } | null } | null };
+
+export type GetInstallationsQueryVariables = Exact<{
+  first?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type GetInstallationsQuery = { __typename?: 'RootQueryType', installations?: { __typename?: 'InstallationConnection', edges?: Array<{ __typename?: 'InstallationEdge', node?: { __typename?: 'Installation', id: string, context?: Map<string, unknown> | null, licenseKey?: string | null, acmeKeyId?: string | null, acmeSecret?: string | null, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, icon?: string | null, darkIcon?: string | null, description?: string | null, publisher?: { __typename?: 'Publisher', name: string } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null } | null, oidcProvider?: { __typename?: 'OidcProvider', id: string, clientId: string, clientSecret: string, redirectUris?: Array<string | null> | null, bindings?: Array<{ __typename?: 'OidcProviderBinding', user?: { __typename?: 'User', id: string, email: string } | null, group?: { __typename?: 'Group', id: string, name: string } | null } | null> | null, configuration?: { __typename?: 'OuathConfiguration', issuer?: string | null, authorizationEndpoint?: string | null, tokenEndpoint?: string | null, jwksUri?: string | null, userinfoEndpoint?: string | null } | null } | null } | null } | null> | null } | null };
+
+export type UpsertOidcProviderMutationVariables = Exact<{
+  id: Scalars['ID'];
+  attributes: OidcAttributes;
+}>;
+
+
+export type UpsertOidcProviderMutation = { __typename?: 'RootMutationType', upsertOidcProvider?: { __typename?: 'OidcProvider', id: string } | null };
+
+export type ApplyLockFragmentFragment = { __typename?: 'ApplyLock', id: string, lock?: string | null };
+
+export type ArtifactFragmentFragment = { __typename?: 'Artifact', id?: string | null, name?: string | null, readme?: string | null, platform?: ArtifactPlatform | null, arch?: string | null, blob?: string | null, sha?: string | null, filesize?: number | null };
+
+export type CloudShellFragmentFragment = { __typename?: 'CloudShell', id: string, aesKey: string, gitUrl: string };
+
+export type ChartFragmentFragment = { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null };
+
+export type DependenciesFragmentFragment = { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', type?: DependencyType | null, name?: string | null, repo?: string | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null };
+
+export type DnsDomainFragmentFragment = { __typename?: 'DnsDomain', id: string, name: string };
+
+export type RecipeSectionFragmentFragment = { __typename?: 'RecipeSection', index?: number | null, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, icon?: string | null, darkIcon?: string | null, description?: string | null, publisher?: { __typename?: 'Publisher', name: string } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null } | null, recipeItems?: Array<{ __typename?: 'RecipeItem', id?: string | null, chart?: { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null } | null, terraform?: { __typename?: 'Terraform', id?: string | null, name?: string | null, package?: string | null, description?: string | null, valuesTemplate?: string | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', type?: DependencyType | null, name?: string | null, repo?: string | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, configuration?: Array<{ __typename?: 'RecipeConfiguration', name?: string | null, type?: Datatype | null, default?: string | null, documentation?: string | null, optional?: boolean | null, placeholder?: string | null, functionName?: string | null, condition?: { __typename?: 'RecipeCondition', field: string, operation: Operation, value?: string | null } | null, validation?: { __typename?: 'RecipeValidation', type: ValidationType, regex?: string | null, message: string } | null } | null> | null } | null> | null, configuration?: Array<{ __typename?: 'RecipeConfiguration', name?: string | null, type?: Datatype | null, default?: string | null, documentation?: string | null, optional?: boolean | null, placeholder?: string | null, functionName?: string | null, condition?: { __typename?: 'RecipeCondition', field: string, operation: Operation, value?: string | null } | null, validation?: { __typename?: 'RecipeValidation', type: ValidationType, regex?: string | null, message: string } | null } | null> | null };
+
+export type RecipeFragmentFragment = { __typename?: 'Recipe', id: string, name: string, description?: string | null, restricted?: boolean | null, provider?: Provider | null, tests?: Array<{ __typename?: 'RecipeTest', type: TestType, name: string, message?: string | null, args?: Array<{ __typename?: 'TestArgument', name: string, repo: string, key: string } | null> | null } | null> | null, repository?: { __typename?: 'Repository', id: string, name: string } | null, oidcSettings?: { __typename?: 'OidcSettings', uriFormat?: string | null, uriFormats?: Array<string | null> | null, authMethod: OidcAuthMethod, domainKey?: string | null, subdomain?: boolean | null } | null, recipeSections?: Array<{ __typename?: 'RecipeSection', index?: number | null, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, icon?: string | null, darkIcon?: string | null, description?: string | null, publisher?: { __typename?: 'Publisher', name: string } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null } | null, recipeItems?: Array<{ __typename?: 'RecipeItem', id?: string | null, chart?: { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null } | null, terraform?: { __typename?: 'Terraform', id?: string | null, name?: string | null, package?: string | null, description?: string | null, valuesTemplate?: string | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', type?: DependencyType | null, name?: string | null, repo?: string | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, configuration?: Array<{ __typename?: 'RecipeConfiguration', name?: string | null, type?: Datatype | null, default?: string | null, documentation?: string | null, optional?: boolean | null, placeholder?: string | null, functionName?: string | null, condition?: { __typename?: 'RecipeCondition', field: string, operation: Operation, value?: string | null } | null, validation?: { __typename?: 'RecipeValidation', type: ValidationType, regex?: string | null, message: string } | null } | null> | null } | null> | null, configuration?: Array<{ __typename?: 'RecipeConfiguration', name?: string | null, type?: Datatype | null, default?: string | null, documentation?: string | null, optional?: boolean | null, placeholder?: string | null, functionName?: string | null, condition?: { __typename?: 'RecipeCondition', field: string, operation: Operation, value?: string | null } | null, validation?: { __typename?: 'RecipeValidation', type: ValidationType, regex?: string | null, message: string } | null } | null> | null } | null> | null };
+
+export type RecipeItemFragmentFragment = { __typename?: 'RecipeItem', id?: string | null, chart?: { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null } | null, terraform?: { __typename?: 'Terraform', id?: string | null, name?: string | null, package?: string | null, description?: string | null, valuesTemplate?: string | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', type?: DependencyType | null, name?: string | null, repo?: string | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, configuration?: Array<{ __typename?: 'RecipeConfiguration', name?: string | null, type?: Datatype | null, default?: string | null, documentation?: string | null, optional?: boolean | null, placeholder?: string | null, functionName?: string | null, condition?: { __typename?: 'RecipeCondition', field: string, operation: Operation, value?: string | null } | null, validation?: { __typename?: 'RecipeValidation', type: ValidationType, regex?: string | null, message: string } | null } | null> | null };
+
+export type RecipeConfigurationFragmentFragment = { __typename?: 'RecipeConfiguration', name?: string | null, type?: Datatype | null, default?: string | null, documentation?: string | null, optional?: boolean | null, placeholder?: string | null, functionName?: string | null, condition?: { __typename?: 'RecipeCondition', field: string, operation: Operation, value?: string | null } | null, validation?: { __typename?: 'RecipeValidation', type: ValidationType, regex?: string | null, message: string } | null };
+
+export type RepositoryFragmentFragment = { __typename?: 'Repository', id: string, name: string, notes?: string | null, icon?: string | null, darkIcon?: string | null, description?: string | null, publisher?: { __typename?: 'Publisher', name: string } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null };
+
+export type TerraformFragmentFragment = { __typename?: 'Terraform', id?: string | null, name?: string | null, package?: string | null, description?: string | null, valuesTemplate?: string | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', type?: DependencyType | null, name?: string | null, repo?: string | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null };
+
+export type TerraformInstallationFragmentFragment = { __typename?: 'TerraformInstallation', id?: string | null, terraform?: { __typename?: 'Terraform', id?: string | null, name?: string | null, package?: string | null, description?: string | null, valuesTemplate?: string | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', type?: DependencyType | null, name?: string | null, repo?: string | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, version?: { __typename?: 'Version', id: string, readme?: string | null, version: string, valuesTemplate?: string | null, package?: string | null, crds?: Array<{ __typename?: 'Crd', id: string, name: string, blob?: string | null } | null> | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', type?: DependencyType | null, name?: string | null, repo?: string | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null };
+
+export type VersionFragmentFragment = { __typename?: 'Version', id: string, readme?: string | null, version: string, valuesTemplate?: string | null, package?: string | null, crds?: Array<{ __typename?: 'Crd', id: string, name: string, blob?: string | null } | null> | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', type?: DependencyType | null, name?: string | null, repo?: string | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null };
+
+export type CrdFragmentFragment = { __typename?: 'Crd', id: string, name: string, blob?: string | null };
+
+export type ChartInstallationFragmentFragment = { __typename?: 'ChartInstallation', id?: string | null, chart?: { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', type?: DependencyType | null, name?: string | null, repo?: string | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, version?: { __typename?: 'Version', id: string, readme?: string | null, version: string, valuesTemplate?: string | null, package?: string | null, crds?: Array<{ __typename?: 'Crd', id: string, name: string, blob?: string | null } | null> | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', type?: DependencyType | null, name?: string | null, repo?: string | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null };
+
+export type InstallationFragmentFragment = { __typename?: 'Installation', id: string, context?: Map<string, unknown> | null, licenseKey?: string | null, acmeKeyId?: string | null, acmeSecret?: string | null, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, icon?: string | null, darkIcon?: string | null, description?: string | null, publisher?: { __typename?: 'Publisher', name: string } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null } | null, oidcProvider?: { __typename?: 'OidcProvider', id: string, clientId: string, clientSecret: string, redirectUris?: Array<string | null> | null, bindings?: Array<{ __typename?: 'OidcProviderBinding', user?: { __typename?: 'User', id: string, email: string } | null, group?: { __typename?: 'Group', id: string, name: string } | null } | null> | null, configuration?: { __typename?: 'OuathConfiguration', issuer?: string | null, authorizationEndpoint?: string | null, tokenEndpoint?: string | null, jwksUri?: string | null, userinfoEndpoint?: string | null } | null } | null };
+
+export type OidcProviderFragment = { __typename?: 'OidcProvider', id: string, clientId: string, clientSecret: string, redirectUris?: Array<string | null> | null, bindings?: Array<{ __typename?: 'OidcProviderBinding', user?: { __typename?: 'User', id: string, email: string } | null, group?: { __typename?: 'Group', id: string, name: string } | null } | null> | null, configuration?: { __typename?: 'OuathConfiguration', issuer?: string | null, authorizationEndpoint?: string | null, tokenEndpoint?: string | null, jwksUri?: string | null, userinfoEndpoint?: string | null } | null };
+
+export type PublicKeyFragmentFragment = { __typename?: 'PublicKey', id: string, content: string, user: { __typename?: 'User', id: string, name: string, email: string } };
+
+export type UserFragmentFragment = { __typename?: 'User', id: string, name: string, email: string };
+
+export type EabCredentialFragmentFragment = { __typename?: 'EabCredential', id: string, keyId: string, hmacKey: string, cluster: string, provider: Provider };
+
+export type TestFragmentFragment = { __typename?: 'Test', id: string, name?: string | null, status: TestStatus, promoteTag: string, steps?: Array<{ __typename?: 'TestStep', id: string, name: string, description: string, status: TestStatus } | null> | null };
+
+export type StackFragmentFragment = { __typename?: 'Stack', id: string, name: string, featured?: boolean | null, description?: string | null, bundles?: Array<{ __typename?: 'Recipe', id: string, name: string, description?: string | null, restricted?: boolean | null, provider?: Provider | null, tests?: Array<{ __typename?: 'RecipeTest', type: TestType, name: string, message?: string | null, args?: Array<{ __typename?: 'TestArgument', name: string, repo: string, key: string } | null> | null } | null> | null, repository?: { __typename?: 'Repository', id: string, name: string } | null, oidcSettings?: { __typename?: 'OidcSettings', uriFormat?: string | null, uriFormats?: Array<string | null> | null, authMethod: OidcAuthMethod, domainKey?: string | null, subdomain?: boolean | null } | null, recipeSections?: Array<{ __typename?: 'RecipeSection', index?: number | null, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, icon?: string | null, darkIcon?: string | null, description?: string | null, publisher?: { __typename?: 'Publisher', name: string } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null } | null, recipeItems?: Array<{ __typename?: 'RecipeItem', id?: string | null, chart?: { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null } | null, terraform?: { __typename?: 'Terraform', id?: string | null, name?: string | null, package?: string | null, description?: string | null, valuesTemplate?: string | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', type?: DependencyType | null, name?: string | null, repo?: string | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, configuration?: Array<{ __typename?: 'RecipeConfiguration', name?: string | null, type?: Datatype | null, default?: string | null, documentation?: string | null, optional?: boolean | null, placeholder?: string | null, functionName?: string | null, condition?: { __typename?: 'RecipeCondition', field: string, operation: Operation, value?: string | null } | null, validation?: { __typename?: 'RecipeValidation', type: ValidationType, regex?: string | null, message: string } | null } | null> | null } | null> | null, configuration?: Array<{ __typename?: 'RecipeConfiguration', name?: string | null, type?: Datatype | null, default?: string | null, documentation?: string | null, optional?: boolean | null, placeholder?: string | null, functionName?: string | null, condition?: { __typename?: 'RecipeCondition', field: string, operation: Operation, value?: string | null } | null, validation?: { __typename?: 'RecipeValidation', type: ValidationType, regex?: string | null, message: string } | null } | null> | null } | null> | null } | null> | null };
+
+export type GetRecipeQueryVariables = Exact<{
+  repo?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type GetRecipeQuery = { __typename?: 'RootQueryType', recipe?: { __typename?: 'Recipe', id: string, name: string, description?: string | null, restricted?: boolean | null, provider?: Provider | null, recipeDependencies?: Array<{ __typename?: 'Recipe', id: string, name: string, description?: string | null, restricted?: boolean | null, provider?: Provider | null, tests?: Array<{ __typename?: 'RecipeTest', type: TestType, name: string, message?: string | null, args?: Array<{ __typename?: 'TestArgument', name: string, repo: string, key: string } | null> | null } | null> | null, repository?: { __typename?: 'Repository', id: string, name: string } | null, oidcSettings?: { __typename?: 'OidcSettings', uriFormat?: string | null, uriFormats?: Array<string | null> | null, authMethod: OidcAuthMethod, domainKey?: string | null, subdomain?: boolean | null } | null, recipeSections?: Array<{ __typename?: 'RecipeSection', index?: number | null, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, icon?: string | null, darkIcon?: string | null, description?: string | null, publisher?: { __typename?: 'Publisher', name: string } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null } | null, recipeItems?: Array<{ __typename?: 'RecipeItem', id?: string | null, chart?: { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null } | null, terraform?: { __typename?: 'Terraform', id?: string | null, name?: string | null, package?: string | null, description?: string | null, valuesTemplate?: string | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', type?: DependencyType | null, name?: string | null, repo?: string | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, configuration?: Array<{ __typename?: 'RecipeConfiguration', name?: string | null, type?: Datatype | null, default?: string | null, documentation?: string | null, optional?: boolean | null, placeholder?: string | null, functionName?: string | null, condition?: { __typename?: 'RecipeCondition', field: string, operation: Operation, value?: string | null } | null, validation?: { __typename?: 'RecipeValidation', type: ValidationType, regex?: string | null, message: string } | null } | null> | null } | null> | null, configuration?: Array<{ __typename?: 'RecipeConfiguration', name?: string | null, type?: Datatype | null, default?: string | null, documentation?: string | null, optional?: boolean | null, placeholder?: string | null, functionName?: string | null, condition?: { __typename?: 'RecipeCondition', field: string, operation: Operation, value?: string | null } | null, validation?: { __typename?: 'RecipeValidation', type: ValidationType, regex?: string | null, message: string } | null } | null> | null } | null> | null } | null> | null, tests?: Array<{ __typename?: 'RecipeTest', type: TestType, name: string, message?: string | null, args?: Array<{ __typename?: 'TestArgument', name: string, repo: string, key: string } | null> | null } | null> | null, repository?: { __typename?: 'Repository', id: string, name: string } | null, oidcSettings?: { __typename?: 'OidcSettings', uriFormat?: string | null, uriFormats?: Array<string | null> | null, authMethod: OidcAuthMethod, domainKey?: string | null, subdomain?: boolean | null } | null, recipeSections?: Array<{ __typename?: 'RecipeSection', index?: number | null, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, icon?: string | null, darkIcon?: string | null, description?: string | null, publisher?: { __typename?: 'Publisher', name: string } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null } | null, recipeItems?: Array<{ __typename?: 'RecipeItem', id?: string | null, chart?: { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null } | null, terraform?: { __typename?: 'Terraform', id?: string | null, name?: string | null, package?: string | null, description?: string | null, valuesTemplate?: string | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', type?: DependencyType | null, name?: string | null, repo?: string | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, configuration?: Array<{ __typename?: 'RecipeConfiguration', name?: string | null, type?: Datatype | null, default?: string | null, documentation?: string | null, optional?: boolean | null, placeholder?: string | null, functionName?: string | null, condition?: { __typename?: 'RecipeCondition', field: string, operation: Operation, value?: string | null } | null, validation?: { __typename?: 'RecipeValidation', type: ValidationType, regex?: string | null, message: string } | null } | null> | null } | null> | null, configuration?: Array<{ __typename?: 'RecipeConfiguration', name?: string | null, type?: Datatype | null, default?: string | null, documentation?: string | null, optional?: boolean | null, placeholder?: string | null, functionName?: string | null, condition?: { __typename?: 'RecipeCondition', field: string, operation: Operation, value?: string | null } | null, validation?: { __typename?: 'RecipeValidation', type: ValidationType, regex?: string | null, message: string } | null } | null> | null } | null> | null } | null };
+
+export type ListRecipesQueryVariables = Exact<{
+  repo?: InputMaybe<Scalars['String']>;
+  provider?: InputMaybe<Provider>;
+}>;
+
+
+export type ListRecipesQuery = { __typename?: 'RootQueryType', recipes?: { __typename?: 'RecipeConnection', edges?: Array<{ __typename?: 'RecipeEdge', node?: { __typename?: 'Recipe', id: string, name: string, description?: string | null, restricted?: boolean | null, provider?: Provider | null, tests?: Array<{ __typename?: 'RecipeTest', type: TestType, name: string, message?: string | null, args?: Array<{ __typename?: 'TestArgument', name: string, repo: string, key: string } | null> | null } | null> | null, repository?: { __typename?: 'Repository', id: string, name: string } | null, oidcSettings?: { __typename?: 'OidcSettings', uriFormat?: string | null, uriFormats?: Array<string | null> | null, authMethod: OidcAuthMethod, domainKey?: string | null, subdomain?: boolean | null } | null, recipeSections?: Array<{ __typename?: 'RecipeSection', index?: number | null, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, icon?: string | null, darkIcon?: string | null, description?: string | null, publisher?: { __typename?: 'Publisher', name: string } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null } | null, recipeItems?: Array<{ __typename?: 'RecipeItem', id?: string | null, chart?: { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null } | null, terraform?: { __typename?: 'Terraform', id?: string | null, name?: string | null, package?: string | null, description?: string | null, valuesTemplate?: string | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', type?: DependencyType | null, name?: string | null, repo?: string | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, configuration?: Array<{ __typename?: 'RecipeConfiguration', name?: string | null, type?: Datatype | null, default?: string | null, documentation?: string | null, optional?: boolean | null, placeholder?: string | null, functionName?: string | null, condition?: { __typename?: 'RecipeCondition', field: string, operation: Operation, value?: string | null } | null, validation?: { __typename?: 'RecipeValidation', type: ValidationType, regex?: string | null, message: string } | null } | null> | null } | null> | null, configuration?: Array<{ __typename?: 'RecipeConfiguration', name?: string | null, type?: Datatype | null, default?: string | null, documentation?: string | null, optional?: boolean | null, placeholder?: string | null, functionName?: string | null, condition?: { __typename?: 'RecipeCondition', field: string, operation: Operation, value?: string | null } | null, validation?: { __typename?: 'RecipeValidation', type: ValidationType, regex?: string | null, message: string } | null } | null> | null } | null> | null } | null } | null> | null } | null };
+
+export type CreateRecipeMutationVariables = Exact<{
+  name: Scalars['String'];
+  attributes: RecipeAttributes;
+}>;
+
+
+export type CreateRecipeMutation = { __typename?: 'RootMutationType', createRecipe?: { __typename?: 'Recipe', id: string } | null };
+
+export type InstallRecipeMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type InstallRecipeMutation = { __typename?: 'RootMutationType', installRecipe?: Array<{ __typename?: 'Installation', id: string } | null> | null };
+
+export type CreateStackMutationVariables = Exact<{
+  attributes: StackAttributes;
+}>;
+
+
+export type CreateStackMutation = { __typename?: 'RootMutationType', createStack?: { __typename?: 'Stack', id: string } | null };
+
+export type GetStackQueryVariables = Exact<{
+  name: Scalars['String'];
+  provider: Provider;
+}>;
+
+
+export type GetStackQuery = { __typename?: 'RootQueryType', stack?: { __typename?: 'Stack', id: string, name: string, featured?: boolean | null, description?: string | null, bundles?: Array<{ __typename?: 'Recipe', id: string, name: string, description?: string | null, restricted?: boolean | null, provider?: Provider | null, tests?: Array<{ __typename?: 'RecipeTest', type: TestType, name: string, message?: string | null, args?: Array<{ __typename?: 'TestArgument', name: string, repo: string, key: string } | null> | null } | null> | null, repository?: { __typename?: 'Repository', id: string, name: string } | null, oidcSettings?: { __typename?: 'OidcSettings', uriFormat?: string | null, uriFormats?: Array<string | null> | null, authMethod: OidcAuthMethod, domainKey?: string | null, subdomain?: boolean | null } | null, recipeSections?: Array<{ __typename?: 'RecipeSection', index?: number | null, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, icon?: string | null, darkIcon?: string | null, description?: string | null, publisher?: { __typename?: 'Publisher', name: string } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null } | null, recipeItems?: Array<{ __typename?: 'RecipeItem', id?: string | null, chart?: { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null } | null, terraform?: { __typename?: 'Terraform', id?: string | null, name?: string | null, package?: string | null, description?: string | null, valuesTemplate?: string | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', type?: DependencyType | null, name?: string | null, repo?: string | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, configuration?: Array<{ __typename?: 'RecipeConfiguration', name?: string | null, type?: Datatype | null, default?: string | null, documentation?: string | null, optional?: boolean | null, placeholder?: string | null, functionName?: string | null, condition?: { __typename?: 'RecipeCondition', field: string, operation: Operation, value?: string | null } | null, validation?: { __typename?: 'RecipeValidation', type: ValidationType, regex?: string | null, message: string } | null } | null> | null } | null> | null, configuration?: Array<{ __typename?: 'RecipeConfiguration', name?: string | null, type?: Datatype | null, default?: string | null, documentation?: string | null, optional?: boolean | null, placeholder?: string | null, functionName?: string | null, condition?: { __typename?: 'RecipeCondition', field: string, operation: Operation, value?: string | null } | null, validation?: { __typename?: 'RecipeValidation', type: ValidationType, regex?: string | null, message: string } | null } | null> | null } | null> | null } | null> | null } | null };
+
+export type ListStacksQueryVariables = Exact<{
+  featured?: InputMaybe<Scalars['Boolean']>;
+  cursor?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type ListStacksQuery = { __typename?: 'RootQueryType', stacks?: { __typename?: 'StackConnection', edges?: Array<{ __typename?: 'StackEdge', node?: { __typename?: 'Stack', id: string, name: string, featured?: boolean | null, description?: string | null, bundles?: Array<{ __typename?: 'Recipe', id: string, name: string, description?: string | null, restricted?: boolean | null, provider?: Provider | null, tests?: Array<{ __typename?: 'RecipeTest', type: TestType, name: string, message?: string | null, args?: Array<{ __typename?: 'TestArgument', name: string, repo: string, key: string } | null> | null } | null> | null, repository?: { __typename?: 'Repository', id: string, name: string } | null, oidcSettings?: { __typename?: 'OidcSettings', uriFormat?: string | null, uriFormats?: Array<string | null> | null, authMethod: OidcAuthMethod, domainKey?: string | null, subdomain?: boolean | null } | null, recipeSections?: Array<{ __typename?: 'RecipeSection', index?: number | null, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, icon?: string | null, darkIcon?: string | null, description?: string | null, publisher?: { __typename?: 'Publisher', name: string } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null } | null, recipeItems?: Array<{ __typename?: 'RecipeItem', id?: string | null, chart?: { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null } | null, terraform?: { __typename?: 'Terraform', id?: string | null, name?: string | null, package?: string | null, description?: string | null, valuesTemplate?: string | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', type?: DependencyType | null, name?: string | null, repo?: string | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, configuration?: Array<{ __typename?: 'RecipeConfiguration', name?: string | null, type?: Datatype | null, default?: string | null, documentation?: string | null, optional?: boolean | null, placeholder?: string | null, functionName?: string | null, condition?: { __typename?: 'RecipeCondition', field: string, operation: Operation, value?: string | null } | null, validation?: { __typename?: 'RecipeValidation', type: ValidationType, regex?: string | null, message: string } | null } | null> | null } | null> | null, configuration?: Array<{ __typename?: 'RecipeConfiguration', name?: string | null, type?: Datatype | null, default?: string | null, documentation?: string | null, optional?: boolean | null, placeholder?: string | null, functionName?: string | null, condition?: { __typename?: 'RecipeCondition', field: string, operation: Operation, value?: string | null } | null, validation?: { __typename?: 'RecipeValidation', type: ValidationType, regex?: string | null, message: string } | null } | null> | null } | null> | null } | null> | null } | null } | null> | null } | null };
+
+export type GetRepositoryQueryVariables = Exact<{
+  name?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type GetRepositoryQuery = { __typename?: 'RootQueryType', repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, icon?: string | null, darkIcon?: string | null, description?: string | null, publisher?: { __typename?: 'Publisher', name: string } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null } | null };
+
+export type CreateResourceDefinitionMutationVariables = Exact<{
+  name: Scalars['String'];
+  input: ResourceDefinitionAttributes;
+}>;
+
+
+export type CreateResourceDefinitionMutation = { __typename?: 'RootMutationType', updateRepository?: { __typename?: 'Repository', id: string } | null };
+
+export type CreateIntegrationMutationVariables = Exact<{
+  name: Scalars['String'];
+  attrs: IntegrationAttributes;
+}>;
+
+
+export type CreateIntegrationMutation = { __typename?: 'RootMutationType', createIntegration?: { __typename?: 'Integration', id: string } | null };
+
+export type UpdateRepositoryMutationVariables = Exact<{
+  name: Scalars['String'];
+  attrs: RepositoryAttributes;
+}>;
+
+
+export type UpdateRepositoryMutation = { __typename?: 'RootMutationType', updateRepository?: { __typename?: 'Repository', id: string } | null };
+
+export type CreateRepositoryMutationVariables = Exact<{
+  name: Scalars['String'];
+  publisher: Scalars['String'];
+  attributes: RepositoryAttributes;
+}>;
+
+
+export type CreateRepositoryMutation = { __typename?: 'RootMutationType', upsertRepository?: { __typename?: 'Repository', id: string } | null };
+
+export type AcquireLockMutationVariables = Exact<{
+  name: Scalars['String'];
+}>;
+
+
+export type AcquireLockMutation = { __typename?: 'RootMutationType', acquireLock?: { __typename?: 'ApplyLock', id: string, lock?: string | null } | null };
+
+export type ReleaseLockMutationVariables = Exact<{
+  name: Scalars['String'];
+  attrs: LockAttributes;
+}>;
+
+
+export type ReleaseLockMutation = { __typename?: 'RootMutationType', releaseLock?: { __typename?: 'ApplyLock', id: string, lock?: string | null } | null };
+
+export type UnlockRepositoryMutationVariables = Exact<{
+  name: Scalars['String'];
+}>;
+
+
+export type UnlockRepositoryMutation = { __typename?: 'RootMutationType', unlockRepository?: number | null };
+
+export type ListRepositoriesQueryVariables = Exact<{
+  q?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type ListRepositoriesQuery = { __typename?: 'RootQueryType', repositories?: { __typename?: 'RepositoryConnection', edges?: Array<{ __typename?: 'RepositoryEdge', node?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, icon?: string | null, darkIcon?: string | null, description?: string | null, publisher?: { __typename?: 'Publisher', name: string } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null } | null } | null> | null } | null };
+
+export type ScaffoldsQueryVariables = Exact<{
+  app: Scalars['String'];
+  pub: Scalars['String'];
+  cat: Category;
+  ing?: InputMaybe<Scalars['Boolean']>;
+  pg?: InputMaybe<Scalars['Boolean']>;
+}>;
+
+
+export type ScaffoldsQuery = { __typename?: 'RootQueryType', scaffold?: Array<{ __typename?: 'ScaffoldFile', path?: string | null, content?: string | null } | null> | null };
+
+export type DeleteRepositoryMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type DeleteRepositoryMutation = { __typename?: 'RootMutationType', deleteRepository?: { __typename?: 'Repository', id: string } | null };
+
+export type GetTfProvidersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetTfProvidersQuery = { __typename?: 'RootQueryType', terraformProviders?: Array<Provider | null> | null };
+
+export type GetTfProviderScaffoldQueryVariables = Exact<{
+  name: Provider;
+  vsn?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type GetTfProviderScaffoldQuery = { __typename?: 'RootQueryType', terraformProvider?: { __typename?: 'TerraformProvider', name?: Provider | null, content?: string | null } | null };
+
+export type GetShellQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetShellQuery = { __typename?: 'RootQueryType', shell?: { __typename?: 'CloudShell', id: string, aesKey: string, gitUrl: string } | null };
+
+export type DeleteShellMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type DeleteShellMutation = { __typename?: 'RootMutationType', deleteShell?: { __typename?: 'CloudShell', id: string, aesKey: string, gitUrl: string } | null };
+
+export type GetTerraformQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type GetTerraformQuery = { __typename?: 'RootQueryType', terraform?: { __typename?: 'TerraformConnection', edges?: Array<{ __typename?: 'TerraformEdge', node?: { __typename?: 'Terraform', id?: string | null, name?: string | null, package?: string | null, description?: string | null, valuesTemplate?: string | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', type?: DependencyType | null, name?: string | null, repo?: string | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null } | null> | null } | null };
+
+export type GetTerraformInstallationsQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type GetTerraformInstallationsQuery = { __typename?: 'RootQueryType', terraformInstallations?: { __typename?: 'TerraformInstallationConnection', edges?: Array<{ __typename?: 'TerraformInstallationEdge', node?: { __typename?: 'TerraformInstallation', id?: string | null, terraform?: { __typename?: 'Terraform', id?: string | null, name?: string | null, package?: string | null, description?: string | null, valuesTemplate?: string | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', type?: DependencyType | null, name?: string | null, repo?: string | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, version?: { __typename?: 'Version', id: string, readme?: string | null, version: string, valuesTemplate?: string | null, package?: string | null, crds?: Array<{ __typename?: 'Crd', id: string, name: string, blob?: string | null } | null> | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', type?: DependencyType | null, name?: string | null, repo?: string | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null } | null } | null> | null } | null };
+
+export type UploadTerraformMutationVariables = Exact<{
+  repoName: Scalars['String'];
+  name: Scalars['String'];
+  uploadOrUrl: Scalars['UploadOrUrl'];
+}>;
+
+
+export type UploadTerraformMutation = { __typename?: 'RootMutationType', uploadTerraform?: { __typename?: 'Terraform', id?: string | null, name?: string | null, package?: string | null, description?: string | null, valuesTemplate?: string | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', type?: DependencyType | null, name?: string | null, repo?: string | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null };
+
+export type UninstallTerraformMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type UninstallTerraformMutation = { __typename?: 'RootMutationType', uninstallTerraform?: { __typename?: 'TerraformInstallation', id?: string | null } | null };
+
+export type CreateTestMutationVariables = Exact<{
+  name: Scalars['String'];
+  attrs: TestAttributes;
+}>;
+
+
+export type CreateTestMutation = { __typename?: 'RootMutationType', createTest?: { __typename?: 'Test', id: string, name?: string | null, status: TestStatus, promoteTag: string, steps?: Array<{ __typename?: 'TestStep', id: string, name: string, description: string, status: TestStatus } | null> | null } | null };
+
+export type UpdateTestMutationVariables = Exact<{
+  id: Scalars['ID'];
+  attrs: TestAttributes;
+}>;
+
+
+export type UpdateTestMutation = { __typename?: 'RootMutationType', updateTest?: { __typename?: 'Test', id: string, name?: string | null, status: TestStatus, promoteTag: string, steps?: Array<{ __typename?: 'TestStep', id: string, name: string, description: string, status: TestStatus } | null> | null } | null };
+
+export type UpdateStepMutationVariables = Exact<{
+  id: Scalars['ID'];
+  logs: Scalars['UploadOrUrl'];
+}>;
+
+
+export type UpdateStepMutation = { __typename?: 'RootMutationType', updateStep?: { __typename?: 'TestStep', id: string } | null };
+
+export type PublishLogsMutationVariables = Exact<{
+  id: Scalars['ID'];
+  logs: Scalars['String'];
+}>;
+
+
+export type PublishLogsMutation = { __typename?: 'RootMutationType', publishLogs?: { __typename?: 'TestStep', id: string } | null };
+
+export type MeQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeQuery = { __typename?: 'RootQueryType', me?: { __typename?: 'User', id: string, email: string } | null };
+
+export type GetLoginMethodQueryVariables = Exact<{
+  email: Scalars['String'];
+}>;
+
+
+export type GetLoginMethodQuery = { __typename?: 'RootQueryType', loginMethod?: { __typename?: 'LoginMethodResponse', loginMethod: LoginMethod, token?: string | null } | null };
+
+export type ListTokensQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ListTokensQuery = { __typename?: 'RootQueryType', tokens?: { __typename?: 'PersistedTokenConnection', edges?: Array<{ __typename?: 'PersistedTokenEdge', node?: { __typename?: 'PersistedToken', token?: string | null } | null } | null> | null } | null };
+
+export type ListKeysQueryVariables = Exact<{
+  emails?: InputMaybe<Array<InputMaybe<Scalars['String']>> | InputMaybe<Scalars['String']>>;
+}>;
+
+
+export type ListKeysQuery = { __typename?: 'RootQueryType', publicKeys?: { __typename?: 'PublicKeyConnection', edges?: Array<{ __typename?: 'PublicKeyEdge', node?: { __typename?: 'PublicKey', id: string, content: string, user: { __typename?: 'User', id: string, name: string, email: string } } | null } | null> | null } | null };
+
+export type GetEabCredentialQueryVariables = Exact<{
+  cluster: Scalars['String'];
+  provider: Provider;
+}>;
+
+
+export type GetEabCredentialQuery = { __typename?: 'RootQueryType', eabCredential?: { __typename?: 'EabCredential', id: string, keyId: string, hmacKey: string, cluster: string, provider: Provider } | null };
+
+export type PollLoginTokenMutationVariables = Exact<{
+  token: Scalars['String'];
+}>;
+
+
+export type PollLoginTokenMutation = { __typename?: 'RootMutationType', loginToken?: { __typename?: 'User', jwt?: string | null } | null };
+
+export type DevLoginMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type DevLoginMutation = { __typename?: 'RootMutationType', deviceLogin?: { __typename?: 'DeviceLogin', loginUrl: string, deviceToken: string } | null };
+
+export type LoginMutationVariables = Exact<{
+  email: Scalars['String'];
+  pwd: Scalars['String'];
+}>;
+
+
+export type LoginMutation = { __typename?: 'RootMutationType', login?: { __typename?: 'User', jwt?: string | null } | null };
+
+export type ImpersonateServiceAccountMutationVariables = Exact<{
+  email?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type ImpersonateServiceAccountMutation = { __typename?: 'RootMutationType', impersonateServiceAccount?: { __typename?: 'User', jwt?: string | null, email: string } | null };
+
+export type CreateAccessTokenMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CreateAccessTokenMutation = { __typename?: 'RootMutationType', createToken?: { __typename?: 'PersistedToken', token?: string | null } | null };
+
+export type CreateKeyMutationVariables = Exact<{
+  key: Scalars['String'];
+  name: Scalars['String'];
+}>;
+
+
+export type CreateKeyMutation = { __typename?: 'RootMutationType', createPublicKey?: { __typename?: 'PublicKey', id: string } | null };
+
+export type DeleteEabCredentialMutationVariables = Exact<{
+  cluster: Scalars['String'];
+  provider: Provider;
+}>;
+
+
+export type DeleteEabCredentialMutation = { __typename?: 'RootMutationType', deleteEabKey?: { __typename?: 'EabCredential', id: string } | null };
+
+export type CreateEventMutationVariables = Exact<{
+  attrs: UserEventAttributes;
+}>;
+
+
+export type CreateEventMutation = { __typename?: 'RootMutationType', createUserEvent?: boolean | null };
+
+export type UpdateVersionMutationVariables = Exact<{
+  spec?: InputMaybe<VersionSpec>;
+  attributes: VersionAttributes;
+}>;
+
+
+export type UpdateVersionMutation = { __typename?: 'RootMutationType', updateVersion?: { __typename?: 'Version', id: string } | null };
+
+export const DnsRecordFragmentFragmentDoc = gql`
+    fragment DnsRecordFragment on DnsRecord {
+  type
+  name
+  records
+}
+    `;
+export const ApplyLockFragmentFragmentDoc = gql`
+    fragment ApplyLockFragment on ApplyLock {
+  id
+  lock
+}
+    `;
+export const ArtifactFragmentFragmentDoc = gql`
+    fragment ArtifactFragment on Artifact {
+  id
+  name
+  readme
+  platform
+  arch
+  blob
+  sha
+  filesize
+}
+    `;
+export const CloudShellFragmentFragmentDoc = gql`
+    fragment CloudShellFragment on CloudShell {
+  id
+  aesKey
+  gitUrl
+}
+    `;
+export const DnsDomainFragmentFragmentDoc = gql`
+    fragment DnsDomainFragment on DnsDomain {
+  id
+  name
+}
+    `;
+export const DependenciesFragmentFragmentDoc = gql`
+    fragment DependenciesFragment on Dependencies {
+  dependencies {
+    type
+    name
+    repo
+  }
+  wait
+  application
+  providers
+  secrets
+  wirings {
+    terraform
+    helm
+  }
+  providerWirings
+  outputs
+}
+    `;
+export const TerraformFragmentFragmentDoc = gql`
+    fragment TerraformFragment on Terraform {
+  id
+  name
+  package
+  description
+  dependencies {
+    ...DependenciesFragment
+  }
+  valuesTemplate
+}
+    ${DependenciesFragmentFragmentDoc}`;
+export const CrdFragmentFragmentDoc = gql`
+    fragment CrdFragment on Crd {
+  id
+  name
+  blob
+}
+    `;
+export const VersionFragmentFragmentDoc = gql`
+    fragment VersionFragment on Version {
+  id
+  readme
+  version
+  valuesTemplate
+  package
+  crds {
+    ...CrdFragment
+  }
+  dependencies {
+    ...DependenciesFragment
+  }
+}
+    ${CrdFragmentFragmentDoc}
+${DependenciesFragmentFragmentDoc}`;
+export const TerraformInstallationFragmentFragmentDoc = gql`
+    fragment TerraformInstallationFragment on TerraformInstallation {
+  id
+  terraform {
+    ...TerraformFragment
+  }
+  version {
+    ...VersionFragment
+  }
+}
+    ${TerraformFragmentFragmentDoc}
+${VersionFragmentFragmentDoc}`;
+export const ChartFragmentFragmentDoc = gql`
+    fragment ChartFragment on Chart {
+  id
+  name
+  description
+  latestVersion
+}
+    `;
+export const ChartInstallationFragmentFragmentDoc = gql`
+    fragment ChartInstallationFragment on ChartInstallation {
+  id
+  chart {
+    ...ChartFragment
+    dependencies {
+      ...DependenciesFragment
+    }
+  }
+  version {
+    ...VersionFragment
+  }
+}
+    ${ChartFragmentFragmentDoc}
+${DependenciesFragmentFragmentDoc}
+${VersionFragmentFragmentDoc}`;
+export const RepositoryFragmentFragmentDoc = gql`
+    fragment RepositoryFragment on Repository {
+  id
+  name
+  notes
+  icon
+  darkIcon
+  description
+  publisher {
+    name
+  }
+  recipes {
+    name
+  }
+}
+    `;
+export const OidcProviderFragmentDoc = gql`
+    fragment OIDCProvider on OidcProvider {
+  id
+  clientId
+  clientSecret
+  redirectUris
+  bindings {
+    user {
+      id
+      email
+    }
+    group {
+      id
+      name
+    }
+  }
+  configuration {
+    issuer
+    authorizationEndpoint
+    tokenEndpoint
+    jwksUri
+    userinfoEndpoint
+  }
+}
+    `;
+export const InstallationFragmentFragmentDoc = gql`
+    fragment InstallationFragment on Installation {
+  id
+  context
+  licenseKey
+  acmeKeyId
+  acmeSecret
+  repository {
+    ...RepositoryFragment
+  }
+  oidcProvider {
+    ...OIDCProvider
+  }
+}
+    ${RepositoryFragmentFragmentDoc}
+${OidcProviderFragmentDoc}`;
+export const UserFragmentFragmentDoc = gql`
+    fragment UserFragment on User {
+  id
+  name
+  email
+}
+    `;
+export const PublicKeyFragmentFragmentDoc = gql`
+    fragment PublicKeyFragment on PublicKey {
+  id
+  content
+  user {
+    ...UserFragment
+  }
+}
+    ${UserFragmentFragmentDoc}`;
+export const EabCredentialFragmentFragmentDoc = gql`
+    fragment EabCredentialFragment on EabCredential {
+  id
+  keyId
+  hmacKey
+  cluster
+  provider
+}
+    `;
+export const TestFragmentFragmentDoc = gql`
+    fragment TestFragment on Test {
+  id
+  name
+  status
+  promoteTag
+  steps {
+    id
+    name
+    description
+    status
+  }
+}
+    `;
+export const RecipeConfigurationFragmentFragmentDoc = gql`
+    fragment RecipeConfigurationFragment on RecipeConfiguration {
+  name
+  type
+  default
+  documentation
+  optional
+  placeholder
+  functionName
+  condition {
+    field
+    operation
+    value
+  }
+  validation {
+    type
+    regex
+    message
+  }
+}
+    `;
+export const RecipeItemFragmentFragmentDoc = gql`
+    fragment RecipeItemFragment on RecipeItem {
+  id
+  chart {
+    ...ChartFragment
+  }
+  terraform {
+    ...TerraformFragment
+  }
+  configuration {
+    ...RecipeConfigurationFragment
+  }
+}
+    ${ChartFragmentFragmentDoc}
+${TerraformFragmentFragmentDoc}
+${RecipeConfigurationFragmentFragmentDoc}`;
+export const RecipeSectionFragmentFragmentDoc = gql`
+    fragment RecipeSectionFragment on RecipeSection {
+  index
+  repository {
+    ...RepositoryFragment
+  }
+  recipeItems {
+    ...RecipeItemFragment
+  }
+  configuration {
+    ...RecipeConfigurationFragment
+  }
+}
+    ${RepositoryFragmentFragmentDoc}
+${RecipeItemFragmentFragmentDoc}
+${RecipeConfigurationFragmentFragmentDoc}`;
+export const RecipeFragmentFragmentDoc = gql`
+    fragment RecipeFragment on Recipe {
+  id
+  name
+  description
+  restricted
+  provider
+  tests {
+    type
+    name
+    message
+    args {
+      name
+      repo
+      key
+    }
+  }
+  repository {
+    id
+    name
+  }
+  oidcSettings {
+    uriFormat
+    uriFormats
+    authMethod
+    domainKey
+    subdomain
+  }
+  recipeSections {
+    ...RecipeSectionFragment
+  }
+}
+    ${RecipeSectionFragmentFragmentDoc}`;
+export const StackFragmentFragmentDoc = gql`
+    fragment StackFragment on Stack {
+  id
+  name
+  featured
+  description
+  bundles {
+    ...RecipeFragment
+  }
+}
+    ${RecipeFragmentFragmentDoc}`;
+export const ListArtifactsDocument = gql`
+    query ListArtifacts($id: ID!) {
+  repository(id: $id) {
+    artifacts {
+      ...ArtifactFragment
+    }
+  }
+}
+    ${ArtifactFragmentFragmentDoc}`;
+
+/**
+ * __useListArtifactsQuery__
+ *
+ * To run a query within a React component, call `useListArtifactsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListArtifactsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListArtifactsQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useListArtifactsQuery(baseOptions: Apollo.QueryHookOptions<ListArtifactsQuery, ListArtifactsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ListArtifactsQuery, ListArtifactsQueryVariables>(ListArtifactsDocument, options);
+      }
+export function useListArtifactsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ListArtifactsQuery, ListArtifactsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ListArtifactsQuery, ListArtifactsQueryVariables>(ListArtifactsDocument, options);
+        }
+export type ListArtifactsQueryHookResult = ReturnType<typeof useListArtifactsQuery>;
+export type ListArtifactsLazyQueryHookResult = ReturnType<typeof useListArtifactsLazyQuery>;
+export type ListArtifactsQueryResult = Apollo.QueryResult<ListArtifactsQuery, ListArtifactsQueryVariables>;
+export const CreateArtifactDocument = gql`
+    mutation CreateArtifact($repoName: String!, $name: String!, $readme: String!, $artifactType: String!, $platform: String!, $blob: UploadOrUrl!, $arch: String) {
+  createArtifact(
+    repositoryName: $repoName
+    attributes: {name: $name, blob: $blob, readme: $readme, type: $artifactType, platform: $platform, arch: $arch}
+  ) {
+    ...ArtifactFragment
+  }
+}
+    ${ArtifactFragmentFragmentDoc}`;
+export type CreateArtifactMutationFn = Apollo.MutationFunction<CreateArtifactMutation, CreateArtifactMutationVariables>;
+
+/**
+ * __useCreateArtifactMutation__
+ *
+ * To run a mutation, you first call `useCreateArtifactMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateArtifactMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createArtifactMutation, { data, loading, error }] = useCreateArtifactMutation({
+ *   variables: {
+ *      repoName: // value for 'repoName'
+ *      name: // value for 'name'
+ *      readme: // value for 'readme'
+ *      artifactType: // value for 'artifactType'
+ *      platform: // value for 'platform'
+ *      blob: // value for 'blob'
+ *      arch: // value for 'arch'
+ *   },
+ * });
+ */
+export function useCreateArtifactMutation(baseOptions?: Apollo.MutationHookOptions<CreateArtifactMutation, CreateArtifactMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateArtifactMutation, CreateArtifactMutationVariables>(CreateArtifactDocument, options);
+      }
+export type CreateArtifactMutationHookResult = ReturnType<typeof useCreateArtifactMutation>;
+export type CreateArtifactMutationResult = Apollo.MutationResult<CreateArtifactMutation>;
+export type CreateArtifactMutationOptions = Apollo.BaseMutationOptions<CreateArtifactMutation, CreateArtifactMutationVariables>;
+export const GetChartsDocument = gql`
+    query GetCharts($id: ID!) {
+  charts(repositoryId: $id, first: 100) {
+    edges {
+      node {
+        ...ChartFragment
+      }
+    }
+  }
+}
+    ${ChartFragmentFragmentDoc}`;
+
+/**
+ * __useGetChartsQuery__
+ *
+ * To run a query within a React component, call `useGetChartsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetChartsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetChartsQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetChartsQuery(baseOptions: Apollo.QueryHookOptions<GetChartsQuery, GetChartsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetChartsQuery, GetChartsQueryVariables>(GetChartsDocument, options);
+      }
+export function useGetChartsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetChartsQuery, GetChartsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetChartsQuery, GetChartsQueryVariables>(GetChartsDocument, options);
+        }
+export type GetChartsQueryHookResult = ReturnType<typeof useGetChartsQuery>;
+export type GetChartsLazyQueryHookResult = ReturnType<typeof useGetChartsLazyQuery>;
+export type GetChartsQueryResult = Apollo.QueryResult<GetChartsQuery, GetChartsQueryVariables>;
+export const GetVersionsDocument = gql`
+    query GetVersions($id: ID!) {
+  versions(chartId: $id, first: 100) {
+    edges {
+      node {
+        ...VersionFragment
+      }
+    }
+  }
+}
+    ${VersionFragmentFragmentDoc}`;
+
+/**
+ * __useGetVersionsQuery__
+ *
+ * To run a query within a React component, call `useGetVersionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetVersionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetVersionsQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetVersionsQuery(baseOptions: Apollo.QueryHookOptions<GetVersionsQuery, GetVersionsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetVersionsQuery, GetVersionsQueryVariables>(GetVersionsDocument, options);
+      }
+export function useGetVersionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetVersionsQuery, GetVersionsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetVersionsQuery, GetVersionsQueryVariables>(GetVersionsDocument, options);
+        }
+export type GetVersionsQueryHookResult = ReturnType<typeof useGetVersionsQuery>;
+export type GetVersionsLazyQueryHookResult = ReturnType<typeof useGetVersionsLazyQuery>;
+export type GetVersionsQueryResult = Apollo.QueryResult<GetVersionsQuery, GetVersionsQueryVariables>;
+export const GetChartInstallationsDocument = gql`
+    query GetChartInstallations($id: ID!) {
+  chartInstallations(repositoryId: $id, first: 100) {
+    edges {
+      node {
+        ...ChartInstallationFragment
+      }
+    }
+  }
+}
+    ${ChartInstallationFragmentFragmentDoc}`;
+
+/**
+ * __useGetChartInstallationsQuery__
+ *
+ * To run a query within a React component, call `useGetChartInstallationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetChartInstallationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetChartInstallationsQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetChartInstallationsQuery(baseOptions: Apollo.QueryHookOptions<GetChartInstallationsQuery, GetChartInstallationsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetChartInstallationsQuery, GetChartInstallationsQueryVariables>(GetChartInstallationsDocument, options);
+      }
+export function useGetChartInstallationsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetChartInstallationsQuery, GetChartInstallationsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetChartInstallationsQuery, GetChartInstallationsQueryVariables>(GetChartInstallationsDocument, options);
+        }
+export type GetChartInstallationsQueryHookResult = ReturnType<typeof useGetChartInstallationsQuery>;
+export type GetChartInstallationsLazyQueryHookResult = ReturnType<typeof useGetChartInstallationsLazyQuery>;
+export type GetChartInstallationsQueryResult = Apollo.QueryResult<GetChartInstallationsQuery, GetChartInstallationsQueryVariables>;
+export const GetPackageInstallationsDocument = gql`
+    query GetPackageInstallations($id: ID!) {
+  chartInstallations(repositoryId: $id, first: 100) {
+    edges {
+      node {
+        ...ChartInstallationFragment
+      }
+    }
+  }
+  terraformInstallations(repositoryId: $id, first: 100) {
+    edges {
+      node {
+        ...TerraformInstallationFragment
+      }
+    }
+  }
+}
+    ${ChartInstallationFragmentFragmentDoc}
+${TerraformInstallationFragmentFragmentDoc}`;
+
+/**
+ * __useGetPackageInstallationsQuery__
+ *
+ * To run a query within a React component, call `useGetPackageInstallationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPackageInstallationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPackageInstallationsQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetPackageInstallationsQuery(baseOptions: Apollo.QueryHookOptions<GetPackageInstallationsQuery, GetPackageInstallationsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPackageInstallationsQuery, GetPackageInstallationsQueryVariables>(GetPackageInstallationsDocument, options);
+      }
+export function useGetPackageInstallationsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPackageInstallationsQuery, GetPackageInstallationsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPackageInstallationsQuery, GetPackageInstallationsQueryVariables>(GetPackageInstallationsDocument, options);
+        }
+export type GetPackageInstallationsQueryHookResult = ReturnType<typeof useGetPackageInstallationsQuery>;
+export type GetPackageInstallationsLazyQueryHookResult = ReturnType<typeof useGetPackageInstallationsLazyQuery>;
+export type GetPackageInstallationsQueryResult = Apollo.QueryResult<GetPackageInstallationsQuery, GetPackageInstallationsQueryVariables>;
+export const CreateCrdDocument = gql`
+    mutation CreateCrd($chartName: ChartName!, $name: String!, $blob: UploadOrUrl!) {
+  createCrd(chartName: $chartName, attributes: {name: $name, blob: $blob}) {
+    id
+  }
+}
+    `;
+export type CreateCrdMutationFn = Apollo.MutationFunction<CreateCrdMutation, CreateCrdMutationVariables>;
+
+/**
+ * __useCreateCrdMutation__
+ *
+ * To run a mutation, you first call `useCreateCrdMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCrdMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCrdMutation, { data, loading, error }] = useCreateCrdMutation({
+ *   variables: {
+ *      chartName: // value for 'chartName'
+ *      name: // value for 'name'
+ *      blob: // value for 'blob'
+ *   },
+ * });
+ */
+export function useCreateCrdMutation(baseOptions?: Apollo.MutationHookOptions<CreateCrdMutation, CreateCrdMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateCrdMutation, CreateCrdMutationVariables>(CreateCrdDocument, options);
+      }
+export type CreateCrdMutationHookResult = ReturnType<typeof useCreateCrdMutation>;
+export type CreateCrdMutationResult = Apollo.MutationResult<CreateCrdMutation>;
+export type CreateCrdMutationOptions = Apollo.BaseMutationOptions<CreateCrdMutation, CreateCrdMutationVariables>;
+export const UninstallChartDocument = gql`
+    mutation UninstallChart($id: ID!) {
+  deleteChartInstallation(id: $id) {
+    id
+  }
+}
+    `;
+export type UninstallChartMutationFn = Apollo.MutationFunction<UninstallChartMutation, UninstallChartMutationVariables>;
+
+/**
+ * __useUninstallChartMutation__
+ *
+ * To run a mutation, you first call `useUninstallChartMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUninstallChartMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [uninstallChartMutation, { data, loading, error }] = useUninstallChartMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useUninstallChartMutation(baseOptions?: Apollo.MutationHookOptions<UninstallChartMutation, UninstallChartMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UninstallChartMutation, UninstallChartMutationVariables>(UninstallChartDocument, options);
+      }
+export type UninstallChartMutationHookResult = ReturnType<typeof useUninstallChartMutation>;
+export type UninstallChartMutationResult = Apollo.MutationResult<UninstallChartMutation>;
+export type UninstallChartMutationOptions = Apollo.BaseMutationOptions<UninstallChartMutation, UninstallChartMutationVariables>;
+export const GetDnsRecordsDocument = gql`
+    query GetDnsRecords($cluster: String!, $provider: Provider!) {
+  dnsRecords(cluster: $cluster, provider: $provider, first: 500) {
+    edges {
+      node {
+        ...DnsRecordFragment
+      }
+    }
+  }
+}
+    ${DnsRecordFragmentFragmentDoc}`;
+
+/**
+ * __useGetDnsRecordsQuery__
+ *
+ * To run a query within a React component, call `useGetDnsRecordsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDnsRecordsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDnsRecordsQuery({
+ *   variables: {
+ *      cluster: // value for 'cluster'
+ *      provider: // value for 'provider'
+ *   },
+ * });
+ */
+export function useGetDnsRecordsQuery(baseOptions: Apollo.QueryHookOptions<GetDnsRecordsQuery, GetDnsRecordsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetDnsRecordsQuery, GetDnsRecordsQueryVariables>(GetDnsRecordsDocument, options);
+      }
+export function useGetDnsRecordsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDnsRecordsQuery, GetDnsRecordsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetDnsRecordsQuery, GetDnsRecordsQueryVariables>(GetDnsRecordsDocument, options);
+        }
+export type GetDnsRecordsQueryHookResult = ReturnType<typeof useGetDnsRecordsQuery>;
+export type GetDnsRecordsLazyQueryHookResult = ReturnType<typeof useGetDnsRecordsLazyQuery>;
+export type GetDnsRecordsQueryResult = Apollo.QueryResult<GetDnsRecordsQuery, GetDnsRecordsQueryVariables>;
+export const CreateDnsRecordDocument = gql`
+    mutation CreateDnsRecord($cluster: String!, $provider: Provider!, $attributes: DnsRecordAttributes!) {
+  createDnsRecord(cluster: $cluster, provider: $provider, attributes: $attributes) {
+    ...DnsRecordFragment
+  }
+}
+    ${DnsRecordFragmentFragmentDoc}`;
+export type CreateDnsRecordMutationFn = Apollo.MutationFunction<CreateDnsRecordMutation, CreateDnsRecordMutationVariables>;
+
+/**
+ * __useCreateDnsRecordMutation__
+ *
+ * To run a mutation, you first call `useCreateDnsRecordMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateDnsRecordMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createDnsRecordMutation, { data, loading, error }] = useCreateDnsRecordMutation({
+ *   variables: {
+ *      cluster: // value for 'cluster'
+ *      provider: // value for 'provider'
+ *      attributes: // value for 'attributes'
+ *   },
+ * });
+ */
+export function useCreateDnsRecordMutation(baseOptions?: Apollo.MutationHookOptions<CreateDnsRecordMutation, CreateDnsRecordMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateDnsRecordMutation, CreateDnsRecordMutationVariables>(CreateDnsRecordDocument, options);
+      }
+export type CreateDnsRecordMutationHookResult = ReturnType<typeof useCreateDnsRecordMutation>;
+export type CreateDnsRecordMutationResult = Apollo.MutationResult<CreateDnsRecordMutation>;
+export type CreateDnsRecordMutationOptions = Apollo.BaseMutationOptions<CreateDnsRecordMutation, CreateDnsRecordMutationVariables>;
+export const DeleteDnsRecordDocument = gql`
+    mutation DeleteDnsRecord($name: String!, $type: DnsRecordType!) {
+  deleteDnsRecord(name: $name, type: $type) {
+    ...DnsRecordFragment
+  }
+}
+    ${DnsRecordFragmentFragmentDoc}`;
+export type DeleteDnsRecordMutationFn = Apollo.MutationFunction<DeleteDnsRecordMutation, DeleteDnsRecordMutationVariables>;
+
+/**
+ * __useDeleteDnsRecordMutation__
+ *
+ * To run a mutation, you first call `useDeleteDnsRecordMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteDnsRecordMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteDnsRecordMutation, { data, loading, error }] = useDeleteDnsRecordMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      type: // value for 'type'
+ *   },
+ * });
+ */
+export function useDeleteDnsRecordMutation(baseOptions?: Apollo.MutationHookOptions<DeleteDnsRecordMutation, DeleteDnsRecordMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteDnsRecordMutation, DeleteDnsRecordMutationVariables>(DeleteDnsRecordDocument, options);
+      }
+export type DeleteDnsRecordMutationHookResult = ReturnType<typeof useDeleteDnsRecordMutation>;
+export type DeleteDnsRecordMutationResult = Apollo.MutationResult<DeleteDnsRecordMutation>;
+export type DeleteDnsRecordMutationOptions = Apollo.BaseMutationOptions<DeleteDnsRecordMutation, DeleteDnsRecordMutationVariables>;
+export const CreateDomainDocument = gql`
+    mutation CreateDomain($name: String!) {
+  provisionDomain(name: $name) {
+    ...DnsDomainFragment
+  }
+}
+    ${DnsDomainFragmentFragmentDoc}`;
+export type CreateDomainMutationFn = Apollo.MutationFunction<CreateDomainMutation, CreateDomainMutationVariables>;
+
+/**
+ * __useCreateDomainMutation__
+ *
+ * To run a mutation, you first call `useCreateDomainMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateDomainMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createDomainMutation, { data, loading, error }] = useCreateDomainMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *   },
+ * });
+ */
+export function useCreateDomainMutation(baseOptions?: Apollo.MutationHookOptions<CreateDomainMutation, CreateDomainMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateDomainMutation, CreateDomainMutationVariables>(CreateDomainDocument, options);
+      }
+export type CreateDomainMutationHookResult = ReturnType<typeof useCreateDomainMutation>;
+export type CreateDomainMutationResult = Apollo.MutationResult<CreateDomainMutation>;
+export type CreateDomainMutationOptions = Apollo.BaseMutationOptions<CreateDomainMutation, CreateDomainMutationVariables>;
+export const GetInstallationDocument = gql`
+    query GetInstallation($name: String) {
+  installation(name: $name) {
+    ...InstallationFragment
+  }
+}
+    ${InstallationFragmentFragmentDoc}`;
+
+/**
+ * __useGetInstallationQuery__
+ *
+ * To run a query within a React component, call `useGetInstallationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetInstallationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetInstallationQuery({
+ *   variables: {
+ *      name: // value for 'name'
+ *   },
+ * });
+ */
+export function useGetInstallationQuery(baseOptions?: Apollo.QueryHookOptions<GetInstallationQuery, GetInstallationQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetInstallationQuery, GetInstallationQueryVariables>(GetInstallationDocument, options);
+      }
+export function useGetInstallationLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetInstallationQuery, GetInstallationQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetInstallationQuery, GetInstallationQueryVariables>(GetInstallationDocument, options);
+        }
+export type GetInstallationQueryHookResult = ReturnType<typeof useGetInstallationQuery>;
+export type GetInstallationLazyQueryHookResult = ReturnType<typeof useGetInstallationLazyQuery>;
+export type GetInstallationQueryResult = Apollo.QueryResult<GetInstallationQuery, GetInstallationQueryVariables>;
+export const GetInstallationByIdDocument = gql`
+    query GetInstallationById($id: ID) {
+  installation(id: $id) {
+    ...InstallationFragment
+  }
+}
+    ${InstallationFragmentFragmentDoc}`;
+
+/**
+ * __useGetInstallationByIdQuery__
+ *
+ * To run a query within a React component, call `useGetInstallationByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetInstallationByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetInstallationByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetInstallationByIdQuery(baseOptions?: Apollo.QueryHookOptions<GetInstallationByIdQuery, GetInstallationByIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetInstallationByIdQuery, GetInstallationByIdQueryVariables>(GetInstallationByIdDocument, options);
+      }
+export function useGetInstallationByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetInstallationByIdQuery, GetInstallationByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetInstallationByIdQuery, GetInstallationByIdQueryVariables>(GetInstallationByIdDocument, options);
+        }
+export type GetInstallationByIdQueryHookResult = ReturnType<typeof useGetInstallationByIdQuery>;
+export type GetInstallationByIdLazyQueryHookResult = ReturnType<typeof useGetInstallationByIdLazyQuery>;
+export type GetInstallationByIdQueryResult = Apollo.QueryResult<GetInstallationByIdQuery, GetInstallationByIdQueryVariables>;
+export const GetInstallationsDocument = gql`
+    query GetInstallations($first: Int) {
+  installations(first: $first) {
+    edges {
+      node {
+        ...InstallationFragment
+      }
+    }
+  }
+}
+    ${InstallationFragmentFragmentDoc}`;
+
+/**
+ * __useGetInstallationsQuery__
+ *
+ * To run a query within a React component, call `useGetInstallationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetInstallationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetInstallationsQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *   },
+ * });
+ */
+export function useGetInstallationsQuery(baseOptions?: Apollo.QueryHookOptions<GetInstallationsQuery, GetInstallationsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetInstallationsQuery, GetInstallationsQueryVariables>(GetInstallationsDocument, options);
+      }
+export function useGetInstallationsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetInstallationsQuery, GetInstallationsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetInstallationsQuery, GetInstallationsQueryVariables>(GetInstallationsDocument, options);
+        }
+export type GetInstallationsQueryHookResult = ReturnType<typeof useGetInstallationsQuery>;
+export type GetInstallationsLazyQueryHookResult = ReturnType<typeof useGetInstallationsLazyQuery>;
+export type GetInstallationsQueryResult = Apollo.QueryResult<GetInstallationsQuery, GetInstallationsQueryVariables>;
+export const UpsertOidcProviderDocument = gql`
+    mutation UpsertOidcProvider($id: ID!, $attributes: OidcAttributes!) {
+  upsertOidcProvider(installationId: $id, attributes: $attributes) {
+    id
+  }
+}
+    `;
+export type UpsertOidcProviderMutationFn = Apollo.MutationFunction<UpsertOidcProviderMutation, UpsertOidcProviderMutationVariables>;
+
+/**
+ * __useUpsertOidcProviderMutation__
+ *
+ * To run a mutation, you first call `useUpsertOidcProviderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpsertOidcProviderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [upsertOidcProviderMutation, { data, loading, error }] = useUpsertOidcProviderMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      attributes: // value for 'attributes'
+ *   },
+ * });
+ */
+export function useUpsertOidcProviderMutation(baseOptions?: Apollo.MutationHookOptions<UpsertOidcProviderMutation, UpsertOidcProviderMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpsertOidcProviderMutation, UpsertOidcProviderMutationVariables>(UpsertOidcProviderDocument, options);
+      }
+export type UpsertOidcProviderMutationHookResult = ReturnType<typeof useUpsertOidcProviderMutation>;
+export type UpsertOidcProviderMutationResult = Apollo.MutationResult<UpsertOidcProviderMutation>;
+export type UpsertOidcProviderMutationOptions = Apollo.BaseMutationOptions<UpsertOidcProviderMutation, UpsertOidcProviderMutationVariables>;
+export const GetRecipeDocument = gql`
+    query GetRecipe($repo: String, $name: String) {
+  recipe(repo: $repo, name: $name) {
+    ...RecipeFragment
+    recipeDependencies {
+      ...RecipeFragment
+    }
+  }
+}
+    ${RecipeFragmentFragmentDoc}`;
+
+/**
+ * __useGetRecipeQuery__
+ *
+ * To run a query within a React component, call `useGetRecipeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetRecipeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetRecipeQuery({
+ *   variables: {
+ *      repo: // value for 'repo'
+ *      name: // value for 'name'
+ *   },
+ * });
+ */
+export function useGetRecipeQuery(baseOptions?: Apollo.QueryHookOptions<GetRecipeQuery, GetRecipeQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetRecipeQuery, GetRecipeQueryVariables>(GetRecipeDocument, options);
+      }
+export function useGetRecipeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRecipeQuery, GetRecipeQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetRecipeQuery, GetRecipeQueryVariables>(GetRecipeDocument, options);
+        }
+export type GetRecipeQueryHookResult = ReturnType<typeof useGetRecipeQuery>;
+export type GetRecipeLazyQueryHookResult = ReturnType<typeof useGetRecipeLazyQuery>;
+export type GetRecipeQueryResult = Apollo.QueryResult<GetRecipeQuery, GetRecipeQueryVariables>;
+export const ListRecipesDocument = gql`
+    query ListRecipes($repo: String, $provider: Provider) {
+  recipes(repositoryName: $repo, provider: $provider, first: 500) {
+    edges {
+      node {
+        ...RecipeFragment
+      }
+    }
+  }
+}
+    ${RecipeFragmentFragmentDoc}`;
+
+/**
+ * __useListRecipesQuery__
+ *
+ * To run a query within a React component, call `useListRecipesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListRecipesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListRecipesQuery({
+ *   variables: {
+ *      repo: // value for 'repo'
+ *      provider: // value for 'provider'
+ *   },
+ * });
+ */
+export function useListRecipesQuery(baseOptions?: Apollo.QueryHookOptions<ListRecipesQuery, ListRecipesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ListRecipesQuery, ListRecipesQueryVariables>(ListRecipesDocument, options);
+      }
+export function useListRecipesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ListRecipesQuery, ListRecipesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ListRecipesQuery, ListRecipesQueryVariables>(ListRecipesDocument, options);
+        }
+export type ListRecipesQueryHookResult = ReturnType<typeof useListRecipesQuery>;
+export type ListRecipesLazyQueryHookResult = ReturnType<typeof useListRecipesLazyQuery>;
+export type ListRecipesQueryResult = Apollo.QueryResult<ListRecipesQuery, ListRecipesQueryVariables>;
+export const CreateRecipeDocument = gql`
+    mutation CreateRecipe($name: String!, $attributes: RecipeAttributes!) {
+  createRecipe(repositoryName: $name, attributes: $attributes) {
+    id
+  }
+}
+    `;
+export type CreateRecipeMutationFn = Apollo.MutationFunction<CreateRecipeMutation, CreateRecipeMutationVariables>;
+
+/**
+ * __useCreateRecipeMutation__
+ *
+ * To run a mutation, you first call `useCreateRecipeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateRecipeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createRecipeMutation, { data, loading, error }] = useCreateRecipeMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      attributes: // value for 'attributes'
+ *   },
+ * });
+ */
+export function useCreateRecipeMutation(baseOptions?: Apollo.MutationHookOptions<CreateRecipeMutation, CreateRecipeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateRecipeMutation, CreateRecipeMutationVariables>(CreateRecipeDocument, options);
+      }
+export type CreateRecipeMutationHookResult = ReturnType<typeof useCreateRecipeMutation>;
+export type CreateRecipeMutationResult = Apollo.MutationResult<CreateRecipeMutation>;
+export type CreateRecipeMutationOptions = Apollo.BaseMutationOptions<CreateRecipeMutation, CreateRecipeMutationVariables>;
+export const InstallRecipeDocument = gql`
+    mutation InstallRecipe($id: ID!) {
+  installRecipe(recipeId: $id, context: "{}") {
+    id
+  }
+}
+    `;
+export type InstallRecipeMutationFn = Apollo.MutationFunction<InstallRecipeMutation, InstallRecipeMutationVariables>;
+
+/**
+ * __useInstallRecipeMutation__
+ *
+ * To run a mutation, you first call `useInstallRecipeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useInstallRecipeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [installRecipeMutation, { data, loading, error }] = useInstallRecipeMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useInstallRecipeMutation(baseOptions?: Apollo.MutationHookOptions<InstallRecipeMutation, InstallRecipeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<InstallRecipeMutation, InstallRecipeMutationVariables>(InstallRecipeDocument, options);
+      }
+export type InstallRecipeMutationHookResult = ReturnType<typeof useInstallRecipeMutation>;
+export type InstallRecipeMutationResult = Apollo.MutationResult<InstallRecipeMutation>;
+export type InstallRecipeMutationOptions = Apollo.BaseMutationOptions<InstallRecipeMutation, InstallRecipeMutationVariables>;
+export const CreateStackDocument = gql`
+    mutation CreateStack($attributes: StackAttributes!) {
+  createStack(attributes: $attributes) {
+    id
+  }
+}
+    `;
+export type CreateStackMutationFn = Apollo.MutationFunction<CreateStackMutation, CreateStackMutationVariables>;
+
+/**
+ * __useCreateStackMutation__
+ *
+ * To run a mutation, you first call `useCreateStackMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateStackMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createStackMutation, { data, loading, error }] = useCreateStackMutation({
+ *   variables: {
+ *      attributes: // value for 'attributes'
+ *   },
+ * });
+ */
+export function useCreateStackMutation(baseOptions?: Apollo.MutationHookOptions<CreateStackMutation, CreateStackMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateStackMutation, CreateStackMutationVariables>(CreateStackDocument, options);
+      }
+export type CreateStackMutationHookResult = ReturnType<typeof useCreateStackMutation>;
+export type CreateStackMutationResult = Apollo.MutationResult<CreateStackMutation>;
+export type CreateStackMutationOptions = Apollo.BaseMutationOptions<CreateStackMutation, CreateStackMutationVariables>;
+export const GetStackDocument = gql`
+    query GetStack($name: String!, $provider: Provider!) {
+  stack(name: $name, provider: $provider) {
+    ...StackFragment
+  }
+}
+    ${StackFragmentFragmentDoc}`;
+
+/**
+ * __useGetStackQuery__
+ *
+ * To run a query within a React component, call `useGetStackQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetStackQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetStackQuery({
+ *   variables: {
+ *      name: // value for 'name'
+ *      provider: // value for 'provider'
+ *   },
+ * });
+ */
+export function useGetStackQuery(baseOptions: Apollo.QueryHookOptions<GetStackQuery, GetStackQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetStackQuery, GetStackQueryVariables>(GetStackDocument, options);
+      }
+export function useGetStackLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetStackQuery, GetStackQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetStackQuery, GetStackQueryVariables>(GetStackDocument, options);
+        }
+export type GetStackQueryHookResult = ReturnType<typeof useGetStackQuery>;
+export type GetStackLazyQueryHookResult = ReturnType<typeof useGetStackLazyQuery>;
+export type GetStackQueryResult = Apollo.QueryResult<GetStackQuery, GetStackQueryVariables>;
+export const ListStacksDocument = gql`
+    query ListStacks($featured: Boolean, $cursor: String) {
+  stacks(first: 100, after: $cursor, featured: $featured) {
+    edges {
+      node {
+        ...StackFragment
+      }
+    }
+  }
+}
+    ${StackFragmentFragmentDoc}`;
+
+/**
+ * __useListStacksQuery__
+ *
+ * To run a query within a React component, call `useListStacksQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListStacksQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListStacksQuery({
+ *   variables: {
+ *      featured: // value for 'featured'
+ *      cursor: // value for 'cursor'
+ *   },
+ * });
+ */
+export function useListStacksQuery(baseOptions?: Apollo.QueryHookOptions<ListStacksQuery, ListStacksQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ListStacksQuery, ListStacksQueryVariables>(ListStacksDocument, options);
+      }
+export function useListStacksLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ListStacksQuery, ListStacksQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ListStacksQuery, ListStacksQueryVariables>(ListStacksDocument, options);
+        }
+export type ListStacksQueryHookResult = ReturnType<typeof useListStacksQuery>;
+export type ListStacksLazyQueryHookResult = ReturnType<typeof useListStacksLazyQuery>;
+export type ListStacksQueryResult = Apollo.QueryResult<ListStacksQuery, ListStacksQueryVariables>;
+export const GetRepositoryDocument = gql`
+    query GetRepository($name: String) {
+  repository(name: $name) {
+    ...RepositoryFragment
+  }
+}
+    ${RepositoryFragmentFragmentDoc}`;
+
+/**
+ * __useGetRepositoryQuery__
+ *
+ * To run a query within a React component, call `useGetRepositoryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetRepositoryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetRepositoryQuery({
+ *   variables: {
+ *      name: // value for 'name'
+ *   },
+ * });
+ */
+export function useGetRepositoryQuery(baseOptions?: Apollo.QueryHookOptions<GetRepositoryQuery, GetRepositoryQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetRepositoryQuery, GetRepositoryQueryVariables>(GetRepositoryDocument, options);
+      }
+export function useGetRepositoryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRepositoryQuery, GetRepositoryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetRepositoryQuery, GetRepositoryQueryVariables>(GetRepositoryDocument, options);
+        }
+export type GetRepositoryQueryHookResult = ReturnType<typeof useGetRepositoryQuery>;
+export type GetRepositoryLazyQueryHookResult = ReturnType<typeof useGetRepositoryLazyQuery>;
+export type GetRepositoryQueryResult = Apollo.QueryResult<GetRepositoryQuery, GetRepositoryQueryVariables>;
+export const CreateResourceDefinitionDocument = gql`
+    mutation CreateResourceDefinition($name: String!, $input: ResourceDefinitionAttributes!) {
+  updateRepository(
+    repositoryName: $name
+    attributes: {integrationResourceDefinition: $input}
+  ) {
+    id
+  }
+}
+    `;
+export type CreateResourceDefinitionMutationFn = Apollo.MutationFunction<CreateResourceDefinitionMutation, CreateResourceDefinitionMutationVariables>;
+
+/**
+ * __useCreateResourceDefinitionMutation__
+ *
+ * To run a mutation, you first call `useCreateResourceDefinitionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateResourceDefinitionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createResourceDefinitionMutation, { data, loading, error }] = useCreateResourceDefinitionMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateResourceDefinitionMutation(baseOptions?: Apollo.MutationHookOptions<CreateResourceDefinitionMutation, CreateResourceDefinitionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateResourceDefinitionMutation, CreateResourceDefinitionMutationVariables>(CreateResourceDefinitionDocument, options);
+      }
+export type CreateResourceDefinitionMutationHookResult = ReturnType<typeof useCreateResourceDefinitionMutation>;
+export type CreateResourceDefinitionMutationResult = Apollo.MutationResult<CreateResourceDefinitionMutation>;
+export type CreateResourceDefinitionMutationOptions = Apollo.BaseMutationOptions<CreateResourceDefinitionMutation, CreateResourceDefinitionMutationVariables>;
+export const CreateIntegrationDocument = gql`
+    mutation CreateIntegration($name: String!, $attrs: IntegrationAttributes!) {
+  createIntegration(repositoryName: $name, attributes: $attrs) {
+    id
+  }
+}
+    `;
+export type CreateIntegrationMutationFn = Apollo.MutationFunction<CreateIntegrationMutation, CreateIntegrationMutationVariables>;
+
+/**
+ * __useCreateIntegrationMutation__
+ *
+ * To run a mutation, you first call `useCreateIntegrationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateIntegrationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createIntegrationMutation, { data, loading, error }] = useCreateIntegrationMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      attrs: // value for 'attrs'
+ *   },
+ * });
+ */
+export function useCreateIntegrationMutation(baseOptions?: Apollo.MutationHookOptions<CreateIntegrationMutation, CreateIntegrationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateIntegrationMutation, CreateIntegrationMutationVariables>(CreateIntegrationDocument, options);
+      }
+export type CreateIntegrationMutationHookResult = ReturnType<typeof useCreateIntegrationMutation>;
+export type CreateIntegrationMutationResult = Apollo.MutationResult<CreateIntegrationMutation>;
+export type CreateIntegrationMutationOptions = Apollo.BaseMutationOptions<CreateIntegrationMutation, CreateIntegrationMutationVariables>;
+export const UpdateRepositoryDocument = gql`
+    mutation UpdateRepository($name: String!, $attrs: RepositoryAttributes!) {
+  updateRepository(repositoryName: $name, attributes: $attrs) {
+    id
+  }
+}
+    `;
+export type UpdateRepositoryMutationFn = Apollo.MutationFunction<UpdateRepositoryMutation, UpdateRepositoryMutationVariables>;
+
+/**
+ * __useUpdateRepositoryMutation__
+ *
+ * To run a mutation, you first call `useUpdateRepositoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateRepositoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateRepositoryMutation, { data, loading, error }] = useUpdateRepositoryMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      attrs: // value for 'attrs'
+ *   },
+ * });
+ */
+export function useUpdateRepositoryMutation(baseOptions?: Apollo.MutationHookOptions<UpdateRepositoryMutation, UpdateRepositoryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateRepositoryMutation, UpdateRepositoryMutationVariables>(UpdateRepositoryDocument, options);
+      }
+export type UpdateRepositoryMutationHookResult = ReturnType<typeof useUpdateRepositoryMutation>;
+export type UpdateRepositoryMutationResult = Apollo.MutationResult<UpdateRepositoryMutation>;
+export type UpdateRepositoryMutationOptions = Apollo.BaseMutationOptions<UpdateRepositoryMutation, UpdateRepositoryMutationVariables>;
+export const CreateRepositoryDocument = gql`
+    mutation CreateRepository($name: String!, $publisher: String!, $attributes: RepositoryAttributes!) {
+  upsertRepository(name: $name, publisher: $publisher, attributes: $attributes) {
+    id
+  }
+}
+    `;
+export type CreateRepositoryMutationFn = Apollo.MutationFunction<CreateRepositoryMutation, CreateRepositoryMutationVariables>;
+
+/**
+ * __useCreateRepositoryMutation__
+ *
+ * To run a mutation, you first call `useCreateRepositoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateRepositoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createRepositoryMutation, { data, loading, error }] = useCreateRepositoryMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      publisher: // value for 'publisher'
+ *      attributes: // value for 'attributes'
+ *   },
+ * });
+ */
+export function useCreateRepositoryMutation(baseOptions?: Apollo.MutationHookOptions<CreateRepositoryMutation, CreateRepositoryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateRepositoryMutation, CreateRepositoryMutationVariables>(CreateRepositoryDocument, options);
+      }
+export type CreateRepositoryMutationHookResult = ReturnType<typeof useCreateRepositoryMutation>;
+export type CreateRepositoryMutationResult = Apollo.MutationResult<CreateRepositoryMutation>;
+export type CreateRepositoryMutationOptions = Apollo.BaseMutationOptions<CreateRepositoryMutation, CreateRepositoryMutationVariables>;
+export const AcquireLockDocument = gql`
+    mutation AcquireLock($name: String!) {
+  acquireLock(repository: $name) {
+    ...ApplyLockFragment
+  }
+}
+    ${ApplyLockFragmentFragmentDoc}`;
+export type AcquireLockMutationFn = Apollo.MutationFunction<AcquireLockMutation, AcquireLockMutationVariables>;
+
+/**
+ * __useAcquireLockMutation__
+ *
+ * To run a mutation, you first call `useAcquireLockMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAcquireLockMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [acquireLockMutation, { data, loading, error }] = useAcquireLockMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *   },
+ * });
+ */
+export function useAcquireLockMutation(baseOptions?: Apollo.MutationHookOptions<AcquireLockMutation, AcquireLockMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AcquireLockMutation, AcquireLockMutationVariables>(AcquireLockDocument, options);
+      }
+export type AcquireLockMutationHookResult = ReturnType<typeof useAcquireLockMutation>;
+export type AcquireLockMutationResult = Apollo.MutationResult<AcquireLockMutation>;
+export type AcquireLockMutationOptions = Apollo.BaseMutationOptions<AcquireLockMutation, AcquireLockMutationVariables>;
+export const ReleaseLockDocument = gql`
+    mutation ReleaseLock($name: String!, $attrs: LockAttributes!) {
+  releaseLock(repository: $name, attributes: $attrs) {
+    ...ApplyLockFragment
+  }
+}
+    ${ApplyLockFragmentFragmentDoc}`;
+export type ReleaseLockMutationFn = Apollo.MutationFunction<ReleaseLockMutation, ReleaseLockMutationVariables>;
+
+/**
+ * __useReleaseLockMutation__
+ *
+ * To run a mutation, you first call `useReleaseLockMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useReleaseLockMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [releaseLockMutation, { data, loading, error }] = useReleaseLockMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      attrs: // value for 'attrs'
+ *   },
+ * });
+ */
+export function useReleaseLockMutation(baseOptions?: Apollo.MutationHookOptions<ReleaseLockMutation, ReleaseLockMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ReleaseLockMutation, ReleaseLockMutationVariables>(ReleaseLockDocument, options);
+      }
+export type ReleaseLockMutationHookResult = ReturnType<typeof useReleaseLockMutation>;
+export type ReleaseLockMutationResult = Apollo.MutationResult<ReleaseLockMutation>;
+export type ReleaseLockMutationOptions = Apollo.BaseMutationOptions<ReleaseLockMutation, ReleaseLockMutationVariables>;
+export const UnlockRepositoryDocument = gql`
+    mutation UnlockRepository($name: String!) {
+  unlockRepository(name: $name)
+}
+    `;
+export type UnlockRepositoryMutationFn = Apollo.MutationFunction<UnlockRepositoryMutation, UnlockRepositoryMutationVariables>;
+
+/**
+ * __useUnlockRepositoryMutation__
+ *
+ * To run a mutation, you first call `useUnlockRepositoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUnlockRepositoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [unlockRepositoryMutation, { data, loading, error }] = useUnlockRepositoryMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *   },
+ * });
+ */
+export function useUnlockRepositoryMutation(baseOptions?: Apollo.MutationHookOptions<UnlockRepositoryMutation, UnlockRepositoryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UnlockRepositoryMutation, UnlockRepositoryMutationVariables>(UnlockRepositoryDocument, options);
+      }
+export type UnlockRepositoryMutationHookResult = ReturnType<typeof useUnlockRepositoryMutation>;
+export type UnlockRepositoryMutationResult = Apollo.MutationResult<UnlockRepositoryMutation>;
+export type UnlockRepositoryMutationOptions = Apollo.BaseMutationOptions<UnlockRepositoryMutation, UnlockRepositoryMutationVariables>;
+export const ListRepositoriesDocument = gql`
+    query ListRepositories($q: String) {
+  repositories(q: $q, first: 100) {
+    edges {
+      node {
+        ...RepositoryFragment
+      }
+    }
+  }
+}
+    ${RepositoryFragmentFragmentDoc}`;
+
+/**
+ * __useListRepositoriesQuery__
+ *
+ * To run a query within a React component, call `useListRepositoriesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListRepositoriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListRepositoriesQuery({
+ *   variables: {
+ *      q: // value for 'q'
+ *   },
+ * });
+ */
+export function useListRepositoriesQuery(baseOptions?: Apollo.QueryHookOptions<ListRepositoriesQuery, ListRepositoriesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ListRepositoriesQuery, ListRepositoriesQueryVariables>(ListRepositoriesDocument, options);
+      }
+export function useListRepositoriesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ListRepositoriesQuery, ListRepositoriesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ListRepositoriesQuery, ListRepositoriesQueryVariables>(ListRepositoriesDocument, options);
+        }
+export type ListRepositoriesQueryHookResult = ReturnType<typeof useListRepositoriesQuery>;
+export type ListRepositoriesLazyQueryHookResult = ReturnType<typeof useListRepositoriesLazyQuery>;
+export type ListRepositoriesQueryResult = Apollo.QueryResult<ListRepositoriesQuery, ListRepositoriesQueryVariables>;
+export const ScaffoldsDocument = gql`
+    query Scaffolds($app: String!, $pub: String!, $cat: Category!, $ing: Boolean, $pg: Boolean) {
+  scaffold(
+    application: $app
+    publisher: $pub
+    category: $cat
+    ingress: $ing
+    postgres: $pg
+  ) {
+    path
+    content
+  }
+}
+    `;
+
+/**
+ * __useScaffoldsQuery__
+ *
+ * To run a query within a React component, call `useScaffoldsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useScaffoldsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useScaffoldsQuery({
+ *   variables: {
+ *      app: // value for 'app'
+ *      pub: // value for 'pub'
+ *      cat: // value for 'cat'
+ *      ing: // value for 'ing'
+ *      pg: // value for 'pg'
+ *   },
+ * });
+ */
+export function useScaffoldsQuery(baseOptions: Apollo.QueryHookOptions<ScaffoldsQuery, ScaffoldsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ScaffoldsQuery, ScaffoldsQueryVariables>(ScaffoldsDocument, options);
+      }
+export function useScaffoldsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ScaffoldsQuery, ScaffoldsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ScaffoldsQuery, ScaffoldsQueryVariables>(ScaffoldsDocument, options);
+        }
+export type ScaffoldsQueryHookResult = ReturnType<typeof useScaffoldsQuery>;
+export type ScaffoldsLazyQueryHookResult = ReturnType<typeof useScaffoldsLazyQuery>;
+export type ScaffoldsQueryResult = Apollo.QueryResult<ScaffoldsQuery, ScaffoldsQueryVariables>;
+export const DeleteRepositoryDocument = gql`
+    mutation DeleteRepository($id: ID!) {
+  deleteRepository(repositoryId: $id) {
+    id
+  }
+}
+    `;
+export type DeleteRepositoryMutationFn = Apollo.MutationFunction<DeleteRepositoryMutation, DeleteRepositoryMutationVariables>;
+
+/**
+ * __useDeleteRepositoryMutation__
+ *
+ * To run a mutation, you first call `useDeleteRepositoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteRepositoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteRepositoryMutation, { data, loading, error }] = useDeleteRepositoryMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteRepositoryMutation(baseOptions?: Apollo.MutationHookOptions<DeleteRepositoryMutation, DeleteRepositoryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteRepositoryMutation, DeleteRepositoryMutationVariables>(DeleteRepositoryDocument, options);
+      }
+export type DeleteRepositoryMutationHookResult = ReturnType<typeof useDeleteRepositoryMutation>;
+export type DeleteRepositoryMutationResult = Apollo.MutationResult<DeleteRepositoryMutation>;
+export type DeleteRepositoryMutationOptions = Apollo.BaseMutationOptions<DeleteRepositoryMutation, DeleteRepositoryMutationVariables>;
+export const GetTfProvidersDocument = gql`
+    query GetTfProviders {
+  terraformProviders
+}
+    `;
+
+/**
+ * __useGetTfProvidersQuery__
+ *
+ * To run a query within a React component, call `useGetTfProvidersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTfProvidersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTfProvidersQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetTfProvidersQuery(baseOptions?: Apollo.QueryHookOptions<GetTfProvidersQuery, GetTfProvidersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetTfProvidersQuery, GetTfProvidersQueryVariables>(GetTfProvidersDocument, options);
+      }
+export function useGetTfProvidersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTfProvidersQuery, GetTfProvidersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetTfProvidersQuery, GetTfProvidersQueryVariables>(GetTfProvidersDocument, options);
+        }
+export type GetTfProvidersQueryHookResult = ReturnType<typeof useGetTfProvidersQuery>;
+export type GetTfProvidersLazyQueryHookResult = ReturnType<typeof useGetTfProvidersLazyQuery>;
+export type GetTfProvidersQueryResult = Apollo.QueryResult<GetTfProvidersQuery, GetTfProvidersQueryVariables>;
+export const GetTfProviderScaffoldDocument = gql`
+    query GetTfProviderScaffold($name: Provider!, $vsn: String) {
+  terraformProvider(name: $name, vsn: $vsn) {
+    name
+    content
+  }
+}
+    `;
+
+/**
+ * __useGetTfProviderScaffoldQuery__
+ *
+ * To run a query within a React component, call `useGetTfProviderScaffoldQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTfProviderScaffoldQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTfProviderScaffoldQuery({
+ *   variables: {
+ *      name: // value for 'name'
+ *      vsn: // value for 'vsn'
+ *   },
+ * });
+ */
+export function useGetTfProviderScaffoldQuery(baseOptions: Apollo.QueryHookOptions<GetTfProviderScaffoldQuery, GetTfProviderScaffoldQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetTfProviderScaffoldQuery, GetTfProviderScaffoldQueryVariables>(GetTfProviderScaffoldDocument, options);
+      }
+export function useGetTfProviderScaffoldLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTfProviderScaffoldQuery, GetTfProviderScaffoldQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetTfProviderScaffoldQuery, GetTfProviderScaffoldQueryVariables>(GetTfProviderScaffoldDocument, options);
+        }
+export type GetTfProviderScaffoldQueryHookResult = ReturnType<typeof useGetTfProviderScaffoldQuery>;
+export type GetTfProviderScaffoldLazyQueryHookResult = ReturnType<typeof useGetTfProviderScaffoldLazyQuery>;
+export type GetTfProviderScaffoldQueryResult = Apollo.QueryResult<GetTfProviderScaffoldQuery, GetTfProviderScaffoldQueryVariables>;
+export const GetShellDocument = gql`
+    query GetShell {
+  shell {
+    ...CloudShellFragment
+  }
+}
+    ${CloudShellFragmentFragmentDoc}`;
+
+/**
+ * __useGetShellQuery__
+ *
+ * To run a query within a React component, call `useGetShellQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetShellQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetShellQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetShellQuery(baseOptions?: Apollo.QueryHookOptions<GetShellQuery, GetShellQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetShellQuery, GetShellQueryVariables>(GetShellDocument, options);
+      }
+export function useGetShellLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetShellQuery, GetShellQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetShellQuery, GetShellQueryVariables>(GetShellDocument, options);
+        }
+export type GetShellQueryHookResult = ReturnType<typeof useGetShellQuery>;
+export type GetShellLazyQueryHookResult = ReturnType<typeof useGetShellLazyQuery>;
+export type GetShellQueryResult = Apollo.QueryResult<GetShellQuery, GetShellQueryVariables>;
+export const DeleteShellDocument = gql`
+    mutation DeleteShell {
+  deleteShell {
+    ...CloudShellFragment
+  }
+}
+    ${CloudShellFragmentFragmentDoc}`;
+export type DeleteShellMutationFn = Apollo.MutationFunction<DeleteShellMutation, DeleteShellMutationVariables>;
+
+/**
+ * __useDeleteShellMutation__
+ *
+ * To run a mutation, you first call `useDeleteShellMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteShellMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteShellMutation, { data, loading, error }] = useDeleteShellMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useDeleteShellMutation(baseOptions?: Apollo.MutationHookOptions<DeleteShellMutation, DeleteShellMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteShellMutation, DeleteShellMutationVariables>(DeleteShellDocument, options);
+      }
+export type DeleteShellMutationHookResult = ReturnType<typeof useDeleteShellMutation>;
+export type DeleteShellMutationResult = Apollo.MutationResult<DeleteShellMutation>;
+export type DeleteShellMutationOptions = Apollo.BaseMutationOptions<DeleteShellMutation, DeleteShellMutationVariables>;
+export const GetTerraformDocument = gql`
+    query GetTerraform($id: ID!) {
+  terraform(repositoryId: $id, first: 100) {
+    edges {
+      node {
+        ...TerraformFragment
+      }
+    }
+  }
+}
+    ${TerraformFragmentFragmentDoc}`;
+
+/**
+ * __useGetTerraformQuery__
+ *
+ * To run a query within a React component, call `useGetTerraformQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTerraformQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTerraformQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetTerraformQuery(baseOptions: Apollo.QueryHookOptions<GetTerraformQuery, GetTerraformQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetTerraformQuery, GetTerraformQueryVariables>(GetTerraformDocument, options);
+      }
+export function useGetTerraformLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTerraformQuery, GetTerraformQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetTerraformQuery, GetTerraformQueryVariables>(GetTerraformDocument, options);
+        }
+export type GetTerraformQueryHookResult = ReturnType<typeof useGetTerraformQuery>;
+export type GetTerraformLazyQueryHookResult = ReturnType<typeof useGetTerraformLazyQuery>;
+export type GetTerraformQueryResult = Apollo.QueryResult<GetTerraformQuery, GetTerraformQueryVariables>;
+export const GetTerraformInstallationsDocument = gql`
+    query GetTerraformInstallations($id: ID!) {
+  terraformInstallations(repositoryId: $id, first: 100) {
+    edges {
+      node {
+        ...TerraformInstallationFragment
+      }
+    }
+  }
+}
+    ${TerraformInstallationFragmentFragmentDoc}`;
+
+/**
+ * __useGetTerraformInstallationsQuery__
+ *
+ * To run a query within a React component, call `useGetTerraformInstallationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTerraformInstallationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTerraformInstallationsQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetTerraformInstallationsQuery(baseOptions: Apollo.QueryHookOptions<GetTerraformInstallationsQuery, GetTerraformInstallationsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetTerraformInstallationsQuery, GetTerraformInstallationsQueryVariables>(GetTerraformInstallationsDocument, options);
+      }
+export function useGetTerraformInstallationsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTerraformInstallationsQuery, GetTerraformInstallationsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetTerraformInstallationsQuery, GetTerraformInstallationsQueryVariables>(GetTerraformInstallationsDocument, options);
+        }
+export type GetTerraformInstallationsQueryHookResult = ReturnType<typeof useGetTerraformInstallationsQuery>;
+export type GetTerraformInstallationsLazyQueryHookResult = ReturnType<typeof useGetTerraformInstallationsLazyQuery>;
+export type GetTerraformInstallationsQueryResult = Apollo.QueryResult<GetTerraformInstallationsQuery, GetTerraformInstallationsQueryVariables>;
+export const UploadTerraformDocument = gql`
+    mutation UploadTerraform($repoName: String!, $name: String!, $uploadOrUrl: UploadOrUrl!) {
+  uploadTerraform(
+    repositoryName: $repoName
+    name: $name
+    attributes: {name: $name, package: $uploadOrUrl}
+  ) {
+    ...TerraformFragment
+  }
+}
+    ${TerraformFragmentFragmentDoc}`;
+export type UploadTerraformMutationFn = Apollo.MutationFunction<UploadTerraformMutation, UploadTerraformMutationVariables>;
+
+/**
+ * __useUploadTerraformMutation__
+ *
+ * To run a mutation, you first call `useUploadTerraformMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUploadTerraformMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [uploadTerraformMutation, { data, loading, error }] = useUploadTerraformMutation({
+ *   variables: {
+ *      repoName: // value for 'repoName'
+ *      name: // value for 'name'
+ *      uploadOrUrl: // value for 'uploadOrUrl'
+ *   },
+ * });
+ */
+export function useUploadTerraformMutation(baseOptions?: Apollo.MutationHookOptions<UploadTerraformMutation, UploadTerraformMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UploadTerraformMutation, UploadTerraformMutationVariables>(UploadTerraformDocument, options);
+      }
+export type UploadTerraformMutationHookResult = ReturnType<typeof useUploadTerraformMutation>;
+export type UploadTerraformMutationResult = Apollo.MutationResult<UploadTerraformMutation>;
+export type UploadTerraformMutationOptions = Apollo.BaseMutationOptions<UploadTerraformMutation, UploadTerraformMutationVariables>;
+export const UninstallTerraformDocument = gql`
+    mutation UninstallTerraform($id: ID!) {
+  uninstallTerraform(id: $id) {
+    id
+  }
+}
+    `;
+export type UninstallTerraformMutationFn = Apollo.MutationFunction<UninstallTerraformMutation, UninstallTerraformMutationVariables>;
+
+/**
+ * __useUninstallTerraformMutation__
+ *
+ * To run a mutation, you first call `useUninstallTerraformMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUninstallTerraformMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [uninstallTerraformMutation, { data, loading, error }] = useUninstallTerraformMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useUninstallTerraformMutation(baseOptions?: Apollo.MutationHookOptions<UninstallTerraformMutation, UninstallTerraformMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UninstallTerraformMutation, UninstallTerraformMutationVariables>(UninstallTerraformDocument, options);
+      }
+export type UninstallTerraformMutationHookResult = ReturnType<typeof useUninstallTerraformMutation>;
+export type UninstallTerraformMutationResult = Apollo.MutationResult<UninstallTerraformMutation>;
+export type UninstallTerraformMutationOptions = Apollo.BaseMutationOptions<UninstallTerraformMutation, UninstallTerraformMutationVariables>;
+export const CreateTestDocument = gql`
+    mutation CreateTest($name: String!, $attrs: TestAttributes!) {
+  createTest(name: $name, attributes: $attrs) {
+    ...TestFragment
+  }
+}
+    ${TestFragmentFragmentDoc}`;
+export type CreateTestMutationFn = Apollo.MutationFunction<CreateTestMutation, CreateTestMutationVariables>;
+
+/**
+ * __useCreateTestMutation__
+ *
+ * To run a mutation, you first call `useCreateTestMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateTestMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createTestMutation, { data, loading, error }] = useCreateTestMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      attrs: // value for 'attrs'
+ *   },
+ * });
+ */
+export function useCreateTestMutation(baseOptions?: Apollo.MutationHookOptions<CreateTestMutation, CreateTestMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateTestMutation, CreateTestMutationVariables>(CreateTestDocument, options);
+      }
+export type CreateTestMutationHookResult = ReturnType<typeof useCreateTestMutation>;
+export type CreateTestMutationResult = Apollo.MutationResult<CreateTestMutation>;
+export type CreateTestMutationOptions = Apollo.BaseMutationOptions<CreateTestMutation, CreateTestMutationVariables>;
+export const UpdateTestDocument = gql`
+    mutation UpdateTest($id: ID!, $attrs: TestAttributes!) {
+  updateTest(id: $id, attributes: $attrs) {
+    ...TestFragment
+  }
+}
+    ${TestFragmentFragmentDoc}`;
+export type UpdateTestMutationFn = Apollo.MutationFunction<UpdateTestMutation, UpdateTestMutationVariables>;
+
+/**
+ * __useUpdateTestMutation__
+ *
+ * To run a mutation, you first call `useUpdateTestMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateTestMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateTestMutation, { data, loading, error }] = useUpdateTestMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      attrs: // value for 'attrs'
+ *   },
+ * });
+ */
+export function useUpdateTestMutation(baseOptions?: Apollo.MutationHookOptions<UpdateTestMutation, UpdateTestMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateTestMutation, UpdateTestMutationVariables>(UpdateTestDocument, options);
+      }
+export type UpdateTestMutationHookResult = ReturnType<typeof useUpdateTestMutation>;
+export type UpdateTestMutationResult = Apollo.MutationResult<UpdateTestMutation>;
+export type UpdateTestMutationOptions = Apollo.BaseMutationOptions<UpdateTestMutation, UpdateTestMutationVariables>;
+export const UpdateStepDocument = gql`
+    mutation UpdateStep($id: ID!, $logs: UploadOrUrl!) {
+  updateStep(id: $id, attributes: {logs: $logs}) {
+    id
+  }
+}
+    `;
+export type UpdateStepMutationFn = Apollo.MutationFunction<UpdateStepMutation, UpdateStepMutationVariables>;
+
+/**
+ * __useUpdateStepMutation__
+ *
+ * To run a mutation, you first call `useUpdateStepMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateStepMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateStepMutation, { data, loading, error }] = useUpdateStepMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      logs: // value for 'logs'
+ *   },
+ * });
+ */
+export function useUpdateStepMutation(baseOptions?: Apollo.MutationHookOptions<UpdateStepMutation, UpdateStepMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateStepMutation, UpdateStepMutationVariables>(UpdateStepDocument, options);
+      }
+export type UpdateStepMutationHookResult = ReturnType<typeof useUpdateStepMutation>;
+export type UpdateStepMutationResult = Apollo.MutationResult<UpdateStepMutation>;
+export type UpdateStepMutationOptions = Apollo.BaseMutationOptions<UpdateStepMutation, UpdateStepMutationVariables>;
+export const PublishLogsDocument = gql`
+    mutation PublishLogs($id: ID!, $logs: String!) {
+  publishLogs(id: $id, logs: $logs) {
+    id
+  }
+}
+    `;
+export type PublishLogsMutationFn = Apollo.MutationFunction<PublishLogsMutation, PublishLogsMutationVariables>;
+
+/**
+ * __usePublishLogsMutation__
+ *
+ * To run a mutation, you first call `usePublishLogsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePublishLogsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [publishLogsMutation, { data, loading, error }] = usePublishLogsMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      logs: // value for 'logs'
+ *   },
+ * });
+ */
+export function usePublishLogsMutation(baseOptions?: Apollo.MutationHookOptions<PublishLogsMutation, PublishLogsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<PublishLogsMutation, PublishLogsMutationVariables>(PublishLogsDocument, options);
+      }
+export type PublishLogsMutationHookResult = ReturnType<typeof usePublishLogsMutation>;
+export type PublishLogsMutationResult = Apollo.MutationResult<PublishLogsMutation>;
+export type PublishLogsMutationOptions = Apollo.BaseMutationOptions<PublishLogsMutation, PublishLogsMutationVariables>;
+export const MeDocument = gql`
+    query Me {
+  me {
+    id
+    email
+  }
+}
+    `;
+
+/**
+ * __useMeQuery__
+ *
+ * To run a query within a React component, call `useMeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMeQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMeQuery(baseOptions?: Apollo.QueryHookOptions<MeQuery, MeQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MeQuery, MeQueryVariables>(MeDocument, options);
+      }
+export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery, MeQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MeQuery, MeQueryVariables>(MeDocument, options);
+        }
+export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
+export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
+export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const GetLoginMethodDocument = gql`
+    query GetLoginMethod($email: String!) {
+  loginMethod(email: $email) {
+    loginMethod
+    token
+  }
+}
+    `;
+
+/**
+ * __useGetLoginMethodQuery__
+ *
+ * To run a query within a React component, call `useGetLoginMethodQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetLoginMethodQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetLoginMethodQuery({
+ *   variables: {
+ *      email: // value for 'email'
+ *   },
+ * });
+ */
+export function useGetLoginMethodQuery(baseOptions: Apollo.QueryHookOptions<GetLoginMethodQuery, GetLoginMethodQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetLoginMethodQuery, GetLoginMethodQueryVariables>(GetLoginMethodDocument, options);
+      }
+export function useGetLoginMethodLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetLoginMethodQuery, GetLoginMethodQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetLoginMethodQuery, GetLoginMethodQueryVariables>(GetLoginMethodDocument, options);
+        }
+export type GetLoginMethodQueryHookResult = ReturnType<typeof useGetLoginMethodQuery>;
+export type GetLoginMethodLazyQueryHookResult = ReturnType<typeof useGetLoginMethodLazyQuery>;
+export type GetLoginMethodQueryResult = Apollo.QueryResult<GetLoginMethodQuery, GetLoginMethodQueryVariables>;
+export const ListTokensDocument = gql`
+    query ListTokens {
+  tokens(first: 3) {
+    edges {
+      node {
+        token
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useListTokensQuery__
+ *
+ * To run a query within a React component, call `useListTokensQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListTokensQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListTokensQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useListTokensQuery(baseOptions?: Apollo.QueryHookOptions<ListTokensQuery, ListTokensQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ListTokensQuery, ListTokensQueryVariables>(ListTokensDocument, options);
+      }
+export function useListTokensLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ListTokensQuery, ListTokensQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ListTokensQuery, ListTokensQueryVariables>(ListTokensDocument, options);
+        }
+export type ListTokensQueryHookResult = ReturnType<typeof useListTokensQuery>;
+export type ListTokensLazyQueryHookResult = ReturnType<typeof useListTokensLazyQuery>;
+export type ListTokensQueryResult = Apollo.QueryResult<ListTokensQuery, ListTokensQueryVariables>;
+export const ListKeysDocument = gql`
+    query ListKeys($emails: [String]) {
+  publicKeys(emails: $emails, first: 1000) {
+    edges {
+      node {
+        ...PublicKeyFragment
+      }
+    }
+  }
+}
+    ${PublicKeyFragmentFragmentDoc}`;
+
+/**
+ * __useListKeysQuery__
+ *
+ * To run a query within a React component, call `useListKeysQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListKeysQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListKeysQuery({
+ *   variables: {
+ *      emails: // value for 'emails'
+ *   },
+ * });
+ */
+export function useListKeysQuery(baseOptions?: Apollo.QueryHookOptions<ListKeysQuery, ListKeysQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ListKeysQuery, ListKeysQueryVariables>(ListKeysDocument, options);
+      }
+export function useListKeysLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ListKeysQuery, ListKeysQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ListKeysQuery, ListKeysQueryVariables>(ListKeysDocument, options);
+        }
+export type ListKeysQueryHookResult = ReturnType<typeof useListKeysQuery>;
+export type ListKeysLazyQueryHookResult = ReturnType<typeof useListKeysLazyQuery>;
+export type ListKeysQueryResult = Apollo.QueryResult<ListKeysQuery, ListKeysQueryVariables>;
+export const GetEabCredentialDocument = gql`
+    query GetEabCredential($cluster: String!, $provider: Provider!) {
+  eabCredential(cluster: $cluster, provider: $provider) {
+    ...EabCredentialFragment
+  }
+}
+    ${EabCredentialFragmentFragmentDoc}`;
+
+/**
+ * __useGetEabCredentialQuery__
+ *
+ * To run a query within a React component, call `useGetEabCredentialQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetEabCredentialQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetEabCredentialQuery({
+ *   variables: {
+ *      cluster: // value for 'cluster'
+ *      provider: // value for 'provider'
+ *   },
+ * });
+ */
+export function useGetEabCredentialQuery(baseOptions: Apollo.QueryHookOptions<GetEabCredentialQuery, GetEabCredentialQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetEabCredentialQuery, GetEabCredentialQueryVariables>(GetEabCredentialDocument, options);
+      }
+export function useGetEabCredentialLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetEabCredentialQuery, GetEabCredentialQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetEabCredentialQuery, GetEabCredentialQueryVariables>(GetEabCredentialDocument, options);
+        }
+export type GetEabCredentialQueryHookResult = ReturnType<typeof useGetEabCredentialQuery>;
+export type GetEabCredentialLazyQueryHookResult = ReturnType<typeof useGetEabCredentialLazyQuery>;
+export type GetEabCredentialQueryResult = Apollo.QueryResult<GetEabCredentialQuery, GetEabCredentialQueryVariables>;
+export const PollLoginTokenDocument = gql`
+    mutation PollLoginToken($token: String!) {
+  loginToken(token: $token) {
+    jwt
+  }
+}
+    `;
+export type PollLoginTokenMutationFn = Apollo.MutationFunction<PollLoginTokenMutation, PollLoginTokenMutationVariables>;
+
+/**
+ * __usePollLoginTokenMutation__
+ *
+ * To run a mutation, you first call `usePollLoginTokenMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePollLoginTokenMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [pollLoginTokenMutation, { data, loading, error }] = usePollLoginTokenMutation({
+ *   variables: {
+ *      token: // value for 'token'
+ *   },
+ * });
+ */
+export function usePollLoginTokenMutation(baseOptions?: Apollo.MutationHookOptions<PollLoginTokenMutation, PollLoginTokenMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<PollLoginTokenMutation, PollLoginTokenMutationVariables>(PollLoginTokenDocument, options);
+      }
+export type PollLoginTokenMutationHookResult = ReturnType<typeof usePollLoginTokenMutation>;
+export type PollLoginTokenMutationResult = Apollo.MutationResult<PollLoginTokenMutation>;
+export type PollLoginTokenMutationOptions = Apollo.BaseMutationOptions<PollLoginTokenMutation, PollLoginTokenMutationVariables>;
+export const DevLoginDocument = gql`
+    mutation DevLogin {
+  deviceLogin {
+    loginUrl
+    deviceToken
+  }
+}
+    `;
+export type DevLoginMutationFn = Apollo.MutationFunction<DevLoginMutation, DevLoginMutationVariables>;
+
+/**
+ * __useDevLoginMutation__
+ *
+ * To run a mutation, you first call `useDevLoginMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDevLoginMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [devLoginMutation, { data, loading, error }] = useDevLoginMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useDevLoginMutation(baseOptions?: Apollo.MutationHookOptions<DevLoginMutation, DevLoginMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DevLoginMutation, DevLoginMutationVariables>(DevLoginDocument, options);
+      }
+export type DevLoginMutationHookResult = ReturnType<typeof useDevLoginMutation>;
+export type DevLoginMutationResult = Apollo.MutationResult<DevLoginMutation>;
+export type DevLoginMutationOptions = Apollo.BaseMutationOptions<DevLoginMutation, DevLoginMutationVariables>;
+export const LoginDocument = gql`
+    mutation Login($email: String!, $pwd: String!) {
+  login(email: $email, password: $pwd) {
+    jwt
+  }
+}
+    `;
+export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>;
+
+/**
+ * __useLoginMutation__
+ *
+ * To run a mutation, you first call `useLoginMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLoginMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [loginMutation, { data, loading, error }] = useLoginMutation({
+ *   variables: {
+ *      email: // value for 'email'
+ *      pwd: // value for 'pwd'
+ *   },
+ * });
+ */
+export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginMutation, LoginMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, options);
+      }
+export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
+export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
+export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const ImpersonateServiceAccountDocument = gql`
+    mutation ImpersonateServiceAccount($email: String) {
+  impersonateServiceAccount(email: $email) {
+    jwt
+    email
+  }
+}
+    `;
+export type ImpersonateServiceAccountMutationFn = Apollo.MutationFunction<ImpersonateServiceAccountMutation, ImpersonateServiceAccountMutationVariables>;
+
+/**
+ * __useImpersonateServiceAccountMutation__
+ *
+ * To run a mutation, you first call `useImpersonateServiceAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useImpersonateServiceAccountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [impersonateServiceAccountMutation, { data, loading, error }] = useImpersonateServiceAccountMutation({
+ *   variables: {
+ *      email: // value for 'email'
+ *   },
+ * });
+ */
+export function useImpersonateServiceAccountMutation(baseOptions?: Apollo.MutationHookOptions<ImpersonateServiceAccountMutation, ImpersonateServiceAccountMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ImpersonateServiceAccountMutation, ImpersonateServiceAccountMutationVariables>(ImpersonateServiceAccountDocument, options);
+      }
+export type ImpersonateServiceAccountMutationHookResult = ReturnType<typeof useImpersonateServiceAccountMutation>;
+export type ImpersonateServiceAccountMutationResult = Apollo.MutationResult<ImpersonateServiceAccountMutation>;
+export type ImpersonateServiceAccountMutationOptions = Apollo.BaseMutationOptions<ImpersonateServiceAccountMutation, ImpersonateServiceAccountMutationVariables>;
+export const CreateAccessTokenDocument = gql`
+    mutation CreateAccessToken {
+  createToken {
+    token
+  }
+}
+    `;
+export type CreateAccessTokenMutationFn = Apollo.MutationFunction<CreateAccessTokenMutation, CreateAccessTokenMutationVariables>;
+
+/**
+ * __useCreateAccessTokenMutation__
+ *
+ * To run a mutation, you first call `useCreateAccessTokenMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateAccessTokenMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createAccessTokenMutation, { data, loading, error }] = useCreateAccessTokenMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCreateAccessTokenMutation(baseOptions?: Apollo.MutationHookOptions<CreateAccessTokenMutation, CreateAccessTokenMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateAccessTokenMutation, CreateAccessTokenMutationVariables>(CreateAccessTokenDocument, options);
+      }
+export type CreateAccessTokenMutationHookResult = ReturnType<typeof useCreateAccessTokenMutation>;
+export type CreateAccessTokenMutationResult = Apollo.MutationResult<CreateAccessTokenMutation>;
+export type CreateAccessTokenMutationOptions = Apollo.BaseMutationOptions<CreateAccessTokenMutation, CreateAccessTokenMutationVariables>;
+export const CreateKeyDocument = gql`
+    mutation CreateKey($key: String!, $name: String!) {
+  createPublicKey(attributes: {content: $key, name: $name}) {
+    id
+  }
+}
+    `;
+export type CreateKeyMutationFn = Apollo.MutationFunction<CreateKeyMutation, CreateKeyMutationVariables>;
+
+/**
+ * __useCreateKeyMutation__
+ *
+ * To run a mutation, you first call `useCreateKeyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateKeyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createKeyMutation, { data, loading, error }] = useCreateKeyMutation({
+ *   variables: {
+ *      key: // value for 'key'
+ *      name: // value for 'name'
+ *   },
+ * });
+ */
+export function useCreateKeyMutation(baseOptions?: Apollo.MutationHookOptions<CreateKeyMutation, CreateKeyMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateKeyMutation, CreateKeyMutationVariables>(CreateKeyDocument, options);
+      }
+export type CreateKeyMutationHookResult = ReturnType<typeof useCreateKeyMutation>;
+export type CreateKeyMutationResult = Apollo.MutationResult<CreateKeyMutation>;
+export type CreateKeyMutationOptions = Apollo.BaseMutationOptions<CreateKeyMutation, CreateKeyMutationVariables>;
+export const DeleteEabCredentialDocument = gql`
+    mutation DeleteEabCredential($cluster: String!, $provider: Provider!) {
+  deleteEabKey(cluster: $cluster, provider: $provider) {
+    id
+  }
+}
+    `;
+export type DeleteEabCredentialMutationFn = Apollo.MutationFunction<DeleteEabCredentialMutation, DeleteEabCredentialMutationVariables>;
+
+/**
+ * __useDeleteEabCredentialMutation__
+ *
+ * To run a mutation, you first call `useDeleteEabCredentialMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteEabCredentialMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteEabCredentialMutation, { data, loading, error }] = useDeleteEabCredentialMutation({
+ *   variables: {
+ *      cluster: // value for 'cluster'
+ *      provider: // value for 'provider'
+ *   },
+ * });
+ */
+export function useDeleteEabCredentialMutation(baseOptions?: Apollo.MutationHookOptions<DeleteEabCredentialMutation, DeleteEabCredentialMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteEabCredentialMutation, DeleteEabCredentialMutationVariables>(DeleteEabCredentialDocument, options);
+      }
+export type DeleteEabCredentialMutationHookResult = ReturnType<typeof useDeleteEabCredentialMutation>;
+export type DeleteEabCredentialMutationResult = Apollo.MutationResult<DeleteEabCredentialMutation>;
+export type DeleteEabCredentialMutationOptions = Apollo.BaseMutationOptions<DeleteEabCredentialMutation, DeleteEabCredentialMutationVariables>;
+export const CreateEventDocument = gql`
+    mutation CreateEvent($attrs: UserEventAttributes!) {
+  createUserEvent(attributes: $attrs)
+}
+    `;
+export type CreateEventMutationFn = Apollo.MutationFunction<CreateEventMutation, CreateEventMutationVariables>;
+
+/**
+ * __useCreateEventMutation__
+ *
+ * To run a mutation, you first call `useCreateEventMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateEventMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createEventMutation, { data, loading, error }] = useCreateEventMutation({
+ *   variables: {
+ *      attrs: // value for 'attrs'
+ *   },
+ * });
+ */
+export function useCreateEventMutation(baseOptions?: Apollo.MutationHookOptions<CreateEventMutation, CreateEventMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateEventMutation, CreateEventMutationVariables>(CreateEventDocument, options);
+      }
+export type CreateEventMutationHookResult = ReturnType<typeof useCreateEventMutation>;
+export type CreateEventMutationResult = Apollo.MutationResult<CreateEventMutation>;
+export type CreateEventMutationOptions = Apollo.BaseMutationOptions<CreateEventMutation, CreateEventMutationVariables>;
+export const UpdateVersionDocument = gql`
+    mutation UpdateVersion($spec: VersionSpec, $attributes: VersionAttributes!) {
+  updateVersion(spec: $spec, attributes: $attributes) {
+    id
+  }
+}
+    `;
+export type UpdateVersionMutationFn = Apollo.MutationFunction<UpdateVersionMutation, UpdateVersionMutationVariables>;
+
+/**
+ * __useUpdateVersionMutation__
+ *
+ * To run a mutation, you first call `useUpdateVersionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateVersionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateVersionMutation, { data, loading, error }] = useUpdateVersionMutation({
+ *   variables: {
+ *      spec: // value for 'spec'
+ *      attributes: // value for 'attributes'
+ *   },
+ * });
+ */
+export function useUpdateVersionMutation(baseOptions?: Apollo.MutationHookOptions<UpdateVersionMutation, UpdateVersionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateVersionMutation, UpdateVersionMutationVariables>(UpdateVersionDocument, options);
+      }
+export type UpdateVersionMutationHookResult = ReturnType<typeof useUpdateVersionMutation>;
+export type UpdateVersionMutationResult = Apollo.MutationResult<UpdateVersionMutation>;
+export type UpdateVersionMutationOptions = Apollo.BaseMutationOptions<UpdateVersionMutation, UpdateVersionMutationVariables>;

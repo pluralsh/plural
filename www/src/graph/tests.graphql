@@ -1,0 +1,19 @@
+mutation CreateTest($name: String!, $attrs: TestAttributes!) {
+    createTest(name: $name, attributes: $attrs) {
+        ...TestFragment
+    }
+}
+
+mutation UpdateTest($id: ID!, $attrs: TestAttributes!) {
+    updateTest(id: $id, attributes: $attrs) {
+        ...TestFragment
+    }
+}
+
+mutation UpdateStep($id: ID!, $logs: UploadOrUrl!) {
+    updateStep(id: $id, attributes: {logs: $logs}) { id }
+}
+
+mutation PublishLogs($id: ID!, $logs: String!) {
+    publishLogs(id: $id, logs: $logs) { id }
+}

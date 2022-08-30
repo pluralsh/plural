@@ -1,5 +1,6 @@
 overwrite: true
 schema: "https://app.plural.sh/gql"
+documents: './src/graph/**/*.graphql'
 generates:
   src/generated/graphql.tsx:
     plugins:

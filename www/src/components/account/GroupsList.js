@@ -13,7 +13,7 @@ import { ListItem } from '../utils/List'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { StandardScroller } from '../utils/SmoothScroller'
 
-import { CreateGroup } from './Group'
+import { CreateGroup } from './CreateGroup'
 import { Group } from './Groups'
 
 export function GroupsList({ q }) {

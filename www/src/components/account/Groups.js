@@ -4,7 +4,6 @@ import { Flex } from 'honorable'
 import {
   Button,
   GlobeIcon,
-  Input,
   Modal,
   ModalHeader,
   PageTitle,
@@ -27,7 +26,9 @@ import { CurrentUserContext } from '../login/CurrentUser'
 import { DeleteIconButton } from '../utils/IconButtons'
 
 import { Confirm } from './Confirm'
-import { CreateGroup, UpdateGroup, ViewGroup } from './Group'
+import { ViewGroup } from './Group'
+import { CreateGroup } from './CreateGroup'
+import { EditGroup } from './EditGroup'
 
 import { Info } from './Info'
 import { hasRbac } from './utils'
@@ -114,8 +115,8 @@ export function Group({ group, q }) {
           width="60vw"
           onClose={() => setEdit(false)}
         >
-          <ModalHeader onClose={() => setEdit(false)}>EDIT GROUP</ModalHeader>
-          <UpdateGroup
+          <ModalHeader onClose={() => setEdit(false)}>Edit group</ModalHeader>
+          <EditGroup
             group={group}
             cancel={() => setEdit(false)}
           />

@@ -64,7 +64,7 @@ export const EDIT_PUBLISHER = gql`
   ${PublisherFragment}
 `
 
-export const CREATE_PUBLISHER = gql`
+export const CREATE_PUBLISHER_MUTATION = gql`
   mutation CreatePublisher($attributes: PublisherAttributes!) {
     createPublisher(attributes: $attributes) {
       ...PublisherFragment

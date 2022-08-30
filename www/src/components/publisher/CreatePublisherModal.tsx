@@ -1,14 +1,21 @@
 import { useEffect, useState } from 'react'
 import { Button, Flex, Modal } from 'honorable'
 import {
-  FormField, Input, ModalActions, ModalHeader,
+  Alert,
+  FormField,
+  Input,
+  ModalActions,
+  ModalHeader,
 } from 'pluralsh-design-system'
+import { useMutation } from '@apollo/client'
 import { useFilePicker } from 'react-sage'
 import isArray from 'lodash/isArray'
 
 import { generatePreview } from '../../utils/file'
 
 import IconUploadPreview from '../utils/IconUploadPreview'
+
+import { CREATE_PUBLISHER_MUTATION } from './queries'
 
 type CreatePublisherModalProps = {
   open: boolean
@@ -30,6 +37,7 @@ function CreatePublisherModal({ open, onClose }: CreatePublisherModalProps) {
   const [discord, setDiscord] = useState('')
   const [slack, setSlack] = useState('')
   const [twitter, setTwitter] = useState('')
+  const [preMutationError, setPreMutationError] = useState('')
   const [errors, setErrors] = useState({
     website: false,
     documentation: false,
@@ -50,6 +58,25 @@ function CreatePublisherModal({ open, onClose }: CreatePublisherModalProps) {
     accept: 'image/jpeg,image/png',
   }
 
+  const [mutation, { loading, error }] = useMutation(CREATE_PUBLISHER_MUTATION, {
+    variables: {
+      attributes: {
+        name,
+        description,
+        ...(iconUpload.file ? { avatar: iconUpload.file } : {}),
+        address: {
+          city: '',
+          country: '',
+          line1: '',
+          line2: '',
+          state: '',
+          zip: '',
+        },
+        phone: '',
+      },
+    },
+  })
+
   useEffect(() => {
     const file = isArray(iconPicker?.files) && iconPicker?.files[0]
 
@@ -63,6 +90,31 @@ function CreatePublisherModal({ open, onClose }: CreatePublisherModalProps) {
       reader.abort()
     }
   }, [iconPicker.files])
+
+  function handleSubmit() {
+    setPreMutationError('')
+
+    if (!name) {
+      setPreMutationError('Name is required')
+
+      return
+    }
+
+    if (!description) {
+      setPreMutationError('Description is required')
+
+      return
+    }
+
+    mutation()
+      .then(data => {
+        console.log('error', error)
+        console.log(data)
+      })
+      .catch(error => {
+        setPreMutationError(error.message)
+      })
+  }
 
   function isValidUrl(url: string) {
     return !/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/.test(url)
@@ -200,6 +252,11 @@ function CreatePublisherModal({ open, onClose }: CreatePublisherModalProps) {
           'Twitter link', 'Twitter URL', twitter, setTwitter, errors.twitter
         )}
       </Flex>
+      {!!preMutationError && (
+        <Alert severity="error">
+          {preMutationError}
+        </Alert>
+      )}
       <ModalActions gap="medium">
         <Button
           secondary
@@ -207,7 +264,11 @@ function CreatePublisherModal({ open, onClose }: CreatePublisherModalProps) {
         >
           Cancel
         </Button>
-        <Button primary>
+        <Button
+          primary
+          loading={loading}
+          onClick={handleSubmit}
+        >
           Save
         </Button>
       </ModalActions>

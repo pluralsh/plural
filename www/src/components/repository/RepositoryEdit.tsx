@@ -129,33 +129,32 @@ function RepositoryEdit() {
 
   const tagSearchRef = useRef<any>(null)
 
-  const [mutation, { loading, error }] = useMutation(UPDATE_REPOSITORY_MUTATION,
-    {
-      variables: {
-        repositoryId: id,
-        attributes: {
-          name: formState.name,
-          description: formState.description,
-          category: formState.category,
-          oauthSettings:
-            formState.oauthUrl && formState.oauthMethod
-              ? {
-                uriFormat: formState.oauthUrl,
-                authMethod: formState.oauthMethod,
-              }
-              : null,
-          ...(iconUpdate.file ? { icon: iconUpdate.file } : {}),
-          tags: formState.tags,
-          private: formState.private,
-        },
+  const [mutation, { loading, error }] = useMutation(UPDATE_REPOSITORY_MUTATION, {
+    variables: {
+      repositoryId: id,
+      attributes: {
+        name: formState.name,
+        description: formState.description,
+        category: formState.category,
+        oauthSettings:
+          formState.oauthUrl && formState.oauthMethod
+            ? {
+              uriFormat: formState.oauthUrl,
+              authMethod: formState.oauthMethod,
+            }
+            : null,
+        ...(iconUpdate.file ? { icon: iconUpdate.file } : {}),
+        tags: formState.tags,
+        private: formState.private,
       },
-      update: (_cache, { data: { updateRepository } }) => {
-        setIconUpdate({
-          previewUrl: updateRepository.icon || null,
-          file: null,
-        })
-      },
-    })
+    },
+    update: (_cache, { data: { updateRepository } }) => {
+      setIconUpdate({
+        previewUrl: updateRepository.icon || null,
+        file: null,
+      })
+    },
+  })
 
   console.log('Error: ', error)
 

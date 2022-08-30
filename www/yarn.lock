@@ -20064,14 +20064,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"slate@npm:0.82.0":
-  version: 0.82.0
-  resolution: "slate@npm:0.82.0"
+"slate@npm:0.82.1":
+  version: 0.82.1
+  resolution: "slate@npm:0.82.1"
   dependencies:
     immer: ^9.0.6
     is-plain-object: ^5.0.0
     tiny-warning: ^1.0.3
-  checksum: 60dbc656a80419883736bb588dc39a2713f96fcb455c7f9cf90df2e0bcac943c05d95a019bcc3358659be77ce2298b4115b45a535152d843f8bcd934dda8cf66
+  checksum: 391e6be7c1e7865e6f3113b60ed98dcd5261cd80c053e670ecece0b969098d5bacfa3d875c3b38c3d79fc5d5b369e13f351292c968b3661d4957a36a1fd6e06f
   languageName: node
   linkType: hard
 
@@ -23131,7 +23131,7 @@ __metadata:
     react-window-reversed: 1.4.1
     rehype-raw: 6.1.1
     serve: 14.0.1
-    slate: 0.82.0
+    slate: 0.82.1
     slate-history: 0.81.3
     slate-react: 0.82.0
     styled-components: 5.3.5

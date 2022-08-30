@@ -6,11 +6,14 @@ generates:
       - "typescript"
       - "typescript-operations"
       - "typescript-react-apollo"
+      - add:
+          content: '/* eslint-disable */'
 config:
   scalars:
-    Map: Map<string, any>
+    Map: Map<string, unknown>
     UploadOrUrl: string
     DateTime: Date
+    Yaml: unknown
 hooks:
   afterAllFileWrite:
     - eslint --fix

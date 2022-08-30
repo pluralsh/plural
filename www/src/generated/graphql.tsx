@@ -1,10 +1,10 @@
-import { gql } from '@apollo/client'
-
-export type Maybe<T> = T | null
-;export type InputMaybe<T> = Maybe<T>
-;export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] }
-;export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> }
-;export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+/* eslint-disable */
+import { gql } from '@apollo/client';
+export type Maybe<T> = T | null;
+export type InputMaybe<T> = Maybe<T>;
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -13,11 +13,12 @@ export type Scalars = {
   Int: number;
   Float: number;
   DateTime: Date;
-  Map: Map<string, any>;
+  Map: Map<string, unknown>;
   UploadOrUrl: string;
-  Yaml: any;
-}
-;export type Account = {
+  Yaml: unknown;
+};
+
+export type Account = {
   __typename?: 'Account';
   backgroundColor?: Maybe<Scalars['String']>;
   billingCustomerId?: Maybe<Scalars['String']>;
@@ -29,22 +30,26 @@ export type Scalars = {
   rootUser?: Maybe<User>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   workosConnectionId?: Maybe<Scalars['String']>;
-}
-;export type AccountAttributes = {
+};
+
+export type AccountAttributes = {
   domainMappings?: InputMaybe<Array<InputMaybe<DomainMappingInput>>>;
   icon?: InputMaybe<Scalars['UploadOrUrl']>;
   name?: InputMaybe<Scalars['String']>;
-}
-;export type ActionItem = {
+};
+
+export type ActionItem = {
   __typename?: 'ActionItem';
   link: Scalars['String'];
   type: ActionItemType;
-}
-;export type ActionItemAttributes = {
+};
+
+export type ActionItemAttributes = {
   link: Scalars['String'];
   type: ActionItemType;
-}
-;export enum ActionItemType {
+};
+
+export enum ActionItemType {
   Blog = 'BLOG',
   Issue = 'ISSUE',
   Pull = 'PULL'
@@ -58,16 +63,18 @@ export type Address = {
   line2?: Maybe<Scalars['String']>;
   state?: Maybe<Scalars['String']>;
   zip?: Maybe<Scalars['String']>;
-}
-;export type AddressAttributes = {
+};
+
+export type AddressAttributes = {
   city: Scalars['String'];
   country: Scalars['String'];
   line1: Scalars['String'];
   line2: Scalars['String'];
   state: Scalars['String'];
   zip: Scalars['String'];
-}
-;export type ApplyLock = {
+};
+
+export type ApplyLock = {
   __typename?: 'ApplyLock';
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
@@ -75,8 +82,9 @@ export type Address = {
   owner?: Maybe<User>;
   repository?: Maybe<Repository>;
   updatedAt?: Maybe<Scalars['DateTime']>;
-}
-;export type Artifact = {
+};
+
+export type Artifact = {
   __typename?: 'Artifact';
   arch?: Maybe<Scalars['String']>;
   blob?: Maybe<Scalars['String']>;
@@ -89,16 +97,18 @@ export type Address = {
   sha?: Maybe<Scalars['String']>;
   type?: Maybe<ArtifactType>;
   updatedAt?: Maybe<Scalars['DateTime']>;
-}
-;export type ArtifactAttributes = {
+};
+
+export type ArtifactAttributes = {
   arch?: InputMaybe<Scalars['String']>;
   blob?: InputMaybe<Scalars['UploadOrUrl']>;
   name: Scalars['String'];
   platform: Scalars['String'];
   readme: Scalars['String'];
   type: Scalars['String'];
-}
-;export enum ArtifactPlatform {
+};
+
+export enum ArtifactPlatform {
   Android = 'ANDROID',
   Freebsd = 'FREEBSD',
   Linux = 'LINUX',
@@ -133,32 +143,38 @@ export type Audit = {
   updatedAt?: Maybe<Scalars['DateTime']>;
   user?: Maybe<User>;
   version?: Maybe<Version>;
-}
-;export type AuditConnection = {
+};
+
+export type AuditConnection = {
   __typename?: 'AuditConnection';
   edges?: Maybe<Array<Maybe<AuditEdge>>>;
   pageInfo: PageInfo;
-}
-;export type AuditEdge = {
+};
+
+export type AuditEdge = {
   __typename?: 'AuditEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<Audit>;
-}
-;export type AuthorizationUrl = {
+};
+
+export type AuthorizationUrl = {
   __typename?: 'AuthorizationUrl';
   provider: ScmProvider;
   url: Scalars['String'];
-}
-;export type AwsShellCredentialsAttributes = {
+};
+
+export type AwsShellCredentialsAttributes = {
   accessKeyId: Scalars['String'];
   secretAccessKey: Scalars['String'];
-}
-;export type BindingAttributes = {
+};
+
+export type BindingAttributes = {
   groupId?: InputMaybe<Scalars['ID']>;
   id?: InputMaybe<Scalars['ID']>;
   userId?: InputMaybe<Scalars['ID']>;
-}
-;export type Card = {
+};
+
+export type Card = {
   __typename?: 'Card';
   brand: Scalars['String'];
   expMonth: Scalars['Int'];
@@ -166,18 +182,21 @@ export type Audit = {
   id: Scalars['ID'];
   last4: Scalars['String'];
   name?: Maybe<Scalars['String']>;
-}
-;export type CardConnection = {
+};
+
+export type CardConnection = {
   __typename?: 'CardConnection';
   edges?: Maybe<Array<Maybe<CardEdge>>>;
   pageInfo: PageInfo;
-}
-;export type CardEdge = {
+};
+
+export type CardEdge = {
   __typename?: 'CardEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<Card>;
-}
-;export enum Category {
+};
+
+export enum Category {
   Data = 'DATA',
   Database = 'DATABASE',
   Devops = 'DEVOPS',
@@ -193,20 +212,24 @@ export type CategoryInfo = {
   category?: Maybe<Category>;
   count?: Maybe<Scalars['Int']>;
   tags?: Maybe<GroupedTagConnection>;
-}
-;export type CategoryInfoTagsArgs = {
+};
+
+
+export type CategoryInfoTagsArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   q?: InputMaybe<Scalars['String']>;
-}
-;export type ChangeInstructions = {
+};
+
+export type ChangeInstructions = {
   __typename?: 'ChangeInstructions';
   instructions?: Maybe<Scalars['String']>;
   script?: Maybe<Scalars['String']>;
-}
-;export type Chart = {
+};
+
+export type Chart = {
   __typename?: 'Chart';
   dependencies?: Maybe<Dependencies>;
   description?: Maybe<Scalars['String']>;
@@ -218,21 +241,25 @@ export type CategoryInfo = {
   repository?: Maybe<Repository>;
   tags?: Maybe<Array<Maybe<VersionTag>>>;
   updatedAt?: Maybe<Scalars['DateTime']>;
-}
-;export type ChartAttributes = {
+};
+
+export type ChartAttributes = {
   tags?: InputMaybe<Array<InputMaybe<VersionTagAttributes>>>;
-}
-;export type ChartConnection = {
+};
+
+export type ChartConnection = {
   __typename?: 'ChartConnection';
   edges?: Maybe<Array<Maybe<ChartEdge>>>;
   pageInfo: PageInfo;
-}
-;export type ChartEdge = {
+};
+
+export type ChartEdge = {
   __typename?: 'ChartEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<Chart>;
-}
-;export type ChartInstallation = {
+};
+
+export type ChartInstallation = {
   __typename?: 'ChartInstallation';
   chart?: Maybe<Chart>;
   id?: Maybe<Scalars['ID']>;
@@ -240,32 +267,38 @@ export type CategoryInfo = {
   installation?: Maybe<Installation>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   version?: Maybe<Version>;
-}
-;export type ChartInstallationAttributes = {
+};
+
+export type ChartInstallationAttributes = {
   chartId?: InputMaybe<Scalars['ID']>;
   versionId?: InputMaybe<Scalars['ID']>;
-}
-;export type ChartInstallationConnection = {
+};
+
+export type ChartInstallationConnection = {
   __typename?: 'ChartInstallationConnection';
   edges?: Maybe<Array<Maybe<ChartInstallationEdge>>>;
   pageInfo: PageInfo;
-}
-;export type ChartInstallationEdge = {
+};
+
+export type ChartInstallationEdge = {
   __typename?: 'ChartInstallationEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<ChartInstallation>;
-}
-;export type ChartName = {
+};
+
+export type ChartName = {
   chart?: InputMaybe<Scalars['String']>;
   repo?: InputMaybe<Scalars['String']>;
-}
-;export type ClosureItem = {
+};
+
+export type ClosureItem = {
   __typename?: 'ClosureItem';
   dep?: Maybe<Dependency>;
   helm?: Maybe<Chart>;
   terraform?: Maybe<Terraform>;
-}
-;export type CloudShell = {
+};
+
+export type CloudShell = {
   __typename?: 'CloudShell';
   aesKey: Scalars['String'];
   alive: Scalars['Boolean'];
@@ -277,15 +310,17 @@ export type CategoryInfo = {
   status?: Maybe<ShellStatus>;
   subdomain: Scalars['String'];
   updatedAt?: Maybe<Scalars['DateTime']>;
-}
-;export type CloudShellAttributes = {
+};
+
+export type CloudShellAttributes = {
   credentials: ShellCredentialsAttributes;
   demoId?: InputMaybe<Scalars['ID']>;
   provider?: InputMaybe<Provider>;
   scm?: InputMaybe<ScmAttributes>;
   workspace: WorkspaceAttributes;
-}
-;export type ClusterInformation = {
+};
+
+export type ClusterInformation = {
   __typename?: 'ClusterInformation';
   gitCommit?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
@@ -293,43 +328,50 @@ export type CategoryInfo = {
   platform?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   version?: Maybe<Scalars['String']>;
-}
-;export type ClusterInformationAttributes = {
+};
+
+export type ClusterInformationAttributes = {
   gitCommit?: InputMaybe<Scalars['String']>;
   platform?: InputMaybe<Scalars['String']>;
   version?: InputMaybe<Scalars['String']>;
-}
-;export type Community = {
+};
+
+export type Community = {
   __typename?: 'Community';
   discord?: Maybe<Scalars['String']>;
   slack?: Maybe<Scalars['String']>;
   twitter?: Maybe<Scalars['String']>;
   videos?: Maybe<Array<Maybe<Scalars['String']>>>;
-}
-;export type CommunityAttributes = {
+};
+
+export type CommunityAttributes = {
   discord?: InputMaybe<Scalars['String']>;
   slack?: InputMaybe<Scalars['String']>;
   twitter?: InputMaybe<Scalars['String']>;
   videos?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-}
-;export type ConsentRequest = {
+};
+
+export type ConsentRequest = {
   __typename?: 'ConsentRequest';
   requestedScope?: Maybe<Array<Maybe<Scalars['String']>>>;
   skip?: Maybe<Scalars['Boolean']>;
-}
-;export type Crd = {
+};
+
+export type Crd = {
   __typename?: 'Crd';
   blob?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
   name: Scalars['String'];
   updatedAt?: Maybe<Scalars['DateTime']>;
-}
-;export type CrdAttributes = {
+};
+
+export type CrdAttributes = {
   blob?: InputMaybe<Scalars['UploadOrUrl']>;
   name: Scalars['String'];
-}
-;export type Cvss = {
+};
+
+export type Cvss = {
   __typename?: 'Cvss';
   attackComplexity?: Maybe<VulnGrade>;
   attackVector?: Maybe<VulnVector>;
@@ -338,8 +380,9 @@ export type CategoryInfo = {
   integrity?: Maybe<VulnGrade>;
   privilegesRequired?: Maybe<VulnGrade>;
   userInteraction?: Maybe<VulnRequirement>;
-}
-;export enum Datatype {
+};
+
+export enum Datatype {
   Bool = 'BOOL',
   Bucket = 'BUCKET',
   Domain = 'DOMAIN',
@@ -360,18 +403,21 @@ export type DeferredUpdate = {
   terraformInstallation?: Maybe<TerraformInstallation>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   version?: Maybe<Version>;
-}
-;export type DeferredUpdateConnection = {
+};
+
+export type DeferredUpdateConnection = {
   __typename?: 'DeferredUpdateConnection';
   edges?: Maybe<Array<Maybe<DeferredUpdateEdge>>>;
   pageInfo: PageInfo;
-}
-;export type DeferredUpdateEdge = {
+};
+
+export type DeferredUpdateEdge = {
   __typename?: 'DeferredUpdateEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<DeferredUpdate>;
-}
-;export enum Delta {
+};
+
+export enum Delta {
   Create = 'CREATE',
   Delete = 'DELETE',
   Update = 'UPDATE'
@@ -386,8 +432,9 @@ export type DemoProject = {
   ready?: Maybe<Scalars['Boolean']>;
   state?: Maybe<DemoProjectState>;
   updatedAt?: Maybe<Scalars['DateTime']>;
-}
-;export enum DemoProjectState {
+};
+
+export enum DemoProjectState {
   Created = 'CREATED',
   Enabled = 'ENABLED',
   Ready = 'READY'
@@ -406,16 +453,18 @@ export type Dependencies = {
   secrets?: Maybe<Array<Maybe<Scalars['String']>>>;
   wait?: Maybe<Scalars['Boolean']>;
   wirings?: Maybe<Wirings>;
-}
-;export type Dependency = {
+};
+
+export type Dependency = {
   __typename?: 'Dependency';
   name?: Maybe<Scalars['String']>;
   optional?: Maybe<Scalars['Boolean']>;
   repo?: Maybe<Scalars['String']>;
   type?: Maybe<DependencyType>;
   version?: Maybe<Scalars['String']>;
-}
-;export enum DependencyType {
+};
+
+export enum DependencyType {
   Helm = 'HELM',
   Terraform = 'TERRAFORM'
 }
@@ -424,19 +473,22 @@ export type DeviceLogin = {
   __typename?: 'DeviceLogin';
   deviceToken: Scalars['String'];
   loginUrl: Scalars['String'];
-}
-;export type DnsAccessPolicy = {
+};
+
+export type DnsAccessPolicy = {
   __typename?: 'DnsAccessPolicy';
   bindings?: Maybe<Array<Maybe<PolicyBinding>>>;
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
-}
-;export type DnsAccessPolicyAttributes = {
+};
+
+export type DnsAccessPolicyAttributes = {
   bindings?: InputMaybe<Array<InputMaybe<BindingAttributes>>>;
   id?: InputMaybe<Scalars['ID']>;
-}
-;export type DnsDomain = {
+};
+
+export type DnsDomain = {
   __typename?: 'DnsDomain';
   accessPolicy?: Maybe<DnsAccessPolicy>;
   account?: Maybe<Account>;
@@ -446,28 +498,34 @@ export type DeviceLogin = {
   insertedAt?: Maybe<Scalars['DateTime']>;
   name: Scalars['String'];
   updatedAt?: Maybe<Scalars['DateTime']>;
-}
-;export type DnsDomainDnsRecordsArgs = {
+};
+
+
+export type DnsDomainDnsRecordsArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
-}
-;export type DnsDomainAttributes = {
+};
+
+export type DnsDomainAttributes = {
   accessPolicy?: InputMaybe<DnsAccessPolicyAttributes>;
   name?: InputMaybe<Scalars['String']>;
-}
-;export type DnsDomainConnection = {
+};
+
+export type DnsDomainConnection = {
   __typename?: 'DnsDomainConnection';
   edges?: Maybe<Array<Maybe<DnsDomainEdge>>>;
   pageInfo: PageInfo;
-}
-;export type DnsDomainEdge = {
+};
+
+export type DnsDomainEdge = {
   __typename?: 'DnsDomainEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<DnsDomain>;
-}
-;export type DnsRecord = {
+};
+
+export type DnsRecord = {
   __typename?: 'DnsRecord';
   cluster: Scalars['String'];
   creator?: Maybe<User>;
@@ -479,23 +537,27 @@ export type DeviceLogin = {
   records?: Maybe<Array<Maybe<Scalars['String']>>>;
   type: DnsRecordType;
   updatedAt?: Maybe<Scalars['DateTime']>;
-}
-;export type DnsRecordAttributes = {
+};
+
+export type DnsRecordAttributes = {
   name: Scalars['String'];
   records?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   type: DnsRecordType;
-}
-;export type DnsRecordConnection = {
+};
+
+export type DnsRecordConnection = {
   __typename?: 'DnsRecordConnection';
   edges?: Maybe<Array<Maybe<DnsRecordEdge>>>;
   pageInfo: PageInfo;
-}
-;export type DnsRecordEdge = {
+};
+
+export type DnsRecordEdge = {
   __typename?: 'DnsRecordEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<DnsRecord>;
-}
-;export enum DnsRecordType {
+};
+
+export enum DnsRecordType {
   A = 'A',
   Aaaa = 'AAAA',
   Cname = 'CNAME',
@@ -513,18 +575,21 @@ export type DockerImage = {
   tag?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   vulnerabilities?: Maybe<Array<Maybe<Vulnerability>>>;
-}
-;export type DockerImageConnection = {
+};
+
+export type DockerImageConnection = {
   __typename?: 'DockerImageConnection';
   edges?: Maybe<Array<Maybe<DockerImageEdge>>>;
   pageInfo: PageInfo;
-}
-;export type DockerImageEdge = {
+};
+
+export type DockerImageEdge = {
   __typename?: 'DockerImageEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<DockerImage>;
-}
-;export type DockerRepository = {
+};
+
+export type DockerRepository = {
   __typename?: 'DockerRepository';
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
@@ -533,26 +598,32 @@ export type DockerImage = {
   public?: Maybe<Scalars['Boolean']>;
   repository?: Maybe<Repository>;
   updatedAt?: Maybe<Scalars['DateTime']>;
-}
-;export type DockerRepositoryMetricsArgs = {
+};
+
+
+export type DockerRepositoryMetricsArgs = {
   offset?: InputMaybe<Scalars['String']>;
   precision?: InputMaybe<Scalars['String']>;
   tag?: InputMaybe<Scalars['String']>;
-}
-;export type DockerRepositoryAttributes = {
+};
+
+export type DockerRepositoryAttributes = {
   public: Scalars['Boolean'];
-}
-;export type DockerRepositoryConnection = {
+};
+
+export type DockerRepositoryConnection = {
   __typename?: 'DockerRepositoryConnection';
   edges?: Maybe<Array<Maybe<DockerRepositoryEdge>>>;
   pageInfo: PageInfo;
-}
-;export type DockerRepositoryEdge = {
+};
+
+export type DockerRepositoryEdge = {
   __typename?: 'DockerRepositoryEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<DockerRepository>;
-}
-;export type DomainMapping = {
+};
+
+export type DomainMapping = {
   __typename?: 'DomainMapping';
   account?: Maybe<Account>;
   domain: Scalars['String'];
@@ -560,13 +631,15 @@ export type DockerImage = {
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
-}
-;export type DomainMappingInput = {
+};
+
+export type DomainMappingInput = {
   domain?: InputMaybe<Scalars['String']>;
   enableSso?: InputMaybe<Scalars['Boolean']>;
   id?: InputMaybe<Scalars['ID']>;
-}
-;export type EabCredential = {
+};
+
+export type EabCredential = {
   __typename?: 'EabCredential';
   cluster: Scalars['String'];
   hmacKey: Scalars['String'];
@@ -575,15 +648,17 @@ export type DockerImage = {
   keyId: Scalars['String'];
   provider: Provider;
   updatedAt?: Maybe<Scalars['DateTime']>;
-}
-;export type EntityAttributes = {
+};
+
+export type EntityAttributes = {
   endIndex?: InputMaybe<Scalars['Int']>;
   startIndex?: InputMaybe<Scalars['Int']>;
   text?: InputMaybe<Scalars['String']>;
   type: MessageEntityType;
   userId?: InputMaybe<Scalars['ID']>;
-}
-;export type File = {
+};
+
+export type File = {
   __typename?: 'File';
   blob: Scalars['String'];
   contentType?: Maybe<Scalars['String']>;
@@ -596,21 +671,25 @@ export type DockerImage = {
   message: IncidentMessage;
   updatedAt?: Maybe<Scalars['DateTime']>;
   width?: Maybe<Scalars['Int']>;
-}
-;export type FileAttributes = {
+};
+
+export type FileAttributes = {
   blob?: InputMaybe<Scalars['UploadOrUrl']>;
-}
-;export type FileConnection = {
+};
+
+export type FileConnection = {
   __typename?: 'FileConnection';
   edges?: Maybe<Array<Maybe<FileEdge>>>;
   pageInfo: PageInfo;
-}
-;export type FileEdge = {
+};
+
+export type FileEdge = {
   __typename?: 'FileEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<File>;
-}
-;export type Follower = {
+};
+
+export type Follower = {
   __typename?: 'Follower';
   id: Scalars['ID'];
   incident?: Maybe<Incident>;
@@ -618,29 +697,35 @@ export type DockerImage = {
   preferences?: Maybe<NotificationPreferences>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   user: User;
-}
-;export type FollowerAttributes = {
+};
+
+export type FollowerAttributes = {
   preferences?: InputMaybe<NotificationPreferencesAttributes>;
-}
-;export type FollowerConnection = {
+};
+
+export type FollowerConnection = {
   __typename?: 'FollowerConnection';
   edges?: Maybe<Array<Maybe<FollowerEdge>>>;
   pageInfo: PageInfo;
-}
-;export type FollowerEdge = {
+};
+
+export type FollowerEdge = {
   __typename?: 'FollowerEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<Follower>;
-}
-;export type GcpShellCredentialsAttributes = {
+};
+
+export type GcpShellCredentialsAttributes = {
   applicationCredentials: Scalars['String'];
-}
-;export type GeoMetric = {
+};
+
+export type GeoMetric = {
   __typename?: 'GeoMetric';
   count?: Maybe<Scalars['Int']>;
   country?: Maybe<Scalars['String']>;
-}
-;export type Group = {
+};
+
+export type Group = {
   __typename?: 'Group';
   description?: Maybe<Scalars['String']>;
   global?: Maybe<Scalars['Boolean']>;
@@ -648,64 +733,75 @@ export type DockerImage = {
   insertedAt?: Maybe<Scalars['DateTime']>;
   name: Scalars['String'];
   updatedAt?: Maybe<Scalars['DateTime']>;
-}
-;export type GroupAttributes = {
+};
+
+export type GroupAttributes = {
   description?: InputMaybe<Scalars['String']>;
   global?: InputMaybe<Scalars['Boolean']>;
   name: Scalars['String'];
-}
-;export type GroupConnection = {
+};
+
+export type GroupConnection = {
   __typename?: 'GroupConnection';
   edges?: Maybe<Array<Maybe<GroupEdge>>>;
   pageInfo: PageInfo;
-}
-;export type GroupEdge = {
+};
+
+export type GroupEdge = {
   __typename?: 'GroupEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<Group>;
-}
-;export type GroupMember = {
+};
+
+export type GroupMember = {
   __typename?: 'GroupMember';
   group?: Maybe<Group>;
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   user?: Maybe<User>;
-}
-;export type GroupMemberConnection = {
+};
+
+export type GroupMemberConnection = {
   __typename?: 'GroupMemberConnection';
   edges?: Maybe<Array<Maybe<GroupMemberEdge>>>;
   pageInfo: PageInfo;
-}
-;export type GroupMemberEdge = {
+};
+
+export type GroupMemberEdge = {
   __typename?: 'GroupMemberEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<GroupMember>;
-}
-;export type GroupedTag = {
+};
+
+export type GroupedTag = {
   __typename?: 'GroupedTag';
   count: Scalars['Int'];
   tag: Scalars['String'];
-}
-;export type GroupedTagConnection = {
+};
+
+export type GroupedTagConnection = {
   __typename?: 'GroupedTagConnection';
   edges?: Maybe<Array<Maybe<GroupedTagEdge>>>;
   pageInfo: PageInfo;
-}
-;export type GroupedTagEdge = {
+};
+
+export type GroupedTagEdge = {
   __typename?: 'GroupedTagEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<GroupedTag>;
-}
-;export type ImageDependency = {
+};
+
+export type ImageDependency = {
   __typename?: 'ImageDependency';
   id: Scalars['ID'];
   image: DockerImage;
   insertedAt?: Maybe<Scalars['DateTime']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   version: Version;
-}
-;export enum ImageGrade {
+};
+
+export enum ImageGrade {
   A = 'A',
   B = 'B',
   C = 'C',
@@ -717,32 +813,37 @@ export type ImageLayer = {
   __typename?: 'ImageLayer';
   diffId?: Maybe<Scalars['String']>;
   digest?: Maybe<Scalars['String']>;
-}
-;export type ImpersonationPolicy = {
+};
+
+export type ImpersonationPolicy = {
   __typename?: 'ImpersonationPolicy';
   bindings?: Maybe<Array<Maybe<ImpersonationPolicyBinding>>>;
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
-}
-;export type ImpersonationPolicyAttributes = {
+};
+
+export type ImpersonationPolicyAttributes = {
   bindings?: InputMaybe<Array<InputMaybe<ImpersonationPolicyBindingAttributes>>>;
   id?: InputMaybe<Scalars['ID']>;
-}
-;export type ImpersonationPolicyBinding = {
+};
+
+export type ImpersonationPolicyBinding = {
   __typename?: 'ImpersonationPolicyBinding';
   group?: Maybe<Group>;
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   user?: Maybe<User>;
-}
-;export type ImpersonationPolicyBindingAttributes = {
+};
+
+export type ImpersonationPolicyBindingAttributes = {
   groupId?: InputMaybe<Scalars['ID']>;
   id?: InputMaybe<Scalars['ID']>;
   userId?: InputMaybe<Scalars['ID']>;
-}
-;export type Incident = {
+};
+
+export type Incident = {
   __typename?: 'Incident';
   clusterInformation?: Maybe<ClusterInformation>;
   creator: User;
@@ -765,32 +866,41 @@ export type ImageLayer = {
   tags?: Maybe<Array<Maybe<Tag>>>;
   title: Scalars['String'];
   updatedAt?: Maybe<Scalars['DateTime']>;
-}
-;export type IncidentFilesArgs = {
+};
+
+
+export type IncidentFilesArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
-}
-;export type IncidentFollowersArgs = {
+};
+
+
+export type IncidentFollowersArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
-}
-;export type IncidentHistoryArgs = {
+};
+
+
+export type IncidentHistoryArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
-}
-;export type IncidentMessagesArgs = {
+};
+
+
+export type IncidentMessagesArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
-}
-;export enum IncidentAction {
+};
+
+export enum IncidentAction {
   Accept = 'ACCEPT',
   Complete = 'COMPLETE',
   Create = 'CREATE',
@@ -806,34 +916,40 @@ export type IncidentAttributes = {
   status?: InputMaybe<IncidentStatus>;
   tags?: InputMaybe<Array<InputMaybe<TagAttributes>>>;
   title?: InputMaybe<Scalars['String']>;
-}
-;export type IncidentChange = {
+};
+
+export type IncidentChange = {
   __typename?: 'IncidentChange';
   key: Scalars['String'];
   next?: Maybe<Scalars['String']>;
   prev?: Maybe<Scalars['String']>;
-}
-;export type IncidentConnection = {
+};
+
+export type IncidentConnection = {
   __typename?: 'IncidentConnection';
   edges?: Maybe<Array<Maybe<IncidentEdge>>>;
   pageInfo: PageInfo;
-}
-;export type IncidentDelta = {
+};
+
+export type IncidentDelta = {
   __typename?: 'IncidentDelta';
   delta?: Maybe<Delta>;
   payload?: Maybe<Incident>;
-}
-;export type IncidentEdge = {
+};
+
+export type IncidentEdge = {
   __typename?: 'IncidentEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<Incident>;
-}
-;export type IncidentFilter = {
+};
+
+export type IncidentFilter = {
   statuses?: InputMaybe<Array<InputMaybe<IncidentStatus>>>;
   type: IncidentFilterType;
   value?: InputMaybe<Scalars['String']>;
-}
-;export enum IncidentFilterType {
+};
+
+export enum IncidentFilterType {
   Following = 'FOLLOWING',
   Notifications = 'NOTIFICATIONS',
   Status = 'STATUS',
@@ -849,18 +965,21 @@ export type IncidentHistory = {
   incident: Incident;
   insertedAt?: Maybe<Scalars['DateTime']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
-}
-;export type IncidentHistoryConnection = {
+};
+
+export type IncidentHistoryConnection = {
   __typename?: 'IncidentHistoryConnection';
   edges?: Maybe<Array<Maybe<IncidentHistoryEdge>>>;
   pageInfo: PageInfo;
-}
-;export type IncidentHistoryEdge = {
+};
+
+export type IncidentHistoryEdge = {
   __typename?: 'IncidentHistoryEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<IncidentHistory>;
-}
-;export type IncidentMessage = {
+};
+
+export type IncidentMessage = {
   __typename?: 'IncidentMessage';
   creator: User;
   entities?: Maybe<Array<Maybe<MessageEntity>>>;
@@ -871,28 +990,33 @@ export type IncidentHistory = {
   reactions?: Maybe<Array<Maybe<Reaction>>>;
   text: Scalars['String'];
   updatedAt?: Maybe<Scalars['DateTime']>;
-}
-;export type IncidentMessageAttributes = {
+};
+
+export type IncidentMessageAttributes = {
   entities?: InputMaybe<Array<InputMaybe<EntityAttributes>>>;
   file?: InputMaybe<FileAttributes>;
   text: Scalars['String'];
-}
-;export type IncidentMessageConnection = {
+};
+
+export type IncidentMessageConnection = {
   __typename?: 'IncidentMessageConnection';
   edges?: Maybe<Array<Maybe<IncidentMessageEdge>>>;
   pageInfo: PageInfo;
-}
-;export type IncidentMessageDelta = {
+};
+
+export type IncidentMessageDelta = {
   __typename?: 'IncidentMessageDelta';
   delta?: Maybe<Delta>;
   payload?: Maybe<IncidentMessage>;
-}
-;export type IncidentMessageEdge = {
+};
+
+export type IncidentMessageEdge = {
   __typename?: 'IncidentMessageEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<IncidentMessage>;
-}
-;export enum IncidentSort {
+};
+
+export enum IncidentSort {
   InsertedAt = 'INSERTED_AT',
   Severity = 'SEVERITY',
   Status = 'STATUS',
@@ -922,23 +1046,27 @@ export type Installation = {
   trackTag: Scalars['String'];
   updatedAt?: Maybe<Scalars['DateTime']>;
   user?: Maybe<User>;
-}
-;export type InstallationAttributes = {
+};
+
+export type InstallationAttributes = {
   autoUpgrade?: InputMaybe<Scalars['Boolean']>;
   context?: InputMaybe<Scalars['Yaml']>;
   trackTag?: InputMaybe<Scalars['String']>;
-}
-;export type InstallationConnection = {
+};
+
+export type InstallationConnection = {
   __typename?: 'InstallationConnection';
   edges?: Maybe<Array<Maybe<InstallationEdge>>>;
   pageInfo: PageInfo;
-}
-;export type InstallationEdge = {
+};
+
+export type InstallationEdge = {
   __typename?: 'InstallationEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<Installation>;
-}
-;export type Integration = {
+};
+
+export type Integration = {
   __typename?: 'Integration';
   description?: Maybe<Scalars['String']>;
   icon?: Maybe<Scalars['String']>;
@@ -952,8 +1080,9 @@ export type Installation = {
   tags?: Maybe<Array<Maybe<Tag>>>;
   type?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
-}
-;export type IntegrationAttributes = {
+};
+
+export type IntegrationAttributes = {
   description?: InputMaybe<Scalars['String']>;
   icon?: InputMaybe<Scalars['UploadOrUrl']>;
   name: Scalars['String'];
@@ -961,18 +1090,21 @@ export type Installation = {
   spec?: InputMaybe<Scalars['Yaml']>;
   tags?: InputMaybe<Array<InputMaybe<TagAttributes>>>;
   type?: InputMaybe<Scalars['String']>;
-}
-;export type IntegrationConnection = {
+};
+
+export type IntegrationConnection = {
   __typename?: 'IntegrationConnection';
   edges?: Maybe<Array<Maybe<IntegrationEdge>>>;
   pageInfo: PageInfo;
-}
-;export type IntegrationEdge = {
+};
+
+export type IntegrationEdge = {
   __typename?: 'IntegrationEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<Integration>;
-}
-;export type IntegrationWebhook = {
+};
+
+export type IntegrationWebhook = {
   __typename?: 'IntegrationWebhook';
   account?: Maybe<Account>;
   actions?: Maybe<Array<Maybe<Scalars['String']>>>;
@@ -983,29 +1115,35 @@ export type Installation = {
   secret: Scalars['String'];
   updatedAt?: Maybe<Scalars['DateTime']>;
   url: Scalars['String'];
-}
-;export type IntegrationWebhookLogsArgs = {
+};
+
+
+export type IntegrationWebhookLogsArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
-}
-;export type IntegrationWebhookAttributes = {
+};
+
+export type IntegrationWebhookAttributes = {
   actions?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   name: Scalars['String'];
   url: Scalars['String'];
-}
-;export type IntegrationWebhookConnection = {
+};
+
+export type IntegrationWebhookConnection = {
   __typename?: 'IntegrationWebhookConnection';
   edges?: Maybe<Array<Maybe<IntegrationWebhookEdge>>>;
   pageInfo: PageInfo;
-}
-;export type IntegrationWebhookEdge = {
+};
+
+export type IntegrationWebhookEdge = {
   __typename?: 'IntegrationWebhookEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<IntegrationWebhook>;
-}
-;export type Invite = {
+};
+
+export type Invite = {
   __typename?: 'Invite';
   account?: Maybe<Account>;
   email?: Maybe<Scalars['String']>;
@@ -1014,21 +1152,25 @@ export type Installation = {
   secureId: Scalars['String'];
   updatedAt?: Maybe<Scalars['DateTime']>;
   user?: Maybe<User>;
-}
-;export type InviteAttributes = {
+};
+
+export type InviteAttributes = {
   email?: InputMaybe<Scalars['String']>;
-}
-;export type InviteConnection = {
+};
+
+export type InviteConnection = {
   __typename?: 'InviteConnection';
   edges?: Maybe<Array<Maybe<InviteEdge>>>;
   pageInfo: PageInfo;
-}
-;export type InviteEdge = {
+};
+
+export type InviteEdge = {
   __typename?: 'InviteEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<Invite>;
-}
-;export type Invoice = {
+};
+
+export type Invoice = {
   __typename?: 'Invoice';
   amountDue: Scalars['Int'];
   amountPaid: Scalars['Int'];
@@ -1038,56 +1180,66 @@ export type Installation = {
   lines?: Maybe<Array<Maybe<InvoiceItem>>>;
   number: Scalars['String'];
   status?: Maybe<Scalars['String']>;
-}
-;export type InvoiceConnection = {
+};
+
+export type InvoiceConnection = {
   __typename?: 'InvoiceConnection';
   edges?: Maybe<Array<Maybe<InvoiceEdge>>>;
   pageInfo: PageInfo;
-}
-;export type InvoiceEdge = {
+};
+
+export type InvoiceEdge = {
   __typename?: 'InvoiceEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<Invoice>;
-}
-;export type InvoiceItem = {
+};
+
+export type InvoiceItem = {
   __typename?: 'InvoiceItem';
   amount: Scalars['Int'];
   currency: Scalars['String'];
   description?: Maybe<Scalars['String']>;
-}
-;export type License = {
+};
+
+export type License = {
   __typename?: 'License';
   name?: Maybe<Scalars['String']>;
   url?: Maybe<Scalars['String']>;
-}
-;export type Limit = {
+};
+
+export type Limit = {
   __typename?: 'Limit';
   dimension: Scalars['String'];
   quantity: Scalars['Int'];
-}
-;export type LimitAttributes = {
+};
+
+export type LimitAttributes = {
   dimension: Scalars['String'];
   quantity: Scalars['Int'];
-}
-;export type LineItem = {
+};
+
+export type LineItem = {
   __typename?: 'LineItem';
   cost: Scalars['Int'];
   dimension: Scalars['String'];
   name: Scalars['String'];
   period?: Maybe<Scalars['String']>;
   type?: Maybe<PlanType>;
-}
-;export type LineItemAttributes = {
+};
+
+export type LineItemAttributes = {
   cost: Scalars['Int'];
   dimension: Scalars['String'];
   name: Scalars['String'];
   period: Scalars['String'];
   type?: InputMaybe<PlanType>;
-}
-;export type LockAttributes = {
+};
+
+export type LockAttributes = {
   lock: Scalars['String'];
-}
-;export enum LoginMethod {
+};
+
+export enum LoginMethod {
   Github = 'GITHUB',
   Google = 'GOOGLE',
   Password = 'PASSWORD',
@@ -1100,13 +1252,15 @@ export type LoginMethodResponse = {
   authorizeUrl?: Maybe<Scalars['String']>;
   loginMethod: LoginMethod;
   token?: Maybe<Scalars['String']>;
-}
-;export type LoginRequest = {
+};
+
+export type LoginRequest = {
   __typename?: 'LoginRequest';
   requestedScope?: Maybe<Array<Maybe<Scalars['String']>>>;
   subject?: Maybe<Scalars['String']>;
-}
-;export enum MediaType {
+};
+
+export enum MediaType {
   Audio = 'AUDIO',
   Image = 'IMAGE',
   Other = 'OTHER',
@@ -1117,8 +1271,9 @@ export type LoginMethodResponse = {
 export type MeetingAttributes = {
   incidentId?: InputMaybe<Scalars['ID']>;
   topic: Scalars['String'];
-}
-;export type MessageEntity = {
+};
+
+export type MessageEntity = {
   __typename?: 'MessageEntity';
   endIndex?: Maybe<Scalars['Int']>;
   id: Scalars['ID'];
@@ -1128,8 +1283,9 @@ export type MeetingAttributes = {
   type: MessageEntityType;
   updatedAt?: Maybe<Scalars['DateTime']>;
   user?: Maybe<User>;
-}
-;export enum MessageEntityType {
+};
+
+export enum MessageEntityType {
   Emoji = 'EMOJI',
   Mention = 'MENTION'
 }
@@ -1139,18 +1295,21 @@ export type Metric = {
   name: Scalars['String'];
   tags?: Maybe<Array<Maybe<MetricTag>>>;
   values?: Maybe<Array<Maybe<MetricValue>>>;
-}
-;export type MetricTag = {
+};
+
+export type MetricTag = {
   __typename?: 'MetricTag';
   name: Scalars['String'];
   value: Scalars['String'];
-}
-;export type MetricValue = {
+};
+
+export type MetricValue = {
   __typename?: 'MetricValue';
   time?: Maybe<Scalars['DateTime']>;
   value?: Maybe<Scalars['Int']>;
-}
-;export type Notification = {
+};
+
+export type Notification = {
   __typename?: 'Notification';
   actor: User;
   id: Scalars['ID'];
@@ -1162,29 +1321,34 @@ export type Metric = {
   type: NotificationType;
   updatedAt?: Maybe<Scalars['DateTime']>;
   user: User;
-}
-;export type NotificationConnection = {
+};
+
+export type NotificationConnection = {
   __typename?: 'NotificationConnection';
   edges?: Maybe<Array<Maybe<NotificationEdge>>>;
   pageInfo: PageInfo;
-}
-;export type NotificationEdge = {
+};
+
+export type NotificationEdge = {
   __typename?: 'NotificationEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<Notification>;
-}
-;export type NotificationPreferences = {
+};
+
+export type NotificationPreferences = {
   __typename?: 'NotificationPreferences';
   incidentUpdate?: Maybe<Scalars['Boolean']>;
   mention?: Maybe<Scalars['Boolean']>;
   message?: Maybe<Scalars['Boolean']>;
-}
-;export type NotificationPreferencesAttributes = {
+};
+
+export type NotificationPreferencesAttributes = {
   incidentUpdate: Scalars['Boolean'];
   mention: Scalars['Boolean'];
   message: Scalars['Boolean'];
-}
-;export enum NotificationType {
+};
+
+export enum NotificationType {
   IncidentUpdate = 'INCIDENT_UPDATE',
   Locked = 'LOCKED',
   Mention = 'MENTION',
@@ -1195,21 +1359,24 @@ export type OauthAttributes = {
   code?: InputMaybe<Scalars['String']>;
   redirectUri?: InputMaybe<Scalars['String']>;
   service?: InputMaybe<OauthService>;
-}
-;export type OauthInfo = {
+};
+
+export type OauthInfo = {
   __typename?: 'OauthInfo';
   authorizeUrl: Scalars['String'];
   provider: OauthProvider;
-}
-;export type OauthIntegration = {
+};
+
+export type OauthIntegration = {
   __typename?: 'OauthIntegration';
   account?: Maybe<Account>;
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
   service: OauthService;
   updatedAt?: Maybe<Scalars['DateTime']>;
-}
-;export enum OauthProvider {
+};
+
+export enum OauthProvider {
   Github = 'GITHUB',
   Gitlab = 'GITLAB',
   Google = 'GOOGLE'
@@ -1218,8 +1385,9 @@ export type OauthAttributes = {
 export type OauthResponse = {
   __typename?: 'OauthResponse';
   redirectTo: Scalars['String'];
-}
-;export enum OauthService {
+};
+
+export enum OauthService {
   Zoom = 'ZOOM'
 }
 
@@ -1227,17 +1395,20 @@ export type OauthSettings = {
   __typename?: 'OauthSettings';
   authMethod: OidcAuthMethod;
   uriFormat: Scalars['String'];
-}
-;export type OauthSettingsAttributes = {
+};
+
+export type OauthSettingsAttributes = {
   authMethod: OidcAuthMethod;
   uriFormat: Scalars['String'];
-}
-;export type OidcAttributes = {
+};
+
+export type OidcAttributes = {
   authMethod: OidcAuthMethod;
   bindings?: InputMaybe<Array<InputMaybe<BindingAttributes>>>;
   redirectUris?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-}
-;export enum OidcAuthMethod {
+};
+
+export enum OidcAuthMethod {
   Basic = 'BASIC',
   Post = 'POST'
 }
@@ -1255,18 +1426,21 @@ export type OidcLogin = {
   repository?: Maybe<Repository>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   user?: Maybe<User>;
-}
-;export type OidcLoginConnection = {
+};
+
+export type OidcLoginConnection = {
   __typename?: 'OidcLoginConnection';
   edges?: Maybe<Array<Maybe<OidcLoginEdge>>>;
   pageInfo: PageInfo;
-}
-;export type OidcLoginEdge = {
+};
+
+export type OidcLoginEdge = {
   __typename?: 'OidcLoginEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<OidcLogin>;
-}
-;export type OidcProvider = {
+};
+
+export type OidcProvider = {
   __typename?: 'OidcProvider';
   authMethod: OidcAuthMethod;
   bindings?: Maybe<Array<Maybe<OidcProviderBinding>>>;
@@ -1278,37 +1452,42 @@ export type OidcLogin = {
   insertedAt?: Maybe<Scalars['DateTime']>;
   redirectUris?: Maybe<Array<Maybe<Scalars['String']>>>;
   updatedAt?: Maybe<Scalars['DateTime']>;
-}
-;export type OidcProviderBinding = {
+};
+
+export type OidcProviderBinding = {
   __typename?: 'OidcProviderBinding';
   group?: Maybe<Group>;
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   user?: Maybe<User>;
-}
-;export type OidcSettings = {
+};
+
+export type OidcSettings = {
   __typename?: 'OidcSettings';
   authMethod: OidcAuthMethod;
   domainKey?: Maybe<Scalars['String']>;
   subdomain?: Maybe<Scalars['Boolean']>;
   uriFormat?: Maybe<Scalars['String']>;
   uriFormats?: Maybe<Array<Maybe<Scalars['String']>>>;
-}
-;export type OidcSettingsAttributes = {
+};
+
+export type OidcSettingsAttributes = {
   authMethod: OidcAuthMethod;
   domainKey?: InputMaybe<Scalars['String']>;
   subdomain?: InputMaybe<Scalars['Boolean']>;
   uriFormat?: InputMaybe<Scalars['String']>;
   uriFormats?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-}
-;export type OidcStepResponse = {
+};
+
+export type OidcStepResponse = {
   __typename?: 'OidcStepResponse';
   consent?: Maybe<ConsentRequest>;
   login?: Maybe<LoginRequest>;
   repository?: Maybe<Repository>;
-}
-;export enum OnboardingState {
+};
+
+export enum OnboardingState {
   Active = 'ACTIVE',
   Installed = 'INSTALLED',
   New = 'NEW',
@@ -1338,8 +1517,9 @@ export type OuathConfiguration = {
   jwksUri?: Maybe<Scalars['String']>;
   tokenEndpoint?: Maybe<Scalars['String']>;
   userinfoEndpoint?: Maybe<Scalars['String']>;
-}
-;export type PackageScan = {
+};
+
+export type PackageScan = {
   __typename?: 'PackageScan';
   errors?: Maybe<Array<Maybe<ScanError>>>;
   grade?: Maybe<ImageGrade>;
@@ -1347,8 +1527,9 @@ export type OuathConfiguration = {
   insertedAt?: Maybe<Scalars['DateTime']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   violations?: Maybe<Array<Maybe<ScanViolation>>>;
-}
-;export type PageInfo = {
+};
+
+export type PageInfo = {
   __typename?: 'PageInfo';
   /** When paginating forwards, the cursor to continue. */
   endCursor?: Maybe<Scalars['String']>;
@@ -1358,8 +1539,9 @@ export type OuathConfiguration = {
   hasPreviousPage: Scalars['Boolean'];
   /** When paginating backwards, the cursor to continue. */
   startCursor?: Maybe<Scalars['String']>;
-}
-;export enum Permission {
+};
+
+export enum Permission {
   Billing = 'BILLING',
   Install = 'INSTALL',
   Integrations = 'INTEGRATIONS',
@@ -1376,14 +1558,17 @@ export type PersistedToken = {
   metrics?: Maybe<Array<Maybe<GeoMetric>>>;
   token?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
-}
-;export type PersistedTokenAuditsArgs = {
+};
+
+
+export type PersistedTokenAuditsArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
-}
-;export type PersistedTokenAudit = {
+};
+
+export type PersistedTokenAudit = {
   __typename?: 'PersistedTokenAudit';
   city?: Maybe<Scalars['String']>;
   count?: Maybe<Scalars['Int']>;
@@ -1395,28 +1580,33 @@ export type PersistedToken = {
   longitude?: Maybe<Scalars['String']>;
   timestamp?: Maybe<Scalars['DateTime']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
-}
-;export type PersistedTokenAuditConnection = {
+};
+
+export type PersistedTokenAuditConnection = {
   __typename?: 'PersistedTokenAuditConnection';
   edges?: Maybe<Array<Maybe<PersistedTokenAuditEdge>>>;
   pageInfo: PageInfo;
-}
-;export type PersistedTokenAuditEdge = {
+};
+
+export type PersistedTokenAuditEdge = {
   __typename?: 'PersistedTokenAuditEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<PersistedTokenAudit>;
-}
-;export type PersistedTokenConnection = {
+};
+
+export type PersistedTokenConnection = {
   __typename?: 'PersistedTokenConnection';
   edges?: Maybe<Array<Maybe<PersistedTokenEdge>>>;
   pageInfo: PageInfo;
-}
-;export type PersistedTokenEdge = {
+};
+
+export type PersistedTokenEdge = {
   __typename?: 'PersistedTokenEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<PersistedToken>;
-}
-;export type Plan = {
+};
+
+export type Plan = {
   __typename?: 'Plan';
   cost: Scalars['Int'];
   default?: Maybe<Scalars['Boolean']>;
@@ -1429,8 +1619,9 @@ export type PersistedToken = {
   serviceLevels?: Maybe<Array<Maybe<ServiceLevel>>>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   visible: Scalars['Boolean'];
-}
-;export type PlanAttributes = {
+};
+
+export type PlanAttributes = {
   cost: Scalars['Int'];
   default?: InputMaybe<Scalars['Boolean']>;
   lineItems?: InputMaybe<PlanLineItemAttributes>;
@@ -1438,35 +1629,42 @@ export type PersistedToken = {
   name: Scalars['String'];
   period: Scalars['String'];
   serviceLevels?: InputMaybe<Array<InputMaybe<ServiceLevelAttributes>>>;
-}
-;export type PlanFeature = {
+};
+
+export type PlanFeature = {
   __typename?: 'PlanFeature';
   description: Scalars['String'];
   name: Scalars['String'];
-}
-;export type PlanFeatureAttributes = {
+};
+
+export type PlanFeatureAttributes = {
   description: Scalars['String'];
   name: Scalars['String'];
-}
-;export type PlanLineItemAttributes = {
+};
+
+export type PlanLineItemAttributes = {
   included?: InputMaybe<Array<InputMaybe<LimitAttributes>>>;
   items?: InputMaybe<Array<InputMaybe<LineItemAttributes>>>;
-}
-;export type PlanLineItems = {
+};
+
+export type PlanLineItems = {
   __typename?: 'PlanLineItems';
   included?: Maybe<Array<Maybe<Limit>>>;
   items?: Maybe<Array<Maybe<LineItem>>>;
-}
-;export type PlanMetadata = {
+};
+
+export type PlanMetadata = {
   __typename?: 'PlanMetadata';
   features?: Maybe<Array<Maybe<PlanFeature>>>;
   freeform?: Maybe<Scalars['Map']>;
-}
-;export type PlanMetadataAttributes = {
+};
+
+export type PlanMetadataAttributes = {
   features?: InputMaybe<Array<InputMaybe<PlanFeatureAttributes>>>;
   freeform?: InputMaybe<Scalars['Yaml']>;
-}
-;export enum PlanType {
+};
+
+export enum PlanType {
   Licensed = 'LICENSED',
   Metered = 'METERED'
 }
@@ -1477,23 +1675,26 @@ export type PlatformMetrics = {
   publishers?: Maybe<Scalars['Int']>;
   repositories?: Maybe<Scalars['Int']>;
   rollouts?: Maybe<Scalars['Int']>;
-}
-;export type PluralConfiguration = {
+};
+
+export type PluralConfiguration = {
   __typename?: 'PluralConfiguration';
   gitCommit?: Maybe<Scalars['String']>;
   registry?: Maybe<Scalars['String']>;
   stripeConnectId?: Maybe<Scalars['String']>;
   stripePublishableKey?: Maybe<Scalars['String']>;
-}
-;export type PolicyBinding = {
+};
+
+export type PolicyBinding = {
   __typename?: 'PolicyBinding';
   group?: Maybe<Group>;
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   user?: Maybe<User>;
-}
-;export type Postmortem = {
+};
+
+export type Postmortem = {
   __typename?: 'Postmortem';
   actionItems?: Maybe<Array<Maybe<ActionItem>>>;
   content: Scalars['String'];
@@ -1501,12 +1702,14 @@ export type PlatformMetrics = {
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
-}
-;export type PostmortemAttributes = {
+};
+
+export type PostmortemAttributes = {
   actionItems?: InputMaybe<Array<InputMaybe<ActionItemAttributes>>>;
   content: Scalars['String'];
-}
-;export enum Provider {
+};
+
+export enum Provider {
   Aws = 'AWS',
   Azure = 'AZURE',
   Custom = 'CUSTOM',
@@ -1525,22 +1728,26 @@ export type PublicKey = {
   name: Scalars['String'];
   updatedAt?: Maybe<Scalars['DateTime']>;
   user: User;
-}
-;export type PublicKeyAttributes = {
+};
+
+export type PublicKeyAttributes = {
   content: Scalars['String'];
   name: Scalars['String'];
-}
-;export type PublicKeyConnection = {
+};
+
+export type PublicKeyConnection = {
   __typename?: 'PublicKeyConnection';
   edges?: Maybe<Array<Maybe<PublicKeyEdge>>>;
   pageInfo: PageInfo;
-}
-;export type PublicKeyEdge = {
+};
+
+export type PublicKeyEdge = {
   __typename?: 'PublicKeyEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<PublicKey>;
-}
-;export type Publisher = {
+};
+
+export type Publisher = {
   __typename?: 'Publisher';
   address?: Maybe<Address>;
   avatar?: Maybe<Scalars['String']>;
@@ -1554,33 +1761,38 @@ export type PublicKey = {
   phone?: Maybe<Scalars['String']>;
   repositories?: Maybe<Array<Maybe<Repository>>>;
   updatedAt?: Maybe<Scalars['DateTime']>;
-}
-;export type PublisherAttributes = {
+};
+
+export type PublisherAttributes = {
   address?: InputMaybe<AddressAttributes>;
   avatar?: InputMaybe<Scalars['UploadOrUrl']>;
   description?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
   phone?: InputMaybe<Scalars['String']>;
-}
-;export type PublisherConnection = {
+};
+
+export type PublisherConnection = {
   __typename?: 'PublisherConnection';
   edges?: Maybe<Array<Maybe<PublisherEdge>>>;
   pageInfo: PageInfo;
-}
-;export type PublisherEdge = {
+};
+
+export type PublisherEdge = {
   __typename?: 'PublisherEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<Publisher>;
-}
-;export type Reaction = {
+};
+
+export type Reaction = {
   __typename?: 'Reaction';
   creator: User;
   insertedAt?: Maybe<Scalars['DateTime']>;
   message: IncidentMessage;
   name: Scalars['String'];
   updatedAt?: Maybe<Scalars['DateTime']>;
-}
-;export type Recipe = {
+};
+
+export type Recipe = {
   __typename?: 'Recipe';
   description?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
@@ -1595,8 +1807,9 @@ export type PublicKey = {
   restricted?: Maybe<Scalars['Boolean']>;
   tests?: Maybe<Array<Maybe<RecipeTest>>>;
   updatedAt?: Maybe<Scalars['DateTime']>;
-}
-;export type RecipeAttributes = {
+};
+
+export type RecipeAttributes = {
   dependencies?: InputMaybe<Array<InputMaybe<RecipeReference>>>;
   description?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
@@ -1606,19 +1819,22 @@ export type PublicKey = {
   restricted?: InputMaybe<Scalars['Boolean']>;
   sections?: InputMaybe<Array<InputMaybe<RecipeSectionAttributes>>>;
   tests?: InputMaybe<Array<InputMaybe<RecipeTestAttributes>>>;
-}
-;export type RecipeCondition = {
+};
+
+export type RecipeCondition = {
   __typename?: 'RecipeCondition';
   field: Scalars['String'];
   operation: Operation;
   value?: Maybe<Scalars['String']>;
-}
-;export type RecipeConditionAttributes = {
+};
+
+export type RecipeConditionAttributes = {
   field: Scalars['String'];
   operation: Operation;
   value?: InputMaybe<Scalars['String']>;
-}
-;export type RecipeConfiguration = {
+};
+
+export type RecipeConfiguration = {
   __typename?: 'RecipeConfiguration';
   args?: Maybe<Array<Maybe<Scalars['String']>>>;
   condition?: Maybe<RecipeCondition>;
@@ -1631,8 +1847,9 @@ export type PublicKey = {
   placeholder?: Maybe<Scalars['String']>;
   type?: Maybe<Datatype>;
   validation?: Maybe<RecipeValidation>;
-}
-;export type RecipeConfigurationAttributes = {
+};
+
+export type RecipeConfigurationAttributes = {
   condition?: InputMaybe<RecipeConditionAttributes>;
   default?: InputMaybe<Scalars['String']>;
   documentation?: InputMaybe<Scalars['String']>;
@@ -1643,18 +1860,21 @@ export type PublicKey = {
   placeholder?: InputMaybe<Scalars['String']>;
   type: Datatype;
   validation?: InputMaybe<RecipeValidationAttributes>;
-}
-;export type RecipeConnection = {
+};
+
+export type RecipeConnection = {
   __typename?: 'RecipeConnection';
   edges?: Maybe<Array<Maybe<RecipeEdge>>>;
   pageInfo: PageInfo;
-}
-;export type RecipeEdge = {
+};
+
+export type RecipeEdge = {
   __typename?: 'RecipeEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<Recipe>;
-}
-;export type RecipeItem = {
+};
+
+export type RecipeItem = {
   __typename?: 'RecipeItem';
   chart?: Maybe<Chart>;
   configuration?: Maybe<Array<Maybe<RecipeConfiguration>>>;
@@ -1663,13 +1883,15 @@ export type PublicKey = {
   recipeSection?: Maybe<RecipeSection>;
   terraform?: Maybe<Terraform>;
   updatedAt?: Maybe<Scalars['DateTime']>;
-}
-;export type RecipeItemAttributes = {
+};
+
+export type RecipeItemAttributes = {
   configuration?: InputMaybe<Array<InputMaybe<RecipeConfigurationAttributes>>>;
   name: Scalars['String'];
   type: RecipeItemType;
-}
-;export enum RecipeItemType {
+};
+
+export enum RecipeItemType {
   Helm = 'HELM',
   Terraform = 'TERRAFORM'
 }
@@ -1677,8 +1899,9 @@ export type PublicKey = {
 export type RecipeReference = {
   name: Scalars['String'];
   repo: Scalars['String'];
-}
-;export type RecipeSection = {
+};
+
+export type RecipeSection = {
   __typename?: 'RecipeSection';
   configuration?: Maybe<Array<Maybe<RecipeConfiguration>>>;
   id?: Maybe<Scalars['ID']>;
@@ -1688,37 +1911,43 @@ export type RecipeReference = {
   recipeItems?: Maybe<Array<Maybe<RecipeItem>>>;
   repository?: Maybe<Repository>;
   updatedAt?: Maybe<Scalars['DateTime']>;
-}
-;export type RecipeSectionAttributes = {
+};
+
+export type RecipeSectionAttributes = {
   configuration?: InputMaybe<Array<InputMaybe<RecipeConfigurationAttributes>>>;
   items?: InputMaybe<Array<InputMaybe<RecipeItemAttributes>>>;
   name: Scalars['String'];
-}
-;export type RecipeTest = {
+};
+
+export type RecipeTest = {
   __typename?: 'RecipeTest';
   args?: Maybe<Array<Maybe<TestArgument>>>;
   message?: Maybe<Scalars['String']>;
   name: Scalars['String'];
   type: TestType;
-}
-;export type RecipeTestAttributes = {
+};
+
+export type RecipeTestAttributes = {
   args?: InputMaybe<Array<InputMaybe<TestArgumentAttributes>>>;
   message?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
   type: TestType;
-}
-;export type RecipeValidation = {
+};
+
+export type RecipeValidation = {
   __typename?: 'RecipeValidation';
   message: Scalars['String'];
   regex?: Maybe<Scalars['String']>;
   type: ValidationType;
-}
-;export type RecipeValidationAttributes = {
+};
+
+export type RecipeValidationAttributes = {
   message: Scalars['String'];
   regex?: InputMaybe<Scalars['String']>;
   type: ValidationType;
-}
-;export type Repository = {
+};
+
+export type Repository = {
   __typename?: 'Repository';
   artifacts?: Maybe<Array<Maybe<Artifact>>>;
   category?: Maybe<Category>;
@@ -1749,8 +1978,9 @@ export type RecipeReference = {
   tags?: Maybe<Array<Maybe<Tag>>>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   verified?: Maybe<Scalars['Boolean']>;
-}
-;export type RepositoryAttributes = {
+};
+
+export type RepositoryAttributes = {
   category?: InputMaybe<Category>;
   community?: InputMaybe<CommunityAttributes>;
   darkIcon?: InputMaybe<Scalars['UploadOrUrl']>;
@@ -1769,18 +1999,21 @@ export type RecipeReference = {
   secrets?: InputMaybe<Scalars['Yaml']>;
   tags?: InputMaybe<Array<InputMaybe<TagAttributes>>>;
   verified?: InputMaybe<Scalars['Boolean']>;
-}
-;export type RepositoryConnection = {
+};
+
+export type RepositoryConnection = {
   __typename?: 'RepositoryConnection';
   edges?: Maybe<Array<Maybe<RepositoryEdge>>>;
   pageInfo: PageInfo;
-}
-;export type RepositoryEdge = {
+};
+
+export type RepositoryEdge = {
   __typename?: 'RepositoryEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<Repository>;
-}
-;export type RepositorySubscription = {
+};
+
+export type RepositorySubscription = {
   __typename?: 'RepositorySubscription';
   customerId?: Maybe<Scalars['String']>;
   externalId?: Maybe<Scalars['String']>;
@@ -1789,24 +2022,29 @@ export type RecipeReference = {
   invoices?: Maybe<InvoiceConnection>;
   lineItems?: Maybe<SubscriptionLineItems>;
   plan?: Maybe<Plan>;
-}
-;export type RepositorySubscriptionInvoicesArgs = {
+};
+
+
+export type RepositorySubscriptionInvoicesArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
-}
-;export type RepositorySubscriptionConnection = {
+};
+
+export type RepositorySubscriptionConnection = {
   __typename?: 'RepositorySubscriptionConnection';
   edges?: Maybe<Array<Maybe<RepositorySubscriptionEdge>>>;
   pageInfo: PageInfo;
-}
-;export type RepositorySubscriptionEdge = {
+};
+
+export type RepositorySubscriptionEdge = {
   __typename?: 'RepositorySubscriptionEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<RepositorySubscription>;
-}
-;export type ResetToken = {
+};
+
+export type ResetToken = {
   __typename?: 'ResetToken';
   email: Scalars['String'];
   externalId: Scalars['ID'];
@@ -1815,15 +2053,18 @@ export type RecipeReference = {
   type: ResetTokenType;
   updatedAt?: Maybe<Scalars['DateTime']>;
   user: User;
-}
-;export type ResetTokenAttributes = {
+};
+
+export type ResetTokenAttributes = {
   email?: InputMaybe<Scalars['String']>;
   type: ResetTokenType;
-}
-;export type ResetTokenRealization = {
+};
+
+export type ResetTokenRealization = {
   password?: InputMaybe<Scalars['String']>;
-}
-;export enum ResetTokenType {
+};
+
+export enum ResetTokenType {
   Email = 'EMAIL',
   Password = 'PASSWORD'
 }
@@ -1831,8 +2072,9 @@ export type RecipeReference = {
 export type ResourceDefinitionAttributes = {
   name: Scalars['String'];
   spec?: InputMaybe<Array<InputMaybe<SpecificationAttributes>>>;
-}
-;export type Role = {
+};
+
+export type Role = {
   __typename?: 'Role';
   account?: Maybe<Account>;
   description?: Maybe<Scalars['String']>;
@@ -1843,40 +2085,47 @@ export type ResourceDefinitionAttributes = {
   repositories?: Maybe<Array<Maybe<Scalars['String']>>>;
   roleBindings?: Maybe<Array<Maybe<RoleBinding>>>;
   updatedAt?: Maybe<Scalars['DateTime']>;
-}
-;export type RoleAttributes = {
+};
+
+export type RoleAttributes = {
   description?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
   permissions?: InputMaybe<Array<InputMaybe<Permission>>>;
   repositories?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   roleBindings?: InputMaybe<Array<InputMaybe<BindingAttributes>>>;
-}
-;export type RoleBinding = {
+};
+
+export type RoleBinding = {
   __typename?: 'RoleBinding';
   group?: Maybe<Group>;
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   user?: Maybe<User>;
-}
-;export type RoleConnection = {
+};
+
+export type RoleConnection = {
   __typename?: 'RoleConnection';
   edges?: Maybe<Array<Maybe<RoleEdge>>>;
   pageInfo: PageInfo;
-}
-;export type RoleEdge = {
+};
+
+export type RoleEdge = {
   __typename?: 'RoleEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<Role>;
-}
-;export type Roles = {
+};
+
+export type Roles = {
   __typename?: 'Roles';
   admin?: Maybe<Scalars['Boolean']>;
-}
-;export type RolesAttributes = {
+};
+
+export type RolesAttributes = {
   admin?: InputMaybe<Scalars['Boolean']>;
-}
-;export type Rollout = {
+};
+
+export type Rollout = {
   __typename?: 'Rollout';
   count?: Maybe<Scalars['Int']>;
   cursor?: Maybe<Scalars['ID']>;
@@ -1887,23 +2136,27 @@ export type ResourceDefinitionAttributes = {
   repository?: Maybe<Repository>;
   status: RolloutStatus;
   updatedAt?: Maybe<Scalars['DateTime']>;
-}
-;export type RolloutConnection = {
+};
+
+export type RolloutConnection = {
   __typename?: 'RolloutConnection';
   edges?: Maybe<Array<Maybe<RolloutEdge>>>;
   pageInfo: PageInfo;
-}
-;export type RolloutDelta = {
+};
+
+export type RolloutDelta = {
   __typename?: 'RolloutDelta';
   delta?: Maybe<Delta>;
   payload?: Maybe<Rollout>;
-}
-;export type RolloutEdge = {
+};
+
+export type RolloutEdge = {
   __typename?: 'RolloutEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<Rollout>;
-}
-;export enum RolloutStatus {
+};
+
+export enum RolloutStatus {
   Finished = 'FINISHED',
   Queued = 'QUEUED',
   Running = 'RUNNING'
@@ -2028,411 +2281,628 @@ export type RootMutationType = {
   uploadTerraform?: Maybe<Terraform>;
   upsertOidcProvider?: Maybe<OidcProvider>;
   upsertRepository?: Maybe<Repository>;
-}
-;export type RootMutationTypeAcceptIncidentArgs = {
+};
+
+
+export type RootMutationTypeAcceptIncidentArgs = {
   id: Scalars['ID'];
-}
-;export type RootMutationTypeAcceptLoginArgs = {
+};
+
+
+export type RootMutationTypeAcceptLoginArgs = {
   challenge: Scalars['String'];
-}
-;export type RootMutationTypeAcquireLockArgs = {
+};
+
+
+export type RootMutationTypeAcquireLockArgs = {
   repository: Scalars['String'];
-}
-;export type RootMutationTypeCompleteIncidentArgs = {
+};
+
+
+export type RootMutationTypeCompleteIncidentArgs = {
   id: Scalars['ID'];
   postmortem: PostmortemAttributes;
-}
-;export type RootMutationTypeCreateArtifactArgs = {
+};
+
+
+export type RootMutationTypeCreateArtifactArgs = {
   attributes: ArtifactAttributes;
   repositoryId?: InputMaybe<Scalars['ID']>;
   repositoryName?: InputMaybe<Scalars['String']>;
-}
-;export type RootMutationTypeCreateCardArgs = {
+};
+
+
+export type RootMutationTypeCreateCardArgs = {
   source: Scalars['String'];
-}
-;export type RootMutationTypeCreateCrdArgs = {
+};
+
+
+export type RootMutationTypeCreateCrdArgs = {
   attributes: CrdAttributes;
   chartId?: InputMaybe<Scalars['ID']>;
   chartName?: InputMaybe<ChartName>;
-}
-;export type RootMutationTypeCreateDnsRecordArgs = {
+};
+
+
+export type RootMutationTypeCreateDnsRecordArgs = {
   attributes: DnsRecordAttributes;
   cluster: Scalars['String'];
   provider: Provider;
-}
-;export type RootMutationTypeCreateDomainArgs = {
+};
+
+
+export type RootMutationTypeCreateDomainArgs = {
   attributes: DnsDomainAttributes;
-}
-;export type RootMutationTypeCreateGroupArgs = {
+};
+
+
+export type RootMutationTypeCreateGroupArgs = {
   attributes: GroupAttributes;
-}
-;export type RootMutationTypeCreateGroupMemberArgs = {
+};
+
+
+export type RootMutationTypeCreateGroupMemberArgs = {
   groupId: Scalars['ID'];
   userId: Scalars['ID'];
-}
-;export type RootMutationTypeCreateIncidentArgs = {
+};
+
+
+export type RootMutationTypeCreateIncidentArgs = {
   attributes: IncidentAttributes;
   repository?: InputMaybe<Scalars['String']>;
   repositoryId?: InputMaybe<Scalars['ID']>;
-}
-;export type RootMutationTypeCreateInstallationArgs = {
+};
+
+
+export type RootMutationTypeCreateInstallationArgs = {
   repositoryId: Scalars['ID'];
-}
-;export type RootMutationTypeCreateIntegrationArgs = {
+};
+
+
+export type RootMutationTypeCreateIntegrationArgs = {
   attributes: IntegrationAttributes;
   repositoryName: Scalars['String'];
-}
-;export type RootMutationTypeCreateIntegrationWebhookArgs = {
+};
+
+
+export type RootMutationTypeCreateIntegrationWebhookArgs = {
   attributes: IntegrationWebhookAttributes;
-}
-;export type RootMutationTypeCreateInviteArgs = {
+};
+
+
+export type RootMutationTypeCreateInviteArgs = {
   attributes: InviteAttributes;
-}
-;export type RootMutationTypeCreateMessageArgs = {
+};
+
+
+export type RootMutationTypeCreateMessageArgs = {
   attributes: IncidentMessageAttributes;
   incidentId: Scalars['ID'];
-}
-;export type RootMutationTypeCreateOauthIntegrationArgs = {
+};
+
+
+export type RootMutationTypeCreateOauthIntegrationArgs = {
   attributes: OauthAttributes;
-}
-;export type RootMutationTypeCreateOidcProviderArgs = {
+};
+
+
+export type RootMutationTypeCreateOidcProviderArgs = {
   attributes: OidcAttributes;
   installationId: Scalars['ID'];
-}
-;export type RootMutationTypeCreatePlanArgs = {
+};
+
+
+export type RootMutationTypeCreatePlanArgs = {
   attributes: PlanAttributes;
   repositoryId: Scalars['ID'];
-}
-;export type RootMutationTypeCreatePublicKeyArgs = {
+};
+
+
+export type RootMutationTypeCreatePublicKeyArgs = {
   attributes: PublicKeyAttributes;
-}
-;export type RootMutationTypeCreatePublisherArgs = {
+};
+
+
+export type RootMutationTypeCreatePublisherArgs = {
   attributes: PublisherAttributes;
-}
-;export type RootMutationTypeCreateQueueArgs = {
+};
+
+
+export type RootMutationTypeCreateQueueArgs = {
   attributes: UpgradeQueueAttributes;
-}
-;export type RootMutationTypeCreateReactionArgs = {
+};
+
+
+export type RootMutationTypeCreateReactionArgs = {
   messageId: Scalars['ID'];
   name: Scalars['String'];
-}
-;export type RootMutationTypeCreateRecipeArgs = {
+};
+
+
+export type RootMutationTypeCreateRecipeArgs = {
   attributes: RecipeAttributes;
   repositoryId?: InputMaybe<Scalars['String']>;
   repositoryName?: InputMaybe<Scalars['String']>;
-}
-;export type RootMutationTypeCreateRepositoryArgs = {
+};
+
+
+export type RootMutationTypeCreateRepositoryArgs = {
   attributes: RepositoryAttributes;
   id?: InputMaybe<Scalars['ID']>;
-}
-;export type RootMutationTypeCreateResetTokenArgs = {
+};
+
+
+export type RootMutationTypeCreateResetTokenArgs = {
   attributes: ResetTokenAttributes;
-}
-;export type RootMutationTypeCreateRoleArgs = {
+};
+
+
+export type RootMutationTypeCreateRoleArgs = {
   attributes: RoleAttributes;
-}
-;export type RootMutationTypeCreateServiceAccountArgs = {
+};
+
+
+export type RootMutationTypeCreateServiceAccountArgs = {
   attributes: ServiceAccountAttributes;
-}
-;export type RootMutationTypeCreateShellArgs = {
+};
+
+
+export type RootMutationTypeCreateShellArgs = {
   attributes: CloudShellAttributes;
-}
-;export type RootMutationTypeCreateStackArgs = {
+};
+
+
+export type RootMutationTypeCreateStackArgs = {
   attributes: StackAttributes;
-}
-;export type RootMutationTypeCreateSubscriptionArgs = {
+};
+
+
+export type RootMutationTypeCreateSubscriptionArgs = {
   attributes?: InputMaybe<SubscriptionAttributes>;
   installationId: Scalars['ID'];
   planId: Scalars['ID'];
-}
-;export type RootMutationTypeCreateTerraformArgs = {
+};
+
+
+export type RootMutationTypeCreateTerraformArgs = {
   attributes: TerraformAttributes;
   repositoryId: Scalars['ID'];
-}
-;export type RootMutationTypeCreateTestArgs = {
+};
+
+
+export type RootMutationTypeCreateTestArgs = {
   attributes: TestAttributes;
   name?: InputMaybe<Scalars['String']>;
   repositoryId?: InputMaybe<Scalars['ID']>;
-}
-;export type RootMutationTypeCreateUserEventArgs = {
+};
+
+
+export type RootMutationTypeCreateUserEventArgs = {
   attributes: UserEventAttributes;
-}
-;export type RootMutationTypeCreateWebhookArgs = {
+};
+
+
+export type RootMutationTypeCreateWebhookArgs = {
   attributes: WebhookAttributes;
-}
-;export type RootMutationTypeCreateZoomArgs = {
+};
+
+
+export type RootMutationTypeCreateZoomArgs = {
   attributes: MeetingAttributes;
-}
-;export type RootMutationTypeDeleteCardArgs = {
+};
+
+
+export type RootMutationTypeDeleteCardArgs = {
   id: Scalars['ID'];
-}
-;export type RootMutationTypeDeleteChartInstallationArgs = {
+};
+
+
+export type RootMutationTypeDeleteChartInstallationArgs = {
   id: Scalars['ID'];
-}
-;export type RootMutationTypeDeleteDnsRecordArgs = {
+};
+
+
+export type RootMutationTypeDeleteDnsRecordArgs = {
   name: Scalars['String'];
   type: DnsRecordType;
-}
-;export type RootMutationTypeDeleteDomainArgs = {
+};
+
+
+export type RootMutationTypeDeleteDomainArgs = {
   id: Scalars['ID'];
-}
-;export type RootMutationTypeDeleteEabKeyArgs = {
+};
+
+
+export type RootMutationTypeDeleteEabKeyArgs = {
   cluster?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['ID']>;
   provider?: InputMaybe<Provider>;
-}
-;export type RootMutationTypeDeleteGroupArgs = {
+};
+
+
+export type RootMutationTypeDeleteGroupArgs = {
   groupId: Scalars['ID'];
-}
-;export type RootMutationTypeDeleteGroupMemberArgs = {
+};
+
+
+export type RootMutationTypeDeleteGroupMemberArgs = {
   groupId: Scalars['ID'];
   userId: Scalars['ID'];
-}
-;export type RootMutationTypeDeleteIncidentArgs = {
+};
+
+
+export type RootMutationTypeDeleteIncidentArgs = {
   id: Scalars['ID'];
-}
-;export type RootMutationTypeDeleteInstallationArgs = {
+};
+
+
+export type RootMutationTypeDeleteInstallationArgs = {
   id: Scalars['ID'];
-}
-;export type RootMutationTypeDeleteIntegrationWebhookArgs = {
+};
+
+
+export type RootMutationTypeDeleteIntegrationWebhookArgs = {
   id: Scalars['ID'];
-}
-;export type RootMutationTypeDeleteInviteArgs = {
+};
+
+
+export type RootMutationTypeDeleteInviteArgs = {
   secureId: Scalars['String'];
-}
-;export type RootMutationTypeDeleteMessageArgs = {
+};
+
+
+export type RootMutationTypeDeleteMessageArgs = {
   id: Scalars['ID'];
-}
-;export type RootMutationTypeDeletePublicKeyArgs = {
+};
+
+
+export type RootMutationTypeDeletePublicKeyArgs = {
   id: Scalars['ID'];
-}
-;export type RootMutationTypeDeleteReactionArgs = {
+};
+
+
+export type RootMutationTypeDeleteReactionArgs = {
   messageId: Scalars['ID'];
   name: Scalars['String'];
-}
-;export type RootMutationTypeDeleteRecipeArgs = {
+};
+
+
+export type RootMutationTypeDeleteRecipeArgs = {
   id: Scalars['ID'];
-}
-;export type RootMutationTypeDeleteRepositoryArgs = {
+};
+
+
+export type RootMutationTypeDeleteRepositoryArgs = {
   repositoryId: Scalars['ID'];
-}
-;export type RootMutationTypeDeleteRoleArgs = {
+};
+
+
+export type RootMutationTypeDeleteRoleArgs = {
   id: Scalars['ID'];
-}
-;export type RootMutationTypeDeleteStackArgs = {
+};
+
+
+export type RootMutationTypeDeleteStackArgs = {
   name: Scalars['String'];
-}
-;export type RootMutationTypeDeleteTerraformArgs = {
+};
+
+
+export type RootMutationTypeDeleteTerraformArgs = {
   id: Scalars['ID'];
-}
-;export type RootMutationTypeDeleteTokenArgs = {
+};
+
+
+export type RootMutationTypeDeleteTokenArgs = {
   id: Scalars['ID'];
-}
-;export type RootMutationTypeDeleteUserArgs = {
+};
+
+
+export type RootMutationTypeDeleteUserArgs = {
   id: Scalars['ID'];
-}
-;export type RootMutationTypeDestroyClusterArgs = {
+};
+
+
+export type RootMutationTypeDestroyClusterArgs = {
   domain: Scalars['String'];
   name: Scalars['String'];
   provider: Provider;
-}
-;export type RootMutationTypeFollowIncidentArgs = {
+};
+
+
+export type RootMutationTypeFollowIncidentArgs = {
   attributes: FollowerAttributes;
   id: Scalars['ID'];
-}
-;export type RootMutationTypeImpersonateServiceAccountArgs = {
+};
+
+
+export type RootMutationTypeImpersonateServiceAccountArgs = {
   email?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['ID']>;
-}
-;export type RootMutationTypeInstallChartArgs = {
+};
+
+
+export type RootMutationTypeInstallChartArgs = {
   attributes: ChartInstallationAttributes;
   installationId: Scalars['ID'];
-}
-;export type RootMutationTypeInstallRecipeArgs = {
+};
+
+
+export type RootMutationTypeInstallRecipeArgs = {
   context: Scalars['Map'];
   recipeId: Scalars['ID'];
-}
-;export type RootMutationTypeInstallTerraformArgs = {
+};
+
+
+export type RootMutationTypeInstallTerraformArgs = {
   attributes: TerraformInstallationAttributes;
   installationId: Scalars['ID'];
-}
-;export type RootMutationTypeLinkPublisherArgs = {
+};
+
+
+export type RootMutationTypeLinkPublisherArgs = {
   token: Scalars['String'];
-}
-;export type RootMutationTypeLoginArgs = {
+};
+
+
+export type RootMutationTypeLoginArgs = {
   deviceToken?: InputMaybe<Scalars['String']>;
   email: Scalars['String'];
   password: Scalars['String'];
-}
-;export type RootMutationTypeLoginTokenArgs = {
+};
+
+
+export type RootMutationTypeLoginTokenArgs = {
   deviceToken?: InputMaybe<Scalars['String']>;
   token: Scalars['String'];
-}
-;export type RootMutationTypeOauthCallbackArgs = {
+};
+
+
+export type RootMutationTypeOauthCallbackArgs = {
   code: Scalars['String'];
   deviceToken?: InputMaybe<Scalars['String']>;
   host?: InputMaybe<Scalars['String']>;
   provider: OauthProvider;
-}
-;export type RootMutationTypeOauthConsentArgs = {
+};
+
+
+export type RootMutationTypeOauthConsentArgs = {
   challenge: Scalars['String'];
   scopes?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-}
-;export type RootMutationTypePasswordlessLoginArgs = {
+};
+
+
+export type RootMutationTypePasswordlessLoginArgs = {
   token: Scalars['String'];
-}
-;export type RootMutationTypePingWebhookArgs = {
+};
+
+
+export type RootMutationTypePingWebhookArgs = {
   id: Scalars['ID'];
   message?: InputMaybe<Scalars['String']>;
   repo: Scalars['String'];
-}
-;export type RootMutationTypeProvisionDomainArgs = {
+};
+
+
+export type RootMutationTypeProvisionDomainArgs = {
   name: Scalars['String'];
-}
-;export type RootMutationTypePublishLogsArgs = {
+};
+
+
+export type RootMutationTypePublishLogsArgs = {
   id: Scalars['ID'];
   logs: Scalars['String'];
-}
-;export type RootMutationTypeReadNotificationsArgs = {
+};
+
+
+export type RootMutationTypeReadNotificationsArgs = {
   incidentId?: InputMaybe<Scalars['ID']>;
-}
-;export type RootMutationTypeRealizeInviteArgs = {
+};
+
+
+export type RootMutationTypeRealizeInviteArgs = {
   id: Scalars['String'];
-}
-;export type RootMutationTypeRealizeResetTokenArgs = {
+};
+
+
+export type RootMutationTypeRealizeResetTokenArgs = {
   attributes: ResetTokenRealization;
   id: Scalars['ID'];
-}
-;export type RootMutationTypeReleaseLockArgs = {
+};
+
+
+export type RootMutationTypeReleaseLockArgs = {
   attributes: LockAttributes;
   repository: Scalars['String'];
-}
-;export type RootMutationTypeSignupArgs = {
+};
+
+
+export type RootMutationTypeSignupArgs = {
   account?: InputMaybe<AccountAttributes>;
   attributes: UserAttributes;
   deviceToken?: InputMaybe<Scalars['String']>;
   inviteId?: InputMaybe<Scalars['String']>;
-}
-;export type RootMutationTypeSsoCallbackArgs = {
+};
+
+
+export type RootMutationTypeSsoCallbackArgs = {
   code: Scalars['String'];
   deviceToken?: InputMaybe<Scalars['String']>;
-}
-;export type RootMutationTypeUnfollowIncidentArgs = {
+};
+
+
+export type RootMutationTypeUnfollowIncidentArgs = {
   id: Scalars['ID'];
-}
-;export type RootMutationTypeUninstallTerraformArgs = {
+};
+
+
+export type RootMutationTypeUninstallTerraformArgs = {
   id: Scalars['ID'];
-}
-;export type RootMutationTypeUnlockRepositoryArgs = {
+};
+
+
+export type RootMutationTypeUnlockRepositoryArgs = {
   name: Scalars['String'];
-}
-;export type RootMutationTypeUpdateAccountArgs = {
+};
+
+
+export type RootMutationTypeUpdateAccountArgs = {
   attributes: AccountAttributes;
-}
-;export type RootMutationTypeUpdateChartArgs = {
+};
+
+
+export type RootMutationTypeUpdateChartArgs = {
   attributes: ChartAttributes;
   id: Scalars['ID'];
-}
-;export type RootMutationTypeUpdateChartInstallationArgs = {
+};
+
+
+export type RootMutationTypeUpdateChartInstallationArgs = {
   attributes: ChartInstallationAttributes;
   chartInstallationId: Scalars['ID'];
-}
-;export type RootMutationTypeUpdateDockerRepositoryArgs = {
+};
+
+
+export type RootMutationTypeUpdateDockerRepositoryArgs = {
   attributes: DockerRepositoryAttributes;
   id: Scalars['ID'];
-}
-;export type RootMutationTypeUpdateDomainArgs = {
+};
+
+
+export type RootMutationTypeUpdateDomainArgs = {
   attributes: DnsDomainAttributes;
   id: Scalars['ID'];
-}
-;export type RootMutationTypeUpdateGroupArgs = {
+};
+
+
+export type RootMutationTypeUpdateGroupArgs = {
   attributes: GroupAttributes;
   groupId: Scalars['ID'];
-}
-;export type RootMutationTypeUpdateIncidentArgs = {
+};
+
+
+export type RootMutationTypeUpdateIncidentArgs = {
   attributes: IncidentAttributes;
   id: Scalars['ID'];
-}
-;export type RootMutationTypeUpdateInstallationArgs = {
+};
+
+
+export type RootMutationTypeUpdateInstallationArgs = {
   attributes: InstallationAttributes;
   id: Scalars['ID'];
-}
-;export type RootMutationTypeUpdateIntegrationWebhookArgs = {
+};
+
+
+export type RootMutationTypeUpdateIntegrationWebhookArgs = {
   attributes: IntegrationWebhookAttributes;
   id: Scalars['ID'];
-}
-;export type RootMutationTypeUpdateLineItemArgs = {
+};
+
+
+export type RootMutationTypeUpdateLineItemArgs = {
   attributes: LimitAttributes;
   subscriptionId: Scalars['ID'];
-}
-;export type RootMutationTypeUpdateMessageArgs = {
+};
+
+
+export type RootMutationTypeUpdateMessageArgs = {
   attributes: IncidentMessageAttributes;
   id: Scalars['ID'];
-}
-;export type RootMutationTypeUpdateOidcProviderArgs = {
+};
+
+
+export type RootMutationTypeUpdateOidcProviderArgs = {
   attributes: OidcAttributes;
   installationId: Scalars['ID'];
-}
-;export type RootMutationTypeUpdatePlanArgs = {
+};
+
+
+export type RootMutationTypeUpdatePlanArgs = {
   planId: Scalars['ID'];
   subscriptionId: Scalars['ID'];
-}
-;export type RootMutationTypeUpdatePlanAttributesArgs = {
+};
+
+
+export type RootMutationTypeUpdatePlanAttributesArgs = {
   attributes: UpdatablePlanAttributes;
   id: Scalars['ID'];
-}
-;export type RootMutationTypeUpdatePublisherArgs = {
+};
+
+
+export type RootMutationTypeUpdatePublisherArgs = {
   attributes: PublisherAttributes;
-}
-;export type RootMutationTypeUpdateRepositoryArgs = {
+};
+
+
+export type RootMutationTypeUpdateRepositoryArgs = {
   attributes: RepositoryAttributes;
   repositoryId?: InputMaybe<Scalars['ID']>;
   repositoryName?: InputMaybe<Scalars['String']>;
-}
-;export type RootMutationTypeUpdateRoleArgs = {
+};
+
+
+export type RootMutationTypeUpdateRoleArgs = {
   attributes: RoleAttributes;
   id: Scalars['ID'];
-}
-;export type RootMutationTypeUpdateServiceAccountArgs = {
+};
+
+
+export type RootMutationTypeUpdateServiceAccountArgs = {
   attributes: ServiceAccountAttributes;
   id: Scalars['ID'];
-}
-;export type RootMutationTypeUpdateStepArgs = {
+};
+
+
+export type RootMutationTypeUpdateStepArgs = {
   attributes: TestStepAttributes;
   id: Scalars['ID'];
-}
-;export type RootMutationTypeUpdateTerraformArgs = {
+};
+
+
+export type RootMutationTypeUpdateTerraformArgs = {
   attributes: TerraformAttributes;
   id: Scalars['ID'];
-}
-;export type RootMutationTypeUpdateTestArgs = {
+};
+
+
+export type RootMutationTypeUpdateTestArgs = {
   attributes: TestAttributes;
   id: Scalars['ID'];
-}
-;export type RootMutationTypeUpdateUserArgs = {
+};
+
+
+export type RootMutationTypeUpdateUserArgs = {
   attributes: UserAttributes;
   id?: InputMaybe<Scalars['ID']>;
-}
-;export type RootMutationTypeUpdateVersionArgs = {
+};
+
+
+export type RootMutationTypeUpdateVersionArgs = {
   attributes: VersionAttributes;
   id?: InputMaybe<Scalars['ID']>;
   spec?: InputMaybe<VersionSpec>;
-}
-;export type RootMutationTypeUploadTerraformArgs = {
+};
+
+
+export type RootMutationTypeUploadTerraformArgs = {
   attributes: TerraformAttributes;
   name: Scalars['String'];
   repositoryName: Scalars['String'];
-}
-;export type RootMutationTypeUpsertOidcProviderArgs = {
+};
+
+
+export type RootMutationTypeUpsertOidcProviderArgs = {
   attributes: OidcAttributes;
   installationId: Scalars['ID'];
-}
-;export type RootMutationTypeUpsertRepositoryArgs = {
+};
+
+
+export type RootMutationTypeUpsertRepositoryArgs = {
   attributes: RepositoryAttributes;
   name: Scalars['String'];
   publisher: Scalars['String'];
-}
-;export type RootQueryType = {
+};
+
+export type RootQueryType = {
   __typename?: 'RootQueryType';
   auditMetrics?: Maybe<Array<Maybe<GeoMetric>>>;
   audits?: Maybe<AuditConnection>;
@@ -2513,58 +2983,80 @@ export type RootMutationType = {
   users?: Maybe<UserConnection>;
   versions?: Maybe<VersionConnection>;
   webhooks?: Maybe<WebhookConnection>;
-}
-;export type RootQueryTypeAuditsArgs = {
+};
+
+
+export type RootQueryTypeAuditsArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
-}
-;export type RootQueryTypeCategoryArgs = {
+};
+
+
+export type RootQueryTypeCategoryArgs = {
   name: Category;
-}
-;export type RootQueryTypeChartArgs = {
+};
+
+
+export type RootQueryTypeChartArgs = {
   id: Scalars['ID'];
-}
-;export type RootQueryTypeChartInstallationsArgs = {
+};
+
+
+export type RootQueryTypeChartInstallationsArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   repositoryId: Scalars['ID'];
-}
-;export type RootQueryTypeChartsArgs = {
+};
+
+
+export type RootQueryTypeChartsArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   repositoryId: Scalars['ID'];
-}
-;export type RootQueryTypeClosureArgs = {
+};
+
+
+export type RootQueryTypeClosureArgs = {
   id: Scalars['ID'];
   type: DependencyType;
-}
-;export type RootQueryTypeDeferredUpdatesArgs = {
+};
+
+
+export type RootQueryTypeDeferredUpdatesArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   chartInstallationId?: InputMaybe<Scalars['ID']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   terraformInstallationId?: InputMaybe<Scalars['ID']>;
-}
-;export type RootQueryTypeDemoProjectArgs = {
+};
+
+
+export type RootQueryTypeDemoProjectArgs = {
   id: Scalars['ID'];
-}
-;export type RootQueryTypeDnsDomainArgs = {
+};
+
+
+export type RootQueryTypeDnsDomainArgs = {
   id: Scalars['ID'];
-}
-;export type RootQueryTypeDnsDomainsArgs = {
+};
+
+
+export type RootQueryTypeDnsDomainsArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
-}
-;export type RootQueryTypeDnsRecordsArgs = {
+};
+
+
+export type RootQueryTypeDnsRecordsArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   cluster?: InputMaybe<Scalars['String']>;
@@ -2572,46 +3064,62 @@ export type RootMutationType = {
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   provider?: InputMaybe<Provider>;
-}
-;export type RootQueryTypeDockerImageArgs = {
+};
+
+
+export type RootQueryTypeDockerImageArgs = {
   id: Scalars['ID'];
-}
-;export type RootQueryTypeDockerImagesArgs = {
+};
+
+
+export type RootQueryTypeDockerImagesArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   dockerRepositoryId: Scalars['ID'];
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
-}
-;export type RootQueryTypeDockerRepositoriesArgs = {
+};
+
+
+export type RootQueryTypeDockerRepositoriesArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   repositoryId: Scalars['ID'];
-}
-;export type RootQueryTypeEabCredentialArgs = {
+};
+
+
+export type RootQueryTypeEabCredentialArgs = {
   cluster: Scalars['String'];
   provider: Provider;
-}
-;export type RootQueryTypeGroupMembersArgs = {
+};
+
+
+export type RootQueryTypeGroupMembersArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   groupId: Scalars['ID'];
   last?: InputMaybe<Scalars['Int']>;
-}
-;export type RootQueryTypeGroupsArgs = {
+};
+
+
+export type RootQueryTypeGroupsArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   q?: InputMaybe<Scalars['String']>;
-}
-;export type RootQueryTypeIncidentArgs = {
+};
+
+
+export type RootQueryTypeIncidentArgs = {
   id: Scalars['ID'];
-}
-;export type RootQueryTypeIncidentsArgs = {
+};
+
+
+export type RootQueryTypeIncidentsArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   filters?: InputMaybe<Array<InputMaybe<IncidentFilter>>>;
@@ -2622,27 +3130,37 @@ export type RootMutationType = {
   repositoryId?: InputMaybe<Scalars['ID']>;
   sort?: InputMaybe<IncidentSort>;
   supports?: InputMaybe<Scalars['Boolean']>;
-}
-;export type RootQueryTypeInstallationArgs = {
+};
+
+
+export type RootQueryTypeInstallationArgs = {
   id?: InputMaybe<Scalars['ID']>;
   name?: InputMaybe<Scalars['String']>;
-}
-;export type RootQueryTypeInstallationsArgs = {
+};
+
+
+export type RootQueryTypeInstallationsArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
-}
-;export type RootQueryTypeIntegrationWebhookArgs = {
+};
+
+
+export type RootQueryTypeIntegrationWebhookArgs = {
   id: Scalars['ID'];
-}
-;export type RootQueryTypeIntegrationWebhooksArgs = {
+};
+
+
+export type RootQueryTypeIntegrationWebhooksArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
-}
-;export type RootQueryTypeIntegrationsArgs = {
+};
+
+
+export type RootQueryTypeIntegrationsArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
@@ -2651,73 +3169,103 @@ export type RootMutationType = {
   repositoryName?: InputMaybe<Scalars['String']>;
   tag?: InputMaybe<Scalars['String']>;
   type?: InputMaybe<Scalars['String']>;
-}
-;export type RootQueryTypeInviteArgs = {
+};
+
+
+export type RootQueryTypeInviteArgs = {
   id: Scalars['String'];
-}
-;export type RootQueryTypeInvitesArgs = {
+};
+
+
+export type RootQueryTypeInvitesArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
-}
-;export type RootQueryTypeLoginMethodArgs = {
+};
+
+
+export type RootQueryTypeLoginMethodArgs = {
   email: Scalars['String'];
   host?: InputMaybe<Scalars['String']>;
-}
-;export type RootQueryTypeNotificationsArgs = {
+};
+
+
+export type RootQueryTypeNotificationsArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   cli?: InputMaybe<Scalars['Boolean']>;
   first?: InputMaybe<Scalars['Int']>;
   incidentId?: InputMaybe<Scalars['ID']>;
   last?: InputMaybe<Scalars['Int']>;
-}
-;export type RootQueryTypeOauthConsentArgs = {
+};
+
+
+export type RootQueryTypeOauthConsentArgs = {
   challenge: Scalars['String'];
-}
-;export type RootQueryTypeOauthLoginArgs = {
+};
+
+
+export type RootQueryTypeOauthLoginArgs = {
   challenge: Scalars['String'];
-}
-;export type RootQueryTypeOauthUrlsArgs = {
+};
+
+
+export type RootQueryTypeOauthUrlsArgs = {
   host?: InputMaybe<Scalars['String']>;
-}
-;export type RootQueryTypeOidcConsentArgs = {
+};
+
+
+export type RootQueryTypeOidcConsentArgs = {
   challenge: Scalars['String'];
-}
-;export type RootQueryTypeOidcLoginArgs = {
+};
+
+
+export type RootQueryTypeOidcLoginArgs = {
   challenge: Scalars['String'];
-}
-;export type RootQueryTypeOidcLoginsArgs = {
+};
+
+
+export type RootQueryTypeOidcLoginsArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
-}
-;export type RootQueryTypePublicKeysArgs = {
+};
+
+
+export type RootQueryTypePublicKeysArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   emails?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
-}
-;export type RootQueryTypePublisherArgs = {
+};
+
+
+export type RootQueryTypePublisherArgs = {
   id?: InputMaybe<Scalars['ID']>;
-}
-;export type RootQueryTypePublishersArgs = {
+};
+
+
+export type RootQueryTypePublishersArgs = {
   accountId?: InputMaybe<Scalars['ID']>;
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   publishable?: InputMaybe<Scalars['Boolean']>;
-}
-;export type RootQueryTypeRecipeArgs = {
+};
+
+
+export type RootQueryTypeRecipeArgs = {
   id?: InputMaybe<Scalars['ID']>;
   name?: InputMaybe<Scalars['String']>;
   repo?: InputMaybe<Scalars['String']>;
-}
-;export type RootQueryTypeRecipesArgs = {
+};
+
+
+export type RootQueryTypeRecipesArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
@@ -2725,8 +3273,10 @@ export type RootMutationType = {
   provider?: InputMaybe<Provider>;
   repositoryId?: InputMaybe<Scalars['ID']>;
   repositoryName?: InputMaybe<Scalars['String']>;
-}
-;export type RootQueryTypeRepositoriesArgs = {
+};
+
+
+export type RootQueryTypeRepositoriesArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   categories?: InputMaybe<Array<InputMaybe<Category>>>;
@@ -2740,79 +3290,107 @@ export type RootMutationType = {
   supports?: InputMaybe<Scalars['Boolean']>;
   tag?: InputMaybe<Scalars['String']>;
   tags?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-}
-;export type RootQueryTypeRepositoryArgs = {
+};
+
+
+export type RootQueryTypeRepositoryArgs = {
   id?: InputMaybe<Scalars['ID']>;
   name?: InputMaybe<Scalars['String']>;
-}
-;export type RootQueryTypeRepositorySubscriptionArgs = {
+};
+
+
+export type RootQueryTypeRepositorySubscriptionArgs = {
   id: Scalars['ID'];
-}
-;export type RootQueryTypeResetTokenArgs = {
+};
+
+
+export type RootQueryTypeResetTokenArgs = {
   id: Scalars['ID'];
-}
-;export type RootQueryTypeRoleArgs = {
+};
+
+
+export type RootQueryTypeRoleArgs = {
   id: Scalars['ID'];
-}
-;export type RootQueryTypeRolesArgs = {
+};
+
+
+export type RootQueryTypeRolesArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   q?: InputMaybe<Scalars['String']>;
   userId?: InputMaybe<Scalars['ID']>;
-}
-;export type RootQueryTypeRolloutsArgs = {
+};
+
+
+export type RootQueryTypeRolloutsArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   repositoryId: Scalars['ID'];
-}
-;export type RootQueryTypeScaffoldArgs = {
+};
+
+
+export type RootQueryTypeScaffoldArgs = {
   application: Scalars['String'];
   category: Category;
   ingress?: InputMaybe<Scalars['Boolean']>;
   postgres?: InputMaybe<Scalars['Boolean']>;
   publisher: Scalars['String'];
-}
-;export type RootQueryTypeScmTokenArgs = {
+};
+
+
+export type RootQueryTypeScmTokenArgs = {
   code: Scalars['String'];
   provider: ScmProvider;
-}
-;export type RootQueryTypeSearchRepositoriesArgs = {
+};
+
+
+export type RootQueryTypeSearchRepositoriesArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   query: Scalars['String'];
-}
-;export type RootQueryTypeSearchUsersArgs = {
+};
+
+
+export type RootQueryTypeSearchUsersArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   incidentId: Scalars['ID'];
   last?: InputMaybe<Scalars['Int']>;
   q: Scalars['String'];
-}
-;export type RootQueryTypeStackArgs = {
+};
+
+
+export type RootQueryTypeStackArgs = {
   name: Scalars['String'];
   provider: Provider;
-}
-;export type RootQueryTypeStacksArgs = {
+};
+
+
+export type RootQueryTypeStacksArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   featured?: InputMaybe<Scalars['Boolean']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
-}
-;export type RootQueryTypeSubscriptionsArgs = {
+};
+
+
+export type RootQueryTypeSubscriptionsArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
-}
-;export type RootQueryTypeTagsArgs = {
+};
+
+
+export type RootQueryTypeTagsArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
@@ -2820,56 +3398,78 @@ export type RootMutationType = {
   last?: InputMaybe<Scalars['Int']>;
   q?: InputMaybe<Scalars['String']>;
   type: TagGroup;
-}
-;export type RootQueryTypeTerraformArgs = {
+};
+
+
+export type RootQueryTypeTerraformArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   repositoryId: Scalars['ID'];
-}
-;export type RootQueryTypeTerraformInstallationsArgs = {
+};
+
+
+export type RootQueryTypeTerraformInstallationsArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   repositoryId: Scalars['ID'];
-}
-;export type RootQueryTypeTerraformModuleArgs = {
+};
+
+
+export type RootQueryTypeTerraformModuleArgs = {
   id: Scalars['ID'];
-}
-;export type RootQueryTypeTerraformProviderArgs = {
+};
+
+
+export type RootQueryTypeTerraformProviderArgs = {
   name: Provider;
   vsn?: InputMaybe<Scalars['String']>;
-}
-;export type RootQueryTypeTestArgs = {
+};
+
+
+export type RootQueryTypeTestArgs = {
   id: Scalars['ID'];
-}
-;export type RootQueryTypeTestLogsArgs = {
+};
+
+
+export type RootQueryTypeTestLogsArgs = {
   id: Scalars['ID'];
   step: Scalars['ID'];
-}
-;export type RootQueryTypeTestsArgs = {
+};
+
+
+export type RootQueryTypeTestsArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   repositoryId?: InputMaybe<Scalars['ID']>;
   versionId?: InputMaybe<Scalars['ID']>;
-}
-;export type RootQueryTypeTokenArgs = {
+};
+
+
+export type RootQueryTypeTokenArgs = {
   id: Scalars['ID'];
-}
-;export type RootQueryTypeTokensArgs = {
+};
+
+
+export type RootQueryTypeTokensArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
-}
-;export type RootQueryTypeUpgradeQueueArgs = {
+};
+
+
+export type RootQueryTypeUpgradeQueueArgs = {
   id?: InputMaybe<Scalars['ID']>;
-}
-;export type RootQueryTypeUsersArgs = {
+};
+
+
+export type RootQueryTypeUsersArgs = {
   after?: InputMaybe<Scalars['String']>;
   all?: InputMaybe<Scalars['Boolean']>;
   before?: InputMaybe<Scalars['String']>;
@@ -2877,22 +3477,27 @@ export type RootMutationType = {
   last?: InputMaybe<Scalars['Int']>;
   q?: InputMaybe<Scalars['String']>;
   serviceAccount?: InputMaybe<Scalars['Boolean']>;
-}
-;export type RootQueryTypeVersionsArgs = {
+};
+
+
+export type RootQueryTypeVersionsArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   chartId?: InputMaybe<Scalars['ID']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   terraformId?: InputMaybe<Scalars['ID']>;
-}
-;export type RootQueryTypeWebhooksArgs = {
+};
+
+
+export type RootQueryTypeWebhooksArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
-}
-;export type RootSubscriptionType = {
+};
+
+export type RootSubscriptionType = {
   __typename?: 'RootSubscriptionType';
   incidentDelta?: Maybe<IncidentDelta>;
   incidentMessageDelta?: Maybe<IncidentMessageDelta>;
@@ -2902,36 +3507,51 @@ export type RootMutationType = {
   testLogs?: Maybe<StepLogs>;
   upgrade?: Maybe<Upgrade>;
   upgradeQueueDelta?: Maybe<UpgradeQueueDelta>;
-}
-;export type RootSubscriptionTypeIncidentDeltaArgs = {
+};
+
+
+export type RootSubscriptionTypeIncidentDeltaArgs = {
   incidentId?: InputMaybe<Scalars['ID']>;
   repositoryId?: InputMaybe<Scalars['ID']>;
-}
-;export type RootSubscriptionTypeIncidentMessageDeltaArgs = {
+};
+
+
+export type RootSubscriptionTypeIncidentMessageDeltaArgs = {
   incidentId?: InputMaybe<Scalars['ID']>;
-}
-;export type RootSubscriptionTypeRolloutDeltaArgs = {
+};
+
+
+export type RootSubscriptionTypeRolloutDeltaArgs = {
   repositoryId: Scalars['ID'];
-}
-;export type RootSubscriptionTypeTestDeltaArgs = {
+};
+
+
+export type RootSubscriptionTypeTestDeltaArgs = {
   repositoryId: Scalars['ID'];
-}
-;export type RootSubscriptionTypeTestLogsArgs = {
+};
+
+
+export type RootSubscriptionTypeTestLogsArgs = {
   testId: Scalars['ID'];
-}
-;export type RootSubscriptionTypeUpgradeArgs = {
+};
+
+
+export type RootSubscriptionTypeUpgradeArgs = {
   id?: InputMaybe<Scalars['ID']>;
-}
-;export type ScaffoldFile = {
+};
+
+export type ScaffoldFile = {
   __typename?: 'ScaffoldFile';
   content?: Maybe<Scalars['String']>;
   path?: Maybe<Scalars['String']>;
-}
-;export type ScanError = {
+};
+
+export type ScanError = {
   __typename?: 'ScanError';
   message?: Maybe<Scalars['String']>;
-}
-;export type ScanViolation = {
+};
+
+export type ScanViolation = {
   __typename?: 'ScanViolation';
   category?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
@@ -2944,14 +3564,16 @@ export type RootMutationType = {
   ruleName?: Maybe<Scalars['String']>;
   severity?: Maybe<VulnGrade>;
   updatedAt?: Maybe<Scalars['DateTime']>;
-}
-;export type ScmAttributes = {
+};
+
+export type ScmAttributes = {
   name: Scalars['String'];
   org?: InputMaybe<Scalars['String']>;
   provider?: InputMaybe<ScmProvider>;
   token: Scalars['String'];
-}
-;export enum ScmProvider {
+};
+
+export enum ScmProvider {
   Github = 'GITHUB',
   Gitlab = 'GITLAB'
 }
@@ -2960,36 +3582,42 @@ export type ServiceAccountAttributes = {
   email?: InputMaybe<Scalars['String']>;
   impersonationPolicy?: InputMaybe<ImpersonationPolicyAttributes>;
   name?: InputMaybe<Scalars['String']>;
-}
-;export type ServiceLevel = {
+};
+
+export type ServiceLevel = {
   __typename?: 'ServiceLevel';
   maxSeverity?: Maybe<Scalars['Int']>;
   minSeverity?: Maybe<Scalars['Int']>;
   responseTime?: Maybe<Scalars['Int']>;
-}
-;export type ServiceLevelAttributes = {
+};
+
+export type ServiceLevelAttributes = {
   maxSeverity?: InputMaybe<Scalars['Int']>;
   minSeverity?: InputMaybe<Scalars['Int']>;
   responseTime?: InputMaybe<Scalars['Int']>;
-}
-;export type ShellCredentialsAttributes = {
+};
+
+export type ShellCredentialsAttributes = {
   aws?: InputMaybe<AwsShellCredentialsAttributes>;
   gcp?: InputMaybe<GcpShellCredentialsAttributes>;
-}
-;export type ShellStatus = {
+};
+
+export type ShellStatus = {
   __typename?: 'ShellStatus';
   containersReady?: Maybe<Scalars['Boolean']>;
   initialized?: Maybe<Scalars['Boolean']>;
   podScheduled?: Maybe<Scalars['Boolean']>;
   ready?: Maybe<Scalars['Boolean']>;
-}
-;export type SlimSubscription = {
+};
+
+export type SlimSubscription = {
   __typename?: 'SlimSubscription';
   id: Scalars['ID'];
   lineItems?: Maybe<SubscriptionLineItems>;
   plan?: Maybe<Plan>;
-}
-;export enum SpecDatatype {
+};
+
+export enum SpecDatatype {
   Bool = 'BOOL',
   Float = 'FLOAT',
   Int = 'INT',
@@ -3004,8 +3632,9 @@ export type SpecificationAttributes = {
   required?: InputMaybe<Scalars['Boolean']>;
   spec?: InputMaybe<Array<InputMaybe<SpecificationAttributes>>>;
   type: SpecDatatype;
-}
-;export type Stack = {
+};
+
+export type Stack = {
   __typename?: 'Stack';
   bundles?: Maybe<Array<Maybe<Recipe>>>;
   collections?: Maybe<Array<Maybe<StackCollection>>>;
@@ -3016,66 +3645,79 @@ export type SpecificationAttributes = {
   insertedAt?: Maybe<Scalars['DateTime']>;
   name: Scalars['String'];
   updatedAt?: Maybe<Scalars['DateTime']>;
-}
-;export type StackAttributes = {
+};
+
+export type StackAttributes = {
   collections?: InputMaybe<Array<InputMaybe<StackCollectionAttributes>>>;
   description?: InputMaybe<Scalars['String']>;
   featured?: InputMaybe<Scalars['Boolean']>;
   name: Scalars['String'];
-}
-;export type StackCollection = {
+};
+
+export type StackCollection = {
   __typename?: 'StackCollection';
   bundles?: Maybe<Array<Maybe<StackRecipe>>>;
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
   provider: Provider;
   updatedAt?: Maybe<Scalars['DateTime']>;
-}
-;export type StackCollectionAttributes = {
+};
+
+export type StackCollectionAttributes = {
   bundles?: InputMaybe<Array<InputMaybe<RecipeReference>>>;
   provider: Provider;
-}
-;export type StackConnection = {
+};
+
+export type StackConnection = {
   __typename?: 'StackConnection';
   edges?: Maybe<Array<Maybe<StackEdge>>>;
   pageInfo: PageInfo;
-}
-;export type StackEdge = {
+};
+
+export type StackEdge = {
   __typename?: 'StackEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<Stack>;
-}
-;export type StackRecipe = {
+};
+
+export type StackRecipe = {
   __typename?: 'StackRecipe';
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
   recipe: Recipe;
   updatedAt?: Maybe<Scalars['DateTime']>;
-}
-;export type StepLogs = {
+};
+
+export type StepLogs = {
   __typename?: 'StepLogs';
   logs?: Maybe<Array<Maybe<Scalars['String']>>>;
   step?: Maybe<TestStep>;
-}
-;export type SubscriptionAttributes = {
+};
+
+export type SubscriptionAttributes = {
   lineItems?: InputMaybe<SubscriptionLineItemAttributes>;
-}
-;export type SubscriptionLineItemAttributes = {
+};
+
+export type SubscriptionLineItemAttributes = {
   items?: InputMaybe<Array<InputMaybe<LimitAttributes>>>;
-}
-;export type SubscriptionLineItems = {
+};
+
+export type SubscriptionLineItems = {
   __typename?: 'SubscriptionLineItems';
   items?: Maybe<Array<Maybe<Limit>>>;
-}
-;export type Tag = {
+};
+
+export type Tag = {
   __typename?: 'Tag';
   id: Scalars['ID'];
   tag: Scalars['String'];
-}
-;export type TagAttributes = {
+};
+
+export type TagAttributes = {
   tag: Scalars['String'];
-}
-;export enum TagGroup {
+};
+
+export enum TagGroup {
   Integrations = 'INTEGRATIONS',
   Repositories = 'REPOSITORIES'
 }
@@ -3095,25 +3737,29 @@ export type Terraform = {
   repository?: Maybe<Repository>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   valuesTemplate?: Maybe<Scalars['String']>;
-}
-;export type TerraformAttributes = {
+};
+
+export type TerraformAttributes = {
   dependencies?: InputMaybe<Scalars['Yaml']>;
   description?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
   package?: InputMaybe<Scalars['UploadOrUrl']>;
   version?: InputMaybe<Scalars['String']>;
-}
-;export type TerraformConnection = {
+};
+
+export type TerraformConnection = {
   __typename?: 'TerraformConnection';
   edges?: Maybe<Array<Maybe<TerraformEdge>>>;
   pageInfo: PageInfo;
-}
-;export type TerraformEdge = {
+};
+
+export type TerraformEdge = {
   __typename?: 'TerraformEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<Terraform>;
-}
-;export type TerraformInstallation = {
+};
+
+export type TerraformInstallation = {
   __typename?: 'TerraformInstallation';
   id?: Maybe<Scalars['ID']>;
   insertedAt?: Maybe<Scalars['DateTime']>;
@@ -3121,27 +3767,32 @@ export type Terraform = {
   terraform?: Maybe<Terraform>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   version?: Maybe<Version>;
-}
-;export type TerraformInstallationAttributes = {
+};
+
+export type TerraformInstallationAttributes = {
   terraformId?: InputMaybe<Scalars['ID']>;
   versionId?: InputMaybe<Scalars['ID']>;
-}
-;export type TerraformInstallationConnection = {
+};
+
+export type TerraformInstallationConnection = {
   __typename?: 'TerraformInstallationConnection';
   edges?: Maybe<Array<Maybe<TerraformInstallationEdge>>>;
   pageInfo: PageInfo;
-}
-;export type TerraformInstallationEdge = {
+};
+
+export type TerraformInstallationEdge = {
   __typename?: 'TerraformInstallationEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<TerraformInstallation>;
-}
-;export type TerraformProvider = {
+};
+
+export type TerraformProvider = {
   __typename?: 'TerraformProvider';
   content?: Maybe<Scalars['String']>;
   name?: Maybe<Provider>;
-}
-;export type Test = {
+};
+
+export type Test = {
   __typename?: 'Test';
   creator?: Maybe<User>;
   id: Scalars['ID'];
@@ -3153,40 +3804,47 @@ export type Terraform = {
   status: TestStatus;
   steps?: Maybe<Array<Maybe<TestStep>>>;
   updatedAt?: Maybe<Scalars['DateTime']>;
-}
-;export type TestArgument = {
+};
+
+export type TestArgument = {
   __typename?: 'TestArgument';
   key: Scalars['String'];
   name: Scalars['String'];
   repo: Scalars['String'];
-}
-;export type TestArgumentAttributes = {
+};
+
+export type TestArgumentAttributes = {
   key: Scalars['String'];
   name: Scalars['String'];
   repo: Scalars['String'];
-}
-;export type TestAttributes = {
+};
+
+export type TestAttributes = {
   name?: InputMaybe<Scalars['String']>;
   promoteTag?: InputMaybe<Scalars['String']>;
   status?: InputMaybe<TestStatus>;
   steps?: InputMaybe<Array<InputMaybe<TestStepAttributes>>>;
-}
-;export type TestConnection = {
+};
+
+export type TestConnection = {
   __typename?: 'TestConnection';
   edges?: Maybe<Array<Maybe<TestEdge>>>;
   pageInfo: PageInfo;
-}
-;export type TestDelta = {
+};
+
+export type TestDelta = {
   __typename?: 'TestDelta';
   delta?: Maybe<Delta>;
   payload?: Maybe<Test>;
-}
-;export type TestEdge = {
+};
+
+export type TestEdge = {
   __typename?: 'TestEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<Test>;
-}
-;export enum TestStatus {
+};
+
+export enum TestStatus {
   Failed = 'FAILED',
   Queued = 'QUEUED',
   Running = 'RUNNING',
@@ -3202,23 +3860,26 @@ export type TestStep = {
   name: Scalars['String'];
   status: TestStatus;
   updatedAt?: Maybe<Scalars['DateTime']>;
-}
-;export type TestStepAttributes = {
+};
+
+export type TestStepAttributes = {
   description?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['ID']>;
   logs?: InputMaybe<Scalars['UploadOrUrl']>;
   name?: InputMaybe<Scalars['String']>;
   status?: InputMaybe<TestStatus>;
-}
-;export enum TestType {
+};
+
+export enum TestType {
   Git = 'GIT'
 }
 
 export type UpdatablePlanAttributes = {
   default?: InputMaybe<Scalars['Boolean']>;
   serviceLevels?: InputMaybe<Array<InputMaybe<ServiceLevelAttributes>>>;
-}
-;export type Upgrade = {
+};
+
+export type Upgrade = {
   __typename?: 'Upgrade';
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
@@ -3226,18 +3887,21 @@ export type UpdatablePlanAttributes = {
   repository?: Maybe<Repository>;
   type?: Maybe<UpgradeType>;
   updatedAt?: Maybe<Scalars['DateTime']>;
-}
-;export type UpgradeConnection = {
+};
+
+export type UpgradeConnection = {
   __typename?: 'UpgradeConnection';
   edges?: Maybe<Array<Maybe<UpgradeEdge>>>;
   pageInfo: PageInfo;
-}
-;export type UpgradeEdge = {
+};
+
+export type UpgradeEdge = {
   __typename?: 'UpgradeEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<Upgrade>;
-}
-;export type UpgradeQueue = {
+};
+
+export type UpgradeQueue = {
   __typename?: 'UpgradeQueue';
   acked?: Maybe<Scalars['ID']>;
   domain?: Maybe<Scalars['String']>;
@@ -3250,25 +3914,30 @@ export type UpdatablePlanAttributes = {
   updatedAt?: Maybe<Scalars['DateTime']>;
   upgrades?: Maybe<UpgradeConnection>;
   user: User;
-}
-;export type UpgradeQueueUpgradesArgs = {
+};
+
+
+export type UpgradeQueueUpgradesArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
-}
-;export type UpgradeQueueAttributes = {
+};
+
+export type UpgradeQueueAttributes = {
   domain?: InputMaybe<Scalars['String']>;
   git?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
   provider?: InputMaybe<Provider>;
-}
-;export type UpgradeQueueDelta = {
+};
+
+export type UpgradeQueueDelta = {
   __typename?: 'UpgradeQueueDelta';
   delta?: Maybe<Delta>;
   payload?: Maybe<UpgradeQueue>;
-}
-;export enum UpgradeType {
+};
+
+export enum UpgradeType {
   Approval = 'APPROVAL',
   Bounce = 'BOUNCE',
   Deploy = 'DEPLOY'
@@ -3300,14 +3969,17 @@ export type User = {
   roles?: Maybe<Roles>;
   serviceAccount?: Maybe<Scalars['Boolean']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
-}
-;export type UserCardsArgs = {
+};
+
+
+export type UserCardsArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
-}
-;export type UserAttributes = {
+};
+
+export type UserAttributes = {
   avatar?: InputMaybe<Scalars['UploadOrUrl']>;
   confirm?: InputMaybe<Scalars['String']>;
   email?: InputMaybe<Scalars['String']>;
@@ -3316,23 +3988,27 @@ export type User = {
   onboarding?: InputMaybe<OnboardingState>;
   password?: InputMaybe<Scalars['String']>;
   roles?: InputMaybe<RolesAttributes>;
-}
-;export type UserConnection = {
+};
+
+export type UserConnection = {
   __typename?: 'UserConnection';
   edges?: Maybe<Array<Maybe<UserEdge>>>;
   pageInfo: PageInfo;
-}
-;export type UserEdge = {
+};
+
+export type UserEdge = {
   __typename?: 'UserEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<User>;
-}
-;export type UserEventAttributes = {
+};
+
+export type UserEventAttributes = {
   data?: InputMaybe<Scalars['String']>;
   event: Scalars['String'];
   status?: InputMaybe<UserEventStatus>;
-}
-;export enum UserEventStatus {
+};
+
+export enum UserEventStatus {
   Error = 'ERROR',
   Ok = 'OK'
 }
@@ -3358,27 +4034,32 @@ export type Version = {
   updatedAt?: Maybe<Scalars['DateTime']>;
   valuesTemplate?: Maybe<Scalars['String']>;
   version: Scalars['String'];
-}
-;export type VersionAttributes = {
+};
+
+export type VersionAttributes = {
   tags?: InputMaybe<Array<InputMaybe<VersionTagAttributes>>>;
-}
-;export type VersionConnection = {
+};
+
+export type VersionConnection = {
   __typename?: 'VersionConnection';
   edges?: Maybe<Array<Maybe<VersionEdge>>>;
   pageInfo: PageInfo;
-}
-;export type VersionEdge = {
+};
+
+export type VersionEdge = {
   __typename?: 'VersionEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<Version>;
-}
-;export type VersionSpec = {
+};
+
+export type VersionSpec = {
   chart?: InputMaybe<Scalars['String']>;
   repository?: InputMaybe<Scalars['String']>;
   terraform?: InputMaybe<Scalars['String']>;
   version?: InputMaybe<Scalars['String']>;
-}
-;export type VersionTag = {
+};
+
+export type VersionTag = {
   __typename?: 'VersionTag';
   chart?: Maybe<Chart>;
   id: Scalars['ID'];
@@ -3386,12 +4067,14 @@ export type Version = {
   tag: Scalars['String'];
   updatedAt?: Maybe<Scalars['DateTime']>;
   version?: Maybe<Version>;
-}
-;export type VersionTagAttributes = {
+};
+
+export type VersionTagAttributes = {
   tag: Scalars['String'];
   versionId?: InputMaybe<Scalars['ID']>;
-}
-;export enum VulnGrade {
+};
+
+export enum VulnGrade {
   Critical = 'CRITICAL',
   High = 'HIGH',
   Low = 'LOW',
@@ -3428,8 +4111,9 @@ export type Vulnerability = {
   updatedAt?: Maybe<Scalars['DateTime']>;
   url?: Maybe<Scalars['String']>;
   vulnerabilityId?: Maybe<Scalars['String']>;
-}
-;export type Webhook = {
+};
+
+export type Webhook = {
   __typename?: 'Webhook';
   id?: Maybe<Scalars['ID']>;
   insertedAt?: Maybe<Scalars['DateTime']>;
@@ -3437,21 +4121,25 @@ export type Vulnerability = {
   updatedAt?: Maybe<Scalars['DateTime']>;
   url?: Maybe<Scalars['String']>;
   user?: Maybe<User>;
-}
-;export type WebhookAttributes = {
+};
+
+export type WebhookAttributes = {
   url: Scalars['String'];
-}
-;export type WebhookConnection = {
+};
+
+export type WebhookConnection = {
   __typename?: 'WebhookConnection';
   edges?: Maybe<Array<Maybe<WebhookEdge>>>;
   pageInfo: PageInfo;
-}
-;export type WebhookEdge = {
+};
+
+export type WebhookEdge = {
   __typename?: 'WebhookEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<Webhook>;
-}
-;export type WebhookLog = {
+};
+
+export type WebhookLog = {
   __typename?: 'WebhookLog';
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
@@ -3461,18 +4149,21 @@ export type Vulnerability = {
   status?: Maybe<Scalars['Int']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   webhook?: Maybe<IntegrationWebhook>;
-}
-;export type WebhookLogConnection = {
+};
+
+export type WebhookLogConnection = {
   __typename?: 'WebhookLogConnection';
   edges?: Maybe<Array<Maybe<WebhookLogEdge>>>;
   pageInfo: PageInfo;
-}
-;export type WebhookLogEdge = {
+};
+
+export type WebhookLogEdge = {
   __typename?: 'WebhookLogEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<WebhookLog>;
-}
-;export enum WebhookLogState {
+};
+
+export enum WebhookLogState {
   Delivered = 'DELIVERED',
   Failed = 'FAILED',
   Sending = 'SENDING'
@@ -3483,20 +4174,23 @@ export type WebhookResponse = {
   body?: Maybe<Scalars['String']>;
   headers?: Maybe<Scalars['Map']>;
   statusCode: Scalars['Int'];
-}
-;export type Wirings = {
+};
+
+export type Wirings = {
   __typename?: 'Wirings';
   helm?: Maybe<Scalars['Map']>;
   terraform?: Maybe<Scalars['Map']>;
-}
-;export type WorkspaceAttributes = {
+};
+
+export type WorkspaceAttributes = {
   bucketPrefix: Scalars['String'];
   cluster: Scalars['String'];
   project?: InputMaybe<Scalars['String']>;
   region: Scalars['String'];
   subdomain: Scalars['String'];
-}
-;export type ZoomMeeting = {
+};
+
+export type ZoomMeeting = {
   __typename?: 'ZoomMeeting';
   joinUrl: Scalars['String'];
   password?: Maybe<Scalars['String']>;

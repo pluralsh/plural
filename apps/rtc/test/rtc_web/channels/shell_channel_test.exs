@@ -38,5 +38,17 @@ defmodule RtcWeb.ShellChannelTest do
 
       assert Base.decode64!(res) == "resized"
     end
+
+    test "channel should return error and close on setup fail" do
+      user = insert(:user)
+      %{id: id} = insert(:cloud_shell, user: user, pod_name: "plrl-shell")
+
+      expect(Client, :setup, fn %{id: ^id} -> {:error, :failed} end)
+
+      {:ok, socket} = mk_socket(user)
+      {:error, reason} = subscribe_and_join(socket, "shells:me", %{})
+
+      assert reason == {:error, :failed}
+    end
   end
 end

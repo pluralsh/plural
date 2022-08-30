@@ -37,8 +37,8 @@ function extendedTheme({ minMenuWidth = 400 }) {
       ],
       Menu: [
         {
-          backgroundColor: 'fill-one',
-          border: '1px solid border-fill-one',
+          backgroundColor: 'fill-two',
+          border: '1px solid border-fill-two',
           borderRadius: 'large',
           width: 'max-content',
           minWidth: minMenuWidth,
@@ -149,6 +149,7 @@ function InstallDropdownButton({ recipes, ...props }) {
             active={tab === 0}
             onClick={() => setTab(0)}
             flexGrow={1}
+            borderBottom={tab === 0 ? '1px solid border-primary' : '1px solid border-fill-two'}
             {...{ '&>div': { justifyContent: 'center' } }}
           >
             Plural CLI
@@ -157,6 +158,7 @@ function InstallDropdownButton({ recipes, ...props }) {
             active={tab === 1}
             onClick={() => setTab(1)}
             flexGrow={1}
+            borderBottom={tab === 1 ? '1px solid border-primary' : '1px solid border-fill-two'}
             {...{ '&>div': { justifyContent: 'center' } }}
           >
             Cloud Shell
@@ -177,17 +179,18 @@ function InstallDropdownButton({ recipes, ...props }) {
             <P
               body2
               color="text"
-              marginBottom="small"
+              marginBottom="xsmall"
             >
-              Copy bundle command:
+              Copy this command:
             </P>
             <Codeline language="bash">{`plural bundle install ${name} ${recipe.name}`}</Codeline>
             <P
               body2
               color="text"
-              marginVertical="small"
+              marginTop="large"
+              marginBottom="xsmall"
             >
-              Open and paste command into cloud shell:
+              Open in cloud shell and paste command:
             </P>
             <Link
               to="/shell"

@@ -1,16 +1,16 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { gql, useMutation, useQuery } from '@apollo/client'
-import { Box, Keyboard, Text } from 'grommet'
+import { Box, Keyboard } from 'grommet'
 import { GqlError } from 'forge-core'
-import { Checkmark, StatusCritical } from 'grommet-icons'
-import { Button } from 'pluralsh-design-system'
+import { AppIcon, Button } from 'pluralsh-design-system'
+
+import { Text } from 'honorable'
 
 import { setToken } from '../helpers/authentication'
 
 import { UserFragment } from '../models/user'
 
-import { initials } from './users/Avatar'
 import { LabelledInput, LoginPortal } from './users/MagicLogin'
 import { WelcomeHeader } from './utils/WelcomeHeader'
 
@@ -49,62 +49,7 @@ function InvalidInvite() {
       justify="center"
       align="center"
     >
-      <Box>
-        <Text>That invite code is no longer valid</Text>
-      </Box>
-    </Box>
-  )
-}
-
-export function disableState(password, confirm) {
-  if (password.length < 10) return { disabled: true, reason: 'password is too short' }
-  if (password !== confirm) return { disabled: true, reason: 'passwords do not match' }
-
-  return { disabled: false, reason: 'passwords match!' }
-}
-
-function DummyAvatar({ name, size: given }) {
-  const size = given || '50px'
-
-  return (
-    <Box
-      flex={false}
-      round="xsmall"
-      align="center"
-      justify="center"
-      width={size}
-      height={size}
-      background="#6b5b95"
-    >
-      <Text size="small">{initials(name)}</Text>
-    </Box>
-  )
-}
-
-export function PasswordStatus({ disabled, reason }) {
-  return (
-    <Box
-      direction="row"
-      fill="horizontal"
-      align="center"
-      gap="xsmall"
-    >
-      {disabled ? (
-        <StatusCritical
-          color="error"
-          size="12px"
-        />
-      ) : (
-        <Checkmark
-          color="status-ok"
-          size="12px"
-        />
-      )}
-      <Text
-        size="small"
-        color={disabled ? 'error' : 'status-ok'}
-      >{reason}
-      </Text>
+      That invite code is no longer valid
     </Box>
   )
 }
@@ -163,7 +108,7 @@ function ExistingInvite({ invite: { account }, id }) {
 export default function Invite() {
   const { inviteId } = useParams()
   const [attributes, setAttributes] = useState({ name: '', password: '' })
-  const [confirm, setConfirm] = useState('')
+  const [passwordConfirmation, setPasswordConfirmation] = useState('')
   const [mutation, { loading, error }] = useMutation(SIGNUP, {
     variables: { inviteId, attributes },
     onCompleted: ({ signup: { jwt } }) => {
@@ -177,8 +122,9 @@ export default function Invite() {
   if (inviteError) return <InvalidInvite />
   if (!data) return null
 
-  const { disabled, reason } = disableState(attributes.password, confirm)
-  const valid = attributes.name.length > 0 && attributes.password.length > 0 && attributes.password === confirm
+  const passwordTooShort = attributes.password.length > 0 && attributes.password.length < 10
+  const passwordMatch = attributes.password === passwordConfirmation
+  const valid = attributes.name.length > 0 && attributes.password.length > 0 && passwordMatch
 
   if (data.invite.user) {
     return (
@@ -213,17 +159,24 @@ export default function Invite() {
               align="center"
               margin={{ vertical: '32px' }}
             >
-              <DummyAvatar name={attributes.name} />
+              <AppIcon
+                name={attributes.name}
+                size="xsmall"
+                hue="default"
+              />
               <Box>
                 <Text
-                  size="small"
-                  weight={500}
-                >{attributes.name}
+                  body1
+                  fontFamily="Monument Semi-Mono, monospace"
+                  fontWeight="500"
+                >
+                  {attributes.name}
                 </Text>
                 <Text
-                  size="small"
-                  color="dark-3"
-                >{data.invite.email}
+                  caption
+                  color="text-xlight"
+                >
+                  {data.invite.email}
                 </Text>
               </Box>
             </Box>
@@ -247,39 +200,28 @@ export default function Invite() {
                 value={attributes.password}
                 placeholder="Enter password"
                 onChange={password => setAttributes({ ...attributes, password })}
+                error={passwordTooShort}
+                hint={passwordTooShort ? 'Password too short, use min 10 characters.' : ''}
               />
               <LabelledInput
                 type="password"
                 label="Confirm password"
-                value={confirm}
+                value={passwordConfirmation}
                 placeholder="Enter password again"
-                onChange={setConfirm}
+                onChange={setPasswordConfirmation}
+                error={passwordConfirmation && !passwordMatch}
+                hint={passwordConfirmation && !passwordMatch ? 'Passwords do not match.' : ''}
               />
             </Box>
-            <Box
-              align="center"
-              gap="small"
+            <Button
+              primary
+              width="100%"
+              loading={loading}
+              disabled={!valid}
+              onClick={mutation}
             >
-              <PasswordStatus
-                disabled={disabled}
-                reason={reason}
-              />
-              <Box
-                fill="horizontal"
-                direction="row"
-                gap="small"
-              >
-                <Button
-                  primary
-                  width="100%"
-                  loading={loading}
-                  disabled={!valid}
-                  onClick={mutation}
-                >
-                  Sign up
-                </Button>
-              </Box>
-            </Box>
+              Sign up
+            </Button>
           </Box>
         </Keyboard>
       </Box>

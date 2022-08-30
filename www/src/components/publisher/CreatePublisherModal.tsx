@@ -65,7 +65,7 @@ function CreatePublisherModal({ open, onClose }: CreatePublisherModalProps) {
   }, [iconPicker.files])
 
   function isValidUrl(url: string) {
-    return !/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/.test(url)
+    return !/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/.test(url)
   }
 
   function renderUrlField(

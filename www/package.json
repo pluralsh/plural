@@ -18,7 +18,7 @@
   "engines": {
     "node": ">=16.15.0"
   },
-  "packageManager": "yarn@3.2.1",
+  "packageManager": "yarn@3.2.3",
   "dependencies": {
     "@absinthe/socket": "0.2.1",
     "@apollo/client": "3.6.9",

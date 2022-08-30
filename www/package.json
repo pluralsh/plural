@@ -126,6 +126,7 @@
     "@typescript-eslint/parser": "5.33.1",
     "eslint": "8.22.0",
     "eslint-config-pluralsh": "3.1.0",
+    "eslint-plugin-import": "2.26.0",
     "postcss-import": "8.2.0",
     "serve": "14.0.1",
     "stylelint": "14.11.0",

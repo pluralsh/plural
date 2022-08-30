@@ -324,7 +324,7 @@ function MarketplaceRepositories({ installed }) {
               {categories.map(category => (
                 <Token
                   {...filterTokenProps}
-                  onClick={() => handleClearToken('category', category)}
+                  onClose={() => handleClearToken('category', category)}
                   onKeyDown={event => (event.key === 'Enter' || event.key === ' ') && handleClearToken('category', category)}
                 >
                   {capitalize(category)}
@@ -333,7 +333,7 @@ function MarketplaceRepositories({ installed }) {
               {tags.map(tag => (
                 <Token
                   {...filterTokenProps}
-                  onClick={() => handleClearToken('tag', tag)}
+                  onClose={() => handleClearToken('tag', tag)}
                   onKeyDown={event => (event.key === 'Enter' || event.key === ' ') && handleClearToken('tag', tag)}
                 >
                   {capitalize(tag)}

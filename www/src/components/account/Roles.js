@@ -4,12 +4,13 @@ import { isEmpty } from 'lodash'
 import { Flex } from 'honorable'
 import {
   EmptyState,
-  Input,
   PageTitle,
   SearchIcon,
 } from 'pluralsh-design-system'
 import { useContext, useState } from 'react'
 
+import { List, ListItem } from '../utils/List'
+import ListInput from '../utils/ListInput'
 import {
   extendConnection,
   removeConnection,
@@ -21,7 +22,6 @@ import { DELETE_ROLE, ROLES_Q } from '../accounts/queries'
 import { Permissions } from '../accounts/types'
 import { CurrentUserContext } from '../login/CurrentUser'
 import { DeleteIconButton } from '../utils/IconButtons'
-import { ListItem } from '../profile/ListItem'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { StandardScroller } from '../utils/SmoothScroller'
 
@@ -33,25 +33,14 @@ import { hasRbac } from './utils'
 
 function Header({ q, setQ }) {
   return (
-    <Box
-      direction="row"
-      align="center"
-      gap="medium"
-    >
-      <Box
-        fill="horizontal"
-        direction="row"
-        align="center"
-      >
-        <Input
-          width="100%"
-          value={q}
-          placeholder="Search for roles by name"
-          startIcon={<SearchIcon size={15} />}
-          onChange={({ target: { value } }) => setQ(value)}
-        />
-      </Box>
-    </Box>
+    <ListInput
+      width="100%"
+      value={q}
+      placeholder="Search a role"
+      startIcon={<SearchIcon color="text-light" />}
+      onChange={({ target: { value } }) => setQ(value)}
+      flexGrow={0}
+    />
   )
 }
 
@@ -176,16 +165,13 @@ export function Roles() {
         {' '}
         <CreateRole q={q} />
       </PageTitle>
-      <Box
-        fill
-        gap="medium"
-      >
+      <List>
         <Header
           q={q}
           setQ={setQ}
         />
         <RolesInner q={q} />
-      </Box>
+      </List>
     </Flex>
   )
 }

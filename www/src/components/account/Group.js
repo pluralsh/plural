@@ -14,9 +14,11 @@ import {
   CREATE_GROUP, CREATE_GROUP_MEMBERS, DELETE_GROUP_MEMBER, GROUPS_Q, GROUP_MEMBERS, UPDATE_GROUP,
 } from '../accounts/queries'
 import { DeleteIconButton } from '../utils/IconButtons'
-import { ListItem } from '../profile/ListItem'
+
 import { GqlError } from '../utils/Alert'
 import { StandardScroller } from '../utils/SmoothScroller'
+
+import { List, ListItem } from '../utils/List'
 
 import { Actions } from './Actions'
 
@@ -56,7 +58,6 @@ function GroupMember({
         {edit && (
           <DeleteIconButton
             onClick={mutation}
-            size={25}
           />
         )}
       </Box>
@@ -75,12 +76,7 @@ function GroupMembers({ group, edit }) {
   const { groupMembers: { pageInfo, edges } } = data
 
   return (
-    <Box
-      flex={false}
-      style={{ minHeight: '300px' }}
-      pad={{ bottom: 'small' }}
-      fill
-    >
+    <List minHeight="300px">
       <StandardScroller
         listRef={listRef}
         setListRef={setListRef}
@@ -103,7 +99,7 @@ function GroupMembers({ group, edit }) {
           updateQuery: (prev, { fetchMoreResult: { groupMembers } }) => extendConnection(prev, groupMembers, 'groupMembers'),
         })}
       />
-    </Box>
+    </List>
   )
 }
 

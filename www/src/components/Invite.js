@@ -1,16 +1,18 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { gql, useMutation, useQuery } from '@apollo/client'
-import { Box, Keyboard, Text } from 'grommet'
-import { Button, GqlError, SecondaryButton } from 'forge-core'
-import { Checkmark, StatusCritical } from 'grommet-icons'
+import { Box, Keyboard } from 'grommet'
+import { GqlError } from 'forge-core'
+import { AppIcon, Button } from 'pluralsh-design-system'
+
+import { Text } from 'honorable'
 
 import { setToken } from '../helpers/authentication'
 
 import { UserFragment } from '../models/user'
 
-import { initials } from './users/Avatar'
 import { LabelledInput, LoginPortal } from './users/MagicLogin'
+import { WelcomeHeader } from './utils/WelcomeHeader'
 
 const SIGNUP = gql`
   mutation Signup($attributes: UserAttributes!, $inviteId: String!) {
@@ -47,63 +49,7 @@ function InvalidInvite() {
       justify="center"
       align="center"
     >
-      <Box>
-        <Text>That invite code is no longer valid</Text>
-      </Box>
-    </Box>
-  )
-}
-
-export function disableState(password, confirm) {
-  if (password.length === 0) return { disabled: true, reason: 'enter a password' }
-  if (password.length < 10) return { disabled: true, reason: 'password is too short' }
-  if (password !== confirm) return { disabled: true, reason: 'passwords do not match' }
-
-  return { disabled: false, reason: 'passwords match!' }
-}
-
-function DummyAvatar({ name, size: given }) {
-  const size = given || '50px'
-
-  return (
-    <Box
-      flex={false}
-      round="xsmall"
-      align="center"
-      justify="center"
-      width={size}
-      height={size}
-      background="#6b5b95"
-    >
-      <Text size="small">{initials(name)}</Text>
-    </Box>
-  )
-}
-
-export function PasswordStatus({ disabled, reason }) {
-  return (
-    <Box
-      direction="row"
-      fill="horizontal"
-      align="center"
-      gap="xsmall"
-    >
-      {disabled ? (
-        <StatusCritical
-          color="error"
-          size="12px"
-        />
-      ) : (
-        <Checkmark
-          color="status-ok"
-          size="12px"
-        />
-      )}
-      <Text
-        size="small"
-        color={disabled ? 'error' : 'status-ok'}
-      >{reason}
-      </Text>
+      That invite code is no longer valid
     </Box>
   )
 }
@@ -133,26 +79,15 @@ function ExistingInvite({ invite: { account }, id }) {
               header="Something went wrong!"
             />
           )}
-          <Box
-            justify="center"
-            align="center"
+          <Box align="center">You were invited to join another account</Box>
+          <Button
+            onClick={mutation}
+            loading={loading}
+            width="100%"
+            padding="medium"
           >
-            <Text>You were invited to join another account</Text>
-          </Box>
-          <Box
-            direction="row"
-            fill="horizontal"
-          >
-            <Button
-              onClick={mutation}
-              loading={loading}
-              fill="horizontal"
-              size="small"
-              round="xsmall"
-              pad={{ vertical: 'xsmall', horizontal: 'medium' }}
-              label={`Join ${account.name}`}
-            />
-          </Box>
+            Join {account.name}
+          </Button>
         </Box>
       </Box>
     </LoginPortal>
@@ -162,8 +97,7 @@ function ExistingInvite({ invite: { account }, id }) {
 export default function Invite() {
   const { inviteId } = useParams()
   const [attributes, setAttributes] = useState({ name: '', password: '' })
-  const [confirm, setConfirm] = useState('')
-  const [editPassword, setEditPassword] = useState(false)
+  const [passwordConfirmation, setPasswordConfirmation] = useState('')
   const [mutation, { loading, error }] = useMutation(SIGNUP, {
     variables: { inviteId, attributes },
     onCompleted: ({ signup: { jwt } }) => {
@@ -177,8 +111,10 @@ export default function Invite() {
   if (inviteError) return <InvalidInvite />
   if (!data) return null
 
-  const { disabled, reason } = disableState(attributes.password, confirm)
-  const { email } = data.invite
+  const isNameValid = attributes.name.length > 0
+  const isPasswordValid = attributes.password.length > 10
+  const passwordMatch = attributes.password === passwordConfirmation
+  const isValid = isNameValid && isPasswordValid && passwordMatch
 
   if (data.invite.user) {
     return (
@@ -189,15 +125,13 @@ export default function Invite() {
     )
   }
 
-  const filled = attributes.name.length > 0
-
   return (
     <LoginPortal style={{ minWidth: '50%' }}>
       <Box
         fill
         pad="medium"
       >
-        <Keyboard onEnter={editPassword && filled ? mutation : null}>
+        <Keyboard onEnter={isValid && mutation}>
           <Box
             flex={false}
             gap="small"
@@ -208,107 +142,80 @@ export default function Invite() {
                 header="Something went wrong!"
               />
             )}
-            <Box
-              justify="center"
-              align="center"
-            >
-              <Text size="large">Accept your invite</Text>
-            </Box>
+            <WelcomeHeader heading="Accept your invitation" />
             <Box
               direction="row"
               gap="small"
               align="center"
+              margin={{ vertical: '32px' }}
             >
-              <DummyAvatar name={attributes.name} />
+              <AppIcon
+                name={attributes.name || 'John Doe'}
+                size="xsmall"
+                hue="default"
+              />
               <Box>
                 <Text
-                  size="small"
-                  weight={500}
-                >{attributes.name}
+                  body1
+                  fontFamily="Monument Semi-Mono, monospace"
+                  fontWeight="500"
+                >
+                  {attributes.name || 'John Doe'}
                 </Text>
                 <Text
-                  size="small"
-                  color="dark-3"
-                >{email}
+                  caption
+                  color="text-xlight"
+                >
+                  {data.invite.email}
                 </Text>
               </Box>
             </Box>
-            {editPassword ? (
-              <Box animation={{ type: 'fadeIn', duration: 500 }}>
-                <Box
-                  gap="small"
-                  fill="horizontal"
-                >
-                  <LabelledInput
-                    width="100%"
-                    type="password"
-                    label="password"
-                    value={attributes.password}
-                    placeholder="battery horse fire stapler"
-                    onChange={password => setAttributes({ ...attributes, password })}
-                  />
-                  <LabelledInput
-                    width="100%"
-                    type="password"
-                    label="confirm"
-                    value={confirm}
-                    placeholder="type it again"
-                    onChange={setConfirm}
-                  />
-                </Box>
-              </Box>
-            ) : (
-              <Box animation={{ type: 'fadeIn', duration: 500 }}>
-                <Box
-                  gap="small"
-                  fill="horizontal"
-                >
-                  <LabelledInput
-                    width="100%"
-                    label="Email"
-                    value={email}
-                  />
-                  <LabelledInput
-                    width="100%"
-                    label="Name"
-                    value={attributes.name}
-                    placeholder="John Doe"
-                    onChange={name => setAttributes({ ...attributes, name })}
-                  />
-                </Box>
-              </Box>
-            )}
             <Box
-              direction="row"
-              justify="end"
-              align="center"
               gap="small"
+              fill="horizontal"
             >
-              {editPassword && (
-                <PasswordStatus
-                  disabled={disabled}
-                  reason={reason}
-                />
-              )}
-              <Box
-                flex={false}
-                direction="row"
-                gap="small"
-              >
-                {editPassword && (
-                  <SecondaryButton
-                    label="Go Back"
-                    onClick={() => setEditPassword(false)}
-                  />
-                )}
-                <Button
-                  loading={loading}
-                  disabled={editPassword ? disabled : !filled}
-                  label={editPassword ? 'Sign up' : 'Continue'}
-                  onClick={editPassword ? mutation : () => setEditPassword(true)}
-                />
-              </Box>
+              <LabelledInput
+                label="Email"
+                value={data.invite.email}
+                disabled
+              />
+              <LabelledInput
+                label="Name"
+                value={attributes.name}
+                placeholder="John Doe"
+                onChange={name => setAttributes({ ...attributes, name })}
+                required
+              />
+              <LabelledInput
+                type="password"
+                label="Password"
+                value={attributes.password}
+                placeholder="Enter password"
+                onChange={password => setAttributes({ ...attributes, password })}
+                error={attributes.password.length > 0 && !isPasswordValid}
+                hint={attributes.password.length > 0 && !isPasswordValid ? 'Password is too short. Use at least 10 characters.' : ''}
+                required
+              />
+              <LabelledInput
+                type="password"
+                label="Confirm password"
+                value={passwordConfirmation}
+                placeholder="Enter password again"
+                onChange={setPasswordConfirmation}
+                error={passwordConfirmation && !passwordMatch}
+                hint={passwordConfirmation && !passwordMatch ? 'Passwords do not match.' : ''}
+                required
+              />
             </Box>
+            <Button
+              primary
+              width="100%"
+              loading={loading}
+              disabled={!isValid}
+              onClick={mutation}
+            >
+              Sign up
+            </Button>
           </Box>
         </Keyboard>
       </Box>

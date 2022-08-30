@@ -1,5 +1,4 @@
 import { useQuery } from '@apollo/client'
-import { Box } from 'grommet'
 import { isEmpty } from 'lodash'
 import { EmptyState } from 'pluralsh-design-system'
 import { useState } from 'react'

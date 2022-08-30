@@ -1,12 +1,8 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
-import {
-  Avatar, Flex, Span,
-} from 'honorable'
+import { Avatar, Flex, Span } from 'honorable'
 import moment from 'moment'
 import {
-  ArrowLeftIcon,
-  IconFrame,
   ListBoxItem,
   Modal,
   ModalHeader,
@@ -17,22 +13,13 @@ import { useMemo, useState } from 'react'
 import { isEqual, uniqWith } from 'lodash'
 
 import {
-  deepUpdate,
   extendConnection,
   removeConnection,
   updateCache,
 } from '../../utils/graphql'
 
 import { Placeholder } from '../accounts/Audits'
-import {
-  DELETE_DNS_RECORD,
-  DELETE_DOMAIN,
-  DNS_DOMAINS,
-  DNS_RECORDS,
-  UPDATE_DOMAIN,
-} from '../accounts/queries'
-import { DeleteIconButton } from '../utils/IconButtons'
-import { Provider } from '../repos/misc'
+import { DELETE_DOMAIN, DNS_DOMAINS, UPDATE_DOMAIN } from '../accounts/queries'
 import { GqlError } from '../utils/Alert'
 import { StandardScroller } from '../utils/SmoothScroller'
 import { Table, TableData, TableRow } from '../utils/Table'
@@ -44,6 +31,7 @@ import { Confirm } from './Confirm'
 import { MoreMenu } from './MoreMenu'
 import { BindingInput } from './Typeaheads'
 import { sanitize } from './utils'
+import { DnsRecords } from './DnsRecords'
 
 function DomainOptions({ domain, setDomain }) {
   const [confirm, setConfirm] = useState(false)
@@ -180,142 +168,6 @@ function AccessPolicy({ domain: { id, accessPolicy }, cancel, setOpen }) {
         action="Update"
       />
     </>
-  )
-}
-
-function DeleteRecord({ record, domain }) {
-  const [confirm, setConfirm] = useState(false)
-  const [mutation, { loading, error }] = useMutation(DELETE_DNS_RECORD, {
-    variables: { name: record.name, type: record.type },
-    update: (cache, { data: { deleteDnsRecord } }) => updateCache(cache, {
-      query: DNS_RECORDS,
-      variables: { id: domain.id },
-      update: prev => deepUpdate(prev, 'dnsDomain', domain => removeConnection(domain, deleteDnsRecord, 'dnsRecords')),
-      onCompleted: () => setConfirm(false),
-    }),
-  })
-
-  return (
-    <>
-      <DeleteIconButton onClick={() => setConfirm(true)} />
-      <Confirm
-        open={confirm}
-        error={error}
-        title={`Delete ${record.name}?`}
-        text={`This will delete the ${record.type} record for ${record.name} permanently`}
-        submit={mutation}
-        close={() => setConfirm(false)}
-        label="Delete"
-        loading={loading}
-      />
-    </>
-  )
-}
-
-function DnsRecords({ domain, setDomain }) {
-  const [listRef, setListRef] = useState(null)
-  const { data, loading, fetchMore } = useQuery(DNS_RECORDS, {
-    variables: { id: domain.id },
-    fetchPolicy: 'cache-and-network',
-  })
-
-  if (!data) return null
-
-  const {
-    dnsRecords: { pageInfo, edges },
-  } = data.dnsDomain
-
-  return (
-    <Box
-      fill
-      pad={{ vertical: 'small' }}
-    >
-      <Box
-        direction="row"
-        gap="small"
-        align="center"
-        pad="small"
-        background="fill-one"
-        border
-        round="xsmall"
-      >
-        <IconFrame
-          clickable
-          size="medium"
-          icon={<ArrowLeftIcon />}
-          onClick={() => setDomain(null)}
-        />
-        <Span fontWeight="bold">{domain.name}</Span>
-      </Box>
-      <Table
-        headers={['Name', 'Type', 'Cluster', 'Creator', 'Created On']}
-        sizes={['20%', '20%', '20%', '20%', '20%']}
-        background="fill-one"
-        border="1px solid border"
-        marginTop="medium"
-        width="100%"
-        height="100%"
-      >
-        <Box fill>
-          <StandardScroller
-            listRef={listRef}
-            setListRef={setListRef}
-            hasNextPage={pageInfo.hasNextPage}
-            items={edges}
-            loading={loading}
-            placeholder={Placeholder}
-            mapper={({ node }, { next }) => (
-              <TableRow
-                last={!next.node}
-                suffix={(
-                  <DeleteRecord
-                    record={node}
-                    domain={domain}
-                  />
-                )}
-              >
-                <TableData>{node.name}</TableData>
-                <TableData>{node.type}</TableData>
-                <TableData>
-                  <Box
-                    flex={false}
-                    direction="row"
-                    gap="xsmall"
-                    align="center"
-                  >
-                    <Provider
-                      provider={node.provider}
-                      width={30}
-                    />
-                    <Span color="text-light">{node.cluster}</Span>
-                  </Box>
-                </TableData>
-                <TableData>
-                  <Box
-                    direction="row"
-                    gap="xsmall"
-                    align="center"
-                  >
-                    <Avatar
-                      src={node.creator.avatar}
-                      name={node.creator.name}
-                      size={25}
-                    />
-                    <Span color="text-light">{node.creator.name}</Span>
-                  </Box>
-                </TableData>
-                <TableData>{moment(node.insertedAt).format('lll')}</TableData>
-              </TableRow>
-            )}
-            loadNextPage={() => pageInfo.hasNextPage
-              && fetchMore({
-                variables: { cursor: pageInfo.endCursor },
-                updateQuery: (prev, { fetchMoreResult: { dnsDomain } }) => deepUpdate(prev, 'dnsDomain', prev => extendConnection(prev, dnsDomain.dnsRecords, 'dnsRecords')),
-              })}
-          />
-        </Box>
-      </Table>
-    </Box>
   )
 }
 

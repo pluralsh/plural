@@ -11,6 +11,7 @@ import { UserFragment } from '../models/user'
 
 import { initials } from './users/Avatar'
 import { LabelledInput, LoginPortal } from './users/MagicLogin'
+import { WelcomeHeader } from './utils/WelcomeHeader'
 
 const SIGNUP = gql`
   mutation Signup($attributes: UserAttributes!, $inviteId: String!) {
@@ -208,12 +209,7 @@ export default function Invite() {
                 header="Something went wrong!"
               />
             )}
-            <Box
-              justify="center"
-              align="center"
-            >
-              <Text size="large">Accept your invite</Text>
-            </Box>
+            <WelcomeHeader heading="Accept your invitation" />
             <Box
               direction="row"
               gap="small"

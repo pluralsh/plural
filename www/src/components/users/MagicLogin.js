@@ -15,8 +15,10 @@ import {
 } from 'react-router-dom'
 import queryString from 'query-string'
 import {
-  A, Article, Button, Div, Flex, H1, H2, Icon, Img, Input, P,
+  A, Article, Button, Div, Flex, H2, Icon, Img, Input, P,
 } from 'honorable'
+
+import { WelcomeHeader } from 'components/utils/WelcomeHeader'
 
 import { fetchToken, setToken } from '../../helpers/authentication'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
@@ -613,16 +615,5 @@ export function Signup() {
         </A>
       </P>
     </LoginPortal>
-  )
-}
-
-function WelcomeHeader({ heading = 'Welcome to Plural', subheading = 'We\'re glad to see you here.' }) {
-  return (
-    <Div marginBottom="xxlarge">
-      <H1 title1>
-        {heading}
-      </H1>
-      <P body1>{subheading}</P>
-    </Div>
   )
 }

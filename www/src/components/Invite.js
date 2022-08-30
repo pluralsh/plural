@@ -79,26 +79,15 @@ function ExistingInvite({ invite: { account }, id }) {
               header="Something went wrong!"
             />
           )}
-          <Box
-            justify="center"
-            align="center"
+          <Box align="center">You were invited to join another account</Box>
+          <Button
+            onClick={mutation}
+            loading={loading}
+            width="100%"
+            padding="medium"
           >
-            <Text>You were invited to join another account</Text>
-          </Box>
-          <Box
-            direction="row"
-            fill="horizontal"
-          >
-            <Button
-              onClick={mutation}
-              loading={loading}
-              fill="horizontal"
-              size="small"
-              round="xsmall"
-              pad={{ vertical: 'xsmall', horizontal: 'medium' }}
-              label={`Join ${account.name}`}
-            />
-          </Box>
+            Join {account.name}
+          </Button>
         </Box>
       </Box>
     </LoginPortal>

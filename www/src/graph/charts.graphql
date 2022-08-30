@@ -1,0 +1,44 @@
+query GetCharts($id: ID!) {
+    charts(repositoryId: $id, first: 100) {
+        edges {
+            node {
+                ...ChartFragment
+            }
+        }
+    }
+}
+
+query GetVersions($id: ID!) {
+    versions(chartId: $id, first: 100) {
+        edges {
+            node {
+                ...VersionFragment
+            }
+        }
+    }
+}
+
+query GetChartInstallations($id: ID!) {
+    chartInstallations(repositoryId: $id, first: 100) {
+        edges { node { ...ChartInstallationFragment } }
+    }
+}
+
+query GetPackageInstallations($id: ID!) {
+    chartInstallations(repositoryId: $id, first: 100) {
+        edges { node { ...ChartInstallationFragment } }
+    }
+    terraformInstallations(repositoryId: $id, first: 100) {
+        edges { node { ...TerraformInstallationFragment } }
+    }
+}
+
+mutation CreateCrd($chartName: ChartName!, $name: String!, $blob: UploadOrUrl!) {
+    createCrd(chartName: $chartName, attributes: {name:$name, blob:$blob}) {
+        id
+    }
+}
+
+mutation UninstallChart($id: ID!) {
+    deleteChartInstallation(id: $id) { id }
+}

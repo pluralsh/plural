@@ -1,0 +1,52 @@
+query GetRepository($name: String) {
+    repository(name: $name) { ...RepositoryFragment }
+}
+
+mutation CreateResourceDefinition($name: String!, $input: ResourceDefinitionAttributes!) {
+    updateRepository(repositoryName: $name, attributes: {integrationResourceDefinition: $input}) {
+        id
+    }
+}
+
+mutation CreateIntegration($name: String!, $attrs: IntegrationAttributes!) {
+    createIntegration(repositoryName: $name, attributes: $attrs) { id }
+}
+
+mutation UpdateRepository($name: String!, $attrs: RepositoryAttributes!) {
+    updateRepository(repositoryName: $name, attributes: $attrs) { id }
+}
+
+mutation CreateRepository($name: String!, $publisher: String!, $attributes: RepositoryAttributes!) {
+    upsertRepository(name: $name, publisher: $publisher, attributes: $attributes) { id }
+}
+
+mutation AcquireLock($name: String!) {
+    acquireLock(repository: $name) { ...ApplyLockFragment }
+}
+
+mutation ReleaseLock($name: String!, $attrs: LockAttributes!) {
+    releaseLock(repository: $name, attributes: $attrs) { ...ApplyLockFragment	}
+}
+
+mutation UnlockRepository($name: String!) {
+    unlockRepository(name: $name)
+}
+
+query ListRepositories($q: String) {
+    repositories(q: $q, first: 100) {
+        edges { node { ...RepositoryFragment } }
+    }
+}
+
+query Scaffolds($app: String!, $pub: String!, $cat: Category!, $ing: Boolean, $pg: Boolean) {
+    scaffold(application: $app, publisher: $pub, category: $cat, ingress: $ing, postgres: $pg) {
+        path
+        content
+    }
+}
+
+mutation DeleteRepository($id: ID!) {
+    deleteRepository(repositoryId: $id){
+        id
+    }
+}

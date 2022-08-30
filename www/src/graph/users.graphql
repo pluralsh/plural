@@ -1,0 +1,59 @@
+query Me{
+    me { id email }
+}
+
+query GetLoginMethod($email: String!) {
+    loginMethod(email: $email) { loginMethod token }
+}
+
+query ListTokens{
+    tokens(first: 3) {
+        edges { node { token } }
+    }
+}
+
+query ListKeys($emails: [String]) {
+    publicKeys(emails: $emails, first: 1000) {
+        edges { node { ...PublicKeyFragment } }
+    }
+}
+
+query GetEabCredential($cluster: String!, $provider: Provider!) {
+    eabCredential(cluster: $cluster, provider: $provider) {
+        ...EabCredentialFragment
+    }
+}
+
+mutation PollLoginToken($token: String!) {
+    loginToken(token: $token) { jwt }
+}
+
+mutation DevLogin {
+    deviceLogin { loginUrl deviceToken }
+}
+
+mutation Login($email: String!, $pwd: String!) {
+    login(email: $email, password: $pwd) { jwt }
+}
+
+mutation ImpersonateServiceAccount($email: String) {
+    impersonateServiceAccount(email: $email) { jwt email }
+}
+
+mutation CreateAccessToken{
+    createToken { token }
+}
+
+mutation CreateKey($key: String!, $name: String!) {
+    createPublicKey(attributes: {content: $key, name: $name}) { id }
+}
+
+mutation DeleteEabCredential($cluster: String!, $provider: Provider!) {
+    deleteEabKey(cluster: $cluster, provider: $provider) {
+        id
+    }
+}
+
+mutation CreateEvent($attrs: UserEventAttributes!) {
+    createUserEvent(attributes: $attrs)
+}

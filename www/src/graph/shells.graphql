@@ -1,0 +1,7 @@
+query GetShell {
+    shell { ...CloudShellFragment }
+}
+
+mutation DeleteShell {
+    deleteShell { ...CloudShellFragment }
+}

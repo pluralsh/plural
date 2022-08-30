@@ -138,6 +138,7 @@ function InstallDropdownButton({ recipes, ...props }) {
                 inline
                 href="https://docs.plural.sh/getting-started/getting-started#install-plural-cli"
                 target="_blank"
+                textDecoration="none"
               >
                 docs
               </A>.

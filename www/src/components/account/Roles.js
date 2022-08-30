@@ -28,7 +28,8 @@ import { StandardScroller } from '../utils/SmoothScroller'
 import { Confirm } from './Confirm'
 
 import { Info } from './Info'
-import { CreateRole, UpdateRole } from './Role'
+import { EditRole } from './EditRole'
+import { CreateRole } from './CreateRole'
 import { hasRbac } from './utils'
 
 function Header({ q, setQ }) {
@@ -75,7 +76,7 @@ function Role({ role, q }) {
           align="center"
         >
           {editable && (
-            <UpdateRole
+            <EditRole
               role={role}
               q={q}
             />

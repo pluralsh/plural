@@ -8,7 +8,7 @@ import {
   ModalHeader,
   ValidatedInput,
 } from 'pluralsh-design-system'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import { appendConnection, updateCache } from '../../utils/graphql'
 import {
@@ -42,7 +42,7 @@ function ServiceAccountForm({
     >
       {error && (
         <GqlError
-          header="Something broke"
+          header="Something went wrong"
           error={error}
         />
       )}
@@ -149,7 +149,9 @@ export function EditServiceAccount({ user, update }) {
       <Modal
         portal
         open={edit}
-        onClose={() => setEdit(false)}
+        onClose={() => {
+          setEdit(false)
+        }}
       >
         <ModalHeader onClose={() => setEdit(false)}>
           UPDATE SERVICE ACCOUNT
@@ -187,10 +189,17 @@ export function EditServiceAccount({ user, update }) {
   )
 }
 
+const defaultAttributes = { name: '', email: '' }
+
 export function CreateServiceAccount({ q }) {
   const [open, setOpen] = useState(false)
-  const [attributes, setAttributes] = useState({ name: '', email: '' })
+  const [attributes, setAttributes] = useState(defaultAttributes)
   const [bindings, setBindings] = useState([])
+  const resetAndClose = useCallback(() => {
+    setBindings([])
+    setAttributes(defaultAttributes)
+    setOpen(false)
+  }, [])
   const [mutation, { loading, error }] = useMutation(CREATE_SERVICE_ACCOUNT, {
     variables: {
       attributes: {
@@ -203,7 +212,9 @@ export function CreateServiceAccount({ q }) {
       variables: { q, serviceAccount: true },
       update: prev => appendConnection(prev, createServiceAccount, 'users'),
     }),
-    onCompleted: () => setOpen(false),
+    onCompleted: () => {
+      resetAndClose()
+    },
   })
 
   return (
@@ -218,10 +229,13 @@ export function CreateServiceAccount({ q }) {
       </Div>
       <Modal
         open={open}
-        onClose={() => setOpen(false)}
+        onClose={() => {
+          resetAndClose()
+          setOpen(false)
+        }}
       >
-        <ModalHeader onClose={() => setOpen(false)}>
-          CREATE SERVICE ACCOUNT
+        <ModalHeader>
+          Create service account
         </ModalHeader>
         <Box
           flex={false}
@@ -238,7 +252,9 @@ export function CreateServiceAccount({ q }) {
           <ModalActions>
             <Button
               secondary
-              onClick={() => setOpen(false)}
+              onClick={() => {
+                resetAndClose()
+              }}
             >
               Cancel
             </Button>

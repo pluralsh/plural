@@ -6,26 +6,24 @@ import {
   ModalActions,
   ModalHeader, ValidatedInput,
 } from 'pluralsh-design-system'
-import { useMemo, useState } from 'react'
-import uniqWith from 'lodash/uniqWith'
-import isEqual from 'lodash/isEqual'
+import { useCallback, useState } from 'react'
 
 import { appendConnection, updateCache } from '../../utils/graphql'
 import { CREATE_GROUP, GROUPS_Q } from '../accounts/queries'
 import { GqlError } from '../utils/Alert'
 
-import { BindingInput } from './Typeaheads'
-
 export function CreateGroup({ q }) {
   const [open, setOpen] = useState(false)
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
-  const [bindings, setBindings] = useState([])
-  const uniqueBindings = useMemo(() => uniqWith(bindings, isEqual),
-    [bindings])
+  const resetAndClose = useCallback(() => {
+    setName('')
+    setDescription(null)
+    setOpen(false)
+  }, [])
   const [mutation, { loading, error }] = useMutation(CREATE_GROUP, {
     variables: { attributes: { name, description } },
-    onCompleted: () => setOpen(false),
+    onCompleted: () => resetAndClose(),
     update: (cache, { data: { createGroup } }) => updateCache(cache, {
       query: GROUPS_Q,
       variables: { q },
@@ -43,7 +41,7 @@ export function CreateGroup({ q }) {
       </Button>
       <Modal
         open={open}
-        onClose={() => setOpen(false)}
+        onClose={() => resetAndClose()}
         maxHeight="400px"
       >
         <ModalHeader>Create group</ModalHeader>
@@ -53,7 +51,7 @@ export function CreateGroup({ q }) {
         >
           {error && (
             <GqlError
-              header="Something broke"
+              header="Something went wrong"
               error={error}
             />
           )}
@@ -67,19 +65,10 @@ export function CreateGroup({ q }) {
             value={description}
             onChange={({ target: { value } }) => setDescription(value)}
           />
-          <BindingInput
-            type="user"
-            hint="users that will receive this role"
-            bindings={uniqueBindings
-              .filter(({ user }) => !!user)
-              .map(({ user: { email } }) => email)}
-            add={user => setBindings([...bindings, { user }])}
-            remove={email => setBindings(bindings.filter(({ user }) => !user || user.email !== email))}
-          />
           <ModalActions>
             <Button
               secondary
-              onClick={() => setOpen(false)}
+              onClick={() => resetAndClose()}
             >
               Cancel
             </Button>

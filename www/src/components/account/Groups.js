@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/client'
 import { Box } from 'grommet'
-import { Flex } from 'honorable'
+import { Div, Flex } from 'honorable'
 import {
   Button,
   GlobeIcon,
@@ -15,10 +15,7 @@ import ListInput from 'components/utils/ListInput'
 
 import { List } from 'components/utils/List'
 
-import {
-  removeConnection,
-  updateCache,
-} from '../../utils/graphql'
+import { removeConnection, updateCache } from '../../utils/graphql'
 import { canEdit } from '../accounts/EditAccount'
 import { DELETE_GROUP, GROUPS_Q } from '../accounts/queries'
 import { Permissions } from '../accounts/types'
@@ -115,11 +112,13 @@ export function Group({ group, q }) {
           width="60vw"
           onClose={() => setEdit(false)}
         >
-          <ModalHeader onClose={() => setEdit(false)}>Edit group</ModalHeader>
-          <EditGroup
-            group={group}
-            cancel={() => setEdit(false)}
-          />
+          <Div>
+            <ModalHeader onClose={() => setEdit(false)}>Edit group</ModalHeader>
+            <EditGroup
+              group={group}
+              cancel={() => setEdit(false)}
+            />
+          </Div>
         </Modal>
         <Confirm
           open={confirm}

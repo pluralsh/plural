@@ -1,6 +1,8 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
-import { Avatar, Flex, Span } from 'honorable'
+import {
+  Avatar, Flex, Span,
+} from 'honorable'
 import moment from 'moment'
 import {
   ArrowLeftIcon,
@@ -54,6 +56,7 @@ function DomainOptions({ domain, setDomain }) {
         update: prev => removeConnection(prev, deleteDomain, 'dnsDomains'),
       })
     },
+    onCompleted: () => setEdit(false),
   })
 
   const menuItems = {
@@ -95,15 +98,16 @@ function DomainOptions({ domain, setDomain }) {
       <Modal
         portal
         open={edit}
-        title="UPDATE ACCESS POLICY"
         onClose={() => setEdit(false)}
+        width="100%"
       >
         <ModalHeader onClose={() => setEdit(false)}>
-          EDIT ACCESS POLICY
+          Edit access policy
         </ModalHeader>
         <AccessPolicy
           domain={domain}
           cancel={() => setEdit(false)}
+          setOpen={open => setEdit(open)}
         />
       </Modal>
       <Confirm
@@ -119,7 +123,7 @@ function DomainOptions({ domain, setDomain }) {
   )
 }
 
-function AccessPolicy({ domain: { id, accessPolicy }, cancel }) {
+function AccessPolicy({ domain: { id, accessPolicy }, cancel, setOpen }) {
   const [bindings, setBindings] = useState(accessPolicy ? accessPolicy.bindings : [])
   const uniqueBindings = useMemo(() => uniqWith(bindings, isEqual), [bindings])
   const [mutation, { loading, error }] = useMutation(UPDATE_DOMAIN, {
@@ -132,46 +136,50 @@ function AccessPolicy({ domain: { id, accessPolicy }, cancel }) {
         },
       },
     },
+    onCompleted: () => {
+      setBindings([])
+      setOpen(false)
+    },
   })
 
   return (
-    <Box
-      pad="medium"
-      gap="small"
-      width="500px"
-      minHeight="250px"
-    >
-      {error && (
-        <GqlError
-          error={error}
-          header="Something broke"
+    <>
+      <Flex
+        direction="column"
+        gap="large"
+      >
+        {error && (
+          <GqlError
+            error={error}
+            header="Something went wrong"
+          />
+        )}
+        <BindingInput
+          type="user"
+          background="fill-two"
+          bindings={uniqueBindings
+            .filter(({ user }) => !!user)
+            .map(({ user: { email } }) => email)}
+          add={user => setBindings([...uniqueBindings, { user }])}
+          remove={email => setBindings(uniqueBindings.filter(({ user }) => !user || user.email !== email))}
         />
-      )}
-      <BindingInput
-        type="user"
-        background="fill-two"
-        bindings={uniqueBindings
-          .filter(({ user }) => !!user)
-          .map(({ user: { email } }) => email)}
-        add={user => setBindings([...uniqueBindings, { user }])}
-        remove={email => setBindings(uniqueBindings.filter(({ user }) => !user || user.email !== email))}
-      />
-      <BindingInput
-        type="group"
-        background="fill-two"
-        bindings={uniqueBindings
-          .filter(({ group }) => !!group)
-          .map(({ group: { name } }) => name)}
-        add={group => setBindings([...uniqueBindings, { group }])}
-        remove={name => setBindings(uniqueBindings.filter(({ group }) => !group || group.name !== name))}
-      />
+        <BindingInput
+          type="group"
+          background="fill-two"
+          bindings={uniqueBindings
+            .filter(({ group }) => !!group)
+            .map(({ group: { name } }) => name)}
+          add={group => setBindings([...uniqueBindings, { group }])}
+          remove={name => setBindings(uniqueBindings.filter(({ group }) => !group || group.name !== name))}
+        />
+      </Flex>
       <Actions
         cancel={cancel}
         submit={mutation}
         loading={loading}
         action="Update"
       />
-    </Box>
+    </>
   )
 }
 
@@ -183,6 +191,7 @@ function DeleteRecord({ record, domain }) {
       query: DNS_RECORDS,
       variables: { id: domain.id },
       update: prev => deepUpdate(prev, 'dnsDomain', domain => removeConnection(domain, deleteDnsRecord, 'dnsRecords')),
+      onCompleted: () => setConfirm(false),
     }),
   })
 
@@ -195,7 +204,7 @@ function DeleteRecord({ record, domain }) {
         title={`Delete ${record.name}?`}
         text={`This will delete the ${record.type} record for ${record.name} permanently`}
         submit={mutation}
-        cancel={() => setConfirm(false)}
+        close={() => setConfirm(false)}
         label="Delete"
         loading={loading}
       />

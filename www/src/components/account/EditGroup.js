@@ -1,14 +1,15 @@
 import { useApolloClient, useMutation } from '@apollo/client'
-import { Box, TextInput } from 'grommet'
-import { Div, Flex } from 'honorable'
+import { TextInput } from 'grommet'
 import {
   FormField,
+  Input,
   PersonIcon,
   Switch,
-  Tab,
   ValidatedInput,
 } from 'pluralsh-design-system'
 import { useState } from 'react'
+import { Flex, Text } from 'honorable'
+import { useTheme } from 'styled-components'
 
 import { appendConnection, updateCache } from '../../utils/graphql'
 import {
@@ -24,7 +25,6 @@ import { GroupMembers } from './Group'
 
 export function EditGroup({ group, cancel }) {
   const client = useApolloClient()
-  const [view, setView] = useState('attributes')
   const [value, setValue] = useState('')
   const [name, setName] = useState(group.name)
   const [description, setDescription] = useState(group.description)
@@ -42,97 +42,73 @@ export function EditGroup({ group, cancel }) {
     }),
   })
   const [suggestions, setSuggestions] = useState([])
+  const theme = useTheme()
 
   return (
-    <Box
-      fill
-      gap="small"
+    <Flex
+      flexDirection="column"
+      gap="large"
     >
       {error && (
         <GqlError
-          header="Something broke"
+          header="Something went wrong"
           error={error}
         />
       )}
-      <Flex>
-        <Tab
-          active={view === 'attributes'}
-          onClick={() => setView('attributes')}
-        >
-          Attributes
-        </Tab>
-        <Tab
-          active={view === 'users'}
-          onClick={() => setView('users')}
-        >
-          Users
-        </Tab>
-        <Div
-          flexGrow={1}
-          borderBottom="1px solid border"
+      <Flex
+        direction="row"
+        gap="medium"
+        alignItems="center"
+      >
+        <Text {...theme.partials.text.body2Bold}>Name:</Text>
+        <Input
+          width="100%"
+          flowGrow={1}
+          value={name}
+          onChange={({ target: { value } }) => setName(value)}
         />
       </Flex>
-      {view === 'attributes' && (
-        <Box
-          gap="small"
-          fill
-        >
-          <ValidatedInput
-            value={name}
-            onChange={({ target: { value } }) => setName(value)}
-            label="Name"
-          />
-          <ValidatedInput
-            label="Description"
-            value={description}
-            onChange={({ target: { value } }) => setDescription(value)}
-          />
-          <Switch
-            checked={global}
-            onChange={({ target: { checked } }) => setGlobal(checked)}
-          >
-            Global
-          </Switch>
-          <Actions
-            cancel={cancel}
-            submit={mutation}
-            loading={loading}
-            action="Update"
-          />
-        </Box>
-      )}
-      {view === 'users' && (
-        <Box
-          gap="small"
-          pad={{ bottom: 'small' }}
-          fill
-        >
-          <FormField
-            label="Add users"
-            width="100%"
-          >
-            <TextInput
-              icon={<PersonIcon size={14} />}
-              width="100%"
-              value={value}
-              placeholder="Search for users by name"
-              suggestions={suggestions}
-              onChange={({ target: { value } }) => {
-                setValue(value)
-                fetchUsers(client, value, setSuggestions)
-              }}
-              onSelect={({ suggestion: { value } }) => {
-                setValue('')
-                addMut({ variables: { userId: value.id } })
-              }}
-            />
-          </FormField>
-          <GroupMembers
-            group={group}
-            edit
-          />
-        </Box>
-      )}
-    </Box>
+      <ValidatedInput
+        label="Description"
+        value={description}
+        onChange={({ target: { value } }) => setDescription(value)}
+      />
+      <FormField
+        label="Add users"
+        width="100%"
+      >
+        <TextInput
+          icon={<PersonIcon size={14} />}
+          width="100%"
+          value={value}
+          placeholder="Search for users by name"
+          suggestions={suggestions}
+          onChange={({ target: { value } }) => {
+            setValue(value)
+            fetchUsers(client, value, setSuggestions)
+          }}
+          onSelect={({ suggestion: { value } }) => {
+            setValue('')
+            addMut({ variables: { userId: value.id } })
+          }}
+        />
+      </FormField>
+      <GroupMembers
+        group={group}
+        edit
+      />
+      <Switch
+        checked={global}
+        onChange={({ target: { checked } }) => setGlobal(checked)}
+      >
+        Apply globally
+      </Switch>
+      <Actions
+        cancel={cancel}
+        submit={mutation}
+        loading={loading}
+        action="Update"
+      />
+    </Flex>
   )
 }

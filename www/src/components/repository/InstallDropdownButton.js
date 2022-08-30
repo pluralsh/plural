@@ -167,17 +167,28 @@ function InstallDropdownButton({ recipes, ...props }) {
             <P
               body2
               color="text"
+              marginBottom="small"
             >
               In your installation repository, run:
             </P>
-            <Codeline
-              marginTop="small"
-              language="bash"
-            >
-              {`plural bundle install ${name} ${recipe.name}`}
-            </Codeline>
+            <Codeline language="bash">{`plural bundle install ${name} ${recipe.name}`}</Codeline>
           </Div>
           <Div {...(tab !== 1 ? visuallyHideMaintainWidth : {})}>
+            <P
+              body2
+              color="text"
+              marginBottom="small"
+            >
+              Copy bundle command:
+            </P>
+            <Codeline language="bash">{`plural bundle install ${name} ${recipe.name}`}</Codeline>
+            <P
+              body2
+              color="text"
+              marginVertical="small"
+            >
+              Open and paste command into cloud shell:
+            </P>
             <Link
               to="/shell"
               style={{ textDecoration: 'none' }}

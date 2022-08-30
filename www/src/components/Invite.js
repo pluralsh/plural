@@ -122,9 +122,10 @@ export default function Invite() {
   if (inviteError) return <InvalidInvite />
   if (!data) return null
 
-  const passwordTooShort = attributes.password.length > 0 && attributes.password.length < 10
+  const isNameValid = attributes.name.length > 0
+  const isPasswordValid = attributes.password.length > 10
   const passwordMatch = attributes.password === passwordConfirmation
-  const valid = attributes.name.length > 0 && attributes.password.length > 0 && passwordMatch
+  const isValid = isNameValid && isPasswordValid && passwordMatch
 
   if (data.invite.user) {
     return (
@@ -141,7 +142,7 @@ export default function Invite() {
         fill
         pad="medium"
       >
-        <Keyboard onEnter={valid && mutation}>
+        <Keyboard onEnter={isValid && mutation}>
           <Box
             flex={false}
             gap="small"
@@ -201,8 +202,8 @@ export default function Invite() {
                 value={attributes.password}
                 placeholder="Enter password"
                 onChange={password => setAttributes({ ...attributes, password })}
-                error={passwordTooShort}
-                hint={passwordTooShort ? 'Password is too short. Use at least 10 characters.' : ''}
+                error={attributes.password.length > 0 && !isPasswordValid}
+                hint={attributes.password.length > 0 && !isPasswordValid ? 'Password is too short. Use at least 10 characters.' : ''}
                 required
               />
               <LabelledInput
@@ -220,7 +221,7 @@ export default function Invite() {
               primary
               width="100%"
               loading={loading}
-              disabled={!valid}
+              disabled={!isValid}
               onClick={mutation}
             >
               Sign up

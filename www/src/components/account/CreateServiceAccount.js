@@ -1,15 +1,15 @@
 import { useMutation } from '@apollo/client'
 import { Box } from 'grommet'
+import { Button, Div } from 'honorable'
 import {
-  Button, Div, MenuItem, Span,
-} from 'honorable'
-import {
+  ListBoxItem,
   Modal,
   ModalActions,
   ModalHeader,
   ValidatedInput,
 } from 'pluralsh-design-system'
 import { useState } from 'react'
+import { useTheme } from 'styled-components'
 
 import { appendConnection, updateCache } from '../../utils/graphql'
 import {
@@ -103,16 +103,40 @@ export function EditServiceAccount({ user, update }) {
     update,
     onCompleted: () => setConfirm(false),
   })
+  const theme = useTheme()
+
+  const menuItems = {
+    editUser: {
+      label: 'Edit',
+      onSelect: () => setEdit(true),
+      props: {},
+    },
+    deleteUser: {
+      label: 'Delete user',
+      onSelect: () => setConfirm(true),
+      props: {
+        color: theme.colors['text-error'],
+      },
+    },
+  }
 
   return (
     <>
-      <MoreMenu>
-        <MenuItem onClick={() => setEdit(true)}>
-          <Span color="text-light">Edit</Span>
-        </MenuItem>
-        <MenuItem onClick={() => setConfirm(true)}>
-          <Span color="text-error">Delete user</Span>
-        </MenuItem>
+      <MoreMenu
+        onSelectionChange={selectedKey => {
+          menuItems[selectedKey]?.onSelect()
+        }}
+      >
+        {Object.entries(menuItems).map(([key, { label, props = {} }]) => (
+          <ListBoxItem
+            key={key}
+            textValue={label}
+            width="auto"
+            label={label}
+            {...props}
+            color="blue"
+          />
+        ))}
       </MoreMenu>
       <Confirm
         open={confirm}

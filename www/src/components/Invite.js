@@ -161,7 +161,7 @@ export default function Invite() {
               margin={{ vertical: '32px' }}
             >
               <AppIcon
-                name={attributes.name}
+                name={attributes.name || 'John Doe'}
                 size="xsmall"
                 hue="default"
               />
@@ -171,7 +171,7 @@ export default function Invite() {
                   fontFamily="Monument Semi-Mono, monospace"
                   fontWeight="500"
                 >
-                  {attributes.name}
+                  {attributes.name || 'John Doe'}
                 </Text>
                 <Text
                   caption

@@ -24,8 +24,10 @@ import {
   Button,
   Chip,
   CloseIcon,
+  ContentCard,
   FormField,
   Input,
+  PageTitle,
   SearchIcon,
 } from 'pluralsh-design-system'
 import isEqual from 'lodash/isEqual'
@@ -42,6 +44,7 @@ import { AuthMethod as authMethods } from '../oidc/types'
 import { useUpdateState } from '../../hooks/useUpdateState'
 
 import { TAGS_SEARCH_QUERY, UPDATE_REPOSITORY_MUTATION } from './queries'
+import { RepositoryActions } from './misc'
 
 export const categories = [
   'DEVOPS',
@@ -320,21 +323,19 @@ function RepositoryEdit() {
   }
 
   return (
-    <>
-      <H2
-        title1
-        paddingBottom="large"
-        borderBottom="1px solid border"
-        marginBottom="large"
+    <Flex
+      direction="column"
+      height="100%"
+    >
+      <PageTitle
+        heading="Edit"
+        paddingTop="medium"
       >
-        Edit
-      </H2>
-      <Flex
-        justifyContent="center"
-        border="1px solid border"
-        backgroundColor="fill-one"
-        borderRadius="large"
-        padding="xlarge"
+        <Flex display-desktop-up="none"><RepositoryActions /></Flex>
+      </PageTitle>
+      <ContentCard
+        marginBottom="xlarge"
+        overflow="auto"
       >
         <Div
           maxWidth={608}
@@ -342,9 +343,7 @@ function RepositoryEdit() {
         >
           <Form
             onSubmit={handleSubmit}
-            onReset={e => {
-              e.preventDefault()
-            }}
+            onReset={e => e.preventDefault()}
           >
             {iconPicker.HiddenFileInput(iconPickerInputOpts)}
 
@@ -589,8 +588,8 @@ function RepositoryEdit() {
             </Flex>
           </Form>
         </Div>
-      </Flex>
-    </>
+      </ContentCard>
+    </Flex>
   )
 }
 

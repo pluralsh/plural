@@ -12,10 +12,14 @@ import {
   PageTitle, SubTab, TabList, TabPanel,
 } from 'pluralsh-design-system'
 
+import { Flex } from 'honorable'
+
 import TreeGraph from '../../utils/TreeGraph'
 
 import { DEFAULT_CHART_ICON, DEFAULT_TF_ICON, Tools } from '../constants'
 import { CLOSURE_Q } from '../queries'
+
+import { PackageActions } from './misc'
 
 const GRAPH_HEIGHT = '400px'
 const OPTIONAL_COLOR = '#9095A2'
@@ -166,23 +170,7 @@ export default function PackageDependencies() {
       gap="small"
     >
       <PageTitle heading="Dependencies">
-        <TabList
-          stateRef={tabStateRef}
-          stateProps={{
-            orientation: 'horizontal',
-            selectedKey: selectedTabKey,
-            onSelectionChange: key => setFull(key === 'full'),
-          }}
-        >
-          {DIRECTORY.map(({ label, key }) => (
-            <SubTab
-              key={key}
-              textValue={label}
-            >
-              {label}
-            </SubTab>
-          ))}
-        </TabList>
+        <Flex display-desktop-up="none"><PackageActions /></Flex>
       </PageTitle>
       <TabPanel
         stateRef={tabStateRef}
@@ -193,6 +181,24 @@ export default function PackageDependencies() {
           />
         )}
       >
+        <TabList
+          stateRef={tabStateRef}
+          stateProps={{
+            orientation: 'horizontal',
+            selectedKey: selectedTabKey,
+            onSelectionChange: key => setFull(key === 'full'),
+          }}
+          marginBottom="small"
+        >
+          {DIRECTORY.map(({ label, key }) => (
+            <SubTab
+              key={key}
+              textValue={label}
+            >
+              {label}
+            </SubTab>
+          ))}
+        </TabList>
         {full && <FullDependencies resource={chart} />}
         {!full && (
           <Dependencies

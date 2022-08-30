@@ -4,6 +4,10 @@ import { useOutletContext } from 'react-router-dom'
 
 import { Markdown, PageTitle } from 'pluralsh-design-system'
 
+import { Flex } from 'honorable'
+
+import { PackageActions } from './misc'
+
 export default function PackageReadme() {
   const { currentHelmChart, currentTerraformChart } = useOutletContext()
   const readme = (currentHelmChart || currentTerraformChart)?.readme || 'This package does not have a Readme yet.'
@@ -14,7 +18,9 @@ export default function PackageReadme() {
       flex={false}
       gap="small"
     >
-      <PageTitle heading="Readme" />
+      <PageTitle heading="Readme">
+        <Flex display-desktop-up="none"><PackageActions /></Flex>
+      </PageTitle>
       <Box
         pad={{ right: 'xsmall' }}
         overflow={{ vertical: 'auto' }}

@@ -97,21 +97,19 @@ export const MARKDOWN_STYLING = {
   pre: { component: Code, props: {} },
 }
 
-function ChartInstaller({
-  chartInstallation, versionId, chartId, installation,
-}) {
-  const [mutation, { error }] = useMutation(chartInstallation ? UPDATE_CHART_INST : INSTALL_CHART, {
+function ChartInstaller({ chart }) {
+  const [mutation, { error }] = useMutation(chart.installation ? UPDATE_CHART_INST : INSTALL_CHART, {
     variables: {
-      id: chartInstallation ? chartInstallation.id : installation.id,
-      attributes: { chartId, versionId },
+      id: chart.installation ? chart.installation.id : chart.repository.installation.id,
+      attributes: { chartId: chart.id, versionId: chart.installation?.version?.id },
     },
     update: (cache, { data }) => {
       const ci = data.installChart || data.updateChartInstallation
-      const prev = cache.readQuery({ query: CHART_Q, variables: { chartId } })
+      const prev = cache.readQuery({ query: CHART_Q, variables: { chartId: chart.id } })
 
       cache.writeQuery({
         query: CHART_Q,
-        variables: { chartId },
+        variables: { chartId: chart.id },
         data: {
           ...prev,
           chart: {
@@ -132,6 +130,14 @@ function ChartInstaller({
       Install
     </Button>
   )
+}
+
+export function ChartActions({ chart, currentVersion, ...props }) {
+  if (chart.installation?.version?.id === currentVersion.id || !chart.repository.installation) {
+    return null
+  }
+
+  return <Box {...props}><ChartInstaller chart={chart} /></Box>
 }
 
 function ImageDependencies({ version: { imageDependencies } }) {
@@ -172,7 +178,6 @@ export default function Chart() {
   if (!data) return null
 
   const { versions, chart } = data
-  const { repository } = chart
   const { edges, pageInfo } = versions
   const currentVersion = version || edges[0].node
   const chartInst = data.chart.installation
@@ -272,16 +277,11 @@ export default function Chart() {
             direction="column"
             gap="small"
           >
-            <Box height="54px">
-              {chartInst?.version?.id !== currentVersion.id && repository.installation && (
-                <ChartInstaller
-                  chartInstallation={chartInst}
-                  installation={repository.installation}
-                  versionId={chartInst?.version?.id}
-                  chartId={chart.id}
-                />
-              )}
-            </Box>
+            <ChartActions
+              chart={chart}
+              currentVersion={currentVersion}
+              height="54px"
+            />
             <ChartInfo version={currentVersion} />
             <ImageDependencies version={currentVersion} />
           </Box>

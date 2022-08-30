@@ -1,10 +1,12 @@
 import { Box } from 'grommet'
 
-import { Div } from 'honorable'
+import { Div, Flex } from 'honorable'
 
 import { useOutletContext } from 'react-router-dom'
 
 import { Code, PageTitle } from 'pluralsh-design-system'
+
+import { PackageActions } from './misc'
 
 export default function PackageConfiguration() {
   const { currentHelmChart, currentTerraformChart } = useOutletContext()
@@ -16,7 +18,9 @@ export default function PackageConfiguration() {
       flex={false}
       gap="small"
     >
-      <PageTitle heading="Configuration" />
+      <PageTitle heading="Configuration">
+        <Flex display-desktop-up="none"><PackageActions /></Flex>
+      </PageTitle>
       <Box
         pad={{ right: 'xsmall' }}
         overflow={{ vertical: 'auto' }}

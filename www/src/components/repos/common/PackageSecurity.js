@@ -16,7 +16,9 @@ import { capitalize } from 'lodash/string'
 
 import { Table, TableData, TableRow } from '../../utils/Table'
 
-import { PackageGrade, PackageProperty, chipSeverity } from './misc'
+import {
+  PackageActions, PackageGrade, PackageProperty, chipSeverity,
+} from './misc'
 
 function ScanViolation({ violation, last }) {
   const [open, setOpen] = useState(false)
@@ -91,14 +93,19 @@ export default function PackageSecurity() {
       flex={false}
       gap="medium"
     >
-      <PageTitle heading="Security">{
-        current?.scan && (
-          <PackageGrade
-            grade={current.scan.grade}
-            large
-          />
-        )
-      }
+      <PageTitle heading="Security">
+        <Flex
+          alignItems="center"
+          gap="large"
+        >
+          {current?.scan && (
+            <PackageGrade
+              grade={current.scan.grade}
+              large
+            />
+          )}
+          <Flex display-desktop-up="none"><PackageActions /></Flex>
+        </Flex>
       </PageTitle>
       <Box
         pad={{ right: 'small' }}

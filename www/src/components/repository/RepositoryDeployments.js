@@ -14,6 +14,7 @@ import { appendConnection } from '../../utils/graphql'
 import { Table, TableData, TableRow } from '../utils/Table'
 
 import { DEPLOYMENTS_QUERY } from './queries'
+import { RepositoryActions } from './misc'
 
 // eslint-disable-next-line
 const MAX_UUID = 0xffffffffffffffffffffffffffffffff
@@ -108,7 +109,9 @@ function RepositoryDeployments() {
       <PageTitle
         heading="Deployments"
         paddingTop="medium"
-      />
+      >
+        <Flex display-desktop-up="none"><RepositoryActions /></Flex>
+      </PageTitle>
       <Div
         fill
         marginBottom="medium"

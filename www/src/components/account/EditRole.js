@@ -9,7 +9,6 @@ import { UPDATE_ROLE } from '../accounts/queries'
 
 import { Actions } from './Actions'
 import { sanitize } from './utils'
-import { MODAL_DIMS } from './Role'
 import { RoleForm } from './RoleForm'
 
 export function EditRole({ role }) {
@@ -44,11 +43,10 @@ export function EditRole({ role }) {
       <Modal
         portal
         open={open}
+        size="large"
         onClose={() => setOpen(false)}
-        marginVertical={16}
-        {...MODAL_DIMS}
       >
-        <ModalHeader onClose={() => setOpen(false)}>UPDATE ROLE</ModalHeader>
+        <ModalHeader>Edit role</ModalHeader>
         <RoleForm
           attributes={attributes}
           setAttributes={setAttributes}

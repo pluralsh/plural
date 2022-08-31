@@ -57,5 +57,3 @@ export function GeneralAttributes({
     </Box>
   )
 }
-
-export const MODAL_DIMS = { width: '1000px' }

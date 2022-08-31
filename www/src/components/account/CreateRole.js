@@ -10,7 +10,6 @@ import { CREATE_ROLE, ROLES_Q } from '../accounts/queries'
 
 import { Actions } from './Actions'
 import { sanitize } from './utils'
-import { MODAL_DIMS } from './Role'
 import { RoleForm } from './RoleForm'
 
 const defaultAttributes = {
@@ -55,9 +54,9 @@ export function CreateRole({ q }) {
         open={open}
         onClose={() => resetAndClose()}
         marginVertical={16}
-        {...MODAL_DIMS}
+        size="large"
       >
-        <ModalHeader onClose={() => resetAndClose()}>Create role</ModalHeader>
+        <ModalHeader>Create role</ModalHeader>
         <RoleForm
           attributes={attributes}
           setAttributes={setAttributes}

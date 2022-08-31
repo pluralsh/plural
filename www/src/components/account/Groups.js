@@ -109,11 +109,11 @@ export function Group({ group, q }) {
         <Modal
           portal
           open={edit}
-          width="60vw"
+          size="large"
           onClose={() => setEdit(false)}
         >
           <Div>
-            <ModalHeader onClose={() => setEdit(false)}>Edit group</ModalHeader>
+            <ModalHeader>Edit group</ModalHeader>
             <EditGroup
               group={group}
               cancel={() => setEdit(false)}

@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
     "start": "PORT=3001 HTTPS=true react-scripts start",
     "start:prod": "yarn build && serve -s -p 3001 build",
     "build": "react-scripts build",
@@ -59,7 +60,7 @@
     "moment": "2.29.4",
     "phoenix": "1.6.11",
     "pluralsh-absinthe-socket-apollo-link": "0.2.0",
-    "pluralsh-design-system": "1.194.0",
+    "pluralsh-design-system": "1.195.0",
     "prop-types": "15.8.1",
     "query-string": "7.1.1",
     "randomcolor": "0.6.2",
@@ -130,6 +131,7 @@
     "eslint-plugin-import": "2.26.0",
     "postcss-import": "8.2.0",
     "serve": "14.0.1",
+    "source-map-explorer": "2.5.2",
     "stylelint": "14.11.0",
     "typescript": "4.8.2"
   },

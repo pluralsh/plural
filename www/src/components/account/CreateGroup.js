@@ -42,7 +42,6 @@ export function CreateGroup({ q }) {
       <Modal
         open={open}
         onClose={() => resetAndClose()}
-        maxHeight="400px"
       >
         <ModalHeader>Create group</ModalHeader>
         <Box

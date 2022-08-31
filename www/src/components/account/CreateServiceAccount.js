@@ -36,7 +36,6 @@ function ServiceAccountForm({
   return (
     <Box
       fill
-      pad="small"
       gap="small"
       {...box}
     >
@@ -152,14 +151,14 @@ export function EditServiceAccount({ user, update }) {
         onClose={() => {
           setEdit(false)
         }}
+        size="large"
       >
         <ModalHeader onClose={() => setEdit(false)}>
-          UPDATE SERVICE ACCOUNT
+          Edit service account
         </ModalHeader>
         <Box
           flex={false}
           gap="small"
-          width="50vw"
         >
           <ServiceAccountForm
             error={eerror}
@@ -233,6 +232,7 @@ export function CreateServiceAccount({ q }) {
           resetAndClose()
           setOpen(false)
         }}
+        size="large"
       >
         <ModalHeader>
           Create service account
@@ -240,7 +240,6 @@ export function CreateServiceAccount({ q }) {
         <Box
           flex={false}
           gap="small"
-          width="50vw"
         >
           <ServiceAccountForm
             error={error}

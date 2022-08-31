@@ -70,6 +70,7 @@ defmodule Core.Schema.Publisher do
     |> validate_required([:name, :owner_id])
     |> foreign_key_constraint(:owner_id)
     |> unique_constraint(:name)
+    |> unique_constraint(:owner_id)
     |> validate_length(:name, max: 255)
     |> generate_uuid(:avatar_id)
     |> cast_attachments(attrs, [:avatar], allow_urls: true)

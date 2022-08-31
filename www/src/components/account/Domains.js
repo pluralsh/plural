@@ -55,6 +55,7 @@ function DomainOptions({ domain, setDomain }) {
         open={edit}
         title="UPDATE ACCESS POLICY"
         onClose={() => setEdit(false)}
+        size="large"
       >
         <ModalHeader onClose={() => setEdit(false)}>
           EDIT ACCESS POLICY
@@ -92,12 +93,7 @@ function AccessPolicy({ domain: { id, accessPolicy }, cancel }) {
   })
 
   return (
-    <Box
-      pad="medium"
-      gap="small"
-      width="500px"
-      minHeight="250px"
-    >
+    <Box gap="small">
       {error && (
         <GqlError
           error={error}

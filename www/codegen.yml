@@ -1,0 +1,20 @@
+overwrite: true
+schema: "https://app.plural.sh/gql"
+documents: './src/graph/**/*.graphql'
+generates:
+  src/generated/graphql.tsx:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-apollo"
+      - add:
+          content: '/* eslint-disable */'
+config:
+  scalars:
+    Map: Map<string, unknown>
+    UploadOrUrl: string
+    DateTime: Date
+    Yaml: unknown
+hooks:
+  afterAllFileWrite:
+    - eslint --fix

@@ -5,7 +5,7 @@ import { useOutletContext } from 'react-router-dom'
 import { useState } from 'react'
 
 import {
-  ArrowTopRightIcon, Chip, CollapseIcon, DockerTagIcon, PageTitle,
+  ArrowTopRightIcon, Chip, Codeline, CollapseIcon, DockerTagIcon, EmptyState, PageTitle,
 } from 'pluralsh-design-system'
 
 import { Table, TableData, TableRow } from 'components/utils/Table'
@@ -15,8 +15,6 @@ import {
 } from 'honorable'
 
 import { capitalize } from 'lodash'
-
-import { EmptyState } from 'components/utils/EmptyState'
 
 import { AttackVector } from '../constants'
 
@@ -293,7 +291,7 @@ function Vulnerability({ v, last }) {
 }
 
 export default function ImageVulnerabilities() {
-  const { image } = useOutletContext()
+  const { image, imageName } = useOutletContext()
   const { vulnerabilities } = image
 
   return (
@@ -303,10 +301,21 @@ export default function ImageVulnerabilities() {
       gap="small"
     >
       <PageTitle heading="Vulnerabilities">
-        <PackageGrade
-          grade={image.grade}
-          large
-        />
+        <Flex
+          alignItems="center"
+          gap="large"
+        >
+          <PackageGrade
+            grade={image.grade}
+            large
+          />
+          <Codeline
+            maxWidth="200px"
+            display-desktop-up="none"
+          >
+            {`docker pull ${imageName}`}
+          </Codeline>
+        </Flex>
       </PageTitle>
       <Box
         overflow={{ vertical: 'auto' }}

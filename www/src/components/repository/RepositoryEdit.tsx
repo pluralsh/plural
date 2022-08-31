@@ -1,6 +1,5 @@
 import React, {
   MouseEventHandler,
-  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -25,8 +24,10 @@ import {
   Button,
   Chip,
   CloseIcon,
+  ContentCard,
   FormField,
   Input,
+  PageTitle,
   SearchIcon,
 } from 'pluralsh-design-system'
 import isEqual from 'lodash/isEqual'
@@ -40,8 +41,10 @@ import RepositoryContext from '../../contexts/RepositoryContext'
 import { capitalize } from '../../utils/string'
 import { generatePreview } from '../../utils/file'
 import { AuthMethod as authMethods } from '../oidc/types'
+import { useUpdateState } from '../../hooks/useUpdateState'
 
 import { TAGS_SEARCH_QUERY, UPDATE_REPOSITORY_MUTATION } from './queries'
+import { RepositoryActions } from './misc'
 
 export const categories = [
   'DEVOPS',
@@ -61,36 +64,6 @@ const StyledTextInput = styled(TextInput)`
     border-color: #5c77ff;
   }
 `
-
-function useUpdateState<T extends { [key: string]: unknown }>(initialState: T) {
-  const [state, setState] = useState({ ...initialState })
-
-  const update = useCallback((update: Partial<T>) => {
-    setState({ ...state, ...update })
-  },
-  [state])
-  const reset = useCallback(() => {
-    setState({ ...initialState })
-  }, [initialState])
-
-  const hasUpdates = useMemo(() => {
-    for (const [prop, value] of Object.entries(state)) {
-      if (!isEqual(value, initialState[prop])) {
-        return true
-      }
-    }
-
-    return false
-  }, [initialState, state])
-
-  return {
-    state: { ...state },
-    hasUpdates,
-    update,
-    reset,
-    initialState: { ...initialState },
-  }
-}
 
 function RepoIcon({
   src = null,
@@ -350,21 +323,19 @@ function RepositoryEdit() {
   }
 
   return (
-    <>
-      <H2
-        title1
-        paddingBottom="large"
-        borderBottom="1px solid border"
-        marginBottom="large"
+    <Flex
+      direction="column"
+      height="100%"
+    >
+      <PageTitle
+        heading="Edit"
+        paddingTop="medium"
       >
-        Edit
-      </H2>
-      <Flex
-        justifyContent="center"
-        border="1px solid border"
-        backgroundColor="fill-one"
-        borderRadius="large"
-        padding="xlarge"
+        <Flex display-desktop-up="none"><RepositoryActions /></Flex>
+      </PageTitle>
+      <ContentCard
+        marginBottom="xlarge"
+        overflow="auto"
       >
         <Div
           maxWidth={608}
@@ -372,9 +343,7 @@ function RepositoryEdit() {
         >
           <Form
             onSubmit={handleSubmit}
-            onReset={e => {
-              e.preventDefault()
-            }}
+            onReset={e => e.preventDefault()}
           >
             {iconPicker.HiddenFileInput(iconPickerInputOpts)}
 
@@ -619,8 +588,8 @@ function RepositoryEdit() {
             </Flex>
           </Form>
         </Div>
-      </Flex>
-    </>
+      </ContentCard>
+    </Flex>
   )
 }
 

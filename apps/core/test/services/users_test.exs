@@ -228,7 +228,18 @@ defmodule Core.Services.UsersTest do
 
       assert login.id == user.id
 
-      {:error, :invalid_password} = Users.login_user(user.email, "incorrectpassword")
+      {:error, _} = Users.login_user(user.email, "incorrectpassword")
+    end
+
+    test "You cannot password login with a different login method" do
+      {:ok, user} = Users.create_user(%{
+        name: "some user",
+        email: "someone@example.com",
+        password: "verystrongpassword",
+        login_method: :google
+      })
+
+      {:error, _} = Users.login_user(user.email, "verystrongpassword")
     end
   end
 

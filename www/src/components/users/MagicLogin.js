@@ -15,8 +15,10 @@ import {
 } from 'react-router-dom'
 import queryString from 'query-string'
 import {
-  A, Article, Button, Div, Flex, H1, H2, Icon, Img, Input, P,
+  A, Article, Button, Div, Flex, H2, Icon, Img, Input, P,
 } from 'honorable'
+
+import { WelcomeHeader } from 'components/utils/WelcomeHeader'
 
 import { fetchToken, setToken } from '../../helpers/authentication'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
@@ -41,14 +43,16 @@ import { METHOD_ICONS } from './OauthEnabler'
 import { finishedDeviceLogin } from './DeviceLoginNotif'
 
 export function LabelledInput({
-  label, value, onChange, placeholder, type, caption, hint,
+  label, value, onChange, placeholder, type, caption, hint, error = undefined, required = false, disabled = false,
 }) {
   return (
     <FormField
       label={label}
       caption={caption}
       hint={hint}
-      marginBottom="medium"
+      marginBottom="small"
+      error={error}
+      required={required}
     >
       <Input
         width="100%"
@@ -57,6 +61,8 @@ export function LabelledInput({
         value={value || ''}
         onChange={onChange && (({ target: { value } }) => onChange(value))}
         placeholder={placeholder}
+        error={error}
+        disabled={disabled}
       />
     </FormField>
   )
@@ -229,7 +235,6 @@ export function handleOauthChallenge(client, challenge) {
   }).catch(err => {
     console.error(err)
     wipeChallenge()
-    window.location = window.location.pathname
   })
 }
 
@@ -316,8 +321,9 @@ export function Login() {
     wipeChallenge()
     wipeDeviceToken()
 
-    if (data && data.loginMethod && data.loginMethod.authorizeUrl) {
-      if (challenge) saveChallenge(challenge)
+    if (challenge) saveChallenge(challenge)
+
+    if (data?.loginMethod?.authorizeUrl) {
       if (deviceToken) saveDeviceToken(deviceToken)
       window.location = data.loginMethod.authorizeUrl
     }
@@ -364,7 +370,7 @@ export function Login() {
 
   return (
     <LoginPortal>
-      <WelcomeHeader />
+      <WelcomeHeader marginBottom="xxlarge" />
       {passwordless && (
         <Div>
           <LoginPoller
@@ -508,7 +514,7 @@ export function Signup() {
 
   return (
     <LoginPortal>
-      <WelcomeHeader />
+      <WelcomeHeader marginBottom="xxlarge" />
       <Keyboard onEnter={mutation}>
         <Form onSubmit={mutation}>
           {error && (
@@ -613,16 +619,5 @@ export function Signup() {
         </A>
       </P>
     </LoginPortal>
-  )
-}
-
-function WelcomeHeader({ heading = 'Welcome to Plural', subheading = 'We\'re glad to see you here.' }) {
-  return (
-    <Div marginBottom="xxlarge">
-      <H1 title1>
-        {heading}
-      </H1>
-      <P body1>{subheading}</P>
-    </Div>
   )
 }

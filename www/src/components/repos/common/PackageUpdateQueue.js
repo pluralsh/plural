@@ -7,7 +7,7 @@ import { useOutletContext } from 'react-router-dom'
 
 import { PageTitle } from 'pluralsh-design-system'
 
-import { Div } from 'honorable'
+import { Div, Flex } from 'honorable'
 
 import { Table, TableData, TableRow } from '../../utils/Table'
 
@@ -18,6 +18,8 @@ import { DEFERRED_UPDATES } from '../queries'
 
 import { LoopingLogo } from '../../utils/AnimatedLogo'
 import { Date } from '../../utils/Date'
+
+import { PackageActions } from './misc'
 
 export default function PackageUpdateQueue() {
   const { helmChart, terraformChart } = useOutletContext()
@@ -41,7 +43,9 @@ export default function PackageUpdateQueue() {
       pad="medium"
       gap="small"
     >
-      <PageTitle heading="Update queue" />
+      <PageTitle heading="Update queue">
+        <Flex display-desktop-up="none"><PackageActions /></Flex>
+      </PageTitle>
       {edges?.length ? (
         <Table
           headers={['Version', 'Dequeueable at', 'Created', 'Attempts']}

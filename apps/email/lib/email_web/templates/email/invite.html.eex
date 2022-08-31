@@ -1,0 +1,16 @@
+<%= row do %>
+  <%= text bold: true do %>
+    Join <%= @account.name %>
+  <% end %>
+<% end %>
+<%= row do %>
+  <%= text do %>
+    Click below to join <%= @account.name %> (owned by <%= @account.root_user.name %>).  This will transfer your user from your previous account to their account.
+  <% end %>
+<% end %>
+<%= space() %>
+<%= row do %>
+  <%= btn url: url("/invite/#{@inv.secure_id}") do %>
+    Confirm
+  <% end %>
+<% end %>

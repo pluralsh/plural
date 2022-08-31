@@ -161,6 +161,7 @@ defmodule Core.Services.Accounts do
       |> when_ok(:insert)
     end)
     |> execute(extract: :invite)
+    |> notify(:create, user)
   end
 
   def delete_invite(id, %User{} = user) do
@@ -251,7 +252,7 @@ defmodule Core.Services.Accounts do
     end)
     |> add_operation(:upsert, fn %{user: user} ->
       user
-      |> User.changeset(attributes)
+      |> User.invite_changeset(attributes)
       |> Ecto.Changeset.change(%{account_id: invite.account_id})
       |> Core.Repo.insert_or_update()
     end)
@@ -553,6 +554,10 @@ defmodule Core.Services.Accounts do
     do: handle_notify(PubSub.GroupMemberCreated, m, actor: user)
   defp notify({:ok, %GroupMember{} = m}, :delete, user),
     do: handle_notify(PubSub.GroupMemberDeleted, m, actor: user)
+
+
+  defp notify({:ok, %Invite{} = inv}, :create, user),
+    do: handle_notify(PubSub.InviteCreated, inv, actor: user)
 
   defp notify({:ok, meeting}, :zoom, user),
     do: handle_notify(PubSub.ZoomMeetingCreated, meeting, actor: user)

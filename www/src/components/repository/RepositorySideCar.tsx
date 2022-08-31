@@ -1,54 +1,14 @@
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 import {
   Button, Div, Flex, P,
 } from 'honorable'
 import {
-  BrowserIcon, CertificateIcon, GearTrainIcon, GitHubLogoIcon,
+  BrowserIcon, CertificateIcon, GitHubLogoIcon,
 } from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
-import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 
-import { InferredConsoleButton } from '../clusters/ConsoleButton'
-
-import { RECIPES_QUERY } from './queries'
-
-import InstallDropdownButton from './InstallDropdownButton'
-import { InstallationConfiguration } from './InstallationConfiguration'
-
-function InstalledActions({ installation, ...props }: any) {
-  const [open, setOpen] = useState(false)
-
-  return (
-    <>
-      <Flex
-        align="center"
-        gap="medium"
-        {...props}
-      >
-        <InferredConsoleButton
-          secondary
-          text="Console"
-          flexGrow={1}
-        />
-        <Button
-          secondary
-          onClick={() => setOpen(true)}
-        >
-          <GearTrainIcon
-            position="relative"
-            top={4}
-          />
-        </Button>
-      </Flex>
-      <InstallationConfiguration
-        open={open}
-        setOpen={setOpen}
-        installation={installation}
-      />
-    </>
-  )
-}
+import { RepositoryActions } from './misc'
 
 function RepositorySideCarButtons() {
   const repository = useContext(RepositoryContext)
@@ -97,24 +57,6 @@ function RepositorySideCarButtons() {
   )
 }
 
-function RepositorySideCarActions() {
-  const repository = useContext(RepositoryContext)
-  const [recipes] = usePaginatedQuery(RECIPES_QUERY,
-    {
-      variables: {
-        repositoryId: repository.id,
-      },
-    },
-    data => data.recipes)
-
-  return (
-    <>
-      {!repository.installation && <InstallDropdownButton recipes={recipes} />}
-      {!!repository.installation && <InstalledActions installation={repository.installation} />}
-    </>
-  )
-}
-
 export function RepositorySideCar(props: any) {
   const repository = useContext(RepositoryContext)
 
@@ -125,7 +67,7 @@ export function RepositorySideCar(props: any) {
       paddingTop="medium"
       {...props}
     >
-      <RepositorySideCarActions />
+      <RepositoryActions />
       <Div
         marginTop="large"
         border="1px solid border"
@@ -158,7 +100,7 @@ export function RepositorySideCarCollapsed(props: any) {
       align="center"
       {...props}
     >
-      <RepositorySideCarActions />
+      <RepositoryActions />
       <Flex
         align="center"
         marginLeft="medium"

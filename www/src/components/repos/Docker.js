@@ -219,7 +219,10 @@ export function Docker() {
           as={<ResponsiveLayoutContentContainer />}
           stateRef={tabStateRef}
         >
-          <Outlet context={{ image, filter, setFilter }} />
+          <Outlet context={{
+            image, imageName, filter, setFilter,
+          }}
+          />
         </TabPanel>
         <ResponsiveLayoutSidecarContainer width="200px">
           <Codeline marginBottom="xlarge">{`docker pull ${imageName}`}</Codeline>
@@ -231,7 +234,7 @@ export function Docker() {
           >
             <PrivateControl dockerRepo={image.dockerRepository} />
             <PackageProperty header="Created">
-              {moment(image.insertedAt).format('lll')}
+              {moment(image.updatedAt || image.insertedAt).format('lll')}
             </PackageProperty>
             <PackageProperty header="Scanned">
               {image.scannedAt

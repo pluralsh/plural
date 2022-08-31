@@ -2,8 +2,8 @@ import { Outlet, useLocation } from 'react-router-dom'
 import { Flex } from 'honorable'
 import {
   Input,
-  MagnifyingGlassIcon,
   PageTitle,
+  SearchIcon,
   SubTab,
   TabList,
   TabPanel,
@@ -13,6 +13,8 @@ import styled from 'styled-components'
 
 import { LinkTabWrap } from '../utils/Tabs'
 import RepositoryContext from '../../contexts/RepositoryContext'
+
+import { RepositoryActions } from './misc'
 
 export function packageCardStyle(first, last) {
   return {
@@ -61,33 +63,33 @@ export default function RepositoryPackages() {
         heading="Packages"
         paddingTop="medium"
       >
-        <Flex>
-          <TabList
-            stateRef={tabStateRef}
-            stateProps={{
-              orientation: 'horizontal',
-              selectedKey: currentTab?.path,
-            }}
-          >
-            {DIRECTORY.map(({ path, label }) => (
-              <LinkTabWrap
-                to={`${pathPrefix}${path}`}
-                key={path}
-                textValue={label}
-                subTab
-              >
-                <SubTab flexGrow={1}>{label}</SubTab>
-              </LinkTabWrap>
-            ))}
-          </TabList>
-        </Flex>
+        <Flex display-desktop-up="none"><RepositoryActions /></Flex>
       </PageTitle>
       <StyledTabPanel stateRef={tabStateRef}>
+        <TabList
+          stateRef={tabStateRef}
+          stateProps={{
+            orientation: 'horizontal',
+            selectedKey: currentTab?.path,
+          }}
+          marginBottom="small"
+        >
+          {DIRECTORY.map(({ path, label }) => (
+            <LinkTabWrap
+              to={`${pathPrefix}${path}`}
+              key={path}
+              textValue={label}
+              subTab
+            >
+              <SubTab flexGrow={1}>{label}</SubTab>
+            </LinkTabWrap>
+          ))}
+        </TabList>
         <Input
           value={q}
           onChange={event => setQ(event.target.value)}
           placeholder={`Filter ${currentTab?.label || ''}`}
-          startIcon={<MagnifyingGlassIcon size={14} />}
+          startIcon={<SearchIcon />}
           width="100%"
           backgroundColor="fill-one"
           borderBottomLeftRadius="0"

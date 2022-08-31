@@ -146,9 +146,16 @@ defmodule Core.Schema.User do
 
   def changeset(model, attrs \\ %{}, mode \\ :primary) do
     model
-    |> cast(attrs, fields(mode))
+    |> base_changeset(attrs, mode)
     |> cast_embed(:address)
     |> cast_embed(:roles, with: &roles_changeset/2)
+  end
+
+  def invite_changeset(model, attrs \\ %{}), do: base_changeset(model, attrs, :primary)
+
+  def base_changeset(model, attrs, mode) do
+    model
+    |> cast(attrs, fields(mode))
     |> unique_constraint(:email)
     |> unique_constraint(:external_id)
     |> validate_required([:name, :email])

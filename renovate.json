@@ -18,21 +18,24 @@
     {
       "matchManagers": ["npm"],
       "addLabels": [
-        "dependencies",
         "frontend"
       ]
     },
     {
       "matchManagers": ["mix"],
       "addLabels": [
-        "dependencies",
         "backend"
       ]
     }
   ],
-  "lockFileMaintenance": {
-    "enabled": true
-  },
-  "separateMinorPatch": true,
-  "dependencyDashboardApproval": true
+  "labels": ["dependencies"],
+  "regexManagers": [
+    {
+      "description": "Update Plural CLI version for the cloud shell",
+      "fileMatch": ["^apps/core/lib/core/services/shell/pods.ex$"],
+      "matchStrings": ["@image \"(?<depName>.*?):(?<currentValue>.*?)\"\\n"],
+      "datasourceTemplate": "docker"
+    }
+  ],
+  "separateMinorPatch": true
 }

@@ -29,6 +29,7 @@ import { Table, TableData, TableRow } from '../utils/Table'
 import { XTermTheme } from '../../theme'
 
 import { TESTS_QUERY } from './queries'
+import { RepositoryActions } from './misc'
 
 const statusAttrs = {
   QUEUED: { severity: 'neutral', icon: <StatusIpIcon /> },
@@ -287,7 +288,9 @@ function RepositoryTests() {
       <PageTitle
         heading="Tests"
         paddingTop="medium"
-      />
+      >
+        <Flex display-desktop-up="none"><RepositoryActions /></Flex>
+      </PageTitle>
       <Flex
         direction="column"
         flexGrow={1}

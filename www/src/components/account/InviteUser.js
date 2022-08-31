@@ -22,7 +22,11 @@ export function InviteUser() {
   return (
     <>
       <Div>
-        <Button onClick={() => setOpen(true)}>Invite</Button>
+        <Button
+          secondary
+          onClick={() => setOpen(true)}
+        >Invite user
+        </Button>
       </Div>
       <Modal
         open={open}

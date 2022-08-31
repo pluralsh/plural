@@ -26,21 +26,19 @@ import { DEFAULT_TF_ICON } from './constants'
 
 import { PackageGrade, PackageHeader, PackageVersionPicker } from './common/misc'
 
-function TerraformInstaller({
-  installation, terraformId, terraformInstallation, version,
-}) {
-  const installed = terraformInstallation && terraformInstallation.version.id === version.id
+function TerraformInstaller({ terraformModule, version }) {
+  const installed = terraformModule?.installation?.version.id === version.id
   const [mutation, { error }] = useMutation(installed ? UNINSTALL_TF : INSTALL_TF, {
     variables: {
-      id: installed ? terraformInstallation.id : installation.id,
-      attributes: { terraformId, versionId: version.id },
+      id: installed ? terraformModule.installation.id : terraformModule.repository.installation.id,
+      attributes: { terraformId: terraformModule.id, versionId: version.id },
     },
     update: (cache, { data }) => {
       const ti = data.installTerraform ? data.installTerraform : null
 
       updateCache(cache, {
         query: TF_Q,
-        variables: { tfId: terraformId },
+        variables: { tfId: terraformModule.id },
         update: prev => deepUpdate(prev, 'terraformModule.installation', () => ti),
       })
     },
@@ -49,10 +47,11 @@ function TerraformInstaller({
   return (
     <>
       {error && (
-        <Modal><GqlError
-          error={error}
-          header="Could not install module"
-        />
+        <Modal>
+          <GqlError
+            error={error}
+            header="Could not install module"
+          />
         </Modal>
       )}
       <Button
@@ -62,6 +61,19 @@ function TerraformInstaller({
         {installed ? 'Uninstall' : 'Install'}
       </Button>
     </>
+  )
+}
+
+export function TerraformActions({ terraformModule, currentVersion, ...props }) {
+  if (!terraformModule.installation) return null
+
+  return (
+    <Box {...props}>
+      <TerraformInstaller
+        terraformModule={terraformModule}
+        version={currentVersion}
+      />
+    </Box>
   )
 }
 
@@ -173,21 +185,11 @@ export default function Terraform() {
           />
         </TabPanel>
         <ResponsiveLayoutSidecarContainer width="200px">
-          <Box
-            direction="column"
-            gap="small"
-          >
-            <Box height="54px">
-              {terraformModule.installation && (
-                <TerraformInstaller
-                  installation={terraformModule.repository.installation}
-                  terraformInstallation={terraformModule.installation}
-                  version={currentVersion}
-                  terraformId={terraformModule.id}
-                />
-              )}
-            </Box>
-          </Box>
+          <TerraformActions
+            terraformModule={terraformModule}
+            currentVersion={currentVersion}
+            height="54px"
+          />
         </ResponsiveLayoutSidecarContainer>
         <ResponsiveLayoutSpacer />
       </Box>

@@ -1,0 +1,18 @@
+query ListArtifacts($id: ID!) {
+    repository(id: $id) {
+        artifacts { ...ArtifactFragment }
+    }
+}
+
+mutation CreateArtifact($repoName: String!, $name: String!, $readme: String!, $artifactType: String!, $platform: String!, $blob: UploadOrUrl!, $arch: String) {
+    createArtifact(repositoryName: $repoName, attributes: {
+        name: $name,
+        blob: $blob,
+        readme: $readme,
+        type: $artifactType,
+        platform: $platform,
+        arch: $arch
+    }) {
+        ...ArtifactFragment
+    }
+}

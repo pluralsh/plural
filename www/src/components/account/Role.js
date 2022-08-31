@@ -235,7 +235,11 @@ export function CreateRole({ q }) {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)}>Create Role</Button>
+      <Button
+        secondary
+        onClick={() => setOpen(true)}
+      >Create Role
+      </Button>
       <Modal
         open={open}
         onClose={() => setOpen(false)}

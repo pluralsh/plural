@@ -86,3 +86,16 @@ defimpl Core.PubSub.Auditable, for: [Core.PubSub.UserDeleted] do
     }
   end
 end
+
+
+defimpl Core.PubSub.Auditable, for: [Core.PubSub.InviteCreated] do
+  alias Core.Schema.Audit
+
+  def audit(%{item: invite, actor: %{id: actor_id}}) do
+    %Audit{
+      action: "invite:created",
+      actor_id: actor_id,
+      account_id: invite.account_id,
+    }
+  end
+end

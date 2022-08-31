@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import {
-  A, Br, Button, Div, Flex, H1, Span, useMediaQuery,
+  A, Br, Button, Div, Flex, H1, Hr, Span, useMediaQuery,
 } from 'honorable'
 import {
   ArrowTopRightIcon,
@@ -27,6 +27,10 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 import { LinkTabWrap } from '../utils/Tabs'
 
 import TopBar from '../layout/TopBar'
+import { ResponsiveLayoutSidecarContainer } from '../layout/ResponsiveLayout'
+
+import PublisherSideNav from '../publisher/PublisherSideNav'
+import PublisherSideCar from '../publisher/PublisherSideCar'
 
 import { MARKETPLACE_QUERY } from './queries'
 
@@ -301,8 +305,19 @@ function MarketplaceRepositories({ installed, publisher }) {
         marginTop="medium"
         overflow="hidden"
       >
+        {publisher && (
+          <PublisherSideNav publisher={publisher} />
+        )}
         <StyledTabPanel stateRef={tabStateRef}>
           <Div position="relative">
+            {publisher && (
+              <Div paddingHorizontal="large">
+                <H1 title1>
+                  {capitalize(publisher.name)}'s Apps
+                </H1>
+                <Hr marginVertical="medium" />
+              </Div>
+            )}
             <Flex
               paddingHorizontal="large"
               align="stretch"
@@ -473,6 +488,11 @@ function MarketplaceRepositories({ installed, publisher }) {
           >
             <MarketplaceSidebar width="100%" />
           </Div>
+        )}
+        {publisher && (
+          <ResponsiveLayoutSidecarContainer>
+            <PublisherSideCar publisher={publisher} />
+          </ResponsiveLayoutSidecarContainer>
         )}
       </Flex>
     </Flex>

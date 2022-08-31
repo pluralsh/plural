@@ -27,8 +27,6 @@ function Publisher() {
 
   const { publisher } = data
 
-  console.log('publisher', publisher)
-
   return (
     <Marketplace publisher={publisher} />
   )

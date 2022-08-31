@@ -37,7 +37,7 @@ export function CreateGroup({ q }) {
         secondary
         onClick={() => setOpen(true)}
       >
-        Create Group
+        Create group
       </Button>
       <Modal
         open={open}

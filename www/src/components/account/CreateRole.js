@@ -49,7 +49,7 @@ export function CreateRole({ q }) {
         secondary
         onClick={() => setOpen(true)}
       >
-        Create Role
+        Create role
       </Button>
       <Modal
         open={open}
@@ -57,7 +57,7 @@ export function CreateRole({ q }) {
         marginVertical={16}
         {...MODAL_DIMS}
       >
-        <ModalHeader onClose={() => resetAndClose()}>CREATE ROLE</ModalHeader>
+        <ModalHeader onClose={() => resetAndClose()}>Create role</ModalHeader>
         <RoleForm
           attributes={attributes}
           setAttributes={setAttributes}

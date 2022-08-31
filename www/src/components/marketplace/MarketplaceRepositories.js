@@ -5,6 +5,7 @@ import {
 } from 'honorable'
 import {
   ArrowTopRightIcon,
+  Chip,
   EmptyState,
   FiltersIcon,
   Input,
@@ -13,7 +14,6 @@ import {
   Tab,
   TabList,
   TabPanel,
-  Token,
 } from 'pluralsh-design-system'
 import Fuse from 'fuse.js'
 import styled from 'styled-components'
@@ -37,13 +37,13 @@ const searchOptions = {
   threshold: 0.25,
 }
 
-const filterTokenProps = {
+const chipProps = {
   marginRight: 'xsmall',
   marginBottom: 'xsmall',
   flexShrink: 0,
-  border: '1px solid border',
-  backgroundColor: 'fill-one',
   tabIndex: 0,
+  closeButton: true,
+  clickable: true,
 }
 
 const sidebarWidth = 256 - 32
@@ -322,22 +322,22 @@ function MarketplaceRepositories({ installed }) {
                 />
               </Div>
               {categories.map(category => (
-                <Token
-                  {...filterTokenProps}
-                  onClose={() => handleClearToken('category', category)}
+                <Chip
+                  {...chipProps}
+                  onClick={() => handleClearToken('category', category)}
                   onKeyDown={event => (event.key === 'Enter' || event.key === ' ') && handleClearToken('category', category)}
                 >
                   {capitalize(category)}
-                </Token>
+                </Chip>
               ))}
               {tags.map(tag => (
-                <Token
-                  {...filterTokenProps}
-                  onClose={() => handleClearToken('tag', tag)}
+                <Chip
+                  {...chipProps}
+                  onClick={() => handleClearToken('tag', tag)}
                   onKeyDown={event => (event.key === 'Enter' || event.key === ' ') && handleClearToken('tag', tag)}
                 >
                   {capitalize(tag)}
-                </Token>
+                </Chip>
               ))}
               {!!(categories.length || tags.length) && (
                 <Button

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Button, Flex, Modal } from 'honorable'
 import {
   Alert,
@@ -46,6 +47,7 @@ function CreatePublisherModal({ open, onClose }: CreatePublisherModalProps) {
     slack: false,
     twitter: false,
   })
+  const navigate = useNavigate()
 
   const iconPicker = useFilePicker({
     minImageWidth: 64,
@@ -58,21 +60,12 @@ function CreatePublisherModal({ open, onClose }: CreatePublisherModalProps) {
     accept: 'image/jpeg,image/png',
   }
 
-  const [mutation, { loading, error }] = useMutation(CREATE_PUBLISHER_MUTATION, {
+  const [mutation, { data, loading, error }] = useMutation(CREATE_PUBLISHER_MUTATION, {
     variables: {
       attributes: {
         name,
         description,
         ...(iconUpload.file ? { avatar: iconUpload.file } : {}),
-        address: {
-          city: '',
-          country: '',
-          line1: '',
-          line2: '',
-          state: '',
-          zip: '',
-        },
-        phone: '',
       },
     },
   })
@@ -91,6 +84,19 @@ function CreatePublisherModal({ open, onClose }: CreatePublisherModalProps) {
     }
   }, [iconPicker.files])
 
+  useEffect(() => {
+    if (!data) return
+
+    navigate(`/publisher/${data.createPublisher.id}`)
+    onClose()
+  }, [data, navigate, onClose])
+
+  useEffect(() => {
+    if (!error) return
+
+    setPreMutationError(error.message)
+  }, [error])
+
   function handleSubmit() {
     setPreMutationError('')
 
@@ -107,10 +113,6 @@ function CreatePublisherModal({ open, onClose }: CreatePublisherModalProps) {
     }
 
     mutation()
-      .then(data => {
-        console.log('error', error)
-        console.log(data)
-      })
       .catch(error => {
         setPreMutationError(error.message)
       })

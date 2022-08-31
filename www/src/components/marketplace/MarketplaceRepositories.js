@@ -458,12 +458,14 @@ function MarketplaceRepositories({ installed, publisher }) {
                   >
                     Add an application
                   </Button>
-                  <Button
-                    secondary
-                    onClick={handleClearFilters}
-                  >
-                    Clear filters
-                  </Button>
+                  {!publisher && (
+                    <Button
+                      secondary
+                      onClick={handleClearFilters}
+                    >
+                      Clear filters
+                    </Button>
+                  )}
                 </Flex>
               </EmptyState>
             )}

@@ -20219,7 +20219,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"source-map-explorer@npm:^2.5.2":
+"source-map-explorer@npm:2.5.2":
   version: 2.5.2
   resolution: "source-map-explorer@npm:2.5.2"
   dependencies:
@@ -23197,7 +23197,7 @@ __metadata:
     slate: 0.82.1
     slate-history: 0.81.3
     slate-react: 0.82.1
-    source-map-explorer: ^2.5.2
+    source-map-explorer: 2.5.2
     styled-components: 5.3.5
     stylelint: 14.11.0
     typescript: 4.8.2

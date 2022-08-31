@@ -17,15 +17,13 @@ import {
 } from 'pluralsh-design-system'
 import Fuse from 'fuse.js'
 import styled from 'styled-components'
-
 import { isEmpty } from 'lodash'
 
 import { capitalize } from '../../utils/string'
-
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 
+import { GoBack } from '../utils/GoBack'
 import { LoopingLogo } from '../utils/AnimatedLogo'
-
 import { LinkTabWrap } from '../utils/Tabs'
 
 import { MARKETPLACE_QUERY } from './queries'
@@ -121,7 +119,7 @@ const StyledTabPanel = styled(TabPanel)(() => ({
   flexGrow: 1,
 }))
 
-function MarketplaceRepositories({ installed }) {
+function MarketplaceRepositories({ installed, publisher }) {
   const scrollRef = useRef()
   const [searchParams, setSearchParams] = useSearchParams()
   const categories = searchParams.getAll('category')
@@ -132,7 +130,11 @@ function MarketplaceRepositories({ installed }) {
   const isDesktopLarge = useMediaQuery('up', 'desktopLarge')
 
   const [repositories, loadingRepositories, hasMoreRepositories, fetchMoreRepositories] = usePaginatedQuery(MARKETPLACE_QUERY,
-    {},
+    {
+      variables: {
+        ...(publisher ? { publisherId: publisher.id } : {}),
+      },
+    },
     data => data.repositories)
 
   const shouldRenderFeatured = !categories.length && !tags.length && !installed && !search
@@ -203,6 +205,8 @@ function MarketplaceRepositories({ installed }) {
   }
 
   function renderFeatured() {
+    if (publisher) return null
+
     const featuredA = sortedRepositories.shift()
     const featuredB = sortedRepositories.shift()
 
@@ -240,15 +244,12 @@ function MarketplaceRepositories({ installed }) {
       width-desktopLarge-down="100%"
     >
       <Flex
-        direction="column"
+        marginHorizontal="large"
+        flexShrink={0}
+        height={57}
+        alignItems="flex-end"
       >
-        <Flex
-          marginHorizontal="large"
-          flexShrink={0}
-          direction="row"
-          height={57}
-          alignItems="flex-end"
-        >
+        {!publisher && (
           <TabList
             stateRef={tabStateRef}
             stateProps={{
@@ -271,6 +272,14 @@ function MarketplaceRepositories({ installed }) {
               <Tab>Installed</Tab>
             </LinkTabWrap>
           </TabList>
+        )}
+        {publisher && (
+          <GoBack
+            text="Back to marketplace"
+            link="/marketplace"
+          />
+        )}
+        {!publisher && (
           <Flex
             paddingBottom="xxsmall"
             paddingTop="xxsmall"
@@ -288,7 +297,7 @@ function MarketplaceRepositories({ installed }) {
               Filters
             </Button>
           </Flex>
-        </Flex>
+        )}
       </Flex>
       <Flex
         flexGrow={1}
@@ -372,7 +381,7 @@ function MarketplaceRepositories({ installed }) {
             ref={scrollRef}
           >
             {shouldRenderFeatured && renderFeatured()}
-            {resultRepositories?.length > 0 && (
+            {resultRepositories?.length > 0 && !publisher && (
               <H1
                 subtitle1
                 marginTop={shouldRenderFeatured ? 'xlarge' : 0}
@@ -382,7 +391,7 @@ function MarketplaceRepositories({ installed }) {
             )}
             <RepoCardList
               repositories={resultRepositories}
-              marginTop="medium"
+              marginTop={publisher ? 0 : 'medium'}
             />
             {loadingRepositories && (
               <Flex
@@ -448,24 +457,26 @@ function MarketplaceRepositories({ installed }) {
             )}
           </Div>
         </StyledTabPanel>
-        <Div
-          marginRight={areFiltersOpen ? 'large' : `-${sidebarWidth}px`}
-          transform={areFiltersOpen ? 'translateX(0)' : 'translateX(100%)'}
-          opacity={areFiltersOpen ? 1 : 0}
-          flexShrink={0}
-          position="sticky"
-          top={0}
-          right={0}
-          width={sidebarWidth}
-          height="calc(100% - 16px)"
-          overflowY="auto"
-          border="1px solid border"
-          backgroundColor="fill-one"
-          borderRadius="large"
-          transition="all 250ms ease"
-        >
-          <MarketplaceSidebar width="100%" />
-        </Div>
+        {!publisher && (
+          <Div
+            marginRight={areFiltersOpen ? 'large' : `-${sidebarWidth}px`}
+            transform={areFiltersOpen ? 'translateX(0)' : 'translateX(100%)'}
+            opacity={areFiltersOpen ? 1 : 0}
+            flexShrink={0}
+            position="sticky"
+            top={0}
+            right={0}
+            width={sidebarWidth}
+            height="calc(100% - 16px)"
+            overflowY="auto"
+            border="1px solid border"
+            backgroundColor="fill-one"
+            borderRadius="large"
+            transition="all 250ms ease"
+          >
+            <MarketplaceSidebar width="100%" />
+          </Div>
+        )}
       </Flex>
     </Flex>
   )

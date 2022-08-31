@@ -63,10 +63,17 @@ function Repository() {
         direction="column"
         overflowY="hidden"
       >
-        <GoBack
-          text="Back to marketplace"
-          link="/marketplace"
-        />
+        <Flex
+          marginHorizontal="large"
+          flexShrink={0}
+          height={57}
+          align="flex-end"
+        >
+          <GoBack
+            text="Back to marketplace"
+            link="/marketplace"
+          />
+        </Flex>
         <Flex
           flexGrow={1}
           height={0}

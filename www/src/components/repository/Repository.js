@@ -72,8 +72,7 @@ function Repository() {
           height={0}
           overflowX="hidden"
           paddingLeft="medium"
-          paddingRight="large"
-          paddingTop="medium"
+          paddingRight="medium"
         >
           <ResponsiveLayoutSidenavContainer>
             <RepositorySideNav tabStateRef={tabStateRef} />
@@ -81,7 +80,7 @@ function Repository() {
           <ResponsiveLayoutSpacer />
           <TabPanel
             as={
-              <ResponsiveLayoutContentContainer paddingHorizontal="xxxsmall" />
+              <ResponsiveLayoutContentContainer />
             }
             stateRef={tabStateRef}
           >

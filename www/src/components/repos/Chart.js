@@ -231,7 +231,10 @@ export default function Chart() {
         direction="row"
       >
         <ResponsiveLayoutSidenavContainer>
-          <Box pad={{ left: '16px' }}>
+          <Box
+            pad={{ left: '16px' }}
+            width="240px"
+          >
             <PackageHeader
               name={currentVersion.chart.name}
               icon={currentVersion.chart.icon || DEFAULT_CHART_ICON}

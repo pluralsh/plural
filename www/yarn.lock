@@ -7530,6 +7530,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"btoa@npm:^1.2.1":
+  version: 1.2.1
+  resolution: "btoa@npm:1.2.1"
+  bin:
+    btoa: bin/btoa.js
+  checksum: afbf004fb1b1d530e053ffa66ef5bd3878b101c59d808ac947fcff96810b4452abba2b54be687adadea2ba9efc7af48b04228742789bf824ef93f103767e690c
+  languageName: node
+  linkType: hard
+
 "buffer-alloc-unsafe@npm:^1.1.0":
   version: 1.1.0
   resolution: "buffer-alloc-unsafe@npm:1.1.0"
@@ -9747,7 +9756,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ejs@npm:^3.1.6":
+"ejs@npm:^3.1.5, ejs@npm:^3.1.6":
   version: 3.1.8
   resolution: "ejs@npm:3.1.8"
   dependencies:
@@ -10017,7 +10026,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"escape-html@npm:~1.0.3":
+"escape-html@npm:^1.0.3, escape-html@npm:~1.0.3":
   version: 1.0.3
   resolution: "escape-html@npm:1.0.3"
   checksum: 6213ca9ae00d0ab8bccb6d8d4e0a98e76237b2410302cf7df70aaa6591d509a2a37ce8998008cbecae8fc8ffaadf3fb0229535e6a145f3ce0b211d060decbb24
@@ -13375,7 +13384,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-wsl@npm:^2.2.0":
+"is-wsl@npm:^2.1.1, is-wsl@npm:^2.2.0":
   version: 2.2.0
   resolution: "is-wsl@npm:2.2.0"
   dependencies:
@@ -16361,6 +16370,16 @@ __metadata:
   dependencies:
     mimic-fn: ^2.1.0
   checksum: 2478859ef817fc5d4e9c2f9e5728512ddd1dbc9fb7829ad263765bb6d3b91ce699d6e2332eef6b7dff183c2f490bd3349f1666427eaba4469fba0ac38dfd0d34
+  languageName: node
+  linkType: hard
+
+"open@npm:^7.3.1":
+  version: 7.4.2
+  resolution: "open@npm:7.4.2"
+  dependencies:
+    is-docker: ^2.0.0
+    is-wsl: ^2.1.1
+  checksum: 3333900ec0e420d64c23b831bc3467e57031461d843c801f569b2204a1acc3cd7b3ec3c7897afc9dde86491dfa289708eb92bba164093d8bd88fb2c231843c91
   languageName: node
   linkType: hard
 
@@ -19459,6 +19478,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"rimraf@npm:~2.6.2":
+  version: 2.6.3
+  resolution: "rimraf@npm:2.6.3"
+  dependencies:
+    glob: ^7.1.3
+  bin:
+    rimraf: ./bin.js
+  checksum: 3ea587b981a19016297edb96d1ffe48af7e6af69660e3b371dbfc73722a73a0b0e9be5c88089fbeeb866c389c1098e07f64929c7414290504b855f54f901ab10
+  languageName: node
+  linkType: hard
+
 "rollup-plugin-terser@npm:^7.0.0":
   version: 7.0.2
   resolution: "rollup-plugin-terser@npm:7.0.2"
@@ -20186,6 +20216,29 @@ __metadata:
   version: 2.0.1
   resolution: "source-list-map@npm:2.0.1"
   checksum: 806efc6f75e7cd31e4815e7a3aaf75a45c704871ea4075cb2eb49882c6fca28998f44fc5ac91adb6de03b2882ee6fb02f951fdc85e6a22b338c32bfe19557938
+  languageName: node
+  linkType: hard
+
+"source-map-explorer@npm:2.5.2":
+  version: 2.5.2
+  resolution: "source-map-explorer@npm:2.5.2"
+  dependencies:
+    btoa: ^1.2.1
+    chalk: ^4.1.0
+    convert-source-map: ^1.7.0
+    ejs: ^3.1.5
+    escape-html: ^1.0.3
+    glob: ^7.1.6
+    gzip-size: ^6.0.0
+    lodash: ^4.17.20
+    open: ^7.3.1
+    source-map: ^0.7.3
+    temp: ^0.9.4
+    yargs: ^16.2.0
+  bin:
+    sme: bin/cli.js
+    source-map-explorer: bin/cli.js
+  checksum: ff6748a5e132e03cd7646892e7b3869d10ebae1f2adea6f359145e188f2af5450e3ed9d8f132ed6b2e7fe9359e5e5d2b5becb0264fb8ef7105437ff452981295
   languageName: node
   linkType: hard
 
@@ -21205,6 +21258,16 @@ __metadata:
   version: 2.0.0
   resolution: "temp-dir@npm:2.0.0"
   checksum: cc4f0404bf8d6ae1a166e0e64f3f409b423f4d1274d8c02814a59a5529f07db6cd070a749664141b992b2c1af337fa9bb451a460a43bb9bcddc49f235d3115aa
+  languageName: node
+  linkType: hard
+
+"temp@npm:^0.9.4":
+  version: 0.9.4
+  resolution: "temp@npm:0.9.4"
+  dependencies:
+    mkdirp: ^0.5.1
+    rimraf: ~2.6.2
+  checksum: 8709d4d63278bd309ca0e49e80a268308dea543a949e71acd427b3314cd9417da9a2cc73425dd9c21c6780334dbffd67e05e7be5aaa73e9affe8479afc6f20e3
   languageName: node
   linkType: hard
 
@@ -23134,6 +23197,7 @@ __metadata:
     slate: 0.82.1
     slate-history: 0.81.3
     slate-react: 0.82.1
+    source-map-explorer: 2.5.2
     styled-components: 5.3.5
     stylelint: 14.11.0
     typescript: 4.8.2

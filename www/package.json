@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
     "start": "PORT=3001 HTTPS=true react-scripts start",
     "start:prod": "yarn build && serve -s -p 3001 build",
     "build": "react-scripts build",
@@ -98,6 +99,7 @@
     "slate": "0.82.1",
     "slate-history": "0.81.3",
     "slate-react": "0.82.1",
+    "source-map-explorer": "^2.5.2",
     "styled-components": "5.3.5",
     "uuid": "8.3.2",
     "workbox-core": "6.5.4",

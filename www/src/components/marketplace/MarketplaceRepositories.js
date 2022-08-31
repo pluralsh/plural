@@ -26,6 +26,8 @@ import { GoBack } from '../utils/GoBack'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { LinkTabWrap } from '../utils/Tabs'
 
+import TopBar from '../layout/TopBar'
+
 import { MARKETPLACE_QUERY } from './queries'
 
 import MarketplaceSidebar from './MarketplaceSidebar'
@@ -243,12 +245,7 @@ function MarketplaceRepositories({ installed, publisher }) {
       width-desktopLarge-up={1640}
       width-desktopLarge-down="100%"
     >
-      <Flex
-        marginHorizontal="large"
-        flexShrink={0}
-        height={57}
-        alignItems="flex-end"
-      >
+      <TopBar>
         {!publisher && (
           <TabList
             stateRef={tabStateRef}
@@ -298,7 +295,7 @@ function MarketplaceRepositories({ installed, publisher }) {
             </Button>
           </Flex>
         )}
-      </Flex>
+      </TopBar>
       <Flex
         flexGrow={1}
         marginTop="medium"

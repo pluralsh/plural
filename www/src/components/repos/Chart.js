@@ -16,11 +16,11 @@ import { A, Flex } from 'honorable'
 
 import {
   ResponsiveLayoutContentContainer, ResponsiveLayoutSidecarContainer, ResponsiveLayoutSidenavContainer, ResponsiveLayoutSpacer,
-} from 'components/layout/ResponsiveLayout'
+} from '../layout/ResponsiveLayout'
+import TopBar from '../layout/TopBar'
 
-import { GoBack } from 'components/utils/GoBack'
-
-import { LinkTabWrap } from 'components/utils/Tabs'
+import { GoBack } from '../utils/GoBack'
+import { LinkTabWrap } from '../utils/Tabs'
 
 import { PluralConfigurationContext } from '../login/CurrentUser'
 
@@ -222,10 +222,12 @@ export default function Chart() {
       direction="column"
       fill
     >
-      <GoBack
-        text="Back to packages"
-        link={`/repository/${chart.repository.id}/packages/helm`}
-      />
+      <TopBar>
+        <GoBack
+          text="Back to packages"
+          link={`/repository/${chart.repository.id}/packages/helm`}
+        />
+      </TopBar>
       <Box
         pad="16px"
         direction="row"

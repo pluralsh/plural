@@ -120,7 +120,7 @@ function Group({ group, q }) {
         <Modal
           portal
           open={edit}
-          width="60vw"
+          size="large"
           onClose={() => setEdit(false)}
         >
           <ModalHeader onClose={() => setEdit(false)}>EDIT GROUP</ModalHeader>

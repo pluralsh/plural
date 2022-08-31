@@ -1,9 +1,9 @@
 import {
   MutableRefObject, useContext, useImperativeHandle, useRef,
 } from 'react'
-import { useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import {
-  Div, Flex, Img, P,
+  A, Div, Flex, Img, P,
 } from 'honorable'
 import { Tab, TabList } from 'pluralsh-design-system'
 
@@ -90,7 +90,14 @@ function RepositorySideNav({
         color="text-xlight"
         marginTop="medium"
       >
-        Published by {capitalize(repository.publisher.name)}
+        Published by&nbsp;
+        <A
+          inline
+          as={Link}
+          to={`/publisher/${repository.publisher.id}`}
+        >
+          {capitalize(repository.publisher.name)}
+        </A>
       </P>
       <Div
         marginTop="medium"

@@ -36,7 +36,7 @@ export const ACCOUNT_PUBLISHERS = gql`
   ${PublisherFragment}
 `
 
-export const PUBLISHER_Q = gql`
+export const PUBLISHER_QUERY = gql`
   query Publisher($publisherId: ID) {
     publisher(id: $publisherId) {
       ...PublisherFragment

@@ -14,6 +14,11 @@ defmodule Core.Schema.Invite do
     timestamps()
   end
 
+  def expired(query \\ __MODULE__) do
+    expiry = Timex.now() |> Timex.shift(days: -2)
+    from(i in query, where: i.inserted_at < ^expiry)
+  end
+
   def for_account(query \\ __MODULE__, aid) do
     from(i in query, where: i.account_id == ^aid)
   end

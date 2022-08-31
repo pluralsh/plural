@@ -363,6 +363,10 @@ crons:
   cronModule: Task.StaleTests
   crontab: "0 30 * * *"
   envVars: []
+- cronName: plrl-prune-invites
+  cronModule: Prune.Invites
+  crontab: "0 45 * * *"
+  envVars: []
 
 hydraSecrets:
   dsn: memory

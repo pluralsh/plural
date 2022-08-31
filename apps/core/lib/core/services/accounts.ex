@@ -170,6 +170,12 @@ defmodule Core.Services.Accounts do
     |> when_ok(:delete)
   end
 
+  def delete_invite_by_id(id, %User{} = user) do
+    Core.Repo.get!(Invite, id)
+    |> allow(user, :delete)
+    |> when_ok(:delete)
+  end
+
   @doc """
   Creates a service account for the user's account, which is an assumable identity allowing multiple
   users to share credentials for instance to manage a set of installations

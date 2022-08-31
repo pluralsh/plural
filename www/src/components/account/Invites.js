@@ -18,7 +18,7 @@ import { Confirm } from './Confirm'
 function DeleteInvite({ invite }) {
   const [confirm, setConfirm] = useState(false)
   const [mutation, { loading, error }] = useMutation(DELETE_INVITE, {
-    variables: { id: invite.secureId },
+    variables: { id: invite.id },
     onCompleted: () => setConfirm(false),
     update: (cache, { data: { deleteInvite } }) => updateCache(cache, {
       query: INVITES_Q,
@@ -43,6 +43,18 @@ function DeleteInvite({ invite }) {
         error={error}
       />
     </>
+  )
+}
+
+function LinkCell({ invite }) {
+  if (!invite.secureId) return <TableData>Email sent to user</TableData>
+
+  return (
+    <TableData><Copyable
+      text={inviteLink(invite)}
+      pillText="Copied invite link"
+    />
+    </TableData>
   )
 }
 
@@ -78,11 +90,7 @@ export function Invites() {
                 suffix={<DeleteInvite invite={node} />}
               >
                 <TableData>{node.email}</TableData>
-                <TableData><Copyable
-                  text={inviteLink(node)}
-                  pillText="Copied invite link"
-                />
-                </TableData>
+                <LinkCell invite={node} />
                 <TableData>{moment(node.timestamp).format('lll')}</TableData>
               </TableRow>
             )}

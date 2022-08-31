@@ -311,7 +311,8 @@ defmodule GraphQl.Schema.Account do
     end
 
     field :delete_invite, :invite do
-      arg :secure_id, non_null(:string)
+      arg :id, :id
+      arg :secure_id, :string
 
       resolve safe_resolver(&Account.delete_invite/2)
     end

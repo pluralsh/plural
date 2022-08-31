@@ -2,6 +2,7 @@ import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
 import { Switch } from 'pluralsh-design-system'
 import { useState } from 'react'
+import { Div } from 'honorable'
 
 import {
   extendConnection,
@@ -46,8 +47,14 @@ function GroupMember({
         <UserInfo
           user={user}
           fill="horizontal"
+          hue="lightest"
         />
-        {edit && <DeleteIconButton onClick={mutation} />}
+        {edit && (
+          <DeleteIconButton
+            onClick={mutation}
+            hue="lighter"
+          />
+        )}
       </Box>
     </ListItem>
   )
@@ -66,30 +73,36 @@ export function GroupMembers({ group, edit }) {
   } = data
 
   return (
-    <List minHeight="300px">
-      <StandardScroller
-        listRef={listRef}
-        setListRef={setListRef}
-        items={edges}
-        loading={loading}
-        placeholder={Placeholder}
-        hasNextPage={pageInfo.hasNextPage}
-        mapper={({ node }, { prev, next }) => (
-          <GroupMember
-            key={node.user.id}
-            user={node.user}
-            group={group}
-            first={!prev.node}
-            last={!next.node}
-            edit={edit}
-          />
-        )}
-        loadNextPage={() => pageInfo.hasNextPage
-          && fetchMore({
-            variables: { cursor: pageInfo.endCursor },
-            updateQuery: (prev, { fetchMoreResult: { groupMembers } }) => extendConnection(prev, groupMembers, 'groupMembers'),
-          })}
-      />
+    <List
+      minHeight="230px"
+      position="relative"
+      hue="lighter"
+    >
+      <Div flexGrow="1">
+        <StandardScroller
+          listRef={listRef}
+          setListRef={setListRef}
+          items={edges}
+          loading={loading}
+          placeholder={Placeholder}
+          hasNextPage={pageInfo.hasNextPage}
+          mapper={({ node }, { prev, next }) => (
+            <GroupMember
+              key={node.user.id}
+              user={node.user}
+              group={group}
+              first={!prev.node}
+              last={!next.node}
+              edit={edit}
+            />
+          )}
+          loadNextPage={() => pageInfo.hasNextPage
+            && fetchMore({
+              variables: { cursor: pageInfo.endCursor },
+              updateQuery: (prev, { fetchMoreResult: { groupMembers } }) => extendConnection(prev, groupMembers, 'groupMembers'),
+            })}
+        />
+      </Div>
     </List>
   )
 }

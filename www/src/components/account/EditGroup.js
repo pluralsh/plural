@@ -1,15 +1,15 @@
 import { useApolloClient, useMutation } from '@apollo/client'
-import { TextInput } from 'grommet'
 import {
+  ComboBox,
   FormField,
-  Input,
-  PersonIcon,
   Switch,
+  Tab,
+  TabList,
+  TabPanel,
   ValidatedInput,
 } from 'pluralsh-design-system'
-import { useState } from 'react'
-import { Flex, Text } from 'honorable'
-import { useTheme } from 'styled-components'
+import { useRef, useState } from 'react'
+import { Flex } from 'honorable'
 
 import { appendConnection, updateCache } from '../../utils/graphql'
 import {
@@ -22,6 +22,11 @@ import { GqlError } from '../utils/Alert'
 import { Actions } from './Actions'
 import { fetchUsers } from './Typeaheads'
 import { GroupMembers } from './Group'
+
+const TABS = {
+  Attributes: { label: 'Attributes' },
+  Users: { label: 'Users' },
+}
 
 export function EditGroup({ group, cancel }) {
   const client = useApolloClient()
@@ -42,7 +47,8 @@ export function EditGroup({ group, cancel }) {
     }),
   })
   const [suggestions, setSuggestions] = useState([])
-  const theme = useTheme()
+  const tabStateRef = useRef()
+  const [view, setView] = useState('Attributes')
 
   return (
     <Flex
@@ -55,54 +61,79 @@ export function EditGroup({ group, cancel }) {
           error={error}
         />
       )}
-      <Flex
-        direction="row"
-        gap="medium"
-        alignItems="center"
+      <TabList
+        stateRef={tabStateRef}
+        stateProps={{
+          orientation: 'horizontal',
+          selectedKey: view,
+          onSelectionChange: key => setView(key),
+        }}
       >
-        <Text {...theme.partials.text.body2Bold}>Name:</Text>
-        <Input
-          width="100%"
-          flowGrow={1}
-          value={name}
-          onChange={({ target: { value } }) => setName(value)}
-        />
-      </Flex>
-      <ValidatedInput
-        label="Description"
-        value={description}
-        onChange={({ target: { value } }) => setDescription(value)}
-      />
-      <FormField
-        label="Add users"
-        width="100%"
-      >
-        <TextInput
-          icon={<PersonIcon size={14} />}
-          width="100%"
-          value={value}
-          placeholder="Search for users by name"
-          suggestions={suggestions}
-          onChange={({ target: { value } }) => {
-            setValue(value)
-            fetchUsers(client, value, setSuggestions)
-          }}
-          onSelect={({ suggestion: { value } }) => {
-            setValue('')
-            addMut({ variables: { userId: value.id } })
-          }}
-        />
-      </FormField>
-      <GroupMembers
-        group={group}
-        edit
-      />
-      <Switch
-        checked={global}
-        onChange={({ target: { checked } }) => setGlobal(checked)}
-      >
-        Apply globally
-      </Switch>
+        {Object.entries(TABS).map(([key, { label }]) => (
+          <Tab key={key}>{label}</Tab>
+        ))}
+      </TabList>
+      <TabPanel stateRef={tabStateRef}>
+        {view === 'Attributes' && (
+          <Flex
+            flexDirection="column"
+            gap="large"
+          >
+            <ValidatedInput
+              label="Name"
+              value={name}
+              onChange={({ target: { value } }) => setName(value)}
+            />
+            <ValidatedInput
+              label="Description"
+              value={description}
+              onChange={({ target: { value } }) => setDescription(value)}
+            />
+            <Switch
+              checked={global}
+              onChange={({ target: { checked } }) => setGlobal(checked)}
+            >
+              Apply globally
+            </Switch>
+          </Flex>
+        )}
+        {view === 'Users' && (
+          <Flex
+            flexDirection="column"
+            gap="large"
+          >
+            <FormField
+              label="Add users"
+              width="100%"
+              {...{
+                '& :last-child': {
+                  marginTop: 0,
+                },
+              }}
+            >
+              <ComboBox
+                inputValue={value}
+                placeholder="Search a user"
+                onSelectionChange={key => {
+                  setValue('')
+                  addMut({ variables: { userId: key } })
+                }}
+                onInputChange={value => {
+                  setValue(value)
+                  fetchUsers(client, value, setSuggestions)
+                }}
+              >
+                {suggestions.map(({ label }) => label)}
+              </ComboBox>
+            </FormField>
+            <GroupMembers
+              group={group}
+              edit
+            />
+
+          </Flex>
+        )}
+      </TabPanel>
       <Actions
         cancel={cancel}
         submit={mutation}

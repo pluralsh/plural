@@ -29,7 +29,7 @@ import { EditServiceAccount } from './CreateServiceAccount'
 import { MoreMenu } from './MoreMenu'
 import { hasRbac } from './utils'
 
-export function UserInfo({ user: { email, name, avatar }, ...box }) {
+export function UserInfo({ user: { email, name, avatar }, hue = 'lighter', ...box }) {
   return (
     <Box
       {...box}
@@ -40,8 +40,9 @@ export function UserInfo({ user: { email, name, avatar }, ...box }) {
       <AppIcon
         url={avatar}
         name={name}
-        spacing="none"
+        spacing={avatar ? 'none' : undefined}
         size="xsmall"
+        hue={hue}
       />
       <Box>
         <Span fontWeight="bold">{name}</Span>

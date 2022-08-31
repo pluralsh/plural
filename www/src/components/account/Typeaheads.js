@@ -62,7 +62,8 @@ function userSuggestion({
       description={email}
       leftContent={(
         <AppIcon
-          spacing="none"
+          spacing={avatar ? 'none' : undefined}
+          hue="lightest"
           size="xsmall"
           name={name}
           url={avatar}

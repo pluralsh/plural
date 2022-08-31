@@ -1,16 +1,21 @@
 import { Box } from 'grommet'
 import { Span, Switch } from 'honorable'
-import { useCallback, useState } from 'react'
+import { Tab, TabList, TabPanel } from 'pluralsh-design-system'
+import { useCallback, useRef, useState } from 'react'
 
 import { PermissionTypes } from '../accounts/types'
 import { ListItem } from '../profile/ListItem'
 import { GqlError } from '../utils/Alert'
-import { Tabs } from '../utils/SidebarTabs'
 
 import { GeneralAttributes } from './Role'
 
 function PermissionToggle({
-  permission, description, attributes, setAttributes, first, last,
+  permission,
+  description,
+  attributes,
+  setAttributes,
+  first,
+  last,
 }) {
   const toggle = useCallback(enable => {
     if (enable) {
@@ -46,13 +51,24 @@ function PermissionToggle({
   )
 }
 
+const TABS = {
+  General: { label: 'General' },
+  Permissions: { label: 'Permissions' },
+}
+
 export function RoleForm({
   // eslint-disable-next-line
-  error, attributes, setAttributes, bindings, setBindings, ...box
+  error,
+  attributes,
+  setAttributes,
+  bindings,
+  setBindings,
+  ...box
 }) {
   const [view, setView] = useState('General')
   const permissions = Object.entries(PermissionTypes)
   const len = permissions.length
+  const tabStateRef = useRef()
 
   return (
     <Box
@@ -66,42 +82,51 @@ export function RoleForm({
           error={error}
         />
       )}
-      <Tabs
-        tabs={['General', 'Permissions']}
-        tab={view}
-        setTab={setView}
-      />
-      {view === 'General' && (
-        <GeneralAttributes
-          attributes={attributes}
-          setAttributes={setAttributes}
-          bindings={bindings}
-          setBindings={setBindings}
-        />
-      )}
-      {view === 'Permissions' && (
-        <Box gap="small">
-          <Box>
-            <Span fontWeight="bold">Permissions</Span>
-            <Span>
-              Grant permissions to all users and groups bound to this role
-            </Span>
+      <TabList
+        stateRef={tabStateRef}
+        stateProps={{
+          orientation: 'horizontal',
+          selectedKey: view,
+          onSelectionChange: key => setView(key),
+        }}
+      >
+        {Object.entries(TABS).map(([key, { label }]) => (
+          <Tab key={key}>{label}</Tab>
+        ))}
+      </TabList>
+      <TabPanel stateRef={tabStateRef}>
+        {view === 'General' && (
+          <GeneralAttributes
+            attributes={attributes}
+            setAttributes={setAttributes}
+            bindings={bindings}
+            setBindings={setBindings}
+          />
+        )}
+        {view === 'Permissions' && (
+          <Box gap="small">
+            <Box>
+              <Span fontWeight="bold">Permissions</Span>
+              <Span>
+                Grant permissions to all users and groups bound to this role
+              </Span>
+            </Box>
+            <Box>
+              {permissions.map(([perm, description], i) => (
+                <PermissionToggle
+                  key={perm}
+                  permission={perm}
+                  description={description}
+                  attributes={attributes}
+                  setAttributes={setAttributes}
+                  first={i === 0}
+                  last={i === len - 1}
+                />
+              ))}
+            </Box>
           </Box>
-          <Box>
-            {permissions.map(([perm, description], i) => (
-              <PermissionToggle
-                key={perm}
-                permission={perm}
-                description={description}
-                attributes={attributes}
-                setAttributes={setAttributes}
-                first={i === 0}
-                last={i === len - 1}
-              />
-            ))}
-          </Box>
-        </Box>
-      )}
+        )}
+      </TabPanel>
     </Box>
   )
 }

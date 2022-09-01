@@ -16,12 +16,12 @@ function Marketplace({ installed = false, publisher = null }) {
         flexGrow={1}
         overflow="hidden"
       >
-        <ResponsiveLayoutSpacer />
+        {!publisher && <ResponsiveLayoutSpacer />}
         <MarketplaceRepositories
           installed={installed}
           publisher={publisher}
         />
-        <ResponsiveLayoutSpacer />
+        {!publisher && <ResponsiveLayoutSpacer />}
       </Flex>
     </Flex>
   )

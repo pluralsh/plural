@@ -247,9 +247,10 @@ function MarketplaceRepositories({ installed, publisher }) {
     <Flex
       direction="column"
       overflow="hidden"
-      maxWidth-desktopLarge-up={1640}
-      width-desktopLarge-up={1640}
+      maxWidth-desktopLarge-up={publisher ? null : 1640}
+      width-desktopLarge-up={publisher ? null : 1640}
       width-desktopLarge-down="100%"
+      flexGrow={publisher ? 1 : 0}
     >
       <TopBar>
         {!publisher && (
@@ -321,9 +322,9 @@ function MarketplaceRepositories({ installed, publisher }) {
         )}
         <StyledTabPanel
           stateRef={tabStateRef}
-          width={publisher ? 944 : null} // 896 + 24 * 2 margin
-          maxWidth-desktopLarge-up={publisher ? 944 : null}
-          width-desktopLarge-up={publisher ? 944 : null}
+          width={publisher ? 928 : null} // 896 + 32 margin
+          maxWidth-desktopLarge-up={publisher ? 928 : null}
+          width-desktopLarge-up={publisher ? 928 : null}
         >
           <Div position="relative">
             {publisher && (

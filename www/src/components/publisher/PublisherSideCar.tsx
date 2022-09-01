@@ -3,9 +3,10 @@ import { Div, P } from 'honorable'
 function PublisherSideCar({ publisher }: any) {
   return (
     <Div
-      marginRight="large"
+      paddingLeft="xsmall"
+      marginRight="medium"
       flexShrink={0}
-      width={200}
+      width={208}
     >
       <Div
         marginTop="xxxlarge"

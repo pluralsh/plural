@@ -1,15 +1,14 @@
 import { useMutation } from '@apollo/client'
 import { Box } from 'grommet'
+import { Button, Div } from 'honorable'
 import {
-  Button, Div, MenuItem, Span,
-} from 'honorable'
-import {
+  ListBoxItem,
   Modal,
   ModalActions,
   ModalHeader,
   ValidatedInput,
 } from 'pluralsh-design-system'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import { appendConnection, updateCache } from '../../utils/graphql'
 import {
@@ -37,13 +36,12 @@ function ServiceAccountForm({
   return (
     <Box
       fill
-      pad="small"
       gap="small"
       {...box}
     >
       {error && (
         <GqlError
-          header="Something broke"
+          header="Something went wrong"
           error={error}
         />
       )}
@@ -59,7 +57,7 @@ function ServiceAccountForm({
       />
       <BindingInput
         type="user"
-        hint="users that can impersonate this service account"
+        hint="Users that can impersonate this service account"
         bindings={bindings
           .filter(({ user }) => !!user)
           .map(({ user: { email } }) => email)}
@@ -68,7 +66,7 @@ function ServiceAccountForm({
       />
       <BindingInput
         type="group"
-        hint="user groups that can impersonate this service account"
+        hint="User groups that can impersonate this service account"
         bindings={bindings
           .filter(({ group }) => !!group)
           .map(({ group: { name } }) => name)}
@@ -104,15 +102,37 @@ export function EditServiceAccount({ user, update }) {
     onCompleted: () => setConfirm(false),
   })
 
+  const menuItems = {
+    editUser: {
+      label: 'Edit',
+      onSelect: () => setEdit(true),
+      props: {},
+    },
+    deleteUser: {
+      label: 'Delete user',
+      onSelect: () => setConfirm(true),
+      props: {
+        destructive: true,
+      },
+    },
+  }
+
   return (
     <>
-      <MoreMenu>
-        <MenuItem onClick={() => setEdit(true)}>
-          <Span color="text-light">Edit</Span>
-        </MenuItem>
-        <MenuItem onClick={() => setConfirm(true)}>
-          <Span color="text-error">Delete user</Span>
-        </MenuItem>
+      <MoreMenu
+        onSelectionChange={selectedKey => {
+          menuItems[selectedKey]?.onSelect()
+        }}
+      >
+        {Object.entries(menuItems).map(([key, { label, props = {} }]) => (
+          <ListBoxItem
+            key={key}
+            textValue={label}
+            label={label}
+            {...props}
+            color="blue"
+          />
+        ))}
       </MoreMenu>
       <Confirm
         open={confirm}
@@ -128,16 +148,17 @@ export function EditServiceAccount({ user, update }) {
       <Modal
         portal
         open={edit}
-        onClose={() => setEdit(false)}
+        onClose={() => {
+          setEdit(false)
+        }}
         size="large"
       >
         <ModalHeader onClose={() => setEdit(false)}>
-          UPDATE SERVICE ACCOUNT
+          Edit service account
         </ModalHeader>
         <Box
           flex={false}
           gap="small"
-          width="50vw"
         >
           <ServiceAccountForm
             error={eerror}
@@ -167,10 +188,17 @@ export function EditServiceAccount({ user, update }) {
   )
 }
 
+const defaultAttributes = { name: '', email: '' }
+
 export function CreateServiceAccount({ q }) {
   const [open, setOpen] = useState(false)
-  const [attributes, setAttributes] = useState({ name: '', email: '' })
+  const [attributes, setAttributes] = useState(defaultAttributes)
   const [bindings, setBindings] = useState([])
+  const resetAndClose = useCallback(() => {
+    setBindings([])
+    setAttributes(defaultAttributes)
+    setOpen(false)
+  }, [])
   const [mutation, { loading, error }] = useMutation(CREATE_SERVICE_ACCOUNT, {
     variables: {
       attributes: {
@@ -183,7 +211,9 @@ export function CreateServiceAccount({ q }) {
       variables: { q, serviceAccount: true },
       update: prev => appendConnection(prev, createServiceAccount, 'users'),
     }),
-    onCompleted: () => setOpen(false),
+    onCompleted: () => {
+      resetAndClose()
+    },
   })
 
   return (
@@ -198,16 +228,18 @@ export function CreateServiceAccount({ q }) {
       </Div>
       <Modal
         open={open}
-        onClose={() => setOpen(false)}
+        onClose={() => {
+          resetAndClose()
+          setOpen(false)
+        }}
         size="large"
       >
-        <ModalHeader onClose={() => setOpen(false)}>
-          CREATE SERVICE ACCOUNT
+        <ModalHeader>
+          Create service account
         </ModalHeader>
         <Box
           flex={false}
           gap="small"
-          width="50vw"
         >
           <ServiceAccountForm
             error={error}
@@ -219,7 +251,9 @@ export function CreateServiceAccount({ q }) {
           <ModalActions>
             <Button
               secondary
-              onClick={() => setOpen(false)}
+              onClick={() => {
+                resetAndClose()
+              }}
             >
               Cancel
             </Button>

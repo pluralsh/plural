@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="www/public/plural-lockup-dark-cropped.png" width=30%/>
+  <img src="www/public/plural-lockup-dark-cropped.png" width="30%" />
 </p>
 
 <h3 align="center">
@@ -15,7 +15,7 @@
 </h3>
 
 <p align="center">
-  <img src="www/public/plural-cli.png" width=60%/>
+  <img src="www/public/plural-cli.png" width="60%" />
   <br/>
 </p>
 
@@ -56,7 +56,7 @@ We think it's pretty cool! 😎 Some other nice things:
 
 <p align="center">
   <br/>
-  <img src="www/public/console.png" width=60%/>
+  <img src="www/public/console.png" width="60%" />
   <br/><br/>
 </p>
 
@@ -65,7 +65,7 @@ The plural platform ingests all deployment artifacts needed to deploy cloud-nati
 ### 🤖 Day-2 Operational Toolkit
 
 <p align="center">
-  <img src="www/public/graph.png" width=60%/>
+  <img src="www/public/graph.png" width="60%" />
   <br/>
 </p>
 

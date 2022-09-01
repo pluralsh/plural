@@ -27,7 +27,7 @@ import { Confirm } from './Confirm'
 function DeleteInvite({ invite }) {
   const [confirm, setConfirm] = useState(false)
   const [mutation, { loading, error }] = useMutation(DELETE_INVITE, {
-    variables: { id: invite.secureId },
+    variables: { id: invite.id },
     onCompleted: () => setConfirm(false),
     update: (cache, { data: { deleteInvite } }) => updateCache(cache, {
       query: INVITES_Q,
@@ -49,6 +49,20 @@ function DeleteInvite({ invite }) {
         error={error}
       />
     </>
+  )
+}
+
+function InviteLink({ invite }) {
+  if (!invite.secureId) return <Div>Email sent to user</Div>
+
+  return (
+    <CopyableButton
+      secondary
+      small
+      copyText={inviteLink(invite)}
+    >
+      Copy invite link
+    </CopyableButton>
   )
 }
 
@@ -75,13 +89,7 @@ function Invite(invite) {
       >
         {`Created ${moment(insertedAt).format('lll')}`}
       </Text>
-      <CopyableButton
-        secondary
-        small
-        copyText={inviteLink(invite)}
-      >
-        Copy invite link
-      </CopyableButton>
+      <InviteLink invite={invite} />
       <DeleteInvite invite={invite} />
     </Flex>
   )

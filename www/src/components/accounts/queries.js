@@ -325,8 +325,8 @@ export const INVITES_Q = gql`
 `
 
 export const DELETE_INVITE = gql`
-  mutation Delete($id: String!) {
-    deleteInvite(secureId: $id) { ...InviteFragment }
+  mutation Delete($id: ID!) {
+    deleteInvite(id: $id) { ...InviteFragment }
   }
   ${InviteFragment}
 `

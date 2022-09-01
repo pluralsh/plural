@@ -1,4 +1,4 @@
-import { Button, Div } from 'honorable'
+import { Button, Div, Span } from 'honorable'
 import {
   Codeline,
   MailIcon,
@@ -60,7 +60,8 @@ export function InviteUser() {
             header="Failed to invite user"
           />
         )}
-        {invite && <Codeline marginTop="small">{inviteLink(invite)}</Codeline>}
+        {invite?.secureId && <Codeline marginTop="small">{inviteLink(invite)}</Codeline>}
+        {invite && !invite.secureId && <Span>An email was sent to {email} to accept the invite</Span>}
         <ModalActions>
           {invite ? (
             <Button onClick={() => resetAndClose()}>Done</Button>

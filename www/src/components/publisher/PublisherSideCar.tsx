@@ -6,10 +6,9 @@ function PublisherSideCar({ publisher }: any) {
       marginRight="large"
       flexShrink={0}
       width={200}
-      paddingTop="xlarge"
     >
       <Div
-        marginTop="large"
+        marginTop="xxxlarge"
         border="1px solid border"
         borderRadius="large"
         padding="medium"

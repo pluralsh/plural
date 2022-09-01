@@ -27,7 +27,7 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 import { LinkTabWrap } from '../utils/Tabs'
 
 import TopBar from '../layout/TopBar'
-import { ResponsiveLayoutSidecarContainer } from '../layout/ResponsiveLayout'
+import { ResponsiveLayoutSidecarContainer, ResponsiveLayoutSpacer } from '../layout/ResponsiveLayout'
 
 import PublisherSideNav from '../publisher/PublisherSideNav'
 import PublisherSideCar from '../publisher/PublisherSideCar'
@@ -130,6 +130,8 @@ function MarketplaceRepositories({ installed, publisher }) {
   const [searchParams, setSearchParams] = useSearchParams()
   const categories = searchParams.getAll('category')
   const tags = searchParams.getAll('tag')
+  const backRepositoryName = searchParams.get('backRepositoryName')
+  const backRepositoryId = searchParams.get('backRepositoryId')
   const [search, setSearch] = useState('')
   const [areFiltersOpen, setAreFiltersOpen] = useState(true)
   const tabStateRef = useRef()
@@ -274,10 +276,16 @@ function MarketplaceRepositories({ installed, publisher }) {
             </LinkTabWrap>
           </TabList>
         )}
-        {publisher && (
+        {publisher && !(backRepositoryName && backRepositoryId) && (
           <GoBack
             text="Back to marketplace"
             link="/marketplace"
+          />
+        )}
+        {publisher && backRepositoryName && backRepositoryId && (
+          <GoBack
+            text={`Back to ${capitalize(backRepositoryName)}`}
+            link={`/repository/${backRepositoryId}`}
           />
         )}
         {!publisher && (
@@ -304,18 +312,28 @@ function MarketplaceRepositories({ installed, publisher }) {
         flexGrow={1}
         marginTop="medium"
         overflow="hidden"
+        paddingTop={publisher ? 'medium' : 0}
       >
         {publisher && (
-          <PublisherSideNav publisher={publisher} />
+          <>
+            <PublisherSideNav publisher={publisher} />
+            <ResponsiveLayoutSpacer />
+          </>
         )}
-        <StyledTabPanel stateRef={tabStateRef}>
+        <StyledTabPanel
+          stateRef={tabStateRef}
+          maxWidth={publisher ? 896 + 48 : null} // 896 + 24 margin
+        >
           <Div position="relative">
             {publisher && (
               <Div paddingHorizontal="large">
                 <H1 title1>
                   {capitalize(publisher.name)}'s Apps
                 </H1>
-                <Hr marginVertical="medium" />
+                <Hr
+                  marginTop="large"
+                  marginBottom="medium"
+                />
               </Div>
             )}
             <Flex
@@ -492,9 +510,12 @@ function MarketplaceRepositories({ installed, publisher }) {
           </Div>
         )}
         {publisher && (
-          <ResponsiveLayoutSidecarContainer>
-            <PublisherSideCar publisher={publisher} />
-          </ResponsiveLayoutSidecarContainer>
+          <>
+            <ResponsiveLayoutSidecarContainer>
+              <PublisherSideCar publisher={publisher} />
+            </ResponsiveLayoutSidecarContainer>
+            <ResponsiveLayoutSpacer />
+          </>
         )}
       </Flex>
     </Flex>

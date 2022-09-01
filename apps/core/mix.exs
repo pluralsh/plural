@@ -39,6 +39,8 @@ defmodule Core.MixProject do
       {:comeonin, "~> 5.1.2"},
       {:argon2_elixir, "~> 2.0"},
       {:piazza_core, "~> 0.3.8"},
+      {:inet_cidr, "~> 1.0.0"},
+      {:dns, "~> 2.4.0"},
       {:bamboo, "~> 2.0"},
       {:parallax, "~> 1.0"},
       {:bourne, "~> 1.1"},

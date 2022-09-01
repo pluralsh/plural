@@ -328,7 +328,7 @@ function MarketplaceRepositories({ installed, publisher }) {
         >
           <Div position="relative">
             {publisher && (
-              <Div paddingHorizontal="large">
+              <Div paddingLeft="large">
                 <H1 title1>
                   {capitalize(publisher.name)}'s Apps
                 </H1>
@@ -339,7 +339,8 @@ function MarketplaceRepositories({ installed, publisher }) {
               </Div>
             )}
             <Flex
-              paddingHorizontal="large"
+              paddingLeft="large"
+              paddingRight={publisher ? 0 : 'large'}
               align="stretch"
               wrap
               marginBottom="-8px"

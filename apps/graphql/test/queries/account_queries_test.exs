@@ -75,11 +75,15 @@ defmodule GraphQl.AccountQueriesTest do
 
       {:ok, %{data: %{"invite" => found}}} = run_query("""
         query Invite($id: String!) {
-          invite(id: $id) { email }
+          invite(id: $id) {
+            email
+            expiresAt
+          }
         }
       """, %{"id" => invite.secure_id})
 
       assert found["email"] == invite.email
+      assert found["expiresAt"]
     end
   end
 

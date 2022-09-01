@@ -117,6 +117,9 @@ defmodule GraphQl.Schema.Account do
       _, _, _ -> {:ok, false}
     end
     field :email,     :string
+    field :expires_at, :datetime, resolve: fn
+      %{inserted_at: at}, _, _ -> {:ok, Timex.shift(at, days: 2)}
+    end
 
     field :account, :account, resolve: dataloader(Account)
     field :user,    :user, resolve: dataloader(User)

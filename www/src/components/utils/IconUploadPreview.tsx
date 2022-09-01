@@ -44,8 +44,8 @@ function IconUploadPreview({
     <Img
       src={src}
       alt="Icon"
-      width={64 + 32}
-      height={64 + 32}
+      width={96}
+      height={96}
       objectFit="cover"
       backgroundColor="fill-one"
       cursor="pointer"

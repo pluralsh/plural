@@ -1,0 +1,5 @@
+mutation CreateDomain($name: String!) {
+    provisionDomain(name: $name) {
+        ...DnsDomainFragment
+    }
+}

@@ -1,0 +1,23 @@
+query GetInstallation($name: String) {
+    installation(name: $name) {
+        ...InstallationFragment
+    }
+}
+
+query GetInstallationById($id: ID) {
+    installation(id: $id) {
+        ...InstallationFragment
+    }
+}
+
+query GetInstallations($first: Int) {
+    installations(first: $first) {
+        edges { node { ...InstallationFragment } }
+    }
+}
+
+mutation UpsertOidcProvider($id: ID!, $attributes: OidcAttributes!) {
+    upsertOidcProvider(installationId: $id, attributes: $attributes) {
+        id
+    }
+}

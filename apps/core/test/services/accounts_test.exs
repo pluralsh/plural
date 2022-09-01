@@ -307,6 +307,23 @@ defmodule Core.Services.AccountsTest do
 
       assert_receive {:event, %PubSub.UserCreated{item: ^user}}
     end
+
+    test "it will ignore privileged fields", %{user: user, account: account} do
+      {:ok, invite} = Accounts.create_invite(%{email: "some@example.com"}, user)
+
+      {:ok, user} = Accounts.realize_invite(%{
+        password: "some long password",
+        name: "Some User",
+        roles: %{admin: true}
+      }, invite.secure_id)
+
+      assert user.email == invite.email
+      assert user.account_id == account.id
+      assert user.name == "Some User"
+      refute user.roles
+
+      assert_receive {:event, %PubSub.UserCreated{item: ^user}}
+    end
   end
 
   describe "#create_role/2" do

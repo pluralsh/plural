@@ -195,6 +195,20 @@ defmodule Core.PubSub.Audits.AccountsTest do
     end
   end
 
+  describe "InviteCreated" do
+    test "it can post a message about the meeting" do
+      actor = insert(:user)
+      invite  = insert(:invite)
+
+      event = %PubSub.InviteCreated{item: invite, actor: actor}
+      {:ok, audit} = Audits.handle_event(event)
+
+      assert audit.action == "invite:created"
+      assert audit.actor_id == actor.id
+      assert audit.account_id == invite.account_id
+    end
+  end
+
   def set_context(_) do
     ctx = %Core.Schema.AuditContext{
       ip: "1.2.3.4",

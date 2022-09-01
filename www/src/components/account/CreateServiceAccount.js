@@ -129,6 +129,7 @@ export function EditServiceAccount({ user, update }) {
         portal
         open={edit}
         onClose={() => setEdit(false)}
+        size="large"
       >
         <ModalHeader onClose={() => setEdit(false)}>
           UPDATE SERVICE ACCOUNT
@@ -198,6 +199,7 @@ export function CreateServiceAccount({ q }) {
       <Modal
         open={open}
         onClose={() => setOpen(false)}
+        size="large"
       >
         <ModalHeader onClose={() => setOpen(false)}>
           CREATE SERVICE ACCOUNT

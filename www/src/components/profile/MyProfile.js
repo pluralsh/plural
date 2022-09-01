@@ -40,7 +40,7 @@ export function MyProfile() {
       <ResponsiveLayoutSidenavContainer width={240}>
         <PageCard
           heading={me.name}
-          icon={{ name: me.avatar, url: me.avatar, spacing: 'none' }}
+          icon={{ name: me.name, url: me.avatar, spacing: 'none' }}
           subheading={me?.roles?.admin && (
             `Admin${me?.account?.name && ` at ${me?.account?.name}`}`
           )}

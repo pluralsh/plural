@@ -1,0 +1,42 @@
+query GetRecipe($repo: String, $name: String) {
+    recipe(repo: $repo, name: $name) {
+        ...RecipeFragment
+        recipeDependencies { ...RecipeFragment }
+    }
+}
+
+query ListRecipes($repo: String, $provider: Provider) {
+    recipes(repositoryName: $repo, provider: $provider, first: 500) {
+        edges { node { ...RecipeFragment } }
+    }
+}
+
+mutation CreateRecipe($name: String!, $attributes: RecipeAttributes!) {
+    createRecipe(repositoryName: $name, attributes: $attributes) {
+        id
+    }
+}
+
+mutation InstallRecipe($id: ID!) {
+    installRecipe(recipeId: $id, context: "{}") {
+        id
+    }
+}
+
+mutation CreateStack($attributes: StackAttributes!) {
+    createStack(attributes: $attributes) {
+        id
+    }
+}
+
+query GetStack($name: String!, $provider: Provider!) {
+    stack(name: $name, provider: $provider) {
+        ...StackFragment
+    }
+}
+
+query ListStacks($featured: Boolean, $cursor: String) {
+    stacks(first: 100, after: $cursor, featured: $featured) {
+        edges { node { ...StackFragment } }
+    }
+}

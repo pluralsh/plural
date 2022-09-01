@@ -266,7 +266,7 @@ export function CreateGroup({ q }) {
       <Modal
         open={open}
         onClose={() => setOpen(false)}
-        maxHeight="400px"
+        size="large"
       >
         <ModalHeader onClose={() => setOpen(false)}>
           CREATE GROUP

@@ -321,7 +321,7 @@ function MarketplaceRepositories({ installed, publisher }) {
         )}
         <StyledTabPanel
           stateRef={tabStateRef}
-          maxWidth={publisher ? 896 + 48 : null} // 896 + 24 margin
+          maxWidth={publisher ? 896 + 48 : null} // 896 + 24 * 2 margin
         >
           <Div position="relative">
             {publisher && (

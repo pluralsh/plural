@@ -157,7 +157,7 @@ function CreatePublisherModal({ open, onClose }: CreatePublisherModalProps) {
     <Modal
       open={open}
       onClose={onClose}
-      width={608}
+      size="large"
     >
       <ModalHeader>
         Create a publisher

@@ -312,7 +312,6 @@ function MarketplaceRepositories({ installed, publisher }) {
         flexGrow={1}
         marginTop="medium"
         overflow="hidden"
-        paddingTop={publisher ? 'medium' : 0}
       >
         {publisher && (
           <>

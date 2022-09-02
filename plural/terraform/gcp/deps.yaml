@@ -6,7 +6,7 @@ dependencies:
 
 providers:
 - gcp
-description: forge gcp credentials
+description: plural gcp setup
 version: 0.1.0
 
 wirings:

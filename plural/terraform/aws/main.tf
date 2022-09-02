@@ -75,7 +75,7 @@ resource "aws_s3_bucket" "chart_bucket" {
 
 resource "aws_s3_bucket" "plural_assets_bucket" {
   bucket = var.plural_assets_bucket
-  acl    = "public-read"
+  acl    = "private"
   force_destroy = true
 }
 

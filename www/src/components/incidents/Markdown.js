@@ -7,7 +7,7 @@ import {
 import {
   Copy, TooltipContent, WithCopy,
 } from 'forge-core'
-import hljs from 'highlight.js'
+import hljs from 'highlight.js/lib/core'
 import { normalizeColor } from 'grommet/utils'
 import sortBy from 'lodash/sortBy'
 import { Emoji as Emojii } from 'emoji-mart'

@@ -2,37 +2,32 @@ defmodule Core.MixProject do
   use Mix.Project
 
   defp version do
-    case :file.consult('hex_metadata.config') do
-      {:ok, data} ->
-        {"version", version} = List.keyfind(data, "version", 0)
-        version
-      _ ->
-        version =
-          case System.cmd("git", ~w[describe --dirty=+dirty]) do
-            {version, 0} ->
-              String.trim_leading(String.trim(version), "v")
+    version = git_vsn()
+    case Version.parse(version) do
+      {:ok, %Version{pre: ["pre" <> _ | _]} = version} ->
+        to_string(version)
 
-            {_, code} ->
-              Mix.shell().error("Git exited with code #{code}, falling back to 0.0.0")
+      {:ok, %Version{pre: []} = version} ->
+        to_string(version)
 
-              "0.0.0"
-          end
+      {:ok, %Version{patch: patch, pre: pre} = version} ->
+        to_string(%{version | patch: patch + 1, pre: ["dev" | pre]})
 
-        case Version.parse(version) do
-          {:ok, %Version{pre: ["pre" <> _ | _]} = version} ->
-            to_string(version)
+      :error ->
+        Mix.shell().error("Failed to parse, falling back to 0.0.0")
+        "0.0.0"
+    end
+  end
 
-          {:ok, %Version{pre: []} = version} ->
-            to_string(version)
+  defp git_vsn() do
+    case System.cmd("git", ~w[describe --dirty=+dirty]) do
+      {version, 0} ->
+        String.trim_leading(String.trim(version), "v")
 
-          {:ok, %Version{patch: patch, pre: pre} = version} ->
-            to_string(%{version | patch: patch + 1, pre: ["dev" | pre]})
+      {_, code} ->
+        Mix.shell().error("Git exited with code #{code}, falling back to 0.0.0")
 
-          :error ->
-            Mix.shell().error("Failed to parse #{version}, falling back to 0.0.0")
-
-            "0.0.0"
-        end
+        "0.0.0"
     end
   end
 

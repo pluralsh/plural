@@ -10,7 +10,6 @@ import {
   Button, Tab, TabList, TabPanel,
 } from 'pluralsh-design-system'
 import moment from 'moment'
-import Highlight from 'react-highlight.js'
 
 import { A, Flex } from 'honorable'
 
@@ -68,33 +67,6 @@ function ChartInfo({ version: { helm, insertedAt } }) {
       ))}
     </DetailContainer>
   )
-}
-
-function Code({ value, children, language }) {
-  return (
-    <Highlight language={language}>
-      {value || children}
-    </Highlight>
-  )
-}
-
-export const MARKDOWN_STYLING = {
-  p: { props: { size: 'small', style: { maxWidth: '100%' }, margin: { top: 'xsmall', bottom: 'xsmall' } } },
-  h1: {
-    props: {
-      style: { borderBottom: '1px solid #eaecef', paddingBottom: '.3em', maxWidth: '100%' },
-      size: 'small',
-      margin: { top: 'small', bottom: 'small' },
-    },
-  },
-  h2: {
-    props: {
-      style: { borderBottom: '1px solid #eaecef', paddingBottom: '.3em', maxWidth: '100%' },
-      size: 'xsmall',
-      margin: { top: 'small', bottom: 'small' },
-    },
-  },
-  pre: { component: Code, props: {} },
 }
 
 function ChartInstaller({ chart }) {

@@ -12281,13 +12281,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"highlight.js@npm:^9.3.0":
-  version: 9.18.5
-  resolution: "highlight.js@npm:9.18.5"
-  checksum: a8afdb395869bba8a892dd8891b738d3bd48fe2e5b6843ec3181c93d73f52abf2cab863424caa631442a7bbafac222bafdab3f5a536a69aab9c60d4c1b7f8b77
-  languageName: node
-  linkType: hard
-
 "history@npm:^5.2.0":
   version: 5.3.0
   resolution: "history@npm:5.3.0"
@@ -18391,19 +18384,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-highlight.js@npm:1.0.7":
-  version: 1.0.7
-  resolution: "react-highlight.js@npm:1.0.7"
-  dependencies:
-    highlight.js: ^9.3.0
-    prop-types: ^15.6.0
-  peerDependencies:
-    react: ^0.14.0 || ^15.0.0 || ^16.0.0
-    react-dom: ^0.14.0 || ^15.0.0 || ^16.0.0
-  checksum: 23f3a6398780ab09d52324f419fdce696b5d40833e0c2d47eeb3ea09e381d9c397f04e9144c491db1dd1f480a9674134fa38496c5db337990e35d41c3c83d77b
-  languageName: node
-  linkType: hard
-
 "react-icons@npm:4.4.0":
   version: 4.4.0
   resolution: "react-icons@npm:4.4.0"
@@ -23173,7 +23153,6 @@ __metadata:
     react-dom: 18.2.0
     react-file-icon: 1.2.0
     react-file-picker: 0.0.6
-    react-highlight.js: 1.0.7
     react-icons: 4.4.0
     react-json-view: 1.21.3
     react-markdown: 8.0.3

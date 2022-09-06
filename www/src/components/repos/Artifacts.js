@@ -18,7 +18,6 @@ import { download } from '../../utils/file'
 
 import { Icon } from '../accounts/Group'
 
-import { MARKDOWN_STYLING } from './Chart'
 import { DetailContainer } from './Installation'
 
 const SMALL_ICON_SIZE = '13px'
@@ -42,7 +41,7 @@ function Readme({ readme }) {
       pad={{ horizontal: 'small', bottom: 'small' }}
       style={{ overflow: 'auto' }}
     >
-      <Markdown components={MARKDOWN_STYLING}>
+      <Markdown>
         {readme}
       </Markdown>
     </Box>

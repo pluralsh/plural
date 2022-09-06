@@ -6,8 +6,8 @@ dependencies:
 
 providers:
 - aws
-description: forge aws setup
-version: 0.1.1
+description: plural aws setup
+version: 0.1.2
 
 wirings:
   terraform: {}

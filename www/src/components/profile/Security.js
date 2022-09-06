@@ -154,12 +154,6 @@ function LoginMethods() {
         name="Login with password"
         onClick={() => mutation({ variables: { attributes: { loginMethod: Method.PASSWORD } } })}
       />
-      <LoginMethod
-        icon={<Password size="20px" />}
-        active={me.loginMethod === Method.PASSWORDLESS}
-        name="Passwordless login"
-        onClick={() => mutation({ variables: { attributes: { loginMethod: Method.PASSWORDLESS } } })}
-      />
     </Box>
   )
 }

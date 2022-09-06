@@ -22,5 +22,10 @@ defmodule GraphQl.Schemas.Upload do
 
   defp fetch_upload(%{__absinthe_plug__: %{uploads: %{} = uploads}}, value),
     do: {:ok, Map.get(uploads, value, value)}
-  defp fetch_upload(_, value), do: {:ok, value}
+  defp fetch_upload(_, value) do
+    case Core.Firewall.check(value) do
+      :ok -> {:ok, value}
+      _ -> :error
+    end
+  end
 end

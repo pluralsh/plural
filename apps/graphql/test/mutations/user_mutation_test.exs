@@ -165,7 +165,7 @@ defmodule GraphQl.UserMutationTest do
     end
 
     test "it can create a user by invite" do
-      invite = insert(:invite)
+      invite = insert(:invite, email: "mguarino46@gmail.com")
       {:ok, %{data: %{"signup" => signup}}} = run_query("""
         mutation Signup($attributes: UserAttributes!, $id: String) {
           signup(attributes: $attributes, inviteId: $id) {
@@ -201,11 +201,27 @@ defmodule GraphQl.UserMutationTest do
             loginMethod
           }
         }
-      """, %{"name" => "Updated User", "loginMethod" => "PASSWORDLESS"}, %{current_user: user})
+      """, %{"name" => "Updated User", "loginMethod" => "GOOGLE"}, %{current_user: user})
 
       assert updated["id"] == user.id
       assert updated["name"] == "Updated User"
-      assert updated["loginMethod"] == "PASSWORDLESS"
+      assert updated["loginMethod"] == "GOOGLE"
+    end
+
+    test "it will block invalid avatar urls" do
+      {:ok, user} = Users.create_user(%{
+        name: "Michael Guarino",
+        email: "mguarino46@gmail.com",
+        password: "super strong password"
+      })
+
+      {:ok, %{errors: [_ | _]}} = run_query("""
+        mutation UpdateUser($avatar: UploadOrUrl) {
+          updateUser(attributes: {avatar: $avatar}) {
+            id
+          }
+        }
+      """, %{"avatar" => "https://10.0.1.0/hacking"}, %{current_user: user})
     end
   end
 

@@ -168,6 +168,14 @@ defmodule Core.Schema.User do
     |> change_markers(password_hash: :password_change)
     |> cast_attachments(attrs, [:avatar], allow_urls: true)
     |> set_email_changed()
+    |> reject_passwordless()
+  end
+
+  def reject_passwordless(cs) do
+    case get_change(cs, :login_method) do
+      :passwordless -> add_error(cs, :login_method, "passwordless logins have been deprecated")
+      _ -> cs
+    end
   end
 
   def set_email_changed(cs) do

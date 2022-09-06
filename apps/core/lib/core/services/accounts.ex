@@ -66,27 +66,11 @@ defmodule Core.Services.Accounts do
   @spec create_account(User.t) :: {:ok, %{account: Account.t, user: User.t}} | {:error, term}
   def create_account(attrs \\ %{}, %User{email: email} = user) do
     start_transaction()
-    |> add_operation(:domain_name, fn _ ->
-      case String.split(email, "@") do
-        [_, domain] -> {:ok, domain}
-        _ -> {:error, "invalid email #{email}"}
-      end
-    end)
-    |> add_operation(:autoassign, fn %{domain_name: domain} ->
-      get_domain_mapping(domain)
-      |> Core.Repo.preload([:account])
-      |> case do
-        %DomainMapping{account: account} -> {:ok, account}
-        _ -> {:ok, nil}
-      end
-    end)
-    |> add_operation(:account, fn
-      %{autoassign: nil} ->
-        %Account{}
-        |> Account.changeset(Map.merge(%{name: email}, attrs))
-        |> Ecto.Changeset.change(%{root_user_id: user.id})
-        |> Core.Repo.insert()
-      %{autoassign: %Account{} = account} -> {:ok, account}
+    |> add_operation(:account, fn _ ->
+      %Account{}
+      |> Account.changeset(Map.merge(%{name: email}, attrs))
+      |> Ecto.Changeset.change(%{root_user_id: user.id})
+      |> Core.Repo.insert()
     end)
     |> add_operation(:user, fn %{account: %{id: id}} ->
       user
@@ -258,7 +242,7 @@ defmodule Core.Services.Accounts do
     end)
     |> add_operation(:upsert, fn %{user: user} ->
       user
-      |> User.invite_changeset(attributes)
+      |> User.invite_changeset(Map.put(attributes, :email, invite.email))
       |> Ecto.Changeset.change(%{account_id: invite.account_id})
       |> Core.Repo.insert_or_update()
     end)

@@ -60,13 +60,22 @@ function CreatePublisherModal({ open, onClose }: CreatePublisherModalProps) {
     accept: 'image/jpeg,image/png',
   }
 
-  const [mutation, { data, loading, error }] = useMutation(CREATE_PUBLISHER_MUTATION, {
+  const [mutation, { loading }] = useMutation(CREATE_PUBLISHER_MUTATION, {
     variables: {
       attributes: {
         name,
         description,
         ...(iconUpload.file ? { avatar: iconUpload.file } : {}),
       },
+    },
+    onCompleted: data => {
+      if (!data) return
+
+      navigate(`/publisher/${data.createPublisher.id}`)
+      onClose()
+    },
+    onError: error => {
+      setPreMutationError(error.message)
     },
   })
 
@@ -83,19 +92,6 @@ function CreatePublisherModal({ open, onClose }: CreatePublisherModalProps) {
       reader.abort()
     }
   }, [iconPicker.files])
-
-  useEffect(() => {
-    if (!data) return
-
-    navigate(`/publisher/${data.createPublisher.id}`)
-    onClose()
-  }, [data, navigate, onClose])
-
-  useEffect(() => {
-    if (!error) return
-
-    setPreMutationError(error.message)
-  }, [error])
 
   function handleSubmit() {
     setPreMutationError('')

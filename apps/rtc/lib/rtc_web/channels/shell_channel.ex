@@ -7,20 +7,15 @@ defmodule RtcWeb.ShellChannel do
   require Logger
 
   def join("shells:me", _, socket) do
-    send(self(), :connect)
-    {:ok, socket}
-  end
-
-  def handle_info(:connect, socket) do
     with %CloudShell{pod_name: name} = shell <- Shell.get_shell(socket.assigns.user.id),
          {:ok, _} <- Client.setup(shell),
          url <- Pods.PodExec.exec_url(name),
          {:ok, pid} <- Pods.PodExec.start_link(url, self()) do
-      {:noreply, assign(socket, :wss_pid, pid)}
+      {:ok, assign(socket, :wss_pid, pid)}
     else
       err ->
         Logger.info "failed to exec pod with #{inspect(err)}"
-        {:stop, {:shutdown, :failed_exec}, socket}
+        {:error, err}
     end
   end
 

@@ -21,6 +21,7 @@ function TerminalThemeSelector() {
 
   return (
     <Select
+      aria-label="theme-selector"
       placement="right"
       width="460px"
       onSelectionChange={t => setTerminalTheme(t)}

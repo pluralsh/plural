@@ -61,7 +61,10 @@ function Terraform({ terraform, first, last }) {
             {terraform.name}
           </P>
           {terraform.dependencies && terraform.dependencies.providers && (
-            <Flex ml={1}>
+            <Flex
+              ml={1}
+              gap="xsmall"
+            >
               {terraform.dependencies.providers.map(provider => (
                 <Img
                   key={provider}

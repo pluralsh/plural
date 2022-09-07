@@ -12,7 +12,7 @@ import Clamp from 'react-multiline-clamp'
 
 import { useOutletContext } from 'react-router-dom'
 
-import { capitalize } from 'lodash/string'
+import capitalize from 'lodash/capitalize'
 
 import { Table, TableData, TableRow } from '../../utils/Table'
 

@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client'
 import { List, ListItem } from 'components/utils/List'
 import ListInput from 'components/utils/ListInput'
 import { Div, Flex } from 'honorable'
-import { isEmpty } from 'lodash'
+import isEmpty from 'lodash/isEmpty'
 import { EmptyState, PageTitle, SearchIcon } from 'pluralsh-design-system'
 import { useCallback, useEffect, useState } from 'react'
 

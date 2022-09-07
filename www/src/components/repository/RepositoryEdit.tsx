@@ -34,7 +34,7 @@ import isEqual from 'lodash/isEqual'
 import isArray from 'lodash/isArray'
 import uniqWith from 'lodash/uniqWith'
 import { useFilePicker } from 'react-sage'
-import { filter } from 'lodash'
+import filter from 'lodash/filter'
 import styled from '@emotion/styled'
 
 import RepositoryContext from '../../contexts/RepositoryContext'

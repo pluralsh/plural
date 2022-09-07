@@ -1,4 +1,4 @@
-import { isEqual } from 'lodash'
+import isEqual from 'lodash/isEqual'
 import { useCallback, useMemo, useState } from 'react'
 
 export function useUpdateState<T extends { [key: string]: unknown }>(initialState: T) {

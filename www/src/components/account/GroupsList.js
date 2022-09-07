@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client'
-import { isEmpty } from 'lodash'
+import isEmpty from 'lodash/isEmpty'
 import { EmptyState } from 'pluralsh-design-system'
 import { useState } from 'react'
 

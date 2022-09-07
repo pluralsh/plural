@@ -18,7 +18,7 @@ import {
 import Fuse from 'fuse.js'
 import styled from 'styled-components'
 
-import { isEmpty } from 'lodash'
+import isEmpty from 'lodash/isEmpty'
 
 import { capitalize } from '../../utils/string'
 

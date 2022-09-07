@@ -6,9 +6,9 @@ import {
   Div, Flex, Img, P,
 } from 'honorable'
 import { Tab, TabList } from 'pluralsh-design-system'
+import capitalize from 'lodash/capitalize'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
-import { capitalize } from '../../utils/string'
 import { LinkTabWrap } from '../utils/Tabs'
 
 const DIRECTORY = [

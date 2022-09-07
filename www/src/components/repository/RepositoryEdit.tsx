@@ -134,6 +134,12 @@ function RepositoryEdit() {
     tags,
     icon,
     private: privateRepo,
+    websiteUrl,
+    docsUrl,
+    githubUrl,
+    discordUrl,
+    slackUrl,
+    twitterUrl,
   } = useContext(RepositoryContext) as any
   const {
     state: formState,
@@ -142,13 +148,19 @@ function RepositoryEdit() {
     update: updateFormState,
     // reset: resetFormState,
   } = useUpdateState<FormState>(useMemo(() => ({
-    name: `${name || ''}`,
-    description: `${description || ''}`,
-    category: `${category || ''}`,
-    oauthUrl: `${oauthSettings?.uriFormat || ''}`,
+    name: name || '',
+    description: description || '',
+    category: category || '',
+    oauthUrl: oauthSettings?.uriFormat || '',
     oauthMethod: `${oauthSettings?.authMethod || authMethods.BASIC}`,
     tags: isArray(tags) ? tags.map(tag => ({ tag: tag.tag })) : [],
     private: !!privateRepo,
+    websiteUrl: websiteUrl || '',
+    docsUrls: docsUrl || '',
+    githubUrl: githubUrl || '',
+    discordUrl: discordUrl || '',
+    slackUrl: slackUrl || '',
+    twitterUrl: twitterUrl || '',
   }),
   [
     name,
@@ -158,6 +170,12 @@ function RepositoryEdit() {
     tags,
     privateRepo,
     category,
+    websiteUrl,
+    docsUrl,
+    githubUrl,
+    discordUrl,
+    slackUrl,
+    twitterUrl,
   ]))
 
   const [tagSearchString, setTagSearchString] = useState('')

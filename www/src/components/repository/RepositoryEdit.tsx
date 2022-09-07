@@ -146,6 +146,8 @@ function RepositoryEdit() {
     initialState: formInitialState,
     hasUpdates: formStateHasUpdates,
     update: updateFormState,
+    errors: formStateErrors,
+    updateErrors: updateFormStateErrors,
     // reset: resetFormState,
   } = useUpdateState<FormState>(useMemo(() => ({
     name: name || '',
@@ -284,6 +286,36 @@ function RepositoryEdit() {
     setTagSearchString('')
   }
 
+  function isValidUrl(url: string) {
+    return !/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/.test(url)
+  }
+
+  function renderUrlField(key: string,
+    label: string,
+    placeholder: string) {
+    return (
+      <FormField
+        label={label}
+        error={formStateErrors[key]}
+        hint={formStateErrors[key] ? 'Must be a valid URL' : ''}
+        marginBottom="large"
+        flexGrow={1}
+      >
+        <Input
+          value={formState[key]}
+          error={formStateErrors[key]}
+          onChange={event => {
+            updateFormState({ [key]: event.target.value })
+            updateFormStateErrors({
+              [key]: !!event.target.value && isValidUrl(event.target.value),
+            })
+          }}
+          placeholder={placeholder}
+        />
+      </FormField>
+    )
+  }
+
   if (!editable) {
     return <H2>You cannot edit this repository</H2>
   }
@@ -349,7 +381,28 @@ function RepositoryEdit() {
         heading="Edit"
         paddingTop="medium"
       >
-        <Flex display-desktop-up="none"><RepositoryActions /></Flex>
+        <Flex
+          align="center"
+          gap="medium"
+        >
+          {formHasUpdates && (
+            <P
+              body2
+              color="text-xlight"
+            >
+              Unsaved changes
+            </P>
+          )}
+          <Button
+            type="submit"
+            enabled={submitEnabled}
+            disabled={!submitEnabled}
+            loading={loading}
+          >
+            Update
+          </Button>
+          <Flex display-desktop-up="none"><RepositoryActions /></Flex>
+        </Flex>
       </PageTitle>
       <ContentCard
         marginBottom="xlarge"
@@ -408,38 +461,21 @@ function RepositoryEdit() {
                 </Flex>
               </Flex>
             </FormField>
-            <FormField
-              marginBottom="large"
-              label="Name"
-            >
-              <Input
-                placeholder={formInitialState.name}
-                value={formState.name}
-                onChange={event => updateFormState({ name: event.target.value })}
-              />
-            </FormField>
             <Flex
-              marginLeft="minus-medium"
-              {...{ '& > *': { marginLeft: 'medium' } }}
+              gap="medium"
+              marginBottom="large"
             >
               <FormField
-                marginBottom="large"
-                label="Description"
-                width="100%"
-                flexShrink={1}
-                marginLeft="medium"
+                label="Name"
+                flexGrow={1}
               >
                 <Input
-                  multiline
-                  minHeight={40}
-                  placeholder={formInitialState.description}
-                  value={formState.description}
-                  onChange={event => updateFormState({ description: event.target.value })}
+                  placeholder={formInitialState.name}
+                  value={formState.name}
+                  onChange={event => updateFormState({ name: event.target.value })}
                 />
               </FormField>
               <FormField
-                marginLeft="medium"
-                marginBottom="large"
                 label="Category"
                 width={148}
                 flexShrink={1}
@@ -461,6 +497,33 @@ function RepositoryEdit() {
                   ))}
                 </Select>
               </FormField>
+            </Flex>
+            <FormField
+              marginBottom="large"
+              label="Description"
+              width="100%"
+              length={formState.description.length}
+              maxLength={200}
+            >
+              <Input
+                multiline
+                minRows={3}
+                placeholder={formInitialState.description}
+                value={formState.description}
+                onChange={event => updateFormState({ description: event.target.value.substring(0, 200) })}
+              />
+            </FormField>
+            <Flex gap="medium">
+              {renderUrlField('websiteUrl', 'Website link', 'Website URL',)}
+              {renderUrlField('docsUrl', 'Docs link', 'Docs URL',)}
+            </Flex>
+            <Flex gap="medium">
+              {renderUrlField('githubUrl', 'GitHub link', 'GitHub URL',)}
+              {renderUrlField('discordUrl', 'Discord link', 'Discord invite URL',)}
+            </Flex>
+            <Flex gap="medium">
+              {renderUrlField('slackUrl', 'Slack link', 'Slack invite URL',)}
+              {renderUrlField('twitterUrl', 'Twitter link', 'Twitter URL',)}
             </Flex>
             <FormField
               marginBottom="large"
@@ -573,37 +636,6 @@ function RepositoryEdit() {
                 Private repository
               </Switch>
             </Div>
-            <Flex
-              align="center"
-              justify="flex-start"
-              marginTop="xlarge"
-            >
-              {/* <Button
-                secondary
-                type="reset"
-                onClick={handleReset}
-              >
-                Reset
-              </Button> */}
-              <Button
-                type="submit"
-                enabled={submitEnabled}
-                disabled={!submitEnabled}
-                loading={loading}
-              >
-                Update
-              </Button>
-              {formHasUpdates && (
-                <Flex
-                  marginLeft="medium"
-                  alignItems="center"
-                  body2
-                  color="text-xlight"
-                >
-                  Unsaved changes
-                </Flex>
-              )}
-            </Flex>
           </Form>
         </Div>
       </ContentCard>

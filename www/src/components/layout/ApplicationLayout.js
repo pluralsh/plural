@@ -1,7 +1,9 @@
-import { Box } from 'grommet'
-import { A, Flex, Span } from 'honorable'
+import {
+  A, Flex, Span, Text,
+} from 'honorable'
 import { ErrorIcon, Toast } from 'pluralsh-design-system'
 import { useContext } from 'react'
+import { useTheme } from 'styled-components'
 
 import { getPreviousUserData } from '../../helpers/authentication'
 import { CurrentUserContext, handlePreviousUserClick } from '../login/CurrentUser'
@@ -11,27 +13,31 @@ import WithApplicationUpdate from './WithApplicationUpdate'
 
 function ServiceAccountBanner({ previousUser }) {
   const me = useContext(CurrentUserContext)
+  const theme = useTheme()
 
   return (
-    <Box
-      flex={false}
-      height="30px"
+    <Flex
       direction="row"
-      justify="center"
-      align="center"
-      gap="3px"
+      justifyContent="center"
+      alignItems="center"
+      gap={theme.spacing.xsmall}
+      paddingTop="large"
+      paddingRight="medium"
+      paddingLeft="medium"
     >
       <ErrorIcon
-        color="icon-warning"
-        marginRight="2px"
+        color="text-warning-light"
       />
-      <Span>You are currently logged into the service account {me.email}.</Span>
-      <A
-        color="action-link-inline"
-        onClick={() => handlePreviousUserClick(previousUser)}
-      >Switch to {previousUser.me.email}
-      </A>
-    </Box>
+      <Text>
+        You are currently logged into the service account {me.email}.{' '}
+        <A
+          inline
+          onClick={() => handlePreviousUserClick(previousUser)}
+        >
+          Switch to {previousUser.me.email}
+        </A>
+      </Text>
+    </Flex>
   )
 }
 

@@ -12281,13 +12281,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"highlight.js@npm:^9.3.0":
-  version: 9.18.5
-  resolution: "highlight.js@npm:9.18.5"
-  checksum: a8afdb395869bba8a892dd8891b738d3bd48fe2e5b6843ec3181c93d73f52abf2cab863424caa631442a7bbafac222bafdab3f5a536a69aab9c60d4c1b7f8b77
-  languageName: node
-  linkType: hard
-
 "history@npm:^5.2.0":
   version: 5.3.0
   resolution: "history@npm:5.3.0"
@@ -16817,9 +16810,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pluralsh-design-system@npm:1.195.0":
-  version: 1.195.0
-  resolution: "pluralsh-design-system@npm:1.195.0"
+"pluralsh-design-system@npm:1.197.0":
+  version: 1.197.0
+  resolution: "pluralsh-design-system@npm:1.197.0"
   dependencies:
     "@floating-ui/react-dom-interactions": 0.8.1
     "@react-aria/button": 3.6.0
@@ -16856,7 +16849,7 @@ __metadata:
     react-dom: ">=16.0.0"
     react-transition-group: ">=4.4.2"
     styled-components: ">=5.3.5"
-  checksum: 784b42c3c830d6b6c6e5ba76364318db7b308c49616b1dcb4dbd6d47c87ffa7f744f6e5f27f756c8157b3e6391093d1c67b46bdd30835de18442c3879bbda47a
+  checksum: 2f4f3817da913db255192f351791103da0d4428bfa141a33b83157172a286b975783abe35e0dd1c73a83b97f2b00d0626198dc4cba9c3e99de29775ac382430b
   languageName: node
   linkType: hard
 
@@ -18388,19 +18381,6 @@ __metadata:
   version: 0.0.6
   resolution: "react-file-picker@npm:0.0.6"
   checksum: 638077c0281f714354c8282e078841462b3bb98ed74441b7a55629b3887b091b7f63eedab1749eaf6b73c8aa77ef35be7791f824b8e41885a65cab6618747229
-  languageName: node
-  linkType: hard
-
-"react-highlight.js@npm:1.0.7":
-  version: 1.0.7
-  resolution: "react-highlight.js@npm:1.0.7"
-  dependencies:
-    highlight.js: ^9.3.0
-    prop-types: ^15.6.0
-  peerDependencies:
-    react: ^0.14.0 || ^15.0.0 || ^16.0.0
-    react-dom: ^0.14.0 || ^15.0.0 || ^16.0.0
-  checksum: 23f3a6398780ab09d52324f419fdce696b5d40833e0c2d47eeb3ea09e381d9c397f04e9144c491db1dd1f480a9674134fa38496c5db337990e35d41c3c83d77b
   languageName: node
   linkType: hard
 
@@ -23156,7 +23136,7 @@ __metadata:
     moment: 2.29.4
     phoenix: 1.6.11
     pluralsh-absinthe-socket-apollo-link: 0.2.0
-    pluralsh-design-system: 1.195.0
+    pluralsh-design-system: 1.197.0
     postcss-import: 8.2.0
     prop-types: 15.8.1
     query-string: 7.1.1
@@ -23173,7 +23153,6 @@ __metadata:
     react-dom: 18.2.0
     react-file-icon: 1.2.0
     react-file-picker: 0.0.6
-    react-highlight.js: 1.0.7
     react-icons: 4.4.0
     react-json-view: 1.21.3
     react-markdown: 8.0.3

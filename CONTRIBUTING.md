@@ -1,5 +1,5 @@
 # Contributing
-From opening a bug report to creating a pull request: every contribution is appreciated and welcome. 
+From opening a bug report to creating a pull request: every contribution is appreciated and welcome.
 
 
 ## Development
@@ -38,20 +38,41 @@ asdf reshim erlang 23.2
 <!-- >
   Remove this line if irrelevant in the future
 </!-->
-In case you're running into this error: `configure: error: cannot find required auxiliary files: install-sh config.guess config.sub` you may consider this [GitHub issue](https://github.com/asdf-vm/asdf-erlang/issues/195#issuecomment-815999279)
+In case you're running into this error: `configure: error: cannot find required auxiliary files: install-sh config.guess config.sub` you may consider this [GitHub issue](https://github.com/asdf-vm/asdf-erlang/issues/195#issuecomment-815999279) then re-run `asdf install`.
 
 All server dependencies are managed via [docker-compose](https://www.docker.com/):
 
 ```sh
 docker compose up
 ```
-`
+
+Initializing the db can be done with:
+
+```sh
+mix ecto.setup
+```
+
 Tests can be run via `mix`, like so:
 
 ```sh
 make testup
 mix test
 ```
+
+Working on the emails can be done with:
+
+```sh
+cd apps/email && iex -S mix phx.server
+```
+
+Then sending a text email can be done with:
+
+```sh
+Email.Helper.confirm_email("foo@plural.sh")
+```
+
+Your email will show up at http://localhost:4002/sent_emails
+
 
 ### Server Architecture
 

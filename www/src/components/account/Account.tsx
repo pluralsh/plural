@@ -48,7 +48,7 @@ export function Account() {
       </ResponsiveLayoutSidenavContainer>
       <ResponsiveLayoutSpacer />
       <TabPanel
-        as={<ResponsiveLayoutContentContainer />}
+        as={<ResponsiveLayoutContentContainer overflow="visible" />}
         stateRef={tabStateRef}
       >
         <Outlet />

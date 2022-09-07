@@ -2,9 +2,10 @@ import './container.css'
 
 import { useCallback, useState } from 'react'
 import { Box, Text } from 'grommet'
-import Highlight from 'react-highlight.js'
 
 import { Div, useTheme } from 'honorable'
+
+import { Codeline } from 'pluralsh-design-system'
 
 import Plan from '../payments/Plan'
 import CreatePlan, { CreateAnchor } from '../payments/CreatePlan'
@@ -107,12 +108,12 @@ export function InstallationInner({ installation, repository }) {
             subscription={installation.subscription}
           />
         )}
-        <Highlight
+        <Codeline
           language="bash"
           style={{ backgroundColor: theme.utils.resolveColor('fill-two') }}
         >
           {[`plural build --only ${repository.name}`, `plural deploy ${repository.name}`].join('\n')}
-        </Highlight>
+        </Codeline>
       </Box>
     )
   }

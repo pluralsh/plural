@@ -4,7 +4,6 @@ import {
 } from 'honorable'
 import {
   Button,
-  Card,
   Chip,
   ContentCard,
   FormField,
@@ -17,13 +16,14 @@ import { useTheme } from 'styled-components'
 
 import { UPDATE_ACCOUNT } from '../accounts/queries'
 import { CurrentUserContext } from '../login/CurrentUser'
-import { DeleteIcon } from '../profile/Icon'
+import { DeleteIconButton } from '../utils/IconButtons'
 import { GqlError } from '../utils/Alert'
 import { useUpdateState } from '../../hooks/useUpdateState'
 
 import SaveButton from '../utils/SaveButton'
 
-import { List, ListItem } from './List'
+import { List, ListItem } from '../utils/List'
+
 import { Confirm } from './Confirm'
 
 import { Account } from './Account'
@@ -35,44 +35,49 @@ function sanitize<T extends { [key: string]: any }>({
   return rest
 }
 
-function DomainMapping({ mapping, remove }: any) {
+function DomainMapping({
+  mapping, remove, first, last,
+}: any) {
   const theme = useTheme()
   const [confirm, setConfirm] = useState(false)
 
   return (
     <>
       <ListItem
-        hue="lighter"
-        display="flex"
-        gap={theme.spacing.medium}
-        alignItems="center"
+        first={first}
+        last={last}
       >
-        <Div
-          fill="horizontal"
-          flexGrow={1}
-        >
-          <Span fontWeight="bold">{mapping.domain}</Span>
-        </Div>
         <Flex
-          flexDirection="row"
+          gap={theme.spacing.medium}
           alignItems="center"
-          gap="small"
         >
-          {mapping.enableSso && (
-            <Chip
-              severity="neutral"
-              backgroundColor="fill-three"
-              borderColor="border-input"
-            >
-              SSO
-            </Chip>
-          )}
-          <DeleteIcon
-            onClick={() => {
-              setConfirm(true)
-            }}
-            hue="lighter"
-          />
+          <Div
+            fill="horizontal"
+            flexGrow={1}
+          >
+            <Span fontWeight="bold">{mapping.domain}</Span>
+          </Div>
+          <Flex
+            flexDirection="row"
+            alignItems="center"
+            gap="small"
+          >
+            {mapping.enableSso && (
+              <Chip
+                severity="neutral"
+                backgroundColor="fill-three"
+                borderColor="border-input"
+              >
+                SSO
+              </Chip>
+            )}
+            <DeleteIconButton
+              onClick={() => {
+                setConfirm(true)
+              }}
+              hue="lighter"
+            />
+          </Flex>
         </Flex>
       </ListItem>
       <Confirm
@@ -127,8 +132,6 @@ export function AccountAttributes() {
       },
     },
     update: (_cache, { data }) => {
-      console.log('data')
-      console.log('updateAccount', data?.updateAccount)
       if (data?.updateAccount) updateFormState(toFormState(data.updateAccount))
     },
   })
@@ -230,17 +233,17 @@ export function AccountAttributes() {
             </Flex>
           </FormField>
           {sortedDomainMappings.length > 0 && (
-            <Card hue="lighter">
-              <List>
-                {sortedDomainMappings.map(mapping => (
-                  <DomainMapping
-                    key={mapping.domain}
-                    mapping={mapping}
-                    remove={() => rmDomain(mapping.domain)}
-                  />
-                ))}
-              </List>
-            </Card>
+            <List hue="lighter">
+              {sortedDomainMappings.map((mapping, i) => (
+                <DomainMapping
+                  key={mapping.domain}
+                  mapping={mapping}
+                  first={i === 0}
+                  last={i === sortedDomainMappings.length - 1}
+                  remove={() => rmDomain(mapping.domain)}
+                />
+              ))}
+            </List>
           )}
         </Flex>
       </ContentCard>

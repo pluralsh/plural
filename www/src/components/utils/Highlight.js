@@ -1,4 +1,4 @@
-import hljs from 'highlight.js'
+import hljs from 'highlight.js/lib/core'
 import { useEffect, useRef } from 'react'
 import { Pre } from 'honorable'
 

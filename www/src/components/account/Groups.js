@@ -1,12 +1,9 @@
-import { useMutation, useQuery } from '@apollo/client'
+import { useMutation } from '@apollo/client'
 import { Box } from 'grommet'
-import { Flex } from 'honorable'
-import { isEmpty } from 'lodash'
+import { Div, Flex } from 'honorable'
 import {
   Button,
-  EmptyState,
   GlobeIcon,
-  Input,
   Modal,
   ModalHeader,
   PageTitle,
@@ -14,48 +11,40 @@ import {
 } from 'pluralsh-design-system'
 import { useContext, useState } from 'react'
 
-import {
-  extendConnection,
-  removeConnection,
-  updateCache,
-} from '../../utils/graphql'
-import { Placeholder } from '../accounts/Audits'
+import ListInput from 'components/utils/ListInput'
+
+import { List } from 'components/utils/List'
+
+import { removeConnection, updateCache } from '../../utils/graphql'
 import { canEdit } from '../accounts/EditAccount'
 import { DELETE_GROUP, GROUPS_Q } from '../accounts/queries'
 import { Permissions } from '../accounts/types'
 import { CurrentUserContext } from '../login/CurrentUser'
-import { DeleteIcon } from '../profile/Icon'
-import { ListItem } from '../profile/ListItem'
-import { LoopingLogo } from '../utils/AnimatedLogo'
-import { StandardScroller } from '../utils/SmoothScroller'
+import { DeleteIconButton } from '../utils/IconButtons'
 
 import { Confirm } from './Confirm'
-import { CreateGroup, UpdateGroup, ViewGroup } from './Group'
+import { ViewGroup } from './Group'
+import { CreateGroup } from './CreateGroup'
+import { EditGroup } from './EditGroup'
 
 import { Info } from './Info'
 import { hasRbac } from './utils'
+import { GroupsList } from './GroupsList'
 
 function Header({ q, setQ }) {
   return (
-    <Box
-      direction="row"
-      align="center"
-      gap="medium"
-    >
-      <Box fill="horizontal">
-        <Input
-          width="100%"
-          value={q}
-          placeholder="Search for groups by name"
-          startIcon={<SearchIcon size={15} />}
-          onChange={({ target: { value } }) => setQ(value)}
-        />
-      </Box>
-    </Box>
+    <ListInput
+      width="100%"
+      value={q}
+      placeholder="Search a group"
+      startIcon={<SearchIcon color="text-light" />}
+      onChange={({ target: { value } }) => setQ(value)}
+      flexGrow={0}
+    />
   )
 }
 
-function Group({ group, q }) {
+export function Group({ group, q }) {
   const { account, ...me } = useContext(CurrentUserContext)
   const editable = canEdit(me, account) || hasRbac(me, Permissions.USERS)
   const [edit, setEdit] = useState(false)
@@ -107,7 +96,7 @@ function Group({ group, q }) {
               Edit
             </Button>
           )}
-          {editable && <DeleteIcon onClick={() => setConfirm(true)} />}
+          {editable && <DeleteIconButton onClick={() => setConfirm(true)} />}
         </Box>
         <Modal
           open={view}
@@ -123,11 +112,13 @@ function Group({ group, q }) {
           size="large"
           onClose={() => setEdit(false)}
         >
-          <ModalHeader onClose={() => setEdit(false)}>EDIT GROUP</ModalHeader>
-          <UpdateGroup
-            group={group}
-            cancel={() => setEdit(false)}
-          />
+          <Div>
+            <ModalHeader>Edit group</ModalHeader>
+            <EditGroup
+              group={group}
+              cancel={() => setEdit(false)}
+            />
+          </Div>
         </Modal>
         <Confirm
           open={confirm}
@@ -139,59 +130,6 @@ function Group({ group, q }) {
           error={error}
         />
       </>
-    </Box>
-  )
-}
-
-function GroupsInner({ q }) {
-  const [listRef, setListRef] = useState(null)
-  const { data, loading, fetchMore } = useQuery(GROUPS_Q, { variables: { q } })
-
-  if (!data) return <LoopingLogo />
-
-  const { edges, pageInfo } = data.groups
-
-  return (
-    <Box
-      fill
-      pad={{ bottom: 'small' }}
-    >
-      {edges?.length ? (
-        <StandardScroller
-          listRef={listRef}
-          setListRef={setListRef}
-          items={edges}
-          mapper={({ node: group }, { prev, next }) => (
-            <ListItem
-              first={!prev.node}
-              last={!next.node}
-            >
-              <Group
-                group={group}
-                q={q}
-              />
-            </ListItem>
-          )}
-          loadNextPage={() => pageInfo.hasNextPage
-            && fetchMore({
-              variables: { cursor: pageInfo.endCursor },
-              updateQuery: (prev, { fetchMoreResult: { groups } }) => extendConnection(prev, groups, 'groups'),
-            })}
-          hasNextPage={pageInfo.hasNextPage}
-          loading={loading}
-          placeholder={Placeholder}
-        />
-      ) : (
-        <EmptyState
-          message={
-            isEmpty(q)
-              ? "Looks like you don't have any groups yet."
-              : `No groups found for ${q}`
-          }
-        >
-          <CreateGroup q={q} />
-        </EmptyState>
-      )}
     </Box>
   )
 }
@@ -208,16 +146,13 @@ export function Groups() {
       <PageTitle heading="Groups">
         <CreateGroup q={q} />
       </PageTitle>
-      <Box
-        fill
-        gap="medium"
-      >
+      <List>
         <Header
           q={q}
           setQ={setQ}
         />
-        <GroupsInner q={q} />
-      </Box>
+        <GroupsList q={q} />
+      </List>
     </Flex>
   )
 }

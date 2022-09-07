@@ -22,6 +22,10 @@ defimpl Core.PubSub.Cacheable, for: [Core.PubSub.UserUpdated, Core.PubSub.EmailC
   end
 end
 
+defimpl Core.PubSub.Cacheable, for: Core.PubSub.UserDeleted do
+  def cache(%{item: %{id: user_id}}), do: {:del, {:login, user_id}, nil}
+end
+
 defimpl Core.PubSub.Cacheable, for: [Core.PubSub.InstallationCreated, Core.PubSub.InstallationDeleted] do
   def cache(%{item: %{user_id: user_id}}),
     do: {:del, {:has_installations, user_id}, nil}

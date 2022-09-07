@@ -1,23 +1,25 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
-import { Return } from 'grommet-icons'
-import {
-  Avatar, Flex, MenuItem, Span,
-} from 'honorable'
+import { Avatar, Flex, Span } from 'honorable'
 import moment from 'moment'
-import { Modal, ModalHeader, PageTitle } from 'pluralsh-design-system'
-import { useState } from 'react'
+import {
+  ListBoxItem,
+  Modal,
+  ModalHeader,
+  PageTitle,
+} from 'pluralsh-design-system'
+import { useMemo, useState } from 'react'
+
+import { isEqual, uniqWith } from 'lodash'
 
 import {
-  deepUpdate, extendConnection, removeConnection, updateCache,
+  extendConnection,
+  removeConnection,
+  updateCache,
 } from '../../utils/graphql'
 
 import { Placeholder } from '../accounts/Audits'
-import {
-  DELETE_DNS_RECORD, DELETE_DOMAIN, DNS_DOMAINS, DNS_RECORDS, UPDATE_DOMAIN,
-} from '../accounts/queries'
-import { DeleteIcon, Icon } from '../profile/Icon'
-import { Provider } from '../repos/misc'
+import { DELETE_DOMAIN, DNS_DOMAINS, UPDATE_DOMAIN } from '../accounts/queries'
 import { GqlError } from '../utils/Alert'
 import { StandardScroller } from '../utils/SmoothScroller'
 import { Table, TableData, TableRow } from '../utils/Table'
@@ -29,6 +31,7 @@ import { Confirm } from './Confirm'
 import { MoreMenu } from './MoreMenu'
 import { BindingInput } from './Typeaheads'
 import { sanitize } from './utils'
+import { DnsRecords } from './DnsRecords'
 
 function DomainOptions({ domain, setDomain }) {
   const [confirm, setConfirm] = useState(false)
@@ -41,28 +44,58 @@ function DomainOptions({ domain, setDomain }) {
         update: prev => removeConnection(prev, deleteDomain, 'dnsDomains'),
       })
     },
+    onCompleted: () => setEdit(false),
   })
+
+  const menuItems = {
+    viewDNSRecords: {
+      label: 'View DNS Records',
+      onSelect: () => setDomain(domain),
+      props: {},
+    },
+    editAccessPolicy: {
+      label: 'Edit Access Policy',
+      onSelect: () => setEdit(true),
+    },
+    delete: {
+      label: 'Delete',
+      onSelect: () => setConfirm(true),
+      props: {
+        destructive: true,
+      },
+    },
+  }
 
   return (
     <>
-      <MoreMenu>
-        <MenuItem onClick={() => setDomain(domain)}><Span color="text-light">View DNS Records</Span></MenuItem>
-        <MenuItem onClick={() => setEdit(true)}><Span color="text-light">Edit Access Policy</Span></MenuItem>
-        <MenuItem onClick={() => setConfirm(true)}><Span color="text-error">Delete</Span></MenuItem>
+      <MoreMenu
+        onSelectionChange={selectedKey => {
+          menuItems[selectedKey]?.onSelect()
+        }}
+      >
+        {Object.entries(menuItems).map(([key, { label, props = {} }]) => (
+          <ListBoxItem
+            key={key}
+            textValue={label}
+            label={label}
+            {...props}
+            color="blue"
+          />
+        ))}
       </MoreMenu>
       <Modal
         portal
         open={edit}
-        title="UPDATE ACCESS POLICY"
         onClose={() => setEdit(false)}
-        size="large"
+        width="100%"
       >
         <ModalHeader onClose={() => setEdit(false)}>
-          EDIT ACCESS POLICY
+          Edit access policy
         </ModalHeader>
         <AccessPolicy
           domain={domain}
           cancel={() => setEdit(false)}
+          setOpen={open => setEdit(open)}
         />
       </Modal>
       <Confirm
@@ -78,187 +111,63 @@ function DomainOptions({ domain, setDomain }) {
   )
 }
 
-function AccessPolicy({ domain: { id, accessPolicy }, cancel }) {
+function AccessPolicy({ domain: { id, accessPolicy }, cancel, setOpen }) {
   const [bindings, setBindings] = useState(accessPolicy ? accessPolicy.bindings : [])
+  const uniqueBindings = useMemo(() => uniqWith(bindings, isEqual), [bindings])
   const [mutation, { loading, error }] = useMutation(UPDATE_DOMAIN, {
     variables: {
       id,
       attributes: {
         accessPolicy: {
           id: accessPolicy ? accessPolicy.id : null,
-          bindings: bindings.map(sanitize),
+          bindings: uniqueBindings.map(sanitize),
         },
       },
+    },
+    onCompleted: () => {
+      setBindings([])
+      setOpen(false)
     },
   })
 
   return (
-    <Box gap="small">
-      {error && (
-        <GqlError
-          error={error}
-          header="Something broke"
+    <>
+      <Flex
+        direction="column"
+        gap="large"
+      >
+        {error && (
+          <GqlError
+            error={error}
+            header="Something went wrong"
+          />
+        )}
+        <BindingInput
+          type="user"
+          background="fill-two"
+          bindings={uniqueBindings
+            .filter(({ user }) => !!user)
+            .map(({ user: { email } }) => email)}
+          add={user => setBindings([...uniqueBindings, { user }])}
+          remove={email => setBindings(uniqueBindings.filter(({ user }) => !user || user.email !== email))}
         />
-      )}
-      <BindingInput
-        type="user"
-        background="fill-two"
-        bindings={bindings.filter(({ user }) => !!user).map(({ user: { email } }) => email)}
-        add={user => setBindings([...bindings, { user }])}
-        remove={email => setBindings(bindings.filter(({ user }) => !user || user.email !== email))}
-      />
-      <BindingInput
-        type="group"
-        background="fill-two"
-        bindings={bindings.filter(({ group }) => !!group).map(({ group: { name } }) => name)}
-        add={group => setBindings([...bindings, { group }])}
-        remove={name => setBindings(bindings.filter(({ group }) => !group || group.name !== name))}
-      />
+        <BindingInput
+          type="group"
+          background="fill-two"
+          bindings={uniqueBindings
+            .filter(({ group }) => !!group)
+            .map(({ group: { name } }) => name)}
+          add={group => setBindings([...uniqueBindings, { group }])}
+          remove={name => setBindings(uniqueBindings.filter(({ group }) => !group || group.name !== name))}
+        />
+      </Flex>
       <Actions
         cancel={cancel}
         submit={mutation}
         loading={loading}
         action="Update"
       />
-    </Box>
-  )
-}
-
-function DeleteRecord({ record, domain }) {
-  const [confirm, setConfirm] = useState(false)
-  const [mutation, { loading, error }] = useMutation(DELETE_DNS_RECORD, {
-    variables: { name: record.name, type: record.type },
-    update: (cache, { data: { deleteDnsRecord } }) => updateCache(cache, {
-      query: DNS_RECORDS,
-      variables: { id: domain.id },
-      update: prev => deepUpdate(prev,
-        'dnsDomain',
-        domain => removeConnection(domain, deleteDnsRecord, 'dnsRecords')),
-    }),
-  })
-
-  return (
-    <>
-      <DeleteIcon
-        onClick={() => setConfirm(true)}
-      />
-      <Confirm
-        open={confirm}
-        error={error}
-        title={`Delete ${record.name}?`}
-        text={`This will delete the ${record.type} record for ${record.name} permanently`}
-        submit={mutation}
-        cancel={() => setConfirm(false)}
-        label="Delete"
-        loading={loading}
-      />
     </>
-  )
-}
-
-function DnsRecords({ domain, setDomain }) {
-  const [listRef, setListRef] = useState(null)
-  const { data, loading, fetchMore } = useQuery(DNS_RECORDS, {
-    variables: { id: domain.id },
-    fetchPolicy: 'cache-and-network',
-  })
-
-  if (!data) return null
-
-  const { dnsRecords: { pageInfo, edges } } = data.dnsDomain
-
-  return (
-    <Box
-      fill
-      pad={{ vertical: 'small' }}
-    >
-      <Box
-        direction="row"
-        gap="small"
-        align="center"
-        pad="small"
-        background="fill-one"
-        border
-        round="xsmall"
-      >
-        <Icon
-          clickable
-          size="medium"
-          icon={<Return />}
-          onClick={() => setDomain(null)}
-        />
-        <Span fontWeight="bold">{domain.name}</Span>
-      </Box>
-      <Table
-        headers={['Name', 'Type', 'Cluster', 'Creator', 'Created On']}
-        sizes={['20%', '20%', '20%', '20%', '20%']}
-        background="fill-one"
-        border="1px solid border"
-        marginTop="medium"
-        width="100%"
-        height="100%"
-      >
-        <Box fill>
-          <StandardScroller
-            listRef={listRef}
-            setListRef={setListRef}
-            hasNextPage={pageInfo.hasNextPage}
-            items={edges}
-            loading={loading}
-            placeholder={Placeholder}
-            mapper={({ node }, { next }) => (
-              <TableRow
-                last={!next.node}
-                suffix={(
-                  <DeleteRecord
-                    record={node}
-                    domain={domain}
-                  />
-                )}
-              >
-                <TableData>{node.name}</TableData>
-                <TableData>{node.type}</TableData>
-                <TableData>
-                  <Box
-                    flex={false}
-                    direction="row"
-                    gap="xsmall"
-                    align="center"
-                  >
-                    <Provider
-                      provider={node.provider}
-                      width={30}
-                    />
-                    <Span color="text-light">{node.cluster}</Span>
-                  </Box>
-                </TableData>
-                <TableData>
-                  <Box
-                    direction="row"
-                    gap="xsmall"
-                    align="center"
-                  >
-                    <Avatar
-                      src={node.creator.avatar}
-                      name={node.creator.name}
-                      size={25}
-                    />
-                    <Span color="text-light">{node.creator.name}</Span>
-                  </Box>
-                </TableData>
-                <TableData>{moment(node.insertedAt).format('lll')}</TableData>
-              </TableRow>
-            )}
-            loadNextPage={() => pageInfo.hasNextPage && fetchMore({
-              variables: { cursor: pageInfo.endCursor },
-              updateQuery: (prev, { fetchMoreResult: { dnsDomain } }) => deepUpdate(prev,
-                'dnsDomain',
-                prev => extendConnection(prev, dnsDomain.dnsRecords, 'dnsRecords')),
-            })}
-          />
-        </Box>
-      </Table>
-    </Box>
   )
 }
 
@@ -296,7 +205,9 @@ function Domain({ node, last, setDomain }) {
 export function Domains() {
   const [listRef, setListRef] = useState(null)
   const [domain, setDomain] = useState(null)
-  const { data, loading, fetchMore } = useQuery(DNS_DOMAINS, { fetchPolicy: 'cache-and-network' })
+  const { data, loading, fetchMore } = useQuery(DNS_DOMAINS, {
+    fetchPolicy: 'cache-and-network',
+  })
 
   if (!data) return null
 
@@ -309,7 +220,9 @@ export function Domains() {
     )
   }
 
-  const { dnsDomains: { pageInfo, edges } } = data
+  const {
+    dnsDomains: { pageInfo, edges },
+  } = data
 
   return (
     <Flex
@@ -342,14 +255,17 @@ export function Domains() {
                   setDomain={setDomain}
                 />
               )}
-              loadNextPage={() => pageInfo.hasNextPage && fetchMore({
-                variables: { cursor: pageInfo.endCursor },
-                updateQuery: (prev, { fetchMoreResult: { invites } }) => extendConnection(prev, invites, 'invites'),
-              })}
+              loadNextPage={() => pageInfo.hasNextPage
+                && fetchMore({
+                  variables: { cursor: pageInfo.endCursor },
+                  updateQuery: (prev, { fetchMoreResult: { invites } }) => extendConnection(prev, invites, 'invites'),
+                })}
             />
           </Box>
         </Table>
-      ) : (<Span>You do not have any domains set yet.</Span>)}
+      ) : (
+        <Span>You do not have any domains set yet.</Span>
+      )}
     </Flex>
   )
 }

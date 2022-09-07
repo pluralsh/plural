@@ -16,7 +16,7 @@ import { Table, TableData, TableRow } from '../utils/Table'
 
 import { Date } from '../utils/Date'
 
-import { DeleteIcon } from './Icon'
+import { DeleteIconButton } from '../utils/IconButtons'
 
 const TOOLTIP = 'EAB credentials are used to generate an ACME account for certificate issuance in your clusters. '
   + 'These should be recycled on `plural destroy`.'
@@ -35,7 +35,7 @@ function EabCredential({ credential, last }) {
   return (
     <>
       <TableRow
-        suffix={<DeleteIcon onClick={() => setConfirm(true)} />}
+        suffix={<DeleteIconButton onClick={() => setConfirm(true)} />}
         last={last}
       >
         <TableData>{credential.keyId}</TableData>

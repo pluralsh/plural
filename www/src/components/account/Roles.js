@@ -4,12 +4,13 @@ import { isEmpty } from 'lodash'
 import { Flex } from 'honorable'
 import {
   EmptyState,
-  Input,
   PageTitle,
   SearchIcon,
 } from 'pluralsh-design-system'
 import { useContext, useState } from 'react'
 
+import { List, ListItem } from '../utils/List'
+import ListInput from '../utils/ListInput'
 import {
   extendConnection,
   removeConnection,
@@ -20,38 +21,27 @@ import { canEdit } from '../accounts/EditAccount'
 import { DELETE_ROLE, ROLES_Q } from '../accounts/queries'
 import { Permissions } from '../accounts/types'
 import { CurrentUserContext } from '../login/CurrentUser'
-import { DeleteIcon } from '../profile/Icon'
-import { ListItem } from '../profile/ListItem'
+import { DeleteIconButton } from '../utils/IconButtons'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { StandardScroller } from '../utils/SmoothScroller'
 
 import { Confirm } from './Confirm'
 
 import { Info } from './Info'
-import { CreateRole, UpdateRole } from './Role'
+import { EditRole } from './EditRole'
+import { CreateRole } from './CreateRole'
 import { hasRbac } from './utils'
 
 function Header({ q, setQ }) {
   return (
-    <Box
-      direction="row"
-      align="center"
-      gap="medium"
-    >
-      <Box
-        fill="horizontal"
-        direction="row"
-        align="center"
-      >
-        <Input
-          width="100%"
-          value={q}
-          placeholder="Search for roles by name"
-          startIcon={<SearchIcon size={15} />}
-          onChange={({ target: { value } }) => setQ(value)}
-        />
-      </Box>
-    </Box>
+    <ListInput
+      width="100%"
+      value={q}
+      placeholder="Search a role"
+      startIcon={<SearchIcon color="text-light" />}
+      onChange={({ target: { value } }) => setQ(value)}
+      flexGrow={0}
+    />
   )
 }
 
@@ -65,6 +55,7 @@ function Role({ role, q }) {
       query: ROLES_Q,
       variables: { q },
       update: prev => removeConnection(prev, data.deleteRole, 'roles'),
+      onCompleted: () => setConfirm(false),
     }),
   })
 
@@ -86,12 +77,12 @@ function Role({ role, q }) {
           align="center"
         >
           {editable && (
-            <UpdateRole
+            <EditRole
               role={role}
               q={q}
             />
           )}
-          <DeleteIcon onClick={() => setConfirm(true)} />
+          <DeleteIconButton onClick={() => setConfirm(true)} />
         </Box>
         <Confirm
           open={confirm}
@@ -176,16 +167,13 @@ export function Roles() {
         {' '}
         <CreateRole q={q} />
       </PageTitle>
-      <Box
-        fill
-        gap="medium"
-      >
+      <List>
         <Header
           q={q}
           setQ={setQ}
         />
         <RolesInner q={q} />
-      </Box>
+      </List>
     </Flex>
   )
 }

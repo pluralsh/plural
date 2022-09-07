@@ -15,6 +15,17 @@ defmodule Core.PubSub.Consumers.Cache.UsersTest do
     end
   end
 
+  describe "UserDeleted" do
+    test "it will wipe the login cache" do
+      user = insert(:user)
+
+      event = %PubSub.UserDeleted{item: user}
+      Cache.handle_event(event)
+
+      refute Core.Cache.get({:login, user.id})
+    end
+  end
+
   describe "CacheUser" do
     test "it will overwrite the login cache" do
       user = insert(:user)

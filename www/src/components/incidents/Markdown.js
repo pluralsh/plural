@@ -4,12 +4,15 @@ import {
 import {
   Anchor, Box, Drop, Markdown, Text, ThemeContext,
 } from 'grommet'
-import { Copy, TooltipContent, WithCopy } from 'forge-core'
-import Highlight from 'react-highlight.js'
-import hljs from 'highlight.js'
+import {
+  Copy, TooltipContent, WithCopy,
+} from 'forge-core'
+import hljs from 'highlight.js/lib/core'
 import { normalizeColor } from 'grommet/utils'
 import sortBy from 'lodash/sortBy'
 import { Emoji as Emojii } from 'emoji-mart'
+
+import Highlight from '../utils/Highlight'
 
 import Avatar from '../users/Avatar'
 

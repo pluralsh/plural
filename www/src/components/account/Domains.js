@@ -10,7 +10,8 @@ import {
 } from 'pluralsh-design-system'
 import { useMemo, useState } from 'react'
 
-import { isEqual, uniqWith } from 'lodash'
+import isEqual from 'lodash/isEqual'
+import uniqWith from 'lodash/uniqWith'
 
 import {
   extendConnection,

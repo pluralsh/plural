@@ -7,11 +7,10 @@ import {
 } from 'pluralsh-design-system'
 import { useCallback, useRef, useState } from 'react'
 import { Keyboard } from 'grommet'
+import capitalize from 'lodash/capitalize'
 
 import { Actions } from '../account/Actions'
 import { GqlError } from '../utils/Alert'
-
-import { capitalize } from '../../utils/string'
 
 import { DELETE_INSTALLATION_MUTATION, UPDATE_INSTALLATION } from './queries'
 

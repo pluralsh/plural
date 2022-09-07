@@ -14,7 +14,7 @@ import {
   A, Flex, P, Span,
 } from 'honorable'
 
-import { capitalize } from 'lodash'
+import capitalize from 'lodash/capitalize'
 
 import { AttackVector } from '../constants'
 

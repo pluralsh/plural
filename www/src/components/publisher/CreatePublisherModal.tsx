@@ -124,6 +124,7 @@ function CreatePublisherModal({ open, onClose }: CreatePublisherModalProps) {
     getter: string,
     setter: (value: string) => void,
     error: boolean,
+    setError: (value: boolean) => void,
   ) {
     return (
       <FormField
@@ -138,10 +139,7 @@ function CreatePublisherModal({ open, onClose }: CreatePublisherModalProps) {
           error={error}
           onChange={event => {
             setter(event.target.value)
-            setErrors(e => ({
-              ...e,
-              website: isValidUrl(event.target.value),
-            }))
+            setError(isValidUrl(event.target.value))
           }}
           placeholder={placeholder}
         />
@@ -228,26 +226,26 @@ function CreatePublisherModal({ open, onClose }: CreatePublisherModalProps) {
       </FormField>
       <Flex gap="medium">
         {renderUrlField(
-          'Website link', 'Website URL', website, setWebsite, errors.website
+          'Website link', 'Website URL', website, setWebsite, errors.website, value => setErrors({ ...errors, website: value }),
         )}
         {renderUrlField(
-          'Docs link', 'Docs URL', documentation, setDocumentation, errors.documentation
-        )}
-      </Flex>
-      <Flex gap="medium">
-        {renderUrlField(
-          'GitHub link', 'GitHub URL', github, setGithub, errors.github
-        )}
-        {renderUrlField(
-          'Docs link', 'Discord invite URL', discord, setDiscord, errors.discord
+          'Docs link', 'Docs URL', documentation, setDocumentation, errors.documentation, value => setErrors({ ...errors, documentation: value }),
         )}
       </Flex>
       <Flex gap="medium">
         {renderUrlField(
-          'Slack link', 'Slack invite URL', slack, setSlack, errors.slack
+          'GitHub link', 'GitHub URL', github, setGithub, errors.github, value => setErrors({ ...errors, github: value }),
         )}
         {renderUrlField(
-          'Twitter link', 'Twitter URL', twitter, setTwitter, errors.twitter
+          'Docs link', 'Discord invite URL', discord, setDiscord, errors.discord, value => setErrors({ ...errors, discord: value }),
+        )}
+      </Flex>
+      <Flex gap="medium">
+        {renderUrlField(
+          'Slack link', 'Slack invite URL', slack, setSlack, errors.slack, value => setErrors({ ...errors, slack: value }),
+        )}
+        {renderUrlField(
+          'Twitter link', 'Twitter URL', twitter, setTwitter, errors.twitter, value => setErrors({ ...errors, twitter: value }),
         )}
       </Flex>
       {!!preMutationError && (

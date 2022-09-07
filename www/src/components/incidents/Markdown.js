@@ -1,18 +1,14 @@
 import {
-  cloneElement, memo, useContext, useRef, useState,
+  cloneElement, memo, useRef, useState,
 } from 'react'
 import {
-  Anchor, Box, Drop, Markdown, Text, ThemeContext,
+  Anchor, Box, Drop, Markdown, Text,
 } from 'grommet'
-import {
-  Copy, TooltipContent, WithCopy,
-} from 'forge-core'
-import hljs from 'highlight.js/lib/core'
-import { normalizeColor } from 'grommet/utils'
+import { TooltipContent } from 'forge-core'
 import sortBy from 'lodash/sortBy'
 import { Emoji as Emojii } from 'emoji-mart'
 
-import Highlight from '../utils/Highlight'
+import { Code } from 'pluralsh-design-system'
 
 import Avatar from '../users/Avatar'
 
@@ -26,91 +22,6 @@ function Blockquote({ children }) {
     >
       {children}
     </Box>
-  )
-}
-
-// DEPRECATED in favor of utils/Code
-export function Code({
-  children, header, className, multiline,
-}) {
-  const theme = useContext(ThemeContext)
-
-  if (className && className.startsWith('lang-')) {
-    const lang = className && className.slice(5)
-
-    if (hljs.getLanguage(lang)) {
-      return (
-        <Box
-          fill="horizontal"
-          round="xxsmall"
-          background="#2e3440"
-          border={{ color: 'border' }}
-        >
-          <Box
-            fill="horizontal"
-            border={{ side: 'bottom', color: 'border' }}
-            direction="row"
-            justify="end"
-            gap="xsmall"
-            background="fill-one"
-            pad="xsmall"
-            align="center"
-          >
-            {header && (
-              <Box fill="horizontal">
-                <Text
-                  size="small"
-                  weight={500}
-                >
-                  {header}
-                </Text>
-              </Box>
-            )}
-            <Text
-              size="small"
-              weight={500}
-              color="text-weak"
-            >
-              language:
-            </Text>
-            <Text
-              size="small"
-              color="text-weak"
-            >
-              {lang}
-            </Text>
-            <WithCopy
-              text={children}
-              pillText={`copied ${lang} contents`}
-            >
-              <Copy
-                style={{ cursor: 'pointer' }}
-                size="small"
-                color="text-weak"
-              />
-            </WithCopy>
-          </Box>
-          <Highlight language={lang}>{children}</Highlight>
-        </Box>
-      )
-    }
-  }
-
-  return (
-    <span>
-      <Box
-        flex={false}
-        style={{ display: 'inline-block', color: multiline ? null : normalizeColor('notif', theme) }}
-        pad={multiline ? 'xsmall' : { horizontal: 'xxsmall' }}
-        round="xxsmall"
-        border={{ color: 'border' }}
-        background="light-2"
-      >
-        <pre>
-          <code>{children}</code>
-        </pre>
-      </Box>
-    </span>
   )
 }
 

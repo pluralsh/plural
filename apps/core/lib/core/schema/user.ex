@@ -115,7 +115,7 @@ defmodule Core.Schema.User do
   end
 
   def search(query \\ __MODULE__, name) do
-    from(u in query, where: like(u.name, ^"#{name}%") or like(u.email, ^"#{name}%"))
+    from(u in query, where: ilike(u.name, ^"%#{name}%") or ilike(u.email, ^"%#{name}%"))
   end
 
   def for_account(query \\ __MODULE__, account_id) do

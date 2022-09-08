@@ -62,7 +62,7 @@ function Terraform({ terraform, first, last }) {
           </P>
           {terraform.dependencies && terraform.dependencies.providers && (
             <Flex
-              ml={1}
+              marginLeft="medium"
               gap="xsmall"
             >
               {terraform.dependencies.providers.map(provider => (

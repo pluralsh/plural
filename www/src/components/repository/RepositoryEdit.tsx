@@ -38,10 +38,12 @@ import { filter } from 'lodash'
 import styled from '@emotion/styled'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
-import { capitalize } from '../../utils/string'
+import { capitalize, isValidUrl } from '../../utils/string'
 import { generatePreview } from '../../utils/file'
 import { AuthMethod as authMethods } from '../oidc/types'
 import { useUpdateState } from '../../hooks/useUpdateState'
+
+import SaveButton from '../utils/SaveButton'
 
 import { TAGS_SEARCH_QUERY, UPDATE_REPOSITORY_MUTATION } from './queries'
 import { RepositoryActions } from './misc'
@@ -286,10 +288,6 @@ function RepositoryEdit() {
     setTagSearchString('')
   }
 
-  function isValidUrl(url: string) {
-    return !/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/.test(url)
-  }
-
   function renderUrlField(key: string,
     label: string,
     placeholder: string) {
@@ -385,22 +383,13 @@ function RepositoryEdit() {
           align="center"
           gap="medium"
         >
-          {formHasUpdates && (
-            <P
-              body2
-              color="text-xlight"
-            >
-              Unsaved changes
-            </P>
-          )}
-          <Button
+          <SaveButton
             type="submit"
+            dirty={formHasUpdates}
             enabled={submitEnabled}
-            disabled={!submitEnabled}
+            disabled={!submitEnabled || Object.keys(formStateErrors).some(key => formStateErrors[key])}
             loading={loading}
-          >
-            Update
-          </Button>
+          />
           <Flex display-desktop-up="none"><RepositoryActions /></Flex>
         </Flex>
       </PageTitle>

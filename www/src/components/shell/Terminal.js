@@ -10,7 +10,7 @@ import {
   Button, LoopingLogo, ReloadIcon, ScrollIcon,
 } from 'pluralsh-design-system'
 import { useResizeDetector } from 'react-resize-detector'
-import { debounce } from 'lodash'
+import debounce from 'lodash/debounce'
 
 import { socket } from '../../helpers/client'
 import TerminalThemeContext from '../../contexts/TerminalThemeContext'

@@ -5,12 +5,11 @@ import {
 import {
   Chip, GearTrainIcon, GitHubIcon, InvoicesIcon, LinksIcon,
 } from 'pluralsh-design-system'
+import capitalize from 'lodash/capitalize'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
-
-import { capitalize } from '../../utils/string'
 
 import { InferredConsoleButton } from '../clusters/ConsoleButton'
 

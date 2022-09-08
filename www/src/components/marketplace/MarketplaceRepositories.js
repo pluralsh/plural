@@ -17,9 +17,9 @@ import {
 } from 'pluralsh-design-system'
 import Fuse from 'fuse.js'
 import styled from 'styled-components'
-import { isEmpty } from 'lodash'
+import isEmpty from 'lodash/isEmpty'
+import capitalize from 'lodash/capitalize'
 
-import { capitalize } from '../../utils/string'
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 
 import { GoBack } from '../utils/GoBack'

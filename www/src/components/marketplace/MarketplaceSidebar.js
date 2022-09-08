@@ -6,9 +6,9 @@ import {
 } from 'honorable'
 import { Checkbox, CloseIcon, Input } from 'pluralsh-design-system'
 import Fuse from 'fuse.js'
+import capitalize from 'lodash/capitalize'
 
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
-import { capitalize } from '../../utils/string'
 
 import { CATEGORIES_QUERY, TAGS_QUERY } from './queries'
 

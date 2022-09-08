@@ -1,7 +1,7 @@
 import { useCallback, useRef, useState } from 'react'
 import styled from 'styled-components'
 import {
-  Box, Drop, Markdown, Table, TableBody, TableCell, TableRow, Text,
+  Box, Collapsible, Drop, Markdown, Table, TableBody, TableCell, TableRow, Text,
 } from 'grommet'
 import {
   Apple, DocumentText, Previous, Ubuntu, Windows,
@@ -9,7 +9,6 @@ import {
 import { Copyable, Download, ListView as List } from 'forge-core'
 import { normalizeColor } from 'grommet/utils'
 import fs from 'filesize'
-import Collapsible from 'react-collapsible'
 import moment from 'moment'
 
 import { HeaderItem } from 'components/utils/Header'

@@ -6,10 +6,9 @@ import {
   ArrowTopRightIcon, Codeline, DropdownArrowIcon, Tab,
 } from 'pluralsh-design-system'
 import { Link } from 'react-router-dom'
+import capitalize from 'lodash/capitalize'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
-
-import { capitalize } from '../../utils/string'
 
 import { providerToDisplayName, providerToIcon, providerToIconHeight } from './constants'
 

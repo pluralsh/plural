@@ -1,6 +1,6 @@
 import { Flex, P, Span } from 'honorable'
 import { createContext, useContext, useMemo } from 'react'
-import { toUpper } from 'lodash/string'
+import toUpper from 'lodash/toUpper'
 
 const TableContext = createContext({})
 

@@ -1,45 +1,10 @@
 import { useState } from 'react'
-import { Box, Layer, Text } from 'grommet'
-import { CircleInformation } from 'grommet-icons'
-import { Close, Copy } from 'forge-core'
+import { Box, Text } from 'grommet'
+import { Copy } from 'forge-core'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import truncate from 'lodash/truncate'
 
 import { Toast } from 'pluralsh-design-system'
-
-import { Icon } from '../accounts/Group'
-
-export function CopyNotice({ text, onClose }) {
-  return (
-    <Layer
-      position="top"
-      plain
-      onEsc={onClose}
-      onClickOutside={onClose}
-    >
-      <Box
-        direction="row"
-        align="center"
-        gap="small"
-        background="white"
-        border={{ color: 'border' }}
-        round="xsmall"
-        margin={{ top: 'small' }}
-        pad={{ horizontal: 'small', vertical: 'xsmall' }}
-      >
-        <CircleInformation
-          color="progress"
-          size="medium"
-        />
-        <Text>{text}</Text>
-        <Icon
-          icon={Close}
-          onClick={onClose}
-        />
-      </Box>
-    </Layer>
-  )
-}
 
 export function Copyable({
   text, pillText, displayText, onCopy,

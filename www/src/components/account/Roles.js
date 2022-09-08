@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
-import { isEmpty } from 'lodash'
+import isEmpty from 'lodash/isEmpty'
 import { Flex } from 'honorable'
 import {
   EmptyState,

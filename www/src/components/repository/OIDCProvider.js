@@ -5,7 +5,7 @@ import { Box } from 'grommet'
 import { useMutation } from '@apollo/client'
 import { Button, Flex, P } from 'honorable'
 import {
-  CheckIcon, Codeline, ContentCard, FormField, Input, PageTitle, Toast, Token,
+  CheckIcon, Chip, Codeline, ContentCard, FormField, Input, PageTitle, Toast,
 } from 'pluralsh-design-system'
 import { useNavigate, useParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
@@ -61,7 +61,8 @@ function UrlsInput({ uriFormat = '', urls, setUrls }) {
           onClick={addUrl}
           secondary
           marginLeft="small"
-        >Add
+        >
+          Add
         </Button>
       </Box>
       <Flex
@@ -69,14 +70,17 @@ function UrlsInput({ uriFormat = '', urls, setUrls }) {
         wrap="wrap"
         gap="xxsmall"
       >
-        {urls.map(url => (
-          <Token
-            key={url}
-            onClose={() => setUrls(urls.filter(u => u !== url))}
+        {urls.map((url, i) => (
+          <Chip
+            key={i}
+            size="small"
             hue="lighter"
+            clickable
+            closeButton
+            onClick={() => setUrls(urls.filter(u => u !== url))}
           >
             {url}
-          </Token>
+          </Chip>
         ))}
       </Flex>
     </Box>

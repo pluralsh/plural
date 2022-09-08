@@ -6,7 +6,7 @@ import { useState } from 'react'
 
 import { InfoIcon, PageTitle, Tooltip } from 'pluralsh-design-system'
 
-import { isEmpty } from 'lodash/lang'
+import isEmpty from 'lodash/isEmpty'
 
 import { extendConnection } from '../../utils/graphql'
 import { Confirm } from '../account/Confirm'

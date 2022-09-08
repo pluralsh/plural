@@ -28,7 +28,7 @@ import { ACCEPT_LOGIN } from '../oidc/queries'
 import { host } from '../../helpers/hostname'
 
 import {
-  getDeviceToken, saveChallenge, saveDeviceToken, wipeChallenge, wipeDeviceToken,
+  METHOD_ICONS, getDeviceToken, saveChallenge, saveDeviceToken, wipeChallenge, wipeDeviceToken,
 } from './utils'
 import { LoginMethod } from './types'
 import {
@@ -39,7 +39,6 @@ import {
   POLL_LOGIN_TOKEN,
   SIGNUP_MUTATION,
 } from './queries'
-import { METHOD_ICONS } from './OauthEnabler'
 import { finishedDeviceLogin } from './DeviceLoginNotif'
 
 export function LabelledInput({

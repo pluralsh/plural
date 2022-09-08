@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { Box, Stack, Text } from 'grommet'
 import { FileIcon, defaultStyles } from 'react-file-icon'
-import { Download, HoveredBackground, Tooltip } from 'forge-core'
+import { HoveredBackground, Tooltip } from 'forge-core'
 import moment from 'moment'
 import filesize from 'filesize'
+import { DownloadIcon } from 'pluralsh-design-system'
 
 import { download } from '../../utils/file'
 
@@ -29,7 +30,7 @@ function DownloadAffordance({ blob }) {
           }}
           border={{ color: 'border' }}
         >
-          <Download size="15px" />
+          <DownloadIcon size={15} />
         </Box>
       </HoveredBackground>
       <Text size="small">download</Text>

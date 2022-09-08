@@ -1,5 +1,5 @@
 import { Box, Text } from 'grommet'
-import { Checkmark, StatusCritical } from 'grommet-icons'
+import { CheckIcon, ErrorIcon } from 'pluralsh-design-system'
 
 export function disableState(password, confirm) {
   if (password.length === 0) return { disabled: true, reason: '' }
@@ -19,14 +19,14 @@ export function PasswordStatus({ disabled, reason }) {
       gap="xsmall"
     >
       {reason ? disabled ? (
-        <StatusCritical
+        <ErrorIcon
           color="error"
-          size="12px"
+          size={12}
         />
       ) : (
-        <Checkmark
+        <CheckIcon
           color="good"
-          size="12px"
+          size={12}
         />
       ) : null}
       <Text

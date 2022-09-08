@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Box, Layer, Text } from 'grommet'
-import { Fingerprint } from 'forge-core'
+import { FingerPrintIcon } from 'pluralsh-design-system'
 
 import { ModalHeader } from '../ModalHeader'
 
@@ -40,7 +40,7 @@ export function DeviceLoginNotif() {
           gap="small"
           pad="medium"
         >
-          <Fingerprint size="15px" />
+          <FingerPrintIcon size={15} />
           <Text size="small">The device you requested on should now have access</Text>
         </Box>
       </Box>

@@ -6,7 +6,7 @@ import {
   Box, Drop, Text, TextInput,
 } from 'grommet'
 import { Bundle, Incidents as IncidentsI, Explore as Search } from 'forge-core'
-import { Checkmark } from 'grommet-icons'
+import { Checkmark as CheckIcon } from 'pluralsh-design-system'
 
 import { extendConnection } from '../../utils/graphql'
 
@@ -154,8 +154,8 @@ function StatusSelector({ statuses, setStatuses }) {
                   width="10px"
                 >
                   {hasStatus.has(status) && (
-                    <Checkmark
-                      size="small"
+                    <CheckIcon
+                      size={12}
                       color="brand"
                     />
                   )}

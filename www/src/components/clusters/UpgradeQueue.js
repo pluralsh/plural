@@ -1,10 +1,9 @@
 import { useContext, useEffect, useState } from 'react'
 import { useQuery, useSubscription } from '@apollo/client'
-import { Reload as Refresh } from 'forge-core'
 import { Box, Text } from 'grommet'
 import moment from 'moment'
 import { BeatLoader } from 'react-spinners'
-import { Github } from 'grommet-icons'
+import { GitHubLogoIcon, ReloadIcon } from 'pluralsh-design-system'
 import { useParams } from 'react-router-dom'
 
 import { appendConnection, extendConnection } from '../../utils/graphql'
@@ -154,7 +153,7 @@ export function UpgradeQueue() {
                   gap="xsmall"
                   align="center"
                 >
-                  <Github size="14px" />
+                  <GitHubLogoIcon size={14} />
                   <Text
                     size="small"
                     color="dark-3"
@@ -194,7 +193,7 @@ export function UpgradeQueue() {
             hoverIndicator="fill-one"
             focusIndicator={false}
           >
-            <Refresh size="small" />
+            <ReloadIcon size={12} />
           </Box>
         )}
       >

@@ -1,5 +1,5 @@
 import { Box, Text } from 'grommet'
-import { Checkmark, Cube, Group } from 'grommet-icons'
+import { CheckIcon, FileIcon, PeopleIcon } from 'pluralsh-design-system'
 
 import { RepoIcon } from '../repos/Repositories'
 
@@ -20,8 +20,8 @@ function Feature({ feature: { name, description } }) {
       gap="small"
       align="center"
     >
-      <Checkmark
-        size="15px"
+      <CheckIcon
+        size={15}
         color="focus"
       />
       <Box gap="xsmall">
@@ -59,15 +59,15 @@ function LineItemIcon({ dimension, size }) {
   switch (dimension) {
   case 'user':
     return (
-      <Group
-        size={size || '15px'}
+      <PeopleIcon
+        size={size || 15}
         color="focus"
       />
     )
   default:
     return (
-      <Cube
-        size={size || '15px'}
+      <FileIcon
+        size={size || 15}
         color="focus"
       />
     )

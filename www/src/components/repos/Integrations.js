@@ -8,7 +8,7 @@ import {
 import {
   Anchor, Box, Stack, Text, ThemeContext,
 } from 'grommet'
-import { FormNextLink, FormPrevious } from 'grommet-icons'
+import { ArrowRightIcon, CaretLeftIcon } from 'pluralsh-design-system'
 import { normalizeColor } from 'grommet/utils'
 
 import { chunk } from '../../utils/array'
@@ -180,7 +180,7 @@ function SourceLink({ sourceUrl }) {
             color="focus"
           >Source code
           </Text>
-          <FormNextLink size="12px" />
+          <ArrowRightIcon size="12px" />
         </Box>
       </Anchor>
     </Box>
@@ -227,7 +227,7 @@ export function TagHeader({ tag, setTag }) {
         direction="row"
         onClick={() => setTag(null)}
       >
-        <FormPrevious size="20px" />
+        <CaretLeftIcon size="20px" />
         <Text weight={500}># {tag}</Text>
       </Box>
     </HoveredBackground>
@@ -322,7 +322,7 @@ function ViewAll({ repositoryId }) {
           >
             view all
           </Text>
-          <FormNextLink
+          <ArrowRightIcon
             size="15px"
             color="focus"
           />

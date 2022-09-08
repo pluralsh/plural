@@ -1,4 +1,4 @@
-import { Checkmark } from 'grommet-icons'
+import { CheckIcon } from 'pluralsh-design-system'
 
 import { Box, Text } from 'grommet'
 
@@ -38,7 +38,7 @@ function UnreadyStatus() {
 function ReadyStatus() {
   return (
     <StatusContainer background="success">
-      <Checkmark size="15px" />
+      <CheckIcon size={15} />
     </StatusContainer>
   )
 }

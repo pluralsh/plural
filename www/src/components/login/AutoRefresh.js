@@ -1,6 +1,6 @@
 import { useCallback, useContext, useState } from 'react'
 
-import { Download } from 'forge-core'
+import { DownloadIcon } from 'pluralsh-design-system'
 
 import { Box } from 'grommet'
 
@@ -50,8 +50,8 @@ export function AutoRefresh() {
     >
       <Icon
         icon={(
-          <Download
-            size="15px"
+          <DownloadIcon
+            size={15}
             color="orange"
           />
         )}

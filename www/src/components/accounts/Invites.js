@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
 
-import { Copyable, Trash } from 'forge-core'
-
+import { Copyable } from 'forge-core'
+import { Trash as TrashIcon } from 'pluralsh-design-system'
 import moment from 'moment'
 
 import { Box, Text } from 'grommet'
@@ -69,7 +69,7 @@ function DeleteInvite({ invite }) {
   return (
     <>
       <Icon
-        icon={Trash}
+        icon={TrashIcon}
         tooltip="delete"
         onClick={() => setOpen(true)}
         iconAttrs={{ color: 'error' }}

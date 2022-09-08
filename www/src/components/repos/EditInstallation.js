@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { Button, Pill, Select } from 'forge-core'
 import { Box, CheckBox, Text } from 'grommet'
-import { Close } from 'grommet-icons'
+import { CloseIcon } from 'pluralsh-design-system'
 import Toggle from 'react-toggle'
 
 import { TAGS } from '../versions/VersionTags'
@@ -104,7 +104,7 @@ export function EditInstallation({ installation, repository, onUpdate }) {
             gap="small"
           >
             <Text>Configuration saved</Text>
-            <Close
+            <CloseIcon
               style={{ cursor: 'pointer' }}
               size="15px"
               onClick={() => setNotif(false)}

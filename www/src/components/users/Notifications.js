@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { Box, Stack, Text } from 'grommet'
-import { Notification as NotificationI, Scroller } from 'forge-core'
+import { Scroller } from 'forge-core'
 import { useQuery } from '@apollo/client'
+import { LightningIcon } from 'pluralsh-design-system'
 
 import { useNavigate } from 'react-router-dom'
 
@@ -136,7 +137,7 @@ export function Notifications() {
           round
           onClick={() => setOpen(!open)}
         >
-          <NotificationI size="17px" />
+          <LightningIcon size={17} />
         </Box>
         {notifications && notifications.edges.length > 0 && <Badge notifications={data.notifications} />}
       </Stack>

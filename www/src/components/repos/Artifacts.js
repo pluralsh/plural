@@ -4,9 +4,9 @@ import {
   Box, Collapsible, Drop, Markdown, Table, TableBody, TableCell, TableRow, Text,
 } from 'grommet'
 import {
-  Apple, DocumentText, Previous, Ubuntu, Windows,
-} from 'grommet-icons'
-import { Copyable, Download, ListView as List } from 'forge-core'
+  AppleLogoIcon, CaretLeftIcon, DownloadIcon, FileIcon, ListIcon, UbuntuLogoIcon, WindowsLogoIcon,
+} from 'pluralsh-design-system'
+import { Copyable } from 'forge-core'
 import { normalizeColor } from 'grommet/utils'
 import fs from 'filesize'
 import moment from 'moment'
@@ -19,16 +19,31 @@ import { Icon } from '../accounts/Group'
 
 import { DetailContainer } from './Installation'
 
-const SMALL_ICON_SIZE = '13px'
+const SMALL_ICON_SIZE = 13
 
 function ArtifactPlatform({ platform }) {
   switch (platform) {
   case 'MAC':
-    return <Apple size={SMALL_ICON_SIZE} />
+    return (
+      <AppleLogoIcon
+        size={SMALL_ICON_SIZE}
+        fullColor
+      />
+    )
   case 'WINDOWS':
-    return <Windows size={SMALL_ICON_SIZE} />
+    return (
+      <WindowsLogoIcon
+        size={SMALL_ICON_SIZE}
+        fullColor
+      />
+    )
   case 'LINUX':
-    return <Ubuntu size={SMALL_ICON_SIZE} />
+    return (
+      <UbuntuLogoIcon
+        size={SMALL_ICON_SIZE}
+        fullColor
+      />
+    )
   default:
     return null
   }
@@ -96,7 +111,7 @@ function WithBack({ children, setAlternate }) {
         pad="small"
         gap="small"
       >
-        <Previous size="12px" />
+        <CaretLeftIcon size={12} />
         <Text size="small">back</Text>
       </Box>
     </Box>
@@ -312,17 +327,17 @@ function ArtifactRow({ artifact }) {
           gap="small"
         >
           <Icon
-            icon={DocumentText}
+            icon={FileIcon}
             tooltip="readme"
             onClick={() => doSetOpen('readme')}
           />
           <Icon
-            icon={List}
+            icon={ListIcon}
             tooltip="details"
             onClick={() => doSetOpen('details')}
           />
           <Icon
-            icon={Download}
+            icon={DownloadIcon}
             tooltip="download"
             onClick={() => download(artifact.blob)}
           />

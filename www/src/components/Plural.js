@@ -12,7 +12,6 @@ import ApplicationLayout from './layout/ApplicationLayout'
 import BreadcrumbProvider from './Breadcrumbs'
 import Chart from './repos/Chart'
 import CloudShell from './shell/CloudShell'
-import EditUser from './users/EditUser'
 import Marketplace from './marketplace/Marketplace'
 import OAuthCallback from './shell/OAuthCallback'
 import Repository from './repository/Repository'
@@ -368,16 +367,6 @@ export function PluralInner() {
             <Route
               path="/account/billing/:section"
               element={<EditBilling />}
-            />
-            {/* --- USER --- */}
-            <Route
-              exact
-              path="/user/edit"
-              element={<Navigate to="/user/edit/user" />}
-            />
-            <Route
-              path="/user/edit/:editing"
-              element={<EditUser />}
             />
             <Route
               path="/audits"

@@ -7,10 +7,11 @@ import {
 import { createElement, useContext, useState } from 'react'
 import { Password } from 'forge-core'
 
+import { METHOD_ICONS } from 'components/users/utils'
+
 import { host } from '../../helpers/hostname'
 
 import { CurrentUserContext } from '../login/CurrentUser'
-import { METHOD_ICONS } from '../users/OauthEnabler'
 import { OAUTH_URLS, UPDATE_USER } from '../users/queries'
 
 import { LoginMethod as Method } from './types'

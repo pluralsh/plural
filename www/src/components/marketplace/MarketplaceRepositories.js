@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import {
-  A, Br, Button, Div, Flex, H1, Span, useMediaQuery,
+  A, Br, Button, Div, Flex, H1, Hr, Span, useMediaQuery,
 } from 'honorable'
 import {
   ArrowTopRightIcon,
@@ -22,9 +22,15 @@ import capitalize from 'lodash/capitalize'
 
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 
+import { GoBack } from '../utils/GoBack'
 import { LoopingLogo } from '../utils/AnimatedLogo'
-
 import { LinkTabWrap } from '../utils/Tabs'
+
+import TopBar from '../layout/TopBar'
+import { ResponsiveLayoutSidecarContainer, ResponsiveLayoutSpacer } from '../layout/ResponsiveLayout'
+
+import PublisherSideNav from '../publisher/PublisherSideNav'
+import PublisherSideCar from '../publisher/PublisherSideCar'
 
 import { MARKETPLACE_QUERY } from './queries'
 
@@ -119,18 +125,24 @@ const StyledTabPanel = styled(TabPanel)(() => ({
   flexGrow: 1,
 }))
 
-function MarketplaceRepositories({ installed }) {
+function MarketplaceRepositories({ installed, publisher }) {
   const scrollRef = useRef()
   const [searchParams, setSearchParams] = useSearchParams()
   const categories = searchParams.getAll('category')
   const tags = searchParams.getAll('tag')
+  const backRepositoryName = searchParams.get('backRepositoryName')
+  const backRepositoryId = searchParams.get('backRepositoryId')
   const [search, setSearch] = useState('')
   const [areFiltersOpen, setAreFiltersOpen] = useState(true)
   const tabStateRef = useRef()
   const isDesktopLarge = useMediaQuery('up', 'desktopLarge')
 
   const [repositories, loadingRepositories, hasMoreRepositories, fetchMoreRepositories] = usePaginatedQuery(MARKETPLACE_QUERY,
-    {},
+    {
+      variables: {
+        ...(publisher ? { publisherId: publisher.id } : {}),
+      },
+    },
     data => data.repositories)
 
   const shouldRenderFeatured = !categories.length && !tags.length && !installed && !search
@@ -201,6 +213,8 @@ function MarketplaceRepositories({ installed }) {
   }
 
   function renderFeatured() {
+    if (publisher) return null
+
     const featuredA = sortedRepositories.shift()
     const featuredB = sortedRepositories.shift()
 
@@ -233,20 +247,13 @@ function MarketplaceRepositories({ installed }) {
     <Flex
       direction="column"
       overflow="hidden"
-      maxWidth-desktopLarge-up={1640}
-      width-desktopLarge-up={1640}
+      maxWidth-desktopLarge-up={publisher ? null : 1640}
+      width-desktopLarge-up={publisher ? null : 1640}
       width-desktopLarge-down="100%"
+      flexGrow={publisher ? 1 : 0}
     >
-      <Flex
-        direction="column"
-      >
-        <Flex
-          marginHorizontal="large"
-          flexShrink={0}
-          direction="row"
-          height={57}
-          alignItems="flex-end"
-        >
+      <TopBar>
+        {!publisher && (
           <TabList
             stateRef={tabStateRef}
             stateProps={{
@@ -269,6 +276,20 @@ function MarketplaceRepositories({ installed }) {
               <Tab>Installed</Tab>
             </LinkTabWrap>
           </TabList>
+        )}
+        {publisher && !(backRepositoryName && backRepositoryId) && (
+          <GoBack
+            text="Back to marketplace"
+            link="/marketplace"
+          />
+        )}
+        {publisher && backRepositoryName && backRepositoryId && (
+          <GoBack
+            text={`Back to ${capitalize(backRepositoryName)}`}
+            link={`/repository/${backRepositoryId}`}
+          />
+        )}
+        {!publisher && (
           <Flex
             paddingBottom="xxsmall"
             paddingTop="xxsmall"
@@ -286,17 +307,40 @@ function MarketplaceRepositories({ installed }) {
               Filters
             </Button>
           </Flex>
-        </Flex>
-      </Flex>
+        )}
+      </TopBar>
       <Flex
         flexGrow={1}
         marginTop="medium"
         overflow="hidden"
       >
-        <StyledTabPanel stateRef={tabStateRef}>
+        {publisher && (
+          <>
+            <PublisherSideNav publisher={publisher} />
+            <ResponsiveLayoutSpacer />
+          </>
+        )}
+        <StyledTabPanel
+          stateRef={tabStateRef}
+          width={publisher ? 928 : null} // 896 + 32 margin
+          maxWidth-desktopLarge-up={publisher ? 928 : null}
+          width-desktopLarge-up={publisher ? 928 : null}
+        >
           <Div position="relative">
+            {publisher && (
+              <Div paddingLeft="large">
+                <H1 title1>
+                  {capitalize(publisher.name)}'s Apps
+                </H1>
+                <Hr
+                  marginTop="large"
+                  marginBottom="medium"
+                />
+              </Div>
+            )}
             <Flex
-              paddingHorizontal="large"
+              paddingLeft="large"
+              paddingRight={publisher ? 0 : 'large'}
               align="stretch"
               wrap
               marginBottom="-8px"
@@ -370,7 +414,7 @@ function MarketplaceRepositories({ installed }) {
             ref={scrollRef}
           >
             {shouldRenderFeatured && renderFeatured()}
-            {resultRepositories?.length > 0 && (
+            {resultRepositories?.length > 0 && !publisher && (
               <H1
                 subtitle1
                 marginTop={shouldRenderFeatured ? 'xlarge' : 0}
@@ -380,7 +424,7 @@ function MarketplaceRepositories({ installed }) {
             )}
             <RepoCardList
               repositories={resultRepositories}
-              marginTop="medium"
+              marginTop={publisher ? 0 : 'medium'}
             />
             {loadingRepositories && (
               <Flex
@@ -435,35 +479,47 @@ function MarketplaceRepositories({ installed }) {
                   >
                     Add an application
                   </Button>
-                  <Button
-                    secondary
-                    onClick={handleClearFilters}
-                  >
-                    Clear filters
-                  </Button>
+                  {!publisher && (
+                    <Button
+                      secondary
+                      onClick={handleClearFilters}
+                    >
+                      Clear filters
+                    </Button>
+                  )}
                 </Flex>
               </EmptyState>
             )}
           </Div>
         </StyledTabPanel>
-        <Div
-          marginRight={areFiltersOpen ? 'large' : `-${sidebarWidth}px`}
-          transform={areFiltersOpen ? 'translateX(0)' : 'translateX(100%)'}
-          opacity={areFiltersOpen ? 1 : 0}
-          flexShrink={0}
-          position="sticky"
-          top={0}
-          right={0}
-          width={sidebarWidth}
-          height="calc(100% - 16px)"
-          overflowY="auto"
-          border="1px solid border"
-          backgroundColor="fill-one"
-          borderRadius="large"
-          transition="all 250ms ease"
-        >
-          <MarketplaceSidebar width="100%" />
-        </Div>
+        {!publisher && (
+          <Div
+            marginRight={areFiltersOpen ? 'large' : `-${sidebarWidth}px`}
+            transform={areFiltersOpen ? 'translateX(0)' : 'translateX(100%)'}
+            opacity={areFiltersOpen ? 1 : 0}
+            flexShrink={0}
+            position="sticky"
+            top={0}
+            right={0}
+            width={sidebarWidth}
+            height="calc(100% - 16px)"
+            overflowY="auto"
+            border="1px solid border"
+            backgroundColor="fill-one"
+            borderRadius="large"
+            transition="all 250ms ease"
+          >
+            <MarketplaceSidebar width="100%" />
+          </Div>
+        )}
+        {publisher && (
+          <>
+            <ResponsiveLayoutSidecarContainer>
+              <PublisherSideCar publisher={publisher} />
+            </ResponsiveLayoutSidecarContainer>
+            <ResponsiveLayoutSpacer />
+          </>
+        )}
       </Flex>
     </Flex>
   )

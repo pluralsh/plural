@@ -60,6 +60,7 @@ import PackageUpdateQueue from './repos/common/PackageUpdateQueue'
 import PackageDependencies from './repos/common/PackageDependencies'
 import ImagePullMetrics from './repos/common/ImagePullMetrics'
 import ImageVulnerabilities from './repos/common/ImageVulnerabilities'
+import Publisher from './publisher/Publisher'
 
 function EditBilling(props) {
   return (
@@ -403,6 +404,11 @@ export function PluralInner() {
                   to="/audits/table"
                 />
               )}
+            />
+            {/* --- PUBLISHER --- */}
+            <Route
+              path="/publisher/:id"
+              element={<Publisher />}
             />
             {/* --- UPGRADES --- */}
             <Route

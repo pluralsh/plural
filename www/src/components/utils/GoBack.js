@@ -1,31 +1,20 @@
-import { A, Flex } from 'honorable'
-import { ArrowLeftIcon } from 'pluralsh-design-system'
 import { Link } from 'react-router-dom'
+import { Button } from 'honorable'
+import { ArrowLeftIcon } from 'pluralsh-design-system'
 
 export function GoBack({
-  text, link, as = Link, ...props
+  text, link,
 }) {
   return (
-    <Flex
-      direction="row"
-      paddingHorizontal="xxlarge"
-      paddingVertical="large"
-      {...props}
+    <Button
+      tertiary
+      as={Link}
+      to={link}
+      startIcon={(
+        <ArrowLeftIcon />
+      )}
     >
-      <A
-        as={as}
-        to={link}
-        fontFamily="Monument Semi-Mono, monospace"
-        fontWeight={500}
-        display="flex"
-        alignContent="center"
-      >
-        <ArrowLeftIcon
-          size={14}
-          marginRight={14}
-        />
-        {text}
-      </A>
-    </Flex>
+      {text}
+    </Button>
   )
 }

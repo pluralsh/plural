@@ -1,10 +1,10 @@
 import { Flex } from 'honorable'
 
-import { ResponsiveLayoutSpacer } from '../layout/ResponsiveLayout.tsx'
+import { ResponsiveLayoutSpacer } from '../layout/ResponsiveLayout'
 
 import MarketplaceRepositories from './MarketplaceRepositories'
 
-function Marketplace({ installed }) {
+function Marketplace({ installed = false, publisher = null }) {
   return (
     <Flex
       direction="column"
@@ -16,11 +16,12 @@ function Marketplace({ installed }) {
         flexGrow={1}
         overflow="hidden"
       >
-        <ResponsiveLayoutSpacer />
+        {!publisher && <ResponsiveLayoutSpacer />}
         <MarketplaceRepositories
           installed={installed}
+          publisher={publisher}
         />
-        <ResponsiveLayoutSpacer />
+        {!publisher && <ResponsiveLayoutSpacer />}
       </Flex>
     </Flex>
   )

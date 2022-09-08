@@ -15,6 +15,7 @@ import {
   ListIcon,
   LogoutIcon,
   MarketIcon,
+  MarketPlusIcon,
   PeopleIcon,
   PersonIcon,
   ScrollIcon,
@@ -25,6 +26,8 @@ import {
 import { getPreviousUserData, wipeToken } from '../../helpers/authentication'
 import { CurrentUserContext, handlePreviousUserClick } from '../login/CurrentUser'
 import { useOnboarded } from '../shell/onboarding/useOnboarded'
+
+import CreatePublisherModal from '../publisher/CreatePublisherModal'
 
 import { NotificationsPanel, WithNotifications } from './WithNotifications'
 
@@ -250,6 +253,7 @@ function Sidebar({
   const [isMenuOpen, setIsMenuOpened] = useState(false)
   const [collapsed, _setCollapsed] = useState(true)
   const [isNotificationsPanelOpen, setIsNotificationsPanelOpen] = useState(false)
+  const [isCreatePublisherModalOpen, setIsCreatePublisherModalOpen] = useState(false)
   const sidebarWidth = collapsed ? 65 : 256 - 32 // 64 + 1px border
   const previousUserData = getPreviousUserData()
 
@@ -482,10 +486,10 @@ function Sidebar({
             <Flex flexGrow={1} />
             <ArrowTopRightIcon />
           </MenuItem>
-          {/* <MenuItem>
+          <MenuItem onClick={() => setIsCreatePublisherModalOpen(true)}>
             <MarketPlusIcon mr={1} />
-            Create new publisher
-          </MenuItem> */}
+            Create a publisher
+          </MenuItem>
           {!!previousUserData && (
             <MenuItem onClick={switchPrevious}>
               <LogoutIcon mr={1} />
@@ -558,6 +562,13 @@ function Sidebar({
           </Flex>
         </Flex>
       )}
+      {/* ---
+        CREATE PUBLISHER MODAL
+      --- */}
+      <CreatePublisherModal
+        open={isCreatePublisherModalOpen}
+        onClose={() => setIsCreatePublisherModalOpen(false)}
+      />
     </>
   )
 }

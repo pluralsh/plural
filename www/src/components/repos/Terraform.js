@@ -17,6 +17,8 @@ import { GoBack } from 'components/utils/GoBack'
 
 import { LinkTabWrap } from 'components/utils/Tabs'
 
+import TopBar from '../layout/TopBar'
+
 import { deepUpdate, updateCache } from '../../utils/graphql'
 
 import { GqlError } from '../utils/Alert'
@@ -131,10 +133,12 @@ export default function Terraform() {
       direction="column"
       fill
     >
-      <GoBack
-        text="Back to packages"
-        link={`/repository/${terraformModule.repository.id}/packages/terraform`}
-      />
+      <TopBar>
+        <GoBack
+          text="Back to packages"
+          link={`/repository/${terraformModule.repository.id}/packages/terraform`}
+        />
+      </TopBar>
       <Box
         pad="16px"
         direction="row"

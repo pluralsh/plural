@@ -6,11 +6,13 @@ import { useQuery } from '@apollo/client'
 import { Box, Collapsible, Text } from 'grommet'
 import { useNavigate, useParams } from 'react-router-dom'
 import sortBy from 'lodash/sortBy'
-import { Down, Next } from 'grommet-icons'
+import { CaretDownIcon, CaretRightIcon } from 'pluralsh-design-system'
 import { Portal } from 'react-portal'
 import { v4 as uuidv4 } from 'uuid'
 
 import { extendConnection } from '../utils/graphql'
+
+import { ignoreEvent } from '../utils/ignore-event'
 
 import { CurrentUserContext } from './login/CurrentUser'
 import { SafeLink } from './utils/Link'
@@ -20,7 +22,6 @@ import { Tag } from './repos/Tags'
 import { CATEGORIES, CATEGORY, EXPLORE_REPOS } from './repos/queries'
 import { StandardScroller } from './utils/SmoothScroller'
 import { LoopingLogo } from './utils/AnimatedLogo'
-import { ignore } from './utils/ModalHeader'
 
 const WIDTH = 20
 
@@ -47,7 +48,7 @@ function RepoTag({ tag, setTag }) {
       hoverIndicator="hover"
       focusIndicator={false}
       onClick={e => {
-        ignore(e)
+        ignoreEvent(e)
         setTag(tag)
       }}
     >
@@ -262,8 +263,8 @@ function Category({
           </Box>
         </Box>
         <Box flex={false}>
-          {open && <Down size="small" />}
-          {!open && <Next size="small" />}
+          {open && <CaretDownIcon size={12} />}
+          {!open && <CaretRightIcon size={12} />}
         </Box>
       </Box>
       <Collapsible

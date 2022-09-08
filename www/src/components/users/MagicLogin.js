@@ -474,7 +474,7 @@ function OAuthOption({ url: { authorizeUrl, provider }, ...props }) {
       }}
       startIcon={(
         <Icon>
-          {createElement(icon, { size: '20px', color: provider.toLowerCase() === 'github' ? 'white' : 'plain' })}
+          {createElement(icon, { size: 20, fullColor: true })}
         </Icon>
       )}
       {...props}

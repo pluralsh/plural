@@ -4,7 +4,7 @@ import {
   Button, Edit, InputCollection, ListView as List,
 } from 'forge-core'
 import { Anchor, Box, Text } from 'grommet'
-import { Add, Stripe } from 'grommet-icons'
+import { CreditCardIcon, PlusIcon } from 'pluralsh-design-system'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useFilePicker } from 'react-sage'
 
@@ -66,9 +66,9 @@ function AccountConnected() {
       gap="xsmall"
       round="xsmall"
     >
-      <Stripe
+      <CreditCardIcon
         color={STRIPE_BLUE}
-        size="medium"
+        size={24}
       />
       <Anchor
         href="https://dashboard.stripe.com/"
@@ -243,7 +243,7 @@ export default function MyPublisher() {
           base={base}
           edit="create"
           name="Create Repository"
-          icon={<Add size="small" />}
+          icon={<PlusIcon size={12} />}
         />
         {publisher.billingAccountId && <AccountConnected />}
         {!publisher.billingAccountId && (<PublisherPayments publisher={publisher} />)}

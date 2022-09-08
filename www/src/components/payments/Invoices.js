@@ -8,13 +8,13 @@ import { useQuery } from '@apollo/client'
 import moment from 'moment'
 
 import { TagContainer } from '../repos/Tags'
-import { TOOLBAR_SIZE } from '../Toolbar'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
 import { subscriptionCost } from './utils'
 import { SUBSCRIPTIONS_Q, SUBSCRIPTION_Q } from './queries'
 
+const TOOLBAR_SIZE = 55
 const ICON_SIZE = '30px'
 
 function Subscription({ current, subscription, setCurrent }) {

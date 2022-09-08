@@ -6,9 +6,12 @@ import {
 } from 'grommet'
 import { useApolloClient, useMutation, useQuery } from '@apollo/client'
 import {
-  AddUser, Button, EditField as Edit, GqlError, Group, Public, TooltipContent, Trash,
+  Button, GqlError, Public, TooltipContent,
 } from 'forge-core'
 import Toggle from 'react-toggle'
+import {
+  PencilIcon, PeopleIcon, PersonPlusIcon, TrashCanIcon,
+} from 'pluralsh-design-system'
 
 import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
 import { LoopingLogo } from '../utils/AnimatedLogo'
@@ -64,7 +67,7 @@ const GroupMemberRow = memo(({ group, user }) => {
       </Box>
       <Box flex={false}>
         <Icon
-          icon={Trash}
+          icon={TrashCanIcon}
           tooltip="delete"
           onClick={mutation}
           iconAttrs={{ color: 'error' }}
@@ -160,7 +163,7 @@ export function Icon({
         hoverIndicator={hover || 'fill-two'}
         focusIndicator={false}
       >
-        {createElement(icon, { size: '14px', ...(iconAttrs || {}) })}
+        {createElement(icon, { size: 16, ...(iconAttrs || {}) })}
       </Box>
       {open && tooltip && (
         <TooltipContent
@@ -336,12 +339,12 @@ export default function GroupRow({ group }) {
           direction="row"
         >
           <Icon
-            icon={Edit}
+            icon={PencilIcon}
             tooltip="edit"
             onClick={() => setEdit(!edit)}
           />
           <Icon
-            icon={AddUser}
+            icon={PersonPlusIcon}
             tooltip="add user"
             onClick={() => setModal({
               text: `Add user to ${group.name}`,
@@ -352,7 +355,7 @@ export default function GroupRow({ group }) {
             })}
           />
           <Icon
-            icon={Group}
+            icon={PeopleIcon}
             tooltip="members"
             onClick={() => setModal({
               text: `${group.name} members`,
@@ -362,7 +365,7 @@ export default function GroupRow({ group }) {
             })}
           />
           <Icon
-            icon={Trash}
+            icon={TrashCanIcon}
             tooltip="delete"
             onClick={mutation}
             iconAttrs={{ color: 'error' }}

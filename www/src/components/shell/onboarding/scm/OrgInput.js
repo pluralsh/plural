@@ -1,5 +1,5 @@
 import { Box, Drop, TextInput } from 'grommet'
-import { Checkmark, Down } from 'grommet-icons'
+import { CaretDownIcon, CheckIcon } from 'pluralsh-design-system'
 import { useCallback, useRef, useState } from 'react'
 
 function OrgOption({
@@ -17,9 +17,9 @@ function OrgOption({
     >
       {render(org)}
       {isCurrent && (
-        <Checkmark
+        <CheckIcon
           color="brand"
-          size="small"
+          size={12}
         />
       )}
     </Box>
@@ -60,7 +60,7 @@ export function OrgInput({
             onClick={() => setOpen(true)}
           >
             {render(org)}
-            <Down size="small" />
+            <CaretDownIcon size={12} />
           </Box>
           {open && (
             <Drop

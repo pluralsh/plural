@@ -3,9 +3,11 @@ import {
   Anchor, Box, Layer, Text,
 } from 'grommet'
 import {
-  Button, Check as Checkmark, Notification, Owner, SecondaryButton,
+  Button, SecondaryButton,
 } from 'forge-core'
-import { Zoom } from 'grommet-icons'
+import {
+  CameraIcon, CheckIcon, LightningIcon, OwnerIcon,
+} from 'pluralsh-design-system'
 import { useMutation } from '@apollo/client'
 
 import { Editable, Slate } from 'slate-react'
@@ -46,7 +48,7 @@ function AcceptIncident({ incident: { id } }) {
 
   return (
     <Control
-      icon={<Owner size="small" />}
+      icon={<OwnerIcon size={12} />}
       onClick={mutation}
     />
   )
@@ -69,7 +71,7 @@ function CompleteIncident({ incident: { id } }) {
   return (
     <>
       <Control
-        icon={<Checkmark size="small" />}
+        icon={<CheckIcon size={12} />}
         onClick={() => setOpen(true)}
       />
       {open && (
@@ -156,7 +158,7 @@ function Follower({ incident: { id, follower } }) {
   return (
     <>
       <Control
-        icon={<Notification size="small" />}
+        icon={<LightningIcon size={12} />}
         onClick={() => setOpen(true)}
       />
       {open && (
@@ -223,8 +225,8 @@ function ZoomMeeting({ incident: { id, title } }) {
         pad={{ horizontal: 'xsmall' }}
         onClick={mutation}
       >
-        <Zoom
-          size="17px"
+        <CameraIcon
+          size={17}
           color="plain"
         />
       </Box>

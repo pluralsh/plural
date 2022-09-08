@@ -1,9 +1,11 @@
 import { useCallback, useRef, useState } from 'react'
 import { Box, Layer, Text } from 'grommet'
 import {
-  GqlError, Group, InputCollection, TagInput, Trash, User,
+  GqlError, InputCollection, TagInput,
 } from 'forge-core'
-import { Edit } from 'grommet-icons'
+import {
+  EditIcon, PeopleIcon, PersonIcon, TrashCanIcon,
+} from 'pluralsh-design-system'
 import { Button, Div } from 'honorable'
 
 import { useApolloClient, useMutation } from '@apollo/client'
@@ -82,8 +84,8 @@ function PermissionToggle({
 }
 
 const ICONS = {
-  user: <User size="14px" />,
-  group: <Group size="14px" />,
+  user: <PersonIcon size={16} />,
+  group: <PeopleIcon size={16} />,
 }
 
 const TEXT = {
@@ -365,7 +367,7 @@ export default function RoleRow({ role }) {
           direction="row"
         >
           <Icon
-            icon={Edit}
+            icon={EditIcon}
             tooltip="edit"
             onClick={() => setModal({
               text: `Edit role ${role.name}`,
@@ -376,7 +378,7 @@ export default function RoleRow({ role }) {
             })}
           />
           <Icon
-            icon={Trash}
+            icon={TrashCanIcon}
             tooltip="delete"
             onClick={mutation}
             iconAttrs={{ color: 'error' }}

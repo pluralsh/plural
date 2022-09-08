@@ -6,7 +6,11 @@ import { CardElement, Elements, injectStripe } from 'react-stripe-elements'
 import { Box, Layer, Text } from 'grommet'
 import { useMutation, useQuery } from '@apollo/client'
 import { Button, PaymentMethods, Trash } from 'forge-core'
-import { Amex, Mastercard, Visa } from 'grommet-icons'
+import {
+  CreditCardIcon as Amex,
+  CreditCardIcon as Mastercard,
+  CreditCardIcon as Visa,
+} from 'pluralsh-design-system'
 
 import { HeaderItem } from 'components/utils/Header'
 
@@ -28,7 +32,9 @@ function _CardForm({ stripe, onCompleted }) {
   const onClick = useCallback(() => {
     stripe.createToken().then(({ token, error }) => {
       setStripeError(error)
-      if (token && token.id) return mutation({ variables: { source: token.id } })
+      if (token && token.id) {
+        return mutation({ variables: { source: token.id } })
+      }
     })
   }, [stripe, mutation])
 
@@ -185,7 +191,9 @@ function CardRow({ card, noDelete }) {
           align="center"
         >
           <Box fill="horizontal">
-            <Text size="small">{card.expMonth} / {card.expYear}</Text>
+            <Text size="small">
+              {card.expMonth} / {card.expYear}
+            </Text>
           </Box>
           <Icon
             icon={Trash}
@@ -212,7 +220,8 @@ export function CardOption({ card, current, setCurrent }) {
         <Text
           size="small"
           color="dark-3"
-        >{expiry(card.expMonth, card.expYear)}
+        >
+          {expiry(card.expMonth, card.expYear)}
         </Text>
       </Box>
     </TagContainer>

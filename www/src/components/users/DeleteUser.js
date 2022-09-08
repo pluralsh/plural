@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Trash } from 'forge-core'
+import { TrashCanIcon } from 'pluralsh-design-system'
 import { useMutation } from '@apollo/client'
 
 import { Icon } from '../accounts/Group'
@@ -20,7 +20,7 @@ export function DeleteUser({ id, update }) {
   return (
     <>
       <Icon
-        icon={Trash}
+        icon={TrashCanIcon}
         onClick={() => setConfirm(true)}
         iconAttrs={{ color: 'error' }}
       />

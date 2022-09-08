@@ -2,7 +2,7 @@ import { useLocation } from 'react-router-dom'
 import { useMutation, useQuery } from '@apollo/client'
 import { Button } from 'forge-core'
 import queryString from 'query-string'
-import { Transaction } from 'grommet-icons'
+import { ArrowRightLeftIcon } from 'pluralsh-design-system'
 import { Box, Text } from 'grommet'
 
 import { LoginPortal } from '../users/MagicLogin'
@@ -54,7 +54,7 @@ export function OAuthConsent() {
             src={PLURAL_MARK_WHITE}
             width="60px"
           />
-          <Transaction size="15px" />
+          <ArrowRightLeftIcon size={15} />
           <RepoIcon
             repo={repository}
             size="60px"

@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { CircleInformation } from 'grommet-icons'
+import {
+  Codeline, Divider, InfoIcon, ModalHeader,
+} from 'pluralsh-design-system'
 
 import {
   Button, Flex, Modal, Span,
 } from 'honorable'
-import { Codeline, Divider, ModalHeader } from 'pluralsh-design-system'
 
 const CLOUDS = {
   GCP: 'Google Cloud Platform (GCP)',
@@ -61,7 +62,7 @@ function TerminalInformation({ shell }) {
       <Button
         small
         tertiary
-        startIcon={<CircleInformation size="16px" />}
+        startIcon={<InfoIcon size={16} />}
         onClick={() => setOpen(true)}
       >
         Cloud shell info

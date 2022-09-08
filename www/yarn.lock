@@ -12004,7 +12004,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql-ws@npm:5.10.1, graphql-ws@npm:^5.4.1":
+"graphql-ws@npm:^5.4.1":
   version: 5.10.1
   resolution: "graphql-ws@npm:5.10.1"
   peerDependencies:
@@ -12026,13 +12026,6 @@ __metadata:
   version: 15.5.0
   resolution: "graphql@npm:15.5.0"
   checksum: 58a69f7274ae94c690bfa2517f96bbaf1327e1ca1fc46606e772ba2f7ca517adeb375346301373351e693022f448b7866163034209623d7c5315819ef8c5e7c0
-  languageName: node
-  linkType: hard
-
-"graphql@npm:16.6.0":
-  version: 16.6.0
-  resolution: "graphql@npm:16.6.0"
-  checksum: bf1d9e3c1938ce3c1a81e909bd3ead1ae4707c577f91cff1ca2eca474bfbc7873d5d7b942e1e9777ff5a8304421dba57a4b76d7a29eb19de8711cb70e3c2415e
   languageName: node
   linkType: hard
 
@@ -23211,8 +23204,6 @@ __metadata:
     fireworks-js: 1.4.1
     forge-core: 1.4.6
     fuse.js: 6.6.2
-    graphql: 16.6.0
-    graphql-ws: 5.10.1
     grommet: 2.25.1
     grommet-icons: 4.7.0
     honorable: 0.139.0

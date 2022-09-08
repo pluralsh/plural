@@ -5,11 +5,12 @@ import {
 } from 'forge-core'
 import { Anchor, Box, Text } from 'grommet'
 import { Add, Stripe } from 'grommet-icons'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useFilePicker } from 'react-sage'
 
+import { SectionChoice } from 'components/utils/SectionChoice'
+
 import { STRIPE_BLUE } from '../payments/constants'
-import { EditContent, EditSelect } from '../users/EditUser'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 import { SIDEBAR_WIDTH } from '../constants'
 
@@ -20,12 +21,41 @@ import CreateRepository from '../repos/CreateRepository'
 import Repositories from '../repos/Repositories'
 import { deepUpdate, updateCache } from '../../utils/graphql'
 import Avatar from '../users/Avatar'
-import { SectionPortal } from '../Explore'
+import { SectionContentContainer, SectionPortal } from '../Explore'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
 import { AUTHORIZE_URL, CONNECT_ICON } from './constants'
 
 import { EDIT_PUBLISHER, FULL_PUBLISHER_Q, LINK_ACCOUNT } from './queries'
+
+function EditSelect({
+  name, edit, icon, base,
+}) {
+  const { editing } = useParams()
+  const navigate = useNavigate()
+
+  return (
+    <SectionChoice
+      name={name}
+      label={name}
+      icon={icon}
+      onClick={edit === editing ? null : () => navigate(`${base || '/user/edit/'}${edit}`)}
+      selected={editing === edit}
+    />
+  )
+}
+
+function EditContent({ edit, name, children }) {
+  const { editing } = useParams()
+
+  if (editing !== edit) return null
+
+  return (
+    <SectionContentContainer header={name}>
+      {children}
+    </SectionContentContainer>
+  )
+}
 
 function AccountConnected() {
   return (

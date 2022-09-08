@@ -12,7 +12,10 @@ clientsClaim()
 // Their URLs are injected into the manifest variable below.
 // This variable must be present somewhere in your service worker file,
 // even if you decide not to use precaching. See https://cra.link/PWA
-precacheAndRoute(self.__WB_MANIFEST)
+// Filter out the "index.html" so that it is not cached as it breaks
+// the application when the code changes and SW caches it
+const precache = self.__WB_MANIFEST.filter(file => !file.url.includes('index.html'))
+precacheAndRoute(precache)
 
 const isSameOrigin = (url) => url.origin === self.location.origin;
 const shouldCache = (pathname) => Boolean(

@@ -20,6 +20,7 @@ import {
   TabList,
   TabPanel,
 } from 'pluralsh-design-system'
+import { Flex } from 'honorable'
 
 import { GoBack } from 'components/utils/GoBack'
 
@@ -29,7 +30,7 @@ import {
 
 import { LinkTabWrap } from 'components/utils/Tabs'
 
-import { Flex } from 'honorable'
+import TopBar from '../layout/TopBar'
 
 import { PluralConfigurationContext } from '../login/CurrentUser'
 
@@ -180,10 +181,12 @@ export function Docker() {
       direction="column"
       fill
     >
-      <GoBack
-        text="Back to packages"
-        link={`/repository/${image.dockerRepository.repository.id}/packages/docker`}
-      />
+      <TopBar>
+        <GoBack
+          text="Back to packages"
+          link={`/repository/${image.dockerRepository.repository.id}/packages/docker`}
+        />
+      </TopBar>
       <Box
         pad="16px"
         direction="row"

@@ -18,6 +18,7 @@ import {
   ResponsiveLayoutSidenavContainer,
   ResponsiveLayoutSpacer,
 } from '../layout/ResponsiveLayout.tsx'
+import TopBar from '../layout/TopBar'
 
 import RepositorySideNav from './RepositorySideNav.tsx'
 import { RepositorySideCar } from './RepositorySideCar.tsx'
@@ -63,10 +64,12 @@ function Repository() {
         direction="column"
         overflowY="hidden"
       >
-        <GoBack
-          text="Back to marketplace"
-          link="/marketplace"
-        />
+        <TopBar>
+          <GoBack
+            text="Back to marketplace"
+            link="/marketplace"
+          />
+        </TopBar>
         <Flex
           flexGrow={1}
           height={0}

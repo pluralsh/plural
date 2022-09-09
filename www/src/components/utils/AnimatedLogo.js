@@ -16,7 +16,12 @@ function scaling(scale) {
 const image = (img, dark) => img.replace('{color}', dark ? 'wht' : 'blk')
 
 export function LoopingLogo({
-  nofill, darkbg, height, scale, dark, still,
+  nofill = false,
+  darkbg = false,
+  height = null,
+  scale = null,
+  dark = false,
+  still = false,
 }) {
   return (
     <Box

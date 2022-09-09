@@ -9,7 +9,7 @@ import Avatar from '../users/Avatar'
 import { DetailContainer } from '../repos/Installation'
 import { BreadcrumbsContext } from '../Breadcrumbs'
 
-import { PUBLISHER_Q } from './queries'
+import { PUBLISHER_QUERY } from './queries'
 
 function formatAddress({
   line1, line2, city, state, country, zip,
@@ -75,7 +75,7 @@ function PublisherView({
 
 export default function Publisher() {
   const { publisherId } = useParams()
-  const { loading, data } = useQuery(PUBLISHER_Q, { variables: { publisherId } })
+  const { loading, data } = useQuery(PUBLISHER_QUERY, { variables: { publisherId } })
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
 
   useEffect(() => {

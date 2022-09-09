@@ -1,5 +1,4 @@
 import React, {
-  MouseEventHandler,
   useContext,
   useEffect,
   useMemo,
@@ -12,9 +11,7 @@ import {
   Flex,
   Form,
   H2,
-  Img,
   MenuItem,
-  P,
   Select,
   Span,
   Switch,
@@ -45,6 +42,7 @@ import { AuthMethod as authMethods } from '../oidc/types'
 import { useUpdateState } from '../../hooks/useUpdateState'
 
 import SaveButton from '../utils/SaveButton'
+import IconUploadPreview from '../utils/IconUploadPreview'
 
 import { TAGS_SEARCH_QUERY, UPDATE_REPOSITORY_MUTATION } from './queries'
 import { RepositoryActions } from './misc'
@@ -67,54 +65,6 @@ const StyledTextInput = styled(TextInput)`
     border-color: #5c77ff;
   }
 `
-
-function RepoIcon({
-  src = null,
-  onClick,
-}: {
-  src: string | null;
-  onClick: MouseEventHandler;
-}) {
-  if (!src) {
-    return (
-      <Flex
-        width={96}
-        height={96}
-        backgroundColor="fill-two"
-        _hover={{
-          backgroundColor: 'fill-two-hover',
-        }}
-        border="1px solid border-fill-two"
-        borderRadius="medium"
-        align="center"
-        justify="center"
-        cursor="pointer"
-        onClick={onClick}
-      >
-        <P
-          title2
-          color="text-light"
-        >
-          +
-        </P>
-      </Flex>
-    )
-  }
-
-  return (
-    <Img
-      src={src}
-      alt="Icon"
-      width={64 + 32}
-      height={64 + 32}
-      objectFit="cover"
-      backgroundColor="fill-one"
-      cursor="pointer"
-      border="1px solid border"
-      onClick={onClick}
-    />
-  )
-}
 
 type FormState = {
   name: string;
@@ -201,33 +151,32 @@ function RepositoryEdit() {
 
   const tagSearchRef = useRef<any>(null)
 
-  const [mutation, { loading, error }] = useMutation(UPDATE_REPOSITORY_MUTATION,
-    {
-      variables: {
-        repositoryId: id,
-        attributes: {
-          name: formState.name,
-          description: formState.description,
-          category: formState.category,
-          oauthSettings:
-            formState.oauthUrl && formState.oauthMethod
-              ? {
-                uriFormat: formState.oauthUrl,
-                authMethod: formState.oauthMethod,
-              }
-              : null,
-          ...(iconUpdate.file ? { icon: iconUpdate.file } : {}),
-          tags: formState.tags,
-          private: formState.private,
-        },
+  const [mutation, { loading, error }] = useMutation(UPDATE_REPOSITORY_MUTATION, {
+    variables: {
+      repositoryId: id,
+      attributes: {
+        name: formState.name,
+        description: formState.description,
+        category: formState.category,
+        oauthSettings:
+          formState.oauthUrl && formState.oauthMethod
+            ? {
+              uriFormat: formState.oauthUrl,
+              authMethod: formState.oauthMethod,
+            }
+            : null,
+        ...(iconUpdate.file ? { icon: iconUpdate.file } : {}),
+        tags: formState.tags,
+        private: formState.private,
       },
-      update: (_cache, { data: { updateRepository } }) => {
-        setIconUpdate({
-          previewUrl: updateRepository.icon || null,
-          file: null,
-        })
-      },
-    })
+    },
+    update: (_cache, { data: { updateRepository } }) => {
+      setIconUpdate({
+        previewUrl: updateRepository.icon || null,
+        file: null,
+      })
+    },
+  })
 
   console.log('Error: ', error)
 
@@ -407,7 +356,6 @@ function RepositoryEdit() {
             onReset={e => e.preventDefault()}
           >
             {iconPicker.HiddenFileInput(iconPickerInputOpts)}
-
             <FormField
               marginBottom="large"
               label="Icon"
@@ -417,7 +365,7 @@ function RepositoryEdit() {
                 alignItems="flex-end"
                 gap="medium"
               >
-                <RepoIcon
+                <IconUploadPreview
                   src={iconUpdate.previewUrl}
                   onClick={iconPicker.onClick}
                 />

@@ -6,7 +6,7 @@ import { Button } from 'forge-core'
 import { ME_Q } from '../users/queries'
 import { deepUpdate, updateCache } from '../../utils/graphql'
 
-import { CREATE_PUBLISHER } from './queries'
+import { CREATE_PUBLISHER_MUTATION } from './queries'
 
 function Input({
   label, header, placeholder, value, setValue,
@@ -30,7 +30,7 @@ function Input({
 
 export default function CreatePublisher({ onCreate }) {
   const [attributes, setAttributes] = useState({ description: '', name: '' })
-  const [mutation, { loading }] = useMutation(CREATE_PUBLISHER, {
+  const [mutation, { loading }] = useMutation(CREATE_PUBLISHER_MUTATION, {
     variables: { attributes },
     update: (cache, { data: { createPublisher } }) => updateCache(cache, {
       query: ME_Q,

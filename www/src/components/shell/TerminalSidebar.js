@@ -528,7 +528,7 @@ function CheatsheetCommand({ command, description }) {
         flex="50%"
         body2
       >
-        <strong>{command}</strong>
+        <strong>plural {command}</strong>
       </P>
       <P
         flex="50%"

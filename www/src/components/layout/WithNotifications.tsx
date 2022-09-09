@@ -13,7 +13,6 @@ import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 import InfiniteScroller from '../utils/InfiniteScroller'
 
 import { NOTIFICATIONS_QUERY } from './queries'
-// import { DEBUG_NOTIFCATIONS } from './DEBUG_NOTIFCATIONS'
 
 type WithNotificationsProps = {
   children: ({
@@ -42,12 +41,6 @@ export function NotificationsPanel({ closePanel }) {
   ] = usePaginatedQuery(NOTIFICATIONS_QUERY,
     { variables: {} },
     data => data.notifications)
-
-  // Uncomment below (and comment out above) to load debug notifications
-  // const notifications = DEBUG_NOTIFCATIONS
-  // const loadingNotifications = false
-  // const hasMoreNotifications = false
-  // const fetchMoreNotifications = () => {}
 
   if (!notifications.length) {
     return <P padding="medium">You do not have any notifications yet.</P>

@@ -30,7 +30,7 @@ export function ShellStatus({
   }, error,
 }) {
   return (
-    <OnboardingWrapper stepIndex={3}>
+    <>
       <OnboardingCard
         paddingTop="xlarge"
         paddingBottom="xlarge"
@@ -172,6 +172,6 @@ export function ShellStatus({
           </Button>
         </Flex>
       </OnboardingCard>
-    </OnboardingWrapper>
+    </>
   )
 }

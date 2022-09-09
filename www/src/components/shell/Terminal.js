@@ -23,6 +23,7 @@ import TerminalThemeProvider from './TerminalThemeProvider'
 import TerminalSidebar from './TerminalSidebar'
 import TerminalInformation from './TerminalInformation'
 import { useOnboarded } from './onboarding/useOnboarded'
+import OnboardingWrapper from './onboarding/OnboardingWrapper'
 
 // eslint-disable-next-line
 const { Buffer } = require('buffer/')
@@ -186,7 +187,9 @@ export function Terminal() {
 
   if (!alive) {
     return (
-      <ShellStatus shell={shell} />
+      <OnboardingWrapper stepIndex={3}>
+        <ShellStatus shell={shell} />
+      </OnboardingWrapper>
     )
   }
 

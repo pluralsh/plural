@@ -24,6 +24,7 @@ import TerminalSidebar from './TerminalSidebar'
 import TerminalInformation from './TerminalInformation'
 import { useOnboarded } from './onboarding/useOnboarded'
 import OnboardingWrapper from './onboarding/OnboardingWrapper'
+import { JoinCommunityCard } from './onboarding/JoinCommunityCard'
 
 // eslint-disable-next-line
 const { Buffer } = require('buffer/')
@@ -189,6 +190,7 @@ export function Terminal() {
     return (
       <OnboardingWrapper stepIndex={3}>
         <ShellStatus shell={shell} />
+        <JoinCommunityCard />
       </OnboardingWrapper>
     )
   }

@@ -3,8 +3,14 @@ name: Plural
 on:
   push:
     branches: [ master ]
+    paths-ignore:
+      - ".github/workflows/www.yaml"
+      - 'www/**'
   pull_request:
     branches: [ master ]
+    paths-ignore:
+      - ".github/workflows/www.yaml"
+      - 'www/**'
 jobs:
   build:
     name: Build image

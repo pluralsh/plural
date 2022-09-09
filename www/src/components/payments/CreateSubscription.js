@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Box, Layer, Text } from 'grommet'
 import { Button, NumericInput } from 'forge-core'
-import { Add } from 'grommet-icons'
+import { PlusIcon } from 'pluralsh-design-system'
 import { useMutation } from '@apollo/client'
 
 import { deepUpdate } from '../../utils/graphql'
@@ -21,7 +21,7 @@ function LineItemInput({ item: { dimension, name, cost }, included, updateItem }
       gap="xsmall"
       align="center"
     >
-      <Add size="15px" />
+      <PlusIcon size={15} />
       <NumericInput
         margin={{ horizontal: 'xsmall' }}
         value={0}

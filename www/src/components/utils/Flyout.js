@@ -1,5 +1,5 @@
 import { Box, Text } from 'grommet'
-import { Next } from 'grommet-icons'
+import { CaretRightIcon } from 'pluralsh-design-system'
 import { Portal } from 'react-portal'
 
 const FLYOUT_ID = 'flyout-container'
@@ -38,7 +38,7 @@ export function Flyout({
             onClick={() => setOpen(false)}
             hoverIndicator="fill-one"
           >
-            <Next size="small" />
+            <CaretRightIcon size={12} />
           </Box>
         </Box>
         <Box fill>

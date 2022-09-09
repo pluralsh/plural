@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 import { Box, Text, TextInput } from 'grommet'
-import { Add } from 'grommet-icons'
+import { PlusIcon } from 'pluralsh-design-system'
 import { useMutation } from '@apollo/client'
 import { Button, SecondaryButton, Select } from 'forge-core'
 import { FilePicker } from 'react-file-picker'
@@ -60,7 +60,7 @@ function ImagePicker({
             src={image.previewUrl}
           />
         )
-          : <Add size="20px" />}
+          : <PlusIcon size="20px" />}
       </Box>
       <Box gap="xsmall">
         <Text size="small">{image ? image.file.name : 'Select an image'}</Text>

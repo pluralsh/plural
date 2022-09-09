@@ -4,10 +4,10 @@ import {
 import {
   Box, Drop, Text, TextInput, ThemeContext,
 } from 'grommet'
+import { Button } from 'forge-core'
 import {
-  SortAsc as Ascend, Button, Check as Checkmark, Close, SortDesc as Descend, Filters as FiltersI, Notification, Explore as Search, Tag as TagIcon, User,
-} from 'forge-core'
-import { Next } from 'grommet-icons'
+  CaretRightIcon, CheckIcon, CloseIcon, FiltersIcon, LightningIcon, PersonIcon, SearchIcon, SortAscIcon, SortDescIcon, TagIcon,
+} from 'pluralsh-design-system'
 import { useQuery } from '@apollo/client'
 
 import moment from 'moment'
@@ -160,9 +160,9 @@ export function IncidentRow({
       <SubscriptionBadge incident={incident} />
       <Severity incident={incident} />
       {id === selected && (
-        <Checkmark
+        <CheckIcon
           color="brand"
-          size="15px"
+          size={15}
         />
       )}
     </Box>
@@ -190,7 +190,7 @@ function FilterOption({
         {icon}
         <Text size="small">{filter.toLowerCase()}</Text>
       </Box>
-      {next && <Next size="small" />}
+      {next && <CaretRightIcon size={12} />}
     </Box>
   )
 }
@@ -235,7 +235,7 @@ function TagInput({ setAlternate }) {
         onClick={accept}
         hoverIndicator="light-3"
       >
-        <Checkmark size="small" />
+        <CheckIcon size={12} />
       </Box>
       <Box
         flex={false}
@@ -244,7 +244,7 @@ function TagInput({ setAlternate }) {
         onClick={() => setAlternate(null)}
         hoverIndicator="light-3"
       >
-        <Close size="small" />
+        <CloseIcon size={12} />
       </Box>
     </Box>
   )
@@ -270,7 +270,7 @@ export function FilterSelect() {
         focusIndicator={false}
         pad={{ horizontal: 'small', vertical: 'xsmall' }}
       >
-        <FiltersI size="small" />
+        <FiltersIcon size={12} />
         <Text size="small">Filters</Text>
       </Box>
       {open && (
@@ -287,18 +287,18 @@ export function FilterSelect() {
               {setAlternate => (
                 <Box pad={{ vertical: 'xsmall' }}>
                   <FilterOption
-                    icon={<Notification size="small" />}
+                    icon={<LightningIcon size={12} />}
                     filter={IncidentFilter.NOTIFICATIONS}
                     onClick={() => setFilters([...filters, { type: IncidentFilter.NOTIFICATIONS }])}
                   />
                   <FilterOption
-                    icon={<User size="small" />}
+                    icon={<PersonIcon size={12} />}
                     filter={IncidentFilter.FOLLOWING}
                     onClick={() => setFilters([...filters, { type: IncidentFilter.FOLLOWING }])}
                   />
                   <FilterOption
                     next
-                    icon={<TagIcon size="small" />}
+                    icon={<TagIcon size={12} />}
                     filter={IncidentFilter.TAG}
                     onClick={() => setAlternate(<TagInput
                       setFilters={setFilters}
@@ -355,8 +355,8 @@ function Filters() {
 
 function Checked() {
   return (
-    <Checkmark
-      size="small"
+    <CheckIcon
+      size={12}
       color="brand"
     />
   )
@@ -399,7 +399,7 @@ function SortOptions() {
         gap="xsmall"
         onClick={() => setOpen(true)}
       >
-        {selectedOrder === Order.DESC ? <Descend size="15px" /> : <Ascend size="15px" />}
+        {selectedOrder === Order.DESC ? <SortDescIcon size={15} /> : <SortAscIcon size={15} />}
         <Text size="small">{IncidentSortNames[selectedSort]}</Text>
       </Box>
       {open && (
@@ -537,7 +537,7 @@ export function Incidents() {
             <Box fill="horizontal">
               <TextInput
                 plain
-                icon={<Search size="15px" />}
+                icon={<SearchIcon size={15} />}
                 value={q || ''}
                 placeholder="search for an incident"
                 onChange={({ target: { value } }) => setQ(value)}

@@ -1,12 +1,12 @@
 import { useCallback, useState } from 'react'
 import moment from 'moment'
-import { Button, Roles, Trash } from 'forge-core'
+import { Button } from 'forge-core'
 import { useMutation, useQuery } from '@apollo/client'
 import {
   Box, Layer, Text, TextInput,
 } from 'grommet'
 import { Route, Routes, useNavigate } from 'react-router-dom'
-
+import { ScrollIcon, TrashCanIcon } from 'pluralsh-design-system'
 import { HeaderItem } from 'components/utils/Header'
 
 import {
@@ -19,7 +19,7 @@ import Avatar from '../users/Avatar'
 
 import { ModalHeader } from '../ModalHeader'
 
-import { ignore } from '../utils/ModalHeader'
+import { ignoreEvent } from '../../utils/ignore-event'
 import { GqlError } from '../utils/Alert'
 
 import { Placeholder } from './Audits'
@@ -72,7 +72,7 @@ function DomainRow({ domain }) {
   const [open, setOpen] = useState(false)
   const navigate = useNavigate()
   const doOpen = useCallback((value, e) => {
-    if (e) ignore(e)
+    if (e) ignoreEvent(e)
     setOpen(value)
   }, [setOpen])
 
@@ -109,12 +109,12 @@ function DomainRow({ domain }) {
             <Text size="small">{moment(domain.insertedAt).format('lll')}</Text>
           </Box>
           <Icon
-            icon={Roles}
+            icon={ScrollIcon}
             tooltip="Edit Access Policy"
             onClick={e => doOpen('edit', e)}
           />
           <Icon
-            icon={Trash}
+            icon={TrashCanIcon}
             tooltip="delete"
             onClick={e => doOpen('delete', e)}
             iconAttrs={{ color: 'error' }}

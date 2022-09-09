@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import { Box, Text, ThemeContext } from 'grommet'
-import { Alert as AlertError, Checkmark, StatusInfo } from 'grommet-icons'
+import { CheckIcon, ErrorIcon, InfoIcon } from 'pluralsh-design-system'
 import { normalizeColor } from 'grommet/utils'
 
 export const AlertStatus = {
@@ -19,27 +19,27 @@ function AlertIcon({ status, color }) {
   switch (status) {
   case AlertStatus.SUCCESS:
     return (
-      <Checkmark
+      <CheckIcon
         color={color}
         size="medium"
       />
     )
   case AlertStatus.ERROR:
     return (
-      <AlertError
+      <ErrorIcon
         color={color}
         size="medium"
       />
     )
   case AlertStatus.INFO:
     return (
-      <StatusInfo
+      <InfoIcon
         color={color}
         size="medium"
       />
     )
   default:
-      // nothing
+    // nothing
   }
 
   return null
@@ -78,7 +78,8 @@ export function Alert({ status, header, description }) {
         <Text
           size="small"
           weight={500}
-        >{header}
+        >
+          {header}
         </Text>
         <Text size="small">{description}</Text>
       </Box>

@@ -11932,19 +11932,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"grommet-icons@npm:4.7.0":
-  version: 4.7.0
-  resolution: "grommet-icons@npm:4.7.0"
-  dependencies:
-    grommet-styles: ^0.2.0
-  peerDependencies:
-    react: ">= 16.6.0"
-    react-dom: ">= 16.6.0"
-    styled-components: ">= 5.x"
-  checksum: 5fd1f15978aa4adcb43b1df33e80f9b40cd56688cb2a0270b77363fd28cb3f59ee5e8968898081d561a3c937f7138a9eca03807dbe0c983984ef3e40d828cefe
-  languageName: node
-  linkType: hard
-
 "grommet-icons@npm:^4.7.0":
   version: 4.8.0
   resolution: "grommet-icons@npm:4.8.0"
@@ -16813,9 +16800,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pluralsh-design-system@npm:1.200.0":
-  version: 1.200.0
-  resolution: "pluralsh-design-system@npm:1.200.0"
+"pluralsh-design-system@npm:1.202.0":
+  version: 1.202.0
+  resolution: "pluralsh-design-system@npm:1.202.0"
   dependencies:
     "@floating-ui/react-dom-interactions": 0.8.1
     "@react-aria/button": 3.6.1
@@ -16850,7 +16837,7 @@ __metadata:
     react-dom: ">=16.0.0"
     react-transition-group: ">=4.4.2"
     styled-components: ">=5.3.5"
-  checksum: fd2349aafc4c965f21f7b339a21cbae9da8fbe8348f2b61202da66d7d5a511d95a3bbddbb4370916858133bfdd42f8481b9d62a7e7a72864a919155fa8272deb
+  checksum: 13074af80cca051de543371f0ab45deee43d0438eb8f775bd940ba72d8408eef676b0d98ed3eddf51208ed6cd04c961394312f849ddd222bb200de6d778f4a28
   languageName: node
   linkType: hard
 
@@ -23115,7 +23102,6 @@ __metadata:
     forge-core: 1.4.6
     fuse.js: 6.6.2
     grommet: 2.25.1
-    grommet-icons: 4.7.0
     honorable: 0.139.0
     honorable-recipe-mp: 0.3.0
     honorable-theme-default: 0.65.0
@@ -23125,7 +23111,7 @@ __metadata:
     moment: 2.29.4
     phoenix: 1.6.11
     pluralsh-absinthe-socket-apollo-link: 0.2.0
-    pluralsh-design-system: 1.200.0
+    pluralsh-design-system: 1.202.0
     postcss-import: 8.2.0
     prop-types: 15.8.1
     query-string: 7.1.1

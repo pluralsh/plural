@@ -3,13 +3,10 @@ import moment from 'moment'
 import {
   Flex, H2, Modal, P, Span, Tooltip,
 } from 'honorable'
-import { Download, ListView } from 'forge-core'
 import {
-  Apple, DocumentText, Ubuntu, Windows,
-} from 'grommet-icons'
+  AppleLogoIcon, Code, DownloadIcon, FileIcon, ListIcon, UbuntuLogoIcon, WindowsLogoIcon,
+} from 'pluralsh-design-system'
 import fs from 'filesize'
-
-import { Code } from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 
@@ -17,9 +14,18 @@ import InfiniteScroller from '../utils/InfiniteScroller'
 import { download } from '../../utils/file'
 
 const platformToIcon = {
-  MAC: <Apple size="14px" />,
-  WINDOWS: <Windows size="14px" />,
-  LINUX: <Ubuntu size="14px" />,
+  MAC: <AppleLogoIcon
+    size="14px"
+    fullColor
+  />,
+  WINDOWS: <WindowsLogoIcon
+    size="14px"
+    fullColor
+  />,
+  LINUX: <UbuntuLogoIcon
+    size="14px"
+    fullColor
+  />,
 }
 
 function ArtifactIcon({ Icon, tooltip, ...props }) {
@@ -34,7 +40,7 @@ function ArtifactIcon({ Icon, tooltip, ...props }) {
         cursor="pointer"
         {...props}
       >
-        <Icon size="16px" />
+        <Icon size={16} />
       </Flex>
     </Tooltip>
   )
@@ -90,18 +96,18 @@ function Artifacts({ artifact }) {
           width="calc(100% / 5)"
         >
           <ArtifactIcon
-            Icon={DocumentText}
+            Icon={FileIcon}
             tooltip="Readme"
             onClick={() => setReadmeOpen(true)}
           />
           <ArtifactIcon
-            Icon={ListView}
+            Icon={ListIcon}
             tooltip="Details"
             onClick={() => setDetailsOpen(true)}
             ml={1}
           />
           <ArtifactIcon
-            Icon={Download}
+            Icon={DownloadIcon}
             tooltip="Download"
             onClick={handleDownload}
             ml={1}

@@ -1,7 +1,7 @@
 import { useCallback, useContext, useState } from 'react'
 import { Box, Layer, TextInput } from 'grommet'
 import { useMutation, useQuery } from '@apollo/client'
-import { Edit } from 'grommet-icons'
+import { EditIcon } from 'pluralsh-design-system'
 import { Scroller } from 'forge-core'
 import { Button } from 'honorable'
 
@@ -68,7 +68,7 @@ function ServiceAccount({ user, next, update }) {
           Impersonate
         </Button>
         <Icon
-          icon={Edit}
+          icon={EditIcon}
           tooltip="edit"
           onClick={() => setOpen(true)}
         />

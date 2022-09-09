@@ -1,6 +1,5 @@
 import { Layer } from 'grommet'
-import { Up } from 'grommet-icons'
-import { Button } from 'pluralsh-design-system'
+import { Button, CaretUpIcon } from 'pluralsh-design-system'
 
 export function ReturnToBeginning({ beginning }) {
   return (
@@ -11,7 +10,7 @@ export function ReturnToBeginning({ beginning }) {
     >
       <Button
         onClick={beginning}
-        endIcon={<Up size="small" />}
+        endIcon={<CaretUpIcon size="small" />}
         marginRight="100px"
         marginBottom="30px"
       >

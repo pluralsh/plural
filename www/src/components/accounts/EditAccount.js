@@ -9,9 +9,9 @@ import { useParams } from 'react-router-dom'
 import {
   Button,
   InputCollection,
-  Trash,
 } from 'forge-core'
 import { useMutation } from '@apollo/client'
+import { TrashCanIcon } from 'pluralsh-design-system'
 
 import { CurrentUserContext } from '../login/CurrentUser'
 
@@ -75,7 +75,7 @@ function DomainRow({ domain: { domain, enableSso }, removeDomain }) {
         )}
       </Box>
       <Icon
-        icon={Trash}
+        icon={TrashCanIcon}
         tooltip="delete"
         onClick={() => removeDomain(domain)}
         iconAttrs={{ color: 'error' }}

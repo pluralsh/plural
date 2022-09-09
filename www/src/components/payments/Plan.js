@@ -8,11 +8,11 @@ import {
 import {
   Anchor, Box, Collapsible, Layer, Stack, Text,
 } from 'grommet'
-import { Cube } from 'grommet-icons'
+import { CreditCardIcon } from 'pluralsh-design-system'
 import { normalizeColor } from 'grommet/utils'
 
 import { CurrentUserContext } from '../login/CurrentUser'
-import { ignore } from '../utils/ModalHeader'
+import { ignoreEvent } from '../../utils/ignore-event'
 import { ModalHeader } from '../ModalHeader'
 
 import { PlanType } from './types'
@@ -24,14 +24,14 @@ export function LineItemIcon({ dimension, size }) {
   case 'user':
     return (
       <Group
-        size={size || '15px'}
+        size={size || 15}
         color="focus"
       />
     )
   default:
     return (
-      <Cube
-        size={size || '15px'}
+      <CreditCardIcon
+        size={size || 15}
         color="focus"
       />
     )
@@ -169,7 +169,7 @@ export const hover = styled.div`
 function EditPlan({ plan }) {
   const [open, setOpen] = useState(false)
   const doSetOpen = useCallback((val, e) => {
-    ignore(e); setOpen(val)
+    ignoreEvent(e); setOpen(val)
   }, [setOpen])
 
   return (

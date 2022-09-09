@@ -7,7 +7,7 @@ import {
   Button, HoveredBackground, SecondaryButton, Select, Trash,
 } from 'forge-core'
 import { FaDollarSign } from 'react-icons/fa'
-import { Add, Cube } from 'grommet-icons'
+import { CreditCardIcon, PlusIcon } from 'pluralsh-design-system'
 
 import { LabeledInput } from '../repos/CreateRepository'
 
@@ -44,8 +44,8 @@ function LineItem({
       gap="xsmall"
       align="center"
     >
-      <Cube
-        size="15px"
+      <CreditCardIcon
+        size={15}
         color="focus"
       />
       <Text size="small">
@@ -565,7 +565,7 @@ export function CreateAnchor({ onClick }) {
       align="center"
       onClick={onClick}
     >
-      <Add size="small" />
+      <PlusIcon size={12} />
       <Text size="small">Create plan</Text>
     </Box>
   )

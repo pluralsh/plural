@@ -2,10 +2,10 @@ import {
   useCallback, useContext, useEffect, useState,
 } from 'react'
 import { Box, Text, TextInput } from 'grommet'
-import { Button, Check as Checkmark, SecondaryButton } from 'forge-core'
+import { Button, SecondaryButton } from 'forge-core'
 import { Editable, Slate } from 'slate-react'
-
 import { useMutation, useQuery } from '@apollo/client'
+import { CheckIcon } from 'pluralsh-design-system'
 
 import { useEditor } from '../utils/hooks'
 import { plainDeserialize, plainSerialize } from '../../utils/slate'
@@ -126,8 +126,8 @@ export function RepoOption({ repo, selected, setRepository }) {
         <Text size="small"><i>{repo.description}</i></Text>
       </Box>
       {selected && selected.id === repo.id && (
-        <Checkmark
-          size="15px"
+        <CheckIcon
+          size={15}
           color="brand"
         />
       )}

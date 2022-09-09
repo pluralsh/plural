@@ -2,10 +2,10 @@ import { Box, Text } from 'grommet'
 import moment from 'moment'
 import { useState } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
-import { SecondaryButton, Trash } from 'forge-core'
+import { SecondaryButton } from 'forge-core'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { Refresh, Return } from 'grommet-icons'
+import { ArrowLeftIcon, ReloadIcon, TrashCanIcon } from 'pluralsh-design-system'
 
 import { HeaderItem } from 'components/utils/Header'
 
@@ -123,7 +123,7 @@ function DeleteRecord({ record, domain }) {
   return (
     <>
       <Icon
-        icon={Trash}
+        icon={TrashCanIcon}
         tooltip="delete"
         onClick={() => setConfirm(true)}
         iconAttrs={{ color: 'error' }}
@@ -154,12 +154,12 @@ function RecordsControls({ refetch }) {
         gap="small"
       >
         <Icon
-          icon={Refresh}
+          icon={ReloadIcon}
           onClick={refetch}
           tooltip="refresh list"
         />
         <SecondaryButton
-          icon={<Return size="small" />}
+          icon={<ArrowLeftIcon size={12} />}
           label="Return"
           onClick={() => navigate('/accounts/edit/domains')}
         />

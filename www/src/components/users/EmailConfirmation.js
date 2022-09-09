@@ -3,8 +3,7 @@ import {
 } from 'react'
 import { useMutation } from '@apollo/client'
 import { Box, Layer, Text } from 'grommet'
-import { Reload as Refresh } from 'forge-core'
-import { CircleAlert, Close } from 'grommet-icons'
+import { CloseIcon, ErrorIcon, ReloadIcon } from 'pluralsh-design-system'
 import moment from 'moment'
 import { useParams } from 'react-router-dom'
 
@@ -91,8 +90,8 @@ export function VerifyEmailConfirmed() {
           flex={false}
           align="center"
         >
-          <CircleAlert
-            size="medium"
+          <ErrorIcon
+            size={24}
             color="error"
           />
         </Box>
@@ -114,12 +113,12 @@ export function VerifyEmailConfirmed() {
           align="center"
         >
           <Icon
-            icon={Refresh}
+            icon={ReloadIcon}
             tooltip="Resend"
             onClick={mutation}
           />
           <Icon
-            icon={Close}
+            icon={CloseIcon}
             tooltip="Close"
             onClick={() => setOpen(false)}
           />

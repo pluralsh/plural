@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Box, Collapsible, Text } from 'grommet'
 import moment from 'moment'
-import { Down, Next } from 'grommet-icons'
+import { CaretDownIcon, CaretRightIcon } from 'pluralsh-design-system'
 import sortBy from 'lodash/sortBy'
 import yaml from 'js-yaml'
 import ReactDiffViewer from 'react-diff-viewer'
@@ -113,7 +113,7 @@ function HistoryItem({
             hoverIndicator="light-2"
             onClick={() => setOpen(!open)}
           >
-            {open ? <Down size="15px" /> : <Next size="15px" />}
+            {open ? <CaretDownIcon size={15} /> : <CaretRightIcon size={15} />}
           </Box>
         )}
       </Box>

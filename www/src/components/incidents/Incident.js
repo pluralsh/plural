@@ -1,9 +1,7 @@
 import {
   useCallback, useContext, useEffect, useMemo, useState,
 } from 'react'
-import {
-  Button, Close, Edit, File, Messages as MessagesI, Scroller,
-} from 'forge-core'
+import { Button, Scroller } from 'forge-core'
 import { Editable, Slate } from 'slate-react'
 import { useMutation, useQuery, useSubscription } from '@apollo/client'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -11,6 +9,9 @@ import {
   Box, Layer, Text, TextInput,
 } from 'grommet'
 import moment from 'moment'
+import {
+  CloseIcon, FileIcon, MessagesIcon, PencilIcon,
+} from 'pluralsh-design-system'
 
 import { ModalHeader } from '../ModalHeader'
 import { dateFormat } from '../../utils/date'
@@ -59,13 +60,13 @@ function EditButton({ editing, setEditing }) {
       onClick={() => setEditing(!editing)}
     >
       {editing ? (
-        <Close
-          size="small"
+        <CloseIcon
+          size={12}
           color="dark-6"
         />
       ) : (
-        <Edit
-          size="small"
+        <PencilIcon
+          size={12}
           color="dark-6"
         />
       )}
@@ -83,7 +84,7 @@ function Empty() {
       justify="center"
       round="xsmall"
     >
-      <MessagesI size="40px" />
+      <MessagesIcon size={40} />
       <Text size="small">Get the conversation started</Text>
     </Box>
   )
@@ -275,7 +276,7 @@ function NoFiles() {
       justify="center"
       round="xsmall"
     >
-      <File size="40px" />
+      <FileIcon size={40} />
       <Text size="small">No files uploaded yet</Text>
     </Box>
   )

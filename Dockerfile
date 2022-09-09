@@ -57,7 +57,7 @@ RUN \
   tar -xzf ${APP_NAME}.tar.gz && \
   rm ${APP_NAME}.tar.gz
 
-FROM dkr.plural.sh/plural/plural-cli:0.1.0 as cmd
+FROM dkr.plural.sh/plural/plural-cli:0.5.5 as cmd
 
 FROM erlang:23-alpine as helm
 

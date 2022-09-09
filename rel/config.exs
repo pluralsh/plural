@@ -3,8 +3,6 @@
 |> Path.wildcard()
 |> Enum.map(&Code.eval_file(&1))
 
-version = File.read!("VERSION")
-
 use Distillery.Releases.Config,
   # This sets the default release built by `mix distillery.release`
   default_release: :default,
@@ -33,7 +31,7 @@ environment :prod do
 end
 
 release :plural do
-  set version: version
+  set version: current_version(:api)
   set applications: [
     :runtime_tools,
     api: :permanent,
@@ -49,7 +47,7 @@ release :plural do
 end
 
 release :rtc do
-  set version: version
+  set version: current_version(:rtc)
   set applications: [
     :runtime_tools,
     rtc: :permanent,
@@ -59,7 +57,7 @@ release :rtc do
 end
 
 release :worker do
-  set version: version
+  set version: current_version(:worker)
   set applications: [
     :runtime_tools,
     worker: :permanent,
@@ -68,7 +66,7 @@ release :worker do
 end
 
 release :cron do
-  set version: version
+  set version: current_version(:cron)
   set applications: [
     :runtime_tools,
     cron: :permanent,

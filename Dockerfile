@@ -3,20 +3,10 @@ FROM bitwalker/alpine-elixir:1.11.4 AS builder
 # The following are build arguments used to change variable parts of the image.
 # The name of your application/release (required)
 ARG APP_NAME
-# The version of the application we are building (required)
-ARG APP_VSN
 # The environment to build with
 ARG MIX_ENV=prod
-# Set this to true if this release is not a Phoenix app
-ARG SKIP_PHOENIX=true
-# If you are using an umbrella project, you can change this
-# argument to the directory the Phoenix app is in so that the assets
-# can be built
-ARG PHOENIX_SUBDIR=.
 
-ENV SKIP_PHOENIX=${SKIP_PHOENIX} \
-    APP_NAME=${APP_NAME} \
-    APP_VSN=${APP_VSN} \
+ENV APP_NAME=${APP_NAME} \
     MIX_ENV=${MIX_ENV}
 
 # By convention, /opt is typically used for applications
@@ -26,8 +16,6 @@ WORKDIR /opt/app
 RUN apk update --allow-untrusted && \
   apk upgrade --no-cache && \
   apk add --no-cache \
-    nodejs \
-    yarn \
     git \
     build-base && \
   mix local.rebar --force && \
@@ -36,45 +24,72 @@ RUN apk update --allow-untrusted && \
 # This copies our app source code into the build container
 COPY . .
 
-RUN mix do deps.get, compile
+# needed so that we can get the app version from the git tag
+RUN git config --global --add safe.directory '/opt/app'
 
-# This step builds assets for the Phoenix app (if there is one)
-# If you aren't building a Phoenix app, pass `--build-arg SKIP_PHOENIX=true`
-# This is mostly here for demonstration purposes
-RUN if [ ! "$SKIP_PHOENIX" = "true" ]; then \
-  cd ${PHOENIX_SUBDIR}/assets && \
-  yarn install && \
-  yarn deploy && \
-  cd - && \
-  mix phx.digest; \
-fi
+RUN mix do deps.get, compile
 
 RUN \
   mkdir -p /opt/built && \
   mix distillery.release --name ${APP_NAME} && \
-  cp _build/${MIX_ENV}/rel/${APP_NAME}/releases/${APP_VSN}/${APP_NAME}.tar.gz /opt/built && \
+  cp _build/${MIX_ENV}/rel/${APP_NAME}/releases/*/${APP_NAME}.tar.gz /opt/built && \
   cd /opt/built && \
   tar -xzf ${APP_NAME}.tar.gz && \
   rm ${APP_NAME}.tar.gz
 
-FROM dkr.plural.sh/plural/plural-cli:0.1.0 as cmd
+FROM alpine:3.16.2 as tools
 
-FROM erlang:23-alpine as helm
+ARG TARGETARCH
 
-ARG VERSION=3.3.1
+# renovate: datasource=github-releases depName=helm/helm
+ENV HELM_VERSION=v3.9.3
 
-# ENV BASE_URL="https://storage.googleapis.com/kubernetes-helm"
-ENV BASE_URL="https://get.helm.sh"
-ENV TAR_FILE="helm-v${VERSION}-linux-amd64.tar.gz"
+# renovate: datasource=github-releases depName=alco/goon
+ENV GOON_VERSION=v1.1.1
+
+# renovate: datasource=github-releases depName=pluralsh/plural-cli
+ENV CLI_VERSION=v0.4.9
+
+# renovate: datasource=github-releases depName=accurics/terrascan
+ENV TERRASCAN_VERSION=v1.15.2
+
+# renovate: datasource=github-releases depName=aquasecurity/trivy
+ENV TRIVY_VERSION=v0.30.4
 
 RUN apk add --update --no-cache curl ca-certificates unzip wget openssl && \
-    curl -L ${BASE_URL}/${TAR_FILE} | tar xvz && \
-    mv linux-amd64/helm /usr/local/bin/helm && \
+    # download helm
+    curl -L https://get.helm.sh/helm-${HELM_VERSION}-linux-${TARGETARCH}.tar.gz | tar xvz && \
+    mv linux-${TARGETARCH}/helm /usr/local/bin/helm && \
+    # download goon
+    curl -L https://github.com/alco/goon/releases/download/${GOON_VERSION}/goon_linux_${TARGETARCH}.tar.gz | tar xvz && \
+    mv goon /usr/local/bin/goon && \
+    # download plural cli
+    curl -L https://github.com/pluralsh/plural-cli/releases/download/${CLI_VERSION}/plural-cli_${CLI_VERSION/v/}_Linux_${TARGETARCH}.tar.gz | tar xvz plural && \
+    mv plural /usr/local/bin/plural && \
+    # download terrascan
+    if [ "$TARGETARCH" = "amd64" ]; then \
+      curl -L https://github.com/accurics/terrascan/releases/download/${TERRASCAN_VERSION}/terrascan_${TERRASCAN_VERSION/v/}_Linux_x86_64.tar.gz > terrascan.tar.gz; \
+    else \
+      curl -L https://github.com/accurics/terrascan/releases/download/${TERRASCAN_VERSION}/terrascan_${TERRASCAN_VERSION/v/}_Linux_${TARGETARCH}.tar.gz > terrascan.tar.gz; \
+    fi && \
+    tar -xf terrascan.tar.gz terrascan && rm terrascan.tar.gz && \
+    mv terrascan /usr/local/bin/terrascan && \
+    # download trivy
+    if [ "$TARGETARCH" = "amd64" ]; then \
+      curl -L https://github.com/aquasecurity/trivy/releases/download/${TRIVY_VERSION}/trivy_${TRIVY_VERSION/v/}_Linux-64bit.tar.gz > trivy.tar.gz; \
+    elif [ "$TARGETARCH" = "arm64" ]; then \
+      curl -L https://github.com/aquasecurity/trivy/releases/download/${TRIVY_VERSION}/trivy_${TRIVY_VERSION/v/}_Linux-ARM64.tar.gz > trivy.tar.gz; \
+    fi && \
+    tar -xf trivy.tar.gz trivy && rm trivy.tar.gz && \
+    mv trivy /usr/local/bin/trivy && \
+    # make tools executable
     chmod +x /usr/local/bin/helm && \
-    curl -L https://github.com/alco/goon/releases/download/v1.1.1/goon_linux_amd64.tar.gz | tar xvz && \
-    mv goon /usr/local/bin/goon && chmod +x /usr/local/bin/goon
+    chmod +x /usr/local/bin/goon && \
+    chmod +x /usr/local/bin/plural && \
+    chmod +x /usr/local/bin/terrascan && \
+    chmod +x /usr/local/bin/trivy
 
-FROM erlang:23-alpine
+FROM erlang:23.3.4.16-alpine
 
 # The name of your application/release (required)
 ARG APP_NAME
@@ -82,14 +97,12 @@ ARG GIT_COMMIT
 
 RUN apk update && \
     apk add --no-cache \
-      bash curl busybox \
-      openssl-dev ca-certificates git
-
-RUN curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.16.0
-RUN curl -L https://github.com/accurics/terrascan/releases/download/v1.9.0/terrascan_1.9.0_Linux_x86_64.tar.gz > terrascan.tar.gz && \
-      tar -xf terrascan.tar.gz terrascan && rm terrascan.tar.gz && \
-      chmod +x terrascan && \
-      mv terrascan /usr/local/bin/terrascan
+      bash \
+      curl \
+      busybox \
+      openssl-dev \
+      ca-certificates \
+      git
 
 ENV REPLACE_OS_VARS=true \
     APP_NAME=${APP_NAME} \
@@ -97,9 +110,11 @@ ENV REPLACE_OS_VARS=true \
 
 WORKDIR /opt/app
 
-COPY --from=helm /usr/local/bin/helm /usr/local/bin/helm
-COPY --from=cmd /go/bin/plural /usr/local/bin/plural
-COPY --from=helm /usr/local/bin/goon /usr/local/bin/goon
+COPY --from=tools /usr/local/bin/plural /usr/local/bin/plural
+COPY --from=tools /usr/local/bin/helm /usr/local/bin/helm
+COPY --from=tools /usr/local/bin/goon /usr/local/bin/goon
+COPY --from=tools /usr/local/bin/terrascan /usr/local/bin/terrascan
+COPY --from=tools /usr/local/bin/trivy /usr/local/bin/trivy
 COPY --from=builder /opt/built .
 
 CMD trap 'exit' INT; /opt/app/bin/${APP_NAME} foreground

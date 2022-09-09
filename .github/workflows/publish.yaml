@@ -1,0 +1,204 @@
+name: CD / Plural
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: erlef/setup-beam@v1
+        with:
+          elixir-version: '1.11.4' # Define the elixir version [required]
+          otp-version: '23.1.5' # Define the OTP version [required]
+      - uses: azure/setup-helm@v1
+        with:
+          version: latest
+      - name: install plural cli
+        run: |
+          wget -O plural.o 'https://app.plural.sh/artifacts/plural/plural?platform=linux&arch=amd64'
+          chmod +x ./plural.o
+          cp ./plural.o /usr/local/bin/plural
+      - run: make testup
+      - name: Restore dependencies cache
+        uses: actions/cache@v2
+        with:
+          path: deps
+          key: ${{ runner.os }}-mix-2-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-mix-2
+      - name: Restore _build
+        uses: actions/cache@v2
+        with:
+          path: _build
+          key: ${{ runner.os }}-mix-2-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-mix-2
+      - run: mix deps.get
+      - run: mix test
+      - uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: workflow,job,repo,message,commit,author
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }} # required
+        if: always()
+  publish:
+    name: Build and push Plural containers
+    runs-on: ubuntu-latest
+    needs: test
+    strategy:
+      matrix:
+        app: [ plural, cron, worker, rtc ]
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+      packages: 'write'
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Docker meta ${{ matrix.app }}
+      id: meta
+      uses: docker/metadata-action@v4
+      with:
+        # list of Docker images to use as base name for tags
+        images: |
+          dkr.plural.sh/plural/${{ matrix.app }}
+          gcr.io/pluralsh/${{ matrix.app }}
+          ghcr.io/pluralsh/${{ matrix.app }}
+        # generate Docker tags based on the following events/attributes
+        tags: |
+          type=semver,pattern={{version}}
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v2
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+    - uses: google-github-actions/auth@v0
+      with:
+        workload_identity_provider: 'projects/${{ secrets.GOOGLE_PROJECT_ID }}/locations/global/workloadIdentityPools/github/providers/github'
+        service_account: 'terraform@pluralsh.iam.gserviceaccount.com'
+        token_format: 'access_token'
+        create_credentials_file: true
+    - uses: google-github-actions/setup-gcloud@v0.3.0
+    - name: Login to gcr
+      run: gcloud auth configure-docker -q
+    - name: Login to plural registry
+      uses: docker/login-action@v2
+      with:
+        registry: dkr.plural.sh
+        username: mjg@plural.sh
+        password: ${{ secrets.PLURAL_ACCESS_TOKEN }}
+    - name: Login to GHCR
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Build and push ${{ matrix.app }}
+      uses: docker/build-push-action@v3
+      with:
+        context: "."
+        file: "./Dockerfile"
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        platforms: linux/amd64
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        build-args: |
+          APP_NAME=${{ matrix.app }}
+          GIT_COMMIT=$GITHUB_SHA
+    - name: slack webhook
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        fields: workflow,job,repo,message,commit,author
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }} # required
+      if: always()
+  publish-frontend:
+    name: Build and push Plural frontend container
+    runs-on: ubuntu-latest
+    needs: test
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+      packages: 'write'
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Docker meta
+      id: meta
+      uses: docker/metadata-action@v4
+      with:
+        # list of Docker images to use as base name for tags
+        images: |
+          dkr.plural.sh/plural/plural-www
+          gcr.io/pluralsh/plural-www
+          ghcr.io/pluralsh/plural-www
+        # generate Docker tags based on the following events/attributes
+        tags: |
+          type=semver,pattern={{version}}
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v2
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+    - uses: google-github-actions/auth@v0
+      with:
+        workload_identity_provider: 'projects/${{ secrets.GOOGLE_PROJECT_ID }}/locations/global/workloadIdentityPools/github/providers/github'
+        service_account: 'terraform@pluralsh.iam.gserviceaccount.com'
+        token_format: 'access_token'
+        create_credentials_file: true
+    - uses: google-github-actions/setup-gcloud@v0.3.0
+    - name: Login to gcr
+      run: gcloud auth configure-docker -q
+    - name: Login to plural registry
+      uses: docker/login-action@v2
+      with:
+        registry: dkr.plural.sh
+        username: mjg@plural.sh
+        password: ${{ secrets.PLURAL_ACCESS_TOKEN }}
+    - name: Login to GHCR
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Build and push ${{ matrix.app }}
+      uses: docker/build-push-action@v3
+      with:
+        context: "./www"
+        file: "./www/Dockerfile"
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        platforms: linux/amd64
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+    - name: slack webhook
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        fields: workflow,job,repo,message,commit,author
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }} # required
+      if: always()
+  release:
+    name: Create GitHub release
+    runs-on: ubuntu-latest
+    needs: publish
+    permissions:
+      contents: write
+      discussions: write
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      with:
+        generate_release_notes: true

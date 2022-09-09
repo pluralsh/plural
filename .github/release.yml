@@ -4,10 +4,6 @@ changelog:
   exclude:
     labels:
       - ignore-for-release
-    authors:
-      - plural-bot
-      - renovate
-      - dependabot
   categories:
     - title: Breaking Changes ⚠️
       labels:
@@ -18,3 +14,9 @@ changelog:
     - title: Bug Fixes 🐛
       labels:
         - bug-fix
+    - title: Dependency Updates
+      labels:
+        - dependencies
+    - title: Other Changes
+      labels:
+        - "*"

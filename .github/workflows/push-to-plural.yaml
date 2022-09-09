@@ -1,0 +1,30 @@
+name: CD / Plural
+
+on:
+  push:
+    branches:
+      - "master"
+    paths:
+      - "plural/**"
+jobs:
+  deploy:
+    name: Push Plural artifact to Plural
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: hashicorp/setup-terraform@v2
+    - uses: azure/setup-helm@v2
+      with:
+        version: latest
+    - name: installing plural
+      uses: pluralsh/setup-plural@v0.1.2
+      with:
+        config: ${{ secrets.PLURAL_CONF }}
+    - run: make deploy
+    - uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        fields: workflow,job,repo,message,commit,author
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }} # required
+      if: always()

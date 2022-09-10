@@ -1,7 +1,6 @@
 import { useContext, useEffect } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
-import { Div, Flex, P } from 'honorable'
-import { Button, DiscordIcon } from 'pluralsh-design-system'
+import { Div } from 'honorable'
 
 import { useNavigate } from 'react-router-dom'
 
@@ -9,9 +8,10 @@ import CreateShellContext from '../../../../contexts/CreateShellContext'
 
 import { CLOUD_SHELL_QUERY, CREATE_SHELL_MUTATION } from '../../query'
 
-import OnboardingCard from '../OnboardingCard'
 import { GqlError } from '../../../utils/Alert'
 import { ShellStatus } from '../ShellStatus'
+
+import { JoinCommunityCard } from '../JoinCommunityCard'
 
 const EMPTY_SHELL = ({ alive: false, status: {} })
 
@@ -70,42 +70,7 @@ function CloudLaunch() {
           />
         </Div>
       )}
-      <OnboardingCard
-        marginTop="xlarge"
-        paddingBottom="medium"
-      >
-        <Flex
-          align="center"
-          justify="space-between"
-        >
-          <Div>
-            <P
-              body1
-              bold
-            >
-              Join the community
-            </P>
-            <P
-              body1
-              color="text-light"
-            >
-              Receive support from our team.
-            </P>
-          </Div>
-          <Button
-            secondary
-            endIcon={(
-              <DiscordIcon />
-            )}
-            as="a"
-            href="https://discord.gg/pluralsh"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Join Discord
-          </Button>
-        </Flex>
-      </OnboardingCard>
+      <JoinCommunityCard />
     </>
   )
 }

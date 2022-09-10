@@ -21,21 +21,21 @@ function AlertIcon({ status, color }) {
     return (
       <CheckIcon
         color={color}
-        size="medium"
+        size={16}
       />
     )
   case AlertStatus.ERROR:
     return (
       <ErrorIcon
         color={color}
-        size="medium"
+        size={16}
       />
     )
   case AlertStatus.INFO:
     return (
       <InfoIcon
         color={color}
-        size="medium"
+        size={16}
       />
     )
   default:

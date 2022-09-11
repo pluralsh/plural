@@ -44,6 +44,7 @@ function WithApplicationUpdate({ children }) {
   // Empty deps array is intentional here as it allows to run this effect only once.
   useEffect(() => {
     reloadOnStale()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   if (commit === DEFAULT_COMMIT) setCommit(config.gitCommit)

@@ -9,6 +9,8 @@ import { ArrowLeftIcon, ReloadIcon, TrashCanIcon } from 'pluralsh-design-system'
 
 import { HeaderItem } from 'components/utils/Header'
 
+import { Icon } from 'components/utils/IconOld'
+
 import {
   deepUpdate, extendConnection, removeConnection, updateCache,
 } from '../../utils/graphql'
@@ -22,7 +24,6 @@ import { Confirm } from '../utils/Confirm'
 import { Placeholder } from './Audits'
 import { TableRow } from './Domains'
 import { DELETE_DNS_RECORD, DNS_RECORDS } from './queries'
-import { Icon } from './Group'
 
 function DnsRecordHeader() {
   return (

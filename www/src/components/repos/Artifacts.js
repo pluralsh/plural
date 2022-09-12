@@ -13,9 +13,9 @@ import moment from 'moment'
 
 import { HeaderItem } from 'components/utils/Header'
 
-import { download } from '../../utils/file'
+import { Icon } from 'components/utils/IconOld'
 
-import { Icon } from '../accounts/Group'
+import { download } from '../../utils/file'
 
 import { DetailContainer } from './Installation'
 

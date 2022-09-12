@@ -14,11 +14,12 @@ import {
 
 import { HeaderItem } from 'components/utils/Header'
 
+import { Icon } from 'components/utils/IconOld'
+
 import { ModalHeader } from '../ModalHeader'
 import { TagContainer } from '../repos/Tags'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 import { SectionPortal } from '../Explore'
-import { Icon } from '../accounts/Group'
 import { CurrentUserContext } from '../login/CurrentUser'
 
 import { CARDS, DELETE_CARD, REGISTER_CARD } from './queries'

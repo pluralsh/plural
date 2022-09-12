@@ -11,6 +11,8 @@ import { HeaderItem } from 'components/utils/Header'
 
 import { fetchGroups, fetchUsers } from 'components/account/Typeaheads'
 
+import { Icon } from 'components/utils/IconOld'
+
 import {
   appendConnection, extendConnection, removeConnection, updateCache,
 } from '../../utils/graphql'
@@ -24,14 +26,14 @@ import { ModalHeader } from '../ModalHeader'
 import { ignoreEvent } from '../../utils/ignore-event'
 import { GqlError } from '../utils/Alert'
 
+import { BindingInput, sanitize } from '../utils/BindingInput'
+
 import { Placeholder } from './Audits'
 import {
   CREATE_DOMAIN, DELETE_DOMAIN, DNS_DOMAINS, UPDATE_DOMAIN,
 } from './queries'
 
 import { DnsRecords } from './DnsRecords'
-import { BindingInput, sanitize } from './Role'
-import { Icon } from './Group'
 
 export function TableRow({ children, border, ...props }) {
   return (

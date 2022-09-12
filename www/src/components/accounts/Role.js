@@ -12,9 +12,7 @@ import { useApolloClient, useMutation } from '@apollo/client'
 
 import Toggle from 'react-toggle'
 
-import { fetchUsers } from 'components/incidents/MessageInput'
-
-import { fetchGroups } from 'components/account/Typeaheads'
+import { fetchGroups, fetchUsers } from 'components/account/Typeaheads'
 
 import ResponsiveInput from '../ResponsiveInput'
 import { ModalHeader } from '../ModalHeader'

@@ -29,14 +29,9 @@ const ViewOptions = {
   INVITES: 'invites',
 }
 
-// eslint-disable-next-line
-export const sanitize = ({ __typename, ...rest }) => rest
-
 export const canEdit = ({ roles, id }, { rootUser }) => (
   (roles && roles.admin) || id === rootUser.id
 )
-
-export const hasRbac = ({ boundRoles }, role) => (boundRoles || []).some(({ permissions }) => !!permissions[role])
 
 export function EditAccount({ billing }) {
   const { section } = useParams()

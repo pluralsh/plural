@@ -9,9 +9,7 @@ import { Route, Routes, useNavigate } from 'react-router-dom'
 import { ScrollIcon, TrashCanIcon } from 'pluralsh-design-system'
 import { HeaderItem } from 'components/utils/Header'
 
-import { fetchUsers } from 'components/incidents/MessageInput'
-
-import { fetchGroups } from 'components/account/Typeaheads'
+import { fetchGroups, fetchUsers } from 'components/account/Typeaheads'
 
 import {
   appendConnection, extendConnection, removeConnection, updateCache,

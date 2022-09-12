@@ -4,9 +4,7 @@ import { Button, InputCollection } from 'forge-core'
 import { Div } from 'honorable'
 import { Box, Layer } from 'grommet'
 
-import { fetchUsers } from 'components/incidents/MessageInput'
-
-import { fetchGroups } from 'components/account/Typeaheads'
+import { fetchGroups, fetchUsers } from 'components/account/Typeaheads'
 
 import { appendConnection, updateCache } from '../../utils/graphql'
 

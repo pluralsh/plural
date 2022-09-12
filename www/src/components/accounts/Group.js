@@ -13,7 +13,7 @@ import {
   PencilIcon, PeopleIcon, PersonPlusIcon, TrashCanIcon,
 } from 'pluralsh-design-system'
 
-import { fetchUsers } from 'components/incidents/MessageInput'
+import { fetchUsers } from 'components/account/Typeaheads'
 
 import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
 import { LoopingLogo } from '../utils/AnimatedLogo'

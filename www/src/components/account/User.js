@@ -15,13 +15,15 @@ import {
   setToken,
 } from '../../helpers/authentication'
 
-import { canEdit } from '../accounts/EditAccount'
-import { EDIT_USER, IMPERSONATE_SERVICE_ACCOUNT } from '../accounts/queries'
-import { Permissions } from '../accounts/types'
+import { canEdit } from '../users/EditAccount'
+
 import { CurrentUserContext } from '../login/CurrentUser'
 
 import { Provider } from '../repos/misc'
 import { DELETE_USER } from '../users/queries'
+
+import { Permissions } from './types'
+import { EDIT_USER, IMPERSONATE_SERVICE_ACCOUNT } from './queries'
 
 import { Confirm } from './Confirm'
 import { EditServiceAccount } from './CreateServiceAccount'

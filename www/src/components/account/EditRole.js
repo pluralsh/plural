@@ -5,7 +5,7 @@ import { useMemo, useState } from 'react'
 import uniqWith from 'lodash/uniqWith'
 import isEqual from 'lodash/isEqual'
 
-import { UPDATE_ROLE } from '../accounts/queries'
+import { UPDATE_ROLE } from './queries'
 
 import { Actions } from './Actions'
 import { sanitize } from './utils'

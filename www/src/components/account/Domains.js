@@ -21,10 +21,11 @@ import {
   updateCache,
 } from '../../utils/graphql'
 
-import { DELETE_DOMAIN, DNS_DOMAINS, UPDATE_DOMAIN } from '../accounts/queries'
 import { GqlError } from '../utils/Alert'
 import { StandardScroller } from '../utils/SmoothScroller'
 import { Table, TableData, TableRow } from '../utils/Table'
+
+import { DELETE_DOMAIN, DNS_DOMAINS, UPDATE_DOMAIN } from './queries'
 
 import { Actions } from './Actions'
 

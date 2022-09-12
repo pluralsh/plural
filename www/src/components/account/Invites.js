@@ -18,9 +18,10 @@ import {
   updateCache,
 } from '../../utils/graphql'
 
-import { DELETE_INVITE, INVITES_Q } from '../accounts/queries'
 import { DeleteIconButton } from '../utils/IconButtons'
 import { StandardScroller } from '../utils/SmoothScroller'
+
+import { DELETE_INVITE, INVITES_Q } from './queries'
 
 import { Confirm } from './Confirm'
 import { inviteLink } from './utils'

@@ -6,7 +6,8 @@ import uniqWith from 'lodash/uniqWith'
 import isEqual from 'lodash/isEqual'
 
 import { appendConnection, updateCache } from '../../utils/graphql'
-import { CREATE_ROLE, ROLES_Q } from '../accounts/queries'
+
+import { CREATE_ROLE, ROLES_Q } from './queries'
 
 import { Actions } from './Actions'
 import { sanitize } from './utils'

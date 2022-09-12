@@ -16,11 +16,13 @@ import {
   removeConnection,
   updateCache,
 } from '../../utils/graphql'
-import { DELETE_DNS_RECORD, DNS_RECORDS } from '../accounts/queries'
+
 import { DeleteIconButton } from '../utils/IconButtons'
 import { Provider } from '../repos/misc'
 import { StandardScroller } from '../utils/SmoothScroller'
 import { Table, TableData, TableRow } from '../utils/Table'
+
+import { DELETE_DNS_RECORD, DNS_RECORDS } from './queries'
 
 import { Confirm } from './Confirm'
 

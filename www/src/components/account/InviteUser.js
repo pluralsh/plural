@@ -11,8 +11,9 @@ import { useCallback, useState } from 'react'
 
 import { useMutation } from '@apollo/client'
 
-import { CREATE_INVITE } from '../accounts/queries'
 import { GqlError } from '../utils/Alert'
+
+import { CREATE_INVITE } from './queries'
 
 import { inviteLink } from './utils'
 

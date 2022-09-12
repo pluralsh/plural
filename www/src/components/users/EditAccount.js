@@ -8,25 +8,18 @@ import {
 import { useParams } from 'react-router-dom'
 
 import { BreadcrumbsContext } from '../Breadcrumbs'
-import { CardList } from '../users/BillingDetails'
+
 import Invoices from '../payments/Invoices'
 import { OAuthIntegrations } from '../integrations/OAuthIntegrations'
 
 import { SectionContentContainer } from '../Explore'
 
-import { DnsDirectory } from './Domains'
+import { CardList } from './BillingDetails'
 
 const ViewOptions = {
-  EDIT: 'attributes',
-  USERS: 'users',
-  SRV_ACCTS: 'service-accounts',
-  GROUPS: 'groups',
-  ROLES: 'roles',
   METHODS: 'methods',
   INVOICES: 'invoices',
   INTEGRATIONS: 'integrations',
-  DOMAINS: 'domains',
-  INVITES: 'invites',
 }
 
 export const canEdit = ({ roles, id }, { rootUser }) => (
@@ -49,7 +42,6 @@ export function EditAccount({ billing }) {
   return (
     <ThemeContext.Extend value={{ global: { input: { padding: '9px' } } }}>
       <Box fill>
-        {section === ViewOptions.DOMAINS && <DnsDirectory />}
         {section === ViewOptions.METHODS && (
           <SectionContentContainer header="Payment Methods">
             <CardList />

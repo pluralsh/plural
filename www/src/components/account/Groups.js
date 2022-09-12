@@ -16,11 +16,14 @@ import ListInput from 'components/utils/ListInput'
 import { List } from 'components/utils/List'
 
 import { removeConnection, updateCache } from '../../utils/graphql'
-import { canEdit } from '../accounts/EditAccount'
-import { DELETE_GROUP, GROUPS_Q } from '../accounts/queries'
-import { Permissions } from '../accounts/types'
+import { canEdit } from '../users/EditAccount'
+
 import { CurrentUserContext } from '../login/CurrentUser'
+
 import { DeleteIconButton } from '../utils/IconButtons'
+
+import { DELETE_GROUP, GROUPS_Q } from './queries'
+import { Permissions } from './types'
 
 import { Confirm } from './Confirm'
 import { ViewGroup } from './Group'

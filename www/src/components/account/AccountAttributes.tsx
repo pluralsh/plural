@@ -14,7 +14,6 @@ import {
 import { useContext, useMemo, useState } from 'react'
 import { useTheme } from 'styled-components'
 
-import { UPDATE_ACCOUNT } from '../accounts/queries'
 import { CurrentUserContext } from '../login/CurrentUser'
 import { DeleteIconButton } from '../utils/IconButtons'
 import { GqlError } from '../utils/Alert'
@@ -23,6 +22,8 @@ import { useUpdateState } from '../../hooks/useUpdateState'
 import SaveButton from '../utils/SaveButton'
 
 import { List, ListItem } from '../utils/List'
+
+import { UPDATE_ACCOUNT } from './queries'
 
 import { Confirm } from './Confirm'
 

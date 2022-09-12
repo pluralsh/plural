@@ -19,13 +19,15 @@ import {
   updateCache,
 } from '../../utils/graphql'
 
-import { canEdit } from '../accounts/EditAccount'
-import { DELETE_ROLE, ROLES_Q } from '../accounts/queries'
-import { Permissions } from '../accounts/types'
+import { canEdit } from '../users/EditAccount'
+
 import { CurrentUserContext } from '../login/CurrentUser'
 import { DeleteIconButton } from '../utils/IconButtons'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { StandardScroller } from '../utils/SmoothScroller'
+
+import { Permissions } from './types'
+import { DELETE_ROLE, ROLES_Q } from './queries'
 
 import { hasRbac } from './utils'
 

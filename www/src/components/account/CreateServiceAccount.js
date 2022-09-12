@@ -11,13 +11,15 @@ import {
 import { useCallback, useState } from 'react'
 
 import { appendConnection, updateCache } from '../../utils/graphql'
+
+import { DELETE_USER } from '../users/queries'
+import { GqlError } from '../utils/Alert'
+
 import {
   CREATE_SERVICE_ACCOUNT,
   UPDATE_SERVICE_ACCOUNT,
   USERS_Q,
-} from '../accounts/queries'
-import { DELETE_USER } from '../users/queries'
-import { GqlError } from '../utils/Alert'
+} from './queries'
 
 import { Confirm } from './Confirm'
 import { MoreMenu } from './MoreMenu'

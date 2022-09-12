@@ -12,9 +12,11 @@ import {
   removeConnection,
   updateCache,
 } from '../../utils/graphql'
-import { USERS_Q } from '../accounts/queries'
+
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { StandardScroller } from '../utils/SmoothScroller'
+
+import { USERS_Q } from './queries'
 
 import { CreateServiceAccount } from './CreateServiceAccount'
 

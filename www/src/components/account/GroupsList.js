@@ -8,10 +8,12 @@ import { Div } from 'honorable'
 import { Placeholder } from 'components/utils/Placeholder'
 
 import { extendConnection } from '../../utils/graphql'
-import { GROUPS_Q } from '../accounts/queries'
+
 import { ListItem } from '../utils/List'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { StandardScroller } from '../utils/SmoothScroller'
+
+import { GROUPS_Q } from './queries'
 
 import { CreateGroup } from './CreateGroup'
 import { Group } from './Groups'

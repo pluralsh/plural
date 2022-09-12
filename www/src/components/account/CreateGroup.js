@@ -9,8 +9,10 @@ import {
 import { useCallback, useState } from 'react'
 
 import { appendConnection, updateCache } from '../../utils/graphql'
-import { CREATE_GROUP, GROUPS_Q } from '../accounts/queries'
+
 import { GqlError } from '../utils/Alert'
+
+import { CREATE_GROUP, GROUPS_Q } from './queries'
 
 export function CreateGroup({ q }) {
   const [open, setOpen] = useState(false)

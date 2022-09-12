@@ -17,12 +17,12 @@ import {
 } from '../../utils/graphql'
 
 import { Placeholder } from '../accounts/Audits'
-import { inviteLink } from '../accounts/CreateInvite'
 import { DELETE_INVITE, INVITES_Q } from '../accounts/queries'
 import { DeleteIconButton } from '../utils/IconButtons'
 import { StandardScroller } from '../utils/SmoothScroller'
 
 import { Confirm } from './Confirm'
+import { inviteLink } from './utils'
 
 function DeleteInvite({ invite }) {
   const [confirm, setConfirm] = useState(false)

@@ -34,7 +34,7 @@ import { DeviceLoginNotif } from './users/DeviceLoginNotif'
 import { Docker, DockerRepository } from './repos/Docker'
 import { Domains } from './account/Domains'
 import { EabCredentials } from './profile/EabCredentials'
-import { EditAccount } from './accounts/EditAccount'
+import { EditAccount } from './users/EditAccount'
 import { Groups } from './account/Groups'
 import { IntegrationPage } from './repos/Integrations'
 import { Profile } from './profile/Profile'
@@ -395,16 +395,6 @@ export function PluralInner() {
                 element={<AuditChloropleth />}
               />
             </Route>
-            <Route
-              exact
-              path="/audits"
-              element={(
-                <Navigate
-                  replace
-                  to="/audits/table"
-                />
-              )}
-            />
             {/* --- PUBLISHER --- */}
             <Route
               path="/publisher/:id"

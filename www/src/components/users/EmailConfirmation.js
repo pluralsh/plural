@@ -7,8 +7,9 @@ import { CloseIcon, ErrorIcon, ReloadIcon } from 'pluralsh-design-system'
 import moment from 'moment'
 import { useParams } from 'react-router-dom'
 
+import { Icon } from 'components/utils/IconOld'
+
 import { CurrentUserContext } from '../login/CurrentUser'
-import { Icon } from '../accounts/Group'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 

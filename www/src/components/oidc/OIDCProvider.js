@@ -5,7 +5,7 @@ import {
 } from 'grommet'
 import { useMutation } from '@apollo/client'
 
-import { BindingInput, sanitize } from '../accounts/Role'
+import { BindingInput, sanitize } from '../utils/BindingInput'
 import { fetchGroups, fetchUsers } from '../accounts/Typeaheads'
 
 import { SectionPortal } from '../Explore'

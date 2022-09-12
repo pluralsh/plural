@@ -13,36 +13,17 @@ import {
 
 import styled from 'styled-components'
 
-import { SEARCH_GROUPS, SEARCH_USERS } from '../accounts/queries'
+import { SEARCH_GROUPS, SEARCH_USERS } from './queries'
 
 export function fetchUsers(client, query, setSuggestions) {
-  if (!query) return
-
-  client
-    .query({
-      query: SEARCH_USERS,
-      variables: { q: query, all: true },
-    })
-    .then(({
-      data: {
-        users: { edges },
-      },
-    }) => edges.map(({ node }) => ({ value: node, label: userSuggestion(node) })))
+  client.query({ query: SEARCH_USERS, variables: { q: query, all: true } })
+    .then(({ data: { users: { edges } } }) => edges.map(({ node }) => ({ value: node, label: userSuggestion(node) })))
     .then(setSuggestions)
 }
 
 export function fetchGroups(client, query, setSuggestions) {
-  if (!query) return
-  client
-    .query({
-      query: SEARCH_GROUPS,
-      variables: { q: query },
-    })
-    .then(({
-      data: {
-        groups: { edges },
-      },
-    }) => edges.map(({ node }) => ({ value: node, label: groupSuggestion(node) })))
+  client.query({ query: SEARCH_GROUPS, variables: { q: query } })
+    .then(({ data: { groups: { edges } } }) => edges.map(({ node }) => ({ value: node, label: groupSuggestion(node) })))
     .then(setSuggestions)
 }
 
@@ -99,12 +80,9 @@ function TagInput({
 }) {
   const [inputValue, setInputValue] = useState('')
 
-  // only run on first render
-  // make sure there will be data in Combo Box to start with
-  useEffect(() => {
-    onChange({ target: { value: inputValue } })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  // Run only on first render. Make sure there will be data in Combo Box to start with.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => onChange({ target: { value: inputValue } }), [])
 
   return (
     <TagPicker>

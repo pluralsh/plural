@@ -11,9 +11,11 @@ import { useCallback, useState } from 'react'
 
 import { useMutation } from '@apollo/client'
 
-import { inviteLink } from '../accounts/CreateInvite'
-import { CREATE_INVITE } from '../accounts/queries'
 import { GqlError } from '../utils/Alert'
+
+import { CREATE_INVITE } from './queries'
+
+import { inviteLink } from './utils'
 
 export function InviteUser() {
   const [open, setOpen] = useState(false)

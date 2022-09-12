@@ -12,12 +12,14 @@ import { useRef, useState } from 'react'
 import { Flex } from 'honorable'
 
 import { appendConnection, updateCache } from '../../utils/graphql'
+
+import { GqlError } from '../utils/Alert'
+
 import {
   CREATE_GROUP_MEMBERS,
   GROUP_MEMBERS,
   UPDATE_GROUP,
-} from '../accounts/queries'
-import { GqlError } from '../utils/Alert'
+} from './queries'
 
 import { Actions } from './Actions'
 import { fetchUsers } from './Typeaheads'

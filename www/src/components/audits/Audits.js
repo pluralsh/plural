@@ -15,7 +15,7 @@ import { ReturnToBeginning } from '../utils/ReturnToBeginning'
 
 import { Table, TableData, TableRow } from '../utils/Table'
 
-import { AUDITS_Q } from '../accounts/queries'
+import { AUDITS_Q } from '../account/queries'
 
 import { Date } from '../utils/Date'
 

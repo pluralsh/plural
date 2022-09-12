@@ -4,18 +4,21 @@ import { Switch } from 'pluralsh-design-system'
 import { useState } from 'react'
 import { Div } from 'honorable'
 
+import { Placeholder } from 'components/utils/Placeholder'
+
 import {
   extendConnection,
   removeConnection,
   updateCache,
 } from '../../utils/graphql'
-import { Placeholder } from '../accounts/Audits'
-import { DELETE_GROUP_MEMBER, GROUP_MEMBERS } from '../accounts/queries'
+
 import { DeleteIconButton } from '../utils/IconButtons'
 
 import { StandardScroller } from '../utils/SmoothScroller'
 
 import { List, ListItem } from '../utils/List'
+
+import { DELETE_GROUP_MEMBER, GROUP_MEMBERS } from './queries'
 
 import { UserInfo } from './User'
 

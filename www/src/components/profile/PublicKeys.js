@@ -8,9 +8,10 @@ import { InfoIcon, PageTitle, Tooltip } from 'pluralsh-design-system'
 
 import isEmpty from 'lodash/isEmpty'
 
+import { Placeholder } from 'components/utils/Placeholder'
+
 import { extendConnection } from '../../utils/graphql'
 import { Confirm } from '../account/Confirm'
-import { Placeholder } from '../accounts/Audits'
 
 import { DELETE_KEY, LIST_KEYS } from '../users/queries'
 import { LoopingLogo } from '../utils/AnimatedLogo'

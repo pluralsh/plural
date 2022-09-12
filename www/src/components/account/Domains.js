@@ -13,17 +13,19 @@ import { useMemo, useState } from 'react'
 import isEqual from 'lodash/isEqual'
 import uniqWith from 'lodash/uniqWith'
 
+import { Placeholder } from 'components/utils/Placeholder'
+
 import {
   extendConnection,
   removeConnection,
   updateCache,
 } from '../../utils/graphql'
 
-import { Placeholder } from '../accounts/Audits'
-import { DELETE_DOMAIN, DNS_DOMAINS, UPDATE_DOMAIN } from '../accounts/queries'
 import { GqlError } from '../utils/Alert'
 import { StandardScroller } from '../utils/SmoothScroller'
 import { Table, TableData, TableRow } from '../utils/Table'
+
+import { DELETE_DOMAIN, DNS_DOMAINS, UPDATE_DOMAIN } from './queries'
 
 import { Actions } from './Actions'
 

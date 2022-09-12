@@ -3,9 +3,10 @@ import { Span, Switch } from 'honorable'
 import { Tab, TabList, TabPanel } from 'pluralsh-design-system'
 import { useCallback, useRef, useState } from 'react'
 
-import { PermissionTypes } from '../accounts/types'
 import { ListItem } from '../profile/ListItem'
 import { GqlError } from '../utils/Alert'
+
+import { PermissionTypes } from './types'
 
 import { GeneralAttributes } from './Role'
 

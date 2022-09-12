@@ -5,8 +5,9 @@ import { useState } from 'react'
 
 import { Div } from 'honorable'
 
+import { Placeholder } from 'components/utils/Placeholder'
+
 import { extendConnection } from '../../utils/graphql'
-import { Placeholder } from '../accounts/Audits'
 import { GROUPS_Q } from '../accounts/queries'
 import { ListItem } from '../utils/List'
 import { LoopingLogo } from '../utils/AnimatedLogo'

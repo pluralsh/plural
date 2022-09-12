@@ -9,6 +9,8 @@ import {
 } from 'pluralsh-design-system'
 import { useContext, useState } from 'react'
 
+import { Placeholder } from 'components/utils/Placeholder'
+
 import { List, ListItem } from '../utils/List'
 import ListInput from '../utils/ListInput'
 import {
@@ -16,7 +18,7 @@ import {
   removeConnection,
   updateCache,
 } from '../../utils/graphql'
-import { Placeholder } from '../accounts/Audits'
+
 import { canEdit } from '../accounts/EditAccount'
 import { DELETE_ROLE, ROLES_Q } from '../accounts/queries'
 import { Permissions } from '../accounts/types'
@@ -25,12 +27,13 @@ import { DeleteIconButton } from '../utils/IconButtons'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { StandardScroller } from '../utils/SmoothScroller'
 
+import { hasRbac } from './utils'
+
 import { Confirm } from './Confirm'
 
 import { Info } from './Info'
 import { EditRole } from './EditRole'
 import { CreateRole } from './CreateRole'
-import { hasRbac } from './utils'
 
 function Header({ q, setQ }) {
   return (

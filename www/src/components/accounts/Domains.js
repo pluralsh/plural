@@ -13,6 +13,8 @@ import { fetchGroups, fetchUsers } from 'components/account/Typeaheads'
 
 import { Icon } from 'components/utils/IconOld'
 
+import { Placeholder } from 'components/utils/Placeholder'
+
 import {
   appendConnection, extendConnection, removeConnection, updateCache,
 } from '../../utils/graphql'
@@ -28,7 +30,6 @@ import { GqlError } from '../utils/Alert'
 
 import { BindingInput, sanitize } from '../utils/BindingInput'
 
-import { Placeholder } from './Audits'
 import {
   CREATE_DOMAIN, DELETE_DOMAIN, DNS_DOMAINS, UPDATE_DOMAIN,
 } from './queries'

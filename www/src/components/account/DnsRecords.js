@@ -8,13 +8,14 @@ import { useState } from 'react'
 
 import { GoBack } from 'components/utils/GoBack'
 
+import { Placeholder } from 'components/utils/Placeholder'
+
 import {
   deepUpdate,
   extendConnection,
   removeConnection,
   updateCache,
 } from '../../utils/graphql'
-import { Placeholder } from '../accounts/Audits'
 import { DELETE_DNS_RECORD, DNS_RECORDS } from '../accounts/queries'
 import { DeleteIconButton } from '../utils/IconButtons'
 import { Provider } from '../repos/misc'

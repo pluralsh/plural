@@ -20,10 +20,11 @@ import {
   Tooltip,
 } from 'pluralsh-design-system'
 
+import { Placeholder } from 'components/utils/Placeholder'
+
 import {
   appendConnection, deepUpdate, extendConnection, removeConnection, updateCache,
 } from '../../utils/graphql'
-import { Placeholder } from '../accounts/Audits'
 import {
   CREATE_TOKEN, DELETE_TOKEN, TOKENS_Q, TOKEN_AUDITS, TOKEN_METRICS,
 } from '../users/queries'

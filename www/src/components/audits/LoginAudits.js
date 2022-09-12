@@ -6,7 +6,7 @@ import { PageTitle } from 'pluralsh-design-system'
 
 import { Span } from 'honorable'
 
-import { Placeholder } from '../accounts/Audits'
+import { Placeholder } from 'components/utils/Placeholder'
 
 import { RepoIcon } from '../repos/Repositories'
 

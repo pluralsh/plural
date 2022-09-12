@@ -7,6 +7,8 @@ import { LoopingLogo, SearchIcon } from 'pluralsh-design-system'
 
 import ListInput from 'components/utils/ListInput'
 
+import { Placeholder } from 'components/utils/Placeholder'
+
 import CopyableButton from '../utils/CopyableButton'
 import { List, ListItem } from '../utils/List'
 
@@ -16,7 +18,6 @@ import {
   updateCache,
 } from '../../utils/graphql'
 
-import { Placeholder } from '../accounts/Audits'
 import { DELETE_INVITE, INVITES_Q } from '../accounts/queries'
 import { DeleteIconButton } from '../utils/IconButtons'
 import { StandardScroller } from '../utils/SmoothScroller'

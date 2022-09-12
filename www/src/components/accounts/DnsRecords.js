@@ -11,6 +11,8 @@ import { HeaderItem } from 'components/utils/Header'
 
 import { Icon } from 'components/utils/IconOld'
 
+import { Placeholder } from 'components/utils/Placeholder'
+
 import {
   deepUpdate, extendConnection, removeConnection, updateCache,
 } from '../../utils/graphql'
@@ -21,7 +23,6 @@ import { StandardScroller } from '../utils/SmoothScroller'
 
 import { Confirm } from '../utils/Confirm'
 
-import { Placeholder } from './Audits'
 import { TableRow } from './Domains'
 import { DELETE_DNS_RECORD, DNS_RECORDS } from './queries'
 

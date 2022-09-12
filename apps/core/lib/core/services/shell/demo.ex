@@ -3,7 +3,7 @@ defmodule Core.Services.Shell.Demo do
   alias Core.Schema.{User, DemoProject}
   alias Core.Services.{Locks, Users, Upgrades, Repositories}
   alias GoogleApi.CloudResourceManager.V3.Api.{Projects, Operations}
-  alias GoogleApi.CloudResourceManager.V3.Model.{Project, Operation, SetIamPolicyRequest}
+  alias GoogleApi.CloudResourceManager.V3.Model.{Project, Operation, SetIamPolicyRequest, MoveProjectRequest}
   alias GoogleApi.CloudResourceManager.V3.Connection, as: ProjectsConnection
   alias GoogleApi.IAM.V1.Connection, as: IAMConnection
   alias GoogleApi.IAM.V1.Api.Projects, as: IAMProjects
@@ -18,12 +18,16 @@ defmodule Core.Services.Shell.Demo do
 
 
   @type error :: {:error, term}
+  @type demo_resp :: {:ok, DemoProject.t} | error
 
   @lock "demo-projects"
   @max_count 3
 
   @spec get_demo_project(binary) :: DemoProject.t | nil
   def get_demo_project(id), do: Core.Repo.get(DemoProject, id)
+
+  @spec get_by_user_id(binary) :: DemoProject.t | nil
+  def get_by_user_id(id), do: Core.Repo.get_by(DemoProject, user_id: id)
 
   @doc """
   Returns at most `limit` demo projects for deletion.  This operation should be atomic, and will mark each project with
@@ -91,6 +95,33 @@ defmodule Core.Services.Shell.Demo do
       Users.update_user(%{demo_count: (count || 0) + 1}, user)
     end)
     |> execute(extract: :final)
+  end
+
+  @doc """
+  Transfers a demo project to another organization
+  """
+  @spec transfer_demo_project(binary, User.t) :: demo_resp
+  def transfer_demo_project(org_id, %User{id: user_id}) do
+    demo = get_by_user_id(user_id)
+    projs = projects_conn()
+
+    start_transaction()
+    |> add_operation(:move, fn _ ->
+      Projects.cloudresourcemanager_projects_move(projs, demo.project_id, body: %MoveProjectRequest{
+        destinationParent: "organizations/#{org_id}"
+      })
+      |> IO.inspect() # useful for testing
+    end)
+    |> add_operation(:shell, fn _ ->
+      with %{} = shell <- Core.Services.Shell.get_shell(user_id) do
+        Ecto.Changeset.change(shell, %{demo_id: nil})
+        |> Core.Repo.update()
+      else
+        _ -> {:ok, nil}
+      end
+    end)
+    |> add_operation(:delete, fn _ -> Core.Repo.delete(demo) end)
+    |> execute(extract: :delete)
   end
 
   @doc """

@@ -144,6 +144,13 @@ defmodule GraphQl.Schema.Shell do
       safe_resolve &Shell.create_demo_project/2
     end
 
+    field :transfer_demo_project, :demo_project do
+      middleware Authenticated
+      arg :organization_id, non_null(:string)
+
+      safe_resolve &Shell.transfer_demo_project/2
+    end
+
     field :stop_shell, :boolean do
       middleware Authenticated
       safe_resolve &Shell.stop/2

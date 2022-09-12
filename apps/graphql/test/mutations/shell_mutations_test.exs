@@ -3,6 +3,7 @@ defmodule GraphQl.ShellMutationsTest do
   use Mimic
   import GraphQl.TestHelpers
   alias Core.Services.Shell.Pods
+  alias GoogleApi.CloudResourceManager.V3.Api.Projects
 
   describe "createShell" do
     test "it will create a new shell instance" do
@@ -89,7 +90,7 @@ defmodule GraphQl.ShellMutationsTest do
     test "it will create a new demo project" do
       user = insert(:user)
       expect(Goth.Token, :for_scope, fn _ -> {:ok, %{token: "token"}} end)
-      expect(GoogleApi.CloudResourceManager.V3.Api.Projects, :cloudresourcemanager_projects_create, fn _, [body: _] ->
+      expect(Projects, :cloudresourcemanager_projects_create, fn _, [body: _] ->
         {:ok, %{name: "operations/123"}}
       end)
 
@@ -142,6 +143,27 @@ defmodule GraphQl.ShellMutationsTest do
 
       assert restarted
       assert refetch(shell)
+    end
+  end
+
+  describe "transferDemoProject" do
+    test "it will send out a tranfer request" do
+      demo = insert(:demo_project)
+
+      proj_id = demo.project_id
+      expect(Goth.Token, :for_scope, fn _ -> {:ok, %{token: "token"}} end)
+      expect(Projects, :cloudresourcemanager_projects_move, fn _, ^proj_id, [body: %{destinationParent: "organizations/org-id"}] ->
+        {:ok, %{}}
+      end)
+
+      {:ok, %{data: %{"transferDemoProject" => %{"id" => id}}}} = run_query("""
+        mutation {
+          transferDemoProject(organizationId: "org-id") { id }
+        }
+      """, %{}, %{current_user: demo.user})
+
+      assert id == demo.id
+      refute refetch(demo)
     end
   end
 end

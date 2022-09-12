@@ -151,6 +151,26 @@ defmodule Core.Services.Shell.DemoTest do
     end
   end
 
+  describe "#transfer_demo_project/2" do
+    test "it will transfer a users demo project" do
+      demo = insert(:demo_project)
+      shell = insert(:cloud_shell, demo: demo, user: demo.user)
+
+      proj_id = demo.project_id
+      expect(Goth.Token, :for_scope, fn _ -> {:ok, %{token: "token"}} end)
+      expect(Projects, :cloudresourcemanager_projects_move, fn _, ^proj_id, [body: %{destinationParent: "organizations/org-id"}] ->
+        {:ok, %{}}
+      end)
+
+      {:ok, res} = Demo.transfer_demo_project("org-id", demo.user)
+
+      assert res.id == demo.id
+
+      refute refetch(demo)
+      refute refetch(shell).demo_id
+    end
+  end
+
   describe "#poll/1" do
     test "it will fetch a list of projects to delete" do
       expired = Timex.now() |> Timex.shift(hours: -10)

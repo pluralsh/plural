@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="www/public/plural-lockup-dark-cropped.png" width="30%" />
+  <img src="www/public/logos/plural-full-logo-black.svg" width="30%" />
 </p>
 
 <h3 align="center">

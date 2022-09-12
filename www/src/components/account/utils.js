@@ -1,3 +1,5 @@
+import { apiHost } from 'helpers/hostname'
+
 export const inviteLink = invite => `https://${apiHost()}/invite/${invite.secureId}`
 
 export const sanitize = ({ id, user, group }) => ({ id, userId: user && user.id, groupId: group && group.id })

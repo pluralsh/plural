@@ -10,11 +10,10 @@ import {
 import { useNavigate, useParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 
-import { fetchGroups, fetchUsers } from '../accounts/Typeaheads'
+import { BindingInput, fetchGroups, fetchUsers } from '../account/Typeaheads'
 import { GqlError } from '../utils/Alert'
 import { deepUpdate, updateCache } from '../../utils/graphql'
 import { REPO_Q } from '../repos/queries'
-import { BindingInput } from '../account/Typeaheads'
 import { sanitize } from '../account/utils'
 import { CREATE_PROVIDER, UPDATE_PROVIDER } from '../oidc/queries'
 import { AuthMethod } from '../oidc/types'

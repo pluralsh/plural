@@ -12,6 +12,10 @@ import { useApolloClient, useMutation } from '@apollo/client'
 
 import Toggle from 'react-toggle'
 
+import { fetchUsers } from 'components/incidents/MessageInput'
+
+import { fetchGroups } from 'components/account/Typeaheads'
+
 import ResponsiveInput from '../ResponsiveInput'
 import { ModalHeader } from '../ModalHeader'
 
@@ -22,7 +26,6 @@ import {
   CREATE_ROLE, DELETE_ROLE, ROLES_Q, UPDATE_ROLE,
 } from './queries'
 import { PermissionTypes } from './types'
-import { fetchGroups, fetchUsers } from './Typeaheads'
 
 function RoleName({ role: { name, description } }) {
   return (

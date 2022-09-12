@@ -4,6 +4,10 @@ import { Button, InputCollection } from 'forge-core'
 import { Div } from 'honorable'
 import { Box, Layer } from 'grommet'
 
+import { fetchUsers } from 'components/incidents/MessageInput'
+
+import { fetchGroups } from 'components/account/Typeaheads'
+
 import { appendConnection, updateCache } from '../../utils/graphql'
 
 import ResponsiveInput from '../ResponsiveInput'
@@ -11,7 +15,6 @@ import { ModalHeader } from '../ModalHeader'
 import { GqlError } from '../utils/Alert'
 
 import { BindingInput, sanitize } from './Role'
-import { fetchGroups, fetchUsers } from './Typeaheads'
 import { CREATE_SERVICE_ACCOUNT, UPDATE_SERVICE_ACCOUNT, USERS_Q } from './queries'
 
 export function ServiceAccountForm({

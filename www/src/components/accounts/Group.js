@@ -13,6 +13,8 @@ import {
   PencilIcon, PeopleIcon, PersonPlusIcon, TrashCanIcon,
 } from 'pluralsh-design-system'
 
+import { fetchUsers } from 'components/incidents/MessageInput'
+
 import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { FixedScroller } from '../utils/SmoothScroller'
@@ -22,7 +24,6 @@ import { ModalHeader } from '../ModalHeader'
 import {
   CREATE_GROUP_MEMBERS, DELETE_GROUP, DELETE_GROUP_MEMBER, GROUP_MEMBERS, UPDATE_GROUP,
 } from './queries'
-import { fetchUsers } from './Typeaheads'
 import { SearchIcon, addGroupMember, deleteGroup } from './utils'
 
 const GroupMemberRow = memo(({ group, user }) => {

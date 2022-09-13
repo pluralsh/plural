@@ -73,3 +73,10 @@ migration:
 
 yarn-add: ## adds a yarn dep to the react interface
 	cd www && yarn add $(dep)
+
+release-vsn: # tags and pushes a new release
+	@read -p "Version: " tag; \
+	git checkout master; \
+	git pull --rebase; \
+	git tag -a $$tag -m "new release"; \
+	git push origin $$tag

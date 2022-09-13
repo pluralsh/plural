@@ -17,6 +17,9 @@ defmodule GraphQl.Resolvers.Shell do
   def create_demo_project(_, %{context: %{current_user: user}}),
     do: Shell.Demo.create_demo_project(user)
 
+  def transfer_demo_project(%{organization_id: org}, %{context: %{current_user: user}}),
+    do: Shell.Demo.transfer_demo_project(org, user)
+
   def reboot(_, %{context: %{current_user: user}}), do: Shell.reboot(user.id)
 
   def stop(_, %{context: %{current_user: user}}), do: Shell.stop(user)

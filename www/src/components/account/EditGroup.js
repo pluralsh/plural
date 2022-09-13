@@ -136,6 +136,7 @@ export function EditGroup({ group, cancel }) {
           </Flex>
         )}
       </TabPanel>
+      {/* FIXME: Update it. */}
       <Actions
         cancel={cancel}
         submit={mutation}

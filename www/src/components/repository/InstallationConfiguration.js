@@ -86,6 +86,7 @@ function UpdateUpgrades({ installation, setOpen }) {
           none
         </Radio>
       </RadioGroup>
+      {/* FIXME: Update it. */}
       <Actions
         cancel={() => setOpen(false)}
         submit={mutation}

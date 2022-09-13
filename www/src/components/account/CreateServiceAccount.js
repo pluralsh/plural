@@ -1,13 +1,7 @@
 import { useMutation } from '@apollo/client'
 import { Box } from 'grommet'
 import { Button, Div } from 'honorable'
-import {
-  ListBoxItem,
-  Modal,
-  ModalActions,
-  ModalHeader,
-  ValidatedInput,
-} from 'pluralsh-design-system'
+import { ListBoxItem, Modal, ValidatedInput } from 'pluralsh-design-system'
 import { useCallback, useState } from 'react'
 
 import { appendConnection, updateCache } from '../../utils/graphql'
@@ -148,28 +142,14 @@ export function EditServiceAccount({ user, update }) {
         loading={loading}
       />
       <Modal
+        header="Edit service account"
         portal
         open={edit}
         onClose={() => {
           setEdit(false)
         }}
-        size="large"
-      >
-        <ModalHeader onClose={() => setEdit(false)}>
-          Edit service account
-        </ModalHeader>
-        <Box
-          flex={false}
-          gap="small"
-        >
-          <ServiceAccountForm
-            error={eerror}
-            attributes={attributes}
-            setAttributes={setAttributes}
-            bindings={bindings}
-            setBindings={setBindings}
-          />
-          <ModalActions>
+        actions={(
+          <>
             <Button
               secondary
               onClick={() => setEdit(false)}
@@ -183,7 +163,21 @@ export function EditServiceAccount({ user, update }) {
             >
               Update
             </Button>
-          </ModalActions>
+          </>
+        )}
+        size="large"
+      >
+        <Box
+          flex={false}
+          gap="small"
+        >
+          <ServiceAccountForm
+            error={eerror}
+            attributes={attributes}
+            setAttributes={setAttributes}
+            bindings={bindings}
+            setBindings={setBindings}
+          />
         </Box>
       </Modal>
     </>
@@ -229,28 +223,15 @@ export function CreateServiceAccount({ q }) {
         </Button>
       </Div>
       <Modal
+        header="Create service account"
         open={open}
         onClose={() => {
           resetAndClose()
           setOpen(false)
         }}
         size="large"
-      >
-        <ModalHeader>
-          Create service account
-        </ModalHeader>
-        <Box
-          flex={false}
-          gap="small"
-        >
-          <ServiceAccountForm
-            error={error}
-            attributes={attributes}
-            setAttributes={setAttributes}
-            bindings={bindings}
-            setBindings={setBindings}
-          />
-          <ModalActions>
+        actions={(
+          <>
             <Button
               secondary
               onClick={() => {
@@ -266,7 +247,21 @@ export function CreateServiceAccount({ q }) {
             >
               Create
             </Button>
-          </ModalActions>
+          </>
+        )}
+      >
+        <Box
+          flex={false}
+          gap="small"
+        >
+          <ServiceAccountForm
+            error={error}
+            attributes={attributes}
+            setAttributes={setAttributes}
+            bindings={bindings}
+            setBindings={setBindings}
+          />
+
         </Box>
       </Modal>
     </>

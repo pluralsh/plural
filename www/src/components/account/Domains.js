@@ -2,12 +2,7 @@ import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
 import { Avatar, Flex, Span } from 'honorable'
 import moment from 'moment'
-import {
-  ListBoxItem,
-  Modal,
-  ModalHeader,
-  PageTitle,
-} from 'pluralsh-design-system'
+import { ListBoxItem, Modal, PageTitle } from 'pluralsh-design-system'
 import { useMemo, useState } from 'react'
 
 import isEqual from 'lodash/isEqual'
@@ -87,14 +82,12 @@ function DomainOptions({ domain, setDomain }) {
         ))}
       </MoreMenu>
       <Modal
+        header="Edit access policy"
         portal
         open={edit}
         onClose={() => setEdit(false)}
         width="100%"
       >
-        <ModalHeader onClose={() => setEdit(false)}>
-          Edit access policy
-        </ModalHeader>
         <AccessPolicy
           domain={domain}
           cancel={() => setEdit(false)}
@@ -164,6 +157,7 @@ function AccessPolicy({ domain: { id, accessPolicy }, cancel, setOpen }) {
           remove={name => setBindings(uniqueBindings.filter(({ group }) => !group || group.name !== name))}
         />
       </Flex>
+      {/* FIXME: Update it. */}
       <Actions
         cancel={cancel}
         submit={mutation}

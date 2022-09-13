@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import {
-  Codeline, Divider, InfoIcon, ModalHeader,
+  Codeline, Divider, InfoIcon,
 } from 'pluralsh-design-system'
 
 import {

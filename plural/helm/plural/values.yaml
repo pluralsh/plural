@@ -353,19 +353,19 @@ crons:
   envVars: []
 - cronName: plrl-login-prune
   cronModule: Prune.Passwordless
-  crontab: "0 10 * * *"
+  crontab: "10 0 * * *"
   envVars: []
 - cronName: plrl-prune-queues
   cronModule: Prune.Queues
-  crontab: "0 15 * * *"
+  crontab: "15 0 * * *"
   envVars: []
 - cronName: plrl-stale-tests
   cronModule: Task.StaleTests
-  crontab: "0 30 * * *"
+  crontab: "30 0 * * *"
   envVars: []
 - cronName: plrl-prune-invites
   cronModule: Prune.Invites
-  crontab: "0 45 * * *"
+  crontab: "45 0 * * *"
   envVars: []
 
 hydraSecrets:

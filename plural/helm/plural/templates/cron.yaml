@@ -11,7 +11,7 @@ metadata:
   labels:
 {{ include "plural.labels" . | indent 4 }}
 spec:
-  schedule: {{ .crontab }}
+  schedule: {{ .crontab | quote }}
   jobTemplate:
     spec:
       template:

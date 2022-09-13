@@ -2,6 +2,7 @@ import { useApolloClient, useMutation } from '@apollo/client'
 import {
   ComboBox,
   FormField,
+  Modal,
   Switch,
   Tab,
   TabList,
@@ -30,7 +31,7 @@ const TABS = {
   Users: { label: 'Users' },
 }
 
-export function EditGroup({ group, cancel }) {
+export function EditGroup({ group, edit, setEdit }) {
   const client = useApolloClient()
   const [value, setValue] = useState('')
   const [name, setName] = useState(group.name)
@@ -38,7 +39,7 @@ export function EditGroup({ group, cancel }) {
   const [global, setGlobal] = useState(group.global)
   const [mutation, { loading, error }] = useMutation(UPDATE_GROUP, {
     variables: { id: group.id, attributes: { name, description, global } },
-    onCompleted: () => cancel(),
+    onCompleted: () => setEdit(false),
   })
   const [addMut] = useMutation(CREATE_GROUP_MEMBERS, {
     variables: { groupId: group.id },
@@ -53,96 +54,104 @@ export function EditGroup({ group, cancel }) {
   const [view, setView] = useState('Attributes')
 
   return (
-    <Flex
-      flexDirection="column"
-      gap="large"
-    >
-      {error && (
-        <GqlError
-          header="Something went wrong"
-          error={error}
+    <Modal
+      header="Edit group"
+      portal
+      open={edit}
+      size="large"
+      onClose={() => setEdit(false)}
+      actions={(
+        <Actions
+          cancel={() => setEdit(false)}
+          submit={mutation}
+          loading={loading}
+          action="Update"
         />
       )}
-      <TabList
-        stateRef={tabStateRef}
-        stateProps={{
-          orientation: 'horizontal',
-          selectedKey: view,
-          onSelectionChange: key => setView(key),
-        }}
+    >
+      <Flex
+        flexDirection="column"
+        gap="large"
       >
-        {Object.entries(TABS).map(([key, { label }]) => (
-          <Tab key={key}>{label}</Tab>
-        ))}
-      </TabList>
-      <TabPanel stateRef={tabStateRef}>
-        {view === 'Attributes' && (
-          <Flex
-            flexDirection="column"
-            gap="large"
-          >
-            <ValidatedInput
-              label="Name"
-              value={name}
-              onChange={({ target: { value } }) => setName(value)}
-            />
-            <ValidatedInput
-              label="Description"
-              value={description}
-              onChange={({ target: { value } }) => setDescription(value)}
-            />
-            <Switch
-              checked={global}
-              onChange={({ target: { checked } }) => setGlobal(checked)}
-            >
-              Apply globally
-            </Switch>
-          </Flex>
+        {error && (
+          <GqlError
+            header="Something went wrong"
+            error={error}
+          />
         )}
-        {view === 'Users' && (
-          <Flex
-            flexDirection="column"
-            gap="large"
-          >
-            <FormField
-              label="Add users"
-              width="100%"
-              {...{
-                '& :last-child': {
-                  marginTop: 0,
-                },
-              }}
+        <TabList
+          stateRef={tabStateRef}
+          stateProps={{
+            orientation: 'horizontal',
+            selectedKey: view,
+            onSelectionChange: key => setView(key),
+          }}
+        >
+          {Object.entries(TABS).map(([key, { label }]) => (
+            <Tab key={key}>{label}</Tab>
+          ))}
+        </TabList>
+        <TabPanel stateRef={tabStateRef}>
+          {view === 'Attributes' && (
+            <Flex
+              flexDirection="column"
+              gap="large"
             >
-              <ComboBox
-                inputValue={value}
-                placeholder="Search a user"
-                onSelectionChange={key => {
-                  setValue('')
-                  addMut({ variables: { userId: key } })
-                }}
-                onInputChange={value => {
-                  setValue(value)
-                  fetchUsers(client, value, setSuggestions)
+              <ValidatedInput
+                label="Name"
+                value={name}
+                onChange={({ target: { value } }) => setName(value)}
+              />
+              <ValidatedInput
+                label="Description"
+                value={description}
+                onChange={({ target: { value } }) => setDescription(value)}
+              />
+              <Switch
+                checked={global}
+                onChange={({ target: { checked } }) => setGlobal(checked)}
+              >
+                Apply globally
+              </Switch>
+            </Flex>
+          )}
+          {view === 'Users' && (
+            <Flex
+              flexDirection="column"
+              gap="large"
+            >
+              <FormField
+                label="Add users"
+                width="100%"
+                {...{
+                  '& :last-child': {
+                    marginTop: 0,
+                  },
                 }}
               >
-                {suggestions.map(({ label }) => label)}
-              </ComboBox>
-            </FormField>
-            <GroupMembers
-              group={group}
-              edit
-            />
-
-          </Flex>
-        )}
-      </TabPanel>
-      {/* FIXME: Update it. */}
-      <Actions
-        cancel={cancel}
-        submit={mutation}
-        loading={loading}
-        action="Update"
-      />
-    </Flex>
+                <ComboBox
+                  inputValue={value}
+                  placeholder="Search a user"
+                  onSelectionChange={key => {
+                    setValue('')
+                    addMut({ variables: { userId: key } })
+                  }}
+                  onInputChange={value => {
+                    setValue(value)
+                    fetchUsers(client, value, setSuggestions)
+                  }}
+                >
+                  {suggestions.map(({ label }) => label)}
+                </ComboBox>
+              </FormField>
+              <GroupMembers
+                group={group}
+                edit
+              />
+            </Flex>
+          )}
+        </TabPanel>
+      </Flex>
+    </Modal>
   )
 }

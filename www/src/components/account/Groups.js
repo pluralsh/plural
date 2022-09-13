@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/client'
 import { Box } from 'grommet'
-import { Div, Flex } from 'honorable'
+import { Flex } from 'honorable'
 import {
   Button,
   GlobeIcon,
@@ -108,20 +108,11 @@ export function Group({ group, q }) {
         >
           <ViewGroup group={group} />
         </Modal>
-        <Modal
-          header="Edit group"
-          portal
-          open={edit}
-          size="large"
-          onClose={() => setEdit(false)}
-        >
-          <Div>
-            <EditGroup
-              group={group}
-              cancel={() => setEdit(false)}
-            />
-          </Div>
-        </Modal>
+        <EditGroup
+          group={group}
+          edit={edit}
+          setEdit={setEdit}
+        />
         <Confirm
           open={confirm}
           text="Deleting groups cannot be undone and permissions attached to this group will be removed."

@@ -1,48 +1,15 @@
-import { Div, Flex } from 'honorable'
-import {
-  BrowserIcon, CloudIcon, GearTrainIcon, NetworkInterfaceIcon, Stepper,
-} from 'pluralsh-design-system'
+import { Flex } from 'honorable'
 
 import {
-  SECTION_CLI_INSTALLATION, SECTION_CLOUD_SELECT, SECTION_CLOUD_WORKSPACE, SECTION_GIT_PROVIDER, SECTION_SYNOPSIS,
-} from '../constants'
+  ResponsiveLayoutContentContainer, ResponsiveLayoutSidecarContainer, ResponsiveLayoutSidenavContainer, ResponsiveLayoutSpacer,
+} from '../../layout/ResponsiveLayout'
 
+import OnboardingSidenav from './OnboardingSidenav'
+import OnboardingSidecar from './OnboardingSidecar'
+import OnboardingTitle from './OnboardingTitle'
 import OnboardingFooter from './OnboardingFooter'
 
 import SplashToLogoTransition from './SplashToLogoTransition'
-
-function DemoStepper({ stepIndex = 0, ...props }) {
-  const steps = [
-    { key: SECTION_GIT_PROVIDER, stepTitle: 'Create a repository', IconComponent: NetworkInterfaceIcon },
-    { key: SECTION_CLOUD_SELECT, stepTitle: <>Choose a&nbsp;cloud</>, IconComponent: CloudIcon },
-    { key: SECTION_CLOUD_WORKSPACE, stepTitle: 'Configure workspace', IconComponent: GearTrainIcon },
-    { key: SECTION_SYNOPSIS, stepTitle: 'Launch cloud shell', IconComponent: BrowserIcon },
-  ]
-
-  return (
-    <Stepper
-      stepIndex={stepIndex}
-      steps={steps}
-      {...props}
-    />
-  )
-}
-
-function CliStepper({ stepIndex = 0, ...props }) {
-  const steps = [
-    { key: SECTION_GIT_PROVIDER, stepTitle: 'Create a repository', IconComponent: NetworkInterfaceIcon },
-    { key: SECTION_CLI_INSTALLATION, stepTitle: <>Install CLI</>, IconComponent: CloudIcon },
-    { key: SECTION_SYNOPSIS, stepTitle: <>Launch cloud&nbsp;shell</>, IconComponent: BrowserIcon },
-  ]
-
-  return (
-    <Stepper
-      stepIndex={stepIndex}
-      steps={steps}
-      {...props}
-    />
-  )
-}
 
 function OnboardingWrapper({
   showSplashScreen = false, stepIndex = 0, childIsReady = true, children, cliMode = false,
@@ -62,17 +29,28 @@ function OnboardingWrapper({
         childIsReady={childIsReady}
       >
         {childIsReady && (
-          <Flex
-            direction="column"
-            position="relative"
-            height="100%"
-            width="100%"
-            maxWidth={640}
-            zIndex={0}
-            marginTop="xlarge"
-            paddingHorizontal="xlarge"
-          >
-            {/* <Div
+          <Flex direction="column">
+            <OnboardingTitle />
+            <Flex
+              position="relative"
+              height="100%"
+              width="100%"
+            >
+              <ResponsiveLayoutSpacer />
+              <ResponsiveLayoutSidenavContainer>
+                <OnboardingSidenav
+                  stepIndex={stepIndex}
+                  cliMode={cliMode}
+                />
+              </ResponsiveLayoutSidenavContainer>
+              <ResponsiveLayoutContentContainer>
+                {children}
+              </ResponsiveLayoutContentContainer>
+              <ResponsiveLayoutSidecarContainer>
+                <OnboardingSidecar />
+              </ResponsiveLayoutSidecarContainer>
+              <ResponsiveLayoutSpacer />
+              {/* <Div
               marginBottom="xxlarge"
             >
               {(
@@ -81,12 +59,7 @@ function OnboardingWrapper({
                   : <DemoStepper stepIndex={stepIndex} />
               )}
             </Div> */}
-            {children}
-            <Flex
-              direction="column"
-              height="100%"
-            />
-            <OnboardingFooter />
+            </Flex>
           </Flex>
         )}
       </SplashToLogoTransition>

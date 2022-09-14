@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { ModalHeader } from 'pluralsh-design-system'
 import {
   A, Accordion, Button, Div, ExtendTheme, Flex, Li, Modal, P, Ul,
 } from 'honorable'

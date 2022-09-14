@@ -81,19 +81,11 @@ function DomainOptions({ domain, setDomain }) {
           />
         ))}
       </MoreMenu>
-      <Modal
-        header="Edit access policy"
-        portal
-        open={edit}
-        onClose={() => setEdit(false)}
-        width="100%"
-      >
-        <AccessPolicy
-          domain={domain}
-          cancel={() => setEdit(false)}
-          setOpen={open => setEdit(open)}
-        />
-      </Modal>
+      <AccessPolicy
+        domain={domain}
+        edit={edit}
+        setEdit={setEdit}
+      />
       <Confirm
         open={confirm}
         text="Make sure the domain is empty before deleting"
@@ -107,7 +99,7 @@ function DomainOptions({ domain, setDomain }) {
   )
 }
 
-function AccessPolicy({ domain: { id, accessPolicy }, cancel, setOpen }) {
+function AccessPolicy({ domain: { id, accessPolicy }, edit, setEdit }) {
   const [bindings, setBindings] = useState(accessPolicy ? accessPolicy.bindings : [])
   const uniqueBindings = useMemo(() => uniqWith(bindings, isEqual), [bindings])
   const [mutation, { loading, error }] = useMutation(UPDATE_DOMAIN, {
@@ -122,12 +114,26 @@ function AccessPolicy({ domain: { id, accessPolicy }, cancel, setOpen }) {
     },
     onCompleted: () => {
       setBindings([])
-      setOpen(false)
+      setEdit(false)
     },
   })
 
   return (
-    <>
+    <Modal
+      header="Edit access policy"
+      portal
+      open={edit}
+      onClose={() => setEdit(false)}
+      width="100%"
+      actions={(
+        <Actions
+          cancel={() => setEdit(false)}
+          submit={mutation}
+          loading={loading}
+          action="Update"
+        />
+      )}
+    >
       <Flex
         direction="column"
         gap="large"
@@ -157,14 +163,7 @@ function AccessPolicy({ domain: { id, accessPolicy }, cancel, setOpen }) {
           remove={name => setBindings(uniqueBindings.filter(({ group }) => !group || group.name !== name))}
         />
       </Flex>
-      {/* FIXME: Update it. */}
-      <Actions
-        cancel={cancel}
-        submit={mutation}
-        loading={loading}
-        action="Update"
-      />
-    </>
+    </Modal>
   )
 }
 

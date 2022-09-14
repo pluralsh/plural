@@ -1,10 +1,5 @@
 import { Div } from 'honorable'
-import {
-  Button,
-  Modal,
-  ModalActions,
-  ModalHeader,
-} from 'pluralsh-design-system'
+import { Button, Modal } from 'pluralsh-design-system'
 import { ReactNode } from 'react'
 
 import { GqlError } from '../utils/Alert'
@@ -34,12 +29,30 @@ export function Confirm({
 }: ConfirmProps) {
   return (
     <Modal
+      header={title}
       open={open}
       onClose={close}
       width="512px"
       portal
+      actions={(
+        <>
+          <Button
+            secondary
+            onClick={close}
+          >
+            Cancel
+          </Button>
+          <Button
+            destructive={destructive}
+            onClick={submit}
+            loading={loading}
+            marginLeft="medium"
+          >
+            {label || 'Confirm'}
+          </Button>
+        </>
+      )}
     >
-      <ModalHeader onClose={close}>{title}</ModalHeader>
       {error ? (
         <GqlError
           error={error}
@@ -52,22 +65,6 @@ export function Confirm({
         >{text}
         </Div>
       )}
-      <ModalActions>
-        <Button
-          secondary
-          onClick={close}
-        >
-          Cancel
-        </Button>
-        <Button
-          destructive={destructive}
-          onClick={submit}
-          loading={loading}
-          marginLeft="medium"
-        >
-          {label || 'Confirm'}
-        </Button>
-      </ModalActions>
     </Modal>
   )
 }

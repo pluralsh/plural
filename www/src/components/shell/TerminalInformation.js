@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import {
-  Codeline, Divider, InfoIcon, ModalHeader,
+  Codeline, Divider, InfoIcon,
 } from 'pluralsh-design-system'
 
 import {
@@ -68,13 +68,11 @@ function TerminalInformation({ shell }) {
         Cloud shell info
       </Button>
       <Modal
+        header="Cloud shell info"
         open={open}
         onClose={() => setOpen(false)}
       >
         <Flex direction="column">
-          <ModalHeader onClose={() => setOpen(false)}>
-            Cloud shell info
-          </ModalHeader>
           <Flex
             direction="column"
             gap="medium"

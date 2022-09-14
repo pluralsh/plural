@@ -1,11 +1,6 @@
 import { useMutation } from '@apollo/client'
 import { Box } from 'grommet'
-import {
-  Button,
-  Modal,
-  ModalActions,
-  ModalHeader, ValidatedInput,
-} from 'pluralsh-design-system'
+import { Button, Modal, ValidatedInput } from 'pluralsh-design-system'
 import { useCallback, useState } from 'react'
 
 import { appendConnection, updateCache } from '../../utils/graphql'
@@ -42,10 +37,28 @@ export function CreateGroup({ q }) {
         Create group
       </Button>
       <Modal
+        header="Create group"
         open={open}
         onClose={() => resetAndClose()}
+        actions={(
+          <>
+            <Button
+              secondary
+              onClick={() => resetAndClose()}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              onClick={mutation}
+              loading={loading}
+              marginLeft="medium"
+            >
+              Create
+            </Button>
+          </>
+        )}
       >
-        <ModalHeader>Create group</ModalHeader>
         <Box
           width="50vw"
           gap="small"
@@ -66,22 +79,6 @@ export function CreateGroup({ q }) {
             value={description}
             onChange={({ target: { value } }) => setDescription(value)}
           />
-          <ModalActions>
-            <Button
-              secondary
-              onClick={() => resetAndClose()}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              onClick={mutation}
-              loading={loading}
-              marginLeft="medium"
-            >
-              Create
-            </Button>
-          </ModalActions>
         </Box>
       </Modal>
     </>

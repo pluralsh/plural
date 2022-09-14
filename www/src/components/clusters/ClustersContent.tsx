@@ -80,6 +80,7 @@ export function ClustersContent(): ReactElement | null {
       </PageTitle>
       <UpgradesList
         upgrades={data.upgradeQueue?.upgrades}
+        acked={data.upgradeQueue?.acked}
         loading={loading}
         fetchMore={fetchMore}
       />
@@ -88,10 +89,10 @@ export function ClustersContent(): ReactElement | null {
 }
 
 function UpgradesList({
-  upgrades, loading, fetchMore,
+  upgrades, acked, loading, fetchMore,
 }): ReactElement {
   const [listRef, setListRef] = useState(null)
-  const { edges, pageInfo, acked } = upgrades
+  const { edges, pageInfo } = upgrades
 
   return (
     <Flex

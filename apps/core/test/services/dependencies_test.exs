@@ -24,7 +24,7 @@ defmodule Core.Services.DependenciesTest do
       assert Dependencies.valid?(terraform.dependencies, user)
     end
 
-    test "If a dependency is locked, it will return false" do
+    test "If a dependency is locked, it will return a locked tuple" do
       chart     = insert(:chart)
       terraform = insert(:terraform)
       user      = insert(:user)
@@ -43,7 +43,7 @@ defmodule Core.Services.DependenciesTest do
         %{type: :terraform, repo: terraform.repository.name, name: terraform.name}
       ]})
 
-      refute Dependencies.valid?(terraform.dependencies, user)
+      {:locked, _} = Dependencies.valid?(terraform.dependencies, user)
     end
 
     test "If a dependency is missing it returns false" do

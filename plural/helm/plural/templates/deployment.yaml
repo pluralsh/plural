@@ -194,7 +194,7 @@ metadata:
   labels:
 {{ include "plural.labels" . | indent 4 }}
 spec:
-  replicas: {{ .Values.www.replicas }}
+  replicas: {{ .Values.www.replicaCount }}
   selector:
     matchLabels:
       app.kubernetes.io/name: plural-www

@@ -1,14 +1,15 @@
-import { Button, ModalActions } from 'pluralsh-design-system'
+import { Button } from 'pluralsh-design-system'
 
 export function Actions({
   cancel, submit, loading, action, destructive,
 }) {
   return (
-    <ModalActions>
+    <>
       <Button
         secondary
         onClick={cancel}
-      >Cancel
+      >
+        Cancel
       </Button>
       <Button
         destructive={destructive}
@@ -16,8 +17,9 @@ export function Actions({
         disabled={!submit}
         loading={loading}
         marginLeft="medium"
-      >{action || 'Create'}
+      >
+        {action || 'Create'}
       </Button>
-    </ModalActions>
+    </>
   )
 }

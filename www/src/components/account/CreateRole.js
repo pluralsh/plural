@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/client'
 import { Button } from 'honorable'
-import { Modal, ModalHeader } from 'pluralsh-design-system'
+import { Modal } from 'pluralsh-design-system'
 import { useCallback, useMemo, useState } from 'react'
 import uniqWith from 'lodash/uniqWith'
 import isEqual from 'lodash/isEqual'
@@ -52,23 +52,25 @@ export function CreateRole({ q }) {
         Create role
       </Button>
       <Modal
+        header="Create role"
         open={open}
         onClose={() => resetAndClose()}
         marginVertical={16}
         size="large"
+        actions={(
+          <Actions
+            cancel={() => resetAndClose()}
+            submit={mutation}
+            loading={loading}
+          />
+        )}
       >
-        <ModalHeader>Create role</ModalHeader>
         <RoleForm
           attributes={attributes}
           setAttributes={setAttributes}
           bindings={uniqueRoleBindings}
           setBindings={setRoleBindings}
           error={error}
-        />
-        <Actions
-          cancel={() => resetAndClose()}
-          submit={mutation}
-          loading={loading}
         />
       </Modal>
     </>

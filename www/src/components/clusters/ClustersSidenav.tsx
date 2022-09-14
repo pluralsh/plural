@@ -29,6 +29,13 @@ export function ClustersSidenav({
     onQueueChange(queue)
   }
 
+  // Update selected queue if queues are updated
+  useEffect(() => {
+    const queue = queues.find(q => q.id === selectedKey.id)
+
+    setSelectedKey(queue)
+  }, [queues, selectedKey, setSelectedKey])
+
   return (
     <Flex
       gap={24}

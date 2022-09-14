@@ -34,16 +34,9 @@ function MiniHeader({ header, description }) {
   )
 }
 
-function UpdateUpgrades({ installation, setOpen }) {
-  const [autoUpgrade, setAutoUpgrade] = useState(installation.autoUpgrade || false)
-  const [trackTag, setTrackTag] = useState(installation.trackTag || '')
-  const [mutation, { loading }] = useMutation(UPDATE_INSTALLATION, {
-    variables: {
-      id: installation.id,
-      attributes: { trackTag, autoUpgrade },
-    },
-  })
-
+function UpdateUpgrades({
+  autoUpgrade, setAutoUpgrade, trackTag, setTrackTag,
+}) {
   const doSetTrackTag = useCallback(tag => {
     if (tag === 'none') {
       setAutoUpgrade(false)
@@ -83,59 +76,37 @@ function UpdateUpgrades({ installation, setOpen }) {
           checked={!autoUpgrade}
           onChange={({ target: { checked } }) => checked && doSetTrackTag('none')}
         >
-          none
+          None
         </Radio>
       </RadioGroup>
-      {/* FIXME: Update it. */}
-      <Actions
-        cancel={() => setOpen(false)}
-        submit={mutation}
-        loading={loading}
-        action="Update"
-      />
     </Flex>
   )
 }
 
-function DeleteInstallation({ installation, setOpen }) {
-  const { repository: { name } } = installation
-  const [confirm, setConfirm] = useState('')
-  const [mutation, { loading, error }] = useMutation(DELETE_INSTALLATION_MUTATION, {
-    variables: {
-      id: installation.id,
-    },
-    onCompleted: () => window.location.reload(),
-  })
-
+function DeleteInstallation({
+  installation, deleteMutation, deleteError, confirm, setConfirm,
+}) {
   return (
-    <Keyboard onEnter={confirm !== name ? null : mutation}>
+    <Keyboard onEnter={confirm !== installation.repository.name ? null : deleteMutation}>
       <Flex
         direction="column"
         gap="medium"
       >
-
-        {error && (
+        {deleteError && (
           <GqlError
-            error={error}
+            error={deleteError}
             header="Failed to delete"
           />
         )}
         <MiniHeader
           header="Delete this installation"
-          description={`Type the application name, "${name}", to confirm deletion.`}
+          description={`Type the application name, "${installation.repository.name}", to confirm deletion.`}
         />
         <Input
           value={confirm}
           onChange={({ target: { value } }) => setConfirm(value)}
           placeholder="Confirm application name"
           width="75%"
-        />
-        <Actions
-          cancel={() => setOpen(false)}
-          submit={confirm !== name ? null : mutation}
-          loading={loading}
-          destructive
-          action="Delete installation"
         />
       </Flex>
     </Keyboard>
@@ -145,19 +116,53 @@ function DeleteInstallation({ installation, setOpen }) {
 export function InstallationConfiguration({ installation, open, setOpen }) {
   const tabStateRef = useRef()
   const [selectedTabKey, setSelectedKey] = useState()
+
+  // Update tab controls.
+  const [autoUpgrade, setAutoUpgrade] = useState(installation.autoUpgrade || false)
+  const [trackTag, setTrackTag] = useState(installation.trackTag || '')
+  const [updateMutation, { loading: updateLoading }] = useMutation(UPDATE_INSTALLATION, {
+    variables: { id: installation.id, attributes: { trackTag, autoUpgrade } },
+    onCompleted: () => setOpen(false),
+  })
+
+  // Delete tab controls.
+  const [confirm, setConfirm] = useState('')
+  const [deleteMutation, { loading: deleteLoading, error: deleteError }] = useMutation(DELETE_INSTALLATION_MUTATION, {
+    variables: { id: installation.id },
+    onCompleted: () => window.location.reload(),
+  })
+
   const tabs = {
     upgrades: {
       label: 'Upgrades',
       content: <UpdateUpgrades
-        installation={installation}
-        setOpen={setOpen}
+        autoUpgrade={autoUpgrade}
+        setAutoUpgrade={setAutoUpgrade}
+        trackTag={trackTag}
+        setTrackTag={setTrackTag}
+      />,
+      actions: <Actions
+        cancel={() => setOpen(false)}
+        submit={updateMutation}
+        loading={updateLoading}
+        action="Update"
       />,
     },
     uninstall: {
       label: 'Delete',
       content: <DeleteInstallation
         installation={installation}
-        setOpen={setOpen}
+        deleteMutation={deleteMutation}
+        deleteError={deleteError}
+        confirm={confirm}
+        setConfirm={setConfirm}
+      />,
+      actions: <Actions
+        cancel={() => setOpen(false)}
+        submit={confirm !== installation.repository.name ? null : deleteMutation}
+        loading={deleteLoading}
+        destructive
+        action="Delete installation"
       />,
     },
   }
@@ -170,6 +175,7 @@ export function InstallationConfiguration({ installation, open, setOpen }) {
       paddingRight={0}
       paddingLeft={0}
       paddingTop={0}
+      actions={tabs[selectedTabKey]?.actions}
     >
       <TabList
         stateRef={tabStateRef}

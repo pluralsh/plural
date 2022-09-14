@@ -72,7 +72,7 @@ function OnboardingWrapper({
             marginTop="xlarge"
             paddingHorizontal="xlarge"
           >
-            <Div
+            {/* <Div
               marginBottom="xxlarge"
             >
               {(
@@ -80,7 +80,7 @@ function OnboardingWrapper({
                   ? <CliStepper stepIndex={stepIndex} />
                   : <DemoStepper stepIndex={stepIndex} />
               )}
-            </Div>
+            </Div> */}
             {children}
             <Flex
               direction="column"

@@ -57,7 +57,7 @@
     "moment": "2.29.4",
     "phoenix": "1.6.11",
     "pluralsh-absinthe-socket-apollo-link": "0.2.0",
-    "pluralsh-design-system": "1.202.0",
+    "pluralsh-design-system": "1.205.0",
     "prop-types": "15.8.1",
     "query-string": "7.1.1",
     "randomcolor": "0.6.2",

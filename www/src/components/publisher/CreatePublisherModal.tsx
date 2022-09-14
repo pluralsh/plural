@@ -1,13 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button, Flex, Modal } from 'honorable'
-import {
-  Alert,
-  FormField,
-  Input,
-  ModalActions,
-  ModalHeader,
-} from 'pluralsh-design-system'
+import { Alert, FormField, Input } from 'pluralsh-design-system'
 import { useMutation } from '@apollo/client'
 import { useFilePicker } from 'react-sage'
 import isArray from 'lodash/isArray'
@@ -152,10 +146,26 @@ function CreatePublisherModal({ open, onClose }: CreatePublisherModalProps) {
       open={open}
       onClose={onClose}
       size="large"
+      header="Create a publisher"
+      actions={(
+        <>
+          <Button
+            secondary
+            onClick={onClose}
+          >
+            Cancel
+          </Button>
+          <Button
+            primary
+            marginLeft="medium"
+            loading={loading}
+            onClick={handleSubmit}
+          >
+            Save
+          </Button>
+        </>
+      )}
     >
-      <ModalHeader>
-        Create a publisher
-      </ModalHeader>
       {iconPicker.HiddenFileInput(iconPickerInputOpts)}
       <FormField
         label="Icon"
@@ -253,21 +263,6 @@ function CreatePublisherModal({ open, onClose }: CreatePublisherModalProps) {
           {preMutationError}
         </Alert>
       )}
-      <ModalActions gap="medium">
-        <Button
-          secondary
-          onClick={onClose}
-        >
-          Cancel
-        </Button>
-        <Button
-          primary
-          loading={loading}
-          onClick={handleSubmit}
-        >
-          Save
-        </Button>
-      </ModalActions>
     </Modal>
   )
 }

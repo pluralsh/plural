@@ -15,8 +15,14 @@ defmodule Core.Services.Dependencies do
   @spec valid?(Dependencies.t | Dependencies.Dependency.t | nil, User.t) :: boolean
   def valid?(nil, _), do: true
   def valid?(%Dependencies{dependencies: nil}, _), do: true
-  def valid?(%Dependencies{dependencies: deps}, user) when is_list(deps),
-    do: Enum.all?(deps, &valid?(&1, user))
+  def valid?(%Dependencies{dependencies: []}, _), do: true
+  def valid?(%Dependencies{dependencies: [dep | deps]} = dependency, user) do
+    case valid?(dep, user) do
+      {:locked, _} = locked -> locked
+      false -> false
+      _ -> valid?(%{dependency | dependencies: deps}, user)
+    end
+  end
   def valid?(%Dependencies.Dependency{type: :terraform, repo: repo} = dep, %User{id: user_id}) do
     TerraformInstallation.for_repo_name(repo)
     |> TerraformInstallation.for_terraform_name(find_names(dep))
@@ -58,6 +64,7 @@ defmodule Core.Services.Dependencies do
   def validate([dep | rest], user) do
     case valid?(dep, user) do
       true -> validate(rest, user)
+      {:locked, repo} -> {:error, "you have a pending breaking change, apply it locally then run `plural repos unlock #{repo}` to allow future installs"}
       false -> {:error, {:missing_dep, dep}}
     end
   end
@@ -92,7 +99,7 @@ defmodule Core.Services.Dependencies do
   def closure(nil), do: []
   def closure(deps) when is_list(deps), do: closure(deps, MapSet.new(), [])
 
-  defp valid_version?([%{locked: true} | _], _), do: false # don't deliver updates when an installation is locked
+  defp valid_version?([%{locked: true} | _], %{repo: repo}), do: {:locked, repo} # don't deliver updates when an installation is locked
   defp valid_version?([_ | _], %{version: nil}), do: true
   defp valid_version?(versions, %{any_of: [_ | _] = deps}) do
     by_name = Enum.into(deps, %{}, & {&1.name, &1})

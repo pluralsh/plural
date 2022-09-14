@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { ModalHeader } from 'pluralsh-design-system'
 import {
   A, Accordion, Button, Div, ExtendTheme, Flex, Li, Modal, P, Ul,
 } from 'honorable'
@@ -159,14 +158,12 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
         />
       )}
       <Modal
+        header="Next steps"
         maxWidth={512}
         open={isModalOpen}
         onClose={handleModalClose}
         borderTop="4px solid border-success"
       >
-        <ModalHeader>
-          Next steps
-        </ModalHeader>
         <P body1>
           Congratulations, you've installed your first Plural application!
           Next, you can view your deployed application in the Plural Console.

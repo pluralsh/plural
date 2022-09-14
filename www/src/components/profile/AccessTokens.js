@@ -14,7 +14,6 @@ import {
   InfoIcon,
   ListIcon,
   Modal,
-  ModalHeader,
   PageTitle,
   Toast,
   Tooltip,
@@ -186,13 +185,11 @@ function AccessToken({ token, first, last }) {
               onClick={() => setGraph(true)}
             />
             <Modal
+              header="Usage metrics"
               open={graph}
               portal
               onClose={() => setGraph(false)}
             >
-              <ModalHeader onClose={() => setGraph(false)}>
-                USAGE METRICS
-              </ModalHeader>
               <TokenMetrics token={token} />
             </Modal>
           </>
@@ -204,13 +201,11 @@ function AccessToken({ token, first, last }) {
               onClick={() => setAudits(true)}
             />
             <Modal
+              header="Audit logs"
               open={audits}
               portal
               onClose={() => setAudits(false)}
             >
-              <ModalHeader onClose={() => setAudits(false)}>
-                AUDIT LOGS
-              </ModalHeader>
               <TokenAudits token={token} />
             </Modal>
           </>

@@ -3,8 +3,6 @@ import {
   Codeline,
   MailIcon,
   Modal,
-  ModalActions,
-  ModalHeader,
   ValidatedInput,
 } from 'pluralsh-design-system'
 import { useCallback, useState } from 'react'
@@ -44,11 +42,31 @@ export function InviteUser() {
         </Button>
       </Div>
       <Modal
+        header="Invite users"
         open={open}
         onClose={() => resetAndClose()}
         width="100%"
+        actions={invite ? (
+          <Button onClick={() => resetAndClose()}>Done</Button>
+        ) : (
+          <>
+            <Button
+              secondary
+              onClick={() => resetAndClose()}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={mutation}
+              loading={loading}
+              disabled={email.length === 0}
+              marginLeft="medium"
+            >
+              Invite
+            </Button>
+          </>
+        )}
       >
-        <ModalHeader>Invite users</ModalHeader>
         <ValidatedInput
           disabled={!!invite}
           value={email}
@@ -64,28 +82,6 @@ export function InviteUser() {
         )}
         {invite?.secureId && <Codeline marginTop="small">{inviteLink(invite)}</Codeline>}
         {invite && !invite.secureId && <Span>An email was sent to {email} to accept the invite</Span>}
-        <ModalActions>
-          {invite ? (
-            <Button onClick={() => resetAndClose()}>Done</Button>
-          ) : (
-            <>
-              <Button
-                secondary
-                onClick={() => resetAndClose()}
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={mutation}
-                loading={loading}
-                disabled={email.length === 0}
-                marginLeft="medium"
-              >
-                Invite
-              </Button>
-            </>
-          )}
-        </ModalActions>
       </Modal>
     </>
   )

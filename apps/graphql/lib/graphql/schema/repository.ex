@@ -91,10 +91,12 @@ defmodule GraphQl.Schema.Repository do
   end
 
   input_object :community_attributes do
-    field :discord, :string
-    field :slack,   :string
-    field :twitter, :string
-    field :videos,  list_of(:string)
+    field :discord,  :string
+    field :slack,    :string
+    field :twitter,  :string
+    field :homepage, :string
+    field :git_url,  :string
+    field :videos,   list_of(:string)
   end
 
   ## OBJECTS
@@ -142,10 +144,12 @@ defmodule GraphQl.Schema.Repository do
   end
 
   object :community do
-    field :discord, :string
-    field :slack,   :string
-    field :twitter, :string
-    field :videos,  list_of(:string)
+    field :discord,  :string
+    field :slack,    :string
+    field :twitter,  :string
+    field :homepage, :string
+    field :git_url,  :string
+    field :videos,   list_of(:string)
   end
 
   object :repository do

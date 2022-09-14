@@ -305,18 +305,18 @@ postgres:
 
 image:
   repository: dkr.plural.sh/plural/plural
-  tag: '0.3.1' ## PLRL-REPLACE[  tag: '%s']
+  tag: '0.3.3' ## PLRL-REPLACE[  tag: '%s']
   pullPolicy: Always
 
 rtc:
   repository: dkr.plural.sh/plural/rtc
-  tag: '0.3.1' ## PLRL-REPLACE[  tag: '%s']
+  tag: '0.3.3' ## PLRL-REPLACE[  tag: '%s']
   resources: {}
   replicaCount: 2
 
 worker:
   repository: dkr.plural.sh/plural/worker
-  tag: '0.3.1' ## PLRL-REPLACE[  tag: '%s']
+  tag: '0.3.3' ## PLRL-REPLACE[  tag: '%s']
   minReplicas: 1
   maxReplicas: 10
   resources: {}
@@ -324,14 +324,14 @@ worker:
 
 www:
   image: dkr.plural.sh/plural/plural-www
-  tag: '0.3.1' ## PLRL-REPLACE[  tag: '%s']
+  tag: '0.3.3' ## PLRL-REPLACE[  tag: '%s']
   port: 80
   resources: {}
   replicaCount: 2
 
 cron:
   image: dkr.plural.sh/plural/cron
-  tag: '0.3.1' ## PLRL-REPLACE[  tag: '%s']
+  tag: '0.3.3' ## PLRL-REPLACE[  tag: '%s']
 
 imagePullSecrets:
 - name: plural-creds

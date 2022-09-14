@@ -29,6 +29,7 @@ const steps = [
   { key: SECTION_SYNOPSIS, stepTitle: 'Launch cloud shell', IconComponent: BrowserIcon },
 ]
 
+// eslint-disable-next-line
 function OnboardingSidenav({ stepIndex, cliMode }: OnboardingSidenavProps) {
   function handleRestart() {
 

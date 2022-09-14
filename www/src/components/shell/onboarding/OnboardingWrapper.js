@@ -7,7 +7,6 @@ import {
 import OnboardingSidenav from './OnboardingSidenav'
 import OnboardingSidecar from './OnboardingSidecar'
 import OnboardingTitle from './OnboardingTitle'
-import OnboardingFooter from './OnboardingFooter'
 
 import SplashToLogoTransition from './SplashToLogoTransition'
 
@@ -50,15 +49,6 @@ function OnboardingWrapper({
                 <OnboardingSidecar />
               </ResponsiveLayoutSidecarContainer>
               <ResponsiveLayoutSpacer />
-              {/* <Div
-              marginBottom="xxlarge"
-            >
-              {(
-                cliMode
-                  ? <CliStepper stepIndex={stepIndex} />
-                  : <DemoStepper stepIndex={stepIndex} />
-              )}
-            </Div> */}
             </Flex>
           </Flex>
         )}

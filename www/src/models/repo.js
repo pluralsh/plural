@@ -25,6 +25,26 @@ export const RepoFragment = gql`
   ${PublisherFragment}
 `
 
+export const StackFragment = gql`
+  fragment StackFragment on Stack {
+    id
+    name
+    description
+    featured
+    collections {
+      provider
+      bundles {
+        recipe {
+          repository {
+            name
+            icon
+          }
+        }
+      }
+    }
+  }
+`
+
 export const InstallationFragment = gql`
   fragment InstallationFragment on Installation {
     id

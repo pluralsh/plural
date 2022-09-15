@@ -16781,9 +16781,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pluralsh-design-system@npm:1.207.0":
-  version: 1.207.0
-  resolution: "pluralsh-design-system@npm:1.207.0"
+"pluralsh-design-system@npm:1.208.0":
+  version: 1.208.0
+  resolution: "pluralsh-design-system@npm:1.208.0"
   dependencies:
     "@floating-ui/react-dom-interactions": 0.8.1
     "@react-aria/button": 3.6.1
@@ -16818,7 +16818,7 @@ __metadata:
     react-dom: ">=16.0.0"
     react-transition-group: ">=4.4.2"
     styled-components: ">=5.3.5"
-  checksum: 2e8dd26ce51069a3444a42edf2468c5d757a17eb4e83a5ce783a2e73a4b8527cf75a4e6fd7336842003bb90d176560409bf2f9eaf9c9a995c11e2656ba02583b
+  checksum: 956ab1da036a5c1ad2d4c221ad812a6f34b126edc1a5a5cf0f541afe4208d9714d9bd38d7980f55208fe0dd68bfb8848159c71aa9c7fcec5d1ae46966158dda6
   languageName: node
   linkType: hard
 
@@ -23152,7 +23152,7 @@ __metadata:
     moment: 2.29.4
     phoenix: 1.6.11
     pluralsh-absinthe-socket-apollo-link: 0.2.0
-    pluralsh-design-system: 1.207.0
+    pluralsh-design-system: 1.208.0
     postcss-import: 8.2.0
     prop-types: 15.8.1
     query-string: 7.1.1

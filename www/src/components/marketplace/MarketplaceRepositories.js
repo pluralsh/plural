@@ -36,6 +36,7 @@ import { MARKETPLACE_QUERY } from './queries'
 
 import MarketplaceSidebar from './MarketplaceSidebar'
 import MarketplaceStacks from './MarketplaceStacks'
+import { fillEmptyColumns, flexBasis } from './utils'
 
 const searchOptions = {
   keys: ['name', 'description', 'tags.tag'],
@@ -56,24 +57,6 @@ const sidebarWidth = 256 - 32
 function RepoCardList({
   repositories, repoProps, maxWidth, stretchLastRow = false, size = 'small', ...props
 }) {
-  const flexBasis = '400px'
-
-  // Workaround that will render empty columns to align the last row.
-  // It is better to use bigger columns number to prevent issues on all kinds of viewports.
-  function fillEmptyColumns(columns) {
-    return (
-      <>
-        {[...Array(columns)].map((x, i) => (
-          <Flex
-            key={i}
-            flexGrow={1}
-            flexBasis={flexBasis}
-          />
-        ))}
-      </>
-    )
-  }
-
   return (
     <Flex
       mx={-1}

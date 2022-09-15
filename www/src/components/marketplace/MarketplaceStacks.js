@@ -11,6 +11,10 @@ export default function MarketplaceStacks() {
 
   const { stacks: { edges } } = data
 
+  // TODO: It should rely directly on stack.bundles instead of provider-specific stack.collections.
+  const apps = ({ collections: c }) => (c?.length > 0
+    ? c[0].bundles.map(({ recipe: { repository: { name, icon } } }) => ({ name, imageUrl: icon })) : [])
+
   return (
     <>
       <H1 subtitle1>Plural Stacks</H1>
@@ -23,6 +27,7 @@ export default function MarketplaceStacks() {
             key={stack.id}
             title={stack.name}
             description={stack.description}
+            apps={apps(stack)}
           />
         ))}
       </Flex>

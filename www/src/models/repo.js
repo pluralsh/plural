@@ -31,6 +31,17 @@ export const StackFragment = gql`
     name
     description
     featured
+    collections {
+      provider
+      bundles {
+        recipe {
+          repository {
+            name
+            icon
+          }
+        }
+      }
+    }
   }
 `
 

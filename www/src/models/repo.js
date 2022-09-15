@@ -25,6 +25,15 @@ export const RepoFragment = gql`
   ${PublisherFragment}
 `
 
+export const StackFragment = gql`
+  fragment StackFragment on Stack {
+    id
+    name
+    description
+    featured
+  }
+`
+
 export const InstallationFragment = gql`
   fragment InstallationFragment on Installation {
     id

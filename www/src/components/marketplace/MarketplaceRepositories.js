@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import {
-  A, Br, Button, Div, Flex, H1, Hr, Span, useMediaQuery,
+  A, Br, Button, Div, Flex, H1, Hr, Span,
 } from 'honorable'
 import {
   ArrowTopRightIcon,
@@ -35,6 +35,7 @@ import PublisherSideCar from '../publisher/PublisherSideCar'
 import { MARKETPLACE_QUERY } from './queries'
 
 import MarketplaceSidebar from './MarketplaceSidebar'
+import MarketplaceStacks from './MarketplaceStacks'
 
 const searchOptions = {
   keys: ['name', 'description', 'tags.tag'],
@@ -135,7 +136,6 @@ function MarketplaceRepositories({ installed, publisher }) {
   const [search, setSearch] = useState('')
   const [areFiltersOpen, setAreFiltersOpen] = useState(true)
   const tabStateRef = useRef()
-  const isDesktopLarge = useMediaQuery('up', 'desktopLarge')
 
   const [repositories, loadingRepositories, hasMoreRepositories, fetchMoreRepositories] = usePaginatedQuery(MARKETPLACE_QUERY,
     {
@@ -145,7 +145,7 @@ function MarketplaceRepositories({ installed, publisher }) {
     },
     data => data.repositories)
 
-  const shouldRenderFeatured = !categories.length && !tags.length && !installed && !search
+  const shouldRenderStacks = !categories.length && !tags.length && !installed && !search
 
   useEffect(() => {
     const { current } = scrollRef
@@ -210,29 +210,6 @@ function MarketplaceRepositories({ installed, publisher }) {
   function handleClearFilters() {
     setSearch('')
     setSearchParams({})
-  }
-
-  function renderFeatured() {
-    if (publisher) return null
-
-    const featuredA = sortedRepositories.shift()
-    const featuredB = sortedRepositories.shift()
-
-    return (
-      <>
-        <H1 subtitle1>
-          Featured Repositories
-        </H1>
-        <RepoCardList
-          repositories={[featuredA, featuredB]}
-          repoProps={{ featured: true }}
-          marginTop="medium"
-          maxWidth="100%"
-          stretchLastRow
-          size={isDesktopLarge ? 'large' : 'medium'}
-        />
-      </>
-    )
   }
 
   function renderTitle() {
@@ -413,11 +390,11 @@ function MarketplaceRepositories({ installed, publisher }) {
             position="relative"
             ref={scrollRef}
           >
-            {shouldRenderFeatured && renderFeatured()}
+            {shouldRenderStacks && <MarketplaceStacks />}
             {resultRepositories?.length > 0 && !publisher && (
               <H1
                 subtitle1
-                marginTop={shouldRenderFeatured ? 'xlarge' : 0}
+                marginTop={shouldRenderStacks ? 'xlarge' : 0}
               >
                 {renderTitle()}
               </H1>

@@ -1,5 +1,6 @@
 export const CLOUDS = ['AWS', 'GCP']
 
+export const SECTION_APPLICATIONS = 'applications'
 export const SECTION_GIT_PROVIDER = 'git-provider'
 export const SECTION_CLOUD_SELECT = 'cloud-select'
 export const SECTION_CLOUD_CREDENTIALS = 'cloud-credentials'

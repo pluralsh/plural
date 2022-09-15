@@ -23,8 +23,8 @@ export default function MarketplaceStacks() {
     <>
       <H1 subtitle1>Plural Stacks</H1>
       <Flex
-        gap="large"
-        marginVertical="large"
+        gap="xlarge"
+        marginTop="medium"
       >
         {edges.map(({ node: stack }, i) => (
           <StackCard
@@ -36,7 +36,10 @@ export default function MarketplaceStacks() {
           />
         ))}
       </Flex>
-      <Divider backgroundColor="border" />
+      <Divider
+        backgroundColor="border"
+        marginVertical="xlarge"
+      />
     </>
   )
 }

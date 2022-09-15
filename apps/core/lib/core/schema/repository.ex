@@ -57,10 +57,12 @@ defmodule Core.Schema.Repository do
     end
 
     embeds_one :community, Community, on_replace: :update do
-      field :discord, :string
-      field :slack,   :string
-      field :twitter, :string
-      field :videos,  {:array, :string}
+      field :discord,  :string
+      field :slack,    :string
+      field :homepage, :string
+      field :git_url,  :string
+      field :twitter,  :string
+      field :videos,   {:array, :string}
     end
 
     belongs_to :integration_resource_definition, ResourceDefinition, on_replace: :update
@@ -218,5 +220,5 @@ defmodule Core.Schema.Repository do
 
   def license_changeset(model, attrs \\ %{}), do: cast(model, attrs, [:url, :name])
 
-  def community_changeset(model, attrs \\ %{}), do: cast(model, attrs, [:discord, :slack, :twitter, :videos])
+  def community_changeset(model, attrs \\ %{}), do: cast(model, attrs, [:discord, :slack, :twitter, :videos, :homepage, :git_url])
 end

@@ -14,11 +14,8 @@ export default function MarketplaceStacks() {
   if (!data) return
 
   const { stacks: { edges } } = data
-
-  // TODO: It should rely directly on stack.bundles instead of provider-specific stack.collections.
   const apps = ({ collections: c }) => (c?.length > 0
     ? c[0].bundles.map(({ recipe: { repository: { name, icon } } }) => ({ name, imageUrl: icon })) : [])
-
   const hue = i => hues[i % hues.length]
 
   return (

@@ -151,3 +151,8 @@ If you're not sure where to start, or if you have any questions, please open a d
 ## 📝 License
 
 See [LICENSE](LICENSE) for licensing information. If there are any questions on the license please visit our [Discord](https://discord.gg/pluralsh).
+
+## Thanks to all the contributors ❤
+ <a href = "https://github.com/pluralsh/plural/graphs/contributors">
+   <img src = "https://contrib.rocks/image?repo=pluralsh/plural"/>
+ </a>

@@ -71,7 +71,7 @@ defmodule Core.Services.Upgrades do
     case Dependencies.valid?(version.dependencies, user) do
       true ->
         apply_deferred_update(update)
-      false ->
+      _ ->
         dequeue = Timex.now() |> Timex.shift(hours: DeferredUpdate.wait_time(update))
 
         update

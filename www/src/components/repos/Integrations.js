@@ -180,7 +180,7 @@ function SourceLink({ sourceUrl }) {
             color="focus"
           >Source code
           </Text>
-          <ArrowRightIcon size="12px" />
+          <ArrowRightIcon size={12} />
         </Box>
       </Anchor>
     </Box>
@@ -227,7 +227,7 @@ export function TagHeader({ tag, setTag }) {
         direction="row"
         onClick={() => setTag(null)}
       >
-        <CaretLeftIcon size="20px" />
+        <CaretLeftIcon size={20} />
         <Text weight={500}># {tag}</Text>
       </Box>
     </HoveredBackground>
@@ -323,7 +323,7 @@ function ViewAll({ repositoryId }) {
             view all
           </Text>
           <ArrowRightIcon
-            size="15px"
+            size={15}
             color="focus"
           />
         </Box>

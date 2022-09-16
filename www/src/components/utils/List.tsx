@@ -13,7 +13,7 @@ type Hue = Required<CardProps>['hue']
 
 const ListContext = createContext<{ hue: Hue }>({ hue: 'default' })
 
-const LiBare = styled.li(({ $extendStyle }) => ({
+const LiBare = styled.li(({ $extendStyle }: { $extendStyle?: Record<string, any> }) => ({
   margin: 0,
   textIndent: 0,
   padding: 0,
@@ -28,7 +28,11 @@ const hueToBorderColor: Record<Hue, string> = {
   lightest: 'border-fill-three',
 }
 
-const ListItemInner = styled(LiBare)(({ theme, $last, $hue = 'default' }) => ({
+const ListItemInner = styled(LiBare)<{
+  $last?: boolean
+  $hue?: string
+  $first?: boolean
+}>(({ theme, $last = false, $hue = 'default' }) => ({
   padding: `${theme.spacing.xsmall}px ${theme.spacing.medium}px`,
   borderBottomStyle: $last ? 'none' : 'solid',
   borderColor: theme.colors[hueToBorderColor[$hue]] || 'transparent',

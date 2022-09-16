@@ -77,7 +77,7 @@ function FileInput({ updateCreds, gcp, setProject }) {
       textAlign="center"
     >
       <FileIcon
-        size="48"
+        size={48}
         color={loaded ? 'icon-success' : 'text'}
       />
       <Text

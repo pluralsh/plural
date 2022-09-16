@@ -10,7 +10,7 @@ export function ReturnToBeginning({ beginning }) {
     >
       <Button
         onClick={beginning}
-        endIcon={<CaretUpIcon size="small" />}
+        endIcon={<CaretUpIcon size={14} />}
         marginRight="100px"
         marginBottom="30px"
       >

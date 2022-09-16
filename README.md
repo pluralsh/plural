@@ -113,7 +113,7 @@ Our tooling will take care of the rest.
 
 ## 📚 Documentation
 
-* The full documentation is available on our [Documentation site](https://docs.plural.sh/).
+The full documentation is available on our [Documentation site](https://docs.plural.sh/).
 <br /><br />
 
 

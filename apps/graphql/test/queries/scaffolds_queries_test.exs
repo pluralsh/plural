@@ -37,7 +37,7 @@ defmodule GraphQl.ScaffoldsQueriesTest do
             }
         }
       """, %{"name" => provider, "vsn" => vsn})
-      assert message == "could not find version #{vsn} for the given provider #{String.downcase(provider)}"
+      assert message == "could not find provider #{String.downcase(provider)} with version #{vsn}"
     end
   end
 end

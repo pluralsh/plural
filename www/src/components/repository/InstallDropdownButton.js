@@ -32,6 +32,7 @@ function extendedTheme({ minMenuWidth = 400 }) {
       Button: [
         {
           borderRadius: 'normal',
+          width: '100%',
         },
       ],
       Menu: [
@@ -220,7 +221,7 @@ function InstallDropdownButton({ recipes, ...props }) {
             setTab(0)
           }}
           endIcon={(
-            <DropdownArrowIcon size={10} />
+            <DropdownArrowIcon size={16} />
           )}
           {...props}
         >
@@ -245,7 +246,7 @@ function InstallDropdownButton({ recipes, ...props }) {
             setTab(0)
           }}
           endIcon={(
-            <DropdownArrowIcon size={10} />
+            <DropdownArrowIcon size={16} />
           )}
           {...props}
         >

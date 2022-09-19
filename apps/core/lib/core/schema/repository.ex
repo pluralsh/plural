@@ -198,7 +198,7 @@ defmodule Core.Schema.Repository do
     |> cast_assoc(:shell)
     |> foreign_key_constraint(:publisher_id)
     |> cast_assoc(:integration_resource_definition)
-    |> validate_format(:name, ~r/^[a-z][-a-z0-9]*$/, message: "name must be formatted as a valid kubernetes namespace")
+    |> validate_format(:name, ~r/^[a-z0-9][-a-z0-9]*[a-z0-9]$/, message: "name must be formatted as a valid kubernetes namespace")
     |> unique_constraint(:name)
     |> validate_required([:name, :category])
     |> generate_uuid(:icon_id)

@@ -164,7 +164,7 @@ function MarketplaceRepositories({ installed, publisher }) {
     )
   }
 
-  const sortedRepositories = _.orderBy(repositories.slice(), ['trending', 'name'], ['desc', 'asc'])
+  const sortedRepositories = _.orderBy(repositories.slice(), ['trending', r => r.name.toLowerCase()], ['desc', 'asc'])
     .filter(repository => (categories.length ? categories.includes(repository.category.toLowerCase()) : true))
     .filter(repository => {
       if (!tags.length) return true
@@ -178,7 +178,7 @@ function MarketplaceRepositories({ installed, publisher }) {
   const fuse = new Fuse(sortedRepositories, searchOptions)
 
   const resultRepositories = search
-    ? _.orderBy(fuse.search(search).map(({ item }) => item), ['trending', 'name'], ['desc', 'asc'])
+    ? _.orderBy(fuse.search(search).map(({ item }) => item), ['trending', r => r.name.toLowerCase()], ['desc', 'asc'])
     : sortedRepositories
 
   function handleClearToken(key, value) {

@@ -155,8 +155,6 @@ function MarketplaceRepositories({ installed, publisher }) {
     return title
   }
 
-  console.log(resultRepositories)
-
   return (
     <Flex
       direction="column"

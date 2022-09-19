@@ -110,8 +110,6 @@ function StatusSelector({ statuses, setStatuses }) {
     }
   }, [hasStatus, statuses, setStatuses])
 
-  console.log(statuses)
-
   return (
     <>
       <Box

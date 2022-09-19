@@ -148,7 +148,7 @@ export default function Stack() {
           <Outlet context={{ stack } as StackContext} />
         </TabPanel>
         <ResponsiveLayoutSidecarContainer>
-          {/* <RepositorySideCar /> */}
+          {/* TODO: <RepositorySideCar /> */}
         </ResponsiveLayoutSidecarContainer>
         <ResponsiveLayoutSpacer />
       </Flex>

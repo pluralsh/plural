@@ -7,7 +7,8 @@ import { StackContext } from './types'
 
 export default function StackApps() {
   const { stack }: StackContext = useOutletContext()
-  const repositories = stack?.bundles?.map(({ repository }) => repository)
+  const { collections: c } = stack
+  const repositories = c?.length > 0 ? c[0].bundles?.map(({ recipe: { repository: r } }) => r) : []
 
   return (
     <Flex
@@ -21,7 +22,7 @@ export default function StackApps() {
         heading="Stack applications"
         paddingTop="medium"
       >
-        {/* <Flex display-desktop-up="none"><RepositoryActions /></Flex> */}
+        {/* TODO: <Flex display-desktop-up="none"><RepositoryActions /></Flex> */}
       </PageTitle>
       <Flex
         direction="column"
@@ -36,7 +37,7 @@ export default function StackApps() {
           body1
           marginBottom="medium"
         >
-          {stack.description}
+          {stack?.description}
         </P>
         <RepoCardList
           repositories={repositories}

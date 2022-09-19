@@ -50,8 +50,10 @@ export const StackFragment = gql`
       bundles {
         recipe {
           repository {
-            name
-            icon
+            ...RepoFragment
+            tags {
+              tag
+            }
           }
         }
       }

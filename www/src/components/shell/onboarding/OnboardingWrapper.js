@@ -28,28 +28,30 @@ function OnboardingWrapper({
         childIsReady={childIsReady}
       >
         {childIsReady && (
-          <Flex direction="column">
-            <OnboardingTitle />
-            <Flex
-              position="relative"
-              height="100%"
-              width="100%"
+          <Flex
+            position="relative"
+            width="100%"
+            flexGrow={1}
+            overflow="hidden"
+          >
+            <ResponsiveLayoutSpacer />
+            <ResponsiveLayoutSidenavContainer>
+              <OnboardingSidenav
+                stepIndex={stepIndex}
+                cliMode={cliMode}
+              />
+            </ResponsiveLayoutSidenavContainer>
+            <ResponsiveLayoutContentContainer
+              overflowY="hidden"
+              marginRight-desktop-down={32}
             >
-              <ResponsiveLayoutSpacer />
-              <ResponsiveLayoutSidenavContainer>
-                <OnboardingSidenav
-                  stepIndex={stepIndex}
-                  cliMode={cliMode}
-                />
-              </ResponsiveLayoutSidenavContainer>
-              <ResponsiveLayoutContentContainer>
-                {children}
-              </ResponsiveLayoutContentContainer>
-              <ResponsiveLayoutSidecarContainer>
-                <OnboardingSidecar />
-              </ResponsiveLayoutSidecarContainer>
-              <ResponsiveLayoutSpacer />
-            </Flex>
+              <OnboardingTitle />
+              {children}
+            </ResponsiveLayoutContentContainer>
+            <ResponsiveLayoutSidecarContainer>
+              <OnboardingSidecar />
+            </ResponsiveLayoutSidecarContainer>
+            <ResponsiveLayoutSpacer />
           </Flex>
         )}
       </SplashToLogoTransition>

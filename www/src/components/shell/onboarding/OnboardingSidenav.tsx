@@ -36,7 +36,11 @@ function OnboardingSidenav({ stepIndex, cliMode }: OnboardingSidenavProps) {
   }
 
   return (
-    <Div marginRight="medium">
+    <Div
+      marginTop={82}
+      marginLeft="xlarge"
+      marginRight="medium"
+    >
       <Stepper
         vertical
         steps={steps}

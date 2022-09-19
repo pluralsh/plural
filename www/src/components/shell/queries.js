@@ -73,6 +73,8 @@ export const APPLICATIONS_QUERY = gql`
         node {
           id
           name
+          icon
+          private
         }
       }
     }

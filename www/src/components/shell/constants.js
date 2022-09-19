@@ -58,3 +58,5 @@ export const SECTIONS = {
     next: null,
   },
 }
+
+export const MAX_SELECTED_APPLICATIONS = 5

@@ -32,6 +32,14 @@ export const StackFragment = gql`
     name
     description
     featured
+    bundles {
+      repository {
+        ...RepoFragment
+        tags {
+          tag
+        }
+      }
+    }
     collections {
       provider
       bundles {
@@ -44,6 +52,7 @@ export const StackFragment = gql`
       }
     }
   }
+  ${RepoFragment}
 `
 
 export const InstallationFragment = gql`

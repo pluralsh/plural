@@ -1,9 +1,13 @@
-import { Flex } from 'honorable'
+import { RepoCardList } from 'components/marketplace/RepoCardList'
+import { Flex, P } from 'honorable'
 import { PageTitle } from 'pluralsh-design-system'
 import { useOutletContext } from 'react-router-dom'
 
+import { StackContext } from './types'
+
 export default function StackApps() {
-  const { stack }: any = useOutletContext()
+  const { stack }: StackContext = useOutletContext()
+  const repositories = stack?.bundles?.map(({ repository }) => repository)
 
   return (
     <Flex
@@ -28,7 +32,13 @@ export default function StackApps() {
         marginBottom="medium"
         paddingRight="small"
       >
-        {stack.description}
+        <P
+          body1
+          marginBottom="medium"
+        >
+          {stack.description}
+        </P>
+        <RepoCardList repositories={repositories} />
       </Flex>
     </Flex>
   )

@@ -4,18 +4,25 @@ import { Flex } from 'honorable'
 
 import { GoBack } from 'components/utils/GoBack'
 
-import { ResponsiveLayoutSidecarContainer, ResponsiveLayoutSidenavContainer, ResponsiveLayoutSpacer } from 'components/layout/ResponsiveLayout'
+import {
+  ResponsiveLayoutContentContainer, ResponsiveLayoutSidecarContainer, ResponsiveLayoutSidenavContainer, ResponsiveLayoutSpacer,
+} from 'components/layout/ResponsiveLayout'
+
+import { TabPanel } from 'pluralsh-design-system'
+
+import { useRef } from 'react'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
 import TopBar from '../layout/TopBar'
 
 import { STACK_QUERY } from './queries'
+import { StackContext } from './types'
 
 export default function Stack() {
   const { name } = useParams()
   const { data } = useQuery(STACK_QUERY, { variables: { name, provider: 'AWS' } })
-  // const tabStateRef = useRef()
+  const tabStateRef = useRef()
 
   if (!data) {
     return (
@@ -56,15 +63,12 @@ export default function Stack() {
           {/* <RepositorySideNav tabStateRef={tabStateRef} /> */}
         </ResponsiveLayoutSidenavContainer>
         <ResponsiveLayoutSpacer />
-        <Outlet context={{ stack }} />
-        {/* <TabPanel
-          as={
-            <ResponsiveLayoutContentContainer />
-          }
+        <TabPanel
+          as={<ResponsiveLayoutContentContainer />}
           stateRef={tabStateRef}
         >
-          <Outlet />
-        </TabPanel> */}
+          <Outlet context={{ stack } as StackContext} />
+        </TabPanel>
         <ResponsiveLayoutSidecarContainer>
           {/* <RepositorySideCar /> */}
         </ResponsiveLayoutSidecarContainer>

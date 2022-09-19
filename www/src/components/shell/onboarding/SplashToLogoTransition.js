@@ -19,12 +19,15 @@ const splashTranslate = 'calc(50vh - (110px))'
 const logoTranslateTransition = {
   '&, &.enter, &.enter-active, &.enter-done, &.exit': {
     transform: `translateY(${splashTranslate})`,
+    opacity: 1,
   },
   '&.exit-active': {
-    transition: 'all 0.6s cubic-bezier(0.5, 0, 0.5, 1)',
+    transition: 'transform 0.6s cubic-bezier(0.5, 0, 0.5, 1), opacity 0.6s linear',
+    opacity: 1,
   },
   '&.exit-active, &.exit-done': {
     transform: 'translateY(0)',
+    opacity: 0,
   },
 }
 

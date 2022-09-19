@@ -103,6 +103,7 @@ export function Shell({ shell }) {
         gap="medium"
         borderBottom="1px solid border"
         width="100%"
+        maxWidth={1640}
       >
         {!fresh && (
           <Button

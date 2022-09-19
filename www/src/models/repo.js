@@ -19,6 +19,7 @@ export const RepoFragment = gql`
     darkIcon
     private
     trending
+    verified
     category
     oauthSettings { uriFormat authMethod }
     publisher { ...PublisherFragment }

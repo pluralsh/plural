@@ -16,7 +16,7 @@ defmodule GraphQl.RepositoryMutationsTest do
           }
         }
       """, %{"attrs" => %{
-        "name" => "my repo",
+        "name" => "my-repo",
         "category" => "DATA",
         "integration_resource_definition" => %{
           "name" => "definition",
@@ -30,7 +30,7 @@ defmodule GraphQl.RepositoryMutationsTest do
       }}, %{current_user: user})
 
       assert repo["id"]
-      assert repo["name"] == "my repo"
+      assert repo["name"] == "my-repo"
       assert repo["publisher"]["id"] == id
     end
 
@@ -51,7 +51,7 @@ defmodule GraphQl.RepositoryMutationsTest do
           }
         }
       """, %{"id" => pub.id, "attrs" => %{
-        "name" => "my repo",
+        "name" => "my-repo",
         "category" => "DATA",
         "integration_resource_definition" => %{
           "name" => "definition",
@@ -65,7 +65,7 @@ defmodule GraphQl.RepositoryMutationsTest do
       }}, %{current_user: user})
 
       assert repo["id"]
-      assert repo["name"] == "my repo"
+      assert repo["name"] == "my-repo"
       assert repo["publisher"]["id"] == pub.id
     end
   end
@@ -84,7 +84,7 @@ defmodule GraphQl.RepositoryMutationsTest do
         }
       """, %{
         "repositoryName" => repo.name,
-        "name" => "Updated Repo",
+        "name" => "updated-repo",
         "resource" => %{
           "name" => "definition",
           "spec" => [
@@ -97,7 +97,7 @@ defmodule GraphQl.RepositoryMutationsTest do
       }, %{current_user: user})
 
       assert updated["id"] == repo.id
-      assert updated["name"] == "Updated Repo"
+      assert updated["name"] == "updated-repo"
 
       %{integration_resource_definition: def} = Core.Repo.preload(refetch(repo), [:integration_resource_definition])
 

@@ -32,6 +32,10 @@ export const StackFragment = gql`
     name
     description
     featured
+    creator { 
+      id
+      name
+    }
     bundles {
       repository {
         ...RepoFragment

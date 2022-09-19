@@ -92,6 +92,7 @@ function RepoCardList({
               priv={repository.private}
               installed={!!repository.installation}
               verified={repository.verified}
+              trending={repository.trending}
               size={size}
               {...repoProps}
             />

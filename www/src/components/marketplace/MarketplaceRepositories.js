@@ -20,6 +20,8 @@ import styled from 'styled-components'
 import isEmpty from 'lodash/isEmpty'
 import capitalize from 'lodash/capitalize'
 
+import _ from 'lodash'
+
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 
 import { GoBack } from '../utils/GoBack'
@@ -162,8 +164,7 @@ function MarketplaceRepositories({ installed, publisher }) {
     )
   }
 
-  const sortedRepositories = repositories.slice()
-    .sort((a, b) => a.name.localeCompare(b.name))
+  const sortedRepositories = _.orderBy(repositories.slice(), ['trending', 'name'], ['desc', 'asc'])
     .filter(repository => (categories.length ? categories.includes(repository.category.toLowerCase()) : true))
     .filter(repository => {
       if (!tags.length) return true
@@ -176,7 +177,9 @@ function MarketplaceRepositories({ installed, publisher }) {
 
   const fuse = new Fuse(sortedRepositories, searchOptions)
 
-  const resultRepositories = search ? fuse.search(search).map(({ item }) => item) : sortedRepositories
+  const resultRepositories = search
+    ? _.orderBy(fuse.search(search).map(({ item }) => item), ['trending', 'name'], ['desc', 'asc'])
+    : sortedRepositories
 
   function handleClearToken(key, value) {
     const existing = searchParams.getAll(key)

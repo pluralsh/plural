@@ -9,7 +9,7 @@ import {
 } from 'components/layout/ResponsiveLayout'
 
 import {
-  RocketIcon, StackIcon, Tab, TabList, TabPanel,
+  StackIcon, Tab, TabList, TabPanel,
 } from 'pluralsh-design-system'
 
 import { useRef } from 'react'

@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'
 
-import { CLOUD_SHELL_QUERY, CREATE_SHELL_MUTATION } from '../../query'
+import { CLOUD_SHELL_QUERY, CREATE_SHELL_MUTATION } from '../../queries'
 
 import { GqlError } from '../../../utils/Alert'
 import { ShellStatus } from '../ShellStatus'

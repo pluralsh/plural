@@ -3,7 +3,7 @@ import { useQuery } from '@apollo/client'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
-import { AUTHENTICATION_URLS_QUERY, SCM_TOKEN_QUERY } from './query'
+import { AUTHENTICATION_URLS_QUERY, SCM_TOKEN_QUERY } from './queries'
 import { DEBUG_SCM_TOKENS } from './debug-tokens'
 
 import OnboardingFlow from './onboarding/OnboardingFlow'

@@ -83,7 +83,7 @@ defmodule ApiWeb.AuthControllerTest do
   describe "#refresh_license/2" do
     test "It can refresh the license for an installation", %{conn: conn} do
       publisher = insert(:publisher)
-      {:ok, repo} = Repositories.create_repository(%{name: "my repo", category: :data}, publisher.owner)
+      {:ok, repo} = Repositories.create_repository(%{name: "my-repo", category: :data}, publisher.owner)
 
       installation = insert(:installation, repository: repo)
       token = insert(:license_token, installation: installation)

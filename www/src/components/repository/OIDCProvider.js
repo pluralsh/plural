@@ -36,6 +36,15 @@ function UrlsInput({ uriFormat = '', urls, setUrls }) {
     setValue('')
   }, [urls, value, setValue, setUrls, uriFormat, basePath, baseScheme])
 
+  const removeUrl = useCallback(url => {
+    const array = [...urls]
+    const idx = urls.indexOf(url)
+
+    if (idx < 0) return
+
+    setUrls(array.splice(idx, 1))
+  }, [setUrls, urls])
+
   return (
     <Box
       gap="small"
@@ -76,7 +85,7 @@ function UrlsInput({ uriFormat = '', urls, setUrls }) {
             hue="lighter"
             clickable
             closeButton
-            onClick={() => setUrls(urls.filter(u => u !== url))}
+            onClick={() => removeUrl(url)}
           >
             {url}
           </Chip>

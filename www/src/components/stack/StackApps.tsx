@@ -38,7 +38,10 @@ export default function StackApps() {
         >
           {stack.description}
         </P>
-        <RepoCardList repositories={repositories} />
+        <RepoCardList
+          repositories={repositories}
+          mx={-0.75}
+        />
       </Flex>
     </Flex>
   )

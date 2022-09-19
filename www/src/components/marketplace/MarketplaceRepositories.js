@@ -19,6 +19,7 @@ import Fuse from 'fuse.js'
 import styled from 'styled-components'
 import isEmpty from 'lodash/isEmpty'
 import capitalize from 'lodash/capitalize'
+import orderBy from 'lodash/orderBy'
 
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 
@@ -92,6 +93,7 @@ function RepoCardList({
               priv={repository.private}
               installed={!!repository.installation}
               verified={repository.verified}
+              trending={repository.trending}
               size={size}
               {...repoProps}
             />
@@ -161,8 +163,7 @@ function MarketplaceRepositories({ installed, publisher }) {
     )
   }
 
-  const sortedRepositories = repositories.slice()
-    .sort((a, b) => a.name.localeCompare(b.name))
+  const sortedRepositories = orderBy(repositories.slice(), ['trending', r => r.name.toLowerCase()], ['desc', 'asc'])
     .filter(repository => (categories.length ? categories.includes(repository.category.toLowerCase()) : true))
     .filter(repository => {
       if (!tags.length) return true
@@ -175,7 +176,9 @@ function MarketplaceRepositories({ installed, publisher }) {
 
   const fuse = new Fuse(sortedRepositories, searchOptions)
 
-  const resultRepositories = search ? fuse.search(search).map(({ item }) => item) : sortedRepositories
+  const resultRepositories = search
+    ? orderBy(fuse.search(search).map(({ item }) => item), ['trending', r => r.name.toLowerCase()], ['desc', 'asc'])
+    : sortedRepositories
 
   function handleClearToken(key, value) {
     const existing = searchParams.getAll(key)

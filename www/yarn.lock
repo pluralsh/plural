@@ -12030,22 +12030,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"grommet@npm:2.25.1":
-  version: 2.25.1
-  resolution: "grommet@npm:2.25.1"
-  dependencies:
-    grommet-icons: ^4.7.0
-    hoist-non-react-statics: ^3.2.0
-    markdown-to-jsx: ^7.1.5
-    prop-types: ^15.8.1
-  peerDependencies:
-    react: ^16.6.1 || ^17.0.0 || ^18.0.0
-    react-dom: ^16.6.1 || ^17.0.0 || ^18.0.0
-    styled-components: ">= 5.1"
-  checksum: 4b1cb7c685fed5af5168fcb703def60b60678bf72897b3145df6545fef66e765a42009aac95c2039938202988b4ce0af3a297a34080f88ad98d45d4b5f005b3f
-  languageName: node
-  linkType: hard
-
 "grommet@npm:2.25.3":
   version: 2.25.3
   resolution: "grommet@npm:2.25.3"
@@ -23220,7 +23204,7 @@ __metadata:
     fireworks-js: 1.4.1
     forge-core: 1.4.6
     fuse.js: 6.6.2
-    grommet: 2.25.1
+    grommet: 2.25.3
     honorable: 0.139.0
     honorable-recipe-mp: 0.3.0
     honorable-theme-default: 0.65.0

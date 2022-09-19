@@ -18,6 +18,9 @@ defmodule Core.Schema.ProviderScaffold do
 
   defp provider_file(name, vsn) do
     Path.join([:code.priv_dir(:core), "scaffolds/terraform/providers/#{vsn}", "#{name}.eex"])
-    |> File.read!
+    |> case do
+       {:ok, resp} -> {:ok, resp} |> File.read!
+       error -> "could not find version #{vsn} for the given provider #{name}"
+    end
   end
 end

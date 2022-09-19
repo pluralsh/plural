@@ -25,5 +25,19 @@ defmodule GraphQl.ScaffoldsQueriesTest do
       assert String.length(content) > 10
       assert name == aws
     end
+
+    test "it can't find provider definition for version x" do
+      provider = "AWS"
+      vsn = "0.1.1"
+      {:ok, %{data: %{"terraformProvider" => %{"content" => message}}}} = run_query("""
+        query Provider($name: Provider!, $vsn: string!) {
+          terraformProvider(name: $name, vsn: $vsn) {
+              name
+              content
+            }
+        }
+      """, %{"name" => provider, "vsn" => vsn})
+      assert message == "could not find version #{vsn} for the given provider #{String.downcase(provider)}"
+    end
   end
 end

@@ -9,7 +9,7 @@ import {
 } from 'components/layout/ResponsiveLayout'
 
 import {
-  RocketIcon, Tab, TabList, TabPanel,
+  RocketIcon, StackIcon, Tab, TabList, TabPanel,
 } from 'pluralsh-design-system'
 
 import { useRef } from 'react'
@@ -57,7 +57,10 @@ function Sidenav({ stack }: any) {
           height={64}
           width={64}
         >
-          <RocketIcon size={32} />
+          <StackIcon
+            color="text-primary-accent"
+            size={32}
+          />
         </Flex>
         <Div><P subtitle1>{stack.name}</P></Div>
       </Flex>

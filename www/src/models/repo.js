@@ -37,14 +37,6 @@ export const StackFragment = gql`
       id
       name
     }
-    bundles {
-      repository {
-        ...RepoFragment
-        tags {
-          tag
-        }
-      }
-    }
     collections {
       provider
       bundles {

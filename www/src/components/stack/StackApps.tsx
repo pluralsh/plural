@@ -3,6 +3,8 @@ import { Flex, P } from 'honorable'
 import { PageTitle } from 'pluralsh-design-system'
 import { useOutletContext } from 'react-router-dom'
 
+import { StackActions } from './misc'
+
 import { StackContext } from './types'
 
 export default function StackApps() {
@@ -20,7 +22,7 @@ export default function StackApps() {
         heading="Stack applications"
         paddingTop="medium"
       >
-        {/* TODO: <Flex display-desktop-up="none"><RepositoryActions /></Flex> */}
+        <Flex display-desktop-up="none"><StackActions stack={stack} /></Flex>
       </PageTitle>
       <Flex
         direction="column"

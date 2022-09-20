@@ -16,14 +16,13 @@ import { useRef } from 'react'
 
 import { LinkTabWrap } from 'components/utils/Tabs'
 
-import InstallDropdownButton, { Recipe } from 'components/utils/InstallDropdownButton'
-
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
 import TopBar from '../layout/TopBar'
 
 import { STACK_QUERY } from './queries'
 import { StackContext } from './types'
+import { StackActions } from './misc'
 
 const DIRECTORY = [
   { label: 'Stack applications', path: '' },
@@ -100,23 +99,13 @@ function Sidenav({ stack }: StackContext) {
 }
 
 function Sidecar({ stack }: StackContext) {
-  const recipes = stack?.collections?.map(({ name, provider }) => ({
-    name,
-    description: `Installs ${stack.name} on ${provider}`,
-    provider,
-  } as Recipe))
-
   return (
     <Div
       position="relative"
       width={200}
       paddingTop="medium"
     >
-      <InstallDropdownButton
-        name={stack.name}
-        recipes={recipes}
-        type="stack"
-      />
+      <StackActions stack={stack} />
     </Div>
   )
 }

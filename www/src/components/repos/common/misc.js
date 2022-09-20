@@ -29,7 +29,7 @@ const gradeToColor = {
   C: '#FFE78F',
   D: '#FFE78F',
   E: '#FDB1A5',
-  F: '#FDB1A5',
+  F: '#ED456A',
 }
 
 export function PackageGrade({ grade, large }) {

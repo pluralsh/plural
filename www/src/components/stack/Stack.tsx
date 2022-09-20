@@ -16,6 +16,8 @@ import { useRef } from 'react'
 
 import { LinkTabWrap } from 'components/utils/Tabs'
 
+import InstallDropdownButton, { Recipe } from 'components/utils/InstallDropdownButton'
+
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
 import TopBar from '../layout/TopBar'
@@ -27,7 +29,7 @@ const DIRECTORY = [
   { label: 'Stack applications', path: '' },
 ]
 
-function Sidenav({ stack }: any) {
+function Sidenav({ stack }: StackContext) {
   const { pathname } = useLocation()
   const pathPrefix = `/stack/${stack.name}`
   const currentTab = DIRECTORY
@@ -97,6 +99,28 @@ function Sidenav({ stack }: any) {
   )
 }
 
+function Sidecar({ stack }: StackContext) {
+  const recipes = stack?.collections?.map(({ name, provider }) => ({
+    name,
+    description: `Installs ${stack.name} on ${provider}`,
+    provider,
+  } as Recipe))
+
+  return (
+    <Div
+      position="relative"
+      width={200}
+      paddingTop="medium"
+    >
+      <InstallDropdownButton
+        name={stack.name}
+        recipes={recipes}
+        type="stack"
+      />
+    </Div>
+  )
+}
+
 export default function Stack() {
   const { name } = useParams()
   const { data } = useQuery(STACK_QUERY, { variables: { name, provider: 'AWS' } })
@@ -116,6 +140,7 @@ export default function Stack() {
   }
 
   const { stack } = data
+  const outletContext: StackContext = { stack }
 
   return (
     <Flex
@@ -138,20 +163,17 @@ export default function Stack() {
         paddingRight="medium"
       >
         <ResponsiveLayoutSidenavContainer>
-          <Sidenav
-            stack={stack}
-            tabStateRef={tabStateRef}
-          />
+          <Sidenav stack={stack} />
         </ResponsiveLayoutSidenavContainer>
         <ResponsiveLayoutSpacer />
         <TabPanel
           as={<ResponsiveLayoutContentContainer />}
           stateRef={tabStateRef}
         >
-          <Outlet context={{ stack } as StackContext} />
+          <Outlet context={outletContext} />
         </TabPanel>
         <ResponsiveLayoutSidecarContainer>
-          {/* TODO: <RepositorySideCar /> */}
+          <Sidecar stack={stack} />
         </ResponsiveLayoutSidecarContainer>
         <ResponsiveLayoutSpacer />
       </Flex>

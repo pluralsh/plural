@@ -1386,9 +1386,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cypress/webpack-preprocessor@npm:5.12.0":
-  version: 5.12.0
-  resolution: "@cypress/webpack-preprocessor@npm:5.12.0"
+"@cypress/webpack-preprocessor@npm:5.12.2":
+  version: 5.12.2
+  resolution: "@cypress/webpack-preprocessor@npm:5.12.2"
   dependencies:
     bluebird: 3.7.1
     debug: ^4.3.2
@@ -1398,7 +1398,7 @@ __metadata:
     "@babel/preset-env": ^7.0.0
     babel-loader: ^8.0.2
     webpack: ^4 || ^5
-  checksum: 3fa209655412369eb5bf0e8e0eaf25c89f0dfc6937d9aa4c51aa351449cf3d56b1834908dc81e507eb3d6508fee8534769b576f46f26034220a9f3f82ed7b3f8
+  checksum: a9502c0356d0496c9e0ea64ca2935000721580e2dd87f241bb4be6430e0b2597f70c5d29e8d50235d1bdf8b77e8e320cdebc52518f2d47cc5ced67bf8621f488
   languageName: node
   linkType: hard
 
@@ -2565,7 +2565,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "console-cypress-e2e@workspace:."
   dependencies:
-    "@cypress/webpack-preprocessor": 5.12.0
+    "@cypress/webpack-preprocessor": 5.12.2
     "@pluralsh/eslint-config-typescript": 2.3.0
     "@typescript-eslint/eslint-plugin": 5.33.0
     cypress: 10.4.0

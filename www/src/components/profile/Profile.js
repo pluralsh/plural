@@ -63,8 +63,6 @@ export function Profile() {
     }
   }, [files])
 
-  console.log('avatar', avatar)
-
   return (
     <Box fill>
       <PageTitle heading="Profile" />

@@ -19,6 +19,7 @@ export const RepoFragment = gql`
     darkIcon
     private
     trending
+    verified
     category
     oauthSettings { uriFormat authMethod }
     publisher { ...PublisherFragment }
@@ -32,18 +33,25 @@ export const StackFragment = gql`
     name
     description
     featured
+    creator { 
+      id
+      name
+    }
     collections {
       provider
       bundles {
         recipe {
           repository {
-            name
-            icon
+            ...RepoFragment
+            tags {
+              tag
+            }
           }
         }
       }
     }
   }
+  ${RepoFragment}
 `
 
 export const InstallationFragment = gql`

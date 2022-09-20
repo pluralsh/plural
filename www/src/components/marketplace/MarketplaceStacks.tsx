@@ -2,6 +2,8 @@ import { useQuery } from '@apollo/client'
 import { Flex, H1 } from 'honorable'
 import { Divider, StackCard } from 'pluralsh-design-system'
 
+import { useNavigate } from 'react-router-dom'
+
 import { fillEmptyColumns, flexBasis } from './utils'
 
 import { STACKS_QUERY } from './queries'
@@ -9,13 +11,14 @@ import { STACKS_QUERY } from './queries'
 const hues = ['blue', 'green', 'yellow', 'red']
 
 export default function MarketplaceStacks() {
+  const navigate = useNavigate()
   const { data } = useQuery(STACKS_QUERY, { featured: true } as any)
 
   if (!data) return
 
   const { stacks: { edges } } = data
   const apps = ({ collections: c }) => (c?.length > 0
-    ? c[0].bundles.map(({ recipe: { repository: { name, icon } } }) => ({ name, imageUrl: icon })) : [])
+    ? c[0].bundles?.map(({ recipe: { repository: { name, icon } } }) => ({ name, imageUrl: icon })) : [])
   const hue = i => hues[i % hues.length]
 
   return (
@@ -44,6 +47,7 @@ export default function MarketplaceStacks() {
               description={stack.description}
               apps={apps(stack)}
               hue={hue(i)}
+              onClick={() => navigate(`/stack/${stack.name}`)}
             />
           </Flex>
         ))}

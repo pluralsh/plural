@@ -46,7 +46,7 @@ function CloudShell() {
   return (
     <OnboardingWrapper
       showSplashScreen={!location?.state?.hideSplashScreen}
-      stepIndex={0}
+      stepIndex={section === 'applications' ? 0 : 1}
       childIsReady={ready}
     >
       {section === 'applications' && (

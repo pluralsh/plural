@@ -14,11 +14,17 @@ import {
   RepositoryChip,
 } from 'pluralsh-design-system'
 import capitalize from 'lodash/capitalize'
+import Fuse from 'fuse.js'
 
 import { APPLICATIONS_QUERY } from '../../queries'
 import { MAX_SELECTED_APPLICATIONS } from '../../constants'
 
 import OnboardingCard from '../OnboardingCard'
+
+const searchOptions = {
+  keys: ['name'],
+  threshold: 0.25,
+}
 
 type ApplicationsSelectionProps = {
   onNext: () => void
@@ -67,73 +73,81 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
     .map(x => x.node)
     .filter(x => !x.private)
 
+  const fuse = new Fuse(applications, searchOptions)
+  const filteredApplications = search ? fuse.search(search).map(x => x.item) : applications
+
   return (
     <OnboardingCard
       flexGrow={1}
       overflow="hidden"
     >
-      <Flex
-        direction="column"
-        flexGrow={1}
-        overflow="hidden"
-        maxWidth={608}
-        marginHorizontal="auto"
+      <H2
+        subtitle1
+        marginTop="medium"
       >
-        <H2
-          subtitle1
-          marginTop="medium"
+        Choose applications
+      </H2>
+      <P
+        body2
+        color="text-light"
+        marginTop="xsmall"
+      >
+        Plural has over {Math.floor(applications.length / 10) * 10} open-source apps to choose from. Select up to five apps to begin.
+      </P>
+      <Input
+        autoFocus
+        value={search}
+        onChange={event => setSearch(event.target.value)}
+        placeholder="Search an application"
+        startIcon={(
+          <MagnifyingGlassIcon />
+        )}
+        width="100%"
+        marginTop="large"
+      />
+      <Div
+        marginTop="medium"
+        flexGrow={1}
+        overflowY="auto"
+        display="grid"
+        gridTemplateColumns="repeat(3, 1fr)"
+        gridTemplateRows="repeat(auto-fill, 42px)"
+        gridColumnGap="16px"
+        gridRowGap="16px"
+        paddingRight="xsmall"
+        paddingBottom="medium"
+      >
+        {filteredApplications.map(application => (
+          <RepositoryChip
+            imageUrl={application.icon}
+            label={capitalize(application.name)}
+            checked={selectedApplicationIds.includes(application.id)}
+            onClick={() => toggleApplication(application.id)}
+          />
+        ))}
+      </Div>
+      <Flex
+        align="center"
+        marginTop="large"
+      >
+        <Button
+          tertiary
+          onClick={handleSkipDemo}
         >
-          Choose applications
-        </H2>
-        <P
-          body2
-          marginTop="xsmall"
-        >
-          Plural has over {Math.floor(applications.length / 10) * 10} open-source apps to choose from. Select up to five apps to begin.
+          Skip demo
+        </Button>
+        <Div flexGrow={1} />
+        <P color="text-light">
+          {selectedApplicationIds.length ? `${selectedApplicationIds.length} out of ${MAX_SELECTED_APPLICATIONS} apps selected` : '0 apps selected'}
         </P>
-        <Input
-          autoFocus
-          value={search}
-          onChange={event => setSearch(event.target.value)}
-          placeholder="Search an application"
-          startIcon={(
-            <MagnifyingGlassIcon />
-          )}
-          width="100%"
-          marginTop="large"
-        />
-        <Div
-          marginTop="medium"
-          flexGrow={1}
-          overflowY="auto"
-          display="grid"
-          gridTemplateColumns="repeat(3, 1fr)"
-          gridTemplateRows="1fr"
-          gridColumnGap="16px"
-          gridRowGap="16px"
-          paddingRight="xsmall"
-          paddingBottom="medium"
+        <Button
+          primary
+          onClick={onNext}
+          disabled={!selectedApplicationIds.length}
+          marginLeft="medium"
         >
-          {applications.map(application => (
-            <RepositoryChip
-              imageUrl={application.icon}
-              label={capitalize(application.name)}
-              checked={selectedApplicationIds.includes(application.id)}
-              onClick={() => toggleApplication(application.id)}
-            />
-          ))}
-        </Div>
-        <Flex
-          align="center"
-          marginTop="large"
-        >
-          <Button
-            tertiary
-            onClick={handleSkipDemo}
-          >
-            Skip demo
-          </Button>
-        </Flex>
+          Continue
+        </Button>
       </Flex>
     </OnboardingCard>
   )

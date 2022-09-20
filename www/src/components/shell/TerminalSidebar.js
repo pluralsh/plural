@@ -465,26 +465,26 @@ function Cheatsheet() {
 function CheatsheetCommands() {
   const commands = [{
     command: 'repos list',
-    description: 'Lists available repositories to install.',
+    description: 'Shows all available applications on the platform (repos) and the cloud providers they can be deployed to (bundles).',
   },
   {
-    command: 'bundle list <app>',
-    description: 'Lists bundles for a repository.',
+    command: 'bundle list <repo>',
+    description: 'Shows all available bundles for repository.',
   },
   {
-    command: 'bundle install <app> <bundle>',
-    description: 'Installs a bundle and writes the configuration to this installation\'s context.',
+    command: 'bundle install <repo> <bundle>',
+    description: <>E.g. <strong>plural bundle install dagster dagster-gcp</strong> would configure Dagster for deployment to GCP.</>,
   },
   {
     command: 'build',
-    description: 'Builds your workspace.',
+    description: 'Generates all the infrastructure as code.',
   },
   {
     command: 'deploy',
-    description: 'Deploys the current workspace. This command will sniff out git diffs in workspaces, topsort them, then apply all changes.',
+    description: 'Deploys all installed bundles.',
   },
   {
-    command: 'watch <app>',
+    command: 'watch <repo>',
     description: 'Watches applications until they become ready.',
   }]
 

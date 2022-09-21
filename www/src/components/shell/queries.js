@@ -74,6 +74,7 @@ export const APPLICATIONS_QUERY = gql`
           id
           name
           icon
+          darkIcon
           private
         }
       }

@@ -119,7 +119,7 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
       >
         {filteredApplications.map(application => (
           <RepositoryChip
-            imageUrl={application.icon}
+            imageUrl={application.darkIcon || application.icon}
             label={capitalize(application.name)}
             checked={selectedApplicationIds.includes(application.id)}
             onClick={() => toggleApplication(application.id)}

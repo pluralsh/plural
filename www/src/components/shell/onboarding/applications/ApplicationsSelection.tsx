@@ -105,27 +105,51 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
         width="100%"
         marginTop="large"
       />
-      <Div
-        marginTop="medium"
-        flexGrow={1}
-        overflowY="auto"
-        display="grid"
-        gridTemplateColumns="repeat(3, 1fr)"
-        gridTemplateRows="repeat(auto-fill, 42px)"
-        gridColumnGap="16px"
-        gridRowGap="16px"
-        paddingRight="xsmall"
-        paddingBottom="medium"
-      >
-        {filteredApplications.map(application => (
-          <RepositoryChip
-            imageUrl={application.darkIcon || application.icon}
-            label={capitalize(application.name)}
-            checked={selectedApplicationIds.includes(application.id)}
-            onClick={() => toggleApplication(application.id)}
-          />
-        ))}
-      </Div>
+      {!!filteredApplications.length && (
+        <Div
+          marginTop="medium"
+          flexGrow={1}
+          overflowY="auto"
+          display="grid"
+          gridTemplateColumns="repeat(3, 1fr)"
+          gridTemplateRows="repeat(auto-fill, 42px)"
+          gridColumnGap="16px"
+          gridRowGap="16px"
+          paddingRight="xsmall"
+          paddingBottom="medium"
+        >
+          {filteredApplications.map(application => (
+            <RepositoryChip
+              imageUrl={application.darkIcon || application.icon}
+              label={capitalize(application.name)}
+              checked={selectedApplicationIds.includes(application.id)}
+              onClick={() => toggleApplication(application.id)}
+            />
+          ))}
+        </Div>
+      )}
+      {!filteredApplications.length && (
+        <Flex
+          direction="column"
+          align="center"
+          marginTop="medium"
+          flexGrow={1}
+        >
+          <P
+            body2
+            color="text-light"
+          >
+            No application found for "{search}"
+          </P>
+          <Button
+            secondary
+            onClick={() => setSearch('')}
+            marginTop="medium"
+          >
+            Clear search
+          </Button>
+        </Flex>
+      )}
       <Flex
         align="center"
         marginTop="large"

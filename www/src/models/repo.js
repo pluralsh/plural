@@ -38,6 +38,7 @@ export const StackFragment = gql`
       name
     }
     collections {
+      id
       provider
       bundles {
         recipe {

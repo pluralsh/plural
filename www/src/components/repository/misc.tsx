@@ -1,4 +1,5 @@
 import { InferredConsoleButton } from 'components/clusters/ConsoleButton'
+import InstallDropdownButton from 'components/utils/InstallDropdownButton'
 import RepositoryContext from 'contexts/RepositoryContext'
 import { Flex } from 'honorable'
 import usePaginatedQuery from 'hooks/usePaginatedQuery'
@@ -6,8 +7,6 @@ import { Button, GearTrainIcon } from 'pluralsh-design-system'
 import { useContext, useState } from 'react'
 
 import { InstallationConfiguration } from './InstallationConfiguration'
-
-import InstallDropdownButton from './InstallDropdownButton'
 
 import { RECIPES_QUERY } from './queries'
 
@@ -53,5 +52,10 @@ export function RepositoryActions() {
 
   if (repository.installation) return <InstalledRepositoryActions installation={repository.installation} />
 
-  return (<InstallDropdownButton recipes={recipes} />)
+  return (
+    <InstallDropdownButton
+      name={repository.name}
+      recipes={recipes}
+    />
+  )
 }

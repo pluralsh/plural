@@ -7,6 +7,7 @@ defmodule Core.Schema.Stack do
     field :description, :string
     field :featured,    :boolean, default: :false
     field :bundles,     :map, virtual: true
+    field :expires_at,  :utc_datetime_usec
 
     belongs_to :account,     Account
     belongs_to :creator,     User
@@ -19,6 +20,11 @@ defmodule Core.Schema.Stack do
 
   def featured(query \\ __MODULE__), do: from(s in query, where: s.featured)
 
+  def expired(query \\ __MODULE__) do
+    now = Timex.now()
+    from(s in query, where: s.expires_at < ^now)
+  end
+
   def for_account(query \\ __MODULE__, account_id) do
     from(s in query, where: s.account_id == ^account_id)
   end
@@ -27,7 +33,7 @@ defmodule Core.Schema.Stack do
     from(s in query, order_by: ^order)
   end
 
-  @valid ~w(name description featured)a
+  @valid ~w(name description featured expires_at)a
 
   def changeset(model, attrs \\ %{}) do
     model

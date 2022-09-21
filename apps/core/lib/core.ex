@@ -6,6 +6,11 @@ defmodule Core do
 
   def conf(key), do: Application.get_env(:core, key)
 
+  def random_phrase(len, sep \\ "-") do
+    Enum.map(0..len, fn _ -> Dictionary.random_word() end)
+    |> Enum.join(sep)
+  end
+
   def drain_config(), do: Application.get_env(:core, :connection_draining) || []
 
   def broker(), do: conf(:broker)

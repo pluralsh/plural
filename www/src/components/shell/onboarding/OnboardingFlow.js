@@ -118,11 +118,21 @@ function OnboardingFlow({ accessToken, provider: scmProvider, authUrlData }) {
     exceptions,
   ])
 
+  function handleRestart() {
+    setDemoId(null)
+    setSection(SECTION_GIT_PROVIDER)
+    setProvider('AWS')
+    setScm({ name: '', provider: scmProvider, token: accessToken })
+    setCredentials({})
+    setWorkspace({})
+  }
+
   return (
     <CreateShellContext.Provider value={contextData}>
       <OnboardingWrapper
         stepIndex={stepIndex}
         cliMode={section === SECTION_CLI_INSTALLATION || section === SECTION_CLI_COMPLETION}
+        onRestart={handleRestart}
       >
         {section === SECTION_GIT_PROVIDER && (
           <ScmSection />

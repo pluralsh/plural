@@ -1,4 +1,8 @@
-import { useEffect, useMemo, useState } from 'react'
+import {
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import { useMutation, useQuery } from '@apollo/client'
 import { useLocation } from 'react-router-dom'
 
@@ -48,6 +52,7 @@ function CloudShell() {
       showSplashScreen={!location?.state?.hideSplashScreen}
       stepIndex={section === 'applications' ? 0 : 1}
       childIsReady={ready}
+      onRestart={() => setSection('applications')}
     >
       {section === 'applications' && (
         <ApplicationsSelection onNext={() => setSection('git')} />

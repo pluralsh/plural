@@ -20,6 +20,7 @@ import {
 type OnboardingSidenavProps = {
   stepIndex: number
   cliMode: boolean
+  onRestart: () => void
 }
 
 const steps = [
@@ -37,11 +38,7 @@ const stepsCli = [
 ]
 
 // eslint-disable-next-line
-function OnboardingSidenav({ stepIndex, cliMode }: OnboardingSidenavProps) {
-  function handleRestart() {
-
-  }
-
+function OnboardingSidenav({ stepIndex, cliMode, onRestart }: OnboardingSidenavProps) {
   return (
     <Div
       marginTop={82}
@@ -55,7 +52,7 @@ function OnboardingSidenav({ stepIndex, cliMode }: OnboardingSidenavProps) {
       />
       <A
         inline
-        onClick={handleRestart}
+        onClick={onRestart}
         marginTop="xlarge"
         marginLeft={60}
       >

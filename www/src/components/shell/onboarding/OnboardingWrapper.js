@@ -11,7 +11,12 @@ import OnboardingTitle from './OnboardingTitle'
 import SplashToLogoTransition from './SplashToLogoTransition'
 
 function OnboardingWrapper({
-  showSplashScreen = false, stepIndex = 0, childIsReady = true, children, cliMode = false,
+  showSplashScreen = false,
+  stepIndex = 0,
+  childIsReady = true,
+  cliMode = false,
+  onRestart = () => {},
+  children,
 }) {
   return (
     <Flex
@@ -39,6 +44,7 @@ function OnboardingWrapper({
               <OnboardingSidenav
                 stepIndex={stepIndex}
                 cliMode={cliMode}
+                onRestart={onRestart}
               />
             </ResponsiveLayoutSidenavContainer>
             <ResponsiveLayoutContentContainer

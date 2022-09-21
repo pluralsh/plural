@@ -22,12 +22,13 @@ import TopBar from '../layout/TopBar'
 
 import { STACK_QUERY } from './queries'
 import { StackContext } from './types'
+import { StackActions } from './misc'
 
 const DIRECTORY = [
   { label: 'Stack applications', path: '' },
 ]
 
-function Sidenav({ stack }: any) {
+function Sidenav({ stack }: StackContext) {
   const { pathname } = useLocation()
   const pathPrefix = `/stack/${stack.name}`
   const currentTab = DIRECTORY
@@ -97,6 +98,18 @@ function Sidenav({ stack }: any) {
   )
 }
 
+function Sidecar({ stack }: StackContext) {
+  return (
+    <Div
+      position="relative"
+      width={200}
+      paddingTop="medium"
+    >
+      <StackActions stack={stack} />
+    </Div>
+  )
+}
+
 export default function Stack() {
   const { name } = useParams()
   const { data } = useQuery(STACK_QUERY, { variables: { name, provider: 'AWS' } })
@@ -116,6 +129,7 @@ export default function Stack() {
   }
 
   const { stack } = data
+  const outletContext: StackContext = { stack }
 
   return (
     <Flex
@@ -138,20 +152,17 @@ export default function Stack() {
         paddingRight="medium"
       >
         <ResponsiveLayoutSidenavContainer>
-          <Sidenav
-            stack={stack}
-            tabStateRef={tabStateRef}
-          />
+          <Sidenav stack={stack} />
         </ResponsiveLayoutSidenavContainer>
         <ResponsiveLayoutSpacer />
         <TabPanel
           as={<ResponsiveLayoutContentContainer />}
           stateRef={tabStateRef}
         >
-          <Outlet context={{ stack } as StackContext} />
+          <Outlet context={outletContext} />
         </TabPanel>
         <ResponsiveLayoutSidecarContainer>
-          {/* TODO: <RepositorySideCar /> */}
+          <Sidecar stack={stack} />
         </ResponsiveLayoutSidecarContainer>
         <ResponsiveLayoutSpacer />
       </Flex>

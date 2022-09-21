@@ -13,37 +13,37 @@ export const SECTION_SYNOPSIS = 'synopsis'
 
 export const SECTIONS = {
   [SECTION_GIT_PROVIDER]: {
-    stepIndex: 0,
+    stepIndex: 1,
     previous: null,
     next: SECTION_CLOUD_SELECT,
   },
   [SECTION_CLOUD_SELECT]: {
-    stepIndex: 1,
+    stepIndex: 2,
     previous: SECTION_GIT_PROVIDER,
     next: null, // Next will be decided by the user, using setSection directly
   },
   [SECTION_CLOUD_BUILD]: {
-    stepIndex: 1,
+    stepIndex: 2,
     previous: SECTION_CLOUD_SELECT,
     next: SECTION_CLOUD_WORKSPACE,
   },
   [SECTION_CLOUD_CREDENTIALS]: {
-    stepIndex: 2,
+    stepIndex: 3,
     previous: SECTION_CLOUD_SELECT,
     next: SECTION_CLOUD_WORKSPACE,
   },
   [SECTION_CLOUD_WORKSPACE]: {
-    stepIndex: 2,
+    stepIndex: 3,
     previous: SECTION_CLOUD_SELECT,
     next: SECTION_SYNOPSIS,
   },
   [SECTION_SYNOPSIS]: {
-    stepIndex: 3,
+    stepIndex: 4,
     previous: SECTION_CLOUD_WORKSPACE,
     next: SECTION_CLOUD_LAUNCH,
   },
   [SECTION_CLOUD_LAUNCH]: {
-    stepIndex: 3,
+    stepIndex: 4,
     previous: SECTION_SYNOPSIS,
     next: null,
   },

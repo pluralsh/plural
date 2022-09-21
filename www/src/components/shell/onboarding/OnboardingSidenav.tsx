@@ -6,6 +6,7 @@ import {
   NetworkInterfaceIcon,
   PackageIcon,
   Stepper,
+  TerminalIcon,
 } from 'pluralsh-design-system'
 
 import {
@@ -29,6 +30,12 @@ const steps = [
   { key: SECTION_SYNOPSIS, stepTitle: 'Launch cloud shell', IconComponent: BrowserIcon },
 ]
 
+const stepsCli = [
+  { key: SECTION_APPLICATIONS, stepTitle: 'Choose applications', IconComponent: PackageIcon },
+  { key: SECTION_GIT_PROVIDER, stepTitle: 'Create a git repository', IconComponent: NetworkInterfaceIcon },
+  { key: SECTION_SYNOPSIS, stepTitle: 'Install Plural CLI', IconComponent: TerminalIcon },
+]
+
 // eslint-disable-next-line
 function OnboardingSidenav({ stepIndex, cliMode }: OnboardingSidenavProps) {
   function handleRestart() {
@@ -43,7 +50,7 @@ function OnboardingSidenav({ stepIndex, cliMode }: OnboardingSidenavProps) {
     >
       <Stepper
         vertical
-        steps={steps}
+        steps={cliMode ? stepsCli : steps}
         stepIndex={stepIndex}
       />
       <A

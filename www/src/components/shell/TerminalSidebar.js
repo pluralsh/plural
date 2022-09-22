@@ -465,7 +465,7 @@ function Cheatsheet() {
 function CheatsheetCommands() {
   const commands = [{
     command: 'repos list',
-    description: 'Shows all available applications on the platform (repos) and the cloud providers they can be deployed to (bundles).',
+    description: 'Shows all available applications on the platform (repos) and the cloud providers they can be deployed to (using a bundle).',
   },
   {
     command: 'bundle list <repo>',

@@ -60,7 +60,7 @@ function ImagePicker({
             src={image.previewUrl}
           />
         )
-          : <PlusIcon size="20px" />}
+          : <PlusIcon size={20} />}
       </Box>
       <Box gap="xsmall">
         <Text size="small">{image ? image.file.name : 'Select an image'}</Text>

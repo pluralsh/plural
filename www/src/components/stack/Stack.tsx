@@ -70,7 +70,7 @@ function Sidenav({ stack }: StackContext) {
         color="text-xlight"
         marginTop="medium"
       >
-        Created by&nbsp;{stack.creator.name}
+        Curated by Plural
       </P>
       <Div
         marginTop="medium"

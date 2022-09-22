@@ -56,6 +56,7 @@ export function RepositoryActions() {
     <InstallDropdownButton
       name={repository.name}
       recipes={recipes}
+      width="100%"
     />
   )
 }

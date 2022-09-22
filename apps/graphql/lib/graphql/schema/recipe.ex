@@ -28,6 +28,7 @@ defmodule GraphQl.Schema.Recipe do
     field :description, :string
     field :featured,    :boolean
     field :collections, list_of(:stack_collection_attributes)
+    field :community,   :community_attributes
   end
 
   input_object :stack_collection_attributes do
@@ -202,6 +203,7 @@ defmodule GraphQl.Schema.Recipe do
     field :name,        non_null(:string)
     field :description, :string
     field :featured,    :boolean
+    field :community,   :community
     field :collections, list_of(:stack_collection), resolve: dataloader(Recipe)
     field :creator,     :user, resolve: dataloader(User)
     field :bundles,     list_of(:recipe)

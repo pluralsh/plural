@@ -14,8 +14,6 @@ import Shell from './Shell'
 // eslint-disable-next-line
 const { Buffer } = require('buffer/')
 
-export const decodeBase64 = str => Buffer.from(str, 'base64').toString('utf-8')
-
 export function Terminal() {
   const { data } = useQuery(CLOUD_SHELL_QUERY, { pollInterval: 5000, fetchPolicy: 'cache-and-network' })
   const { shell } = data || {}

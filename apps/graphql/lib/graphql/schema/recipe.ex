@@ -289,6 +289,14 @@ defmodule GraphQl.Schema.Recipe do
       safe_resolve &Recipe.upsert_stack/2
     end
 
+    field :quick_stack, :stack do
+      middleware Authenticated
+      arg :repository_ids, list_of(:id)
+      arg :provider, non_null(:provider)
+
+      safe_resolve &Recipe.quick_stack/2
+    end
+
     field :delete_stack, :stack do
       middleware Authenticated
       arg :name, non_null(:string)

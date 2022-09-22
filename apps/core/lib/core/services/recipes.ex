@@ -79,6 +79,29 @@ defmodule Core.Services.Recipes do
   end
 
   @doc """
+  creates a quick stack for a set of repository ids
+  """
+  @spec quick_stack([binary], atom, User.t) :: stack_resp
+  def quick_stack(repositories, provider, %User{account_id: aid, id: user_id, name: name}) do
+    bundles = Enum.map(repositories, fn repo_id ->
+      rs = Recipe.for_repository(repo_id) |> Core.Repo.all()
+      Enum.find(rs, & &1.provider == provider)
+    end)
+    |> Enum.filter(& &1)
+    |> Enum.with_index()
+    |> Enum.map(fn {%{id: id}, ind} -> %{recipe_id: id, index: ind} end)
+
+    %Stack{account_id: aid, creator_id: user_id}
+    |> Stack.changeset(%{
+      name: Core.random_phrase(2),
+      description: "a quick stack for #{name}",
+      expires_at: Timex.now() |> Timex.shift(days: 7),
+      collections: [%{provider: provider, bundles: bundles}]
+    })
+    |> Core.Repo.insert()
+  end
+
+  @doc """
   Deletes the given stack if the user was the creator
   """
   @spec delete_stack(binary, User.t) :: stack_resp

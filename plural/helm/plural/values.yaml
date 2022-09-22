@@ -368,6 +368,10 @@ crons:
   cronModule: Prune.Invites
   crontab: "45 0 * * *"
   envVars: []
+- cronName: plrl-prune-stacks
+  cronModule: Prune.Stacks
+  crontab: "55 0 * * *"
+  envVars: []
 
 hydraSecrets:
   dsn: memory

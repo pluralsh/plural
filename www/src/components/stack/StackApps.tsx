@@ -41,6 +41,7 @@ export default function StackApps() {
         </P>
         <RepoCardList
           repositories={stack?.bundles?.map(({ repository }) => repository)}
+          urlParams={`backStackName=${stack.name}`}
           mx={-0.75}
         />
       </Flex>

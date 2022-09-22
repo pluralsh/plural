@@ -3,11 +3,12 @@ defmodule Core.Schema.Stack do
   alias Core.Schema.{Account, User, StackCollection, Repository}
 
   schema "stacks" do
-    field :name,        :string
-    field :description, :string
-    field :featured,    :boolean, default: :false
-    field :bundles,     :map, virtual: true
-    field :expires_at,  :utc_datetime_usec
+    field :name,         :string
+    field :description,  :string
+    field :featured,     :boolean, default: :false
+    field :display_name, :string
+    field :bundles,      :map, virtual: true
+    field :expires_at,   :utc_datetime_usec
 
     belongs_to :account,     Account
     belongs_to :creator,     User
@@ -33,7 +34,7 @@ defmodule Core.Schema.Stack do
     from(s in query, order_by: ^order)
   end
 
-  @valid ~w(name description featured expires_at)a
+  @valid ~w(name description featured expires_at display_name)a
 
   def changeset(model, attrs \\ %{}) do
     model

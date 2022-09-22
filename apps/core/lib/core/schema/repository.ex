@@ -57,10 +57,12 @@ defmodule Core.Schema.Repository do
     end
 
     embeds_one :community, Community, on_replace: :update do
-      field :discord, :string
-      field :slack,   :string
-      field :twitter, :string
-      field :videos,  {:array, :string}
+      field :discord,  :string
+      field :slack,    :string
+      field :homepage, :string
+      field :git_url,  :string
+      field :twitter,  :string
+      field :videos,   {:array, :string}
     end
 
     belongs_to :integration_resource_definition, ResourceDefinition, on_replace: :update
@@ -196,6 +198,7 @@ defmodule Core.Schema.Repository do
     |> cast_assoc(:shell)
     |> foreign_key_constraint(:publisher_id)
     |> cast_assoc(:integration_resource_definition)
+    |> validate_format(:name, ~r/^[a-z0-9][-a-z0-9]*[a-z0-9]$/, message: "name must be formatted as a valid kubernetes namespace")
     |> unique_constraint(:name)
     |> validate_required([:name, :category])
     |> generate_uuid(:icon_id)
@@ -218,5 +221,5 @@ defmodule Core.Schema.Repository do
 
   def license_changeset(model, attrs \\ %{}), do: cast(model, attrs, [:url, :name])
 
-  def community_changeset(model, attrs \\ %{}), do: cast(model, attrs, [:discord, :slack, :twitter, :videos])
+  def community_changeset(model, attrs \\ %{}), do: cast(model, attrs, [:discord, :slack, :twitter, :videos, :homepage, :git_url])
 end

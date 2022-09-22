@@ -342,7 +342,7 @@ export default function ImageVulnerabilities() {
             description="...and feels pretty damn good about it."
             icon={(
               <DockerTagIcon
-                size="64px"
+                size={64}
                 color="text-primary-accent"
               />
             )}

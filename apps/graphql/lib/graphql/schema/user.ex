@@ -35,6 +35,7 @@ defmodule GraphQl.Schema.User do
     field :avatar,      :upload_or_url
     field :phone,       :string
     field :address,     :address_attributes
+    field :community,   :community_attributes
   end
 
   input_object :address_attributes do
@@ -182,6 +183,7 @@ defmodule GraphQl.Schema.User do
     field :billing_account_id, :string
     field :phone,              :string
     field :address,            :address
+    field :community,          :community
 
     field :owner,  :user, resolve: dataloader(User)
 

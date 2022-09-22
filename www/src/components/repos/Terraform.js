@@ -143,7 +143,7 @@ export default function Terraform() {
         pad="16px"
         direction="row"
       >
-        <ResponsiveLayoutSidenavContainer>
+        <ResponsiveLayoutSidenavContainer width="240px">
           <Box pad={{ left: '16px' }}>
             <PackageHeader
               name={terraformModule.name}

@@ -58,6 +58,7 @@ function extendedTheme({ minMenuWidth = 400 }) {
       Button: [
         {
           borderRadius: 'normal',
+          width: '100%',
         },
       ],
       Menu: [
@@ -246,7 +247,10 @@ function InstallDropdownButton({ recipes, name, type = 'bundle' } : {recipes: Re
             setRecipe((event.target as any).value)
             setTab(0)
           }}
-          endIcon={<DropdownArrowIcon size={10} />}
+          endIcon={(
+            <DropdownArrowIcon size={16} />
+          )}
+          {...props}
         >
           {recipes.map((recipe, i) => (
             <RecipeMenuItem
@@ -268,7 +272,10 @@ function InstallDropdownButton({ recipes, name, type = 'bundle' } : {recipes: Re
             setRecipe(undefined)
             setTab(0)
           }}
-          endIcon={<DropdownArrowIcon size={10} />}
+          endIcon={(
+            <DropdownArrowIcon size={16} />
+          )}
+          {...props}
         >
           {renderTabs()}
         </DropdownButton>

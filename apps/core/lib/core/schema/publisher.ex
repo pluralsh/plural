@@ -18,6 +18,7 @@ defmodule Core.Schema.Publisher do
     belongs_to :account, Account
 
     embeds_one :address, Address, on_replace: :update
+    embeds_one :community, Repository.Community, on_replace: :update
 
     timestamps()
   end
@@ -67,6 +68,7 @@ defmodule Core.Schema.Publisher do
     model
     |> cast(attrs, @valid)
     |> cast_embed(:address)
+    |> cast_embed(:community, with: &Repository.community_changeset/2)
     |> validate_required([:name, :owner_id])
     |> foreign_key_constraint(:owner_id)
     |> unique_constraint(:name)

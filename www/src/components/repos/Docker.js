@@ -228,7 +228,7 @@ export function Docker() {
           />
         </TabPanel>
         <ResponsiveLayoutSidecarContainer width="200px">
-          <Codeline marginBottom="xlarge">{`docker pull ${imageName}`}</Codeline>
+          <Codeline marginBottom="large">{`docker pull ${imageName}`}</Codeline>
           <DetailContainer
             title="Metadata"
             pad="small"

@@ -62,15 +62,15 @@ function OnboardingFlow({ accessToken, provider: scmProvider, authUrlData }) {
   }, [setProvider, setCredentials, setWorkspace, workspace])
 
   const next = useCallback(() => {
-    const hasNext = !!SECTIONS[section].next
-
-    if (hasNext) setSection(SECTIONS[section].next)
+    if (SECTIONS[section].next) {
+      setSection(SECTIONS[section].next)
+    }
   }, [section])
 
   const previous = useCallback(() => {
-    const hasPrevious = !!SECTIONS[section].previous
-
-    if (hasPrevious) setSection(SECTIONS[section].previous)
+    if (SECTIONS[section].previous) {
+      setSection(SECTIONS[section].previous)
+    }
   }, [section])
 
   const validations = getValidations(providerName, scmProvider, section)
@@ -118,11 +118,21 @@ function OnboardingFlow({ accessToken, provider: scmProvider, authUrlData }) {
     exceptions,
   ])
 
+  function handleRestart() {
+    setDemoId(null)
+    setSection(SECTION_GIT_PROVIDER)
+    setProvider('AWS')
+    setScm({ name: '', provider: scmProvider, token: accessToken })
+    setCredentials({})
+    setWorkspace({})
+  }
+
   return (
     <CreateShellContext.Provider value={contextData}>
       <OnboardingWrapper
         stepIndex={stepIndex}
         cliMode={section === SECTION_CLI_INSTALLATION || section === SECTION_CLI_COMPLETION}
+        onRestart={handleRestart}
       >
         {section === SECTION_GIT_PROVIDER && (
           <ScmSection />

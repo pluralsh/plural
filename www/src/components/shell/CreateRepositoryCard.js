@@ -1,28 +1,14 @@
-import { useEffect, useMemo, useState } from 'react'
-import { useMutation, useQuery } from '@apollo/client'
 import {
-  Div, Flex, P, Text,
+  Div,
+  Flex,
+  P,
+  Text,
 } from 'honorable'
-import { useLocation } from 'react-router-dom'
 
-import { AUTHENTICATION_URLS_QUERY, CLOUD_SHELL_QUERY, REBOOT_SHELL_MUTATION } from './query'
-import { Terminal } from './Terminal'
-import { Github as GithubLogo, Gitlab as GitlabLogo } from './icons'
 import { DEBUG_SCM_TOKENS } from './debug-tokens'
-
-import OnboardingWrapper from './onboarding/OnboardingWrapper'
 import OnboardingCard from './onboarding/OnboardingCard'
 import OnboardingCardButton from './onboarding/OnboardingCardButton'
-
-const providerToLogo = {
-  github: <GithubLogo />,
-  gitlab: <GitlabLogo />,
-}
-
-const providerToDisplayName = {
-  github: 'GitHub',
-  gitlab: 'GitLab',
-}
+import { providerToDisplayName, providerToLogo } from './CloudShell'
 
 function CreateRepositoryCard({ data }) {
   return (
@@ -43,7 +29,6 @@ function CreateRepositoryCard({ data }) {
                 return
               }
               // END <<Remove this after dev>>
-
               window.location = url
             }}
           >
@@ -68,38 +53,4 @@ function CreateRepositoryCard({ data }) {
   )
 }
 
-function CloudShell() {
-  const { data } = useQuery(AUTHENTICATION_URLS_QUERY)
-  const { data: shellData } = useQuery(CLOUD_SHELL_QUERY, { fetchPolicy: 'network-only' })
-  const [rebootMutation] = useMutation(REBOOT_SHELL_MUTATION)
-  const [created, setCreated] = useState(false)
-  const location = useLocation()
-
-  useEffect(() => {
-    if (shellData && shellData.shell && !shellData.shell.alive) {
-      rebootMutation()
-      setCreated(true)
-    }
-  }, [shellData, rebootMutation])
-
-  const ready = useMemo(() => (shellData && data),
-    [shellData, data])
-
-  if (shellData?.shell?.alive || created) {
-    return (
-      <Terminal />
-    )
-  }
-
-  return (
-    <OnboardingWrapper
-      showSplashScreen={!location?.state?.hideSplashScreen}
-      stepIndex={0}
-      childIsReady={ready}
-    >
-      <CreateRepositoryCard data={data} />
-    </OnboardingWrapper>
-  )
-}
-
-export default CloudShell
+export default CreateRepositoryCard

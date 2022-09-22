@@ -1,5 +1,8 @@
 import {
-  Div, Flex, Hr, Img,
+  Div,
+  Flex,
+  Hr,
+  Img,
 } from 'honorable'
 
 // @ts-ignore
@@ -7,10 +10,7 @@ import { ReactComponent as OnboardingTitleOnboarding } from './OnboardingTitleOn
 
 function OnboardingHeader() {
   return (
-    <Div
-      marginLeft={269}
-      maxWidth={894}
-    >
+    <Div width="100%">
       <Flex align="flex-end">
         <Img
           src="/logos/plural-logomark-only-white.svg"

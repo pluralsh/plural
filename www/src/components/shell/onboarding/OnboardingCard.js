@@ -1,8 +1,9 @@
-import { Div, H2 } from 'honorable'
+import { Flex, H2 } from 'honorable'
 
 function OnboardingCard({ children, title = '', ...props }) {
   return (
-    <Div
+    <Flex
+      direction="column"
       body2
       width="100%"
       color="text-light"
@@ -24,7 +25,7 @@ function OnboardingCard({ children, title = '', ...props }) {
         </H2>
       )}
       {children}
-    </Div>
+    </Flex>
   )
 }
 

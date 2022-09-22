@@ -15,7 +15,8 @@ function OnboardingSidecar() {
       borderRadius="large"
       padding="medium"
       direction="column"
-      marginTop={-25}
+      marginTop={57}
+      marginRight="xlarge"
     >
       <Button
         small

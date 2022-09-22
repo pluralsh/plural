@@ -29,7 +29,7 @@ const { Buffer } = require('buffer/')
 
 const decodeBase64 = str => Buffer.from(str, 'base64').toString('utf-8')
 
-export function Shell({ shell }) {
+function Shell({ shell }) {
   const xterm = useRef(null)
   const [channel, setChannel] = useState(null)
   const [dimensions, setDimensions] = useState({})
@@ -167,4 +167,5 @@ export function Shell({ shell }) {
     </Flex>
   )
 }
+
 export default Shell

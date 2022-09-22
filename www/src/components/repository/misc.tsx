@@ -53,5 +53,10 @@ export function RepositoryActions() {
 
   if (repository.installation) return <InstalledRepositoryActions installation={repository.installation} />
 
-  return (<InstallDropdownButton recipes={recipes} />)
+  return (
+    <InstallDropdownButton
+      recipes={recipes}
+      width="100%"
+    />
+  )
 }

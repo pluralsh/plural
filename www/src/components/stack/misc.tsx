@@ -14,6 +14,7 @@ export function StackActions({ stack }: StackContext) {
       name={stack.name}
       recipes={recipes}
       type="stack"
+      width="100%"
     />
   )
 }

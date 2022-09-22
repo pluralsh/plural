@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import { fillEmptyColumns, flexBasis } from './utils'
 
 export function RepoCardList({
-  repositories, repoProps = {}, maxWidth = '800px', stretchLastRow = false, size = 'small', ...props
+  repositories, repoProps = {}, urlParams = '', maxWidth = '800px', stretchLastRow = false, size = 'small', ...props
 }) {
   return (
     <Flex
@@ -30,7 +30,7 @@ export function RepoCardList({
             <RepositoryCard
               key={repository.id}
               as={Link}
-              to={`/repository/${repository.id}`}
+              to={`/repository/${repository.id}${urlParams ? `?${urlParams}` : ''}`}
               color="text"
               textDecoration="none"
               width="100%"

@@ -1,6 +1,8 @@
 import { useQuery } from '@apollo/client'
 import { Outlet, useLocation, useParams } from 'react-router-dom'
-import { Div, Flex, P } from 'honorable'
+import {
+  Div, Flex, P, Span,
+} from 'honorable'
 
 import { GoBack } from 'components/utils/GoBack'
 
@@ -9,7 +11,7 @@ import {
 } from 'components/layout/ResponsiveLayout'
 
 import {
-  StackIcon, Tab, TabList, TabPanel,
+  StackIcon, Tab, TabList, TabPanel, VerifiedIcon,
 } from 'pluralsh-design-system'
 
 import { useRef } from 'react'
@@ -63,7 +65,25 @@ function Sidenav({ stack }: StackContext) {
             size={32}
           />
         </Flex>
-        <Div><P subtitle1>{stack.name}</P></Div>
+        <Div>
+          <P subtitle1>{stack.name}</P>
+          <Flex
+            direction="row"
+            alignItems="center"
+          >
+            <VerifiedIcon
+              size={12}
+              color="text-primary-accent"
+            />
+            <Span
+              caption
+              color="text-xlight"
+              marginLeft="xxsmall"
+            >
+              Verified
+            </Span>
+          </Flex>
+        </Div>
       </Flex>
       <P
         body2

@@ -20,6 +20,8 @@ import isEmpty from 'lodash/isEmpty'
 import capitalize from 'lodash/capitalize'
 import orderBy from 'lodash/orderBy'
 
+import { growthbook } from 'helpers/growthbook'
+
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 
 import { GoBack } from '../utils/GoBack'
@@ -79,7 +81,7 @@ function MarketplaceRepositories({ installed, publisher }) {
     },
     data => data.repositories)
 
-  const shouldRenderStacks = !categories.length && !tags.length && !installed && !search
+  const shouldRenderStacks = growthbook.isOn('stacks') && !categories.length && !tags.length && !installed && !search
 
   useEffect(() => {
     const { current } = scrollRef

@@ -1,14 +1,12 @@
 import { useQuery } from '@apollo/client'
 import { useRef } from 'react'
-import { Outlet, useParams } from 'react-router-dom'
+import { Outlet, useParams, useSearchParams } from 'react-router-dom'
 import { Flex } from 'honorable'
 import { TabPanel } from 'pluralsh-design-system'
 
 import { GoBack } from 'components/utils/GoBack'
 
 import RepositoryContext from '../../contexts/RepositoryContext.ts'
-
-import useBreadcrumbs from '../../hooks/useBreadcrumbs'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
@@ -27,17 +25,10 @@ import { REPOSITORY_QUERY } from './queries'
 
 function Repository() {
   const { id } = useParams()
-  const { data } = useQuery(REPOSITORY_QUERY, {
-    variables: {
-      repositoryId: id,
-    },
-  })
+  const [searchParams] = useSearchParams()
+  const { data } = useQuery(REPOSITORY_QUERY, { variables: { repositoryId: id } })
+  const backStackName = searchParams.get('backStackName')
   const tabStateRef = useRef()
-
-  useBreadcrumbs(data && [
-    { url: '/marketplace', text: 'Marketplace' },
-    { url: `/repository/${data.repository.id}`, text: data.repository.name },
-  ])
 
   if (!data) {
     return (
@@ -66,8 +57,8 @@ function Repository() {
       >
         <TopBar>
           <GoBack
-            text="Back to marketplace"
-            link="/marketplace"
+            text={backStackName ? `Back to ${backStackName} stack` : 'Back to marketplace'}
+            link={backStackName ? `/stack/${backStackName}` : '/marketplace'}
           />
         </TopBar>
         <Flex

@@ -19,6 +19,7 @@ function CloudShell() {
   const { data } = useQuery(AUTHENTICATION_URLS_QUERY)
   const { data: shellData } = useQuery(CLOUD_SHELL_QUERY, { fetchPolicy: 'network-only' })
   const [rebootMutation] = useMutation(REBOOT_SHELL_MUTATION)
+  const ready = useMemo(() => shellData && data, [shellData, data])
   const location = useLocation()
 
   useEffect(() => {
@@ -27,8 +28,6 @@ function CloudShell() {
       setCreated(true)
     }
   }, [shellData, rebootMutation])
-
-  const ready = useMemo(() => shellData && data, [shellData, data])
 
   if (shellData?.shell?.alive || created) {
     return (

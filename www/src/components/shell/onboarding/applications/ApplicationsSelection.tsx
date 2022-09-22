@@ -232,6 +232,8 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
               label={capitalize(application.name)}
               checked={selectedApplicationIds.includes(application.id)}
               onClick={() => toggleApplication(application.id)}
+              cursor={selectedApplicationIds.length >= MAX_SELECTED_APPLICATIONS && !selectedApplicationIds.includes(application.id) ? 'not-allowed' : 'pointer'}
+              opacity={selectedApplicationIds.length >= MAX_SELECTED_APPLICATIONS && !selectedApplicationIds.includes(application.id) ? 0.5 : 1}
             />
           ))}
         </Div>

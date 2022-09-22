@@ -14,7 +14,10 @@ import moment from 'moment'
 import { A, Flex } from 'honorable'
 
 import {
-  ResponsiveLayoutContentContainer, ResponsiveLayoutSidecarContainer, ResponsiveLayoutSidenavContainer, ResponsiveLayoutSpacer,
+  ResponsiveLayoutContentContainer,
+  ResponsiveLayoutSidecarContainer,
+  ResponsiveLayoutSidenavContainer,
+  ResponsiveLayoutSpacer,
 } from '../layout/ResponsiveLayout'
 import TopBar from '../layout/TopBar'
 
@@ -38,7 +41,7 @@ function ChartInfo({ version: { helm, insertedAt } }) {
       title="chart.yaml"
       pad="small"
       gap="small"
-      style={{ overflow: 'hidden' }}
+      style={{ overflow: 'hidden', marginTop: '8px' }}
     >
       <PackageProperty header="App Version">{helm.appVersion}</PackageProperty>
       <PackageProperty header="Created">{moment(insertedAt).fromNow()}</PackageProperty>
@@ -153,6 +156,7 @@ export default function Chart() {
   const { edges, pageInfo } = versions
   const currentVersion = version || edges[0].node
   const chartInst = data.chart.installation
+  const hasActions = () => chart.installation?.version?.id !== currentVersion.id && chart.repository.installation
 
   const DIRECTORY = [
     { label: 'Readme', path: '' },
@@ -250,18 +254,19 @@ export default function Chart() {
           />
         </TabPanel>
         <ResponsiveLayoutSidecarContainer width="200px">
-          <Box
+          <Flex
+            gap="medium"
             direction="column"
-            gap="small"
+            paddingTop={hasActions() ? '' : 'xsmall'}
+            marginTop={hasActions() ? '' : 'xxlarge'}
           >
             <ChartActions
               chart={chart}
               currentVersion={currentVersion}
-              height="54px"
             />
             <ChartInfo version={currentVersion} />
             <ImageDependencies version={currentVersion} />
-          </Box>
+          </Flex>
         </ResponsiveLayoutSidecarContainer>
         <ResponsiveLayoutSpacer />
       </Box>

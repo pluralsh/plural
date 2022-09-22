@@ -1,6 +1,6 @@
 defmodule Core.Schema.Stack do
   use Piazza.Ecto.Schema
-  alias Core.Schema.{Account, User, StackCollection}
+  alias Core.Schema.{Account, User, StackCollection, Repository}
 
   schema "stacks" do
     field :name,        :string
@@ -11,6 +11,8 @@ defmodule Core.Schema.Stack do
     belongs_to :account,     Account
     belongs_to :creator,     User
     has_many :collections,   StackCollection, on_replace: :delete, foreign_key: :stack_id
+
+    embeds_one :community, Repository.Community, on_replace: :update
 
     timestamps()
   end
@@ -30,6 +32,7 @@ defmodule Core.Schema.Stack do
   def changeset(model, attrs \\ %{}) do
     model
     |> cast(attrs, @valid)
+    |> cast_embed(:community, with: &Repository.community_changeset/2)
     |> cast_assoc(:collections)
     |> unique_constraint(:name)
     |> foreign_key_constraint(:account_id)

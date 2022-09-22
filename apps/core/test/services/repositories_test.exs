@@ -340,7 +340,7 @@ defmodule Core.Services.RepositoriesTest do
     test "It can generate an ecrypted license for an installation" do
       publisher = insert(:publisher)
       {:ok, repo} = Repositories.create_repository(%{
-        name: "my repo",
+        name: "my-repo",
         category: :data,
         secrets: %{"token" => "a"}
       }, publisher.owner)
@@ -361,7 +361,7 @@ defmodule Core.Services.RepositoriesTest do
 
     test "It can generate licenses for payed plans" do
       publisher = insert(:publisher)
-      {:ok, repo} = Repositories.create_repository(%{name: "my repo", category: :data}, publisher.owner)
+      {:ok, repo} = Repositories.create_repository(%{name: "my-repo", category: :data}, publisher.owner)
       installation = insert(:installation, repository: repo)
       plan = insert(:plan,
         repository: repo,
@@ -393,7 +393,7 @@ defmodule Core.Services.RepositoriesTest do
 
     test "It will not generate licenses if there is no subscription for a non-free repo" do
       publisher = insert(:publisher)
-      {:ok, repo} = Repositories.create_repository(%{name: "my repo", category: :data}, publisher.owner)
+      {:ok, repo} = Repositories.create_repository(%{name: "my-repo", category: :data}, publisher.owner)
       installation = insert(:installation, repository: repo)
       insert(:plan, repository: repo)
 

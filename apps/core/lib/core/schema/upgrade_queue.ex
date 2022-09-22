@@ -2,7 +2,7 @@ defmodule Core.Schema.UpgradeQueue do
   use Piazza.Ecto.Schema
   alias Core.Schema.User
 
-  @expiry 10
+  @expiry 1
 
   schema "upgrade_queues" do
     field :acked,     :binary_id

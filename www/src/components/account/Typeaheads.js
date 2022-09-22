@@ -92,6 +92,7 @@ function TagInput({
         width={width}
       >
         <ComboBox
+          aria-label={label}
           inputValue={inputValue}
           onSelectionChange={key => {
             const selection = suggestions.find(s => s?.value?.id === key)

@@ -23,9 +23,10 @@ import { normalizedThemes } from './themes'
 import TerminalSidebar from './TerminalSidebar'
 import TerminalInformation from './TerminalInformation'
 import { useOnboarded } from './onboarding/useOnboarded'
-import { decodeBase64 } from './Terminal'
 
-function Shell({ shell }) {
+const decodeBase64 = str => Buffer.from(str, 'base64').toString('utf-8')
+
+export function Shell({ shell }) {
   const xterm = useRef(null)
   const [channel, setChannel] = useState(null)
   const [dimensions, setDimensions] = useState({})
@@ -35,9 +36,7 @@ function Shell({ shell }) {
   const { fresh } = useOnboarded()
 
   useEffect(() => {
-    if (!xterm?.current?.terminal) {
-      return
-    }
+    if (!xterm?.current?.terminal) return
 
     const term = xterm.current.terminal
     const chan = socket.channel('shells:me')
@@ -62,9 +61,7 @@ function Shell({ shell }) {
   }, [shell, xterm, fitAddon])
 
   const handleResetSize = useCallback(() => {
-    if (!channel) {
-      return
-    }
+    if (!channel) return
     channel.push('resize', { width: dimensions.cols, height: dimensions.rows })
   }, [channel, dimensions])
 
@@ -73,17 +70,13 @@ function Shell({ shell }) {
   }, [handleResetSize])
 
   const handleResize = useCallback(({ cols, rows }) => {
-    if (!channel) {
-      return
-    }
+    if (!channel) return
     channel.push('resize', { width: cols, height: rows })
   }, [channel])
 
   const { ref } = useResizeDetector({
     onResize: debounce(() => {
-      if (!channel) {
-        return
-      }
+      if (!channel) return
       fitAddon.fit()
       handleResize(fitAddon.proposeDimensions())
     }, 500, { leading: true }),
@@ -105,6 +98,7 @@ function Shell({ shell }) {
         gap="medium"
         borderBottom="1px solid border"
         width="100%"
+        maxWidth={1640}
       >
         {!fresh && (
           <Button
@@ -170,5 +164,4 @@ function Shell({ shell }) {
     </Flex>
   )
 }
-
 export default Shell

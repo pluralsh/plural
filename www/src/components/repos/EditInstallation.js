@@ -104,7 +104,7 @@ export function EditInstallation({ installation, repository, onUpdate }) {
             <Text>Configuration saved</Text>
             <CloseIcon
               style={{ cursor: 'pointer' }}
-              size="15px"
+              size={15}
               onClick={() => setNotif(false)}
             />
           </Box>

@@ -58,6 +58,7 @@ function extendedTheme({ minMenuWidth = 400 }) {
       Button: [
         {
           borderRadius: 'normal',
+          width: '100%',
         },
       ],
       Menu: [
@@ -121,7 +122,9 @@ function RecipeMenuItem({ recipe }: {recipe: Recipe}) {
   )
 }
 
-function InstallDropdownButton({ recipes, name, type = 'bundle' } : {recipes: Recipe[], name: string, type?: string}) {
+function InstallDropdownButton({
+  recipes, name, type = 'bundle', ...props
+} : {recipes: Recipe[], name: string, type?: string, [x: string]: any;}) {
   const [recipe, setRecipe] = useState<Recipe>()
   const [tab, setTab] = useState(0)
 
@@ -246,7 +249,10 @@ function InstallDropdownButton({ recipes, name, type = 'bundle' } : {recipes: Re
             setRecipe((event.target as any).value)
             setTab(0)
           }}
-          endIcon={<DropdownArrowIcon size={10} />}
+          endIcon={(
+            <DropdownArrowIcon size={16} />
+          )}
+          {...props}
         >
           {recipes.map((recipe, i) => (
             <RecipeMenuItem
@@ -268,7 +274,10 @@ function InstallDropdownButton({ recipes, name, type = 'bundle' } : {recipes: Re
             setRecipe(undefined)
             setTab(0)
           }}
-          endIcon={<DropdownArrowIcon size={10} />}
+          endIcon={(
+            <DropdownArrowIcon size={16} />
+          )}
+          {...props}
         >
           {renderTabs()}
         </DropdownButton>

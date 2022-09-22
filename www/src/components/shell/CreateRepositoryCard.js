@@ -5,10 +5,20 @@ import {
   Text,
 } from 'honorable'
 
+import { Github as GithubLogo, Gitlab as GitlabLogo } from './icons'
 import { DEBUG_SCM_TOKENS } from './debug-tokens'
 import OnboardingCard from './onboarding/OnboardingCard'
 import OnboardingCardButton from './onboarding/OnboardingCardButton'
-import { providerToDisplayName, providerToLogo } from './CloudShell'
+
+const providerToLogo = {
+  github: <GithubLogo />,
+  gitlab: <GitlabLogo />,
+}
+
+const providerToDisplayName = {
+  github: 'GitHub',
+  gitlab: 'GitLab',
+}
 
 function CreateRepositoryCard({ data }) {
   return (

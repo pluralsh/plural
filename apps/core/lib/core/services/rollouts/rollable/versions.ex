@@ -31,7 +31,7 @@ defimpl Core.Rollouts.Rollable, for: [Core.PubSub.VersionCreated, Core.PubSub.Ve
   def process(%{item: version}, %{installation: %{user: user}} = inst) do
     case Dependencies.valid?(version.dependencies, user) do
       true -> directly_install(version, inst)
-      false -> Upgrades.create_deferred_update(version.id, inst, user)
+      _ -> Upgrades.create_deferred_update(version.id, inst, user)
     end
   end
 

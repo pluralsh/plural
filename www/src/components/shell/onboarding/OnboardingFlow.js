@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import CreateShellContext from '../../../contexts/CreateShellContext'
 
@@ -54,6 +55,7 @@ function OnboardingFlow({ accessToken, provider: scmProvider, authUrlData }) {
   const [scm, setScm] = useState({ name: '', provider: scmProvider, token: accessToken })
   const [credentials, setCredentials] = useState({})
   const [workspace, setWorkspace] = useState({})
+  const navigate = useNavigate()
 
   const doSetProvider = useCallback(provider => {
     setProvider(provider)
@@ -125,6 +127,7 @@ function OnboardingFlow({ accessToken, provider: scmProvider, authUrlData }) {
     setScm({ name: '', provider: scmProvider, token: accessToken })
     setCredentials({})
     setWorkspace({})
+    navigate('/shell')
   }
 
   return (

@@ -60,3 +60,5 @@ export const SECTIONS = {
 }
 
 export const MAX_SELECTED_APPLICATIONS = 5
+export const SELECTED_APPLICATIONS_LOCAL_STORAGE_KEY = 'onboarding-selected-applications'
+export const PROVIDER_LOCAL_STORAGE_KEY = 'onboarding-provider'

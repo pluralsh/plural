@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Flex } from 'honorable'
 
 import {
@@ -6,6 +6,8 @@ import {
 } from '../../layout/ResponsiveLayout'
 
 import SelectedApplicationsContext, { SelectedApplicationsContextType } from '../../../contexts/SelectedApplicationsContext'
+
+import { SELECTED_APPLICATIONS_LOCAL_STORAGE_KEY } from '../constants'
 
 import OnboardingSidenav from './OnboardingSidenav'
 import OnboardingSidecar from './OnboardingSidecar'
@@ -23,6 +25,10 @@ function OnboardingWrapper({
 }) {
   const [selectedApplications, setSelectedApplications] = useState<any[]>([])
   const selectedApplicationsContextValue = useMemo<SelectedApplicationsContextType>(() => ({ selectedApplications, setSelectedApplications }), [selectedApplications])
+
+  useEffect(() => {
+    localStorage.setItem(SELECTED_APPLICATIONS_LOCAL_STORAGE_KEY, JSON.stringify(selectedApplications))
+  }, [selectedApplications])
 
   return (
     <SelectedApplicationsContext.Provider value={selectedApplicationsContextValue}>

@@ -25,7 +25,7 @@ import {
 
 import { getPreviousUserData, wipeToken } from '../../helpers/authentication'
 import { CurrentUserContext, handlePreviousUserClick } from '../login/CurrentUser'
-import { useOnboarded } from '../shell/onboarding/useOnboarded'
+import useOnboarded from '../shell/onboarding/useOnboarded'
 
 import CreatePublisherModal from '../publisher/CreatePublisherModal'
 

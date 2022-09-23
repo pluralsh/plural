@@ -110,3 +110,11 @@ export const STACK_QUERY = gql`
     }
   }
 `
+
+export const CREATE_QUICK_STACK_MUTATION = gql`
+ mutation QuickStacks($applicationIds: [ID], $provider: Provider!) {
+  quickStack(repositoryIds: $ids, provider: $provider) {
+    name
+  }
+}
+`

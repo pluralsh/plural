@@ -6,7 +6,8 @@ import { Fireworks } from 'fireworks-js/dist/react'
 
 import CodeLine from '../utils/CodeLine'
 
-import { useOnboarded } from './onboarding/useOnboarded'
+import useOnboarded from './onboarding/useOnboarded'
+import useQuickStack from './useQuickStack'
 
 const sidebarWidth = 512
 
@@ -31,6 +32,7 @@ const steps = [
 
 function TerminalSidebar({ shell, showCheatsheet, ...props }) {
   const { mutation, fresh } = useOnboarded()
+  const quickStackName = useQuickStack()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [stepIndex, setStepIndex] = useState(0)
   const { title, Component } = steps[stepIndex]
@@ -86,7 +88,7 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
           flexGrow={1}
           overflowY="auto"
         >
-          <Component />
+          <Component quickStackName={quickStackName} />
         </Div>
         <Flex
           align="center"
@@ -342,7 +344,9 @@ function Step1() {
   DEMO STEP 2
 --- */
 
-function Step2() {
+function Step2({ quickStackName }) {
+  console.log('quickStackName', quickStackName)
+
   return (
     <Div
       paddingVertical="medium"

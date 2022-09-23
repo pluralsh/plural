@@ -8,7 +8,7 @@ import { UPDATE_USER } from '../../users/queries'
 
 const FORCE_ONBOARDING = 'plrl-force-onboarding'
 
-export function useOnboarded() {
+function useOnboarded() {
   const me = useContext(CurrentUserContext)
 
   const [mutation] = useMutation(UPDATE_USER, {
@@ -20,3 +20,5 @@ export function useOnboarded() {
 
   return { mutation: fresh ? mutation : () => Promise.resolve(), fresh }
 }
+
+export default useOnboarded

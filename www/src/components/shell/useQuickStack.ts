@@ -1,33 +1,29 @@
 import { useMutation } from '@apollo/client'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 
-import { PROVIDER_LOCAL_STORAGE_KEY, SELECTED_APPLICATIONS_LOCAL_STORAGE_KEY } from './constants'
 import { CREATE_QUICK_STACK_MUTATION } from './queries'
+import { retrieveApplications, retrieveProvider } from './persistance'
 
-function useQuickStack(isDemo: boolean) {
-  const provider = isDemo ? 'GCP' : localStorage.getItem(PROVIDER_LOCAL_STORAGE_KEY)
-  let selectedApplications: any[] = [] // eslint-disable-line
-
-  try {
-    selectedApplications = JSON.parse(localStorage.getItem(SELECTED_APPLICATIONS_LOCAL_STORAGE_KEY) as string)
-  }
-  catch (error) {
-    //
-  }
+function useQuickStack() {
+  const provider = useMemo(() => retrieveProvider(), [])
+  const applications = useMemo(() => retrieveApplications(), [])
 
   const [mutation, { data, error, loading }] = useMutation(CREATE_QUICK_STACK_MUTATION, {
     variables: {
       provider,
-      applicationIds: selectedApplications.map(application => application.id),
+      applicationIds: applications.map(application => application.id),
     },
   })
 
   useEffect(() => {
+    console.log('provider, selectedApplications', provider, applications)
     if (!provider) return
-    if (!selectedApplications.length) return
+    if (!applications.length) return
 
     mutation()
-  }, [provider, selectedApplications, isDemo, mutation])
+  }, [provider, applications, mutation])
+
+  console.log('data', data)
 
   return loading || error ? null : data?.quickStack?.name ?? null
 }

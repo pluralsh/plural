@@ -1,9 +1,11 @@
 import {
-  createElement, useCallback, useContext, useRef, useState,
+  createElement, useCallback, useContext, useEffect, useRef, useState,
 } from 'react'
 import { Box, Drop } from 'grommet'
 import { MenuItem, Select } from 'honorable'
 import { Button, FormField } from 'pluralsh-design-system'
+
+import { persistProvider } from 'components/shell/persistance'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'
 
@@ -16,13 +18,26 @@ import { ProviderForms } from './provider'
 
 function CloudCredentials() {
   const {
-    provider, setProvider, workspace, setWorkspace, credentials, setCredentials, previous, next, error, exceptions,
+    provider,
+    setProvider,
+    workspace,
+    setWorkspace,
+    credentials,
+    setCredentials,
+    previous,
+    next,
+    error,
+    exceptions,
   } = useContext(CreateShellContext)
 
   const ref = useRef()
   const [open, setOpen] = useState(false)
   const close = useCallback(() => setOpen(false), [setOpen])
   const form = ProviderForms[provider]
+
+  useEffect(() => {
+    persistProvider(provider)
+  }, [provider])
 
   return (
     <>

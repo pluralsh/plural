@@ -1,13 +1,21 @@
-import { useEffect, useMemo, useState } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import { Flex } from 'honorable'
 
 import {
-  ResponsiveLayoutContentContainer, ResponsiveLayoutSidecarContainer, ResponsiveLayoutSidenavContainer, ResponsiveLayoutSpacer,
+  ResponsiveLayoutContentContainer,
+  ResponsiveLayoutSidecarContainer,
+  ResponsiveLayoutSidenavContainer,
+  ResponsiveLayoutSpacer,
 } from '../../layout/ResponsiveLayout'
 
 import SelectedApplicationsContext, { SelectedApplicationsContextType } from '../../../contexts/SelectedApplicationsContext'
 
-import { SELECTED_APPLICATIONS_LOCAL_STORAGE_KEY } from '../constants'
+import { persistApplications, retrieveApplications } from '../persistance'
 
 import OnboardingSidenav from './OnboardingSidenav'
 import OnboardingSidecar from './OnboardingSidecar'
@@ -23,11 +31,16 @@ function OnboardingWrapper({
   onRestart = () => {},
   children,
 }) {
-  const [selectedApplications, setSelectedApplications] = useState<any[]>([])
+  const [selectedApplications, setSelectedApplications] = useState<any[]>(retrieveApplications())
   const selectedApplicationsContextValue = useMemo<SelectedApplicationsContextType>(() => ({ selectedApplications, setSelectedApplications }), [selectedApplications])
 
+  const handleRestart = useCallback(() => {
+    setSelectedApplications([])
+    onRestart()
+  }, [onRestart])
+
   useEffect(() => {
-    localStorage.setItem(SELECTED_APPLICATIONS_LOCAL_STORAGE_KEY, JSON.stringify(selectedApplications))
+    persistApplications(selectedApplications)
   }, [selectedApplications])
 
   return (
@@ -57,7 +70,7 @@ function OnboardingWrapper({
                 <OnboardingSidenav
                   stepIndex={stepIndex}
                   cliMode={cliMode}
-                  onRestart={onRestart}
+                  onRestart={handleRestart}
                 />
               </ResponsiveLayoutSidenavContainer>
               <ResponsiveLayoutContentContainer

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import {
   A, Accordion, Button, Div, ExtendTheme, Flex, Li, Modal, P, Ul,
 } from 'honorable'
@@ -8,6 +8,9 @@ import CodeLine from '../utils/CodeLine'
 
 import useOnboarded from './onboarding/useOnboarded'
 import useQuickStack from './useQuickStack'
+import {
+  retrieveApplications, retrieveProvider, retrieveStackName,
+} from './persistance'
 
 const sidebarWidth = 512
 
@@ -32,7 +35,10 @@ const steps = [
 
 function TerminalSidebar({ shell, showCheatsheet, ...props }) {
   const { mutation, fresh } = useOnboarded()
-  const quickStackName = useQuickStack()
+  const quickStackName = useQuickStack() // Could be put inside Step2 but stays here for eager loading
+  const applications = retrieveApplications()
+  const provider = retrieveProvider()
+  const stackName = retrieveStackName() // TODO refactor useQuickStack to output the commandSuffix and isSTack
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [stepIndex, setStepIndex] = useState(0)
   const { title, Component } = steps[stepIndex]
@@ -344,10 +350,17 @@ function Step1() {
   DEMO STEP 2
 --- */
 
-function Step2({ quickStackName }) {
-  console.log('quickStackName', quickStackName)
-
-  return (
+function Step2({
+  isStack,
+  commandSuffix,
+}) {
+  // eslint-disable-next-line
+  const renderInstall = useCallback((
+    info1,
+    info2,
+    commandLine,
+  // eslint-disable-next-line
+  ) => (
     <Div
       paddingVertical="medium"
       paddingHorizontal="large"
@@ -356,26 +369,35 @@ function Step2({ quickStackName }) {
         overline
         color="text-xlight"
       >
-        installation
+        Installation
       </P>
       <P
         body1
         marginTop="medium"
       >
-        Now that you've installed the Plural Console, it may be a good idea to install another app.
-        For the sake of this demo we recommend installing an instance of Airbyte.
+        {info1}
       </P>
       <P
         body1
         marginTop="medium"
       >
-        To install Airbyte, simply run:
+        {info2}
       </P>
       <CodeLine marginTop="medium">
-        plural bundle install airbyte airbyte-gcp
+        {commandLine}
       </CodeLine>
     </Div>
-  )
+  ), [])
+
+  if (stackName) {
+    return renderInstall("Now that you've installed the Plural Console, it's time to install the stack you selected earlier in the demo.",
+      'Copy and paste this command into your cloud shell to begin:',
+      `plural stack install ${quickStackName}`)
+  }
+
+  return renderInstall("Now that you've installed the Plural Console, it may be a good idea to install another app. For the sake of this demo we recommend installing an instance of Airbyte.",
+    'To install Airbyte, simply run:',
+    'plural bundle install airbyte airbyte-gcp')
 }
 
 /* ---

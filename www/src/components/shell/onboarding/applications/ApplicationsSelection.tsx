@@ -1,4 +1,6 @@
-import { useCallback, useEffect, useState } from 'react'
+import {
+  useCallback, useContext, useEffect, useState,
+} from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useQuery } from '@apollo/client'
 import {
@@ -20,6 +22,8 @@ import {
 import capitalize from 'lodash/capitalize'
 import Fuse from 'fuse.js'
 
+import SelectedApplicationsContext from 'contexts/SelectedApplicationsContext'
+
 import { APPLICATIONS_QUERY, STACK_QUERY } from '../../queries'
 import { MAX_SELECTED_APPLICATIONS } from '../../constants'
 
@@ -39,9 +43,9 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
   const stackName = searchParams.get('stackName')
   const stackProvider = searchParams.get('stackProvider')
   const isStack = !!(stackName && stackProvider)
+  const { selectedApplications, setSelectedApplications } = useContext(SelectedApplicationsContext)
   const [search, setSearch] = useState('')
   const [shouldInstallConsole, setShouldInstallConsole] = useState(true)
-  const [selectedApplicationIds, setSelectedApplicationIds] = useState<string[]>([])
   const { data: applicationsData, loading: applicationsLoading, error: applicationsError } = useQuery(APPLICATIONS_QUERY)
   const { data: stackData, loading: stackLoading, error: stackError } = useQuery(STACK_QUERY, {
     variables: {
@@ -69,12 +73,16 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
     if (isStack && stackData && applicationsData) {
       const applications = getApplications()
 
-      setSelectedApplicationIds(applications.map(x => x.id))
+      setSelectedApplications(applications)
     }
-  }, [isStack, stackData, applicationsData, getApplications])
+  }, [isStack, stackData, applicationsData, getApplications, setSelectedApplications])
 
-  function toggleApplication(id: string) {
-    setSelectedApplicationIds(ids => (ids.includes(id) ? ids.filter(_id => _id !== id) : [...ids, id].filter((_x, i) => i < MAX_SELECTED_APPLICATIONS)))
+  function toggleApplication(application: any) {
+    setSelectedApplications(applications => (
+      applications.find(a => a.id === application.id)
+        ? applications.filter(a => a.id !== application.id)
+        : [...applications, application].filter((_x, i) => i < MAX_SELECTED_APPLICATIONS)
+    ))
   }
 
   function handleSkipDemo() {
@@ -190,7 +198,7 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
   function renderApplicationsFooter() {
     return (
       <P color="text-light">
-        {selectedApplicationIds.length ? `${selectedApplicationIds.length} out of ${MAX_SELECTED_APPLICATIONS} apps selected` : '0 apps selected'}
+        {selectedApplications.length ? `${selectedApplications.length} out of ${MAX_SELECTED_APPLICATIONS} apps selected` : '0 apps selected'}
       </P>
     )
   }
@@ -230,10 +238,10 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
               key={application.id}
               imageUrl={application.darkIcon || application.icon}
               label={capitalize(application.name)}
-              checked={selectedApplicationIds.includes(application.id)}
-              onClick={() => toggleApplication(application.id)}
-              cursor={selectedApplicationIds.length >= MAX_SELECTED_APPLICATIONS && !selectedApplicationIds.includes(application.id) ? 'not-allowed' : 'pointer'}
-              opacity={selectedApplicationIds.length >= MAX_SELECTED_APPLICATIONS && !selectedApplicationIds.includes(application.id) ? 0.5 : 1}
+              checked={!!selectedApplications.find(a => a.id === application.id)}
+              onClick={() => toggleApplication(application)}
+              cursor={selectedApplications.length >= MAX_SELECTED_APPLICATIONS && !selectedApplications.find(a => a.id === application.id) ? 'not-allowed' : 'pointer'}
+              opacity={selectedApplications.length >= MAX_SELECTED_APPLICATIONS && !selectedApplications.find(a => a.id === application.id) ? 0.5 : 1}
             />
           ))}
         </Div>
@@ -276,7 +284,7 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
         <Button
           primary
           onClick={onNext}
-          disabled={!selectedApplicationIds.length}
+          disabled={!selectedApplications.length}
           marginLeft="medium"
         >
           Continue

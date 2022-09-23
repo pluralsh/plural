@@ -46,7 +46,10 @@ function CloudShell() {
         <ApplicationsSelection onNext={() => setSection('git')} />
       )}
       {section === 'git' && (
-        <CreateRepositoryCard data={data} />
+        <CreateRepositoryCard
+          data={data}
+          onPrevious={() => setSection('applications')}
+        />
       )}
     </OnboardingWrapper>
   )

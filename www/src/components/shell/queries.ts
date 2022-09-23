@@ -82,3 +82,31 @@ export const APPLICATIONS_QUERY = gql`
   }
   ${PageInfo}
 `
+
+export const STACK_QUERY = gql`
+  query StackQuery($name: String!, $provider: Provider!) {
+    stack(name: $name, provider: $provider) {
+      id
+      name
+      description
+      # featured
+      # creator {
+        # id
+        # name
+      # }
+      collections {
+        provider
+        bundles {
+          recipe {
+            repository {
+              id
+              name
+              icon
+              darkIcon
+            }
+          }
+        }
+      }
+    }
+  }
+`

@@ -11,9 +11,6 @@ import { JoinCommunityCard } from './onboarding/JoinCommunityCard'
 import TerminalThemeProvider from './TerminalThemeProvider'
 import Shell from './Shell'
 
-// eslint-disable-next-line
-const { Buffer } = require('buffer/')
-
 export function Terminal() {
   const { data } = useQuery(CLOUD_SHELL_QUERY, { pollInterval: 5000, fetchPolicy: 'cache-and-network' })
   const { shell } = data || {}

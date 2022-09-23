@@ -4,13 +4,24 @@ import {
   P,
   Text,
 } from 'honorable'
+import { Button } from 'pluralsh-design-system'
 
+import { Github as GithubLogo, Gitlab as GitlabLogo } from './icons'
 import { DEBUG_SCM_TOKENS } from './debug-tokens'
 import OnboardingCard from './onboarding/OnboardingCard'
 import OnboardingCardButton from './onboarding/OnboardingCardButton'
-import { providerToDisplayName, providerToLogo } from './CloudShell'
 
-function CreateRepositoryCard({ data }) {
+const providerToLogo = {
+  github: <GithubLogo />,
+  gitlab: <GitlabLogo />,
+}
+
+const providerToDisplayName = {
+  github: 'GitHub',
+  gitlab: 'GitLab',
+}
+
+function CreateRepositoryCard({ data, onPrevious = () => {} }) {
   return (
     <OnboardingCard title="Create a repository">
       <P marginBottom="medium">
@@ -48,6 +59,14 @@ function CreateRepositoryCard({ data }) {
             </Text>
           </OnboardingCardButton>
         ))}
+      </Flex>
+      <Flex marginTop="medium">
+        <Button
+          secondary
+          onClick={onPrevious}
+        >
+          Back
+        </Button>
       </Flex>
     </OnboardingCard>
   )

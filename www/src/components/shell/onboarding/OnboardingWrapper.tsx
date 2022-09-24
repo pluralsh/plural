@@ -66,7 +66,12 @@ function OnboardingWrapper({
               overflow="hidden"
             >
               <ResponsiveLayoutSpacer />
-              <ResponsiveLayoutSidenavContainer>
+              <ResponsiveLayoutSidenavContainer
+                marginTop={82}
+                marginRight={30}
+                paddingRight="xxsmall"
+                overflowY="auto"
+              >
                 <OnboardingSidenav
                   stepIndex={stepIndex}
                   cliMode={cliMode}
@@ -74,13 +79,20 @@ function OnboardingWrapper({
                 />
               </ResponsiveLayoutSidenavContainer>
               <ResponsiveLayoutContentContainer
-                overflowY="hidden"
-                marginRight-desktop-down={32}
+                overflowY="auto"
+                paddingBottom="large"
+                paddingHorizontal="xxsmall"
+                marginRight-desktop-down={30}
               >
                 <OnboardingTitle />
                 {children}
               </ResponsiveLayoutContentContainer>
-              <ResponsiveLayoutSidecarContainer>
+              <ResponsiveLayoutSidecarContainer
+                marginLeft={30}
+                marginTop={57}
+                marginRight="xlarge"
+                overflowY="auto"
+              >
                 <OnboardingSidecar areApplicationsDisplayed={stepIndex > 0} />
               </ResponsiveLayoutSidecarContainer>
               <ResponsiveLayoutSpacer />

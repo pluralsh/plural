@@ -1,5 +1,8 @@
 import {
-  useCallback, useContext, useEffect, useState,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
 } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useQuery } from '@apollo/client'
@@ -23,6 +26,8 @@ import capitalize from 'lodash/capitalize'
 import Fuse from 'fuse.js'
 
 import SelectedApplicationsContext from 'contexts/SelectedApplicationsContext'
+
+import { persistStack } from 'components/shell/persistance'
 
 import { APPLICATIONS_QUERY, STACK_QUERY } from '../../queries'
 import { MAX_SELECTED_APPLICATIONS, PROVIDER_LOCAL_STORAGE_KEY } from '../../constants'
@@ -70,10 +75,14 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
   }, [applicationsData, isStack, stackData, stackProvider])
 
   useEffect(() => {
-    if (isStack && stackData && applicationsData) {
-      const applications = getApplications()
+    if (isStack && stackData) {
+      persistStack(stackData.stack)
+    }
+  }, [isStack, stackData])
 
-      setSelectedApplications(applications)
+  useEffect(() => {
+    if (isStack && stackData && applicationsData) {
+      setSelectedApplications(getApplications())
     }
   }, [isStack, stackData, applicationsData, getApplications, setSelectedApplications])
 
@@ -221,10 +230,7 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
   }
 
   return (
-    <OnboardingCard
-      flexGrow={1}
-      overflow="hidden"
-    >
+    <OnboardingCard flexGrow={1}>
       {isStack ? renderStackHeader() : renderApplicationsHeader()}
       {!!filteredApplications.length && (
         <Div
@@ -238,6 +244,7 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
           gridRowGap="16px"
           paddingRight="xsmall"
           paddingBottom="medium"
+          minHeight={42 + 16}
         >
           {filteredApplications.map(application => (
             <RepositoryChip

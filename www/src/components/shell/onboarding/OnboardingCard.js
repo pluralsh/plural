@@ -12,6 +12,7 @@ function OnboardingCard({ children, title = '', ...props }) {
       borderRadius="large"
       padding="xlarge"
       paddingTop="medium"
+      overflowY="auto"
       {...props}
     >
       {!!title && (

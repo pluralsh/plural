@@ -25,10 +25,15 @@ export function retrieveProvider() {
   return localStorage.getItem(PROVIDER_LOCAL_STORAGE_KEY)
 }
 
-export function persistStackName(stackName: string) {
-  localStorage.setItem(STACK_NAME_LOCAL_STORAGE_KEY, stackName)
+export function persistStack(stack: any) {
+  localStorage.setItem(STACK_NAME_LOCAL_STORAGE_KEY, JSON.stringify(stack))
 }
 
-export function retrieveStackName() {
-  return localStorage.getItem(STACK_NAME_LOCAL_STORAGE_KEY)
+export function retrieveStack() {
+  try {
+    return JSON.parse(localStorage.getItem(STACK_NAME_LOCAL_STORAGE_KEY) as string) as any
+  }
+  catch (error) {
+    return null
+  }
 }

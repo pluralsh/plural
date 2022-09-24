@@ -1,16 +1,22 @@
-import { useCallback, useState } from 'react'
+import { useState } from 'react'
 import {
-  A, Accordion, Button, Div, ExtendTheme, Flex, Li, Modal, P, Ul,
+  A,
+  Accordion,
+  Button,
+  Div,
+  ExtendTheme,
+  Flex,
+  Li,
+  Modal,
+  P,
+  Ul,
 } from 'honorable'
 import { Fireworks } from 'fireworks-js/dist/react'
 
 import CodeLine from '../utils/CodeLine'
 
 import useOnboarded from './onboarding/useOnboarded'
-import useQuickStack from './useQuickStack'
-import {
-  retrieveApplications, retrieveProvider, retrieveStackName,
-} from './persistance'
+import usePluralCommand from './usePluralCommand'
 
 const sidebarWidth = 512
 
@@ -20,7 +26,7 @@ const steps = [
     Component: Step1,
   },
   {
-    title: 'Install Airbyte (optional)',
+    title: type => (type === 'stack' ? 'Install your stack' : 'Install your application'),
     Component: Step2,
   },
   {
@@ -35,10 +41,7 @@ const steps = [
 
 function TerminalSidebar({ shell, showCheatsheet, ...props }) {
   const { mutation, fresh } = useOnboarded()
-  const quickStackName = useQuickStack() // Could be put inside Step2 but stays here for eager loading
-  const applications = retrieveApplications()
-  const provider = retrieveProvider()
-  const stackName = retrieveStackName() // TODO refactor useQuickStack to output the commandSuffix and isSTack
+  const { command, type: commandType } = usePluralCommand() // Could be put inside Step2 but stays here for eager loading
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [stepIndex, setStepIndex] = useState(0)
   const { title, Component } = steps[stepIndex]
@@ -81,7 +84,7 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
           borderBottom="1px solid border"
         >
           <P subtitle1>
-            {title}
+            {typeof title === 'function' ? title(commandType) : title}
           </P>
           <P
             body2
@@ -94,7 +97,10 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
           flexGrow={1}
           overflowY="auto"
         >
-          <Component quickStackName={quickStackName} />
+          <Component
+            command={command}
+            commandType={commandType}
+          />
         </Div>
         <Flex
           align="center"
@@ -351,16 +357,10 @@ function Step1() {
 --- */
 
 function Step2({
-  isStack,
-  commandSuffix,
+  command,
+  commandType,
 }) {
-  // eslint-disable-next-line
-  const renderInstall = useCallback((
-    info1,
-    info2,
-    commandLine,
-  // eslint-disable-next-line
-  ) => (
+  return (
     <Div
       paddingVertical="medium"
       paddingHorizontal="large"
@@ -375,29 +375,20 @@ function Step2({
         body1
         marginTop="medium"
       >
-        {info1}
+        Now that you've installed the Plural Console,
+        it's time to install the {commandType === 'stack' ? 'stack' : 'application'} you selected earlier in the demo.
       </P>
       <P
         body1
         marginTop="medium"
       >
-        {info2}
+        Copy and paste these commands into your cloud shell to begin:
       </P>
       <CodeLine marginTop="medium">
-        {commandLine}
+        {command}
       </CodeLine>
     </Div>
-  ), [])
-
-  if (stackName) {
-    return renderInstall("Now that you've installed the Plural Console, it's time to install the stack you selected earlier in the demo.",
-      'Copy and paste this command into your cloud shell to begin:',
-      `plural stack install ${quickStackName}`)
-  }
-
-  return renderInstall("Now that you've installed the Plural Console, it may be a good idea to install another app. For the sake of this demo we recommend installing an instance of Airbyte.",
-    'To install Airbyte, simply run:',
-    'plural bundle install airbyte airbyte-gcp')
+  )
 }
 
 /* ---

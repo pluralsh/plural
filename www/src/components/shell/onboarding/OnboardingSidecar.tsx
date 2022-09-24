@@ -13,11 +13,7 @@ import OnboardingSidecarApplications from './OnboardingSidecarApplications'
 
 function OnboardingSidecar({ areApplicationsDisplayed = false }) {
   return (
-    <Div
-      width={200}
-      marginTop={57}
-      marginRight="xlarge"
-    >
+    <Div width={200}>
       <Flex
         border="1px solid border"
         borderRadius="large"

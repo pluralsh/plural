@@ -64,7 +64,7 @@ function PrivateControl({ dockerRepo }) {
       checked={!dockerRepo.public}
       onChange={() => mutation({ variables: { attributes: { public: !dockerRepo.public } } })}
     >
-      Private
+      {dockerRepo.public ? 'Public' : 'Private'}
     </Switch>
   )
 }

@@ -17,6 +17,8 @@ function usePluralCommand() {
   })
 
   const isStackComplete = useCallback(() => {
+    if (!stack) return false
+
     const stackApplicationIds = stack.collections.find(x => x.provider === provider).bundles.map(x => x.recipe.repository.id)
     const applicationIds = applications.map(x => x.id)
 
@@ -25,19 +27,18 @@ function usePluralCommand() {
 
   const getApplicationCommand = useCallback(() => {
     const [application] = applications
+    const recipe = application.recipes.find(x => x.provider === provider)
 
-    console.log('application', application)
+    if (!recipe) return 'plural bundle install airbyte airbye-gcp'
 
-    return 'plural install foo'
-  }, [applications])
+    return `plural bundle install ${application.name} ${recipe.name}`
+  }, [applications, provider])
 
   const getStackCommand = useCallback(() => {
-    const collection = stack.collections.find(x => x.provider === provider)
+    if (!stack) return 'An error occured'
 
-    console.log('collection', collection)
-
-    return 'plural install bar'
-  }, [stack, provider])
+    return `plural stack install ${stack.name}`
+  }, [stack])
 
   const getQuickStackCommand = useCallback(() => {
     if (error || loading) return 'plural stack install ...'

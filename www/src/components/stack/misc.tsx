@@ -5,7 +5,7 @@ import { StackContext } from './types'
 export function StackActions({ stack }: StackContext) {
   const recipes = stack?.collections?.map(({ name, provider }) => ({
     name,
-    description: `Installs ${stack.name} on ${provider}`,
+    description: `Installs ${stack.displayName || stack.name} on ${provider}`,
     provider,
   } as Recipe))
 

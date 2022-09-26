@@ -141,12 +141,10 @@ function LoginMethods() {
       {data.oauthUrls.map(({ provider, authorizeUrl }, i) => (
         <LoginMethod
           key={i}
-          icon={createElement(METHOD_ICONS[provider], { size: '20px', color: provider === Method.GITHUB ? 'white' : 'plain' })}
+          icon={createElement(METHOD_ICONS[provider], { size: '20px', color: 'white' })}
           active={me.loginMethod === provider}
           name={`Login with ${provider.toLowerCase()}`}
-          onClick={() => {
-            window.location = authorizeUrl
-          }}
+          onClick={() => window.location = authorizeUrl}
         />
       ))}
       <LoginMethod

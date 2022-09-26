@@ -5,7 +5,7 @@ import last from 'lodash/last'
 import { Box, Text } from 'grommet'
 import { normalizeColor } from 'grommet/utils'
 import { Flex, P } from 'honorable'
-import { semanticColors } from 'pluralsh-design-system/dist/theme'
+import { semanticColors } from 'pluralsh-design-system/dist/theme/colors'
 
 export function dateFormat(date) {
   return moment(date).format('MM/DD h:mm:ss A')

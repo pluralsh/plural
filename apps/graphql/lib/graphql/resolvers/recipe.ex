@@ -73,4 +73,7 @@ defmodule GraphQl.Resolvers.Recipe do
 
   def delete_stack(%{name: name}, %{context: %{current_user: user}}),
     do: Recipes.delete_stack(name, user)
+
+  def quick_stack(%{repository_ids: ids, provider: provider}, %{context: %{current_user: user}}),
+    do: Recipes.quick_stack(ids, provider, user)
 end

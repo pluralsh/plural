@@ -1,15 +1,15 @@
 import { useState } from 'react'
 import {
-  A, Accordion, Button, Div, ExtendTheme, Flex, Li, Modal, P, Ul,
+  A, Accordion, Button, Div, ExtendTheme, Flex, Li, P, Ul,
 } from 'honorable'
 import { Fireworks } from 'fireworks-js/dist/react'
+import { Chip, InfoIcon, Modal } from 'pluralsh-design-system'
 
 import CodeLine from '../utils/CodeLine'
 
 import { useOnboarded } from './onboarding/useOnboarded'
 
 const sidebarWidth = 512
-
 const steps = [
   {
     title: 'Install Plural Console',
@@ -22,6 +22,10 @@ const steps = [
   {
     title: 'Deploy your cluster',
     Component: Step3,
+  },
+  {
+    title: 'Run plural watch',
+    Component: Step4,
   },
 ]
 
@@ -107,7 +111,7 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
               secondary
               onClick={handlePrevious}
             >
-              Previous
+              Back
             </Button>
           )}
           <Button
@@ -159,6 +163,7 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
       )}
       <Modal
         header="Next steps"
+        width={512}
         maxWidth={512}
         open={isModalOpen}
         onClose={handleModalClose}
@@ -432,6 +437,73 @@ function Step3() {
         Now grab a coffee or your favorite hot beverage while we wait for your cloud provider to provision your
         infrastructure.
       </P>
+    </Div>
+  )
+}
+
+/* ---
+  DEMO STEP 4
+--- */
+
+function Step4() {
+  return (
+    <Div
+      paddingVertical="medium"
+      paddingHorizontal="large"
+    >
+      <Flex
+        backgroundColor="fill-two"
+        padding="medium"
+        borderRadius="medium"
+        borderLeft="medium solid"
+        borderColor="text-warning-light"
+        gap="small"
+      >
+        <InfoIcon
+          alignSelf="flex-start"
+          color="text-warning-light"
+          height="24px"
+        />
+        <Flex
+          direction="column"
+          gap="xxsmall"
+        >
+          <P
+            body1
+            bold
+          >Wait for your cluster to build
+          </P>
+          <P
+            body2
+            color="text-light"
+          >After
+            <Chip
+              size="small"
+              hue="lighter"
+              marginHorizontal="xxsmall"
+            >
+              plural deploy
+            </Chip>
+            is done, all your applications and the Plural Console will
+            be up and ready to access.
+          </P>
+        </Flex>
+      </Flex>
+      <P
+        body1
+        color="text-light"
+        marginTop="medium"
+      >
+        Take a nice stretch break as your deployment finishes, then run the command below to check whether or not your cluster is up and running.
+      </P>
+      <P
+        body1
+        color="text-light"
+        marginTop="medium"
+      >
+        Check the health of your cluster:
+      </P>
+      <CodeLine marginTop="xsmall">plural watch</CodeLine>
     </Div>
   )
 }

@@ -2345,7 +2345,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-codegen/add@npm:^3.2.1":
+"@graphql-codegen/add@npm:3.2.1":
   version: 3.2.1
   resolution: "@graphql-codegen/add@npm:3.2.1"
   dependencies:
@@ -23170,7 +23170,7 @@ __metadata:
     "@emotion/react": 11.10.0
     "@emotion/styled": 11.10.0
     "@gitbeaker/browser": 35.7.0
-    "@graphql-codegen/add": ^3.2.1
+    "@graphql-codegen/add": 3.2.1
     "@graphql-codegen/cli": 2.11.8
     "@graphql-codegen/introspection": 2.2.1
     "@graphql-codegen/typescript": 2.7.3

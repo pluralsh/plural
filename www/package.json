@@ -55,7 +55,7 @@
     "lodash": "4.17.21",
     "memoize-one": "6.0.0",
     "moment": "2.29.4",
-    "phoenix": "1.6.11",
+    "phoenix": "1.6.12",
     "pluralsh-absinthe-socket-apollo-link": "0.2.0",
     "pluralsh-design-system": "1.205.0",
     "prop-types": "15.8.1",

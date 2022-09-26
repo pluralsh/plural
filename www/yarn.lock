@@ -16786,10 +16786,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"phoenix@npm:1.6.11":
-  version: 1.6.11
-  resolution: "phoenix@npm:1.6.11"
-  checksum: 3e0811fab9eb9bf676765837363fa4b750525de0b722a0673574666d4e9db31f007f750632180bf4257f5ca838ecac5a187133d0235cd2d85e05a55ab34dfc59
+"phoenix@npm:1.6.12":
+  version: 1.6.12
+  resolution: "phoenix@npm:1.6.12"
+  checksum: 684bf1f3569c1163f7b8bef6ee5d4cdcf9b691b84bcab67aae232339d4f8a3f37e62b106491b0fae293d99945b08a0ab43881eba9257e9ac4b6a22883e4f228b
   languageName: node
   linkType: hard
 
@@ -23212,7 +23212,7 @@ __metadata:
     lodash: 4.17.21
     memoize-one: 6.0.0
     moment: 2.29.4
-    phoenix: 1.6.11
+    phoenix: 1.6.12
     pluralsh-absinthe-socket-apollo-link: 0.2.0
     pluralsh-design-system: 1.205.0
     postcss-import: 8.2.0

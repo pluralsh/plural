@@ -93,7 +93,7 @@
     "rehype-raw": "6.1.1",
     "slate": "0.82.1",
     "slate-history": "0.81.3",
-    "slate-react": "0.82.1",
+    "slate-react": "0.82.2",
     "styled-components": "5.3.5",
     "uuid": "8.3.2",
     "workbox-core": "6.5.4",

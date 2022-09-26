@@ -31,6 +31,7 @@ export const StackFragment = gql`
   fragment StackFragment on Stack {
     id
     name
+    displayName
     description
     featured
     creator { 

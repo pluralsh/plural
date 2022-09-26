@@ -66,7 +66,7 @@ function Sidenav({ stack }: StackContext) {
           />
         </Flex>
         <Div>
-          <P subtitle1>{stack.name}</P>
+          <P subtitle1>{stack.displayName || stack.name}</P>
           <Flex
             direction="row"
             alignItems="center"

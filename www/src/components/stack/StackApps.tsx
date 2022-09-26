@@ -9,6 +9,8 @@ import { StackContext } from './types'
 
 export default function StackApps() {
   const { stack }: StackContext = useOutletContext()
+  const repositories = stack.collections?.length > 0
+    ? stack.collections[0].bundles?.map(b => b.recipe.repository) : []
 
   return (
     <Flex
@@ -40,7 +42,7 @@ export default function StackApps() {
           {stack?.description}
         </P>
         <RepoCardList
-          repositories={stack?.bundles?.map(({ repository }) => repository)}
+          repositories={repositories}
           urlParams={`backStackName=${stack.name}`}
           mx={-0.75}
         />

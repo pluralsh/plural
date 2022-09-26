@@ -1,6 +1,6 @@
 import {
   blue, green, red, yellow,
-} from 'pluralsh-design-system/dist/theme'
+} from 'pluralsh-design-system/dist/theme/colors'
 import { randomColor } from 'randomcolor'
 
 const COLORS = [

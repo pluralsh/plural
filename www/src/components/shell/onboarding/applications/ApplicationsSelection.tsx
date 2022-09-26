@@ -114,7 +114,7 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
         justify="center"
         padding="xlarge"
       >
-        An error occured, please reload the page.
+        An error occurred, please reload the page.
       </Flex>
     )
   }
@@ -216,7 +216,6 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
 
   return (
     <OnboardingCard
-      flexGrow={1}
       overflow="hidden"
     >
       {isStack ? renderStackHeader() : renderApplicationsHeader()}
@@ -239,39 +238,42 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
               imageUrl={application.darkIcon || application.icon}
               label={capitalize(application.name)}
               checked={!!selectedApplications.find(a => a.id === application.id)}
-              onClick={() => toggleApplication(application)}
+              onClick={() => (isStack ? null : toggleApplication(application))}
               cursor={selectedApplications.length >= MAX_SELECTED_APPLICATIONS && !selectedApplications.find(a => a.id === application.id) ? 'not-allowed' : 'pointer'}
               opacity={selectedApplications.length >= MAX_SELECTED_APPLICATIONS && !selectedApplications.find(a => a.id === application.id) ? 0.5 : 1}
             />
           ))}
         </Div>
       )}
-      {!filteredApplications.length && (
-        <Flex
-          direction="column"
-          align="center"
-          marginTop="medium"
-          flexGrow={1}
-        >
-          <P
-            body2
-            color="text-light"
-          >
-            No application found for "{search}"
-          </P>
-          <Button
-            secondary
-            onClick={() => setSearch('')}
+      <Flex paddingBottom="large">
+        {!filteredApplications.length && (
+          <Flex
+            direction="column"
+            align="center"
             marginTop="medium"
+            flexGrow={1}
           >
-            Clear search
-          </Button>
-        </Flex>
-      )}
-      {isStack && renderConsoleSwitch()}
+            <P
+              body2
+              color="text-light"
+            >
+              No application found for "{search}"
+            </P>
+            <Button
+              secondary
+              onClick={() => setSearch('')}
+              marginTop="medium"
+            >
+              Clear search
+            </Button>
+          </Flex>
+        )}
+        {isStack && renderConsoleSwitch()}
+      </Flex>
       <Flex
         align="center"
-        marginTop="large"
+        paddingTop="large"
+        borderTop="1px solid border"
       >
         <Button
           tertiary

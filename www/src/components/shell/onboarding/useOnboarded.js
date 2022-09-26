@@ -16,7 +16,7 @@ export function useOnboarded() {
   })
 
   const onboarding = me.onboarding || OnboardingStatus.NEW
-  const fresh = onboarding === OnboardingStatus.NEW || !!localStorage.getItem(FORCE_ONBOARDING)
+  const fresh = onboarding === OnboardingStatus.ONBOARDED || !!localStorage.getItem(FORCE_ONBOARDING)
 
   return { mutation: fresh ? mutation : () => Promise.resolve(), fresh }
 }

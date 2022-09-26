@@ -296,6 +296,28 @@ defmodule Core.Services.RecipesTest do
     end
   end
 
+  describe "#quick_stack/3" do
+    test "it can create a stack for a list of repo ids and provider" do
+      repos = insert_list(3, :repository)
+      recipes = for r <- repos, do: insert(:recipe, repository: r, provider: :aws)
+      for r <- repos, do: insert(:recipe, repository: r, provider: :gcp)
+      user = insert(:user)
+
+      {:ok, stack} = Enum.map(repos, & &1.id)
+                     |> Recipes.quick_stack(:aws, user)
+
+      assert is_binary(stack.name)
+      assert stack.creator_id == user.id
+      assert stack.expires_at
+
+      %{collections: [collection]} = Core.Repo.preload(stack, [collections: :bundles])
+
+      assert collection.provider == :aws
+      assert Enum.map(collection.bundles, & &1.recipe_id)
+             |> ids_equal(recipes)
+    end
+  end
+
   defp provision_recipe(recipe) do
     %{repository: repo0} = section0 = insert(:recipe_section, recipe: recipe)
     insert(:recipe_item, recipe_section: section0, chart: build(:chart))

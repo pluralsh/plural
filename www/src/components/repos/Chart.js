@@ -13,6 +13,8 @@ import moment from 'moment'
 
 import { A, Flex } from 'honorable'
 
+import { updateCache } from 'utils/graphql'
+
 import {
   ResponsiveLayoutContentContainer,
   ResponsiveLayoutSidecarContainer,
@@ -72,26 +74,19 @@ function ChartInfo({ version: { helm, insertedAt } }) {
   )
 }
 
-function ChartInstaller({ chart }) {
+function ChartInstaller({ chart, version }) {
   const [mutation, { error }] = useMutation(chart.installation ? UPDATE_CHART_INST : INSTALL_CHART, {
     variables: {
       id: chart.installation ? chart.installation.id : chart.repository.installation.id,
-      attributes: { chartId: chart.id, versionId: chart.installation?.version?.id },
+      attributes: { chartId: chart.id, versionId: version.id },
     },
     update: (cache, { data }) => {
       const ci = data.installChart || data.updateChartInstallation
-      const prev = cache.readQuery({ query: CHART_Q, variables: { chartId: chart.id } })
 
-      cache.writeQuery({
+      updateCache(cache, {
         query: CHART_Q,
         variables: { chartId: chart.id },
-        data: {
-          ...prev,
-          chart: {
-            ...prev.chart,
-            installation: ci,
-          },
-        },
+        update: prev => ({ ...prev, chart: { ...prev.chart, installation: ci } }),
       })
     },
   })
@@ -112,7 +107,13 @@ export function ChartActions({ chart, currentVersion, ...props }) {
     return null
   }
 
-  return <Box {...props}><ChartInstaller chart={chart} /></Box>
+  return (
+    <Box {...props}><ChartInstaller
+      chart={chart}
+      version={currentVersion}
+    />
+    </Box>
+  )
 }
 
 function ImageDependencies({ version: { imageDependencies } }) {

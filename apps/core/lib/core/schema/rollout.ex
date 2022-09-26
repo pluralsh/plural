@@ -3,6 +3,8 @@ defmodule Core.Schema.Rollout do
   alias Piazza.Ecto.UUID
   alias Core.Schema.{Repository}
 
+  @expiry -14
+
   defenum Status, queued: 0, running: 1, finished: 2
 
   schema "rollouts" do
@@ -15,6 +17,11 @@ defmodule Core.Schema.Rollout do
     belongs_to :repository, Repository
 
     timestamps()
+  end
+
+  def expired(query \\ __MODULE__) do
+    expiry = Timex.now() |> Timex.shift(days: @expiry)
+    from(r in query, where: r.inserted_at < ^expiry)
   end
 
   def for_repository(query \\ __MODULE__, id) do

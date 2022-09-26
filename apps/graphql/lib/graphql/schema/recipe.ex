@@ -24,11 +24,12 @@ defmodule GraphQl.Schema.Recipe do
   end
 
   input_object :stack_attributes do
-    field :name,        non_null(:string)
-    field :description, :string
-    field :featured,    :boolean
-    field :collections, list_of(:stack_collection_attributes)
-    field :community,   :community_attributes
+    field :name,         non_null(:string)
+    field :description,  :string
+    field :featured,     :boolean
+    field :display_name, :string
+    field :collections,  list_of(:stack_collection_attributes)
+    field :community,    :community_attributes
   end
 
   input_object :stack_collection_attributes do
@@ -199,14 +200,15 @@ defmodule GraphQl.Schema.Recipe do
   end
 
   object :stack do
-    field :id,          non_null(:id)
-    field :name,        non_null(:string)
-    field :description, :string
-    field :featured,    :boolean
-    field :community,   :community
-    field :collections, list_of(:stack_collection), resolve: dataloader(Recipe)
-    field :creator,     :user, resolve: dataloader(User)
-    field :bundles,     list_of(:recipe)
+    field :id,           non_null(:id)
+    field :name,         non_null(:string)
+    field :description,  :string
+    field :featured,     :boolean
+    field :community,    :community
+    field :display_name, :string
+    field :collections,  list_of(:stack_collection), resolve: dataloader(Recipe)
+    field :creator,      :user, resolve: dataloader(User)
+    field :bundles,      list_of(:recipe)
 
     timestamps()
   end
@@ -287,6 +289,14 @@ defmodule GraphQl.Schema.Recipe do
       arg :attributes, non_null(:stack_attributes)
 
       safe_resolve &Recipe.upsert_stack/2
+    end
+
+    field :quick_stack, :stack do
+      middleware Authenticated
+      arg :repository_ids, list_of(:id)
+      arg :provider, non_null(:provider)
+
+      safe_resolve &Recipe.quick_stack/2
     end
 
     field :delete_stack, :stack do

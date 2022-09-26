@@ -167,4 +167,22 @@ defmodule GraphQl.RecipeMutationsTest do
       refute refetch(stack)
     end
   end
+
+  describe "quickStack" do
+    test "it can create a quick stack for a list of repositories" do
+      repos = insert_list(3, :repository)
+      for r <- repos, do: insert(:recipe, repository: r, provider: :aws)
+      user = insert(:user)
+
+      {:ok, %{data: %{"quickStack" => s}}} = run_query("""
+        mutation Quick($ids: [ID], $provider: Provider!) {
+          quickStack(repositoryIds: $ids, provider: $provider) {
+            name
+          }
+        }
+      """, %{"ids" => Enum.map(repos, & &1.id), "provider" => "AWS"}, %{current_user: user})
+
+      assert s["name"]
+    end
+  end
 end

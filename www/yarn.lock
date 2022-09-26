@@ -20104,9 +20104,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"slate-react@npm:0.82.1":
-  version: 0.82.1
-  resolution: "slate-react@npm:0.82.1"
+"slate-react@npm:0.82.2":
+  version: 0.82.2
+  resolution: "slate-react@npm:0.82.2"
   dependencies:
     "@types/is-hotkey": ^0.1.1
     "@types/lodash": ^4.14.149
@@ -20120,7 +20120,7 @@ __metadata:
     react: ">=16.8.0"
     react-dom: ">=16.8.0"
     slate: ">=0.65.3"
-  checksum: 4ff5022e09b8624451b6b1225128031eaec9f38166b0c0189fcbbb0d4f410a5b264daec99679c2c2abc5cef30a5ddada48dde051976afffe34bb0eea8047f3e0
+  checksum: a0d9688b46562dc8a9c410a3be9e08b13aa8aff4a6a2101e0bca68e5aa4fc7c92e06ff181647526d1855722c4a674a582dd5533f8ce8a493807d2f6991dbe1cc
   languageName: node
   linkType: hard
 
@@ -23252,7 +23252,7 @@ __metadata:
     serve: 14.0.1
     slate: 0.82.1
     slate-history: 0.81.3
-    slate-react: 0.82.1
+    slate-react: 0.82.2
     source-map-explorer: 2.5.2
     styled-components: 5.3.5
     stylelint: 14.11.0

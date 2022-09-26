@@ -7,7 +7,6 @@ import {
   ExtendTheme,
   Flex,
   Li,
-  Modal,
   P,
   Ul,
 } from 'honorable'

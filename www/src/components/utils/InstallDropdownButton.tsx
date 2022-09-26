@@ -78,7 +78,7 @@ function extendedTheme({ minMenuWidth = 400 }) {
   }
 }
 
-function RecipeMenuItem({ recipe }: {recipe: Recipe}) {
+function RecipeMenuItem({ recipe }: { recipe: Recipe }) {
   return (
     <MenuItem
       value={recipe}
@@ -172,7 +172,8 @@ function InstallDropdownButton({
               maxWidth="100%"
               flexGrow={1}
             >
-              Choose either the Plural CLI or cloud shell to install. Learn more about CLI installation in our{' '}
+              Choose either the Plural CLI or cloud shell to install. Learn more about CLI
+              installation in our{' '}
               <A
                 inline
                 href="https://docs.plural.sh/getting-started/getting-started#install-plural-cli"
@@ -213,34 +214,44 @@ function InstallDropdownButton({
             >
               In your installation repository, run:
             </P>
-            <Codeline language="bash">{`plural ${type} install ${name} ${recipe.name || ''}`}</Codeline>
+            <Codeline
+              language="bash"
+            >{`plural ${type} install ${name} ${recipe.name || ''}`}
+            </Codeline>
           </Div>
           <Div {...(tab !== 1 ? visuallyHideMaintainWidth : {})}>
-            <P
-              body2
-              color="text"
-              marginBottom="xsmall"
-            >
-              Copy this command:
-            </P>
-            <Codeline language="bash">{`plural ${type} install ${name} ${recipe.name || ''}`}</Codeline>
-            <P
-              body2
-              color="text"
-              marginTop="large"
-              marginBottom="xsmall"
-            >
-              Open in cloud shell and paste command:
-            </P>
+            {type !== 'stack' && (
+              <Div>
+                <P
+                  body2
+                  color="text"
+                  marginBottom="xsmall"
+                >
+                  Copy this command:
+                </P>
+                <Codeline
+                  language="bash"
+                >{`plural ${type} install ${name} ${recipe.name || ''}`}
+                </Codeline>
+                <P
+                  body2
+                  color="text"
+                  marginTop="large"
+                  marginBottom="xsmall"
+                >
+                  Open in cloud shell and paste command:
+                </P>
+              </Div>
+            )}
             <Link
-              to="/shell"
+              to={type === 'stack' ? `/shell?stackName=${name}&stackProvider=${recipe.provider}` : '/shell'}
               style={{ textDecoration: 'none' }}
             >
               <Button
                 width="100%"
                 endIcon={<ArrowTopRightIcon />}
               >
-                Open Cloud Shell
+                {type === 'stack' ? 'Install on Cloud Shell' : 'Open Cloud Shell'}
               </Button>
             </Link>
           </Div>

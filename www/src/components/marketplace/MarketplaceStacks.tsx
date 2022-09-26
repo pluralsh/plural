@@ -43,7 +43,7 @@ export default function MarketplaceStacks() {
             marginBottom="xlarge"
           >
             <StackCard
-              title={stack.name}
+              title={stack.displayName || stack.name}
               description={stack.description}
               apps={apps(stack)}
               hue={hue(i)}

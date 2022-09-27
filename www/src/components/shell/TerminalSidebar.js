@@ -17,7 +17,7 @@ import CodeLine from '../utils/CodeLine'
 
 import useOnboarded from './onboarding/useOnboarded'
 import usePluralCommand from './usePluralCommand'
-import { retrieveConsole } from './persistance'
+import { retrieveApplications, retrieveConsole } from './persistance'
 
 const sidebarWidth = 512
 const steps = [
@@ -51,8 +51,12 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
   const workingSteps = useMemo(() => {
     const workingSteps = [...steps]
     const shouldInstallConsole = retrieveConsole()
+    const applications = retrieveApplications()
 
-    if (!shouldInstallConsole) workingSteps.shift()
+    if (applications.length === 1 && applications[0].name !== 'console') return workingSteps
+    if (shouldInstallConsole) return workingSteps
+
+    workingSteps.shift()
 
     return workingSteps
   }, [])

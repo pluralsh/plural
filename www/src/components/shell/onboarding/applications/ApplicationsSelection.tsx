@@ -33,6 +33,7 @@ import { APPLICATIONS_QUERY, STACK_QUERY } from '../../queries'
 import { MAX_SELECTED_APPLICATIONS } from '../../constants'
 
 import OnboardingCard from '../OnboardingCard'
+import useOnboarded from '../useOnboarded'
 
 const searchOptions = {
   keys: ['name'],
@@ -59,6 +60,7 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
     },
     skip: !isStack,
   })
+  const { mutation: onboardMutation } = useOnboarded()
   const navigate = useNavigate()
 
   const getApplications = useCallback(() => {
@@ -105,7 +107,7 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
   }
 
   function handleSkipDemo() {
-
+    onboardMutation()
   }
 
   function handleSkipStack() {

@@ -6,7 +6,7 @@ import { CurrentUserContext } from '../../login/CurrentUser'
 import { OnboardingStatus } from '../../profile/types'
 import { UPDATE_USER } from '../../users/queries'
 
-const FORCE_ONBOARDING = 'plrl-force-onboarding'
+const FORCE_ONBOARDING = 'plural-force-onboarding'
 
 function useOnboarded() {
   const me = useContext(CurrentUserContext)

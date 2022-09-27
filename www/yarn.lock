@@ -19990,7 +19990,8 @@ __metadata:
     react: ">=16.8.0"
     react-dom: ">=16.8.0"
     slate: ">=0.65.3"
-  checksum: 1a648c276ad934a516ba769168a2d8231a7a6fa1c4536a41146284d7952784e087b72fd3bbc44567983986aee663c5414b02b0e73e8442e254cc75c18e031b79  languageName: node
+  checksum: 1a648c276ad934a516ba769168a2d8231a7a6fa1c4536a41146284d7952784e087b72fd3bbc44567983986aee663c5414b02b0e73e8442e254cc75c18e031b79
+  languageName: node
   linkType: hard
 
 "slate@npm:0.82.1":

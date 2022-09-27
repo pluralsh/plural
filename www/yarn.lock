@@ -23060,7 +23060,7 @@ __metadata:
     workbox-precaching: 6.5.4
     workbox-routing: 6.5.4
     workbox-strategies: 6.5.4
-    xterm-addon-fit: 0.6.0
+    xterm-addon-fit: 0.5.0
     xterm-for-react: 1.0.4
     xterm-theme: 1.1.0
   languageName: unknown
@@ -23094,12 +23094,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"xterm-addon-fit@npm:0.6.0":
-  version: 0.6.0
-  resolution: "xterm-addon-fit@npm:0.6.0"
+"xterm-addon-fit@npm:0.5.0":
+  version: 0.5.0
+  resolution: "xterm-addon-fit@npm:0.5.0"
   peerDependencies:
-    xterm: ^5.0.0
-  checksum: 6115e130a58a5ec3d17b424bd0420f3d871e9a6bb455ca62e67c10724534eafbdd205dd35c4707d8037efe8107c09486b48cb4369ba2e3ac97ab78f805195319
+    xterm: ^4.0.0
+  checksum: 884d9f360893335c87e4514beeda2af6dbebf38a89b8518f1126d9c4611aefc1598b750bb43a953b79fdf1179c40d70c77a9169ae10f07e0abbbdb39b919b33f
   languageName: node
   linkType: hard
 

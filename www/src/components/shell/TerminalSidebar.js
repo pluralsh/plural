@@ -48,17 +48,17 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
   const { command, type: commandType } = usePluralCommand() // Could be put inside Step2 but stays here for eager loading
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [stepIndex, setStepIndex] = useState(0)
-  const workingSteps = useMemo(() => {
+  const { workingSteps, skipConsoleInstall } = useMemo(() => {
     const workingSteps = [...steps]
     const shouldInstallConsole = retrieveConsole()
     const applications = retrieveApplications()
 
-    if (applications.length === 1 && applications[0].name !== 'console') return workingSteps
-    if (shouldInstallConsole) return workingSteps
+    if (applications.length === 1 && applications[0].name !== 'console') return { workingSteps, skipConsoleInstall: false }
+    if (shouldInstallConsole) return { workingSteps, skipConsoleInstall: false }
 
     workingSteps.shift()
 
-    return workingSteps
+    return { workingSteps, skipConsoleInstall: true }
   }, [])
 
   console.log('workingSteps', workingSteps)
@@ -119,6 +119,7 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
           <Component
             command={command}
             commandType={commandType}
+            skipConsoleInstall={skipConsoleInstall}
           />
         </Div>
         <Flex
@@ -379,6 +380,7 @@ function Step1() {
 function Step2({
   command,
   commandType,
+  skipConsoleInstall,
 }) {
   return (
     <Div
@@ -395,14 +397,22 @@ function Step2({
         body1
         marginTop="medium"
       >
-        Now that you've installed the Plural Console,
-        it's time to install the {commandType === 'stack' ? 'stack' : 'application'} you selected earlier in the demo.
+        {skipConsoleInstall ? (
+          <>
+            It's time to install the {commandType === 'stack' ? 'stack' : 'application'} you selected earlier in the demo.
+          </>
+        ) : (
+          <>
+            Now that you've installed the Plural Console,
+            it's time to install the {commandType === 'stack' ? 'stack' : 'application'} you selected earlier in the demo.
+          </>
+        )}
       </P>
       <P
         body1
         marginTop="medium"
       >
-        Copy and paste these commands into your cloud shell to begin:
+        Copy and paste this command into your cloud shell to begin:
       </P>
       <CodeLine marginTop="medium">
         {command}

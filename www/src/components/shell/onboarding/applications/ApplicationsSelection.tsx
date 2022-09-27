@@ -107,7 +107,7 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
   }
 
   function handleSkipDemo() {
-    onboardMutation()
+    onboardMutation().then(() => navigate('/marketplace'))
   }
 
   function handleSkipStack() {

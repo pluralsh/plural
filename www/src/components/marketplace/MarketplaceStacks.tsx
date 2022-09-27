@@ -4,6 +4,8 @@ import { Divider, StackCard } from 'pluralsh-design-system'
 
 import { useNavigate } from 'react-router-dom'
 
+import isEmpty from 'lodash/isEmpty'
+
 import { fillEmptyColumns, flexBasis } from './utils'
 
 import { STACKS_QUERY } from './queries'
@@ -14,7 +16,7 @@ export default function MarketplaceStacks() {
   const navigate = useNavigate()
   const { data } = useQuery(STACKS_QUERY, { featured: true } as any)
 
-  if (!data) return
+  if (isEmpty(data?.stacks?.edges)) return
 
   const { stacks: { edges } } = data
   const apps = ({ collections: c }) => (c?.length > 0

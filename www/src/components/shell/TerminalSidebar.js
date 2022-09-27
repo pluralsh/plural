@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import {
   A,
   Accordion,
@@ -17,6 +17,7 @@ import CodeLine from '../utils/CodeLine'
 
 import useOnboarded from './onboarding/useOnboarded'
 import usePluralCommand from './usePluralCommand'
+import { retrieveConsole } from './persistance'
 
 const sidebarWidth = 512
 const steps = [
@@ -47,7 +48,18 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
   const { command, type: commandType } = usePluralCommand() // Could be put inside Step2 but stays here for eager loading
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [stepIndex, setStepIndex] = useState(0)
-  const { title, Component } = steps[stepIndex]
+  const workingSteps = useMemo(() => {
+    const workingSteps = [...steps]
+    const shouldInstallConsole = retrieveConsole()
+
+    if (!shouldInstallConsole) workingSteps.shift()
+
+    return workingSteps
+  }, [])
+
+  console.log('workingSteps', workingSteps)
+
+  const { title, Component } = workingSteps[stepIndex]
 
   function markDemoAsComplete() {
     mutation()
@@ -58,9 +70,9 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
   }
 
   function handleNext() {
-    setStepIndex(x => Math.min(steps.length - 1, x + 1))
+    setStepIndex(x => Math.min(workingSteps.length - 1, x + 1))
 
-    if (stepIndex === steps.length - 1) {
+    if (stepIndex === workingSteps.length - 1) {
       setIsModalOpen(true)
       markDemoAsComplete()
     }
@@ -93,7 +105,7 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
             body2
             color="text-xlight"
           >
-            Step {stepIndex + 1} of {steps.length}
+            Step {stepIndex + 1} of {workingSteps.length}
           </P>
         </Flex>
         <Div
@@ -131,7 +143,7 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
             primary
             onClick={handleNext}
           >
-            {stepIndex === steps.length - 1 ? 'Complete demo' : 'Next'}
+            {stepIndex === workingSteps.length - 1 ? 'Complete demo' : 'Next'}
           </Button>
         </Flex>
       </>

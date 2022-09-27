@@ -39,6 +39,8 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
   const [stepIndex, setStepIndex] = useState(0)
   const { title, Component } = steps[stepIndex]
 
+  console.log(shell)
+
   function markDemoAsComplete() {
     mutation()
   }
@@ -90,7 +92,7 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
           flexGrow={1}
           overflowY="auto"
         >
-          <Component />
+          <Component shell={shell} />
         </Div>
         <Flex
           align="center"
@@ -224,7 +226,7 @@ const extendedTheme = {
   },
 }
 
-function Step1() {
+function Step1({ shell }) {
   return (
     <>
       <Div
@@ -252,7 +254,7 @@ function Step1() {
           To begin, run this one-line command:
         </P>
         <CodeLine marginTop="medium">
-          plural bundle install console console-gcp
+          plural bundle install console console-{shell?.provider?.toLowerCase() || 'gcp'}
         </CodeLine>
         <P
           body1

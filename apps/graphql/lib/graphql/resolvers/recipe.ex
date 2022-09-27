@@ -20,6 +20,7 @@ defmodule GraphQl.Resolvers.Recipe do
 
   def list_stacks(args, %{context: %{current_user: user}}) do
     Stack.ordered()
+    |> Stack.permanent()
     |> stack_filters(args, user)
     |> paginate(args)
   end

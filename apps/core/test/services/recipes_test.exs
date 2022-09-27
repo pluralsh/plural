@@ -309,6 +309,7 @@ defmodule Core.Services.RecipesTest do
       assert is_binary(stack.name)
       assert stack.creator_id == user.id
       assert stack.expires_at
+      refute stack.featured
 
       %{collections: [collection]} = Core.Repo.preload(stack, [collections: :bundles])
 

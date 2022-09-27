@@ -5,7 +5,7 @@ defmodule Core.Schema.Stack do
   schema "stacks" do
     field :name,         :string
     field :description,  :string
-    field :featured,     :boolean, default: :false
+    field :featured,     :boolean, default: false
     field :display_name, :string
     field :bundles,      :map, virtual: true
     field :expires_at,   :utc_datetime_usec
@@ -18,6 +18,8 @@ defmodule Core.Schema.Stack do
 
     timestamps()
   end
+
+  def permanent(query \\ __MODULE__), do: from(s in query, where: is_nil(s.expires_at))
 
   def featured(query \\ __MODULE__), do: from(s in query, where: s.featured)
 

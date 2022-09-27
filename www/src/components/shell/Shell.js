@@ -22,7 +22,7 @@ import TerminalThemeSelector from './TerminalThemeSelector'
 import { normalizedThemes } from './themes'
 import TerminalSidebar from './TerminalSidebar'
 import TerminalInformation from './TerminalInformation'
-import { useOnboarded } from './onboarding/useOnboarded'
+import useOnboarded from './onboarding/useOnboarded'
 
 // eslint-disable-next-line
 const { Buffer } = require('buffer/')
@@ -44,15 +44,30 @@ function Shell({ shell }) {
     const term = xterm.current.terminal
     const chan = socket.channel('shells:me')
 
-    fitAddon.fit()
+    try {
+      fitAddon.fit()
+    }
+    catch (error) {
+      console.error(error)
+    }
+
     term.write(`Booting into your ${shell.provider} shell...\r\n\r\n`)
     chan.onError(console.log)
     chan.on('stdo', ({ message }) => term.write(decodeBase64(message)))
     chan.join()
 
-    const { cols, rows } = fitAddon.proposeDimensions() || { cols: 80, rows: 24 }
+    let cols = 80
+    let rows = 24
 
-    setDimensions({ cols, rows })
+    try {
+      ({ cols, rows } = fitAddon.proposeDimensions())
+
+      setDimensions({ cols, rows })
+    }
+    catch (error) {
+      console.error(error)
+    }
+
     setChannel(chan)
 
     const ref = socket.onOpen(() => setTimeout(() => chan.push('resize', { width: cols, height: rows }), 1000))
@@ -88,32 +103,27 @@ function Shell({ shell }) {
   const handleData = useCallback(text => channel.push('command', { cmd: text }), [channel])
 
   return (
-    <Flex
-      direction="column"
-      flexGrow={1}
-      align="center"
-      paddingHorizontal="large"
-      paddingVertical="medium"
-    >
+    <>
       <Flex
         align="center"
-        paddingBottom="small"
+        paddingVertical="small"
+        marginHorizontal="medium"
         gap="medium"
         borderBottom="1px solid border"
-        width="100%"
-        maxWidth={1640}
       >
         {!fresh && (
           <Button
             small
             tertiary
-            startIcon={<ScrollIcon />}
+            startIcon={(
+              <ScrollIcon />
+            )}
             onClick={() => setShowCheatsheet(!showCheatsheet)}
-            backgroundColor={showCheatsheet ? 'fill-zero-selected' : 'fill-zero'}
           >
             CLI Cheatsheet
           </Button>
         )}
+        {/* <Div><Span fontWeight="bold">{shell.cluster}</Span></Div> */}
         <Div flexGrow={1} />
         <TerminalInformation shell={shell} />
         <Button
@@ -128,10 +138,11 @@ function Shell({ shell }) {
       </Flex>
       <Flex
         marginTop="medium"
+        flexGrow={1}
+        paddingBottom="medium"
+        paddingHorizontal="medium"
         height="100%"
         maxHeight="100%"
-        width="100%"
-        maxWidth={1640}
         overflow="hidden"
       >
         <TerminalSidebar
@@ -164,7 +175,7 @@ function Shell({ shell }) {
           />
         </Flex>
       </Flex>
-    </Flex>
+    </>
   )
 }
 

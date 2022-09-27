@@ -1,5 +1,8 @@
 import {
-  useCallback, useContext, useEffect, useState,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
 } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useQuery } from '@apollo/client'
@@ -24,10 +27,13 @@ import Fuse from 'fuse.js'
 
 import SelectedApplicationsContext from 'contexts/SelectedApplicationsContext'
 
+import { persistConsole, persistProvider, persistStack } from 'components/shell/persistance'
+
 import { APPLICATIONS_QUERY, STACK_QUERY } from '../../queries'
 import { MAX_SELECTED_APPLICATIONS } from '../../constants'
 
 import OnboardingCard from '../OnboardingCard'
+import useOnboarded from '../useOnboarded'
 
 const searchOptions = {
   keys: ['name'],
@@ -54,6 +60,7 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
     },
     skip: !isStack,
   })
+  const { mutation: onboardMutation } = useOnboarded()
   const navigate = useNavigate()
 
   const getApplications = useCallback(() => {
@@ -70,12 +77,26 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
   }, [applicationsData, isStack, stackData, stackProvider])
 
   useEffect(() => {
-    if (isStack && stackData && applicationsData) {
-      const applications = getApplications()
+    if (isStack && stackData) {
+      persistStack(stackData.stack)
+    }
+  }, [isStack, stackData])
 
-      setSelectedApplications(applications)
+  useEffect(() => {
+    if (isStack && stackData && applicationsData) {
+      setSelectedApplications(getApplications())
     }
   }, [isStack, stackData, applicationsData, getApplications, setSelectedApplications])
+
+  useEffect(() => {
+    if (stackProvider) {
+      persistProvider(stackProvider)
+    }
+  }, [stackProvider])
+
+  useEffect(() => {
+    persistConsole(isStack ? shouldInstallConsole : false)
+  }, [isStack, shouldInstallConsole])
 
   function toggleApplication(application: any) {
     setSelectedApplications(applications => (
@@ -86,7 +107,7 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
   }
 
   function handleSkipDemo() {
-
+    onboardMutation().then(() => navigate('/marketplace'))
   }
 
   function handleSkipStack() {
@@ -215,9 +236,7 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
   }
 
   return (
-    <OnboardingCard
-      overflow="hidden"
-    >
+    <OnboardingCard flexGrow={1}>
       {isStack ? renderStackHeader() : renderApplicationsHeader()}
       {!!filteredApplications.length && (
         <Div
@@ -231,6 +250,7 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
           gridRowGap="16px"
           paddingRight="xsmall"
           paddingBottom="medium"
+          minHeight={42 + 16}
         >
           {filteredApplications.map(application => (
             <RepositoryChip

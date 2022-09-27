@@ -1,6 +1,7 @@
 import { gql } from '@apollo/client'
 
 import { CloudShellFragment, DemoProjectFragment } from '../../models/shell'
+import { RepoFragment, StackFragment } from '../../models/repo'
 import { PageInfo } from '../../models/misc'
 
 export const AUTHENTICATION_URLS_QUERY = gql`
@@ -71,42 +72,33 @@ export const APPLICATIONS_QUERY = gql`
       }
       edges {
         node {
-          id
-          name
-          icon
-          darkIcon
-          private
+          ...RepoFragment
+          recipes {
+            id
+            name
+            provider
+          }
         }
       }
     }
   }
+  ${RepoFragment}
   ${PageInfo}
 `
 
 export const STACK_QUERY = gql`
   query StackQuery($name: String!, $provider: Provider!) {
     stack(name: $name, provider: $provider) {
-      id
-      name
-      description
-      # featured
-      # creator {
-        # id
-        # name
-      # }
-      collections {
-        provider
-        bundles {
-          recipe {
-            repository {
-              id
-              name
-              icon
-              darkIcon
-            }
-          }
-        }
-      }
+      ...StackFragment
     }
   }
+  ${StackFragment}
+`
+
+export const CREATE_QUICK_STACK_MUTATION = gql`
+ mutation QuickStacks($applicationIds: [ID], $provider: Provider!) {
+  quickStack(repositoryIds: $applicationIds, provider: $provider) {
+    name
+  }
+}
 `

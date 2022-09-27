@@ -122,9 +122,19 @@ function RecipeMenuItem({ recipe }: { recipe: Recipe }) {
   )
 }
 
+type InstallDropDownButtonProps = {
+  recipes: Recipe[],
+  name: string,
+  type?: string,
+  [x: string]: any
+}
+
 function InstallDropdownButton({
-  recipes, name, type = 'bundle', ...props
-}: { recipes: Recipe[], name: string, type?: string, [x: string]: any; }) {
+  recipes,
+  name,
+  type = 'bundle',
+  ...props
+} : InstallDropDownButtonProps) {
   const [recipe, setRecipe] = useState<Recipe>()
   const [tab, setTab] = useState(0)
 

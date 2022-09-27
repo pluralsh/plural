@@ -11,7 +11,9 @@ export function persistApplications(applications: any[]) {
 
 export function retrieveApplications() {
   try {
-    return JSON.parse(localStorage.getItem(SELECTED_APPLICATIONS_LOCAL_STORAGE_KEY) as string) as any[]
+    const res = JSON.parse(localStorage.getItem(SELECTED_APPLICATIONS_LOCAL_STORAGE_KEY) as string) as any[]
+
+    return res || []
   }
   catch (error) {
     return []

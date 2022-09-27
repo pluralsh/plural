@@ -25,8 +25,8 @@
   "dependencies": {
     "@absinthe/socket": "0.2.1",
     "@apollo/client": "3.6.9",
-    "@emotion/react": "11.10.0",
-    "@emotion/styled": "11.10.0",
+    "@emotion/react": "11.10.4",
+    "@emotion/styled": "11.10.4",
     "@gitbeaker/browser": "35.7.0",
     "@growthbook/growthbook": "0.18.1",
     "@jest/types": "28.1.3",

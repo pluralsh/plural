@@ -256,7 +256,7 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
             <RepositoryChip
               key={application.id}
               imageUrl={application.darkIcon || application.icon}
-              label={capitalize(application.name)}
+              label={application.name}
               checked={!!selectedApplications.find(a => a.id === application.id)}
               onClick={() => (isStack ? null : toggleApplication(application))}
               cursor={selectedApplications.length >= MAX_SELECTED_APPLICATIONS && !selectedApplications.find(a => a.id === application.id) ? 'not-allowed' : 'pointer'}

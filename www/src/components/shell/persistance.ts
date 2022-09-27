@@ -1,4 +1,5 @@
 import {
+  CONSOLE_LOCAL_STORAGE_KEY,
   PROVIDER_LOCAL_STORAGE_KEY,
   SELECTED_APPLICATIONS_LOCAL_STORAGE_KEY,
   STACK_NAME_LOCAL_STORAGE_KEY,
@@ -36,4 +37,12 @@ export function retrieveStack() {
   catch (error) {
     return null
   }
+}
+
+export function persistConsole(shouldUseConsole: boolean) {
+  localStorage.setItem(CONSOLE_LOCAL_STORAGE_KEY, shouldUseConsole.toString())
+}
+
+export function retrieveConsole() {
+  return localStorage.getItem(PROVIDER_LOCAL_STORAGE_KEY) === 'true'
 }

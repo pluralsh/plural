@@ -27,10 +27,10 @@ import Fuse from 'fuse.js'
 
 import SelectedApplicationsContext from 'contexts/SelectedApplicationsContext'
 
-import { persistStack } from 'components/shell/persistance'
+import { persistConsole, persistProvider, persistStack } from 'components/shell/persistance'
 
 import { APPLICATIONS_QUERY, STACK_QUERY } from '../../queries'
-import { MAX_SELECTED_APPLICATIONS, PROVIDER_LOCAL_STORAGE_KEY } from '../../constants'
+import { MAX_SELECTED_APPLICATIONS } from '../../constants'
 
 import OnboardingCard from '../OnboardingCard'
 
@@ -87,10 +87,16 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
   }, [isStack, stackData, applicationsData, getApplications, setSelectedApplications])
 
   useEffect(() => {
-    if (!stackProvider) return
-
-    localStorage.setItem(PROVIDER_LOCAL_STORAGE_KEY, stackProvider)
+    if (stackProvider) {
+      persistProvider(stackProvider)
+    }
   }, [stackProvider])
+
+  useEffect(() => {
+    if (isStack) {
+      persistConsole(shouldInstallConsole)
+    }
+  }, [isStack, shouldInstallConsole])
 
   function toggleApplication(application: any) {
     setSelectedApplications(applications => (

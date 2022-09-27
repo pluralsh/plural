@@ -93,9 +93,7 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
   }, [stackProvider])
 
   useEffect(() => {
-    if (isStack) {
-      persistConsole(shouldInstallConsole)
-    }
+    persistConsole(isStack ? shouldInstallConsole : false)
   }, [isStack, shouldInstallConsole])
 
   function toggleApplication(application: any) {

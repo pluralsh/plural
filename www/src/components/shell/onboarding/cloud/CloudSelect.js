@@ -2,6 +2,8 @@ import { useContext, useState } from 'react'
 import { Flex, Img, P } from 'honorable'
 import { Button, CloudIcon } from 'pluralsh-design-system'
 
+import { persistProvider } from 'components/shell/persistance'
+
 import CreateShellContext from '../../../../contexts/CreateShellContext'
 
 import { SECTION_CLI_INSTALLATION, SECTION_CLOUD_BUILD, SECTION_CLOUD_CREDENTIALS } from '../../constants'
@@ -15,6 +17,11 @@ function CloudSelect() {
   const { previous, setSection, setDemoId } = useContext(CreateShellContext)
   const [nextPath, setNextPath] = useState('')
   const [byocShell, setByocShell] = useState('cloud')
+
+  function handleDemoClick() {
+    setNextPath('demo')
+    persistProvider('GCP')
+  }
 
   return (
     <>
@@ -36,7 +43,7 @@ function CloudSelect() {
             )}
             header="GCP Cloud Demo"
             description="A six-hour instance of a GCP cloud to help get you started."
-            onClick={() => setNextPath('demo')}
+            onClick={handleDemoClick}
           />
           <CloudOption
             selected={nextPath === 'byoc'}

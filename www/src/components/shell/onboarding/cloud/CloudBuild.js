@@ -7,7 +7,7 @@ import CreateShellContext from '../../../../contexts/CreateShellContext'
 
 import OnboardingTips from '../OnboardingTips'
 
-import { CREATE_DEMO_PROJECT_MUTATION, POLL_DEMO_PROJECT_QUERY } from '../../query'
+import { CREATE_DEMO_PROJECT_MUTATION, POLL_DEMO_PROJECT_QUERY } from '../../queries'
 
 import OnboardingNavSection from '../OnboardingNavSection'
 import OnboardingCard from '../OnboardingCard'

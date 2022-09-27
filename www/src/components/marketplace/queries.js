@@ -1,6 +1,8 @@
 import { gql } from '@apollo/client'
 
-import { CategoryFragment, InstallationFragment, RepoFragment } from '../../models/repo'
+import {
+  CategoryFragment, InstallationFragment, RepoFragment, StackFragment,
+} from '../../models/repo'
 import { PageInfo } from '../../models/misc'
 
 export const MARKETPLACE_QUERY = gql`
@@ -25,6 +27,23 @@ export const MARKETPLACE_QUERY = gql`
   ${PageInfo}
   ${RepoFragment}
   ${InstallationFragment}
+`
+
+export const STACKS_QUERY = gql`
+  query Stacks($featured: Boolean) {
+    stacks(featured: $featured, first: 10) {
+      pageInfo {
+        ...PageInfo
+      }
+      edges {
+        node {
+          ...StackFragment
+        }
+      }
+    }
+  }
+  ${PageInfo}
+  ${StackFragment}
 `
 
 export const CATEGORIES_QUERY = gql`

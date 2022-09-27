@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import {
-  A, Br, Button, Div, Flex, H1, Hr, Span, useMediaQuery,
+  A, Br, Button, Div, Flex, H1, Hr, Span,
 } from 'honorable'
 import {
   ArrowTopRightIcon,
@@ -10,7 +10,6 @@ import {
   FiltersIcon,
   Input,
   MagnifyingGlassIcon,
-  RepositoryCard,
   Tab,
   TabList,
   TabPanel,
@@ -19,6 +18,9 @@ import Fuse from 'fuse.js'
 import styled from 'styled-components'
 import isEmpty from 'lodash/isEmpty'
 import capitalize from 'lodash/capitalize'
+import orderBy from 'lodash/orderBy'
+
+import { growthbook } from 'helpers/growthbook'
 
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 
@@ -35,6 +37,8 @@ import PublisherSideCar from '../publisher/PublisherSideCar'
 import { MARKETPLACE_QUERY } from './queries'
 
 import MarketplaceSidebar from './MarketplaceSidebar'
+import MarketplaceStacks from './MarketplaceStacks'
+import { RepoCardList } from './RepoCardList'
 
 const searchOptions = {
   keys: ['name', 'description', 'tags.tag'],
@@ -52,73 +56,6 @@ const chipProps = {
 
 const sidebarWidth = 256 - 32
 
-function RepoCardList({
-  repositories, repoProps, maxWidth, stretchLastRow = false, size = 'small', ...props
-}) {
-  const flexBasis = '400px'
-
-  // Workaround that will render empty columns to align the last row.
-  // It is better to use bigger columns number to prevent issues on all kinds of viewports.
-  function fillEmptyColumns(columns) {
-    return (
-      <>
-        {[...Array(columns)].map((x, i) => (
-          <Flex
-            key={i}
-            flexGrow={1}
-            flexBasis={flexBasis}
-          />
-        ))}
-      </>
-    )
-  }
-
-  return (
-    <Flex
-      mx={-1}
-      align="stretch"
-      wrap="wrap"
-      {...props}
-    >
-      {
-        repositories.map(repository => (
-          <Flex
-            key={`${repository.id}flex`}
-            px={0.75}
-            marginBottom="large"
-            width="auto"
-            flexBasis={flexBasis}
-            flexGrow={1}
-            flexShrink={1}
-            minWidth="250px"
-            maxWidth={maxWidth || '800px'}
-          >
-            <RepositoryCard
-              key={repository.id}
-              as={Link}
-              to={`/repository/${repository.id}`}
-              color="text"
-              textDecoration="none"
-              width="100%"
-              title={repository.name}
-              imageUrl={repository.darkIcon || repository.icon}
-              publisher={repository.publisher?.name}
-              description={repository.description}
-              tags={repository.tags.map(({ tag }) => tag)}
-              priv={repository.private}
-              installed={!!repository.installation}
-              verified={repository.verified}
-              size={size}
-              {...repoProps}
-            />
-          </Flex>
-        ))
-      }
-      {!stretchLastRow && fillEmptyColumns(10)}
-    </Flex>
-  )
-}
-
 const StyledTabPanel = styled(TabPanel)(() => ({
   display: 'flex',
   flexDirection: 'column',
@@ -135,7 +72,6 @@ function MarketplaceRepositories({ installed, publisher }) {
   const [search, setSearch] = useState('')
   const [areFiltersOpen, setAreFiltersOpen] = useState(true)
   const tabStateRef = useRef()
-  const isDesktopLarge = useMediaQuery('up', 'desktopLarge')
 
   const [repositories, loadingRepositories, hasMoreRepositories, fetchMoreRepositories] = usePaginatedQuery(MARKETPLACE_QUERY,
     {
@@ -145,7 +81,7 @@ function MarketplaceRepositories({ installed, publisher }) {
     },
     data => data.repositories)
 
-  const shouldRenderFeatured = !categories.length && !tags.length && !installed && !search
+  const shouldRenderStacks = growthbook.isOn('stacks') && !categories.length && !tags.length && !installed && !search
 
   useEffect(() => {
     const { current } = scrollRef
@@ -178,8 +114,7 @@ function MarketplaceRepositories({ installed, publisher }) {
     )
   }
 
-  const sortedRepositories = repositories.slice()
-    .sort((a, b) => a.name.localeCompare(b.name))
+  const sortedRepositories = orderBy(repositories.slice(), ['trending', r => r.name.toLowerCase()], ['desc', 'asc'])
     .filter(repository => (categories.length ? categories.includes(repository.category.toLowerCase()) : true))
     .filter(repository => {
       if (!tags.length) return true
@@ -192,7 +127,9 @@ function MarketplaceRepositories({ installed, publisher }) {
 
   const fuse = new Fuse(sortedRepositories, searchOptions)
 
-  const resultRepositories = search ? fuse.search(search).map(({ item }) => item) : sortedRepositories
+  const resultRepositories = search
+    ? orderBy(fuse.search(search).map(({ item }) => item), ['trending', r => r.name.toLowerCase()], ['desc', 'asc'])
+    : sortedRepositories
 
   function handleClearToken(key, value) {
     const existing = searchParams.getAll(key)
@@ -210,29 +147,6 @@ function MarketplaceRepositories({ installed, publisher }) {
   function handleClearFilters() {
     setSearch('')
     setSearchParams({})
-  }
-
-  function renderFeatured() {
-    if (publisher) return null
-
-    const featuredA = sortedRepositories.shift()
-    const featuredB = sortedRepositories.shift()
-
-    return (
-      <>
-        <H1 subtitle1>
-          Featured Repositories
-        </H1>
-        <RepoCardList
-          repositories={[featuredA, featuredB]}
-          repoProps={{ featured: true }}
-          marginTop="medium"
-          maxWidth="100%"
-          stretchLastRow
-          size={isDesktopLarge ? 'large' : 'medium'}
-        />
-      </>
-    )
   }
 
   function renderTitle() {
@@ -413,11 +327,11 @@ function MarketplaceRepositories({ installed, publisher }) {
             position="relative"
             ref={scrollRef}
           >
-            {shouldRenderFeatured && renderFeatured()}
+            {shouldRenderStacks && <MarketplaceStacks />}
             {resultRepositories?.length > 0 && !publisher && (
               <H1
                 subtitle1
-                marginTop={shouldRenderFeatured ? 'xlarge' : 0}
+                marginTop={shouldRenderStacks ? 'xlarge' : 0}
               >
                 {renderTitle()}
               </H1>

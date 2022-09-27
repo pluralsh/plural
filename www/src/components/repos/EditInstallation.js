@@ -94,9 +94,7 @@ export function EditInstallation({ installation, repository, onUpdate }) {
       {notif && (
         <Pill
           background="status-ok"
-          onClose={() => {
-            console.log('wtf'); setNotif(false)
-          }}
+          onClose={() => setNotif(false)}
         >
           <Box
             direction="row"

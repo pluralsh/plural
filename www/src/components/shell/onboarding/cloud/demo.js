@@ -3,7 +3,7 @@ import { useMutation, useQuery } from '@apollo/client'
 
 import { Box, Text } from 'grommet'
 
-import { CREATE_DEMO_PROJECT_MUTATION, POLL_DEMO_PROJECT_QUERY } from '../../query'
+import { CREATE_DEMO_PROJECT_MUTATION, POLL_DEMO_PROJECT_QUERY } from '../../queries'
 import { LoopingLogo } from '../../../utils/AnimatedLogo'
 import { Status } from '../../ShellStatus'
 

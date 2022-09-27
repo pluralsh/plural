@@ -1,13 +1,23 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import {
-  A, Accordion, Button, Div, ExtendTheme, Flex, Li, P, Ul,
+  A,
+  Accordion,
+  Button,
+  Div,
+  ExtendTheme,
+  Flex,
+  Li,
+  P,
+  Ul,
 } from 'honorable'
 import { Fireworks } from 'fireworks-js/dist/react'
 import { Chip, InfoIcon, Modal } from 'pluralsh-design-system'
 
 import CodeLine from '../utils/CodeLine'
 
-import { useOnboarded } from './onboarding/useOnboarded'
+import useOnboarded from './onboarding/useOnboarded'
+import usePluralCommand from './usePluralCommand'
+import { retrieveApplications, retrieveConsole } from './persistance'
 
 const sidebarWidth = 512
 const steps = [
@@ -16,7 +26,7 @@ const steps = [
     Component: Step1,
   },
   {
-    title: 'Install Airbyte (optional)',
+    title: type => (type === 'stack' ? 'Install your stack' : 'Install your application'),
     Component: Step2,
   },
   {
@@ -35,9 +45,25 @@ const steps = [
 
 function TerminalSidebar({ shell, showCheatsheet, ...props }) {
   const { mutation, fresh } = useOnboarded()
+  const { command, type: commandType } = usePluralCommand() // Could be put inside Step2 but stays here for eager loading
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [stepIndex, setStepIndex] = useState(0)
-  const { title, Component } = steps[stepIndex]
+  const { workingSteps, skipConsoleInstall } = useMemo(() => {
+    const workingSteps = [...steps]
+    const shouldInstallConsole = retrieveConsole()
+    const applications = retrieveApplications()
+
+    if (applications.length === 1 && applications[0].name !== 'console') return { workingSteps, skipConsoleInstall: false }
+    if (shouldInstallConsole) return { workingSteps, skipConsoleInstall: false }
+
+    workingSteps.shift()
+
+    return { workingSteps, skipConsoleInstall: true }
+  }, [])
+
+  console.log('workingSteps', workingSteps)
+
+  const { title, Component } = workingSteps[stepIndex]
 
   console.log(shell)
 
@@ -50,9 +76,9 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
   }
 
   function handleNext() {
-    setStepIndex(x => Math.min(steps.length - 1, x + 1))
+    setStepIndex(x => Math.min(workingSteps.length - 1, x + 1))
 
-    if (stepIndex === steps.length - 1) {
+    if (stepIndex === workingSteps.length - 1) {
       setIsModalOpen(true)
       markDemoAsComplete()
     }
@@ -79,20 +105,25 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
           borderBottom="1px solid border"
         >
           <P subtitle1>
-            {title}
+            {typeof title === 'function' ? title(commandType) : title}
           </P>
           <P
             body2
             color="text-xlight"
           >
-            Step {stepIndex + 1} of {steps.length}
+            Step {stepIndex + 1} of {workingSteps.length}
           </P>
         </Flex>
         <Div
           flexGrow={1}
           overflowY="auto"
         >
-          <Component shell={shell} />
+          <Component
+            command={command}
+            commandType={commandType}
+            skipConsoleInstall={skipConsoleInstall}
+            shell={shell}
+          />
         </Div>
         <Flex
           align="center"
@@ -120,7 +151,7 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
             primary
             onClick={handleNext}
           >
-            {stepIndex === steps.length - 1 ? 'Complete demo' : 'Next'}
+            {stepIndex === workingSteps.length - 1 ? 'Complete demo' : 'Next'}
           </Button>
         </Flex>
       </>
@@ -349,7 +380,11 @@ function Step1({ shell }) {
   DEMO STEP 2
 --- */
 
-function Step2() {
+function Step2({
+  command,
+  commandType,
+  skipConsoleInstall,
+}) {
   return (
     <Div
       paddingVertical="medium"
@@ -359,23 +394,31 @@ function Step2() {
         overline
         color="text-xlight"
       >
-        installation
+        Installation
       </P>
       <P
         body1
         marginTop="medium"
       >
-        Now that you've installed the Plural Console, it may be a good idea to install another app.
-        For the sake of this demo we recommend installing an instance of Airbyte.
+        {skipConsoleInstall ? (
+          <>
+            It's time to install the {commandType === 'stack' ? 'stack' : 'application'} you selected earlier in the demo.
+          </>
+        ) : (
+          <>
+            Now that you've installed the Plural Console,
+            it's time to install the {commandType === 'stack' ? 'stack' : 'application'} you selected earlier in the demo.
+          </>
+        )}
       </P>
       <P
         body1
         marginTop="medium"
       >
-        To install Airbyte, simply run:
+        Copy and paste this command into your cloud shell to begin:
       </P>
       <CodeLine marginTop="medium">
-        plural bundle install airbyte airbyte-gcp
+        {command}
       </CodeLine>
     </Div>
   )

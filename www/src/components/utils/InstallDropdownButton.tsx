@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 import {
   A, Button, Div, DropdownButton, ExtendTheme, Flex, H2, Img, MenuItem, P,
 } from 'honorable'
@@ -8,9 +8,35 @@ import {
 import { Link } from 'react-router-dom'
 import capitalize from 'lodash/capitalize'
 
-import RepositoryContext from '../../contexts/RepositoryContext'
+export interface Recipe {
+  name: string
+  description: string
+  provider: string
+}
 
-import { providerToDisplayName, providerToIcon, providerToIconHeight } from './constants'
+export const providerToDisplayName = {
+  AWS: 'Amazon Web Services',
+  AZURE: 'Azure',
+  EQUINIX: 'Equinix Metal',
+  GCP: 'Google Cloud Platform',
+  KIND: 'Kind',
+}
+
+export const providerToIcon = {
+  AWS: `${process.env.PUBLIC_URL}/aws-icon.png`,
+  AZURE: `${process.env.PUBLIC_URL}/azure.png`,
+  EQUINIX: `${process.env.PUBLIC_URL}/equinix-metal.png`,
+  GCP: `${process.env.PUBLIC_URL}/gcp.png`,
+  KIND: `${process.env.PUBLIC_URL}/kind.png`,
+}
+
+export const providerToIconHeight = {
+  AWS: 11,
+  AZURE: 14,
+  EQUINIX: 16,
+  GCP: 14,
+  KIND: 14,
+}
 
 const visuallyHideMaintainWidth = {
   opacity: '0',
@@ -52,7 +78,7 @@ function extendedTheme({ minMenuWidth = 400 }) {
   }
 }
 
-function RecipeMenuItem({ recipe }) {
+function RecipeMenuItem({ recipe }: { recipe: Recipe }) {
   return (
     <MenuItem
       value={recipe}
@@ -96,12 +122,25 @@ function RecipeMenuItem({ recipe }) {
   )
 }
 
-function InstallDropdownButton({ recipes, ...props }) {
-  const { name } = useContext(RepositoryContext)
-  const [recipe, setRecipe] = useState(null)
+type InstallDropDownButtonProps = {
+  recipes: Recipe[],
+  name: string,
+  type?: string,
+  [x: string]: any
+}
+
+function InstallDropdownButton({
+  recipes,
+  name,
+  type = 'bundle',
+  ...props
+} : InstallDropDownButtonProps) {
+  const [recipe, setRecipe] = useState<Recipe>()
   const [tab, setTab] = useState(0)
 
   function renderTabs() {
+    if (!recipe) return
+
     return (
       <Div>
         <Div
@@ -133,7 +172,8 @@ function InstallDropdownButton({ recipes, ...props }) {
               maxWidth="100%"
               flexGrow={1}
             >
-              Choose either the Plural CLI or cloud shell to install. Learn more about CLI installation in our{' '}
+              Choose either the Plural CLI or cloud shell to install. Learn more about CLI
+              installation in our{' '}
               <A
                 inline
                 href="https://docs.plural.sh/getting-started/getting-started#install-plural-cli"
@@ -174,34 +214,44 @@ function InstallDropdownButton({ recipes, ...props }) {
             >
               In your installation repository, run:
             </P>
-            <Codeline language="bash">{`plural bundle install ${name} ${recipe.name}`}</Codeline>
+            <Codeline
+              language="bash"
+            >{`plural ${type} install ${name} ${recipe.name || ''}`}
+            </Codeline>
           </Div>
           <Div {...(tab !== 1 ? visuallyHideMaintainWidth : {})}>
-            <P
-              body2
-              color="text"
-              marginBottom="xsmall"
-            >
-              Copy this command:
-            </P>
-            <Codeline language="bash">{`plural bundle install ${name} ${recipe.name}`}</Codeline>
-            <P
-              body2
-              color="text"
-              marginTop="large"
-              marginBottom="xsmall"
-            >
-              Open in cloud shell and paste command:
-            </P>
+            {type !== 'stack' && (
+              <Div>
+                <P
+                  body2
+                  color="text"
+                  marginBottom="xsmall"
+                >
+                  Copy this command:
+                </P>
+                <Codeline
+                  language="bash"
+                >{`plural ${type} install ${name} ${recipe.name || ''}`}
+                </Codeline>
+                <P
+                  body2
+                  color="text"
+                  marginTop="large"
+                  marginBottom="xsmall"
+                >
+                  Open in cloud shell and paste command:
+                </P>
+              </Div>
+            )}
             <Link
-              to="/shell"
+              to={type === 'stack' ? `/shell?stackName=${name}&stackProvider=${recipe.provider}` : '/shell'}
               style={{ textDecoration: 'none' }}
             >
               <Button
                 width="100%"
                 endIcon={<ArrowTopRightIcon />}
               >
-                Open Cloud Shell
+                {type === 'stack' ? 'Install on Cloud Shell' : 'Open Cloud Shell'}
               </Button>
             </Link>
           </Div>
@@ -217,7 +267,7 @@ function InstallDropdownButton({ recipes, ...props }) {
           fade
           label="Install"
           onChange={event => {
-            setRecipe(event.target.value)
+            setRecipe((event.target as any).value)
             setTab(0)
           }}
           endIcon={(
@@ -225,9 +275,9 @@ function InstallDropdownButton({ recipes, ...props }) {
           )}
           {...props}
         >
-          {recipes.map(recipe => (
+          {recipes.map((recipe, i) => (
             <RecipeMenuItem
-              key={recipe.id}
+              key={i}
               recipe={recipe}
             />
           ))}
@@ -238,11 +288,11 @@ function InstallDropdownButton({ recipes, ...props }) {
           fade
           defaultOpen
           onOpen={open => {
-            if (!open) setRecipe(null)
+            if (!open) setRecipe(undefined)
           }}
           label="Install"
           onChange={() => {
-            setRecipe(null)
+            setRecipe(undefined)
             setTab(0)
           }}
           endIcon={(

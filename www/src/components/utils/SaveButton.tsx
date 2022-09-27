@@ -32,7 +32,6 @@ export default function SaveButton({
       }, 2000)
 
       return () => {
-        console.log('clear timeout')
         setShowSaved(false)
         clearTimeout(timeout)
       }

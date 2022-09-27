@@ -61,6 +61,8 @@ import PackageDependencies from './repos/common/PackageDependencies'
 import ImagePullMetrics from './repos/common/ImagePullMetrics'
 import ImageVulnerabilities from './repos/common/ImageVulnerabilities'
 import Publisher from './publisher/Publisher'
+import StackApps from './stack/StackApps'
+import Stack from './stack/Stack'
 
 function EditBilling(props) {
   return (
@@ -244,6 +246,16 @@ export function PluralInner() {
               <Route
                 path="edit"
                 element={<RepositoryEdit />}
+              />
+            </Route>
+            {/* --- STACK --- */}
+            <Route
+              path="/stack/:name"
+              element={<Stack />}
+            >
+              <Route
+                index
+                element={<StackApps />}
               />
             </Route>
             {/* --- HELM CHARTS --- */}

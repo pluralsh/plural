@@ -65,6 +65,8 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
 
   const { title, Component } = workingSteps[stepIndex]
 
+  console.log(shell)
+
   function markDemoAsComplete() {
     mutation()
   }
@@ -120,6 +122,7 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
             command={command}
             commandType={commandType}
             skipConsoleInstall={skipConsoleInstall}
+            shell={shell}
           />
         </Div>
         <Flex
@@ -254,7 +257,7 @@ const extendedTheme = {
   },
 }
 
-function Step1() {
+function Step1({ shell }) {
   return (
     <>
       <Div
@@ -282,7 +285,7 @@ function Step1() {
           To begin, run this one-line command:
         </P>
         <CodeLine marginTop="medium">
-          plural bundle install console console-gcp
+          plural bundle install console console-{shell?.provider?.toLowerCase() || 'gcp'}
         </CodeLine>
         <P
           body1

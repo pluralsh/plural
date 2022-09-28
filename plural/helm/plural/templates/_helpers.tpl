@@ -90,6 +90,10 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{ end }}
 {{- end -}}
 
+{{- define "plural.image" -}}
+{{ .Values.global.registry }}/{{ .repository }}:{{ .tag }}
+{{- end -}}
+
 {{- define "plural.migration-name" -}}
 plural-migration-{{ .Release.Revision }}
 {{- end -}}

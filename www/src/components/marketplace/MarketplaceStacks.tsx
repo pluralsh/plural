@@ -14,7 +14,7 @@ const hues = ['blue', 'green', 'yellow', 'red']
 
 export default function MarketplaceStacks() {
   const navigate = useNavigate()
-  const { data } = useQuery(STACKS_QUERY, { featured: true } as any)
+  const { data } = useQuery(STACKS_QUERY, { variables: { featured: true } })
 
   if (isEmpty(data?.stacks?.edges)) return
 

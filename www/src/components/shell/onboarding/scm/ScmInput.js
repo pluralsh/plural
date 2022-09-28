@@ -195,7 +195,7 @@ export function ScmSection() {
         <Button
           secondary
           onClick={() => {
-            navigate('/shell', { state: { hideSplashScreen: true } })
+            navigate('/shell', { state: { hideSplashScreen: true, step: 1 } })
           }}
         >
           Back

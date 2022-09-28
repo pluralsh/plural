@@ -60,7 +60,7 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
     },
     skip: !isStack,
   })
-  const { mutation: onboardMutation } = useOnboarded()
+  const { mutation: onboardMutation, fresh } = useOnboarded()
   const navigate = useNavigate()
 
   const getApplications = useCallback(() => {
@@ -295,12 +295,14 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
         paddingTop="large"
         borderTop="1px solid border"
       >
-        <Button
-          tertiary
-          onClick={handleSkipDemo}
-        >
-          Skip demo
-        </Button>
+        {fresh && (
+          <Button
+            tertiary
+            onClick={handleSkipDemo}
+          >
+            Skip demo
+          </Button>
+        )}
         <Div flexGrow={1} />
         {isStack ? renderStackFooter() : renderApplicationsFooter()}
         <Button

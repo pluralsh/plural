@@ -17,7 +17,12 @@ import CodeLine from '../utils/CodeLine'
 
 import useOnboarded from './onboarding/useOnboarded'
 import usePluralCommand from './usePluralCommand'
-import { retrieveApplications, retrieveConsole } from './persistance'
+import {
+  persistShouldUseOnboardingTerminalSidebar,
+  retrieveApplications,
+  retrieveConsole,
+  retrieveShouldUseOnboardingTerminalSidebar,
+} from './persistance'
 
 const sidebarWidth = 512
 const steps = [
@@ -44,12 +49,9 @@ const steps = [
 --- */
 
 function TerminalSidebar({ shell, showCheatsheet, ...props }) {
-  const {
-    mutation,
-    fresh,
-    shouldUseTerminalSidebarOnboarding,
-    setShouldUseTerminalSidebarOnboarding,
-  } = useOnboarded()
+  const [, refresh] = useState(true) // See below
+  const { mutation, fresh } = useOnboarded()
+  const shouldUseTerminalSidebar = retrieveShouldUseOnboardingTerminalSidebar()
   const { command, type: commandType } = usePluralCommand() // Could be put inside Step2 but stays here for eager loading
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [stepIndex, setStepIndex] = useState(0)
@@ -66,13 +68,15 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
     return { workingSteps, skipConsoleInstall: true }
   }, [])
 
+  console.log('shouldUseTerminalSidebar', shouldUseTerminalSidebar)
   const { title, Component } = workingSteps[stepIndex]
 
   console.log(shell)
 
   function markDemoAsComplete() {
     mutation()
-    setShouldUseTerminalSidebarOnboarding(false)
+    persistShouldUseOnboardingTerminalSidebar(false)
+    refresh(x => !x) // Hack to refresh shouldUseTerminalSidebar
   }
 
   function handlePrevious() {
@@ -181,7 +185,7 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
           borderRadius="large"
           direction="column"
         >
-          {fresh || shouldUseTerminalSidebarOnboarding ? renderDemo() : showCheatsheet ? renderCheatsheet() : null}
+          {fresh || shouldUseTerminalSidebar ? renderDemo() : showCheatsheet ? renderCheatsheet() : null}
         </Flex>
       </Div>
       {isModalOpen && (

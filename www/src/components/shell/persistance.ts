@@ -2,6 +2,7 @@ import {
   CONSOLE_LOCAL_STORAGE_KEY,
   PROVIDER_LOCAL_STORAGE_KEY,
   SELECTED_APPLICATIONS_LOCAL_STORAGE_KEY,
+  SHOULD_USE_ONBOARDING_TERMINAL_SIDEBAR_LOCAL_STORAGE_KEY,
   STACK_NAME_LOCAL_STORAGE_KEY,
 } from './constants'
 
@@ -47,4 +48,12 @@ export function persistConsole(shouldUseConsole: boolean) {
 
 export function retrieveConsole() {
   return localStorage.getItem(PROVIDER_LOCAL_STORAGE_KEY) === 'true'
+}
+
+export function persistShouldUseOnboardingTerminalSidebar(shouldUseOnboardingTerminalSidebar: boolean) {
+  localStorage.setItem(SHOULD_USE_ONBOARDING_TERMINAL_SIDEBAR_LOCAL_STORAGE_KEY, shouldUseOnboardingTerminalSidebar.toString())
+}
+
+export function retrieveShouldUseOnboardingTerminalSidebar() {
+  return localStorage.getItem(SHOULD_USE_ONBOARDING_TERMINAL_SIDEBAR_LOCAL_STORAGE_KEY) === 'true'
 }

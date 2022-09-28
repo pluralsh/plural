@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client'
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 
 import { CurrentUserContext } from '../../login/CurrentUser'
 
@@ -9,7 +9,6 @@ import { UPDATE_USER } from '../../users/queries'
 const FORCE_ONBOARDING = 'plural-force-onboarding'
 
 function useOnboarded() {
-  const [shouldUseTerminalSidebarOnboarding, setShouldUseTerminalSidebarOnboarding] = useState(false)
   const me = useContext(CurrentUserContext)
 
   const [mutation] = useMutation(UPDATE_USER, {
@@ -20,10 +19,8 @@ function useOnboarded() {
   const fresh = onboarding === OnboardingStatus.NEW || !!localStorage.getItem(FORCE_ONBOARDING)
 
   return {
-    mutation: fresh ? mutation : Promise.resolve,
+    mutation: fresh ? mutation : () => Promise.resolve(),
     fresh,
-    shouldUseTerminalSidebarOnboarding,
-    setShouldUseTerminalSidebarOnboarding,
   }
 }
 

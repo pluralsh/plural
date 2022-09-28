@@ -23,7 +23,7 @@ import {
   SECTION_SYNOPSIS,
 } from '../constants'
 
-import useOnboarded from './useOnboarded'
+import { persistShouldUseOnboardingTerminalSidebar } from '../persistance'
 
 import { GITHUB_VALIDATIONS } from './scm/github'
 import { CLOUD_VALIDATIONS } from './cloud/provider'
@@ -62,12 +62,11 @@ function OnboardingFlow({ accessToken, provider: scmProvider, authUrlData }) {
   const [scm, setScm] = useState({ name: '', provider: scmProvider, token: accessToken })
   const [credentials, setCredentials] = useState({})
   const [workspace, setWorkspace] = useState({})
-  const { setShouldUseTerminalSidebarOnboarding } = useOnboarded()
   const navigate = useNavigate()
 
   useEffect(() => {
-    setShouldUseTerminalSidebarOnboarding(true)
-  }, [setShouldUseTerminalSidebarOnboarding])
+    persistShouldUseOnboardingTerminalSidebar(true)
+  }, [])
 
   const doSetProvider = useCallback(provider => {
     setProvider(provider)

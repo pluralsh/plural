@@ -326,7 +326,7 @@ worker:
   replicaCount: 2
 
 www:
-  image: plural/plural-www
+  repository: plural/plural-www
   tag: '0.3.7' ## PLRL-REPLACE[  tag: '%s']
   port: 80
   resources: {}

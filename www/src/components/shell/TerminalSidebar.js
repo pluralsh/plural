@@ -68,7 +68,6 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
     return { workingSteps, skipConsoleInstall: true }
   }, [])
 
-  console.log('shouldUseTerminalSidebar', shouldUseTerminalSidebar)
   const { title, Component } = workingSteps[stepIndex]
 
   console.log(shell)

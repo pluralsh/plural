@@ -14,13 +14,13 @@ import OnboardingWrapper from './onboarding/OnboardingWrapper'
 import ApplicationsSelection from './onboarding/applications/ApplicationsSelection'
 
 function CloudShell() {
-  const [section, setSection] = useState<'applications' | 'git'>('applications')
+  const location = useLocation()
+  const [section, setSection] = useState<'applications' | 'git'>(location?.state?.step === 1 ? 'git' : 'applications')
   const [created, setCreated] = useState(false)
   const { data } = useQuery(AUTHENTICATION_URLS_QUERY)
   const { data: shellData } = useQuery(CLOUD_SHELL_QUERY, { fetchPolicy: 'network-only' })
   const [rebootMutation] = useMutation(REBOOT_SHELL_MUTATION)
   const ready = useMemo(() => shellData && data, [shellData, data])
-  const location = useLocation()
 
   useEffect(() => {
     if (shellData && shellData.shell && !shellData.shell.alive) {

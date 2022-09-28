@@ -1,5 +1,6 @@
 import {
   useCallback,
+  useEffect,
   useMemo,
   useState,
 } from 'react'
@@ -21,6 +22,8 @@ import {
   SECTION_GIT_PROVIDER,
   SECTION_SYNOPSIS,
 } from '../constants'
+
+import { persistShouldUseOnboardingTerminalSidebar } from '../persistance'
 
 import { GITHUB_VALIDATIONS } from './scm/github'
 import { CLOUD_VALIDATIONS } from './cloud/provider'
@@ -60,6 +63,10 @@ function OnboardingFlow({ accessToken, provider: scmProvider, authUrlData }) {
   const [credentials, setCredentials] = useState({})
   const [workspace, setWorkspace] = useState({})
   const navigate = useNavigate()
+
+  useEffect(() => {
+    persistShouldUseOnboardingTerminalSidebar(true)
+  }, [])
 
   const doSetProvider = useCallback(provider => {
     setProvider(provider)

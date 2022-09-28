@@ -1,5 +1,6 @@
 import {
   useCallback,
+  useEffect,
   useMemo,
   useState,
 } from 'react'
@@ -21,6 +22,8 @@ import {
   SECTION_GIT_PROVIDER,
   SECTION_SYNOPSIS,
 } from '../constants'
+
+import useOnboarded from './useOnboarded'
 
 import { GITHUB_VALIDATIONS } from './scm/github'
 import { CLOUD_VALIDATIONS } from './cloud/provider'
@@ -59,7 +62,12 @@ function OnboardingFlow({ accessToken, provider: scmProvider, authUrlData }) {
   const [scm, setScm] = useState({ name: '', provider: scmProvider, token: accessToken })
   const [credentials, setCredentials] = useState({})
   const [workspace, setWorkspace] = useState({})
+  const { setShouldUseTerminalSidebarOnboarding } = useOnboarded()
   const navigate = useNavigate()
+
+  useEffect(() => {
+    setShouldUseTerminalSidebarOnboarding(true)
+  }, [setShouldUseTerminalSidebarOnboarding])
 
   const doSetProvider = useCallback(provider => {
     setProvider(provider)

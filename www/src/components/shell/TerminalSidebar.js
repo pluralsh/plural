@@ -44,7 +44,12 @@ const steps = [
 --- */
 
 function TerminalSidebar({ shell, showCheatsheet, ...props }) {
-  const { mutation, fresh } = useOnboarded()
+  const {
+    mutation,
+    fresh,
+    shouldUseTerminalSidebarOnboarding,
+    setShouldUseTerminalSidebarOnboarding,
+  } = useOnboarded()
   const { command, type: commandType } = usePluralCommand() // Could be put inside Step2 but stays here for eager loading
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [stepIndex, setStepIndex] = useState(0)
@@ -61,14 +66,13 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
     return { workingSteps, skipConsoleInstall: true }
   }, [])
 
-  console.log('workingSteps', workingSteps)
-
   const { title, Component } = workingSteps[stepIndex]
 
   console.log(shell)
 
   function markDemoAsComplete() {
     mutation()
+    setShouldUseTerminalSidebarOnboarding(false)
   }
 
   function handlePrevious() {
@@ -177,7 +181,7 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
           borderRadius="large"
           direction="column"
         >
-          {fresh ? renderDemo() : showCheatsheet ? renderCheatsheet() : null}
+          {fresh || shouldUseTerminalSidebarOnboarding ? renderDemo() : showCheatsheet ? renderCheatsheet() : null}
         </Flex>
       </Div>
       {isModalOpen && (

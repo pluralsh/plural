@@ -519,7 +519,7 @@ function Step3() {
             Deploy your Kubernetes cluster and the applications you've configured
           </Li>
         </Ul>
-        Now grab a coffee or your favorite hot beverage while we wait for your cloud provider to provision your
+        Now grab a coffee or your favorite hot beverage while we wait for the cloud provider to provision your
         infrastructure.
       </Div>
     </Div>
@@ -588,7 +588,7 @@ function Step4() {
       >
         Check the health of your cluster:
       </P>
-      <CodeLine marginTop="xsmall">plural watch</CodeLine>
+      <CodeLine marginTop="xsmall">plural watch &lt;appName&gt;</CodeLine>
     </Div>
   )
 }

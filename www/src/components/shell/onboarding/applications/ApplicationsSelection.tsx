@@ -2,6 +2,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from 'react'
 import {
@@ -50,6 +51,8 @@ const hueToColor = {
   red: 'text-error-light',
 }
 
+const CONSOLE_APP_NAME = 'console'
+
 const searchOptions = {
   keys: ['name'],
   threshold: 0.25,
@@ -57,6 +60,10 @@ const searchOptions = {
 
 type ApplicationsSelectionProps = {
   onNext: () => void
+}
+
+function countSelectedApps(applications:any[]) {
+  return applications.filter(a => (a.name !== CONSOLE_APP_NAME)).length
 }
 
 function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
@@ -94,9 +101,12 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
 
     return applicationsData.repositories.edges
       .map(x => x.node)
-      .filter(x => !x.private && x.name !== 'airflow') // airflow is a pain in the butt here
+       // airflow is a pain in the butt here
+       // console is handled by 'Install Plural Console' toggle switch
+      .filter(x => !x.private && x.name !== 'airflow' && x.name !== 'console')
       .filter(x => (isStack && stackData ? stackApplicationsIds.includes(x.id) : true))
   }, [applicationsData, isStack, stackData, stackProvider])
+  const consoleApp = useMemo(() => applicationsData?.repositories?.edges?.find(({ node: a }) => a.name === CONSOLE_APP_NAME).node, [applicationsData])
 
   useEffect(() => {
     if (isStack && stackData) {
@@ -116,18 +126,48 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
     }
   }, [stackProvider])
 
+  const setSelectedConsole = useCallback((selected: boolean) => {
+    if (!consoleApp) {
+      return
+    }
+    setSelectedApplications(applications => {
+      if (applications.find(a => a.id === consoleApp.id)) {
+        if (!selected) {
+          applications = applications.filter(a => a.id !== consoleApp.id)
+        }
+      }
+      else if (selected) {
+        applications = [...applications, consoleApp]
+      }
+
+      return applications
+    })
+  }, [consoleApp, setSelectedApplications])
+
   useEffect(() => {
+    setSelectedConsole(!isStack ? shouldInstallConsole : false)
     persistConsole(isStack ? shouldInstallConsole : false)
-  }, [isStack, shouldInstallConsole])
+  }, [isStack, shouldInstallConsole, setSelectedConsole])
 
   function toggleApplication(application: any) {
     if (isStack) return
+    if (application.id === consoleApp?.id) {
+      setShouldInstallConsole(!selectedApplications.find(a => a.id === consoleApp.id))
 
-    setSelectedApplications(applications => (
-      applications.find(a => a.id === application.id)
-        ? applications.filter(a => a.id !== application.id)
-        : [...applications, application].filter((_x, i) => i < MAX_SELECTED_APPLICATIONS)
-    ))
+      return
+    }
+
+    setSelectedApplications(applications => {
+      if (applications.find(a => a.id === application.id)) {
+        applications = applications.filter(a => a.id !== application.id)
+      }
+      // Don't count plural console against MAX_SELECTED_APPLICATIONS limit
+      else if (countSelectedApps(applications) < MAX_SELECTED_APPLICATIONS) {
+        applications = [...applications, application]
+      }
+
+      return applications
+    })
   }
 
   function handleSkipDemo() {
@@ -285,9 +325,13 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
   }
 
   function renderApplicationsFooter() {
+    const selectedAppsCount = countSelectedApps(selectedApplications)
+
     return (
       <P color="text-light">
-        {selectedApplications.length ? `${selectedApplications.length} out of ${MAX_SELECTED_APPLICATIONS} apps selected` : '0 apps selected'}
+        {selectedAppsCount
+          ? `${selectedAppsCount} out of ${MAX_SELECTED_APPLICATIONS} apps selected`
+          : '0 apps selected'}
       </P>
     )
   }
@@ -325,10 +369,24 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
               key={application.id}
               imageUrl={application.darkIcon || application.icon}
               label={application.name}
-              checked={!!selectedApplications.find(a => a.id === application.id)}
+              checked={
+                !!selectedApplications.find(a => a.id === application.id)
+              }
               onClick={() => toggleApplication(application)}
-              cursor={isStack ? 'auto' : selectedApplications.length >= MAX_SELECTED_APPLICATIONS && !selectedApplications.find(a => a.id === application.id) ? 'not-allowed' : 'pointer'}
-              opacity={selectedApplications.length >= MAX_SELECTED_APPLICATIONS && !selectedApplications.find(a => a.id === application.id) ? 0.5 : 1}
+              cursor={
+                isStack
+                  ? 'auto'
+                  : countSelectedApps(selectedApplications) >= MAX_SELECTED_APPLICATIONS
+                    && !selectedApplications.find(a => a.id === application.id)
+                    ? 'not-allowed'
+                    : 'pointer'
+              }
+              opacity={
+                countSelectedApps(selectedApplications) >= MAX_SELECTED_APPLICATIONS
+                && !selectedApplications.find(a => a.id === application.id)
+                  ? 0.5
+                  : 1
+              }
             />
           ))}
         </Div>
@@ -355,7 +413,7 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
         </Flex>
       )}
       <Flex paddingBottom="large">
-        {isStack && renderConsoleSwitch()}
+        {renderConsoleSwitch()}
       </Flex>
       <Flex
         align="center"
@@ -375,7 +433,7 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
         <Button
           primary
           onClick={onNext}
-          disabled={!selectedApplications.length}
+          disabled={!countSelectedApps(selectedApplications)}
           marginLeft="medium"
         >
           Continue

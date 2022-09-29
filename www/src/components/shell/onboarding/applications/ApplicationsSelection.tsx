@@ -265,29 +265,29 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
           ))}
         </Div>
       )}
-      <Flex paddingBottom="large">
-        {!filteredApplications.length && (
-          <Flex
-            direction="column"
-            align="center"
-            marginTop="medium"
-            flexGrow={1}
+      {!filteredApplications.length && (
+        <Flex
+          direction="column"
+          align="center"
+          marginTop="medium"
+          flexGrow={1}
+        >
+          <P
+            body2
+            color="text-light"
           >
-            <P
-              body2
-              color="text-light"
-            >
-              No application found for "{search}"
-            </P>
-            <Button
-              secondary
-              onClick={() => setSearch('')}
-              marginTop="medium"
-            >
-              Clear search
-            </Button>
-          </Flex>
-        )}
+            No application found for "{search}"
+          </P>
+          <Button
+            secondary
+            onClick={() => setSearch('')}
+            marginTop="medium"
+          >
+            Clear search
+          </Button>
+        </Flex>
+      )}
+      <Flex paddingBottom="large">
         {isStack && renderConsoleSwitch()}
       </Flex>
       <Flex

@@ -40,7 +40,10 @@ const stepsCli = [
 // eslint-disable-next-line
 function OnboardingSidenav({ stepIndex, cliMode, onRestart }: OnboardingSidenavProps) {
   return (
-    <Div paddingBottom="large">
+    <Div
+      paddingBottom="large"
+      paddingLeft="medium"
+    >
       <Stepper
         vertical
         steps={cliMode ? stepsCli : steps}

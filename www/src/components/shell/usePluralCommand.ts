@@ -56,8 +56,8 @@ function usePluralCommand() {
   }, [provider, applications, mutation])
 
   if (applications.length === 1) return { type: 'application', command: getApplicationCommand() }
-  if (isStackComplete()) return { type: 'stack', command: getStackCommand() }
-  if (applications.length > 0 && !isStackComplete()) return { type: 'stack', command: getQuickStackCommand() }
+  if (isStackComplete()) return { type: 'stack', quick: false, command: getStackCommand() }
+  if (applications.length > 0 && !isStackComplete()) return { type: 'stack', quick: true, command: getQuickStackCommand() }
 
   return { type: 'application', command: 'plural bundle install airbyte airbye-gcp' }
 }

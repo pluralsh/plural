@@ -57,7 +57,7 @@ function OnboardingWrapper({
         >
           <ResponsiveLayoutSpacer />
           <ResponsiveLayoutSidenavContainer
-            marginTop={82}
+            marginTop={72}
             marginRight={30}
             paddingRight="xxsmall"
             overflowY="auto"
@@ -79,7 +79,7 @@ function OnboardingWrapper({
           </ResponsiveLayoutContentContainer>
           <ResponsiveLayoutSidecarContainer
             marginLeft={30}
-            marginTop={57}
+            marginTop={67}
             marginRight="xlarge"
             overflowY="auto"
           >

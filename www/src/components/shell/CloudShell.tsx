@@ -1,8 +1,4 @@
-import {
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { useEffect, useState } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
 import { useLocation } from 'react-router-dom'
 
@@ -20,7 +16,6 @@ function CloudShell() {
   const { data } = useQuery(AUTHENTICATION_URLS_QUERY)
   const { data: shellData } = useQuery(CLOUD_SHELL_QUERY, { fetchPolicy: 'network-only' })
   const [rebootMutation] = useMutation(REBOOT_SHELL_MUTATION)
-  const ready = useMemo(() => shellData && data, [shellData, data])
 
   useEffect(() => {
     if (shellData && shellData.shell && !shellData.shell.alive) {
@@ -37,9 +32,7 @@ function CloudShell() {
 
   return (
     <OnboardingWrapper
-      showSplashScreen={!location?.state?.hideSplashScreen}
       stepIndex={section === 'applications' ? 0 : 1}
-      childIsReady={ready}
       onRestart={() => setSection('applications')}
     >
       {section === 'applications' && (

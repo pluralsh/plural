@@ -24,7 +24,7 @@ import {
   retrieveShouldUseOnboardingTerminalSidebar,
 } from './persistance'
 
-const sidebarWidth = 512
+const sidebarWidth = 420
 const steps = [
   {
     title: 'Install Plural Console',
@@ -170,7 +170,7 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
       <Div
         width={fresh || showCheatsheet ? sidebarWidth : '0'}
         opacity={fresh || showCheatsheet ? '1' : '0'}
-        marginRight={fresh || showCheatsheet ? 'xlarge' : '0'}
+        marginRight={fresh || showCheatsheet ? 'large' : '0'}
         transition="width 666ms ease, opacity 666ms linear, margin-right 666ms linear"
         maxHeight="100%"
         overflowX="auto"

@@ -12,8 +12,7 @@ import useOnboardingNavigation from '../../useOnboardingNavigation'
 import { ScmInput } from './ScmInput'
 
 export function OnboardingRepository() {
-  const { exceptions, error, next } = useContext(CreateShellContext)
-  const navigate = useNavigate()
+  const { exceptions, error, next } = useOnboarding(CreateShellContext)
   const { previousTo, nextTo } = useOnboardingNavigation()
 
   return (

@@ -30,7 +30,7 @@ spec:
       {{ include "plural.wait-for-migration" . | nindent 6 }}
       containers:
       - name: api
-        image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
+        image: "{{ .Values.global.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         envFrom:
         - secretRef:
@@ -96,7 +96,7 @@ spec:
       {{ include "plural.wait-for-migration" . | nindent 6 }}
       containers:
       - name: worker
-        image: "{{ .Values.worker.repository }}:{{ .Chart.AppVersion }}"
+        image: "{{ .Values.global.registry }}/{{ .Values.worker.repository }}:{{ .Values.worker.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         envFrom:
         - secretRef:
@@ -150,7 +150,7 @@ spec:
       {{ include "plural.wait-for-migration" . | nindent 6 }}
       containers:
       - name: rtc
-        image: "{{ .Values.rtc.repository }}:{{ .Chart.AppVersion }}"
+        image: "{{ .Values.global.registry }}/{{ .Values.rtc.repository }}:{{ .Values.rtc.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         envFrom:
         - secretRef:
@@ -211,7 +211,7 @@ spec:
       {{- end }}
       containers:
       - name: www
-        image: "{{ .Values.www.image }}:{{ .Chart.AppVersion }}"
+        image: "{{ .Values.global.registry }}/{{ .Values.www.repository }}:{{ .Values.www.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
         - name: DEPLOYED_AT

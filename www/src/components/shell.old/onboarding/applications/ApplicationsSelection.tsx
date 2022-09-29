@@ -72,7 +72,7 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
 
     return applicationsData.repositories.edges
       .map(x => x.node)
-      .filter(x => !x.private)
+      .filter(x => !x.private && x.name !== 'airflow') // airflow is a pain in the butt here
       .filter(x => (isStack && stackData ? stackApplicationsIds.includes(x.id) : true))
   }, [applicationsData, isStack, stackData, stackProvider])
 

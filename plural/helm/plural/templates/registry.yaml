@@ -47,10 +47,10 @@ spec:
           - /bin/registry
           - serve
           - /etc/docker/registry/config.yml
-          {{ if .Values.registry.resources }}
+          {{- with .Values.registry.resources }}
           resources:
-          {{ toYaml .Values.registry.resources | nindent 12 }}
-          {{ end }}
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
           ports:
           - containerPort: 5000
             name: http
@@ -69,8 +69,6 @@ spec:
 {{- end }}
               path: /
               port: 5000
-          resources:
-{{ toYaml .Values.registry.resources | indent 12 }}
           env:
           - name: AWS_SDK_LOAD_CONFIG
             value: "1"

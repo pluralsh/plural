@@ -11,7 +11,7 @@ spec:
       {{- end }}
       containers:
       - name: migrator
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        image: "{{ .Values.global.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         command: ["/opt/app/bin/plural",  "migrate"]
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         envFrom:

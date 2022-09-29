@@ -1,3 +1,6 @@
+global:
+  registry: dkr.plural.sh
+
 replicaCount: 2
 rabbitmqNamespace: rabbitmq
 influxNamespace: influx
@@ -304,34 +307,39 @@ postgres:
         memory: 1Gi
 
 image:
-  repository: dkr.plural.sh/plural/plural
-  tag: '0.3.7' ## PLRL-REPLACE[  tag: '%s']
+  repository: plural/plural
+  # if empty the chart version is used
+  tag: '' ## PLRL-REPLACE[  tag: '%s']
   pullPolicy: Always
 
 rtc:
-  repository: dkr.plural.sh/plural/rtc
-  tag: '0.3.7' ## PLRL-REPLACE[  tag: '%s']
+  repository: plural/rtc
+  # if empty the chart version is used
+  tag: '' ## PLRL-REPLACE[  tag: '%s']
   resources: {}
   replicaCount: 2
 
 worker:
-  repository: dkr.plural.sh/plural/worker
-  tag: '0.3.7' ## PLRL-REPLACE[  tag: '%s']
+  repository: plural/worker
+  # if empty the chart version is used
+  tag: '' ## PLRL-REPLACE[  tag: '%s']
   minReplicas: 1
   maxReplicas: 10
   resources: {}
   replicaCount: 2
 
 www:
-  image: dkr.plural.sh/plural/plural-www
-  tag: '0.3.7' ## PLRL-REPLACE[  tag: '%s']
+  repository: plural/plural-www
+  # if empty the chart version is used
+  tag: '' ## PLRL-REPLACE[  tag: '%s']
   port: 80
   resources: {}
   replicaCount: 2
 
 cron:
-  image: dkr.plural.sh/plural/cron
-  tag: '0.3.7' ## PLRL-REPLACE[  tag: '%s']
+  repository: plural/cron
+  # if empty the chart version is used
+  tag: '' ## PLRL-REPLACE[  tag: '%s']
 
 imagePullSecrets:
 - name: plural-creds
@@ -425,7 +433,7 @@ hydra:
   
 chartmuseum:
   resources: {}
-  replicaCount: 1
+  replicaCount: 2
   rbac:
     serviceAccountAnnotations: {}
   repository: dkr.plural.sh/plural/chartmuseum
@@ -434,7 +442,7 @@ chartmuseum:
   pullPolicy: Always
 
 registry:
-  replicaCount: 1
+  replicaCount: 2
   podAnnotations: {}
   podLabels: {}
   podDisruptionBudget: {}

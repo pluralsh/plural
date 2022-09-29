@@ -24,7 +24,7 @@ spec:
           {{- end }}
           containers:
           - name: cron
-            image: "{{ .Values.cron.image }}:{{ .Values.cron.tag }}"
+            image: "{{ .Values.global.registry }}/{{ .Values.cron.repository }}:{{ .Values.cron.tag | default .Chart.AppVersion }}"
             imagePullPolicy: {{ .Values.image.pullPolicy }}
             envFrom:
             - secretRef:

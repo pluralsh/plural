@@ -1,8 +1,8 @@
 import { useMutation } from '@apollo/client'
 import { useContext } from 'react'
+import { useLocation } from 'react-router-dom'
 
 import { CurrentUserContext } from '../../login/CurrentUser'
-
 import { OnboardingStatus } from '../../profile/types'
 import { UPDATE_USER } from '../../users/queries'
 
@@ -16,7 +16,9 @@ function useOnboarded() {
   })
 
   const onboarding = me.onboarding || OnboardingStatus.NEW
-  const fresh = onboarding === OnboardingStatus.NEW || !!localStorage.getItem(FORCE_ONBOARDING)
+  const fresh
+    = onboarding === OnboardingStatus.NEW
+    || !!localStorage.getItem(FORCE_ONBOARDING)
 
   return {
     mutation: fresh ? mutation : () => Promise.resolve(),
@@ -25,3 +27,10 @@ function useOnboarded() {
 }
 
 export default useOnboarded
+
+export function useIsCurrentlyOnboarding() {
+  const { fresh } = useOnboarded()
+  const { pathname } = useLocation()
+
+  return fresh && pathname.startsWith('/shell')
+}

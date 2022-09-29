@@ -15,6 +15,7 @@ import {
   Div,
   Flex,
   H2,
+  Hr,
   P,
   Switch,
 } from 'honorable'
@@ -40,7 +41,15 @@ import { MAX_SELECTED_APPLICATIONS } from '../../constants'
 import OnboardingCard from '../OnboardingCard'
 import useOnboarded from '../useOnboarded'
 
+// TODO move this to the DS or the database
 const hues = ['blue', 'green', 'yellow', 'red']
+const hueToColor = {
+  blue: 'border-outline-focused',
+  green: 'text-success-light',
+  yellow: 'text-warning-light',
+  red: 'text-error-light',
+}
+
 const searchOptions = {
   keys: ['name'],
   threshold: 0.25,
@@ -185,6 +194,7 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
           )}
           width="100%"
           marginTop="large"
+          marginBottom="large"
         />
       </>
     )
@@ -203,6 +213,7 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
           body2
           color="text-light"
           marginTop="xsmall"
+          marginBottom="large"
         >
           {capitalize(stackData.stack.description)}
         </P>
@@ -211,26 +222,44 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
   }
 
   function renderStacks() {
+    if (!stacksData?.stacks?.edges?.length) return null
+
     return (
-      <Flex
-        align="center"
-        gap="medium"
-      >
-        {stacksData.edges.map(x => x.node).map((stack, i) => (
-          <RepositoryChip
-            key={stack.id}
-            icon={(
-              <StackIcon />
-            )}
-            label={stack.name}
-            border={`1px solid ${hues[i]}`}
-            checked={false}
-            as={Link}
-            to={`/shell?stackName=${stack.name}&stackProvider=GCP`}
-            cursor="pointer"
-          />
-        ))}
-      </Flex>
+      <>
+        <Div
+          flexShrink={0}
+          overflowY="auto"
+          display="grid"
+          gridTemplateColumns="repeat(3, 1fr)"
+          gridTemplateRows="repeat(auto-fill, 42px)"
+          gridColumnGap="16px"
+          gridRowGap="16px"
+        >
+          {stacksData.stacks.edges.map(x => x.node).map((stack, i) => (
+            <RepositoryChip
+              key={stack.id}
+              icon={(
+                <StackIcon />
+              )}
+              label={stack.name}
+              border={`1px solid ${hueToColor[hues[i]]}`}
+              checked={false}
+              as={Link}
+              to={`/shell?stackName=${stack.name}&stackProvider=GCP`}
+              cursor="pointer"
+              textDecoration="none"
+              color="inherit"
+            />
+          ))}
+        </Div>
+        <Hr
+          width="100%"
+          marginTop="large"
+          marginBottom="large"
+          flexShrink={0}
+          borderTop="1px solid border-fill-two"
+        />
+      </>
     )
   }
 
@@ -280,7 +309,6 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
       {!isStack && !search && renderStacks()}
       {!!filteredApplications.length && (
         <Div
-          marginTop="medium"
           flexGrow={1}
           overflowY="auto"
           display="grid"
@@ -309,7 +337,6 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
         <Flex
           direction="column"
           align="center"
-          marginTop="medium"
           flexGrow={1}
         >
           <P

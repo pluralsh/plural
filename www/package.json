@@ -94,7 +94,7 @@
     "slate": "0.82.1",
     "slate-history": "0.81.3",
     "slate-react": "0.83.0",
-    "styled-components": "5.3.5",
+    "styled-components": "5.3.6",
     "uuid": "9.0.0",
     "workbox-core": "6.5.4",
     "workbox-expiration": "6.5.4",

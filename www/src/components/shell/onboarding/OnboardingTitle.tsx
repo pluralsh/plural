@@ -6,9 +6,9 @@ import {
 } from 'honorable'
 
 // @ts-ignore
-import { ReactComponent as OnboardingTitleOnboarding } from './OnboardingTitleOnboarding.svg'
+import { ReactComponent as OnboardingTitleOnboarding } from './OnboardingTitle.svg'
 
-function OnboardingHeader() {
+function OnboardingTitle() {
   return (
     <Div width="100%">
       <Flex align="flex-end">
@@ -33,4 +33,4 @@ function OnboardingHeader() {
   )
 }
 
-export default OnboardingHeader
+export default OnboardingTitle

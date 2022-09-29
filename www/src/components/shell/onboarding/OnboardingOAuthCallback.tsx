@@ -1,23 +1,30 @@
-import { Navigate, useSearchParams } from 'react-router-dom'
+import { useEffect } from 'react'
+import { Navigate, useParams, useSearchParams } from 'react-router-dom'
 import { useQuery } from '@apollo/client'
 import { LoopingLogo } from 'pluralsh-design-system'
+import { Flex } from 'honorable'
 
 import { AUTHENTICATION_URLS_QUERY, SCM_TOKEN_QUERY } from '../queries'
+import { persistGitData } from '../persistance'
 
 import DEBUG_SCM_TOKENS from './debug-tokens'
 
-function OAuthCallback({ provider }) {
+function OnboardingOAuthCallback() {
+  const { provider = '' } = useParams()
   const [searchParams] = useSearchParams()
+  const code = searchParams.get('code')
 
   const { data: authUrlData } = useQuery(AUTHENTICATION_URLS_QUERY)
 
-  let { data, loading } = useQuery(SCM_TOKEN_QUERY, {
+  let { data } = useQuery(SCM_TOKEN_QUERY, {
     variables: {
-      code: searchParams.get('code'),
+      code,
       provider: provider.toUpperCase(),
     },
   })
 
+  // Do not remove this line, it is needed for dev
+  // Used to retrieve the token from production
   console.log(data)
 
   // Dev only
@@ -25,25 +32,34 @@ function OAuthCallback({ provider }) {
     data = { ...data, ...{ scmToken: DEBUG_SCM_TOKENS[provider.toUpperCase()] } }
   }
 
-  if (!data) {
+  useEffect(() => {
+    persistGitData({
+      authUrlData,
+      accessToken: data.scmToken,
+    })
+  }, [authUrlData, data])
+
+  if (authUrlData && data?.scmToken) {
     return (
-      <LoopingLogo />
+      <Navigate to="/shell/onboarding/repository" />
     )
   }
 
-  if (!data.scmToken) {
+  if (data && !data?.scmToken) {
     return (
       <Navigate to="/shell" />
     )
   }
 
   return (
-    <OnboardingFlow
-      accessToken={data.scmToken}
-      provider={provider.toUpperCase()}
-      authUrlData={authUrlData}
-    />
+    <Flex
+      align="center"
+      justify="center"
+      flexGrow={1}
+    >
+      <LoopingLogo />
+    </Flex>
   )
 }
 
-export default OAuthCallback
+export default OnboardingOAuthCallback

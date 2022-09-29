@@ -1,9 +1,10 @@
 import { useContext, useEffect, useState } from 'react'
 import {
-  Navigate, Route, Routes, useMatch,
+  Navigate,
+  Route,
+  Routes,
 } from 'react-router-dom'
 import { StripeProvider } from 'react-stripe-elements'
-
 import { Toast } from 'pluralsh-design-system'
 
 import { growthbook } from '../helpers/growthbook'
@@ -11,9 +12,8 @@ import { growthbook } from '../helpers/growthbook'
 import ApplicationLayout from './layout/ApplicationLayout'
 import BreadcrumbProvider from './Breadcrumbs'
 import Chart from './repos/Chart'
-import CloudShell from './shell.old/CloudShell'
+import ShellRouter from './shell/ShellRouter'
 import Marketplace from './marketplace/Marketplace'
-import OAuthCallback from './shell.old/OAuthCallback'
 import Repository from './repository/Repository'
 import RepositoryArtifacts from './repository/RepositoryArtifacts'
 import RepositoryDeployments from './repository/RepositoryDeployments'
@@ -85,21 +85,11 @@ function WrapStripe({ children }) {
   )
 }
 
-// Weird judo to get around inability to match oauth callback
-// routes as subroutes passed from App.js.
-// If anyone knows a better way around this, I'm all ears.
-// - Klink
-function OAuthOrFallback() {
+function FallbackRoute() {
   const me = useContext(CurrentUserContext)
-  const shellOAuthMatch = useMatch('/oauth/callback/:provider/shell')
-
-  if (shellOAuthMatch) {
-    return <OAuthCallback provider={shellOAuthMatch.params.provider} />
-  }
 
   return (
     <Navigate
-      shellOAuthMatch={shellOAuthMatch}
       replace
       to={me.hasInstallations ? '/installed' : '/marketplace'}
     />
@@ -329,10 +319,7 @@ export function PluralInner() {
               />
             </Route>
             {/* --- SHELL --- */}
-            <Route
-              path="/shell"
-              element={<CloudShell />}
-            />
+            <ShellRouter />
             {/* --- ACCOUNT --- */}
             <Route
               path="/account/edit/:section/*"
@@ -429,7 +416,7 @@ export function PluralInner() {
             <Route
               path="/*"
               element={(
-                <OAuthOrFallback />
+                <FallbackRoute />
               )}
             />
           </Routes>

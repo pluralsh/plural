@@ -1,5 +1,6 @@
 import {
   CONSOLE_LOCAL_STORAGE_KEY,
+  GIT_DATA_LOCAL_STORAGE_KEY,
   PROVIDER_LOCAL_STORAGE_KEY,
   SELECTED_APPLICATIONS_LOCAL_STORAGE_KEY,
   STACK_NAME_LOCAL_STORAGE_KEY,
@@ -56,4 +57,19 @@ export function persistTerminalOnboardingSidebar(terminalOnboardingSidebar: bool
 
 export function retrieveTerminalOnboardingSidebar() {
   return localStorage.getItem(TERMINAL_ONBOARDING_SIDEBAR_LOCAL_STORAGE_KEY) === 'true'
+}
+
+export function persistGitData(gitData: any) {
+  localStorage.setItem(GIT_DATA_LOCAL_STORAGE_KEY, JSON.stringify(gitData))
+}
+
+export function retrieveGitData() {
+  try {
+    const res = JSON.parse(localStorage.getItem(GIT_DATA_LOCAL_STORAGE_KEY) as string) as any
+
+    return res || {}
+  }
+  catch (error) {
+    return {}
+  }
 }

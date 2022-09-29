@@ -92,24 +92,24 @@ function OnboardingFlow({ accessToken, provider: scmProvider, authUrlData }) {
   const { stepIndex } = SECTIONS[section]
 
   const contextData = useMemo(() => ({
-    scmProvider,
-    accessToken,
-    scm,
+    scmProvider, // gitData
+    accessToken, // gitData
+    scm, // gitData
     setScm,
     setProvider: doSetProvider,
-    authUrlData,
-    provider: providerName,
-    workspace,
+    authUrlData, // gitData
+    provider: providerName, // provider
+    workspace, // cloudConfiguration
     setWorkspace,
-    credentials,
+    credentials, // cloudConfiguration
     setCredentials,
-    demoId,
+    demoId, // ?
     setDemoId,
     next,
     previous,
     setSection,
-    error,
-    exceptions,
+    error, // useValidation
+    exceptions, // useValidation
   }), [
     scmProvider,
     accessToken,

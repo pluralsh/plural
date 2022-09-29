@@ -205,7 +205,8 @@ function MarketplaceSidebar(props) {
       {...props}
     >
       {renderCategories()}
-      {renderPublishers()}
+      {/* TODO: Enable once more publishers are available */}
+      {/* {renderPublishers()} */}
       {renderTags()}
     </Div>
   )

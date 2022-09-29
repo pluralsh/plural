@@ -62,10 +62,6 @@ type ApplicationsSelectionProps = {
   onNext: () => void
 }
 
-function countSelectedApps(applications:any[]) {
-  return applications.filter(a => (a.name !== CONSOLE_APP_NAME)).length
-}
-
 function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
   const [searchParams] = useSearchParams()
   const stackName = searchParams.get('stackName')
@@ -107,6 +103,7 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
       .filter(x => (isStack && stackData ? stackApplicationsIds.includes(x.id) : true))
   }, [applicationsData, isStack, stackData, stackProvider])
   const consoleApp = useMemo(() => applicationsData?.repositories?.edges?.find(({ node: a }) => a.name === CONSOLE_APP_NAME).node, [applicationsData])
+  const selectedAppsCount = useMemo(() => selectedApplications.filter(a => (a.name !== CONSOLE_APP_NAME)).length, [selectedApplications])
 
   useEffect(() => {
     if (isStack && stackData) {
@@ -162,7 +159,7 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
         applications = applications.filter(a => a.id !== application.id)
       }
       // Don't count plural console against MAX_SELECTED_APPLICATIONS limit
-      else if (countSelectedApps(applications) < MAX_SELECTED_APPLICATIONS) {
+      else if (selectedAppsCount < MAX_SELECTED_APPLICATIONS) {
         applications = [...applications, application]
       }
 
@@ -325,8 +322,6 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
   }
 
   function renderApplicationsFooter() {
-    const selectedAppsCount = countSelectedApps(selectedApplications)
-
     return (
       <P color="text-light">
         {selectedAppsCount
@@ -376,13 +371,13 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
               cursor={
                 isStack
                   ? 'auto'
-                  : countSelectedApps(selectedApplications) >= MAX_SELECTED_APPLICATIONS
+                  : selectedAppsCount >= MAX_SELECTED_APPLICATIONS
                     && !selectedApplications.find(a => a.id === application.id)
                     ? 'not-allowed'
                     : 'pointer'
               }
               opacity={
-                countSelectedApps(selectedApplications) >= MAX_SELECTED_APPLICATIONS
+                selectedAppsCount >= MAX_SELECTED_APPLICATIONS
                 && !selectedApplications.find(a => a.id === application.id)
                   ? 0.5
                   : 1
@@ -433,7 +428,7 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
         <Button
           primary
           onClick={onNext}
-          disabled={!countSelectedApps(selectedApplications)}
+          disabled={!selectedAppsCount}
           marginLeft="medium"
         >
           Continue

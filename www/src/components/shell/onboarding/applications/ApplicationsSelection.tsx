@@ -4,7 +4,11 @@ import {
   useEffect,
   useState,
 } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import {
+  Link,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom'
 import { useQuery } from '@apollo/client'
 import {
   Button,
@@ -20,6 +24,7 @@ import {
   LoopingLogo,
   MagnifyingGlassIcon,
   RepositoryChip,
+  StackIcon,
   Tooltip,
 } from 'pluralsh-design-system'
 import capitalize from 'lodash/capitalize'
@@ -35,6 +40,7 @@ import { MAX_SELECTED_APPLICATIONS } from '../../constants'
 import OnboardingCard from '../OnboardingCard'
 import useOnboarded from '../useOnboarded'
 
+const hues = ['blue', 'green', 'yellow', 'red']
 const searchOptions = {
   keys: ['name'],
   threshold: 0.25,
@@ -70,7 +76,6 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
   const { mutation: onboardMutation, fresh } = useOnboarded()
   const navigate = useNavigate()
 
-  console.log('stacksData', stacksData)
   const getApplications = useCallback(() => {
     if (!applicationsData || (isStack && !stackData)) return []
 
@@ -205,6 +210,30 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
     )
   }
 
+  function renderStacks() {
+    return (
+      <Flex
+        align="center"
+        gap="medium"
+      >
+        {stacksData.edges.map(x => x.node).map((stack, i) => (
+          <RepositoryChip
+            key={stack.id}
+            icon={(
+              <StackIcon />
+            )}
+            label={stack.name}
+            border={`1px solid ${hues[i]}`}
+            checked={false}
+            as={Link}
+            to={`/shell?stackName=${stack.name}&stackProvider=GCP`}
+            cursor="pointer"
+          />
+        ))}
+      </Flex>
+    )
+  }
+
   function renderConsoleSwitch() {
     return (
       <Switch
@@ -248,6 +277,7 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
   return (
     <OnboardingCard flexGrow={1}>
       {isStack ? renderStackHeader() : renderApplicationsHeader()}
+      {!isStack && !search && renderStacks()}
       {!!filteredApplications.length && (
         <Div
           marginTop="medium"

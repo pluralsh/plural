@@ -62,6 +62,7 @@ function OnboardingWrapper({
             marginLeft={32}
             paddingRight="xxsmall"
             overflowY="auto"
+            flexShrink={0}
           >
             <OnboardingSidenav
               stepIndex={stepIndex}
@@ -83,6 +84,7 @@ function OnboardingWrapper({
             marginTop={67}
             marginRight="xlarge"
             overflowY="auto"
+            flexShrink={0}
           >
             <OnboardingSidecar areApplicationsDisplayed={stepIndex > 0} />
           </ResponsiveLayoutSidecarContainer>

@@ -59,7 +59,7 @@ function usePluralCommand(shell) {
   if (isStackComplete()) return { type: 'stack', command: getStackCommand() }
   if (applications.length > 0 && !isStackComplete()) return { type: 'stack', command: getQuickStackCommand() }
 
-  return { type: 'application', command: `plural bundle install airbyte airbyte-${provider || shell?.provider?.toLowerCase()}` }
+  return { type: 'application', command: `plural bundle install airbyte airbyte-${provider || shell?.provider?.toLowerCase() || 'gcp'}` }
 }
 
 export default usePluralCommand

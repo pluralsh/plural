@@ -321,9 +321,16 @@ function RepositoryEdit() {
   }
 
   return (
-    <Flex
-      direction="column"
-      height="100%"
+    <Form
+      onSubmit={event => {
+        event.preventDefault()
+        if (formHasUpdates) {
+          mutation()
+        }
+      }}
+      maxHeight="100%"
+      display="flex"
+      flexDirection="column"
     >
       <PageTitle
         heading="Edit"
@@ -577,7 +584,7 @@ function RepositoryEdit() {
           </Form>
         </Div>
       </ContentCard>
-    </Flex>
+    </Form>
   )
 }
 

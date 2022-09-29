@@ -8,6 +8,10 @@ import {
   Stepper,
   TerminalIcon,
 } from 'pluralsh-design-system'
+import { useCallback, useContext } from 'react'
+import { useNavigate } from 'react-router-dom'
+
+import OnboardingContext from '../../../contexts/OnboardingContext'
 
 import {
   SECTION_APPLICATIONS,
@@ -17,13 +21,9 @@ import {
   SECTION_SYNOPSIS,
 } from '../constants'
 
-type OnboardingSidenavProps = {
-  stepIndex: number
-  cliMode: boolean
-  onRestart: () => void
-}
+import useStepIndex from './useStepIndex'
 
-const steps = [
+const stepsDemo = [
   { key: SECTION_APPLICATIONS, stepTitle: 'Choose applications', IconComponent: PackageIcon },
   { key: SECTION_GIT_PROVIDER, stepTitle: 'Create a git repository', IconComponent: NetworkInterfaceIcon },
   { key: SECTION_CLOUD_SELECT, stepTitle: 'Choose a cloud', IconComponent: CloudIcon },
@@ -37,18 +37,51 @@ const stepsCli = [
   { key: SECTION_SYNOPSIS, stepTitle: 'Install Plural CLI', IconComponent: TerminalIcon },
 ]
 
-// eslint-disable-next-line
-function OnboardingSidenav({ stepIndex, cliMode, onRestart }: OnboardingSidenavProps) {
+function OnboardingSidenav() {
+  const {
+    stack,
+    provider,
+    setApplications,
+    setProvider,
+    setConsole,
+    setStack,
+    setTerminalOnboardingSidebar,
+  } = useContext(OnboardingContext)
+  const stepIndex = useStepIndex()
+  const navigate = useNavigate()
+
+  const handleRestart = useCallback(() => {
+    let url = '/shell/onboarding'
+
+    if (stack && provider) url += `?stackName=${stack.name}&stackProvider=${provider}`
+
+    setApplications([])
+    setProvider('')
+    setConsole(true)
+    setStack(null)
+    setTerminalOnboardingSidebar(true)
+    navigate(url)
+  }, [
+    stack,
+    provider,
+    setApplications,
+    setProvider,
+    setConsole,
+    setStack,
+    setTerminalOnboardingSidebar,
+    navigate,
+  ])
+
   return (
     <Div paddingBottom="large">
       <Stepper
         vertical
-        steps={cliMode ? stepsCli : steps}
+        steps={false ? stepsCli : stepsDemo}
         stepIndex={stepIndex}
       />
       <A
         inline
-        onClick={onRestart}
+        onClick={handleRestart}
         marginTop="xlarge"
         marginLeft={60}
       >

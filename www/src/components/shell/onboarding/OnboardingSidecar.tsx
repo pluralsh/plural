@@ -11,7 +11,7 @@ import {
 
 import OnboardingSidecarApplications from './OnboardingSidecarApplications'
 
-function OnboardingSidecar({ areApplicationsDisplayed = false }) {
+function OnboardingSidecar({ displayApplications = false }) {
   return (
     <Div width={200}>
       <Flex
@@ -61,7 +61,7 @@ function OnboardingSidecar({ areApplicationsDisplayed = false }) {
           Discord
         </Button>
       </Flex>
-      {areApplicationsDisplayed && <OnboardingSidecarApplications />}
+      {displayApplications && <OnboardingSidecarApplications />}
     </Div>
   )
 }

@@ -1,10 +1,9 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { Outlet } from 'react-router-dom'
 import { Flex } from 'honorable'
+
+import { useMemo } from 'react'
+
+import OnboardingContext, { OnboardigContextType } from '../../../contexts/OnboardingContext'
 
 import {
   ResponsiveLayoutContentContainer,
@@ -13,37 +12,54 @@ import {
   ResponsiveLayoutSpacer,
 } from '../../layout/ResponsiveLayout'
 
-import SelectedApplicationsContext, { SelectedApplicationsContextType } from '../../../contexts/SelectedApplicationsContext'
+import {
+  usePersistedApplications,
+  usePersistedConsole,
+  usePersistedProvider,
+  usePersistedStack,
+  usePersistedTerminalOnboardingSidebar,
+} from '../usePersistance'
 
-import { persistApplications, retrieveApplications } from '../persistance'
-
-import OnboardingSplash from './OnboardingSplash'
 import OnboardingTitle from './OnboardingTitle'
+import OnboardingSplash from './OnboardingSplash'
 import OnboardingSidenav from './OnboardingSidenav'
 import OnboardingSidecar from './OnboardingSidecar'
 
-function OnboardingRoot({
-  showSplashScreen = false,
-  stepIndex = 0,
-  childIsReady = true,
-  cliMode = false,
-  onRestart = () => {},
-  children,
-}) {
-  const [selectedApplications, setSelectedApplications] = useState<any[]>(retrieveApplications())
-  const selectedApplicationsContextValue = useMemo<SelectedApplicationsContextType>(() => ({ selectedApplications, setSelectedApplications }), [selectedApplications])
+import useStepIndex from './useStepIndex'
 
-  const handleRestart = useCallback(() => {
-    setSelectedApplications([])
-    onRestart()
-  }, [onRestart])
-
-  useEffect(() => {
-    persistApplications(selectedApplications)
-  }, [selectedApplications])
+function OnboardingRoot() {
+  const stepIndex = useStepIndex()
+  const [applications, setApplications] = usePersistedApplications()
+  const [provider, setProvider] = usePersistedProvider()
+  const [stack, setStack] = usePersistedStack()
+  const [console, setConsole] = usePersistedConsole() // Wether to install the console or not
+  const [terminalOnboardingSidebar, setTerminalOnboardingSidebar] = usePersistedTerminalOnboardingSidebar() // Wether to force the display of the demo in the terminal sidebar
+  const onboardingContextValue = useMemo<OnboardigContextType>(() => ({
+    applications,
+    setApplications,
+    provider,
+    setProvider,
+    stack,
+    setStack,
+    console,
+    setConsole,
+    terminalOnboardingSidebar,
+    setTerminalOnboardingSidebar,
+  }), [
+    applications,
+    setApplications,
+    provider,
+    setProvider,
+    stack,
+    setStack,
+    console,
+    setConsole,
+    terminalOnboardingSidebar,
+    setTerminalOnboardingSidebar,
+  ])
 
   return (
-    <SelectedApplicationsContext.Provider value={selectedApplicationsContextValue}>
+    <OnboardingContext.Provider value={onboardingContextValue}>
       <Flex
         width="100%"
         height="100%"
@@ -53,53 +69,47 @@ function OnboardingRoot({
         overflowY="auto"
       >
         <OnboardingSplash
-          showSplashScreen={showSplashScreen}
+          childIsReady
+          showSplashScreen
           splashTimeout={1200}
-          childIsReady={childIsReady}
         >
-          {childIsReady && (
-            <Flex
-              position="relative"
-              width="100%"
-              flexGrow={1}
-              overflow="hidden"
+          <Flex
+            position="relative"
+            width="100%"
+            flexGrow={1}
+            overflow="hidden"
+          >
+            <ResponsiveLayoutSpacer />
+            <ResponsiveLayoutSidenavContainer
+              marginTop={82}
+              marginRight={30}
+              paddingRight="xxsmall"
+              overflowY="auto"
             >
-              <ResponsiveLayoutSpacer />
-              <ResponsiveLayoutSidenavContainer
-                marginTop={82}
-                marginRight={30}
-                paddingRight="xxsmall"
-                overflowY="auto"
-              >
-                <OnboardingSidenav
-                  stepIndex={stepIndex}
-                  cliMode={cliMode}
-                  onRestart={handleRestart}
-                />
-              </ResponsiveLayoutSidenavContainer>
-              <ResponsiveLayoutContentContainer
-                overflowY="auto"
-                paddingBottom="large"
-                paddingHorizontal="xxsmall"
-                marginRight-desktop-down={30}
-              >
-                <OnboardingTitle />
-                {children}
-              </ResponsiveLayoutContentContainer>
-              <ResponsiveLayoutSidecarContainer
-                marginLeft={30}
-                marginTop={57}
-                marginRight="xlarge"
-                overflowY="auto"
-              >
-                <OnboardingSidecar areApplicationsDisplayed={stepIndex > 0} />
-              </ResponsiveLayoutSidecarContainer>
-              <ResponsiveLayoutSpacer />
-            </Flex>
-          )}
+              <OnboardingSidenav />
+            </ResponsiveLayoutSidenavContainer>
+            <ResponsiveLayoutContentContainer
+              overflowY="auto"
+              paddingBottom="large"
+              paddingHorizontal="xxsmall"
+              marginRight-desktop-down={30}
+            >
+              <OnboardingTitle />
+              <Outlet />
+            </ResponsiveLayoutContentContainer>
+            <ResponsiveLayoutSidecarContainer
+              marginLeft={30}
+              marginTop={57}
+              marginRight="xlarge"
+              overflowY="auto"
+            >
+              <OnboardingSidecar displayApplications={stepIndex > 0} />
+            </ResponsiveLayoutSidecarContainer>
+            <ResponsiveLayoutSpacer />
+          </Flex>
         </OnboardingSplash>
       </Flex>
-    </SelectedApplicationsContext.Provider>
+    </OnboardingContext.Provider>
   )
 }
 

@@ -2,8 +2,8 @@ import {
   CONSOLE_LOCAL_STORAGE_KEY,
   PROVIDER_LOCAL_STORAGE_KEY,
   SELECTED_APPLICATIONS_LOCAL_STORAGE_KEY,
-  SHOULD_USE_ONBOARDING_TERMINAL_SIDEBAR_LOCAL_STORAGE_KEY,
   STACK_NAME_LOCAL_STORAGE_KEY,
+  TERMINAL_ONBOARDING_SIDEBAR_LOCAL_STORAGE_KEY,
 } from './constants'
 
 export function persistApplications(applications: any[]) {
@@ -26,7 +26,7 @@ export function persistProvider(provider: string) {
 }
 
 export function retrieveProvider() {
-  return localStorage.getItem(PROVIDER_LOCAL_STORAGE_KEY)
+  return localStorage.getItem(PROVIDER_LOCAL_STORAGE_KEY) || ''
 }
 
 export function persistStack(stack: any) {
@@ -50,10 +50,10 @@ export function retrieveConsole() {
   return localStorage.getItem(PROVIDER_LOCAL_STORAGE_KEY) === 'true'
 }
 
-export function persistShouldUseOnboardingTerminalSidebar(shouldUseOnboardingTerminalSidebar: boolean) {
-  localStorage.setItem(SHOULD_USE_ONBOARDING_TERMINAL_SIDEBAR_LOCAL_STORAGE_KEY, shouldUseOnboardingTerminalSidebar.toString())
+export function persistTerminalOnboardingSidebar(terminalOnboardingSidebar: boolean) {
+  localStorage.setItem(TERMINAL_ONBOARDING_SIDEBAR_LOCAL_STORAGE_KEY, terminalOnboardingSidebar.toString())
 }
 
-export function retrieveShouldUseOnboardingTerminalSidebar() {
-  return localStorage.getItem(SHOULD_USE_ONBOARDING_TERMINAL_SIDEBAR_LOCAL_STORAGE_KEY) === 'true'
+export function retrieveTerminalOnboardingSidebar() {
+  return localStorage.getItem(TERMINAL_ONBOARDING_SIDEBAR_LOCAL_STORAGE_KEY) === 'true'
 }

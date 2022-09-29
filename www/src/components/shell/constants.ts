@@ -65,4 +65,4 @@ export const SELECTED_APPLICATIONS_LOCAL_STORAGE_KEY = 'onboarding-selected-appl
 export const PROVIDER_LOCAL_STORAGE_KEY = 'onboarding-provider'
 export const STACK_NAME_LOCAL_STORAGE_KEY = 'onboarding-stack-name'
 export const CONSOLE_LOCAL_STORAGE_KEY = 'onboarding-console'
-export const SHOULD_USE_ONBOARDING_TERMINAL_SIDEBAR_LOCAL_STORAGE_KEY = 'onboarding-terminal-sidebar'
+export const TERMINAL_ONBOARDING_SIDEBAR_LOCAL_STORAGE_KEY = 'onboarding-terminal-sidebar'

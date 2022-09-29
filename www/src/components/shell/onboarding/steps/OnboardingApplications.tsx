@@ -29,16 +29,15 @@ import { useQuery } from '@apollo/client'
 import capitalize from 'lodash/capitalize'
 import Fuse from 'fuse.js'
 
-import SelectedApplicationsContext from 'contexts/SelectedApplicationsContext'
+import OnboardingContext from '../../../../contexts/OnboardingContext'
 
-import { persistConsole, persistProvider, persistStack } from 'components/shell.old/persistance'
+import { APPLICATIONS_QUERY, STACK_QUERY } from '../../queries'
+import { MAX_SELECTED_APPLICATIONS } from '../../constants'
+import useOnboarded from '../../useOnboarded'
 
-import { APPLICATIONS_QUERY, STACK_QUERY } from '../queries'
-import { MAX_SELECTED_APPLICATIONS } from '../constants'
+import OnboardingCard from '../OnboardingCard'
 
-import useOnboarded from '../useOnboarded'
-
-import OnboardingCard from './OnboardingCard'
+import useOnboardingNavigation from '../useOnboardingNavigation'
 
 const searchOptions = {
   keys: ['name'],
@@ -50,7 +49,13 @@ function OnboardingApplications() {
   const stackName = searchParams.get('stackName')
   const stackProvider = searchParams.get('stackProvider')
   const isStack = !!(stackName && stackProvider)
-  const { selectedApplications, setSelectedApplications } = useContext(SelectedApplicationsContext)
+  const {
+    applications: selectedApplications,
+    setApplications: setSelectedApplications,
+    setStack,
+    setProvider,
+    setConsole,
+  } = useContext(OnboardingContext)
   const [search, setSearch] = useState('')
   const [shouldInstallConsole, setShouldInstallConsole] = useState(true)
   const { data: applicationsData, loading: applicationsLoading, error: applicationsError } = useQuery(APPLICATIONS_QUERY)
@@ -63,6 +68,7 @@ function OnboardingApplications() {
   })
   const { mutation: onboardMutation, fresh } = useOnboarded()
   const navigate = useNavigate()
+  const { nextTo } = useOnboardingNavigation()
 
   const getApplications = useCallback(() => {
     if (!applicationsData || (isStack && !stackData)) return []
@@ -79,9 +85,9 @@ function OnboardingApplications() {
 
   useEffect(() => {
     if (isStack && stackData) {
-      persistStack(stackData.stack)
+      setStack(stackData.stack)
     }
-  }, [isStack, stackData])
+  }, [isStack, stackData, setStack])
 
   useEffect(() => {
     if (isStack && stackData && applicationsData) {
@@ -91,13 +97,13 @@ function OnboardingApplications() {
 
   useEffect(() => {
     if (stackProvider) {
-      persistProvider(stackProvider)
+      setProvider(stackProvider)
     }
-  }, [stackProvider])
+  }, [stackProvider, setProvider])
 
   useEffect(() => {
-    persistConsole(isStack ? shouldInstallConsole : false)
-  }, [isStack, shouldInstallConsole])
+    setConsole(isStack ? shouldInstallConsole : false)
+  }, [isStack, shouldInstallConsole, setConsole])
 
   function toggleApplication(application: any) {
     setSelectedApplications(applications => (
@@ -309,7 +315,7 @@ function OnboardingApplications() {
         <Button
           primary
           as={Link}
-          to="/shell/onboarding/git"
+          to={nextTo}
           disabled={!selectedApplications.length}
           marginLeft="medium"
         >

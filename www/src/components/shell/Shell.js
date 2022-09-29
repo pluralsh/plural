@@ -51,7 +51,7 @@ function Shell({ shell }) {
       console.error(error)
     }
 
-    term.write(`Booting into your ${shell.provider} shell...\r\n\r\n`)
+    term.write(`Booting into your ${shell.provider} shell...\r\n(feel free to refresh the page if tmux gets out of whack)\r\n\r\n`)
     chan.onError(console.log)
     chan.on('stdo', ({ message }) => term.write(decodeBase64(message)))
     chan.join()

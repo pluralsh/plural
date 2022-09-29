@@ -99,6 +99,8 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
   }, [isStack, shouldInstallConsole])
 
   function toggleApplication(application: any) {
+    if (isStack) return
+
     setSelectedApplications(applications => (
       applications.find(a => a.id === application.id)
         ? applications.filter(a => a.id !== application.id)
@@ -258,8 +260,8 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
               imageUrl={application.darkIcon || application.icon}
               label={application.name}
               checked={!!selectedApplications.find(a => a.id === application.id)}
-              onClick={() => (isStack ? null : toggleApplication(application))}
-              cursor={selectedApplications.length >= MAX_SELECTED_APPLICATIONS && !selectedApplications.find(a => a.id === application.id) ? 'not-allowed' : 'pointer'}
+              onClick={() => toggleApplication(application)}
+              cursor={isStack ? 'auto' : selectedApplications.length >= MAX_SELECTED_APPLICATIONS && !selectedApplications.find(a => a.id === application.id) ? 'not-allowed' : 'pointer'}
               opacity={selectedApplications.length >= MAX_SELECTED_APPLICATIONS && !selectedApplications.find(a => a.id === application.id) ? 0.5 : 1}
             />
           ))}

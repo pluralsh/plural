@@ -51,7 +51,7 @@ function Shell({ shell }) {
       console.error(error)
     }
 
-    term.write(`Booting into your ${shell.provider} shell...\r\n\r\n`)
+    term.write(`Booting into your ${shell.provider} shell...\r\n\r\nIt can take a few minutes to load. Try refreshing the page if it gets stuck for too long.\r\n`)
     chan.onError(err => console.error(`Unknown error during booting into your shell: ${err}`))
     chan.on('stdo', ({ message }) => term.write(decodeBase64(message)))
     chan.join()

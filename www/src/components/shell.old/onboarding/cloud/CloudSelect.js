@@ -2,7 +2,7 @@ import { useContext, useState } from 'react'
 import { Flex, Img, P } from 'honorable'
 import { Button, CloudIcon } from 'pluralsh-design-system'
 
-import { persistProvider } from 'components/shell/persistance'
+import { persistProvider } from 'components/shell.old/persistance'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'
 

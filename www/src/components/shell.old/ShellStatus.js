@@ -99,7 +99,8 @@ export function ShellStatus({ shell: { status } }) {
         <Text
           size="small"
           color="dark-3"
-        >Give us a minute as your shell instance is provisioning
+        >
+          Give us a minute as your shell instance is provisioning
         </Text>
       </Box>
     </Box>

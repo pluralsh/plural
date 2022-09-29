@@ -5,7 +5,7 @@ import { Box, Drop } from 'grommet'
 import { MenuItem, Select } from 'honorable'
 import { Button, FormField } from 'pluralsh-design-system'
 
-import { persistProvider } from 'components/shell/persistance'
+import { persistProvider } from 'components/shell.old/persistance'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'
 

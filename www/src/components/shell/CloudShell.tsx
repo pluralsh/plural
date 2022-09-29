@@ -2,6 +2,10 @@ import { useEffect, useState } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
 import { useLocation } from 'react-router-dom'
 
+import { LoopingLogo } from 'pluralsh-design-system'
+
+import { Flex } from 'honorable'
+
 import { AUTHENTICATION_URLS_QUERY, CLOUD_SHELL_QUERY, REBOOT_SHELL_MUTATION } from './queries'
 import { Terminal } from './Terminal'
 
@@ -27,6 +31,22 @@ function CloudShell() {
   if (shellData?.shell?.alive || created) {
     return (
       <Terminal />
+    )
+  }
+
+  // Don't show onboarding until we're sure we're not going to load the terminal
+  // Showing onboarding will mess with local storage vars needed for first load
+  // of the terminal
+  if (!shellData) {
+    return (
+      <Flex
+        flexGrow={1}
+        align="center"
+        justify="center"
+        padding="xlarge"
+      >
+        <LoopingLogo />
+      </Flex>
     )
   }
 

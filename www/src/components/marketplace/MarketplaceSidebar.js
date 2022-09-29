@@ -117,7 +117,7 @@ function MarketplaceSidebar(props) {
     )
   }
 
-  function renderPublishers() {
+  function _renderPublishers() {
     const sortedPublishers = ['Plural']
 
     return (

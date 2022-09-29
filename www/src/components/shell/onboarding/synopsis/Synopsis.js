@@ -13,7 +13,7 @@ import OnboardingCard from '../OnboardingCard'
 
 function Synopsis() {
   const {
-    scm, workspace, previous, next, demoId, setSection, ...rest
+    scm, workspace, previous, next, demoId, setSection, ..._rest
   } = useContext(CreateShellContext)
 
   return (

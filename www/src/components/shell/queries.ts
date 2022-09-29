@@ -86,6 +86,23 @@ export const APPLICATIONS_QUERY = gql`
   ${PageInfo}
 `
 
+export const STACKS_QUERY = gql`
+  query Stacks($featured: Boolean) {
+    stacks(featured: $featured, first: 10) {
+      pageInfo {
+        ...PageInfo
+      }
+      edges {
+        node {
+          ...StackFragment
+        }
+      }
+    }
+  }
+  ${PageInfo}
+  ${StackFragment}
+`
+
 export const STACK_QUERY = gql`
   query StackQuery($name: String!, $provider: Provider!) {
     stack(name: $name, provider: $provider) {

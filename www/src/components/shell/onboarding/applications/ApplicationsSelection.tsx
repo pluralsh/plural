@@ -29,7 +29,7 @@ import SelectedApplicationsContext from 'contexts/SelectedApplicationsContext'
 
 import { persistConsole, persistProvider, persistStack } from 'components/shell/persistance'
 
-import { APPLICATIONS_QUERY, STACK_QUERY } from '../../queries'
+import { APPLICATIONS_QUERY, STACKS_QUERY, STACK_QUERY } from '../../queries'
 import { MAX_SELECTED_APPLICATIONS } from '../../constants'
 
 import OnboardingCard from '../OnboardingCard'
@@ -53,6 +53,13 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
   const [search, setSearch] = useState('')
   const [shouldInstallConsole, setShouldInstallConsole] = useState(true)
   const { data: applicationsData, loading: applicationsLoading, error: applicationsError } = useQuery(APPLICATIONS_QUERY)
+  const { data: stacksData } = useQuery(STACKS_QUERY,
+    {
+      variables: {
+        featured: true,
+      },
+      skip: isStack,
+    })
   const { data: stackData, loading: stackLoading, error: stackError } = useQuery(STACK_QUERY, {
     variables: {
       name: stackName,
@@ -63,6 +70,7 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
   const { mutation: onboardMutation, fresh } = useOnboarded()
   const navigate = useNavigate()
 
+  console.log('stacksData', stacksData)
   const getApplications = useCallback(() => {
     if (!applicationsData || (isStack && !stackData)) return []
 

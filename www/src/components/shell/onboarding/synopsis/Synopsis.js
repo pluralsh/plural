@@ -16,9 +16,6 @@ function Synopsis() {
     scm, workspace, previous, next, demoId, setSection, ...rest
   } = useContext(CreateShellContext)
 
-  console.log(workspace)
-  console.log(rest)
-
   return (
     <>
       <OnboardingCard

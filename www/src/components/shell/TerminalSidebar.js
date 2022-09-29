@@ -11,7 +11,11 @@ import {
   Ul,
 } from 'honorable'
 import { Fireworks } from 'fireworks-js/dist/react'
-import { Chip, InfoIcon, Modal } from 'pluralsh-design-system'
+import {
+  ArrowTopRightIcon, Chip, InfoIcon, Modal,
+} from 'pluralsh-design-system'
+
+import { useNavigate } from 'react-router-dom'
 
 import CodeLine from '../utils/CodeLine'
 
@@ -49,10 +53,11 @@ const steps = [
 --- */
 
 function TerminalSidebar({ shell, showCheatsheet, ...props }) {
+  const navigate = useNavigate()
   const [, refresh] = useState(true) // See below
   const { mutation, fresh } = useOnboarded()
   const shouldUseTerminalSidebar = retrieveShouldUseOnboardingTerminalSidebar()
-  const { command, type: commandType } = usePluralCommand() // Could be put inside Step2 but stays here for eager loading
+  const { command, type: commandType } = usePluralCommand(shell) // Could be put inside Step2 but stays here for eager loading
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [stepIndex, setStepIndex] = useState(0)
   const { workingSteps, skipConsoleInstall } = useMemo(() => {
@@ -69,8 +74,6 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
   }, [])
 
   const { title, Component } = workingSteps[stepIndex]
-
-  console.log(shell)
 
   function markDemoAsComplete() {
     mutation()
@@ -209,21 +212,51 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
         onClose={handleModalClose}
         borderTop="4px solid border-success"
       >
-        <P body1>
-          Congratulations, you've installed your first Plural application!
-          Next, you can view your deployed application in the Plural Console.
-        </P>
-        <Button
-          primary
-          width="100%"
-          marginTop="large"
-          as="a"
-          href={`https://console.${shell.subdomain}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Go to Plural Console
-        </Button>
+        {skipConsoleInstall && (
+          <Div>
+            <P body1>
+              Congratulations, you've installed your first Plural application!
+              Next, you can view your installed application in our marketplace.
+            </P>
+            <Button
+              primary
+              width="100%"
+              marginTop="large"
+              onClick={() => navigate('/installed')}
+            >
+              View your apps
+            </Button>
+          </Div>
+        )}
+
+        {!skipConsoleInstall && (
+          <Div>
+            <P body1>
+              Congratulations, you've installed your first Plural application!
+              Next, you can view your deployed application in the Plural Console.
+            </P>
+            <Button
+              primary
+              width="100%"
+              marginTop="large"
+              as="a"
+              href={`https://console.${shell.subdomain}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              endIcon={<ArrowTopRightIcon />}
+            >
+              Go to Plural Console
+            </Button>
+            <Button
+              secondary
+              width="100%"
+              marginTop="large"
+              onClick={() => navigate('/marketplace')}
+            >
+              Go to marketplace
+            </Button>
+          </Div>
+        )}
         <P
           body2
           marginTop="large"
@@ -473,7 +506,7 @@ function Step3() {
       <CodeLine marginTop="medium">
         plural deploy --commit "your message"
       </CodeLine>
-      <P
+      <Div
         body1
         marginTop="medium"
       >
@@ -488,7 +521,7 @@ function Step3() {
         </Ul>
         Now grab a coffee or your favorite hot beverage while we wait for your cloud provider to provision your
         infrastructure.
-      </P>
+      </Div>
     </Div>
   )
 }
@@ -525,7 +558,7 @@ function Step4() {
             bold
           >Wait for your cluster to build
           </P>
-          <P
+          <Div
             body2
             color="text-light"
           >After
@@ -538,7 +571,7 @@ function Step4() {
             </Chip>
             is done, all your applications and the Plural Console will
             be up and ready to access.
-          </P>
+          </Div>
         </Flex>
       </Flex>
       <P

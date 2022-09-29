@@ -47,7 +47,7 @@ export function persistConsole(shouldUseConsole: boolean) {
 }
 
 export function retrieveConsole() {
-  return localStorage.getItem(PROVIDER_LOCAL_STORAGE_KEY) === 'true'
+  return localStorage.getItem(CONSOLE_LOCAL_STORAGE_KEY) === 'true'
 }
 
 export function persistShouldUseOnboardingTerminalSidebar(shouldUseOnboardingTerminalSidebar: boolean) {

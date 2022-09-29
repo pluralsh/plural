@@ -52,7 +52,7 @@ function Shell({ shell }) {
     }
 
     term.write(`Booting into your ${shell.provider} shell...\r\n\r\n`)
-    chan.onError(console.log)
+    chan.onError(err => console.error(`Unknown error during booting into your shell: ${err}`))
     chan.on('stdo', ({ message }) => term.write(decodeBase64(message)))
     chan.join()
 

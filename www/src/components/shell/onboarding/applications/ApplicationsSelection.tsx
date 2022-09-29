@@ -241,7 +241,7 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
               icon={(
                 <StackIcon />
               )}
-              label={stack.name}
+              label={`${capitalize(stack.name)} Stack`}
               border={`1px solid ${hueToColor[hues[i]]}`}
               checked={false}
               as={Link}

@@ -1,7 +1,73 @@
-import { Div, Flex, Text } from 'honorable'
-import { ErrorIcon } from 'pluralsh-design-system'
-
 import { deepFetch } from '../../../utils/graphql'
+
+import {
+  SECTION_REPOSITORY,
+  SECTION_SELECT,
+  SECTION_WORKSPACE,
+} from '../constants'
+
+import {
+  usePersistedGitData,
+  usePersistedProvider,
+  usePersistedWorkspace,
+} from '../usePersistance'
+
+import Provider from './common/providerTypes'
+
+const GITHUB_VALIDATIONS = [
+  { field: 'scm.name', name: 'repository', func: isAlphanumeric },
+]
+
+const GITLAB_VALIDATIONS = [
+  { field: 'scm.name', name: 'repository', func: isValidGitlabName },
+]
+
+const SCM_VALIDATIONS = {
+  [Provider.GITHUB]: GITHUB_VALIDATIONS,
+  [Provider.GITLAB]: GITLAB_VALIDATIONS,
+}
+
+const AWS_VALIDATIONS = [
+  { field: 'credentials.aws.accessKeyId', func: stringExists, name: 'access key id' },
+  { field: 'credentials.aws.secretAccessKey', func: stringExists, name: 'secret access key' },
+]
+
+const GCP_VALIDATIONS = [
+  { field: 'credentials.gcp.applicationCredentials', func: stringExists, name: 'application credentials' },
+  { field: 'workspace.project', func: isAlphanumeric, name: 'project' },
+]
+
+const CLOUD_VALIDATIONS = {
+  AWS: AWS_VALIDATIONS,
+  GCP: GCP_VALIDATIONS,
+}
+
+const CLOUD_WORKSPACE_VALIDATIONS = [
+  { field: 'workspace.cluster', func: isAlphanumeric, name: 'cluster' },
+  { field: 'workspace.bucketPrefix', func: isAlphanumeric, name: 'bucket prefix' },
+  { field: 'workspace.subdomain', func: isSubdomain, name: 'subdomain' },
+]
+
+const VALIDATIONS = {
+  [SECTION_REPOSITORY]: GITHUB_VALIDATIONS,
+  [SECTION_WORKSPACE]: CLOUD_WORKSPACE_VALIDATIONS,
+}
+
+function getValidations(provider, scmProvider, section) {
+  if (section === SECTION_SELECT) return CLOUD_VALIDATIONS[provider]
+  if (section === SECTION_REPOSITORY) return SCM_VALIDATIONS[scmProvider]
+
+  return VALIDATIONS[section]
+}
+
+function useValidation(section: string) {
+  const [provider] = usePersistedProvider()
+  const [{ scmProvider, scm }] = usePersistedGitData()
+  const [workspace] = usePersistedWorkspace()
+  const validations = getValidations(provider, scmProvider, section)
+
+  return getExceptions(validations, { workspace, scm })
+}
 
 export function validator(
   object,
@@ -85,59 +151,4 @@ export function getExceptions(validations, object) {
   return { error: allExceptions.length > 0, exceptions: allExceptions }
 }
 
-// Should probably pull this into the design system at some point
-function Exception({ field, message }) {
-  return (
-    <Flex
-      width="100%"
-      direction="row"
-      marginBottom="xsmall"
-      {...{ ':last-child': { marginBottom: 0 } }}
-    >
-      <Flex
-        marginRight="medium"
-        align="center"
-        justify="center"
-      >
-        <ErrorIcon
-          size={16}
-          color="icon-error"
-        />
-      </Flex>
-      <Text
-        body2
-        color="text-light"
-      >
-        {`Error: ${field} ${message}`}
-      </Text>
-    </Flex>
-  )
-}
-
-export function Exceptions({ exceptions, filterEmpty = true }) {
-  const workingExceptions = filterEmpty ? exceptions.filter(({ empty }) => !empty) : exceptions
-
-  if (workingExceptions.length === 0) return null
-
-  return (
-    <Div
-      mt={1}
-      borderRadius="medium"
-      backgroundColor="fill-two"
-      overflow="hidden"
-    >
-      <Div
-        padding="medium"
-        borderTop="3px solid icon-error"
-      >
-        {workingExceptions.map(({ field, message, empty }) => (
-          <Exception
-            key={`${field}-${message}-${empty}`}
-            field={field}
-            message={message}
-          />
-        ))}
-      </Div>
-    </Div>
-  )
-}
+export default useValidation

@@ -15,10 +15,10 @@ import OnboardingContext from '../../../contexts/OnboardingContext'
 
 import {
   SECTION_APPLICATIONS,
-  SECTION_CLOUD_SELECT,
-  SECTION_CLOUD_WORKSPACE,
-  SECTION_GIT_PROVIDER,
   SECTION_SYNOPSIS,
+  SECTION_GIT_PROVIDER,
+  SECTION_SELECT,
+  SECTION_WORKSPACE,
 } from '../constants'
 
 import useStepIndex from './useStepIndex'
@@ -26,8 +26,8 @@ import useStepIndex from './useStepIndex'
 const stepsDemo = [
   { key: SECTION_APPLICATIONS, stepTitle: 'Choose applications', IconComponent: PackageIcon },
   { key: SECTION_GIT_PROVIDER, stepTitle: 'Create a git repository', IconComponent: NetworkInterfaceIcon },
-  { key: SECTION_CLOUD_SELECT, stepTitle: 'Choose a cloud', IconComponent: CloudIcon },
-  { key: SECTION_CLOUD_WORKSPACE, stepTitle: 'Configure workspace', IconComponent: GearTrainIcon },
+  { key: SECTION_SELECT, stepTitle: 'Choose a cloud', IconComponent: CloudIcon },
+  { key: SECTION_WORKSPACE, stepTitle: 'Configure workspace', IconComponent: GearTrainIcon },
   { key: SECTION_SYNOPSIS, stepTitle: 'Launch cloud shell', IconComponent: BrowserIcon },
 ]
 

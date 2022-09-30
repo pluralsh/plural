@@ -3,7 +3,10 @@ import { CaretDownIcon, CheckIcon } from 'pluralsh-design-system'
 import { useCallback, useRef, useState } from 'react'
 
 function OrgOption({
-  org, current, setOrg, render,
+  org,
+  current,
+  setOrg,
+  render,
 }) {
   const isCurrent = org.id === current.id
 
@@ -13,7 +16,7 @@ function OrgOption({
       gap="small"
       align="center"
       hoverIndicator="tone-light"
-      onClick={isCurrent ? null : () => setOrg(org)}
+      onClick={isCurrent ? () => {} : () => setOrg(org)}
     >
       {render(org)}
       {isCurrent && (
@@ -29,7 +32,7 @@ function OrgOption({
 export function OrgInput({
   name, setName, org, orgs, setOrg, render,
 }) {
-  const ref = useRef()
+  const ref = useRef<HTMLDivElement>(null)
   const [open, setOpen] = useState(false)
   const close = useCallback(() => setOpen(false), [setOpen])
   const doSetOrg = useCallback(org => {
@@ -64,7 +67,7 @@ export function OrgInput({
           </Box>
           {open && (
             <Drop
-              target={ref.current}
+              target={ref.current as object}
               align={{ top: 'bottom' }}
               onClickOutside={close}
               onEsc={close}

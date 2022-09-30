@@ -1,19 +1,20 @@
-import { useContext } from 'react'
 import {
-  A, Flex, Img, Input, MenuItem, Select, Text,
+  A,
+  Flex,
+  Img,
+  Input,
+  MenuItem,
+  Select,
+  Text,
 } from 'honorable'
 import { FormField } from 'pluralsh-design-system'
 
-import CreateShellContext from '../../../../contexts/CreateShellContext'
+import { usePersistedGitData } from '../../../usePersistance'
 
-import { GITHUB_VALIDATIONS, useGithubState } from './github'
-import { GITLAB_VALIDATIONS, useGitlabState } from './gitlab'
-import { Provider } from './types'
+import Provider from '../../common/providerTypes'
 
-export const SCM_VALIDATIONS = {
-  [Provider.GITHUB]: GITHUB_VALIDATIONS,
-  [Provider.GITLAB]: GITLAB_VALIDATIONS,
-}
+import useGithubState from './useGithubState'
+import useGitlabState from './useGitlabState'
 
 function OrgDisplay({ name, avatarUrl }) {
   return (
@@ -34,14 +35,15 @@ function OrgDisplay({ name, avatarUrl }) {
       )}
       <Text
         body1
-      >{name}
+      >
+        {name}
       </Text>
     </Flex>
   )
 }
 
 function OrgInput({ org, orgs, doSetOrg }) {
-  const { scm: { provider }, authUrlData } = useContext(CreateShellContext)
+  const [{ scm: { provider }, authUrlData }] = usePersistedGitData()
 
   const altProvider = provider === Provider.GITHUB ? Provider.GITLAB : Provider.GITHUB
   const altProviderUrl = authUrlData?.scmAuthorization?.find(({ provider: p }) => p === altProvider)?.url
@@ -108,13 +110,12 @@ function OrgInput({ org, orgs, doSetOrg }) {
 }
 
 function RepositoryInput({ scmState }) {
-  const { scm, setScm } = useContext(CreateShellContext)
+  const [{ scm }, setGitData] = usePersistedGitData()
+  const maxLen = 100
 
   function setName(name) {
-    setScm({ ...scm, name })
+    setGitData(x => ({ ...x, scm: { ...x.scm, name } }))
   }
-
-  const maxLen = 100
 
   return (
     <>
@@ -141,7 +142,8 @@ function RepositoryInput({ scmState }) {
 }
 
 function GithubRepositoryInput() {
-  const { scm, setScm, accessToken } = useContext(CreateShellContext)
+  const [{ scm, accessToken }, setGitData] = usePersistedGitData()
+  const setScm = scm => setGitData(x => ({ ...x, scm }))
   const scmState = useGithubState({ scm, setScm, accessToken })
 
   return (
@@ -150,7 +152,8 @@ function GithubRepositoryInput() {
 }
 
 function GitlabRepositoryInput() {
-  const { scm, setScm, accessToken } = useContext(CreateShellContext)
+  const [{ scm, accessToken }, setGitData] = usePersistedGitData()
+  const setScm = scm => setGitData(x => ({ ...x, scm }))
   const scmState = useGitlabState({ scm, setScm, accessToken })
 
   return (
@@ -159,14 +162,14 @@ function GitlabRepositoryInput() {
 }
 
 export function ScmInput() {
-  const { scm: { provider: scmProvider } } = useContext(CreateShellContext)
+  const [{ scm }] = usePersistedGitData()
 
-  if (scmProvider === Provider.GITHUB) {
+  if (scm.provider === Provider.GITHUB) {
     return (
       <GithubRepositoryInput />
     )
   }
-  if (scmProvider === Provider.GITLAB) {
+  if (scm.provider === Provider.GITLAB) {
     return (
       <GitlabRepositoryInput />
     )

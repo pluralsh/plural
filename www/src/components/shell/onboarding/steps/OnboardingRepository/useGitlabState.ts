@@ -1,21 +1,14 @@
 import {
-  useCallback, useEffect, useMemo, useState,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
 } from 'react'
 import { Gitlab } from '@gitbeaker/browser'
 
-import { isValidGitlabName } from '../../validation'
-
-export const GITLAB_VALIDATIONS = [
-  {
-    field: 'scm.name',
-    name: 'repository',
-    func: isValidGitlabName,
-  },
-]
-
-export function useGitlabState({ scm, setScm, accessToken }) {
+function useGitlabState({ scm, setScm, accessToken }) {
   const client = useMemo(() => new Gitlab({ oauthToken: accessToken }), [accessToken])
-  const [orgs, setOrgs] = useState(null)
+  const [orgs, setOrgs] = useState<any>(null)
   const [org, setOrg] = useState(null)
   const doSetOrg = useCallback(org => {
     if (org.type === 'user') {
@@ -56,3 +49,5 @@ export function useGitlabState({ scm, setScm, accessToken }) {
     doSetOrg,
   }
 }
+
+export default useGitlabState

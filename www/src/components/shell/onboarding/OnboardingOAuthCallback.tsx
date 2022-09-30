@@ -7,12 +7,16 @@ import { Flex } from 'honorable'
 import { AUTHENTICATION_URLS_QUERY, SCM_TOKEN_QUERY } from '../queries'
 import { persistGitData } from '../persistance'
 
+import { SECTION_GIT } from '../constants'
+
 import DEBUG_SCM_TOKENS from './debug-tokens'
+import useOnboardingNavigation from './useOnboardingNavigation'
 
 function OnboardingOAuthCallback() {
   const { provider = '' } = useParams()
   const [searchParams] = useSearchParams()
   const code = searchParams.get('code')
+  const { nextTo } = useOnboardingNavigation(SECTION_GIT)
 
   const { data: authUrlData } = useQuery(AUTHENTICATION_URLS_QUERY)
 
@@ -23,7 +27,7 @@ function OnboardingOAuthCallback() {
     },
   })
 
-  // Do not remove this line, it is needed for dev
+  // Do not remove this line, it is needed for local onboarding development
   // Used to retrieve the token from production
   console.log(data)
 
@@ -33,15 +37,16 @@ function OnboardingOAuthCallback() {
   }
 
   useEffect(() => {
-    persistGitData({
+    persistGitData(x => ({
+      ...x,
       authUrlData,
       accessToken: data.scmToken,
-    })
+    }))
   }, [authUrlData, data])
 
-  if (authUrlData && data?.scmToken) {
+  if (authUrlData && data?.scmToken && nextTo) {
     return (
-      <Navigate to="/shell/onboarding/repository" />
+      <Navigate to={nextTo} />
     )
   }
 

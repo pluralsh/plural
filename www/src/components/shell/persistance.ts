@@ -1,10 +1,13 @@
 import {
   CONSOLE_LOCAL_STORAGE_KEY,
+  CREDENTIALS_LOCAL_STORAGE_KEY,
+  DEMO_ID_LOCAL_STORAGE_KEY,
   GIT_DATA_LOCAL_STORAGE_KEY,
   PROVIDER_LOCAL_STORAGE_KEY,
   SELECTED_APPLICATIONS_LOCAL_STORAGE_KEY,
-  STACK_NAME_LOCAL_STORAGE_KEY,
+  STACK_LOCAL_STORAGE_KEY,
   TERMINAL_ONBOARDING_SIDEBAR_LOCAL_STORAGE_KEY,
+  WORKSPACE_LOCAL_STORAGE_KEY,
 } from './constants'
 
 export function persistApplications(applications: any[]) {
@@ -31,12 +34,12 @@ export function retrieveProvider() {
 }
 
 export function persistStack(stack: any) {
-  localStorage.setItem(STACK_NAME_LOCAL_STORAGE_KEY, JSON.stringify(stack))
+  localStorage.setItem(STACK_LOCAL_STORAGE_KEY, JSON.stringify(stack))
 }
 
 export function retrieveStack() {
   try {
-    return JSON.parse(localStorage.getItem(STACK_NAME_LOCAL_STORAGE_KEY) as string) as any
+    return JSON.parse(localStorage.getItem(STACK_LOCAL_STORAGE_KEY) as string) as any
   }
   catch (error) {
     return null
@@ -72,4 +75,42 @@ export function retrieveGitData() {
   catch (error) {
     return {}
   }
+}
+
+export function persistWorkspace(workspace: any) {
+  localStorage.setItem(WORKSPACE_LOCAL_STORAGE_KEY, JSON.stringify(workspace))
+}
+
+export function retrieveWorkspace() {
+  try {
+    const res = JSON.parse(localStorage.getItem(WORKSPACE_LOCAL_STORAGE_KEY) as string) as any
+
+    return res || {}
+  }
+  catch (error) {
+    return {}
+  }
+}
+
+export function persistCredentials(credentials: any) {
+  localStorage.setItem(CREDENTIALS_LOCAL_STORAGE_KEY, JSON.stringify(credentials))
+}
+
+export function retrieveCredentials() {
+  try {
+    const res = JSON.parse(localStorage.getItem(CREDENTIALS_LOCAL_STORAGE_KEY) as string) as any
+
+    return res || {}
+  }
+  catch (error) {
+    return {}
+  }
+}
+
+export function persistDemoId(demoId: string) {
+  localStorage.setItem(DEMO_ID_LOCAL_STORAGE_KEY, demoId)
+}
+
+export function retrieveDemoId() {
+  return localStorage.getItem(DEMO_ID_LOCAL_STORAGE_KEY) || ''
 }

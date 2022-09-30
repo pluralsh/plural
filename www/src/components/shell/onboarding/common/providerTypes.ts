@@ -1,4 +1,4 @@
-export const Provider = {
+export default {
   GITLAB: 'GITLAB',
   GITHUB: 'GITHUB',
 }

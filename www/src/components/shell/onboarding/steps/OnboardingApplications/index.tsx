@@ -1,6 +1,5 @@
 import {
   useCallback,
-  useContext,
   useEffect,
   useState,
 } from 'react'
@@ -29,15 +28,20 @@ import { useQuery } from '@apollo/client'
 import capitalize from 'lodash/capitalize'
 import Fuse from 'fuse.js'
 
-import OnboardingContext from '../../../../contexts/OnboardingContext'
+import {
+  usePersistedApplications,
+  usePersistedConsole,
+  usePersistedProvider,
+  usePersistedStack,
+} from 'components/shell/usePersistance'
 
-import { APPLICATIONS_QUERY, STACK_QUERY } from '../../queries'
-import { MAX_SELECTED_APPLICATIONS } from '../../constants'
-import useOnboarded from '../../useOnboarded'
+import { APPLICATIONS_QUERY, STACK_QUERY } from '../../../queries'
+import { MAX_SELECTED_APPLICATIONS, SECTION_APPLICATIONS } from '../../../constants'
+import useOnboarded from '../../../useOnboarded'
 
-import OnboardingCard from '../OnboardingCard'
+import OnboardingCard from '../../OnboardingCard'
 
-import useOnboardingNavigation from '../useOnboardingNavigation'
+import useOnboardingNavigation from '../../useOnboardingNavigation'
 
 const searchOptions = {
   keys: ['name'],
@@ -49,13 +53,10 @@ function OnboardingApplications() {
   const stackName = searchParams.get('stackName')
   const stackProvider = searchParams.get('stackProvider')
   const isStack = !!(stackName && stackProvider)
-  const {
-    applications: selectedApplications,
-    setApplications: setSelectedApplications,
-    setStack,
-    setProvider,
-    setConsole,
-  } = useContext(OnboardingContext)
+  const [selectedApplications, setSelectedApplications] = usePersistedApplications()
+  const [, setProvider] = usePersistedProvider()
+  const [, setStack] = usePersistedStack()
+  const [, setConsole] = usePersistedConsole()
   const [search, setSearch] = useState('')
   const [shouldInstallConsole, setShouldInstallConsole] = useState(true)
   const { data: applicationsData, loading: applicationsLoading, error: applicationsError } = useQuery(APPLICATIONS_QUERY)
@@ -68,7 +69,7 @@ function OnboardingApplications() {
   })
   const { mutation: onboardMutation, fresh } = useOnboarded()
   const navigate = useNavigate()
-  const { nextTo } = useOnboardingNavigation()
+  const { nextTo } = useOnboardingNavigation(SECTION_APPLICATIONS)
 
   const getApplications = useCallback(() => {
     if (!applicationsData || (isStack && !stackData)) return []

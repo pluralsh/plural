@@ -1,22 +1,14 @@
-/* eslint-disable camelcase */
 import {
-  useCallback, useEffect, useMemo, useState,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
 } from 'react'
 import { Octokit } from '@octokit/core'
 
-import { isAlphanumeric } from '../../validation'
-
-export const GITHUB_VALIDATIONS = [
-  {
-    field: 'scm.name',
-    name: 'repository',
-    func: isAlphanumeric,
-  },
-]
-
-export function useGithubState({ scm, setScm, accessToken }) {
+function useGithubState({ scm, setScm, accessToken }) {
   const client = useMemo(() => new Octokit({ auth: accessToken }), [accessToken])
-  const [orgs, setOrgs] = useState(null)
+  const [orgs, setOrgs] = useState<any>(null)
   const [org, setOrg] = useState(null)
 
   const doSetOrg = useCallback(org => {
@@ -52,3 +44,5 @@ export function useGithubState({ scm, setScm, accessToken }) {
     doSetOrg,
   }
 }
+
+export default useGithubState

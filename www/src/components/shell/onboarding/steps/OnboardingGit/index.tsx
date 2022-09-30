@@ -8,14 +8,15 @@ import {
 import { Button } from 'pluralsh-design-system'
 import { useQuery } from '@apollo/client'
 
-import { AUTHENTICATION_URLS_QUERY } from '../../queries'
+import { SECTION_GIT } from '../../../constants'
+import { AUTHENTICATION_URLS_QUERY } from '../../../queries'
 
-import DEBUG_SCM_TOKENS from '../debug-tokens'
+import DEBUG_SCM_TOKENS from '../../debug-tokens'
 
-import OnboardingCard from '../OnboardingCard'
-import OnboardingCardButton from '../OnboardingCardButton'
-import { Github as GithubLogo, Gitlab as GitlabLogo } from '../icons'
-import useOnboardingNavigation from '../useOnboardingNavigation'
+import OnboardingCard from '../../OnboardingCard'
+import OnboardingCardButton from '../../OnboardingCardButton'
+import useOnboardingNavigation from '../../useOnboardingNavigation'
+import { Github as GithubLogo, Gitlab as GitlabLogo } from '../../icons'
 
 const providerToLogo = {
   github: <GithubLogo />,
@@ -29,7 +30,7 @@ const providerToDisplayName = {
 
 function CreateRepositoryCard() {
   const { data } = useQuery(AUTHENTICATION_URLS_QUERY)
-  const { previousTo } = useOnboardingNavigation()
+  const { previousTo } = useOnboardingNavigation(SECTION_GIT)
 
   return (
     <>
@@ -42,9 +43,8 @@ function CreateRepositoryCard() {
             <OnboardingCardButton
               key={provider}
               onClick={() => {
-                // Dev only
+                // Dev only, keep this line as it allows local development of the onboarding
                 if (process.env.NODE_ENV !== 'production' && DEBUG_SCM_TOKENS[provider]) {
-                  console.log('going to ', `/oauth/callback/${provider.toLowerCase()}/shell?code=abcd`)
                   window.location = `/oauth/callback/${provider.toLowerCase()}/shell?code=abcd` as (string & Location)
 
                   return

@@ -1,19 +1,21 @@
-import { useContext } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { Button } from 'pluralsh-design-system'
 
-import CreateShellContext from '../../../../contexts/CreateShellContext'
-import OnboardingNavSection from '../OnboardingNavSection'
-import { Exceptions } from '../../validation'
-import OnboardingCard from '../OnboardingCard'
+import OnboardingNavSection from '../../OnboardingNavSection'
+import OnboardingCard from '../../OnboardingCard'
+import Exceptions from '../../Exceptions'
 
 import useOnboardingNavigation from '../../useOnboardingNavigation'
 
+import useValidation from '../../useValidation'
+
+import { SECTION_REPOSITORY } from '../../../constants'
+
 import { ScmInput } from './ScmInput'
 
-export function OnboardingRepository() {
-  const { exceptions, error, next } = useOnboarding(CreateShellContext)
-  const { previousTo, nextTo } = useOnboardingNavigation()
+function OnboardingRepository() {
+  const { exceptions, error } = useValidation(SECTION_REPOSITORY)
+  const { previousTo, nextTo } = useOnboardingNavigation(SECTION_REPOSITORY)
 
   return (
     <>
@@ -42,3 +44,5 @@ export function OnboardingRepository() {
     </>
   )
 }
+
+export default OnboardingRepository

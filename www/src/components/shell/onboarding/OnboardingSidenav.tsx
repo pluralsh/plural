@@ -1,4 +1,4 @@
-import { A, Div } from 'honorable'
+import { A } from 'honorable'
 import {
   BrowserIcon,
   CloudIcon,

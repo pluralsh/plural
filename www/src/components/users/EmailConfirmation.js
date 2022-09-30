@@ -9,6 +9,7 @@ import { useParams } from 'react-router-dom'
 
 import { Icon } from 'components/utils/IconOld'
 
+import { useIsCurrentlyOnboarding } from '../shell/onboarding/useOnboarded'
 import { CurrentUserContext } from '../login/CurrentUser'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 import { LoopingLogo } from '../utils/AnimatedLogo'
@@ -64,10 +65,11 @@ export function VerifyEmailConfirmed() {
     variables: { attributes: { email: me.email, type: ResetTokenType.EMAIL } },
     onCompleted: () => setOpen(false),
   })
+  const isCurrentlyOnboarding = useIsCurrentlyOnboarding()
 
   const close = useCallback(() => setOpen(false), [setOpen])
 
-  if (me.emailConfirmed || me.serviceAccount || !open) return null
+  if (me.emailConfirmed || me.serviceAccount || !open || isCurrentlyOnboarding) return null
 
   return (
     <Layer

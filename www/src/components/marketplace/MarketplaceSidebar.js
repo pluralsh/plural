@@ -117,7 +117,7 @@ function MarketplaceSidebar(props) {
     )
   }
 
-  function renderPublishers() {
+  function _renderPublishers() {
     const sortedPublishers = ['Plural']
 
     return (
@@ -205,7 +205,8 @@ function MarketplaceSidebar(props) {
       {...props}
     >
       {renderCategories()}
-      {renderPublishers()}
+      {/* TODO: Enable once more publishers are available */}
+      {/* {renderPublishers()} */}
       {renderTags()}
     </Div>
   )

@@ -26,7 +26,7 @@ function OnboardingTitle() {
         <OnboardingTitleOnboarding />
       </Flex>
       <Hr
-        marginTop="xlarge"
+        marginTop={42}
         marginBottom="large"
       />
     </Div>

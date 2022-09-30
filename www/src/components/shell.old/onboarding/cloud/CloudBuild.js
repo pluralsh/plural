@@ -35,7 +35,6 @@ function CloudBuild() {
   }, [mutation])
 
   useEffect(() => {
-    console.log(results)
     if (results?.data?.demoProject?.ready && results?.data?.demoProject?.state === 'ENABLED') {
       const demo = results.data.demoProject
 

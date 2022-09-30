@@ -1,17 +1,19 @@
 import { useMemo, useState } from 'react'
 import {
   A,
-  Accordion,
   Button,
   Div,
-  ExtendTheme,
   Flex,
   Li,
   P,
   Ul,
 } from 'honorable'
 import { Fireworks } from 'fireworks-js/dist/react'
-import { Chip, InfoIcon, Modal } from 'pluralsh-design-system'
+import {
+  ArrowTopRightIcon, Chip, InfoIcon, Modal,
+} from 'pluralsh-design-system'
+
+import { useNavigate } from 'react-router-dom'
 
 import CodeLine from '../utils/CodeLine'
 
@@ -24,7 +26,7 @@ import {
   retrieveShouldUseOnboardingTerminalSidebar,
 } from './persistance'
 
-const sidebarWidth = 512
+const sidebarWidth = 420
 const steps = [
   {
     title: 'Install Plural Console',
@@ -35,7 +37,7 @@ const steps = [
     Component: Step2,
   },
   {
-    title: 'Deploy your cluster',
+    title: 'Deploy your apps',
     Component: Step3,
   },
   {
@@ -49,10 +51,11 @@ const steps = [
 --- */
 
 function TerminalSidebar({ shell, showCheatsheet, ...props }) {
+  const navigate = useNavigate()
   const [, refresh] = useState(true) // See below
   const { mutation, fresh } = useOnboarded()
   const shouldUseTerminalSidebar = retrieveShouldUseOnboardingTerminalSidebar()
-  const { command, type: commandType } = usePluralCommand() // Could be put inside Step2 but stays here for eager loading
+  const { command, type: commandType, quick } = usePluralCommand(shell) // Could be put inside Step2 but stays here for eager loading
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [stepIndex, setStepIndex] = useState(0)
   const { workingSteps, skipConsoleInstall } = useMemo(() => {
@@ -69,8 +72,6 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
   }, [])
 
   const { title, Component } = workingSteps[stepIndex]
-
-  console.log(shell)
 
   function markDemoAsComplete() {
     mutation()
@@ -127,6 +128,7 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
         >
           <Component
             command={command}
+            quick={quick}
             commandType={commandType}
             skipConsoleInstall={skipConsoleInstall}
             shell={shell}
@@ -170,7 +172,7 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
       <Div
         width={fresh || showCheatsheet ? sidebarWidth : '0'}
         opacity={fresh || showCheatsheet ? '1' : '0'}
-        marginRight={fresh || showCheatsheet ? 'xlarge' : '0'}
+        marginRight={fresh || showCheatsheet ? 'large' : '0'}
         transition="width 666ms ease, opacity 666ms linear, margin-right 666ms linear"
         maxHeight="100%"
         overflowX="auto"
@@ -209,21 +211,51 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
         onClose={handleModalClose}
         borderTop="4px solid border-success"
       >
-        <P body1>
-          Congratulations, you've installed your first Plural application!
-          Next, you can view your deployed application in the Plural Console.
-        </P>
-        <Button
-          primary
-          width="100%"
-          marginTop="large"
-          as="a"
-          href={`https://console.${shell.subdomain}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Go to Plural Console
-        </Button>
+        {skipConsoleInstall && (
+          <Div>
+            <P body1>
+              Congratulations, you've installed your first Plural application!
+              Next, you can view your installed application in our marketplace.
+            </P>
+            <Button
+              primary
+              width="100%"
+              marginTop="large"
+              onClick={() => navigate('/installed')}
+            >
+              View your apps
+            </Button>
+          </Div>
+        )}
+
+        {!skipConsoleInstall && (
+          <Div>
+            <P body1>
+              Congratulations, you've installed your first Plural application!
+              Next, you can view your deployed application in the Plural Console.
+            </P>
+            <Button
+              primary
+              width="100%"
+              marginTop="large"
+              as="a"
+              href={`https://console.${shell.subdomain}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              endIcon={<ArrowTopRightIcon />}
+            >
+              Go to Plural Console
+            </Button>
+            <Button
+              secondary
+              width="100%"
+              marginTop="large"
+              onClick={() => navigate('/marketplace')}
+            >
+              Go to marketplace
+            </Button>
+          </Div>
+        )}
         <P
           body2
           marginTop="large"
@@ -248,138 +280,155 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
   DEMO STEP 1
 --- */
 
-const extendedTheme = {
-  Accordion: {
-    Root: [
-      {
-        paddingLeft: 8,
-        paddingRight: 8,
-      },
-    ],
-    Title: [
-      {
-        subtitle2: true,
-      },
-    ],
-  },
+// const extendedTheme = {
+//   Accordion: {
+//     Root: [
+//       {
+//         paddingLeft: 8,
+//         paddingRight: 8,
+//       },
+//     ],
+//     Title: [
+//       {
+//         subtitle2: true,
+//       },
+//     ],
+//   },
+// }
+
+// function Guidance() {
+//   return (
+//     <ExtendTheme theme={extendedTheme}>
+//       <Accordion
+//         ghost
+//         title="Key terms"
+//       >
+//         <P body1>
+//           <strong>vpc_name:</strong> The vpc name we'll create for your cluster.
+//           This will be a separate vpc and should be named distinctly from any others in your account.
+//         </P>
+//         <P
+//           body1
+//           marginTop="small"
+//         >
+//           <strong>wal_bucket:</strong> Our postgres operator automatically ships write ahead logs to s3 for
+//           point-in-time backup and restore.
+//         </P>
+//         <P
+//           body1
+//           marginTop="small"
+//         >
+//           <strong>dns hostnames:</strong> You can specify any hostname under the plural dns domain you entered (xxx).
+//           Be sure to type the full name since we do validate they are formatted correctly.
+//         </P>
+//         <P
+//           body1
+//           marginTop="small"
+//         >
+//           <strong>Plural OIDC:</strong> You can opt in to using Plural as an OpenID Connect provider, dramatically
+//           simplifying enabling secure login for your plural apps.
+//           This is highly recommended.
+//         </P>
+//         <P
+//           body1
+//           marginTop="small"
+//         >
+//           <strong>git_user:</strong> Plural will perform Git operations on your behalf to manage your config
+//           repository.
+//           Just use your GitHub username here, unless you have a dedicated user for Ops.
+//         </P>
+//         <P
+//           body1
+//           marginTop="small"
+//         >
+//           <strong>git_email:</strong> Use the email tied to the account associated with git_user.
+//         </P>
+//         <P
+//           body1
+//           marginTop="small"
+//         >
+//           <strong>admin_name:</strong> Use your naming preference for admin accounts.
+//           No need to reinvent the wheel, admin is fine too.
+//         </P>
+//         <P
+//           body1
+//           marginTop="small"
+//         >
+//           <strong>private_key:</strong> This makes sure that your admin account has Read/Write access to the config
+//           repo.
+//           We recommend you stick with the default, unless you have compliance reasons for this file not existing here.
+//         </P>
+//         <P
+//           body1
+//           marginTop="small"
+//         >
+//           <strong>public_key:</strong> Similar to private_key, this makes sure that your admin account has Read/Write
+//           access to the DAG repo.
+//           We recommend you stick with the default, unless you have compliance reasons for this file not existing here.
+//         </P>
+//         <P
+//           body1
+//           marginTop="small"
+//         >
+//           <strong>passphrase:</strong> If you have encrypted your SSH key with a passphrase for extra security, you'll
+//           need to enter it here in order for Plural to use it for Git operations.
+//         </P>
+//       </Accordion>
+//     </ExtendTheme>
+//   )
+// }
+
+function WizardDocs() {
+  return (
+    <>
+      <P
+        body1
+        marginTop="medium"
+      >
+        Our cli will lead you through a brief install wizard to make sure everything is configured properly. If you need more detailed guidance
+        for these steps, refer to <a href="https://docs.plural.sh/applications/repositories/console#setup-configuration">our documentation</a>.
+      </P>
+      <P
+        body1
+        marginTop="medium"
+      >
+        After successfully running this step, move on to the next command.
+      </P>
+    </>
+  )
 }
 
 function Step1({ shell }) {
   return (
-    <>
-      <Div
-        paddingVertical="medium"
-        paddingHorizontal="large"
-        borderBottom="1px solid border"
+    <Div
+      paddingVertical="medium"
+      paddingHorizontal="large"
+      borderBottom="1px solid border"
+    >
+      <P
+        body1
+        marginTop="medium"
       >
-        <P
-          overline
-          color="text-xlight"
-        >
-          bundle install
-        </P>
-        <P
-          body1
-          marginTop="medium"
-        >
-          The Plural Console provides you with out-of-the-box monitoring and upgrading functionality.
-          It will also give you access to console.xxx.onplural.sh after the demo is complete.
-        </P>
-        <P
-          body1
-          marginTop="medium"
-        >
-          To begin, run this one-line command:
-        </P>
-        <CodeLine marginTop="medium">
-          plural bundle install console console-{shell?.provider?.toLowerCase() || 'gcp'}
-        </CodeLine>
-        <P
-          body1
-          marginTop="medium"
-        >
-          After running this command you will be prompted through a setup wizard.
-          Below are some key terms that will help you complete this step.
-        </P>
-      </Div>
-      <ExtendTheme theme={extendedTheme}>
-        <Accordion
-          ghost
-          title="Key terms"
-        >
-          <P body1>
-            <strong>vpc_name:</strong> The vpc name we'll create for your cluster.
-            This will be a separate vpc and should be named distinctly from any others in your account.
-          </P>
-          <P
-            body1
-            marginTop="small"
-          >
-            <strong>wal_bucket:</strong> Our postgres operator automatically ships write ahead logs to s3 for
-            point-in-time backup and restore.
-          </P>
-          <P
-            body1
-            marginTop="small"
-          >
-            <strong>dns hostnames:</strong> You can specify any hostname under the plural dns domain you entered (xxx).
-            Be sure to type the full name since we do validate they are formatted correctly.
-          </P>
-          <P
-            body1
-            marginTop="small"
-          >
-            <strong>Plural OIDC:</strong> You can opt in to using Plural as an OpenID Connect provider, dramatically
-            simplifying enabling secure login for your plural apps.
-            This is highly recommended.
-          </P>
-          <P
-            body1
-            marginTop="small"
-          >
-            <strong>git_user:</strong> Plural will perform Git operations on your behalf to manage your config
-            repository.
-            Just use your GitHub username here, unless you have a dedicated user for Ops.
-          </P>
-          <P
-            body1
-            marginTop="small"
-          >
-            <strong>git_email:</strong> Use the email tied to the account associated with git_user.
-          </P>
-          <P
-            body1
-            marginTop="small"
-          >
-            <strong>admin_name:</strong> Use your naming preference for admin accounts.
-            No need to reinvent the wheel, admin is fine too.
-          </P>
-          <P
-            body1
-            marginTop="small"
-          >
-            <strong>private_key:</strong> This makes sure that your admin account has Read/Write access to the config
-            repo.
-            We recommend you stick with the default, unless you have compliance reasons for this file not existing here.
-          </P>
-          <P
-            body1
-            marginTop="small"
-          >
-            <strong>public_key:</strong> Similar to private_key, this makes sure that your admin account has Read/Write
-            access to the DAG repo.
-            We recommend you stick with the default, unless you have compliance reasons for this file not existing here.
-          </P>
-          <P
-            body1
-            marginTop="small"
-          >
-            <strong>passphrase:</strong> If you have encrypted your SSH key with a passphrase for extra security, you'll
-            need to enter it here in order for Plural to use it for Git operations.
-          </P>
-        </Accordion>
-      </ExtendTheme>
-    </>
+        Welcome to the cloud shell!  After your shell initializes it's time to install your first bundle to install our console.
+      </P>
+      <P
+        body1
+        marginTop="medium"
+      >
+        To begin, run this one-line command:
+      </P>
+      <CodeLine marginTop="medium">
+        plural bundle install console console-{shell?.provider?.toLowerCase() || 'gcp'}
+      </CodeLine>
+      <P
+        body1
+        marginTop="medium"
+      >
+        The Plural Console provides you with out-of-the-box monitoring and upgrading functionality.
+        It will also give you access to console.xxx.onplural.sh after the demo is complete.
+      </P>
+      <WizardDocs />
+    </Div>
   )
 }
 
@@ -389,35 +438,21 @@ function Step1({ shell }) {
 
 function Step2({
   command,
-  commandType,
-  skipConsoleInstall,
+  quick,
 }) {
   return (
     <Div
       paddingVertical="medium"
       paddingHorizontal="large"
     >
-      <P
-        overline
-        color="text-xlight"
-      >
-        Installation
-      </P>
-      <P
-        body1
-        marginTop="medium"
-      >
-        {skipConsoleInstall ? (
-          <>
-            It's time to install the {commandType === 'stack' ? 'stack' : 'application'} you selected earlier in the demo.
-          </>
-        ) : (
-          <>
-            Now that you've installed the Plural Console,
-            it's time to install the {commandType === 'stack' ? 'stack' : 'application'} you selected earlier in the demo.
-          </>
-        )}
-      </P>
+      {quick && (
+        <P
+          body1
+          marginTop="medium"
+        >
+          We've collected all the apps you selected into a temporary stack you can install in one command.
+        </P>
+      )}
       <P
         body1
         marginTop="medium"
@@ -427,6 +462,7 @@ function Step2({
       <CodeLine marginTop="medium">
         {command}
       </CodeLine>
+      <WizardDocs />
     </Div>
   )
 }
@@ -442,17 +478,10 @@ function Step3() {
       paddingHorizontal="large"
     >
       <P
-        overline
-        color="text-xlight"
-      >
-        plural build & deploy
-      </P>
-      <P
         body1
         marginTop="medium"
       >
-        Now it's time for Plural to write all the Helm and Terraform required to bring up your Kubernetes cluster based
-        on the config that you've entered.
+        With everything installed, all that's left is to build your workspace and deploy it to your cloud.
       </P>
       <P
         body1
@@ -473,7 +502,7 @@ function Step3() {
       <CodeLine marginTop="medium">
         plural deploy --commit "your message"
       </CodeLine>
-      <P
+      <Div
         body1
         marginTop="medium"
       >
@@ -486,9 +515,9 @@ function Step3() {
             Deploy your Kubernetes cluster and the applications you've configured
           </Li>
         </Ul>
-        Now grab a coffee or your favorite hot beverage while we wait for your cloud provider to provision your
+        Now grab a coffee or your favorite hot beverage while we wait for the cloud provider to provision your
         infrastructure.
-      </P>
+      </Div>
     </Div>
   )
 }
@@ -525,7 +554,7 @@ function Step4() {
             bold
           >Wait for your cluster to build
           </P>
-          <P
+          <Div
             body2
             color="text-light"
           >After
@@ -536,9 +565,8 @@ function Step4() {
             >
               plural deploy
             </Chip>
-            is done, all your applications and the Plural Console will
-            be up and ready to access.
-          </P>
+            is done, all your applications will be up and ready to access.
+          </Div>
         </Flex>
       </Flex>
       <P
@@ -546,16 +574,16 @@ function Step4() {
         color="text-light"
         marginTop="medium"
       >
-        Take a nice stretch break as your deployment finishes, then run the command below to check whether or not your cluster is up and running.
+        Take a nice stretch break as your deployment finishes, then run the command below to check whether kubernetes has finished deploying your applications
       </P>
       <P
         body1
         color="text-light"
         marginTop="medium"
       >
-        Check the health of your cluster:
+        To check the health of any of your applications:
       </P>
-      <CodeLine marginTop="xsmall">plural watch</CodeLine>
+      <CodeLine marginTop="xsmall">plural watch &lt;appName&gt;</CodeLine>
     </Div>
   )
 }

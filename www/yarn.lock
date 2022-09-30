@@ -16718,9 +16718,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pluralsh-design-system@npm:1.219.0":
-  version: 1.219.0
-  resolution: "pluralsh-design-system@npm:1.219.0"
+"pluralsh-design-system@npm:1.221.0":
+  version: 1.221.0
+  resolution: "pluralsh-design-system@npm:1.221.0"
   dependencies:
     "@floating-ui/react-dom-interactions": 0.8.1
     "@react-aria/button": 3.6.1
@@ -16755,7 +16755,7 @@ __metadata:
     react-dom: ">=16.0.0"
     react-transition-group: ">=4.4.2"
     styled-components: ">=5.3.5"
-  checksum: 14144948450a98151040759ab97ed94e0fca7db7541c4b9e2d7a5a4fbeaffda203188b28d15ffad048f0a5dca5c9c6d10001bab06e2995fa43030caa43a33b7e
+  checksum: f1eb33f7f43001d18265fc7970a60be20a7726a75e3d9eaef68121bf865d4de6dce815be0fa7c1cf3f81a2abbe276c7b44c730a26696052db2782d56a49193df
   languageName: node
   linkType: hard
 
@@ -20696,7 +20696,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"styled-components@npm:5.3.5, styled-components@npm:^5.1.1":
+"styled-components@npm:5.3.6":
+  version: 5.3.6
+  resolution: "styled-components@npm:5.3.6"
+  dependencies:
+    "@babel/helper-module-imports": ^7.0.0
+    "@babel/traverse": ^7.4.5
+    "@emotion/is-prop-valid": ^1.1.0
+    "@emotion/stylis": ^0.8.4
+    "@emotion/unitless": ^0.7.4
+    babel-plugin-styled-components: ">= 1.12.0"
+    css-to-react-native: ^3.0.0
+    hoist-non-react-statics: ^3.0.0
+    shallowequal: ^1.1.0
+    supports-color: ^5.5.0
+  peerDependencies:
+    react: ">= 16.8.0"
+    react-dom: ">= 16.8.0"
+    react-is: ">= 16.8.0"
+  checksum: 68eac1e451be81d66739cf86de8ec9e72f46e7584aa359271761a2437468210bd7cf0a864281fc97dab08c32b35e6bf7513dc8b4104ed6b196cf8d65674dd289
+  languageName: node
+  linkType: hard
+
+"styled-components@npm:^5.1.1":
   version: 5.3.5
   resolution: "styled-components@npm:5.3.5"
   dependencies:
@@ -23093,7 +23115,7 @@ __metadata:
     moment: 2.29.4
     phoenix: 1.6.12
     pluralsh-absinthe-socket-apollo-link: 0.2.0
-    pluralsh-design-system: 1.219.0
+    pluralsh-design-system: 1.221.0
     postcss-import: 8.2.0
     prop-types: 15.8.1
     query-string: 7.1.1
@@ -23133,7 +23155,7 @@ __metadata:
     slate-history: 0.81.3
     slate-react: 0.83.0
     source-map-explorer: 2.5.3
-    styled-components: 5.3.5
+    styled-components: 5.3.6
     stylelint: 14.12.1
     typescript: 4.8.3
     uuid: 9.0.0

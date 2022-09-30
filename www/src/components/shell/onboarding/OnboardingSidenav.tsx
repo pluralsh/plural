@@ -73,7 +73,10 @@ function OnboardingSidenav() {
   ])
 
   return (
-    <Div paddingBottom="large">
+    <Div
+      paddingBottom="large"
+      paddingLeft="medium"
+    >
       <Stepper
         vertical
         steps={false ? stepsCli : stepsDemo}

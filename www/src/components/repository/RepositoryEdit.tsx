@@ -74,6 +74,12 @@ type FormState = {
   oauthMethod: string;
   tags: { tag: string }[];
   private: boolean;
+  websiteUrl: string;
+  docsUrl: string;
+  githubUrl: string;
+  discordUrl: string;
+  slackUrl: string;
+  twitterUrl: string;
 };
 
 function RepositoryEdit() {
@@ -111,7 +117,7 @@ function RepositoryEdit() {
     tags: isArray(tags) ? tags.map(tag => ({ tag: tag.tag })) : [],
     private: !!privateRepo,
     websiteUrl: websiteUrl || '',
-    docsUrls: docsUrl || '',
+    docsUrl: docsUrl || '',
     githubUrl: githubUrl || '',
     discordUrl: discordUrl || '',
     slackUrl: slackUrl || '',
@@ -168,6 +174,12 @@ function RepositoryEdit() {
         ...(iconUpdate.file ? { icon: iconUpdate.file } : {}),
         tags: formState.tags,
         private: formState.private,
+        websiteUrl: formState.websiteUrl,
+        docsUrl: formState.docsUrl,
+        githubUrl: formState.githubUrl,
+        discordUrl: formState.discordUrl,
+        slackUrl: formState.slackUrl,
+        twitterUrl: formState.twitterUrl,
       },
     },
     update: (_cache, { data: { updateRepository } }) => {

@@ -308,18 +308,21 @@ postgres:
 
 image:
   repository: plural/plural
-  tag: '0.3.7' ## PLRL-REPLACE[  tag: '%s']
+  # if empty the chart version is used
+  tag: '' ## PLRL-REPLACE[  tag: '%s']
   pullPolicy: Always
 
 rtc:
   repository: plural/rtc
-  tag: '0.3.7' ## PLRL-REPLACE[  tag: '%s']
+  # if empty the chart version is used
+  tag: '' ## PLRL-REPLACE[  tag: '%s']
   resources: {}
   replicaCount: 2
 
 worker:
   repository: plural/worker
-  tag: '0.3.7' ## PLRL-REPLACE[  tag: '%s']
+  # if empty the chart version is used
+  tag: '' ## PLRL-REPLACE[  tag: '%s']
   minReplicas: 1
   maxReplicas: 10
   resources: {}
@@ -327,14 +330,16 @@ worker:
 
 www:
   repository: plural/plural-www
-  tag: '0.3.7' ## PLRL-REPLACE[  tag: '%s']
+  # if empty the chart version is used
+  tag: '' ## PLRL-REPLACE[  tag: '%s']
   port: 80
   resources: {}
   replicaCount: 2
 
 cron:
-  image: plural/cron
-  tag: '0.3.7' ## PLRL-REPLACE[  tag: '%s']
+  repository: plural/cron
+  # if empty the chart version is used
+  tag: '' ## PLRL-REPLACE[  tag: '%s']
 
 imagePullSecrets:
 - name: plural-creds
@@ -428,7 +433,7 @@ hydra:
   
 chartmuseum:
   resources: {}
-  replicaCount: 1
+  replicaCount: 2
   rbac:
     serviceAccountAnnotations: {}
   repository: dkr.plural.sh/plural/chartmuseum

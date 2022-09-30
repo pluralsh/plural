@@ -25,7 +25,7 @@ import {
 
 import { getPreviousUserData, wipeToken } from '../../helpers/authentication'
 import { CurrentUserContext, handlePreviousUserClick } from '../login/CurrentUser'
-import useOnboarded from '../shell/onboarding/useOnboarded'
+import { useIsCurrentlyOnboarding } from '../shell/onboarding/useOnboarded'
 
 import CreatePublisherModal from '../publisher/CreatePublisherModal'
 
@@ -35,13 +35,9 @@ export const SIDEBAR_ICON_HEIGHT = '40px'
 export const SIDEBAR_WIDTH = '224px'
 export const SMALL_WIDTH = '60px'
 
-function isOnboarding(fresh, currentPath) {
-  return fresh && currentPath.endsWith('/shell')
-}
-
 function SidebarWrapper() {
   const me = useContext(CurrentUserContext)
-  const { fresh } = useOnboarded()
+  const isCurrentlyOnboarding = useIsCurrentlyOnboarding()
   const { pathname } = useLocation()
 
   const items = [
@@ -79,7 +75,7 @@ function SidebarWrapper() {
       {({ notificationsCount }) => (
         <Sidebar
           transition="width 300ms ease, opacity 200ms ease"
-          style={isOnboarding(fresh, pathname) ? {
+          style={isCurrentlyOnboarding ? {
             width: '0',
             opacity: '0',
           } : null}

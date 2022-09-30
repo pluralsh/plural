@@ -1,10 +1,10 @@
-import {
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { useEffect, useState } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
 import { useLocation } from 'react-router-dom'
+
+import { LoopingLogo } from 'pluralsh-design-system'
+
+import { Flex } from 'honorable'
 
 import { AUTHENTICATION_URLS_QUERY, CLOUD_SHELL_QUERY, REBOOT_SHELL_MUTATION } from './queries'
 import { Terminal } from './Terminal'
@@ -20,7 +20,6 @@ function CloudShell() {
   const { data } = useQuery(AUTHENTICATION_URLS_QUERY)
   const { data: shellData } = useQuery(CLOUD_SHELL_QUERY, { fetchPolicy: 'network-only' })
   const [rebootMutation] = useMutation(REBOOT_SHELL_MUTATION)
-  const ready = useMemo(() => shellData && data, [shellData, data])
 
   useEffect(() => {
     if (shellData && shellData.shell && !shellData.shell.alive) {
@@ -35,11 +34,25 @@ function CloudShell() {
     )
   }
 
+  // Don't show onboarding until we're sure we're not going to load the terminal
+  // Showing onboarding will mess with local storage vars needed for first load
+  // of the terminal
+  if (!shellData) {
+    return (
+      <Flex
+        flexGrow={1}
+        align="center"
+        justify="center"
+        padding="xlarge"
+      >
+        <LoopingLogo />
+      </Flex>
+    )
+  }
+
   return (
     <OnboardingWrapper
-      showSplashScreen={!location?.state?.hideSplashScreen}
       stepIndex={section === 'applications' ? 0 : 1}
-      childIsReady={ready}
       onRestart={() => setSection('applications')}
     >
       {section === 'applications' && (

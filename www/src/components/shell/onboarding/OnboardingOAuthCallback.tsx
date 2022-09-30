@@ -5,9 +5,10 @@ import { LoopingLogo } from 'pluralsh-design-system'
 import { Flex } from 'honorable'
 
 import { AUTHENTICATION_URLS_QUERY, SCM_TOKEN_QUERY } from '../queries'
-import { persistGitData } from '../persistance'
 
 import { SECTION_GIT } from '../constants'
+
+import { usePersistedGitData } from '../usePersistance'
 
 import DEBUG_SCM_TOKENS from './debug-tokens'
 import useOnboardingNavigation from './useOnboardingNavigation'
@@ -17,6 +18,7 @@ function OnboardingOAuthCallback() {
   const [searchParams] = useSearchParams()
   const code = searchParams.get('code')
   const { nextTo } = useOnboardingNavigation(SECTION_GIT)
+  const [, setGitData] = usePersistedGitData()
 
   const { data: authUrlData } = useQuery(AUTHENTICATION_URLS_QUERY)
 
@@ -37,12 +39,12 @@ function OnboardingOAuthCallback() {
   }
 
   useEffect(() => {
-    persistGitData(x => ({
+    setGitData(x => ({
       ...x,
       authUrlData,
       accessToken: data.scmToken,
     }))
-  }, [authUrlData, data])
+  }, [authUrlData, data, setGitData])
 
   if (authUrlData && data?.scmToken && nextTo) {
     return (

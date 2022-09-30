@@ -11,6 +11,8 @@ import {
 
 import OnboardingSidecarApplications from './OnboardingSidecarApplications'
 
+// TODO use intercom for first link
+
 function OnboardingSidecar({ displayApplications = false }) {
   return (
     <Div width={200}>

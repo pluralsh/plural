@@ -1,12 +1,11 @@
-import { useContext } from 'react'
 import { Flex, P } from 'honorable'
 import { RepositoryChip } from 'pluralsh-design-system'
 import capitalize from 'lodash/capitalize'
 
-import SelectedApplicationsContext from '../../../contexts/SelectedApplicationsContext'
+import { usePersistedApplications } from '../usePersistance'
 
 function OnboardingSidecarApplications() {
-  const { selectedApplications } = useContext(SelectedApplicationsContext)
+  const [selectedApplications] = usePersistedApplications()
 
   return (
     <Flex

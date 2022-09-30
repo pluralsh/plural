@@ -566,7 +566,7 @@ function Step4() {
               plural deploy
             </Chip>
             is done, all your applications will be up and ready to access.
-          </P>
+          </Div>
         </Flex>
       </Flex>
       <P

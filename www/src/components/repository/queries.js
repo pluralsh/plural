@@ -27,6 +27,14 @@ export const UPDATE_REPOSITORY_MUTATION = gql`
       tags {
         tag
       }
+      documentation
+      community {
+        discord
+        slack
+        homepage
+        gitUrl
+        twitter
+      }
     }
   }
   ${RepoFragment}
@@ -57,6 +65,14 @@ export const REPOSITORY_QUERY = gql`
       license {
         name
         url
+      }
+      documentation
+      community {
+        discord
+        slack
+        homepage
+        gitUrl
+        twitter
       }
     }
   }

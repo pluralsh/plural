@@ -74,7 +74,7 @@ function Repository() {
           <ResponsiveLayoutSpacer />
           <TabPanel
             as={
-              <ResponsiveLayoutContentContainer />
+              <ResponsiveLayoutContentContainer overflow="visible" />
             }
             stateRef={tabStateRef}
           >

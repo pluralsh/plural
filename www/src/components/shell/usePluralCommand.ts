@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { CREATE_QUICK_STACK_MUTATION } from './queries'
 import { retrieveApplications, retrieveProvider, retrieveStack } from './persistance'
 
-function usePluralCommand() {
+function usePluralCommand(shell) {
   const provider = useMemo(() => retrieveProvider(), [])
   const applications = useMemo(() => retrieveApplications(), [])
   const stack = useMemo(() => retrieveStack(), [])
@@ -27,9 +27,10 @@ function usePluralCommand() {
 
   const getApplicationCommand = useCallback(() => {
     const [application] = applications
+
     const recipe = application.recipes.find(x => x.provider === provider)
 
-    if (!recipe) return 'plural bundle install airbyte airbye-gcp'
+    if (!recipe) return 'plural bundle install airbyte airbyte-gcp'
 
     return `plural bundle install ${application.name} ${recipe.name}`
   }, [applications, provider])
@@ -44,11 +45,10 @@ function usePluralCommand() {
     if (error || loading) return 'plural stack install ...'
     if (data?.quickStack?.name) return `plural stack install ${data.quickStack.name}`
 
-    return `An error occured, but you can still try "${getStackCommand()}"`
+    return `An error occurred, but you can still try "${getStackCommand()}"`
   }, [error, loading, data, getStackCommand])
 
   useEffect(() => {
-    console.log('provider, selectedApplications', provider, applications)
     if (!provider) return
     if (!applications.length) return
 
@@ -59,7 +59,7 @@ function usePluralCommand() {
   if (isStackComplete()) return { type: 'stack', quick: false, command: getStackCommand() }
   if (applications.length > 0 && !isStackComplete()) return { type: 'stack', quick: true, command: getQuickStackCommand() }
 
-  return { type: 'application', command: 'plural bundle install airbyte airbye-gcp' }
+  return { type: 'application', command: `plural bundle install airbyte airbyte-${provider || shell?.provider?.toLowerCase() || 'gcp'}` }
 }
 
 export default usePluralCommand

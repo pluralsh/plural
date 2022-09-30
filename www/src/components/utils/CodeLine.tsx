@@ -1,8 +1,12 @@
 import { useState } from 'react'
-import { Div, Flex } from 'honorable'
+import { Div, Flex, FlexProps } from 'honorable'
 import { CopyIcon } from 'pluralsh-design-system'
 
-function CodeLine({ children, ...props }) {
+type CodeLineProps = Omit<FlexProps, 'children'> & {
+ children:string
+}
+
+function CodeLine({ children, ...props }:CodeLineProps) {
   const [copied, setCopied] = useState(false)
 
   function handleCopy() {

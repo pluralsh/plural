@@ -35,6 +35,10 @@ import filter from 'lodash/filter'
 import styled from '@emotion/styled'
 import capitalize from 'lodash/capitalize'
 
+import { Repository } from 'generated/graphql'
+
+import { GqlError } from 'components/utils/Alert'
+
 import RepositoryContext from '../../contexts/RepositoryContext'
 import { isValidUrl } from '../../utils/string'
 import { generatePreview } from '../../utils/file'
@@ -74,6 +78,12 @@ type FormState = {
   oauthMethod: string;
   tags: { tag: string }[];
   private: boolean;
+  websiteUrl?: string;
+  docsUrl?: string;
+  githubUrl?: string;
+  discordUrl?: string;
+  slackUrl?: string;
+  twitterUrl?: string;
 };
 
 function RepositoryEdit() {
@@ -87,13 +97,12 @@ function RepositoryEdit() {
     tags,
     icon,
     private: privateRepo,
-    websiteUrl,
-    docsUrl,
-    githubUrl,
-    discordUrl,
-    slackUrl,
-    twitterUrl,
-  } = useContext(RepositoryContext) as any
+    community: communityUrls,
+    documentation,
+  } = useContext(RepositoryContext) as Repository
+
+  console.log('documentation', documentation)
+
   const {
     state: formState,
     initialState: formInitialState,
@@ -108,14 +117,14 @@ function RepositoryEdit() {
     category: category || '',
     oauthUrl: oauthSettings?.uriFormat || '',
     oauthMethod: `${oauthSettings?.authMethod || authMethods.BASIC}`,
-    tags: isArray(tags) ? tags.map(tag => ({ tag: tag.tag })) : [],
+    tags: isArray(tags) ? tags.map(tag => ({ tag: tag?.tag || '' })) : [],
     private: !!privateRepo,
-    websiteUrl: websiteUrl || '',
-    docsUrls: docsUrl || '',
-    githubUrl: githubUrl || '',
-    discordUrl: discordUrl || '',
-    slackUrl: slackUrl || '',
-    twitterUrl: twitterUrl || '',
+    websiteUrl: (communityUrls as any)?.homepage || '',
+    docsUrl: documentation || '',
+    githubUrl: (communityUrls as any)?.gitUrl || '',
+    discordUrl: communityUrls?.discord || '',
+    slackUrl: communityUrls?.slack || '',
+    twitterUrl: communityUrls?.twitter || '',
   }),
   [
     name,
@@ -125,12 +134,8 @@ function RepositoryEdit() {
     tags,
     privateRepo,
     category,
-    websiteUrl,
-    docsUrl,
-    githubUrl,
-    discordUrl,
-    slackUrl,
-    twitterUrl,
+    communityUrls,
+    documentation,
   ]))
 
   const [tagSearchString, setTagSearchString] = useState('')
@@ -168,6 +173,14 @@ function RepositoryEdit() {
         ...(iconUpdate.file ? { icon: iconUpdate.file } : {}),
         tags: formState.tags,
         private: formState.private,
+        documentation: formState.docsUrl,
+        community: {
+          homepage: formState.websiteUrl,
+          gitUrl: formState.githubUrl,
+          discord: formState.discordUrl,
+          slack: formState.slackUrl,
+          twitter: formState.twitterUrl,
+        },
       },
     },
     update: (_cache, { data: { updateRepository } }) => {
@@ -177,8 +190,6 @@ function RepositoryEdit() {
       })
     },
   })
-
-  console.log('Error: ', error)
 
   const iconPicker = useFilePicker({
     minImageWidth: 64,
@@ -321,9 +332,11 @@ function RepositoryEdit() {
   }
 
   return (
-    <Flex
-      direction="column"
-      height="100%"
+    <Form
+      onSubmit={handleSubmit}
+      maxHeight="100%"
+      display="flex"
+      flexDirection="column"
     >
       <PageTitle
         heading="Edit"
@@ -351,233 +364,234 @@ function RepositoryEdit() {
           maxWidth={608}
           width="100%"
         >
-          <Form
-            onSubmit={handleSubmit}
-            onReset={e => e.preventDefault()}
+          {error && (
+            <GqlError
+              error={error}
+              header="Something went wrong"
+            />
+          )}
+          {iconPicker.HiddenFileInput(iconPickerInputOpts)}
+          <FormField
+            marginBottom="large"
+            label="Icon"
           >
-            {iconPicker.HiddenFileInput(iconPickerInputOpts)}
-            <FormField
-              marginBottom="large"
-              label="Icon"
+            <Flex
+              direction="row"
+              alignItems="flex-end"
+              gap="medium"
             >
+              <IconUploadPreview
+                src={iconUpdate.previewUrl}
+                onClick={iconPicker.onClick}
+              />
               <Flex
-                direction="row"
-                alignItems="flex-end"
-                gap="medium"
+                direction="column"
+                gap="xsmall"
               >
-                <IconUploadPreview
-                  src={iconUpdate.previewUrl}
+                <Button
+                  type="button"
+                  secondary
+                  small
+                  minHeight="auto"
                   onClick={iconPicker.onClick}
-                />
-                <Flex
-                  direction="column"
-                  gap="xsmall"
                 >
+                  {iconUpdate.previewUrl ? 'Switch' : 'Upload'}
+                </Button>
+                {iconUpdate.previewUrl && (
                   <Button
                     type="button"
                     secondary
                     small
                     minHeight="auto"
-                    onClick={iconPicker.onClick}
+                    destructive
+                    onClick={() => {
+                      setIconUpdate({ file: null, previewUrl: null })
+                    }}
                   >
-                    {iconUpdate.previewUrl ? 'Switch' : 'Upload'}
+                    Delete
                   </Button>
-                  {iconUpdate.previewUrl && (
-                    <Button
-                      type="button"
-                      secondary
-                      small
-                      minHeight="auto"
-                      destructive
-                      onClick={() => {
-                        setIconUpdate({ file: null, previewUrl: null })
-                      }}
-                    >
-                      Delete
-                    </Button>
-                  )}
-                </Flex>
+                )}
               </Flex>
-            </FormField>
-            <Flex
-              gap="medium"
-              marginBottom="large"
-            >
-              <FormField
-                label="Name"
-                flexGrow={1}
-              >
-                <Input
-                  placeholder={formInitialState.name}
-                  value={formState.name}
-                  onChange={event => updateFormState({ name: event.target.value })}
-                />
-              </FormField>
-              <FormField
-                label="Category"
-                width={148}
-                flexShrink={1}
-              >
-                <Select
-                  value={formState.category}
-                  onChange={event => updateFormState({ category: event.target.value })}
-                  width="100%"
-                  minHeight={40}
-                  minWidth="auto"
-                >
-                  {categories.map(category => (
-                    <MenuItem
-                      key={category}
-                      value={category}
-                    >
-                      {capitalize(category.toLocaleLowerCase())}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormField>
             </Flex>
+          </FormField>
+          <Flex
+            gap="medium"
+            marginBottom="large"
+          >
             <FormField
-              marginBottom="large"
-              label="Description"
-              width="100%"
-              length={formState.description.length}
-              maxLength={200}
+              label="Name"
+              flexGrow={1}
             >
               <Input
-                multiline
-                minRows={3}
-                placeholder={formInitialState.description}
-                value={formState.description}
-                onChange={event => updateFormState({ description: event.target.value.substring(0, 200) })}
+                placeholder={formInitialState.name}
+                value={formState.name}
+                onChange={event => updateFormState({ name: event.target.value })}
               />
             </FormField>
-            <Flex gap="medium">
-              {renderUrlField('websiteUrl', 'Website link', 'Website URL',)}
-              {renderUrlField('docsUrl', 'Docs link', 'Docs URL',)}
-            </Flex>
-            <Flex gap="medium">
-              {renderUrlField('githubUrl', 'GitHub link', 'GitHub URL',)}
-              {renderUrlField('discordUrl', 'Discord link', 'Discord invite URL',)}
-            </Flex>
-            <Flex gap="medium">
-              {renderUrlField('slackUrl', 'Slack link', 'Slack invite URL',)}
-              {renderUrlField('twitterUrl', 'Twitter link', 'Twitter URL',)}
-            </Flex>
             <FormField
-              marginBottom="large"
-              label="Tags"
+              label="Category"
+              width={148}
+              flexShrink={1}
             >
-              <StyledTextInput
-                style={{}}
-                ref={tagSearchRef}
-                icon={<SearchIcon size={12} />}
-                placeholder="Search for tags"
-                value={tagSearchString}
-                suggestions={suggestions}
-                dropHeight="200px"
-                onSelect={event => {
-                  tagSearchRef?.current?.blur()
-                  handleCreateTag(event?.suggestion?.value)
-                }}
-                onChange={event => setTagSearchString(event?.target?.value)}
-              />
-              <Flex
-                wrap="wrap"
-                align="flex-start"
-                gap="xsmall"
-                marginTop="small"
+              <Select
+                value={formState.category}
+                onChange={event => updateFormState({ category: event.target.value })}
+                width="100%"
+                minHeight={40}
+                minWidth="auto"
               >
-                {formState.tags.map(tag => (
-                  <Chip
-                    key={tag.tag}
-                    onClick={() => handleDeleteTag(tag)}
-                    backgroundColor="fill-two"
-                    _hover={{
-                      backgroundColor: 'fill-two-hover',
-                      '& svg': {
-                        color: 'text',
+                {categories.map(category => (
+                  <MenuItem
+                    key={category}
+                    value={category}
+                  >
+                    {capitalize(category.toLocaleLowerCase())}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormField>
+          </Flex>
+          <FormField
+            marginBottom="large"
+            label="Description"
+            width="100%"
+            length={formState.description.length}
+            maxLength={200}
+          >
+            <Input
+              multiline
+              minRows={3}
+              placeholder={formInitialState.description}
+              value={formState.description}
+              onChange={event => updateFormState({ description: event.target.value.substring(0, 200) })}
+            />
+          </FormField>
+          <Flex gap="medium">
+            {renderUrlField('websiteUrl', 'Website link', 'Website URL',)}
+            {renderUrlField('docsUrl', 'Docs link', 'Docs URL',)}
+          </Flex>
+          <Flex gap="medium">
+            {renderUrlField('githubUrl', 'GitHub link', 'GitHub URL',)}
+            {renderUrlField('discordUrl', 'Discord link', 'Discord invite URL',)}
+          </Flex>
+          <Flex gap="medium">
+            {renderUrlField('slackUrl', 'Slack link', 'Slack invite URL',)}
+            {renderUrlField('twitterUrl', 'Twitter link', 'Twitter URL',)}
+          </Flex>
+          <FormField
+            marginBottom="large"
+            label="Tags"
+          >
+            <StyledTextInput
+              style={{}}
+              ref={tagSearchRef}
+              icon={<SearchIcon size={12} />}
+              placeholder="Search for tags"
+              value={tagSearchString}
+              suggestions={suggestions}
+              dropHeight="200px"
+              onSelect={event => {
+                tagSearchRef?.current?.blur()
+                handleCreateTag(event?.suggestion?.value)
+              }}
+              onChange={event => setTagSearchString(event?.target?.value)}
+            />
+            <Flex
+              wrap="wrap"
+              align="flex-start"
+              gap="xsmall"
+              marginTop="small"
+            >
+              {formState.tags.map(tag => (
+                <Chip
+                  key={tag.tag}
+                  onClick={() => handleDeleteTag(tag)}
+                  backgroundColor="fill-two"
+                  _hover={{
+                    backgroundColor: 'fill-two-hover',
+                    '& svg': {
+                      color: 'text',
+                    },
+                  }}
+                  cursor="pointer"
+                >
+                  <Span fontWeight="400">{tag.tag}</Span>
+                  <CloseIcon
+                    size={8}
+                    marginLeft="xsmall"
+                    {...{
+                      ':hover &': {
+                        color: 'red',
                       },
                     }}
-                    cursor="pointer"
-                  >
-                    <Span fontWeight="400">{tag.tag}</Span>
-                    <CloseIcon
-                      size={8}
-                      marginLeft="xsmall"
-                      {...{
-                        ':hover &': {
-                          color: 'red',
-                        },
-                      }}
-                    />
-                  </Chip>
-                ))}
-              </Flex>
-            </FormField>
-
-            <Flex
-              marginLeft="minus-medium"
-              alignItems="stretch"
-              alignContent="stretch"
-              flexWrap=""
-            >
-              <FormField
-                label="OAuth settings"
-                hint="This must be a valid url beginning with https://"
-                width="100%"
-                marginLeft="medium"
-                marginBottom="large"
-              >
-                <Input
-                  value={formState.oauthUrl}
-                  onChange={event => updateFormState({ oauthUrl: event.target.value })}
-                  placeholder={
-                    formInitialState.oauthUrl
-                    || 'https://{domain}/oauth/callback'
-                  }
-                />
-              </FormField>
-              <FormField
-                label="HTTP method"
-                width={148}
-                flexShrink={1}
-                marginLeft="medium"
-                marginBottom="large"
-              >
-                <Select
-                  width="100%"
-                  minWidth="auto"
-                  minHeight={40}
-                  value={formState.oauthMethod}
-                  onChange={event => updateFormState({ oauthMethod: event.target.value })}
-                >
-                  {Object.keys(authMethods).map(method => (
-                    <MenuItem
-                      key={method}
-                      value={method}
-                    >
-                      {capitalize(method.toLocaleLowerCase())}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormField>
+                  />
+                </Chip>
+              ))}
             </Flex>
+          </FormField>
 
-            <Div paddingVertical={10}>
-              <Switch
-                padding={0}
-                checked={formState.private || false}
-                onChange={({ target: { checked } }) => {
-                  updateFormState({ private: checked })
-                }}
+          <Flex
+            marginLeft="minus-medium"
+            alignItems="stretch"
+            alignContent="stretch"
+            flexWrap=""
+          >
+            <FormField
+              label="OAuth settings"
+              hint="This must be a valid url beginning with https://"
+              width="100%"
+              marginLeft="medium"
+              marginBottom="large"
+            >
+              <Input
+                value={formState.oauthUrl}
+                onChange={event => updateFormState({ oauthUrl: event.target.value })}
+                placeholder={
+                  formInitialState.oauthUrl
+                    || 'https://{domain}/oauth/callback'
+                }
+              />
+            </FormField>
+            <FormField
+              label="HTTP method"
+              width={148}
+              flexShrink={1}
+              marginLeft="medium"
+              marginBottom="large"
+            >
+              <Select
+                width="100%"
+                minWidth="auto"
+                minHeight={40}
+                value={formState.oauthMethod}
+                onChange={event => updateFormState({ oauthMethod: event.target.value })}
               >
-                Private repository
-              </Switch>
-            </Div>
-          </Form>
+                {Object.keys(authMethods).map(method => (
+                  <MenuItem
+                    key={method}
+                    value={method}
+                  >
+                    {capitalize(method.toLocaleLowerCase())}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormField>
+          </Flex>
+
+          <Div paddingVertical={10}>
+            <Switch
+              padding={0}
+              checked={formState.private || false}
+              onChange={({ target: { checked } }) => {
+                updateFormState({ private: checked })
+              }}
+            >
+              Private repository
+            </Switch>
+          </Div>
         </Div>
       </ContentCard>
-    </Flex>
+    </Form>
   )
 }
 

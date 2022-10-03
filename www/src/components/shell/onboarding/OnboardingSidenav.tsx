@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { A, Div } from 'honorable'
+import { A } from 'honorable'
 import {
   BrowserIcon,
   CloudIcon,
@@ -10,6 +10,7 @@ import {
   Stepper,
   TerminalIcon,
 } from 'pluralsh-design-system'
+import styled from 'styled-components'
 
 import {
   SECTION_APPLICATIONS,
@@ -45,6 +46,34 @@ const stepsCli = [
   { key: SECTION_GIT, stepTitle: 'Create a git repository', IconComponent: NetworkInterfaceIcon },
   { key: SECTION_SYNOPSIS, stepTitle: 'Install Plural CLI', IconComponent: TerminalIcon },
 ]
+
+const expandAtWidth = 160
+const ResponsiveWidth = styled.div(({ theme }) => {
+  const medMq = '@media only screen and (min-width: 1040px)'
+  const desktopMq = `@media only screen and (min-width: ${theme.breakpoints.desktop}px)`
+  const desktopLargeMq = `@media only screen and (min-width: ${theme.breakpoints.desktopLarge}px)`
+
+  return {
+    width: 48,
+    paddingTop: 93,
+    paddingBottom: theme.spacing.large,
+    textAlign: 'center',
+    [medMq]: {
+      width: expandAtWidth,
+      textAlign: 'left',
+      '.restartLink': {
+        marginLeft: 60,
+      },
+    },
+    [desktopMq]: {
+      marginLeft: 64,
+      width: expandAtWidth,
+    },
+    [desktopLargeMq]: {
+      width: 240,
+    },
+  }
+})
 
 function OnboardingSidenav() {
   const [, setApplications] = usePersistedApplications()
@@ -88,24 +117,22 @@ function OnboardingSidenav() {
   ])
 
   return (
-    <Div
-      paddingBottom="large"
-      paddingLeft="medium"
-    >
+    <ResponsiveWidth>
       <Stepper
         vertical
         steps={false ? stepsCli : stepsDemo}
         stepIndex={stepIndex}
+        collapseAtWidth={expandAtWidth - 1}
       />
       <A
+        className="restartLink"
         inline
         onClick={handleRestart}
         marginTop="xlarge"
-        marginLeft={60}
       >
         Restart
       </A>
-    </Div>
+    </ResponsiveWidth>
   )
 }
 

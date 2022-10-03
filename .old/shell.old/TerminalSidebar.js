@@ -418,7 +418,7 @@ function Step1({ shell }) {
         To begin, run this one-line command:
       </P>
       <CodeLine marginTop="medium">
-        plural bundle install console console-{shell?.provider?.toLowerCase() || 'gcp'}
+        {`plural bundle install console console-${shell?.provider?.toLowerCase() || 'gcp'}`}
       </CodeLine>
       <P
         body1

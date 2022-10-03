@@ -6,6 +6,8 @@ import {
 } from 'react'
 import { Flex } from 'honorable'
 
+import { useTheme } from 'styled-components'
+
 import {
   ResponsiveLayoutContentContainer,
   ResponsiveLayoutSidecarContainer,
@@ -27,6 +29,7 @@ function OnboardingWrapper({
   onRestart = () => {},
   children,
 }) {
+  const theme = useTheme()
   const [selectedApplications, setSelectedApplications] = useState<any[]>(retrieveApplications())
   const selectedApplicationsContextValue = useMemo<SelectedApplicationsContextType>(() => ({ selectedApplications, setSelectedApplications }), [selectedApplications])
 
@@ -57,11 +60,10 @@ function OnboardingWrapper({
         >
           <ResponsiveLayoutSpacer />
           <ResponsiveLayoutSidenavContainer
-            marginTop={72}
-            marginRight={30}
-            marginLeft={32}
-            paddingRight="xxsmall"
+            marginRight="xlarge"
+            marginLeft="xlarge"
             overflowY="auto"
+            flexShrink={0}
           >
             <OnboardingSidenav
               stepIndex={stepIndex}
@@ -73,16 +75,18 @@ function OnboardingWrapper({
             overflowY="auto"
             paddingBottom="large"
             paddingHorizontal="xxsmall"
-            marginRight-desktop-down={30}
+            marginRight="xlarge"
+            marginRight-desktop-down={theme.spacing.large}
           >
             <OnboardingTitle />
             {children}
           </ResponsiveLayoutContentContainer>
           <ResponsiveLayoutSidecarContainer
-            marginLeft={30}
+            marginLeft={0}
             marginTop={67}
-            marginRight="xlarge"
+            marginRight="large"
             overflowY="auto"
+            flexShrink={0}
           >
             <OnboardingSidecar areApplicationsDisplayed={stepIndex > 0} />
           </ResponsiveLayoutSidecarContainer>

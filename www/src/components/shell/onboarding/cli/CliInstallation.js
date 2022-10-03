@@ -55,11 +55,6 @@ function CliInstallation() {
   const tabStateRef = useRef()
   const currentTab = useMemo(() => DIRECTORY.find(t => t.key === tab), [tab])
 
-  console.log('tab', tab)
-  console.log('tab === TAB_MAC', tab === TAB_MAC)
-  console.log('TAB_MAC', TAB_MAC)
-  console.log('currentTab', currentTab)
-
   return (
     <>
       <OnboardingCard title="Install CLI">

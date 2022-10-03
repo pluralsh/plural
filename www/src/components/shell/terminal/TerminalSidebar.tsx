@@ -9,22 +9,19 @@ import {
   P,
   Ul,
 } from 'honorable'
+import { Fireworks } from 'fireworks-js/dist/react'
 import {
   ArrowTopRightIcon,
   Chip,
   InfoIcon,
   Modal,
 } from 'pluralsh-design-system'
-import { Fireworks } from 'fireworks-js/dist/react'
 
 import CodeLine from '../../utils/CodeLine'
 
 import useOnboarded from '../useOnboarded'
-import {
-  usePersistedApplications,
-  usePersistedConsole,
-  usePersistedTerminalOnboardingSidebar,
-} from '../usePersistance'
+
+import { usePersistedApplications, usePersistedConsole, usePersistedTerminalOnboardingSidebar } from '../usePersistance'
 
 import usePluralCommand from './usePluralCommand'
 
@@ -56,8 +53,8 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
   const navigate = useNavigate()
   const { mutation, fresh } = useOnboarded()
   const [terminalOnboardingSidebar, setTerminalOnboardingSidebar] = usePersistedTerminalOnboardingSidebar()
-  const [console] = usePersistedConsole()
   const [applications] = usePersistedApplications()
+  const [console] = usePersistedConsole()
   const { command, type: commandType, quick } = usePluralCommand(shell) // Could be put inside Step2 but stays here for eager loading
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [stepIndex, setStepIndex] = useState(0)
@@ -416,7 +413,7 @@ function Step1({ shell }) {
         To begin, run this one-line command:
       </P>
       <CodeLine marginTop="medium">
-        plural bundle install console console-{shell?.provider?.toLowerCase() || 'gcp'}
+        {`plural bundle install console console-${shell?.provider?.toLowerCase() || 'gcp'}`}
       </CodeLine>
       <P
         body1

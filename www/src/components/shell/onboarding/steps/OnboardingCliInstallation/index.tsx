@@ -133,33 +133,28 @@ function OnboardingCliInstallation() {
         </P>
         {tab !== TAB_EC2 && (
           <>
-            <CodeLine marginTop="small">
-              {tab === TAB_MAC && 'brew install pluralsh/plural/plural'}
-              {tab === TAB_CURL && (
-                <>
-                  curl -L -o plural.tgz 'https://github.com/pluralsh/plural-cli/releases/download/v0.2.57/plural-cli_0.2.57_Darwin_arm64.tar.gz'
-                  <br />
-                  tar -xvf plural.tgz
-                  <br />
-                  chmod +x plural
-                  <br />
-                  mv plural /usr/local/bin/plural
-                </>
-              )}
-              {tab === TAB_DOCKER && (
-                <>
-                  docker run -it --volume $HOME/.aws:/home/plural/aws \
-                  <br />
-                  {'\t'}--volume $HOME/.plural:/home/plural/.plural \
-                  <br />
-                  {'\t'}--volume $HOME/.ssh:/home/plural/.ssh \
-                  <br />
-                  {'\t'}--volume $HOME/path-to-installation-repo:/home/plural/workspace \ # optional if you want to manage git via a volume
-                  <br />
-                  {'\t'}gcr.io/pluralsh/plural-cli:0.1.1-cloud zsh
-                </>
-              )}
-            </CodeLine>
+            {tab === TAB_MAC && (
+              <CodeLine marginTop="small">
+                brew install pluralsh/plural/plural
+              </CodeLine>
+            )}
+            {tab === TAB_CURL && (
+              <CodeLine marginTop="small">
+                curl -L -o plural.tgz 'https://github.com/pluralsh/plural-cli/releases/download/v0.2.57/plural-cli_0.2.57_Darwin_arm64.tar.gz'
+                tar -xvf plural.tgz
+                chmod +x plural
+                mv plural /usr/local/bin/plural
+              </CodeLine>
+            )}
+            {tab === TAB_DOCKER && (
+              <CodeLine marginTop="small">
+                docker run -it --volume $HOME/.aws:/home/plural/aws \
+                --volume $HOME/.plural:/home/plural/.plural \
+                --volume $HOME/.ssh:/home/plural/.ssh \
+                --volume $HOME/path-to-installation-repo:/home/plural/workspace # optional if you want to manage git via a volume
+                gcr.io/pluralsh/plural-cli:0.1.1-cloud zsh
+              </CodeLine>
+            )}
             <P marginTop="small">
               {tab === TAB_MAC && (
                 <>

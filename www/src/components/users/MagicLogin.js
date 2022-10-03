@@ -27,6 +27,8 @@ import { PLURAL_FULL_LOGO_WHITE, PLURAL_MARK_WHITE } from '../constants'
 import { ACCEPT_LOGIN } from '../oidc/queries'
 import { host } from '../../helpers/hostname'
 
+import { useHistory } from '../../history/router'
+
 import {
   METHOD_ICONS, getDeviceToken, saveChallenge, saveDeviceToken, wipeChallenge, wipeDeviceToken,
 } from './utils'
@@ -286,6 +288,7 @@ function LoginPoller({ challenge, token, deviceToken }) {
 
 export function Login() {
   const navigate = useNavigate()
+  const history = useHistory()
   const client = useApolloClient()
   const location = useLocation()
   const jwt = fetchToken()
@@ -295,6 +298,8 @@ export function Login() {
   const [getLoginMethod, { data, loading: qLoading, error: qError }] = useLazyQuery(LOGIN_METHOD, {
     variables: { email, host: host() },
   })
+
+  console.log(history)
 
   const loginMethod = data?.loginMethod?.loginMethod
   const open = loginMethod === LoginMethod.PASSWORD

@@ -10,7 +10,7 @@ import OnboardingNavSection from '../OnboardingNavSection'
 import OnboardingCard from '../OnboardingCard'
 
 function CliCompletion() {
-  const { previous, next } = useContext(CreateShellContext)
+  const { previous } = useContext(CreateShellContext)
 
   return (
     <>

@@ -28,6 +28,7 @@ import useOnboarded from './onboarding/useOnboarded'
 const { Buffer } = require('buffer/')
 
 const decodeBase64 = str => Buffer.from(str, 'base64').toString('utf-8')
+const detachedMessage = '[detached (from session workspace)]'
 
 function Shell({ shell }) {
   const xterm = useRef(null)
@@ -37,9 +38,11 @@ function Shell({ shell }) {
   const fitAddon = useMemo(() => new FitAddon(), [])
   const [terminalTheme] = useContext(TerminalThemeContext)
   const { fresh } = useOnboarded()
+  const [restart, setRestart] = useState(false)
 
   useEffect(() => {
     if (!xterm?.current?.terminal) return
+    if (restart) return
 
     const term = xterm.current.terminal
     const chan = socket.channel('shells:me')
@@ -52,8 +55,16 @@ function Shell({ shell }) {
     }
 
     term.write(`Booting into your ${shell.provider} shell...\r\n\r\nIt can take a few minutes to load. Try refreshing the page if it gets stuck for too long.\r\n`)
-    chan.onError(err => console.error(`Unknown error during booting into your shell: ${err}`))
-    chan.on('stdo', ({ message }) => term.write(decodeBase64(message)))
+    chan.onError(err => console.error(`Unknown error during booting into your shell: ${JSON.stringify(err)}`))
+    chan.on('stdo', ({ message }) => {
+      const decoded = decodeBase64(message)
+
+      term.write(decodeBase64(message))
+
+      if (!restart && decoded.includes(detachedMessage)) {
+        setRestart(true)
+      }
+    })
     chan.join()
 
     let cols = 80
@@ -76,7 +87,9 @@ function Shell({ shell }) {
       socket.off([ref])
       chan.leave()
     }
-  }, [shell, xterm, fitAddon])
+  }, [shell, xterm, fitAddon, restart])
+
+  useEffect(() => (restart ? setRestart(false) : undefined), [restart, setRestart])
 
   const handleResetSize = useCallback(() => {
     if (!channel) return

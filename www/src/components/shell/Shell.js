@@ -59,7 +59,7 @@ function Shell({ shell }) {
     chan.on('stdo', ({ message }) => {
       const decoded = decodeBase64(message)
 
-      term.write(decodeBase64(message))
+      term.write(decoded)
 
       if (!restart && decoded.includes(detachedMessage)) {
         setRestart(true)

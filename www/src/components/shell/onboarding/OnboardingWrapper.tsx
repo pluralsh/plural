@@ -60,8 +60,9 @@ function OnboardingWrapper({
         >
           <ResponsiveLayoutSpacer />
           <ResponsiveLayoutSidenavContainer
-            marginRight="xlarge"
+            marginRight={theme.spacing.xlarge - theme.spacing.small}
             marginLeft="xlarge"
+            paddingRight="small"
             overflowY="auto"
             flexShrink={0}
           >

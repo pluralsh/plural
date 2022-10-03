@@ -385,8 +385,17 @@ function WizardDocs() {
         body1
         marginTop="medium"
       >
-        Our cli will lead you through a brief install wizard to make sure everything is configured properly. If you need more detailed guidance
-        for these steps, refer to <a href="https://docs.plural.sh/applications/repositories/console#setup-configuration">our documentation</a>.
+        Our cli will lead you through a brief install wizard to make sure
+        everything is configured properly. If you need more detailed guidance
+        for these steps, refer to{' '}
+        <A
+          inline
+          target="_blank"
+          href="https://docs.plural.sh/applications/repositories/console#setup-configuration"
+        >
+          our documentation
+        </A>
+        .
       </P>
       <P
         body1

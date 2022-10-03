@@ -22,7 +22,7 @@ function OAuthCallback({ provider }) {
   })
 
   // Do not remove as it's used for onboarding local development
-  console.log(data)
+  console.debug(data)
 
   // START <<Remove this after dev>>
   if (process.env.NODE_ENV !== 'production' && DEBUG_SCM_TOKENS[provider.toUpperCase()]) {

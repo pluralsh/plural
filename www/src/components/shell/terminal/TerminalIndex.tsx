@@ -13,6 +13,12 @@ function TerminalIndex() {
   const { shell } = data || {}
   const { alive, status } = shell || {}
 
+  if (!alive) {
+    return (
+      <Navigate to="/shell/onboarding" />
+    )
+  }
+
   if (!status) {
     return (
       <Flex
@@ -22,12 +28,6 @@ function TerminalIndex() {
       >
         <LoopingLogo />
       </Flex>
-    )
-  }
-
-  if (!alive) {
-    return (
-      <Navigate to="/shell/onboarding" />
     )
   }
 

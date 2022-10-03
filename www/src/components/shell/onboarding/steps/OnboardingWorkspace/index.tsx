@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Button, FormField, Input } from 'pluralsh-design-system'
 
-import { usePersistedWorkspace } from 'components/shell/usePersistance'
+import { usePersistedWorkspace } from '../../../usePersistance'
 
 import { SECTION_WORKSPACE } from '../../../constants'
 

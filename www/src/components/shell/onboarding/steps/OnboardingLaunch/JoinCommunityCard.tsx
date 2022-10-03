@@ -29,7 +29,9 @@ function JoinCommunityCard() {
         </Div>
         <Button
           secondary
-          endIcon={<DiscordIcon />}
+          endIcon={(
+            <DiscordIcon />
+          )}
           as="a"
           href="https://discord.gg/pluralsh"
           target="_blank"

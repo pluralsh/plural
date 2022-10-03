@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 import {
   Navigate,
+  Outlet,
   Route,
   Routes,
 } from 'react-router-dom'
@@ -12,7 +13,6 @@ import { growthbook } from '../helpers/growthbook'
 import ApplicationLayout from './layout/ApplicationLayout'
 import BreadcrumbProvider from './Breadcrumbs'
 import Chart from './repos/Chart'
-import ShellRouter from './shell/ShellRouter'
 import Marketplace from './marketplace/Marketplace'
 import Repository from './repository/Repository'
 import RepositoryArtifacts from './repository/RepositoryArtifacts'
@@ -63,6 +63,37 @@ import ImageVulnerabilities from './repos/common/ImageVulnerabilities'
 import Publisher from './publisher/Publisher'
 import StackApps from './stack/StackApps'
 import Stack from './stack/Stack'
+
+import {
+  SECTION_APPLICATIONS,
+  SECTION_BUILD,
+  SECTION_CLI_COMPLETION,
+  SECTION_CLI_INSTALLATION,
+  SECTION_CREDENTIALS,
+  SECTION_GIT,
+  SECTION_LAUNCH,
+  SECTION_REPOSITORY,
+  SECTION_SELECT,
+  SECTION_SYNOPSIS,
+  SECTION_TO_URL,
+  SECTION_WORKSPACE,
+} from './shell/constants'
+
+import TerminalIndex from './shell/terminal/TerminalIndex'
+import OnboardingRoot from './shell/onboarding/OnboardingRoot'
+import OnboardingOAuthCallback from './shell/onboarding/OnboardingOAuthCallback'
+
+import OnboardingApplications from './shell/onboarding/steps/OnboardingApplications'
+import OnboardingGit from './shell/onboarding/steps/OnboardingGit'
+import OnboardingRepository from './shell/onboarding/steps/OnboardingRepository'
+import OnboardingSelect from './shell/onboarding/steps/OnboardingSelect'
+import OnboardingBuild from './shell/onboarding/steps/OnboardingBuild'
+import OnboardingCredentials from './shell/onboarding/steps/OnboardingCredentials'
+import OnboardingWorkspace from './shell/onboarding/steps/OnboardingWorkspace'
+import OnboardingSynopsis from './shell/onboarding/steps/OnboardingSynopsis'
+import OnboardingLaunch from './shell/onboarding/steps/OnboardingLaunch'
+import OnboardingCliInstallation from './shell/onboarding/steps/OnboardingCliInstallation'
+import OnboardingCliComplete from './shell/onboarding/steps/OnboardingCliComplete'
 
 function EditBilling(props) {
   return (
@@ -319,7 +350,72 @@ export function PluralInner() {
               />
             </Route>
             {/* --- SHELL --- */}
-            <ShellRouter />
+            <Route
+              path="shell"
+              element={<Outlet />}
+            >
+              <Route
+                index
+                element={<TerminalIndex />}
+              />
+              <Route
+                path="onboarding"
+                element={<OnboardingRoot />}
+              >
+                <Route
+                  index
+                  element={<Navigate to={`/shell/onboarding/${SECTION_TO_URL[SECTION_APPLICATIONS]}`} />}
+                />
+                <Route
+                  path={SECTION_TO_URL[SECTION_APPLICATIONS]}
+                  element={<OnboardingApplications />}
+                />
+                <Route
+                  path={SECTION_TO_URL[SECTION_GIT]}
+                  element={<OnboardingGit />}
+                />
+                <Route
+                  path={SECTION_TO_URL[SECTION_REPOSITORY]}
+                  element={<OnboardingRepository />}
+                />
+                <Route
+                  path={SECTION_TO_URL[SECTION_SELECT]}
+                  element={<OnboardingSelect />}
+                />
+                <Route
+                  path={SECTION_TO_URL[SECTION_BUILD]}
+                  element={<OnboardingBuild />}
+                />
+                <Route
+                  path={SECTION_TO_URL[SECTION_CREDENTIALS]}
+                  element={<OnboardingCredentials />}
+                />
+                <Route
+                  path={SECTION_TO_URL[SECTION_WORKSPACE]}
+                  element={<OnboardingWorkspace />}
+                />
+                <Route
+                  path={SECTION_TO_URL[SECTION_SYNOPSIS]}
+                  element={<OnboardingSynopsis />}
+                />
+                <Route
+                  path={SECTION_TO_URL[SECTION_LAUNCH]}
+                  element={<OnboardingLaunch />}
+                />
+                <Route
+                  path={SECTION_TO_URL[SECTION_CLI_INSTALLATION]}
+                  element={<OnboardingCliInstallation />}
+                />
+                <Route
+                  path={SECTION_TO_URL[SECTION_CLI_COMPLETION]}
+                  element={<OnboardingCliComplete />}
+                />
+              </Route>
+            </Route>
+            <Route
+              path="/oauth/callback/:provider/shell"
+              element={<OnboardingOAuthCallback />}
+            />
             {/* --- ACCOUNT --- */}
             <Route
               path="/account/edit/:section/*"

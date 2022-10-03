@@ -59,9 +59,7 @@ function CloudCredentials() {
             ))}
           </Select>
         </FormField>
-        <Box>
-          <Form />
-        </Box>
+        <Form />
         {open && (
           <Drop
             target={ref.current}

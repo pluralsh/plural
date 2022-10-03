@@ -4,13 +4,14 @@ import {
   useState,
 } from 'react'
 
-import CreateShellContext from '../../../../contexts/CreateShellContext'
-import DemoProject from '../demo/DemoProject'
+import CreateShellContext from '../../www/src/contexts/CreateShellContext'
+import DemoProject from '../../www/src/components/shell/onboarding/demo/DemoProject'
 
-import CloudSelect from './OnboardingSelect'
+import CloudSelect from '../../www/src/components/shell/onboarding/steps/OnboardingSelect'
 
 function ProviderForm() {
   const {
+    // @ts-ignore
     setProvider, workspace, setWorkspace, credentials, setCredentials, demo, setDemo, next,
   } = useContext(CreateShellContext)
   const [path, setPath] = useState(null)
@@ -24,6 +25,7 @@ function ProviderForm() {
 
   if (!path) {
     return (
+      // @ts-ignore
       <CloudSelect doSetPath={doSetPath} />
     )
   }

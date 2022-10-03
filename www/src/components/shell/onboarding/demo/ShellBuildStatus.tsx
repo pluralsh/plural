@@ -6,7 +6,7 @@ import Status from './Status'
 // TODO find if necessary
 // TODO un-grommet this file
 
-export function OnboardingShellBuildStatus({ shell: { status } }) {
+export function ShellBuildStatus({ shell: { status } }) {
   if (!status) {
     return <LoopingLogo />
   }

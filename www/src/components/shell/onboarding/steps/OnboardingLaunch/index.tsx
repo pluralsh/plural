@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import { useMutation, useQuery } from '@apollo/client'
 import { Div } from 'honorable'
 
@@ -14,7 +14,7 @@ import {
 } from '../../../usePersistance'
 import { CLOUD_SHELL_QUERY, CREATE_SHELL_MUTATION } from '../../../queries'
 
-import OnboardingShellLaunchStatus from '../../demo/OnboardingShellLaunchStatus'
+import ShellLaunchStatus from '../../demo/ShellLaunchStatus'
 
 import JoinCommunityCard from './JoinCommunityCard'
 
@@ -26,7 +26,6 @@ function OnboardingLaunch() {
   const [workspace] = usePersistedWorkspace()
   const [credentials] = usePersistedCredentials()
   const [demoId] = usePersistedDemoId()
-  const navigate = useNavigate()
 
   const [createShellMutation, { data: mutationData, error }] = useMutation(CREATE_SHELL_MUTATION, {
     variables: {
@@ -52,15 +51,15 @@ function OnboardingLaunch() {
     createShellMutation()
   }, [createShellMutation])
 
-  useEffect(() => {
-    if (data?.shell?.alive) {
-      navigate('/shell')
-    }
-  }, [data, navigate])
+  if (data?.shell?.alive) {
+    return (
+      <Navigate to="/shell" />
+    )
+  }
 
   return (
     <>
-      <OnboardingShellLaunchStatus
+      <ShellLaunchStatus
         shell={data?.shell || EMPTY_SHELL}
         error={error}
       />

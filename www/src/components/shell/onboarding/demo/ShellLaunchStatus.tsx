@@ -22,7 +22,7 @@ function StatusChip({
   )
 }
 
-function OnboardingShellStatus({
+function ShellLaunchStatus({
   shell: {
     alive,
     status: {
@@ -145,4 +145,4 @@ function OnboardingShellStatus({
   )
 }
 
-export default OnboardingShellStatus
+export default ShellLaunchStatus

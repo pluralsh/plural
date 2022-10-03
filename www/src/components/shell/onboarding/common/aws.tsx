@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { MenuItem, Select } from 'honorable'
 import { FormField, Input } from 'pluralsh-design-system'
-import { usePersistedCredentials, usePersistedWorkspace } from 'components/shell/usePersistance'
+
+import { usePersistedCredentials, usePersistedWorkspace } from '../../usePersistance'
 
 const REGIONS = [
   'af-south-1',

@@ -6,7 +6,7 @@ import {
   usePersistedCredentials,
   usePersistedProvider,
   usePersistedWorkspace,
-} from 'components/shell/usePersistance'
+} from '../../usePersistance'
 
 import { POLL_DEMO_PROJECT_QUERY } from '../../queries'
 

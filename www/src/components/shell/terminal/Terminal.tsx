@@ -1,4 +1,4 @@
-import './shell.css'
+import './terminal.css'
 
 import {
   useCallback,

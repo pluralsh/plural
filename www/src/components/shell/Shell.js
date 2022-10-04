@@ -41,8 +41,12 @@ function Shell({ shell }) {
   const [restart, setRestart] = useState(false)
 
   useEffect(() => {
-    if (!xterm?.current?.terminal) return
-    if (restart) return
+    if (!xterm?.current?.terminal || restart) {
+      // eslint-disable-next-line no-unused-expressions
+      restart && setRestart(false)
+
+      return
+    }
 
     const term = xterm.current.terminal
     const chan = socket.channel('shells:me')
@@ -88,8 +92,6 @@ function Shell({ shell }) {
       chan.leave()
     }
   }, [shell, xterm, fitAddon, restart])
-
-  useEffect(() => (restart ? setRestart(false) : undefined), [restart, setRestart])
 
   const handleResetSize = useCallback(() => {
     if (!channel) return

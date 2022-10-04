@@ -48,12 +48,12 @@ export const SECTIONS = {
     next: null,
   },
   [SECTION_CLI_INSTALLATION]: {
-    stepIndex: 1,
+    stepIndex: 2,
     previous: SECTION_CLOUD_SELECT,
     next: SECTION_CLI_COMPLETION,
   },
   [SECTION_CLI_COMPLETION]: {
-    stepIndex: 2,
+    stepIndex: 3,
     previous: SECTION_CLI_INSTALLATION,
     next: null,
   },

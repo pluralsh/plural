@@ -30,6 +30,12 @@ export function retrieveProvider() {
 }
 
 export function persistStack(stack: any) {
+  if (!stack) {
+    localStorage.removeItem(STACK_NAME_LOCAL_STORAGE_KEY)
+
+    return
+  }
+
   localStorage.setItem(STACK_NAME_LOCAL_STORAGE_KEY, JSON.stringify(stack))
 }
 

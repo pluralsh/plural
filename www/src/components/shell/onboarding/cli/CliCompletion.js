@@ -1,6 +1,7 @@
 import { useContext } from 'react'
 import { P } from 'honorable'
 import { ArrowTopRightIcon, Button } from 'pluralsh-design-system'
+import { Link } from 'react-router-dom'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'
 
@@ -9,7 +10,7 @@ import OnboardingNavSection from '../OnboardingNavSection'
 import OnboardingCard from '../OnboardingCard'
 
 function CliCompletion() {
-  const { previous, next } = useContext(CreateShellContext)
+  const { previous } = useContext(CreateShellContext)
 
   return (
     <>
@@ -42,9 +43,10 @@ function CliCompletion() {
         </Button>
         <Button
           primary
-          onClick={() => next()}
+          as={Link}
+          to="/marketplace"
         >
-          Complete Setup
+          Continue to app
         </Button>
       </OnboardingNavSection>
     </>

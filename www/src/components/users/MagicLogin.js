@@ -17,6 +17,8 @@ import queryString from 'query-string'
 import {
   A, Article, Button, Div, Flex, H2, Icon, Img, Input, P,
 } from 'honorable'
+import { useResizeDetector } from 'react-resize-detector'
+
 import { WelcomeHeader } from 'components/utils/WelcomeHeader'
 
 import { fetchToken, setToken } from '../../helpers/authentication'
@@ -66,6 +68,8 @@ export function LabelledInput({
     </FormField>
   )
 }
+
+const RIGHT_CONTENT_MAX_WIDTH = 480
 
 export function LoginPortal({ children }) {
   return (
@@ -127,10 +131,12 @@ export function LoginPortal({ children }) {
       <Flex
         overflow="auto"
         grow={1}
+        shrink={1}
         padding="xxlarge"
       >
         <Div
-          width="480px"
+          maxWidth={RIGHT_CONTENT_MAX_WIDTH}
+          width="100%"
           marginVertical="auto"
           marginHorizontal="auto"
         >
@@ -284,6 +290,48 @@ function LoginPoller({ challenge, token, deviceToken }) {
   )
 }
 
+function OAuthOptions({ oauthUrls }) {
+  const { ref, width } = useResizeDetector({
+    handleHeight: false,
+  })
+  const singleColumn = width < RIGHT_CONTENT_MAX_WIDTH
+
+  return (
+    <Div
+      ref={ref}
+      marginBottom="medium"
+    >
+      {oauthUrls && (
+        <>
+          <Divider
+            text="Or continue with"
+            color="text-xlight"
+            backgroundColor="border"
+            marginVertical="large"
+            overline
+          />
+          <Flex
+            direction="row"
+            gap="large"
+            justify="space-between"
+            wrap="wrap"
+            flexWrap="wrap"
+          >
+            {oauthUrls.map(url => (
+              <OAuthOption
+                key={url.provider}
+                url={url}
+                flexGrow={1}
+                width={singleColumn ? '100%' : 'auto'}
+              />
+            ))}
+          </Flex>
+        </>
+      )}
+    </Div>
+  )
+}
+
 export function Login() {
   const history = useHistory()
   const navigate = useNavigate()
@@ -427,28 +475,7 @@ export function Login() {
             </Form>
           </Keyboard>
           {!deviceToken && (
-            <>
-              <Divider
-                text="OR CONTINUE WITH"
-                color="text-xlight"
-                backgroundColor="border"
-                marginVertical="large"
-                overline
-              />
-              <Flex
-                direction="row"
-                gap="large"
-                justify="space-between"
-              >
-                {oAuthData && oAuthData.oauthUrls.map(url => (
-                  <OAuthOption
-                    key={url.provider}
-                    url={url}
-                    marginBottom="medium"
-                  />
-                ))}
-              </Flex>
-            </>
+            <OAuthOptions oauthUrls={oAuthData?.oauthUrls} />
           )}
         </>
       )}
@@ -586,26 +613,7 @@ export function Signup() {
           </Button>
         </Form>
       </Keyboard>
-      <Divider
-        text="OR CONTINUE WITH"
-        color="text-xlight"
-        backgroundColor="border"
-        marginVertical="large"
-        overline
-      />
-      <Flex
-        direction="row"
-        gap="large"
-        justify="space-between"
-      >
-        {data && data.oauthUrls.map(url => (
-          <OAuthOption
-            key={url.provider}
-            url={url}
-            marginBottom="medium"
-          />
-        ))}
-      </Flex>
+      <OAuthOptions oauthUrls={data?.oauthUrls} />
       <P
         body2
         textAlign="center"

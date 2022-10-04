@@ -22,8 +22,7 @@ import { OAuthConsent } from './components/oidc/OAuthConsent'
 import { EmailConfirmed } from './components/users/EmailConfirmation'
 import { OAuthCallback } from './components/users/OAuthCallback'
 import { SSOCallback } from './components/users/SSOCallback'
-import HistoryRouter from './history/router'
-import browserHistory from './history/browser'
+import { HistoryRouter, browserHistory } from './router'
 
 const honorableTheme = mergeTheme(theme, {
   global: [

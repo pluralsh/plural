@@ -8,6 +8,8 @@ import { Toast } from 'pluralsh-design-system'
 
 import { growthbook } from '../helpers/growthbook'
 
+import { useHistory } from '../router'
+
 import ApplicationLayout from './layout/ApplicationLayout'
 import BreadcrumbProvider from './Breadcrumbs'
 import Chart from './repos/Chart'
@@ -91,6 +93,7 @@ function WrapStripe({ children }) {
 // - Klink
 function OAuthOrFallback() {
   const me = useContext(CurrentUserContext)
+  const history = useHistory()
   const shellOAuthMatch = useMatch('/oauth/callback/:provider/shell')
 
   if (shellOAuthMatch) {
@@ -101,7 +104,7 @@ function OAuthOrFallback() {
     <Navigate
       shellOAuthMatch={shellOAuthMatch}
       replace
-      to={me.hasInstallations ? '/installed' : '/marketplace'}
+      to={history.pop(me.hasInstallations ? '/installed' : '/marketplace')}
     />
   )
 }

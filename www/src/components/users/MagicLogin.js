@@ -10,7 +10,9 @@ import {
 import {
   useApolloClient, useLazyQuery, useMutation, useQuery,
 } from '@apollo/client'
-import { Navigate, useLocation, useParams } from 'react-router-dom'
+import {
+  Navigate, useLocation, useNavigate, useParams,
+} from 'react-router-dom'
 import queryString from 'query-string'
 import {
   A, Article, Button, Div, Flex, H2, Icon, Img, Input, P,
@@ -284,6 +286,7 @@ function LoginPoller({ challenge, token, deviceToken }) {
 
 export function Login() {
   const history = useHistory()
+  const navigate = useNavigate()
   const client = useApolloClient()
   const location = useLocation()
   const jwt = fetchToken()
@@ -405,7 +408,7 @@ export function Login() {
                   caption={(
                     <A
                       inline
-                      onClick={() => history.navigate('/password-reset')}
+                      onClick={() => navigate('/password-reset')}
                     >forgot your password?
                     </A>
                   )}
@@ -484,6 +487,7 @@ function OAuthOption({ url: { authorizeUrl, provider }, ...props }) {
 
 export function Signup() {
   const history = useHistory()
+  const navigate = useNavigate()
   const location = useLocation()
   const [email, setEmail] = useState(location?.state?.email || '')
   const [password, setPassword] = useState('')
@@ -610,7 +614,7 @@ export function Signup() {
         Already have an account?{' '}
         <A
           inline
-          onClick={() => history.navigate('/login')}
+          onClick={() => navigate('/login')}
         >
           Login
         </A>

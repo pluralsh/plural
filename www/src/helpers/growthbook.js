@@ -20,5 +20,3 @@ fetch(FEATURES_ENDPOINT)
   .catch(() => {
     console.log('Failed to fetch feature definitions from GrowthBook')
   })
-
-growthbook.setAttributes({})

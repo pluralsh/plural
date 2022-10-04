@@ -5,6 +5,8 @@ import { Box } from 'grommet'
 
 import { useIntercom } from 'react-use-intercom'
 
+import { growthbook } from 'helpers/growthbook'
+
 import { ME_Q } from '../users/queries'
 import { setPreviousUserData, setToken, wipeToken } from '../../helpers/authentication'
 import { useNotificationSubscription } from '../incidents/Notifications'
@@ -33,13 +35,26 @@ export default function CurrentUser({ children }) {
 
   useNotificationSubscription()
 
+  useEffect(() => {
+    if (data?.me) {
+      const { me } = data
+
+      growthbook.setAttributes({
+        id: me.id,
+        email: me.email,
+        company: me.account.name,
+      })
+    }
+  }, [data])
+
   if (loading) return (<Box height="100vh"><LoadingSpinner /></Box>)
 
-  if (error || !data || !data.me || !data.me.id) {
+  if (error || !data?.me?.id) {
     wipeToken()
 
     return (<Navigate to="/login" />)
   }
+
   const { me } = data
 
   return (

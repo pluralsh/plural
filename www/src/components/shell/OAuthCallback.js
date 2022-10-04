@@ -1,7 +1,9 @@
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import { useQuery } from '@apollo/client'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
+
+import { useHistory } from '../../router'
 
 import { AUTHENTICATION_URLS_QUERY, SCM_TOKEN_QUERY } from './queries'
 import { DEBUG_SCM_TOKENS } from './debug-tokens'
@@ -9,7 +11,7 @@ import { DEBUG_SCM_TOKENS } from './debug-tokens'
 import OnboardingFlow from './onboarding/OnboardingFlow'
 
 function OAuthCallback({ provider }) {
-  const navigate = useNavigate()
+  const history = useHistory()
   const [searchParams] = useSearchParams()
 
   const { data: authUrlData } = useQuery(AUTHENTICATION_URLS_QUERY)
@@ -37,7 +39,7 @@ function OAuthCallback({ provider }) {
   }
 
   if (!data.scmToken) {
-    navigate('/shell')
+    history.navigate('/shell')
 
     return null
   }

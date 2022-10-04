@@ -1,5 +1,5 @@
 import 'react-toggle/style.css'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 import { ApolloProvider } from '@apollo/client'
 import { IntercomProvider } from 'react-use-intercom'
 import { Box, Grommet } from 'grommet'
@@ -22,6 +22,7 @@ import { OAuthConsent } from './components/oidc/OAuthConsent'
 import { EmailConfirmed } from './components/users/EmailConfirmation'
 import { OAuthCallback } from './components/users/OAuthCallback'
 import { SSOCallback } from './components/users/SSOCallback'
+import { HistoryRouter, browserHistory } from './router'
 
 const honorableTheme = mergeTheme(theme, {
   global: [
@@ -51,7 +52,7 @@ function App() {
                 height="100vh"
                 background="#171A21"
               >
-                <BrowserRouter>
+                <HistoryRouter history={browserHistory}>
                   <Routes>
                     <Route
                       path="/reset-password/:id"
@@ -106,7 +107,7 @@ function App() {
                       element={<Plural />}
                     />
                   </Routes>
-                </BrowserRouter>
+                </HistoryRouter>
               </Box>
             </Grommet>
           </StyledThemeProvider>

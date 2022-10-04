@@ -17,7 +17,6 @@ import queryString from 'query-string'
 import {
   A, Article, Button, Div, Flex, H2, Icon, Img, Input, P,
 } from 'honorable'
-
 import { WelcomeHeader } from 'components/utils/WelcomeHeader'
 
 import { fetchToken, setToken } from '../../helpers/authentication'
@@ -26,6 +25,7 @@ import { disableState } from '../Login'
 import { PLURAL_FULL_LOGO_WHITE, PLURAL_MARK_WHITE } from '../constants'
 import { ACCEPT_LOGIN } from '../oidc/queries'
 import { host } from '../../helpers/hostname'
+import { useHistory } from '../../router'
 
 import {
   METHOD_ICONS, getDeviceToken, saveChallenge, saveDeviceToken, wipeChallenge, wipeDeviceToken,
@@ -238,7 +238,7 @@ export function handleOauthChallenge(client, challenge) {
 }
 
 function LoginPoller({ challenge, token, deviceToken }) {
-  const navigate = useNavigate()
+  const history = useHistory()
   const client = useApolloClient()
   const [success, setSuccess] = useState(false)
 
@@ -257,13 +257,13 @@ function LoginPoller({ challenge, token, deviceToken }) {
           handleOauthChallenge(client, challenge)
         }
         else {
-          navigate('/')
+          history.navigate('/')
         }
       })
     }, 2000)
 
     return () => clearInterval(interval)
-  }, [token, challenge, deviceToken, navigate, client])
+  }, [token, challenge, deviceToken, history, client])
 
   if (success) {
     return (
@@ -285,6 +285,7 @@ function LoginPoller({ challenge, token, deviceToken }) {
 }
 
 export function Login() {
+  const history = useHistory()
   const navigate = useNavigate()
   const client = useApolloClient()
   const location = useLocation()
@@ -311,7 +312,7 @@ export function Login() {
         handleOauthChallenge(client, challenge)
       }
       else {
-        navigate('/')
+        history.navigate('/')
       }
     },
   })
@@ -333,9 +334,9 @@ export function Login() {
       handleOauthChallenge(client, challenge)
     }
     else if (!deviceToken && jwt) {
-      navigate('/')
+      history.navigate('/')
     }
-  }, [challenge, deviceToken, navigate, client, jwt])
+  }, [challenge, deviceToken, history, client, jwt])
 
   const submit = useCallback(() => (open ? mutation() : getLoginMethod()), [mutation, getLoginMethod, open])
 
@@ -485,6 +486,7 @@ function OAuthOption({ url: { authorizeUrl, provider }, ...props }) {
 }
 
 export function Signup() {
+  const history = useHistory()
   const navigate = useNavigate()
   const location = useLocation()
   const [email, setEmail] = useState(location?.state?.email || '')
@@ -498,16 +500,16 @@ export function Signup() {
     onCompleted: ({ signup: { jwt } }) => {
       if (deviceToken) finishedDeviceLogin()
       setToken(jwt)
-      window.location = '/shell'
+      history.navigate('/shell')
     },
   })
   const { data } = useQuery(OAUTH_URLS, { variables: { host: host() } })
 
   useEffect(() => {
     if (fetchToken()) {
-      navigate('/')
+      history.navigate('/')
     }
-  }, [navigate])
+  }, [history])
 
   const { disabled, reason } = disableState(password, confirm, email)
 

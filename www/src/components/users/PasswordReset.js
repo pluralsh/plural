@@ -8,7 +8,8 @@ import {
 
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 import { PasswordStatus, disableState } from '../Login'
-import { wipeToken } from '../../helpers/authentication'
+
+import { clearLocalStorage } from '../../helpers/localStorage'
 
 import { ResetTokenType } from './types'
 import { CREATE_RESET_TOKEN, REALIZE_TOKEN, RESET_TOKEN } from './queries'
@@ -22,7 +23,7 @@ export function ResetPassword() {
   const [mutation, { loading, data: realized, error }] = useMutation(REALIZE_TOKEN, {
     variables: { id, attributes },
     onCompleted: () => {
-      wipeToken()
+      clearLocalStorage()
       window.location = '/login'
     },
   })

@@ -1,12 +1,14 @@
 import { createContext } from 'react'
 
+export const BROWSER_HISTORY_STORAGE_KEY = 'browser-history'
+
 class PluralHistory {
   private _stack: Array<string> = []
 
   // We do not want to store those paths in the history
   private readonly _filteredPaths: Array<string> = ['/login', '/oauth', '/signup', '/sso']
 
-  private readonly _localStorageKey = 'browser-history'
+  private readonly _localStorageKey = BROWSER_HISTORY_STORAGE_KEY
 
   // Keep only this number of entries in the history
   private readonly _maxHistoryLength = 20

@@ -86,7 +86,7 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
   })
   const { mutation: onboardMutation, fresh } = useOnboarded()
   const navigate = useNavigate()
-  const stackDisplayName = stackData.stack.displayName || `${capitalize(stackData.stack.name)} Stack`
+  const stackDisplayName = stackData?.stack?.displayName || `${capitalize(stackData?.stack?.name)} Stack`
 
   const getApplications = useCallback(() => {
     if (!applicationsData || (isStack && !stackData)) return []

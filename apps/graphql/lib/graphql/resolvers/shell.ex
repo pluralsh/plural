@@ -1,6 +1,6 @@
 defmodule GraphQl.Resolvers.Shell do
   use GraphQl.Resolvers.Base, model: Core.Schema.CloudShell
-  alias Core.Services.Shell
+  alias Core.Services.{Recipes, Shell}
   alias Core.Shell.Scm
 
   def resolve_shell(_, %{context: %{current_user: user}}),
@@ -8,6 +8,9 @@ defmodule GraphQl.Resolvers.Shell do
 
   def create_shell(%{attributes: attrs}, %{context: %{current_user: user}}),
     do: Shell.create_shell(attrs, user)
+
+  def resolve_shell_configuration(_, %{context: %{current_user: user}}),
+    do: Shell.shell_configuration(user)
 
   def delete_shell(_, %{context: %{current_user: user}}),
     do: Shell.delete(user.id)
@@ -19,6 +22,14 @@ defmodule GraphQl.Resolvers.Shell do
 
   def transfer_demo_project(%{organization_id: org}, %{context: %{current_user: user}}),
     do: Shell.Demo.transfer_demo_project(org, user)
+
+  def update_shell_configuration(%{context: ctx}, %{context: %{current_user: user}}),
+    do: Shell.update_shell_configuration(ctx, user)
+
+  def install_bundle(%{name: name, repo: repo, oidc: oidc, context: ctx}, %{context: %{current_user: user}}) do
+    Recipes.get_by_repo_and_name!(repo, name)
+    |> Shell.install_bundle(ctx, oidc, user)
+  end
 
   def reboot(_, %{context: %{current_user: user}}), do: Shell.reboot(user.id)
 

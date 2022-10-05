@@ -3,6 +3,7 @@ defmodule GraphQl.ShellQueriesTest do
   import GraphQl.TestHelpers
   use Mimic
   alias Core.Services.Shell.Pods
+  alias Core.Shell.Models
   alias GoogleApi.CloudResourceManager.V3
 
   describe "shell" do
@@ -55,6 +56,37 @@ defmodule GraphQl.ShellQueriesTest do
       """, %{"code" => "code", "prov" => "GITHUB"}, %{current_user: user})
 
       assert tok == "access"
+    end
+  end
+
+  describe "shellConfiguration" do
+    test "it can fetch the configuration from your cloud shell" do
+      expect(Pods, :ip, fn "plrl-shell-1" -> {:ok, "0.0.0.0"} end)
+
+      shell = insert(:cloud_shell, pod_name: "plrl-shell-1", workspace: %{cluster: "cluster"})
+
+      expect(HTTPoison, :request, fn :get, "http://0.0.0.0:8080/v1/configuration", _, _, _ ->
+        {:ok, %HTTPoison.Response{status_code: 200, body: Poison.encode!(%Models.Configuration{
+          workspace: %Models.Workspace{bucket_prefix: "pre", network: %Models.Network{plural_dns: true}},
+          git: %Models.Git{url: "git"},
+          context_configuration: %{"some" => "config"}
+        })}}
+      end)
+
+      {:ok, %{data: %{"shellConfiguration" => found}}} = run_query("""
+        query {
+          shellConfiguration {
+            workspace { bucketPrefix network { pluralDns } }
+            git { url }
+            contextConfiguration
+          }
+        }
+      """, %{}, %{current_user: shell.user})
+
+      assert found["workspace"]["bucketPrefix"] == "pre"
+      assert found["workspace"]["network"]["pluralDns"]
+      assert found["git"]["url"] == "git"
+      assert found["contextConfiguration"] == %{"some" => "config"}
     end
   end
 

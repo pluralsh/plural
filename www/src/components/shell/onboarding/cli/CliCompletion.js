@@ -15,8 +15,20 @@ function CliCompletion() {
   const { previous } = useContext(CreateShellContext)
   const provider = useMemo(() => retrieveProvider(), [])
   const applications = useMemo(() => retrieveApplications(), [])
-  const _stack = useMemo(() => retrieveStack(), [])
-  const appInstallCmds = applications.map(app => {
+  const applicationIds = applications.map(x => x.id)
+  const stack = useMemo(() => retrieveStack(), [])
+  const stackApplicationIds = stack.collections.find(x => x.provider === provider)?.bundles.map(x => x.recipe.repository.id)
+
+  // If all stack applications are in the list then we can filter them out to show stack install command.
+  const isStackComplete = stackApplicationIds.every(id => applicationIds.includes(id))
+  const filteredApplications = isStackComplete
+    ? applications.filter(app => !stackApplicationIds.includes(app.id))
+    : applications
+
+  const stackInstallCmd = isStackComplete
+    ? (<Codeline>plural stack install {stack.name}</Codeline>)
+    : null
+  const appInstallCmds = filteredApplications.map(app => {
     const recipes = app.recipes.filter(recipe => recipe.provider.toLowerCase() === provider.toLowerCase())
 
     if (recipes?.length !== 1) return // There should be only one bundle for each provider.
@@ -34,6 +46,7 @@ function CliCompletion() {
           marginVertical="large"
         >
           <Codeline>plural init</Codeline>
+          {stackInstallCmd}
           {appInstallCmds}
           <Codeline>plural build</Codeline>
           <Codeline>plural deploy --commit "first commit"</Codeline>

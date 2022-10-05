@@ -3,7 +3,9 @@ import { A, Flex, P } from 'honorable'
 import { Button, Codeline } from 'pluralsh-design-system'
 import { Link } from 'react-router-dom'
 
-import { retrieveApplications, retrieveProvider, retrieveStack } from 'components/shell/persistance'
+import {
+  retrieveApplications, retrieveConsole, retrieveProvider, retrieveStack,
+} from 'components/shell/persistance'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'
 
@@ -17,7 +19,9 @@ function CliCompletion() {
   const applications = useMemo(() => retrieveApplications(), [])
   const applicationIds = applications.map(x => x.id)
   const stack = useMemo(() => retrieveStack(), [])
-  const stackApplicationIds = stack.collections.find(x => x.provider === provider)?.bundles.map(x => x.recipe.repository.id)
+  const stackCollection = stack.collections.find(x => x.provider === provider)
+  const stackApplicationIds = stackCollection?.bundles.map(x => x.recipe.repository.id)
+  const shouldInstallConsole = retrieveConsole()
 
   // If all stack applications are in the list then we can filter them out to show stack install command.
   const isStackComplete = stackApplicationIds.every(id => applicationIds.includes(id))
@@ -25,9 +29,16 @@ function CliCompletion() {
     ? applications.filter(app => !stackApplicationIds.includes(app.id))
     : applications
 
+    // Console command should only be added if it is not in the apps list already.
+  const isConsoleInApps = filteredApplications.find(app => app.name === 'console')
+  const consoleInstallCmd = shouldInstallConsole && !isConsoleInApps
+    ? <Codeline>{`plural bundle install console console-${provider.toLowerCase()}`}</Codeline>
+    : null
+
   const stackInstallCmd = isStackComplete
     ? (<Codeline>plural stack install {stack.name}</Codeline>)
     : null
+
   const appInstallCmds = filteredApplications.map(app => {
     const recipes = app.recipes.filter(recipe => recipe.provider.toLowerCase() === provider.toLowerCase())
 
@@ -48,6 +59,7 @@ function CliCompletion() {
           <Codeline>plural init</Codeline>
           {stackInstallCmd}
           {appInstallCmds}
+          {consoleInstallCmd}
           <Codeline>plural build</Codeline>
           <Codeline>plural deploy --commit "first commit"</Codeline>
         </Flex>

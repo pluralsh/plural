@@ -1,8 +1,4 @@
-import {
-  ApolloClient,
-  InMemoryCache,
-  split,
-} from '@apollo/client'
+import { ApolloClient, InMemoryCache, split } from '@apollo/client'
 import { getMainDefinition } from '@apollo/client/utilities'
 import { setContext } from '@apollo/client/link/context'
 import { onError } from '@apollo/client/link/error'
@@ -14,7 +10,8 @@ import { createAbsintheSocketLink } from 'pluralsh-absinthe-socket-apollo-link'
 
 import { apiHost } from './hostname'
 import customFetch from './uploadLink'
-import { fetchToken, wipeToken } from './authentication'
+import { fetchToken } from './authentication'
+import { clearLocalStorage } from './localStorage'
 
 const API_HOST = apiHost()
 const GQL_URL = `https://${API_HOST}/gql`
@@ -44,7 +41,7 @@ const authLink = setContext(({ headers }) => {
 const resetToken = onError(({ networkError }) => {
   if (networkError && networkError.statusCode === 401) {
     // remove cached token on 401 from the server
-    wipeToken()
+    clearLocalStorage()
     window.location = '/login'
   }
 })

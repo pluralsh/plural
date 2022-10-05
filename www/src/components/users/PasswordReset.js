@@ -8,6 +8,7 @@ import {
 
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 import { PasswordStatus, disableState } from '../Login'
+
 import { wipeToken } from '../../helpers/authentication'
 
 import { ResetTokenType } from './types'

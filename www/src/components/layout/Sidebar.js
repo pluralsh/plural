@@ -23,11 +23,13 @@ import {
   Tooltip,
 } from 'pluralsh-design-system'
 
-import { getPreviousUserData, wipeToken } from '../../helpers/authentication'
+import { getPreviousUserData } from '../../helpers/authentication'
 import { CurrentUserContext, handlePreviousUserClick } from '../login/CurrentUser'
 import { useIsCurrentlyOnboarding } from '../shell/onboarding/useOnboarded'
 
 import CreatePublisherModal from '../publisher/CreatePublisherModal'
+
+import { clearLocalStorage } from '../../helpers/localStorage'
 
 import { NotificationsPanel, WithNotifications } from './WithNotifications'
 
@@ -266,7 +268,7 @@ function Sidebar({
   const switchPrevious = () => handlePreviousUserClick(previousUserData)
 
   function handleLogout() {
-    wipeToken()
+    clearLocalStorage()
     window.location = '/'
   }
 

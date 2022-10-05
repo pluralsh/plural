@@ -36,7 +36,7 @@
     "@octokit/core": "3.6.0",
     "@testing-library/jest-dom": "5.16.5",
     "@testing-library/react": "13.4.0",
-    "@types/styled-components": "^5.1.26",
+    "@types/styled-components": "5.1.26",
     "apollo-absinthe-upload-link": "1.7.0",
     "buffer": "6.0.3",
     "country-code-lookup": "0.0.20",

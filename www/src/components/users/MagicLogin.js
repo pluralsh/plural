@@ -18,6 +18,7 @@ import {
   A, Article, Button, Div, Flex, H2, Icon, Img, Input, P,
 } from 'honorable'
 import { useResizeDetector } from 'react-resize-detector'
+import useScript from 'react-script-hook'
 
 import { WelcomeHeader } from 'components/utils/WelcomeHeader'
 
@@ -537,6 +538,7 @@ export function Signup() {
       history.navigate('/')
     }
   }, [history])
+  useScript({ src: 'https://js.hs-scripts.com/22363579.js' })
 
   const { disabled, reason } = disableState(password, confirm, email)
 
@@ -625,6 +627,20 @@ export function Signup() {
           onClick={() => navigate('/login')}
         >
           Login
+        </A>
+      </P>
+      <P
+        body2
+        textAlign="center"
+        marginTop="xxsmall"
+      >
+        <A
+          inline
+          onClick={() => {
+            window?._hsp?.push(['showBanner'])
+          }}
+        >
+          Cookie settings
         </A>
       </P>
     </LoginPortal>

@@ -26,8 +26,8 @@ function CliCompletion() {
 
   return (
     <>
-      <OnboardingCard title="Get started">
-        <P body1>Now that you've installed the Plural CLI, here are the next steps:</P>
+      <OnboardingCard title="Complete setup">
+        <P>Now that you've installed the Plural CLI, here are the next steps:</P>
         <Flex
           direction="column"
           gap="medium"
@@ -38,7 +38,7 @@ function CliCompletion() {
           <Codeline>plural build</Codeline>
           <Codeline>plural deploy --commit "first commit"</Codeline>
         </Flex>
-        <P body1>
+        <P>
           If you need help filling out the install wizard during any of these steps,
           visit our{' '}
           <A

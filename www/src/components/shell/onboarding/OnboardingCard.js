@@ -17,8 +17,9 @@ function OnboardingCard({ children, title = '', ...props }) {
     >
       {!!title && (
         <H2
-          overline
-          color="text-xlight"
+          subtitle1
+          color="text"
+          marginTop="medium"
           marginBottom="xsmall"
           width="100%"
         >

@@ -15,7 +15,6 @@ import {
   Button,
   Div,
   Flex,
-  H2,
   Hr,
   P,
   Switch,
@@ -87,6 +86,7 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
   })
   const { mutation: onboardMutation, fresh } = useOnboarded()
   const navigate = useNavigate()
+  const stackDisplayName = stackData.stack.displayName || `${capitalize(stackData.stack.name)} Stack`
 
   const getApplications = useCallback(() => {
     if (!applicationsData || (isStack && !stackData)) return []
@@ -205,15 +205,9 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
   const fuse = new Fuse(applications, searchOptions)
   const filteredApplications = search ? fuse.search(search).map(x => x.item) : applications
 
-  function renderApplicationsHeader() {
+  function renderApplicationsSubHeader() {
     return (
       <>
-        <H2
-          subtitle1
-          marginTop="medium"
-        >
-          Choose applications
-        </H2>
         <P
           body2
           color="text-light"
@@ -237,24 +231,16 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
     )
   }
 
-  function renderStackHeader() {
+  function renderStackSubHeader() {
     return (
-      <>
-        <H2
-          subtitle1
-          marginTop="medium"
-        >
-          Install the {capitalize(stackData.stack.name)} Stack
-        </H2>
-        <P
-          body2
-          color="text-light"
-          marginTop="xsmall"
-          marginBottom="large"
-        >
-          {capitalize(stackData.stack.description)}
-        </P>
-      </>
+      <P
+        body2
+        color="text-light"
+        marginTop="xsmall"
+        marginBottom="large"
+      >
+        {capitalize(stackData.stack.description)}
+      </P>
     )
   }
 
@@ -343,8 +329,11 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
   }
 
   return (
-    <OnboardingCard flexGrow={1}>
-      {isStack ? renderStackHeader() : renderApplicationsHeader()}
+    <OnboardingCard
+      title={isStack ? ` Install the ${stackDisplayName}` : 'Choose applications'}
+      flexGrow={1}
+    >
+      {isStack ? renderStackSubHeader() : renderApplicationsSubHeader()}
       {!isStack && !search && renderStacks()}
       {!!filteredApplications.length && (
         <Div

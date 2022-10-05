@@ -299,7 +299,10 @@ function ApplicationsSelection({ onNext }: ApplicationsSelectionProps) {
           gap="xsmall"
         >
           Install Plural Console
-          <Tooltip label={<>Plural Console is a web-based dashboard<br />that allows you to manage your Plural apps and clusters.</>}>
+          <Tooltip
+            label="Plural Console is a web-based dashboard that allows you to manage your Plural apps and clusters."
+            width="350px"
+          >
             <InfoIcon />
           </Tooltip>
         </Flex>

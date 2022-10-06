@@ -390,7 +390,7 @@ defmodule Core.Services.Repositories do
   end
 
   @oidc_scopes "profile code openid offline_access offline"
-  @grant_types "authorization_code refresh_token"
+  @grant_types "authorization_code refresh_token client_credentials"
 
   @doc """
   Creates a new oidc provider for a given installation, enabling a log-in with plural experience

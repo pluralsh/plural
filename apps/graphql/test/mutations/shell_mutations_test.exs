@@ -2,7 +2,6 @@ defmodule GraphQl.ShellMutationsTest do
   use Core.SchemaCase, async: true
   use Mimic
   import GraphQl.TestHelpers
-  alias Core.Services.Shell.Demo
   alias Core.Services.Shell.Pods
   alias GoogleApi.CloudResourceManager.V3.Api.Projects
 

@@ -21,6 +21,7 @@ import {
   retrieveApplications,
   retrieveConsole,
   retrieveShouldUseOnboardingTerminalSidebar,
+  retrieveStack,
 } from './persistance'
 
 const sidebarWidth = 420
@@ -30,15 +31,17 @@ const steps = [
     Component: Step1,
   },
   {
-    title: type => (type === 'stack' ? 'Install your stack' : 'Install your apps'),
+    title: ({
+      type, quick, appCount, stackName,
+    }) => (quick || type !== 'stack' ? `Install your app${appCount > 1 ? 's' : ''}` : `Install ${stackName} stack`),
     Component: Step2,
   },
   {
-    title: 'Deploy your apps',
+    title: ({ appCount }) => `Deploy your app${appCount > 1 ? 's' : ''}`,
     Component: Step3,
   },
   {
-    title: 'Run plural watch',
+    title: ({ appCount }) => `Check your app${appCount > 1 ? 's' : ''}`,
     Component: Step4,
   },
 ]
@@ -55,17 +58,28 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
   const { command, type: commandType, quick } = usePluralCommand(shell) // Could be put inside Step2 but stays here for eager loading
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [stepIndex, setStepIndex] = useState(0)
-  const { workingSteps, skipConsoleInstall } = useMemo(() => {
+  const {
+    workingSteps, skipConsoleInstall, appCount, stackName,
+  } = useMemo(() => {
     const workingSteps = [...steps]
     const shouldInstallConsole = retrieveConsole()
     const applications = retrieveApplications()
+    const stack = retrieveStack()
 
-    if (applications.length === 1 && applications[0].name !== 'console') return { workingSteps, skipConsoleInstall: false }
-    if (shouldInstallConsole) return { workingSteps, skipConsoleInstall: false }
+    const ret = {
+      appCount: applications?.length,
+      stackName: stack?.name,
+      workingSteps,
+    }
 
-    workingSteps.shift()
+    if (applications.length === 1 && applications[0].name !== 'console') return { ...ret, skipConsoleInstall: false }
+    if (shouldInstallConsole) return { ...ret, skipConsoleInstall: false }
 
-    return { workingSteps, skipConsoleInstall: true }
+    ret.workingSteps.shift()
+
+    return {
+      ...ret, skipConsoleInstall: true,
+    }
   }, [])
 
   const { title, Component } = workingSteps[stepIndex]
@@ -110,7 +124,9 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
           borderBottom="1px solid border"
         >
           <P subtitle1>
-            {typeof title === 'function' ? title(commandType) : title}
+            {typeof title === 'function' ? title({
+              type: commandType, stackName, appCount, quick,
+            }) : title}
           </P>
           <P
             body2
@@ -132,6 +148,7 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
             commandType={commandType}
             skipConsoleInstall={skipConsoleInstall}
             shell={shell}
+            appCount={appCount}
           />
         </Flex>
         <Flex
@@ -503,14 +520,15 @@ function Step2({ command, quick }) {
   DEMO STEP 3
 --- */
 
-function Step3() {
+function Step3({ appCount }) {
   return (
     <>
       <div>
         <StepSection>
           <StepP>
-            With all of your apps installed, all that’s left to do is build and
-            deploy them to Kubernetes.
+            With {appCount > 1 ? 'all of your apps' : 'your app'} installed, all
+            that’s left to do is build and deploy {appCount > 1 ? 'them' : 'it'}{' '}
+            to Kubernetes.
           </StepP>
         </StepSection>
         <StepSection>
@@ -538,17 +556,17 @@ function Step3() {
   DEMO STEP 4
 --- */
 
-function Step4() {
+function Step4({ appCount }) {
   return (
     <>
       <div>
         <StepSection>
           <StepP>
-            Before we finish up, let’s make sure your applications are up and
+            Before we finish up, let’s make sure your {appCount > 1 ? 'applications are' : 'application is'} up and
             running.
           </StepP>
           <StepP>
-            The command below will check the health any app you installed.
+            The command below will check the health of any app you installed.
           </StepP>
           <StepP>Run this command:</StepP>
           <Codeline marginTop="xsmall">{'plural watch <app-name>'}</Codeline>

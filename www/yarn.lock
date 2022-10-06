@@ -7943,7 +7943,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"classnames@npm:^2.2.5, classnames@npm:^2.2.6":
+"classnames@npm:2.3.2, classnames@npm:^2.2.5, classnames@npm:^2.2.6":
   version: 2.3.2
   resolution: "classnames@npm:2.3.2"
   checksum: 2c62199789618d95545c872787137262e741f9db13328e216b093eea91c85ef2bfb152c1f9e63027204e2559a006a92eb74147d46c800a9f96297ae1d9f96f4e
@@ -16748,9 +16748,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pluralsh-design-system@npm:1.222.0":
-  version: 1.222.0
-  resolution: "pluralsh-design-system@npm:1.222.0"
+"pluralsh-design-system@npm:1.224.0":
+  version: 1.224.0
+  resolution: "pluralsh-design-system@npm:1.224.0"
   dependencies:
     "@floating-ui/react-dom-interactions": 0.8.1
     "@react-aria/button": 3.6.1
@@ -16768,6 +16768,7 @@ __metadata:
     "@react-types/shared": 3.14.1
     "@types/chroma-js": 2.1.4
     chroma-js: 2.4.2
+    classnames: 2.3.2
     grommet: 2.25.3
     highlight.js: 11.6.0
     prop-types: 15.8.1
@@ -16785,7 +16786,7 @@ __metadata:
     react-dom: ">=16.0.0"
     react-transition-group: ">=4.4.2"
     styled-components: ">=5.3.5"
-  checksum: eede7d35cc792f0706b19c682a7dd56301cdbeee71927467ba0a90fb01db739a116d2db0da03ccfe0422cce90cf0529d55b9feb16d09a3e1236b2c6385c4a2df
+  checksum: 326644d99fb3a2c5ae3102c4864d90c64980f2d01987e21f85009abe6109695426b7bb1545d5158314facaa03dae6e9244f7f76f91cadc82b2260c35ebedbf48
   languageName: node
   linkType: hard
 
@@ -23157,7 +23158,7 @@ __metadata:
     moment: 2.29.4
     phoenix: 1.6.12
     pluralsh-absinthe-socket-apollo-link: 0.2.0
-    pluralsh-design-system: 1.222.0
+    pluralsh-design-system: 1.224.0
     postcss-import: 8.2.0
     prop-types: 15.8.1
     query-string: 7.1.1

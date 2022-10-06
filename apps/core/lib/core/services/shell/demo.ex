@@ -174,7 +174,7 @@ defmodule Core.Services.Shell.Demo do
     end
   end
 
-  def poll_demo_project(id, user) when is_binary(id) do
+  def poll_demo_project(id, _) when is_binary(id) do
     get_demo_project(id)
     |> poll_demo_project()
   end

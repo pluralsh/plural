@@ -131,7 +131,7 @@ function RepositoryInput({ scmState }) {
         width="100%"
         marginTop="medium"
         label="Repository name"
-        hint="This must be unique. Avoid generic names such as “plural-demo”."
+        hint="This must be globally unique. Avoid generic names such as “plural-demo”."
         length={scm?.name?.length || 0}
         maxLength={maxLen}
       >

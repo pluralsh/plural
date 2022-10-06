@@ -2,6 +2,7 @@ defmodule GraphQl.ShellMutationsTest do
   use Core.SchemaCase, async: true
   use Mimic
   import GraphQl.TestHelpers
+  alias Core.Services.Shell.Demo
   alias Core.Services.Shell.Pods
   alias GoogleApi.CloudResourceManager.V3.Api.Projects
 
@@ -111,11 +112,18 @@ defmodule GraphQl.ShellMutationsTest do
     test "it will delete demo project of current user" do
       demo = insert(:demo_project)
 
-      {:ok, %{data: %{"deleteDemoProject" => demo}}} = run_query("""
+      expect(Goth.Token, :for_scope, fn _ -> {:ok, %{token: "token"}} end)
+      expect(Projects, :cloudresourcemanager_projects_delete, fn _, _ ->
+        {:ok, %{name: "operations/123"}}
+      end)
+
+      {:ok, %{data: %{"deleteDemoProject" => deleted}}} = run_query("""
         mutation { deleteDemoProject { id } }
       """, %{}, %{current_user: demo.user})
 
-      refute demo
+      assert deleted["id"]
+
+      refute refetch(demo)
     end
   end
 

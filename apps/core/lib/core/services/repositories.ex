@@ -390,6 +390,7 @@ defmodule Core.Services.Repositories do
   end
 
   @oidc_scopes "profile code openid offline_access offline"
+  @grant_types "authorization_code refresh_token"
 
   @doc """
   Creates a new oidc provider for a given installation, enabling a log-in with plural experience
@@ -404,6 +405,7 @@ defmodule Core.Services.Repositories do
     |> add_operation(:client, fn _ ->
       Map.take(attrs, [:redirect_uris])
       |> Map.put(:scope, @oidc_scopes)
+      |> Map.put(:grant_types, @grant_types)
       |> Map.put(:token_endpoint_auth_method, oidc_auth_method(attrs.auth_method))
       |> Hydra.create_client()
     end)

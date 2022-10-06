@@ -174,12 +174,12 @@ defmodule Core.Services.Shell.Demo do
     end
   end
 
-  def poll_demo_project(id, _) when is_binary(id) do
+  def poll_demo_project(:id, id) do
     get_demo_project(id)
     |> poll_demo_project()
   end
 
-  def poll_demo_project(_, %User{id: user_id}) do
+  def poll_demo_project(:user, user_id) do
     get_by_user_id(user_id)
     |> poll_demo_project()
   end

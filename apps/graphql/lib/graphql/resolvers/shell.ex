@@ -12,7 +12,8 @@ defmodule GraphQl.Resolvers.Shell do
   def delete_shell(_, %{context: %{current_user: user}}),
     do: Shell.delete(user.id)
 
-  def get_demo_project(%{id: id}, %{context: %{current_user: user}}), do: Shell.Demo.poll_demo_project(id, user)
+  def get_demo_project(%{id: id}, _) when is_binary(id), do: Shell.Demo.poll_demo_project(:id, id)
+  def get_demo_project(_, %{context: %{current_user: %{id: user_id}}}), do: Shell.Demo.poll_demo_project(:user, user_id)
 
   def create_demo_project(_, %{context: %{current_user: user}}),
     do: Shell.Demo.create_demo_project(user)

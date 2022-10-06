@@ -8,10 +8,13 @@ import {
   LifePreserverIcon,
   ScrollIcon,
 } from 'pluralsh-design-system'
+import { useIntercom } from 'react-use-intercom'
 
 import OnboardingSidecarApplications from './OnboardingSidecarApplications'
 
 function OnboardingSidecar({ areApplicationsDisplayed = false }) {
+  const { show } = useIntercom()
+
   return (
     <Div width={200}>
       <Flex
@@ -24,9 +27,7 @@ function OnboardingSidecar({ areApplicationsDisplayed = false }) {
         <Button
           small
           tertiary
-          as="a"
-          target="_blank"
-          href="https://docs.plural.sh"
+          onClick={show}
           startIcon={(
             <LifePreserverIcon />
           )}

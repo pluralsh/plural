@@ -26,6 +26,12 @@ defmodule Core.Services.Recipes do
   def get_by_name!(name, repo_id),
     do: Core.Repo.get_by!(Recipe, name: name, repository_id: repo_id)
 
+  @spec get_by_repo_and_name!(binary, binary) :: Recipe.t
+  def get_by_repo_and_name!(repo, name) do
+    %{id: repo_id} = Repositories.get_repository_by_name!(repo)
+    get_by_name!(name, repo_id)
+  end
+
   @doc """
   Will persist the given recipe for repository `repository_id`
 

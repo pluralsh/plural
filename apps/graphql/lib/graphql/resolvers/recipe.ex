@@ -44,9 +44,7 @@ defmodule GraphQl.Resolvers.Recipe do
   end
 
   def resolve_recipe(%{name: name, repo: repo}, %{context: %{current_user: user}}) do
-    %{id: repo_id} = Repositories.get_repository_by_name!(repo)
-
-    Recipes.get_by_name(name, repo_id)
+    Recipes.get_by_repo_and_name!(repo, name)
     |> Recipes.hydrate()
     |> accessible(user)
   end

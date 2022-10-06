@@ -21,7 +21,7 @@ defmodule GraphQl.Resolvers.Shell do
     do: Shell.Demo.transfer_demo_project(org, user)
 
   def delete_demo_project(_, %{context: %{current_user: user}}),
-    do: Shell.Demo.delete_current_user_demo_project(user)
+    do: Shell.Demo.delete_demo_project_for_user(user)
 
   def reboot(_, %{context: %{current_user: user}}), do: Shell.reboot(user.id)
 

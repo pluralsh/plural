@@ -148,8 +148,8 @@ defmodule Core.Services.Shell.Demo do
   @doc """
   Deletes the demo project of the current user and its associated gcp project
   """
-  @spec delete_current_user_demo_project(User.t) :: {:ok, DemoProject.t} | error
-  def delete_current_user_demo_project(%User{id: user_id}) do
+  @spec delete_demo_project_for_user(User.t) :: {:ok, DemoProject.t} | error
+  def delete_demo_project_for_user(%User{id: user_id}) do
     get_by_user_id(user_id)
     |> delete_demo_project()
   end

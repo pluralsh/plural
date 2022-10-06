@@ -59,7 +59,7 @@ defmodule GraphQl.ShellQueriesTest do
   end
 
   describe "demoProject" do
-    test "it will poll a demo project" do
+    test "it will poll a demo project for the given id" do
       demo = insert(:demo_project)
 
       expect(Goth.Token, :for_scope, fn _ -> {:ok, %{token: "token"}} end)
@@ -74,6 +74,36 @@ defmodule GraphQl.ShellQueriesTest do
       """, %{"id" => demo.id}, %{current_user: demo.user})
 
       assert found["id"] == demo.id
+    end
+
+    test "it will poll a demo project for the current user" do
+      demo = insert(:demo_project)
+
+      expect(Goth.Token, :for_scope, fn _ -> {:ok, %{token: "token"}} end)
+      expect(V3.Api.Operations, :cloudresourcemanager_operations_get, fn _, _ ->
+        {:ok, %V3.Model.Operation{done: false}}
+      end)
+
+      {:ok, %{data: %{"demoProject" => found}}} = run_query("""
+        query Demo($id: ID) {
+          demoProject(id: $id) { id }
+        }
+      """, %{"id" => nil}, %{current_user: demo.user})
+
+      assert found["id"] == demo.id
+    end
+
+    test "it will return not found when polling a non-existing demo project for the user" do
+      user = insert(:user)
+
+      {:ok, %{data: %{"demoProject" => _}, errors: [%{code: code, locations: _, message: message, path: _}]}} = run_query("""
+        query Demo($id: ID) {
+          demoProject(id: $id) { id }
+        }
+      """, %{"id" => nil}, %{current_user: user})
+
+      assert code == 404
+      assert message == "Demo project not found"
     end
   end
 end

@@ -12,7 +12,7 @@ defmodule GraphQl.Resolvers.Shell do
   def delete_shell(_, %{context: %{current_user: user}}),
     do: Shell.delete(user.id)
 
-  def get_demo_project(%{id: id}, _), do: Shell.Demo.poll_demo_project(id)
+  def get_demo_project(%{id: id}, %{context: %{current_user: user}}), do: Shell.Demo.poll_demo_project(id, user)
 
   def create_demo_project(_, %{context: %{current_user: user}}),
     do: Shell.Demo.create_demo_project(user)

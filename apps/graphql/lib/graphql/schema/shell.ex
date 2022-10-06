@@ -114,7 +114,7 @@ defmodule GraphQl.Schema.Shell do
 
     field :demo_project, :demo_project do
       middleware Authenticated
-      arg :id, non_null(:id)
+      arg :id, :id
 
       safe_resolve &Shell.get_demo_project/2
     end

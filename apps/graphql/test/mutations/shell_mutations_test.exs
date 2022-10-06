@@ -107,6 +107,18 @@ defmodule GraphQl.ShellMutationsTest do
     end
   end
 
+  describe "deleteDemoProject" do
+    test "it will delete demo project of current user" do
+      demo = insert(:demo_project)
+
+      {:ok, %{data: %{"deleteDemoProject" => demo}}} = run_query("""
+        mutation { deleteDemoProject { id } }
+      """, %{}, %{current_user: demo.user})
+
+      refute demo
+    end
+  end
+
   describe "stopShell" do
     test "it will stop a shell for a user" do
       user = insert(:user)

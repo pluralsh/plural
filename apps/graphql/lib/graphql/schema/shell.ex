@@ -71,6 +71,30 @@ defmodule GraphQl.Schema.Shell do
     timestamps()
   end
 
+  object :shell_configuration do
+    field :workspace,             :shell_workspace
+    field :git,                   :git_configuration
+    field :context_configuration, :map
+  end
+
+  object :shell_workspace do
+    field :network,       :network_configuration
+    field :bucket_prefix, :string
+    field :cluster,       :string
+  end
+
+  object :network_configuration do
+    field :plural_dns, :boolean
+    field :subdomain,  :string
+  end
+
+  object :git_configuration do
+    field :url,    :string
+    field :name,   :string
+    field :root,   :string
+    field :branch, :string
+  end
+
   object :shell_status do
     field :ready,            :boolean
     field :initialized,      :boolean
@@ -99,6 +123,11 @@ defmodule GraphQl.Schema.Shell do
       resolve &Shell.resolve_shell/2
     end
 
+    field :shell_configuration, :shell_configuration do
+      middleware Authenticated
+      resolve &Shell.resolve_shell_configuration/2
+    end
+
     field :scm_authorization, list_of(:authorization_url) do
       middleware Authenticated
       resolve &Shell.authorize_urls/2
@@ -114,7 +143,7 @@ defmodule GraphQl.Schema.Shell do
 
     field :demo_project, :demo_project do
       middleware Authenticated
-      arg :id, non_null(:id)
+      arg :id, :id
 
       safe_resolve &Shell.get_demo_project/2
     end
@@ -126,6 +155,23 @@ defmodule GraphQl.Schema.Shell do
       arg :attributes, non_null(:cloud_shell_attributes)
 
       safe_resolve &Shell.create_shell/2
+    end
+
+    field :update_shell_configuration, :boolean do
+      middleware Authenticated
+      arg :context, non_null(:map)
+
+      safe_resolve &Shell.update_shell_configuration/2
+    end
+
+    field :install_bundle, list_of(:installation) do
+      middleware Authenticated
+      arg :context, non_null(:map)
+      arg :oidc, non_null(:boolean)
+      arg :repo, non_null(:string)
+      arg :name, non_null(:string)
+
+      safe_resolve &Shell.install_bundle/2
     end
 
     field :reboot_shell, :cloud_shell do

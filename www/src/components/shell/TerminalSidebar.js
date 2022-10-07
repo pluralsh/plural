@@ -1,21 +1,18 @@
 import { useMemo, useState } from 'react'
 import {
-  A,
-  Button,
-  Div,
-  Flex,
-  Li,
-  P,
-  Ul,
+  A, Button, Div, Flex, P,
 } from 'honorable'
 import { Fireworks } from 'fireworks-js/dist/react'
 import {
-  ArrowTopRightIcon, Chip, InfoIcon, Modal,
+  ArrowTopRightIcon,
+  Callout,
+  Codeline,
+  Modal,
 } from 'pluralsh-design-system'
 
 import { useNavigate } from 'react-router-dom'
 
-import CodeLine from '../utils/CodeLine'
+import styled from 'styled-components'
 
 import useOnboarded from './onboarding/useOnboarded'
 import usePluralCommand from './usePluralCommand'
@@ -24,6 +21,7 @@ import {
   retrieveApplications,
   retrieveConsole,
   retrieveShouldUseOnboardingTerminalSidebar,
+  retrieveStack,
 } from './persistance'
 
 const sidebarWidth = 420
@@ -33,15 +31,17 @@ const steps = [
     Component: Step1,
   },
   {
-    title: type => (type === 'stack' ? 'Install your stack' : 'Install your application'),
+    title: ({
+      type, quick, appCount, stackName,
+    }) => (quick || type !== 'stack' ? `Install your app${appCount > 1 ? 's' : ''}` : `Install ${stackName} stack`),
     Component: Step2,
   },
   {
-    title: 'Deploy your apps',
+    title: ({ appCount }) => `Deploy your app${appCount > 1 ? 's' : ''}`,
     Component: Step3,
   },
   {
-    title: 'Run plural watch',
+    title: ({ appCount }) => `Check your app${appCount > 1 ? 's' : ''}`,
     Component: Step4,
   },
 ]
@@ -58,17 +58,28 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
   const { command, type: commandType, quick } = usePluralCommand(shell) // Could be put inside Step2 but stays here for eager loading
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [stepIndex, setStepIndex] = useState(0)
-  const { workingSteps, skipConsoleInstall } = useMemo(() => {
+  const {
+    workingSteps, skipConsoleInstall, appCount, stackName,
+  } = useMemo(() => {
     const workingSteps = [...steps]
     const shouldInstallConsole = retrieveConsole()
     const applications = retrieveApplications()
+    const stack = retrieveStack()
 
-    if (applications.length === 1 && applications[0].name !== 'console') return { workingSteps, skipConsoleInstall: false }
-    if (shouldInstallConsole) return { workingSteps, skipConsoleInstall: false }
+    const ret = {
+      appCount: applications?.length,
+      stackName: stack?.name,
+      workingSteps,
+    }
 
-    workingSteps.shift()
+    if (applications.length === 1 && applications[0].name !== 'console') return { ...ret, skipConsoleInstall: false }
+    if (shouldInstallConsole) return { ...ret, skipConsoleInstall: false }
 
-    return { workingSteps, skipConsoleInstall: true }
+    ret.workingSteps.shift()
+
+    return {
+      ...ret, skipConsoleInstall: true,
+    }
   }, [])
 
   const { title, Component } = workingSteps[stepIndex]
@@ -113,7 +124,9 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
           borderBottom="1px solid border"
         >
           <P subtitle1>
-            {typeof title === 'function' ? title(commandType) : title}
+            {typeof title === 'function' ? title({
+              type: commandType, stackName, appCount, quick,
+            }) : title}
           </P>
           <P
             body2
@@ -122,9 +135,12 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
             Step {stepIndex + 1} of {workingSteps.length}
           </P>
         </Flex>
-        <Div
+        <Flex
           flexGrow={1}
+          flexDirection="column"
           overflowY="auto"
+          paddingHorizontal="large"
+          paddingVertical="medium"
         >
           <Component
             command={command}
@@ -132,8 +148,9 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
             commandType={commandType}
             skipConsoleInstall={skipConsoleInstall}
             shell={shell}
+            appCount={appCount}
           />
-        </Div>
+        </Flex>
         <Flex
           align="center"
           paddingVertical="medium"
@@ -213,10 +230,10 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
       >
         {skipConsoleInstall && (
           <Div>
-            <P body1>
+            <StepP>
               Congratulations, you've installed your first Plural application!
               Next, you can view your installed application in our marketplace.
-            </P>
+            </StepP>
             <Button
               primary
               width="100%"
@@ -230,10 +247,11 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
 
         {!skipConsoleInstall && (
           <Div>
-            <P body1>
+            <StepP>
               Congratulations, you've installed your first Plural application!
-              Next, you can view your deployed application in the Plural Console.
-            </P>
+              Next, you can view your deployed application in the Plural
+              Console.
+            </StepP>
             <Button
               primary
               width="100%"
@@ -303,7 +321,7 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
 //         ghost
 //         title="Key terms"
 //       >
-//         <P body1>
+//         <StepP>
 //           <strong>vpc_name:</strong> The vpc name we'll create for your cluster.
 //           This will be a separate vpc and should be named distinctly from any others in your account.
 //         </P>
@@ -381,11 +399,8 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
 function WizardDocs() {
   return (
     <>
-      <P
-        body1
-        marginTop="medium"
-      >
-        Our cli will lead you through a brief install wizard to make sure
+      <StepP>
+        Our CLI will lead you through a brief install wizard to make sure
         everything is configured properly. If you need more detailed guidance
         for these steps, refer to{' '}
         <A
@@ -396,48 +411,77 @@ function WizardDocs() {
           our documentation
         </A>
         .
-      </P>
-      <P
-        body1
-        marginTop="medium"
-      >
-        After successfully running this step, move on to the next command.
-      </P>
+      </StepP>
+      <StepP>
+        After successfully running this command, move on to the next step.
+      </StepP>
     </>
+  )
+}
+
+const StepSection = styled.div(({ theme }) => ({
+  // padding: `${theme.spacing.small}px ${theme.spacing.medium}px`,
+  '&:not(:first-child)': {
+    paddingTop: theme.spacing.large,
+  },
+  '&:not(:last-child)': {
+    paddingBottom: theme.spacing.medium,
+    borderBottom: theme.borders.default,
+  },
+}))
+
+const StepP = styled.p(({ theme }) => ({
+  margin: 0,
+  ...theme.partials.text.body2,
+  '&:not(:last-of-type)': {
+    marginBottom: theme.spacing.medium,
+  },
+}))
+
+const CalloutArea = styled(StepSection)(_ => ({
+  display: 'flex',
+  flexGrow: 1,
+  flexDirection: 'column',
+  justifyContent: 'end',
+}))
+
+function Callout1() {
+  return (
+    <Callout
+      severity="info"
+      title="Does the cloud shell look weird?"
+    >
+      Give the page a quick refresh or click “repair viewport” in the top right.
+    </Callout>
   )
 }
 
 function Step1({ shell }) {
   return (
-    <Div
-      paddingVertical="medium"
-      paddingHorizontal="large"
-      borderBottom="1px solid border"
-    >
-      <P
-        body1
-        marginTop="medium"
-      >
-        Welcome to the cloud shell!  After your shell initializes it's time to install your first bundle to install our console.
-      </P>
-      <P
-        body1
-        marginTop="medium"
-      >
-        To begin, run this one-line command:
-      </P>
-      <CodeLine marginTop="medium">
-        {`plural bundle install console console-${shell?.provider?.toLowerCase() || 'gcp'}`}
-      </CodeLine>
-      <P
-        body1
-        marginTop="medium"
-      >
-        The Plural Console provides you with out-of-the-box monitoring and upgrading functionality.
-        It will also give you access to console.xxx.onplural.sh after the demo is complete.
-      </P>
-      <WizardDocs />
-    </Div>
+    <>
+      <div>
+        <StepSection>
+          <StepP>
+            Welcome to the cloud shell! After your shell initializes, it’s time
+            to install your first bundle.
+          </StepP>
+        </StepSection>
+        <StepSection>
+          <StepP>Run this command:</StepP>
+          <Codeline marginTop="xsmall">
+            {`plural bundle install console console-${
+              shell?.provider?.toLowerCase() || 'gcp'
+            }`}
+          </Codeline>
+        </StepSection>
+        <StepSection>
+          <WizardDocs />
+        </StepSection>
+      </div>
+      <CalloutArea>
+        <Callout1 />
+      </CalloutArea>
+    </>
   )
 }
 
@@ -445,34 +489,30 @@ function Step1({ shell }) {
   DEMO STEP 2
 --- */
 
-function Step2({
-  command,
-  quick,
-}) {
+function Step2({ command, quick }) {
   return (
-    <Div
-      paddingVertical="medium"
-      paddingHorizontal="large"
-    >
-      {quick && (
-        <P
-          body1
-          marginTop="medium"
-        >
-          We've collected all the apps you selected into a temporary stack you can install in one command.
-        </P>
-      )}
-      <P
-        body1
-        marginTop="medium"
-      >
-        Copy and paste this command into your cloud shell to begin:
-      </P>
-      <CodeLine marginTop="medium">
-        {command}
-      </CodeLine>
-      <WizardDocs />
-    </Div>
+    <>
+      <div>
+        {quick && (
+          <StepSection>
+            <StepP>
+              We’ve collected all of your selected apps into a temporary stack
+              command.
+            </StepP>
+          </StepSection>
+        )}
+        <StepSection>
+          <StepP>Run this command:</StepP>
+          <Codeline marginTop="xsmall">{command}</Codeline>
+        </StepSection>
+        <StepSection>
+          <WizardDocs />
+        </StepSection>
+      </div>
+      <CalloutArea>
+        <Callout1 />
+      </CalloutArea>
+    </>
   )
 }
 
@@ -480,54 +520,35 @@ function Step2({
   DEMO STEP 3
 --- */
 
-function Step3() {
+function Step3({ appCount }) {
   return (
-    <Div
-      paddingVertical="medium"
-      paddingHorizontal="large"
-    >
-      <P
-        body1
-        marginTop="medium"
-      >
-        With everything installed, all that's left is to build your workspace and deploy it to your cloud.
-      </P>
-      <P
-        body1
-        marginTop="medium"
-      >
-        Start by running:
-      </P>
-      <CodeLine marginTop="medium">
-        plural build
-      </CodeLine>
-      <P
-        body1
-        marginTop="medium"
-      >
-        You can do a quick <strong>ls</strong> to check the files we've created for you, or you can go directly to
-        deploying them by running:
-      </P>
-      <CodeLine marginTop="medium">
-        plural deploy --commit "your message"
-      </CodeLine>
-      <Div
-        body1
-        marginTop="medium"
-      >
-        This will do two things:
-        <Ul marginVertical="medium">
-          <Li>
-            Push your configuration files created in the Cloud Shell to your newly created repository
-          </Li>
-          <Li>
-            Deploy your Kubernetes cluster and the applications you've configured
-          </Li>
-        </Ul>
-        Now grab a coffee or your favorite hot beverage while we wait for the cloud provider to provision your
-        infrastructure.
-      </Div>
-    </Div>
+    <>
+      <div>
+        <StepSection>
+          <StepP>
+            With {appCount > 1 ? 'all of your apps' : 'your app'} installed, all
+            that’s left to do is build and deploy {appCount > 1 ? 'them' : 'it'}{' '}
+            to Kubernetes.
+          </StepP>
+        </StepSection>
+        <StepSection>
+          <StepP>Run these commands sequentially:</StepP>
+          <Codeline marginTop="xsmall">plural build</Codeline>
+          <Codeline marginTop="xsmall">
+            plural deploy --commit "first commit"
+          </Codeline>
+        </StepSection>
+        <StepSection>
+          <StepP>
+            These commands may take upwards of fifteen to complete as the cloud
+            provider provisions your infrastructure.
+          </StepP>
+        </StepSection>
+      </div>
+      <CalloutArea>
+        <Callout1 />
+      </CalloutArea>
+    </>
   )
 }
 
@@ -535,65 +556,47 @@ function Step3() {
   DEMO STEP 4
 --- */
 
-function Step4() {
+function Step4({ appCount }) {
   return (
-    <Div
-      paddingVertical="medium"
-      paddingHorizontal="large"
-    >
-      <Flex
-        backgroundColor="fill-two"
-        padding="medium"
-        borderRadius="medium"
-        borderLeft="medium solid"
-        borderColor="text-warning-light"
-        gap="small"
-      >
-        <InfoIcon
-          alignSelf="flex-start"
-          color="text-warning-light"
-          height="24px"
-        />
-        <Flex
-          direction="column"
-          gap="xxsmall"
+    <>
+      <div>
+        <StepSection>
+          <StepP>
+            Before we finish up, let’s make sure your {appCount > 1 ? 'applications are' : 'application is'} up and
+            running.
+          </StepP>
+          <StepP>
+            The command below will check the health of any app you installed.
+          </StepP>
+          <StepP>Run this command:</StepP>
+          <Codeline marginTop="xsmall">{'plural watch <app-name>'}</Codeline>
+        </StepSection>
+      </div>
+      <CalloutArea>
+        <Callout
+          severity="warning"
+          title="Encountering any errors?"
         >
-          <P
-            body1
-            bold
-          >Wait for your cluster to build
-          </P>
-          <Div
-            body2
-            color="text-light"
-          >After
-            <Chip
-              size="small"
-              hue="lighter"
-              marginHorizontal="xxsmall"
-            >
-              plural deploy
-            </Chip>
-            is done, all your applications will be up and ready to access.
-          </Div>
-        </Flex>
-      </Flex>
-      <P
-        body1
-        color="text-light"
-        marginTop="medium"
-      >
-        Take a nice stretch break as your deployment finishes, then run the command below to check whether kubernetes has finished deploying your applications
-      </P>
-      <P
-        body1
-        color="text-light"
-        marginTop="medium"
-      >
-        To check the health of any of your applications:
-      </P>
-      <CodeLine marginTop="xsmall">plural watch &lt;appName&gt;</CodeLine>
-    </Div>
+          Check out{' '}
+          <A
+            inline
+            target="_blank"
+            href="https://docs.plural.sh"
+          >
+            our documentation
+          </A>{' '}
+          or contact us on{' '}
+          <A
+            inline
+            target="_blank"
+            href="https://discord.gg/pluralsh"
+          >
+            Discord
+          </A>{' '}
+          for support.
+        </Callout>
+      </CalloutArea>
+    </>
   )
 }
 
@@ -624,30 +627,38 @@ function Cheatsheet() {
 }
 
 function CheatsheetCommands() {
-  const commands = [{
-    command: 'repos list',
-    description: 'Shows all available applications on the platform (repos) and the cloud providers they can be deployed to (using a bundle).',
-  },
-  {
-    command: 'bundle list <repo>',
-    description: 'Shows all available bundles for repository.',
-  },
-  {
-    command: 'bundle install <repo> <bundle>',
-    description: <>E.g. <strong>plural bundle install dagster dagster-gcp</strong> would configure Dagster for deployment to GCP.</>,
-  },
-  {
-    command: 'build',
-    description: 'Generates all the infrastructure as code.',
-  },
-  {
-    command: 'deploy',
-    description: 'Deploys all installed bundles.',
-  },
-  {
-    command: 'watch <repo>',
-    description: 'Watches applications until they become ready.',
-  }]
+  const commands = [
+    {
+      command: 'repos list',
+      description:
+        'Shows all available applications on the platform (repos) and the cloud providers they can be deployed to (using a bundle).',
+    },
+    {
+      command: 'bundle list <repo>',
+      description: 'Shows all available bundles for repository.',
+    },
+    {
+      command: 'bundle install <repo> <bundle>',
+      description: (
+        <>
+          E.g. <strong>plural bundle install dagster dagster-gcp</strong> would
+          configure Dagster for deployment to GCP.
+        </>
+      ),
+    },
+    {
+      command: 'build',
+      description: 'Generates all the infrastructure as code.',
+    },
+    {
+      command: 'deploy',
+      description: 'Deploys all installed bundles.',
+    },
+    {
+      command: 'watch <repo>',
+      description: 'Watches applications until they become ready.',
+    },
+  ]
 
   return (
     <>

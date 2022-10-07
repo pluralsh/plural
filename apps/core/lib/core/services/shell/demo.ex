@@ -183,10 +183,17 @@ defmodule Core.Services.Shell.Demo do
     end
   end
 
-  def poll_demo_project(id) when is_binary(id) do
+  def poll_demo_project(:id, id) do
     get_demo_project(id)
     |> poll_demo_project()
   end
+
+  def poll_demo_project(:user, user_id) do
+    get_by_user_id(user_id)
+    |> poll_demo_project()
+  end
+
+  def poll_demo_project(nil), do: {:error, [message: "Demo project not found", code: 404]}
 
   defp enable(%DemoProject{} = proj) do
     DemoProject.changeset(proj, %{state: :enabled})

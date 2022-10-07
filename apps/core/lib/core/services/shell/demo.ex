@@ -146,6 +146,15 @@ defmodule Core.Services.Shell.Demo do
   end
 
   @doc """
+  Deletes the demo project of the current user and its associated gcp project
+  """
+  @spec delete_demo_project_for_user(User.t) :: {:ok, DemoProject.t} | error
+  def delete_demo_project_for_user(%User{id: user_id}) do
+    get_by_user_id(user_id)
+    |> delete_demo_project()
+  end
+
+  @doc """
   Will check the create project operation for completion, and if completed, will provision a service account for
   that project to be used in the cloud shell
   """

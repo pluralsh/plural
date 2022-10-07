@@ -197,6 +197,11 @@ defmodule GraphQl.Schema.Shell do
       safe_resolve &Shell.transfer_demo_project/2
     end
 
+    field :delete_demo_project, :demo_project do
+      middleware Authenticated
+      safe_resolve &Shell.delete_demo_project/2
+    end
+
     field :stop_shell, :boolean do
       middleware Authenticated
       safe_resolve &Shell.stop/2

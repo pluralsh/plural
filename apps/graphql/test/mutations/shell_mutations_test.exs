@@ -107,6 +107,25 @@ defmodule GraphQl.ShellMutationsTest do
     end
   end
 
+  describe "deleteDemoProject" do
+    test "it will delete demo project of current user" do
+      demo = insert(:demo_project)
+
+      expect(Goth.Token, :for_scope, fn _ -> {:ok, %{token: "token"}} end)
+      expect(Projects, :cloudresourcemanager_projects_delete, fn _, _ ->
+        {:ok, %{name: "operations/123"}}
+      end)
+
+      {:ok, %{data: %{"deleteDemoProject" => deleted}}} = run_query("""
+        mutation { deleteDemoProject { id } }
+      """, %{}, %{current_user: demo.user})
+
+      assert deleted["id"]
+
+      refute refetch(demo)
+    end
+  end
+
   describe "stopShell" do
     test "it will stop a shell for a user" do
       user = insert(:user)

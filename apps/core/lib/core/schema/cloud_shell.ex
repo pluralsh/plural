@@ -68,6 +68,27 @@ defmodule Core.Schema.CloudShell do
     end
   end
 
+  defmodule Azure do
+    use Piazza.Ecto.Schema
+    alias Piazza.Ecto.EncryptedString
+
+    embedded_schema do
+      field :tenant_id,       :string
+      field :client_id,       :string
+      field :client_secret,   EncryptedString
+      field :storage_account, :string
+      field :subscription_id, :string
+    end
+
+    @valid ~w(client_id client_secret tenant_id storage_account subscription_id)a
+
+    def changeset(model, attrs \\ %{}) do
+      model
+      |> cast(attrs, @valid)
+      |> validate_required(@valid)
+    end
+  end
+
   defmodule Credentials do
     use Piazza.Ecto.Schema
     alias Core.Schema.CloudShell
@@ -75,6 +96,7 @@ defmodule Core.Schema.CloudShell do
     embedded_schema do
       embeds_one :aws, CloudShell.AWS
       embeds_one :gcp, CloudShell.GCP
+      embeds_one :azure, CloudShell.Azure
     end
 
     def changeset(model, attrs \\ %{}) do
@@ -82,6 +104,7 @@ defmodule Core.Schema.CloudShell do
       |> cast(attrs, [])
       |> cast_embed(:aws)
       |> cast_embed(:gcp)
+      |> cast_embed(:azure)
     end
   end
 

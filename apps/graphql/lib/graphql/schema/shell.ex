@@ -33,8 +33,9 @@ defmodule GraphQl.Schema.Shell do
   end
 
   input_object :shell_credentials_attributes do
-    field :aws, :aws_shell_credentials_attributes
-    field :gcp, :gcp_shell_credentials_attributes
+    field :aws,   :aws_shell_credentials_attributes
+    field :gcp,   :gcp_shell_credentials_attributes
+    field :azure, :azure_shell_credentials_attributes
   end
 
   input_object :aws_shell_credentials_attributes do
@@ -44,6 +45,14 @@ defmodule GraphQl.Schema.Shell do
 
   input_object :gcp_shell_credentials_attributes do
     field :application_credentials, non_null(:string)
+  end
+
+  input_object :azure_shell_credentials_attributes do
+    field :tenant_id,       non_null(:string)
+    field :client_id,       non_null(:string)
+    field :client_secret,   non_null(:string)
+    field :storage_account, non_null(:string)
+    field :subscription_id, non_null(:string)
   end
 
   object :cloud_shell do

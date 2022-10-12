@@ -183,6 +183,8 @@ defmodule Core.Services.Shell.Demo do
     end
   end
 
+  def poll_demo_project(nil), do: {:error, [message: "Demo project not found", code: 404]}
+
   def poll_demo_project(:id, id) do
     get_demo_project(id)
     |> poll_demo_project()
@@ -192,8 +194,6 @@ defmodule Core.Services.Shell.Demo do
     get_by_user_id(user_id)
     |> poll_demo_project()
   end
-
-  def poll_demo_project(nil), do: {:error, [message: "Demo project not found", code: 404]}
 
   defp enable(%DemoProject{} = proj) do
     DemoProject.changeset(proj, %{state: :enabled})

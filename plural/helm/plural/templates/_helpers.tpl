@@ -99,10 +99,8 @@ plural-migration-{{ .Release.Revision }}
 {{- end -}}
 
 {{- define "plural.wait-for-migration" -}}
-- name: wait-for-migration
-  image: gcr.io/pluralsh/groundnuty/k8s-wait-for:v1.3
-  imagePullPolicy: Always
-  args:
-  - job
-  - {{ include "plural.migration-name" . }}
+- name: wait-for-pg
+  image: gcr.io/pluralsh/busybox:latest
+  imagePullPolicy: IfNotPresent
+  command: [ "/bin/sh", "-c", "until nc -zv plural-plural 5432 -w1; do echo 'waiting for db'; sleep 1; done" ]
 {{- end -}}

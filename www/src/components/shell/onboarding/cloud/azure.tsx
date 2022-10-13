@@ -30,7 +30,16 @@ const REGIONS = [
 ]
 
 export const AZURE_VALIDATIONS = [
-  { field: 'credentials.workspace.region', func: stringExists, name: 'region' },
+  {
+    field: 'credentials.workspace.region',
+    func: stringExists,
+    name: 'region',
+  },
+  {
+    field: 'credentials.workspace.project',
+    func: stringExists,
+    name: 'project',
+  },
   {
     field: 'credentials.azure.clientId',
     func: stringExists,
@@ -83,7 +92,8 @@ export function AzureForm({
   [setCredentials, credentials])
   const setRegion = useCallback(r => setWorkspace({ ...workspace, region: r }),
     [setWorkspace, workspace])
-  const setProject = useCallback(p => setWorkspace({ ...workspace, project: p }), [setWorkspace, workspace])
+  const setProject = useCallback(p => setWorkspace({ ...workspace, project: p }),
+    [setWorkspace, workspace])
 
   const region = workspace.region || 'eastus'
 

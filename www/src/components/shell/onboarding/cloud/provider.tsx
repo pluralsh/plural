@@ -1,40 +1,48 @@
-import { useCallback, useContext, useState } from 'react'
 import {
   Div, H2, P, RadioGroup, Text,
 } from 'honorable'
 import { Radio } from 'pluralsh-design-system'
 
-import CreateShellContext from '../../../../contexts/CreateShellContext'
-
 import OnboardingCardButton from '../OnboardingCardButton'
 
 import { AWS_VALIDATIONS, AwsForm, awsSynopsis } from './aws'
 import { GCP_VALIDATIONS, GcpForm, gcpSynopsis } from './gcp'
-import { DemoProject } from './demo'
-import CloudSelect from './CloudSelect'
-import CloudCredentials from './CloudCredentials'
+import { AZURE_VALIDATIONS, AzureForm, azureSynopsis } from './azure'
 
-export const ProviderForms = {
+export type ProviderKey = 'AWS' | 'GCP' | 'AZURE'
+
+export const ProviderForms: Record<ProviderKey, any> = {
   AWS: AwsForm,
   GCP: GcpForm,
+  AZURE: AzureForm,
 }
 
-export const CLOUD_VALIDATIONS = {
+export const CLOUD_VALIDATIONS: Record<ProviderKey, any> = {
   AWS: AWS_VALIDATIONS,
   GCP: GCP_VALIDATIONS,
+  AZURE: AZURE_VALIDATIONS,
 }
 
-export const synopsis = ({ provider, ...rest }) => {
+export const synopsis = ({
+  provider,
+  ...rest
+}: { provider: ProviderKey } & { workspace: any; credentials: any }) => {
   switch (provider) {
   case 'AWS':
     return awsSynopsis(rest)
   case 'GCP':
     return gcpSynopsis(rest)
+  case 'AZURE':
+    return azureSynopsis(rest)
   }
 }
 
 export function CloudOption({
-  providerLogo, header, description, selected, ...props
+  providerLogo,
+  header,
+  description,
+  selected,
+  ...props
 }) {
   return (
     <OnboardingCardButton
@@ -48,7 +56,7 @@ export function CloudOption({
         maxHeight={40}
         overflow="visible"
       >
-        { providerLogo }
+        {providerLogo}
       </Div>
       <Text
         body1
@@ -86,7 +94,8 @@ export function ChooseAShell({ options, selected, setSelected }) {
         color="text-light"
         marginBottom="medium"
       >
-        Determine which shell you'll use to get started. The cloud shell comes fully equipped with the Plural CLI and all required dependencies.
+        Determine which shell you'll use to get started. The cloud shell comes
+        fully equipped with the Plural CLI and all required dependencies.
       </P>
       <RadioGroup>
         {options.map(({ label, value }) => (
@@ -102,41 +111,5 @@ export function ChooseAShell({ options, selected, setSelected }) {
         ))}
       </RadioGroup>
     </Div>
-  )
-}
-
-export function ProviderForm() {
-  const {
-    setProvider, workspace, setWorkspace, credentials, setCredentials, demo, setDemo, next,
-  } = useContext(CreateShellContext)
-  const [path, setPath] = useState(null)
-
-  const doSetPath = useCallback(path => {
-    if (path === 'demo') setDemo(true)
-    setPath(path)
-  }, [setPath, setDemo])
-
-  if (!path) {
-    return (
-      <CloudSelect doSetPath={doSetPath} />
-    )
-  }
-
-  if (demo) {
-    return (
-      <DemoProject
-        setDemo={setDemo}
-        setProvider={setProvider}
-        workspace={workspace}
-        setWorkspace={setWorkspace}
-        credentials={credentials}
-        setCredentials={setCredentials}
-        next={next}
-      />
-    )
-  }
-
-  return (
-    <CloudCredentials doSetPath={doSetPath} />
   )
 }

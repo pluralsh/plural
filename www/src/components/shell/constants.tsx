@@ -1,4 +1,6 @@
-export const CLOUDS = ['AWS', 'GCP']
+import { ProviderKey } from './onboarding/cloud/provider'
+
+export const CLOUDS: ProviderKey[] = ['AWS', 'GCP', 'AZURE']
 
 export const SECTION_APPLICATIONS = 'applications'
 export const SECTION_GIT_PROVIDER = 'git-provider'

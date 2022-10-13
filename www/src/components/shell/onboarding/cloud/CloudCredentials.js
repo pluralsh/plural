@@ -41,7 +41,10 @@ function CloudCredentials() {
 
   return (
     <>
-      <OnboardingCard title="Configure cloud credentials">
+      <OnboardingCard
+        title="Configure cloud credentials"
+        paddingBottom="large"
+      >
         <FormField
           width="100%"
           marginTop="large"

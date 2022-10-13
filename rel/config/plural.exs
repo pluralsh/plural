@@ -13,6 +13,10 @@ config :stripity_stripe, api_key: get_env("STRIPE_SECRET")
 config :api, ApiWeb.Endpoint,
   secret_key_base: get_env("SECRET_KEY_BASE")
 
+if get_env("CLOUD_SHELL_IMG") do
+  config :core, :cloud_shell_img, get_env("CLOUD_SHELL_IMG")
+end
+
 config :libcluster,
   topologies: [
     api: [

@@ -2,7 +2,6 @@ defmodule Core.Services.Shell.Pods do
   alias Kazan.Apis.Core.V1, as: CoreV1
   alias Kazan.Models.Apimachinery.Meta.V1, as: MetaV1
 
-  @image "gcr.io/pluralsh/plural-cli-cloud:0.5.12"
   @busybox_img "gcr.io/pluralsh/busybox:latest"
   @ns "plrl-shell"
   @conditions ~w(Initialized Ready ContainersReady PodScheduled)
@@ -91,7 +90,7 @@ defmodule Core.Services.Shell.Pods do
   defp container() do
     %CoreV1.Container{
       name: "shell",
-      image: @image,
+      image: image(),
       image_pull_policy: "Always",
       ports: [
         %CoreV1.ContainerPort{
@@ -121,4 +120,6 @@ defmodule Core.Services.Shell.Pods do
       initial_delay_seconds: 5,
     }
   end
+
+  defp image(), do: Application.get_env(:core, :cloud_shell_img) || "gcr.io/pluralsh/plural-cli-cloud:0.5.13"
 end

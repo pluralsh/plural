@@ -10,8 +10,12 @@ import {
 } from 'react'
 import { XTerm } from 'xterm-for-react'
 import { FitAddon } from 'xterm-addon-fit'
-import { Div, Flex } from 'honorable'
-import { Button, ReloadIcon, ScrollIcon } from 'pluralsh-design-system'
+import {
+  Div, Flex, Iframe, Modal,
+} from 'honorable'
+import {
+  Button, ReloadIcon, ScrollIcon,
+} from 'pluralsh-design-system'
 import { useResizeDetector } from 'react-resize-detector'
 import debounce from 'lodash/debounce'
 
@@ -39,6 +43,7 @@ function Shell({ shell }) {
   const [terminalTheme] = useContext(TerminalThemeContext)
   const { fresh } = useOnboarded()
   const [restart, setRestart] = useState(false)
+  const [isGamming, setIsGamming] = useState(false)
 
   useEffect(() => {
     if (!xterm?.current?.terminal || restart) {
@@ -126,6 +131,20 @@ function Shell({ shell }) {
         gap="medium"
         borderBottom="1px solid border"
       >
+        <Flex
+          background="linear-gradient(180deg,hsla(0,0%,100%,.2),hsla(0,0%,100%,.2)),linear-gradient(145deg,#0fa,#0af 25%,#9f6eff 50%,#fd66cb 75%,#fa0)"
+          paddingVertical="small"
+          paddingHorizontal="medium"
+          borderRadius="medium"
+          cursor="pointer"
+          transition="transform 200ms ease"
+          _hover={{
+            transform: 'scale(1.05)',
+          }}
+          onClick={() => setIsGamming(x => !x)}
+        >
+          Play a game while waiting!
+        </Flex>
         {!fresh && (
           <Button
             small
@@ -190,6 +209,17 @@ function Shell({ shell }) {
           />
         </Flex>
       </Flex>
+      <Modal
+        open={isGamming}
+        onClose={() => setIsGamming(false)}
+      >
+        <Iframe
+          width="80vw"
+          height="80vh"
+          src="https://plural-game.web.app/"
+          title="Game"
+        />
+      </Modal>
     </>
   )
 }

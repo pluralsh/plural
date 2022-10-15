@@ -12,6 +12,8 @@ import { Button, FormField } from 'pluralsh-design-system'
 import { persistProvider } from 'components/shell/persistance'
 import { providerToDisplayName } from 'components/utils/InstallDropdownButton'
 
+import { growthbook } from 'helpers/growthbook'
+
 import CreateShellContext from '../../../../contexts/CreateShellContext'
 import { CLOUDS } from '../../constants'
 import OnboardingNavSection from '../OnboardingNavSection'
@@ -19,6 +21,8 @@ import { Exceptions } from '../../validation'
 import OnboardingCard from '../OnboardingCard'
 
 import { ProviderForms } from './provider'
+
+const FILTERED_CLOUDS = CLOUDS.filter(c => c !== 'AZURE')
 
 function CloudCredentials() {
   const {
@@ -43,6 +47,8 @@ function CloudCredentials() {
     persistProvider(provider)
   }, [provider])
 
+  const clouds = growthbook.isOn('azure-cloud-shell') ? CLOUDS : FILTERED_CLOUDS
+
   return (
     <>
       <OnboardingCard title="Configure cloud credentials">
@@ -62,7 +68,7 @@ function CloudCredentials() {
               }}
               value={provider}
             >
-              {CLOUDS.map(cloud => (
+              {clouds.map(cloud => (
                 <MenuItem
                   key={cloud}
                   value={cloud}

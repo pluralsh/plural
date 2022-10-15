@@ -32,5 +32,5 @@ export function useIsCurrentlyOnboarding() {
   const { fresh } = useOnboarded()
   const { pathname } = useLocation()
 
-  return fresh && pathname.startsWith('/shell')
+  return fresh && (pathname.startsWith('/shell') || pathname.startsWith('/oauth/callback'))
 }

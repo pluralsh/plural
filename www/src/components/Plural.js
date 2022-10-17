@@ -65,6 +65,7 @@ import ImageVulnerabilities from './repos/common/ImageVulnerabilities'
 import Publisher from './publisher/Publisher'
 import StackApps from './stack/StackApps'
 import Stack from './stack/Stack'
+import { GettingStarted } from './getting-started/GettingStarted'
 
 function EditBilling(props) {
   return (
@@ -140,6 +141,7 @@ export function PluralInner() {
           <VerifyEmailConfirmed />
           <DeviceLoginNotif />
           <TestBanner />
+          <GettingStarted />
           <Routes>
             {/* --- OAUTH --- */}
             <Route

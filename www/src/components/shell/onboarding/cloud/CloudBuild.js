@@ -55,33 +55,18 @@ function CloudBuild() {
   return (
     <>
       <OnboardingCard>
-        <Flex
-          align="center"
-          justify="space-between"
+        <P
+          body1
+          bold
         >
-          <Div>
-            <P
-              body1
-              bold
-            >
-              Creating your demo project
-            </P>
-            <P
-              body1
-              color="text-light"
-            >
-              This may take a few minutes.
-            </P>
-          </Div>
-          <Chip
-            size="large"
-            backgroundColor="fill-two"
-            borderColor="border-fill-two"
-            severity={status === 'ENABLED' ? 'success' : 'info'}
-          >
-            {status === 'ENABLED' ? 'Success' : 'In progress'}
-          </Chip>
-        </Flex>
+          Creating your demo project
+        </P>
+        <P
+          body1
+          color="text-light"
+        >
+          This may take a few minutes.
+        </P>
         <ProgressBar
           mode={error || status === 'ENABLED' ? 'determinate' : 'indeterminate'}
           marginTop="medium"

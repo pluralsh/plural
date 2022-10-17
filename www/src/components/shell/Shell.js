@@ -10,7 +10,7 @@ import {
 } from 'react'
 import { XTerm } from 'xterm-for-react'
 import { FitAddon } from 'xterm-addon-fit'
-import { Div, Flex } from 'honorable'
+import { Div, Flex, Span } from 'honorable'
 import { Button, ReloadIcon, ScrollIcon } from 'pluralsh-design-system'
 import { useResizeDetector } from 'react-resize-detector'
 import debounce from 'lodash/debounce'
@@ -23,6 +23,7 @@ import { normalizedThemes } from './themes'
 import TerminalSidebar from './TerminalSidebar'
 import TerminalInformation from './TerminalInformation'
 import useOnboarded from './onboarding/useOnboarded'
+import ConfigureMyCloudButton from './ConfigureMyCloudButton'
 
 // eslint-disable-next-line
 const { Buffer } = require('buffer/')
@@ -138,7 +139,7 @@ function Shell({ shell }) {
             CLI Cheatsheet
           </Button>
         )}
-        {/* <Div><Span fontWeight="bold">{shell.cluster}</Span></Div> */}
+        <Div><Span fontWeight="bold">{shell.cluster}</Span></Div>
         <Div flexGrow={1} />
         <TerminalInformation shell={shell} />
         <Button
@@ -150,6 +151,7 @@ function Shell({ shell }) {
           Repair viewport
         </Button>
         <TerminalThemeSelector />
+        <ConfigureMyCloudButton />
       </Flex>
       <Flex
         marginTop="medium"

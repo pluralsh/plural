@@ -64,6 +64,15 @@ export const POLL_DEMO_PROJECT_QUERY = gql`
   ${DemoProjectFragment}
 `
 
+export const DELETE_DEMO_PROJECT_QUERY = gql`
+  mutation {
+    deleteDemoProject {
+      ...DemoProjectFragment
+    }
+  }
+  ${DemoProjectFragment}
+`
+
 export const APPLICATIONS_QUERY = gql`
   query ApplicationsQuery($cursor: String) {
     repositories(after: $cursor, first: 200) {

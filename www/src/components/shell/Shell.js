@@ -10,7 +10,7 @@ import {
 } from 'react'
 import { XTerm } from 'xterm-for-react'
 import { FitAddon } from 'xterm-addon-fit'
-import { Div, Flex, Span } from 'honorable'
+import { Div, Flex } from 'honorable'
 import { Button, ReloadIcon, ScrollIcon } from 'pluralsh-design-system'
 import { useResizeDetector } from 'react-resize-detector'
 import debounce from 'lodash/debounce'
@@ -139,7 +139,6 @@ function Shell({ shell }) {
             CLI Cheatsheet
           </Button>
         )}
-        <Div><Span fontWeight="bold">{shell.cluster}</Span></Div>
         <Div flexGrow={1} />
         <TerminalInformation shell={shell} />
         <Button

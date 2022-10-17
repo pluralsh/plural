@@ -1,16 +1,19 @@
-import { useMutation } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client'
 import { Confirm } from 'components/account/Confirm'
 import { Button, CloudIcon } from 'pluralsh-design-system'
 import { useState } from 'react'
 
-import { DELETE_DEMO_PROJECT_QUERY } from './queries'
+import { DELETE_DEMO_PROJECT_QUERY, POLL_DEMO_PROJECT_QUERY } from './queries'
 
-// TODO: Pulse, should only appear during demo, test mutation.
+// TODO: Pulse, test mutation.
 export default function ConfigureMyCloudButton() {
   const [open, setOpen] = useState(false)
+  const { data } = useQuery(POLL_DEMO_PROJECT_QUERY, { pollInterval: 10000 })
   const [mutation, { loading, error }] = useMutation(DELETE_DEMO_PROJECT_QUERY, {
     onCompleted: () => setOpen(false),
   })
+
+  if (!data) return
 
   return (
     <>

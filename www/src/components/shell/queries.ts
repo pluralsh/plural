@@ -56,7 +56,7 @@ export const CREATE_DEMO_PROJECT_MUTATION = gql`
 `
 
 export const POLL_DEMO_PROJECT_QUERY = gql`
-  query Demo($id: ID!) {
+  query Demo($id: ID) {
     demoProject(id: $id) {
       ...DemoProjectFragment
     }

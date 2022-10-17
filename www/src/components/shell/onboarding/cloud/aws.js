@@ -30,17 +30,22 @@ const REGIONS = [
 ]
 
 export const AWS_VALIDATIONS = [
-  { field: 'credentials.aws.accessKeyId', func: stringExists, name: 'access key id' },
-  { field: 'credentials.aws.secretAccessKey', func: stringExists, name: 'secret access key' },
+  {
+    field: 'workspace.region',
+    func: stringExists,
+    name: 'Region',
+  },
+  {
+    field: 'credentials.aws.accessKeyId',
+    func: stringExists,
+    name: 'Access Key ID',
+  },
+  {
+    field: 'credentials.aws.secretAccessKey',
+    func: stringExists,
+    name: 'Secret Access Key',
+  },
 ]
-
-export const awsSynopsis = ({ workspace, credentials }) => (
-  [
-    { name: 'Region', value: workspace.region },
-    { name: 'Access Key Id', value: credentials.aws.accessKeyId },
-    { name: 'Secret Access Key', value: '*****REDACTED****' },
-  ]
-)
 
 export function AwsForm({
   credentials, setCredentials, workspace, setWorkspace,

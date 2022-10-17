@@ -1,20 +1,28 @@
 import {
-  createElement, useCallback, useContext, useEffect, useRef, useState,
+  createElement,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
 } from 'react'
 import { Box, Drop } from 'grommet'
 import { MenuItem, Select } from 'honorable'
 import { Button, FormField } from 'pluralsh-design-system'
-
 import { persistProvider } from 'components/shell/persistance'
+import { providerToDisplayName } from 'components/utils/InstallDropdownButton'
+
+import { growthbook } from 'helpers/growthbook'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'
-
 import { CLOUDS } from '../../constants'
 import OnboardingNavSection from '../OnboardingNavSection'
 import { Exceptions } from '../../validation'
 import OnboardingCard from '../OnboardingCard'
 
 import { ProviderForms } from './provider'
+
+const FILTERED_CLOUDS = CLOUDS.filter(c => c !== 'AZURE')
 
 function CloudCredentials() {
   const {
@@ -39,47 +47,56 @@ function CloudCredentials() {
     persistProvider(provider)
   }, [provider])
 
+  const clouds = growthbook.isOn('azure-cloud-shell') ? CLOUDS : FILTERED_CLOUDS
+
   return (
     <>
       <OnboardingCard title="Configure cloud credentials">
-        <FormField
-          width="100%"
-          marginTop="large"
-          marginBottom="large"
-          label="Cloud provider"
-        >
-          <Select
+        {/* Div wrapper needed for bottom padding show up
+        when content overflows */}
+        <div>
+          <FormField
             width="100%"
-            onChange={({ target: { value } }) => {
-              setProvider(value)
-            }}
-            value={provider}
+            marginTop="large"
+            marginBottom="large"
+            label="Cloud provider"
           >
-            {CLOUDS.map(cloud => (
-              <MenuItem
-                key={cloud}
-                value={cloud}
-              >
-                {cloud}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormField>
-        <Box>
-          {createElement(form, {
-            workspace, setWorkspace, credentials, setCredentials,
-          })}
-        </Box>
-        {open && (
-          <Drop
-            target={ref.current}
-            onClickOutside={close}
-            onEsc={close}
-          >
-            <Box width="250px" />
-          </Drop>
-        )}
-        {exceptions && <Exceptions exceptions={exceptions} />}
+            <Select
+              width="100%"
+              onChange={({ target: { value } }) => {
+                setProvider(value)
+              }}
+              value={provider}
+            >
+              {clouds.map(cloud => (
+                <MenuItem
+                  key={cloud}
+                  value={cloud}
+                >
+                  {providerToDisplayName[cloud]}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormField>
+          <Box>
+            {createElement(form, {
+              workspace,
+              setWorkspace,
+              credentials,
+              setCredentials,
+            })}
+          </Box>
+          {open && (
+            <Drop
+              target={ref.current}
+              onClickOutside={close}
+              onEsc={close}
+            >
+              <Box width="250px" />
+            </Drop>
+          )}
+          {exceptions && <Exceptions exceptions={exceptions} />}
+        </div>
       </OnboardingCard>
       {/* Navigation */}
       <OnboardingNavSection>

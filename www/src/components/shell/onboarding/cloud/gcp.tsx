@@ -1,11 +1,18 @@
-import { useCallback, useContext, useEffect } from 'react'
-
+import {
+  useCallback, useContext, useEffect, useState,
+} from 'react'
 import {
   Flex, MenuItem, Select, Text,
 } from 'honorable'
 import { FileIcon, FormField } from 'pluralsh-design-system'
+import usePrevious from 'hooks/usePrevious'
+import { useTheme } from 'styled-components'
 
-import { AttachmentContext, AttachmentProvider, Dropzone } from '../../../incidents/AttachmentProvider'
+import {
+  AttachmentContext,
+  AttachmentProvider,
+  Dropzone,
+} from '../../../incidents/AttachmentProvider'
 import { isAlphanumeric, stringExists } from '../../validation'
 
 const ZONES = [
@@ -39,30 +46,51 @@ export const gcpSynopsis = ({ workspace }) => (
 )
 
 function FileInput({ updateCreds, gcp, setProject }) {
-  // Seems to be getting stuck in infinite loop when file is uploaded
-  const { attachment } = useContext(AttachmentContext)
+  const { attachment } = useContext(AttachmentContext) as any
+  const prevAttachment = usePrevious(attachment)
+  const theme = useTheme()
+  const [uploadError, setUploadError] = useState(false)
+  const loaded = !!gcp.applicationCredentials
+
+  const resetCreds = useCallback(() => {
+    setProject(undefined)
+    updateCreds('applicationCredentials', undefined)
+  }, [updateCreds, setProject])
 
   useEffect(() => {
-    if (!attachment) return
-
+    if (!attachment || attachment === prevAttachment) return
+    setUploadError(false)
     const reader = new FileReader()
 
-    reader.onload = ({ target: { result } }) => {
-      try {
-        const creds = JSON.parse(result)
+    reader.onload = ({ target }) => {
+      if (typeof target?.result === 'string') {
+        const { result } = target
 
-        setProject(creds.project_id)
-        updateCreds('applicationCredentials', result)
-      }
-      catch (error) {
-         // TODO: show errors to user
-        console.log('file error', error)
+        try {
+          const creds = JSON.parse(result)
+
+          setProject(creds.project_id)
+          updateCreds('applicationCredentials', result)
+        }
+        catch (error) {
+          setUploadError(true)
+          resetCreds()
+        }
       }
     }
+    reader.onerror = () => {
+      setUploadError(true)
+      resetCreds()
+    }
     reader.readAsText(attachment)
-  }, [attachment, setProject, updateCreds])
-
-  const loaded = !!gcp.applicationCredentials
+  }, [
+    attachment,
+    prevAttachment,
+    setProject,
+    setUploadError,
+    updateCreds,
+    resetCreds,
+  ])
 
   return (
     <Flex
@@ -78,7 +106,7 @@ function FileInput({ updateCreds, gcp, setProject }) {
     >
       <FileIcon
         size={48}
-        color={loaded ? 'icon-success' : 'text'}
+        color={loaded ? 'icon-success' : uploadError ? 'icon-error' : 'text'}
       />
       <Text
         body1
@@ -88,20 +116,37 @@ function FileInput({ updateCreds, gcp, setProject }) {
       >
         Drop your service account credentials here
       </Text>
+      {uploadError && (
+        <Text
+          body2
+          color={theme.colors['text-error']}
+          marginTop={theme.spacing.xsmall}
+        >
+          Problem uploading credentials. Please try again.
+        </Text>
+      )}
     </Flex>
   )
 }
 
 export function GcpForm({
-  workspace, setWorkspace, credentials, setCredentials,
+  workspace,
+  setWorkspace,
+  credentials,
+  setCredentials,
 }) {
   const gcp = credentials.gcp || {}
-  const updateCreds = useCallback((field, val) => (
-    setCredentials({ ...credentials, gcp: { ...credentials.gcp, [field]: val } })
-  ), [setCredentials, credentials])
-  const setRegion = useCallback(r => setWorkspace({ ...workspace, region: r }), [setWorkspace, workspace])
-  const setProject = useCallback(p => setWorkspace({ ...workspace, project: p }), [setWorkspace, workspace])
+  const updateCreds = useCallback((field, val) => setCredentials({
+    ...credentials,
+    gcp: { ...credentials.gcp, [field]: val },
+  }),
+  [setCredentials, credentials])
+  const setRegion = useCallback(r => setWorkspace({ ...workspace, region: r }),
+    [setWorkspace, workspace])
+  const setProject = useCallback(p => setWorkspace({ ...workspace, project: p }),
+    [setWorkspace, workspace])
   const region = workspace.region || 'us-east1'
+  const credsLoaded = !!gcp.applicationCredentials
 
   useEffect(() => {
     if (!workspace.region) setRegion(region)
@@ -137,7 +182,7 @@ export function GcpForm({
         label="Service account credentials"
       >
         <AttachmentProvider>
-          <Dropzone>
+          <Dropzone loaded={credsLoaded}>
             <FileInput
               updateCreds={updateCreds}
               gcp={gcp}

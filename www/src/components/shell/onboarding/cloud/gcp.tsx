@@ -46,7 +46,6 @@ export const gcpSynopsis = ({ workspace }) => (
 )
 
 function FileInput({ updateCreds, gcp, setProject }) {
-  // Seems to be getting stuck in infinite loop when file is uploaded
   const { attachment } = useContext(AttachmentContext) as any
   const prevAttachment = usePrevious(attachment)
   const theme = useTheme()

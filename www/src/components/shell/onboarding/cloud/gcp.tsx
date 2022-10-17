@@ -33,17 +33,17 @@ const ZONES = [
 ]
 
 export const GCP_VALIDATIONS = [
-  { field: 'credentials.gcp.applicationCredentials', func: stringExists, name: 'application credentials' },
-  { field: 'workspace.project', func: isAlphanumeric, name: 'project' },
+  {
+    field: 'credentials.gcp.applicationCredentials',
+    func: stringExists,
+    name: 'application credentials',
+  },
+  {
+    field: 'workspace.project',
+    func: isAlphanumeric,
+    name: 'project',
+  },
 ]
-
-export const gcpSynopsis = ({ workspace }) => (
-  [
-    { name: 'Region', value: workspace.region },
-    { name: 'Application Credentials', value: '*****REDACTED****' },
-    { name: 'Project', value: workspace.project },
-  ]
-)
 
 function FileInput({ updateCreds, gcp, setProject }) {
   const { attachment } = useContext(AttachmentContext) as any

@@ -1,8 +1,5 @@
 import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
+  useCallback, useEffect, useMemo, useState,
 } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -26,7 +23,7 @@ import {
 import { persistShouldUseOnboardingTerminalSidebar } from '../persistance'
 
 import { GITHUB_VALIDATIONS } from './scm/github'
-import { CLOUD_VALIDATIONS } from './cloud/provider'
+import { CLOUD_CREDENTIALS_VALIDATIONS } from './cloud/provider'
 import { SCM_VALIDATIONS, ScmSection } from './scm/ScmInput'
 
 // Common
@@ -35,7 +32,9 @@ import OnboardingWrapper from './OnboardingWrapper'
 import CloudSelect from './cloud/CloudSelect'
 import CloudBuild from './cloud/CloudBuild'
 import CloudCredentials from './cloud/CloudCredentials'
-import CloudWorkspace, { CLOUD_WORKSPACE_VALIDATIONS } from './cloud/CloudWorkspace'
+import CloudWorkspace, {
+  CLOUD_WORKSPACE_VALIDATIONS,
+} from './cloud/CloudWorkspace'
 import CloudLaunch from './cloud/CloudLaunch'
 // CLI
 import CliInstallation from './cli/CliInstallation'
@@ -49,7 +48,7 @@ const VALIDATIONS = {
 }
 
 function getValidations(provider, scmProvider, section) {
-  if (section === SECTION_CLOUD_SELECT) return CLOUD_VALIDATIONS[provider]
+  if (section === SECTION_CLOUD_CREDENTIALS) return CLOUD_CREDENTIALS_VALIDATIONS[provider]
   if (section === SECTION_GIT_PROVIDER) return SCM_VALIDATIONS[scmProvider]
 
   return VALIDATIONS[section]
@@ -59,7 +58,11 @@ function OnboardingFlow({ accessToken, provider: scmProvider, authUrlData }) {
   const [demoId, setDemoId] = useState(null)
   const [section, setSection] = useState(SECTION_GIT_PROVIDER)
   const [providerName, setProvider] = useState('AWS')
-  const [scm, setScm] = useState({ name: '', provider: scmProvider, token: accessToken })
+  const [scm, setScm] = useState({
+    name: '',
+    provider: scmProvider,
+    token: accessToken,
+  })
   const [credentials, setCredentials] = useState({})
   const [workspace, setWorkspace] = useState({})
   const navigate = useNavigate()
@@ -72,7 +75,8 @@ function OnboardingFlow({ accessToken, provider: scmProvider, authUrlData }) {
     setProvider(provider)
     setCredentials({})
     setWorkspace({ ...workspace, region: null })
-  }, [setProvider, setCredentials, setWorkspace, workspace])
+  },
+  [setProvider, setCredentials, setWorkspace, workspace])
 
   const next = useCallback(() => {
     if (SECTIONS[section].next) {
@@ -87,7 +91,12 @@ function OnboardingFlow({ accessToken, provider: scmProvider, authUrlData }) {
   }, [section])
 
   const validations = getValidations(providerName, scmProvider, section)
-  const { error, exceptions } = getExceptions(validations, { credentials, workspace, scm })
+
+  const { error, exceptions } = getExceptions(validations, {
+    credentials,
+    workspace,
+    scm,
+  })
 
   const { stepIndex } = SECTIONS[section]
 
@@ -110,7 +119,8 @@ function OnboardingFlow({ accessToken, provider: scmProvider, authUrlData }) {
     setSection,
     error,
     exceptions,
-  }), [
+  }),
+  [
     scmProvider,
     accessToken,
     scm,
@@ -145,36 +155,21 @@ function OnboardingFlow({ accessToken, provider: scmProvider, authUrlData }) {
     <CreateShellContext.Provider value={contextData}>
       <OnboardingWrapper
         stepIndex={stepIndex}
-        cliMode={section === SECTION_CLI_INSTALLATION || section === SECTION_CLI_COMPLETION}
+        cliMode={
+          section === SECTION_CLI_INSTALLATION
+          || section === SECTION_CLI_COMPLETION
+        }
         onRestart={handleRestart}
       >
-        {section === SECTION_GIT_PROVIDER && (
-          <ScmSection />
-        )}
-        {section === SECTION_CLOUD_SELECT && (
-          <CloudSelect />
-        )}
-        {section === SECTION_CLOUD_BUILD && (
-          <CloudBuild />
-        )}
-        {section === SECTION_CLOUD_CREDENTIALS && (
-          <CloudCredentials />
-        )}
-        {section === SECTION_CLOUD_WORKSPACE && (
-          <CloudWorkspace />
-        )}
-        {section === SECTION_CLI_INSTALLATION && (
-          <CliInstallation />
-        )}
-        {section === SECTION_CLI_COMPLETION && (
-          <CliCompletion />
-        )}
-        {section === SECTION_SYNOPSIS && (
-          <Synopsis />
-        )}
-        {section === SECTION_CLOUD_LAUNCH && (
-          <CloudLaunch />
-        )}
+        {section === SECTION_GIT_PROVIDER && <ScmSection />}
+        {section === SECTION_CLOUD_SELECT && <CloudSelect />}
+        {section === SECTION_CLOUD_BUILD && <CloudBuild />}
+        {section === SECTION_CLOUD_CREDENTIALS && <CloudCredentials />}
+        {section === SECTION_CLOUD_WORKSPACE && <CloudWorkspace />}
+        {section === SECTION_CLI_INSTALLATION && <CliInstallation />}
+        {section === SECTION_CLI_COMPLETION && <CliCompletion />}
+        {section === SECTION_SYNOPSIS && <Synopsis />}
+        {section === SECTION_CLOUD_LAUNCH && <CloudLaunch />}
       </OnboardingWrapper>
     </CreateShellContext.Provider>
   )

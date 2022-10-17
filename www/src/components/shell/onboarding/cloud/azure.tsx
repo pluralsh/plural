@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { MenuItem, Select } from 'honorable'
 import { FormField, Input } from 'pluralsh-design-system'
 
-import { stringExists } from '../../validation'
+import { isUuid, stringExists } from '../../validation'
 
 const REGIONS = [
   'eastus',
@@ -31,50 +31,40 @@ const REGIONS = [
 
 export const AZURE_VALIDATIONS = [
   {
-    field: 'credentials.workspace.region',
+    field: 'workspace.region',
     func: stringExists,
-    name: 'region',
+    name: 'Region',
   },
   {
-    field: 'credentials.workspace.project',
+    field: 'workspace.project',
     func: stringExists,
-    name: 'project',
+    name: 'Resource Group',
   },
   {
     field: 'credentials.azure.clientId',
-    func: stringExists,
-    name: 'client id',
+    func: isUuid,
+    name: 'Client ID',
   },
   {
     field: 'credentials.azure.storageAccount',
     func: stringExists,
-    name: 'storage account',
+    name: 'Storage Account',
   },
   {
     field: 'credentials.azure.subscriptionId',
-    func: stringExists,
-    name: 'subscription id',
+    func: isUuid,
+    name: 'Subscription ID',
   },
   {
     field: 'credentials.azure.tenantId',
-    func: stringExists,
-    name: 'tenant id',
+    func: isUuid,
+    name: 'Tenant ID',
   },
   {
     field: 'credentials.azure.clientSecret',
     func: stringExists,
-    name: 'client secret',
+    name: 'Client Secret',
   },
-]
-
-export const azureSynopsis = ({ workspace, credentials }) => [
-  { name: 'Region', value: workspace.region },
-  { name: 'Project', value: workspace.project },
-  { name: 'Client Id', value: credentials.azure.clientId },
-  { name: 'Storage Account', value: credentials.azure.storageAccount },
-  { name: 'Subscription Id', value: credentials.azure.subscriptionId },
-  { name: 'Tenant Id', value: credentials.azure.tenantId },
-  { name: 'Client Secret', value: '*****REDACTED****' },
 ]
 
 export function AzureForm({

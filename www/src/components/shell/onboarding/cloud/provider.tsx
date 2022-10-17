@@ -5,9 +5,9 @@ import { Radio } from 'pluralsh-design-system'
 
 import OnboardingCardButton from '../OnboardingCardButton'
 
-import { AWS_VALIDATIONS, AwsForm, awsSynopsis } from './aws'
-import { GCP_VALIDATIONS, GcpForm, gcpSynopsis } from './gcp'
-import { AZURE_VALIDATIONS, AzureForm, azureSynopsis } from './azure'
+import { AWS_VALIDATIONS, AwsForm } from './aws'
+import { GCP_VALIDATIONS, GcpForm } from './gcp'
+import { AZURE_VALIDATIONS, AzureForm } from './azure'
 
 export type ProviderKey = 'AWS' | 'GCP' | 'AZURE'
 
@@ -17,24 +17,10 @@ export const ProviderForms: Record<ProviderKey, any> = {
   AZURE: AzureForm,
 }
 
-export const CLOUD_VALIDATIONS: Record<ProviderKey, any> = {
+export const CLOUD_CREDENTIALS_VALIDATIONS: Record<ProviderKey, any> = {
   AWS: AWS_VALIDATIONS,
   GCP: GCP_VALIDATIONS,
   AZURE: AZURE_VALIDATIONS,
-}
-
-export const synopsis = ({
-  provider,
-  ...rest
-}: { provider: ProviderKey } & { workspace: any; credentials: any }) => {
-  switch (provider) {
-  case 'AWS':
-    return awsSynopsis(rest)
-  case 'GCP':
-    return gcpSynopsis(rest)
-  case 'AZURE':
-    return azureSynopsis(rest)
-  }
 }
 
 export function CloudOption({

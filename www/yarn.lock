@@ -3794,6 +3794,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-aria/interactions@npm:3.12.0":
+  version: 3.12.0
+  resolution: "@react-aria/interactions@npm:3.12.0"
+  dependencies:
+    "@babel/runtime": ^7.6.2
+    "@react-aria/utils": ^3.14.0
+    "@react-types/shared": ^3.15.0
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
+  checksum: 38b78a3327c7687498270833a83f364dddea86aba393bc03026e476da6e8ea83c934f3d81e5e0df5442a7f29535ca015cb2f77f9e82f6e85c54c290d892c7e73
+  languageName: node
+  linkType: hard
+
 "@react-aria/interactions@npm:^3.11.0":
   version: 3.11.0
   resolution: "@react-aria/interactions@npm:3.11.0"
@@ -3995,6 +4008,21 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
   checksum: b6d87ddb8e1d93b00405473099390c854647d81c0419de53cc4a7f02bdcca6d030776fba9f4b241400af13082bafc820dd5ce05c168e8f5a2c43a1b2660fb2ad
+  languageName: node
+  linkType: hard
+
+"@react-aria/utils@npm:^3.14.0":
+  version: 3.14.0
+  resolution: "@react-aria/utils@npm:3.14.0"
+  dependencies:
+    "@babel/runtime": ^7.6.2
+    "@react-aria/ssr": ^3.3.0
+    "@react-stately/utils": ^3.5.1
+    "@react-types/shared": ^3.15.0
+    clsx: ^1.1.1
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
+  checksum: 45600e9492e275c47e6ee5dae549ad7cb1999ecc46d98368fb32b261d680fcf7e6c4fd8eaec746f2f3b82d7263fe6a8065d5a48a8b1a0a5c7e144dc75ba1353e
   languageName: node
   linkType: hard
 
@@ -4524,6 +4552,15 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
   checksum: 117fe230f5a26b7fcaf535c1cfb7c4d42416b0f49d0e0b3436fef2a5851234967908c4e884fc5f2a99a04bee2543543348346a04e1f3f45aaa14c42b6f08491a
+  languageName: node
+  linkType: hard
+
+"@react-types/shared@npm:^3.15.0":
+  version: 3.15.0
+  resolution: "@react-types/shared@npm:3.15.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
+  checksum: 4bae4444b1002ca4a51ca45313d9ed4469a09b114366a8a8c3a2277f22d36c721fa0132225b4fb461ee2e26ee1fca3b9b2562949faa854d255f2618265911a49
   languageName: node
   linkType: hard
 
@@ -7943,7 +7980,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"classnames@npm:2.3.2, classnames@npm:^2.2.5, classnames@npm:^2.2.6":
+"classnames@npm:2.3.2, classnames@npm:^2.2.5, classnames@npm:^2.2.6, classnames@npm:^2.3.1":
   version: 2.3.2
   resolution: "classnames@npm:2.3.2"
   checksum: 2c62199789618d95545c872787137262e741f9db13328e216b093eea91c85ef2bfb152c1f9e63027204e2559a006a92eb74147d46c800a9f96297ae1d9f96f4e
@@ -16748,14 +16785,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pluralsh-design-system@npm:1.224.0":
-  version: 1.224.0
-  resolution: "pluralsh-design-system@npm:1.224.0"
+"pluralsh-design-system@npm:1.232.0":
+  version: 1.232.0
+  resolution: "pluralsh-design-system@npm:1.232.0"
   dependencies:
     "@floating-ui/react-dom-interactions": 0.8.1
     "@react-aria/button": 3.6.1
     "@react-aria/combobox": 3.4.1
     "@react-aria/focus": 3.8.0
+    "@react-aria/interactions": 3.12.0
     "@react-aria/listbox": 3.6.1
     "@react-aria/overlays": 3.10.1
     "@react-aria/select": 3.8.1
@@ -16772,6 +16810,7 @@ __metadata:
     grommet: 2.25.3
     highlight.js: 11.6.0
     prop-types: 15.8.1
+    react-animate-height: 3.0.4
     react-markdown: 8.0.3
     react-merge-refs: 2.0.1
     react-spring: 9.5.2
@@ -16786,7 +16825,7 @@ __metadata:
     react-dom: ">=16.0.0"
     react-transition-group: ">=4.4.2"
     styled-components: ">=5.3.5"
-  checksum: 326644d99fb3a2c5ae3102c4864d90c64980f2d01987e21f85009abe6109695426b7bb1545d5158314facaa03dae6e9244f7f76f91cadc82b2260c35ebedbf48
+  checksum: ad0341754dc0a731e77be87d6b58e775a75691d7dc954a0f2f8309ec25ff74ac824d369f2383059737f84d5e91cc0fc0910fad7223abc32791880b838230ff55
   languageName: node
   linkType: hard
 
@@ -18114,6 +18153,18 @@ __metadata:
   bin:
     rc: ./cli.js
   checksum: 2e26e052f8be2abd64e6d1dabfbd7be03f80ec18ccbc49562d31f617d0015fbdbcf0f9eed30346ea6ab789e0fdfe4337f033f8016efdbee0df5354751842080e
+  languageName: node
+  linkType: hard
+
+"react-animate-height@npm:3.0.4":
+  version: 3.0.4
+  resolution: "react-animate-height@npm:3.0.4"
+  dependencies:
+    classnames: ^2.3.1
+  peerDependencies:
+    react: ">=16.8.0"
+    react-dom: ">=16.8.0"
+  checksum: 3efa212b41bb1c424c4b5390c1b0e34e85eec799f5ca76fab3223ccb0dff215febc5fd95a07188db85e5a06661ed9f6f3f9b8c68de744d8daad912f298d1bfc2
   languageName: node
   linkType: hard
 
@@ -23158,7 +23209,7 @@ __metadata:
     moment: 2.29.4
     phoenix: 1.6.12
     pluralsh-absinthe-socket-apollo-link: 0.2.0
-    pluralsh-design-system: 1.224.0
+    pluralsh-design-system: 1.232.0
     postcss-import: 8.2.0
     prop-types: 15.8.1
     query-string: 7.1.1

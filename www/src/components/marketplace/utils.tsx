@@ -1,6 +1,6 @@
 import { Flex } from 'honorable'
 
-export const flexBasis = '400px'
+export const flexBasis = '365px'
 
 // Workaround that will render empty columns to align the last row.
 // It is better to use bigger columns number to prevent issues on all kinds of viewports.

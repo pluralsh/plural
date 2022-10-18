@@ -50,4 +50,25 @@ defmodule Core.PubSub.Fanout.UsersTest do
       :ok = Core.PubSub.Fanout.fanout(event)
     end
   end
+
+  describe "PersistedTokenCreated" do
+    test "new users will be marked configured" do
+      user = insert(:user, onboarding_checklist: %{status: :new})
+      tok  = insert(:persisted_token, user: user)
+
+      event = %PubSub.PersistedTokenCreated{item: tok, actor: user}
+      {:ok, updated} = Core.PubSub.Fanout.fanout(event)
+
+      assert updated.id == user.id
+      assert updated.onboarding_checklist.status == :configured
+    end
+
+    test "onboarded users are ignored" do
+      user = insert(:user, onboarding_checklist: %{status: :console_installed})
+      tok  = insert(:persisted_token, user: user)
+
+      event = %PubSub.PersistedTokenCreated{item: tok, actor: user}
+      :ok = Core.PubSub.Fanout.fanout(event)
+    end
+  end
 end

@@ -217,6 +217,7 @@ defmodule Core.Services.Users do
     %PersistedToken{}
     |> PersistedToken.changeset(%{user_id: user.id})
     |> Core.Repo.insert()
+    |> notify(:create, user)
   end
 
   @doc "self explanatory"
@@ -608,6 +609,8 @@ defmodule Core.Services.Users do
     do: handle_notify(PubSub.UserDeleted, u, actor: actor)
   def notify({:ok, %User{} = u}, :update, actor),
     do: handle_notify(PubSub.UserUpdated, u, actor: actor)
+  def notify({:ok, %PersistedToken{} = p}, :create, actor),
+    do: handle_notify(PubSub.PersistedTokenCreated, p, actor: actor)
   def notify(pass, _, _), do: pass
 
   def notify({:ok, %ResetToken{} = t}, :create),

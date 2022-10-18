@@ -102,6 +102,36 @@ defimpl Core.PubSub.Fanout, for: Core.PubSub.InstallationDeleted do
   end
 end
 
+defimpl Core.PubSub.Fanout, for: Core.PubSub.InstallationCreated do
+  alias Core.Schema.{Repository, User}
+  alias Core.Services.Users
+
+  @console_deps ~w(console monitoring bootstrap postgres ingress-nginx)
+
+  def fanout(%{item: inst, actor: user}) do
+    inst = Core.Repo.preload(inst, [:repository])
+
+    handle(inst.repository, user)
+  end
+
+  defp handle(%Repository{name: "console"}, %User{onboarding_checklist: %User.OnboardingChecklist{status: :finished}}), do: :ok
+  defp handle(%Repository{name: "console"}, user),
+    do: Users.update_user(%{onboarding_checklist: %{status: :console_installed}}, user)
+
+  defp handle(%Repository{name: n}, user) when n not in @console_deps,
+    do: Users.update_user(%{onboarding_checklist: %{status: :finished}}, user)
+
+  defp handle(_, _), do: :ok
+end
+
+defimpl Core.PubSub.Fanout, for: Core.PubSub.PersistedTokenCreated do
+  alias Core.{Schema.User, Services.Users}
+
+  def fanout(%{actor: %User{onboarding_checklist: %User.OnboardingChecklist{status: :new}} = user}),
+    do: Users.update_user(%{onboarding_checklist: %{status: :configured}}, user)
+  def fanout(_), do: :ok
+end
+
 defimpl Core.PubSub.Fanout, for: Core.PubSub.GroupUpdated do
   alias Core.Services.Accounts
   alias Core.Schema.User

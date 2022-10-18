@@ -2,15 +2,19 @@ import { useMutation, useQuery } from '@apollo/client'
 import { Confirm } from 'components/account/Confirm'
 import { Button, CloudIcon } from 'pluralsh-design-system'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import { DELETE_DEMO_PROJECT_QUERY, POLL_DEMO_PROJECT_QUERY } from './queries'
 
-// TODO: Pulse, test mutation.
 export default function ConfigureMyCloudButton() {
   const [open, setOpen] = useState(false)
+  const navigate = useNavigate()
   const { data } = useQuery(POLL_DEMO_PROJECT_QUERY, { pollInterval: 10000 })
   const [mutation, { loading, error }] = useMutation(DELETE_DEMO_PROJECT_QUERY, {
-    onCompleted: () => setOpen(false),
+    onCompleted: () => {
+      setOpen(false)
+      navigate('/shell')
+    },
   })
 
   if (!data) return
@@ -19,7 +23,7 @@ export default function ConfigureMyCloudButton() {
     <>
       <Button
         small
-        pulse
+        pulse // FIXME: It doesn't work.
         startIcon={<CloudIcon />}
         onClick={() => setOpen(true)}
       >

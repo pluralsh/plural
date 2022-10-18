@@ -19,8 +19,8 @@ function CliCompletion() {
   const applications = useMemo(() => retrieveApplications(), [])
   const applicationIds = applications.map(x => x.id)
   const stack = useMemo(() => retrieveStack(), [])
-  const stackCollection = stack.collections.find(x => x.provider === provider)
-  const stackApplicationIds = stackCollection?.bundles.map(x => x.recipe.repository.id)
+  const stackCollection = stack?.collections.find(x => x.provider === provider)
+  const stackApplicationIds = stackCollection?.bundles.map(x => x.recipe.repository.id) || []
   const shouldInstallConsole = retrieveConsole()
 
   // If all stack applications are in the list then we can filter them out to show stack install command.
@@ -36,11 +36,11 @@ function CliCompletion() {
     : null
 
   const stackInstallCmd = isStackComplete
-    ? (<Codeline>plural stack install {stack.name}</Codeline>)
+    ? (<Codeline>plural stack install {stack?.name}</Codeline>)
     : null
 
   const appInstallCmds = filteredApplications.map(app => {
-    const recipes = app.recipes.filter(recipe => recipe.provider.toLowerCase() === provider.toLowerCase())
+    const recipes = app.recipes.filter(recipe => recipe.provider.toLowerCase() === provider?.toLowerCase())
 
     if (recipes?.length !== 1) return // There should be only one bundle for each provider.
 
@@ -48,35 +48,33 @@ function CliCompletion() {
   })
 
   return (
-    <>
-      <OnboardingCard title="Complete setup">
-        <P>Now that you've installed the Plural CLI, here are the next steps:</P>
-        <Flex
-          direction="column"
-          gap="medium"
-          marginVertical="large"
+    <OnboardingCard title="Complete setup">
+      <P>Now that you've installed the Plural CLI, here are the next steps:</P>
+      <Flex
+        direction="column"
+        gap="medium"
+        marginVertical="large"
+      >
+        <Codeline>plural init</Codeline>
+        {stackInstallCmd}
+        {appInstallCmds}
+        {consoleInstallCmd}
+        <Codeline>plural build</Codeline>
+        <Codeline>plural deploy --commit "first commit"</Codeline>
+      </Flex>
+      <P>
+        If you need help filling out the install wizard during any of these steps,
+        visit our{' '}
+        <A
+          inline
+          href="https://docs.plural.sh/getting-started/getting-started"
+          target="_blank"
+          rel="noopener noreferrer"
         >
-          <Codeline>plural init</Codeline>
-          {stackInstallCmd}
-          {appInstallCmds}
-          {consoleInstallCmd}
-          <Codeline>plural build</Codeline>
-          <Codeline>plural deploy --commit "first commit"</Codeline>
-        </Flex>
-        <P>
-          If you need help filling out the install wizard during any of these steps,
-          visit our{' '}
-          <A
-            inline
-            href="https://docs.plural.sh/getting-started/getting-started"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Quickstart Guide
-          </A>
-          {' '}for more information.
-        </P>
-      </OnboardingCard>
+          Quickstart Guide
+        </A>
+        {' '}for more information.
+      </P>
       <OnboardingNavSection>
         <Button
           secondary
@@ -92,7 +90,7 @@ function CliCompletion() {
           Continue to app
         </Button>
       </OnboardingNavSection>
-    </>
+    </OnboardingCard>
   )
 }
 

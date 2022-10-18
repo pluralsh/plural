@@ -50,55 +50,52 @@ function CloudCredentials() {
   const clouds = growthbook.isOn('azure-cloud-shell') ? CLOUDS : FILTERED_CLOUDS
 
   return (
-    <>
-      <OnboardingCard title="Configure cloud credentials">
-        {/* Div wrapper needed for bottom padding show up
+    <OnboardingCard title="Configure cloud credentials">
+      {/* Div wrapper needed for bottom padding show up
         when content overflows */}
-        <div>
-          <FormField
+      <div>
+        <FormField
+          width="100%"
+          marginTop="large"
+          marginBottom="large"
+          label="Cloud provider"
+        >
+          <Select
             width="100%"
-            marginTop="large"
-            marginBottom="large"
-            label="Cloud provider"
+            onChange={({ target: { value } }) => {
+              setProvider(value)
+            }}
+            value={provider}
           >
-            <Select
-              width="100%"
-              onChange={({ target: { value } }) => {
-                setProvider(value)
-              }}
-              value={provider}
-            >
-              {clouds.map(cloud => (
-                <MenuItem
-                  key={cloud}
-                  value={cloud}
-                >
-                  {providerToDisplayName[cloud]}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormField>
-          <Box>
-            {createElement(form, {
-              workspace,
-              setWorkspace,
-              credentials,
-              setCredentials,
-            })}
-          </Box>
-          {open && (
-            <Drop
-              target={ref.current}
-              onClickOutside={close}
-              onEsc={close}
-            >
-              <Box width="250px" />
-            </Drop>
-          )}
-          {exceptions && <Exceptions exceptions={exceptions} />}
-        </div>
-      </OnboardingCard>
-      {/* Navigation */}
+            {clouds.map(cloud => (
+              <MenuItem
+                key={cloud}
+                value={cloud}
+              >
+                {providerToDisplayName[cloud]}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormField>
+        <Box>
+          {createElement(form, {
+            workspace,
+            setWorkspace,
+            credentials,
+            setCredentials,
+          })}
+        </Box>
+        {open && (
+          <Drop
+            target={ref.current}
+            onClickOutside={close}
+            onEsc={close}
+          >
+            <Box width="250px" />
+          </Drop>
+        )}
+        {exceptions && <Exceptions exceptions={exceptions} />}
+      </div>
       <OnboardingNavSection>
         <Button
           secondary
@@ -117,7 +114,7 @@ function CloudCredentials() {
           Continue
         </Button>
       </OnboardingNavSection>
-    </>
+    </OnboardingCard>
   )
 }
 

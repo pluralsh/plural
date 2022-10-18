@@ -109,6 +109,27 @@ function CloudBuild() {
             {status === 'CREATED' ? 'Running' : status === 'ENABLED' | status === 'READY' ? 'Success' : 'Pending'}
           </Chip>
         </Flex>
+        <OnboardingNavSection>
+          {(!!error || status === 'ENABLED') && (
+            <Button
+              secondary
+              onClick={() => {
+                previous()
+              }}
+            >
+              Back
+            </Button>
+          )}
+          {status === 'ENABLED' && (
+            <Button
+              onClick={() => {
+                next()
+              }}
+            >
+              Continue
+            </Button>
+          )}
+        </OnboardingNavSection>
       </OnboardingCard>
       {!!error && (
         <Div marginTop="medium">
@@ -120,28 +141,6 @@ function CloudBuild() {
       )}
       {/* Navigation */}
       <OnboardingTips marginTop="large" />
-      <OnboardingNavSection>
-        {(!!error || status === 'ENABLED') && (
-          <Button
-            secondary
-            onClick={() => {
-              previous()
-            }}
-          >
-            Back
-          </Button>
-        )}
-        {status === 'ENABLED' && (
-          <Button
-            onClick={() => {
-              next()
-            }}
-          >
-            Continue
-          </Button>
-        )}
-      </OnboardingNavSection>
-
     </>
   )
 }

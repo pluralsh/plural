@@ -186,11 +186,9 @@ export function ScmSection() {
   const navigate = useNavigate()
 
   return (
-    <>
-      <OnboardingCard>
-        <ScmInput />
-        {exceptions && <Exceptions exceptions={exceptions} />}
-      </OnboardingCard>
+    <OnboardingCard>
+      <ScmInput />
+      {exceptions && <Exceptions exceptions={exceptions} />}
       <OnboardingNavSection>
         <Button
           secondary
@@ -203,9 +201,10 @@ export function ScmSection() {
         <Button
           disabled={error}
           onClick={() => next()}
-        >Continue
+        >
+          Continue
         </Button>
       </OnboardingNavSection>
-    </>
+    </OnboardingCard>
   )
 }

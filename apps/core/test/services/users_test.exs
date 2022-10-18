@@ -84,6 +84,23 @@ defmodule Core.Services.UsersTest do
 
       {:error, _} = Users.update_user(%{name: "real user", roles: %{admin: true}}, user)
     end
+
+    test "users can update their onboarding checklist" do
+      onboarding_checklist = %{status: :new, dismissed: false}
+      {:ok, user} = Users.create_user(%{
+        name: "some user",
+        password: "superstrongpassword",
+        email: "something@example.com",
+        onboarding_checklist: onboarding_checklist
+      })
+
+      {:ok, updated} = Users.update_user(%{onboarding_checklist: %{status: :finished}}, user)
+
+      assert updated.onboarding_checklist.status == :finished
+      assert updated.onboarding_checklist.dismissed == onboarding_checklist.dismissed
+
+      assert_receive {:event, %PubSub.UserUpdated{item: ^updated}}
+    end
   end
 
   describe "#update_user/3" do

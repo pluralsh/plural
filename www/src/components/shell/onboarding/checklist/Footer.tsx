@@ -1,7 +1,11 @@
+import { useMutation } from '@apollo/client'
 import { Button, Flex } from 'honorable'
-import { Dispatch } from 'react'
 
-export function ChecklistFooter({ setDismiss }: {setDismiss: Dispatch<boolean>}) {
+import { UPDATE_ONBOARDING_CHECKLIST } from '../../../users/queries'
+
+export function ChecklistFooter({ refetch }) {
+  const [updateChecklist, { loading }] = useMutation(UPDATE_ONBOARDING_CHECKLIST)
+
   return (
     <Flex
       gap="small"
@@ -42,7 +46,17 @@ export function ChecklistFooter({ setDismiss }: {setDismiss: Dispatch<boolean>})
         small
         tertiary
         padding="none"
-        onClick={() => setDismiss(true)}
+        loading={loading}
+        onClick={() => updateChecklist({
+          variables: {
+            attributes: {
+              onboardingChecklist: {
+                dismissed: true,
+              },
+            },
+          },
+          onCompleted: refetch,
+        })}
       >Dismiss
       </Button>
     </Flex>

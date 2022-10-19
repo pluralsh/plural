@@ -255,6 +255,7 @@ defmodule Core.Services.Users do
       confirm_by = Timex.now() |> Timex.shift(days: 7)
       %User{email_confirm_by: confirm_by}
       |> User.changeset(attrs)
+      |> User.changeset(%{onboarding_checklist: %{status: :new}})
       |> Core.Repo.insert()
     end)
     |> add_operation(:user, fn %{pre: user} ->

@@ -75,3 +75,5 @@ defmodule Core.PubSub.StepLogs, do: use Piazza.PubSub.Event
 defmodule Core.PubSub.CacheUser, do: use Piazza.PubSub.Event
 
 defmodule Core.PubSub.InviteCreated, do: use Piazza.PubSub.Event
+
+defmodule Core.PubSub.PersistedTokenCreated, do: use Piazza.PubSub.Event

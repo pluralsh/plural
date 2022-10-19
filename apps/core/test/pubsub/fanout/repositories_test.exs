@@ -15,6 +15,46 @@ defmodule Core.PubSub.Fanout.InstallationsTest do
     end
   end
 
+  describe "InstallationCreated" do
+    test "it will set console isntalled" do
+      user = insert(:user, onboarding_checklist: %{status: :new})
+      inst = insert(:installation, repository: build(:repository, name: "console"))
+
+      event = %PubSub.InstallationCreated{item: inst, actor: user}
+      {:ok, update} = PubSub.Fanout.fanout(event)
+
+      assert update.id == user.id
+      assert update.onboarding_checklist.status == :console_installed
+    end
+
+    test "it will ignore console when finished" do
+      user = insert(:user, onboarding_checklist: %{status: :finished})
+      inst = insert(:installation, repository: build(:repository, name: "console"))
+
+      event = %PubSub.InstallationCreated{item: inst, actor: user}
+      :ok = PubSub.Fanout.fanout(event)
+    end
+
+    test "it will set finished" do
+      user = insert(:user, onboarding_checklist: %{status: :console_installed})
+      inst = insert(:installation, repository: build(:repository, name: "airbyte"))
+
+      event = %PubSub.InstallationCreated{item: inst, actor: user}
+      {:ok, update} = PubSub.Fanout.fanout(event)
+
+      assert update.id == user.id
+      assert update.onboarding_checklist.status == :finished
+    end
+
+    test "it will ignore console deps" do
+      user = insert(:user, onboarding_checklist: %{status: :console_installed})
+      inst = insert(:installation, repository: build(:repository, name: "monitoring"))
+
+      event = %PubSub.InstallationCreated{item: inst, actor: user}
+      :ok = PubSub.Fanout.fanout(event)
+    end
+  end
+
   describe "RepositoryCreated" do
     test "it will fetch and persist a repositories readme" do
       repo = insert(:repository, git_url: "https://github.com/pluralsh/plural")

@@ -83,7 +83,7 @@ function UpdateUpgrades({
   )
 }
 
-function DeleteInstallation({
+function UninstallApp({
   installation, deleteMutation, deleteError, confirm, setConfirm,
 }) {
   return (
@@ -149,7 +149,7 @@ export function InstallationConfiguration({ installation, open, setOpen }) {
     },
     uninstall: {
       label: 'Uninstall',
-      content: <DeleteInstallation
+      content: <UninstallApp
         installation={installation}
         deleteMutation={deleteMutation}
         deleteError={deleteError}

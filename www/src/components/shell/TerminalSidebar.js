@@ -2,15 +2,10 @@ import { useMemo, useState } from 'react'
 import {
   A, Button, Div, Flex, P,
 } from 'honorable'
-import { Fireworks } from 'fireworks-js/dist/react'
 import {
-  ArrowTopRightIcon,
   Callout,
   Codeline,
-  Modal,
 } from 'pluralsh-design-system'
-
-import { useNavigate } from 'react-router-dom'
 
 import styled from 'styled-components'
 
@@ -23,6 +18,7 @@ import {
   retrieveShouldUseOnboardingTerminalSidebar,
   retrieveStack,
 } from './persistance'
+import OnboardingCompletionModal from './OnboardingCompletionModal'
 
 const sidebarWidth = 420
 const steps = [
@@ -51,7 +47,6 @@ const steps = [
 --- */
 
 function TerminalSidebar({ shell, showCheatsheet, ...props }) {
-  const navigate = useNavigate()
   const [, refresh] = useState(true) // See below
   const { mutation, fresh } = useOnboarded()
   const shouldUseTerminalSidebar = retrieveShouldUseOnboardingTerminalSidebar()
@@ -101,10 +96,6 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
       setIsModalOpen(true)
       markDemoAsComplete()
     }
-  }
-
-  function handleModalClose() {
-    setIsModalOpen(false)
   }
 
   function renderCheatsheet() {
@@ -206,90 +197,12 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }) {
           {fresh || shouldUseTerminalSidebar ? renderDemo() : showCheatsheet ? renderCheatsheet() : null}
         </Flex>
       </Div>
-      {isModalOpen && (
-        <Fireworks
-          options={{}}
-          style={{
-            top: 0,
-            left: 0,
-            width: '100vw',
-            height: '100vh',
-            position: 'fixed',
-            background: 'transparent',
-            zIndex: 999,
-          }}
-        />
-      )}
-      <Modal
-        header="Next steps"
-        width={512}
-        maxWidth={512}
+      <OnboardingCompletionModal
         open={isModalOpen}
-        onClose={handleModalClose}
-        borderTop="4px solid border-success"
-      >
-        {skipConsoleInstall && (
-          <Div>
-            <StepP>
-              Congratulations, you've installed your first Plural application!
-              Next, you can view your installed application in our marketplace.
-            </StepP>
-            <Button
-              primary
-              width="100%"
-              marginTop="large"
-              onClick={() => navigate('/installed')}
-            >
-              View your apps
-            </Button>
-          </Div>
-        )}
-
-        {!skipConsoleInstall && (
-          <Div>
-            <StepP>
-              Congratulations, you've installed your first Plural application!
-              Next, you can view your deployed application in the Plural
-              Console.
-            </StepP>
-            <Button
-              primary
-              width="100%"
-              marginTop="large"
-              as="a"
-              href={`https://console.${shell.subdomain}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              endIcon={<ArrowTopRightIcon />}
-            >
-              Go to Plural Console
-            </Button>
-            <Button
-              secondary
-              width="100%"
-              marginTop="large"
-              onClick={() => navigate('/marketplace')}
-            >
-              Go to marketplace
-            </Button>
-          </Div>
-        )}
-        <P
-          body2
-          marginTop="large"
-          textAlign="center"
-        >
-          Need support?&nbsp;
-          <A
-            inline
-            href="https://discord.gg/pluralsh"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            Ping us on Discord
-          </A>
-        </P>
-      </Modal>
+        onClose={() => setIsModalOpen(false)}
+        skipConsoleInstall={skipConsoleInstall}
+        shell={shell}
+      />
     </>
   )
 }

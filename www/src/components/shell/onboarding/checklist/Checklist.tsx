@@ -1,14 +1,21 @@
 import {
-  A, Button, Div, Flex, Span,
+  A, Button, Flex, Span,
 } from 'honorable'
 import {
-  Checklist, ChecklistItem, ChecklistStateProps, DownloadIcon, GitHubLogoIcon, MarketIcon, SourcererIcon, TerminalIcon,
+  Checklist, ChecklistItem, ChecklistStateProps, DownloadIcon, MarketIcon, TerminalIcon,
 } from 'pluralsh-design-system'
-import { useCallback, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-export function GettingStarted() {
+import { CurrentUserContext } from '../../../login/CurrentUser'
+
+import { ChecklistComplete } from './Complete'
+
+import { ChecklistFooter } from './Footer'
+
+export function OnboardingChecklist() {
   const navigate = useNavigate()
+  const user = useContext(CurrentUserContext)
 
   const [selected, setSelected] = useState<number>(0)
   const [focused, setFocused] = useState<number>(-1)
@@ -42,6 +49,8 @@ export function GettingStarted() {
     </Button>
   )
 
+  console.log(user)
+
   return (
     <Flex
       grow={1}
@@ -49,119 +58,19 @@ export function GettingStarted() {
       style={{
         bottom: 0,
         position: 'fixed',
-        zIndex: 999,
+        zIndex: 1,
       }}
     >
       <Checklist
         label="Getting Started"
         stateProps={checklistStateProps}
-        footerChildren={(
-          <Flex
-            gap="small"
-          >
-            <Button
-              as="a"
-              href="https://discord.gg/pluralsh"
-              target="_blank"
-              rel="noopener noreferrer"
-              secondary
-              small
-            >Support
-            </Button>
-
-            <Button
-              as="a"
-              href="https://docs.plural.sh/"
-              target="_blank"
-              rel="noopener noreferrer"
-              secondary
-              small
-            >Docs
-            </Button>
-
-            <Button
-              as="a"
-              href="https://github.com/pluralsh/plural"
-              target="_blank"
-              rel="noopener noreferrer"
-              secondary
-              small
-            >GitHub
-            </Button>
-
-            <Flex flex="1" />
-
-            <Button
-              small
-              tertiary
-              padding="none"
-              onClick={() => setDismiss(true)}
-            >Dismiss
-            </Button>
-          </Flex>
-        )}
+        footerChildren={<ChecklistFooter setDismiss={setDismiss} />}
         completeChildren={(
-          <Flex
-            direction="column"
-            gap="medium"
-          >
-            <Flex
-              paddingHorizontal="large"
-              gap="medium"
-            >
-              <SourcererIcon />
-              <Flex
-                gap="xxsmall"
-                direction="column"
-              >
-                <Span subtitle1>Congratulations!</Span>
-                <Span body2>You're well on your way to becoming an
-                  <A
-                    inline
-                    href="https://www.plural.sh/community"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    open-sourcerer
-                  </A>.
-                </Span>
-              </Flex>
-            </Flex>
-            <Div
-              height={1}
-              backgroundColor="border-input"
-            />
-            <Flex
-              gap="small"
-              paddingHorizontal="large"
-            >
-              <Button
-                as="a"
-                href="https://github.com/pluralsh/plural"
-                target="_blank"
-                rel="noopener noreferrer"
-                small
-                secondary
-                startIcon={<GitHubLogoIcon />}
-              >Star us on GitHub
-              </Button>
-              <Flex grow={1} />
-              <Button
-                small
-                secondary
-                onClick={() => {
-                  setCompleted(-1)
-                  setSelected(0)
-                }}
-              >Restart
-              </Button>
-              <Button
-                small
-                onClick={() => setDismiss(true)}
-              >Complete
-              </Button>
-            </Flex>
-          </Flex>
+          <ChecklistComplete
+            setDismiss={setDismiss}
+            setCompleted={setCompleted}
+            setSelected={setSelected}
+          />
         )}
       >
         <ChecklistItem title="Setup on your own cloud">
@@ -216,6 +125,7 @@ export function GettingStarted() {
             </Flex>
           </Flex>
         </ChecklistItem>
+
         <ChecklistItem title="Install another app">
           <Flex
             gap="small"

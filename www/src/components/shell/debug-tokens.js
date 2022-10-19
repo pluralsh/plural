@@ -2,6 +2,7 @@
 // START <<Remove this after dev>>
 export const DEBUG_SCM_TOKENS = {
   GITLAB: '',
-  GITHUB: '',
+  // TODO: Remove!
+  GITHUB: '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',
 }
 // END <<Remove this after dev>>

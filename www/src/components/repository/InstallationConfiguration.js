@@ -106,7 +106,6 @@ function DeleteInstallation({
           value={confirm}
           onChange={({ target: { value } }) => setConfirm(value)}
           placeholder="Confirm application name"
-          width="75%"
         />
       </Flex>
     </Keyboard>

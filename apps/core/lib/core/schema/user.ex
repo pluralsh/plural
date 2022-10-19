@@ -263,7 +263,7 @@ defmodule Core.Schema.User do
 end
 
 defimpl Jason.Encoder, for: Core.Schema.User do
-  @ignore ~w(password password_hash jwt)a
+  @ignore ~w(password password_hash jwt onboarding_checklist)a
 
   def encode(struct, opts) do
     Piazza.Ecto.Schema.mapify(struct)

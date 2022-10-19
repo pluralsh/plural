@@ -15,6 +15,7 @@ defmodule Core.Services.UsersTest do
       assert user.name == "some user"
       assert user.email == "something@example.com"
       assert user.password_hash
+      assert user.onboarding_checklist.status == :new
       assert Timex.after?(user.email_confirm_by, Timex.now())
 
       %{account: account} = Core.Repo.preload(user, [:account])

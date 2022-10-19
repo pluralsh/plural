@@ -94,9 +94,9 @@ defmodule Core.Schema.CloudShell do
     alias Core.Schema.CloudShell
 
     embedded_schema do
-      embeds_one :aws, CloudShell.AWS
-      embeds_one :gcp, CloudShell.GCP
-      embeds_one :azure, CloudShell.Azure
+      embeds_one :aws, CloudShell.AWS, on_replace: :update
+      embeds_one :gcp, CloudShell.GCP, on_replace: :update
+      embeds_one :azure, CloudShell.Azure, on_replace: :update
     end
 
     def changeset(model, attrs \\ %{}) do

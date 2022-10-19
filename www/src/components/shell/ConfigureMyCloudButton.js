@@ -1,10 +1,17 @@
 import { useMutation, useQuery } from '@apollo/client'
+import { keyframes } from '@emotion/react'
 import { Confirm } from 'components/account/Confirm'
 import { Button, CloudIcon } from 'pluralsh-design-system'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { DELETE_DEMO_PROJECT_QUERY, POLL_DEMO_PROJECT_QUERY } from './queries'
+
+const pulseKeyframes = keyframes`
+  0% { box-shadow: 0 0 7px 2px #fff1; }
+  70% { box-shadow: 0 0 7px 4px #fff2; }
+  100% { box-shadow: 0 0 7px 2px #fff1; }
+}`
 
 export default function ConfigureMyCloudButton() {
   const [open, setOpen] = useState(false)
@@ -23,9 +30,13 @@ export default function ConfigureMyCloudButton() {
     <>
       <Button
         small
-        pulse // FIXME: It doesn't work.
         startIcon={<CloudIcon />}
         onClick={() => setOpen(true)}
+        // FIXME: Below props should be replaced with "pulse" property that doesn't work in app.
+        animationDuration="4s"
+        animationIterationCount="infinite"
+        animationName={pulseKeyframes}
+        _hover={{ animationPlayState: 'paused' }}
       >
         Configure my cloud
       </Button>

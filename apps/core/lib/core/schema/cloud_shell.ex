@@ -130,9 +130,9 @@ defmodule Core.Schema.CloudShell do
     field :ssh_private_key, EncryptedString
     field :bucket_prefix,   :string
 
-    embeds_one :git_info,    GitInfo
-    embeds_one :workspace,   Workspace
-    embeds_one :credentials, Credentials
+    embeds_one :git_info,    GitInfo, on_replace: :update
+    embeds_one :workspace,   Workspace, on_replace: :update
+    embeds_one :credentials, Credentials, on_replace: :update
 
     belongs_to :user, User
     belongs_to :demo, DemoProject

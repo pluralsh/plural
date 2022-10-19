@@ -178,6 +178,34 @@ defmodule Core.Services.ShellTest do
     end
   end
 
+  describe "#udpate_shell/2" do
+    test "it can update the cloud shell for a user" do
+      user = insert(:user)
+      insert(:cloud_shell, user: user)
+
+      # Should not find the initial pod
+      expect(Kazan, :run, fn _ -> {:error, :not_found} end)
+      # Should create the shell pod
+      expect(Kazan, :run, fn _ -> {:ok, true} end)
+
+      {:ok, update} = Shell.update_shell(%{
+        provider: :aws,
+        credentials: %{
+          aws: %{access_key_id: "access_key", secret_access_key: "secret"}
+        },
+        scm: %{token: "tok", provider: :github, name: "installations"},
+        workspace: %{
+          cluster: "plural",
+          bucket_prefix: "plrl",
+          region: "us-east-1",
+          subdomain: "sub.onplural.sh"
+        }
+      }, user)
+
+      assert update.provider == :aws
+    end
+  end
+
   describe "#reboot/1" do
     test "it will create the pod for a user's shell if it does not exist" do
       pod_name = "plrl-shell-1"

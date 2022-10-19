@@ -60,6 +60,20 @@ defmodule Core.Services.Shell do
     |> execute(extract: :git)
   end
 
+  @doc """
+  updates your cloud shell instance and restarts it
+  """
+  @spec update_shell(map, User.t) :: shell_resp
+  def update_shell(attributes, %User{id: user_id}) do
+    start_transaction()
+    |> add_operation(:shell, fn _ ->
+      get_shell!(user_id)
+      |> CloudShell.changeset(attributes)
+      |> Core.Repo.update()
+    end)
+    |> add_operation(:reboot, fn %{shell: s} -> reboot(s) end)
+    |> execute(extract: :shell)
+  end
 
   @doc """
   Deletes the shell record from the db and destroys its associated pod if it exists

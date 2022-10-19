@@ -83,7 +83,7 @@ function UpdateUpgrades({
   )
 }
 
-function DeleteInstallation({
+function UninstallApp({
   installation, deleteMutation, deleteError, confirm, setConfirm,
 }) {
   return (
@@ -95,18 +95,17 @@ function DeleteInstallation({
         {deleteError && (
           <GqlError
             error={deleteError}
-            header="Failed to delete"
+            header="Failed to uninstall"
           />
         )}
         <MiniHeader
-          header="Delete this installation"
-          description={`Type the application name, "${installation.repository.name}", to confirm deletion.`}
+          header="Uninstall this application"
+          description={`Type the application name, "${installation.repository.name}", to confirm uninstall. Note that this will uninstall this app from the API but not destroy any of its infrastructure.`}
         />
         <Input
           value={confirm}
           onChange={({ target: { value } }) => setConfirm(value)}
           placeholder="Confirm application name"
-          width="75%"
         />
       </Flex>
     </Keyboard>
@@ -149,8 +148,8 @@ export function InstallationConfiguration({ installation, open, setOpen }) {
       />,
     },
     uninstall: {
-      label: 'Delete',
-      content: <DeleteInstallation
+      label: 'Uninstall',
+      content: <UninstallApp
         installation={installation}
         deleteMutation={deleteMutation}
         deleteError={deleteError}
@@ -162,7 +161,7 @@ export function InstallationConfiguration({ installation, open, setOpen }) {
         submit={confirm !== installation.repository.name ? null : deleteMutation}
         loading={deleteLoading}
         destructive
-        action="Delete installation"
+        action={`Uninstall ${installation.repository.name}`}
       />,
     },
   }

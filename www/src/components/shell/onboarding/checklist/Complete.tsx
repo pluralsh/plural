@@ -6,12 +6,8 @@ import { GitHubLogoIcon, SourcererIcon } from 'pluralsh-design-system'
 
 import { OnboardingChecklistState } from '../../../../generated/graphql'
 import { UPDATE_ONBOARDING_CHECKLIST } from '../../../users/queries'
-import { ONBOARDING_CHECKLIST_STATE } from '../../constants'
-import {
-  clearOnboardingChecklistState, isOnboardingChecklistHidden, setOnboardingChecklistState, shouldOnboardingChecklistReappear,
-} from '../../persistance'
 
-export function ChecklistComplete({ refetch, setDismiss }) {
+export function ChecklistComplete({ refetch }) {
   const [updateChecklist, { loading }] = useMutation(UPDATE_ONBOARDING_CHECKLIST)
 
   return (
@@ -81,32 +77,16 @@ export function ChecklistComplete({ refetch, setDismiss }) {
         <Button
           small
           loading={loading}
-          onClick={() => {
-            if (!shouldOnboardingChecklistReappear() && !isOnboardingChecklistHidden()) {
-              setOnboardingChecklistState(ONBOARDING_CHECKLIST_STATE.HIDDEN)
-              setDismiss(true)
-
-              return
-            }
-
-            if (!shouldOnboardingChecklistReappear()) {
-              return
-            }
-
-            updateChecklist({
-              variables: {
-                attributes: {
-                  onboardingChecklist: {
-                    dismissed: true,
-                  },
+          onClick={() => updateChecklist({
+            variables: {
+              attributes: {
+                onboardingChecklist: {
+                  dismissed: true,
                 },
               },
-              onCompleted: () => {
-                refetch()
-                clearOnboardingChecklistState()
-              },
-            })
-          }}
+            },
+            onCompleted: refetch,
+          })}
         >Complete
         </Button>
       </Flex>

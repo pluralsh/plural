@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { OnboardingChecklistState, OnboardingState, User } from '../../../../generated/graphql'
 import { ONBOARDING_STATUS, UPDATE_ONBOARDING_CHECKLIST } from '../../../users/queries'
-import { clearOnboardingChecklistState, isOnboardingChecklistHidden } from '../../persistance'
+import { isOnboardingChecklistHidden } from '../../persistance'
 
 import { ChecklistComplete } from './Complete'
 import { ChecklistFooter } from './Footer'
@@ -30,7 +30,7 @@ export function OnboardingChecklist() {
   const [selected, setSelected] = useState<number>(0)
   const [focused, setFocused] = useState<number>(-1)
   const [open, setOpen] = useState<boolean>(true)
-  const [dismiss, setDismiss] = useState(isOnboardingChecklistHidden())
+  const [dismiss, setDismiss] = useState(false)
   const [visible, setVisible] = useState(false)
 
   // GraphQL
@@ -68,10 +68,12 @@ export function OnboardingChecklist() {
   }, [setCompleted, setSelected, setStatus, setDismiss, data])
 
   // This is a small workaround to not show the checklist closing animation
-  // on every page refresh to the users that already finished it and still be able to
+  // on every page refresh to the users that already finished/dismissed it and still be able to
   // see dismiss animation.
   useEffect(() => {
-    if (data) {
+    if (!data?.me?.onboardingChecklist?.dismissed
+      && data?.me?.onboardingChecklist?.status !== OnboardingChecklistState.Finished
+      && data?.me?.onboarding !== OnboardingState.New) {
       setTimeout(() => setVisible(true), 1000)
     }
   }, [data])
@@ -128,10 +130,7 @@ export function OnboardingChecklist() {
           />
         )}
         completeChildren={(
-          <ChecklistComplete
-            refetch={refetch}
-            setDismiss={setDismiss}
-          />
+          <ChecklistComplete refetch={refetch} />
         )}
       >
         <ChecklistItem title="Setup on your own cloud">

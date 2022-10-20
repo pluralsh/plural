@@ -101,7 +101,6 @@ export default function Invite() {
   const [mutation, { loading, error }] = useMutation(SIGNUP, {
     variables: { inviteId, attributes },
     onCompleted: ({ signup: { jwt } }) => {
-      console.log(jwt)
       setToken(jwt)
       window.location = '/'
     },

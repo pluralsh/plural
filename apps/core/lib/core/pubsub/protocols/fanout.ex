@@ -104,14 +104,17 @@ end
 
 defimpl Core.PubSub.Fanout, for: Core.PubSub.InstallationCreated do
   alias Core.Schema.{Repository, User}
-  alias Core.Services.Users
+  alias Core.Services.{Users, Shell.Demo}
 
   @console_deps ~w(console monitoring bootstrap postgres ingress-nginx)
 
   def fanout(%{item: inst, actor: user}) do
     inst = Core.Repo.preload(inst, [:repository])
 
-    handle(inst.repository, user)
+    case Demo.get_by_user_id(user.id) do
+      nil -> handle(inst.repository, user)
+      _ -> :ok
+    end
   end
 
   defp handle(%Repository{name: "console"}, %User{onboarding_checklist: %User.OnboardingChecklist{status: :finished}}), do: :ok
@@ -126,9 +129,14 @@ end
 
 defimpl Core.PubSub.Fanout, for: Core.PubSub.PersistedTokenCreated do
   alias Core.{Schema.User, Services.Users}
+  alias Core.Services.Shell.Demo
 
-  def fanout(%{actor: %User{onboarding_checklist: %User.OnboardingChecklist{status: :new}} = user}),
-    do: Users.update_user(%{onboarding_checklist: %{status: :configured}}, user)
+  def fanout(%{actor: %User{onboarding_checklist: %User.OnboardingChecklist{status: :new}} = user}) do
+    case Demo.get_by_user_id(user.id) do
+      nil -> Users.update_user(%{onboarding_checklist: %{status: :configured}}, user)
+      _ -> :ok
+    end
+  end
   def fanout(_), do: :ok
 end
 

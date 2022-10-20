@@ -27,6 +27,15 @@ defmodule Core.PubSub.Fanout.InstallationsTest do
       assert update.onboarding_checklist.status == :console_installed
     end
 
+    test "it will ignore if a demo project is present" do
+      user = insert(:user, onboarding_checklist: %{status: :new})
+      inst = insert(:installation, repository: build(:repository, name: "console"))
+      insert(:demo_project, user: user)
+
+      event = %PubSub.InstallationCreated{item: inst, actor: user}
+      :ok = PubSub.Fanout.fanout(event)
+    end
+
     test "it will ignore console when finished" do
       user = insert(:user, onboarding_checklist: %{status: :finished})
       inst = insert(:installation, repository: build(:repository, name: "console"))

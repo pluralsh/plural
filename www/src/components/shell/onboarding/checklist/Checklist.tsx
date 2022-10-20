@@ -3,13 +3,12 @@ import { A, Flex, Span } from 'honorable'
 import {
   Button, Checklist, ChecklistItem, ChecklistStateProps, DownloadIcon, MarketIcon, TerminalIcon, Toast,
 } from 'pluralsh-design-system'
-import {
-  useCallback, useEffect, useRef, useState,
-} from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { OnboardingChecklistState, OnboardingState, User } from '../../../../generated/graphql'
 import { ONBOARDING_STATUS, UPDATE_ONBOARDING_CHECKLIST } from '../../../users/queries'
+import { clearOnboardingChecklistState, isOnboardingChecklistHidden } from '../../persistance'
 
 import { ChecklistComplete } from './Complete'
 import { ChecklistFooter } from './Footer'
@@ -31,7 +30,7 @@ export function OnboardingChecklist() {
   const [selected, setSelected] = useState<number>(0)
   const [focused, setFocused] = useState<number>(-1)
   const [open, setOpen] = useState<boolean>(true)
-  const [dismiss, setDismiss] = useState(false)
+  const [dismiss, setDismiss] = useState(isOnboardingChecklistHidden())
   const [visible, setVisible] = useState(false)
 
   // GraphQL
@@ -60,7 +59,7 @@ export function OnboardingChecklist() {
     const status = user?.onboardingChecklist?.status || OnboardingChecklistState.New
     const completed = statusToIndex(status) - 1
     const selected = completed > -1 ? completed + 1 : 0
-    const dismissed = user?.onboardingChecklist?.dismissed || (user?.onboarding === OnboardingState.New) || false
+    const dismissed = isOnboardingChecklistHidden() || user?.onboardingChecklist?.dismissed || (user?.onboarding === OnboardingState.New) || false
 
     setCompleted(completed)
     setSelected(selected)
@@ -122,8 +121,18 @@ export function OnboardingChecklist() {
       <Checklist
         label="Getting Started"
         stateProps={checklistStateProps}
-        footerChildren={<ChecklistFooter refetch={refetch} />}
-        completeChildren={<ChecklistComplete refetch={refetch} />}
+        footerChildren={(
+          <ChecklistFooter
+            refetch={refetch}
+            setDismiss={setDismiss}
+          />
+        )}
+        completeChildren={(
+          <ChecklistComplete
+            refetch={refetch}
+            setDismiss={setDismiss}
+          />
+        )}
       >
         <ChecklistItem title="Setup on your own cloud">
           <Flex

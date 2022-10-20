@@ -2,8 +2,12 @@ import { useMutation } from '@apollo/client'
 import { Button, Flex } from 'honorable'
 
 import { UPDATE_ONBOARDING_CHECKLIST } from '../../../users/queries'
+import { ONBOARDING_CHECKLIST_STATE } from '../../constants'
+import {
+  clearOnboardingChecklistState, isOnboardingChecklistHidden, setOnboardingChecklistState, shouldOnboardingChecklistReappear,
+} from '../../persistance'
 
-export function ChecklistFooter({ refetch }) {
+export function ChecklistFooter({ refetch, setDismiss }) {
   const [updateChecklist, { loading }] = useMutation(UPDATE_ONBOARDING_CHECKLIST)
 
   return (
@@ -47,16 +51,32 @@ export function ChecklistFooter({ refetch }) {
         tertiary
         padding="none"
         loading={loading}
-        onClick={() => updateChecklist({
-          variables: {
-            attributes: {
-              onboardingChecklist: {
-                dismissed: true,
+        onClick={() => {
+          if (!shouldOnboardingChecklistReappear() && !isOnboardingChecklistHidden()) {
+            setOnboardingChecklistState(ONBOARDING_CHECKLIST_STATE.HIDDEN)
+            setDismiss(true)
+
+            return
+          }
+
+          if (!shouldOnboardingChecklistReappear()) {
+            return
+          }
+
+          updateChecklist({
+            variables: {
+              attributes: {
+                onboardingChecklist: {
+                  dismissed: true,
+                },
               },
             },
-          },
-          onCompleted: refetch,
-        })}
+            onCompleted: () => {
+              refetch()
+              clearOnboardingChecklistState()
+            },
+          })
+        }}
       >Dismiss
       </Button>
     </Flex>

@@ -94,9 +94,9 @@ defmodule Core.Schema.CloudShell do
     alias Core.Schema.CloudShell
 
     embedded_schema do
-      embeds_one :aws, CloudShell.AWS
-      embeds_one :gcp, CloudShell.GCP
-      embeds_one :azure, CloudShell.Azure
+      embeds_one :aws, CloudShell.AWS, on_replace: :update
+      embeds_one :gcp, CloudShell.GCP, on_replace: :update
+      embeds_one :azure, CloudShell.Azure, on_replace: :update
     end
 
     def changeset(model, attrs \\ %{}) do
@@ -130,9 +130,9 @@ defmodule Core.Schema.CloudShell do
     field :ssh_private_key, EncryptedString
     field :bucket_prefix,   :string
 
-    embeds_one :git_info,    GitInfo
-    embeds_one :workspace,   Workspace
-    embeds_one :credentials, Credentials
+    embeds_one :git_info,    GitInfo, on_replace: :update
+    embeds_one :workspace,   Workspace, on_replace: :update
+    embeds_one :credentials, Credentials, on_replace: :update
 
     belongs_to :user, User
     belongs_to :demo, DemoProject

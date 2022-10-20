@@ -217,6 +217,7 @@ defmodule Core.Services.Users do
     %PersistedToken{}
     |> PersistedToken.changeset(%{user_id: user.id})
     |> Core.Repo.insert()
+    |> notify(:create, user)
   end
 
   @doc "self explanatory"
@@ -255,6 +256,7 @@ defmodule Core.Services.Users do
       confirm_by = Timex.now() |> Timex.shift(days: 7)
       %User{email_confirm_by: confirm_by}
       |> User.changeset(attrs)
+      |> User.changeset(%{onboarding_checklist: %{status: :new}})
       |> Core.Repo.insert()
     end)
     |> add_operation(:user, fn %{pre: user} ->
@@ -608,6 +610,8 @@ defmodule Core.Services.Users do
     do: handle_notify(PubSub.UserDeleted, u, actor: actor)
   def notify({:ok, %User{} = u}, :update, actor),
     do: handle_notify(PubSub.UserUpdated, u, actor: actor)
+  def notify({:ok, %PersistedToken{} = p}, :create, actor),
+    do: handle_notify(PubSub.PersistedTokenCreated, p, actor: actor)
   def notify(pass, _, _), do: pass
 
   def notify({:ok, %ResetToken{} = t}, :create),

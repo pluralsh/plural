@@ -13,20 +13,27 @@ defmodule GraphQl.Schema.User do
   ecto_enum :login_method, Schema.User.LoginMethod
   ecto_enum :user_event_status, Schema.UserEvent.Status
   ecto_enum :onboarding_state, Schema.User.OnboardingStatus
+  ecto_enum :onboarding_checklist_state, Schema.User.OnboardingChecklistStatus
 
   input_object :user_attributes do
-    field :name,         :string
-    field :email,        :string
-    field :password,     :string
-    field :avatar,       :upload_or_url
-    field :onboarding,   :onboarding_state
-    field :login_method, :login_method
-    field :roles,        :roles_attributes
-    field :confirm,      :string
+    field :name,                 :string
+    field :email,                :string
+    field :password,             :string
+    field :avatar,               :upload_or_url
+    field :onboarding,           :onboarding_state
+    field :onboarding_checklist, :onboarding_checklist_attributes
+    field :login_method,         :login_method
+    field :roles,                :roles_attributes
+    field :confirm,              :string
   end
 
   input_object :roles_attributes do
     field :admin, :boolean
+  end
+
+  input_object :onboarding_checklist_attributes do
+    field :status,    :onboarding_checklist_state
+    field :dismissed, :boolean
   end
 
   input_object :publisher_attributes do
@@ -72,19 +79,20 @@ defmodule GraphQl.Schema.User do
   end
 
   object :user do
-    field :id,               non_null(:id)
-    field :name,             non_null(:string)
-    field :email,            non_null(:string)
-    field :phone,            :string
-    field :address,          :address
-    field :login_method,     :login_method
-    field :onboarding,       :onboarding_state
-    field :default_queue_id, :id
-    field :service_account,  :boolean
-    field :email_confirmed,  :boolean
-    field :email_confirm_by, :datetime
-    field :provider,         :provider
-    field :roles,            :roles
+    field :id,                   non_null(:id)
+    field :name,                 non_null(:string)
+    field :email,                non_null(:string)
+    field :phone,                :string
+    field :address,              :address
+    field :login_method,         :login_method
+    field :onboarding,           :onboarding_state
+    field :onboarding_checklist, :onboarding_checklist
+    field :default_queue_id,     :id
+    field :service_account,      :boolean
+    field :email_confirmed,      :boolean
+    field :email_confirm_by,     :datetime
+    field :provider,             :provider
+    field :roles,                :roles
 
     field :bound_roles,      list_of(:role), resolve: fn
       %{id: id}, _, %{context: %{current_user: %{id: id} = current_user}} -> {:ok, Core.Schema.User.roles(current_user)}
@@ -122,6 +130,11 @@ defmodule GraphQl.Schema.User do
 
   object :roles do
     field :admin, :boolean
+  end
+
+  object :onboarding_checklist do
+    field :status,    :onboarding_checklist_state
+    field :dismissed, :boolean
   end
 
   object :impersonation_policy do

@@ -15,6 +15,7 @@ defmodule Core.Services.UsersTest do
       assert user.name == "some user"
       assert user.email == "something@example.com"
       assert user.password_hash
+      assert user.onboarding_checklist.status == :new
       assert Timex.after?(user.email_confirm_by, Timex.now())
 
       %{account: account} = Core.Repo.preload(user, [:account])
@@ -83,6 +84,23 @@ defmodule Core.Services.UsersTest do
              |> insert()
 
       {:error, _} = Users.update_user(%{name: "real user", roles: %{admin: true}}, user)
+    end
+
+    test "users can update their onboarding checklist" do
+      onboarding_checklist = %{status: :new, dismissed: false}
+      {:ok, user} = Users.create_user(%{
+        name: "some user",
+        password: "superstrongpassword",
+        email: "something@example.com",
+        onboarding_checklist: onboarding_checklist
+      })
+
+      {:ok, updated} = Users.update_user(%{onboarding_checklist: %{status: :finished}}, user)
+
+      assert updated.onboarding_checklist.status == :finished
+      assert updated.onboarding_checklist.dismissed == onboarding_checklist.dismissed
+
+      assert_receive {:event, %PubSub.UserUpdated{item: ^updated}}
     end
   end
 

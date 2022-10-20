@@ -1,11 +1,18 @@
-import { Flex } from 'honorable'
+import { Div, Flex, Hr } from 'honorable'
 
-export default function OnboardingNavSection(props) {
+export default function OnboardingNavSection({ children, ...props }: any) {
   return (
-    <Flex
+    <Div
       marginTop="large"
-      justify="space-between"
       {...props}
-    />
+    >
+      <Hr />
+      <Flex
+        justify="space-between"
+        marginTop="large"
+      >
+        {children}
+      </Flex>
+    </Div>
   )
 }

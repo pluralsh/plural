@@ -29,6 +29,12 @@ defmodule Core.Schema.User do
     installed: 2,
     active: 3
 
+  defenum OnboardingChecklistStatus,
+    new: 0,
+    configured: 1,
+    console_installed: 2,
+    finished: 3
+
   schema "users" do
     field :name,            :string
     field :email,           :string
@@ -57,6 +63,11 @@ defmodule Core.Schema.User do
     embeds_one :address, Address, on_replace: :update
     embeds_one :roles, Roles, on_replace: :update do
       boolean_fields [:admin]
+    end
+
+    embeds_one :onboarding_checklist, OnboardingChecklist, on_replace: :update do
+      field :status,    OnboardingChecklistStatus, default: :new
+      field :dismissed, :boolean, default: false
     end
 
     belongs_to :account, Account
@@ -149,6 +160,7 @@ defmodule Core.Schema.User do
     |> base_changeset(attrs, mode)
     |> cast_embed(:address)
     |> cast_embed(:roles, with: &roles_changeset/2)
+    |> cast_embed(:onboarding_checklist, with: &onboarding_checklist_changeset/2)
   end
 
   def invite_changeset(model, attrs \\ %{}), do: base_changeset(model, attrs, :primary)
@@ -196,6 +208,11 @@ defmodule Core.Schema.User do
   def roles_changeset(model, attrs \\ %{}) do
     model
     |> cast(attrs, [:admin])
+  end
+
+  def onboarding_checklist_changeset(model, attrs \\ %{}) do
+    model
+    |> cast(attrs, [:status, :dismissed])
   end
 
   def service_account_changeset(model, attrs \\ %{}) do
@@ -246,7 +263,7 @@ defmodule Core.Schema.User do
 end
 
 defimpl Jason.Encoder, for: Core.Schema.User do
-  @ignore ~w(password password_hash jwt)a
+  @ignore ~w(password password_hash jwt onboarding_checklist)a
 
   def encode(struct, opts) do
     Piazza.Ecto.Schema.mapify(struct)

@@ -78,8 +78,11 @@ export function PluralProvider({ children }) {
   useNotificationSubscription()
 
   useEffect(() => {
-    if (!data || !data.me) return
-    boot({ name: data.me.name, email: data.me.email, user_id: data.me.id })
+    if (!data?.me) return
+    const { me } = data
+
+    boot({ name: me.name, email: me.email, user_id: me.id })
+    growthbook.setAttributes({ company: me.account.name, id: me.id, email: me.email })
   }, [data, boot])
 
   useEffect(() => {

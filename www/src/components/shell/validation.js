@@ -44,20 +44,39 @@ export function stringExists(val) {
 export function isAlphanumeric(val) {
   if (/^[a-zA-Z0-9-]+$/.test(val)) return null
 
-  return { message: "may contain only letters, numbers, or '-'", type: 'alpha-numeric' }
+  return {
+    message: "may contain only letters, numbers, or '-'",
+    type: 'alpha-numeric',
+  }
 }
 
 export function isValidGitlabName(val) {
   if (!/^[a-zA-Z0-9._-]+$/.test(val)) {
-    return { type: 'alpha-numeric', message: "can contain only letters, digits, '_', '-' and '.'" }
-  } if (/^[._-]/.test(val)) {
-    return { type: 'alpha-numeric', message: "cannot start with '-', '_' or '.'" }
-  } if (/[._-]$/.test(val)) {
+    return {
+      type: 'alpha-numeric',
+      message: "can contain only letters, digits, '_', '-' and '.'",
+    }
+  }
+  if (/^[._-]/.test(val)) {
+    return {
+      type: 'alpha-numeric',
+      message: "cannot start with '-', '_' or '.'",
+    }
+  }
+  if (/[._-]$/.test(val)) {
     return { type: 'alpha-numeric', message: "cannot end with '-', '_' or '.'" }
-  } if (/(.atom|.git)$/.test(val)) {
-    return { type: 'alpha-numeric', message: "cannot end in '.git' or end in '.atom'" }
-  } if (/[._-]{2}/.test(val)) {
-    return { type: 'alpha-numeric', message: 'cannot contain consecutive special characters' }
+  }
+  if (/(.atom|.git)$/.test(val)) {
+    return {
+      type: 'alpha-numeric',
+      message: "cannot end in '.git' or end in '.atom'",
+    }
+  }
+  if (/[._-]{2}/.test(val)) {
+    return {
+      type: 'alpha-numeric',
+      message: 'cannot contain consecutive special characters',
+    }
   }
 
   return null
@@ -68,6 +87,16 @@ export function isSubdomain(val) {
   if (/^[a-z][a-z0-9-]*$/.test(val)) return null
 
   return { type: 'subdomain', message: 'must be a valid subdomain' }
+}
+
+export function isUuid(val) {
+  if (
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(val)
+  ) {
+    return null
+  }
+
+  return { type: 'uuid', message: 'must be a valid UUID' }
 }
 
 export function getExceptions(validations, object) {

@@ -1,20 +1,28 @@
 import {
-  createElement, useCallback, useContext, useEffect, useRef, useState,
+  createElement,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
 } from 'react'
 import { Box, Drop } from 'grommet'
 import { MenuItem, Select } from 'honorable'
 import { Button, FormField } from 'pluralsh-design-system'
-
 import { persistProvider } from 'components/shell/persistance'
+import { providerToDisplayName } from 'components/utils/InstallDropdownButton'
+
+import { growthbook } from 'helpers/growthbook'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'
-
 import { CLOUDS } from '../../constants'
 import OnboardingNavSection from '../OnboardingNavSection'
 import { Exceptions } from '../../validation'
 import OnboardingCard from '../OnboardingCard'
 
 import { ProviderForms } from './provider'
+
+const FILTERED_CLOUDS = CLOUDS.filter(c => c !== 'AZURE')
 
 function CloudCredentials() {
   const {
@@ -39,9 +47,13 @@ function CloudCredentials() {
     persistProvider(provider)
   }, [provider])
 
+  const clouds = growthbook.isOn('azure-cloud-shell') ? CLOUDS : FILTERED_CLOUDS
+
   return (
-    <>
-      <OnboardingCard title="Configure cloud credentials">
+    <OnboardingCard title="Configure cloud credentials">
+      {/* Div wrapper needed for bottom padding show up
+        when content overflows */}
+      <div>
         <FormField
           width="100%"
           marginTop="large"
@@ -55,19 +67,22 @@ function CloudCredentials() {
             }}
             value={provider}
           >
-            {CLOUDS.map(cloud => (
+            {clouds.map(cloud => (
               <MenuItem
                 key={cloud}
                 value={cloud}
               >
-                {cloud}
+                {providerToDisplayName[cloud]}
               </MenuItem>
             ))}
           </Select>
         </FormField>
         <Box>
           {createElement(form, {
-            workspace, setWorkspace, credentials, setCredentials,
+            workspace,
+            setWorkspace,
+            credentials,
+            setCredentials,
           })}
         </Box>
         {open && (
@@ -80,8 +95,7 @@ function CloudCredentials() {
           </Drop>
         )}
         {exceptions && <Exceptions exceptions={exceptions} />}
-      </OnboardingCard>
-      {/* Navigation */}
+      </div>
       <OnboardingNavSection>
         <Button
           secondary
@@ -100,7 +114,7 @@ function CloudCredentials() {
           Continue
         </Button>
       </OnboardingNavSection>
-    </>
+    </OnboardingCard>
   )
 }
 

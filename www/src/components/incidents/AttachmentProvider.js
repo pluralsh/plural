@@ -31,7 +31,7 @@ export function Dropzone({ children, loaded }) {
       backgroundColor="fill-two"
       border="1px solid border-fill-two"
       borderRadius="medium"
-      borderColor={loaded ? 'action-link-inline' : 'border-fill-two'}
+      borderColor={loaded ? 'border-success' : 'border-fill-two'}
       {...(dragActive ? FILE_DROP_PROPS : {})}
     >
       {children}

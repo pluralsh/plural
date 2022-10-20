@@ -31,8 +31,8 @@ export function OnboardingChecklist() {
   const [selected, setSelected] = useState<number>(0)
   const [focused, setFocused] = useState<number>(-1)
   const [open, setOpen] = useState<boolean>(true)
-  const [dismiss, setDismiss] = useState(true)
-  const isFirstRender = useRef(true)
+  const [dismiss, setDismiss] = useState(false)
+  const [visible, setVisible] = useState(false)
 
   // GraphQL
   const { data, loading: statusLoading, refetch } = useQuery<{me: User}>(ONBOARDING_STATUS, { pollInterval: 60000 })
@@ -68,11 +68,14 @@ export function OnboardingChecklist() {
     setDismiss(dismissed)
   }, [setCompleted, setSelected, setStatus, setDismiss, data])
 
+  // This is a small workaround to not show the checklist closing animation
+  // on every page refresh to the users that already finished it and still be able to
+  // see dismiss animation.
   useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false
+    if (data) {
+      setTimeout(() => setVisible(true), 1000)
     }
-  })
+  }, [data])
 
   const completeButton = (
     <Button
@@ -93,8 +96,8 @@ export function OnboardingChecklist() {
     </Button>
   )
 
-  if (dismiss && isFirstRender.current) {
-    return null
+  if (!visible) {
+    return
   }
 
   return (

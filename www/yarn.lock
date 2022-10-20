@@ -5104,6 +5104,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tanstack/react-table@npm:8.5.13":
+  version: 8.5.13
+  resolution: "@tanstack/react-table@npm:8.5.13"
+  dependencies:
+    "@tanstack/table-core": 8.5.13
+  peerDependencies:
+    react: ">=16"
+    react-dom: ">=16"
+  checksum: 97f5947e1d5e12ac44e6cb9a88c5a3f4003b36e1accd16abf67abb84df2c0ec40bfc4bc882ab391024e1fadb35c8d2e17da277aaf004a23f5167a1e889a78b1c
+  languageName: node
+  linkType: hard
+
+"@tanstack/table-core@npm:8.5.13":
+  version: 8.5.13
+  resolution: "@tanstack/table-core@npm:8.5.13"
+  checksum: 980e3e547161cc21e681d9db4335e5a636bca63c68898e73ec475bca3043c4a8940f535a9d47df7728b9ae464598cc2cb4daccefa04a10539aace6fa4f369c71
+  languageName: node
+  linkType: hard
+
 "@testing-library/dom@npm:^8.5.0":
   version: 8.18.1
   resolution: "@testing-library/dom@npm:8.18.1"
@@ -17174,9 +17193,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pluralsh-design-system@npm:1.233.0":
-  version: 1.233.0
-  resolution: "pluralsh-design-system@npm:1.233.0"
+"pluralsh-design-system@npm:1.234.0":
+  version: 1.234.0
+  resolution: "pluralsh-design-system@npm:1.234.0"
   dependencies:
     "@floating-ui/react-dom-interactions": 0.8.1
     "@react-aria/button": 3.6.1
@@ -17193,6 +17212,7 @@ __metadata:
     "@react-stately/overlays": 3.4.1
     "@react-stately/tabs": 3.2.1
     "@react-types/shared": 3.14.1
+    "@tanstack/react-table": 8.5.13
     "@types/chroma-js": 2.1.4
     chroma-js: 2.4.2
     classnames: 2.3.2
@@ -17214,7 +17234,7 @@ __metadata:
     react-dom: ">=16.0.0"
     react-transition-group: ">=4.4.2"
     styled-components: ">=5.3.5"
-  checksum: 7aae8c5c64cd6bf23dd44f33bacaedaf10d53031d1abdc4de1565fd7b2fd0b0fd101a69ed33753ad535769081c4afd02efd9e8e90cb51c0d79cd23762c414e1a
+  checksum: 949e28b1db9fc926c9210ffb781ef106ac5123f036ffabb6110d784419c04ac261edd575a3b080aef27f235b37c2cd124d22bc28b544d47fb14f18acbaa527ca
   languageName: node
   linkType: hard
 
@@ -23624,7 +23644,7 @@ __metadata:
     moment: 2.29.4
     phoenix: 1.6.12
     pluralsh-absinthe-socket-apollo-link: 0.2.0
-    pluralsh-design-system: 1.233.0
+    pluralsh-design-system: 1.234.0
     postcss-import: 8.2.0
     prop-types: 15.8.1
     query-string: 7.1.1

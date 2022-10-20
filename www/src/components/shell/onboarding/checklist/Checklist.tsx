@@ -3,9 +3,12 @@ import { A, Flex, Span } from 'honorable'
 import {
   Button, Checklist, ChecklistItem, ChecklistStateProps, DownloadIcon, MarketIcon, TerminalIcon, Toast,
 } from 'pluralsh-design-system'
-import { useCallback, useEffect, useState } from 'react'
+import {
+  useCallback, useContext, useEffect, useMemo, useRef, useState,
+} from 'react'
 import { useNavigate } from 'react-router-dom'
 
+import { OnboardingChecklistContext } from '../../../../contexts/OnboardingChecklistContext'
 import { OnboardingChecklistState, OnboardingState, User } from '../../../../generated/graphql'
 import { ONBOARDING_STATUS, UPDATE_ONBOARDING_CHECKLIST } from '../../../users/queries'
 import { isOnboardingChecklistHidden } from '../../persistance'
@@ -23,6 +26,8 @@ function statusToIndex(status: OnboardingChecklistState) : number {
 
 export function OnboardingChecklist() {
   const navigate = useNavigate()
+  const { dismissed: dismissedFromContext, setDismissed: setDismissedFromContext } = useContext(OnboardingChecklistContext)
+  const prevDismissedRef = useRef(dismissedFromContext)
 
   // State
   const [status, setStatus] = useState<OnboardingChecklistState>(OnboardingChecklistState.New)
@@ -59,24 +64,34 @@ export function OnboardingChecklist() {
     const status = user?.onboardingChecklist?.status || OnboardingChecklistState.New
     const completed = statusToIndex(status) - 1
     const selected = completed > -1 ? completed + 1 : 0
-    const dismissed = isOnboardingChecklistHidden() || user?.onboardingChecklist?.dismissed || (user?.onboarding === OnboardingState.New) || false
+    const dismiss = isOnboardingChecklistHidden() || user?.onboardingChecklist?.dismissed || (user?.onboarding === OnboardingState.New) || false
 
     setCompleted(completed)
     setSelected(selected)
     setStatus(status)
-    setDismiss(dismissed)
-  }, [setCompleted, setSelected, setStatus, setDismiss, data])
+    setDismiss(dismiss)
+    setDismissedFromContext(dismiss)
+  }, [setCompleted, setSelected, setStatus, setDismiss, setDismissedFromContext, dismissedFromContext, data])
 
   // This is a small workaround to not show the checklist closing animation
   // on every page refresh to the users that already finished/dismissed it and still be able to
   // see dismiss animation.
   useEffect(() => {
     if (!data?.me?.onboardingChecklist?.dismissed
-      && data?.me?.onboardingChecklist?.status !== OnboardingChecklistState.Finished
+      && !isOnboardingChecklistHidden()
+      && !dismissedFromContext
       && data?.me?.onboarding !== OnboardingState.New) {
       setTimeout(() => setVisible(true), 1000)
     }
-  }, [data])
+  }, [data, dismissedFromContext])
+
+  useEffect(() => {
+    if (prevDismissedRef.current !== dismissedFromContext) {
+      refetch()
+    }
+
+    prevDismissedRef.current = dismissedFromContext
+  }, [dismissedFromContext, refetch])
 
   const completeButton = (
     <Button
@@ -205,5 +220,16 @@ export function OnboardingChecklist() {
         </ChecklistItem>
       </Checklist>
     </Flex>
+  )
+}
+
+export function ChecklistProvider({ children }) {
+  const [dismissed, setDismissed] = useState<boolean>(false)
+  const value = useMemo(() => ({ dismissed, setDismissed }), [dismissed, setDismissed])
+
+  return (
+    <OnboardingChecklistContext.Provider value={value}>
+      {children}
+    </OnboardingChecklistContext.Provider>
   )
 }

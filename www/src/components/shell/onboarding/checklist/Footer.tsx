@@ -1,5 +1,8 @@
 import { useMutation } from '@apollo/client'
 import { Button, Flex } from 'honorable'
+import { useContext } from 'react'
+
+import { OnboardingChecklistContext } from '../../../../contexts/OnboardingChecklistContext'
 
 import { UPDATE_ONBOARDING_CHECKLIST } from '../../../users/queries'
 import { ONBOARDING_CHECKLIST_STATE } from '../../constants'
@@ -9,6 +12,7 @@ import {
 
 export function ChecklistFooter({ refetch, setDismiss }) {
   const [updateChecklist, { loading }] = useMutation(UPDATE_ONBOARDING_CHECKLIST)
+  const { setDismissed } = useContext(OnboardingChecklistContext)
 
   return (
     <Flex
@@ -52,6 +56,8 @@ export function ChecklistFooter({ refetch, setDismiss }) {
         padding="none"
         loading={loading}
         onClick={() => {
+          setDismissed(true)
+
           if (!shouldOnboardingChecklistReappear() && !isOnboardingChecklistHidden()) {
             setOnboardingChecklistState(ONBOARDING_CHECKLIST_STATE.HIDDEN)
             setDismiss(true)

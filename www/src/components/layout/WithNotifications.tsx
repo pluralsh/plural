@@ -1,15 +1,20 @@
+import { useMutation, useQuery } from '@apollo/client'
+import {
+  Notification as NotificationT, NotificationType, OnboardingChecklistState, User,
+} from 'generated/graphql'
 import { Div, Flex, P } from 'honorable'
 import moment from 'moment'
-import { useTheme } from 'styled-components'
 import {
-  Notification as NotificationT,
-  NotificationType,
-} from 'generated/graphql'
-import { AppIcon, Card, Markdown } from 'pluralsh-design-system'
+  AppIcon, Button, Card, Markdown,
+} from 'pluralsh-design-system'
+import { ReactElement, useCallback, useContext } from 'react'
 import { Link } from 'react-router-dom'
-import { ReactElement } from 'react'
+import { useTheme } from 'styled-components'
 
+import { OnboardingChecklistContext } from '../../contexts/OnboardingChecklistContext'
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
+import { clearOnboardingChecklistState, isOnboardingChecklistHidden } from '../shell/persistance'
+import { ONBOARDING_STATUS, UPDATE_ONBOARDING_CHECKLIST } from '../users/queries'
 import InfiniteScroller from '../utils/InfiniteScroller'
 
 import { NOTIFICATIONS_QUERY } from './queries'
@@ -42,27 +47,97 @@ export function NotificationsPanel({ closePanel }) {
     { variables: {} },
     data => data.notifications)
 
+  const { data } = useQuery<{me: User}>(ONBOARDING_STATUS)
+  const showOnboardingNotification = useCallback(() => (data?.me?.onboardingChecklist?.dismissed || isOnboardingChecklistHidden()) && data?.me?.onboardingChecklist?.status !== OnboardingChecklistState.Finished, [data])
+
+  if (showOnboardingNotification() && !notifications.length) {
+    return <OnboardingChecklistNotification closePanel={closePanel} />
+  }
+
   if (!notifications.length) {
     return <P padding="medium">You do not have any notifications yet.</P>
   }
 
   return (
-    <InfiniteScroller
-      loading={loadingNotifications}
-      hasMore={hasMoreNotifications}
-      loadMore={fetchMoreNotifications}
-      // Allow for scrolling in a flexbox layout
+    <Flex
       flexGrow={1}
-      height={0}
+      direction="column"
     >
-      {notifications.map(notification => (
-        <Notification
-          key={notification.id}
-          notification={notification}
-          closePanel={closePanel}
-        />
-      ))}
-    </InfiniteScroller>
+      {showOnboardingNotification() && (
+        <OnboardingChecklistNotification closePanel={closePanel} />
+      )}
+      <InfiniteScroller
+        loading={loadingNotifications}
+        hasMore={hasMoreNotifications}
+        loadMore={fetchMoreNotifications}
+      // Allow for scrolling in a flexbox layout
+        flexGrow={1}
+        height={0}
+      >
+        {notifications.map(notification => (
+          <Notification
+            key={notification.id}
+            notification={notification}
+            closePanel={closePanel}
+          />
+        ))}
+      </InfiniteScroller>
+    </Flex>
+  )
+}
+
+function OnboardingChecklistNotification({ closePanel }) {
+  const { setDismissed } = useContext(OnboardingChecklistContext)
+  const [updateChecklist, { loading }] = useMutation(UPDATE_ONBOARDING_CHECKLIST)
+
+  return (
+    <Flex
+      justify="space-between"
+      padding="medium"
+      borderTop="1px solid border-fill-two"
+      borderBottom="1px solid border-fill-two"
+    >
+      <Flex
+        direction="column"
+        gap="xxsmall"
+        height={40}
+      >
+        <P
+          body2
+          bold
+        >Get started
+        </P>
+        <P
+          caption
+          color="text-light"
+        >Get started with our quick start guide.
+        </P>
+      </Flex>
+      <Flex alignItems="center">
+        <Button
+          secondary
+          small
+          loading={loading}
+          onClick={() => {
+            updateChecklist({
+              variables: {
+                attributes: {
+                  onboardingChecklist: {
+                    dismissed: false,
+                  },
+                },
+              },
+              onCompleted: () => {
+                clearOnboardingChecklistState()
+                closePanel()
+                setDismissed(false)
+              },
+            })
+          }}
+        >Open Guide
+        </Button>
+      </Flex>
+    </Flex>
   )
 }
 

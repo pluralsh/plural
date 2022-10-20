@@ -3,11 +3,9 @@ import {
   Navigate, Route, Routes, useMatch,
 } from 'react-router-dom'
 import { StripeProvider } from 'react-stripe-elements'
-
 import { Toast } from 'pluralsh-design-system'
 
 import { growthbook } from '../helpers/growthbook'
-
 import { useHistory } from '../router'
 
 import ApplicationLayout from './layout/ApplicationLayout'
@@ -65,7 +63,7 @@ import ImageVulnerabilities from './repos/common/ImageVulnerabilities'
 import Publisher from './publisher/Publisher'
 import StackApps from './stack/StackApps'
 import Stack from './stack/Stack'
-import { OnboardingChecklist } from './shell/onboarding/checklist/Checklist'
+import { ChecklistProvider, OnboardingChecklist } from './shell/onboarding/checklist/Checklist'
 
 function EditBilling(props) {
   return (
@@ -137,308 +135,310 @@ export function PluralInner() {
   return (
     <WrapStripe>
       <BreadcrumbProvider>
-        <ApplicationLayout>
-          <VerifyEmailConfirmed />
-          <DeviceLoginNotif />
-          <TestBanner />
-          <OnboardingChecklist />
-          <Routes>
-            {/* --- OAUTH --- */}
-            <Route
-              path="/oauth/accept/:service"
-              element={<OauthCreator />}
-            />
-            {/* --- APPLICATIONS --- */}
-            <Route
-              path="/marketplace"
-              element={<Marketplace />}
-            />
-            <Route
-              path="/installed"
-              element={<Marketplace installed />}
-            />
-            {/* --- REPOSITORIES --- */}
-            <Route
-              path="/repositories/:id/integrations"
-              element={<IntegrationPage />}
-            />
-            {/* --- PROFILE --- */}
-            <Route
-              path="/profile"
-              element={<MyProfile />}
-            >
+        <ChecklistProvider>
+          <ApplicationLayout>
+            <VerifyEmailConfirmed />
+            <DeviceLoginNotif />
+            <TestBanner />
+            <OnboardingChecklist />
+            <Routes>
+              {/* --- OAUTH --- */}
               <Route
-                index
-                element={(
-                  <Navigate
-                    replace
-                    to="me"
-                  />
-                )}
+                path="/oauth/accept/:service"
+                element={<OauthCreator />}
+              />
+              {/* --- APPLICATIONS --- */}
+              <Route
+                path="/marketplace"
+                element={<Marketplace />}
               />
               <Route
-                path="me"
-                element={<Profile />}
+                path="/installed"
+                element={<Marketplace installed />}
               />
+              {/* --- REPOSITORIES --- */}
               <Route
-                path="security"
-                element={<Security />}
+                path="/repositories/:id/integrations"
+                element={<IntegrationPage />}
               />
+              {/* --- PROFILE --- */}
               <Route
-                path="tokens"
-                element={<AccessTokens />}
-              />
-              <Route
-                path="keys"
-                element={<PublicKeys />}
-              />
-              <Route
-                path="eab"
-                element={<EabCredentials />}
-              />
-            </Route>
-            {/* --- REPOSITORY --- */}
-            <Route
-              path="/repository/:id"
-              element={<Repository />}
-            >
-              <Route
-                index
-                element={<RepositoryDescription />}
-              />
-              <Route
-                path="packages"
-                element={<RepositoryPackages />}
+                path="/profile"
+                element={<MyProfile />}
               >
                 <Route
                   index
                   element={(
                     <Navigate
                       replace
-                      to="helm"
+                      to="me"
                     />
                   )}
                 />
                 <Route
-                  path="helm"
-                  element={<RepositoryPackagesHelm />}
+                  path="me"
+                  element={<Profile />}
                 />
                 <Route
-                  path="terraform"
-                  element={<RepositoryPackagesTerraform />}
+                  path="security"
+                  element={<Security />}
                 />
                 <Route
-                  path="docker"
-                  element={<RepositoryPackagesDocker />}
+                  path="tokens"
+                  element={<AccessTokens />}
+                />
+                <Route
+                  path="keys"
+                  element={<PublicKeys />}
+                />
+                <Route
+                  path="eab"
+                  element={<EabCredentials />}
+                />
+              </Route>
+              {/* --- REPOSITORY --- */}
+              <Route
+                path="/repository/:id"
+                element={<Repository />}
+              >
+                <Route
+                  index
+                  element={<RepositoryDescription />}
+                />
+                <Route
+                  path="packages"
+                  element={<RepositoryPackages />}
+                >
+                  <Route
+                    index
+                    element={(
+                      <Navigate
+                        replace
+                        to="helm"
+                      />
+                    )}
+                  />
+                  <Route
+                    path="helm"
+                    element={<RepositoryPackagesHelm />}
+                  />
+                  <Route
+                    path="terraform"
+                    element={<RepositoryPackagesTerraform />}
+                  />
+                  <Route
+                    path="docker"
+                    element={<RepositoryPackagesDocker />}
+                  />
+                </Route>
+                <Route
+                  path="oidc"
+                  element={<OIDCProvider />}
+                />
+                <Route
+                  path="tests"
+                  element={<RepositoryTests />}
+                />
+                <Route
+                  path="deployments"
+                  element={<RepositoryDeployments />}
+                />
+                <Route
+                  path="artifacts"
+                  element={<RepositoryArtifacts />}
+                />
+                <Route
+                  path="edit"
+                  element={<RepositoryEdit />}
+                />
+              </Route>
+              {/* --- STACK --- */}
+              <Route
+                path="/stack/:name"
+                element={<Stack />}
+              >
+                <Route
+                  index
+                  element={<StackApps />}
+                />
+              </Route>
+              {/* --- HELM CHARTS --- */}
+              <Route
+                path="/charts/:chartId"
+                element={<Chart />}
+              >
+                <Route
+                  index
+                  element={<PackageReadme />}
+                />
+                <Route
+                  path="configuration"
+                  element={<PackageConfiguration />}
+                />
+                <Route
+                  path="dependencies"
+                  element={<PackageDependencies />}
+                />
+                <Route
+                  path="security"
+                  element={<PackageSecurity />}
+                />
+                <Route
+                  path="updatequeue"
+                  element={<PackageUpdateQueue />}
+                />
+              </Route>
+              {/* --- TERRAFORM CHARTS --- */}
+              <Route
+                path="/terraform/:tfId"
+                element={<Terraform />}
+              >
+                <Route
+                  index
+                  element={<PackageReadme />}
+                />
+                <Route
+                  path="configuration"
+                  element={<PackageConfiguration />}
+                />
+                <Route
+                  path="dependencies"
+                  element={<PackageDependencies />}
+                />
+                <Route
+                  path="security"
+                  element={<PackageSecurity />}
+                />
+                <Route
+                  path="updatequeue"
+                  element={<PackageUpdateQueue />}
+                />
+              </Route>
+              {/* --- DOCKER --- */}
+              <Route
+                path="/dkr/repo/:id"
+                element={<DockerRepository />}
+              />
+              <Route
+                path="/dkr/img/:id"
+                element={<Docker />}
+              >
+                <Route
+                  index
+                  element={<ImagePullMetrics />}
+                />
+                <Route
+                  path="vulnerabilities"
+                  element={<ImageVulnerabilities />}
+                />
+              </Route>
+              {/* --- SHELL --- */}
+              <Route
+                path="/shell"
+                element={<CloudShell />}
+              />
+              {/* --- ACCOUNT --- */}
+              <Route
+                path="/account/edit/:section/*"
+                element={<EditAccount />}
+              />
+              <Route
+                exact
+                path="/account"
+                element={<Account />}
+              >
+                <Route
+                  index
+                  element={(
+                    <Navigate
+                      replace
+                      to="edit"
+                    />
+                  )}
+                />
+                <Route
+                  path="edit"
+                  element={<AccountAttributes />}
+                />
+                <Route
+                  path="users"
+                  element={<Users />}
+                />
+                <Route
+                  path="groups"
+                  element={<Groups />}
+                />
+                <Route
+                  path="service-accounts"
+                  element={<ServiceAccounts />}
+                />
+                <Route
+                  path="roles"
+                  element={<Roles />}
+                />
+                <Route
+                  path="domains"
+                  element={<Domains />}
                 />
               </Route>
               <Route
-                path="oidc"
-                element={<OIDCProvider />}
+                path="/account/billing/:section"
+                element={<EditBilling />}
               />
               <Route
-                path="tests"
-                element={<RepositoryTests />}
+                path="/audits"
+                element={<AuditDirectory />}
+              >
+                <Route
+                  index
+                  element={(
+                    <Navigate
+                      replace
+                      to="logs"
+                    />
+                  )}
+                />
+                <Route
+                  path="logs"
+                  element={<Audits />}
+                />
+                <Route
+                  path="logins"
+                  element={<LoginAudits />}
+                />
+                <Route
+                  path="geo"
+                  element={<AuditChloropleth />}
+                />
+              </Route>
+              {/* --- PUBLISHER --- */}
+              <Route
+                path="/publisher/:id"
+                element={<Publisher />}
+              />
+              {/* --- UPGRADES --- */}
+              <Route
+                path="/upgrades/:id"
+                element={<UpgradeQueue />}
               />
               <Route
-                path="deployments"
-                element={<RepositoryDeployments />}
+                path="/upgrades"
+                element={<UpgradeQueues />}
               />
               <Route
-                path="artifacts"
-                element={<RepositoryArtifacts />}
+                path="/clusters"
+                element={<Clusters />}
               />
+              {/* --- 404 --- */}
               <Route
-                path="edit"
-                element={<RepositoryEdit />}
-              />
-            </Route>
-            {/* --- STACK --- */}
-            <Route
-              path="/stack/:name"
-              element={<Stack />}
-            >
-              <Route
-                index
-                element={<StackApps />}
-              />
-            </Route>
-            {/* --- HELM CHARTS --- */}
-            <Route
-              path="/charts/:chartId"
-              element={<Chart />}
-            >
-              <Route
-                index
-                element={<PackageReadme />}
-              />
-              <Route
-                path="configuration"
-                element={<PackageConfiguration />}
-              />
-              <Route
-                path="dependencies"
-                element={<PackageDependencies />}
-              />
-              <Route
-                path="security"
-                element={<PackageSecurity />}
-              />
-              <Route
-                path="updatequeue"
-                element={<PackageUpdateQueue />}
-              />
-            </Route>
-            {/* --- TERRAFORM CHARTS --- */}
-            <Route
-              path="/terraform/:tfId"
-              element={<Terraform />}
-            >
-              <Route
-                index
-                element={<PackageReadme />}
-              />
-              <Route
-                path="configuration"
-                element={<PackageConfiguration />}
-              />
-              <Route
-                path="dependencies"
-                element={<PackageDependencies />}
-              />
-              <Route
-                path="security"
-                element={<PackageSecurity />}
-              />
-              <Route
-                path="updatequeue"
-                element={<PackageUpdateQueue />}
-              />
-            </Route>
-            {/* --- DOCKER --- */}
-            <Route
-              path="/dkr/repo/:id"
-              element={<DockerRepository />}
-            />
-            <Route
-              path="/dkr/img/:id"
-              element={<Docker />}
-            >
-              <Route
-                index
-                element={<ImagePullMetrics />}
-              />
-              <Route
-                path="vulnerabilities"
-                element={<ImageVulnerabilities />}
-              />
-            </Route>
-            {/* --- SHELL --- */}
-            <Route
-              path="/shell"
-              element={<CloudShell />}
-            />
-            {/* --- ACCOUNT --- */}
-            <Route
-              path="/account/edit/:section/*"
-              element={<EditAccount />}
-            />
-            <Route
-              exact
-              path="/account"
-              element={<Account />}
-            >
-              <Route
-                index
+                path="/*"
                 element={(
-                  <Navigate
-                    replace
-                    to="edit"
-                  />
+                  <OAuthOrFallback />
                 )}
               />
-              <Route
-                path="edit"
-                element={<AccountAttributes />}
-              />
-              <Route
-                path="users"
-                element={<Users />}
-              />
-              <Route
-                path="groups"
-                element={<Groups />}
-              />
-              <Route
-                path="service-accounts"
-                element={<ServiceAccounts />}
-              />
-              <Route
-                path="roles"
-                element={<Roles />}
-              />
-              <Route
-                path="domains"
-                element={<Domains />}
-              />
-            </Route>
-            <Route
-              path="/account/billing/:section"
-              element={<EditBilling />}
-            />
-            <Route
-              path="/audits"
-              element={<AuditDirectory />}
-            >
-              <Route
-                index
-                element={(
-                  <Navigate
-                    replace
-                    to="logs"
-                  />
-                )}
-              />
-              <Route
-                path="logs"
-                element={<Audits />}
-              />
-              <Route
-                path="logins"
-                element={<LoginAudits />}
-              />
-              <Route
-                path="geo"
-                element={<AuditChloropleth />}
-              />
-            </Route>
-            {/* --- PUBLISHER --- */}
-            <Route
-              path="/publisher/:id"
-              element={<Publisher />}
-            />
-            {/* --- UPGRADES --- */}
-            <Route
-              path="/upgrades/:id"
-              element={<UpgradeQueue />}
-            />
-            <Route
-              path="/upgrades"
-              element={<UpgradeQueues />}
-            />
-            <Route
-              path="/clusters"
-              element={<Clusters />}
-            />
-            {/* --- 404 --- */}
-            <Route
-              path="/*"
-              element={(
-                <OAuthOrFallback />
-              )}
-            />
-          </Routes>
-        </ApplicationLayout>
+            </Routes>
+          </ApplicationLayout>
+        </ChecklistProvider>
       </BreadcrumbProvider>
     </WrapStripe>
   )

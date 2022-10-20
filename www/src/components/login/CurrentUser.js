@@ -72,8 +72,7 @@ export function handlePreviousUserClick({ jwt }) {
 
 export function PluralProvider({ children }) {
   const location = useLocation()
-  // TODO: Revert to 60s
-  const { loading, error, data } = useQuery(ME_Q, { pollInterval: 5000 })
+  const { loading, error, data } = useQuery(ME_Q, { pollInterval: 60000 })
   const { boot, update } = useIntercom()
 
   useNotificationSubscription()

@@ -23,6 +23,7 @@ import { normalizedThemes } from './themes'
 import TerminalSidebar from './TerminalSidebar'
 import TerminalInformation from './TerminalInformation'
 import useOnboarded from './onboarding/useOnboarded'
+import ConfigureMyCloudButton from './ConfigureMyCloudButton'
 
 // eslint-disable-next-line
 const { Buffer } = require('buffer/')
@@ -138,7 +139,6 @@ function Shell({ shell }) {
             CLI Cheatsheet
           </Button>
         )}
-        {/* <Div><Span fontWeight="bold">{shell.cluster}</Span></Div> */}
         <Div flexGrow={1} />
         <TerminalInformation shell={shell} />
         <Button
@@ -150,6 +150,7 @@ function Shell({ shell }) {
           Repair viewport
         </Button>
         <TerminalThemeSelector />
+        <ConfigureMyCloudButton />
       </Flex>
       <Flex
         marginTop="medium"

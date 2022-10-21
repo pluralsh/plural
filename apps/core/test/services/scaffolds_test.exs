@@ -8,7 +8,7 @@ defmodule Core.Services.ScaffoldsTest do
     end
 
     test "it retrieves definition for a given provider" do
-      %{:name => name, :content => content} = Scaffolds.provider(:aws)
+      {:ok, %{:name => name, :content => content}} = Scaffolds.provider(:aws)
       assert name == :aws
       assert String.length(content) > 10
     end

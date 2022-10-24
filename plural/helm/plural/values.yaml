@@ -1,5 +1,5 @@
 global:
-  registry: dkr.plural.sh
+  registry: dkr.plural.sh/plural
 
 replicaCount: 2
 rabbitmqNamespace: rabbitmq
@@ -307,20 +307,20 @@ postgres:
         memory: 1Gi
 
 image:
-  repository: plural/plural
+  repository: plural
   # if empty the chart version is used
   tag: '' ## PLRL-REPLACE[  tag: '%s']
   pullPolicy: Always
 
 rtc:
-  repository: plural/rtc
+  repository: rtc
   # if empty the chart version is used
   tag: '' ## PLRL-REPLACE[  tag: '%s']
   resources: {}
   replicaCount: 2
 
 worker:
-  repository: plural/worker
+  repository: worker
   # if empty the chart version is used
   tag: '' ## PLRL-REPLACE[  tag: '%s']
   minReplicas: 1
@@ -329,7 +329,7 @@ worker:
   replicaCount: 2
 
 www:
-  repository: plural/plural-www
+  repository: plural-www
   # if empty the chart version is used
   tag: '' ## PLRL-REPLACE[  tag: '%s']
   port: 80
@@ -337,7 +337,7 @@ www:
   replicaCount: 2
 
 cron:
-  repository: plural/cron
+  repository: cron
   # if empty the chart version is used
   tag: '' ## PLRL-REPLACE[  tag: '%s']
 

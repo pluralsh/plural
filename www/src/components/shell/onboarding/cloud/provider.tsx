@@ -90,7 +90,7 @@ export function ChooseAShell({ options, selected, setSelected }) {
             value={value}
             defaultChecked={value === 'cloud'}
             checked={value === selected}
-            onClick={() => setSelected(value)}
+            onChange={() => setSelected(value)}
           >
             {label}
           </Radio>

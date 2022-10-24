@@ -32,18 +32,15 @@ function UrlsInput({ uriFormat = '', urls, setUrls }) {
       return
     }
 
+    if (urls.indexOf(url) > -1) {
+      return
+    }
+
     setUrls([...urls, url])
     setValue('')
   }, [urls, value, setValue, setUrls, uriFormat, basePath, baseScheme])
 
-  const removeUrl = useCallback(url => {
-    const array = [...urls]
-    const idx = urls.indexOf(url)
-
-    if (idx < 0) return
-
-    setUrls(array.splice(idx, 1))
-  }, [setUrls, urls])
+  const removeUrl = useCallback(url => setUrls(urls.filter(item => item !== url)), [setUrls, urls])
 
   return (
     <Box

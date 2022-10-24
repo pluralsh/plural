@@ -19,17 +19,24 @@ function CliCompletion() {
   const applications = useMemo(() => retrieveApplications(), [])
   const applicationIds = applications.map(x => x.id)
   const stack = useMemo(() => retrieveStack(), [])
-  const stackCollection = stack?.collections.find(x => x.provider === provider)
-  const stackApplicationIds = stackCollection?.bundles.map(x => x.recipe.repository.id) || []
+
+  let filteredApplications = applications
+  let isStackComplete = false
+
+  if (stack) {
+    // If all stack applications are in the list then we can filter them out to show stack install command.
+    const stackCollection = stack?.collections?.find(x => x.provider === provider)
+    const stackApplicationIds = stackCollection?.bundles.map(x => x.recipe.repository.id)
+
+    isStackComplete = stackApplicationIds?.every(id => applicationIds.includes(id))
+
+    if (isStackComplete) {
+      filteredApplications = applications.filter(app => !stackApplicationIds.includes(app.id))
+    }
+  }
+
+  // Console command should only be added if it is not in the apps list already.
   const shouldInstallConsole = retrieveConsole()
-
-  // If all stack applications are in the list then we can filter them out to show stack install command.
-  const isStackComplete = stackApplicationIds.every(id => applicationIds.includes(id))
-  const filteredApplications = isStackComplete
-    ? applications.filter(app => !stackApplicationIds.includes(app.id))
-    : applications
-
-    // Console command should only be added if it is not in the apps list already.
   const isConsoleInApps = filteredApplications.find(app => app.name === 'console')
   const consoleInstallCmd = shouldInstallConsole && !isConsoleInApps
     ? <Codeline>{`plural bundle install console console-${provider.toLowerCase()}`}</Codeline>

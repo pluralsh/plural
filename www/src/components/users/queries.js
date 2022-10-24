@@ -11,7 +11,6 @@ export const ME_Q = gql`
     me {
       ...UserFragment
       loginMethod
-      onboarding
       hasInstallations
       account {
         ...AccountFragment
@@ -274,4 +273,27 @@ export const SSO_CALLBACK = gql`
   mutation SSOCallback($code: String!, $deviceToken: String) { 
     ssoCallback(code: $code, deviceToken: $deviceToken) { jwt }
   }
+`
+
+export const UPDATE_ONBOARDING_CHECKLIST = gql`
+  mutation UpdateOnboardingChecklist($attributes: UserAttributes!) {
+  updateUser(attributes: $attributes) {
+    onboardingChecklist {
+      status
+      dismissed
+    }
+  }
+}
+`
+
+export const ONBOARDING_STATUS = gql`
+  query OnboardingStatus {
+    me {
+      onboarding
+      onboardingChecklist {
+        status
+        dismissed
+      }
+    }
+  } 
 `

@@ -13,6 +13,8 @@ export default defineConfig({
     chromeWebSecurity: false,
     supportFile: 'cypress/support/index.ts',
     experimentalSessionAndOrigin: true,
+    viewportWidth: 1920,
+    viewportHeight: 1080,
     setupNodeEvents(on) {
       on('file:preprocessor', webpack(options))
     },

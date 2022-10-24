@@ -20,6 +20,7 @@ export class LoginPage extends BasePage {
       this._continueButton.should(Condition.BeVisible).and(Condition.BeEnabled).click()
 
       GQLInterceptor.wait([Mutations.Login])
+      GQLInterceptor.wait([Queries.Repos, Queries.Tags])
     })
   }
 

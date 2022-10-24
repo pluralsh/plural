@@ -4,6 +4,7 @@ import {
 } from 'react-router-dom'
 import { StripeProvider } from 'react-stripe-elements'
 import { Toast } from 'pluralsh-design-system'
+import { useFeature } from '@growthbook/growthbook-react'
 
 import { growthbook } from '../helpers/growthbook'
 import { useHistory } from '../router'
@@ -132,6 +133,8 @@ function TestBanner() {
 }
 
 export function PluralInner() {
+  const isChecklistEnabled = useFeature('checklist').on
+
   return (
     <WrapStripe>
       <BreadcrumbProvider>
@@ -140,7 +143,9 @@ export function PluralInner() {
             <VerifyEmailConfirmed />
             <DeviceLoginNotif />
             <TestBanner />
-            <OnboardingChecklist />
+            { isChecklistEnabled && (
+              <OnboardingChecklist />
+            )}
             <Routes>
               {/* --- OAUTH --- */}
               <Route

@@ -29,6 +29,7 @@
     "@emotion/styled": "11.10.4",
     "@gitbeaker/browser": "35.7.0",
     "@growthbook/growthbook": "0.18.1",
+    "@growthbook/growthbook-react": "0.10.0",
     "@jest/types": "29.2.0",
     "@nivo/core": "0.80.0",
     "@nivo/geo": "0.80.0",

@@ -47,8 +47,11 @@ export function NotificationsPanel({ closePanel }) {
     { variables: {} },
     data => data.notifications)
 
-  const { data } = useQuery<{me: User}>(ONBOARDING_STATUS)
-  const showOnboardingNotification = useCallback(() => (data?.me?.onboardingChecklist?.dismissed || isOnboardingChecklistHidden()) && data?.me?.onboardingChecklist?.status !== OnboardingChecklistState.Finished, [data])
+  const { data } = useQuery<{ me: User }>(ONBOARDING_STATUS)
+  const showOnboardingNotification = useCallback(() => (
+    data?.me?.onboardingChecklist?.dismissed || isOnboardingChecklistHidden())
+    && data?.me?.onboardingChecklist?.status !== OnboardingChecklistState.Finished,
+  [data])
 
   if (showOnboardingNotification() && !notifications.length) {
     return <OnboardingChecklistNotification closePanel={closePanel} />
@@ -70,7 +73,7 @@ export function NotificationsPanel({ closePanel }) {
         loading={loadingNotifications}
         hasMore={hasMoreNotifications}
         loadMore={fetchMoreNotifications}
-      // Allow for scrolling in a flexbox layout
+        // Allow for scrolling in a flexbox layout
         flexGrow={1}
         height={0}
       >
@@ -88,7 +91,20 @@ export function NotificationsPanel({ closePanel }) {
 
 function OnboardingChecklistNotification({ closePanel }) {
   const { setDismissed } = useContext(OnboardingChecklistContext)
-  const [updateChecklist, { loading }] = useMutation(UPDATE_ONBOARDING_CHECKLIST)
+  const [updateChecklist, { loading }] = useMutation(UPDATE_ONBOARDING_CHECKLIST, {
+    variables: {
+      attributes: {
+        onboardingChecklist: {
+          dismissed: false,
+        },
+      },
+    },
+    onCompleted: () => {
+      clearOnboardingChecklistState()
+      closePanel()
+      setDismissed(false)
+    },
+  })
 
   return (
     <Flex
@@ -118,22 +134,7 @@ function OnboardingChecklistNotification({ closePanel }) {
           secondary
           small
           loading={loading}
-          onClick={() => {
-            updateChecklist({
-              variables: {
-                attributes: {
-                  onboardingChecklist: {
-                    dismissed: false,
-                  },
-                },
-              },
-              onCompleted: () => {
-                clearOnboardingChecklistState()
-                closePanel()
-                setDismissed(false)
-              },
-            })
-          }}
+          onClick={() => updateChecklist()}
         >Open Guide
         </Button>
       </Flex>

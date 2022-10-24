@@ -11,8 +11,20 @@ import {
 } from '../../persistance'
 
 export function ChecklistFooter({ refetch, setDismiss }) {
-  const [updateChecklist, { loading }] = useMutation(UPDATE_ONBOARDING_CHECKLIST)
-  const { setDismissed } = useContext(OnboardingChecklistContext)
+  const { setDismissed: setDismissedFromContext } = useContext(OnboardingChecklistContext)
+  const [updateChecklist, { loading }] = useMutation(UPDATE_ONBOARDING_CHECKLIST, {
+    variables: {
+      attributes: {
+        onboardingChecklist: {
+          dismissed: true,
+        },
+      },
+    },
+    onCompleted: () => {
+      refetch()
+      clearOnboardingChecklistState()
+    },
+  })
 
   return (
     <Flex
@@ -56,7 +68,7 @@ export function ChecklistFooter({ refetch, setDismiss }) {
         padding="none"
         loading={loading}
         onClick={() => {
-          setDismissed(true)
+          setDismissedFromContext(true)
 
           if (!shouldOnboardingChecklistReappear() && !isOnboardingChecklistHidden()) {
             setOnboardingChecklistState(ONBOARDING_CHECKLIST_STATE.HIDDEN)
@@ -69,19 +81,7 @@ export function ChecklistFooter({ refetch, setDismiss }) {
             return
           }
 
-          updateChecklist({
-            variables: {
-              attributes: {
-                onboardingChecklist: {
-                  dismissed: true,
-                },
-              },
-            },
-            onCompleted: () => {
-              refetch()
-              clearOnboardingChecklistState()
-            },
-          })
+          updateChecklist()
         }}
       >Dismiss
       </Button>

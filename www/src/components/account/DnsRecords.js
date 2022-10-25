@@ -1,20 +1,17 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
 import {
-  A, Avatar, Div, Flex, Span,
+  Avatar, Button, Div, Flex, Span,
 } from 'honorable'
 import moment from 'moment'
 import { useState } from 'react'
 
-import { GoBack } from 'components/utils/GoBack'
-
 import { Placeholder } from 'components/utils/Placeholder'
 
+import { ArrowLeftIcon } from 'pluralsh-design-system'
+
 import {
-  deepUpdate,
-  extendConnection,
-  removeConnection,
-  updateCache,
+  deepUpdate, extendConnection, removeConnection, updateCache,
 } from '../../utils/graphql'
 
 import { DeleteIconButton } from '../utils/IconButtons'
@@ -74,26 +71,19 @@ export function DnsRecords({ domain, setDomain }) {
   } = data.dnsDomain
 
   return (
-    <Box
-      fill
-      pad={{ vertical: 'small' }}
-    >
-      <Flex
-        borderRadius="large"
-        border="1px solid border"
-      >
-        <GoBack
-          text="Back"
-          as={A}
+    <Box fill>
+      <Flex margin="xxxsmall">
+        <Button
+          tertiary
+          textDecoration="none"
           onClick={e => {
             e.preventDefault()
             setDomain(null)
           }}
-          paddingLeft="medium"
-          padingRight="medium"
-          paddingTop="xsmall"
-          paddingBottom="xsmall"
-        />
+          startIcon={<ArrowLeftIcon />}
+        >
+          Back
+        </Button>
       </Flex>
       <Table
         heading={domain.name}
@@ -101,7 +91,6 @@ export function DnsRecords({ domain, setDomain }) {
         sizes={['40%', '80px', '20%', '120px', '20%']}
         background="fill-one"
         border="1px solid border"
-        marginTop="medium"
         width="100%"
         height="100%"
       >

@@ -2,34 +2,43 @@ import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
 import { Avatar, Flex, Span } from 'honorable'
 import moment from 'moment'
-import { ListBoxItem, Modal, PageTitle } from 'pluralsh-design-system'
-import { useMemo, useState } from 'react'
+import {
+  ListBoxItem, Modal, PageTitle, SearchIcon,
+} from 'pluralsh-design-system'
+import { useCallback, useMemo, useState } from 'react'
 
 import isEqual from 'lodash/isEqual'
 import uniqWith from 'lodash/uniqWith'
-
 import { Placeholder } from 'components/utils/Placeholder'
 
-import {
-  extendConnection,
-  removeConnection,
-  updateCache,
-} from '../../utils/graphql'
-
+import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
 import { GqlError } from '../utils/Alert'
 import { StandardScroller } from '../utils/SmoothScroller'
 import { Table, TableData, TableRow } from '../utils/Table'
+import ListInput from '../utils/ListInput'
+
+import { List } from '../utils/List'
 
 import { DELETE_DOMAIN, DNS_DOMAINS, UPDATE_DOMAIN } from './queries'
-
 import { Actions } from './Actions'
-
 import { Confirm } from './Confirm'
-
 import { MoreMenu } from './MoreMenu'
 import { BindingInput } from './Typeaheads'
 import { sanitize } from './utils'
 import { DnsRecords } from './DnsRecords'
+
+function Header({ q, setQ }) {
+  return (
+    <ListInput
+      width="100%"
+      value={q}
+      placeholder="Search a domain"
+      startIcon={<SearchIcon color="text-light" />}
+      onChange={({ target: { value } }) => setQ(value)}
+      flexGrow={0}
+    />
+  )
+}
 
 function DomainOptions({ domain, setDomain }) {
   const [confirm, setConfirm] = useState(false)
@@ -198,12 +207,17 @@ function Domain({ node, last, setDomain }) {
   )
 }
 
-export function Domains() {
+function DomainsInner({ q, setDomainSelected }) {
   const [listRef, setListRef] = useState(null)
   const [domain, setDomain] = useState(null)
   const { data, loading, fetchMore } = useQuery(DNS_DOMAINS, {
     fetchPolicy: 'cache-and-network',
   })
+
+  const setDomainWrapper = useCallback(domain => {
+    setDomainSelected(!!domain)
+    setDomain(domain)
+  }, [setDomainSelected, setDomain])
 
   if (!data) return null
 
@@ -211,7 +225,7 @@ export function Domains() {
     return (
       <DnsRecords
         domain={domain}
-        setDomain={setDomain}
+        setDomain={setDomainWrapper}
       />
     )
   }
@@ -226,7 +240,6 @@ export function Domains() {
       flexDirection="column"
       maxHeight="100%"
     >
-      <PageTitle heading="Domains" />
       {edges?.length ? (
         <Table
           headers={['Name', 'Creator', 'Created On']}
@@ -240,21 +253,21 @@ export function Domains() {
             <StandardScroller
               listRef={listRef}
               setListRef={setListRef}
-              hasNextPage={pageInfo.hasNextPage}
-              items={edges}
+              hasNextPage={pageInfo?.hasNextPage || false}
+              items={edges.filter(e => e.node?.name?.includes(q))}
               loading={loading}
               placeholder={Placeholder}
               mapper={({ node }, { next }) => (
                 <Domain
                   node={node}
                   last={!next.node}
-                  setDomain={setDomain}
+                  setDomain={setDomainWrapper}
                 />
               )}
               loadNextPage={() => pageInfo.hasNextPage
                 && fetchMore({
                   variables: { cursor: pageInfo.endCursor },
-                  updateQuery: (prev, { fetchMoreResult: { invites } }) => extendConnection(prev, invites, 'invites'),
+                  updateQuery: (prev, { fetchMoreResult: { dnsDomains } }) => extendConnection(prev, dnsDomains, 'dnsDomains'),
                 })}
             />
           </Box>
@@ -262,6 +275,33 @@ export function Domains() {
       ) : (
         <Span>You do not have any domains set yet.</Span>
       )}
+    </Flex>
+  )
+}
+
+export function Domains() {
+  const [q, setQ] = useState('')
+  const [domainSelected, setDomainSelected] = useState(false)
+
+  return (
+    <Flex
+      flexGrow={1}
+      flexDirection="column"
+      maxHeight="100%"
+    >
+      <PageTitle heading="Domains" />
+      <List>
+        {!domainSelected && (
+          <Header
+            q={q}
+            setQ={setQ}
+          />
+        )}
+        <DomainsInner
+          q={q}
+          setDomainSelected={setDomainSelected}
+        />
+      </List>
     </Flex>
   )
 }

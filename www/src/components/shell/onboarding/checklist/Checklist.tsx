@@ -170,7 +170,7 @@ export function OnboardingChecklist() {
                 startIcon={<TerminalIcon />}
                 onClick={() => {
                   setOpen(false)
-                  navigate('/shell')
+                  navigate('/shell?ref=checklist')
                 }}
               >Launch Cloud Shell
               </Button>

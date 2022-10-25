@@ -110,8 +110,8 @@ defmodule Core.Services.Versions do
   end
 
   def record_scan(scan, %Version{} = version) when is_binary(scan) do
-    Poison.decode!(scan, as: Core.Scan.type())
-    |> record_scan(version)
+    with {:ok, scan} <- Poison.decode(scan, as: Core.Scan.type()),
+      do: record_scan(scan, version)
   end
 
   def record_scan(%{results: scan_result}, %Version{id: version_id}) do

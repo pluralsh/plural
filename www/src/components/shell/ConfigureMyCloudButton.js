@@ -12,7 +12,7 @@ export default function ConfigureMyCloudButton() {
   const [open, setOpen] = useState(false)
   const navigate = useNavigate()
   const me = useContext(CurrentUserContext)
-  const isNotOnboarded = me.onboarding === OnboardingStatus.NEW
+  const isOnboarded = me.onboarding === OnboardingStatus.ONBOARDED
   const { data } = useQuery(POLL_DEMO_PROJECT_QUERY, { pollInterval: 10000 })
   const [mutation, { loading, error }] = useMutation(DELETE_DEMO_PROJECT_QUERY, {
     onCompleted: () => {
@@ -21,7 +21,7 @@ export default function ConfigureMyCloudButton() {
     },
   })
 
-  if (!data || isNotOnboarded) return
+  if (!data || !isOnboarded) return
 
   return (
     <>

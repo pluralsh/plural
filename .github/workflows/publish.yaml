@@ -19,6 +19,7 @@ jobs:
           version: latest
       - name: install plural cli
         run: |
+          mkdir scratch && cd scratch
           curl -sL 'https://github.com/pluralsh/plural-cli/releases/download/v0.5.18/plural-cli_0.5.18_Linux_amd64.tar.gz' | tar xzvf -
           chmod +x plural
           cp plural /usr/local/bin/plural

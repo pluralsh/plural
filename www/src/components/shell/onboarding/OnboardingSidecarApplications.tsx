@@ -44,8 +44,8 @@ function OnboardingSidecarApplications() {
       ))}
       {shouldInstallConsole && !isConsoleInApps && (
         <RepositoryChip
-          imageUrl={consoleApp.darkIcon || consoleApp.icon}
-          label={consoleApp.name}
+          imageUrl={consoleApp?.darkIcon || consoleApp?.icon}
+          label={consoleApp?.name}
           marginTop="medium"
           backgroundColor="transparent"
           border="none"

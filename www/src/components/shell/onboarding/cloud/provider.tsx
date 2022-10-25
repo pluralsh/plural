@@ -24,7 +24,7 @@ export const CLOUD_CREDENTIALS_VALIDATIONS: Record<ProviderKey, any> = {
 }
 
 export function CloudOption({
-  providerLogo,
+  icon,
   header,
   description,
   selected,
@@ -42,7 +42,7 @@ export function CloudOption({
         maxHeight={40}
         overflow="visible"
       >
-        {providerLogo}
+        {icon}
       </Div>
       <Text
         body1
@@ -90,7 +90,7 @@ export function ChooseAShell({ options, selected, setSelected }) {
             value={value}
             defaultChecked={value === 'cloud'}
             checked={value === selected}
-            onClick={() => setSelected(value)}
+            onChange={() => setSelected(value)}
           >
             {label}
           </Radio>

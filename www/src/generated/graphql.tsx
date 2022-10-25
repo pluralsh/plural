@@ -170,6 +170,14 @@ export type AwsShellCredentialsAttributes = {
   secretAccessKey: Scalars['String'];
 };
 
+export type AzureShellCredentialsAttributes = {
+  clientId: Scalars['String'];
+  clientSecret: Scalars['String'];
+  storageAccount: Scalars['String'];
+  subscriptionId: Scalars['String'];
+  tenantId: Scalars['String'];
+};
+
 export type BindingAttributes = {
   groupId?: InputMaybe<Scalars['ID']>;
   id?: InputMaybe<Scalars['ID']>;
@@ -341,6 +349,8 @@ export type ClusterInformationAttributes = {
 export type Community = {
   __typename?: 'Community';
   discord?: Maybe<Scalars['String']>;
+  gitUrl?: Maybe<Scalars['String']>;
+  homepage?: Maybe<Scalars['String']>;
   slack?: Maybe<Scalars['String']>;
   twitter?: Maybe<Scalars['String']>;
   videos?: Maybe<Array<Maybe<Scalars['String']>>>;
@@ -348,6 +358,8 @@ export type Community = {
 
 export type CommunityAttributes = {
   discord?: InputMaybe<Scalars['String']>;
+  gitUrl?: InputMaybe<Scalars['String']>;
+  homepage?: InputMaybe<Scalars['String']>;
   slack?: InputMaybe<Scalars['String']>;
   twitter?: InputMaybe<Scalars['String']>;
   videos?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
@@ -725,6 +737,14 @@ export type GeoMetric = {
   __typename?: 'GeoMetric';
   count?: Maybe<Scalars['Int']>;
   country?: Maybe<Scalars['String']>;
+};
+
+export type GitConfiguration = {
+  __typename?: 'GitConfiguration';
+  branch?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  root?: Maybe<Scalars['String']>;
+  url?: Maybe<Scalars['String']>;
 };
 
 export type Group = {
@@ -1149,9 +1169,11 @@ export type Invite = {
   __typename?: 'Invite';
   account?: Maybe<Account>;
   email?: Maybe<Scalars['String']>;
+  existing: Scalars['Boolean'];
+  expiresAt?: Maybe<Scalars['DateTime']>;
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
-  secureId: Scalars['String'];
+  secureId?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   user?: Maybe<User>;
 };
@@ -1309,6 +1331,12 @@ export type MetricValue = {
   __typename?: 'MetricValue';
   time?: Maybe<Scalars['DateTime']>;
   value?: Maybe<Scalars['Int']>;
+};
+
+export type NetworkConfiguration = {
+  __typename?: 'NetworkConfiguration';
+  pluralDns?: Maybe<Scalars['Boolean']>;
+  subdomain?: Maybe<Scalars['String']>;
 };
 
 export type Notification = {
@@ -1488,6 +1516,24 @@ export type OidcStepResponse = {
   login?: Maybe<LoginRequest>;
   repository?: Maybe<Repository>;
 };
+
+export type OnboardingChecklist = {
+  __typename?: 'OnboardingChecklist';
+  dismissed?: Maybe<Scalars['Boolean']>;
+  status?: Maybe<OnboardingChecklistState>;
+};
+
+export type OnboardingChecklistAttributes = {
+  dismissed?: InputMaybe<Scalars['Boolean']>;
+  status?: InputMaybe<OnboardingChecklistState>;
+};
+
+export enum OnboardingChecklistState {
+  Configured = 'CONFIGURED',
+  ConsoleInstalled = 'CONSOLE_INSTALLED',
+  Finished = 'FINISHED',
+  New = 'NEW'
+}
 
 export enum OnboardingState {
   Active = 'ACTIVE',
@@ -1755,6 +1801,7 @@ export type Publisher = {
   avatar?: Maybe<Scalars['String']>;
   backgroundColor?: Maybe<Scalars['String']>;
   billingAccountId?: Maybe<Scalars['String']>;
+  community?: Maybe<Community>;
   description?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['ID']>;
   insertedAt?: Maybe<Scalars['DateTime']>;
@@ -1768,6 +1815,7 @@ export type Publisher = {
 export type PublisherAttributes = {
   address?: InputMaybe<AddressAttributes>;
   avatar?: InputMaybe<Scalars['UploadOrUrl']>;
+  community?: InputMaybe<CommunityAttributes>;
   description?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
   phone?: InputMaybe<Scalars['String']>;
@@ -1978,6 +2026,7 @@ export type Repository = {
   recipes?: Maybe<Array<Maybe<Recipe>>>;
   secrets?: Maybe<Scalars['Map']>;
   tags?: Maybe<Array<Maybe<Tag>>>;
+  trending?: Maybe<Scalars['Boolean']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   verified?: Maybe<Scalars['Boolean']>;
 };
@@ -2000,6 +2049,7 @@ export type RepositoryAttributes = {
   readme?: InputMaybe<Scalars['String']>;
   secrets?: InputMaybe<Scalars['Yaml']>;
   tags?: InputMaybe<Array<InputMaybe<TagAttributes>>>;
+  trending?: InputMaybe<Scalars['Boolean']>;
   verified?: InputMaybe<Scalars['Boolean']>;
 };
 
@@ -2207,6 +2257,7 @@ export type RootMutationType = {
   createZoom?: Maybe<ZoomMeeting>;
   deleteCard?: Maybe<Account>;
   deleteChartInstallation?: Maybe<ChartInstallation>;
+  deleteDemoProject?: Maybe<DemoProject>;
   deleteDnsRecord?: Maybe<DnsRecord>;
   deleteDomain?: Maybe<DnsDomain>;
   deleteEabKey?: Maybe<EabCredential>;
@@ -2232,6 +2283,7 @@ export type RootMutationType = {
   externalToken?: Maybe<Scalars['String']>;
   followIncident?: Maybe<Follower>;
   impersonateServiceAccount?: Maybe<User>;
+  installBundle?: Maybe<Array<Maybe<Installation>>>;
   installChart?: Maybe<ChartInstallation>;
   installRecipe?: Maybe<Array<Maybe<Installation>>>;
   installTerraform?: Maybe<TerraformInstallation>;
@@ -2244,6 +2296,7 @@ export type RootMutationType = {
   pingWebhook?: Maybe<WebhookResponse>;
   provisionDomain?: Maybe<DnsDomain>;
   publishLogs?: Maybe<TestStep>;
+  quickStack?: Maybe<Stack>;
   readNotifications?: Maybe<Scalars['Int']>;
   realizeInvite?: Maybe<User>;
   realizeResetToken?: Maybe<Scalars['Boolean']>;
@@ -2254,6 +2307,7 @@ export type RootMutationType = {
   signup?: Maybe<User>;
   ssoCallback?: Maybe<User>;
   stopShell?: Maybe<Scalars['Boolean']>;
+  transferDemoProject?: Maybe<DemoProject>;
   unfollowIncident?: Maybe<Follower>;
   uninstallTerraform?: Maybe<TerraformInstallation>;
   unlockRepository?: Maybe<Scalars['Int']>;
@@ -2275,6 +2329,7 @@ export type RootMutationType = {
   updateRepository?: Maybe<Repository>;
   updateRole?: Maybe<Role>;
   updateServiceAccount?: Maybe<User>;
+  updateShellConfiguration?: Maybe<Scalars['Boolean']>;
   updateStep?: Maybe<TestStep>;
   updateTerraform?: Maybe<Terraform>;
   updateTest?: Maybe<Test>;
@@ -2549,7 +2604,8 @@ export type RootMutationTypeDeleteIntegrationWebhookArgs = {
 
 
 export type RootMutationTypeDeleteInviteArgs = {
-  secureId: Scalars['String'];
+  id?: InputMaybe<Scalars['ID']>;
+  secureId?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -2620,6 +2676,14 @@ export type RootMutationTypeFollowIncidentArgs = {
 export type RootMutationTypeImpersonateServiceAccountArgs = {
   email?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['ID']>;
+};
+
+
+export type RootMutationTypeInstallBundleArgs = {
+  context: Scalars['Map'];
+  name: Scalars['String'];
+  oidc: Scalars['Boolean'];
+  repo: Scalars['String'];
 };
 
 
@@ -2696,6 +2760,12 @@ export type RootMutationTypePublishLogsArgs = {
 };
 
 
+export type RootMutationTypeQuickStackArgs = {
+  provider: Provider;
+  repositoryIds?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+};
+
+
 export type RootMutationTypeReadNotificationsArgs = {
   incidentId?: InputMaybe<Scalars['ID']>;
 };
@@ -2729,6 +2799,11 @@ export type RootMutationTypeSignupArgs = {
 export type RootMutationTypeSsoCallbackArgs = {
   code: Scalars['String'];
   deviceToken?: InputMaybe<Scalars['String']>;
+};
+
+
+export type RootMutationTypeTransferDemoProjectArgs = {
+  organizationId: Scalars['String'];
 };
 
 
@@ -2854,6 +2929,11 @@ export type RootMutationTypeUpdateServiceAccountArgs = {
 };
 
 
+export type RootMutationTypeUpdateShellConfigurationArgs = {
+  context: Scalars['Map'];
+};
+
+
 export type RootMutationTypeUpdateStepArgs = {
   attributes: TestStepAttributes;
   id: Scalars['ID'];
@@ -2966,6 +3046,7 @@ export type RootQueryType = {
   searchRepositories?: Maybe<RepositoryConnection>;
   searchUsers?: Maybe<UserConnection>;
   shell?: Maybe<CloudShell>;
+  shellConfiguration?: Maybe<ShellConfiguration>;
   stack?: Maybe<Stack>;
   stacks?: Maybe<StackConnection>;
   subscriptions?: Maybe<RepositorySubscriptionConnection>;
@@ -3041,7 +3122,7 @@ export type RootQueryTypeDeferredUpdatesArgs = {
 
 
 export type RootQueryTypeDemoProjectArgs = {
-  id: Scalars['ID'];
+  id?: InputMaybe<Scalars['ID']>;
 };
 
 
@@ -3599,8 +3680,16 @@ export type ServiceLevelAttributes = {
   responseTime?: InputMaybe<Scalars['Int']>;
 };
 
+export type ShellConfiguration = {
+  __typename?: 'ShellConfiguration';
+  contextConfiguration?: Maybe<Scalars['Map']>;
+  git?: Maybe<GitConfiguration>;
+  workspace?: Maybe<ShellWorkspace>;
+};
+
 export type ShellCredentialsAttributes = {
   aws?: InputMaybe<AwsShellCredentialsAttributes>;
+  azure?: InputMaybe<AzureShellCredentialsAttributes>;
   gcp?: InputMaybe<GcpShellCredentialsAttributes>;
 };
 
@@ -3610,6 +3699,13 @@ export type ShellStatus = {
   initialized?: Maybe<Scalars['Boolean']>;
   podScheduled?: Maybe<Scalars['Boolean']>;
   ready?: Maybe<Scalars['Boolean']>;
+};
+
+export type ShellWorkspace = {
+  __typename?: 'ShellWorkspace';
+  bucketPrefix?: Maybe<Scalars['String']>;
+  cluster?: Maybe<Scalars['String']>;
+  network?: Maybe<NetworkConfiguration>;
 };
 
 export type SlimSubscription = {
@@ -3640,8 +3736,10 @@ export type Stack = {
   __typename?: 'Stack';
   bundles?: Maybe<Array<Maybe<Recipe>>>;
   collections?: Maybe<Array<Maybe<StackCollection>>>;
+  community?: Maybe<Community>;
   creator?: Maybe<User>;
   description?: Maybe<Scalars['String']>;
+  displayName?: Maybe<Scalars['String']>;
   featured?: Maybe<Scalars['Boolean']>;
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
@@ -3651,7 +3749,9 @@ export type Stack = {
 
 export type StackAttributes = {
   collections?: InputMaybe<Array<InputMaybe<StackCollectionAttributes>>>;
+  community?: InputMaybe<CommunityAttributes>;
   description?: InputMaybe<Scalars['String']>;
+  displayName?: InputMaybe<Scalars['String']>;
   featured?: InputMaybe<Scalars['Boolean']>;
   name: Scalars['String'];
 };
@@ -3965,6 +4065,7 @@ export type User = {
   loginMethod?: Maybe<LoginMethod>;
   name: Scalars['String'];
   onboarding?: Maybe<OnboardingState>;
+  onboardingChecklist?: Maybe<OnboardingChecklist>;
   phone?: Maybe<Scalars['String']>;
   provider?: Maybe<Provider>;
   publisher?: Maybe<Publisher>;
@@ -3988,6 +4089,7 @@ export type UserAttributes = {
   loginMethod?: InputMaybe<LoginMethod>;
   name?: InputMaybe<Scalars['String']>;
   onboarding?: InputMaybe<OnboardingState>;
+  onboardingChecklist?: InputMaybe<OnboardingChecklistAttributes>;
   password?: InputMaybe<Scalars['String']>;
   roles?: InputMaybe<RolesAttributes>;
 };

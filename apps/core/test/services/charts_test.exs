@@ -212,6 +212,7 @@ defmodule Core.Services.ChartsTest do
   end
 
   describe "#upload_chart/4" do
+    @tag :skip
     test "It can upload a chart" do
       path = Path.join(:code.priv_dir(:core), "console-0.5.24.tgz")
       repo = insert(:repository, name: "console")

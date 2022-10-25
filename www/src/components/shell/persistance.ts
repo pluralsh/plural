@@ -1,9 +1,5 @@
 import {
-  CONSOLE_LOCAL_STORAGE_KEY,
-  PROVIDER_LOCAL_STORAGE_KEY,
-  SELECTED_APPLICATIONS_LOCAL_STORAGE_KEY,
-  SHOULD_USE_ONBOARDING_TERMINAL_SIDEBAR_LOCAL_STORAGE_KEY,
-  STACK_NAME_LOCAL_STORAGE_KEY,
+  CONSOLE_LOCAL_STORAGE_KEY, ONBOARDING_CHECKLIST_LOCAL_STORAGE_KEY, ONBOARDING_CHECKLIST_STATE, PROVIDER_LOCAL_STORAGE_KEY, SELECTED_APPLICATIONS_LOCAL_STORAGE_KEY, SHOULD_USE_ONBOARDING_TERMINAL_SIDEBAR_LOCAL_STORAGE_KEY, STACK_NAME_LOCAL_STORAGE_KEY,
 } from './constants'
 
 export function persistApplications(applications: any[]) {
@@ -62,4 +58,20 @@ export function persistShouldUseOnboardingTerminalSidebar(shouldUseOnboardingTer
 
 export function retrieveShouldUseOnboardingTerminalSidebar() {
   return localStorage.getItem(SHOULD_USE_ONBOARDING_TERMINAL_SIDEBAR_LOCAL_STORAGE_KEY) === 'true'
+}
+
+export function isOnboardingChecklistHidden(): boolean {
+  return localStorage.getItem(ONBOARDING_CHECKLIST_LOCAL_STORAGE_KEY) === ONBOARDING_CHECKLIST_STATE.HIDDEN
+}
+
+export function shouldOnboardingChecklistReappear(): boolean {
+  return localStorage.getItem(ONBOARDING_CHECKLIST_LOCAL_STORAGE_KEY) === ONBOARDING_CHECKLIST_STATE.REAPPEAR
+}
+
+export function setOnboardingChecklistState(state: ONBOARDING_CHECKLIST_STATE): void {
+  localStorage.setItem(ONBOARDING_CHECKLIST_LOCAL_STORAGE_KEY, state)
+}
+
+export function clearOnboardingChecklistState(): void {
+  localStorage.removeItem(ONBOARDING_CHECKLIST_LOCAL_STORAGE_KEY)
 }

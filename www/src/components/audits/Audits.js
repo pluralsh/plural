@@ -44,7 +44,7 @@ function resourceInfo({
     })
   }
 
-  if (repository) return { link: `/repositories/${repository.id}`, text: `Repository{${repository.name}}` }
+  if (repository) return { link: `/repository/${repository.id}`, text: `Repository{${repository.name}}` }
 
   return { link: null, text: '' }
 }

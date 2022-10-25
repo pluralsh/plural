@@ -26,6 +26,7 @@ export const UserFragment = gql`
     avatar
     provider
     onboarding
+    onboardingChecklist { dismissed status }
     emailConfirmed
     emailConfirmBy
     backgroundColor

@@ -1,7 +1,5 @@
 import { Application } from '@ctypes/application'
 import { Condition } from '@ctypes/condition'
-import { Queries } from '@ctypes/queries'
-import { GQLInterceptor } from '@intercept/graphql'
 import { BasePage } from '@pages/base'
 
 export class MarketplacePage extends BasePage {
@@ -12,10 +10,8 @@ export class MarketplacePage extends BasePage {
   }
 
   static openRepository(name: Application): void {
-    GQLInterceptor.wait([Queries.Repos, Queries.Tags])
-
     this._contains('a', name)
       .should(Condition.BeVisible)
-      .click()
+      .click({ force: true })
   }
 }

@@ -23,6 +23,11 @@ spec:
     hydra: hydra  # dbname: owner
   postgresql:
     version: "13"
+  livenessProbe:
+    exec:
+      command:
+      - echo
+      - 'hello world'
   sidecars:
   - image: gcr.io/pluralsh/postgres-exporter:0.8.0
     name: exporter

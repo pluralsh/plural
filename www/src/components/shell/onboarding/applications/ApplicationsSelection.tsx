@@ -50,7 +50,7 @@ const hueToColor = {
   red: 'text-error-light',
 }
 
-const CONSOLE_APP_NAME = 'console'
+export const CONSOLE_APP_NAME = 'console'
 
 const searchOptions = {
   keys: ['name'],

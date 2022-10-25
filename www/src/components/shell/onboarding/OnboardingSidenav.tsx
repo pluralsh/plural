@@ -1,3 +1,5 @@
+import { CurrentUserContext } from 'components/login/CurrentUser'
+import { OnboardingStatus } from 'components/profile/types'
 import { A } from 'honorable'
 import {
   BrowserIcon,
@@ -9,6 +11,7 @@ import {
   Stepper,
   TerminalIcon,
 } from 'pluralsh-design-system'
+import { useContext } from 'react'
 import styled from 'styled-components'
 
 import {
@@ -27,10 +30,10 @@ type OnboardingSidenavProps = {
   onRestart: () => void
 }
 
-const steps = [
+const steps = (canUseDemo: boolean) => [
   { key: SECTION_APPLICATIONS, stepTitle: 'Choose applications', IconComponent: PackageIcon },
   { key: SECTION_GIT_PROVIDER, stepTitle: 'Create a git repo', IconComponent: NetworkInterfaceIcon },
-  { key: SECTION_CLOUD_SELECT, stepTitle: <>Choose a&nbsp;cloud</>, IconComponent: CloudIcon },
+  { key: SECTION_CLOUD_SELECT, stepTitle: `Choose a ${canUseDemo ? 'cloud' : 'shell'}`, IconComponent: CloudIcon },
   { key: SECTION_CLOUD_WORKSPACE, stepTitle: 'Configure workspace', IconComponent: GearTrainIcon },
   { key: SECTION_SYNOPSIS, stepTitle: <>Launch cloud&nbsp;shell</>, IconComponent: BrowserIcon },
 ]
@@ -72,11 +75,14 @@ const ResponsiveWidth = styled.div(({ theme }) => {
 
 // eslint-disable-next-line
 function OnboardingSidenav({ stepIndex, cliMode, onRestart }: OnboardingSidenavProps) {
+  const me: any = useContext(CurrentUserContext)
+  const canUseDemo = me?.onboarding === OnboardingStatus.NEW
+
   return (
     <ResponsiveWidth>
       <Stepper
         vertical
-        steps={cliMode ? stepsCli : steps}
+        steps={cliMode ? stepsCli : steps(canUseDemo)}
         stepIndex={stepIndex}
         collapseAtWidth={expandAtWidth - 1}
       />

@@ -19,9 +19,10 @@ jobs:
           version: latest
       - name: install plural cli
         run: |
-          wget -O plural.o 'https://app.plural.sh/artifacts/plural/plural?platform=linux&arch=amd64'
-          chmod +x ./plural.o
-          cp ./plural.o /usr/local/bin/plural
+          mkdir scratch && cd scratch
+          curl -sL 'https://github.com/pluralsh/plural-cli/releases/download/v0.5.18/plural-cli_0.5.18_Linux_amd64.tar.gz' | tar xzvf -
+          chmod +x plural
+          cp plural /usr/local/bin/plural
       - run: make testup
       - name: Restore dependencies cache
         uses: actions/cache@v2

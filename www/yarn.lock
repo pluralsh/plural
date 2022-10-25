@@ -2703,10 +2703,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@growthbook/growthbook-react@npm:0.10.0":
+  version: 0.10.0
+  resolution: "@growthbook/growthbook-react@npm:0.10.0"
+  dependencies:
+    "@growthbook/growthbook": ^0.19.0
+  peerDependencies:
+    react: ^16.8.0-0 || ^17.0.0-0 || ^18.0.0-0
+  checksum: e3b0e17364b7f986e4af542272228fb659f4fd48bfc712823ff8f0492d00d81ff5a947b178b2cd1ee6181cd35df75862478fb03fab7481ff759412aa9f658b8c
+  languageName: node
+  linkType: hard
+
 "@growthbook/growthbook@npm:0.18.1":
   version: 0.18.1
   resolution: "@growthbook/growthbook@npm:0.18.1"
   checksum: 202347550562487b47044f406415f26976ec1fabd0504658f84c6520d834ec8addf57be1ba5e73e4715d02da4c11f41649edbb6ad49b5d2b24ec46a497c5617f
+  languageName: node
+  linkType: hard
+
+"@growthbook/growthbook@npm:^0.19.0":
+  version: 0.19.0
+  resolution: "@growthbook/growthbook@npm:0.19.0"
+  checksum: 6e162106d3b1b822316883da472d5ebf19f52872cb3206feabfafc83b14a2a0a71426147f84a0a0aa5dc6b03c5eff8945e73faadf2e134380c3141b4fa34d4c7
   languageName: node
   linkType: hard
 
@@ -16833,9 +16851,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pluralsh-design-system@npm:1.235.0":
-  version: 1.235.0
-  resolution: "pluralsh-design-system@npm:1.235.0"
+"pluralsh-design-system@npm:1.236.0":
+  version: 1.236.0
+  resolution: "pluralsh-design-system@npm:1.236.0"
   dependencies:
     "@floating-ui/react-dom-interactions": 0.8.1
     "@react-aria/button": 3.6.1
@@ -16874,7 +16892,7 @@ __metadata:
     react-dom: ">=16.0.0"
     react-transition-group: ">=4.4.2"
     styled-components: ">=5.3.5"
-  checksum: 3ae3842d4085d5002998e6f1d8d22dcbe4c705e12837699940974958d9e6a0c059dae107f1274ba91962bb1c30904d93d1292598ad86645f6187d7a859816218
+  checksum: 2265fe9cb30387bb721d87be38062a56086c87f42988a82d7d004f9b6f3919767df9268bcb0b9619f47aea027568659909aa4bdd0f75afebee3c6f50169155b5
   languageName: node
   linkType: hard
 
@@ -23185,6 +23203,7 @@ __metadata:
     "@graphql-codegen/typescript-operations": 2.5.4
     "@graphql-codegen/typescript-react-apollo": 3.3.4
     "@growthbook/growthbook": 0.18.1
+    "@growthbook/growthbook-react": 0.10.0
     "@jest/types": 29.2.0
     "@nivo/core": 0.80.0
     "@nivo/geo": 0.80.0
@@ -23224,7 +23243,7 @@ __metadata:
     moment: 2.29.4
     phoenix: 1.6.12
     pluralsh-absinthe-socket-apollo-link: 0.2.0
-    pluralsh-design-system: 1.235.0
+    pluralsh-design-system: 1.236.0
     postcss-import: 8.2.0
     prop-types: 15.8.1
     query-string: 7.1.1

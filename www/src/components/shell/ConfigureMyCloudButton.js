@@ -1,7 +1,9 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Confirm } from 'components/account/Confirm'
+import { CurrentUserContext } from 'components/login/CurrentUser'
+import { OnboardingStatus } from 'components/profile/types'
 import { Button, CloudIcon } from 'pluralsh-design-system'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { DELETE_DEMO_PROJECT_QUERY, POLL_DEMO_PROJECT_QUERY } from './queries'
@@ -9,6 +11,8 @@ import { DELETE_DEMO_PROJECT_QUERY, POLL_DEMO_PROJECT_QUERY } from './queries'
 export default function ConfigureMyCloudButton() {
   const [open, setOpen] = useState(false)
   const navigate = useNavigate()
+  const me = useContext(CurrentUserContext)
+  const isNotOnboarded = me.onboarding === OnboardingStatus.NEW
   const { data } = useQuery(POLL_DEMO_PROJECT_QUERY, { pollInterval: 10000 })
   const [mutation, { loading, error }] = useMutation(DELETE_DEMO_PROJECT_QUERY, {
     onCompleted: () => {
@@ -17,7 +21,7 @@ export default function ConfigureMyCloudButton() {
     },
   })
 
-  if (!data) return
+  if (!data || isNotOnboarded) return
 
   return (
     <>
@@ -31,12 +35,13 @@ export default function ConfigureMyCloudButton() {
       </Button>
       <Confirm
         open={open}
-        title="Configure your cloud"
+        title="Configure my cloud"
         text="Restart the onboarding process on your own cloud. This will delete your GCP cloud demo."
         close={() => setOpen(false)}
         submit={mutation}
         loading={loading}
         error={error}
+        destructive
       />
     </>
   )

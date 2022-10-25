@@ -1,0 +1,31 @@
+name: Daily
+on:
+  schedule:
+    - cron: '0 5 * * *'
+
+jobs:
+  graphql:
+    name: 'Update GraphQL TS Schema'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: www
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v3
+      - name: 'Configure Git User'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+      - name: 'Setup Node'
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.15.0
+      - name: 'Update Schema'
+        run: |
+          yarn install --immutable
+          yarn graphql:codegen
+          git add .
+          git commit -m "Update GraphQL TS Schema"
+          git push         

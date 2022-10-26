@@ -2,7 +2,10 @@ import { useContext, useEffect } from 'react'
 import moment from 'moment'
 import { Div, Flex, Span } from 'honorable'
 import {
-  Chip, PageTitle, StatusIpIcon, StatusOkIcon,
+  Chip,
+  PageTitle,
+  StatusIpIcon,
+  StatusOkIcon,
 } from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'

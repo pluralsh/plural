@@ -2,11 +2,7 @@ import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
 import isEmpty from 'lodash/isEmpty'
 import { Flex } from 'honorable'
-import {
-  EmptyState,
-  PageTitle,
-  SearchIcon,
-} from 'pluralsh-design-system'
+import { EmptyState, PageTitle, SearchIcon } from 'pluralsh-design-system'
 import { useContext, useState } from 'react'
 
 import { Placeholder } from 'components/utils/Placeholder'
@@ -15,11 +11,7 @@ import CurrentUserContext from '../../contexts/CurrentUserContext'
 
 import { List, ListItem } from '../utils/List'
 import ListInput from '../utils/ListInput'
-import {
-  extendConnection,
-  removeConnection,
-  updateCache,
-} from '../../utils/graphql'
+import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
 
 import { canEdit } from '../users/EditAccount'
 

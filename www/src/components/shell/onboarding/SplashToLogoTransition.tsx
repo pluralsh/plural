@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 import {
-  Div, Flex, H2, Img,
+  Div,
+  Flex,
+  H2,
+  Img,
 } from 'honorable'
 import { CSSTransition, Transition } from 'react-transition-group'
 

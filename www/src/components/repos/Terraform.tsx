@@ -1,16 +1,17 @@
 import { useRef, useState } from 'react'
 import { Box } from 'grommet'
 import { useMutation, useQuery } from '@apollo/client'
-import {
-  Outlet, useLocation, useParams,
-} from 'react-router-dom'
+import { Outlet, useLocation, useParams } from 'react-router-dom'
 
 import { Button, Flex, Modal } from 'honorable'
 
 import { Tab, TabList, TabPanel } from 'pluralsh-design-system'
 
 import {
-  ResponsiveLayoutContentContainer, ResponsiveLayoutSidecarContainer, ResponsiveLayoutSidenavContainer, ResponsiveLayoutSpacer,
+  ResponsiveLayoutContentContainer,
+  ResponsiveLayoutSidecarContainer,
+  ResponsiveLayoutSidenavContainer,
+  ResponsiveLayoutSpacer,
 } from 'components/layout/ResponsiveLayout'
 
 import { GoBack } from 'components/utils/GoBack'

@@ -1,7 +1,10 @@
 import { Flex } from 'honorable'
 import { Box } from 'grommet'
 import {
-  PageTitle, SubTab, TabList, TabPanel,
+  PageTitle,
+  SubTab,
+  TabList,
+  TabPanel,
 } from 'pluralsh-design-system'
 import { useRef, useState } from 'react'
 

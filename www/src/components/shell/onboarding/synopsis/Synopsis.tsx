@@ -1,7 +1,10 @@
 import { useContext } from 'react'
 import { Div, Flex, P } from 'honorable'
 import {
-  Button, CloudIcon, GearTrainIcon, GitHubIcon,
+  Button,
+  CloudIcon,
+  GearTrainIcon,
+  GitHubIcon,
 } from 'pluralsh-design-system'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'

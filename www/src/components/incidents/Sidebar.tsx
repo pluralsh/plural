@@ -1,7 +1,12 @@
 import { useCallback, useState } from 'react'
 import { Box, Stack, Text } from 'grommet'
 import {
-  Cluster, Eye as Hide, History, Notification, Package, User,
+  Cluster,
+  Eye as Hide,
+  History,
+  Notification,
+  Package,
+  User,
 } from 'forge-core'
 
 import { IncidentHistory } from './IncidentHistory'

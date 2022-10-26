@@ -1,13 +1,5 @@
-import {
-  Button,
-  Div,
-  Flex,
-} from 'honorable'
-import {
-  DiscordIcon,
-  LifePreserverIcon,
-  ScrollIcon,
-} from 'pluralsh-design-system'
+import { Button, Div, Flex } from 'honorable'
+import { DiscordIcon, LifePreserverIcon, ScrollIcon } from 'pluralsh-design-system'
 import { useIntercom } from 'react-use-intercom'
 
 import OnboardingSidecarApplications from './OnboardingSidecarApplications'

@@ -6,11 +6,7 @@ import { Div } from 'honorable'
 import { SearchIcon } from 'pluralsh-design-system'
 import { useCallback, useEffect, useState } from 'react'
 
-import {
-  extendConnection,
-  removeConnection,
-  updateCache,
-} from '../../utils/graphql'
+import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { StandardScroller } from '../utils/SmoothScroller'

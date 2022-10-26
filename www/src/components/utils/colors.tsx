@@ -1,5 +1,8 @@
 import {
-  blue, green, red, yellow,
+  blue,
+  green,
+  red,
+  yellow,
 } from 'pluralsh-design-system/dist/theme/colors'
 import { randomColor } from 'randomcolor'
 

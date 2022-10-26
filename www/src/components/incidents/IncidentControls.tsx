@@ -1,12 +1,16 @@
 import { useCallback, useState } from 'react'
 import {
-  Anchor, Box, Layer, Text,
+  Anchor,
+  Box,
+  Layer,
+  Text,
 } from 'grommet'
+import { Button, SecondaryButton } from 'forge-core'
 import {
-  Button, SecondaryButton,
-} from 'forge-core'
-import {
-  CameraIcon, CheckIcon, LightningIcon, OwnerIcon,
+  CameraIcon,
+  CheckIcon,
+  LightningIcon,
+  OwnerIcon,
 } from 'pluralsh-design-system'
 import { useMutation } from '@apollo/client'
 
@@ -20,7 +24,12 @@ import { updateCache } from '../../utils/graphql'
 import { useEditor } from '../utils/hooks'
 
 import {
-  ACCEPT_INCIDENT, COMPLETE_INCIDENT, FOLLOW, INCIDENT_Q, UNFOLLOW, ZOOM_MEETING,
+  ACCEPT_INCIDENT,
+  COMPLETE_INCIDENT,
+  FOLLOW,
+  INCIDENT_Q,
+  UNFOLLOW,
+  ZOOM_MEETING,
 } from './queries'
 
 import { IncidentStatus } from './types'

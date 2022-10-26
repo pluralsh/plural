@@ -1,10 +1,22 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { A, Flex, Span } from 'honorable'
 import {
-  Button, Checklist, ChecklistItem, ChecklistStateProps, DownloadIcon, MarketIcon, TerminalIcon, Toast,
+  Button,
+  Checklist,
+  ChecklistItem,
+  ChecklistStateProps,
+  DownloadIcon,
+  MarketIcon,
+  TerminalIcon,
+  Toast,
 } from 'pluralsh-design-system'
 import {
-  useCallback, useContext, useEffect, useMemo, useRef, useState,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
 } from 'react'
 import { useNavigate } from 'react-router-dom'
 

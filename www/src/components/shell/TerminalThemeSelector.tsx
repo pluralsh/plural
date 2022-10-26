@@ -3,7 +3,13 @@ import { Flex } from 'honorable'
 import Fuse from 'fuse.js'
 
 import {
-  Button, DropdownArrowIcon, Input, ListBoxItem, MagnifyingGlassIcon, Select, SprayIcon,
+  Button,
+  DropdownArrowIcon,
+  Input,
+  ListBoxItem,
+  MagnifyingGlassIcon,
+  Select,
+  SprayIcon,
 } from 'pluralsh-design-system'
 
 import TerminalThemeContext from '../../contexts/TerminalThemeContext'

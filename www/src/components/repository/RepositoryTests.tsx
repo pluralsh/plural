@@ -1,10 +1,17 @@
 import {
-  useContext, useEffect, useMemo, useRef, useState,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
 } from 'react'
 import { useApolloClient, useSubscription } from '@apollo/client'
 import moment from 'moment'
 import {
-  Div, Flex, P, Span,
+  Div,
+  Flex,
+  P,
+  Span,
 } from 'honorable'
 import { XTerm } from 'xterm-for-react'
 import { FitAddon } from 'xterm-addon-fit'

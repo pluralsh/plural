@@ -1,11 +1,20 @@
 import { useQuery } from '@apollo/client'
 import { Box } from 'grommet'
 import {
-  Button, Flex, MenuItem, P, Select, Span,
+  Button,
+  Flex,
+  MenuItem,
+  P,
+  Select,
+  Span,
 } from 'honorable'
 import moment from 'moment'
 import {
-  Chip, ClusterIcon, ReloadIcon, StatusIpIcon, StatusOkIcon,
+  Chip,
+  ClusterIcon,
+  ReloadIcon,
+  StatusIpIcon,
+  StatusOkIcon,
 } from 'pluralsh-design-system'
 import { useEffect, useMemo, useState } from 'react'
 
@@ -19,7 +28,10 @@ import { StandardScroller } from '../utils/SmoothScroller'
 import { ConsoleButton } from './ConsoleButton'
 
 import {
-  QUEUE, QUEUES, UPGRADE_QUEUE_SUB, UPGRADE_SUB,
+  QUEUE,
+  QUEUES,
+  UPGRADE_QUEUE_SUB,
+  UPGRADE_SUB,
 } from './queries'
 
 function QueueItem({ q }) {

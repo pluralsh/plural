@@ -1,5 +1,8 @@
 import {
-  useCallback, useEffect, useMemo, useState,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
 } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -32,9 +35,7 @@ import OnboardingWrapper from './OnboardingWrapper'
 import CloudSelect from './cloud/CloudSelect'
 import CloudBuild from './cloud/CloudBuild'
 import CloudCredentials from './cloud/CloudCredentials'
-import CloudWorkspace, {
-  CLOUD_WORKSPACE_VALIDATIONS,
-} from './cloud/CloudWorkspace'
+import CloudWorkspace, { CLOUD_WORKSPACE_VALIDATIONS } from './cloud/CloudWorkspace'
 import CloudLaunch from './cloud/CloudLaunch'
 // CLI
 import CliInstallation from './cli/CliInstallation'

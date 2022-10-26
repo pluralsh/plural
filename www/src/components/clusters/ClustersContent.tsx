@@ -2,10 +2,16 @@ import { useQuery } from '@apollo/client'
 import { Flex, P } from 'honorable'
 import moment from 'moment'
 import {
-  Button, Chip, LoopingLogo, PageTitle,
+  Button,
+  Chip,
+  LoopingLogo,
+  PageTitle,
 } from 'pluralsh-design-system'
 import {
-  ReactElement, useContext, useEffect, useState,
+  ReactElement,
+  useContext,
+  useEffect,
+  useState,
 } from 'react'
 
 import QueueContext from '../../contexts/QueueContext'

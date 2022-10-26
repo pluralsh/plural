@@ -7,7 +7,10 @@ import { useMemo, useRef } from 'react'
 import moment from 'moment'
 import {
   Codeline,
-  PageTitle, SubTab, TabList, TabPanel,
+  PageTitle,
+  SubTab,
+  TabList,
+  TabPanel,
 } from 'pluralsh-design-system'
 import { generateColor } from 'components/utils/colors'
 

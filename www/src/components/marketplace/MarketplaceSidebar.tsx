@@ -2,7 +2,10 @@ import { useState } from 'react'
 import { useQuery } from '@apollo/client'
 import { useSearchParams } from 'react-router-dom'
 import {
-  A, Accordion, Div, P,
+  A,
+  Accordion,
+  Div,
+  P,
 } from 'honorable'
 import { Checkbox, CloseIcon, Input } from 'pluralsh-design-system'
 import Fuse from 'fuse.js'

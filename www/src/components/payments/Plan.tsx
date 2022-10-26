@@ -3,10 +3,19 @@ import './plan.css'
 import { useCallback, useContext, useState } from 'react'
 import styled from 'styled-components'
 import {
-  Check as Checkmark, Edit, Group, HoveredBackground, Reload as Refresh,
+  Check as Checkmark,
+  Edit,
+  Group,
+  HoveredBackground,
+  Reload as Refresh,
 } from 'forge-core'
 import {
-  Anchor, Box, Collapsible, Layer, Stack, Text,
+  Anchor,
+  Box,
+  Collapsible,
+  Layer,
+  Stack,
+  Text,
 } from 'grommet'
 import { CreditCardIcon } from 'pluralsh-design-system'
 import { normalizeColor } from 'grommet/utils'

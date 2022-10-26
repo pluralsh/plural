@@ -1,11 +1,12 @@
 import { useMemo, useState } from 'react'
 import {
-  A, Button, Div, Flex, P,
+  A,
+  Button,
+  Div,
+  Flex,
+  P,
 } from 'honorable'
-import {
-  Callout,
-  Codeline,
-} from 'pluralsh-design-system'
+import { Callout, Codeline } from 'pluralsh-design-system'
 
 import styled from 'styled-components'
 

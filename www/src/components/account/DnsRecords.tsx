@@ -1,7 +1,11 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
 import {
-  Avatar, Button, Div, Flex, Span,
+  Avatar,
+  Button,
+  Div,
+  Flex,
+  Span,
 } from 'honorable'
 import moment from 'moment'
 import { useState } from 'react'
@@ -11,7 +15,10 @@ import { Placeholder } from 'components/utils/Placeholder'
 import { ArrowLeftIcon } from 'pluralsh-design-system'
 
 import {
-  deepUpdate, extendConnection, removeConnection, updateCache,
+  deepUpdate,
+  extendConnection,
+  removeConnection,
+  updateCache,
 } from '../../utils/graphql'
 
 import { DeleteIconButton } from '../utils/IconButtons'

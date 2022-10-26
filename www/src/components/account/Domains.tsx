@@ -3,7 +3,10 @@ import { Box } from 'grommet'
 import { Avatar, Flex, Span } from 'honorable'
 import moment from 'moment'
 import {
-  ListBoxItem, Modal, PageTitle, SearchIcon,
+  ListBoxItem,
+  Modal,
+  PageTitle,
+  SearchIcon,
 } from 'pluralsh-design-system'
 import { useCallback, useMemo, useState } from 'react'
 

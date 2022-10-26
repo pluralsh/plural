@@ -1,6 +1,4 @@
-import {
-  GitHubLogoIcon, GitLabLogoIcon, GoogleLogoIcon,
-} from 'pluralsh-design-system'
+import { GitHubLogoIcon, GitLabLogoIcon, GoogleLogoIcon } from 'pluralsh-design-system'
 
 export const obscure = token => token.substring(0, 9) + 'x'.repeat(15)
 

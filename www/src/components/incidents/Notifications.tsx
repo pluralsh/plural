@@ -2,7 +2,10 @@ import { useEffect } from 'react'
 import { Box, Text } from 'grommet'
 import { Scroller } from 'forge-core'
 import {
-  useApolloClient, useMutation, useQuery, useSubscription,
+  useApolloClient,
+  useMutation,
+  useQuery,
+  useSubscription,
 } from '@apollo/client'
 import moment from 'moment'
 import truncate from 'lodash/truncate'
@@ -10,7 +13,10 @@ import truncate from 'lodash/truncate'
 import Avatar from '../users/Avatar'
 
 import {
-  appendConnection, extendConnection, updateCache, updateFragment,
+  appendConnection,
+  extendConnection,
+  updateCache,
+  updateFragment,
 } from '../../utils/graphql'
 
 import { IncidentFragment } from '../../models/incidents'

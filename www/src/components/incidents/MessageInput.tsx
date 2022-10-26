@@ -1,17 +1,29 @@
 import {
-  createContext, useCallback, useContext, useRef, useState,
+  createContext,
+  useCallback,
+  useContext,
+  useRef,
+  useState,
 } from 'react'
 import { FilePicker } from 'react-file-picker'
 import { useMutation } from '@apollo/client'
 import {
-  Box, Drop, Keyboard, Layer, Stack, Text,
+  Box,
+  Drop,
+  Keyboard,
+  Layer,
+  Stack,
+  Text,
 } from 'grommet'
 import { MoonLoader, SyncLoader } from 'react-spinners'
 import { Progress } from 'react-sweet-progress'
 import { Editor as SlateEditor, Transforms } from 'slate'
 import { useParams } from 'react-router-dom'
 import {
-  Attachment, Close, Emoji, SendMessage,
+  Attachment,
+  Close,
+  Emoji,
+  SendMessage,
 } from 'forge-core'
 import fs from 'filesize'
 import { NimbleEmoji, emojiIndex } from 'emoji-mart'

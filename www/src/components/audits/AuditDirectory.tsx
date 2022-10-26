@@ -1,8 +1,4 @@
-import {
-  ResponsiveLayoutContentContainer,
-  ResponsiveLayoutSidenavContainer,
-  ResponsiveLayoutSpacer,
-} from 'components/layout/ResponsiveLayout'
+import { ResponsiveLayoutContentContainer, ResponsiveLayoutSidenavContainer, ResponsiveLayoutSpacer } from 'components/layout/ResponsiveLayout'
 import { Flex } from 'honorable'
 import { Tab, TabList } from 'pluralsh-design-system'
 import { Outlet, useLocation } from 'react-router-dom'

@@ -9,11 +9,7 @@ import {
 } from 'pluralsh-design-system'
 import { useContext, useState } from 'react'
 
-import {
-  fetchToken,
-  setPreviousUserData,
-  setToken,
-} from '../../helpers/authentication'
+import { fetchToken, setPreviousUserData, setToken } from '../../helpers/authentication'
 
 import { canEdit } from '../users/EditAccount'
 import CurrentUserContext from '../../contexts/CurrentUserContext'

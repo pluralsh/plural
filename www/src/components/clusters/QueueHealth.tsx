@@ -1,5 +1,8 @@
 import {
-  useContext, useEffect, useMemo, useState,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
 } from 'react'
 import { Box, ThemeContext } from 'grommet'
 import { normalizeColor } from 'grommet/utils'

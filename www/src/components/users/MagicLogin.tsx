@@ -1,21 +1,46 @@
 import {
-  createElement, useCallback, useEffect, useState,
+  createElement,
+  useCallback,
+  useEffect,
+  useState,
 } from 'react'
 import {
-  Box, Collapsible, Form, Keyboard, Text,
+  Box,
+  Collapsible,
+  Form,
+  Keyboard,
+  Text,
 } from 'grommet'
 import {
-  Divider, FormField, LoadingSpinner, StatusOkIcon,
+  Divider,
+  FormField,
+  LoadingSpinner,
+  StatusOkIcon,
 } from 'pluralsh-design-system'
 import {
-  useApolloClient, useLazyQuery, useMutation, useQuery,
+  useApolloClient,
+  useLazyQuery,
+  useMutation,
+  useQuery,
 } from '@apollo/client'
 import {
-  Navigate, useLocation, useNavigate, useParams,
+  Navigate,
+  useLocation,
+  useNavigate,
+  useParams,
 } from 'react-router-dom'
 import queryString from 'query-string'
 import {
-  A, Article, Button, Div, Flex, H2, Icon, Img, Input, P,
+  A,
+  Article,
+  Button,
+  Div,
+  Flex,
+  H2,
+  Icon,
+  Img,
+  Input,
+  P,
 } from 'honorable'
 import { useResizeDetector } from 'react-resize-detector'
 import useScript from 'react-script-hook'
@@ -31,7 +56,12 @@ import { host } from '../../helpers/hostname'
 import { useHistory } from '../../router'
 
 import {
-  METHOD_ICONS, getDeviceToken, saveChallenge, saveDeviceToken, wipeChallenge, wipeDeviceToken,
+  METHOD_ICONS,
+  getDeviceToken,
+  saveChallenge,
+  saveDeviceToken,
+  wipeChallenge,
+  wipeDeviceToken,
 } from './utils'
 import { LoginMethod } from './types'
 import {

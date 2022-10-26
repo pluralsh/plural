@@ -22,10 +22,18 @@ import {
 import { Placeholder } from 'components/utils/Placeholder'
 
 import {
-  appendConnection, deepUpdate, extendConnection, removeConnection, updateCache,
+  appendConnection,
+  deepUpdate,
+  extendConnection,
+  removeConnection,
+  updateCache,
 } from '../../utils/graphql'
 import {
-  CREATE_TOKEN, DELETE_TOKEN, TOKENS_Q, TOKEN_AUDITS, TOKEN_METRICS,
+  CREATE_TOKEN,
+  DELETE_TOKEN,
+  TOKENS_Q,
+  TOKEN_AUDITS,
+  TOKEN_METRICS,
 } from '../users/queries'
 import { obscure } from '../users/utils'
 import { LoopingLogo } from '../utils/AnimatedLogo'

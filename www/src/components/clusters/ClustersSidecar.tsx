@@ -1,7 +1,10 @@
 import { A, Flex } from 'honorable'
 import moment from 'moment'
 import {
-  ArrowTopRightIcon, Button, Sidecar, SidecarItem,
+  ArrowTopRightIcon,
+  Button,
+  Sidecar,
+  SidecarItem,
 } from 'pluralsh-design-system'
 import { ReactElement, useContext } from 'react'
 

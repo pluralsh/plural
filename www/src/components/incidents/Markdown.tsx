@@ -1,8 +1,15 @@
 import {
-  cloneElement, memo, useRef, useState,
+  cloneElement,
+  memo,
+  useRef,
+  useState,
 } from 'react'
 import {
-  Anchor, Box, Drop, Markdown, Text,
+  Anchor,
+  Box,
+  Drop,
+  Markdown,
+  Text,
 } from 'grommet'
 import { TooltipContent } from 'forge-core'
 import sortBy from 'lodash/sortBy'

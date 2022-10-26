@@ -4,9 +4,9 @@ import { Button, CloudIcon } from 'pluralsh-design-system'
 
 import { persistProvider } from 'components/shell/persistance'
 
-import CurrentUserContext from '../../contexts/CurrentUserContext'
-
 import { OnboardingStatus } from 'components/profile/types'
+
+import CurrentUserContext from '../../contexts/CurrentUserContext'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'
 

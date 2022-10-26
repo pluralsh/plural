@@ -1,7 +1,10 @@
 import { gql } from '@apollo/client'
 
 import {
-  CategoryFragment, InstallationFragment, RepoFragment, StackFragment,
+  CategoryFragment,
+  InstallationFragment,
+  RepoFragment,
+  StackFragment,
 } from '../../models/repo'
 import { PageInfo } from '../../models/misc'
 

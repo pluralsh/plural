@@ -5,11 +5,7 @@ import {
   useMemo,
   useState,
 } from 'react'
-import {
-  Link,
-  useNavigate,
-  useSearchParams,
-} from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useQuery } from '@apollo/client'
 import {
   Button,

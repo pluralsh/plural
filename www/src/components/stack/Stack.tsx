@@ -1,17 +1,27 @@
 import { useQuery } from '@apollo/client'
 import { Outlet, useLocation, useParams } from 'react-router-dom'
 import {
-  Div, Flex, P, Span,
+  Div,
+  Flex,
+  P,
+  Span,
 } from 'honorable'
 
 import { GoBack } from 'components/utils/GoBack'
 
 import {
-  ResponsiveLayoutContentContainer, ResponsiveLayoutSidecarContainer, ResponsiveLayoutSidenavContainer, ResponsiveLayoutSpacer,
+  ResponsiveLayoutContentContainer,
+  ResponsiveLayoutSidecarContainer,
+  ResponsiveLayoutSidenavContainer,
+  ResponsiveLayoutSpacer,
 } from 'components/layout/ResponsiveLayout'
 
 import {
-  StackIcon, Tab, TabList, TabPanel, VerifiedIcon,
+  StackIcon,
+  Tab,
+  TabList,
+  TabPanel,
+  VerifiedIcon,
 } from 'pluralsh-design-system'
 
 import { useRef } from 'react'

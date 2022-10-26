@@ -1,10 +1,21 @@
 import { useContext, useState } from 'react'
 import moment from 'moment'
 import {
-  Flex, H2, Modal, P, Span, Tooltip,
+  Flex,
+  H2,
+  Modal,
+  P,
+  Span,
+  Tooltip,
 } from 'honorable'
 import {
-  AppleLogoIcon, Code, DownloadIcon, FileIcon, ListIcon, UbuntuLogoIcon, WindowsLogoIcon,
+  AppleLogoIcon,
+  Code,
+  DownloadIcon,
+  FileIcon,
+  ListIcon,
+  UbuntuLogoIcon,
+  WindowsLogoIcon,
 } from 'pluralsh-design-system'
 import fs from 'filesize'
 

@@ -1,9 +1,16 @@
 import {
-  useCallback, useContext, useMemo, useRef, useState,
+  useCallback,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
 } from 'react'
 import { useQuery } from '@apollo/client'
 import {
-  Box, Drop, Text, TextInput,
+  Box,
+  Drop,
+  Text,
+  TextInput,
 } from 'grommet'
 import { Bundle, Incidents as IncidentsI, Explore as Search } from 'forge-core'
 import { Checkmark as CheckIcon } from 'pluralsh-design-system'
@@ -19,10 +26,16 @@ import { ReturnToBeginning } from '../utils/ReturnToBeginning'
 import { INCIDENTS_Q, REPOS_Q } from './queries'
 import { RepoOption } from './CreateIncident'
 import {
-  FilterSelect, IncidentRow, IncidentToolbar, IncidentViewContext,
+  FilterSelect,
+  IncidentRow,
+  IncidentToolbar,
+  IncidentViewContext,
 } from './Incidents'
 import {
-  IncidentFilter, IncidentSort, IncidentStatus, Order,
+  IncidentFilter,
+  IncidentSort,
+  IncidentStatus,
+  Order,
 } from './types'
 
 function Placeholder() {

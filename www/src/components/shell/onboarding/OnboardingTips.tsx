@@ -1,5 +1,8 @@
 import {
-  A, Code, Div, P,
+  A,
+  Code,
+  Div,
+  P,
 } from 'honorable'
 import { TipCarousel } from 'pluralsh-design-system'
 

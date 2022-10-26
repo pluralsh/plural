@@ -1,6 +1,9 @@
 import { Flex } from 'honorable'
 import {
-  PageCard, Tab, TabList, TabPanel,
+  PageCard,
+  Tab,
+  TabList,
+  TabPanel,
 } from 'pluralsh-design-system'
 import { Outlet, useLocation } from 'react-router-dom'
 
@@ -8,11 +11,7 @@ import { useContext, useRef } from 'react'
 
 import { LinkTabWrap } from '../utils/Tabs'
 
-import {
-  ResponsiveLayoutContentContainer,
-  ResponsiveLayoutSidenavContainer,
-  ResponsiveLayoutSpacer,
-} from '../layout/ResponsiveLayout'
+import { ResponsiveLayoutContentContainer, ResponsiveLayoutSidenavContainer, ResponsiveLayoutSpacer } from '../layout/ResponsiveLayout'
 import { CurrentUserContext } from '../login/CurrentUser'
 
 const DIRECTORY = [

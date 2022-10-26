@@ -1,5 +1,9 @@
 import {
-  Div, H2, P, RadioGroup, Text,
+  Div,
+  H2,
+  P,
+  RadioGroup,
+  Text,
 } from 'honorable'
 import { Radio } from 'pluralsh-design-system'
 

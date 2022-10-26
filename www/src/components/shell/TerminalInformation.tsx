@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import {
-  Codeline, Divider, InfoIcon,
-} from 'pluralsh-design-system'
+import { Codeline, Divider, InfoIcon } from 'pluralsh-design-system'
 
 import {
-  Button, Flex, Modal, Span,
+  Button,
+  Flex,
+  Modal,
+  Span,
 } from 'honorable'
 
 const CLOUDS = {

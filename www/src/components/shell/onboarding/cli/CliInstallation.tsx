@@ -1,11 +1,22 @@
 import {
-  useContext, useMemo, useRef, useState,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
 } from 'react'
 import {
-  A, Div, Flex, P,
+  A,
+  Div,
+  Flex,
+  P,
 } from 'honorable'
 import {
-  Button, Code, Codeline, Tab, TabList, TabPanel,
+  Button,
+  Code,
+  Codeline,
+  Tab,
+  TabList,
+  TabPanel,
 } from 'pluralsh-design-system'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'

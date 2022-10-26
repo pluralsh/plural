@@ -2,7 +2,13 @@ import { gql } from '@apollo/client'
 
 import { RepoFragment } from '../../models/repo'
 import {
-  FileFragment, FollowerFragment, IncidentFragment, IncidentHistoryFragment, IncidentMessageFragment, NotificationFragment, PostmortemFragment,
+  FileFragment,
+  FollowerFragment,
+  IncidentFragment,
+  IncidentHistoryFragment,
+  IncidentMessageFragment,
+  NotificationFragment,
+  PostmortemFragment,
 } from '../../models/incidents'
 import { PageInfo } from '../../models/misc'
 

@@ -1,5 +1,11 @@
 import {
-  Box, Table, TableBody, TableCell, TableHeader, TableRow, Text,
+  Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableHeader,
+  TableRow,
+  Text,
 } from 'grommet'
 
 function NoInformation() {

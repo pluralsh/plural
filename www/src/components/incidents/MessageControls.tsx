@@ -1,9 +1,15 @@
 import {
-  useCallback, useContext, useRef, useState,
+  useCallback,
+  useContext,
+  useRef,
+  useState,
 } from 'react'
 import { Box, Drop, Text } from 'grommet'
 import {
-  Edit, Emoji, TooltipContent, Trash,
+  Edit,
+  Emoji,
+  TooltipContent,
+  Trash,
 } from 'forge-core'
 import { useMutation } from '@apollo/client'
 import { useParams } from 'react-router-dom'

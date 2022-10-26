@@ -1,12 +1,31 @@
 import {
-  createContext, useCallback, useContext, useEffect, useMemo, useRef, useState,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
 } from 'react'
 import {
-  Box, Drop, Text, TextInput, ThemeContext,
+  Box,
+  Drop,
+  Text,
+  TextInput,
+  ThemeContext,
 } from 'grommet'
 import { Button } from 'forge-core'
 import {
-  CaretRightIcon, CheckIcon, CloseIcon, FiltersIcon, LightningIcon, PersonIcon, SearchIcon, SortAscIcon, SortDescIcon, TagIcon,
+  CaretRightIcon,
+  CheckIcon,
+  CloseIcon,
+  FiltersIcon,
+  LightningIcon,
+  PersonIcon,
+  SearchIcon,
+  SortAscIcon,
+  SortDescIcon,
+  TagIcon,
 } from 'pluralsh-design-system'
 import { useQuery } from '@apollo/client'
 
@@ -32,7 +51,10 @@ import { CreateIncident } from './CreateIncident'
 import { Status } from './IncidentStatus'
 import { Severity } from './Severity'
 import {
-  IncidentFilter, IncidentSort, IncidentSortNames, Order,
+  IncidentFilter,
+  IncidentSort,
+  IncidentSortNames,
+  Order,
 } from './types'
 import { SlaTimer } from './SlaTimer'
 import { INCIDENTS_Q } from './queries'

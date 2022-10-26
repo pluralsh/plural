@@ -1,10 +1,24 @@
 import { useCallback, useRef, useState } from 'react'
 import styled from 'styled-components'
 import {
-  Box, Collapsible, Drop, Markdown, Table, TableBody, TableCell, TableRow, Text,
+  Box,
+  Collapsible,
+  Drop,
+  Markdown,
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+  Text,
 } from 'grommet'
 import {
-  AppleLogoIcon, CaretLeftIcon, DownloadIcon, FileIcon, ListIcon, UbuntuLogoIcon, WindowsLogoIcon,
+  AppleLogoIcon,
+  CaretLeftIcon,
+  DownloadIcon,
+  FileIcon,
+  ListIcon,
+  UbuntuLogoIcon,
+  WindowsLogoIcon,
 } from 'pluralsh-design-system'
 import { Copyable } from 'forge-core'
 import { normalizeColor } from 'grommet/utils'

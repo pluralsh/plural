@@ -2,7 +2,10 @@ import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
 import { Button, Div, Span } from 'honorable'
 import {
-  ContentCard, PageTitle, StatusOkIcon, ValidatedInput,
+  ContentCard,
+  PageTitle,
+  StatusOkIcon,
+  ValidatedInput,
 } from 'pluralsh-design-system'
 import { createElement, useContext, useState } from 'react'
 import { Password } from 'forge-core'

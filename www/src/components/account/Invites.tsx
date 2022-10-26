@@ -12,11 +12,7 @@ import { Placeholder } from 'components/utils/Placeholder'
 import CopyableButton from '../utils/CopyableButton'
 import { List, ListItem } from '../utils/List'
 
-import {
-  extendConnection,
-  removeConnection,
-  updateCache,
-} from '../../utils/graphql'
+import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
 
 import { DeleteIconButton } from '../utils/IconButtons'
 import { StandardScroller } from '../utils/SmoothScroller'

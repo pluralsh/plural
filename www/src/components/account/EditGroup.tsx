@@ -16,11 +16,7 @@ import { appendConnection, updateCache } from '../../utils/graphql'
 
 import { GqlError } from '../utils/Alert'
 
-import {
-  CREATE_GROUP_MEMBERS,
-  GROUP_MEMBERS,
-  UPDATE_GROUP,
-} from './queries'
+import { CREATE_GROUP_MEMBERS, GROUP_MEMBERS, UPDATE_GROUP } from './queries'
 
 import { Actions } from './Actions'
 import { fetchUsers } from './Typeaheads'

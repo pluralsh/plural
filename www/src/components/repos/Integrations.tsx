@@ -3,10 +3,17 @@ import { useQuery } from '@apollo/client'
 import styled from 'styled-components'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
-  Carousel, HoveredBackground, ScrollableContainer, Scroller,
+  Carousel,
+  HoveredBackground,
+  ScrollableContainer,
+  Scroller,
 } from 'forge-core'
 import {
-  Anchor, Box, Stack, Text, ThemeContext,
+  Anchor,
+  Box,
+  Stack,
+  Text,
+  ThemeContext,
 } from 'grommet'
 import { ArrowRightIcon, CaretLeftIcon } from 'pluralsh-design-system'
 import { normalizeColor } from 'grommet/utils'

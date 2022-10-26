@@ -1,16 +1,26 @@
 import {
-  useCallback, useContext, useEffect, useMemo, useState,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
 } from 'react'
 import { Button, Scroller } from 'forge-core'
 import { Editable, Slate } from 'slate-react'
 import { useMutation, useQuery, useSubscription } from '@apollo/client'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
-  Box, Layer, Text, TextInput,
+  Box,
+  Layer,
+  Text,
+  TextInput,
 } from 'grommet'
 import moment from 'moment'
 import {
-  CloseIcon, FileIcon, MessagesIcon, PencilIcon,
+  CloseIcon,
+  FileIcon,
+  MessagesIcon,
+  PencilIcon,
 } from 'pluralsh-design-system'
 
 import { ModalHeader } from '../ModalHeader'
@@ -27,7 +37,11 @@ import Avatar from '../users/Avatar'
 
 import Markdown from './Markdown'
 import {
-  DELETE_INCIDENT, INCIDENT_Q, INCIDENT_SUB, MESSAGE_SUB, UPDATE_INCIDENT,
+  DELETE_INCIDENT,
+  INCIDENT_Q,
+  INCIDENT_SUB,
+  MESSAGE_SUB,
+  UPDATE_INCIDENT,
 } from './queries'
 import { Severity } from './Severity'
 import { Status } from './IncidentStatus'

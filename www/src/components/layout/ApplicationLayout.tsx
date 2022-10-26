@@ -1,5 +1,8 @@
 import {
-  A, Flex, Span, Text,
+  A,
+  Flex,
+  Span,
+  Text,
 } from 'honorable'
 import { ErrorIcon, Toast } from 'pluralsh-design-system'
 import { useContext } from 'react'

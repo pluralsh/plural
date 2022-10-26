@@ -1,11 +1,18 @@
 import { useState } from 'react'
 import { Box, Collapsible } from 'grommet'
 import {
-  Chip, CollapseIcon, ErrorIcon, PageTitle,
+  Chip,
+  CollapseIcon,
+  ErrorIcon,
+  PageTitle,
 } from 'pluralsh-design-system'
 
 import {
-  Button, Div, Flex, H2, Span,
+  Button,
+  Div,
+  Flex,
+  H2,
+  Span,
 } from 'honorable'
 
 import Clamp from 'react-multiline-clamp'
@@ -17,7 +24,10 @@ import capitalize from 'lodash/capitalize'
 import { Table, TableData, TableRow } from '../../utils/Table'
 
 import {
-  PackageActions, PackageGrade, PackageProperty, chipSeverity,
+  PackageActions,
+  PackageGrade,
+  PackageProperty,
+  chipSeverity,
 } from './misc'
 
 function ScanViolation({ violation, last }) {

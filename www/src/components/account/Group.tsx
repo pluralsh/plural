@@ -6,11 +6,7 @@ import { Div } from 'honorable'
 
 import { Placeholder } from 'components/utils/Placeholder'
 
-import {
-  extendConnection,
-  removeConnection,
-  updateCache,
-} from '../../utils/graphql'
+import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
 
 import { DeleteIconButton } from '../utils/IconButtons'
 

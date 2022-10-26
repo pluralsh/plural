@@ -1,9 +1,5 @@
-import {
-  useContext, useEffect,
-} from 'react'
-import {
-  Box, ThemeContext,
-} from 'grommet'
+import { useContext, useEffect } from 'react'
+import { Box, ThemeContext } from 'grommet'
 
 import { useParams } from 'react-router-dom'
 

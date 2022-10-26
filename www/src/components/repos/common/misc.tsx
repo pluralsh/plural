@@ -1,9 +1,17 @@
 import {
-  Div, Flex, H2, Img, Span,
+  Div,
+  Flex,
+  H2,
+  Img,
+  Span,
 } from 'honorable'
 import { Box } from 'grommet'
 import {
-  Chip, ListBoxFooterPlus, ListBoxItem, ListBoxItemChipList, Select,
+  Chip,
+  ListBoxFooterPlus,
+  ListBoxItem,
+  ListBoxItemChipList,
+  Select,
 } from 'pluralsh-design-system'
 import { extendConnection } from 'utils/graphql'
 

@@ -1,11 +1,17 @@
 import { useMutation, useQuery } from '@apollo/client'
 import {
-  Notification as NotificationT, NotificationType, OnboardingChecklistState, User,
+  Notification as NotificationT,
+  NotificationType,
+  OnboardingChecklistState,
+  User,
 } from 'generated/graphql'
 import { Div, Flex, P } from 'honorable'
 import moment from 'moment'
 import {
-  AppIcon, Button, Card, Markdown,
+  AppIcon,
+  Button,
+  Card,
+  Markdown,
 } from 'pluralsh-design-system'
 import { ReactElement, useCallback, useContext } from 'react'
 import { Link } from 'react-router-dom'

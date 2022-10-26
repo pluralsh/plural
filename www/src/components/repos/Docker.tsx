@@ -1,9 +1,15 @@
 import {
-  useContext, useEffect, useRef, useState,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
 } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
 import {
-  Outlet, useLocation, useNavigate, useParams,
+  Outlet,
+  useLocation,
+  useNavigate,
+  useParams,
 } from 'react-router-dom'
 import moment from 'moment'
 import { Box } from 'grommet'
@@ -25,7 +31,10 @@ import { Flex } from 'honorable'
 import { GoBack } from 'components/utils/GoBack'
 
 import {
-  ResponsiveLayoutContentContainer, ResponsiveLayoutSidecarContainer, ResponsiveLayoutSidenavContainer, ResponsiveLayoutSpacer,
+  ResponsiveLayoutContentContainer,
+  ResponsiveLayoutSidecarContainer,
+  ResponsiveLayoutSidenavContainer,
+  ResponsiveLayoutSpacer,
 } from 'components/layout/ResponsiveLayout'
 
 import { LinkTabWrap } from 'components/utils/Tabs'
@@ -37,7 +46,10 @@ import { PluralConfigurationContext } from '../login/CurrentUser'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
 import {
-  PackageGrade, PackageHeader, PackageProperty, dockerPull,
+  PackageGrade,
+  PackageHeader,
+  PackageProperty,
+  dockerPull,
 } from './common/misc'
 
 import { DetailContainer } from './Installation'

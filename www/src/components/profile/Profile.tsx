@@ -14,11 +14,7 @@ import { useFilePicker } from 'react-sage'
 
 import { CurrentUserContext } from '../login/CurrentUser'
 import { UPDATE_USER } from '../users/queries'
-import {
-  DEFAULT_CHART_ICON,
-  DarkProviderIcons,
-  ProviderIcons,
-} from '../repos/constants'
+import { DEFAULT_CHART_ICON, DarkProviderIcons, ProviderIcons } from '../repos/constants'
 
 function Attribute({ header, children }) {
   return (

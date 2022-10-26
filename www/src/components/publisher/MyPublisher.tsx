@@ -1,7 +1,10 @@
 import { useContext, useEffect, useState } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
 import {
-  Button, Edit, InputCollection, ListView as List,
+  Button,
+  Edit,
+  InputCollection,
+  ListView as List,
 } from 'forge-core'
 import { Anchor, Box, Text } from 'grommet'
 import { CreditCardIcon, PlusIcon } from 'pluralsh-design-system'

@@ -4,10 +4,16 @@ import { useContext, useRef, useState } from 'react'
 import { Box } from 'grommet'
 import { useMutation, useQuery } from '@apollo/client'
 import {
-  Link, Outlet, useLocation, useParams,
+  Link,
+  Outlet,
+  useLocation,
+  useParams,
 } from 'react-router-dom'
 import {
-  Button, Tab, TabList, TabPanel,
+  Button,
+  Tab,
+  TabList,
+  TabPanel,
 } from 'pluralsh-design-system'
 import moment from 'moment'
 
@@ -29,7 +35,11 @@ import { LinkTabWrap } from '../utils/Tabs'
 import { PluralConfigurationContext } from '../login/CurrentUser'
 
 import {
-  PackageGrade, PackageHeader, PackageProperty, PackageVersionPicker, dockerPull,
+  PackageGrade,
+  PackageHeader,
+  PackageProperty,
+  PackageVersionPicker,
+  dockerPull,
 } from './common/misc'
 
 import { CHART_Q, INSTALL_CHART, UPDATE_CHART_INST } from './queries'

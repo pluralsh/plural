@@ -1,18 +1,20 @@
 import {
-  useCallback, useContext, useEffect, useState,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
 } from 'react'
 import {
-  Flex, MenuItem, Select, Text,
+  Flex,
+  MenuItem,
+  Select,
+  Text,
 } from 'honorable'
 import { FileIcon, FormField } from 'pluralsh-design-system'
 import usePrevious from 'hooks/usePrevious'
 import { useTheme } from 'styled-components'
 
-import {
-  AttachmentContext,
-  AttachmentProvider,
-  Dropzone,
-} from '../../../incidents/AttachmentProvider'
+import { AttachmentContext, AttachmentProvider, Dropzone } from '../../../incidents/AttachmentProvider'
 import { isAlphanumeric, stringExists } from '../../validation'
 
 const ZONES = [

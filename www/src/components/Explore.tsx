@@ -1,6 +1,11 @@
 import './explore.css'
 import {
-  createContext, useCallback, useContext, useEffect, useMemo, useState,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
 } from 'react'
 import { useQuery } from '@apollo/client'
 import { Box, Collapsible, Text } from 'grommet'
@@ -14,9 +19,10 @@ import { extendConnection } from '../utils/graphql'
 
 import { ignoreEvent } from '../utils/ignore-event'
 
-import { CurrentUserContext } from './login/CurrentUser'
+import BreadcrumbsContext from '../contexts/BreadcrumbsContext'
+import CurrentUserContext from '../contexts/CurrentUserContext'
+
 import { SafeLink } from './utils/Link'
-import { BreadcrumbsContext } from './Breadcrumbs'
 import { RepoIcon, RepoName } from './repos/Repositories'
 import { Tag } from './repos/Tags'
 import { CATEGORIES, CATEGORY, EXPLORE_REPOS } from './repos/queries'
@@ -151,8 +157,12 @@ function Placeholder() {
 }
 
 function Repositories({
-  edges, pageInfo, loading, fetchMore, setTag,
-}) {
+  edges,
+  pageInfo,
+  loading,
+  fetchMore,
+  setTag,
+}: any) {
   const [listRef, setListRef] = useState(null)
 
   return (
@@ -238,7 +248,7 @@ function Category({
         align="center"
         hoverIndicator="fill-one"
         pad={{ horizontal: 'small', vertical: 'xsmall' }}
-        border={open ? { side: 'bottom' } : null}
+        border={open ? { side: 'bottom' } : undefined}
         onClick={() => setOpen(!open)}
       >
         <Box
@@ -317,7 +327,7 @@ function filters(tab, me) {
   return {}
 }
 
-export const SectionContext = createContext({})
+export const SectionContext = createContext<any>({})
 
 export function SectionPortal({ children }) {
   const { ref } = useContext(SectionContext)
@@ -329,9 +339,9 @@ export function SectionPortal({ children }) {
   )
 }
 
-export function SectionContentContainer({ header: h, children, borderLeft }) {
+export function SectionContentContainer({ header: h, children, borderLeft }: any) {
   const [header, setHeader] = useState(h)
-  const [ref, setRef] = useState(null)
+  const [ref, setRef] = useState<HTMLDivElement | null>(null)
   const id = useMemo(() => uuidv4(), [])
   const value = useMemo(() => ({ id, ref, setHeader }), [id, ref, setHeader])
 
@@ -356,7 +366,7 @@ export function SectionContentContainer({ header: h, children, borderLeft }) {
             </Text>
           </Box>
           <Box
-            ref={setRef}
+            ref={ref => setRef(ref)}
             id={id}
             flex={false}
           />
@@ -379,13 +389,13 @@ export function SectionItemContainer({
       flex={false}
       pad="small"
       round="3px"
-      background={selected ? 'fill-one' : null}
+      background={selected ? 'fill-one' : undefined}
       fill="horizontal"
       align="center"
       gap="small"
       direction="row"
       hoverIndicator="fill-one"
-      onClick={selected ? null : () => navigate(location)}
+      onClick={selected ? undefined : () => navigate(location)}
       {...props}
     >
       <Box flex={false}>

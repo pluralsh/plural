@@ -1,6 +1,14 @@
-import { useContext, useEffect, useState } from 'react'
 import {
-  Navigate, Route, Routes, useMatch,
+  useContext,
+  useEffect,
+  useState,
+} from 'react'
+import {
+  Navigate,
+  Outlet,
+  Route,
+  Routes,
+  useMatch,
 } from 'react-router-dom'
 import { StripeProvider } from 'react-stripe-elements'
 import { Toast } from 'pluralsh-design-system'
@@ -9,28 +17,45 @@ import { useFeature } from '@growthbook/growthbook-react'
 import { growthbook } from '../helpers/growthbook'
 import { useHistory } from '../router'
 
+import PluralConfigurationContext from '../contexts/PluralConfigurationContext'
+import CurrentUserContext from '../contexts/CurrentUserContext'
+
 import ApplicationLayout from './layout/ApplicationLayout'
 import BreadcrumbProvider from './Breadcrumbs'
 import Chart from './repos/Chart'
 import CloudShell from './shell/CloudShell'
+import ImagePullMetrics from './repos/common/ImagePullMetrics'
+import ImageVulnerabilities from './repos/common/ImageVulnerabilities'
 import Marketplace from './marketplace/Marketplace'
 import OAuthCallback from './shell/OAuthCallback'
+import PackageConfiguration from './repos/common/PackageConfiguration'
+import PackageDependencies from './repos/common/PackageDependencies'
+import PackageReadme from './repos/common/PackageReadme'
+import PackageSecurity from './repos/common/PackageSecurity'
+import PackageUpdateQueue from './repos/common/PackageUpdateQueue'
+import Publisher from './publisher/Publisher'
 import Repository from './repository/Repository'
 import RepositoryArtifacts from './repository/RepositoryArtifacts'
 import RepositoryDeployments from './repository/RepositoryDeployments'
 import RepositoryDescription from './repository/RepositoryDescription'
-import RepositoryEdit from './repository/RepositoryEdit.tsx'
+import RepositoryEdit from './repository/RepositoryEdit'
 import RepositoryPackages from './repository/RepositoryPackages'
 import RepositoryPackagesDocker from './repository/RepositoryPackagesDocker'
 import RepositoryPackagesHelm from './repository/RepositoryPackagesHelm'
 import RepositoryPackagesTerraform from './repository/RepositoryPackagesTerraform'
 import RepositoryTests from './repository/RepositoryTests'
+import Stack from './stack/Stack'
+import StackApps from './stack/StackApps'
 import Terraform from './repos/Terraform'
 import { AccessTokens } from './profile/AccessTokens'
 import { Account } from './account/Account'
 import { AccountAttributes } from './account/AccountAttributes'
-import { Clusters } from './clusters/Clusters.tsx'
-import { CurrentUserContext, PluralConfigurationContext, PluralProvider } from './login/CurrentUser'
+import { AuditChloropleth } from './audits/AuditChloropleth'
+import { AuditDirectory } from './audits/AuditDirectory'
+import { Audits } from './audits/Audits'
+import { ChecklistProvider, OnboardingChecklist } from './shell/onboarding/checklist/Checklist'
+import { Clusters } from './clusters/Clusters'
+import { PluralProvider } from './login/CurrentUser'
 import { DeviceLoginNotif } from './users/DeviceLoginNotif'
 import { Docker, DockerRepository } from './repos/Docker'
 import { Domains } from './account/Domains'
@@ -38,10 +63,11 @@ import { EabCredentials } from './profile/EabCredentials'
 import { EditAccount } from './users/EditAccount'
 import { Groups } from './account/Groups'
 import { IntegrationPage } from './repos/Integrations'
-import { Profile } from './profile/Profile'
+import { LoginAudits } from './audits/LoginAudits'
 import { MyProfile } from './profile/MyProfile'
 import { OIDCProvider } from './repository/OIDCProvider'
 import { OauthCreator } from './integrations/OauthCreator'
+import { Profile } from './profile/Profile'
 import { PublicKeys } from './profile/PublicKeys'
 import { Roles } from './account/Roles'
 import { Security } from './profile/Security'
@@ -50,21 +76,6 @@ import { UpgradeQueue } from './clusters/UpgradeQueue'
 import { UpgradeQueues } from './clusters/UpgradeQueues'
 import { Users } from './account/Users'
 import { VerifyEmailConfirmed } from './users/EmailConfirmation'
-import { AuditDirectory } from './audits/AuditDirectory'
-import { Audits } from './audits/Audits'
-import { LoginAudits } from './audits/LoginAudits'
-import { AuditChloropleth } from './audits/AuditChloropleth'
-import PackageReadme from './repos/common/PackageReadme'
-import PackageConfiguration from './repos/common/PackageConfiguration'
-import PackageSecurity from './repos/common/PackageSecurity'
-import PackageUpdateQueue from './repos/common/PackageUpdateQueue'
-import PackageDependencies from './repos/common/PackageDependencies'
-import ImagePullMetrics from './repos/common/ImagePullMetrics'
-import ImageVulnerabilities from './repos/common/ImageVulnerabilities'
-import Publisher from './publisher/Publisher'
-import StackApps from './stack/StackApps'
-import Stack from './stack/Stack'
-import { ChecklistProvider, OnboardingChecklist } from './shell/onboarding/checklist/Checklist'
 
 function EditBilling(props) {
   return (
@@ -102,6 +113,7 @@ function OAuthOrFallback() {
 
   return (
     <Navigate
+      // @ts-expect-error
       shellOAuthMatch={shellOAuthMatch}
       replace
       to={history.pop(me.hasInstallations ? '/installed' : '/marketplace')}
@@ -143,7 +155,7 @@ export function PluralInner() {
             <VerifyEmailConfirmed />
             <DeviceLoginNotif />
             <TestBanner />
-            { isChecklistEnabled && (
+            {isChecklistEnabled && (
               <OnboardingChecklist />
             )}
             <Routes>
@@ -344,11 +356,6 @@ export function PluralInner() {
               />
               {/* --- ACCOUNT --- */}
               <Route
-                path="/account/edit/:section/*"
-                element={<EditAccount />}
-              />
-              <Route
-                exact
                 path="/account"
                 element={<Account />}
               >
@@ -363,8 +370,17 @@ export function PluralInner() {
                 />
                 <Route
                   path="edit"
-                  element={<AccountAttributes />}
-                />
+                  element={<Outlet />}
+                >
+                  <Route
+                    index
+                    element={<AccountAttributes />}
+                  />
+                  <Route
+                    path=":section/*"
+                    element={<EditAccount />}
+                  />
+                </Route>
                 <Route
                   path="users"
                   element={<Users />}

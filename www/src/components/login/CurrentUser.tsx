@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useQuery } from '@apollo/client'
 import { Navigate, useLocation } from 'react-router-dom'
 import { Box } from 'grommet'
@@ -7,14 +7,16 @@ import { useIntercom } from 'react-use-intercom'
 
 import { growthbook } from 'helpers/growthbook'
 
+import PluralConfigurationContext from 'contexts/PluralConfigurationContext'
+
+import CurrentUserContext from 'contexts/CurrentUserContext'
+
 import { ME_Q } from '../users/queries'
 import { setPreviousUserData, setToken, wipeToken } from '../../helpers/authentication'
 import { useNotificationSubscription } from '../incidents/Notifications'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
 // const POLL_INTERVAL=30000
-export const CurrentUserContext = createContext({})
-export const PluralConfigurationContext = createContext({})
 
 function LoadingSpinner() {
   const [showLogo, setShowLogo] = useState(false)
@@ -27,7 +29,7 @@ function LoadingSpinner() {
     return () => clearTimeout(timer)
   }, [])
 
-  return showLogo && <LoopingLogo />
+  return showLogo ? <LoopingLogo /> : null
 }
 
 export default function CurrentUser({ children }) {
@@ -81,7 +83,7 @@ export function PluralProvider({ children }) {
     if (!data?.me) return
     const { me } = data
 
-    boot({ name: me.name, email: me.email, user_id: me.id })
+    boot({ name: me.name, email: me.email, userId: me.id })
     growthbook.setAttributes({ company: me.account.name, id: me.id, email: me.email })
   }, [data, boot])
 

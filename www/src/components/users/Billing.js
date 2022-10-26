@@ -4,7 +4,7 @@ import { FaCreditCard, FaReceipt } from 'react-icons/fa'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { BreadcrumbsContext } from '../Breadcrumbs'
-import { SIDEBAR_WIDTH } from '../constants'
+import { SIDEBAR_WIDTH } from '../constants.ts'
 import Invoices from '../payments/Invoices'
 import { SectionChoice } from '../utils/SectionChoice'
 

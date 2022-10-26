@@ -26,7 +26,7 @@ export const canEdit = ({ roles, id }, { rootUser }) => (
   (roles && roles.admin) || id === rootUser.id
 )
 
-export function EditAccount({ billing }) {
+export function EditAccount({ billing }: any) {
   const { section } = useParams()
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
 

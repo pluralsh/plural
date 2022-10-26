@@ -18,7 +18,7 @@ export function setPreviousUserData(userData) {
 
 export function getPreviousUserData() {
   try {
-    return JSON.parse(localStorage.getItem(AUTH_PREVIOUS_USER_DATA)) || null
+    return JSON.parse(localStorage.getItem(AUTH_PREVIOUS_USER_DATA) as string) || null
   }
   catch (error) {
     return null

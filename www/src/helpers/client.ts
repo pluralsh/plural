@@ -30,7 +30,7 @@ const retryLink = new RetryLink({
   },
 })
 
-const authLink = setContext(({ headers }) => {
+const authLink = setContext(({ headers }: any) => {
   const token = fetchToken()
 
   return {
@@ -38,11 +38,11 @@ const authLink = setContext(({ headers }) => {
   }
 })
 
-const resetToken = onError(({ networkError }) => {
+const resetToken = onError(({ networkError }: any) => {
   if (networkError && networkError.statusCode === 401) {
     // remove cached token on 401 from the server
     clearLocalStorage()
-    window.location = '/login'
+    window.location = '/login' as any as Location
   }
 })
 

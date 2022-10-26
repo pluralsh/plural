@@ -17,7 +17,7 @@ function DeleteRepository({ repo, publisherId }) {
   const [mutation] = useMutation(DELETE_REPO, {
     variables: { id: repo.id },
     update: (cache, { data: { deleteRepository } }) => {
-      const { repositories, ...prev } = cache.readQuery({ query: REPOS_Q, variables: { publisherId } })
+      const { repositories, ...prev } = cache.readQuery({ query: REPOS_Q, variables: { publisherId } }) as any
 
       cache.writeQuery({
         query: REPOS_Q,
@@ -35,7 +35,6 @@ function DeleteRepository({ repo, publisherId }) {
   return (
     <HoveredBackground>
       <Box
-        accentable
         focusIndicator={false}
         background="white"
         pad="xsmall"
@@ -51,8 +50,8 @@ function DeleteRepository({ repo, publisherId }) {
   )
 }
 
-export function RepoIcon({ repo: { icon, darkIcon }, round, size }) {
-  const { dark } = useContext(ThemeContext)
+export function RepoIcon({ repo: { icon, darkIcon }, round, size }: any) {
+  const { dark } = useContext(ThemeContext) as any
   const dim = size || '50px'
 
   return (

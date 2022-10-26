@@ -121,7 +121,7 @@ const containerStyling = styled.div`
 
 export function Container({
   pad, width, setHover, children, modifier, noHover, ...rest
-}) {
+}: any) {
   const theme = useContext(ThemeContext)
 
   return (

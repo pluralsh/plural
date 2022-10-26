@@ -12,7 +12,7 @@ import { SectionChoice } from 'components/utils/SectionChoice'
 
 import { STRIPE_BLUE } from '../payments/constants'
 import { BreadcrumbsContext } from '../Breadcrumbs'
-import { SIDEBAR_WIDTH } from '../constants'
+import { SIDEBAR_WIDTH } from '../constants.ts'
 
 import ResponsiveInput from '../ResponsiveInput'
 import { ME_Q } from '../users/queries'

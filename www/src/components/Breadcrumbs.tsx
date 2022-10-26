@@ -59,7 +59,7 @@ export function Breadcrumbs() {
       >{crumb.text}
       </Text>
     )
-  })).flat()
+  }) as any as any[]).flat()
 
   return (
     <Box

@@ -59,12 +59,12 @@ function ExistingInvite({ invite: { account }, id }) {
     variables: { id },
     onCompleted: ({ realizeInvite: { jwt } }) => {
       setToken(jwt)
-      window.location = '/'
+      window.location = '/' as any as Location
     },
   })
 
   return (
-    <LoginPortal style={{ minWidth: '50%' }}>
+    <LoginPortal>
       <Box
         fill
         pad="medium"
@@ -81,7 +81,7 @@ function ExistingInvite({ invite: { account }, id }) {
           )}
           <Box align="center">You were invited to join another account</Box>
           <Button
-            onClick={mutation}
+            onClick={() => mutation()}
             loading={loading}
             width="100%"
             padding="medium"
@@ -89,7 +89,7 @@ function ExistingInvite({ invite: { account }, id }) {
             Join {account.name}
           </Button>
         </Box>
-      </Box>
+      </Box>mo
     </LoginPortal>
   )
 }
@@ -102,7 +102,7 @@ export default function Invite() {
     variables: { inviteId, attributes },
     onCompleted: ({ signup: { jwt } }) => {
       setToken(jwt)
-      window.location = '/'
+      window.location = '/' as any as Location
     },
   })
 
@@ -126,12 +126,12 @@ export default function Invite() {
   }
 
   return (
-    <LoginPortal style={{ minWidth: '50%' }}>
+    <LoginPortal>
       <Box
         fill
         pad="medium"
       >
-        <Keyboard onEnter={isValid && mutation}>
+        <Keyboard onEnter={() => isValid && mutation()}>
           <Box
             flex={false}
             gap="small"
@@ -212,7 +212,7 @@ export default function Invite() {
               width="100%"
               loading={loading}
               disabled={!isValid}
-              onClick={mutation}
+              onClick={() => mutation()}
             >
               Sign up
             </Button>

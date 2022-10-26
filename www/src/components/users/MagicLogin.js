@@ -25,7 +25,7 @@ import { WelcomeHeader } from 'components/utils/WelcomeHeader'
 import { fetchToken, setToken } from '../../helpers/authentication'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 import { disableState } from '../Login'
-import { PLURAL_FULL_LOGO_WHITE, PLURAL_MARK_WHITE } from '../constants'
+import { PLURAL_FULL_LOGO_WHITE, PLURAL_MARK_WHITE } from '../constants.ts'
 import { ACCEPT_LOGIN } from '../oidc/queries'
 import { host } from '../../helpers/hostname'
 import { useHistory } from '../../router'
@@ -45,8 +45,17 @@ import {
 import { finishedDeviceLogin } from './DeviceLoginNotif'
 
 export function LabelledInput({
-  label, value, onChange, placeholder, type, caption, hint, error = undefined, required = false, disabled = false,
-}) {
+  label,
+  value,
+  onChange,
+  placeholder,
+  type,
+  caption,
+  hint,
+  error = undefined,
+  required = false,
+  disabled = false,
+}: any) {
   return (
     <FormField
       label={label}

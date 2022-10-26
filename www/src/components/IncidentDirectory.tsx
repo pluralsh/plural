@@ -10,19 +10,6 @@ import { Responses } from './incidents/Responses'
 
 import { SubmenuItem, SubmenuPortal } from './navigation/Submenu'
 
-// const ICON_SIZE = '14px'
-
-// function SectionItem({name, label, icon}) {
-//   const {group} = useParams()
-//   return (
-//     <SectionItemContainer
-//       label={label}
-//       selected={group === name}
-//       location={`/incidents/${name}`}
-//       icon={React.createElement(icon, {size: ICON_SIZE})} />
-//   )
-// }
-
 export function IncidentDirectory() {
   const { group } = useParams()
 

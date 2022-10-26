@@ -113,7 +113,7 @@ export function OnboardingChecklist() {
   )
 
   if (!visible) {
-    return
+    return null
   }
 
   return (

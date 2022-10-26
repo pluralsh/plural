@@ -7,8 +7,8 @@ import Autosizer from 'react-virtualized-auto-sizer'
 import memoize from 'memoize-one'
 import { CellMeasurer } from 'forge-core'
 
-class SmartLoader extends PureComponent {
-  _listRef = null
+class SmartLoader extends PureComponent<any> {
+  _listRef: any = null
 
   _lastRenderedStartIndex = -1
 
@@ -106,19 +106,19 @@ function areEqual(prevProps, nextProps) {
   )
 }
 
-const Item = ({ index, mapper, isItemLoaded, placeholder, items, setSize }) => {
+const Item = ({ index, mapper, isItemLoaded, placeholder, items, setSize }: any) => {
   if (!isItemLoaded(index)) {
     return placeholder && placeholder(index)
   }
 
   return mapper(items[index], { next: items[index + 1] || {}, prev: items[index - 1] || {} }, { setSize, index })
 }
-const ItemWrapper = memo(({ data: { setSize, width, refreshKey, items, isItemLoaded, placeholder, mapper }, style, index, ...props }) => {
-  const [rowRef, setRowRef] = useState(null)
+const ItemWrapper = memo(({ data: { setSize, width, refreshKey, items, isItemLoaded, placeholder, mapper }, style, index, ...props }: any) => {
+  const [rowRef, setRowRef] = useState<HTMLDivElement | null>(null)
   const item = items[index]
   const sizeCallback = useCallback(() => {
     rowRef && setSize(index, rowRef.getBoundingClientRect().height)
-// eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rowRef, index])
 
   useEffect(() => {
@@ -134,12 +134,12 @@ const ItemWrapper = memo(({ data: { setSize, width, refreshKey, items, isItemLoa
       {({ registerChild }) => (
         <div style={style}>
           <Box
-            classNames={refreshKey}
+            className={refreshKey}
             ref={ref => {
               registerChild(ref)
               setRowRef(ref)
             }}
-            margin={index === 0 ? { bottom: 'small' } : null}
+            margin={index === 0 ? { bottom: 'small' } : undefined}
           >
             <Item
               index={index}
@@ -156,7 +156,7 @@ const ItemWrapper = memo(({ data: { setSize, width, refreshKey, items, isItemLoa
   )
 }, areEqual)
 
-const FixedItemWrapper = memo(({ data: { items, isItemLoaded, placeholder, mapper }, style, index }) => (
+const FixedItemWrapper = memo(({ data: { items, isItemLoaded, placeholder, mapper }, style, index }: any) => (
   <div style={style}>
     <Item
       index={index}
@@ -226,7 +226,19 @@ export default function SmoothScroller({
 }
 
 export function StandardScroller({
-  hasNextPage, placeholder, loading, items, loadNextPage, mapper, listRef, setListRef, handleScroll, refreshKey, setLoader, ...props }) {
+  hasNextPage,
+  placeholder,
+   loading,
+    items,
+     loadNextPage,
+      mapper,
+       listRef,
+        setListRef,
+         handleScroll,
+          refreshKey,
+           setLoader,
+            ...props
+           }: any) {
   const sizeMap = useRef({})
   const setSize = useCallback((index, size) => {
     sizeMap.current = { ...sizeMap.current, [index]: size }
@@ -300,7 +312,7 @@ export function FixedScroller({ hasNextPage, loading, items, loadNextPage, mappe
               width={width}
               itemSize={itemSize}
               itemCount={itemCount}
-              itemData={buildItemData(null, mapper, isItemLoaded, items, null, width, placeholder)}
+              itemData={buildItemData(null, null, mapper, isItemLoaded, items, null, width, placeholder)}
               onItemsRendered={onItemsRendered}
               ref={ref}
             >

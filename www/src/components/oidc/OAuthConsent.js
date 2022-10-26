@@ -7,7 +7,7 @@ import { Box, Text } from 'grommet'
 
 import { LoginPortal } from '../users/MagicLogin'
 import { GqlError } from '../utils/Alert'
-import { PLURAL_MARK_WHITE } from '../constants'
+import { PLURAL_MARK_WHITE } from '../constants.ts'
 import { RepoIcon } from '../repos/Repositories'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 

@@ -48,8 +48,6 @@ type ListItemProps = {
 const ListItem = forwardRef<HTMLLIElement, ListItemProps>(({ first, last, ...props }, ref) => {
   const { hue } = useContext(ListContext)
 
-  console.log('props', props)
-
   return (
     <ListItemInner
       ref={ref}

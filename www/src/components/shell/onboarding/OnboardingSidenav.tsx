@@ -1,4 +1,3 @@
-import { CurrentUserContext } from 'components/login/CurrentUser'
 import { OnboardingStatus } from 'components/profile/types'
 import { A } from 'honorable'
 import {
@@ -13,6 +12,8 @@ import {
 } from 'pluralsh-design-system'
 import { useContext } from 'react'
 import styled from 'styled-components'
+
+import CurrentUserContext from '../../../contexts/CurrentUserContext'
 
 import {
   SECTION_APPLICATIONS,

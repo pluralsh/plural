@@ -9,13 +9,13 @@ import { GqlError } from '../utils/Alert'
 
 import { CREATE_GROUP, GROUPS_Q } from './queries'
 
-export function CreateGroup({ q }) {
+export function CreateGroup({ q }: any) {
   const [open, setOpen] = useState(false)
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const resetAndClose = useCallback(() => {
     setName('')
-    setDescription(null)
+    setDescription('')
     setOpen(false)
   }, [])
   const [mutation, { loading, error }] = useMutation(CREATE_GROUP, {
@@ -50,7 +50,7 @@ export function CreateGroup({ q }) {
             </Button>
             <Button
               type="submit"
-              onClick={mutation}
+              onClick={() => mutation()}
               loading={loading}
               marginLeft="medium"
             >

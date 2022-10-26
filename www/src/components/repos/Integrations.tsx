@@ -13,7 +13,7 @@ import { normalizeColor } from 'grommet/utils'
 
 import { chunk } from '../../utils/array'
 import { extendConnection } from '../../utils/graphql'
-import { BreadcrumbsContext } from '../Breadcrumbs'
+import BreadcrumbsContext from '../../contexts/BreadcrumbsContext'
 
 import { DetailContainer } from './Installation'
 import { DetailHeader } from './Artifacts'

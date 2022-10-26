@@ -11,7 +11,7 @@ import { useMutation, useQuery } from '@apollo/client'
 
 import { ModalHeader } from '../ModalHeader'
 import { extendConnection } from '../../utils/graphql'
-import { BreadcrumbsContext } from '../Breadcrumbs'
+import BreadcrumbsContext from '../../contexts/BreadcrumbsContext'
 import { StandardScroller } from '../utils/SmoothScroller'
 
 import { WebhookLog } from './WebhookLog'

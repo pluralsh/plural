@@ -1,4 +1,3 @@
-import { CurrentUserContext } from 'components/login/CurrentUser'
 import { LinkTabWrap } from 'components/utils/Tabs'
 import {
   PageCard, Tab, TabList,
@@ -7,6 +6,8 @@ import { useContext } from 'react'
 import { useLocation } from 'react-router-dom'
 
 import { Div } from 'honorable'
+
+import CurrentUserContext from '../../contexts/CurrentUserContext'
 
 const DIRECTORY = [
   { path: '/account/edit', label: 'Account attributes' },

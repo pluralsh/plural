@@ -6,7 +6,7 @@ import { GitHubLogoIcon } from 'pluralsh-design-system'
 import { Update } from 'forge-core'
 
 import { Provider } from '../repos/misc'
-import { BreadcrumbsContext } from '../Breadcrumbs'
+import BreadcrumbsContext from '../../contexts/BreadcrumbsContext'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
 

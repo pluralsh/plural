@@ -8,7 +8,7 @@ import { ModalHeader } from '../ModalHeader'
 
 import { extendConnection } from '../../utils/graphql'
 
-import { BreadcrumbsContext } from '../Breadcrumbs'
+import BreadcrumbsContext from '../../contexts/BreadcrumbsContext'
 
 import { ActionTab, CreateWebhook } from './CreateWebhook'
 

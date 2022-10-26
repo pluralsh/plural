@@ -11,7 +11,7 @@ import { useFilePicker } from 'react-sage'
 import { SectionChoice } from 'components/utils/SectionChoice'
 
 import { STRIPE_BLUE } from '../payments/constants'
-import { BreadcrumbsContext } from '../Breadcrumbs'
+import BreadcrumbsContext from '../../contexts/BreadcrumbsContext'
 import { SIDEBAR_WIDTH } from '../constants.ts'
 
 import ResponsiveInput from '../ResponsiveInput'

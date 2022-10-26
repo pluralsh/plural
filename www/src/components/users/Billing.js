@@ -3,7 +3,7 @@ import { useContext, useEffect } from 'react'
 import { FaCreditCard, FaReceipt } from 'react-icons/fa'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { BreadcrumbsContext } from '../Breadcrumbs'
+import BreadcrumbsContext from '../../contexts/BreadcrumbsContext'
 import { SIDEBAR_WIDTH } from '../constants.ts'
 import Invoices from '../payments/Invoices'
 import { SectionChoice } from '../utils/SectionChoice'

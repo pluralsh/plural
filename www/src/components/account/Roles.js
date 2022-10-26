@@ -11,6 +11,8 @@ import { useContext, useState } from 'react'
 
 import { Placeholder } from 'components/utils/Placeholder'
 
+import CurrentUserContext from '../../contexts/CurrentUserContext'
+
 import { List, ListItem } from '../utils/List'
 import ListInput from '../utils/ListInput'
 import {
@@ -21,7 +23,6 @@ import {
 
 import { canEdit } from '../users/EditAccount'
 
-import { CurrentUserContext } from '../login/CurrentUser'
 import { DeleteIconButton } from '../utils/IconButtons'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { StandardScroller } from '../utils/SmoothScroller'

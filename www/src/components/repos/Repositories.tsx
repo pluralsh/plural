@@ -142,7 +142,7 @@ export function Repository({
       pad="small"
       direction="row"
       gap="small"
-      border={hasNext ? 'bottom' : null}
+      border={hasNext ? 'bottom' : undefined}
     >
       <Box
         width="50px"
@@ -187,8 +187,13 @@ export function Repository({
 }
 
 export function RepositoryList({
-  repositores: { edges, pageInfo }, fetchMore, publisher, deletable, columns, emptyState,
-}) {
+  repositores: { edges, pageInfo },
+  fetchMore,
+  publisher,
+  deletable,
+  columns,
+  emptyState,
+}: any) {
   const width = Math.floor((100 - 10) / columns)
 
   return (

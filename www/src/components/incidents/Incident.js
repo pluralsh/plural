@@ -22,7 +22,7 @@ import { useEditor } from '../utils/hooks'
 
 import { TagInput } from '../repos/Tags'
 import { CurrentUserContext } from '../login/CurrentUser'
-import { BreadcrumbsContext } from '../Breadcrumbs'
+import BreadcrumbsContext from '../../contexts/BreadcrumbsContext'
 import Avatar from '../users/Avatar'
 
 import Markdown from './Markdown'

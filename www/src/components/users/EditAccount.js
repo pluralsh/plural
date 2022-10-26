@@ -7,7 +7,7 @@ import {
 
 import { useParams } from 'react-router-dom'
 
-import { BreadcrumbsContext } from '../Breadcrumbs'
+import BreadcrumbsContext from '../../contexts/BreadcrumbsContext'
 
 import Invoices from '../payments/Invoices'
 import { OAuthIntegrations } from '../integrations/OAuthIntegrations'

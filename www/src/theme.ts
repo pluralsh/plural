@@ -129,6 +129,7 @@ export const DEFAULT_COLOR_THEME = {
   backgroundColor: 'sidebarBackground',
   sidebarBorder: alpha('#363840', 0.4),
   sidebarBackground: '#0d1215',
+  // @ts-expect-error
   orange: '#d7722c',
   presence: '#39E500',
   link: '#3366BB',

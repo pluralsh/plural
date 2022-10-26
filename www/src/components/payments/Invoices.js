@@ -8,7 +8,7 @@ import { useQuery } from '@apollo/client'
 import moment from 'moment'
 
 import { TagContainer } from '../repos/Tags'
-import { BreadcrumbsContext } from '../Breadcrumbs'
+import BreadcrumbsContext from '../../contexts/BreadcrumbsContext'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
 import { subscriptionCost } from './utils'

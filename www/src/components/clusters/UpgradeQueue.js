@@ -9,7 +9,7 @@ import { useParams } from 'react-router-dom'
 import { appendConnection, extendConnection } from '../../utils/graphql'
 import { RepoIcon } from '../repos/Repositories'
 
-import { BreadcrumbsContext } from '../Breadcrumbs'
+import BreadcrumbsContext from '../../contexts/BreadcrumbsContext'
 import { Attributes } from '../incidents/utils'
 import { Attribute, Container } from '../integrations/Webhook'
 import { Provider } from '../repos/misc'

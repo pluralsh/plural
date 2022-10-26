@@ -7,7 +7,7 @@ import { InputCollection, ResponsiveInputContainer } from 'forge-core'
 import Repositories from '../repos/Repositories'
 import Avatar from '../users/Avatar'
 import { DetailContainer } from '../repos/Installation'
-import { BreadcrumbsContext } from '../Breadcrumbs'
+import BreadcrumbsContext from '../../contexts/BreadcrumbsContext'
 
 import { PUBLISHER_QUERY } from './queries'
 

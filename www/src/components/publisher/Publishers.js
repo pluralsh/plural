@@ -10,7 +10,7 @@ import { Scroller } from 'forge-core'
 
 import Avatar from '../users/Avatar'
 import { Container } from '../repos/Integrations'
-import { BreadcrumbsContext } from '../Breadcrumbs'
+import BreadcrumbsContext from '../../contexts/BreadcrumbsContext'
 
 import { PUBLISHERS_Q } from './queries'
 

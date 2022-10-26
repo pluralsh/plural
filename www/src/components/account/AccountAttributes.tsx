@@ -14,7 +14,7 @@ import {
 import { useContext, useMemo, useState } from 'react'
 import { useTheme } from 'styled-components'
 
-import { CurrentUserContext } from '../login/CurrentUser'
+import CurrentUserContext from '../../contexts/CurrentUserContext'
 import { DeleteIconButton } from '../utils/IconButtons'
 import { GqlError } from '../utils/Alert'
 import { useUpdateState } from '../../hooks/useUpdateState'

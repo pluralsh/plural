@@ -14,10 +14,10 @@ import ListInput from 'components/utils/ListInput'
 
 import { List } from 'components/utils/List'
 
+import CurrentUserContext from '../../contexts/CurrentUserContext'
+
 import { removeConnection, updateCache } from '../../utils/graphql'
 import { canEdit } from '../users/EditAccount'
-
-import { CurrentUserContext } from '../login/CurrentUser'
 
 import { DeleteIconButton } from '../utils/IconButtons'
 

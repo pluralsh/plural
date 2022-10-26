@@ -16,8 +16,7 @@ import {
 } from '../../helpers/authentication'
 
 import { canEdit } from '../users/EditAccount'
-
-import { CurrentUserContext } from '../login/CurrentUser'
+import CurrentUserContext from '../../contexts/CurrentUserContext'
 
 import { Provider } from '../repos/misc'
 import { DELETE_USER } from '../users/queries'

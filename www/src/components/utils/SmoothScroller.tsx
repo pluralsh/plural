@@ -312,7 +312,7 @@ export function FixedScroller({ hasNextPage, loading, items, loadNextPage, mappe
               width={width}
               itemSize={itemSize}
               itemCount={itemCount}
-              itemData={buildItemData(null, null, mapper, isItemLoaded, items, null, width, placeholder)}
+              itemData={buildItemData(null, null, mapper, isItemLoaded, items, null, width, placeholder, null)}
               onItemsRendered={onItemsRendered}
               ref={ref}
             >

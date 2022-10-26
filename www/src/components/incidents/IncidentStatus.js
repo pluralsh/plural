@@ -6,7 +6,7 @@ import { ThemeContext } from 'styled-components'
 
 import { normalizeColor } from 'grommet/utils'
 
-import { CurrentUserContext } from '../login/CurrentUser'
+import CurrentUserContext from '../../contexts/CurrentUserContext'
 
 import { IncidentStatus, StatusColorMap } from './types'
 import { canEdit } from './Incident'

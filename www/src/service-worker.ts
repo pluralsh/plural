@@ -14,6 +14,7 @@ clientsClaim()
 // even if you decide not to use precaching. See https://cra.link/PWA
 // Filter out the "index.html" so that it is not cached as it breaks
 // the application when the code changes and SW caches it
+// @ts-expect-error
 const precache = self.__WB_MANIFEST.filter(file => !file.url.includes('index.html'))
 precacheAndRoute(precache)
 

@@ -9,7 +9,7 @@ import {
 import { TerraformFragment, TerraformInstallationFragment } from '../../models/terraform'
 import {
   DockerImageFragment, DockerRepoFragment, DockerRepository, VulnerabilityFragment,
-} from '../../models/docker'
+} from '../../models/docker.ts'
 import { RecipeFragment, RecipeSectionFragment } from '../../models/recipe'
 import { PlanFragment, SubscriptionFragment } from '../../models/payments'
 import { PageInfo } from '../../models/misc'

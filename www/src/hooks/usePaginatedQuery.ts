@@ -5,9 +5,9 @@ function mapNode(edges) {
   return (edges || []).map(({ node }) => node)
 }
 
-function usePaginatedQuery(query, options = {}, getResults = x => x) {
-  const [previousEdges, setPreviousEdges] = useState([])
-  const [cursor, setCursor] = useState(null)
+function usePaginatedQuery(query, options: any = {}, getResults = x => x) {
+  const [previousEdges, setPreviousEdges] = useState<any[]>([])
+  const [cursor, setCursor] = useState<any>(null)
 
   const results = useQuery(query, {
     ...options,
